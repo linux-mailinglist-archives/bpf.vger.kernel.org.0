@@ -2,151 +2,396 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AD91BB86B
-	for <lists+bpf@lfdr.de>; Mon, 23 Sep 2019 17:49:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A112FBB99E
+	for <lists+bpf@lfdr.de>; Mon, 23 Sep 2019 18:31:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732758AbfIWPtO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 Sep 2019 11:49:14 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:33999 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728594AbfIWPtN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 23 Sep 2019 11:49:13 -0400
-Received: by mail-io1-f71.google.com with SMTP id z10so8964975ioj.1
-        for <bpf@vger.kernel.org>; Mon, 23 Sep 2019 08:49:11 -0700 (PDT)
+        id S1729121AbfIWQbt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 Sep 2019 12:31:49 -0400
+Received: from mail-vs1-f67.google.com ([209.85.217.67]:34601 "EHLO
+        mail-vs1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726328AbfIWQbt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 Sep 2019 12:31:49 -0400
+Received: by mail-vs1-f67.google.com with SMTP id d3so9876137vsr.1;
+        Mon, 23 Sep 2019 09:31:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=l2tJEqzHnv6SXlQuHsd3hOyscPeROk0Nh2yTJ+a5uyQ=;
+        b=FxgGsYVAsCnBLLOvalqPZXXp9FtfUsz5vdpQkK/TRK5Xc5HPIc176exvXKsGiRp+31
+         44CgGyb4HFjefjSrZwm7Q0L6d1EMs9xirQOprYYR8WDdr3TOCUZPvH+X+KeaXN5rmQ4q
+         B9WU5c7+KlpIT/7KCx/qfL5YCyYvletVM2rSSefUykzZmwcLW2ORS44vLiRhMU7G7KDk
+         zrqSqE3uCOTZxhwWbWECD4WGmi8MJeHl3XfQx78l2Q/4t8NLmQZ0zqFjBnNEhugrYBqI
+         suh4Bb6DbQLbrXNwxTspd32ViJZQcB3GY3MgLkJOZ7R3svY7WmTcCSc141BDN75IFLeW
+         bKYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to
-         :content-transfer-encoding;
-        bh=aTe9vFgxnQSUbqzD1uvP+ahz/Hl3A6XwhKJCZ9nDuOs=;
-        b=eZH5g0wXD9Vbhgl4c8ltCuzAsBskExQFxbFMC3N02gyrx2A5dInnUOpdktW/4/6PCj
-         hlYqCHe+R2AtupEJf6v0/ZBEoIfzb3paNijKhxzwKAe0AX1+Gu39R2RA2vgG6Fnz+zL6
-         B10ofVevlhxvfseLzAAwZ0koxpa23U/afwhEp84lbH+MKdH+L31GH2CfJXZl6R4K9lCK
-         20hFGwEt3Q8vqwyuucGXX9/mj6yCsFvhF4EzLr0Qjgfptr3CiD7xQFGpCSo8s9mCzwUA
-         9VXkzxVHwgiv9LPggtYYyC56btdzzkDDsqnjITakw1jtUaxyHHkXUCaXKEh0qxDc/v4N
-         b7sQ==
-X-Gm-Message-State: APjAAAUpTGed+Rl/7LkMi0bmVPAetyX9ge9lG2jFqVIpZfadnEy80BMt
-        /3MZRFcN7HSWwDKf9cCPEIEOHIo5/hcgzaxU0KU0oSau708U
-X-Google-Smtp-Source: APXvYqxPjdQBB4Fscqb4QFuBDGFKVQVQx/4U6ZEhKpwVw/nNziP7PXssR1WqgphK6lL3xLS8f87kiSF4AJU/MRIDv/RT2Bht86lN
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=l2tJEqzHnv6SXlQuHsd3hOyscPeROk0Nh2yTJ+a5uyQ=;
+        b=rD9PCfWFEeIUFNQehHtHmDfwj8pn8ih3xfrfzpGeeRmER0oz6UAkQjlv4Q0NHBWf2j
+         Zp3pvcAu3sQe2J12srNzFT1rdSzm1a5UmsuMPy1a8Ia2RRaKvKpm1YUv8eLBEvyPwvzl
+         +mp+FnSDjhh3rYj5b1Q0lnynOHWd67kEZcwDwVVwi4vH28MgVPYFJ1X1h21+lb93RcRo
+         e0NzeAB3S/nnUOTYCOYwmNGeJU8rMcktO1mrwNPO7dKB+Bab1DyH4zyOg/vD8cuDDEE+
+         l3nZ67PfYkVjn5bcphos+6VL7+y8/BvCstfOIYiPiNOicQRUIYv9xadOWjfXxv8YC47l
+         V/vQ==
+X-Gm-Message-State: APjAAAWxUwXbJXY1vGPEd4SZuruZThIsjoVki71uMYcJxq9H4/rsUhFV
+        EtQbjMGHXsDjOOq1uYOxhmfBPg0lmS5ItD6+/FA=
+X-Google-Smtp-Source: APXvYqwIVyawganWqhPEMoK2JdvNIz0I0IVnVb3kgZmKX2y2uxVA04rka9xj7wQmdVVu6WYgVlyUknAhx8LgY2w8jTA=
+X-Received: by 2002:a67:328f:: with SMTP id y137mr18062vsy.199.1569256308066;
+ Mon, 23 Sep 2019 09:31:48 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a5d:814f:: with SMTP id f15mr16445345ioo.134.1569253751401;
- Mon, 23 Sep 2019 08:49:11 -0700 (PDT)
-Date:   Mon, 23 Sep 2019 08:49:11 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006a3a2f05933a5c53@google.com>
-Subject: general protection fault in xsk_map_update_elem
-From:   syzbot <syzbot+491c1b7565ba9069ecae@syzkaller.appspotmail.com>
-To:     ast@kernel.org, bjorn.topel@intel.com, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
-        jakub.kicinski@netronome.com, john.fastabend@gmail.com,
-        jonathan.lemon@gmail.com, kafai@fb.com,
-        linux-kernel@vger.kernel.org, magnus.karlsson@intel.com,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-Content-Transfer-Encoding: base64
+References: <20190920185843.4096-1-matthew.cover@stackpath.com>
+ <20190922080326-mutt-send-email-mst@kernel.org> <CAGyo_hqGbFdt1PoDrmo=S5iTO8TwbrbtOJtbvGT1WrFFMLwk-Q@mail.gmail.com>
+ <20190922162546-mutt-send-email-mst@kernel.org> <CAGyo_hr+_oSwVSKSqKTXaouaMK-6b8+NVLTxWmZD3vn07GEGWA@mail.gmail.com>
+ <f2e5b3d5-f38c-40e7-dda9-e1ed737a0135@redhat.com> <CAGyo_hohbFP+=eu3jWL954hrOgqu4upaw6HTH2=1qC9jcENWxQ@mail.gmail.com>
+ <7d3abb5d-c5a7-9fbd-f82e-88b4bf717a0b@redhat.com> <CAGyo_hondiOXi8GtqZg-YNV3A+COV=5PMHoNKaHbBjnTRTUe9Q@mail.gmail.com>
+ <b96ecf36-8f13-4a52-5355-7d88ec9e4a98@redhat.com>
+In-Reply-To: <b96ecf36-8f13-4a52-5355-7d88ec9e4a98@redhat.com>
+From:   Matt Cover <werekraken@gmail.com>
+Date:   Mon, 23 Sep 2019 09:31:36 -0700
+Message-ID: <CAGyo_hq2fyVOOJ9ktDoM9M4umAonb0ofhP6puTz91UHEp=ojDA@mail.gmail.com>
+Subject: Re: [PATCH net-next] tuntap: Fallback to automq on TUNSETSTEERINGEBPF
+ prog negative return
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>, davem@davemloft.net,
+        ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com,
+        Eric Dumazet <edumazet@google.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Matthew Cover <matthew.cover@stackpath.com>,
+        mail@timurcelik.de, pabeni@redhat.com,
+        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
+        wangli39@baidu.com, lifei.shirley@bytedance.com,
+        tglx@linutronix.de, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-SGVsbG8sDQoNCnN5emJvdCBmb3VuZCB0aGUgZm9sbG93aW5nIGNyYXNoIG9uOg0KDQpIRUFEIGNv
-bW1pdDogICAgYjQxZGFlMDYgTWVyZ2UgdGFnICd4ZnMtNS40LW1lcmdlLTcnIG9mIGdpdDovL2dp
-dC5rZXJuZWwuby4uDQpnaXQgdHJlZTogICAgICAgbmV0LW5leHQNCmNvbnNvbGUgb3V0cHV0OiBo
-dHRwczovL3N5emthbGxlci5hcHBzcG90LmNvbS94L2xvZy50eHQ/eD0xMzBiMjVhZDYwMDAwMA0K
-a2VybmVsIGNvbmZpZzogIGh0dHBzOi8vc3l6a2FsbGVyLmFwcHNwb3QuY29tL3gvLmNvbmZpZz94
-PWRmY2Y1OTJkYjIyYjkxMzINCmRhc2hib2FyZCBsaW5rOiBodHRwczovL3N5emthbGxlci5hcHBz
-cG90LmNvbS9idWc/ZXh0aWQ9NDkxYzFiNzU2NWJhOTA2OWVjYWUNCmNvbXBpbGVyOiAgICAgICBn
-Y2MgKEdDQykgOS4wLjAgMjAxODEyMzEgKGV4cGVyaW1lbnRhbCkNCnN5eiByZXBybzogICAgICBo
-dHRwczovL3N5emthbGxlci5hcHBzcG90LmNvbS94L3JlcHJvLnN5ej94PTE1NWEwYzI5NjAwMDAw
-DQpDIHJlcHJvZHVjZXI6ICAgaHR0cHM6Ly9zeXprYWxsZXIuYXBwc3BvdC5jb20veC9yZXByby5j
-P3g9MTcyYmY2ZDk2MDAwMDANCg0KVGhlIGJ1ZyB3YXMgYmlzZWN0ZWQgdG86DQoNCmNvbW1pdCAw
-NDAyYWNkNjgzYzY3ODg3NGRmNmJkYmMyMzUzMGNhMDdlYTE5MzUzDQpBdXRob3I6IEJqw7ZybiBU
-w7ZwZWwgPGJqb3JuLnRvcGVsQGludGVsLmNvbT4NCkRhdGU6ICAgVGh1IEF1ZyAxNSAwOTozMDox
-MyAyMDE5ICswMDAwDQoNCiAgICAgeHNrOiByZW1vdmUgQUZfWERQIHNvY2tldCBmcm9tIG1hcCB3
-aGVuIHRoZSBzb2NrZXQgaXMgcmVsZWFzZWQNCg0KYmlzZWN0aW9uIGxvZzogIGh0dHBzOi8vc3l6
-a2FsbGVyLmFwcHNwb3QuY29tL3gvYmlzZWN0LnR4dD94PTEwZDRhODIzNjAwMDAwDQpmaW5hbCBj
-cmFzaDogICAgaHR0cHM6Ly9zeXprYWxsZXIuYXBwc3BvdC5jb20veC9yZXBvcnQudHh0P3g9MTJk
-NGE4MjM2MDAwMDANCmNvbnNvbGUgb3V0cHV0OiBodHRwczovL3N5emthbGxlci5hcHBzcG90LmNv
-bS94L2xvZy50eHQ/eD0xNGQ0YTgyMzYwMDAwMA0KDQpJTVBPUlRBTlQ6IGlmIHlvdSBmaXggdGhl
-IGJ1ZywgcGxlYXNlIGFkZCB0aGUgZm9sbG93aW5nIHRhZyB0byB0aGUgY29tbWl0Og0KUmVwb3J0
-ZWQtYnk6IHN5emJvdCs0OTFjMWI3NTY1YmE5MDY5ZWNhZUBzeXprYWxsZXIuYXBwc3BvdG1haWwu
-Y29tDQpGaXhlczogMDQwMmFjZDY4M2M2ICgieHNrOiByZW1vdmUgQUZfWERQIHNvY2tldCBmcm9t
-IG1hcCB3aGVuIHRoZSBzb2NrZXQgaXMgIA0KcmVsZWFzZWQiKQ0KDQpSRFg6IDAwMDAwMDAwMDAw
-MDAwMjAgUlNJOiAwMDAwMDAwMDIwMDAwMTAwIFJESTogMDAwMDAwMDAwMDAwMDAwMg0KUkJQOiAw
-MDAwMDAwMDAwMDAwMDA1IFIwODogMDAwMDAwMDAwMDAwMDAwMSBSMDk6IDAwMDA3ZmZlZjQ1MDAw
-MzMNClIxMDogMDAwMDAwMDAwMDAwMDAwMCBSMTE6IDAwMDAwMDAwMDAwMDAyNDYgUjEyOiAwMDAw
-MDAwMDAwNDAxZmYwDQpSMTM6IDAwMDAwMDAwMDA0MDIwODAgUjE0OiAwMDAwMDAwMDAwMDAwMDAw
-IFIxNTogMDAwMDAwMDAwMDAwMDAwMA0Ka2FzYW46IENPTkZJR19LQVNBTl9JTkxJTkUgZW5hYmxl
-ZA0Ka2FzYW46IEdQRiBjb3VsZCBiZSBjYXVzZWQgYnkgTlVMTC1wdHIgZGVyZWYgb3IgdXNlciBt
-ZW1vcnkgYWNjZXNzDQpnZW5lcmFsIHByb3RlY3Rpb24gZmF1bHQ6IDAwMDAgWyMxXSBQUkVFTVBU
-IFNNUCBLQVNBTg0KQ1BVOiAxIFBJRDogODg3OCBDb21tOiBzeXotZXhlY3V0b3I4MzUgTm90IHRh
-aW50ZWQgNS4zLjArICMwDQpIYXJkd2FyZSBuYW1lOiBHb29nbGUgR29vZ2xlIENvbXB1dGUgRW5n
-aW5lL0dvb2dsZSBDb21wdXRlIEVuZ2luZSwgQklPUyAgDQpHb29nbGUgMDEvMDEvMjAxMQ0KUklQ
-OiAwMDEwOl9fbGlzdF9hZGQgaW5jbHVkZS9saW51eC9saXN0Lmg6NjQgW2lubGluZV0NClJJUDog
-MDAxMDpsaXN0X2FkZF90YWlsIGluY2x1ZGUvbGludXgvbGlzdC5oOjkzIFtpbmxpbmVdDQpSSVA6
-IDAwMTA6eHNrX21hcF9zb2NrX2FkZCBrZXJuZWwvYnBmL3hza21hcC5jOjYyIFtpbmxpbmVdDQpS
-SVA6IDAwMTA6eHNrX21hcF91cGRhdGVfZWxlbSsweDc5Yy8weGFjMCBrZXJuZWwvYnBmL3hza21h
-cC5jOjI2NQ0KQ29kZTogMDAgZmMgZmYgZGYgNDggYzEgZWEgMDMgODAgM2MgMDIgMDAgMGYgODUg
-ZWYgMDIgMDAgMDAgNGMgODkgZTIgNGQgODkgIA0KYTcgZDggMDUgMDAgMDAgNDggYjggMDAgMDAg
-MDAgMDAgMDAgZmMgZmYgZGYgNDggYzEgZWEgMDMgPDgwPiAzYyAwMiAwMCAwZiAgDQo4NSBjMCAw
-MiAwMCAwMCA0OSA4ZCA3YyAyNCAwOCA0OSA4ZCA4NyBkMCAwNSAwMCAwMA0KUlNQOiAwMDE4OmZm
-ZmY4ODgwOWE1MTdiYjggRUZMQUdTOiAwMDAxMDI0Ng0KUkFYOiBkZmZmZmMwMDAwMDAwMDAwIFJC
-WDogZmZmZjg4ODA5Y2NjNDlkMCBSQ1g6IGZmZmZmZmZmODE4NjgwNzANClJEWDogMDAwMDAwMDAw
-MDAwMDAwMCBSU0k6IGZmZmZmZmZmODE4NjgwODUgUkRJOiAwMDAwMDAwMDAwMDAwMDAxDQpSQlA6
-IGZmZmY4ODgwOWE1MTdjNzggUjA4OiBmZmZmODg4MGExMGQyMDAwIFIwOTogZmZmZmVkMTAxMzRh
-MmY2NQ0KUjEwOiBmZmZmZWQxMDEzNGEyZjY0IFIxMTogMDAwMDAwMDAwMDAwMDAwMyBSMTI6IDAw
-MDAwMDAwMDAwMDAwMDANClIxMzogZmZmZjg4ODA5Y2NjNDllMCBSMTQ6IGZmZmY4ODgwODlkYjU1
-ODAgUjE1OiBmZmZmODg4MDljY2M0NDAwDQpGUzogIDAwMDA1NTU1NTVkZjI4ODAoMDAwMCkgR1M6
-ZmZmZjg4ODBhZTkwMDAwMCgwMDAwKSBrbmxHUzowMDAwMDAwMDAwMDAwMDAwDQpDUzogIDAwMTAg
-RFM6IDAwMDAgRVM6IDAwMDAgQ1IwOiAwMDAwMDAwMDgwMDUwMDMzDQpDUjI6IDAwMDAwMDAwMjAw
-MDAwNDAgQ1IzOiAwMDAwMDAwMDk4NWU1MDAwIENSNDogMDAwMDAwMDAwMDE0MDZlMA0KRFIwOiAw
-MDAwMDAwMDAwMDAwMDAwIERSMTogMDAwMDAwMDAwMDAwMDAwMCBEUjI6IDAwMDAwMDAwMDAwMDAw
-MDANCkRSMzogMDAwMDAwMDAwMDAwMDAwMCBEUjY6IDAwMDAwMDAwZmZmZTBmZjAgRFI3OiAwMDAw
-MDAwMDAwMDAwNDAwDQpDYWxsIFRyYWNlOg0KICBtYXBfdXBkYXRlX2VsZW0rMHhjODIvMHgxMGIw
-IGtlcm5lbC9icGYvc3lzY2FsbC5jOjk2Ng0KICBfX2RvX3N5c19icGYrMHg4YjUvMHgzMzUwIGtl
-cm5lbC9icGYvc3lzY2FsbC5jOjI4NTQNCiAgX19zZV9zeXNfYnBmIGtlcm5lbC9icGYvc3lzY2Fs
-bC5jOjI4MjUgW2lubGluZV0NCiAgX194NjRfc3lzX2JwZisweDczLzB4YjAga2VybmVsL2JwZi9z
-eXNjYWxsLmM6MjgyNQ0KICBkb19zeXNjYWxsXzY0KzB4ZmEvMHg3NjAgYXJjaC94ODYvZW50cnkv
-Y29tbW9uLmM6MjkwDQogIGVudHJ5X1NZU0NBTExfNjRfYWZ0ZXJfaHdmcmFtZSsweDQ5LzB4YmUN
-ClJJUDogMDAzMzoweDQ0MDcwOQ0KQ29kZTogMTggODkgZDAgYzMgNjYgMmUgMGYgMWYgODQgMDAg
-MDAgMDAgMDAgMDAgMGYgMWYgMDAgNDggODkgZjggNDggODkgZjcgIA0KNDggODkgZDYgNDggODkg
-Y2EgNGQgODkgYzIgNGQgODkgYzggNGMgOGIgNGMgMjQgMDggMGYgMDUgPDQ4PiAzZCAwMSBmMCBm
-ZiAgDQpmZiAwZiA4MyA1YiAxNCBmYyBmZiBjMyA2NiAyZSAwZiAxZiA4NCAwMCAwMCAwMCAwMA0K
-UlNQOiAwMDJiOjAwMDA3ZmZlZjQ1MDM0NzggRUZMQUdTOiAwMDAwMDI0NiBPUklHX1JBWDogMDAw
-MDAwMDAwMDAwMDE0MQ0KUkFYOiBmZmZmZmZmZmZmZmZmZmRhIFJCWDogMDAwMDdmZmVmNDUwMzQ4
-MCBSQ1g6IDAwMDAwMDAwMDA0NDA3MDkNClJEWDogMDAwMDAwMDAwMDAwMDAyMCBSU0k6IDAwMDAw
-MDAwMjAwMDAxMDAgUkRJOiAwMDAwMDAwMDAwMDAwMDAyDQpSQlA6IDAwMDAwMDAwMDAwMDAwMDUg
-UjA4OiAwMDAwMDAwMDAwMDAwMDAxIFIwOTogMDAwMDdmZmVmNDUwMDAzMw0KUjEwOiAwMDAwMDAw
-MDAwMDAwMDAwIFIxMTogMDAwMDAwMDAwMDAwMDI0NiBSMTI6IDAwMDAwMDAwMDA0MDFmZjANClIx
-MzogMDAwMDAwMDAwMDQwMjA4MCBSMTQ6IDAwMDAwMDAwMDAwMDAwMDAgUjE1OiAwMDAwMDAwMDAw
-MDAwMDAwDQpNb2R1bGVzIGxpbmtlZCBpbjoNCi0tLVsgZW5kIHRyYWNlIGE5NWI5YjkyNmY4NTYw
-NzcgXS0tLQ0KUklQOiAwMDEwOl9fbGlzdF9hZGQgaW5jbHVkZS9saW51eC9saXN0Lmg6NjQgW2lu
-bGluZV0NClJJUDogMDAxMDpsaXN0X2FkZF90YWlsIGluY2x1ZGUvbGludXgvbGlzdC5oOjkzIFtp
-bmxpbmVdDQpSSVA6IDAwMTA6eHNrX21hcF9zb2NrX2FkZCBrZXJuZWwvYnBmL3hza21hcC5jOjYy
-IFtpbmxpbmVdDQpSSVA6IDAwMTA6eHNrX21hcF91cGRhdGVfZWxlbSsweDc5Yy8weGFjMCBrZXJu
-ZWwvYnBmL3hza21hcC5jOjI2NQ0KQ29kZTogMDAgZmMgZmYgZGYgNDggYzEgZWEgMDMgODAgM2Mg
-MDIgMDAgMGYgODUgZWYgMDIgMDAgMDAgNGMgODkgZTIgNGQgODkgIA0KYTcgZDggMDUgMDAgMDAg
-NDggYjggMDAgMDAgMDAgMDAgMDAgZmMgZmYgZGYgNDggYzEgZWEgMDMgPDgwPiAzYyAwMiAwMCAw
-ZiAgDQo4NSBjMCAwMiAwMCAwMCA0OSA4ZCA3YyAyNCAwOCA0OSA4ZCA4NyBkMCAwNSAwMCAwMA0K
-UlNQOiAwMDE4OmZmZmY4ODgwOWE1MTdiYjggRUZMQUdTOiAwMDAxMDI0Ng0KUkFYOiBkZmZmZmMw
-MDAwMDAwMDAwIFJCWDogZmZmZjg4ODA5Y2NjNDlkMCBSQ1g6IGZmZmZmZmZmODE4NjgwNzANClJE
-WDogMDAwMDAwMDAwMDAwMDAwMCBSU0k6IGZmZmZmZmZmODE4NjgwODUgUkRJOiAwMDAwMDAwMDAw
-MDAwMDAxDQpSQlA6IGZmZmY4ODgwOWE1MTdjNzggUjA4OiBmZmZmODg4MGExMGQyMDAwIFIwOTog
-ZmZmZmVkMTAxMzRhMmY2NQ0KUjEwOiBmZmZmZWQxMDEzNGEyZjY0IFIxMTogMDAwMDAwMDAwMDAw
-MDAwMyBSMTI6IDAwMDAwMDAwMDAwMDAwMDANClIxMzogZmZmZjg4ODA5Y2NjNDllMCBSMTQ6IGZm
-ZmY4ODgwODlkYjU1ODAgUjE1OiBmZmZmODg4MDljY2M0NDAwDQpGUzogIDAwMDA1NTU1NTVkZjI4
-ODAoMDAwMCkgR1M6ZmZmZjg4ODBhZTkwMDAwMCgwMDAwKSBrbmxHUzowMDAwMDAwMDAwMDAwMDAw
-DQpDUzogIDAwMTAgRFM6IDAwMDAgRVM6IDAwMDAgQ1IwOiAwMDAwMDAwMDgwMDUwMDMzDQpDUjI6
-IDAwMDAwMDAwMjAwMDAwNDAgQ1IzOiAwMDAwMDAwMDk4NWU1MDAwIENSNDogMDAwMDAwMDAwMDE0
-MDZlMA0KRFIwOiAwMDAwMDAwMDAwMDAwMDAwIERSMTogMDAwMDAwMDAwMDAwMDAwMCBEUjI6IDAw
-MDAwMDAwMDAwMDAwMDANCkRSMzogMDAwMDAwMDAwMDAwMDAwMCBEUjY6IDAwMDAwMDAwZmZmZTBm
-ZjAgRFI3OiAwMDAwMDAwMDAwMDAwNDAwDQoNCg0KLS0tDQpUaGlzIGJ1ZyBpcyBnZW5lcmF0ZWQg
-YnkgYSBib3QuIEl0IG1heSBjb250YWluIGVycm9ycy4NClNlZSBodHRwczovL2dvby5nbC90cHNt
-RUogZm9yIG1vcmUgaW5mb3JtYXRpb24gYWJvdXQgc3l6Ym90Lg0Kc3l6Ym90IGVuZ2luZWVycyBj
-YW4gYmUgcmVhY2hlZCBhdCBzeXprYWxsZXJAZ29vZ2xlZ3JvdXBzLmNvbS4NCg0Kc3l6Ym90IHdp
-bGwga2VlcCB0cmFjayBvZiB0aGlzIGJ1ZyByZXBvcnQuIFNlZToNCmh0dHBzOi8vZ29vLmdsL3Rw
-c21FSiNzdGF0dXMgZm9yIGhvdyB0byBjb21tdW5pY2F0ZSB3aXRoIHN5emJvdC4NCkZvciBpbmZv
-cm1hdGlvbiBhYm91dCBiaXNlY3Rpb24gcHJvY2VzcyBzZWU6IGh0dHBzOi8vZ29vLmdsL3Rwc21F
-SiNiaXNlY3Rpb24NCnN5emJvdCBjYW4gdGVzdCBwYXRjaGVzIGZvciB0aGlzIGJ1ZywgZm9yIGRl
-dGFpbHMgc2VlOg0KaHR0cHM6Ly9nb28uZ2wvdHBzbUVKI3Rlc3RpbmctcGF0Y2hlcw0K
+On Sun, Sep 22, 2019 at 10:16 PM Jason Wang <jasowang@redhat.com> wrote:
+>
+>
+> On 2019/9/23 =E4=B8=8A=E5=8D=8811:18, Matt Cover wrote:
+> > On Sun, Sep 22, 2019 at 7:34 PM Jason Wang <jasowang@redhat.com> wrote:
+> >>
+> >> On 2019/9/23 =E4=B8=8A=E5=8D=889:15, Matt Cover wrote:
+> >>> On Sun, Sep 22, 2019 at 5:51 PM Jason Wang <jasowang@redhat.com> wrot=
+e:
+> >>>> On 2019/9/23 =E4=B8=8A=E5=8D=886:30, Matt Cover wrote:
+> >>>>> On Sun, Sep 22, 2019 at 1:36 PM Michael S. Tsirkin <mst@redhat.com>=
+ wrote:
+> >>>>>> On Sun, Sep 22, 2019 at 10:43:19AM -0700, Matt Cover wrote:
+> >>>>>>> On Sun, Sep 22, 2019 at 5:37 AM Michael S. Tsirkin <mst@redhat.co=
+m> wrote:
+> >>>>>>>> On Fri, Sep 20, 2019 at 11:58:43AM -0700, Matthew Cover wrote:
+> >>>>>>>>> Treat a negative return from a TUNSETSTEERINGEBPF bpf prog as a=
+ signal
+> >>>>>>>>> to fallback to tun_automq_select_queue() for tx queue selection=
+.
+> >>>>>>>>>
+> >>>>>>>>> Compilation of this exact patch was tested.
+> >>>>>>>>>
+> >>>>>>>>> For functional testing 3 additional printk()s were added.
+> >>>>>>>>>
+> >>>>>>>>> Functional testing results (on 2 txq tap device):
+> >>>>>>>>>
+> >>>>>>>>>      [Fri Sep 20 18:33:27 2019] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =
+tun no prog =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> >>>>>>>>>      [Fri Sep 20 18:33:27 2019] tuntap: tun_ebpf_select_queue()=
+ returned '-1'
+> >>>>>>>>>      [Fri Sep 20 18:33:27 2019] tuntap: tun_automq_select_queue=
+() ran
+> >>>>>>>>>      [Fri Sep 20 18:33:27 2019] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =
+tun prog -1 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> >>>>>>>>>      [Fri Sep 20 18:33:27 2019] tuntap: bpf_prog_run_clear_cb()=
+ returned '-1'
+> >>>>>>>>>      [Fri Sep 20 18:33:27 2019] tuntap: tun_ebpf_select_queue()=
+ returned '-1'
+> >>>>>>>>>      [Fri Sep 20 18:33:27 2019] tuntap: tun_automq_select_queue=
+() ran
+> >>>>>>>>>      [Fri Sep 20 18:33:27 2019] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =
+tun prog 0 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> >>>>>>>>>      [Fri Sep 20 18:33:27 2019] tuntap: bpf_prog_run_clear_cb()=
+ returned '0'
+> >>>>>>>>>      [Fri Sep 20 18:33:27 2019] tuntap: tun_ebpf_select_queue()=
+ returned '0'
+> >>>>>>>>>      [Fri Sep 20 18:33:27 2019] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =
+tun prog 1 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> >>>>>>>>>      [Fri Sep 20 18:33:27 2019] tuntap: bpf_prog_run_clear_cb()=
+ returned '1'
+> >>>>>>>>>      [Fri Sep 20 18:33:27 2019] tuntap: tun_ebpf_select_queue()=
+ returned '1'
+> >>>>>>>>>      [Fri Sep 20 18:33:27 2019] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =
+tun prog 2 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> >>>>>>>>>      [Fri Sep 20 18:33:27 2019] tuntap: bpf_prog_run_clear_cb()=
+ returned '2'
+> >>>>>>>>>      [Fri Sep 20 18:33:27 2019] tuntap: tun_ebpf_select_queue()=
+ returned '0'
+> >>>>>>>>>
+> >>>>>>>>> Signed-off-by: Matthew Cover <matthew.cover@stackpath.com>
+> >>>>>>>> Could you add a bit more motivation data here?
+> >>>>>>> Thank you for these questions Michael.
+> >>>>>>>
+> >>>>>>> I'll plan on adding the below information to the
+> >>>>>>> commit message and submitting a v2 of this patch
+> >>>>>>> when net-next reopens. In the meantime, it would
+> >>>>>>> be very helpful to know if these answers address
+> >>>>>>> some of your concerns.
+> >>>>>>>
+> >>>>>>>> 1. why is this a good idea
+> >>>>>>> This change allows TUNSETSTEERINGEBPF progs to
+> >>>>>>> do any of the following.
+> >>>>>>>     1. implement queue selection for a subset of
+> >>>>>>>        traffic (e.g. special queue selection logic
+> >>>>>>>        for ipv4, but return negative and use the
+> >>>>>>>        default automq logic for ipv6)
+> >>>>>>>     2. determine there isn't sufficient information
+> >>>>>>>        to do proper queue selection; return
+> >>>>>>>        negative and use the default automq logic
+> >>>>>>>        for the unknown
+> >>>>>>>     3. implement a noop prog (e.g. do
+> >>>>>>>        bpf_trace_printk() then return negative and
+> >>>>>>>        use the default automq logic for everything)
+> >>>>>>>
+> >>>>>>>> 2. how do we know existing userspace does not rely on existing b=
+ehaviour
+> >>>>>>> Prior to this change a negative return from a
+> >>>>>>> TUNSETSTEERINGEBPF prog would have been cast
+> >>>>>>> into a u16 and traversed netdev_cap_txqueue().
+> >>>>>>>
+> >>>>>>> In most cases netdev_cap_txqueue() would have
+> >>>>>>> found this value to exceed real_num_tx_queues
+> >>>>>>> and queue_index would be updated to 0.
+> >>>>>>>
+> >>>>>>> It is possible that a TUNSETSTEERINGEBPF prog
+> >>>>>>> return a negative value which when cast into a
+> >>>>>>> u16 results in a positive queue_index less than
+> >>>>>>> real_num_tx_queues. For example, on x86_64, a
+> >>>>>>> return value of -65535 results in a queue_index
+> >>>>>>> of 1; which is a valid queue for any multiqueue
+> >>>>>>> device.
+> >>>>>>>
+> >>>>>>> It seems unlikely, however as stated above is
+> >>>>>>> unfortunately possible, that existing
+> >>>>>>> TUNSETSTEERINGEBPF programs would choose to
+> >>>>>>> return a negative value rather than return the
+> >>>>>>> positive value which holds the same meaning.
+> >>>>>>>
+> >>>>>>> It seems more likely that future
+> >>>>>>> TUNSETSTEERINGEBPF programs would leverage a
+> >>>>>>> negative return and potentially be loaded into
+> >>>>>>> a kernel with the old behavior.
+> >>>>>> OK if we are returning a special
+> >>>>>> value, shouldn't we limit it? How about a special
+> >>>>>> value with this meaning?
+> >>>>>> If we are changing an ABI let's at least make it
+> >>>>>> extensible.
+> >>>>>>
+> >>>>> A special value with this meaning sounds
+> >>>>> good to me. I'll plan on adding a define
+> >>>>> set to -1 to cause the fallback to automq.
+> >>>> Can it really return -1?
+> >>>>
+> >>>> I see:
+> >>>>
+> >>>> static inline u32 bpf_prog_run_clear_cb(const struct bpf_prog *prog,
+> >>>>                                            struct sk_buff *skb)
+> >>>> ...
+> >>>>
+> >>>>
+> >>>>> The way I was initially viewing the old
+> >>>>> behavior was that returning negative was
+> >>>>> undefined; it happened to have the
+> >>>>> outcomes I walked through, but not
+> >>>>> necessarily by design.
+> >>>> Having such fallback may bring extra troubles, it requires the eBPF
+> >>>> program know the existence of the behavior which is not a part of ke=
+rnel
+> >>>> ABI actually. And then some eBPF program may start to rely on that w=
+hich
+> >>>> is pretty dangerous. Note, one important consideration is to have
+> >>>> macvtap support where does not have any stuffs like automq.
+> >>>>
+> >>>> Thanks
+> >>>>
+> >>> How about we call this TUN_SSE_ABORT
+> >>> instead of TUN_SSE_DO_AUTOMQ?
+> >>>
+> >>> TUN_SSE_ABORT could be documented as
+> >>> falling back to the default queue
+> >>> selection method in either space
+> >>> (presumably macvtap has some queue
+> >>> selection method when there is no prog).
+> >>
+> >> This looks like a more complex API, we don't want userspace to differ
+> >> macvtap from tap too much.
+> >>
+> >> Thanks
+> >>
+> > This is barely more complex and provides
+> > similar to what is done in many places.
+> > For xdp, an XDP_PASS enacts what the
+> > kernel would do if there was no bpf prog.
+> > For tc cls in da mode, TC_ACT_OK enacts
+> > what the kernel would do if there was
+> > no bpf prog. For xt_bpf, false enacts
+> > what the kernel would do if there was
+> > no bpf prog (as long as negation
+> > isn't in play in the rule, I believe).
+>
+>
+> I think this is simply because you can't implement e.g
+> XDP_PASS/TC_ACT_OK through eBPF itself which is not the case of steering
+> prog here.
+>
+>
+> >
+> > I know that this is somewhat of an
+> > oversimplification and that each of
+> > these also means something else in
+> > the respective hookpoint, but I standby
+> > seeing value in this change.
+> >
+> > macvtap must have some default (i.e the
+> > action which it takes when no prog is
+> > loaded), even if that is just use queue
+> > 0. We can provide the same TUN_SSE_ABORT
+> > in userspace which does the same thing;
+> > enacts the default when returned. Any
+> > differences left between tap and macvtap
+> > would be in what the default is, not in
+> > these changes. And that difference already
+> > exists today.
+>
+>
+> I think it's better to safe to just drop the packet instead of trying to
+> workaround it.
+>
+
+This patch aside, dropping the packet here
+seems like the wrong choice. Loading a
+prog at this hookpoint "configures"
+steering. The action of configuring
+steering should not result in dropped
+packets.
+
+Suboptimal delivery is generally preferable
+to no delivery. Leaving the behavior as-is
+(i.e. relying on netdev_cap_txqueue()) or
+making any return which doesn't fit in a
+u16 simply use queue 0 would be highly
+preferable to dropping the packet.
+
+> Thanks
+>
+>
+> >
+> >>>>> In order to keep the new behavior
+> >>>>> extensible, how should we state that a
+> >>>>> negative return other than -1 is
+> >>>>> undefined and therefore subject to
+> >>>>> change. Is something like this
+> >>>>> sufficient?
+> >>>>>
+> >>>>>      Documentation/networking/tc-actions-env-rules.txt
+> >>>>>
+> >>>>> Additionally, what should the new
+> >>>>> behavior implement when a negative other
+> >>>>> than -1 is returned? I would like to have
+> >>>>> it do the same thing as -1 for now, but
+> >>>>> with the understanding that this behavior
+> >>>>> is undefined. Does this sound reasonable?
+> >>>>>
+> >>>>>>>> 3. why doesn't userspace need a way to figure out whether it run=
+s on a kernel with and
+> >>>>>>>>       without this patch
+> >>>>>>> There may be some value in exposing this fact
+> >>>>>>> to the ebpf prog loader. What is the standard
+> >>>>>>> practice here, a define?
+> >>>>>> We'll need something at runtime - people move binaries between ker=
+nels
+> >>>>>> without rebuilding then. An ioctl is one option.
+> >>>>>> A sysfs attribute is another, an ethtool flag yet another.
+> >>>>>> A combination of these is possible.
+> >>>>>>
+> >>>>>> And if we are doing this anyway, maybe let userspace select
+> >>>>>> the new behaviour? This way we can stay compatible with old
+> >>>>>> userspace...
+> >>>>>>
+> >>>>> Understood. I'll look into adding an
+> >>>>> ioctl to activate the new behavior. And
+> >>>>> perhaps a method of checking which is
+> >>>>> behavior is currently active (in case we
+> >>>>> ever want to change the default, say
+> >>>>> after some suitably long transition
+> >>>>> period).
+> >>>>>
+> >>>>>>>> thanks,
+> >>>>>>>> MST
+> >>>>>>>>
+> >>>>>>>>> ---
+> >>>>>>>>>     drivers/net/tun.c | 20 +++++++++++---------
+> >>>>>>>>>     1 file changed, 11 insertions(+), 9 deletions(-)
+> >>>>>>>>>
+> >>>>>>>>> diff --git a/drivers/net/tun.c b/drivers/net/tun.c
+> >>>>>>>>> index aab0be4..173d159 100644
+> >>>>>>>>> --- a/drivers/net/tun.c
+> >>>>>>>>> +++ b/drivers/net/tun.c
+> >>>>>>>>> @@ -583,35 +583,37 @@ static u16 tun_automq_select_queue(struct=
+ tun_struct *tun, struct sk_buff *skb)
+> >>>>>>>>>          return txq;
+> >>>>>>>>>     }
+> >>>>>>>>>
+> >>>>>>>>> -static u16 tun_ebpf_select_queue(struct tun_struct *tun, struc=
+t sk_buff *skb)
+> >>>>>>>>> +static int tun_ebpf_select_queue(struct tun_struct *tun, struc=
+t sk_buff *skb)
+> >>>>>>>>>     {
+> >>>>>>>>>          struct tun_prog *prog;
+> >>>>>>>>>          u32 numqueues;
+> >>>>>>>>> -     u16 ret =3D 0;
+> >>>>>>>>> +     int ret =3D -1;
+> >>>>>>>>>
+> >>>>>>>>>          numqueues =3D READ_ONCE(tun->numqueues);
+> >>>>>>>>>          if (!numqueues)
+> >>>>>>>>>                  return 0;
+> >>>>>>>>>
+> >>>>>>>>> +     rcu_read_lock();
+> >>>>>>>>>          prog =3D rcu_dereference(tun->steering_prog);
+> >>>>>>>>>          if (prog)
+> >>>>>>>>>                  ret =3D bpf_prog_run_clear_cb(prog->prog, skb)=
+;
+> >>>>>>>>> +     rcu_read_unlock();
+> >>>>>>>>>
+> >>>>>>>>> -     return ret % numqueues;
+> >>>>>>>>> +     if (ret >=3D 0)
+> >>>>>>>>> +             ret %=3D numqueues;
+> >>>>>>>>> +
+> >>>>>>>>> +     return ret;
+> >>>>>>>>>     }
+> >>>>>>>>>
+> >>>>>>>>>     static u16 tun_select_queue(struct net_device *dev, struct =
+sk_buff *skb,
+> >>>>>>>>>                              struct net_device *sb_dev)
+> >>>>>>>>>     {
+> >>>>>>>>>          struct tun_struct *tun =3D netdev_priv(dev);
+> >>>>>>>>> -     u16 ret;
+> >>>>>>>>> +     int ret;
+> >>>>>>>>>
+> >>>>>>>>> -     rcu_read_lock();
+> >>>>>>>>> -     if (rcu_dereference(tun->steering_prog))
+> >>>>>>>>> -             ret =3D tun_ebpf_select_queue(tun, skb);
+> >>>>>>>>> -     else
+> >>>>>>>>> +     ret =3D tun_ebpf_select_queue(tun, skb);
+> >>>>>>>>> +     if (ret < 0)
+> >>>>>>>>>                  ret =3D tun_automq_select_queue(tun, skb);
+> >>>>>>>>> -     rcu_read_unlock();
+> >>>>>>>>>
+> >>>>>>>>>          return ret;
+> >>>>>>>>>     }
+> >>>>>>>>> --
+> >>>>>>>>> 1.8.3.1
