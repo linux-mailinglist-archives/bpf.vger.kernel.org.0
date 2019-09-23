@@ -2,112 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C4AE3BBDEE
-	for <lists+bpf@lfdr.de>; Mon, 23 Sep 2019 23:31:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B75D6BBEA3
+	for <lists+bpf@lfdr.de>; Tue, 24 Sep 2019 00:51:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732345AbfIWVbJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 Sep 2019 17:31:09 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:39029 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729120AbfIWVbI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 23 Sep 2019 17:31:08 -0400
-Received: by mail-pf1-f196.google.com with SMTP id v4so5331494pff.6;
-        Mon, 23 Sep 2019 14:31:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=M2IFVrWJfMOAbZ8zA9rzidNehYbIVV/clhh3kKcrw9E=;
-        b=o8Q/uBGSu8ZdsYS0hUd/MewIisiM0eWQnwEplzkf+gYm/+TEQ0x7wO5DVHWHHVe/1B
-         0R0x1l1ZgAZL2svOvsBblBhkx5ehvs33a2hc77H9E6JVDuHr4xO8nflmbNTSSO5jD9iQ
-         h4hdHieLDX+zxUZwtq2k28rij1Zk4LOQEoC4vll4zH/9+V+z8ZHdrlLNkJ9veJHtkxnt
-         PLv3/AUQxmm8hLJdIYeGw2crjNLORwJVUzqMuxBVVf9cgcI4a5WWmlBYmZKVDoesuY+l
-         kJhKM/vSQcJ9fjG9cZDQzi+wF15QqnJHsXhg3AnAD4+JcbXEzmxJwwEhbqD4zA/IVwoE
-         TxiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=M2IFVrWJfMOAbZ8zA9rzidNehYbIVV/clhh3kKcrw9E=;
-        b=o9ZOte/izGDEaX426hAhp0oZlnRj9vetu0m2ce6mteC2OjvhqX/Oucp+S3JyKOtlQZ
-         d+uHIsZns5E8zMOIdtuzwbYLEJ0Lk4P/A4ZWLR9zR4t7kGDtn6MODbENmokM50kgtcpd
-         dcf2mjgtKznOzoaIJCmXCRL//aT0sI4qnL2Kt53foyyEsoghLtCKA942fp9V/j936DIN
-         32mjHvTe2xT1AsKhMuG6vdnKsHua70JCiHqjCHmsZgCSg3iCdoh9fMh0SoCd+INoMyMr
-         G9RPG6q7puGjSg9Iva/OdNXrZezaEIQr4LQw1Ioaq09q+pBzrHbewKm2RqXjI4iOhSl8
-         dlDA==
-X-Gm-Message-State: APjAAAWa6Pzdpd1qYL2W9Lm3tsF/otwWmuBrAGBTqRqbgUmxCssItAyu
-        rF65gMwOZWT+iTI/SowUTNLuUUoK
-X-Google-Smtp-Source: APXvYqz11dgh3msJRTJFiRiQ3k2P7vA2ePQWKiABBwCaAzm+nc2axjz7y3bjzbHGSmKtH1j4Z0C4gg==
-X-Received: by 2002:a17:90a:8d13:: with SMTP id c19mr1716231pjo.142.1569274267670;
-        Mon, 23 Sep 2019 14:31:07 -0700 (PDT)
-Received: from ?IPv6:2620:15c:2c1:200:55c7:81e6:c7d8:94b? ([2620:15c:2c1:200:55c7:81e6:c7d8:94b])
-        by smtp.gmail.com with ESMTPSA id z22sm12576337pgf.10.2019.09.23.14.31.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Sep 2019 14:31:06 -0700 (PDT)
-Subject: Re: [PATCH] kcm: use BPF_PROG_RUN
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Yonghong Song <yhs@fb.com>
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Tom Herbert <tom@herbertland.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20190905211528.97828-1-samitolvanen@google.com>
- <0f77cc31-4df5-a74f-5b64-a1e3fc439c6d@fb.com>
- <CAADnVQJxrPDZtKAik4VEzvw=TwY6PoWytfp7HcQt5Jsaja7mxw@mail.gmail.com>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <048e82f4-5b31-f9f4-5bf7-82dfbf7ec8f3@gmail.com>
-Date:   Mon, 23 Sep 2019 14:31:04 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S2392842AbfIWWvB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 Sep 2019 18:51:01 -0400
+Received: from www62.your-server.de ([213.133.104.62]:43564 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392820AbfIWWvB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 Sep 2019 18:51:01 -0400
+Received: from [178.197.248.15] (helo=localhost)
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1iCXAR-00087M-8r; Tue, 24 Sep 2019 00:50:51 +0200
+Date:   Tue, 24 Sep 2019 00:50:50 +0200
+From:   Daniel Borkmann <daniel@iogearbox.net>
+To:     syzbot <syzbot+491c1b7565ba9069ecae@syzkaller.appspotmail.com>
+Cc:     ast@kernel.org, bjorn.topel@intel.com, bpf@vger.kernel.org,
+        davem@davemloft.net, hawk@kernel.org, jakub.kicinski@netronome.com,
+        john.fastabend@gmail.com, jonathan.lemon@gmail.com, kafai@fb.com,
+        linux-kernel@vger.kernel.org, magnus.karlsson@intel.com,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Subject: Re: general protection fault in xsk_map_update_elem
+Message-ID: <20190923225050.GA26406@pc-63.home>
+References: <0000000000006a3a2f05933a5c53@google.com>
 MIME-Version: 1.0
-In-Reply-To: <CAADnVQJxrPDZtKAik4VEzvw=TwY6PoWytfp7HcQt5Jsaja7mxw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0000000000006a3a2f05933a5c53@google.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.101.4/25581/Mon Sep 23 10:20:21 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 9/6/19 10:06 AM, Alexei Starovoitov wrote:
-> On Fri, Sep 6, 2019 at 3:03 AM Yonghong Song <yhs@fb.com> wrote:
->>
->>
->>
->> On 9/5/19 2:15 PM, Sami Tolvanen wrote:
->>> Instead of invoking struct bpf_prog::bpf_func directly, use the
->>> BPF_PROG_RUN macro.
->>>
->>> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
->>
->> Acked-by: Yonghong Song <yhs@fb.com>
+On Mon, Sep 23, 2019 at 08:49:11AM -0700, syzbot wrote:
+> Hello,
 > 
-> Applied. Thanks
+> syzbot found the following crash on:
 > 
+> HEAD commit:    b41dae06 Merge tag 'xfs-5.4-merge-7' of git://git.kernel.o..
+> git tree:       net-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=130b25ad600000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=dfcf592db22b9132
+> dashboard link: https://syzkaller.appspot.com/bug?extid=491c1b7565ba9069ecae
+> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=155a0c29600000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=172bf6d9600000
+> 
+> The bug was bisected to:
+> 
+> commit 0402acd683c678874df6bdbc23530ca07ea19353
+> Author: Björn Töpel <bjorn.topel@intel.com>
+> Date:   Thu Aug 15 09:30:13 2019 +0000
+> 
+>     xsk: remove AF_XDP socket from map when the socket is released
 
-Then we probably need this as well, what do you think ?
-
-diff --git a/net/kcm/kcmsock.c b/net/kcm/kcmsock.c
-index 8f12f5c6ab875ebaa6c59c6268c337919fb43bb9..6508e88efdaf57f206b84307f5ad5915a2ed21f7 100644
---- a/net/kcm/kcmsock.c
-+++ b/net/kcm/kcmsock.c
-@@ -378,8 +378,13 @@ static int kcm_parse_func_strparser(struct strparser *strp, struct sk_buff *skb)
- {
-        struct kcm_psock *psock = container_of(strp, struct kcm_psock, strp);
-        struct bpf_prog *prog = psock->bpf_prog;
-+       int res;
- 
--       return BPF_PROG_RUN(prog, skb);
-+       preempt_disable();
-+       res = BPF_PROG_RUN(prog, skb);
-+       preempt_enable();
-+
-+       return res;
- }
- 
- static int kcm_read_sock_done(struct strparser *strp, int err)
+Bjorn, PTAL, thanks.
