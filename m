@@ -2,150 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 03038BD284
-	for <lists+bpf@lfdr.de>; Tue, 24 Sep 2019 21:20:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D432BD2A5
+	for <lists+bpf@lfdr.de>; Tue, 24 Sep 2019 21:29:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404336AbfIXTUJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Sep 2019 15:20:09 -0400
-Received: from www62.your-server.de ([213.133.104.62]:58134 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730870AbfIXTUJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 Sep 2019 15:20:09 -0400
-Received: from [178.197.248.15] (helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iCqLu-0004Cm-8p; Tue, 24 Sep 2019 21:19:58 +0200
-Date:   Tue, 24 Sep 2019 21:19:57 +0200
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andrii Nakryiko <andriin@fb.com>
-Subject: Re: Linux 5.4 - bpf test build fails
-Message-ID: <20190924191957.GD5889@pc-63.home>
-References: <742ecabe-45ce-cf6e-2540-25d6dc23c45f@linuxfoundation.org>
- <0a5bf608-bb15-c116-8e58-7224b6c3b62f@fb.com>
- <05b7830c-1fa8-b613-0535-1f5f5a40a25a@linuxfoundation.org>
- <20190924184946.GB5889@pc-63.home>
- <edb38c06-a75f-89df-60cd-d9d2de1879d6@linuxfoundation.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <edb38c06-a75f-89df-60cd-d9d2de1879d6@linuxfoundation.org>
-User-Agent: Mutt/1.12.1 (2019-06-15)
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.101.4/25582/Tue Sep 24 10:20:37 2019)
+        id S2409994AbfIXT3j (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Sep 2019 15:29:39 -0400
+Received: from mail-pf1-f202.google.com ([209.85.210.202]:50670 "EHLO
+        mail-pf1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2409918AbfIXT3j (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 Sep 2019 15:29:39 -0400
+Received: by mail-pf1-f202.google.com with SMTP id q127so2180401pfc.17
+        for <bpf@vger.kernel.org>; Tue, 24 Sep 2019 12:29:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=9lyd/OGRWu2T77jL2o1qpzkNA2DEbU24ACMy4vbRMkM=;
+        b=qAtKieAyjiy0/ITUORlc7X5E3vX3I6LprV/ie2BaDLS8An9mA9Z97mpxj/1CUWDG/e
+         yKnB1WmzsZYWSxI3r/sdcSodFbApZezCXkl052K8JYWDhz4kk6aGcD7gdbDfUPUHmZDl
+         4r1R4PAQwuTVuuK+2NJ/WXtGAIlbZeYlWbK4Y4UTx9rgzhu6U9RMWT2cqGT3Bj7ZUfJa
+         nEliVnyW3rwGkarshZ0bSeN9rTtdSNsWaz2LjaiMufqxWVt9THLHJhDNgCJQlUhPkKKV
+         zQUZXmeD231OTGQLdLQp1ja0za9Wqs9hbsV/PQOMjOMgil7ZiQ605VXTvwlu7RIakPZP
+         /zIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=9lyd/OGRWu2T77jL2o1qpzkNA2DEbU24ACMy4vbRMkM=;
+        b=r5YxEkVRvYG4bq8+tY7Q9lXS/lT/o//eoxGMfhAaXrN1VL7SL449jpLdOLG9S/4mZy
+         FlG5BzlSXOfyQcFfdDvpE/ke+SbgIt3+eVRjKLX+P4R9aqvlOiPP5c7x/H19otvRWn/3
+         85c86oqhg6AnLGCJcDdzGIKmymS+mMyUNsExvO8vys36MAzBCukv702pjYK0Xg8DBEPc
+         nh65ik9ghSZu7I5lbCUb/o3rnkmrXHG7UOp+Wn6aBX7K5Gs/0vMpqaeyuS2qIvTAFKdj
+         ro65Fl2Zq18EbB+iNatdxLRGEE4b7QQOpJzJCNFsncixAnFh0wsVfst7nGZrPDYFn4/4
+         1w6w==
+X-Gm-Message-State: APjAAAWQ1EgXICIu5oNqhd48ZiGGmgJAHsW8J+P2VNEV0qW2ussPUG+C
+        4Caeo/x5Wpy6bWtRU1yb+Oo3tiBKBmrPvQ==
+X-Google-Smtp-Source: APXvYqy+3zt4YD+h79yUKZTq1m937Ee+d8ln0Im3iGvQ1K3KdMQsXTpWNFrCCy3XvMVeSveLTbKcM8Qa04n0Tw==
+X-Received: by 2002:a65:66c4:: with SMTP id c4mr4695732pgw.246.1569353378542;
+ Tue, 24 Sep 2019 12:29:38 -0700 (PDT)
+Date:   Tue, 24 Sep 2019 12:29:34 -0700
+Message-Id: <20190924192934.212317-1-edumazet@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.23.0.351.gc4317032e6-goog
+Subject: [PATCH net] kcm: disable preemption in kcm_parse_func_strparser()
+From:   Eric Dumazet <edumazet@google.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        netdev <netdev@vger.kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        bpf <bpf@vger.kernel.org>, syzbot <syzkaller@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Sep 24, 2019 at 12:56:53PM -0600, Shuah Khan wrote:
-> On 9/24/19 12:49 PM, Daniel Borkmann wrote:
-> > On Tue, Sep 24, 2019 at 09:48:35AM -0600, Shuah Khan wrote:
-> > > On 9/24/19 9:43 AM, Yonghong Song wrote:
-> > > > On 9/24/19 8:26 AM, Shuah Khan wrote:
-> > > > > Hi Alexei and Daniel,
-> > > > > 
-> > > > > bpf test doesn't build on Linux 5.4 mainline. Do you know what's
-> > > > > happening here.
-> > > > > 
-> > > > > make -C tools/testing/selftests/bpf/
-> > > > > 
-> > > > > -c progs/test_core_reloc_ptr_as_arr.c -o - || echo "clang failed") | \
-> > > > > llc -march=bpf -mcpu=generic  -filetype=obj -o
-> > > > > /mnt/data/lkml/linux_5.4/tools/testing/selftests/bpf/test_core_reloc_ptr_as_arr.o
-> > > > > 
-> > > > > progs/test_core_reloc_ptr_as_arr.c:25:6: error: use of unknown builtin
-> > > > >          '__builtin_preserve_access_index' [-Wimplicit-function-declaration]
-> > > > >            if (BPF_CORE_READ(&out->a, &in[2].a))
-> > > > >                ^
-> > > > > ./bpf_helpers.h:533:10: note: expanded from macro 'BPF_CORE_READ'
-> > > > >                           __builtin_preserve_access_index(src))
-> > > > >                           ^
-> > > > > progs/test_core_reloc_ptr_as_arr.c:25:6: warning: incompatible integer to
-> > > > >          pointer conversion passing 'int' to parameter of type 'const void *'
-> > > > >          [-Wint-conversion]
-> > > > >            if (BPF_CORE_READ(&out->a, &in[2].a))
-> > > > >                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > > > > ./bpf_helpers.h:533:10: note: expanded from macro 'BPF_CORE_READ'
-> > > > >                           __builtin_preserve_access_index(src))
-> > > > >                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > > > > 1 warning and 1 error generated.
-> > > > > llc: error: llc: <stdin>:1:1: error: expected top-level entity
-> > > > > clang failed
-> > > > > 
-> > > > > Also
-> > > > > 
-> > > > > make TARGETS=bpf kselftest fails as well. Dependency between
-> > > > > tools/lib/bpf and the test. How can we avoid this type of
-> > > > > dependency or resolve it in a way it doesn't result in build
-> > > > > failures?
-> > > > 
-> > > > Thanks, Shuah.
-> > > > 
-> > > > The clang __builtin_preserve_access_index() intrinsic is
-> > > > introduced in LLVM9 (which just released last week) and
-> > > > the builtin and other CO-RE features are only supported
-> > > > in LLVM10 (current development branch) with more bug fixes
-> > > > and added features.
-> > > > 
-> > > > I think we should do a feature test for llvm version and only
-> > > > enable these tests when llvm version >= 10.
-> > > 
-> > > Yes. If new tests depend on a particular llvm revision, the failing
-> > > the build is a regression. I would like to see older tests that don't
-> > > have dependency build and run.
-> > 
-> > So far we haven't made it a requirement as majority of BPF contributors
-> > that would run/add tests in here are also on bleeding edge LLVM anyway
-> > and other CIs like 0-day bot have simply upgraded their LLVM version
-> > from git whenever there was a failure similar to the one here so its
-> > ensured that really /all/ test cases are running and nothing would be
-> > skipped. There is worry to some degree that CIs just keep sticking to
-> > an old compiler since tests "just" pass and regressions wouldn't be
-> > caught on new releases for those that are skipped. >
-> 
-> Sure. Bleeding edge is developer mode. We still have to be concerned
-> about users that might not upgrade quickly.
-> 
-> > That said, for the C based tests, it should actually be straight forward
-> > to categorize them based on built-in macros like ...
-> > 
-> > $ echo | clang -dM -E -
-> > [...]
-> > #define __clang_major__ 10
-> > #define __clang_minor__ 0
-> > [...]
-> 
-> What would nice running the tests you can run and then say some tests
-> aren't going to run. Is this something you can support?
+After commit a2c11b034142 ("kcm: use BPF_PROG_RUN")
+syzbot easily triggers the warning in cant_sleep().
 
-Once there is such infra in place, should be possible.
+As explained in commit 6cab5e90ab2b ("bpf: run bpf programs
+with preemption disabled") we need to disable preemption before
+running bpf programs.
 
-> > ... given there is now also bpf-gcc, the test matrix gets bigger anyway,
-> > so it might be worth rethinking to run the suite multiple times with
-> > different major llvm{,gcc} versions at some point to make sure their
-> > generated BPF bytecode keeps passing the verifier, and yell loudly if
-> > newer features had to be skipped due to lack of recent compiler version.
-> > This would be a super set of /just/ skipping tests and improve coverage
-> > at the same time.
-> 
-> Probably. Reality is most users will just quit and add bpf to "hard to
-> run category" of tests.
+BUG: assuming atomic context at net/kcm/kcmsock.c:382
+in_atomic(): 0, irqs_disabled(): 0, pid: 7, name: kworker/u4:0
+3 locks held by kworker/u4:0/7:
+ #0: ffff888216726128 ((wq_completion)kstrp){+.+.}, at: __write_once_size include/linux/compiler.h:226 [inline]
+ #0: ffff888216726128 ((wq_completion)kstrp){+.+.}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888216726128 ((wq_completion)kstrp){+.+.}, at: atomic64_set include/asm-generic/atomic-instrumented.h:855 [inline]
+ #0: ffff888216726128 ((wq_completion)kstrp){+.+.}, at: atomic_long_set include/asm-generic/atomic-long.h:40 [inline]
+ #0: ffff888216726128 ((wq_completion)kstrp){+.+.}, at: set_work_data kernel/workqueue.c:620 [inline]
+ #0: ffff888216726128 ((wq_completion)kstrp){+.+.}, at: set_work_pool_and_clear_pending kernel/workqueue.c:647 [inline]
+ #0: ffff888216726128 ((wq_completion)kstrp){+.+.}, at: process_one_work+0x88b/0x1740 kernel/workqueue.c:2240
+ #1: ffff8880a989fdc0 ((work_completion)(&strp->work)){+.+.}, at: process_one_work+0x8c1/0x1740 kernel/workqueue.c:2244
+ #2: ffff888098998d10 (sk_lock-AF_INET){+.+.}, at: lock_sock include/net/sock.h:1522 [inline]
+ #2: ffff888098998d10 (sk_lock-AF_INET){+.+.}, at: strp_sock_lock+0x2e/0x40 net/strparser/strparser.c:440
+CPU: 0 PID: 7 Comm: kworker/u4:0 Not tainted 5.3.0+ #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: kstrp strp_work
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x172/0x1f0 lib/dump_stack.c:113
+ __cant_sleep kernel/sched/core.c:6826 [inline]
+ __cant_sleep.cold+0xa4/0xbc kernel/sched/core.c:6803
+ kcm_parse_func_strparser+0x54/0x200 net/kcm/kcmsock.c:382
+ __strp_recv+0x5dc/0x1b20 net/strparser/strparser.c:221
+ strp_recv+0xcf/0x10b net/strparser/strparser.c:343
+ tcp_read_sock+0x285/0xa00 net/ipv4/tcp.c:1639
+ strp_read_sock+0x14d/0x200 net/strparser/strparser.c:366
+ do_strp_work net/strparser/strparser.c:414 [inline]
+ strp_work+0xe3/0x130 net/strparser/strparser.c:423
+ process_one_work+0x9af/0x1740 kernel/workqueue.c:2269
 
-I don't really worry too much about such users at this point, more important
-is that we have a way to test bpf-gcc and llvm behavior side by side to
-make sure behavior is consistent and to have some sort of automated CI
-integration that runs BPF kselftests before we even stare at a patch for
-review. These are right now the two highest prio items from BPF testing
-side where we need to get to.
+Fixes: a2c11b034142 ("kcm: use BPF_PROG_RUN")
+Fixes: 6cab5e90ab2b ("bpf: run bpf programs with preemption disabled")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Reported-by: syzbot <syzkaller@googlegroups.com>
+---
+ net/kcm/kcmsock.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-Thanks,
-Daniel
+diff --git a/net/kcm/kcmsock.c b/net/kcm/kcmsock.c
+index 8f12f5c6ab875ebaa6c59c6268c337919fb43bb9..ea9e73428ed9c8b7bb3441947151c41f0c099185 100644
+--- a/net/kcm/kcmsock.c
++++ b/net/kcm/kcmsock.c
+@@ -378,8 +378,12 @@ static int kcm_parse_func_strparser(struct strparser *strp, struct sk_buff *skb)
+ {
+ 	struct kcm_psock *psock = container_of(strp, struct kcm_psock, strp);
+ 	struct bpf_prog *prog = psock->bpf_prog;
++	int res;
+ 
+-	return BPF_PROG_RUN(prog, skb);
++	preempt_disable();
++	res = BPF_PROG_RUN(prog, skb);
++	preempt_enable();
++	return res;
+ }
+ 
+ static int kcm_read_sock_done(struct strparser *strp, int err)
+-- 
+2.23.0.351.gc4317032e6-goog
+
