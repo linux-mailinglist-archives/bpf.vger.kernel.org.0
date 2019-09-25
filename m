@@ -2,188 +2,170 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FE60BD301
-	for <lists+bpf@lfdr.de>; Tue, 24 Sep 2019 21:48:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26F77BD6B0
+	for <lists+bpf@lfdr.de>; Wed, 25 Sep 2019 05:27:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405151AbfIXTsZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Sep 2019 15:48:25 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:44653 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726251AbfIXTsZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 Sep 2019 15:48:25 -0400
-Received: by mail-io1-f66.google.com with SMTP id j4so7412553iog.11
-        for <bpf@vger.kernel.org>; Tue, 24 Sep 2019 12:48:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=WLFw2SVVX0kQvrxHzIlzDBhL2m2rkHI2fm2b3O8cq3o=;
-        b=FB5uHKExMXckVE07EJAbyDE07WgfHdvZYgI5iDxv2gf7ygNUl7sY+skMZCgt9b31OD
-         tD7jPzJfU70wuoj/JP+x0jx9jldNZlsdbdrzc2e1g/HGDqY4cYFjmG/jwD/YS+3DoLBn
-         7hcCn57Y0JrrCbjBLJnIk4Q1KitF5cx/XtL0M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WLFw2SVVX0kQvrxHzIlzDBhL2m2rkHI2fm2b3O8cq3o=;
-        b=R3193SIVmX2uyEN4SiHbenVz3YsHSO7QQ0gxAD9XLDNbIUA2mVEgd9lcDLJ32mzv9t
-         j+Rkd6Gz1H7Y395Pa/9PXbJpSrlWKRgwJ0KyS2gSQ/aL9Kvnn9T+uEEPznkHwWWk/LeS
-         vzl+4AqcxbFuK2770xzQkMtxVc49FBVSDgQL6M3b6IqNymfYx6QSUpsGQdj4f/mFAhFH
-         CkP6IqiIGKlFa6Dt/ZzxIdl2b6w/IV4fxIsn8LOAsYK0MEZRQFqwcPqoNz/lTOt7VexN
-         7KN9AlxTV0b7ceP8z/46epA29Z3nyOqEWbppsTtcL5AONxKSOKloYklphBoo4R1jXkob
-         uu7A==
-X-Gm-Message-State: APjAAAV7dNkqhQsi5xKpf211kE2p93GN4a9kt+qMHhz427t2DU+tbT4H
-        Tm6RMwCsG8ctipF4UT/A8ot7Fg==
-X-Google-Smtp-Source: APXvYqzBjOqn1deXR9hEiioeq7EqwoEbVRynYUN+BLzNZLOVNSRF26ydZVcgKMz2qP7M+ixvUyoU5w==
-X-Received: by 2002:a6b:5a1a:: with SMTP id o26mr5123757iob.65.1569354504637;
-        Tue, 24 Sep 2019 12:48:24 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id a14sm2990902ioo.85.2019.09.24.12.48.23
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 24 Sep 2019 12:48:24 -0700 (PDT)
-Subject: Re: Linux 5.4 - bpf test build fails
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        "skh >> Shuah Khan" <skhan@linuxfoundation.org>
-References: <742ecabe-45ce-cf6e-2540-25d6dc23c45f@linuxfoundation.org>
- <0a5bf608-bb15-c116-8e58-7224b6c3b62f@fb.com>
- <05b7830c-1fa8-b613-0535-1f5f5a40a25a@linuxfoundation.org>
- <20190924184946.GB5889@pc-63.home>
- <edb38c06-a75f-89df-60cd-d9d2de1879d6@linuxfoundation.org>
- <20190924191957.GD5889@pc-63.home>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <7c3cb2ff-e19c-6b2c-652a-870e73534099@linuxfoundation.org>
-Date:   Tue, 24 Sep 2019 13:48:23 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <20190924191957.GD5889@pc-63.home>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S2404183AbfIYD1L (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Sep 2019 23:27:11 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:19474 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2404095AbfIYD1L (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 24 Sep 2019 23:27:11 -0400
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id x8P3JDfG005503;
+        Tue, 24 Sep 2019 20:27:07 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=7krzVMmLIxQzEV+/fgplYO4UDEDBeLpzSR+sngDsylo=;
+ b=XKA8PRyHEsPFSMqR7OjQ/Z2TX6/jWSHFzW31i4FwmzjJDp4/E0lLyGhmfaZYUg0rhSPN
+ 4D/cka0u7YyvBkZlkdmTFQBUIfahi1yrW8SKZZHGdRljdProY9v0y98E27gimzwpc+BJ
+ opCMUKvS87WyqyL0oUTn7REVf3g0/8qwI4s= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by m0089730.ppops.net with ESMTP id 2v752ky8hp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Tue, 24 Sep 2019 20:27:06 -0700
+Received: from prn-mbx08.TheFacebook.com (2620:10d:c081:6::22) by
+ prn-hub05.TheFacebook.com (2620:10d:c081:35::129) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Tue, 24 Sep 2019 20:27:05 -0700
+Received: from prn-hub01.TheFacebook.com (2620:10d:c081:35::125) by
+ prn-mbx08.TheFacebook.com (2620:10d:c081:6::22) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Tue, 24 Sep 2019 20:27:05 -0700
+Received: from NAM03-DM3-obe.outbound.protection.outlook.com (192.168.54.28)
+ by o365-in.thefacebook.com (192.168.16.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
+ via Frontend Transport; Tue, 24 Sep 2019 20:27:05 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Fr5qayZ+/ng1ovucVHzPf5D7Zugl/+l3N0Tw4sfSoxaOAGyzGDFdRO5v1pSDLginazhQdgsj6mQ0vCXze/jWx8wNbVNyOjDfm5umHGa/zeaqCOJ/uQKoz2oYfa6lrtze925QHCShuxbWrbIM5F6pgUuBrV0n6/cbkUoo5NcoPcCxQ8O0gRhmaXWjAfuJJybGX9Srg2dAEARaS590/V4UrxJiE/I1zEugo8Etf273fGJVAmdQOOUsEXkyv697CG2URIgTsg3dFqk5dfIeJApmhqhBRhgYHjfQNow1D/5rGNcK0jtySyJjVjQFA7xT3xzucKTihW3cdNW3wenmTmgi6w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7krzVMmLIxQzEV+/fgplYO4UDEDBeLpzSR+sngDsylo=;
+ b=k+l4gmvYlQoczj0FSWN3WU1rSwywHk3YwWKBnCo9CgBoXnS/BujimKNZFveKh2p80VJGrLGi4elNzIgl+xaMlk8CLbKKhmKW0gell7EnUyrZiwi8XLA7EFocGHLTpB6D7nxaX8IP2mre41lAz7ObfbHFmnSB7udmugNSGgDcJ9/NDb4DhfGNi8xwJZca+kVV8VNCoe4J3QXzUz+VAXkig2R5M9IZi0YmLwD67XrEXTf7T9mZLoeQHgKC00DoYBeiA4NYvSIEkQZFyGlnmp8SC3MudUGnPjZNzP2suOlzjMJLxCq210NmEOowTRgw1vdRZ72WdnvOcqNYOoqofBZsOA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7krzVMmLIxQzEV+/fgplYO4UDEDBeLpzSR+sngDsylo=;
+ b=IFi3BsANy44thTQGSbo924torTGU4ELR9Icwfv+nDFUy78bVNBl38rmJPBFIENSsmWRP551vjXhh6bMzvNhtX/UpepI53e5+OoVsvKJYV6pSRAbmZJbTxDY9La3QWeQk1CwZPh/UAab5LLV4wE6UzAvmYIecAOXJU0Oirg2GVg4=
+Received: from BYAPR15MB3384.namprd15.prod.outlook.com (20.179.60.27) by
+ BYAPR15MB3127.namprd15.prod.outlook.com (20.178.239.158) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2284.18; Wed, 25 Sep 2019 03:27:04 +0000
+Received: from BYAPR15MB3384.namprd15.prod.outlook.com
+ ([fe80::95ab:61a0:29f4:e07e]) by BYAPR15MB3384.namprd15.prod.outlook.com
+ ([fe80::95ab:61a0:29f4:e07e%6]) with mapi id 15.20.2284.023; Wed, 25 Sep 2019
+ 03:27:04 +0000
+From:   Yonghong Song <yhs@fb.com>
+To:     Carlos Neira <cneirabustos@gmail.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+CC:     "ebiederm@xmission.com" <ebiederm@xmission.com>,
+        "brouer@redhat.com" <brouer@redhat.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: Re: [PATCH bpf-next v11 3/4] tools: Added bpf_get_ns_current_pid_tgid
+ helper
+Thread-Topic: [PATCH bpf-next v11 3/4] tools: Added
+ bpf_get_ns_current_pid_tgid helper
+Thread-Index: AQHVcuudAWYjTW0730uz3NXi0PzFQ6c7vFcA
+Date:   Wed, 25 Sep 2019 03:27:03 +0000
+Message-ID: <756e3fd4-28a2-3d7e-694d-ef9b54b491f3@fb.com>
+References: <20190924152005.4659-1-cneirabustos@gmail.com>
+ <20190924152005.4659-4-cneirabustos@gmail.com>
+In-Reply-To: <20190924152005.4659-4-cneirabustos@gmail.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: CO2PR04CA0088.namprd04.prod.outlook.com
+ (2603:10b6:104:6::14) To BYAPR15MB3384.namprd15.prod.outlook.com
+ (2603:10b6:a03:112::27)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c090:180::8fa7]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 5f047d5f-41e9-448b-3499-08d741683c21
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600167)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:BYAPR15MB3127;
+x-ms-traffictypediagnostic: BYAPR15MB3127:
+x-microsoft-antispam-prvs: <BYAPR15MB312764D792E0C2224BC78112D3870@BYAPR15MB3127.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:227;
+x-forefront-prvs: 01713B2841
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(136003)(376002)(39860400002)(366004)(396003)(346002)(199004)(189003)(486006)(6246003)(71190400001)(31686004)(71200400001)(81166006)(14444005)(229853002)(6486002)(6116002)(2616005)(2906002)(81156014)(14454004)(46003)(186003)(6436002)(256004)(476003)(8936002)(99286004)(4326008)(446003)(36756003)(76176011)(52116002)(66946007)(31696002)(2501003)(305945005)(6512007)(66476007)(66446008)(54906003)(316002)(66556008)(8676002)(7736002)(64756008)(25786009)(53546011)(86362001)(386003)(478600001)(5660300002)(102836004)(6506007)(110136005)(11346002);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB3127;H:BYAPR15MB3384.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: 2TW9NCrGJczEJvK02QWZK3dGvW1qkptPdKRCyJ1hitwIgq5/56MJvR8GeQSwJ3v9z5m60ni1xcu9TMnHwDDEP7crtFTs/RCR8O/+Ud4QPypPrwXhj9cMwxL5YjlC757mNDEgCn16cWnUT2VdeJTEdMIE8N7fhsftGnn/WMnJOcCdsMBO+peKrdCEEcyA65Vji2ZiYyLCre0AvZ6KeoXyglBV+EsN5GyR1IRhY7lAYDRlP4lhNzVkMWYwp2cTYVlNSVujdd9ETTLLb6aQ2JVVxUxvtsXRmILjXpsbhImRcUL+NctwqEebPB3Ags6mMetUmMWnZAt4IuwCSUuPgQOR2/hX+xNEMeeQxtgDzmeG/dGGMcouy/pz/iY4WAYTSyQwKsyART7YiFwekiAdmkB5/r+SPwAHvq9sC6ksVihFnQc=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <B25999AA34053542BDE720FB5A90DD58@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5f047d5f-41e9-448b-3499-08d741683c21
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Sep 2019 03:27:04.0885
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Iw2B5qSIldo7S/n5g1cIjP3DqsXG9abQAibFGTjkKh2IN5LhnFCYvtc8mMSOkuW4
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3127
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
+ definitions=2019-09-25_02:2019-09-23,2019-09-25 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0
+ impostorscore=0 phishscore=0 adultscore=0 priorityscore=1501
+ lowpriorityscore=0 clxscore=1015 malwarescore=0 bulkscore=0
+ mlxlogscore=999 suspectscore=0 mlxscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-1908290000
+ definitions=main-1909250031
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 9/24/19 1:19 PM, Daniel Borkmann wrote:
-> On Tue, Sep 24, 2019 at 12:56:53PM -0600, Shuah Khan wrote:
->> On 9/24/19 12:49 PM, Daniel Borkmann wrote:
->>> On Tue, Sep 24, 2019 at 09:48:35AM -0600, Shuah Khan wrote:
->>>> On 9/24/19 9:43 AM, Yonghong Song wrote:
->>>>> On 9/24/19 8:26 AM, Shuah Khan wrote:
->>>>>> Hi Alexei and Daniel,
->>>>>>
->>>>>> bpf test doesn't build on Linux 5.4 mainline. Do you know what's
->>>>>> happening here.
->>>>>>
->>>>>> make -C tools/testing/selftests/bpf/
->>>>>>
->>>>>> -c progs/test_core_reloc_ptr_as_arr.c -o - || echo "clang failed") | \
->>>>>> llc -march=bpf -mcpu=generic  -filetype=obj -o
->>>>>> /mnt/data/lkml/linux_5.4/tools/testing/selftests/bpf/test_core_reloc_ptr_as_arr.o
->>>>>>
->>>>>> progs/test_core_reloc_ptr_as_arr.c:25:6: error: use of unknown builtin
->>>>>>           '__builtin_preserve_access_index' [-Wimplicit-function-declaration]
->>>>>>             if (BPF_CORE_READ(&out->a, &in[2].a))
->>>>>>                 ^
->>>>>> ./bpf_helpers.h:533:10: note: expanded from macro 'BPF_CORE_READ'
->>>>>>                            __builtin_preserve_access_index(src))
->>>>>>                            ^
->>>>>> progs/test_core_reloc_ptr_as_arr.c:25:6: warning: incompatible integer to
->>>>>>           pointer conversion passing 'int' to parameter of type 'const void *'
->>>>>>           [-Wint-conversion]
->>>>>>             if (BPF_CORE_READ(&out->a, &in[2].a))
->>>>>>                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>>>>> ./bpf_helpers.h:533:10: note: expanded from macro 'BPF_CORE_READ'
->>>>>>                            __builtin_preserve_access_index(src))
->>>>>>                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>>>>> 1 warning and 1 error generated.
->>>>>> llc: error: llc: <stdin>:1:1: error: expected top-level entity
->>>>>> clang failed
->>>>>>
->>>>>> Also
->>>>>>
->>>>>> make TARGETS=bpf kselftest fails as well. Dependency between
->>>>>> tools/lib/bpf and the test. How can we avoid this type of
->>>>>> dependency or resolve it in a way it doesn't result in build
->>>>>> failures?
->>>>>
->>>>> Thanks, Shuah.
->>>>>
->>>>> The clang __builtin_preserve_access_index() intrinsic is
->>>>> introduced in LLVM9 (which just released last week) and
->>>>> the builtin and other CO-RE features are only supported
->>>>> in LLVM10 (current development branch) with more bug fixes
->>>>> and added features.
->>>>>
->>>>> I think we should do a feature test for llvm version and only
->>>>> enable these tests when llvm version >= 10.
->>>>
->>>> Yes. If new tests depend on a particular llvm revision, the failing
->>>> the build is a regression. I would like to see older tests that don't
->>>> have dependency build and run.
->>>
->>> So far we haven't made it a requirement as majority of BPF contributors
->>> that would run/add tests in here are also on bleeding edge LLVM anyway
->>> and other CIs like 0-day bot have simply upgraded their LLVM version
->>> from git whenever there was a failure similar to the one here so its
->>> ensured that really /all/ test cases are running and nothing would be
->>> skipped. There is worry to some degree that CIs just keep sticking to
->>> an old compiler since tests "just" pass and regressions wouldn't be
->>> caught on new releases for those that are skipped. >
->>
->> Sure. Bleeding edge is developer mode. We still have to be concerned
->> about users that might not upgrade quickly.
->>
->>> That said, for the C based tests, it should actually be straight forward
->>> to categorize them based on built-in macros like ...
->>>
->>> $ echo | clang -dM -E -
->>> [...]
->>> #define __clang_major__ 10
->>> #define __clang_minor__ 0
->>> [...]
->>
->> What would nice running the tests you can run and then say some tests
->> aren't going to run. Is this something you can support?
-> 
-> Once there is such infra in place, should be possible.
-
-Can't you do it in bpf run-time or during build for dependency?
-You should be able to handle this as a dependency and let users
-know at least.
-
-> 
->>> ... given there is now also bpf-gcc, the test matrix gets bigger anyway,
->>> so it might be worth rethinking to run the suite multiple times with
->>> different major llvm{,gcc} versions at some point to make sure their
->>> generated BPF bytecode keeps passing the verifier, and yell loudly if
->>> newer features had to be skipped due to lack of recent compiler version.
->>> This would be a super set of /just/ skipping tests and improve coverage
->>> at the same time.
->>
->> Probably. Reality is most users will just quit and add bpf to "hard to
->> run category" of tests.
-> 
-> I don't really worry too much about such users at this point, more important
-> is that we have a way to test bpf-gcc and llvm behavior side by side to
-> make sure behavior is consistent and to have some sort of automated CI
-> integration that runs BPF kselftests before we even stare at a patch for
-> review. These are right now the two highest prio items from BPF testing
-> side where we need to get to.
-> 
-
-What happens if CI's can't upgrade quickly and newer versions aren't
-supported on test machines that are in their test rings?
-
-thanks,
--- Shuah
-
+DQoNCk9uIDkvMjQvMTkgODoyMCBBTSwgQ2FybG9zIE5laXJhIHdyb3RlOg0KPiBTaWduZWQtb2Zm
+LWJ5OiBDYXJsb3MgTmVpcmEgPGNuZWlyYWJ1c3Rvc0BnbWFpbC5jb20+DQoNClBsZWFzZSBkbyBh
+ZGQgc29tZSBjb21taXQgbWVzc2FnZS4gQSBjb3VwbGUgb2YgZXhhbXBsZXMsDQoNCmNvbW1pdCAw
+ZmMyZTBiODRiYTcyNWM1ZTZlZTY2MDU5OTM2NjM4Mzg5ZTY3YzgwDQpBdXRob3I6IEFsZXhlaSBT
+dGFyb3ZvaXRvdiA8YXN0QGtlcm5lbC5vcmc+DQpEYXRlOiAgIFRodSBBdWcgMjIgMjI6NTI6MTMg
+MjAxOSAtMDcwMA0KDQogICAgIHRvb2xzL2JwZjogc3luYyBicGYuaA0KDQogICAgIHN5bmMgYnBm
+LmggZnJvbSBrZXJuZWwvIHRvIHRvb2xzLw0KDQogICAgIFNpZ25lZC1vZmYtYnk6IEFsZXhlaSBT
+dGFyb3ZvaXRvdiA8YXN0QGtlcm5lbC5vcmc+DQogICAgIEFja2VkLWJ5OiBTb25nIExpdSA8c29u
+Z2xpdWJyYXZpbmdAZmIuY29tPg0KICAgICBTaWduZWQtb2ZmLWJ5OiBEYW5pZWwgQm9ya21hbm4g
+PGRhbmllbEBpb2dlYXJib3gubmV0Pg0KDQpjb21taXQgMWY4OTE5YjE3MDMxOGU3ZTEzZTMwM2Vl
+ZGFjMzYzZDQ0MDU3OTk1Zg0KQXV0aG9yOiBQZXRlciBXdSA8cGV0ZXJAbGVrZW5zdGV5bi5ubD4N
+CkRhdGU6ICAgV2VkIEF1ZyAyMSAwMDowOTowMCAyMDE5ICswMTAwDQoNCiAgICAgYnBmOiBzeW5j
+IGJwZi5oIHRvIHRvb2xzLw0KDQogICAgIEZpeCBhICdzdHJ1Y3QgcHRfcmVnJyB0eXBvIGFuZCBj
+bGFyaWZ5IHdoZW4gYnBmX3RyYWNlX3ByaW50ayBkaXNjYXJkcw0KICAgICBsaW5lcy4gQWZmZWN0
+cyBkb2N1bWVudGF0aW9uIG9ubHkuDQoNCiAgICAgU2lnbmVkLW9mZi1ieTogUGV0ZXIgV3UgPHBl
+dGVyQGxla2Vuc3RleW4ubmw+DQogICAgIFNpZ25lZC1vZmYtYnk6IEFsZXhlaSBTdGFyb3ZvaXRv
+diA8YXN0QGtlcm5lbC5vcmc+DQoNCj4gLS0tDQo+ICAgdG9vbHMvaW5jbHVkZS91YXBpL2xpbnV4
+L2JwZi5oIHwgMTggKysrKysrKysrKysrKysrKystDQo+ICAgMSBmaWxlIGNoYW5nZWQsIDE3IGlu
+c2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkNCj4gDQo+IGRpZmYgLS1naXQgYS90b29scy9pbmNs
+dWRlL3VhcGkvbGludXgvYnBmLmggYi90b29scy9pbmNsdWRlL3VhcGkvbGludXgvYnBmLmgNCj4g
+aW5kZXggNzdjNmJlOTZkNjc2Li45MjcyZGM4ZmIwOGMgMTAwNjQ0DQo+IC0tLSBhL3Rvb2xzL2lu
+Y2x1ZGUvdWFwaS9saW51eC9icGYuaA0KPiArKysgYi90b29scy9pbmNsdWRlL3VhcGkvbGludXgv
+YnBmLmgNCj4gQEAgLTI3NTAsNiArMjc1MCwyMSBAQCB1bmlvbiBicGZfYXR0ciB7DQo+ICAgICoJ
+CSoqLUVPUE5PVFNVUFAqKiBrZXJuZWwgY29uZmlndXJhdGlvbiBkb2VzIG5vdCBlbmFibGUgU1lO
+IGNvb2tpZXMNCj4gICAgKg0KPiAgICAqCQkqKi1FUFJPVE9OT1NVUFBPUlQqKiBJUCBwYWNrZXQg
+dmVyc2lvbiBpcyBub3QgNCBvciA2DQo+ICsgKg0KPiArICogaW50IGJwZl9nZXRfbnNfY3VycmVu
+dF9waWRfdGdpZCh1MzIgZGV2LCB1NjQgaW51bSkNCj4gKyAqCVJldHVybg0KPiArICoJCUEgNjQt
+Yml0IGludGVnZXIgY29udGFpbmluZyB0aGUgY3VycmVudCB0Z2lkIGFuZCBwaWQgZnJvbSBjdXJy
+ZW50IHRhc2sNCj4gKyAqICAgICAgICAgICAgICB3aGljaCBuYW1lc3BhY2UgaW5vZGUgYW5kIGRl
+dl90IG1hdGNoZXMgLCBhbmQgaXMgY3JlYXRlIGFzIHN1Y2g6DQo+ICsgKgkJKmN1cnJlbnRfdGFz
+aypcICoqLT50Z2lkIDw8IDMyIFx8KioNCj4gKyAqCQkqY3VycmVudF90YXNrKlwgKiotPnBpZCoq
+Lg0KPiArICoNCj4gKyAqCQlPbiBmYWlsdXJlLCB0aGUgcmV0dXJuZWQgdmFsdWUgaXMgb25lIG9m
+IHRoZSBmb2xsb3dpbmc6DQo+ICsgKg0KPiArICoJCSoqLUVJTlZBTCoqIGlmIGRldiBhbmQgaW51
+bSBzdXBwbGllZCBkb24ndCBtYXRjaCBkZXZfdCBhbmQgaW5vZGUgbnVtYmVyDQo+ICsgKiAgICAg
+ICAgICAgICAgd2l0aCBuc2ZzIG9mIGN1cnJlbnQgdGFzay4NCj4gKyAqDQo+ICsgKgkJKiotRU5P
+RU5UKiogaWYgL3Byb2Mvc2VsZi9ucyBkb2VzIG5vdCBleGlzdHMuDQo+ICsgKg0KPiAgICAqLw0K
+PiAgICNkZWZpbmUgX19CUEZfRlVOQ19NQVBQRVIoRk4pCQlcDQo+ICAgCUZOKHVuc3BlYyksCQkJ
+XA0KPiBAQCAtMjg2Miw3ICsyODc3LDggQEAgdW5pb24gYnBmX2F0dHIgew0KPiAgIAlGTihza19z
+dG9yYWdlX2dldCksCQlcDQo+ICAgCUZOKHNrX3N0b3JhZ2VfZGVsZXRlKSwJCVwNCj4gICAJRk4o
+c2VuZF9zaWduYWwpLAkJXA0KPiAtCUZOKHRjcF9nZW5fc3luY29va2llKSwNCj4gKwlGTih0Y3Bf
+Z2VuX3N5bmNvb2tpZSksICAgICAgICAgIFwNCj4gKwlGTihnZXRfbnNfY3VycmVudF9waWRfdGdp
+ZCksDQo+ICAgDQo+ICAgLyogaW50ZWdlciB2YWx1ZSBpbiAnaW1tJyBmaWVsZCBvZiBCUEZfQ0FM
+TCBpbnN0cnVjdGlvbiBzZWxlY3RzIHdoaWNoIGhlbHBlcg0KPiAgICAqIGZ1bmN0aW9uIGVCUEYg
+cHJvZ3JhbSBpbnRlbmRzIHRvIGNhbGwNCj4gDQo=
