@@ -2,129 +2,196 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F119BF3CE
-	for <lists+bpf@lfdr.de>; Thu, 26 Sep 2019 15:12:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74DEFBF63C
+	for <lists+bpf@lfdr.de>; Thu, 26 Sep 2019 17:51:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726857AbfIZNMg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 Sep 2019 09:12:36 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:37122 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725836AbfIZNMg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 26 Sep 2019 09:12:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1569503555;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JSMLfK3pYPL1cVmk6h2CM/KHhT/OAXe1m21X5wqkJSY=;
-        b=QjS8aZNutTX6EZTKJgnmKM/GJXR1TbANLmZnOoyJK3P+9xlrAk3GZPgo821nq67r5Cp6Wz
-        +bxcprGiWhmR3A9KYxzw116CdVFIe7198am1KgThGCWy3ApUBOgpIyYATvH7HrvryMq8Xd
-        49gWTYas62OKe8B6Gt35chccjU47isk=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-112-KtsrOmYPNPi9tc63VLrIvg-1; Thu, 26 Sep 2019 09:12:34 -0400
-Received: by mail-ed1-f69.google.com with SMTP id s3so1318393edr.15
-        for <bpf@vger.kernel.org>; Thu, 26 Sep 2019 06:12:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=JSMLfK3pYPL1cVmk6h2CM/KHhT/OAXe1m21X5wqkJSY=;
-        b=PMwfunHqrUTRTaQUGGEBAaAcScEj7JQpCzDf0l6AsBcQScpOCcn5zqQaTcVsp5KJLu
-         Xq0wK6v3VR3MieDkjOleSscjzQY3C/DgByqomW8eqyx/Z0/MArtOp7QtmVnxomGo2l41
-         uCxdV0zp71orNuv+S28D8GPaw8HCwIKiLyZBMFnRzs01Wwc5nhQb+NAjI2Q9Uocxxch8
-         NFFb8LlkIluKWNWIoMkMdJ63xyHNf9t40jthioq1QkX3GoZKjkeAEbNhLy166mZ3r64Q
-         9mEWQTwTq+mYAdQ2RiduVuq1m2UhFAwYW8WOSIcmu9KH8uJu5HSYfV2pxBW5nv8BNxX0
-         3vNQ==
-X-Gm-Message-State: APjAAAU6Eoi6+eZTGHNxjj1UPkM2kL0RFNdFCUF9TMrcivj0r4hmmv+1
-        5t30H9+at8Zxidxun5K6ziSX3b/tt1gJTS1p5kEGWzsPnliODR7ttox9DE55p2PYYa9ug8m07yj
-        d12xg0dnhKk/Q
-X-Received: by 2002:aa7:dc55:: with SMTP id g21mr3502239edu.210.1569503552722;
-        Thu, 26 Sep 2019 06:12:32 -0700 (PDT)
-X-Google-Smtp-Source: APXvYqysfFqzMbAq1fGirMk9DgRDRLRtTNc1nuTuicrYtY2auNcoAVtqtld52F8WV3y9rTJF1aK0JQ==
-X-Received: by 2002:aa7:dc55:: with SMTP id g21mr3502211edu.210.1569503552480;
-        Thu, 26 Sep 2019 06:12:32 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a00:7660:6da:443::2])
-        by smtp.gmail.com with ESMTPSA id n1sm231174ejc.16.2019.09.26.06.12.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Sep 2019 06:12:31 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id CE5CE18063D; Thu, 26 Sep 2019 15:12:30 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: Are BPF tail calls only supposed to work with pinned maps?
-In-Reply-To: <20190926125347.GB6563@pc-63.home>
-References: <874l0z2tdx.fsf@toke.dk> <20190926125347.GB6563@pc-63.home>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 26 Sep 2019 15:12:30 +0200
-Message-ID: <87zhir19s1.fsf@toke.dk>
+        id S1727216AbfIZPvy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 Sep 2019 11:51:54 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:43540 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726666AbfIZPvx (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 26 Sep 2019 11:51:53 -0400
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x8QFXAM7009237;
+        Thu, 26 Sep 2019 08:51:50 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=S1g0gcdaZuT/V/rEbetgzobMznuzrYzI7BythI7v7+0=;
+ b=lXwAfK6hxl9Mlf+lD2CBfzTYAO+WyzsqKxKRRnueacGl1fQlObmJyF+bR4cVIW4B3pn2
+ LnXDXHMe/3rz56DZ9/nbANcGt3Svzl2yyFxwgZ86tcEMtJjjf00vjjFB0VArymraRZeN
+ DG9sEMbfUTUwJhm674TUXZ6tnx3AQ2wiEFk= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2v8cg2cyj0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 26 Sep 2019 08:51:50 -0700
+Received: from ash-exhub203.TheFacebook.com (2620:10d:c0a8:83::5) by
+ ash-exhub103.TheFacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 26 Sep 2019 08:51:49 -0700
+Received: from NAM03-DM3-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
+ via Frontend Transport; Thu, 26 Sep 2019 08:51:49 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OTswVakXoMPCMqowfL0G/dhnczAqU5ZFPpWmCr09eHexGMebW5JV8RS5mESusRptRes65guA3pIsYuRkWOa0qasGCk7/yHFjinxxVGs0y4WCetd5qM+hOXlVDuPL9lSyt9z0aOgtcW4mQ9gPQh84fANb2gq5/t0PQ9Zb0ZUpRgFyNxhUf+Yk73g+ez9Ydb2wQDKQppXzT+oRNPZGD1SIdfjhJWNce+LI/lHbEXwg3KQcKBfNHhUiheQEbon4BqOG4hgMHNj23Dmytxl+L/pwMG8nhGEu9rupNMhmv6bv8NVuQ86nvOvQHsIjyGTDM1WjVewwt8INTnBwSQ8nv5Ui0A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=S1g0gcdaZuT/V/rEbetgzobMznuzrYzI7BythI7v7+0=;
+ b=R5ywRuasq5qPiV/yUNGJJ3gzHqek0zqrKwBwyyQY0n4LaivLFhCBNGbUitG1yEQGNJxDG1X9pNgaWViIgxZq6BCEbqMj9YKIBafKdrNUzkz73/oyUlLysYl7JDwzvg5vSxFa7AAuqXXjqvoNF4ikQMvPU6NGTycUqNK9CnxgNRik8NQGP//3MvdcSYVIJPs2yMZQX9PfLaLZrslfmyM2toCPzI94gaQyV04zaM5xtDZnfc0x9caAFh8FfRPuobswFmMVcw63KX5F3OmwcnQ32rVd9C9aq3l9mHUR27WTbDRapAXl6t9n3L9Er2tCtQp2/YGzktRvDhzhxLxwHGAz+g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=S1g0gcdaZuT/V/rEbetgzobMznuzrYzI7BythI7v7+0=;
+ b=FUuCP/3wkEEYa87JdA4Nv8LOfBK6xRKEnwFLy3c3zPmJvMnm9GXstX7oPwGhx+rIpdl6NHtNO8VOwfY2OwtZ6o4Zbbb3aMg9MGwmjKbRoka4Z1CyscTjd9nmYIXAycFYv3+sQRZwfXr1ktEt/8ASkufxWEYkgTN6JJ4YWutgxlU=
+Received: from BYAPR15MB3384.namprd15.prod.outlook.com (20.179.60.27) by
+ BYAPR15MB2885.namprd15.prod.outlook.com (20.178.206.204) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2284.26; Thu, 26 Sep 2019 15:51:48 +0000
+Received: from BYAPR15MB3384.namprd15.prod.outlook.com
+ ([fe80::95ab:61a0:29f4:e07e]) by BYAPR15MB3384.namprd15.prod.outlook.com
+ ([fe80::95ab:61a0:29f4:e07e%6]) with mapi id 15.20.2284.023; Thu, 26 Sep 2019
+ 15:51:48 +0000
+From:   Yonghong Song <yhs@fb.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Carlos Neira <cneirabustos@gmail.com>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "brouer@redhat.com" <brouer@redhat.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: Re: [PATCH V11 0/4] BPF: New helper to obtain namespace data from
+ current task
+Thread-Topic: [PATCH V11 0/4] BPF: New helper to obtain namespace data from
+ current task
+Thread-Index: AQHVdAWgq7haa1RJFUyRjOZj8chkCac+HI2A
+Date:   Thu, 26 Sep 2019 15:51:48 +0000
+Message-ID: <baafb22b-0dbc-bdcf-c692-c924d9d9671b@fb.com>
+References: <20190924152005.4659-1-cneirabustos@gmail.com>
+ <87ef033maf.fsf@x220.int.ebiederm.org>
+In-Reply-To: <87ef033maf.fsf@x220.int.ebiederm.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MWHPR08CA0007.namprd08.prod.outlook.com
+ (2603:10b6:301:5f::20) To BYAPR15MB3384.namprd15.prod.outlook.com
+ (2603:10b6:a03:112::27)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c090:200::2:b920]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 44db073f-d0ae-4c31-be5a-08d742997056
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600167)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:BYAPR15MB2885;
+x-ms-traffictypediagnostic: BYAPR15MB2885:
+x-microsoft-antispam-prvs: <BYAPR15MB2885C17A030B67A8644D4760D3860@BYAPR15MB2885.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-forefront-prvs: 0172F0EF77
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(136003)(376002)(346002)(396003)(39860400002)(366004)(199004)(189003)(11346002)(316002)(71200400001)(81166006)(81156014)(36756003)(46003)(2616005)(476003)(8936002)(386003)(102836004)(53546011)(6506007)(256004)(25786009)(71190400001)(110136005)(66946007)(8676002)(66556008)(6116002)(64756008)(66446008)(66476007)(186003)(486006)(54906003)(6436002)(446003)(6486002)(4326008)(6512007)(478600001)(229853002)(7736002)(6246003)(305945005)(14454004)(31696002)(86362001)(2906002)(31686004)(99286004)(52116002)(76176011)(5660300002);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB2885;H:BYAPR15MB3384.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: pFbD2ztGQtrH7WE7BscsGE6VzlXfkSUqhomrx0sJqYnA5iU0kKCwaxqVkMm57Sd9uZCaxCQVBB5hC3N2teTPDdJrVgeVE1808qD1hpLIQNWoawwrHH1Po3gxhIpZvBEGNKvh38s67xf70eyORtul0t2dHM78ueafHoYJ6LL2/yBxfDLrIJmXrvdtDLvz5O8UDXqugO2TciHV+mz9ob0jQqo+suHYFpx56bn9WvWES7uDFjK5Olo5qzGJdNjYm1gCAuAs+CRybBQKyezUgGqCPtxGCSQnOsTcTIL9JUwygr0ojdGwqSF0UYxkdljYAklxkx88XssoghJAXzAorq7vW122Z8LqneRzCMayn/EqEMxpjEr7dGG5/TLdDuoGiz1If1PzUf8Gz7z8t3p+beZrSonx0bQyN0rtuXUX2+yhIT0=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <4244A1645CFD7D47AB47DA9175696BF9@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-MC-Unique: KtsrOmYPNPi9tc63VLrIvg-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-CrossTenant-Network-Message-Id: 44db073f-d0ae-4c31-be5a-08d742997056
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Sep 2019 15:51:48.0705
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: u/Hlwc3FB1oCud71HXBiuB4uPuMJy9QLET65iAk2oOy989VrEzLYX+3033k74gI8
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2885
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
+ definitions=2019-09-26_07:2019-09-25,2019-09-26 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
+ adultscore=0 suspectscore=0 mlxlogscore=999 bulkscore=0 impostorscore=0
+ phishscore=0 malwarescore=0 lowpriorityscore=0 spamscore=0 mlxscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1908290000 definitions=main-1909260141
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Daniel Borkmann <daniel@iogearbox.net> writes:
-
-> Hi Toke,
->
-> On Thu, Sep 26, 2019 at 01:23:38PM +0200, Toke H=C3=B8iland-J=C3=B8rgense=
-n wrote:
-> [...]
->> While working on a prototype of the XDP chain call feature, I ran into
->> some strange behaviour with tail calls: If I create a userspace program
->> that loads two XDP programs, one of which tail calls the other, the tail
->> call map would appear to be empty even though the userspace program
->> populates it as part of the program loading.
->>=20
->> I eventually tracked this down to this commit:
->> c9da161c6517 ("bpf: fix clearing on persistent program array maps")
->
-> Correct.
->
->> Which clears PROG_ARRAY maps whenever the last uref to it disappears
->> (which it does when my loader exits after attaching the XDP program).
->>=20
->> This effectively means that tail calls only work if the PROG_ARRAY map
->> is pinned (or the process creating it keeps running). And as far as I
->> can tell, the inner_map reference in bpf_map_fd_get_ptr() doesn't bump
->> the uref either, so presumably if one were to create a map-in-map
->> construct with tail call pointer in the inner map(s), each inner map
->> would also need to be pinned (haven't tested this case)?
->
-> There is no map in map support for tail calls today.
-
-Not directly, but can't a program do:
-
-tail_call_map =3D bpf_map_lookup(outer_map, key);
-bpf_tail_call(tail_call_map, idx);
-
->> Is this really how things are supposed to work? From an XDP use case PoV
->> this seems somewhat surprising...
->>=20
->> Or am I missing something obvious here?
->
-> The way it was done like this back then was in order to break up cyclic
-> dependencies as otherwise the programs and maps involved would never get
-> freed as they reference themselves and live on in the kernel forever
-> consuming potentially large amount of resources, so orchestration tools
-> like Cilium typically just pin the maps in bpf fs (like most other maps
-> it uses and accesses from agent side) in order to up/downgrade the agent
-> while keeping BPF datapath intact.
-
-Right. I can see how the cyclic reference thing gets thorny otherwise.
-However, the behaviour was somewhat surprising to me; is it documented
-anywhere?
-
-I think I'll probably end up creating a new map type for chaining
-programs anyway, so this is not a huge show-stopper for me; but it had
-me scratching my head for a while there... ;)
-
--Toke
-
+DQoNCk9uIDkvMjUvMTkgNTo1OSBQTSwgRXJpYyBXLiBCaWVkZXJtYW4gd3JvdGU6DQo+IENhcmxv
+cyBOZWlyYSA8Y25laXJhYnVzdG9zQGdtYWlsLmNvbT4gd3JpdGVzOg0KPiANCj4+IEN1cnJlbnRs
+eSBicGZfZ2V0X2N1cnJlbnRfcGlkX3RnaWQoKSwgaXMgdXNlZCB0byBkbyBwaWQgZmlsdGVyaW5n
+IGluIGJjYydzDQo+PiBzY3JpcHRzIGJ1dCB0aGlzIGhlbHBlciByZXR1cm5zIHRoZSBwaWQgYXMg
+c2VlbiBieSB0aGUgcm9vdCBuYW1lc3BhY2Ugd2hpY2ggaXMNCj4+IGZpbmUgd2hlbiBhIGJjYyBz
+Y3JpcHQgaXMgbm90IGV4ZWN1dGVkIGluc2lkZSBhIGNvbnRhaW5lci4NCj4+IFdoZW4gdGhlIHBy
+b2Nlc3Mgb2YgaW50ZXJlc3QgaXMgaW5zaWRlIGEgY29udGFpbmVyLCBwaWQgZmlsdGVyaW5nIHdp
+bGwgbm90IHdvcmsNCj4+IGlmIGJwZl9nZXRfY3VycmVudF9waWRfdGdpZCgpIGlzIHVzZWQuDQo+
+PiBUaGlzIGhlbHBlciBhZGRyZXNzZXMgdGhpcyBsaW1pdGF0aW9uIHJldHVybmluZyB0aGUgcGlk
+IGFzIGl0J3Mgc2VlbiBieSB0aGUgY3VycmVudA0KPj4gbmFtZXNwYWNlIHdoZXJlIHRoZSBzY3Jp
+cHQgaXMgZXhlY3V0aW5nLg0KPj4NCj4+IEluIHRoZSBmdXR1cmUgZGlmZmVyZW50IHBpZF9ucyBm
+aWxlcyBtYXkgYmVsb25nIHRvIGRpZmZlcmVudCBkZXZpY2VzLCBhY2NvcmRpbmcgdG8gdGhlDQo+
+PiBkaXNjdXNzaW9uIGJldHdlZW4gRXJpYyBCaWVkZXJtYW4gYW5kIFlvbmdob25nIGluIDIwMTcg
+TGludXggcGx1bWJlcnMgY29uZmVyZW5jZS4NCj4+IFRvIGFkZHJlc3MgdGhhdCBzaXR1YXRpb24g
+dGhlIGhlbHBlciByZXF1aXJlcyBpbnVtIGFuZCBkZXZfdCBmcm9tIC9wcm9jL3NlbGYvbnMvcGlk
+Lg0KPj4gVGhpcyBoZWxwZXIgaGFzIHRoZSBzYW1lIHVzZSBjYXNlcyBhcyBicGZfZ2V0X2N1cnJl
+bnRfcGlkX3RnaWQoKSBhcyBpdCBjYW4gYmUNCj4+IHVzZWQgdG8gZG8gcGlkIGZpbHRlcmluZyBl
+dmVuIGluc2lkZSBhIGNvbnRhaW5lci4NCj4gDQo+IEkgdGhpbmsgSSBtYXkgaGF2ZSBhc2tlZCB0
+aGlzIGJlZm9yZS4gIElmIEkgYW0gcmVwZWF0aW5nIG9sZCBnb3VuZA0KPiBwbGVhc2UgZXhjdXNl
+IG1lLg0KPiANCj4gQW0gSSBjb3JyZWN0IGluIHVuZGVyc3RhbmRpbmcgdGhlc2UgbmV3IGhlbHBl
+cnMgYXJlIGRlc2lnbmVkIHRvIGJlIHVzZWQNCj4gd2hlbiBwcm9ncmFtcyBydW5uaW5nIGluIGBg
+Y29uYWluZXJzJycgY2FsbCBpdCBpbnNpZGUgcGlkIG5hbWVzcGFjZXMNCj4gcmVnaXN0ZXIgYnBm
+IHByb2dyYW1zIGZvciB0cmFjaW5nPw0KDQpSaWdodC4NCg0KPiANCj4gSWYgc28gd291bGQgaXQg
+YmUgcG9zc2libGUgdG8gY2hhbmdlIGhvdyB0aGUgZXhpc3RpbmcgYnBmIG9wY29kZXMNCj4gb3Bl
+cmF0ZSB3aGVuIHRoZXkgYXJlIHVzZWQgaW4gdGhlIGNvbnRleHQgb2YgYSBwaWQgbmFtZXNwYWNl
+Pw0KDQoNClRvZGF5LCB0eXBpY2FsIGJwZiBwcm9ncmFtIGdldHRpbmcgcGlkIGxpa2U6DQogICAg
+dWludDY0X3QgcGlkX3RnaWQgPSBicGZfZ2V0X2N1cnJlbnRfcGlkX3RnaWQoKTsNCiAgICBwaWRf
+dCBwaWQgPSBwaWRfdGdpZCA+PiAzMjsNCiAgICBwaWRfdCB0aWQgPSBwaWRfdGdpZDsNCg0KICAg
+IC8qIHBvc3NpYmxlIGZpbHRlcmluZyAuLi4gKi8NCiAgICBpZiAocGlkID09IDx1c2VyX3Byb3Zp
+ZGVkIHBpZD4pIC4uLi4NCiAgICAuLi4NCg0KICAgIC8qIHJlY29yZCBwaWQgaW4gc29tZSBwbGFj
+ZXMgKi8NCiAgICBtYXBfdmFsLT5waWQgPSBwaWQ7DQogICAgLi4uDQoNClRoZSBicGZfZ2V0X2N1
+cnJlbnRfcGlkX3RnaWQoKSBpcyBhIGtlcm5lbCBoZWxwZXINCiAgICBCUEZfQ0FMTF8wKGJwZl9n
+ZXRfY3VycmVudF9waWRfdGdpZCkNCiAgICB7DQogICAgICAgICBzdHJ1Y3QgdGFza19zdHJ1Y3Qg
+KnRhc2sgPSBjdXJyZW50Ow0KDQogICAgICAgICBpZiAodW5saWtlbHkoIXRhc2spKQ0KICAgICAg
+ICAgICAgICAgICByZXR1cm4gLUVJTlZBTDsNCg0KICAgICAgICAgcmV0dXJuICh1NjQpIHRhc2st
+PnRnaWQgPDwgMzIgfCB0YXNrLT5waWQ7DQogICAgfQ0KDQpTbyB0aGUgYnBmX2dldF9jdXJyZW50
+X3BpZF90Z2lkKCkgZ2V0cyB0aGUgdGdpZC9waWQgb3V0c2lkZSBhbnkNCnBpZCBuYW1lc3BhY2Vz
+Lg0KDQpUbyBtYWtlIHRoZSBwcm9ncmFtIHdvcmsgaW5zaWRlIHRoZSBjb250YWluZXIsIGp1c3Qg
+Z2V0IG5hbWVzcGFjZQ0KcGlkL3RnaWQgbm90IGVub3VnaC4gWW91IG5lZWQgdG8gbWFrZSBzdXJl
+IHRoZSBuYW1lc3BhY2UgeW91IGFyZQ0KdHJhY2tpbmcgaXMgdGhlIG9uZSB5b3UgYXJlIGluLiBU
+aGF0IGlzIHdoYXQgdGhlIG5ldyBwcm9wb3NlZA0KaGVscGVyIHRvIGRvLg0KDQpEbyB5b3Ugc3Vn
+Z2VzdCB3ZSBjaGFuZ2UNCiAgICBicGZfZ2V0X2N1cnJlbnRfcGlkX3RnaWQoKQ0KdG8gcmV0dXJu
+IG5hbWVzcGFjZWQgdGdpZC9waWQ/DQpGaXJzdCwgdGhpcyB3aWxsIGJyZWFrIHVzZXIgQVBJIChr
+ZXJuZWwgaGVscGVyIGlzIGFuIEFQSSkgYW5kIHNlY29uZCwNCmV2ZW4gaWYgd2UgZG8gZ2V0IHBp
+ZC90Z2lkLCB3ZSBzdGlsbCBub3Qgc3VyZSB3aGV0aGVyDQp0aGlzIGlzIGZvciBteSBuYW1lc3Bh
+Y2Ugb3Igbm90Lg0KDQpEbyB5b3UgaGF2ZSBzb21ldGhpbmcgaW4gbWluZCB0byBhZGRyZXNzIHRo
+aXMgaXNzdWU/DQoNCj4gDQo+IFRoYXQgbGF0ZXIgd291bGQgc2VlbSB0byBhbGxvdyBqdXN0IG1v
+dmluZyBhbiBleGlzdGluZyBhcHBsaWNhdGlvbiBpbnRvDQo+IGEgcGlkIG5hbWVzcGFjZSB3aXRo
+IG5vIG1vZGlmaWNhdGlvbnMuICAgSWYgd2UgY2FuIGRvIHRoaXMgd2l0aCB0cml2aWFsDQo+IGNv
+c3QgYXQgYnBmIGNvbXBpbGUgdGltZSBhbmQgd2l0aCBubyB1c2Vyc3BhY2UgY2hhbmdlcyB0aGF0
+IHdvdWxkIHNlZW0NCj4gYSBiZXR0ZXIgYXBwcm9hY2guDQo+IA0KPiBJZiBub3QgY2FuIHNvbWVv
+bmUgcG9pbnQgbWUgdG8gd2h5IHdlIGNhbid0IGRvIHRoYXQ/ICBXaGF0IGFtIEkgbWlzc2luZz8N
+Cj4gDQo+IEVyaWMNCj4gDQo+PiBTaWduZWQtb2ZmLWJ5OiBDYXJsb3MgTmVpcmEgPGNuZWlyYWJ1
+c3Rvc0BnbWFpbC5jb20+DQo+Pg0KPj4gQ2FybG9zIE5laXJhICg0KToNCj4+ICAgIGZzL25zZnMu
+YzogYWRkZWQgbnNfbWF0Y2gNCj4+ICAgIGJwZjogYWRkZWQgbmV3IGhlbHBlciBicGZfZ2V0X25z
+X2N1cnJlbnRfcGlkX3RnaWQNCj4+ICAgIHRvb2xzOiBBZGRlZCBicGZfZ2V0X25zX2N1cnJlbnRf
+cGlkX3RnaWQgaGVscGVyDQo+PiAgICB0b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9icGY6IEFkZCBz
+ZWxmLXRlc3RzIGZvciBuZXcgaGVscGVyLiBzZWxmIHRlc3RzDQo+PiAgICAgIGFkZGVkIGZvciBu
+ZXcgaGVscGVyDQo+Pg0KPj4gICBmcy9uc2ZzLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgfCAgIDggKw0KPj4gICBpbmNsdWRlL2xpbnV4L2JwZi5oICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgfCAgIDEgKw0KPj4gICBpbmNsdWRlL2xpbnV4L3Byb2NfbnMuaCAgICAgICAg
+ICAgICAgICAgICAgICAgfCAgIDIgKw0KPj4gICBpbmNsdWRlL3VhcGkvbGludXgvYnBmLmggICAg
+ICAgICAgICAgICAgICAgICAgfCAgMTggKystDQo+PiAgIGtlcm5lbC9icGYvY29yZS5jICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICB8ICAgMSArDQo+PiAgIGtlcm5lbC9icGYvaGVscGVycy5j
+ICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAzMiArKysrDQo+PiAgIGtlcm5lbC90cmFjZS9i
+cGZfdHJhY2UuYyAgICAgICAgICAgICAgICAgICAgICB8ICAgMiArDQo+PiAgIHRvb2xzL2luY2x1
+ZGUvdWFwaS9saW51eC9icGYuaCAgICAgICAgICAgICAgICB8ICAxOCArKy0NCj4+ICAgdG9vbHMv
+dGVzdGluZy9zZWxmdGVzdHMvYnBmL01ha2VmaWxlICAgICAgICAgIHwgICAyICstDQo+PiAgIHRv
+b2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2JwZi9icGZfaGVscGVycy5oICAgICB8ICAgMyArDQo+PiAg
+IC4uLi9zZWxmdGVzdHMvYnBmL3Byb2dzL3Rlc3RfcGlkbnNfa2Vybi5jICAgICB8ICA3MSArKysr
+KysrKw0KPj4gICB0b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9icGYvdGVzdF9waWRucy5jICAgICAg
+fCAxNTIgKysrKysrKysrKysrKysrKysrDQo+PiAgIDEyIGZpbGVzIGNoYW5nZWQsIDMwNyBpbnNl
+cnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQ0KPj4gICBjcmVhdGUgbW9kZSAxMDA2NDQgdG9vbHMv
+dGVzdGluZy9zZWxmdGVzdHMvYnBmL3Byb2dzL3Rlc3RfcGlkbnNfa2Vybi5jDQo+PiAgIGNyZWF0
+ZSBtb2RlIDEwMDY0NCB0b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9icGYvdGVzdF9waWRucy5jDQo=
