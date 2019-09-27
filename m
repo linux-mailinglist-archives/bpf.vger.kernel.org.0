@@ -2,104 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DAA42C0595
-	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2019 14:48:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83B8CC05F5
+	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2019 15:06:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727159AbfI0MsX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 Sep 2019 08:48:23 -0400
-Received: from www62.your-server.de ([213.133.104.62]:44366 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726295AbfI0MsW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 Sep 2019 08:48:22 -0400
-Received: from [2a02:120b:2c12:c120:71a0:62dd:894c:fd0e] (helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iDpfZ-0004tR-24; Fri, 27 Sep 2019 14:48:21 +0200
-Date:   Fri, 27 Sep 2019 14:48:20 +0200
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, Alexei Starovoitov <ast@fb.com>,
-        kernel-team@fb.com
-Subject: Re: [PATCH bpf] libbpf: add macro __BUILD_STATIC_LIBBPF__ to guard
- .symver
-Message-ID: <20190927124820.GB22184@pc-66.home>
-References: <20190926230204.1911391-1-yhs@fb.com>
+        id S1726926AbfI0NGi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 Sep 2019 09:06:38 -0400
+Received: from mail-ed1-f68.google.com ([209.85.208.68]:37722 "EHLO
+        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726144AbfI0NGi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 Sep 2019 09:06:38 -0400
+Received: by mail-ed1-f68.google.com with SMTP id r4so2277363edy.4;
+        Fri, 27 Sep 2019 06:06:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pfddVZ+BXRM3AZXqv+ZT0fTLNYdGcpGyrxWu4D92uZE=;
+        b=GXS1LbBmD64+zLp5u1YnxdYeQ8PrVxKHTGIY9o7mMl0x2b9Kbktua72wlNmpRk41F0
+         gEfcX5YdImGN42x6nLhqWZ/OSZfTKKk3qjj/AY1ANbARrSbIdA9a922XYEKuBsompZBU
+         vh2VX1ugpRxCvXH2QZHDwXKJOcFSQ0qTbRYxQVe3NLRHUJJGaaj27kQBmF598JFdp/vI
+         Ap0KUCazl3OlpNq1zBUTHISC5rv/CDO7KE6ZuQUfQZF5pLYQZR9C+ANHJ0GuRZ35TUDx
+         4PqHbt0HSLeYVmk4iqNtyY65tI4hRYU1Gswxg++xxKM/6KaRw1XZs8ldsp22sgNBWLgO
+         xbhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pfddVZ+BXRM3AZXqv+ZT0fTLNYdGcpGyrxWu4D92uZE=;
+        b=i8gwM3yAjv4KEGHPAi3DnEtkM6Hg5i6u2vGHt6EO+9phUq9o6kO0yZQsfRzj4SpCvh
+         1xErhK9AJYZkkBqDlsAsxRgIFCpBcN13hfA/cj2n94fYP41N2z2/wg3A8tPA+jXZ1r9M
+         TUvqyosV3nVrNvi+yQeD0+G/WE0AH07ZpRlWtjkZYsuTAwd+9RHeQk6gkwXsXHx6HH+5
+         5lIkuKFELbTP/JwJ9t4+f6DJ9GA4Q2M0K1m8NovWrNgB2YbJ0JvKCe+rfen6bKhKlKkw
+         KI6nzceiMQeICrSXfENtD+xAIymviURhLezYUGmK1H7OZsJ0xb9bjGvS+w0hzaF6ZM0K
+         TPBQ==
+X-Gm-Message-State: APjAAAWxz/62agqC4PfaM7bno8zfd//eQVS3H514G8zkol9DBac2AYyO
+        jR5MhjfPfcDGqsI5Sv2sU4nS3fDic+wyCKCg2Sc=
+X-Google-Smtp-Source: APXvYqz6jHSQsa3IMSkr7eTUjAru2YBYnHAlMN5XRDfFnNXyoEYJaovgiUnurVtV4xx3I5tSSmmCz536FsHxleUSAIM=
+X-Received: by 2002:a05:6402:1858:: with SMTP id v24mr4395130edy.130.1569589596288;
+ Fri, 27 Sep 2019 06:06:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190926230204.1911391-1-yhs@fb.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.101.4/25585/Fri Sep 27 10:25:33 2019)
+References: <20190919082902.GA15755@yogzotot> <CAADnVQK6FjwivxDsmoskH_Zwr+Q730+H9u_5hBBdyzzDP1vyRg@mail.gmail.com>
+ <56fb689c-428b-ad1a-6f25-48422420e4c5@kernel.org>
+In-Reply-To: <56fb689c-428b-ad1a-6f25-48422420e4c5@kernel.org>
+From:   Anatoly Pugachev <matorola@gmail.com>
+Date:   Fri, 27 Sep 2019 16:06:24 +0300
+Message-ID: <CADxRZqwzXc1-bFFHx1_LUw-95+f+1cYnHZp7RKqycwfcsF28OA@mail.gmail.com>
+Subject: Re: [PATCH] selftests: update .gitignore files for selftests/bpf and selftests/zram
+To:     shuah <shuah@kernel.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 26, 2019 at 04:02:04PM -0700, Yonghong Song wrote:
-> bcc uses libbpf repo as a submodule. It brings in libbpf source
-> code and builds everything together to produce shared libraries.
-> With latest libbpf, I got the following errors:
->   /bin/ld: libbcc_bpf.so.0.10.0: version node not found for symbol xsk_umem__create@LIBBPF_0.0.2
->   /bin/ld: failed to set dynamic section sizes: Bad value
->   collect2: error: ld returned 1 exit status
->   make[2]: *** [src/cc/libbcc_bpf.so.0.10.0] Error 1
-> 
-> In xsk.c, we have
->   asm(".symver xsk_umem__create_v0_0_2, xsk_umem__create@LIBBPF_0.0.2");
->   asm(".symver xsk_umem__create_v0_0_4, xsk_umem__create@@LIBBPF_0.0.4");
-> The linker thinks the built is for LIBBPF but cannot find proper version
-> LIBBPF_0.0.2/4, so emit errors.
-> 
-> I also confirmed that using libbpf.a to produce a shared library also
-> has issues:
->   -bash-4.4$ cat t.c
->   extern void *xsk_umem__create;
->   void * test() { return xsk_umem__create; }
->   -bash-4.4$ gcc -c t.c
->   -bash-4.4$ gcc -shared t.o libbpf.a -o t.so
->   /bin/ld: t.so: version node not found for symbol xsk_umem__create@LIBBPF_0.0.2
->   /bin/ld: failed to set dynamic section sizes: Bad value
->   collect2: error: ld returned 1 exit status
->   -bash-4.4$
-> 
-> To fix the problem, I simply added a macro __BUILD_STATIC_LIBBPF__
-> which will prevent issuing .symver assembly codes when enabled.
-> The .symver assembly codes are still issued by default.
-> This will at least give other libbpf users to build libbpf
-> without these versioned symbols.
-> 
-> I did not touch Makefile to actually use this macro to build
-> static library as I want to check whether this is desirable or not.
+On Thu, Sep 19, 2019 at 8:09 PM shuah <shuah@kernel.org> wrote:
+>
+> On 9/19/19 8:39 AM, Alexei Starovoitov wrote:
+> > On Thu, Sep 19, 2019 at 1:35 AM Anatoly Pugachev <matorola@gmail.com> wrote:
+> >>
+> >> selftests: update .gitignore files for selftests/bpf and selftests/zram
+> >>
+> >> Signed-off-by: Anatoly Pugachev <matorola@gmail.com>
+> >> ---
+> >>   tools/testing/selftests/bpf/.gitignore  | 4 ++++
+> >>   tools/testing/selftests/zram/.gitignore | 1 +
+> >>   2 files changed, 5 insertions(+)
+> >>   create mode 100644 tools/testing/selftests/zram/.gitignore
+> >
+> > could you please split this patch into selftests/bpf/ and the rest?
+> > we'll take bpf bits via bpf tree.
+>
+> Yes. Please split them. .gitignore changes for each test need to be
+> in separate patches.
 
-Isn't there any better way on how we can detect this? Asking users to
-pass this macro to the build seems a suboptimal user experience. How
-are other libraries solving this given this seems really not specific
-to libbpf?
-
-> Signed-off-by: Yonghong Song <yhs@fb.com>
-> ---
->  tools/lib/bpf/xsk.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
-> index 24fa313524fb..76c12c4c5c70 100644
-> --- a/tools/lib/bpf/xsk.c
-> +++ b/tools/lib/bpf/xsk.c
-> @@ -261,8 +261,11 @@ int xsk_umem__create_v0_0_2(struct xsk_umem **umem_ptr, void *umem_area,
->  	return xsk_umem__create_v0_0_4(umem_ptr, umem_area, size, fill, comp,
->  					&config);
->  }
-> +
-> +#ifndef __BUILD_STATIC_LIBBPF__
->  asm(".symver xsk_umem__create_v0_0_2, xsk_umem__create@LIBBPF_0.0.2");
->  asm(".symver xsk_umem__create_v0_0_4, xsk_umem__create@@LIBBPF_0.0.4");
-> +#endif
->  
->  static int xsk_load_xdp_prog(struct xsk_socket *xsk)
->  {
-> -- 
-> 2.17.1
-> 
+I wonder does it still make sense to post patch for .gitignore if my
+current git kernel does not show this extra compiled binaries any more
+(probably after make clean) ?
