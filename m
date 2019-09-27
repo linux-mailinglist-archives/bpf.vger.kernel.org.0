@@ -2,118 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DF265BFB9D
-	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2019 01:02:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00C9BBFC9D
+	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2019 03:13:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727869AbfIZXCM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 Sep 2019 19:02:12 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:51616 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727955AbfIZXCL (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 26 Sep 2019 19:02:11 -0400
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x8QMs6qk029336
-        for <bpf@vger.kernel.org>; Thu, 26 Sep 2019 16:02:09 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=facebook;
- bh=bYw3lyB1mldE+JJKpmjaVaKwzoTKIJgZbzyWoKd+PXo=;
- b=Hymelu4It4KEZpxqu1sCfCD9tvHrAfFi9oDQeS6EuRfOjNhNY6+5223PGH18pMXm2jJZ
- vNttNTiMX5K35UF4uhPEH3VPwehpb+VaCCN6SZs3+niDOPsEXhz+mGbfmEbWBabISHcB
- 9+5A4kjAn9WxiL/eNW25YAZjDWK0qBkRhFw= 
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by mx0a-00082601.pphosted.com with ESMTP id 2v8u2euept-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 26 Sep 2019 16:02:09 -0700
-Received: from mx-out.facebook.com (2620:10d:c081:10::13) by
- mail.thefacebook.com (2620:10d:c081:35::127) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
- Thu, 26 Sep 2019 16:02:08 -0700
-Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
-        id 0A7483702B16; Thu, 26 Sep 2019 16:02:04 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Yonghong Song <yhs@fb.com>
-Smtp-Origin-Hostname: devbig003.ftw2.facebook.com
-To:     Andrii Nakryiko <andriin@fb.com>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf] libbpf: add macro __BUILD_STATIC_LIBBPF__ to guard .symver
-Date:   Thu, 26 Sep 2019 16:02:04 -0700
-Message-ID: <20190926230204.1911391-1-yhs@fb.com>
-X-Mailer: git-send-email 2.17.1
-X-FB-Internal: Safe
+        id S1727440AbfI0BNs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 Sep 2019 21:13:48 -0400
+Received: from mail-io1-f65.google.com ([209.85.166.65]:40678 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727381AbfI0BNs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 26 Sep 2019 21:13:48 -0400
+Received: by mail-io1-f65.google.com with SMTP id h144so11799368iof.7
+        for <bpf@vger.kernel.org>; Thu, 26 Sep 2019 18:13:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8j9rA1WD839oUqijh+Vh8zZRtr0Ej8NqAU1MM5cNTJc=;
+        b=dX6f3lPvSg9p2xx0kSYYtSRW/JjhIx4eA1YpglOO+6kZKvxeJICogR/PdXk9SyluNE
+         d/qt5V5/PUpkaX+OSSVc5kSdh/AmzoxZ5aMrEr4rEgwa7fil0v9ZZX4A34BfhjiZdyLo
+         xxSwfEFenWsZrSvfYTJwR5aDCJitIxqWKE8tw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8j9rA1WD839oUqijh+Vh8zZRtr0Ej8NqAU1MM5cNTJc=;
+        b=QFYN8/SgXqBB0sGlGPlal7U4QSmLdTtAZ5/bz+x4dNQhmjXrRamdwCWkwmizjE42s5
+         LEnaEae2KxT1f+u+Xisdc5eEmF0YASB0a9yDAv//V4jxmUqfN96rpVWZNJRpu1bzuyYa
+         YkmgZZyJL/CqZIadtKazsUoI44m91/+buQKoGD4wmdg2JyCOdpqEvszK5XJfSuvj52q4
+         MBvWjcvvok/vmXTLF/bQyu4KcMaDIdgiLgmyS8nyN3V3WMDcYpXFNnPkBG3UJ8KQK/w7
+         n+/CyesEVX4NtmVqeKenxFMidXx9wHBw+ds3K612WJ1K7490qNeTtIjS1MVn1KJLYcso
+         fcaQ==
+X-Gm-Message-State: APjAAAVEgoUkwWy5Klivg6EBIZqk6N/nag0CmPVezBNNIo5BFV4KeQJ7
+        Ohf70Hl+3HoBCda4PoC7X1wN3w==
+X-Google-Smtp-Source: APXvYqyXeSPC+d9QdCWlvsXRPQVaxLUlT8C3HCTK3Kg9BOMblYLJYajtK7SPVki2xvpeDwPQEca/3A==
+X-Received: by 2002:a02:1cc5:: with SMTP id c188mr6360952jac.26.1569546827184;
+        Thu, 26 Sep 2019 18:13:47 -0700 (PDT)
+Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id h70sm1907469iof.48.2019.09.26.18.13.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Sep 2019 18:13:46 -0700 (PDT)
+From:   Shuah Khan <skhan@linuxfoundation.org>
+To:     ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com
+Cc:     Shuah Khan <skhan@linuxfoundation.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: [PATCH] tools: bpf: Use !building_out_of_srctree to determine srctree
+Date:   Thu, 26 Sep 2019 19:13:44 -0600
+Message-Id: <20190927011344.4695-1-skhan@linuxfoundation.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
- definitions=2019-09-26_08:2019-09-25,2019-09-26 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
- phishscore=0 impostorscore=0 spamscore=0 malwarescore=0 clxscore=1015
- priorityscore=1501 mlxlogscore=999 lowpriorityscore=0 bulkscore=0
- mlxscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1908290000 definitions=main-1909260181
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-bcc uses libbpf repo as a submodule. It brings in libbpf source
-code and builds everything together to produce shared libraries.
-With latest libbpf, I got the following errors:
-  /bin/ld: libbcc_bpf.so.0.10.0: version node not found for symbol xsk_umem__create@LIBBPF_0.0.2
-  /bin/ld: failed to set dynamic section sizes: Bad value
-  collect2: error: ld returned 1 exit status
-  make[2]: *** [src/cc/libbcc_bpf.so.0.10.0] Error 1
+make TARGETS=bpf kselftest fails with:
 
-In xsk.c, we have
-  asm(".symver xsk_umem__create_v0_0_2, xsk_umem__create@LIBBPF_0.0.2");
-  asm(".symver xsk_umem__create_v0_0_4, xsk_umem__create@@LIBBPF_0.0.4");
-The linker thinks the built is for LIBBPF but cannot find proper version
-LIBBPF_0.0.2/4, so emit errors.
+Makefile:127: tools/build/Makefile.include: No such file or directory
 
-I also confirmed that using libbpf.a to produce a shared library also
-has issues:
-  -bash-4.4$ cat t.c
-  extern void *xsk_umem__create;
-  void * test() { return xsk_umem__create; }
-  -bash-4.4$ gcc -c t.c
-  -bash-4.4$ gcc -shared t.o libbpf.a -o t.so
-  /bin/ld: t.so: version node not found for symbol xsk_umem__create@LIBBPF_0.0.2
-  /bin/ld: failed to set dynamic section sizes: Bad value
-  collect2: error: ld returned 1 exit status
-  -bash-4.4$
+When the bpf tool make is invoked from tools Makefile, srctree is
+cleared and the current logic check for srctree equals to empty
+string to determine srctree location from CURDIR.
 
-To fix the problem, I simply added a macro __BUILD_STATIC_LIBBPF__
-which will prevent issuing .symver assembly codes when enabled.
-The .symver assembly codes are still issued by default.
-This will at least give other libbpf users to build libbpf
-without these versioned symbols.
+When the build in invoked from selftests/bpf Makefile, the srctree
+is set to "." and the same logic used for srctree equals to empty is
+needed to determine srctree.
 
-I did not touch Makefile to actually use this macro to build
-static library as I want to check whether this is desirable or not.
+Check building_out_of_srctree undefined as the condition for both
+cases to fix "make TARGETS=bpf kselftest" build failure.
 
-Signed-off-by: Yonghong Song <yhs@fb.com>
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 ---
- tools/lib/bpf/xsk.c | 3 +++
- 1 file changed, 3 insertions(+)
+ tools/bpf/Makefile     | 6 +++++-
+ tools/lib/bpf/Makefile | 6 +++++-
+ 2 files changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
-index 24fa313524fb..76c12c4c5c70 100644
---- a/tools/lib/bpf/xsk.c
-+++ b/tools/lib/bpf/xsk.c
-@@ -261,8 +261,11 @@ int xsk_umem__create_v0_0_2(struct xsk_umem **umem_ptr, void *umem_area,
- 	return xsk_umem__create_v0_0_4(umem_ptr, umem_area, size, fill, comp,
- 					&config);
- }
-+
-+#ifndef __BUILD_STATIC_LIBBPF__
- asm(".symver xsk_umem__create_v0_0_2, xsk_umem__create@LIBBPF_0.0.2");
- asm(".symver xsk_umem__create_v0_0_4, xsk_umem__create@@LIBBPF_0.0.4");
-+#endif
+diff --git a/tools/bpf/Makefile b/tools/bpf/Makefile
+index fbf5e4a0cb9c..5d1995fd369c 100644
+--- a/tools/bpf/Makefile
++++ b/tools/bpf/Makefile
+@@ -12,7 +12,11 @@ INSTALL ?= install
+ CFLAGS += -Wall -O2
+ CFLAGS += -D__EXPORTED_HEADERS__ -I$(srctree)/include/uapi -I$(srctree)/include
  
- static int xsk_load_xdp_prog(struct xsk_socket *xsk)
- {
+-ifeq ($(srctree),)
++# This will work when bpf is built in tools env. where srctree
++# isn't set and when invoked from selftests build, where srctree
++# is set to ".". building_out_of_srctree is undefined for in srctree
++# builds
++ifndef building_out_of_srctree
+ srctree := $(patsubst %/,%,$(dir $(CURDIR)))
+ srctree := $(patsubst %/,%,$(dir $(srctree)))
+ endif
+diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
+index c6f94cffe06e..20772663d3e1 100644
+--- a/tools/lib/bpf/Makefile
++++ b/tools/lib/bpf/Makefile
+@@ -8,7 +8,11 @@ LIBBPF_MAJOR_VERSION := $(firstword $(subst ., ,$(LIBBPF_VERSION)))
+ 
+ MAKEFLAGS += --no-print-directory
+ 
+-ifeq ($(srctree),)
++# This will work when bpf is built in tools env. where srctree
++# isn't set and when invoked from selftests build, where srctree
++# is a ".". building_out_of_srctree is undefined for in srctree
++# builds
++ifndef building_out_of_srctree
+ srctree := $(patsubst %/,%,$(dir $(CURDIR)))
+ srctree := $(patsubst %/,%,$(dir $(srctree)))
+ srctree := $(patsubst %/,%,$(dir $(srctree)))
 -- 
-2.17.1
+2.20.1
 
