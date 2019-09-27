@@ -2,135 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CA54C060D
-	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2019 15:12:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D4B2C061C
+	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2019 15:15:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727099AbfI0NMG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 Sep 2019 09:12:06 -0400
-Received: from mail-ed1-f67.google.com ([209.85.208.67]:40382 "EHLO
-        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727076AbfI0NMG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 Sep 2019 09:12:06 -0400
-Received: by mail-ed1-f67.google.com with SMTP id v38so2270966edm.7
-        for <bpf@vger.kernel.org>; Fri, 27 Sep 2019 06:12:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=r/YlMd+ABdbFqVfQSuisclIe5RaTInuYhTyrlp7UJqI=;
-        b=LwB7iZ62Q3MzwaxIUnSj4Pzy98gBm+A1KMiJbjObU2r9JHOq5qvX1sRJr7OzQ50a/1
-         YMxWixU8GiufOzDfTXWqBl1ocb23Z+/GcUFhiS1oC8Em8zTeH/yiNIyZgbQFNuL0aOhu
-         8m6Dt9Bwc4LPb34QbLXQpU2exb9l5PNJ2zedU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=r/YlMd+ABdbFqVfQSuisclIe5RaTInuYhTyrlp7UJqI=;
-        b=ID5fbOOTsP01U+gG9z/9E8bWZLO+TBbRPv532OxQzB/MX6Ynyd4U/KZ7sylRHz87on
-         nUZ5AvtBL9XHem3qYqbKnLiUqhNVKsFz1W4A2axwuAKPCoquLaup1ds0onxPBwgIwIh4
-         N31DuOytV16DUgyEnvDvVplArXCvYooYbX43FM/vajIB+fgosafXInjram2nW9b9ytg6
-         1mIaCJLKkQiMlQ4FYrsVCTnR1m7MtWAIrGD/+vVdXCS7x10acqi5L3keC5p+styiZ+dh
-         II0qPU0VO/NDnpuyIST42jg7dqAwSM1BhKaTrwhJ/HHpkEkJihhU0Wo4XFPsSN/HV583
-         rRKA==
-X-Gm-Message-State: APjAAAVp2FzHRN9RiBOrT3b9630rI161IHABl1DfdfVy+ES5nJjPIU/h
-        Wpo5kGyc2SKmZ/7fwo1vnEYngw==
-X-Google-Smtp-Source: APXvYqwH0Kf3RFJvBaP6/8SQDfZmH+CT8T2b9MSPH2Qpy/XpKo0w4gLRa+nt6qL7rpKJaKcTDGVDUg==
-X-Received: by 2002:a17:907:20eb:: with SMTP id rh11mr7559558ejb.25.1569589924483;
-        Fri, 27 Sep 2019 06:12:04 -0700 (PDT)
-Received: from chromium.org ([2620:0:105f:fd00:440a:66a5:a253:2909])
-        by smtp.gmail.com with ESMTPSA id p1sm575690ejg.10.2019.09.27.06.12.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Sep 2019 06:12:04 -0700 (PDT)
-From:   KP Singh <kpsingh@chromium.org>
-X-Google-Original-From: KP Singh <kpsingh>
-Date:   Fri, 27 Sep 2019 15:12:02 +0200
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Anton Protopopov <a.s.protopopov@gmail.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH bpf-next] tools: libbpf: update extended attributes
- version of bpf_object__open()
-Message-ID: <20190927131202.GA18934@chromium.org>
-References: <20190815000330.12044-1-a.s.protopopov@gmail.com>
- <796E4DA8-4844-4708-866E-A8AE9477E94E@fb.com>
- <CAGn_itwS=bLf8NGVNbByNx8FmR_JtPWnuEnKO23ig8xnK_GYOw@mail.gmail.com>
- <9EC54605-1911-48B0-B33A-02EC46DEF3DD@fb.com>
+        id S1727289AbfI0NPO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 Sep 2019 09:15:14 -0400
+Received: from www62.your-server.de ([213.133.104.62]:51496 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727076AbfI0NPO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 Sep 2019 09:15:14 -0400
+Received: from [2a02:120b:2c12:c120:71a0:62dd:894c:fd0e] (helo=localhost)
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1iDq5V-0007Ak-0x; Fri, 27 Sep 2019 15:15:09 +0200
+From:   Daniel Borkmann <daniel@iogearbox.net>
+To:     davem@davemloft.net
+Cc:     jakub.kicinski@netronome.com, daniel@iogearbox.net, ast@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: pull-request: bpf 2019-09-27
+Date:   Fri, 27 Sep 2019 15:15:08 +0200
+Message-Id: <20190927131508.24576-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <9EC54605-1911-48B0-B33A-02EC46DEF3DD@fb.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.101.4/25585/Fri Sep 27 10:25:33 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 30-Aug 19:24, Song Liu wrote:
-> 
-> 
-> > On Aug 30, 2019, at 11:53 AM, Anton Protopopov <a.s.protopopov@gmail.com> wrote:
-> > 
-> > чт, 29 авг. 2019 г. в 16:02, Song Liu <songliubraving@fb.com>:
-> >> 
-> >> 
-> >> 
-> >>> On Aug 14, 2019, at 5:03 PM, Anton Protopopov <a.s.protopopov@gmail.com> wrote:
-> >>> 
-> >> 
-> >> [...]
-> >> 
-> >>> 
-> >>> 
-> >>> int bpf_object__unload(struct bpf_object *obj)
-> >>> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> >>> index e8f70977d137..634f278578dd 100644
-> >>> --- a/tools/lib/bpf/libbpf.h
-> >>> +++ b/tools/lib/bpf/libbpf.h
-> >>> @@ -63,8 +63,13 @@ LIBBPF_API libbpf_print_fn_t libbpf_set_print(libbpf_print_fn_t fn);
-> >>> struct bpf_object;
-> >>> 
-> >>> struct bpf_object_open_attr {
-> >>> -     const char *file;
-> >>> +     union {
-> >>> +             const char *file;
-> >>> +             const char *obj_name;
-> >>> +     };
-> >>>      enum bpf_prog_type prog_type;
-> >>> +     void *obj_buf;
-> >>> +     size_t obj_buf_sz;
-> >>> };
-> >> 
-> >> I think this would break dynamically linked libbpf. No?
-> > 
-> > Ah, yes, sure. What is the right way to make changes which break ABI in libbpf?
-> 
-> I don't have a good idea here on the top of my head.
-> 
-> Maybe we need a new struct and/or function for this. 
+Hi David,
 
+The following pull-request contains BPF updates for your *net* tree.
 
-I incorporated the suggested fixes and sent a new patch for this as we
-ran into pretty much the same issue. (i.e. not being able to set
-needs_kver / flags).
+The main changes are:
 
-https://lore.kernel.org/bpf/20190927130834.18829-1-kpsingh@chromium.org/T/#u
+1) Fix libbpf's BTF dumper to not skip anonymous enum definitions, from Andrii.
 
-- KP
+2) Fix BTF verifier issues when handling the BTF of vmlinux, from Alexei.
 
->  
-> > 
-> > BTW, does the commit ddc7c3042614 ("libbpf: implement BPF CO-RE offset
-> > relocation algorithm") which adds a new field to the struct
-> > bpf_object_load_attr also break ABI?
-> 
-> I think this change was in the same release, so it is OK. 
-> 
-> Thanks,
-> Song
+3) Fix nested calls into bpf_event_output() from TCP sockops BPF
+   programs, from Allan.
+
+4) Fix NULL pointer dereference in AF_XDP's xsk map creation when
+   allocation fails, from Jonathan.
+
+5) Remove unneeded 64 byte alignment requirement of the AF_XDP UMEM
+   headroom, from Bjorn.
+
+6) Remove unused XDP_OPTIONS getsockopt() call which results in an error
+   on older kernels, from Toke.
+
+7) Fix a client/server race in tcp_rtt BPF kselftest case, from Stanislav.
+
+8) Fix indentation issue in BTF's btf_enum_check_kflag_member(), from Colin.
+
+Please consider pulling these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+
+Thanks a lot!
+
+----------------------------------------------------------------
+
+The following changes since commit 280ceaed79f18db930c0cc8bb21f6493490bf29c:
+
+  usbnet: sanity checking of packet sizes and device mtu (2019-09-19 13:27:11 +0200)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git 
+
+for you to fetch changes up to 768fb61fcc13b2acaca758275d54c09a65e2968b:
+
+  bpf: Fix bpf_event_output re-entry issue (2019-09-27 11:24:29 +0200)
+
+----------------------------------------------------------------
+Alexei Starovoitov (2):
+      bpf: fix BTF verification of enums
+      bpf: fix BTF limits
+
+Allan Zhang (1):
+      bpf: Fix bpf_event_output re-entry issue
+
+Andrii Nakryiko (4):
+      libbpf: fix false uninitialized variable warning
+      selftests/bpf: delete unused variables in test_sysctl
+      selftests/bpf: adjust strobemeta loop to satisfy latest clang
+      libbpf: Teach btf_dumper to emit stand-alone anonymous enum definitions
+
+Björn Töpel (1):
+      xsk: relax UMEM headroom alignment
+
+Colin Ian King (1):
+      bpf: Clean up indentation issue in BTF kflag processing
+
+Jonathan Lemon (1):
+      bpf/xskmap: Return ERR_PTR for failure case instead of NULL.
+
+Stanislav Fomichev (1):
+      selftests/bpf: test_progs: fix client/server race in tcp_rtt
+
+Toke Høiland-Jørgensen (1):
+      libbpf: Remove getsockopt() check for XDP_OPTIONS
+
+ include/uapi/linux/btf.h                         |  4 +-
+ kernel/bpf/btf.c                                 |  7 +-
+ kernel/bpf/xskmap.c                              |  2 +-
+ kernel/trace/bpf_trace.c                         | 26 +++++--
+ net/xdp/xdp_umem.c                               |  2 -
+ tools/lib/bpf/btf_dump.c                         | 94 ++++++++++++++++++++++--
+ tools/lib/bpf/xsk.c                              | 11 ---
+ tools/testing/selftests/bpf/prog_tests/tcp_rtt.c | 21 +++++-
+ tools/testing/selftests/bpf/progs/strobemeta.h   |  5 +-
+ tools/testing/selftests/bpf/test_sysctl.c        |  1 -
+ 10 files changed, 138 insertions(+), 35 deletions(-)
