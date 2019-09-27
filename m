@@ -2,55 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C7A68C0123
-	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2019 10:28:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEB2AC0567
+	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2019 14:45:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726523AbfI0I2h (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 Sep 2019 04:28:37 -0400
-Received: from shards.monkeyblade.net ([23.128.96.9]:57244 "EHLO
-        shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726359AbfI0I2g (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 Sep 2019 04:28:36 -0400
-Received: from localhost (unknown [65.39.69.237])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id D645B14DECD54;
-        Fri, 27 Sep 2019 01:28:34 -0700 (PDT)
-Date:   Fri, 27 Sep 2019 10:28:33 +0200 (CEST)
-Message-Id: <20190927.102833.1060603614092107867.davem@davemloft.net>
-To:     edumazet@google.com
-Cc:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
-        eric.dumazet@gmail.com, bpf@vger.kernel.org,
-        syzkaller@googlegroups.com
-Subject: Re: [PATCH net] kcm: disable preemption in
- kcm_parse_func_strparser()
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20190924192934.212317-1-edumazet@google.com>
-References: <20190924192934.212317-1-edumazet@google.com>
-X-Mailer: Mew version 6.8 on Emacs 26.2
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Fri, 27 Sep 2019 01:28:36 -0700 (PDT)
+        id S1726441AbfI0Mov (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 Sep 2019 08:44:51 -0400
+Received: from www62.your-server.de ([213.133.104.62]:43326 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725890AbfI0Mov (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 Sep 2019 08:44:51 -0400
+Received: from [2a02:120b:2c12:c120:71a0:62dd:894c:fd0e] (helo=localhost)
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1iDpc8-0004dT-ND; Fri, 27 Sep 2019 14:44:48 +0200
+Date:   Fri, 27 Sep 2019 14:44:48 +0200
+From:   Daniel Borkmann <daniel@iogearbox.net>
+To:     Allan Zhang <allanzhang@google.com>
+Cc:     songliubraving@fb.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Stanislav Fomichev <sdf@google.com>,
+        Eric Dumazet <edumazet@google.com>
+Subject: Re: [PATCH 1/1] bpf: Fix bpf_event_output re-entry issue
+Message-ID: <20190927124448.GA22184@pc-66.home>
+References: <20190925234312.94063-1-allanzhang@google.com>
+ <20190925234312.94063-2-allanzhang@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190925234312.94063-2-allanzhang@google.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.101.4/25585/Fri Sep 27 10:25:33 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
-Date: Tue, 24 Sep 2019 12:29:34 -0700
-
-> After commit a2c11b034142 ("kcm: use BPF_PROG_RUN")
-> syzbot easily triggers the warning in cant_sleep().
+On Wed, Sep 25, 2019 at 04:43:12PM -0700, Allan Zhang wrote:
+> BPF_PROG_TYPE_SOCK_OPS program can reenter bpf_event_output because it can
+> be called from atomic and non-atomic contexts since we don't have
+> bpf_prog_active to prevent it happen.
 > 
-> As explained in commit 6cab5e90ab2b ("bpf: run bpf programs
-> with preemption disabled") we need to disable preemption before
-> running bpf programs.
- ...
-> Fixes: a2c11b034142 ("kcm: use BPF_PROG_RUN")
-> Fixes: 6cab5e90ab2b ("bpf: run bpf programs with preemption disabled")
-> Signed-off-by: Eric Dumazet <edumazet@google.com>
-> Reported-by: syzbot <syzkaller@googlegroups.com>
+> This patch enables 3 level of nesting to support normal, irq and nmi
+> context.
+> 
+> We can easily reproduce the issue by running neper crr mode with 100 flows
+> and 10 threads from neper client side.
+> 
+> Here is the whole stack dump:
+[...]
+> 
+> Fixes: a5a3a828cd00 ("bpf: add perf event notificaton support for sock_ops")
+> 
+> Effort: BPF
+> Signed-off-by: Allan Zhang <allanzhang@google.com>
+> Reviewed-by: Stanislav Fomichev <sdf@google.com>
+> Reviewed-by: Eric Dumazet <edumazet@google.com>
 
-Applied.
+Applied, thanks!
