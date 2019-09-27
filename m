@@ -2,137 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B701C0CCF
-	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2019 22:47:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94513C0CEE
+	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2019 22:58:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725815AbfI0Urf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 Sep 2019 16:47:35 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:42958 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725789AbfI0Urf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 Sep 2019 16:47:35 -0400
-Received: by mail-pg1-f193.google.com with SMTP id z12so4068102pgp.9;
-        Fri, 27 Sep 2019 13:47:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=bzYSSPrgLAC4YfKvOYdW8JV9P97aaiQ4S1KEYZ0vYTQ=;
-        b=UuD1GphT5DoxXuKlWeBSG54du7TXGyNIeEUMIePFxzgEIkFr2ZWqssI95w2VXDN221
-         J5feVuwTpfDOnSNEFHt1mMjKL8Bqk4Dus52w9JF/Gr9ROjlz95Qk57bfY3R4pLmKZje+
-         J1YArd90GlQSypsRsYaXu+3ga5DW1vajaeuZx8Ee60JvUxxphHKE/ghf1M2ybddCRizU
-         xvU56hF0HcNeVLwF3wS4jPqE2rDLd+8yoI0P23DEURKoOKmtiKgoXFpXltRmIU8j62ua
-         ufxkmjFI8LVBNvJSZXalgp+d2/nfHjvOXvKH8BoPXVXPCIKD74PCX3dlev5AN2B3MBAR
-         eegQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bzYSSPrgLAC4YfKvOYdW8JV9P97aaiQ4S1KEYZ0vYTQ=;
-        b=lF7TcOX6rOrbCyT5pTe3PbatQLbWCeV7raxtpGtR/AQS/+YPO3WCFzsrKEFVxvJnqL
-         9kfsbAjNjAHlkmjvy2/+yumFosa10OSM6a4r/EtVDvjRWiw1Wdje8KZZkS3anrLH4+Tq
-         9CMU9cX4FLltPOBldy1Gr66kVWSCJZz3ivuzVzNK1YgtT5qeIBxBRlaZ+zQ+Z1SwCLZw
-         yuHAPAxPMnlMPVzSXEYzFNHF/qOZ++iPI0nPPPJZWFlsWvPZwgLjKrFEpD3MxXt800qi
-         TicSh7f7G/354eiVr7jvnrrbebB+CHUqTIYZQ3AHCZRDF0JjfimHnyC9J14OtqWOgKkp
-         ntRQ==
-X-Gm-Message-State: APjAAAXYTgf3d6WPqiNIt56Vyyp0iABm4YQJmJHKghimkBmezaAfj21c
-        Dx3tP1RzMuWPUjazHgP27oQ=
-X-Google-Smtp-Source: APXvYqy1C1JP1b3d0GSZuPk0C4n/gYXS1ppofxspzJZADstlQttHJW26kqX6aSA8QGbj0VSrVAuChA==
-X-Received: by 2002:a17:90a:bb97:: with SMTP id v23mr11812267pjr.84.1569617254604;
-        Fri, 27 Sep 2019 13:47:34 -0700 (PDT)
-Received: from ?IPv6:2620:15c:2c1:200:55c7:81e6:c7d8:94b? ([2620:15c:2c1:200:55c7:81e6:c7d8:94b])
-        by smtp.gmail.com with ESMTPSA id g5sm6181080pgd.82.2019.09.27.13.47.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Sep 2019 13:47:33 -0700 (PDT)
-Subject: Re: [PATCH bpf] bpf: Fix a race in reuseport_array_free()
-To:     Martin Lau <kafai@fb.com>, Eric Dumazet <eric.dumazet@gmail.com>
-Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>,
-        Kernel Team <Kernel-team@fb.com>
-References: <20190927165221.2391541-1-kafai@fb.com>
- <04f683c6-ac49-05fb-6ec9-9f0d698657a2@gmail.com>
- <20190927181729.7ep3pp2hiy6l5ixk@kafai-mbp.dhcp.thefacebook.com>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <fc762c01-94da-7f72-4fc0-9b76d6bbe3dd@gmail.com>
-Date:   Fri, 27 Sep 2019 13:47:32 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1726711AbfI0U6Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 Sep 2019 16:58:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33474 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726594AbfI0U6Y (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 Sep 2019 16:58:24 -0400
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 97C7921928
+        for <bpf@vger.kernel.org>; Fri, 27 Sep 2019 20:58:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1569617903;
+        bh=JHvPXPKOI8xXY+v+RmsysJ+7eQJL2fGTE9qEG3GltO4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=IZBobdmnLixGOMe0GgALjKFamRkN+1/IlDJ93Mesp167haHYR7IBTWvK6yM1HL85P
+         fgn5Hvfd5gJ9LHq/raH1oyc+JNVnN55DE5TJ7vnvYOudEB+EMU2l92r1xncFRaMHhV
+         RqDQ8KOcKcKYu9CMwqEVaB0ZppLtJi/hqoWYNb3U=
+Received: by mail-wr1-f51.google.com with SMTP id o18so4606341wrv.13
+        for <bpf@vger.kernel.org>; Fri, 27 Sep 2019 13:58:23 -0700 (PDT)
+X-Gm-Message-State: APjAAAWZFlfkk5jaHx4UOWspaQl4/wwrwxnMzZ+KXit/pfI6BFZ47J2D
+        x1IjmskykjewjVS1wIRmhk2zKpwyZ/sf2BzAz5UiHA==
+X-Google-Smtp-Source: APXvYqxmWFPXVg5my2vdtfXTIKkRAsW/tJXeLCeFEGi5LTezBydsLm94jzUi9r5S9tnwrfzAbRz3QhWaRfS3fvEnT+I=
+X-Received: by 2002:adf:dbc6:: with SMTP id e6mr4312618wrj.149.1569617900104;
+ Fri, 27 Sep 2019 13:58:20 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20190927181729.7ep3pp2hiy6l5ixk@kafai-mbp.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <419CB0D1-E51C-49D5-9745-7771C863462F@amacapital.net> <mhng-c8a768f7-1a90-4228-b654-be9e879c92ec@palmer-si-x1c4>
+In-Reply-To: <mhng-c8a768f7-1a90-4228-b654-be9e879c92ec@palmer-si-x1c4>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Fri, 27 Sep 2019 13:58:08 -0700
+X-Gmail-Original-Message-ID: <CALCETrUmqKz4vu2VCPC5MYGFyiG4djbOmKG32oLtQPb=o6rJ_Q@mail.gmail.com>
+Message-ID: <CALCETrUmqKz4vu2VCPC5MYGFyiG4djbOmKG32oLtQPb=o6rJ_Q@mail.gmail.com>
+Subject: Re: [PATCH v2] riscv: add support for SECCOMP and SECCOMP_FILTER
+To:     Palmer Dabbelt <palmer@sifive.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        David Abdurachmanov <david.abdurachmanov@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Will Drewry <wad@chromium.org>, Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        David Abdurachmanov <david.abdurachmanov@sifive.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Allison Randal <allison@lohutok.net>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        Anup Patel <Anup.Patel@wdc.com>,
+        Vincent Chen <vincentc@andestech.com>,
+        Alan Kao <alankao@andestech.com>,
+        linux-riscv@lists.infradead.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, me@carlosedp.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Tue, Sep 3, 2019 at 3:27 PM Palmer Dabbelt <palmer@sifive.com> wrote:
+>
+> On Wed, 28 Aug 2019 10:52:05 PDT (-0700), luto@amacapital.net wrote:
+> >
+> >
+> >> On Aug 25, 2019, at 2:59 PM, Kees Cook <keescook@chromium.org> wrote:
+> >>
+> >>> On Thu, Aug 22, 2019 at 01:55:22PM -0700, David Abdurachmanov wrote:
+> >>> This patch was extensively tested on Fedora/RISCV (applied by default=
+ on
+> >>> top of 5.2-rc7 kernel for <2 months). The patch was also tested with =
+5.3-rc
+> >>> on QEMU and SiFive Unleashed board.
+> >>
+> >> Oops, I see the mention of QEMU here. Where's the best place to find
+> >> instructions on creating a qemu riscv image/environment?
+> >
+> > I don=E2=80=99t suppose one of you riscv folks would like to contribute=
+ riscv support to virtme?  virtme-run =E2=80=94arch=3Driscv would be quite =
+nice, and the total patch should be just a couple lines.  Unfortunately, it=
+ helps a lot to understand the subtleties of booting the architecture to wr=
+ite those couple lines :)
+>
+> What mailing list should I sent this to?  You need to use the "virtme" br=
+anch
+> of kernel.org/palmer/linux.git until I send the defconfig patches.
+>
+> commit a8bd7b318691891991caea298f9a5ed0f815c322
+> gpg: Signature made Tue 03 Sep 2019 03:22:45 PM PDT
+> gpg:                using RSA key 00CE76D1834960DFCE886DF8EF4CA1502CCBAB4=
+1
+> gpg:                issuer "palmer@dabbelt.com"
+> gpg: Good signature from "Palmer Dabbelt <palmer@dabbelt.com>" [ultimate]
+> gpg:                 aka "Palmer Dabbelt <palmer@sifive.com>" [ultimate]
+> Author: Palmer Dabbelt <palmer@sifive.com>
+> Date:   Tue Sep 3 14:39:39 2019 -0700
+>
+>     Add RISC-V support
 
-
-On 9/27/19 11:17 AM, Martin Lau wrote:
-> On Fri, Sep 27, 2019 at 10:24:49AM -0700, Eric Dumazet wrote:
->>
->>
->> On 9/27/19 9:52 AM, Martin KaFai Lau wrote:
->>> In reuseport_array_free(), the rcu_read_lock() cannot ensure sk is still
->>> valid.  It is because bpf_sk_reuseport_detach() can be called from
->>> __sk_destruct() which is invoked through call_rcu(..., __sk_destruct).
->>
->> We could question why reuseport_detach_sock(sk) is called from __sk_destruct()
->> (after the rcu grace period) instead of sk_destruct() ?
-> Agree.  It is another way to fix it.
-> 
-> In this patch, I chose to avoid the need to single out a special treatment for
-> reuseport_detach_sock() in sk_destruct().
-> 
-> I am happy either way.  What do you think?
-
-It seems that since we call reuseport_detach_sock() after the rcu grace period,
-another cpu could catch the sk pointer in reuse->socks[] array and use
-it right before our cpu frees the socket.
-
-RCU rules are not properly applied here I think.
-
-The rules for deletion are :
-
-1) unpublish object from various lists/arrays/hashes.
-2) rcu_grace_period
-3) free the object.
-
-If we fix the unpublish (we need to anyway to make the data path safe),
-then your patch is not needed ?
-
-What about (totally untested, might be horribly wrong)
-
-diff --git a/net/core/sock.c b/net/core/sock.c
-index 07863edbe6fc4842e47ebebf00bc21bc406d9264..d31a4b094797f73ef89110c954aa0a164879362d 100644
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -1700,8 +1700,6 @@ static void __sk_destruct(struct rcu_head *head)
-                sk_filter_uncharge(sk, filter);
-                RCU_INIT_POINTER(sk->sk_filter, NULL);
-        }
--       if (rcu_access_pointer(sk->sk_reuseport_cb))
--               reuseport_detach_sock(sk);
- 
-        sock_disable_timestamp(sk, SK_FLAGS_TIMESTAMP);
- 
-@@ -1728,7 +1726,13 @@ static void __sk_destruct(struct rcu_head *head)
- 
- void sk_destruct(struct sock *sk)
- {
--       if (sock_flag(sk, SOCK_RCU_FREE))
-+       bool use_call_rcu = sock_flag(sk, SOCK_RCU_FREE);
-+
-+       if (rcu_access_pointer(sk->sk_reuseport_cb)) {
-+               reuseport_detach_sock(sk);
-+               use_call_rcu = true;
-+       }
-+       if (use_call_rcu)
-                call_rcu(&sk->sk_rcu, __sk_destruct);
-        else
-                __sk_destruct(&sk->sk_rcu);
+Could you rebase onto virtme master and resend in some format that
+isn't corrupt?  git am really doesn't like your patch and, even if I
+fix it up manually, your gpg: lines are bogus.  You could also send a
+PR at https://github.com/amluto/virtme
