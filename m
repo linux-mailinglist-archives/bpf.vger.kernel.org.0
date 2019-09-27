@@ -2,134 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BC13C095A
-	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2019 18:16:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13FAEC09D4
+	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2019 18:52:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727427AbfI0QQJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 Sep 2019 12:16:09 -0400
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:46494 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727079AbfI0QQJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 Sep 2019 12:16:09 -0400
-Received: by mail-qk1-f194.google.com with SMTP id 201so2384219qkd.13;
-        Fri, 27 Sep 2019 09:16:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WH+jCb5SoMk5PgpbLmgZLUs0O9xYNHix8ZiFZUfLT4o=;
-        b=LPCmFaL1gv+jFl6/93kp6LkP/x2PmI/dci7AOy6LBaNXb6V1mHtMUx2hGdbu8xaO+j
-         m1AJw04JWzLqlcgkn18mH4BgrbCVFIcjQWONu9gZeyTERhny0nWZxEPAWDDMXFVIz+Id
-         pJfY2lpWXBPDmry6e6IuULKBN+YdiN1S1cDCiGI25rpdMGGqEWICzwmvxvz53ci2ZrCD
-         Hw55wgxxk2IcSiiCwTJFZjFOI4O8BmqyvXTJ5TCLh19unXDHnQTC/5dPDZOaRQUq5LFF
-         JniwYNzLKnF471vIMCAv8Ghxt998PFcHvpJ/WPpUaMvtvIPMNgPWYUqaBfgH4JV7MJTS
-         cC/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WH+jCb5SoMk5PgpbLmgZLUs0O9xYNHix8ZiFZUfLT4o=;
-        b=ZsW9KyvDnokHSYMc86aizJmXqr7cUW6NgbFUNUwAEY3rjZFGaLrn7ZM4ql5pbETa1L
-         se0KgXuQIxWtk6XBYK5bNu2BZda26SpOcxKVGxf7tqNGUKHHW2GaoBCN5iljzmspRR8I
-         /Xmwjm48d314krD1qRwFAux0VPkUhpjNMnKbCcxuTZX3n92w2jhvdWiEh+2bgBLU2Qy2
-         jV02AQNf7ofrtKYML4sxlnorTytR19+QfrTb4fspqzEVEa3/vEdVwuKI448m2x1UMGTm
-         uaEI7fC+ub/zK5DN9RpekbH78P6PYlaZ24NUKoVa4AXWIbdM+5Oj55WalZl3DzU37O1r
-         u/TQ==
-X-Gm-Message-State: APjAAAVLMdifWKvMMd89FEWl/nEa0/U0YE0h3akyg9fU99epB+7+Z/Xs
-        mj1R9aNsfbtguF8WI6XaP53NM/qXlB78TXaAaYg=
-X-Google-Smtp-Source: APXvYqwcnZq6iS1/KX2eb586JfxIsGc2OnLE/cIhhWL5/lhF5aU9O3YnVMs6VvYYAU9vv9Me1Z2OpAfN6DgyIjZsB3g=
-X-Received: by 2002:a05:620a:119a:: with SMTP id b26mr5405136qkk.39.1569600968422;
- Fri, 27 Sep 2019 09:16:08 -0700 (PDT)
+        id S1727079AbfI0Qw0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 Sep 2019 12:52:26 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:8258 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726251AbfI0Qw0 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 27 Sep 2019 12:52:26 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id x8RGgmff000926
+        for <bpf@vger.kernel.org>; Fri, 27 Sep 2019 09:52:23 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=Ih1aOj4sWxSL2hNxjqXRnOy5s6MhWA/QoCRk88X4s1Y=;
+ b=UCy3/s2/42KU5f6N9Ohoyk7xb7e/OJoSleTWziV3aowF6hSNCnAQxQlB0LuZCMbnIpm0
+ 9du18ulrXAsgh21VRq7Bj2Nbygl3U5Py8XkW6PqtpCCO3SF31VlXYAjI8e8I1I+Kxl+N
+ LV97OpycveAHIZodzBG0xOnPMQ0DQtl52Kk= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0001303.ppops.net with ESMTP id 2v9mph0jtn-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 27 Sep 2019 09:52:23 -0700
+Received: from mx-out.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Fri, 27 Sep 2019 09:52:23 -0700
+Received: by devbig005.ftw2.facebook.com (Postfix, from userid 6611)
+        id 4461329412CD; Fri, 27 Sep 2019 09:52:21 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Martin KaFai Lau <kafai@fb.com>
+Smtp-Origin-Hostname: devbig005.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>, <kernel-team@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf] bpf: Fix a race in reuseport_array_free()
+Date:   Fri, 27 Sep 2019 09:52:21 -0700
+Message-ID: <20190927165221.2391541-1-kafai@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-References: <20190924152005.4659-1-cneirabustos@gmail.com> <20190924152005.4659-3-cneirabustos@gmail.com>
-In-Reply-To: <20190924152005.4659-3-cneirabustos@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 27 Sep 2019 09:15:57 -0700
-Message-ID: <CAEf4BzZeO3cZJWVG0min98gnFs3E8D1m67E+3A_9-rTjHA_Ybg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v11 2/4] bpf: added new helper bpf_get_ns_current_pid_tgid
-To:     Carlos Neira <cneirabustos@gmail.com>
-Cc:     Networking <netdev@vger.kernel.org>, Yonghong Song <yhs@fb.com>,
-        ebiederm@xmission.com, Jesper Dangaard Brouer <brouer@redhat.com>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
+ definitions=2019-09-27_08:2019-09-25,2019-09-27 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
+ lowpriorityscore=0 phishscore=0 priorityscore=1501 spamscore=0 bulkscore=0
+ suspectscore=25 clxscore=1015 mlxlogscore=999 adultscore=0 malwarescore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1908290000 definitions=main-1909270146
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Sep 26, 2019 at 1:15 AM Carlos Neira <cneirabustos@gmail.com> wrote:
->
-> New bpf helper bpf_get_ns_current_pid_tgid,
-> This helper will return pid and tgid from current task
-> which namespace matches dev_t and inode number provided,
-> this will allows us to instrument a process inside a container.
->
-> Signed-off-by: Carlos Neira <cneirabustos@gmail.com>
-> ---
->  include/linux/bpf.h      |  1 +
->  include/uapi/linux/bpf.h | 18 +++++++++++++++++-
->  kernel/bpf/core.c        |  1 +
->  kernel/bpf/helpers.c     | 32 ++++++++++++++++++++++++++++++++
->  kernel/trace/bpf_trace.c |  2 ++
->  5 files changed, 53 insertions(+), 1 deletion(-)
->
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 5b9d22338606..231001475504 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -1055,6 +1055,7 @@ extern const struct bpf_func_proto bpf_get_local_storage_proto;
->  extern const struct bpf_func_proto bpf_strtol_proto;
->  extern const struct bpf_func_proto bpf_strtoul_proto;
->  extern const struct bpf_func_proto bpf_tcp_sock_proto;
-> +extern const struct bpf_func_proto bpf_get_ns_current_pid_tgid_proto;
->
->  /* Shared helpers among cBPF and eBPF. */
->  void bpf_user_rnd_init_once(void);
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 77c6be96d676..9272dc8fb08c 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -2750,6 +2750,21 @@ union bpf_attr {
->   *             **-EOPNOTSUPP** kernel configuration does not enable SYN cookies
->   *
->   *             **-EPROTONOSUPPORT** IP packet version is not 4 or 6
-> + *
-> + * int bpf_get_ns_current_pid_tgid(u32 dev, u64 inum)
-> + *     Return
-> + *             A 64-bit integer containing the current tgid and pid from current task
+In reuseport_array_free(), the rcu_read_lock() cannot ensure sk is still
+valid.  It is because bpf_sk_reuseport_detach() can be called from
+__sk_destruct() which is invoked through call_rcu(..., __sk_destruct).
 
-Function signature doesn't correspond to the actual return type (int vs u64).
+This patch takes the reuseport_lock in reuseport_array_free() which
+is not the fast path.  The lock is taken inside the loop in case
+that the bpf map is big.
 
-> + *              which namespace inode and dev_t matches , and is create as such:
-> + *             *current_task*\ **->tgid << 32 \|**
-> + *             *current_task*\ **->pid**.
-> + *
-> + *             On failure, the returned value is one of the following:
-> + *
-> + *             **-EINVAL** if dev and inum supplied don't match dev_t and inode number
-> + *              with nsfs of current task.
-> + *
-> + *             **-ENOENT** if /proc/self/ns does not exists.
-> + *
->   */
+Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+---
+ kernel/bpf/reuseport_array.c | 27 +++++----------------------
+ 1 file changed, 5 insertions(+), 22 deletions(-)
 
-[...]
+diff --git a/kernel/bpf/reuseport_array.c b/kernel/bpf/reuseport_array.c
+index 50c083ba978c..9e593ac31ad7 100644
+--- a/kernel/bpf/reuseport_array.c
++++ b/kernel/bpf/reuseport_array.c
+@@ -103,29 +103,11 @@ static void reuseport_array_free(struct bpf_map *map)
+ 	 * array now. Hence, this function only races with
+ 	 * bpf_sk_reuseport_detach() which was triggerred by
+ 	 * close() or disconnect().
+-	 *
+-	 * This function and bpf_sk_reuseport_detach() are
+-	 * both removing sk from "array".  Who removes it
+-	 * first does not matter.
+-	 *
+-	 * The only concern here is bpf_sk_reuseport_detach()
+-	 * may access "array" which is being freed here.
+-	 * bpf_sk_reuseport_detach() access this "array"
+-	 * through sk->sk_user_data _and_ with sk->sk_callback_lock
+-	 * held which is enough because this "array" is not freed
+-	 * until all sk->sk_user_data has stopped referencing this "array".
+-	 *
+-	 * Hence, due to the above, taking "reuseport_lock" is not
+-	 * needed here.
+ 	 */
+-
+-	/*
+-	 * Since reuseport_lock is not taken, sk is accessed under
+-	 * rcu_read_lock()
+-	 */
+-	rcu_read_lock();
+ 	for (i = 0; i < map->max_entries; i++) {
+-		sk = rcu_dereference(array->ptrs[i]);
++		spin_lock_bh(&reuseport_lock);
++		sk = rcu_dereference_protected(array->ptrs[i],
++					lockdep_is_held(&reuseport_lock));
+ 		if (sk) {
+ 			write_lock_bh(&sk->sk_callback_lock);
+ 			/*
+@@ -137,8 +119,9 @@ static void reuseport_array_free(struct bpf_map *map)
+ 			write_unlock_bh(&sk->sk_callback_lock);
+ 			RCU_INIT_POINTER(array->ptrs[i], NULL);
+ 		}
++		spin_unlock_bh(&reuseport_lock);
++		cond_resched();
+ 	}
+-	rcu_read_unlock();
+ 
+ 	/*
+ 	 * Once reaching here, all sk->sk_user_data is not
+-- 
+2.17.1
 
->  #include "../../lib/kstrtox.h"
->
-> @@ -487,3 +489,33 @@ const struct bpf_func_proto bpf_strtoul_proto = {
->         .arg4_type      = ARG_PTR_TO_LONG,
->  };
->  #endif
-> +
-> +BPF_CALL_2(bpf_get_ns_current_pid_tgid, u32, dev, u64, inum)
-
-Just curious, is dev_t officially specified as u32 and is never
-supposed to grow bigger? I wonder if accepting u64 might be more
-future-proof API here?
-
-> +{
-> +       struct task_struct *task = current;
-> +       struct pid_namespace *pidns;
-
-[...]
