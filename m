@@ -2,104 +2,153 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DFB4C1111
-	for <lists+bpf@lfdr.de>; Sat, 28 Sep 2019 16:47:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6063EC114B
+	for <lists+bpf@lfdr.de>; Sat, 28 Sep 2019 18:31:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726026AbfI1Ors (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 28 Sep 2019 10:47:48 -0400
-Received: from smtp5-g21.free.fr ([212.27.42.5]:64404 "EHLO smtp5-g21.free.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725965AbfI1Ors (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 28 Sep 2019 10:47:48 -0400
-Received: from heffalump.sk2.org (unknown [88.186.243.14])
-        by smtp5-g21.free.fr (Postfix) with ESMTPS id 0C4925FF6C;
-        Sat, 28 Sep 2019 16:47:45 +0200 (CEST)
-Received: from steve by heffalump.sk2.org with local (Exim 4.92)
-        (envelope-from <steve@sk2.org>)
-        id 1iEE1L-00012P-KS; Sat, 28 Sep 2019 16:48:27 +0200
-From:   Stephen Kitt <steve@sk2.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>
-Cc:     linux-doc@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org,
-        "Gustavo A . R . Silva" <gustavo@embeddedor.com>,
-        Stephen Kitt <steve@sk2.org>
-Subject: [PATCH] bpf: use flexible array members, not zero-length
-Date:   Sat, 28 Sep 2019 16:48:14 +0200
-Message-Id: <20190928144814.27002-1-steve@sk2.org>
-X-Mailer: git-send-email 2.20.1
+        id S1725965AbfI1QbP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 28 Sep 2019 12:31:15 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:35241 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725897AbfI1QbP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 28 Sep 2019 12:31:15 -0400
+Received: by mail-qk1-f194.google.com with SMTP id w2so4450307qkf.2;
+        Sat, 28 Sep 2019 09:31:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DB3lQTaHiF44p47TOLBQdbutu/YNcs/2oWSngvnk8pM=;
+        b=BkNbvMUWm+1v+GJKK/5n80GdlEIXTDF7ipkukdFUhaxLqVuNVjM4GJQMuEuT5lw9jv
+         wVIIHDuEEukWKNTfybDkWbo+eJs8OmFMUCbnfZTO6d6zR2D0EqQ4HwYKEXFnLG8LUjZI
+         8k5KlJ1vgNYcXWm/ESrUwlhqdZHE0zl5LJ64G0bGKqNWAPtmA8WDUJvtENuN/0dDgbaD
+         yoRcYCzvFL6EAJmnDEKiwUbXlMSrxkSnoLctv1yWKQ5OOJEhfDVntYfClFsxMhcFkf4T
+         k1LjIxYxdg7KZiXwlaiD5ey9+0WR7GBP+3Qkj0Mk0ec8P2iPWneN81RNt0tvvkAL8q5q
+         8bRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DB3lQTaHiF44p47TOLBQdbutu/YNcs/2oWSngvnk8pM=;
+        b=j23WPbi9/2DdZz+bH2lxPHpJZiwsCzKYSHqpQ0ijmU57JNu1S43L77HmKaYxoG17mv
+         yQMvx4Hvlk/N0e35vFkxR0AiHWBoFkxXC+ACCEXWbGRGcslK7pg2axqAWOAAoW4MMPDS
+         Hhl6QixU4hnazVL9CMKPZuUph9rNOH+xtfyvSQRFthoo0zWu2Ftv3JEQO8/JVLQQb1VH
+         PISASEpwKOk2GwAodPZFktRhyU4qJNORglUqjt9o/6m72gbK/pDdk/nY0YucFiLh3Xf3
+         yMzWVYb+99h+itCtD3BOuSeVsuqOZbzwkF4qKLHqkuHbaY3yzB3IjnTwm77QxYGtJT3w
+         DHKA==
+X-Gm-Message-State: APjAAAV++vmPydLuK9GvesuhO5RBtG+33BNKG/VFIuaKrWrUPORo/0fc
+        lC1rKo7iUFfmkVMuCIEfxFG8xukl7OBwG90jKms=
+X-Google-Smtp-Source: APXvYqxPZIX6lsapPAClIPustCCQwbJ123lj6HXH5AwejPDFpsGykc/XCrlmUoXQQxThTWzkY9Q1Kx19iDKAdsj7q0A=
+X-Received: by 2002:ae9:dc87:: with SMTP id q129mr10643759qkf.92.1569688273738;
+ Sat, 28 Sep 2019 09:31:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20190928063033.1674094-1-andriin@fb.com> <alpine.LRH.2.20.1909281202530.5332@dhcp-10-175-218-65.vpn.oracle.com>
+In-Reply-To: <alpine.LRH.2.20.1909281202530.5332@dhcp-10-175-218-65.vpn.oracle.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Sat, 28 Sep 2019 09:31:03 -0700
+Message-ID: <CAEf4BzYTQbVVUiQOHEcjL8mZ=iJBSGHFRNxoayRpaMw5ys+iDw@mail.gmail.com>
+Subject: Re: [PATCH bpf] libbpf: count present CPUs, not theoretically possible
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This switches zero-length arrays in variable-length structs to C99
-flexible array members. GCC will then ensure that the arrays are
-always the last element in the struct.
+On Sat, Sep 28, 2019 at 4:20 AM Alan Maguire <alan.maguire@oracle.com> wrote:
+>
+> On Fri, 27 Sep 2019, Andrii Nakryiko wrote:
+>
+> > This patch switches libbpf_num_possible_cpus() from using possible CPU
+> > set to present CPU set. This fixes issues with incorrect auto-sizing of
+> > PERF_EVENT_ARRAY map on HOTPLUG-enabled systems.
+> >
+> > On HOTPLUG enabled systems, /sys/devices/system/cpu/possible is going to
+> > be a set of any representable (i.e., potentially possible) CPU, which is
+> > normally way higher than real amount of CPUs (e.g., 0-127 on VM I've
+> > tested on, while there were just two CPU cores actually present).
+> > /sys/devices/system/cpu/present, on the other hand, will only contain
+> > CPUs that are physically present in the system (even if not online yet),
+> > which is what we really want, especially when creating per-CPU maps or
+> > perf events.
+> >
+> > On systems with HOTPLUG disabled, present and possible are identical, so
+> > there is no change of behavior there.
+> >
+>
+> Just curious - is there a reason for not adding a new libbpf_num_present_cpus()
+> function to cover this  case, and switching to using that in various places?
 
-Coccinelle:
-@@
-identifier S, fld;
-type T;
-@@
+The reason is that libbpf_num_possible_cpus() is useless on HOTPLUG
+systems and never worked as intended. If you rely on this function to
+create perf_buffer and/or PERF_EVENT_ARRAY, it will simply fail due to
+specifying more CPUs than are present. I didn't want to keep adding
+new APIs for no good reason, while also leaving useless ones, so I
+fixed the existing API to behave as expected. It's unfortunate that
+name doesn't match sysfs file we are reading it from, of course, but
+having people to choose between libbpf_num_possible_cpus() vs
+libbpf_num_present_cpus() seems like even bigger problem, as
+differences are non-obvious.
 
-struct S {
-  ...
-- T fld[0];
-+ T fld[];
-  ...
-};
+The good thing, it won't break all the non-HOTPLUG systems for sure,
+which seems to be the only cases that are used right now (otherwise
+someone would already complain about broken
+libbpf_num_possible_cpus()).
 
-Signed-off-by: Stephen Kitt <steve@sk2.org>
----
- Documentation/bpf/btf.rst       | 2 +-
- tools/lib/bpf/libbpf.c          | 2 +-
- tools/lib/bpf/libbpf_internal.h | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+>
+> Looking at the places libbpf_num_possible_cpus() is called in libbpf
+>
+> - __perf_buffer__new(): this could just change to use the number of
+>   present CPUs, since perf_buffer__new_raw() with a cpu_cnt in struct
+>   perf_buffer_raw_ops
+>
+> - bpf_object__create_maps(), which is called via bpf_oject__load_xattr().
+>   In this case it seems like switching to num present makes sense, though
+>   it might make sense to add a field to struct bpf_object_load_attr * to
+>   allow users to explicitly set another max value.
 
-diff --git a/Documentation/bpf/btf.rst b/Documentation/bpf/btf.rst
-index 4d565d202ce3..24ce50fc1fc1 100644
---- a/Documentation/bpf/btf.rst
-+++ b/Documentation/bpf/btf.rst
-@@ -670,7 +670,7 @@ func_info for each specific ELF section.::
-         __u32   sec_name_off; /* offset to section name */
-         __u32   num_info;
-         /* Followed by num_info * record_size number of bytes */
--        __u8    data[0];
-+        __u8    data[];
-      };
- 
- Here, num_info must be greater than 0.
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index e0276520171b..c02ea0e1a588 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -5577,7 +5577,7 @@ static struct perf_buffer *__perf_buffer__new(int map_fd, size_t page_cnt,
- struct perf_sample_raw {
- 	struct perf_event_header header;
- 	uint32_t size;
--	char data[0];
-+	char data[];
- };
- 
- struct perf_sample_lost {
-diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
-index 2e83a34f8c79..26eaa3f594aa 100644
---- a/tools/lib/bpf/libbpf_internal.h
-+++ b/tools/lib/bpf/libbpf_internal.h
-@@ -86,7 +86,7 @@ struct btf_ext_info_sec {
- 	__u32	sec_name_off;
- 	__u32	num_info;
- 	/* Followed by num_info * record_size number of bytes */
--	__u8	data[0];
-+	__u8 data[];
- };
- 
- /* The minimum bpf_func_info checked by the loader */
--- 
-2.20.1
+I believe more knobs is not always better for API. Plus, adding any
+field to those xxx_xattr structs is an ABI breakage and requires
+adding new APIs, so I don't think this is good enough reason to add
+new flag. See discussion in another thread about this whole API design
+w/ current attributes and ABI consequences of adding anything new to
+them.
 
+>
+> This would give the desired default behaviour, while still giving users
+> a way of specifying the possible number. What do you think? Thanks!
+
+BTW, if user wants to override the size of maps, they can do it easily
+either in map definition or programmatically after bpf_object__open,
+but before bpf_object__load, so there is no need for flags, it's all
+easily achievable with existing API.
+
+>
+> Alan
+>
+> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> > ---
+> >  tools/lib/bpf/libbpf.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > index e0276520171b..45351c074e45 100644
+> > --- a/tools/lib/bpf/libbpf.c
+> > +++ b/tools/lib/bpf/libbpf.c
+> > @@ -5899,7 +5899,7 @@ void bpf_program__bpil_offs_to_addr(struct bpf_prog_info_linear *info_linear)
+> >
+> >  int libbpf_num_possible_cpus(void)
+> >  {
+> > -     static const char *fcpu = "/sys/devices/system/cpu/possible";
+> > +     static const char *fcpu = "/sys/devices/system/cpu/present";
+> >       int len = 0, n = 0, il = 0, ir = 0;
+> >       unsigned int start = 0, end = 0;
+> >       int tmp_cpus = 0;
+> > --
+> > 2.17.1
+> >
+> >
