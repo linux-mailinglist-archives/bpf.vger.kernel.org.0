@@ -2,132 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F069C0F72
-	for <lists+bpf@lfdr.de>; Sat, 28 Sep 2019 05:15:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B6B8C0FF7
+	for <lists+bpf@lfdr.de>; Sat, 28 Sep 2019 08:30:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728568AbfI1DPO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 Sep 2019 23:15:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42668 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728501AbfI1DPO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 Sep 2019 23:15:14 -0400
-Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F2FD9207FA;
-        Sat, 28 Sep 2019 03:15:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1569640512;
-        bh=3OF1vilItFteZHZLRZa6EA+C1EdUbT48lGH3zl9W3mQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Kpeg6InUVnVYOtsyrbLe3qt3J5rqETH1GMlHPTBwZL05pbihO5k9suFODkBHbavR8
-         jBtuF6OduhAHn5zxD7uoOzH/a0yp0YeIH7eCi1mfNd1W2qwPhomQF+r69OS51LiGl/
-         VKRhofX9RXW9vHwhWlo9e4/UqfE3H0XRWHrAQQYc=
-Date:   Fri, 27 Sep 2019 20:15:10 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Arnd Bergmann <arnd@arndb.de>, Al Viro <viro@zeniv.linux.org.uk>
-Cc:     syzbot <syzbot+eb853b51b10f1befa0b7@syzkaller.appspotmail.com>,
-        ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
-        davem@davemloft.net, hawk@kernel.org, jakub.kicinski@netronome.com,
-        john.fastabend@gmail.com, kafai@fb.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ppp@vger.kernel.org, netdev@vger.kernel.org,
-        paulus@samba.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Subject: Re: KASAN: slab-out-of-bounds Read in bpf_prog_create
-Message-ID: <20190928031510.GD1079@sol.localdomain>
-Mail-Followup-To: Arnd Bergmann <arnd@arndb.de>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        syzbot <syzbot+eb853b51b10f1befa0b7@syzkaller.appspotmail.com>,
-        ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
-        davem@davemloft.net, hawk@kernel.org, jakub.kicinski@netronome.com,
-        john.fastabend@gmail.com, kafai@fb.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ppp@vger.kernel.org, netdev@vger.kernel.org, paulus@samba.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
-References: <000000000000cacc7e0592c42ce3@google.com>
+        id S1725897AbfI1Gao (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 28 Sep 2019 02:30:44 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:48502 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725818AbfI1Gao (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sat, 28 Sep 2019 02:30:44 -0400
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x8S6Uf4X021849
+        for <bpf@vger.kernel.org>; Fri, 27 Sep 2019 23:30:43 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=6R2Dd5IRUs0LfXRedoJRvfGPayXQYWmjdz8o5YpU+k8=;
+ b=QEqlegTCWGANxAqW6c2xYpOzKbmO7CNgmormARvxyYL+H7t2JAkQV5Zhk5ScgaKHng9N
+ MBw7jp+Opnud2SCXy2AqRl0jE6He7x07Alqus9FSIY3o0dpAJ5bocanDKWMsN8aj4h5X
+ x7iBvAj4BfxR0mDO/EduFlkJTyi4G+V23nM= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by mx0a-00082601.pphosted.com with ESMTP id 2v9mqskh8n-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 27 Sep 2019 23:30:43 -0700
+Received: from mx-out.facebook.com (2620:10d:c081:10::13) by
+ mail.thefacebook.com (2620:10d:c081:35::128) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
+ Fri, 27 Sep 2019 23:30:35 -0700
+Received: by dev101.prn2.facebook.com (Postfix, from userid 137359)
+        id 070958618C8; Fri, 27 Sep 2019 23:30:35 -0700 (PDT)
+Smtp-Origin-Hostprefix: dev
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: dev101.prn2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: prn2c23
+Subject: [PATCH bpf] libbpf: count present CPUs, not theoretically possible
+Date:   Fri, 27 Sep 2019 23:30:33 -0700
+Message-ID: <20190928063033.1674094-1-andriin@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000000000000cacc7e0592c42ce3@google.com>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
+ definitions=2019-09-28_03:2019-09-25,2019-09-28 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
+ mlxlogscore=999 malwarescore=0 bulkscore=0 suspectscore=0 clxscore=1015
+ mlxscore=0 lowpriorityscore=0 phishscore=0 priorityscore=1501 spamscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1908290000 definitions=main-1909280067
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Arnd and Al,
+This patch switches libbpf_num_possible_cpus() from using possible CPU
+set to present CPU set. This fixes issues with incorrect auto-sizing of
+PERF_EVENT_ARRAY map on HOTPLUG-enabled systems.
 
-On Tue, Sep 17, 2019 at 11:49:06AM -0700, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following crash on:
-> 
-> HEAD commit:    2015a28f Add linux-next specific files for 20190915
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=11880d69600000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=110691c2286b679a
-> dashboard link: https://syzkaller.appspot.com/bug?extid=eb853b51b10f1befa0b7
-> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=127c3481600000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1150a70d600000
-> 
-> The bug was bisected to:
-> 
-> commit 2f4fa2db75e26995709043c8d3de4632ebed5c4b
-> Author: Al Viro <viro@zeniv.linux.org.uk>
-> Date:   Thu Apr 18 03:48:01 2019 +0000
-> 
->     compat_ioctl: unify copy-in of ppp filters
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=145eee1d600000
-> final crash:    https://syzkaller.appspot.com/x/report.txt?x=165eee1d600000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=125eee1d600000
-> 
-> IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> Reported-by: syzbot+eb853b51b10f1befa0b7@syzkaller.appspotmail.com
-> Fixes: 2f4fa2db75e2 ("compat_ioctl: unify copy-in of ppp filters")
-> 
-> ==================================================================
-> BUG: KASAN: slab-out-of-bounds in memcpy include/linux/string.h:404 [inline]
-> BUG: KASAN: slab-out-of-bounds in bpf_prog_create+0xe9/0x250
-> net/core/filter.c:1351
-> Read of size 32768 at addr ffff88809cf74000 by task syz-executor183/8575
-> 
-> CPU: 0 PID: 8575 Comm: syz-executor183 Not tainted 5.3.0-rc8-next-20190915
-> #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS
-> Google 01/01/2011
-> Call Trace:
->  __dump_stack lib/dump_stack.c:77 [inline]
->  dump_stack+0x172/0x1f0 lib/dump_stack.c:113
->  print_address_description.constprop.0.cold+0xd4/0x30b mm/kasan/report.c:374
->  __kasan_report.cold+0x1b/0x41 mm/kasan/report.c:506
->  kasan_report+0x12/0x20 mm/kasan/common.c:634
->  check_memory_region_inline mm/kasan/generic.c:185 [inline]
->  check_memory_region+0x134/0x1a0 mm/kasan/generic.c:192
->  memcpy+0x24/0x50 mm/kasan/common.c:122
->  memcpy include/linux/string.h:404 [inline]
->  bpf_prog_create+0xe9/0x250 net/core/filter.c:1351
->  get_filter.isra.0+0x108/0x1a0 drivers/net/ppp/ppp_generic.c:572
->  ppp_get_filter drivers/net/ppp/ppp_generic.c:584 [inline]
->  ppp_ioctl+0x129d/0x2590 drivers/net/ppp/ppp_generic.c:801
+On HOTPLUG enabled systems, /sys/devices/system/cpu/possible is going to
+be a set of any representable (i.e., potentially possible) CPU, which is
+normally way higher than real amount of CPUs (e.g., 0-127 on VM I've
+tested on, while there were just two CPU cores actually present).
+/sys/devices/system/cpu/present, on the other hand, will only contain
+CPUs that are physically present in the system (even if not online yet),
+which is what we really want, especially when creating per-CPU maps or
+perf events.
 
-This is a correct bisection.  This commit needs:
+On systems with HOTPLUG disabled, present and possible are identical, so
+there is no change of behavior there.
 
-diff --git a/drivers/net/ppp/ppp_generic.c b/drivers/net/ppp/ppp_generic.c
-index 267fe2c58087..f55d7937d6c5 100644
---- a/drivers/net/ppp/ppp_generic.c
-+++ b/drivers/net/ppp/ppp_generic.c
-@@ -564,8 +564,9 @@ static struct bpf_prog *get_filter(struct sock_fprog *uprog)
- 		return NULL;
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+---
+ tools/lib/bpf/libbpf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index e0276520171b..45351c074e45 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -5899,7 +5899,7 @@ void bpf_program__bpil_offs_to_addr(struct bpf_prog_info_linear *info_linear)
  
- 	/* uprog->len is unsigned short, so no overflow here */
--	fprog.len = uprog->len * sizeof(struct sock_filter);
--	fprog.filter = memdup_user(uprog->filter, fprog.len);
-+	fprog.len = uprog->len;
-+	fprog.filter = memdup_user(uprog->filter,
-+				   uprog->len * sizeof(struct sock_filter));
- 	if (IS_ERR(fprog.filter))
- 		return ERR_CAST(fprog.filter);
- 
+ int libbpf_num_possible_cpus(void)
+ {
+-	static const char *fcpu = "/sys/devices/system/cpu/possible";
++	static const char *fcpu = "/sys/devices/system/cpu/present";
+ 	int len = 0, n = 0, il = 0, ir = 0;
+ 	unsigned int start = 0, end = 0;
+ 	int tmp_cpus = 0;
+-- 
+2.17.1
+
