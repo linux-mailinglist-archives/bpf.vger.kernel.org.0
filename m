@@ -2,136 +2,177 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 935EEC0D41
-	for <lists+bpf@lfdr.de>; Fri, 27 Sep 2019 23:29:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BC54C0F3F
+	for <lists+bpf@lfdr.de>; Sat, 28 Sep 2019 03:43:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727837AbfI0V2s (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 Sep 2019 17:28:48 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:54041 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725306AbfI0V2s (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 27 Sep 2019 17:28:48 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 9A37A22AA;
-        Fri, 27 Sep 2019 17:28:46 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Fri, 27 Sep 2019 17:28:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
-        content-transfer-encoding:content-type:in-reply-to:date:cc
-        :subject:from:to:message-id; s=fm1; bh=tEytGYjqRKPYg5eCE7y6nPooC
-        bRk5cnOY2TTMlrG3W4=; b=kGHYCLSdj89XY6LTRlLeSXv7el6WQ20uWccauT87V
-        E2LZF1nMANPIZHGZohZb0cPcH6+JyOf4EkrfI2bnHTNK7mZq8G27nRwArvGi6jNJ
-        f27GAXCO3B/m7NTMXyq/9xCSs20CpkxwqWPm41sQWVDcPIswBqwvCEbuoiYYKj9n
-        HsutJ9EreQAdn0cPxldwvttj4F8RQev+IHxWLRx67SsWwLoxCO+YgQ+nShfi8MS8
-        9vogDptJ61ADsFQ0dsdPiwDQ3DpGstER6db494cWO8dATsHH68lDBkqEsdbVIhOP
-        7+Ed5E0V1FJ6Kncxf1Fc6YtDEcvFRMsSXZ6nSI9zpOzdw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=tEytGY
-        jqRKPYg5eCE7y6nPooCbRk5cnOY2TTMlrG3W4=; b=TRJ5v6i8Anowb1mb/c/xe5
-        aER9VH2QCbEL000vUJiyD6UAYRyZlBwp6HfqWuJB4JDKzCx+l6WiXAke/qIApb6s
-        lwuNb3Unk6c9P417zwyy66NdKXxUq6dnIPOVgLtdc4P7e+pzywk/9keUns/IQ9hu
-        KHmXtGMCMx++/F/mCc3W+fTg7cUeFxQ4pl0tKtdNtgTMSKXhSFEQUkCiilThZpZ7
-        c1UPBbc0uWxncZymjE3X3QpAqQBGfWf8LJ2zPQek4es4HtOiOKxTLYo0bvwhFaTd
-        29zcfEPbth8UeRh3RcgU0PgVoEvkmyI+FPq4YEmMcNPhdsiviy8eHBUGAgjqAmqA
-        ==
-X-ME-Sender: <xms:DX-OXf-I8FOKU-EM_IZiZaMH_6_8XfysQ23kziqjZj__X9eSPhxSFQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedufedrfeeigdduheelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    gfrhhlucfvnfffucdljedtmdenucfjughrpefgtggjfffuhffvkfesthhqredttddtjeen
-    ucfhrhhomhepfdffrghnihgvlhcuighufdcuoegugihusegugihuuhhurdighiiiqeenuc
-    fkphepudelledrvddtuddrieegrddvnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihu
-    segugihuuhhurdighiiinecuvehluhhsthgvrhfuihiivgeptd
-X-ME-Proxy: <xmx:DX-OXQlGZcIaZyDrqLo631BF5AeBeYwvCQmD_G0z4o8InUDWiVJVrQ>
-    <xmx:DX-OXVkwo1OLucWU4_-JfdhgXudIt6BOj_bfagWDR8Na9nf_UvtzwA>
-    <xmx:DX-OXcva-tU3uG8rUivTJtbuLawLcP6XBN7R-WvDOlwd3rxjbZTXcw>
-    <xmx:Dn-OXXifHPLswMp9N9jbLEfGNsKtvLR0JPXCnpWGgitoEhWjZv23ug>
-Received: from localhost (unknown [199.201.64.2])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 10B9ED6005B;
-        Fri, 27 Sep 2019 17:28:43 -0400 (EDT)
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-In-Reply-To: <20190924083342.GA21640@krava>
-Date:   Fri, 27 Sep 2019 14:28:43 -0700
-Cc:     <bpf@vger.kernel.org>, <songliubraving@fb.com>, <yhs@fb.com>,
-        <andriin@fb.com>, <peterz@infradead.org>, <mingo@redhat.com>,
-        <acme@kernel.org>, <ast@fb.com>,
-        <alexander.shishkin@linux.intel.com>, <namhyung@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <kernel-team@fb.com>
-Subject: Re: [PATCH bpf-next 1/5] perf/core: Add PERF_FORMAT_LOST
- read_format
-From:   "Daniel Xu" <dxu@dxuuu.xyz>
-To:     "Jiri Olsa" <jolsa@redhat.com>
-Message-Id: <BXB3R6AZT2LR.2DHP9YCMGCTYJ@dlxu-fedora-R90QNFJV>
+        id S1727046AbfI1BnB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 Sep 2019 21:43:01 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:41382 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725990AbfI1BnB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 Sep 2019 21:43:01 -0400
+Received: by mail-qk1-f194.google.com with SMTP id p10so3512210qkg.8;
+        Fri, 27 Sep 2019 18:43:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=K5mFZ8ZW9xOI1UQMWK7PjgDnXrBKjboW28wsNbRcWmE=;
+        b=SiOb/42E4i/NZ0ZBE3lcP+McD+hrcwGfgXpY4tN8hpDGQV+yFe/epXL2jR4IU6/D7J
+         ngxIVvXOrrHrnM8B79ti5QsMsTrDl/6VXYtzvLGjRfWQUMyVRJ+Dx6wpE3V1C54Tan9f
+         TQdB9zggHfx/5cleX9A82CkOhkCNG2J6ujB33GGcuonTMieoy/iqeMgQbrboeXGEK+FJ
+         GOp7+E8pVIjA4DWbJSGMfGzL6+yaGi9d5YFscvQ5cYllydGET0EBmfWdj9xaTFaktRue
+         4y8Aty/jYJ+NcWgRLARbDGQnIqnZFP3zz/+NOmb0Ef3f3xOHo+mqh5FZL1qjOrwAWDcy
+         XRFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=K5mFZ8ZW9xOI1UQMWK7PjgDnXrBKjboW28wsNbRcWmE=;
+        b=uiR86DX3ZlkVcSI2qKAx4vkv8EFrJHbVPn9Erp2IJ3Zs0wkXqYYZZNA3AKv7bwA3Py
+         fdmQbzT+lCsznhkTNXe0KGnzXBXjpG4yhDzgBAvPIkjPXi83dJmgvlp1DMDJ05Lkjfbb
+         wAOc4zmh6Vw8k+HD1UPD0/asi/DFKZjVLcmKTl+ZORw6qHbSxsora+xmJt1bBiDmCZ23
+         7618fE/16PY/5OYugx/oFgSlC/ulUfO2azxJKnDNlrwIgWAcJ0sNXAF2mFr+6/RFITqu
+         Ox3hiV8udf+Ovcx0ryoE7H6CvHl2SOLX99UQyldVxCW6L19nnQlEAfTc611lWO1TCyNJ
+         zYAQ==
+X-Gm-Message-State: APjAAAUkfYZB5UlnzF+6eqZoYQYYdv9FYxdIbdOiA+N9AUi6YQAAC5I7
+        EaB4+zwddmioykyhxn85KPM=
+X-Google-Smtp-Source: APXvYqz2ig4TXerI5H5B7nuvAFYXfdDzqqK9yg3BMH2qpJKfW7jPWd85akRSLqTt34b327Czp4YYBQ==
+X-Received: by 2002:a37:916:: with SMTP id 22mr8005703qkj.45.1569634979407;
+        Fri, 27 Sep 2019 18:42:59 -0700 (PDT)
+Received: from frodo.byteswizards.com ([190.162.109.190])
+        by smtp.gmail.com with ESMTPSA id z46sm2846281qth.62.2019.09.27.18.42.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Sep 2019 18:42:58 -0700 (PDT)
+Date:   Fri, 27 Sep 2019 22:42:54 -0300
+From:   Carlos Antonio Neira Bustos <cneirabustos@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Yonghong Song <yhs@fb.com>, Networking <netdev@vger.kernel.org>,
+        "ebiederm@xmission.com" <ebiederm@xmission.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH bpf-next v11 2/4] bpf: added new helper
+ bpf_get_ns_current_pid_tgid
+Message-ID: <20190928014254.GA26129@frodo.byteswizards.com>
+References: <20190924152005.4659-1-cneirabustos@gmail.com>
+ <20190924152005.4659-3-cneirabustos@gmail.com>
+ <CAEf4BzZeO3cZJWVG0min98gnFs3E8D1m67E+3A_9-rTjHA_Ybg@mail.gmail.com>
+ <12db0313-668e-3825-d5fa-28d0f675808c@fb.com>
+ <CAEf4BzYZGh774nS1EaCP4od9gzWqPtePPAGX6J7O+pEosnuYrQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzYZGh774nS1EaCP4od9gzWqPtePPAGX6J7O+pEosnuYrQ@mail.gmail.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Jiri,
+On Fri, Sep 27, 2019 at 10:24:46AM -0700, Andrii Nakryiko wrote:
+> On Fri, Sep 27, 2019 at 9:59 AM Yonghong Song <yhs@fb.com> wrote:
+> >
+> >
+> >
+> > On 9/27/19 9:15 AM, Andrii Nakryiko wrote:
+> > > On Thu, Sep 26, 2019 at 1:15 AM Carlos Neira <cneirabustos@gmail.com> wrote:
+> > >>
+> > >> New bpf helper bpf_get_ns_current_pid_tgid,
+> > >> This helper will return pid and tgid from current task
+> > >> which namespace matches dev_t and inode number provided,
+> > >> this will allows us to instrument a process inside a container.
+> > >>
+> > >> Signed-off-by: Carlos Neira <cneirabustos@gmail.com>
+> > >> ---
+> > >>   include/linux/bpf.h      |  1 +
+> > >>   include/uapi/linux/bpf.h | 18 +++++++++++++++++-
+> > >>   kernel/bpf/core.c        |  1 +
+> > >>   kernel/bpf/helpers.c     | 32 ++++++++++++++++++++++++++++++++
+> > >>   kernel/trace/bpf_trace.c |  2 ++
+> > >>   5 files changed, 53 insertions(+), 1 deletion(-)
+> > >>
+> > >> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > >> index 5b9d22338606..231001475504 100644
+> > >> --- a/include/linux/bpf.h
+> > >> +++ b/include/linux/bpf.h
+> > >> @@ -1055,6 +1055,7 @@ extern const struct bpf_func_proto bpf_get_local_storage_proto;
+> > >>   extern const struct bpf_func_proto bpf_strtol_proto;
+> > >>   extern const struct bpf_func_proto bpf_strtoul_proto;
+> > >>   extern const struct bpf_func_proto bpf_tcp_sock_proto;
+> > >> +extern const struct bpf_func_proto bpf_get_ns_current_pid_tgid_proto;
+> > >>
+> > >>   /* Shared helpers among cBPF and eBPF. */
+> > >>   void bpf_user_rnd_init_once(void);
+> > >> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > >> index 77c6be96d676..9272dc8fb08c 100644
+> > >> --- a/include/uapi/linux/bpf.h
+> > >> +++ b/include/uapi/linux/bpf.h
+> > >> @@ -2750,6 +2750,21 @@ union bpf_attr {
+> > >>    *             **-EOPNOTSUPP** kernel configuration does not enable SYN cookies
+> > >>    *
+> > >>    *             **-EPROTONOSUPPORT** IP packet version is not 4 or 6
+> > >> + *
+> > >> + * int bpf_get_ns_current_pid_tgid(u32 dev, u64 inum)
+> > >> + *     Return
+> > >> + *             A 64-bit integer containing the current tgid and pid from current task
+> > >
+> > > Function signature doesn't correspond to the actual return type (int vs u64).
+> > >
+> > >> + *              which namespace inode and dev_t matches , and is create as such:
+> > >> + *             *current_task*\ **->tgid << 32 \|**
+> > >> + *             *current_task*\ **->pid**.
+> > >> + *
+> > >> + *             On failure, the returned value is one of the following:
+> > >> + *
+> > >> + *             **-EINVAL** if dev and inum supplied don't match dev_t and inode number
+> > >> + *              with nsfs of current task.
+> > >> + *
+> > >> + *             **-ENOENT** if /proc/self/ns does not exists.
+> > >> + *
+> > >>    */
+> > >
+> > > [...]
+> > >
+> > >>   #include "../../lib/kstrtox.h"
+> > >>
+> > >> @@ -487,3 +489,33 @@ const struct bpf_func_proto bpf_strtoul_proto = {
+> > >>          .arg4_type      = ARG_PTR_TO_LONG,
+> > >>   };
+> > >>   #endif
+> > >> +
+> > >> +BPF_CALL_2(bpf_get_ns_current_pid_tgid, u32, dev, u64, inum)
+> > >
+> > > Just curious, is dev_t officially specified as u32 and is never
+> > > supposed to grow bigger? I wonder if accepting u64 might be more
+> > > future-proof API here?
+> >
+> > This is what we have now in kernel (include/linux/types.h)
+> > typedef u32 __kernel_dev_t;
+> > typedef __kernel_dev_t          dev_t;
+> >
+> > But userspace dev_t (defined at /usr/include/sys/types.h) have
+> > 8 bytes.
+> >
+> > Agree. Let us just use u64. It won't hurt and also will be fine
+> > if kernel internal dev_t becomes 64bit.
+> 
+> Sounds good. Let's not forget to check that conversion to dev_t
+> doesn't loose high bits, something like:
+> 
+> if ((u64)(dev_t)dev != dev)
+>     return -E<something>;
+> 
+> >
+> > >
+> > >> +{
+> > >> +       struct task_struct *task = current;
+> > >> +       struct pid_namespace *pidns;
+> > >
+> > > [...]
+> > >
 
-On Tue Sep 24, 2019 at 10:33 AM Jiri Olsa wrote:
-> On Tue, Sep 17, 2019 at 06:30:52AM -0700, Daniel Xu wrote:
->=20
-> SNIP
->=20
-> > +	PERF_FORMAT_MAX =3D 1U << 5,		/* non-ABI */
-> >  };
-> > =20
-> >  #define PERF_ATTR_SIZE_VER0	64	/* sizeof first published struct */
-> > diff --git a/kernel/events/core.c b/kernel/events/core.c
-> > index 0463c1151bae..ee08d3ed6299 100644
-> > --- a/kernel/events/core.c
-> > +++ b/kernel/events/core.c
-> > @@ -1715,6 +1715,9 @@ static void __perf_event_read_size(struct perf_ev=
-ent *event, int nr_siblings)
-> >  	if (event->attr.read_format & PERF_FORMAT_ID)
-> >  		entry +=3D sizeof(u64);
-> > =20
-> > +	if (event->attr.read_format & PERF_FORMAT_LOST)
-> > +		entry +=3D sizeof(u64);
-> > +
-> >  	if (event->attr.read_format & PERF_FORMAT_GROUP) {
-> >  		nr +=3D nr_siblings;
-> >  		size +=3D sizeof(u64);
-> > @@ -4734,6 +4737,24 @@ u64 perf_event_read_value(struct perf_event *eve=
-nt, u64 *enabled, u64 *running)
-> >  }
-> >  EXPORT_SYMBOL_GPL(perf_event_read_value);
-> > =20
-> > +static struct pmu perf_kprobe;
-> > +static u64 perf_event_lost(struct perf_event *event)
-> > +{
-> > +	struct ring_buffer *rb;
-> > +	u64 lost =3D 0;
-> > +
-> > +	rcu_read_lock();
-> > +	rb =3D rcu_dereference(event->rb);
-> > +	if (likely(!!rb))
-> > +		lost +=3D local_read(&rb->lost);
-> > +	rcu_read_unlock();
-> > +
-> > +	if (event->attr.type =3D=3D perf_kprobe.type)
-> > +		lost +=3D perf_kprobe_missed(event);
->=20
-> not sure what was the peterz's suggestion, but here you are mixing
-> ring buffer's lost count with kprobes missed count, seems wrong
+Thanks Yonghong and Andrii,
 
-To be honest, I'm not 100% sure what the correct semantics here should
-be. I thought it might be less misleading if we included ring buffer
-related misses as well.
+I'll include these fixes on V12, I'll work on this over the weekend.
 
-Regardless, I am ok with either.
-
-> maybe we could add PERF_FORMAT_KPROBE_MISSED
-
-I think the feedback from the last patchset was that we want to keep
-the misses unified.
-
-Peter, do you have any thoughts?
-
-Thanks,
-Daniel
+Bests
