@@ -2,137 +2,222 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DBB1C1BEC
-	for <lists+bpf@lfdr.de>; Mon, 30 Sep 2019 09:11:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35CA6C1BF5
+	for <lists+bpf@lfdr.de>; Mon, 30 Sep 2019 09:12:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729280AbfI3HLI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Sep 2019 03:11:08 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:48764 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725794AbfI3HLH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 Sep 2019 03:11:07 -0400
-Received: by mail-io1-f71.google.com with SMTP id w16so28497337ioc.15
-        for <bpf@vger.kernel.org>; Mon, 30 Sep 2019 00:11:07 -0700 (PDT)
+        id S1729659AbfI3HMp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Sep 2019 03:12:45 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:51298 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729625AbfI3HMp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Sep 2019 03:12:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1569827562;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=W9PtTOzM1rgbNPgKyLzSFcLDf0NZGpY4hCXyEWTHQYw=;
+        b=FOdal9fEPH+IkW5Nd080Kpkc+aCLiv97Y7rDRw3UuAYZRHHkq/2qq9ZGSi5V7zEEuvqH5F
+        wQsjXxuKLSeMQ/gKjIOhvZYvSpaacZw4OFLSXWz2HK19ksD0HlzGIfjCwLDw+6nfXQmKo9
+        v3F2YNPtttZHQ93oZYaN08IFvfbvCjk=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-192-ZvF8k16SN8S3UTp6_ZSVOw-1; Mon, 30 Sep 2019 03:12:41 -0400
+Received: by mail-ed1-f70.google.com with SMTP id k5so5669890edx.13
+        for <bpf@vger.kernel.org>; Mon, 30 Sep 2019 00:12:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=no/fJ4kEHtF7S7dZrIXoqdgmhjfpV6Rp9i2xAq4jHGY=;
-        b=dqhRf2N5NNLdPtVqWc0wpi+KwLGQuCRpXcilhfRe+F/FVrWOBeMpP5wQN9yKL1PzSl
-         3odbZDVZ+SvbDjBEd5A/2ysKOSEO80XEoOiXQTrjBsLK6VN409kWfZQjHAgZ7UkjDoZj
-         fZzh4BbEaB1IesTuQp1ZKhdGaeHij+id5ImFVdca1AgPR2+V7AlkGSRInMi0rye6Jg2J
-         fTg4K5YreEi99DT3pIeC+aHHPWZjvc5EGEp6vmAI/PJnDD1XQkjaNw6/dF/zYAnQJc0B
-         yMrx0SuDj6eny/3hTUih0CnjJ6pDeD2hgelB0fEG83gsS8xKl3C4RLhweHJJpbtnjcu6
-         xxyA==
-X-Gm-Message-State: APjAAAXbXvxnna5lFdv+pnyY9b+Gh2Uv49a22UDlu8LlMJFWYUw6ulmW
-        poOoclvfyq+Qfm9SY2vMjjaRdO2s3CRjPmIqoDCihWmawckY
-X-Google-Smtp-Source: APXvYqxIKz+As8+Qavz0Ymjn0rB9AZryTW33OmEjS9T4M4+ln+fVv/6g2V+X6Yecl9pU4ElHuOcekLNkCOVy+oDKpm/fcOapKFDi
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=vU2fSiERaqwgggzkGOioKrkdDmXRo5o+Ne0c4vAR1CQ=;
+        b=j5O21jUAztpkv4wjKasKx4uUczEtNYzDyNcN5eL/PJ8XFd8VZG+b2++QF0rdX+ZImG
+         VlBk20Cda+zrtPGajnHStn68qHcppkEYRQhUP92QAyCl3TdcEfk8fgxIJm39R3Bl3PYD
+         6mDnHFEpTd7QcFZxQcnLlpjPyKRsacDTgCwyX9RBnyuH2NbiDJ3M97gIsCTRTZVO2BIq
+         Nza8QGkj4mFENhk6A6ukfdp1Hqx/TXONVeQECvCR2RnxYevTYCC9sqHGZVCopmFittbQ
+         CVZkaYsN+CIaBbNwx/Xg2G0ppK8pvtd+U+k0lAl6Z3M+7ZpZy5z1pWL/N4q4fm5quXcD
+         JFcg==
+X-Gm-Message-State: APjAAAWK1Jk3exnJpDW7pPdA+UZJLnqcZqdV24XqI9hTNOmn9khSlrH5
+        YiiR63rd9nAOK5L0GhZpqLu+ivKvDF5naNKf/KvYajNgD+HWHdTLaLD2CycWbe+OA3BiFQipQhy
+        4IqNk/fcoPdIv
+X-Received: by 2002:a17:906:7687:: with SMTP id o7mr18089159ejm.213.1569827559943;
+        Mon, 30 Sep 2019 00:12:39 -0700 (PDT)
+X-Google-Smtp-Source: APXvYqxNh0+E8XNHpdRQJY652iiF3XmuXIqVPoJcyfixU4Ze8+NVGMKBTjoBRiU+pVoLCHLti8UGUw==
+X-Received: by 2002:a17:906:7687:: with SMTP id o7mr18089139ejm.213.1569827559669;
+        Mon, 30 Sep 2019 00:12:39 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk (borgediget.toke.dk. [85.204.121.218])
+        by smtp.gmail.com with ESMTPSA id ot24sm1368521ejb.59.2019.09.30.00.12.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Sep 2019 00:12:38 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 4C9D518063D; Mon, 30 Sep 2019 09:12:38 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Anton Protopopov <a.s.protopopov@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Florent Revest <revest@chromium.org>
+Subject: Re: [PATCH] tools: libbpf: Add bpf_object__open_buffer_xattr
+In-Reply-To: <CAEf4Bzb_8AJS=HLUt9QpdRrt4AzW1ME9tFyL-QTqyu=7fC-dGA@mail.gmail.com>
+References: <20190927130834.18829-1-kpsingh@chromium.org> <CAEf4Bzb_8AJS=HLUt9QpdRrt4AzW1ME9tFyL-QTqyu=7fC-dGA@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Mon, 30 Sep 2019 09:12:38 +0200
+Message-ID: <87h84uxno9.fsf@toke.dk>
 MIME-Version: 1.0
-X-Received: by 2002:a5e:da0a:: with SMTP id x10mr20533544ioj.286.1569827466834;
- Mon, 30 Sep 2019 00:11:06 -0700 (PDT)
-Date:   Mon, 30 Sep 2019 00:11:06 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000084fb070593bff0fb@google.com>
-Subject: BUG: unable to handle kernel NULL pointer dereference in xsk_poll
-From:   syzbot <syzbot+a5765ed8cdb1cca4d249@syzkaller.appspotmail.com>
-To:     ast@kernel.org, bjorn.topel@intel.com, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
-        jakub.kicinski@netronome.com, john.fastabend@gmail.com,
-        jonathan.lemon@gmail.com, kafai@fb.com,
-        linux-kernel@vger.kernel.org, magnus.karlsson@intel.com,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+X-MC-Unique: ZvF8k16SN8S3UTp6_ZSVOw-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-syzbot found the following crash on:
+> On Fri, Sep 27, 2019 at 6:11 AM KP Singh <kpsingh@chromium.org> wrote:
+>>
+>> From: KP Singh <kpsingh@google.com>
+>>
+>> Introduce struct bpf_object_open_buffer_attr and an API function,
+>> bpf_object__open_xattr, as the existing API, bpf_object__open_buffer,
+>> doesn't provide a way to specify neither the "needs_kver" nor
+>> the "flags" parameter to the internal call to the
+>> __bpf_object__open which makes it inconvenient for loading BPF
+>> objects that do not require a kernel version from a buffer.
+>>
+>> The flags attribute in the bpf_object_open_buffer_attr is set
+>> to MAPS_RELAX_COMPAT when used in bpf_object__open_buffer to
+>> maintain backward compatibility as this was added to load objects
+>> with non-compat map definitions in:
+>>
+>> commit c034a177d3c8 ("bpf: bpftool, add flag to allow non-compat map
+>>                       definitions")
+>>
+>> and bpf_object__open_buffer was called with this flag enabled (as a
+>> boolean true value).
+>>
+>> The existing "bpf_object__open_xattr" cannot be modified to
+>> maintain API compatibility.
+>>
+>> Reported-by: Anton Protopopov <a.s.protopopov@gmail.com>
+>> Signed-off-by: KP Singh <kpsingh@google.com>
+>> ---
+>>  tools/lib/bpf/libbpf.c   | 39 ++++++++++++++++++++++++++++-----------
+>>  tools/lib/bpf/libbpf.h   | 10 ++++++++++
+>>  tools/lib/bpf/libbpf.map |  5 +++++
+>>  3 files changed, 43 insertions(+), 11 deletions(-)
+>>
+>> This patch is assimilates the feedback from:
+>>
+>>   https://lore.kernel.org/bpf/20190815000330.12044-1-a.s.protopopov@gmai=
+l.com/
+>>
+>> I have added a "Reported-by:" tag, but please feel free to update to
+>> "Co-developed-by" if it's more appropriate from an attribution perspecti=
+ve.
+>>
+>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+>> index 2b57d7ea7836..1f1f2e92832b 100644
+>> --- a/tools/lib/bpf/libbpf.c
+>> +++ b/tools/lib/bpf/libbpf.c
+>> @@ -2752,25 +2752,42 @@ struct bpf_object *bpf_object__open(const char *=
+path)
+>>         return bpf_object__open_xattr(&attr);
+>>  }
+>>
+>> -struct bpf_object *bpf_object__open_buffer(void *obj_buf,
+>> -                                          size_t obj_buf_sz,
+>> -                                          const char *name)
+>> +struct bpf_object *
+>> +bpf_object__open_buffer_xattr(struct bpf_object_open_buffer_attr *attr)
+>
+> I have few concerns w.r.t. adding API in this form and I'm going to
+> use this specific case to discuss more general problem of API design,
+> ABI compatibility, and extending APIs with extra optional arguments.
+>
+> 1. In general, I think it would be good for libbpf API usability to
+> use the following pattern consistently (moving forward):
+>
+> T1 some_api_function(T2 mandatory_arg1, ..., TN mandatory_arg, struct
+> something_opts *opts)
+>
+> So all the mandatory arguments that have to be provides are specified
+> explicitly as function arguments. That makes it very clear what API
+> expects to get always.
+> opts (we use both opts and attrs, but opts seems better because its
+> optional options :), on the other hand, is stuff that might be
+> omitted, so if user doesn't care about tuning behavior of API and
+> wants all-defaults behavior, then providing NULL here should just
+> work.
+>
+> So in this case for bpf_object__open_buffer_xattr(), it could look like t=
+his:
+>
+> struct bpf_object* bpf_object__open_buffer_opts(void *buf, size_t sz,
+> struct bpf_object_open_opts* opts);
 
-HEAD commit:    a3c0e7b1 Merge tag 'libnvdimm-fixes-5.4-rc1' of git://git...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14f05435600000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6ffbfa7e4a36190f
-dashboard link: https://syzkaller.appspot.com/bug?extid=a5765ed8cdb1cca4d249
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1096d835600000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=129f15f3600000
+I like this idea! Sensible defaults that can be selected by just passing
+NULL as opts is a laudable goal.
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+a5765ed8cdb1cca4d249@syzkaller.appspotmail.com
+> 2. Now, we need to do something with adding new options without
+> breaking ABIs. With all the existing extra attributes, when we need to
+> add new field to that struct, that can break old code that's
+> dynamically linked to newer versions of libbpf, because their
+> attr/opts struct is too short for new code, so that could cause
+> segment violation or can make libbpf read garbage for those newly
+> added fields. There are basically three ways we can go about this:
+>
+> a. either provide the size of opts struct as an extra argument to each
+> API that uses options, so:
+> struct bpf_object* bpf_object__open_buffer_opts(void *buf, size_t sz,
+> struct bpf_object_open_opts* opts, size_t opts_sz);
+>
+> b. make it mandatory that every option struct has to have as a first
+> field its size, so:
+>
+> struct bpf_object_open_opts {
+>         size_t sz;
+>         /* now we can keep adding attrs */
+> };
+>
+> Now, when options are provided, we'll read first sizeof(size_t) bytes,
+> validate it for sanity and then we'll know which fields are there or
+> not.
+>
+> Both options have downside of user needing to do extra initialization,
+> but it's not too bad in either case. Especially in case b), if user
+> doesn't care about extra options, then no extra steps are necessary.
+> In case a, we can pass NULL, 0 at the end, so also not a big deal.
+>
+> c. Alternatively, we can do symbol versioning similar how xsk.c
+> started doing it, and handle those options struct size differences
+> transparently. But that's a lot of extra boilerplate code in libbpf
+> and I'd like to avoid that, if possible.
 
-IPv6: ADDRCONF(NETDEV_CHANGE): hsr0: link becomes ready
-8021q: adding VLAN 0 to HW filter on device batadv0
-BUG: kernel NULL pointer dereference, address: 0000000000000000
-#PF: supervisor instruction fetch in kernel mode
-#PF: error_code(0x0010) - not-present page
-PGD 99226067 P4D 99226067 PUD 8fa47067 PMD 0
-Oops: 0010 [#1] PREEMPT SMP KASAN
-CPU: 0 PID: 8719 Comm: syz-executor502 Not tainted 5.3.0+ #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-Google 01/01/2011
-RIP: 0010:0x0
-Code: Bad RIP value.
-RSP: 0018:ffff88809dd4f848 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: ffff88808c06d740 RCX: 1ffff1101180db7c
-RDX: 0000000000000002 RSI: 0000000000000000 RDI: ffff88809a190b00
-RBP: ffff88809dd4f880 R08: ffff8880921924c0 R09: ffffed101180db31
-R10: ffffed101180db30 R11: ffff88808c06d987 R12: 0000000000000002
-R13: 0000000000000304 R14: ffff88809a190b00 R15: 0000000000000000
-FS:  0000000001b27880(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffffffffffffd6 CR3: 00000000a307a000 CR4: 00000000001406f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
-  xsk_poll+0x1e7/0x5a0 net/xdp/xsk.c:430
-  sock_poll+0x15e/0x480 net/socket.c:1256
-  vfs_poll include/linux/poll.h:90 [inline]
-  do_pollfd fs/select.c:859 [inline]
-  do_poll fs/select.c:907 [inline]
-  do_sys_poll+0x63c/0xdd0 fs/select.c:1001
-  __do_sys_ppoll fs/select.c:1101 [inline]
-  __se_sys_ppoll fs/select.c:1081 [inline]
-  __x64_sys_ppoll+0x259/0x310 fs/select.c:1081
-  do_syscall_64+0xfa/0x760 arch/x86/entry/common.c:290
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-RIP: 0033:0x441bd9
-Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7  
-48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
-ff 0f 83 7b 10 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffd48824e98 EFLAGS: 00000246 ORIG_RAX: 000000000000010f
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000441bd9
-RDX: 0000000000000000 RSI: 0000000000000006 RDI: 0000000020000040
-RBP: 00007ffd48824eb0 R08: 0000000000000000 R09: 0000000001bbbbbb
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 0000000000403170 R14: 0000000000000000 R15: 0000000000000000
-Modules linked in:
-CR2: 0000000000000000
----[ end trace e262cafe88422aec ]---
-RIP: 0010:0x0
-Code: Bad RIP value.
-RSP: 0018:ffff88809dd4f848 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: ffff88808c06d740 RCX: 1ffff1101180db7c
-RDX: 0000000000000002 RSI: 0000000000000000 RDI: ffff88809a190b00
-RBP: ffff88809dd4f880 R08: ffff8880921924c0 R09: ffffed101180db31
-R10: ffffed101180db30 R11: ffff88808c06d987 R12: 0000000000000002
-R13: 0000000000000304 R14: ffff88809a190b00 R15: 0000000000000000
-FS:  0000000001b27880(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffffffffffffd6 CR3: 00000000a307a000 CR4: 00000000001406f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+My hunch is that we're kidding ourselves if we think we can avoid the
+symbol versioning. And besides, checking struct sizes needs boilerplate
+code as well, boilerplate that will fail at runtime instead of compile
+time if it's done wrong.
 
+So IMO we're better off just doing symbol version right from the
+beginning.
 
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 3. Now, the last minor complain is about flags field. It's super
+> generic. Why not have a set of boolean fields in a struct, in this
+> case to allow to specify strict/compat modes. Given we solve struct
+> extensibility issue, adding new bool fields is not an issue at all, so
+> the benefit of flags field are gone. The downside of flags field is
+> that it's very opaque integer, you have to go and read sources to
+> understand all the intended use cases and possible flags, which is
+> certainly not a great user experience.
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+This I agree with :)
+
+-Toke
+
