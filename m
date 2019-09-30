@@ -2,289 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AECBBC27AA
-	for <lists+bpf@lfdr.de>; Mon, 30 Sep 2019 23:02:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D28C4C28D3
+	for <lists+bpf@lfdr.de>; Mon, 30 Sep 2019 23:32:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726504AbfI3VCR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Sep 2019 17:02:17 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:53130 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730876AbfI3VCR (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 30 Sep 2019 17:02:17 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id x8UKqjPP007665
-        for <bpf@vger.kernel.org>; Mon, 30 Sep 2019 14:02:14 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=facebook;
- bh=CO7RwEdhA/wxtfQtGmzIWELdwohHnFe/w49n8MJKZd0=;
- b=UxTULwQ9jziNGw5p7+Jasg1Ji60tsB53KRSALADrGdBFjmz/NYgp7jBbERnskeJAw14D
- sZp4hFmm6SqwW92LzZHHNLIRkdae+2fOvQX6nJjXjrpyTcIXDfmv7yddgiUXUtlwMryn
- FO5JM+RG0N6Dykyg33bKkAC4NMUplkCm27Y= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net with ESMTP id 2vbm2uhj9w-5
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 30 Sep 2019 14:02:14 -0700
-Received: from mx-out.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 30 Sep 2019 14:02:06 -0700
-Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
-        id AC1713701A4D; Mon, 30 Sep 2019 14:02:03 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Yonghong Song <yhs@fb.com>
-Smtp-Origin-Hostname: devbig003.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        Kevin Laatz <kevin.laatz@intel.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf v5] libbpf: handle symbol versioning properly for libbpf.a
-Date:   Mon, 30 Sep 2019 14:02:03 -0700
-Message-ID: <20190930210203.3196501-1-yhs@fb.com>
-X-Mailer: git-send-email 2.17.1
-X-FB-Internal: Safe
+        id S1727702AbfI3Vb5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Sep 2019 17:31:57 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:39958 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727118AbfI3Vb5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Sep 2019 17:31:57 -0400
+Received: by mail-pf1-f194.google.com with SMTP id x127so6322585pfb.7
+        for <bpf@vger.kernel.org>; Mon, 30 Sep 2019 14:31:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=T2TY6NGUwIvtdhDebNN+p+NWVfl2R9w7WL/YAsVOyZk=;
+        b=i5xaSt1y22h381i+VEX8rdtcahF4pzXousOyH7UTBOqSlWxJsNRx3U1w+jky6T7wpJ
+         JSJ6TFnZUA+axWRpru7iWLaLNNNkszVK8pLgceyVlm4v3jnDQHKIKagXDKC+wY3J2x9c
+         Cw953v3oTPadf0FQSP0LrhvtDBiUZVmGP+u4g=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=T2TY6NGUwIvtdhDebNN+p+NWVfl2R9w7WL/YAsVOyZk=;
+        b=kJP9MqbIfl9yldb3fAty6WXu0dMPeJYU4L9oDOnXVKZaX7MVVTXsK8LG93EueopE2u
+         zMcmJ/QUxYSstALO5+ZXceiG8fQqJUUXrN5b9axloCKCPLHPKwKuW1m+rpAOt8V2Ai9L
+         Pei4v06vQwbf72wqMQvfT6o/fQBtCIgw8r0P02+5FAPDeVuVcpHATITvNBrQhd7ebWms
+         2TaBDOINfgDZ6hAlidYtxvne3UkLcMYF0Hm+NFVe2b8oUr4l7oHTH0OXveydwMRniOZj
+         ohG6oIyk5bWKVmgQujfL1eY4Rs5irkVkboMSo8BYqVGHpiTyj8TcGJg27V6vrESpjvTh
+         /OGA==
+X-Gm-Message-State: APjAAAVPtnZrPMo13XCVZL6uGflLRjVH8pHJjYHKJILjVv9eJOrn3AWW
+        yTv1zb4Tls93VMakbn3urJuaCQ==
+X-Google-Smtp-Source: APXvYqzUWfgikZuehcyb1ebNrGpxs7GPx/fz1aqBg6pNhhtsuL3oDtjyS/9y2h54yyg97lG3WBg15w==
+X-Received: by 2002:a17:90a:6509:: with SMTP id i9mr665793pjj.82.1569868291886;
+        Mon, 30 Sep 2019 11:31:31 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id b5sm14866917pfp.38.2019.09.30.11.31.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Sep 2019 11:31:30 -0700 (PDT)
+Date:   Mon, 30 Sep 2019 11:31:29 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Andy Lutomirski <luto@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        James Morris <jmorris@namei.org>, Jann Horn <jannh@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, kernel-team <kernel-team@fb.com>,
+        Linux API <linux-api@vger.kernel.org>
+Subject: Re: [PATCH bpf-next] bpf, capabilities: introduce CAP_BPF
+Message-ID: <201909301129.5A1129C@keescook>
+References: <20190827205213.456318-1-ast@kernel.org>
+ <CALCETrV8iJv9+Ai11_1_r6MapPhhwt9hjxi=6EoixytabTScqg@mail.gmail.com>
+ <20190828003447.htgzsxs5oevn3eys@ast-mbp.dhcp.thefacebook.com>
+ <CALCETrVbPPPr=BdPAx=tJKxD3oLXP4OVSgCYrB_E4vb6idELow@mail.gmail.com>
+ <20190828044340.zeha3k3cmmxgfqj7@ast-mbp.dhcp.thefacebook.com>
+ <CALCETrW1o+Lazi2Ng6b9JN6jeJffgdW9f3HvqYhNo4TpHRXW=g@mail.gmail.com>
+ <20190828225512.q6qbvkdiqih2iewk@ast-mbp.dhcp.thefacebook.com>
+ <DA52992F-4862-4945-8482-FE619A04C753@amacapital.net>
+ <20190829040721.ef6rumbaunkavyrr@ast-mbp.dhcp.thefacebook.com>
+ <20190928193727.1769e90c@oasis.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
- definitions=2019-09-30_11:2019-09-30,2019-09-30 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- malwarescore=0 phishscore=0 mlxscore=0 priorityscore=1501 bulkscore=0
- adultscore=0 mlxlogscore=999 clxscore=1015 impostorscore=0 spamscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1908290000 definitions=main-1909300178
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20190928193727.1769e90c@oasis.local.home>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-bcc uses libbpf repo as a submodule. It brings in libbpf source
-code and builds everything together to produce shared libraries.
-With latest libbpf, I got the following errors:
-  /bin/ld: libbcc_bpf.so.0.10.0: version node not found for symbol xsk_umem__create@LIBBPF_0.0.2
-  /bin/ld: failed to set dynamic section sizes: Bad value
-  collect2: error: ld returned 1 exit status
-  make[2]: *** [src/cc/libbcc_bpf.so.0.10.0] Error 1
+On Sat, Sep 28, 2019 at 07:37:27PM -0400, Steven Rostedt wrote:
+> On Wed, 28 Aug 2019 21:07:24 -0700
+> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> > > 
+> > > This won’t make me much more comfortable, since CAP_BPF lets it do an ever-growing set of nasty things. I’d much rather one or both of two things happen:
+> > > 
+> > > 1. Give it CAP_TRACING only. It can leak my data, but it’s rather hard for it to crash my laptop, lose data, or cause other shenanigans.
+> > > 
+> > > 2. Improve it a bit do all the privileged ops are wrapped by capset().
+> > > 
+> > > Does this make sense?  I’m a security person on occasion. I find
+> > > vulnerabilities and exploit them deliberately and I break things by
+> > > accident on a regular basis. In my considered opinion, CAP_TRACING
+> > > alone, even extended to cover part of BPF as I’ve described, is
+> > > decently safe. Getting root with just CAP_TRACING will be decently
+> > > challenging, especially if I don’t get to read things like sshd’s
+> > > memory, and improvements to mitigate even that could be added.  I
+> > > am quite confident that attacks starting with CAP_TRACING will have
+> > > clear audit signatures if auditing is on.  I am also confident that
+> > > CAP_BPF *will* allow DoS and likely privilege escalation, and this
+> > > will only get more likely as BPF gets more widely used. And, if
+> > > BPF-based auditing ever becomes a thing, writing to the audit
+> > > daemon’s maps will be a great way to cover one’s tracks.  
+> > 
+> > CAP_TRACING, as I'm proposing it, will allow full tracefs access.
+> > I think Steven and Massami prefer that as well.
+> > That includes kprobe with probe_kernel_read.
+> > That also means mini-DoS by installing kprobes everywhere or running
+> > too much ftrace.
+> 
+> I was talking with Kees at Plumbers about this, and we were talking
+> about just using simple file permissions. I started playing with some
+> patches to allow the tracefs be visible but by default it would only be
+> visible by root.
+> 
+>  rwx------
+> 
+> Then a start up script (or perhaps mount options) could change the
+> group owner, and change this to:
+> 
+>  rwxrwx---
+> 
+> Where anyone in the group assigned (say "tracing") gets full access to
+> the file system.
+> 
+> The more I was playing with this, the less I see the need for
+> CAP_TRACING for ftrace and reading the format files.
 
-In xsk.c, we have
-  asm(".symver xsk_umem__create_v0_0_2, xsk_umem__create@LIBBPF_0.0.2");
-  asm(".symver xsk_umem__create_v0_0_4, xsk_umem__create@@LIBBPF_0.0.4");
-The linker thinks the built is for LIBBPF but cannot find proper version
-LIBBPF_0.0.2/4, so emit errors.
+Nice! Thanks for playing with this. I like it because it gives us a way
+to push policy into userspace (group membership, etc), and provides a
+clean way (hopefully) do separate "read" (kernel memory confidentiality)
+from "write" (kernel memory integrity), which wouldn't have been possible
+with a single new CAP_...
 
-I also confirmed that using libbpf.a to produce a shared library also
-has issues:
-  -bash-4.4$ cat t.c
-  extern void *xsk_umem__create;
-  void * test() { return xsk_umem__create; }
-  -bash-4.4$ gcc -c -fPIC t.c
-  -bash-4.4$ gcc -shared t.o libbpf.a -o t.so
-  /bin/ld: t.so: version node not found for symbol xsk_umem__create@LIBBPF_0.0.2
-  /bin/ld: failed to set dynamic section sizes: Bad value
-  collect2: error: ld returned 1 exit status
-  -bash-4.4$
+-Kees
 
-Symbol versioning does happens in commonly used libraries, e.g., elfutils
-and glibc. For static libraries, for a versioned symbol, the old definitions
-will be ignored, and the symbol will be an alias to the latest definition.
-For example, glibc sched_setaffinity is versioned.
-  -bash-4.4$ readelf -s /usr/lib64/libc.so.6 | grep sched_setaffinity
-     756: 000000000013d3d0    13 FUNC    GLOBAL DEFAULT   13 sched_setaffinity@GLIBC_2.3.3
-     757: 00000000000e2e70   455 FUNC    GLOBAL DEFAULT   13 sched_setaffinity@@GLIBC_2.3.4
-    1800: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS sched_setaffinity.c
-    4228: 00000000000e2e70   455 FUNC    LOCAL  DEFAULT   13 __sched_setaffinity_new
-    4648: 000000000013d3d0    13 FUNC    LOCAL  DEFAULT   13 __sched_setaffinity_old
-    7338: 000000000013d3d0    13 FUNC    GLOBAL DEFAULT   13 sched_setaffinity@GLIBC_2
-    7380: 00000000000e2e70   455 FUNC    GLOBAL DEFAULT   13 sched_setaffinity@@GLIBC_
-  -bash-4.4$
-For static library, the definition of sched_setaffinity aliases to the new definition.
-  -bash-4.4$ readelf -s /usr/lib64/libc.a | grep sched_setaffinity
-  File: /usr/lib64/libc.a(sched_setaffinity.o)
-     8: 0000000000000000   455 FUNC    GLOBAL DEFAULT    1 __sched_setaffinity_new
-    12: 0000000000000000   455 FUNC    WEAK   DEFAULT    1 sched_setaffinity
-
-For both elfutils and glibc, additional macros are used to control different handling
-of symbol versioning w.r.t static and shared libraries.
-For elfutils, the macro is SYMBOL_VERSIONING
-(https://sourceware.org/git/?p=elfutils.git;a=blob;f=lib/eu-config.h).
-For glibc, the macro is SHARED
-(https://sourceware.org/git/?p=glibc.git;a=blob;f=include/shlib-compat.h;hb=refs/heads/master)
-
-This patch used SHARED as the macro name. After this patch, the libbpf.a has
-  -bash-4.4$ readelf -s libbpf.a | grep xsk_umem__create
-     372: 0000000000017145  1190 FUNC    GLOBAL DEFAULT    1 xsk_umem__create_v0_0_4
-     405: 0000000000017145  1190 FUNC    GLOBAL DEFAULT    1 xsk_umem__create
-     499: 00000000000175eb   103 FUNC    GLOBAL DEFAULT    1 xsk_umem__create_v0_0_2
-  -bash-4.4$
-No versioned symbols for xsk_umem__create.
-The libbpf.a can be used to build a shared library succesfully.
-  -bash-4.4$ cat t.c
-  extern void *xsk_umem__create;
-  void * test() { return xsk_umem__create; }
-  -bash-4.4$ gcc -c -fPIC t.c
-  -bash-4.4$ gcc -shared t.o libbpf.a -o t.so
-  -bash-4.4$
-
-Fixes: 10d30e301732 ("libbpf: add flags to umem config")
-Cc: Kevin Laatz <kevin.laatz@intel.com>
-Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc: Andrii Nakryiko <andriin@fb.com>
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- tools/lib/bpf/Makefile          | 27 ++++++++++++++++++---------
- tools/lib/bpf/libbpf_internal.h | 16 ++++++++++++++++
- tools/lib/bpf/xsk.c             |  4 ++--
- 3 files changed, 36 insertions(+), 11 deletions(-)
-
-ChangeLog:
-  v4 -> v5:
-     - Think twice. Using weak symbol for the libbpf.a API function
-       xsk_umem__create() is not right. Let us make it as a non-weak
-       global symbol so users cannot accidentally redefine it.
-  v3 -> v4:
-     - Raname macros {OLD|NEW}_VERSION to {COMPAT|DEFAULT}_VERSION
-       (Alexei).
-  v2 -> v3:
-     - Rename macro name from SYMBOL_VERSIONING to SHARED,
-       plus some other minor changes (Andrii).
-  v1 -> v2:
-     - Simple hacking to remove versioning for static library, which
-       does not work if the versioned symbol is referenced,
-     to a proper implementation.
-
-diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
-index 20772663d3e1..56ce6292071b 100644
---- a/tools/lib/bpf/Makefile
-+++ b/tools/lib/bpf/Makefile
-@@ -114,6 +114,9 @@ override CFLAGS += $(INCLUDES)
- override CFLAGS += -fvisibility=hidden
- override CFLAGS += -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
- 
-+# flags specific for shared library
-+SHLIB_FLAGS := -DSHARED
-+
- ifeq ($(VERBOSE),1)
-   Q =
- else
-@@ -130,14 +133,17 @@ all:
- export srctree OUTPUT CC LD CFLAGS V
- include $(srctree)/tools/build/Makefile.include
- 
--BPF_IN		:= $(OUTPUT)libbpf-in.o
-+SHARED_OBJDIR	:= $(OUTPUT)sharedobjs/
-+STATIC_OBJDIR	:= $(OUTPUT)staticobjs/
-+BPF_IN_SHARED	:= $(SHARED_OBJDIR)libbpf-in.o
-+BPF_IN_STATIC	:= $(STATIC_OBJDIR)libbpf-in.o
- VERSION_SCRIPT	:= libbpf.map
- 
- LIB_TARGET	:= $(addprefix $(OUTPUT),$(LIB_TARGET))
- LIB_FILE	:= $(addprefix $(OUTPUT),$(LIB_FILE))
- PC_FILE		:= $(addprefix $(OUTPUT),$(PC_FILE))
- 
--GLOBAL_SYM_COUNT = $(shell readelf -s --wide $(BPF_IN) | \
-+GLOBAL_SYM_COUNT = $(shell readelf -s --wide $(BPF_IN_SHARED) | \
- 			   cut -d "@" -f1 | sed 's/_v[0-9]_[0-9]_[0-9].*//' | \
- 			   awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$8}' | \
- 			   sort -u | wc -l)
-@@ -159,7 +165,7 @@ all: fixdep
- 
- all_cmd: $(CMD_TARGETS) check
- 
--$(BPF_IN): force elfdep bpfdep
-+$(BPF_IN_SHARED): force elfdep bpfdep
- 	@(test -f ../../include/uapi/linux/bpf.h -a -f ../../../include/uapi/linux/bpf.h && ( \
- 	(diff -B ../../include/uapi/linux/bpf.h ../../../include/uapi/linux/bpf.h >/dev/null) || \
- 	echo "Warning: Kernel ABI header at 'tools/include/uapi/linux/bpf.h' differs from latest version at 'include/uapi/linux/bpf.h'" >&2 )) || true
-@@ -175,17 +181,20 @@ $(BPF_IN): force elfdep bpfdep
- 	@(test -f ../../include/uapi/linux/if_xdp.h -a -f ../../../include/uapi/linux/if_xdp.h && ( \
- 	(diff -B ../../include/uapi/linux/if_xdp.h ../../../include/uapi/linux/if_xdp.h >/dev/null) || \
- 	echo "Warning: Kernel ABI header at 'tools/include/uapi/linux/if_xdp.h' differs from latest version at 'include/uapi/linux/if_xdp.h'" >&2 )) || true
--	$(Q)$(MAKE) $(build)=libbpf
-+	$(Q)$(MAKE) $(build)=libbpf OUTPUT=$(SHARED_OBJDIR) CFLAGS="$(CFLAGS) $(SHLIB_FLAGS)"
-+
-+$(BPF_IN_STATIC): force elfdep bpfdep
-+	$(Q)$(MAKE) $(build)=libbpf OUTPUT=$(STATIC_OBJDIR)
- 
- $(OUTPUT)libbpf.so: $(OUTPUT)libbpf.so.$(LIBBPF_VERSION)
- 
--$(OUTPUT)libbpf.so.$(LIBBPF_VERSION): $(BPF_IN)
-+$(OUTPUT)libbpf.so.$(LIBBPF_VERSION): $(BPF_IN_SHARED)
- 	$(QUIET_LINK)$(CC) --shared -Wl,-soname,libbpf.so.$(LIBBPF_MAJOR_VERSION) \
- 				    -Wl,--version-script=$(VERSION_SCRIPT) $^ -lelf -o $@
- 	@ln -sf $(@F) $(OUTPUT)libbpf.so
- 	@ln -sf $(@F) $(OUTPUT)libbpf.so.$(LIBBPF_MAJOR_VERSION)
- 
--$(OUTPUT)libbpf.a: $(BPF_IN)
-+$(OUTPUT)libbpf.a: $(BPF_IN_STATIC)
- 	$(QUIET_LINK)$(RM) $@; $(AR) rcs $@ $^
- 
- $(OUTPUT)test_libbpf: test_libbpf.cpp $(OUTPUT)libbpf.a
-@@ -201,7 +210,7 @@ check: check_abi
- 
- check_abi: $(OUTPUT)libbpf.so
- 	@if [ "$(GLOBAL_SYM_COUNT)" != "$(VERSIONED_SYM_COUNT)" ]; then	 \
--		echo "Warning: Num of global symbols in $(BPF_IN)"	 \
-+		echo "Warning: Num of global symbols in $(BPF_IN_SHARED)"	 \
- 		     "($(GLOBAL_SYM_COUNT)) does NOT match with num of"	 \
- 		     "versioned symbols in $^ ($(VERSIONED_SYM_COUNT))." \
- 		     "Please make sure all LIBBPF_API symbols are"	 \
-@@ -259,9 +268,9 @@ config-clean:
- 	$(Q)$(MAKE) -C $(srctree)/tools/build/feature/ clean >/dev/null
- 
- clean:
--	$(call QUIET_CLEAN, libbpf) $(RM) $(TARGETS) $(CXX_TEST_TARGET) \
-+	$(call QUIET_CLEAN, libbpf) $(RM) -rf $(TARGETS) $(CXX_TEST_TARGET) \
- 		*.o *~ *.a *.so *.so.$(LIBBPF_MAJOR_VERSION) .*.d .*.cmd \
--		*.pc LIBBPF-CFLAGS
-+		*.pc LIBBPF-CFLAGS $(SHARED_OBJDIR) $(STATIC_OBJDIR)
- 	$(call QUIET_CLEAN, core-gen) $(RM) $(OUTPUT)FEATURE-DUMP.libbpf
- 
- 
-diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
-index 2e83a34f8c79..f05f753f0983 100644
---- a/tools/lib/bpf/libbpf_internal.h
-+++ b/tools/lib/bpf/libbpf_internal.h
-@@ -34,6 +34,22 @@
- 	(offsetof(TYPE, FIELD) + sizeof(((TYPE *)0)->FIELD))
- #endif
- 
-+/* Symbol versioning is different between static and shared library.
-+ * Properly versioned symbols are needed for shared library, but
-+ * only the symbol of the new version is needed for static library.
-+ */
-+#ifdef SHARED
-+# define COMPAT_VERSION(internal_name, api_name, version) \
-+	asm(".symver " #internal_name "," #api_name "@" #version);
-+# define DEFAULT_VERSION(internal_name, api_name, version) \
-+	asm(".symver " #internal_name "," #api_name "@@" #version);
-+#else
-+# define COMPAT_VERSION(internal_name, api_name, version)
-+# define DEFAULT_VERSION(internal_name, api_name, version) \
-+	extern typeof(internal_name) api_name \
-+	__attribute__((alias (#internal_name)));
-+#endif
-+
- extern void libbpf_print(enum libbpf_print_level level,
- 			 const char *format, ...)
- 	__attribute__((format(printf, 2, 3)));
-diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
-index 24fa313524fb..a902838f9fcc 100644
---- a/tools/lib/bpf/xsk.c
-+++ b/tools/lib/bpf/xsk.c
-@@ -261,8 +261,8 @@ int xsk_umem__create_v0_0_2(struct xsk_umem **umem_ptr, void *umem_area,
- 	return xsk_umem__create_v0_0_4(umem_ptr, umem_area, size, fill, comp,
- 					&config);
- }
--asm(".symver xsk_umem__create_v0_0_2, xsk_umem__create@LIBBPF_0.0.2");
--asm(".symver xsk_umem__create_v0_0_4, xsk_umem__create@@LIBBPF_0.0.4");
-+COMPAT_VERSION(xsk_umem__create_v0_0_2, xsk_umem__create, LIBBPF_0.0.2)
-+DEFAULT_VERSION(xsk_umem__create_v0_0_4, xsk_umem__create, LIBBPF_0.0.4)
- 
- static int xsk_load_xdp_prog(struct xsk_socket *xsk)
- {
 -- 
-2.17.1
-
+Kees Cook
