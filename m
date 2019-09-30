@@ -2,122 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AD555C2263
-	for <lists+bpf@lfdr.de>; Mon, 30 Sep 2019 15:48:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66B0DC22F9
+	for <lists+bpf@lfdr.de>; Mon, 30 Sep 2019 16:16:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731065AbfI3NsK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Sep 2019 09:48:10 -0400
-Received: from mga14.intel.com ([192.55.52.115]:45443 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730864AbfI3NsJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 Sep 2019 09:48:09 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 30 Sep 2019 06:48:09 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,567,1559545200"; 
-   d="scan'208";a="342654351"
-Received: from mkarlsso-mobl.ger.corp.intel.com (HELO localhost.localdomain) ([10.249.40.22])
-  by orsmga004.jf.intel.com with ESMTP; 30 Sep 2019 06:48:07 -0700
-From:   Magnus Karlsson <magnus.karlsson@intel.com>
-To:     magnus.karlsson@intel.com, bjorn.topel@intel.com, ast@kernel.org,
-        daniel@iogearbox.net, netdev@vger.kernel.org
-Cc:     jonathan.lemon@gmail.com, bpf@vger.kernel.org
-Subject: [PATCH bpf] xsk: fix crash in poll when device does not support ndo_xsk_wakeup
-Date:   Mon, 30 Sep 2019 15:30:12 +0200
-Message-Id: <1569850212-4035-1-git-send-email-magnus.karlsson@intel.com>
-X-Mailer: git-send-email 2.7.4
+        id S1731276AbfI3OQ6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Sep 2019 10:16:58 -0400
+Received: from mail-io1-f67.google.com ([209.85.166.67]:39888 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730809AbfI3OQ6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Sep 2019 10:16:58 -0400
+Received: by mail-io1-f67.google.com with SMTP id a1so38732067ioc.6
+        for <bpf@vger.kernel.org>; Mon, 30 Sep 2019 07:16:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=qSyzuXDiOCBGYUe5x3wq3t+cEuvzBt8YWh4PsSfAxng=;
+        b=UN3DqBAKeUwm8D0QEQjS3xJkE3+G7UwQhw6O0nfYZs1PZxchfelnwuw6XbPAxU+6iT
+         z7SVP3YgvJDIJkPDy8Bfe1iwyqHZfIHIy7DYtqo1N8vSDthWvJQNB9ATkSpZlZ3XCuki
+         qXAC8XV3pv/MJIMPSXlVWaEDCm27ZkGzg0pXY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qSyzuXDiOCBGYUe5x3wq3t+cEuvzBt8YWh4PsSfAxng=;
+        b=d1VZn0dg4C/jN0of172oVcCcnt73SyAT7d/RHL4S9YMbefV0ruWNDLBorEMYGvt8RV
+         Jcpuu88Mb7/eMS/Y2PjtobHj4PzlFq4iCpBS1jkaNLs9w0jQ5eV92Bqwx5xnoctxhFpw
+         WdsyUZHvwPoJhecGfTWHyE4OeOy76R3q2P/p8mcU1FNE2eiphf1j35MHgqlTcwZGT7wb
+         iVV+ZwG/crgpe44kD47p3MxzavAafOnQQsk5X9vdjiMvlC/9S2F3nmAnYpjj7ASAi2NS
+         O3SC1HWo+6d0s+urTjBPuAQUKN9323f6aIKfudkFRdSXTvlRfbCBNB4MQVr7+xuowV7T
+         0DYA==
+X-Gm-Message-State: APjAAAVqn033Bt/NqCTRRdLoI9Ezb9QfpPaP1r4jRQS3diEMswx8xUta
+        2rl5dZG6oTPnUDTt1lk6d3Ba7A==
+X-Google-Smtp-Source: APXvYqxn8RJVirvm2HAhcEVkXxh7lQAUGhEQpdT+JkKACOG3a8byP3d+14FHtvWo1veaYWwLKjPYgA==
+X-Received: by 2002:a92:6c10:: with SMTP id h16mr6350326ilc.299.1569853017550;
+        Mon, 30 Sep 2019 07:16:57 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id r2sm5475403ila.52.2019.09.30.07.16.56
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 30 Sep 2019 07:16:56 -0700 (PDT)
+Subject: Re: [PATCH] tools: bpf: Use !building_out_of_srctree to determine
+ srctree
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     ast@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20190927011344.4695-1-skhan@linuxfoundation.org>
+ <20190930085815.GA7249@pc-66.home>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <ea108769-1b3e-42f8-de9c-50b4a563be57@linuxfoundation.org>
+Date:   Mon, 30 Sep 2019 08:16:55 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
+MIME-Version: 1.0
+In-Reply-To: <20190930085815.GA7249@pc-66.home>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fixes a crash in poll() when an AF_XDP socket is opened in copy mode
-with the XDP_USE_NEED_WAKEUP flag set and the bound device does not
-have ndo_xsk_wakeup defined. Avoid trying to call the non-existing ndo
-and instead call the internal xsk sendmsg functionality to send
-packets in the same way (from the application's point of view) as
-calling sendmsg() in any mode or poll() in zero-copy mode would have
-done. The application should behave in the same way independent on if
-zero-copy mode or copy-mode is used.
+On 9/30/19 2:58 AM, Daniel Borkmann wrote:
+> On Thu, Sep 26, 2019 at 07:13:44PM -0600, Shuah Khan wrote:
+>> make TARGETS=bpf kselftest fails with:
+>>
+>> Makefile:127: tools/build/Makefile.include: No such file or directory
+>>
+>> When the bpf tool make is invoked from tools Makefile, srctree is
+>> cleared and the current logic check for srctree equals to empty
+>> string to determine srctree location from CURDIR.
+>>
+>> When the build in invoked from selftests/bpf Makefile, the srctree
+>> is set to "." and the same logic used for srctree equals to empty is
+>> needed to determine srctree.
+>>
+>> Check building_out_of_srctree undefined as the condition for both
+>> cases to fix "make TARGETS=bpf kselftest" build failure.
+>>
+>> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+> 
+> Applied, thanks!
+> 
 
-Fixes: 77cd0d7b3f25 ("xsk: add support for need_wakeup flag in AF_XDP rings")
-Reported-by: syzbot+a5765ed8cdb1cca4d249@syzkaller.appspotmail.com
-Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
----
- net/xdp/xsk.c | 33 +++++++++++++++++++++++----------
- 1 file changed, 23 insertions(+), 10 deletions(-)
+Hi Daniel!
 
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index c2f1af3..a478d8ec 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -327,8 +327,7 @@ static void xsk_destruct_skb(struct sk_buff *skb)
- 	sock_wfree(skb);
- }
- 
--static int xsk_generic_xmit(struct sock *sk, struct msghdr *m,
--			    size_t total_len)
-+static int xsk_generic_xmit(struct sock *sk)
- {
- 	u32 max_batch = TX_BATCH_SIZE;
- 	struct xdp_sock *xs = xdp_sk(sk);
-@@ -394,22 +393,31 @@ static int xsk_generic_xmit(struct sock *sk, struct msghdr *m,
- 	return err;
- }
- 
--static int xsk_sendmsg(struct socket *sock, struct msghdr *m, size_t total_len)
-+static int __xsk_sendmsg(struct socket *sock)
- {
--	bool need_wait = !(m->msg_flags & MSG_DONTWAIT);
- 	struct sock *sk = sock->sk;
- 	struct xdp_sock *xs = xdp_sk(sk);
- 
--	if (unlikely(!xsk_is_bound(xs)))
--		return -ENXIO;
- 	if (unlikely(!(xs->dev->flags & IFF_UP)))
- 		return -ENETDOWN;
- 	if (unlikely(!xs->tx))
- 		return -ENOBUFS;
-+
-+	return xs->zc ? xsk_zc_xmit(sk) : xsk_generic_xmit(sk);
-+}
-+
-+static int xsk_sendmsg(struct socket *sock, struct msghdr *m, size_t total_len)
-+{
-+	bool need_wait = !(m->msg_flags & MSG_DONTWAIT);
-+	struct sock *sk = sock->sk;
-+	struct xdp_sock *xs = xdp_sk(sk);
-+
-+	if (unlikely(!xsk_is_bound(xs)))
-+		return -ENXIO;
- 	if (need_wait)
- 		return -EOPNOTSUPP;
- 
--	return (xs->zc) ? xsk_zc_xmit(sk) : xsk_generic_xmit(sk, m, total_len);
-+	return __xsk_sendmsg(sock);
- }
- 
- static unsigned int xsk_poll(struct file *file, struct socket *sock,
-@@ -426,9 +434,14 @@ static unsigned int xsk_poll(struct file *file, struct socket *sock,
- 	dev = xs->dev;
- 	umem = xs->umem;
- 
--	if (umem->need_wakeup)
--		dev->netdev_ops->ndo_xsk_wakeup(dev, xs->queue_id,
--						umem->need_wakeup);
-+	if (umem->need_wakeup) {
-+		if (dev->netdev_ops->ndo_xsk_wakeup)
-+			dev->netdev_ops->ndo_xsk_wakeup(dev, xs->queue_id,
-+							umem->need_wakeup);
-+		else
-+			/* Poll needs to drive Tx also in copy mode */
-+			__xsk_sendmsg(sock);
-+	}
- 
- 	if (xs->rx && !xskq_empty_desc(xs->rx))
- 		mask |= POLLIN | POLLRDNORM;
--- 
-2.7.4
+Is the tree the patch went into included in the linux-next?
 
+thanks,
+-- Shuah
