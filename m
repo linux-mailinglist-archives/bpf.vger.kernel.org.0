@@ -2,84 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ADC0C2A24
-	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2019 00:59:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0FEFC2AC0
+	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2019 01:18:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731890AbfI3W6s (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Sep 2019 18:58:48 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:45382 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731685AbfI3W6r (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 Sep 2019 18:58:47 -0400
-Received: by mail-qt1-f194.google.com with SMTP id c21so19167533qtj.12;
-        Mon, 30 Sep 2019 15:58:46 -0700 (PDT)
+        id S1731985AbfI3XST (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Sep 2019 19:18:19 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:32909 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727621AbfI3XST (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Sep 2019 19:18:19 -0400
+Received: by mail-qt1-f193.google.com with SMTP id r5so19299699qtd.0
+        for <bpf@vger.kernel.org>; Mon, 30 Sep 2019 16:18:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cvCTcx43JDg1o6KPY5fDSJTzdGhnKOviIKAIHHSnoeI=;
-        b=pvymu7VeESp4BaH6p35MroG5OK7PLwJMqW7vJJx0W8ajfBzAjnZFz1GOe+TtSVWS6Y
-         Ft74dgo8akgHikqAMHkRh+dKShlc4GVKBhIg2tBN3ef8pUsE59YAWoq1kCzkqv0eqTmN
-         xvSFrYXrKs88bwLf5ZGa2tExHnVmtVG0OiX6eUxAdGwXiBq0BRpemcoKvSpR74EhKvmx
-         9sM4yCgwtG8tLL6RVOnpBKShsZ3tudjg5N5KDRsmdQho/QawGWSmETd/B6vfz9G5P1K8
-         cAXxItfc4cwjgTGKEwER8D7jhZ9ql+kRPbC4L+sr81iA9yfIzzhv3cjCOtJTyaIi8Wga
-         Dg+w==
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :organization:mime-version:content-transfer-encoding;
+        bh=+K7vISo63seW+fv9e2awwFfZvkHDT6dGzGUlDkiOv4I=;
+        b=tj5Bg7oa+tGI3KiWZ3R1MUj3EZzTH0QoravQqXqqY+q6HRaApaGPdk5Nq7LoBoycS9
+         rProm0oYTx/sp2TLsZ5z41BMDy14KnrW0KwE4SLnwrPFeqHyxoLZpxhsfZ4Y2iwScuwd
+         Yvy0uEkYCAnOnBmt9Fz2NuXZVd1jZqO092PylMjjlNNCgDNN60BDVNCsfFozO6O3Xxl3
+         kge1NZuWf5ukSL+zKpdLDtsJQE5Po0aVY3A0DJ4WPKDDvf+Gmp/KIAAxE+cgmihfk33G
+         wiqFMDWmKB0/IoOyjeDx+dJYjQPftM1ldwuJ9R5HLibd8FMByGjof5GmBaTUkHaRh2oF
+         X9kQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cvCTcx43JDg1o6KPY5fDSJTzdGhnKOviIKAIHHSnoeI=;
-        b=Zg+cEM8JBcXxtcfLKZOB8TsLE4YBGhyYhd3OPHAWxmeEOvg07a5xzNsQfg1F308olR
-         Tm8mu665H4tWyZzC2dCkLiP7H/4WffKovqgPG013dR1J39wk4E8E+3GAHIEFTGmVHonh
-         V5VUpwJX9380K9MxEEl6sKZ7DopEt7ebylTdWSk0nzrZEG08NfNIa7SjYXp+8POSxAgG
-         1/zgtSbotXMrbpLWxmu2TAfH3VGARE2Ok7/MnKsaOvXdY0GRcYMnEUuh+8pXLCwwGLAs
-         Hhq9ShH+jQWVyHu19YMv1uUpwpci+4pY0ioN9Ncz90Z3LM1koAH3GbKSMJs08tlW+uC0
-         mRWQ==
-X-Gm-Message-State: APjAAAW+XkkLMhRSY4bsQqQRyT1m+FAEUkgNhrQ3K6HGtkE4ngTrME+D
-        yvJeSz0s81piMIEFnK+lzNDfmsS3KSxOfBnD/OE=
-X-Google-Smtp-Source: APXvYqz8QjXfyMdU7bHG/VQoO+Hok1DHYk+5fo6q/VjSYjeEHG1vou/JweDL+45RxpohymsVQgM+xKYTCZjNtjioAs0=
-X-Received: by 2002:a05:6214:114a:: with SMTP id b10mr22523228qvt.150.1569884326168;
- Mon, 30 Sep 2019 15:58:46 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190930185855.4115372-1-andriin@fb.com> <20190930185855.4115372-3-andriin@fb.com>
- <CAPhsuW6RHaPceOWdqmL1w_rwz8dqq4CrfY43Gg7qVK0w1rA29w@mail.gmail.com>
-In-Reply-To: <CAPhsuW6RHaPceOWdqmL1w_rwz8dqq4CrfY43Gg7qVK0w1rA29w@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 30 Sep 2019 15:58:35 -0700
-Message-ID: <CAEf4BzaPdA+egnSKveZ_dE=hTU5ZAsOFSRpkBjmEpPsZLM=Y=Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/6] libbpf: move bpf_helpers.h, bpf_endian.h
- into libbpf
-To:     Song Liu <liu.song.a23@gmail.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=+K7vISo63seW+fv9e2awwFfZvkHDT6dGzGUlDkiOv4I=;
+        b=YKtd40LPjap5KzdaAzCRR+O1LH8fBLTms2mQiyb6mUlYPW2GRzZjGvP0S6GoFdwacg
+         fPQ3xrpvm0XWBL5H6oiAEKnL2GHT/cwWIvJYNnQykmoGXDi50QxoR+fb3SH4aaOCm5je
+         fqsI1mRLhoWo5GGYFBlYqbhT/l738ZreAhjYaHETGecuEYfqMsgFNfKmS/xG39h5DUD7
+         dAQj3SrqW1AoyDdFn/DquoqXCZ7H3oaEJ6LyIgYWyOjHDOHRALw0rPdQWE5aFj6j0ibD
+         JFxWENySy3ifkp4tCePLZdBsjuxvsIjAKKSXgVYrhXiIx9KTABNgaPV1qnj4fKH+DF5s
+         wMZg==
+X-Gm-Message-State: APjAAAWDPH9iGuVKQNtOTWjLxdF5u7QFjRlYfDwDsrG9Qm1XGqPpFv9J
+        dxX3fBH6O7G0nbifTsUsRmnIjQ==
+X-Google-Smtp-Source: APXvYqzlI5zUao25wiclYxdwIkv/zreglQewx+l+8w/s3z8i2q2KXmAR88Gq86chESrrW3V5Zzo8ZQ==
+X-Received: by 2002:a0c:ffa7:: with SMTP id d7mr22258056qvv.12.1569885497995;
+        Mon, 30 Sep 2019 16:18:17 -0700 (PDT)
+Received: from cakuba.netronome.com ([66.60.152.14])
+        by smtp.gmail.com with ESMTPSA id w73sm6817942qkb.111.2019.09.30.16.18.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Sep 2019 16:18:17 -0700 (PDT)
+Date:   Mon, 30 Sep 2019 16:18:14 -0700
+From:   Jakub Kicinski <jakub.kicinski@netronome.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Song Liu <liu.song.a23@gmail.com>,
+        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
         Networking <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH bpf-next 2/6] libbpf: move bpf_helpers.h, bpf_endian.h
+ into libbpf
+Message-ID: <20190930161814.381c9bb0@cakuba.netronome.com>
+In-Reply-To: <CAEf4BzaPdA+egnSKveZ_dE=hTU5ZAsOFSRpkBjmEpPsZLM=Y=Q@mail.gmail.com>
+References: <20190930185855.4115372-1-andriin@fb.com>
+        <20190930185855.4115372-3-andriin@fb.com>
+        <CAPhsuW6RHaPceOWdqmL1w_rwz8dqq4CrfY43Gg7qVK0w1rA29w@mail.gmail.com>
+        <CAEf4BzaPdA+egnSKveZ_dE=hTU5ZAsOFSRpkBjmEpPsZLM=Y=Q@mail.gmail.com>
+Organization: Netronome Systems, Ltd.
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Sep 30, 2019 at 3:55 PM Song Liu <liu.song.a23@gmail.com> wrote:
->
-> On Mon, Sep 30, 2019 at 1:43 PM Andrii Nakryiko <andriin@fb.com> wrote:
+On Mon, 30 Sep 2019 15:58:35 -0700, Andrii Nakryiko wrote:
+> On Mon, Sep 30, 2019 at 3:55 PM Song Liu <liu.song.a23@gmail.com> wrote:
 > >
-> > Make bpf_helpers.h and bpf_endian.h official part of libbpf. Ensure they
-> > are installed along the other libbpf headers.
+> > On Mon, Sep 30, 2019 at 1:43 PM Andrii Nakryiko <andriin@fb.com> wrote:  
+> > >
+> > > Make bpf_helpers.h and bpf_endian.h official part of libbpf. Ensure they
+> > > are installed along the other libbpf headers.
+> > >
+> > > Signed-off-by: Andrii Nakryiko <andriin@fb.com>  
 > >
-> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
->
-> Can we merge/rearrange 2/6 and 3/6, so they is a git-rename instead of
-> many +++ and ---?
+> > Can we merge/rearrange 2/6 and 3/6, so they is a git-rename instead of
+> > many +++ and ---?  
+> 
+> I arranged them that way because of Github sync. We don't sync
+> selftests/bpf changes to Github, and it causes more churn if commits
+> have a mix of libbpf and selftests changes.
+> 
+> I didn't modify bpf_helpers.h/bpf_endian.h between those patches, so
+> don't worry about reviewing contents ;)
 
-I arranged them that way because of Github sync. We don't sync
-selftests/bpf changes to Github, and it causes more churn if commits
-have a mix of libbpf and selftests changes.
-
-I didn't modify bpf_helpers.h/bpf_endian.h between those patches, so
-don't worry about reviewing contents ;)
-
->
-> Thanks,
-> Song
+I thought we were over this :/ Please merge the patches.
