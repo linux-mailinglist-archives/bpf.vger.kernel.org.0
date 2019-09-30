@@ -2,210 +2,231 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 09E0DC254F
-	for <lists+bpf@lfdr.de>; Mon, 30 Sep 2019 18:41:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 422E0C2569
+	for <lists+bpf@lfdr.de>; Mon, 30 Sep 2019 18:50:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732166AbfI3Qlc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Sep 2019 12:41:32 -0400
-Received: from gateway22.websitewelcome.com ([192.185.47.168]:40566 "EHLO
-        gateway22.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731976AbfI3Qlc (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 30 Sep 2019 12:41:32 -0400
-X-Greylist: delayed 1320 seconds by postgrey-1.27 at vger.kernel.org; Mon, 30 Sep 2019 12:41:31 EDT
-Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
-        by gateway22.websitewelcome.com (Postfix) with ESMTP id 4099B20F861
-        for <bpf@vger.kernel.org>; Mon, 30 Sep 2019 11:19:31 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id EyOZi0zKjVUVYEyOZioLTR; Mon, 30 Sep 2019 11:19:31 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=MfJZMISa5OTKdNXPHLsCROtCu6VTNYBXkGGuJIbv5t4=; b=yJ56Zet3XSJosWaXnnkVFp8of5
-        Emg89LTRpZY9FX1zwhbSRz7Y4hf7Y3KFMNi/Yi72U975/rN+VyKhsRnh5+55fvTGVJZH9Owg7yPSm
-        Sxn/yvHV653uc3q2RkprHX2xfLl+2wNY0PKe2K80bzPKtBTHQQQylvHaKEvTWo+d1hGijucxR09xF
-        MV6E5OVB6r031JXe8cnnUL8IshjqiRgEOUn81T1RvVeRxx7ERdzfGZw927rFSQN2F1jPRuaQTk4ge
-        US9KRZSQNAoV9160efk5Zkh3uWpUwvMK9kJ9LJyHRczv8hG6YXrlJNfvxatvmGHCCo5853kUrbXFK
-        9vEpo7rA==;
-Received: from [38.98.37.138] (port=62616 helo=[192.168.43.131])
-        by gator4166.hostgator.com with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
-        (Exim 4.92)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1iEyOX-0027A7-Df; Mon, 30 Sep 2019 11:19:30 -0500
-Subject: Re: [PATCH v2] bpf: use flexible array members, not zero-length
-To:     Stephen Kitt <steve@sk2.org>, Alexei Starovoitov <ast@kernel.org>,
+        id S1732166AbfI3Qus (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Sep 2019 12:50:48 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:43152 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727767AbfI3Qus (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Sep 2019 12:50:48 -0400
+Received: by mail-qk1-f194.google.com with SMTP id h126so8368905qke.10;
+        Mon, 30 Sep 2019 09:50:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=KoXld5A01oSGDgCLY+ILZpasDZh9Ml2uSiGgAsKNG8w=;
+        b=FeiT7jCVx9yzGP5+5VicytREB73495f8wt2wy3rTz0P/An3RtHDcJhDMXwFKiyyxxP
+         NAHO82N7/e1YneU2+qo3xQuXGpCBA6AjslWTc8P3lvSJsQlwj9GT4rKHUUvwbNye3RL3
+         MD62J5Ycq1fQSZTzx/T35RWaEb4b1VbcYOknebObNcgiMs0Dcc1/z/e9G2fvku2KdfR4
+         eLMpfH1sEpBZTzJX1ogP8pTb0+e4Z1tGixO8GspRxNKmDzuF3jPXABgFIR+F3Z3OMl3c
+         /Bn5yKJ4W+1+FEaMq99NhMmY+3hKUig1Neq00qQpeRpspQWg1b7l4HDFBxSPI6GbBuhT
+         qVaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=KoXld5A01oSGDgCLY+ILZpasDZh9Ml2uSiGgAsKNG8w=;
+        b=lJfUG53KLD30y8MyhScJkIluvV47loFuLtwmMT94VoRhfUUGOCEHuq6Io+ijP1PHc3
+         VIQHuMFn2z31MIq5BY2mMFYE9R/NjKd9mjssOU9gt84tFglH6P3DFJJwKQV21AZ4gMf1
+         PSay/zgAbK8WqAEw6/zzC6yJjZGDC9GMKJtxgk9w3Vb90umQHZ+HVr4rm1njCt6jjBU7
+         gmORxt46goqRDzHDTNVn2svBU+wANQYOooQhr7WXxgClA+X/AhjmA/JJZnCHtPY7Pgoa
+         zSYobdDbYLIVqy8Lw7ov0i22sQ5yJYLnAy2TVhPA0yt3YiG6PLQCgx9hDMecGa9FT4sg
+         kvuA==
+X-Gm-Message-State: APjAAAV0TMt5e6d1avbUtL+rlUWVUEe1EHqf99TmuptHp7p0YAHgsZMJ
+        xt2O3xRrxKSJgZjamqo7yf5nhDU2jPEd8/BLU8M=
+X-Google-Smtp-Source: APXvYqxpZFT6uu3F7zK0gwboh8wqtndVlH7R0FjdalKWDeDHssjvqgoKeHndmEeJ1OzBYHCcBpfVHvVjsi08K5+Mrxs=
+X-Received: by 2002:a37:98f:: with SMTP id 137mr1025607qkj.449.1569862245153;
+ Mon, 30 Sep 2019 09:50:45 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190927130834.18829-1-kpsingh@chromium.org> <CAEf4Bzb_8AJS=HLUt9QpdRrt4AzW1ME9tFyL-QTqyu=7fC-dGA@mail.gmail.com>
+ <87h84uxno9.fsf@toke.dk>
+In-Reply-To: <87h84uxno9.fsf@toke.dk>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 30 Sep 2019 09:50:33 -0700
+Message-ID: <CAEf4BzZNWu1e8ryuhyPW5=NqkX_s8NkBaet+akwh5ixxL1AegA@mail.gmail.com>
+Subject: Re: [PATCH] tools: libbpf: Add bpf_object__open_buffer_xattr
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     KP Singh <kpsingh@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Anton Protopopov <a.s.protopopov@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>
-Cc:     linux-doc@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <F15E974F-4B7F-4819-B640-682A0A3A47C5@fb.com>
- <20190930073858.7639-1-steve@sk2.org>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=gustavo@embeddedor.com; keydata=
- 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
- VtSixD1uOgytAP7RWS474w==
-Message-ID: <ae6bce75-d477-7727-316a-cb78e2cafc46@embeddedor.com>
-Date:   Mon, 30 Sep 2019 18:18:41 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <20190930073858.7639-1-steve@sk2.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 38.98.37.138
-X-Source-L: No
-X-Exim-ID: 1iEyOX-0027A7-Df
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: ([192.168.43.131]) [38.98.37.138]:62616
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 9
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Florent Revest <revest@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Mon, Sep 30, 2019 at 12:12 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@red=
+hat.com> wrote:
+>
+> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+>
+> > On Fri, Sep 27, 2019 at 6:11 AM KP Singh <kpsingh@chromium.org> wrote:
+> >>
+> >> From: KP Singh <kpsingh@google.com>
+> >>
+> >> Introduce struct bpf_object_open_buffer_attr and an API function,
+> >> bpf_object__open_xattr, as the existing API, bpf_object__open_buffer,
+> >> doesn't provide a way to specify neither the "needs_kver" nor
+> >> the "flags" parameter to the internal call to the
+> >> __bpf_object__open which makes it inconvenient for loading BPF
+> >> objects that do not require a kernel version from a buffer.
+> >>
+> >> The flags attribute in the bpf_object_open_buffer_attr is set
+> >> to MAPS_RELAX_COMPAT when used in bpf_object__open_buffer to
+> >> maintain backward compatibility as this was added to load objects
+> >> with non-compat map definitions in:
+> >>
+> >> commit c034a177d3c8 ("bpf: bpftool, add flag to allow non-compat map
+> >>                       definitions")
+> >>
+> >> and bpf_object__open_buffer was called with this flag enabled (as a
+> >> boolean true value).
+> >>
+> >> The existing "bpf_object__open_xattr" cannot be modified to
+> >> maintain API compatibility.
+> >>
+> >> Reported-by: Anton Protopopov <a.s.protopopov@gmail.com>
+> >> Signed-off-by: KP Singh <kpsingh@google.com>
+> >> ---
+> >>  tools/lib/bpf/libbpf.c   | 39 ++++++++++++++++++++++++++++-----------
+> >>  tools/lib/bpf/libbpf.h   | 10 ++++++++++
+> >>  tools/lib/bpf/libbpf.map |  5 +++++
+> >>  3 files changed, 43 insertions(+), 11 deletions(-)
+> >>
+> >> This patch is assimilates the feedback from:
+> >>
+> >>   https://lore.kernel.org/bpf/20190815000330.12044-1-a.s.protopopov@gm=
+ail.com/
+> >>
+> >> I have added a "Reported-by:" tag, but please feel free to update to
+> >> "Co-developed-by" if it's more appropriate from an attribution perspec=
+tive.
+> >>
+> >> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> >> index 2b57d7ea7836..1f1f2e92832b 100644
+> >> --- a/tools/lib/bpf/libbpf.c
+> >> +++ b/tools/lib/bpf/libbpf.c
+> >> @@ -2752,25 +2752,42 @@ struct bpf_object *bpf_object__open(const char=
+ *path)
+> >>         return bpf_object__open_xattr(&attr);
+> >>  }
+> >>
+> >> -struct bpf_object *bpf_object__open_buffer(void *obj_buf,
+> >> -                                          size_t obj_buf_sz,
+> >> -                                          const char *name)
+> >> +struct bpf_object *
+> >> +bpf_object__open_buffer_xattr(struct bpf_object_open_buffer_attr *att=
+r)
+> >
+> > I have few concerns w.r.t. adding API in this form and I'm going to
+> > use this specific case to discuss more general problem of API design,
+> > ABI compatibility, and extending APIs with extra optional arguments.
+> >
+> > 1. In general, I think it would be good for libbpf API usability to
+> > use the following pattern consistently (moving forward):
+> >
+> > T1 some_api_function(T2 mandatory_arg1, ..., TN mandatory_arg, struct
+> > something_opts *opts)
+> >
+> > So all the mandatory arguments that have to be provides are specified
+> > explicitly as function arguments. That makes it very clear what API
+> > expects to get always.
+> > opts (we use both opts and attrs, but opts seems better because its
+> > optional options :), on the other hand, is stuff that might be
+> > omitted, so if user doesn't care about tuning behavior of API and
+> > wants all-defaults behavior, then providing NULL here should just
+> > work.
+> >
+> > So in this case for bpf_object__open_buffer_xattr(), it could look like=
+ this:
+> >
+> > struct bpf_object* bpf_object__open_buffer_opts(void *buf, size_t sz,
+> > struct bpf_object_open_opts* opts);
+>
+> I like this idea! Sensible defaults that can be selected by just passing
+> NULL as opts is a laudable goal.
 
+Cool, I just sent out RFC w/ what I had in mind and applied that to
+consistent open_mem/open_file APIs, let's discuss further there.
 
-On 9/30/19 02:38, Stephen Kitt wrote:
-> This switches zero-length arrays in variable-length structs to C99
-> flexible array members. GCC will then ensure that the arrays are
-> always the last element in the struct.
-> 
-> Coccinelle:
-> @@
-> identifier S, fld;
-> type T;
-> @@
-> 
-> struct S {
->   ...
->   T fld[
-> - 0
->   ];
->   ...
-> };
-> 
-> Signed-off-by: Stephen Kitt <steve@sk2.org>
-> ---
+>
+> > 2. Now, we need to do something with adding new options without
+> > breaking ABIs. With all the existing extra attributes, when we need to
+> > add new field to that struct, that can break old code that's
+> > dynamically linked to newer versions of libbpf, because their
+> > attr/opts struct is too short for new code, so that could cause
+> > segment violation or can make libbpf read garbage for those newly
+> > added fields. There are basically three ways we can go about this:
+> >
+> > a. either provide the size of opts struct as an extra argument to each
+> > API that uses options, so:
+> > struct bpf_object* bpf_object__open_buffer_opts(void *buf, size_t sz,
+> > struct bpf_object_open_opts* opts, size_t opts_sz);
+> >
+> > b. make it mandatory that every option struct has to have as a first
+> > field its size, so:
+> >
+> > struct bpf_object_open_opts {
+> >         size_t sz;
+> >         /* now we can keep adding attrs */
+> > };
+> >
+> > Now, when options are provided, we'll read first sizeof(size_t) bytes,
+> > validate it for sanity and then we'll know which fields are there or
+> > not.
+> >
+> > Both options have downside of user needing to do extra initialization,
+> > but it's not too bad in either case. Especially in case b), if user
+> > doesn't care about extra options, then no extra steps are necessary.
+> > In case a, we can pass NULL, 0 at the end, so also not a big deal.
+> >
+> > c. Alternatively, we can do symbol versioning similar how xsk.c
+> > started doing it, and handle those options struct size differences
+> > transparently. But that's a lot of extra boilerplate code in libbpf
+> > and I'd like to avoid that, if possible.
+>
+> My hunch is that we're kidding ourselves if we think we can avoid the
+> symbol versioning. And besides, checking struct sizes needs boilerplate
+> code as well, boilerplate that will fail at runtime instead of compile
+> time if it's done wrong.
+>
+> So IMO we're better off just doing symbol version right from the
+> beginning.
 
-What changed in v2?
+I'm not against symbol versioning, don't get me wrong. Yonghong is
+already fixing one of the problems with symbol versioning and after
+that it should be pretty streamlined to add extra symbol versions. But
+I'd like to avoid create a new symbol version for every minor new
+optional field being added. On libbpf side this will cause lots of
+boilerplate code for each version to "converge" to correct and full
+struct definition and then call into a common implementation that
+expects full struct definition.
 
-You should include a changelog here.
+With what I'm proposing in the RFC patch I sent out and CC'ed you on
+we should have new symbol version only when there is some nontrivial
+change only, which I think is a good thing to strive for.
 
-I encourage you to read the following document:
-
-https://kernelnewbies.org/Outreachyfirstpatch
-
-In particular this section "Versioning one patch revision"
-
-Also, always CC the lkml: linux-kernel@vger.kernel.org
-
-Thanks
---
-Gustavo
-
-
-
->  Documentation/bpf/btf.rst       | 2 +-
->  tools/lib/bpf/libbpf.c          | 2 +-
->  tools/lib/bpf/libbpf_internal.h | 2 +-
->  3 files changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/Documentation/bpf/btf.rst b/Documentation/bpf/btf.rst
-> index 4d565d202ce3..24ce50fc1fc1 100644
-> --- a/Documentation/bpf/btf.rst
-> +++ b/Documentation/bpf/btf.rst
-> @@ -670,7 +670,7 @@ func_info for each specific ELF section.::
->          __u32   sec_name_off; /* offset to section name */
->          __u32   num_info;
->          /* Followed by num_info * record_size number of bytes */
-> -        __u8    data[0];
-> +        __u8    data[];
->       };
->  
->  Here, num_info must be greater than 0.
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index e0276520171b..c02ea0e1a588 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -5577,7 +5577,7 @@ static struct perf_buffer *__perf_buffer__new(int map_fd, size_t page_cnt,
->  struct perf_sample_raw {
->  	struct perf_event_header header;
->  	uint32_t size;
-> -	char data[0];
-> +	char data[];
->  };
->  
->  struct perf_sample_lost {
-> diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
-> index 2e83a34f8c79..930ada2276bf 100644
-> --- a/tools/lib/bpf/libbpf_internal.h
-> +++ b/tools/lib/bpf/libbpf_internal.h
-> @@ -86,7 +86,7 @@ struct btf_ext_info_sec {
->  	__u32	sec_name_off;
->  	__u32	num_info;
->  	/* Followed by num_info * record_size number of bytes */
-> -	__u8	data[0];
-> +	__u8	data[];
->  };
->  
->  /* The minimum bpf_func_info checked by the loader */
-> 
+>
+> > 3. Now, the last minor complain is about flags field. It's super
+> > generic. Why not have a set of boolean fields in a struct, in this
+> > case to allow to specify strict/compat modes. Given we solve struct
+> > extensibility issue, adding new bool fields is not an issue at all, so
+> > the benefit of flags field are gone. The downside of flags field is
+> > that it's very opaque integer, you have to go and read sources to
+> > understand all the intended use cases and possible flags, which is
+> > certainly not a great user experience.
+>
+> This I agree with :)
+>
+> -Toke
+>
