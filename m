@@ -2,73 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F2507C2505
-	for <lists+bpf@lfdr.de>; Mon, 30 Sep 2019 18:22:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8CBDC2519
+	for <lists+bpf@lfdr.de>; Mon, 30 Sep 2019 18:26:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732008AbfI3QW7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Sep 2019 12:22:59 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:33205 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727767AbfI3QW7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 Sep 2019 12:22:59 -0400
-Received: by mail-qt1-f195.google.com with SMTP id r5so17823115qtd.0;
-        Mon, 30 Sep 2019 09:22:58 -0700 (PDT)
+        id S1732151AbfI3Q07 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Sep 2019 12:26:59 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:40010 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732026AbfI3Q07 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Sep 2019 12:26:59 -0400
+Received: by mail-qk1-f196.google.com with SMTP id y144so8302904qkb.7;
+        Mon, 30 Sep 2019 09:26:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=El93Fu1oJqniCITnf6MocyiC5MoE5Rxv000GoLGhIcE=;
-        b=fgX+6Z+CtxQiPY/CGH1zslA6mqXLXl+VBoSAIj10rNs004C3SGQupsPaUZ/1ztgL/m
-         uN/eh6ywaFxMJT2ljpEnWmnWhXPORuRNauKi/L/PLr16dx273YdT5/vpcSmIltLgVCYU
-         vJ+B5MwiYRg1FOrpezId2n4u6cwhFsPWUmja38vlDM/J6Fzuw1ksovuBRRsye9fRoDK5
-         GKcyMGbXRa6SF8chVUrlku3JcF1+XHD5u0cebZ0BaxACdN1/1xs6sbj1DBga9N+jK+YU
-         lfqBx6G8amueyD/Ov0RLWoFLuchcRP0vQzYQY7MSMIhx8VlMYC2A0DgJhu1mzynMZtRV
-         Gd1Q==
+        bh=/82IvvXBPSeOUnTimHmLfeGbwanGgz3/wyw+4Uf2M84=;
+        b=uqGeyEN6zHofbXJ+F2aQML/sUJMng3bDh0LgHmlYVarlITQIDmrr49+hhyivl6+V4D
+         fnNL34+5RDkqtVVflQix1dDKlAmIKSueoCphWcqzId+iho/8jl0eEI8Z0DKhAGJatqvO
+         QRUvD8C9BnAbI9aCOzdZ3Fcj+Ts5UKTmgb9v2I9Q6mOc7I9CPOKK4+kyDJs1VWXskPFw
+         1NQUbxrgiY1vl+66bG/uHdMxkHuYCektE8JPqHiRnReh8G3umKfr0Zmo+BxeUTN79KZB
+         XKqIY/nS3IXGdk+Hc0MtRMpyA2mO4bhm+prbjNnsXI5e9FrIBPGwMzn+40OUhiq5SiZJ
+         9xNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=El93Fu1oJqniCITnf6MocyiC5MoE5Rxv000GoLGhIcE=;
-        b=ROox7J63xEYjL2/KzcjWE/+6iPkTZWJ7aJaf3gSJXF+0DPhxnc33w+K/PBtgwsH/LS
-         Q1HE6upLB9N0hS3mfhDxzBf55nG3WPhefDze/mhFs8umvuXL75lrIpfh7hmfH4f6D2Nl
-         /xyVZAnO29kXhRoI5fHMth7RaZRZvrRa9GYNTFlfBJ+xvK0XCgOiXfY+QqJxK9aHBxCW
-         +vUYnxKv39LyxBGi3oMYvdPgacQy0xPX63CoNdSErL8EDI5rR40x2iVa29G5DWs5q/Vf
-         C6TemjDdPMMJcytw80T6gBXC7WMuUwdxOiYy14P3lHLwGa8sb8HUXNW3yG1iHfsqh2xA
-         ltXg==
-X-Gm-Message-State: APjAAAXiNVivQ26zm96qsj+xeSdhjY4kl0p9OhWvkpXbYFM1YAKZowFn
-        GOlln7V/ODOkk5ppu0JWL6ZHtcJjIu/9A2qkhNI=
-X-Google-Smtp-Source: APXvYqy/QgcC7txP+bTPRoIV9DEwamtrpPUNd9KRn5bDLfaORHvTe03LXfM03Zs5b4m8246V87TsOhFFOGVtbyt0shE=
-X-Received: by 2002:ac8:7401:: with SMTP id p1mr25094277qtq.141.1569860577784;
- Mon, 30 Sep 2019 09:22:57 -0700 (PDT)
+        bh=/82IvvXBPSeOUnTimHmLfeGbwanGgz3/wyw+4Uf2M84=;
+        b=M7I8SVR912SVlBDd4tXHzx2qRFOg++Ylteh7uPRPgpWkoVfkQOKHMxH3DN+rOKw0DT
+         SPuX0zULRtMBiqbtwVH9HbDnAoRJZysuaHXdbC/aVzHaDAs7bAt7NYJkpTLx2ra8AXCh
+         hO76lApset1BvHl2/Bjrwoq144Mz40vIiH4LHMbF+xbsf0OkHwwDg3XKAjPit2dZ1apg
+         SMiGvucd8hahSBX2jABSJgasKq7NPin9yzf75rUW5w25N0xqL4eV3A5MRC9dZveJVXKG
+         zxC/wK4plhCs8m/o9N2+vJ+VaTwzJki13pnNyOeF1tlHBm7jfkmDcROvmU7LmFDMpgA4
+         F3SA==
+X-Gm-Message-State: APjAAAUOozzjc7zGq+Iji0BCObvNP1n+az+OY/d58vNoy6Hx1Sa6sHJr
+        2rQSA8topvuTgdlEbHAv4tBm0MJzXfE5fOGdn0c=
+X-Google-Smtp-Source: APXvYqxBFGlwM2s42jIN6WX/UdqvVpfVpTmtQ/JfID2Hjq9Xv0OxQz2yq5VEvWwvDKlfChDUY17ZYd6RMk2jTZqLiGA=
+X-Received: by 2002:a37:98f:: with SMTP id 137mr885008qkj.449.1569860818118;
+ Mon, 30 Sep 2019 09:26:58 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190928063033.1674094-1-andriin@fb.com> <05329A22-363F-4C12-9B6D-F9A2941C749E@fb.com>
-In-Reply-To: <05329A22-363F-4C12-9B6D-F9A2941C749E@fb.com>
+References: <20190928063033.1674094-1-andriin@fb.com> <0b70df6a-28fd-e139-d72c-d4d88e9bc7b7@iogearbox.net>
+In-Reply-To: <0b70df6a-28fd-e139-d72c-d4d88e9bc7b7@iogearbox.net>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 30 Sep 2019 09:22:46 -0700
-Message-ID: <CAEf4BzZ4aDv07Qs48_=58x=gDdVyTN8c+S4_NjJj8z4NOCJqvg@mail.gmail.com>
+Date:   Mon, 30 Sep 2019 09:26:47 -0700
+Message-ID: <CAEf4BzYgNE7pLRVQStQ_hmC-WQp5cFz4W2sLFfunow35=7PGNQ@mail.gmail.com>
 Subject: Re: [PATCH bpf] libbpf: count present CPUs, not theoretically possible
-To:     Song Liu <songliubraving@fb.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
 Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@fb.com>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Sep 29, 2019 at 11:07 PM Song Liu <songliubraving@fb.com> wrote:
+On Mon, Sep 30, 2019 at 1:32 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
 >
->
->
-> > On Sep 27, 2019, at 11:30 PM, Andrii Nakryiko <andriin@fb.com> wrote:
-> >
+> On 9/28/19 8:30 AM, Andrii Nakryiko wrote:
 > > This patch switches libbpf_num_possible_cpus() from using possible CPU
 > > set to present CPU set. This fixes issues with incorrect auto-sizing of
 > > PERF_EVENT_ARRAY map on HOTPLUG-enabled systems.
-> >
+>
+> Those issues should be described in more detail here in the changelog,
+> otherwise noone knows what is meant exactly when glancing at the git log.
+
+Sure, I can add more details.
+
+>
 > > On HOTPLUG enabled systems, /sys/devices/system/cpu/possible is going to
 > > be a set of any representable (i.e., potentially possible) CPU, which is
 > > normally way higher than real amount of CPUs (e.g., 0-127 on VM I've
@@ -83,8 +85,8 @@ On Sun, Sep 29, 2019 at 11:07 PM Song Liu <songliubraving@fb.com> wrote:
 > >
 > > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 > > ---
-> > tools/lib/bpf/libbpf.c | 2 +-
-> > 1 file changed, 1 insertion(+), 1 deletion(-)
+> >   tools/lib/bpf/libbpf.c | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
 > >
 > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
 > > index e0276520171b..45351c074e45 100644
@@ -92,24 +94,23 @@ On Sun, Sep 29, 2019 at 11:07 PM Song Liu <songliubraving@fb.com> wrote:
 > > +++ b/tools/lib/bpf/libbpf.c
 > > @@ -5899,7 +5899,7 @@ void bpf_program__bpil_offs_to_addr(struct bpf_prog_info_linear *info_linear)
 > >
-> > int libbpf_num_possible_cpus(void)
-> > {
+> >   int libbpf_num_possible_cpus(void)
+> >   {
 > > -     static const char *fcpu = "/sys/devices/system/cpu/possible";
 > > +     static const char *fcpu = "/sys/devices/system/cpu/present";
 >
-> This is _very_ confusing. "possible cpus", "present cpus", and "online
-> cpus" are existing terminologies. I don't think we should force people
-> to remember something like "By possible cpus, libbpf actually means
-> present cpus".
->
-> This change works if we call it "libbbpf_num_cpus()". However,
-> libbpf_num_possible_cpus(), should mean possible CPUs.
+> Problem is that this is going to break things *badly* for per-cpu maps as
+> BPF_DECLARE_PERCPU() relies on possible CPUs, not present ones. And given
+> present<=possible you'll end up corrupting user space when you do a lookup
+> on the map since kernel side operates on possible as well.
 
-Ok, then if we really need to (I'll play again with my VM to recall
-all the details of original problem with this that I had before), I'll
-just add libbpf_num_present_cpus().
+Yeah, you are right. Ok, let me go back to my VM and repro original
+issue I had and see what and why is causing that. I'll see maybe I
+don't need this fix at all.
 
 >
-> Thanks,
-> Song
+> >       int len = 0, n = 0, il = 0, ir = 0;
+> >       unsigned int start = 0, end = 0;
+> >       int tmp_cpus = 0;
+> >
 >
