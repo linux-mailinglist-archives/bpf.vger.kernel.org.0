@@ -2,139 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D28C4C28D3
-	for <lists+bpf@lfdr.de>; Mon, 30 Sep 2019 23:32:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D235C2959
+	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2019 00:16:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727702AbfI3Vb5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Sep 2019 17:31:57 -0400
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:39958 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727118AbfI3Vb5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 Sep 2019 17:31:57 -0400
-Received: by mail-pf1-f194.google.com with SMTP id x127so6322585pfb.7
-        for <bpf@vger.kernel.org>; Mon, 30 Sep 2019 14:31:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=T2TY6NGUwIvtdhDebNN+p+NWVfl2R9w7WL/YAsVOyZk=;
-        b=i5xaSt1y22h381i+VEX8rdtcahF4pzXousOyH7UTBOqSlWxJsNRx3U1w+jky6T7wpJ
-         JSJ6TFnZUA+axWRpru7iWLaLNNNkszVK8pLgceyVlm4v3jnDQHKIKagXDKC+wY3J2x9c
-         Cw953v3oTPadf0FQSP0LrhvtDBiUZVmGP+u4g=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=T2TY6NGUwIvtdhDebNN+p+NWVfl2R9w7WL/YAsVOyZk=;
-        b=kJP9MqbIfl9yldb3fAty6WXu0dMPeJYU4L9oDOnXVKZaX7MVVTXsK8LG93EueopE2u
-         zMcmJ/QUxYSstALO5+ZXceiG8fQqJUUXrN5b9axloCKCPLHPKwKuW1m+rpAOt8V2Ai9L
-         Pei4v06vQwbf72wqMQvfT6o/fQBtCIgw8r0P02+5FAPDeVuVcpHATITvNBrQhd7ebWms
-         2TaBDOINfgDZ6hAlidYtxvne3UkLcMYF0Hm+NFVe2b8oUr4l7oHTH0OXveydwMRniOZj
-         ohG6oIyk5bWKVmgQujfL1eY4Rs5irkVkboMSo8BYqVGHpiTyj8TcGJg27V6vrESpjvTh
-         /OGA==
-X-Gm-Message-State: APjAAAVPtnZrPMo13XCVZL6uGflLRjVH8pHJjYHKJILjVv9eJOrn3AWW
-        yTv1zb4Tls93VMakbn3urJuaCQ==
-X-Google-Smtp-Source: APXvYqzUWfgikZuehcyb1ebNrGpxs7GPx/fz1aqBg6pNhhtsuL3oDtjyS/9y2h54yyg97lG3WBg15w==
-X-Received: by 2002:a17:90a:6509:: with SMTP id i9mr665793pjj.82.1569868291886;
-        Mon, 30 Sep 2019 11:31:31 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id b5sm14866917pfp.38.2019.09.30.11.31.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Sep 2019 11:31:30 -0700 (PDT)
-Date:   Mon, 30 Sep 2019 11:31:29 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Andy Lutomirski <luto@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        James Morris <jmorris@namei.org>, Jann Horn <jannh@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, kernel-team <kernel-team@fb.com>,
-        Linux API <linux-api@vger.kernel.org>
-Subject: Re: [PATCH bpf-next] bpf, capabilities: introduce CAP_BPF
-Message-ID: <201909301129.5A1129C@keescook>
-References: <20190827205213.456318-1-ast@kernel.org>
- <CALCETrV8iJv9+Ai11_1_r6MapPhhwt9hjxi=6EoixytabTScqg@mail.gmail.com>
- <20190828003447.htgzsxs5oevn3eys@ast-mbp.dhcp.thefacebook.com>
- <CALCETrVbPPPr=BdPAx=tJKxD3oLXP4OVSgCYrB_E4vb6idELow@mail.gmail.com>
- <20190828044340.zeha3k3cmmxgfqj7@ast-mbp.dhcp.thefacebook.com>
- <CALCETrW1o+Lazi2Ng6b9JN6jeJffgdW9f3HvqYhNo4TpHRXW=g@mail.gmail.com>
- <20190828225512.q6qbvkdiqih2iewk@ast-mbp.dhcp.thefacebook.com>
- <DA52992F-4862-4945-8482-FE619A04C753@amacapital.net>
- <20190829040721.ef6rumbaunkavyrr@ast-mbp.dhcp.thefacebook.com>
- <20190928193727.1769e90c@oasis.local.home>
+        id S1730176AbfI3WQO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Sep 2019 18:16:14 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:28676 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726590AbfI3WQO (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 30 Sep 2019 18:16:14 -0400
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id x8UMC01o009531
+        for <bpf@vger.kernel.org>; Mon, 30 Sep 2019 15:16:09 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=ksBZK73P+9iV095l6KAewxzw5v+Nv0i/kuDTbkxM0Y4=;
+ b=p96YeHgRGRhbad+nhSl/FZD7SAJBdw2E6tQXvTDQ0mYI0doojMv6/g1emxwY2rt+pSYj
+ Md5g9s/YiJjMRTts1XecmKnOzYZi/QRc5EyNnksaHAHTyrzNYFz0eYbw0G5e8/XL1j4R
+ g2rqdTENGxPs8gFu8xhudOKI2KJy41eRArc= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by m0089730.ppops.net with ESMTP id 2vbq6g8vgw-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 30 Sep 2019 15:16:09 -0700
+Received: from mx-out.facebook.com (2620:10d:c081:10::13) by
+ mail.thefacebook.com (2620:10d:c081:35::129) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
+ Mon, 30 Sep 2019 15:16:07 -0700
+Received: by dev101.prn2.facebook.com (Postfix, from userid 137359)
+        id 20BC2861880; Mon, 30 Sep 2019 15:16:07 -0700 (PDT)
+Smtp-Origin-Hostprefix: dev
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: dev101.prn2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: prn2c23
+Subject: [PATCH bpf-next] libbpf: dump current version to v0.0.6
+Date:   Mon, 30 Sep 2019 15:16:04 -0700
+Message-ID: <20190930221604.491942-1-andriin@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20190928193727.1769e90c@oasis.local.home>
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
+ definitions=2019-09-30_12:2019-09-30,2019-09-30 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0 spamscore=0
+ clxscore=1015 suspectscore=8 phishscore=0 adultscore=0 lowpriorityscore=0
+ malwarescore=0 impostorscore=0 mlxscore=0 mlxlogscore=546
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1908290000 definitions=main-1909300183
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Sep 28, 2019 at 07:37:27PM -0400, Steven Rostedt wrote:
-> On Wed, 28 Aug 2019 21:07:24 -0700
-> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-> > > 
-> > > This won’t make me much more comfortable, since CAP_BPF lets it do an ever-growing set of nasty things. I’d much rather one or both of two things happen:
-> > > 
-> > > 1. Give it CAP_TRACING only. It can leak my data, but it’s rather hard for it to crash my laptop, lose data, or cause other shenanigans.
-> > > 
-> > > 2. Improve it a bit do all the privileged ops are wrapped by capset().
-> > > 
-> > > Does this make sense?  I’m a security person on occasion. I find
-> > > vulnerabilities and exploit them deliberately and I break things by
-> > > accident on a regular basis. In my considered opinion, CAP_TRACING
-> > > alone, even extended to cover part of BPF as I’ve described, is
-> > > decently safe. Getting root with just CAP_TRACING will be decently
-> > > challenging, especially if I don’t get to read things like sshd’s
-> > > memory, and improvements to mitigate even that could be added.  I
-> > > am quite confident that attacks starting with CAP_TRACING will have
-> > > clear audit signatures if auditing is on.  I am also confident that
-> > > CAP_BPF *will* allow DoS and likely privilege escalation, and this
-> > > will only get more likely as BPF gets more widely used. And, if
-> > > BPF-based auditing ever becomes a thing, writing to the audit
-> > > daemon’s maps will be a great way to cover one’s tracks.  
-> > 
-> > CAP_TRACING, as I'm proposing it, will allow full tracefs access.
-> > I think Steven and Massami prefer that as well.
-> > That includes kprobe with probe_kernel_read.
-> > That also means mini-DoS by installing kprobes everywhere or running
-> > too much ftrace.
-> 
-> I was talking with Kees at Plumbers about this, and we were talking
-> about just using simple file permissions. I started playing with some
-> patches to allow the tracefs be visible but by default it would only be
-> visible by root.
-> 
->  rwx------
-> 
-> Then a start up script (or perhaps mount options) could change the
-> group owner, and change this to:
-> 
->  rwxrwx---
-> 
-> Where anyone in the group assigned (say "tracing") gets full access to
-> the file system.
-> 
-> The more I was playing with this, the less I see the need for
-> CAP_TRACING for ftrace and reading the format files.
+New release cycle started, let's bump to v0.0.6 proactively.
 
-Nice! Thanks for playing with this. I like it because it gives us a way
-to push policy into userspace (group membership, etc), and provides a
-clean way (hopefully) do separate "read" (kernel memory confidentiality)
-from "write" (kernel memory integrity), which wouldn't have been possible
-with a single new CAP_...
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+---
+ tools/lib/bpf/libbpf.map | 3 +++
+ 1 file changed, 3 insertions(+)
 
--Kees
-
+diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+index d04c7cb623ed..8d10ca03d78d 100644
+--- a/tools/lib/bpf/libbpf.map
++++ b/tools/lib/bpf/libbpf.map
+@@ -190,3 +190,6 @@ LIBBPF_0.0.5 {
+ 	global:
+ 		bpf_btf_get_next_id;
+ } LIBBPF_0.0.4;
++
++LIBBPF_0.0.6 {
++} LIBBPF_0.0.5;
 -- 
-Kees Cook
+2.17.1
+
