@@ -2,52 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DBEEC2595
-	for <lists+bpf@lfdr.de>; Mon, 30 Sep 2019 19:01:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D804C26CA
+	for <lists+bpf@lfdr.de>; Mon, 30 Sep 2019 22:40:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729983AbfI3RBA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Sep 2019 13:01:00 -0400
-Received: from ms.lwn.net ([45.79.88.28]:49970 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729640AbfI3RA7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 Sep 2019 13:00:59 -0400
-Received: from lwn.net (localhost [127.0.0.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id E5B149A9;
-        Mon, 30 Sep 2019 17:00:58 +0000 (UTC)
-Date:   Mon, 30 Sep 2019 11:00:57 -0600
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Stephen Kitt <steve@sk2.org>
-Cc:     linux-doc@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        linux-can@vger.kernel.org, linux-afs@lists.infradead.org,
-        kvm@vger.kernel.org,
-        "Gustavo A . R . Silva" <gustavo@embeddedor.com>
-Subject: Re: [PATCH] docs: use flexible array members, not zero-length
-Message-ID: <20190930110057.1b11d798@lwn.net>
-In-Reply-To: <20190928105557.221fb119@heffalump.sk2.org>
-References: <20190927142927.27968-1-steve@sk2.org>
-        <20190928011639.7c983e77@lwn.net>
-        <20190928105557.221fb119@heffalump.sk2.org>
-Organization: LWN.net
+        id S1730935AbfI3UkF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Sep 2019 16:40:05 -0400
+Received: from www62.your-server.de ([213.133.104.62]:60488 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730607AbfI3UkE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Sep 2019 16:40:04 -0400
+Received: from 15.248.197.178.dynamic.dsl-lte-bonding.zhbmb00p-msn.res.cust.swisscom.ch ([178.197.248.15] helo=localhost)
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1iF0KT-0000xK-7e; Mon, 30 Sep 2019 20:23:25 +0200
+Date:   Mon, 30 Sep 2019 20:23:24 +0200
+From:   Daniel Borkmann <daniel@iogearbox.net>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     ast@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH] tools: bpf: Use !building_out_of_srctree to determine
+ srctree
+Message-ID: <20190930182324.GA20613@pc-63.home>
+References: <20190927011344.4695-1-skhan@linuxfoundation.org>
+ <20190930085815.GA7249@pc-66.home>
+ <ea108769-1b3e-42f8-de9c-50b4a563be57@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ea108769-1b3e-42f8-de9c-50b4a563be57@linuxfoundation.org>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.101.4/25588/Mon Sep 30 10:25:56 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 28 Sep 2019 10:55:57 +0200
-Stephen Kitt <steve@sk2.org> wrote:
+On Mon, Sep 30, 2019 at 08:16:55AM -0600, Shuah Khan wrote:
+> On 9/30/19 2:58 AM, Daniel Borkmann wrote:
+> > On Thu, Sep 26, 2019 at 07:13:44PM -0600, Shuah Khan wrote:
+> > > make TARGETS=bpf kselftest fails with:
+> > > 
+> > > Makefile:127: tools/build/Makefile.include: No such file or directory
+> > > 
+> > > When the bpf tool make is invoked from tools Makefile, srctree is
+> > > cleared and the current logic check for srctree equals to empty
+> > > string to determine srctree location from CURDIR.
+> > > 
+> > > When the build in invoked from selftests/bpf Makefile, the srctree
+> > > is set to "." and the same logic used for srctree equals to empty is
+> > > needed to determine srctree.
+> > > 
+> > > Check building_out_of_srctree undefined as the condition for both
+> > > cases to fix "make TARGETS=bpf kselftest" build failure.
+> > > 
+> > > Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+> > 
+> > Applied, thanks!
+> 
+> Hi Daniel!
+> 
+> Is the tree the patch went into included in the linux-next?
 
-> Wouldn’t it be better to update the docs simultaneously in each patch which
-> fixes a structure? Or is that unworkable with current development practices?
-
-Definitely update the two together.  The doc fix should just go through
-the appropriate maintainer with the code change.
+Yes, both bpf and bpf-next are included in linux-next.
 
 Thanks,
-
-jon
+Daniel
