@@ -2,201 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A63EC1B45
-	for <lists+bpf@lfdr.de>; Mon, 30 Sep 2019 08:08:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DBB1C1BEC
+	for <lists+bpf@lfdr.de>; Mon, 30 Sep 2019 09:11:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726121AbfI3GI0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Sep 2019 02:08:26 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:35128 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725767AbfI3GI0 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 30 Sep 2019 02:08:26 -0400
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x8U67qQJ027898;
-        Sun, 29 Sep 2019 23:07:52 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=F3F21BYuXWueTtrOKdcBzV97+lmy2gurUWhzKriov+k=;
- b=cuFgXMzFleT1HynAxIiuNZIPiQQnwTuxWxL8Tuhzyb57Y7fYtsyV1/bRlU9ECWV70/Fk
- hmPrWtR47eEJPW8Hx4SpfMlCRnQDvCa4+O+XcveMcz7r1s1L32J9ow49pQT0r0m8KBpU
- j1X5f53VdJD7WEnOw81cevvmYjDCADn3bxE= 
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by mx0a-00082601.pphosted.com with ESMTP id 2vaq7t40xg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Sun, 29 Sep 2019 23:07:52 -0700
-Received: from prn-mbx01.TheFacebook.com (2620:10d:c081:6::15) by
- prn-hub06.TheFacebook.com (2620:10d:c081:35::130) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Sun, 29 Sep 2019 23:07:51 -0700
-Received: from prn-hub03.TheFacebook.com (2620:10d:c081:35::127) by
- prn-mbx01.TheFacebook.com (2620:10d:c081:6::15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Sun, 29 Sep 2019 23:07:50 -0700
-Received: from NAM05-BY2-obe.outbound.protection.outlook.com (192.168.54.28)
- by o365-in.thefacebook.com (192.168.16.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
- via Frontend Transport; Sun, 29 Sep 2019 23:07:50 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HPanGKmaEpZipzjbbGf+FmFcDB3R5Vu+1/Lwi5XHcnOISofM1jrgzbUu9PFT57S7L+BwJ+JjRsQxNTwKut905fDwldd49N6Szu+dvv+EcXzQ2xwZhw9C7nTQOok+aL0Q7nDPVxNmdWGNV27jFbRTJw4aY10gW+fveo+qAQqMorjBgDlKjATsJPUcmIwX8STv4hnt61wTnzZIZzEmqDXjjoW5N569ULHI+v5V7EW4CspJ0YXaJbRB0NYVJHjDm1tFxQz0Rvo2+5rk/0h7RzLjzhhKs0VqWWIUwXfaZaI3TTYYoURlcpzAaRJuFMDvhzP16uncPt2SDgrgbb96Gfb2AQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=F3F21BYuXWueTtrOKdcBzV97+lmy2gurUWhzKriov+k=;
- b=iSD6TKuDFrPLrY5s7pqcdg//21djjOg3t7aUKZBLxL4ehK2URGnyE28SXEWlaULU30+2RGSef7abCry7rV1CyGmIGRpRvOe7+KwRsez/Jj667PDH2yvVoGudJCzgDPkqOmUbfsibA5w3vgbnuEZYuog4GDkNM4bsgSetP3C6ZNT2nsRM6SEdZYfwrtagx921UFpyrQkg7Mhb67YFpJq+xxVVN3w8s3s75lQVI0b324U8KpsFIo19GRlK4pYMVyFXwKodnI/TwWmmC3ymy3Z96eVgx7moCyjeTm+SmUsraKzbpmcWOsIY5IudKnNBQGhicgkLTfU4YlBIlLouRN73CA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=F3F21BYuXWueTtrOKdcBzV97+lmy2gurUWhzKriov+k=;
- b=BCUYVTaFxku8UtxVCrw4NkuwI4/BiSBkbfhTMxWTgiiS8/W8tA/q476FhsfARSA5SyMaTkkrAGs92w3NjlX6200It8d8dr5rNLLMFHF6mRs5BcaZhAurkKpmLPAbpTjYxroeunI/qVoY6HeA/paIXTaB4pMFmkoN2cV5VkNnUSU=
-Received: from MWHPR15MB1165.namprd15.prod.outlook.com (10.175.3.22) by
- MWHPR15MB1165.namprd15.prod.outlook.com (10.175.3.22) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2305.15; Mon, 30 Sep 2019 06:07:47 +0000
-Received: from MWHPR15MB1165.namprd15.prod.outlook.com
- ([fe80::a828:5750:379d:b9a1]) by MWHPR15MB1165.namprd15.prod.outlook.com
- ([fe80::a828:5750:379d:b9a1%8]) with mapi id 15.20.2305.017; Mon, 30 Sep 2019
- 06:07:47 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-CC:     Stephen Kitt <steve@sk2.org>, Alexei Starovoitov <ast@kernel.org>,
-        "Daniel Borkmann" <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: Re: [PATCH] bpf: use flexible array members, not zero-length
-Thread-Topic: [PATCH] bpf: use flexible array members, not zero-length
-Thread-Index: AQHVdgvJY5waAsiNhEOsaINEV/KuxadCJ12AgAGXToA=
-Date:   Mon, 30 Sep 2019 06:07:47 +0000
-Message-ID: <F15E974F-4B7F-4819-B640-682A0A3A47C5@fb.com>
-References: <20190928144814.27002-1-steve@sk2.org>
- <02a551bc-7551-7c0e-0215-5ac8856b0512@embeddedor.com>
-In-Reply-To: <02a551bc-7551-7c0e-0215-5ac8856b0512@embeddedor.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3445.104.11)
-x-originating-ip: [2620:10d:c090:180::387f]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 5b21fa51-7acf-4895-e6e0-08d7456c8462
-x-ms-traffictypediagnostic: MWHPR15MB1165:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MWHPR15MB1165FC1DD257B825E140DC9AB3820@MWHPR15MB1165.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-forefront-prvs: 01762B0D64
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(396003)(376002)(366004)(39860400002)(346002)(136003)(199004)(189003)(66556008)(446003)(66476007)(76176011)(478600001)(6512007)(476003)(64756008)(8936002)(81156014)(256004)(99286004)(91956017)(76116006)(486006)(81166006)(305945005)(2616005)(4326008)(66946007)(8676002)(6436002)(5660300002)(11346002)(316002)(25786009)(71200400001)(71190400001)(46003)(14454004)(2906002)(6486002)(102836004)(229853002)(6246003)(186003)(6916009)(66446008)(7736002)(6116002)(50226002)(86362001)(33656002)(6506007)(36756003)(53546011)(54906003);DIR:OUT;SFP:1102;SCL:1;SRVR:MWHPR15MB1165;H:MWHPR15MB1165.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: RhzOLXOgp5Nmn5vb4x/4MiLOh0f0knFjoknWg5TNKO3zGRMgTgg6sSiew+RuRrZduuon0RyTg9wM9CF4/Y7HKzlJKltY6RhMi6PuNssMuyuQDU8kFxtmMe5RB3wi9enkcEmMWlkZvaOBb85JlqCwsyn5uZlk6c+PJ+verwvtq2ANK/rijTFkRhd6oMkHSBd5NQDko03hUVB4n3b8hAj1+BikIJBR2Pvi3G0gfg5sGoYQqG/i+8vDe8EUFOXiukCcG/KODi0H4Eqffn8NoAOJNVAu1eRXTTOSuvdKihx0pJR9L0Ms6nxXQBjnAlYcw4NP3hfk4l7V5l/IW5Fm+bgDVztIG3gTtiMsUszeIKqtUnk6hG4ClYLwzszqt11u0olgRjdwEauw9gJQ8WY1qfrt+tl5vPql8xGjOkVYPwjFVxY=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <6B0E49F048999546AC9E78A9D4672E28@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1729280AbfI3HLI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Sep 2019 03:11:08 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:48764 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725794AbfI3HLH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Sep 2019 03:11:07 -0400
+Received: by mail-io1-f71.google.com with SMTP id w16so28497337ioc.15
+        for <bpf@vger.kernel.org>; Mon, 30 Sep 2019 00:11:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=no/fJ4kEHtF7S7dZrIXoqdgmhjfpV6Rp9i2xAq4jHGY=;
+        b=dqhRf2N5NNLdPtVqWc0wpi+KwLGQuCRpXcilhfRe+F/FVrWOBeMpP5wQN9yKL1PzSl
+         3odbZDVZ+SvbDjBEd5A/2ysKOSEO80XEoOiXQTrjBsLK6VN409kWfZQjHAgZ7UkjDoZj
+         fZzh4BbEaB1IesTuQp1ZKhdGaeHij+id5ImFVdca1AgPR2+V7AlkGSRInMi0rye6Jg2J
+         fTg4K5YreEi99DT3pIeC+aHHPWZjvc5EGEp6vmAI/PJnDD1XQkjaNw6/dF/zYAnQJc0B
+         yMrx0SuDj6eny/3hTUih0CnjJ6pDeD2hgelB0fEG83gsS8xKl3C4RLhweHJJpbtnjcu6
+         xxyA==
+X-Gm-Message-State: APjAAAXbXvxnna5lFdv+pnyY9b+Gh2Uv49a22UDlu8LlMJFWYUw6ulmW
+        poOoclvfyq+Qfm9SY2vMjjaRdO2s3CRjPmIqoDCihWmawckY
+X-Google-Smtp-Source: APXvYqxIKz+As8+Qavz0Ymjn0rB9AZryTW33OmEjS9T4M4+ln+fVv/6g2V+X6Yecl9pU4ElHuOcekLNkCOVy+oDKpm/fcOapKFDi
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5b21fa51-7acf-4895-e6e0-08d7456c8462
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Sep 2019 06:07:47.4913
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 2daoBlwys4j2B5hioLjlu+TTopeACKrXCycB8TFgCWcZ+ljbAwi93sJ7ZzwgC+AZuWeTop4HSD0Z4Tv+5p7/Nw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1165
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
- definitions=2019-09-30_02:2019-09-25,2019-09-30 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
- spamscore=0 mlxscore=0 clxscore=1011 lowpriorityscore=0 adultscore=0
- phishscore=0 malwarescore=0 mlxlogscore=999 impostorscore=0 bulkscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1908290000 definitions=main-1909300064
-X-FB-Internal: deliver
+X-Received: by 2002:a5e:da0a:: with SMTP id x10mr20533544ioj.286.1569827466834;
+ Mon, 30 Sep 2019 00:11:06 -0700 (PDT)
+Date:   Mon, 30 Sep 2019 00:11:06 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000084fb070593bff0fb@google.com>
+Subject: BUG: unable to handle kernel NULL pointer dereference in xsk_poll
+From:   syzbot <syzbot+a5765ed8cdb1cca4d249@syzkaller.appspotmail.com>
+To:     ast@kernel.org, bjorn.topel@intel.com, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
+        jakub.kicinski@netronome.com, john.fastabend@gmail.com,
+        jonathan.lemon@gmail.com, kafai@fb.com,
+        linux-kernel@vger.kernel.org, magnus.karlsson@intel.com,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Hello,
+
+syzbot found the following crash on:
+
+HEAD commit:    a3c0e7b1 Merge tag 'libnvdimm-fixes-5.4-rc1' of git://git...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=14f05435600000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6ffbfa7e4a36190f
+dashboard link: https://syzkaller.appspot.com/bug?extid=a5765ed8cdb1cca4d249
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1096d835600000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=129f15f3600000
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+a5765ed8cdb1cca4d249@syzkaller.appspotmail.com
+
+IPv6: ADDRCONF(NETDEV_CHANGE): hsr0: link becomes ready
+8021q: adding VLAN 0 to HW filter on device batadv0
+BUG: kernel NULL pointer dereference, address: 0000000000000000
+#PF: supervisor instruction fetch in kernel mode
+#PF: error_code(0x0010) - not-present page
+PGD 99226067 P4D 99226067 PUD 8fa47067 PMD 0
+Oops: 0010 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 8719 Comm: syz-executor502 Not tainted 5.3.0+ #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+Google 01/01/2011
+RIP: 0010:0x0
+Code: Bad RIP value.
+RSP: 0018:ffff88809dd4f848 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: ffff88808c06d740 RCX: 1ffff1101180db7c
+RDX: 0000000000000002 RSI: 0000000000000000 RDI: ffff88809a190b00
+RBP: ffff88809dd4f880 R08: ffff8880921924c0 R09: ffffed101180db31
+R10: ffffed101180db30 R11: ffff88808c06d987 R12: 0000000000000002
+R13: 0000000000000304 R14: ffff88809a190b00 R15: 0000000000000000
+FS:  0000000001b27880(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffffffffffffd6 CR3: 00000000a307a000 CR4: 00000000001406f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+  xsk_poll+0x1e7/0x5a0 net/xdp/xsk.c:430
+  sock_poll+0x15e/0x480 net/socket.c:1256
+  vfs_poll include/linux/poll.h:90 [inline]
+  do_pollfd fs/select.c:859 [inline]
+  do_poll fs/select.c:907 [inline]
+  do_sys_poll+0x63c/0xdd0 fs/select.c:1001
+  __do_sys_ppoll fs/select.c:1101 [inline]
+  __se_sys_ppoll fs/select.c:1081 [inline]
+  __x64_sys_ppoll+0x259/0x310 fs/select.c:1081
+  do_syscall_64+0xfa/0x760 arch/x86/entry/common.c:290
+  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+RIP: 0033:0x441bd9
+Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7  
+48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
+ff 0f 83 7b 10 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffd48824e98 EFLAGS: 00000246 ORIG_RAX: 000000000000010f
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000441bd9
+RDX: 0000000000000000 RSI: 0000000000000006 RDI: 0000000020000040
+RBP: 00007ffd48824eb0 R08: 0000000000000000 R09: 0000000001bbbbbb
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000403170 R14: 0000000000000000 R15: 0000000000000000
+Modules linked in:
+CR2: 0000000000000000
+---[ end trace e262cafe88422aec ]---
+RIP: 0010:0x0
+Code: Bad RIP value.
+RSP: 0018:ffff88809dd4f848 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: ffff88808c06d740 RCX: 1ffff1101180db7c
+RDX: 0000000000000002 RSI: 0000000000000000 RDI: ffff88809a190b00
+RBP: ffff88809dd4f880 R08: ffff8880921924c0 R09: ffffed101180db31
+R10: ffffed101180db30 R11: ffff88808c06d987 R12: 0000000000000002
+R13: 0000000000000304 R14: ffff88809a190b00 R15: 0000000000000000
+FS:  0000000001b27880(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffffffffffffd6 CR3: 00000000a307a000 CR4: 00000000001406f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
 
-> On Sep 28, 2019, at 10:49 PM, Gustavo A. R. Silva <gustavo@embeddedor.com=
-> wrote:
->=20
->=20
->=20
-> On 9/28/19 09:48, Stephen Kitt wrote:
->> This switches zero-length arrays in variable-length structs to C99
->> flexible array members. GCC will then ensure that the arrays are
->> always the last element in the struct.
->>=20
->> Coccinelle:
->> @@
->> identifier S, fld;
->> type T;
->> @@
->>=20
->> struct S {
->>  ...
->> - T fld[0];
->> + T fld[];
->>  ...
->> };
->>=20
->> Signed-off-by: Stephen Kitt <steve@sk2.org>
->> ---
->> Documentation/bpf/btf.rst       | 2 +-
->> tools/lib/bpf/libbpf.c          | 2 +-
->> tools/lib/bpf/libbpf_internal.h | 2 +-
->> 3 files changed, 3 insertions(+), 3 deletions(-)
->>=20
->> diff --git a/Documentation/bpf/btf.rst b/Documentation/bpf/btf.rst
->> index 4d565d202ce3..24ce50fc1fc1 100644
->> --- a/Documentation/bpf/btf.rst
->> +++ b/Documentation/bpf/btf.rst
->> @@ -670,7 +670,7 @@ func_info for each specific ELF section.::
->>         __u32   sec_name_off; /* offset to section name */
->>         __u32   num_info;
->>         /* Followed by num_info * record_size number of bytes */
->> -        __u8    data[0];
->> +        __u8    data[];
->>      };
->>=20
->> Here, num_info must be greater than 0.
->> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
->> index e0276520171b..c02ea0e1a588 100644
->> --- a/tools/lib/bpf/libbpf.c
->> +++ b/tools/lib/bpf/libbpf.c
->> @@ -5577,7 +5577,7 @@ static struct perf_buffer *__perf_buffer__new(int =
-map_fd, size_t page_cnt,
->> struct perf_sample_raw {
->> 	struct perf_event_header header;
->> 	uint32_t size;
->> -	char data[0];
->> +	char data[];
->> };
->>=20
->> struct perf_sample_lost {
->> diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_inte=
-rnal.h
->> index 2e83a34f8c79..26eaa3f594aa 100644
->> --- a/tools/lib/bpf/libbpf_internal.h
->> +++ b/tools/lib/bpf/libbpf_internal.h
->> @@ -86,7 +86,7 @@ struct btf_ext_info_sec {
->> 	__u32	sec_name_off;
->> 	__u32	num_info;
->> 	/* Followed by num_info * record_size number of bytes */
->> -	__u8	data[0];
->> +	__u8 data[];
->=20
-> I think you should preserve the tab here.
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Agreed.=20
-
-Besides this:
-
-Acked-by: Song Liu <songliubraving@fb.com>
-
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this bug, for details see:
+https://goo.gl/tpsmEJ#testing-patches
