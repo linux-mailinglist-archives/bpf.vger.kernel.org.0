@@ -2,281 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A8ECFC42F4
-	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2019 23:49:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F6A2C4359
+	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2019 00:00:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727893AbfJAVt1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Oct 2019 17:49:27 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:38956 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726681AbfJAVt1 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 1 Oct 2019 17:49:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1569966565;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xTPKXYanENCf8S6Y/MdcG6LWf8Ty0manQNkYewZ+BGM=;
-        b=cIzP+yjKPGy1t9Z0JYIkZzzo7jevU5voZVk+u8VA3mVgKSdpTuS9ka4Twj7izRd6t34WjB
-        gt/MCC+Pjm0LzPGqMdDxstoBCP7BxVzgWdKbKXMnoL3RCXFt1dt2CcCRlxXBgex9YG5oM4
-        p+4RpjWzHLVQfE7i06exAIxG5HAHuxM=
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
- [209.85.167.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-133-LC_SWJqdOhSJgtqJWWvDBw-1; Tue, 01 Oct 2019 17:49:22 -0400
-Received: by mail-lf1-f72.google.com with SMTP id g24so3057288lfh.4
-        for <bpf@vger.kernel.org>; Tue, 01 Oct 2019 14:49:21 -0700 (PDT)
+        id S1728593AbfJAWAb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Oct 2019 18:00:31 -0400
+Received: from mail-io1-f66.google.com ([209.85.166.66]:35744 "EHLO
+        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727473AbfJAWAb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Oct 2019 18:00:31 -0400
+Received: by mail-io1-f66.google.com with SMTP id q10so52200951iop.2;
+        Tue, 01 Oct 2019 15:00:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=Ofb6T6xdILQ89Quyul9GGKyHwjSaqm5qwwuzogf11LQ=;
+        b=p/ZRYnkSTcEdKV9aBcYChw1Q5JZe+1lC26/XnmbGG/YQK0HHKcMWl0DdRnoEp+wmb6
+         rGK1jHnBcTUFOlEYMIEZrW5oQchf7H5pgBBoErFib9lGgk8DYuX5Llp9ozkO8PbXkXw3
+         VJFijFDbJGZs0sHHz56AXhtm7vkpEDFnJhbuUzeHokhsDjKdxLd5MgexzQi44n2cC4+b
+         YQ6r2QJqSORrd25MovitIgqs9ogkCtrI1yo7Wirn5qBFSFuRsQik8ptdY30P7/hIi1Bj
+         jkVwComagozLVJyIVkhFQogwDX3q6smYiWquOfU2TiBGuN4AznAJTFbMDUZmSTrPoxJa
+         AQtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=CWvSuWO20TyB05rSQQNOr2Loal1JyROYxQL2nrEc6yk=;
-        b=bjVUXnkvkiWKryK8wdfMSRkt8QhncmHNFUITCuV2hgcN4hITZMPjKKBT772SXALs23
-         KfCLe6/y+aJrFFcowVH1WwrRvoGe76ndZLIuybF+ARup/EenjW23zLSzyaUl8n8v0t8E
-         4LVUVGT4B1uME2XGXAYiMDls0GNEIBTSQZuubK0KHJavwfI42byt7cbIczPv8GwaUxA/
-         7D5QfMYNSCkAa6wxwxi8JVbEKdVyDxn4zPCTcR2aF3Zt7dVp0TVX7pjjU5jcwUoUkc98
-         D0DLhPwRrcufWSIGyBQ1gOHkUCn6oeGak5arzJ/n2pDGaZBc10sQW5kJ/QL1/MJ3HEpz
-         u8mw==
-X-Gm-Message-State: APjAAAUSxnDKKMJpjKzeFNOGG1YEph7S46B2q1hTnNlG3SNXd+bilAUJ
-        03iFx4o2kdIj9fJjiQCkJJeU1LD/Pk7PW99VFW/G2NCmlYBs/+1b3eyFH/ji/Q1dE32cd+gNIsA
-        YQ8DcZo39lYyr
-X-Received: by 2002:a2e:8857:: with SMTP id z23mr45943ljj.19.1569966560602;
-        Tue, 01 Oct 2019 14:49:20 -0700 (PDT)
-X-Google-Smtp-Source: APXvYqzrNkirmUxLUhp3EyQUktDY7LhdA5FGyZ3+yZH2x7FEwi2PkHZAqN4kO+1NY51d/6WEM10SVQ==
-X-Received: by 2002:a2e:8857:: with SMTP id z23mr45927ljj.19.1569966560379;
-        Tue, 01 Oct 2019 14:49:20 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk (borgediget.toke.dk. [85.204.121.218])
-        by smtp.gmail.com with ESMTPSA id s7sm4280204ljs.16.2019.10.01.14.49.19
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=Ofb6T6xdILQ89Quyul9GGKyHwjSaqm5qwwuzogf11LQ=;
+        b=e8qPz2WwR/v7kEIUO7OkWCoTF452D6RljxG6xNTU4kGrGL4b6HdmObcAD3JsgrWApy
+         7CHwnn/iMu3+9WLNre2diKn1QRszuvRjcFh/N99e+8UJpaiY/ykrELdQnMqrMK3v65FM
+         thD2SJuR7M0conK843FnLnn3BYH6p+bdrIpducK/NY8Dg+i8k2umQN7zgq/v1b/AiMNq
+         PUlyxu87gfyI8T85VMKzyaWU/UBIiORu9kdZ/SV1e+1/EBUB7Yce+3zpdLbp5rdyPmp5
+         zLzI7wlKZE7ZLLEBr8ToyGtRC/NPpy1xaxmVkZP9Bc3T3wppEs6ek0n5HUR3AwcLgr91
+         IodA==
+X-Gm-Message-State: APjAAAXuxSSplHnpDgt5wuu9GZ5tFssWfSgUo/o5uV4Tx3X22qHS5Urv
+        6T6CNJef++m4IMDp6tAyKtU=
+X-Google-Smtp-Source: APXvYqxRNEpfn7i1UzwaZ9p+rlSwTmjKQy4bdLkvztqK1RY/tAH8nID9D/fpxBiRzGdBR+N9+qNdjA==
+X-Received: by 2002:a6b:e512:: with SMTP id y18mr442604ioc.4.1569967230010;
+        Tue, 01 Oct 2019 15:00:30 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id n17sm6558538iog.11.2019.10.01.15.00.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Oct 2019 14:49:19 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 6140718063D; Tue,  1 Oct 2019 23:49:18 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Tue, 01 Oct 2019 15:00:29 -0700 (PDT)
+Date:   Tue, 01 Oct 2019 15:00:21 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
         Networking <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@chromium.org>,
         Kernel Team <kernel-team@fb.com>
-Subject: Re: [RFC][PATCH bpf-next] libbpf: add bpf_object__open_{file,mem} w/ sized opts
-In-Reply-To: <CAEf4BzYvx7wpy79mTgKMuZop3_qYCCOzk4XWoDKiq7Fbj+gAow@mail.gmail.com>
-References: <20190930164239.3697916-1-andriin@fb.com> <871rvwx3fg.fsf@toke.dk> <CAEf4BzYvx7wpy79mTgKMuZop3_qYCCOzk4XWoDKiq7Fbj+gAow@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 01 Oct 2019 23:49:18 +0200
-Message-ID: <87lfu4t9up.fsf@toke.dk>
-MIME-Version: 1.0
-X-MC-Unique: LC_SWJqdOhSJgtqJWWvDBw-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=UTF-8
+Message-ID: <5d93cc75429b4_67df2ac29a6045b472@john-XPS-13-9370.notmuch>
+In-Reply-To: <CAEf4Bzb8Q5nUppqBqnXH93U1con3895BJFHP88hQi5r6wohR6Q@mail.gmail.com>
+References: <20190930185855.4115372-1-andriin@fb.com>
+ <20190930185855.4115372-3-andriin@fb.com>
+ <87d0fhvt4e.fsf@toke.dk>
+ <5d93a6713cf1d_85b2b0fc76de5b424@john-XPS-13-9370.notmuch>
+ <CAEf4Bzb8Q5nUppqBqnXH93U1con3895BJFHP88hQi5r6wohR6Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/6] libbpf: move bpf_helpers.h, bpf_endian.h
+ into libbpf
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+Andrii Nakryiko wrote:
+> On Tue, Oct 1, 2019 at 12:18 PM John Fastabend <john.fastabend@gmail.co=
+m> wrote:
+> >
+> > Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> > >
+> > > > +struct bpf_map_def {
+> > > > +   unsigned int type;
+> > > > +   unsigned int key_size;
+> > > > +   unsigned int value_size;
+> > > > +   unsigned int max_entries;
+> > > > +   unsigned int map_flags;
+> > > > +   unsigned int inner_map_idx;
+> > > > +   unsigned int numa_node;
+> > > > +};
+> > >
+> > > Didn't we agree on no new bpf_map_def ABI in libbpf, and that all
+> > > additions should be BTF-based?
+> > >
+> > > -Toke
+> > >
+> >
+> > We use libbpf on pre BTF kernels so in this case I think it makes
+> > sense to add these fields. Having inner_map_idx there should allow
+> > us to remove some other things we have sitting around.
+> =
 
-> On Tue, Oct 1, 2019 at 1:42 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@red=
-hat.com> wrote:
->>
->> Andrii Nakryiko <andriin@fb.com> writes:
->>
->> > Add new set of bpf_object__open APIs using new approach to optional
->> > parameters extensibility allowing simpler ABI compatibility approach.
->> >
->> > This patch demonstrates an approach to implementing libbpf APIs that
->> > makes it easy to extend existing APIs with extra optional parameters i=
-n
->> > such a way, that ABI compatibility is preserved without having to do
->> > symbol versioning and generating lots of boilerplate code to handle it=
-.
->> > To facilitate succinct code for working with options, add OPTS_VALID,
->> > OPTS_HAS, and OPTS_GET macros that hide all the NULL and size checks.
->> >
->> > Additionally, newly added libbpf APIs are encouraged to follow similar
->> > pattern of having all mandatory parameters as formal function paramete=
-rs
->> > and always have optional (NULL-able) xxx_opts struct, which should
->> > always have real struct size as a first field and the rest would be
->> > optional parameters added over time, which tune the behavior of existi=
-ng
->> > API, if specified by user.
->>
->> I think this is a reasonable idea. It does require some care when adding
->> new options, though. They have to be truly optional. I.e., I could
->> imagine that we will have cases where the behaviour might need to be
->> different if a program doesn't understand a particular option (I am
->> working on such a case in the kernel ATM). You could conceivably use the
->> OPTS_HAS() macro to test for this case in the code, but that breaks if a
->> program is recompiled with no functional change: then it would *appear*
->> to "understand" that option, but not react properly to it.
->
-> So let me double-check I'm understanding this correctly.
->
-> Let's say we have some initial options like:
->
-> // VERSION 1
-> struct bla_opts {
->     size_t sz;
-> };
->
-> // VERSION 2
-> Then in newer version we add new field:
-> struct bla_opts {
->     int awesomeness_trigger;
-> };
->
-> Are you saying that if program was built with VERSION 1 in mind (so sz
-> =3D 8 for bla_opts, so awesomeness_trigger can't be even specified),
-> then that should be different from the program built against VERSION 2
-> and specifying .awesomeness_trigger =3D 0?
-> Do I get this right? I'm not sure how to otherwise interpret what you
-> are saying, so please elaborate if I didn't get the idea.
->
-> If that's what you are saying, then I think we shouldn't (and we
-> really can't, see Jesper's remark about padding) distinguish between
-> whether field was not "physically" there or whether it was just set to
-> default 0 value. Treating this uniformly as 0 makes libbpf logic
-> simpler and consistent and behavior much less surprising.
+> We had a discussion about supporting non-BTF and non-standard BPF map
+> definition before and it's still on my TODO list to go and do a proof
+> of concept how that can look like and what libbpf changes we need to
+> make. Right now libbpf doesn't support those new fields anyway, so we
+> shouldn't add them to public API.
 
-Indeed. My point was that we should make sure we don't try to do this :)
+I'm carrying around a patch for perf_event_open_probe() to get it working=
 
->> In other words, this should only be used for truly optional bits (like
->> flags) where the default corresponds to unchanged behaviour relative to
->> when the option was added.
->
-> This I agree 100%, furthermore, any added new option has to behave
-> like this. If that's not the case, then it has to be a new API
-> function or at least another symbol version.
+without BTF I'll send that out today/tomorrow. It seems enough to get
+all the basic prog load, maps reused/pinned, etc at least for my use
+case.
 
-Exactly!
+> =
 
->>
->> A few comments on the syntax below...
->>
->>
->> > +static struct bpf_object *
->> > +__bpf_object__open_mem(const void *obj_buf, size_t obj_buf_sz,
->> > +                    struct bpf_object_open_opts *opts, bool enforce_k=
-ver)
->>
->> I realise this is an internal function, but why does it have a
->> non-optional parameter *after* the opts?
->
-> Oh, no reason, added it later and I'm hoping to remove it completely.
-> Current bpf_object__open_buffer always enforces kver presence in a
-> program, which differs from bpf_object__open behavior (where it
-> depends on provided .prog_type argument), so with this I tried to
-> preserve existing behavior. But in the final version of this patch I
-> think I'll just make this kver archaic business in libbpf not
-> enforced. It's been deleted from kernel long time ago, there is no
-> good reason to keep enforcing this in libbpf. If someone is running
-> against old kernel and didn't specify kver, they'll get error anyway.
-> Libbpf will just need to make sure to pass kver through, if it's
-> specified. Thoughts?
+> >
+> > .John
 
-Not many. Enforcing anything on kernel version seems brittle anyway, so
-off the top of my head, yeah, let's nuke it (in a backwards-compatible
-way, of course :)).
-
->>
->> >       char tmp_name[64];
->> > +     const char *name;
->> >
->> > -     /* param validation */
->> > -     if (!obj_buf || obj_buf_sz <=3D 0)
->> > -             return NULL;
->> > +     if (!OPTS_VALID(opts) || !obj_buf || obj_buf_sz =3D=3D 0)
->> > +             return ERR_PTR(-EINVAL);
->> >
->> > +     name =3D OPTS_GET(opts, object_name, NULL);
->> >       if (!name) {
->> >               snprintf(tmp_name, sizeof(tmp_name), "%lx-%lx",
->> >                        (unsigned long)obj_buf,
->> >                        (unsigned long)obj_buf_sz);
->> >               name =3D tmp_name;
->> >       }
->> > +
->> >       pr_debug("loading object '%s' from buffer\n", name);
->> >
->> > -     return __bpf_object__open(name, obj_buf, obj_buf_sz, true, true)=
-;
->> > +     return __bpf_object__open(name, obj_buf, obj_buf_sz, enforce_kve=
-r, 0);
->> > +}
->> > +
->> > +struct bpf_object *
->> > +bpf_object__open_mem(const void *obj_buf, size_t obj_buf_sz,
->> > +                  struct bpf_object_open_opts *opts)
->> > +{
->> > +     return __bpf_object__open_mem(obj_buf, obj_buf_sz, opts, false);
->> > +}
->> > +
->> > +struct bpf_object *
->> > +bpf_object__open_buffer(const void *obj_buf, size_t obj_buf_sz, const=
- char *name)
->> > +{
->> > +     struct bpf_object_open_opts opts =3D {
->> > +             .sz =3D sizeof(struct bpf_object_open_opts),
->> > +             .object_name =3D name,
->> > +     };
->>
->> I think this usage with the "size in struct" model is really awkward.
->> Could we define a macro to help hide it? E.g.,
->>
->> #define BPF_OPTS_TYPE(type) struct bpf_ ## type ## _opts
->> #define DECLARE_BPF_OPTS(var, type) BPF_OPTS_TYPE(type) var =3D { .sz =
-=3D sizeof(BPF_OPTS_TYPE(type)); }
->
-> We certainly could (though I'd maintain that type specified full
-> struct name, makes it easier to navigate/grep code), but then we'll be
-> preventing this nice syntax of initializing structs, which makes me
-> very said because I love that syntax.
->>
->> Then the usage code could be:
->>
->> DECLARE_BPF_OPTS(opts, object_open);
->> opts.object_name =3D name;
->>
->> Still not ideal, but at least it's less boiler plate for the caller, and
->> people will be less likely to mess up by forgetting to add the size.
->
-> What do you think about this?
->
-> #define BPF_OPTS(type, name, ...) \
->         struct type name =3D { \
->                 .sz =3D sizeof(struct type), \
->                 __VA_ARGS__ \
->         }
->
-> struct bla_opts {
->         size_t sz;
->         int opt1;
->         void *opt2;
->         const char *opt3;
-> };
->
-> int main() {
->         BPF_OPTS(bla_opts, opts,
->                 .opt1 =3D 123,
->                 .opt2 =3D NULL,
->                 .opt3 =3D "fancy",
->         );
->
->         /* then also */
->         BPF_OPTS(bla_opts, old_school);
->         old_school.opt1 =3D 256;
->
->         return opts.opt1;
-> }
-
-Sure, LGTM! Should we still keep the bit where it expands _opts in the
-struct name as part of the macro, or does that become too obtuse?
-
-> Thanks a lot for a thoughtful feedback, Toke!
-
-You're very welcome! And thanks for working on these API issues!
-
--Toke
 
