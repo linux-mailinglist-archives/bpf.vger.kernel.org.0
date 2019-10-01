@@ -2,76 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 26476C311A
-	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2019 12:18:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C2A0C3151
+	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2019 12:27:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730189AbfJAKRr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Oct 2019 06:17:47 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:46098 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726109AbfJAKRq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Oct 2019 06:17:46 -0400
-Received: by mail-qk1-f193.google.com with SMTP id 201so10603973qkd.13;
-        Tue, 01 Oct 2019 03:17:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=1XTVdrOmV1no1NximF6x4JToT7Z0gqeikJEk6LhVXx0=;
-        b=clLx+LrvjCskroKu8+i3lksRlmy4EV1mdasaIHrzfweLGCRy8liLVlThudd4vBPE2X
-         bFXBYrChOSbq2+6ab+qmo7TUMM9erAe3C26fqSNJ2bsDOgbUV6GZwcLi37UiXrqJQu2N
-         vqPB8d/cwfa4pLeIDtSQ5ZMt2hsWpdmifAKm7Ew8fMnnlT9RDSVoiS6u8WhUvWhZspCN
-         KGvchZWLTspbBiZwPk1sWpu3wroZqokY1+eXHeqlS3kNUpd7+Vx7jsJQlTDcLb25890g
-         QfPF8yLvRgwpBgmvkIz4aFIzrjKOJPhpY5bOeL8ZAahxOhM3UUsBzCHV1KNfECNjVuO1
-         u6sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=1XTVdrOmV1no1NximF6x4JToT7Z0gqeikJEk6LhVXx0=;
-        b=XkrFhXS5soKXAdbVPZLJPKL99A69qHX8qsCGmr52G+/4UPPYV/r413rODXlIrcwd5V
-         c2fyE3ftmwMs4TFbQsNJ907NmbFFE4V+6c8ZgJPkudztnD2PR6igv4YDczvLfF6IL2yl
-         F8OFMIlOSPMeO1AH6MVzaus8xdw6fPb/lBOU+mFFbw7IFKC1Uf2Eub1YsW0AoQD6dFT3
-         rPxmRuDDMfGk4ESjB9BWj1v5Ygv9iwlwYUhvFmjL/+f+GHpGoGr0M4azUnIbD1ATDbpg
-         Xm8kFdbAJVA73RF1SGRNe1Szm39oi5PWtlGLL2yEha3+k+521bTk612ggxkuOXBVyF74
-         KCuw==
-X-Gm-Message-State: APjAAAWGZJO5KUXabE13nol5ydVUWYUTqDpvvMRcWuv/w7d9yHQCtem4
-        evEB2B/F5V2bhe0FyR+/iJ+1+7fUlisH45thv2XV9/JeB0CBrA==
-X-Google-Smtp-Source: APXvYqxVw7tb+xvjwLWAH80CttooWcvHoBzihRL2jjYn01P8YCPFIeLXsb9Da/SUFtmEbOjSeOm+9ohvGTuv8xY5D2E=
-X-Received: by 2002:a37:4b02:: with SMTP id y2mr5012794qka.493.1569925065228;
- Tue, 01 Oct 2019 03:17:45 -0700 (PDT)
-MIME-Version: 1.0
-References: <20191001101429.24965-1-bjorn.topel@gmail.com>
-In-Reply-To: <20191001101429.24965-1-bjorn.topel@gmail.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Tue, 1 Oct 2019 12:17:33 +0200
-Message-ID: <CAJ+HfNjSPeRrbibG8LtyFOQAtm+Bu425PO5Co+tHn0PkS5-gcg@mail.gmail.com>
-Subject: Re: [PATCH bpf] samples/bpf: kbuild: add CONFIG_SAMPLE_BPF Kconfig
-To:     Netdev <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        linux-kbuild@vger.kernel.org, bpf <bpf@vger.kernel.org>,
-        yamada.masahiro@socionext.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S1726721AbfJAKZk convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Tue, 1 Oct 2019 06:25:40 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:15574 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725765AbfJAKZk (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 1 Oct 2019 06:25:40 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x91AN6g2008169
+        for <bpf@vger.kernel.org>; Tue, 1 Oct 2019 06:25:39 -0400
+Received: from e06smtp02.uk.ibm.com (e06smtp02.uk.ibm.com [195.75.94.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2vc4s20je6-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 01 Oct 2019 06:25:39 -0400
+Received: from localhost
+        by e06smtp02.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
+        Tue, 1 Oct 2019 11:25:32 +0100
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (9.149.109.197)
+        by e06smtp02.uk.ibm.com (192.168.101.132) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Tue, 1 Oct 2019 11:25:29 +0100
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x91APSvZ59244646
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 1 Oct 2019 10:25:28 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 76FED42041;
+        Tue,  1 Oct 2019 10:25:28 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3A64C42047;
+        Tue,  1 Oct 2019 10:25:28 +0000 (GMT)
+Received: from dyn-9-152-96-81.boeblingen.de.ibm.com (unknown [9.152.96.81])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue,  1 Oct 2019 10:25:28 +0000 (GMT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.1\))
+Subject: Re: [PATCH bpf-next 1/6] selftests/bpf: undo GCC-specific
+ bpf_helpers.h changes
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+In-Reply-To: <20190930185855.4115372-2-andriin@fb.com>
+Date:   Tue, 1 Oct 2019 12:25:27 +0200
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
+        daniel@iogearbox.net, andrii.nakryiko@gmail.com, kernel-team@fb.com
+Content-Transfer-Encoding: 8BIT
+References: <20190930185855.4115372-1-andriin@fb.com>
+ <20190930185855.4115372-2-andriin@fb.com>
+To:     Andrii Nakryiko <andriin@fb.com>
+X-Mailer: Apple Mail (2.3445.9.1)
+X-TM-AS-GCONF: 00
+x-cbid: 19100110-0008-0000-0000-0000031CB76A
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19100110-0009-0000-0000-00004A3B6108
+Message-Id: <8E58BA2E-FFD2-4CF2-A617-D03D7D712AFB@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-10-01_05:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=3 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1908290000 definitions=main-1910010098
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 1 Oct 2019 at 12:14, Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> =
-wrote:
->
-> From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
->
-> This commit makes it possible to build the BPF samples via a Kconfig
-> option, CONFIG_SAMPLE_BPF. Further, it fixes that samples/bpf/ could
-> not be built due to a missing samples/Makefile subdir-y entry, after
-> the introduction of commit 394053f4a4b3 ("kbuild: make single targets
-> work more correctly").
->
-> Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
 
-I didn't add a Fixes:-tag for the kbuild commit above; The fix is a
-fallout from the kbuild change.
+
+> Am 30.09.2019 um 20:58 schrieb Andrii Nakryiko <andriin@fb.com>:
+> 
+> Having GCC provide its own bpf-helper.h is not the right approach and is
+> going to be changed. Undo bpf_helpers.h change before moving
+> bpf_helpers.h into libbpf.
+> 
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> ---
+> tools/testing/selftests/bpf/bpf_helpers.h | 8 --------
+> 1 file changed, 8 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/bpf_helpers.h b/tools/testing/selftests/bpf/bpf_helpers.h
+> index 54a50699bbfd..a1d9b97b8e15 100644
+> --- a/tools/testing/selftests/bpf/bpf_helpers.h
+> +++ b/tools/testing/selftests/bpf/bpf_helpers.h
+> @@ -13,8 +13,6 @@
+> 			 ##__VA_ARGS__);		\
+> })
+> 
+> -#ifdef __clang__
+> -
+> /* helper macro to place programs, maps, license in
+>  * different sections in elf_bpf file. Section names
+>  * are interpreted by elf_bpf loader
+> @@ -258,12 +256,6 @@ struct bpf_map_def {
+> 	unsigned int numa_node;
+> };
+> 
+> -#else
+> -
+> -#include <bpf-helpers.h>
+> -
+> -#endif
+> -
+> #define BPF_ANNOTATE_KV_PAIR(name, type_key, type_val)		\
+> 	struct ____btf_map_##name {				\
+> 		type_key key;					\
+> -- 
+> 2.17.1
+> 
+
+Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
