@@ -2,55 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7808EC3261
-	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2019 13:23:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C78A6C3285
+	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2019 13:34:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725951AbfJALXE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Oct 2019 07:23:04 -0400
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:45333 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725947AbfJALXE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Oct 2019 07:23:04 -0400
-Received: by mail-pg1-f194.google.com with SMTP id q7so9382613pgi.12;
-        Tue, 01 Oct 2019 04:23:03 -0700 (PDT)
+        id S1731629AbfJALdS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Oct 2019 07:33:18 -0400
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:36585 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725839AbfJALdS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Oct 2019 07:33:18 -0400
+Received: by mail-pf1-f195.google.com with SMTP id y22so7754842pfr.3;
+        Tue, 01 Oct 2019 04:33:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=3RJ117gHi9sUj8qt+VBfFz4EZYQo2wfsZBAfmwAinyI=;
-        b=bWpao1UbKLZ5vdfFFpvQBVnrWMGZwrWXh5RH0yoT0CFcWQZsyod03p7/fg3sK1RoaJ
-         M5lhkKCaUSDoqalvZbEQXwsQAvlatomKNJHb16rTalnD5qdWfnIkF7opmdS4kleOV7af
-         bFofljbGiaBbR9PuYeQFnECoYVNo07aP2DkonJQ1MIGz17VvN8jXMS09cOKqGVcv5As1
-         KzR+F4lVMtxm2OpAe62THuRKAyWVTtt7to+3CoXbiXdEqbtjiCfseUd9gTJbLrZdkFqt
-         l+OjLSCyf2WZ6iW7vLK3x4Z6Oaf/nJqi3LYCcVaG36wD4SJNhRBGPIx4eiPgp1aPdiXZ
-         o3AQ==
+        bh=NedOdxduYE192+j0L9U6oJB7serWu3kUApAmq9EK7s0=;
+        b=a/daXUUo3gjQK5srp4pfd1YsXfM2FYJ/SeSXm/K2wqAzgLsI9A22Cx4QVUXEUJGgNU
+         RXYzxEaVdT8uZrAbGe+FmV7RbeAHd3PV1uWdmSa+O6uHZ1b49Vr9/MCPMJnR/GAJPLh0
+         e8R6rENDW2vC5GJcyL+x6f0R2jbS0Mer5ikTdY2rCseYeOII+I2qgTz5L+fbvtdhlGPZ
+         8uhbD7rFFHTTeAHpTOXP1Ourma6dHQ6oWXd9dm0FZo75AIy69VThTVgPA8s/xw5BVTud
+         fQkemzWD2kwDQ647v/sH8Er1BtLJ1QX3AiiY0PJ3o4D2t5huxSy4KlrbHG65sk5hDxnV
+         /SMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=3RJ117gHi9sUj8qt+VBfFz4EZYQo2wfsZBAfmwAinyI=;
-        b=GhxJwLDktfCM1IT6WI3ercTi/9ft8EY62kZnWA3OdC+z/VC2b8w680OixnF4tV2a0g
-         IT+G1DJDrep+1VcD9LRqDGOERosAZ1emY69PjYY+8ZukG3nrSZsrDuYaookvlA2zRsJy
-         FX0mjUqi+eP49jpm4JIwkkUYjQjDKn687wWqUr2cpQAcUbORKVGcQDnm7KTbgQGXdRrt
-         CmbFGEwhWIYxzECCIs6wou2FQQ24+jiP900OYrOwQ6ba490QsufxL5HavvcZfMG1+OpF
-         8qFp7MxBdiSEBxQ+0M/uZPEgTrl5SpnwfJqI3/1OWph3Pl4jq6CjwuoNQsW8CVbvGbus
-         vnvg==
-X-Gm-Message-State: APjAAAXoS3dHee+s+y9r2Q9on0bVybMMrxM89Iw3aJ7EKgyaH/RKdEVE
-        ty0RuhQwUvNabOSzPA7hLweG9TBYKVU=
-X-Google-Smtp-Source: APXvYqyuiSulkSxXtffHndOosj4twhj2q6JGfb2gAtGd+/2qcb6hdjXV7GqmuKRbg7qHWFjcHBi3Gg==
-X-Received: by 2002:a63:2216:: with SMTP id i22mr29406263pgi.430.1569928982981;
-        Tue, 01 Oct 2019 04:23:02 -0700 (PDT)
+        bh=NedOdxduYE192+j0L9U6oJB7serWu3kUApAmq9EK7s0=;
+        b=HapWnr1Z7LD9XOMZSlA6BSSTOQaUe+E6r0nYZ00KRKI8P+Z8O1zk8GsKGmNq7ZRIGJ
+         iVXHuhIPt03PYsrJSB8bBeg6tyLJiid4dGOFRlBBI++n9U9TkV6ZqP/tqZJPTMZb7Rlz
+         FotO5SgOaxl9u95xyMPgbBttD7nROzFd9e4zCrGMPYTp4kAWbGK+Dk0GmXO7/uvqmStT
+         S/1mh6cAnZ+Lsf421di05O8wOCfdEYd/j8DozRowagW8jS0C2EVvM5Qo+z6pTFQ+tMHD
+         7p5rlQ7gnoLVDYNq2wfqP9SwgWUzYsVdA6Cuy6j/0whIY7XTqOEirs9YROkMVuZ4Un5A
+         kRTQ==
+X-Gm-Message-State: APjAAAVoEisYodzR8MZdoxu+eYsLsEb2ArCfA1LSXqzTZBVPYX2D3kHi
+        agkZvPpNw638wbpPId5PnW7RvoeIzdMBdg==
+X-Google-Smtp-Source: APXvYqxCn3u/39GjKHZ0Kpc/Yja0tSf1XnpAKP21udqK7c+x2TaaNcm8mxZ+RkgBKqZ8FtEJajuosQ==
+X-Received: by 2002:a65:6659:: with SMTP id z25mr30064683pgv.23.1569929597494;
+        Tue, 01 Oct 2019 04:33:17 -0700 (PDT)
 Received: from btopel-mobl.ger.intel.com ([192.55.55.41])
-        by smtp.gmail.com with ESMTPSA id h1sm15849488pfk.124.2019.10.01.04.22.59
+        by smtp.gmail.com with ESMTPSA id a29sm16238634pfr.152.2019.10.01.04.33.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Oct 2019 04:23:02 -0700 (PDT)
+        Tue, 01 Oct 2019 04:33:16 -0700 (PDT)
 From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
-To:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
-        bpf@vger.kernel.org
-Subject: [PATCH bpf] samples/bpf: fix build for task_fd_query_user.c
-Date:   Tue,  1 Oct 2019 13:22:49 +0200
-Message-Id: <20191001112249.27341-1-bjorn.topel@gmail.com>
+To:     linux-kernel@vger.kernel.org, acme@kernel.org
+Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, adrian.hunter@intel.com, jolsa@kernel.org,
+        namhyung@kernel.org
+Subject: [PATCH 0/2] perf tools: optional compile time test_attr__* depenency for perf-sys.h
+Date:   Tue,  1 Oct 2019 13:33:05 +0200
+Message-Id: <20191001113307.27796-1-bjorn.topel@gmail.com>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -60,27 +62,21 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Björn Töpel <bjorn.topel@intel.com>
+This mini series makes it possible to disable the use of test_attr__*
+for perf-sys.h users outside perf. E.g., samples/bpf/ uses perf-sys.h
+as a syscall wrapper.
 
-Add missing "linux/perf_event.h" include file.
+Now a user can define HAVE_ATTR_TEST to zero to avoid this, and as a
+nice side-effect it also fixes the samples/bpf/ build. ;-)
 
-Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
----
- samples/bpf/task_fd_query_user.c | 1 +
- 1 file changed, 1 insertion(+)
+Björn Töpel (2):
+  perf tools: Make usage of test_attr__* optional for perf-sys.h
+  samples/bpf: fix build by setting HAVE_ATTR_TEST to zero
 
-diff --git a/samples/bpf/task_fd_query_user.c b/samples/bpf/task_fd_query_user.c
-index e39938058223..4c31b305e6ef 100644
---- a/samples/bpf/task_fd_query_user.c
-+++ b/samples/bpf/task_fd_query_user.c
-@@ -13,6 +13,7 @@
- #include <sys/resource.h>
- #include <sys/types.h>
- #include <sys/stat.h>
-+#include <linux/perf_event.h>
- 
- #include "libbpf.h"
- #include "bpf_load.h"
+ samples/bpf/Makefile  | 1 +
+ tools/perf/perf-sys.h | 6 ++++--
+ 2 files changed, 5 insertions(+), 2 deletions(-)
+
 -- 
 2.20.1
 
