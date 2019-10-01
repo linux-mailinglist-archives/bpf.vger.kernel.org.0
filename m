@@ -2,37 +2,36 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9016EC3D8C
-	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2019 19:00:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10AD1C3D8D
+	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2019 19:00:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727817AbfJAQkp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Oct 2019 12:40:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52066 "EHLO mail.kernel.org"
+        id S1727312AbfJARAj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Oct 2019 13:00:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52148 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730241AbfJAQko (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Oct 2019 12:40:44 -0400
+        id S1730241AbfJAQkr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Oct 2019 12:40:47 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D3E7421D79;
-        Tue,  1 Oct 2019 16:40:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6B87E21A4A;
+        Tue,  1 Oct 2019 16:40:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1569948043;
-        bh=8rXf1rcCw3zLras7kS4IMtEFY7Dv0pAdekM63Zo4p1g=;
+        s=default; t=1569948047;
+        bh=AFahc8G12K7WvzeCEERC3mW1Z1th2gs47ouNqmHB0wA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hw0rp2UpCOnwwt+y7MLvTR0/AixA8DMxxoqItXLEpo8mN62bPcckG4dLPgwngg5sa
-         fAly+fz7licAcUa4bDyQbh5j7svzd2NDiSRVgveSwisIaGynvGm/TjlFalFjfB7jxe
-         9aOf+oiI/rE7GyTrF3sYpVLYl6ejHNffhzFPlfjE=
+        b=PPiOLtLZtsPXzedIqFHTNWvPncwW1qkdB2L/UDaCacxr8FARikNWCww+ScfXlMmFx
+         5xmqvDN9tqzhuMtNZof0iPCZ+ThMvAmEvzqKg8foM331tDWXPdY/7hDYYfaCjtDuEy
+         a0+NqT8cMq9t1THTZeViQYVnl9z4XA4k3dLNXZBY=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Andrii Nakryiko <andriin@fb.com>, Alexei Starovoitov <ast@fb.com>,
+Cc:     Andrii Nakryiko <andriin@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: [PATCH AUTOSEL 5.3 50/71] selftests/bpf: adjust strobemeta loop to satisfy latest clang
-Date:   Tue,  1 Oct 2019 12:39:00 -0400
-Message-Id: <20191001163922.14735-50-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.3 52/71] libbpf: fix false uninitialized variable warning
+Date:   Tue,  1 Oct 2019 12:39:02 -0400
+Message-Id: <20191001163922.14735-52-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191001163922.14735-1-sashal@kernel.org>
 References: <20191001163922.14735-1-sashal@kernel.org>
@@ -47,47 +46,32 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Andrii Nakryiko <andriin@fb.com>
 
-[ Upstream commit 4670d68b9254710fdeaf794cad54d8b2c9929e0a ]
+[ Upstream commit aef70a1f44c0b570e6345c02c2d240471859f0a4 ]
 
-Some recent changes in latest Clang started causing the following
-warning when unrolling strobemeta test case main loop:
+Some compilers emit warning for potential uninitialized next_id usage.
+The code is correct, but control flow is too complicated for some
+compilers to figure this out. Re-initialize next_id to satisfy
+compiler.
 
-  progs/strobemeta.h:416:2: warning: loop not unrolled: the optimizer was
-  unable to perform the requested transformation; the transformation might
-  be disabled or specified as part of an unsupported transformation
-  ordering [-Wpass-failed=transform-warning]
-
-This patch simplifies loop's exit condition to depend only on constant
-max iteration number (STROBE_MAX_MAP_ENTRIES), while moving early
-termination logic inside the loop body. The changes are equivalent from
-program logic standpoint, but fixes the warning. It also appears to
-improve generated BPF code, as it fixes previously failing non-unrolled
-strobemeta test cases.
-
-Cc: Alexei Starovoitov <ast@fb.com>
 Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/bpf/progs/strobemeta.h | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ tools/lib/bpf/btf_dump.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/tools/testing/selftests/bpf/progs/strobemeta.h b/tools/testing/selftests/bpf/progs/strobemeta.h
-index 8a399bdfd9203..067eb625d01c5 100644
---- a/tools/testing/selftests/bpf/progs/strobemeta.h
-+++ b/tools/testing/selftests/bpf/progs/strobemeta.h
-@@ -413,7 +413,10 @@ static __always_inline void *read_map_var(struct strobemeta_cfg *cfg,
- #else
- #pragma unroll
- #endif
--	for (int i = 0; i < STROBE_MAX_MAP_ENTRIES && i < map.cnt; ++i) {
-+	for (int i = 0; i < STROBE_MAX_MAP_ENTRIES; ++i) {
-+		if (i >= map.cnt)
-+			break;
-+
- 		descr->key_lens[i] = 0;
- 		len = bpf_probe_read_str(payload, STROBE_MAX_STR_LEN,
- 					 map.entries[i].key);
+diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
+index 7065bb5b27525..e1357dbb16c24 100644
+--- a/tools/lib/bpf/btf_dump.c
++++ b/tools/lib/bpf/btf_dump.c
+@@ -1213,6 +1213,7 @@ static void btf_dump_emit_type_chain(struct btf_dump *d,
+ 				return;
+ 			}
+ 
++			next_id = decls->ids[decls->cnt - 1];
+ 			next_t = btf__type_by_id(d->btf, next_id);
+ 			multidim = btf_kind_of(next_t) == BTF_KIND_ARRAY;
+ 			/* we need space if we have named non-pointer */
 -- 
 2.20.1
 
