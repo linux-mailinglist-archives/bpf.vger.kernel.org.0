@@ -2,113 +2,198 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E412C36D8
-	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2019 16:17:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81783C3B33
+	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2019 18:43:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388729AbfJAOQU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Oct 2019 10:16:20 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:42858 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726554AbfJAOQU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Oct 2019 10:16:20 -0400
-Received: by mail-qt1-f193.google.com with SMTP id w14so21743341qto.9;
-        Tue, 01 Oct 2019 07:16:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=zqe/3yQ//FnSWGENLzctmWxawD8BEgiS/3EQrQ4HX8Q=;
-        b=U5szjWsyE6rJuE1IsJodEcdG6EC9zXgWg6A1w9p6+VcT3Ug/y6Xf0r6pQ8e3EyaHtJ
-         SHuWDz50EB2O+ZJ3Ca4aTVtSbuFgmK+G3EI44O3R+2zpu0kyjzXXOeRhcIh8EPjMVBA3
-         Q8dpXPkI4L177mVxdw6QXwBvQsegsNHR71bJLYcv42T6atSGrk8YbrzC4xcsTGsULGqB
-         64OB27zXFiLEFyTTSQh6XyO2w8yPC6jW35qlEkoupPUZ+boU5fWvhhAnkmGppaGjnQOu
-         oKSMC5PzD7KkhEh2rl6DMF1TpM6SObOk2nBwCbwnLpfFqFQMVXE6fEr17l8+qdJxUv5h
-         YWNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=zqe/3yQ//FnSWGENLzctmWxawD8BEgiS/3EQrQ4HX8Q=;
-        b=Fw7foO3f2PASYJVqStJ4mMWRQ6XLykqVTdkur49JeJM80FIWTn2Bvx8Bmq7uRVGaqt
-         0N4hvyo+SIhSY7qb9lgkhcqGEIf1BhdsdMNbXlWW/xBkBnxGQZqPNVJclKGgdVd5Hlrn
-         EWn3ZKyXtVahkHhKLph8mQFypm1EoFO8mxYFbDCB5FFop8j4zRKh8/jGdIvhYTJfUf96
-         09B+hJulFkgevjSlgoKL4oAScKaf403MCzbzQehL9oAA+r9aKtXM60clIm+Y45wwsAb4
-         LoczYeBuGMDe5SDboQXASh+x3wjYTdO+eCU2ymrGzenZqNJRhtrC9RimRIly3pp0nHHd
-         7Myw==
-X-Gm-Message-State: APjAAAVe2cMHQOHWavwUrTPI2U+RkmBqpAXa6yFcdzb78rLNKyKyNSpT
-        kAI+4DOS1GPnsgg5pvFr4cQ8mGJtZHPqRr74eDo=
-X-Google-Smtp-Source: APXvYqwy5L7lsArt7eRzsOObi54HA7rJbsTO0TkfyRzzAV4GNqKD8qOP15LcFgfixXyNieEk8mnHY5psxc3M3RmPVBM=
-X-Received: by 2002:a05:6214:1369:: with SMTP id c9mr25800672qvw.3.1569939377523;
- Tue, 01 Oct 2019 07:16:17 -0700 (PDT)
-MIME-Version: 1.0
-References: <20191001101429.24965-1-bjorn.topel@gmail.com> <CAK7LNATNw4Qysj1Q2dXd4PALfbtgMXPwgvmW=g0dRcrczGW-Fg@mail.gmail.com>
-In-Reply-To: <CAK7LNATNw4Qysj1Q2dXd4PALfbtgMXPwgvmW=g0dRcrczGW-Fg@mail.gmail.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Tue, 1 Oct 2019 16:16:05 +0200
-Message-ID: <CAJ+HfNgvxornSfqnbAthNy6u6=-enGCdA8K1e6rLXhCzGgmONQ@mail.gmail.com>
-Subject: Re: [PATCH bpf] samples/bpf: kbuild: add CONFIG_SAMPLE_BPF Kconfig
-To:     Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc:     Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S1732115AbfJAQmn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Oct 2019 12:42:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54666 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732082AbfJAQmm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Oct 2019 12:42:42 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BF69B222C5;
+        Tue,  1 Oct 2019 16:42:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1569948160;
+        bh=nxxeL1J9BA6m3C/MTM13KTCe1snedyexFr9+5Ba6axM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=JIRhlJRQeAH3ukLcaaF6+llLxPtouSB/sRN30jyBCz6uRer43++lquiHdouRXM/5W
+         BxtIvfy8pPo/RuplLHpo9KX8YqnwGx26WyrVVjVOHE1SC6c9eVWyunNZ7uIY9aDkjw
+         6nwBgoTyx4KQrNmleWtlBeaIZlVquq0CrzVn0tYY=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Allan Zhang <allanzhang@google.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Stanislav Fomichev <sdf@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.2 49/63] bpf: Fix bpf_event_output re-entry issue
+Date:   Tue,  1 Oct 2019 12:41:11 -0400
+Message-Id: <20191001164125.15398-49-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20191001164125.15398-1-sashal@kernel.org>
+References: <20191001164125.15398-1-sashal@kernel.org>
+MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 1 Oct 2019 at 14:33, Masahiro Yamada
-<yamada.masahiro@socionext.com> wrote:
->
-> Hi Bjorn
->
-> On Tue, Oct 1, 2019 at 7:14 PM Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.c=
-om> wrote:
-> >
-[...]
-> >  subdir-$(CONFIG_SAMPLE_VFS)            +=3D vfs
-> > +subdir-$(CONFIG_SAMPLE_BPF)            +=3D bpf
->
->
-> Please keep samples/Makefile sorted alphabetically.
->
+From: Allan Zhang <allanzhang@google.com>
 
-Thank you, I'll address that in the v2!
+[ Upstream commit 768fb61fcc13b2acaca758275d54c09a65e2968b ]
 
->
->
->
-> I am not checking samples/bpf/Makefile, but
-> allmodconfig no longer compiles for me.
->
->
->
-> samples/bpf/Makefile:209: WARNING: Detected possible issues with include =
-path.
-> samples/bpf/Makefile:210: WARNING: Please install kernel headers
-> locally (make headers_install).
-> error: unable to create target: 'No available targets are compatible
-> with triple "bpf"'
-> 1 error generated.
-> readelf: Error: './llvm_btf_verify.o': No such file
-> *** ERROR: LLVM (llc) does not support 'bpf' target
->    NOTICE: LLVM version >=3D 3.7.1 required
->
+BPF_PROG_TYPE_SOCK_OPS program can reenter bpf_event_output because it
+can be called from atomic and non-atomic contexts since we don't have
+bpf_prog_active to prevent it happen.
 
-Yes, the BPF samples require clang/LLVM with BPF support to build. Any
-suggestion on a good way to address this (missing tools), better than
-the warning above? After the commit 394053f4a4b3 ("kbuild: make single
-targets work more correctly"), it's no longer possible to build
-samples/bpf without support in the samples/Makefile.
+This patch enables 3 levels of nesting to support normal, irq and nmi
+context.
 
+We can easily reproduce the issue by running netperf crr mode with 100
+flows and 10 threads from netperf client side.
 
-Thanks,
-Bj=C3=B6rn
+Here is the whole stack dump:
 
-> --
-> Best Regards
-> Masahiro Yamada
+[  515.228898] WARNING: CPU: 20 PID: 14686 at kernel/trace/bpf_trace.c:549 bpf_event_output+0x1f9/0x220
+[  515.228903] CPU: 20 PID: 14686 Comm: tcp_crr Tainted: G        W        4.15.0-smp-fixpanic #44
+[  515.228904] Hardware name: Intel TBG,ICH10/Ikaria_QC_1b, BIOS 1.22.0 06/04/2018
+[  515.228905] RIP: 0010:bpf_event_output+0x1f9/0x220
+[  515.228906] RSP: 0018:ffff9a57ffc03938 EFLAGS: 00010246
+[  515.228907] RAX: 0000000000000012 RBX: 0000000000000001 RCX: 0000000000000000
+[  515.228907] RDX: 0000000000000000 RSI: 0000000000000096 RDI: ffffffff836b0f80
+[  515.228908] RBP: ffff9a57ffc039c8 R08: 0000000000000004 R09: 0000000000000012
+[  515.228908] R10: ffff9a57ffc1de40 R11: 0000000000000000 R12: 0000000000000002
+[  515.228909] R13: ffff9a57e13bae00 R14: 00000000ffffffff R15: ffff9a57ffc1e2c0
+[  515.228910] FS:  00007f5a3e6ec700(0000) GS:ffff9a57ffc00000(0000) knlGS:0000000000000000
+[  515.228910] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  515.228911] CR2: 0000537082664fff CR3: 000000061fed6002 CR4: 00000000000226f0
+[  515.228911] Call Trace:
+[  515.228913]  <IRQ>
+[  515.228919]  [<ffffffff82c6c6cb>] bpf_sockopt_event_output+0x3b/0x50
+[  515.228923]  [<ffffffff8265daee>] ? bpf_ktime_get_ns+0xe/0x10
+[  515.228927]  [<ffffffff8266fda5>] ? __cgroup_bpf_run_filter_sock_ops+0x85/0x100
+[  515.228930]  [<ffffffff82cf90a5>] ? tcp_init_transfer+0x125/0x150
+[  515.228933]  [<ffffffff82cf9159>] ? tcp_finish_connect+0x89/0x110
+[  515.228936]  [<ffffffff82cf98e4>] ? tcp_rcv_state_process+0x704/0x1010
+[  515.228939]  [<ffffffff82c6e263>] ? sk_filter_trim_cap+0x53/0x2a0
+[  515.228942]  [<ffffffff82d90d1f>] ? tcp_v6_inbound_md5_hash+0x6f/0x1d0
+[  515.228945]  [<ffffffff82d92160>] ? tcp_v6_do_rcv+0x1c0/0x460
+[  515.228947]  [<ffffffff82d93558>] ? tcp_v6_rcv+0x9f8/0xb30
+[  515.228951]  [<ffffffff82d737c0>] ? ip6_route_input+0x190/0x220
+[  515.228955]  [<ffffffff82d5f7ad>] ? ip6_protocol_deliver_rcu+0x6d/0x450
+[  515.228958]  [<ffffffff82d60246>] ? ip6_rcv_finish+0xb6/0x170
+[  515.228961]  [<ffffffff82d5fb90>] ? ip6_protocol_deliver_rcu+0x450/0x450
+[  515.228963]  [<ffffffff82d60361>] ? ipv6_rcv+0x61/0xe0
+[  515.228966]  [<ffffffff82d60190>] ? ipv6_list_rcv+0x330/0x330
+[  515.228969]  [<ffffffff82c4976b>] ? __netif_receive_skb_one_core+0x5b/0xa0
+[  515.228972]  [<ffffffff82c497d1>] ? __netif_receive_skb+0x21/0x70
+[  515.228975]  [<ffffffff82c4a8d2>] ? process_backlog+0xb2/0x150
+[  515.228978]  [<ffffffff82c4aadf>] ? net_rx_action+0x16f/0x410
+[  515.228982]  [<ffffffff830000dd>] ? __do_softirq+0xdd/0x305
+[  515.228986]  [<ffffffff8252cfdc>] ? irq_exit+0x9c/0xb0
+[  515.228989]  [<ffffffff82e02de5>] ? smp_call_function_single_interrupt+0x65/0x120
+[  515.228991]  [<ffffffff82e020e1>] ? call_function_single_interrupt+0x81/0x90
+[  515.228992]  </IRQ>
+[  515.228996]  [<ffffffff82a11ff0>] ? io_serial_in+0x20/0x20
+[  515.229000]  [<ffffffff8259c040>] ? console_unlock+0x230/0x490
+[  515.229003]  [<ffffffff8259cbaa>] ? vprintk_emit+0x26a/0x2a0
+[  515.229006]  [<ffffffff8259cbff>] ? vprintk_default+0x1f/0x30
+[  515.229008]  [<ffffffff8259d9f5>] ? vprintk_func+0x35/0x70
+[  515.229011]  [<ffffffff8259d4bb>] ? printk+0x50/0x66
+[  515.229013]  [<ffffffff82637637>] ? bpf_event_output+0xb7/0x220
+[  515.229016]  [<ffffffff82c6c6cb>] ? bpf_sockopt_event_output+0x3b/0x50
+[  515.229019]  [<ffffffff8265daee>] ? bpf_ktime_get_ns+0xe/0x10
+[  515.229023]  [<ffffffff82c29e87>] ? release_sock+0x97/0xb0
+[  515.229026]  [<ffffffff82ce9d6a>] ? tcp_recvmsg+0x31a/0xda0
+[  515.229029]  [<ffffffff8266fda5>] ? __cgroup_bpf_run_filter_sock_ops+0x85/0x100
+[  515.229032]  [<ffffffff82ce77c1>] ? tcp_set_state+0x191/0x1b0
+[  515.229035]  [<ffffffff82ced10e>] ? tcp_disconnect+0x2e/0x600
+[  515.229038]  [<ffffffff82cecbbb>] ? tcp_close+0x3eb/0x460
+[  515.229040]  [<ffffffff82d21082>] ? inet_release+0x42/0x70
+[  515.229043]  [<ffffffff82d58809>] ? inet6_release+0x39/0x50
+[  515.229046]  [<ffffffff82c1f32d>] ? __sock_release+0x4d/0xd0
+[  515.229049]  [<ffffffff82c1f3e5>] ? sock_close+0x15/0x20
+[  515.229052]  [<ffffffff8273b517>] ? __fput+0xe7/0x1f0
+[  515.229055]  [<ffffffff8273b66e>] ? ____fput+0xe/0x10
+[  515.229058]  [<ffffffff82547bf2>] ? task_work_run+0x82/0xb0
+[  515.229061]  [<ffffffff824086df>] ? exit_to_usermode_loop+0x7e/0x11f
+[  515.229064]  [<ffffffff82408171>] ? do_syscall_64+0x111/0x130
+[  515.229067]  [<ffffffff82e0007c>] ? entry_SYSCALL_64_after_hwframe+0x3d/0xa2
+
+Fixes: a5a3a828cd00 ("bpf: add perf event notificaton support for sock_ops")
+Signed-off-by: Allan Zhang <allanzhang@google.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Reviewed-by: Stanislav Fomichev <sdf@google.com>
+Reviewed-by: Eric Dumazet <edumazet@google.com>
+Acked-by: John Fastabend <john.fastabend@gmail.com>
+Link: https://lore.kernel.org/bpf/20190925234312.94063-2-allanzhang@google.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ kernel/trace/bpf_trace.c | 26 +++++++++++++++++++++-----
+ 1 file changed, 21 insertions(+), 5 deletions(-)
+
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 1c9a4745e596d..aaf66cd9daa6b 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -497,14 +497,17 @@ static const struct bpf_func_proto bpf_perf_event_output_proto = {
+ 	.arg5_type	= ARG_CONST_SIZE_OR_ZERO,
+ };
+ 
+-static DEFINE_PER_CPU(struct pt_regs, bpf_pt_regs);
+-static DEFINE_PER_CPU(struct perf_sample_data, bpf_misc_sd);
++static DEFINE_PER_CPU(int, bpf_event_output_nest_level);
++struct bpf_nested_pt_regs {
++	struct pt_regs regs[3];
++};
++static DEFINE_PER_CPU(struct bpf_nested_pt_regs, bpf_pt_regs);
++static DEFINE_PER_CPU(struct bpf_trace_sample_data, bpf_misc_sds);
+ 
+ u64 bpf_event_output(struct bpf_map *map, u64 flags, void *meta, u64 meta_size,
+ 		     void *ctx, u64 ctx_size, bpf_ctx_copy_t ctx_copy)
+ {
+-	struct perf_sample_data *sd = this_cpu_ptr(&bpf_misc_sd);
+-	struct pt_regs *regs = this_cpu_ptr(&bpf_pt_regs);
++	int nest_level = this_cpu_inc_return(bpf_event_output_nest_level);
+ 	struct perf_raw_frag frag = {
+ 		.copy		= ctx_copy,
+ 		.size		= ctx_size,
+@@ -519,12 +522,25 @@ u64 bpf_event_output(struct bpf_map *map, u64 flags, void *meta, u64 meta_size,
+ 			.data	= meta,
+ 		},
+ 	};
++	struct perf_sample_data *sd;
++	struct pt_regs *regs;
++	u64 ret;
++
++	if (WARN_ON_ONCE(nest_level > ARRAY_SIZE(bpf_misc_sds.sds))) {
++		ret = -EBUSY;
++		goto out;
++	}
++	sd = this_cpu_ptr(&bpf_misc_sds.sds[nest_level - 1]);
++	regs = this_cpu_ptr(&bpf_pt_regs.regs[nest_level - 1]);
+ 
+ 	perf_fetch_caller_regs(regs);
+ 	perf_sample_data_init(sd, 0, 0);
+ 	sd->raw = &raw;
+ 
+-	return __bpf_perf_event_output(regs, map, flags, sd);
++	ret = __bpf_perf_event_output(regs, map, flags, sd);
++out:
++	this_cpu_dec(bpf_event_output_nest_level);
++	return ret;
+ }
+ 
+ BPF_CALL_0(bpf_get_current_task)
+-- 
+2.20.1
+
