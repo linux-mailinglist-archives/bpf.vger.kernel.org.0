@@ -2,116 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C2A0C3151
-	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2019 12:27:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7808EC3261
+	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2019 13:23:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726721AbfJAKZk convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 1 Oct 2019 06:25:40 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:15574 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725765AbfJAKZk (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 1 Oct 2019 06:25:40 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x91AN6g2008169
-        for <bpf@vger.kernel.org>; Tue, 1 Oct 2019 06:25:39 -0400
-Received: from e06smtp02.uk.ibm.com (e06smtp02.uk.ibm.com [195.75.94.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2vc4s20je6-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 01 Oct 2019 06:25:39 -0400
-Received: from localhost
-        by e06smtp02.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
-        Tue, 1 Oct 2019 11:25:32 +0100
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (9.149.109.197)
-        by e06smtp02.uk.ibm.com (192.168.101.132) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Tue, 1 Oct 2019 11:25:29 +0100
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x91APSvZ59244646
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 1 Oct 2019 10:25:28 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 76FED42041;
-        Tue,  1 Oct 2019 10:25:28 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3A64C42047;
-        Tue,  1 Oct 2019 10:25:28 +0000 (GMT)
-Received: from dyn-9-152-96-81.boeblingen.de.ibm.com (unknown [9.152.96.81])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  1 Oct 2019 10:25:28 +0000 (GMT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.1\))
-Subject: Re: [PATCH bpf-next 1/6] selftests/bpf: undo GCC-specific
- bpf_helpers.h changes
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-In-Reply-To: <20190930185855.4115372-2-andriin@fb.com>
-Date:   Tue, 1 Oct 2019 12:25:27 +0200
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
-        daniel@iogearbox.net, andrii.nakryiko@gmail.com, kernel-team@fb.com
-Content-Transfer-Encoding: 8BIT
-References: <20190930185855.4115372-1-andriin@fb.com>
- <20190930185855.4115372-2-andriin@fb.com>
-To:     Andrii Nakryiko <andriin@fb.com>
-X-Mailer: Apple Mail (2.3445.9.1)
-X-TM-AS-GCONF: 00
-x-cbid: 19100110-0008-0000-0000-0000031CB76A
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19100110-0009-0000-0000-00004A3B6108
-Message-Id: <8E58BA2E-FFD2-4CF2-A617-D03D7D712AFB@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-10-01_05:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=3 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1908290000 definitions=main-1910010098
+        id S1725951AbfJALXE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Oct 2019 07:23:04 -0400
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:45333 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725947AbfJALXE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Oct 2019 07:23:04 -0400
+Received: by mail-pg1-f194.google.com with SMTP id q7so9382613pgi.12;
+        Tue, 01 Oct 2019 04:23:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3RJ117gHi9sUj8qt+VBfFz4EZYQo2wfsZBAfmwAinyI=;
+        b=bWpao1UbKLZ5vdfFFpvQBVnrWMGZwrWXh5RH0yoT0CFcWQZsyod03p7/fg3sK1RoaJ
+         M5lhkKCaUSDoqalvZbEQXwsQAvlatomKNJHb16rTalnD5qdWfnIkF7opmdS4kleOV7af
+         bFofljbGiaBbR9PuYeQFnECoYVNo07aP2DkonJQ1MIGz17VvN8jXMS09cOKqGVcv5As1
+         KzR+F4lVMtxm2OpAe62THuRKAyWVTtt7to+3CoXbiXdEqbtjiCfseUd9gTJbLrZdkFqt
+         l+OjLSCyf2WZ6iW7vLK3x4Z6Oaf/nJqi3LYCcVaG36wD4SJNhRBGPIx4eiPgp1aPdiXZ
+         o3AQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3RJ117gHi9sUj8qt+VBfFz4EZYQo2wfsZBAfmwAinyI=;
+        b=GhxJwLDktfCM1IT6WI3ercTi/9ft8EY62kZnWA3OdC+z/VC2b8w680OixnF4tV2a0g
+         IT+G1DJDrep+1VcD9LRqDGOERosAZ1emY69PjYY+8ZukG3nrSZsrDuYaookvlA2zRsJy
+         FX0mjUqi+eP49jpm4JIwkkUYjQjDKn687wWqUr2cpQAcUbORKVGcQDnm7KTbgQGXdRrt
+         CmbFGEwhWIYxzECCIs6wou2FQQ24+jiP900OYrOwQ6ba490QsufxL5HavvcZfMG1+OpF
+         8qFp7MxBdiSEBxQ+0M/uZPEgTrl5SpnwfJqI3/1OWph3Pl4jq6CjwuoNQsW8CVbvGbus
+         vnvg==
+X-Gm-Message-State: APjAAAXoS3dHee+s+y9r2Q9on0bVybMMrxM89Iw3aJ7EKgyaH/RKdEVE
+        ty0RuhQwUvNabOSzPA7hLweG9TBYKVU=
+X-Google-Smtp-Source: APXvYqyuiSulkSxXtffHndOosj4twhj2q6JGfb2gAtGd+/2qcb6hdjXV7GqmuKRbg7qHWFjcHBi3Gg==
+X-Received: by 2002:a63:2216:: with SMTP id i22mr29406263pgi.430.1569928982981;
+        Tue, 01 Oct 2019 04:23:02 -0700 (PDT)
+Received: from btopel-mobl.ger.intel.com ([192.55.55.41])
+        by smtp.gmail.com with ESMTPSA id h1sm15849488pfk.124.2019.10.01.04.22.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Oct 2019 04:23:02 -0700 (PDT)
+From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
+To:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net
+Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
+        bpf@vger.kernel.org
+Subject: [PATCH bpf] samples/bpf: fix build for task_fd_query_user.c
+Date:   Tue,  1 Oct 2019 13:22:49 +0200
+Message-Id: <20191001112249.27341-1-bjorn.topel@gmail.com>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+From: Björn Töpel <bjorn.topel@intel.com>
 
+Add missing "linux/perf_event.h" include file.
 
-> Am 30.09.2019 um 20:58 schrieb Andrii Nakryiko <andriin@fb.com>:
-> 
-> Having GCC provide its own bpf-helper.h is not the right approach and is
-> going to be changed. Undo bpf_helpers.h change before moving
-> bpf_helpers.h into libbpf.
-> 
-> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> ---
-> tools/testing/selftests/bpf/bpf_helpers.h | 8 --------
-> 1 file changed, 8 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/bpf_helpers.h b/tools/testing/selftests/bpf/bpf_helpers.h
-> index 54a50699bbfd..a1d9b97b8e15 100644
-> --- a/tools/testing/selftests/bpf/bpf_helpers.h
-> +++ b/tools/testing/selftests/bpf/bpf_helpers.h
-> @@ -13,8 +13,6 @@
-> 			 ##__VA_ARGS__);		\
-> })
-> 
-> -#ifdef __clang__
-> -
-> /* helper macro to place programs, maps, license in
->  * different sections in elf_bpf file. Section names
->  * are interpreted by elf_bpf loader
-> @@ -258,12 +256,6 @@ struct bpf_map_def {
-> 	unsigned int numa_node;
-> };
-> 
-> -#else
-> -
-> -#include <bpf-helpers.h>
-> -
-> -#endif
-> -
-> #define BPF_ANNOTATE_KV_PAIR(name, type_key, type_val)		\
-> 	struct ____btf_map_##name {				\
-> 		type_key key;					\
-> -- 
-> 2.17.1
-> 
+Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
+---
+ samples/bpf/task_fd_query_user.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
+diff --git a/samples/bpf/task_fd_query_user.c b/samples/bpf/task_fd_query_user.c
+index e39938058223..4c31b305e6ef 100644
+--- a/samples/bpf/task_fd_query_user.c
++++ b/samples/bpf/task_fd_query_user.c
+@@ -13,6 +13,7 @@
+ #include <sys/resource.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
++#include <linux/perf_event.h>
+ 
+ #include "libbpf.h"
+ #include "bpf_load.h"
+-- 
+2.20.1
+
