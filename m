@@ -2,90 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DEFAC328B
-	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2019 13:34:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8E8AC3494
+	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2019 14:42:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726446AbfJALd2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Oct 2019 07:33:28 -0400
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:44970 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732086AbfJALd1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Oct 2019 07:33:27 -0400
-Received: by mail-pg1-f196.google.com with SMTP id i14so9403410pgt.11;
-        Tue, 01 Oct 2019 04:33:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=09lI8sA7GBmAEMY2ZHF2GfLfirrTO8tbiRtZGHSh2eo=;
-        b=HRaTJrbn7HI6PaiCQm9rKuYy1mccgKsXAOfaPFlYC1bvJUIysqgQ1PO51Yw7JlMNCU
-         j4Ba/kpmHtiaHL/K1eLBDrIjETgKRAZgfXIaUtshwZKKPDTdw/rhFx4D/HzNpX4+2ab5
-         rI2TGfxxsOXPUwYB47r0K82qmnY2DVgoh0z4HlJghPktYRuWObIbqdLWalZH5zn0SmPI
-         uj4Nre6CcOL+LoSaUkP2v9EK6sk6YBsbr2ujPHz7TNNP9us3o8XQMrYhXMTH3kfjIzJn
-         BfduXWpI+DXhu36AXo7IX67AGF1fd8OcOT0s5OvXwRWNMkyTnsYsgRzPK1TbLmKvtvXa
-         OZ8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=09lI8sA7GBmAEMY2ZHF2GfLfirrTO8tbiRtZGHSh2eo=;
-        b=MPaHDYhV28RJtgomv5ej6QKZ8JHtzqWdWErYwI0UL49rSnMXPTtQdl4KeOZPLeYD0d
-         WG/6sTH9MIzolBIFFq0m0Asn18tzBn078AaszG5JJ2s7dTYJ2V85dEtURbgitTAmCkuz
-         T9TnfX1OvH8RI9E/Zc2VFdBHrjtb+5ADX5JzPPDB8ltWs6ScmrI75cU/JgD0e6Dg1CLn
-         aMtof9woU02oQe4+frCYDrJENfacZOUcdUDe4UAJGylGMezCRWy6lrpQL4Nj4Hi8fKEM
-         YcldIq/gm+DTz62Qh4MTJmlFIt12mqGxovam85dSoCA7uTnmecaqaw/LE2/0cunzjeXK
-         Azxg==
-X-Gm-Message-State: APjAAAWu1Cxpc7ZIEQPMm8OMrp7RsOokrwKqas5TOP4qKwsybVNAbn4v
-        lwWt/8mGzdOJ2p4u4f7pp+vLd+H/+PoHpg==
-X-Google-Smtp-Source: APXvYqxI2XEKH6x0Vt6kBCMsXWh4Ts8VEMTFQ+fqehWx1Mwoq+Wby4LwhnS6ZWII8JzeEf4TjMwYcA==
-X-Received: by 2002:a17:90a:d98a:: with SMTP id d10mr4929715pjv.65.1569929606610;
-        Tue, 01 Oct 2019 04:33:26 -0700 (PDT)
-Received: from btopel-mobl.ger.intel.com ([192.55.55.41])
-        by smtp.gmail.com with ESMTPSA id a29sm16238634pfr.152.2019.10.01.04.33.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Oct 2019 04:33:26 -0700 (PDT)
-From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
-To:     linux-kernel@vger.kernel.org, acme@kernel.org
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, adrian.hunter@intel.com, jolsa@kernel.org,
-        namhyung@kernel.org
-Subject: [PATCH 2/2] samples/bpf: fix build by setting HAVE_ATTR_TEST to zero
-Date:   Tue,  1 Oct 2019 13:33:07 +0200
-Message-Id: <20191001113307.27796-3-bjorn.topel@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191001113307.27796-1-bjorn.topel@gmail.com>
-References: <20191001113307.27796-1-bjorn.topel@gmail.com>
+        id S2387762AbfJAMmo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Oct 2019 08:42:44 -0400
+Received: from condef-02.nifty.com ([202.248.20.67]:64883 "EHLO
+        condef-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731931AbfJAMmo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Oct 2019 08:42:44 -0400
+X-Greylist: delayed 351 seconds by postgrey-1.27 at vger.kernel.org; Tue, 01 Oct 2019 08:42:42 EDT
+Received: from conssluserg-01.nifty.com ([10.126.8.80])by condef-02.nifty.com with ESMTP id x91CXnHa015144
+        for <bpf@vger.kernel.org>; Tue, 1 Oct 2019 21:33:49 +0900
+Received: from mail-vs1-f47.google.com (mail-vs1-f47.google.com [209.85.217.47]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id x91CXb5n009302;
+        Tue, 1 Oct 2019 21:33:38 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com x91CXb5n009302
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1569933218;
+        bh=vZ/by6QGyvjk+iMrCPDyuHl+7HvLeaF7vg7qAlH/0gM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=LcxUtM7Szvj3Aa2e4c2A1wzxF3fUSR8DEKqTJvpb1RlRemNEy9bn14M3IRgHYzs11
+         AjHa/fw1zpSswKnqtBDS03OHuKplMR057CnPolWhMcv4iyYAr6tGBM8ga4SR12S76P
+         cG5et+8g+yyQFVCC6bhCsLC2GsGuFROtLfVo8PYphiJ0yzCD+X4S7ms6WL/sNrdaUw
+         PGNEu9uPWIt6jJL17RcM68FMLNK1mOFaTP/jOrO+BgOSvrGLInFE2ByW7SSkIeoTb8
+         GPNFBqfkKsf1lj+gHbF2sgU+4rJO4i+krzAlxs9wjyHpsat1odB9sGygYPq53lIz3w
+         F5N56NLrRJ2IA==
+X-Nifty-SrcIP: [209.85.217.47]
+Received: by mail-vs1-f47.google.com with SMTP id y129so8217342vsc.6;
+        Tue, 01 Oct 2019 05:33:37 -0700 (PDT)
+X-Gm-Message-State: APjAAAVqoUo4xMHtaIhWOsrj2nqL9/L7VKuzLpFhlUsDoxqHN917PWLL
+        qtDUaa7pg8TwXe+hqgCpmSn0rTCJAVkApQikIW4=
+X-Google-Smtp-Source: APXvYqzyG7S32nGz1uEUNLPUcQCQ8TKvJylySJaOoKcfZPW3A+jS3aqcfynfl9dnbk2g6Sr1O9oa0d+P231N1XKqaRU=
+X-Received: by 2002:a67:1e87:: with SMTP id e129mr13181899vse.179.1569933216622;
+ Tue, 01 Oct 2019 05:33:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20191001101429.24965-1-bjorn.topel@gmail.com>
+In-Reply-To: <20191001101429.24965-1-bjorn.topel@gmail.com>
+From:   Masahiro Yamada <yamada.masahiro@socionext.com>
+Date:   Tue, 1 Oct 2019 21:33:00 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATNw4Qysj1Q2dXd4PALfbtgMXPwgvmW=g0dRcrczGW-Fg@mail.gmail.com>
+Message-ID: <CAK7LNATNw4Qysj1Q2dXd4PALfbtgMXPwgvmW=g0dRcrczGW-Fg@mail.gmail.com>
+Subject: Re: [PATCH bpf] samples/bpf: kbuild: add CONFIG_SAMPLE_BPF Kconfig
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Cc:     Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Björn Töpel <bjorn.topel@intel.com>
+Hi Bjorn
 
-To remove that test_attr__{enabled/open} are used by perf-sys.h, we
-set HAVE_ATTR_TEST to zero.
+On Tue, Oct 1, 2019 at 7:14 PM Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com=
+> wrote:
+>
+> From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+>
+> This commit makes it possible to build the BPF samples via a Kconfig
+> option, CONFIG_SAMPLE_BPF. Further, it fixes that samples/bpf/ could
+> not be built due to a missing samples/Makefile subdir-y entry, after
+> the introduction of commit 394053f4a4b3 ("kbuild: make single targets
+> work more correctly").
+>
+> Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+> ---
+>  samples/Kconfig  | 4 ++++
+>  samples/Makefile | 1 +
+>  2 files changed, 5 insertions(+)
+>
+> diff --git a/samples/Kconfig b/samples/Kconfig
+> index c8dacb4dda80..054297ac89ad 100644
+> --- a/samples/Kconfig
+> +++ b/samples/Kconfig
+> @@ -169,4 +169,8 @@ config SAMPLE_VFS
+>           as mount API and statx().  Note that this is restricted to the =
+x86
+>           arch whilst it accesses system calls that aren't yet in all arc=
+hes.
+>
+> +config SAMPLE_BPF
+> +       bool "BPF samples"
+> +       depends on HEADERS_INSTALL
+> +
+>  endif # SAMPLES
+> diff --git a/samples/Makefile b/samples/Makefile
+> index 7d6e4ca28d69..49aa2f7d044b 100644
+> --- a/samples/Makefile
+> +++ b/samples/Makefile
+> @@ -20,3 +20,4 @@ obj-$(CONFIG_SAMPLE_TRACE_PRINTK)     +=3D trace_printk=
+/
+>  obj-$(CONFIG_VIDEO_PCI_SKELETON)       +=3D v4l/
+>  obj-y                                  +=3D vfio-mdev/
+>  subdir-$(CONFIG_SAMPLE_VFS)            +=3D vfs
+> +subdir-$(CONFIG_SAMPLE_BPF)            +=3D bpf
 
-Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
----
- samples/bpf/Makefile | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-index 1d9be26b4edd..42b571cde177 100644
---- a/samples/bpf/Makefile
-+++ b/samples/bpf/Makefile
-@@ -176,6 +176,7 @@ KBUILD_HOSTCFLAGS += -I$(srctree)/tools/lib/bpf/
- KBUILD_HOSTCFLAGS += -I$(srctree)/tools/testing/selftests/bpf/
- KBUILD_HOSTCFLAGS += -I$(srctree)/tools/lib/ -I$(srctree)/tools/include
- KBUILD_HOSTCFLAGS += -I$(srctree)/tools/perf
-+KBUILD_HOSTCFLAGS += -DHAVE_ATTR_TEST=0
- 
- HOSTCFLAGS_bpf_load.o += -I$(objtree)/usr/include -Wno-unused-variable
- 
--- 
-2.20.1
+Please keep samples/Makefile sorted alphabetically.
 
+
+
+
+I am not checking samples/bpf/Makefile, but
+allmodconfig no longer compiles for me.
+
+
+
+samples/bpf/Makefile:209: WARNING: Detected possible issues with include pa=
+th.
+samples/bpf/Makefile:210: WARNING: Please install kernel headers
+locally (make headers_install).
+error: unable to create target: 'No available targets are compatible
+with triple "bpf"'
+1 error generated.
+readelf: Error: './llvm_btf_verify.o': No such file
+*** ERROR: LLVM (llc) does not support 'bpf' target
+   NOTICE: LLVM version >=3D 3.7.1 required
+
+--=20
+Best Regards
+Masahiro Yamada
