@@ -2,118 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F6A2C4359
-	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2019 00:00:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2C1BC4391
+	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2019 00:10:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728593AbfJAWAb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Oct 2019 18:00:31 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:35744 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727473AbfJAWAb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Oct 2019 18:00:31 -0400
-Received: by mail-io1-f66.google.com with SMTP id q10so52200951iop.2;
-        Tue, 01 Oct 2019 15:00:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=Ofb6T6xdILQ89Quyul9GGKyHwjSaqm5qwwuzogf11LQ=;
-        b=p/ZRYnkSTcEdKV9aBcYChw1Q5JZe+1lC26/XnmbGG/YQK0HHKcMWl0DdRnoEp+wmb6
-         rGK1jHnBcTUFOlEYMIEZrW5oQchf7H5pgBBoErFib9lGgk8DYuX5Llp9ozkO8PbXkXw3
-         VJFijFDbJGZs0sHHz56AXhtm7vkpEDFnJhbuUzeHokhsDjKdxLd5MgexzQi44n2cC4+b
-         YQ6r2QJqSORrd25MovitIgqs9ogkCtrI1yo7Wirn5qBFSFuRsQik8ptdY30P7/hIi1Bj
-         jkVwComagozLVJyIVkhFQogwDX3q6smYiWquOfU2TiBGuN4AznAJTFbMDUZmSTrPoxJa
-         AQtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=Ofb6T6xdILQ89Quyul9GGKyHwjSaqm5qwwuzogf11LQ=;
-        b=e8qPz2WwR/v7kEIUO7OkWCoTF452D6RljxG6xNTU4kGrGL4b6HdmObcAD3JsgrWApy
-         7CHwnn/iMu3+9WLNre2diKn1QRszuvRjcFh/N99e+8UJpaiY/ykrELdQnMqrMK3v65FM
-         thD2SJuR7M0conK843FnLnn3BYH6p+bdrIpducK/NY8Dg+i8k2umQN7zgq/v1b/AiMNq
-         PUlyxu87gfyI8T85VMKzyaWU/UBIiORu9kdZ/SV1e+1/EBUB7Yce+3zpdLbp5rdyPmp5
-         zLzI7wlKZE7ZLLEBr8ToyGtRC/NPpy1xaxmVkZP9Bc3T3wppEs6ek0n5HUR3AwcLgr91
-         IodA==
-X-Gm-Message-State: APjAAAXuxSSplHnpDgt5wuu9GZ5tFssWfSgUo/o5uV4Tx3X22qHS5Urv
-        6T6CNJef++m4IMDp6tAyKtU=
-X-Google-Smtp-Source: APXvYqxRNEpfn7i1UzwaZ9p+rlSwTmjKQy4bdLkvztqK1RY/tAH8nID9D/fpxBiRzGdBR+N9+qNdjA==
-X-Received: by 2002:a6b:e512:: with SMTP id y18mr442604ioc.4.1569967230010;
-        Tue, 01 Oct 2019 15:00:30 -0700 (PDT)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id n17sm6558538iog.11.2019.10.01.15.00.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Oct 2019 15:00:29 -0700 (PDT)
-Date:   Tue, 01 Oct 2019 15:00:21 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+        id S1726638AbfJAWK4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Oct 2019 18:10:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42102 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726392AbfJAWKz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Oct 2019 18:10:55 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 009AE20873;
+        Tue,  1 Oct 2019 22:10:53 +0000 (UTC)
+Date:   Tue, 1 Oct 2019 18:10:52 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Andy Lutomirski <luto@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        James Morris <jmorris@namei.org>, Jann Horn <jannh@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Message-ID: <5d93cc75429b4_67df2ac29a6045b472@john-XPS-13-9370.notmuch>
-In-Reply-To: <CAEf4Bzb8Q5nUppqBqnXH93U1con3895BJFHP88hQi5r6wohR6Q@mail.gmail.com>
-References: <20190930185855.4115372-1-andriin@fb.com>
- <20190930185855.4115372-3-andriin@fb.com>
- <87d0fhvt4e.fsf@toke.dk>
- <5d93a6713cf1d_85b2b0fc76de5b424@john-XPS-13-9370.notmuch>
- <CAEf4Bzb8Q5nUppqBqnXH93U1con3895BJFHP88hQi5r6wohR6Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/6] libbpf: move bpf_helpers.h, bpf_endian.h
- into libbpf
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, kernel-team <kernel-team@fb.com>,
+        Linux API <linux-api@vger.kernel.org>
+Subject: Re: [PATCH bpf-next] bpf, capabilities: introduce CAP_BPF
+Message-ID: <20191001181052.43c9fabb@gandalf.local.home>
+In-Reply-To: <20191001012226.vwpe56won5r7gbrz@ast-mbp.dhcp.thefacebook.com>
+References: <CALCETrV8iJv9+Ai11_1_r6MapPhhwt9hjxi=6EoixytabTScqg@mail.gmail.com>
+        <20190828003447.htgzsxs5oevn3eys@ast-mbp.dhcp.thefacebook.com>
+        <CALCETrVbPPPr=BdPAx=tJKxD3oLXP4OVSgCYrB_E4vb6idELow@mail.gmail.com>
+        <20190828044340.zeha3k3cmmxgfqj7@ast-mbp.dhcp.thefacebook.com>
+        <CALCETrW1o+Lazi2Ng6b9JN6jeJffgdW9f3HvqYhNo4TpHRXW=g@mail.gmail.com>
+        <20190828225512.q6qbvkdiqih2iewk@ast-mbp.dhcp.thefacebook.com>
+        <DA52992F-4862-4945-8482-FE619A04C753@amacapital.net>
+        <20190829040721.ef6rumbaunkavyrr@ast-mbp.dhcp.thefacebook.com>
+        <20190928193727.1769e90c@oasis.local.home>
+        <201909301129.5A1129C@keescook>
+        <20191001012226.vwpe56won5r7gbrz@ast-mbp.dhcp.thefacebook.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko wrote:
-> On Tue, Oct 1, 2019 at 12:18 PM John Fastabend <john.fastabend@gmail.co=
-m> wrote:
-> >
-> > Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> > >
-> > > > +struct bpf_map_def {
-> > > > +   unsigned int type;
-> > > > +   unsigned int key_size;
-> > > > +   unsigned int value_size;
-> > > > +   unsigned int max_entries;
-> > > > +   unsigned int map_flags;
-> > > > +   unsigned int inner_map_idx;
-> > > > +   unsigned int numa_node;
-> > > > +};
-> > >
-> > > Didn't we agree on no new bpf_map_def ABI in libbpf, and that all
-> > > additions should be BTF-based?
-> > >
-> > > -Toke
-> > >
-> >
-> > We use libbpf on pre BTF kernels so in this case I think it makes
-> > sense to add these fields. Having inner_map_idx there should allow
-> > us to remove some other things we have sitting around.
-> =
+On Mon, 30 Sep 2019 18:22:28 -0700
+Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
 
-> We had a discussion about supporting non-BTF and non-standard BPF map
-> definition before and it's still on my TODO list to go and do a proof
-> of concept how that can look like and what libbpf changes we need to
-> make. Right now libbpf doesn't support those new fields anyway, so we
-> shouldn't add them to public API.
+> tracefs is a file system, so clearly file based acls are much better fit
+> for all tracefs operations.
+> But that is not the case for ftrace overall.
+> bpf_trace_printk() calls trace_printk() that dumps into trace pipe.
+> Technically it's ftrace operation, but it cannot be controlled by tracefs
+> and by file permissions. That's the motivation to guard bpf_trace_printk()
+> usage from bpf program with CAP_TRACING.
 
-I'm carrying around a patch for perf_event_open_probe() to get it working=
+BTW, I'd rather have bpf use an event that records a string than using
+trace printk itself.
 
-without BTF I'll send that out today/tomorrow. It seems enough to get
-all the basic prog load, maps reused/pinned, etc at least for my use
-case.
+Perhaps something like "bpf_print" event? That could be defined like:
 
-> =
+TRACE_EVENT(bpf_print,
+	TP_PROTO(const char *msg),
+	TP_ARGS(msg),
+	TP_STRUCT__entry(
+		__string(msg, msg)
+	),
+	TP_fast_assign(
+		__assign_str(msg, msg)
+	),
+	TP_printk("msg=%s", __get_str(msg))
+);
 
-> >
-> > .John
+And then you can just format the string from the bpf_trace_printk()
+into msg, and then have:
+
+	trace_bpf_print(msg);
+
+The user could then just enable the trace event from the file system. I
+could also work on making instances work like /tmp does (with the
+sticky bit) in creation. That way people with write access to the
+instances directory, can make their own buffers that they can use (and
+others can't access).
 
 
+> 
+> Both 'trace' and 'trace_pipe' have quirky side effects.
+> Like opening 'trace' file will make all parallel trace_printk() to be ignored.
+> While reading 'trace_pipe' file will clear it.
+> The point that traditional 'read' and 'write' ACLs don't map as-is
+> to tracefs, so I would be careful categorizing things into
+> confidentiality vs integrity only based on access type.
+
+What exactly is the bpf_trace_printk() used for? I may have other ideas
+that can help.
+
+-- Steve
