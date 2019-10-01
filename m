@@ -2,156 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BC762C2B9E
-	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2019 03:22:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C96B2C2DF8
+	for <lists+bpf@lfdr.de>; Tue,  1 Oct 2019 09:47:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728760AbfJABWc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Sep 2019 21:22:32 -0400
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:40925 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728217AbfJABWc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 Sep 2019 21:22:32 -0400
-Received: by mail-pg1-f195.google.com with SMTP id d26so2981545pgl.7;
-        Mon, 30 Sep 2019 18:22:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=MXvCTFZX8iSPk2vvATyDXImBAz+PzNSrzftt/mv+u6c=;
-        b=LJCmptb/PRN7KCppGIVot1/c6ujLs+Bv+s45nPpSBvLW8foWP3xkwRWkh7YIozy9xH
-         4PAGfeJP5YfvOAT3Ryg1rhBCFlfw/a7731y+X+uV3JOOOaQ2yEjZTiW40govJEiAJCCq
-         +qqqBOAqMw9PKfr3mmkIhkrD5WT8BYo75kVAACZmoNVhnoCiqoLUEf5RFQaKk17sMZ89
-         N70xlrIAvMPM6AS5y1AyGkaLFTDJvnU19K5vMdeEtq7WEga2QR+7xzTUWkMmyPLe/X8a
-         0xa1LP1ox3YwHtOj1331wj68oSyEcxymY0Z5xFPkqAhINkBKU8SHXt117lYpUsbxHiPH
-         fjwQ==
+        id S1730740AbfJAHKQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Oct 2019 03:10:16 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:51187 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726822AbfJAHKQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Oct 2019 03:10:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1569913815;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FwK1cw+HTHejYMgpIxBGIUbF1NXkCBEpQH4yikdvzRc=;
+        b=Q/gshWvcNmVZIRIRaIYJv0HRLCxxxeAlrxSmAIod6alsAP2TL718TjzYk0XGQmVP9s/O+D
+        Md4uBvuLS83+SFT31DDrIWHg2rE67VHsf9RdZxeFx/yctE9f3OU4nLcNJCe40ttCT4fM44
+        9/dPrDQ0ibItS/oiYra7kri+47spQPo=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-244-kNNpazASOJKb0nzUDwE0nQ-1; Tue, 01 Oct 2019 03:10:13 -0400
+Received: by mail-lj1-f200.google.com with SMTP id 5so3789439lje.12
+        for <bpf@vger.kernel.org>; Tue, 01 Oct 2019 00:10:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=MXvCTFZX8iSPk2vvATyDXImBAz+PzNSrzftt/mv+u6c=;
-        b=ko8cD6iyU0vhwIYmBb+yHdZCms9NnewrK831Q1WLPVpDLNeSJXUJcmg2Ll3IX6NO1Z
-         xHfs7vB95OnPbZuWO60MIwCrPlkGZTzIOYmzGyjiZOIm8/t7WrLBV8448P185H4vGBtE
-         M6hQHBShQckRxLa6OK9jm79Q/Fq4rrQPTlSg3mtlwAayXKPzWKhqD+ZeDb1FAYjkvJND
-         a6vcXYFbqbHJrC+xEWQlJaIrLTDHEq8qS7o97cZStqAvWBp5Wvonm8nceXeIPkxk//xk
-         A3WduOOKILjTXnIpPNx3S8eN3ftmIbon3bSIq/c7pqhqhTD2RJGQXSo+wj9GA1gi1vwi
-         uD5w==
-X-Gm-Message-State: APjAAAXGTTWKevDJTKyG1R1vjDvmMNWxd231+2PIYlMcwrcNf71vsKpQ
-        7OL26bjnNHH/bj0iU2Zv7XY=
-X-Google-Smtp-Source: APXvYqxngZaWfzy18fBCjfA06mYyRHg2DLXhmKrXXZ0DpoarRB5Vh1Kc1rcVHetbIvO3llzJ/cy9BA==
-X-Received: by 2002:a63:d20f:: with SMTP id a15mr27254294pgg.130.1569892951294;
-        Mon, 30 Sep 2019 18:22:31 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:180::f760])
-        by smtp.gmail.com with ESMTPSA id b11sm15330078pgr.20.2019.09.30.18.22.29
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 30 Sep 2019 18:22:30 -0700 (PDT)
-Date:   Mon, 30 Sep 2019 18:22:28 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Andy Lutomirski <luto@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        James Morris <jmorris@namei.org>, Jann Horn <jannh@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, kernel-team <kernel-team@fb.com>,
-        Linux API <linux-api@vger.kernel.org>
-Subject: Re: [PATCH bpf-next] bpf, capabilities: introduce CAP_BPF
-Message-ID: <20191001012226.vwpe56won5r7gbrz@ast-mbp.dhcp.thefacebook.com>
-References: <CALCETrV8iJv9+Ai11_1_r6MapPhhwt9hjxi=6EoixytabTScqg@mail.gmail.com>
- <20190828003447.htgzsxs5oevn3eys@ast-mbp.dhcp.thefacebook.com>
- <CALCETrVbPPPr=BdPAx=tJKxD3oLXP4OVSgCYrB_E4vb6idELow@mail.gmail.com>
- <20190828044340.zeha3k3cmmxgfqj7@ast-mbp.dhcp.thefacebook.com>
- <CALCETrW1o+Lazi2Ng6b9JN6jeJffgdW9f3HvqYhNo4TpHRXW=g@mail.gmail.com>
- <20190828225512.q6qbvkdiqih2iewk@ast-mbp.dhcp.thefacebook.com>
- <DA52992F-4862-4945-8482-FE619A04C753@amacapital.net>
- <20190829040721.ef6rumbaunkavyrr@ast-mbp.dhcp.thefacebook.com>
- <20190928193727.1769e90c@oasis.local.home>
- <201909301129.5A1129C@keescook>
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=hqIzzpD8IOQLWmcd/1moh6fetqtyiKiVmX3233qBoxY=;
+        b=Gyzm9zIko8iraCx3twfPqK+kATM23AAuYBe88MTsleEszXjaQ+Zcy6JC/0EKa3X05c
+         9F65E46gnLWO5s9om/D+Ohbf2Z9U4qR54XMm2xqRsZc7mVMilKUOnXshxZsL6KdaQODf
+         KOv4vFMFeETVVGBS0s8QXi5cSQhRzvDrhdocR8gKxij+FG9khzIY0+cLVffIc1L1Zjax
+         QBENiKIxQNeiBIVs/I5C1h9mAWU18MHhqDQFmsoGf6xA3o0BZK7vU7yabwE/9XfoU1pV
+         xP0iug3WkqqvpbNF2o9ouiBgjoJLFGemwuKDb5vmD+4dcRQL9RYpYlnVeNdzTDAZLKKx
+         6HaA==
+X-Gm-Message-State: APjAAAWrAUXydeo9ahHYYD4pvH30WNOoc3iDCsNN6eUz3Vieva8y4mQj
+        8cvpSR7cWM5rB4kr1z4FM4fPJqWeB/yBorB3Rglrne0DHSpkzaO7qqyyfGn1mqz+2+jYtpbb6VG
+        hjsU8nlJtOSF/
+X-Received: by 2002:a2e:4296:: with SMTP id h22mr15129058ljf.208.1569913812089;
+        Tue, 01 Oct 2019 00:10:12 -0700 (PDT)
+X-Google-Smtp-Source: APXvYqw5zdtdRl6GeiHx7FeDGheYopkFgYAPPKNKhz2hYebf0a7QjqWVwALCnmww4Qavi6M7oJ8AHA==
+X-Received: by 2002:a2e:4296:: with SMTP id h22mr15129039ljf.208.1569913811905;
+        Tue, 01 Oct 2019 00:10:11 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk (borgediget.toke.dk. [85.204.121.218])
+        by smtp.gmail.com with ESMTPSA id m17sm4638187lje.0.2019.10.01.00.10.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Oct 2019 00:10:11 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 60A2E18063D; Tue,  1 Oct 2019 09:10:09 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, ast@fb.com, daniel@iogearbox.net
+Cc:     andrii.nakryiko@gmail.com, kernel-team@fb.com,
+        Andrii Nakryiko <andriin@fb.com>
+Subject: Re: [PATCH bpf-next 2/6] libbpf: move bpf_helpers.h, bpf_endian.h into libbpf
+In-Reply-To: <20190930185855.4115372-3-andriin@fb.com>
+References: <20190930185855.4115372-1-andriin@fb.com> <20190930185855.4115372-3-andriin@fb.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 01 Oct 2019 09:10:09 +0200
+Message-ID: <87d0fhvt4e.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <201909301129.5A1129C@keescook>
-User-Agent: NeoMutt/20180223
+X-MC-Unique: kNNpazASOJKb0nzUDwE0nQ-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Sep 30, 2019 at 11:31:29AM -0700, Kees Cook wrote:
-> On Sat, Sep 28, 2019 at 07:37:27PM -0400, Steven Rostedt wrote:
-> > On Wed, 28 Aug 2019 21:07:24 -0700
-> > Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-> > > > 
-> > > > This won’t make me much more comfortable, since CAP_BPF lets it do an ever-growing set of nasty things. I’d much rather one or both of two things happen:
-> > > > 
-> > > > 1. Give it CAP_TRACING only. It can leak my data, but it’s rather hard for it to crash my laptop, lose data, or cause other shenanigans.
-> > > > 
-> > > > 2. Improve it a bit do all the privileged ops are wrapped by capset().
-> > > > 
-> > > > Does this make sense?  I’m a security person on occasion. I find
-> > > > vulnerabilities and exploit them deliberately and I break things by
-> > > > accident on a regular basis. In my considered opinion, CAP_TRACING
-> > > > alone, even extended to cover part of BPF as I’ve described, is
-> > > > decently safe. Getting root with just CAP_TRACING will be decently
-> > > > challenging, especially if I don’t get to read things like sshd’s
-> > > > memory, and improvements to mitigate even that could be added.  I
-> > > > am quite confident that attacks starting with CAP_TRACING will have
-> > > > clear audit signatures if auditing is on.  I am also confident that
-> > > > CAP_BPF *will* allow DoS and likely privilege escalation, and this
-> > > > will only get more likely as BPF gets more widely used. And, if
-> > > > BPF-based auditing ever becomes a thing, writing to the audit
-> > > > daemon’s maps will be a great way to cover one’s tracks.  
-> > > 
-> > > CAP_TRACING, as I'm proposing it, will allow full tracefs access.
-> > > I think Steven and Massami prefer that as well.
-> > > That includes kprobe with probe_kernel_read.
-> > > That also means mini-DoS by installing kprobes everywhere or running
-> > > too much ftrace.
-> > 
-> > I was talking with Kees at Plumbers about this, and we were talking
-> > about just using simple file permissions. I started playing with some
-> > patches to allow the tracefs be visible but by default it would only be
-> > visible by root.
-> > 
-> >  rwx------
-> > 
-> > Then a start up script (or perhaps mount options) could change the
-> > group owner, and change this to:
-> > 
-> >  rwxrwx---
-> > 
-> > Where anyone in the group assigned (say "tracing") gets full access to
-> > the file system.
-> > 
-> > The more I was playing with this, the less I see the need for
-> > CAP_TRACING for ftrace and reading the format files.
-> 
-> Nice! Thanks for playing with this. I like it because it gives us a way
-> to push policy into userspace (group membership, etc), and provides a
-> clean way (hopefully) do separate "read" (kernel memory confidentiality)
-> from "write" (kernel memory integrity), which wouldn't have been possible
-> with a single new CAP_...
 
-tracefs is a file system, so clearly file based acls are much better fit
-for all tracefs operations.
-But that is not the case for ftrace overall.
-bpf_trace_printk() calls trace_printk() that dumps into trace pipe.
-Technically it's ftrace operation, but it cannot be controlled by tracefs
-and by file permissions. That's the motivation to guard bpf_trace_printk()
-usage from bpf program with CAP_TRACING.
+> +struct bpf_map_def {
+> +=09unsigned int type;
+> +=09unsigned int key_size;
+> +=09unsigned int value_size;
+> +=09unsigned int max_entries;
+> +=09unsigned int map_flags;
+> +=09unsigned int inner_map_idx;
+> +=09unsigned int numa_node;
+> +};
 
-Both 'trace' and 'trace_pipe' have quirky side effects.
-Like opening 'trace' file will make all parallel trace_printk() to be ignored.
-While reading 'trace_pipe' file will clear it.
-The point that traditional 'read' and 'write' ACLs don't map as-is
-to tracefs, so I would be careful categorizing things into
-confidentiality vs integrity only based on access type.
+Didn't we agree on no new bpf_map_def ABI in libbpf, and that all
+additions should be BTF-based?
+
+-Toke
 
