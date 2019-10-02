@@ -2,124 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B66C5C92D2
-	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2019 22:22:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22343C92DF
+	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2019 22:30:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727464AbfJBUWV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Oct 2019 16:22:21 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:46577 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727304AbfJBUWU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Oct 2019 16:22:20 -0400
-Received: by mail-qt1-f195.google.com with SMTP id u22so356460qtq.13;
-        Wed, 02 Oct 2019 13:22:20 -0700 (PDT)
+        id S1727889AbfJBUa1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Oct 2019 16:30:27 -0400
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:44761 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726374AbfJBUa1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Oct 2019 16:30:27 -0400
+Received: by mail-qk1-f193.google.com with SMTP id u22so26190qkk.11;
+        Wed, 02 Oct 2019 13:30:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=fcINkAGrhaxybz9we0aCJ9+w9JUp7C0z8Gn94WWvQGI=;
-        b=BjDZyYgjhfxWcP3NTWkt0mMF/bAuMBjpivsjx7HfXOrCmMr1getLWzGJso+UuJ3zdb
-         K2PaFVMLXTGS2/r7nMFf3pMjf2yg+79Eb3x+suEdXJWcBAvvMgbMyAObfJWypFt4a+ED
-         EooK5rxib95WH0eMz1mwL2sTqVbbyFjGDt7vRPwi8HL7liGAwYiknyv2hIDssS5zx8fQ
-         +QR9Fg0ISZPTwmpGpTI10DbOIKVhpSq9LC/tPUfDLtZWjBgZfOnjGWTcglvLdmyGJZoS
-         vPVYma+ZxpAM7X63vm2eRkThUj42ZUGXwEohT+v+JpVo27Kf9BhZAG/m/ebC8JUIiR4m
-         4lAg==
+        bh=H/l1Z6mqe+sew18UxIihneHwJjZNG3zHFInnW5dLs3Y=;
+        b=gkVMntSdsPeklPKD+UqQ33URkWswRRQAsbO0bdUwGWUuswAnqJfCLsvfj/KSKV723K
+         zlbgYL7cJs1m1Zvr6dTAWffEAH2gB/yAdLNeTmNNSMVahyOyTeUXHILKnj2c7xuSw/p3
+         7BniCHczZQcd609FnnSsaZOc+TxBrLJdTHu0OxwNemggbAU2XMVNHoaYZwSKc+fyVuJL
+         FsfqMj+zKX53eEBpgLRlDC6WIw5KkR5HxrAR5Uy3J55tRl5yJw+I9jWsp7EY74ifPddJ
+         1kf02djXfyI8Xrg12EMR9M0/bTIGK5KQMxytQGEXCLO5DJZ8J1Pn9gM3Lag0jDxnnOTv
+         o1WQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=fcINkAGrhaxybz9we0aCJ9+w9JUp7C0z8Gn94WWvQGI=;
-        b=qHSqfwUAPJ+kLMeh/Qr708AdeG6ljvpRPvvRY0lDCmvTcG5YCxVLFP4ZnJWXlbu+sX
-         OoqY5NFIaR5u3MLdRWOl2Ok69PmOs84ywmwzIp4rRSxnkQx/ZvUt0cYh86XculpLO6zn
-         eqOGNs/SaFHLHVQZ9NIyOszRemXiPwCO04sG32suDU34C4jFXZ3h7DFGAKWPRd9T/YAg
-         2WUteIGNnpmqfeQyxZj+mICcke1RsQg8efsh2jrGKtQVmmBIk9t5JCG6cqYduIQfrqIz
-         Tsx6n0ri93VmKgk117ImSqq4MVOlNhWgWwqY4j+Jyax9xlajm/PYiLFzGW03MmZHwd92
-         fTMw==
-X-Gm-Message-State: APjAAAUlDw7kTrA8O82dmChMwK5P6oofKV2J12T7xW7RtY1Y3b7yfK8B
-        pIBxvl0CBTTsXcREhca5fqKW1CBfn5iSbzI7bwI=
-X-Google-Smtp-Source: APXvYqySHhkOEsIOcVw93B6ZEj9ZGqCCSVJ5Fhmq8QghLWxsWgfgVCA11vGgq5CpwZLlJ86+S07y5uvgJMmXx5yUg7I=
-X-Received: by 2002:ac8:1417:: with SMTP id k23mr5869128qtj.93.1570047739558;
- Wed, 02 Oct 2019 13:22:19 -0700 (PDT)
+        bh=H/l1Z6mqe+sew18UxIihneHwJjZNG3zHFInnW5dLs3Y=;
+        b=mD87W6nmIu3yIWMiiNa7TDZ/4B6wE2GN6F2XEZcwpYHrP47PicjnT1kgy2mpF2G26Y
+         +BjrjnDCv1VPkMZ3MV+pCE3Yi1S1eekrBKekWsD3Y2FWynaCSYLQLvZRKspJRVWLZpX9
+         zWgtsc83m7xYRT9Rbsw22Opyc6EJejse+QdDwqGE7S8smtCdXZjnMecihpanEmde5gpH
+         GOzt5hMNyoHCLWyFZhsdjoXT4ri7/FGP6XqIAHZ/XSTvLW14EBoq1rie9T1Jj86SFCjI
+         mnVnuqVlkl5QztbV7F+h3FBYDDv/W3xT+5n260ixo3XWD/cNvpJrdpXHL0s4Pixnv5Kw
+         cyuw==
+X-Gm-Message-State: APjAAAWMICQdOwlQlrd/74g5GPTmw3sFF/oZ1LioEMbzBKDlEkujVSUt
+        AvDIAQJmplxI8NT4gYOQIkUgYpu052l/MankCeo=
+X-Google-Smtp-Source: APXvYqyYUlULdUWEftFIOGiwzSS3v9o59oPmGXc7uRSh/abRXSUEn9PHsXKjygA8vcQSFo914oM9gzGYrp0DUL0sW9E=
+X-Received: by 2002:a37:98f:: with SMTP id 137mr722298qkj.449.1570048225831;
+ Wed, 02 Oct 2019 13:30:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <20191002191652.11432-1-kpsingh@chromium.org>
-In-Reply-To: <20191002191652.11432-1-kpsingh@chromium.org>
+References: <20191001173728.149786-1-brianvv@google.com> <20191001173728.149786-3-brianvv@google.com>
+ <CAEf4BzYxs6Ace8s64ML3pA9H4y0vgdWv_vDF57oy3i-O_G7c-g@mail.gmail.com>
+ <CABCgpaWbPN+2vSNdynHtmDxrgGbyzHa_D-y4-X8hLrQYbhTx=A@mail.gmail.com> <20191002085553.GA6226@pc-66.home>
+In-Reply-To: <20191002085553.GA6226@pc-66.home>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 2 Oct 2019 13:22:08 -0700
-Message-ID: <CAEf4BzY4tXd=sHbkN=Bbhj5=7=W_PBs_BB=wjGJ4-bHenKz6sw@mail.gmail.com>
-Subject: Re: [PATCH v2] samples/bpf: Add a workaround for asm_inline
-To:     KP Singh <kpsingh@chromium.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Florent Revest <revest@google.com>,
+Date:   Wed, 2 Oct 2019 13:30:14 -0700
+Message-ID: <CAEf4BzZAywR2g4bRu8Bs-YJxzf64GTrR7NvgOaXG2fqaKiJpSQ@mail.gmail.com>
+Subject: Re: [PATCH bpf 2/2] selftests/bpf: test_progs: don't leak server_fd
+ in test_sockopt_inherit
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Brian Vazquez <brianvv.kernel@gmail.com>,
+        Brian Vazquez <brianvv@google.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Florent Revest <revest@chromium.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
+        "David S . Miller" <davem@davemloft.net>,
+        Stanislav Fomichev <sdf@google.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 2, 2019 at 12:17 PM KP Singh <kpsingh@chromium.org> wrote:
+On Wed, Oct 2, 2019 at 1:56 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
 >
-> From: KP Singh <kpsingh@google.com>
+> On Tue, Oct 01, 2019 at 08:42:30PM -0700, Brian Vazquez wrote:
+> > Thanks for reviewing the patches Andrii!
+> >
+> > Although Daniel fixed them and applied them correctly.
 >
-> This was added in:
->
->   commit eb111869301e ("compiler-types.h: add asm_inline definition")
->
-> and breaks samples/bpf as clang does not support asm __inline.
->
-> Co-developed-by: Florent Revest <revest@google.com>
-> Signed-off-by: Florent Revest <revest@google.com>
-> Signed-off-by: KP Singh <kpsingh@google.com>
-> ---
->
-> Changes since v1:
->
-> - Dropped the rename from asm_workaround.h to asm_goto_workaround.h
-> - Dropped the fix for task_fd_query_user.c as it is updated in
->   https://lore.kernel.org/bpf/20191001112249.27341-1-bjorn.topel@gmail.com/
->
->  samples/bpf/asm_goto_workaround.h | 13 ++++++++++++-
->  1 file changed, 12 insertions(+), 1 deletion(-)
->
-> diff --git a/samples/bpf/asm_goto_workaround.h b/samples/bpf/asm_goto_workaround.h
-> index 7409722727ca..7048bb3594d6 100644
-> --- a/samples/bpf/asm_goto_workaround.h
-> +++ b/samples/bpf/asm_goto_workaround.h
-> @@ -3,7 +3,8 @@
->  #ifndef __ASM_GOTO_WORKAROUND_H
->  #define __ASM_GOTO_WORKAROUND_H
->
-> -/* this will bring in asm_volatile_goto macro definition
-> +/*
-> + * This will bring in asm_volatile_goto and asm_inline macro definitions
->   * if enabled by compiler and config options.
->   */
->  #include <linux/types.h>
-> @@ -13,5 +14,15 @@
->  #define asm_volatile_goto(x...) asm volatile("invalid use of asm_volatile_goto")
->  #endif
->
-> +/*
-> + * asm_inline is defined as asm __inline in "include/linux/compiler_types.h"
-> + * if supported by the kernel's CC (i.e CONFIG_CC_HAS_ASM_INLINE) which is not
-> + * supported by CLANG.
-> + */
-> +#ifdef asm_inline
-> +#undef asm_inline
-> +#define asm_inline asm
-> +#endif
+> After last kernel/maintainer summit at LPC, I reworked all my patchwork scripts [0]
+> which I use for bpf trees in order to further reduce manual work and add more sanity
+> checks at the same time. Therefore, the broken Fixes: tag was a good test-case. ;-)
 
-Would it be better to just #undef CONFIG_CC_HAS_ASM_INLINE for BPF programs?
+Do you scripts also capitalize first word after libbpf: prefix? Is
+that intentional? Is that a recommended subject casing:
 
-> +
->  #define volatile(x...) volatile("")
->  #endif
-> --
-> 2.20.1
+"libbpf: Do awesome stuff" vs "libbpf: do awesome stuff"?
+
 >
+> Thanks,
+> Daniel
+>
+>   [0] https://git.kernel.org/pub/scm/linux/kernel/git/dborkman/pw.git/
+>
+> > On Tue, Oct 1, 2019 at 8:20 PM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > On Tue, Oct 1, 2019 at 10:40 AM Brian Vazquez <brianvv@google.com> wrote:
+> > > >
+> > >
+> > > I don't think there is a need to add "test_progs:" to subject, "
+> > > test_sockopt_inherit" is specific enough ;)
+> > >
+> > > > server_fd needs to be close if pthread can't be created.
+> > >
+> > > typo: closed
+> > >
+> > > > Fixes: e3e02e1d9c24 ("selftests/bpf: test_progs: convert test_sockopt_inherit")
+> > > > Cc: Stanislav Fomichev <sdf@google.com>
+> > > > Signed-off-by: Brian Vazquez <brianvv@google.com>
+> > > > ---
+> > >
+> > > Acked-by: Andrii Nakryiko <andriin@fb.com>
+> > >
+> > > >  tools/testing/selftests/bpf/prog_tests/sockopt_inherit.c | 2 +-
+> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
