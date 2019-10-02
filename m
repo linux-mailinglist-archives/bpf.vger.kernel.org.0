@@ -2,116 +2,192 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E904C9385
-	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2019 23:31:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D354C93AE
+	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2019 23:50:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728995AbfJBVbZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Oct 2019 17:31:25 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:42155 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728102AbfJBVbY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Oct 2019 17:31:24 -0400
-Received: by mail-pf1-f195.google.com with SMTP id q12so291352pff.9
-        for <bpf@vger.kernel.org>; Wed, 02 Oct 2019 14:31:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=m5xVHAEIhIAqpO/8qHSF3PHN+LcVgKj3lgSIWUJ6nJU=;
-        b=l9SmDi/iJrgkCfuZ6qHcNy5lR3q89uvOm2q697YSOoEQXxF96ZIJm0C8Arq55uTRso
-         Jz6n+hl089Z0B5EDvhbTbsa/ufsN5Az3s9OtkAkPOiuc+AkuAta+04f6C89FC9oyYTY2
-         RZz4kbOBRe+AgwBJE8J6CD3GG7kFnT/pkn/lVIJ6lh8dNtu+uj+AkbM+80JWHNMabkE/
-         GjkXTGmlDbVwf++eEXvl4eL9bKnqXqvMK9vq0m0MsoFR1og8SHyu70Yi2PCGDVwfHJEW
-         WQWowSFow+LSCcBdDk96B1fMCmwvZN/WJSFWQ9iq1pywYMM+5AnsqwX/o9CCIemEK9Zq
-         S+VQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=m5xVHAEIhIAqpO/8qHSF3PHN+LcVgKj3lgSIWUJ6nJU=;
-        b=jZqCd/bNNpIfuExP+YIv53UOo8J/TXIrVsdezC8iZwertBiTncb14FP4DXjF88afwc
-         R5coeKCttQjPXOJEVHLFAUSooNIqkIJQHLfnhx07aHVzv9F8o8BN9eN4N3/ultawwCt5
-         /0E+IBKvQGIdeaYOXc9NkXPo2WMkAWXyHF++h6ML25oLeqH9vBgfmDJJLSkmvB6G5rvZ
-         kcImmkaudNphnNYurvRyVHoIjZLw0HBXNdX+OUCDdFfQrN2963/+S5Cal0Gec7N5d46I
-         QZU/YGZux0jDKuHfUkb39FcOJlPDg/to0z5V4TcAUq6WO6DgAEjEZ/e0v7b8yg+lj370
-         /v3g==
-X-Gm-Message-State: APjAAAUtwsL877MDAzzqSDxzB95giw4kEthUgmNvfU1Q0CiWlG7ZogQZ
-        sCNaa7QT+YbSC1GtDEthPZSsjQ==
-X-Google-Smtp-Source: APXvYqxefMrb+WA4AhwWWkXE9kZkzf8l8zTyjo7a9OpMxNiDT7SFCyxx152FrySs3TwCKr1n6UhR0A==
-X-Received: by 2002:a17:90a:8002:: with SMTP id b2mr6894567pjn.0.1570051883271;
-        Wed, 02 Oct 2019 14:31:23 -0700 (PDT)
-Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
-        by smtp.gmail.com with ESMTPSA id f15sm374729pfd.141.2019.10.02.14.31.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Oct 2019 14:31:22 -0700 (PDT)
-Date:   Wed, 2 Oct 2019 14:31:21 -0700
-From:   Stanislav Fomichev <sdf@fomichev.me>
-To:     Song Liu <liu.song.a23@gmail.com>
-Cc:     Stanislav Fomichev <sdf@google.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Petar Penkov <ppenkov@google.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf/flow_dissector: add mode to enforce
- global BPF flow dissector
-Message-ID: <20191002213121.GB3223377@mini-arch>
-References: <20191002173357.253643-1-sdf@google.com>
- <20191002173357.253643-2-sdf@google.com>
- <CAPhsuW6ywq5yySKjtdna8rXGBWdUyFgxQuy0+=2-gReXSTQ=ow@mail.gmail.com>
+        id S1726655AbfJBVux (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Oct 2019 17:50:53 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:33038 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726374AbfJBVuw (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 2 Oct 2019 17:50:52 -0400
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id x92Lnud3028878
+        for <bpf@vger.kernel.org>; Wed, 2 Oct 2019 14:50:51 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=4A+/IPDkzy9yqOSyIdy9XZRIIkxCgU8gGUr7xMFjnFc=;
+ b=ZuODER5ZiA0ueEWEZwUpUMDWNkW3L2ueYdFc+WHgP6x4h9zQDbBRuesqNzHuy8ksHEKx
+ YO/yO9Y4eL1pVibHpwkmIXgk6MqP47bNElQOQSEgJ4+u1ukj1CvQvuxdrEvN+XjCA4uo
+ ts/iY5jPU/sIIR4/kZM+ZQPmEkAt+fgMjEA= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0089730.ppops.net with ESMTP id 2vcy1g9jve-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 02 Oct 2019 14:50:51 -0700
+Received: from mx-out.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 2 Oct 2019 14:50:50 -0700
+Received: by dev101.prn2.facebook.com (Postfix, from userid 137359)
+        id 31D72861822; Wed,  2 Oct 2019 14:50:49 -0700 (PDT)
+Smtp-Origin-Hostprefix: dev
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: dev101.prn2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: prn2c23
+Subject: [PATCH v2 bpf-next 0/7] Move bpf_helpers and add BPF_CORE_READ macros
+Date:   Wed, 2 Oct 2019 14:50:34 -0700
+Message-ID: <20191002215041.1083058-1-andriin@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPhsuW6ywq5yySKjtdna8rXGBWdUyFgxQuy0+=2-gReXSTQ=ow@mail.gmail.com>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
+ definitions=2019-10-02_09:2019-10-01,2019-10-02 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ suspectscore=8 clxscore=1015 adultscore=0 mlxlogscore=999 spamscore=0
+ mlxscore=0 malwarescore=0 bulkscore=0 phishscore=0 lowpriorityscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1908290000 definitions=main-1910020173
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/02, Song Liu wrote:
-> On Wed, Oct 2, 2019 at 10:36 AM Stanislav Fomichev <sdf@google.com> wrote:
-> >
-> > Always use init_net flow dissector BPF program if it's attached and fall
-> > back to the per-net namespace one. Also, deny installing new programs if
-> > there is already one attached to the root namespace.
-> > Users can still detach their BPF programs, but can't attach any
-> > new ones (-EPERM).
-> >
-> > Cc: Petar Penkov <ppenkov@google.com>
-> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> > ---
-> >  Documentation/bpf/prog_flow_dissector.rst |  3 +++
-> >  net/core/flow_dissector.c                 | 11 ++++++++++-
-> >  2 files changed, 13 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/Documentation/bpf/prog_flow_dissector.rst b/Documentation/bpf/prog_flow_dissector.rst
-> > index a78bf036cadd..4d86780ab0f1 100644
-> > --- a/Documentation/bpf/prog_flow_dissector.rst
-> > +++ b/Documentation/bpf/prog_flow_dissector.rst
-> > @@ -142,3 +142,6 @@ BPF flow dissector doesn't support exporting all the metadata that in-kernel
-> >  C-based implementation can export. Notable example is single VLAN (802.1Q)
-> >  and double VLAN (802.1AD) tags. Please refer to the ``struct bpf_flow_keys``
-> >  for a set of information that's currently can be exported from the BPF context.
-> > +
-> > +When BPF flow dissector is attached to the root network namespace (machine-wide
-> > +policy), users can't override it in their child network namespaces.
-> > diff --git a/net/core/flow_dissector.c b/net/core/flow_dissector.c
-> > index 7c09d87d3269..494e2016fe84 100644
-> > --- a/net/core/flow_dissector.c
-> > +++ b/net/core/flow_dissector.c
-> > @@ -115,6 +115,11 @@ int skb_flow_dissector_bpf_prog_attach(const union bpf_attr *attr,
-> >         struct bpf_prog *attached;
-> >         struct net *net;
-> >
-> > +       if (rcu_access_pointer(init_net.flow_dissector_prog)) {
-> > +               /* Can't override root flow dissector program */
-> > +               return -EPERM;
-> 
-> Maybe -EBUSY is more accurate?
-I'm not sure, -EBUSY to me means that I can retry and (maybe) eventually
-will succeed. Maybe return -EEXIST? At least it gives a hint that BPF
-flow dissector is already there and retrying won't help. Thoughts?
+This patch set makes bpf_helpers.h and bpf_endian.h a part of libbpf itself
+for consumption by user BPF programs, not just selftests. It also splits off
+tracing helpers into bpf_tracing.h, which also becomes part of libbpf. Some of
+the legacy stuff (BPF_ANNOTATE_KV_PAIR, load_{byte,half,word}, bpf_map_def
+with unsupported fields, etc, is extracted into selftests-only bpf_legacy.h.
+All the selftests and samples are switched to use libbpf's headers and
+selftests' ones are removed.
 
-> Thanks,
-> Song
+As part of this patch set we also add BPF_CORE_READ variadic macros, that are
+simplifying BPF CO-RE reads, especially the ones that have to follow few
+pointers. E.g., what in non-BPF world (and when using BCC) would be:
+
+int x = s->a->b.c->d; /* s, a, and b.c are pointers */
+
+today would have to be written using explicit bpf_probe_read() calls as:
+
+  void *t;
+  int x;
+  bpf_probe_read(&t, sizeof(t), s->a);
+  bpf_probe_read(&t, sizeof(t), ((struct b *)t)->b.c);
+  bpf_probe_read(&x, sizeof(x), ((struct c *)t)->d);
+
+This is super inconvenient and distracts from program logic a lot. Now, with
+added BPF_CORE_READ() macros, you can write the above as:
+
+  int x = BPF_CORE_READ(s, a, b.c, d);
+
+Up to 9 levels of pointer chasing are supported, which should be enough for
+any practical purpose, hopefully, without adding too much boilerplate macro
+definitions (though there is admittedly some, given how variadic and recursive
+C macro have to be implemented).
+
+There is also BPF_CORE_READ_INTO() variant, which relies on caller to allocate
+space for result:
+
+  int x;
+  BPF_CORE_READ_INTO(&x, s, a, b.c, d);
+
+Result of last bpf_probe_read() call in the chain of calls is the result of
+BPF_CORE_READ_INTO(). If any intermediate bpf_probe_read() aall fails, then
+all the subsequent ones will fail too, so this is sufficient to know whether
+overall "operation" succeeded or not. No short-circuiting of bpf_probe_read()s
+is done, though.
+
+BPF_CORE_READ_STR_INTO() is added as well, which differs from
+BPF_CORE_READ_INTO() only in that last bpf_probe_read() call (to read final
+field after chasing pointers) is replaced with bpf_probe_read_str(). Result of
+bpf_probe_read_str() is returned as a result of BPF_CORE_READ_STR_INTO() macro
+itself, so that applications can track return code and/or length of read
+string.
+
+Patch set outline:
+- patch #1 undoes previously added GCC-specific bpf-helpers.h include;
+- patch #2 splits off legacy stuff we don't want to carry over;
+- patch #3 adjusts CO-RE reloc tests to avoid subsequent naming conflict with
+  BPF_CORE_READ;
+- patch #4 splits off bpf_tracing.h;
+- patch #5 moves bpf_{helpers,endian,tracing}.h into libbpf and adjusts
+  Makefiles to include libbpf for header search;
+- patch #6 adds variadic BPF_CORE_READ() macro family, as described above;
+- patch #7 adds tests to verify all possible levels of pointer nestedness for
+  BPF_CORE_READ(), as well as correctness test for BPF_CORE_READ_STR_INTO().
+
+v1->v2:
+- fix CO-RE reloc tests before bpf_helpers.h move (Song);
+- split off legacy stuff we don't want to carry over (Daniel, Toke);
+- split off bpf_tracing.h (Daniel);
+- fix samples/bpf build (assuming other fixes are applied);
+- switch remaining maps either to bpf_map_def_legacy or BTF-defined maps;
+
+Andrii Nakryiko (7):
+  selftests/bpf: undo GCC-specific bpf_helpers.h changes
+  selftests/bpf: samples/bpf: split off legacy stuff from bpf_helpers.h
+  selftests/bpf: adjust CO-RE reloc tests for new bpf_core_read() macro
+  selftests/bpf: split off tracing-only helpers into bpf_tracing.h
+  libbpf: move bpf_{helpers,endian,tracing}.h into libbpf
+  libbpf: add BPF_CORE_READ/BPF_CORE_READ_INTO helpers
+  selftests/bpf: add BPF_CORE_READ and BPF_CORE_READ_STR_INTO macro
+    tests
+
+ samples/bpf/Makefile                          |   2 +-
+ samples/bpf/hbm_kern.h                        |  28 +-
+ samples/bpf/map_perf_test_kern.c              |  24 +-
+ samples/bpf/offwaketime_kern.c                |   1 +
+ samples/bpf/parse_ldabs.c                     |   1 +
+ samples/bpf/sampleip_kern.c                   |   1 +
+ samples/bpf/sockex1_kern.c                    |   1 +
+ samples/bpf/sockex2_kern.c                    |   1 +
+ samples/bpf/sockex3_kern.c                    |   1 +
+ samples/bpf/spintest_kern.c                   |   1 +
+ samples/bpf/tcbpf1_kern.c                     |   1 +
+ samples/bpf/test_map_in_map_kern.c            |  16 +-
+ samples/bpf/test_overhead_kprobe_kern.c       |   1 +
+ samples/bpf/test_probe_write_user_kern.c      |   1 +
+ samples/bpf/trace_event_kern.c                |   1 +
+ samples/bpf/tracex1_kern.c                    |   1 +
+ samples/bpf/tracex2_kern.c                    |   1 +
+ samples/bpf/tracex3_kern.c                    |   1 +
+ samples/bpf/tracex4_kern.c                    |   1 +
+ samples/bpf/tracex5_kern.c                    |   1 +
+ tools/lib/bpf/Makefile                        |   5 +-
+ .../selftests => lib}/bpf/bpf_endian.h        |   0
+ .../selftests => lib}/bpf/bpf_helpers.h       | 391 +++++++-----------
+ tools/lib/bpf/bpf_tracing.h                   | 195 +++++++++
+ tools/testing/selftests/bpf/Makefile          |   2 +-
+ tools/testing/selftests/bpf/bpf_legacy.h      |  39 ++
+ .../selftests/bpf/prog_tests/core_reloc.c     |   8 +-
+ .../selftests/bpf/progs/core_reloc_types.h    |   9 +
+ tools/testing/selftests/bpf/progs/loop1.c     |   1 +
+ tools/testing/selftests/bpf/progs/loop2.c     |   1 +
+ tools/testing/selftests/bpf/progs/loop3.c     |   1 +
+ .../testing/selftests/bpf/progs/sockopt_sk.c  |  13 +-
+ tools/testing/selftests/bpf/progs/tcp_rtt.c   |  13 +-
+ .../selftests/bpf/progs/test_btf_haskv.c      |   1 +
+ .../selftests/bpf/progs/test_btf_newkv.c      |   1 +
+ .../bpf/progs/test_core_reloc_arrays.c        |  10 +-
+ .../bpf/progs/test_core_reloc_flavors.c       |   8 +-
+ .../bpf/progs/test_core_reloc_ints.c          |  18 +-
+ .../bpf/progs/test_core_reloc_kernel.c        |  60 ++-
+ .../bpf/progs/test_core_reloc_misc.c          |   8 +-
+ .../bpf/progs/test_core_reloc_mods.c          |  18 +-
+ .../bpf/progs/test_core_reloc_nesting.c       |   6 +-
+ .../bpf/progs/test_core_reloc_primitives.c    |  12 +-
+ .../bpf/progs/test_core_reloc_ptr_as_arr.c    |   4 +-
+ 44 files changed, 587 insertions(+), 323 deletions(-)
+ rename tools/{testing/selftests => lib}/bpf/bpf_endian.h (100%)
+ rename tools/{testing/selftests => lib}/bpf/bpf_helpers.h (66%)
+ create mode 100644 tools/lib/bpf/bpf_tracing.h
+ create mode 100644 tools/testing/selftests/bpf/bpf_legacy.h
+
+-- 
+2.17.1
+
