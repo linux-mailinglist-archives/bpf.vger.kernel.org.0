@@ -2,106 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0679BC94A9
-	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2019 01:14:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DB52C94D8
+	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2019 01:29:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728504AbfJBXOz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Oct 2019 19:14:55 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:41204 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726708AbfJBXOz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Oct 2019 19:14:55 -0400
-Received: by mail-lj1-f193.google.com with SMTP id f5so584714ljg.8
-        for <bpf@vger.kernel.org>; Wed, 02 Oct 2019 16:14:53 -0700 (PDT)
+        id S1728855AbfJBX3w (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Oct 2019 19:29:52 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:39474 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726798AbfJBX3v (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Oct 2019 19:29:51 -0400
+Received: by mail-qk1-f194.google.com with SMTP id 4so493679qki.6;
+        Wed, 02 Oct 2019 16:29:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=UgTt1s2t3sg0v6y3jPFKSo9NyBXHyysWlJIqH2+dS84=;
-        b=qIcbNjpyVugWAKSNEz7Wb9fwaJn3yg3SKOMtpqYfKJBhxgMwLVl9KEhHvdMkMeTmoJ
-         1oj63lrsvx88r7gusVdZs7zew6pUlHiDnoiV5ZMtRHoFC42fLgnIkU/oBWFulZ7q2agY
-         4ceFiAPT2DPx981o/3pRdKiiF0L0sLU9fSAcdOdjY4+/KevJD/U8P21l7CSITAXb3I9x
-         bzwlyo3BK+83/xDj7wdmLs04qzAUxisYTDtyrXwJVjOTVlkGn5CfX3F0RktGq7cR+5zy
-         mH1urqt4dFX2YP2RbXaZcBLi19tnunwMzOkoqijq4UHuohCAGe8UGoAxug1SSTpERcFO
-         0jlQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=px76N5Ygyt1+IaPaI8lPcGpZkxeisLsbA6YBoyUGZsk=;
+        b=kpc6N+43kHEhQsTbxUhs1VlXqZ/4llzRMyDhVnOUlpAkjcuvRyrD3CjG/lbI3Dktgw
+         O07IgARrj4egPxvsrn6bJTr8MOOXXRvvHr/KgSgTTj7jVJTabWuYFVCGDM4FpcUuItJN
+         JnIh77eBrBBHgmYPtggm9jT6MSii32eedAhVNi/HJSZB+JO8kVEAF71uhfyJwA+X8M5v
+         6HsZnHnSrMISDX/0znO1VAG3cE0gzxKSvyfQKEPccnHY8Qqny1wV3ZQbRbOAyGpnB7qw
+         eaX5d1OLznV8uLf0exSpqJtE1Yzm0mb36buAWekadlwFTO5aj7YSRoFFJyxW5Ct+mRoI
+         bIBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=UgTt1s2t3sg0v6y3jPFKSo9NyBXHyysWlJIqH2+dS84=;
-        b=XSy0MAfYfoaUD/P2is9+PMHlodOCc7ElPh+XtmVA9/lxbNO5PjxPdG2bky492AInvj
-         WaToN/HegcNd2v3RmFNzhLT+xyNSwXv+n2+PW8vw+LG/j/+g2RMnMTPUjETw2n83JNFi
-         uLO9Nkrg0cnEQHcEXInHgLFFGFwZdNw9wlR5lHjysgtkYETmn14dD0VjBEAsd4CayE2W
-         URQJ99cKU4mqRxkF9D6w6x099dSgWyDNg+EGy6oP+bbeuRAtQeSR3wJupfVNlviufuEp
-         7FM/Oo9mCh/KRutwuA4u7LBKjddc0PM6ctcAz1g9pO+ajV55PIrqdW2ZRe5kv12HzT8Q
-         elXg==
-X-Gm-Message-State: APjAAAV1qpAiTo3DxeHroUNMii1Yi5FXA6kRxd7l+6MrQ4kY9mG2uFLC
-        zQ7c79pGUtqt1fZZPtxDG+9SLA==
-X-Google-Smtp-Source: APXvYqwrl1jb/dLjiJDvGTME5xFbdtNf2mo7y+7nzW/o8zCYP9/fQoQMwGsu/qM3/g7GeDw7w6EAVQ==
-X-Received: by 2002:a2e:4296:: with SMTP id h22mr4098307ljf.208.1570058093003;
-        Wed, 02 Oct 2019 16:14:53 -0700 (PDT)
-Received: from khorivan (168-200-94-178.pool.ukrtel.net. [178.94.200.168])
-        by smtp.gmail.com with ESMTPSA id z18sm165026ljh.17.2019.10.02.16.14.51
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 02 Oct 2019 16:14:52 -0700 (PDT)
-Date:   Thu, 3 Oct 2019 02:14:50 +0300
-From:   Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
-To:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>
-Cc:     Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Networking <netdev@vger.kernel.org>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=px76N5Ygyt1+IaPaI8lPcGpZkxeisLsbA6YBoyUGZsk=;
+        b=a1TfU7kgwOv1pU5hRZIJOSqRDyGmZDxajH7QNPD436Xenl2eRtCssvk0yzspz1rb5U
+         vPizF/zDpsfPDrgYNe5p9PEEIOPZDOe44NtSjlhwrIyd0QK803lGiK+LCY7sbZWyGTDw
+         KRsHPQBPwEQd0PCqIwURD3YARF7MwCPp2RiJb/HAjtOfnp5e6MT5nIz2sHXmPJw82rLn
+         dCI31Lgd1YzBQ7045M3b2IKqjW5TAp/oTkqHm6nrYdJlwzghinJyfM9uikno/LtdOzjB
+         4+nNRkHMkxp7pcw0V62xLmhsAWZZy6IXNn6LN5YxbrjsFIIoisxIQQqFgsd5JUKrnh71
+         qhVw==
+X-Gm-Message-State: APjAAAWGplOT1sZ+QTCa9GPGZWKkG0we5zIezuRAKVSkn38Qt21JyShx
+        Kmh1pemC1jKOsRQDm7ggle7Oh1BbgRDsSFU55XE=
+X-Google-Smtp-Source: APXvYqyHFJy8nYfCoKUjZpUzSzmYzsMlShEropZlNJ4z2f11vlFDW5/mLSDeK/ebISRMUSZO8n1lT7SO8CF3/OUIM4o=
+X-Received: by 2002:a37:4e55:: with SMTP id c82mr1479110qkb.437.1570058990712;
+ Wed, 02 Oct 2019 16:29:50 -0700 (PDT)
+MIME-Version: 1.0
+References: <20191002173357.253643-1-sdf@google.com> <20191002173357.253643-2-sdf@google.com>
+In-Reply-To: <20191002173357.253643-2-sdf@google.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 2 Oct 2019 16:29:39 -0700
+Message-ID: <CAEf4BzZuEChOL828F91wLxUr3h2yfAkZvhsyoSx18uSFSxOtqw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf/flow_dissector: add mode to enforce
+ global BPF flow dissector
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf] samples/bpf: kbuild: add CONFIG_SAMPLE_BPF Kconfig
-Message-ID: <20191002231448.GA10649@khorivan>
-References: <20191001101429.24965-1-bjorn.topel@gmail.com>
- <CAK7LNATNw4Qysj1Q2dXd4PALfbtgMXPwgvmW=g0dRcrczGW-Fg@mail.gmail.com>
- <CAJ+HfNgvxornSfqnbAthNy6u6=-enGCdA8K1e6rLXhCzGgmONQ@mail.gmail.com>
- <CAK7LNATD4vCQnNsHXP8A2cyWDkCNX=LGh0ej-dkDajm-+Lfw8Q@mail.gmail.com>
- <CAJ+HfNgem7ijzQkz7BU-Z_A-CqWXY_uMF6_p0tGZ6eUMx_N3QQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJ+HfNgem7ijzQkz7BU-Z_A-CqWXY_uMF6_p0tGZ6eUMx_N3QQ@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        Petar Penkov <ppenkov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 02, 2019 at 09:41:15AM +0200, Björn Töpel wrote:
->On Wed, 2 Oct 2019 at 03:49, Masahiro Yamada
-><yamada.masahiro@socionext.com> wrote:
->>
->[...]
->> > Yes, the BPF samples require clang/LLVM with BPF support to build. Any
->> > suggestion on a good way to address this (missing tools), better than
->> > the warning above? After the commit 394053f4a4b3 ("kbuild: make single
->> > targets work more correctly"), it's no longer possible to build
->> > samples/bpf without support in the samples/Makefile.
->>
->>
->> You can with
->>
->> "make M=samples/bpf"
->>
+On Wed, Oct 2, 2019 at 10:35 AM Stanislav Fomichev <sdf@google.com> wrote:
 >
->Oh, I didn't know that. Does M= support "output" builds (O=)?
+> Always use init_net flow dissector BPF program if it's attached and fall
+> back to the per-net namespace one. Also, deny installing new programs if
+> there is already one attached to the root namespace.
+> Users can still detach their BPF programs, but can't attach any
+> new ones (-EPERM).
 >
->I usually just build samples/bpf/ with:
+> Cc: Petar Penkov <ppenkov@google.com>
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> ---
+>  Documentation/bpf/prog_flow_dissector.rst |  3 +++
+>  net/core/flow_dissector.c                 | 11 ++++++++++-
+>  2 files changed, 13 insertions(+), 1 deletion(-)
 >
->  $ make V=1 O=/home/foo/build/bleh samples/bpf/
+> diff --git a/Documentation/bpf/prog_flow_dissector.rst b/Documentation/bpf/prog_flow_dissector.rst
+> index a78bf036cadd..4d86780ab0f1 100644
+> --- a/Documentation/bpf/prog_flow_dissector.rst
+> +++ b/Documentation/bpf/prog_flow_dissector.rst
+> @@ -142,3 +142,6 @@ BPF flow dissector doesn't support exporting all the metadata that in-kernel
+>  C-based implementation can export. Notable example is single VLAN (802.1Q)
+>  and double VLAN (802.1AD) tags. Please refer to the ``struct bpf_flow_keys``
+>  for a set of information that's currently can be exported from the BPF context.
+> +
+> +When BPF flow dissector is attached to the root network namespace (machine-wide
+> +policy), users can't override it in their child network namespaces.
+> diff --git a/net/core/flow_dissector.c b/net/core/flow_dissector.c
+> index 7c09d87d3269..494e2016fe84 100644
+> --- a/net/core/flow_dissector.c
+> +++ b/net/core/flow_dissector.c
+> @@ -115,6 +115,11 @@ int skb_flow_dissector_bpf_prog_attach(const union bpf_attr *attr,
+>         struct bpf_prog *attached;
+>         struct net *net;
 >
->
->Björn
+> +       if (rcu_access_pointer(init_net.flow_dissector_prog)) {
+> +               /* Can't override root flow dissector program */
+> +               return -EPERM;
+> +       }
 
-Shouldn't README be updated?
+This is racy, shouldn't this be checked after grabbing a lock below?
 
--- 
-Regards,
-Ivan Khoronzhuk
+> +
+>         net = current->nsproxy->net_ns;
+>         mutex_lock(&flow_dissector_mutex);
+>         attached = rcu_dereference_protected(net->flow_dissector_prog,
+> @@ -910,7 +915,11 @@ bool __skb_flow_dissect(const struct net *net,
+>         WARN_ON_ONCE(!net);
+>         if (net) {
+>                 rcu_read_lock();
+> -               attached = rcu_dereference(net->flow_dissector_prog);
+> +               attached =
+> +                       rcu_dereference(init_net.flow_dissector_prog);
+> +
+> +               if (!attached)
+> +                       attached = rcu_dereference(net->flow_dissector_prog);
+>
+>                 if (attached) {
+>                         struct bpf_flow_keys flow_keys;
+> --
+> 2.23.0.444.g18eeb5a265-goog
+>
