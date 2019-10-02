@@ -2,118 +2,155 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B1151C922B
-	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2019 21:17:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6387FC9239
+	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2019 21:23:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729193AbfJBTRL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Oct 2019 15:17:11 -0400
-Received: from mail-ed1-f68.google.com ([209.85.208.68]:36021 "EHLO
-        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726669AbfJBTRK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Oct 2019 15:17:10 -0400
-Received: by mail-ed1-f68.google.com with SMTP id h2so207733edn.3
-        for <bpf@vger.kernel.org>; Wed, 02 Oct 2019 12:17:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4oGOfktdveo5ZtuoH4C6yPHNIwcTv3+DyM2wCB4zh4U=;
-        b=dAo0QIHTfhTRnlYtaeL9gFzX3qDzreXEhE4rf+FJms1XQb84amNAa8vp3so/P0rIps
-         KN84SQ3T51eDvLkMPS8292geBjpXywMAmzx7uOca+jx9ndkr9cbGzz/16GXRurF3Dp6o
-         dsodWB+N7/WQ/Jyv3/I1NxxsGTV5AUsJZqCBM=
+        id S1726076AbfJBTXH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Wed, 2 Oct 2019 15:23:07 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:32906 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726669AbfJBTXH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Oct 2019 15:23:07 -0400
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com [209.85.208.200])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 01F1B8830B
+        for <bpf@vger.kernel.org>; Wed,  2 Oct 2019 19:23:05 +0000 (UTC)
+Received: by mail-lj1-f200.google.com with SMTP id 5so91258lje.12
+        for <bpf@vger.kernel.org>; Wed, 02 Oct 2019 12:23:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4oGOfktdveo5ZtuoH4C6yPHNIwcTv3+DyM2wCB4zh4U=;
-        b=C9qdW/NYeCkoL0eLTOkL+6q6t+ZOxDHrRq8wLctvARvQ3a8z5i2RQho5r7qAsw+Tk8
-         2aPm5SUxOruKozBE/i8g38KyyrRlkKd7hlRTFsOkdDm2imYEM9fJYcOgcQfbzjyJuH+T
-         DPT8b/L10JUGeWkAaeUJdFtJyLYeUcXeO3ZefbF/qJHlc4eZZKKHOh8SAPMJkotJZeTi
-         bGMpJJed1OXtqP1ft0irjmKCa21spUbImU2QQ5Q05gfheWVEY3ia+jezMJPVUAv9MK/B
-         wdxR21Z+VGuxPoGksEJbQnlmiA/ePZaNhec/emDp10Q4+GsczDMQl3j0JCD9Ij+gPk/p
-         xvPw==
-X-Gm-Message-State: APjAAAUoNUAzzjC2uVB14ZJE5BCSuMqOhirQ2ThphkExZ4V0TCpmYLey
-        UqSIvCHezwg0mFIOISN9IJCKzw==
-X-Google-Smtp-Source: APXvYqxc21q3xZdpLrf1tkXfKo6ihP3vYlwZE7tC9X2U0uFDnrfeLpnWv9df3JAOYj1FrucG4bfITw==
-X-Received: by 2002:a17:906:1394:: with SMTP id f20mr4650214ejc.274.1570043829050;
-        Wed, 02 Oct 2019 12:17:09 -0700 (PDT)
-Received: from kpsingh-kernel.localdomain (77-56-209-237.dclient.hispeed.ch. [77.56.209.237])
-        by smtp.gmail.com with ESMTPSA id p19sm7996edq.31.2019.10.02.12.17.08
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=Ub/B1xLl3oHfgYFdtw9xij/+r1A/SqWswRKGttSC7Zw=;
+        b=avh/cygsCgmkNm49MBOlwjsh0r9i0Zef2/vCz4Vb2wBfJCAywOhAieZBXq39uVFmF1
+         +1nxRD+VxkYZlaXY1aXECfMXz7CJxlFb6VyB+ABhi7XUiUZlcHz3xm+/2n9uL2zvQZRt
+         CrkbAqR43qj6o6KLfaqt1rOpWYy5og3gfgwTH8OASmmGpK4yspxuDZuIVE7ArTj815nm
+         PL8gVsQcnIoJiBVNmrNSuuo+94gYp2lZm59FqxvatT7oYMUoAv7yn3tTjcif6galnAXN
+         seI7IdqyEfx0Lqv+93LcfM5JCB22TzTNfAC0KqG1Y1u6oMiz4rM3GPJ+WglRcPovD0xe
+         7TSA==
+X-Gm-Message-State: APjAAAX1rX5ZPxMdCcRUgC+uIsKdoawj6cSK4E01rZmgDXzt6efz/7k5
+        bJHRvwOwSwmAwgLg2Fuake4urZC01kIK5rzCPpyNhoAHWySlcCUBoQeZ0watAAZk8cQK+2UlHOM
+        4TV/YCWPhPTx3
+X-Received: by 2002:ac2:5463:: with SMTP id e3mr3250619lfn.117.1570044183930;
+        Wed, 02 Oct 2019 12:23:03 -0700 (PDT)
+X-Google-Smtp-Source: APXvYqzYX3k9iv8+gc87K/3BVW9mTTa48DJMwPuK5XYfZ2CncXrm7YPtjOPOFkG1nlrKCR8Om+WTmQ==
+X-Received: by 2002:ac2:5463:: with SMTP id e3mr3250607lfn.117.1570044183694;
+        Wed, 02 Oct 2019 12:23:03 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a00:7660:6da:443::2])
+        by smtp.gmail.com with ESMTPSA id m15sm73217ljg.97.2019.10.02.12.23.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Oct 2019 12:17:08 -0700 (PDT)
-From:   KP Singh <kpsingh@chromium.org>
-To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Cc:     Florent Revest <revest@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Florent Revest <revest@chromium.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH v2] samples/bpf: Add a workaround for asm_inline
-Date:   Wed,  2 Oct 2019 21:16:52 +0200
-Message-Id: <20191002191652.11432-1-kpsingh@chromium.org>
-X-Mailer: git-send-email 2.20.1
+        Wed, 02 Oct 2019 12:23:03 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id E16FF18063D; Wed,  2 Oct 2019 21:23:01 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>, Martin Lau <kafai@fb.com>,
+        Yonghong Song <yhs@fb.com>,
+        Marek Majkowski <marek@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        David Miller <davem@davemloft.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        "netdev\@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf\@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 0/9] xdp: Support multiple programs on a single interface through chain calls
+In-Reply-To: <E7319D69-6450-4BC3-97B1-134B420298FF@fb.com>
+References: <157002302448.1302756.5727756706334050763.stgit@alrua-x1> <E7319D69-6450-4BC3-97B1-134B420298FF@fb.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 02 Oct 2019 21:23:01 +0200
+Message-ID: <87tv8rq7e2.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: KP Singh <kpsingh@google.com>
+Song Liu <songliubraving@fb.com> writes:
 
-This was added in:
+>> On Oct 2, 2019, at 6:30 AM, Toke Høiland-Jørgensen <toke@redhat.com> wrote:
+>> 
+>> This series adds support for executing multiple XDP programs on a single
+>> interface in sequence, through the use of chain calls, as discussed at the Linux
+>> Plumbers Conference last month:
+>> 
+>> https://urldefense.proofpoint.com/v2/url?u=https-3A__linuxplumbersconf.org_event_4_contributions_460_&d=DwIDaQ&c=5VD0RTtNlTh3ycd41b3MUw&r=dR8692q0_uaizy0jkrBJQM5k2hfm4CiFxYT8KaysFrg&m=YXqqHTC51zXBviPBEk55y-fQjFQwcXWFlH0IoOqm2KU&s=NF4w3eSPmNhSpJr1-0FLqqlqfgEV8gsCQb9YqWQ9p-k&e= 
+>> 
+>> # HIGH-LEVEL IDEA
+>> 
+>> The basic idea is to express the chain call sequence through a special map type,
+>> which contains a mapping from a (program, return code) tuple to another program
+>> to run in next in the sequence. Userspace can populate this map to express
+>> arbitrary call sequences, and update the sequence by updating or replacing the
+>> map.
+>> 
+>> The actual execution of the program sequence is done in bpf_prog_run_xdp(),
+>> which will lookup the chain sequence map, and if found, will loop through calls
+>> to BPF_PROG_RUN, looking up the next XDP program in the sequence based on the
+>> previous program ID and return code.
+>> 
+>> An XDP chain call map can be installed on an interface by means of a new netlink
+>> attribute containing an fd pointing to a chain call map. This can be supplied
+>> along with the XDP prog fd, so that a chain map is always installed together
+>> with an XDP program.
+>
+> Interesting work!
+>
+> Quick question: can we achieve the same by adding a "retval to
+> call_tail_next" map to each program?
 
-  commit eb111869301e ("compiler-types.h: add asm_inline definition")
+Hmm, that's an interesting idea; I hadn't thought of that. As long as
+that map can be manipulated outside of the program itself, it may work.
+I wonder how complex it gets to modify the call sequence, though; say
+you want to change A->B->C to A->C->B - how do you do that without
+interrupting the sequence while you're modifying things? Or is it OK if
+that is not possible?
 
-and breaks samples/bpf as clang does not support asm __inline.
+> I think one issue is how to avoid loop like A->B->C->A, but this
+> should be solvable?
 
-Co-developed-by: Florent Revest <revest@google.com>
-Signed-off-by: Florent Revest <revest@google.com>
-Signed-off-by: KP Singh <kpsingh@google.com>
----
+Well, for tail calls there's already a counter that breaks the sequence
+after a certain number of calls. We could do the same here.
 
-Changes since v1:
+>> # PERFORMANCE
+>> 
+>> I performed a simple performance test to get an initial feel for the overhead of
+>> the chain call mechanism. This test consists of running only two programs in
+>> sequence: One that returns XDP_PASS and another that returns XDP_DROP. I then
+>> measure the drop PPS performance and compare it to a baseline of just a single
+>> program that only returns XDP_DROP.
+>> 
+>> For comparison, a test case that uses regular eBPF tail calls to sequence two
+>> programs together is also included. Finally, because 'perf' showed that the
+>> hashmap lookup was the largest single source of overhead, I also added a test
+>> case where I removed the jhash() call from the hashmap code, and just use the
+>> u32 key directly as an index into the hash bucket structure.
+>> 
+>> The performance for these different cases is as follows (with retpolines disabled):
+>> 
+>> | Test case                       | Perf      | Add. overhead | Total overhead |
+>> |---------------------------------+-----------+---------------+----------------|
+>> | Before patch (XDP DROP program) | 31.0 Mpps |               |                |
+>> | After patch (XDP DROP program)  | 28.9 Mpps |        2.3 ns |         2.3 ns |
+>> | XDP tail call                   | 26.6 Mpps |        3.0 ns |         5.3 ns |
+>> | XDP chain call (no jhash)       | 19.6 Mpps |       13.4 ns |        18.7 ns |
+>> | XDP chain call (this series)    | 17.0 Mpps |        7.9 ns |        26.6 ns |
+>> 
+>> From this it is clear that while there is some overhead from this mechanism; but
+>> the jhash removal example indicates that it is probably possible to optimise the
+>> code to the point where the overhead becomes low enough that it is acceptable.
+>
+> I think we can probably re-jit multiple programs into one based on the
+> mapping, which should give the best performance.
 
-- Dropped the rename from asm_workaround.h to asm_goto_workaround.h
-- Dropped the fix for task_fd_query_user.c as it is updated in
-  https://lore.kernel.org/bpf/20191001112249.27341-1-bjorn.topel@gmail.com/
+Yeah, integrating this into the jit+verifier would obviously give the
+best performance. But I wanted to avoid that because I viewed this as an
+XDP-specific feature, and I didn't want to add more complexity to the
+already somewhat complex verifier.
 
- samples/bpf/asm_goto_workaround.h | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+However, if there's really interest in having this be a general feature
+outside of XDP, I guess I can look at that again.
 
-diff --git a/samples/bpf/asm_goto_workaround.h b/samples/bpf/asm_goto_workaround.h
-index 7409722727ca..7048bb3594d6 100644
---- a/samples/bpf/asm_goto_workaround.h
-+++ b/samples/bpf/asm_goto_workaround.h
-@@ -3,7 +3,8 @@
- #ifndef __ASM_GOTO_WORKAROUND_H
- #define __ASM_GOTO_WORKAROUND_H
- 
--/* this will bring in asm_volatile_goto macro definition
-+/*
-+ * This will bring in asm_volatile_goto and asm_inline macro definitions
-  * if enabled by compiler and config options.
-  */
- #include <linux/types.h>
-@@ -13,5 +14,15 @@
- #define asm_volatile_goto(x...) asm volatile("invalid use of asm_volatile_goto")
- #endif
- 
-+/*
-+ * asm_inline is defined as asm __inline in "include/linux/compiler_types.h"
-+ * if supported by the kernel's CC (i.e CONFIG_CC_HAS_ASM_INLINE) which is not
-+ * supported by CLANG.
-+ */
-+#ifdef asm_inline
-+#undef asm_inline
-+#define asm_inline asm
-+#endif
-+
- #define volatile(x...) volatile("")
- #endif
--- 
-2.20.1
-
+-Toke
