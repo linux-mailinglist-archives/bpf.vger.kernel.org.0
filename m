@@ -2,122 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 10139C45B2
-	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2019 03:49:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8603C4612
+	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2019 05:18:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727665AbfJBBtg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Oct 2019 21:49:36 -0400
-Received: from conssluserg-04.nifty.com ([210.131.2.83]:28970 "EHLO
-        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727603AbfJBBtg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Oct 2019 21:49:36 -0400
-Received: from mail-vs1-f46.google.com (mail-vs1-f46.google.com [209.85.217.46]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id x921nVMp020028;
-        Wed, 2 Oct 2019 10:49:31 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com x921nVMp020028
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1569980972;
-        bh=LjA8My+d4AXL7V4tiUE7HhNcYoSR/qp9wLGs+QBy8Xg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Hvi8hapQfUO2Bu8gbSviT13DPPT0YHHo+bgu1tRSU9/8EHHPjBejRa/EctiRhaImt
-         niq3xWX9oVIdVuccVCyuSgKm1nW0sLgmGNyqB6uYgshPq1RDHwQSedgcRrfRWmAYAa
-         eOjn9v6lvjmaIr7EHGiiBo+5OozvMQBr7+FPf5LvG6gqGBSOhlFShfQiwycNMM59o2
-         dHG1tK05agxCYI34w3fglCEAd9ARGdOi9hvoTz2nMe918b3jxoZvxdGf4ZRBQEDYP0
-         wwc8jbbgboN4gve9LVlM7PJ6aR4xwn1yPtUoaJPTxM0wIDC2xdj65b1QFRRtBuG4md
-         goIJSBcQECLtg==
-X-Nifty-SrcIP: [209.85.217.46]
-Received: by mail-vs1-f46.google.com with SMTP id m22so10811250vsl.9;
-        Tue, 01 Oct 2019 18:49:31 -0700 (PDT)
-X-Gm-Message-State: APjAAAUJlg3M1pm3qvcEPUA3og8Si73ux+7fnwRTVeuIGA1qXb0C2jlF
-        nKw2ZwhfUqPK5C8tXa278NCPMFbdCgK3m7tFSpE=
-X-Google-Smtp-Source: APXvYqxCAYyFoQZyJNti5pJOkHTE9th8RVVwPpDGWczMD67cVLZzOytCkyRv+ymTayZa3BXEKEhJUzcQUJmbrHVeDHU=
-X-Received: by 2002:a67:7c03:: with SMTP id x3mr529092vsc.155.1569980970468;
- Tue, 01 Oct 2019 18:49:30 -0700 (PDT)
+        id S1727772AbfJBDSC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Oct 2019 23:18:02 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:36570 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726869AbfJBDSC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Oct 2019 23:18:02 -0400
+Received: by mail-qt1-f194.google.com with SMTP id o12so24558994qtf.3;
+        Tue, 01 Oct 2019 20:18:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DkfOxbgDr7IYTTOG7aOBpzhIL2nlLLSARJt6E+jjVXU=;
+        b=IhspJJTCUMExojADiKr2W/9JHFM0sVu94fB83wkgQSgbKLnWmSlRyg7OBZ2wEQ6zFV
+         yQRvkabi8UL5SqFLiyi6m1SPuhofDVvoaLHj2L0C5sx0uSySug1ibL7hNfGwvie86GJZ
+         NPDitckoC0vaohlnMQmYOv3L4Gzsz5OKIx1/tNUWeRcIkDPLdjAYtuaq5ZnE6QFg6YmW
+         b/ZHkclTCiwtvPp0BZ9CKTdn7ZAX02ne0DRLfidO2AcVv8LtvDpS+06BS7nGcH+8xBzy
+         hX8Um03GcW04FPtVizP/47K82r2th84FqA7j86y5kLcTI9+J/FmtI6oDhKZ47QCYRd6j
+         1uUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DkfOxbgDr7IYTTOG7aOBpzhIL2nlLLSARJt6E+jjVXU=;
+        b=k8/+Nuij7PdJh+FT1554aeGnvu1e0FUYGRpJejN6MVLrH8wAhMM+VilQcA94S7Ydj0
+         ++eCCbw0aItGuCT8cuoqLLIwbLcithTsKBz46XF1soHZ5K4VD102ktbHyp1/vUt33UXK
+         D7VOX6XvBvSseVVPbVqmCVAp4wRtYpRxVGQfF0L4HJV52yejlOTVUXiaVw86FmBBqca6
+         CdWYMwe2Ac8voOHHcuqT0IfSC4jBUJzbWTQAPzDhrQYAX1PxOF6tJHOFtKCxAWNrtbx/
+         5UckLgHmwAEOXyCzRX2bDAc/QEkDeRFyaVauscvdVQyOFFgyy5prtRXUbbiI3Mkde6fl
+         WgJg==
+X-Gm-Message-State: APjAAAUY42veVtfPMZQsiJ/6OdarslG9yOBcJ9wTSkbl0jG8Fe+cnI8G
+        p+UYUeTeMS+Uc5XwPGT5yCN/75xdG8bAx3MY/Nw=
+X-Google-Smtp-Source: APXvYqw3Go3PwnQpyK3Qdr1NGe4I3IFRGZ1+38xzNKIt7ca1IGQDBDYkiZWNeqhmy2nhKIfw6qymUYBbF/yKvCcGtUk=
+X-Received: by 2002:a0c:88f0:: with SMTP id 45mr1215730qvo.78.1569986280629;
+ Tue, 01 Oct 2019 20:18:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <20191001101429.24965-1-bjorn.topel@gmail.com> <CAK7LNATNw4Qysj1Q2dXd4PALfbtgMXPwgvmW=g0dRcrczGW-Fg@mail.gmail.com>
- <CAJ+HfNgvxornSfqnbAthNy6u6=-enGCdA8K1e6rLXhCzGgmONQ@mail.gmail.com>
-In-Reply-To: <CAJ+HfNgvxornSfqnbAthNy6u6=-enGCdA8K1e6rLXhCzGgmONQ@mail.gmail.com>
-From:   Masahiro Yamada <yamada.masahiro@socionext.com>
-Date:   Wed, 2 Oct 2019 10:48:54 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATD4vCQnNsHXP8A2cyWDkCNX=LGh0ej-dkDajm-+Lfw8Q@mail.gmail.com>
-Message-ID: <CAK7LNATD4vCQnNsHXP8A2cyWDkCNX=LGh0ej-dkDajm-+Lfw8Q@mail.gmail.com>
-Subject: Re: [PATCH bpf] samples/bpf: kbuild: add CONFIG_SAMPLE_BPF Kconfig
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Cc:     Networking <netdev@vger.kernel.org>,
+References: <20191001173728.149786-1-brianvv@google.com> <20191001173728.149786-2-brianvv@google.com>
+In-Reply-To: <20191001173728.149786-2-brianvv@google.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 1 Oct 2019 20:17:49 -0700
+Message-ID: <CAEf4Bzb7ag=bdhuAuDHuxk_+jQj7ZudU3Bd2zk3OPz8GSYVFtA@mail.gmail.com>
+Subject: Re: [PATCH bpf 1/2] selftests/bpf: test_progs: don't leak server_fd
+ in tcp_rtt
+To:     Brian Vazquez <brianvv@google.com>
+Cc:     Brian Vazquez <brianvv.kernel@gmail.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
+        "David S . Miller" <davem@davemloft.net>,
+        Stanislav Fomichev <sdf@google.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 1, 2019 at 11:16 PM Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.co=
-m> wrote:
+On Tue, Oct 1, 2019 at 10:39 AM Brian Vazquez <brianvv@google.com> wrote:
 >
-> On Tue, 1 Oct 2019 at 14:33, Masahiro Yamada
-> <yamada.masahiro@socionext.com> wrote:
-> >
-> > Hi Bjorn
-> >
-> > On Tue, Oct 1, 2019 at 7:14 PM Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail=
-.com> wrote:
-> > >
-> [...]
-> > >  subdir-$(CONFIG_SAMPLE_VFS)            +=3D vfs
-> > > +subdir-$(CONFIG_SAMPLE_BPF)            +=3D bpf
-> >
-> >
-> > Please keep samples/Makefile sorted alphabetically.
-> >
+> server_fd needs to be closed if pthread can't be created.
 >
-> Thank you, I'll address that in the v2!
+> Fixes: 8a03222f508b ("selftests/bpf: test_progs: fix client/server race
+> in tcp_rtt")
+
+Fixes tag hast to be on single line, no wrapping. Besides that:
+
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+
+> Cc: Stanislav Fomichev <sdf@google.com>
 >
-> >
-> >
-> >
-> > I am not checking samples/bpf/Makefile, but
-> > allmodconfig no longer compiles for me.
-> >
-> >
-> >
-> > samples/bpf/Makefile:209: WARNING: Detected possible issues with includ=
-e path.
-> > samples/bpf/Makefile:210: WARNING: Please install kernel headers
-> > locally (make headers_install).
-> > error: unable to create target: 'No available targets are compatible
-> > with triple "bpf"'
-> > 1 error generated.
-> > readelf: Error: './llvm_btf_verify.o': No such file
-> > *** ERROR: LLVM (llc) does not support 'bpf' target
-> >    NOTICE: LLVM version >=3D 3.7.1 required
-> >
-
-So, samples/bpf intentionally opts out the normal build
-because most of people fail to build it.
-
-It must be fixed somehow
-before supporting it in samples/Makefile.
-
-
-
-> Yes, the BPF samples require clang/LLVM with BPF support to build. Any
-> suggestion on a good way to address this (missing tools), better than
-> the warning above? After the commit 394053f4a4b3 ("kbuild: make single
-> targets work more correctly"), it's no longer possible to build
-> samples/bpf without support in the samples/Makefile.
-
-
-You can with
-
-"make M=3Dsamples/bpf"
-
-
-
---
-Best Regards
-Masahiro Yamada
+> Signed-off-by: Brian Vazquez <brianvv@google.com>
+> ---
+>  tools/testing/selftests/bpf/prog_tests/tcp_rtt.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/tcp_rtt.c b/tools/testing/selftests/bpf/prog_tests/tcp_rtt.c
+> index a82da555b1b02..f4cd60d6fba2e 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/tcp_rtt.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/tcp_rtt.c
+> @@ -260,13 +260,14 @@ void test_tcp_rtt(void)
+>
+>         if (CHECK_FAIL(pthread_create(&tid, NULL, server_thread,
+>                                       (void *)&server_fd)))
+> -               goto close_cgroup_fd;
+> +               goto close_server_fd;
+>
+>         pthread_mutex_lock(&server_started_mtx);
+>         pthread_cond_wait(&server_started, &server_started_mtx);
+>         pthread_mutex_unlock(&server_started_mtx);
+>
+>         CHECK_FAIL(run_test(cgroup_fd, server_fd));
+> +close_server_fd:
+>         close(server_fd);
+>  close_cgroup_fd:
+>         close(cgroup_fd);
+> --
+> 2.23.0.444.g18eeb5a265-goog
+>
