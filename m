@@ -2,196 +2,277 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 17EC6C8FA1
-	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2019 19:19:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26B66C8FFE
+	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2019 19:33:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728692AbfJBRTc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Oct 2019 13:19:32 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:24450 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727003AbfJBRTc (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 2 Oct 2019 13:19:32 -0400
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x92HDGib032465;
-        Wed, 2 Oct 2019 10:18:25 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=2U9m3zEa1J2WIPmwVqO4XJTLvqrceRqseNnu6R99SKw=;
- b=ZXhg5O8iE8ufOiWOatkxb8tD1Y2btWqHG8csB3rFrYQ2Jcun4bg3waEg3yZ0pzmVNE96
- t+QsEOM5eqf8/cLzeNMeNu7pqjIciRFvnZEcJiumSw2pButzH9ef3JdeMOv7zRoupb0m
- Pwy5m6qm6CQ/FMy4MtK4McSSE7zF8raX78A= 
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by mx0a-00082601.pphosted.com with ESMTP id 2vc9fw63sp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 02 Oct 2019 10:18:25 -0700
-Received: from prn-hub05.TheFacebook.com (2620:10d:c081:35::129) by
- prn-hub02.TheFacebook.com (2620:10d:c081:35::126) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Wed, 2 Oct 2019 10:18:24 -0700
-Received: from NAM03-DM3-obe.outbound.protection.outlook.com (192.168.54.28)
- by o365-in.thefacebook.com (192.168.16.29) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
- via Frontend Transport; Wed, 2 Oct 2019 10:18:24 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YLGBGeI6h/qsf/NvyqbdhWrBGhPWvxXCJrfk08V0lifau9Pjyk0nWAYEvTxYo+mNa9hKWqN6MmliVmfuDBhBpwUQ1Va1VE7yEv2GjAoASiiKzD4WUK0c/Tkn4xLhVkcYfYCfnJsXttyR/fR1OH3bSPDOQbzXDSgU4onb6xM9r/AvdknG2El4gtdtRcqe1lb1E+5zEzAeA1HprKHAoTF2mNI+WQ5VAF4l9RrnQd6ohhDgOVRX2+8sogV8vwDyH8shNO1Jp2JyYK0Kw8CoiTNsv1XypcaaAEc+xnUJr9OwRpueLh9kyUz6moIisSIXaj/ue52rKvvLR7Z3kZlpjIie6A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2U9m3zEa1J2WIPmwVqO4XJTLvqrceRqseNnu6R99SKw=;
- b=cfIWBSJQuQpeby1sp2L6yAwocRm+LJgV2YInL56zwtRqBjMtVd5H/iz2ZOxAl9ANclVNlankD3q/K3s0pJCk/XkSCIkMtjvhGSvsyt1tgP030/LKlkYjvf8zFG5aorLbsOMGGzjRF3TCy5OM/JHvBGtl3YMWIKK53d8LOyJXBU8rJIfOQQDToR4ZXsl8yaC4seC4dPkHcbCpvkQqpmx5nmYiw7979VJuHDCtU7MrSrsjr0TaHvPUGor5JnnjIoRh/051TezVSw3O8We1QZKcWSBaJ05PAClS8PVhwRfTKP5nH7n3kGtAcAFc80ZjQNUtn2H3mt/UbXLY8K99EdDaLA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2U9m3zEa1J2WIPmwVqO4XJTLvqrceRqseNnu6R99SKw=;
- b=iCOsoNI7OEY0WOMI6a3r7bUuX4hnllE0gR5BXltB6RDL4oBAWiKe5F7zMvbfUgJ1ldEZk60hGCkZXFY0RkXAzfl0uqwWHTqGiIV4fKj3QV1GDHetXJFRKK4Z9DyX0kT64hUoNAC9EGJqCks2OYqWKPgKEI9JLBFLuot4GfDVHEU=
-Received: from BYAPR15MB2501.namprd15.prod.outlook.com (52.135.196.11) by
- BYAPR15MB3336.namprd15.prod.outlook.com (20.179.57.215) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2305.20; Wed, 2 Oct 2019 17:18:22 +0000
-Received: from BYAPR15MB2501.namprd15.prod.outlook.com
- ([fe80::c13d:be57:b216:bfa0]) by BYAPR15MB2501.namprd15.prod.outlook.com
- ([fe80::c13d:be57:b216:bfa0%5]) with mapi id 15.20.2305.022; Wed, 2 Oct 2019
- 17:18:22 +0000
-From:   Alexei Starovoitov <ast@fb.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-CC:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        "Andy Lutomirski" <luto@kernel.org>,
+        id S1727964AbfJBRdg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Oct 2019 13:33:36 -0400
+Received: from mga18.intel.com ([134.134.136.126]:46931 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727793AbfJBRdg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Oct 2019 13:33:36 -0400
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga106.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 02 Oct 2019 10:33:35 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.67,249,1566889200"; 
+   d="gz'50?scan'50,208,50";a="221479304"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by fmsmga002.fm.intel.com with ESMTP; 02 Oct 2019 10:33:32 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1iFiVI-0008mT-1J; Thu, 03 Oct 2019 01:33:32 +0800
+Date:   Thu, 3 Oct 2019 01:33:23 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
+Cc:     kbuild-all@01.org, Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <ast@kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        James Morris <jmorris@namei.org>, Jann Horn <jannh@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Masami Hiramatsu" <mhiramat@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <Kernel-team@fb.com>,
-        Linux API <linux-api@vger.kernel.org>
-Subject: Re: [PATCH bpf-next] bpf, capabilities: introduce CAP_BPF
-Thread-Topic: [PATCH bpf-next] bpf, capabilities: introduce CAP_BPF
-Thread-Index: AQHVXRmQqSOzyqrm4ECmsLsG3CKso6cPnGwAgAAaLYCAAAXUgIAAP7UAgAAYzoCAARgsgIAAHuKAgAA4VQCAMGzZgIACzy2AgABy1ACAAVzMAIAAAg8AgAAIL4CAATZYgA==
-Date:   Wed, 2 Oct 2019 17:18:21 +0000
-Message-ID: <a98725c6-a7db-1d9f-7033-5ecd96438c8d@fb.com>
-References: <CALCETrV8iJv9+Ai11_1_r6MapPhhwt9hjxi=6EoixytabTScqg@mail.gmail.com>
- <20190828003447.htgzsxs5oevn3eys@ast-mbp.dhcp.thefacebook.com>
- <CALCETrVbPPPr=BdPAx=tJKxD3oLXP4OVSgCYrB_E4vb6idELow@mail.gmail.com>
- <20190828044340.zeha3k3cmmxgfqj7@ast-mbp.dhcp.thefacebook.com>
- <CALCETrW1o+Lazi2Ng6b9JN6jeJffgdW9f3HvqYhNo4TpHRXW=g@mail.gmail.com>
- <20190828225512.q6qbvkdiqih2iewk@ast-mbp.dhcp.thefacebook.com>
- <DA52992F-4862-4945-8482-FE619A04C753@amacapital.net>
- <20190829040721.ef6rumbaunkavyrr@ast-mbp.dhcp.thefacebook.com>
- <20190928193727.1769e90c@oasis.local.home> <201909301129.5A1129C@keescook>
- <20191001012226.vwpe56won5r7gbrz@ast-mbp.dhcp.thefacebook.com>
- <20191001181052.43c9fabb@gandalf.local.home>
- <6e8b910c-a739-857d-4867-395bd369bc6a@fb.com>
- <20191001184731.0ec98c7a@gandalf.local.home>
-In-Reply-To: <20191001184731.0ec98c7a@gandalf.local.home>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: CO2PR04CA0179.namprd04.prod.outlook.com
- (2603:10b6:104:4::33) To BYAPR15MB2501.namprd15.prod.outlook.com
- (2603:10b6:a02:88::11)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:200::1:2790]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: aa0908d2-eed9-4edb-2784-08d7475c861a
-x-ms-traffictypediagnostic: BYAPR15MB3336:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR15MB333622CFB6130434008111B2D79C0@BYAPR15MB3336.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-forefront-prvs: 0178184651
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(376002)(39860400002)(346002)(396003)(366004)(136003)(199004)(189003)(6512007)(99286004)(11346002)(305945005)(476003)(6506007)(52116002)(2906002)(102836004)(76176011)(256004)(14444005)(6116002)(386003)(53546011)(486006)(186003)(316002)(31696002)(7416002)(86362001)(7736002)(446003)(81156014)(25786009)(81166006)(8936002)(229853002)(2616005)(71190400001)(71200400001)(8676002)(31686004)(14454004)(6246003)(66476007)(66556008)(64756008)(66446008)(6436002)(66946007)(36756003)(6486002)(4326008)(46003)(6916009)(478600001)(54906003)(5660300002);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB3336;H:BYAPR15MB2501.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: y5+lgMt+Nr9+bICJADGmgpYU0RCvPTmADTPcDlh6QviWJZHEA7exW1xMSyfc+V8lApUsVuD+lA7sh7AGndFqev2urNDgZQuY0aOpCG7RIyGQWBkQJfIEqJLTya2PDxSQ4mj3GPNFqkDWtC835l9E1x8PxNUTDQQ2vhng93ZlkgtMr9oFFBdgIpLeNMbaYC3jouW2ejbtO77he6f+vHwxQezfmrCFiu6krrRWl/IxHLO5ZiPE1DpXukpzffC05quyfVtjfRIB2nivxROYGPfGAGYvJ9ra7NHqK6FJ3jrocQsGdcm4C1x6PdQoQwhPtEe3luBBKNW6T1rtSGpMQOswsOe6gZarPymJyPr43tFZWj7SndEwNHt2ug7HSl74XnYoMw90fXGGZugjenabvgJJLxHy28+lEIFi0FCRsqk68Ts=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <6C67F4DB606ECE4B98C15C3E6FFF0E7B@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Marek Majkowski <marek@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        David Miller <davem@davemloft.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next 4/9] xdp: Implement chain call logic to support
+ multiple programs on one interface
+Message-ID: <201910030106.jiEiPOvb%lkp@intel.com>
+References: <157002302894.1302756.12004905609124608227.stgit@alrua-x1>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: aa0908d2-eed9-4edb-2784-08d7475c861a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Oct 2019 17:18:21.2226
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 7l488ctAl6vHfUK9i0xBRt5AWpyxdEGaOFUxlIiHTkXr+nSwJTVU3lIgJraWg4CG
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3336
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
- definitions=2019-10-02_07:2019-10-01,2019-10-02 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
- lowpriorityscore=0 impostorscore=0 bulkscore=0 mlxlogscore=999
- malwarescore=0 clxscore=1015 adultscore=0 phishscore=0 suspectscore=0
- priorityscore=1501 spamscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-1908290000 definitions=main-1910020145
-X-FB-Internal: deliver
+Content-Type: multipart/mixed; boundary="jvcwoqd6f4txt6l6"
+Content-Disposition: inline
+In-Reply-To: <157002302894.1302756.12004905609124608227.stgit@alrua-x1>
+X-Patchwork-Hint: ignore
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-T24gMTAvMS8xOSAzOjQ3IFBNLCBTdGV2ZW4gUm9zdGVkdCB3cm90ZToNCj4gT24gVHVlLCAxIE9j
-dCAyMDE5IDIyOjE4OjE4ICswMDAwDQo+IEFsZXhlaSBTdGFyb3ZvaXRvdiA8YXN0QGZiLmNvbT4g
-d3JvdGU6DQo+IA0KPj4+IEFuZCB0aGVuIHlvdSBjYW4ganVzdCBmb3JtYXQgdGhlIHN0cmluZyBm
-cm9tIHRoZSBicGZfdHJhY2VfcHJpbnRrKCkNCj4+PiBpbnRvIG1zZywgYW5kIHRoZW4gaGF2ZToN
-Cj4+Pg0KPj4+IAl0cmFjZV9icGZfcHJpbnQobXNnKTsNCj4+DQo+PiBJdCdzIGFuIGludGVyZXN0
-aW5nIGlkZWEsIGJ1dCBJIGRvbid0IHRoaW5rIGl0IGNhbiB3b3JrLg0KPj4gUGxlYXNlIHNlZSBi
-cGZfdHJhY2VfcHJpbnRrIGltcGxlbWVudGF0aW9uIGluIGtlcm5lbC90cmFjZS9icGZfdHJhY2Uu
-Yw0KPj4gSXQncyBhIGxvdCBtb3JlIHRoYW4gc3RyaW5nIHByaW50aW5nLg0KPiANCj4gV2VsbCwg
-dHJhY2VfcHJpbnRrKCkgaXMganVzdCBzdHJpbmcgcHJpbnRpbmcuIEkgd2FzIHRoaW5raW5nIHRo
-YXQgdGhlDQo+IGJwZl90cmFjZV9wcmludGsoKSBjb3VsZCBqdXN0IHVzZSBhIHZzbnByaW50Zigp
-IGludG8gYSB0ZW1wb3JhcnkgYnVmZmVyDQo+IChsaWtlIHRyYWNlX3ByaW50aygpIGRvZXMpLCBh
-bmQgdGhlbiBjYWxsIHRoZSB0cmFjZSBldmVudCB0byB3cml0ZSBpdA0KPiBvdXQuDQoNCmFyZSB5
-b3UgcHJvcG9zaW5nIHRvIHJlcGxpY2F0ZSBnZXRfdHJhY2VfYnVmKCkgZnVuY3Rpb25hbGl0eQ0K
-aW50byBicGZfdHJhY2VfcHJpbnRrPw0KU28gcHJpbnQgaW50byB0ZW1wIHN0cmluZyBidWZmZXIg
-aXMgZG9uZSB0d2ljZT8NCkknbSBub3QgZXhjaXRlZCBhYm91dCBzdWNoIGhhY2suDQpBbmQgd2hh
-dCdzIHRoZSBnb2FsPyBzbyB0aGF0IHRyYWNlX2JwZl9wcmludChzdHJpbmdfbXNnKTsNCmNhbiBn
-byB0aHJvdWdoIF9ydW4tdGltZV8gY2hlY2sgd2hldGhlciB0aGF0IHBhcnRpY3VsYXIgdHJhY2Ug
-ZXZlbnQNCndhcyBhbGxvd2VkIGluIHRyYWNlZnMgPw0KVGhhdCdzIG5vdCBob3cgZmlsZSBzeXN0
-ZW0gYWNscyBhcmUgdHlwaWNhbGx5IGRlc2lnbmVkLg0KVGhlIHBlcm1pc3Npb24gY2hlY2sgaXMg
-YXQgb3BlbigpLiBOb3QgYXQgd3JpdGUoKS4NCklmIEkgdW5kZXJzdG9vZCB5b3UgY29ycmVjdGx5
-IHlvdSdyZSBwcm9wb3NpbmcgdG8gY2hlY2sgcGVybWlzc2lvbnMNCmF0IGJwZiBwcm9ncmFtIHJ1
-bi10aW1lIHdoaWNoIGlzIG5vIGdvb2QuDQoNCmJwZl90cmFjZV9wcmludGsoKSBhbHJlYWR5IGhh
-cyBvbmUgc21hbGwgYnVmZmVyIGZvcg0KcHJvYmVfa2VybmVsX3JlYWQtaW5nIGFuIHVua25vd24g
-c3RyaW5nIHRvIHBhc3MgaW50byAlcy4NClRoYXQncyBub3QgZnRyYWNlLiBUaGF0J3MgY29yZSB0
-cmFjaW5nLiBUaGF0IGFzcGVjdCBpcyBjb3ZlcmVkIGJ5IA0KQ0FQX1RSQUNJTkcgYXMgd2VsbC4N
-Cg0KDQo+Pg0KPj4+IFRoZSB1c2VyIGNvdWxkIHRoZW4ganVzdCBlbmFibGUgdGhlIHRyYWNlIGV2
-ZW50IGZyb20gdGhlIGZpbGUgc3lzdGVtLiBJDQo+Pj4gY291bGQgYWxzbyB3b3JrIG9uIG1ha2lu
-ZyBpbnN0YW5jZXMgd29yayBsaWtlIC90bXAgZG9lcyAod2l0aCB0aGUNCj4+PiBzdGlja3kgYml0
-KSBpbiBjcmVhdGlvbi4gVGhhdCB3YXkgcGVvcGxlIHdpdGggd3JpdGUgYWNjZXNzIHRvIHRoZQ0K
-Pj4+IGluc3RhbmNlcyBkaXJlY3RvcnksIGNhbiBtYWtlIHRoZWlyIG93biBidWZmZXJzIHRoYXQg
-dGhleSBjYW4gdXNlIChhbmQNCj4+PiBvdGhlcnMgY2FuJ3QgYWNjZXNzKS4NCj4+DQo+PiBXZSB0
-cmllZCBpbnN0YW5jZXMgaW4gYmNjIGluIHRoZSBwYXN0IGFuZCBldmVudHVhbGx5IHJlbW92ZWQg
-YWxsIHRoZQ0KPj4gc3VwcG9ydC4gVGhlIG92ZXJoZWFkIG9mIGluc3RhbmNlcyBpcyB0b28gaGln
-aCB0byBiZSB1c2FibGUuDQo+IA0KPiBXaGF0IG92ZXJoZWFkPyBBbiBmdHJhY2UgaW5zdGFuY2Ug
-c2hvdWxkIG5vdCBoYXZlIGFueSBtb3JlIG92ZXJoZWFkIHRoYW4NCj4gdGhlIHJvb3Qgb25lIGRv
-ZXMgKGl0J3MgdGhlIHNhbWUgY29kZSkuIE9yIGFyZSB5b3UgdGFsa2luZyBhYm91dCBtZW1vcnkN
-Cj4gb3ZlcmhlYWQ/DQoNClllcy4gTWVtb3J5IG92ZXJoZWFkLiBIdW1hbiB1c2VycyBkb2luZyBj
-YXQvZWNobyBpbnRvIHRyYWNlZnMgd29uJ3QgYmUNCmNyZWF0aW5nIG1hbnkgaW5zdGFuY2VzLCBz
-byB0aGF0J3MgdGhlIG9ubHkgcHJhY3RpY2FsIHVzYWdlIG9mIHRoZW0uDQoNCj4gDQo+Pg0KPj4+
-DQo+Pj4gICAgDQo+Pj4+DQo+Pj4+IEJvdGggJ3RyYWNlJyBhbmQgJ3RyYWNlX3BpcGUnIGhhdmUg
-cXVpcmt5IHNpZGUgZWZmZWN0cy4NCj4+Pj4gTGlrZSBvcGVuaW5nICd0cmFjZScgZmlsZSB3aWxs
-IG1ha2UgYWxsIHBhcmFsbGVsIHRyYWNlX3ByaW50aygpIHRvIGJlIGlnbm9yZWQuDQo+Pj4+IFdo
-aWxlIHJlYWRpbmcgJ3RyYWNlX3BpcGUnIGZpbGUgd2lsbCBjbGVhciBpdC4NCj4+Pj4gVGhlIHBv
-aW50IHRoYXQgdHJhZGl0aW9uYWwgJ3JlYWQnIGFuZCAnd3JpdGUnIEFDTHMgZG9uJ3QgbWFwIGFz
-LWlzDQo+Pj4+IHRvIHRyYWNlZnMsIHNvIEkgd291bGQgYmUgY2FyZWZ1bCBjYXRlZ29yaXppbmcg
-dGhpbmdzIGludG8NCj4+Pj4gY29uZmlkZW50aWFsaXR5IHZzIGludGVncml0eSBvbmx5IGJhc2Vk
-IG9uIGFjY2VzcyB0eXBlLg0KPj4+DQo+Pj4gV2hhdCBleGFjdGx5IGlzIHRoZSBicGZfdHJhY2Vf
-cHJpbnRrKCkgdXNlZCBmb3I/IEkgbWF5IGhhdmUgb3RoZXIgaWRlYXMNCj4+PiB0aGF0IGNhbiBo
-ZWxwLg0KPj4NCj4+IEl0J3MgZGVidWdnaW5nIG9mIGJwZiBwcm9ncmFtcy4gU2FtZSBpcyB3aGF0
-IHByaW50aygpIGlzIHVzZWQgZm9yDQo+PiBieSBrZXJuZWwgZGV2ZWxvcGVycy4NCj4+DQo+IA0K
-PiBIb3cgaXMgaXQgZXh0cmFjdGVkPyBKdXN0IHJlYWQgZnJvbSB0aGUgdHJhY2Ugb3IgdHJhY2Vf
-cGlwZSBmaWxlPw0KDQp5ZXAuIEp1c3QgbGlrZSBrZXJuZWwgZGV2cyBsb29rIGF0IGRtZXNnIHdo
-ZW4gdGhleSBzcHJpbmtsZSBwcmludGsuDQpidHcsIGlmIHlvdSBjYW4gZml4ICd0cmFjZScgZmls
-ZSBpc3N1ZSB0aGF0IHN0b3BzIGFsbCB0cmFjZV9wcmludGsNCndoaWxlICd0cmFjZScgZmlsZSBp
-cyBvcGVuIHRoYXQgd291bGQgYmUgZ3JlYXQuDQpTb21lIHVzZXJzIGhhdmUgYmVlbiBiaXR0ZW4g
-YnkgdGhpcyBiZWhhdmlvci4gV2UgZXZlbiBkb2N1bWVudGVkIGl0Lg0K
+
+--jvcwoqd6f4txt6l6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+Hi "Toke,
+
+I love your patch! Yet something to improve:
+
+[auto build test ERROR on bpf-next/master]
+
+url:    https://github.com/0day-ci/linux/commits/Toke-H-iland-J-rgensen/xdp-Support-multiple-programs-on-a-single-interface-through-chain-calls/20191003-005238
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+config: i386-tinyconfig (attached as .config)
+compiler: gcc-7 (Debian 7.4.0-13) 7.4.0
+reproduce:
+        # save the attached .config to linux build tree
+        make ARCH=i386 
+
+If you fix the issue, kindly add following tag
+Reported-by: kbuild test robot <lkp@intel.com>
+
+All error/warnings (new ones prefixed by >>):
+
+   In file included from include/net/sock.h:59:0,
+                    from include/linux/tcp.h:19,
+                    from include/linux/ipv6.h:87,
+                    from include/net/ipv6.h:12,
+                    from include/linux/sunrpc/clnt.h:28,
+                    from include/linux/nfs_fs.h:32,
+                    from init/do_mounts.c:23:
+   include/linux/filter.h: In function 'bpf_prog_run_xdp':
+>> include/linux/filter.h:725:10: error: implicit declaration of function 'bpf_xdp_chain_map_get_prog' [-Werror=implicit-function-declaration]
+      prog = bpf_xdp_chain_map_get_prog(chain_map, prog->aux->id, ret);
+             ^~~~~~~~~~~~~~~~~~~~~~~~~~
+>> include/linux/filter.h:725:8: warning: assignment makes pointer from integer without a cast [-Wint-conversion]
+      prog = bpf_xdp_chain_map_get_prog(chain_map, prog->aux->id, ret);
+           ^
+   cc1: some warnings being treated as errors
+
+vim +/bpf_xdp_chain_map_get_prog +725 include/linux/filter.h
+
+   695	
+   696	#define BPF_XDP_MAX_CHAIN_CALLS 32
+   697	static __always_inline u32 bpf_prog_run_xdp(const struct bpf_prog *prog,
+   698						    struct xdp_buff *xdp)
+   699	{
+   700		/* Caller needs to hold rcu_read_lock() (!), otherwise program
+   701		 * can be released while still running, or map elements could be
+   702		 * freed early while still having concurrent users. XDP fastpath
+   703		 * already takes rcu_read_lock() when fetching the program, so
+   704		 * it's not necessary here anymore.
+   705		 */
+   706	
+   707		int i = BPF_XDP_MAX_CHAIN_CALLS;
+   708		struct bpf_map *chain_map;
+   709		u32 ret;
+   710	
+   711		chain_map = rcu_dereference(xdp->rxq->dev->xdp_chain_map);
+   712		if (!chain_map)
+   713			return BPF_PROG_RUN(prog, xdp);
+   714	
+   715		do {
+   716			if (!--i) {
+   717				ret = XDP_ABORTED;
+   718				goto out;
+   719			}
+   720	
+   721			ret = BPF_PROG_RUN(prog, xdp);
+   722			if (ret == XDP_ABORTED)
+   723				goto out;
+   724	
+ > 725			prog = bpf_xdp_chain_map_get_prog(chain_map, prog->aux->id, ret);
+   726		} while(prog);
+   727	
+   728	out:
+   729		return ret;
+   730	}
+   731	
+
+---
+0-DAY kernel test infrastructure                Open Source Technology Center
+https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+
+--jvcwoqd6f4txt6l6
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
+
+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
+jaAqd4aOUO302DrBgcIPvUQopQloAAA=
+
+--jvcwoqd6f4txt6l6--
