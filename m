@@ -2,247 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BC2FC92E7
-	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2019 22:34:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3226C9313
+	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2019 22:52:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726931AbfJBUes (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Oct 2019 16:34:48 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:42153 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726364AbfJBUer (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Oct 2019 16:34:47 -0400
-Received: by mail-io1-f66.google.com with SMTP id n197so353987iod.9;
-        Wed, 02 Oct 2019 13:34:47 -0700 (PDT)
+        id S1726698AbfJBUwv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Oct 2019 16:52:51 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:44709 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725975AbfJBUwv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Oct 2019 16:52:51 -0400
+Received: by mail-qt1-f194.google.com with SMTP id u40so492118qth.11;
+        Wed, 02 Oct 2019 13:52:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=R8qRCvTuArkNMmSIp9k7fBA7Fd9wKT3Ft5lVzIbWZ/E=;
-        b=dkaT7NL3cQU3zdS0xDGPfx0w+UWaRPJjfGSPT05mref4a5QvrgLcd25mENHXitcgA1
-         05w2yjeLGlms32sIXQQdadqM1avpOblwGpcdLmu2bXJ2+NztlDBUIw+nOZk2fzfQumt3
-         qct2ae2sRUGG3tlTyXEAEP23avg/mMu2kJ2vRhb+Njwo8nAmX/ezwhgWsCnIIZIf2adV
-         gWGbRJU0AymTcHMeEtoxYAnAFdcrkXZ32YZjxRnAbn3M3sQ/imQnE+WL64+GTWmqdEF1
-         atVGI/tCxPCUpMjjWp4nqBh0t+Qt1dGiFzuxFRW9R4ac96qk2YR8E3tKVQB3XcQzNfAh
-         WHZg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dV7G2LykqgYT5rhZ0q2+Dl9UTjM6dUdhYsDLKx2iJ7w=;
+        b=njfHQ0Pj2mArKtJe69H3lcP4vF+5C3hV7R/QQb/tDNWLFG4JppbZXB9w28vCynRyls
+         puQkBWu6UMUwfybBipZJ1Rw6SvHSvcb2VqlMJMU6VSXcQXNbxMlNqKMjCrMhc5TjoKeA
+         OztSzIUKI7xszZ9TFFrvCWpbbQnczKoIbHnhEMFujmzBUG6t4/YELDphmB8XHiPDehbr
+         81j0yeNkAIrESvDDQFGvzEikxZ+JIikblhtppodDgRvoET0W/2Wp+Qb7H+eO8XNGMcJs
+         2E5Fb8NrvgMiCaslFyWB3mLssZMGI1iRc1bxuuNwQ4XD31OD4JIetOzRh6UfoOHz8D+l
+         rCzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=R8qRCvTuArkNMmSIp9k7fBA7Fd9wKT3Ft5lVzIbWZ/E=;
-        b=W797rEpUygIhw0UQ7LKZtt2uV2djU7nZXH8kPlOJFGi3ZRILcPIyqNszXMUS/wS2qM
-         wjM+v3VwPlUtUsLjUBmFrmsCivGXupLFQbT2/8GMA4gkjJLQoTs3onOtj0mtFdQk2Se0
-         7WE2C5lgqvIHwhXxhbJ0HfFyMsIt+YfJznRYjOpRTiuhAhTCqaqyvADNM8OMKvORS57o
-         yWUoJAPDuM6oyz7oznM4m9lqtLtUdWwWBJM/wriw0z06CPcGCQhaB4UFWYvmT/Bku2uK
-         ZEerpHKOuEOxBr9Lrt39T9Hdj5jTm0vvYap1I/dWJtbVbBVibP1P7jyzbI+7UAEzja+1
-         PJzA==
-X-Gm-Message-State: APjAAAXNwQd/TdZvyQ6xpYW1Iyuci2WbzBs00tiqUVwkW5W/UZKNTjfq
-        Y+BLPfZ+aiRNOWNewp5Hw9I=
-X-Google-Smtp-Source: APXvYqzA5nqQkAH1GUDA5ILLtffZHfJwb9fffM898ljZXjfvzS5jLpAXelk7ERufFtEzdQPAmCGPnw==
-X-Received: by 2002:a92:9906:: with SMTP id p6mr6112446ili.57.1570048486677;
-        Wed, 02 Oct 2019 13:34:46 -0700 (PDT)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id 28sm311224ilq.61.2019.10.02.13.34.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Oct 2019 13:34:45 -0700 (PDT)
-Date:   Wed, 02 Oct 2019 13:34:38 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Alan Maguire <alan.maguire@oracle.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dV7G2LykqgYT5rhZ0q2+Dl9UTjM6dUdhYsDLKx2iJ7w=;
+        b=n8x0UX8ne4Ilhk2ayRlpNvv0tEkxbmRZNHFZP91fJq7i3Wa81A/SeJcTtDM7RMVHcv
+         KhGHLYb9DU2zSsLMqF2wgr9O75xkpIydIWYkFdm1Fwf1DaiHTnwPKQewY6GGI0t01/51
+         Nonxi3o4sZSFpZ2e98CF6RJvCRTmJcrk9XngkDgAx/WTBIs3gzA94k0iuwxwkis7fTPd
+         EDHJq7IhAIJQ+u/raHO1tiHPVHl8ANojtlz1E4aNavRVvSS+ioBVjxlK1VPgouq34FkW
+         JbNovBmMonY3jPUy80o2zWn25NZ17g0TCH3rVveE+bkeyvVQRNknYCm/Y7k3yMdqDgi2
+         qIyg==
+X-Gm-Message-State: APjAAAU5lGez2to8EvJAa8QL43iqDXR6WF71D+ARIdoWc1RsufA6JNZH
+        51RYVj6Gnb8o4pxRJScr+Jn7hJ+pk37XuU1EY7c=
+X-Google-Smtp-Source: APXvYqydMlkQMGe8h2Djsj5sssvOku+IQi/vN4XfsKNs2+Dobgptdmt8myS/rr/raKPEITL0iycEqxzpL4WTEaw3LxM=
+X-Received: by 2002:ac8:37cb:: with SMTP id e11mr6510756qtc.22.1570049569865;
+ Wed, 02 Oct 2019 13:52:49 -0700 (PDT)
+MIME-Version: 1.0
+References: <20191002191652.11432-1-kpsingh@chromium.org>
+In-Reply-To: <20191002191652.11432-1-kpsingh@chromium.org>
+From:   Song Liu <liu.song.a23@gmail.com>
+Date:   Wed, 2 Oct 2019 13:52:38 -0700
+Message-ID: <CAPhsuW4nSxnghVUmObi1Mo95Jb1nMVHbSKbAMU3rD765enL+dg@mail.gmail.com>
+Subject: Re: [PATCH v2] samples/bpf: Add a workaround for asm_inline
+To:     KP Singh <kpsingh@chromium.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Florent Revest <revest@google.com>,
         Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Marek Majkowski <marek@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        David Miller <davem@davemloft.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Message-ID: <5d9509de4acb6_32c02ab4bb3b05c052@john-XPS-13-9370.notmuch>
-In-Reply-To: <8736gbro8x.fsf@toke.dk>
-References: <157002302448.1302756.5727756706334050763.stgit@alrua-x1>
- <alpine.LRH.2.20.1910021540270.24629@dhcp-10-175-191-98.vpn.oracle.com>
- <87bluzrwks.fsf@toke.dk>
- <5d94d188e4cca_22502b00ea21a5b425@john-XPS-13-9370.notmuch>
- <8736gbro8x.fsf@toke.dk>
-Subject: Re: [PATCH bpf-next 0/9] xdp: Support multiple programs on a single
- interface through chain calls
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        Florent Revest <revest@chromium.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> John Fastabend <john.fastabend@gmail.com> writes:
-> =
+On Wed, Oct 2, 2019 at 12:17 PM KP Singh <kpsingh@chromium.org> wrote:
+>
+> From: KP Singh <kpsingh@google.com>
+>
+> This was added in:
+>
+>   commit eb111869301e ("compiler-types.h: add asm_inline definition")
+>
+> and breaks samples/bpf as clang does not support asm __inline.
+>
+> Co-developed-by: Florent Revest <revest@google.com>
+> Signed-off-by: Florent Revest <revest@google.com>
+> Signed-off-by: KP Singh <kpsingh@google.com>
 
-> > Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> >> Alan Maguire <alan.maguire@oracle.com> writes:
-> >> =
-
-> >> > On Wed, 2 Oct 2019, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> >> >
-> >> >> This series adds support for executing multiple XDP programs on a=
- single
-> >> >> interface in sequence, through the use of chain calls, as discuss=
-ed at the Linux
-> >> >> Plumbers Conference last month:
-> >> >> =
-
-> >> >> https://linuxplumbersconf.org/event/4/contributions/460/
-> >> >> =
-
-> >> >> # HIGH-LEVEL IDEA
-> >> >> =
-
-> >> >> The basic idea is to express the chain call sequence through a sp=
-ecial map type,
-> >> >> which contains a mapping from a (program, return code) tuple to a=
-nother program
-> >> >> to run in next in the sequence. Userspace can populate this map t=
-o express
-> >> >> arbitrary call sequences, and update the sequence by updating or =
-replacing the
-> >> >> map.
-> >> >> =
-
-> >> >> The actual execution of the program sequence is done in bpf_prog_=
-run_xdp(),
-> >> >> which will lookup the chain sequence map, and if found, will loop=
- through calls
-> >> >> to BPF_PROG_RUN, looking up the next XDP program in the sequence =
-based on the
-> >> >> previous program ID and return code.
-> >> >> =
-
-> >> >> An XDP chain call map can be installed on an interface by means o=
-f a new netlink
-> >> >> attribute containing an fd pointing to a chain call map. This can=
- be supplied
-> >> >> along with the XDP prog fd, so that a chain map is always install=
-ed together
-> >> >> with an XDP program.
-> >> >> =
-
-> >> >
-> >> > This is great stuff Toke!
-> >> =
-
-> >> Thanks! :)
-> >> =
-
-> >> > One thing that wasn't immediately clear to me - and this may be ju=
-st
-> >> > me - is the relationship between program behaviour for the XDP_DRO=
-P
-> >> > case and chain call execution. My initial thought was that a progr=
-am
-> >> > in the chain XDP_DROP'ping the packet would terminate the call cha=
-in,
-> >> > but on looking at patch #4 it seems that the only way the call cha=
-in
-> >> > execution is terminated is if
-> >> >
-> >> > - XDP_ABORTED is returned from a program in the call chain; or
-> >> =
-
-> >> Yes. Not actually sure about this one...
-> >> =
-
-> >> > - the map entry for the next program (determined by the return val=
-ue
-> >> >   of the current program) is empty; or
-> >> =
-
-> >> This will be the common exit condition, I expect
-> >> =
-
-> >> > - we run out of entries in the map
-> >> =
-
-> >> You mean if we run the iteration counter to zero, right?
-> >> =
-
-> >> > The return value of the last-executed program in the chain seems t=
-o be
-> >> > what determines packet processing behaviour after executing the ch=
-ain
-> >> > (_DROP, _TX, _PASS, etc). So there's no way to both XDP_PASS and
-> >> > XDP_TX a packet from the same chain, right? Just want to make sure=
-
-> >> > I've got the semantics correct. Thanks!
-> >> =
-
-> >> Yeah, you've got all this right. The chain call mechanism itself doe=
-sn't
-> >> change any of the underlying fundamentals of XDP. I.e., each packet =
-gets
-> >> exactly one verdict.
-> >> =
-
-> >> For chaining actual XDP programs that do different things to the pac=
-ket,
-> >> I expect that the most common use case will be to only run the next
-> >> program if the previous one returns XDP_PASS. That will make the mos=
-t
-> >> semantic sense I think.
-> >> =
-
-> >> But there are also use cases where one would want to match on the ot=
-her
-> >> return codes; such as packet capture, for instance, where one might
-> >> install a capture program that would carry forward the previous retu=
-rn
-> >> code, but do something to the packet (throw it out to userspace) fir=
-st.
-> >> =
-
-> >> For the latter use case, the question is if we need to expose the
-> >> previous return code to the program when it runs. You can do things
-> >> without it (by just using a different program per return code), but =
-it
-> >> may simplify things if we just expose the return code. However, sinc=
-e
-> >> this will also change the semantics for running programs, I decided =
-to
-> >> leave that off for now.
-> >> =
-
-> >> -Toke
-> >
-> > In other cases where programs (e.g. cgroups) are run in an array the
-> > return codes are 'AND'ed together so that we get
-> >
-> >    result1 & result2 & ... & resultN
-> =
-
-> How would that work with multiple programs, though? PASS -> DROP seems
-> obvious, but what if the first program returns TX? Also, programs may
-> want to be able to actually override return codes (e.g., say you want t=
-o
-> turn DROPs into REDIRECTs, to get all your dropped packets mirrored to
-> your IDS or something).
-
-In general I think either you hard code a precedence that will have to
-be overly conservative because if one program (your firewall) tells XDP
-to drop the packet and some other program redirects it, passes, etc. that=
-
-seems incorrect to me. Or you get creative with the precedence rules and
-they become complex and difficult to manage, where a drop will drop a pac=
-ket
-unless a previous/preceding program redirects it, etc. I think any hard
-coded precedence you come up with will make some one happy and some other=
-
-user annoyed. Defeating the programability of BPF.
-
-Better if its programmable. I would prefer to pass the context into the
-next program then programs can build their own semantics. Then leave
-the & of return codes so any program can if needed really drop a packet.
-The context could be pushed into a shared memory region and then it
-doesn't even need to be part of the program signature.
-
-.John=
+Acked-by: Song Liu <songliubraving@fb.com>
