@@ -2,73 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BDDCBC47F6
-	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2019 08:56:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9999EC4867
+	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2019 09:21:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725988AbfJBG4C (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Oct 2019 02:56:02 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:43714 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726139AbfJBG4B (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Oct 2019 02:56:01 -0400
+        id S1726444AbfJBHVr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Oct 2019 03:21:47 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:31768 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725852AbfJBHVr (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 2 Oct 2019 03:21:47 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1569999359;
+        s=mimecast20190719; t=1570000906;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=efyYUpYxx029Ew+s+FaYOT0lLgYPQRTDAPERFvMlQUI=;
-        b=hyeV0xZONfxgVfJlq3jnYoPCOQdD+Z57zgtVCJ4gmIv8km/kwuuCPXKvTdO+OMdVfYGWxO
-        C0VxUqo3vJlEre4YiqFUPHEngxl/IB5GtIB29M+1spwWQMDAlQjUENMO75KCYLyhX9ssal
-        61JupHO+AGaA1yb0957XFtxWifksyzU=
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
- [209.85.208.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-8-GkbMaZgjPtij5vWbF4Zg7A-1; Wed, 02 Oct 2019 02:55:57 -0400
-Received: by mail-lj1-f198.google.com with SMTP id y12so4535919ljc.8
-        for <bpf@vger.kernel.org>; Tue, 01 Oct 2019 23:55:56 -0700 (PDT)
+        bh=ZXKoJ1jbuJ+ks0dSg3TRhQiKe5OUNHwJKm984nzXgMI=;
+        b=fwksWvmFcZTjME0yEhzP3d+tI52WLxnvUIh8AHfuA7jSxuwmR/ajy0Q8wxKF2S0/3QmOBW
+        yFUPbGQ0J8g0Dem7sWnkzcYI7o+7KzuTWKMK2rQOko7whX9H884QcL2RLvEyt7aaM/qZqU
+        XpzptSO/SNBohl0dTuneuf2qBXyfYZA=
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
+ [209.85.208.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-109-J_pWYpFlMGu4w85b0wIa-Q-1; Wed, 02 Oct 2019 03:21:45 -0400
+Received: by mail-lj1-f197.google.com with SMTP id g88so1951589lje.10
+        for <bpf@vger.kernel.org>; Wed, 02 Oct 2019 00:21:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=efyYUpYxx029Ew+s+FaYOT0lLgYPQRTDAPERFvMlQUI=;
-        b=K/kLa4K61Q8gGiAjISuIHVImtqy7PoyU8PwMS17OG1uGeC5kpnIjFiBqcUDDZ3m9LG
-         CnDZAOZkSQdGRszOYmUdgjLRp3/Je4yOqr4sGQ83Mk+ie6tfCvQKe9a0/iZqyEf9uGvj
-         ThBeArZsr3+Sb0jiaKRmZd6lLxqRYzzoffnTPZfxiR2jHMHkDdgyk6+i7ReC2/OILsbg
-         A+BCs+b9R3tXDO4I26KXowzurelZsitDxbaemFRibPIDS8FUy4wu+c/MHLDMuBCcyYDN
-         HzCjDVcqYUwAWLVuSxbiFSY3GeBkcuoR9XOmAKSGhEtNjK/49scfiadYrTFZIFS/ME6B
-         G9kQ==
-X-Gm-Message-State: APjAAAXIR3kWLiyur+lr37gC7r9fkjF4es2qYtInKKLyNxldpbaqwAdC
-        AyI7SfQwQDMnpWjH4/Lku6NPi5qausZcaXFskXMTB1RVPXG4Ge86FeejHmkhRvBkDE4RrvEisI4
-        I9vnGplODZzg5
-X-Received: by 2002:a2e:8603:: with SMTP id a3mr1213840lji.98.1569999355534;
-        Tue, 01 Oct 2019 23:55:55 -0700 (PDT)
-X-Google-Smtp-Source: APXvYqxoLbMsdz/75inICUmz6CtpucmTyybdcjgnYInPuNAMpg3jL7kYgzGnAsEAo1c53JjH8BrcKw==
-X-Received: by 2002:a2e:8603:: with SMTP id a3mr1213826lji.98.1569999355373;
-        Tue, 01 Oct 2019 23:55:55 -0700 (PDT)
+         :message-id:mime-version:content-transfer-encoding;
+        bh=ZXKoJ1jbuJ+ks0dSg3TRhQiKe5OUNHwJKm984nzXgMI=;
+        b=O4xCL8ZV29BEu4aEXh6HgLl9SQUNbtsAYNeNg1JSPYgVre8KHqTmKEWL0BICZx9lGQ
+         VhoMK3HMo0XeIITEyR85voMhLc6EIqQ/PMEECuhCUQWlRjg29QaogJlK+INXsQ32cjLU
+         25Sfqqrq6jmC+EynR5MMjwAoSSVGdE5LYOYadT2IfzjBnCwWMHRUue9vYQwkhIWbIfjj
+         3HvICVITN6dfchPW0W0HXbD0ljZnvl/hHJnYVoGADCpzquvzqcnxpIoHwT78yKt62/V5
+         RFZuUBRy5bQqDXZwHBr4LBaCe39HSJ6OQ3BcOVq2ee4BehEE1TLMfPpW0EejKDoKn3v5
+         Xkmg==
+X-Gm-Message-State: APjAAAUsOKHQorXKVWaTGPp4RXO96G/uo/O9zG5+m0PB4hmSUKsMbxZ+
+        xJ7IfFasJMWXusF2v4vKo59cj8lIOzg96v9njh3zdP1LFppSe3Di67zkYMW5E1VJgf7AAu6Ez8V
+        DkVyfUs7/h4RX
+X-Received: by 2002:ac2:5464:: with SMTP id e4mr1278056lfn.102.1570000903668;
+        Wed, 02 Oct 2019 00:21:43 -0700 (PDT)
+X-Google-Smtp-Source: APXvYqzQPU+F+tlnzzzTShi4AS+eN2MOMLc/gx+x3gRIKe2v0XtfmW5KzhrpkSLC+StZ5+LIeSra0g==
+X-Received: by 2002:ac2:5464:: with SMTP id e4mr1278044lfn.102.1570000903515;
+        Wed, 02 Oct 2019 00:21:43 -0700 (PDT)
 Received: from alrua-x1.borgediget.toke.dk (borgediget.toke.dk. [85.204.121.218])
-        by smtp.gmail.com with ESMTPSA id b25sm5622012ljj.36.2019.10.01.23.55.54
+        by smtp.gmail.com with ESMTPSA id 3sm4464958ljs.20.2019.10.02.00.21.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Oct 2019 23:55:54 -0700 (PDT)
+        Wed, 02 Oct 2019 00:21:42 -0700 (PDT)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 8B5F518063D; Wed,  2 Oct 2019 08:55:53 +0200 (CEST)
+        id DE8FC18063D; Wed,  2 Oct 2019 09:21:41 +0200 (CEST)
 From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
         Networking <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@chromium.org>,
         Kernel Team <kernel-team@fb.com>
-Subject: Re: [RFC][PATCH bpf-next] libbpf: add bpf_object__open_{file,mem} w/ sized opts
-In-Reply-To: <CAEf4BzZJFBdjCSAzJ3-rOrCkkaTJmPSDhx_0xKJt4+Vg2TEFwg@mail.gmail.com>
-References: <20190930164239.3697916-1-andriin@fb.com> <871rvwx3fg.fsf@toke.dk> <CAEf4BzYvx7wpy79mTgKMuZop3_qYCCOzk4XWoDKiq7Fbj+gAow@mail.gmail.com> <87lfu4t9up.fsf@toke.dk> <CAEf4BzZJFBdjCSAzJ3-rOrCkkaTJmPSDhx_0xKJt4+Vg2TEFwg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/6] libbpf: move bpf_helpers.h, bpf_endian.h into libbpf
+In-Reply-To: <CAEf4Bza789NPSx0FksudY7J0D9Q-+EsTDvvAJXJyrcTNka=sag@mail.gmail.com>
+References: <20190930185855.4115372-1-andriin@fb.com> <20190930185855.4115372-3-andriin@fb.com> <87d0fhvt4e.fsf@toke.dk> <CAEf4Bza789NPSx0FksudY7J0D9Q-+EsTDvvAJXJyrcTNka=sag@mail.gmail.com>
 X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 02 Oct 2019 08:55:53 +0200
-Message-ID: <87imp7tz46.fsf@toke.dk>
+Date:   Wed, 02 Oct 2019 09:21:41 +0200
+Message-ID: <87a7ajtxx6.fsf@toke.dk>
 MIME-Version: 1.0
-X-MC-Unique: GkbMaZgjPtij5vWbF4Zg7A-1
+X-MC-Unique: J_pWYpFlMGu4w85b0wIa-Q-1
 X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=WINDOWS-1252
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
@@ -77,22 +76,29 @@ X-Mailing-List: bpf@vger.kernel.org
 
 Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
->> Sure, LGTM! Should we still keep the bit where it expands _opts in the
->> struct name as part of the macro, or does that become too obtuse?
+> On Tue, Oct 1, 2019 at 12:10 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
+dhat.com> wrote:
+>>
+>>
+>> > +struct bpf_map_def {
+>> > +     unsigned int type;
+>> > +     unsigned int key_size;
+>> > +     unsigned int value_size;
+>> > +     unsigned int max_entries;
+>> > +     unsigned int map_flags;
+>> > +     unsigned int inner_map_idx;
+>> > +     unsigned int numa_node;
+>> > +};
+>>
+>> Didn't we agree on no new bpf_map_def ABI in libbpf, and that all
+>> additions should be BTF-based?
 >
-> For me it's a question of code navigation. When I'll have a code
->
-> LIBBPF_OPTS(bpf_object_open, <whatever>);
->
-> I'll want to jump to the definition of "bpf_object_open" (e.g., w/
-> cscope)... and will find nothing, because it's actually
-> bpf_object_open_opts. So I prefer user to spell it out exactly and in
-> full, this is more maintainable in the long run, IMO.
+> Oh yes, we did, sorry, this is an oversight. I really appreciate you
+> pointing this out ;)
+> I'll go over bpf_helpers.h carefully and will double-check if we don't
+> have any other custom selftests-only stuff left there.
 
-That's a good point; we shouldn't break cscope!
-
-BTW, speaking of cscope, how about having a 'make cscope' target for
-libbpf to generate the definition file? :)
+Great, thanks!
 
 -Toke
 
