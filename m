@@ -2,139 +2,191 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A046C9121
-	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2019 20:52:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B32CC9130
+	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2019 20:54:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726708AbfJBSwh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Oct 2019 14:52:37 -0400
-Received: from mail-ed1-f65.google.com ([209.85.208.65]:41437 "EHLO
-        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728543AbfJBSwh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Oct 2019 14:52:37 -0400
-Received: by mail-ed1-f65.google.com with SMTP id f20so104419edv.8
-        for <bpf@vger.kernel.org>; Wed, 02 Oct 2019 11:52:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=yVl3DvwCADMp64mcvKATV/e92AOrRf7vvTQmwDnOrvk=;
-        b=TpyYBW2hiIXk1ZFCht2y3HJcPbCcRo2CDLEfs0/Sn6IRUDFDzcztEQ5+OP3uhfds3p
-         HISNhssIt/0eInvtS1j1l6xoQDFrD9bOvfNWs6uSmd5j9jULKw+LfxVH7cawMse67ooU
-         4/LWsuWbBUEhe3ALND6duir5F1uMOa9p92Dn0=
+        id S1728866AbfJBSyh convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Wed, 2 Oct 2019 14:54:37 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:51178 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729059AbfJBSyh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Oct 2019 14:54:37 -0400
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com [209.85.208.199])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 3647D69060
+        for <bpf@vger.kernel.org>; Wed,  2 Oct 2019 18:54:36 +0000 (UTC)
+Received: by mail-lj1-f199.google.com with SMTP id y28so80656ljn.2
+        for <bpf@vger.kernel.org>; Wed, 02 Oct 2019 11:54:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=yVl3DvwCADMp64mcvKATV/e92AOrRf7vvTQmwDnOrvk=;
-        b=QQwzXNX1KJAiR8yzXlOuHVabo8EiZaxgSHMnPNRJATrEm4Hr4OuuHcgTaS5onOL1Bx
-         dOBTExgDrBMnb6AfUMwrNhjIXKfVCYKMSdSR4smfy6dbvzK9swoJJkCWRRxZedPA/QIf
-         Vvnc+qk3p0x+jgdBit8cD4ha6ZiE8yv7WXxV2ar5wj1c4S9JWRyYoVSrJ2wf9Pwb07Ym
-         eNbojGuvcU6hva575HeNDUEa4ypNZTULBqm5AfkUc6KFd6wmADcU1/JOLnpNpHduVj+M
-         egxjnuwr4oJxIDjOfmYZxnA/jmv1z/1TUEPAoxCy80SjvuLO/ki6WuFIqurxSTiZo3UP
-         KU8Q==
-X-Gm-Message-State: APjAAAUEfbZ2nDX3qxM2xQMTjRvlcFYHITTHZ+qN0RGTM5UT+5lgFLc7
-        dMK5ggN1YQOT2KvQr/EFVdx4bg==
-X-Google-Smtp-Source: APXvYqy4nAcB23b6wdIF3ZqiDW0mlD3bK7ADCQW7GZ2ZJE4qpYFJuX+RzPLqxNkLw/iuPYQ1CM6/6Q==
-X-Received: by 2002:a17:906:2ccc:: with SMTP id r12mr4383114ejr.219.1570042355474;
-        Wed, 02 Oct 2019 11:52:35 -0700 (PDT)
-Received: from chromium.org (77-56-209-237.dclient.hispeed.ch. [77.56.209.237])
-        by smtp.gmail.com with ESMTPSA id os27sm2352181ejb.18.2019.10.02.11.52.34
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=tZ76WLJTc2djGr7zvzNnwDyy9+JtFDIfybMW/NsEPPI=;
+        b=IA1ixw0WegyLNegKEe7YnTv+Oh7Y2C1ZbQtfWLgnoafEe3jr+KOGFjXe09rMan2OUb
+         rwXZyOYfXtkzhB+2yMLOPrQVS2vlR9SZYQ7o5Nrl1YZXMIczitqL4ydCfM3wlic/+gMu
+         mDBjtc7TowtpcVxz0vlQIkMR8ZaeNa8fGkBg7Y12HQ3Ltzm8pSF/uLNl7hX3oigFjdQG
+         esZzNM6eVOQdUemAw+YUanrDThZUTwERpUi22vjO6rslN+P+j8SrBfC4qfzqAWj4kX+j
+         hyct5ioIVkAU1JfwPgA7JhPbAX7AqO4c2wjrp5biffvu47CVA/VNfBysf0ThtM2Pc3lt
+         VpCQ==
+X-Gm-Message-State: APjAAAX8H1h2xfBNzPh+ka1i40/gYR3q6t0w/NipUBP53wiD6mjajbjP
+        sgmzLpF/5A4hM/w2QTelcNdl3E9ZOW9icMOvkNu76GnV1wtOAsE7DkFSruD1I8NF58ohn/L415p
+        EYqvqLSoDXNh0
+X-Received: by 2002:ac2:418c:: with SMTP id z12mr3379840lfh.183.1570042474591;
+        Wed, 02 Oct 2019 11:54:34 -0700 (PDT)
+X-Google-Smtp-Source: APXvYqxhLdL2yy2vl7flCph33FWSO3Bpo+wb+J33SiWtAxgIomr8wmqJDK023/wH22APnPqqxVa5bw==
+X-Received: by 2002:ac2:418c:: with SMTP id z12mr3379822lfh.183.1570042474293;
+        Wed, 02 Oct 2019 11:54:34 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a00:7660:6da:443::2])
+        by smtp.gmail.com with ESMTPSA id t24sm4744347lfq.13.2019.10.02.11.54.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Oct 2019 11:52:34 -0700 (PDT)
-From:   KP Singh <kpsingh@chromium.org>
-X-Google-Original-From: KP Singh <kpsingh>
-Date:   Wed, 2 Oct 2019 20:52:33 +0200
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        Florent Revest <revest@google.com>,
+        Wed, 02 Oct 2019 11:54:33 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id D0FAB18063D; Wed,  2 Oct 2019 20:54:31 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Lorenz Bauer <lmb@cloudflare.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Florent Revest <revest@chromium.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: Re: [PATCH] samples/bpf: Fix broken samples.
-Message-ID: <20191002185233.GA3650@chromium.org>
-References: <20191002174632.28610-1-kpsingh@chromium.org>
- <20191002184506.iauttcpgyzcplope@ast-mbp.dhcp.thefacebook.com>
+        Marek Majkowski <marek@cloudflare.com>,
+        David Miller <davem@davemloft.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>
+Subject: Re: [PATCH bpf-next 0/9] xdp: Support multiple programs on a single interface through chain calls
+In-Reply-To: <CACAyw9860eDGU9meO0wQ82OgWNPv3LXAQqrJNf-mQFA0yu7rWQ@mail.gmail.com>
+References: <157002302448.1302756.5727756706334050763.stgit@alrua-x1> <CACAyw9860eDGU9meO0wQ82OgWNPv3LXAQqrJNf-mQFA0yu7rWQ@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 02 Oct 2019 20:54:31 +0200
+Message-ID: <87zhijq8pk.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191002184506.iauttcpgyzcplope@ast-mbp.dhcp.thefacebook.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 02-Okt 11:45, Alexei Starovoitov wrote:
-> On Wed, Oct 02, 2019 at 07:46:32PM +0200, KP Singh wrote:
-> > From: KP Singh <kpsingh@google.com>
-> > 
-> > Rename asm_goto_workaround.h to asm_workaround.h and add a
-> > workaround for the newly added "asm_inline" in:
-> > 
-> >   commit eb111869301e ("compiler-types.h: add asm_inline definition")
-> > 
-> > Add missing include for <linux/perf_event.h> which was removed from
-> > perf-sys.h in:
-> > 
-> >   commit 91854f9a077e ("perf tools: Move everything related to
-> > 	               sys_perf_event_open() to perf-sys.h")
-> > 
+Lorenz Bauer <lmb@cloudflare.com> writes:
 
-I see this is already fixed in a patch that was sent yesterday and has
-been Acked.
+> On Wed, 2 Oct 2019 at 14:30, Toke Høiland-Jørgensen <toke@redhat.com> wrote:
+>>
+>> This series adds support for executing multiple XDP programs on a single
+>> interface in sequence, through the use of chain calls, as discussed at the Linux
+>> Plumbers Conference last month:
+>
+> Hi Toke,
+>
+> Thanks for posting the patch set! As I mentioned, this is a big pain
+> point for us as well. Right now, all of our different XDP components
+> are managed by a single daemon called (drumroll) xdpd. We'd like to
+> separate this out into individual bits and pieces that operate
+> separately from each other.
 
-  https://lore.kernel.org/bpf/20191001112249.27341-1-bjorn.topel@gmail.com/
+Yes, I'm counting on you guys to be one of the potential users and help
+me iron out the API and semantics! ;)
 
-I will drop this change from my patch.
+> I've looked at the kernel side of your patch set, here are my thoughts:
+>
+>> # HIGH-LEVEL IDEA
+>>
+>> The basic idea is to express the chain call sequence through a special map type,
+>> which contains a mapping from a (program, return code) tuple to another program
+>> to run in next in the sequence. Userspace can populate this map to express
+>> arbitrary call sequences, and update the sequence by updating or replacing the
+>> map.
+>
+> How do you imagine this would work in practice? From what I can tell,
+> the map is keyed by program id, which makes it difficult to reliably
+> construct the control flow that I want.
 
-> > Co-developed-by: Florent Revest <revest@google.com>
-> > Signed-off-by: Florent Revest <revest@google.com>
-> > Signed-off-by: KP Singh <kpsingh@google.com>
-> > ---
-> >  samples/bpf/Makefile                            |  2 +-
-> >  .../{asm_goto_workaround.h => asm_workaround.h} | 17 ++++++++++++++---
-> >  samples/bpf/task_fd_query_user.c                |  1 +
-> >  3 files changed, 16 insertions(+), 4 deletions(-)
-> >  rename samples/bpf/{asm_goto_workaround.h => asm_workaround.h} (46%)
-> > 
-> > diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-> > index 42b571cde177..ab2b4d7ecb4b 100644
-> > --- a/samples/bpf/Makefile
-> > +++ b/samples/bpf/Makefile
-> > @@ -289,7 +289,7 @@ $(obj)/%.o: $(src)/%.c
-> >  		-Wno-gnu-variable-sized-type-not-at-end \
-> >  		-Wno-address-of-packed-member -Wno-tautological-compare \
-> >  		-Wno-unknown-warning-option $(CLANG_ARCH_ARGS) \
-> > -		-I$(srctree)/samples/bpf/ -include asm_goto_workaround.h \
-> > +		-I$(srctree)/samples/bpf/ -include asm_workaround.h \
-> >  		-O2 -emit-llvm -c $< -o -| $(LLC) -march=bpf $(LLC_FLAGS) -filetype=obj -o $@
-> >  ifeq ($(DWARF2BTF),y)
-> >  	$(BTF_PAHOLE) -J $@
-> > diff --git a/samples/bpf/asm_goto_workaround.h b/samples/bpf/asm_workaround.h
-> > similarity index 46%
-> > rename from samples/bpf/asm_goto_workaround.h
-> > rename to samples/bpf/asm_workaround.h
-> > index 7409722727ca..7c99ea6ae98c 100644
-> > --- a/samples/bpf/asm_goto_workaround.h
-> > +++ b/samples/bpf/asm_workaround.h
-> > @@ -1,9 +1,10 @@
-> >  /* SPDX-License-Identifier: GPL-2.0 */
-> >  /* Copyright (c) 2019 Facebook */
-> > -#ifndef __ASM_GOTO_WORKAROUND_H
-> > -#define __ASM_GOTO_WORKAROUND_H
-> > +#ifndef __ASM_WORKAROUND_H
-> > +#define __ASM_WORKAROUND_H
-> 
-> I don't think rename is necessary.
-> This file already has a hack for volatile().
-> Just add asm_inline hack to it.
+The way I've been picturing this would work, is that programs would
+cooperatively manage this by updating the data structures to insert and
+remove themselves as needed. I haven't actually fleshed out this in code
+yet (that's next on my agenda), but I imagine it would be something like
+this:
 
-Thanks, will send an update the patch to reflect this.
+> As an example, I'd like to split the daemon into two parts, A and B,
+> which I want to be completely independent. So:
+>
+> - A runs before B, if both are active
+> - If A is not active, B is called first
+> - If B is not active, only A is called
+>
+> Both A and B may at any point in time replace their current XDP
+> program with a new one. This means that there is no stable program ID
+> I can use.
 
-- KP
+They would have to cooperate. Either by a central management daemon, or
+by using the chain call map as a data structure to coordinate.
 
-> 
+If A switches out its program, it would need to first load the new
+version, then update the map to replace the old ID with the new one.
+
+> Another problem are deletions: if I delete A (because that component
+> is shut down) B will never be called, since the program ID that linked
+> B into the control flow is gone. This means that B needs to know about
+> A and vice versa.
+
+Say both programs are running. If B shuts down, it just removes itself
+from the map. If A shuts down, it also needs to remove itself from the
+map, and move up all its "descendants" in the call sequence. So in this
+case, A would look up itself in the chain call map, find the next
+program in the sequence, and install that as the new program on the
+interface.
+
+The operations are kinda like linked list manipulations. I had some
+examples in my slides at LPC:
+
+- Simple updates: *linked-list like* operations (map stays the same)
+# Insert after id 3
+  --> id = load(prog.o);
+  --> map_update(map, {3, PASS}, id) # atomic update
+# Insert before id 2
+  --> id = load(prog.o);
+  --> map_update(map, {id, PASS}, 2); # no effect on chain sequence
+  --> map_update(map, {1, PASS}, id); # atomic update
+
+- More complex operations: /*replace the whole thing*/
+
+# Replace ID 3 with new program
+  --> id = load(prog.o); map = new_map();
+  --> map_update(map, {1, PASS}, 2);
+  --> map_update(map, {1, TX}, id);
+  --> map_update(map, {2, PASS}, id);
+  --> xdp_attach(eth0, 1, map, FORCE); # atomic replace
+
+
+The tricky part is avoiding read-modify-update races. I was imagining
+that we could provide "cmpxchg-like" semantics by adding an "expected
+old value" to the netlink load and/or to map updates. The kernel could
+then ensure that the update fails if the actual value being replaced has
+changed since userspace read it, in which case userspace could retry the
+whole operation.
+
+>> The actual execution of the program sequence is done in
+>> bpf_prog_run_xdp(), which will lookup the chain sequence map, and if
+>> found, will loop through calls to BPF_PROG_RUN, looking up the next
+>> XDP program in the sequence based on the previous program ID and
+>> return code.
+>
+> I think that the tail call chain is useful for other eBPF programs as
+> well. How hard is it to turn the logic in bpf_prog_run_xdp into a
+> helper instead?
+
+Heh. In principle, I guess we could move the logic *into* BPF_PROG_RUN
+instead of wrapping around it. The tricky part would be figuring out
+where to stash the map itself.
+
+One way to do this, which your other question about why both prog fd and
+map fd was needed made me think about, is to make programs and sequence
+maps interchangeable *everywhere*. I.e., every time we attach an eBPF
+program anywhere, we pass an fd to that program. So from a UAPI PoV, we
+could just extend that so all attach points would accept *either* a
+program fd *or* a chain call map fd, and then do the appropriate thing.
+This is quite intrusive, though, so let's leave that aside from now and
+maybe come back to it in the future if this turns out to be a huge
+success :)
+
+-Toke
