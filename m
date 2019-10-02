@@ -2,136 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0994EC9350
-	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2019 23:13:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E904C9385
+	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2019 23:31:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729311AbfJBVNb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Oct 2019 17:13:31 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:39278 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729293AbfJBVNb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Oct 2019 17:13:31 -0400
-Received: by mail-qk1-f193.google.com with SMTP id 4so184637qki.6;
-        Wed, 02 Oct 2019 14:13:29 -0700 (PDT)
+        id S1728995AbfJBVbZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Oct 2019 17:31:25 -0400
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:42155 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728102AbfJBVbY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Oct 2019 17:31:24 -0400
+Received: by mail-pf1-f195.google.com with SMTP id q12so291352pff.9
+        for <bpf@vger.kernel.org>; Wed, 02 Oct 2019 14:31:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nS55Gc+Wv5/nS3zhWqKGsQA+EFTAinrmi2NmXLvOimM=;
-        b=p5/RX4IYlDc7ukUBIt6El1HamNmNTdFO1AOqwKivIZtpuB59c9V4J7GnoqgOUeSkQ3
-         5bxDF5IgF1YRRpSHWaCkbTdbAA0JXIwTJSomNFSwjcGgtfMRb3oKus1wRN4z5SmN+a7R
-         Y8oV9TywyZ5rCm5wrVbjPUsAYTLKI8wnE0vhGeHFBM/9s6wA1O3Uzr8uswpp/Ti4gg8Y
-         m/vIB6JQl7L0JBvxC5cSp8tY05kRmvEYSBQSGfsd4xMpxM0XhHY6M51ltN/BKA/So7Qa
-         ZUFjaPguL1kE3gd1ESJ+CFhsz854H/0b2SLSoACfC7nk4B+JT3oOpc7+sOEcsphEesDJ
-         EAGQ==
+        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=m5xVHAEIhIAqpO/8qHSF3PHN+LcVgKj3lgSIWUJ6nJU=;
+        b=l9SmDi/iJrgkCfuZ6qHcNy5lR3q89uvOm2q697YSOoEQXxF96ZIJm0C8Arq55uTRso
+         Jz6n+hl089Z0B5EDvhbTbsa/ufsN5Az3s9OtkAkPOiuc+AkuAta+04f6C89FC9oyYTY2
+         RZz4kbOBRe+AgwBJE8J6CD3GG7kFnT/pkn/lVIJ6lh8dNtu+uj+AkbM+80JWHNMabkE/
+         GjkXTGmlDbVwf++eEXvl4eL9bKnqXqvMK9vq0m0MsoFR1og8SHyu70Yi2PCGDVwfHJEW
+         WQWowSFow+LSCcBdDk96B1fMCmwvZN/WJSFWQ9iq1pywYMM+5AnsqwX/o9CCIemEK9Zq
+         S+VQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nS55Gc+Wv5/nS3zhWqKGsQA+EFTAinrmi2NmXLvOimM=;
-        b=LN7mxXhMTSnBV+g/EKjYyLTv8WNbZTbiYJwcwSg1vssZfOygLGWsraZGabPvndzjmM
-         Ph9I/6xjt/hUXSaxwa55cFdvnGwjfdvsC3ZyQO+0wFxdk3u7J31j6bHfqkNmmXnqxne2
-         sPLhCeX+mFiqtJZzetx5AFLSOocWTc837cAbdtV3ZrHNfTssPdpU6yeZLS/pBtUROEiX
-         uzh2qAs9KQpRpHcOTi1aOG28GhN9xe5DpN0vdNX5OYCxPhdknhV/1B0NT3lCad+BzGxa
-         Hc5GZ3/YjpKmKE4a5T1qOXPBjgQceoppa4ETDEDqXzi59KOappVsbm6VFpooPy5CIf24
-         8Y4A==
-X-Gm-Message-State: APjAAAUXKP4iCz7ZbWd7U3wQLSI4IJkNAZOueAIzzxJkEyH8BaBgK3Zu
-        CVewL8z1hFu3azL5Y8rAnpIKuJ8PUu3bQfYzxtM=
-X-Google-Smtp-Source: APXvYqzOz103T/YDH9M3NoQFnxa0eSLeJtiSfsLzfA23Gn47+eYnLSS9ucBhmDfi6X5TsVTjxANWKXSDURw1zM2p+lw=
-X-Received: by 2002:a37:4e55:: with SMTP id c82mr897485qkb.437.1570050808374;
- Wed, 02 Oct 2019 14:13:28 -0700 (PDT)
-MIME-Version: 1.0
-References: <20191002191652.11432-1-kpsingh@chromium.org> <CAEf4BzY4tXd=sHbkN=Bbhj5=7=W_PBs_BB=wjGJ4-bHenKz6sw@mail.gmail.com>
- <E7A6B893-9E4B-4C22-A0CC-833AF45AF460@fb.com>
-In-Reply-To: <E7A6B893-9E4B-4C22-A0CC-833AF45AF460@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 2 Oct 2019 14:13:16 -0700
-Message-ID: <CAEf4BzZ3jqKRap4h9n-JY=-Sp1RdsDDX=1fnX2ZPxbXURdnvvQ@mail.gmail.com>
-Subject: Re: [PATCH v2] samples/bpf: Add a workaround for asm_inline
-To:     Song Liu <songliubraving@fb.com>
-Cc:     KP Singh <kpsingh@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Florent Revest <revest@google.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=m5xVHAEIhIAqpO/8qHSF3PHN+LcVgKj3lgSIWUJ6nJU=;
+        b=jZqCd/bNNpIfuExP+YIv53UOo8J/TXIrVsdezC8iZwertBiTncb14FP4DXjF88afwc
+         R5coeKCttQjPXOJEVHLFAUSooNIqkIJQHLfnhx07aHVzv9F8o8BN9eN4N3/ultawwCt5
+         /0E+IBKvQGIdeaYOXc9NkXPo2WMkAWXyHF++h6ML25oLeqH9vBgfmDJJLSkmvB6G5rvZ
+         kcImmkaudNphnNYurvRyVHoIjZLw0HBXNdX+OUCDdFfQrN2963/+S5Cal0Gec7N5d46I
+         QZU/YGZux0jDKuHfUkb39FcOJlPDg/to0z5V4TcAUq6WO6DgAEjEZ/e0v7b8yg+lj370
+         /v3g==
+X-Gm-Message-State: APjAAAUtwsL877MDAzzqSDxzB95giw4kEthUgmNvfU1Q0CiWlG7ZogQZ
+        sCNaa7QT+YbSC1GtDEthPZSsjQ==
+X-Google-Smtp-Source: APXvYqxefMrb+WA4AhwWWkXE9kZkzf8l8zTyjo7a9OpMxNiDT7SFCyxx152FrySs3TwCKr1n6UhR0A==
+X-Received: by 2002:a17:90a:8002:: with SMTP id b2mr6894567pjn.0.1570051883271;
+        Wed, 02 Oct 2019 14:31:23 -0700 (PDT)
+Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
+        by smtp.gmail.com with ESMTPSA id f15sm374729pfd.141.2019.10.02.14.31.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Oct 2019 14:31:22 -0700 (PDT)
+Date:   Wed, 2 Oct 2019 14:31:21 -0700
+From:   Stanislav Fomichev <sdf@fomichev.me>
+To:     Song Liu <liu.song.a23@gmail.com>
+Cc:     Stanislav Fomichev <sdf@google.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        Florent Revest <revest@chromium.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+        Petar Penkov <ppenkov@google.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf/flow_dissector: add mode to enforce
+ global BPF flow dissector
+Message-ID: <20191002213121.GB3223377@mini-arch>
+References: <20191002173357.253643-1-sdf@google.com>
+ <20191002173357.253643-2-sdf@google.com>
+ <CAPhsuW6ywq5yySKjtdna8rXGBWdUyFgxQuy0+=2-gReXSTQ=ow@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPhsuW6ywq5yySKjtdna8rXGBWdUyFgxQuy0+=2-gReXSTQ=ow@mail.gmail.com>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 2, 2019 at 2:05 PM Song Liu <songliubraving@fb.com> wrote:
->
->
->
-> > On Oct 2, 2019, at 1:22 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+On 10/02, Song Liu wrote:
+> On Wed, Oct 2, 2019 at 10:36 AM Stanislav Fomichev <sdf@google.com> wrote:
 > >
-> > On Wed, Oct 2, 2019 at 12:17 PM KP Singh <kpsingh@chromium.org> wrote:
-> >>
-> >> From: KP Singh <kpsingh@google.com>
-> >>
-> >> This was added in:
-> >>
-> >>  commit eb111869301e ("compiler-types.h: add asm_inline definition")
-> >>
-> >> and breaks samples/bpf as clang does not support asm __inline.
-> >>
-> >> Co-developed-by: Florent Revest <revest@google.com>
-> >> Signed-off-by: Florent Revest <revest@google.com>
-> >> Signed-off-by: KP Singh <kpsingh@google.com>
-> >> ---
-> >>
-> >> Changes since v1:
-> >>
-> >> - Dropped the rename from asm_workaround.h to asm_goto_workaround.h
-> >> - Dropped the fix for task_fd_query_user.c as it is updated in
-> >>  https://lore.kernel.org/bpf/20191001112249.27341-1-bjorn.topel@gmail.com/
-> >>
-> >> samples/bpf/asm_goto_workaround.h | 13 ++++++++++++-
-> >> 1 file changed, 12 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/samples/bpf/asm_goto_workaround.h b/samples/bpf/asm_goto_workaround.h
-> >> index 7409722727ca..7048bb3594d6 100644
-> >> --- a/samples/bpf/asm_goto_workaround.h
-> >> +++ b/samples/bpf/asm_goto_workaround.h
-> >> @@ -3,7 +3,8 @@
-> >> #ifndef __ASM_GOTO_WORKAROUND_H
-> >> #define __ASM_GOTO_WORKAROUND_H
-> >>
-> >> -/* this will bring in asm_volatile_goto macro definition
-> >> +/*
-> >> + * This will bring in asm_volatile_goto and asm_inline macro definitions
-> >>  * if enabled by compiler and config options.
-> >>  */
-> >> #include <linux/types.h>
-> >> @@ -13,5 +14,15 @@
-> >> #define asm_volatile_goto(x...) asm volatile("invalid use of asm_volatile_goto")
-> >> #endif
-> >>
-> >> +/*
-> >> + * asm_inline is defined as asm __inline in "include/linux/compiler_types.h"
-> >> + * if supported by the kernel's CC (i.e CONFIG_CC_HAS_ASM_INLINE) which is not
-> >> + * supported by CLANG.
-> >> + */
-> >> +#ifdef asm_inline
-> >> +#undef asm_inline
-> >> +#define asm_inline asm
-> >> +#endif
+> > Always use init_net flow dissector BPF program if it's attached and fall
+> > back to the per-net namespace one. Also, deny installing new programs if
+> > there is already one attached to the root namespace.
+> > Users can still detach their BPF programs, but can't attach any
+> > new ones (-EPERM).
 > >
-> > Would it be better to just #undef CONFIG_CC_HAS_ASM_INLINE for BPF programs?
->
-> I guess that is still useful when gcc fully support BPF?
+> > Cc: Petar Penkov <ppenkov@google.com>
+> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> > ---
+> >  Documentation/bpf/prog_flow_dissector.rst |  3 +++
+> >  net/core/flow_dissector.c                 | 11 ++++++++++-
+> >  2 files changed, 13 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/Documentation/bpf/prog_flow_dissector.rst b/Documentation/bpf/prog_flow_dissector.rst
+> > index a78bf036cadd..4d86780ab0f1 100644
+> > --- a/Documentation/bpf/prog_flow_dissector.rst
+> > +++ b/Documentation/bpf/prog_flow_dissector.rst
+> > @@ -142,3 +142,6 @@ BPF flow dissector doesn't support exporting all the metadata that in-kernel
+> >  C-based implementation can export. Notable example is single VLAN (802.1Q)
+> >  and double VLAN (802.1AD) tags. Please refer to the ``struct bpf_flow_keys``
+> >  for a set of information that's currently can be exported from the BPF context.
+> > +
+> > +When BPF flow dissector is attached to the root network namespace (machine-wide
+> > +policy), users can't override it in their child network namespaces.
+> > diff --git a/net/core/flow_dissector.c b/net/core/flow_dissector.c
+> > index 7c09d87d3269..494e2016fe84 100644
+> > --- a/net/core/flow_dissector.c
+> > +++ b/net/core/flow_dissector.c
+> > @@ -115,6 +115,11 @@ int skb_flow_dissector_bpf_prog_attach(const union bpf_attr *attr,
+> >         struct bpf_prog *attached;
+> >         struct net *net;
+> >
+> > +       if (rcu_access_pointer(init_net.flow_dissector_prog)) {
+> > +               /* Can't override root flow dissector program */
+> > +               return -EPERM;
+> 
+> Maybe -EBUSY is more accurate?
+I'm not sure, -EBUSY to me means that I can retry and (maybe) eventually
+will succeed. Maybe return -EEXIST? At least it gives a hint that BPF
+flow dissector is already there and retrying won't help. Thoughts?
 
-Ah, I missed that it's Clang-specific, not BPF target-specific thing.
-Yeah, then it makes sense.
-
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-
->
 > Thanks,
 > Song
->
