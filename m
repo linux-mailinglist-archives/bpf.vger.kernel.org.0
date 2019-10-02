@@ -2,71 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A8A0C9110
-	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2019 20:46:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A046C9121
+	for <lists+bpf@lfdr.de>; Wed,  2 Oct 2019 20:52:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727624AbfJBSqt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Oct 2019 14:46:49 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:35793 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726076AbfJBSqt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Oct 2019 14:46:49 -0400
-Received: by mail-qt1-f193.google.com with SMTP id m15so45834qtq.2;
-        Wed, 02 Oct 2019 11:46:48 -0700 (PDT)
+        id S1726708AbfJBSwh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Oct 2019 14:52:37 -0400
+Received: from mail-ed1-f65.google.com ([209.85.208.65]:41437 "EHLO
+        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728543AbfJBSwh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Oct 2019 14:52:37 -0400
+Received: by mail-ed1-f65.google.com with SMTP id f20so104419edv.8
+        for <bpf@vger.kernel.org>; Wed, 02 Oct 2019 11:52:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Q9D4dosTml0l227Zzgv4rTTlL2Je0VeBGCcoUbz32Xk=;
-        b=lPO14QscMrkEWS8YmQjhQBWB3VluXmncO15YTQcvVORnb+/HUq1NSLM2cUkZm0Yfn9
-         glCYPS//BCxiDQY9AGIHCzNYyz0HpZ22dcintX4FsAxVdWPj2KsPxNpuxk/G4xX4Gzxm
-         eJ9Z0x5CNEcGPI9yBqXKziFhYVILRV8DG5gZ6n7FydmqkJ35dQ4R721e/ML2MpvUltMT
-         aqoQ41nTR+6swbN+eidSK1qcK+AQc/aRwAwEJv+5nd5kePr6es09GJZh/u/TP73taTGJ
-         mtUDyjfpbBEUJeuACLFj94ohK8w8KMaMBRSF3MLrrevNVwGhLUZ1ICHJQsg/JgeUaeVG
-         0xUg==
+        d=chromium.org; s=google;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=yVl3DvwCADMp64mcvKATV/e92AOrRf7vvTQmwDnOrvk=;
+        b=TpyYBW2hiIXk1ZFCht2y3HJcPbCcRo2CDLEfs0/Sn6IRUDFDzcztEQ5+OP3uhfds3p
+         HISNhssIt/0eInvtS1j1l6xoQDFrD9bOvfNWs6uSmd5j9jULKw+LfxVH7cawMse67ooU
+         4/LWsuWbBUEhe3ALND6duir5F1uMOa9p92Dn0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Q9D4dosTml0l227Zzgv4rTTlL2Je0VeBGCcoUbz32Xk=;
-        b=QbPUd6LGeIUVwBvpRPEjVnSCCFkma885DTgMlGfEUpSfVoH2RNdNZZXb4Yphbyrq4l
-         VntVZSve/GaJagK1Rt7ZGAZqZrtCTbB38h7YUuXE9NZQSJz3kMJQuOZpXC7RljEZ3I/0
-         tAflgUEWDQCHkPkvDvJ3v37hlBO1/O8Gy4kfNPzO3ZdziySsZsoJdhOKojsO43cQpcUg
-         rbMhwpKiUJJl4ALyYQIU/WqjXExQzZQ7s6savTKrHIYLi8krfzBtybQ8jfF012Pe8HxU
-         M+tkRYfz6xChOtY52Iq4YcYklVcy3MH32wtAK+WzlB03hevFjaxacUf0UKmaK93tNhB5
-         Q7wg==
-X-Gm-Message-State: APjAAAU8RDGRh8SWxZ2JSPfcleeeJWTDoYY5ZNFPWblOPpQ5eSrfybWg
-        xMXqDrvL5ihDEA4EF7amjD5y9YQQ6xYtkL9gAbg=
-X-Google-Smtp-Source: APXvYqyOpiYjmr+7vXul/WFcnIgMDgO0DSV67S33cFDfGXPdgQMk69fduc6J8NU8dtEi5YWwxtfwQ++7p8qknGZE/z4=
-X-Received: by 2002:ac8:1099:: with SMTP id a25mr5670508qtj.308.1570042008317;
- Wed, 02 Oct 2019 11:46:48 -0700 (PDT)
-MIME-Version: 1.0
-References: <20191001112249.27341-1-bjorn.topel@gmail.com>
-In-Reply-To: <20191001112249.27341-1-bjorn.topel@gmail.com>
-From:   Song Liu <liu.song.a23@gmail.com>
-Date:   Wed, 2 Oct 2019 11:46:37 -0700
-Message-ID: <CAPhsuW5c9v0OnU4g+eYkPjBCuNMjC_69pFhzr=nTfDMAy4bK6w@mail.gmail.com>
-Subject: Re: [PATCH bpf] samples/bpf: fix build for task_fd_query_user.c
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Cc:     Networking <netdev@vger.kernel.org>,
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=yVl3DvwCADMp64mcvKATV/e92AOrRf7vvTQmwDnOrvk=;
+        b=QQwzXNX1KJAiR8yzXlOuHVabo8EiZaxgSHMnPNRJATrEm4Hr4OuuHcgTaS5onOL1Bx
+         dOBTExgDrBMnb6AfUMwrNhjIXKfVCYKMSdSR4smfy6dbvzK9swoJJkCWRRxZedPA/QIf
+         Vvnc+qk3p0x+jgdBit8cD4ha6ZiE8yv7WXxV2ar5wj1c4S9JWRyYoVSrJ2wf9Pwb07Ym
+         eNbojGuvcU6hva575HeNDUEa4ypNZTULBqm5AfkUc6KFd6wmADcU1/JOLnpNpHduVj+M
+         egxjnuwr4oJxIDjOfmYZxnA/jmv1z/1TUEPAoxCy80SjvuLO/ki6WuFIqurxSTiZo3UP
+         KU8Q==
+X-Gm-Message-State: APjAAAUEfbZ2nDX3qxM2xQMTjRvlcFYHITTHZ+qN0RGTM5UT+5lgFLc7
+        dMK5ggN1YQOT2KvQr/EFVdx4bg==
+X-Google-Smtp-Source: APXvYqy4nAcB23b6wdIF3ZqiDW0mlD3bK7ADCQW7GZ2ZJE4qpYFJuX+RzPLqxNkLw/iuPYQ1CM6/6Q==
+X-Received: by 2002:a17:906:2ccc:: with SMTP id r12mr4383114ejr.219.1570042355474;
+        Wed, 02 Oct 2019 11:52:35 -0700 (PDT)
+Received: from chromium.org (77-56-209-237.dclient.hispeed.ch. [77.56.209.237])
+        by smtp.gmail.com with ESMTPSA id os27sm2352181ejb.18.2019.10.02.11.52.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Oct 2019 11:52:34 -0700 (PDT)
+From:   KP Singh <kpsingh@chromium.org>
+X-Google-Original-From: KP Singh <kpsingh>
+Date:   Wed, 2 Oct 2019 20:52:33 +0200
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        Florent Revest <revest@google.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Florent Revest <revest@chromium.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: Re: [PATCH] samples/bpf: Fix broken samples.
+Message-ID: <20191002185233.GA3650@chromium.org>
+References: <20191002174632.28610-1-kpsingh@chromium.org>
+ <20191002184506.iauttcpgyzcplope@ast-mbp.dhcp.thefacebook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191002184506.iauttcpgyzcplope@ast-mbp.dhcp.thefacebook.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 1, 2019 at 4:26 AM Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com=
-> wrote:
->
-> From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
->
-> Add missing "linux/perf_event.h" include file.
->
-> Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+On 02-Okt 11:45, Alexei Starovoitov wrote:
+> On Wed, Oct 02, 2019 at 07:46:32PM +0200, KP Singh wrote:
+> > From: KP Singh <kpsingh@google.com>
+> > 
+> > Rename asm_goto_workaround.h to asm_workaround.h and add a
+> > workaround for the newly added "asm_inline" in:
+> > 
+> >   commit eb111869301e ("compiler-types.h: add asm_inline definition")
+> > 
+> > Add missing include for <linux/perf_event.h> which was removed from
+> > perf-sys.h in:
+> > 
+> >   commit 91854f9a077e ("perf tools: Move everything related to
+> > 	               sys_perf_event_open() to perf-sys.h")
+> > 
 
-Acked-by: Song Liu <songliubraving@fb.com>
+I see this is already fixed in a patch that was sent yesterday and has
+been Acked.
+
+  https://lore.kernel.org/bpf/20191001112249.27341-1-bjorn.topel@gmail.com/
+
+I will drop this change from my patch.
+
+> > Co-developed-by: Florent Revest <revest@google.com>
+> > Signed-off-by: Florent Revest <revest@google.com>
+> > Signed-off-by: KP Singh <kpsingh@google.com>
+> > ---
+> >  samples/bpf/Makefile                            |  2 +-
+> >  .../{asm_goto_workaround.h => asm_workaround.h} | 17 ++++++++++++++---
+> >  samples/bpf/task_fd_query_user.c                |  1 +
+> >  3 files changed, 16 insertions(+), 4 deletions(-)
+> >  rename samples/bpf/{asm_goto_workaround.h => asm_workaround.h} (46%)
+> > 
+> > diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
+> > index 42b571cde177..ab2b4d7ecb4b 100644
+> > --- a/samples/bpf/Makefile
+> > +++ b/samples/bpf/Makefile
+> > @@ -289,7 +289,7 @@ $(obj)/%.o: $(src)/%.c
+> >  		-Wno-gnu-variable-sized-type-not-at-end \
+> >  		-Wno-address-of-packed-member -Wno-tautological-compare \
+> >  		-Wno-unknown-warning-option $(CLANG_ARCH_ARGS) \
+> > -		-I$(srctree)/samples/bpf/ -include asm_goto_workaround.h \
+> > +		-I$(srctree)/samples/bpf/ -include asm_workaround.h \
+> >  		-O2 -emit-llvm -c $< -o -| $(LLC) -march=bpf $(LLC_FLAGS) -filetype=obj -o $@
+> >  ifeq ($(DWARF2BTF),y)
+> >  	$(BTF_PAHOLE) -J $@
+> > diff --git a/samples/bpf/asm_goto_workaround.h b/samples/bpf/asm_workaround.h
+> > similarity index 46%
+> > rename from samples/bpf/asm_goto_workaround.h
+> > rename to samples/bpf/asm_workaround.h
+> > index 7409722727ca..7c99ea6ae98c 100644
+> > --- a/samples/bpf/asm_goto_workaround.h
+> > +++ b/samples/bpf/asm_workaround.h
+> > @@ -1,9 +1,10 @@
+> >  /* SPDX-License-Identifier: GPL-2.0 */
+> >  /* Copyright (c) 2019 Facebook */
+> > -#ifndef __ASM_GOTO_WORKAROUND_H
+> > -#define __ASM_GOTO_WORKAROUND_H
+> > +#ifndef __ASM_WORKAROUND_H
+> > +#define __ASM_WORKAROUND_H
+> 
+> I don't think rename is necessary.
+> This file already has a hack for volatile().
+> Just add asm_inline hack to it.
+
+Thanks, will send an update the patch to reflect this.
+
+- KP
+
+> 
