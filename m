@@ -2,174 +2,153 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 868CDCAD4D
-	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2019 19:48:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AC35CAD88
+	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2019 19:48:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389317AbfJCRiI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Oct 2019 13:38:08 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:36309 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389289AbfJCRiE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Oct 2019 13:38:04 -0400
-Received: by mail-qt1-f194.google.com with SMTP id o12so4771264qtf.3;
-        Thu, 03 Oct 2019 10:38:04 -0700 (PDT)
+        id S1730993AbfJCRpQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Oct 2019 13:45:16 -0400
+Received: from mail-io1-f65.google.com ([209.85.166.65]:44932 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730850AbfJCRpQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Oct 2019 13:45:16 -0400
+Received: by mail-io1-f65.google.com with SMTP id w12so7461894iol.11;
+        Thu, 03 Oct 2019 10:45:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=v8XmbpBJ+gEOl64AXh0Pf5wUInfxzFXC/UuayhxnpMk=;
-        b=rt5dCao8iPmw1012acsU1AIGQu5XI7yo1HPVSYHPXrSMOcd4OXUbPr2F8CgMZMT2Vr
-         SnMhXp8KkKNNRd9s19tX150S3ane4rzcWnvJ8aWgD9sTgRUFBVvE/+AGljtYcB4/GX4m
-         OW//ICaWEOqtwltNl1CV9RxQVoEQ7i2BPQ/6oU5fJHIu0ZciTQEY4zKFHDzDV27YM3v9
-         i0PKmb8L+VMJM7iL+PrSc5SdP5wAcry9zrO73Az9jvdwM12dScIHvg96eI/uiNrnSiK8
-         IygOtBQJChONiYYF+aPzda+mZorupmFfNulolHkSi6QpLdvbn8RINVwRJa7y2xvJGyRW
-         T5yA==
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=bKVwErrHr2f+dxk4S22kvE7QuC7upJdZpAbg/+FysTY=;
+        b=mg3SLrWnO+avkvKkTFSAkLhxomEVO1JddF76kPLQgqA2e3vmSgof5nmThCnaUkdmWi
+         D1+2IHogtc0pT2P0Dde4nlyiG7qxYI7mJ6P3HQNi+l8tcagUcDgVTpGjTZTZF+O+y+O+
+         oMUyJXntOYTMWHNw0297sinaMl9JDn48lyEYs7j+flsAG+w6XnLDNvHmzawC2jYPZbiG
+         AVmvBwI5Qbv5MksRjvIJBznY/KD2NnOgP3hbGBs5pxAfuyxG2gbBSonpezjLtOjaGV2A
+         I85g6q4btdskngADXO4CQAVa/qtKCdDOekbH9oCsj+UWYYIevMZWm9Fz+PN1gx/06SjX
+         d+Cg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=v8XmbpBJ+gEOl64AXh0Pf5wUInfxzFXC/UuayhxnpMk=;
-        b=rACBuNocL7olThEFYr9sZI1L11a0niCppFAp5XzSCcSBRpwPG+KWQEyCKNlGWwIsIZ
-         L/0gZ/FX7GddEcjG2ln0vlSFPWCdtm4euU9on3ugkjBdGoVgD/FHkXgAVbbdjdmkKwUe
-         97j/3wPO9BoPU64snNY0gtLzpB4z7UNna9QmEpofRiZ12HFdh0AzXUPYSPxewzfSKXYk
-         +QuP35vuxd8UAgJFujGhTe9eQhtSK4LA1czMC6ePyt/oYmW9sojPylBAGDfkLffT7+uD
-         3vEt0gG/yAIyfhhQs6zkk53gAWl2FOW/jcxvHIxoYLHKQh+9MK2LHdJ7jYi9zDfn8XjK
-         u4HQ==
-X-Gm-Message-State: APjAAAX00mXxMJkJy80R9ulYkhWBSKDlTTFthlcSioGludriCfuS5aXi
-        seKpdn6/a/WnWd8gZTHo89j+7LVI3dZIfkhmA4c=
-X-Google-Smtp-Source: APXvYqys6FXV9SDmyMY1yhxPBTgUjw4e+dhiseP2HSsqO9/a/3VQxdSlt7+Lj/R/ECIo3B0/D/LRtEor6+F5b2EUnFQ=
-X-Received: by 2002:a05:6214:2e4:: with SMTP id h4mr9656529qvu.127.1570124283426;
- Thu, 03 Oct 2019 10:38:03 -0700 (PDT)
-MIME-Version: 1.0
-References: <20191001101429.24965-1-bjorn.topel@gmail.com> <CAK7LNATNw4Qysj1Q2dXd4PALfbtgMXPwgvmW=g0dRcrczGW-Fg@mail.gmail.com>
- <CAJ+HfNgvxornSfqnbAthNy6u6=-enGCdA8K1e6rLXhCzGgmONQ@mail.gmail.com>
- <CAK7LNATD4vCQnNsHXP8A2cyWDkCNX=LGh0ej-dkDajm-+Lfw8Q@mail.gmail.com>
- <CAJ+HfNgem7ijzQkz7BU-Z_A-CqWXY_uMF6_p0tGZ6eUMx_N3QQ@mail.gmail.com>
- <20191002231448.GA10649@khorivan> <CAJ+HfNiCrcVDwQw4nxsntnTSy2pUgV2n6pW206==hUmq1=ZUTA@mail.gmail.com>
- <CAK7LNARd4_o4E=TSONZjJ9iyyeUE1=L_njU7LiEZFpNunSEEkw@mail.gmail.com>
- <CAJ+HfNhx+gQmRMb18UDRrmzciDYUbdezUh9bRhWG8_HTUCLk9w@mail.gmail.com> <CAEf4BzbZxa3iGZEWB03rdL+7ErmhdpB0e3aeOQvbLPu0o8XFqw@mail.gmail.com>
-In-Reply-To: <CAEf4BzbZxa3iGZEWB03rdL+7ErmhdpB0e3aeOQvbLPu0o8XFqw@mail.gmail.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Thu, 3 Oct 2019 19:37:51 +0200
-Message-ID: <CAJ+HfNi1cTvCxcgjU4r03eJt_mc7L4Zwn7vfgWHAPWyjH0q4Bw@mail.gmail.com>
-Subject: Re: [PATCH bpf] samples/bpf: kbuild: add CONFIG_SAMPLE_BPF Kconfig
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
-        Networking <netdev@vger.kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=bKVwErrHr2f+dxk4S22kvE7QuC7upJdZpAbg/+FysTY=;
+        b=sP0ju///8Pit7u4JxOWK5oP38QXSs/cSbslBU/hwhCwpRx3XX6/bnF8IdXNVjVUN0K
+         XQfeCkRzvgVWrH1z8ujjkRKKhrdJ7WQIZjbPoBsnnPaZ7E2ZKJpcuWEpRdPYTho2STMG
+         84EWW8PqCCd970bGkTA3LHGFzR6uhxlZT9+CYKLbyg4LobeIRsRcHGnNxLVlbj3mFN+9
+         csoeNmgv7NmOhz6SSQtlbRBmsapyzzZdbolxoaovedY5t2LjMkXee2ndTERFPhUQV58e
+         3FHKaSh/J++htzBUU3Ih9OPJ5dZm2kyZB+JXHTL5gIUamWFSMayHyTjT6Nhpw/So1oit
+         4HDA==
+X-Gm-Message-State: APjAAAXhGjygmMJc3p5QKf9+EwfS4DNHYZnM7OfHGx9zymtjDOgXLhhB
+        vAyA/zPUA5uzmmP/CzAwbj+CRQeRLA0=
+X-Google-Smtp-Source: APXvYqwfirEzf7045EMiY6mX2EQ/NgRPpctOg7M/DK1GviI2YEiv8gNYycIjcds2kHCPiaWV2lkBrA==
+X-Received: by 2002:a92:8fcf:: with SMTP id r76mr11645616ilk.82.1570124714507;
+        Thu, 03 Oct 2019 10:45:14 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id m15sm1430802ilg.49.2019.10.03.10.45.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Oct 2019 10:45:13 -0700 (PDT)
+Date:   Thu, 03 Oct 2019 10:45:06 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Stanislav Fomichev <sdf@fomichev.me>
+Cc:     Stanislav Fomichev <sdf@google.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Petar Penkov <ppenkov@google.com>
+Message-ID: <5d9633a2de69c_55732aec43fe05c41@john-XPS-13-9370.notmuch>
+In-Reply-To: <CAEf4BzYbJZz7AwW_N=Q2b-V8ZQCJVTHeUaGo6Ji848aB_z8nXA@mail.gmail.com>
+References: <20191002173357.253643-1-sdf@google.com>
+ <20191002173357.253643-2-sdf@google.com>
+ <CAEf4BzZuEChOL828F91wLxUr3h2yfAkZvhsyoSx18uSFSxOtqw@mail.gmail.com>
+ <20191003014356.GC3223377@mini-arch>
+ <CAEf4BzZnWkdFpSUsSBenDDfrvgjGvBxUnJmQRwb7xjNQBaKXdQ@mail.gmail.com>
+ <20191003160137.GD3223377@mini-arch>
+ <CAEf4BzYbJZz7AwW_N=Q2b-V8ZQCJVTHeUaGo6Ji848aB_z8nXA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf/flow_dissector: add mode to enforce
+ global BPF flow dissector
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 3 Oct 2019 at 19:16, Andrii Nakryiko <andrii.nakryiko@gmail.com> wr=
-ote:
->
-> On Thu, Oct 3, 2019 at 3:52 AM Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.c=
-om> wrote:
+Andrii Nakryiko wrote:
+> On Thu, Oct 3, 2019 at 9:01 AM Stanislav Fomichev <sdf@fomichev.me> wrote:
 > >
-> > On Thu, 3 Oct 2019 at 12:37, Masahiro Yamada
-> > <yamada.masahiro@socionext.com> wrote:
-> > >
-> > > On Thu, Oct 3, 2019 at 3:28 PM Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gma=
-il.com> wrote:
+> > On 10/02, Andrii Nakryiko wrote:
+> > > On Wed, Oct 2, 2019 at 6:43 PM Stanislav Fomichev <sdf@fomichev.me> wrote:
 > > > >
-> > > > On Thu, 3 Oct 2019 at 01:14, Ivan Khoronzhuk <ivan.khoronzhuk@linar=
-o.org> wrote:
-> > > > >
-> > > > > On Wed, Oct 02, 2019 at 09:41:15AM +0200, Bj=C3=B6rn T=C3=B6pel w=
-rote:
-> > > > > >On Wed, 2 Oct 2019 at 03:49, Masahiro Yamada
-> > > > > ><yamada.masahiro@socionext.com> wrote:
-> > > > > >>
-> > > > > >[...]
-> > > > > >> > Yes, the BPF samples require clang/LLVM with BPF support to =
-build. Any
-> > > > > >> > suggestion on a good way to address this (missing tools), be=
-tter than
-> > > > > >> > the warning above? After the commit 394053f4a4b3 ("kbuild: m=
-ake single
-> > > > > >> > targets work more correctly"), it's no longer possible to bu=
-ild
-> > > > > >> > samples/bpf without support in the samples/Makefile.
-> > > > > >>
-> > > > > >>
-> > > > > >> You can with
-> > > > > >>
-> > > > > >> "make M=3Dsamples/bpf"
-> > > > > >>
+> > > > On 10/02, Andrii Nakryiko wrote:
+> > > > > On Wed, Oct 2, 2019 at 10:35 AM Stanislav Fomichev <sdf@google.com> wrote:
 > > > > > >
-> > > > > >Oh, I didn't know that. Does M=3D support "output" builds (O=3D)=
-?
+> > > > > > Always use init_net flow dissector BPF program if it's attached and fall
+> > > > > > back to the per-net namespace one. Also, deny installing new programs if
+> > > > > > there is already one attached to the root namespace.
+> > > > > > Users can still detach their BPF programs, but can't attach any
+> > > > > > new ones (-EPERM).
 > > >
-> > > No.
-> > > O=3D points to the output directory of vmlinux,
-> > > not of the external module.
-> > >
-> > > You cannot put the build artifacts from samples/bpf/
-> > > in a separate directory.
-> > >
+> > > I find this quite confusing for users, honestly. If there is no root
+> > > namespace dissector we'll successfully attach per-net ones and they
+> > > will be working fine. That some process will attach root one and all
+> > > the previously successfully working ones will suddenly "break" without
+> > > users potentially not realizing why. I bet this will be hair-pulling
+> > > investigation for someone. Furthermore, if root net dissector is
+> > > already attached, all subsequent attachment will now start failing.
+> > The idea is that if sysadmin decides to use system-wide dissector it would
+> > be attached from the init scripts/systemd early in the boot process.
+> > So the users in your example would always get EPERM/EBUSY/EXIST.
+> > I don't really see a realistic use-case where root and non-root
+> > namespaces attach/detach flow dissector programs at non-boot
+> > time (or why non-root containers could have BPF dissector and root
+> > could have C dissector; multi-nic machine?).
 > >
-> > Hmm, I can't even get "make M=3Dsamples/bpf/" to build. Am I missing
-> > something obvious?
->
-> There were 3 or 4 separate fixes submitted for samples/bpf yesterday,
-> maybe you are hitting some of those issues. Try to pull latest (not
-> sure if bpf or bpf-next tree). I tried make M=3Dsamples/bpf and it
-> worked for me.
->
+> > But I totally see your point about confusion. See below.
+> >
+> > > I'm not sure what's the better behavior here is, but maybe at least
+> > > forcibly detach already attached ones, so when someone goes and tries
+> > > to investigate, they will see that their BPF program is not attached
+> > > anymore. Printing dmesg warning would be hugely useful here as well.
+> > We can do for_each_net and detach non-root ones; that sounds
+> > feasible and may avoid the confusion (at least when you query
+> > non-root ns to see if the prog is still there, you get a valid
+> > indication that it's not).
+> >
+> > > Alternatively, if there is any per-net dissector attached, we might
+> > > disallow root net dissector to be installed. Sort of "too late to the
+> > > party" way, but at least not surprising to successfully installed
+> > > dissectors.
+> > We can do this as well.
+> >
+> > > Thoughts?
+> > Let me try to implement both of your suggestions and see which one makes
+> > more sense. I'm leaning towards the later (simple check to see if
+> > any non-root ns has the prog attached).
+> >
+> > I'll follow up with a v2 if all goes well.
+> 
+> Thanks! I don't have strong opinion on either, see what makes most
+> sense from an actual user perspective.
 
-Yeah, it was PEBKAC. "make M=3Dsamples/bpf" works if you have a proper
-.config + "make prepare" ;-)
 
-I guess I need to change my workflow. I build all my kernels "O=3D", and
-did so with samples/bpf as well. Everything ended up in the same
-output directory. Now I need to have all this build output in source
-tree, and need to manage the .config files in where the source is at.
-Oh well... I'll stop complaining now. :-)
+From my point of view the second option is better. The root namespace flow
+dissector attach should always happen first before any other namespaces are
+created. If any namespaces have already attached then just fail the root
+namespace. 
 
-Thanks,
-Bj=C3=B6rn
+Otherwise if you detach existing dissectors from a container these were
+probably attached by the init container which might not be running anymore
+and I have no easy way to learn/find out about this without creating another
+container specifically to watch for this. If I'm relying on the dissector
+for something now I can seemingly random errors. So its a bit ugly and I'll
+probably just tell users to always attach the root namespace first to avoid
+this headache. On the other side if the root namespace already has a
+flow dissector attached and my init container fails its attach cmd I
+can handle the error gracefully or even fail to launch the container with
+a nice error message and the administrator can figure something out.
+I'm always in favor of hard errors vs trying to guess what the right
+choice is for any particular setup.
 
-> >
-> > Prior 394053f4a4b3 "make samples/bpf/" and "make O=3D/foo/bar
-> > samples/bpf/" worked, but I guess I can live with that...
-> >
-> >
-> > Thanks!
-> > Bj=C3=B6rn
-> >
-> >
-> > >
-> > >
-> > > > > >I usually just build samples/bpf/ with:
-> > > > > >
-> > > > > >  $ make V=3D1 O=3D/home/foo/build/bleh samples/bpf/
-> > > > > >
-> > > > > >
-> > > > > >Bj=C3=B6rn
-> > > > >
-> > > > > Shouldn't README be updated?
-> > > > >
-> > > >
-> > > > Hmm, the M=3D variant doesn't work at all for me. The build is stil=
-l
-> > > > broken for me. Maybe I'm missing anything obvious...
-> > > >
-> > > >
-> > > > > --
-> > > > > Regards,
-> > > > > Ivan Khoronzhuk
-> > >
-> > >
-> > >
-> > > --
-> > > Best Regards
-> > > Masahiro Yamada
+Also it seems to me just checking if anything is attached is going to make
+the code simpler vs trying to detach things in all namespaces.
