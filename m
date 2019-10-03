@@ -2,113 +2,195 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AD3FCAAEE
-	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2019 19:27:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53E99CAD5C
+	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2019 19:48:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729468AbfJCRZe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Oct 2019 13:25:34 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:36635 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390881AbfJCRVu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Oct 2019 13:21:50 -0400
-Received: by mail-qt1-f195.google.com with SMTP id o12so4699988qtf.3;
-        Thu, 03 Oct 2019 10:21:49 -0700 (PDT)
+        id S2389706AbfJCRjN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Oct 2019 13:39:13 -0400
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:42984 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731876AbfJCQBl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Oct 2019 12:01:41 -0400
+Received: by mail-pg1-f194.google.com with SMTP id z12so2028876pgp.9
+        for <bpf@vger.kernel.org>; Thu, 03 Oct 2019 09:01:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=h5Rim9i4R2dtqePdDLpMCbY7rNwA6OH+nyEYI7LKahs=;
-        b=face39Zit5ry5Kv5MEk6wx4lT9nUPV/Qw7+B489XY4veUQ8Vg1354MpUcaarHInvO1
-         aEzb6pTQwv9J9IvU8iaZzbfOuYaNy9AWHG5qsRqVP2rR54qVMbGeueL2E/3PgqTc4MXR
-         ERYhWFZjcnZZ/O7s7ZxeaayQozjcO04gBOE/16ykGd3/zHrsTlW8iQme/sniIEngN3iJ
-         03xPKJsMjHyvHH9hSqX25xoaOz2boH7cgLVicayHXn2As2h41G5rhsna0OLOKET9aJLB
-         qSvFRZlxtr6FK0tcZQp0sH5NOthVXZtUhKxno5yWREXFDOzZpgs27BgDPFKAdTCJ1bIO
-         jpSg==
+        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=0y95u07iur6UmavagV9rFmpo+CBc/4QJ5Hj3jr+TpaQ=;
+        b=s1xvJejmY+mvKv3vUZxfK4BegMDKrxzh6o96zYo+TFJPWyhqh/Ot6wxgYculZVmYQT
+         xJIc8GTHYOmPAZz0mFN+Kz5+Ap0WTrhj/Bnt0xNFe239Ev+qEfQbSW7uxPBG6Nkn8PZb
+         bkfuq9fOH7ixdqyGURPW1H1Ts7PAgUvSpdwbhtxvAh5ba2jcAu5jYyZWu/nD9O3o/S2N
+         8laQy8QkiETnldqJXYLFDrjq3N5nBa1l9C6cTq0V7ppW2ZJRCTJXnzc9gaxS9ItHN57o
+         bSfNNweK596ZCfyQQE9WJnRdCVDwSlcMF79wPJ5HX3BMgCsAfYYyb4DL4EKklm7pKfHg
+         RTOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=h5Rim9i4R2dtqePdDLpMCbY7rNwA6OH+nyEYI7LKahs=;
-        b=I4EpVSL9YNC+Lu7aJw9cSEOw36qC7eK7ZkKES5NcoXXjnXeyNKqUUKml1dtLwsHEtK
-         IYYEBqMZGMSx4y9IR9jrhT8sxzj12ZtxaYxIzfldrJczoAKB4izga/LishtIiW2tlMp2
-         2w3RmI/LnFv/eV5bDd1Qh+lbc6tTQam6XIp5y4Ews41WAAQJ4lwaEYVVwL99hH3ayB21
-         ANrxuO6FNHy3NHY8lFM75YUz3HPLiANPtBGDMQX/7wMOCn6PyVIeEFwZMv7ooffcXPmp
-         8rOwY5kjEfIJRFVvzWeVsk4qMZhiLR+aQ3Wtle2s0h5ubX6jhbihycF87+chumURS/QJ
-         kZKA==
-X-Gm-Message-State: APjAAAXg17UfeBrmBIhZAm6pUQIM1AcQ85PC45jWAlbAKCSukqrZB0nt
-        ZSC0pmgDCd1UXZs8RBB/eTZfASEXc/nnj3jOjKFODxGSUbE=
-X-Google-Smtp-Source: APXvYqz4TrdMivyXDTK0GQ13yFmR3JItdHh5McZQkymTQsopcQ3vLgBQWOsNamCBOfIzbAPoIMHO57B910EUdBEE4mk=
-X-Received: by 2002:aed:2726:: with SMTP id n35mr10864628qtd.171.1570123309206;
- Thu, 03 Oct 2019 10:21:49 -0700 (PDT)
-MIME-Version: 1.0
-References: <20191003014153.GA13156@paulmck-ThinkPad-P72> <20191003014310.13262-6-paulmck@kernel.org>
-In-Reply-To: <20191003014310.13262-6-paulmck@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 3 Oct 2019 10:21:38 -0700
-Message-ID: <CAEf4BzaBuktutCZr2ZUC6b-XK_JJ7prWZmO-5Yew2tVp5DxbBA@mail.gmail.com>
-Subject: Re: [PATCH tip/core/rcu 6/9] bpf/cgroup: Replace rcu_swap_protected()
- with rcu_replace()
-To:     paulmck@kernel.org
-Cc:     rcu@vger.kernel.org, open list <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, jiangshanlai@gmail.com,
-        dipankar@in.ibm.com, Andrew Morton <akpm@linux-foundation.org>,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Ziljstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>, dhowells@redhat.com,
-        Eric Dumazet <edumazet@google.com>, fweisbec@gmail.com,
-        oleg@redhat.com, Joel Fernandes <joel@joelfernandes.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=0y95u07iur6UmavagV9rFmpo+CBc/4QJ5Hj3jr+TpaQ=;
+        b=EetBRIhB5BfgaPT4Cc+8oUeMrJkYrHaXKkZnWGQeSh7EpzVe0WC0KIceV3HMqsABi8
+         vZcLJMjUQjiCOOM7fMKL4zXGqewrmZXYX87O3ii8R/uiqKmjlrIu7E5CFz9XMK89af3i
+         x9kGTB2znScoAu2AD6LppVKDEH275VUfXKwE3VH+y88ahgRIi87eQ1dWT9rf3hgjkqIw
+         LU15gaNKkk3bKJDr3J3g8vtGDM/MmjeTgo68sqPPhUFMcD3ZWtPkvEIM93v2rwrwh91Q
+         WGWqSK/4AKp5CxevGF1mqmUzkROs9HSPF+gZPhW3DaFU/OJprwgIhzAkMkZrHPLZ/KS9
+         eGGg==
+X-Gm-Message-State: APjAAAXmQWJOH50ebF2lNqL5sGcghHQzfLn39pvPckNxARApyCUEaYZ1
+        q87oMOPVQBOhe14cZ9Z34PxeAg==
+X-Google-Smtp-Source: APXvYqxw0Oe/KdrL+HBsrGCOAS014MtZt1fEkQBrJMSaimgtYcKAXcMo/8Zx2vDtzP3yG1z1xuIxcg==
+X-Received: by 2002:a17:90a:2284:: with SMTP id s4mr11019605pjc.3.1570118500057;
+        Thu, 03 Oct 2019 09:01:40 -0700 (PDT)
+Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
+        by smtp.gmail.com with ESMTPSA id 190sm3182704pgi.59.2019.10.03.09.01.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Oct 2019 09:01:39 -0700 (PDT)
+Date:   Thu, 3 Oct 2019 09:01:37 -0700
+From:   Stanislav Fomichev <sdf@fomichev.me>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Stanislav Fomichev <sdf@google.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Petar Penkov <ppenkov@google.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf/flow_dissector: add mode to enforce
+ global BPF flow dissector
+Message-ID: <20191003160137.GD3223377@mini-arch>
+References: <20191002173357.253643-1-sdf@google.com>
+ <20191002173357.253643-2-sdf@google.com>
+ <CAEf4BzZuEChOL828F91wLxUr3h2yfAkZvhsyoSx18uSFSxOtqw@mail.gmail.com>
+ <20191003014356.GC3223377@mini-arch>
+ <CAEf4BzZnWkdFpSUsSBenDDfrvgjGvBxUnJmQRwb7xjNQBaKXdQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzZnWkdFpSUsSBenDDfrvgjGvBxUnJmQRwb7xjNQBaKXdQ@mail.gmail.com>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 2, 2019 at 6:45 PM <paulmck@kernel.org> wrote:
->
-> From: "Paul E. McKenney" <paulmck@kernel.org>
->
-> This commit replaces the use of rcu_swap_protected() with the more
-> intuitively appealing rcu_replace() as a step towards removing
-> rcu_swap_protected().
->
-> Link: https://lore.kernel.org/lkml/CAHk-=wiAsJLw1egFEE=Z7-GGtM6wcvtyytXZA1+BHqta4gg6Hw@mail.gmail.com/
-> Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Martin KaFai Lau <kafai@fb.com>
-> Cc: Song Liu <songliubraving@fb.com>
-> Cc: Yonghong Song <yhs@fb.com>
-> Cc: <netdev@vger.kernel.org>
-> Cc: <bpf@vger.kernel.org>
-> ---
+On 10/02, Andrii Nakryiko wrote:
+> On Wed, Oct 2, 2019 at 6:43 PM Stanislav Fomichev <sdf@fomichev.me> wrote:
+> >
+> > On 10/02, Andrii Nakryiko wrote:
+> > > On Wed, Oct 2, 2019 at 10:35 AM Stanislav Fomichev <sdf@google.com> wrote:
+> > > >
+> > > > Always use init_net flow dissector BPF program if it's attached and fall
+> > > > back to the per-net namespace one. Also, deny installing new programs if
+> > > > there is already one attached to the root namespace.
+> > > > Users can still detach their BPF programs, but can't attach any
+> > > > new ones (-EPERM).
+> 
+> I find this quite confusing for users, honestly. If there is no root
+> namespace dissector we'll successfully attach per-net ones and they
+> will be working fine. That some process will attach root one and all
+> the previously successfully working ones will suddenly "break" without
+> users potentially not realizing why. I bet this will be hair-pulling
+> investigation for someone. Furthermore, if root net dissector is
+> already attached, all subsequent attachment will now start failing.
+The idea is that if sysadmin decides to use system-wide dissector it would
+be attached from the init scripts/systemd early in the boot process.
+So the users in your example would always get EPERM/EBUSY/EXIST.
+I don't really see a realistic use-case where root and non-root
+namespaces attach/detach flow dissector programs at non-boot
+time (or why non-root containers could have BPF dissector and root
+could have C dissector; multi-nic machine?).
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+But I totally see your point about confusion. See below.
 
->  kernel/bpf/cgroup.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-> index ddd8add..06a0657 100644
-> --- a/kernel/bpf/cgroup.c
-> +++ b/kernel/bpf/cgroup.c
-> @@ -180,8 +180,8 @@ static void activate_effective_progs(struct cgroup *cgrp,
->                                      enum bpf_attach_type type,
->                                      struct bpf_prog_array *old_array)
->  {
-> -       rcu_swap_protected(cgrp->bpf.effective[type], old_array,
-> -                          lockdep_is_held(&cgroup_mutex));
-> +       old_array = rcu_replace(cgrp->bpf.effective[type], old_array,
-> +                               lockdep_is_held(&cgroup_mutex));
->         /* free prog array after grace period, since __cgroup_bpf_run_*()
->          * might be still walking the array
->          */
-> --
-> 2.9.5
->
+> I'm not sure what's the better behavior here is, but maybe at least
+> forcibly detach already attached ones, so when someone goes and tries
+> to investigate, they will see that their BPF program is not attached
+> anymore. Printing dmesg warning would be hugely useful here as well.
+We can do for_each_net and detach non-root ones; that sounds
+feasible and may avoid the confusion (at least when you query
+non-root ns to see if the prog is still there, you get a valid
+indication that it's not).
+
+> Alternatively, if there is any per-net dissector attached, we might
+> disallow root net dissector to be installed. Sort of "too late to the
+> party" way, but at least not surprising to successfully installed
+> dissectors.
+We can do this as well.
+
+> Thoughts?
+Let me try to implement both of your suggestions and see which one makes
+more sense. I'm leaning towards the later (simple check to see if
+any non-root ns has the prog attached).
+
+I'll follow up with a v2 if all goes well.
+
+> > > > Cc: Petar Penkov <ppenkov@google.com>
+> > > > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> > > > ---
+> > > >  Documentation/bpf/prog_flow_dissector.rst |  3 +++
+> > > >  net/core/flow_dissector.c                 | 11 ++++++++++-
+> > > >  2 files changed, 13 insertions(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/Documentation/bpf/prog_flow_dissector.rst b/Documentation/bpf/prog_flow_dissector.rst
+> > > > index a78bf036cadd..4d86780ab0f1 100644
+> > > > --- a/Documentation/bpf/prog_flow_dissector.rst
+> > > > +++ b/Documentation/bpf/prog_flow_dissector.rst
+> > > > @@ -142,3 +142,6 @@ BPF flow dissector doesn't support exporting all the metadata that in-kernel
+> > > >  C-based implementation can export. Notable example is single VLAN (802.1Q)
+> > > >  and double VLAN (802.1AD) tags. Please refer to the ``struct bpf_flow_keys``
+> > > >  for a set of information that's currently can be exported from the BPF context.
+> > > > +
+> > > > +When BPF flow dissector is attached to the root network namespace (machine-wide
+> > > > +policy), users can't override it in their child network namespaces.
+> > > > diff --git a/net/core/flow_dissector.c b/net/core/flow_dissector.c
+> > > > index 7c09d87d3269..494e2016fe84 100644
+> > > > --- a/net/core/flow_dissector.c
+> > > > +++ b/net/core/flow_dissector.c
+> > > > @@ -115,6 +115,11 @@ int skb_flow_dissector_bpf_prog_attach(const union bpf_attr *attr,
+> > > >         struct bpf_prog *attached;
+> > > >         struct net *net;
+> > > >
+> > > > +       if (rcu_access_pointer(init_net.flow_dissector_prog)) {
+> > > > +               /* Can't override root flow dissector program */
+> > > > +               return -EPERM;
+> > > > +       }
+> > >
+> > > This is racy, shouldn't this be checked after grabbing a lock below?
+> > What kind of race do you have in mind?
+> 
+> I was thinking about the case of two competing attaches for root
+> init_net, but it seems like we will double-check again under lock, so
+> this is fine as is.
+> 
+> >
+> > Even if I put this check under the mutex, it's still possible that if
+> > two cpus concurrently start attaching flow dissector programs (i.e. call
+> > sys_bpf(BPF_PROG_ATTACH)) at the same time (one to root ns, the other
+> > to non-root ns), the cpu that is attaching to non-root can grab mutex first,
+> > pass all the checks and attach the prog (higher frequency, tubo boost, etc).
+> >
+> > The mutex is there to protect only against concurrent attaches to the
+> > _same_ netns. For the sake of simplicity we have a global one instead
+> > of a mutex per net-ns.
+> >
+> > So I'd rather not grab the mutex and keep it simple. Even in there is a
+> > race, in __skb_flow_dissect we always check init_net first.
+> >
+> > > > +
+> > > >         net = current->nsproxy->net_ns;
+> > > >         mutex_lock(&flow_dissector_mutex);
+> > > >         attached = rcu_dereference_protected(net->flow_dissector_prog,
+> > > > @@ -910,7 +915,11 @@ bool __skb_flow_dissect(const struct net *net,
+> > > >         WARN_ON_ONCE(!net);
+> > > >         if (net) {
+> > > >                 rcu_read_lock();
+> > > > -               attached = rcu_dereference(net->flow_dissector_prog);
+> > > > +               attached =
+> > > > +                       rcu_dereference(init_net.flow_dissector_prog);
+> > > > +
+> > > > +               if (!attached)
+> > > > +                       attached = rcu_dereference(net->flow_dissector_prog);
+> > > >
+> > > >                 if (attached) {
+> > > >                         struct bpf_flow_keys flow_keys;
+> > > > --
+> > > > 2.23.0.444.g18eeb5a265-goog
+> > > >
