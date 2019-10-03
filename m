@@ -2,111 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E3E28C9A31
-	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2019 10:44:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D6C7C9A40
+	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2019 10:53:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729181AbfJCIoE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Oct 2019 04:44:04 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:40124 "EHLO mx1.redhat.com"
+        id S1728761AbfJCIxq convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Thu, 3 Oct 2019 04:53:46 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:47938 "EHLO mx1.redhat.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728720AbfJCIoE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Oct 2019 04:44:04 -0400
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com [209.85.208.199])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1727357AbfJCIxq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Oct 2019 04:53:46 -0400
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id E805A89AC0
-        for <bpf@vger.kernel.org>; Thu,  3 Oct 2019 08:44:03 +0000 (UTC)
-Received: by mail-lj1-f199.google.com with SMTP id y12so614687ljc.8
-        for <bpf@vger.kernel.org>; Thu, 03 Oct 2019 01:44:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PzHNU38txAalUSBk1bXYsOjn6NQRGTI31cw8NynxL64=;
-        b=s8WEYxy/Q1ykX8tABL8xvXOP2dP91IxTLsjEHKgTkXmdsRPFtFYMOedAbA95te04aA
-         8qMXMsgLj2B4FFvyfHL3hsgDJAwamxjBF6yzySQj+NvtXqXvxmD6aUHRJAnd8ae1XLSy
-         iZ6+GROS4dWLy9BB64fjlt1fitG9lMwxur7OoK4HvxLd0vWAPUuuPL9mueQUwrKoNeFY
-         afie2aMQejqbF4tgb4JcDwmEXO8Wurajsg0ocqw3+Ohjk5Q5p6cud61ePpDuWg32D7B5
-         Mj7kNeD3o41xQOYVm23Y2xNEColLJfGGPHFF79SBqb6J7OgbfpwqAepCKUqqJTrcmeYZ
-         hpXw==
-X-Gm-Message-State: APjAAAXUbw8cWjcD0wUezZvvlULChUHPPwkn5DjSg0m3wTEzSp6tRsI4
-        bLISvLQqqP/Cv0v+czbpHcWZ/X8rjEUZV7XjDqlvJJZ3Cv6eVH7zeAWXenvp72gD0pmRCUc3O4T
-        nq7adOkfKW5+p
-X-Received: by 2002:ac2:554e:: with SMTP id l14mr5402763lfk.32.1570092242528;
-        Thu, 03 Oct 2019 01:44:02 -0700 (PDT)
-X-Google-Smtp-Source: APXvYqzymPFpuHFhKyn5oDKRe5DTDqE/dYm4jA2UMZk2t+bMfLInhNq6QEEiptCNN8oaPdEOGvNveQ==
-X-Received: by 2002:ac2:554e:: with SMTP id l14mr5402755lfk.32.1570092242360;
-        Thu, 03 Oct 2019 01:44:02 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a00:7660:6da:443::2])
-        by smtp.gmail.com with ESMTPSA id w30sm308525lfn.82.2019.10.03.01.44.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Oct 2019 01:44:01 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 4D69018063D; Thu,  3 Oct 2019 10:44:00 +0200 (CEST)
-From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     daniel@iogearbox.net, ast@fb.com
-Cc:     =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        andriin@fb.com, bpf@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH bpf-next] libbpf: Add cscope and TAGS targets to Makefile
-Date:   Thu,  3 Oct 2019 10:43:21 +0200
-Message-Id: <20191003084321.1431906-1-toke@redhat.com>
-X-Mailer: git-send-email 2.23.0
+        by mx1.redhat.com (Postfix) with ESMTPS id 7320E3090FD7;
+        Thu,  3 Oct 2019 08:53:45 +0000 (UTC)
+Received: from carbon (ovpn-200-24.brq.redhat.com [10.40.200.24])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5D4C85D6A9;
+        Thu,  3 Oct 2019 08:53:36 +0000 (UTC)
+Date:   Thu, 3 Oct 2019 10:53:35 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>
+Cc:     Song Liu <songliubraving@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>, Martin Lau <kafai@fb.com>,
+        Yonghong Song <yhs@fb.com>,
+        Marek Majkowski <marek@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        David Miller <davem@davemloft.net>,
+        "netdev\@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf\@vger.kernel.org" <bpf@vger.kernel.org>, brouer@redhat.com
+Subject: Re: [PATCH bpf-next 0/9] xdp: Support multiple programs on a single
+ interface through chain calls
+Message-ID: <20191003105335.3cc65226@carbon>
+In-Reply-To: <87r23vq79z.fsf@toke.dk>
+References: <157002302448.1302756.5727756706334050763.stgit@alrua-x1>
+        <E7319D69-6450-4BC3-97B1-134B420298FF@fb.com>
+        <A754440E-07BF-4CF4-8F15-C41179DCECEF@fb.com>
+        <87r23vq79z.fsf@toke.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 8BIT
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.43]); Thu, 03 Oct 2019 08:53:45 +0000 (UTC)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Using cscope and/or TAGS files for navigating the source code is useful.
-Add simple targets to the Makefile to generate the index files for both
-tools.
+On Wed, 02 Oct 2019 21:25:28 +0200
+Toke Høiland-Jørgensen <toke@redhat.com> wrote:
 
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
----
- tools/lib/bpf/.gitignore |  2 ++
- tools/lib/bpf/Makefile   | 10 +++++++++-
- 2 files changed, 11 insertions(+), 1 deletion(-)
+> Song Liu <songliubraving@fb.com> writes:
+> 
+> >> On Oct 2, 2019, at 11:38 AM, Song Liu <songliubraving@fb.com> wrote:
+> >>   
+> >>> On Oct 2, 2019, at 6:30 AM, Toke Høiland-Jørgensen <toke@redhat.com> wrote:
+> >>> 
+> >>> This series adds support for executing multiple XDP programs on a single
+> >>> interface in sequence, through the use of chain calls, as discussed at the Linux
+> >>> Plumbers Conference last month:
+> >>>
 
-diff --git a/tools/lib/bpf/.gitignore b/tools/lib/bpf/.gitignore
-index d9e9dec04605..c1057c01223e 100644
---- a/tools/lib/bpf/.gitignore
-+++ b/tools/lib/bpf/.gitignore
-@@ -3,3 +3,5 @@ libbpf.pc
- FEATURE-DUMP.libbpf
- test_libbpf
- libbpf.so.*
-+TAGS
-+cscope.*
-diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
-index c6f94cffe06e..57df6b933196 100644
---- a/tools/lib/bpf/Makefile
-+++ b/tools/lib/bpf/Makefile
-@@ -262,7 +262,7 @@ clean:
+[1] https://linuxplumbersconf.org/event/4/contributions/460/
+- [2] Slides: http://people.netfilter.org/hawk/presentations/LinuxPlumbers2019/xdp-distro-view.pdf
+- [3] Source: https://github.com/xdp-project/xdp-project/tree/master/conference/LinuxPlumbers2019
  
+[...]
+> >
+> > Also, could you please share a real word example? I saw the example
+> > from LPC slides, but I am more curious about what does each program do
+> > in real use cases.  
+> 
+> The only concrete program that I have that needs this is xdpcap:
+> https://github.com/cloudflare/xdpcap
+> 
+> Right now that needs to be integrated into the calling program to work;
+> I want to write a tool like it, but that can insert itself before or
+> after arbitrary XDP programs.
+
+The other real world use-case it Facebooks katran, you should be aware:
+ https://github.com/facebookincubator/katran
+
+It might be important to understand that the patchset/intent is a hybrid
+that satisfy both xdpcap ([2] slide-26) and katran ([2] slide-27), see
+later slides how this is done. Notice there a requirement is that users
+don't (need to) modify the BPF ELF file, to make it cooperate with this
+system.
+
+The katran use-case is to chain several eBPF programs.
+
+The xdpcap use-case is to trap any XDP return action code (and tcpdump
+via perf event ring_buffer).  For system administrators the xdpcap
+use-case is something we hear about all the time, so one of the missing
+features for XDP.  As Toke also wrote, we want to extend this to ALSO
+be-able to see/dump the packet BEFORE a given XDP program.
+
+
+> Lorenz, can you say more about your use case? :)
+
+AFAIK Cloudflare also have a chaining eBPF program use-case for XDP.  I
+could not find the blog post.
  
- 
--PHONY += force elfdep bpfdep
-+PHONY += force elfdep bpfdep cscope TAGS
- force:
- 
- elfdep:
-@@ -271,6 +271,14 @@ elfdep:
- bpfdep:
- 	@if [ "$(feature-bpf)" != "1" ]; then echo "BPF API too old"; exit 1 ; fi
- 
-+cscope:
-+	(echo \-k; echo \-q; for f in *.c *.h; do echo $$f; done) > cscope.files
-+	cscope -b -f cscope.out
-+
-+TAGS:
-+	rm -f TAGS
-+	echo *.c *.h | xargs etags -a
-+
- # Declare the contents of the .PHONY variable as phony.  We keep that
- # information in a variable so we can use it in if_changed and friends.
- .PHONY: $(PHONY)
 -- 
-2.23.0
-
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
