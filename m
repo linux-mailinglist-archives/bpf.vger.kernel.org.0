@@ -2,114 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ABE85CA0D9
-	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2019 17:02:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39750CA0D6
+	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2019 17:01:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727127AbfJCPCr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Oct 2019 11:02:47 -0400
-Received: from dispatchb-us1.ppe-hosted.com ([148.163.129.53]:49232 "EHLO
-        dispatchb-us1.ppe-hosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725874AbfJCPCq (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 3 Oct 2019 11:02:46 -0400
-X-Greylist: delayed 511 seconds by postgrey-1.27 at vger.kernel.org; Thu, 03 Oct 2019 11:02:46 EDT
-Received: from dispatchb-us1.ppe-hosted.com (localhost.localdomain [127.0.0.1])
-        by dispatchb-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTP id 36A5749353
-        for <bpf@vger.kernel.org>; Thu,  3 Oct 2019 14:54:16 +0000 (UTC)
-X-Virus-Scanned: Proofpoint Essentials engine
-Received: from webmail.solarflare.com (webmail.solarflare.com [12.187.104.26])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1-us2.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTPS id EF9DA68007A;
-        Thu,  3 Oct 2019 14:54:13 +0000 (UTC)
-Received: from [10.17.20.203] (10.17.20.203) by ocex03.SolarFlarecom.com
- (10.20.40.36) with Microsoft SMTP Server (TLS) id 15.0.1395.4; Thu, 3 Oct
- 2019 07:53:52 -0700
-Subject: Re: [PATCH bpf-next 0/9] xdp: Support multiple programs on a single
- interface through chain calls
-To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        "Alexei Starovoitov" <alexei.starovoitov@gmail.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-CC:     Song Liu <songliubraving@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>, Martin Lau <kafai@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        Marek Majkowski <marek@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        David Miller <davem@davemloft.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-References: <157002302448.1302756.5727756706334050763.stgit@alrua-x1>
- <E7319D69-6450-4BC3-97B1-134B420298FF@fb.com>
- <A754440E-07BF-4CF4-8F15-C41179DCECEF@fb.com> <87r23vq79z.fsf@toke.dk>
- <20191003105335.3cc65226@carbon>
- <CAADnVQKTbaxJhkukxXM7Ue7=kA9eWsGMpnkXc=Z8O3iWGSaO0A@mail.gmail.com>
- <87pnjdq4pi.fsf@toke.dk>
-From:   Edward Cree <ecree@solarflare.com>
-Message-ID: <1c9b72f9-1b61-d89a-49a4-e0b8eead853d@solarflare.com>
-Date:   Thu, 3 Oct 2019 15:53:50 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S1729688AbfJCPBB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Oct 2019 11:01:01 -0400
+Received: from www62.your-server.de ([213.133.104.62]:39862 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727326AbfJCPBB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Oct 2019 11:01:01 -0400
+Received: from 57.248.197.178.dynamic.dsl-lte-bonding.zhbmb00p-msn.res.cust.swisscom.ch ([178.197.248.57] helo=localhost)
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1iG2b9-0001c2-3b; Thu, 03 Oct 2019 17:00:55 +0200
+Date:   Thu, 3 Oct 2019 17:00:54 +0200
+From:   Daniel Borkmann <daniel@iogearbox.net>
+To:     Magnus Karlsson <magnus.karlsson@intel.com>
+Cc:     bjorn.topel@intel.com, ast@kernel.org, netdev@vger.kernel.org,
+        jonathan.lemon@gmail.com, bpf@vger.kernel.org
+Subject: Re: [PATCH bpf v2] xsk: fix crash in poll when device does not
+ support ndo_xsk_wakeup
+Message-ID: <20191003150054.GD9196@pc-66.home>
+References: <1569997919-11541-1-git-send-email-magnus.karlsson@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <87pnjdq4pi.fsf@toke.dk>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Content-Language: en-GB
-X-Originating-IP: [10.17.20.203]
-X-TM-AS-Product-Ver: SMEX-12.5.0.1300-8.5.1010-24950.005
-X-TM-AS-Result: No-3.444600-4.000000-10
-X-TMASE-MatchedRID: hls5oAVArl/mLzc6AOD8DfHkpkyUphL9NACXtweanwblhO+RZsN0Zor+
-        gPD/6bb5/nY12zbSW7Xh7WGk9eqElxMNizWX5cxi6OX7GFz9H1BGI9Mwxz8yaU8iLpubparm9Fb
-        T0eFjvVY8trUk/Qn8GTleqRRlTHCdG7B2FtuHETsW8Al79bnAD/bXnlulH5Mg4PdcWsl+C/OMvr
-        NL543EbgO3JVTdl8ePVIKZ9Pa/e17epncDgUbx3crLV1iI5YuZggDXESKHmTB+SLLtNOiBhkiO7
-        +wNDdeYCqRokEHAs+3Y6rPzrnouFKPFjJEFr+olSXhbxZVQ5H/3FLeZXNZS4IzHo47z5Aa+5XAN
-        8XFPmLn6ddQOm9Ik4J5glh4dZkrTAkfsSKHIw54MZCPlreuC10Wjf9EYkbqbj3rykoe+mOG9w8J
-        o/nuKXT/IVSD45lqQ1DXsKeBNv04EqZlWBkJWd7MZNZFdSWvHG2wlTHLNY1JWXGvUUmKP2w==
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--3.444600-4.000000
-X-TMASE-Version: SMEX-12.5.0.1300-8.5.1010-24950.005
-X-MDID: 1570114455-tqQeZUSOc4Xy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1569997919-11541-1-git-send-email-magnus.karlsson@intel.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.101.4/25591/Thu Oct  3 10:30:38 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 03/10/2019 15:33, Toke Høiland-Jørgensen wrote:
-> In all cases, the sysadmin can't (or doesn't want to) modify any of the
-> XDP programs. In fact, they may just be installed as pre-compiled .so
-> BPF files on his system. So he needs to be able to configure the call
-> chain of different programs without modifying the eBPF program source
-> code.
-Perhaps I'm being dumb, but can't we solve this if we make linking work?
-I.e. myIDS.so has ids_main() function, myFirewall.so has firewall()
- function, and sysadmin writes a little XDP prog to call these:
+On Wed, Oct 02, 2019 at 08:31:59AM +0200, Magnus Karlsson wrote:
+> Fixes a crash in poll() when an AF_XDP socket is opened in copy mode
+> and the bound device does not have ndo_xsk_wakeup defined. Avoid
+> trying to call the non-existing ndo and instead call the internal xsk
+> sendmsg function to send packets in the same way (from the
+> application's point of view) as calling sendmsg() in any mode or
+> poll() in zero-copy mode would have done. The application should
+> behave in the same way independent on if zero-copy mode or copy mode
+> is used.
+> 
+> Fixes: 77cd0d7b3f25 ("xsk: add support for need_wakeup flag in AF_XDP rings")
+> Reported-by: syzbot+a5765ed8cdb1cca4d249@syzkaller.appspotmail.com
+> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
 
-int main(struct xdp_md *ctx)
-{
-        int rc = firewall(ctx), rc2;
+Applied, thanks!
 
-        switch(rc) {
-        case XDP_DROP:
-        case XDP_ABORTED:
-        default:
-                return rc;
-        case XDP_PASS:
-                return ids_main(ctx);
-        case XDP_TX:
-        case XDP_REDIRECT:
-                rc2 = ids_main(ctx);
-                if (rc2 == XDP_PASS)
-                        return rc;
-                return rc2;
-        }
-}
+[...]
+> +static int xsk_generic_xmit(struct sock *sk)
+>  {
+> -	u32 max_batch = TX_BATCH_SIZE;
+>  	struct xdp_sock *xs = xdp_sk(sk);
+> +	u32 max_batch = TX_BATCH_SIZE;
+>  	bool sent_frame = false;
+>  	struct xdp_desc desc;
+>  	struct sk_buff *skb;
+> @@ -394,6 +392,18 @@ static int xsk_generic_xmit(struct sock *sk, struct msghdr *m,
+>  	return err;
+>  }
+>  
+> +static int __xsk_sendmsg(struct sock *sk)
 
-Now he compiles this and links it against those .so files, giving him
- a new object file which he can then install.
+Bit unclear why you don't just pass xs directly in here from both call
+sites ...
 
-(One problem which does spring to mind is that the .so files may very
- inconsiderately both name their entry points main(), which makes
- linking against both of them rather challenging.  But I think that
- can be worked around with a sufficiently clever linker).
+> +{
+> +	struct xdp_sock *xs = xdp_sk(sk);
+> +
+> +	if (unlikely(!(xs->dev->flags & IFF_UP)))
+> +		return -ENETDOWN;
+> +	if (unlikely(!xs->tx))
+> +		return -ENOBUFS;
+> +
+> +	return xs->zc ? xsk_zc_xmit(xs) : xsk_generic_xmit(sk);
 
--Ed
+... and for the xsk_generic_xmit() pass in &xs->sk. Presumably generated
+code should be the same, but maybe small cleanup for next batch of AF_XDP
+patches.
+
+> +}
+> +
+>  static int xsk_sendmsg(struct socket *sock, struct msghdr *m, size_t total_len)
+>  {
+>  	bool need_wait = !(m->msg_flags & MSG_DONTWAIT);
+> @@ -402,21 +412,18 @@ static int xsk_sendmsg(struct socket *sock, struct msghdr *m, size_t total_len)
+>  
+>  	if (unlikely(!xsk_is_bound(xs)))
+>  		return -ENXIO;
+> -	if (unlikely(!(xs->dev->flags & IFF_UP)))
+> -		return -ENETDOWN;
+> -	if (unlikely(!xs->tx))
+> -		return -ENOBUFS;
+> -	if (need_wait)
+> +	if (unlikely(need_wait))
+>  		return -EOPNOTSUPP;
+>  
+> -	return (xs->zc) ? xsk_zc_xmit(sk) : xsk_generic_xmit(sk, m, total_len);
+> +	return __xsk_sendmsg(sk);
+>  }
+
+Thanks,
+Daniel
