@@ -2,167 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BFC9CC96CE
-	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2019 04:47:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32999C981A
+	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2019 08:12:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726116AbfJCCrQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Oct 2019 22:47:16 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:39409 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725860AbfJCCrP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Oct 2019 22:47:15 -0400
-Received: by mail-qt1-f196.google.com with SMTP id n7so1537758qtb.6;
-        Wed, 02 Oct 2019 19:47:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pwuUcNwfLJmUgbZ/recv15iJIKnaqtwVcxZNVlHAusM=;
-        b=SFdiQuMkLMDgzmTsFkdjyQpAJA1OncM+bCGdNgL87KgxsjXwbTswp23HxyfKoNkDJA
-         V3fN2i7kUHv0tbr5FhiIHHYf7CzfvEMF+78wtk5X8nK/iyeOLc052vKdK7iipzhDMxMV
-         qxXHDiLSpZgUunLTRhucPzHEf0iEuV4/EQzrs+jRymBJ7YREKTMkaKiy/R5fs/kBd4rT
-         VrRDRmE2xsFldO/1YVN/tM+TuzbezIqtuaKvel8zPDL2EJGg3tg9mPjAcwBITVeOK/2+
-         ZkGHe1nIZ/n9JQ70mgKqyXdG8K8uZesVQTxyXfT0igB4SiPTXM6YqoYNo/PET6I5x2jG
-         I76Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pwuUcNwfLJmUgbZ/recv15iJIKnaqtwVcxZNVlHAusM=;
-        b=rAP/jRyhclKtUjnFQ9Eqw3ljpI37QusUxsy1apBvCVLUpINYQAEBwgMifvqtuF3Do2
-         pNRc/ftDQevGHs4lDi/knALo7hAhDg+pl5tdLjjVOg726XPU9votdc246KZA/SHVtMab
-         9hyKpgp4J6ckl2t8bwtxvwMmQtydK/O3FsZn5YYoYzAzdh/HofGRua/vzLgKwmrJFlOb
-         CBvXZySTchs2f4DPQT0/enAUS5c5qU/1rtmWp7e5k7Ezj7yR2TbFM9LeYpYHl+HEzMM9
-         KlUYMVv4AG9Ut7APqEgLAVd0MwlGKMiTEr818GXukC11McKyVKH6xVDBWtVIln3V0FnQ
-         UYAg==
-X-Gm-Message-State: APjAAAVknFQnLbsbjSq3xvtJDr7krL7Klc9m3JNiZ5Cu8HaDMwecsgRm
-        jh6OSlSZ+B+To1ble8CoCYygDOouh9Av6wBp3B4=
-X-Google-Smtp-Source: APXvYqxmyENdypIbJ63XmK5BNaVqUpjtljOeo7js/viCjXq4h0DBsm8b/JwaE5HJrKZHaa02WW3xMNQUYnD8LRC8k3A=
-X-Received: by 2002:a0c:d284:: with SMTP id q4mr6318864qvh.228.1570070834025;
- Wed, 02 Oct 2019 19:47:14 -0700 (PDT)
-MIME-Version: 1.0
-References: <20191002173357.253643-1-sdf@google.com> <20191002173357.253643-2-sdf@google.com>
- <CAEf4BzZuEChOL828F91wLxUr3h2yfAkZvhsyoSx18uSFSxOtqw@mail.gmail.com> <20191003014356.GC3223377@mini-arch>
-In-Reply-To: <20191003014356.GC3223377@mini-arch>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 2 Oct 2019 19:47:02 -0700
-Message-ID: <CAEf4BzZnWkdFpSUsSBenDDfrvgjGvBxUnJmQRwb7xjNQBaKXdQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf/flow_dissector: add mode to enforce
- global BPF flow dissector
-To:     Stanislav Fomichev <sdf@fomichev.me>
-Cc:     Stanislav Fomichev <sdf@google.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
+        id S1727254AbfJCGMM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Oct 2019 02:12:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50200 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725827AbfJCGMM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Oct 2019 02:12:12 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EE1E8218DE;
+        Thu,  3 Oct 2019 06:12:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1570083130;
+        bh=zRHusEA2BntUs+MDIOwiuECq1YylGT8PDqdzAmwXlD4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=gzSkKBe/43chnA5H13prqsUsTOef7QJk2iUur210cq9Qffl69CHshAUgRp+nglnHj
+         /M5rcOBc0JBKOlUGkZ7BzoUNyN7w15FdLBiIJQYcn2HUr/oGiiEQuY/W211S+3H1v+
+         8hjtNiDG6enNBj+Wn32+H+2psTwBma1PeG7ee6ZY=
+Date:   Thu, 3 Oct 2019 15:12:04 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Andy Lutomirski <luto@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        James Morris <jmorris@namei.org>, Jann Horn <jannh@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Petar Penkov <ppenkov@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, kernel-team <kernel-team@fb.com>,
+        Linux API <linux-api@vger.kernel.org>
+Subject: Re: [PATCH bpf-next] bpf, capabilities: introduce CAP_BPF
+Message-Id: <20191003151204.5857bb24245f9c3355f27e0d@kernel.org>
+In-Reply-To: <201909301129.5A1129C@keescook>
+References: <20190827205213.456318-1-ast@kernel.org>
+        <CALCETrV8iJv9+Ai11_1_r6MapPhhwt9hjxi=6EoixytabTScqg@mail.gmail.com>
+        <20190828003447.htgzsxs5oevn3eys@ast-mbp.dhcp.thefacebook.com>
+        <CALCETrVbPPPr=BdPAx=tJKxD3oLXP4OVSgCYrB_E4vb6idELow@mail.gmail.com>
+        <20190828044340.zeha3k3cmmxgfqj7@ast-mbp.dhcp.thefacebook.com>
+        <CALCETrW1o+Lazi2Ng6b9JN6jeJffgdW9f3HvqYhNo4TpHRXW=g@mail.gmail.com>
+        <20190828225512.q6qbvkdiqih2iewk@ast-mbp.dhcp.thefacebook.com>
+        <DA52992F-4862-4945-8482-FE619A04C753@amacapital.net>
+        <20190829040721.ef6rumbaunkavyrr@ast-mbp.dhcp.thefacebook.com>
+        <20190928193727.1769e90c@oasis.local.home>
+        <201909301129.5A1129C@keescook>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-2022-JP
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 2, 2019 at 6:43 PM Stanislav Fomichev <sdf@fomichev.me> wrote:
->
-> On 10/02, Andrii Nakryiko wrote:
-> > On Wed, Oct 2, 2019 at 10:35 AM Stanislav Fomichev <sdf@google.com> wrote:
-> > >
-> > > Always use init_net flow dissector BPF program if it's attached and fall
-> > > back to the per-net namespace one. Also, deny installing new programs if
-> > > there is already one attached to the root namespace.
-> > > Users can still detach their BPF programs, but can't attach any
-> > > new ones (-EPERM).
+On Mon, 30 Sep 2019 11:31:29 -0700
+Kees Cook <keescook@chromium.org> wrote:
 
-I find this quite confusing for users, honestly. If there is no root
-namespace dissector we'll successfully attach per-net ones and they
-will be working fine. That some process will attach root one and all
-the previously successfully working ones will suddenly "break" without
-users potentially not realizing why. I bet this will be hair-pulling
-investigation for someone. Furthermore, if root net dissector is
-already attached, all subsequent attachment will now start failing.
+> On Sat, Sep 28, 2019 at 07:37:27PM -0400, Steven Rostedt wrote:
+> > On Wed, 28 Aug 2019 21:07:24 -0700
+> > Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> > > > 
+> > > > This won’t make me much more comfortable, since CAP_BPF lets it do an ever-growing set of nasty things. I’d much rather one or both of two things happen:
+> > > > 
+> > > > 1. Give it CAP_TRACING only. It can leak my data, but it’s rather hard for it to crash my laptop, lose data, or cause other shenanigans.
+> > > > 
+> > > > 2. Improve it a bit do all the privileged ops are wrapped by capset().
+> > > > 
+> > > > Does this make sense?  I’m a security person on occasion. I find
+> > > > vulnerabilities and exploit them deliberately and I break things by
+> > > > accident on a regular basis. In my considered opinion, CAP_TRACING
+> > > > alone, even extended to cover part of BPF as I’ve described, is
+> > > > decently safe. Getting root with just CAP_TRACING will be decently
+> > > > challenging, especially if I don’t get to read things like sshd’s
+> > > > memory, and improvements to mitigate even that could be added.  I
+> > > > am quite confident that attacks starting with CAP_TRACING will have
+> > > > clear audit signatures if auditing is on.  I am also confident that
+> > > > CAP_BPF *will* allow DoS and likely privilege escalation, and this
+> > > > will only get more likely as BPF gets more widely used. And, if
+> > > > BPF-based auditing ever becomes a thing, writing to the audit
+> > > > daemon’s maps will be a great way to cover one’s tracks.  
+> > > 
+> > > CAP_TRACING, as I'm proposing it, will allow full tracefs access.
+> > > I think Steven and Massami prefer that as well.
+> > > That includes kprobe with probe_kernel_read.
+> > > That also means mini-DoS by installing kprobes everywhere or running
+> > > too much ftrace.
+> > 
+> > I was talking with Kees at Plumbers about this, and we were talking
+> > about just using simple file permissions. I started playing with some
+> > patches to allow the tracefs be visible but by default it would only be
+> > visible by root.
+> > 
+> >  rwx------
+> > 
+> > Then a start up script (or perhaps mount options) could change the
+> > group owner, and change this to:
+> > 
+> >  rwxrwx---
+> > 
+> > Where anyone in the group assigned (say "tracing") gets full access to
+> > the file system.
 
-I'm not sure what's the better behavior here is, but maybe at least
-forcibly detach already attached ones, so when someone goes and tries
-to investigate, they will see that their BPF program is not attached
-anymore. Printing dmesg warning would be hugely useful here as well.
+Does it for "all" files under tracefs?
 
-Alternatively, if there is any per-net dissector attached, we might
-disallow root net dissector to be installed. Sort of "too late to the
-party" way, but at least not surprising to successfully installed
-dissectors.
+> > 
+> > The more I was playing with this, the less I see the need for
+> > CAP_TRACING for ftrace and reading the format files.
+> 
+> Nice! Thanks for playing with this. I like it because it gives us a way
+> to push policy into userspace (group membership, etc), and provides a
+> clean way (hopefully) do separate "read" (kernel memory confidentiality)
+> from "write" (kernel memory integrity), which wouldn't have been possible
+> with a single new CAP_...
 
-Thoughts?
+ From the confidentiality point of view, if tracefs exposes traced data,
+it might include in-kernel pointer and symbols, but the user still can't
+see /proc/kallsyms. This means we still have several different confidentiality
+for each interface.
 
-> > >
-> > > Cc: Petar Penkov <ppenkov@google.com>
-> > > Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> > > ---
-> > >  Documentation/bpf/prog_flow_dissector.rst |  3 +++
-> > >  net/core/flow_dissector.c                 | 11 ++++++++++-
-> > >  2 files changed, 13 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/Documentation/bpf/prog_flow_dissector.rst b/Documentation/bpf/prog_flow_dissector.rst
-> > > index a78bf036cadd..4d86780ab0f1 100644
-> > > --- a/Documentation/bpf/prog_flow_dissector.rst
-> > > +++ b/Documentation/bpf/prog_flow_dissector.rst
-> > > @@ -142,3 +142,6 @@ BPF flow dissector doesn't support exporting all the metadata that in-kernel
-> > >  C-based implementation can export. Notable example is single VLAN (802.1Q)
-> > >  and double VLAN (802.1AD) tags. Please refer to the ``struct bpf_flow_keys``
-> > >  for a set of information that's currently can be exported from the BPF context.
-> > > +
-> > > +When BPF flow dissector is attached to the root network namespace (machine-wide
-> > > +policy), users can't override it in their child network namespaces.
-> > > diff --git a/net/core/flow_dissector.c b/net/core/flow_dissector.c
-> > > index 7c09d87d3269..494e2016fe84 100644
-> > > --- a/net/core/flow_dissector.c
-> > > +++ b/net/core/flow_dissector.c
-> > > @@ -115,6 +115,11 @@ int skb_flow_dissector_bpf_prog_attach(const union bpf_attr *attr,
-> > >         struct bpf_prog *attached;
-> > >         struct net *net;
-> > >
-> > > +       if (rcu_access_pointer(init_net.flow_dissector_prog)) {
-> > > +               /* Can't override root flow dissector program */
-> > > +               return -EPERM;
-> > > +       }
-> >
-> > This is racy, shouldn't this be checked after grabbing a lock below?
-> What kind of race do you have in mind?
+Anyway, adding a tracefs mount option for allowing a user group to access
+event format data will be a good idea. But even though, I  think we still
+need the CAP_TRACING for allowing control of intrusive tracing, like kprobes
+and bpf etc. (Or, do we keep those for CAP_SYS_ADMIN??)
 
-I was thinking about the case of two competing attaches for root
-init_net, but it seems like we will double-check again under lock, so
-this is fine as is.
+BTW, should we request CAP_SYS_PTRACE for ftrace uprobe interface too?
+It might break any user-space program (including init) if user puts a
+probe on a wrong address (e.g. non instruction boundary on x86).
 
->
-> Even if I put this check under the mutex, it's still possible that if
-> two cpus concurrently start attaching flow dissector programs (i.e. call
-> sys_bpf(BPF_PROG_ATTACH)) at the same time (one to root ns, the other
-> to non-root ns), the cpu that is attaching to non-root can grab mutex first,
-> pass all the checks and attach the prog (higher frequency, tubo boost, etc).
->
-> The mutex is there to protect only against concurrent attaches to the
-> _same_ netns. For the sake of simplicity we have a global one instead
-> of a mutex per net-ns.
->
-> So I'd rather not grab the mutex and keep it simple. Even in there is a
-> race, in __skb_flow_dissect we always check init_net first.
->
-> > > +
-> > >         net = current->nsproxy->net_ns;
-> > >         mutex_lock(&flow_dissector_mutex);
-> > >         attached = rcu_dereference_protected(net->flow_dissector_prog,
-> > > @@ -910,7 +915,11 @@ bool __skb_flow_dissect(const struct net *net,
-> > >         WARN_ON_ONCE(!net);
-> > >         if (net) {
-> > >                 rcu_read_lock();
-> > > -               attached = rcu_dereference(net->flow_dissector_prog);
-> > > +               attached =
-> > > +                       rcu_dereference(init_net.flow_dissector_prog);
-> > > +
-> > > +               if (!attached)
-> > > +                       attached = rcu_dereference(net->flow_dissector_prog);
-> > >
-> > >                 if (attached) {
-> > >                         struct bpf_flow_keys flow_keys;
-> > > --
-> > > 2.23.0.444.g18eeb5a265-goog
-> > >
+Thank you,
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
