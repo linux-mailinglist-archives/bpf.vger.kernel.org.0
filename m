@@ -2,155 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D823BCAAFF
-	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2019 19:27:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6FEECAB66
+	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2019 19:27:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390505AbfJCRQn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Oct 2019 13:16:43 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:41575 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389869AbfJCRQn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Oct 2019 13:16:43 -0400
-Received: by mail-qt1-f196.google.com with SMTP id d16so4634707qtq.8;
-        Thu, 03 Oct 2019 10:16:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=JYtDMQDuVwNG8RqJRwPjaq6fFD8Re73+f293ZD4Wuu8=;
-        b=X65WtpVrZDIrxBVNWICeND5pIWhjgoOYVvKncTm9QbFMbaL5r9hckYjcpXRgaPZyLa
-         JqVw0XcKNXHml026LmzXPcsIEPtG4rXqZfHLJjgs49cVhrcGQgSqwxy+LDiYM7y+i4yE
-         786uxyRDJrbFAP9ghhzYguh/0Y5piaG2/PSQNcWIca3qCXgC+6q7ZMRpDEmju0CCvmKH
-         oo3NXQQwgJUvelIATdto/0clFKpv3DPDhBTl8nxsogTCraf/qBTXyC8o7uiAY5uoMSYM
-         TTTpylbrrqyI29KMsdxcB4U+boLAjZq0C50zSlNzh5noBPAUZPBFlfqsL2502R7iQHde
-         v3bw==
+        id S2389405AbfJCRVI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Oct 2019 13:21:08 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:22242 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2389421AbfJCRVH (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 3 Oct 2019 13:21:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1570123266;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Z7rXGAQSbiGa4/7Bkctjr6dl8SSz5zO8pwOGZPcMe1w=;
+        b=QN1UGe28ocRTI/3XboKP84GZCpvWUqeja4IGFpzYB3gx9Y9Um4l62cyotb+N2NkN0Kgt1f
+        fJuC8MfaBN4jkJe/jeVj+BNwhQ9A0+YmZFVY5ULMXNutA2EemUwIRbNK7DKL+2IM20JIOh
+        nLp9ET9nI3Alv1VTW7MDWzlsZT4k998=
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
+ [209.85.208.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-227-YIQgiriSMA6VnjMSmVHHIg-1; Thu, 03 Oct 2019 13:21:04 -0400
+Received: by mail-lj1-f199.google.com with SMTP id r22so1068793ljg.15
+        for <bpf@vger.kernel.org>; Thu, 03 Oct 2019 10:21:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=JYtDMQDuVwNG8RqJRwPjaq6fFD8Re73+f293ZD4Wuu8=;
-        b=BFDdWZOCLQ21AvalC4owxB4JfQtAL7cnTPIGQBKxRKYYxREuwL88wlz+nyWquAn45d
-         agLAejxCW2ifUhtKt7oXElxG8wRtpK8S5G8ljZN+QRW4hMNaWW29rjfnVuNheSFJGhLi
-         PhpmJt3ZGYQ5EPHmFlxWNJQjKV8nza6nUIcW6f/bt5LWLgIxKjFItRhNXrfasGfUHiVZ
-         +o7a9wQ3iowbcHV4bb4Q3HH3ODjcgnpAd8oOaU6ExfnKzhoSP9L93hHorSBNnL+MzcxR
-         l6ri/v9xFRUu7wCTjySc6uyLGTZCcSHG4ZDS8UGoBwAN8ZMC9WR2dQwtaopY7mkqPILr
-         5EaQ==
-X-Gm-Message-State: APjAAAUXuKF7bGCxxgNlq04B9eYcL41/OQCx3ycN/2olUg2jkJNFmT8s
-        3y7CGl8GVBwfGXxCGl+VmuUCj9aOrZxnRP8Xqh7RxMS9Cq8=
-X-Google-Smtp-Source: APXvYqzriFgfsaOb+zMayUMrzzyhk7sKU1aDErcpfzuTPS3JYASAuhxXYTY9J0+rlPuyNmp6vaxcjnhpvJTRRKRaAKw=
-X-Received: by 2002:ad4:4649:: with SMTP id y9mr6155437qvv.247.1570123002156;
- Thu, 03 Oct 2019 10:16:42 -0700 (PDT)
-MIME-Version: 1.0
-References: <20191001101429.24965-1-bjorn.topel@gmail.com> <CAK7LNATNw4Qysj1Q2dXd4PALfbtgMXPwgvmW=g0dRcrczGW-Fg@mail.gmail.com>
- <CAJ+HfNgvxornSfqnbAthNy6u6=-enGCdA8K1e6rLXhCzGgmONQ@mail.gmail.com>
- <CAK7LNATD4vCQnNsHXP8A2cyWDkCNX=LGh0ej-dkDajm-+Lfw8Q@mail.gmail.com>
- <CAJ+HfNgem7ijzQkz7BU-Z_A-CqWXY_uMF6_p0tGZ6eUMx_N3QQ@mail.gmail.com>
- <20191002231448.GA10649@khorivan> <CAJ+HfNiCrcVDwQw4nxsntnTSy2pUgV2n6pW206==hUmq1=ZUTA@mail.gmail.com>
- <CAK7LNARd4_o4E=TSONZjJ9iyyeUE1=L_njU7LiEZFpNunSEEkw@mail.gmail.com> <CAJ+HfNhx+gQmRMb18UDRrmzciDYUbdezUh9bRhWG8_HTUCLk9w@mail.gmail.com>
-In-Reply-To: <CAJ+HfNhx+gQmRMb18UDRrmzciDYUbdezUh9bRhWG8_HTUCLk9w@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 3 Oct 2019 10:16:31 -0700
-Message-ID: <CAEf4BzbZxa3iGZEWB03rdL+7ErmhdpB0e3aeOQvbLPu0o8XFqw@mail.gmail.com>
-Subject: Re: [PATCH bpf] samples/bpf: kbuild: add CONFIG_SAMPLE_BPF Kconfig
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Cc:     Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=Z7rXGAQSbiGa4/7Bkctjr6dl8SSz5zO8pwOGZPcMe1w=;
+        b=JHatrsNQd4CxqIOmTO7MbKC6n6p47f8pN3YW/jUeoQyZiMRFnw3rfDncRE5mEXHZ1H
+         kvUKrW0lOde8Dwjx71BhPojQyYFGdDFM2HPJHlnhpOu45WMuz0W6lA5WT+qol3qZgbQp
+         1V9olKn0lq4cPXMxDCwLhXyC/PWk4GV719RHa3OHAazpcmi/c3CxMeJVtquGbYMGPC8H
+         OFPs9kTo+4Q2eO8uWFDzygdlglBph/TXtogcYwpsRBiWagnucN6/ckA1A3ZjhXxFDJSY
+         vbNX5KOoaTWNYcY3PLvCBzf165HAWFutQLVsuwPX1sVANqcu/SDuJUVeC9Gr0X0nCd09
+         zPaQ==
+X-Gm-Message-State: APjAAAVVpLcEWGPHxb3GVN/QxX72BhW65wDDB52b/x9adh+uw9267X6i
+        by8voe72ZzALzax3uFhbtfm4byCZkMPHUrFaq/kSi12dfWttDn8kpQOb3R6GEm1+4Zp+86pma+b
+        n9FgUcSXde3Y6
+X-Received: by 2002:a2e:301a:: with SMTP id w26mr6813889ljw.168.1570123262610;
+        Thu, 03 Oct 2019 10:21:02 -0700 (PDT)
+X-Google-Smtp-Source: APXvYqxdVca8Nh/s/XnjRxYBzzGYfahRNbeqRheVUMUAoTyrgPFZWpEK8rXkXg5jaqOA/m79I5yRKA==
+X-Received: by 2002:a2e:301a:: with SMTP id w26mr6813876ljw.168.1570123262441;
+        Thu, 03 Oct 2019 10:21:02 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a00:7660:6da:443::2])
+        by smtp.gmail.com with ESMTPSA id i142sm571559lfi.5.2019.10.03.10.21.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Oct 2019 10:21:01 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id C5D8E18063D; Thu,  3 Oct 2019 19:21:00 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
         Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH v2 bpf-next 4/7] selftests/bpf: split off tracing-only helpers into bpf_tracing.h
+In-Reply-To: <CAEf4BzZa9aSz_FXkexKWse_k-m0WvxZJZG6qOqacaKKxgHb1OA@mail.gmail.com>
+References: <20191002215041.1083058-1-andriin@fb.com> <20191002215041.1083058-5-andriin@fb.com> <87imp6qo1o.fsf@toke.dk> <CAEf4BzZa9aSz_FXkexKWse_k-m0WvxZJZG6qOqacaKKxgHb1OA@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Thu, 03 Oct 2019 19:21:00 +0200
+Message-ID: <87ftk9pwxv.fsf@toke.dk>
+MIME-Version: 1.0
+X-MC-Unique: YIQgiriSMA6VnjMSmVHHIg-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 3, 2019 at 3:52 AM Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com=
-> wrote:
->
-> On Thu, 3 Oct 2019 at 12:37, Masahiro Yamada
-> <yamada.masahiro@socionext.com> wrote:
-> >
-> > On Thu, Oct 3, 2019 at 3:28 PM Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail=
-.com> wrote:
-> > >
-> > > On Thu, 3 Oct 2019 at 01:14, Ivan Khoronzhuk <ivan.khoronzhuk@linaro.=
-org> wrote:
-> > > >
-> > > > On Wed, Oct 02, 2019 at 09:41:15AM +0200, Bj=C3=B6rn T=C3=B6pel wro=
-te:
-> > > > >On Wed, 2 Oct 2019 at 03:49, Masahiro Yamada
-> > > > ><yamada.masahiro@socionext.com> wrote:
-> > > > >>
-> > > > >[...]
-> > > > >> > Yes, the BPF samples require clang/LLVM with BPF support to bu=
-ild. Any
-> > > > >> > suggestion on a good way to address this (missing tools), bett=
-er than
-> > > > >> > the warning above? After the commit 394053f4a4b3 ("kbuild: mak=
-e single
-> > > > >> > targets work more correctly"), it's no longer possible to buil=
-d
-> > > > >> > samples/bpf without support in the samples/Makefile.
-> > > > >>
-> > > > >>
-> > > > >> You can with
-> > > > >>
-> > > > >> "make M=3Dsamples/bpf"
-> > > > >>
-> > > > >
-> > > > >Oh, I didn't know that. Does M=3D support "output" builds (O=3D)?
-> >
-> > No.
-> > O=3D points to the output directory of vmlinux,
-> > not of the external module.
-> >
-> > You cannot put the build artifacts from samples/bpf/
-> > in a separate directory.
-> >
->
-> Hmm, I can't even get "make M=3Dsamples/bpf/" to build. Am I missing
-> something obvious?
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-There were 3 or 4 separate fixes submitted for samples/bpf yesterday,
-maybe you are hitting some of those issues. Try to pull latest (not
-sure if bpf or bpf-next tree). I tried make M=3Dsamples/bpf and it
-worked for me.
+> On Thu, Oct 3, 2019 at 12:35 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
+dhat.com> wrote:
+>>
+>> Andrii Nakryiko <andriin@fb.com> writes:
+>>
+>> > +/* a helper structure used by eBPF C program
+>> > + * to describe BPF map attributes to libbpf loader
+>> > + */
+>> > +struct bpf_map_def {
+>> > +     unsigned int type;
+>> > +     unsigned int key_size;
+>> > +     unsigned int value_size;
+>> > +     unsigned int max_entries;
+>> > +     unsigned int map_flags;
+>> > +};
+>>
+>> Why is this still here? There's already an identical definition in libbp=
+f.h...
+>>
+>
+> It's a BPF (kernel) side vs userspace side difference. bpf_helpers.h
+> are included from BPF program, while libbpf.h won't work on kernel
+> side. So we have to have a duplicate of bpf_map_def.
 
->
-> Prior 394053f4a4b3 "make samples/bpf/" and "make O=3D/foo/bar
-> samples/bpf/" worked, but I guess I can live with that...
->
->
-> Thanks!
-> Bj=C3=B6rn
->
->
-> >
-> >
-> > > > >I usually just build samples/bpf/ with:
-> > > > >
-> > > > >  $ make V=3D1 O=3D/home/foo/build/bleh samples/bpf/
-> > > > >
-> > > > >
-> > > > >Bj=C3=B6rn
-> > > >
-> > > > Shouldn't README be updated?
-> > > >
-> > >
-> > > Hmm, the M=3D variant doesn't work at all for me. The build is still
-> > > broken for me. Maybe I'm missing anything obvious...
-> > >
-> > >
-> > > > --
-> > > > Regards,
-> > > > Ivan Khoronzhuk
-> >
-> >
-> >
-> > --
-> > Best Regards
-> > Masahiro Yamada
+Ah, yes, of course. Silly me :)
+
+-Toke
+
