@@ -2,144 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B94CBC9CB1
-	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2019 12:50:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96D82C9FD7
+	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2019 15:50:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729241AbfJCKuf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Oct 2019 06:50:35 -0400
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:43271 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728234AbfJCKuf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Oct 2019 06:50:35 -0400
-Received: by mail-qk1-f194.google.com with SMTP id h126so1817556qke.10;
-        Thu, 03 Oct 2019 03:50:35 -0700 (PDT)
+        id S1728821AbfJCNur (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Oct 2019 09:50:47 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:43864 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728257AbfJCNur (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Oct 2019 09:50:47 -0400
+Received: by mail-qt1-f196.google.com with SMTP id c3so3621226qtv.10;
+        Thu, 03 Oct 2019 06:50:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=fM8THgk9XJ8sEx3BQtTeX7NMdju8tZeZ21w0FheC/X8=;
-        b=Yw6zyNoUH4yW7RQ7YV/7pJcwMNXfuTZin2s/vuqWslxOAE4epDnrWzWgpUbLtI8hDA
-         HCVll6Yh+odiUiVVb7MEZ3qz32civ6+r1+Gee42f5hA465jar5eE+/Mx7qBDkRqB+t2W
-         wW3T3dz1ZFePY825jVVGxLvhovVOPOVkY5L+bBeZHxnvamkRVuY3FBFoDnAlwfvjmthq
-         wC7a7z0hq2/ZAw6DPVtwNxkC0U70C3ONCDKKO0w3BEY8obTeZDHuBVn03N5z2xV4VoUj
-         49WeCaq1NNaGCUPphU+k1YwfEfnO79wk8kehNyTcVzvlgQ8hJ21EgwFir6+qlsAC6fES
-         sT1Q==
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=wd7tBqBSSEmGFgyOp4VhZ6hdLUak5SsJ+mT0116Ujn0=;
+        b=RcDHF1VBJS1LsGtb3uKaw5MRfIH9CAzxBc4pP7oERBIZ8PJxMZzBOhU/NFKlnu4cqT
+         bEJGo9oXggGTXeWJ7BF3s30XqWk+LQEbRyUZcEU71pY+vETYUnnoQaUHhsSknD7B8gOE
+         +cRzS85acUz/tA1cijRJHWhohvTK19yU8v6LSjJg+vBYzvKGszfA8Km5np2/mbZ8ciPI
+         Da95gmg+Xqm5MQOzo+lvzSPYJoFi6KX82f9Qh1Y8nysIW+5LH7ck36SEZbHjfjqD8Kjs
+         SUdFSfEH/4O1bbDYhY7tytV5+Pb9zfESiofz5CsNucT+SZW6KfiaNEUmVdoIZ7YP76z4
+         hOPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=fM8THgk9XJ8sEx3BQtTeX7NMdju8tZeZ21w0FheC/X8=;
-        b=PuWc8KJFNlnAylrkY7giVxKUS9QaH+Pjym19IWAKxjl7pKt24XhKerAapCuBhDKelO
-         InUQk/HP07fyTwNHS9vwgqArCvbh8xsfrYEuKrSbfb/4cetFyA6di5tcMkkgvdXA9FG9
-         +Ia/sJNDCn+Cmn/fnnF5/YuFbonDP7ToHVdAd4BqyLf/XcDBoxxfZ89fgVkxs6Qm8bKT
-         PVoB1DTYyxOGbnOKJ8yw8CaKkdjunAiezWq4mFYw1PtZ3UR+mqSbAPK2Eml6sXksvw5k
-         Uzfy5yffY7OjlpG4eOdrgEbWJo2pNtzdBypQcA8FUgwwxIlmw5xX5k/1rORlPPurzoS9
-         Beyw==
-X-Gm-Message-State: APjAAAV3egMP+FyFruq03V8ZccCVbwSR0EgQmWO+S3/E3gmvjxMQ/Gm2
-        M0yov9q7LvZQSO6H5ZZRxLBSuCkxBet9vSIlmMY=
-X-Google-Smtp-Source: APXvYqyy5HXJM2u1U8CaDWPNkgh8DjaBowL+QJagMg52IaLV/RQvEkR4ypi9bc/ESi24zGBP49W6itIZ24w1nDkJSGg=
-X-Received: by 2002:a37:4b02:: with SMTP id y2mr3537894qka.493.1570099834447;
- Thu, 03 Oct 2019 03:50:34 -0700 (PDT)
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=wd7tBqBSSEmGFgyOp4VhZ6hdLUak5SsJ+mT0116Ujn0=;
+        b=mzLb8FuIFnfS7j+gA0yRef2LGR9Midv2t7g+qDo6IZSh2Os3/6F4kmfPgnEML2J/h6
+         yYQYt0apL0nP9u6ChWgSGRCoRVh16kM0YxFKqtNUxupH7HiDDemK7aHkUzOA9PW6y9Fu
+         +gsf/BizZG2F0KEtxJQX+HMV4FZaCOSoLj0fpVJX/gB9vqFhIxMVdmNjcZcNENDjp8Hu
+         EXZyD4jnF9NQCyRFHeAazMm/qyNSuevY8/pkfgyrf5fX7F4b4KLSlbgxnEKB1ZgUPhgf
+         FRsZOd+ZFGDbs55IjzMVj6gcswms4NK5xH0LGYgtb5KeLtvIUS+mDO9s3XuKFookRvQo
+         hR/Q==
+X-Gm-Message-State: APjAAAUapJgCllneyAjA3bDtY8iVeHqXrR4c84qL4NGc7cTN9Q9iSrco
+        3lb4KfGVSLOVKEtgxhTBgoE=
+X-Google-Smtp-Source: APXvYqxHZtIth9FbpgdLK6Ef363ni24MYUaFEHRAqKVcuMuiQ3qJHYf0ICzlNtr9yuxMKPDU4/EnPA==
+X-Received: by 2002:a0c:f6cd:: with SMTP id d13mr8594377qvo.146.1570110646613;
+        Thu, 03 Oct 2019 06:50:46 -0700 (PDT)
+Received: from quaco.ghostprotocols.net ([179.97.35.50])
+        by smtp.gmail.com with ESMTPSA id u27sm2057569qta.90.2019.10.03.06.50.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Oct 2019 06:50:44 -0700 (PDT)
+From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 4E24E40DD3; Thu,  3 Oct 2019 10:50:42 -0300 (-03)
+Date:   Thu, 3 Oct 2019 10:50:42 -0300
+To:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, adrian.hunter@intel.com, jolsa@kernel.org,
+        namhyung@kernel.org
+Subject: Re: [PATCH 1/2] perf tools: Make usage of test_attr__* optional for
+ perf-sys.h
+Message-ID: <20191003135042.GA18973@kernel.org>
+References: <20191001113307.27796-1-bjorn.topel@gmail.com>
+ <20191001113307.27796-2-bjorn.topel@gmail.com>
 MIME-Version: 1.0
-References: <20191001101429.24965-1-bjorn.topel@gmail.com> <CAK7LNATNw4Qysj1Q2dXd4PALfbtgMXPwgvmW=g0dRcrczGW-Fg@mail.gmail.com>
- <CAJ+HfNgvxornSfqnbAthNy6u6=-enGCdA8K1e6rLXhCzGgmONQ@mail.gmail.com>
- <CAK7LNATD4vCQnNsHXP8A2cyWDkCNX=LGh0ej-dkDajm-+Lfw8Q@mail.gmail.com>
- <CAJ+HfNgem7ijzQkz7BU-Z_A-CqWXY_uMF6_p0tGZ6eUMx_N3QQ@mail.gmail.com>
- <20191002231448.GA10649@khorivan> <CAJ+HfNiCrcVDwQw4nxsntnTSy2pUgV2n6pW206==hUmq1=ZUTA@mail.gmail.com>
- <CAK7LNARd4_o4E=TSONZjJ9iyyeUE1=L_njU7LiEZFpNunSEEkw@mail.gmail.com>
-In-Reply-To: <CAK7LNARd4_o4E=TSONZjJ9iyyeUE1=L_njU7LiEZFpNunSEEkw@mail.gmail.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Thu, 3 Oct 2019 12:50:23 +0200
-Message-ID: <CAJ+HfNhx+gQmRMb18UDRrmzciDYUbdezUh9bRhWG8_HTUCLk9w@mail.gmail.com>
-Subject: Re: [PATCH bpf] samples/bpf: kbuild: add CONFIG_SAMPLE_BPF Kconfig
-To:     Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc:     Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20191001113307.27796-2-bjorn.topel@gmail.com>
+X-Url:  http://acmel.wordpress.com
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 3 Oct 2019 at 12:37, Masahiro Yamada
-<yamada.masahiro@socionext.com> wrote:
->
-> On Thu, Oct 3, 2019 at 3:28 PM Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.c=
-om> wrote:
-> >
-> > On Thu, 3 Oct 2019 at 01:14, Ivan Khoronzhuk <ivan.khoronzhuk@linaro.or=
-g> wrote:
-> > >
-> > > On Wed, Oct 02, 2019 at 09:41:15AM +0200, Bj=C3=B6rn T=C3=B6pel wrote=
-:
-> > > >On Wed, 2 Oct 2019 at 03:49, Masahiro Yamada
-> > > ><yamada.masahiro@socionext.com> wrote:
-> > > >>
-> > > >[...]
-> > > >> > Yes, the BPF samples require clang/LLVM with BPF support to buil=
-d. Any
-> > > >> > suggestion on a good way to address this (missing tools), better=
- than
-> > > >> > the warning above? After the commit 394053f4a4b3 ("kbuild: make =
-single
-> > > >> > targets work more correctly"), it's no longer possible to build
-> > > >> > samples/bpf without support in the samples/Makefile.
-> > > >>
-> > > >>
-> > > >> You can with
-> > > >>
-> > > >> "make M=3Dsamples/bpf"
-> > > >>
-> > > >
-> > > >Oh, I didn't know that. Does M=3D support "output" builds (O=3D)?
->
-> No.
-> O=3D points to the output directory of vmlinux,
-> not of the external module.
->
-> You cannot put the build artifacts from samples/bpf/
-> in a separate directory.
->
+Em Tue, Oct 01, 2019 at 01:33:06PM +0200, Björn Töpel escreveu:
+> From: Björn Töpel <bjorn.topel@intel.com>
+> 
+> For users of perf-sys.h outside perf, e.g. samples/bpf/bpf_load.c,
+> it's convenient not to depend on test_attr__*.
+> 
+> After commit 91854f9a077e ("perf tools: Move everything related to
+> sys_perf_event_open() to perf-sys.h"), all users of perf-sys.h will
+> depend on test_attr__enabled and test_attr__open.
+> 
+> This commit enables a user to define HAVE_ATTR_TEST to zero in order
+> to omit the test dependency.
 
-Hmm, I can't even get "make M=3Dsamples/bpf/" to build. Am I missing
-something obvious?
+Woah, I wasn't expecting tools/perf/ stuff to be included from outside
+tools/perf/, so thanks for fixing that odd user.
 
-Prior 394053f4a4b3 "make samples/bpf/" and "make O=3D/foo/bar
-samples/bpf/" worked, but I guess I can live with that...
+Applied.
 
+- Arnaldo
+ 
+> Fixes: 91854f9a077e ("perf tools: Move everything related to sys_perf_event_open() to perf-sys.h")
+> Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
+> ---
+>  tools/perf/perf-sys.h | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/perf/perf-sys.h b/tools/perf/perf-sys.h
+> index 63e4349a772a..15e458e150bd 100644
+> --- a/tools/perf/perf-sys.h
+> +++ b/tools/perf/perf-sys.h
+> @@ -15,7 +15,9 @@ void test_attr__init(void);
+>  void test_attr__open(struct perf_event_attr *attr, pid_t pid, int cpu,
+>  		     int fd, int group_fd, unsigned long flags);
+>  
+> -#define HAVE_ATTR_TEST
+> +#ifndef HAVE_ATTR_TEST
+> +#define HAVE_ATTR_TEST 1
+> +#endif
+>  
+>  static inline int
+>  sys_perf_event_open(struct perf_event_attr *attr,
+> @@ -27,7 +29,7 @@ sys_perf_event_open(struct perf_event_attr *attr,
+>  	fd = syscall(__NR_perf_event_open, attr, pid, cpu,
+>  		     group_fd, flags);
+>  
+> -#ifdef HAVE_ATTR_TEST
+> +#if HAVE_ATTR_TEST
+>  	if (unlikely(test_attr__enabled))
+>  		test_attr__open(attr, pid, cpu, fd, group_fd, flags);
+>  #endif
+> -- 
+> 2.20.1
 
-Thanks!
-Bj=C3=B6rn
+-- 
 
-
->
->
-> > > >I usually just build samples/bpf/ with:
-> > > >
-> > > >  $ make V=3D1 O=3D/home/foo/build/bleh samples/bpf/
-> > > >
-> > > >
-> > > >Bj=C3=B6rn
-> > >
-> > > Shouldn't README be updated?
-> > >
-> >
-> > Hmm, the M=3D variant doesn't work at all for me. The build is still
-> > broken for me. Maybe I'm missing anything obvious...
-> >
-> >
-> > > --
-> > > Regards,
-> > > Ivan Khoronzhuk
->
->
->
-> --
-> Best Regards
-> Masahiro Yamada
+- Arnaldo
