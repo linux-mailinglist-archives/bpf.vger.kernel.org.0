@@ -2,107 +2,197 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D6C7C9A40
-	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2019 10:53:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 814D6C9BC8
+	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2019 12:11:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728761AbfJCIxq convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 3 Oct 2019 04:53:46 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:47938 "EHLO mx1.redhat.com"
+        id S1728625AbfJCKJf convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Thu, 3 Oct 2019 06:09:35 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:53440 "EHLO mx1.redhat.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727357AbfJCIxq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Oct 2019 04:53:46 -0400
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        id S1728624AbfJCKJe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Oct 2019 06:09:34 -0400
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 7320E3090FD7;
-        Thu,  3 Oct 2019 08:53:45 +0000 (UTC)
+        by mx1.redhat.com (Postfix) with ESMTPS id 1EAF618CB905;
+        Thu,  3 Oct 2019 10:09:34 +0000 (UTC)
 Received: from carbon (ovpn-200-24.brq.redhat.com [10.40.200.24])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5D4C85D6A9;
-        Thu,  3 Oct 2019 08:53:36 +0000 (UTC)
-Date:   Thu, 3 Oct 2019 10:53:35 +0200
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3A06C5C22C;
+        Thu,  3 Oct 2019 10:09:24 +0000 (UTC)
+Date:   Thu, 3 Oct 2019 12:09:23 +0200
 From:   Jesper Dangaard Brouer <brouer@redhat.com>
 To:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>
-Cc:     Song Liu <songliubraving@fb.com>,
+Cc:     John Fastabend <john.fastabend@gmail.com>,
+        Alan Maguire <alan.maguire@oracle.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>, Martin Lau <kafai@fb.com>,
-        Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         Marek Majkowski <marek@cloudflare.com>,
         Lorenz Bauer <lmb@cloudflare.com>,
-        David Miller <davem@davemloft.net>,
-        "netdev\@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf\@vger.kernel.org" <bpf@vger.kernel.org>, brouer@redhat.com
+        David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, brouer@redhat.com
 Subject: Re: [PATCH bpf-next 0/9] xdp: Support multiple programs on a single
  interface through chain calls
-Message-ID: <20191003105335.3cc65226@carbon>
-In-Reply-To: <87r23vq79z.fsf@toke.dk>
+Message-ID: <20191003120923.2a8ec190@carbon>
+In-Reply-To: <87ftkaqng9.fsf@toke.dk>
 References: <157002302448.1302756.5727756706334050763.stgit@alrua-x1>
-        <E7319D69-6450-4BC3-97B1-134B420298FF@fb.com>
-        <A754440E-07BF-4CF4-8F15-C41179DCECEF@fb.com>
-        <87r23vq79z.fsf@toke.dk>
+        <alpine.LRH.2.20.1910021540270.24629@dhcp-10-175-191-98.vpn.oracle.com>
+        <87bluzrwks.fsf@toke.dk>
+        <5d94d188e4cca_22502b00ea21a5b425@john-XPS-13-9370.notmuch>
+        <8736gbro8x.fsf@toke.dk>
+        <5d9509de4acb6_32c02ab4bb3b05c052@john-XPS-13-9370.notmuch>
+        <87ftkaqng9.fsf@toke.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8BIT
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.43]); Thu, 03 Oct 2019 08:53:45 +0000 (UTC)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.6.2 (mx1.redhat.com [10.5.110.63]); Thu, 03 Oct 2019 10:09:34 +0000 (UTC)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 02 Oct 2019 21:25:28 +0200
+On Thu, 03 Oct 2019 09:48:22 +0200
 Toke Høiland-Jørgensen <toke@redhat.com> wrote:
 
-> Song Liu <songliubraving@fb.com> writes:
+> John Fastabend <john.fastabend@gmail.com> writes:
 > 
-> >> On Oct 2, 2019, at 11:38 AM, Song Liu <songliubraving@fb.com> wrote:
+> > Toke Høiland-Jørgensen wrote:  
+> >> John Fastabend <john.fastabend@gmail.com> writes:
 > >>   
-> >>> On Oct 2, 2019, at 6:30 AM, Toke Høiland-Jørgensen <toke@redhat.com> wrote:
-> >>> 
-> >>> This series adds support for executing multiple XDP programs on a single
-> >>> interface in sequence, through the use of chain calls, as discussed at the Linux
-> >>> Plumbers Conference last month:
-> >>>
+> >> > Toke Høiland-Jørgensen wrote:  
+> >> >> Alan Maguire <alan.maguire@oracle.com> writes:
+> >> >>   
+> >> >> > On Wed, 2 Oct 2019, Toke Høiland-Jørgensen wrote:
+> >> >> >  
+> >> >> >> This series adds support for executing multiple XDP programs on a single
+> >> >> >> interface in sequence, through the use of chain calls, as discussed at the Linux
+> >> >> >> Plumbers Conference last month:
+> >> >> >> 
+> >> >> >> https://linuxplumbersconf.org/event/4/contributions/460/
+> >> >> >> 
+> >> >> >> # HIGH-LEVEL IDEA
+> >> >> >> 
+> >> >> >> The basic idea is to express the chain call sequence through a special map type,
+> >> >> >> which contains a mapping from a (program, return code) tuple to another program
+> >> >> >> to run in next in the sequence. Userspace can populate this map to express
+> >> >> >> arbitrary call sequences, and update the sequence by updating or replacing the
+> >> >> >> map.
+> >> >> >> 
+> >> >> >> The actual execution of the program sequence is done in bpf_prog_run_xdp(),
+> >> >> >> which will lookup the chain sequence map, and if found, will loop through calls
+> >> >> >> to BPF_PROG_RUN, looking up the next XDP program in the sequence based on the
+> >> >> >> previous program ID and return code.
+> >> >> >> 
+> >> >> >> An XDP chain call map can be installed on an interface by means of a new netlink
+> >> >> >> attribute containing an fd pointing to a chain call map. This can be supplied
+> >> >> >> along with the XDP prog fd, so that a chain map is always installed together
+> >> >> >> with an XDP program.
+> >> >> >>   
+> >> >> >
+> >> >> > This is great stuff Toke!  
+> >> >> 
+> >> >> Thanks! :)
+> >> >>   
+> >> >> > One thing that wasn't immediately clear to me - and this may be just
+> >> >> > me - is the relationship between program behaviour for the XDP_DROP
+> >> >> > case and chain call execution. My initial thought was that a program
+> >> >> > in the chain XDP_DROP'ping the packet would terminate the call chain,
+> >> >> > but on looking at patch #4 it seems that the only way the call chain
+> >> >> > execution is terminated is if
+> >> >> >
+> >> >> > - XDP_ABORTED is returned from a program in the call chain; or  
+> >> >> 
+> >> >> Yes. Not actually sure about this one...
+> >> >>   
+> >> >> > - the map entry for the next program (determined by the return value
+> >> >> >   of the current program) is empty; or  
+> >> >> 
+> >> >> This will be the common exit condition, I expect
+> >> >>   
+> >> >> > - we run out of entries in the map  
+> >> >> 
+> >> >> You mean if we run the iteration counter to zero, right?
+> >> >>   
+> >> >> > The return value of the last-executed program in the chain seems to be
+> >> >> > what determines packet processing behaviour after executing the chain
+> >> >> > (_DROP, _TX, _PASS, etc). So there's no way to both XDP_PASS and
+> >> >> > XDP_TX a packet from the same chain, right? Just want to make sure
+> >> >> > I've got the semantics correct. Thanks!  
+> >> >> 
+> >> >> Yeah, you've got all this right. The chain call mechanism itself doesn't
+> >> >> change any of the underlying fundamentals of XDP. I.e., each packet gets
+> >> >> exactly one verdict.
+> >> >> 
+> >> >> For chaining actual XDP programs that do different things to the packet,
+> >> >> I expect that the most common use case will be to only run the next
+> >> >> program if the previous one returns XDP_PASS. That will make the most
+> >> >> semantic sense I think.
+> >> >> 
+> >> >> But there are also use cases where one would want to match on the other
+> >> >> return codes; such as packet capture, for instance, where one might
+> >> >> install a capture program that would carry forward the previous return
+> >> >> code, but do something to the packet (throw it out to userspace) first.
+> >> >> 
+> >> >> For the latter use case, the question is if we need to expose the
+> >> >> previous return code to the program when it runs. You can do things
+> >> >> without it (by just using a different program per return code), but it
+> >> >> may simplify things if we just expose the return code. However, since
+> >> >> this will also change the semantics for running programs, I decided to
+> >> >> leave that off for now.
+> >> >> 
+> >> >> -Toke  
+> >> >
+> >> > In other cases where programs (e.g. cgroups) are run in an array the
+> >> > return codes are 'AND'ed together so that we get
+> >> >
+> >> >    result1 & result2 & ... & resultN  
 
-[1] https://linuxplumbersconf.org/event/4/contributions/460/
-- [2] Slides: http://people.netfilter.org/hawk/presentations/LinuxPlumbers2019/xdp-distro-view.pdf
-- [3] Source: https://github.com/xdp-project/xdp-project/tree/master/conference/LinuxPlumbers2019
- 
-[...]
+But the XDP return codes are not bit values, so AND operation doesn't
+make sense to me.
+
+> >> 
+> >> How would that work with multiple programs, though? PASS -> DROP seems
+> >> obvious, but what if the first program returns TX? Also, programs may
+> >> want to be able to actually override return codes (e.g., say you want to
+> >> turn DROPs into REDIRECTs, to get all your dropped packets mirrored to
+> >> your IDS or something).  
 > >
-> > Also, could you please share a real word example? I saw the example
-> > from LPC slides, but I am more curious about what does each program do
-> > in real use cases.  
+> > In general I think either you hard code a precedence that will have to
+> > be overly conservative because if one program (your firewall) tells
+> > XDP to drop the packet and some other program redirects it, passes,
+> > etc. that seems incorrect to me. Or you get creative with the
+> > precedence rules and they become complex and difficult to manage,
+> > where a drop will drop a packet unless a previous/preceding program
+> > redirects it, etc. I think any hard coded precedence you come up with
+> > will make some one happy and some other user annoyed. Defeating the
+> > programability of BPF.  
 > 
-> The only concrete program that I have that needs this is xdpcap:
-> https://github.com/cloudflare/xdpcap
+> Yeah, exactly. That's basically why I punted on that completely.
+> Besides, technically you can get this by just installing different
+> programs in each slot if you really need it.
+
+I would really like to avoid hard coding precedence.  I know it is
+"challenging" that we want to allow overruling any XDP return code, but
+I think it makes sense and it is the most flexible solution.
+
+
+> > Better if its programmable. I would prefer to pass the context into
+> > the next program then programs can build their own semantics. Then
+> > leave the & of return codes so any program can if needed really drop a
+> > packet. The context could be pushed into a shared memory region and
+> > then it doesn't even need to be part of the program signature.  
 > 
-> Right now that needs to be integrated into the calling program to work;
-> I want to write a tool like it, but that can insert itself before or
-> after arbitrary XDP programs.
+> Since it seems I'll be going down the rabbit hole of baking this into
+> the BPF execution environment itself, I guess I'll keep this in mind as
+> well. Either by stuffing the previous program return code into the
+> context object(s), or by adding a new helper to retrieve it.
 
-The other real world use-case it Facebooks katran, you should be aware:
- https://github.com/facebookincubator/katran
+I would like to see the ability to retrieve previous program return
+code, and a new helper would be the simplest approach.  As this could
+potentially simplify and compact the data-structure.
 
-It might be important to understand that the patchset/intent is a hybrid
-that satisfy both xdpcap ([2] slide-26) and katran ([2] slide-27), see
-later slides how this is done. Notice there a requirement is that users
-don't (need to) modify the BPF ELF file, to make it cooperate with this
-system.
-
-The katran use-case is to chain several eBPF programs.
-
-The xdpcap use-case is to trap any XDP return action code (and tcpdump
-via perf event ring_buffer).  For system administrators the xdpcap
-use-case is something we hear about all the time, so one of the missing
-features for XDP.  As Toke also wrote, we want to extend this to ALSO
-be-able to see/dump the packet BEFORE a given XDP program.
-
-
-> Lorenz, can you say more about your use case? :)
-
-AFAIK Cloudflare also have a chaining eBPF program use-case for XDP.  I
-could not find the blog post.
- 
 -- 
 Best regards,
   Jesper Dangaard Brouer
