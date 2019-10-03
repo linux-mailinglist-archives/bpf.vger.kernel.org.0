@@ -2,199 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 814D6C9BC8
-	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2019 12:11:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3D8FC9C6F
+	for <lists+bpf@lfdr.de>; Thu,  3 Oct 2019 12:37:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728625AbfJCKJf convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 3 Oct 2019 06:09:35 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:53440 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728624AbfJCKJe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Oct 2019 06:09:34 -0400
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 1EAF618CB905;
-        Thu,  3 Oct 2019 10:09:34 +0000 (UTC)
-Received: from carbon (ovpn-200-24.brq.redhat.com [10.40.200.24])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3A06C5C22C;
-        Thu,  3 Oct 2019 10:09:24 +0000 (UTC)
-Date:   Thu, 3 Oct 2019 12:09:23 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>
-Cc:     John Fastabend <john.fastabend@gmail.com>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Marek Majkowski <marek@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, brouer@redhat.com
-Subject: Re: [PATCH bpf-next 0/9] xdp: Support multiple programs on a single
- interface through chain calls
-Message-ID: <20191003120923.2a8ec190@carbon>
-In-Reply-To: <87ftkaqng9.fsf@toke.dk>
-References: <157002302448.1302756.5727756706334050763.stgit@alrua-x1>
-        <alpine.LRH.2.20.1910021540270.24629@dhcp-10-175-191-98.vpn.oracle.com>
-        <87bluzrwks.fsf@toke.dk>
-        <5d94d188e4cca_22502b00ea21a5b425@john-XPS-13-9370.notmuch>
-        <8736gbro8x.fsf@toke.dk>
-        <5d9509de4acb6_32c02ab4bb3b05c052@john-XPS-13-9370.notmuch>
-        <87ftkaqng9.fsf@toke.dk>
+        id S1728682AbfJCKhh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Oct 2019 06:37:37 -0400
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:44016 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727756AbfJCKhg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Oct 2019 06:37:36 -0400
+Received: from mail-vs1-f53.google.com (mail-vs1-f53.google.com [209.85.217.53]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id x93AbNR8004089;
+        Thu, 3 Oct 2019 19:37:24 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com x93AbNR8004089
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1570099044;
+        bh=n1PGXVvMl6n5rOY+jPDvgNuS8cWYEdmV5YtD+HFJn0A=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=kkuURiblyI9hPRD2Am3ni0EbtBFyhkDf3Ux1pllNGSWCGRJh2lz3661jTFvNjOPet
+         9r79JDB7tkf0noYXkn/SWgB1M+RDl4EAsEBL3gP5YTXqAGe0FMSuyHVIE/01tNbU4K
+         QBuXv/PvXMOk6x/DhJeD05U4d5Chuurbsh12sKqqP0AKcj1GDVEkn4CGvLYC1008Ad
+         O5Nwlv8K371NaRRx393FqpAqnUdPusvWS290p4vIyq9CQ+RRsifLB/B2VUNFB6eOB1
+         6CrXGltHwL6MW4pJnmOMcOoln4+bvyD+fMpTvx5S55h7O1KvIXuRUolVxogRBvJ2jK
+         Rwj30t763b0HA==
+X-Nifty-SrcIP: [209.85.217.53]
+Received: by mail-vs1-f53.google.com with SMTP id v19so1358297vsv.3;
+        Thu, 03 Oct 2019 03:37:24 -0700 (PDT)
+X-Gm-Message-State: APjAAAWqnVBrBj/gwT+riOfLbKLA0NXGz7+6SlePF1nzEJc0YzP5CK7O
+        jlAJR79knMJytwjegRt1pzPXs+F0pzAqYpJw5s0=
+X-Google-Smtp-Source: APXvYqwjodpygq++B1e36Zfn5tPGl4dsCKAK3qEhLmC8Jk1EtgiEuAkIOdYPl5KPu16KcZ42HDUceOxLIO/eOpgxeFY=
+X-Received: by 2002:a67:1a41:: with SMTP id a62mr4732113vsa.54.1570099043250;
+ Thu, 03 Oct 2019 03:37:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.6.2 (mx1.redhat.com [10.5.110.63]); Thu, 03 Oct 2019 10:09:34 +0000 (UTC)
+References: <20191001101429.24965-1-bjorn.topel@gmail.com> <CAK7LNATNw4Qysj1Q2dXd4PALfbtgMXPwgvmW=g0dRcrczGW-Fg@mail.gmail.com>
+ <CAJ+HfNgvxornSfqnbAthNy6u6=-enGCdA8K1e6rLXhCzGgmONQ@mail.gmail.com>
+ <CAK7LNATD4vCQnNsHXP8A2cyWDkCNX=LGh0ej-dkDajm-+Lfw8Q@mail.gmail.com>
+ <CAJ+HfNgem7ijzQkz7BU-Z_A-CqWXY_uMF6_p0tGZ6eUMx_N3QQ@mail.gmail.com>
+ <20191002231448.GA10649@khorivan> <CAJ+HfNiCrcVDwQw4nxsntnTSy2pUgV2n6pW206==hUmq1=ZUTA@mail.gmail.com>
+In-Reply-To: <CAJ+HfNiCrcVDwQw4nxsntnTSy2pUgV2n6pW206==hUmq1=ZUTA@mail.gmail.com>
+From:   Masahiro Yamada <yamada.masahiro@socionext.com>
+Date:   Thu, 3 Oct 2019 19:36:47 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARd4_o4E=TSONZjJ9iyyeUE1=L_njU7LiEZFpNunSEEkw@mail.gmail.com>
+Message-ID: <CAK7LNARd4_o4E=TSONZjJ9iyyeUE1=L_njU7LiEZFpNunSEEkw@mail.gmail.com>
+Subject: Re: [PATCH bpf] samples/bpf: kbuild: add CONFIG_SAMPLE_BPF Kconfig
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Cc:     Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 03 Oct 2019 09:48:22 +0200
-Toke Høiland-Jørgensen <toke@redhat.com> wrote:
-
-> John Fastabend <john.fastabend@gmail.com> writes:
-> 
-> > Toke Høiland-Jørgensen wrote:  
-> >> John Fastabend <john.fastabend@gmail.com> writes:
-> >>   
-> >> > Toke Høiland-Jørgensen wrote:  
-> >> >> Alan Maguire <alan.maguire@oracle.com> writes:
-> >> >>   
-> >> >> > On Wed, 2 Oct 2019, Toke Høiland-Jørgensen wrote:
-> >> >> >  
-> >> >> >> This series adds support for executing multiple XDP programs on a single
-> >> >> >> interface in sequence, through the use of chain calls, as discussed at the Linux
-> >> >> >> Plumbers Conference last month:
-> >> >> >> 
-> >> >> >> https://linuxplumbersconf.org/event/4/contributions/460/
-> >> >> >> 
-> >> >> >> # HIGH-LEVEL IDEA
-> >> >> >> 
-> >> >> >> The basic idea is to express the chain call sequence through a special map type,
-> >> >> >> which contains a mapping from a (program, return code) tuple to another program
-> >> >> >> to run in next in the sequence. Userspace can populate this map to express
-> >> >> >> arbitrary call sequences, and update the sequence by updating or replacing the
-> >> >> >> map.
-> >> >> >> 
-> >> >> >> The actual execution of the program sequence is done in bpf_prog_run_xdp(),
-> >> >> >> which will lookup the chain sequence map, and if found, will loop through calls
-> >> >> >> to BPF_PROG_RUN, looking up the next XDP program in the sequence based on the
-> >> >> >> previous program ID and return code.
-> >> >> >> 
-> >> >> >> An XDP chain call map can be installed on an interface by means of a new netlink
-> >> >> >> attribute containing an fd pointing to a chain call map. This can be supplied
-> >> >> >> along with the XDP prog fd, so that a chain map is always installed together
-> >> >> >> with an XDP program.
-> >> >> >>   
-> >> >> >
-> >> >> > This is great stuff Toke!  
-> >> >> 
-> >> >> Thanks! :)
-> >> >>   
-> >> >> > One thing that wasn't immediately clear to me - and this may be just
-> >> >> > me - is the relationship between program behaviour for the XDP_DROP
-> >> >> > case and chain call execution. My initial thought was that a program
-> >> >> > in the chain XDP_DROP'ping the packet would terminate the call chain,
-> >> >> > but on looking at patch #4 it seems that the only way the call chain
-> >> >> > execution is terminated is if
-> >> >> >
-> >> >> > - XDP_ABORTED is returned from a program in the call chain; or  
-> >> >> 
-> >> >> Yes. Not actually sure about this one...
-> >> >>   
-> >> >> > - the map entry for the next program (determined by the return value
-> >> >> >   of the current program) is empty; or  
-> >> >> 
-> >> >> This will be the common exit condition, I expect
-> >> >>   
-> >> >> > - we run out of entries in the map  
-> >> >> 
-> >> >> You mean if we run the iteration counter to zero, right?
-> >> >>   
-> >> >> > The return value of the last-executed program in the chain seems to be
-> >> >> > what determines packet processing behaviour after executing the chain
-> >> >> > (_DROP, _TX, _PASS, etc). So there's no way to both XDP_PASS and
-> >> >> > XDP_TX a packet from the same chain, right? Just want to make sure
-> >> >> > I've got the semantics correct. Thanks!  
-> >> >> 
-> >> >> Yeah, you've got all this right. The chain call mechanism itself doesn't
-> >> >> change any of the underlying fundamentals of XDP. I.e., each packet gets
-> >> >> exactly one verdict.
-> >> >> 
-> >> >> For chaining actual XDP programs that do different things to the packet,
-> >> >> I expect that the most common use case will be to only run the next
-> >> >> program if the previous one returns XDP_PASS. That will make the most
-> >> >> semantic sense I think.
-> >> >> 
-> >> >> But there are also use cases where one would want to match on the other
-> >> >> return codes; such as packet capture, for instance, where one might
-> >> >> install a capture program that would carry forward the previous return
-> >> >> code, but do something to the packet (throw it out to userspace) first.
-> >> >> 
-> >> >> For the latter use case, the question is if we need to expose the
-> >> >> previous return code to the program when it runs. You can do things
-> >> >> without it (by just using a different program per return code), but it
-> >> >> may simplify things if we just expose the return code. However, since
-> >> >> this will also change the semantics for running programs, I decided to
-> >> >> leave that off for now.
-> >> >> 
-> >> >> -Toke  
-> >> >
-> >> > In other cases where programs (e.g. cgroups) are run in an array the
-> >> > return codes are 'AND'ed together so that we get
-> >> >
-> >> >    result1 & result2 & ... & resultN  
-
-But the XDP return codes are not bit values, so AND operation doesn't
-make sense to me.
-
-> >> 
-> >> How would that work with multiple programs, though? PASS -> DROP seems
-> >> obvious, but what if the first program returns TX? Also, programs may
-> >> want to be able to actually override return codes (e.g., say you want to
-> >> turn DROPs into REDIRECTs, to get all your dropped packets mirrored to
-> >> your IDS or something).  
+On Thu, Oct 3, 2019 at 3:28 PM Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com=
+> wrote:
+>
+> On Thu, 3 Oct 2019 at 01:14, Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>=
+ wrote:
 > >
-> > In general I think either you hard code a precedence that will have to
-> > be overly conservative because if one program (your firewall) tells
-> > XDP to drop the packet and some other program redirects it, passes,
-> > etc. that seems incorrect to me. Or you get creative with the
-> > precedence rules and they become complex and difficult to manage,
-> > where a drop will drop a packet unless a previous/preceding program
-> > redirects it, etc. I think any hard coded precedence you come up with
-> > will make some one happy and some other user annoyed. Defeating the
-> > programability of BPF.  
-> 
-> Yeah, exactly. That's basically why I punted on that completely.
-> Besides, technically you can get this by just installing different
-> programs in each slot if you really need it.
+> > On Wed, Oct 02, 2019 at 09:41:15AM +0200, Bj=C3=B6rn T=C3=B6pel wrote:
+> > >On Wed, 2 Oct 2019 at 03:49, Masahiro Yamada
+> > ><yamada.masahiro@socionext.com> wrote:
+> > >>
+> > >[...]
+> > >> > Yes, the BPF samples require clang/LLVM with BPF support to build.=
+ Any
+> > >> > suggestion on a good way to address this (missing tools), better t=
+han
+> > >> > the warning above? After the commit 394053f4a4b3 ("kbuild: make si=
+ngle
+> > >> > targets work more correctly"), it's no longer possible to build
+> > >> > samples/bpf without support in the samples/Makefile.
+> > >>
+> > >>
+> > >> You can with
+> > >>
+> > >> "make M=3Dsamples/bpf"
+> > >>
+> > >
+> > >Oh, I didn't know that. Does M=3D support "output" builds (O=3D)?
 
-I would really like to avoid hard coding precedence.  I know it is
-"challenging" that we want to allow overruling any XDP return code, but
-I think it makes sense and it is the most flexible solution.
+No.
+O=3D points to the output directory of vmlinux,
+not of the external module.
+
+You cannot put the build artifacts from samples/bpf/
+in a separate directory.
 
 
-> > Better if its programmable. I would prefer to pass the context into
-> > the next program then programs can build their own semantics. Then
-> > leave the & of return codes so any program can if needed really drop a
-> > packet. The context could be pushed into a shared memory region and
-> > then it doesn't even need to be part of the program signature.  
-> 
-> Since it seems I'll be going down the rabbit hole of baking this into
-> the BPF execution environment itself, I guess I'll keep this in mind as
-> well. Either by stuffing the previous program return code into the
-> context object(s), or by adding a new helper to retrieve it.
 
-I would like to see the ability to retrieve previous program return
-code, and a new helper would be the simplest approach.  As this could
-potentially simplify and compact the data-structure.
+> > >I usually just build samples/bpf/ with:
+> > >
+> > >  $ make V=3D1 O=3D/home/foo/build/bleh samples/bpf/
+> > >
+> > >
+> > >Bj=C3=B6rn
+> >
+> > Shouldn't README be updated?
+> >
+>
+> Hmm, the M=3D variant doesn't work at all for me. The build is still
+> broken for me. Maybe I'm missing anything obvious...
+>
+>
+> > --
+> > Regards,
+> > Ivan Khoronzhuk
 
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+
+
+--=20
+Best Regards
+Masahiro Yamada
