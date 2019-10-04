@@ -2,207 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 92730CBC5A
-	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2019 15:56:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 291D5CBC9C
+	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2019 16:05:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388662AbfJDNz7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Oct 2019 09:55:59 -0400
-Received: from mail-ed1-f68.google.com ([209.85.208.68]:32790 "EHLO
-        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388491AbfJDNz7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Oct 2019 09:55:59 -0400
-Received: by mail-ed1-f68.google.com with SMTP id c4so5964181edl.0;
-        Fri, 04 Oct 2019 06:55:55 -0700 (PDT)
+        id S2388941AbfJDOF3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Oct 2019 10:05:29 -0400
+Received: from mail-io1-f67.google.com ([209.85.166.67]:42828 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388270AbfJDOF3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Oct 2019 10:05:29 -0400
+Received: by mail-io1-f67.google.com with SMTP id n197so13720095iod.9;
+        Fri, 04 Oct 2019 07:05:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1csabjhWVNY3kOmJm1w8vuqsbkwQCoftT+YyWdw/wF8=;
-        b=JPGkyZ1C0hfdUrp9qoqlHLQlkrEWaEBcK5nHm9C3iBhXl8f87HwcYJMnJpBEzQOdSO
-         T2478ascOBGZkafOmfqmJY4feY1t065/trwiw8pQsO/Epi6Esdh4vWrEdOFOQXkNL00p
-         9vvXs/Uj6wl2cf1s2EIXAKLx7smSv7/RBgZHaH1aL8aJqQSD6lZgxmvgxolcaxgzhDmc
-         ctnPsuOLeB4iBiH87r6c0we5duiLkCCnaPislwiAjN8QSmHMKDwsW0cn/UP0tedzlrvL
-         HB+P1TcEAKyE6Xv458Kr87p5W5CBu0ZypFc/CoZK4Vm/mV1A0kR8ec40FtVrxwyg2VjG
-         i80Q==
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=bDTKfu+ejKRK+adYoy6fnBSPT/VXZuxJ5Rl3WF3I6Pg=;
+        b=kRtH8CQfWnRBUhEmC0zRYmi7cDsFLuqwYdIG8u1iEixXil+XlY2RJDtn+k9mZbZrS6
+         pMKLCGEcOSDqYI7IYKqtR9PYrcQheBkLaAXbTtBSiYUyGNypdNIGFkdqJs8e3ai9fqIT
+         462TSgElW52mhpof/fOqfFr3De3aIovIfpN4lCxnOtGCDQR5mnJKzuk7gQyQmfZRuRtP
+         Zns36ekzyY37DWhA4ve8cB4TbQ3sDSw7Mm26yv3knVRjD4eRGrdxFfE1a41agB7n8CE+
+         mm0gLqKHkXBxHN/xrx/zKEkE0yhd2N8OGRgfz30O+4IRKF+fM5FBf5s5a4nmjpu+Jq2U
+         0D3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1csabjhWVNY3kOmJm1w8vuqsbkwQCoftT+YyWdw/wF8=;
-        b=CcKOY+Kr7IELNp7D6VnhvU0YmlQOfaxL6Ya/CFIEzLQZt4iOV8ymEdJuPjNMW27v8V
-         l/uS85XkjDwTwa59HwjhIUTKFLuuoagaSwBrIGFJfIzZnNTJPuFFHfVG0opo2RIrary9
-         v/Le1vL6SShEc8OSshbD7tksbPAeQI+V3sI/J1k5u49kL4NZzW4O5JiycWt5e0NDP88P
-         86kMMvc3dUgxTSLCy1L7EKEK7MdY860jxxvQTzvb0pPUEnMCzQIEx9qoKWF66y4VwW+j
-         0W/xZVtTziq942o8wHgC6xx+pQVpGSkZk/97v4b0ncOY+GFHiGWkTnXT4RGCZkIbuLQj
-         UV/Q==
-X-Gm-Message-State: APjAAAXl5qN2TuwEmtwY6HhuuKenPysRV7S4y7KSCi0z2AdJv8oxROO7
-        3lb4/wowbxvr4Ls/Czw8oWayYfI/A+fQa3pM1U8=
-X-Google-Smtp-Source: APXvYqzzKOfL4IXEV8NTYa6HFtfKh2JmOq/jPD1SkT4mywatbIhJKh84XSwTj/v19amYnQntfnu2mbh5/1tZy5+/UtM=
-X-Received: by 2002:aa7:d789:: with SMTP id s9mr15371233edq.62.1570197354887;
- Fri, 04 Oct 2019 06:55:54 -0700 (PDT)
-MIME-Version: 1.0
-References: <00000000000051e9280593f2dc9f@google.com>
-In-Reply-To: <00000000000051e9280593f2dc9f@google.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Fri, 4 Oct 2019 09:55:18 -0400
-Message-ID: <CAF=yD-J-qZv+K5AJc_W8zbyfV2FrtN1kV2pwL65CXzVo8cmH1w@mail.gmail.com>
-Subject: Re: general protection fault in veth_get_stats64
-To:     syzbot <syzbot+3f3e5e77d793c7a6fe6c@syzkaller.appspotmail.com>
-Cc:     airlied@linux.ie, andriy.shevchenko@linux.intel.com,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        bskeggs@redhat.com, Daniel Vetter <daniel@ffwll.ch>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>,
-        dri-devel@lists.freedesktop.org, David Ahern <dsahern@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>, guoren@kernel.org,
-        hawk@kernel.org, Ido Schimmel <idosch@mellanox.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        John Fastabend <john.fastabend@gmail.com>, jwi@linux.ibm.com,
-        Martin KaFai Lau <kafai@fb.com>, kimbrownkd@gmail.com,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        nouveau@lists.freedesktop.org, petrm@mellanox.com,
-        songliubraving@fb.com,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        toshiaki.makita1@gmail.com, wanghai26@huawei.com,
-        Yonghong Song <yhs@fb.com>, yuehaibing@huawei.com
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=bDTKfu+ejKRK+adYoy6fnBSPT/VXZuxJ5Rl3WF3I6Pg=;
+        b=ouMIIEozBpGI8f31xvV2UkywMThb9L0Iix5zwKqDAJXd5wuOC6c36VMBnfzU94s5at
+         UzRqp6Pmr9lfEoaJZhl9oa8aXvrVt/JCd4cIephMjId/bS/0aKWxUmx2pJGAjBnP5BkY
+         ihvK8sEq3GE9v15lKr/zy6GNbuxnxPJdiO39nsllWfdxDHs1hNsnc7yA7ShMH5JiTj92
+         goKqlYFw85rqcl+WfJs1qYAI+ahFq9w6xGGOeojrxftjK897Ir9eKeQs4xd1ZxWLys2m
+         DuIZm90/uyDbvlGMP/L/x8eCGTsOyND9rELs5vBq/Ron682NKETTvFvzRuU3k9kU7uqq
+         dQfQ==
+X-Gm-Message-State: APjAAAWe7QbXBaavKYdXWpA3mR/u0wsUnpugNTYg0HZj6ccFlYBh4lKO
+        DScq+RnQwGIl4zeqUp15btdvTYFmBx8=
+X-Google-Smtp-Source: APXvYqzM7GbCzI1E1SVWT93K2qa5R0zjAa634eIT9NaeJf2U3wd1Yw9Oc+Om1CcdHmleJH8VoUr3BQ==
+X-Received: by 2002:a5e:c241:: with SMTP id w1mr1690679iop.36.1570197926614;
+        Fri, 04 Oct 2019 07:05:26 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id l186sm2399905ioa.54.2019.10.04.07.05.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Oct 2019 07:05:25 -0700 (PDT)
+Date:   Fri, 04 Oct 2019 07:05:18 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, ast@fb.com, daniel@iogearbox.net
+Cc:     andrii.nakryiko@gmail.com, kernel-team@fb.com,
+        Andrii Nakryiko <andriin@fb.com>
+Message-ID: <5d97519e9e7f3_4e6d2b183260e5bcbf@john-XPS-13-9370.notmuch>
+In-Reply-To: <20191004030058.2248514-2-andriin@fb.com>
+References: <20191004030058.2248514-1-andriin@fb.com>
+ <20191004030058.2248514-2-andriin@fb.com>
+Subject: RE: [PATCH bpf-next 1/2] libbpf: stop enforcing kern_version,
+ populate it for users
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 2, 2019 at 5:45 PM syzbot
-<syzbot+3f3e5e77d793c7a6fe6c@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following crash on:
->
-> HEAD commit:    a32db7e1 Add linux-next specific files for 20191002
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=175ab7cd600000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=599cf05035799eef
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3f3e5e77d793c7a6fe6c
-> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12f8b943600000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16981a25600000
->
-> The bug was bisected to:
->
-> commit 84da111de0b4be15bd500deff773f5116f39f7be
-> Author: Linus Torvalds <torvalds@linux-foundation.org>
-> Date:   Sat Sep 21 17:07:42 2019 +0000
->
->      Merge tag 'for-linus-hmm' of
-> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17c55847600000
-> final crash:    https://syzkaller.appspot.com/x/report.txt?x=14255847600000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=10255847600000
->
-> IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> Reported-by: syzbot+3f3e5e77d793c7a6fe6c@syzkaller.appspotmail.com
-> Fixes: 84da111de0b4 ("Merge tag 'for-linus-hmm' of
-> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma")
->
-> RSP: 002b:00007fff0ba6c998 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-> RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00000000004424a9
-> RDX: 0000000000000000 RSI: 0000000020000140 RDI: 0000000000000003
-> RBP: 0000000000000000 R08: 0000000000000002 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: ffffffffffffffff
-> R13: 0000000000000004 R14: 0000000000000000 R15: 0000000000000000
-> kasan: CONFIG_KASAN_INLINE enabled
-> kasan: GPF could be caused by NULL-ptr deref or user memory access
-> general protection fault: 0000 [#1] PREEMPT SMP KASAN
-> CPU: 1 PID: 8605 Comm: syz-executor330 Not tainted 5.4.0-rc1-next-20191002
-> #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS
-> Google 01/01/2011
-> RIP: 0010:veth_stats_rx drivers/net/veth.c:322 [inline]
-> RIP: 0010:veth_get_stats64+0x523/0x900 drivers/net/veth.c:356
-> Code: 89 85 60 ff ff ff e8 6c 74 31 fd 49 63 c7 48 69 c0 c0 02 00 00 48 03
-> 85 60 ff ff ff 48 8d b8 a0 01 00 00 48 89 fa 48 c1 ea 03 <42> 80 3c 32 00
-> 0f 85 c9 02 00 00 48 8d b8 a8 01 00 00 48 8b 90 a0
-> RSP: 0018:ffff88809996ed00 EFLAGS: 00010202
-> RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffffffff84418daf
-> RDX: 0000000000000034 RSI: ffffffff84418e04 RDI: 00000000000001a0
-> RBP: ffff88809996ede0 R08: ffff888093182180 R09: ffffed1013202d6a
-> R10: ffffed1013202d69 R11: ffff888099016b4f R12: 0000000000000000
-> R13: 0000000000000000 R14: dffffc0000000000 R15: 0000000000000000
-> FS:  0000000001f4a880(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000000020000140 CR3: 000000009a80b000 CR4: 00000000001406e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->   dev_get_stats+0x8e/0x280 net/core/dev.c:9220
->   rtnl_fill_stats+0x4d/0xac0 net/core/rtnetlink.c:1191
->   rtnl_fill_ifinfo+0x10ad/0x3af0 net/core/rtnetlink.c:1717
->   rtmsg_ifinfo_build_skb+0xc9/0x1a0 net/core/rtnetlink.c:3635
->   rtmsg_ifinfo_event.part.0+0x43/0xe0 net/core/rtnetlink.c:3667
->   rtmsg_ifinfo_event net/core/rtnetlink.c:3678 [inline]
->   rtmsg_ifinfo+0x8d/0xa0 net/core/rtnetlink.c:3676
->   __dev_notify_flags+0x235/0x2c0 net/core/dev.c:7757
->   rtnl_configure_link+0x175/0x250 net/core/rtnetlink.c:2968
->   __rtnl_newlink+0x10c4/0x16d0 net/core/rtnetlink.c:3285
->   rtnl_newlink+0x69/0xa0 net/core/rtnetlink.c:3325
->   rtnetlink_rcv_msg+0x463/0xb00 net/core/rtnetlink.c:5386
->   netlink_rcv_skb+0x177/0x450 net/netlink/af_netlink.c:2477
->   rtnetlink_rcv+0x1d/0x30 net/core/rtnetlink.c:5404
->   netlink_unicast_kernel net/netlink/af_netlink.c:1302 [inline]
->   netlink_unicast+0x531/0x710 net/netlink/af_netlink.c:1328
->   netlink_sendmsg+0x8a5/0xd60 net/netlink/af_netlink.c:1917
->   sock_sendmsg_nosec net/socket.c:638 [inline]
->   sock_sendmsg+0xd7/0x130 net/socket.c:658
->   ___sys_sendmsg+0x803/0x920 net/socket.c:2312
->   __sys_sendmsg+0x105/0x1d0 net/socket.c:2357
->   __do_sys_sendmsg net/socket.c:2366 [inline]
->   __se_sys_sendmsg net/socket.c:2364 [inline]
->   __x64_sys_sendmsg+0x78/0xb0 net/socket.c:2364
->   do_syscall_64+0xfa/0x760 arch/x86/entry/common.c:290
->   entry_SYSCALL_64_after_hwframe+0x49/0xbe
-> RIP: 0033:0x4424a9
-> Code: e8 9c 07 03 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7
-> 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff
-> ff 0f 83 3b 0a fc ff c3 66 2e 0f 1f 84 00 00 00 00
-> RSP: 002b:00007fff0ba6c998 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-> RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00000000004424a9
-> RDX: 0000000000000000 RSI: 0000000020000140 RDI: 0000000000000003
-> RBP: 0000000000000000 R08: 0000000000000002 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: ffffffffffffffff
-> R13: 0000000000000004 R14: 0000000000000000 R15: 0000000000000000
-> Modules linked in:
-> ---[ end trace cc6dec8a4962bfff ]---
-> RIP: 0010:veth_stats_rx drivers/net/veth.c:322 [inline]
-> RIP: 0010:veth_get_stats64+0x523/0x900 drivers/net/veth.c:356
-> Code: 89 85 60 ff ff ff e8 6c 74 31 fd 49 63 c7 48 69 c0 c0 02 00 00 48 03
-> 85 60 ff ff ff 48 8d b8 a0 01 00 00 48 89 fa 48 c1 ea 03 <42> 80 3c 32 00
-> 0f 85 c9 02 00 00 48 8d b8 a8 01 00 00 48 8b 90 a0
-> RSP: 0018:ffff88809996ed00 EFLAGS: 00010202
-> RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffffffff84418daf
-> RDX: 0000000000000034 RSI: ffffffff84418e04 RDI: 00000000000001a0
-> RBP: ffff88809996ede0 R08: ffff888093182180 R09: ffffed1013202d6a
-> R10: ffffed1013202d69 R11: ffff888099016b4f R12: 0000000000000000
-> R13: 0000000000000000 R14: dffffc0000000000 R15: 0000000000000000
-> FS:  0000000001f4a880(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000000020000140 CR3: 000000009a80b000 CR4: 00000000001406e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->
->
+Andrii Nakryiko wrote:
+> Kernel version enforcement for kprobes/kretprobes was removed from
+> 5.0 kernel in 6c4fc209fcf9 ("bpf: remove useless version check for prog load").
+> Since then, BPF programs were specifying SEC("version") just to please
+> libbpf. We should stop enforcing this in libbpf, if even kernel doesn't
+> care. Furthermore, libbpf now will pre-populate current kernel version
+> of the host system, in case we are still running on old kernel.
+> 
+> This patch also removes __bpf_object__open_xattr from libbpf.h, as
+> nothing in libbpf is relying on having it in that header. That function
+> was never exported as LIBBPF_API and even name suggests its internal
+> version. So this should be safe to remove, as it doesn't break ABI.
+> 
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 > ---
-> This bug is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this bug report. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-> syzbot can test patches for this bug, for details see:
-> https://goo.gl/tpsmEJ#testing-patches
+>  tools/lib/bpf/libbpf.c                        | 79 ++++++-------------
+>  tools/lib/bpf/libbpf.h                        |  2 -
+>  .../selftests/bpf/progs/test_attach_probe.c   |  1 -
+>  .../bpf/progs/test_get_stack_rawtp.c          |  1 -
+>  .../selftests/bpf/progs/test_perf_buffer.c    |  1 -
+>  .../selftests/bpf/progs/test_stacktrace_map.c |  1 -
+>  6 files changed, 22 insertions(+), 63 deletions(-)
 
-#syz fix: net: propagate errors correctly in register_netdevice()
+[...]
+
+>  static struct bpf_object *
+> -__bpf_object__open(const char *path, void *obj_buf, size_t obj_buf_sz,
+> -		   bool needs_kver, int flags)
+> +__bpf_object__open(const char *path, const void *obj_buf, size_t obj_buf_sz,
+> +		   int flags)
+>  {
+>  	struct bpf_object *obj;
+>  	int err;
+> @@ -3617,7 +3585,6 @@ __bpf_object__open(const char *path, void *obj_buf, size_t obj_buf_sz,
+>  	CHECK_ERR(bpf_object__probe_caps(obj), err, out);
+>  	CHECK_ERR(bpf_object__elf_collect(obj, flags), err, out);
+
+If we are not going to validate the section should we also skip collect'ing it?
+
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index e0276520171b..22a458cd602c 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -1567,12 +1567,6 @@ static int bpf_object__elf_collect(struct bpf_object *obj, int flags)
+                                                       data->d_size);
+                        if (err)
+                                return err;
+-               } else if (strcmp(name, "version") == 0) {
+-                       err = bpf_object__init_kversion(obj,
+-                                                       data->d_buf,
+-                                                       data->d_size);
+-                       if (err)
+-                               return err;
+                } else if (strcmp(name, "maps") == 0) {
+                        obj->efile.maps_shndx = idx;
+                } else if (strcmp(name, MAPS_ELF_SEC) == 0) {
+
+
+>  	CHECK_ERR(bpf_object__collect_reloc(obj), err, out);
+> -	CHECK_ERR(bpf_object__validate(obj, needs_kver), err, out);
+>  
+>  	bpf_object__elf_finish(obj);
+>  	return obj;
+> @@ -3626,8 +3593,8 @@ __bpf_object__open(const char *path, void *obj_buf, size_t obj_buf_sz,
+>  	return ERR_PTR(err);
+>  }
