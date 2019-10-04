@@ -2,108 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 25D78CB435
-	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2019 07:33:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 094DCCB48B
+	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2019 08:38:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729386AbfJDFdq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Oct 2019 01:33:46 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:39747 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726525AbfJDFdq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Oct 2019 01:33:46 -0400
-Received: by mail-qk1-f196.google.com with SMTP id 4so4748212qki.6;
-        Thu, 03 Oct 2019 22:33:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CZLbsNalEDLVCI/uyy17hqZrVOedmz8hzfFbWaNkEoA=;
-        b=nAej/k4+z1Dm02vuaLnHSKcMV5iipe+F6PLhJjCKK1mVn1s+CZNaDQxAnf1RShtMXl
-         L9Bvu2bQlja1Ky3h80h9PlYjTov6XVmqdGsSRGTGWDOskkcBAxEY4i3LRKa2M+GUAuTj
-         JZ6gQ0h/xPN3pkZa6Cu9TuzoJo7JCwz8bLKHzYbd3QZ4FswX1eYGmHdj5CnPq5NcqlVE
-         cTtrzNEo22iamXGtEHpBVR8RD8b22Zdx6UUGmGdGZWRMkLIEF5I54ziFYwotKAC2+QO+
-         8cOPgSi4BSkxLLFcUap97dr9E7CJ/zIcvKncOmceI5ybtOtQTnrhed3aLMHGGnWxwxUN
-         gQRg==
+        id S2388232AbfJDGiP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Oct 2019 02:38:15 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:53718 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2387864AbfJDGiP (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 4 Oct 2019 02:38:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1570171094;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=e2vQy4nCiKJtPP2YUeyLGNlBXDwMdQo8pJX2YFwX0IM=;
+        b=IZi7YjXHGWorKLO3cphm1RrKSD1rPdzENK6/PI27C3eA+FFueUD38XRgqpxioVrhBsR4Zw
+        XtrD9b+FgMLhV/yr6+rmfQg6X2XJ7nRBMShG5jB158wmDRBBIeKRg6xP6shrsgjP/a8FBr
+        9qGwm0OVNS9jessC2Qyy8p2GRjfFcrM=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-323-Z9jj--uHMA28dWbKFXF-bw-1; Fri, 04 Oct 2019 02:38:12 -0400
+Received: by mail-lj1-f200.google.com with SMTP id j10so1457002lja.21
+        for <bpf@vger.kernel.org>; Thu, 03 Oct 2019 23:38:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CZLbsNalEDLVCI/uyy17hqZrVOedmz8hzfFbWaNkEoA=;
-        b=OM6OaJLYXysWLn7TeV9ropUMI1DjL3At0ingNiYMni6+6bOBkQZq5fFMgyNv/IZIbb
-         K1YUSokix03hYB+duGiOh2aztJWXGiVYwPG6nGBbOAkv1Z8nis+WQB08NAs842Qzm9H1
-         oSUthIKg14ZGkCVm0Tlp+eNwFmnDL+9QUrYa+mZtR00AMtVJ7fp1Vgfsxezjf9JqNV2n
-         FunOqM5jN95LSNPO9fZ1Te0POtU+YElV3K5vH1izojg7O2pbVxVt95wvC9huzJXCCD8V
-         77l4m0S4bQhPecxWM9GAq8ZUFl6abphU3OqD2hf//fs6JFvYY7d+WlgKsd3naj3oT7Db
-         3u7w==
-X-Gm-Message-State: APjAAAV5koySArqt5jNxGcDT4ddQL/EvL1EHzvfw0otiGTg0+jPCF0SF
-        xUdyCT0i9zH8Bs6FXS5kBDUG4gWlCry70OwBDiA=
-X-Google-Smtp-Source: APXvYqzI9QQfZCdw4JMz5OdOIUQqx8h53GM09GvJBjZc8tqHdWJnQ11RnG6jvgDr0Wx9k8K5vYsmRbl09ENLMgQ/whE=
-X-Received: by 2002:a37:4e55:: with SMTP id c82mr8474072qkb.437.1570167225468;
- Thu, 03 Oct 2019 22:33:45 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=zerJ5a4bqZ6C2r8FC8tJikvRyWEeCzjBczh0mC/7AFg=;
+        b=eKSLVT0gXPkBYHTETW7Ndcvr7s/myqT3bMGCq/SJKI5wyO6G95wgkSsR3hUOEYhT2S
+         NYbAkf3hDyQnfwRmshHmRWRsWxTEt70vnG3HyztrwZZzOfBNQxv7OUYoWZML0TgDBO3b
+         C04ci3DE9HEmlXUkCBYAjFAsxGxa2jxNrIKdmLP+Zg132ZC4hFwu+FTu/awJiyrgnlpk
+         PmUky8O7XNxlApzXh85Jm//jtLrh59SDPeXuhdPTJ2EH/QcRbPot6MX2HBnPZ+9dc8Hf
+         z1cdqbzHvncM+MsrTmADBrhD3P9KT3qNUSxCO/55zesLqMlCtwqzHxxyMP1+OvDF5ort
+         75og==
+X-Gm-Message-State: APjAAAVJ5EBjYBbEqqmOMuT5CFGOIPbCXIgwsLLvHboHz6a7V+nZ/uNa
+        HNb7uo8IHXZynXja+V7N8uiCGet8bfBOvmDa6goF5vMELoBzOxecbfUSVjotDMqmGuEkK2aDN9x
+        4+rdcBTyDRSIk
+X-Received: by 2002:a2e:7611:: with SMTP id r17mr3698371ljc.133.1570171091517;
+        Thu, 03 Oct 2019 23:38:11 -0700 (PDT)
+X-Google-Smtp-Source: APXvYqwEX2q87AKMLDQvOqCaRenXaH/M92WsTcEpetLiwcWYfwtfHNpX5BZTfewnq2ByXX527GH7bg==
+X-Received: by 2002:a2e:7611:: with SMTP id r17mr3698356ljc.133.1570171091294;
+        Thu, 03 Oct 2019 23:38:11 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk (borgediget.toke.dk. [85.204.121.218])
+        by smtp.gmail.com with ESMTPSA id c69sm1072603ljf.32.2019.10.03.23.38.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Oct 2019 23:38:10 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 72C1718063D; Fri,  4 Oct 2019 08:38:09 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, ast@fb.com, daniel@iogearbox.net
+Cc:     andrii.nakryiko@gmail.com, kernel-team@fb.com,
+        Andrii Nakryiko <andriin@fb.com>
+Subject: Re: [PATCH v2 bpf-next 2/3] libbpf: add bpf_object__open_{file,mem} w/ extensible opts
+In-Reply-To: <20191004053235.2710592-3-andriin@fb.com>
+References: <20191004053235.2710592-1-andriin@fb.com> <20191004053235.2710592-3-andriin@fb.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Fri, 04 Oct 2019 08:38:09 +0200
+Message-ID: <87bluxow1a.fsf@toke.dk>
 MIME-Version: 1.0
-References: <20191004052922.2701794-1-andriin@fb.com>
-In-Reply-To: <20191004052922.2701794-1-andriin@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 3 Oct 2019 22:33:34 -0700
-Message-ID: <CAEf4BzZFGv_2gvckoVMO1i5h7BBx74ZqC4qDKyQkyELj5_Kvbw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/3] Add new-style bpf_object__open APIs
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MC-Unique: Z9jj--uHMA28dWbKFXF-bw-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 3, 2019 at 10:29 PM Andrii Nakryiko <andriin@fb.com> wrote:
->
-> Add bpf_object__open_file() and bpf_object__open_mem() APIs that use a new
-> approach to providing future-proof non-ABI-breaking API changes. It relies on
-> APIs accepting optional self-describing "opts" struct, containing its own
-> size, filled out and provided by potentially outdated (as well as
-> newer-than-libbpf) user application. A set of internal helper macros
-> (OPTS_VALID, OPTS_HAS, and OPTS_GET) streamline and simplify a graceful
-> handling forward and backward compatibility for user applications dynamically
-> linked against different versions of libbpf shared library.
->
-> Users of libbpf are provided with convenience macro LIBBPF_OPTS that takes
-> care of populating correct structure size and zero-initializes options struct,
-> which helps avoid obscure issues of unitialized padding. Uninitialized padding
-> in a struct might turn into garbage-populated new fields understood by future
-> versions of libbpf.
->
-> Patch #3 switches two of test_progs' tests to use new APIs as a validation
-> that they work as expected.
->
-> v1->v2:
-> - use better approach for tracking last field in opts struct;
-> - convert few tests to new APIs for validation;
-> - fix bug with using offsetof(last_field) instead of offsetofend(last_field).
->
-> Andrii Nakryiko (3):
->   libbpf: stop enforcing kern_version, populate it for users
->   libbpf: add bpf_object__open_{file,mem} w/ extensible opts
->   selftests/bpf: switch tests to new bpf_object__open_{file,mem}() APIs
->
->  tools/lib/bpf/libbpf.c                        | 128 +++++++++---------
->  tools/lib/bpf/libbpf.h                        |  38 +++++-
->  tools/lib/bpf/libbpf.map                      |   3 +
->  tools/lib/bpf/libbpf_internal.h               |  32 +++++
->  tools/testing/selftests/bpf/Makefile          |   2 +-
->  .../selftests/bpf/prog_tests/attach_probe.c   |  42 +++++-
->  .../bpf/prog_tests/reference_tracking.c       |   7 +-
->  .../selftests/bpf/progs/test_attach_probe.c   |   1 -
->  .../bpf/progs/test_get_stack_rawtp.c          |   1 -
->  .../selftests/bpf/progs/test_perf_buffer.c    |   1 -
->  .../selftests/bpf/progs/test_stacktrace_map.c |   1 -
->  11 files changed, 176 insertions(+), 80 deletions(-)
->
-> --
-> 2.17.1
->
+Andrii Nakryiko <andriin@fb.com> writes:
 
-Sorry for the spam! Forgot to bump to v2 in subject prefix, re-sending
-v2 with correct prefix.
+> Add new set of bpf_object__open APIs using new approach to optional
+> parameters extensibility allowing simpler ABI compatibility approach.
+>
+> This patch demonstrates an approach to implementing libbpf APIs that
+> makes it easy to extend existing APIs with extra optional parameters in
+> such a way, that ABI compatibility is preserved without having to do
+> symbol versioning and generating lots of boilerplate code to handle it.
+> To facilitate succinct code for working with options, add OPTS_VALID,
+> OPTS_HAS, and OPTS_GET macros that hide all the NULL, size, and zero
+> checks.
+>
+> Additionally, newly added libbpf APIs are encouraged to follow similar
+> pattern of having all mandatory parameters as formal function parameters
+> and always have optional (NULL-able) xxx_opts struct, which should
+> always have real struct size as a first field and the rest would be
+> optional parameters added over time, which tune the behavior of existing
+> API, if specified by user.
+>
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> ---
+>  tools/lib/bpf/libbpf.c          | 51 ++++++++++++++++++++++++++++-----
+>  tools/lib/bpf/libbpf.h          | 36 +++++++++++++++++++++--
+>  tools/lib/bpf/libbpf.map        |  3 ++
+>  tools/lib/bpf/libbpf_internal.h | 32 +++++++++++++++++++++
+>  4 files changed, 112 insertions(+), 10 deletions(-)
+>
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 056769ce4fd0..503fba903e99 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -3620,16 +3620,33 @@ struct bpf_object *bpf_object__open(const char *p=
+ath)
+>  =09return bpf_object__open_xattr(&attr);
+>  }
+> =20
+> -struct bpf_object *bpf_object__open_buffer(void *obj_buf,
+> -=09=09=09=09=09   size_t obj_buf_sz,
+> -=09=09=09=09=09   const char *name)
+> +struct bpf_object *
+> +bpf_object__open_file(const char *path, struct bpf_object_open_opts *opt=
+s)
+> +{
+> +=09if (!OPTS_VALID(opts, bpf_object_open_opts))
+> +=09=09return ERR_PTR(-EINVAL);
+> +=09if (!path)
+> +=09=09return ERR_PTR(-EINVAL);
+> +
+> +=09pr_debug("loading %s\n", path);
+> +
+> +=09return __bpf_object__open(path, NULL, 0, 0);
+> +}
+
+This is not doing anything with opts...
+
+[...]
+
+> +struct bpf_object_open_opts {
+> +=09/* size of this struct, for forward/backward compatiblity */
+> +=09size_t sz;
+> +=09/* object name override, if provided:
+> +=09 * - for object open from file, this will override setting object
+> +=09 *   name from file path's base name;
+
+... but this says it should be, no?
+
+-Toke
+
