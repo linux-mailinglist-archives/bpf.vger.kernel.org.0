@@ -2,137 +2,177 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BA22CB5BD
-	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2019 10:09:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EFA3CB750
+	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2019 11:27:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731057AbfJDIJI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Oct 2019 04:09:08 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:51278 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728149AbfJDIJI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Oct 2019 04:09:08 -0400
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com [209.85.208.198])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 1BE278BA02
-        for <bpf@vger.kernel.org>; Fri,  4 Oct 2019 08:09:07 +0000 (UTC)
-Received: by mail-lj1-f198.google.com with SMTP id y12so1533631ljc.8
-        for <bpf@vger.kernel.org>; Fri, 04 Oct 2019 01:09:07 -0700 (PDT)
+        id S1728671AbfJDJ1e (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Oct 2019 05:27:34 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:49936 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727611AbfJDJ1e (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Oct 2019 05:27:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1570181251;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qjyer/U6Y+oiGKP2bVl8pCipiegwE7ie1YY+oAl4Nd8=;
+        b=Y1Ste/pFC9k0jF/8YYyjFlvMO1fnlf8TjP8viPUNpeXpwkI6WEqzyiILNyp+dQbLC7WI/g
+        wIqAlFrjksnAERB6zne3egTjM9tAq7M+hz9MxdZ/T5PBGsr4xpbeMirWrFBbjhlW8X0WTA
+        bGzgmQsA1+4qR+U5KymOsKVgMeQ274o=
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
+ [209.85.208.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-182-jFNt_a54MTeKY9BiIbZ4_A-1; Fri, 04 Oct 2019 05:27:30 -0400
+Received: by mail-lj1-f197.google.com with SMTP id x13so1585037ljj.18
+        for <bpf@vger.kernel.org>; Fri, 04 Oct 2019 02:27:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
          :message-id:mime-version:content-transfer-encoding;
-        bh=CxTGr3OoNs+1k7o4ga9lw+ILp07RapA8ZHUGhYn/b08=;
-        b=azcLQHVMav/7frz0ys4CjJHaatEKw4J8jgwsRzj49FMigijY2iUcfyQjRuXwjvDgFl
-         sGA9oXw985P5hpi2Y2HguRRAEuzarsZQjysv/xhHya9Zi4A8gncAK2u2Qso/ddEptygK
-         CzNMmtLXmmY96g9UQW5qNqkXAelFAR2WSkjtrbKtdhQumToEBxZHWrHzS2m4xBhf2BVK
-         OaxUDYDVQml8QK0BStosCMfhzy1guEThG0xIipyTDvXUHpeonB2t/dxwnvvypqTVftAy
-         RhK3xzWife5eqyyz2ncM9Q/dzpbPubhqxjM8+TYpqWMwXeh9CIkl63RHWXGHoN69iLjU
-         L/iw==
-X-Gm-Message-State: APjAAAXLKelP20IZL1P4xlIWm7nJKF49IGUbJ48GfKESq9xBZM/bcnve
-        vfQlf47PEPeHMZej7XVRDdgqYPB4cMoRDZsZbPgHfLYFgTohJBik/fy8PRAvU5JBsx5uFn8Q81k
-        Y3kRY5/pTexI3
-X-Received: by 2002:a2e:9d4a:: with SMTP id y10mr8606074ljj.181.1570176545596;
-        Fri, 04 Oct 2019 01:09:05 -0700 (PDT)
-X-Google-Smtp-Source: APXvYqwXdOsafsBtw1ID/IHtklN1DXHglNPA9xvu8TmDnmxL1/HwjensqucJ31jIfzkD42V9B9jhBA==
-X-Received: by 2002:a2e:9d4a:: with SMTP id y10mr8606064ljj.181.1570176545324;
-        Fri, 04 Oct 2019 01:09:05 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk (borgediget.toke.dk. [85.204.121.218])
-        by smtp.gmail.com with ESMTPSA id f28sm993491lfp.28.2019.10.04.01.09.04
+        bh=qjyer/U6Y+oiGKP2bVl8pCipiegwE7ie1YY+oAl4Nd8=;
+        b=ensN8ULyLEi7clhtn7s/irwmhz1wQ5VaLSibQouCRZeDHv26fIWWT0irpPd8scQaRI
+         L7LmEVFSkIJP7I1DQdbgDGmwzuLXGrpXTamQkNJGq+SoWvblvzRJIh7Tm14g78CBrt8L
+         nXj+AWzLr5mXmW8n9cG7Wonox+yHsf+jAw4npuYwesIpkIb7qoOgEilM89Iep91vremL
+         pdTF/st+QPPYtnXDuUqiVcnXx2Glma94FIJ9r6j2cxj20t66bFTTLFN/Hiw7+8LLD9xC
+         kqvRjLZLceWJ52aX/an59JDdGFkUQzvlxUTPjR08x7/Bnnro9PBaHtgCAOWUQsJAbtcD
+         gh7Q==
+X-Gm-Message-State: APjAAAU8NbjKc/hhw5jCycGZxTvTszTSVAR+DoGj6NfYt9d8NuwfeAlT
+        67YHJRyT0k7/YXabGQnnAW5gtLZlAPFWGXB/1K34gYCUFJ9XLP+ELo1TbOLq9ouXjqvdjAHiTuQ
+        8bJWiOFcZeTPN
+X-Received: by 2002:a19:f801:: with SMTP id a1mr7640945lff.166.1570181248547;
+        Fri, 04 Oct 2019 02:27:28 -0700 (PDT)
+X-Google-Smtp-Source: APXvYqz4lUtmSD5ClS+953q4DT2fCMfMovRljQn5aBweEWopaCUX8Z6KB6FkEjjJwU/dDbldhtVTqQ==
+X-Received: by 2002:a19:f801:: with SMTP id a1mr7640938lff.166.1570181248318;
+        Fri, 04 Oct 2019 02:27:28 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a00:7660:6da:443::2])
+        by smtp.gmail.com with ESMTPSA id e21sm1031128lfj.10.2019.10.04.02.27.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Oct 2019 01:09:04 -0700 (PDT)
+        Fri, 04 Oct 2019 02:27:27 -0700 (PDT)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 930C318063D; Fri,  4 Oct 2019 10:09:03 +0200 (CEST)
+        id 8DF2C18063D; Fri,  4 Oct 2019 11:27:26 +0200 (CEST)
 From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     John Fastabend <john.fastabend@gmail.com>,
-        Edward Cree <ecree@solarflare.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     Song Liu <songliubraving@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>, Martin Lau <kafai@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        Marek Majkowski <marek@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        David Miller <davem@davemloft.net>,
-        "netdev\@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf\@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 0/9] xdp: Support multiple programs on a single interface through chain calls
-In-Reply-To: <5d964d8ccfd90_55732aec43fe05c47b@john-XPS-13-9370.notmuch>
-References: <157002302448.1302756.5727756706334050763.stgit@alrua-x1> <E7319D69-6450-4BC3-97B1-134B420298FF@fb.com> <A754440E-07BF-4CF4-8F15-C41179DCECEF@fb.com> <87r23vq79z.fsf@toke.dk> <20191003105335.3cc65226@carbon> <CAADnVQKTbaxJhkukxXM7Ue7=kA9eWsGMpnkXc=Z8O3iWGSaO0A@mail.gmail.com> <87pnjdq4pi.fsf@toke.dk> <1c9b72f9-1b61-d89a-49a4-e0b8eead853d@solarflare.com> <5d964d8ccfd90_55732aec43fe05c47b@john-XPS-13-9370.notmuch>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>
+Subject: Re: [PATCH bpf-next] libbpf: Add cscope and TAGS targets to Makefile
+In-Reply-To: <CAEf4BzZpksMGZhggHd=wHVStrN9Wb8RRw-PyDm7fGL3A7YSXdQ@mail.gmail.com>
+References: <20191003084321.1431906-1-toke@redhat.com> <CAEf4BzZpksMGZhggHd=wHVStrN9Wb8RRw-PyDm7fGL3A7YSXdQ@mail.gmail.com>
 X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 04 Oct 2019 10:09:03 +0200
-Message-ID: <87tv8pnd9c.fsf@toke.dk>
+Date:   Fri, 04 Oct 2019 11:27:26 +0200
+Message-ID: <87r23soo75.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: base64
+X-MC-Unique: jFNt_a54MTeKY9BiIbZ4_A-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Sm9obiBGYXN0YWJlbmQgPGpvaG4uZmFzdGFiZW5kQGdtYWlsLmNvbT4gd3JpdGVzOg0KDQo+IEVk
-d2FyZCBDcmVlIHdyb3RlOg0KPj4gT24gMDMvMTAvMjAxOSAxNTozMywgVG9rZSBIw7hpbGFuZC1K
-w7hyZ2Vuc2VuIHdyb3RlOg0KPj4gPiBJbiBhbGwgY2FzZXMsIHRoZSBzeXNhZG1pbiBjYW4ndCAo
-b3IgZG9lc24ndCB3YW50IHRvKSBtb2RpZnkgYW55IG9mIHRoZQ0KPj4gPiBYRFAgcHJvZ3JhbXMu
-IEluIGZhY3QsIHRoZXkgbWF5IGp1c3QgYmUgaW5zdGFsbGVkIGFzIHByZS1jb21waWxlZCAuc28N
-Cj4+ID4gQlBGIGZpbGVzIG9uIGhpcyBzeXN0ZW0uIFNvIGhlIG5lZWRzIHRvIGJlIGFibGUgdG8g
-Y29uZmlndXJlIHRoZSBjYWxsDQo+PiA+IGNoYWluIG9mIGRpZmZlcmVudCBwcm9ncmFtcyB3aXRo
-b3V0IG1vZGlmeWluZyB0aGUgZUJQRiBwcm9ncmFtIHNvdXJjZQ0KPj4gPiBjb2RlLg0KPj4gUGVy
-aGFwcyBJJ20gYmVpbmcgZHVtYiwgYnV0IGNhbid0IHdlIHNvbHZlIHRoaXMgaWYgd2UgbWFrZSBs
-aW5raW5nIHdvcms/DQo+PiBJLmUuIG15SURTLnNvIGhhcyBpZHNfbWFpbigpIGZ1bmN0aW9uLCBt
-eUZpcmV3YWxsLnNvIGhhcyBmaXJld2FsbCgpDQo+PiDCoGZ1bmN0aW9uLCBhbmQgc3lzYWRtaW4g
-d3JpdGVzIGEgbGl0dGxlIFhEUCBwcm9nIHRvIGNhbGwgdGhlc2U6DQo+PiANCj4+IGludCBtYWlu
-KHN0cnVjdCB4ZHBfbWQgKmN0eCkNCj4+IHsNCj4+IMKgwqDCoMKgwqDCoMKgIGludCByYyA9IGZp
-cmV3YWxsKGN0eCksIHJjMjsNCj4+IA0KPj4gwqDCoMKgwqDCoMKgwqAgc3dpdGNoKHJjKSB7DQo+
-PiDCoMKgwqDCoMKgwqDCoCBjYXNlIFhEUF9EUk9QOg0KPj4gwqDCoMKgwqDCoMKgwqAgY2FzZSBY
-RFBfQUJPUlRFRDoNCj4+IMKgwqDCoMKgwqDCoMKgIGRlZmF1bHQ6DQo+PiDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqAgcmV0dXJuIHJjOw0KPj4gwqDCoMKgwqDCoMKgwqAgY2FzZSBYRFBf
-UEFTUzoNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZXR1cm4gaWRzX21haW4o
-Y3R4KTsNCj4+IMKgwqDCoMKgwqDCoMKgIGNhc2UgWERQX1RYOg0KPj4gwqDCoMKgwqDCoMKgwqAg
-Y2FzZSBYRFBfUkVESVJFQ1Q6DQo+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcmMy
-ID0gaWRzX21haW4oY3R4KTsNCj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBpZiAo
-cmMyID09IFhEUF9QQVNTKQ0KPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoCByZXR1cm4gcmM7DQo+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
-cmV0dXJuIHJjMjsNCj4+IMKgwqDCoMKgwqDCoMKgIH0NCj4+IH0NCj4+IA0KPj4gTm93IGhlIGNv
-bXBpbGVzIHRoaXMgYW5kIGxpbmtzIGl0IGFnYWluc3QgdGhvc2UgLnNvIGZpbGVzLCBnaXZpbmcg
-aGltDQo+PiDCoGEgbmV3IG9iamVjdCBmaWxlIHdoaWNoIGhlIGNhbiB0aGVuIGluc3RhbGwuDQo+
-PiANCj4+IChPbmUgcHJvYmxlbSB3aGljaCBkb2VzIHNwcmluZyB0byBtaW5kIGlzIHRoYXQgdGhl
-IC5zbyBmaWxlcyBtYXkgdmVyeQ0KPj4gwqBpbmNvbnNpZGVyYXRlbHkgYm90aCBuYW1lIHRoZWly
-IGVudHJ5IHBvaW50cyBtYWluKCksIHdoaWNoIG1ha2VzDQo+PiDCoGxpbmtpbmcgYWdhaW5zdCBi
-b3RoIG9mIHRoZW0gcmF0aGVyIGNoYWxsZW5naW5nLsKgIEJ1dCBJIHRoaW5rIHRoYXQNCj4+IMKg
-Y2FuIGJlIHdvcmtlZCBhcm91bmQgd2l0aCBhIHN1ZmZpY2llbnRseSBjbGV2ZXIgbGlua2VyKS4N
-Cj4NCj4gSSBhZ3JlZSBidXQgdGhlIHNhbWUgY291bGQgYmUgZG9uZSB0b2RheSBpZiBpZHNfbWFp
-biBhbmQgZmlyZXdhbGwNCj4gd2VyZSBpbmxpbmUgZnVuY3Rpb25zLiBBZG1pbiBjYW4gd3JpdGUg
-dGhlaXIgbGl0dGxlIHByb2dyYW0gbGlrZSBhYm92ZQ0KPiBhbmQganVzdCAnI2luY2x1ZGUgZmly
-ZXdhbGwnLCAnI2luY2x1ZGUgaWRzJy4gVGhlbiB5b3UgZG9uJ3QgbmVlZA0KPiBsaW5raW5nIGFs
-dGhvdWdoIGl0IGRvZXMgbWFrZSB0aGluZ3MgbmljZXIuDQoNCihSZXBseWluZyB0byBib3RoIHlv
-dSBhbmQgRWR3YXJkIGhlcmUsIGFzIHdoYXQgeW91IHN1Z2dlc3RlZCBpbiB5b3VyDQpvdGhlciBl
-bWFpbCBpcyBiYXNpY2FsbHkgdGhlIHNhbWUpLg0KDQpZZXMsIHlvdSBhcmUgcmlnaHQgdGhhdCB3
-ZSBjb3VsZCB0ZWNobmljYWxseSBkbyB0aGlzIGVudGlyZWx5IGluDQp1c2Vyc3BhY2Ugd2l0aCBh
-IHN1ZmZpY2llbnRseSBzbWFydCBsb2FkZXIuIFRoaXMgd2FzIGV2ZW4gaW4gdGhlDQpwcmVzZW50
-YXRpb24gYXQgTFBDIChzZWUgc2xpZGUgMzQ6ICJJbXBsZW1lbnRhdGlvbiBvcHRpb24gIzE6IHVz
-ZXJzcGFjZQ0Kb25seSIpLg0KDQpUaGUgcmVhc29uIHdlIHdhbnQgdG8gYWRkIGtlcm5lbCBzdXBw
-b3J0IGlzIHRoYXQgaXQgc29sdmVzIHNldmVyYWwNCmltcG9ydGFudCBwcm9ibGVtczoNCg0KLSBD
-ZW50cmFsaXNhdGlvbjogVG8gZG8gdGhpcyBlbnRpcmVseSBpbiB1c2Vyc3BhY2UsIGV2ZXJ5dGhp
-bmcgaGFzIHRvIGdvDQogIHRocm91Z2ggdGhlIHNhbWUgbG9hZGVyIHRoYXQgYnVpbGRzIHRoZSAi
-ZGlzcGF0Y2hlciBwcm9ncmFtIi4NCg0KLSBFbmZvcmNlbWVudDogUmVsYXRlZCB0byB0aGUgcG9p
-bnQgYWJvdmUgLSBpZiBhbiBYRFAtZW5hYmxlZA0KICBhcHBsaWNhdGlvbiBsb2FkcyBpdHMgb3du
-IFhEUCBwcm9ncmFtIHdpdGhvdXQgZ29pbmcgdGhyb3VnaCB0aGUNCiAgY2VudHJhbCBsb2FkZXIs
-IHdlIGNhbid0IGxvYWQgYW5vdGhlciBwcm9ncmFtIGFmdGVyIHRoYXQuDQoNCi0gU3RhdGUgaW5z
-cGVjdGlvbjogSWYgdXNlcnNwYWNlIGJ1aWxkcyBhbmQgbG9hZHMgYSBzaW5nbGUgZGlzcGF0Y2gN
-CiAgcHJvZ3JhbSwgaXQgaXMgZGlmZmljdWx0IHRvIGdvIGZyb20gdGhhdCBiYWNrIHRvIHRoZSBj
-YWxsIHNlcXVlbmNlDQogIGdyYXBoLg0KDQotIER5bmFtaWMgY2hhbmdlczogV2hpbGUgdGhlIGRp
-c3BhdGNoIHByb2dyYW0gY2FuIGJlIHJlYnVpbHQgZnJvbSBhDQogIGNvbmZpZyBmaWxlLCBpdCBi
-ZWNvbWVzIGRpZmZpY3VsdCB0byBkbyBkeW5hbWljIGNoYW5nZXMgdG8gdGhlDQogIHNlcXVlbmNl
-IChzdWNoIGFzIHRlbXBvcmFyaWx5IGF0dGFjaGluZyB4ZHBkdW1wIHRvIHRoZSBYRFBfRFJPUCBh
-Y3Rpb24NCiAgb2YgdGhpcyBhbHJlYWR5LWxvYWRlZCBwcm9ncmFtIHdoaWxlIGRlYnVnZ2luZyku
-DQoNCkhhdmluZyB0aGUgbWVjaGFuaXNtIGJlIGluLWtlcm5lbCBtYWtlcyBzb2x2aW5nIHRoZXNl
-IHByb2JsZW1zIGEgbG90DQplYXNpZXIsIGJlY2F1c2UgdGhlIGtlcm5lbCBjYW4gYmUgcmVzcG9u
-c2libGUgZm9yIHN0YXRlIG1hbmFnZW1lbnQsIGFuZA0KaXQgY2FuIGVuZm9yY2UgdGhlIGNoYWlu
-IGNhbGwgZXhlY3V0aW9uIGxvZ2ljLg0KDQpUaGUgZmFjdCB0aGF0IExvcmVueiBldCBhbCBhcmUg
-aW50ZXJlc3RlZCBpbiB0aGlzIGZlYXR1cmUgKGV2ZW4gdGhvdWdoDQp0aGV5IGFyZSBlc3NlbnRp
-YWxseSBhbHJlYWR5IGRvaW5nIHdoYXQgeW91IHN1Z2dlc3RlZCwgYnkgaGF2aW5nIGENCmNlbnRy
-YWxpc2VkIGRhZW1vbiB0byBtYW5hZ2UgYWxsIFhEUCBwcm9ncmFtcyksIHRlbGxzIG1lIHRoYXQg
-aGF2aW5nDQprZXJuZWwgc3VwcG9ydCBmb3IgdGhpcyBpcyB0aGUgcmlnaHQgdGhpbmcgdG8gZG8u
-DQoNCi1Ub2tlDQo=
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+
+> On Thu, Oct 3, 2019 at 1:46 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@red=
+hat.com> wrote:
+>>
+>> Using cscope and/or TAGS files for navigating the source code is useful.
+>> Add simple targets to the Makefile to generate the index files for both
+>> tools.
+>>
+>> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+>> ---
+>
+> Thanks a lot for adding this!
+>
+> I tested cscope only and it works (especially without -k), so:
+>
+> Tested-by: Andrii Nakryiko <andriin@fb.com>
+>
+>
+>>  tools/lib/bpf/.gitignore |  2 ++
+>>  tools/lib/bpf/Makefile   | 10 +++++++++-
+>>  2 files changed, 11 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/tools/lib/bpf/.gitignore b/tools/lib/bpf/.gitignore
+>> index d9e9dec04605..c1057c01223e 100644
+>> --- a/tools/lib/bpf/.gitignore
+>> +++ b/tools/lib/bpf/.gitignore
+>> @@ -3,3 +3,5 @@ libbpf.pc
+>>  FEATURE-DUMP.libbpf
+>>  test_libbpf
+>>  libbpf.so.*
+>> +TAGS
+>> +cscope.*
+>> diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
+>> index c6f94cffe06e..57df6b933196 100644
+>> --- a/tools/lib/bpf/Makefile
+>> +++ b/tools/lib/bpf/Makefile
+>> @@ -262,7 +262,7 @@ clean:
+>>
+>>
+>>
+>> -PHONY +=3D force elfdep bpfdep
+>> +PHONY +=3D force elfdep bpfdep cscope TAGS
+>>  force:
+>>
+>>  elfdep:
+>> @@ -271,6 +271,14 @@ elfdep:
+>>  bpfdep:
+>>         @if [ "$(feature-bpf)" !=3D "1" ]; then echo "BPF API too old"; =
+exit 1 ; fi
+>>
+>> +cscope:
+>> +       (echo \-k; echo \-q; for f in *.c *.h; do echo $$f; done) > csco=
+pe.files
+>> +       cscope -b -f cscope.out
+>
+> 1. I'd drop -k, given libbpf is user-land library, so it's convenient
+> to jump into system headers for some of BPF definitions.
+
+Well, the reason I included it was that when using the version in the
+kernel tree, I found it really annoying to jump to kernel headers
+installed in the system. Then I'd rather the jump fails and I can go
+lookup the header in the kernel tree myself.
+
+So maybe we should rather use -I to point at the parent directory? You
+guys could then strip that when syncing to the github repo?
+
+> 2. Wouldn't this be simpler and work exactly the same?
+>
+> ls *.c *.h > cscope.files
+> cscope -b -q -f cscope.out
+
+Well, I usually avoid 'ls' because I have it aliased in my shell so it
+prints more info than just the file names. But I don't suppose that's an
+issue inside the Makefile, so will fix :)
+
+>> +
+>> +TAGS:
+>
+> let's make it lower-case, please? Linux makefile supports both `make
+> tags` and `make TAGS`, but all-caps is terrible :)
+
+You mean just rename the 'make' target, right? Sure, can do...
+
+As for the file itself, I think the version actually on what you use to
+generate the tags file. 'ctags' generates lower-case 'tags' by default,
+while 'etags' generates 'TAGS'.
+
+I don't use either, so dunno why that different exists, and if it's
+actually meaningful? Should we do both?
+
+>> +       rm -f TAGS
+>> +       echo *.c *.h | xargs etags -a
+>
+> nit: might as well do ls *.c *.h for consistency with cscope
+> suggestion above (though in both cases we just rely on shell expansion
+> logic, so doesn't matter).
+
+Heh, pedantic much? ;)
+But OK, I have no strong feelings one way or the other...
+
+-Toke
+
