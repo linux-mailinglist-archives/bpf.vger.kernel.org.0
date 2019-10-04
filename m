@@ -2,115 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AE2EECBF98
-	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2019 17:44:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31ACCCBFD6
+	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2019 17:56:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389952AbfJDPos (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Oct 2019 11:44:48 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:34673 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389669AbfJDPor (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Oct 2019 11:44:47 -0400
-Received: by mail-pl1-f194.google.com with SMTP id k7so3323287pll.1;
-        Fri, 04 Oct 2019 08:44:47 -0700 (PDT)
+        id S2390146AbfJDP4S (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Oct 2019 11:56:18 -0400
+Received: from mail-pf1-f202.google.com ([209.85.210.202]:53141 "EHLO
+        mail-pf1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390031AbfJDP4S (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Oct 2019 11:56:18 -0400
+Received: by mail-pf1-f202.google.com with SMTP id u12so5002414pfn.19
+        for <bpf@vger.kernel.org>; Fri, 04 Oct 2019 08:56:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=GFFmq53ZA+vEvLH+L12DZotI8ZROy3ndHmBfHrJMHss=;
-        b=ei/Yx9eFGr127yukJnQzL+G9T8OPFW+B1biEqAV+G5FAYoZeLKyg0Tx44MGMotsI1D
-         gXv+eZTIViulRT4kAK8vNaxjuxjh1uWrhPC0IqjnZosRxM9p0GEDuCRSVpHJfHX/b5+X
-         SHGIcSbkklnQjOZUww37yJvNvpO6Q2fmz5ADdlJmT3eGyZQeivuTDwBU7deQDlTPaNhd
-         3EA18EpxJFxSFRw1JfWEZUZ62wfnZ+3AU0bhQBR7QZH2KOKmkb7pLfiogvxZMOlpdSVC
-         YH5RydmJ/pUVQXHHeufXfaVvIPshDY+moUMy+5nm206IKc+8pbkO0Bji8oElJHk0f2N0
-         Ay0w==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=VwzelZXvMKVqfPi7TNjhPVyjYSy8RxKwQ848A3WQgV0=;
+        b=sk0A6RXv2sU6dca0VvDoRtkllW+X5AA7anM26yEMg/tVE8TvGYRl1LcSj63WGYfCZw
+         jMgGIVgHhVucjUZT1jrNFrBCrnwvSHLl1qK97KGDRb9GZAtuNdoC58tGFSdkd04vSULB
+         s7vkUFmHXrYDdRv/XTo9S8ZO12kY0oFyfYMpgy3I8vi01nYieJgxYoP9uzu4bF0V+nVS
+         DAIoX6C9zCJo+3PhmtjoIEbVzWCXO5LmCYA6l6QUciIu4RHjTwEmc/IHck1EmVIcRbeC
+         xq0mXSH9CtDpL2qjfNwkPvXsF7azWpq4NOUxYkeg1K5ELDcdr31G8RLExbM7u7AkSwYo
+         Z/FA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=GFFmq53ZA+vEvLH+L12DZotI8ZROy3ndHmBfHrJMHss=;
-        b=SxcUYgks0A5mTUU7bvdWQwrXb4geBJcrDTx1A94DSaxVcv8zVigHVOOzafRX0waDAU
-         JvSvqgC3nU3L0+gLDD/qspl9O1EfusXlTJvMhIgS5lhhCIV95VCAYI46NlgVB49x6Qva
-         5FhyLiIDPfrUcPWSpgCzf2eHcg8fL0sLARU64nRxYJgDoPoTdbOwzbEtL85Nt503Mi4X
-         rvbg8g8+46lV9DnTCDh8OTgEa4vWD4uCieWCl3AE+pX53C6l9CfChigdTvUw5lpCyWfB
-         Vb+GbByRVKkA1fM/PDK8ostkY9LfrOIlHgzovpWnXllbwXq+j33hWRy+2AjlISPPvhUa
-         RQrA==
-X-Gm-Message-State: APjAAAWiP4Z82D7y2LGtSrola/xxlaI28wldCHOw3LQjKn0DWgx0I7oF
-        VuxwbtVo8GgE9EDs5/DND0U=
-X-Google-Smtp-Source: APXvYqwvXzjxXxPm7KLjY8weQp9I7QVoefcVhwta9o1JsCBL3oCdpHE64Gz1900QlFs5HykdhrTd6w==
-X-Received: by 2002:a17:902:8d81:: with SMTP id v1mr15928819plo.124.1570203887112;
-        Fri, 04 Oct 2019 08:44:47 -0700 (PDT)
-Received: from dahern-DO-MB.local (c-73-169-115-106.hsd1.co.comcast.net. [73.169.115.106])
-        by smtp.googlemail.com with ESMTPSA id n66sm7289911pfn.90.2019.10.04.08.44.45
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 04 Oct 2019 08:44:46 -0700 (PDT)
-Subject: Re: [PATCH v3 bpf-next 5/7] libbpf: move
- bpf_{helpers,endian,tracing}.h into libbpf
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-References: <20191003212856.1222735-1-andriin@fb.com>
- <20191003212856.1222735-6-andriin@fb.com>
- <da73636f-7d81-1fe0-65af-aa32f7654c57@gmail.com>
- <CAEf4BzYRJ4i05prEJF_aCQK5jnmpSUqrwTXYsj4FDahCWcNQdQ@mail.gmail.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <4fcbe7bf-201a-727a-a6f1-2088aea82a33@gmail.com>
-Date:   Fri, 4 Oct 2019 09:44:44 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
- Gecko/20100101 Thunderbird/60.9.0
-MIME-Version: 1.0
-In-Reply-To: <CAEf4BzYRJ4i05prEJF_aCQK5jnmpSUqrwTXYsj4FDahCWcNQdQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=VwzelZXvMKVqfPi7TNjhPVyjYSy8RxKwQ848A3WQgV0=;
+        b=TSGBPJ2CCS8qaxRHny3h1o6W4ewuyNufcpERBbR93JokjuHp7ouJMjcuqWhQJDzC+1
+         GAr4g8K2XkHGUHsmTsH3KXS9CFfQfEnyvVjQJr1R+yFhJSZ/uDF63qO5k8yApaHhzHqQ
+         2S641ha5Vmfp0Mzmei0HCozjt32ncZObk4S6QsnKCr/ZRecP2m3zSdUr3ovlJGxxj+GT
+         HH1xPzZiFStTy8UO7xkC23pnL9qQdMUHeZC593/8ZSaY30Ba8PlPdBExsIjKwvLDa86G
+         AWlMVzh76ztJrTz6zjkos/tYr05hFv91plb/WiYmbnNWFlPHVRULeek+g1h3oM+ujFah
+         Hpkg==
+X-Gm-Message-State: APjAAAV6uLLc4PYZP/te//UKq6dCvdPj+2yFVl+EfpsmQIbZObr3uM+w
+        4xjI0C39qndcE4ZWPaeWHi+lV24=
+X-Google-Smtp-Source: APXvYqwP/m71gJ8MvKfW7uO5jbHe0hoOta4hVVoqxwVtGq6aLgl6/8eGDN6nJIp/arirao/sTDkIrT0=
+X-Received: by 2002:a63:4e44:: with SMTP id o4mr16127867pgl.103.1570204577251;
+ Fri, 04 Oct 2019 08:56:17 -0700 (PDT)
+Date:   Fri,  4 Oct 2019 08:56:13 -0700
+Message-Id: <20191004155615.95469-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.23.0.581.g78d2f28ef7-goog
+Subject: [PATCH bpf-next v2 0/2] bpf/flow_dissector: add mode to enforce
+ global BPF flow dissector
+From:   Stanislav Fomichev <sdf@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        Stanislav Fomichev <sdf@google.com>,
+        Petar Penkov <ppenkov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/4/19 9:27 AM, Andrii Nakryiko wrote:
-> On Fri, Oct 4, 2019 at 7:47 AM David Ahern <dsahern@gmail.com> wrote:
->>
->> On 10/3/19 3:28 PM, Andrii Nakryiko wrote:
->>> Move bpf_helpers.h, bpf_tracing.h, and bpf_endian.h into libbpf. Ensure
->>> they are installed along the other libbpf headers. Also, adjust
->>> selftests and samples include path to include libbpf now.
->>
->> There are side effects to bringing bpf_helpers.h into libbpf if this
->> gets propagated to the github sync.
->>
->> bpf_helpers.h references BPF_FUNC_* which are defined in the
->> uapi/linux/bpf.h header. That is a kernel version dependent api file
->> which means attempts to use newer libbpf with older kernel headers is
->> going to throw errors when compiling bpf programs -- bpf_helpers.h will
->> contain undefined BPF_FUNC references.
-> 
-> That's true, but I'm wondering if maintaining a copy of that enum in
-> bpf_helpers.h itself is a good answer here?
-> 
-> bpf_helpers.h will be most probably used with BPF CO-RE and
-> auto-generated vmlinux.h with all the enums and types. In that case,
-> you'll probably want to use vmlinux.h for one of the latest kernels
-> anyways.
+While having a per-net-ns flow dissector programs is convenient for
+testing, security-wise it's better to have only one vetted global
+flow dissector implementation.
 
-I'm not following you; my interpretation of your comment seems like you
-are making huge assumptions.
+Let's have a convention that when BPF flow dissector is installed
+in the root namespace, child namespaces can't override it.
 
-I build bpf programs for specific kernel versions using the devel
-packages for the specific kernel of interest.
+The intended use-case is to attach global BPF flow dissector
+early from the init scripts/systemd. Attaching global dissector
+is prohibited if some non-root namespace already has flow dissector
+attached. Also, attaching to non-root namespace is prohibited
+when there is flow dissector attached to the root namespace.
 
-> 
-> Nevertheless, it is a problem and thanks for bringing it up! I'd say
-> for now we should still go ahead with this move and try to solve with
-> issue once bpf_helpers.h is in libbpf. If bpf_helpers.h doesn't work
-> for someone, it's no worse than it is today when users don't have
-> bpf_helpers.h at all.
-> 
+v2:
+* EPERM -> EEXIST (Song Liu)
+* Make sure we don't have dissector attached to non-root namespaces
+  when attaching the global one (Andrii Nakryiko)
 
-If this syncs to the github libbpf, it will be worse than today in the
-sense of compile failures if someone's header file ordering picks
-libbpf's bpf_helpers.h over whatever they are using today.
+Cc: Petar Penkov <ppenkov@google.com>
+
+Stanislav Fomichev (2):
+  bpf/flow_dissector: add mode to enforce global BPF flow dissector
+  selftests/bpf: add test for BPF flow dissector in the root namespace
+
+ Documentation/bpf/prog_flow_dissector.rst     |  3 ++
+ net/core/flow_dissector.c                     | 42 ++++++++++++++--
+ .../selftests/bpf/test_flow_dissector.sh      | 48 ++++++++++++++++---
+ 3 files changed, 83 insertions(+), 10 deletions(-)
+
+-- 
+2.23.0.581.g78d2f28ef7-goog
