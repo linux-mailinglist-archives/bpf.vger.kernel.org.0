@@ -2,138 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2803DCBFDB
-	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2019 17:56:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64401CBFE6
+	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2019 17:58:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390173AbfJDP4Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Oct 2019 11:56:24 -0400
-Received: from mail-yw1-f74.google.com ([209.85.161.74]:47609 "EHLO
-        mail-yw1-f74.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390156AbfJDP4X (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Oct 2019 11:56:23 -0400
-Received: by mail-yw1-f74.google.com with SMTP id p205so6120553ywc.14
-        for <bpf@vger.kernel.org>; Fri, 04 Oct 2019 08:56:23 -0700 (PDT)
+        id S2390184AbfJDP6t (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Oct 2019 11:58:49 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:33309 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389794AbfJDP6s (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Oct 2019 11:58:48 -0400
+Received: by mail-ot1-f66.google.com with SMTP id 60so5739935otu.0
+        for <bpf@vger.kernel.org>; Fri, 04 Oct 2019 08:58:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=dSnbP5Jkis+rn77OzXcSHwYP7eOSGch4IOdOZ3lKMAI=;
-        b=Im2RWn74vOKBgu9Poi6W/dO0NUqLg9bxxDf/THc48zCMcb8BNJcprvjqtPrdhLDZjc
-         +wkFdGSW55YHNIkllq2xcHaH8fqiG47oMVCqlKUxAMIsG650R828Nwg4aV9cXI3mKYgK
-         PoM5nB2Z6fOcoMci2sWkUUEg2G0YXfM9ffPqIvJobhlVTRsxzDIfbeFt8p8amdJEsYSF
-         0upS5bHX1Hlzqe0nB7BC3r2zlB/7ClBn/XdmEtCaVYvRiwng0QUCtL7S0S/TPANMFhFI
-         a+6l2cO9TN8A2hqhAxOL5BW968IwDg+ggI16mZC2hUe3bLUjEOeNmrCYT/+JIkz48/XO
-         hopQ==
+        bh=Kii2t84FnpnUt+XgKeXePx9ynfaDpkgw73Li78q+P1g=;
+        b=J3H7HHcpkA4nMMNjy8hzRpc9bYvv2Qp5Ao4uFjr6zVyKTGFd/1zIIzSsdUbnXKDejt
+         PXOf+WJhfVQ1cEuHg4W+YdxfNnClR9ZEgbPbvO48b6CuWnyHM7jaVLqU9oDkGDmGbN7p
+         Fg4sxQWdn5g606/E4II2GwxDufXL3ZnsGhL2Q=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=dSnbP5Jkis+rn77OzXcSHwYP7eOSGch4IOdOZ3lKMAI=;
-        b=LrSs/SQH1OaaAx8laYrdbZsWyqpZLz2csKsQ7XrIEO1sOwkEYynm2a4VMICqqKXvAJ
-         8egVfIccNiC4Xfd1ni0fesp764DPCn9FNUFKlnbQh6hPv7qMUjTboqms0cIvo1a6cxhq
-         qHrrV7y9O8HUqrvC/fUvW+jd4cB2ufTgYy+0ktsFHXIp0zqNLT16QZnC6iw5Jgw2vJ8G
-         vJE5aVbhKnCjDmAKTLWGLbbNNBzwtJAp/B1eTANhE5Jmc2XmkkxiVehBchkZ4xvnYzeb
-         0q1KNGy4jSk4ALcg6x/535t6yZCJao9hPwDSBE3Qxm+kbfCZ6/7xbsAZUtoRZ2XFBm0a
-         J2wg==
-X-Gm-Message-State: APjAAAX1OAxJ9FHiM2wIez6kvDGJgkl/ZGOUpxJ1BQ9RfvNquAzVzjhf
-        tNF60swCvwwQO4/zWP9FQ3oR7NM=
-X-Google-Smtp-Source: APXvYqx9ao7IS9HtEjI17gkBC+SDiaid6NDXJm8QkifSIxXPThWEQ+JeZcbfwmaHh+pLCYaIyelWl/8=
-X-Received: by 2002:a81:8203:: with SMTP id s3mr11007383ywf.235.1570204582427;
- Fri, 04 Oct 2019 08:56:22 -0700 (PDT)
-Date:   Fri,  4 Oct 2019 08:56:15 -0700
-In-Reply-To: <20191004155615.95469-1-sdf@google.com>
-Message-Id: <20191004155615.95469-3-sdf@google.com>
-Mime-Version: 1.0
-References: <20191004155615.95469-1-sdf@google.com>
-X-Mailer: git-send-email 2.23.0.581.g78d2f28ef7-goog
-Subject: [PATCH bpf-next v2 2/2] selftests/bpf: add test for BPF flow
- dissector in the root namespace
-From:   Stanislav Fomichev <sdf@google.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
-        Stanislav Fomichev <sdf@google.com>,
-        Petar Penkov <ppenkov@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Kii2t84FnpnUt+XgKeXePx9ynfaDpkgw73Li78q+P1g=;
+        b=BoWSo+psd/FKLX1vZP1VvgV+XvjgpdYj3BpmAHp3PoA4OGtP1CBZCpVZ0ssKrg7soD
+         CHEe1rTt011d2ivUKHWHuv4pUwgKEiFDYVJTdSlEq6SBq3borr5p9r6cffIcfWFdPOfR
+         OhwU7P7iRsszu8PXN9MoiofaVokIZP19UT4X/6iq8HiPITm2uJIqK7xZ/4c6IKf9IT47
+         ZeDLNfN4LvMtI58KyyG29Tw186cVtc/5h49pDi3/nzxazGi6YQWxAfGajGGSW3tWdxbw
+         gqKdeXvHj1PVJNjsbqB4lOU+feth9Kj02JrI2XMPs/1W83jOR4LeZSfZIXtzXq/vew53
+         9QPg==
+X-Gm-Message-State: APjAAAWeoioa72yaSUtqr6VHhv0QeYIntCnrpZfQyEqr/VSeExqZ91so
+        nM8c5fuiti36LRP7qEvVNVWn+VpMSN9Sc6Z07loJPA==
+X-Google-Smtp-Source: APXvYqyKL1Kens97wBLPLsOvsJYc8PCr4lRbH4sMcBrXV994Y/EKtcQCA14vCjdq7k4WHKF1OgG7W4aVju1mSLnylQA=
+X-Received: by 2002:a9d:7398:: with SMTP id j24mr10951958otk.289.1570204727971;
+ Fri, 04 Oct 2019 08:58:47 -0700 (PDT)
+MIME-Version: 1.0
+References: <157002302448.1302756.5727756706334050763.stgit@alrua-x1>
+ <E7319D69-6450-4BC3-97B1-134B420298FF@fb.com> <A754440E-07BF-4CF4-8F15-C41179DCECEF@fb.com>
+ <87r23vq79z.fsf@toke.dk> <20191003105335.3cc65226@carbon> <CAADnVQKTbaxJhkukxXM7Ue7=kA9eWsGMpnkXc=Z8O3iWGSaO0A@mail.gmail.com>
+ <87pnjdq4pi.fsf@toke.dk> <1c9b72f9-1b61-d89a-49a4-e0b8eead853d@solarflare.com>
+ <5d964d8ccfd90_55732aec43fe05c47b@john-XPS-13-9370.notmuch>
+ <87tv8pnd9c.fsf@toke.dk> <68466316-c796-7808-6932-01d9d8c0a40b@solarflare.com>
+In-Reply-To: <68466316-c796-7808-6932-01d9d8c0a40b@solarflare.com>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Fri, 4 Oct 2019 16:58:36 +0100
+Message-ID: <CACAyw99oUfst5LDaPZmbKNfQtM2wF8fP0rz7qMk+Qn7SMaF_vw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/9] xdp: Support multiple programs on a single
+ interface through chain calls
+To:     Edward Cree <ecree@solarflare.com>
+Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>, Martin Lau <kafai@fb.com>,
+        Yonghong Song <yhs@fb.com>,
+        Marek Majkowski <marek@cloudflare.com>,
+        David Miller <davem@davemloft.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Make sure non-root namespaces get an error if root flow dissector is
-attached.
+On Fri, 4 Oct 2019 at 11:34, Edward Cree <ecree@solarflare.com> wrote:
+>
+> Enforcement is easily dealt with: you just don't give people the caps/
+>  perms to load XDP programs directly, so the only way they can do it is
+>  via your loader (which you give them a socket or dbus or something to
+>  talk to).
 
-Cc: Petar Penkov <ppenkov@google.com>
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- .../selftests/bpf/test_flow_dissector.sh      | 48 ++++++++++++++++---
- 1 file changed, 42 insertions(+), 6 deletions(-)
+Writing this daemon is actually harder than it sounds. Loading eBPF
+programs can become fairly complex, with eBPF
+maps being shared between different programs. If you want to support
+all use cases (which you kind of have to) then you'll end up writing an
+RPC wrapper for libbpf, which sounds very painful to me.
 
-diff --git a/tools/testing/selftests/bpf/test_flow_dissector.sh b/tools/testing/selftests/bpf/test_flow_dissector.sh
-index d23d4da66b83..2c3a25d64faf 100755
---- a/tools/testing/selftests/bpf/test_flow_dissector.sh
-+++ b/tools/testing/selftests/bpf/test_flow_dissector.sh
-@@ -18,19 +18,55 @@ fi
- # this is the case and run it with in_netns.sh if it is being run in the root
- # namespace.
- if [[ -z $(ip netns identify $$) ]]; then
-+	err=0
-+	if bpftool="$(which bpftool)"; then
-+		echo "Testing global flow dissector..."
-+
-+		$bpftool prog loadall ./bpf_flow.o /sys/fs/bpf/flow \
-+			type flow_dissector
-+
-+		if ! unshare --net $bpftool prog attach pinned \
-+			/sys/fs/bpf/flow/flow_dissector flow_dissector; then
-+			echo "Unexpected unsuccessful attach in namespace" >&2
-+			err=1
-+		fi
-+
-+		$bpftool prog attach pinned /sys/fs/bpf/flow/flow_dissector \
-+			flow_dissector
-+
-+		if unshare --net $bpftool prog attach pinned \
-+			/sys/fs/bpf/flow/flow_dissector flow_dissector; then
-+			echo "Unexpected successful attach in namespace" >&2
-+			err=1
-+		fi
-+
-+		if ! $bpftool prog detach pinned \
-+			/sys/fs/bpf/flow/flow_dissector flow_dissector; then
-+			echo "Failed to detach flow dissector" >&2
-+			err=1
-+		fi
-+
-+		rm -rf /sys/fs/bpf/flow
-+	else
-+		echo "Skipping root flow dissector test, bpftool not found" >&2
-+	fi
-+
-+	# Run the rest of the tests in a net namespace.
- 	../net/in_netns.sh "$0" "$@"
--	exit $?
--fi
-+	err=$(( $err + $? ))
- 
--# Determine selftest success via shell exit code
--exit_handler()
--{
--	if (( $? == 0 )); then
-+	if (( $err == 0 )); then
- 		echo "selftests: $TESTNAME [PASS]";
- 	else
- 		echo "selftests: $TESTNAME [FAILED]";
- 	fi
- 
-+	exit $err
-+fi
-+
-+# Determine selftest success via shell exit code
-+exit_handler()
-+{
- 	set +e
- 
- 	# Cleanup
+So I think for this to work at all, loading has to happen in the user space
+components. Only construction of the control flow should be centralised.
+This has the knock on effect that these components need
+CAP_NET_ADMIN, since too much of eBPF relies on having that
+capability right now: various map types, safety features applied to non-root
+eBPF, etc. Given time this will be fixed, and maybe these programs can then
+just have CAP_BPF or whatever.
+
+I chatted with my colleague Arthur, and we think this might work if all
+programs are forced to comply with the xdpcap-style tail call map:
+a prog array with MAX_XDP_ACTION slots, which each program
+calls into via
+
+  tail_call(map, action);
+  return action; // to handle the empty slot case
+
+You could then send (program fd, tail call map fd) along with a priority
+of some sort via SCM_RIGHTS. The daemon can then update the tail
+call maps as needed. The problem is that this only allows
+for linear (not tree-like) control flow.
+
+We'll try and hack up a POC to see if it works at all.
+
+> In any case, it seems like XDP users in userspace still need to
+>  communicate with each other in order to update the chain map (which
+>  seems to rely on knowing where one's own program fits into it); you
+>  suggest they might communicate through the chain map itself, and then
+>  veer off into the weeds of finding race-free ways of doing that.  This
+>  seems (to me) needlessly complex.
+
+I agree.
+
+> Incidentally, there's also a performance advantage to an eBPF dispatcher,
+>  because it means the calls to the individual programs can be JITted and
+>  therefore be direct, whereas an in-kernel data-driven dispatcher has to
+>  use indirect calls (*waves at spectre*).
+
+This is if we somehow got full blown calls between distinct eBPF programs?
+
+> Maybe Lorenz could describe what he sees as the difficulties with the
+>  centralised daemon approach.  In what ways is his current "xdpd"
+>  solution unsatisfactory?
+
+xdpd contains the logic to load and install all the different XDP programs
+we have. If we want to change one of them we have to redeploy the whole
+thing. Same if we want to add one. It also makes life-cycle management
+harder than it should be. So our xdpd is not at all like the "loader"
+you envision.
+
 -- 
-2.23.0.581.g78d2f28ef7-goog
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
 
+www.cloudflare.com
