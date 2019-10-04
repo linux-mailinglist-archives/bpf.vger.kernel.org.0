@@ -2,129 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 62EAFCBF48
-	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2019 17:35:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE2EECBF98
+	for <lists+bpf@lfdr.de>; Fri,  4 Oct 2019 17:44:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389620AbfJDPfn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Oct 2019 11:35:43 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:58056 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389556AbfJDPfn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Oct 2019 11:35:43 -0400
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com [209.85.208.200])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 63357C057E3C
-        for <bpf@vger.kernel.org>; Fri,  4 Oct 2019 15:35:42 +0000 (UTC)
-Received: by mail-lj1-f200.google.com with SMTP id y28so1891192ljn.2
-        for <bpf@vger.kernel.org>; Fri, 04 Oct 2019 08:35:42 -0700 (PDT)
+        id S2389952AbfJDPos (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Oct 2019 11:44:48 -0400
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:34673 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389669AbfJDPor (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Oct 2019 11:44:47 -0400
+Received: by mail-pl1-f194.google.com with SMTP id k7so3323287pll.1;
+        Fri, 04 Oct 2019 08:44:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=GFFmq53ZA+vEvLH+L12DZotI8ZROy3ndHmBfHrJMHss=;
+        b=ei/Yx9eFGr127yukJnQzL+G9T8OPFW+B1biEqAV+G5FAYoZeLKyg0Tx44MGMotsI1D
+         gXv+eZTIViulRT4kAK8vNaxjuxjh1uWrhPC0IqjnZosRxM9p0GEDuCRSVpHJfHX/b5+X
+         SHGIcSbkklnQjOZUww37yJvNvpO6Q2fmz5ADdlJmT3eGyZQeivuTDwBU7deQDlTPaNhd
+         3EA18EpxJFxSFRw1JfWEZUZ62wfnZ+3AU0bhQBR7QZH2KOKmkb7pLfiogvxZMOlpdSVC
+         YH5RydmJ/pUVQXHHeufXfaVvIPshDY+moUMy+5nm206IKc+8pbkO0Bji8oElJHk0f2N0
+         Ay0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=mSjDVZs7yZyvp7tYsPDuu5P8/DKobkJVpszPyt8bpUc=;
-        b=fDHfT18oEA8c2xAkL/K43HL+1Rxx9fLbWFCF15NbI7PbHtb5JIzgfC3wycdivbxrCb
-         V401uSgLexCoAzfeh5CDm38MqmTPXst0ZGjwhZ4ynUtKhvfgMLCJmkqHFWUVOLBo5/cG
-         Kx9T0URzgIHpP8AElVtlUHR9k0Ae9dQIOZMDDOKAwWd00huOS1owSp1ica66vZ62QA8u
-         dZtCM2OvpqHHlkMOWg65PgRSLwFv5CygFh15l664A+QixP+ogE3t4oyw9AnRkheYO1Oi
-         jVfmr6js2EdfY2B+Lt1Jn0BHHEoO4SFeTB7zZuiWII26kqdlpxWOLplrjMyVzaP+K85V
-         iJAQ==
-X-Gm-Message-State: APjAAAVZCZkG013u2yRgcrLJiA0M8vcylUn83eqbDfZbFqufYLiwZcIK
-        JCQghMtw72uV0z141jG7Ul3qctTJqW2zZh6+XWPquHhrVQrtmJb5fcK4Mya9mnzf7ELuy8b1x+C
-        6qsXBKowglMLj
-X-Received: by 2002:a2e:761a:: with SMTP id r26mr2099111ljc.137.1570203340893;
-        Fri, 04 Oct 2019 08:35:40 -0700 (PDT)
-X-Google-Smtp-Source: APXvYqwoYEsKvr2RkSp5/QzdVvpyKMaf0KNWME56kF4E7XcDEzvNiA1999Zz+XpiUMEVFG8ob39KdA==
-X-Received: by 2002:a2e:761a:: with SMTP id r26mr2099099ljc.137.1570203340726;
-        Fri, 04 Oct 2019 08:35:40 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk (borgediget.toke.dk. [85.204.121.218])
-        by smtp.gmail.com with ESMTPSA id d3sm1316121ljc.66.2019.10.04.08.35.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Oct 2019 08:35:40 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 1E9FA18063D; Fri,  4 Oct 2019 17:35:39 +0200 (CEST)
-From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     daniel@iogearbox.net, ast@fb.com
-Cc:     =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        andriin@fb.com, bpf@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH bpf-next v2] libbpf: Add cscope and tags targets to Makefile
-Date:   Fri,  4 Oct 2019 17:34:44 +0200
-Message-Id: <20191004153444.1711278-1-toke@redhat.com>
-X-Mailer: git-send-email 2.23.0
+        bh=GFFmq53ZA+vEvLH+L12DZotI8ZROy3ndHmBfHrJMHss=;
+        b=SxcUYgks0A5mTUU7bvdWQwrXb4geBJcrDTx1A94DSaxVcv8zVigHVOOzafRX0waDAU
+         JvSvqgC3nU3L0+gLDD/qspl9O1EfusXlTJvMhIgS5lhhCIV95VCAYI46NlgVB49x6Qva
+         5FhyLiIDPfrUcPWSpgCzf2eHcg8fL0sLARU64nRxYJgDoPoTdbOwzbEtL85Nt503Mi4X
+         rvbg8g8+46lV9DnTCDh8OTgEa4vWD4uCieWCl3AE+pX53C6l9CfChigdTvUw5lpCyWfB
+         Vb+GbByRVKkA1fM/PDK8ostkY9LfrOIlHgzovpWnXllbwXq+j33hWRy+2AjlISPPvhUa
+         RQrA==
+X-Gm-Message-State: APjAAAWiP4Z82D7y2LGtSrola/xxlaI28wldCHOw3LQjKn0DWgx0I7oF
+        VuxwbtVo8GgE9EDs5/DND0U=
+X-Google-Smtp-Source: APXvYqwvXzjxXxPm7KLjY8weQp9I7QVoefcVhwta9o1JsCBL3oCdpHE64Gz1900QlFs5HykdhrTd6w==
+X-Received: by 2002:a17:902:8d81:: with SMTP id v1mr15928819plo.124.1570203887112;
+        Fri, 04 Oct 2019 08:44:47 -0700 (PDT)
+Received: from dahern-DO-MB.local (c-73-169-115-106.hsd1.co.comcast.net. [73.169.115.106])
+        by smtp.googlemail.com with ESMTPSA id n66sm7289911pfn.90.2019.10.04.08.44.45
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 04 Oct 2019 08:44:46 -0700 (PDT)
+Subject: Re: [PATCH v3 bpf-next 5/7] libbpf: move
+ bpf_{helpers,endian,tracing}.h into libbpf
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+References: <20191003212856.1222735-1-andriin@fb.com>
+ <20191003212856.1222735-6-andriin@fb.com>
+ <da73636f-7d81-1fe0-65af-aa32f7654c57@gmail.com>
+ <CAEf4BzYRJ4i05prEJF_aCQK5jnmpSUqrwTXYsj4FDahCWcNQdQ@mail.gmail.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <4fcbe7bf-201a-727a-a6f1-2088aea82a33@gmail.com>
+Date:   Fri, 4 Oct 2019 09:44:44 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
+ Gecko/20100101 Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzYRJ4i05prEJF_aCQK5jnmpSUqrwTXYsj4FDahCWcNQdQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Using cscope and/or TAGS files for navigating the source code is useful.
-Add simple targets to the Makefile to generate the index files for both
-tools.
+On 10/4/19 9:27 AM, Andrii Nakryiko wrote:
+> On Fri, Oct 4, 2019 at 7:47 AM David Ahern <dsahern@gmail.com> wrote:
+>>
+>> On 10/3/19 3:28 PM, Andrii Nakryiko wrote:
+>>> Move bpf_helpers.h, bpf_tracing.h, and bpf_endian.h into libbpf. Ensure
+>>> they are installed along the other libbpf headers. Also, adjust
+>>> selftests and samples include path to include libbpf now.
+>>
+>> There are side effects to bringing bpf_helpers.h into libbpf if this
+>> gets propagated to the github sync.
+>>
+>> bpf_helpers.h references BPF_FUNC_* which are defined in the
+>> uapi/linux/bpf.h header. That is a kernel version dependent api file
+>> which means attempts to use newer libbpf with older kernel headers is
+>> going to throw errors when compiling bpf programs -- bpf_helpers.h will
+>> contain undefined BPF_FUNC references.
+> 
+> That's true, but I'm wondering if maintaining a copy of that enum in
+> bpf_helpers.h itself is a good answer here?
+> 
+> bpf_helpers.h will be most probably used with BPF CO-RE and
+> auto-generated vmlinux.h with all the enums and types. In that case,
+> you'll probably want to use vmlinux.h for one of the latest kernels
+> anyways.
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-Tested-by: Andrii Nakryiko <andriin@fb.com>
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
----
-v2:
-  - Use lower-case 'tags' for Makefile target
-  - Use -I to cscope instead of -k
-  - Support both ctags and etags
-  - Pass options directly to cscope instead of putting them in cscope.files
-  - Use 'ls' to list files
- tools/lib/bpf/.gitignore |  3 +++
- tools/lib/bpf/Makefile   | 12 +++++++++++-
- 2 files changed, 14 insertions(+), 1 deletion(-)
+I'm not following you; my interpretation of your comment seems like you
+are making huge assumptions.
 
-diff --git a/tools/lib/bpf/.gitignore b/tools/lib/bpf/.gitignore
-index d9e9dec04605..12382b0c71c7 100644
---- a/tools/lib/bpf/.gitignore
-+++ b/tools/lib/bpf/.gitignore
-@@ -3,3 +3,6 @@ libbpf.pc
- FEATURE-DUMP.libbpf
- test_libbpf
- libbpf.so.*
-+TAGS
-+tags
-+cscope.*
-diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
-index c6f94cffe06e..10b77644a17c 100644
---- a/tools/lib/bpf/Makefile
-+++ b/tools/lib/bpf/Makefile
-@@ -133,6 +133,8 @@ LIB_TARGET	:= $(addprefix $(OUTPUT),$(LIB_TARGET))
- LIB_FILE	:= $(addprefix $(OUTPUT),$(LIB_FILE))
- PC_FILE		:= $(addprefix $(OUTPUT),$(PC_FILE))
- 
-+TAGS_PROG := $(if $(shell which etags 2>/dev/null),etags,ctags)
-+
- GLOBAL_SYM_COUNT = $(shell readelf -s --wide $(BPF_IN) | \
- 			   cut -d "@" -f1 | sed 's/_v[0-9]_[0-9]_[0-9].*//' | \
- 			   awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$8}' | \
-@@ -262,7 +264,7 @@ clean:
- 
- 
- 
--PHONY += force elfdep bpfdep
-+PHONY += force elfdep bpfdep cscope tags
- force:
- 
- elfdep:
-@@ -271,6 +273,14 @@ elfdep:
- bpfdep:
- 	@if [ "$(feature-bpf)" != "1" ]; then echo "BPF API too old"; exit 1 ; fi
- 
-+cscope:
-+	ls *.c *.h > cscope.files
-+	cscope -b -q -I $(srctree)/include -f cscope.out
-+
-+tags:
-+	rm -f TAGS tags
-+	ls *.c *.h | xargs $(TAGS_PROG) -a
-+
- # Declare the contents of the .PHONY variable as phony.  We keep that
- # information in a variable so we can use it in if_changed and friends.
- .PHONY: $(PHONY)
--- 
-2.23.0
+I build bpf programs for specific kernel versions using the devel
+packages for the specific kernel of interest.
 
+> 
+> Nevertheless, it is a problem and thanks for bringing it up! I'd say
+> for now we should still go ahead with this move and try to solve with
+> issue once bpf_helpers.h is in libbpf. If bpf_helpers.h doesn't work
+> for someone, it's no worse than it is today when users don't have
+> bpf_helpers.h at all.
+> 
+
+If this syncs to the github libbpf, it will be worse than today in the
+sense of compile failures if someone's header file ordering picks
+libbpf's bpf_helpers.h over whatever they are using today.
