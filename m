@@ -2,47 +2,47 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 66829CC95C
-	for <lists+bpf@lfdr.de>; Sat,  5 Oct 2019 12:29:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8CCCCC95E
+	for <lists+bpf@lfdr.de>; Sat,  5 Oct 2019 12:30:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726902AbfJEK3V convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Sat, 5 Oct 2019 06:29:21 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:58372 "EHLO mx1.redhat.com"
+        id S1727411AbfJEKa4 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Sat, 5 Oct 2019 06:30:56 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:34478 "EHLO mx1.redhat.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725985AbfJEK3U (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 5 Oct 2019 06:29:20 -0400
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com [209.85.208.200])
+        id S1725976AbfJEKaz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 5 Oct 2019 06:30:55 -0400
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com [209.85.208.199])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 9AA6337E80
-        for <bpf@vger.kernel.org>; Sat,  5 Oct 2019 10:29:19 +0000 (UTC)
-Received: by mail-lj1-f200.google.com with SMTP id e3so2351571ljj.16
-        for <bpf@vger.kernel.org>; Sat, 05 Oct 2019 03:29:19 -0700 (PDT)
+        by mx1.redhat.com (Postfix) with ESMTPS id 396308BE70
+        for <bpf@vger.kernel.org>; Sat,  5 Oct 2019 10:30:55 +0000 (UTC)
+Received: by mail-lj1-f199.google.com with SMTP id i18so2358191ljg.14
+        for <bpf@vger.kernel.org>; Sat, 05 Oct 2019 03:30:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
          :message-id:mime-version:content-transfer-encoding;
-        bh=5ld6mvaTaFysits5sS/BQg6PZgIZJXXNnUbaRYN6pRE=;
-        b=uVBTx5qi5aRcQoHzn2uQjefWU1fH9LW0m6T0KgB9UU3oUOdNpiS/4ow+bUEa9hsFlf
-         x9lrAteZ0cSJvrrCW1EIsqUTzLLnC1pT8AqAQR3m+uTknYrZNDSx4Es+t69NBh2/pEkr
-         ZcJTGRcnF+lJuGSPKqiTY4z2y1ZdYsoumvLhs6oK2DwIykYoEFSrp4QRVKMA4DrLiNIu
-         myB9AGIpnwtplzzOOCkbTKp6A0r2Ja+dlVNjYruDG5h9MPeSywgJepMKOysR6/wiUf9K
-         x5UizLrogctKQTbKZnYVc8ct1/vCP0zB8/owns+qAVi21dVFtha7v7R6obvB7PTcAMOV
-         Vk/Q==
-X-Gm-Message-State: APjAAAWo4TPX1E+BV5WNGktr6xofmEzXLg9zkHU5w3eOLP+OjPh5W+p+
-        A/bB4wHWwbMmAz6l01Dy52FcOIR6t6c2Gz8Wb28uBpQqN/1xsMqWq2Tz6MOjiru9fOyPgZ4vTLX
-        IIwFBizx8p5ue
-X-Received: by 2002:ac2:4902:: with SMTP id n2mr11689813lfi.0.1570271357985;
-        Sat, 05 Oct 2019 03:29:17 -0700 (PDT)
-X-Google-Smtp-Source: APXvYqwZNCrJEMOF4tSr+Ilbe21VpkrggmSf12Y10g7t8HuAeMjj8dSV2sdYxTDAu7apiNHhBDgNnA==
-X-Received: by 2002:ac2:4902:: with SMTP id n2mr11689780lfi.0.1570271357477;
-        Sat, 05 Oct 2019 03:29:17 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a00:7660:6da:443::2])
-        by smtp.gmail.com with ESMTPSA id q19sm2167601lfj.9.2019.10.05.03.29.15
+        bh=0BTW7nl+H/XRQtnoJO4rjId8yr0bcribLIhknb5mLqw=;
+        b=mdDUC+alFmJ23HF7hravFN+G7BpWnJ2aVE/RN5Xz77ehZcbo7m7KOlhXa4Kq3FK5Ux
+         kPREbuU35UO+EzcdfiFozq3Cfqam0vahyHDQrLooSmypvGPSiemdBWcUpHW0Wf9MQF3C
+         ua5vjTAq+5Xm6cTs0aU6oZAgVbrVHKOMPRRijkeHaKCzWvkH3YXOI8gGUHre6DOqH2Es
+         3z4t0Tj4OtV8mU9l2mXLPOkfrWCDAKYpcJ9JAbqw0cbu3TwyUYEAmlOhUcPKA3BUA+Ia
+         GZiFEhXPBlPtY6/jksF+8DVVYw8kLTLUFfOsbgHXvQBNJu4cLVxRAhl7aerXFUmXtx4S
+         3Ycw==
+X-Gm-Message-State: APjAAAU0cBXlJ+Y7Vr1LSG/Y5aE+iGr53aYM/bhesqMFo4o4Z2sjGONf
+        DqQu37CsHZd+9uaZAXcMWLk1JDjyNruUzsIn1Run3ABAojKpFrLM3LNt9INujCaSSWELXaZqWbc
+        t5aYs5QwE80aQ
+X-Received: by 2002:a2e:9e8b:: with SMTP id f11mr8734636ljk.153.1570271453709;
+        Sat, 05 Oct 2019 03:30:53 -0700 (PDT)
+X-Google-Smtp-Source: APXvYqyJyujM1Er185peAYODficBxekswVKPLsM3E8O4Zeu2pJ+E3A2prNs/g4ezxCnjlv2sPcVXWg==
+X-Received: by 2002:a2e:9e8b:: with SMTP id f11mr8734625ljk.153.1570271453536;
+        Sat, 05 Oct 2019 03:30:53 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk (borgediget.toke.dk. [85.204.121.218])
+        by smtp.gmail.com with ESMTPSA id a23sm1620173lfl.66.2019.10.05.03.30.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 05 Oct 2019 03:29:16 -0700 (PDT)
+        Sat, 05 Oct 2019 03:30:52 -0700 (PDT)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id E8A0A18063D; Sat,  5 Oct 2019 12:29:14 +0200 (CEST)
+        id 0182218063D; Sat,  5 Oct 2019 12:30:51 +0200 (CEST)
 From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
 To:     Jakub Kicinski <jakub.kicinski@netronome.com>
 Cc:     Daniel Borkmann <daniel@iogearbox.net>,
@@ -55,12 +55,12 @@ Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
         David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2 1/5] bpf: Support injecting chain calls into BPF programs on load
-In-Reply-To: <20191004161715.2dc7cbd9@cakuba.hsd1.ca.comcast.net>
-References: <157020976030.1824887.7191033447861395957.stgit@alrua-x1> <157020976144.1824887.10249946730258092768.stgit@alrua-x1> <20191004161715.2dc7cbd9@cakuba.hsd1.ca.comcast.net>
+Subject: Re: [PATCH bpf-next v2 2/5] bpf: Add support for setting chain call sequence for programs
+In-Reply-To: <20191004161842.617b8bd8@cakuba.hsd1.ca.comcast.net>
+References: <157020976030.1824887.7191033447861395957.stgit@alrua-x1> <157020976257.1824887.7683650534515359703.stgit@alrua-x1> <20191004161842.617b8bd8@cakuba.hsd1.ca.comcast.net>
 X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Sat, 05 Oct 2019 12:29:14 +0200
-Message-ID: <87d0fbo58l.fsf@toke.dk>
+Date:   Sat, 05 Oct 2019 12:30:51 +0200
+Message-ID: <87a7afo55w.fsf@toke.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8BIT
@@ -71,224 +71,38 @@ X-Mailing-List: bpf@vger.kernel.org
 
 Jakub Kicinski <jakub.kicinski@netronome.com> writes:
 
-> On Fri, 04 Oct 2019 19:22:41 +0200, Toke Høiland-Jørgensen wrote:
->> From: Toke Høiland-Jørgensen <toke@redhat.com>
+> On Fri, 04 Oct 2019 19:22:42 +0200, Toke Høiland-Jørgensen wrote:
+>> From: Alan Maguire <alan.maguire@oracle.com>
 >> 
->> This adds support for injecting chain call logic into eBPF programs before
->> they return. The code injection is controlled by a flag at program load
->> time; if the flag is set, the verifier will add code to every BPF_EXIT
->> instruction that first does a lookup into a chain call structure to see if
->> it should call into another program before returning. The actual calls
->> reuse the tail call infrastructure.
+>> This adds support for setting and deleting bpf chain call programs through
+>> a couple of new commands in the bpf() syscall. The CHAIN_ADD and CHAIN_DEL
+>> commands take two eBPF program fds and a return code, and install the
+>> 'next' program to be chain called after the 'prev' program if that program
+>> returns 'retcode'. A retcode of -1 means "wildcard", so that the program
+>> will be executed regardless of the previous program's return code.
 >> 
->> Ideally, it shouldn't be necessary to set the flag on program load time,
->> but rather inject the calls when a chain call program is first loaded.
->> However, rewriting the program reallocates the bpf_prog struct, which is
->> obviously not possible after the program has been attached to something.
->
-> Very exciting stuff :)
->
-> Forgive my ignorance, isn't synchronize_rcu() enough to ensure old
-> image is no longer used?
-
-Because it's reallocating the 'struct bpf_prog*'. Which is what we pass
-into the driver on XDP attach. So we'd have to track down all the uses
-and replace the pointer.
-
-At least, that's how I read the code; am I missing something?
-
-> For simple rewrites which don't require much context like the one here
-> it'd be cool to do it after loading..
-
-I think re-jit'ing is probably doable, which is why I kinda want the
-support in the JIT. We could also conceivably just stick in some NOP
-instructions in the eBPF byte code on load and then replace them
-dynamically later?
-
->> One way around this could be a sysctl to force the flag one (for enforcing
->> system-wide support). Another could be to have the chain call support
->> itself built into the interpreter and JIT, which could conceivably be
->> re-run each time we attach a new chain call program. This would also allow
->> the JIT to inject direct calls to the next program instead of using the
->> tail call infrastructure, which presumably would be a performance win. The
->> drawback is, of course, that it would require modifying all the JITs.
 >> 
+>> The syscall command names are based on Alexei's prog_chain example[0],
+>> which Alan helpfully rebased on current bpf-next. However, the logic and
+>> program storage is obviously adapted to the execution logic in the previous
+>> commit.
+>> 
+>> [0] https://git.kernel.org/pub/scm/linux/kernel/git/ast/bpf.git/commit/?h=prog_chain&id=f54f45d00f91e083f6aec2abe35b6f0be52ae85b&context=15
+>> 
+>> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
 >> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
 >
->> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
->> index 5b9d22338606..753abfb78c13 100644
->> --- a/include/linux/bpf.h
->> +++ b/include/linux/bpf.h
->> @@ -383,6 +383,7 @@ struct bpf_prog_aux {
->>  	struct list_head ksym_lnode;
->>  	const struct bpf_prog_ops *ops;
->>  	struct bpf_map **used_maps;
->> +	struct bpf_array *chain_progs;
->>  	struct bpf_prog *prog;
->>  	struct user_struct *user;
->>  	u64 load_time; /* ns since boottime */
->> @@ -443,6 +444,7 @@ struct bpf_array {
->>  
->>  #define BPF_COMPLEXITY_LIMIT_INSNS      1000000 /* yes. 1M insns */
->>  #define MAX_TAIL_CALL_CNT 32
->> +#define BPF_NUM_CHAIN_SLOTS 8
->
-> This could be user arg? Also the behaviour of mapping could be user
-> controlled? Perhaps even users could pass the snippet to map the return
-> code to the location, one day?
->
->>  #define BPF_F_ACCESS_MASK	(BPF_F_RDONLY |		\
->>  				 BPF_F_RDONLY_PROG |	\
->> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
->> index 77c6be96d676..febe8934d19a 100644
->> --- a/include/uapi/linux/bpf.h
->> +++ b/include/uapi/linux/bpf.h
->> @@ -288,6 +288,12 @@ enum bpf_attach_type {
->>  /* The verifier internal test flag. Behavior is undefined */
->>  #define BPF_F_TEST_STATE_FREQ	(1U << 3)
->>  
->> +/* Whether to enable chain call injection at program return. If set, the
->> + * verifier will rewrite program returns to check for and jump to chain call
->> + * programs configured with the BPF_PROG_CHAIN_* commands to the bpf syscall.
->> + */
->> +#define BPF_F_INJECT_CHAIN_CALLS	(1U << 4)
->> +
->>  /* When BPF ldimm64's insn[0].src_reg != 0 then this can have
->>   * two extensions:
->>   *
->> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
->> index 66088a9e9b9e..98f1ad920e48 100644
->> --- a/kernel/bpf/core.c
->> +++ b/kernel/bpf/core.c
->> @@ -255,6 +255,16 @@ void __bpf_prog_free(struct bpf_prog *fp)
->>  {
->>  	if (fp->aux) {
->>  		free_percpu(fp->aux->stats);
->> +		if (fp->aux->chain_progs) {
->> +			struct bpf_array *array = fp->aux->chain_progs;
->> +			int i;
->> +
->> +			for (i = 0; i < BPF_NUM_CHAIN_SLOTS; i++)
->> +				if (array->ptrs[i])
->> +					bpf_prog_put(array->ptrs[i]);
->> +
->> +			bpf_map_area_free(array);
->> +		}
->>  		kfree(fp->aux);
->>  	}
->>  	vfree(fp);
->> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
->> index 82eabd4e38ad..c2a49df5f921 100644
->> --- a/kernel/bpf/syscall.c
->> +++ b/kernel/bpf/syscall.c
->> @@ -1630,7 +1630,8 @@ static int bpf_prog_load(union bpf_attr *attr, union bpf_attr __user *uattr)
->>  	if (attr->prog_flags & ~(BPF_F_STRICT_ALIGNMENT |
->>  				 BPF_F_ANY_ALIGNMENT |
->>  				 BPF_F_TEST_STATE_FREQ |
->> -				 BPF_F_TEST_RND_HI32))
->> +				 BPF_F_TEST_RND_HI32 |
->> +				 BPF_F_INJECT_CHAIN_CALLS))
->>  		return -EINVAL;
->>  
->>  	if (!IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS) &&
->> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->> index ffc3e53f5300..dbc9bbf13300 100644
->> --- a/kernel/bpf/verifier.c
->> +++ b/kernel/bpf/verifier.c
->> @@ -9154,6 +9154,79 @@ static int fixup_bpf_calls(struct bpf_verifier_env *env)
->>  	return 0;
->>  }
->>  
->> +static int bpf_inject_chain_calls(struct bpf_verifier_env *env)
->> +{
->> +	struct bpf_prog *prog = env->prog;
->> +	struct bpf_insn *insn = prog->insnsi;
->> +	int i, cnt, delta = 0, ret = -ENOMEM;
->> +	const int insn_cnt = prog->len;
->> +	struct bpf_array *prog_array;
->> +	struct bpf_prog *new_prog;
->> +	size_t array_size;
->> +
->> +	struct bpf_insn call_next[] = {
->> +		BPF_LD_IMM64(BPF_REG_2, 0),
->> +		/* Save real return value for later */
->> +		BPF_MOV64_REG(BPF_REG_6, BPF_REG_0),
->> +		/* First try tail call with index ret+1 */
->> +		BPF_MOV64_REG(BPF_REG_3, BPF_REG_0),
->
-> Don't we need to check against the max here, and spectre-proofing
-> here?
+> It'd be good to explain why not just allocate a full prog array (or 
+> in fact get one from the user), instead of having a hidden one which
+> requires new command to interact with?
 
-No, I don't think so. This is just setting up the arguments for the
-BPF_TAIL_CALL instruction below. The JIT will do its thing with that and
-emit the range check and the retpoline stuff...
+Because I consider the reuse of the prog array to be an implementation
+detail that we may want to change later. Whereas if we expose it to
+userspace it becomes API.
 
->> +		BPF_ALU64_IMM(BPF_ADD, BPF_REG_3, 1),
->> +		BPF_RAW_INSN(BPF_JMP | BPF_TAIL_CALL, 0, 0, 0, 0),
->> +		/* If that doesn't work, try with index 0 (wildcard) */
->> +		BPF_MOV64_IMM(BPF_REG_3, 0),
->> +		BPF_RAW_INSN(BPF_JMP | BPF_TAIL_CALL, 0, 0, 0, 0),
->> +		/* Restore saved return value and exit */
->> +		BPF_MOV64_REG(BPF_REG_0, BPF_REG_6),
->> +		BPF_EXIT_INSN()
->> +	};
->
->> +	if (prog->aux->chain_progs)
->> +		return 0;
->
-> Not sure why this check is here?
-
-In preparation for being able to call this function multiple times when
-attaching the chain call program :)
-
->> +	array_size = sizeof(*prog_array) + BPF_NUM_CHAIN_SLOTS * sizeof(void*);
->> +	prog_array = bpf_map_area_alloc(array_size, NUMA_NO_NODE);
->> +
->> +	if (!prog_array)
->> +		goto out_err;
->> +
->> +	prog_array->elem_size = sizeof(void*);
->> +	prog_array->map.max_entries = BPF_NUM_CHAIN_SLOTS;
->> +
->> +	call_next[0].imm = (u32)((u64) prog_array);
->> +	call_next[1].imm = ((u64) prog_array) >> 32;
->> +
->> +	for (i = 0; i < insn_cnt; i++, insn++) {
->> +		if (insn->code != (BPF_JMP | BPF_EXIT))
->> +			continue;
->
-> Mm.. don't subprogs also exit with JMP | EXIT?  This should only apply
-> to main prog, no?
-
-Hmm, no idea? If it does, you're right of course. Guess I'll try to
-figure that out...
-
->> +		cnt = ARRAY_SIZE(call_next);
->> +
->> +		new_prog = bpf_patch_insn_data(env, i+delta, call_next, cnt);
->> +		if (!new_prog) {
->> +			goto out_err;
->> +		}
->> +
->> +		delta    += cnt - 1;
->> +		env->prog = prog = new_prog;
->> +		insn      = new_prog->insnsi + i + delta;
->> +	}
->> +
->> +	/* If we chain call into other programs, we cannot make any assumptions
->> +	 * since they can be replaced dynamically during runtime.
->> +	 */
->> +	prog->cb_access = 1;
->> +	env->prog->aux->stack_depth = MAX_BPF_STACK;
->> +	env->prog->aux->max_pkt_offset = MAX_PACKET_OFF;
->
-> Some refactoring & reuse of the normal tail call code could be nice?
-> Same for the hand allocation of the prog array actually :(
-
-See above; this is actually just setting up the arguments to reuse the
-tail call logic. I'll try to make that clearer...
-
-Most other places that do these kinds of smallish code injections seem
-to be hand-coding the instructions; what else would I do?
+For instance, if we do end up wanting to have support directly in the
+JIT for this, we could make the next progs just a linked list that the
+JIT will walk and emit direct call instructions for each, instead of
+doing the index-lookup.
 
 -Toke
