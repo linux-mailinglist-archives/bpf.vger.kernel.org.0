@@ -2,131 +2,190 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EF0CCCC72E
-	for <lists+bpf@lfdr.de>; Sat,  5 Oct 2019 03:24:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FAD3CC811
+	for <lists+bpf@lfdr.de>; Sat,  5 Oct 2019 07:05:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726037AbfJEBYK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Oct 2019 21:24:10 -0400
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:33728 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725909AbfJEBYK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Oct 2019 21:24:10 -0400
-Received: by mail-oi1-f194.google.com with SMTP id a15so1286155oic.0
-        for <bpf@vger.kernel.org>; Fri, 04 Oct 2019 18:24:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=Gr3vPHhUUWGmUVhCZ83FOVrxuAp5M1FSUXsxEnqOUVw=;
-        b=aNlQ5uVh9JxZHsH9PosFCQkAXOZbUVmDp4sYNIiyQWF7usjj7tYRWSXGvGeb+TKmQx
-         /PKYmS1XWZi9z89cLQ8sCIOSbR9FlH6ncaopWkD+hcrjvRWSclilETaXt24XtrsjiYTW
-         FcDmxdTcT38ukq9MY0VdtfU84Hpxq5kPDmMmxPxIUYlpICCR1J71ZFp8FcxLdMTuQ4O+
-         0PciPfJdQ8/SgJA0QMK8CeGeuaSM+1WVBGkDGgs2dijunkUXtplNyQ7tYe0MLNEryPel
-         sN28J2s2rF3qk1Js6Fl2vJo3uz3N3ajPuVP0SYKhSHp2NGk0frPPaNviNK6+V2Af1CQg
-         AHIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=Gr3vPHhUUWGmUVhCZ83FOVrxuAp5M1FSUXsxEnqOUVw=;
-        b=ayQ++XwjYH/1lXK3X3nFymzoeORAZfl8RLJjSeNMa4yHqPbFrt+XIdXYaGDYH8bcqe
-         KuEhzp/FriQr553pZiBD88/x9Im9xEOUKh0jYyDU6CmkctzvCOyTqrspRu2mPgtKHxHz
-         d5nuhP0gZ5MFsOUGDGJT7EGzQyEAlJcYYwOqDfqHHF4fe3EgHDel0D/nu7U9YZw7fHyq
-         LHejSbzbEgvvt4IJusEWZ/wv9ivsBYhpDSwpCZXSTAYPfhRiMvBrDDHZKfeENzu0jE3c
-         EEx+Ub5ImebsN78HjR1UHkrxZEIkHdtiovqDCndFgh3jIxaj4LRWN1vtBJc4vYTpPOKJ
-         t4/A==
-X-Gm-Message-State: APjAAAXv7XYaZBxRRcSvtliYtZDVNVKrrVX9UHdEU304L9FGRB7VjHMN
-        u/LR9DRiXku24EXx33c3yYE6nA==
-X-Google-Smtp-Source: APXvYqzgkJxuaT0woltjn4JGZ5HsgdZmLxkxcI/oHlVqnvxI9eGlw+q4m2LXamIq0+QDajNCtfMU3A==
-X-Received: by 2002:aca:d07:: with SMTP id 7mr9442211oin.155.1570238649063;
-        Fri, 04 Oct 2019 18:24:09 -0700 (PDT)
-Received: from localhost ([2600:100e:b029:4ada:34fb:aeb7:d598:e51c])
-        by smtp.gmail.com with ESMTPSA id a9sm2260524otc.75.2019.10.04.18.24.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Oct 2019 18:24:08 -0700 (PDT)
-Date:   Fri, 4 Oct 2019 18:24:07 -0700 (PDT)
-From:   Paul Walmsley <paul.walmsley@sifive.com>
-X-X-Sender: paulw@viisi.sifive.com
-To:     Kees Cook <keescook@chromium.org>
-cc:     Tycho Andersen <tycho@tycho.ws>,
-        David Abdurachmanov <david.abdurachmanov@gmail.com>,
-        Palmer Dabbelt <palmer@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>, Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        David Abdurachmanov <david.abdurachmanov@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Allison Randal <allison@lohutok.net>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        Anup Patel <Anup.Patel@wdc.com>,
-        Vincent Chen <vincentc@andestech.com>,
-        Alan Kao <alankao@andestech.com>,
-        linux-riscv@lists.infradead.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, me@carlosedp.com
-Subject: Re: [PATCH v2] riscv: add support for SECCOMP and SECCOMP_FILTER
-In-Reply-To: <CAJr-aD=UnCN9E_mdVJ2H5nt=6juRSWikZnA5HxDLQxXLbsRz-w@mail.gmail.com>
-Message-ID: <alpine.DEB.2.21.9999.1910041820560.15827@viisi.sifive.com>
-References: <20190822205533.4877-1-david.abdurachmanov@sifive.com> <alpine.DEB.2.21.9999.1908231717550.25649@viisi.sifive.com> <20190826145756.GB4664@cisco> <CAEn-LTrtn01=fp6taBBG_QkfBtgiJyt6oUjZJOi6VN8OeXp6=g@mail.gmail.com> <201908261043.08510F5E66@keescook>
- <alpine.DEB.2.21.9999.1908281825240.13811@viisi.sifive.com> <CAJr-aD=UnCN9E_mdVJ2H5nt=6juRSWikZnA5HxDLQxXLbsRz-w@mail.gmail.com>
-User-Agent: Alpine 2.21.9999 (DEB 301 2018-08-15)
+        id S1727117AbfJEFDz convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Sat, 5 Oct 2019 01:03:55 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:15776 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727137AbfJEFDz (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sat, 5 Oct 2019 01:03:55 -0400
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x954xZIE015206
+        for <bpf@vger.kernel.org>; Fri, 4 Oct 2019 22:03:53 -0700
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2ve548c1nf-18
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 04 Oct 2019 22:03:53 -0700
+Received: from 2401:db00:2120:80e1:face:0:29:0 (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Fri, 4 Oct 2019 22:03:20 -0700
+Received: by devbig007.ftw2.facebook.com (Postfix, from userid 572438)
+        id 65DC176091D; Fri,  4 Oct 2019 22:03:14 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Alexei Starovoitov <ast@kernel.org>
+Smtp-Origin-Hostname: devbig007.ftw2.facebook.com
+To:     <davem@davemloft.net>
+CC:     <daniel@iogearbox.net>, <x86@kernel.org>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <kernel-team@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next 00/10] bpf: revolutionize bpf tracing
+Date:   Fri, 4 Oct 2019 22:03:04 -0700
+Message-ID: <20191005050314.1114330-1-ast@kernel.org>
+X-Mailer: git-send-email 2.20.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
+ definitions=2019-10-05_02:2019-10-03,2019-10-05 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ impostorscore=0 mlxscore=0 bulkscore=0 mlxlogscore=999 adultscore=0
+ lowpriorityscore=0 malwarescore=0 suspectscore=1 spamscore=0 clxscore=1015
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1908290000 definitions=main-1910050044
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 27 Sep 2019, Kees Cook wrote:
+Revolutionize bpf tracing and bpf C programming.
+C language allows any pointer to be typecasted to any other pointer
+or convert integer to a pointer.
+Though bpf verifier is operating at assembly level it has strict type
+checking for fixed number of types.
+Known types are defined in 'enum bpf_reg_type'.
+For example:
+PTR_TO_FLOW_KEYS is a pointer to 'struct bpf_flow_keys'
+PTR_TO_SOCKET is a pointer to 'struct bpf_sock',
+and so on.
 
-> On Wed, Aug 28, 2019 at 6:30 PM Paul Walmsley <paul.walmsley@sifive.com> wrote:
-> > On Mon, 26 Aug 2019, Kees Cook wrote:
-> >
-> > > On Mon, Aug 26, 2019 at 09:39:50AM -0700, David Abdurachmanov wrote:
-> > > > I don't have the a build with SECCOMP for the board right now, so it
-> > > > will have to wait. I just finished a new kernel (almost rc6) for Fedora,
-> > >
-> > > FWIW, I don't think this should block landing the code: all the tests
-> > > fail without seccomp support. ;) So this patch is an improvement!
-> >
-> > Am sympathetic to this -- we did it with the hugetlb patches for RISC-V --
-> > but it would be good to understand a little bit more about why the test
-> > fails before we merge it.
-> 
-> The test is almost certainly failing due to the environmental
-> requirements (i.e. namespaces, user ids, etc). There are some corner
-> cases in there that we've had to fix in the past. If the other tests
-> are passing, then I would expect all the seccomp internals are fine --
-> it's just the case being weird. It's just a matter of figuring out
-> what state the test environment is in so we can cover that corner case
-> too.
-> 
-> > Once we merge the patch, it will probably reduce the motivation for others
-> > to either understand and fix the underlying problem with the RISC-V code
-> > -- or, if it truly is a flaky test, to drop (or fix) the test in the
-> > seccomp_bpf kselftests.
-> 
-> Sure, I get that point -- but I don't want to block seccomp landing
-> for riscv for that. I suggested to David offlist that the test could
-> just be marked with a FIXME XFAIL on riscv and once someone's in a
-> better position to reproduce it we can fix it. (I think the test bug
-> is almost certainly not riscv specific, but just some missing
-> requirement that we aren't handling correctly.)
+When it comes to bpf tracing there are no types to track.
+bpf+kprobe receives 'struct pt_regs' as input.
+bpf+raw_tracepoint receives raw kernel arguments as an array of u64 values.
+It was up to bpf program to interpret these integers.
+Typical tracing program looks like:
+int bpf_prog(struct pt_regs *ctx)
+{
+    struct net_device *dev;
+    struct sk_buff *skb;
+    int ifindex;
 
-OK.  It might be nice to mark the seccomp_bpf.c test as flaky in the 
-comments for the test.
+    skb = (struct sk_buff *) ctx->di;
+    bpf_probe_read(&dev, sizeof(dev), &skb->dev);
+    bpf_probe_read(&ifindex, sizeof(ifindex), &dev->ifindex);
+}
+Addressing mistakes will not be caught by C compiler or by the verifier.
+The program above could have typecasted ctx->si to skb and page faulted
+on every bpf_probe_read().
+bpf_probe_read() allows reading any address and suppresses page faults.
+Typical program has hundreds of bpf_probe_read() calls to walk
+kernel data structures.
+Not only tracing program would be slow, but there was always a risk
+that bpf_probe_read() would read mmio region of memory and cause
+unpredictable hw behavior.
 
-> How does that sound?
+With introduction of Compile Once Run Everywhere technology in libbpf
+and in LLVM and BPF Type Format (BTF) the verifier is finally ready
+for the next step in program verification.
+Now it can use in-kernel BTF to type check bpf assembly code.
 
-Let's follow your plan.  Thanks for your review and feedback.
+Equivalent program will look like:
+struct trace_kfree_skb {
+    struct sk_buff *skb;
+    void *location;
+};
+SEC("raw_tracepoint/kfree_skb")
+int trace_kfree_skb(struct trace_kfree_skb* ctx)
+{
+    struct sk_buff *skb = ctx->skb;
+    struct net_device *dev;
+    int ifindex;
 
+    __builtin_preserve_access_index(({
+        dev = skb->dev;
+        ifindex = dev->ifindex;
+    }));
+}
 
-- Paul
+These patches teach bpf verifier to recognize kfree_skb's first argument
+as 'struct sk_buff *' because this is what kernel C code is doing.
+The bpf program cannot 'cheat' and say that the first argument
+to kfree_skb raw_tracepoint is some other type.
+The verifier will catch such type mismatch between bpf program
+assumption of kernel code and the actual type in the kernel.
+
+Furthermore skb->dev access is type tracked as well.
+The verifier can see which field of skb is being read
+in bpf assembly. It will match offset to type.
+If bpf program has code:
+struct net_device *dev = (void *)skb->len;
+C compiler will not complain and generate bpf assembly code,
+but the verifier will recognize that integer 'len' field
+is being accessed at offsetof(struct sk_buff, len) and will reject
+further dereference of 'dev' variable because it contains
+integer value instead of a pointer.
+
+Such sophisticated type tracking allows calling networking
+bpf helpers from tracing programs.
+This patchset allows calling bpf_skb_event_output() that dumps
+skb data into perf ring buffer.
+It greatly improves observability.
+Now users can not only see packet lenth of the skb
+about to be freed in kfree_skb() kernel function, but can
+dump it to user space via perf ring buffer using bpf helper
+that was previously available only to TC and socket filters.
+See patch 10 for full example.
+
+The end result is safer and faster bpf tracing.
+Safer - because direct calls to bpf_probe_read() are disallowed and
+arbitrary addresses cannot be read.
+Faster - because normal loads are used to walk kernel data structures
+instead of bpf_probe_read() calls.
+Note that such loads can page fault and are supported by
+hidden bpf_probe_read() in interpreter and via exception table
+if program is JITed.
+
+See patches for details.
+
+Alexei Starovoitov (10):
+  bpf: add typecast to raw_tracepoints to help BTF generation
+  bpf: add typecast to bpf helpers to help BTF generation
+  bpf: process in-kernel BTF
+  libbpf: auto-detect btf_id of raw_tracepoint
+  bpf: implement accurate raw_tp context access via BTF
+  bpf: add support for BTF pointers to interpreter
+  bpf: add support for BTF pointers to x86 JIT
+  bpf: check types of arguments passed into helpers
+  bpf: disallow bpf_probe_read[_str] helpers
+  selftests/bpf: add kfree_skb raw_tp test
+
+ arch/x86/net/bpf_jit_comp.c                   |  96 +++++-
+ include/linux/bpf.h                           |  21 +-
+ include/linux/bpf_verifier.h                  |   6 +-
+ include/linux/btf.h                           |   1 +
+ include/linux/extable.h                       |  10 +
+ include/linux/filter.h                        |   6 +-
+ include/trace/bpf_probe.h                     |   3 +-
+ include/uapi/linux/bpf.h                      |   3 +-
+ kernel/bpf/btf.c                              | 318 ++++++++++++++++++
+ kernel/bpf/core.c                             |  39 ++-
+ kernel/bpf/verifier.c                         | 125 ++++++-
+ kernel/extable.c                              |   2 +
+ kernel/trace/bpf_trace.c                      |  10 +-
+ net/core/filter.c                             |  15 +-
+ tools/include/uapi/linux/bpf.h                |   3 +-
+ tools/lib/bpf/libbpf.c                        |  16 +
+ tools/testing/selftests/bpf/bpf_helpers.h     |   4 +
+ .../selftests/bpf/prog_tests/kfree_skb.c      |  90 +++++
+ tools/testing/selftests/bpf/progs/kfree_skb.c |  76 +++++
+ 19 files changed, 828 insertions(+), 16 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/kfree_skb.c
+ create mode 100644 tools/testing/selftests/bpf/progs/kfree_skb.c
+
+-- 
+2.20.0
+
