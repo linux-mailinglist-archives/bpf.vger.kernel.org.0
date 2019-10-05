@@ -2,251 +2,293 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C740CC8AC
-	for <lists+bpf@lfdr.de>; Sat,  5 Oct 2019 09:59:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66829CC95C
+	for <lists+bpf@lfdr.de>; Sat,  5 Oct 2019 12:29:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727454AbfJEH7w (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 5 Oct 2019 03:59:52 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:7310 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727418AbfJEH7v (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 5 Oct 2019 03:59:51 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id x957xkRk025168
-        for <bpf@vger.kernel.org>; Sat, 5 Oct 2019 00:59:50 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=facebook; bh=qR0miEwxwGQpXesPz+FnJeD3C3OHiGNNNtjNNrL9reo=;
- b=NxNVX5R7jSt1MypsDwDuh/Q3YeIbeMFcpRy8hmYbYC5hzBjkWuu9XfNbmw4zfZy++vU/
- G1ghYPaAPw2iFaeJ7WEWfW7T9nrlFqVGKleRsgH/WPshCFrX/DE6dGrrJfOhbzS/XRx3
- wTjY+YAe1R3qn30ZnAFBq+V3IxFCukaI0Ig= 
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by m0089730.ppops.net with ESMTP id 2vepp1g33v-11
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Sat, 05 Oct 2019 00:59:50 -0700
-Received: from 2401:db00:30:6007:face:0:1:0 (2620:10d:c081:10::13) by
- mail.thefacebook.com (2620:10d:c081:35::125) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
- Sat, 5 Oct 2019 00:59:37 -0700
-Received: by dev101.prn2.facebook.com (Postfix, from userid 137359)
-        id 054CD86182A; Sat,  5 Oct 2019 00:59:35 -0700 (PDT)
-Smtp-Origin-Hostprefix: dev
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: dev101.prn2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Cluster: prn2c23
-Subject: [PATCH bpf-next 2/3] scripts/bpf: teach bpf_helpers_doc.py to dump BPF helper definitions
-Date:   Sat, 5 Oct 2019 00:59:20 -0700
-Message-ID: <20191005075921.3310139-3-andriin@fb.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20191005075921.3310139-1-andriin@fb.com>
-References: <20191005075921.3310139-1-andriin@fb.com>
-X-FB-Internal: Safe
+        id S1726902AbfJEK3V convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Sat, 5 Oct 2019 06:29:21 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:58372 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725985AbfJEK3U (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 5 Oct 2019 06:29:20 -0400
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com [209.85.208.200])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 9AA6337E80
+        for <bpf@vger.kernel.org>; Sat,  5 Oct 2019 10:29:19 +0000 (UTC)
+Received: by mail-lj1-f200.google.com with SMTP id e3so2351571ljj.16
+        for <bpf@vger.kernel.org>; Sat, 05 Oct 2019 03:29:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=5ld6mvaTaFysits5sS/BQg6PZgIZJXXNnUbaRYN6pRE=;
+        b=uVBTx5qi5aRcQoHzn2uQjefWU1fH9LW0m6T0KgB9UU3oUOdNpiS/4ow+bUEa9hsFlf
+         x9lrAteZ0cSJvrrCW1EIsqUTzLLnC1pT8AqAQR3m+uTknYrZNDSx4Es+t69NBh2/pEkr
+         ZcJTGRcnF+lJuGSPKqiTY4z2y1ZdYsoumvLhs6oK2DwIykYoEFSrp4QRVKMA4DrLiNIu
+         myB9AGIpnwtplzzOOCkbTKp6A0r2Ja+dlVNjYruDG5h9MPeSywgJepMKOysR6/wiUf9K
+         x5UizLrogctKQTbKZnYVc8ct1/vCP0zB8/owns+qAVi21dVFtha7v7R6obvB7PTcAMOV
+         Vk/Q==
+X-Gm-Message-State: APjAAAWo4TPX1E+BV5WNGktr6xofmEzXLg9zkHU5w3eOLP+OjPh5W+p+
+        A/bB4wHWwbMmAz6l01Dy52FcOIR6t6c2Gz8Wb28uBpQqN/1xsMqWq2Tz6MOjiru9fOyPgZ4vTLX
+        IIwFBizx8p5ue
+X-Received: by 2002:ac2:4902:: with SMTP id n2mr11689813lfi.0.1570271357985;
+        Sat, 05 Oct 2019 03:29:17 -0700 (PDT)
+X-Google-Smtp-Source: APXvYqwZNCrJEMOF4tSr+Ilbe21VpkrggmSf12Y10g7t8HuAeMjj8dSV2sdYxTDAu7apiNHhBDgNnA==
+X-Received: by 2002:ac2:4902:: with SMTP id n2mr11689780lfi.0.1570271357477;
+        Sat, 05 Oct 2019 03:29:17 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a00:7660:6da:443::2])
+        by smtp.gmail.com with ESMTPSA id q19sm2167601lfj.9.2019.10.05.03.29.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 05 Oct 2019 03:29:16 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id E8A0A18063D; Sat,  5 Oct 2019 12:29:14 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Jakub Kicinski <jakub.kicinski@netronome.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Marek Majkowski <marek@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next v2 1/5] bpf: Support injecting chain calls into BPF programs on load
+In-Reply-To: <20191004161715.2dc7cbd9@cakuba.hsd1.ca.comcast.net>
+References: <157020976030.1824887.7191033447861395957.stgit@alrua-x1> <157020976144.1824887.10249946730258092768.stgit@alrua-x1> <20191004161715.2dc7cbd9@cakuba.hsd1.ca.comcast.net>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Sat, 05 Oct 2019 12:29:14 +0200
+Message-ID: <87d0fbo58l.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
- definitions=2019-10-05_04:2019-10-03,2019-10-05 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- clxscore=1015 suspectscore=9 bulkscore=0 adultscore=0 mlxlogscore=444
- lowpriorityscore=0 spamscore=0 mlxscore=0 phishscore=0 impostorscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1908290000 definitions=main-1910050077
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Enhance scripts/bpf_helpers_doc.py to emit C header with BPF helper
-definitions (to be included from libbpf's bpf_helpers.h).
+Jakub Kicinski <jakub.kicinski@netronome.com> writes:
 
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- scripts/bpf_helpers_doc.py | 156 ++++++++++++++++++++++++++++++++++++-
- 1 file changed, 155 insertions(+), 1 deletion(-)
+> On Fri, 04 Oct 2019 19:22:41 +0200, Toke Høiland-Jørgensen wrote:
+>> From: Toke Høiland-Jørgensen <toke@redhat.com>
+>> 
+>> This adds support for injecting chain call logic into eBPF programs before
+>> they return. The code injection is controlled by a flag at program load
+>> time; if the flag is set, the verifier will add code to every BPF_EXIT
+>> instruction that first does a lookup into a chain call structure to see if
+>> it should call into another program before returning. The actual calls
+>> reuse the tail call infrastructure.
+>> 
+>> Ideally, it shouldn't be necessary to set the flag on program load time,
+>> but rather inject the calls when a chain call program is first loaded.
+>> However, rewriting the program reallocates the bpf_prog struct, which is
+>> obviously not possible after the program has been attached to something.
+>
+> Very exciting stuff :)
+>
+> Forgive my ignorance, isn't synchronize_rcu() enough to ensure old
+> image is no longer used?
 
-diff --git a/scripts/bpf_helpers_doc.py b/scripts/bpf_helpers_doc.py
-index 894cc58c1a03..410a994e2b36 100755
---- a/scripts/bpf_helpers_doc.py
-+++ b/scripts/bpf_helpers_doc.py
-@@ -391,6 +391,155 @@ SEE ALSO
- 
-         print('')
- 
-+class PrinterHelpers(Printer):
-+    """
-+    A printer for dumping collected information about helpers as C header to
-+    be included from BPF program.
-+    @helpers: array of Helper objects to print to standard output
-+    """
-+
-+    type_fwds = [
-+            'struct bpf_fib_lookup',
-+            'struct bpf_perf_event_data',
-+            'struct bpf_perf_event_value',
-+            'struct bpf_sock',
-+            'struct bpf_sock_addr',
-+            'struct bpf_sock_ops',
-+            'struct bpf_sock_tuple',
-+            'struct bpf_spin_lock',
-+            'struct bpf_sysctl',
-+            'struct bpf_tcp_sock',
-+            'struct bpf_tunnel_key',
-+            'struct bpf_xfrm_state',
-+            'struct pt_regs',
-+            'struct sk_reuseport_md',
-+            'struct sockaddr',
-+            'struct tcphdr',
-+
-+            'struct __sk_buff',
-+            'struct sk_msg_md',
-+            'struct xpd_md',
-+    ]
-+    known_types = {
-+            '...',
-+            'void',
-+            'const void',
-+            'char',
-+            'const char',
-+            'int',
-+            'long',
-+            'unsigned long',
-+
-+            '__be16',
-+            '__be32',
-+            '__wsum',
-+
-+            'struct bpf_fib_lookup',
-+            'struct bpf_perf_event_data',
-+            'struct bpf_perf_event_value',
-+            'struct bpf_sock',
-+            'struct bpf_sock_addr',
-+            'struct bpf_sock_ops',
-+            'struct bpf_sock_tuple',
-+            'struct bpf_spin_lock',
-+            'struct bpf_sysctl',
-+            'struct bpf_tcp_sock',
-+            'struct bpf_tunnel_key',
-+            'struct bpf_xfrm_state',
-+            'struct pt_regs',
-+            'struct sk_reuseport_md',
-+            'struct sockaddr',
-+            'struct tcphdr',
-+    }
-+    mapped_types = {
-+            'u8': '__u8',
-+            'u16': '__u16',
-+            'u32': '__u32',
-+            'u64': '__u64',
-+            's8': '__s8',
-+            's16': '__s16',
-+            's32': '__s32',
-+            's64': '__s64',
-+            'size_t': 'unsigned long',
-+            'struct bpf_map': 'void',
-+            'struct sk_buff': 'struct __sk_buff',
-+            'const struct sk_buff': 'const struct __sk_buff',
-+            'struct sk_msg_buff': 'struct sk_msg_md',
-+            'struct xdp_buff': 'struct xdp_md',
-+    }
-+
-+    def print_header(self):
-+        header = '''\
-+/* This is auto-generated file. See bpf_helpers_doc.py for details. */
-+
-+/* Forward declarations of BPF structs */ '''
-+
-+        print(header)
-+        for fwd in self.type_fwds:
-+            print('%s;' % fwd)
-+        print('')
-+
-+    def print_footer(self):
-+        footer = ''
-+        print(footer)
-+
-+    def map_type(self, t):
-+        if t in self.known_types:
-+            return t
-+        if t in self.mapped_types:
-+            return self.mapped_types[t]
-+        print("")
-+        print("Unrecognized type '%s', please add it to known types!" % t)
-+        sys.exit(1)
-+
-+    seen_helpers = set()
-+
-+    def print_one(self, helper):
-+        proto = helper.proto_break_down()
-+
-+        if proto['name'] in self.seen_helpers:
-+            return
-+        self.seen_helpers.add(proto['name'])
-+
-+        print('/*')
-+        print(" * %s" % proto['name'])
-+        print(" *")
-+        if (helper.desc):
-+            # print(' * Description')
-+            # Do not strip all newline characters: formatted code at the end of
-+            # a section must be followed by a blank line.
-+            for line in re.sub('\n$', '', helper.desc, count=1).split('\n'):
-+                print(' *{}{}'.format(' \t' if line else '', line))
-+
-+        if (helper.ret):
-+            print(' *')
-+            print(' * Returns')
-+            for line in helper.ret.rstrip().split('\n'):
-+                print(' *{}{}'.format(' \t' if line else '', line))
-+
-+        print(' */')
-+        print('static %s %s(*%s)(' % (self.map_type(proto['ret_type']),
-+                                      proto['ret_star'], proto['name']), end='')
-+        comma = ''
-+        for i, a in enumerate(proto['args']):
-+            t = a['type']
-+            n = a['name']
-+            if proto['name'] == 'bpf_get_socket_cookie' and i == 0:
-+                    t = 'void'
-+                    n = 'ctx'
-+            one_arg = '{}{}'.format(comma, self.map_type(t))
-+            if n:
-+                if a['star']:
-+                    one_arg += ' {}'.format(a['star'])
-+                else:
-+                    one_arg += ' '
-+                one_arg += '{}'.format(n)
-+            comma = ', '
-+            print(one_arg, end='')
-+
-+        print(') = (void *) %d;' % len(self.seen_helpers))
-+        print('')
-+
- ###############################################################################
- 
- # If script is launched from scripts/ from kernel tree and can access
-@@ -405,6 +554,8 @@ Parse eBPF header file and generate documentation for eBPF helper functions.
- The RST-formatted output produced can be turned into a manual page with the
- rst2man utility.
- """)
-+argParser.add_argument('--header', action='store_true',
-+                       help='generate C header file')
- if (os.path.isfile(bpfh)):
-     argParser.add_argument('--filename', help='path to include/uapi/linux/bpf.h',
-                            default=bpfh)
-@@ -417,5 +568,8 @@ headerParser = HeaderParser(args.filename)
- headerParser.run()
- 
- # Print formatted output to standard output.
--printer = PrinterRST(headerParser.helpers)
-+if args.header:
-+    printer = PrinterHelpers(headerParser.helpers)
-+else:
-+    printer = PrinterRST(headerParser.helpers)
- printer.print_all()
--- 
-2.17.1
+Because it's reallocating the 'struct bpf_prog*'. Which is what we pass
+into the driver on XDP attach. So we'd have to track down all the uses
+and replace the pointer.
 
+At least, that's how I read the code; am I missing something?
+
+> For simple rewrites which don't require much context like the one here
+> it'd be cool to do it after loading..
+
+I think re-jit'ing is probably doable, which is why I kinda want the
+support in the JIT. We could also conceivably just stick in some NOP
+instructions in the eBPF byte code on load and then replace them
+dynamically later?
+
+>> One way around this could be a sysctl to force the flag one (for enforcing
+>> system-wide support). Another could be to have the chain call support
+>> itself built into the interpreter and JIT, which could conceivably be
+>> re-run each time we attach a new chain call program. This would also allow
+>> the JIT to inject direct calls to the next program instead of using the
+>> tail call infrastructure, which presumably would be a performance win. The
+>> drawback is, of course, that it would require modifying all the JITs.
+>> 
+>> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+>
+>> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+>> index 5b9d22338606..753abfb78c13 100644
+>> --- a/include/linux/bpf.h
+>> +++ b/include/linux/bpf.h
+>> @@ -383,6 +383,7 @@ struct bpf_prog_aux {
+>>  	struct list_head ksym_lnode;
+>>  	const struct bpf_prog_ops *ops;
+>>  	struct bpf_map **used_maps;
+>> +	struct bpf_array *chain_progs;
+>>  	struct bpf_prog *prog;
+>>  	struct user_struct *user;
+>>  	u64 load_time; /* ns since boottime */
+>> @@ -443,6 +444,7 @@ struct bpf_array {
+>>  
+>>  #define BPF_COMPLEXITY_LIMIT_INSNS      1000000 /* yes. 1M insns */
+>>  #define MAX_TAIL_CALL_CNT 32
+>> +#define BPF_NUM_CHAIN_SLOTS 8
+>
+> This could be user arg? Also the behaviour of mapping could be user
+> controlled? Perhaps even users could pass the snippet to map the return
+> code to the location, one day?
+>
+>>  #define BPF_F_ACCESS_MASK	(BPF_F_RDONLY |		\
+>>  				 BPF_F_RDONLY_PROG |	\
+>> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+>> index 77c6be96d676..febe8934d19a 100644
+>> --- a/include/uapi/linux/bpf.h
+>> +++ b/include/uapi/linux/bpf.h
+>> @@ -288,6 +288,12 @@ enum bpf_attach_type {
+>>  /* The verifier internal test flag. Behavior is undefined */
+>>  #define BPF_F_TEST_STATE_FREQ	(1U << 3)
+>>  
+>> +/* Whether to enable chain call injection at program return. If set, the
+>> + * verifier will rewrite program returns to check for and jump to chain call
+>> + * programs configured with the BPF_PROG_CHAIN_* commands to the bpf syscall.
+>> + */
+>> +#define BPF_F_INJECT_CHAIN_CALLS	(1U << 4)
+>> +
+>>  /* When BPF ldimm64's insn[0].src_reg != 0 then this can have
+>>   * two extensions:
+>>   *
+>> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+>> index 66088a9e9b9e..98f1ad920e48 100644
+>> --- a/kernel/bpf/core.c
+>> +++ b/kernel/bpf/core.c
+>> @@ -255,6 +255,16 @@ void __bpf_prog_free(struct bpf_prog *fp)
+>>  {
+>>  	if (fp->aux) {
+>>  		free_percpu(fp->aux->stats);
+>> +		if (fp->aux->chain_progs) {
+>> +			struct bpf_array *array = fp->aux->chain_progs;
+>> +			int i;
+>> +
+>> +			for (i = 0; i < BPF_NUM_CHAIN_SLOTS; i++)
+>> +				if (array->ptrs[i])
+>> +					bpf_prog_put(array->ptrs[i]);
+>> +
+>> +			bpf_map_area_free(array);
+>> +		}
+>>  		kfree(fp->aux);
+>>  	}
+>>  	vfree(fp);
+>> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+>> index 82eabd4e38ad..c2a49df5f921 100644
+>> --- a/kernel/bpf/syscall.c
+>> +++ b/kernel/bpf/syscall.c
+>> @@ -1630,7 +1630,8 @@ static int bpf_prog_load(union bpf_attr *attr, union bpf_attr __user *uattr)
+>>  	if (attr->prog_flags & ~(BPF_F_STRICT_ALIGNMENT |
+>>  				 BPF_F_ANY_ALIGNMENT |
+>>  				 BPF_F_TEST_STATE_FREQ |
+>> -				 BPF_F_TEST_RND_HI32))
+>> +				 BPF_F_TEST_RND_HI32 |
+>> +				 BPF_F_INJECT_CHAIN_CALLS))
+>>  		return -EINVAL;
+>>  
+>>  	if (!IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS) &&
+>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>> index ffc3e53f5300..dbc9bbf13300 100644
+>> --- a/kernel/bpf/verifier.c
+>> +++ b/kernel/bpf/verifier.c
+>> @@ -9154,6 +9154,79 @@ static int fixup_bpf_calls(struct bpf_verifier_env *env)
+>>  	return 0;
+>>  }
+>>  
+>> +static int bpf_inject_chain_calls(struct bpf_verifier_env *env)
+>> +{
+>> +	struct bpf_prog *prog = env->prog;
+>> +	struct bpf_insn *insn = prog->insnsi;
+>> +	int i, cnt, delta = 0, ret = -ENOMEM;
+>> +	const int insn_cnt = prog->len;
+>> +	struct bpf_array *prog_array;
+>> +	struct bpf_prog *new_prog;
+>> +	size_t array_size;
+>> +
+>> +	struct bpf_insn call_next[] = {
+>> +		BPF_LD_IMM64(BPF_REG_2, 0),
+>> +		/* Save real return value for later */
+>> +		BPF_MOV64_REG(BPF_REG_6, BPF_REG_0),
+>> +		/* First try tail call with index ret+1 */
+>> +		BPF_MOV64_REG(BPF_REG_3, BPF_REG_0),
+>
+> Don't we need to check against the max here, and spectre-proofing
+> here?
+
+No, I don't think so. This is just setting up the arguments for the
+BPF_TAIL_CALL instruction below. The JIT will do its thing with that and
+emit the range check and the retpoline stuff...
+
+>> +		BPF_ALU64_IMM(BPF_ADD, BPF_REG_3, 1),
+>> +		BPF_RAW_INSN(BPF_JMP | BPF_TAIL_CALL, 0, 0, 0, 0),
+>> +		/* If that doesn't work, try with index 0 (wildcard) */
+>> +		BPF_MOV64_IMM(BPF_REG_3, 0),
+>> +		BPF_RAW_INSN(BPF_JMP | BPF_TAIL_CALL, 0, 0, 0, 0),
+>> +		/* Restore saved return value and exit */
+>> +		BPF_MOV64_REG(BPF_REG_0, BPF_REG_6),
+>> +		BPF_EXIT_INSN()
+>> +	};
+>
+>> +	if (prog->aux->chain_progs)
+>> +		return 0;
+>
+> Not sure why this check is here?
+
+In preparation for being able to call this function multiple times when
+attaching the chain call program :)
+
+>> +	array_size = sizeof(*prog_array) + BPF_NUM_CHAIN_SLOTS * sizeof(void*);
+>> +	prog_array = bpf_map_area_alloc(array_size, NUMA_NO_NODE);
+>> +
+>> +	if (!prog_array)
+>> +		goto out_err;
+>> +
+>> +	prog_array->elem_size = sizeof(void*);
+>> +	prog_array->map.max_entries = BPF_NUM_CHAIN_SLOTS;
+>> +
+>> +	call_next[0].imm = (u32)((u64) prog_array);
+>> +	call_next[1].imm = ((u64) prog_array) >> 32;
+>> +
+>> +	for (i = 0; i < insn_cnt; i++, insn++) {
+>> +		if (insn->code != (BPF_JMP | BPF_EXIT))
+>> +			continue;
+>
+> Mm.. don't subprogs also exit with JMP | EXIT?  This should only apply
+> to main prog, no?
+
+Hmm, no idea? If it does, you're right of course. Guess I'll try to
+figure that out...
+
+>> +		cnt = ARRAY_SIZE(call_next);
+>> +
+>> +		new_prog = bpf_patch_insn_data(env, i+delta, call_next, cnt);
+>> +		if (!new_prog) {
+>> +			goto out_err;
+>> +		}
+>> +
+>> +		delta    += cnt - 1;
+>> +		env->prog = prog = new_prog;
+>> +		insn      = new_prog->insnsi + i + delta;
+>> +	}
+>> +
+>> +	/* If we chain call into other programs, we cannot make any assumptions
+>> +	 * since they can be replaced dynamically during runtime.
+>> +	 */
+>> +	prog->cb_access = 1;
+>> +	env->prog->aux->stack_depth = MAX_BPF_STACK;
+>> +	env->prog->aux->max_pkt_offset = MAX_PACKET_OFF;
+>
+> Some refactoring & reuse of the normal tail call code could be nice?
+> Same for the hand allocation of the prog array actually :(
+
+See above; this is actually just setting up the arguments to reuse the
+tail call logic. I'll try to make that clearer...
+
+Most other places that do these kinds of smallish code injections seem
+to be hand-coding the instructions; what else would I do?
+
+-Toke
