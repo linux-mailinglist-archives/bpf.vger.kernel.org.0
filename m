@@ -2,125 +2,209 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E057CCF10
-	for <lists+bpf@lfdr.de>; Sun,  6 Oct 2019 08:49:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E05ECD1CD
+	for <lists+bpf@lfdr.de>; Sun,  6 Oct 2019 13:58:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726240AbfJFGtu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 6 Oct 2019 02:49:50 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:33362 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726216AbfJFGtu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 6 Oct 2019 02:49:50 -0400
-Received: by mail-qt1-f196.google.com with SMTP id r5so14815691qtd.0;
-        Sat, 05 Oct 2019 23:49:48 -0700 (PDT)
+        id S1726311AbfJFL6Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 6 Oct 2019 07:58:25 -0400
+Received: from mail-pg1-f175.google.com ([209.85.215.175]:34562 "EHLO
+        mail-pg1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726275AbfJFL6Z (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 6 Oct 2019 07:58:25 -0400
+Received: by mail-pg1-f175.google.com with SMTP id y35so6524199pgl.1;
+        Sun, 06 Oct 2019 04:58:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ndSiowtmaYsMdyW5qrWKh8qoq7dXM+au1DUpgPxwWLw=;
-        b=e4jTyWj0q/1ZQVBgW/uEPJ/Z7vgIDOTbELiiA3rgQZk7PX0++2+hawsS9ujMHNAujg
-         mxHz5Tu0L53NfZFn8Zg9Q03T1fqHg1nyBq7WyORVMPrIdKTbIS/2IjtCx7Xs3ZjX4xLE
-         gWV8H4YALE3dKDlfCJBV9f0FuL+kkboqMNrJDCBrcdBK/6QghHc3mYTM2WPZAGOeB9KE
-         Zq1NIxALudM+GZNcLM3QWs90pMEk8O97MGv9xFEjNsz0CYPtPUGvR4CtWvgTpEAzNakm
-         WR2VdtYFjIqu6Hs7WJTsE1H4jsXM/sO9JcaYAW4JnSZ9Wj0/pnt7qBb89475tx/f+JNG
-         QrcQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8jtusd2e8pzBkQsAu63azV87Y10QhM0PvTVIOsSJOoI=;
+        b=I5nO5Zjxe6YTD58+eTwLHmLzvBQaTS15xjCUUHj9nU4OyNyYFQF71WHK/H7fSkzOMu
+         wmR4xaNQEy35LRtwjsYuUu906vd8V6QKAS5PjUkL3/W3xqr5fmtpDcGRtgE9KfzhCffs
+         AYVlQXxf70J/WzAw8kOA36W3IMt1UtNsIS4uAWozn4LvayuT57nsmOFbQTWUnV13tQ5K
+         TJIV4lmHwV6O2+MQbkQ3UoDmAYPspKAQ2AtWiQfDPBF26+/1utG2adjwv2UmNbcFOH2m
+         VSfMlKHIL94Yvb6StNI1cQPlpwhNSWdK0p7HP9p577xH1HZnbK4b9vOPjwY/cmTUBAsc
+         POIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ndSiowtmaYsMdyW5qrWKh8qoq7dXM+au1DUpgPxwWLw=;
-        b=XkN5iBBdBFOShpoLWuPWtJRB70bFdkbQjggQr5CXfF+ca1PBx8SVcKMbQ5VkUAHGYa
-         JbEKYj91889bxQtyXD0JGT9BM1GYsY1fwT8KSBRV163kyGnRj4TaEbucaYrcZ7zwjI/r
-         +XfEa3PWH/mVi1++IgF9qJoPZ+evorDreveykpXH8SxWQmDXDdhTcjVfADEfe86R59Fz
-         XH4EWZ/+bAt/AzSB8ummnnZvRS8FAsjhIOwqlrnr6Xan2U6Oeuz/TVTm4umNegyCl+1U
-         wXBU0V1b4aO4zgwPXAIhnLdjXYyJJBvUrK2i8Cr+qwIj1ZmCyi3Tr/PP3KcyWp9+1Uc1
-         MLeA==
-X-Gm-Message-State: APjAAAXvU7gWOKeIUIjsn5iS5gIuGVVyq3UM2S+xRjq1LRYpHResj8TP
-        3/po/zv8B4Bm151td0P+Px/RBdRQVNLLYTbinJ4=
-X-Google-Smtp-Source: APXvYqzxj6Nc1nD60pTa8QGuDknaSt0P3FweVjbCyYwQi/6RWqR3QcxkmFm6T9eoEMlpTEfwNBAhaHMB5Oify4uMgQE=
-X-Received: by 2002:ac8:5147:: with SMTP id h7mr24338099qtn.117.1570344587576;
- Sat, 05 Oct 2019 23:49:47 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAEKGpzhoYHrE4NTvaWSpy-R6CiLYehGHzLM6v+-9j8iemNyK0g@mail.gmail.com>
- <20191005192040.20308-1-eric@sage.org>
-In-Reply-To: <20191005192040.20308-1-eric@sage.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Sat, 5 Oct 2019 23:49:36 -0700
-Message-ID: <CAEf4BzYER-Fzu3=RZFfWJqq83Jx-HYg6nuGYUiszfROLKuje7A@mail.gmail.com>
-Subject: Re: samples/bpf not working?
-To:     Eric Sage <eric@sage.org>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8jtusd2e8pzBkQsAu63azV87Y10QhM0PvTVIOsSJOoI=;
+        b=pvtu6RgCu2bAOIPIMjHNFWIOYc+JYlI7mLRtrR63r1gH/hPBRVlCP9ZVTKFdLuP/ry
+         sq0h3Xu8oEGYL4jPlGlUP0ULfh6ts/hvHQhLYF7WvI/bzr9xMyfVy6GNCjX3aGA/V0uf
+         OcYj/zMTuODsBGZFddLkqJnNMRVddluzPb3aQP/DEfs+IugUmcksd2sx5pK0SLGXWfCT
+         9eOBLEIbs96ccsj4HYcDAdFMeVsGi8vf/udQ3QFcciyUXtbnkYJpjBbwqIe1YWieA9nK
+         GYv68NxC7JmjAD/r5hmQRyol5ezAt+8dGWzXdQbqDmtT54p49rSRIeHw6JKqFbnLAn1W
+         89TA==
+X-Gm-Message-State: APjAAAV+hsIuMmVgenuFfgBgi/jOX0PEeeavKURiiThjVqncKdqQ7oi5
+        7pyGcowrqSbZZQ3kCbM6aw==
+X-Google-Smtp-Source: APXvYqzh1zoALgta24J3bq8ETMMRW9TB2DvkP5oWZpBeuknXWW6KULOPxHggIHQlIjv/a1ZwkO/TIA==
+X-Received: by 2002:a17:90a:cb07:: with SMTP id z7mr27277220pjt.67.1570363103763;
+        Sun, 06 Oct 2019 04:58:23 -0700 (PDT)
+Received: from localhost.localdomain ([110.35.161.54])
+        by smtp.gmail.com with ESMTPSA id h14sm12445559pfo.15.2019.10.06.04.58.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 06 Oct 2019 04:58:23 -0700 (PDT)
+From:   "Daniel T. Lee" <danieltimlee@gmail.com>
+To:     Yonghong Song <yhs@fb.com>, Song Liu <liu.song.a23@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        xdp-newbies@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Alexei Starovoitov <ast@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>, netdev@vger.kernel.org
+Subject: [bpf-next v5] samples: bpf: add max_pckt_size option at xdp_adjust_tail
+Date:   Sun,  6 Oct 2019 20:58:15 +0900
+Message-Id: <20191006115815.10292-1-danieltimlee@gmail.com>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Oct 5, 2019 at 12:24 PM Eric Sage <eric@sage.org> wrote:
->
-> 394053f4a4b3 ("kbuild: make single targets work more correctly")
-> changed the way single target builds work. For example,
-> 'make samples/bpf/' in the previous commit matched:
->
-> Makefile:1787
-> %/: prepare FORCE
->   $(Q)$(MAKE) KBUILD_MODULES=3D1 $(build)=3D$(build-dir) need-modorder=3D=
-1
->
-> So that 'samples/bpf/Makefile' was processed directly.
-> Commit 394053f4a4b3 removed this rule and now requires that
-> 'CONFIG_SAMPLES=3Dy' and that 'bpf/' be added to 'samples/Makefile'
-> so it is added to the list of targets processed by the new
-> 'ifdef single-build' section of 'scripts/Makefile.build'.
->
-> This commit adds a new 'CONFIG_SAMPLE_BPF' under 'CONFIG_SAMPLES' to
-> match what the other sample subdirs have done.
->
-> Signed-off-by: Eric Sage <eric@sage.org>
-> ---
+Currently, at xdp_adjust_tail_kern.c, MAX_PCKT_SIZE is limited
+to 600. To make this size flexible, static global variable
+'max_pcktsz' is added.
 
-See [0], Bj=C3=B6rn already attempted this.
+By updating new packet size from the user space, xdp_adjust_tail_kern.o
+will use this value as a new max packet size.
 
-  [0] https://lore.kernel.org/bpf/20191001101429.24965-1-bjorn.topel@gmail.=
-com/
+This static global variable can be accesible from .data section with
+bpf_object__find_map* from user space, since it is considered as
+internal map (accessible with .bss/.data/.rodata suffix).
 
->  samples/Kconfig  | 6 ++++++
->  samples/Makefile | 1 +
->  2 files changed, 7 insertions(+)
->
-> diff --git a/samples/Kconfig b/samples/Kconfig
-> index c8dacb4dda80..396e87ba97e0 100644
-> --- a/samples/Kconfig
-> +++ b/samples/Kconfig
-> @@ -6,6 +6,12 @@ menuconfig SAMPLES
->
->  if SAMPLES
->
-> +config SAMPLE_BPF
-> +       tristate "Build bpf examples"
-> +       depends on EVENT_TRACING && m
-> +       help
-> +         This builds the bpf example modules.
-> +
->  config SAMPLE_TRACE_EVENTS
->         tristate "Build trace_events examples -- loadable modules only"
->         depends on EVENT_TRACING && m
-> diff --git a/samples/Makefile b/samples/Makefile
-> index 7d6e4ca28d69..e133a78f3fb8 100644
-> --- a/samples/Makefile
-> +++ b/samples/Makefile
-> @@ -2,6 +2,7 @@
->  # Makefile for Linux samples code
->
->  obj-$(CONFIG_SAMPLE_ANDROID_BINDERFS)  +=3D binderfs/
-> +obj-$(CONFIG_SAMPLE_BPF) +=3D bpf/
->  obj-$(CONFIG_SAMPLE_CONFIGFS)          +=3D configfs/
->  obj-$(CONFIG_SAMPLE_CONNECTOR)         +=3D connector/
->  subdir-$(CONFIG_SAMPLE_HIDRAW)         +=3D hidraw
-> --
-> 2.18.1
->
+If no '-P <MAX_PCKT_SIZE>' option is used, the size of maximum packet
+will be 600 as a default.
+
+Changed the way to test prog_fd, map_fd from '!= 0' to '< 0',
+since fd could be 0 when stdin is closed.
+
+Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
+
+---
+Changes in v5:
+    - Change pcktsz map to static global variable
+Changes in v4:
+    - make pckt_size no less than ICMP_TOOBIG_SIZE
+    - Fix code style
+Changes in v2:
+    - Change the helper to fetch map from 'bpf_map__next' to
+    'bpf_object__find_map_fd_by_name'.
+
+ samples/bpf/xdp_adjust_tail_kern.c |  7 +++++--
+ samples/bpf/xdp_adjust_tail_user.c | 32 ++++++++++++++++++++++--------
+ 2 files changed, 29 insertions(+), 10 deletions(-)
+
+diff --git a/samples/bpf/xdp_adjust_tail_kern.c b/samples/bpf/xdp_adjust_tail_kern.c
+index 411fdb21f8bc..c616508befb9 100644
+--- a/samples/bpf/xdp_adjust_tail_kern.c
++++ b/samples/bpf/xdp_adjust_tail_kern.c
+@@ -25,6 +25,9 @@
+ #define ICMP_TOOBIG_SIZE 98
+ #define ICMP_TOOBIG_PAYLOAD_SIZE 92
+ 
++/* volatile to prevent compiler optimizations */
++static volatile __u32 max_pcktsz = MAX_PCKT_SIZE;
++
+ struct bpf_map_def SEC("maps") icmpcnt = {
+ 	.type = BPF_MAP_TYPE_ARRAY,
+ 	.key_size = sizeof(__u32),
+@@ -92,7 +95,7 @@ static __always_inline int send_icmp4_too_big(struct xdp_md *xdp)
+ 	orig_iph = data + off;
+ 	icmp_hdr->type = ICMP_DEST_UNREACH;
+ 	icmp_hdr->code = ICMP_FRAG_NEEDED;
+-	icmp_hdr->un.frag.mtu = htons(MAX_PCKT_SIZE-sizeof(struct ethhdr));
++	icmp_hdr->un.frag.mtu = htons(max_pcktsz - sizeof(struct ethhdr));
+ 	icmp_hdr->checksum = 0;
+ 	ipv4_csum(icmp_hdr, ICMP_TOOBIG_PAYLOAD_SIZE, &csum);
+ 	icmp_hdr->checksum = csum;
+@@ -121,7 +124,7 @@ static __always_inline int handle_ipv4(struct xdp_md *xdp)
+ 	int pckt_size = data_end - data;
+ 	int offset;
+ 
+-	if (pckt_size > MAX_PCKT_SIZE) {
++	if (pckt_size > max(max_pcktsz, ICMP_TOOBIG_SIZE)) {
+ 		offset = pckt_size - ICMP_TOOBIG_SIZE;
+ 		if (bpf_xdp_adjust_tail(xdp, 0 - offset))
+ 			return XDP_PASS;
+diff --git a/samples/bpf/xdp_adjust_tail_user.c b/samples/bpf/xdp_adjust_tail_user.c
+index a3596b617c4c..bcdebd3be83e 100644
+--- a/samples/bpf/xdp_adjust_tail_user.c
++++ b/samples/bpf/xdp_adjust_tail_user.c
+@@ -23,6 +23,7 @@
+ #include "libbpf.h"
+ 
+ #define STATS_INTERVAL_S 2U
++#define MAX_PCKT_SIZE 600
+ 
+ static int ifindex = -1;
+ static __u32 xdp_flags = XDP_FLAGS_UPDATE_IF_NOEXIST;
+@@ -72,6 +73,7 @@ static void usage(const char *cmd)
+ 	printf("Usage: %s [...]\n", cmd);
+ 	printf("    -i <ifname|ifindex> Interface\n");
+ 	printf("    -T <stop-after-X-seconds> Default: 0 (forever)\n");
++	printf("    -P <MAX_PCKT_SIZE> Default: %u\n", MAX_PCKT_SIZE);
+ 	printf("    -S use skb-mode\n");
+ 	printf("    -N enforce native mode\n");
+ 	printf("    -F force loading prog\n");
+@@ -85,13 +87,14 @@ int main(int argc, char **argv)
+ 		.prog_type	= BPF_PROG_TYPE_XDP,
+ 	};
+ 	unsigned char opt_flags[256] = {};
+-	const char *optstr = "i:T:SNFh";
++	const char *optstr = "i:T:P:SNFh";
+ 	struct bpf_prog_info info = {};
+ 	__u32 info_len = sizeof(info);
+ 	unsigned int kill_after_s = 0;
+ 	int i, prog_fd, map_fd, opt;
+ 	struct bpf_object *obj;
+-	struct bpf_map *map;
++	__u32 max_pckt_size = 0;
++	__u32 key = 0;
+ 	char filename[256];
+ 	int err;
+ 
+@@ -110,6 +113,9 @@ int main(int argc, char **argv)
+ 		case 'T':
+ 			kill_after_s = atoi(optarg);
+ 			break;
++		case 'P':
++			max_pckt_size = atoi(optarg);
++			break;
+ 		case 'S':
+ 			xdp_flags |= XDP_FLAGS_SKB_MODE;
+ 			break;
+@@ -150,15 +156,25 @@ int main(int argc, char **argv)
+ 	if (bpf_prog_load_xattr(&prog_load_attr, &obj, &prog_fd))
+ 		return 1;
+ 
+-	map = bpf_map__next(NULL, obj);
+-	if (!map) {
+-		printf("finding a map in obj file failed\n");
++	if (prog_fd < 0) {
++		printf("load_bpf_file: %s\n", strerror(errno));
+ 		return 1;
+ 	}
+-	map_fd = bpf_map__fd(map);
+ 
+-	if (!prog_fd) {
+-		printf("load_bpf_file: %s\n", strerror(errno));
++	/* static global var 'max_pcktsz' is accessible from .data section */
++	if (max_pckt_size) {
++		map_fd = bpf_object__find_map_fd_by_name(obj, "xdp_adju.data");
++		if (map_fd < 0) {
++			printf("finding a max_pcktsz map in obj file failed\n");
++			return 1;
++		}
++		bpf_map_update_elem(map_fd, &key, &max_pckt_size, BPF_ANY);
++	}
++
++	/* fetch icmpcnt map */
++	map_fd = bpf_object__find_map_fd_by_name(obj, "icmpcnt");
++	if (map_fd < 0) {
++		printf("finding a icmpcnt map in obj file failed\n");
+ 		return 1;
+ 	}
+ 
+-- 
+2.20.1
+
