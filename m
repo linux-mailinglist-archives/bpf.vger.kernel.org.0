@@ -2,122 +2,195 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 663DACD8DA
-	for <lists+bpf@lfdr.de>; Sun,  6 Oct 2019 21:19:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76B35CD9BC
+	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2019 01:49:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726765AbfJFTTN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 6 Oct 2019 15:19:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46294 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726139AbfJFTTN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 6 Oct 2019 15:19:13 -0400
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1AE02214D9
-        for <bpf@vger.kernel.org>; Sun,  6 Oct 2019 19:19:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1570389552;
-        bh=ktUpIaexhlxRiG4ce7iLuw4QHFnf1O8GxwmdLQRzKQQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=yoHDBSHfwn2R9DQNKNey6IjgYQQ3iKumA9xVSa4w7i0ZBbVIjDv7j4kF/rzp6dak+
-         g+yjLDpx0ycO6XeI4GT37gZAk6+zY6rrqL9xPsh93vnexztlzjyD1+CL1A0VKcY7bU
-         RNHZComg9ON5ELsv2hs0AaFM4rfSAe5HKQvYxpnE=
-Received: by mail-wm1-f42.google.com with SMTP id p7so10353121wmp.4
-        for <bpf@vger.kernel.org>; Sun, 06 Oct 2019 12:19:12 -0700 (PDT)
-X-Gm-Message-State: APjAAAVLpd2aVLHQ9cGYeouyHwR2lfx10dfhtkQKSnDMcmHi4I0pCn7u
-        tlyx+D8j/cfreaTpKCYbbF/EPO/vbcGsX8REQCtBiQ==
-X-Google-Smtp-Source: APXvYqzx1ZnDJzMrKkfkPpBPdQaV6IOTwM8ALHjC39JfwEbpQY+QpI4wEbZ4dp0MU/oNOnC7f2vGFBUaGlcGv6Uudg8=
-X-Received: by 2002:a1c:1bcf:: with SMTP id b198mr19073715wmb.0.1570389548492;
- Sun, 06 Oct 2019 12:19:08 -0700 (PDT)
+        id S1726167AbfJFXtl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 6 Oct 2019 19:49:41 -0400
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:35390 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726000AbfJFXtl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 6 Oct 2019 19:49:41 -0400
+Received: by mail-pf1-f196.google.com with SMTP id 205so7493641pfw.2;
+        Sun, 06 Oct 2019 16:49:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=SMs2JewYcGSP3CnPuall2iZDxcetigZ64C7idthVvHQ=;
+        b=Nzr5v7R0rNNBW5HZCg45CejDo/oi8Xs5E3dPqs2LA/TeKkrgeItedDMVe7/0coc8YX
+         BGfhkiPKTyGgtexQwKuqeUwxr0NQ5OtJpugK+Yqd72GUdOC0KAmrIU1+Y7zyyY8FeQ/r
+         De2WkriIX1U08m5FZFDOWuAbAeMXTLT6eIoTKHe2Chr62J5ySP6FB/82KbdqJVuaSH2P
+         8Z3Asvk+LP4bQ6nH6Jh3cXYnxYbtwSLAznp/ob/3IkAeXHqwnuqa1cwrrTgUIkIybZ9N
+         irSpBq3rJVnHFdI6fbWvBjlvjPnWw1ZkpRAQjAHaxjQdCvyHGzG/BBZU50mQikxabaL2
+         6+2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=SMs2JewYcGSP3CnPuall2iZDxcetigZ64C7idthVvHQ=;
+        b=FoBVluDzehSqeUTlUDQK+oqmJ3PdgIk/WpEz7cTS+WMXhVoarZawTo2N0hvEyiwdds
+         X6PN7mTZ3B7pbsAnndduqvnvFYl65X6pWRsG1VrGvOFacE1qidT92A/lfXW1vO3xgcCg
+         AyZvaE6kdWm9ioYdgdzi5vNqNCzY8pxXinIb84W0I0YKvay9N46hSwes8juwp8MqDiht
+         EtOKTt4dd/jsF4AFo4YyXyNMXGxFb3K5dUCTcM8tGgR/1LY/uGdlPGrEn3CqGppeXb3R
+         41y5YwyapqRKEmO5lq8HTzJBJ70R3xREWagQuUaDDlXoHBa4e9XLkhnEejdF5d0D0Vpq
+         QNtw==
+X-Gm-Message-State: APjAAAW9IBQ6cmQgVYlBq1aQJ9ODyE6LGgwJBbo1Ki/h46xpFguBwMMz
+        xevDWE8YJiAnfc1iFcsIYHs=
+X-Google-Smtp-Source: APXvYqznj+OTjGPKdS4besI3ZT49NaCznHk0ZkpHco2gKUKFN838uKsgto8t6fQG6YAVsGfNODtM7A==
+X-Received: by 2002:a63:2aca:: with SMTP id q193mr27115051pgq.156.1570405780072;
+        Sun, 06 Oct 2019 16:49:40 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:180::f2c6])
+        by smtp.gmail.com with ESMTPSA id s141sm14677576pfs.13.2019.10.06.16.49.38
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 06 Oct 2019 16:49:39 -0700 (PDT)
+Date:   Sun, 6 Oct 2019 16:49:37 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>, x86@kernel.org,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next 03/10] bpf: process in-kernel BTF
+Message-ID: <20191006234935.fxdcva2mdqhgtjhu@ast-mbp.dhcp.thefacebook.com>
+References: <20191005050314.1114330-1-ast@kernel.org>
+ <20191005050314.1114330-4-ast@kernel.org>
+ <CAEf4BzahO9XjK7rMYa+DdRRhm2z4MmjD9Y-n3DWGd-W-G3mYRQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <419CB0D1-E51C-49D5-9745-7771C863462F@amacapital.net>
- <mhng-c8a768f7-1a90-4228-b654-be9e879c92ec@palmer-si-x1c4> <CALCETrUmqKz4vu2VCPC5MYGFyiG4djbOmKG32oLtQPb=o6rJ_Q@mail.gmail.com>
-In-Reply-To: <CALCETrUmqKz4vu2VCPC5MYGFyiG4djbOmKG32oLtQPb=o6rJ_Q@mail.gmail.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Sun, 6 Oct 2019 12:18:57 -0700
-X-Gmail-Original-Message-ID: <CALCETrVrQf2B5T6GhoWWuMzrmvTBx9TWxEEN5ZEaXFCiajqMZg@mail.gmail.com>
-Message-ID: <CALCETrVrQf2B5T6GhoWWuMzrmvTBx9TWxEEN5ZEaXFCiajqMZg@mail.gmail.com>
-Subject: Re: [PATCH v2] riscv: add support for SECCOMP and SECCOMP_FILTER
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Palmer Dabbelt <palmer@sifive.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Abdurachmanov <david.abdurachmanov@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Will Drewry <wad@chromium.org>, Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        David Abdurachmanov <david.abdurachmanov@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Allison Randal <allison@lohutok.net>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        Anup Patel <Anup.Patel@wdc.com>,
-        Vincent Chen <vincentc@andestech.com>,
-        Alan Kao <alankao@andestech.com>,
-        linux-riscv@lists.infradead.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, me@carlosedp.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzahO9XjK7rMYa+DdRRhm2z4MmjD9Y-n3DWGd-W-G3mYRQ@mail.gmail.com>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Sep 27, 2019 at 1:58 PM Andy Lutomirski <luto@kernel.org> wrote:
->
-> On Tue, Sep 3, 2019 at 3:27 PM Palmer Dabbelt <palmer@sifive.com> wrote:
+On Sat, Oct 05, 2019 at 11:36:16PM -0700, Andrii Nakryiko wrote:
+> On Fri, Oct 4, 2019 at 10:08 PM Alexei Starovoitov <ast@kernel.org> wrote:
 > >
-> > On Wed, 28 Aug 2019 10:52:05 PDT (-0700), luto@amacapital.net wrote:
-> > >
-> > >
-> > >> On Aug 25, 2019, at 2:59 PM, Kees Cook <keescook@chromium.org> wrote=
-:
-> > >>
-> > >>> On Thu, Aug 22, 2019 at 01:55:22PM -0700, David Abdurachmanov wrote=
-:
-> > >>> This patch was extensively tested on Fedora/RISCV (applied by defau=
-lt on
-> > >>> top of 5.2-rc7 kernel for <2 months). The patch was also tested wit=
-h 5.3-rc
-> > >>> on QEMU and SiFive Unleashed board.
-> > >>
-> > >> Oops, I see the mention of QEMU here. Where's the best place to find
-> > >> instructions on creating a qemu riscv image/environment?
-> > >
-> > > I don=E2=80=99t suppose one of you riscv folks would like to contribu=
-te riscv support to virtme?  virtme-run =E2=80=94arch=3Driscv would be quit=
-e nice, and the total patch should be just a couple lines.  Unfortunately, =
-it helps a lot to understand the subtleties of booting the architecture to =
-write those couple lines :)
+> > If in-kernel BTF exists parse it and prepare 'struct btf *btf_vmlinux'
+> > for further use by the verifier.
+> > In-kernel BTF is trusted just like kallsyms and other build artifacts
+> > embedded into vmlinux.
+> > Yet run this BTF image through BTF verifier to make sure
+> > that it is valid and it wasn't mangled during the build.
 > >
+> > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> > ---
+> >  include/linux/bpf_verifier.h |  4 ++-
+> >  include/linux/btf.h          |  1 +
+> >  kernel/bpf/btf.c             | 66 ++++++++++++++++++++++++++++++++++++
+> >  kernel/bpf/verifier.c        | 18 ++++++++++
+> >  4 files changed, 88 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+> > index 26a6d58ca78c..432ba8977a0a 100644
+> > --- a/include/linux/bpf_verifier.h
+> > +++ b/include/linux/bpf_verifier.h
+> > @@ -330,10 +330,12 @@ static inline bool bpf_verifier_log_full(const struct bpf_verifier_log *log)
+> >  #define BPF_LOG_STATS  4
+> >  #define BPF_LOG_LEVEL  (BPF_LOG_LEVEL1 | BPF_LOG_LEVEL2)
+> >  #define BPF_LOG_MASK   (BPF_LOG_LEVEL | BPF_LOG_STATS)
+> > +#define BPF_LOG_KERNEL (BPF_LOG_MASK + 1)
+> 
+> It's not clear what's the numbering scheme is for these flags. Are
+> they independent bits? Only one bit allowed at a time? Only some
+> subset of bits allowed?
+> E.g., if I specify BPF_LOG_KERNEL an BPF_LOG_STATS, will it work?
 
-FYI, it works now:
+you cannot. It's kernel internal flag. User space cannot pass it in.
+That's why it's just +1 and will keep floating up when other flags
+are added in the future.
+I considered using something really large instead (like ~0),
+but it's imo cleaner to define it as max_visible_flag + 1.
 
-$ virtme-configkernel --arch=3Driscv --defconfig
-  GEN     Makefile
-[...]
-Configured.  Build with 'make ARCH=3Driscv CROSS_COMPILE=3Driscv64-linux-gn=
-u- -j4'
+> > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> > index 29c7c06c6bd6..848f9d4b9d7e 100644
+> > --- a/kernel/bpf/btf.c
+> > +++ b/kernel/bpf/btf.c
+> > @@ -698,6 +698,9 @@ __printf(4, 5) static void __btf_verifier_log_type(struct btf_verifier_env *env,
+> >         if (!bpf_verifier_log_needed(log))
+> >                 return;
+> >
+> > +       if (log->level == BPF_LOG_KERNEL && !fmt)
+> > +               return;
+> 
+> This "!fmt" condition is subtle and took me a bit of time to
+> understand. Is the intent to print only verification errors for
+> BPF_LOG_KERNEL mode? Maybe small comment would help?
 
-$ make ARCH=3Driscv CROSS_COMPILE=3Driscv64-linux-gnu- -j4
-[...]
+It's the way btf.c prints types. It's calling btf_verifier_log_type(..fmt=NULL).
+I need to skip all of these, since they're there to debug invalid BTF
+when user space passes it into the kernel.
+Here the same code is processing in-kernel trusted BTF and extra messages
+are completely unnecessary.
+I will add a comment.
 
-$ virtme-run --kdir=3D. --arch=3Driscv64 --mods=3Dauto --root [path to a
-riscv filesystem]
+> 
+> nit: extra empty line here, might as well get rid of it in this change?
 
-This is with virtme master and a qemu-system-riscv64 from qemu git on
-my path.  It does *not* work with Fedora 30's qemu.
+yeah. the empty line was there before. Will remove it.
 
-So now you can all jump on the virtme bandwagon and have an easy way
-to test riscv kernels. :)  Although, if you want to run kernel
-selftests, you may find the process of actually running them to be
-more fun if you use --rodir or --rwdir to map the kernel selftests
-directory into the guest.
+> 
+> > +               if (env->log.level == BPF_LOG_KERNEL)
+> > +                       continue;
+> >                 btf_verifier_log(env, "\t%s val=%d\n",
+> >                                  __btf_name_by_offset(btf, enums[i].name_off),
+> >                                  enums[i].val);
+> > @@ -3367,6 +3378,61 @@ static struct btf *btf_parse(void __user *btf_data, u32 btf_data_size,
+> >         return ERR_PTR(err);
+> >  }
+> >
+> > +extern char __weak _binary__btf_vmlinux_bin_start[];
+> > +extern char __weak _binary__btf_vmlinux_bin_end[];
+> > +
+> > +struct btf *btf_parse_vmlinux(void)
+> 
+> It's a bit unfortunate to duplicate a bunch of logic of btf_parse()
+> here. I assume you considered extending btf_parse() with extra flag
+> but decided it's better to have separate vmlinux-specific version?
+
+Right. It looks similar, but it's 70-80% different. I actually started
+with combined, but it didn't look good.
+
+> >
+> > +       if (is_priv && !btf_vmlinux) {
+> 
+> I'm missing were you are checking that vmlinux BTF (raw data) is
+> present at all? Should this have additional `&&
+> _binary__btf_vmlinux_bin_start` check?
+
+btf_parse_hdr() is doing it.
+But now I'm thinking I should gate it with CONFIG_DEBUG_INFO_BTF.
+
+> 
+> > +               mutex_lock(&bpf_verifier_lock);
+> > +               btf_vmlinux = btf_parse_vmlinux();
+> 
+> This is racy, you might end up parsing vmlinux BTF twice. Check
+> `!btf_vmlinux` again under lock?
+
+right. good catch.
+
+> >
+> > +       if (IS_ERR(btf_vmlinux)) {
+> 
+> There is an interesting interplay between non-priviledged BPF and
+> corrupted vmlinux. If vmlinux BTF is malformed, but system only ever
+> does unprivileged BPF, then we'll never parse vmlinux BTF and won't
+> know it's malformed. But once some privileged BPF does parse and
+> detect problem, all subsequent unprivileged BPFs will fail due to bad
+> BTF, even though they shouldn't use/rely on it. Should something be
+> done about this inconsistency?
+
+I did is_priv check to avoid parsing btf in unpriv, since no unpriv
+progs will ever use this stuff.. (not until cpu hw side channels are fixed).
+But this inconsistency is indeed bad.
+Will refactor to do it always.
+Broken in-kernel BTF is bad enough sign that either gcc or pahole or kernel
+are broken. In all cases the kernel shouldn't be loading any bpf.
+
+Thanks for the review!
+
