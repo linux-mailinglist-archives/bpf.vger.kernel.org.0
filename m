@@ -2,205 +2,163 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A9938CD9DE
-	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2019 02:21:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B1A9CD9E6
+	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2019 02:27:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726491AbfJGAVA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 6 Oct 2019 20:21:00 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:34090 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726266AbfJGAVA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 6 Oct 2019 20:21:00 -0400
-Received: by mail-qk1-f193.google.com with SMTP id q203so11080891qke.1;
-        Sun, 06 Oct 2019 17:20:59 -0700 (PDT)
+        id S1726761AbfJGA1q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 6 Oct 2019 20:27:46 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:44659 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726605AbfJGA1q (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 6 Oct 2019 20:27:46 -0400
+Received: by mail-pg1-f196.google.com with SMTP id i14so7095051pgt.11;
+        Sun, 06 Oct 2019 17:27:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CjhIlCPO4IZHyUrYGHcK5dFsgSPh5pjAUfM++lnj5FQ=;
-        b=PIsIadk9ZpC1DpGvNsrecu6WqRP81Gb57D2ta8Kmg1qS2cdvvR3Rx2wTT40u6uwg75
-         s/PHvOMFzj42gdn8H4gTmWTxOf7Fb0e2LaAPTz8Mi0NSLv+uZsp/Qbl786MSK+acbiIg
-         A1vrG/GPXxdeHiZ3UGhxTJ9o4crLr45B0Qu6IhZxltVdwvSj7Za5M2pdH3f0xuJAZysC
-         EHPsHe7sOl0+w1r3j1wRK7Ik5U+SBE7l9NDzmXd0x9f6qrdFHOZBzJjRCtWSz4PVSkF1
-         cNs6E77j2AqMQVS4cc4WqM0pHnXEOFW+bvbFbfeUICLVomjtkS3FmWLfI2B2alN2i1xd
-         OJMQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=czcZT6dxXZ+Vqa23wzs7oImXUOO2ucfIZtL/GfvRzmg=;
+        b=p5f568iBYcCFDGPwPpDnCzDViJVIRjCe513AzpBQDHvJPEf1lsefSn3RPbz72Tpxxl
+         3Jw1Ilbh+qE/3S1Y8WBtLqvNPThD0ljlzBkpIkBiYeDQ4YHz/TMXbKhEJ33kuZEWjZHR
+         M4v5LXC7TwBvlSfSS3RbtUeSkK1za0huPepzRtGvf4wpOdZ9UU7NZ2uk8D2pUf/GBaDM
+         YT4fOq8ReU3WC5XZ+tiUexsxnagE6z/drNcUbLln6gnykPfiGi/jhNAkovy9pjEFIoGr
+         CBD2RLk/roc1g/PTURDAK+P3MuB7FLoS2rB1x0vpsR6Dmr3mwPiqzmzRJ32hu5lGkKB3
+         3otw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CjhIlCPO4IZHyUrYGHcK5dFsgSPh5pjAUfM++lnj5FQ=;
-        b=m4jgnhAp/TaQkDDqa5EnEAu6LM/qUzTSmWyVgEcADSyZ14mySGdLVGEH30r8YkatWY
-         m2Y8jmHJsNJ1AcmLDci6YsCk/I5pTbU5b3StZt9gedifBDPxxXu6AyetGWvXnHI6nd5Q
-         6YCL8iPNLGVPj91vwYYm+ldSuzE8lQsV487iRIn6vXMZsknPvtCrGLaQljGaDrmmMjpY
-         5LDsr8R2n7lFUhugjIYpX0Rv/DbIBitopgH/ZAsvKCzDW7kAbleRvQpVOX/qlIXkoi3h
-         L6uVnWSk4s4wJdha5lpn+p3rQUiAEcMfTvkyA+zp4r9d7LCOkEqGqfgecmTPYtU1LDkV
-         OMsg==
-X-Gm-Message-State: APjAAAU+rAsLB2x83oecMoGeCLzFeuZOwg5NXGS01/DqXJ4WaU+mX60l
-        Tz1UUSJIBimkJlG4+MiJHPkL/DTElz3yCMAu0jQ=
-X-Google-Smtp-Source: APXvYqxP6w5lvBstF9c5OIivIXR758Blxk4aw7pvwuviZ4FZkyPRcS6sbrRmPKKVcUdhB3OGeCanjXkvt9YjmZ9gNuo=
-X-Received: by 2002:a37:98f:: with SMTP id 137mr21902376qkj.449.1570407659086;
- Sun, 06 Oct 2019 17:20:59 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=czcZT6dxXZ+Vqa23wzs7oImXUOO2ucfIZtL/GfvRzmg=;
+        b=UEfwxBJJ+0zTfLIIOeKvX9Rb3uQkkhZbUjnxpfCiGv2uG9JaAv1uh0beF+/b0GX94T
+         Aan5oKjm1TowRC4db8zHdOsG/Bb7NyyFZiSuoPnww+BTd5bRWU9jwf4y84Mk+qlY8IxE
+         ZaB9nhyTAUPCsYjyF1AEjXQo3zEaDBGCbJeYD42CoWloubOFBKDMBfjTqmJ8sSg/xcU8
+         1kdKnRIZy45Zo9iYU7D6kim+0bNFoEGbC/5+YD4DgwCQJJhdDHTgAch046x5kjspCBbr
+         FlCsTaYDApkK6PN9NxJnTQnwTePBU4rHjOhnq8CC6KLe6d1EWdd+4WctRPHZJONFaXr0
+         dvDA==
+X-Gm-Message-State: APjAAAWEyEh+duitHa7YjnxvP7yRsddTFH3ESiVJweHxbfcw6bZ8jKtw
+        xoDwSf7Z/WdyQm2vZArqCbY=
+X-Google-Smtp-Source: APXvYqzdCT1pvaPTDyhCZqdNnbBCeJKapH5CuslGPsQxNU47XFOZX4LXfKGZyexwFlYZmAyJIAEcrA==
+X-Received: by 2002:a63:214e:: with SMTP id s14mr26898145pgm.205.1570408063611;
+        Sun, 06 Oct 2019 17:27:43 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:180::f2c6])
+        by smtp.gmail.com with ESMTPSA id q76sm22390168pfc.86.2019.10.06.17.27.41
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 06 Oct 2019 17:27:42 -0700 (PDT)
+Date:   Sun, 6 Oct 2019 17:27:40 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Marek Majkowski <marek@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next v2 1/5] bpf: Support injecting chain calls into
+ BPF programs on load
+Message-ID: <20191007002739.5seu2btppfjmhry4@ast-mbp.dhcp.thefacebook.com>
+References: <157020976030.1824887.7191033447861395957.stgit@alrua-x1>
+ <157020976144.1824887.10249946730258092768.stgit@alrua-x1>
 MIME-Version: 1.0
-References: <20191005050314.1114330-1-ast@kernel.org> <20191005050314.1114330-4-ast@kernel.org>
- <CAEf4BzahO9XjK7rMYa+DdRRhm2z4MmjD9Y-n3DWGd-W-G3mYRQ@mail.gmail.com> <20191006234935.fxdcva2mdqhgtjhu@ast-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20191006234935.fxdcva2mdqhgtjhu@ast-mbp.dhcp.thefacebook.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Sun, 6 Oct 2019 17:20:48 -0700
-Message-ID: <CAEf4BzYM=whUfEsuSa8yvZjM62RUfiByEzHye5cpPbeMMDMyeA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 03/10] bpf: process in-kernel BTF
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>, x86@kernel.org,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <157020976144.1824887.10249946730258092768.stgit@alrua-x1>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Oct 6, 2019 at 4:49 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Sat, Oct 05, 2019 at 11:36:16PM -0700, Andrii Nakryiko wrote:
-> > On Fri, Oct 4, 2019 at 10:08 PM Alexei Starovoitov <ast@kernel.org> wrote:
-> > >
-> > > If in-kernel BTF exists parse it and prepare 'struct btf *btf_vmlinux'
-> > > for further use by the verifier.
-> > > In-kernel BTF is trusted just like kallsyms and other build artifacts
-> > > embedded into vmlinux.
-> > > Yet run this BTF image through BTF verifier to make sure
-> > > that it is valid and it wasn't mangled during the build.
-> > >
-> > > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> > > ---
-> > >  include/linux/bpf_verifier.h |  4 ++-
-> > >  include/linux/btf.h          |  1 +
-> > >  kernel/bpf/btf.c             | 66 ++++++++++++++++++++++++++++++++++++
-> > >  kernel/bpf/verifier.c        | 18 ++++++++++
-> > >  4 files changed, 88 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-> > > index 26a6d58ca78c..432ba8977a0a 100644
-> > > --- a/include/linux/bpf_verifier.h
-> > > +++ b/include/linux/bpf_verifier.h
-> > > @@ -330,10 +330,12 @@ static inline bool bpf_verifier_log_full(const struct bpf_verifier_log *log)
-> > >  #define BPF_LOG_STATS  4
-> > >  #define BPF_LOG_LEVEL  (BPF_LOG_LEVEL1 | BPF_LOG_LEVEL2)
-> > >  #define BPF_LOG_MASK   (BPF_LOG_LEVEL | BPF_LOG_STATS)
-> > > +#define BPF_LOG_KERNEL (BPF_LOG_MASK + 1)
-> >
-> > It's not clear what's the numbering scheme is for these flags. Are
-> > they independent bits? Only one bit allowed at a time? Only some
-> > subset of bits allowed?
-> > E.g., if I specify BPF_LOG_KERNEL an BPF_LOG_STATS, will it work?
->
-> you cannot. It's kernel internal flag. User space cannot pass it in.
-> That's why it's just +1 and will keep floating up when other flags
-> are added in the future.
-> I considered using something really large instead (like ~0),
-> but it's imo cleaner to define it as max_visible_flag + 1.
+On Fri, Oct 04, 2019 at 07:22:41PM +0200, Toke Høiland-Jørgensen wrote:
+> From: Toke Høiland-Jørgensen <toke@redhat.com>
+> 
+> This adds support for injecting chain call logic into eBPF programs before
+> they return. The code injection is controlled by a flag at program load
+> time; if the flag is set, the verifier will add code to every BPF_EXIT
+> instruction that first does a lookup into a chain call structure to see if
+> it should call into another program before returning. The actual calls
+> reuse the tail call infrastructure.
+> 
+> Ideally, it shouldn't be necessary to set the flag on program load time,
+> but rather inject the calls when a chain call program is first loaded.
+> However, rewriting the program reallocates the bpf_prog struct, which is
+> obviously not possible after the program has been attached to something.
+> 
+> One way around this could be a sysctl to force the flag one (for enforcing
+> system-wide support). Another could be to have the chain call support
+> itself built into the interpreter and JIT, which could conceivably be
+> re-run each time we attach a new chain call program. This would also allow
+> the JIT to inject direct calls to the next program instead of using the
+> tail call infrastructure, which presumably would be a performance win. The
+> drawback is, of course, that it would require modifying all the JITs.
+> 
+> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+...
+>  
+> +static int bpf_inject_chain_calls(struct bpf_verifier_env *env)
+> +{
+> +	struct bpf_prog *prog = env->prog;
+> +	struct bpf_insn *insn = prog->insnsi;
+> +	int i, cnt, delta = 0, ret = -ENOMEM;
+> +	const int insn_cnt = prog->len;
+> +	struct bpf_array *prog_array;
+> +	struct bpf_prog *new_prog;
+> +	size_t array_size;
+> +
+> +	struct bpf_insn call_next[] = {
+> +		BPF_LD_IMM64(BPF_REG_2, 0),
+> +		/* Save real return value for later */
+> +		BPF_MOV64_REG(BPF_REG_6, BPF_REG_0),
+> +		/* First try tail call with index ret+1 */
+> +		BPF_MOV64_REG(BPF_REG_3, BPF_REG_0),
+> +		BPF_ALU64_IMM(BPF_ADD, BPF_REG_3, 1),
+> +		BPF_RAW_INSN(BPF_JMP | BPF_TAIL_CALL, 0, 0, 0, 0),
+> +		/* If that doesn't work, try with index 0 (wildcard) */
+> +		BPF_MOV64_IMM(BPF_REG_3, 0),
+> +		BPF_RAW_INSN(BPF_JMP | BPF_TAIL_CALL, 0, 0, 0, 0),
+> +		/* Restore saved return value and exit */
+> +		BPF_MOV64_REG(BPF_REG_0, BPF_REG_6),
+> +		BPF_EXIT_INSN()
+> +	};
 
-Ah, I see, maybe small comment, e.g., /* kernel-only flag */ or
-something along those lines?
+How did you test it?
+With the only test from patch 5?
++int xdp_drop_prog(struct xdp_md *ctx)
++{
++       return XDP_DROP;
++}
 
->
-> > > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> > > index 29c7c06c6bd6..848f9d4b9d7e 100644
-> > > --- a/kernel/bpf/btf.c
-> > > +++ b/kernel/bpf/btf.c
-> > > @@ -698,6 +698,9 @@ __printf(4, 5) static void __btf_verifier_log_type(struct btf_verifier_env *env,
-> > >         if (!bpf_verifier_log_needed(log))
-> > >                 return;
-> > >
-> > > +       if (log->level == BPF_LOG_KERNEL && !fmt)
-> > > +               return;
-> >
-> > This "!fmt" condition is subtle and took me a bit of time to
-> > understand. Is the intent to print only verification errors for
-> > BPF_LOG_KERNEL mode? Maybe small comment would help?
->
-> It's the way btf.c prints types. It's calling btf_verifier_log_type(..fmt=NULL).
-> I need to skip all of these, since they're there to debug invalid BTF
-> when user space passes it into the kernel.
-> Here the same code is processing in-kernel trusted BTF and extra messages
-> are completely unnecessary.
-> I will add a comment.
->
-> >
-> > nit: extra empty line here, might as well get rid of it in this change?
->
-> yeah. the empty line was there before. Will remove it.
->
-> >
-> > > +               if (env->log.level == BPF_LOG_KERNEL)
-> > > +                       continue;
-> > >                 btf_verifier_log(env, "\t%s val=%d\n",
-> > >                                  __btf_name_by_offset(btf, enums[i].name_off),
-> > >                                  enums[i].val);
-> > > @@ -3367,6 +3378,61 @@ static struct btf *btf_parse(void __user *btf_data, u32 btf_data_size,
-> > >         return ERR_PTR(err);
-> > >  }
-> > >
-> > > +extern char __weak _binary__btf_vmlinux_bin_start[];
-> > > +extern char __weak _binary__btf_vmlinux_bin_end[];
-> > > +
-> > > +struct btf *btf_parse_vmlinux(void)
-> >
-> > It's a bit unfortunate to duplicate a bunch of logic of btf_parse()
-> > here. I assume you considered extending btf_parse() with extra flag
-> > but decided it's better to have separate vmlinux-specific version?
->
-> Right. It looks similar, but it's 70-80% different. I actually started
-> with combined, but it didn't look good.
->
-> > >
-> > > +       if (is_priv && !btf_vmlinux) {
-> >
-> > I'm missing were you are checking that vmlinux BTF (raw data) is
-> > present at all? Should this have additional `&&
-> > _binary__btf_vmlinux_bin_start` check?
->
-> btf_parse_hdr() is doing it.
-> But now I'm thinking I should gate it with CONFIG_DEBUG_INFO_BTF.
+Please try different program with more than one instruction.
+And then look at above asm and think how it can be changed to
+get valid R1 all the way to each bpf_exit insn.
+Do you see amount of headaches this approach has?
 
-You mean btf_data_size check? But in that case you'll get error
-message printed even though no BTF was generated, so yeah, I guess
-gating is cleaner.
+The way you explained the use case of XDP-based firewall plus XDP-based
+IPS/IDS it's about "knows nothing" admin that has to deal with more than
+one XDP application on an unfamiliar server.
+This is the case of debugging.
+The admin would probably want to see all values xdp prog returns, right?
+The possible answer is to add a tracepoint to bpf_prog_run_xdp().
+Most drivers have XDP_DROP stats. So some visibility into drops
+is already available.
+Dumping all packets that xdp prog is dropping into user space via another
+xdp application is imo pointless. User space won't be able to process
+this rate of packets. Human admin won't be able to "grep" through millions
+of packets either.
+xdp-firewall prog is dropping the packets for some reason.
+That reason is what admin is looking for!
+The admin wants to see inside the program.
+The actual content of the packet is like bread crumbs.
+The authors of xdp firewall can find packet dumps useful,
+but poor admin who was tasked to debug unknown xdp application will
+not find anything useful in those packets.
+I think what you're advocating for is better xdp debugging.
+Let's work on that. Let's focus on designing good debugging facility.
+This chaining feature isn't necessary for that and looks unlikely to converge.
 
->
-> >
-> > > +               mutex_lock(&bpf_verifier_lock);
-> > > +               btf_vmlinux = btf_parse_vmlinux();
-> >
-> > This is racy, you might end up parsing vmlinux BTF twice. Check
-> > `!btf_vmlinux` again under lock?
->
-> right. good catch.
->
-> > >
-> > > +       if (IS_ERR(btf_vmlinux)) {
-> >
-> > There is an interesting interplay between non-priviledged BPF and
-> > corrupted vmlinux. If vmlinux BTF is malformed, but system only ever
-> > does unprivileged BPF, then we'll never parse vmlinux BTF and won't
-> > know it's malformed. But once some privileged BPF does parse and
-> > detect problem, all subsequent unprivileged BPFs will fail due to bad
-> > BTF, even though they shouldn't use/rely on it. Should something be
-> > done about this inconsistency?
->
-> I did is_priv check to avoid parsing btf in unpriv, since no unpriv
-> progs will ever use this stuff.. (not until cpu hw side channels are fixed).
-> But this inconsistency is indeed bad.
-> Will refactor to do it always.
-
-Sounds good.
-
-> Broken in-kernel BTF is bad enough sign that either gcc or pahole or kernel
-> are broken. In all cases the kernel shouldn't be loading any bpf.
->
-> Thanks for the review!
->
-
-I'm intending to go over the rest today-tomorrow, so don't post v2 just yet :)
