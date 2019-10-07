@@ -2,161 +2,229 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CF793CDEE3
-	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2019 12:11:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95871CE04C
+	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2019 13:25:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727355AbfJGKLh convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Mon, 7 Oct 2019 06:11:37 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:54258 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727411AbfJGKLg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Oct 2019 06:11:36 -0400
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com [209.85.208.198])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 655955AFF8
-        for <bpf@vger.kernel.org>; Mon,  7 Oct 2019 10:11:35 +0000 (UTC)
-Received: by mail-lj1-f198.google.com with SMTP id p14so3306890ljh.22
-        for <bpf@vger.kernel.org>; Mon, 07 Oct 2019 03:11:35 -0700 (PDT)
+        id S1728285AbfJGLZh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Oct 2019 07:25:37 -0400
+Received: from mail-yb1-f194.google.com ([209.85.219.194]:36448 "EHLO
+        mail-yb1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728270AbfJGLZg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Oct 2019 07:25:36 -0400
+Received: by mail-yb1-f194.google.com with SMTP id r2so4533068ybg.3;
+        Mon, 07 Oct 2019 04:25:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CSSn9nuGJFkNmV3Ad6esk8BPxn8MDrtoN+nrwnmUgNU=;
+        b=gRO/DLYuewD23kmazS+h++Ca7bm5EWCpxujdJg8AICBmBXxi5QrDk5QZOCe12YWGqo
+         oVYfic2caqcbTaXCnx+t8kGkhTF3DJYNDkB1PhOqkGQJlnbuUKmsShTYfSJ8F9K0y8v8
+         /rlp6R9T8/ggWPdYzdis61NWClP4tnMjCxzKBOB0iSrUsJPlNrv3zuz0jCtu6V13dJO7
+         7nPiCZgb6aae5ZfcHkFf+CT86dAfX6l1Lds6gEiQkpD7lLvVbVMRovPA/QuahdYBCJOL
+         mgWsUT0azOjgXfohhIsFjaQonYD/5OA4eKEtugq+/W7QqRdZuUK5LecnmC2gHmD7uqDu
+         qFxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=xFJfvxGSxXmlG8uRezCO6P2oPcGamXrw9xhVuelSmow=;
-        b=f0up+toN+UU6VI13WJWPl2o7q7wVHvAg58hll3q2vAdE5UKaQUfuPzhXGsT+M+EP4W
-         TI5oz8ra0KBu+5URP+fdpNCb6TxRfSEeD+E8Piz0UaNMGjrdq0Sql+Qeb7u4rP+j+y7X
-         w7W6kVhh3I40YrdQo5f2e64/BuaaESLwogeJP53/nYbmZ2/vvdjnrg9hhMSjyul2sz1o
-         GJ39iMk2po5X7K2G92SnYeT3pjlLhCNP8V+t+WueRRzuAMdIh1AJXoq2zl+yJMy3+dNw
-         VZRZmf71peMIm3XumVhNk597MdClfMQXF6QL3z3s3i7ydOvk1BOW5tk2R3p8yRE/O6UW
-         pslw==
-X-Gm-Message-State: APjAAAX6J4apXJOuMVf5oRv4jYwk3N7VJu+Wquvn1HBXnRJZ/ZOGjvwf
-        VkuOC/mjdVVouSv5axsOgKW3WjDEH2420xK8v4Fj9ReTpHZEsDlMVTPw1gO44YClG88bc2kp+Gy
-        61sLPuh+ikYwI
-X-Received: by 2002:ac2:5dd0:: with SMTP id x16mr16758738lfq.38.1570443093368;
-        Mon, 07 Oct 2019 03:11:33 -0700 (PDT)
-X-Google-Smtp-Source: APXvYqx2gFbEXRiqKPPXrCBizFB8ImxCZF7nNRmfGN7yLgLUqd2Ermfi23xtdcLo32ef7jpQ9FBUOw==
-X-Received: by 2002:ac2:5dd0:: with SMTP id x16mr16758719lfq.38.1570443093110;
-        Mon, 07 Oct 2019 03:11:33 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a00:7660:6da:443::2])
-        by smtp.gmail.com with ESMTPSA id 6sm2650023lfa.24.2019.10.07.03.11.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Oct 2019 03:11:32 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 52EA518063D; Mon,  7 Oct 2019 12:11:31 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Marek Majkowski <marek@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2 1/5] bpf: Support injecting chain calls into BPF programs on load
-In-Reply-To: <20191007002739.5seu2btppfjmhry4@ast-mbp.dhcp.thefacebook.com>
-References: <157020976030.1824887.7191033447861395957.stgit@alrua-x1> <157020976144.1824887.10249946730258092768.stgit@alrua-x1> <20191007002739.5seu2btppfjmhry4@ast-mbp.dhcp.thefacebook.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Mon, 07 Oct 2019 12:11:31 +0200
-Message-ID: <87h84kn9v0.fsf@toke.dk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CSSn9nuGJFkNmV3Ad6esk8BPxn8MDrtoN+nrwnmUgNU=;
+        b=KcDVPts1QSI58mfIlX+uM3vrgCegA466V9Ntb42RrvJJmV9e+UKbXkrg8poZa0k9s+
+         +JS0f62oW8mBPaBTZxZqAPQSh4aM5p6IUI9HbYj0ADQ4yk5Cqp4hbXIFEfnpg74vDL9Z
+         DfAxx+0wM9XIE9TFbBFbYTSqwtGGU6NsSx9afn6rMz/s1NODN0BN7/zr5bZ/1vxqso2b
+         yzmoRuj9KWm9LAcrRdSJWqh44wQJpB6tQ5uQAM9gYX6mAVgd9/dyD85gQuVCKK/Rb8Kx
+         ChhsvEwRLXJzAJvgHZzBtjXIkiW+eYYutPfVNqhBhiJtKRpjfhTR151aq/r40XdTTFLy
+         Pl6Q==
+X-Gm-Message-State: APjAAAVN/fHbMamifyhIPXL2jX6jQ08b7n4HOMVDbbUH9YBCM0jwfHGN
+        xHmkDs5DlMevFLnJ56X5sGr2tNMGkERh1+wEGg==
+X-Google-Smtp-Source: APXvYqyktAxb03gDnJck5sTDTlWkVN9ZbfFJmrP1ZuNId2ucjo/jC8lV+13UrtvNwIfexC/bqKUAZsFr32eI72G18Sk=
+X-Received: by 2002:a25:c009:: with SMTP id c9mr10930458ybf.164.1570447535633;
+ Mon, 07 Oct 2019 04:25:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+References: <20191006115815.10292-1-danieltimlee@gmail.com> <CAEf4BzaUMRkbJLm98ZBu7uutcdukxUb2XyzX60ODcuBXGdQ3Vg@mail.gmail.com>
+In-Reply-To: <CAEf4BzaUMRkbJLm98ZBu7uutcdukxUb2XyzX60ODcuBXGdQ3Vg@mail.gmail.com>
+From:   "Daniel T. Lee" <danieltimlee@gmail.com>
+Date:   Mon, 7 Oct 2019 20:25:19 +0900
+Message-ID: <CAEKGpzg_bOzsD_BmvOUTneFscdbEZhCcY5BBtsYZW=GmMGDb1g@mail.gmail.com>
+Subject: Re: [bpf-next v5] samples: bpf: add max_pckt_size option at xdp_adjust_tail
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Yonghong Song <yhs@fb.com>, Song Liu <liu.song.a23@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
-
-> On Fri, Oct 04, 2019 at 07:22:41PM +0200, Toke Høiland-Jørgensen wrote:
->> From: Toke Høiland-Jørgensen <toke@redhat.com>
->> 
->> This adds support for injecting chain call logic into eBPF programs before
->> they return. The code injection is controlled by a flag at program load
->> time; if the flag is set, the verifier will add code to every BPF_EXIT
->> instruction that first does a lookup into a chain call structure to see if
->> it should call into another program before returning. The actual calls
->> reuse the tail call infrastructure.
->> 
->> Ideally, it shouldn't be necessary to set the flag on program load time,
->> but rather inject the calls when a chain call program is first loaded.
->> However, rewriting the program reallocates the bpf_prog struct, which is
->> obviously not possible after the program has been attached to something.
->> 
->> One way around this could be a sysctl to force the flag one (for enforcing
->> system-wide support). Another could be to have the chain call support
->> itself built into the interpreter and JIT, which could conceivably be
->> re-run each time we attach a new chain call program. This would also allow
->> the JIT to inject direct calls to the next program instead of using the
->> tail call infrastructure, which presumably would be a performance win. The
->> drawback is, of course, that it would require modifying all the JITs.
->> 
->> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
-> ...
->>  
->> +static int bpf_inject_chain_calls(struct bpf_verifier_env *env)
->> +{
->> +	struct bpf_prog *prog = env->prog;
->> +	struct bpf_insn *insn = prog->insnsi;
->> +	int i, cnt, delta = 0, ret = -ENOMEM;
->> +	const int insn_cnt = prog->len;
->> +	struct bpf_array *prog_array;
->> +	struct bpf_prog *new_prog;
->> +	size_t array_size;
->> +
->> +	struct bpf_insn call_next[] = {
->> +		BPF_LD_IMM64(BPF_REG_2, 0),
->> +		/* Save real return value for later */
->> +		BPF_MOV64_REG(BPF_REG_6, BPF_REG_0),
->> +		/* First try tail call with index ret+1 */
->> +		BPF_MOV64_REG(BPF_REG_3, BPF_REG_0),
->> +		BPF_ALU64_IMM(BPF_ADD, BPF_REG_3, 1),
->> +		BPF_RAW_INSN(BPF_JMP | BPF_TAIL_CALL, 0, 0, 0, 0),
->> +		/* If that doesn't work, try with index 0 (wildcard) */
->> +		BPF_MOV64_IMM(BPF_REG_3, 0),
->> +		BPF_RAW_INSN(BPF_JMP | BPF_TAIL_CALL, 0, 0, 0, 0),
->> +		/* Restore saved return value and exit */
->> +		BPF_MOV64_REG(BPF_REG_0, BPF_REG_6),
->> +		BPF_EXIT_INSN()
->> +	};
+On Mon, Oct 7, 2019 at 12:37 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> How did you test it?
-> With the only test from patch 5?
-> +int xdp_drop_prog(struct xdp_md *ctx)
-> +{
-> +       return XDP_DROP;
-> +}
+> On Sun, Oct 6, 2019 at 4:58 AM Daniel T. Lee <danieltimlee@gmail.com> wrote:
+> >
+> > Currently, at xdp_adjust_tail_kern.c, MAX_PCKT_SIZE is limited
+> > to 600. To make this size flexible, static global variable
+> > 'max_pcktsz' is added.
+> >
+> > By updating new packet size from the user space, xdp_adjust_tail_kern.o
+> > will use this value as a new max packet size.
+> >
+> > This static global variable can be accesible from .data section with
+> > bpf_object__find_map* from user space, since it is considered as
+> > internal map (accessible with .bss/.data/.rodata suffix).
+> >
+> > If no '-P <MAX_PCKT_SIZE>' option is used, the size of maximum packet
+> > will be 600 as a default.
+> >
+> > Changed the way to test prog_fd, map_fd from '!= 0' to '< 0',
+> > since fd could be 0 when stdin is closed.
+> >
+> > Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
+> >
+> > ---
 >
-> Please try different program with more than one instruction.
-> And then look at above asm and think how it can be changed to
-> get valid R1 all the way to each bpf_exit insn.
-> Do you see amount of headaches this approach has?
+> See nit below, but otherwise looks good.
+>
+> Acked-by: Andrii Nakryiko <andriin@fb.com>
+>
+> > Changes in v5:
+> >     - Change pcktsz map to static global variable
+> > Changes in v4:
+> >     - make pckt_size no less than ICMP_TOOBIG_SIZE
+> >     - Fix code style
+> > Changes in v2:
+> >     - Change the helper to fetch map from 'bpf_map__next' to
+> >     'bpf_object__find_map_fd_by_name'.
+> >
+> >  samples/bpf/xdp_adjust_tail_kern.c |  7 +++++--
+> >  samples/bpf/xdp_adjust_tail_user.c | 32 ++++++++++++++++++++++--------
+> >  2 files changed, 29 insertions(+), 10 deletions(-)
+> >
+> > diff --git a/samples/bpf/xdp_adjust_tail_kern.c b/samples/bpf/xdp_adjust_tail_kern.c
+> > index 411fdb21f8bc..c616508befb9 100644
+> > --- a/samples/bpf/xdp_adjust_tail_kern.c
+> > +++ b/samples/bpf/xdp_adjust_tail_kern.c
+> > @@ -25,6 +25,9 @@
+> >  #define ICMP_TOOBIG_SIZE 98
+> >  #define ICMP_TOOBIG_PAYLOAD_SIZE 92
+> >
+> > +/* volatile to prevent compiler optimizations */
+> > +static volatile __u32 max_pcktsz = MAX_PCKT_SIZE;
+> > +
+> >  struct bpf_map_def SEC("maps") icmpcnt = {
+> >         .type = BPF_MAP_TYPE_ARRAY,
+> >         .key_size = sizeof(__u32),
+> > @@ -92,7 +95,7 @@ static __always_inline int send_icmp4_too_big(struct xdp_md *xdp)
+> >         orig_iph = data + off;
+> >         icmp_hdr->type = ICMP_DEST_UNREACH;
+> >         icmp_hdr->code = ICMP_FRAG_NEEDED;
+> > -       icmp_hdr->un.frag.mtu = htons(MAX_PCKT_SIZE-sizeof(struct ethhdr));
+> > +       icmp_hdr->un.frag.mtu = htons(max_pcktsz - sizeof(struct ethhdr));
+> >         icmp_hdr->checksum = 0;
+> >         ipv4_csum(icmp_hdr, ICMP_TOOBIG_PAYLOAD_SIZE, &csum);
+> >         icmp_hdr->checksum = csum;
+> > @@ -121,7 +124,7 @@ static __always_inline int handle_ipv4(struct xdp_md *xdp)
+> >         int pckt_size = data_end - data;
+> >         int offset;
+> >
+> > -       if (pckt_size > MAX_PCKT_SIZE) {
+> > +       if (pckt_size > max(max_pcktsz, ICMP_TOOBIG_SIZE)) {
+> >                 offset = pckt_size - ICMP_TOOBIG_SIZE;
+> >                 if (bpf_xdp_adjust_tail(xdp, 0 - offset))
+> >                         return XDP_PASS;
+> > diff --git a/samples/bpf/xdp_adjust_tail_user.c b/samples/bpf/xdp_adjust_tail_user.c
+> > index a3596b617c4c..bcdebd3be83e 100644
+> > --- a/samples/bpf/xdp_adjust_tail_user.c
+> > +++ b/samples/bpf/xdp_adjust_tail_user.c
+> > @@ -23,6 +23,7 @@
+> >  #include "libbpf.h"
+> >
+> >  #define STATS_INTERVAL_S 2U
+> > +#define MAX_PCKT_SIZE 600
+> >
+> >  static int ifindex = -1;
+> >  static __u32 xdp_flags = XDP_FLAGS_UPDATE_IF_NOEXIST;
+> > @@ -72,6 +73,7 @@ static void usage(const char *cmd)
+> >         printf("Usage: %s [...]\n", cmd);
+> >         printf("    -i <ifname|ifindex> Interface\n");
+> >         printf("    -T <stop-after-X-seconds> Default: 0 (forever)\n");
+> > +       printf("    -P <MAX_PCKT_SIZE> Default: %u\n", MAX_PCKT_SIZE);
+> >         printf("    -S use skb-mode\n");
+> >         printf("    -N enforce native mode\n");
+> >         printf("    -F force loading prog\n");
+> > @@ -85,13 +87,14 @@ int main(int argc, char **argv)
+> >                 .prog_type      = BPF_PROG_TYPE_XDP,
+> >         };
+> >         unsigned char opt_flags[256] = {};
+> > -       const char *optstr = "i:T:SNFh";
+> > +       const char *optstr = "i:T:P:SNFh";
+> >         struct bpf_prog_info info = {};
+> >         __u32 info_len = sizeof(info);
+> >         unsigned int kill_after_s = 0;
+> >         int i, prog_fd, map_fd, opt;
+> >         struct bpf_object *obj;
+> > -       struct bpf_map *map;
+> > +       __u32 max_pckt_size = 0;
+> > +       __u32 key = 0;
+> >         char filename[256];
+> >         int err;
+> >
+> > @@ -110,6 +113,9 @@ int main(int argc, char **argv)
+> >                 case 'T':
+> >                         kill_after_s = atoi(optarg);
+> >                         break;
+> > +               case 'P':
+> > +                       max_pckt_size = atoi(optarg);
+> > +                       break;
+> >                 case 'S':
+> >                         xdp_flags |= XDP_FLAGS_SKB_MODE;
+> >                         break;
+> > @@ -150,15 +156,25 @@ int main(int argc, char **argv)
+> >         if (bpf_prog_load_xattr(&prog_load_attr, &obj, &prog_fd))
+> >                 return 1;
+> >
+> > -       map = bpf_map__next(NULL, obj);
+> > -       if (!map) {
+> > -               printf("finding a map in obj file failed\n");
+> > +       if (prog_fd < 0) {
+> > +               printf("load_bpf_file: %s\n", strerror(errno));
+>
+> program load error is checked above (bpf_prog_load_xattr check), not
+> clear why check this again... Maybe just print helpful message there?
+>
 
-Ah yes, that's a good point. It seems that I totally overlooked that
-issue, somehow...
+Oh, It won't be necessary since it gets error from 'bpf_prog_load_xattr'.
+I'll resend the patch with this nit fixed.
 
-> The way you explained the use case of XDP-based firewall plus XDP-based
-> IPS/IDS it's about "knows nothing" admin that has to deal with more than
-> one XDP application on an unfamiliar server.
-> This is the case of debugging.
+Thanks for the review!
 
-This is not about debugging. The primary use case is about deploying
-multiple, independently developed, XDP-enabled applications on the same
-server.
+Thanks,
+Daniel
 
-Basically, we want the admin to be able to do:
-
-# yum install MyIDS
-# yum install MyXDPFirewall
-
-and then have both of those *just work* in XDP mode, on the same
-interface.
-
-I originally started solving this in an XDP-specific way (v1 of this
-patch set), but the reactions to that was pretty unanimous that this
-could be useful as a general eBPF feature. Do you agree with this?
-
--Toke
+> >                 return 1;
+> >         }
+> > -       map_fd = bpf_map__fd(map);
+> >
+> > -       if (!prog_fd) {
+> > -               printf("load_bpf_file: %s\n", strerror(errno));
+> > +       /* static global var 'max_pcktsz' is accessible from .data section */
+> > +       if (max_pckt_size) {
+> > +               map_fd = bpf_object__find_map_fd_by_name(obj, "xdp_adju.data");
+> > +               if (map_fd < 0) {
+> > +                       printf("finding a max_pcktsz map in obj file failed\n");
+> > +                       return 1;
+> > +               }
+> > +               bpf_map_update_elem(map_fd, &key, &max_pckt_size, BPF_ANY);
+> > +       }
+> > +
+> > +       /* fetch icmpcnt map */
+> > +       map_fd = bpf_object__find_map_fd_by_name(obj, "icmpcnt");
+> > +       if (map_fd < 0) {
+> > +               printf("finding a icmpcnt map in obj file failed\n");
+> >                 return 1;
+> >         }
+> >
+> > --
+> > 2.20.1
+> >
