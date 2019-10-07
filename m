@@ -2,180 +2,267 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D8FBCEAEF
-	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2019 19:47:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0041ECEC43
+	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2019 20:58:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728734AbfJGRrc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Oct 2019 13:47:32 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:33380 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728121AbfJGRrc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Oct 2019 13:47:32 -0400
-Received: by mail-qt1-f196.google.com with SMTP id r5so20513747qtd.0;
-        Mon, 07 Oct 2019 10:47:31 -0700 (PDT)
+        id S1728581AbfJGS6Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Oct 2019 14:58:25 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:36106 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728071AbfJGS6Z (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Oct 2019 14:58:25 -0400
+Received: by mail-io1-f68.google.com with SMTP id b136so31030684iof.3;
+        Mon, 07 Oct 2019 11:58:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9brArzmow4+S+OwMgabAOaG8vYuIy/Dm4KOaavrwI6U=;
-        b=UcdJWd0RqmL1QOmxP3viGNDCUcWOcoJFSlVkkd6SeFWNyu/c09ziUkd0PLYin1hpux
-         lp3xlvoEOrhKBAUKGdt2szozYPZ4JWhU4wbP05YPn5OMBdIV2L8Bw6zDglLedwFmJjik
-         1A4ckaK5EdTfWPuzem2pmqdy33Uxpr9TiLkqbhLRqZGdBcfLPqZx4gZLqcE4yyW4hChd
-         LqGXno2EkN+5XDZfILuesYwKxdH7oy/g35wNlwRXKAcP6wpYmnBhnVYOCm0LHVkT2dLP
-         KK7EoS20FdPapeW0gDk6p/KqLrUVShtcWXBs/xNJxtEKDnlBA+YL0hnWTKFAttnX+D+K
-         Ieag==
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=HNfy0c9jaNnckiijPmAbgaw+sSGuMd+2WSHAvDEnKnc=;
+        b=TYVtgtG4PaiilFsfZ135jqvNDewOHox7RopB6JN42sRUEHk+0dDIucd0pMc6OkRj/Y
+         JmN9MkfDzJaxnx4yMQSyHW56Q3oCT8BVdNjx4jH3qF0NT8uIN9JkfFDDrQ3TbNRzCq4p
+         Ie8/38Jon4XPnWVp5ANwe0y0Ri15UPtQuC/f8IVH85B4vnE2tWh/Vi9RGDuOJKmRKH5c
+         JKebQzl+4dbYPt75SkSgVf4BaoEH9RrurabGgsMDoxTw9lCNZQBv571K6e123ee7pgnE
+         gTnFrCvK+4Ihi2n4k9QAgS6UOVPUi+P/HS3KMTlx9TLLaRBjqVa0lURqNc7j2yV7RJ8C
+         YVMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9brArzmow4+S+OwMgabAOaG8vYuIy/Dm4KOaavrwI6U=;
-        b=IpUNOy20Q1z1r3isZDDdRELKypacwi41XEJcXmFDkoK2ms1kl4BD1AJdxkvzFLjUh5
-         VMA+//FJc+BczAo+CiFvSNaqwwl24dyq80q9+9qgIgxar6C+tDdXmlHo4QnimgKDoL4t
-         5zv1fE9tBeGisUcO0xzlSZRcCQzuQWRDxiW4qzGb9djdprpiYibpgA4Wq+q+qmvWIluj
-         6qdyy+Cmk0qbbtn+UXbbAO4kIMZRUiIvFN3eT6Y5nYH24KN8+tuBwfRafEuFG6TUIwwJ
-         nmh+UZkKEUzJ5X+vEmOi45si6rir4FgBopvx37mx9hk7xbXNAV/JQ84EmSIz603dpbEh
-         r/Ug==
-X-Gm-Message-State: APjAAAUJ6hgDyGoFKH7og2AvpDVczXOp2FccTDc9SNpf0VETaPtNZVDp
-        Tap7qFMmOdj2zRhGLzzjn/2Xhpp4d6OpHXkKb98=
-X-Google-Smtp-Source: APXvYqx0HFGdoWbC5TIi5pACtp17u38tW2uDl6YUL2NdDJ/U4oQM7iFpHNGjq+kdlzryWPkzSnxst+xAudVMHV893qQ=
-X-Received: by 2002:ac8:c01:: with SMTP id k1mr30597139qti.59.1570470450780;
- Mon, 07 Oct 2019 10:47:30 -0700 (PDT)
-MIME-Version: 1.0
-References: <20191007030738.2627420-1-andriin@fb.com> <20191007030738.2627420-2-andriin@fb.com>
- <20191007094346.GC27307@pc-66.home>
-In-Reply-To: <20191007094346.GC27307@pc-66.home>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 7 Oct 2019 10:47:19 -0700
-Message-ID: <CAEf4BzZDKkxtMGwnn+Zam58sYwS33EDuw3hrUTexmC9o7Xnj1w@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 1/3] uapi/bpf: fix helper docs
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Quentin Monnet <quentin.monnet@netronome.com>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=HNfy0c9jaNnckiijPmAbgaw+sSGuMd+2WSHAvDEnKnc=;
+        b=G8pNA5kv3u1wXdZbt5UV51n2oD3piZi+cIFdQPhYYabMEcoArgpfQr4vVf3+tIwMbl
+         nifsS5/UukmDTzfUzERkPpbgtVMsrORySC8pbF2DNOPoYEXqfn+FcBruLUafWU3b7QTa
+         /gH6NBeBwtSgrwmA3jrELEfAFdWzxhnD9lDRfy2uFWS32405DRFmT3p1qlTOhFm/2T2x
+         X9XXdaQGqm28rrBMWbuod+6kzbV47z+cxOjJ5opejyNmPM13cxIJdxvL39qGRPPvtK/X
+         SBmZrVnHHjgnTjHveHOqmF+6ijGemshO2hVSgHgz08hOtE0H1JfJE4cgi08mJjmhBST6
+         0obg==
+X-Gm-Message-State: APjAAAWgH/oiZgbEoPJzdr+gD1IpB+SqUV6p+ozxMRDJJ7FIUZfMKcy2
+        HpXIl+gBdZ+ahnmsDCqIOoE=
+X-Google-Smtp-Source: APXvYqzZ7gh0fCQgEu8adLKH/s2GKcR7YvXPIquDYDsUbODpU1YQHnnEFEDF76hqx8eJkO4sd8IonQ==
+X-Received: by 2002:a05:6e02:c27:: with SMTP id q7mr30576564ilg.148.1570474702646;
+        Mon, 07 Oct 2019 11:58:22 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id l1sm5323829ioc.30.2019.10.07.11.58.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Oct 2019 11:58:21 -0700 (PDT)
+Date:   Mon, 07 Oct 2019 11:58:13 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Marek Majkowski <marek@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Message-ID: <5d9b8ac5655_2a4b2aed075a45b41@john-XPS-13-9370.notmuch>
+In-Reply-To: <157046883502.2092443.146052429591277809.stgit@alrua-x1>
+References: <157046883502.2092443.146052429591277809.stgit@alrua-x1>
+Subject: RE: [PATCH bpf-next v3 0/5] xdp: Support multiple programs on a
+ single interface through chain calls
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Oct 7, 2019 at 2:43 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On Sun, Oct 06, 2019 at 08:07:36PM -0700, Andrii Nakryiko wrote:
-> > Various small fixes to BPF helper documentation comments, enabling
-> > automatic header generation with a list of BPF helpers.
-> >
-> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> > ---
-> >  include/uapi/linux/bpf.h       | 32 ++++++++++++++++----------------
-> >  tools/include/uapi/linux/bpf.h | 32 ++++++++++++++++----------------
-> >  2 files changed, 32 insertions(+), 32 deletions(-)
-> >
-> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > index 77c6be96d676..a65c3b0c6935 100644
-> > --- a/include/uapi/linux/bpf.h
-> > +++ b/include/uapi/linux/bpf.h
-> > @@ -794,7 +794,7 @@ union bpf_attr {
-> >   *           A 64-bit integer containing the current GID and UID, and
-> >   *           created as such: *current_gid* **<< 32 \|** *current_uid*.
->
-> Overall, I do like the approach that we keep generating the BPF helpers header
-> file from this documentation as it really enforces that the signatures here
-> must be 100% correct, and given this also lands in the man page it is /always/
-> in sync.
->
-> > - * int bpf_get_current_comm(char *buf, u32 size_of_buf)
-> > + * int bpf_get_current_comm(void *buf, u32 size_of_buf)
->
-> You did not elaborate why this needs to change from char * to void *. What is
-> the reason? Those rules should probably be documented somewhere, otherwise
-> people might keep adding them.
+Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> This series adds support for executing multiple XDP programs on a singl=
+e
+> interface in sequence, through the use of chain calls, as discussed at =
+the Linux
+> Plumbers Conference last month:
+> =
 
-So here and below for __u8*, compiler is much more strict about
-**exact** type of pointer passed by program into helpers. E.g, in one
-selftest, we had struct like this
+> https://linuxplumbersconf.org/event/4/contributions/460/
+> =
 
-struct s {
-    char a[16];
-};
 
-struct s = {};
-bpf_get_current_comm(&s.a);
+Can we add RFC to the title if we are just iterating through idea-space h=
+ere.
 
-and compiler was complaining that program passes char (*)[16] (pointer
-to an array) instead of char *. So instead of forcing all the correct
-program to do extra casts, I think it's better to stick to void * for
-all the "pointer to a chunk of memory" use cases. With void *,
-usability is much better.
+> # HIGH-LEVEL IDEA
+> =
 
->
-> >   *   Description
-> >   *           Copy the **comm** attribute of the current task into *buf* of
-> >   *           *size_of_buf*. The **comm** attribute contains the name of
-> > @@ -1023,7 +1023,7 @@ union bpf_attr {
-> >   *           The realm of the route for the packet associated to *skb*, or 0
-> >   *           if none was found.
-> >   *
-> > - * int bpf_perf_event_output(struct pt_regs *ctx, struct bpf_map *map, u64 flags, void *data, u64 size)
-> > + * int bpf_perf_event_output(void *ctx, struct bpf_map *map, u64 flags, void *data, u64 size)
->
-> This one here is because we have multiple program types with different input context.
+> Since Alexei pointed out some issues with trying to rewrite the eBPF by=
+te code,
+> let's try a third approach: We add the ability to chain call programs i=
+nto the
+> eBPF execution core itself, but without rewriting the eBPF byte code.
+> =
 
-Yes.
+> As in the previous version, the bpf() syscall gets a couple of new comm=
+ands
+> which takes a pair of BPF program fds and a return code. It will then a=
+ttach the
+> second program to the first one in a structured keyed by return code. W=
+hen a
+> program chain is thus established, the former program will tail call to=
+ the
+> latter at the end of its execution.
+> =
 
->
-> >   *   Description
-> >   *           Write raw *data* blob into a special BPF perf event held by
-> >   *           *map* of type **BPF_MAP_TYPE_PERF_EVENT_ARRAY**. This perf
-> > @@ -1068,7 +1068,7 @@ union bpf_attr {
-> >   *   Return
-> >   *           0 on success, or a negative error in case of failure.
-> >   *
-> > - * int bpf_skb_load_bytes(const struct sk_buff *skb, u32 offset, void *to, u32 len)
-> > + * int bpf_skb_load_bytes(const void *skb, u32 offset, void *to, u32 len)
->
-> Changing from struct sk_buff * to void * here, again due to struct sk_reuseport_kern *?
+> The actual tail calling is achieved by adding a new flag to struct bpf_=
+prog and
+> having BPF_PROG_RUN run the chain call logic if that flag is set. This =
+means
+> that if the feature is *not* used, the overhead is a single conditional=
+ branch
+> (which means I couldn't measure a performance difference, as can be see=
+n in the
+> results below).
+> =
 
-Yep.
 
->
-> I'm wondering whether it would simply be much better to always just use 'void *ctx'
-> for everything that is BPF context as it may be just confusing to people why different
-> types are chosen sometimes leading to buggy drive-by attempts to 'fix' them back into
-> struct sk_buff * et al.
+I still believe user space should be able to link these multiple programs=
 
-I'm impartial on this issue. In some cases it might be helpful to
-specify what is the expected type of the context, if it's only ever
-one type, but there are lots of helpers that accept various contexts,
-so for consistency its better to just have "void *context".
+together as Ed and I were suggesting in the last series. It seems much cl=
+eaner
+to handle this with calls and linker steps vs adding something on the sid=
+e to
+handle this. Also by doing it by linking your control program can be arbi=
+trary
+complex. For example not just taking the output of one program and jumpin=
+g
+to another but doing arbitrary more complex/interesting things. Taking th=
+e
+input from multiple programs to pick next call for example.
 
->
-> >   *   Description
-> >   *           This helper was provided as an easy way to load data from a
-> >   *           packet. It can be used to load *len* bytes from *offset* from
-> > @@ -1085,7 +1085,7 @@ union bpf_attr {
-> >   *   Return
-> >   *           0 on success, or a negative error in case of failure.
-> >   *
-> > - * int bpf_get_stackid(struct pt_regs *ctx, struct bpf_map *map, u64 flags)
-> > + * int bpf_get_stackid(void *ctx, struct bpf_map *map, u64 flags)
-> >   *   Description
-> >   *           Walk a user or a kernel stack and return its id. To achieve
-> >   *           this, the helper needs *ctx*, which is a pointer to the context
-> > @@ -1154,7 +1154,7 @@ union bpf_attr {
-> >   *           The checksum result, or a negative error code in case of
-> >   *           failure.
-> >   *
-> > - * int bpf_skb_get_tunnel_opt(struct sk_buff *skb, u8 *opt, u32 size)
-> > + * int bpf_skb_get_tunnel_opt(struct sk_buff *skb, void *opt, u32 size)
->
-> Same here and in more places in this patch, why u8 * -> void * and the like?
+Maybe I missed a point but it seems like the main complaint is tail calls=
+ and
+regular calls don't mix well. We want to fix this regardless so I don't t=
+hink
+that should be a blocker on using a linking step in user space.
 
-See above, making compiler less picky about pointer to a memory buffer.
+> For this version I kept the load-time flag from the previous version, t=
+o avoid
+> having to remove the read-only memory protection from the bpf prog. Onl=
+y
+> programs loaded with this flag set can have other programs attached to =
+them for
+> chain calls.
+> =
 
->
-> >   *   Description
-> >   *           Retrieve tunnel options metadata for the packet associated to
-> >   *           *skb*, and store the raw tunnel option data to the buffer *opt*
-> [...]
+> As before, it shouldn't be necessary to set the flag on program load ti=
+me, but
+> rather we should enable the feature when a chain call program is first =
+loaded.
+> We could conceivably just remove the RO property from the first page of=
+ struct
+> bpf_prog and set the flag as needed.
+> =
+
+> # PERFORMANCE
+> =
+
+> I performed a simple performance test to get an initial feel for the ov=
+erhead of
+> the chain call mechanism. This test consists of running only two progra=
+ms in
+> sequence: One that returns XDP_PASS and another that returns XDP_DROP. =
+I then
+> measure the drop PPS performance and compare it to a baseline of just a=
+ single
+> program that only returns XDP_DROP.
+> =
+
+> For comparison, a test case that uses regular eBPF tail calls to sequen=
+ce two
+> programs together is also included.
+> =
+
+> | Test case                        | Perf      | Overhead |
+> |----------------------------------+-----------+----------|
+> | Before patch (XDP DROP program)  | 31.5 Mpps |          |
+> | After patch (XDP DROP program)   | 32.0 Mpps |          |
+> | XDP chain call (XDP_PASS return) | 28.5 Mpps | 3.8 ns   |
+> | XDP chain call (wildcard return) | 28.1 Mpps | 4.3 ns   |
+> =
+
+> I consider the "Before patch" and "After patch" to be identical; the .5=
+ Mpps
+> difference is within the regular test variance I see between runs. Like=
+wise,
+> there is probably no significant difference between hooking the XDP_PAS=
+S return
+> code and using the wildcard slot.
+> =
+
+> # PATCH SET STRUCTURE
+> This series is structured as follows:
+> =
+
+> - Patch 1: Adds the call chain looping logic
+> - Patch 2: Adds the new commands added to the bpf() syscall
+> - Patch 3-4: Tools/ update and libbpf syscall wrappers
+> - Patch 5: Selftest  with example user space code (a bit hacky still)
+> =
+
+> The whole series is also available in my git repo on kernel.org:
+> https://git.kernel.org/pub/scm/linux/kernel/git/toke/linux.git/log/?h=3D=
+xdp-multiprog-03
+> =
+
+> Changelog:
+> =
+
+> v3:
+>   - Keep the UAPI from v2, but change the implementation to hook into
+>     BPF_PROG_RUN instead of trying to inject instructions into the eBPF=
+ program
+>     itself (since that had problems as Alexei pointed out).
+> v2:
+>   - Completely new approach that integrates chain calls into the core e=
+BPF
+>     runtime instead of doing the map XDP-specific thing with a new map =
+from v1.
+> =
+
+> ---
+> =
+
+> Toke H=C3=B8iland-J=C3=B8rgensen (5):
+>       bpf: Support chain calling multiple BPF programs after each other=
+
+>       bpf: Add support for setting chain call sequence for programs
+>       tools: Update bpf.h header for program chain calls
+>       libbpf: Add syscall wrappers for BPF_PROG_CHAIN_* commands
+>       selftests: Add tests for XDP chain calls
+> =
+
+> =
+
+>  include/linux/bpf.h                           |    3 =
+
+>  include/linux/filter.h                        |   34 +++
+>  include/uapi/linux/bpf.h                      |   16 +
+>  kernel/bpf/core.c                             |    6 =
+
+>  kernel/bpf/syscall.c                          |   82 ++++++-
+>  tools/include/uapi/linux/bpf.h                |   16 +
+>  tools/lib/bpf/bpf.c                           |   34 +++
+>  tools/lib/bpf/bpf.h                           |    4 =
+
+>  tools/lib/bpf/libbpf.map                      |    3 =
+
+>  tools/testing/selftests/bpf/.gitignore        |    1 =
+
+>  tools/testing/selftests/bpf/Makefile          |    3 =
+
+>  tools/testing/selftests/bpf/progs/xdp_dummy.c |    6 =
+
+>  tools/testing/selftests/bpf/test_xdp_chain.sh |   77 ++++++
+>  tools/testing/selftests/bpf/xdp_chain.c       |  313 +++++++++++++++++=
+++++++++
+>  14 files changed, 594 insertions(+), 4 deletions(-)
+>  create mode 100755 tools/testing/selftests/bpf/test_xdp_chain.sh
+>  create mode 100644 tools/testing/selftests/bpf/xdp_chain.c
+> =
+
+
+
