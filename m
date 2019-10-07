@@ -2,89 +2,207 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 06B1ACE87E
-	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2019 17:58:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E953BCE89D
+	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2019 18:06:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727814AbfJGP6f (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Oct 2019 11:58:35 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:42602 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727711AbfJGP6f (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Oct 2019 11:58:35 -0400
-Received: by mail-pf1-f196.google.com with SMTP id q12so8919416pff.9
-        for <bpf@vger.kernel.org>; Mon, 07 Oct 2019 08:58:34 -0700 (PDT)
+        id S1727847AbfJGQGr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Oct 2019 12:06:47 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:35753 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727711AbfJGQGr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Oct 2019 12:06:47 -0400
+Received: by mail-pg1-f195.google.com with SMTP id p30so6408510pgl.2;
+        Mon, 07 Oct 2019 09:06:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :organization:mime-version:content-transfer-encoding;
-        bh=Q7rtzjnFJDzgl/cFLK/ImgYohSqUsKxMtww2iZ3LFxI=;
-        b=L2UEzrQNyW4qR/63zw8zkgy4pyfPvUqJc191PUYuwqqFBzcRgHsTNjOtcz6sShZIPb
-         dA/SN5iqkK380QeTr1TMQyMEyXWItFVoOPj0BTJNHvHvuYLm8lwTdbOSUuFCTyIH59hE
-         pzW6qE93mQZcysE7SxfrOnzobpeM0RpPQZ9ky1GwjbHD6Kd1PNsjg2bdQ46qNOywYScA
-         hRSrZvH5pu1GKgAXwZ2wpS+5O5gmxXTtnvm6JIiCE+/vjMomuawzyr7sRW5LQh9nYmYF
-         2X+6u2WLm9hpqjydnIc+4dnn/LIoudKifm2BFrmEQJ8LHa46ej0iFH/IjS8BvBCylDv5
-         4zkA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ehxiHsMQCyh5wZYAe/tjs04IMiaDtw5LmMLtgoz20eM=;
+        b=h7M+L8WfVEe2t6GKGXhWgwXOYzg4Z0DZxcfkCXLD0//IaK540r6+s5QQuZuRae0sGS
+         EZLC+/TkaFEHLEqEgPvlnV3SQnZYfFleluzjKoDG7Q+vpDDumc64/pCYFpRrGFzTrtRZ
+         oW/7iO8dTIFn4smKFbIXriK54sn3wmtGoJds5j4/XMTuSyFwCah/ildIia8QxHu5Jkoo
+         TOJySF+5ichxORndr0TVbIvBQGfndfJ2bacF9gNA49ToV3qiyPG+ofNTe8j2OLKAQ9Ff
+         7D2VPYpuwBQi5dCumdxiEUwbSykvh7J9O3BguQDhswq+TR9gy0B8G8bL2U+qTa8UhAIg
+         uvvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=Q7rtzjnFJDzgl/cFLK/ImgYohSqUsKxMtww2iZ3LFxI=;
-        b=kZD4rLBiO4fLr6d9ZDWvTd277WEYouv7SASPkQrcynSiWO7zGzOMUSHLeG6a2Yat6h
-         uUoihe56S7ii2Dq3M0HokK+Oe+NF2c9tMxH0eeCZ8HvesjxlQTXxZwEW2zpnT5Udase+
-         ZUY6gP56TJymiMXrXtOuxn6vEPvlfna7bWo6aJH4I4xtlth3cLzqwxdyQ+skjf/XO+V8
-         bBxHaPILh9eFXmKjE/6g5YROCMEIoYgtn7FL5IjzSIt1f45twIMpdqh3MQHc2e6tp3jL
-         oo/vxsDU+1c0x3rkYEjKqyssVbp0W80xAYdxiw+tdQFRNipuRJh6EhzFQf/36cW+kmx7
-         bABA==
-X-Gm-Message-State: APjAAAWNcndtwxwINl6sc50umEPkucLBjbkq1fwRGvgyeCclUBz777pS
-        mQJ4GD1A+V+MG7sp44e3yWxE6A==
-X-Google-Smtp-Source: APXvYqyhi32l/kmuUlMffnp2RlvNzUjYV7K3wiMTR7LXwgMxFjOP7LmfHSTRyJu+7lqWRtUm/ypu7w==
-X-Received: by 2002:a63:f915:: with SMTP id h21mr31135096pgi.269.1570463914153;
-        Mon, 07 Oct 2019 08:58:34 -0700 (PDT)
-Received: from cakuba.netronome.com (c-73-202-202-92.hsd1.ca.comcast.net. [73.202.202.92])
-        by smtp.gmail.com with ESMTPSA id y2sm17266224pfe.126.2019.10.07.08.58.33
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ehxiHsMQCyh5wZYAe/tjs04IMiaDtw5LmMLtgoz20eM=;
+        b=ipFlFFTrjK7zi0BkTspsanvRHJCTugW/WIoU8t3AYPUN0sOkL3AE3bcx5Q0ExDU1pE
+         xGoGnlnm6tyBi+yWJJjzeZA9YN0VtmWk0BWZLK4A4mQiLYoadjpjM37emoEeY7D3kNHl
+         LVGUFU7a/gvAG0eoJCegBz2c4K7iJ1vlmBqZimexXg1zRJ3UYnGAb7DGijoe+aaRwjLv
+         7g0cG/uVhh6vyVryE4NNnGnV0eT0Z3BN0ec3vgP0gPyfGdoLlF8efiFnVFjrH0DjJ9rc
+         JS//iujUy16oFxzXtm+zcPjr4Rs1p3B/uRklBKiYif1OZ4KCZQLphPx4117a/89wDpZR
+         ddvg==
+X-Gm-Message-State: APjAAAW0kcGQoh859N7idD5FWSyP5dV8h78sMaQiJil021fljC82eGqq
+        CgQIqlwluujlwai6lYZPew==
+X-Google-Smtp-Source: APXvYqzk6wJkMOlPma5mgBaurwelYUskqpd2a8htstH0bfJHWzn4nMJi4vyIu20/VMFR6/dvn78ItQ==
+X-Received: by 2002:a63:d846:: with SMTP id k6mr31189632pgj.378.1570464406125;
+        Mon, 07 Oct 2019 09:06:46 -0700 (PDT)
+Received: from localhost.localdomain ([110.35.161.54])
+        by smtp.gmail.com with ESMTPSA id g202sm20223900pfb.155.2019.10.07.09.06.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Oct 2019 08:58:33 -0700 (PDT)
-Date:   Mon, 7 Oct 2019 08:58:24 -0700
-From:   Jakub Kicinski <jakub.kicinski@netronome.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
+        Mon, 07 Oct 2019 09:06:44 -0700 (PDT)
+From:   "Daniel T. Lee" <danieltimlee@gmail.com>
+To:     Yonghong Song <yhs@fb.com>, Song Liu <liu.song.a23@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        oss-drivers@netronome.com, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] nfp: bpf: make array exp_mask static, makes object
- smaller
-Message-ID: <20191007085824.64c89788@cakuba.netronome.com>
-In-Reply-To: <20191007115239.1742-1-colin.king@canonical.com>
-References: <20191007115239.1742-1-colin.king@canonical.com>
-Organization: Netronome Systems, Ltd.
+        Alexei Starovoitov <ast@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>, netdev@vger.kernel.org
+Subject: [PATCH bpf-next v6] samples: bpf: add max_pckt_size option at xdp_adjust_tail
+Date:   Tue,  8 Oct 2019 01:06:35 +0900
+Message-Id: <20191007160635.1021-1-danieltimlee@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon,  7 Oct 2019 12:52:39 +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> Don't populate the array exp_mask on the stack but instead make it
-> static. Makes the object code smaller by 224 bytes.
-> 
-> Before:
->    text	   data	    bss	    dec	    hex	filename
->   77832	   2290	      0	  80122	  138fa	ethernet/netronome/nfp/bpf/jit.o
-> 
-> After:
->    text	   data	    bss	    dec	    hex	filename
->   77544	   2354	      0	  79898	  1381a	ethernet/netronome/nfp/bpf/jit.o
-> 
-> (gcc version 9.2.1, amd64)
-> 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Currently, at xdp_adjust_tail_kern.c, MAX_PCKT_SIZE is limited
+to 600. To make this size flexible, static global variable
+'max_pcktsz' is added.
 
-Acked-by: Jakub Kicinski <jakub.kicinski@netronome.com>
+By updating new packet size from the user space, xdp_adjust_tail_kern.o
+will use this value as a new max packet size.
+
+This static global variable can be accesible from .data section with
+bpf_object__find_map* from user space, since it is considered as
+internal map (accessible with .bss/.data/.rodata suffix).
+
+If no '-P <MAX_PCKT_SIZE>' option is used, the size of maximum packet
+will be 600 as a default.
+
+Changed the way to test prog_fd, map_fd from '!= 0' to '< 0',
+since fd could be 0 when stdin is closed.
+
+Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
+
+---
+Changes in v6:
+    - Remove redundant error message
+Changes in v5:
+    - Change pcktsz map to static global variable
+Changes in v4:
+    - make pckt_size no less than ICMP_TOOBIG_SIZE
+    - Fix code style
+Changes in v2:
+    - Change the helper to fetch map from 'bpf_map__next' to
+    'bpf_object__find_map_fd_by_name'.
+
+ samples/bpf/xdp_adjust_tail_kern.c |  7 +++++--
+ samples/bpf/xdp_adjust_tail_user.c | 29 ++++++++++++++++++++---------
+ 2 files changed, 25 insertions(+), 11 deletions(-)
+
+diff --git a/samples/bpf/xdp_adjust_tail_kern.c b/samples/bpf/xdp_adjust_tail_kern.c
+index 411fdb21f8bc..c616508befb9 100644
+--- a/samples/bpf/xdp_adjust_tail_kern.c
++++ b/samples/bpf/xdp_adjust_tail_kern.c
+@@ -25,6 +25,9 @@
+ #define ICMP_TOOBIG_SIZE 98
+ #define ICMP_TOOBIG_PAYLOAD_SIZE 92
+ 
++/* volatile to prevent compiler optimizations */
++static volatile __u32 max_pcktsz = MAX_PCKT_SIZE;
++
+ struct bpf_map_def SEC("maps") icmpcnt = {
+ 	.type = BPF_MAP_TYPE_ARRAY,
+ 	.key_size = sizeof(__u32),
+@@ -92,7 +95,7 @@ static __always_inline int send_icmp4_too_big(struct xdp_md *xdp)
+ 	orig_iph = data + off;
+ 	icmp_hdr->type = ICMP_DEST_UNREACH;
+ 	icmp_hdr->code = ICMP_FRAG_NEEDED;
+-	icmp_hdr->un.frag.mtu = htons(MAX_PCKT_SIZE-sizeof(struct ethhdr));
++	icmp_hdr->un.frag.mtu = htons(max_pcktsz - sizeof(struct ethhdr));
+ 	icmp_hdr->checksum = 0;
+ 	ipv4_csum(icmp_hdr, ICMP_TOOBIG_PAYLOAD_SIZE, &csum);
+ 	icmp_hdr->checksum = csum;
+@@ -121,7 +124,7 @@ static __always_inline int handle_ipv4(struct xdp_md *xdp)
+ 	int pckt_size = data_end - data;
+ 	int offset;
+ 
+-	if (pckt_size > MAX_PCKT_SIZE) {
++	if (pckt_size > max(max_pcktsz, ICMP_TOOBIG_SIZE)) {
+ 		offset = pckt_size - ICMP_TOOBIG_SIZE;
+ 		if (bpf_xdp_adjust_tail(xdp, 0 - offset))
+ 			return XDP_PASS;
+diff --git a/samples/bpf/xdp_adjust_tail_user.c b/samples/bpf/xdp_adjust_tail_user.c
+index a3596b617c4c..d86e9ad0356b 100644
+--- a/samples/bpf/xdp_adjust_tail_user.c
++++ b/samples/bpf/xdp_adjust_tail_user.c
+@@ -23,6 +23,7 @@
+ #include "libbpf.h"
+ 
+ #define STATS_INTERVAL_S 2U
++#define MAX_PCKT_SIZE 600
+ 
+ static int ifindex = -1;
+ static __u32 xdp_flags = XDP_FLAGS_UPDATE_IF_NOEXIST;
+@@ -72,6 +73,7 @@ static void usage(const char *cmd)
+ 	printf("Usage: %s [...]\n", cmd);
+ 	printf("    -i <ifname|ifindex> Interface\n");
+ 	printf("    -T <stop-after-X-seconds> Default: 0 (forever)\n");
++	printf("    -P <MAX_PCKT_SIZE> Default: %u\n", MAX_PCKT_SIZE);
+ 	printf("    -S use skb-mode\n");
+ 	printf("    -N enforce native mode\n");
+ 	printf("    -F force loading prog\n");
+@@ -85,13 +87,14 @@ int main(int argc, char **argv)
+ 		.prog_type	= BPF_PROG_TYPE_XDP,
+ 	};
+ 	unsigned char opt_flags[256] = {};
+-	const char *optstr = "i:T:SNFh";
++	const char *optstr = "i:T:P:SNFh";
+ 	struct bpf_prog_info info = {};
+ 	__u32 info_len = sizeof(info);
+ 	unsigned int kill_after_s = 0;
+ 	int i, prog_fd, map_fd, opt;
+ 	struct bpf_object *obj;
+-	struct bpf_map *map;
++	__u32 max_pckt_size = 0;
++	__u32 key = 0;
+ 	char filename[256];
+ 	int err;
+ 
+@@ -110,6 +113,9 @@ int main(int argc, char **argv)
+ 		case 'T':
+ 			kill_after_s = atoi(optarg);
+ 			break;
++		case 'P':
++			max_pckt_size = atoi(optarg);
++			break;
+ 		case 'S':
+ 			xdp_flags |= XDP_FLAGS_SKB_MODE;
+ 			break;
+@@ -150,15 +156,20 @@ int main(int argc, char **argv)
+ 	if (bpf_prog_load_xattr(&prog_load_attr, &obj, &prog_fd))
+ 		return 1;
+ 
+-	map = bpf_map__next(NULL, obj);
+-	if (!map) {
+-		printf("finding a map in obj file failed\n");
+-		return 1;
++	/* static global var 'max_pcktsz' is accessible from .data section */
++	if (max_pckt_size) {
++		map_fd = bpf_object__find_map_fd_by_name(obj, "xdp_adju.data");
++		if (map_fd < 0) {
++			printf("finding a max_pcktsz map in obj file failed\n");
++			return 1;
++		}
++		bpf_map_update_elem(map_fd, &key, &max_pckt_size, BPF_ANY);
+ 	}
+-	map_fd = bpf_map__fd(map);
+ 
+-	if (!prog_fd) {
+-		printf("load_bpf_file: %s\n", strerror(errno));
++	/* fetch icmpcnt map */
++	map_fd = bpf_object__find_map_fd_by_name(obj, "icmpcnt");
++	if (map_fd < 0) {
++		printf("finding a icmpcnt map in obj file failed\n");
+ 		return 1;
+ 	}
+ 
+-- 
+2.20.1
+
