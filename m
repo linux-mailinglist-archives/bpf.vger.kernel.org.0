@@ -2,25 +2,24 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D20BCED5C
-	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2019 22:22:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE3A7CEDA2
+	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2019 22:39:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728786AbfJGUWg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Oct 2019 16:22:36 -0400
-Received: from www62.your-server.de ([213.133.104.62]:34506 "EHLO
+        id S1728792AbfJGUjG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Oct 2019 16:39:06 -0400
+Received: from www62.your-server.de ([213.133.104.62]:37738 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728187AbfJGUWf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Oct 2019 16:22:35 -0400
+        with ESMTP id S1728187AbfJGUjF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Oct 2019 16:39:05 -0400
 Received: from 55.249.197.178.dynamic.dsl-lte-bonding.lssmb00p-msn.res.cust.swisscom.ch ([178.197.249.55] helo=localhost)
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1iHZWT-0004eD-8Y; Mon, 07 Oct 2019 22:22:25 +0200
-Date:   Mon, 7 Oct 2019 22:22:24 +0200
+        id 1iHZmS-0005Sc-02; Mon, 07 Oct 2019 22:38:56 +0200
+Date:   Mon, 7 Oct 2019 22:38:55 +0200
 From:   Daniel Borkmann <daniel@iogearbox.net>
 To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         Marek Majkowski <marek@cloudflare.com>,
@@ -29,18 +28,16 @@ Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
         David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2 1/5] bpf: Support injecting chain calls into
- BPF programs on load
-Message-ID: <20191007202224.GD27307@pc-66.home>
-References: <157020976030.1824887.7191033447861395957.stgit@alrua-x1>
- <157020976144.1824887.10249946730258092768.stgit@alrua-x1>
- <20191007002739.5seu2btppfjmhry4@ast-mbp.dhcp.thefacebook.com>
- <87h84kn9v0.fsf@toke.dk>
+Subject: Re: [PATCH bpf-next v3 2/5] bpf: Add support for setting chain call
+ sequence for programs
+Message-ID: <20191007203855.GE27307@pc-66.home>
+References: <157046883502.2092443.146052429591277809.stgit@alrua-x1>
+ <157046883723.2092443.3902769602513209987.stgit@alrua-x1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <87h84kn9v0.fsf@toke.dk>
+In-Reply-To: <157046883723.2092443.3902769602513209987.stgit@alrua-x1>
 User-Agent: Mutt/1.12.1 (2019-06-15)
 X-Authenticated-Sender: daniel@iogearbox.net
 X-Virus-Scanned: Clear (ClamAV 0.101.4/25595/Mon Oct  7 10:28:44 2019)
@@ -49,115 +46,159 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Oct 07, 2019 at 12:11:31PM +0200, Toke Høiland-Jørgensen wrote:
-> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
-> > On Fri, Oct 04, 2019 at 07:22:41PM +0200, Toke Høiland-Jørgensen wrote:
-> >> From: Toke Høiland-Jørgensen <toke@redhat.com>
-> >> 
-> >> This adds support for injecting chain call logic into eBPF programs before
-> >> they return. The code injection is controlled by a flag at program load
-> >> time; if the flag is set, the verifier will add code to every BPF_EXIT
-> >> instruction that first does a lookup into a chain call structure to see if
-> >> it should call into another program before returning. The actual calls
-> >> reuse the tail call infrastructure.
-> >> 
-> >> Ideally, it shouldn't be necessary to set the flag on program load time,
-> >> but rather inject the calls when a chain call program is first loaded.
-> >> However, rewriting the program reallocates the bpf_prog struct, which is
-> >> obviously not possible after the program has been attached to something.
-> >> 
-> >> One way around this could be a sysctl to force the flag one (for enforcing
-> >> system-wide support). Another could be to have the chain call support
-> >> itself built into the interpreter and JIT, which could conceivably be
-> >> re-run each time we attach a new chain call program. This would also allow
-> >> the JIT to inject direct calls to the next program instead of using the
-> >> tail call infrastructure, which presumably would be a performance win. The
-> >> drawback is, of course, that it would require modifying all the JITs.
-> >> 
-> >> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
-> > ...
-> >>  
-> >> +static int bpf_inject_chain_calls(struct bpf_verifier_env *env)
-> >> +{
-> >> +	struct bpf_prog *prog = env->prog;
-> >> +	struct bpf_insn *insn = prog->insnsi;
-> >> +	int i, cnt, delta = 0, ret = -ENOMEM;
-> >> +	const int insn_cnt = prog->len;
-> >> +	struct bpf_array *prog_array;
-> >> +	struct bpf_prog *new_prog;
-> >> +	size_t array_size;
-> >> +
-> >> +	struct bpf_insn call_next[] = {
-> >> +		BPF_LD_IMM64(BPF_REG_2, 0),
-> >> +		/* Save real return value for later */
-> >> +		BPF_MOV64_REG(BPF_REG_6, BPF_REG_0),
-> >> +		/* First try tail call with index ret+1 */
-> >> +		BPF_MOV64_REG(BPF_REG_3, BPF_REG_0),
-> >> +		BPF_ALU64_IMM(BPF_ADD, BPF_REG_3, 1),
-> >> +		BPF_RAW_INSN(BPF_JMP | BPF_TAIL_CALL, 0, 0, 0, 0),
-> >> +		/* If that doesn't work, try with index 0 (wildcard) */
-> >> +		BPF_MOV64_IMM(BPF_REG_3, 0),
-> >> +		BPF_RAW_INSN(BPF_JMP | BPF_TAIL_CALL, 0, 0, 0, 0),
-> >> +		/* Restore saved return value and exit */
-> >> +		BPF_MOV64_REG(BPF_REG_0, BPF_REG_6),
-> >> +		BPF_EXIT_INSN()
-> >> +	};
-> >
-> > How did you test it?
-> > With the only test from patch 5?
-> > +int xdp_drop_prog(struct xdp_md *ctx)
-> > +{
-> > +       return XDP_DROP;
-> > +}
-> >
-> > Please try different program with more than one instruction.
-> > And then look at above asm and think how it can be changed to
-> > get valid R1 all the way to each bpf_exit insn.
-> > Do you see amount of headaches this approach has?
+On Mon, Oct 07, 2019 at 07:20:37PM +0200, Toke Høiland-Jørgensen wrote:
+> From: Toke Høiland-Jørgensen <toke@redhat.com>
 > 
-> Ah yes, that's a good point. It seems that I totally overlooked that
-> issue, somehow...
+> This adds support for setting and deleting bpf chain call programs through
+> a couple of new commands in the bpf() syscall. The CHAIN_ADD and CHAIN_DEL
+> commands take two eBPF program fds and a return code, and install the
+> 'next' program to be chain called after the 'prev' program if that program
+> returns 'retcode'. A retcode of -1 means "wildcard", so that the program
+> will be executed regardless of the previous program's return code.
 > 
-> > The way you explained the use case of XDP-based firewall plus XDP-based
-> > IPS/IDS it's about "knows nothing" admin that has to deal with more than
-> > one XDP application on an unfamiliar server.
-> > This is the case of debugging.
 > 
-> This is not about debugging. The primary use case is about deploying
-> multiple, independently developed, XDP-enabled applications on the same
-> server.
+> The syscall command names are based on Alexei's prog_chain example[0],
+> which Alan helpfully rebased on current bpf-next. However, the logic and
+> program storage is obviously adapted to the execution logic in the previous
+> commit.
 > 
-> Basically, we want the admin to be able to do:
+> [0] https://git.kernel.org/pub/scm/linux/kernel/git/ast/bpf.git/commit/?h=prog_chain&id=f54f45d00f91e083f6aec2abe35b6f0be52ae85b&context=15
 > 
-> # yum install MyIDS
-> # yum install MyXDPFirewall
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+> ---
+>  include/uapi/linux/bpf.h |   10 ++++++
+>  kernel/bpf/syscall.c     |   78 ++++++++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 88 insertions(+)
 > 
-> and then have both of those *just work* in XDP mode, on the same
-> interface.
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 1ce80a227be3..b03c23963af8 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -107,6 +107,9 @@ enum bpf_cmd {
+>  	BPF_MAP_LOOKUP_AND_DELETE_ELEM,
+>  	BPF_MAP_FREEZE,
+>  	BPF_BTF_GET_NEXT_ID,
+> +	BPF_PROG_CHAIN_ADD,
+> +	BPF_PROG_CHAIN_DEL,
+> +	BPF_PROG_CHAIN_GET,
+>  };
+>  
+>  enum bpf_map_type {
+> @@ -516,6 +519,13 @@ union bpf_attr {
+>  		__u64		probe_offset;	/* output: probe_offset */
+>  		__u64		probe_addr;	/* output: probe_addr */
+>  	} task_fd_query;
+> +
+> +	struct { /* anonymous struct used by BPF_PROG_CHAIN_* commands */
+> +		__u32		prev_prog_fd;
+> +		__u32		next_prog_fd;
+> +		__u32		retcode;
+> +		__u32		next_prog_id;   /* output: prog_id */
+> +	};
+>  } __attribute__((aligned(8)));
+>  
+>  /* The description below is an attempt at providing documentation to eBPF
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index b8a203a05881..be8112e08a88 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -2113,6 +2113,79 @@ static int bpf_prog_test_run(const union bpf_attr *attr,
+>  	return ret;
+>  }
+>  
+> +#define BPF_PROG_CHAIN_LAST_FIELD next_prog_id
+> +
+> +static int bpf_prog_chain(int cmd, const union bpf_attr *attr,
+> +			  union bpf_attr __user *uattr)
+> +{
+> +	struct bpf_prog *prog, *next_prog, *old_prog;
+> +	struct bpf_prog **array;
+> +	int ret = -EOPNOTSUPP;
+> +	u32 index, prog_id;
+> +
+> +	if (CHECK_ATTR(BPF_PROG_CHAIN))
+> +		return -EINVAL;
+> +
+> +	/* Index 0 is wildcard, encoded as ~0 by userspace */
+> +	if (attr->retcode == ((u32) ~0))
+> +		index = 0;
+> +	else
+> +		index = attr->retcode + 1;
+> +
+> +	if (index >= BPF_NUM_CHAIN_SLOTS)
+> +		return -E2BIG;
+> +
+> +	prog = bpf_prog_get(attr->prev_prog_fd);
+> +	if (IS_ERR(prog))
+> +		return PTR_ERR(prog);
+> +
+> +	/* If the chain_calls bit is not set, that's because the chain call flag
+> +	 * was not set on program load, and so we can't support chain calls.
+> +	 */
+> +	if (!prog->chain_calls)
+> +		goto out;
+> +
+> +	array = prog->aux->chain_progs;
+> +
+> +	switch (cmd) {
+> +	case BPF_PROG_CHAIN_ADD:
+> +		next_prog = bpf_prog_get(attr->next_prog_fd);
+> +		if (IS_ERR(next_prog)) {
+> +			ret = PTR_ERR(next_prog);
+> +			break;
+> +		}
+> +		old_prog = xchg(array + index, next_prog);
+> +		if (old_prog)
+> +			bpf_prog_put(old_prog);
+> +		ret = 0;
+> +		break;
 
-How is the user space loader side handled in this situation, meaning,
-what are your plans on this regard?
+How are circular dependencies resolved here? Seems the situation is
+not prevented, so progs unloaded via XDP won't get the __bpf_prog_free()
+call where they then drop the references of all the other progs in the
+chain.
 
-Reason I'm asking is that those independently developed, XDP-enabled
-applications today might on startup simply forcefully remove what is
-currently installed on XDP layer at device X, and then override it
-with their own program, meaning both of MyIDS and MyXDPFirewall would
-remove each other's programs on start.
-
-This will still require some sort of cooperation, think of something
-like systemd service files or the like where the former would then
-act as the loader to link these together in the background (perhaps
-also allowing to specify some sort of a dependency between well-known
-ones). How would an admin ad-hoc insert his xdpdump program in between,
-meaning what tooling do you have in mind here?
-
-And how would daemons update their own installed programs at runtime?
-Right now it's simply atomic update of whatever is currently installed,
-but with chained progs, they would need to send it to whatever central
-daemon is managing all these instead of just calling bpf() and do the
-attaching by themselves, or is the expectation that the application
-would need to iterate its own chain via BPF_PROG_CHAIN_GET and resetup
-everything by itself?
-
-Thanks,
-Daniel
+> +	case BPF_PROG_CHAIN_DEL:
+> +		old_prog = xchg(array + index, NULL);
+> +		if (old_prog) {
+> +			bpf_prog_put(old_prog);
+> +			ret = 0;
+> +		} else {
+> +			ret = -ENOENT;
+> +		}
+> +		break;
+> +	case BPF_PROG_CHAIN_GET:
+> +		old_prog = READ_ONCE(array[index]);
+> +		if (old_prog) {
+> +			prog_id = old_prog->aux->id;
+> +			if (put_user(prog_id, &uattr->next_prog_id))
+> +				ret = -EFAULT;
+> +			else
+> +				ret = 0;
+> +		} else
+> +			ret = -ENOENT;
+> +		break;
+> +	}
+> +
+> +out:
+> +	bpf_prog_put(prog);
+> +	return ret;
+> +}
+> +
+>  #define BPF_OBJ_GET_NEXT_ID_LAST_FIELD next_id
+>  
+>  static int bpf_obj_get_next_id(const union bpf_attr *attr,
+> @@ -2885,6 +2958,11 @@ SYSCALL_DEFINE3(bpf, int, cmd, union bpf_attr __user *, uattr, unsigned int, siz
+>  	case BPF_PROG_TEST_RUN:
+>  		err = bpf_prog_test_run(&attr, uattr);
+>  		break;
+> +	case BPF_PROG_CHAIN_ADD:
+> +	case BPF_PROG_CHAIN_DEL:
+> +	case BPF_PROG_CHAIN_GET:
+> +		err = bpf_prog_chain(cmd, &attr, uattr);
+> +		break;
+>  	case BPF_PROG_GET_NEXT_ID:
+>  		err = bpf_obj_get_next_id(&attr, uattr,
+>  					  &prog_idr, &prog_idr_lock);
+> 
