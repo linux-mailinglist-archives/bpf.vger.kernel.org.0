@@ -2,76 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A1192CDB77
-	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2019 07:35:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E06ACDDB6
+	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2019 10:51:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727158AbfJGFfb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Oct 2019 01:35:31 -0400
-Received: from mail-lf1-f67.google.com ([209.85.167.67]:42666 "EHLO
-        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726984AbfJGFfb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Oct 2019 01:35:31 -0400
-Received: by mail-lf1-f67.google.com with SMTP id c195so8291976lfg.9;
-        Sun, 06 Oct 2019 22:35:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kxN3nY390QDD4avFKTUgHHcPrTARM4ErRwch6jaSXLk=;
-        b=dFsWTvq4KvrTmnT03gqCtoGI2k+2kVVJ6gWBlsFAReNUaHZw9I/BR7BltRlNrZVwlr
-         aX9IUF0QNyeaULrDllGLN3z15TjIt4/AcSjnTiGvWUqKty7LOAIbsEA+TVGIH3Px0mLB
-         Vbn8oolhpNcfR/W8R4j1BVnJR8pjVFSLOvpHi1TtRsxZT5PTjeqixuGJjHWf1wwnPa09
-         MGEvs198beGV947XQasUrR0Ie7gX9c85btH+nbVwR35CgdVNu7pdtNZ8GLmk1f14lzUJ
-         pbsQSu7X6N91PdKY2ZfNqu/Q5YodTCPJy71fYgu/4ULZadu6zLFU4FxxMLwbAtsQx7VO
-         iSFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kxN3nY390QDD4avFKTUgHHcPrTARM4ErRwch6jaSXLk=;
-        b=ViRGM9DoQYynW56YNg72210zithjXsgvY1fIG8qB03RK7eKD0yYyzs8WA47KfyjQbb
-         Z4fqJpHbVSTIk+dkFL/CfMLbWRXUyoKehonQsV16kO0HSyR/rcjlkK3uV8CnJj7ZIVJ6
-         FxT0hBTS/7d1tbBDEDv7sG/S2QTDagIWENg32/K9MaF1ezcHh1G7zrIy0aeo5HQkupih
-         Yp1MmG/MFA1qiA1CmC+OREiP4mruRtrjc7OdfUiNNlGWtTQMvXuoQNsZO2az0eObrE/R
-         JY12ydzJn6NhVmXdbfT6cvxAyYY5kFxh01Sb2iC2NmzXGM8x1TXuqHWg44S3bS4wL+Um
-         iNHg==
-X-Gm-Message-State: APjAAAUFY+uNvpX71JlF9tMnf+HDy89m81CSO+h/n4p8fDHYRgAC3fRJ
-        aT325LoniMUJXHR8bRl8XalXNb6aFb6tC4XR6jI=
-X-Google-Smtp-Source: APXvYqzBuM4f/vcsa70Ied4nXsj0WyqqPlOO25t0tgSB5/Chur75k+r8MBrH3Zn+jp9MfCX6qWt2rokwg0GycN6Or/s=
-X-Received: by 2002:a05:6512:304:: with SMTP id t4mr16233171lfp.15.1570426529409;
- Sun, 06 Oct 2019 22:35:29 -0700 (PDT)
+        id S1727306AbfJGIvQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Oct 2019 04:51:16 -0400
+Received: from ivanoab7.miniserver.com ([37.128.132.42]:33366 "EHLO
+        www.kot-begemot.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727305AbfJGIvQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Oct 2019 04:51:16 -0400
+X-Greylist: delayed 1466 seconds by postgrey-1.27 at vger.kernel.org; Mon, 07 Oct 2019 04:51:15 EDT
+Received: from tun252.jain.kot-begemot.co.uk ([192.168.18.6] helo=jain.kot-begemot.co.uk)
+        by www.kot-begemot.co.uk with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <anton.ivanov@cambridgegreys.com>)
+        id 1iHOLp-0007In-Eo; Mon, 07 Oct 2019 08:26:41 +0000
+Received: from jain.kot-begemot.co.uk ([192.168.3.3])
+        by jain.kot-begemot.co.uk with esmtp (Exim 4.92)
+        (envelope-from <anton.ivanov@cambridgegreys.com>)
+        id 1iHOLm-0003pm-In; Mon, 07 Oct 2019 09:26:40 +0100
+From:   Anton Ivanov <anton.ivanov@cambridgegreys.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, kafai@fb.com, yhs@fb.com,
+        netdev@vger.kernel.org,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Subject: [PATCH] samples: Trivial - fix spelling mistake in usage
+Date:   Mon,  7 Oct 2019 09:26:36 +0100
+Message-Id: <20191007082636.14686-1-anton.ivanov@cambridgegreys.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20191007030738.2627420-1-andriin@fb.com>
-In-Reply-To: <20191007030738.2627420-1-andriin@fb.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Sun, 6 Oct 2019 22:35:17 -0700
-Message-ID: <CAADnVQK=Pc6Z5q7=oF1xdxq3ThX-Ox5mjmVk3DkwqUrXRHZ1Xg@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 0/3] Auto-generate list of BPF helpers
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Quentin Monnet <quentin.monnet@netronome.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Score: -1.0
+X-Spam-Score: -1.0
+X-Clacks-Overhead: GNU Terry Pratchett
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Oct 6, 2019 at 8:08 PM Andrii Nakryiko <andriin@fb.com> wrote:
->
-> This patch set adds ability to auto-generate list of BPF helper definitions.
-> It relies on existing scripts/bpf_helpers_doc.py and include/uapi/linux/bpf.h
-> having a well-defined set of comments. bpf_helper_defs.h contains all BPF
-> helper signatures which stay in sync with latest bpf.h UAPI. This
-> auto-generated header is included from bpf_helpers.h, while all previously
-> hand-written BPF helper definitions are simultaneously removed in patch #3.
-> The end result is less manually maintained and redundant boilerplate code,
-> while also more consistent and well-documented set of BPF helpers. Generated
-> helper definitions are completely independent from a specific bpf.h on
-> a target system, because it doesn't use BPF_FUNC_xxx enums.
+Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+---
+ samples/bpf/xdpsock_user.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Applied. Thanks
+diff --git a/samples/bpf/xdpsock_user.c b/samples/bpf/xdpsock_user.c
+index d08ee1ab7bb4..eb78159376eb 100644
+--- a/samples/bpf/xdpsock_user.c
++++ b/samples/bpf/xdpsock_user.c
+@@ -361,7 +361,7 @@ static void usage(const char *prog)
+ 		"  -q, --queue=n	Use queue n (default 0)\n"
+ 		"  -p, --poll		Use poll syscall\n"
+ 		"  -S, --xdp-skb=n	Use XDP skb-mod\n"
+-		"  -N, --xdp-native=n	Enfore XDP native mode\n"
++		"  -N, --xdp-native=n	Enforce XDP native mode\n"
+ 		"  -n, --interval=n	Specify statistics update interval (default 1 sec).\n"
+ 		"  -z, --zero-copy      Force zero-copy mode.\n"
+ 		"  -c, --copy           Force copy mode.\n"
+-- 
+2.20.1
+
