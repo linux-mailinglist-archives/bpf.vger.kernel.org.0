@@ -2,112 +2,185 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FC3BCEE1D
-	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2019 23:01:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67AF6CEE61
+	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2019 23:22:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728371AbfJGVBW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Oct 2019 17:01:22 -0400
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:46427 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728330AbfJGVBW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Oct 2019 17:01:22 -0400
-Received: by mail-pg1-f195.google.com with SMTP id b8so2595642pgm.13;
-        Mon, 07 Oct 2019 14:01:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=EXSaX+u+4G65h/ERUamc/6bYuc2C0NOXNy4/BXyLVaE=;
-        b=dHCq8pkj6UT4Jd8rB2BeMt514X3eQwyLMPeHI5Dyf+oLczdSeBAsBt200btr8riRlV
-         8dXh5kpWAqy96CQmGunpu9o1ADGbLZrhwWAyml5rsQxZehBxb3Fva5H+JA1YaqQo1WMN
-         RlNt4j2OtWWSTeqXuyC8h48zC58eYDEbuV5+hCh3peBxZT9LTpJdjJmONF6ozTjFl0bE
-         kwSYRZCkkACT7Q/QAXV/7TWyVQvnRS5sh5F3qRimUt8+4hNYslFL0eKrP90msJGFPt+V
-         ANwsJh8LJ6HQBiLlPTcyOzgXY8Fz2kh4HjLqYFdVrUqmmDuYFmPhQSSXOnYvU/a+sSWd
-         W+9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=EXSaX+u+4G65h/ERUamc/6bYuc2C0NOXNy4/BXyLVaE=;
-        b=qJcU/H4CagBgFkWKjhc1CnlRVT6A6jbs3vdz3mJZxHocCoHvAAcR/cfr7LtXWSB16M
-         TzTfzxoSNkpT5LTd2yV1/fj+jTvsqDCefMq3j14H9cWXVql8P0fN7BcomQq+Zm6CH66T
-         anevSue5lVCjPk7SfMCWiAntyViwi2IqIcsvr5ryDL67b7v/T5qhmV/AEOxLGwT7sOOR
-         4+Cby3l0PmSX/zL8qsrpoqchtioNKC/NwtDCqpfpcCiEGSlZdRNwzM3lAqO6TMztQgU4
-         rFDvxKYYFqGsZ+3tVYTKQI0cONW3afLl0m+10ODx5IBKNa8UvjQsw0asLpH/lekP+tR6
-         Icxg==
-X-Gm-Message-State: APjAAAVJd8XUCiIkBuiJ6I2l4WfCo8BtaF0pQwYZ3Bup4iUXd+otsSCr
-        fVb1nuhXontuM8mdrwZVy7U=
-X-Google-Smtp-Source: APXvYqy1x3pPQMjKcSIUGfWOk1AdmkVjZbUgEsD4d1Lzx1g5ypt/LMO8E6BB3fsdfn/vwKYNwYq4AQ==
-X-Received: by 2002:a62:a509:: with SMTP id v9mr33877557pfm.180.1570482081580;
-        Mon, 07 Oct 2019 14:01:21 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:200::2:2257])
-        by smtp.gmail.com with ESMTPSA id q3sm15415482pgj.54.2019.10.07.14.01.19
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 07 Oct 2019 14:01:20 -0700 (PDT)
-Date:   Mon, 7 Oct 2019 14:01:19 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Edward Cree <ecree@solarflare.com>
-Cc:     Lorenz Bauer <lmb@cloudflare.com>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>, Martin Lau <kafai@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        Marek Majkowski <marek@cloudflare.com>,
-        David Miller <davem@davemloft.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>
-Subject: Re: [PATCH bpf-next 0/9] xdp: Support multiple programs on a single
- interface through chain calls
-Message-ID: <20191007210117.6b2mvhkcysmsgfnv@ast-mbp.dhcp.thefacebook.com>
-References: <87r23vq79z.fsf@toke.dk>
- <20191003105335.3cc65226@carbon>
- <CAADnVQKTbaxJhkukxXM7Ue7=kA9eWsGMpnkXc=Z8O3iWGSaO0A@mail.gmail.com>
- <87pnjdq4pi.fsf@toke.dk>
- <1c9b72f9-1b61-d89a-49a4-e0b8eead853d@solarflare.com>
- <5d964d8ccfd90_55732aec43fe05c47b@john-XPS-13-9370.notmuch>
- <87tv8pnd9c.fsf@toke.dk>
- <68466316-c796-7808-6932-01d9d8c0a40b@solarflare.com>
- <CACAyw99oUfst5LDaPZmbKNfQtM2wF8fP0rz7qMk+Qn7SMaF_vw@mail.gmail.com>
- <1871cacb-4a43-f906-9a9b-ba6a2ca866dd@solarflare.com>
+        id S1728992AbfJGVWy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Oct 2019 17:22:54 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:40512 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728702AbfJGVWy (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 7 Oct 2019 17:22:54 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id x97LHfWd029693
+        for <bpf@vger.kernel.org>; Mon, 7 Oct 2019 14:22:52 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=+gwQlWljAS+f0QtmOz2gYz9NEvVPftQQPUADqEQKSF8=;
+ b=hXdSIAzDcwD2N7cyo6cOYPj6DR++wpqOv4GTNTftWE6/MddhNhsk595XhNRZ08TPhNl5
+ m2RVWipm4FaLKFuHaPEtjrL6CeAbJMdnnQoUt4+NfQkRpc0pO7Gr5YXgS3g4sKzWRaOc
+ C7xZgWypc6DbahSkQBq7GzwVMaTu4CGwhrE= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by m0001303.ppops.net with ESMTP id 2vepuntb2r-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 07 Oct 2019 14:22:51 -0700
+Received: from 2401:db00:30:6007:face:0:1:0 (2620:10d:c081:10::13) by
+ mail.thefacebook.com (2620:10d:c081:35::130) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
+ Mon, 7 Oct 2019 14:22:50 -0700
+Received: by dev101.prn2.facebook.com (Postfix, from userid 137359)
+        id 6B0408618A5; Mon,  7 Oct 2019 14:22:48 -0700 (PDT)
+Smtp-Origin-Hostprefix: dev
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: dev101.prn2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>, <sdf@google.com>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: prn2c23
+Subject: [PATCH bpf-next] bpftool: fix bpftool build by switching to bpf_object__open_file()
+Date:   Mon, 7 Oct 2019 14:22:37 -0700
+Message-ID: <20191007212237.1704211-1-andriin@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1871cacb-4a43-f906-9a9b-ba6a2ca866dd@solarflare.com>
-User-Agent: NeoMutt/20180223
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
+ definitions=2019-10-07_03:2019-10-07,2019-10-07 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0 clxscore=1015
+ priorityscore=1501 mlxscore=0 malwarescore=0 phishscore=0 bulkscore=0
+ lowpriorityscore=0 impostorscore=0 suspectscore=25 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1908290000 definitions=main-1910070189
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Oct 07, 2019 at 05:43:44PM +0100, Edward Cree wrote:
-> 
-> (Although I also think full-blown dynamically-linked calls ought not to be
->  impossible, *if* we restrict them to taking a ctx and returning a u64, in
->  which case the callee can be verified as though it were a normal program,
->  and the caller's verifier just treats the program as returning an unknown
->  scalar.  The devil is in the details, though, and it seems no-one's quite
->  wanted it enough to do the work required to make it happen.)
+As part of libbpf in 5e61f2707029 ("libbpf: stop enforcing kern_version,
+populate it for users") non-LIBBPF_API __bpf_object__open_xattr() API
+was removed from libbpf.h header. This broke bpftool, which relied on
+that function. This patch fixes the build by switching to newly added
+bpf_object__open_file() which provides the same capabilities, but is
+official and future-proof API.
 
-Absolutely.
-Full dynamic linking and libraries is on todo list.
-It's taking long time, since it needs to be powerful and generic from the day one.
-If we do 'pass ctx only and return u64' as a stop gap, it will be just as limited
-as existing bpf_tail_calls.
-bpf_tail_call api was badly designed.
-I couldn't figure out how to make tail calls safe and generic, so I came up
-with this bpf_tail_call hack. bpf usability suffers.
-The verifier is different now. It's powerful enough to do true calls and jumps.
-Especially with BTF it can see and track all types.
-True tail calls will be seen as indirect jump assembler insn.
-True indirect calls will be seen as indirect call assembler insn.
-The choice of opcode encoding is clear.
-The verifier, interpreter, and JIT work left.
-It won't take long.
+Fixes: 5e61f2707029 ("libbpf: stop enforcing kern_version, populate it for users")
+Reported-by: Stanislav Fomichev <sdf@google.com>
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+---
+ tools/bpf/bpftool/main.c |  4 ++--
+ tools/bpf/bpftool/main.h |  2 +-
+ tools/bpf/bpftool/prog.c | 22 ++++++++++++----------
+ 3 files changed, 15 insertions(+), 13 deletions(-)
+
+diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
+index 93d008687020..4764581ff9ea 100644
+--- a/tools/bpf/bpftool/main.c
++++ b/tools/bpf/bpftool/main.c
+@@ -27,7 +27,7 @@ bool json_output;
+ bool show_pinned;
+ bool block_mount;
+ bool verifier_logs;
+-int bpf_flags;
++bool relaxed_maps;
+ struct pinned_obj_table prog_table;
+ struct pinned_obj_table map_table;
+ 
+@@ -396,7 +396,7 @@ int main(int argc, char **argv)
+ 			show_pinned = true;
+ 			break;
+ 		case 'm':
+-			bpf_flags = MAPS_RELAX_COMPAT;
++			relaxed_maps = true;
+ 			break;
+ 		case 'n':
+ 			block_mount = true;
+diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
+index af9ad56c303a..2899095f8254 100644
+--- a/tools/bpf/bpftool/main.h
++++ b/tools/bpf/bpftool/main.h
+@@ -94,7 +94,7 @@ extern bool json_output;
+ extern bool show_pinned;
+ extern bool block_mount;
+ extern bool verifier_logs;
+-extern int bpf_flags;
++extern bool relaxed_maps;
+ extern struct pinned_obj_table prog_table;
+ extern struct pinned_obj_table map_table;
+ 
+diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+index 43fdbbfe41bb..8191cd595963 100644
+--- a/tools/bpf/bpftool/prog.c
++++ b/tools/bpf/bpftool/prog.c
+@@ -1092,9 +1092,7 @@ static int do_run(int argc, char **argv)
+ static int load_with_options(int argc, char **argv, bool first_prog_only)
+ {
+ 	struct bpf_object_load_attr load_attr = { 0 };
+-	struct bpf_object_open_attr open_attr = {
+-		.prog_type = BPF_PROG_TYPE_UNSPEC,
+-	};
++	enum bpf_prog_type prog_type = BPF_PROG_TYPE_UNSPEC;
+ 	enum bpf_attach_type expected_attach_type;
+ 	struct map_replace *map_replace = NULL;
+ 	struct bpf_program *prog = NULL, *pos;
+@@ -1105,11 +1103,16 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
+ 	const char *pinfile;
+ 	unsigned int i, j;
+ 	__u32 ifindex = 0;
++	const char *file;
+ 	int idx, err;
+ 
++	LIBBPF_OPTS(bpf_object_open_opts, open_opts,
++		.relaxed_maps = relaxed_maps,
++	);
++
+ 	if (!REQ_ARGS(2))
+ 		return -1;
+-	open_attr.file = GET_ARG();
++	file = GET_ARG();
+ 	pinfile = GET_ARG();
+ 
+ 	while (argc) {
+@@ -1118,7 +1121,7 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
+ 
+ 			NEXT_ARG();
+ 
+-			if (open_attr.prog_type != BPF_PROG_TYPE_UNSPEC) {
++			if (prog_type != BPF_PROG_TYPE_UNSPEC) {
+ 				p_err("program type already specified");
+ 				goto err_free_reuse_maps;
+ 			}
+@@ -1135,8 +1138,7 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
+ 			strcat(type, *argv);
+ 			strcat(type, "/");
+ 
+-			err = libbpf_prog_type_by_name(type,
+-						       &open_attr.prog_type,
++			err = libbpf_prog_type_by_name(type, &prog_type,
+ 						       &expected_attach_type);
+ 			free(type);
+ 			if (err < 0)
+@@ -1224,16 +1226,16 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
+ 
+ 	set_max_rlimit();
+ 
+-	obj = __bpf_object__open_xattr(&open_attr, bpf_flags);
++	obj = bpf_object__open_file(file, &open_opts);
+ 	if (IS_ERR_OR_NULL(obj)) {
+ 		p_err("failed to open object file");
+ 		goto err_free_reuse_maps;
+ 	}
+ 
+ 	bpf_object__for_each_program(pos, obj) {
+-		enum bpf_prog_type prog_type = open_attr.prog_type;
++		enum bpf_prog_type prog_type = prog_type;
+ 
+-		if (open_attr.prog_type == BPF_PROG_TYPE_UNSPEC) {
++		if (prog_type == BPF_PROG_TYPE_UNSPEC) {
+ 			const char *sec_name = bpf_program__title(pos, false);
+ 
+ 			err = libbpf_prog_type_by_name(sec_name, &prog_type,
+-- 
+2.17.1
 
