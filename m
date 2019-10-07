@@ -2,58 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 80768CEF56
-	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2019 01:01:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86263CEFB1
+	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2019 01:42:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729570AbfJGXBD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Oct 2019 19:01:03 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:35598 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729440AbfJGXBD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Oct 2019 19:01:03 -0400
-Received: by mail-qk1-f193.google.com with SMTP id w2so14449296qkf.2;
-        Mon, 07 Oct 2019 16:01:01 -0700 (PDT)
+        id S1729504AbfJGXmN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Oct 2019 19:42:13 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:46259 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729252AbfJGXmN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Oct 2019 19:42:13 -0400
+Received: by mail-qk1-f195.google.com with SMTP id 201so14496911qkd.13;
+        Mon, 07 Oct 2019 16:42:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=xTjqa5qn/Atk0L8cd3no/IgH0dWjaMBMqyCTniSMesY=;
-        b=kCoeQHUfUXBiU/Uung7W4E5ddCLcsU2A/hqEt4UM6/4Hqy7e7THIPJNXLvp3YeRGwI
-         SIH3f+pRanRbyJYmnVJ5Rx09PnMzkXjEvuqfizYNfavApV0EyV/35+gp61gQojCTyptN
-         adKiDzZ611w202Lzs9aHhEr5VoTamXmvPNWgm/ABrbCEdDBVrbDTP5pGrkaEWZuf6mB2
-         4hXmhMClvrB0kVQyRGfRxXOuIH6qTuTqwL4jYjRA/1nptc+3f7jpQnGz/upTBrbDxFfe
-         6TcM+LfaXD40/A1Z9K6DubESbtA6+LLlyA2cvJfux0duFVETIM1A/Sxwe7LhGxvQrjcY
-         UGtA==
+        bh=gPbndkUp+VpEuDvaOx3NjaF7XhZ9kzYhvl1uUbDKnFg=;
+        b=UFjbQaxMjYjuxhh75EygCiuMG1KHr2/yKHN/oAh56N06VUfQNgGA4q7/eISs7lWB0c
+         v/1FZYmpqFXF79wCZGtv3iKEVrcj0Uan1AltYqaCGzb0KY97lOgLe3cJS95UvEaZ+aoS
+         A4XM0sCcf0ipAYHGFRAwbWDpLtnVbX/Uqke4FZifGa+R6GPLbBqH4RCpTqUBE7FRkEK9
+         9JhGdxZH223C7/HXlI1g6xtJ6Li0RwNP7rc1ab1+CK3y9JYmFOGCtslw2sRdq4hssMYV
+         ffkadZpd4ap+T0rNyqbn1jozwnPJtI99REcU38V8zZeah/25ME50N0GF4XpC59YiamuY
+         N44g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=xTjqa5qn/Atk0L8cd3no/IgH0dWjaMBMqyCTniSMesY=;
-        b=h760IHnYqXtj5umMCS8DuW1vLeFBDxTdK1zmnGxeuyLTLllDKIHKWRPo5No2XcTea9
-         DFl0OCosZKnF/l9K2RqmXxoSIvNPXgX0ZhBAli8xrEYhlDK2JZIqsBS2y7SBJN1k9YKz
-         zoWtJhhN9VCzYrchQ9omJjQ5ntktzVLubBB39C8oqUCFYJwuJDuG34vtg3Uvbuu29Bum
-         feAM4tuJDVrmbJoYyKD9NY743/leaJ5GnFh6Eia7r8D7qc5joKpJ2QeIuFcyUcK8eAmp
-         pl6XKmjmpUHu3SCOz/4lQFtNUqTdZFzvyswkqGLfmS0OQfun/icZBj5DPlxUoejofZft
-         I1sA==
-X-Gm-Message-State: APjAAAVCVDg5vPl5Ev3dRCwBw+mg4qlIV6TdyvDI0DXn5wW7W4j2yxlG
-        fbHlSiHmeaVvzejv9adfSu/qKmdej5eUui1sS4I=
-X-Google-Smtp-Source: APXvYqyb4hGra7pKCWcM590s2dTWwkXzN5V+gp1jzP+aXurHF2YycVQzLHrTNHFf6jQi57jVs8NFA0QD/SjDkeR4ihw=
-X-Received: by 2002:ae9:eb93:: with SMTP id b141mr26807911qkg.36.1570489260765;
- Mon, 07 Oct 2019 16:01:00 -0700 (PDT)
+        bh=gPbndkUp+VpEuDvaOx3NjaF7XhZ9kzYhvl1uUbDKnFg=;
+        b=HYqeIOp5DUhWS9o2jLEXd9JOCwOb9WGZ5kS929BLtWZnC73JZ6fRP7LsUGY4BX6pKB
+         gDT50VXuRlOsut1aXUkKbTtUzP4z6dlOpnseoO5ChHWoNNqt93E/5AtfIdsAFGWq8Se0
+         jeXB6532xvO8dKv80t223KitRrTM4uZrjQYjnIlOoHu96BnMpPspgq3GBUH1750IRjG1
+         n90zR2LLbvCLMCaSU32YvEj0ZkuGspzMsCNzW+gCUbKvOJIceSW1bs49GohleuYhT84N
+         iQXH/VotLCH/KIXfxRv8yqcwin5jokpkFu2QFbBacjOrJoDWwwxh4sbcuRSU+OpbIlOz
+         IULw==
+X-Gm-Message-State: APjAAAUWxk4M09HFH1NSzqnMLhatYPLL9nRulVlUe8jgJnrnNcWDhHFe
+        lKxSc8XB4tSyVOXHABKzkz+yd3QhniSc6FBgl+s=
+X-Google-Smtp-Source: APXvYqxM3n2Ood9D+ySjKrrPHvtWkzqJpw3ZliYVAD6Yr9y5jJUP3bc+HGSrTYeOw80vPRdel3p9HTKvTwj4xac059E=
+X-Received: by 2002:a05:620a:119a:: with SMTP id b26mr26044257qkk.39.1570491731089;
+ Mon, 07 Oct 2019 16:42:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20191007212237.1704211-1-andriin@fb.com> <20191007214650.GC2096@mini-arch>
- <CAEf4Bzba7S=hUkxTvL3Y+QYxAxZ-am5w-mzk8Aks7csx-g0FPA@mail.gmail.com>
-In-Reply-To: <CAEf4Bzba7S=hUkxTvL3Y+QYxAxZ-am5w-mzk8Aks7csx-g0FPA@mail.gmail.com>
+References: <20191005050314.1114330-1-ast@kernel.org> <20191005050314.1114330-5-ast@kernel.org>
+In-Reply-To: <20191005050314.1114330-5-ast@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 7 Oct 2019 16:00:49 -0700
-Message-ID: <CAEf4BzYh4pN3FPYHRMRwAUFEK0E+wXqLSqjZE3FZEmyhzCwuig@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpftool: fix bpftool build by switching to bpf_object__open_file()
-To:     Stanislav Fomichev <sdf@fomichev.me>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Stanislav Fomichev <sdf@google.com>,
+Date:   Mon, 7 Oct 2019 16:41:59 -0700
+Message-ID: <CAEf4BzZxHyBoX9stW7uapZ06xd26N_zZcghytkQAUM1ss5sN6A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 04/10] libbpf: auto-detect btf_id of raw_tracepoint
+To:     Alexei Starovoitov <ast@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>, x86@kernel.org,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
@@ -61,94 +58,58 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
--- Andrii
-
-On Mon, Oct 7, 2019 at 2:50 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Fri, Oct 4, 2019 at 10:04 PM Alexei Starovoitov <ast@kernel.org> wrote:
 >
-> On Mon, Oct 7, 2019 at 2:46 PM Stanislav Fomichev <sdf@fomichev.me> wrote:
-> >
-> > On 10/07, Andrii Nakryiko wrote:
-> > > As part of libbpf in 5e61f2707029 ("libbpf: stop enforcing kern_version,
-> > > populate it for users") non-LIBBPF_API __bpf_object__open_xattr() API
-> > > was removed from libbpf.h header. This broke bpftool, which relied on
-> > > that function. This patch fixes the build by switching to newly added
-> > > bpf_object__open_file() which provides the same capabilities, but is
-> > > official and future-proof API.
-> > >
-> > > Fixes: 5e61f2707029 ("libbpf: stop enforcing kern_version, populate it for users")
-> > > Reported-by: Stanislav Fomichev <sdf@google.com>
-> > > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> > > ---
-> > >  tools/bpf/bpftool/main.c |  4 ++--
-> > >  tools/bpf/bpftool/main.h |  2 +-
-> > >  tools/bpf/bpftool/prog.c | 22 ++++++++++++----------
-> > >  3 files changed, 15 insertions(+), 13 deletions(-)
-> > >
+> For raw tracepoint program types libbpf will try to find
+> btf_id of raw tracepoint in vmlinux's BTF.
+> It's a responsiblity of bpf program author to annotate the program
+> with SEC("raw_tracepoint/name") where "name" is a valid raw tracepoint.
 
-[...]
+As an aside, I've been thinking about allowing to specify "raw_tp/"
+and "tp/" in section name as an "alias" for "raw_tracepoint/" and
+"tracepoint/", respectively. Any objections?
 
-> > > --- a/tools/bpf/bpftool/prog.c
-> > > +++ b/tools/bpf/bpftool/prog.c
-> > > @@ -1092,9 +1092,7 @@ static int do_run(int argc, char **argv)
-> > >  static int load_with_options(int argc, char **argv, bool first_prog_only)
-> > >  {
-> > >       struct bpf_object_load_attr load_attr = { 0 };
-> > > -     struct bpf_object_open_attr open_attr = {
-> > > -             .prog_type = BPF_PROG_TYPE_UNSPEC,
-> > > -     };
-> > > +     enum bpf_prog_type prog_type = BPF_PROG_TYPE_UNSPEC;
-> > >       enum bpf_attach_type expected_attach_type;
-> > >       struct map_replace *map_replace = NULL;
-
-[...]
-
-> > >
-> > >       bpf_object__for_each_program(pos, obj) {
-> > > -             enum bpf_prog_type prog_type = open_attr.prog_type;
-> > > +             enum bpf_prog_type prog_type = prog_type;
-> > Are you sure it works that way?
+> If "name" is indeed a valid raw tracepoint then in-kernel BTF
+> will have "btf_trace_##name" typedef that points to function
+> prototype of that raw tracepoint. BTF description captures
+> exact argument the kernel C code is passing into raw tracepoint.
+> The kernel verifier will check the types while loading bpf program.
 >
-> Oh, I did this pretty mechanically, didn't notice I'm shadowing. In
-> either case I'd like to avoid shadowing, so I'll rename one of them,
-> good catch!
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> ---
+>  tools/lib/bpf/libbpf.c | 16 ++++++++++++++++
+>  1 file changed, 16 insertions(+)
 >
-> >
-> > $ cat tmp.c
-> > #include <stdio.h>
-> >
-> > int main()
-> > {
-> >         int x = 1;
-> >         printf("outer x=%d\n", x);
-> >
-> >         {
-> >                 int x = x;
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index e0276520171b..0e6f7b41c521 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -4591,6 +4591,22 @@ int libbpf_prog_type_by_name(const char *name, enum bpf_prog_type *prog_type,
+>                         continue;
+>                 *prog_type = section_names[i].prog_type;
+>                 *expected_attach_type = section_names[i].expected_attach_type;
+> +               if (*prog_type == BPF_PROG_TYPE_RAW_TRACEPOINT) {
+> +                       struct btf *btf = bpf_core_find_kernel_btf();
+> +                       char raw_tp_btf_name[128] = "btf_trace_";
+> +                       int ret;
+> +
+> +                       if (IS_ERR(btf))
+> +                               /* lack of kernel BTF is not a failure */
+> +                               return 0;
+> +                       /* append "btf_trace_" prefix per kernel convention */
+> +                       strcpy(raw_tp_btf_name + sizeof("btf_trace_") - 1,
+> +                              name + section_names[i].len);
 
-It's amazing `int x = x;` is compiled successfully when there is no x
-in outer scope. And it's also amazing that it's doing the wrong thing
-when there is a shadowed variable in outer scope. I can't imagine the
-case where this will be a meaningful behavior...
+buffer overflow here? use strncat() instead?
 
-> >                 printf("inner x=%d\n", x);
-> >         }
-> >
-> >         return 0;
-> > }
-> >
-> > $ gcc tmp.c && ./a.out
-> > outer x=1
-> > inner x=0
-> >
-> > Other than that:
-> > Reviewed-by: Stanislav Fomichev <sdf@google.com>
-> >
-> > >
-> > > -             if (open_attr.prog_type == BPF_PROG_TYPE_UNSPEC) {
-> > > +             if (prog_type == BPF_PROG_TYPE_UNSPEC) {
-> > >                       const char *sec_name = bpf_program__title(pos, false);
-> > >
-> > >                       err = libbpf_prog_type_by_name(sec_name, &prog_type,
-> > > --
-> > > 2.17.1
-> > >
+> +                       ret = btf__find_by_name(btf, raw_tp_btf_name);
+> +                       if (ret > 0)
+> +                               *expected_attach_type = ret;
+> +                       btf__free(btf);
+> +               }
+>                 return 0;
+>         }
+>         pr_warning("failed to guess program type based on ELF section name '%s'\n", name);
+> --
+> 2.20.0
+>
