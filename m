@@ -2,49 +2,49 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 30CECCEA75
-	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2019 19:20:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED2C6CEA79
+	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2019 19:20:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728528AbfJGRUn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Oct 2019 13:20:43 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:49284 "EHLO mx1.redhat.com"
+        id S1729034AbfJGRUp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Oct 2019 13:20:45 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:25693 "EHLO mx1.redhat.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728897AbfJGRUm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Oct 2019 13:20:42 -0400
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com [209.85.208.199])
+        id S1728941AbfJGRUo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Oct 2019 13:20:44 -0400
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com [209.85.208.198])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 2D12FC08C320
-        for <bpf@vger.kernel.org>; Mon,  7 Oct 2019 17:20:42 +0000 (UTC)
-Received: by mail-lj1-f199.google.com with SMTP id j10so3709676lja.21
-        for <bpf@vger.kernel.org>; Mon, 07 Oct 2019 10:20:42 -0700 (PDT)
+        by mx1.redhat.com (Postfix) with ESMTPS id 630928E3C5
+        for <bpf@vger.kernel.org>; Mon,  7 Oct 2019 17:20:43 +0000 (UTC)
+Received: by mail-lj1-f198.google.com with SMTP id j6so3726009ljb.19
+        for <bpf@vger.kernel.org>; Mon, 07 Oct 2019 10:20:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:from:to:cc:date:message-id:in-reply-to
          :references:user-agent:mime-version:content-transfer-encoding;
-        bh=WmLV2gFYsf8IxZJGPNJMAzm3JcKmbZ5Ig72cy5rVt5w=;
-        b=bL65fZRh0uCI/pBbI0hX/YGUgVN8NagSJpKvygduK99TJsn63psqqXmKfPZSTc5FPq
-         LhSPVd8vLmng3/sEuZU287pw8mzKNlQJknMSPnDARgMNlvnFKZo8wDNqLVddDRakmYLy
-         zJEDlK+UX4cPUdDDLmVFlJ8CBz0vRv6Oqe/xRiO9BfXKWM2nJeI2kdKHr8gvQttKaswI
-         ceDAQgt29gW7OmsLK1kCa1guY6mKdMCl+9cB2HAa/6nBIpg83m4xRV66usHyFFwFZfTK
-         dpnNSKuFIqi1wVZQrqsBPKpJVvXKw8eMiRWrnweXFTdxfzRjhV9X7huV7RwZ8ZrcJ7tm
-         iGMA==
-X-Gm-Message-State: APjAAAXYKLHS4k5IqvO/5ECil0lo9yZENMIvGcgwPdt/XRoai4rJK7rJ
-        IWqLDil4RgEtYNa2/0IealbwELtNHgj8mn+fIrC3TlWPbmO0JbETo/E0ZSnUUsF5G2N5RbyDqtA
-        yPlcjzXpaYWYX
-X-Received: by 2002:ac2:5586:: with SMTP id v6mr17178761lfg.180.1570468840440;
-        Mon, 07 Oct 2019 10:20:40 -0700 (PDT)
-X-Google-Smtp-Source: APXvYqw0nUrGWGR43gYif8JagE5Xd0KXKJ/h62uK47CQTRsq5Q9C1Zge1RFCjXSMZ7xhgl4s8LN5Rg==
-X-Received: by 2002:ac2:5586:: with SMTP id v6mr17178745lfg.180.1570468840264;
-        Mon, 07 Oct 2019 10:20:40 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk (borgediget.toke.dk. [85.204.121.218])
-        by smtp.gmail.com with ESMTPSA id h3sm3342879ljf.12.2019.10.07.10.20.38
+        bh=tTxe0YBCAHRDq7AE78oRk+k8RYg6kbZEgrUi0UlHpcg=;
+        b=KbZtDMq8bLeOn7Brj02a94Z73BpJxyVabrzLUZ6RbzKPWYGbxlexdPPWULiOdx1uQH
+         vWi35zdjndnJ17A61kPLKmyVWDSPMD9jKFvJ1g7DrRPn6Rh6ie3CZrkzAF3KY6/JmqjY
+         czE05Vd8MgkqWv8WUuRs+mtkXqMq7iPrpxTw613/qyjivc9s0JZMyY+QUU0tkN7KE9me
+         yII164xZl1ofkCE25GVbwfKUwIA4lDkxXN9H0hVn4Ccvq1eKTXRgItbvo/xbobZv3ylj
+         6zPZBC5btrqwXPjvH1e1dRUsn6lvbyc2FTb31xz16EGqIJoRF4//eWvyMc8GkHyI4esL
+         O1LQ==
+X-Gm-Message-State: APjAAAVO71y7/tGDUMrdt3t5QbSruzmVu6lzR3sUa7LlPtKvdkFvXOM2
+        dLuNi6NChLaeOHQ0I7mDB3HuSoxT6aqBUzztYRsSb34+U5ySDlP9+oMZvgmqdqKhHDcFhzALQLm
+        BP61Ukzu64LGw
+X-Received: by 2002:a2e:8789:: with SMTP id n9mr19282000lji.52.1570468841937;
+        Mon, 07 Oct 2019 10:20:41 -0700 (PDT)
+X-Google-Smtp-Source: APXvYqw4yuFLqw3buhtiSBBMrP4Eyd5VAt0ZbYU30A4FGLEUEgBxjAQKO7QI9S6+wmyEdzGHQNySGQ==
+X-Received: by 2002:a2e:8789:: with SMTP id n9mr19281987lji.52.1570468841795;
+        Mon, 07 Oct 2019 10:20:41 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a00:7660:6da:443::2])
+        by smtp.gmail.com with ESMTPSA id 6sm2853116lfa.24.2019.10.07.10.20.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Oct 2019 10:20:39 -0700 (PDT)
+        Mon, 07 Oct 2019 10:20:40 -0700 (PDT)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 62F94180640; Mon,  7 Oct 2019 19:20:38 +0200 (CEST)
-Subject: [PATCH bpf-next v3 3/5] tools: Update bpf.h header for program chain
- calls
+        id 7761D180641; Mon,  7 Oct 2019 19:20:39 +0200 (CEST)
+Subject: [PATCH bpf-next v3 4/5] libbpf: Add syscall wrappers for
+ BPF_PROG_CHAIN_* commands
 From:   =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
 To:     Daniel Borkmann <daniel@iogearbox.net>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
@@ -56,8 +56,8 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
         David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Date:   Mon, 07 Oct 2019 19:20:38 +0200
-Message-ID: <157046883832.2092443.8264002991767644164.stgit@alrua-x1>
+Date:   Mon, 07 Oct 2019 19:20:39 +0200
+Message-ID: <157046883940.2092443.14475136847242640757.stgit@alrua-x1>
 In-Reply-To: <157046883502.2092443.146052429591277809.stgit@alrua-x1>
 References: <157046883502.2092443.146052429591277809.stgit@alrua-x1>
 User-Agent: StGit/0.19-dirty
@@ -71,53 +71,83 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Toke Høiland-Jørgensen <toke@redhat.com>
 
-This updates the bpf.h UAPI header in tools/ to add the bpf chain
-call-related definitions.
+This adds simple syscall wrappers for the new BPF_PROG_CHAIN_* commands to
+libbpf.
 
 Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
 ---
- tools/include/uapi/linux/bpf.h |   16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ tools/lib/bpf/bpf.c      |   34 ++++++++++++++++++++++++++++++++++
+ tools/lib/bpf/bpf.h      |    4 ++++
+ tools/lib/bpf/libbpf.map |    3 +++
+ 3 files changed, 41 insertions(+)
 
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 77c6be96d676..b03c23963af8 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -107,6 +107,9 @@ enum bpf_cmd {
- 	BPF_MAP_LOOKUP_AND_DELETE_ELEM,
- 	BPF_MAP_FREEZE,
- 	BPF_BTF_GET_NEXT_ID,
-+	BPF_PROG_CHAIN_ADD,
-+	BPF_PROG_CHAIN_DEL,
-+	BPF_PROG_CHAIN_GET,
- };
+diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+index cbb933532981..23246fa169e7 100644
+--- a/tools/lib/bpf/bpf.c
++++ b/tools/lib/bpf/bpf.c
+@@ -703,3 +703,37 @@ int bpf_task_fd_query(int pid, int fd, __u32 flags, char *buf, __u32 *buf_len,
  
- enum bpf_map_type {
-@@ -288,6 +291,12 @@ enum bpf_attach_type {
- /* The verifier internal test flag. Behavior is undefined */
- #define BPF_F_TEST_STATE_FREQ	(1U << 3)
- 
-+/* Whether to enable chain call logic at program execution. If set, the program
-+ * execution logic will check for and jump to chain call programs configured
-+ * with the BPF_PROG_CHAIN_* commands to the bpf syscall.
-+ */
-+#define BPF_F_CHAIN_CALLS	(1U << 4)
+ 	return err;
+ }
 +
- /* When BPF ldimm64's insn[0].src_reg != 0 then this can have
-  * two extensions:
-  *
-@@ -510,6 +519,13 @@ union bpf_attr {
- 		__u64		probe_offset;	/* output: probe_offset */
- 		__u64		probe_addr;	/* output: probe_addr */
- 	} task_fd_query;
++int bpf_prog_chain_add(int prev_prog_fd, __u32 retcode, int next_prog_fd) {
++	union bpf_attr attr = {};
 +
-+	struct { /* anonymous struct used by BPF_PROG_CHAIN_* commands */
-+		__u32		prev_prog_fd;
-+		__u32		next_prog_fd;
-+		__u32		retcode;
-+		__u32		next_prog_id;   /* output: prog_id */
-+	};
- } __attribute__((aligned(8)));
++	attr.prev_prog_fd = prev_prog_fd;
++	attr.next_prog_fd = next_prog_fd;
++	attr.retcode = retcode;
++
++	return sys_bpf(BPF_PROG_CHAIN_ADD, &attr, sizeof(attr));
++}
++
++int bpf_prog_chain_del(int prev_prog_fd, __u32 retcode) {
++	union bpf_attr attr = {};
++
++	attr.prev_prog_fd = prev_prog_fd;
++	attr.retcode = retcode;
++
++	return sys_bpf(BPF_PROG_CHAIN_DEL, &attr, sizeof(attr));
++}
++
++int bpf_prog_chain_get(int prev_prog_fd, __u32 retcode, __u32 *prog_id) {
++	union bpf_attr attr = {};
++	int err;
++
++	attr.prev_prog_fd = prev_prog_fd;
++	attr.retcode = retcode;
++
++	err = sys_bpf(BPF_PROG_CHAIN_GET, &attr, sizeof(attr));
++
++	if (!err)
++		*prog_id = attr.next_prog_id;
++
++	return err;
++}
+diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
+index 0db01334740f..0300cb8c8bed 100644
+--- a/tools/lib/bpf/bpf.h
++++ b/tools/lib/bpf/bpf.h
+@@ -171,6 +171,10 @@ LIBBPF_API int bpf_task_fd_query(int pid, int fd, __u32 flags, char *buf,
+ 				 __u32 *buf_len, __u32 *prog_id, __u32 *fd_type,
+ 				 __u64 *probe_offset, __u64 *probe_addr);
  
- /* The description below is an attempt at providing documentation to eBPF
++LIBBPF_API int bpf_prog_chain_add(int prev_prog_fd, __u32 retcode, int next_prog_fd);
++LIBBPF_API int bpf_prog_chain_del(int prev_prog_fd, __u32 retcode);
++LIBBPF_API int bpf_prog_chain_get(int prev_prog_fd, __u32 retcode, __u32 *prog_id);
++
+ #ifdef __cplusplus
+ } /* extern "C" */
+ #endif
+diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+index 8d10ca03d78d..9c483c554054 100644
+--- a/tools/lib/bpf/libbpf.map
++++ b/tools/lib/bpf/libbpf.map
+@@ -192,4 +192,7 @@ LIBBPF_0.0.5 {
+ } LIBBPF_0.0.4;
+ 
+ LIBBPF_0.0.6 {
++		bpf_prog_chain_add;
++		bpf_prog_chain_del;
++		bpf_prog_chain_get;
+ } LIBBPF_0.0.5;
 
