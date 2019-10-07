@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 84564CEDCD
-	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2019 22:42:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76591CEDD9
+	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2019 22:45:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729178AbfJGUmk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Oct 2019 16:42:40 -0400
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:40989 "EHLO
+        id S1728465AbfJGUpj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Oct 2019 16:45:39 -0400
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:40324 "EHLO
         mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728325AbfJGUmj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Oct 2019 16:42:39 -0400
-Received: by mail-pg1-f194.google.com with SMTP id t3so3084872pga.8;
-        Mon, 07 Oct 2019 13:42:39 -0700 (PDT)
+        with ESMTP id S1728273AbfJGUpj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Oct 2019 16:45:39 -0400
+Received: by mail-pg1-f194.google.com with SMTP id d26so8922323pgl.7;
+        Mon, 07 Oct 2019 13:45:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:content-transfer-encoding:in-reply-to
          :user-agent;
-        bh=IERIuhXLgndId6gV/E/baoUdLC+H/aoGlssXaZgnKos=;
-        b=iTAH3XL2C2aj+fFlEBXvAzP5lAAlLrIKdYLCTSFNYmQ1NAvjDRORgFaita4BgfJMf/
-         E7MBAjDrRzJ3iqSGuNr1hLuKrJk825fuT3pYZFrSOxJlm8Ygw+sQTRigktt5ULK8qVp6
-         cZGeDMFKcbl9smyLogG7ygAiYSmsloOvNdwxjphz6bQ3WJGC1WFvk8UFNERBUD09BMlN
-         5d6rgETiHcnIDMC0nAfBXyIl2aeHi7xLoa6aKxC8s21BGoB8dAfP84QDHc6FpdLh/qYj
-         eWa5Glijqdi12MxSYsfkNEUc51Zr8uXPbAmwH4ue1UEmfviGlvBfS1FEOmM7Shc+7qwd
-         yu/w==
+        bh=zLF7FBI1yC1AB3/YFO8eHFBENCgJ+U2JL9HlkV8ynIY=;
+        b=SD+TbgfBEC9pXOSq6yqEI0GukwfzUE+/HllpJ4jdoge+72vYYX4F3vHJeq6dQXk86I
+         a68UpO/B8tTCRCJPWCfmOy1s9TFOPXYV+kbQP7sS/P0ut7bivdI2dhqJOfUxiMhxc6+3
+         E1wbHGlYCygcf10LEk3ElEbWIUQMrW1uZpQ96+9yRoYWgtfR/i7Ljz7njX0nmOxO04uO
+         HAdcWCHv7wUrOm7bSZThTdgKxvTGUFjaTtveabvkSSQIy8kIvyp+VSvzV4jGWsdlY9lG
+         FfbGdqiPGQmDSPts3SQsPNDO7l28HpTAXyFfYn+/h4aWrrTotCOWf5iqBzIz489tfwap
+         9KtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to:user-agent;
-        bh=IERIuhXLgndId6gV/E/baoUdLC+H/aoGlssXaZgnKos=;
-        b=YF9DDEg2fFtZDPbiohZ+yue+Y5+xf0g4PXvi35UV0/SLMKgl+hbmRM23/DFoYJWysF
-         U2CRdRpICIip+MgUJjwS39I0F2zovRwr9a5I1aaLu2XRebF/hQYNwyUZkYm6GmCRBRLI
-         qwhoZggnko1yIx8Xe06G6bG4kRSfWOiy0vBbR8GdzaTotrTvMWgMZ9yTyb86hMnb+8uM
-         4/VEKzVPcwGfYdLI7A2ZL6yi4iJkSUX9z/NZPaLXPPGGdhJ4Subo/SdnNbD7JPpDbK9j
-         9zDRoabu3oTgHFoDVGSWWMgU95dQ0n53+bfO9PBPM6pCBqf4KeRIo8suxepHztn4SGxX
-         2fCg==
-X-Gm-Message-State: APjAAAUehS2jVR5OWNTtmKDk8fHEhaywsIhpxgjYd9JCQcgAN4eq7bxo
-        kUnLAS69tieIX7PfPYlb67Q=
-X-Google-Smtp-Source: APXvYqw90Zo15hw6cBzhBe4clBtJLhcwh+y23PKXoTmLPkzrRUgr30w4kJAwb5gJChAoW7oZwyK+mQ==
-X-Received: by 2002:a65:6095:: with SMTP id t21mr23280569pgu.197.1570480958529;
-        Mon, 07 Oct 2019 13:42:38 -0700 (PDT)
+        bh=zLF7FBI1yC1AB3/YFO8eHFBENCgJ+U2JL9HlkV8ynIY=;
+        b=jMR4WTrFhkYcc5mr1zawH4E4LO59/Et8/ze72z3fJ0L3Vs4sRlo8+SIdqad8Fz7G46
+         CS0YwGSB4JtfFNp2Qp4N3ZtrS7rhhriS0JakjAHr0T/aGWnHtQpWIavBEPZs5AdHZRGO
+         nkD/PX67PWJRYoicX4B4dBgHgiZRSt9w8ZchtZq6rwMNQjjsk43rw3GPOJ9pxjfBUeU9
+         4M42P4Ca1jrsGZatdpv+clo5IkavqsO5WSckWFrjnySp+PUXGAdfxOZvZk8IpTaxx0e4
+         a/kWrrUUVSXT2Zs8tFT6dJy3v8e8mqOo0IPz049yeifRPmlZsIFWymK2lkRCVcKntoxk
+         ocZg==
+X-Gm-Message-State: APjAAAUHCmv4EBq6DGq/+6/nDdxfEChpjroYEPmt2Sfw+spuoM0pZxrm
+        Q8/7gY2NLajQznUsLLq1vhhGty0c
+X-Google-Smtp-Source: APXvYqx5hRV3XE5QN1mXuJGLox2NmhPzBr4c/GNzUkD0SRTmZ1zUsCgQ9TebuOS7dOmF8cBG9n8qOA==
+X-Received: by 2002:a62:7d54:: with SMTP id y81mr194419pfc.86.1570481138017;
+        Mon, 07 Oct 2019 13:45:38 -0700 (PDT)
 Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:200::2:2257])
-        by smtp.gmail.com with ESMTPSA id b14sm16478578pfi.95.2019.10.07.13.42.37
+        by smtp.gmail.com with ESMTPSA id x19sm10810246pgc.59.2019.10.07.13.45.36
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 07 Oct 2019 13:42:37 -0700 (PDT)
-Date:   Mon, 7 Oct 2019 13:42:36 -0700
+        Mon, 07 Oct 2019 13:45:37 -0700 (PDT)
+Date:   Mon, 7 Oct 2019 13:45:35 -0700
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
 Cc:     Daniel Borkmann <daniel@iogearbox.net>,
@@ -59,199 +59,121 @@ Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
         David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next v3 1/5] bpf: Support chain calling multiple BPF
- programs after each other
-Message-ID: <20191007204234.p2bh6sul2uakpmnp@ast-mbp.dhcp.thefacebook.com>
-References: <157046883502.2092443.146052429591277809.stgit@alrua-x1>
- <157046883614.2092443.9861796174814370924.stgit@alrua-x1>
+Subject: Re: [PATCH bpf-next v2 1/5] bpf: Support injecting chain calls into
+ BPF programs on load
+Message-ID: <20191007204534.o3prqf463yk4sepn@ast-mbp.dhcp.thefacebook.com>
+References: <157020976030.1824887.7191033447861395957.stgit@alrua-x1>
+ <157020976144.1824887.10249946730258092768.stgit@alrua-x1>
+ <20191007002739.5seu2btppfjmhry4@ast-mbp.dhcp.thefacebook.com>
+ <87h84kn9v0.fsf@toke.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <157046883614.2092443.9861796174814370924.stgit@alrua-x1>
+In-Reply-To: <87h84kn9v0.fsf@toke.dk>
 User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Oct 07, 2019 at 07:20:36PM +0200, Toke Høiland-Jørgensen wrote:
-> From: Toke Høiland-Jørgensen <toke@redhat.com>
+On Mon, Oct 07, 2019 at 12:11:31PM +0200, Toke Høiland-Jørgensen wrote:
+> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
 > 
-> This adds support for wrapping eBPF program dispatch in chain calling
-> logic. The code injection is controlled by a flag at program load time; if
-> the flag is set, the BPF program will carry a flag bit that changes the
-> program dispatch logic to wrap it in a chain call loop.
+> > On Fri, Oct 04, 2019 at 07:22:41PM +0200, Toke Høiland-Jørgensen wrote:
+> >> From: Toke Høiland-Jørgensen <toke@redhat.com>
+> >> 
+> >> This adds support for injecting chain call logic into eBPF programs before
+> >> they return. The code injection is controlled by a flag at program load
+> >> time; if the flag is set, the verifier will add code to every BPF_EXIT
+> >> instruction that first does a lookup into a chain call structure to see if
+> >> it should call into another program before returning. The actual calls
+> >> reuse the tail call infrastructure.
+> >> 
+> >> Ideally, it shouldn't be necessary to set the flag on program load time,
+> >> but rather inject the calls when a chain call program is first loaded.
+> >> However, rewriting the program reallocates the bpf_prog struct, which is
+> >> obviously not possible after the program has been attached to something.
+> >> 
+> >> One way around this could be a sysctl to force the flag one (for enforcing
+> >> system-wide support). Another could be to have the chain call support
+> >> itself built into the interpreter and JIT, which could conceivably be
+> >> re-run each time we attach a new chain call program. This would also allow
+> >> the JIT to inject direct calls to the next program instead of using the
+> >> tail call infrastructure, which presumably would be a performance win. The
+> >> drawback is, of course, that it would require modifying all the JITs.
+> >> 
+> >> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+> > ...
+> >>  
+> >> +static int bpf_inject_chain_calls(struct bpf_verifier_env *env)
+> >> +{
+> >> +	struct bpf_prog *prog = env->prog;
+> >> +	struct bpf_insn *insn = prog->insnsi;
+> >> +	int i, cnt, delta = 0, ret = -ENOMEM;
+> >> +	const int insn_cnt = prog->len;
+> >> +	struct bpf_array *prog_array;
+> >> +	struct bpf_prog *new_prog;
+> >> +	size_t array_size;
+> >> +
+> >> +	struct bpf_insn call_next[] = {
+> >> +		BPF_LD_IMM64(BPF_REG_2, 0),
+> >> +		/* Save real return value for later */
+> >> +		BPF_MOV64_REG(BPF_REG_6, BPF_REG_0),
+> >> +		/* First try tail call with index ret+1 */
+> >> +		BPF_MOV64_REG(BPF_REG_3, BPF_REG_0),
+> >> +		BPF_ALU64_IMM(BPF_ADD, BPF_REG_3, 1),
+> >> +		BPF_RAW_INSN(BPF_JMP | BPF_TAIL_CALL, 0, 0, 0, 0),
+> >> +		/* If that doesn't work, try with index 0 (wildcard) */
+> >> +		BPF_MOV64_IMM(BPF_REG_3, 0),
+> >> +		BPF_RAW_INSN(BPF_JMP | BPF_TAIL_CALL, 0, 0, 0, 0),
+> >> +		/* Restore saved return value and exit */
+> >> +		BPF_MOV64_REG(BPF_REG_0, BPF_REG_6),
+> >> +		BPF_EXIT_INSN()
+> >> +	};
+> >
+> > How did you test it?
+> > With the only test from patch 5?
+> > +int xdp_drop_prog(struct xdp_md *ctx)
+> > +{
+> > +       return XDP_DROP;
+> > +}
+> >
+> > Please try different program with more than one instruction.
+> > And then look at above asm and think how it can be changed to
+> > get valid R1 all the way to each bpf_exit insn.
+> > Do you see amount of headaches this approach has?
 > 
-> Ideally, it shouldn't be necessary to set the flag on program load time,
-> but rather inject the calls when a chain call program is first loaded. The
-> allocation logic sets the whole of struct bpf_prog to be read-only memory,
-> so it can't immediately be modified, but conceivably we could just unlock
-> the first page of the struct and flip the bit when a chain call program is
-> first attached.
+> Ah yes, that's a good point. It seems that I totally overlooked that
+> issue, somehow...
 > 
-> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
-> ---
->  include/linux/bpf.h      |    3 +++
->  include/linux/filter.h   |   34 ++++++++++++++++++++++++++++++++--
->  include/uapi/linux/bpf.h |    6 ++++++
->  kernel/bpf/core.c        |    6 ++++++
->  kernel/bpf/syscall.c     |    4 +++-
->  5 files changed, 50 insertions(+), 3 deletions(-)
+> > The way you explained the use case of XDP-based firewall plus XDP-based
+> > IPS/IDS it's about "knows nothing" admin that has to deal with more than
+> > one XDP application on an unfamiliar server.
+> > This is the case of debugging.
 > 
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 5b9d22338606..13e5f38cf5c6 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -365,6 +365,8 @@ struct bpf_prog_stats {
->  	struct u64_stats_sync syncp;
->  };
->  
-> +#define BPF_NUM_CHAIN_SLOTS 8
-> +
->  struct bpf_prog_aux {
->  	atomic_t refcnt;
->  	u32 used_map_cnt;
-> @@ -383,6 +385,7 @@ struct bpf_prog_aux {
->  	struct list_head ksym_lnode;
->  	const struct bpf_prog_ops *ops;
->  	struct bpf_map **used_maps;
-> +	struct bpf_prog *chain_progs[BPF_NUM_CHAIN_SLOTS];
->  	struct bpf_prog *prog;
->  	struct user_struct *user;
->  	u64 load_time; /* ns since boottime */
-> diff --git a/include/linux/filter.h b/include/linux/filter.h
-> index 2ce57645f3cd..3d1e4991e61d 100644
-> --- a/include/linux/filter.h
-> +++ b/include/linux/filter.h
-> @@ -21,6 +21,7 @@
->  #include <linux/kallsyms.h>
->  #include <linux/if_vlan.h>
->  #include <linux/vmalloc.h>
-> +#include <linux/nospec.h>
->  
->  #include <net/sch_generic.h>
->  
-> @@ -528,6 +529,7 @@ struct bpf_prog {
->  				is_func:1,	/* program is a bpf function */
->  				kprobe_override:1, /* Do we override a kprobe? */
->  				has_callchain_buf:1, /* callchain buffer allocated? */
-> +				chain_calls:1, /* should this use the chain_call wrapper */
->  				enforce_expected_attach_type:1; /* Enforce expected_attach_type checking at attach time */
->  	enum bpf_prog_type	type;		/* Type of BPF program */
->  	enum bpf_attach_type	expected_attach_type; /* For some prog types */
-> @@ -551,6 +553,30 @@ struct sk_filter {
->  	struct bpf_prog	*prog;
->  };
->  
-> +#define BPF_MAX_CHAIN_CALLS 32
-> +static __always_inline unsigned int do_chain_calls(const struct bpf_prog *prog,
-> +						   const void *ctx)
-> +{
-> +	int i = BPF_MAX_CHAIN_CALLS;
-> +	int idx;
-> +	u32 ret;
-> +
-> +	do {
-> +		ret = (*(prog)->bpf_func)(ctx, prog->insnsi);
+> This is not about debugging. The primary use case is about deploying
+> multiple, independently developed, XDP-enabled applications on the same
+> server.
+> 
+> Basically, we want the admin to be able to do:
+> 
+> # yum install MyIDS
+> # yum install MyXDPFirewall
+> 
+> and then have both of those *just work* in XDP mode, on the same
+> interface.
+> 
+> I originally started solving this in an XDP-specific way (v1 of this
+> patch set), but the reactions to that was pretty unanimous that this
+> could be useful as a general eBPF feature. Do you agree with this?
 
-This breaks program stats.
+Chaining in general is useful, but
+yum install ids
+yum install firewall
+is not.
 
-> +
-> +		if (ret + 1 >= BPF_NUM_CHAIN_SLOTS) {
-> +			prog = prog->aux->chain_progs[0];
-> +			continue;
-> +		}
-> +		idx = ret + 1;
-> +		idx = array_index_nospec(idx, BPF_NUM_CHAIN_SLOTS);
-> +
-> +		prog = prog->aux->chain_progs[idx] ?: prog->aux->chain_progs[0];
-> +	} while (prog && --i);
-> +
-> +	return ret;
-> +}
-> +
->  DECLARE_STATIC_KEY_FALSE(bpf_stats_enabled_key);
->  
->  #define BPF_PROG_RUN(prog, ctx)	({				\
-> @@ -559,14 +585,18 @@ DECLARE_STATIC_KEY_FALSE(bpf_stats_enabled_key);
->  	if (static_branch_unlikely(&bpf_stats_enabled_key)) {	\
->  		struct bpf_prog_stats *stats;			\
->  		u64 start = sched_clock();			\
-> -		ret = (*(prog)->bpf_func)(ctx, (prog)->insnsi);	\
-> +		ret = prog->chain_calls ?			\
-> +			do_chain_calls(prog, ctx) :			\
-> +			 (*(prog)->bpf_func)(ctx, (prog)->insnsi);	\
+Say, xdp doesn't exist. Such ids and firewall will be using iptables.
+And they will collide and conflict all over it.
+The problem of mixing unrelated ids and firewall is not new.
 
-I thought you agreed on 'no performance regressions' rule?
-
->  		stats = this_cpu_ptr(prog->aux->stats);		\
->  		u64_stats_update_begin(&stats->syncp);		\
->  		stats->cnt++;					\
->  		stats->nsecs += sched_clock() - start;		\
->  		u64_stats_update_end(&stats->syncp);		\
->  	} else {						\
-> -		ret = (*(prog)->bpf_func)(ctx, (prog)->insnsi);	\
-> +		ret = prog->chain_calls ?				\
-> +			do_chain_calls(prog, ctx) :			\
-> +			 (*(prog)->bpf_func)(ctx, (prog)->insnsi);	\
->  	}							\
->  	ret; })
->  
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 77c6be96d676..1ce80a227be3 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -288,6 +288,12 @@ enum bpf_attach_type {
->  /* The verifier internal test flag. Behavior is undefined */
->  #define BPF_F_TEST_STATE_FREQ	(1U << 3)
->  
-> +/* Whether to enable chain call logic at program execution. If set, the program
-> + * execution logic will check for and jump to chain call programs configured
-> + * with the BPF_PROG_CHAIN_* commands to the bpf syscall.
-> + */
-> +#define BPF_F_CHAIN_CALLS	(1U << 4)
-> +
->  /* When BPF ldimm64's insn[0].src_reg != 0 then this can have
->   * two extensions:
->   *
-> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> index 66088a9e9b9e..5dfe3585bc5d 100644
-> --- a/kernel/bpf/core.c
-> +++ b/kernel/bpf/core.c
-> @@ -254,6 +254,12 @@ struct bpf_prog *bpf_prog_realloc(struct bpf_prog *fp_old, unsigned int size,
->  void __bpf_prog_free(struct bpf_prog *fp)
->  {
->  	if (fp->aux) {
-> +		int i;
-> +
-> +		for (i = 0; i < BPF_NUM_CHAIN_SLOTS; i++)
-> +			if (fp->aux->chain_progs[i])
-> +				bpf_prog_put(fp->aux->chain_progs[i]);
-> +
->  		free_percpu(fp->aux->stats);
->  		kfree(fp->aux);
->  	}
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index 82eabd4e38ad..b8a203a05881 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -1630,7 +1630,8 @@ static int bpf_prog_load(union bpf_attr *attr, union bpf_attr __user *uattr)
->  	if (attr->prog_flags & ~(BPF_F_STRICT_ALIGNMENT |
->  				 BPF_F_ANY_ALIGNMENT |
->  				 BPF_F_TEST_STATE_FREQ |
-> -				 BPF_F_TEST_RND_HI32))
-> +				 BPF_F_TEST_RND_HI32 |
-> +				 BPF_F_CHAIN_CALLS))
->  		return -EINVAL;
->  
->  	if (!IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS) &&
-> @@ -1665,6 +1666,7 @@ static int bpf_prog_load(union bpf_attr *attr, union bpf_attr __user *uattr)
->  		return -ENOMEM;
->  
->  	prog->expected_attach_type = attr->expected_attach_type;
-> +	prog->chain_calls = !!(attr->prog_flags & BPF_F_CHAIN_CALLS);
->  
->  	prog->aux->offload_requested = !!attr->prog_ifindex;
->  
-> 
