@@ -2,108 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 02132CECA3
-	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2019 21:21:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D20BCED5C
+	for <lists+bpf@lfdr.de>; Mon,  7 Oct 2019 22:22:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728429AbfJGTVb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Oct 2019 15:21:31 -0400
-Received: from dispatch1-us1.ppe-hosted.com ([67.231.154.164]:37806 "EHLO
-        dispatch1-us1.ppe-hosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728187AbfJGTVb (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 7 Oct 2019 15:21:31 -0400
-X-Virus-Scanned: Proofpoint Essentials engine
-Received: from webmail.solarflare.com (webmail.solarflare.com [12.187.104.26])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1-us4.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTPS id 78371140069;
-        Mon,  7 Oct 2019 19:21:29 +0000 (UTC)
-Received: from [10.17.20.203] (10.17.20.203) by ocex03.SolarFlarecom.com
- (10.20.40.36) with Microsoft SMTP Server (TLS) id 15.0.1395.4; Mon, 7 Oct
- 2019 12:21:23 -0700
-Subject: Re: [PATCH bpf-next 0/9] xdp: Support multiple programs on a single
- interface through chain calls
-To:     Lorenz Bauer <lmb@cloudflare.com>
-CC:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        "John Fastabend" <john.fastabend@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>, Martin Lau <kafai@fb.com>,
-        Yonghong Song <yhs@fb.com>,
+        id S1728786AbfJGUWg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Oct 2019 16:22:36 -0400
+Received: from www62.your-server.de ([213.133.104.62]:34506 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728187AbfJGUWf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Oct 2019 16:22:35 -0400
+Received: from 55.249.197.178.dynamic.dsl-lte-bonding.lssmb00p-msn.res.cust.swisscom.ch ([178.197.249.55] helo=localhost)
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1iHZWT-0004eD-8Y; Mon, 07 Oct 2019 22:22:25 +0200
+Date:   Mon, 7 Oct 2019 22:22:24 +0200
+From:   Daniel Borkmann <daniel@iogearbox.net>
+To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         Marek Majkowski <marek@cloudflare.com>,
-        David Miller <davem@davemloft.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>
-References: <157002302448.1302756.5727756706334050763.stgit@alrua-x1>
- <E7319D69-6450-4BC3-97B1-134B420298FF@fb.com>
- <A754440E-07BF-4CF4-8F15-C41179DCECEF@fb.com> <87r23vq79z.fsf@toke.dk>
- <20191003105335.3cc65226@carbon>
- <CAADnVQKTbaxJhkukxXM7Ue7=kA9eWsGMpnkXc=Z8O3iWGSaO0A@mail.gmail.com>
- <87pnjdq4pi.fsf@toke.dk>
- <1c9b72f9-1b61-d89a-49a4-e0b8eead853d@solarflare.com>
- <5d964d8ccfd90_55732aec43fe05c47b@john-XPS-13-9370.notmuch>
- <87tv8pnd9c.fsf@toke.dk>
- <68466316-c796-7808-6932-01d9d8c0a40b@solarflare.com>
- <CACAyw99oUfst5LDaPZmbKNfQtM2wF8fP0rz7qMk+Qn7SMaF_vw@mail.gmail.com>
- <1871cacb-4a43-f906-9a9b-ba6a2ca866dd@solarflare.com>
- <CACAyw98mYK3Psv61+BDcyk56PbnJf2JhdfDLsB0eD4vLJJnGYQ@mail.gmail.com>
-From:   Edward Cree <ecree@solarflare.com>
-Message-ID: <4124d5a6-06b7-ad03-f5fe-4b61e55fff27@solarflare.com>
-Date:   Mon, 7 Oct 2019 20:21:22 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next v2 1/5] bpf: Support injecting chain calls into
+ BPF programs on load
+Message-ID: <20191007202224.GD27307@pc-66.home>
+References: <157020976030.1824887.7191033447861395957.stgit@alrua-x1>
+ <157020976144.1824887.10249946730258092768.stgit@alrua-x1>
+ <20191007002739.5seu2btppfjmhry4@ast-mbp.dhcp.thefacebook.com>
+ <87h84kn9v0.fsf@toke.dk>
 MIME-Version: 1.0
-In-Reply-To: <CACAyw98mYK3Psv61+BDcyk56PbnJf2JhdfDLsB0eD4vLJJnGYQ@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Language: en-GB
-X-Originating-IP: [10.17.20.203]
-X-TM-AS-Product-Ver: SMEX-12.5.0.1300-8.5.1010-24960.005
-X-TM-AS-Result: No-5.598300-4.000000-10
-X-TMASE-MatchedRID: 1GZI+iG+MtfmLzc6AOD8DfHkpkyUphL9Ap+UH372RZUjRiu1AuxJTE+m
-        MtGpzwaWovHdz/hFHkqVli3dUdHmduRL/dfzA4JW3PhB6Dd4M5fmKRpN3ALyIHGIg4EQe/dBPmW
-        b5UMEjgS0B2i5o+ShBBT8Ws5yXMRK0KaUpJQo+cI5UYVNPDbxh6m9/6ObPjnDCnaX2vSsl/+nno
-        CPGfH37GwkI7F60L1z3xAKL6qdqRlgX3W8U0UCB+KggdmU+sgMI5rZlsanIIVRD5heJnxuK+mWp
-        qKXmZL5QzArtCOFCW5shc3hHvMHV54v+LC4Hz72AI0UpQvEYJkX2zxRNhh61egLopbDhV65ngIg
-        pj8eDcByZ8zcONpAscRB0bsfrpPIHm9ggFVoCcDFTZbxzjF3V4JH59Px3o8Q2u0dOlpRB726pvW
-        kHT1voL+02BO6uEW7ftwZ3X11IV0=
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--5.598300-4.000000
-X-TMASE-Version: SMEX-12.5.0.1300-8.5.1010-24960.005
-X-MDID: 1570476090-giMe7Opc1XgA
+In-Reply-To: <87h84kn9v0.fsf@toke.dk>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.101.4/25595/Mon Oct  7 10:28:44 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 07/10/2019 18:12, Lorenz Bauer wrote:
-> Sure, but this is the simplest, not necessarily realistic use case. There
-> is a reason that libbpf has the API it has. For example, we patch our
-> eBPF before loading it. I'm sure there are other complications, which is
-> why I prefer to keep loading my own programs.
-Any reason why you can't have the client patch the eBPF (possibly with
-Â libbpf) before supplying the patched object file to the loaderiser?
+On Mon, Oct 07, 2019 at 12:11:31PM +0200, Toke Høiland-Jørgensen wrote:
+> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+> > On Fri, Oct 04, 2019 at 07:22:41PM +0200, Toke Høiland-Jørgensen wrote:
+> >> From: Toke Høiland-Jørgensen <toke@redhat.com>
+> >> 
+> >> This adds support for injecting chain call logic into eBPF programs before
+> >> they return. The code injection is controlled by a flag at program load
+> >> time; if the flag is set, the verifier will add code to every BPF_EXIT
+> >> instruction that first does a lookup into a chain call structure to see if
+> >> it should call into another program before returning. The actual calls
+> >> reuse the tail call infrastructure.
+> >> 
+> >> Ideally, it shouldn't be necessary to set the flag on program load time,
+> >> but rather inject the calls when a chain call program is first loaded.
+> >> However, rewriting the program reallocates the bpf_prog struct, which is
+> >> obviously not possible after the program has been attached to something.
+> >> 
+> >> One way around this could be a sysctl to force the flag one (for enforcing
+> >> system-wide support). Another could be to have the chain call support
+> >> itself built into the interpreter and JIT, which could conceivably be
+> >> re-run each time we attach a new chain call program. This would also allow
+> >> the JIT to inject direct calls to the next program instead of using the
+> >> tail call infrastructure, which presumably would be a performance win. The
+> >> drawback is, of course, that it would require modifying all the JITs.
+> >> 
+> >> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+> > ...
+> >>  
+> >> +static int bpf_inject_chain_calls(struct bpf_verifier_env *env)
+> >> +{
+> >> +	struct bpf_prog *prog = env->prog;
+> >> +	struct bpf_insn *insn = prog->insnsi;
+> >> +	int i, cnt, delta = 0, ret = -ENOMEM;
+> >> +	const int insn_cnt = prog->len;
+> >> +	struct bpf_array *prog_array;
+> >> +	struct bpf_prog *new_prog;
+> >> +	size_t array_size;
+> >> +
+> >> +	struct bpf_insn call_next[] = {
+> >> +		BPF_LD_IMM64(BPF_REG_2, 0),
+> >> +		/* Save real return value for later */
+> >> +		BPF_MOV64_REG(BPF_REG_6, BPF_REG_0),
+> >> +		/* First try tail call with index ret+1 */
+> >> +		BPF_MOV64_REG(BPF_REG_3, BPF_REG_0),
+> >> +		BPF_ALU64_IMM(BPF_ADD, BPF_REG_3, 1),
+> >> +		BPF_RAW_INSN(BPF_JMP | BPF_TAIL_CALL, 0, 0, 0, 0),
+> >> +		/* If that doesn't work, try with index 0 (wildcard) */
+> >> +		BPF_MOV64_IMM(BPF_REG_3, 0),
+> >> +		BPF_RAW_INSN(BPF_JMP | BPF_TAIL_CALL, 0, 0, 0, 0),
+> >> +		/* Restore saved return value and exit */
+> >> +		BPF_MOV64_REG(BPF_REG_0, BPF_REG_6),
+> >> +		BPF_EXIT_INSN()
+> >> +	};
+> >
+> > How did you test it?
+> > With the only test from patch 5?
+> > +int xdp_drop_prog(struct xdp_md *ctx)
+> > +{
+> > +       return XDP_DROP;
+> > +}
+> >
+> > Please try different program with more than one instruction.
+> > And then look at above asm and think how it can be changed to
+> > get valid R1 all the way to each bpf_exit insn.
+> > Do you see amount of headaches this approach has?
+> 
+> Ah yes, that's a good point. It seems that I totally overlooked that
+> issue, somehow...
+> 
+> > The way you explained the use case of XDP-based firewall plus XDP-based
+> > IPS/IDS it's about "knows nothing" admin that has to deal with more than
+> > one XDP application on an unfamiliar server.
+> > This is the case of debugging.
+> 
+> This is not about debugging. The primary use case is about deploying
+> multiple, independently developed, XDP-enabled applications on the same
+> server.
+> 
+> Basically, we want the admin to be able to do:
+> 
+> # yum install MyIDS
+> # yum install MyXDPFirewall
+> 
+> and then have both of those *just work* in XDP mode, on the same
+> interface.
 
->> No, I'm talking about doing a linker step (using the 'full-blown calls'
->>  _within_ an eBPF program that Alexei added a few months back) before the
->>  program is submitted to the kernel.  So the BPF_CALL|BPF_PSEUDO_CALL insn
->>  gets JITed to a direct call.
-> Ah, I see. I'm not sure whether this restriction has been lifted, but those
-> calls are incompatible with tail calls. So we wouldn't be able to use this.
-Indeed, tail calls don't fit into my scheme, because being a tail-call from
-Â the subprogram doesn't make you a tail-call from the dispatcher program.
-But AIUI tail calls are only in use today in various work-arounds for the
-Â lack of proper linking (including dynamic linking).Â  If we supported that,
-Â would you still need them?
+How is the user space loader side handled in this situation, meaning,
+what are your plans on this regard?
 
->> OK, but in that case xdpd isn't evidence that the "loader" approach doesn't
->>  work, so I still think it should be tried before we go to the lengths of
->>  pushing something into the kernel (that we then have to maintain forever).
-> Maybe this came across the wrong way, I never said it is.
-No, you didn't (sorry).Â  Toke somewhat implied it, which is what I was
-Â responding to there.
+Reason I'm asking is that those independently developed, XDP-enabled
+applications today might on startup simply forcefully remove what is
+currently installed on XDP layer at device X, and then override it
+with their own program, meaning both of MyIDS and MyXDPFirewall would
+remove each other's programs on start.
 
--Ed
+This will still require some sort of cooperation, think of something
+like systemd service files or the like where the former would then
+act as the loader to link these together in the background (perhaps
+also allowing to specify some sort of a dependency between well-known
+ones). How would an admin ad-hoc insert his xdpdump program in between,
+meaning what tooling do you have in mind here?
+
+And how would daemons update their own installed programs at runtime?
+Right now it's simply atomic update of whatever is currently installed,
+but with chained progs, they would need to send it to whatever central
+daemon is managing all these instead of just calling bpf() and do the
+attaching by themselves, or is the expectation that the application
+would need to iterate its own chain via BPF_PROG_CHAIN_GET and resetup
+everything by itself?
+
+Thanks,
+Daniel
