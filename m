@@ -2,98 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B39AFD03DF
-	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2019 01:10:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9A84D0426
+	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2019 01:32:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729705AbfJHXKh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Oct 2019 19:10:37 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:11770 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727966AbfJHXKh (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 8 Oct 2019 19:10:37 -0400
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x98NASu3009292
-        for <bpf@vger.kernel.org>; Tue, 8 Oct 2019 16:10:36 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=facebook; bh=oIhq0y55owKbTb1aWo8CNJEaH59x0DKJW3ggGY6nmBs=;
- b=KRDl1k8XX/Q50yOD0Yb4HPTjVDQ6cEHMBzsoJru5Q2QxaSGb0jc++jcXb/MLLdIJ6JjA
- GfXuMcfFRUKeZNctok4Q1oUP7eOl4+ts6vCKsfaCIuDem0LVPmBK/sZT1KnFYiUcqESA
- bhP1KhwLjJxliGeOz80QHpFmldUyh3whwxw= 
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by mx0a-00082601.pphosted.com with ESMTP id 2vh1ukrnay-16
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 08 Oct 2019 16:10:36 -0700
-Received: from 2401:db00:12:9028:face:0:29:0 (2620:10d:c081:10::13) by
- mail.thefacebook.com (2620:10d:c081:35::127) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
- Tue, 8 Oct 2019 16:10:17 -0700
-Received: by dev101.prn2.facebook.com (Postfix, from userid 137359)
-        id 098098618FA; Tue,  8 Oct 2019 16:10:17 -0700 (PDT)
-Smtp-Origin-Hostprefix: dev
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: dev101.prn2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>, <john.fastabend@gmail.com>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Cluster: prn2c23
-Subject: [PATCH bpf-next 3/3] selftests/bpf: fix btf_dump padding test case
-Date:   Tue, 8 Oct 2019 16:10:08 -0700
-Message-ID: <20191008231009.2991130-4-andriin@fb.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20191008231009.2991130-1-andriin@fb.com>
-References: <20191008231009.2991130-1-andriin@fb.com>
-X-FB-Internal: Safe
+        id S1729667AbfJHXcO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Oct 2019 19:32:14 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:41960 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726822AbfJHXcO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Oct 2019 19:32:14 -0400
+Received: by mail-qk1-f196.google.com with SMTP id p10so504608qkg.8;
+        Tue, 08 Oct 2019 16:32:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wjNh5CUw5lUrvHTtLBGinf179u88y/gEO+POZbEDrVk=;
+        b=bmqe8KvZzFG3lAsu2WTSJaChViqFsCe6b2YcT1wr3mqbh7hx32FUZOD50N8flahUpx
+         7IuPDWw9QkL0s/QRKTytqaFGW3Ny6i9Ygtd51LtBpyatw8ZbiYofvrjSV64g1DettAPv
+         nX/09ARYoszP1ASyHHqljiPVKOEbj0EbDusK9QjzCtUPLL3zaptCXUsfECvoqbsAEAxh
+         +3bx5IdWCI5kAcSdT5avpiablOtACsaeotTaJJWavnLLBy6388++Eb6nqsrle1cT0Goe
+         6YNC3ZER5QmXrclDS7zNMjN76hkL0cSjwWLVS2YNXWD623veGy6Za+nLwk8+8RC+5DwE
+         wesw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wjNh5CUw5lUrvHTtLBGinf179u88y/gEO+POZbEDrVk=;
+        b=Fi/ETvUbfAWreRty0rWVg8WytSYh8g9/OzgSguF8GssriHI4R8/mUozqe7mD/8+UsO
+         aDNzJYFrZZefJ+uS05UAEnH3RShMkGppov4k5Rtlj3CCbJu84yk/C0XGY2wNY0hjKwAL
+         ns9jxoOhIbRwdvfaZw9II0El24RwUoLvJb1FakOtqo7kx0kTiZDkmfNpyI18DZumwRT+
+         aaYvF3f13AzUEze5nsxSLzfOfVA7twHkFx1YUQ2GuNS28GXTuztnktz/LMKAX6+juI1J
+         LpmJOyYD8VhzJuNrXpvdcjniiMMEDDzW2SyNZpeUmwS9USBb17HPNnxXx8GJZZJlyEO1
+         Marw==
+X-Gm-Message-State: APjAAAX+uvWDmIPirJrQP2UvmxBdwQXzCRNeJOe1U+sUYgmPo1oXZgYr
+        jFEys3gDsw+f8MeCYodQAMX1RG+NSnAxtSvEwzM=
+X-Google-Smtp-Source: APXvYqxd3+LktT9n7XdT/ePAXvLvLty4IQivusdUKsXfFXUt3GCeMlRMtXCFyunBwEafdtOAFbXNnZAGACGtNzRHHzg=
+X-Received: by 2002:a37:4c13:: with SMTP id z19mr778210qka.449.1570577532777;
+ Tue, 08 Oct 2019 16:32:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
- definitions=2019-10-08_09:2019-10-08,2019-10-08 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
- impostorscore=0 malwarescore=0 mlxlogscore=678 spamscore=0 adultscore=0
- bulkscore=0 lowpriorityscore=0 suspectscore=8 clxscore=1015 mlxscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1908290000 definitions=main-1910080183
-X-FB-Internal: deliver
+References: <20191007030738.2627420-1-andriin@fb.com> <20191007030738.2627420-2-andriin@fb.com>
+ <20191007094346.GC27307@pc-66.home> <CAEf4BzZDKkxtMGwnn+Zam58sYwS33EDuw3hrUTexmC9o7Xnj1w@mail.gmail.com>
+ <20191008214937.GH27307@pc-66.home>
+In-Reply-To: <20191008214937.GH27307@pc-66.home>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 8 Oct 2019 16:32:01 -0700
+Message-ID: <CAEf4Bza=p1uiV0mHvzrbisSYS1s2Gnx4S2109eGjtP0Vhr_mbg@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 1/3] uapi/bpf: fix helper docs
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Quentin Monnet <quentin.monnet@netronome.com>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Existing padding test case for btf_dump has a good test that was
-supposed to test padding generation at the end of a struct, but its
-expected output was specified incorrectly. Fix this.
+On Tue, Oct 8, 2019 at 2:49 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>
+> On Mon, Oct 07, 2019 at 10:47:19AM -0700, Andrii Nakryiko wrote:
+> > On Mon, Oct 7, 2019 at 2:43 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+> > > On Sun, Oct 06, 2019 at 08:07:36PM -0700, Andrii Nakryiko wrote:
+> > > > Various small fixes to BPF helper documentation comments, enabling
+> > > > automatic header generation with a list of BPF helpers.
+> > > >
+> > > > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> [...]
+> > > I'm wondering whether it would simply be much better to always just use 'void *ctx'
+> > > for everything that is BPF context as it may be just confusing to people why different
+> > > types are chosen sometimes leading to buggy drive-by attempts to 'fix' them back into
+> > > struct sk_buff * et al.
+> >
+> > I'm impartial on this issue. In some cases it might be helpful to
+> > specify what is the expected type of the context, if it's only ever
+> > one type, but there are lots of helpers that accept various contexts,
+> > so for consistency its better to just have "void *context".
+>
+> I would favor consistency here to always have "void *context". One
+> additional issue I could see happening otherwise on top of the 'fix'
+> attempts is that if existing helpers get enabled for multiple program
+> types and these have different BPF context, then it might be quite
+> easy to forget converting struct __sk_buff * and whatnot to void * in
+> the helper API doc, so the auto-generated BPF helpers will continue
+> to have only the old type.
 
-Fixes: 2d2a3ad872f8 ("selftests/bpf: add btf_dump BTF-to-C conversion tests")
-Reported-by: John Fastabend <john.fastabend@gmail.com>
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- .../testing/selftests/bpf/progs/btf_dump_test_case_padding.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Ok, I can create a follow-up clean up patch changing all of them to
+void *. There is also a weird singular case of having three
+declarations of bpf_get_socket_cookie() with different contexts. I
+assume I should just combine them into a single
+declaration/description, right?
 
-diff --git a/tools/testing/selftests/bpf/progs/btf_dump_test_case_padding.c b/tools/testing/selftests/bpf/progs/btf_dump_test_case_padding.c
-index 3a62119c7498..35c512818a56 100644
---- a/tools/testing/selftests/bpf/progs/btf_dump_test_case_padding.c
-+++ b/tools/testing/selftests/bpf/progs/btf_dump_test_case_padding.c
-@@ -62,6 +62,10 @@ struct padded_a_lot {
-  *	long: 64;
-  *	long: 64;
-  *	int b;
-+ *	long: 32;
-+ *	long: 64;
-+ *	long: 64;
-+ *	long: 64;
-  *};
-  *
-  */
-@@ -95,7 +99,6 @@ struct zone_padding {
- struct zone {
- 	int a;
- 	short b;
--	short: 16;
- 	struct zone_padding __pad__;
- };
- 
--- 
-2.17.1
-
+>
+> Thanks,
+> Daniel
