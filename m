@@ -2,66 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8047FCF122
-	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2019 05:15:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F40E2CF135
+	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2019 05:21:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729794AbfJHDPj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Oct 2019 23:15:39 -0400
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:40570 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729536AbfJHDPj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Oct 2019 23:15:39 -0400
-Received: by mail-lj1-f194.google.com with SMTP id 7so15869931ljw.7;
-        Mon, 07 Oct 2019 20:15:37 -0700 (PDT)
+        id S1729823AbfJHDVb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Oct 2019 23:21:31 -0400
+Received: from mail-lf1-f67.google.com ([209.85.167.67]:33737 "EHLO
+        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729772AbfJHDVb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Oct 2019 23:21:31 -0400
+Received: by mail-lf1-f67.google.com with SMTP id y127so10805238lfc.0;
+        Mon, 07 Oct 2019 20:21:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=BivRDFAMa00Dwta7AtpjxEuKDkhZIuq1wk86qxnm16U=;
-        b=ddRZYpmlc9NyB+GC8vS66mnw1aUxRo5N6UI5psYzKJAvT9eFobI46halvUm8j6R1QA
-         MubHQ0VIlKzs0hfhvVVWdAAuy9vkx5/pCZC9OnFiwA4EiCl5Hsc4ky+RiMoX75oZVkQs
-         GniEU8rdIOf3E/Sixd8or5Vc6H3iFFrHqd0cYhCYcQIsUSkhjMYzjsiMXHrd16DU6R+r
-         /ezK5qCDV1K0+rh8hrdJUeHX+3I6D860YyZMSinZlS7yShUlHtbm7rF4feqvIh5kzC+X
-         jiryYtiiPg1b90W0z9zgODEwvriuTBfOfW4yoJMNYRnxy+EwCUAA1AErPYmnJvXDpHy0
-         VKRw==
+        bh=vyJcWTmjeQ7bugZJBy22/0j/6WxRNJH63fhiS0BcR5M=;
+        b=bIpC8OXkIJ5aPmGTxNHyyoz/a6+DcoHsAWPnIwDGkBIDa6UC4leHe20YY4ozaxyHR/
+         1NWGB1T0MVU9QkDkY5lO3mCWMWuOSyuM6WD0qOK3dVwgf1StegjCTtkPwHKcvBCbFatg
+         1eZ/WLN3yvk4njbjQzwHqGQDAgMJE3mDwrJm8drmmTFJen+I3wTapbFA5lSMENX8CCAw
+         iibXN8LCcWQSrV2kTOBwWaq9BQ0xj2RAcSaZJYLyUrhrz93IW1q52MvJ7Ohw74VyEciV
+         sa3Hpc/NuUeW9OQogpfX10jV6mY/SJ8RvlGGdvn8mBLQUJFC8heX1fsTgwPOzBpgoLfQ
+         590g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=BivRDFAMa00Dwta7AtpjxEuKDkhZIuq1wk86qxnm16U=;
-        b=ovEQvwSm5bWzApUvDy6ssz7Bvcu3jfoxoJMX/Sf4C6CxoJKB//2zBEJhDEnhkM7Dlq
-         6fYWyw90dqeeTD2VQRR+7zPgeBzQYIBIlGiQOxUNsS6DEiEpu1QCgvStXIT7ltwLB3YV
-         ajYJc0iqqGtcmZRl3+rNzEqwPeakpmrnqr5h0Zxazmw2RWePn+S6rzXqjUVDXK+1t5kK
-         PVnY7jk5qE96OMLbhzQS6l6CwQ2PMxEA8akmGNpMsdLuggp9MTr157d6g/CEgL+Rcsd6
-         maGZz3QgkWT3kyZRUvqZaz9hBSqMhiOXayDC90Xi4dRw5NkU/DLhScXSnkdTV1GyFwM4
-         qGKw==
-X-Gm-Message-State: APjAAAX2HC/oqh7S+NcuruTOfoiPmjN36KnRxF5UK74WULsGKYzbMd4r
-        YOQps4723amUoaiyAL4LHcbev1MuQcLMM33PENI=
-X-Google-Smtp-Source: APXvYqwBp6adm5weu+GWXNCkfHpW8Y+IoSyFLjf5cfbP/PaEIxxl/U+Jc+iea5XGqI8tCLuc2gpWdG+I9k9FQOgGoK8=
-X-Received: by 2002:a2e:252:: with SMTP id 79mr20001435ljc.188.1570504536637;
- Mon, 07 Oct 2019 20:15:36 -0700 (PDT)
+        bh=vyJcWTmjeQ7bugZJBy22/0j/6WxRNJH63fhiS0BcR5M=;
+        b=MzlDxB3W62HlQeglDWPul2pOnfVvBf8AI22kinUPiUteYM34X2qcF/VtRtnQ01LSk+
+         6TjJXF4R0gDskY6AfZC2auhon0CGEnT0BhXsJZaXgv4JdHM3CRV7bH4Ks+iFJM+Qz0Q5
+         oZAfTNKKis27whVQOU0zMNFsxnSfKr+vUQ4GaeevRx8TABWXGG7wCq8+N+9LrNcc13k1
+         I/Sd6b6lpqwrR0edrCfE9uOiQbkk7R0Ukjx4HycQCyn4CS57vbFKVB1GX5fVYLbQb0Un
+         glTvO9CqxVKOX9cbFEDXrgmC6D9w5RV7RGlFn8xvQKMlXYPpSLADG7ocHyZDZuvs8TQ7
+         O5mQ==
+X-Gm-Message-State: APjAAAXpkojw8Ntn9ZReR4to5bl9+iaD72Opa9A6ts66njMOtLkN/39R
+        zDzexGeS2ZsK4Nu/9IJIJ7mXXzRiQXlyyrikLJA=
+X-Google-Smtp-Source: APXvYqwPtJ4FHFnonLktEBUpJn9iN8BG5z4BUVcyMSzXDwV9aSpZUqwnQTOnJaEgsi75twngy2hacuKPiMCtcUKd+UE=
+X-Received: by 2002:a05:6512:304:: with SMTP id t4mr19437205lfp.15.1570504889047;
+ Mon, 07 Oct 2019 20:21:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20191007082636.14686-1-anton.ivanov@cambridgegreys.com>
-In-Reply-To: <20191007082636.14686-1-anton.ivanov@cambridgegreys.com>
+References: <20191007162103.39395-1-sdf@google.com>
+In-Reply-To: <20191007162103.39395-1-sdf@google.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 7 Oct 2019 20:15:24 -0700
-Message-ID: <CAADnVQJ0tJkgLV=t7zONfJ2jCe8BGnsUzn8zYEeVAL+4f_mCEg@mail.gmail.com>
-Subject: Re: [PATCH] samples: Trivial - fix spelling mistake in usage
-To:     Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+Date:   Mon, 7 Oct 2019 20:21:17 -0700
+Message-ID: <CAADnVQLe+mrLo6oLwmQ8eeeNdomTXf-myq2kw=hyEbXFBJwYsA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 0/2] bpf/flow_dissector: add mode to enforce
+ global BPF flow dissector
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        Network Development <netdev@vger.kernel.org>
+        Petar Penkov <ppenkov@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Oct 7, 2019 at 1:51 AM Anton Ivanov
-<anton.ivanov@cambridgegreys.com> wrote:
+On Mon, Oct 7, 2019 at 9:21 AM Stanislav Fomichev <sdf@google.com> wrote:
 >
-> Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+> While having a per-net-ns flow dissector programs is convenient for
+> testing, security-wise it's better to have only one vetted global
+> flow dissector implementation.
+>
+> Let's have a convention that when BPF flow dissector is installed
+> in the root namespace, child namespaces can't override it.
+>
+> The intended use-case is to attach global BPF flow dissector
+> early from the init scripts/systemd. Attaching global dissector
+> is prohibited if some non-root namespace already has flow dissector
+> attached. Also, attaching to non-root namespace is prohibited
+> when there is flow dissector attached to the root namespace.
+>
+> v3:
+> * drop extra check and empty line (Andrii Nakryiko)
+>
+> v2:
+> * EPERM -> EEXIST (Song Liu)
+> * Make sure we don't have dissector attached to non-root namespaces
+>   when attaching the global one (Andrii Nakryiko)
 
-Please add some text to commit log even for trivial patches.
-I fixed it up this time and applied.
+Applied. Thanks
