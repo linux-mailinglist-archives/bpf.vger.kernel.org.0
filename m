@@ -2,119 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 29DA0CF298
-	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2019 08:17:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC97ECF318
+	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2019 08:58:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730050AbfJHGQ6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Oct 2019 02:16:58 -0400
-Received: from mga04.intel.com ([192.55.52.120]:63837 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729802AbfJHGQ6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Oct 2019 02:16:58 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 07 Oct 2019 23:16:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.67,269,1566889200"; 
-   d="scan'208";a="187206757"
-Received: from arch-p28.jf.intel.com ([10.166.187.31])
-  by orsmga008.jf.intel.com with ESMTP; 07 Oct 2019 23:16:55 -0700
-From:   Sridhar Samudrala <sridhar.samudrala@intel.com>
-To:     magnus.karlsson@intel.com, bjorn.topel@intel.com,
+        id S1730250AbfJHG6X (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Oct 2019 02:58:23 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:39453 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730111AbfJHG6W (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Oct 2019 02:58:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1570517901;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BjiVfnfo3B219hJevj+nUA5nd9HYypooTjDbpxlfu2E=;
+        b=iDg+l8uqsxGC0rzCjjSiN6614GKg+MM28ylegxN/Am9jp4g2RnYb3SZZyqeOrWjD5K6b3J
+        dS+I8hjaLlaicPm56hIzKIJQjQ4WxddRYgXYf1U3jXNsq2q7CWP0wa2aeypPIvn2wXP30b
+        eLo0ToVh79cHAT5Mj98DpOaywnaqExM=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-161-RIDzUwHTMYSQ8g4C3A3Mmg-1; Tue, 08 Oct 2019 02:58:20 -0400
+Received: by mail-lf1-f70.google.com with SMTP id w193so2042465lff.3
+        for <bpf@vger.kernel.org>; Mon, 07 Oct 2019 23:58:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=S9PjHaofBE8WvE/gCT9+Hpu5GwookQh45Bj4/FXFqOI=;
+        b=HcAvqarVCXH6xx0cnRTAcTrySM8HKeslcXDHU8fVrbxcB7ZyCkFIrVbMpircDpFWO1
+         iN17XT1FeYGBnlkRXXOqIRzkkwFp9cFwDRhQszEFCPd8H6crp5S7eWoVOoxQmQWwf2rt
+         E9xNLEkE/FTSR4JTsv107C/yi8ZM9uGklMArC06E9seJYaX4lvXg2tDAw9sUKCIK7rV/
+         KcqIN9MwDLFI2nQMuBYDh0i40wbCwRwiKF7BK6JWMvC0GuVrWLMj5YW8tVQNxPNMVrvz
+         +Fxl0LIbPD/H+KzW//nQ3Hx+EEtAf14MJIzs0ytZPD67U8m+yFn+2WbGvxoo7/7l4Cdi
+         J23Q==
+X-Gm-Message-State: APjAAAWZRKcdRXm/6lNAsdo/IQof4xDn00IOzacthwiAYly2zuhOLd0L
+        AIft9/zh8bT5wXZGx3aH+2dQU9NO53P/D1TcLZdfHAtAC+md6paNq/8UgecniQ86tSpiKtBhaq4
+        zlvKp8+aZ+Iif
+X-Received: by 2002:a2e:730a:: with SMTP id o10mr21912307ljc.214.1570517898816;
+        Mon, 07 Oct 2019 23:58:18 -0700 (PDT)
+X-Google-Smtp-Source: APXvYqzcpPsm8E/3M1oXM5bmklENMw0tvOHJJmGog/AgsVSfuHgI1NlUp2BPNtR6+WN3vcVRbtaEPA==
+X-Received: by 2002:a2e:730a:: with SMTP id o10mr21912299ljc.214.1570517898646;
+        Mon, 07 Oct 2019 23:58:18 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a00:7660:6da:443::2])
+        by smtp.gmail.com with ESMTPSA id b6sm3972837lfi.72.2019.10.07.23.58.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Oct 2019 23:58:17 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id BF15F18063D; Tue,  8 Oct 2019 08:58:16 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Sridhar Samudrala <sridhar.samudrala@intel.com>,
+        magnus.karlsson@intel.com, bjorn.topel@intel.com,
         netdev@vger.kernel.org, bpf@vger.kernel.org,
         sridhar.samudrala@intel.com, intel-wired-lan@lists.osuosl.org,
         maciej.fijalkowski@intel.com, tom.herbert@intel.com
-Subject: [PATCH bpf-next 4/4] xdpsock: add an option to create AF_XDP sockets in XDP_DIRECT mode
-Date:   Mon,  7 Oct 2019 23:16:55 -0700
-Message-Id: <1570515415-45593-5-git-send-email-sridhar.samudrala@intel.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1570515415-45593-1-git-send-email-sridhar.samudrala@intel.com>
-References: <1570515415-45593-1-git-send-email-sridhar.samudrala@intel.com>
+Subject: Re: [PATCH bpf-next 2/4] xsk: allow AF_XDP sockets to receive packets directly from a queue
+In-Reply-To: <1570515415-45593-3-git-send-email-sridhar.samudrala@intel.com>
+References: <1570515415-45593-1-git-send-email-sridhar.samudrala@intel.com> <1570515415-45593-3-git-send-email-sridhar.samudrala@intel.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 08 Oct 2019 08:58:16 +0200
+Message-ID: <875zkzn2pj.fsf@toke.dk>
+MIME-Version: 1.0
+X-MC-Unique: RIDzUwHTMYSQ8g4C3A3Mmg-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This option enables an AF_XDP socket to bind with a XDP_DIRECT flag
-that allows packets received on the associated queue to be received
-directly when an XDP program is not attached.
+Sridhar Samudrala <sridhar.samudrala@intel.com> writes:
 
-Signed-off-by: Sridhar Samudrala <sridhar.samudrala@intel.com>
----
- samples/bpf/xdpsock_user.c | 17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
+>  int xdp_do_redirect(struct net_device *dev, struct xdp_buff *xdp,
+>  =09=09    struct bpf_prog *xdp_prog)
+>  {
+>  =09struct bpf_redirect_info *ri =3D this_cpu_ptr(&bpf_redirect_info);
+>  =09struct bpf_map *map =3D READ_ONCE(ri->map);
+> +=09struct xdp_sock *xsk;
+> +
+> +=09xsk =3D xdp_get_direct_xsk(ri);
+> +=09if (xsk)
+> +=09=09return xsk_rcv(xsk, xdp);
 
-diff --git a/samples/bpf/xdpsock_user.c b/samples/bpf/xdpsock_user.c
-index 405c4e091f8b..6f4633769968 100644
---- a/samples/bpf/xdpsock_user.c
-+++ b/samples/bpf/xdpsock_user.c
-@@ -129,6 +129,9 @@ static void print_benchmark(bool running)
- 	if (opt_poll)
- 		printf("poll() ");
- 
-+	if (opt_xdp_bind_flags & XDP_DIRECT)
-+		printf("direct-xsk ");
-+
- 	if (running) {
- 		printf("running...");
- 		fflush(stdout);
-@@ -202,7 +205,8 @@ static void int_exit(int sig)
- 	dump_stats();
- 	xsk_socket__delete(xsks[0]->xsk);
- 	(void)xsk_umem__delete(umem);
--	remove_xdp_program();
-+	if (!(opt_xdp_bind_flags & XDP_DIRECT))
-+		remove_xdp_program();
- 
- 	exit(EXIT_SUCCESS);
- }
-@@ -213,7 +217,8 @@ static void __exit_with_error(int error, const char *file, const char *func,
- 	fprintf(stderr, "%s:%s:%i: errno: %d/\"%s\"\n", file, func,
- 		line, error, strerror(error));
- 	dump_stats();
--	remove_xdp_program();
-+	if (!(opt_xdp_bind_flags & XDP_DIRECT))
-+		remove_xdp_program();
- 	exit(EXIT_FAILURE);
- }
- 
-@@ -363,6 +368,7 @@ static struct option long_options[] = {
- 	{"frame-size", required_argument, 0, 'f'},
- 	{"no-need-wakeup", no_argument, 0, 'm'},
- 	{"unaligned", no_argument, 0, 'u'},
-+	{"direct-xsk", no_argument, 0, 'd'},
- 	{0, 0, 0, 0}
- };
- 
-@@ -386,6 +392,7 @@ static void usage(const char *prog)
- 		"  -m, --no-need-wakeup Turn off use of driver need wakeup flag.\n"
- 		"  -f, --frame-size=n   Set the frame size (must be a power of two in aligned mode, default is %d).\n"
- 		"  -u, --unaligned	Enable unaligned chunk placement\n"
-+		"  -d, --direct-xsk	Direct packets to XDP socket.\n"
- 		"\n";
- 	fprintf(stderr, str, prog, XSK_UMEM__DEFAULT_FRAME_SIZE);
- 	exit(EXIT_FAILURE);
-@@ -398,7 +405,7 @@ static void parse_command_line(int argc, char **argv)
- 	opterr = 0;
- 
- 	for (;;) {
--		c = getopt_long(argc, argv, "Frtli:q:psSNn:czf:mu",
-+		c = getopt_long(argc, argv, "Frtli:q:psSNn:czf:mud",
- 				long_options, &option_index);
- 		if (c == -1)
- 			break;
-@@ -452,7 +459,9 @@ static void parse_command_line(int argc, char **argv)
- 			opt_need_wakeup = false;
- 			opt_xdp_bind_flags &= ~XDP_USE_NEED_WAKEUP;
- 			break;
--
-+		case 'd':
-+			opt_xdp_bind_flags |= XDP_DIRECT;
-+			break;
- 		default:
- 			usage(basename(argv[0]));
- 		}
--- 
-2.14.5
+This is a new branch and a read barrier in the XDP_REDIRECT fast path.
+What's the performance impact of that for non-XSK redirect?
+
+-Toke
 
