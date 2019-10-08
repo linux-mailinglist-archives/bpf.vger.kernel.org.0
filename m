@@ -2,118 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AE6BD012D
-	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2019 21:28:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57DECD0162
+	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2019 21:46:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727126AbfJHT2t (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Oct 2019 15:28:49 -0400
-Received: from mail-io1-f67.google.com ([209.85.166.67]:45220 "EHLO
-        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726439AbfJHT2t (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Oct 2019 15:28:49 -0400
-Received: by mail-io1-f67.google.com with SMTP id c25so39011473iot.12;
-        Tue, 08 Oct 2019 12:28:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=hKUGwdiN8CcAzSwm1K0zrzI1YBggiWbMrqJXJpOw9rI=;
-        b=noxZXtofntjndArr8gNgCk6HCpAHUeq3QEZZ0cRFis1JmEO8QpSsLaAodgVDk+Pk6L
-         OYzv0/rV7PDyMYKYWB1yGLW2H2mNd910OAoqlB0O7UO1VwjaBZgkXchrziyVeRZDdDTR
-         A6kQAGQ4FQo4/rg6iwMEg81aAwVj8BUBG8AopmYh9r3Vka/62E4jnX0z/+kUTfd92blY
-         /uB8XSnPEAk0KTCxh2r4IF4epahVcS+pHUsJuebCd9GPcs1Y8ph+yRd2FLSMsxsY7hh7
-         KqE3GLhI2xzixAGWChcwqdg+gvsf4jnZWEbdh8mGKQy1NhdDMcdlc1wBQFh5JOoqeUex
-         UBTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=hKUGwdiN8CcAzSwm1K0zrzI1YBggiWbMrqJXJpOw9rI=;
-        b=Q9ZC2Dwbnrf8/lBZGVu8kLsi+utCIht6DzM57VuJdt1GIjdnarj3SmE9b+nSlK+6UL
-         w62g7Lf+FUtiHprrPo5N/A2Yvd2B2eF/6SmvWm9CxSoZBQppOSLNxaJRoL4HYv/b/RCF
-         2U9vXg8mKl5VrSKyszpqP3Vu0WJsz/hjqcElQsWfsOqbLla4IeV69sYQo7rOnVOpCSVs
-         ShOXCJ8VUAdKyP70i1zwMi0v2QcOxHF3wR8ONwtnZioUH4bWcOlU6sl42EoXNwVskjVY
-         sBdV+CerODZz5wkBp5GTgONhmgMPY10T9JeN5yuozSiXMXqOSp+s4B5jrHi1uIRsbff/
-         pwdg==
-X-Gm-Message-State: APjAAAX75St9qRo/DgVcRJIDLM6IiyS3DamO0RVAu/daZk6ZQtBAkwSL
-        QVfXxUg6HYYlz1GFGjv88hg=
-X-Google-Smtp-Source: APXvYqy2e/8FcOcI62SHTcbBbl+r9RyeZVYuM2/15zjG3CoBI0yMr6FOv/ibHqWHCLcA9RBQ8HbVmg==
-X-Received: by 2002:a92:b74f:: with SMTP id c15mr383830ilm.43.1570562928746;
-        Tue, 08 Oct 2019 12:28:48 -0700 (PDT)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id 28sm10601898ilq.61.2019.10.08.12.28.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Oct 2019 12:28:48 -0700 (PDT)
-Date:   Tue, 08 Oct 2019 12:28:41 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Magnus Karlsson <magnus.karlsson@intel.com>,
-        magnus.karlsson@intel.com, bjorn.topel@intel.com, ast@kernel.org,
-        daniel@iogearbox.net, netdev@vger.kernel.org
-Cc:     jonathan.lemon@gmail.com, bpf@vger.kernel.org
-Message-ID: <5d9ce369d6e5_17cc2aba94c845b415@john-XPS-13-9370.notmuch>
-In-Reply-To: <1570530208-17720-1-git-send-email-magnus.karlsson@intel.com>
-References: <1570530208-17720-1-git-send-email-magnus.karlsson@intel.com>
-Subject: RE: [PATCH bpf] libbpf: fix compatibility for kernels without
- need_wakeup
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        id S1730156AbfJHTp7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Oct 2019 15:45:59 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:31958 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729647AbfJHTp7 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 8 Oct 2019 15:45:59 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x98Jj5Wr013380
+        for <bpf@vger.kernel.org>; Tue, 8 Oct 2019 12:45:58 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=4ZqodNMNzZghFxCeYdYkqXUZ3wwf06nIFSa1OQsT53g=;
+ b=IXOBO9jkEoF6ka4d5hBoZ2HKkIOEwCTZvk+F1pa401KYFSD4kegYH53vipq/Prvb0CRf
+ HHHPOg7CnYL2hf6xLvtS7TJiizKUSnoxcGH9gcTiBbJkBMfJSJTn/U10vO7vyRYB94Z4
+ nlP5nnIUw7faVhsp+YGS8kR/1C+tuEYyyG4= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2vgvc7swvv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 08 Oct 2019 12:45:58 -0700
+Received: from 2401:db00:30:6007:face:0:1:0 (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 8 Oct 2019 12:45:57 -0700
+Received: by dev101.prn2.facebook.com (Postfix, from userid 137359)
+        id 78B1E8618E0; Tue,  8 Oct 2019 12:45:56 -0700 (PDT)
+Smtp-Origin-Hostprefix: dev
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: dev101.prn2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: prn2c23
+Subject: [PATCH bpf-next 0/2] Track read-only map contents as known scalars in BPF verifiers
+Date:   Tue, 8 Oct 2019 12:45:46 -0700
+Message-ID: <20191008194548.2344473-1-andriin@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
+ definitions=2019-10-08_07:2019-10-08,2019-10-08 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 malwarescore=0
+ phishscore=0 adultscore=0 clxscore=1015 priorityscore=1501 bulkscore=0
+ mlxlogscore=694 impostorscore=0 lowpriorityscore=0 spamscore=0
+ suspectscore=8 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1908290000 definitions=main-1910080151
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Magnus Karlsson wrote:
-> When the need_wakeup flag was added to AF_XDP, the format of the
-> XDP_MMAP_OFFSETS getsockopt was extended. Code was added to the kernel
-> to take care of compatibility issues arrising from running
-> applications using any of the two formats. However, libbpf was not
-> extended to take care of the case when the application/libbpf uses the
-> new format but the kernel only supports the old format. This patch
-> adds support in libbpf for parsing the old format, before the
-> need_wakeup flag was added, and emulating a set of static need_wakeup
-> flags that will always work for the application.
-> 
-> Fixes: a4500432c2587cb2a ("libbpf: add support for need_wakeup flag in AF_XDP part")
-> Reported-by: Eloy Degen <degeneloy@gmail.com>
-> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-> ---
->  tools/lib/bpf/xsk.c | 109 +++++++++++++++++++++++++++++++++++++---------------
->  1 file changed, 78 insertions(+), 31 deletions(-)
-> 
-> diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
-> index a902838..46f9687 100644
-> --- a/tools/lib/bpf/xsk.c
-> +++ b/tools/lib/bpf/xsk.c
-> @@ -44,6 +44,25 @@
->   #define PF_XDP AF_XDP
->  #endif
->  
-> +#define is_mmap_offsets_v1(optlen) \
-> +	((optlen) == sizeof(struct xdp_mmap_offsets_v1))
-> +
-> +#define get_prod_off(ring) \
-> +	(is_mmap_offsets_v1(optlen) ? \
-> +	 ((struct xdp_mmap_offsets_v1 *)&off)->ring.producer : \
-> +	 off.ring.producer)
-> +#define get_cons_off(ring) \
-> +	(is_mmap_offsets_v1(optlen) ? \
-> +	 ((struct xdp_mmap_offsets_v1 *)&off)->ring.consumer : \
-> +	 off.ring.consumer)
-> +#define get_desc_off(ring) \
-> +	(is_mmap_offsets_v1(optlen) ? \
-> +	 ((struct xdp_mmap_offsets_v1 *)&off)->ring.desc : off.ring.desc)
-> +#define get_flags_off(ring) \
-> +	(is_mmap_offsets_v1(optlen) ? \
-> +	 ((struct xdp_mmap_offsets_v1 *)&off)->ring.consumer + sizeof(u32) : \
-> +	 off.ring.flags)
-> +
- 
-It seems the only thing added was flags right? If so seems we
-only need the last one there, get_flags_off(). I think it would
-be a bit cleaner to just use the macros where its actually
-needed IMO.
+With BPF maps supporting direct map access (currently, array_map w/ single
+element, used for global data) that are read-only both from system call and
+BPF side, it's possible for BPF verifier to track its contents as known
+constants.
 
-Thanks,
-John
+Now it's possible for user-space control app to pre-initialize read-only map
+(e.g., for .rodata section) with user-provided flags and parameters and rely
+on BPF verifier to detect and eliminate dead code resulting from specific
+combination of input parameters.
+
+Andrii Nakryiko (2):
+  bpf: track contents of read-only maps as scalars
+  selftests/bpf: add read-only map values propagation tests
+
+ kernel/bpf/verifier.c                         | 58 ++++++++++-
+ .../selftests/bpf/prog_tests/rdonly_maps.c    | 99 +++++++++++++++++++
+ .../selftests/bpf/progs/test_rdonly_maps.c    | 83 ++++++++++++++++
+ 3 files changed, 238 insertions(+), 2 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/rdonly_maps.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_rdonly_maps.c
+
+-- 
+2.17.1
+
