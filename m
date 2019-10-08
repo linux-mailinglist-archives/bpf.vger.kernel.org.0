@@ -2,49 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EA377D0332
-	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2019 00:03:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FAC8D03DC
+	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2019 01:10:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725879AbfJHWDF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Oct 2019 18:03:05 -0400
-Received: from www62.your-server.de ([213.133.104.62]:58380 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725848AbfJHWDF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Oct 2019 18:03:05 -0400
-Received: from 55.249.197.178.dynamic.dsl-lte-bonding.lssmb00p-msn.res.cust.swisscom.ch ([178.197.249.55] helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iHxZP-0004h4-Kf; Wed, 09 Oct 2019 00:03:03 +0200
-Date:   Wed, 9 Oct 2019 00:03:03 +0200
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     Jiri Benc <jbenc@redhat.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH bpf 0/2] selftests/bpf: fix false failures
-Message-ID: <20191008220303.GA1428@pc-63.home>
-References: <cover.1570539863.git.jbenc@redhat.com>
+        id S1727715AbfJHXK3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Oct 2019 19:10:29 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:27498 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729187AbfJHXK3 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 8 Oct 2019 19:10:29 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x98NAStn009292
+        for <bpf@vger.kernel.org>; Tue, 8 Oct 2019 16:10:28 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=DSNf8hp9g/dB7otY6SnpKCQZcvrcUL9LROymFzvmQ5Q=;
+ b=NOybpX3nFdNRaBre8S7GaPopXTfU25RwRGUhJWjeiz7vaKrs2EgNZKQHeK2+68ANpipi
+ WV8/5WUfN+vLlNT1ljMNGzxRU0LUHThMdBvH6BLdd+uVFMdLpBM8reW5cA0I31RaKERi
+ GiPsZXywiZL5PH91wPC3PpM3kc0KgHXpNgw= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by mx0a-00082601.pphosted.com with ESMTP id 2vh1ukrnay-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 08 Oct 2019 16:10:28 -0700
+Received: from 2401:db00:30:600c:face:0:39:0 (2620:10d:c081:10::13) by
+ mail.thefacebook.com (2620:10d:c081:35::127) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
+ Tue, 8 Oct 2019 16:10:11 -0700
+Received: by dev101.prn2.facebook.com (Postfix, from userid 137359)
+        id E42F98618FA; Tue,  8 Oct 2019 16:10:10 -0700 (PDT)
+Smtp-Origin-Hostprefix: dev
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: dev101.prn2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>, <john.fastabend@gmail.com>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: prn2c23
+Subject: [PATCH bpf-next 0/3] Fix BTF-to-C converter's padding generation
+Date:   Tue, 8 Oct 2019 16:10:05 -0700
+Message-ID: <20191008231009.2991130-1-andriin@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1570539863.git.jbenc@redhat.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.101.4/25596/Tue Oct  8 10:33:54 2019)
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
+ definitions=2019-10-08_09:2019-10-08,2019-10-08 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
+ impostorscore=0 malwarescore=0 mlxlogscore=827 spamscore=0 adultscore=0
+ bulkscore=0 lowpriorityscore=0 suspectscore=8 clxscore=1015 mlxscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1908290000 definitions=main-1910080183
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 08, 2019 at 03:10:43PM +0200, Jiri Benc wrote:
-> The test_flow_dissector and test_lwt_ip_encap selftests were failing for me.
-> It was caused by the tests not being enough system/distro independent.
-> 
-> Jiri Benc (2):
->   selftests/bpf: set rp_filter in test_flow_dissector
->   selftests/bpf: more compatible nc options in test_lwt_ip_encap
-> 
->  tools/testing/selftests/bpf/test_flow_dissector.sh | 3 +++
->  tools/testing/selftests/bpf/test_lwt_ip_encap.sh   | 6 +++---
->  2 files changed, 6 insertions(+), 3 deletions(-)
+Fix BTF-to-C logic of handling padding at the end of a struct. Fix existing
+test that should have captured this. Also move test_btf_dump into a test_progs
+test to leverage common infrastructure.
 
-Applied, thanks!
+Andrii Nakryiko (3):
+  libbpf: fix struct end padding in btf_dump
+  selftests/bpf: convert test_btf_dump into test_progs test
+  selftests/bpf: fix btf_dump padding test case
+
+ tools/lib/bpf/btf_dump.c                      |  8 +-
+ tools/testing/selftests/bpf/Makefile          |  2 +-
+ .../btf_dump.c}                               | 88 +++++++------------
+ .../bpf/progs/btf_dump_test_case_padding.c    |  5 +-
+ 4 files changed, 46 insertions(+), 57 deletions(-)
+ rename tools/testing/selftests/bpf/{test_btf_dump.c => prog_tests/btf_dump.c} (51%)
+
+-- 
+2.17.1
+
