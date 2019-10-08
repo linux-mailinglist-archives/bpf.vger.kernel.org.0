@@ -2,82 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 16AB6D0112
-	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2019 21:19:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AE6BD012D
+	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2019 21:28:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727220AbfJHTTc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Oct 2019 15:19:32 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:43266 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726439AbfJHTTc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Oct 2019 15:19:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:To:From:Date:Sender:Reply-To:Cc:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=Nx1tfnzncNr1/2YEe91mPr6s9qQb805exoxZT/kE+5Y=; b=j7TTiFOjt+1RkFZcxcir9K79v
-        ZPi31CptFJa+ykSk5Z+i5oziljqs8kVg1nPlVm+qbBJFrD7o6IIEEsZQ846CG5HsDnSZmvG+89G2r
-        oc2zghrxJEsFKl6qIc4A+oKr3OHRvirmk6PB6iWnregY3vI5UUiMcdToXZQN6biyWfRBsOvjdb3xE
-        vfgA+nwWKe+50/+B34tlL7g3aXyfewvRAw9dI0yNHqRBGSbBXWaAgnpWqXiPpsCrdZhrLPzNDnmrW
-        6hVi5ESd2k1ui1G1zQoJ7/kcjloHIWCL6wSZGKB/SK/i0nNVSchQ7K7fNquDuo+Dw7VIpR2sMG1rp
-        VXOfdODOQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.2 #3 (Red Hat Linux))
-        id 1iHv0B-0005Vw-5M; Tue, 08 Oct 2019 19:18:31 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5DDCD305EE1;
-        Tue,  8 Oct 2019 21:17:34 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 876CE202448A4; Tue,  8 Oct 2019 21:18:25 +0200 (CEST)
-Date:   Tue, 8 Oct 2019 21:18:25 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Qian Cai <cai@lca.pw>, akpm@linux-foundation.org, mingo@redhat.com,
-        will@kernel.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, maarten.lankhorst@linux.intel.com,
-        mripard@kernel.org, sean@poorly.run, airlied@linux.ie,
-        dri-devel@lists.freedesktop.org, gregkh@linuxfoundation.org,
-        jslaby@suse.com, viro@zeniv.linux.org.uk,
-        linux-fsdevel@vger.kernel.org, joonas.lahtinen@linux.intel.com,
-        rodrigo.vivi@intel.com, intel-gfx@lists.freedesktop.org,
-        tytso@mit.edu, jack@suse.com, linux-ext4@vger.kernel.org,
-        tj@kernel.org, mark@fasheh.com, jlbec@evilplan.or,
-        joseph.qi@linux.alibaba.com, ocfs2-devel@oss.oracle.com,
-        davem@davemloft.net, st@kernel.org, daniel@iogearbox.net,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, duyuyang@gmail.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        alexander.levin@microsoft.com
-Subject: Re: [PATCH -next] treewide: remove unused argument in lock_release()
-Message-ID: <20191008191825.GH2328@hirez.programming.kicks-ass.net>
-References: <1568909380-32199-1-git-send-email-cai@lca.pw>
- <20191008163351.GR16989@phenom.ffwll.local>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191008163351.GR16989@phenom.ffwll.local>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1727126AbfJHT2t (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Oct 2019 15:28:49 -0400
+Received: from mail-io1-f67.google.com ([209.85.166.67]:45220 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726439AbfJHT2t (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Oct 2019 15:28:49 -0400
+Received: by mail-io1-f67.google.com with SMTP id c25so39011473iot.12;
+        Tue, 08 Oct 2019 12:28:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=hKUGwdiN8CcAzSwm1K0zrzI1YBggiWbMrqJXJpOw9rI=;
+        b=noxZXtofntjndArr8gNgCk6HCpAHUeq3QEZZ0cRFis1JmEO8QpSsLaAodgVDk+Pk6L
+         OYzv0/rV7PDyMYKYWB1yGLW2H2mNd910OAoqlB0O7UO1VwjaBZgkXchrziyVeRZDdDTR
+         A6kQAGQ4FQo4/rg6iwMEg81aAwVj8BUBG8AopmYh9r3Vka/62E4jnX0z/+kUTfd92blY
+         /uB8XSnPEAk0KTCxh2r4IF4epahVcS+pHUsJuebCd9GPcs1Y8ph+yRd2FLSMsxsY7hh7
+         KqE3GLhI2xzixAGWChcwqdg+gvsf4jnZWEbdh8mGKQy1NhdDMcdlc1wBQFh5JOoqeUex
+         UBTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=hKUGwdiN8CcAzSwm1K0zrzI1YBggiWbMrqJXJpOw9rI=;
+        b=Q9ZC2Dwbnrf8/lBZGVu8kLsi+utCIht6DzM57VuJdt1GIjdnarj3SmE9b+nSlK+6UL
+         w62g7Lf+FUtiHprrPo5N/A2Yvd2B2eF/6SmvWm9CxSoZBQppOSLNxaJRoL4HYv/b/RCF
+         2U9vXg8mKl5VrSKyszpqP3Vu0WJsz/hjqcElQsWfsOqbLla4IeV69sYQo7rOnVOpCSVs
+         ShOXCJ8VUAdKyP70i1zwMi0v2QcOxHF3wR8ONwtnZioUH4bWcOlU6sl42EoXNwVskjVY
+         sBdV+CerODZz5wkBp5GTgONhmgMPY10T9JeN5yuozSiXMXqOSp+s4B5jrHi1uIRsbff/
+         pwdg==
+X-Gm-Message-State: APjAAAX75St9qRo/DgVcRJIDLM6IiyS3DamO0RVAu/daZk6ZQtBAkwSL
+        QVfXxUg6HYYlz1GFGjv88hg=
+X-Google-Smtp-Source: APXvYqy2e/8FcOcI62SHTcbBbl+r9RyeZVYuM2/15zjG3CoBI0yMr6FOv/ibHqWHCLcA9RBQ8HbVmg==
+X-Received: by 2002:a92:b74f:: with SMTP id c15mr383830ilm.43.1570562928746;
+        Tue, 08 Oct 2019 12:28:48 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id 28sm10601898ilq.61.2019.10.08.12.28.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Oct 2019 12:28:48 -0700 (PDT)
+Date:   Tue, 08 Oct 2019 12:28:41 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Magnus Karlsson <magnus.karlsson@intel.com>,
+        magnus.karlsson@intel.com, bjorn.topel@intel.com, ast@kernel.org,
+        daniel@iogearbox.net, netdev@vger.kernel.org
+Cc:     jonathan.lemon@gmail.com, bpf@vger.kernel.org
+Message-ID: <5d9ce369d6e5_17cc2aba94c845b415@john-XPS-13-9370.notmuch>
+In-Reply-To: <1570530208-17720-1-git-send-email-magnus.karlsson@intel.com>
+References: <1570530208-17720-1-git-send-email-magnus.karlsson@intel.com>
+Subject: RE: [PATCH bpf] libbpf: fix compatibility for kernels without
+ need_wakeup
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 08, 2019 at 06:33:51PM +0200, Daniel Vetter wrote:
-> On Thu, Sep 19, 2019 at 12:09:40PM -0400, Qian Cai wrote:
-> > Since the commit b4adfe8e05f1 ("locking/lockdep: Remove unused argument
-> > in __lock_release"), @nested is no longer used in lock_release(), so
-> > remove it from all lock_release() calls and friends.
-> > 
-> > Signed-off-by: Qian Cai <cai@lca.pw>
+Magnus Karlsson wrote:
+> When the need_wakeup flag was added to AF_XDP, the format of the
+> XDP_MMAP_OFFSETS getsockopt was extended. Code was added to the kernel
+> to take care of compatibility issues arrising from running
+> applications using any of the two formats. However, libbpf was not
+> extended to take care of the case when the application/libbpf uses the
+> new format but the kernel only supports the old format. This patch
+> adds support in libbpf for parsing the old format, before the
+> need_wakeup flag was added, and emulating a set of static need_wakeup
+> flags that will always work for the application.
 > 
-> Ack on the concept and for the drm parts (and feel free to keep the ack if
-> you inevitably have to respin this later on). Might result in some
-> conflicts, but welp we need to keep Linus busy :-)
+> Fixes: a4500432c2587cb2a ("libbpf: add support for need_wakeup flag in AF_XDP part")
+> Reported-by: Eloy Degen <degeneloy@gmail.com>
+> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+> ---
+>  tools/lib/bpf/xsk.c | 109 +++++++++++++++++++++++++++++++++++++---------------
+>  1 file changed, 78 insertions(+), 31 deletions(-)
 > 
-> Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+> diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
+> index a902838..46f9687 100644
+> --- a/tools/lib/bpf/xsk.c
+> +++ b/tools/lib/bpf/xsk.c
+> @@ -44,6 +44,25 @@
+>   #define PF_XDP AF_XDP
+>  #endif
+>  
+> +#define is_mmap_offsets_v1(optlen) \
+> +	((optlen) == sizeof(struct xdp_mmap_offsets_v1))
+> +
+> +#define get_prod_off(ring) \
+> +	(is_mmap_offsets_v1(optlen) ? \
+> +	 ((struct xdp_mmap_offsets_v1 *)&off)->ring.producer : \
+> +	 off.ring.producer)
+> +#define get_cons_off(ring) \
+> +	(is_mmap_offsets_v1(optlen) ? \
+> +	 ((struct xdp_mmap_offsets_v1 *)&off)->ring.consumer : \
+> +	 off.ring.consumer)
+> +#define get_desc_off(ring) \
+> +	(is_mmap_offsets_v1(optlen) ? \
+> +	 ((struct xdp_mmap_offsets_v1 *)&off)->ring.desc : off.ring.desc)
+> +#define get_flags_off(ring) \
+> +	(is_mmap_offsets_v1(optlen) ? \
+> +	 ((struct xdp_mmap_offsets_v1 *)&off)->ring.consumer + sizeof(u32) : \
+> +	 off.ring.flags)
+> +
+ 
+It seems the only thing added was flags right? If so seems we
+only need the last one there, get_flags_off(). I think it would
+be a bit cleaner to just use the macros where its actually
+needed IMO.
 
-Thanks Daniel!
+Thanks,
+John
