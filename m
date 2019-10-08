@@ -2,145 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B67CCFD3B
-	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2019 17:11:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E709CFD8F
+	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2019 17:26:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725939AbfJHPLC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Oct 2019 11:11:02 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:16138 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727635AbfJHPLC (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 8 Oct 2019 11:11:02 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x98FAmrn008935;
-        Tue, 8 Oct 2019 08:10:49 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=pey4HVVXSEn2tMg0K6ayjnLcdp+GqRCUltjrdCYIZBA=;
- b=I3mBGF851/P0SbCCfXYAnkLNPkfVFARYObBqRXFXUI0cK+ouF8v5pR0MoHQgF6EMch+p
- KPQ7psIhSpPCx5Cr+nHWR/HKDIzjUdrwerwGH8S6kFD+Pc3EbC1LibbNr9wkFwpQkstm
- qYMFwUhXzvJkk+ThE9ylYDc2z1Pxd6oA6Vs= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2vgvc7r5aa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 08 Oct 2019 08:10:48 -0700
-Received: from ash-exopmbx101.TheFacebook.com (2620:10d:c0a8:82::b) by
- ash-exhub202.TheFacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 8 Oct 2019 08:10:10 -0700
-Received: from ash-exhub103.TheFacebook.com (2620:10d:c0a8:82::c) by
- ash-exopmbx101.TheFacebook.com (2620:10d:c0a8:82::b) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 8 Oct 2019 08:10:09 -0700
-Received: from NAM05-BY2-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Tue, 8 Oct 2019 08:10:09 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AZxPEU3tPRxUv/NHjt7MzcVGCWFwg2NWkjgKLNg9TWqTzz2c5n/2sprSERZWUssmmqIIKGFHiLy+76Kjem0sM/xHe6ZPcHiAWH1Ouoq8fXi+fZ4qL2n7c708ix1TTKQO8NcRZnjGgAMvR0R0PNhCq38jj9mNsgP3KpYXUHho8RIi+8KsiHc3ccHgQvY1TdOZQ/AoeZNPzsh5bXyatAuUrw8isCMw4pLumomYomI2iqNMyz07ug6pY4jAw8D5IpKq7lLgMTpzQ8XXlSgcQZNnuOZH5f89sP2+UgbM7fihZPTePkhNSJF8jOgvKwhltRKBWBBW6ZrQM/6WA0iy6GgbNg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pey4HVVXSEn2tMg0K6ayjnLcdp+GqRCUltjrdCYIZBA=;
- b=hF7ZouKF+3v2IVJ4nPU4n2otzp0Eo2PbCfk/KCQjZBHBCqIXNkSzWq3rN4A4WFK65B5oMFvbdjYp6OrGAg0+D8lddm3uaUUNkYQwgakIg1j5h9r24bNa1YXQx080+6PXi00rwnYEz3I/8m07WCfrJPZhUJ7ib4WofcsFyww77q3y8GXl6RDmQnjxjHyjeGj15vsL9VkuNUnH42wtxETELUIjBH+N//bdVV+mCLcOqpN6YXGjmfcDh03aMcnNBwm8CIuXdD4auSxDOaOi+ZyDw2lnHM8XP0ZEuGsz169JSxwTQFHz1ObV+Y39MNPbcxF6M5GEpsiqiTgzidZzUuKVWg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pey4HVVXSEn2tMg0K6ayjnLcdp+GqRCUltjrdCYIZBA=;
- b=MxmTXNgdBfUXGgrvDyVsSQsE8dDjIsfZ1Tf1ru2oKpuF2QT8zdYB38nuyPsjSMUKAiQSIIadHAdYnozRD3yVcIye32LkgUU/ksRTHblLALxQPb+nsHoG6kUiRkV8daI7kDkq9SKDzLkPyolhhzVj7+OMBU8g2J/F6rnW6mIwtpk=
-Received: from BYAPR15MB2501.namprd15.prod.outlook.com (52.135.196.11) by
- BYAPR15MB2982.namprd15.prod.outlook.com (20.178.237.207) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2327.24; Tue, 8 Oct 2019 15:10:08 +0000
-Received: from BYAPR15MB2501.namprd15.prod.outlook.com
- ([fe80::c13d:be57:b216:bfa0]) by BYAPR15MB2501.namprd15.prod.outlook.com
- ([fe80::c13d:be57:b216:bfa0%5]) with mapi id 15.20.2327.026; Tue, 8 Oct 2019
- 15:10:08 +0000
-From:   Alexei Starovoitov <ast@fb.com>
+        id S1727228AbfJHP0q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Oct 2019 11:26:46 -0400
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:36582 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725966AbfJHP0p (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Oct 2019 11:26:45 -0400
+Received: by mail-pg1-f194.google.com with SMTP id 23so10439729pgk.3
+        for <bpf@vger.kernel.org>; Tue, 08 Oct 2019 08:26:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ukGqWj5a1FeSJU0pzE0V4T+cj7qN53c/aquLzSv6y94=;
+        b=dqkf+ZprkXFVcxFXkXIDOQAPKllrX1M6J7JTd3uE7yvdnmhEulq3lkYjnd+1DflPNk
+         4mVwid7A90bJqpgVt2s3SZc4z9TIryZC1XqcvFFICMMu7YnA3gIbDYBUl2uwsl1dv+Z4
+         t2mX8x3DiVccFyPARNRvAQJ8CgIWdvAVEUff1jRZHo3l4b6zZ6WZMd3ak45tQpdSA9/l
+         7/XMnsW+WhTKdTlH91axXYBBq948GlGlTRAvQxgeF/iWnqRd4mVvFVzS81NVa3qqQXbT
+         cOh2VsLcnhlcGhrvBnwM9j/P2CFOcpbnUBWF3I8PR8rJw3Ca5GkuFHwigJVGXtWn5Rjl
+         Y2vA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ukGqWj5a1FeSJU0pzE0V4T+cj7qN53c/aquLzSv6y94=;
+        b=bBYtmIJ8kjzTtyeCKr0xtYhLx1M5huhpu7/5bhph/vxfYEdG/+0b1K5fMa6QpQtRSz
+         u4ngvhl9Ww3J+6l0nXVU2xUTPjNyPVUXQUIibnX4H88G3zLvdExUV2Ff+h7YSzOaBle0
+         OS+mvsNaJmWVHYxAdUjEjhAgm6IuUDBF+0OBGvWCZFFGpmiX1Zs/GhxRmxl32Uj6RqzE
+         jNthnXHevyq2ztEdr5jrfg2kaHQGJumjoIIyzVPQxvmf5nsIWI4PjQ6yf4loaA+P9Ke4
+         c0athKZjCJkhUcWBg9XtzhGB992oZ4uL/SEFYW2mRanerB6DcuqKHZU7QAL/wslikO1b
+         6SHw==
+X-Gm-Message-State: APjAAAWa+tDIU2Vdh3cYv1ce8inNK5KADEybEiQAm6U4fCCAB5IGPkht
+        5+AFh2453RzZEi1NvcE2TxcsYg==
+X-Google-Smtp-Source: APXvYqxBO2iZovZc62Tudrbl7YZA7NOxm4NfIRO8QC1VBoxV3wwBvdR/5hAlEFkUmwouqWE5jcxolw==
+X-Received: by 2002:a63:6c89:: with SMTP id h131mr36854264pgc.380.1570548403251;
+        Tue, 08 Oct 2019 08:26:43 -0700 (PDT)
+Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
+        by smtp.gmail.com with ESMTPSA id j25sm18518231pfi.113.2019.10.08.08.26.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Oct 2019 08:26:42 -0700 (PDT)
+Date:   Tue, 8 Oct 2019 08:26:41 -0700
+From:   Stanislav Fomichev <sdf@fomichev.me>
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC:     Andrii Nakryiko <andriin@fb.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH v4 bpf-next 6/7] libbpf: add
- BPF_CORE_READ/BPF_CORE_READ_INTO helpers
-Thread-Topic: [PATCH v4 bpf-next 6/7] libbpf: add
- BPF_CORE_READ/BPF_CORE_READ_INTO helpers
-Thread-Index: AQHVfWFOcTsVfqP3i0KD6451oBFXlKdQLrSAgAAWI4CAAJVTAA==
-Date:   Tue, 8 Oct 2019 15:10:08 +0000
-Message-ID: <5411bdae-a723-6dd3-d35a-8ec825924b4e@fb.com>
-References: <20191007224712.1984401-1-andriin@fb.com>
- <20191007224712.1984401-7-andriin@fb.com>
- <035617e9-2d0d-4082-8862-45bc4bb210fe@fb.com>
- <CAEf4Bzbe8mKFfd9yAN-i=f6jG50VL5SEqjVJTBcUe8=5eStYJA@mail.gmail.com>
-In-Reply-To: <CAEf4Bzbe8mKFfd9yAN-i=f6jG50VL5SEqjVJTBcUe8=5eStYJA@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: CO2PR05CA0071.namprd05.prod.outlook.com
- (2603:10b6:102:2::39) To BYAPR15MB2501.namprd15.prod.outlook.com
- (2603:10b6:a02:88::11)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:180::c253]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 709d0223-3ce3-4a33-5c65-08d74c019b59
-x-ms-traffictypediagnostic: BYAPR15MB2982:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR15MB29822509D547C8F4AC44CC01D79A0@BYAPR15MB2982.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2733;
-x-forefront-prvs: 01842C458A
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(366004)(346002)(136003)(396003)(39860400002)(376002)(189003)(199004)(25786009)(186003)(2906002)(52116002)(6116002)(99286004)(7736002)(305945005)(86362001)(11346002)(256004)(229853002)(64756008)(66446008)(66946007)(14444005)(66556008)(6436002)(66476007)(46003)(6486002)(486006)(446003)(316002)(476003)(2616005)(4744005)(54906003)(76176011)(4326008)(53546011)(31696002)(6512007)(102836004)(8936002)(6506007)(14454004)(386003)(6246003)(31686004)(6916009)(71190400001)(81156014)(8676002)(71200400001)(36756003)(478600001)(81166006)(5660300002);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB2982;H:BYAPR15MB2501.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: PMKegaNI4Oc33oOUBCLEFdOd6GfKRxwU6KOZVGxgRQ7jRQoCR/aRQYsmpL8BixOQUCMSQqUVfP5u1qAQ5L+nlK7T4O581rJvy+joTRNL3da57fefSdTN9Ssg2cfGN5wuStTqV4vBGWH6ZktkNiD4gSM8VMffRCiERsX5TNxmlObukPR4oU4/9L6oxcOw/RAigNhazYXSKM/glWlrSn/Nt/jENpk4eEHzOS/H5nii4t8+E38l68qmhssKHMxXVd4PGQc7wdd3gI2+xt2FudeHTBocEzF8fJMEawneLm+gqGZiOiMNvXtghbsPOasRscLPVBkCz0g+ok27RM7hB3YuiHJkv8Voco8IpTjT/XlhLh3+a27SOlZG4qKbSf2jhlHUpAXsCu+rjfmr2GJi7Yq0rLSUaIvt6JwbgI2A1j6kiQk=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <1171DBD6DE25734BBA28C4B1038C1BB6@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Stanislav Fomichev <sdf@google.com>,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next] bpftool: fix bpftool build by switching to
+ bpf_object__open_file()
+Message-ID: <20191008152641.GD2096@mini-arch>
+References: <20191007212237.1704211-1-andriin@fb.com>
+ <20191007214650.GC2096@mini-arch>
+ <CAEf4Bzba7S=hUkxTvL3Y+QYxAxZ-am5w-mzk8Aks7csx-g0FPA@mail.gmail.com>
+ <CAEf4BzYh4pN3FPYHRMRwAUFEK0E+wXqLSqjZE3FZEmyhzCwuig@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 709d0223-3ce3-4a33-5c65-08d74c019b59
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Oct 2019 15:10:08.4635
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: knodDyEG6WnTVCOsCSnhrJ0p+vtTsYfXjaRX1FcIsJwp0Sd7b6ZPbTvvu9QJQYPU
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2982
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
- definitions=2019-10-08_06:2019-10-08,2019-10-08 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 malwarescore=0
- phishscore=0 adultscore=0 clxscore=1015 priorityscore=1501 bulkscore=0
- mlxlogscore=852 impostorscore=0 lowpriorityscore=0 spamscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1908290000 definitions=main-1910080135
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzYh4pN3FPYHRMRwAUFEK0E+wXqLSqjZE3FZEmyhzCwuig@mail.gmail.com>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-T24gMTAvNy8xOSAxMToxNSBQTSwgQW5kcmlpIE5ha3J5aWtvIHdyb3RlOg0KPj4+ICsjZGVmaW5l
-IEJQRl9DT1JFX1JFQUQoc3JjLCBhLCAuLi4pICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgXA0KPj4+ICsgICAgICh7ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXA0KPj4+ICsgICAgICAgICAgICAgX19f
-dHlwZShzcmMsIGEsICMjX19WQV9BUkdTX18pIF9fcjsgICAgICAgICAgICAgICAgICAgICAgICAg
-XA0KPj4+ICsgICAgICAgICAgICAgQlBGX0NPUkVfUkVBRF9JTlRPKCZfX3IsIHNyYywgYSwgIyNf
-X1ZBX0FSR1NfXyk7ICAgICAgICAgICAgXA0KPj4+ICsgICAgICAgICAgICAgX19yOyAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXA0KPj4+ICsg
-ICAgIH0pDQo+Pj4gKw0KPj4gU2luY2Ugd2UncmUgc3BsaXR0aW5nIHRoaW5ncyBpbnRvDQo+PiBi
-cGZfe2hlbHBlcnMsaGVscGVyX2RlZnMsZW5kaWFuLHRyYWNpbmd9LmgNCj4+IGhvdyBhYm91dCBh
-ZGRpbmcgYWxsIGNvcmUgbWFjcm9zIGludG8gYnBmX2NvcmVfcmVhZC5oID8NCj4gb2ssIGJ1dCBt
-YXliZSBqdXN0IGJwZl9jb3JlLmggdGhlbj8NCg0KYnBmX2NvcmUuaCBpcyB0b28gZ2VuZXJpYy4g
-SXQgZWl0aGVyIG5lZWRzIHRvIGJlIGNhcGl0YWxpemVkLA0Kd2hpY2ggaXMgdW5oZWFyZCBvZiBm
-b3IgaGVhZGVyIGZpbGVzIG9yIHNvbWUgc3VmZml4IGFkZGVkLg0KSSB0aGluayBicGZfY29yZV9y
-ZWFkLmggaXMgc2hvcnQgZW5vdWdoIGFuZCBkb2Vzbid0IGxvb2sgbGlrZQ0KYnBmX2NvcmVfd3Jp
-dGUuaCB3aWxsIGJlIGNvbWluZyBhbnkgdGltZSBzb29uLg0KSWYgeW91J3JlIHdvcnJpZWQgYWJv
-dXQgX3JlYWQgcGFydCB0aGVuIG1heSBiZQ0KYnBmX2NvcmVfYWNjZXNzLmggPw0KDQo=
+On 10/07, Andrii Nakryiko wrote:
+> -- Andrii
+> 
+> On Mon, Oct 7, 2019 at 2:50 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Mon, Oct 7, 2019 at 2:46 PM Stanislav Fomichev <sdf@fomichev.me> wrote:
+> > >
+> > > On 10/07, Andrii Nakryiko wrote:
+> > > > As part of libbpf in 5e61f2707029 ("libbpf: stop enforcing kern_version,
+> > > > populate it for users") non-LIBBPF_API __bpf_object__open_xattr() API
+> > > > was removed from libbpf.h header. This broke bpftool, which relied on
+> > > > that function. This patch fixes the build by switching to newly added
+> > > > bpf_object__open_file() which provides the same capabilities, but is
+> > > > official and future-proof API.
+> > > >
+> > > > Fixes: 5e61f2707029 ("libbpf: stop enforcing kern_version, populate it for users")
+> > > > Reported-by: Stanislav Fomichev <sdf@google.com>
+> > > > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> > > > ---
+> > > >  tools/bpf/bpftool/main.c |  4 ++--
+> > > >  tools/bpf/bpftool/main.h |  2 +-
+> > > >  tools/bpf/bpftool/prog.c | 22 ++++++++++++----------
+> > > >  3 files changed, 15 insertions(+), 13 deletions(-)
+> > > >
+> 
+> [...]
+> 
+> > > > --- a/tools/bpf/bpftool/prog.c
+> > > > +++ b/tools/bpf/bpftool/prog.c
+> > > > @@ -1092,9 +1092,7 @@ static int do_run(int argc, char **argv)
+> > > >  static int load_with_options(int argc, char **argv, bool first_prog_only)
+> > > >  {
+> > > >       struct bpf_object_load_attr load_attr = { 0 };
+> > > > -     struct bpf_object_open_attr open_attr = {
+> > > > -             .prog_type = BPF_PROG_TYPE_UNSPEC,
+> > > > -     };
+> > > > +     enum bpf_prog_type prog_type = BPF_PROG_TYPE_UNSPEC;
+> > > >       enum bpf_attach_type expected_attach_type;
+> > > >       struct map_replace *map_replace = NULL;
+> 
+> [...]
+> 
+> > > >
+> > > >       bpf_object__for_each_program(pos, obj) {
+> > > > -             enum bpf_prog_type prog_type = open_attr.prog_type;
+> > > > +             enum bpf_prog_type prog_type = prog_type;
+> > > Are you sure it works that way?
+> >
+> > Oh, I did this pretty mechanically, didn't notice I'm shadowing. In
+> > either case I'd like to avoid shadowing, so I'll rename one of them,
+> > good catch!
+> >
+> > >
+> > > $ cat tmp.c
+> > > #include <stdio.h>
+> > >
+> > > int main()
+> > > {
+> > >         int x = 1;
+> > >         printf("outer x=%d\n", x);
+> > >
+> > >         {
+> > >                 int x = x;
+> 
+> It's amazing `int x = x;` is compiled successfully when there is no x
+> in outer scope. And it's also amazing that it's doing the wrong thing
+> when there is a shadowed variable in outer scope. I can't imagine the
+> case where this will be a meaningful behavior...
+Enjoy your daily dose of undefined behavior :-D
+
+> > >                 printf("inner x=%d\n", x);
+> > >         }
+> > >
+> > >         return 0;
+> > > }
+> > >
+> > > $ gcc tmp.c && ./a.out
+> > > outer x=1
+> > > inner x=0
+> > >
+> > > Other than that:
+> > > Reviewed-by: Stanislav Fomichev <sdf@google.com>
+> > >
+> > > >
+> > > > -             if (open_attr.prog_type == BPF_PROG_TYPE_UNSPEC) {
+> > > > +             if (prog_type == BPF_PROG_TYPE_UNSPEC) {
+> > > >                       const char *sec_name = bpf_program__title(pos, false);
+> > > >
+> > > >                       err = libbpf_prog_type_by_name(sec_name, &prog_type,
+> > > > --
+> > > > 2.17.1
+> > > >
