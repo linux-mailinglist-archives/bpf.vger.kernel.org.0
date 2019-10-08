@@ -2,49 +2,50 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E6877CF4A9
-	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2019 10:09:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E15FCF52E
+	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2019 10:42:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730472AbfJHIJj convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 8 Oct 2019 04:09:39 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:54738 "EHLO mx1.redhat.com"
+        id S1728104AbfJHImG convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Tue, 8 Oct 2019 04:42:06 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:59472 "EHLO mx1.redhat.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730309AbfJHIJi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Oct 2019 04:09:38 -0400
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com [209.85.167.71])
+        id S1729767AbfJHImF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Oct 2019 04:42:05 -0400
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com [209.85.208.200])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id AA7501108
-        for <bpf@vger.kernel.org>; Tue,  8 Oct 2019 08:09:37 +0000 (UTC)
-Received: by mail-lf1-f71.google.com with SMTP id y27so2084982lfg.21
-        for <bpf@vger.kernel.org>; Tue, 08 Oct 2019 01:09:37 -0700 (PDT)
+        by mx1.redhat.com (Postfix) with ESMTPS id 92A0511A27
+        for <bpf@vger.kernel.org>; Tue,  8 Oct 2019 08:42:04 +0000 (UTC)
+Received: by mail-lj1-f200.google.com with SMTP id j6so4102687ljb.19
+        for <bpf@vger.kernel.org>; Tue, 08 Oct 2019 01:42:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
          :message-id:mime-version:content-transfer-encoding;
-        bh=kYDmbLHk/9d7NfrTCWV0Mv6CJV1qIpwez3d+yPbTwTA=;
-        b=T7t9HIiP+jtRylNCxbngrzmp7r5Vq6NhzT1uiLXaMsQBLtdnPWQZuOKAyUjkwH6x+D
-         TvWmsHPcaBW4tfKpdooOL2c/RlxCUqPNkvtwN0jsP9Di2guhSXoU3Y6O8GWEfKevn/jC
-         C2sc2d+P4GgG9Xv9B5exgAmt9xRjG4QyJWvtxBWCqcMSw1pEFVC7QwioobmJc8zZvccE
-         36/6IiREv44x5wq5pUxlLhdeL0Zg8ILeFu+Nq+QdiJoHQB3K74khO9eRZbJ41qkIe45G
-         CQYD9Stkj0DikuGHjuXF8AZPbZQ9564PRE3bQX09NLPIld/zh8ScdkgEpglIDm2WATwh
-         KT3Q==
-X-Gm-Message-State: APjAAAU3h+LREVydR3yiAoRhQNot2V78dmP4OLS0vY4odC3Yx+hhZ0UO
-        ztPh5FeX/65lbpUgxOK8Zm9eNhNaFA6W0LUsizVWldmAXGgpaRO7o9gdDLscsWigF7ZEXFobGAr
-        /9GfWdx4DADom
-X-Received: by 2002:ac2:46d0:: with SMTP id p16mr19089041lfo.190.1570522176171;
-        Tue, 08 Oct 2019 01:09:36 -0700 (PDT)
-X-Google-Smtp-Source: APXvYqxAle2Dm5tkCYnO9J0WNp0pWXk447zxc1i+Ur/5bkOCZdo2MGSXCFM3n4kvLgPWHNE+pTpZ6Q==
-X-Received: by 2002:ac2:46d0:: with SMTP id p16mr19089017lfo.190.1570522175832;
-        Tue, 08 Oct 2019 01:09:35 -0700 (PDT)
+        bh=z7CZ2Zrc9UzmfHGFH2MD86DogE6B+cOvtIyP0patMCo=;
+        b=U7/SMXNdCsYlkRapsXERI/s5V/q6mHW+xq+UaXyc7a9tXo/7BPhtPs7O3AaFiZcOcN
+         vi6hK65f+FTnDFQGYF6eFcKTaFQmoLQcjZXTcceBjiymQTtDoQAEiKM1LOZFN5DnosNP
+         je/yZ6FFxylPpxz879xy7Pmy+BpfTxPU8toPKdipUaPN0JUPHaKxbfZxHpCAcXp8uwAm
+         W2wIa+zzJGrKgtsHi9vvFKpkXvDAjTe+PSsBnRH7B06Re4HhYUUJWQGLCV43NJ/FSKUD
+         cyVq+jNEEqzhGD6AqsiD4wZfwPa3UEomAURAAnQNSwjBSxVhd+PNo4xkydIpM8xuPaLC
+         CunA==
+X-Gm-Message-State: APjAAAU92OfijKALSDrLkKgBzW3wHCXObfQCd3ghjUKNOHhnXobBLITY
+        2N8cpfB4Dnwtn/PnMsXxNZ/uGG7Gbn9QaIB81q7/sH101RkgpnJFW8CkiJbW5hPdyu5PDYvf+12
+        U5F420Ct5Lgsj
+X-Received: by 2002:ac2:5dfa:: with SMTP id z26mr19795920lfq.145.1570524123061;
+        Tue, 08 Oct 2019 01:42:03 -0700 (PDT)
+X-Google-Smtp-Source: APXvYqyrXVySrB19IfktpKpc0xArXZQ8UW7Xnpdw9R5LoOEYr/jfN6mP3yyonjuowIFzrTwyv7l5cw==
+X-Received: by 2002:ac2:5dfa:: with SMTP id z26mr19795908lfq.145.1570524122842;
+        Tue, 08 Oct 2019 01:42:02 -0700 (PDT)
 Received: from alrua-x1.borgediget.toke.dk (borgediget.toke.dk. [85.204.121.218])
-        by smtp.gmail.com with ESMTPSA id m6sm3807131ljj.3.2019.10.08.01.09.34
+        by smtp.gmail.com with ESMTPSA id o18sm3370050lfb.25.2019.10.08.01.42.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Oct 2019 01:09:35 -0700 (PDT)
+        Tue, 08 Oct 2019 01:42:01 -0700 (PDT)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 5ACB218063D; Tue,  8 Oct 2019 10:09:34 +0200 (CEST)
+        id 0F25518063D; Tue,  8 Oct 2019 10:42:01 +0200 (CEST)
 From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
+To:     John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
@@ -54,12 +55,12 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
         David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next v3 2/5] bpf: Add support for setting chain call sequence for programs
-In-Reply-To: <20191007203855.GE27307@pc-66.home>
-References: <157046883502.2092443.146052429591277809.stgit@alrua-x1> <157046883723.2092443.3902769602513209987.stgit@alrua-x1> <20191007203855.GE27307@pc-66.home>
+Subject: RE: [PATCH bpf-next v3 0/5] xdp: Support multiple programs on a single interface through chain calls
+In-Reply-To: <5d9b8ac5655_2a4b2aed075a45b41@john-XPS-13-9370.notmuch>
+References: <157046883502.2092443.146052429591277809.stgit@alrua-x1> <5d9b8ac5655_2a4b2aed075a45b41@john-XPS-13-9370.notmuch>
 X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 08 Oct 2019 10:09:34 +0200
-Message-ID: <87pnj7lku9.fsf@toke.dk>
+Date:   Tue, 08 Oct 2019 10:42:00 +0200
+Message-ID: <87h84jljc7.fsf@toke.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8BIT
@@ -68,123 +69,69 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Daniel Borkmann <daniel@iogearbox.net> writes:
+John Fastabend <john.fastabend@gmail.com> writes:
 
-> On Mon, Oct 07, 2019 at 07:20:37PM +0200, Toke Høiland-Jørgensen wrote:
->> From: Toke Høiland-Jørgensen <toke@redhat.com>
+> Toke Høiland-Jørgensen wrote:
+>> This series adds support for executing multiple XDP programs on a single
+>> interface in sequence, through the use of chain calls, as discussed at the Linux
+>> Plumbers Conference last month:
 >> 
->> This adds support for setting and deleting bpf chain call programs through
->> a couple of new commands in the bpf() syscall. The CHAIN_ADD and CHAIN_DEL
->> commands take two eBPF program fds and a return code, and install the
->> 'next' program to be chain called after the 'prev' program if that program
->> returns 'retcode'. A retcode of -1 means "wildcard", so that the program
->> will be executed regardless of the previous program's return code.
+>> https://linuxplumbersconf.org/event/4/contributions/460/
 >> 
->> 
->> The syscall command names are based on Alexei's prog_chain example[0],
->> which Alan helpfully rebased on current bpf-next. However, the logic and
->> program storage is obviously adapted to the execution logic in the previous
->> commit.
->> 
->> [0] https://git.kernel.org/pub/scm/linux/kernel/git/ast/bpf.git/commit/?h=prog_chain&id=f54f45d00f91e083f6aec2abe35b6f0be52ae85b&context=15
->> 
->> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
->> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
->> ---
->>  include/uapi/linux/bpf.h |   10 ++++++
->>  kernel/bpf/syscall.c     |   78 ++++++++++++++++++++++++++++++++++++++++++++++
->>  2 files changed, 88 insertions(+)
->> 
->> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
->> index 1ce80a227be3..b03c23963af8 100644
->> --- a/include/uapi/linux/bpf.h
->> +++ b/include/uapi/linux/bpf.h
->> @@ -107,6 +107,9 @@ enum bpf_cmd {
->>  	BPF_MAP_LOOKUP_AND_DELETE_ELEM,
->>  	BPF_MAP_FREEZE,
->>  	BPF_BTF_GET_NEXT_ID,
->> +	BPF_PROG_CHAIN_ADD,
->> +	BPF_PROG_CHAIN_DEL,
->> +	BPF_PROG_CHAIN_GET,
->>  };
->>  
->>  enum bpf_map_type {
->> @@ -516,6 +519,13 @@ union bpf_attr {
->>  		__u64		probe_offset;	/* output: probe_offset */
->>  		__u64		probe_addr;	/* output: probe_addr */
->>  	} task_fd_query;
->> +
->> +	struct { /* anonymous struct used by BPF_PROG_CHAIN_* commands */
->> +		__u32		prev_prog_fd;
->> +		__u32		next_prog_fd;
->> +		__u32		retcode;
->> +		__u32		next_prog_id;   /* output: prog_id */
->> +	};
->>  } __attribute__((aligned(8)));
->>  
->>  /* The description below is an attempt at providing documentation to eBPF
->> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
->> index b8a203a05881..be8112e08a88 100644
->> --- a/kernel/bpf/syscall.c
->> +++ b/kernel/bpf/syscall.c
->> @@ -2113,6 +2113,79 @@ static int bpf_prog_test_run(const union bpf_attr *attr,
->>  	return ret;
->>  }
->>  
->> +#define BPF_PROG_CHAIN_LAST_FIELD next_prog_id
->> +
->> +static int bpf_prog_chain(int cmd, const union bpf_attr *attr,
->> +			  union bpf_attr __user *uattr)
->> +{
->> +	struct bpf_prog *prog, *next_prog, *old_prog;
->> +	struct bpf_prog **array;
->> +	int ret = -EOPNOTSUPP;
->> +	u32 index, prog_id;
->> +
->> +	if (CHECK_ATTR(BPF_PROG_CHAIN))
->> +		return -EINVAL;
->> +
->> +	/* Index 0 is wildcard, encoded as ~0 by userspace */
->> +	if (attr->retcode == ((u32) ~0))
->> +		index = 0;
->> +	else
->> +		index = attr->retcode + 1;
->> +
->> +	if (index >= BPF_NUM_CHAIN_SLOTS)
->> +		return -E2BIG;
->> +
->> +	prog = bpf_prog_get(attr->prev_prog_fd);
->> +	if (IS_ERR(prog))
->> +		return PTR_ERR(prog);
->> +
->> +	/* If the chain_calls bit is not set, that's because the chain call flag
->> +	 * was not set on program load, and so we can't support chain calls.
->> +	 */
->> +	if (!prog->chain_calls)
->> +		goto out;
->> +
->> +	array = prog->aux->chain_progs;
->> +
->> +	switch (cmd) {
->> +	case BPF_PROG_CHAIN_ADD:
->> +		next_prog = bpf_prog_get(attr->next_prog_fd);
->> +		if (IS_ERR(next_prog)) {
->> +			ret = PTR_ERR(next_prog);
->> +			break;
->> +		}
->> +		old_prog = xchg(array + index, next_prog);
->> +		if (old_prog)
->> +			bpf_prog_put(old_prog);
->> +		ret = 0;
->> +		break;
 >
-> How are circular dependencies resolved here? Seems the situation is
-> not prevented, so progs unloaded via XDP won't get the __bpf_prog_free()
-> call where they then drop the references of all the other progs in the
-> chain.
+> Can we add RFC to the title if we are just iterating through
+> idea-space here.
 
-Yeah, that's true. My plan was to just walk the "call graph" on insert
-and reject any circular inserts. Just haven't gotten around to adding
-that yet; will fix that in the next version.
+I don't view this as "just iterating through idea-space". I'll admit
+that I may have overestimated the extent to which we were all on the
+same page on this after LPC, but I do view these submissions as serious
+proposals that are making progress... :)
+
+>> # HIGH-LEVEL IDEA
+>> 
+>> Since Alexei pointed out some issues with trying to rewrite the eBPF byte code,
+>> let's try a third approach: We add the ability to chain call programs into the
+>> eBPF execution core itself, but without rewriting the eBPF byte code.
+>> 
+>> As in the previous version, the bpf() syscall gets a couple of new commands
+>> which takes a pair of BPF program fds and a return code. It will then attach the
+>> second program to the first one in a structured keyed by return code. When a
+>> program chain is thus established, the former program will tail call to the
+>> latter at the end of its execution.
+>> 
+>> The actual tail calling is achieved by adding a new flag to struct bpf_prog and
+>> having BPF_PROG_RUN run the chain call logic if that flag is set. This means
+>> that if the feature is *not* used, the overhead is a single conditional branch
+>> (which means I couldn't measure a performance difference, as can be seen in the
+>> results below).
+>> 
+>
+> I still believe user space should be able to link these multiple
+> programs together as Ed and I were suggesting in the last series.
+
+I expect that userspace probably could (I mean, after all, eBPF is
+within spitting distance of a full almost-Turing-complete executing
+environment so userspace can conceivably do pretty much anything).
+
+However, I don't believe that doing it in userspace is the best
+solution. I view it as a tradeoff: How much complexity do we have to add
+to the kernel to make things easier for userspace. And given that we can
+do this without negatively impacting performance, and with a reasonable
+cost in terms of complexity (both of which I think this series
+demonstrates that yes, we can), I think this makes sense to put in the
+kernel.
+
+> Also by doing it by linking your control program can be arbitrary
+> complex. For example not just taking the output of one program and
+> jumping to another but doing arbitrary more complex/interesting
+> things. Taking the input from multiple programs to pick next call for
+> example.
+
+I expect there will indeed be more complex use cases where combining
+multiple programs in arbitrary complex ways would make a lot of sense,
+and doing that by linking in userspace is probably a good fit for that.
+But for the simple use case of running multiple programs after one
+another, I think it is overkill, and something that is better to do in
+the kernel.
 
 -Toke
