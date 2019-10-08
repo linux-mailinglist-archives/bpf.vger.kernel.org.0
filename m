@@ -2,52 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 58F7DCF13A
-	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2019 05:24:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02EEBCF182
+	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2019 06:13:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729888AbfJHDYe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Oct 2019 23:24:34 -0400
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:32926 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729772AbfJHDYe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Oct 2019 23:24:34 -0400
-Received: by mail-lf1-f66.google.com with SMTP id y127so10808825lfc.0;
-        Mon, 07 Oct 2019 20:24:31 -0700 (PDT)
+        id S1726407AbfJHENt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Oct 2019 00:13:49 -0400
+Received: from mail-yw1-f67.google.com ([209.85.161.67]:42409 "EHLO
+        mail-yw1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725781AbfJHENt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Oct 2019 00:13:49 -0400
+Received: by mail-yw1-f67.google.com with SMTP id i207so5967886ywc.9;
+        Mon, 07 Oct 2019 21:13:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=MjDMaoPPyrDz7wCqiv3xz2rB+qVxdenvCbo7vmknjX8=;
-        b=sNZaQI9hlCJ7Y4Y7sJa87W26Z8DAkVlCw8m0dtZ36QKEUP+ViRg7I/ULalVLbTE8mD
-         ajaEkAt6qO8dI7Dwj1uIn/OnzpRF8c8OHyv8Phyb8CJEK/WfGhd3yN4qAMW/71tikQ8R
-         /dpMnSd2ixvHYJaNZ6kj9H06lTJlyUKwlbFaU3d5XzVhxdfIXdd64YjQCMPUwWTZPgYO
-         QMe+ivZ9FPc09XJOTUYjT0IeqqmutK0hbb4h7qcQkK/k5J5AQojaC15pNahU09a8Ndej
-         ABPoKtncD4R4KURKVLRRG64jyt+/6cxH/tR5fia2/Cw46IR4UzpU8WeTPNVfUat+3Igj
-         Iqkg==
+        bh=Auf1dMyhH1zc7fthRanyGrRI3GvJGpCy4rZb6VB9jqk=;
+        b=u1IWmErhRMqpzXKg/namxbwwWLivB/Qf4zn/nCbFYD+Vg5WIImu2MrVP4ZWycsB+hc
+         ldfi1X0M2Zxhu0puKydzCFgkZiqjhQnEOSbLw5ySF2RBJnO8L5vrhUCIkSsuWgfo1V0V
+         9SXCFLpJkA6ztt4ZzHIgI2zuzHsvul5tlUb05KxtCA3Bky79H57F2jMTh1Iimj1U1qml
+         KB/YxwlVG24LXpy3gkOoVj50ZSUMmj7IY7wCCwctrIy6A9NNPMrdOTGTbPbDxK4HCjUq
+         2tDru4g9eWLvomDSIO3XlpGQ5UU4xQzCG6xq1xjxYdvW1C6NtlvlY3Q7VHHBCXEIgBpG
+         0sPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=MjDMaoPPyrDz7wCqiv3xz2rB+qVxdenvCbo7vmknjX8=;
-        b=F4BwbbuEm2CBw5WpM/Ydx8kfBLdpgvoPPxs2gkuIT1gPWZWXxRQ5WwzuuOe6rg129i
-         b+VQF4/HjNP39VoneqZq8j/GpwP/9GqRlfanKa0b5CakdG35+jL88ns3SLCm+NrkXs9L
-         qrQEXAEFmmapurXdKjhDGscVvVgnyaiAmQ+w4pAU/8uRMnWUND/d2nhnN0MmDxMg69hK
-         etLS1tnArV/gLMMLcK1/R1BHVMNad+pzWH1O7dvjvl8jQTUdzhGm6To7vl7gl3mK6X/5
-         U/j/8ncqXaLSVsq7/NXp6h9iX/+Z2y5K/15ILA3WQLc7a7FGNBFEWXkqcLWGPy0Kw1u5
-         48hg==
-X-Gm-Message-State: APjAAAXRjFEColUszr+SDL+9/QTpkEAt9gyRWNAIYwiTD85T7ZblqWBK
-        R7ImBp9AJyXsdpjBxYbkgAEQsK9Fj7T32nqBpDZUgA==
-X-Google-Smtp-Source: APXvYqyP2FrrqASzOp51dODNygt650LS/x7Y3vxi7q1TgRsJ2mFXJ4zPeQy5jrb7mNYbeGrseDKq6zyhrOOM8+DhasE=
-X-Received: by 2002:a19:2c1:: with SMTP id 184mr539088lfc.100.1570505070630;
- Mon, 07 Oct 2019 20:24:30 -0700 (PDT)
+        bh=Auf1dMyhH1zc7fthRanyGrRI3GvJGpCy4rZb6VB9jqk=;
+        b=uPap5ptUeXcd5CinaDGE8QSKnd0Yu+YISsgGgawMo4QDSogS0jhHpUEZ1OWFCTYuEv
+         lsIXCJncTPQyb0bi67G1X7yOvKz65FHcMOFjOvhgbYNyHbvmoEV1b8R1+LVk3w0ZcRHL
+         0IncCVV2Mi+ZVnR6QMP3myh3YsPrI38tmDGWlYrlhgmz6DsWLAEqOIzI+GwsdQMKruGh
+         YdyDG8yXjXfD+hH2dNhNBwupKCws3sZbtCKrlu9zP2zLTL7/TyLQX4cP2gxzPfDgsGS4
+         g4CT8FHkzDHAhtQ6XkxCXkqhOeRIvn9hCkJYDE/TX34ih12n03t7iPLsBLt6YsfrRT4q
+         IBog==
+X-Gm-Message-State: APjAAAW8KgrJu5+Vh3LajBR57sNiTH8vFR+Y4Se8sgFaQohJNMBcU8lW
+        uKsnu0t41tk8AQyMMvghZeACWCsDEIJ0y8a0kw==
+X-Google-Smtp-Source: APXvYqxwPLWIdrbf7Exm4VG+eD/AcpKtTeCmsgQiMtlLdNwe51cRLP8ogWfyRKGCRm0FlzlanU0uemeyvmkUck0DfFo=
+X-Received: by 2002:a0d:d80a:: with SMTP id a10mr20287095ywe.46.1570508028176;
+ Mon, 07 Oct 2019 21:13:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20191007172117.3916-1-danieltimlee@gmail.com>
-In-Reply-To: <20191007172117.3916-1-danieltimlee@gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 7 Oct 2019 20:24:19 -0700
-Message-ID: <CAADnVQLYuNmVSdq3to2Sjpg3WmZF54A_OPTngMRZwToiDF5PoQ@mail.gmail.com>
+References: <20191007172117.3916-1-danieltimlee@gmail.com> <CAADnVQLYuNmVSdq3to2Sjpg3WmZF54A_OPTngMRZwToiDF5PoQ@mail.gmail.com>
+In-Reply-To: <CAADnVQLYuNmVSdq3to2Sjpg3WmZF54A_OPTngMRZwToiDF5PoQ@mail.gmail.com>
+From:   "Daniel T. Lee" <danieltimlee@gmail.com>
+Date:   Tue, 8 Oct 2019 13:13:32 +0900
+Message-ID: <CAEKGpzjn=iW7PFkFGTGdtfW87AE=CudGjNax1TL=euaz=gz+Eg@mail.gmail.com>
 Subject: Re: [PATCH bpf-next v7] samples: bpf: add max_pckt_size option at xdp_adjust_tail
-To:     "Daniel T. Lee" <danieltimlee@gmail.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     Yonghong Song <yhs@fb.com>, Song Liu <liu.song.a23@gmail.com>,
         Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -59,32 +59,42 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Oct 7, 2019 at 10:21 AM Daniel T. Lee <danieltimlee@gmail.com> wrote:
+On Tue, Oct 8, 2019 at 12:24 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> Currently, at xdp_adjust_tail_kern.c, MAX_PCKT_SIZE is limited
-> to 600. To make this size flexible, static global variable
-> 'max_pcktsz' is added.
+> On Mon, Oct 7, 2019 at 10:21 AM Daniel T. Lee <danieltimlee@gmail.com> wrote:
+> >
+> > Currently, at xdp_adjust_tail_kern.c, MAX_PCKT_SIZE is limited
+> > to 600. To make this size flexible, static global variable
+> > 'max_pcktsz' is added.
+> >
+> > By updating new packet size from the user space, xdp_adjust_tail_kern.o
+> > will use this value as a new max packet size.
+> >
+> > This static global variable can be accesible from .data section with
+> > bpf_object__find_map* from user space, since it is considered as
+> > internal map (accessible with .bss/.data/.rodata suffix).
+> >
+> > If no '-P <MAX_PCKT_SIZE>' option is used, the size of maximum packet
+> > will be 600 as a default.
+> >
+> > For clarity, change the helper to fetch map from 'bpf_map__next'
+> > to 'bpf_object__find_map_fd_by_name'. Also, changed the way to
+> > test prog_fd, map_fd from '!= 0' to '< 0', since fd could be 0
+> > when stdin is closed.
+> >
+> > Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
+> >
+> > ---
+> > Changes in v6:
+> >     - Remove redundant error message
 >
-> By updating new packet size from the user space, xdp_adjust_tail_kern.o
-> will use this value as a new max packet size.
->
-> This static global variable can be accesible from .data section with
-> bpf_object__find_map* from user space, since it is considered as
-> internal map (accessible with .bss/.data/.rodata suffix).
->
-> If no '-P <MAX_PCKT_SIZE>' option is used, the size of maximum packet
-> will be 600 as a default.
->
-> For clarity, change the helper to fetch map from 'bpf_map__next'
-> to 'bpf_object__find_map_fd_by_name'. Also, changed the way to
-> test prog_fd, map_fd from '!= 0' to '< 0', since fd could be 0
-> when stdin is closed.
->
-> Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
->
-> ---
-> Changes in v6:
->     - Remove redundant error message
+> Applied.
+> Please keep Acks if you're only doing minor tweaks between versions.
 
-Applied.
-Please keep Acks if you're only doing minor tweaks between versions.
+Thank you for your time and effort for the review.
+
+I will keep that in mind for the future.
+
+Thanks,
+Daniel
