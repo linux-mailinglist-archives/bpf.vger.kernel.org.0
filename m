@@ -2,109 +2,261 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D636CF593
-	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2019 11:04:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2DD8CF6F5
+	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2019 12:23:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727724AbfJHJEI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Oct 2019 05:04:08 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:25142 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729784AbfJHJEH (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 8 Oct 2019 05:04:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1570525446;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7LiTc03LkyuPHndVZx+YUwXgw6EiaRzqV7jwSwvnOpk=;
-        b=LQhu5RVT4GRVgVrcEM6ocA9h4YJkPPv+kCIt5+pLksNKJBmwfXaLBRjSPoc0kJcajB4Gkx
-        Cld5uC3H+mz2JAc+XklqDz3UCHKGxJq4XY6ykPIIK2evVCX0EfqtT4RxngKawXe5TNlJT5
-        l4LhvW0EQTTpCkLD610p+hG21UbXdB0=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-67-XrgXYlWcPre1O6QqCrOwCA-1; Tue, 08 Oct 2019 05:04:03 -0400
-Received: by mail-ed1-f71.google.com with SMTP id s3so10779893edr.15
-        for <bpf@vger.kernel.org>; Tue, 08 Oct 2019 02:04:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=7LiTc03LkyuPHndVZx+YUwXgw6EiaRzqV7jwSwvnOpk=;
-        b=HZarXZNMg4O1Tvv9ojbtTQJ0ZfosKlqiJHd5JKuWuVUj+LHirznPt37icD0zT42Inq
-         Njd7fbw8Fepo0mHFfOzRagoI+ZxQXZPjtMDN8gTD2U3zqr49CXVyn/EXmGdwtG9GS4mZ
-         mlQ2srx8pt67EbFmRe52T+otTWjP/Bx5d0Q0O2x85z1rm6NBKEDwbE7gOUTNraywxCEt
-         /atNdnZeF4Img11QEYgP9RckUk8AqbKAJ0k441N/cxGEWj5OhDuAPQjpOLGXyvUga2QI
-         4WOEMSG1oer4fMihLgMjg12J6QMk8AgNyQaGVE5UY759uk5i4i7PLzjIlw4lK1yvfAg2
-         lINA==
-X-Gm-Message-State: APjAAAUm2QdL2xrXDIKiSwW/2LSlYZtz6jaAUlPC1liQEttmeoQqOeOa
-        IIYN/HM422VypYsYUPxzorn877x2cuzxErcExYyh5+ShlDGym09rPgEXuf6uQcg5DMZp6ABB9o4
-        KsU9TE1E8Fi/F
-X-Received: by 2002:a17:906:4910:: with SMTP id b16mr26878686ejq.301.1570525442166;
-        Tue, 08 Oct 2019 02:04:02 -0700 (PDT)
-X-Google-Smtp-Source: APXvYqy8TcSRNTMv0iuCzK8zElHlrqwUttIOMympRata1iDWQHbT79yuK/s2FdSOFlHE1wLapUhP4w==
-X-Received: by 2002:a17:906:4910:: with SMTP id b16mr26878663ejq.301.1570525441907;
-        Tue, 08 Oct 2019 02:04:01 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk (borgediget.toke.dk. [85.204.121.218])
-        by smtp.gmail.com with ESMTPSA id l19sm3806147edb.50.2019.10.08.02.04.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Oct 2019 02:04:01 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id B884C18063D; Tue,  8 Oct 2019 11:04:00 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Cc:     Sridhar Samudrala <sridhar.samudrala@intel.com>,
-        "Karlsson\, Magnus" <magnus.karlsson@intel.com>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
-        maciej.fijalkowski@intel.com, tom.herbert@intel.com
-Subject: Re: [PATCH bpf-next 2/4] xsk: allow AF_XDP sockets to receive packets directly from a queue
-In-Reply-To: <CAJ+HfNhcvRP34L3px6ipAsCiZdvLXG02brecwB=T-sXMaT5yRw@mail.gmail.com>
-References: <1570515415-45593-1-git-send-email-sridhar.samudrala@intel.com> <1570515415-45593-3-git-send-email-sridhar.samudrala@intel.com> <875zkzn2pj.fsf@toke.dk> <CAJ+HfNhcvRP34L3px6ipAsCiZdvLXG02brecwB=T-sXMaT5yRw@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 08 Oct 2019 11:04:00 +0200
-Message-ID: <878spvlibj.fsf@toke.dk>
-MIME-Version: 1.0
-X-MC-Unique: XrgXYlWcPre1O6QqCrOwCA-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+        id S1730401AbfJHKXf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Oct 2019 06:23:35 -0400
+Received: from mga02.intel.com ([134.134.136.20]:22769 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730051AbfJHKXf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Oct 2019 06:23:35 -0400
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga101.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 08 Oct 2019 03:23:34 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.67,270,1566889200"; 
+   d="scan'208";a="345001950"
+Received: from mkarlsso-mobl.ger.corp.intel.com (HELO VM.isw.intel.com) ([10.103.211.41])
+  by orsmga004.jf.intel.com with ESMTP; 08 Oct 2019 03:23:31 -0700
+From:   Magnus Karlsson <magnus.karlsson@intel.com>
+To:     magnus.karlsson@intel.com, bjorn.topel@intel.com, ast@kernel.org,
+        daniel@iogearbox.net, netdev@vger.kernel.org
+Cc:     jonathan.lemon@gmail.com, bpf@vger.kernel.org
+Subject: [PATCH bpf] libbpf: fix compatibility for kernels without need_wakeup
+Date:   Tue,  8 Oct 2019 12:23:28 +0200
+Message-Id: <1570530208-17720-1-git-send-email-magnus.karlsson@intel.com>
+X-Mailer: git-send-email 2.7.4
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> writes:
+When the need_wakeup flag was added to AF_XDP, the format of the
+XDP_MMAP_OFFSETS getsockopt was extended. Code was added to the kernel
+to take care of compatibility issues arrising from running
+applications using any of the two formats. However, libbpf was not
+extended to take care of the case when the application/libbpf uses the
+new format but the kernel only supports the old format. This patch
+adds support in libbpf for parsing the old format, before the
+need_wakeup flag was added, and emulating a set of static need_wakeup
+flags that will always work for the application.
 
-> On Tue, 8 Oct 2019 at 08:59, Toke H=C3=B8iland-J=C3=B8rgensen <toke@redha=
-t.com> wrote:
->>
->> Sridhar Samudrala <sridhar.samudrala@intel.com> writes:
->>
->> >  int xdp_do_redirect(struct net_device *dev, struct xdp_buff *xdp,
->> >                   struct bpf_prog *xdp_prog)
->> >  {
->> >       struct bpf_redirect_info *ri =3D this_cpu_ptr(&bpf_redirect_info=
-);
->> >       struct bpf_map *map =3D READ_ONCE(ri->map);
->> > +     struct xdp_sock *xsk;
->> > +
->> > +     xsk =3D xdp_get_direct_xsk(ri);
->> > +     if (xsk)
->> > +             return xsk_rcv(xsk, xdp);
->>
->> This is a new branch and a read barrier in the XDP_REDIRECT fast path.
->> What's the performance impact of that for non-XSK redirect?
->>
->
-> The dependent-read-barrier in READ_ONCE? Another branch -- leave that
-> to the branch-predictor already! ;-) No, you're right, performance
-> impact here is interesting. I guess the same static_branch could be
-> used here as well...
+Fixes: a4500432c2587cb2a ("libbpf: add support for need_wakeup flag in AF_XDP part")
+Reported-by: Eloy Degen <degeneloy@gmail.com>
+Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+---
+ tools/lib/bpf/xsk.c | 109 +++++++++++++++++++++++++++++++++++++---------------
+ 1 file changed, 78 insertions(+), 31 deletions(-)
 
-In any case, some measurements to see the impact (or lack thereof) would
-be useful :)
-
--Toke
+diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
+index a902838..46f9687 100644
+--- a/tools/lib/bpf/xsk.c
++++ b/tools/lib/bpf/xsk.c
+@@ -44,6 +44,25 @@
+  #define PF_XDP AF_XDP
+ #endif
+ 
++#define is_mmap_offsets_v1(optlen) \
++	((optlen) == sizeof(struct xdp_mmap_offsets_v1))
++
++#define get_prod_off(ring) \
++	(is_mmap_offsets_v1(optlen) ? \
++	 ((struct xdp_mmap_offsets_v1 *)&off)->ring.producer : \
++	 off.ring.producer)
++#define get_cons_off(ring) \
++	(is_mmap_offsets_v1(optlen) ? \
++	 ((struct xdp_mmap_offsets_v1 *)&off)->ring.consumer : \
++	 off.ring.consumer)
++#define get_desc_off(ring) \
++	(is_mmap_offsets_v1(optlen) ? \
++	 ((struct xdp_mmap_offsets_v1 *)&off)->ring.desc : off.ring.desc)
++#define get_flags_off(ring) \
++	(is_mmap_offsets_v1(optlen) ? \
++	 ((struct xdp_mmap_offsets_v1 *)&off)->ring.consumer + sizeof(u32) : \
++	 off.ring.flags)
++
+ struct xsk_umem {
+ 	struct xsk_ring_prod *fill;
+ 	struct xsk_ring_cons *comp;
+@@ -73,6 +92,20 @@ struct xsk_nl_info {
+ 	int fd;
+ };
+ 
++struct xdp_ring_offset_v1 {
++	__u64 producer;
++	__u64 consumer;
++	__u64 desc;
++};
++
++/* Up until and including Linux 5.3 */
++struct xdp_mmap_offsets_v1 {
++	struct xdp_ring_offset_v1 rx;
++	struct xdp_ring_offset_v1 tx;
++	struct xdp_ring_offset_v1 fr;
++	struct xdp_ring_offset_v1 cr;
++};
++
+ int xsk_umem__fd(const struct xsk_umem *umem)
+ {
+ 	return umem ? umem->fd : -EINVAL;
+@@ -196,7 +229,8 @@ int xsk_umem__create_v0_0_4(struct xsk_umem **umem_ptr, void *umem_area,
+ 		goto out_socket;
+ 	}
+ 
+-	map = mmap(NULL, off.fr.desc + umem->config.fill_size * sizeof(__u64),
++	map = mmap(NULL, get_desc_off(fr) +
++		   umem->config.fill_size * sizeof(__u64),
+ 		   PROT_READ | PROT_WRITE, MAP_SHARED | MAP_POPULATE, umem->fd,
+ 		   XDP_UMEM_PGOFF_FILL_RING);
+ 	if (map == MAP_FAILED) {
+@@ -207,13 +241,18 @@ int xsk_umem__create_v0_0_4(struct xsk_umem **umem_ptr, void *umem_area,
+ 	umem->fill = fill;
+ 	fill->mask = umem->config.fill_size - 1;
+ 	fill->size = umem->config.fill_size;
+-	fill->producer = map + off.fr.producer;
+-	fill->consumer = map + off.fr.consumer;
+-	fill->flags = map + off.fr.flags;
+-	fill->ring = map + off.fr.desc;
++	fill->producer = map + get_prod_off(fr);
++	fill->consumer = map + get_cons_off(fr);
++	fill->flags = map + get_flags_off(fr);
++	fill->ring = map + get_desc_off(fr);
+ 	fill->cached_cons = umem->config.fill_size;
+ 
+-	map = mmap(NULL, off.cr.desc + umem->config.comp_size * sizeof(__u64),
++	if (is_mmap_offsets_v1(optlen))
++		/* Initialized the flag to never signal wakeup */
++		*fill->flags = 0;
++
++	map = mmap(NULL, get_desc_off(cr) +
++		   umem->config.comp_size * sizeof(__u64),
+ 		   PROT_READ | PROT_WRITE, MAP_SHARED | MAP_POPULATE, umem->fd,
+ 		   XDP_UMEM_PGOFF_COMPLETION_RING);
+ 	if (map == MAP_FAILED) {
+@@ -224,16 +263,16 @@ int xsk_umem__create_v0_0_4(struct xsk_umem **umem_ptr, void *umem_area,
+ 	umem->comp = comp;
+ 	comp->mask = umem->config.comp_size - 1;
+ 	comp->size = umem->config.comp_size;
+-	comp->producer = map + off.cr.producer;
+-	comp->consumer = map + off.cr.consumer;
+-	comp->flags = map + off.cr.flags;
+-	comp->ring = map + off.cr.desc;
++	comp->producer = map + get_prod_off(cr);
++	comp->consumer = map + get_cons_off(cr);
++	comp->flags = map + get_flags_off(cr);
++	comp->ring = map + get_desc_off(cr);
+ 
+ 	*umem_ptr = umem;
+ 	return 0;
+ 
+ out_mmap:
+-	munmap(map, off.fr.desc + umem->config.fill_size * sizeof(__u64));
++	munmap(map, get_desc_off(fr) + umem->config.fill_size * sizeof(__u64));
+ out_socket:
+ 	close(umem->fd);
+ out_umem_alloc:
+@@ -558,7 +597,7 @@ int xsk_socket__create(struct xsk_socket **xsk_ptr, const char *ifname,
+ 	}
+ 
+ 	if (rx) {
+-		rx_map = mmap(NULL, off.rx.desc +
++		rx_map = mmap(NULL, get_desc_off(rx) +
+ 			      xsk->config.rx_size * sizeof(struct xdp_desc),
+ 			      PROT_READ | PROT_WRITE, MAP_SHARED | MAP_POPULATE,
+ 			      xsk->fd, XDP_PGOFF_RX_RING);
+@@ -569,15 +608,15 @@ int xsk_socket__create(struct xsk_socket **xsk_ptr, const char *ifname,
+ 
+ 		rx->mask = xsk->config.rx_size - 1;
+ 		rx->size = xsk->config.rx_size;
+-		rx->producer = rx_map + off.rx.producer;
+-		rx->consumer = rx_map + off.rx.consumer;
+-		rx->flags = rx_map + off.rx.flags;
+-		rx->ring = rx_map + off.rx.desc;
++		rx->producer = rx_map + get_prod_off(rx);
++		rx->consumer = rx_map + get_cons_off(rx);
++		rx->flags = rx_map + get_flags_off(rx);
++		rx->ring = rx_map + get_desc_off(rx);
+ 	}
+ 	xsk->rx = rx;
+ 
+ 	if (tx) {
+-		tx_map = mmap(NULL, off.tx.desc +
++		tx_map = mmap(NULL, get_desc_off(tx) +
+ 			      xsk->config.tx_size * sizeof(struct xdp_desc),
+ 			      PROT_READ | PROT_WRITE, MAP_SHARED | MAP_POPULATE,
+ 			      xsk->fd, XDP_PGOFF_TX_RING);
+@@ -588,11 +627,15 @@ int xsk_socket__create(struct xsk_socket **xsk_ptr, const char *ifname,
+ 
+ 		tx->mask = xsk->config.tx_size - 1;
+ 		tx->size = xsk->config.tx_size;
+-		tx->producer = tx_map + off.tx.producer;
+-		tx->consumer = tx_map + off.tx.consumer;
+-		tx->flags = tx_map + off.tx.flags;
+-		tx->ring = tx_map + off.tx.desc;
++		tx->producer = tx_map + get_prod_off(tx);
++		tx->consumer = tx_map + get_cons_off(tx);
++		tx->flags = tx_map + get_flags_off(tx);
++		tx->ring = tx_map + get_desc_off(tx);
+ 		tx->cached_cons = xsk->config.tx_size;
++
++		if (is_mmap_offsets_v1(optlen))
++			/* Initialized the flag to always signal wakeup */
++			*tx->flags = XDP_RING_NEED_WAKEUP;
+ 	}
+ 	xsk->tx = tx;
+ 
+@@ -620,11 +663,11 @@ int xsk_socket__create(struct xsk_socket **xsk_ptr, const char *ifname,
+ 
+ out_mmap_tx:
+ 	if (tx)
+-		munmap(tx_map, off.tx.desc +
++		munmap(tx_map, get_desc_off(tx) +
+ 		       xsk->config.tx_size * sizeof(struct xdp_desc));
+ out_mmap_rx:
+ 	if (rx)
+-		munmap(rx_map, off.rx.desc +
++		munmap(rx_map, get_desc_off(rx) +
+ 		       xsk->config.rx_size * sizeof(struct xdp_desc));
+ out_socket:
+ 	if (--umem->refcount)
+@@ -649,10 +692,12 @@ int xsk_umem__delete(struct xsk_umem *umem)
+ 	optlen = sizeof(off);
+ 	err = getsockopt(umem->fd, SOL_XDP, XDP_MMAP_OFFSETS, &off, &optlen);
+ 	if (!err) {
+-		munmap(umem->fill->ring - off.fr.desc,
+-		       off.fr.desc + umem->config.fill_size * sizeof(__u64));
+-		munmap(umem->comp->ring - off.cr.desc,
+-		       off.cr.desc + umem->config.comp_size * sizeof(__u64));
++		munmap(umem->fill->ring - get_desc_off(fr),
++		       get_desc_off(fr) +
++		       umem->config.fill_size * sizeof(__u64));
++		munmap(umem->comp->ring - get_desc_off(cr),
++		       get_desc_off(cr) +
++		       umem->config.comp_size * sizeof(__u64));
+ 	}
+ 
+ 	close(umem->fd);
+@@ -680,12 +725,14 @@ void xsk_socket__delete(struct xsk_socket *xsk)
+ 	err = getsockopt(xsk->fd, SOL_XDP, XDP_MMAP_OFFSETS, &off, &optlen);
+ 	if (!err) {
+ 		if (xsk->rx) {
+-			munmap(xsk->rx->ring - off.rx.desc,
+-			       off.rx.desc + xsk->config.rx_size * desc_sz);
++			munmap(xsk->rx->ring - get_desc_off(rx),
++			       get_desc_off(rx) +
++			       xsk->config.rx_size * desc_sz);
+ 		}
+ 		if (xsk->tx) {
+-			munmap(xsk->tx->ring - off.tx.desc,
+-			       off.tx.desc + xsk->config.tx_size * desc_sz);
++			munmap(xsk->tx->ring - get_desc_off(tx),
++			       get_desc_off(tx) +
++			       xsk->config.tx_size * desc_sz);
+ 		}
+ 
+ 	}
+-- 
+2.7.4
 
