@@ -2,92 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BC97ECF318
-	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2019 08:58:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CE97CF481
+	for <lists+bpf@lfdr.de>; Tue,  8 Oct 2019 10:05:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730250AbfJHG6X (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Oct 2019 02:58:23 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:39453 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1730111AbfJHG6W (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Oct 2019 02:58:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1570517901;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BjiVfnfo3B219hJevj+nUA5nd9HYypooTjDbpxlfu2E=;
-        b=iDg+l8uqsxGC0rzCjjSiN6614GKg+MM28ylegxN/Am9jp4g2RnYb3SZZyqeOrWjD5K6b3J
-        dS+I8hjaLlaicPm56hIzKIJQjQ4WxddRYgXYf1U3jXNsq2q7CWP0wa2aeypPIvn2wXP30b
-        eLo0ToVh79cHAT5Mj98DpOaywnaqExM=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-161-RIDzUwHTMYSQ8g4C3A3Mmg-1; Tue, 08 Oct 2019 02:58:20 -0400
-Received: by mail-lf1-f70.google.com with SMTP id w193so2042465lff.3
-        for <bpf@vger.kernel.org>; Mon, 07 Oct 2019 23:58:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=S9PjHaofBE8WvE/gCT9+Hpu5GwookQh45Bj4/FXFqOI=;
-        b=HcAvqarVCXH6xx0cnRTAcTrySM8HKeslcXDHU8fVrbxcB7ZyCkFIrVbMpircDpFWO1
-         iN17XT1FeYGBnlkRXXOqIRzkkwFp9cFwDRhQszEFCPd8H6crp5S7eWoVOoxQmQWwf2rt
-         E9xNLEkE/FTSR4JTsv107C/yi8ZM9uGklMArC06E9seJYaX4lvXg2tDAw9sUKCIK7rV/
-         KcqIN9MwDLFI2nQMuBYDh0i40wbCwRwiKF7BK6JWMvC0GuVrWLMj5YW8tVQNxPNMVrvz
-         +Fxl0LIbPD/H+KzW//nQ3Hx+EEtAf14MJIzs0ytZPD67U8m+yFn+2WbGvxoo7/7l4Cdi
-         J23Q==
-X-Gm-Message-State: APjAAAWZRKcdRXm/6lNAsdo/IQof4xDn00IOzacthwiAYly2zuhOLd0L
-        AIft9/zh8bT5wXZGx3aH+2dQU9NO53P/D1TcLZdfHAtAC+md6paNq/8UgecniQ86tSpiKtBhaq4
-        zlvKp8+aZ+Iif
-X-Received: by 2002:a2e:730a:: with SMTP id o10mr21912307ljc.214.1570517898816;
-        Mon, 07 Oct 2019 23:58:18 -0700 (PDT)
-X-Google-Smtp-Source: APXvYqzcpPsm8E/3M1oXM5bmklENMw0tvOHJJmGog/AgsVSfuHgI1NlUp2BPNtR6+WN3vcVRbtaEPA==
-X-Received: by 2002:a2e:730a:: with SMTP id o10mr21912299ljc.214.1570517898646;
-        Mon, 07 Oct 2019 23:58:18 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a00:7660:6da:443::2])
-        by smtp.gmail.com with ESMTPSA id b6sm3972837lfi.72.2019.10.07.23.58.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Oct 2019 23:58:17 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id BF15F18063D; Tue,  8 Oct 2019 08:58:16 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+        id S1730435AbfJHIFY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Oct 2019 04:05:24 -0400
+Received: from mga06.intel.com ([134.134.136.31]:49337 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730414AbfJHIFY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Oct 2019 04:05:24 -0400
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga104.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 08 Oct 2019 01:05:23 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.67,270,1566889200"; 
+   d="scan'208";a="199747067"
+Received: from iannetti-mobl1.ger.corp.intel.com (HELO btopel-mobl.ger.intel.com) ([10.252.56.81])
+  by FMSMGA003.fm.intel.com with ESMTP; 08 Oct 2019 01:05:20 -0700
+Subject: Re: [PATCH bpf-next 0/4] Enable direct receive on AF_XDP sockets
 To:     Sridhar Samudrala <sridhar.samudrala@intel.com>,
-        magnus.karlsson@intel.com, bjorn.topel@intel.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        sridhar.samudrala@intel.com, intel-wired-lan@lists.osuosl.org,
+        magnus.karlsson@intel.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
         maciej.fijalkowski@intel.com, tom.herbert@intel.com
-Subject: Re: [PATCH bpf-next 2/4] xsk: allow AF_XDP sockets to receive packets directly from a queue
-In-Reply-To: <1570515415-45593-3-git-send-email-sridhar.samudrala@intel.com>
-References: <1570515415-45593-1-git-send-email-sridhar.samudrala@intel.com> <1570515415-45593-3-git-send-email-sridhar.samudrala@intel.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 08 Oct 2019 08:58:16 +0200
-Message-ID: <875zkzn2pj.fsf@toke.dk>
+References: <1570515415-45593-1-git-send-email-sridhar.samudrala@intel.com>
+Cc:     Jakub Kicinski <jakub.kicinski@netronome.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
+Message-ID: <4c316f09-0691-4a1b-f798-73299e978946@intel.com>
+Date:   Tue, 8 Oct 2019 10:05:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-X-MC-Unique: RIDzUwHTMYSQ8g4C3A3Mmg-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=WINDOWS-1252
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1570515415-45593-1-git-send-email-sridhar.samudrala@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Sridhar Samudrala <sridhar.samudrala@intel.com> writes:
+On 2019-10-08 08:16, Sridhar Samudrala wrote:
+> This is a rework of the following patch series
+> https://lore.kernel.org/netdev/1565840783-8269-1-git-send-email-sridhar.samudrala@intel.com/#r
+> that tried to enable direct receive by bypassing XDP program attached
+> to the device.
+> 
+> Based on the community feedback and some suggestions from Bjorn, changed
+> the semantics of the implementation to enable direct receive on AF_XDP
+> sockets that are bound to a queue only when there is no normal XDP program
+> attached to the device.
+> 
+> This is accomplished by introducing a special BPF prog pointer (DIRECT_XSK)
+> that is attached at the time of binding an AF_XDP socket to a queue of a
+> device. This is done only if there is no other XDP program attached to
+> the device. The normal XDP program has precedence and will replace the
+> DIRECT_XSK prog if it is attached later. The main reason to introduce a
+> special BPF prog pointer is to minimize the driver changes. The only change
+> is to use the bpf_get_prog_id() helper when QUERYING the prog id.
+> 
+> Any attach of a normal XDP program will take precedence and the direct xsk
+> program will be removed. The direct XSK program will be attached
+> automatically when the normal XDP program is removed when there are any
+> AF_XDP direct sockets associated with that device.
+> 
+> A static key is used to control this feature in order to avoid any overhead
+> for normal XDP datapath when there are no AF_XDP sockets in direct-xsk mode.
+> 
+> Here is some performance data i collected on my Intel Ivybridge based
+> development system (Intel(R) Xeon(R) CPU E5-2697 v2 @ 2.70GHz)
+> NIC: Intel 40Gb ethernet (i40e)
+> 
+> xdpsock rxdrop 1 core (both app and queue's irq pinned to the same core)
+>     default : taskset -c 1 ./xdpsock -i enp66s0f0 -r -q 1
+>     direct-xsk :taskset -c 1 ./xdpsock -i enp66s0f0 -r -q 1
+> 6.1x improvement in drop rate
+> 
+> xdpsock rxdrop 2 core (app and queue's irq pinned to different cores)
+>     default : taskset -c 3 ./xdpsock -i enp66s0f0 -r -q 1
+>     direct-xsk :taskset -c 3 ./xdpsock -i enp66s0f0 -r -d -q 1
+> 6x improvement in drop rate
+> 
+> xdpsock l2fwd 1 core (both app and queue's irq pinned to the same core)
+>     default : taskset -c 1 ./xdpsock -i enp66s0f0 -l -q 1
+>     direct-xsk :taskset -c 1 ./xdpsock -i enp66s0f0 -l -d -q 1
+> 3.5x improvement in l2fwd rate
+> 
+> xdpsock rxdrop 2 core (app and queue'sirq pinned to different cores)
+>     default : taskset -c 3 ./xdpsock -i enp66s0f0 -l -q 1
+>     direct-xsk :taskset -c 3 ./xdpsock -i enp66s0f0 -l -d -q 1
+> 4.5x improvement in l2fwd rate
+> 
+> dpdk-pktgen is used to send 64byte UDP packets from a link partner and
+> ethtool ntuple flow rule is used to redirect packets to queue 1 on the
+> system under test.
+>
 
->  int xdp_do_redirect(struct net_device *dev, struct xdp_buff *xdp,
->  =09=09    struct bpf_prog *xdp_prog)
->  {
->  =09struct bpf_redirect_info *ri =3D this_cpu_ptr(&bpf_redirect_info);
->  =09struct bpf_map *map =3D READ_ONCE(ri->map);
-> +=09struct xdp_sock *xsk;
-> +
-> +=09xsk =3D xdp_get_direct_xsk(ri);
-> +=09if (xsk)
-> +=09=09return xsk_rcv(xsk, xdp);
+Thanks for working on this Sridhar! I like this approach! Except from
+the bpf_get_prog_id() changes, no driver changes are needed.
 
-This is a new branch and a read barrier in the XDP_REDIRECT fast path.
-What's the performance impact of that for non-XSK redirect?
+It's also a cleaner (IMO) approach than my previous attempts [1,2,3]
 
--Toke
+Would be interesting to see NFP support AF_XDP offloading with this
+option. (nudge, nudge).
 
+A thought: From userland, a direct AF_XDP socket will not appear as an
+XDP program is attached to the device (id == 0). Maybe show in ss(8)
+(via xsk_diag.c) that the socket is direct?
+
+[1] 
+https://lore.kernel.org/netdev/CAJ+HfNj63QcLY8=y1fF93PZd3XcfiGSrbbWdiGByjTzZQydSSg@mail.gmail.com/
+[2] 
+https://lore.kernel.org/netdev/cd952f99-6bad-e0c8-5bcd-f0010218238c@intel.com/
+[3] 
+https://lore.kernel.org/netdev/20181207114431.18038-1-bjorn.topel@gmail.com/
+
+> Sridhar Samudrala (4):
+>    bpf: introduce bpf_get_prog_id and bpf_set_prog_id helper functions.
+>    xsk: allow AF_XDP sockets to receive packets directly from a queue
+>    libbpf: handle AF_XDP sockets created with XDP_DIRECT bind flag.
+>    xdpsock: add an option to create AF_XDP sockets in XDP_DIRECT mode
+> 
+>   drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c     |  2 +-
+>   drivers/net/ethernet/cavium/thunder/nicvf_main.c  |  2 +-
+>   drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c  |  2 +-
+>   drivers/net/ethernet/intel/i40e/i40e_main.c       |  2 +-
+>   drivers/net/ethernet/intel/ixgbe/ixgbe_main.c     |  3 +-
+>   drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c |  3 +-
+>   drivers/net/ethernet/mellanox/mlx4/en_netdev.c    |  3 +-
+>   drivers/net/ethernet/mellanox/mlx5/core/en_main.c |  3 +-
+>   drivers/net/ethernet/qlogic/qede/qede_filter.c    |  2 +-
+>   drivers/net/ethernet/socionext/netsec.c           |  2 +-
+>   drivers/net/netdevsim/bpf.c                       |  6 ++-
+>   drivers/net/tun.c                                 |  4 +-
+>   drivers/net/veth.c                                |  4 +-
+>   drivers/net/virtio_net.c                          |  3 +-
+>   include/linux/bpf.h                               |  3 ++
+>   include/linux/filter.h                            | 18 +++++++
+>   include/linux/netdevice.h                         | 10 ++++
+>   include/net/xdp_sock.h                            |  5 ++
+>   include/trace/events/xdp.h                        |  4 +-
+>   include/uapi/linux/if_xdp.h                       |  5 ++
+>   kernel/bpf/arraymap.c                             |  2 +-
+>   kernel/bpf/cgroup.c                               |  2 +-
+>   kernel/bpf/core.c                                 |  2 +-
+>   kernel/bpf/syscall.c                              | 33 +++++++++----
+>   kernel/events/core.c                              |  2 +-
+>   kernel/trace/bpf_trace.c                          |  2 +-
+>   net/core/dev.c                                    | 54 ++++++++++++++++++++-
+>   net/core/filter.c                                 | 58 +++++++++++++++++++++++
+>   net/core/flow_dissector.c                         |  2 +-
+>   net/core/rtnetlink.c                              |  2 +-
+>   net/core/xdp.c                                    |  2 +-
+>   net/ipv6/seg6_local.c                             |  2 +-
+>   net/sched/act_bpf.c                               |  2 +-
+>   net/sched/cls_bpf.c                               |  2 +-
+>   net/xdp/xsk.c                                     | 51 +++++++++++++++++++-
+>   samples/bpf/xdpsock_user.c                        | 17 +++++--
+>   tools/include/uapi/linux/if_xdp.h                 |  5 ++
+>   tools/lib/bpf/xsk.c                               |  6 +++
+>   38 files changed, 279 insertions(+), 53 deletions(-)
+> 
