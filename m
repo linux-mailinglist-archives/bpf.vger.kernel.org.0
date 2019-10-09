@@ -2,47 +2,47 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 65610D19EA
-	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2019 22:43:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F1E5D19EC
+	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2019 22:43:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732129AbfJIUmR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Oct 2019 16:42:17 -0400
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:42235 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732137AbfJIUl7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        id S1728804AbfJIUmX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Oct 2019 16:42:23 -0400
+Received: from mail-lf1-f66.google.com ([209.85.167.66]:46261 "EHLO
+        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732140AbfJIUl7 (ORCPT <rfc822;bpf@vger.kernel.org>);
         Wed, 9 Oct 2019 16:41:59 -0400
-Received: by mail-lj1-f196.google.com with SMTP id y23so3848847lje.9
-        for <bpf@vger.kernel.org>; Wed, 09 Oct 2019 13:41:56 -0700 (PDT)
+Received: by mail-lf1-f66.google.com with SMTP id t8so2645165lfc.13
+        for <bpf@vger.kernel.org>; Wed, 09 Oct 2019 13:41:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=dPicZ6dKiXggVDaTmZsHbexmmGF0NBX0XkLCl2NE9e8=;
-        b=kPel8NhRVnyQDF2w6QWADNKWtsbDrjQPr/EdHwNRDl4cLpDTWXyvgReDZ91tE3VFXh
-         dXHtbNI4k24um1FnMS7LDF9GQriPKlXm2AfN93wb6AlJCjBcZ+1ovPI3gmCbHjz7YiUG
-         VTdR6WGa4vqentsck08qtxZzbc8hvVkqXMbD3LMwWWynxWghejtOT4tGdHljpAs/7Ago
-         p43hmGYeoMy4u8J0oJUns/wP/+M+48aW9ccDLPcj4/rU/oCy+pYw5NM9CgumGq3C6Bar
-         V0Sd3jBn0QjysTdCA5u0gfWo6eZSg9xv2soEhRb0SroRn5shjSsYspO+3Hs+E+nHixXg
-         0/3A==
+        bh=LjUmR6syFZQTjTX+EMH7Sbgc4CwkKZT5NTkS4TQtAUc=;
+        b=sam0/KZSTXmUo2WdsnqCOUMLoQL0oTggZsrHu5xImVNB4DQszXP4VtC6SBAq/YaCj6
+         oZ6V+aleXgxEQmYw17nYVsNTLotnMYHMksl+zIUhW7TUugybC0sScWu16ACFEgW5U9BW
+         bTsDyycFa5HCBVNQ0giJ0kfWtl1HZaXU8oiQDCSEMB6AgOb1dV8Xe5A5es+7vUne7ONT
+         3RMXkAbwjp4xqCDZdeuo5KlRB7t5rARVOS7kuZsRRb9z+bWzkHKkRrTmAX+GjNH3JYJQ
+         y74rRnMCpbmdDtq0gOFuyPg1ZHyMwXzwpOOsQUK/gT2ou23MHlRIiL9fnkgBq1xxhYjL
+         KQgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=dPicZ6dKiXggVDaTmZsHbexmmGF0NBX0XkLCl2NE9e8=;
-        b=UI0AB5RMUjAZbbvbyURatpQ9MqzUNY+4Dqr5CmsF5xoNWXJq9UZ1KR3UQSzXiiKo5L
-         po9cVPbh/cu3oHAGLBg9ZAIOMdB9YHOCH7jftTqDDbT0hkPHMW2+VR3kOaGhAYzwF8bK
-         5WebpLy5cSQbscCTkMSodl9BFsgjIZHX8EYWTTsQOc203fpSMdj3dUEhQFlAHLYuEr6R
-         MjYvWxkt/wPQjlzeltGGE7Tw4Avl918GhenM39Iepd+A9cIw0KhmDX5xmqjGI48rbjgj
-         ybyegl7wOXgfpMM4supiOiX5840hZV47C5pqe0Bu9RkXJr+sUWM5Qd4Pgf690qapKSXN
-         2gwA==
-X-Gm-Message-State: APjAAAXeprYweL76t3SaSWYSI/hligio3Klg4TslPj+fezwHc2SAnpTc
-        Q8vOoySKIeWxSSc7u5juvzBvfA==
-X-Google-Smtp-Source: APXvYqzwWGi4GRBV7LqCTbrCRo2MAQiJrRU4pTiOllSLBVV5JYfE6TfutDsHiizQlpYTCl6wwSaK9Q==
-X-Received: by 2002:a2e:2943:: with SMTP id u64mr3622095lje.241.1570653716268;
-        Wed, 09 Oct 2019 13:41:56 -0700 (PDT)
+        bh=LjUmR6syFZQTjTX+EMH7Sbgc4CwkKZT5NTkS4TQtAUc=;
+        b=ETMlzZu4JvLbid2qzlMo1AHV3Xmm69x1YlndnWrKGvuS9My6mZdh9I5tqq+LByNakr
+         /k/74MmIOW81U3MMAB00dsrINmRvlldhMxHPBhAbDQCnP+wY9wEVtELVbWKmTVc4BSS1
+         hwmWZB+I306OzT5iIviRuYRutuw4w37E8xX83uWZ0XhNyg5Pi+bP7noxfCSq/mACQFCD
+         tKmljLBJZC3ebMGNoXy4F4euWZzij72Q7pSy/PfzStYDZ8a2oNi8w3TAnpHKyYMpX5J3
+         BYzidvl28FjeNsNMcuEGf07MHIVYE2zQQyFbE3Z/dY3KchP7m7sof65Q+ntmKDZsAGAa
+         tyjA==
+X-Gm-Message-State: APjAAAVhc17jQa59FSkhNbrRHFPntxmvVnTXVfots03ykt2T1Cyf/zmc
+        /ZLSsoDhyOLPBVwwfqJrIIMFwA==
+X-Google-Smtp-Source: APXvYqyiGSARqeIXVEVI1rDeKHEAUCzETEToOqGqB5l4cdarrKDlAOgnSm/pu8APW5hjoQ/RqSsBHA==
+X-Received: by 2002:ac2:4904:: with SMTP id n4mr3170649lfi.179.1570653717613;
+        Wed, 09 Oct 2019 13:41:57 -0700 (PDT)
 Received: from localhost.localdomain (168-200-94-178.pool.ukrtel.net. [178.94.200.168])
-        by smtp.gmail.com with ESMTPSA id h3sm730871ljf.12.2019.10.09.13.41.54
+        by smtp.gmail.com with ESMTPSA id h3sm730871ljf.12.2019.10.09.13.41.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Oct 2019 13:41:55 -0700 (PDT)
+        Wed, 09 Oct 2019 13:41:57 -0700 (PDT)
 From:   Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
 To:     ast@kernel.org, daniel@iogearbox.net, yhs@fb.com,
         davem@davemloft.net, jakub.kicinski@netronome.com, hawk@kernel.org,
@@ -51,9 +51,9 @@ Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
         bpf@vger.kernel.org, clang-built-linux@googlegroups.com,
         ilias.apalodimas@linaro.org, sergei.shtylyov@cogentembedded.com,
         Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
-Subject: [PATCH v4 bpf-next 12/15] libbpf: add C/LDFLAGS to libbpf.so and test_libpf targets
-Date:   Wed,  9 Oct 2019 23:41:31 +0300
-Message-Id: <20191009204134.26960-13-ivan.khoronzhuk@linaro.org>
+Subject: [PATCH v4 bpf-next 13/15] samples/bpf: provide C/LDFLAGS to libbpf
+Date:   Wed,  9 Oct 2019 23:41:32 +0300
+Message-Id: <20191009204134.26960-14-ivan.khoronzhuk@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20191009204134.26960-1-ivan.khoronzhuk@linaro.org>
 References: <20191009204134.26960-1-ivan.khoronzhuk@linaro.org>
@@ -62,42 +62,28 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In case of C/LDFLAGS there is no way to pass them correctly to build
-command, for instance when --sysroot is used or external libraries
-are used, like -lelf, wich can be absent in toolchain. This can be
-used for samples/bpf cross-compiling allowing to get elf lib from
-sysroot.
+In order to build lib using C/LD flags of target arch, provide them
+to libbpf make.
 
 Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
 ---
- tools/lib/bpf/Makefile | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ samples/bpf/Makefile | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
-index 46280b5ad48d..75b538577c17 100644
---- a/tools/lib/bpf/Makefile
-+++ b/tools/lib/bpf/Makefile
-@@ -174,8 +174,9 @@ bpf_helper_defs.h: $(srctree)/include/uapi/linux/bpf.h
- $(OUTPUT)libbpf.so: $(OUTPUT)libbpf.so.$(LIBBPF_VERSION)
+diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
+index a6c33496e8ca..6b161326ac67 100644
+--- a/samples/bpf/Makefile
++++ b/samples/bpf/Makefile
+@@ -248,7 +248,8 @@ clean:
  
- $(OUTPUT)libbpf.so.$(LIBBPF_VERSION): $(BPF_IN)
--	$(QUIET_LINK)$(CC) --shared -Wl,-soname,libbpf.so.$(LIBBPF_MAJOR_VERSION) \
--				    -Wl,--version-script=$(VERSION_SCRIPT) $^ -lelf -o $@
-+	$(QUIET_LINK)$(CC) $(LDFLAGS) \
-+		--shared -Wl,-soname,libbpf.so.$(LIBBPF_MAJOR_VERSION) \
-+		-Wl,--version-script=$(VERSION_SCRIPT) $^ -lelf -o $@
- 	@ln -sf $(@F) $(OUTPUT)libbpf.so
- 	@ln -sf $(@F) $(OUTPUT)libbpf.so.$(LIBBPF_MAJOR_VERSION)
+ $(LIBBPF): FORCE
+ # Fix up variables inherited from Kbuild that tools/ build system won't like
+-	$(MAKE) -C $(dir $@) RM='rm -rf' LDFLAGS= srctree=$(BPF_SAMPLES_PATH)/../../ O=
++	$(MAKE) -C $(dir $@) RM='rm -rf' EXTRA_CFLAGS="$(TPROGS_CFLAGS)" \
++		LDFLAGS=$(TPROGS_LDFLAGS) srctree=$(BPF_SAMPLES_PATH)/../../ O=
  
-@@ -183,7 +184,7 @@ $(OUTPUT)libbpf.a: $(BPF_IN)
- 	$(QUIET_LINK)$(RM) $@; $(AR) rcs $@ $^
- 
- $(OUTPUT)test_libbpf: test_libbpf.c $(OUTPUT)libbpf.a
--	$(QUIET_LINK)$(CC) $(INCLUDES) $^ -lelf -o $@
-+	$(QUIET_LINK)$(CC) $(CFLAGS) $(LDFLAGS) $(INCLUDES) $^ -lelf -o $@
- 
- $(OUTPUT)libbpf.pc:
- 	$(QUIET_GEN)sed -e "s|@PREFIX@|$(prefix)|" \
+ $(obj)/syscall_nrs.h:	$(obj)/syscall_nrs.s FORCE
+ 	$(call filechk,offsets,__SYSCALL_NRS_H__)
 -- 
 2.17.1
 
