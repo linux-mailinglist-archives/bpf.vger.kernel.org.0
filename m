@@ -2,119 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 84D65D0CAF
-	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2019 12:20:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E10CBD1266
+	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2019 17:26:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730827AbfJIKUN convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Wed, 9 Oct 2019 06:20:13 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:58430 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730824AbfJIKUM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Oct 2019 06:20:12 -0400
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id EE103C0546FE;
-        Wed,  9 Oct 2019 10:20:11 +0000 (UTC)
-Received: from carbon (ovpn-200-19.brq.redhat.com [10.40.200.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6B31D1001B30;
-        Wed,  9 Oct 2019 10:19:57 +0000 (UTC)
-Date:   Wed, 9 Oct 2019 12:19:55 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Marek Majkowski <marek@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, brouer@redhat.com
-Subject: Re: [PATCH bpf-next v3 1/5] bpf: Support chain calling multiple BPF
- programs after each other
-Message-ID: <20191009121955.29cad5bb@carbon>
-In-Reply-To: <20191009015117.pldowv6n3k5p3ghr@ast-mbp.dhcp.thefacebook.com>
-References: <157046883502.2092443.146052429591277809.stgit@alrua-x1>
-        <157046883614.2092443.9861796174814370924.stgit@alrua-x1>
-        <20191007204234.p2bh6sul2uakpmnp@ast-mbp.dhcp.thefacebook.com>
-        <87sgo3lkx9.fsf@toke.dk>
-        <20191009015117.pldowv6n3k5p3ghr@ast-mbp.dhcp.thefacebook.com>
+        id S1729865AbfJIP0q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Oct 2019 11:26:46 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:36103 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729471AbfJIP0p (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Oct 2019 11:26:45 -0400
+Received: by mail-qt1-f196.google.com with SMTP id o12so4011427qtf.3;
+        Wed, 09 Oct 2019 08:26:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kDwcl4Lkv9JkHR9gMfp83O8Dx8hy5uoIlzYh+nEtcG8=;
+        b=IqbeX11uxCsObiw72IgyRkpU6Qf0HLRpPVzCKjZ09Af8sEJDWiYKuuBHp01KN4OmAJ
+         h+JubKXcnRM2BtqBoCIGyrXHwzLeMrhJ0nv2SDsuifUtmLmt5S7n3r+1ZBsKUdcjt659
+         HKezz4Qt1607eulUmkk1Sbe+NJXMOxh25DS6d2LvDlbV0+MgI1zBcx0jOpsYsSAPLZCP
+         wIi+jJVFLaJLAkS6X9M68S2Q6cCbQ7rNY/Q4Ni7Pz1x/uhXxXfQ4ZLXdrNHWFm/u7SJZ
+         3zzM5N9fliCul6uUgpNe8RUCq1RwxAIScNrjpUi40DGfC/c80lNRglysoQOgPclByPju
+         cTOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kDwcl4Lkv9JkHR9gMfp83O8Dx8hy5uoIlzYh+nEtcG8=;
+        b=WcnL/2/Ax02sZccPuL7KSwimsFL07BXXbX4eSdBwAsIYivxvkbAugl6VqsKc4qkPUG
+         ZR2fpjPtT1UCwOaX+zURHhUI7abEkxVsVhFIEybvhXsjhirLJvX6Ceh9k2l4DDO6Q3gk
+         Bggu+Pd7jdqTfsOxqytiVUIRU9j/ojhoqPsWynt/ZmKft3n/xT29DGuok3zvKkXRTWBW
+         hiCznrofFV305GFWmYTcxNTZCaJoj9eC7TGfuOs2okLa+RV/ZUaEnJOPNX0xjjlu1QVl
+         +wcvCxPKOTJJSvuu58txg5knECHo/GBzIL9x3gBbVQGyYzt0ylCtDaXMNFYfW60Nnx6W
+         GEdQ==
+X-Gm-Message-State: APjAAAWUJsJe2SU+T/451oUYq38cefGKqOgr14Po+Lt3bvene/O3m/M3
+        wpzhZp+jeS3FLp/nSYb1i4JzDsippjs=
+X-Google-Smtp-Source: APXvYqwo3pFNJ7u9MOXB+SmDTHcMGtGcHfp10ZN6mv+GKul2UZYzQ9h1DRt4h7P5zwmHme7CrsOCOw==
+X-Received: by 2002:ac8:71d7:: with SMTP id i23mr4177379qtp.195.1570634802913;
+        Wed, 09 Oct 2019 08:26:42 -0700 (PDT)
+Received: from ebpf00.byteswizards.com ([190.162.109.190])
+        by smtp.googlemail.com with ESMTPSA id l189sm1049895qke.69.2019.10.09.08.26.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Oct 2019 08:26:42 -0700 (PDT)
+From:   Carlos Neira <cneirabustos@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     yhs@fb.com, ebiederm@xmission.com, brouer@redhat.com,
+        bpf@vger.kernel.org, cneirabustos@gmail.com
+Subject: [PATCH v13 0/4] BPF: New helper to obtain namespace data from current task
+Date:   Wed,  9 Oct 2019 12:26:28 -0300
+Message-Id: <20191009152632.14218-1-cneirabustos@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.32]); Wed, 09 Oct 2019 10:20:12 +0000 (UTC)
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 8 Oct 2019 18:51:19 -0700
-Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+Currently bpf_get_current_pid_tgid(), is used to do pid filtering in bcc's
+scripts but this helper returns the pid as seen by the root namespace which is
+fine when a bcc script is not executed inside a container.
+When the process of interest is inside a container, pid filtering will not work
+if bpf_get_current_pid_tgid() is used.
+This helper addresses this limitation returning the pid as it's seen by the current
+namespace where the script is executing.
 
-> On Tue, Oct 08, 2019 at 10:07:46AM +0200, Toke Høiland-Jørgensen wrote:
-> > Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
-> >   
-> > > On Mon, Oct 07, 2019 at 07:20:36PM +0200, Toke Høiland-Jørgensen wrote:  
-> > >> From: Toke Høiland-Jørgensen <toke@redhat.com>
-> > >> 
-> > >> This adds support for wrapping eBPF program dispatch in chain calling
-> > >> logic. The code injection is controlled by a flag at program load time; if
-> > >> the flag is set, the BPF program will carry a flag bit that changes the
-> > >> program dispatch logic to wrap it in a chain call loop.
-[...]
-> > >> diff --git a/include/linux/filter.h b/include/linux/filter.h
-> > >> index 2ce57645f3cd..3d1e4991e61d 100644
-> > >> --- a/include/linux/filter.h
-> > >> +++ b/include/linux/filter.h
-[...]
-> > >>  #define BPF_PROG_RUN(prog, ctx)	({				\
-> > >> @@ -559,14 +585,18 @@ DECLARE_STATIC_KEY_FALSE(bpf_stats_enabled_key);
-> > >>  	if (static_branch_unlikely(&bpf_stats_enabled_key)) {	\
-> > >>  		struct bpf_prog_stats *stats;			\
-> > >>  		u64 start = sched_clock();			\
-> > >> -		ret = (*(prog)->bpf_func)(ctx, (prog)->insnsi);	\
-> > >> +		ret = prog->chain_calls ?			\
-> > >> +			do_chain_calls(prog, ctx) :			\
-> > >> +			 (*(prog)->bpf_func)(ctx, (prog)->insnsi);	\  
-> > >
-> > > I thought you agreed on 'no performance regressions' rule?  
-> > 
-> > As I wrote in the cover letter I could not measurable a performance
-> > impact from this, even with the simplest possible XDP program (where
-> > program setup time has the largest impact).
-> > 
-> > This was the performance before/after patch (also in the cover letter):
-> > 
-> > Before patch (XDP DROP program):  31.5 Mpps
-> > After patch (XDP DROP program):   32.0 Mpps
-> > 
-> > So actually this *increases* performance ;)
-> > (Or rather, the difference is within the measurement uncertainty on my
-> > system).  
-> 
-> I have hard time believing such numbers.
+In the future different pid_ns files may belong to different devices, according to the
+discussion between Eric Biederman and Yonghong in 2017 Linux plumbers conference.
+To address that situation the helper requires inum and dev_t from /proc/self/ns/pid.
+This helper has the same use cases as bpf_get_current_pid_tgid() as it can be
+used to do pid filtering even inside a container.
 
-Don't look at this as +/- 500Kpps.  Instead you have to realize that the
-performance difference in ns (nano-seconds) is only 0.5 ns (0.496 ns).
+Signed-off-by: Carlos Neira <cneirabustos@gmail.com>
 
- (1/31.5*1000)-(1/32.0*1000) = 0.4960 ns
+Carlos Neira (4):
+  fs/nsfs.c: added ns_match
+  bpf: added new helper bpf_get_ns_current_pid_tgid
+  tools: Added bpf_get_ns_current_pid_tgid helper
+  tools/testing/selftests/bpf: Add self-tests for new helper.
 
-This "half-a-nanosec" is below the measurement uncertainty of any
-system. My system have approx 2-3 ns measurement variance, which I'm
-proud of.  At these speeds (32Mpps) this e.g. 3 ns variance would
-result in -2.8 Mpps (29.2Mpps).
-
-
-The change Toke did in BPF_PROG_RUN does not introduce any measurable
-performance change, as least on high-end Intel CPUs.  This DOES satisfy
-'no performance regressions' rule.  You can dislike the solution for
-other reasons ;-)
+ fs/nsfs.c                                     |  8 ++
+ include/linux/bpf.h                           |  1 +
+ include/linux/proc_ns.h                       |  2 +
+ include/uapi/linux/bpf.h                      | 22 ++++-
+ kernel/bpf/core.c                             |  1 +
+ kernel/bpf/helpers.c                          | 43 ++++++++++
+ kernel/trace/bpf_trace.c                      |  2 +
+ tools/include/uapi/linux/bpf.h                | 22 ++++-
+ tools/testing/selftests/bpf/bpf_helpers.h     |  4 +
+ .../bpf/prog_tests/get_ns_current_pid_tgid.c  | 85 +++++++++++++++++++
+ .../bpf/progs/get_ns_current_pid_tgid_kern.c  | 53 ++++++++++++
+ 11 files changed, 241 insertions(+), 2 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/get_ns_current_pid_tgid.c
+ create mode 100644 tools/testing/selftests/bpf/progs/get_ns_current_pid_tgid_kern.c
 
 -- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+2.20.1
+
