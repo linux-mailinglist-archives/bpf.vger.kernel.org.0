@@ -2,153 +2,274 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 26766D1913
-	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2019 21:38:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15418D193A
+	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2019 21:50:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731173AbfJITip (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Oct 2019 15:38:45 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:61788 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730708AbfJITip (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 9 Oct 2019 15:38:45 -0400
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x99JUD0R012520;
-        Wed, 9 Oct 2019 12:38:21 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=3bF7w80voCnsj60rYcOAtvIL8fuE/mOZjhQyKgkwCcI=;
- b=LzrI/d+2CC77jy6Smp+LqquVuC+vBUOv81NFRObyNXd1l/1eOahzVFl1Y1T5XuuUnHf3
- fKS2Wpj589afjgG+R1tA5HQHPVtUQrdY9cwUBsWfKmXG63qK0mVG+zTFZfUdJyq+uTFm
- l+bjX8qyocrQbZFP7K4u6Wgv3MH095GXli4= 
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by mx0a-00082601.pphosted.com with ESMTP id 2vgvbyym6c-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 09 Oct 2019 12:38:21 -0700
-Received: from prn-mbx06.TheFacebook.com (2620:10d:c081:6::20) by
- prn-hub03.TheFacebook.com (2620:10d:c081:35::127) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Wed, 9 Oct 2019 12:38:18 -0700
-Received: from prn-hub03.TheFacebook.com (2620:10d:c081:35::127) by
- prn-mbx06.TheFacebook.com (2620:10d:c081:6::20) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Wed, 9 Oct 2019 12:38:18 -0700
-Received: from NAM05-CO1-obe.outbound.protection.outlook.com (192.168.54.28)
- by o365-in.thefacebook.com (192.168.16.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
- via Frontend Transport; Wed, 9 Oct 2019 12:38:18 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nbWKv8B/NmeZ1G0jTZpjkz6H/V10lgNxBgm6c7XvfzzA1o/d6PgkqJ7mQwWLi2FO48hHzbLCcJX6VgNaX0PTNeZlJf0mgvlvHzIcTWIANoMgfQKjTVQ+27gTwEfS8DykE/FEOMNZcwnrqAgsrIeUsntazgodJvTmhwE5xffqqCQmpO5z9yzue5c/RXm/GYyxdGLDDT/MGVmKs6wQQn1Y2XfTa7CHym+orHiMQrFC4UnQfil9jq8wc2mZ7LsXojrxPi899Vg7WXo/x1hfYvBI02D1h6yYasFP5VSJ/rTIWrsO6efNbz4VSfixtsQb+g1V34Jj1T0JuuHd8R/PCJ2S3g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3bF7w80voCnsj60rYcOAtvIL8fuE/mOZjhQyKgkwCcI=;
- b=cVczbet+NQO5Y803GCM9e/xpl8LIxxRZMxlPQb/AxR4TAq+FiZL83D2RyOM1y3apo1bZh7AMGgSwG7HygwXz+x9iYgUAtpvoM/GMfTKfH+gBW90iBA2hRxpZ7ykWYUAPeZw+aHUyljovzhk0+tuwR+ntW0eBn6a6/paBFwPnftB3wU9GbG9njVGj0hwy358qzIVRVnWrSiSL9bAXLElFitu7/uoaDCRb24JxzrFAbPiygVsqRO7uqmb8g61tSODtYe6ASg3gSMDr7y5nZ2v0Bd5lwmAwkKJw5JImmNkF7m9YkkNa2vq/PrxmyvfxE/wBrRIshWluOcxqWUyaYAoAUw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3bF7w80voCnsj60rYcOAtvIL8fuE/mOZjhQyKgkwCcI=;
- b=GHiG1pPsD8PB8CBbOlS/al4xRV+0uOvvJYJM54sThHvA8d7/wg23e/g2uUGcibLJY3feKjJ7JfxVcW1ZtTe0+YosEhfj4j2cA7IGJSj/lLhN1+dU0Gyde+XoiL3yqc10TkTNZMDVs8g3loy8att+9jYg1ItdYEOA+vOHiokf8PU=
-Received: from BYAPR15MB2501.namprd15.prod.outlook.com (52.135.196.11) by
- BYAPR15MB3269.namprd15.prod.outlook.com (20.179.57.149) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2347.16; Wed, 9 Oct 2019 19:38:17 +0000
-Received: from BYAPR15MB2501.namprd15.prod.outlook.com
- ([fe80::c13d:be57:b216:bfa0]) by BYAPR15MB2501.namprd15.prod.outlook.com
- ([fe80::c13d:be57:b216:bfa0%5]) with mapi id 15.20.2327.026; Wed, 9 Oct 2019
- 19:38:17 +0000
-From:   Alexei Starovoitov <ast@fb.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "x86@kernel.org" <x86@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH bpf-next 09/10] bpf: disallow bpf_probe_read[_str] helpers
-Thread-Topic: [PATCH bpf-next 09/10] bpf: disallow bpf_probe_read[_str]
- helpers
-Thread-Index: AQHVezpE4/ANSHC9XU2IKatyZF/eX6dRzn0AgADtO4A=
-Date:   Wed, 9 Oct 2019 19:38:17 +0000
-Message-ID: <832aa9b3-8c7a-6304-ad09-e825a1c72e3a@fb.com>
-References: <20191005050314.1114330-1-ast@kernel.org>
- <20191005050314.1114330-10-ast@kernel.org>
- <CAEf4Bzb2XEp2H26RonyPjvUqXB4qx6sc6KN_i74hu4bhPhhc4w@mail.gmail.com>
-In-Reply-To: <CAEf4Bzb2XEp2H26RonyPjvUqXB4qx6sc6KN_i74hu4bhPhhc4w@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: CO2PR05CA0065.namprd05.prod.outlook.com
- (2603:10b6:102:2::33) To BYAPR15MB2501.namprd15.prod.outlook.com
- (2603:10b6:a02:88::11)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:180::cfd7]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 90519183-1295-4d68-1ee7-08d74cf03b4f
-x-ms-traffictypediagnostic: BYAPR15MB3269:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR15MB3269355401B4193D6C10E341D7950@BYAPR15MB3269.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:79;
-x-forefront-prvs: 018577E36E
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(376002)(396003)(136003)(366004)(346002)(39860400002)(199004)(189003)(31686004)(36756003)(54906003)(110136005)(6246003)(316002)(6116002)(256004)(478600001)(14444005)(5024004)(6436002)(66556008)(4326008)(66476007)(64756008)(25786009)(66946007)(66446008)(6486002)(229853002)(14454004)(8936002)(6512007)(386003)(81156014)(53546011)(7736002)(5660300002)(305945005)(2906002)(476003)(6506007)(71200400001)(102836004)(2616005)(8676002)(71190400001)(186003)(52116002)(486006)(86362001)(76176011)(46003)(81166006)(99286004)(31696002)(446003)(11346002);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB3269;H:BYAPR15MB2501.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 6eeltJy+Vb+1nec4ubNEDrGQQdY7CwgCgwdplgg0cmyj1xEntD6Q7lxueN/NHLOLCnL9gMaBQ6we8Fi2sNu/Fvpz8YVQT8J7jVJCTn8Pt/F3CEG/RvVtgIwDyemFRvbB4PKr5XFl9m3vsPjmytwUjFPJ2TZhyYtDOUzkcrk9d4KJJHlLrpsrAGxZMiHbWGKABekdbi3R/5jXiY7tvXNmmyutKoW+a1VJCSTYRkpaWFgfwHS8F/VP+MPFIq+SUa6EKuGrKEkyckYKSMaUNemlnC3NaUy95Y5tsKs+RmVJ1FA7H+gaXdY4rAIFMo58utlWgHMFuX+K8JwB3q9PYGNs/F/2yre0xTPIjxxPyFaj4TgcIUB/4VQchf3O3Di+mI/08Gt92j9fjnErq2Q4e0h/32PIW9mYjmeMpP8OqFr3lm4=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <0246DBA4D018A341918DF745873510DE@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1731193AbfJITuX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Oct 2019 15:50:23 -0400
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:38554 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728804AbfJITuX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Oct 2019 15:50:23 -0400
+Received: by mail-qk1-f193.google.com with SMTP id u186so3372392qkc.5;
+        Wed, 09 Oct 2019 12:50:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aNkoSOSLpO8yUGLMo7SKh5bessb8H/CMtgVc3/vAAT8=;
+        b=YPJiIYUTpsGqL4yZBID0wqn3WLBZXQGykahxGwI5iHVv7Nh+RW0Bv1stJgyfQMDPsu
+         8DSk+zQSGwGF1w/Yf2HwRoiVVqvBvKBGx9ge2hayZsq9T/gUcqwzMdwNUKlK53wHvdjb
+         WJqWhjUtRPAgKPslzb2YGP9iEPcZT8zPqBKGBTjoHWRhe8CCjG/T/iJ7Xn4GpQCQqvqd
+         CEtxD1nx+fIicX/agDKeYrKrncak5GwU1aqCZtgQuAdarOl95eSl63N2hCwM8eyKCiku
+         ua+oLnsRzDVsnUHhLw0pWuy9dq6sVG2RXrUb+Qu8YiqnQoo7lAKNCNIDMpHsEgX/YRYl
+         ZP4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aNkoSOSLpO8yUGLMo7SKh5bessb8H/CMtgVc3/vAAT8=;
+        b=MCmofNTz4sScRIlIw6YITQct72tM6ZY+vgSCd4Y6n/MEzkHYkJtEO/gydYVOr0S4Dt
+         ZtimxcMEY6zuyJ7GFuF7pEjLw6I2V+/KevXnJkGErC011q9bn6mJWKBluonYoLsmpv4Y
+         FyiJ5/lI1+Gqow32FExXiIyK7rOZddHn3gQsq3R9NYuEvohfSxy+D0lCfv2eBo9JfFTu
+         K6s9DDoWklyEhaoNIBiQxuYbD3r3yotxYS1sJF26krQZCyfFd/HVLF+8JjRg8KcflLLC
+         tJgtVjCVDYG1i3xISplgppKHAfXSGu4VxoLDvoxPiNNV9RLFbOuNAzbj9+arqejAX8/8
+         m/UA==
+X-Gm-Message-State: APjAAAUKcpK1zqIsIpVOmRaQkf8t/FVph3doatUTwZTWI4htnmIBYjvM
+        +ilK/UVtl5D9LV4p467JSo9wmsPIKFIIa2XtKu4=
+X-Google-Smtp-Source: APXvYqyvTPsZfQSlqq+ct5PbnvT74YIwW5BaTfleIKT0EXwSwUHxzfinxLX/8LAlmYQoaoN0cAXPpiY86DZZtunmXCs=
+X-Received: by 2002:a37:b447:: with SMTP id d68mr5536638qkf.437.1570650621824;
+ Wed, 09 Oct 2019 12:50:21 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 90519183-1295-4d68-1ee7-08d74cf03b4f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Oct 2019 19:38:17.0985
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: wX2xsTuLBzvAD+QOTw3HWOaQ1rNBGOeoSRWexIR3x0R3NnKbMUblGyMXj0IM7mzT
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3269
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
- definitions=2019-10-09_09:2019-10-08,2019-10-09 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
- spamscore=0 priorityscore=1501 adultscore=0 bulkscore=0 lowpriorityscore=0
- malwarescore=0 clxscore=1015 suspectscore=0 mlxlogscore=999 phishscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1908290000 definitions=main-1910090155
-X-FB-Internal: deliver
+References: <20191009152632.14218-1-cneirabustos@gmail.com>
+ <20191009152632.14218-3-cneirabustos@gmail.com> <CAEf4BzYf77BxVy9bNBhW5SFA7nkMLyt_BfDEKC1Nis8Hcc2MqA@mail.gmail.com>
+ <20191009174538.GB12351@frodo.byteswizards.com>
+In-Reply-To: <20191009174538.GB12351@frodo.byteswizards.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 9 Oct 2019 12:50:10 -0700
+Message-ID: <CAEf4BzanTFDV6rXTewJYLN_BXsFbDnJoJ-58fAxE9XBVuVVSNA@mail.gmail.com>
+Subject: Re: [PATCH v13 2/4] bpf: added new helper bpf_get_ns_current_pid_tgid
+To:     Carlos Antonio Neira Bustos <cneirabustos@gmail.com>
+Cc:     Networking <netdev@vger.kernel.org>, Yonghong Song <yhs@fb.com>,
+        ebiederm@xmission.com, Jesper Dangaard Brouer <brouer@redhat.com>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-T24gMTAvOC8xOSAxMDoyOSBQTSwgQW5kcmlpIE5ha3J5aWtvIHdyb3RlOg0KPiBPbiBGcmksIE9j
-dCA0LCAyMDE5IGF0IDEwOjA0IFBNIEFsZXhlaSBTdGFyb3ZvaXRvdiA8YXN0QGtlcm5lbC5vcmc+
-IHdyb3RlOg0KPj4NCj4+IERpc2FsbG93IGJwZl9wcm9iZV9yZWFkKCkgYW5kIGJwZl9wcm9iZV9y
-ZWFkX3N0cigpIGhlbHBlcnMgaW4NCj4+IHJhd190cmFjZXBvaW50IGJwZiBwcm9ncmFtcyB0aGF0
-IHVzZSBpbi1rZXJuZWwgQlRGIHRvIHRyYWNrDQo+PiB0eXBlcyBvZiBtZW1vcnkgYWNjZXNzZXMu
-DQo+Pg0KPj4gU2lnbmVkLW9mZi1ieTogQWxleGVpIFN0YXJvdm9pdG92IDxhc3RAa2VybmVsLm9y
-Zz4NCj4+IC0tLQ0KPj4gICBrZXJuZWwvdHJhY2UvYnBmX3RyYWNlLmMgfCA0ICsrKysNCj4+ICAg
-MSBmaWxlIGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygrKQ0KPj4NCj4+IGRpZmYgLS1naXQgYS9rZXJu
-ZWwvdHJhY2UvYnBmX3RyYWNlLmMgYi9rZXJuZWwvdHJhY2UvYnBmX3RyYWNlLmMNCj4+IGluZGV4
-IDUyZjdlOWQ4YzI5Yi4uN2M2MDdmNzlmMWJiIDEwMDY0NA0KPj4gLS0tIGEva2VybmVsL3RyYWNl
-L2JwZl90cmFjZS5jDQo+PiArKysgYi9rZXJuZWwvdHJhY2UvYnBmX3RyYWNlLmMNCj4+IEBAIC03
-MDAsNiArNzAwLDggQEAgdHJhY2luZ19mdW5jX3Byb3RvKGVudW0gYnBmX2Z1bmNfaWQgZnVuY19p
-ZCwgY29uc3Qgc3RydWN0IGJwZl9wcm9nICpwcm9nKQ0KPj4gICAgICAgICAgY2FzZSBCUEZfRlVO
-Q19tYXBfcGVla19lbGVtOg0KPj4gICAgICAgICAgICAgICAgICByZXR1cm4gJmJwZl9tYXBfcGVl
-a19lbGVtX3Byb3RvOw0KPj4gICAgICAgICAgY2FzZSBCUEZfRlVOQ19wcm9iZV9yZWFkOg0KPj4g
-KyAgICAgICAgICAgICAgIGlmIChwcm9nLT5leHBlY3RlZF9hdHRhY2hfdHlwZSkNCj4+ICsgICAg
-ICAgICAgICAgICAgICAgICAgIHJldHVybiBOVUxMOw0KPiANCj4gVGhpcyBjYW4gdW5pbnRlbnRp
-b25hbGx5IGRpc2FibGUgYnBmX3Byb2JlX3JlYWQvYnBmX3Byb2JlX3JlYWRfc3RyIGZvcg0KPiBu
-b24tcmF3X3RwIHByb2dyYW1zIHRoYXQgaGFwcGVuZWQgdG8gc3BlY2lmeSBub24temVybw0KPiBl
-eHBlY3RlZF9hdHRhY2hfdHlwZSwgd2hpY2ggd2UgZG9uJ3QgcmVhbGx5IHZhbGlkYXRlIGZvcg0K
-PiBrcHJvYmUvdHAvcGVyZl9ldmVudC9ldGMuIFNvIGhvdyBhYm91dCBwYXNzaW5nIHByb2dyYW0g
-dHlwZSBpbnRvDQo+IHRyYWNpbmdfZnVuY19wcm90bygpIHNvIHRoYXQgd2UgY2FuIGhhdmUgbW9y
-ZSBncmFudWxhciBjb250cm9sPw0KDQp5ZWFoLiB0aGF0IHN1Y2tzIHRoYXQgd2UgZm9yZ290IHRv
-IGNoZWNrIGV4cGVjdGVkX2F0dGFjaF90eXBlIGZvciB6ZXJvDQp3aGVuIHRoYXQgZmllbGQgd2Fz
-IGludHJvZHVjZWQgZm9yIG5ldHdvcmtpbmcgcHJvZ3MuDQpJJ2xsIGFkZCBuZXcgdTMyIHRvIHBy
-b2dfbG9hZCBjb21tYW5kIGluc3RlYWQuIEl0J3MgY2xlYW5lciB0b28uDQo=
+On Wed, Oct 9, 2019 at 10:45 AM Carlos Antonio Neira Bustos
+<cneirabustos@gmail.com> wrote:
+>
+> On Wed, Oct 09, 2019 at 09:14:42AM -0700, Andrii Nakryiko wrote:
+> > On Wed, Oct 9, 2019 at 8:27 AM Carlos Neira <cneirabustos@gmail.com> wrote:
+> > >
+> > > New bpf helper bpf_get_ns_current_pid_tgid,
+> > > This helper will return pid and tgid from current task
+> > > which namespace matches dev_t and inode number provided,
+> > > this will allows us to instrument a process inside a container.
+> > >
+> > > Signed-off-by: Carlos Neira <cneirabustos@gmail.com>
+> > > ---
+> > >  include/linux/bpf.h      |  1 +
+> > >  include/uapi/linux/bpf.h | 22 +++++++++++++++++++-
+> > >  kernel/bpf/core.c        |  1 +
+> > >  kernel/bpf/helpers.c     | 43 ++++++++++++++++++++++++++++++++++++++++
+> > >  kernel/trace/bpf_trace.c |  2 ++
+> > >  5 files changed, 68 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > > index 5b9d22338606..231001475504 100644
+> > > --- a/include/linux/bpf.h
+> > > +++ b/include/linux/bpf.h
+> > > @@ -1055,6 +1055,7 @@ extern const struct bpf_func_proto bpf_get_local_storage_proto;
+> > >  extern const struct bpf_func_proto bpf_strtol_proto;
+> > >  extern const struct bpf_func_proto bpf_strtoul_proto;
+> > >  extern const struct bpf_func_proto bpf_tcp_sock_proto;
+> > > +extern const struct bpf_func_proto bpf_get_ns_current_pid_tgid_proto;
+> > >
+> > >  /* Shared helpers among cBPF and eBPF. */
+> > >  void bpf_user_rnd_init_once(void);
+> > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > > index 77c6be96d676..6ad3f2abf00d 100644
+> > > --- a/include/uapi/linux/bpf.h
+> > > +++ b/include/uapi/linux/bpf.h
+> > > @@ -2750,6 +2750,19 @@ union bpf_attr {
+> > >   *             **-EOPNOTSUPP** kernel configuration does not enable SYN cookies
+> > >   *
+> > >   *             **-EPROTONOSUPPORT** IP packet version is not 4 or 6
+> > > + *
+> > > + * u64 bpf_get_ns_current_pid_tgid(struct *bpf_pidns_info, u32 size)
+> >
+> > Should be:
+> >
+> > struct bpf_pidns_info *nsdata
+> >
+> > > + *     Return
+> > > + *             0 on success, values for pid and tgid from nsinfo will be as seen
+> > > + *             from the namespace that matches dev and inum from nsinfo.
+> >
+> > I think its cleaner to have a Description section, explaining that it
+> > will return pid/tgid in bpf_pidns_info, and then describe exit codes
+> > in Return section.
+> >
+> > > + *
+> > > + *             On failure, the returned value is one of the following:
+> > > + *
+> > > + *             **-EINVAL** if dev and inum supplied don't match dev_t and inode number
+> > > + *              with nsfs of current task, or if dev conversion to dev_t lost high bits.
+> > > + *
+> > > + *             **-ENOENT** if /proc/self/ns does not exists.
+> > > + *
+> > >   */
+> > >  #define __BPF_FUNC_MAPPER(FN)          \
+> > >         FN(unspec),                     \
+> > > @@ -2862,7 +2875,8 @@ union bpf_attr {
+> > >         FN(sk_storage_get),             \
+> > >         FN(sk_storage_delete),          \
+> > >         FN(send_signal),                \
+> > > -       FN(tcp_gen_syncookie),
+> > > +       FN(tcp_gen_syncookie),          \
+> > > +       FN(get_ns_current_pid_tgid),
+> > >
+> > >  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+> > >   * function eBPF program intends to call
+> > > @@ -3613,4 +3627,10 @@ struct bpf_sockopt {
+> > >         __s32   retval;
+> > >  };
+> > >
+> > > +struct bpf_pidns_info {
+> > > +       __u64 dev;
+> > > +       __u64 inum;
+> >
+> > seems like conventionally this should be named "ino", this is what
+> > ns_match calls it, so let's stay consistent.
+> >
+> > > +       __u32 pid;
+> > > +       __u32 tgid;
+> > > +};
+> >
+> > So it seems like dev and inum are treated as input parameters, while
+> > pid/tgid is output parameter, right? Wouldn't it be cleaner to have
+> > dev and inum as explicit arguments into bpf_get_ns_current_pid_tgid()?
+> > What's also not great, is that on failure you'll memset this entire
+> > struct to zero, and user will lose its dev/inum. So in practice you'll
+> > be keeping dev/inum somewhere else, then constructing and filling in
+> > this bpf_pidns_info struct every time you need to invoke
+> > bpf_get_ns_current_pid_tgid.
+> >
+> > Maybe it was discussed already, but IMO feels cleaner to have only
+> > pid/tgid in bpf_pidns_info and pass dev/inum as direct arguments.
+> >
+> > >  #endif /* _UAPI__LINUX_BPF_H__ */
+> > > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> > > index 66088a9e9b9e..b2fd5358f472 100644
+> > > --- a/kernel/bpf/core.c
+> > > +++ b/kernel/bpf/core.c
+> > > @@ -2042,6 +2042,7 @@ const struct bpf_func_proto bpf_get_current_uid_gid_proto __weak;
+> > >  const struct bpf_func_proto bpf_get_current_comm_proto __weak;
+> > >  const struct bpf_func_proto bpf_get_current_cgroup_id_proto __weak;
+> > >  const struct bpf_func_proto bpf_get_local_storage_proto __weak;
+> > > +const struct bpf_func_proto bpf_get_ns_current_pid_tgid_proto __weak;
+> > >
+> > >  const struct bpf_func_proto * __weak bpf_get_trace_printk_proto(void)
+> > >  {
+> > > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> > > index 5e28718928ca..78a1ce7726aa 100644
+> > > --- a/kernel/bpf/helpers.c
+> > > +++ b/kernel/bpf/helpers.c
+> > > @@ -11,6 +11,8 @@
+> > >  #include <linux/uidgid.h>
+> > >  #include <linux/filter.h>
+> > >  #include <linux/ctype.h>
+> > > +#include <linux/pid_namespace.h>
+> > > +#include <linux/proc_ns.h>
+> > >
+> > >  #include "../../lib/kstrtox.h"
+> > >
+> > > @@ -487,3 +489,44 @@ const struct bpf_func_proto bpf_strtoul_proto = {
+> > >         .arg4_type      = ARG_PTR_TO_LONG,
+> > >  };
+> > >  #endif
+> > > +
+> > > +BPF_CALL_2(bpf_get_ns_current_pid_tgid, struct bpf_pidns_info *, nsdata, u32,
+> > > +       size)
+> > > +{
+> > > +       struct task_struct *task = current;
+> > > +       struct pid_namespace *pidns;
+> > > +       int err = -EINVAL;
+> > > +
+> > > +       if (unlikely(size != sizeof(struct bpf_pidns_info)))
+> > > +               goto clear;
+> > > +
+> > > +       if ((u64)(dev_t)nsdata->dev != nsdata->dev)
+> >
+> > this seems unlikely() as well :)
+> >
+> > > +               goto clear;
+> > > +
+> > > +       if (unlikely(!task))
+> > > +               goto clear;
+> > > +
+> > > +       pidns = task_active_pid_ns(task);
+> > > +       if (unlikely(!pidns)) {
+> > > +               err = -ENOENT;
+> > > +               goto clear;
+> > > +       }
+> > > +
+> > > +       if (!ns_match(&pidns->ns, (dev_t)nsdata->dev, nsdata->inum))
+> > > +               goto clear;
+> > > +
+> > > +       nsdata->pid = task_pid_nr_ns(task, pidns);
+> > > +       nsdata->tgid = task_tgid_nr_ns(task, pidns);
+> > > +       return 0;
+> > > +clear:
+> > > +       memset((void *)nsdata, 0, (size_t) size);
+> > > +       return err;
+> > > +}
+> > > +
+> > > +const struct bpf_func_proto bpf_get_ns_current_pid_tgid_proto = {
+> > > +       .func           = bpf_get_ns_current_pid_tgid,
+> > > +       .gpl_only       = false,
+> > > +       .ret_type       = RET_INTEGER,
+> > > +       .arg1_type      = ARG_PTR_TO_UNINIT_MEM,
+> >
+> > So this is a lie, you do expect part of that struct to be initialized.
+> > One more reason to just split off dev/inum(ino?).
+> >
+> >
+> > > +       .arg2_type      = ARG_CONST_SIZE,
+> > > +};
+> > > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> > > index 44bd08f2443b..32331a1dcb6d 100644
+> > > --- a/kernel/trace/bpf_trace.c
+> > > +++ b/kernel/trace/bpf_trace.c
+> > > @@ -735,6 +735,8 @@ tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+> > >  #endif
+> > >         case BPF_FUNC_send_signal:
+> > >                 return &bpf_send_signal_proto;
+> > > +       case BPF_FUNC_get_ns_current_pid_tgid:
+> > > +               return &bpf_get_ns_current_pid_tgid_proto;
+> > >         default:
+> > >                 return NULL;
+> > >         }
+> > > --
+> > > 2.20.1
+> > >
+> Thanks for reviewing this, I'll make the changes you suggest.
+> I'm not sure about removing dev and ino from struct bpf_pidns_info, I
+> think is useful to know to which ns pid/tgid belong to using dev and ino
+> to figure it out. Maybe in the future we could filter bpf_pidns_info
+> structs by dev/ino, just an idea.
+
+I'm not following. dev/ino are specified by the caller to this helper,
+right? So caller already know those values. With current set up,
+though, the behavior is weird: this struct's dev/ino is preserved on
+success, but zeroed out on failure, even though helper itself has
+nothing to do with returning dev/ino. It also plays badly with
+ARG_PTR_TO_UNINT_MEM, because that memory is expected to be at least
+partially initialized. I see only downsides, to be honest.
+
+>
+> Bests
