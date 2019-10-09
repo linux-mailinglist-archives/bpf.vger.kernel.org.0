@@ -2,68 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C49E0D1325
-	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2019 17:42:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F3D6D13A3
+	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2019 18:09:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728804AbfJIPmt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Oct 2019 11:42:49 -0400
-Received: from relay6-d.mail.gandi.net ([217.70.183.198]:57735 "EHLO
-        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729471AbfJIPms (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Oct 2019 11:42:48 -0400
-X-Originating-IP: 90.177.210.238
-Received: from localhost.localdomain (238.210.broadband10.iol.cz [90.177.210.238])
-        (Authenticated sender: i.maximets@ovn.org)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 69C66C000D;
-        Wed,  9 Oct 2019 15:42:45 +0000 (UTC)
-From:   Ilya Maximets <i.maximets@ovn.org>
-To:     netdev@vger.kernel.org
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Ilya Maximets <i.maximets@ovn.org>
-Subject: [PATCH bpf] libbpf: fix passing uninitialized bytes to setsockopt
-Date:   Wed,  9 Oct 2019 17:42:38 +0200
-Message-Id: <20191009154238.15410-1-i.maximets@ovn.org>
-X-Mailer: git-send-email 2.17.1
+        id S1731738AbfJIQJS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Oct 2019 12:09:18 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:41922 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731666AbfJIQJR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Oct 2019 12:09:17 -0400
+Received: from [213.220.153.21] (helo=localhost.localdomain)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1iIEWW-00034Q-P7; Wed, 09 Oct 2019 16:09:12 +0000
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org
+Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Christian Brauner <christian.brauner@ubuntu.com>
+Subject: [PATCH 0/3] bpf: switch to new usercopy helpers
+Date:   Wed,  9 Oct 2019 18:09:04 +0200
+Message-Id: <20191009160907.10981-1-christian.brauner@ubuntu.com>
+X-Mailer: git-send-email 2.23.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-'struct xdp_umem_reg' has 4 bytes of padding at the end that makes
-valgrind complain about passing uninitialized stack memory to the
-syscall:
+Hey everyone,
 
-  Syscall param socketcall.setsockopt() points to uninitialised byte(s)
-    at 0x4E7AB7E: setsockopt (in /usr/lib64/libc-2.29.so)
-    by 0x4BDE035: xsk_umem__create@@LIBBPF_0.0.4 (xsk.c:172)
-  Uninitialised value was created by a stack allocation
-    at 0x4BDDEBA: xsk_umem__create@@LIBBPF_0.0.4 (xsk.c:140)
+In v5.4-rc2 we added two new helpers check_zeroed_user() and
+copy_struct_from_user() including selftests (cf. [1]). It is a generic
+interface designed to copy a struct from userspace. The helpers will be
+especially useful for structs versioned by size of which we have quite a
+few.
 
-Padding bytes appeared after introducing of a new 'flags' field.
+The most obvious benefit is that this helper lets us get rid of
+duplicate code. We've already switched over sched_setattr(), perf_event_open(),
+and clone3(). More importantly it will also help to ensure that users
+implementing versioning-by-size end up with the same core semantics.
 
-Fixes: 10d30e301732 ("libbpf: add flags to umem config")
-Signed-off-by: Ilya Maximets <i.maximets@ovn.org>
----
- tools/lib/bpf/xsk.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This point is especially crucial since we have at least one case where
+versioning-by-size is used but with slighly different semantics:
+sched_setattr(), perf_event_open(), and clone3() all do do similar
+checks to copy_struct_from_user() while rt_sigprocmask(2) always rejects
+differently-sized struct arguments.
 
-diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
-index a902838f9fcc..26d9db783560 100644
---- a/tools/lib/bpf/xsk.c
-+++ b/tools/lib/bpf/xsk.c
-@@ -139,7 +139,7 @@ int xsk_umem__create_v0_0_4(struct xsk_umem **umem_ptr, void *umem_area,
- 			    const struct xsk_umem_config *usr_config)
- {
- 	struct xdp_mmap_offsets off;
--	struct xdp_umem_reg mr;
-+	struct xdp_umem_reg mr = {};
- 	struct xsk_umem *umem;
- 	socklen_t optlen;
- 	void *map;
+This little series switches over bpf codepaths that have hand-rolled
+implementations of these helpers.
+
+Thanks!
+Christian
+
+/* Reference */
+[1]: f5a1a536fa14 ("lib: introduce copy_struct_from_user() helper")
+
+Christian Brauner (3):
+  bpf: use check_zeroed_user() in bpf_check_uarg_tail_zero()
+  bpf: use copy_struct_from_user() in bpf_prog_get_info_by_fd()
+  bpf: use copy_struct_from_user() in bpf() syscall
+
+ kernel/bpf/syscall.c | 38 ++++++++++++--------------------------
+ 1 file changed, 12 insertions(+), 26 deletions(-)
+
 -- 
-2.17.1
+2.23.0
 
