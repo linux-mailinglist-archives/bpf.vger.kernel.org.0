@@ -2,47 +2,47 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BC6FFD19D6
-	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2019 22:43:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1F34D19C4
+	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2019 22:41:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731980AbfJIUlq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Oct 2019 16:41:46 -0400
-Received: from mail-lf1-f68.google.com ([209.85.167.68]:44741 "EHLO
-        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731953AbfJIUlq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Oct 2019 16:41:46 -0400
-Received: by mail-lf1-f68.google.com with SMTP id q12so2657229lfc.11
-        for <bpf@vger.kernel.org>; Wed, 09 Oct 2019 13:41:44 -0700 (PDT)
+        id S1732008AbfJIUlr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Oct 2019 16:41:47 -0400
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:33083 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731978AbfJIUlr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Oct 2019 16:41:47 -0400
+Received: by mail-lj1-f195.google.com with SMTP id a22so3917269ljd.0
+        for <bpf@vger.kernel.org>; Wed, 09 Oct 2019 13:41:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=X+OYdLBkIYv08X2eKXt3TCPXQ11so0VYCO7f1mswfR4=;
-        b=tfJRZwLztmeYnFVdBAyxDdd+TZuqCcbbHvU5t2tVbgAMeD89v9awCNcvPek+HEsinA
-         K1LAR52j6GCLiPMmHzsyATIhO8GEAHwsq1kzMxTb+kqnSKYNYd/61S+suugTWtGL+xYl
-         hYzte2ORZ6ds9SEIuh1GeM64BiH81APaqQ8DuaBD1dx9qk2i1Er8JYdmwhNet5xJn8FY
-         UA4s3/ng5TBA92c8PW22hDa8b8CpZzr4neRtwwxFfBh7XCXe0ywARrnUdf3onmDwFKSE
-         KtyiZ5pt88z1zElieeXhqhh6EmSJxDY15JKWCgIFMyvdMpMSehHPchYNTgjgh1TOKi7m
-         700g==
+        bh=j9oehlPvbpQ/3mUr7ILsjkWG9P4RuU3Cq2akh+BGeG4=;
+        b=u9WblPuD1rsm0jyX6rOP8LRDXId4vkuFAucoTNQKldbU28hMIlJ4Ye49sY+S9r4GVw
+         FZlnYg+q4HiKAE96sVNakxmBf34Y9mWy3RWPbEpycFz6xT78/mZDLFsz7FEXaIXy1EXt
+         XrgaMdZhH+hP/js5F/dJ3Em5ta0eRVre0FAswR5FWcDfAnxpFAk1mWdRFBtU+/IJF0Ty
+         TBQ4ItMejqowBuKLezbZXsMP0uNYRa5YzBKTB7STXrYiiISY8jmZs0OxMlAXJTxMw2Uo
+         ah+j28+8X6x/K5OMYVKofwMOJqb+8KuBfI6BQFyAyyrKkwdciKWqLYwXUnPM8odBEyds
+         lLKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=X+OYdLBkIYv08X2eKXt3TCPXQ11so0VYCO7f1mswfR4=;
-        b=o8V2Ir+X2ZbI1r+Wqmm0dJTTutLZoWad49+1tVO/QtEPD17EjzMXI/atotYDej/Joy
-         cP/DpVHkrby0WvlmjlZ8L2doL6+gHVASX2gmKA9PN1LK+arXTp+RRm1DMEcr8La+IVxC
-         Kxof+9cw6UUU9xyojw3ufsVscQrC7yBoAjBqccTtJfWoz8vgwwurbfsO6fKSCA1psfTd
-         Yti58ASK3b/CKGwYLK+mlPAXxve7/UexjazNI2Wj3sgWBMhneJWd1R4iSra0VbdlyUwG
-         mrm0nwuHYYKG3ZTK3tCs6a5Dsx6Y8o0KJSOMkUXwbDontBddIGYFUZeIgowO7R0qkZz5
-         /VAw==
-X-Gm-Message-State: APjAAAXqL70DHbhrkYX+AAEpC3tmgRzCtcmC9hvXibxY/QvvempyzE/3
-        Ocn7VYMD9hjeqikjtYyqWWqBpA==
-X-Google-Smtp-Source: APXvYqz1bKEUNoy2hw6TiSEtk/s+AI2BPUnSPgf5bemrwMHPwBezXWN9I4nngequORm4JiAuSncpjg==
-X-Received: by 2002:a19:380b:: with SMTP id f11mr637307lfa.81.1570653703810;
-        Wed, 09 Oct 2019 13:41:43 -0700 (PDT)
+        bh=j9oehlPvbpQ/3mUr7ILsjkWG9P4RuU3Cq2akh+BGeG4=;
+        b=UabebmZdNpv4rGcwKx7m0g+OusbtZCu1g4Zb4OcfssqzswRyXWBXHY9ONCZc5kRtIV
+         1boWanOwuHeZ5e3xER3DNffBDih374od6j+L1mLsLcgZ5Apv8Q4FkbiqQ8mrPxV/lTyX
+         uMk/I+OZkGXoWHnGozBleofApKW/WfgaZ7M1tindMRSTpjsssSgYiZ1i4pvZSGHsMsRd
+         8zPHiFvYj4kRnMYIFY3QSjFc0G2iGwHLb3hkgvZFV6WoRtnJTeQr/rjQ61Cb2ipn8FYT
+         aqGjpGIvm5sfVM+AgKsJcWOpiBen7CUEx0GAKqv6M2DkLGAU2LsFarfb2W/bpksCGbmg
+         xIuQ==
+X-Gm-Message-State: APjAAAUuRGU5s3yGTgRZkwvqH9rpTG4TwSVhLcO9cBMeoErxITpE7pwH
+        RGO3TF3WBDDJfCtAmt8N0kM6qQ==
+X-Google-Smtp-Source: APXvYqymIdgfyxgRoHuT7kBxL0jS3aNb/nX8NZ5SezJ6vkjCDt5qlasTpcF9WFmXN/+gsv58UvFtuw==
+X-Received: by 2002:a2e:9b12:: with SMTP id u18mr3696925lji.142.1570653705253;
+        Wed, 09 Oct 2019 13:41:45 -0700 (PDT)
 Received: from localhost.localdomain (168-200-94-178.pool.ukrtel.net. [178.94.200.168])
-        by smtp.gmail.com with ESMTPSA id h3sm730871ljf.12.2019.10.09.13.41.42
+        by smtp.gmail.com with ESMTPSA id h3sm730871ljf.12.2019.10.09.13.41.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Oct 2019 13:41:43 -0700 (PDT)
+        Wed, 09 Oct 2019 13:41:44 -0700 (PDT)
 From:   Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
 To:     ast@kernel.org, daniel@iogearbox.net, yhs@fb.com,
         davem@davemloft.net, jakub.kicinski@netronome.com, hawk@kernel.org,
@@ -51,9 +51,9 @@ Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
         bpf@vger.kernel.org, clang-built-linux@googlegroups.com,
         ilias.apalodimas@linaro.org, sergei.shtylyov@cogentembedded.com,
         Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
-Subject: [PATCH v4 bpf-next 03/15] samples/bpf: use --target from cross-compile
-Date:   Wed,  9 Oct 2019 23:41:22 +0300
-Message-Id: <20191009204134.26960-4-ivan.khoronzhuk@linaro.org>
+Subject: [PATCH v4 bpf-next 04/15] samples/bpf: use own EXTRA_CFLAGS for clang commands
+Date:   Wed,  9 Oct 2019 23:41:23 +0300
+Message-Id: <20191009204134.26960-5-ivan.khoronzhuk@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20191009204134.26960-1-ivan.khoronzhuk@linaro.org>
 References: <20191009204134.26960-1-ivan.khoronzhuk@linaro.org>
@@ -62,29 +62,44 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-For cross compiling the target triple can be inherited from
-cross-compile prefix as it's done in CLANG_FLAGS from kernel makefile.
-So copy-paste this decision from kernel Makefile.
+It can overlap with CFLAGS used for libraries built with gcc if
+not now then in next patches. Correct it here for simplicity.
 
 Acked-by: Andrii Nakryiko <andriin@fb.com>
 Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
 ---
- samples/bpf/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ samples/bpf/Makefile | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
 diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-index 045fa43842e6..9c8c9872004d 100644
+index 9c8c9872004d..cf882e43648a 100644
 --- a/samples/bpf/Makefile
 +++ b/samples/bpf/Makefile
-@@ -195,7 +195,7 @@ BTF_PAHOLE ?= pahole
- # Detect that we're cross compiling and use the cross compiler
- ifdef CROSS_COMPILE
- HOSTCC = $(CROSS_COMPILE)gcc
--CLANG_ARCH_ARGS = -target $(ARCH)
-+CLANG_ARCH_ARGS = --target=$(notdir $(CROSS_COMPILE:%-=%))
- endif
+@@ -218,10 +218,10 @@ BTF_LLVM_PROBE := $(shell echo "int main() { return 0; }" | \
+ 			  /bin/rm -f ./llvm_btf_verify.o)
  
- # Don't evaluate probes and warnings if we need to run make recursively
+ ifneq ($(BTF_LLVM_PROBE),)
+-	EXTRA_CFLAGS += -g
++	BPF_EXTRA_CFLAGS += -g
+ else
+ ifneq ($(and $(BTF_LLC_PROBE),$(BTF_PAHOLE_PROBE),$(BTF_OBJCOPY_PROBE)),)
+-	EXTRA_CFLAGS += -g
++	BPF_EXTRA_CFLAGS += -g
+ 	LLC_FLAGS += -mattr=dwarfris
+ 	DWARF2BTF = y
+ endif
+@@ -280,8 +280,9 @@ $(obj)/hbm_edt_kern.o: $(src)/hbm.h $(src)/hbm_kern.h
+ # useless for BPF samples.
+ $(obj)/%.o: $(src)/%.c
+ 	@echo "  CLANG-bpf " $@
+-	$(Q)$(CLANG) $(NOSTDINC_FLAGS) $(LINUXINCLUDE) $(EXTRA_CFLAGS) -I$(obj) \
+-		-I$(srctree)/tools/testing/selftests/bpf/ -I$(srctree)/tools/lib/bpf/ \
++	$(Q)$(CLANG) $(NOSTDINC_FLAGS) $(LINUXINCLUDE) $(BPF_EXTRA_CFLAGS) \
++		-I$(obj) -I$(srctree)/tools/testing/selftests/bpf/ \
++		-I$(srctree)/tools/lib/bpf/ \
+ 		-D__KERNEL__ -D__BPF_TRACING__ -Wno-unused-value -Wno-pointer-sign \
+ 		-D__TARGET_ARCH_$(SRCARCH) -Wno-compare-distinct-pointer-types \
+ 		-Wno-gnu-variable-sized-type-not-at-end \
 -- 
 2.17.1
 
