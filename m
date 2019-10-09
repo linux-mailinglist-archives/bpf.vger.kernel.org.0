@@ -2,293 +2,705 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 62AA1D1990
-	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2019 22:30:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39075D19A2
+	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2019 22:37:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729535AbfJIUaW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Oct 2019 16:30:22 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:44207 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729865AbfJIUaW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Oct 2019 16:30:22 -0400
-Received: by mail-qk1-f195.google.com with SMTP id u22so3448343qkk.11;
-        Wed, 09 Oct 2019 13:30:21 -0700 (PDT)
+        id S1730955AbfJIUhI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Oct 2019 16:37:08 -0400
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:42058 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729535AbfJIUhI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Oct 2019 16:37:08 -0400
+Received: by mail-pf1-f196.google.com with SMTP id q12so2370218pff.9
+        for <bpf@vger.kernel.org>; Wed, 09 Oct 2019 13:37:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=IH91dgLlN0Tlm+Q4KwaoXlMCUMJAKJ0Ox5izNMk7G/g=;
-        b=Kfi8mntnZ0oUNHI0ctYxy8ArWIXUYiibKDamxEm8M1FadgxIcxt+fl6kKPUXu0dq7k
-         pgXaFKJaImLgb5pSB6m9ggOroRhT2gwRcpkd8jQZwbIOQWLboTxaTqNqH76fNqaRhLTy
-         sqE9nrzoT041bp4t6lkriBGbPAqsz+6VDywwShAHyizdL3jpNS4ZM3vRPbt77OPtEQ50
-         Hrn+qwnzAkZE1fzJIeZbSXXzY7QD9Vaiw18YSMcwo+gwV5KC9OxJYmpgDx/fbSiSUFu2
-         qrkqGEd6pcgrflH0YLzbVRr1fRkAdgy3BPGFewXPlAMFCxZrkS3N/vC3e1HMCO22SrWo
-         3H/g==
+        d=joelfernandes.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=S/LB1jZX+3g3mn/uzEKnSvYamW6pUCsUQsCwAUev9cQ=;
+        b=naAWoMUHkUss9Wj70SMiT6ucslY2Djb2FESSl3KN2rthgxyQ+BWD+tOtEK+9CsxxIi
+         D4tY0bEN621fcZQM5TuAFk8396rAuCLL5fybe3NaObQnzic9BdwJFW2/6GesAGPb8GYU
+         +VXBv9ruaU7m8a+SL8YIfky+bR8IjEc4SqxFk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=IH91dgLlN0Tlm+Q4KwaoXlMCUMJAKJ0Ox5izNMk7G/g=;
-        b=KYA7rMW2aCklooTZVjtqt6FdQ0fHlL+5e80LkG11sNeoh8ikZLlop2YWFV4jY38jTX
-         zEjbNvSFDbmtYwMIB91XOCYlqp01hn10larGc6narml5Gkoku5hCLJ4JGbPf+9GqQpI5
-         ImyPuuebfXDjQPQTALlrLwzt8p6zOdq0x+FNySXweaSgVyM++1kuFbhHF3LwhVPsobSl
-         JIlrqcSGGIWVdL1HSZwwcbP550XvIe2NyVKaNQJ0KkCvVgMddt5B8neba6jIJ7selkqk
-         T8blRncVMnbDMTc1+Acko+4vPKBu5K56GFneYVWnGfCAlxfznCOb2eWbs+5Rfkp76yCA
-         XKhw==
-X-Gm-Message-State: APjAAAUCVodcLNXQkXr838gW4uQG+uX9XhnHe7GDIkcUBg97KjDgHa2y
-        2ZzdLTg53jbWqEfv427HBm7y+dlv2aI=
-X-Google-Smtp-Source: APXvYqyaXASz+39OGKF2Pb/p/3uzM9rL1BT5WttM/J//oXnzJqRKv+sHu78ZQxWzhX/CoHjbh9BduA==
-X-Received: by 2002:ae9:f714:: with SMTP id s20mr5521503qkg.262.1570653020434;
-        Wed, 09 Oct 2019 13:30:20 -0700 (PDT)
-Received: from frodo.byteswizards.com ([190.162.109.190])
-        by smtp.gmail.com with ESMTPSA id w85sm1452587qkb.57.2019.10.09.13.30.18
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=S/LB1jZX+3g3mn/uzEKnSvYamW6pUCsUQsCwAUev9cQ=;
+        b=rg/mgHK4VdMtrrCmPaeDKY2rIs0JRoBrVpe7+6BK03pDqNJOQlPWXaoFYUgoh/CpIS
+         X6S5rTAwmgTbMD8q8YwfV5X6gHzH46vFqfpEfsuFYXN2EX05/5OXAX6BqLvZkL0BZ5BY
+         dbCXScuedSvCNjBxPWSnzo6+WYBG2MKeADGEDKPHqOJuFOilCaCY6XrBKCGrxbytozce
+         rRfcK07ir16OGJLA5TP2XphI/wYfGZLqsKf7WHUZU7D9jBpnfAeS9HTHVDPMF0kgUplW
+         urigQIc6oLedZN7AsSHC0qF/dPpGl8HdGSkZsSu6wTDl/VURYerry7PkfFfl9Ct+K4k0
+         Aamg==
+X-Gm-Message-State: APjAAAVouex6utKst3MMFLyaVhDFhtcNBPoV25KMsRd4hbfSj2V1Xv2F
+        t39S30u+EhqDhGHc5KGVotx/yg==
+X-Google-Smtp-Source: APXvYqyURYI1t6l3WgeoVYiaj8FrOOcESQFw3B9HXQGngeIuHQZGNWHM9bb9Xt3IfPjB8RRjslonMg==
+X-Received: by 2002:a63:c445:: with SMTP id m5mr6457743pgg.211.1570653427285;
+        Wed, 09 Oct 2019 13:37:07 -0700 (PDT)
+Received: from joelaf.cam.corp.google.com ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id f12sm2791440pgo.85.2019.10.09.13.37.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Oct 2019 13:30:19 -0700 (PDT)
-Date:   Wed, 9 Oct 2019 17:30:15 -0300
-From:   Carlos Antonio Neira Bustos <cneirabustos@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Networking <netdev@vger.kernel.org>, Yonghong Song <yhs@fb.com>,
-        ebiederm@xmission.com, Jesper Dangaard Brouer <brouer@redhat.com>,
-        bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH v13 2/4] bpf: added new helper bpf_get_ns_current_pid_tgid
-Message-ID: <20191009203015.GA14829@frodo.byteswizards.com>
-References: <20191009152632.14218-1-cneirabustos@gmail.com>
- <20191009152632.14218-3-cneirabustos@gmail.com>
- <CAEf4BzYf77BxVy9bNBhW5SFA7nkMLyt_BfDEKC1Nis8Hcc2MqA@mail.gmail.com>
- <20191009174538.GB12351@frodo.byteswizards.com>
- <CAEf4BzanTFDV6rXTewJYLN_BXsFbDnJoJ-58fAxE9XBVuVVSNA@mail.gmail.com>
+        Wed, 09 Oct 2019 13:37:06 -0700 (PDT)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>, rostedt@goodmis.org,
+        primiano@google.com, rsavitski@google.com, jeffv@google.com,
+        kernel-team@android.com, Alexei Starovoitov <ast@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        bpf@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        James Morris <jmorris@namei.org>, Jiri Olsa <jolsa@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        linux-security-module@vger.kernel.org,
+        Matthew Garrett <matthewgarrett@google.com>,
+        Namhyung Kim <namhyung@kernel.org>, selinux@vger.kernel.org,
+        Song Liu <songliubraving@fb.com>,
+        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
+        Yonghong Song <yhs@fb.com>
+Subject: [PATCH RFC] perf_event: Add support for LSM and SELinux checks
+Date:   Wed,  9 Oct 2019 16:36:57 -0400
+Message-Id: <20191009203657.6070-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.23.0.700.g56cf767bdb-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzanTFDV6rXTewJYLN_BXsFbDnJoJ-58fAxE9XBVuVVSNA@mail.gmail.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 09, 2019 at 12:50:10PM -0700, Andrii Nakryiko wrote:
-> On Wed, Oct 9, 2019 at 10:45 AM Carlos Antonio Neira Bustos
-> <cneirabustos@gmail.com> wrote:
-> >
-> > On Wed, Oct 09, 2019 at 09:14:42AM -0700, Andrii Nakryiko wrote:
-> > > On Wed, Oct 9, 2019 at 8:27 AM Carlos Neira <cneirabustos@gmail.com> wrote:
-> > > >
-> > > > New bpf helper bpf_get_ns_current_pid_tgid,
-> > > > This helper will return pid and tgid from current task
-> > > > which namespace matches dev_t and inode number provided,
-> > > > this will allows us to instrument a process inside a container.
-> > > >
-> > > > Signed-off-by: Carlos Neira <cneirabustos@gmail.com>
-> > > > ---
-> > > >  include/linux/bpf.h      |  1 +
-> > > >  include/uapi/linux/bpf.h | 22 +++++++++++++++++++-
-> > > >  kernel/bpf/core.c        |  1 +
-> > > >  kernel/bpf/helpers.c     | 43 ++++++++++++++++++++++++++++++++++++++++
-> > > >  kernel/trace/bpf_trace.c |  2 ++
-> > > >  5 files changed, 68 insertions(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > > > index 5b9d22338606..231001475504 100644
-> > > > --- a/include/linux/bpf.h
-> > > > +++ b/include/linux/bpf.h
-> > > > @@ -1055,6 +1055,7 @@ extern const struct bpf_func_proto bpf_get_local_storage_proto;
-> > > >  extern const struct bpf_func_proto bpf_strtol_proto;
-> > > >  extern const struct bpf_func_proto bpf_strtoul_proto;
-> > > >  extern const struct bpf_func_proto bpf_tcp_sock_proto;
-> > > > +extern const struct bpf_func_proto bpf_get_ns_current_pid_tgid_proto;
-> > > >
-> > > >  /* Shared helpers among cBPF and eBPF. */
-> > > >  void bpf_user_rnd_init_once(void);
-> > > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > > > index 77c6be96d676..6ad3f2abf00d 100644
-> > > > --- a/include/uapi/linux/bpf.h
-> > > > +++ b/include/uapi/linux/bpf.h
-> > > > @@ -2750,6 +2750,19 @@ union bpf_attr {
-> > > >   *             **-EOPNOTSUPP** kernel configuration does not enable SYN cookies
-> > > >   *
-> > > >   *             **-EPROTONOSUPPORT** IP packet version is not 4 or 6
-> > > > + *
-> > > > + * u64 bpf_get_ns_current_pid_tgid(struct *bpf_pidns_info, u32 size)
-> > >
-> > > Should be:
-> > >
-> > > struct bpf_pidns_info *nsdata
-> > >
-> > > > + *     Return
-> > > > + *             0 on success, values for pid and tgid from nsinfo will be as seen
-> > > > + *             from the namespace that matches dev and inum from nsinfo.
-> > >
-> > > I think its cleaner to have a Description section, explaining that it
-> > > will return pid/tgid in bpf_pidns_info, and then describe exit codes
-> > > in Return section.
-> > >
-> > > > + *
-> > > > + *             On failure, the returned value is one of the following:
-> > > > + *
-> > > > + *             **-EINVAL** if dev and inum supplied don't match dev_t and inode number
-> > > > + *              with nsfs of current task, or if dev conversion to dev_t lost high bits.
-> > > > + *
-> > > > + *             **-ENOENT** if /proc/self/ns does not exists.
-> > > > + *
-> > > >   */
-> > > >  #define __BPF_FUNC_MAPPER(FN)          \
-> > > >         FN(unspec),                     \
-> > > > @@ -2862,7 +2875,8 @@ union bpf_attr {
-> > > >         FN(sk_storage_get),             \
-> > > >         FN(sk_storage_delete),          \
-> > > >         FN(send_signal),                \
-> > > > -       FN(tcp_gen_syncookie),
-> > > > +       FN(tcp_gen_syncookie),          \
-> > > > +       FN(get_ns_current_pid_tgid),
-> > > >
-> > > >  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
-> > > >   * function eBPF program intends to call
-> > > > @@ -3613,4 +3627,10 @@ struct bpf_sockopt {
-> > > >         __s32   retval;
-> > > >  };
-> > > >
-> > > > +struct bpf_pidns_info {
-> > > > +       __u64 dev;
-> > > > +       __u64 inum;
-> > >
-> > > seems like conventionally this should be named "ino", this is what
-> > > ns_match calls it, so let's stay consistent.
-> > >
-> > > > +       __u32 pid;
-> > > > +       __u32 tgid;
-> > > > +};
-> > >
-> > > So it seems like dev and inum are treated as input parameters, while
-> > > pid/tgid is output parameter, right? Wouldn't it be cleaner to have
-> > > dev and inum as explicit arguments into bpf_get_ns_current_pid_tgid()?
-> > > What's also not great, is that on failure you'll memset this entire
-> > > struct to zero, and user will lose its dev/inum. So in practice you'll
-> > > be keeping dev/inum somewhere else, then constructing and filling in
-> > > this bpf_pidns_info struct every time you need to invoke
-> > > bpf_get_ns_current_pid_tgid.
-> > >
-> > > Maybe it was discussed already, but IMO feels cleaner to have only
-> > > pid/tgid in bpf_pidns_info and pass dev/inum as direct arguments.
-> > >
-> > > >  #endif /* _UAPI__LINUX_BPF_H__ */
-> > > > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> > > > index 66088a9e9b9e..b2fd5358f472 100644
-> > > > --- a/kernel/bpf/core.c
-> > > > +++ b/kernel/bpf/core.c
-> > > > @@ -2042,6 +2042,7 @@ const struct bpf_func_proto bpf_get_current_uid_gid_proto __weak;
-> > > >  const struct bpf_func_proto bpf_get_current_comm_proto __weak;
-> > > >  const struct bpf_func_proto bpf_get_current_cgroup_id_proto __weak;
-> > > >  const struct bpf_func_proto bpf_get_local_storage_proto __weak;
-> > > > +const struct bpf_func_proto bpf_get_ns_current_pid_tgid_proto __weak;
-> > > >
-> > > >  const struct bpf_func_proto * __weak bpf_get_trace_printk_proto(void)
-> > > >  {
-> > > > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> > > > index 5e28718928ca..78a1ce7726aa 100644
-> > > > --- a/kernel/bpf/helpers.c
-> > > > +++ b/kernel/bpf/helpers.c
-> > > > @@ -11,6 +11,8 @@
-> > > >  #include <linux/uidgid.h>
-> > > >  #include <linux/filter.h>
-> > > >  #include <linux/ctype.h>
-> > > > +#include <linux/pid_namespace.h>
-> > > > +#include <linux/proc_ns.h>
-> > > >
-> > > >  #include "../../lib/kstrtox.h"
-> > > >
-> > > > @@ -487,3 +489,44 @@ const struct bpf_func_proto bpf_strtoul_proto = {
-> > > >         .arg4_type      = ARG_PTR_TO_LONG,
-> > > >  };
-> > > >  #endif
-> > > > +
-> > > > +BPF_CALL_2(bpf_get_ns_current_pid_tgid, struct bpf_pidns_info *, nsdata, u32,
-> > > > +       size)
-> > > > +{
-> > > > +       struct task_struct *task = current;
-> > > > +       struct pid_namespace *pidns;
-> > > > +       int err = -EINVAL;
-> > > > +
-> > > > +       if (unlikely(size != sizeof(struct bpf_pidns_info)))
-> > > > +               goto clear;
-> > > > +
-> > > > +       if ((u64)(dev_t)nsdata->dev != nsdata->dev)
-> > >
-> > > this seems unlikely() as well :)
-> > >
-> > > > +               goto clear;
-> > > > +
-> > > > +       if (unlikely(!task))
-> > > > +               goto clear;
-> > > > +
-> > > > +       pidns = task_active_pid_ns(task);
-> > > > +       if (unlikely(!pidns)) {
-> > > > +               err = -ENOENT;
-> > > > +               goto clear;
-> > > > +       }
-> > > > +
-> > > > +       if (!ns_match(&pidns->ns, (dev_t)nsdata->dev, nsdata->inum))
-> > > > +               goto clear;
-> > > > +
-> > > > +       nsdata->pid = task_pid_nr_ns(task, pidns);
-> > > > +       nsdata->tgid = task_tgid_nr_ns(task, pidns);
-> > > > +       return 0;
-> > > > +clear:
-> > > > +       memset((void *)nsdata, 0, (size_t) size);
-> > > > +       return err;
-> > > > +}
-> > > > +
-> > > > +const struct bpf_func_proto bpf_get_ns_current_pid_tgid_proto = {
-> > > > +       .func           = bpf_get_ns_current_pid_tgid,
-> > > > +       .gpl_only       = false,
-> > > > +       .ret_type       = RET_INTEGER,
-> > > > +       .arg1_type      = ARG_PTR_TO_UNINIT_MEM,
-> > >
-> > > So this is a lie, you do expect part of that struct to be initialized.
-> > > One more reason to just split off dev/inum(ino?).
-> > >
-> > >
-> > > > +       .arg2_type      = ARG_CONST_SIZE,
-> > > > +};
-> > > > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> > > > index 44bd08f2443b..32331a1dcb6d 100644
-> > > > --- a/kernel/trace/bpf_trace.c
-> > > > +++ b/kernel/trace/bpf_trace.c
-> > > > @@ -735,6 +735,8 @@ tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
-> > > >  #endif
-> > > >         case BPF_FUNC_send_signal:
-> > > >                 return &bpf_send_signal_proto;
-> > > > +       case BPF_FUNC_get_ns_current_pid_tgid:
-> > > > +               return &bpf_get_ns_current_pid_tgid_proto;
-> > > >         default:
-> > > >                 return NULL;
-> > > >         }
-> > > > --
-> > > > 2.20.1
-> > > >
-> > Thanks for reviewing this, I'll make the changes you suggest.
-> > I'm not sure about removing dev and ino from struct bpf_pidns_info, I
-> > think is useful to know to which ns pid/tgid belong to using dev and ino
-> > to figure it out. Maybe in the future we could filter bpf_pidns_info
-> > structs by dev/ino, just an idea.
-> 
-> I'm not following. dev/ino are specified by the caller to this helper,
-> right? So caller already know those values. With current set up,
-> though, the behavior is weird: this struct's dev/ino is preserved on
-> success, but zeroed out on failure, even though helper itself has
-> nothing to do with returning dev/ino. It also plays badly with
-> ARG_PTR_TO_UNINT_MEM, because that memory is expected to be at least
-> partially initialized. I see only downsides, to be honest.
-> 
-> >
-> > Bests
-Andrii,
+In currentl mainline, the degree of access to perf_event_open(2) system
+call depends on the perf_event_paranoid sysctl.  This has a number of
+limitations:
 
-Oh you are right dev/ino are specific to the caller of this helper,
-and what you state is correct dev/ino are also not returned by the caller
-based on that, yes this should be changed. Now I see the point, I'll
-change the helper to take dev/ino and just return pid/tgid.
-Thanks again!.
+1. The sysctl is only a single value. Many types of accesses are controlled
+   based on the single value thus making the control very limited and
+   coarse grained.
+2. The sysctl is global, so if the sysctl is changed, then that means
+   all processes get access to perf_event_open(2) opening the door to
+   security issues.
 
-Bests
+This patch adds LSM and SELinux access checking which will be used in
+Android to access perf_event_open(2) for the purposes of attaching BPF
+programs to tracepoints, perf profiling and other operations from
+userspace. These operations are intended for production systems.
+
+5 new LSM hooks are added:
+1. perf_event_open: This controls access during the perf_event_open(2)
+   syscall itself. The hook is called from all the places that the
+   perf_event_paranoid sysctl is checked to keep it consistent with the
+   systctl. The hook gets passed a 'type' argument which controls CPU,
+   kernel and tracepoint accesses (in this context, CPU, kernel and
+   tracepoint have the same semantics as the perf_event_paranoid sysctl).
+   Additionally, I added an 'open' type which is similar to
+   perf_event_paranoid sysctl == 3 patch carried in Android and several other
+   distros but was rejected in mainline [1] in 2016.
+
+2. perf_event_alloc: This allocates a new security object for the event
+   which stores the current SID within the event. It will be useful when
+   the perf event's FD is passed through IPC to another process which may
+   try to read the FD. Appropriate security checks will limit access.
+
+3. perf_event_free: Called when the event is closed.
+
+4. perf_event_read: Called from the read(2) system call path for the event.
+
+5. perf_event_write: Called from the read(2) system call path for the event.
+
+[1] https://lwn.net/Articles/696240/
+
+Since Peter had suggest LSM hooks in 2016 [1], I am adding his
+Suggested-by tag below.
+
+To use this patch, we set the perf_event_paranoid sysctl to -1 and then
+apply selinux checking as appropriate (default deny everything, and then
+add policy rules to give access to domains that need it). In the future
+we can remove the perf_event_paranoid sysctl altogether.
+
+Suggested-by: Peter Zijlstra <peterz@infradead.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: rostedt@goodmis.org
+Cc: primiano@google.com
+Cc: rsavitski@google.com
+Cc: jeffv@google.com
+Cc: kernel-team@android.com
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+
+---
+ arch/x86/events/intel/bts.c         |  5 +++
+ arch/x86/events/intel/core.c        |  5 +++
+ arch/x86/events/intel/p4.c          |  5 +++
+ include/linux/lsm_hooks.h           | 15 +++++++
+ include/linux/perf_event.h          |  3 ++
+ include/linux/security.h            | 39 +++++++++++++++-
+ include/uapi/linux/perf_event.h     | 13 ++++++
+ kernel/events/core.c                | 59 +++++++++++++++++++++---
+ kernel/trace/trace_event_perf.c     | 15 ++++++-
+ security/security.c                 | 33 ++++++++++++++
+ security/selinux/hooks.c            | 69 +++++++++++++++++++++++++++++
+ security/selinux/include/classmap.h |  2 +
+ security/selinux/include/objsec.h   |  6 ++-
+ 13 files changed, 259 insertions(+), 10 deletions(-)
+
+diff --git a/arch/x86/events/intel/bts.c b/arch/x86/events/intel/bts.c
+index 5ee3fed881d3..9796fc094dad 100644
+--- a/arch/x86/events/intel/bts.c
++++ b/arch/x86/events/intel/bts.c
+@@ -14,6 +14,7 @@
+ #include <linux/debugfs.h>
+ #include <linux/device.h>
+ #include <linux/coredump.h>
++#include <linux/security.h>
+ 
+ #include <linux/sizes.h>
+ #include <asm/perf_event.h>
+@@ -553,6 +554,10 @@ static int bts_event_init(struct perf_event *event)
+ 	    !capable(CAP_SYS_ADMIN))
+ 		return -EACCES;
+ 
++	ret = security_perf_event_open(&event->attr, PERF_SECURITY_KERNEL);
++	if (ret)
++		return ret;
++
+ 	if (x86_add_exclusive(x86_lbr_exclusive_bts))
+ 		return -EBUSY;
+ 
+diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+index 27ee47a7be66..75b6b9b239ae 100644
+--- a/arch/x86/events/intel/core.c
++++ b/arch/x86/events/intel/core.c
+@@ -11,6 +11,7 @@
+ #include <linux/stddef.h>
+ #include <linux/types.h>
+ #include <linux/init.h>
++#include <linux/security.h>
+ #include <linux/slab.h>
+ #include <linux/export.h>
+ #include <linux/nmi.h>
+@@ -3318,6 +3319,10 @@ static int intel_pmu_hw_config(struct perf_event *event)
+ 	if (perf_paranoid_cpu() && !capable(CAP_SYS_ADMIN))
+ 		return -EACCES;
+ 
++	ret = security_perf_event_open(&event->attr, PERF_SECURITY_CPU);
++	if (ret)
++		return ret;
++
+ 	event->hw.config |= ARCH_PERFMON_EVENTSEL_ANY;
+ 
+ 	return 0;
+diff --git a/arch/x86/events/intel/p4.c b/arch/x86/events/intel/p4.c
+index dee579efb2b2..6ac1a0328710 100644
+--- a/arch/x86/events/intel/p4.c
++++ b/arch/x86/events/intel/p4.c
+@@ -8,6 +8,7 @@
+  */
+ 
+ #include <linux/perf_event.h>
++#include <linux/security.h>
+ 
+ #include <asm/perf_event_p4.h>
+ #include <asm/hardirq.h>
+@@ -778,6 +779,10 @@ static int p4_validate_raw_event(struct perf_event *event)
+ 	if (p4_ht_active() && p4_event_bind_map[v].shared) {
+ 		if (perf_paranoid_cpu() && !capable(CAP_SYS_ADMIN))
+ 			return -EACCES;
++
++		v = security_perf_event_open(&event->attr, PERF_SECURITY_CPU);
++		if (v)
++			return v;
+ 	}
+ 
+ 	/* ESCR EventMask bits may be invalid */
+diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
+index a3763247547c..20d8cf194fb7 100644
+--- a/include/linux/lsm_hooks.h
++++ b/include/linux/lsm_hooks.h
+@@ -1818,6 +1818,14 @@ union security_list_options {
+ 	void (*bpf_prog_free_security)(struct bpf_prog_aux *aux);
+ #endif /* CONFIG_BPF_SYSCALL */
+ 	int (*locked_down)(enum lockdown_reason what);
++#ifdef CONFIG_PERF_EVENTS
++	int (*perf_event_open)(struct perf_event_attr *attr, int type);
++	int (*perf_event_alloc)(struct perf_event *event);
++	void (*perf_event_free)(struct perf_event *event);
++	int (*perf_event_read)(struct perf_event *event);
++	int (*perf_event_write)(struct perf_event *event);
++
++#endif
+ };
+ 
+ struct security_hook_heads {
+@@ -2060,6 +2068,13 @@ struct security_hook_heads {
+ 	struct hlist_head bpf_prog_free_security;
+ #endif /* CONFIG_BPF_SYSCALL */
+ 	struct hlist_head locked_down;
++#ifdef CONFIG_PERF_EVENTS
++	struct hlist_head perf_event_open;
++	struct hlist_head perf_event_alloc;
++	struct hlist_head perf_event_free;
++	struct hlist_head perf_event_read;
++	struct hlist_head perf_event_write;
++#endif
+ } __randomize_layout;
+ 
+ /*
+diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+index 61448c19a132..f074bb937800 100644
+--- a/include/linux/perf_event.h
++++ b/include/linux/perf_event.h
+@@ -721,6 +721,9 @@ struct perf_event {
+ 	struct perf_cgroup		*cgrp; /* cgroup event is attach to */
+ #endif
+ 
++#ifdef CONFIG_SECURITY
++	void *security;
++#endif
+ 	struct list_head		sb_list;
+ #endif /* CONFIG_PERF_EVENTS */
+ };
+diff --git a/include/linux/security.h b/include/linux/security.h
+index a8d59d612d27..273e11c66ed7 100644
+--- a/include/linux/security.h
++++ b/include/linux/security.h
+@@ -1894,5 +1894,42 @@ static inline void security_bpf_prog_free(struct bpf_prog_aux *aux)
+ #endif /* CONFIG_SECURITY */
+ #endif /* CONFIG_BPF_SYSCALL */
+ 
+-#endif /* ! __LINUX_SECURITY_H */
++#ifdef CONFIG_PERF_EVENTS
++struct perf_event_attr;
++
++#ifdef CONFIG_SECURITY
++extern int security_perf_event_open(struct perf_event_attr *attr, int type);
++extern int security_perf_event_alloc(struct perf_event *event);
++extern void security_perf_event_free(struct perf_event *event);
++extern int security_perf_event_read(struct perf_event *event);
++extern int security_perf_event_write(struct perf_event *event);
++#else
++static inline int security_perf_event_open(struct perf_event_attr *attr,
++					   int type)
++{
++	return 0;
++}
+ 
++static inline int security_perf_event_alloc(struct perf_event *event)
++{
++	return 0;
++}
++
++static inline void security_perf_event_free(struct perf_event *event)
++{
++	return 0;
++}
++
++static inline int security_perf_event_read(struct perf_event *event)
++{
++	return 0;
++}
++
++static inline int security_perf_event_write(struct perf_event *event)
++{
++	return 0;
++}
++#endif /* CONFIG_SECURITY */
++#endif /* CONFIG_PERF_EVENTS */
++
++#endif /* ! __LINUX_SECURITY_H */
+diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
+index bb7b271397a6..5fc904c17dd8 100644
+--- a/include/uapi/linux/perf_event.h
++++ b/include/uapi/linux/perf_event.h
+@@ -427,6 +427,19 @@ struct perf_event_attr {
+ 	__u16	__reserved_2;	/* align to __u64 */
+ };
+ 
++
++/* Access to perf_event_open(2) syscall. */
++#define PERF_SECURITY_OPEN		0
++
++/* Finer grained perf_event_open(2) access control. */
++#define PERF_SECURITY_CPU		1
++#define PERF_SECURITY_KERNEL		2
++#define PERF_SECURITY_TRACEPOINT	3
++
++/* VFS access. */
++#define PERF_SECURITY_READ		4
++#define PERF_SECURITY_WRITE		5
++
+ /*
+  * Structure used by below PERF_EVENT_IOC_QUERY_BPF command
+  * to query bpf programs attached to the same perf tracepoint
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 4655adbbae10..05915af9d215 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -4220,6 +4220,10 @@ find_get_context(struct pmu *pmu, struct task_struct *task,
+ 		if (perf_paranoid_cpu() && !capable(CAP_SYS_ADMIN))
+ 			return ERR_PTR(-EACCES);
+ 
++		err = security_perf_event_open(&event->attr, PERF_SECURITY_CPU);
++		if (err)
++			return ERR_PTR(err);
++
+ 		cpuctx = per_cpu_ptr(pmu->pmu_cpu_context, cpu);
+ 		ctx = &cpuctx->ctx;
+ 		get_ctx(ctx);
+@@ -4761,6 +4765,7 @@ int perf_event_release_kernel(struct perf_event *event)
+ 	}
+ 
+ no_ctx:
++	security_perf_event_free(event);
+ 	put_event(event); /* Must be the 'last' reference */
+ 	return 0;
+ }
+@@ -4980,6 +4985,10 @@ perf_read(struct file *file, char __user *buf, size_t count, loff_t *ppos)
+ 	struct perf_event_context *ctx;
+ 	int ret;
+ 
++	ret = security_perf_event_read(event);
++	if (ret)
++		return ret;
++
+ 	ctx = perf_event_ctx_lock(event);
+ 	ret = __perf_read(event, buf, count);
+ 	perf_event_ctx_unlock(event, ctx);
+@@ -5244,6 +5253,11 @@ static long perf_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 	struct perf_event_context *ctx;
+ 	long ret;
+ 
++	/* Treat ioctl like writes as it is likely a mutating operation. */
++	ret = security_perf_event_write(event);
++	if (ret)
++		return ret;
++
+ 	ctx = perf_event_ctx_lock(event);
+ 	ret = _perf_ioctl(event, cmd, arg);
+ 	perf_event_ctx_unlock(event, ctx);
+@@ -5706,6 +5720,10 @@ static int perf_mmap(struct file *file, struct vm_area_struct *vma)
+ 	if (!(vma->vm_flags & VM_SHARED))
+ 		return -EINVAL;
+ 
++	ret = security_perf_event_read(event);
++	if (ret)
++		return ret;
++
+ 	vma_size = vma->vm_end - vma->vm_start;
+ 
+ 	if (vma->vm_pgoff == 0) {
+@@ -5819,10 +5837,16 @@ static int perf_mmap(struct file *file, struct vm_area_struct *vma)
+ 	lock_limit >>= PAGE_SHIFT;
+ 	locked = atomic64_read(&vma->vm_mm->pinned_vm) + extra;
+ 
+-	if ((locked > lock_limit) && perf_paranoid_tracepoint_raw() &&
+-		!capable(CAP_IPC_LOCK)) {
+-		ret = -EPERM;
+-		goto unlock;
++	if (locked > lock_limit) {
++		if (perf_paranoid_tracepoint_raw() && !capable(CAP_IPC_LOCK)) {
++			ret = -EPERM;
++			goto unlock;
++		}
++
++		ret = security_perf_event_open(&event->attr,
++					       PERF_SECURITY_TRACEPOINT);
++		if (ret)
++			goto unlock;
+ 	}
+ 
+ 	WARN_ON(!rb && event->rb);
+@@ -10553,11 +10577,17 @@ perf_event_alloc(struct perf_event_attr *attr, int cpu,
+ 		}
+ 	}
+ 
++#ifdef CONFIG_SECURITY
++	err = security_perf_event_alloc(event);
++	if (err)
++		goto err_security;
++#endif
+ 	/* symmetric to unaccount_event() in _free_event() */
+ 	account_event(event);
+ 
+ 	return event;
+ 
++err_security:
+ err_addr_filters:
+ 	kfree(event->addr_filter_ranges);
+ 
+@@ -10675,9 +10705,15 @@ static int perf_copy_attr(struct perf_event_attr __user *uattr,
+ 			attr->branch_sample_type = mask;
+ 		}
+ 		/* privileged levels capture (kernel, hv): check permissions */
+-		if ((mask & PERF_SAMPLE_BRANCH_PERM_PLM)
+-		    && perf_paranoid_kernel() && !capable(CAP_SYS_ADMIN))
+-			return -EACCES;
++		if (mask & PERF_SAMPLE_BRANCH_PERM_PLM) {
++			if (perf_paranoid_kernel() && !capable(CAP_SYS_ADMIN))
++				return -EACCES;
++
++			ret = security_perf_event_open(attr,
++						       PERF_SECURITY_KERNEL);
++			if (ret)
++				return ret;
++		}
+ 	}
+ 
+ 	if (attr->sample_type & PERF_SAMPLE_REGS_USER) {
+@@ -10890,6 +10926,11 @@ SYSCALL_DEFINE5(perf_event_open,
+ 	if (flags & ~PERF_FLAG_ALL)
+ 		return -EINVAL;
+ 
++	/* Do we allow access to perf_event_open(2) ? */
++	err = security_perf_event_open(&attr, PERF_SECURITY_OPEN);
++	if (err)
++		return err;
++
+ 	err = perf_copy_attr(attr_uptr, &attr);
+ 	if (err)
+ 		return err;
+@@ -10897,6 +10938,10 @@ SYSCALL_DEFINE5(perf_event_open,
+ 	if (!attr.exclude_kernel) {
+ 		if (perf_paranoid_kernel() && !capable(CAP_SYS_ADMIN))
+ 			return -EACCES;
++
++		err = security_perf_event_open(&attr, PERF_SECURITY_KERNEL);
++		if (err)
++			return err;
+ 	}
+ 
+ 	if (attr.namespaces) {
+diff --git a/kernel/trace/trace_event_perf.c b/kernel/trace/trace_event_perf.c
+index 0892e38ed6fb..7053a47ba344 100644
+--- a/kernel/trace/trace_event_perf.c
++++ b/kernel/trace/trace_event_perf.c
+@@ -8,6 +8,7 @@
+ 
+ #include <linux/module.h>
+ #include <linux/kprobes.h>
++#include <linux/security.h>
+ #include "trace.h"
+ #include "trace_probe.h"
+ 
+@@ -26,8 +27,10 @@ static int	total_ref_count;
+ static int perf_trace_event_perm(struct trace_event_call *tp_event,
+ 				 struct perf_event *p_event)
+ {
++	int ret;
++
+ 	if (tp_event->perf_perm) {
+-		int ret = tp_event->perf_perm(tp_event, p_event);
++		ret = tp_event->perf_perm(tp_event, p_event);
+ 		if (ret)
+ 			return ret;
+ 	}
+@@ -49,6 +52,11 @@ static int perf_trace_event_perm(struct trace_event_call *tp_event,
+ 		if (perf_paranoid_tracepoint_raw() && !capable(CAP_SYS_ADMIN))
+ 			return -EPERM;
+ 
++		ret = security_perf_event_open(&p_event->attr,
++					       PERF_SECURITY_TRACEPOINT);
++		if (ret)
++			return ret;
++
+ 		if (!is_sampling_event(p_event))
+ 			return 0;
+ 
+@@ -85,6 +93,11 @@ static int perf_trace_event_perm(struct trace_event_call *tp_event,
+ 	if (perf_paranoid_tracepoint_raw() && !capable(CAP_SYS_ADMIN))
+ 		return -EPERM;
+ 
++	ret = security_perf_event_open(&p_event->attr,
++				       PERF_SECURITY_TRACEPOINT);
++	if (ret)
++		return ret;
++
+ 	return 0;
+ }
+ 
+diff --git a/security/security.c b/security/security.c
+index 1bc000f834e2..7639bca1db59 100644
+--- a/security/security.c
++++ b/security/security.c
+@@ -2373,26 +2373,32 @@ int security_bpf(int cmd, union bpf_attr *attr, unsigned int size)
+ {
+ 	return call_int_hook(bpf, 0, cmd, attr, size);
+ }
++
+ int security_bpf_map(struct bpf_map *map, fmode_t fmode)
+ {
+ 	return call_int_hook(bpf_map, 0, map, fmode);
+ }
++
+ int security_bpf_prog(struct bpf_prog *prog)
+ {
+ 	return call_int_hook(bpf_prog, 0, prog);
+ }
++
+ int security_bpf_map_alloc(struct bpf_map *map)
+ {
+ 	return call_int_hook(bpf_map_alloc_security, 0, map);
+ }
++
+ int security_bpf_prog_alloc(struct bpf_prog_aux *aux)
+ {
+ 	return call_int_hook(bpf_prog_alloc_security, 0, aux);
+ }
++
+ void security_bpf_map_free(struct bpf_map *map)
+ {
+ 	call_void_hook(bpf_map_free_security, map);
+ }
++
+ void security_bpf_prog_free(struct bpf_prog_aux *aux)
+ {
+ 	call_void_hook(bpf_prog_free_security, aux);
+@@ -2404,3 +2410,30 @@ int security_locked_down(enum lockdown_reason what)
+ 	return call_int_hook(locked_down, 0, what);
+ }
+ EXPORT_SYMBOL(security_locked_down);
++
++#ifdef CONFIG_PERF_EVENTS
++int security_perf_event_open(struct perf_event_attr *attr, int type)
++{
++	return call_int_hook(perf_event_open, 0, attr, type);
++}
++
++int security_perf_event_alloc(struct perf_event *event)
++{
++	return call_int_hook(perf_event_alloc, 0, event);
++}
++
++void security_perf_event_free(struct perf_event *event)
++{
++	call_void_hook(perf_event_free, event);
++}
++
++int security_perf_event_read(struct perf_event *event)
++{
++	return call_int_hook(perf_event_read, 0, event);
++}
++
++int security_perf_event_write(struct perf_event *event)
++{
++	return call_int_hook(perf_event_write, 0, event);
++}
++#endif /* CONFIG_PERF_EVENTS */
+diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
+index 9625b99e677f..28eb05490d59 100644
+--- a/security/selinux/hooks.c
++++ b/security/selinux/hooks.c
+@@ -6795,6 +6795,67 @@ struct lsm_blob_sizes selinux_blob_sizes __lsm_ro_after_init = {
+ 	.lbs_msg_msg = sizeof(struct msg_security_struct),
+ };
+ 
++#ifdef CONFIG_PERF_EVENTS
++static int selinux_perf_event_open(struct perf_event_attr *attr, int type)
++{
++	u32 requested, sid = current_sid();
++
++	if (type == PERF_SECURITY_OPEN)
++		requested = PERF_EVENT__OPEN;
++	else if (type == PERF_SECURITY_CPU)
++		requested = PERF_EVENT__CPU;
++	else if (type == PERF_SECURITY_KERNEL)
++		requested = PERF_EVENT__KERNEL;
++	else if (type == PERF_SECURITY_TRACEPOINT)
++		requested = PERF_EVENT__TRACEPOINT;
++	else
++		return -EINVAL;
++
++	return avc_has_perm(&selinux_state, sid, sid, SECCLASS_PERF_EVENT,
++			    requested, NULL);
++}
++
++static int selinux_perf_event_alloc(struct perf_event *event)
++{
++	struct perf_event_security_struct *perfsec;
++
++	perfsec = kzalloc(sizeof(*perfsec), GFP_KERNEL);
++	if (!perfsec)
++		return -ENOMEM;
++
++	perfsec->sid = current_sid();
++	event->security = perfsec;
++
++	return 0;
++}
++
++static void selinux_perf_event_free(struct perf_event *event)
++{
++	struct perf_event_security_struct *perfsec = event->security;
++
++	event->security = NULL;
++	kfree(perfsec);
++}
++
++static int selinux_perf_event_read(struct perf_event *event)
++{
++	struct perf_event_security_struct *perfsec = event->security;
++	u32 sid = current_sid();
++
++	return avc_has_perm(&selinux_state, sid, perfsec->sid,
++			    SECCLASS_PERF_EVENT, PERF_EVENT__READ, NULL);
++}
++
++static int selinux_perf_event_write(struct perf_event *event)
++{
++	struct perf_event_security_struct *perfsec = event->security;
++	u32 sid = current_sid();
++
++	return avc_has_perm(&selinux_state, sid, perfsec->sid,
++			    SECCLASS_PERF_EVENT, PERF_EVENT__WRITE, NULL);
++}
++#endif
++
+ static struct security_hook_list selinux_hooks[] __lsm_ro_after_init = {
+ 	LSM_HOOK_INIT(binder_set_context_mgr, selinux_binder_set_context_mgr),
+ 	LSM_HOOK_INIT(binder_transaction, selinux_binder_transaction),
+@@ -7030,6 +7091,14 @@ static struct security_hook_list selinux_hooks[] __lsm_ro_after_init = {
+ 	LSM_HOOK_INIT(bpf_map_free_security, selinux_bpf_map_free),
+ 	LSM_HOOK_INIT(bpf_prog_free_security, selinux_bpf_prog_free),
+ #endif
++
++#ifdef CONFIG_PERF_EVENTS
++	LSM_HOOK_INIT(perf_event_open, selinux_perf_event_open),
++	LSM_HOOK_INIT(perf_event_alloc, selinux_perf_event_alloc),
++	LSM_HOOK_INIT(perf_event_free, selinux_perf_event_free),
++	LSM_HOOK_INIT(perf_event_read, selinux_perf_event_read),
++	LSM_HOOK_INIT(perf_event_write, selinux_perf_event_write),
++#endif
+ };
+ 
+ static __init int selinux_init(void)
+diff --git a/security/selinux/include/classmap.h b/security/selinux/include/classmap.h
+index 32e9b03be3dd..7db24855e12d 100644
+--- a/security/selinux/include/classmap.h
++++ b/security/selinux/include/classmap.h
+@@ -244,6 +244,8 @@ struct security_class_mapping secclass_map[] = {
+ 	  {"map_create", "map_read", "map_write", "prog_load", "prog_run"} },
+ 	{ "xdp_socket",
+ 	  { COMMON_SOCK_PERMS, NULL } },
++	{ "perf_event",
++	  {"open", "cpu", "kernel", "tracepoint", "read", "write"} },
+ 	{ NULL }
+   };
+ 
+diff --git a/security/selinux/include/objsec.h b/security/selinux/include/objsec.h
+index 586b7abd0aa7..a4a86cbcfb0a 100644
+--- a/security/selinux/include/objsec.h
++++ b/security/selinux/include/objsec.h
+@@ -141,7 +141,11 @@ struct pkey_security_struct {
+ };
+ 
+ struct bpf_security_struct {
+-	u32 sid;  /*SID of bpf obj creater*/
++	u32 sid;  /* SID of bpf obj creator */
++};
++
++struct perf_event_security_struct {
++	u32 sid;  /* SID of perf_event obj creator */
+ };
+ 
+ extern struct lsm_blob_sizes selinux_blob_sizes;
+-- 
+2.23.0.700.g56cf767bdb-goog
 
