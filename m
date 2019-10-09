@@ -2,127 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 66A7BD0846
-	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2019 09:31:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 878F4D090A
+	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2019 10:03:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725879AbfJIHbW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Oct 2019 03:31:22 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:32780 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725776AbfJIHbW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Oct 2019 03:31:22 -0400
-Received: by mail-ot1-f65.google.com with SMTP id 60so888963otu.0;
-        Wed, 09 Oct 2019 00:31:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JPgub1MuIZH/1GWLVVbLyXVb5jS64cCM9E+ZqYGumsk=;
-        b=pnJLToe3gYYe0/kNCVflu25Yx02qPhe36h8YMjVMiVP8o9umVeSha3sGUWYow1yGoI
-         6p1cPxZX5/ESpUK4aEDblN5obbLbBuz1zqAZlZkF56Bkq+9F4L0teKzdQ/fuNY1mtKrE
-         +jtGtlG7uWEPdAtsYaQmqGEHpwzA63BDkGrfW7IAB9qvtUyBgfN3xaU30OVdeKruVzIq
-         yUK8UurAMBfySG2jwlcMh40vwZgYFLXuAtAEnyMECaOO96VbjpmFk6BN6UF2XbGYb298
-         4ctgh3de230lnKmlc/Dk2FmVpRWBWO/b20XHELmitgQK3QDWG8YTFSQYHCGvIMpZm2mX
-         uSpg==
+        id S1725440AbfJIIDs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Oct 2019 04:03:48 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:33868 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725914AbfJIIDs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Oct 2019 04:03:48 -0400
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com [209.85.208.197])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id A2E69C08EC02
+        for <bpf@vger.kernel.org>; Wed,  9 Oct 2019 08:03:47 +0000 (UTC)
+Received: by mail-lj1-f197.google.com with SMTP id w26so166700ljh.9
+        for <bpf@vger.kernel.org>; Wed, 09 Oct 2019 01:03:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JPgub1MuIZH/1GWLVVbLyXVb5jS64cCM9E+ZqYGumsk=;
-        b=MCUKijVwoMl0HdMGugXcSloICw/sws4IaQhPSPJNeffdRRmmAzKYiIpwqj/cW7/KiU
-         fRKOWZqXIEfQ8zI0box3bIslRxidoL2kR0HYOx1SfX7QX6C9DalmTeHhzNzb56oMLkjE
-         tpf1a4X7bku6dIGQc6Y8WOtAixldFnhUf4aAlAB6m0OEHtVZiR4sjrP7pwg3xdmcYv47
-         gYtrpl1Io8/JKns+K9ejq1YP74m5XzrGE0FT47ru/n6nHExLqI5e2N0UIKoUCvOEoWvC
-         /VHULt9G0FQiJGizbu9AmhsKloeKNg07rqhVmnt2/nqTQZ/kA16eraMdVFbQx89CjCTH
-         Q/sg==
-X-Gm-Message-State: APjAAAVcU7aADw8IqX1/AAxJB9ezxgWu00eCMpSiT6HxJF1VLgZhzH9t
-        8rvFXzh/ERur5GA9tD2/snMa04VETu8/Z4BBRMM=
-X-Google-Smtp-Source: APXvYqwmIF7x7IYuQaNAEWMMUxk0A555Y6OeAN/AxF/6fNz5vD6G5GGXOzeidpKcF8jfcDSeN21jbhoahEVUK6nXWF8=
-X-Received: by 2002:a9d:7345:: with SMTP id l5mr1753864otk.39.1570606281434;
- Wed, 09 Oct 2019 00:31:21 -0700 (PDT)
-MIME-Version: 1.0
-References: <1570530208-17720-1-git-send-email-magnus.karlsson@intel.com> <5d9ce369d6e5_17cc2aba94c845b415@john-XPS-13-9370.notmuch>
-In-Reply-To: <5d9ce369d6e5_17cc2aba94c845b415@john-XPS-13-9370.notmuch>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Wed, 9 Oct 2019 09:31:10 +0200
-Message-ID: <CAJ8uoz3t2jVuwYKaFtt7huJo8HuW9aKLaFpJ4WcWxjm=-wQgrQ@mail.gmail.com>
-Subject: Re: [PATCH bpf] libbpf: fix compatibility for kernels without need_wakeup
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Magnus Karlsson <magnus.karlsson@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=e6PDWY+jCDc15XxVDO6PNOmfYxpRrFsL3Dg/nclfQ5Q=;
+        b=C8rIFG7aEV6S41l2AenndLuO7H+e86rzJrsmHK45ZFsYBIOL4CCltegmS41ywnFcx0
+         iwgCGklxmuj77jGqldIAHDF6o1KYh796IpnI++GDGLTu5t/2VwJI6O0tnxiHND0gbJ+V
+         yW2hnRXQljJGQ5aQ8Qsxz+6OcN9Na+hOZPLnbEv2Uz3XLRVzn73vVPZwS8PaT5DSxUeQ
+         t1mxc+O8slMMAeq4EpSE2SGmG3OBqIjB2h59C5a+Tqg5fwIdkM0r6N4IpD45RK5UOjc6
+         8JPVPshakDh62CXJQ/mdj5vFGbeanTrMeKJALhcRK6xY1SZiFXRRRcyqyEOfEd/99jhs
+         pODg==
+X-Gm-Message-State: APjAAAXdSjhdLrqJAADbaaUeKWbcYk7J7Ot6r7wD16F7X9CQoQfCQ/0R
+        uaNz3Llnb7foayYzAqwAaB3KpfxT/qb73Q5ngcfN9uE4t6z2e8WnTbm9KzT82gp6AwY5z9gjGb6
+        qxQ9RE1ZXzdwM
+X-Received: by 2002:a19:4849:: with SMTP id v70mr1266869lfa.40.1570608226002;
+        Wed, 09 Oct 2019 01:03:46 -0700 (PDT)
+X-Google-Smtp-Source: APXvYqw8KUkRcnDDp+F0kxjHINAA1UwC3GB9awdIdon0aDan85L+Ki3CJuQUEi/AcdLBoEiIYovPxA==
+X-Received: by 2002:a19:4849:: with SMTP id v70mr1266855lfa.40.1570608225842;
+        Wed, 09 Oct 2019 01:03:45 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a00:7660:6da:443::2])
+        by smtp.gmail.com with ESMTPSA id v7sm291317lfd.55.2019.10.09.01.03.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Oct 2019 01:03:45 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id E105318063D; Wed,  9 Oct 2019 10:03:43 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Marek Majkowski <marek@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next v3 1/5] bpf: Support chain calling multiple BPF programs after each other
+In-Reply-To: <20191009015117.pldowv6n3k5p3ghr@ast-mbp.dhcp.thefacebook.com>
+References: <157046883502.2092443.146052429591277809.stgit@alrua-x1> <157046883614.2092443.9861796174814370924.stgit@alrua-x1> <20191007204234.p2bh6sul2uakpmnp@ast-mbp.dhcp.thefacebook.com> <87sgo3lkx9.fsf@toke.dk> <20191009015117.pldowv6n3k5p3ghr@ast-mbp.dhcp.thefacebook.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 09 Oct 2019 10:03:43 +0200
+Message-ID: <87o8yqjqg0.fsf@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 8, 2019 at 9:29 PM John Fastabend <john.fastabend@gmail.com> wrote:
->
-> Magnus Karlsson wrote:
-> > When the need_wakeup flag was added to AF_XDP, the format of the
-> > XDP_MMAP_OFFSETS getsockopt was extended. Code was added to the kernel
-> > to take care of compatibility issues arrising from running
-> > applications using any of the two formats. However, libbpf was not
-> > extended to take care of the case when the application/libbpf uses the
-> > new format but the kernel only supports the old format. This patch
-> > adds support in libbpf for parsing the old format, before the
-> > need_wakeup flag was added, and emulating a set of static need_wakeup
-> > flags that will always work for the application.
-> >
-> > Fixes: a4500432c2587cb2a ("libbpf: add support for need_wakeup flag in AF_XDP part")
-> > Reported-by: Eloy Degen <degeneloy@gmail.com>
-> > Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-> > ---
-> >  tools/lib/bpf/xsk.c | 109 +++++++++++++++++++++++++++++++++++++---------------
-> >  1 file changed, 78 insertions(+), 31 deletions(-)
-> >
-> > diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
-> > index a902838..46f9687 100644
-> > --- a/tools/lib/bpf/xsk.c
-> > +++ b/tools/lib/bpf/xsk.c
-> > @@ -44,6 +44,25 @@
-> >   #define PF_XDP AF_XDP
-> >  #endif
-> >
-> > +#define is_mmap_offsets_v1(optlen) \
-> > +     ((optlen) == sizeof(struct xdp_mmap_offsets_v1))
-> > +
-> > +#define get_prod_off(ring) \
-> > +     (is_mmap_offsets_v1(optlen) ? \
-> > +      ((struct xdp_mmap_offsets_v1 *)&off)->ring.producer : \
-> > +      off.ring.producer)
-> > +#define get_cons_off(ring) \
-> > +     (is_mmap_offsets_v1(optlen) ? \
-> > +      ((struct xdp_mmap_offsets_v1 *)&off)->ring.consumer : \
-> > +      off.ring.consumer)
-> > +#define get_desc_off(ring) \
-> > +     (is_mmap_offsets_v1(optlen) ? \
-> > +      ((struct xdp_mmap_offsets_v1 *)&off)->ring.desc : off.ring.desc)
-> > +#define get_flags_off(ring) \
-> > +     (is_mmap_offsets_v1(optlen) ? \
-> > +      ((struct xdp_mmap_offsets_v1 *)&off)->ring.consumer + sizeof(u32) : \
-> > +      off.ring.flags)
-> > +
->
-> It seems the only thing added was flags right? If so seems we
-> only need the last one there, get_flags_off(). I think it would
-> be a bit cleaner to just use the macros where its actually
-> needed IMO.
+Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
 
-The flag is indeed added to the end of struct xdp_ring_offsets, but
-this struct is replicated four times in the struct xdp_mmap_offsets,
-so the added flags are present four time there at different offsets.
-This means that 3 out of the 4 prod, cons and desc variables are
-located at different offsets from the original. Do not know how I can
-get rid of these macros in this case. But it might just be me not
-seeing it, of course :-).
+> Please implement proper indirect calls and jumps.
 
-Thanks: Magnus
+I am still not convinced this will actually solve our problem; but OK, I
+can give it a shot.
 
-> Thanks,
-> John
+However, I don't actually have a clear picture of what exactly is
+missing to add this support. Could you please provide a pointer or two?
+
+-Toke
