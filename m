@@ -2,47 +2,47 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ADF5D19DC
-	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2019 22:43:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7E2FD19EF
+	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2019 22:43:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732089AbfJIUly (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Oct 2019 16:41:54 -0400
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:35913 "EHLO
+        id S1732260AbfJIUm2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Oct 2019 16:42:28 -0400
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:45136 "EHLO
         mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732050AbfJIUly (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Oct 2019 16:41:54 -0400
-Received: by mail-lj1-f196.google.com with SMTP id v24so3899434ljj.3
-        for <bpf@vger.kernel.org>; Wed, 09 Oct 2019 13:41:52 -0700 (PDT)
+        with ESMTP id S1732078AbfJIUlz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Oct 2019 16:41:55 -0400
+Received: by mail-lj1-f196.google.com with SMTP id q64so3848299ljb.12
+        for <bpf@vger.kernel.org>; Wed, 09 Oct 2019 13:41:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=OsXgBugq9yBTYp2TWj7gghCrTtBB47X9YeLV9E3YhNo=;
-        b=XKt173H8wj8IKIt4DSevJv+kXD2QtQYilXS8zfwcM9SF+6OorOJJ3SmvoU7IACx3N5
-         ZD4/UL/3p86LvvBJV/yGSkWEyRdtqTpfMBJxpHO+ck6akQ2JdmFtBmoy7w3Ci0j5MNfD
-         7iatnjl5O8In1S22aDEa0gNv47xnsUTG4FhY67C5Wp4Yde6cgVue2NsEVNcETOtarJDt
-         PE5ipS2g0wOPpz4f84UV0CtrbwKOFXWdySlA/CO/sr6CDtBjDHIjVYO8596kQW+ndpi1
-         XOrbcWeIxekD8aI7aComYtS7I2L5V6w7+5MYsOTBISOvFA2UYk/Xr5Y4IpEQMDDqn4ym
-         q65w==
+        bh=wbL2nu6acnton90gIbsX5qxq9tLlNkmN4RUryN8fm7M=;
+        b=A3gY6o7HgTJ8YPTLbW0H4/UT2ZFoBSmF3dt74q0EUM3FTy6EnbqRwhaISluNSdHvUX
+         CIawMYyGoTlYyjuuN/AxQM4IG/BMqNKUl+BPKvdsxEq50+r7fA4jI4lTQ1TO+R066sXk
+         e7QCppCoKQ++RV9uKddTSrIyVbHD2INrvkF3Ffu2ISQMHRpqp9w9ljJoIeEPfbKLAWxQ
+         urHJWqszpXSN4THwBKlG9/N/woZ8qllhLGFCX1DeT/IzKtBd20H2eeFSdY0HTEnbS6N9
+         rw4DTH0s5ogzG+ZqTmvII3XMHWFfRIYNURW5r9/hOhHoiOYH598aERl9cfycrKxgW4gA
+         9eQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=OsXgBugq9yBTYp2TWj7gghCrTtBB47X9YeLV9E3YhNo=;
-        b=aH4+b23HTzWFwzsS6Uu1HESlMRCjdIVTI2HdrtXpQIdhS5fWvMZcdvfEdwFVOk+i39
-         8oPZk7Rly/ci3CvvEhZwF84bYtEkjblwbUEY3DsG3leP8K1Yc0Zk1rUg6KVeXSfZUaY0
-         PEHmqEkEAV3C3ELSlvhxr9CTeGu1M9jcaszEgDMafLqV5IDzpiEwzocYXph+41PD5JV/
-         tGCPgGsXEd2IBwXQb74w7XKjLEAiW+JiExH9/gMXPd34/aN3h+AkSYjTOLV79Y2ZCJRM
-         lQwZare5JZE4/euSHAw+0dBTIT8u4AX8vVb9VI2iyLeLLTsBDyUm1QKF9TY8LPcYLKsp
-         7WOg==
-X-Gm-Message-State: APjAAAWCdcPl1yRO/pt7pIOJrWPaeJX52YpmIJ/a8sfx9uvafl2fyj+r
-        S4QBZdBAQ2RucGr9S49Rqk1lww==
-X-Google-Smtp-Source: APXvYqyKSVYA9IYS07/s7Tz9nGuH4Qj6X8tIMaQkbg3VmhvMOSJ5DehlnN9a0rFAYF6qMZNs9/iBSA==
-X-Received: by 2002:a2e:9958:: with SMTP id r24mr3544709ljj.61.1570653712166;
-        Wed, 09 Oct 2019 13:41:52 -0700 (PDT)
+        bh=wbL2nu6acnton90gIbsX5qxq9tLlNkmN4RUryN8fm7M=;
+        b=U1vfnFmBWskhy/3pCrhXaHP754leLXQJuLtCouRW1stb6AYvVx52XXxm/8AE4p8Nt0
+         g3oCLdYLOlyBR4hdreQr0hCLWIcct0OJG+o69G2xMDuOkjBibDKvYOZpTAKcoYeJQvPb
+         xoOlFizKr0M96wxoiAfViAkpemooDCXDgVA676KmaQ6Jh+480SNY1W5QstjpL4I9u7WJ
+         VmQAFFm8i+JOlkGdJ/YfrbKOcxr4XyKCj7WN2MiNUJHfeUO2LRvaJfPCLO1RF6OJJ4rp
+         y8OKlJVyTz1yuMfFdRRgBs3UG6oj0ypwnND2pF15k1OSMffoB2lhFPar3VLmJ52j/ByU
+         Bi3g==
+X-Gm-Message-State: APjAAAWbyHIQPMsKFcJ1yzU1Fw8Nei1QNfsrhIgRyeO1Mrgsu1yBu+C/
+        b/TS2//hQmvkPvq9PiL/0M7ijg==
+X-Google-Smtp-Source: APXvYqzzMJ/Xt+QwJqqo7iV2M9ovOX+F48KIoP3wwDBFtBp5+MeCB0SWdgoowUD7hVsKgWLwjOX1yw==
+X-Received: by 2002:a2e:9449:: with SMTP id o9mr3534903ljh.110.1570653713531;
+        Wed, 09 Oct 2019 13:41:53 -0700 (PDT)
 Received: from localhost.localdomain (168-200-94-178.pool.ukrtel.net. [178.94.200.168])
-        by smtp.gmail.com with ESMTPSA id h3sm730871ljf.12.2019.10.09.13.41.50
+        by smtp.gmail.com with ESMTPSA id h3sm730871ljf.12.2019.10.09.13.41.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Oct 2019 13:41:51 -0700 (PDT)
+        Wed, 09 Oct 2019 13:41:52 -0700 (PDT)
 From:   Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
 To:     ast@kernel.org, daniel@iogearbox.net, yhs@fb.com,
         davem@davemloft.net, jakub.kicinski@netronome.com, hawk@kernel.org,
@@ -51,9 +51,9 @@ Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
         bpf@vger.kernel.org, clang-built-linux@googlegroups.com,
         ilias.apalodimas@linaro.org, sergei.shtylyov@cogentembedded.com,
         Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
-Subject: [PATCH v4 bpf-next 09/15] samples/bpf: use own flags but not HOSTCFLAGS
-Date:   Wed,  9 Oct 2019 23:41:28 +0300
-Message-Id: <20191009204134.26960-10-ivan.khoronzhuk@linaro.org>
+Subject: [PATCH v4 bpf-next 10/15] samples/bpf: use target CC environment for HDR_PROBE
+Date:   Wed,  9 Oct 2019 23:41:29 +0300
+Message-Id: <20191009204134.26960-11-ivan.khoronzhuk@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20191009204134.26960-1-ivan.khoronzhuk@linaro.org>
 References: <20191009204134.26960-1-ivan.khoronzhuk@linaro.org>
@@ -62,42 +62,37 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-While compiling natively, the host's cflags and ldflags are equal to
-ones used from HOSTCFLAGS and HOSTLDFLAGS. When cross compiling it
-should have own, used for target arch. While verification, for arm,
-arm64 and x86_64 the following flags were used always:
+No need in hacking HOSTCC to be cross-compiler any more, so drop
+this trick and use target CC for HDR_PROBE.
 
--Wall -O2
--fomit-frame-pointer
--Wmissing-prototypes
--Wstrict-prototypes
-
-So, add them as they were verified and used before adding
-Makefile.target and lets omit "-fomit-frame-pointer" as were
-proposed while review, as no sense in such optimization for samples.
-
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
 ---
- samples/bpf/Makefile | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ samples/bpf/Makefile | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
 diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-index 91bfb421c278..57a15ff938a6 100644
+index 57a15ff938a6..a6c33496e8ca 100644
 --- a/samples/bpf/Makefile
 +++ b/samples/bpf/Makefile
-@@ -176,8 +176,10 @@ BPF_EXTRA_CFLAGS := $(ARM_ARCH_SELECTOR)
- TPROGS_CFLAGS += $(ARM_ARCH_SELECTOR)
+@@ -205,15 +205,14 @@ BTF_PAHOLE ?= pahole
+ 
+ # Detect that we're cross compiling and use the cross compiler
+ ifdef CROSS_COMPILE
+-HOSTCC = $(CROSS_COMPILE)gcc
+ CLANG_ARCH_ARGS = --target=$(notdir $(CROSS_COMPILE:%-=%))
  endif
  
--TPROGS_LDLIBS := $(KBUILD_HOSTLDLIBS)
--TPROGS_CFLAGS += $(KBUILD_HOSTCFLAGS) $(HOST_EXTRACFLAGS)
-+TPROGS_CFLAGS += -Wall -O2
-+TPROGS_CFLAGS += -Wmissing-prototypes
-+TPROGS_CFLAGS += -Wstrict-prototypes
-+
- TPROGS_CFLAGS += -I$(objtree)/usr/include
- TPROGS_CFLAGS += -I$(srctree)/tools/lib/bpf/
- TPROGS_CFLAGS += -I$(srctree)/tools/testing/selftests/bpf/
+ # Don't evaluate probes and warnings if we need to run make recursively
+ ifneq ($(src),)
+ HDR_PROBE := $(shell printf "\#include <linux/types.h>\n struct list_head { int a; }; int main() { return 0; }" | \
+-	$(HOSTCC) $(KBUILD_HOSTCFLAGS) -x c - -o /dev/null 2>/dev/null && \
+-	echo okay)
++	$(CC) $(TPROGS_CFLAGS) $(TPROGS_LDFLAGS) -x c - \
++	-o /dev/null 2>/dev/null && echo okay)
+ 
+ ifeq ($(HDR_PROBE),)
+ $(warning WARNING: Detected possible issues with include path.)
 -- 
 2.17.1
 
