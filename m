@@ -2,118 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6969ED0734
-	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2019 08:30:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66A7BD0846
+	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2019 09:31:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727002AbfJIGaC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Oct 2019 02:30:02 -0400
-Received: from mga12.intel.com ([192.55.52.136]:30241 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726765AbfJIGaB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Oct 2019 02:30:01 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 08 Oct 2019 23:30:01 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.67,273,1566889200"; 
-   d="scan'208";a="200037603"
-Received: from samudral-mobl1.amr.corp.intel.com (HELO [10.254.13.114]) ([10.254.13.114])
-  by FMSMGA003.fm.intel.com with ESMTP; 08 Oct 2019 23:30:00 -0700
-Subject: Re: [PATCH bpf-next 0/4] Enable direct receive on AF_XDP sockets
-To:     Jakub Kicinski <jakub.kicinski@netronome.com>
-Cc:     magnus.karlsson@intel.com, bjorn.topel@intel.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org, maciej.fijalkowski@intel.com,
-        tom.herbert@intel.com
-References: <1570515415-45593-1-git-send-email-sridhar.samudrala@intel.com>
- <20191008174919.2160737a@cakuba.netronome.com>
-From:   "Samudrala, Sridhar" <sridhar.samudrala@intel.com>
-Message-ID: <ce255470-6bf7-0ba4-c24f-0808e3331977@intel.com>
-Date:   Tue, 8 Oct 2019 23:29:59 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1725879AbfJIHbW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Oct 2019 03:31:22 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:32780 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725776AbfJIHbW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Oct 2019 03:31:22 -0400
+Received: by mail-ot1-f65.google.com with SMTP id 60so888963otu.0;
+        Wed, 09 Oct 2019 00:31:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JPgub1MuIZH/1GWLVVbLyXVb5jS64cCM9E+ZqYGumsk=;
+        b=pnJLToe3gYYe0/kNCVflu25Yx02qPhe36h8YMjVMiVP8o9umVeSha3sGUWYow1yGoI
+         6p1cPxZX5/ESpUK4aEDblN5obbLbBuz1zqAZlZkF56Bkq+9F4L0teKzdQ/fuNY1mtKrE
+         +jtGtlG7uWEPdAtsYaQmqGEHpwzA63BDkGrfW7IAB9qvtUyBgfN3xaU30OVdeKruVzIq
+         yUK8UurAMBfySG2jwlcMh40vwZgYFLXuAtAEnyMECaOO96VbjpmFk6BN6UF2XbGYb298
+         4ctgh3de230lnKmlc/Dk2FmVpRWBWO/b20XHELmitgQK3QDWG8YTFSQYHCGvIMpZm2mX
+         uSpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JPgub1MuIZH/1GWLVVbLyXVb5jS64cCM9E+ZqYGumsk=;
+        b=MCUKijVwoMl0HdMGugXcSloICw/sws4IaQhPSPJNeffdRRmmAzKYiIpwqj/cW7/KiU
+         fRKOWZqXIEfQ8zI0box3bIslRxidoL2kR0HYOx1SfX7QX6C9DalmTeHhzNzb56oMLkjE
+         tpf1a4X7bku6dIGQc6Y8WOtAixldFnhUf4aAlAB6m0OEHtVZiR4sjrP7pwg3xdmcYv47
+         gYtrpl1Io8/JKns+K9ejq1YP74m5XzrGE0FT47ru/n6nHExLqI5e2N0UIKoUCvOEoWvC
+         /VHULt9G0FQiJGizbu9AmhsKloeKNg07rqhVmnt2/nqTQZ/kA16eraMdVFbQx89CjCTH
+         Q/sg==
+X-Gm-Message-State: APjAAAVcU7aADw8IqX1/AAxJB9ezxgWu00eCMpSiT6HxJF1VLgZhzH9t
+        8rvFXzh/ERur5GA9tD2/snMa04VETu8/Z4BBRMM=
+X-Google-Smtp-Source: APXvYqwmIF7x7IYuQaNAEWMMUxk0A555Y6OeAN/AxF/6fNz5vD6G5GGXOzeidpKcF8jfcDSeN21jbhoahEVUK6nXWF8=
+X-Received: by 2002:a9d:7345:: with SMTP id l5mr1753864otk.39.1570606281434;
+ Wed, 09 Oct 2019 00:31:21 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20191008174919.2160737a@cakuba.netronome.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1570530208-17720-1-git-send-email-magnus.karlsson@intel.com> <5d9ce369d6e5_17cc2aba94c845b415@john-XPS-13-9370.notmuch>
+In-Reply-To: <5d9ce369d6e5_17cc2aba94c845b415@john-XPS-13-9370.notmuch>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Wed, 9 Oct 2019 09:31:10 +0200
+Message-ID: <CAJ8uoz3t2jVuwYKaFtt7huJo8HuW9aKLaFpJ4WcWxjm=-wQgrQ@mail.gmail.com>
+Subject: Re: [PATCH bpf] libbpf: fix compatibility for kernels without need_wakeup
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Magnus Karlsson <magnus.karlsson@intel.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Network Development <netdev@vger.kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Tue, Oct 8, 2019 at 9:29 PM John Fastabend <john.fastabend@gmail.com> wrote:
+>
+> Magnus Karlsson wrote:
+> > When the need_wakeup flag was added to AF_XDP, the format of the
+> > XDP_MMAP_OFFSETS getsockopt was extended. Code was added to the kernel
+> > to take care of compatibility issues arrising from running
+> > applications using any of the two formats. However, libbpf was not
+> > extended to take care of the case when the application/libbpf uses the
+> > new format but the kernel only supports the old format. This patch
+> > adds support in libbpf for parsing the old format, before the
+> > need_wakeup flag was added, and emulating a set of static need_wakeup
+> > flags that will always work for the application.
+> >
+> > Fixes: a4500432c2587cb2a ("libbpf: add support for need_wakeup flag in AF_XDP part")
+> > Reported-by: Eloy Degen <degeneloy@gmail.com>
+> > Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+> > ---
+> >  tools/lib/bpf/xsk.c | 109 +++++++++++++++++++++++++++++++++++++---------------
+> >  1 file changed, 78 insertions(+), 31 deletions(-)
+> >
+> > diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
+> > index a902838..46f9687 100644
+> > --- a/tools/lib/bpf/xsk.c
+> > +++ b/tools/lib/bpf/xsk.c
+> > @@ -44,6 +44,25 @@
+> >   #define PF_XDP AF_XDP
+> >  #endif
+> >
+> > +#define is_mmap_offsets_v1(optlen) \
+> > +     ((optlen) == sizeof(struct xdp_mmap_offsets_v1))
+> > +
+> > +#define get_prod_off(ring) \
+> > +     (is_mmap_offsets_v1(optlen) ? \
+> > +      ((struct xdp_mmap_offsets_v1 *)&off)->ring.producer : \
+> > +      off.ring.producer)
+> > +#define get_cons_off(ring) \
+> > +     (is_mmap_offsets_v1(optlen) ? \
+> > +      ((struct xdp_mmap_offsets_v1 *)&off)->ring.consumer : \
+> > +      off.ring.consumer)
+> > +#define get_desc_off(ring) \
+> > +     (is_mmap_offsets_v1(optlen) ? \
+> > +      ((struct xdp_mmap_offsets_v1 *)&off)->ring.desc : off.ring.desc)
+> > +#define get_flags_off(ring) \
+> > +     (is_mmap_offsets_v1(optlen) ? \
+> > +      ((struct xdp_mmap_offsets_v1 *)&off)->ring.consumer + sizeof(u32) : \
+> > +      off.ring.flags)
+> > +
+>
+> It seems the only thing added was flags right? If so seems we
+> only need the last one there, get_flags_off(). I think it would
+> be a bit cleaner to just use the macros where its actually
+> needed IMO.
 
+The flag is indeed added to the end of struct xdp_ring_offsets, but
+this struct is replicated four times in the struct xdp_mmap_offsets,
+so the added flags are present four time there at different offsets.
+This means that 3 out of the 4 prod, cons and desc variables are
+located at different offsets from the original. Do not know how I can
+get rid of these macros in this case. But it might just be me not
+seeing it, of course :-).
 
-On 10/8/2019 5:49 PM, Jakub Kicinski wrote:
-> On Mon,  7 Oct 2019 23:16:51 -0700, Sridhar Samudrala wrote:
->> This is a rework of the following patch series
->> https://lore.kernel.org/netdev/1565840783-8269-1-git-send-email-sridhar.samudrala@intel.com/#r
->> that tried to enable direct receive by bypassing XDP program attached
->> to the device.
->>
->> Based on the community feedback and some suggestions from Bjorn, changed
->> the semantics of the implementation to enable direct receive on AF_XDP
->> sockets that are bound to a queue only when there is no normal XDP program
->> attached to the device.
->>
->> This is accomplished by introducing a special BPF prog pointer (DIRECT_XSK)
->> that is attached at the time of binding an AF_XDP socket to a queue of a
->> device. This is done only if there is no other XDP program attached to
->> the device. The normal XDP program has precedence and will replace the
->> DIRECT_XSK prog if it is attached later. The main reason to introduce a
->> special BPF prog pointer is to minimize the driver changes. The only change
->> is to use the bpf_get_prog_id() helper when QUERYING the prog id.
->>
->> Any attach of a normal XDP program will take precedence and the direct xsk
->> program will be removed. The direct XSK program will be attached
->> automatically when the normal XDP program is removed when there are any
->> AF_XDP direct sockets associated with that device.
->>
->> A static key is used to control this feature in order to avoid any overhead
->> for normal XDP datapath when there are no AF_XDP sockets in direct-xsk mode.
-> 
-> Don't say that static branches have no overhead. That's dishonest.
+Thanks: Magnus
 
-I didn't mean to say no overhead, but the overhead is minimized using 
-static_branch_unlikely()
-
-> 
->> Here is some performance data i collected on my Intel Ivybridge based
->> development system (Intel(R) Xeon(R) CPU E5-2697 v2 @ 2.70GHz)
->> NIC: Intel 40Gb ethernet (i40e)
->>
->> xdpsock rxdrop 1 core (both app and queue's irq pinned to the same core)
->>     default : taskset -c 1 ./xdpsock -i enp66s0f0 -r -q 1
->>     direct-xsk :taskset -c 1 ./xdpsock -i enp66s0f0 -r -q 1
->> 6.1x improvement in drop rate
->>
->> xdpsock rxdrop 2 core (app and queue's irq pinned to different cores)
->>     default : taskset -c 3 ./xdpsock -i enp66s0f0 -r -q 1
->>     direct-xsk :taskset -c 3 ./xdpsock -i enp66s0f0 -r -d -q 1
->> 6x improvement in drop rate
->>
->> xdpsock l2fwd 1 core (both app and queue's irq pinned to the same core)
->>     default : taskset -c 1 ./xdpsock -i enp66s0f0 -l -q 1
->>     direct-xsk :taskset -c 1 ./xdpsock -i enp66s0f0 -l -d -q 1
->> 3.5x improvement in l2fwd rate
->>
->> xdpsock rxdrop 2 core (app and queue'sirq pinned to different cores)
->>     default : taskset -c 3 ./xdpsock -i enp66s0f0 -l -q 1
->>     direct-xsk :taskset -c 3 ./xdpsock -i enp66s0f0 -l -d -q 1
->> 4.5x improvement in l2fwd rate
-> 
-> I asked you to add numbers for handling those use cases in the kernel
-> directly.
-
-Forgot to explicitly mention that I didn't see any regressions with 
-xdp1, xdp2 or xdpsock in default mode with these patches. Performance 
-remained the same.
-
-> 
->> dpdk-pktgen is used to send 64byte UDP packets from a link partner and
->> ethtool ntuple flow rule is used to redirect packets to queue 1 on the
->> system under test.
-> 
-> Obviously still nack from me.
-> 
+> Thanks,
+> John
