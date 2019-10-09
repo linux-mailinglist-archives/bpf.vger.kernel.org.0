@@ -2,271 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 27611D06E9
-	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2019 07:37:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6969ED0734
+	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2019 08:30:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730592AbfJIFhL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Oct 2019 01:37:11 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:39899 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730451AbfJIFhL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Oct 2019 01:37:11 -0400
-Received: by mail-qt1-f193.google.com with SMTP id n7so1683637qtb.6;
-        Tue, 08 Oct 2019 22:37:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rJBuqLgiutMEczdnWrQ6zOpsg3ZKdIeR1ad1Fo0miKM=;
-        b=TglRhebqETaTOhpQN6mcil1MURROYBhhjGE7trtkHQGQAqpOei/QJDwY7chkj0gEtU
-         twMY5sZPSmtWhCskPreJ0mb4UwXS8AhbPpkb36Ue+2HqLRYs2gupLR6MuNfHwioVtqi1
-         pZLftUr08I/xYA/gW1onz2V92iR+vA21iIAJYeCwHto1xdglBypbxrMCjaVW3RNpKCXR
-         MPfnHzXVDlbJZkPwMv7u44cH0Zz1H7uWDLWrzm6PwwBvx52xZa6HcU7AMQyv/b9Dabgo
-         AA9HhLcsW2w5/V5EWoyNrntczeJ7sLq6s00Uyqpr5k0hvKq29XUvUBvMZrqDWuB6uqSe
-         ofAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rJBuqLgiutMEczdnWrQ6zOpsg3ZKdIeR1ad1Fo0miKM=;
-        b=Ki+Mtd7ikuYVCY5UjhQYO5kSYeFoixJd/Hi9JC10MGYPC2mHW6J80/tkZ20UoJ4Wy+
-         ePAKdDOYJJ7CkGvNy5B32JCYFrD47/25udmO9WugswyC9DKnW9+4w/52JuBGaDSolk+E
-         N4sX/ohxvZhgDnyeD0QJX4HujHwEvdqUj1tRpfS9zFmj3Y7FSKxazmfjbWVR/uXpxbOP
-         L4jVahl3V+IUyT5nX+9iq/49lu4WukZ9S/YMW1DkrEHkai8ocT51c0JIayRLbl0Iqbbs
-         Y91BKc/gvYifCbGju2uLSxuljiiufMA96z7nQelKIE2vAbvPdDGlvOJpW7EzJzosHyvH
-         yx9A==
-X-Gm-Message-State: APjAAAXspKZhbObRmRnP7uzwfhhUlMC5E47InZeNzKCVsPFmX1IVXggr
-        G4ybZkS2Rozsby1xxhIHAz0jjkF5Lmjx0I0UBS4=
-X-Google-Smtp-Source: APXvYqygG+0xuNCCZuprenJcn3Mt8dNF1w27hUa9xZeBffrCqn+YKuXCn+f9j6+Y4tuGTl35lgtdTcpN3APHQwgnNTg=
-X-Received: by 2002:ac8:1c34:: with SMTP id a49mr1782350qtk.59.1570599429608;
- Tue, 08 Oct 2019 22:37:09 -0700 (PDT)
+        id S1727002AbfJIGaC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Oct 2019 02:30:02 -0400
+Received: from mga12.intel.com ([192.55.52.136]:30241 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726765AbfJIGaB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Oct 2019 02:30:01 -0400
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 08 Oct 2019 23:30:01 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.67,273,1566889200"; 
+   d="scan'208";a="200037603"
+Received: from samudral-mobl1.amr.corp.intel.com (HELO [10.254.13.114]) ([10.254.13.114])
+  by FMSMGA003.fm.intel.com with ESMTP; 08 Oct 2019 23:30:00 -0700
+Subject: Re: [PATCH bpf-next 0/4] Enable direct receive on AF_XDP sockets
+To:     Jakub Kicinski <jakub.kicinski@netronome.com>
+Cc:     magnus.karlsson@intel.com, bjorn.topel@intel.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org, maciej.fijalkowski@intel.com,
+        tom.herbert@intel.com
+References: <1570515415-45593-1-git-send-email-sridhar.samudrala@intel.com>
+ <20191008174919.2160737a@cakuba.netronome.com>
+From:   "Samudrala, Sridhar" <sridhar.samudrala@intel.com>
+Message-ID: <ce255470-6bf7-0ba4-c24f-0808e3331977@intel.com>
+Date:   Tue, 8 Oct 2019 23:29:59 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-References: <20191005050314.1114330-1-ast@kernel.org> <20191005050314.1114330-11-ast@kernel.org>
-In-Reply-To: <20191005050314.1114330-11-ast@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 8 Oct 2019 22:36:58 -0700
-Message-ID: <CAEf4BzZS3kvunYnPu6x674H08DZKnuc37c9+m4p_2EjdNuDGSg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 10/10] selftests/bpf: add kfree_skb raw_tp test
-To:     Alexei Starovoitov <ast@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>, x86@kernel.org,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20191008174919.2160737a@cakuba.netronome.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 4, 2019 at 10:04 PM Alexei Starovoitov <ast@kernel.org> wrote:
->
-> Load basic cls_bpf program.
-> Load raw_tracepoint program and attach to kfree_skb raw tracepoint.
-> Trigger cls_bpf via prog_test_run.
-> At the end of test_run kernel will call kfree_skb
-> which will trigger trace_kfree_skb tracepoint.
-> Which will call our raw_tracepoint program.
-> Which will take that skb and will dump it into perf ring buffer.
-> Check that user space received correct packet.
->
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> ---
-
-LGTM, few minor nits below.
-
-Acked-by: Andrii Nakryiko <andriin@fb.com>
 
 
->  .../selftests/bpf/prog_tests/kfree_skb.c      | 90 +++++++++++++++++++
->  tools/testing/selftests/bpf/progs/kfree_skb.c | 76 ++++++++++++++++
->  2 files changed, 166 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/kfree_skb.c
->  create mode 100644 tools/testing/selftests/bpf/progs/kfree_skb.c
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/kfree_skb.c b/tools/testing/selftests/bpf/prog_tests/kfree_skb.c
-> new file mode 100644
-> index 000000000000..238bc7024b36
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/kfree_skb.c
-> @@ -0,0 +1,90 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <test_progs.h>
-> +
-> +static void on_sample(void *ctx, int cpu, void *data, __u32 size)
-> +{
-> +       int ifindex = *(int *)data, duration = 0;
-> +       struct ipv6_packet * pkt_v6 = data + 4;
-> +
-> +       if (ifindex != 1)
-> +               /* spurious kfree_skb not on loopback device */
-> +               return;
-> +       if (CHECK(size != 76, "check_size", "size %d != 76\n", size))
+On 10/8/2019 5:49 PM, Jakub Kicinski wrote:
+> On Mon,  7 Oct 2019 23:16:51 -0700, Sridhar Samudrala wrote:
+>> This is a rework of the following patch series
+>> https://lore.kernel.org/netdev/1565840783-8269-1-git-send-email-sridhar.samudrala@intel.com/#r
+>> that tried to enable direct receive by bypassing XDP program attached
+>> to the device.
+>>
+>> Based on the community feedback and some suggestions from Bjorn, changed
+>> the semantics of the implementation to enable direct receive on AF_XDP
+>> sockets that are bound to a queue only when there is no normal XDP program
+>> attached to the device.
+>>
+>> This is accomplished by introducing a special BPF prog pointer (DIRECT_XSK)
+>> that is attached at the time of binding an AF_XDP socket to a queue of a
+>> device. This is done only if there is no other XDP program attached to
+>> the device. The normal XDP program has precedence and will replace the
+>> DIRECT_XSK prog if it is attached later. The main reason to introduce a
+>> special BPF prog pointer is to minimize the driver changes. The only change
+>> is to use the bpf_get_prog_id() helper when QUERYING the prog id.
+>>
+>> Any attach of a normal XDP program will take precedence and the direct xsk
+>> program will be removed. The direct XSK program will be attached
+>> automatically when the normal XDP program is removed when there are any
+>> AF_XDP direct sockets associated with that device.
+>>
+>> A static key is used to control this feature in order to avoid any overhead
+>> for normal XDP datapath when there are no AF_XDP sockets in direct-xsk mode.
+> 
+> Don't say that static branches have no overhead. That's dishonest.
 
-compiler doesn't complain about %d and size being unsigned?
+I didn't mean to say no overhead, but the overhead is minimized using 
+static_branch_unlikely()
 
-> +               return;
-> +       if (CHECK(pkt_v6->eth.h_proto != 0xdd86, "check_eth",
-> +                 "h_proto %x\n", pkt_v6->eth.h_proto))
-> +               return;
-> +       if (CHECK(pkt_v6->iph.nexthdr != 6, "check_ip",
-> +                 "iph.nexthdr %x\n", pkt_v6->iph.nexthdr))
-> +               return;
-> +       if (CHECK(pkt_v6->tcp.doff != 5, "check_tcp",
-> +                 "tcp.doff %x\n", pkt_v6->tcp.doff))
-> +               return;
-> +
-> +       *(bool *)ctx = true;
-> +}
-> +
-> +void test_kfree_skb(void)
-> +{
-> +       struct bpf_prog_load_attr attr = {
-> +               .file = "./kfree_skb.o",
-> +               .log_level = 2,
-> +       };
-> +
-> +       struct bpf_object *obj, *obj2 = NULL;
-> +       struct perf_buffer_opts pb_opts = {};
-> +       struct perf_buffer *pb = NULL;
-> +       struct bpf_link *link = NULL;
-> +       struct bpf_map *perf_buf_map;
-> +       struct bpf_program *prog;
-> +       __u32 duration, retval;
-> +       int err, pkt_fd, kfree_skb_fd;
-> +       bool passed = false;
-> +
-> +       err = bpf_prog_load("./test_pkt_access.o", BPF_PROG_TYPE_SCHED_CLS, &obj, &pkt_fd);
-> +       if (CHECK(err, "prog_load sched cls", "err %d errno %d\n", err, errno))
-> +               return;
-> +
-> +       err = bpf_prog_load_xattr(&attr, &obj2, &kfree_skb_fd);
-> +       if (CHECK(err, "prog_load raw tp", "err %d errno %d\n", err, errno))
-> +               goto close_prog;
-> +
-> +       prog = bpf_object__find_program_by_title(obj2, "raw_tracepoint/kfree_skb");
-> +       if (CHECK(!prog, "find_prog", "prog kfree_skb not found\n"))
-> +               goto close_prog;
-> +       link = bpf_program__attach_raw_tracepoint(prog, "kfree_skb");
-> +       if (CHECK(IS_ERR(link), "attach_raw_tp", "err %ld\n", PTR_ERR(link)))
-> +               goto close_prog;
-> +
-> +       perf_buf_map = bpf_object__find_map_by_name(obj2, "perf_buf_map");
-> +       if (CHECK(!perf_buf_map, "find_perf_buf_map", "not found\n"))
-> +               goto close_prog;
-> +
-> +       /* set up perf buffer */
-> +       pb_opts.sample_cb = on_sample;
-> +       pb_opts.ctx = &passed;
-> +       pb = perf_buffer__new(bpf_map__fd(perf_buf_map), 1, &pb_opts);
-> +       if (CHECK(IS_ERR(pb), "perf_buf__new", "err %ld\n", PTR_ERR(pb)))
-> +               goto close_prog;
-> +
-> +       err = bpf_prog_test_run(pkt_fd, 1, &pkt_v6, sizeof(pkt_v6),
-> +                               NULL, NULL, &retval, &duration);
-> +       CHECK(err || retval, "ipv6",
-> +             "err %d errno %d retval %d duration %d\n",
-> +             err, errno, retval, duration);
-> +
-> +       /* read perf buffer */
-> +       err = perf_buffer__poll(pb, 100);
-> +       if (CHECK(err < 0, "perf_buffer__poll", "err %d\n", err))
-> +               goto close_prog;
-> +       /* make sure kfree_skb program was triggered
-> +        * and it sent expected skb into ring buffer
-> +        */
-> +       CHECK_FAIL(!passed);
-> +close_prog:
-> +       perf_buffer__free(pb);
-> +       if (!IS_ERR_OR_NULL(link))
-> +               bpf_link__destroy(link);
-> +       bpf_object__close(obj);
-> +       bpf_object__close(obj2);
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/kfree_skb.c b/tools/testing/selftests/bpf/progs/kfree_skb.c
-> new file mode 100644
-> index 000000000000..61f1abfc4f48
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/kfree_skb.c
-> @@ -0,0 +1,76 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +// Copyright (c) 2019 Facebook
-> +#include <linux/bpf.h>
-> +#include "bpf_helpers.h"
-> +
-> +char _license[] SEC("license") = "GPL";
-> +struct {
-> +       __uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
-> +       __uint(key_size, sizeof(int));
-> +       __uint(value_size, sizeof(int));
-> +} perf_buf_map SEC(".maps");
-> +
-> +#define _(P) (__builtin_preserve_access_index(P))
-> +
-> +/* define few struct-s that bpf program needs to access */
-> +struct callback_head {
-> +       struct callback_head *next;
-> +       void (*func)(struct callback_head *head);
-> +};
-> +struct dev_ifalias {
-> +       struct callback_head rcuhead;
-> +};
-> +
-> +struct net_device /* same as kernel's struct net_device */ {
-> +       int ifindex;
-> +       volatile struct dev_ifalias *ifalias;
-> +};
-> +
-> +struct sk_buff {
-> +       /* field names and sizes should match to those in the kernel */
-> +        unsigned int            len,
-> +                                data_len;
-> +        __u16                   mac_len,
-> +                                hdr_len;
-> +        __u16                   queue_mapping;
-> +       struct net_device *dev;
-> +       /* order of the fields doesn't matter */
-> +};
-> +
-> +/* copy arguments from
-> + * include/trace/events/skb.h:
-> + * TRACE_EVENT(kfree_skb,
-> + *         TP_PROTO(struct sk_buff *skb, void *location),
-> + *
-> + * into struct below:
-> + */
-> +struct trace_kfree_skb {
-> +       struct sk_buff *skb;
-> +       void *location;
-> +};
-> +
-> +SEC("raw_tracepoint/kfree_skb")
-> +int trace_kfree_skb(struct trace_kfree_skb* ctx)
-> +{
-> +       struct sk_buff *skb = ctx->skb;
-> +       struct net_device *dev;
-> +       int ifindex;
-> +       struct callback_head *ptr;
-> +       void *func;
+> 
+>> Here is some performance data i collected on my Intel Ivybridge based
+>> development system (Intel(R) Xeon(R) CPU E5-2697 v2 @ 2.70GHz)
+>> NIC: Intel 40Gb ethernet (i40e)
+>>
+>> xdpsock rxdrop 1 core (both app and queue's irq pinned to the same core)
+>>     default : taskset -c 1 ./xdpsock -i enp66s0f0 -r -q 1
+>>     direct-xsk :taskset -c 1 ./xdpsock -i enp66s0f0 -r -q 1
+>> 6.1x improvement in drop rate
+>>
+>> xdpsock rxdrop 2 core (app and queue's irq pinned to different cores)
+>>     default : taskset -c 3 ./xdpsock -i enp66s0f0 -r -q 1
+>>     direct-xsk :taskset -c 3 ./xdpsock -i enp66s0f0 -r -d -q 1
+>> 6x improvement in drop rate
+>>
+>> xdpsock l2fwd 1 core (both app and queue's irq pinned to the same core)
+>>     default : taskset -c 1 ./xdpsock -i enp66s0f0 -l -q 1
+>>     direct-xsk :taskset -c 1 ./xdpsock -i enp66s0f0 -l -d -q 1
+>> 3.5x improvement in l2fwd rate
+>>
+>> xdpsock rxdrop 2 core (app and queue'sirq pinned to different cores)
+>>     default : taskset -c 3 ./xdpsock -i enp66s0f0 -l -q 1
+>>     direct-xsk :taskset -c 3 ./xdpsock -i enp66s0f0 -l -d -q 1
+>> 4.5x improvement in l2fwd rate
+> 
+> I asked you to add numbers for handling those use cases in the kernel
+> directly.
 
-nit: style checker should have complained about missing empty line
+Forgot to explicitly mention that I didn't see any regressions with 
+xdp1, xdp2 or xdpsock in default mode with these patches. Performance 
+remained the same.
 
-> +       __builtin_preserve_access_index(({
-> +               dev = skb->dev;
-> +               ifindex = dev->ifindex;
-> +               ptr = dev->ifalias->rcuhead.next;
-> +               func = ptr->func;
-> +       }));
-> +
-> +       bpf_printk("rcuhead.next %llx func %llx\n", ptr, func);
-> +       bpf_printk("skb->len %d\n", _(skb->len));
-> +       bpf_printk("skb->queue_mapping %d\n", _(skb->queue_mapping));
-> +       bpf_printk("dev->ifindex %d\n", ifindex);
-> +
-> +       /* send first 72 byte of the packet to user space */
-> +       bpf_skb_output(skb, &perf_buf_map, (72ull << 32) | BPF_F_CURRENT_CPU,
-> +                      &ifindex, sizeof(ifindex));
-> +       return 0;
-> +}
-> --
-> 2.20.0
->
+> 
+>> dpdk-pktgen is used to send 64byte UDP packets from a link partner and
+>> ethtool ntuple flow rule is used to redirect packets to queue 1 on the
+>> system under test.
+> 
+> Obviously still nack from me.
+> 
