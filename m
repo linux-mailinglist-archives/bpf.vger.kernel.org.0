@@ -2,80 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 878F4D090A
-	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2019 10:03:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21B26D09EC
+	for <lists+bpf@lfdr.de>; Wed,  9 Oct 2019 10:31:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725440AbfJIIDs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Oct 2019 04:03:48 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:33868 "EHLO mx1.redhat.com"
+        id S1726211AbfJIIbm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Oct 2019 04:31:42 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:41686 "EHLO mx1.redhat.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725914AbfJIIDs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Oct 2019 04:03:48 -0400
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com [209.85.208.197])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1725848AbfJIIbm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Oct 2019 04:31:42 -0400
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id A2E69C08EC02
-        for <bpf@vger.kernel.org>; Wed,  9 Oct 2019 08:03:47 +0000 (UTC)
-Received: by mail-lj1-f197.google.com with SMTP id w26so166700ljh.9
-        for <bpf@vger.kernel.org>; Wed, 09 Oct 2019 01:03:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=e6PDWY+jCDc15XxVDO6PNOmfYxpRrFsL3Dg/nclfQ5Q=;
-        b=C8rIFG7aEV6S41l2AenndLuO7H+e86rzJrsmHK45ZFsYBIOL4CCltegmS41ywnFcx0
-         iwgCGklxmuj77jGqldIAHDF6o1KYh796IpnI++GDGLTu5t/2VwJI6O0tnxiHND0gbJ+V
-         yW2hnRXQljJGQ5aQ8Qsxz+6OcN9Na+hOZPLnbEv2Uz3XLRVzn73vVPZwS8PaT5DSxUeQ
-         t1mxc+O8slMMAeq4EpSE2SGmG3OBqIjB2h59C5a+Tqg5fwIdkM0r6N4IpD45RK5UOjc6
-         8JPVPshakDh62CXJQ/mdj5vFGbeanTrMeKJALhcRK6xY1SZiFXRRRcyqyEOfEd/99jhs
-         pODg==
-X-Gm-Message-State: APjAAAXdSjhdLrqJAADbaaUeKWbcYk7J7Ot6r7wD16F7X9CQoQfCQ/0R
-        uaNz3Llnb7foayYzAqwAaB3KpfxT/qb73Q5ngcfN9uE4t6z2e8WnTbm9KzT82gp6AwY5z9gjGb6
-        qxQ9RE1ZXzdwM
-X-Received: by 2002:a19:4849:: with SMTP id v70mr1266869lfa.40.1570608226002;
-        Wed, 09 Oct 2019 01:03:46 -0700 (PDT)
-X-Google-Smtp-Source: APXvYqw8KUkRcnDDp+F0kxjHINAA1UwC3GB9awdIdon0aDan85L+Ki3CJuQUEi/AcdLBoEiIYovPxA==
-X-Received: by 2002:a19:4849:: with SMTP id v70mr1266855lfa.40.1570608225842;
-        Wed, 09 Oct 2019 01:03:45 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a00:7660:6da:443::2])
-        by smtp.gmail.com with ESMTPSA id v7sm291317lfd.55.2019.10.09.01.03.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Oct 2019 01:03:45 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id E105318063D; Wed,  9 Oct 2019 10:03:43 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Marek Majkowski <marek@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next v3 1/5] bpf: Support chain calling multiple BPF programs after each other
-In-Reply-To: <20191009015117.pldowv6n3k5p3ghr@ast-mbp.dhcp.thefacebook.com>
-References: <157046883502.2092443.146052429591277809.stgit@alrua-x1> <157046883614.2092443.9861796174814370924.stgit@alrua-x1> <20191007204234.p2bh6sul2uakpmnp@ast-mbp.dhcp.thefacebook.com> <87sgo3lkx9.fsf@toke.dk> <20191009015117.pldowv6n3k5p3ghr@ast-mbp.dhcp.thefacebook.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 09 Oct 2019 10:03:43 +0200
-Message-ID: <87o8yqjqg0.fsf@toke.dk>
-MIME-Version: 1.0
-Content-Type: text/plain
+        by mx1.redhat.com (Postfix) with ESMTPS id 8241CC057E32;
+        Wed,  9 Oct 2019 08:31:42 +0000 (UTC)
+Received: from griffin.upir.cz (ovpn-204-237.brq.redhat.com [10.40.204.237])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 94DDB60166;
+        Wed,  9 Oct 2019 08:31:41 +0000 (UTC)
+From:   Jiri Benc <jbenc@redhat.com>
+To:     bpf@vger.kernel.org, netdev@vger.kernel.org
+Cc:     Peter Oskolkov <posk@google.com>
+Subject: [PATCH bpf] bpf: lwtunnel: fix reroute supplying invalid dst
+Date:   Wed,  9 Oct 2019 10:31:24 +0200
+Message-Id: <111664d58fe4e9dd9c8014bb3d0b2dab93086a9e.1570609794.git.jbenc@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.31]); Wed, 09 Oct 2019 08:31:42 +0000 (UTC)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+The dst in bpf_input() has lwtstate field set. As it is of the
+LWTUNNEL_ENCAP_BPF type, lwtstate->data is struct bpf_lwt. When the bpf
+program returns BPF_LWT_REROUTE, ip_route_input_noref is directly called on
+this skb. This causes invalid memory access, as ip_route_input_slow calls
+skb_tunnel_info(skb) that expects the dst->lwstate->data to be
+struct ip_tunnel_info. This results to struct bpf_lwt being accessed as
+struct ip_tunnel_info.
 
-> Please implement proper indirect calls and jumps.
+Drop the dst before calling the IP route input functions (both for IPv4 and
+IPv6).
 
-I am still not convinced this will actually solve our problem; but OK, I
-can give it a shot.
+Reported by KASAN.
 
-However, I don't actually have a clear picture of what exactly is
-missing to add this support. Could you please provide a pointer or two?
+Fixes: 3bd0b15281af ("bpf: add handling of BPF_LWT_REROUTE to lwt_bpf.c")
+Cc: Peter Oskolkov <posk@google.com>
+Signed-off-by: Jiri Benc <jbenc@redhat.com>
+---
+ net/core/lwt_bpf.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
--Toke
+diff --git a/net/core/lwt_bpf.c b/net/core/lwt_bpf.c
+index f93785e5833c..74cfb8b5ab33 100644
+--- a/net/core/lwt_bpf.c
++++ b/net/core/lwt_bpf.c
+@@ -88,11 +88,16 @@ static int bpf_lwt_input_reroute(struct sk_buff *skb)
+ 	int err = -EINVAL;
+ 
+ 	if (skb->protocol == htons(ETH_P_IP)) {
++		struct net_device *dev = skb_dst(skb)->dev;
+ 		struct iphdr *iph = ip_hdr(skb);
+ 
++		dev_hold(dev);
++		skb_dst_drop(skb);
+ 		err = ip_route_input_noref(skb, iph->daddr, iph->saddr,
+-					   iph->tos, skb_dst(skb)->dev);
++					   iph->tos, dev);
++		dev_put(dev);
+ 	} else if (skb->protocol == htons(ETH_P_IPV6)) {
++		skb_dst_drop(skb);
+ 		err = ipv6_stub->ipv6_route_input(skb);
+ 	} else {
+ 		err = -EAFNOSUPPORT;
+-- 
+2.18.1
+
