@@ -2,438 +2,327 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 19E58D224F
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2019 10:12:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1BB4D2255
+	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2019 10:13:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733012AbfJJIMT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Oct 2019 04:12:19 -0400
-Received: from mga14.intel.com ([192.55.52.115]:45882 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727196AbfJJIMT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Oct 2019 04:12:19 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 10 Oct 2019 01:12:18 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.67,279,1566889200"; 
-   d="scan'208";a="345626296"
-Received: from mkarlsso-mobl.ger.corp.intel.com (HELO VM.isw.intel.com) ([10.103.211.41])
-  by orsmga004.jf.intel.com with ESMTP; 10 Oct 2019 01:12:16 -0700
-From:   Magnus Karlsson <magnus.karlsson@intel.com>
-To:     magnus.karlsson@intel.com, bjorn.topel@intel.com, ast@kernel.org,
-        daniel@iogearbox.net, netdev@vger.kernel.org,
-        jonathan.lemon@gmail.com, linux-doc@vger.kernel.org
-Cc:     bpf@vger.kernel.org
-Subject: [PATCH bpf] xsk: improve documentation for AF_XDP
-Date:   Thu, 10 Oct 2019 10:12:13 +0200
-Message-Id: <1570695134-660-1-git-send-email-magnus.karlsson@intel.com>
-X-Mailer: git-send-email 2.7.4
+        id S1733119AbfJJINO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Oct 2019 04:13:14 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:45434 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732980AbfJJINO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Oct 2019 04:13:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=Mf764AdfZwnie4a40/S03SR1BO+wuVvW4KkBz9Ae3Ak=; b=KoIGkvzrOqRBQybp5YMzHwehN
+        pTgVc6riV0bao+s26drY2H4Fvr/7bie91IerrISfRw6rPwx2g8vLxb04Dd0b97RJpn7LLyR6AkyI/
+        hRX6HP0MFFoRq9L+11YPASIDFLc9xl7yt0Pd1g6XCUNayYDe78zfuPoiHjSyLg06XPVCxLlG8A8zq
+        0OpQezjxw6TprtHyM6m30UPL6oRg/Ly+qXsmlSr/ZW567cv9qre5ubl1ksDpzcJUJMvO6oW5YJTuU
+        OZscaHfrofSO13mkfQG8ZCWNcv1DPjEbDkj/Tz5duBK9CvBJI6VTXJUz5Cr4VjtjMcdY18cQbCwA6
+        kfZgVCiNg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.2 #3 (Red Hat Linux))
+        id 1iITZ8-0001dw-Bj; Thu, 10 Oct 2019 08:12:54 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 20D193013A4;
+        Thu, 10 Oct 2019 10:11:59 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 2D97A213C6CDD; Thu, 10 Oct 2019 10:12:51 +0200 (CEST)
+Date:   Thu, 10 Oct 2019 10:12:51 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org, rostedt@goodmis.org,
+        primiano@google.com, rsavitski@google.com, jeffv@google.com,
+        kernel-team@android.com, Alexei Starovoitov <ast@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        bpf@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        James Morris <jmorris@namei.org>, Jiri Olsa <jolsa@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        linux-security-module@vger.kernel.org,
+        Matthew Garrett <matthewgarrett@google.com>,
+        Namhyung Kim <namhyung@kernel.org>, selinux@vger.kernel.org,
+        Song Liu <songliubraving@fb.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Yonghong Song <yhs@fb.com>
+Subject: Re: [PATCH RFC] perf_event: Add support for LSM and SELinux checks
+Message-ID: <20191010081251.GP2311@hirez.programming.kicks-ass.net>
+References: <20191009203657.6070-1-joel@joelfernandes.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191009203657.6070-1-joel@joelfernandes.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Added sections on all the bind flags, libbpf, all the setsockopts and
-all the getsockopts. Also updated the document to reflect the latest
-features and to correct some spelling errors.
+On Wed, Oct 09, 2019 at 04:36:57PM -0400, Joel Fernandes (Google) wrote:
+> In currentl mainline, the degree of access to perf_event_open(2) system
+> call depends on the perf_event_paranoid sysctl.  This has a number of
+> limitations:
+> 
+> 1. The sysctl is only a single value. Many types of accesses are controlled
+>    based on the single value thus making the control very limited and
+>    coarse grained.
+> 2. The sysctl is global, so if the sysctl is changed, then that means
+>    all processes get access to perf_event_open(2) opening the door to
+>    security issues.
+> 
+> This patch adds LSM and SELinux access checking which will be used in
+> Android to access perf_event_open(2) for the purposes of attaching BPF
+> programs to tracepoints, perf profiling and other operations from
+> userspace. These operations are intended for production systems.
+> 
+> 5 new LSM hooks are added:
+> 1. perf_event_open: This controls access during the perf_event_open(2)
+>    syscall itself. The hook is called from all the places that the
+>    perf_event_paranoid sysctl is checked to keep it consistent with the
+>    systctl. The hook gets passed a 'type' argument which controls CPU,
+>    kernel and tracepoint accesses (in this context, CPU, kernel and
+>    tracepoint have the same semantics as the perf_event_paranoid sysctl).
+>    Additionally, I added an 'open' type which is similar to
+>    perf_event_paranoid sysctl == 3 patch carried in Android and several other
+>    distros but was rejected in mainline [1] in 2016.
+> 
+> 2. perf_event_alloc: This allocates a new security object for the event
+>    which stores the current SID within the event. It will be useful when
+>    the perf event's FD is passed through IPC to another process which may
+>    try to read the FD. Appropriate security checks will limit access.
+> 
+> 3. perf_event_free: Called when the event is closed.
+> 
+> 4. perf_event_read: Called from the read(2) system call path for the event.
 
-Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+	+ mmap()
+> 
+> 5. perf_event_write: Called from the read(2) system call path for the event.
+
+	- read() + ioctl()
+
+fresh from the keyboard.. but maybe consoldate things a little.
+
 ---
- Documentation/networking/af_xdp.rst | 262 ++++++++++++++++++++++++++++++++----
- 1 file changed, 234 insertions(+), 28 deletions(-)
-
-diff --git a/Documentation/networking/af_xdp.rst b/Documentation/networking/af_xdp.rst
-index 83f7ae5..52e40d72 100644
---- a/Documentation/networking/af_xdp.rst
-+++ b/Documentation/networking/af_xdp.rst
-@@ -40,13 +40,13 @@ allocates memory for this UMEM using whatever means it feels is most
- appropriate (malloc, mmap, huge pages, etc). This memory area is then
- registered with the kernel using the new setsockopt XDP_UMEM_REG. The
- UMEM also has two rings: the FILL ring and the COMPLETION ring. The
--fill ring is used by the application to send down addr for the kernel
-+FILL ring is used by the application to send down addr for the kernel
- to fill in with RX packet data. References to these frames will then
- appear in the RX ring once each packet has been received. The
--completion ring, on the other hand, contains frame addr that the
-+COMPLETION ring, on the other hand, contains frame addr that the
- kernel has transmitted completely and can now be used again by user
- space, for either TX or RX. Thus, the frame addrs appearing in the
--completion ring are addrs that were previously transmitted using the
-+COMPLETION ring are addrs that were previously transmitted using the
- TX ring. In summary, the RX and FILL rings are used for the RX path
- and the TX and COMPLETION rings are used for the TX path.
+--- a/arch/x86/events/intel/bts.c
++++ b/arch/x86/events/intel/bts.c
+@@ -14,7 +14,6 @@
+ #include <linux/debugfs.h>
+ #include <linux/device.h>
+ #include <linux/coredump.h>
+-#include <linux/security.h>
  
-@@ -91,11 +91,16 @@ Concepts
- ========
- 
- In order to use an AF_XDP socket, a number of associated objects need
--to be setup.
-+to be setup. These objects and their options are explained in the
-+following sections.
- 
--Jonathan Corbet has also written an excellent article on LWN,
--"Accelerating networking with AF_XDP". It can be found at
--https://lwn.net/Articles/750845/.
-+For an overview on how AF_XDP works, you can also take a look at the
-+Linux Plumbers paper from 2018 on the subject:
-+http://vger.kernel.org/lpc_net2018_talks/lpc18_paper_af_xdp_perf-v2.pdf. Do
-+NOT consult the paper from 2017 on "AF_PACKET v4", the first attempt
-+at AF_XDP. Nearly everything changed since then. Jonathan Corbet has
-+also written an excellent article on LWN, "Accelerating networking
-+with AF_XDP". It can be found at https://lwn.net/Articles/750845/.
- 
- UMEM
- ----
-@@ -113,22 +118,22 @@ the next socket B can do this by setting the XDP_SHARED_UMEM flag in
- struct sockaddr_xdp member sxdp_flags, and passing the file descriptor
- of A to struct sockaddr_xdp member sxdp_shared_umem_fd.
- 
--The UMEM has two single-producer/single-consumer rings, that are used
-+The UMEM has two single-producer/single-consumer rings that are used
- to transfer ownership of UMEM frames between the kernel and the
- user-space application.
- 
- Rings
- -----
- 
--There are a four different kind of rings: Fill, Completion, RX and
-+There are a four different kind of rings: FILL, COMPLETION, RX and
- TX. All rings are single-producer/single-consumer, so the user-space
- application need explicit synchronization of multiple
- processes/threads are reading/writing to them.
- 
--The UMEM uses two rings: Fill and Completion. Each socket associated
-+The UMEM uses two rings: FILL and COMPLETION. Each socket associated
- with the UMEM must have an RX queue, TX queue or both. Say, that there
- is a setup with four sockets (all doing TX and RX). Then there will be
--one Fill ring, one Completion ring, four TX rings and four RX rings.
-+one FILL ring, one COMPLETION ring, four TX rings and four RX rings.
- 
- The rings are head(producer)/tail(consumer) based rings. A producer
- writes the data ring at the index pointed out by struct xdp_ring
-@@ -146,7 +151,7 @@ The size of the rings need to be of size power of two.
- UMEM Fill Ring
- ~~~~~~~~~~~~~~
- 
--The Fill ring is used to transfer ownership of UMEM frames from
-+The FILL ring is used to transfer ownership of UMEM frames from
- user-space to kernel-space. The UMEM addrs are passed in the ring. As
- an example, if the UMEM is 64k and each chunk is 4k, then the UMEM has
- 16 chunks and can pass addrs between 0 and 64k.
-@@ -164,8 +169,8 @@ chunks mode, then the incoming addr will be left untouched.
- UMEM Completion Ring
- ~~~~~~~~~~~~~~~~~~~~
- 
--The Completion Ring is used transfer ownership of UMEM frames from
--kernel-space to user-space. Just like the Fill ring, UMEM indicies are
-+The COMPLETION Ring is used transfer ownership of UMEM frames from
-+kernel-space to user-space. Just like the FILL ring, UMEM indices are
- used.
- 
- Frames passed from the kernel to user-space are frames that has been
-@@ -181,7 +186,7 @@ The RX ring is the receiving side of a socket. Each entry in the ring
- is a struct xdp_desc descriptor. The descriptor contains UMEM offset
- (addr) and the length of the data (len).
- 
--If no frames have been passed to kernel via the Fill ring, no
-+If no frames have been passed to kernel via the FILL ring, no
- descriptors will (or can) appear on the RX ring.
- 
- The user application consumes struct xdp_desc descriptors from this
-@@ -199,8 +204,24 @@ be relaxed in the future.
- The user application produces struct xdp_desc descriptors to this
- ring.
- 
-+Libbpf
-+======
-+
-+Libbpf is a helper library for eBPF and XDP that makes using these
-+technologies a lot simpler. It also contains specific helper functions
-+in tools/lib/bpf/xsk.h for facilitating the use of AF_XDP. It
-+contains two types of functions: those that can be used to make the
-+setup of AF_XDP socket easier and ones that can be used in the data
-+plane to access the rings safely and quickly. To see an example on how
-+to use this API, please take a look at the sample application in
-+samples/bpf/xdpsock_usr.c which uses libbpf for both setup and data
-+plane operations.
-+
-+We recommend that you use this library unless you have become a power
-+user. It will make your program a lot simpler.
-+
- XSKMAP / BPF_MAP_TYPE_XSKMAP
------------------------------
-+============================
- 
- On XDP side there is a BPF map type BPF_MAP_TYPE_XSKMAP (XSKMAP) that
- is used in conjunction with bpf_redirect_map() to pass the ingress
-@@ -216,21 +237,200 @@ queue 17. Only the XDP program executing for eth0 and queue 17 will
- successfully pass data to the socket. Please refer to the sample
- application (samples/bpf/) in for an example.
- 
-+Configuration Flags and Socket Options
-+======================================
-+
-+These are the various configuration flags that can be used to control
-+and monitor the behavior of AF_XDP sockets.
-+
-+XDP_COPY and XDP_ZERO_COPY bind flags
-+-------------------------------------
-+
-+When you bind to a socket, the kernel will first try to use zero-copy
-+copy. If zero-copy is not supported, it will fall back on using copy
-+mode, i.e. copying all packets out to user space. But if you would
-+like to force a certain mode, you can use the following flags. If you
-+pass the XDP_COPY flag to the bind call, the kernel will force the
-+socket into copy mode. If it cannot use copy mode, the bind call will
-+fail with an error. Conversely, the XDP_ZERO_COPY flag will force the
-+socket into zero-copy mode or fail.
-+
-+XDP_SHARED_UMEM bind flag
-+-------------------------
-+
-+This flag enables you to bind multiple sockets to the same UMEM, but
-+only if they share the same queue id. In this mode, each socket has
-+their own RX and TX rings, but the UMEM (tied to the fist socket
-+created) only has a single FILL ring and a single COMPLETION
-+ring. To use this mode, create the first socket and bind it in the normal
-+way. Create a second socket and create an RX and a TX ring, or at
-+least one of them, but no FILL or COMPLETION rings as the ones from
-+the first socket will be used. In the bind call, set he
-+XDP_SHARED_UMEM option and provide the initial socket's fd in the
-+sxdp_shared_umem_fd field. You can attach an arbitrary number of extra
-+sockets this way.
-+
-+What socket will then a packet arrive on? This is decided by the XDP
-+program. Put all the sockets in the XSK_MAP and just indicate which
-+index in the array you would like to send each packet to. A simple
-+round-robin example of distributing packets is shown below:
-+
-+.. code-block:: c
-+
-+   #define KBUILD_MODNAME "af_xdp_example"
-+   #include <uapi/linux/bpf.h>
-+   #include "bpf_helpers.h"
-+
-+   #define MAX_SOCKS 16
-+
-+   struct bpf_map_def SEC("maps") xsks_map = {
-+   	  .type = BPF_MAP_TYPE_XSKMAP,
-+	  .key_size = sizeof(int),
-+	  .value_size = sizeof(int),
-+	  .max_entries = MAX_SOCKS,
-+   };
-+
-+   struct bpf_map_def SEC("maps") rr_map = {
-+   	  .type = BPF_MAP_TYPE_PERCPU_ARRAY,
-+	  .key_size = sizeof(int),
-+	  .value_size = sizeof(unsigned int),
-+	  .max_entries = 1,
-+   };
-+
-+   SEC("xdp_sock") int xdp_sock_prog(struct xdp_md *ctx)
-+   {
-+	int key = 0, idx;
-+	unsigned int *rr;
-+
-+	rr = bpf_map_lookup_elem(&rr_map, &key);
-+	if (!rr)
-+	   return XDP_ABORTED;
-+
-+	*rr = (*rr + 1) & (MAX_SOCKS - 1);
-+	idx = *rr;
-+
-+	return bpf_redirect_map(&xsks_map, idx, 0);
-+   }
-+
-+   char _license[] SEC("license") = "GPL";
-+
-+Note, that since there is only a single set of FILL and COMPLETION
-+rings, and they are single producer, single consumer rings, you need
-+to make sure that multiple processes or threads do not use these rings
-+concurrently. There are no synchronization primitives in the
-+libbpf code that protects multiple users at this point in time.
-+
-+XDP_USE_NEED_WAKEUP bind flag
-+-----------------------------
-+
-+This option adds support for a new flag called need_wakeup that is
-+present in the FILL ring and the TX ring, the rings for which user
-+space is a producer. When this option is set in the bind call, the
-+need_wakeup flag will be set if the kernel needs to be explicitly
-+woken up by a syscall to continue processing packets. If the flag is
-+zero, no syscall is needed.
-+
-+If the flag is set on the FILL ring, the application needs to call
-+poll() to be able to continue to receive packets on the RX ring. This
-+can happen, for example, when the kernel has detected that there are no
-+more buffers on the FILL ring and no buffers left on the RX HW ring of
-+the NIC. In this case, interrupts are turned off as the NIC cannot
-+receive any packets (as there are no buffers to put them in), and the
-+need_wakeup flag is set so that user space can put buffers on the
-+FILL ring and then call poll() so that the kernel driver can put these
-+buffers on the HW ring and start to receive packets.
-+
-+If the flag is set for the TX ring, it means that the application
-+needs to explicitly notify the kernel to send any packets put on the
-+TX ring. This can be accomplished either by a poll() call, as in the
-+RX path, or by calling sendto().
-+
-+An example of how to use this flag can be found in
-+samples/bpf/xdpsock_user.c. An example with the use of libbpf helpers
-+would look like this for the TX path:
-+
-+.. code-block:: c
-+
-+   if (xsk_ring_prod__needs_wakeup(&my_tx_ring))
-+      sendto(xsk_socket__fd(xsk_handle), NULL, 0, MSG_DONTWAIT, NULL, 0);
-+
-+I.e., only use the syscall if the flag is set.
-+
-+We recommend that you always enable this mode as it can lead to
-+magnitudes better performance if you run the application and the
-+driver on the same core and somewhat better performance even if you
-+use different cores for the application and the kernel driver, as it
-+reduces the number of syscalls needed for the TX path.
-+
-+XDP_{RX|TX|UMEM_FILL|UMEM_COMPLETION}_RING setsockopts
-+------------------------------------------------------
-+
-+These setsockopts sets the number of descriptors that the RX, TX,
-+FILL, and COMPLETION rings respectively should have. It is mandatory
-+to set the size of at least one of the RX and TX rings. If you set
-+both, you will be able to both receive and send traffic from your
-+application, but if you only want to do one of them, you can save
-+resources by only setting up one of them. Both the FILL ring and the
-+COMPLETION ring are mandatory if you have a UMEM tied to your socket,
-+which is the normal case. But if the XDP_SHARED_UMEM flag is used, any
-+socket after the first one does not have a UMEM and should in that
-+case not have any FILL or COMPLETION rings created.
-+
-+XDP_UMEM_REG setsockopt
-+-----------------------
-+
-+This setsockopt registers a UMEM to a socket. This is the area that
-+contain all the buffers that packet can recide in. The call takes a
-+pointer to the beginning of this area and the size of it. Moreover, it
-+also has parameter called chunk_size that is the size that the UMEM is
-+divided into. It can only be 2K or 4K at the moment. If you have an
-+UMEM area that is 128K and a chunk size of 2K, this means that you
-+will be able to hold a maximum of 128K / 2K = 64 packets in your UMEM
-+area and that your largest packet size can be 2K.
-+
-+There is also an option to set the headroom of each single buffer in
-+the UMEM. If you set this to N bytes, it means that the packet will
-+start N bytes into the buffer leaving the first N bytes for the
-+application to use. The final option is the flags field, but it will
-+be dealt with in separate sections for each UMEM flag.
-+
-+XDP_STATISTICS getsockopt
-+-------------------------
-+
-+Gets drop statistics of a socket that can be useful for debug
-+purposes. The supported statistics are shown below:
-+
-+.. code-block:: c
-+
-+   struct xdp_statistics {
-+   	  __u64 rx_dropped; /* Dropped for reasons other than invalid desc */
-+	  __u64 rx_invalid_descs; /* Dropped due to invalid descriptor */
-+	  __u64 tx_invalid_descs; /* Dropped due to invalid descriptor */
-+   };
-+
-+XDP_OPTIONS getsockopt
-+----------------------
-+
-+Gets options from an XDP socket. The only one supported so far is
-+XDP_OPTIONS_ZEROCOPY which tells you if zero-copy is on or not.
-+
- Usage
- =====
- 
--In order to use AF_XDP sockets there are two parts needed. The
-+In order to use AF_XDP sockets two parts are needed. The
- user-space application and the XDP program. For a complete setup and
- usage example, please refer to the sample application. The user-space
- side is xdpsock_user.c and the XDP side is part of libbpf.
- 
--The XDP code sample included in tools/lib/bpf/xsk.c is the following::
-+The XDP code sample included in tools/lib/bpf/xsk.c is the following:
-+
-+.. code-block:: c
- 
-    SEC("xdp_sock") int xdp_sock_prog(struct xdp_md *ctx)
-    {
-        int index = ctx->rx_queue_index;
- 
--       // A set entry here means that the correspnding queue_id
-+       // A set entry here means that the corresponding queue_id
-        // has an active AF_XDP socket bound to it.
-        if (bpf_map_lookup_elem(&xsks_map, &index))
-            return bpf_redirect_map(&xsks_map, index, 0);
-@@ -238,7 +438,9 @@ The XDP code sample included in tools/lib/bpf/xsk.c is the following::
-        return XDP_PASS;
-    }
- 
--Naive ring dequeue and enqueue could look like this::
-+Naive ring dequeue and enqueue could look like this:
-+
-+.. code-block:: c
- 
-     // struct xdp_rxtx_ring {
-     // 	__u32 *producer;
-@@ -287,17 +489,16 @@ Naive ring dequeue and enqueue could look like this::
-         return 0;
-     }
- 
+ #include <linux/sizes.h>
+ #include <asm/perf_event.h>
+@@ -550,13 +549,11 @@ static int bts_event_init(struct perf_ev
+ 	 * Note that the default paranoia setting permits unprivileged
+ 	 * users to profile the kernel.
+ 	 */
+-	if (event->attr.exclude_kernel && perf_paranoid_kernel() &&
+-	    !capable(CAP_SYS_ADMIN))
+-		return -EACCES;
 -
--For a more optimized version, please refer to the sample application.
-+But please use the libbpf functions as they are optimized and ready to
-+use. Will make your life easier.
+-	ret = security_perf_event_open(&event->attr, PERF_SECURITY_KERNEL);
+-	if (ret)
+-		return ret;
++	if (event->attr.exclude_kernel) {
++		ret = perf_allow_kernel(&event->attr);
++		if (ret)
++			return ret;
++	}
  
- Sample application
- ==================
+ 	if (x86_add_exclusive(x86_lbr_exclusive_bts))
+ 		return -EBUSY;
+--- a/arch/x86/events/intel/core.c
++++ b/arch/x86/events/intel/core.c
+@@ -11,7 +11,6 @@
+ #include <linux/stddef.h>
+ #include <linux/types.h>
+ #include <linux/init.h>
+-#include <linux/security.h>
+ #include <linux/slab.h>
+ #include <linux/export.h>
+ #include <linux/nmi.h>
+@@ -3316,10 +3315,7 @@ static int intel_pmu_hw_config(struct pe
+ 	if (x86_pmu.version < 3)
+ 		return -EINVAL;
  
- There is a xdpsock benchmarking/test application included that
--demonstrates how to use AF_XDP sockets with both private and shared
--UMEMs. Say that you would like your UDP traffic from port 4242 to end
--up in queue 16, that we will enable AF_XDP on. Here, we use ethtool
--for this::
-+demonstrates how to use AF_XDP sockets with private UMEMs. Say that
-+you would like your UDP traffic from port 4242 to end up in queue 16,
-+that we will enable AF_XDP on. Here, we use ethtool for this::
+-	if (perf_paranoid_cpu() && !capable(CAP_SYS_ADMIN))
+-		return -EACCES;
+-
+-	ret = security_perf_event_open(&event->attr, PERF_SECURITY_CPU);
++	ret = perf_allow_cpu(&event->attr);
+ 	if (ret)
+ 		return ret;
  
-       ethtool -N p3p2 rx-flow-hash udp4 fn
-       ethtool -N p3p2 flow-type udp4 src-port 4242 dst-port 4242 \
-@@ -311,13 +512,18 @@ using::
- For XDP_SKB mode, use the switch "-S" instead of "-N" and all options
- can be displayed with "-h", as usual.
+--- a/arch/x86/events/intel/p4.c
++++ b/arch/x86/events/intel/p4.c
+@@ -8,7 +8,6 @@
+  */
  
-+This sample application uses libbpf to make the setup and usage of
-+AF_XDP simpler. If you want to know how the raw uapi of AF_XDP is
-+really used to make something more advanced, take a look at the libbpf
-+code in tools/lib/bpf/xsk.[ch].
+ #include <linux/perf_event.h>
+-#include <linux/security.h>
+ 
+ #include <asm/perf_event_p4.h>
+ #include <asm/hardirq.h>
+@@ -777,10 +776,7 @@ static int p4_validate_raw_event(struct
+ 	 * the user needs special permissions to be able to use it
+ 	 */
+ 	if (p4_ht_active() && p4_event_bind_map[v].shared) {
+-		if (perf_paranoid_cpu() && !capable(CAP_SYS_ADMIN))
+-			return -EACCES;
+-
+-		v = security_perf_event_open(&event->attr, PERF_SECURITY_CPU);
++		v = perf_allow_cpu(&event->attr);
+ 		if (v)
+ 			return v;
+ 	}
+--- a/include/linux/perf_event.h
++++ b/include/linux/perf_event.h
+@@ -56,6 +56,7 @@ struct perf_guest_info_callbacks {
+ #include <linux/perf_regs.h>
+ #include <linux/cgroup.h>
+ #include <linux/refcount.h>
++#include <linux/security.h>
+ #include <asm/local.h>
+ 
+ struct perf_callchain_entry {
+@@ -1244,19 +1245,28 @@ extern int perf_cpu_time_max_percent_han
+ int perf_event_max_stack_handler(struct ctl_table *table, int write,
+ 				 void __user *buffer, size_t *lenp, loff_t *ppos);
+ 
+-static inline bool perf_paranoid_tracepoint_raw(void)
++static inline int perf_allow_kernel(struct perf_event_attr *attr)
+ {
+-	return sysctl_perf_event_paranoid > -1;
++	if (sysctl_perf_event_paranoid > 1 && !capable(CAP_SYS_ADMIN))
++		return -EACCES;
 +
- FAQ
- =======
++	return security_perf_event_open(attr, PERF_SECURITY_KERNEL);
+ }
  
- Q: I am not seeing any traffic on the socket. What am I doing wrong?
+-static inline bool perf_paranoid_cpu(void)
++static inline int perf_allow_cpu(struct perf_event_attr *attr)
+ {
+-	return sysctl_perf_event_paranoid > 0;
++	if (sysctl_perf_event_paranoid > 0 && !capable(CAP_SYS_ADMIN))
++		return -EACCES;
++
++	return security_perf_event_open(attr, PERF_SECURITY_CPU);
+ }
  
- A: When a netdev of a physical NIC is initialized, Linux usually
--   allocates one Rx and Tx queue pair per core. So on a 8 core system,
-+   allocates one RX and TX queue pair per core. So on a 8 core system,
-    queue ids 0 to 7 will be allocated, one per core. In the AF_XDP
-    bind call or the xsk_socket__create libbpf function call, you
-    specify a specific queue id to bind to and it is only the traffic
-@@ -343,7 +549,7 @@ A: When a netdev of a physical NIC is initialized, Linux usually
-      sudo ethtool -N <interface> flow-type udp4 src-port 4242 dst-port \
-      4242 action 2
+-static inline bool perf_paranoid_kernel(void)
++static inline int perf_allow_tracepoint(struct perf_event_attr *attr)
+ {
+-	return sysctl_perf_event_paranoid > 1;
++	if (sysctl_perf_event_paranoid > -1 && !capable(CAP_SYS_ADMIN))
++		return -EPERM;
++
++	return security_perf_event_open(attr, PERF_SECURITY_TRACEPOINT);
+ }
  
--   A number of other ways are possible all up to the capabilitites of
-+   A number of other ways are possible all up to the capabilities of
-    the NIC you have.
+ extern void perf_event_init(void);
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -4229,10 +4229,7 @@ find_get_context(struct pmu *pmu, struct
  
- Credits
--- 
-2.7.4
-
+ 	if (!task) {
+ 		/* Must be root to operate on a CPU event: */
+-		if (perf_paranoid_cpu() && !capable(CAP_SYS_ADMIN))
+-			return ERR_PTR(-EACCES);
+-
+-		err = security_perf_event_open(&event->attr, PERF_SECURITY_CPU);
++		err = perf_allow_cpu(&event->attr);
+ 		if (err)
+ 			return ERR_PTR(err);
+ 
+@@ -5862,14 +5859,8 @@ static int perf_mmap(struct file *file,
+ 	lock_limit >>= PAGE_SHIFT;
+ 	locked = atomic64_read(&vma->vm_mm->pinned_vm) + extra;
+ 
+-	if (locked > lock_limit) {
+-		if (perf_paranoid_tracepoint_raw() && !capable(CAP_IPC_LOCK)) {
+-			ret = -EPERM;
+-			goto unlock;
+-		}
+-
+-		ret = security_perf_event_open(&event->attr,
+-					       PERF_SECURITY_TRACEPOINT);
++	if (locked > lock_limit && !capable(CAP_IPC_LOCK)) {
++		ret = perf_allow_tracepoint(&event->attr);
+ 		if (ret)
+ 			goto unlock;
+ 	}
+@@ -10702,11 +10693,7 @@ static int perf_copy_attr(struct perf_ev
+ 		}
+ 		/* privileged levels capture (kernel, hv): check permissions */
+ 		if (mask & PERF_SAMPLE_BRANCH_PERM_PLM) {
+-			if (perf_paranoid_kernel() && !capable(CAP_SYS_ADMIN))
+-				return -EACCES;
+-
+-			ret = security_perf_event_open(attr,
+-						       PERF_SECURITY_KERNEL);
++			ret = perf_allow_kernel(attr);
+ 			if (ret)
+ 				return ret;
+ 		}
+@@ -10932,10 +10919,7 @@ SYSCALL_DEFINE5(perf_event_open,
+ 		return err;
+ 
+ 	if (!attr.exclude_kernel) {
+-		if (perf_paranoid_kernel() && !capable(CAP_SYS_ADMIN))
+-			return -EACCES;
+-
+-		err = security_perf_event_open(&attr, PERF_SECURITY_KERNEL);
++		err = perf_allow_kernel(&attr);
+ 		if (err)
+ 			return err;
+ 	}
+@@ -10954,9 +10938,11 @@ SYSCALL_DEFINE5(perf_event_open,
+ 	}
+ 
+ 	/* Only privileged users can get physical addresses */
+-	if ((attr.sample_type & PERF_SAMPLE_PHYS_ADDR) &&
+-	    perf_paranoid_kernel() && !capable(CAP_SYS_ADMIN))
+-		return -EACCES;
++	if ((attr.sample_type & PERF_SAMPLE_PHYS_ADDR)) {
++		err = perf_allow_kernel(&attr);
++		if (err)
++			return err;
++	}
+ 
+ 	err = security_locked_down(LOCKDOWN_PERF);
+ 	if (err && (attr.sample_type & PERF_SAMPLE_REGS_INTR))
+--- a/kernel/trace/trace_event_perf.c
++++ b/kernel/trace/trace_event_perf.c
+@@ -49,11 +49,7 @@ static int perf_trace_event_perm(struct
+ 
+ 	/* The ftrace function trace is allowed only for root. */
+ 	if (ftrace_event_is_function(tp_event)) {
+-		if (perf_paranoid_tracepoint_raw() && !capable(CAP_SYS_ADMIN))
+-			return -EPERM;
+-
+-		ret = security_perf_event_open(&p_event->attr,
+-					       PERF_SECURITY_TRACEPOINT);
++		ret = perf_allow_tracepoint(&p->event->attr);
+ 		if (ret)
+ 			return ret;
+ 
+@@ -90,11 +86,7 @@ static int perf_trace_event_perm(struct
+ 	 * ...otherwise raw tracepoint data can be a severe data leak,
+ 	 * only allow root to have these.
+ 	 */
+-	if (perf_paranoid_tracepoint_raw() && !capable(CAP_SYS_ADMIN))
+-		return -EPERM;
+-
+-	ret = security_perf_event_open(&p_event->attr,
+-				       PERF_SECURITY_TRACEPOINT);
++	ret = perf_allow_tracepoint(&p_event->attr);
+ 	if (ret)
+ 		return ret;
+ 
