@@ -2,81 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 502A8D1C84
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2019 01:11:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A8B9D1D66
+	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2019 02:26:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732132AbfJIXLW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Oct 2019 19:11:22 -0400
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:40607 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731542AbfJIXLW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Oct 2019 19:11:22 -0400
-Received: by mail-qk1-f194.google.com with SMTP id y144so3840248qkb.7;
-        Wed, 09 Oct 2019 16:11:20 -0700 (PDT)
+        id S1731834AbfJJA0s (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Oct 2019 20:26:48 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:36609 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731542AbfJJA0s (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Oct 2019 20:26:48 -0400
+Received: by mail-qk1-f196.google.com with SMTP id y189so3999685qkc.3;
+        Wed, 09 Oct 2019 17:26:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=OfYatyWZ6OuNj0Lfpjj++knmMhqGPfA3zINCAn34Cl0=;
-        b=NqFSwAsij2oUUEpx2RukeuBRPoLXqsjyliC2emrCsXZ7ejOCYEoN5W8UrsSOeInYI5
-         kDLc793rYkFH4vdzmIeOlqaPA3Mhvi1/VZNLeC7tZnTeaIpA8HFAtV5fXq1Jb9CEZ3+5
-         o1DT8hB+66GvOKISF4xNOoNKBcer2I31Am0AyjcIyTKwybex5cYIO7fm1RWL7yq37Wbl
-         is8lU6C9FfUErrAL+drIRzNBdyhkE8L8knBUL2t/uHGC2d1ofahrenWRDXLFBkXGZRVO
-         NQl7gEXqsBxNCjOImh0e8N7fmtZCQC+qnupWilp1oghCsvjMpN+z+uY2xfgr/X5hwqLA
-         aOiQ==
+        bh=hJVRzApWUSHgdNBRH3SUZ0/qd5E2CCfr2UoORKNjRa8=;
+        b=N5DYis7uPKipl0cDXvFbCowOIVqJOHtHkPbbgeuPBKtiej1Ij51lQaKh+Gy7hRp2ra
+         EIu8aTLliFZcetEYjur8WYm1n75nqJ+Hy0/aSL4snbMcyzqEHLslTZ1taRJpxDOwmkdh
+         mka1E6M9BOtuGsHqgOWKYdcDpMXT80IiOMMgWxIYOug1zlnw9yW5u0k8Vrfz4TJ3sNab
+         oKPjjN2sdBqYWw343JKpsqRR6YyU/3ZfYMwUcA4RPkQHbj0SBF1iMh0lheHJDnslaoS3
+         bqWRJozkJtU4I5P/Iw1sf4VOSXmJDL5v9G7oF2TFPU14AxdJN85h3fC8fJ3uRil6Md4m
+         ZbLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=OfYatyWZ6OuNj0Lfpjj++knmMhqGPfA3zINCAn34Cl0=;
-        b=SagXqsXUUbp/KCT6RuONqAJhmKG4wQ0t/6+YoyAvRcmpY2xwtQMlFoH5YVhcXkVPJ9
-         /K3YYY8RaM0uiGyJ8visUHoDsq7npONY/Y/cHQz3+Rd304XoXDYZoNb610ylz4Pw/KSh
-         WOxyp0wwn3vni7wbIo4dPF+PUjrFSGBTyt4QIrM72HTH40UBaooqva1lnExA5wxJ9008
-         8MRnfmqNP+WmATsB1hJwDuIwy6cXtb302L/i6LfLzJYBn//jTGNvSV4c1/04IjboDlqs
-         0mwGH/3ELhRBbR14S+KjXR+mxDrP/cAU3gCIrEIHCnD3MV5UmQZE8QWUNRZc0PxwJo+Y
-         BSjg==
-X-Gm-Message-State: APjAAAXKKkhC9ci/MXU5xCe+nS/iSOju4WUbZ2wJKNyW83ShM+pMfVDE
-        udl8LrVFPu5Dt9fmnrZpTjrwe7rRBPdpcI9wBh8=
-X-Google-Smtp-Source: APXvYqynnGYzP6VQ2pMuY4FZtPHGj0WHH5DSTkb9XDnDDuAVbJRhago5easgh6CXNENwZ+zGj5coFYVQe/dDhdkIrm4=
-X-Received: by 2002:a37:4c13:: with SMTP id z19mr6556709qka.449.1570662679717;
- Wed, 09 Oct 2019 16:11:19 -0700 (PDT)
+        bh=hJVRzApWUSHgdNBRH3SUZ0/qd5E2CCfr2UoORKNjRa8=;
+        b=XiHDSMs/+PN+fnWYOnhnHO4skVy86hFrdKUUc5PJ7LudhcmuJFRq9tJUPUEHyfWN1D
+         D+yalBfFTa7HMPzDuo/vMfnZh7xe7dW7botD4ovvx9HLJukrgRnjXKNRt/9Sd40BUhl1
+         P+bHPILgWscu8LOzGNTF3TmZ3VJpaWhfar7lzq70mw1kSe3DFh33BFDWhWxm9VcXDbvh
+         fB70PX6CPD9Jyal3jU++0KMnN4/dtz1OSb2aqzlspZhaMenYoWeIbcrtbyN8WZRDOjs3
+         8l7snMwuPkC/RLj8/UnzDdJM7BLrWvKNOxrbexAhAvsU0dwno975ypUXM7WofjrWNpQr
+         KKyw==
+X-Gm-Message-State: APjAAAV6rkDNwRRkYxxs2QnB/BagKLrSOt+yVspQ3jPG6BgRi1cfnw2X
+        90jUl0Tw3TFezuzv0sk/mPPx3KCwf7jDp5eAFU0=
+X-Google-Smtp-Source: APXvYqxUSe0DseUwlExqerpeDVzqzpbZSaxkzseSPt9wfk83oiom+qzJWnHqrY7tZz8n93L9Dc5K57DvbXGqR3ZFumg=
+X-Received: by 2002:a37:4c13:: with SMTP id z19mr6820886qka.449.1570667207415;
+ Wed, 09 Oct 2019 17:26:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <20191008231009.2991130-1-andriin@fb.com> <CAADnVQLYmzJhhkJknYHBaf0LEWq75VfT6cCg-QEj8UfcE8uBGg@mail.gmail.com>
-In-Reply-To: <CAADnVQLYmzJhhkJknYHBaf0LEWq75VfT6cCg-QEj8UfcE8uBGg@mail.gmail.com>
+References: <20191009204134.26960-1-ivan.khoronzhuk@linaro.org> <20191009204134.26960-12-ivan.khoronzhuk@linaro.org>
+In-Reply-To: <20191009204134.26960-12-ivan.khoronzhuk@linaro.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 9 Oct 2019 16:11:08 -0700
-Message-ID: <CAEf4BzZ79SHkrRzw4sQjHEecY0tBQAvi=PcpPuK=SWU8CChmFg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/3] Fix BTF-to-C converter's padding generation
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+Date:   Wed, 9 Oct 2019 17:26:36 -0700
+Message-ID: <CAEf4BzZ=-DYoP0yPttx9WWwqZe10q+=nxAer7V_S0WRY47tp9Q@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 11/15] libbpf: don't use cxx to test_libpf target
+To:     Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Kernel Team <kernel-team@fb.com>
+        Yonghong Song <yhs@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        john fastabend <john.fastabend@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        clang-built-linux@googlegroups.com, ilias.apalodimas@linaro.org,
+        sergei.shtylyov@cogentembedded.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 9, 2019 at 3:49 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Wed, Oct 9, 2019 at 1:43 PM Ivan Khoronzhuk
+<ivan.khoronzhuk@linaro.org> wrote:
 >
-> On Tue, Oct 8, 2019 at 4:12 PM Andrii Nakryiko <andriin@fb.com> wrote:
-> >
-> > Fix BTF-to-C logic of handling padding at the end of a struct. Fix existing
-> > test that should have captured this. Also move test_btf_dump into a test_progs
-> > test to leverage common infrastructure.
+> No need to use C++ for test_libbpf target when libbpf is on C and it
+> can be tested with C, after this change the CXXFLAGS in makefiles can
+> be avoided, at least in bpf samples, when sysroot is used, passing
+> same C/LDFLAGS as for lib.
 >
-> Applied.
-> But I see some build weirdness.
-> Probably due to some previous patches.
-> Parallel build in selftests/bpf/ is not always succeeding.
-> For this particular set. New progs/*.c files failed to build the first time.
+> Add "return 0" in test_libbpf to void warn, but also remove spaces at
+> start of the lines to keep same style and avoid warns while apply.
+>
+> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
+> ---
 
-I think it's another problem with test_attach_probe.c - it depends on
-libbpf's auto-generated bpf_helper_defs.h, which is not enforced to
-happen before progs/*.c are built. I think it's time to do some
-selftests/bpf/Makefile overhaul, honestly. But I'll try to come up
-with a quick fix for this particular issue as well.
+Thanks for the clean up!
+
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+
+[...]
