@@ -2,252 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E6A09D1F63
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2019 06:15:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1251D1FA4
+	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2019 06:25:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732850AbfJJEPg convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 10 Oct 2019 00:15:36 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:58366 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732828AbfJJEPa (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 10 Oct 2019 00:15:30 -0400
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x9A4E7QQ014734
-        for <bpf@vger.kernel.org>; Wed, 9 Oct 2019 21:15:29 -0700
+        id S1726513AbfJJEZl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Oct 2019 00:25:41 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:8828 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725774AbfJJEZk (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 10 Oct 2019 00:25:40 -0400
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x9A4Olvs031946
+        for <bpf@vger.kernel.org>; Wed, 9 Oct 2019 21:25:38 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=rFt+ElRDA7ZBEXGDS3tpQyrVLoVQSgrBjpwlYXwsh5Y=;
+ b=hjymnCw/ipB0two007/sl+cIe72pyQ+BJybwG1bFLWMg0oVtoOQdubZqwPvj0m7FtsUn
+ lx7qv/ruN1gKrWdh5EGCEAKhaWZ8Ptt8wza1jl+VPmt3i65hQGpwymjNalPER0f00IMt
+ WDh2/U4fhykP4bgGmM0Sf2ILfC797HpXsEc= 
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2vhfsduu0c-2
+        by mx0a-00082601.pphosted.com with ESMTP id 2vht50gkvt-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 09 Oct 2019 21:15:29 -0700
-Received: from 2401:db00:2050:5102:face:0:3b:0 (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Wed, 09 Oct 2019 21:25:38 -0700
+Received: from 2401:db00:30:6007:face:0:1:0 (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 9 Oct 2019 21:15:28 -0700
-Received: by devbig007.ftw2.facebook.com (Postfix, from userid 572438)
-        id B441F760CF9; Wed,  9 Oct 2019 21:15:27 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Alexei Starovoitov <ast@kernel.org>
-Smtp-Origin-Hostname: devbig007.ftw2.facebook.com
-To:     <davem@davemloft.net>
-CC:     <daniel@iogearbox.net>, <x86@kernel.org>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <kernel-team@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH v2 bpf-next 12/12] selftests/bpf: add kfree_skb raw_tp test
-Date:   Wed, 9 Oct 2019 21:15:03 -0700
-Message-ID: <20191010041503.2526303-13-ast@kernel.org>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20191010041503.2526303-1-ast@kernel.org>
-References: <20191010041503.2526303-1-ast@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
+ 15.1.1713.5; Wed, 9 Oct 2019 21:25:37 -0700
+Received: by dev101.prn2.facebook.com (Postfix, from userid 137359)
+        id 0D2048618C9; Wed,  9 Oct 2019 21:25:36 -0700 (PDT)
+Smtp-Origin-Hostprefix: dev
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: dev101.prn2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: prn2c23
+Subject: [PATCH bpf-next] scripts/bpf: fix xdp_md forward declaration typo
+Date:   Wed, 9 Oct 2019 21:25:34 -0700
+Message-ID: <20191010042534.290562-1-andriin@fb.com>
+X-Mailer: git-send-email 2.17.1
 X-FB-Internal: Safe
+MIME-Version: 1.0
 Content-Type: text/plain
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
  definitions=2019-10-10_02:2019-10-08,2019-10-10 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0 phishscore=0
- priorityscore=1501 adultscore=0 lowpriorityscore=0 suspectscore=4
- clxscore=1034 mlxlogscore=999 spamscore=0 mlxscore=0 malwarescore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1908290000 definitions=main-1910100037
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0 mlxscore=0
+ malwarescore=0 spamscore=0 clxscore=1015 adultscore=0 lowpriorityscore=0
+ mlxlogscore=762 phishscore=0 impostorscore=0 suspectscore=9
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1908290000 definitions=main-1910100039
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Load basic cls_bpf program.
-Load raw_tracepoint program and attach to kfree_skb raw tracepoint.
-Trigger cls_bpf via prog_test_run.
-At the end of test_run kernel will call kfree_skb
-which will trigger trace_kfree_skb tracepoint.
-Which will call our raw_tracepoint program.
-Which will take that skb and will dump it into perf ring buffer.
-Check that user space received correct packet.
+Fix typo in struct xpd_md, generated from bpf_helpers_doc.py, which is
+causing compilation warnings for programs using bpf_helpers.h
 
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+Fixes: 7a387bed47f7 ("scripts/bpf: teach bpf_helpers_doc.py to dump BPF helper definitions")
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 ---
- .../selftests/bpf/prog_tests/kfree_skb.c      | 90 +++++++++++++++++++
- tools/testing/selftests/bpf/progs/kfree_skb.c | 74 +++++++++++++++
- 2 files changed, 164 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/kfree_skb.c
- create mode 100644 tools/testing/selftests/bpf/progs/kfree_skb.c
+ scripts/bpf_helpers_doc.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/kfree_skb.c b/tools/testing/selftests/bpf/prog_tests/kfree_skb.c
-new file mode 100644
-index 000000000000..0cf91b6bf276
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/kfree_skb.c
-@@ -0,0 +1,90 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <test_progs.h>
-+
-+static void on_sample(void *ctx, int cpu, void *data, __u32 size)
-+{
-+	int ifindex = *(int *)data, duration = 0;
-+	struct ipv6_packet *pkt_v6 = data + 4;
-+
-+	if (ifindex != 1)
-+		/* spurious kfree_skb not on loopback device */
-+		return;
-+	if (CHECK(size != 76, "check_size", "size %u != 76\n", size))
-+		return;
-+	if (CHECK(pkt_v6->eth.h_proto != 0xdd86, "check_eth",
-+		  "h_proto %x\n", pkt_v6->eth.h_proto))
-+		return;
-+	if (CHECK(pkt_v6->iph.nexthdr != 6, "check_ip",
-+		  "iph.nexthdr %x\n", pkt_v6->iph.nexthdr))
-+		return;
-+	if (CHECK(pkt_v6->tcp.doff != 5, "check_tcp",
-+		  "tcp.doff %x\n", pkt_v6->tcp.doff))
-+		return;
-+
-+	*(bool *)ctx = true;
-+}
-+
-+void test_kfree_skb(void)
-+{
-+	struct bpf_prog_load_attr attr = {
-+		.file = "./kfree_skb.o",
-+		.log_level = 2,
-+	};
-+
-+	struct bpf_object *obj, *obj2 = NULL;
-+	struct perf_buffer_opts pb_opts = {};
-+	struct perf_buffer *pb = NULL;
-+	struct bpf_link *link = NULL;
-+	struct bpf_map *perf_buf_map;
-+	struct bpf_program *prog;
-+	__u32 duration, retval;
-+	int err, pkt_fd, kfree_skb_fd;
-+	bool passed = false;
-+
-+	err = bpf_prog_load("./test_pkt_access.o", BPF_PROG_TYPE_SCHED_CLS, &obj, &pkt_fd);
-+	if (CHECK(err, "prog_load sched cls", "err %d errno %d\n", err, errno))
-+		return;
-+
-+	err = bpf_prog_load_xattr(&attr, &obj2, &kfree_skb_fd);
-+	if (CHECK(err, "prog_load raw tp", "err %d errno %d\n", err, errno))
-+		goto close_prog;
-+
-+	prog = bpf_object__find_program_by_title(obj2, "raw_tracepoint/kfree_skb");
-+	if (CHECK(!prog, "find_prog", "prog kfree_skb not found\n"))
-+		goto close_prog;
-+	link = bpf_program__attach_raw_tracepoint(prog, NULL);
-+	if (CHECK(IS_ERR(link), "attach_raw_tp", "err %ld\n", PTR_ERR(link)))
-+		goto close_prog;
-+
-+	perf_buf_map = bpf_object__find_map_by_name(obj2, "perf_buf_map");
-+	if (CHECK(!perf_buf_map, "find_perf_buf_map", "not found\n"))
-+		goto close_prog;
-+
-+	/* set up perf buffer */
-+	pb_opts.sample_cb = on_sample;
-+	pb_opts.ctx = &passed;
-+	pb = perf_buffer__new(bpf_map__fd(perf_buf_map), 1, &pb_opts);
-+	if (CHECK(IS_ERR(pb), "perf_buf__new", "err %ld\n", PTR_ERR(pb)))
-+		goto close_prog;
-+
-+	err = bpf_prog_test_run(pkt_fd, 1, &pkt_v6, sizeof(pkt_v6),
-+				NULL, NULL, &retval, &duration);
-+	CHECK(err || retval, "ipv6",
-+	      "err %d errno %d retval %d duration %d\n",
-+	      err, errno, retval, duration);
-+
-+	/* read perf buffer */
-+	err = perf_buffer__poll(pb, 100);
-+	if (CHECK(err < 0, "perf_buffer__poll", "err %d\n", err))
-+		goto close_prog;
-+	/* make sure kfree_skb program was triggered
-+	 * and it sent expected skb into ring buffer
-+	 */
-+	CHECK_FAIL(!passed);
-+close_prog:
-+	perf_buffer__free(pb);
-+	if (!IS_ERR_OR_NULL(link))
-+		bpf_link__destroy(link);
-+	bpf_object__close(obj);
-+	bpf_object__close(obj2);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/kfree_skb.c b/tools/testing/selftests/bpf/progs/kfree_skb.c
-new file mode 100644
-index 000000000000..fc25797cc64d
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/kfree_skb.c
-@@ -0,0 +1,74 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2019 Facebook
-+#include <linux/bpf.h>
-+#include "bpf_helpers.h"
-+
-+char _license[] SEC("license") = "GPL";
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
-+	__uint(key_size, sizeof(int));
-+	__uint(value_size, sizeof(int));
-+} perf_buf_map SEC(".maps");
-+
-+#define _(P) (__builtin_preserve_access_index(P))
-+
-+/* define few struct-s that bpf program needs to access */
-+struct callback_head {
-+	struct callback_head *next;
-+	void (*func)(struct callback_head *head);
-+};
-+struct dev_ifalias {
-+	struct callback_head rcuhead;
-+};
-+
-+struct net_device /* same as kernel's struct net_device */ {
-+	int ifindex;
-+	struct dev_ifalias *ifalias;
-+};
-+
-+struct sk_buff {
-+	/* field names and sizes should match to those in the kernel */
-+	unsigned int len, data_len;
-+	__u16 mac_len, hdr_len, queue_mapping;
-+	struct net_device *dev;
-+	/* order of the fields doesn't matter */
-+};
-+
-+/* copy arguments from
-+ * include/trace/events/skb.h:
-+ * TRACE_EVENT(kfree_skb,
-+ *         TP_PROTO(struct sk_buff *skb, void *location),
-+ *
-+ * into struct below:
-+ */
-+struct trace_kfree_skb {
-+	struct sk_buff *skb;
-+	void *location;
-+};
-+
-+SEC("raw_tracepoint/kfree_skb")
-+int trace_kfree_skb(struct trace_kfree_skb *ctx)
-+{
-+	struct sk_buff *skb = ctx->skb;
-+	struct net_device *dev;
-+	int ifindex;
-+	struct callback_head *ptr;
-+	void *func;
-+
-+	__builtin_preserve_access_index(({
-+		dev = skb->dev;
-+		ifindex = dev->ifindex;
-+		ptr = dev->ifalias->rcuhead.next;
-+		func = ptr->func;
-+	}));
-+
-+	bpf_printk("rcuhead.next %llx func %llx\n", ptr, func);
-+	bpf_printk("skb->len %d\n", _(skb->len));
-+	bpf_printk("skb->queue_mapping %d\n", _(skb->queue_mapping));
-+	bpf_printk("dev->ifindex %d\n", ifindex);
-+
-+	/* send first 72 byte of the packet to user space */
-+	bpf_skb_output(skb, &perf_buf_map, (72ull << 32) | BPF_F_CURRENT_CPU,
-+		       &ifindex, sizeof(ifindex));
-+	return 0;
-+}
+diff --git a/scripts/bpf_helpers_doc.py b/scripts/bpf_helpers_doc.py
+index 15d3d83d6297..7df9ce598ff9 100755
+--- a/scripts/bpf_helpers_doc.py
++++ b/scripts/bpf_helpers_doc.py
+@@ -418,7 +418,7 @@ class PrinterHelpers(Printer):
+ 
+             'struct __sk_buff',
+             'struct sk_msg_md',
+-            'struct xpd_md',
++            'struct xdp_md',
+     ]
+     known_types = {
+             '...',
 -- 
-2.23.0
+2.17.1
 
