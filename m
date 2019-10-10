@@ -2,304 +2,250 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B26ED2EA0
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2019 18:32:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C157D2EDD
+	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2019 18:49:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726038AbfJJQcC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Oct 2019 12:32:02 -0400
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:43064 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726007AbfJJQcB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Oct 2019 12:32:01 -0400
-Received: by mail-pg1-f194.google.com with SMTP id i32so3996897pgl.10
-        for <bpf@vger.kernel.org>; Thu, 10 Oct 2019 09:31:59 -0700 (PDT)
+        id S1726045AbfJJQto (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Oct 2019 12:49:44 -0400
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:39570 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726038AbfJJQto (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Oct 2019 12:49:44 -0400
+Received: by mail-lf1-f65.google.com with SMTP id 72so4921348lfh.6
+        for <bpf@vger.kernel.org>; Thu, 10 Oct 2019 09:49:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=vwqZhBgvxWnvBPCTXAtDaBXbkNVWhfnWO9okYwpdMeg=;
-        b=1mTxj+zH62NIZXAs20ixA3svFSkkUFRVerOYLCVC+0/WRzQ0+D7Oij6qkl2+qK/hIK
-         n+E1s54OibhMvSrQwh9VhyOUKXKVjG0yBRQyp03TlgWnieMiZXNml8Spwtf95l5SQLl+
-         8TOoa1/UVMszwSNl6v5SsVlMVNvvfS1HWDbiwqlx+zW0B3mD/f8jS3IcZ07F2VXfgqpf
-         DVTv8wHytBliyXPKuhWq4TY5xmY96ZMsES8xmNQCsAzqJfSQHuwCOroX77Q0drSNBxaI
-         3acsLuvx2bxrPCm54VrnyQrjTOzakTMMyqjnd9Aa9kWns2SPRF+HovetiJDWswCTnCJ6
-         SedQ==
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=s0fYI4mrc7j9HOvfGUo/mEhI2QMF8qgXCSTkC3vv1W4=;
+        b=cj++K3DwJS8fcrZcTt0BOlhgyngwDB4xaFbpeFA9xn4Z0hh8EMuyDZnVUDkSMt6ghC
+         DVmUO56eFtG02ZJVt5mXVqF3KR5xqzPKY4yn5526RPczQ6rZnAVv74MFDPVns9lcXzfM
+         VxDLxG5218CFZiCpi/GJ/VpAS7XG8ukbTcY5M=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=vwqZhBgvxWnvBPCTXAtDaBXbkNVWhfnWO9okYwpdMeg=;
-        b=HTmeDMyHKLvsSo25ZwqjBZbN5bHUH28ps7NDLDWj1OPs4kDeo8rNr70FbrGnriGhw+
-         +aeDAz8+t8UVWDTlzJ0NWTXF0yX11gs9CXjLqIEVghqKx5uu21qXFFeD547I89czeVib
-         5c3XxAB//Z90Qwn5Nhs1aqx/L6z2klnyN98v4j0/rIC+M5CQXG9djaBxE44PyzTXj5S/
-         kgk+HyzMp2s7Pi8160wXmX5tVZ4paIOkHJ6cvYffS8+v/txw44Jj32RuUcQFPiR8qQub
-         9X2suvOQ7I0b8A/aTB5PPb6pxdKFPE0mJyfgqr2pXzs0CHxPM2a9ch+7fsmChUFinSb6
-         Vuyw==
-X-Gm-Message-State: APjAAAUXvD/wf1UvIsbx+EGlavrQ+cRjWPQ76P/Rgtq6LR/7luPHgYXc
-        mxIYe1YV4LGP5fq9ed5ZlL4eCftLOIE=
-X-Google-Smtp-Source: APXvYqxmvFdJCIKzj6ESpmOtLyYq+Ejt+vA1DpXuNQQvCAn4XsmAueq66yW76bi9VpIAedd7/XISFA==
-X-Received: by 2002:a63:d0a:: with SMTP id c10mr9930876pgl.203.1570725119219;
-        Thu, 10 Oct 2019 09:31:59 -0700 (PDT)
-Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
-        by smtp.gmail.com with ESMTPSA id f14sm9856461pfq.187.2019.10.10.09.31.58
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=s0fYI4mrc7j9HOvfGUo/mEhI2QMF8qgXCSTkC3vv1W4=;
+        b=YzSbaGUifE7CN2dasuVrH361j+5AjMcrE7AVZGI+HmCXdMsXRaP9ETcwVr9DrqqRat
+         c3WyCaT91mamJ2EdTpjnZ4i+u9sbICTkyZf9W029veg+CQ5/KrN3hVEP/TPH52vbYG5q
+         PIKj1LwJqG2So3ZCUk+tR2TUrq82gB1H/PBCbcWh7ApeAXpL0kuJyjWeo/8YvHqTYIuV
+         XEliI34rqBSi5dacy3o/SBT4xTJZ3LGT62yRyzl16WDetrwLb6Lq+N0z8VbH5aO1KBRS
+         FxIiJTX3ohH49+CI5OmEHnfrtX1C8/+w17QnRgYhvPSkySCTUQXuJAB9RlNaE/H8ASH8
+         O23A==
+X-Gm-Message-State: APjAAAWspOCbOzqeIJcSI3EnliPrj0tgnx8tSrsQWCswqgXls4+lJQ75
+        f6hAt31hCz2bNCd5pbc2dKAm6Q==
+X-Google-Smtp-Source: APXvYqx4PIqk55FHaTswOL2puRmYL/n1MyDS9lqS8ihrHBXKit+TNqDk/nJ5JkiurmcC0w8AEvBwvw==
+X-Received: by 2002:ac2:4466:: with SMTP id y6mr6568076lfl.8.1570726180697;
+        Thu, 10 Oct 2019 09:49:40 -0700 (PDT)
+Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
+        by smtp.gmail.com with ESMTPSA id c69sm1433030ljf.32.2019.10.10.09.49.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Oct 2019 09:31:58 -0700 (PDT)
-Date:   Thu, 10 Oct 2019 09:31:57 -0700
-From:   Stanislav Fomichev <sdf@fomichev.me>
-To:     Jakub Sitnicki <jakub@cloudflare.com>
+        Thu, 10 Oct 2019 09:49:40 -0700 (PDT)
+References: <20191009094312.15284-1-jakub@cloudflare.com> <20191009094312.15284-2-jakub@cloudflare.com> <20191009163341.GE2096@mini-arch> <87lfts25mq.fsf@cloudflare.com> <20191010163157.GF2096@mini-arch>
+User-agent: mu4e 1.1.0; emacs 26.1
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Stanislav Fomichev <sdf@fomichev.me>
 Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
         kernel-team@cloudflare.com, Stanislav Fomichev <sdf@google.com>
-Subject: Re: [PATH bpf-next 2/2] selftests/bpf: Check that flow dissector can
- be re-attached
-Message-ID: <20191010163157.GF2096@mini-arch>
-References: <20191009094312.15284-1-jakub@cloudflare.com>
- <20191009094312.15284-2-jakub@cloudflare.com>
- <20191009163341.GE2096@mini-arch>
- <87lfts25mq.fsf@cloudflare.com>
+Subject: Re: [PATH bpf-next 2/2] selftests/bpf: Check that flow dissector can be re-attached
+In-reply-to: <20191010163157.GF2096@mini-arch>
+Date:   Thu, 10 Oct 2019 18:49:38 +0200
+Message-ID: <87k19c1r6l.fsf@cloudflare.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87lfts25mq.fsf@cloudflare.com>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/10, Jakub Sitnicki wrote:
-> On Wed, Oct 09, 2019 at 06:33 PM CEST, Stanislav Fomichev wrote:
-> > On 10/09, Jakub Sitnicki wrote:
-> >> Make sure a new flow dissector program can be attached to replace the old
-> >> one with a single syscall. Also check that attaching the same program twice
-> >> is prohibited.
-> > Overall the series looks good, left a bunch of nits/questions below.
-> 
-> Thanks for the comments.
-> 
-> >
-> >> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
-> >> ---
-> >>  .../bpf/prog_tests/flow_dissector_reattach.c  | 93 +++++++++++++++++++
-> >>  1 file changed, 93 insertions(+)
-> >>  create mode 100644 tools/testing/selftests/bpf/prog_tests/flow_dissector_reattach.c
-> >>
-> >> diff --git a/tools/testing/selftests/bpf/prog_tests/flow_dissector_reattach.c b/tools/testing/selftests/bpf/prog_tests/flow_dissector_reattach.c
-> >> new file mode 100644
-> >> index 000000000000..0f0006c93956
-> >> --- /dev/null
-> >> +++ b/tools/testing/selftests/bpf/prog_tests/flow_dissector_reattach.c
-> >> @@ -0,0 +1,93 @@
-> >> +// SPDX-License-Identifier: GPL-2.0
-> >> +/*
-> >> + * Test that the flow_dissector program can be updated with a single
-> >> + * syscall by attaching a new program that replaces the existing one.
-> >> + *
-> >> + * Corner case - the same program cannot be attached twice.
-> >> + */
-> >> +#include <errno.h>
-> >> +#include <fcntl.h>
-> >> +#include <stdbool.h>
-> >> +#include <unistd.h>
-> >> +
-> >> +#include <linux/bpf.h>
-> >> +#include <bpf/bpf.h>
-> >> +
-> >> +#include "test_progs.h"
-> >> +
-> > [..]
-> >> +/* Not used here. For CHECK macro sake only. */
-> >> +static int duration;
-> > nit: you can use CHECK_FAIL macro instead which doesn't require this.
-> >
-> > if (CHECK_FAIL(expr)) {
-> > 	printf("something bad has happened\n");
-> > 	return/goto;
-> > }
-> >
-> > It may be more verbose than doing CHECK() with its embedded error
-> > message, so I leave it up to you to decide on whether you want to switch
-> > to CHECK_FAIL or stick to CHECK.
-> >
-> 
-> I wouldn't mind switching to CHECK_FAIL. It reads better than CHECK with
-> error message stuck in the if expression. (There is a side-issue with
-> printf(). Will explain at the end [*].)
-> 
-> Another thing to consider is that with CHECK the message indicating a
-> failure ("<test>:FAIL:<lineno>") and the actual explanation message are
-> on the same line. This makes the error log easier to reason.
-> 
-> I'm torn here, and considering another alternative to address at least
-> the readability issue:
-> 
-> if (fail_expr) {
->         CHECK(1, "action", "explanation");
->         return;
+On Thu, Oct 10, 2019 at 06:31 PM CEST, Stanislav Fomichev wrote:
+> On 10/10, Jakub Sitnicki wrote:
+>> On Wed, Oct 09, 2019 at 06:33 PM CEST, Stanislav Fomichev wrote:
+>> > On 10/09, Jakub Sitnicki wrote:
+
+[...]
+
+>> >> +/* Not used here. For CHECK macro sake only. */
+>> >> +static int duration;
+>> > nit: you can use CHECK_FAIL macro instead which doesn't require this.
+>> >
+>> > if (CHECK_FAIL(expr)) {
+>> > 	printf("something bad has happened\n");
+>> > 	return/goto;
+>> > }
+>> >
+>> > It may be more verbose than doing CHECK() with its embedded error
+>> > message, so I leave it up to you to decide on whether you want to switch
+>> > to CHECK_FAIL or stick to CHECK.
+>> >
+>>
+>> I wouldn't mind switching to CHECK_FAIL. It reads better than CHECK with
+>> error message stuck in the if expression. (There is a side-issue with
+>> printf(). Will explain at the end [*].)
+>>
+>> Another thing to consider is that with CHECK the message indicating a
+>> failure ("<test>:FAIL:<lineno>") and the actual explanation message are
+>> on the same line. This makes the error log easier to reason.
+>>
+>> I'm torn here, and considering another alternative to address at least
+>> the readability issue:
+>>
+>> if (fail_expr) {
+>>         CHECK(1, "action", "explanation");
+>>         return;
+>> }
+> Can we use perror for the error reporting?
+>
+> if (CHECK(fail_expr)) {
+> 	perror("failed to do something"); // will print errno as well
 > }
-Can we use perror for the error reporting?
+>
+> This should give all the info needed to grep for this message and debug
+> the problem.
+>
+> Alternatively, we can copy/move log_err() from the cgroup_helpers.h,
+> and use it in test_progs; it prints file:line:errno <msg>.
 
-if (CHECK(fail_expr)) {
-	perror("failed to do something"); // will print errno as well
-}
+CHECK_FAIL + perror() works for me. I've been experimenting with
+extracting a new macro-helper (patch below) but perhaps it's an
+overkill.
 
-This should give all the info needed to grep for this message and debug
-the problem.
+[...]
 
-Alternatively, we can copy/move log_err() from the cgroup_helpers.h,
-and use it in test_progs; it prints file:line:errno <msg>.
+>> [*] The printf() issue.
+>>
+>> I've noticed that stdio hijacking that test_progs runner applies doesn't
+>> quite work. printf() seems to skip the FILE stream buffer and write
+>> whole lines directly to stdout. This results in reordered messages on
+>> output.
+>>
+>> Here's a distilled reproducer for what test_progs does:
+>>
+>> int main(void)
+>> {
+>> 	FILE *stream;
+>> 	char *buf;
+>> 	size_t cnt;
+>>
+>> 	stream = stdout;
+>> 	stdout = open_memstream(&buf, &cnt);
+>> 	if (!stdout)
+>> 		error(1, errno, "open_memstream");
+>>
+>> 	printf("foo");
+>> 	printf("bar\n");
+>> 	printf("baz");
+>> 	printf("qux\n");
+>>
+>> 	fflush(stdout);
+>> 	fclose(stdout);
+>>
+>> 	buf[cnt] = '\0';
+>> 	fprintf(stream, "<<%s>>", buf);
+>> 	if (buf[cnt-1] != '\n')
+>> 		fprintf(stream, "\n");
+>>
+>> 	free(buf);
+>> 	return 0;
+>> }
+>>
+>> On output we get:
+>>
+>> $ ./hijack_stdout
+>> bar
+>> qux
+>> <<foobaz>>
+>> $
+> What glibc do you have? I don't see any issues with your reproducer
+> on my setup:
+>
+> $ ./a.out
+> <<foobar
+> bazqux
+>>>$
+>
+> $ ldd --version
+> ldd (Debian GLIBC 2.28-10) 2.28
+>
 
-> It doesn't address the extra variable problem. Maybe we need another
-> CHECK variant.
-> 
-> >> +static bool is_attached(void)
-> >> +{
-> >> +	bool attached = true;
-> >> +	int err, net_fd = -1;
-> > nit: maybe don't need to initialize net_fd to -1 here as well.
-> 
-> Will fix.
-> 
-> >
-> >> +	__u32 cnt;
-> >> +
-> >> +	net_fd = open("/proc/self/ns/net", O_RDONLY);
-> >> +	if (net_fd < 0)
-> >> +		goto out;
-> >> +
-> >> +	err = bpf_prog_query(net_fd, BPF_FLOW_DISSECTOR, 0, NULL, NULL, &cnt);
-> >> +	if (CHECK(err, "bpf_prog_query", "ret %d errno %d\n", err, errno))
-> >> +		goto out;
-> >> +
-> >> +	attached = (cnt > 0);
-> >> +out:
-> >> +	close(net_fd);
-> >> +	return attached;
-> >> +}
-> >> +
-> >> +static int load_prog(void)
-> >> +{
-> >> +	struct bpf_insn prog[] = {
-> >> +		BPF_MOV64_IMM(BPF_REG_0, BPF_OK),
-> >> +		BPF_EXIT_INSN(),
-> >> +	};
-> >> +	int fd;
-> >> +
-> >> +	fd = bpf_load_program(BPF_PROG_TYPE_FLOW_DISSECTOR, prog,
-> >> +			      ARRAY_SIZE(prog), "GPL", 0, NULL, 0);
-> >> +	CHECK(fd < 0, "bpf_load_program", "ret %d errno %d\n", fd, errno);
-> >> +
-> >> +	return fd;
-> >> +}
-> >> +
-> >> +void test_flow_dissector_reattach(void)
-> >> +{
-> >> +	int prog_fd[2] = { -1, -1 };
-> >> +	int err;
-> >> +
-> >> +	if (is_attached())
-> >> +		return;
-> > Should we call test__skip() here to indicate that the test has been
-> > skipped?
-> > Also, do we need to run this test against non-root namespace as well?
-> 
-> Makes sense. Skip the test if anything is attached to root
-> namespace. Otherwise test twice, once in non-root and once in root
-> namespace.
-> 
-> [*] The printf() issue.
-> 
-> I've noticed that stdio hijacking that test_progs runner applies doesn't
-> quite work. printf() seems to skip the FILE stream buffer and write
-> whole lines directly to stdout. This results in reordered messages on
-> output.
-> 
-> Here's a distilled reproducer for what test_progs does:
-> 
-> int main(void)
-> {
-> 	FILE *stream;
-> 	char *buf;
-> 	size_t cnt;
-> 
-> 	stream = stdout;
-> 	stdout = open_memstream(&buf, &cnt);
-> 	if (!stdout)
-> 		error(1, errno, "open_memstream");
-> 
-> 	printf("foo");
-> 	printf("bar\n");
-> 	printf("baz");
-> 	printf("qux\n");
-> 
-> 	fflush(stdout);
-> 	fclose(stdout);
-> 
-> 	buf[cnt] = '\0';
-> 	fprintf(stream, "<<%s>>", buf);
-> 	if (buf[cnt-1] != '\n')
-> 		fprintf(stream, "\n");
-> 
-> 	free(buf);
-> 	return 0;
-> }
-> 
-> On output we get:
-> 
-> $ ./hijack_stdout
-> bar
-> qux
-> <<foobaz>>
-> $
-What glibc do you have? I don't see any issues with your reproducer
-on my setup:
+Interesting. I'm on the same version, different distro:
 
-$ ./a.out
-<<foobar
-bazqux
->>$
+$ rpm -q glibc
+glibc-2.28-33.fc29.x86_64
+glibc-2.28-33.fc29.i686
 
-$ ldd --version
-ldd (Debian GLIBC 2.28-10) 2.28
+I'll need to dig deeper. Thanks for keeping me honest here.
 
-> 
-> Not sure what's a good fix.
-> 
-> Ideally - dup2(STDOUT_FILENO, ...). But memstream doesn't have an FD.
-> We can switch to fprintf(stdout, ...) which works for some reason.
-> 
-> -Jakub
-> 
-> >
-> >> +	prog_fd[0] = load_prog();
-> >> +	if (prog_fd[0] < 0)
-> >> +		return;
-> >> +
-> >> +	prog_fd[1] = load_prog();
-> >> +	if (prog_fd[1] < 0)
-> >> +		goto out_close;
-> >> +
-> >> +	err = bpf_prog_attach(prog_fd[0], 0, BPF_FLOW_DISSECTOR, 0);
-> >> +	if (CHECK(err, "bpf_prog_attach-0", "ret %d errno %d\n", err, errno))
-> >> +		goto out_close;
-> >> +
-> >> +	/* Expect success when attaching a different program */
-> >> +	err = bpf_prog_attach(prog_fd[1], 0, BPF_FLOW_DISSECTOR, 0);
-> >> +	if (CHECK(err, "bpf_prog_attach-1", "ret %d errno %d\n", err, errno))
-> >> +		goto out_detach;
-> >> +
-> >> +	/* Expect failure when attaching the same program twice */
-> >> +	err = bpf_prog_attach(prog_fd[1], 0, BPF_FLOW_DISSECTOR, 0);
-> >> +	CHECK(!err || errno != EINVAL, "bpf_prog_attach-2",
-> >> +	      "ret %d errno %d\n", err, errno);
-> >> +
-> >> +out_detach:
-> >> +	err = bpf_prog_detach(0, BPF_FLOW_DISSECTOR);
-> >> +	CHECK(err, "bpf_prog_detach", "ret %d errno %d\n", err, errno);
-> >> +
-> >> +out_close:
-> >> +	close(prog_fd[1]);
-> >> +	close(prog_fd[0]);
-> >> +}
-> >> --
-> >> 2.20.1
-> >>
+-Jakub
+
+---8<---
+
+From 66fd85cd3bbb36cf99c8b6cbbb161d3c0533263b Mon Sep 17 00:00:00 2001
+From: Jakub Sitnicki <jakub@cloudflare.com>
+Date: Thu, 10 Oct 2019 15:29:28 +0200
+Subject: [PATCH net-next] selftests/bpf: test_progs: Extract a macro for
+ logging failures
+
+When selecting a macro-helper to use for logging a test failure we are
+faced with a choice between the shortcomings of CHECK and CHECK_FAIL.
+
+CHECK is intended to be used in conjunction with bpf_prog_test_run(). It
+expects a program run duration to be passed to it as an implicit argument.
+
+While CHECK_FAIL is more generic but compared to CHECK doesn't allow
+logging a custom error message to explain the failure.
+
+Introduce a new macro-helper - FAIL, that is lower-level than the above it
+and it intended to be used just log the failure with an explanation for it.
+
+Because FAIL does in part what CHECK and CHECK_FAIL do, we can reuse it in
+these macros. One side-effect is a slight the change in the log format. We
+always display the line number where a check has passed/failed.
+
+Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+---
+ tools/testing/selftests/bpf/test_progs.h | 17 ++++++++++-------
+ 1 file changed, 10 insertions(+), 7 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/test_progs.h b/tools/testing/selftests/bpf/test_progs.h
+index 0c48f64f732b..9e203ff71b78 100644
+--- a/tools/testing/selftests/bpf/test_progs.h
++++ b/tools/testing/selftests/bpf/test_progs.h
+@@ -92,15 +92,19 @@ struct ipv6_packet {
+ } __packed;
+ extern struct ipv6_packet pkt_v6;
+ 
++#define FAIL(tag, format...) ({						\
++	test__fail();							\
++	printf("%s:%d:FAIL:%s ", __func__, __LINE__, tag);		\
++	printf(format);							\
++})
++
+ #define _CHECK(condition, tag, duration, format...) ({			\
+ 	int __ret = !!(condition);					\
+ 	if (__ret) {							\
+-		test__fail();						\
+-		printf("%s:FAIL:%s ", __func__, tag);			\
+-		printf(format);						\
++		FAIL(tag, format);					\
+ 	} else {							\
+-		printf("%s:PASS:%s %d nsec\n",				\
+-		       __func__, tag, duration);			\
++		printf("%s:%d:PASS:%s %d nsec\n",			\
++		       __func__, __LINE__, tag, duration);		\
+ 	}								\
+ 	__ret;								\
+ })
+@@ -108,8 +112,7 @@ extern struct ipv6_packet pkt_v6;
+ #define CHECK_FAIL(condition) ({					\
+ 	int __ret = !!(condition);					\
+ 	if (__ret) {							\
+-		test__fail();						\
+-		printf("%s:FAIL:%d\n", __func__, __LINE__);		\
++		FAIL("", #condition "\n");				\
+ 	}								\
+ 	__ret;								\
+ })
+-- 
+2.20.1
+
