@@ -2,119 +2,155 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DEC72D2F4A
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2019 19:10:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEFA5D2F76
+	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2019 19:19:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726323AbfJJRKS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Oct 2019 13:10:18 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:51610 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726291AbfJJRKS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Oct 2019 13:10:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=2ORhkw5GPRBxZuF/xlv/BjcMDmGKtcdp+AMxb3+giRk=; b=Do8hAovh7JWYg3ucRGcXnRKlp
-        Hk/Mdo6HvHbjjzVB2oeN73Lg3ScBEwJ7yLS2xEExgXEBE42Ov7eTrryiUc+6flTBzVMEVyngCfmr0
-        7DveBBO5dhInqtgUEe9a8uF1I+nODwJYoFohx1pWitYKqMGQnFzbQK9pZt+qPCF7MLYHxa6iEwG/W
-        8B6jY4hY9N4UfA4dnrnri9GsVVNzoPzINpuJzJ263r3CONhT24WWKWVS0iUkTf0g+msab95XEwsqm
-        robs5JYWD7vsNoTe5jx1EFbG3TPye9jJ4o0v+nT1wPbMgJAT9He3Ach8nHO3p/htt4/oIuFjVH/eV
-        AslgJc8fw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1iIbwl-0004bm-V5; Thu, 10 Oct 2019 17:09:52 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E0E243013A4;
-        Thu, 10 Oct 2019 19:08:56 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 29D5A21492B14; Thu, 10 Oct 2019 19:09:49 +0200 (CEST)
-Date:   Thu, 10 Oct 2019 19:09:49 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, rostedt@goodmis.org,
-        primiano@google.com, rsavitski@google.com, jeffv@google.com,
-        kernel-team@android.com, Alexei Starovoitov <ast@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        bpf@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Morris <jmorris@namei.org>, Jiri Olsa <jolsa@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        linux-security-module@vger.kernel.org,
-        Matthew Garrett <matthewgarrett@google.com>,
-        Namhyung Kim <namhyung@kernel.org>, selinux@vger.kernel.org,
-        Song Liu <songliubraving@fb.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Yonghong Song <yhs@fb.com>
-Subject: Re: [PATCH RFC] perf_event: Add support for LSM and SELinux checks
-Message-ID: <20191010170949.GR2328@hirez.programming.kicks-ass.net>
-References: <20191009203657.6070-1-joel@joelfernandes.org>
- <20191010081251.GP2311@hirez.programming.kicks-ass.net>
- <20191010151333.GE96813@google.com>
+        id S1726479AbfJJRTa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Oct 2019 13:19:30 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:19168 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726131AbfJJRTa (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 10 Oct 2019 13:19:30 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id x9AH7A3k018682;
+        Thu, 10 Oct 2019 10:19:04 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=B+5Ns28EhcwoidKDx8A4nZ9NVX+e4p+KSTMlnfKiBOU=;
+ b=QbFLF53mDP+2IGIqH/od/bqE3rl0tl2yA8VWDwZghOiecbnxM34tgS0W6J4aouxhEhov
+ pIJnrQ3caY0oWV1RsbsZwP/1ZG54w5X28+d097rYG9VRdvVzduFqu3UoRqcvSRBV3cj/
+ uIr4aK+0qwHYhzHLtCaDKOh6wp9hECBjGYA= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by m0001303.ppops.net with ESMTP id 2vhyc0u2js-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Thu, 10 Oct 2019 10:19:04 -0700
+Received: from prn-hub06.TheFacebook.com (2620:10d:c081:35::130) by
+ prn-hub02.TheFacebook.com (2620:10d:c081:35::126) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Thu, 10 Oct 2019 10:19:03 -0700
+Received: from NAM04-BN3-obe.outbound.protection.outlook.com (192.168.54.28)
+ by o365-in.thefacebook.com (192.168.16.30) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
+ via Frontend Transport; Thu, 10 Oct 2019 10:19:03 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cqxpdmjr7tNbUouGHuyz558CKLKVkAIP9nnYQdgni+ff+ilBaDLL+MLEHQnHn2F7rruvVGbDweX4EM7GKhz/ySIeK4UB1R7OmSvKln4vPpocQygUawkvvwj3d0UtrCespl6c9NszvV/rgewqBDxMx9vCQVpgYQDpbVGOdVtfa0Lgx5NfWs6SVzMxh2O4NezjkZXusJ6scmB5h1g9r30CG3FVcHggJ71njzlpuu4Af4zRptKAcM9x7rV9fvdRk7afskLSMiiLzbg+V53SUe41r/5wT5+MfAvrZxUhuxjx4PSqWZmHFwTG7muMlsCxyE+KQVbjO746BQMnCU0qpwI1Ug==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=B+5Ns28EhcwoidKDx8A4nZ9NVX+e4p+KSTMlnfKiBOU=;
+ b=T8zcRkslhLShvtlvkZoTkndhhMCJeGKUFrYeqY6tXFo/FiLB8LXy9Umt+qUR/LKy098prk4L0K5ZLEgrIORAeBgY5Yekct5rnOMFOxMjMFq6mfXW5NEAIj8cppLuw0GLiZ1e20Gu/KSjDHSiu8Z8F5djjBPAZvBftU1XUXmTpIFJNWwFXpuliFuyo6vUcgSUZN5HHdnC7q637CLEIrGxNufTlfjFU7jgSxgCTfCOHR8IDmOrsLIqkE7QbK35qETQI6Ekiea/AWhEKA+EtwVUsZlNV3HI3GsZaYHGQC1ev+iteOJtJ7/PxjMb3ISbbRUMkdgweAgUBRdhF8KBafSyJQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=B+5Ns28EhcwoidKDx8A4nZ9NVX+e4p+KSTMlnfKiBOU=;
+ b=XjBdI1HLsHJWZv2MeRPTb3+YihL6BghT0CxLY4vgso7f1ScpHcjDab7jfX4zPl+NDM1+P3YIxewuFpuV1vPlIyieFuE4ITxVVM1OEtHYcB4IjpdCVGLCzs0wBXFVIt/Zf8/PZ6J21Xeau2m+hzmqhEK/NYwrpfUzVwFb1rCsezc=
+Received: from BYAPR15MB2501.namprd15.prod.outlook.com (52.135.196.11) by
+ BYAPR15MB2663.namprd15.prod.outlook.com (20.179.156.144) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2347.16; Thu, 10 Oct 2019 17:19:01 +0000
+Received: from BYAPR15MB2501.namprd15.prod.outlook.com
+ ([fe80::c13d:be57:b216:bfa0]) by BYAPR15MB2501.namprd15.prod.outlook.com
+ ([fe80::c13d:be57:b216:bfa0%5]) with mapi id 15.20.2327.026; Thu, 10 Oct 2019
+ 17:19:01 +0000
+From:   Alexei Starovoitov <ast@fb.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Song Liu <songliubraving@fb.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: Re: [PATCH bpf-next 2/2] bpf/stackmap: fix A-A deadlock in
+ bpf_get_stack()
+Thread-Topic: [PATCH bpf-next 2/2] bpf/stackmap: fix A-A deadlock in
+ bpf_get_stack()
+Thread-Index: AQHVfzKswn/pkqmThEy7QwA/cvFN/adTfF0AgACi1oA=
+Date:   Thu, 10 Oct 2019 17:19:01 +0000
+Message-ID: <a1d30b11-2759-0293-5612-48150db92775@fb.com>
+References: <20191010061916.198761-1-songliubraving@fb.com>
+ <20191010061916.198761-3-songliubraving@fb.com>
+ <20191010073608.GO2311@hirez.programming.kicks-ass.net>
+In-Reply-To: <20191010073608.GO2311@hirez.programming.kicks-ass.net>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MWHPR19CA0001.namprd19.prod.outlook.com
+ (2603:10b6:300:d4::11) To BYAPR15MB2501.namprd15.prod.outlook.com
+ (2603:10b6:a02:88::11)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c090:180::f66f]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 99400205-3077-480d-10db-08d74da5f101
+x-ms-traffictypediagnostic: BYAPR15MB2663:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR15MB2663530AE9E4E6AD6F7AEA96D7940@BYAPR15MB2663.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:175;
+x-forefront-prvs: 018632C080
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(979002)(376002)(366004)(396003)(39860400002)(136003)(346002)(199004)(189003)(256004)(66556008)(66446008)(64756008)(478600001)(6512007)(8676002)(102836004)(446003)(54906003)(81156014)(11346002)(66476007)(66946007)(6486002)(486006)(81166006)(52116002)(305945005)(14444005)(2616005)(76176011)(46003)(7736002)(25786009)(476003)(6436002)(229853002)(31686004)(14454004)(186003)(6246003)(4326008)(99286004)(36756003)(2906002)(316002)(71200400001)(71190400001)(8936002)(86362001)(110136005)(5660300002)(6116002)(53546011)(31696002)(6506007)(386003)(6636002)(969003)(989001)(999001)(1009001)(1019001);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB2663;H:BYAPR15MB2501.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: JlOUHvbFeeg2+KRy49JZw8XQa/AWVhuCfJKMTIj6QfhcxnWnnD+kgjM0alnSJl4MZQdskhH9ke1muTcJi2uY+SIDuptoNzBRiiRLunhordFCcPrdUieQS7zpxV2AYVfQcC5mejVBuLMqJoEooUVv9sCIpZNH3cgPleF2e2DEcBhRSFfYbpruzZU/Kuy3X1YcVS96KGRCnn//GWQNnxWBz1th3Viy6IT2JKIVLBckmuuU83aHycGVKkE3rIMt+gRzVZ1MBiQYG3tb3aceAtS7IMwTAoJ4rpWyljyMJEmYBA4sXyrbpu4FzsGqvh5UBsJrdYhcucMpTrGzuZQVAEujDB9JGFsy4QF53K6csYv2Q4SkUrV/PtB0K/2fsAvH9Y/l1jiGQP8VsorOBQy/LVMKDPp61g7KT9xe4PsIjFew+Zg=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <886DEB1D6DD67342989EFADF24526243@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191010151333.GE96813@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 99400205-3077-480d-10db-08d74da5f101
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Oct 2019 17:19:01.6349
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: qdu9LS4OBj4OODOhtT/UZd8oFp5Z1dOGidoEFv/jOnWqagubIfg7bH6jhl6scPX3
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2663
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
+ definitions=2019-10-10_06:2019-10-10,2019-10-10 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ mlxlogscore=999 clxscore=1011 spamscore=0 suspectscore=0 impostorscore=0
+ phishscore=0 bulkscore=0 priorityscore=1501 mlxscore=0 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1908290000 definitions=main-1910100152
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 10, 2019 at 11:13:33AM -0400, Joel Fernandes wrote:
-> On Thu, Oct 10, 2019 at 10:12:51AM +0200, Peter Zijlstra wrote:
-> > +static inline int perf_allow_tracepoint(struct perf_event_attr *attr)
-> >  {
-> > -	return sysctl_perf_event_paranoid > 1;
-> > +	if (sysctl_perf_event_paranoid > -1 && !capable(CAP_SYS_ADMIN))
-> > +		return -EPERM;
-> > +
-> 
-> Here the sysctl check of > -1 also is now coupled with a CAP_SYS_ADMIN check.
-> However..
-> 
-> > +	return security_perf_event_open(attr, PERF_SECURITY_TRACEPOINT);
-> 
-> >  }
-> >  
-> > --- a/kernel/events/core.c
-> > +++ b/kernel/events/core.c
-
-> > @@ -5862,14 +5859,8 @@ static int perf_mmap(struct file *file,
-> >  	lock_limit >>= PAGE_SHIFT;
-> >  	locked = atomic64_read(&vma->vm_mm->pinned_vm) + extra;
-> >  
-> > -	if (locked > lock_limit) {
-> > -		if (perf_paranoid_tracepoint_raw() && !capable(CAP_IPC_LOCK)) {
-> > -			ret = -EPERM;
-> > -			goto unlock;
-> > -		}
-> > -
-> > -		ret = security_perf_event_open(&event->attr,
-> > -					       PERF_SECURITY_TRACEPOINT);
-> > +	if (locked > lock_limit && !capable(CAP_IPC_LOCK)) {
-> > +		ret = perf_allow_tracepoint(&event->attr);
-> 
-> In previous code, this check did not involve a check for CAP_SYS_ADMIN.
-> 
-> I am Ok with adding the CAP_SYS_ADMIN check as well which does make sense to
-> me for tracepoint access. But it is still a change in the logic so I wanted
-> to bring it up.
-> 
-> Let me know any other thoughts and then I'll post a new patch.
-
-Yes, I did notice, I found it weird.
-
-If you have CAP_IPC_LIMIT you should be able to bust mlock memory
-limits, so I don't see why we should further relate that to paranoid.
-
-The way I wrote it, we also allow to bust the limit if we have disabled
-all paranoid checks. Which makes some sense I suppose.
-
-The original commit is this:
-
-  459ec28ab404 ("perf_counter: Allow mmap if paranoid checks are turned off")
+T24gMTAvMTAvMTkgMTI6MzYgQU0sIFBldGVyIFppamxzdHJhIHdyb3RlOg0KPiBPbiBXZWQsIE9j
+dCAwOSwgMjAxOSBhdCAxMToxOToxNlBNIC0wNzAwLCBTb25nIExpdSB3cm90ZToNCj4+IGJwZiBz
+dGFja21hcCB3aXRoIGJ1aWxkLWlkIGxvb2t1cCAoQlBGX0ZfU1RBQ0tfQlVJTERfSUQpIGNhbiB0
+cmlnZ2VyIEEtQQ0KPj4gZGVhZGxvY2sgb24gcnFfbG9jaygpOg0KPj4NCj4+IHJjdTogSU5GTzog
+cmN1X3NjaGVkIGRldGVjdGVkIHN0YWxscyBvbiBDUFVzL3Rhc2tzOg0KPj4gWy4uLl0NCj4+IENh
+bGwgVHJhY2U6DQo+PiAgIHRyeV90b193YWtlX3VwKzB4MWFkLzB4NTkwDQo+PiAgIHdha2VfdXBf
+cSsweDU0LzB4ODANCj4+ICAgcndzZW1fd2FrZSsweDhhLzB4YjANCj4+ICAgYnBmX2dldF9zdGFj
+aysweDEzYy8weDE1MA0KPj4gICBicGZfcHJvZ19mYmRhZjQyZWRlZDlmZTQ2X29uX2V2ZW50KzB4
+NWUzLzB4MTAwMA0KPj4gICBicGZfb3ZlcmZsb3dfaGFuZGxlcisweDYwLzB4MTAwDQo+PiAgIF9f
+cGVyZl9ldmVudF9vdmVyZmxvdysweDRmLzB4ZjANCj4+ICAgcGVyZl9zd2V2ZW50X292ZXJmbG93
+KzB4OTkvMHhjMA0KPj4gICBfX19wZXJmX3N3X2V2ZW50KzB4ZTcvMHgxMjANCj4+ICAgX19zY2hl
+ZHVsZSsweDQ3ZC8weDYyMA0KPj4gICBzY2hlZHVsZSsweDI5LzB4OTANCj4+ICAgZnV0ZXhfd2Fp
+dF9xdWV1ZV9tZSsweGI5LzB4MTEwDQo+PiAgIGZ1dGV4X3dhaXQrMHgxMzkvMHgyMzANCj4+ICAg
+ZG9fZnV0ZXgrMHgyYWMvMHhhNTANCj4+ICAgX194NjRfc3lzX2Z1dGV4KzB4MTNjLzB4MTgwDQo+
+PiAgIGRvX3N5c2NhbGxfNjQrMHg0Mi8weDEwMA0KPj4gICBlbnRyeV9TWVNDQUxMXzY0X2FmdGVy
+X2h3ZnJhbWUrMHg0NC8weGE5DQo+Pg0KPiANCj4+IGRpZmYgLS1naXQgYS9rZXJuZWwvYnBmL3N0
+YWNrbWFwLmMgYi9rZXJuZWwvYnBmL3N0YWNrbWFwLmMNCj4+IGluZGV4IDA1MjU4MGMzM2QyNi4u
+M2IyNzhmNmIwYzNlIDEwMDY0NA0KPj4gLS0tIGEva2VybmVsL2JwZi9zdGFja21hcC5jDQo+PiAr
+KysgYi9rZXJuZWwvYnBmL3N0YWNrbWFwLmMNCj4+IEBAIC0yODcsNyArMjg3LDcgQEAgc3RhdGlj
+IHZvaWQgc3RhY2tfbWFwX2dldF9idWlsZF9pZF9vZmZzZXQoc3RydWN0IGJwZl9zdGFja19idWls
+ZF9pZCAqaWRfb2ZmcywNCj4+ICAgCWJvb2wgaXJxX3dvcmtfYnVzeSA9IGZhbHNlOw0KPj4gICAJ
+c3RydWN0IHN0YWNrX21hcF9pcnFfd29yayAqd29yayA9IE5VTEw7DQo+Pg0KPj4gLQlpZiAoaW5f
+bm1pKCkpIHsNCj4+ICsJaWYgKGluX25taSgpIHx8IHRoaXNfcnFfaXNfbG9ja2VkKCkpIHsNCj4+
+ICAgCQl3b3JrID0gdGhpc19jcHVfcHRyKCZ1cF9yZWFkX3dvcmspOw0KPj4gICAJCWlmICh3b3Jr
+LT5pcnFfd29yay5mbGFncyAmIElSUV9XT1JLX0JVU1kpDQo+PiAgIAkJCS8qIGNhbm5vdCBxdWV1
+ZSBtb3JlIHVwX3JlYWQsIGZhbGxiYWNrICovDQo+IA0KPiBUaGlzIGlzIGhvcnJpZmljIGNyYXAu
+IEp1c3Qgc2F5IG5vIHRvIHRoYXQgZ2V0X2J1aWxkX2lkX29mZnNldCgpDQo+IHRyYWlud3JlY2su
+DQoNCnRoaXMgaXMgbm90IGEgaGVscGZ1bCBjb21tZW50Lg0KV2hhdCBpc3N1ZXMgZG8geW91IHNl
+ZSB3aXRoIHRoaXMgYXBwcm9hY2g/DQoNCg0KDQo=
