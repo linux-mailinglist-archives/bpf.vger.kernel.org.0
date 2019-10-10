@@ -2,282 +2,273 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 727E3D27BE
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2019 13:07:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F589D2807
+	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2019 13:37:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726864AbfJJLHe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Oct 2019 07:07:34 -0400
-Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:59649 "EHLO
-        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726237AbfJJLHe (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 10 Oct 2019 07:07:34 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id CFD427C1;
-        Thu, 10 Oct 2019 07:07:32 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Thu, 10 Oct 2019 07:07:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=crpa8c
-        gkn0UvvoPVIPRiEhbN37zPdlJU00CF3RkXTbw=; b=D0wus0eD7V7QRMH+/Uc18k
-        KEEgrG499TEM2I9uSIIy354khmkJ4inBcxTUwaqxyoY2T2aQferMS5Kex0rnx+OS
-        S+KqGumYWTBdxHPLs72X0HxI6cGrP/4p9rSCdSfX8VyMkkNA0FdUGCQE2CJUFaaV
-        8DP1AwNbWf0d2ejGN0CzZ63gOPanrvBpI/c6EXY9Xf2oA7ABaBcjYS41rg2DZ0cJ
-        86MMOYTq31xyXP0Yn1E6+U4DohiEMbqhx8oy7ip5dqjNHbyJTU3dmc01Vs8rdvSy
-        q27cPVxVhaaXMpRWy4XqwOKH44ujyLFDYHR98bV03zqKHykxxbYQwc3GuPv8pzbQ
-        ==
-X-ME-Sender: <xms:8xCfXWm5BIYEZVWKrdo0yUrYrMvAsa92itxXH9z8jA6oMhIWitjS7A>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedufedrieefgdefkecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujggfsehttdertddtredvnecuhfhrohhmpefkughoucfu
-    tghhihhmmhgvlhcuoehiughoshgthhesihguohhstghhrdhorhhgqeenucfkphepudelfe
-    drgeejrdduieehrddvhedunecurfgrrhgrmhepmhgrihhlfhhrohhmpehiughoshgthhes
-    ihguohhstghhrdhorhhgnecuvehluhhsthgvrhfuihiivgeptd
-X-ME-Proxy: <xmx:8xCfXS3liI9vUVcOFPfif9j8Po4HIl9_Kt1sG7DIS_joFXoj27lCwA>
-    <xmx:8xCfXVjJGIIs3yCa2_5t2ILlPQ_NBxtbOfpMcDjw51uDLrKxn9qVAQ>
-    <xmx:8xCfXQUOUWuPwMbNnnBxTPV3F099rXozRS9_cEkOaIQoE7c0I-oxKA>
-    <xmx:9BCfXbIQLpp1AYhbwz2wyNZ9pvdgseqCz6mVEgBU_hikRRm-Ayc-1g>
-Received: from localhost (unknown [193.47.165.251])
-        by mail.messagingengine.com (Postfix) with ESMTPA id E2B62D60057;
-        Thu, 10 Oct 2019 07:07:30 -0400 (EDT)
-Date:   Thu, 10 Oct 2019 14:07:29 +0300
-From:   Ido Schimmel <idosch@idosch.org>
-To:     Alexei Starovoitov <ast@kernel.org>
-Cc:     davem@davemloft.net, daniel@iogearbox.net, x86@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v2 bpf-next 12/12] selftests/bpf: add kfree_skb raw_tp
- test
-Message-ID: <20191010110729.GA21703@splinter>
-References: <20191010041503.2526303-1-ast@kernel.org>
- <20191010041503.2526303-13-ast@kernel.org>
+        id S1725901AbfJJLhi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Oct 2019 07:37:38 -0400
+Received: from mail-lf1-f66.google.com ([209.85.167.66]:34039 "EHLO
+        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726523AbfJJLhi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Oct 2019 07:37:38 -0400
+Received: by mail-lf1-f66.google.com with SMTP id r22so4132719lfm.1
+        for <bpf@vger.kernel.org>; Thu, 10 Oct 2019 04:37:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=hiy5AVBqTzFPdMykXPXdntwcxs9Lxc3BOJl02HMVZEc=;
+        b=w+PO4u8W5CvO0zUt4uJmoXKN24jUmFfBbtlAgNdTtbPj9hyYVrBUhE47HIdKcGGTxC
+         K3uupyLZKrn94WtS1bqBP/hnecvKPNGl92GjhlVSfxTc+L+anjO9/khHaUZdVxBqL7C/
+         CG+E942yLOpUijkDea+X5T90VI0H8Iih9VvYU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=hiy5AVBqTzFPdMykXPXdntwcxs9Lxc3BOJl02HMVZEc=;
+        b=MRWx1Qrf7ziglTHbs9cze5Sg2x5K0U2CYLpmwSZPntw1a97IDdbdHLmXqLyvYD0lIr
+         O+8MU7K/0Klgl7LDNVB4nkE51u5FCxlLG0ZyJetqxlhPf+CUPGriW/o7JYf1C2C4wZzh
+         ny+zjP98RgRLIm9RX3k3MflQ5Df54rPLOan19IGjvL7GIylMLGD5oqhPXl5QDO8NcK/4
+         Kxld+g5OHs/P6dH7fiSB4WxV7XQtWCPqMTY8tqqeJz5E9aFeltpHSvZVj2RzY04lfyIa
+         FMwOOFTGPvt6kduVIsZ4jSkrFolqCvwMygPRr9TMJ0iGMf52wiiBxpyhuO8TsWhKFrMB
+         uCMw==
+X-Gm-Message-State: APjAAAWndE9jL4iqOUSVZkRGOniPB18KDNMhjLJu7wqh2lTgswOzRyJk
+        2DBpPl7ukhZ3z9Ikrs/fGi9ovw==
+X-Google-Smtp-Source: APXvYqxPUNwbQL9yrPB2N10+CEb8trzM9kyMSKcXTsalGadl9YhtEvvuXMfvfAWgjHwuCkzpXMpEYw==
+X-Received: by 2002:a19:ad4a:: with SMTP id s10mr5667108lfd.159.1570707454386;
+        Thu, 10 Oct 2019 04:37:34 -0700 (PDT)
+Received: from cloudflare.com ([176.221.114.230])
+        by smtp.gmail.com with ESMTPSA id j17sm1183166lfb.11.2019.10.10.04.37.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Oct 2019 04:37:33 -0700 (PDT)
+References: <20191009094312.15284-1-jakub@cloudflare.com> <20191009094312.15284-2-jakub@cloudflare.com> <20191009163341.GE2096@mini-arch>
+User-agent: mu4e 1.1.0; emacs 26.1
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Stanislav Fomichev <sdf@fomichev.me>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        kernel-team@cloudflare.com, Stanislav Fomichev <sdf@google.com>
+Subject: Re: [PATH bpf-next 2/2] selftests/bpf: Check that flow dissector can be re-attached
+In-reply-to: <20191009163341.GE2096@mini-arch>
+Date:   Thu, 10 Oct 2019 13:37:33 +0200
+Message-ID: <87lfts25mq.fsf@cloudflare.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191010041503.2526303-13-ast@kernel.org>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 09, 2019 at 09:15:03PM -0700, Alexei Starovoitov wrote:
-> Load basic cls_bpf program.
-> Load raw_tracepoint program and attach to kfree_skb raw tracepoint.
-> Trigger cls_bpf via prog_test_run.
-> At the end of test_run kernel will call kfree_skb
-> which will trigger trace_kfree_skb tracepoint.
-> Which will call our raw_tracepoint program.
-> Which will take that skb and will dump it into perf ring buffer.
-> Check that user space received correct packet.
-> 
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
-> ---
->  .../selftests/bpf/prog_tests/kfree_skb.c      | 90 +++++++++++++++++++
->  tools/testing/selftests/bpf/progs/kfree_skb.c | 74 +++++++++++++++
->  2 files changed, 164 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/kfree_skb.c
->  create mode 100644 tools/testing/selftests/bpf/progs/kfree_skb.c
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/kfree_skb.c b/tools/testing/selftests/bpf/prog_tests/kfree_skb.c
-> new file mode 100644
-> index 000000000000..0cf91b6bf276
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/kfree_skb.c
-> @@ -0,0 +1,90 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <test_progs.h>
-> +
-> +static void on_sample(void *ctx, int cpu, void *data, __u32 size)
-> +{
-> +	int ifindex = *(int *)data, duration = 0;
-> +	struct ipv6_packet *pkt_v6 = data + 4;
-> +
-> +	if (ifindex != 1)
-> +		/* spurious kfree_skb not on loopback device */
-> +		return;
-> +	if (CHECK(size != 76, "check_size", "size %u != 76\n", size))
-> +		return;
-> +	if (CHECK(pkt_v6->eth.h_proto != 0xdd86, "check_eth",
-> +		  "h_proto %x\n", pkt_v6->eth.h_proto))
-> +		return;
-> +	if (CHECK(pkt_v6->iph.nexthdr != 6, "check_ip",
-> +		  "iph.nexthdr %x\n", pkt_v6->iph.nexthdr))
-> +		return;
-> +	if (CHECK(pkt_v6->tcp.doff != 5, "check_tcp",
-> +		  "tcp.doff %x\n", pkt_v6->tcp.doff))
-> +		return;
-> +
-> +	*(bool *)ctx = true;
-> +}
-> +
-> +void test_kfree_skb(void)
-> +{
-> +	struct bpf_prog_load_attr attr = {
-> +		.file = "./kfree_skb.o",
-> +		.log_level = 2,
-> +	};
-> +
-> +	struct bpf_object *obj, *obj2 = NULL;
-> +	struct perf_buffer_opts pb_opts = {};
-> +	struct perf_buffer *pb = NULL;
-> +	struct bpf_link *link = NULL;
-> +	struct bpf_map *perf_buf_map;
-> +	struct bpf_program *prog;
-> +	__u32 duration, retval;
-> +	int err, pkt_fd, kfree_skb_fd;
-> +	bool passed = false;
-> +
-> +	err = bpf_prog_load("./test_pkt_access.o", BPF_PROG_TYPE_SCHED_CLS, &obj, &pkt_fd);
-> +	if (CHECK(err, "prog_load sched cls", "err %d errno %d\n", err, errno))
-> +		return;
-> +
-> +	err = bpf_prog_load_xattr(&attr, &obj2, &kfree_skb_fd);
-> +	if (CHECK(err, "prog_load raw tp", "err %d errno %d\n", err, errno))
-> +		goto close_prog;
-> +
-> +	prog = bpf_object__find_program_by_title(obj2, "raw_tracepoint/kfree_skb");
-> +	if (CHECK(!prog, "find_prog", "prog kfree_skb not found\n"))
-> +		goto close_prog;
-> +	link = bpf_program__attach_raw_tracepoint(prog, NULL);
-> +	if (CHECK(IS_ERR(link), "attach_raw_tp", "err %ld\n", PTR_ERR(link)))
-> +		goto close_prog;
-> +
-> +	perf_buf_map = bpf_object__find_map_by_name(obj2, "perf_buf_map");
-> +	if (CHECK(!perf_buf_map, "find_perf_buf_map", "not found\n"))
-> +		goto close_prog;
-> +
-> +	/* set up perf buffer */
-> +	pb_opts.sample_cb = on_sample;
-> +	pb_opts.ctx = &passed;
-> +	pb = perf_buffer__new(bpf_map__fd(perf_buf_map), 1, &pb_opts);
-> +	if (CHECK(IS_ERR(pb), "perf_buf__new", "err %ld\n", PTR_ERR(pb)))
-> +		goto close_prog;
-> +
-> +	err = bpf_prog_test_run(pkt_fd, 1, &pkt_v6, sizeof(pkt_v6),
-> +				NULL, NULL, &retval, &duration);
-> +	CHECK(err || retval, "ipv6",
-> +	      "err %d errno %d retval %d duration %d\n",
-> +	      err, errno, retval, duration);
-> +
-> +	/* read perf buffer */
-> +	err = perf_buffer__poll(pb, 100);
-> +	if (CHECK(err < 0, "perf_buffer__poll", "err %d\n", err))
-> +		goto close_prog;
-> +	/* make sure kfree_skb program was triggered
-> +	 * and it sent expected skb into ring buffer
-> +	 */
-> +	CHECK_FAIL(!passed);
-> +close_prog:
-> +	perf_buffer__free(pb);
-> +	if (!IS_ERR_OR_NULL(link))
-> +		bpf_link__destroy(link);
-> +	bpf_object__close(obj);
-> +	bpf_object__close(obj2);
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/kfree_skb.c b/tools/testing/selftests/bpf/progs/kfree_skb.c
-> new file mode 100644
-> index 000000000000..fc25797cc64d
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/kfree_skb.c
-> @@ -0,0 +1,74 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +// Copyright (c) 2019 Facebook
-> +#include <linux/bpf.h>
-> +#include "bpf_helpers.h"
-> +
-> +char _license[] SEC("license") = "GPL";
-> +struct {
-> +	__uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
-> +	__uint(key_size, sizeof(int));
-> +	__uint(value_size, sizeof(int));
-> +} perf_buf_map SEC(".maps");
-> +
-> +#define _(P) (__builtin_preserve_access_index(P))
-> +
-> +/* define few struct-s that bpf program needs to access */
-> +struct callback_head {
-> +	struct callback_head *next;
-> +	void (*func)(struct callback_head *head);
-> +};
-> +struct dev_ifalias {
-> +	struct callback_head rcuhead;
-> +};
-> +
-> +struct net_device /* same as kernel's struct net_device */ {
-> +	int ifindex;
-> +	struct dev_ifalias *ifalias;
-> +};
-> +
-> +struct sk_buff {
-> +	/* field names and sizes should match to those in the kernel */
-> +	unsigned int len, data_len;
-> +	__u16 mac_len, hdr_len, queue_mapping;
-> +	struct net_device *dev;
-> +	/* order of the fields doesn't matter */
-> +};
-> +
-> +/* copy arguments from
-> + * include/trace/events/skb.h:
-> + * TRACE_EVENT(kfree_skb,
-> + *         TP_PROTO(struct sk_buff *skb, void *location),
-> + *
-> + * into struct below:
-> + */
-> +struct trace_kfree_skb {
-> +	struct sk_buff *skb;
-> +	void *location;
-> +};
-> +
-> +SEC("raw_tracepoint/kfree_skb")
-> +int trace_kfree_skb(struct trace_kfree_skb *ctx)
-> +{
-> +	struct sk_buff *skb = ctx->skb;
-> +	struct net_device *dev;
-> +	int ifindex;
-> +	struct callback_head *ptr;
-> +	void *func;
-> +
-> +	__builtin_preserve_access_index(({
-> +		dev = skb->dev;
-> +		ifindex = dev->ifindex;
+On Wed, Oct 09, 2019 at 06:33 PM CEST, Stanislav Fomichev wrote:
+> On 10/09, Jakub Sitnicki wrote:
+>> Make sure a new flow dissector program can be attached to replace the old
+>> one with a single syscall. Also check that attaching the same program twice
+>> is prohibited.
+> Overall the series looks good, left a bunch of nits/questions below.
 
-Hi Alexei,
+Thanks for the comments.
 
-The patchset looks very useful. One question: Is it always safe to
-access 'skb->dev->ifindex' here? I'm asking because 'dev' is inside a
-union with 'dev_scratch' which is 'unsigned long' and therefore might
-not always be a valid memory address. Consider for example the following
-code path:
+>
+>> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+>> ---
+>>  .../bpf/prog_tests/flow_dissector_reattach.c  | 93 +++++++++++++++++++
+>>  1 file changed, 93 insertions(+)
+>>  create mode 100644 tools/testing/selftests/bpf/prog_tests/flow_dissector_reattach.c
+>>
+>> diff --git a/tools/testing/selftests/bpf/prog_tests/flow_dissector_reattach.c b/tools/testing/selftests/bpf/prog_tests/flow_dissector_reattach.c
+>> new file mode 100644
+>> index 000000000000..0f0006c93956
+>> --- /dev/null
+>> +++ b/tools/testing/selftests/bpf/prog_tests/flow_dissector_reattach.c
+>> @@ -0,0 +1,93 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/*
+>> + * Test that the flow_dissector program can be updated with a single
+>> + * syscall by attaching a new program that replaces the existing one.
+>> + *
+>> + * Corner case - the same program cannot be attached twice.
+>> + */
+>> +#include <errno.h>
+>> +#include <fcntl.h>
+>> +#include <stdbool.h>
+>> +#include <unistd.h>
+>> +
+>> +#include <linux/bpf.h>
+>> +#include <bpf/bpf.h>
+>> +
+>> +#include "test_progs.h"
+>> +
+> [..]
+>> +/* Not used here. For CHECK macro sake only. */
+>> +static int duration;
+> nit: you can use CHECK_FAIL macro instead which doesn't require this.
+>
+> if (CHECK_FAIL(expr)) {
+> 	printf("something bad has happened\n");
+> 	return/goto;
+> }
+>
+> It may be more verbose than doing CHECK() with its embedded error
+> message, so I leave it up to you to decide on whether you want to switch
+> to CHECK_FAIL or stick to CHECK.
+>
 
-...
-__udp_queue_rcv_skb(sk, skb)
-	__udp_enqueue_schedule_skb(sk, skb)
-		udp_set_dev_scratch(skb)
-		// returns error
-	...
-	kfree_skb(skb) // ebpf program is invoked
+I wouldn't mind switching to CHECK_FAIL. It reads better than CHECK with
+error message stuck in the if expression. (There is a side-issue with
+printf(). Will explain at the end [*].)
 
-How is this handled by eBPF?
+Another thing to consider is that with CHECK the message indicating a
+failure ("<test>:FAIL:<lineno>") and the actual explanation message are
+on the same line. This makes the error log easier to reason.
 
-Thanks
+I'm torn here, and considering another alternative to address at least
+the readability issue:
 
-> +		ptr = dev->ifalias->rcuhead.next;
-> +		func = ptr->func;
-> +	}));
-> +
-> +	bpf_printk("rcuhead.next %llx func %llx\n", ptr, func);
-> +	bpf_printk("skb->len %d\n", _(skb->len));
-> +	bpf_printk("skb->queue_mapping %d\n", _(skb->queue_mapping));
-> +	bpf_printk("dev->ifindex %d\n", ifindex);
-> +
-> +	/* send first 72 byte of the packet to user space */
-> +	bpf_skb_output(skb, &perf_buf_map, (72ull << 32) | BPF_F_CURRENT_CPU,
-> +		       &ifindex, sizeof(ifindex));
-> +	return 0;
-> +}
-> -- 
-> 2.23.0
-> 
+if (fail_expr) {
+        CHECK(1, "action", "explanation");
+        return;
+}
+
+It doesn't address the extra variable problem. Maybe we need another
+CHECK variant.
+
+>> +static bool is_attached(void)
+>> +{
+>> +	bool attached = true;
+>> +	int err, net_fd = -1;
+> nit: maybe don't need to initialize net_fd to -1 here as well.
+
+Will fix.
+
+>
+>> +	__u32 cnt;
+>> +
+>> +	net_fd = open("/proc/self/ns/net", O_RDONLY);
+>> +	if (net_fd < 0)
+>> +		goto out;
+>> +
+>> +	err = bpf_prog_query(net_fd, BPF_FLOW_DISSECTOR, 0, NULL, NULL, &cnt);
+>> +	if (CHECK(err, "bpf_prog_query", "ret %d errno %d\n", err, errno))
+>> +		goto out;
+>> +
+>> +	attached = (cnt > 0);
+>> +out:
+>> +	close(net_fd);
+>> +	return attached;
+>> +}
+>> +
+>> +static int load_prog(void)
+>> +{
+>> +	struct bpf_insn prog[] = {
+>> +		BPF_MOV64_IMM(BPF_REG_0, BPF_OK),
+>> +		BPF_EXIT_INSN(),
+>> +	};
+>> +	int fd;
+>> +
+>> +	fd = bpf_load_program(BPF_PROG_TYPE_FLOW_DISSECTOR, prog,
+>> +			      ARRAY_SIZE(prog), "GPL", 0, NULL, 0);
+>> +	CHECK(fd < 0, "bpf_load_program", "ret %d errno %d\n", fd, errno);
+>> +
+>> +	return fd;
+>> +}
+>> +
+>> +void test_flow_dissector_reattach(void)
+>> +{
+>> +	int prog_fd[2] = { -1, -1 };
+>> +	int err;
+>> +
+>> +	if (is_attached())
+>> +		return;
+> Should we call test__skip() here to indicate that the test has been
+> skipped?
+> Also, do we need to run this test against non-root namespace as well?
+
+Makes sense. Skip the test if anything is attached to root
+namespace. Otherwise test twice, once in non-root and once in root
+namespace.
+
+[*] The printf() issue.
+
+I've noticed that stdio hijacking that test_progs runner applies doesn't
+quite work. printf() seems to skip the FILE stream buffer and write
+whole lines directly to stdout. This results in reordered messages on
+output.
+
+Here's a distilled reproducer for what test_progs does:
+
+int main(void)
+{
+	FILE *stream;
+	char *buf;
+	size_t cnt;
+
+	stream = stdout;
+	stdout = open_memstream(&buf, &cnt);
+	if (!stdout)
+		error(1, errno, "open_memstream");
+
+	printf("foo");
+	printf("bar\n");
+	printf("baz");
+	printf("qux\n");
+
+	fflush(stdout);
+	fclose(stdout);
+
+	buf[cnt] = '\0';
+	fprintf(stream, "<<%s>>", buf);
+	if (buf[cnt-1] != '\n')
+		fprintf(stream, "\n");
+
+	free(buf);
+	return 0;
+}
+
+On output we get:
+
+$ ./hijack_stdout
+bar
+qux
+<<foobaz>>
+$
+
+Not sure what's a good fix.
+
+Ideally - dup2(STDOUT_FILENO, ...). But memstream doesn't have an FD.
+We can switch to fprintf(stdout, ...) which works for some reason.
+
+-Jakub
+
+>
+>> +	prog_fd[0] = load_prog();
+>> +	if (prog_fd[0] < 0)
+>> +		return;
+>> +
+>> +	prog_fd[1] = load_prog();
+>> +	if (prog_fd[1] < 0)
+>> +		goto out_close;
+>> +
+>> +	err = bpf_prog_attach(prog_fd[0], 0, BPF_FLOW_DISSECTOR, 0);
+>> +	if (CHECK(err, "bpf_prog_attach-0", "ret %d errno %d\n", err, errno))
+>> +		goto out_close;
+>> +
+>> +	/* Expect success when attaching a different program */
+>> +	err = bpf_prog_attach(prog_fd[1], 0, BPF_FLOW_DISSECTOR, 0);
+>> +	if (CHECK(err, "bpf_prog_attach-1", "ret %d errno %d\n", err, errno))
+>> +		goto out_detach;
+>> +
+>> +	/* Expect failure when attaching the same program twice */
+>> +	err = bpf_prog_attach(prog_fd[1], 0, BPF_FLOW_DISSECTOR, 0);
+>> +	CHECK(!err || errno != EINVAL, "bpf_prog_attach-2",
+>> +	      "ret %d errno %d\n", err, errno);
+>> +
+>> +out_detach:
+>> +	err = bpf_prog_detach(0, BPF_FLOW_DISSECTOR);
+>> +	CHECK(err, "bpf_prog_detach", "ret %d errno %d\n", err, errno);
+>> +
+>> +out_close:
+>> +	close(prog_fd[1]);
+>> +	close(prog_fd[0]);
+>> +}
+>> --
+>> 2.20.1
+>>
