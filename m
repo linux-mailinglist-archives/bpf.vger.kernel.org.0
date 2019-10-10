@@ -2,75 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 62BFBD2642
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2019 11:26:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E68DD2780
+	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2019 12:51:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733134AbfJJJ0y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Oct 2019 05:26:54 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:48506 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727320AbfJJJ0y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Oct 2019 05:26:54 -0400
-Received: from [193.96.224.244] (helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1iIUif-0005xu-US; Thu, 10 Oct 2019 09:26:50 +0000
-Date:   Thu, 10 Oct 2019 11:26:48 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+        id S1732317AbfJJKur (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Oct 2019 06:50:47 -0400
+Received: from mx2a.mailbox.org ([80.241.60.219]:31951 "EHLO mx2a.mailbox.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726201AbfJJKur (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Oct 2019 06:50:47 -0400
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [80.241.60.241])
+        (using TLSv1.2 with cipher ECDHE-RSA-CHACHA20-POLY1305 (256/256 bits))
+        (No client certificate requested)
+        by mx2a.mailbox.org (Postfix) with ESMTPS id 21E47A1A7B;
+        Thu, 10 Oct 2019 12:50:45 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Received: from smtp2.mailbox.org ([80.241.60.241])
+        by spamfilter05.heinlein-hosting.de (spamfilter05.heinlein-hosting.de [80.241.56.123]) (amavisd-new, port 10030)
+        with ESMTP id oW1bKVSmI81Q; Thu, 10 Oct 2019 12:50:41 +0200 (CEST)
+Date:   Thu, 10 Oct 2019 21:50:31 +1100
+From:   Aleksa Sarai <cyphar@cyphar.com>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/3] bpf: switch to new usercopy helpers
-Message-ID: <20191010092647.cpxh7neqgabq36gt@wittgenstein>
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] bpf: use check_zeroed_user() in
+ bpf_check_uarg_tail_zero()
+Message-ID: <20191010105031.eadc7baldnnufxjf@yavin.dot.cyphar.com>
 References: <20191009160907.10981-1-christian.brauner@ubuntu.com>
- <CAADnVQJxUwD3u+tK1xsU2thpRWiAbERGx8mMoXKOCfNZrETMuw@mail.gmail.com>
+ <20191009160907.10981-2-christian.brauner@ubuntu.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="yrlewcij3x6slscb"
 Content-Disposition: inline
-In-Reply-To: <CAADnVQJxUwD3u+tK1xsU2thpRWiAbERGx8mMoXKOCfNZrETMuw@mail.gmail.com>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20191009160907.10981-2-christian.brauner@ubuntu.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 09, 2019 at 04:06:18PM -0700, Alexei Starovoitov wrote:
-> On Wed, Oct 9, 2019 at 9:09 AM Christian Brauner
-> <christian.brauner@ubuntu.com> wrote:
-> >
-> > Hey everyone,
-> >
-> > In v5.4-rc2 we added two new helpers check_zeroed_user() and
-> > copy_struct_from_user() including selftests (cf. [1]). It is a generic
-> > interface designed to copy a struct from userspace. The helpers will be
-> > especially useful for structs versioned by size of which we have quite a
-> > few.
-> >
-> > The most obvious benefit is that this helper lets us get rid of
-> > duplicate code. We've already switched over sched_setattr(), perf_event_open(),
-> > and clone3(). More importantly it will also help to ensure that users
-> > implementing versioning-by-size end up with the same core semantics.
-> >
-> > This point is especially crucial since we have at least one case where
-> > versioning-by-size is used but with slighly different semantics:
-> > sched_setattr(), perf_event_open(), and clone3() all do do similar
-> > checks to copy_struct_from_user() while rt_sigprocmask(2) always rejects
-> > differently-sized struct arguments.
-> >
-> > This little series switches over bpf codepaths that have hand-rolled
-> > implementations of these helpers.
-> 
-> check_zeroed_user() is not in bpf-next.
-> we will let this set sit in patchworks for some time until bpf-next
-> is merged back into net-next and we fast forward it.
-> Then we can apply it (assuming no conflicts).
 
-Sounds good to me. Just ping me when you need me to resend rebase onto
-bpf-next.
+--yrlewcij3x6slscb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Christian
+On 2019-10-09, Christian Brauner <christian.brauner@ubuntu.com> wrote:
+> In v5.4-rc2 we added a new helper (cf. [1]) check_zeroed_user() which
+> does what bpf_check_uarg_tail_zero() is doing generically. We're slowly
+> switching such codepaths over to use check_zeroed_user() instead of
+> using their own hand-rolled version.
+>=20
+> [1]: f5a1a536fa14 ("lib: introduce copy_struct_from_user() helper")
+> Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
+
+Acked-by: Aleksa Sarai <cyphar@cyphar.com>
+
+> ---
+>  kernel/bpf/syscall.c | 22 +++++++---------------
+>  1 file changed, 7 insertions(+), 15 deletions(-)
+>=20
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 82eabd4e38ad..78790778f101 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -63,30 +63,22 @@ int bpf_check_uarg_tail_zero(void __user *uaddr,
+>  			     size_t expected_size,
+>  			     size_t actual_size)
+>  {
+> -	unsigned char __user *addr;
+> -	unsigned char __user *end;
+> -	unsigned char val;
+> +	size_t size =3D min(expected_size, actual_size);
+> +	size_t rest =3D max(expected_size, actual_size) - size;
+>  	int err;
+> =20
+>  	if (unlikely(actual_size > PAGE_SIZE))	/* silly large */
+>  		return -E2BIG;
+> =20
+> -	if (unlikely(!access_ok(uaddr, actual_size)))
+> -		return -EFAULT;
+> -
+>  	if (actual_size <=3D expected_size)
+>  		return 0;
+> =20
+> -	addr =3D uaddr + expected_size;
+> -	end  =3D uaddr + actual_size;
+> +	err =3D check_zeroed_user(uaddr + expected_size, rest);
+> +	if (err < 0)
+> +		return err;
+> =20
+> -	for (; addr < end; addr++) {
+> -		err =3D get_user(val, addr);
+> -		if (err)
+> -			return err;
+> -		if (val)
+> -			return -E2BIG;
+> -	}
+> +	if (err)
+> +		return -E2BIG;
+> =20
+>  	return 0;
+>  }
+
+--=20
+Aleksa Sarai
+Senior Software Engineer (Containers)
+SUSE Linux GmbH
+<https://www.cyphar.com/>
+
+--yrlewcij3x6slscb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQSxZm6dtfE8gxLLfYqdlLljIbnQEgUCXZ8M9AAKCRCdlLljIbnQ
+Epr/AQCyrkQQbHuqCW5VkNaIJxIvHI5/ShmQM9ev+h5OCSYKvwEAhqXnMkhCZMnZ
+6Y4CZGrZrNvytbxMMC7EDJEagjZPLQo=
+=MUrF
+-----END PGP SIGNATURE-----
+
+--yrlewcij3x6slscb--
