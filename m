@@ -2,152 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1954DD3066
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2019 20:31:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2369CD311D
+	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2019 21:07:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726755AbfJJSbR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Oct 2019 14:31:17 -0400
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:43176 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726565AbfJJSbR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Oct 2019 14:31:17 -0400
-Received: by mail-pg1-f195.google.com with SMTP id i32so4188660pgl.10
-        for <bpf@vger.kernel.org>; Thu, 10 Oct 2019 11:31:16 -0700 (PDT)
+        id S1726695AbfJJTHZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Oct 2019 15:07:25 -0400
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:40632 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726489AbfJJTHZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Oct 2019 15:07:25 -0400
+Received: by mail-pf1-f196.google.com with SMTP id x127so4490244pfb.7;
+        Thu, 10 Oct 2019 12:07:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=5puI+DUvR4/SJReC5iWNrRC5yb0UPaNESP/3e3cTv9c=;
-        b=MkZI6eTmS3La1zAMkWRZvmhyLoKc8C0+QmWj2WdxWBkcUPahTXnkJlLPusjh9To197
-         Hxat8zlCruXGtldcp5C/WsZQH5HG4bC8HTDy2RnmbNhwPa8yf3YSc2sVn3C2G5qajDHa
-         oXuyROsSnNXl5J4LEDKbBlaEsdpJkyB4rtjxs=
+        bh=MhM3MBjIsBv2BuvleyV0+fZkJP95V4tElogDTT0aEDU=;
+        b=eOm5xohcrYsAp/Ik2r4XySQQBw5UGfIqQxtFAxWf7Sbkjki7F5v4yhATwiC+ECfy2T
+         PHWLOH+QmDqOSJwGt9VyzrmOrRxTvjb0m9DpBuQNWT1ahEiXVHEpGMi906zR3TsxpXeL
+         9o4CO8woahF6dvqVrz2d97ldu0xQtPwYQP/jTakjfmFHGl9WdQ5Qe7iQ9JbInX4FWAFr
+         BUtp7EE6gMW2Ob5CjQ23Wa3izsERv9fDS1Eg6NGug+CBRquslCvWnoM3+zp+Cb0IT+0g
+         6LzWWUyw9BwgZIxakByNaeVygLucrIHROj66aLYYTFPgnxlFvEMCCYy7btCIdSjPDlWm
+         inmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=5puI+DUvR4/SJReC5iWNrRC5yb0UPaNESP/3e3cTv9c=;
-        b=E1kV9jPq01CsBY0RdMfYZYurgZNKHOcMcJZGtTSLnz/axw8f6XYBIKB2826w9eDENK
-         MuMzZqA7wEgv7lo41vF4lZdh+7JHaB/SKWDGZlnE+6WVZGALnKwibArtOZObbbwm/jkz
-         4dRvsglZO+0ZMKEHsiMWEfE8C5OrO2Hk1fPLnC4IAKuPD0NXLiJs08NikO6lgfvmrKjV
-         vQ1S7A+6zy5/ULzD6j+9StpKv1pmYnsln0h9yB6/gnBBTQMvEPY3F/bfYLTc9zUJuQLU
-         Hl4mYqF4zN+/ubifrDX2B0on22OeznfVmUWCLMOINNFkasqT72W/WG2PcawBui0vIhpy
-         WAzQ==
-X-Gm-Message-State: APjAAAVIm2daeSDqBMpCXMpVQrpcsxy5gbq9H0jH307TylEBtNjrgnpQ
-        qu9oP7Oi1gAW1afNL3eXLGev6w==
-X-Google-Smtp-Source: APXvYqzqTVWSe6JvJ/kb/6wa/aaxIFE0i30wB0mnU8oqMEc087kPg9LcojT5gjbi73mMECLQXOK+Cg==
-X-Received: by 2002:a17:90a:c389:: with SMTP id h9mr13255162pjt.11.1570732276108;
-        Thu, 10 Oct 2019 11:31:16 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id ce16sm5637648pjb.29.2019.10.10.11.31.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Oct 2019 11:31:15 -0700 (PDT)
-Date:   Thu, 10 Oct 2019 14:31:14 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, rostedt@goodmis.org,
-        primiano@google.com, rsavitski@google.com, jeffv@google.com,
-        kernel-team@android.com, Alexei Starovoitov <ast@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        bpf@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Morris <jmorris@namei.org>, Jiri Olsa <jolsa@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        linux-security-module@vger.kernel.org,
-        Matthew Garrett <matthewgarrett@google.com>,
-        Namhyung Kim <namhyung@kernel.org>, selinux@vger.kernel.org,
-        Song Liu <songliubraving@fb.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Yonghong Song <yhs@fb.com>
-Subject: Re: [PATCH RFC] perf_event: Add support for LSM and SELinux checks
-Message-ID: <20191010183114.GF96813@google.com>
-References: <20191009203657.6070-1-joel@joelfernandes.org>
- <20191010081251.GP2311@hirez.programming.kicks-ass.net>
- <20191010151333.GE96813@google.com>
- <20191010170949.GR2328@hirez.programming.kicks-ass.net>
+        bh=MhM3MBjIsBv2BuvleyV0+fZkJP95V4tElogDTT0aEDU=;
+        b=UoxDjEOd8EfqlDJ5vlhsTyQqzo5J4UVRE7yC8jug/rh0ijql3A2RSvF73TafinUB9x
+         DYFf9I/0k9qfwU9g6qj14TwOuJ0Fm4UfoT8AZ7BOlW5HEMwW/KDwbxFB4/dM48z1nqeX
+         aQvEIoPri0vzo9f4mLuomurHT9AnPENd/mtgrPz50og+9HxTFHREzaAzppPlFlq24jNW
+         Gg7d2OygDWXWWm8AGeyY9nDV+bMysASuZFVB9PuobrJgmX2mW/Kf9Xu5wwQr6zBn/m12
+         s3zy7zrBsy7jVT8+a2r90vMhE0jqf4O22Muv1HZvmE5gZcrhWQNTDfEjixMWCbE781y7
+         mc+w==
+X-Gm-Message-State: APjAAAUnPrAupJBcroiVLtioKmIQQnAB6V3K5b7jC92e5EO5vY+BltXw
+        rLTbFyBb8QTS6/rXsmkDIzWrsQA3
+X-Google-Smtp-Source: APXvYqyJadDsxdAWbNL7hbFzJd0GYo2e0EgwO1cf2mtmq1qnQmInZvTSv1IdIgm8gGISRaNex4kkFQ==
+X-Received: by 2002:a63:151d:: with SMTP id v29mr12544719pgl.366.1570734444471;
+        Thu, 10 Oct 2019 12:07:24 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:180::f66f])
+        by smtp.gmail.com with ESMTPSA id b5sm5400551pgb.68.2019.10.10.12.07.21
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 10 Oct 2019 12:07:23 -0700 (PDT)
+Date:   Thu, 10 Oct 2019 12:07:20 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Ido Schimmel <idosch@idosch.org>
+Cc:     davem@davemloft.net, daniel@iogearbox.net, x86@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com,
+        edumazet@google.com
+Subject: Re: [PATCH v2 bpf-next 12/12] selftests/bpf: add kfree_skb raw_tp
+ test
+Message-ID: <20191010190634.lpxo5n5qpef3nwdj@ast-mbp.dhcp.thefacebook.com>
+References: <20191010041503.2526303-1-ast@kernel.org>
+ <20191010041503.2526303-13-ast@kernel.org>
+ <20191010110729.GA21703@splinter>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191010170949.GR2328@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20191010110729.GA21703@splinter>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 10, 2019 at 07:09:49PM +0200, Peter Zijlstra wrote:
-> On Thu, Oct 10, 2019 at 11:13:33AM -0400, Joel Fernandes wrote:
-> > On Thu, Oct 10, 2019 at 10:12:51AM +0200, Peter Zijlstra wrote:
-> > > +static inline int perf_allow_tracepoint(struct perf_event_attr *attr)
-> > >  {
-> > > -	return sysctl_perf_event_paranoid > 1;
-> > > +	if (sysctl_perf_event_paranoid > -1 && !capable(CAP_SYS_ADMIN))
-> > > +		return -EPERM;
-> > > +
-> > 
-> > Here the sysctl check of > -1 also is now coupled with a CAP_SYS_ADMIN check.
-> > However..
-> > 
-> > > +	return security_perf_event_open(attr, PERF_SECURITY_TRACEPOINT);
-> > 
-> > >  }
-> > >  
-> > > --- a/kernel/events/core.c
-> > > +++ b/kernel/events/core.c
+On Thu, Oct 10, 2019 at 02:07:29PM +0300, Ido Schimmel wrote:
+> On Wed, Oct 09, 2019 at 09:15:03PM -0700, Alexei Starovoitov wrote:
+> > +SEC("raw_tracepoint/kfree_skb")
+> > +int trace_kfree_skb(struct trace_kfree_skb *ctx)
+> > +{
+> > +	struct sk_buff *skb = ctx->skb;
+> > +	struct net_device *dev;
+> > +	int ifindex;
+> > +	struct callback_head *ptr;
+> > +	void *func;
+> > +
+> > +	__builtin_preserve_access_index(({
+> > +		dev = skb->dev;
+> > +		ifindex = dev->ifindex;
 > 
-> > > @@ -5862,14 +5859,8 @@ static int perf_mmap(struct file *file,
-> > >  	lock_limit >>= PAGE_SHIFT;
-> > >  	locked = atomic64_read(&vma->vm_mm->pinned_vm) + extra;
-> > >  
-> > > -	if (locked > lock_limit) {
-> > > -		if (perf_paranoid_tracepoint_raw() && !capable(CAP_IPC_LOCK)) {
-> > > -			ret = -EPERM;
-> > > -			goto unlock;
-> > > -		}
-> > > -
-> > > -		ret = security_perf_event_open(&event->attr,
-> > > -					       PERF_SECURITY_TRACEPOINT);
-> > > +	if (locked > lock_limit && !capable(CAP_IPC_LOCK)) {
-> > > +		ret = perf_allow_tracepoint(&event->attr);
-> > 
-> > In previous code, this check did not involve a check for CAP_SYS_ADMIN.
-> > 
-> > I am Ok with adding the CAP_SYS_ADMIN check as well which does make sense to
-> > me for tracepoint access. But it is still a change in the logic so I wanted
-> > to bring it up.
-> > 
-> > Let me know any other thoughts and then I'll post a new patch.
+> Hi Alexei,
 > 
-> Yes, I did notice, I found it weird.
+> The patchset looks very useful. One question: Is it always safe to
+> access 'skb->dev->ifindex' here? I'm asking because 'dev' is inside a
+> union with 'dev_scratch' which is 'unsigned long' and therefore might
+> not always be a valid memory address. Consider for example the following
+> code path:
 > 
-> If you have CAP_IPC_LIMIT you should be able to bust mlock memory
-> limits, so I don't see why we should further relate that to paranoid.
+> ...
+> __udp_queue_rcv_skb(sk, skb)
+> 	__udp_enqueue_schedule_skb(sk, skb)
+> 		udp_set_dev_scratch(skb)
+> 		// returns error
+> 	...
+> 	kfree_skb(skb) // ebpf program is invoked
 > 
-> The way I wrote it, we also allow to bust the limit if we have disabled
-> all paranoid checks. Which makes some sense I suppose.
-> 
-> The original commit is this:
-> 
->   459ec28ab404 ("perf_counter: Allow mmap if paranoid checks are turned off")
+> How is this handled by eBPF?
 
-I am thinking we can just a new function perf_is_paranoid() that has nothing
-to do with the CAP_SYS_ADMIN check and doesn't have tracepoint wording:
+Excellent question. There are cases like this where the verifier cannot possibly
+track semantics of the kernel code and union of pointer with scratch area
+like this. That's why every access through btf pointer is a hidden probe_read.
+Comparing to old school tracing all memory accesses were probe_read
+and bpf prog was free to read anything and page fault everywhere.
+Now bpf prog will almost always access correct data. Yet corner cases like
+this are inevitable. I'm working on few ideas how to improve it further
+with btf-tagged slab allocations and kasan-like memory shadowing.
 
-static inline int perf_is_paranoid(void)
-{
-	return sysctl_perf_event_paranoid > -1;
-}
+Your question made me thinking whether we have a long standing issue
+with dev_scratch, since even classic bpf has SKF_AD_IFINDEX hack
+which is implemented as:
+    *insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(struct sk_buff, dev),
+                          BPF_REG_TMP, BPF_REG_CTX,
+                          offsetof(struct sk_buff, dev));
+    /* if (tmp != 0) goto pc + 1 */
+    *insn++ = BPF_JMP_IMM(BPF_JNE, BPF_REG_TMP, 0, 1);
+    *insn++ = BPF_EXIT_INSN();
+    if (fp->k == SKF_AD_OFF + SKF_AD_IFINDEX)
+            *insn = BPF_LDX_MEM(BPF_W, BPF_REG_A, BPF_REG_TMP,
+                                offsetof(struct net_device, ifindex));
 
-And then call that from the mmap() code:
-if (locked > lock_limit && perf_is_paranoid() && !capable(CAP_IPC_LOCK)) {
-	return -EPERM;
-}
-
-I don't think we need to add selinux security checks here since we are
-already adding security checks earlier in mmap(). This will make the code and
-its intention more clear and in line with the commit 459ec28ab404 you
-mentioned. Thoughts?
-
-thanks,
-
- - Joel
+That means for long time [c|e]BPF code was checking skb->dev for NULL only.
+I've analyzed the code where socket filters can be called and I think it's good
+there. dev_scratch is used after sk_filter has run.
+But there are other hooks: lwt, various cgroups.
+I've checked lwt and cgroup inet/egress. I think dev_scratch should not be
+used in these paths. So should be good there as well.
+But I think the whole idea of aliasing scratch into 'dev' pointer is dangerous.
+There are plenty of tracepoints that do skb->dev->foo. Hard to track where
+everything is called.
+I think udp code need to move this dev_scratch into some other place in skb.
 
