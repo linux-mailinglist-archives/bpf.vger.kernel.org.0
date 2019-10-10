@@ -2,84 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C1251D1FA4
-	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2019 06:25:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0029D1FBD
+	for <lists+bpf@lfdr.de>; Thu, 10 Oct 2019 06:42:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726513AbfJJEZl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Oct 2019 00:25:41 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:8828 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725774AbfJJEZk (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 10 Oct 2019 00:25:40 -0400
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x9A4Olvs031946
-        for <bpf@vger.kernel.org>; Wed, 9 Oct 2019 21:25:38 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=facebook;
- bh=rFt+ElRDA7ZBEXGDS3tpQyrVLoVQSgrBjpwlYXwsh5Y=;
- b=hjymnCw/ipB0two007/sl+cIe72pyQ+BJybwG1bFLWMg0oVtoOQdubZqwPvj0m7FtsUn
- lx7qv/ruN1gKrWdh5EGCEAKhaWZ8Ptt8wza1jl+VPmt3i65hQGpwymjNalPER0f00IMt
- WDh2/U4fhykP4bgGmM0Sf2ILfC797HpXsEc= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2vht50gkvt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 09 Oct 2019 21:25:38 -0700
-Received: from 2401:db00:30:6007:face:0:1:0 (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 9 Oct 2019 21:25:37 -0700
-Received: by dev101.prn2.facebook.com (Postfix, from userid 137359)
-        id 0D2048618C9; Wed,  9 Oct 2019 21:25:36 -0700 (PDT)
-Smtp-Origin-Hostprefix: dev
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: dev101.prn2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Cluster: prn2c23
-Subject: [PATCH bpf-next] scripts/bpf: fix xdp_md forward declaration typo
-Date:   Wed, 9 Oct 2019 21:25:34 -0700
-Message-ID: <20191010042534.290562-1-andriin@fb.com>
-X-Mailer: git-send-email 2.17.1
-X-FB-Internal: Safe
+        id S1726304AbfJJEmC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Oct 2019 00:42:02 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:43323 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726201AbfJJEmC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Oct 2019 00:42:02 -0400
+Received: by mail-pf1-f194.google.com with SMTP id a2so3048797pfo.10;
+        Wed, 09 Oct 2019 21:42:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=ul6B5sTr9KQC1ANUb+xAoNDJu9lKzfbcshAB5jlCr1k=;
+        b=fux9292pnE9lQyfdrhgQn83sAoxZaqhZDojnHT4bBZDxRIwfzoLFBv714cBUO3gP01
+         TVRsQQpYG/X7ZgiyDI1iU/rECEiPQw7up+5/7eA3NsypHbQjt2HPRZArWsQ47f9QgMAN
+         KJmVrI6CGjJriEVAo+3KNXtCZvmPKaQ5LPT52EAujUDEM4L357mtQm2BS33y0RFWAAEh
+         EJqnVW4fBr6dffw5YbfvzRjECXYPRvYYO3s92mOjn1wkbNAjMg9FGCB7DyLfnmXk4UNc
+         1AdOlwhxWzeSr7kBLMp0cVbZeFvIkrhQGWD+LBmTHTPL3UVWCXyxREIW5M7QMS91vD/Q
+         GU/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=ul6B5sTr9KQC1ANUb+xAoNDJu9lKzfbcshAB5jlCr1k=;
+        b=MULzrUrXLqXk6uhRAiQjR4SBUjvZfenJbG9sCItjTFuOjYVdI4mQSUuvRnBfMxiaPk
+         pDdGsKK5/rgQsE+3mc/aUyJLr6l5sePbvCBfzvsTKUjLpc2Mma6JQFBrKjvsUEhN2VL6
+         If0pvmomzUGq+pmspApwxVTG59SkmbZeK5RPOk4+n3TPmdM92u7A0N96se+7cHfmx+ux
+         chsTBW6LnR0mhxB1HLIrUj5dsjUX9lBadJsbW+t7SHmeEG7kauph/Ikn7zrdu5gZHNmm
+         P54PZ6+n/j8Ny1pJXpEaKysh1V3WUVrUHoZ6YXnGsGCNcE2t5/y2fvL6eFnVb+w4Vz0C
+         IfaQ==
+X-Gm-Message-State: APjAAAWrwjb0PMzse87pf262osvZXkKSdyFlykYUJF8WYfusBx6md4bR
+        DXUmnjqbsxVehI25mOW1cil9FjG9
+X-Google-Smtp-Source: APXvYqyDqIVTZ2PBykOpjwTgErPEEj8r7vjfaGyIZMRLmqdSeL7Xvu1Pd22rAv7RH+0c/GMMS/yEhg==
+X-Received: by 2002:a63:1b44:: with SMTP id b4mr8838120pgm.421.1570682521719;
+        Wed, 09 Oct 2019 21:42:01 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:180::7c62])
+        by smtp.gmail.com with ESMTPSA id 184sm3621350pgf.33.2019.10.09.21.41.59
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 09 Oct 2019 21:42:00 -0700 (PDT)
+Date:   Wed, 9 Oct 2019 21:41:58 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Marek Majkowski <marek@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next v3 1/5] bpf: Support chain calling multiple BPF
+ programs after each other
+Message-ID: <20191010044156.2hno4sszysu3c35g@ast-mbp.dhcp.thefacebook.com>
+References: <157046883502.2092443.146052429591277809.stgit@alrua-x1>
+ <157046883614.2092443.9861796174814370924.stgit@alrua-x1>
+ <20191007204234.p2bh6sul2uakpmnp@ast-mbp.dhcp.thefacebook.com>
+ <87sgo3lkx9.fsf@toke.dk>
+ <20191009015117.pldowv6n3k5p3ghr@ast-mbp.dhcp.thefacebook.com>
+ <87o8yqjqg0.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
- definitions=2019-10-10_02:2019-10-08,2019-10-10 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0 mlxscore=0
- malwarescore=0 spamscore=0 clxscore=1015 adultscore=0 lowpriorityscore=0
- mlxlogscore=762 phishscore=0 impostorscore=0 suspectscore=9
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1908290000 definitions=main-1910100039
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87o8yqjqg0.fsf@toke.dk>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fix typo in struct xpd_md, generated from bpf_helpers_doc.py, which is
-causing compilation warnings for programs using bpf_helpers.h
+On Wed, Oct 09, 2019 at 10:03:43AM +0200, Toke Høiland-Jørgensen wrote:
+> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+> 
+> > Please implement proper indirect calls and jumps.
+> 
+> I am still not convinced this will actually solve our problem; but OK, I
+> can give it a shot.
 
-Fixes: 7a387bed47f7 ("scripts/bpf: teach bpf_helpers_doc.py to dump BPF helper definitions")
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- scripts/bpf_helpers_doc.py | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+If you're not convinced let's talk about it first.
 
-diff --git a/scripts/bpf_helpers_doc.py b/scripts/bpf_helpers_doc.py
-index 15d3d83d6297..7df9ce598ff9 100755
---- a/scripts/bpf_helpers_doc.py
-+++ b/scripts/bpf_helpers_doc.py
-@@ -418,7 +418,7 @@ class PrinterHelpers(Printer):
- 
-             'struct __sk_buff',
-             'struct sk_msg_md',
--            'struct xpd_md',
-+            'struct xdp_md',
-     ]
-     known_types = {
-             '...',
--- 
-2.17.1
+Indirect calls is a building block for debugpoints.
+Let's not call them tracepoints, because Linus banned any discusion
+that includes that name.
+The debugpoints is a way for BPF program to insert points in its
+code to let external facility to do tracing and debugging.
+
+void (*debugpoint1)(struct xdp_buff *, int code);
+void (*debugpoint2)(struct xdp_buff *);
+void (*debugpoint3)(int len);
+
+int bpf_prog(struct xdp_buff *ctx)
+{
+    // let's parse the packet
+    if (debugpoint3)
+        debugpoint3(ctx->data_end - ctx->data);
+
+    if (condition) {
+        // deciding to drop this packet
+        if (debugpoint1)
+            debugpoint1(ctx, XDP_DROP);
+        return XDP_DROP;
+    }
+    if (some other condition) {
+        // lets pass it to the stack
+        if (debugpoint2)
+            debugpoint2(ctx);
+        return XDP_PASS;
+    }
+}
+
+In normal operation nothing is being called.
+The execution cost to the program is load plus branch.
+But since program is annotated with BTF the external tool,
+like bpftool, can load another program and populate
+debugpointN pointer in the original program to trace its
+execution.
+Essentially it's live debugging (tracing) of cooperative
+bpf programs that added debugpoints to their code.
+
+Obviously indirect calls can be used for a ton of other things
+including proper chaing of progs, but I'm convinced that
+you don't need chaining to solve your problem.
+You need debugging.
+If you disagree please explain _your_ problem again.
+Saying that fb katran is a use case for chaining is, hrm, not correct.
 
