@@ -2,132 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F3CBD38A1
-	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2019 07:15:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDB76D39CC
+	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2019 09:06:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726255AbfJKFPj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Oct 2019 01:15:39 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:33954 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726099AbfJKFPi (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 11 Oct 2019 01:15:38 -0400
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x9B5FNMN002972;
-        Thu, 10 Oct 2019 22:15:26 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=MTVhGVSrY4Dacj3mSYYh/yAGE3BpS+OZYTCuvQrIApE=;
- b=VKm4yRmI9gydugGRVtytzE8mMkVE3PvCOmyDFdwyJdsjkgQPIGvkbMIA7ZaWzwg76glG
- z81ZiBR5IhMovO8T64ew6YBJ0Y0ueCoBnQBuZjmTBt/ztfTruPK1RXSKNAGhUfG3u7Ov
- z4ckJeEff5yuAm+tbyW9qf/DGDsLWJ03KP0= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2vj65fbw7c-4
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 10 Oct 2019 22:15:25 -0700
-Received: from ash-exopmbx101.TheFacebook.com (2620:10d:c0a8:82::b) by
- ash-exhub204.TheFacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 10 Oct 2019 22:15:13 -0700
-Received: from ash-exhub101.TheFacebook.com (2620:10d:c0a8:82::e) by
- ash-exopmbx101.TheFacebook.com (2620:10d:c0a8:82::b) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 10 Oct 2019 22:15:12 -0700
-Received: from NAM02-BL2-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
- via Frontend Transport; Thu, 10 Oct 2019 22:15:12 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=l40pHgA/pFwU1PXekKolcLtDfowO5lVGttuKeYzxdrEj6bFiD4Aav/w7xnT2drnN5Eg1EN6gn2yBXS8lXGwrvk1zHHHsgDRZ7qdldL9w2kprouJaXgdkCj9q9mlGx/zSn9jDjqVo+v1Dw5RE5/8506qG7GRtxNvblg29YskCMplZky2PShj9rHlZsGb5fJ7ohRmV5gQpvkU9crfkVGMU3iR9wpZLSTy7q6DzQ9M+/OrxQm4RCEwEFvxAgE49EeLaa3x4tjMAsCDyQu+nNj6aN9GMEh3QoZlTXXMb23CBHb6uu1PFZISSxRESoeeIlJCL0t4m/pH/iOdTscKMBMkz/w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MTVhGVSrY4Dacj3mSYYh/yAGE3BpS+OZYTCuvQrIApE=;
- b=Ni8O4Qs9nZeWQEkath3Kao6rJLsMNrhH+zP5avMQJF15IvmRlU3YxGKX04+Z7vB7JonUNGqadh2ZHAsxpde4bhQl73wSP+oBrghiHrjxI4roglUza+0ClEzMldnscznyFu8lOmNZcFneMoO7tO8+eryKUK3dJC3lf90uKiB0KzXye4ziUb3gG5TNk4sWRTNAmHV2kSGCOnZ7D70qHC3b+Hp2Xf/dq6mGmaim9lwdRFGUn6vUaj9NAjPrNaT0agIp/TdzHhP0+RQK68BtnhKmRP5zOra9cJKIF6s9wPYwCABENpRfUe3Vuv+TdadbRzU2bW+w83omTkYeIZHirNsdQA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MTVhGVSrY4Dacj3mSYYh/yAGE3BpS+OZYTCuvQrIApE=;
- b=gaRDBhzSlCMAJRYS75LlD5wI3yJXm2EfLsgLNrRKOjlSgFWOzO+KHRGzCVWqljPX7XZJ8xUBdqhsuza0LG/6ypipD0ciI3ep68GFj6k3gpihpCnEKdARB8soI9pvcok4n/feG1YshKf44P4bTgq6tNncG3PuA/W+IQxJqG82iF4=
-Received: from MN2PR15MB3213.namprd15.prod.outlook.com (20.179.21.76) by
- MN2PR15MB2781.namprd15.prod.outlook.com (20.179.144.142) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2347.18; Fri, 11 Oct 2019 05:15:12 +0000
-Received: from MN2PR15MB3213.namprd15.prod.outlook.com
- ([fe80::d5a4:a2a6:a805:6647]) by MN2PR15MB3213.namprd15.prod.outlook.com
- ([fe80::d5a4:a2a6:a805:6647%7]) with mapi id 15.20.2347.021; Fri, 11 Oct 2019
- 05:15:12 +0000
-From:   Martin Lau <kafai@fb.com>
-To:     Andrii Nakryiko <andriin@fb.com>
-CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>
-Subject: Re: [Potential Spoof] [PATCH bpf-next] bpf: fix cast to pointer from
- integer of different size warning
-Thread-Topic: [Potential Spoof] [PATCH bpf-next] bpf: fix cast to pointer from
- integer of different size warning
-Thread-Index: AQHVf+yPhHfGo6/zZE201kBAh+qI06dU5diA
-Date:   Fri, 11 Oct 2019 05:15:11 +0000
-Message-ID: <20191011051507.akhuheqjizpfq7xx@kafai-mbp.dhcp.thefacebook.com>
-References: <20191011042925.731290-1-andriin@fb.com>
-In-Reply-To: <20191011042925.731290-1-andriin@fb.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MWHPR10CA0021.namprd10.prod.outlook.com (2603:10b6:301::31)
- To MN2PR15MB3213.namprd15.prod.outlook.com (2603:10b6:208:3d::12)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:180::daf2]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 3627f50b-5f41-41b5-9c74-08d74e09fde1
-x-ms-traffictypediagnostic: MN2PR15MB2781:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MN2PR15MB2781EAC928162F5A5002CAE0D5970@MN2PR15MB2781.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1443;
-x-forefront-prvs: 0187F3EA14
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(396003)(366004)(39860400002)(376002)(346002)(136003)(189003)(199004)(81156014)(8936002)(4744005)(6246003)(8676002)(81166006)(1076003)(71200400001)(71190400001)(9686003)(6512007)(446003)(54906003)(46003)(229853002)(186003)(6486002)(476003)(486006)(11346002)(14454004)(52116002)(99286004)(66556008)(6506007)(102836004)(478600001)(6436002)(256004)(316002)(25786009)(66946007)(6116002)(14444005)(7736002)(6862004)(305945005)(76176011)(386003)(2906002)(86362001)(66446008)(66476007)(4326008)(64756008)(5660300002)(6636002);DIR:OUT;SFP:1102;SCL:1;SRVR:MN2PR15MB2781;H:MN2PR15MB3213.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 3Bs8gneRaXfCadJWabxGK4EwhlpG7ZtNHtGB8HnXj3PtXGKYMenyIl2YuUa1RqUGMGyOT7qmJMk8ue5N/G8n2e/xPbHBxDGBOGrAAJhtKSz42yh93U1Ag7Hdzz0xsano1Ia3RdhUE7ljzm7BE/q0WN1PkTKJxMcKv4rNpsE3vaw87M1jDhM/NmjyPIWZ5X/dwIik+7meLUfKhzfv4LR3V9PGU4jHEzVlzG3HjB73d9elwa3mT9EsPBQIOO+BgQgMOaduerOas7ci4D7VxKQOTg56C7ahqQ501wVGTODIEe74vrFL3VUs0b9q7ueH4ZWKHDptOlaMBvsV6PfE1/j9MFgOsJRwcE5mmTbqKc9A49yNGHu6ev9keI1BBDGA9abbD8hB8vbiQDNyssijBEiRJ1XSxUGhSU3Krkq6hpD7n0w=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3EFA54B64CE32649A0EBABC2B0AFFE2B@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1726982AbfJKHGL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Oct 2019 03:06:11 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:40260 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726679AbfJKHGK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Oct 2019 03:06:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=B7tSt4++AeNClEYMJ6vFiBHpS1WJihxuciejr2hX7bs=; b=GvnBbSeRL2D7Djol5QJK4MqT+
+        f5pua78F2o9VGO8YAmoQv16DV8cOvHSqAM9e+4JIHcuJk2nKDeKvCJgnjYK3SQmzdBKk/2cWLMjoP
+        pqAr/BidNI3as9nX/sJ7HaZqkEUiPCJGbFRFWV43iqClh+ek5Zjd5NrBpLm9I3OBWbx3fFeSgpjPZ
+        3HFr+5JoDrvRlwuZm1pms3rRyfSGcNJfzUjfRAw364CFb46QXZD81LBxKBMsyJSDD+zBjU7daKMVD
+        1mOylo3pTqay0R17ca4hZEsnO/6nJZdOUAJMyDqQ3vsoeecqLMGUu0QG3I3eSmhNIyAVAAMK79Ql9
+        tk4BJxQ0w==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1iIozh-0004C0-Du; Fri, 11 Oct 2019 07:05:45 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C6927301224;
+        Fri, 11 Oct 2019 09:04:50 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4FEF021492B15; Fri, 11 Oct 2019 09:05:43 +0200 (CEST)
+Date:   Fri, 11 Oct 2019 09:05:43 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org, rostedt@goodmis.org,
+        primiano@google.com, rsavitski@google.com, jeffv@google.com,
+        kernel-team@android.com, Alexei Starovoitov <ast@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        bpf@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        James Morris <jmorris@namei.org>, Jiri Olsa <jolsa@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        linux-security-module@vger.kernel.org,
+        Matthew Garrett <matthewgarrett@google.com>,
+        Namhyung Kim <namhyung@kernel.org>, selinux@vger.kernel.org,
+        Song Liu <songliubraving@fb.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Yonghong Song <yhs@fb.com>
+Subject: Re: [PATCH RFC] perf_event: Add support for LSM and SELinux checks
+Message-ID: <20191011070543.GV2328@hirez.programming.kicks-ass.net>
+References: <20191009203657.6070-1-joel@joelfernandes.org>
+ <20191010081251.GP2311@hirez.programming.kicks-ass.net>
+ <20191010151333.GE96813@google.com>
+ <20191010170949.GR2328@hirez.programming.kicks-ass.net>
+ <20191010183114.GF96813@google.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3627f50b-5f41-41b5-9c74-08d74e09fde1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Oct 2019 05:15:11.9816
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: qwx51yXA3JfOWpnCKv7SiUDrywBQN/KKqcSdYBghok0QLow7tobHMGWOPFRebXaC
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB2781
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
- definitions=2019-10-11_03:2019-10-10,2019-10-11 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- clxscore=1015 mlxscore=0 phishscore=0 lowpriorityscore=0 impostorscore=0
- mlxlogscore=717 suspectscore=0 malwarescore=0 adultscore=0 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1908290000 definitions=main-1910110048
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191010183114.GF96813@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 10, 2019 at 09:29:25PM -0700, Andrii Nakryiko wrote:
-> Fix "warning: cast to pointer from integer of different size" when
-> casting u64 addr to void *.
->=20
-> Reported-by: kbuild test robot <lkp@intel.com>
-> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-Fixes: a23740ec43ba ("bpf: Track contents of read-only maps as scalars")
+On Thu, Oct 10, 2019 at 02:31:14PM -0400, Joel Fernandes wrote:
+> On Thu, Oct 10, 2019 at 07:09:49PM +0200, Peter Zijlstra wrote:
 
-Acked-by: Martin KaFai Lau <kafai@fb.com>
+> > Yes, I did notice, I found it weird.
+> > 
+> > If you have CAP_IPC_LIMIT you should be able to bust mlock memory
+> > limits, so I don't see why we should further relate that to paranoid.
+> > 
+> > The way I wrote it, we also allow to bust the limit if we have disabled
+> > all paranoid checks. Which makes some sense I suppose.
+> > 
+> > The original commit is this:
+> > 
+> >   459ec28ab404 ("perf_counter: Allow mmap if paranoid checks are turned off")
+> 
+> I am thinking we can just a new function perf_is_paranoid() that has nothing
+> to do with the CAP_SYS_ADMIN check and doesn't have tracepoint wording:
+> 
+> static inline int perf_is_paranoid(void)
+> {
+> 	return sysctl_perf_event_paranoid > -1;
+> }
+> 
+> And then call that from the mmap() code:
+> if (locked > lock_limit && perf_is_paranoid() && !capable(CAP_IPC_LOCK)) {
+> 	return -EPERM;
+> }
+> 
+> I don't think we need to add selinux security checks here since we are
+> already adding security checks earlier in mmap(). This will make the code and
+> its intention more clear and in line with the commit 459ec28ab404 you
+> mentioned. Thoughts?
+
+Mostly that I'm confused by the current code ;-)
+
+Like I said, CAP_IPC_LIMIT on its own should already allow busting the
+limit, I don't really see why we should make it conditional on paranoid.
+
+But if you want to preserve behaviour (arguably a sane thing for your
+patch) then yes, feel free to do as you propose.
