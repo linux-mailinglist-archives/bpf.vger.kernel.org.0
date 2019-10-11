@@ -2,48 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 061F3D4543
-	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2019 18:21:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5768DD4545
+	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2019 18:21:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726910AbfJKQV1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Oct 2019 12:21:27 -0400
-Received: from mail-pf1-f202.google.com ([209.85.210.202]:51675 "EHLO
-        mail-pf1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726728AbfJKQV1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Oct 2019 12:21:27 -0400
-Received: by mail-pf1-f202.google.com with SMTP id s137so7830170pfs.18
-        for <bpf@vger.kernel.org>; Fri, 11 Oct 2019 09:21:26 -0700 (PDT)
+        id S1728220AbfJKQV3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Oct 2019 12:21:29 -0400
+Received: from mail-pf1-f201.google.com ([209.85.210.201]:53772 "EHLO
+        mail-pf1-f201.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726728AbfJKQV3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Oct 2019 12:21:29 -0400
+Received: by mail-pf1-f201.google.com with SMTP id x10so7836925pfr.20
+        for <bpf@vger.kernel.org>; Fri, 11 Oct 2019 09:21:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=xBvLpnklmO3BeW4F+cJ5FIZ6jEwlCbi0YlkXsejMb1w=;
-        b=DJDypAfZlllevArKYRXQ88RS2H5DrNm8EpfeLw0LXLL9H2QzEvYMOHgzPgfZLU1X/L
-         JJJT4X310I3RLuccgMEULteGhzajAR5lZlZDMZixeiB8cDBJ91DWJen2FfZQRl3nQqZV
-         qmbplDBAo2KOix/9DuGplFa612nYshXxViRktpY5GDcK/Ngy6OJur4k2oU2Gvu6REX+Q
-         bfQATZ4WAYcPUcavGantHH14ujG+WJzEbqRJbkNVZk0TEPpBboiCkEyiLXpsAJ0yxws0
-         d+qsfem0kGQQvHYPb0pTXc4HHjAr1oqKZyyarWsWqyEzw/eypGX5F/IUjgFoao0x50jn
-         TpIw==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=KDZVxGGvtoUTk1RqaetpoYQq+Ui+ut5COCWag7pw9rs=;
+        b=DRaWA1Es/TQ8MVC3DtaBGIaen9YrP/2hLr9y9MZxWp8SXEdVYr5u4cdb6TJ3Hix2zS
+         bkfcW2q4LSTdI+uT+AAGvBNP0JndC/SqeVQ06d9DwH16mIJGMFUFwdm5RdrF50Glhdm+
+         a3wkCKWdFktlB7XTIpCAu87NNT0qivmeXhH46m69IXRNmfJCRjVg+/ReQ7t4JgZhZu9E
+         Fe9B68y/+3fKC54rEgj68JFPjR+Q1YALQTfmGuUBopPBBXGTvUnr4a8Zkyte8lZNJxpf
+         U7hY8rYRGi3MlTs2t/lKe+WWt9yQe4goE706HRX8NZgMZgZDsOpXiEKumLwhCWdQgABf
+         0qFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=xBvLpnklmO3BeW4F+cJ5FIZ6jEwlCbi0YlkXsejMb1w=;
-        b=dp0kQjh+z1tx15Eo1nzD8r6hiwy8XtWRT1MsVXHU+gj4hQrb8rps9vf5BYkCDhHljY
-         cO0q/fbCxbmwR3aRxmTzEVK2QTOgmHrnwaQnaI1+zXuU9JuwOHnN0S+On9n134rhSszJ
-         SoEjT+jEOBBfUD8k1kbDkLzUGNYmU+tDsv4riQis+dE2y8/newbh6sMb1qnBBuQgApQ5
-         mlZHgJZuLmqTB99A31pr/gaCYe142TY5StgWbVqusiQH/nJPrXpxmFYY5uIigR1XSiEm
-         QcDnnSiEOUsmbxolYka78DRZAnA+7cdyHnWeVhnZE7UxZz0DwJQEiAIqeWtES2jIm0BS
-         w09g==
-X-Gm-Message-State: APjAAAWmLbS2KKE8MI2M66/X066lSptmLa7OrzrR3BLKrrl1NCwArRTT
-        4lvb/2OGzIMoynIVY7YOObLf088=
-X-Google-Smtp-Source: APXvYqygwahaAN17B+q4IqG8G6ZDeaeOcvOgLgoWO2UFUdciDoSvOipn4xcw0+z6LVegK7y3x/kSxg4=
-X-Received: by 2002:a63:5c49:: with SMTP id n9mr17568195pgm.289.1570810886256;
- Fri, 11 Oct 2019 09:21:26 -0700 (PDT)
-Date:   Fri, 11 Oct 2019 09:21:22 -0700
-Message-Id: <20191011162124.52982-1-sdf@google.com>
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=KDZVxGGvtoUTk1RqaetpoYQq+Ui+ut5COCWag7pw9rs=;
+        b=Ln2tBpWyOFF+pYiiEPHuq1hqpLHcUB9YbadFn5JjGRvL1x6SlhSli8yZis30TvrSRc
+         hcNrTWZisJsiRLe7oLc4nyFuwYxKdWmwa4/8bLdBRvYYSJab97CS8Euy/Lw1akxKIccV
+         I6LOF4Ebw3Bum1W4VVaetJoVB7tI8zdZvOa4ggEOBlRtqgzeqV7RbRpSR92usaa8zrjl
+         CWscKK5EAjxy8931skI80+PThdT+nJ71qYiSmvxK3p9MY1jVnFswF96CHvLLgOl+Uf2p
+         EXI7eI8+L9Xhzyp0Cuf8LoQwvdyYg2En3vzqGOD3t6JqmFZWUQ1KJJXI8ofm8zKUnIPW
+         +mVg==
+X-Gm-Message-State: APjAAAXGXAuId/X70zEnqCbSUJAN4xIV/Uywyq7Oh33J1JGMN3KkVWZV
+        O8+Hi7NDCUDIymUe2vmwc/pA6cE=
+X-Google-Smtp-Source: APXvYqxjQ1ZelYEyr7jRyX7StJ5karSIgWLxQNUdmm4yZKlp0cBxP1qTlJcBEuygrfv3aTUR+9WvFyo=
+X-Received: by 2002:a63:d450:: with SMTP id i16mr17496713pgj.126.1570810888835;
+ Fri, 11 Oct 2019 09:21:28 -0700 (PDT)
+Date:   Fri, 11 Oct 2019 09:21:23 -0700
+In-Reply-To: <20191011162124.52982-1-sdf@google.com>
+Message-Id: <20191011162124.52982-2-sdf@google.com>
 Mime-Version: 1.0
+References: <20191011162124.52982-1-sdf@google.com>
 X-Mailer: git-send-email 2.23.0.700.g56cf767bdb-goog
-Subject: [PATCH bpf-next 1/3] bpf: preserve command of the process that loaded
- the program
+Subject: [PATCH bpf-next 2/3] tools/bpf: sync bpf.h
 From:   Stanislav Fomichev <sdf@google.com>
 To:     netdev@vger.kernel.org, bpf@vger.kernel.org
 Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
@@ -54,35 +57,17 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Even though we have the pointer to user_struct and can recover
-uid of the user who has created the program, it usually contains
-0 (root) which is not very informative. Let's store the comm of the
-calling process and export it via bpf_prog_info. This should help
-answer the question "which process loaded this particular program".
+Add created_by_comm.
 
 Signed-off-by: Stanislav Fomichev <sdf@google.com>
 ---
- include/linux/bpf.h      | 1 +
- include/uapi/linux/bpf.h | 2 ++
- kernel/bpf/syscall.c     | 4 ++++
- 3 files changed, 7 insertions(+)
+ tools/include/uapi/linux/bpf.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 5b9d22338606..b03ea396afe5 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -421,6 +421,7 @@ struct bpf_prog_aux {
- 		struct work_struct work;
- 		struct rcu_head	rcu;
- 	};
-+	char created_by_comm[BPF_CREATED_COMM_LEN];
- };
- 
- struct bpf_array {
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
 index a65c3b0c6935..4e883ecbba1e 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
 @@ -326,6 +326,7 @@ enum bpf_attach_type {
  #define BPF_F_NUMA_NODE		(1U << 2)
  
@@ -99,28 +84,6 @@ index a65c3b0c6935..4e883ecbba1e 100644
  } __attribute__((aligned(8)));
  
  struct bpf_map_info {
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 82eabd4e38ad..51c125292eaf 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -1735,6 +1735,8 @@ static int bpf_prog_load(union bpf_attr *attr, union bpf_attr __user *uattr)
- 	bpf_prog_kallsyms_add(prog);
- 	perf_event_bpf_event(prog, PERF_BPF_EVENT_PROG_LOAD, 0);
- 
-+	get_task_comm(prog->aux->created_by_comm, current);
-+
- 	err = bpf_prog_new_fd(prog);
- 	if (err < 0)
- 		bpf_prog_put(prog);
-@@ -2337,6 +2339,8 @@ static int bpf_prog_get_info_by_fd(struct bpf_prog *prog,
- 
- 	memcpy(info.tag, prog->tag, sizeof(prog->tag));
- 	memcpy(info.name, prog->aux->name, sizeof(prog->aux->name));
-+	memcpy(info.created_by_comm, prog->aux->created_by_comm,
-+	       sizeof(prog->aux->created_by_comm));
- 
- 	ulen = info.nr_map_ids;
- 	info.nr_map_ids = prog->aux->used_map_cnt;
 -- 
 2.23.0.700.g56cf767bdb-goog
 
