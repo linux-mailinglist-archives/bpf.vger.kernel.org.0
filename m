@@ -2,252 +2,237 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A3C38D3F33
-	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2019 14:07:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56DA5D43E4
+	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2019 17:12:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727936AbfJKMHX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Oct 2019 08:07:23 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:41392 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727477AbfJKMHW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Oct 2019 08:07:22 -0400
-Received: by mail-wr1-f66.google.com with SMTP id q9so11640223wrm.8
-        for <bpf@vger.kernel.org>; Fri, 11 Oct 2019 05:07:20 -0700 (PDT)
+        id S1726595AbfJKPMW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Oct 2019 11:12:22 -0400
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:34790 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726331AbfJKPMW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Oct 2019 11:12:22 -0400
+Received: by mail-lj1-f194.google.com with SMTP id j19so10220788lja.1;
+        Fri, 11 Oct 2019 08:12:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=DXHRllLSJ/1e62jK/WoBiAvlasUoqg+VrQjUmvDHO/E=;
-        b=DbiKHYxSPV9it/2ZCvnjMRUWTrKt/xUPh+FDv3p5vbVHO8cvFJcAQTqgmxFwPZ74ac
-         cFh+XTO5LtB5cZU44CYg2cMf0tzfWtouWtbbCM1qWV2O6exqgFBFDQvu71z7GdfQPTDm
-         wQbfHCjag/55tfIC5ATL10KVCE/fNy75VtnITaGHByTvO6BZ+/lVKYqe+LivPRgXN4Qn
-         omQyvYlmNcuuiOS2vbuXGmu0dASKkzlcCTGkDh+nsqka9oceabS4455+yVqjFnj7KRX7
-         es/iRQR+9HNxIfo5o2bhY8GM9vMiDX37QRHWJts+//AAC8nLuGs/C4YKRg1Cs1XMLW0I
-         IYiw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+1ypOR9fZA4lK0XmIF+p9uuR9SMEDVTW7L0xDQwfOfI=;
+        b=jm+bx9/q/ioKZOdw2XGXOjjcH1GmMTp4LFxIbat9a+vh/MpLrqoGJTv/CI2EngbYxK
+         sj/uEd3k5DSLnd3Km2fK9oICh410C29fiaBA4W4/zXRIWr1KpBKD9Ic7YYVta7yp3YBA
+         86xIid8ulN3JjBBjRwT4ICWXCYlrVUmHFjI5is9YTasblknqR/IO+7tDgDmQztlNiEzi
+         02pLHhZDzPpOCl2lg/KSt5hdV6DWpoqkDtdj4Ouz3aG+MN6CqH2f7EMU2/viDp1zu9iU
+         LCan+qndJN4GxU72ZnCFDn+kocUAU1sG+NH59SEvgYEjCA/xDtrzUgNaTweVrVVHbim7
+         j9FA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=DXHRllLSJ/1e62jK/WoBiAvlasUoqg+VrQjUmvDHO/E=;
-        b=OzSjuNCmh1dFXGhpw9Jcv/VIkRlhlJR5zY1ZdPZaQUIqI6V9JtnpOtfL4AYX2ybjBF
-         GVMpBw+9BHO/PHwjzk0pGgcwBMxiNA69e1Ah6aI1TxL9iNCpkeSy1rVJW7BHw+qZI7ag
-         5CuX/IGMA8KJX2Y4qRsGn4USwBKdUXKAbz50Ee9+zqryP7HZEpKrlbItHITcBuBDDS+l
-         Bkuh1rBlwPXlhlwIlfRmZ/rz1+6OeDbrBjoLQLvwgs+eMWeWsNHlER6iyD6jdsxC4Of+
-         iGkyiK/NanFMyxeF3bh2oQDLhye9aiGbCpQsVGy5lUDqg3mNOAiY8WXTBg4DqbxndQJx
-         Pjcw==
-X-Gm-Message-State: APjAAAVaPlQ6eVNJDd6IIMP+xkyBuvu9Ncg+qUf1l9vXW2YydO/qnz8z
-        WUAuYXu0SgwE7QFMqvgdrCX10A==
-X-Google-Smtp-Source: APXvYqx4zRh3/lzQcnR7JYi7OUgMTk+geVvTywZNozNZoACrkzaTYw+O/9aIxTn4yeAf3B7n2bSkTQ==
-X-Received: by 2002:a5d:4108:: with SMTP id l8mr12459949wrp.391.1570795639449;
-        Fri, 11 Oct 2019 05:07:19 -0700 (PDT)
-Received: from apalos.home (ppp-94-65-93-45.home.otenet.gr. [94.65.93.45])
-        by smtp.gmail.com with ESMTPSA id w9sm13356785wrt.62.2019.10.11.05.07.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Oct 2019 05:07:18 -0700 (PDT)
-Date:   Fri, 11 Oct 2019 15:07:15 +0300
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
-Cc:     ast@kernel.org, daniel@iogearbox.net, yhs@fb.com,
-        davem@davemloft.net, jakub.kicinski@netronome.com, hawk@kernel.org,
-        john.fastabend@gmail.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        sergei.shtylyov@cogentembedded.com
-Subject: Re: [PATCH v5 bpf-next 00/15] samples: bpf: improve/fix
- cross-compilation
-Message-ID: <20191011120715.GA7944@apalos.home>
-References: <20191011002808.28206-1-ivan.khoronzhuk@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+1ypOR9fZA4lK0XmIF+p9uuR9SMEDVTW7L0xDQwfOfI=;
+        b=iv/9TKnkg6uGE/+1Vhe8gc0aMiD7UcGAlq3AAp5Y7iQWg7ARDQFz5HIW1oydGUnrF2
+         BO/0YgtPcOD3nCobkRc0yW8i3MJW5LPa4aMq5T1jgp+PebMMeBOTWOa1xxYrVFUMwRX0
+         dqcCIXmoPdNuo+WMJH//LJ+plQ52UjqenxwChHvODAdiaBn4zGOHjsekYy4yltZAXEmi
+         iPYNL5l1zhVcLw+st32YKnixaYnTDuyBrXXUopS2F5Fhq41R515mK2emhEGOduka16dd
+         4XCdYfG6jZG+2tqrVqpGnye1D4UTdrWjlb9nNVCaFjh7IFb4FrnEUNe0KniDhNlHPc1m
+         XoQA==
+X-Gm-Message-State: APjAAAXDlyUbHu9xiFw1B1xaG2b6DQsxsr5ulOQxEE3iRF6ZD70Byh6Q
+        3BG9GUKKWaYMjd5+v3veNUMBjP3eIKX3sPZuMfs=
+X-Google-Smtp-Source: APXvYqz0LPu+wPH8jBZSVzpaolRLdSgVVQw+WRtDn3tslIV/n+p9hir0bkcXgYqEC/6nIFdtHBrAjQYmc+zg7TXtF9g=
+X-Received: by 2002:a2e:9bc1:: with SMTP id w1mr4215737ljj.136.1570806738540;
+ Fri, 11 Oct 2019 08:12:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191011002808.28206-1-ivan.khoronzhuk@linaro.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <00000000000056268e05737dcb95@google.com> <0000000000007d22100573d66078@google.com>
+ <063a57ba-7723-6513-043e-ee99c5797271@I-love.SAKURA.ne.jp>
+In-Reply-To: <063a57ba-7723-6513-043e-ee99c5797271@I-love.SAKURA.ne.jp>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 11 Oct 2019 08:12:06 -0700
+Message-ID: <CAADnVQJ7BZMVSt9on4updWrWsFWq6b5J1qEGwTdGYV+BLqH7tg@mail.gmail.com>
+Subject: Re: unregister_netdevice: waiting for DEV to become free (2)
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        syzbot <syzbot+30209ea299c09d8785c9@syzkaller.appspotmail.com>,
+        ddstreet@ieee.org, Dmitry Vyukov <dvyukov@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 11, 2019 at 03:27:53AM +0300, Ivan Khoronzhuk wrote:
-> This series contains mainly fixes/improvements for cross-compilation
-> but not only, tested for arm, arm64, and intended for any arch.
-> Also verified on native build (not cross compilation) for x86_64
-> and arm, arm64.
-> 
-> Initial RFC link:
-> https://lkml.org/lkml/2019/8/29/1665
-> 
-> Prev. version:
-> https://lkml.org/lkml/2019/10/9/1045
-> 
-> Besides the patches given here, the RFC also contains couple patches
-> related to llvm clang
->   arm: include: asm: swab: mask rev16 instruction for clang
->   arm: include: asm: unified: mask .syntax unified for clang
-> They are necessarily to verify arm 32 build.
-> 
-> Also, couple more fixes were added but are not merged in bpf-next yet,
-> they can be needed for verification/configuration steps, if not in
-> your tree the fixes can be taken here:
-> https://www.spinics.net/lists/netdev/msg601716.html
-> https://www.spinics.net/lists/netdev/msg601714.html
-> https://www.spinics.net/lists/linux-kbuild/msg23468.html
-> 
-> Now, to build samples, SAMPLE_BPF should be enabled in config.
-> 
-> The change touches not only cross-compilation and can have impact on
-> other archs and build environments, so might be good idea to verify
-> it in order to add appropriate changes, some warn options could be
-> tuned also.
-> 
-> All is tested on x86-64 with clang installed (has to be built containing
-> targets for arm, arm64..., see llc --version, usually it's present already)
-> 
-> Instructions to test native on x86_64
-> =================================================
-> Native build on x86_64 is done in usual way and shouldn't have difference
-> except HOSTCC is now printed as CC wile building the samples.
-> 
-> Instructions to test cross compilation on arm64
-> =================================================
-> #Toolchain used for test:
-> gcc version 8.3.0
-> (GNU Toolchain for the A-profile Architecture 8.3-2019.03 (arm-rel-8.36))
-> 
-> # Get some arm64 FS, containing at least libelf
-> I've used sdk for TI am65x got here:
-> http://downloads.ti.com/processor-sdk-linux/esd/AM65X/latest/exports/\
-> ti-processor-sdk-linux-am65xx-evm-06.00.00.07-Linux-x86-Install.bin
-> 
-> # Install this binary to some dir, say "sdk".
-> # Configure kernel (use defconfig as no matter), but clean everything
-> # before.
-> make ARCH=arm64 -C tools/ clean
-> make ARCH=arm64 -C samples/bpf clean
-> make ARCH=arm64 clean
-> make ARCH=arm64 defconfig
-> 
-> # Enable SAMPLE_BPF and it's dependencies in config
-> 
-> # The kernel version used in sdk doesn't correspond to checked one,
-> # but for this verification only headers need to be syched,
-> # so install them (can be enabled in config):
-> make ARCH=arm64 headers_install
-> 
-> # or on SDK if need keep them in sync (not necessarily to verify):
-> 
-> make ARCH=arm64 INSTALL_HDR_PATH=/../sdk/\
-> ti-processor-sdk-linux-am65xx-evm-06.00.00.07/linux-devkit/sysroots/\
-> aarch64-linux/usr headers_install
-> 
-> # Build samples
-> make samples/bpf/ ARCH=arm64 CROSS_COMPILE="aarch64-linux-gnu-"\
-> SYSROOT="/../sdk/ti-processor-sdk-linux-am65xx-evm-06.00.00.07/\
-> linux-devkit/sysroots/aarch64-linux"
-> 
-> Instructions to test cross compilation on arm
-> =================================================
-> #Toolchains used for test:
-> arm-linux-gnueabihf-gcc (Linaro GCC 7.2-2017.11) 7.2.1 20171011
-> or
-> arm-linux-gnueabihf-gcc
-> (GNU Toolchain for the A-profile Architecture 8.3-2019.03 \
-> (arm-rel-8.36)) 8.3.0
-> 
-> # Get some FS, I've used sdk for TI am52xx got here:
-> http://downloads.ti.com/processor-sdk-linux/esd/AM57X/05_03_00_07/exports/\
-> ti-processor-sdk-linux-am57xx-evm-05.03.00.07-Linux-x86-Install.bin
-> 
-> # Install this binary to some dir, say "sdk".
-> # Configure kernel, but clean everything before.
-> make ARCH=arm -C tools/ clean
-> make ARCH=arm -C samples/bpf clean
-> make ARCH=arm clean
-> make ARCH=arm omap2plus_defconfig
-> 
-> # The kernel version used in sdk doesn't correspond to checked one, but
-> # headers only should be synched,
-> # so install them (can be enabled in config):
-> 
-> make ARCH=arm headers_install
-> 
-> # or on SDK if need keep them in sync (not necessarily):
-> 
-> make ARCH=arm INSTALL_HDR_PATH=/../sdk/\
-> ti-processor-sdk-linux-am57xx-evm-05.03.00.07/linux-devkit/sysroots/\
-> armv7ahf-neon-linux-gnueabi/usr headers_install
-> 
-> # Build samples
-> make samples/bpf/ ARCH=arm CROSS_COMPILE="arm-linux-gnueabihf-"\
-> SYSROOT="/../sdk/ti-processor-sdk-linux-am57xx-evm-05.03\
-> .00.07/linux-devkit/sysroots/armv7ahf-neon-linux-gnueabi"
-> 
-> 
-> Based on bpf-next/master
-> 
-> v5..v4:
-> - any changes, only missed SOBs are added
-> 
-> v4..v3:
-> - renamed CLANG_EXTRA_CFLAGS on BPF_EXTRA_CFLAGS
-> - used filter for ARCH_ARM_SELECTOR
-> - omit "-fomit-frame-pointer" and use same flags for native and "cross"
-> - used sample/bpf prefixes
-> - use C instead of C++ compiler for test_libbpf target
-> 
-> v3..v2:
-> - renamed makefile.progs to makeifle.target, as more appropriate
-> - left only __LINUX_ARM_ARCH__ for D options for arm
-> - for host build - left options from KBUILD_HOST for compatibility reasons
-> - split patch adding c/cxx/ld flags to libbpf by modules
-> - moved readme change to separate patch
-> - added patch setting options for cross-compile
-> - fixed issue with option error for syscall_nrs.S,
->   avoiding overlap for ccflags-y.
-> 
-> v2..v1:
-> - restructured patches order
-> - split "samples: bpf: Makefile: base progs build on Makefile.progs"
->   to make change more readable. It added couple nice extra patches.
-> - removed redundant patch:
->   "samples: bpf: Makefile: remove target for native build"
-> - added fix:
->   "samples: bpf: makefile: fix cookie_uid_helper_example obj build"
-> - limited -D option filter only for arm
-> - improved comments
-> - added couple instructions to verify cross compilation for arm and
->   arm64 arches based on TI am57xx and am65xx sdks.
-> - corrected include a little order
-> 
-> Ivan Khoronzhuk (15):
->   samples/bpf: fix HDR_PROBE "echo"
->   samples/bpf: fix cookie_uid_helper_example obj build
->   samples/bpf: use --target from cross-compile
->   samples/bpf: use own EXTRA_CFLAGS for clang commands
->   samples/bpf: use __LINUX_ARM_ARCH__ selector for arm
->   samples/bpf: drop unnecessarily inclusion for bpf_load
->   samples/bpf: add makefile.target for separate CC target build
->   samples/bpf: base target programs rules on Makefile.target
->   samples/bpf: use own flags but not HOSTCFLAGS
->   samples/bpf: use target CC environment for HDR_PROBE
->   libbpf: don't use cxx to test_libpf target
->   libbpf: add C/LDFLAGS to libbpf.so and test_libpf targets
->   samples/bpf: provide C/LDFLAGS to libbpf
->   samples/bpf: add sysroot support
->   samples/bpf: add preparation steps and sysroot info to readme
-> 
->  samples/bpf/Makefile                          | 164 ++++++++++--------
->  samples/bpf/Makefile.target                   |  75 ++++++++
->  samples/bpf/README.rst                        |  41 ++++-
->  tools/lib/bpf/Makefile                        |  23 +--
->  .../bpf/{test_libbpf.cpp => test_libbpf.c}    |  14 +-
->  5 files changed, 218 insertions(+), 99 deletions(-)
->  create mode 100644 samples/bpf/Makefile.target
->  rename tools/lib/bpf/{test_libbpf.cpp => test_libbpf.c} (61%)
-> 
-> -- 
-> 2.17.1
-> 
+On Fri, Oct 11, 2019 at 3:15 AM Tetsuo Handa
+<penguin-kernel@i-love.sakura.ne.jp> wrote:
+>
+> Hello.
+>
+> I noticed that syzbot is reporting that refcount incremented by bpf(BPF_MAP_UPDATE_ELEM)
+> syscall is not decremented when unregister_netdevice() is called. Is this a BPF bug?
 
-For native compilation on x86_64 and aarch64 
+Jesper, Toke,
+please take a look.
 
-Tested-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+> Kernel: 9e208aa06c2109b45eec6be049a8e47034748c20 on linux.git
+> Config: https://syzkaller.appspot.com/text?tag=KernelConfig&x=73c2aace7604ab7
+> Reproducer: https://syzkaller.appspot.com/text?tag=ReproC&x=1215afaf600000
+> Debug printk patch:
+> ----------------------------------------
+> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+> index 9eda1c31d1f7..542a47fe6998 100644
+> --- a/include/linux/netdevice.h
+> +++ b/include/linux/netdevice.h
+> @@ -3732,10 +3732,7 @@ void netdev_run_todo(void);
+>   *
+>   * Release reference to device to allow it to be freed.
+>   */
+> -static inline void dev_put(struct net_device *dev)
+> -{
+> -       this_cpu_dec(*dev->pcpu_refcnt);
+> -}
+> +extern void dev_put(struct net_device *dev);
+>
+>  /**
+>   *     dev_hold - get reference to device
+> @@ -3743,10 +3740,7 @@ static inline void dev_put(struct net_device *dev)
+>   *
+>   * Hold reference to device to keep it from being freed.
+>   */
+> -static inline void dev_hold(struct net_device *dev)
+> -{
+> -       this_cpu_inc(*dev->pcpu_refcnt);
+> -}
+> +extern void dev_hold(struct net_device *dev);
+>
+>  /* Carrier loss detection, dial on demand. The functions netif_carrier_on
+>   * and _off may be called from IRQ context, but it is caller
+> diff --git a/net/core/dev.c b/net/core/dev.c
+> index bf3ed413abaf..21f82aa92fad 100644
+> --- a/net/core/dev.c
+> +++ b/net/core/dev.c
+> @@ -8968,8 +8968,8 @@ static void netdev_wait_allrefs(struct net_device *dev)
+>                 refcnt = netdev_refcnt_read(dev);
+>
+>                 if (refcnt && time_after(jiffies, warning_time + 10 * HZ)) {
+> -                       pr_emerg("unregister_netdevice: waiting for %s to become free. Usage count = %d\n",
+> -                                dev->name, refcnt);
+> +                       pr_emerg("unregister_netdevice: waiting for %s to become free. Usage count = %d %px\n",
+> +                                dev->name, refcnt, dev);
+>                         warning_time = jiffies;
+>                 }
+>         }
+> @@ -9930,3 +9930,24 @@ static int __init net_dev_init(void)
+>  }
+>
+>  subsys_initcall(net_dev_init);
+> +
+> +
+> +void dev_put(struct net_device *dev)
+> +{
+> +       this_cpu_dec(*dev->pcpu_refcnt);
+> +       if (!strcmp(dev->name, "bridge_slave_0")) {
+> +               printk("dev_put: %px %d", dev, netdev_refcnt_read(dev));
+> +               dump_stack();
+> +       }
+> +}
+> +EXPORT_SYMBOL(dev_put);
+> +
+> +void dev_hold(struct net_device *dev)
+> +{
+> +       if (!strcmp(dev->name, "bridge_slave_0")) {
+> +               printk("dev_hold: %px %d", dev, netdev_refcnt_read(dev));
+> +               dump_stack();
+> +       }
+> +       this_cpu_inc(*dev->pcpu_refcnt);
+> +}
+> +EXPORT_SYMBOL(dev_hold);
+> ----------------------------------------
+>
+> ----------------------------------------
+> Oct 11 14:33:06 ubuntu kernel: [  114.251175][ T8866] dev_hold: ffff888091fd2000 100
+> Oct 11 14:33:06 ubuntu kernel: [  114.251185][ T8866] CPU: 3 PID: 8866 Comm: a.out Not tainted 5.4.0-rc2+ #217
+> Oct 11 14:33:06 ubuntu kernel: [  114.251199][ T8866] Hardware name: VMware, Inc. VMware Virtual Platform/440BX Desktop Reference Platform, BIOS 6.00 04/13/2018
+> Oct 11 14:33:06 ubuntu kernel: [  114.251208][ T8866] Call Trace:
+> Oct 11 14:33:06 ubuntu kernel: [  114.251232][ T8866]  dump_stack+0x154/0x1c5
+> Oct 11 14:33:06 ubuntu kernel: [  114.251253][ T8866]  dev_hold+0x73/0x80
+> Oct 11 14:33:06 ubuntu kernel: [  114.251267][ T8866]  dev_get_by_index+0x1b3/0x2d0
+> Oct 11 14:33:06 ubuntu kernel: [  114.251280][ T8866]  __dev_map_alloc_node+0x1c7/0x360
+> Oct 11 14:33:06 ubuntu kernel: [  114.251299][ T8866]  dev_map_hash_update_elem+0x485/0x670
+> Oct 11 14:33:06 ubuntu kernel: [  114.251320][ T8866]  __do_sys_bpf+0x35d6/0x38c0
+> Oct 11 14:33:06 ubuntu kernel: [  114.251337][ T8866]  ? bpf_prog_load+0x1470/0x1470
+> Oct 11 14:33:06 ubuntu kernel: [  114.251351][ T8866]  ? do_wp_page+0x3c8/0x1310
+> Oct 11 14:33:06 ubuntu kernel: [  114.251364][ T8866]  ? finish_mkwrite_fault+0x300/0x300
+> Oct 11 14:33:06 ubuntu kernel: [  114.251381][ T8866]  ? find_held_lock+0x35/0x1e0
+> Oct 11 14:33:06 ubuntu kernel: [  114.251397][ T8866]  ? __do_page_fault+0x504/0xb60
+> Oct 11 14:33:06 ubuntu kernel: [  114.251413][ T8866]  ? lock_downgrade+0x900/0x900
+> Oct 11 14:33:06 ubuntu kernel: [  114.251426][ T8866]  ? __pmd_alloc+0x410/0x410
+> Oct 11 14:33:06 ubuntu kernel: [  114.251446][ T8866]  ? __kasan_check_write+0x14/0x20
+> Oct 11 14:33:06 ubuntu kernel: [  114.251457][ T8866]  ? up_read+0x1b6/0x7a0
+> Oct 11 14:33:06 ubuntu kernel: [  114.251471][ T8866]  ? down_read_nested+0x480/0x480
+> Oct 11 14:33:06 ubuntu kernel: [  114.251494][ T8866]  ? do_syscall_64+0x26/0x6a0
+> Oct 11 14:33:06 ubuntu kernel: [  114.251507][ T8866]  ? entry_SYSCALL_64_after_hwframe+0x49/0xbe
+> Oct 11 14:33:06 ubuntu kernel: [  114.251515][ T8866]  ? do_syscall_64+0x26/0x6a0
+> Oct 11 14:33:06 ubuntu kernel: [  114.251528][ T8866]  __x64_sys_bpf+0x73/0xb0
+> Oct 11 14:33:06 ubuntu kernel: [  114.251541][ T8866]  do_syscall_64+0xde/0x6a0
+> Oct 11 14:33:06 ubuntu kernel: [  114.251559][ T8866]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+> (...snipped...)
+> Oct 11 14:33:10 ubuntu kernel: [  117.459637][ T9584] dev_hold: ffff888091fd2000 200
+> Oct 11 14:33:10 ubuntu kernel: [  117.459644][ T9584] CPU: 4 PID: 9584 Comm: a.out Not tainted 5.4.0-rc2+ #217
+> Oct 11 14:33:10 ubuntu kernel: [  117.459652][ T9584] Hardware name: VMware, Inc. VMware Virtual Platform/440BX Desktop Reference Platform, BIOS 6.00 04/13/2018
+> Oct 11 14:33:10 ubuntu kernel: [  117.459656][ T9584] Call Trace:
+> Oct 11 14:33:10 ubuntu kernel: [  117.459669][ T9584]  dump_stack+0x154/0x1c5
+> Oct 11 14:33:10 ubuntu kernel: [  117.459682][ T9584]  dev_hold+0x73/0x80
+> Oct 11 14:33:10 ubuntu kernel: [  117.459695][ T9584]  dev_get_by_index+0x1b3/0x2d0
+> Oct 11 14:33:10 ubuntu kernel: [  117.459706][ T9584]  __dev_map_alloc_node+0x1c7/0x360
+> Oct 11 14:33:10 ubuntu kernel: [  117.459720][ T9584]  dev_map_hash_update_elem+0x485/0x670
+> Oct 11 14:33:10 ubuntu kernel: [  117.459749][ T9584]  __do_sys_bpf+0x35d6/0x38c0
+> Oct 11 14:33:10 ubuntu kernel: [  117.459762][ T9584]  ? bpf_prog_load+0x1470/0x1470
+> Oct 11 14:33:10 ubuntu kernel: [  117.459769][ T9584]  ? do_wp_page+0x3c8/0x1310
+> Oct 11 14:33:10 ubuntu kernel: [  117.459778][ T9584]  ? finish_mkwrite_fault+0x300/0x300
+> Oct 11 14:33:10 ubuntu kernel: [  117.459787][ T9584]  ? find_held_lock+0x35/0x1e0
+> Oct 11 14:33:10 ubuntu kernel: [  117.459797][ T9584]  ? __do_page_fault+0x504/0xb60
+> Oct 11 14:33:10 ubuntu kernel: [  117.459807][ T9584]  ? lock_downgrade+0x900/0x900
+> Oct 11 14:33:10 ubuntu kernel: [  117.459814][ T9584]  ? __pmd_alloc+0x410/0x410
+> Oct 11 14:33:10 ubuntu kernel: [  117.459828][ T9584]  ? __kasan_check_write+0x14/0x20
+> Oct 11 14:33:10 ubuntu kernel: [  117.459835][ T9584]  ? up_read+0x1b6/0x7a0
+> Oct 11 14:33:10 ubuntu kernel: [  117.459846][ T9584]  ? down_read_nested+0x480/0x480
+> Oct 11 14:33:10 ubuntu kernel: [  117.459862][ T9584]  ? do_syscall_64+0x26/0x6a0
+> Oct 11 14:33:10 ubuntu kernel: [  117.459871][ T9584]  ? entry_SYSCALL_64_after_hwframe+0x49/0xbe
+> Oct 11 14:33:10 ubuntu kernel: [  117.459878][ T9584]  ? do_syscall_64+0x26/0x6a0
+> Oct 11 14:33:10 ubuntu kernel: [  117.459891][ T9584]  __x64_sys_bpf+0x73/0xb0
+> Oct 11 14:33:10 ubuntu kernel: [  117.459901][ T9584]  do_syscall_64+0xde/0x6a0
+> Oct 11 14:33:10 ubuntu kernel: [  117.459911][ T9584]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+> (...snipped...)
+> Oct 11 14:33:26 ubuntu kernel: [  134.146838][T13860] dev_hold: ffff888091fd2000 850
+> Oct 11 14:33:26 ubuntu kernel: [  134.146847][T13860] CPU: 4 PID: 13860 Comm: a.out Not tainted 5.4.0-rc2+ #217
+> Oct 11 14:33:26 ubuntu kernel: [  134.146853][T13860] Hardware name: VMware, Inc. VMware Virtual Platform/440BX Desktop Reference Platform, BIOS 6.00 04/13/2018
+> Oct 11 14:33:26 ubuntu kernel: [  134.146859][T13860] Call Trace:
+> Oct 11 14:33:26 ubuntu kernel: [  134.146872][T13860]  dump_stack+0x154/0x1c5
+> Oct 11 14:33:26 ubuntu kernel: [  134.146885][T13860]  dev_hold+0x73/0x80
+> Oct 11 14:33:26 ubuntu kernel: [  134.146893][T13860]  dev_get_by_index+0x1b3/0x2d0
+> Oct 11 14:33:26 ubuntu kernel: [  134.146903][T13860]  __dev_map_alloc_node+0x1c7/0x360
+> Oct 11 14:33:26 ubuntu kernel: [  134.146918][T13860]  dev_map_hash_update_elem+0x485/0x670
+> Oct 11 14:33:26 ubuntu kernel: [  134.146932][T13860]  __do_sys_bpf+0x35d6/0x38c0
+> Oct 11 14:33:26 ubuntu kernel: [  134.146944][T13860]  ? bpf_prog_load+0x1470/0x1470
+> Oct 11 14:33:26 ubuntu kernel: [  134.146953][T13860]  ? do_wp_page+0x3c8/0x1310
+> Oct 11 14:33:26 ubuntu kernel: [  134.146964][T13860]  ? finish_mkwrite_fault+0x300/0x300
+> Oct 11 14:33:26 ubuntu kernel: [  134.146975][T13860]  ? find_held_lock+0x35/0x1e0
+> Oct 11 14:33:26 ubuntu kernel: [  134.146985][T13860]  ? __do_page_fault+0x504/0xb60
+> Oct 11 14:33:26 ubuntu kernel: [  134.146994][T13860]  ? lock_downgrade+0x900/0x900
+> Oct 11 14:33:26 ubuntu kernel: [  134.147002][T13860]  ? __pmd_alloc+0x410/0x410
+> Oct 11 14:33:26 ubuntu kernel: [  134.147017][T13860]  ? __kasan_check_write+0x14/0x20
+> Oct 11 14:33:26 ubuntu kernel: [  134.147024][T13860]  ? up_read+0x1b6/0x7a0
+> Oct 11 14:33:26 ubuntu kernel: [  134.147033][T13860]  ? down_read_nested+0x480/0x480
+> Oct 11 14:33:26 ubuntu kernel: [  134.147048][T13860]  ? do_syscall_64+0x26/0x6a0
+> Oct 11 14:33:26 ubuntu kernel: [  134.147056][T13860]  ? entry_SYSCALL_64_after_hwframe+0x49/0xbe
+> Oct 11 14:33:26 ubuntu kernel: [  134.147063][T13860]  ? do_syscall_64+0x26/0x6a0
+> Oct 11 14:33:26 ubuntu kernel: [  134.147074][T13860]  __x64_sys_bpf+0x73/0xb0
+> Oct 11 14:33:26 ubuntu kernel: [  134.147084][T13860]  do_syscall_64+0xde/0x6a0
+> Oct 11 14:33:26 ubuntu kernel: [  134.147095][T13860]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+> (...snipped...)
+> Oct 11 14:33:41 ubuntu kernel: [  148.384539][ T4514] unregister_netdevice: waiting for bridge_slave_0 to become free. Usage count = 850 ffff888091fd2000
+> ----------------------------------------
+>
