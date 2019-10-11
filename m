@@ -2,107 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 43859D482F
-	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2019 21:05:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57FB2D48FE
+	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2019 22:23:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728783AbfJKTFq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Oct 2019 15:05:46 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:34767 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728748AbfJKTFq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Oct 2019 15:05:46 -0400
-Received: by mail-qk1-f193.google.com with SMTP id q203so9891631qke.1;
-        Fri, 11 Oct 2019 12:05:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Z8abiypIqXEyKvwUzdpOHIek/RcCjFaTvZmzrf90OJQ=;
-        b=R/WAORc1FWUt8kCvTwZUU8P4Hh0W1Ecrj7nk7TekP8GvBaFJk83l63fdEMHhGks5UK
-         r62Xwa/JbNk9CVp8VWxZb4QIxuoShzYcMXgAgRCsj0srGoIEKbOV2qZH4wGkRkhuSabz
-         w96z3ppY7nGZpT/mdPDHzK/ep4snWKff/fTT1GsUCgBsLqaGpsCsc/JJ6PsXLFYa0kMK
-         3MMXGbepSyXTUWxmgdpcmTd+g3bRMPlcg7sZs1yulIvCslS2KjczSVAEh6i9dp1pK0A+
-         5P/0DOgYvXvy9K+FiwkGEaqqPPX8yOwAvrv1g+ti9EAEta6S2ef3ztq+2cEDX0bZPO4y
-         vdtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Z8abiypIqXEyKvwUzdpOHIek/RcCjFaTvZmzrf90OJQ=;
-        b=gNuKVk/Grqn4o/WQpbQOzO/dC9HDdmW+hAbNYuSRfXzVdwHSVHZTp0AlFQ4MbP4mLi
-         KJyHg/VANOd5tZMJHvf61oVzRvk6tC6Vs8K8Gc5q/Fsh2fY4ZFlrWbOouwCsnvy0p2dw
-         pFLVFCoDtkPLYG7QEdvbreYBBVdTfwNU+hzmL/tU8P12OXftuGbdx+WyNzOL/dJFzLhp
-         MwVVawC1mFCM7XJmITfI5nnaaEajewE/7n27HBF/GLSC67shDKJhdzZxvyM2xVcPaOhf
-         ZGDHFDI0JOWwHjBz6zx4P/Z3dsq6ab8TfiSyc2eyXaRQ4qBE4NRz6BzFD7C3r7ZausBZ
-         YOMw==
-X-Gm-Message-State: APjAAAV0VhJYOYYvZZz2hbVRxRTdwGXpWg6omuvwB454opDpws95NnAw
-        tiw3llAVMpGn16NEQ246fHOdVYqGnr0/ZgG3mXg=
-X-Google-Smtp-Source: APXvYqx/YqTHKd/nba+4J5fo86Lm3KhMiC5nlrZJlX7lqBc4a+JqM9gXQfk7ynNULADg4Hj1/HxWezVQFg5AgkRu4Xs=
-X-Received: by 2002:a37:a8c8:: with SMTP id r191mr17132936qke.92.1570820743810;
- Fri, 11 Oct 2019 12:05:43 -0700 (PDT)
+        id S1729305AbfJKUHs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Oct 2019 16:07:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43848 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729055AbfJKUHs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Oct 2019 16:07:48 -0400
+Received: from quaco.ghostprotocols.net (189-94-137-67.3g.claro.net.br [189.94.137.67])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 57FDC2196E;
+        Fri, 11 Oct 2019 20:07:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1570824467;
+        bh=zduB2sJcKOz0TDgbMM1Vx+VolWWgz6xXIgdx6oi4Okk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Jr397YbLOzCQmd+fjJU17h+jfwUGBgOResoDBHfI+1d97rLH6RsfoMNEiSRMpnpvz
+         EGQ6Cir9KVVTbe/IUOihmCOESgtKB/1cc/+4Txl6MEOAcV4OWM+asZLXo/yOHOX5jx
+         RKGPyvEOSgpioAiMTbZxBdOLo7pgLiqNxhVFu16A=
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+        Clark Williams <williams@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
+        Song Liu <songliubraving@fb.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: [PATCH 15/69] perf tools: Make usage of test_attr__* optional for perf-sys.h
+Date:   Fri, 11 Oct 2019 17:05:05 -0300
+Message-Id: <20191011200559.7156-16-acme@kernel.org>
+X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20191011200559.7156-1-acme@kernel.org>
+References: <20191011200559.7156-1-acme@kernel.org>
 MIME-Version: 1.0
-References: <20191010041503.2526303-1-ast@kernel.org> <20191010041503.2526303-13-ast@kernel.org>
-In-Reply-To: <20191010041503.2526303-13-ast@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 11 Oct 2019 12:05:32 -0700
-Message-ID: <CAEf4BzbDQH6AaSJdA5YUTQiAH8co_nBbZZ30W=8k+JB_xPWEMA@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 12/12] selftests/bpf: add kfree_skb raw_tp test
-To:     Alexei Starovoitov <ast@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>, x86@kernel.org,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 9, 2019 at 9:15 PM Alexei Starovoitov <ast@kernel.org> wrote:
->
-> Load basic cls_bpf program.
-> Load raw_tracepoint program and attach to kfree_skb raw tracepoint.
-> Trigger cls_bpf via prog_test_run.
-> At the end of test_run kernel will call kfree_skb
-> which will trigger trace_kfree_skb tracepoint.
-> Which will call our raw_tracepoint program.
-> Which will take that skb and will dump it into perf ring buffer.
-> Check that user space received correct packet.
->
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
-> ---
->  .../selftests/bpf/prog_tests/kfree_skb.c      | 90 +++++++++++++++++++
->  tools/testing/selftests/bpf/progs/kfree_skb.c | 74 +++++++++++++++
->  2 files changed, 164 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/kfree_skb.c
->  create mode 100644 tools/testing/selftests/bpf/progs/kfree_skb.c
->
+From: Björn Töpel <bjorn.topel@intel.com>
 
-[...]
+For users of perf-sys.h outside perf, e.g. samples/bpf/bpf_load.c, it's
+convenient not to depend on test_attr__*.
 
-> +
-> +void test_kfree_skb(void)
-> +{
-> +       struct bpf_prog_load_attr attr = {
-> +               .file = "./kfree_skb.o",
-> +               .log_level = 2,
+After commit 91854f9a077e ("perf tools: Move everything related to
+sys_perf_event_open() to perf-sys.h"), all users of perf-sys.h will
+depend on test_attr__enabled and test_attr__open.
 
-This is rather verbose and memory-consuming. Do you really want to
-leave it at 2?
+This commit enables a user to define HAVE_ATTR_TEST to zero in order
+to omit the test dependency.
 
+Fixes: 91854f9a077e ("perf tools: Move everything related to sys_perf_event_open() to perf-sys.h")
+Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
+Acked-by: Song Liu <songliubraving@fb.com>
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: bpf@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Link: http://lore.kernel.org/lkml/20191001113307.27796-2-bjorn.topel@gmail.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+---
+ tools/perf/perf-sys.h | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-> +       };
-> +
-> +       struct bpf_object *obj, *obj2 = NULL;
-> +       struct perf_buffer_opts pb_opts = {};
-> +       struct perf_buffer *pb = NULL;
-> +       struct bpf_link *link = NULL;
-> +       struct bpf_map *perf_buf_map;
-> +       struct bpf_program *prog;
-> +       __u32 duration, retval;
-> +       int err, pkt_fd, kfree_skb_fd;
-> +       bool passed = false;
-> +
+diff --git a/tools/perf/perf-sys.h b/tools/perf/perf-sys.h
+index 63e4349a772a..15e458e150bd 100644
+--- a/tools/perf/perf-sys.h
++++ b/tools/perf/perf-sys.h
+@@ -15,7 +15,9 @@ void test_attr__init(void);
+ void test_attr__open(struct perf_event_attr *attr, pid_t pid, int cpu,
+ 		     int fd, int group_fd, unsigned long flags);
+ 
+-#define HAVE_ATTR_TEST
++#ifndef HAVE_ATTR_TEST
++#define HAVE_ATTR_TEST 1
++#endif
+ 
+ static inline int
+ sys_perf_event_open(struct perf_event_attr *attr,
+@@ -27,7 +29,7 @@ sys_perf_event_open(struct perf_event_attr *attr,
+ 	fd = syscall(__NR_perf_event_open, attr, pid, cpu,
+ 		     group_fd, flags);
+ 
+-#ifdef HAVE_ATTR_TEST
++#if HAVE_ATTR_TEST
+ 	if (unlikely(test_attr__enabled))
+ 		test_attr__open(attr, pid, cpu, fd, group_fd, flags);
+ #endif
+-- 
+2.21.0
 
-[...]
