@@ -2,52 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 19B6DD3B1D
+	by mail.lfdr.de (Postfix) with ESMTP id 8D528D3B1E
 	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2019 10:30:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726585AbfJKI3w (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S1726869AbfJKI3x (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Oct 2019 04:29:53 -0400
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:42835 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726843AbfJKI3w (ORCPT <rfc822;bpf@vger.kernel.org>);
         Fri, 11 Oct 2019 04:29:52 -0400
-Received: from mail-lj1-f171.google.com ([209.85.208.171]:38303 "EHLO
-        mail-lj1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726508AbfJKI3v (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Oct 2019 04:29:51 -0400
-Received: by mail-lj1-f171.google.com with SMTP id b20so8956221ljj.5
-        for <bpf@vger.kernel.org>; Fri, 11 Oct 2019 01:29:49 -0700 (PDT)
+Received: by mail-lf1-f65.google.com with SMTP id c195so6402793lfg.9
+        for <bpf@vger.kernel.org>; Fri, 11 Oct 2019 01:29:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2nmdN7JMNTYscQBNR+E6gnmp9TFuIjTpURDuQtDu+M4=;
-        b=n7u2TRWNa8qxxSFP1TwtwI0Su6xhZ9xX4XDfCGGz4usGI1NpGKzsW/FtgucGHfwI1y
-         3yGfl/HTCTBxHRyrvDJ5P0Wi9gTlNvzFotCMy4wtAmZqSYSNPqZSu61DCYzgkKXwjToO
-         Db8LZXHEosk7MaGKGE6M0FPVPNlNKLiH/0yzg=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=wDme/K188djfYly/+Kr3bSId7Q+cO3Z3bkh0WCcZWRU=;
+        b=yqjcsrWkk1QyfwuJS1YtfcUwzv3tMM28T4b9Bubfe+a31qt8peh9lpedQOGHWMdinI
+         BeICfxRVkdJJerZUXFRDKJhmD0dmHK+olmKKz/sGRjBKprszgSsZOoftzH0S0ckQybD2
+         c8HDgb2pkdMjD0DFoEmHTPTCQLIYraoCRIXko=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2nmdN7JMNTYscQBNR+E6gnmp9TFuIjTpURDuQtDu+M4=;
-        b=nH6aD40/nM4jz/JdoqASI4KTqlbKsHHB47sDHKqGpebEb2MSdFuWH6fyg9YJsaS4ky
-         NV3nmu5ayqcD1LIRT6eom8v5xELXgsJOPOzwAi7OlVX9cd/W67l5u/8Ef3R19EsophOZ
-         DHfCSrlSWjVqHF0HzFYn4ZW4jzlMltfXxdpZewovZEzTyiDzHqQjjU0QVw/82gvOsQ4B
-         W2L+/gsE2Z1inxiqlMH0M+/b8Ju4VXwtoEhtkhgy5bgnnApgyQThMdwpRSrF8kMmEJdN
-         J4GY9SZWLQqXQ4xaILik6oZHMqooHuSRrsakYx+hlWz0VfwvXGH/CMTthlzLh1WR9Wc4
-         Lyfw==
-X-Gm-Message-State: APjAAAVkB3ro/0Cu8uh3/LP24ehpokFGemNiTZjyI8q4T9ONPF8mAHH9
-        hxhQmUXduLURa5Una5cMKxkMOy4QIFw4lQ==
-X-Google-Smtp-Source: APXvYqyCnKNdd5sWBsH5XbyhBusHqKTGyY1Y7HhI2kSe5CnqmCRvFgD/hycIF5bzYsMHzU17/phdow==
-X-Received: by 2002:a2e:8ec2:: with SMTP id e2mr7906155ljl.126.1570782587831;
-        Fri, 11 Oct 2019 01:29:47 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=wDme/K188djfYly/+Kr3bSId7Q+cO3Z3bkh0WCcZWRU=;
+        b=mo/pI7cI6oz+nO7TnHFglgv2Ks9+OeaEI/L5QC/1JSAtOW3Nyz9tS2NTpH6ky2hm3g
+         9ahx64Gyui/K6j6Ghyk5EbZtKT3pVWxcvM3kxjfAD8i0ew+W3hyZBaFTW0NLrzpuYP2j
+         mSB54y5VeWbfPCtr1TDOGcGWI49//JcFndQT7ZD6q+2jlij+GGREhis6JIraV4V/w7gS
+         f6iRxX/qEE9iYP2DQaNuI32KJiu6VVKoQfFfEK2MLmH4ZqI4llelSJzWkie0jb2UEqLv
+         24Bt6apvrF9EkSuen+gS32/QZndQ7bhyMu5583JO/57OSpk8I1gzUv1jGAIIFkPUrZLl
+         Anzw==
+X-Gm-Message-State: APjAAAX26huP2Zp4FGPefScSsruiVXvVSL6qTd95aee56rfiav50kTFQ
+        pFkbz7/aBnjc712GJJkpFttQaeNCNwCj/w==
+X-Google-Smtp-Source: APXvYqyu65Ad1932F6yGpn+BXiuOvlr/LPc+Y5FjVAAVH77Xz+0NyG3mIDKIlV+zNRuKlEU2dyfIqQ==
+X-Received: by 2002:ac2:4215:: with SMTP id y21mr8172693lfh.85.1570782590380;
+        Fri, 11 Oct 2019 01:29:50 -0700 (PDT)
 Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id h25sm2240656lfj.81.2019.10.11.01.29.46
+        by smtp.gmail.com with ESMTPSA id x76sm2266234ljb.81.2019.10.11.01.29.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Oct 2019 01:29:47 -0700 (PDT)
+        Fri, 11 Oct 2019 01:29:49 -0700 (PDT)
 From:   Jakub Sitnicki <jakub@cloudflare.com>
 To:     bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org, kernel-team@cloudflare.com
-Subject: [PATCH bpf-next v3 0/2] Atomic flow dissector updates
-Date:   Fri, 11 Oct 2019 10:29:44 +0200
-Message-Id: <20191011082946.22695-1-jakub@cloudflare.com>
+Cc:     netdev@vger.kernel.org, kernel-team@cloudflare.com,
+        Stanislav Fomichev <sdf@google.com>,
+        Martin KaFai Lau <kafai@fb.com>
+Subject: [PATCH bpf-next v3 1/2] flow_dissector: Allow updating the flow dissector program atomically
+Date:   Fri, 11 Oct 2019 10:29:45 +0200
+Message-Id: <20191011082946.22695-2-jakub@cloudflare.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20191011082946.22695-1-jakub@cloudflare.com>
+References: <20191011082946.22695-1-jakub@cloudflare.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
@@ -55,34 +59,63 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch set changes how bpf(BPF_PROG_ATTACH) operates on flow dissector
-hook when there is already a program attached. After this change the user
-is allowed to update the program in a single syscall. Please see the first
-patch for rationale.
+It is currently not possible to detach the flow dissector program and
+attach a new one in an atomic fashion, that is with a single syscall.
+Attempts to do so will be met with EEXIST error.
 
-v1 -> v2:
+This makes updates to flow dissector program hard. Traffic steering that
+relies on BPF-powered flow dissection gets disrupted while old program has
+been already detached but the new one has not been attached yet.
 
-- Don't use CHECK macro which expects BPF program run duration, which we
-  don't track in attach/detach tests. Suggested by Stanislav Fomichev.
+There is also a window of opportunity to attach a flow dissector to a
+non-root namespace while updating the root flow dissector, thus blocking
+the update.
 
-- Test re-attaching flow dissector in both root and non-root network
-  namespace. Suggested by Stanislav Fomichev.
+Lastly, the behavior is inconsistent with cgroup BPF programs, which can be
+replaced with a single bpf(BPF_PROG_ATTACH, ...) syscall without any
+restrictions.
 
-v2 -> v3:
+Allow attaching a new flow dissector program when another one is already
+present with a restriction that it can't be the same program.
 
-- Rebased onto recent bpf-next 63098555cfe0 ("Merge branch
-  'bpf-romap-known-scalars'").
+Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+Reviewed-by: Stanislav Fomichev <sdf@google.com>
+Acked-by: Martin KaFai Lau <kafai@fb.com>
+---
+ net/core/flow_dissector.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-
-Jakub Sitnicki (2):
-  flow_dissector: Allow updating the flow dissector program atomically
-  selftests/bpf: Check that flow dissector can be re-attached
-
- net/core/flow_dissector.c                     |  10 +-
- .../bpf/prog_tests/flow_dissector_reattach.c  | 127 ++++++++++++++++++
- 2 files changed, 134 insertions(+), 3 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/flow_dissector_reattach.c
-
+diff --git a/net/core/flow_dissector.c b/net/core/flow_dissector.c
+index 6b4b88d1599d..dbf502c18656 100644
+--- a/net/core/flow_dissector.c
++++ b/net/core/flow_dissector.c
+@@ -128,6 +128,8 @@ int skb_flow_dissector_bpf_prog_attach(const union bpf_attr *attr,
+ 		struct net *ns;
+ 
+ 		for_each_net(ns) {
++			if (ns == &init_net)
++				continue;
+ 			if (rcu_access_pointer(ns->flow_dissector_prog)) {
+ 				ret = -EEXIST;
+ 				goto out;
+@@ -145,12 +147,14 @@ int skb_flow_dissector_bpf_prog_attach(const union bpf_attr *attr,
+ 
+ 	attached = rcu_dereference_protected(net->flow_dissector_prog,
+ 					     lockdep_is_held(&flow_dissector_mutex));
+-	if (attached) {
+-		/* Only one BPF program can be attached at a time */
+-		ret = -EEXIST;
++	if (attached == prog) {
++		/* The same program cannot be attached twice */
++		ret = -EINVAL;
+ 		goto out;
+ 	}
+ 	rcu_assign_pointer(net->flow_dissector_prog, prog);
++	if (attached)
++		bpf_prog_put(attached);
+ out:
+ 	mutex_unlock(&flow_dissector_mutex);
+ 	return ret;
 -- 
 2.20.1
 
