@@ -2,131 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CE0B5D35E7
-	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2019 02:29:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDD5ED35F2
+	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2019 02:29:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727465AbfJKA2v (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Oct 2019 20:28:51 -0400
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:44933 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727812AbfJKA2m (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Oct 2019 20:28:42 -0400
-Received: by mail-lj1-f194.google.com with SMTP id m13so7990330ljj.11
-        for <bpf@vger.kernel.org>; Thu, 10 Oct 2019 17:28:41 -0700 (PDT)
+        id S1726474AbfJKA3L (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Oct 2019 20:29:11 -0400
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:43244 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727895AbfJKA3F (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Oct 2019 20:29:05 -0400
+Received: by mail-lj1-f195.google.com with SMTP id n14so8002629ljj.10
+        for <bpf@vger.kernel.org>; Thu, 10 Oct 2019 17:29:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=pOlOkzzU0bwqDGQkGWa87uAZFQ6B6XzFeEn3c66o8lU=;
-        b=QHN9i8ukUhuJBaTW1UkwsHCf7J5j7HE4qIMcwKRdrirpcaAonzp03YiEqPSRwe3zx/
-         xA0MoKbGih4p4DFXZwDwFBVobJyP2faVBo7sSRFrH+xMkpC/PIjgjau5tDOW+sFmwLwz
-         g1hsnFO0QNDJkY3FkwUuMwhUKVchwkKKVMSTy0IBQDH2rghXK2Kb+YMjb+e9v4KFDu0l
-         5++1qegXGXuL7utw193IWXAe67LN2wicnj/KIR+LUI+F5L2i9Y7eBDqDrS+Yn4GQu+Dy
-         0MUQU2rjtqKV6psnZKCzGon4ksn3ln70MKD8EGIAdfYhyEuOTccCJajTz1HJ7wxhCkN3
-         Ez7w==
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=4WsWgFcQX+4hcpk8fzSs1Uvm+uJ+nhztEkt8zqmznqg=;
+        b=ctOBcBURvGgmJ1YcNG6NC//LFndWhI0zEGO2+cDY0qa66y8fxEW/CXFgEpco3GyBE/
+         zj9K8xfS4StDiRO26znkvTJ9CaoFGJYJvP+AExZhpeNS8wUd9Di6heimHjF41uJZIH8y
+         oH0g6tGELuQom9pG5eE/i6sChB8vJl216T0mhCc/wVKazkoXz8UCoJJ0R/tcgpbCbgbY
+         wDiO8urRb6Nv0b4/zAN9hrNFCHvuS2IukXWFidTX3Fr5mWdgmJJjXmST613+2O1cL5Kv
+         cbLg6AyRPnO358ie71Hox/9a9ha/MIWfQvL48wGoz2M8MO2jpWLL10vE5dYAcNgNdaae
+         JNsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=pOlOkzzU0bwqDGQkGWa87uAZFQ6B6XzFeEn3c66o8lU=;
-        b=FNPj/TRBP2gnsZkS3uDci9NWDJXwowLgyMuJr2z5Hpjiyte+2hEDPpifycOmYyBl3k
-         in4yabrHksEBdU9N3+stp0KA4gYitHCX+Gd+x7rikMNcej+TvusO4ifv0gQairoGJ66p
-         DnDt7K+8cudsTMPq/dY4FpTvo+a4LTew2UVszBSuoHwmrCUKc/G302sRBjs1ICbfWJ/i
-         z+Vq5iSyY0wr2eX/vs+yajTdJLJIePbhhvndnDcVAPX3TIQrpzb30ycU94/lL6UTV5yD
-         q1p1u5Mr9Yv7PpBuhz+NlkFKhU9zgIOzj4kjF3LLTanQVQWjlKSNA+pglmD/VsjaP8oC
-         FphA==
-X-Gm-Message-State: APjAAAXrPYA4C2cWwvobcjvLhEevgp6ylqs0zzU7q+Jl139OFxzxWMZR
-        USgZOelEmf3jzNpjspdYpPGerg==
-X-Google-Smtp-Source: APXvYqx/hZhkYlHMDs/0fYgLREAPdm0Rklj16fXnm+aBEBcqoa/exgzworlTmmiIrWj0rsP8Zh/sXw==
-X-Received: by 2002:a2e:a0ca:: with SMTP id f10mr7479171ljm.83.1570753721062;
-        Thu, 10 Oct 2019 17:28:41 -0700 (PDT)
-Received: from localhost.localdomain (88-201-94-178.pool.ukrtel.net. [178.94.201.88])
-        by smtp.gmail.com with ESMTPSA id 126sm2367010lfh.45.2019.10.10.17.28.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Oct 2019 17:28:40 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to:user-agent;
+        bh=4WsWgFcQX+4hcpk8fzSs1Uvm+uJ+nhztEkt8zqmznqg=;
+        b=Qg2xYOg5jwljkf3RQf9YaJHn6B/e1feCRJkb5XwLZQefE1AwAna1gMb27zltPkOeeY
+         +2gzhRE/b+F/+GbeFt4goxODVpWHU1tpRBSkzqLIwm9NZu/7HBZCjMMGNUERbP9Kab5l
+         hZgU7zMu4F45H0/rzFGA4sEpyD21b7KYhPSib80RyQ3elTvVfrwo3FVypJURc4CS+/s0
+         zht0ASZ1eeePQCPmlPEE+dYh7GJ4ewfIFE679rt5zj+VrRL7FhCrZuoR5M9T5qW/gGiv
+         3FsKE7vKdd1R85I6WKZXtMrGTArsgtaPMuni0PTtDQlsLlitHOaVnGKmlHjCsIpmDUz3
+         m8xA==
+X-Gm-Message-State: APjAAAX6S0Mp3rJrqjfyuQPs5mcTz0DoK982WJH6Gg9ek9AVOBgOwjAm
+        WUFZKxTVbGJ+OWYazHBt0B9yGQ==
+X-Google-Smtp-Source: APXvYqySw5/2iZFOp9V0R18gVq02vew1YIQUx4qtGUkTfdB1VNPqrML/tZj5hh8JTwJShrTOzdeQEQ==
+X-Received: by 2002:a2e:9ad0:: with SMTP id p16mr7677917ljj.179.1570753743905;
+        Thu, 10 Oct 2019 17:29:03 -0700 (PDT)
+Received: from khorivan (88-201-94-178.pool.ukrtel.net. [178.94.201.88])
+        by smtp.gmail.com with ESMTPSA id c26sm1785025ljj.45.2019.10.10.17.29.02
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 10 Oct 2019 17:29:03 -0700 (PDT)
+Date:   Fri, 11 Oct 2019 03:29:01 +0300
 From:   Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
-To:     ast@kernel.org, daniel@iogearbox.net, yhs@fb.com,
-        davem@davemloft.net, jakub.kicinski@netronome.com, hawk@kernel.org,
-        john.fastabend@gmail.com
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     ast@kernel.org, yhs@fb.com, davem@davemloft.net,
+        jakub.kicinski@netronome.com, hawk@kernel.org,
+        john.fastabend@gmail.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        clang-built-linux@googlegroups.com, ilias.apalodimas@linaro.org,
+        sergei.shtylyov@cogentembedded.com
+Subject: Re: [PATCH v4 bpf-next 00/15] samples: bpf: improve/fix
+ cross-compilation
+Message-ID: <20191011002900.GA4121@khorivan>
+Mail-Followup-To: Daniel Borkmann <daniel@iogearbox.net>, ast@kernel.org,
+        yhs@fb.com, davem@davemloft.net, jakub.kicinski@netronome.com,
+        hawk@kernel.org, john.fastabend@gmail.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
         bpf@vger.kernel.org, clang-built-linux@googlegroups.com,
-        ilias.apalodimas@linaro.org, sergei.shtylyov@cogentembedded.com,
-        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
-Subject: [PATCH v5 bpf-next 15/15] samples/bpf: add preparation steps and sysroot info to readme
-Date:   Fri, 11 Oct 2019 03:28:08 +0300
-Message-Id: <20191011002808.28206-16-ivan.khoronzhuk@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20191011002808.28206-1-ivan.khoronzhuk@linaro.org>
-References: <20191011002808.28206-1-ivan.khoronzhuk@linaro.org>
+        ilias.apalodimas@linaro.org, sergei.shtylyov@cogentembedded.com
+References: <20191009204134.26960-1-ivan.khoronzhuk@linaro.org>
+ <20191011000056.GD20202@pc-63.home>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20191011000056.GD20202@pc-63.home>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add couple preparation steps: clean and configuration. Also add newly
-added sysroot support info to cross-compile section.
+On Fri, Oct 11, 2019 at 02:00:56AM +0200, Daniel Borkmann wrote:
+>On Wed, Oct 09, 2019 at 11:41:19PM +0300, Ivan Khoronzhuk wrote:
+>> This series contains mainly fixes/improvements for cross-compilation
+>> but not only, tested for arm, arm64, and intended for any arch.
+>> Also verified on native build (not cross compilation) for x86_64
+>> and arm, arm64.
+>[...]
+>
+>There are multiple SOBs missing, please fix. Thanks!
+>
+>[...]
+> 5 files changed, 218 insertions(+), 99 deletions(-)
+> create mode 100644 samples/bpf/Makefile.target
+> rename tools/lib/bpf/{test_libbpf.cpp => test_libbpf.c} (61%)
+>Deleted branch mbox (was 9f35d1d0c8f0).
+>Commit 9f35d1d0c8f0 ("samples/bpf: Add preparation steps and sysroot info to readme")
+>	author Signed-off-by missing
+>	committer Signed-off-by missing
+>	author email:    ivan.khoronzhuk@linaro.org
+>	committer email: daniel@iogearbox.net
+>
+>
+>Commit 1878c1de4607 ("samples/bpf: Use __LINUX_ARM_ARCH__ selector for arm")
+>	author Signed-off-by missing
+>	committer Signed-off-by missing
+>	author email:    ivan.khoronzhuk@linaro.org
+>	committer email: daniel@iogearbox.net
+>
+>
+>Errors in tree with Signed-off-by, please fix!
 
-Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
----
- samples/bpf/README.rst | 41 ++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 36 insertions(+), 5 deletions(-)
+Done.
 
-diff --git a/samples/bpf/README.rst b/samples/bpf/README.rst
-index 5f27e4faca50..cc1f00a1ee06 100644
---- a/samples/bpf/README.rst
-+++ b/samples/bpf/README.rst
-@@ -14,6 +14,20 @@ Compiling requires having installed:
- Note that LLVM's tool 'llc' must support target 'bpf', list version
- and supported targets with command: ``llc --version``
- 
-+Clean and configuration
-+-----------------------
-+
-+It can be needed to clean tools, samples or kernel before trying new arch or
-+after some changes (on demand)::
-+
-+ make -C tools clean
-+ make -C samples/bpf clean
-+ make clean
-+
-+Configure kernel, defconfig for instance::
-+
-+ make defconfig
-+
- Kernel headers
- --------------
- 
-@@ -68,9 +82,26 @@ It is also possible to point make to the newly compiled 'llc' or
- Cross compiling samples
- -----------------------
- In order to cross-compile, say for arm64 targets, export CROSS_COMPILE and ARCH
--environment variables before calling make. This will direct make to build
--samples for the cross target.
-+environment variables before calling make. But do this before clean,
-+cofiguration and header install steps described above. This will direct make to
-+build samples for the cross target::
-+
-+ export ARCH=arm64
-+ export CROSS_COMPILE="aarch64-linux-gnu-"
-+
-+Headers can be also installed on RFS of target board if need to keep them in
-+sync (not necessarily and it creates a local "usr/include" directory also)::
-+
-+ make INSTALL_HDR_PATH=~/some_sysroot/usr headers_install
-+
-+Pointing LLC and CLANG is not necessarily if it's installed on HOST and have
-+in its targets appropriate arm64 arch (usually it has several arches).
-+Build samples::
-+
-+ make samples/bpf/
-+
-+Or build samples with SYSROOT if some header or library is absent in toolchain,
-+say libelf, providing address to file system containing headers and libs,
-+can be RFS of target board::
- 
--export ARCH=arm64
--export CROSS_COMPILE="aarch64-linux-gnu-"
--make samples/bpf/ LLC=~/git/llvm/build/bin/llc CLANG=~/git/llvm/build/bin/clang
-+ make samples/bpf/ SYSROOT=~/some_sysroot
 -- 
-2.17.1
-
+Regards,
+Ivan Khoronzhuk
