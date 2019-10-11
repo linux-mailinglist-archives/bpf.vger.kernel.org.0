@@ -2,52 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EE81D470D
-	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2019 19:59:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFA76D471E
+	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2019 20:02:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728588AbfJKR7K (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Oct 2019 13:59:10 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:39356 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728472AbfJKR7K (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Oct 2019 13:59:10 -0400
-Received: by mail-qk1-f195.google.com with SMTP id 4so9677585qki.6;
-        Fri, 11 Oct 2019 10:59:10 -0700 (PDT)
+        id S1728741AbfJKSCY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Oct 2019 14:02:24 -0400
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:40939 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728374AbfJKSCX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Oct 2019 14:02:23 -0400
+Received: by mail-qk1-f193.google.com with SMTP id y144so9681384qkb.7;
+        Fri, 11 Oct 2019 11:02:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=asyUShBe9hrWPwsEaTFIAAL62QLdWBJhjs7rcStqxG0=;
-        b=fj4Am7uGUF0ksXh1u48ubPvwU+BkGgkKf7jojTrTszzFabLYX/hUSm9lwrVYae1lfe
-         xlXjK0f8/9I9onhCIC204rjgLB3cDsBOoE89cZV7fU3lh4ELonjbtORHb6i1I2UXX3Xs
-         +2g1sNuqBT7mOxrqkQeGoB0YnqjUZX4BfRnSErhkD5anB9sAADEBKdsFGTrue80Ia/rL
-         88EEgZ6lO5eGw7Xh/oFb+FV2LmKjjqPn/y7GnkJf01y05HXKZ44/od8ZJxs7Yw//Kw8B
-         QqlCFniTVM7mLAkaZbcWqqsfkp6wX7pevmnJlBDYxYJU35lMylerEl5grHii0fuRLaRf
-         Uavg==
+        bh=uvH3zY9Ae8PjYb+2rs975M3jIPTWD9fTgVebSjhl8Gg=;
+        b=vEJqWBNEmB843DiuzdKWPesv8Ml7DKLPjHslfLuFRBy1IEZhRo41prZpJTSIwpxkQg
+         7H3rvA/Ps8X/xM/oaciRY4/Dxluyj8MQUZPHjlIWR6dCdzoBdkveGmXdYlCah9LN45FG
+         FOUwB9vOGJuhyZKEij3SOlUTn3B1PHa23NRz4lrC7FUOgOOZFQFP1ux801AeQjTQdS75
+         2XwrWbO+1MarMi+xSl2YalER+fxiLn1gYDvs6EznBYigfaH2AEV4j0qYK53xvG7FaOeR
+         ehlG5tttriCRYJHjHegSMVQSaaGasosSN5ft9afcnaiZ4wIgy8BLkxkkqnZOJygsufzm
+         S9UA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=asyUShBe9hrWPwsEaTFIAAL62QLdWBJhjs7rcStqxG0=;
-        b=LCG0EXJenPaX+T04ePO4McbvZxqrk7vzhUSBWdSYUGoRMnZXSuugvIAe3BQYOeLMU1
-         UOwMDL/TWh3vr9zWoVA5ZsHA3JSodvMilAgAobauOIClgT+y5Ymw8XWAPVJO+OUhEaXy
-         36JWZlby6Ua4hPeqg354EcPuDDGs7+v2AEXrf/noyiC769uQcHdeLEEnvsgsFOeqcfmI
-         z9U0raqQ/9/Bw08OLo+KvioPYJG3/MoEZ1xfVh7TLcOy0pu5xzmISSNLtT63Lc6/9Cxc
-         tTpORlxMKIqXtGajXVzhU3YR17cOtGr4xFxtrR75yYsw0POtlLP7vmG2V9WmHgOMBSLh
-         EWNA==
-X-Gm-Message-State: APjAAAUr3VnkF9pd92hHkTcw8VH1A8pNLZeJLvHZ7gqNetXS9yFihnKP
-        kUaoXpJ0TkUaD9FVQrjyN34VyuEFal4jLrGNpYc=
-X-Google-Smtp-Source: APXvYqyyLTqZy6qVF80L4pQGhcB7EX1Rz7Ssi1KW4RZ+Yjwao5oMfjrKJXcuuoOs3/RrzU1JWqiAKmHvluWuW6qNYA8=
-X-Received: by 2002:a37:6d04:: with SMTP id i4mr17408293qkc.36.1570816749534;
- Fri, 11 Oct 2019 10:59:09 -0700 (PDT)
+        bh=uvH3zY9Ae8PjYb+2rs975M3jIPTWD9fTgVebSjhl8Gg=;
+        b=lpNRc+sy7jHP1qhZ7YCFqf7iN6w+G7ytt+YowhEIHJFxv72CvBPRGMyRu4n6ji+7WZ
+         FotPal8FaYqHMVHMHK/jatg+6TWDTUXL0Ev3WNw5aL7Kx0CaH3s0oCKgOvLoGWfgavSl
+         rxI1klxmbGFX0YVoqCN7Gr4VLEYdAotQ9SPGLjks6lbL2DDSSlkZybABxsMqbdXAlvox
+         JrKnjyopIQTrpUg9sDdf5V03UsE7jnhSp20apb1NnsiBdricXh7So06B1v5r3ULOfyvi
+         MQ7QqVwVp/ABnwVRACQp1/geK5kz+SpCBolTLwUC3bmaQydfsfzmRuFAx7kO+gE9X7GK
+         DNPA==
+X-Gm-Message-State: APjAAAWmGSUv+a0Vr5wX/bkQgNYhPwTsC/zg6O4/D8PseW5ZTn/DmXoe
+        xIpqrvk7EFH8Ro3wYAqrPglkHo3Za00dxIeKSHY=
+X-Google-Smtp-Source: APXvYqwxzWJeWi+LP9Xc3LgWNadrLwpMIaZZwzVIDpH+GTm7+bwF4MZ80e06PzjgfulCdPEfS7hGaDLK6s18M8E7Qxs=
+X-Received: by 2002:a37:6d04:: with SMTP id i4mr17426523qkc.36.1570816942674;
+ Fri, 11 Oct 2019 11:02:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <20191010041503.2526303-1-ast@kernel.org> <20191010041503.2526303-5-ast@kernel.org>
-In-Reply-To: <20191010041503.2526303-5-ast@kernel.org>
+References: <20191010041503.2526303-1-ast@kernel.org> <20191010041503.2526303-6-ast@kernel.org>
+In-Reply-To: <20191010041503.2526303-6-ast@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 11 Oct 2019 10:58:57 -0700
-Message-ID: <CAEf4BzaUOY3YnULr3JX6d+f0q4Hh5_RrK+cGgib=jfpofvd4jw@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 04/12] bpf: add attach_btf_id attribute to
- program load
+Date:   Fri, 11 Oct 2019 11:02:11 -0700
+Message-ID: <CAEf4BzbONBDhK6WEMYEoz1JEcXR1tzNXPTq45fvWdTPKEjdyVQ@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 05/12] libbpf: auto-detect btf_id of raw_tracepoint
 To:     Alexei Starovoitov <ast@kernel.org>
 Cc:     "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>, x86@kernel.org,
@@ -59,32 +58,30 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 9, 2019 at 9:16 PM Alexei Starovoitov <ast@kernel.org> wrote:
+On Wed, Oct 9, 2019 at 9:17 PM Alexei Starovoitov <ast@kernel.org> wrote:
 >
-> Add attach_btf_id attribute to prog_load command.
-> It's similar to existing expected_attach_type attribute which is
-> used in several cgroup based program types.
-> Unfortunately expected_attach_type is ignored for
-> tracing programs and cannot be reused for new purpose.
-> Hence introduce attach_btf_id to verify bpf programs against
-> given in-kernel BTF type id at load time.
-> It is strictly checked to be valid for raw_tp programs only.
-> In a later patches it will become:
-> btf_id == 0 semantics of existing raw_tp progs.
-> btd_id > 0 raw_tp with BTF and additional type safety.
+> For raw tracepoint program types libbpf will try to find
+> btf_id of raw tracepoint in vmlinux's BTF.
+> It's a responsiblity of bpf program author to annotate the program
+> with SEC("raw_tracepoint/name") where "name" is a valid raw tracepoint.
+> If "name" is indeed a valid raw tracepoint then in-kernel BTF
+> will have "btf_trace_##name" typedef that points to function
+> prototype of that raw tracepoint. BTF description captures
+> exact argument the kernel C code is passing into raw tracepoint.
+> The kernel verifier will check the types while loading bpf program.
+>
+> libbpf keeps BTF type id in expected_attach_type, but since
+> kernel ignores this attribute for tracing programs copy it
+> into attach_btf_id attribute before loading.
 >
 > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 > ---
 
-Looks good!
-
 Acked-by: Andrii Nakryiko <andriin@fb.com>
 
->  include/linux/bpf.h            |  1 +
->  include/uapi/linux/bpf.h       |  1 +
->  kernel/bpf/syscall.c           | 18 ++++++++++++++----
->  tools/include/uapi/linux/bpf.h |  1 +
->  4 files changed, 17 insertions(+), 4 deletions(-)
+>  tools/lib/bpf/bpf.c    |  3 +++
+>  tools/lib/bpf/libbpf.c | 17 +++++++++++++++++
+>  2 files changed, 20 insertions(+)
 >
 
 [...]
