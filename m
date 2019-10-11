@@ -2,85 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B6378D467D
-	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2019 19:20:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D27CD4698
+	for <lists+bpf@lfdr.de>; Fri, 11 Oct 2019 19:28:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728664AbfJKRU7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Oct 2019 13:20:59 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:46540 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728662AbfJKRU6 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 11 Oct 2019 13:20:58 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id x9BHEhYs024238
-        for <bpf@vger.kernel.org>; Fri, 11 Oct 2019 10:20:57 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=facebook;
- bh=E6qFzriGYNuD5C+LpzkuirW/pYQBoReP5pCDz9HbWa0=;
- b=lxZ+X3xrajWUXlto95G7lDKxlGF58mjR3yvBujaz7vIoAuM6XdvGhnHMGx8mJKK4oCRl
- 7v4ypalsidOJTowxKruIrVfhKT5hofXkdyTbtWpIIsZiIOWJNLQtuvQHYaWx+WObWgbF
- qFSxuWqvilpw5gJAZEIm5p6rFvquTeevCl0= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0089730.ppops.net with ESMTP id 2vjekpuqy2-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 11 Oct 2019 10:20:57 -0700
-Received: from 2401:db00:12:909f:face:0:3:0 (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Fri, 11 Oct 2019 10:20:56 -0700
-Received: by dev101.prn2.facebook.com (Postfix, from userid 137359)
-        id 5866D86190D; Fri, 11 Oct 2019 10:20:55 -0700 (PDT)
-Smtp-Origin-Hostprefix: dev
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: dev101.prn2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andriin@fb.com>
-Smtp-Origin-Cluster: prn2c23
-Subject: [PATCH v2 bpf-next] bpf: fix cast to pointer from integer of different size warning
-Date:   Fri, 11 Oct 2019 10:20:53 -0700
-Message-ID: <20191011172053.2980619-1-andriin@fb.com>
-X-Mailer: git-send-email 2.17.1
-X-FB-Internal: Safe
+        id S1728546AbfJKR2v (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Oct 2019 13:28:51 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:41354 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728400AbfJKR2v (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Oct 2019 13:28:51 -0400
+Received: by mail-io1-f68.google.com with SMTP id n26so23111262ioj.8;
+        Fri, 11 Oct 2019 10:28:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=frrCbAZAd68hKoLuiOOGlE5hHEH6QkBVxhQEVUgPYRY=;
+        b=uIIO1nQyPQz/S9w2WtpCS/4aeSLRGaiSgqpChH+47hSJeX5nhlRWavPGULpHAFjlUx
+         aeByzJ5MhMbRFAXZb2CEaBHoeC6C1i/7hzJDP3fl9Ay6PpKTcJzZw2Rvbqbxes+/g3BN
+         wnRtjd2g+CW4YvDzl9rwfVbBh7Jpc5LOlaOZncK/wtnu+y5yEjAYLSPZVB+ICBrs99Z6
+         OQBkZEPJK6Gwwec0NB2sHlEBvbqnbxIAy98R6wpFUF0lZO9VwRsl6uRasrGfU2xWll93
+         7xFKDn1fuzF2s1YNBhMnEX1lRTyxxv5zQm3Gf0hhDoOkqyNF5qy9e4+vJuVzSwFD5O2z
+         m95g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=frrCbAZAd68hKoLuiOOGlE5hHEH6QkBVxhQEVUgPYRY=;
+        b=IUSkSCv9cFdFuSMN7hWP2mFk3jkQEn9Wy8SPtkTDLm8zvDRiM6iZgmejFyIvxwJecz
+         vp4oRLBeNe8PcjrRyTpIZAKyA5b2Yxbe6d1x8FYpgj/0xJI/O3NIgUMaZihD8PFCAFnj
+         Gi3IdwujniAhhFmCA+LJgCpBe15NN1U2QxdzKjab300N5oVAbtoM2/aPX0zDUm36OJHt
+         /hSEgtuiFGV8I1hIo07MUqPmGUY6Qsn+lbn+/95BmO5/FpBiEq+ZT+SgfoCLOmsR3iPC
+         wH5ESwAdJ0xvbIrHzw26LeF5oOxWUkz1w8YiGAs8RlT+v+rolDILwWUE7qeZCiOWWKbt
+         6OVA==
+X-Gm-Message-State: APjAAAVoXooFkPW0DUJsrDekUFcFd4iwt2sqMNPVy5VjWtQLMheHJ6l7
+        +/aHhsHPpRm/KqIEGPNK6w25IPwjrqQetSnT0DE=
+X-Google-Smtp-Source: APXvYqzJDFVnISNwP93ew14GUbMDPf0EA5Qck1Go7sdVCs+QHn0R/7V7Avw/vi26Y8PTjiyKsUKh8ZQIVe6jwF6ARuI=
+X-Received: by 2002:a5d:80d3:: with SMTP id h19mr701429ior.156.1570814930427;
+ Fri, 11 Oct 2019 10:28:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
- definitions=2019-10-11_10:2019-10-10,2019-10-11 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=8
- spamscore=0 adultscore=0 mlxscore=0 mlxlogscore=942 clxscore=1015
- bulkscore=0 impostorscore=0 malwarescore=0 phishscore=0 lowpriorityscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1908290000 definitions=main-1910110150
-X-FB-Internal: deliver
+References: <20191011031318.388493-1-andriin@fb.com> <20191011031318.388493-3-andriin@fb.com>
+ <20191011162117.ckleov43b5piuzvb@kafai-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20191011162117.ckleov43b5piuzvb@kafai-mbp.dhcp.thefacebook.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 11 Oct 2019 10:28:39 -0700
+Message-ID: <CAEf4BzZmWLQRxW_gnJEbxZPp6K_RPGXn-MYKetVD0P-yCHwTtw@mail.gmail.com>
+Subject: Re: [Potential Spoof] [PATCH bpf-next 2/2] selftests/bpf: remove
+ obsolete pahole/BTF support detection
+To:     Martin Lau <kafai@fb.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        Kernel Team <Kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fix "warning: cast to pointer from integer of different size" when
-casting u64 addr to void *.
+On Fri, Oct 11, 2019 at 9:21 AM Martin Lau <kafai@fb.com> wrote:
+>
+> On Thu, Oct 10, 2019 at 08:13:18PM -0700, Andrii Nakryiko wrote:
+> > Given lots of selftests won't work without recent enough Clang/LLVM that
+> > fully supports BTF, there is no point in maintaining outdated BTF
+> > support detection and fall-back to pahole logic. Just assume we have
+> > everything we need.
+> May be an error message to tell which llvm is needed?
 
-Fixes: a23740ec43ba ("bpf: Track contents of read-only maps as scalars")
-Reported-by: kbuild test robot <lkp@intel.com>
-Acked-by: Martin KaFai Lau <kafai@fb.com>
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- kernel/bpf/verifier.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Not sure where we'd want this to be checked/printed. We don't do this
+today, so what I'm doing here is not really a regression.
+There is no single llvm version I'd want to pin down. For most tests
+LLVM w/ basic BTF support would be enough, for CO-RE stuff we need the
+latest Clang 10 (not yet released officially), though. So essentially
+the stance right now is that you need latest Clang built from sources
+to have all the tests compiled and I don't think it's easy to check
+for that.
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index b818fed3208d..d3446f018b9a 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -2753,7 +2753,7 @@ static int bpf_map_direct_read(struct bpf_map *map, int off, int size, u64 *val)
- 	err = map->ops->map_direct_value_addr(map, &addr, off);
- 	if (err)
- 		return err;
--	ptr = (void *)addr + off;
-+	ptr = (void *)(long)addr + off;
- 
- 	switch (size) {
- 	case sizeof(u8):
--- 
-2.17.1
+>
+> $(CPU) and $(PROBE) are no longer needed also?
 
+Good catch, removing them as well.
