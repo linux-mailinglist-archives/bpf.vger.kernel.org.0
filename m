@@ -2,119 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A90D3D5293
-	for <lists+bpf@lfdr.de>; Sat, 12 Oct 2019 23:26:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E1ABD533F
+	for <lists+bpf@lfdr.de>; Sun, 13 Oct 2019 01:14:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729767AbfJLV0u (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 12 Oct 2019 17:26:50 -0400
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:34459 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729618AbfJLV0u (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 12 Oct 2019 17:26:50 -0400
-Received: by mail-lj1-f195.google.com with SMTP id j19so13074380lja.1
-        for <bpf@vger.kernel.org>; Sat, 12 Oct 2019 14:26:49 -0700 (PDT)
+        id S1727340AbfJLXOk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 12 Oct 2019 19:14:40 -0400
+Received: from mail-lf1-f66.google.com ([209.85.167.66]:38695 "EHLO
+        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727262AbfJLXOk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 12 Oct 2019 19:14:40 -0400
+Received: by mail-lf1-f66.google.com with SMTP id u28so9379646lfc.5;
+        Sat, 12 Oct 2019 16:14:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=l+nirvmkHLEBqBl6bw7lxrZbBMmPpPDkXnfegt2ERs0=;
-        b=bOOQ6fpaQHN/FWWatME7AFTtNCrf5dgO1ZU8WA/fBDgO7AEY8yXMZklcpRl4XNkq5T
-         eecBMUbKu/rM+OyMkdQIzmQ2S5VYs8FlfeeBmgWWu0eDBy43EWsj8uX0iYJKIb8MOC5z
-         msROfXVDW89+AcnvuStR3HUCuGucUvwGwo6zA3n9Q6fROANyForjuXNIn/t/f/GpG/o+
-         mOYoJ9C/2Zm01ycIU62BeDDkv5FRvUkOPXYtrApoCWqeg6wcwF3N+TK1QRjHkegswSBv
-         VvvKqBTKJJ5n2JLYN+WoeHgk7qOBooUw05QbaV05lYRP/+8ZCRDs9y+4Bw7uJGCGl7Z/
-         yGmw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ia0hSBa10knYKGOnZiDVQmpAvNOJ+DPL78NAZDUpJtE=;
+        b=GYQvrGg9HhSMYphkXFdQhqgM0mquEQEJ69Ut03YgUNLIBLFb6/MHfUshd/BLWbO/uw
+         50PJm8HpjgPOJ0b9NRmxpPFm9uePxbePlKRoLhvpoGo18lzfQAklQ4f/YhVwa/UCWek0
+         qvk+4WBbGTZkce1rEof9NEi/az/yiiB1ODRpE9YVGZ8maBw+P9mfj3H0n6yegVPhDTtr
+         UaWnYxmUc9Ry3wkVN74BZiU0hVdsqEUCVAZ9/5GF/q4FGnWn+bkh5iQinTNiMdOlKS68
+         PQgzF5agqSG1fpfNFtaiMkQmxuKCNv5RfMThVvHLS8RWKVBL/v4RPXdcv6mI85cUssn7
+         rnuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to:user-agent;
-        bh=l+nirvmkHLEBqBl6bw7lxrZbBMmPpPDkXnfegt2ERs0=;
-        b=RZzCVqWLoV929jJoWSYMUGlx1Pc6dvLDE8UB1OnmzsBIiLLWS8v2q+8PBe5EnUWjd6
-         H88QjPVJvTM7QTCFF2Qx++E6APb8FkY7JvJT8ERpXrrmDA/1TOIBajU2O5ZPPlhZw7jx
-         bptvNpLT1adAn5+hx22fARhdQyHL4ZBQfuc0IAE2sz+T+ViBh+de4aAOuyduKp5F6eRj
-         oPlGtZCDMaTk1PjOscmLmo/PW5tQAsUyZsM6F18lCc+tADyG915w5V/FoJ6Yd8dTwwkf
-         JqpccFONkqzWZEjBu4QYJ5KCkRaFaeDO6VXxyu/IswXQP6v4JGyOvAgWJz5YbLsMt5jk
-         QeMw==
-X-Gm-Message-State: APjAAAW6Uj27O5XIS74U+c4GiVy8jUUVg4Vg80wjgp73ZsiPETgJGIFJ
-        Ys9lUL24px17kttdzv+HdpTZkQ==
-X-Google-Smtp-Source: APXvYqx/zpvokyTYRRQY1lgFNCEeQnhx9hVn6IE+ZWV4Trp0oLV6Oz0w6zjygCjzS9E+uhEs2zkbfA==
-X-Received: by 2002:a2e:8315:: with SMTP id a21mr13301291ljh.73.1570915608214;
-        Sat, 12 Oct 2019 14:26:48 -0700 (PDT)
-Received: from khorivan (88-201-94-178.pool.ukrtel.net. [178.94.201.88])
-        by smtp.gmail.com with ESMTPSA id x30sm2931384ljd.39.2019.10.12.14.26.46
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 12 Oct 2019 14:26:47 -0700 (PDT)
-Date:   Sun, 13 Oct 2019 00:26:45 +0300
-From:   Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
-To:     Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, yhs@fb.com,
-        davem@davemloft.net, jakub.kicinski@netronome.com, hawk@kernel.org,
-        john.fastabend@gmail.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        clang-built-linux@googlegroups.com, ilias.apalodimas@linaro.org
-Subject: Re: [PATCH v5 bpf-next 09/15] samples/bpf: use own flags but not
- HOSTCFLAGS
-Message-ID: <20191012212643.GC3689@khorivan>
-Mail-Followup-To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
-        ast@kernel.org, daniel@iogearbox.net, yhs@fb.com,
-        davem@davemloft.net, jakub.kicinski@netronome.com, hawk@kernel.org,
-        john.fastabend@gmail.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        clang-built-linux@googlegroups.com, ilias.apalodimas@linaro.org
-References: <20191011002808.28206-1-ivan.khoronzhuk@linaro.org>
- <20191011002808.28206-10-ivan.khoronzhuk@linaro.org>
- <99f76e2f-ed76-77e0-a470-36ae07567111@cogentembedded.com>
- <20191011095715.GB3689@khorivan>
- <3fb88a06-5253-1e48-9bea-2d31a443250b@cogentembedded.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ia0hSBa10knYKGOnZiDVQmpAvNOJ+DPL78NAZDUpJtE=;
+        b=aKRJgmKyvWHAfMYR4lN3ElmLRB4IaCwcWOagBINo15BS2ceqNR4U8ADuAXxsufw+Vw
+         BuaxoUaRY2dqJVWq+6Le0EKC5+SO9QJLXEM0LGjDsKTw2AmbuP3jlWTslJewgt1dNXHf
+         O+8ok+odFhMYFvxpRvf7BpIXA/S3cAfEhUhp9noQa/meZIFpeiugaC1fVCqnsS5KJUS/
+         dcH6ReRmEoqkc/+Ock5uWtCcUAKaHqA5r4i6RibWPnKxVAH5qpZlx7/WtdH8hoVAiJRO
+         T72WZRsuDpsjZvvAYf/InagLYsCnrEg5Rq2aCfVtVunKcZdGOoIn0e7GeMpI1JRFy4kv
+         8PIw==
+X-Gm-Message-State: APjAAAU4ETXVFyaaoPWnJ1GoV7OSQIUqPPgSp9ZHnVq/loO2PGj9WiTw
+        cqOmCGTTkhMcaMiCnLs4oo4XyAFj539RRHYWb80=
+X-Google-Smtp-Source: APXvYqyVfVqJ1AZWYOKfESjSkoEXUw13Idwn8M5D5bsFsu+4wES8sUW3KdZ7NfeuZraYgCs5UxP5xPtAAFsAFWNo+PA=
+X-Received: by 2002:a19:f707:: with SMTP id z7mr11974821lfe.162.1570922076534;
+ Sat, 12 Oct 2019 16:14:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <3fb88a06-5253-1e48-9bea-2d31a443250b@cogentembedded.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20191011002808.28206-1-ivan.khoronzhuk@linaro.org> <20191011120715.GA7944@apalos.home>
+In-Reply-To: <20191011120715.GA7944@apalos.home>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Sat, 12 Oct 2019 16:14:24 -0700
+Message-ID: <CAADnVQKhYohS_5KUHeFiiyXZWTNeDz3xBf5qBQgjvFiStO+TOQ@mail.gmail.com>
+Subject: Re: [PATCH v5 bpf-next 00/15] samples: bpf: improve/fix cross-compilation
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Cc:     Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Yonghong Song <yhs@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 11, 2019 at 02:16:05PM +0300, Sergei Shtylyov wrote:
->On 10/11/2019 12:57 PM, Ivan Khoronzhuk wrote:
+On Fri, Oct 11, 2019 at 5:07 AM Ilias Apalodimas
+<ilias.apalodimas@linaro.org> wrote:
 >
->>>> While compiling natively, the host's cflags and ldflags are equal to
->>>> ones used from HOSTCFLAGS and HOSTLDFLAGS. When cross compiling it
->>>> should have own, used for target arch. While verification, for arm,
->>>
->>>   While verifying.
->> While verification stage.
+> On Fri, Oct 11, 2019 at 03:27:53AM +0300, Ivan Khoronzhuk wrote:
+> > This series contains mainly fixes/improvements for cross-compilation
+> > but not only, tested for arm, arm64, and intended for any arch.
+> > Also verified on native build (not cross compilation) for x86_64
+> > and arm, arm64.
+...
+> For native compilation on x86_64 and aarch64
 >
->   While *in* verification stage, "while" doesn't combine with nouns w/o
->a preposition.
+> Tested-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
 
-
-Sergei, better add me in cc list when msg is to me I can miss it.
-
-Regarding the language lesson, thanks, I will keep it in mind next
-time, but the issue is not rude, if it's an issue at all, so I better
-leave it as is, as not reasons to correct it w/o code changes and
-everyone is able to understand it.
-
->
->>>> arm64 and x86_64 the following flags were used always:
->>>>
->>>> -Wall -O2
->>>> -fomit-frame-pointer
->>>> -Wmissing-prototypes
->>>> -Wstrict-prototypes
->>>>
->>>> So, add them as they were verified and used before adding
->>>> Makefile.target and lets omit "-fomit-frame-pointer" as were proposed
->>>> while review, as no sense in such optimization for samples.
->>>>
->>>> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
->>> [...]
->
->MBR, Sergei
-
--- 
-Regards,
-Ivan Khoronzhuk
+Applied. Thanks
