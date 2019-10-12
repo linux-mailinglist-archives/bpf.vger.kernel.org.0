@@ -2,223 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EAE71D4AC2
-	for <lists+bpf@lfdr.de>; Sat, 12 Oct 2019 01:13:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29254D4B4D
+	for <lists+bpf@lfdr.de>; Sat, 12 Oct 2019 02:11:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726391AbfJKXNT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Oct 2019 19:13:19 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:42473 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726354AbfJKXNT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Oct 2019 19:13:19 -0400
-Received: by mail-qt1-f193.google.com with SMTP id w14so16198883qto.9;
-        Fri, 11 Oct 2019 16:13:16 -0700 (PDT)
+        id S1726458AbfJLALN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Oct 2019 20:11:13 -0400
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:43680 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726269AbfJLALN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Oct 2019 20:11:13 -0400
+Received: by mail-lj1-f194.google.com with SMTP id n14so11382382ljj.10;
+        Fri, 11 Oct 2019 17:11:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=TiHBgnfJXl5U4KvXcrLGCdr2FDnDTuuCepelBB5vyv8=;
-        b=lllyIOkf8jca2T9TRHViRIfM+V+YVXBgTDQh1vBaeLIwPwRmt0E3HuCimkYeBSgqNy
-         Rzb6qefYoNl1uFUJ8TF14Fhb3woOsW/lx879l6xPZQGGw7XrXgOPZ+Qa9pl5BmNufKvu
-         krlWIrv4A/fYuT9V5ZZtIQgPyMYHrEzfCDaxSKgM745J7cRNYU7Wsm50Umm1DZrthHDu
-         /WwnhzA3hmNod2Kt2YHRZHtghFoXU1I9h5Nj//VU4q/YKZKDQ4yhw/7N3DzparuB+NB+
-         cs5dHZEm6omE6PmrL3HWUJAPpnNOgN+iIYY9C7ixIN7/Kvb+Ik9IoMN5BkHbZ+/90UoD
-         9eQw==
+        bh=UmqtRAbUHR0Wk9FzarhOPn9Pl/ebzWZj21JJy76ULQ4=;
+        b=IVsjSMXhdcPGermy5FcJ+oGVwALObfe/BBcIRmJPTpHK/zSqguV8YhePONAIDUGJrA
+         I8bU8sc55b2QKsrwRA9g4b6GWOcjYLhYuro4UqLv6kQp/9MCAxJjTCPc4WR4q5AAo8Gy
+         FoDUIcfXWMC+qJMOus5CFbNI9oz1g9JVVEs8BNAEBwIppHgxESjfC6Q0EizH3rxpdkiq
+         OyYJRww8oVgyvu7LbI+ZT2yPVPuhjgeuRryVvKmWC7WOJiEIMETbeU8Z5OimLnQBDDi6
+         ZobGwrjGp0Rkj1bEcfm4ngiWWRdI2BOK1JyLNVWojHu0f/tqnkk48gDf7PoRb36pfKbc
+         bTNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=TiHBgnfJXl5U4KvXcrLGCdr2FDnDTuuCepelBB5vyv8=;
-        b=iAq2bkTLCUTzLTDb0Mjza1B2mcPU8gcuG5jM/Ban4IqWAEbLXXowO7XTTxacehkkp+
-         G70IXyA6i1Nu7rWnLtC/X+bEOvTKOQJIednHiDG22g1NNRdBf2G4PzmK8LQTa9gDhMML
-         qmZEqLNKQn66YB1soiQvWUWKreAB+vNE58ddE+nn/g7UYdpcrn5IM+k/vN8uKv5n0+rT
-         UQL5K/qaJ/Se+G5mlV/ePhUAN1NUSK5nevKMsR77B7A7+B6sq9zDd/jqpDhpYtgId/9x
-         3x9CBUbWtrK0W2QjZg4PqQxcHrvs1SJWPQGq+2T+Va1vZOdtFWtHGd/KHasci0kallUP
-         q5SA==
-X-Gm-Message-State: APjAAAXRKiW8wl4SzDRP9a2w/5W1z8w0/0qX6fNC9dbIA7nDET4i2NML
-        awtuwslCrYRL9tfV0wRabJoYi00So0XdTuEkNFA=
-X-Google-Smtp-Source: APXvYqw4oz81OiUxONiDO+OStsX7RjBuwdZNu3fOmaN7djIfhQUjRo5iIyBf7jMriNNlPgRiVj0kQGJ3kNp49JLNl/Y=
-X-Received: by 2002:ac8:1c34:: with SMTP id a49mr19521864qtk.59.1570835595831;
- Fri, 11 Oct 2019 16:13:15 -0700 (PDT)
+        bh=UmqtRAbUHR0Wk9FzarhOPn9Pl/ebzWZj21JJy76ULQ4=;
+        b=oEYaYgoipRPLi6XRZ626qIuBPL10AfqePO7A6bMvBbxcy1W2qAar2ac7S1OpGrITty
+         KNxyDw/F7Ym8EwOcpscsXIS5I1gXYeq6NJXw05G5YcIIHD52qfHMIgOyROLNhBswFtyP
+         p+cybwHCrxtyxqkKhCvD9dQVNvxF6famSCkgd8hu3RNgWKbUbG6cY+AkB0YVVozye+AB
+         nKYDQLdr5y/WjYp9fxcpQqnuOxmpVZ9eppOfTGfaMoinXEpdR7c+7ANh8+aO1CmpVw74
+         kzRr8Go+55ce/+EWCgFbD3c2MobxoBQv6Jzlc/X0fvP5kj3tVOjfZR9QegYf1Ur6GKD7
+         cpGA==
+X-Gm-Message-State: APjAAAVlKmGJ3hMaO92rPi95cHNS5+smYV4Z7ILeiaNRtNfQ3dL241kN
+        WwwajYUvKdnXkvjMzLwz6MrJCIDDYI2hB7D1Mes=
+X-Google-Smtp-Source: APXvYqz6IogaOtQbdYXCK/XDaULoLI7vfXdqXeaiYV3aEf/a23CU3l1fcQCSRaAwDpqLx5mugJnmBZiziildECgvsx0=
+X-Received: by 2002:a2e:6c15:: with SMTP id h21mr10634389ljc.10.1570839069328;
+ Fri, 11 Oct 2019 17:11:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <20191010041503.2526303-1-ast@kernel.org> <20191010041503.2526303-7-ast@kernel.org>
- <CAEf4BzYeM4mwXKHS3z3WQxWbMU+2XM6g6touV7vZZagGK0Xijg@mail.gmail.com>
-In-Reply-To: <CAEf4BzYeM4mwXKHS3z3WQxWbMU+2XM6g6touV7vZZagGK0Xijg@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 11 Oct 2019 16:13:04 -0700
-Message-ID: <CAEf4BzZ+edCGD8v3FgX-wMaKDYKpSPrwjQNwDuaagnkH--wBpA@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 06/12] bpf: implement accurate raw_tp context
- access via BTF
-To:     Alexei Starovoitov <ast@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>, x86@kernel.org,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
+References: <20191011162124.52982-1-sdf@google.com>
+In-Reply-To: <20191011162124.52982-1-sdf@google.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 11 Oct 2019 17:10:58 -0700
+Message-ID: <CAADnVQLKPLXej_v7ymv3yJakoFLGeQwdZOJ5cZmp7xqOxfebqg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/3] bpf: preserve command of the process that
+ loaded the program
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 11, 2019 at 11:31 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Fri, Oct 11, 2019 at 9:21 AM Stanislav Fomichev <sdf@google.com> wrote:
 >
-> On Wed, Oct 9, 2019 at 9:17 PM Alexei Starovoitov <ast@kernel.org> wrote:
-> >
-> > libbpf analyzes bpf C program, searches in-kernel BTF for given type name
-> > and stores it into expected_attach_type.
-> > The kernel verifier expects this btf_id to point to something like:
-> > typedef void (*btf_trace_kfree_skb)(void *, struct sk_buff *skb, void *loc);
-> > which represents signature of raw_tracepoint "kfree_skb".
-> >
-> > Then btf_ctx_access() matches ctx+0 access in bpf program with 'skb'
-> > and 'ctx+8' access with 'loc' arguments of "kfree_skb" tracepoint.
-> > In first case it passes btf_id of 'struct sk_buff *' back to the verifier core
-> > and 'void *' in second case.
-> >
-> > Then the verifier tracks PTR_TO_BTF_ID as any other pointer type.
-> > Like PTR_TO_SOCKET points to 'struct bpf_sock',
-> > PTR_TO_TCP_SOCK points to 'struct bpf_tcp_sock', and so on.
-> > PTR_TO_BTF_ID points to in-kernel structs.
-> > If 1234 is btf_id of 'struct sk_buff' in vmlinux's BTF
-> > then PTR_TO_BTF_ID#1234 points to one of in kernel skbs.
-> >
-> > When PTR_TO_BTF_ID#1234 is dereferenced (like r2 = *(u64 *)r1 + 32)
-> > the btf_struct_access() checks which field of 'struct sk_buff' is
-> > at offset 32. Checks that size of access matches type definition
-> > of the field and continues to track the dereferenced type.
-> > If that field was a pointer to 'struct net_device' the r2's type
-> > will be PTR_TO_BTF_ID#456. Where 456 is btf_id of 'struct net_device'
-> > in vmlinux's BTF.
-> >
-> > Such verifier analysis prevents "cheating" in BPF C program.
-> > The program cannot cast arbitrary pointer to 'struct sk_buff *'
-> > and access it. C compiler would allow type cast, of course,
-> > but the verifier will notice type mismatch based on BPF assembly
-> > and in-kernel BTF.
-> >
-> > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> > ---
-> >  include/linux/bpf.h          |  17 +++-
-> >  include/linux/bpf_verifier.h |   4 +
-> >  kernel/bpf/btf.c             | 186 +++++++++++++++++++++++++++++++++++
-> >  kernel/bpf/verifier.c        |  86 +++++++++++++++-
-> >  kernel/trace/bpf_trace.c     |   2 +-
-> >  5 files changed, 290 insertions(+), 5 deletions(-)
-> >
+> Even though we have the pointer to user_struct and can recover
+> uid of the user who has created the program, it usually contains
+> 0 (root) which is not very informative. Let's store the comm of the
+> calling process and export it via bpf_prog_info. This should help
+> answer the question "which process loaded this particular program".
 >
-> [...]
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> ---
+>  include/linux/bpf.h      | 1 +
+>  include/uapi/linux/bpf.h | 2 ++
+>  kernel/bpf/syscall.c     | 4 ++++
+>  3 files changed, 7 insertions(+)
 >
-> > +int btf_struct_access(struct bpf_verifier_log *log,
-> > +                     const struct btf_type *t, int off, int size,
-> > +                     enum bpf_access_type atype,
-> > +                     u32 *next_btf_id)
-> > +{
-> > +       const struct btf_member *member;
-> > +       const struct btf_type *mtype;
-> > +       const char *tname, *mname;
-> > +       int i, moff = 0, msize;
-> > +
-> > +again:
-> > +       tname = __btf_name_by_offset(btf_vmlinux, t->name_off);
-> > +       if (!btf_type_is_struct(t)) {
-> > +               bpf_log(log, "Type '%s' is not a struct", tname);
-> > +               return -EINVAL;
-> > +       }
-> > +
-> > +       for_each_member(i, t, member) {
-> > +               /* offset of the field in bits */
-> > +               moff = btf_member_bit_offset(t, member);
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 5b9d22338606..b03ea396afe5 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -421,6 +421,7 @@ struct bpf_prog_aux {
+>                 struct work_struct work;
+>                 struct rcu_head rcu;
+>         };
+> +       char created_by_comm[BPF_CREATED_COMM_LEN];
+>  };
 >
-> This whole logic of offset/size checking doesn't work for bitfields.
-> Your moff % 8 might be non-zero (most probably, actually, for
-> bitfield). Also, msize of underlying integer type is not the same as
-> member's bit size. So probably just check that it's a bitfield and
-> skip it?
+>  struct bpf_array {
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index a65c3b0c6935..4e883ecbba1e 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -326,6 +326,7 @@ enum bpf_attach_type {
+>  #define BPF_F_NUMA_NODE                (1U << 2)
 >
-> The check is surprisingly subtle and not straightforward, btw. You
+>  #define BPF_OBJ_NAME_LEN 16U
+> +#define BPF_CREATED_COMM_LEN   16U
 
-Well, this part is not true, checking btf_member_bitfield_size(t,
-member) for non-zero is enough to derive it's bitfield.
-
-> need to get btf_member_bitfield_size(t, member) and check that it's
-> not equal to underlying type's size (which is in bytes, so * 8). It's
-> unfortunate it's so non-straightforward. But if you don't filter that,
-> all those `moff / 8` and `msize` checks are bogus.
->
-> > +
-> > +               if (off + size <= moff / 8)
-> > +                       /* won't find anything, field is already too far */
-> > +                       break;
-> > +
-> > +               /* type of the field */
-> > +               mtype = btf_type_by_id(btf_vmlinux, member->type);
-> > +               mname = __btf_name_by_offset(btf_vmlinux, member->name_off);
-> > +
-> > +               /* skip modifiers */
-> > +               while (btf_type_is_modifier(mtype))
-> > +                       mtype = btf_type_by_id(btf_vmlinux, mtype->type);
-> > +
-> > +               if (btf_type_is_array(mtype))
-> > +                       /* array deref is not supported yet */
-> > +                       continue;
-> > +
-> > +               if (!btf_type_has_size(mtype) && !btf_type_is_ptr(mtype)) {
-> > +                       bpf_log(log, "field %s doesn't have size\n", mname);
-> > +                       return -EFAULT;
-> > +               }
-> > +               if (btf_type_is_ptr(mtype))
-> > +                       msize = 8;
-> > +               else
-> > +                       msize = mtype->size;
-> > +               if (off >= moff / 8 + msize)
-> > +                       /* no overlap with member, keep iterating */
-> > +                       continue;
-> > +               /* the 'off' we're looking for is either equal to start
-> > +                * of this field or inside of this struct
-> > +                */
-> > +               if (btf_type_is_struct(mtype)) {
-> > +                       /* our field must be inside that union or struct */
-> > +                       t = mtype;
-> > +
-> > +                       /* adjust offset we're looking for */
-> > +                       off -= moff / 8;
-> > +                       goto again;
-> > +               }
-> > +               if (msize != size) {
-> > +                       /* field access size doesn't match */
-> > +                       bpf_log(log,
-> > +                               "cannot access %d bytes in struct %s field %s that has size %d\n",
-> > +                               size, tname, mname, msize);
-> > +                       return -EACCES;
->
-> Are you sure this has to be an error? Why not just default to
-> SCALAR_VALUE here? E.g., if compiler generated one read for few
-> smaller fields, or user wants to read lower 1 byte of int field, etc.
-> I think if you move this size check into the following ptr check, it
-> should be fine. Pointer is the only case where you care about correct
-> read/value, isn't it?
->
-> > +               }
-> > +
-> > +               if (btf_type_is_ptr(mtype)) {
-> > +                       const struct btf_type *stype;
-> > +
-> > +                       stype = btf_type_by_id(btf_vmlinux, mtype->type);
-> > +                       /* skip modifiers */
-> > +                       while (btf_type_is_modifier(stype))
-> > +                               stype = btf_type_by_id(btf_vmlinux, stype->type);
-> > +                       if (btf_type_is_struct(stype)) {
-> > +                               *next_btf_id = mtype->type;
-> > +                               return PTR_TO_BTF_ID;
-> > +                       }
-> > +               }
-> > +               /* all other fields are treated as scalars */
-> > +               return SCALAR_VALUE;
-> > +       }
-> > +       bpf_log(log, "struct %s doesn't have field at offset %d\n", tname, off);
-> > +       return -EINVAL;
-> > +}
-> > +
->
-> [...]
+Nack.
+16 bytes is going to be useless.
+We found it the hard way with prog_name.
+If you want to embed additional debug information
+please use BTF for that.
