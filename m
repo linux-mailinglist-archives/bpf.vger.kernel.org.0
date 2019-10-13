@@ -2,117 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 41938D559C
-	for <lists+bpf@lfdr.de>; Sun, 13 Oct 2019 12:17:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6080AD56F7
+	for <lists+bpf@lfdr.de>; Sun, 13 Oct 2019 19:06:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728635AbfJMKRx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 13 Oct 2019 06:17:53 -0400
-Received: from relay2-d.mail.gandi.net ([217.70.183.194]:50343 "EHLO
-        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728528AbfJMKRx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 13 Oct 2019 06:17:53 -0400
-X-Originating-IP: 90.177.210.238
-Received: from [192.168.1.110] (238.210.broadband10.iol.cz [90.177.210.238])
-        (Authenticated sender: i.maximets@ovn.org)
-        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 9ADA440004;
-        Sun, 13 Oct 2019 10:17:48 +0000 (UTC)
-Subject: Re: [PATCH bpf v2] libbpf: fix passing uninitialized bytes to
- setsockopt
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Ilya Maximets <i.maximets@ovn.org>
-Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-References: <5da24d48.1c69fb81.a3069.c817SMTPIN_ADDED_BROKEN@mx.google.com>
- <20191012232437.2xpi5mmmv7mxz3yy@ast-mbp.dhcp.thefacebook.com>
-From:   Ilya Maximets <i.maximets@ovn.org>
-Message-ID: <c338b2fd-8e0d-885d-5895-317d20800815@ovn.org>
-Date:   Sun, 13 Oct 2019 12:17:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+        id S1729340AbfJMRG3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 13 Oct 2019 13:06:29 -0400
+Received: from mail-lf1-f66.google.com ([209.85.167.66]:46671 "EHLO
+        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727386AbfJMRG2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 13 Oct 2019 13:06:28 -0400
+Received: by mail-lf1-f66.google.com with SMTP id t8so10138414lfc.13
+        for <bpf@vger.kernel.org>; Sun, 13 Oct 2019 10:06:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=xLbu07FbZMOUGLOKpbGSEAHgMuRzWgnJgVeR/okx9Mc=;
+        b=MArB/yKUcZ+UCarFvdsudTlFvo77FpDS6Dg/7V4q6QeKuqqTXC5dH4r6KEcvmp8QZ0
+         wNfnzEhhuC4ERBu5zrS0csbx0oCaoXKYWnkluTtT+ZgGLeyjLKxXM3aL30cCHrWgkK46
+         AVTbNP0ummZUfg8olJaNY28IZzs1oDEwDbbNFcFS6Qt4+vmlmfFXOEiiB45TqinlYihF
+         1sgo/X8It1OREo9KD000bkEOZkD6FemblnyUwEf+NSaFPwpAy8pblpIH77NpEp6qfNti
+         2r41cODj75jSq3SdtrHf4PpxSBTm8qY+dflhsUzIYl70+wFyKF5QARDp+1BhR/4SBiap
+         ULqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xLbu07FbZMOUGLOKpbGSEAHgMuRzWgnJgVeR/okx9Mc=;
+        b=T0JgKOxpPk1wDF1+cG9c1CEnUfuLcnDRxv80eZTgiTJB12nCakptihAK6W6Ah94SD7
+         qIv7b7S5eD9lgfoQ9mEwZter0rlh/Vq+u/DHVBD81BpRF8cBklHSOfl0ss6bA5JJi/x+
+         z4bwcSggG2Sbnob/GjiDnqT3FZ2w3E9YR0JmfIjLW8QkNf6exFc6OYMbXt69ORKeRQix
+         ULYoi1P2ly7vJAEj3bOstZ4SJaCZrl6BOMP0gjWEXpBupo4dwmvQiBbzRmoBmb5ateWj
+         wVixmlp3uXrvLVuzT9ozK2nkDx1QXS7E7VQ6rf637AhwIi6p8DsYcFg6Kj3JBqebFaAX
+         5rBQ==
+X-Gm-Message-State: APjAAAXsFuyt3c/x9lu4DIXfXSO5XirT2Re08deZbbdKcaSweiDQNxin
+        uFhzWtr0KoyhvhpVWwMcaV10hsJWprY=
+X-Google-Smtp-Source: APXvYqyj/4oJ7UHf4MCXDb1qZZMhTQN5/EWewkQNrQNZz5L8TBa+u084ciFzmOKD4pyXqAJgL1nLOw==
+X-Received: by 2002:ac2:5c4b:: with SMTP id s11mr15044950lfp.37.1570986386652;
+        Sun, 13 Oct 2019 10:06:26 -0700 (PDT)
+Received: from ?IPv6:2a00:1fa0:4851:f638:84a8:96d0:2933:dfbf? ([2a00:1fa0:4851:f638:84a8:96d0:2933:dfbf])
+        by smtp.gmail.com with ESMTPSA id k23sm3568595ljc.13.2019.10.13.10.06.24
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 13 Oct 2019 10:06:25 -0700 (PDT)
+Subject: Re: [PATCH v5 bpf-next 09/15] samples/bpf: use own flags but not
+ HOSTCFLAGS
+To:     ast@kernel.org, daniel@iogearbox.net, yhs@fb.com,
+        davem@davemloft.net, jakub.kicinski@netronome.com, hawk@kernel.org,
+        john.fastabend@gmail.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        clang-built-linux@googlegroups.com, ilias.apalodimas@linaro.org
+References: <20191011002808.28206-1-ivan.khoronzhuk@linaro.org>
+ <20191011002808.28206-10-ivan.khoronzhuk@linaro.org>
+ <99f76e2f-ed76-77e0-a470-36ae07567111@cogentembedded.com>
+ <20191011095715.GB3689@khorivan>
+ <3fb88a06-5253-1e48-9bea-2d31a443250b@cogentembedded.com>
+ <20191012212643.GC3689@khorivan>
+From:   Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Message-ID: <03db016e-5337-0207-3d17-0b3bbe79fa5c@cogentembedded.com>
+Date:   Sun, 13 Oct 2019 20:06:24 +0300
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:60.0) Gecko/20100101
  Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <20191012232437.2xpi5mmmv7mxz3yy@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20191012212643.GC3689@khorivan>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 13.10.2019 1:24, Alexei Starovoitov wrote:
-> On Wed, Oct 09, 2019 at 06:49:29PM +0200, Ilya Maximets wrote:
->> 'struct xdp_umem_reg' has 4 bytes of padding at the end that makes
->> valgrind complain about passing uninitialized stack memory to the
->> syscall:
+On 13.10.2019 0:26, Ivan Khoronzhuk wrote:
+
+>>>>> While compiling natively, the host's cflags and ldflags are equal to
+>>>>> ones used from HOSTCFLAGS and HOSTLDFLAGS. When cross compiling it
+>>>>> should have own, used for target arch. While verification, for arm,
+>>>>
+>>>>   While verifying.
+>>> While verification stage.
 >>
->>    Syscall param socketcall.setsockopt() points to uninitialised byte(s)
->>      at 0x4E7AB7E: setsockopt (in /usr/lib64/libc-2.29.so)
->>      by 0x4BDE035: xsk_umem__create@@LIBBPF_0.0.4 (xsk.c:172)
->>    Uninitialised value was created by a stack allocation
->>      at 0x4BDDEBA: xsk_umem__create@@LIBBPF_0.0.4 (xsk.c:140)
->>
->> Padding bytes appeared after introducing of a new 'flags' field.
->> memset() is required to clear them.
->>
->> Fixes: 10d30e301732 ("libbpf: add flags to umem config")
->> Signed-off-by: Ilya Maximets <i.maximets@ovn.org>
->> ---
->>
->> Version 2:
->>    * Struct initializer replaced with explicit memset(). [Andrii]
->>
->>   tools/lib/bpf/xsk.c | 1 +
->>   1 file changed, 1 insertion(+)
->>
->> diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
->> index a902838f9fcc..9d5348086203 100644
->> --- a/tools/lib/bpf/xsk.c
->> +++ b/tools/lib/bpf/xsk.c
->> @@ -163,6 +163,7 @@ int xsk_umem__create_v0_0_4(struct xsk_umem **umem_ptr, void *umem_area,
->>   	umem->umem_area = umem_area;
->>   	xsk_set_umem_config(&umem->config, usr_config);
->>   
->> +	memset(&mr, 0, sizeof(mr));
->>   	mr.addr = (uintptr_t)umem_area;
->>   	mr.len = size;
->>   	mr.chunk_size = umem->config.frame_size;
+>>   While *in* verification stage, "while" doesn't combine with nouns w/o
+>> a preposition.
 > 
-> This was already applied. Why did you resend?
 > 
+> Sergei, better add me in cc list when msg is to me I can miss it.
 
-Sorry, it wasn't me.  Looking at the mail delivery chain:
+    Hm, the earlier mails were addressed to you but no the last one --
+not sure what happened there, sorry.
 
-Received: from listssympa-test.colorado.edu (listssympa-test.colorado.edu [128.138.129.156])
-	by spool.mail.gandi.net (Postfix) with ESMTPS id 66E2F780445
-	for <i.maximets@ovn.org>; Sun, 13 Oct 2019 04:52:14 +0000 (UTC)
-Received: from listssympa-test.colorado.edu (localhost [127.0.0.1])
-	by listssympa-test.colorado.edu (8.15.2/8.15.2/MJC-8.0/sympa) with ESMTPS id x9D4pvsL015926
-	(version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-	Sat, 12 Oct 2019 22:51:57 -0600
-Received: (from root@localhost)
-	by listssympa-test.colorado.edu (8.15.2/8.15.2/MJC-8.0/submit) id x9D4pujl015885;
-	Sat, 12 Oct 2019 22:51:56 -0600
-Received: from DM5PR03MB3273.namprd03.prod.outlook.com (2603:10b6:a03:54::17) by
-  BYAPR03MB4376.namprd03.prod.outlook.com with HTTPS via
-  BYAPR02CA0040.NAMPRD02.PROD.OUTLOOK.COM; Wed, 9 Oct 2019 22:04:15 +0000
-Received: from BN6PR03CA0057.namprd03.prod.outlook.com (2603:10b6:404:4c::19) by
-  DM5PR03MB3273.namprd03.prod.outlook.com (2603:10b6:4:42::32) with Microsoft
-  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384)
-  id 15.20.2347.16; Wed, 9 Oct 2019 17:44:13 +0000
+> Regarding the language lesson, thanks, I will keep it in mind next
+> time, but the issue is not rude, if it's an issue at all, so I better
+> leave it as is, as not reasons to correct it w/o code changes and
+> everyone is able to understand it.
 
-There is some strange server listssympa-test.colorado.edu.
-Looks like someone in colorado.edu is testing stuff on production server.
+    Up to you. and the maintainer(s)...
 
-The simplified delivery chain looks like this:
+>>>>> arm64 and x86_64 the following flags were used always:
+>>>>>
+>>>>> -Wall -O2
+>>>>> -fomit-frame-pointer
+>>>>> -Wmissing-prototypes
+>>>>> -Wstrict-prototypes
+>>>>>
+>>>>> So, add them as they were verified and used before adding
+>>>>> Makefile.target and lets omit "-fomit-frame-pointer" as were proposed
+>>>>> while review, as no sense in such optimization for samples.
+>>>>>
+>>>>> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
+>>>> [...]
 
-Me -> relay6-d.mail.gandi.net -> vger.kernel.org -> mx.colorado.edu ->
-mail.protection.outlook.com -> namprd03.prod.outlook.com ->
-listssympa-test.colorado.edu -> spool.mail.gandi.net -> Me again!
-
-Best regards, Ilya Maximets.
+MBR, Sergei
