@@ -2,114 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6080AD56F7
-	for <lists+bpf@lfdr.de>; Sun, 13 Oct 2019 19:06:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82AD6D5954
+	for <lists+bpf@lfdr.de>; Mon, 14 Oct 2019 03:42:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729340AbfJMRG3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 13 Oct 2019 13:06:29 -0400
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:46671 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727386AbfJMRG2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 13 Oct 2019 13:06:28 -0400
-Received: by mail-lf1-f66.google.com with SMTP id t8so10138414lfc.13
-        for <bpf@vger.kernel.org>; Sun, 13 Oct 2019 10:06:27 -0700 (PDT)
+        id S1729544AbfJNBmd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 13 Oct 2019 21:42:33 -0400
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:45464 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729444AbfJNBmd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 13 Oct 2019 21:42:33 -0400
+Received: by mail-lj1-f195.google.com with SMTP id q64so14915223ljb.12
+        for <bpf@vger.kernel.org>; Sun, 13 Oct 2019 18:42:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=xLbu07FbZMOUGLOKpbGSEAHgMuRzWgnJgVeR/okx9Mc=;
-        b=MArB/yKUcZ+UCarFvdsudTlFvo77FpDS6Dg/7V4q6QeKuqqTXC5dH4r6KEcvmp8QZ0
-         wNfnzEhhuC4ERBu5zrS0csbx0oCaoXKYWnkluTtT+ZgGLeyjLKxXM3aL30cCHrWgkK46
-         AVTbNP0ummZUfg8olJaNY28IZzs1oDEwDbbNFcFS6Qt4+vmlmfFXOEiiB45TqinlYihF
-         1sgo/X8It1OREo9KD000bkEOZkD6FemblnyUwEf+NSaFPwpAy8pblpIH77NpEp6qfNti
-         2r41cODj75jSq3SdtrHf4PpxSBTm8qY+dflhsUzIYl70+wFyKF5QARDp+1BhR/4SBiap
-         ULqg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nHlyjzln2EXA6Rl4vH3JEUJo8C8cF0ODGqTOCDMVJpc=;
+        b=DqVdQrUE1SsHfJHz7TWtg/NlgQIc1OTZOV4k1WybnGXSIzVXlatJ5g4ULB+dTSY4z4
+         J+zlOHaKjbROhj/PlZCs068gF/0tGJf8WWj01slFudmYzBxNVEyuf2q2vxyluB+l5OlM
+         klBERKRlfMStdywR/2bFIug6khPR8NNRYZWSL9wS59NUGFzszFM4qRflsEMX45LzaJGy
+         gK/tb1RHeq1Z8DFzwC4o0wc7LowM3Pil4EGoNWxBz2i58bi8rJRFNCGjegLeZ+Ive4kW
+         r08LenA08QlRH5hbRTMejeo4L625L464+U4WQydOUQ1vOm/RoRUgG+tX5kt1trjLRAyv
+         MiKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=xLbu07FbZMOUGLOKpbGSEAHgMuRzWgnJgVeR/okx9Mc=;
-        b=T0JgKOxpPk1wDF1+cG9c1CEnUfuLcnDRxv80eZTgiTJB12nCakptihAK6W6Ah94SD7
-         qIv7b7S5eD9lgfoQ9mEwZter0rlh/Vq+u/DHVBD81BpRF8cBklHSOfl0ss6bA5JJi/x+
-         z4bwcSggG2Sbnob/GjiDnqT3FZ2w3E9YR0JmfIjLW8QkNf6exFc6OYMbXt69ORKeRQix
-         ULYoi1P2ly7vJAEj3bOstZ4SJaCZrl6BOMP0gjWEXpBupo4dwmvQiBbzRmoBmb5ateWj
-         wVixmlp3uXrvLVuzT9ozK2nkDx1QXS7E7VQ6rf637AhwIi6p8DsYcFg6Kj3JBqebFaAX
-         5rBQ==
-X-Gm-Message-State: APjAAAXsFuyt3c/x9lu4DIXfXSO5XirT2Re08deZbbdKcaSweiDQNxin
-        uFhzWtr0KoyhvhpVWwMcaV10hsJWprY=
-X-Google-Smtp-Source: APXvYqyj/4oJ7UHf4MCXDb1qZZMhTQN5/EWewkQNrQNZz5L8TBa+u084ciFzmOKD4pyXqAJgL1nLOw==
-X-Received: by 2002:ac2:5c4b:: with SMTP id s11mr15044950lfp.37.1570986386652;
-        Sun, 13 Oct 2019 10:06:26 -0700 (PDT)
-Received: from ?IPv6:2a00:1fa0:4851:f638:84a8:96d0:2933:dfbf? ([2a00:1fa0:4851:f638:84a8:96d0:2933:dfbf])
-        by smtp.gmail.com with ESMTPSA id k23sm3568595ljc.13.2019.10.13.10.06.24
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 13 Oct 2019 10:06:25 -0700 (PDT)
-Subject: Re: [PATCH v5 bpf-next 09/15] samples/bpf: use own flags but not
- HOSTCFLAGS
-To:     ast@kernel.org, daniel@iogearbox.net, yhs@fb.com,
-        davem@davemloft.net, jakub.kicinski@netronome.com, hawk@kernel.org,
-        john.fastabend@gmail.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        clang-built-linux@googlegroups.com, ilias.apalodimas@linaro.org
-References: <20191011002808.28206-1-ivan.khoronzhuk@linaro.org>
- <20191011002808.28206-10-ivan.khoronzhuk@linaro.org>
- <99f76e2f-ed76-77e0-a470-36ae07567111@cogentembedded.com>
- <20191011095715.GB3689@khorivan>
- <3fb88a06-5253-1e48-9bea-2d31a443250b@cogentembedded.com>
- <20191012212643.GC3689@khorivan>
-From:   Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Message-ID: <03db016e-5337-0207-3d17-0b3bbe79fa5c@cogentembedded.com>
-Date:   Sun, 13 Oct 2019 20:06:24 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nHlyjzln2EXA6Rl4vH3JEUJo8C8cF0ODGqTOCDMVJpc=;
+        b=qSK1+Kvc0ec53rwYHHXSeOUfGZM+h62N6kC2MueO8hR18kqQZPRnDJeX+xddjSklQQ
+         fpSzP5iRmePWjvv76KYJjAM+qGU2469ZZJuEGvzZhUxe6UEGdfAXg8QqCIG77L6ZqLEi
+         b36vbCw/NKgcUpRG+2Bo9CDZ57jCzSns7JMQZVdmP0/BTve1bqZMTMDl6pQyqckersZp
+         QpSC1EGNKeCqfS9EFNWAmxAuCbBWY/wjF16mRIRDWU+iQ/j8xCFkffLfzsMaIY/ar7uz
+         nr4FP3vCOxGrD7g5/PTB+qaXMHD5ar9Q1O7r3cBjdR+dtjpm67R/OsAJQZAXmB02pXcT
+         t2Bg==
+X-Gm-Message-State: APjAAAXY3jtym0WyybA/E11/dVB0K4hR6A9ObDddxTZCCDJ05GbFkiIl
+        ruYkB/JsV99TlR0bCQ2Ud6R4fpdACf0a0mR8bdk=
+X-Google-Smtp-Source: APXvYqyh+CKJtOdqU6MPSWErugCA//+oH61ao8Y7VCAXoXZ+JxBK/WZeQEHD/91gpT+2UargE6/2NKL8XYd1rSWybDg=
+X-Received: by 2002:a2e:b17b:: with SMTP id a27mr16784341ljm.243.1571017351559;
+ Sun, 13 Oct 2019 18:42:31 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20191012212643.GC3689@khorivan>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <201910032202.OVnkgkNP%lkp@intel.com> <20191011200059.GA30072@ubuntu-m2-xlarge-x86>
+In-Reply-To: <20191011200059.GA30072@ubuntu-m2-xlarge-x86>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Sun, 13 Oct 2019 18:42:20 -0700
+Message-ID: <CAADnVQJA7otF=us0usjZ9x0pqpX--9UVLZhwZe-+8pVf-PMkpQ@mail.gmail.com>
+Subject: Re: [ast:btf_vmlinux 1/7] net/mac80211/./trace.h:253:1: warning:
+ redefinition of typedef 'btf_trace_local_only_evt' is a C11 feature
+To:     Nathan Chancellor <natechancellor@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andriin@fb.com>
+Cc:     kbuild@01.org, Nick Desaulniers <ndesaulniers@google.com>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        kbuild test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 13.10.2019 0:26, Ivan Khoronzhuk wrote:
+On Fri, Oct 11, 2019 at 1:01 PM Nathan Chancellor
+<natechancellor@gmail.com> wrote:
+>
+> On Thu, Oct 03, 2019 at 10:48:31PM +0800, kbuild test robot wrote:
+> > CC: kbuild-all@01.org
+> > TO: Alexei Starovoitov <ast@kernel.org>
+> >
+> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/ast/bpf.git btf_vmlinux
+> > head:   cc9b0a180111f856b93a805fdfc2fb288c41fab2
+> > commit: 82b70116b6ba453e1dda06c7126e100d594b8e0a [1/7] bpf: add typecast to help vmlinux BTF generation
+> > config: x86_64-rhel-7.6 (attached as .config)
+> > compiler: clang version 10.0.0 (git://gitmirror/llvm_project 38ac6bdb83a9bb76c109901960c20d1714339891)
+> > reproduce:
+> >         git checkout 82b70116b6ba453e1dda06c7126e100d594b8e0a
+> >         # save the attached .config to linux build tree
+> >         make ARCH=x86_64
+> >
+> > If you fix the issue, kindly add following tag
+> > Reported-by: kbuild test robot <lkp@intel.com>
+> >
+> > All warnings (new ones prefixed by >>):
+> >
+> >    In file included from net/mac80211/trace.c:11:
+> >    In file included from net/mac80211/./trace.h:2717:
+> >    In file included from include/trace/define_trace.h:104:
+> >    In file included from include/trace/bpf_probe.h:110:
+> > >> net/mac80211/./trace.h:253:1: warning: redefinition of typedef 'btf_trace_local_only_evt' is a C11 feature [-Wtypedef-redefinition]
+> >    DEFINE_EVENT(local_only_evt, drv_start,
+> >    ^
+> >    include/trace/bpf_probe.h:104:2: note: expanded from macro 'DEFINE_EVENT'
+> >            __DEFINE_EVENT(template, call, PARAMS(proto), PARAMS(args), 0)
+> >            ^
+> >    include/trace/bpf_probe.h:77:16: note: expanded from macro '__DEFINE_EVENT'
+> >    typedef void (*btf_trace_##template)(void *__data, proto);              \
+>
+> Hi Alexei,
+>
+> The 0day team has been running clang builds for us for a little bit and
+> this one popped up. It looks like there are certain tracepoints that use
+> the same template so clang warns because there are two identical
+> typedefs. Is there any way to improve this so we don't get noisey
+> builds? This still occurs as of your latest btf_vmlinux branch even
+> though this report is from a week ago.
 
->>>>> While compiling natively, the host's cflags and ldflags are equal to
->>>>> ones used from HOSTCFLAGS and HOSTLDFLAGS. When cross compiling it
->>>>> should have own, used for target arch. While verification, for arm,
->>>>
->>>>   While verifying.
->>> While verification stage.
->>
->>   While *in* verification stage, "while" doesn't combine with nouns w/o
->> a preposition.
-> 
-> 
-> Sergei, better add me in cc list when msg is to me I can miss it.
+Thanks for headsup. That was indeed a valid bug in my branch.
+Interestingly gcc didn't complain.
+I knew that 0day bot is testing my development tree, but
+I didn't know it's doing it with clang.
+And for some reason I didn't receive any reports
+about this breakage.
+More so I got 'build success' email from 0day for my branch.
+Something to improve in the bot, I guess.
 
-    Hm, the earlier mails were addressed to you but no the last one --
-not sure what happened there, sorry.
+If you're curious the fix was:
+-typedef void (*btf_trace_##template)(void *__data, proto);             \
++typedef void (*btf_trace_##call)(void *__data, proto);                 \
 
-> Regarding the language lesson, thanks, I will keep it in mind next
-> time, but the issue is not rude, if it's an issue at all, so I better
-> leave it as is, as not reasons to correct it w/o code changes and
-> everyone is able to understand it.
+I forced pushed my btf_vmlinux branch.
+Please let me know if you still see this issue.
 
-    Up to you. and the maintainer(s)...
-
->>>>> arm64 and x86_64 the following flags were used always:
->>>>>
->>>>> -Wall -O2
->>>>> -fomit-frame-pointer
->>>>> -Wmissing-prototypes
->>>>> -Wstrict-prototypes
->>>>>
->>>>> So, add them as they were verified and used before adding
->>>>> Makefile.target and lets omit "-fomit-frame-pointer" as were proposed
->>>>> while review, as no sense in such optimization for samples.
->>>>>
->>>>> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
->>>> [...]
-
-MBR, Sergei
+Thanks!
