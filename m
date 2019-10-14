@@ -2,93 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FCCDD6220
-	for <lists+bpf@lfdr.de>; Mon, 14 Oct 2019 14:13:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8485DD625D
+	for <lists+bpf@lfdr.de>; Mon, 14 Oct 2019 14:21:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730478AbfJNMNx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Oct 2019 08:13:53 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:47544 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730314AbfJNMNx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Oct 2019 08:13:53 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9EC9JES116386;
-        Mon, 14 Oct 2019 12:13:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2019-08-05;
- bh=drowqFol6Rrr0GLm0Fgl3yA2hycpTzI6ZIAW3QCCM6M=;
- b=bhh6abygd5NYA8NmrkxoQvKLHyYhDhrbYPMDYqsyBbN9gqb30Yckjtjt9Rx+Nq0Emsl5
- W6tD+fe6l9ktuRFfMkMqU2aBYUh6U3qZ+ED1A0d9u8JYxhFIT+DJdZqyl36Srgnq7ZiG
- egfQgpB3Yxa29htslJNwfMP7kmieRnw4bdsn8w+GIKDqHDVLvIyJ7rOW3Gf87GwjdHKP
- FKyjBZRgYQYw0z4PnUHfEtECWxCcjnjKycgfwBtZy84XYkG9QLAola6ADgq6jTJ2S4CK
- EYsyDEwzIYSLK3HRXhLu/nNFcaezXWgDx5GYuK7+0rWhpEDRKdnzZT7ovAKAM+K0IyIb lg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 2vk7fr0aah-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 14 Oct 2019 12:13:40 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9EC7kbo034741;
-        Mon, 14 Oct 2019 12:13:40 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 2vkry64b9e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 14 Oct 2019 12:13:40 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x9ECDceP009233;
-        Mon, 14 Oct 2019 12:13:38 GMT
-Received: from mwanda (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 14 Oct 2019 12:13:36 +0000
-Date:   Mon, 14 Oct 2019 15:13:30 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     daniel@iogearbox.net
-Cc:     bpf@vger.kernel.org
-Subject: [bug report] bpf, sockmap: convert to generic sk_msg interface
-Message-ID: <20191014121330.GA14089@mwanda>
+        id S1726169AbfJNMVb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Oct 2019 08:21:31 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:59502 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730285AbfJNMVa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Oct 2019 08:21:30 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 1AD60898FDB40EB0DFEE;
+        Mon, 14 Oct 2019 20:21:28 +0800 (CST)
+Received: from huawei.com (10.90.53.225) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.439.0; Mon, 14 Oct 2019
+ 20:21:23 +0800
+From:   Hou Tao <houtao1@huawei.com>
+To:     <linux-block@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <axboe@kernel.dk>, <ast@kernel.org>
+CC:     <hare@suse.com>, <osandov@fb.com>, <ming.lei@redhat.com>,
+        <damien.lemoal@wdc.com>, <bvanassche@acm.org>,
+        <daniel@iogearbox.net>, <kafai@fb.com>, <songliubraving@fb.com>,
+        <yhs@fb.com>
+Subject: [RFC PATCH 0/2] block: use eBPF to redirect IO completion
+Date:   Mon, 14 Oct 2019 20:28:31 +0800
+Message-ID: <20191014122833.64908-1-houtao1@huawei.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9409 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=611
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1908290000 definitions=main-1910140120
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9409 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=1 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=714 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
- definitions=main-1910140120
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.90.53.225]
+X-CFilter-Loop: Reflected
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello Daniel Borkmann,
+For network stack, RPS, namely Receive Packet Steering, is used to
+distribute network protocol processing from hardware-interrupted CPU
+to specific CPUs and alleviating soft-irq load of the interrupted CPU.
 
-This is a semi-automatic email about new static checker warnings.
+For block layer, soft-irq (for single queue device) or hard-irq
+(for multiple queue device) is used to handle IO completion, so
+RPS will be useful when the soft-irq load or the hard-irq load
+of a specific CPU is too high, or a specific CPU set is required
+to handle IO completion.
 
-The patch 604326b41a6f: "bpf, sockmap: convert to generic sk_msg
-interface" from Oct 13, 2018, leads to the following Smatch complaint:
+Instead of setting the CPU set used for handling IO completion
+through sysfs or procfs, we can attach an eBPF program to the
+request-queue, provide some useful info (e.g., the CPU
+which submits the request) to the program, and let the program
+decides the proper CPU for IO completion handling.
 
-    net/core/skmsg.c:792 sk_psock_write_space()
-    error: we previously assumed 'psock' could be null (see line 790)
+In order to demonostrate the effect of IO completion redirection,
+a test programm is built to redirect the IO completion handling
+to all online CPUs or a specific CPU set:
 
-net/core/skmsg.c
-   789		psock = sk_psock(sk);
-   790		if (likely(psock && sk_psock_test_state(psock, SK_PSOCK_TX_ENABLED)))
-                           ^^^^^
-Check for NULL
+	./test_blkdev_ccpu -d /dev/vda
+or
+	./test_blkdev_ccpu -d /dev/nvme0n1 -s 4,8,10-13
 
-   791			schedule_work(&psock->work);
-   792		write_space = psock->saved_write_space;
-                              ^^^^^^^^^^^^^^^^^^^^^^^^
+However I am still trying to find out a killer scenario for
+the eBPF redirection, so suggestions and comments are welcome.
 
-   793		rcu_read_unlock();
-   794		write_space(sk);
-                ^^^^^^^^^^^^^^
-The warning is on the wrong line.  The dereference is really here.
+Regards,
+Tao
 
-regards,
-dan carpenter
+Hou Tao (2):
+  block: add support for redirecting IO completion through eBPF
+  selftests/bpf: add test program for redirecting IO completion CPU
+
+ block/Makefile                                |   2 +-
+ block/blk-bpf.c                               | 127 +++++++++
+ block/blk-mq.c                                |  22 +-
+ block/blk-softirq.c                           |  27 +-
+ include/linux/blkdev.h                        |   3 +
+ include/linux/bpf_blkdev.h                    |   9 +
+ include/linux/bpf_types.h                     |   1 +
+ include/uapi/linux/bpf.h                      |   2 +
+ kernel/bpf/syscall.c                          |   9 +
+ tools/include/uapi/linux/bpf.h                |   2 +
+ tools/lib/bpf/libbpf.c                        |   1 +
+ tools/lib/bpf/libbpf_probes.c                 |   1 +
+ tools/testing/selftests/bpf/Makefile          |   1 +
+ .../selftests/bpf/progs/blkdev_ccpu_rr.c      |  66 +++++
+ .../testing/selftests/bpf/test_blkdev_ccpu.c  | 246 ++++++++++++++++++
+ 15 files changed, 507 insertions(+), 12 deletions(-)
+ create mode 100644 block/blk-bpf.c
+ create mode 100644 include/linux/bpf_blkdev.h
+ create mode 100644 tools/testing/selftests/bpf/progs/blkdev_ccpu_rr.c
+ create mode 100644 tools/testing/selftests/bpf/test_blkdev_ccpu.c
+
+-- 
+2.22.0
+
