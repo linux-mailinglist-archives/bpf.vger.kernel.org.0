@@ -2,194 +2,206 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DCE51D67FD
-	for <lists+bpf@lfdr.de>; Mon, 14 Oct 2019 19:08:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7C56D6810
+	for <lists+bpf@lfdr.de>; Mon, 14 Oct 2019 19:12:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732152AbfJNRIL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Oct 2019 13:08:11 -0400
-Received: from mail-io1-f68.google.com ([209.85.166.68]:41298 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732046AbfJNRIL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Oct 2019 13:08:11 -0400
-Received: by mail-io1-f68.google.com with SMTP id n26so39411126ioj.8;
-        Mon, 14 Oct 2019 10:08:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=h6BPR1BA97p9++a8Txt+LR4LDB6CVhKf78yugbDC77U=;
-        b=UTEYJdb3C7SAdoAD08B4nNi0zGmGLGS8bXz/GDLzflF/zHQv7PM/FfSYxhOtg3M+TG
-         HewAT0RRfuzE5goTUQjI4pR0BPZ+94yVz5XaQhYQVMHNFVSu6XrEL418ImjUhnJFOtvJ
-         YVOW3Chc/Api8Xf8H7kfkGtTGBwJ1vetJh71Gtejb2LlR8M1kv5ZggkRthcwkxxGUzMA
-         dIozZTqhAl+djGjMbT8TrQ0lnbDxDRWRbS3Ve81TxX7bxacOEmtXfRfU/IKJh8VYiSFa
-         oNL4QLlPkpDc7rMRBGVFoFgAYCLXUu1Tih2WuNWQ5Gu5A0w5GxvDeuVPgOJMbr5P2CM9
-         QQnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=h6BPR1BA97p9++a8Txt+LR4LDB6CVhKf78yugbDC77U=;
-        b=ujmi3IGOpax08TvAQkAfPVSRwcg8zV6Ug0myz4Z+OKXO3uU9X9HQ1HhBSrOsnTkjVD
-         IeDSxILSpGClnVTWwtunBt2w6f1j7OCLsB2amTAwYQ6ky9OIYjBSgkI7fxvx8K6rlWo/
-         tocoZ0irk9FBxaBl8CYp4O1xqRa3gPJTjfPIkOooylnQs1tw2p5aaUQlMnyqysrkqsAN
-         l/IVTlA5bOpI81WM4bJ8MQ0vxygitvGsFwtBQevC2JUiVniWUPqNtjKthjdTz+sibaqt
-         zAHJCH36DyA89asKmZWEMrP9IVYSSptnXF96r1pDqoU1kcQa2m7WJJcREsYc3BchQUiB
-         8FXA==
-X-Gm-Message-State: APjAAAVXJYjbb4NLpN8sc38EhQ2F/iimzGiBW6+/bVl0nPStmK4/jWyF
-        AuPrGPqoS4aZCKm39SSmIrY=
-X-Google-Smtp-Source: APXvYqx9mp16GBggal25cVYGejE6Az+spTSbPa8M7iARejA1A67TpGUT7wYiD+dhBfoeCClk5QptyA==
-X-Received: by 2002:a02:4807:: with SMTP id p7mr38497822jaa.100.1571072889950;
-        Mon, 14 Oct 2019 10:08:09 -0700 (PDT)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id r12sm1410288ilq.70.2019.10.14.10.08.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Oct 2019 10:08:09 -0700 (PDT)
-Date:   Mon, 14 Oct 2019 10:08:01 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        id S2388358AbfJNRMb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Oct 2019 13:12:31 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:47810 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2387968AbfJNRMb (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 14 Oct 2019 13:12:31 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x9EHAPZL016716
+        for <bpf@vger.kernel.org>; Mon, 14 Oct 2019 10:12:30 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=VZQSaFL6cILSBSh9R3ERpIGAqSNRb2JkOURfLEvU0XA=;
+ b=XxjhRdaOOEW/3QdKoX/UzbVRKdtqhSM/r4lOVuctEYUIoxhlJyBxNq5w1fqO/f59m/lZ
+ ZLKsA55TuNwkS+PI0hW67c3jqlKQlwGrVrs+GPj8VrxXn90jyePl6MfCN9JReKA2xEed
+ r/VxfmIuJLHLv/rPno1eAdTq675SGSO/zQ4= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2vkxgenc5q-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 14 Oct 2019 10:12:30 -0700
+Received: from 2401:db00:30:6007:face:0:1:0 (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 14 Oct 2019 10:12:28 -0700
+Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
+        id BC1D262E1383; Mon, 14 Oct 2019 10:12:26 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Song Liu <songliubraving@fb.com>
+Smtp-Origin-Hostname: devbig006.ftw2.facebook.com
+To:     <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>
+CC:     <sashal@kernel.org>, <kernel-team@fb.com>,
+        Song Liu <songliubraving@fb.com>, <stable@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Marek Majkowski <marek@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Message-ID: <5da4ab712043c_25f42addb7c085b83b@john-XPS-13-9370.notmuch>
-In-Reply-To: <87v9srijxa.fsf@toke.dk>
-References: <157046883502.2092443.146052429591277809.stgit@alrua-x1>
- <157046883614.2092443.9861796174814370924.stgit@alrua-x1>
- <20191007204234.p2bh6sul2uakpmnp@ast-mbp.dhcp.thefacebook.com>
- <87sgo3lkx9.fsf@toke.dk>
- <20191009015117.pldowv6n3k5p3ghr@ast-mbp.dhcp.thefacebook.com>
- <87o8yqjqg0.fsf@toke.dk>
- <20191010044156.2hno4sszysu3c35g@ast-mbp.dhcp.thefacebook.com>
- <87v9srijxa.fsf@toke.dk>
-Subject: Re: [PATCH bpf-next v3 1/5] bpf: Support chain calling multiple BPF
- programs after each other
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        Daniel Borkmann <daniel@iogearbox.net>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH v2 bpf-next] bpf/stackmap: fix deadlock with rq_lock in bpf_get_stack()
+Date:   Mon, 14 Oct 2019 10:12:23 -0700
+Message-ID: <20191014171223.357174-1-songliubraving@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
+ definitions=2019-10-14_09:2019-10-11,2019-10-14 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=2
+ lowpriorityscore=0 spamscore=0 malwarescore=0 bulkscore=0 mlxscore=0
+ priorityscore=1501 clxscore=1015 phishscore=0 adultscore=0 impostorscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1908290000 definitions=main-1910140145
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
-> =
+bpf stackmap with build-id lookup (BPF_F_STACK_BUILD_ID) can trigger A-A
+deadlock on rq_lock():
 
-> > On Wed, Oct 09, 2019 at 10:03:43AM +0200, Toke H=C3=B8iland-J=C3=B8rg=
-ensen wrote:
-> >> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
-> >> =
+rcu: INFO: rcu_sched detected stalls on CPUs/tasks:
+[...]
+Call Trace:
+ try_to_wake_up+0x1ad/0x590
+ wake_up_q+0x54/0x80
+ rwsem_wake+0x8a/0xb0
+ bpf_get_stack+0x13c/0x150
+ bpf_prog_fbdaf42eded9fe46_on_event+0x5e3/0x1000
+ bpf_overflow_handler+0x60/0x100
+ __perf_event_overflow+0x4f/0xf0
+ perf_swevent_overflow+0x99/0xc0
+ ___perf_sw_event+0xe7/0x120
+ __schedule+0x47d/0x620
+ schedule+0x29/0x90
+ futex_wait_queue_me+0xb9/0x110
+ futex_wait+0x139/0x230
+ do_futex+0x2ac/0xa50
+ __x64_sys_futex+0x13c/0x180
+ do_syscall_64+0x42/0x100
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-> >> > Please implement proper indirect calls and jumps.
-> >> =
+This can be reproduced by:
+1. Start a multi-thread program that does parallel mmap() and malloc();
+2. taskset the program to 2 CPUs;
+3. Attach bpf program to trace_sched_switch and gather stackmap with
+   build-id, e.g. with trace.py from bcc tools:
+   trace.py -U -p <pid> -s <some-bin,some-lib> t:sched:sched_switch
 
-> >> I am still not convinced this will actually solve our problem; but O=
-K, I
-> >> can give it a shot.
-> >
-> > If you're not convinced let's talk about it first.
-> >
-> > Indirect calls is a building block for debugpoints.
-> > Let's not call them tracepoints, because Linus banned any discusion
-> > that includes that name.
-> > The debugpoints is a way for BPF program to insert points in its
-> > code to let external facility to do tracing and debugging.
-> >
-> > void (*debugpoint1)(struct xdp_buff *, int code);
-> > void (*debugpoint2)(struct xdp_buff *);
-> > void (*debugpoint3)(int len);
+A sample reproducer is attached at the end.
 
-I was considering some basic static linking from libbpf side. Something
-like,
+This could also trigger deadlock with other locks that are nested with
+rq_lock.
 
-  bpf_object__link_programs(struct bpf_object *obj1, struct bpf_object *o=
-bj2);
+Fix this by checking whether irqs are disabled. Since rq_lock and all
+other nested locks are irq safe, it is safe to do up_read() when irqs are
+not disable. If the irqs are disabled, postpone up_read() in irq_work.
 
-This way you could just 'link' in debugpoint{1,2,3} from libbpf before
-loading? This would be useful on my side for adding/removing features
-and handling different kernel versions. So more generally useful IMO.
+Fixes: commit 615755a77b24 ("bpf: extend stackmap to save binary_build_id+offset instead of address")
+Cc: stable@vger.kernel.org # v4.17+
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Signed-off-by: Song Liu <songliubraving@fb.com>
 
-We can manage this now but its a bit ugly the above seems nicer to me.
-Also not quite as daunting as getting llvm-lld working although that
-would also be worth while.
+Reproducer:
+============================ 8< ============================
 
-> =
+char *filename;
 
-> So how would these work? Similar to global variables (i.e., the loader
-> creates a single-entry PROG_ARRAY map for each one)? Presumably with
-> some BTF to validate the argument types?
-> =
+void *worker(void *p)
+{
+        void *ptr;
+        int fd;
+        char *pptr;
 
-> So what would it take to actually support this? It doesn't quite sound
-> trivial to add?
-> =
+        fd = open(filename, O_RDONLY);
+        if (fd < 0)
+                return NULL;
+        while (1) {
+                struct timespec ts = {0, 1000 + rand() % 2000};
 
-> > Essentially it's live debugging (tracing) of cooperative bpf programs=
+                ptr = mmap(NULL, 4096 * 64, PROT_READ, MAP_PRIVATE, fd, 0);
+                usleep(1);
+                if (ptr == MAP_FAILED) {
+                        printf("failed to mmap\n");
+                        break;
+                }
+                munmap(ptr, 4096 * 64);
+                usleep(1);
+                pptr = malloc(1);
+                usleep(1);
+                pptr[0] = 1;
+                usleep(1);
+                free(pptr);
+                usleep(1);
+                nanosleep(&ts, NULL);
+        }
+        close(fd);
+        return NULL;
+}
 
-> > that added debugpoints to their code.
-> =
+int main(int argc, char *argv[])
+{
+        void *ptr;
+        int i;
+        pthread_t threads[THREAD_COUNT];
 
-> Yup, certainly not disputing that this would be useful for debugging;
-> although it'll probably be a while before its use becomes widespread
-> enough that it'll be a reliable tool for people deploying XDP programs.=
-..
-> =
+        if (argc < 2)
+                return 0;
 
+        filename = argv[1];
 
-I guess linking would be a bit different than tracing. Both seem
-useful.
+        for (i = 0; i < THREAD_COUNT; i++) {
+                if (pthread_create(threads + i, NULL, worker, NULL)) {
+                        fprintf(stderr, "Error creating thread\n");
+                        return 0;
+                }
+        }
 
-> > Obviously indirect calls can be used for a ton of other things
-> > including proper chaing of progs, but I'm convinced that
-> > you don't need chaining to solve your problem.
-> > You need debugging.
-> =
+        for (i = 0; i < THREAD_COUNT; i++)
+                pthread_join(threads[i], NULL);
+        return 0;
+}
+============================ 8< ============================
 
-> Debugging is certainly also an area that I want to improve. However, I
-> think that focusing on debugging as the driver for chaining programs wa=
-s
-> a mistake on my part; rudimentary debugging (using a tool such as
-> xdpdump) is something that falls out of program chaining, but it's not
-> the main driver for it.
-> =
+---
+Changes v1 => v2:
+1. Drop (1/1) and cover letter;
+2. Check irqs_disabled() instead of this_rq_is_locked()
+---
+ kernel/bpf/stackmap.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-> > If you disagree please explain _your_ problem again.
-> > Saying that fb katran is a use case for chaining is, hrm, not correct=
-.
-> =
-
-> I never said Katran was the driver for this. I just used Katran as one
-> of the "prior art" examples for my "how are people solving running
-> multiple programs on the same interface" survey.
-> =
-
-> What I want to achieve is simply the ability to run multiple independen=
-t
-> XDP programs on the same interface, without having to put any
-> constraints on the programs themselves. I'm not disputing that this is
-> *possible* to do completely in userspace, I just don't believe the
-> resulting solution will be very good. Proper kernel support for indirec=
-t
-> calls (or just "tail calls that return") may change that; but in any
-> case I think I need to go write some userspace code to have some more
-> concrete examples to discuss from. So we can come back to the
-> particulars once I've done that :)
-
-I was imaging that because you have to develop some sort of coordination
-by using linking you could enforce call signatures which would allow
-you to drop in any XDP program at a call site as long as it matches the
-signature.
-
-> =
-
-> -Toke
-
+diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
+index 052580c33d26..173e983619d7 100644
+--- a/kernel/bpf/stackmap.c
++++ b/kernel/bpf/stackmap.c
+@@ -287,7 +287,7 @@ static void stack_map_get_build_id_offset(struct bpf_stack_build_id *id_offs,
+ 	bool irq_work_busy = false;
+ 	struct stack_map_irq_work *work = NULL;
+ 
+-	if (in_nmi()) {
++	if (irqs_disabled()) {
+ 		work = this_cpu_ptr(&up_read_work);
+ 		if (work->irq_work.flags & IRQ_WORK_BUSY)
+ 			/* cannot queue more up_read, fallback */
+@@ -295,8 +295,9 @@ static void stack_map_get_build_id_offset(struct bpf_stack_build_id *id_offs,
+ 	}
+ 
+ 	/*
+-	 * We cannot do up_read() in nmi context. To do build_id lookup
+-	 * in nmi context, we need to run up_read() in irq_work. We use
++	 * We cannot do up_read() when the irq is disabled, because of
++	 * risk to deadlock with rq_lock. To do build_id lookup when the
++	 * irqs are disabled, we need to run up_read() in irq_work. We use
+ 	 * a percpu variable to do the irq_work. If the irq_work is
+ 	 * already used by another lookup, we fall back to report ips.
+ 	 *
+-- 
+2.17.1
 
