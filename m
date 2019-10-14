@@ -2,73 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 556D1D69FE
-	for <lists+bpf@lfdr.de>; Mon, 14 Oct 2019 21:19:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C91DD6A77
+	for <lists+bpf@lfdr.de>; Mon, 14 Oct 2019 21:57:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388326AbfJNTR7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Oct 2019 15:17:59 -0400
-Received: from shards.monkeyblade.net ([23.128.96.9]:53460 "EHLO
-        shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728005AbfJNTR7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Oct 2019 15:17:59 -0400
-Received: from localhost (unknown [IPv6:2601:601:9f00:1e2::d71])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id A7067146DA145;
-        Mon, 14 Oct 2019 12:17:58 -0700 (PDT)
-Date:   Mon, 14 Oct 2019 12:17:56 -0700 (PDT)
-Message-Id: <20191014.121756.12312306435084737.davem@davemloft.net>
-To:     ast@kernel.org
-Cc:     daniel@iogearbox.net, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-team@fb.com
+        id S1730836AbfJNT5h (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Oct 2019 15:57:37 -0400
+Received: from mail-lj1-f180.google.com ([209.85.208.180]:42920 "EHLO
+        mail-lj1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726452AbfJNT5g (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Oct 2019 15:57:36 -0400
+Received: by mail-lj1-f180.google.com with SMTP id y23so17801492lje.9;
+        Mon, 14 Oct 2019 12:57:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iWBqM7ACPJuFVmwODsf/7WGCZG2xafP+d2gCrOTywtQ=;
+        b=PNggBWTQgMaMIP7D8fncGMjvU4nHhX173SW6zyv4rGeJchmNir+50H+3PUjxQeap69
+         sVE+De0Z8uLXNB0BZ7JyT7rCY7JPNcjcE1XoE/nEtKJxDD0QAuFrIsub1M3cEkTpEYzo
+         yZQcqK/a/DtEEtLD0DwiZf/3WXqFC1Uaus2yZjY6WIKYgc5BvU81X9wTJ+i/beA4yoqH
+         QSJ0AjbqJGDGsl3SQQHLyTfTt38hMi8rYFQ3I1WyacBohz17anwWppt0Uw8wx/FjpHyP
+         bYATtTdfqjDYyEd2LbxgCyYVddrFK0cE7UwLE2JZOIdEHj0rrJUvk+SqR9l4DM5lR00z
+         GsUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iWBqM7ACPJuFVmwODsf/7WGCZG2xafP+d2gCrOTywtQ=;
+        b=MwBFnvbkAPQzapqyNmYssd90Q1BFgR0bXKn6YF1nQm5m++eMq18sEvazVqEa79GQbg
+         NGYZNxMaLUUpJot1xnXPCVm2Ima6jj2Wjv+TFCGYjqdqDFFG2rJPXJVc8Tp6lau5FUd2
+         Hs3lY4C6PkHn3e82xmEM/XaqTxYtqVhJnqD1QvMIxUI2iX85LSb5BwfA33PFjc42zNuE
+         8ha8vMufL0tZ0aSme93+/Tc9TExy2VtsbEBMWkn223cltPG9v0u2IbKjoZdOJoR34lIg
+         mJfktfeqid3O/OLvIZp/BODOCX6hwhAawZwT0sz0RfooeECPRZSAGGgOn3LBWmr+/cLe
+         cPBA==
+X-Gm-Message-State: APjAAAV5qDRYG0F5yoye59Mx05rflft/Uu6zlgzcd0+r+YEL/CIYpDp1
+        jzrkg00L9vu8J08zfEy4v9qKkim7XTCjzyy8uPg=
+X-Google-Smtp-Source: APXvYqyyT5FRJM7T4H2nIXgZWKX18IJJiyBedoSVCOs43m6vvEvDI2pgwUFktLjqiZBcmLa+x71q+jSjFIocvI060Q4=
+X-Received: by 2002:a2e:6c15:: with SMTP id h21mr19628476ljc.10.1571083054916;
+ Mon, 14 Oct 2019 12:57:34 -0700 (PDT)
+MIME-Version: 1.0
+References: <20191014190620.1588663-1-ast@kernel.org> <20191014.121756.12312306435084737.davem@davemloft.net>
+In-Reply-To: <20191014.121756.12312306435084737.davem@davemloft.net>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Mon, 14 Oct 2019 12:57:23 -0700
+Message-ID: <CAADnVQJJNhVbBuX_094LipXFazEQOAqnJ4RwkeLr-Qd+E0z2Qg@mail.gmail.com>
 Subject: Re: pull-request: bpf-next 2019-10-14
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20191014190620.1588663-1-ast@kernel.org>
-References: <20191014190620.1588663-1-ast@kernel.org>
-X-Mailer: Mew version 6.8 on Emacs 26.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Mon, 14 Oct 2019 12:17:58 -0700 (PDT)
+To:     David Miller <davem@davemloft.net>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Alexei Starovoitov <ast@kernel.org>
-Date: Mon, 14 Oct 2019 12:06:20 -0700
+On Mon, Oct 14, 2019 at 12:18 PM David Miller <davem@davemloft.net> wrote:
+>
+> From: Alexei Starovoitov <ast@kernel.org>
+> Date: Mon, 14 Oct 2019 12:06:20 -0700
+>
+> > The following pull-request contains BPF updates for your *net-next* tree.
+> >
+> > 12 days of development and
+> > 85 files changed, 1889 insertions(+), 1020 deletions(-)
+>
+> This is nice, do you have a script which generates this?
 
-> The following pull-request contains BPF updates for your *net-next* tree.
-> 
-> 12 days of development and
-> 85 files changed, 1889 insertions(+), 1020 deletions(-)
-
-This is nice, do you have a script which generates this?
-
-> The main changes are:
-> 
-> 1) auto-generation of bpf_helper_defs.h, from Andrii.
-> 
-> 2) split of bpf_helpers.h into bpf_{helpers, helper_defs, endian, tracing}.h
->    and move into libbpf, from Andrii.
-> 
-> 3) Track contents of read-only maps as scalars in the verifier, from Andrii.
-> 
-> 4) small x86 JIT optimization, from Daniel.
-> 
-> 5) cross compilation support, from Ivan.
-> 
-> 6) bpf flow_dissector enhancements, from Jakub and Stanislav.
-> 
-> Please consider pulling these changes from:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
-
-Pulled, thanks.
-
-> Note there will be a conflict in tools/lib/bpf/Makefile
-> that should be resolved the way Stephen did in:
-> https://lore.kernel.org/lkml/20191014103232.09c09e53@canb.auug.org.au/
-
-Ok.
+Not yet :) This bit was manual. For the rest Daniel wrote
+pw-pull script in
+https://git.kernel.org/pub/scm/linux/kernel/git/dborkman/pw.git
