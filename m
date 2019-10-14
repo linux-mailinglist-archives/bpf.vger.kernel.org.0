@@ -2,209 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E5E02D5D64
-	for <lists+bpf@lfdr.de>; Mon, 14 Oct 2019 10:26:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7CC6D5E3E
+	for <lists+bpf@lfdr.de>; Mon, 14 Oct 2019 11:09:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730424AbfJNI0Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Oct 2019 04:26:25 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:41166 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729928AbfJNI0Y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Oct 2019 04:26:24 -0400
-Received: by mail-ot1-f65.google.com with SMTP id g13so13081114otp.8;
-        Mon, 14 Oct 2019 01:26:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iKX4/uHaoZ1upFTAF18Q28/UWp+Z5XRqm9+nI8qbEGw=;
-        b=Urk3tTv4w/Uy3+DLXy+P4n+zLdTwXHEdni6VQT0RyDUPtaZknZyUN2tauNsTkg/lPT
-         LSKkJsWVm9SYxNgzGFI6NJqOtnAdrWPHgQckFquODbS3KjVb1DfpoWXt1xVef7IgKg1j
-         hQ1hCDkfmX+wxbUKsi25JDMI7FbB8JQ7TuLI7JVFYstDeSddP5xdLdvPptF5EA/XkTSi
-         f3L9vXnZQQepugb/dE1A0UyhIa8Pd54HwQSdafbfSwmj8bnstTKjPwuNquVPqG4+USGx
-         zhP+ZlwQwwaszNBeL82uFRM9niT0ZRIUCiVrTQYAR4ayoSBkg3y0BL69wCvoZRNJyyqk
-         tq0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iKX4/uHaoZ1upFTAF18Q28/UWp+Z5XRqm9+nI8qbEGw=;
-        b=GwOYojnNJ8ghxSZduGfCQreDG4Yynxf4tSJsl++iTR6SMv1XoWfCwmsSbfVzfnBn7p
-         WpJBkdorElRP20sAil14P+pg8WSO+nx9VSa/YdASTqhfUdQlr+bnxVt9HHKr0WWmlafv
-         aQ/SBvB109yU1SWIqnN00dxY9c+uQdN7UZW+nTKRyzhE89aLtWmB1owkfE+ZwNzEH2vA
-         XMxfShfqjGR00htq5EJdXyrYLzpqVRPqEX8XKDAq1S/elXXaxWZ5EgTpPgbhYEI2aX7+
-         4+xdT4NQsbHfGtz+0zKxUCczWn/k6CMVjxk8qtWTPNsYgNgWKumi0TRAEYxxy6bKt/NI
-         w9Cg==
-X-Gm-Message-State: APjAAAXGOA41JXj9A4dcAG915xrqUY+CIxsNjtYX5e6Y/B9RDl/2z0nI
-        LIi7G4zajfCJqM1Z1+56XYs2kGG847oA6hzzL+0=
-X-Google-Smtp-Source: APXvYqwtjDBgaBHyncvshNegSKRqlG8RP7mDEpXUiTBz+yYFUtoLiTN1KnA3jzk17wDD5DUFxGKKSfvmgyqncPlhUsc=
-X-Received: by 2002:a9d:7345:: with SMTP id l5mr14083032otk.39.1571041581799;
- Mon, 14 Oct 2019 01:26:21 -0700 (PDT)
-MIME-Version: 1.0
-References: <1570530208-17720-1-git-send-email-magnus.karlsson@intel.com>
- <5d9ce369d6e5_17cc2aba94c845b415@john-XPS-13-9370.notmuch>
- <CAJ8uoz3t2jVuwYKaFtt7huJo8HuW9aKLaFpJ4WcWxjm=-wQgrQ@mail.gmail.com>
- <5da0ed0b2a26d_70f72aad5dc6a5b8db@john-XPS-13-9370.notmuch> <CAADnVQKDr0u_YfB_eMYZEPKO1O=4hdzLye9FDMqjy4J3GL8Szg@mail.gmail.com>
-In-Reply-To: <CAADnVQKDr0u_YfB_eMYZEPKO1O=4hdzLye9FDMqjy4J3GL8Szg@mail.gmail.com>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Mon, 14 Oct 2019 10:26:10 +0200
-Message-ID: <CAJ8uoz2mzgwvxpE1jsXvPEU=830MeOEtx4T_CMK3pjexFyJdnw@mail.gmail.com>
-Subject: Re: [PATCH bpf] libbpf: fix compatibility for kernels without need_wakeup
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     John Fastabend <john.fastabend@gmail.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        id S1730654AbfJNJJJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Oct 2019 05:09:09 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:51496 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730641AbfJNJJJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Oct 2019 05:09:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=jTDg8IH5LozhrHxBzB1ClkZ0/ElvKEYcyD0vSMTfAMM=; b=K3XJqY2A6oBGRw6kRpPiaOQjd
+        R5BN5Dq6pF/0JhnsPRxtpWWk3SRhuBf4OaTYksweoovT8STtsBNklhSms9feMWz1FVkQj/pAMXWju
+        BFBxigEgsrPcV3AbOol/mBX82m4TUFI0Cdq2J4muN2/ITFjS9BBxo6I+F2gWJvQSr4wXLAUQz6+IK
+        DAu0BA0WxJAamB5i8RVz93Q0htTdlOHNuXfjGndhVuojIdkL8Yuults5HeC/5tPgnxbg3wg+f82PE
+        MBna5j9S75u/caXq+uN16gL3Nc+akwh7V3O9ln9BmPj9CUiVoLWNqahtpFqIzC6klChW0OGJx/m/Y
+        bcECZYdfg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1iJwLh-0004AL-PF; Mon, 14 Oct 2019 09:09:05 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 23284305E42;
+        Mon, 14 Oct 2019 11:08:09 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 17665202BC5A3; Mon, 14 Oct 2019 11:09:03 +0200 (CEST)
+Date:   Mon, 14 Oct 2019 11:09:03 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Alexei Starovoitov <ast@fb.com>
+Cc:     Song Liu <songliubraving@fb.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: Re: [PATCH bpf-next 2/2] bpf/stackmap: fix A-A deadlock in
+ bpf_get_stack()
+Message-ID: <20191014090903.GA2328@hirez.programming.kicks-ass.net>
+References: <20191010061916.198761-1-songliubraving@fb.com>
+ <20191010061916.198761-3-songliubraving@fb.com>
+ <20191010073608.GO2311@hirez.programming.kicks-ass.net>
+ <a1d30b11-2759-0293-5612-48150db92775@fb.com>
+ <20191010174618.GT2328@hirez.programming.kicks-ass.net>
+ <4865df4d-7d13-0655-f3b4-5d025aaa1edb@fb.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4865df4d-7d13-0655-f3b4-5d025aaa1edb@fb.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Oct 12, 2019 at 6:55 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Fri, Oct 11, 2019 at 1:58 PM John Fastabend <john.fastabend@gmail.com> wrote:
-> >
-> > Magnus Karlsson wrote:
-> > > On Tue, Oct 8, 2019 at 9:29 PM John Fastabend <john.fastabend@gmail.com> wrote:
-> > > >
-> > > > Magnus Karlsson wrote:
-> > > > > When the need_wakeup flag was added to AF_XDP, the format of the
-> > > > > XDP_MMAP_OFFSETS getsockopt was extended. Code was added to the kernel
-> > > > > to take care of compatibility issues arrising from running
-> > > > > applications using any of the two formats. However, libbpf was not
-> > > > > extended to take care of the case when the application/libbpf uses the
-> > > > > new format but the kernel only supports the old format. This patch
-> > > > > adds support in libbpf for parsing the old format, before the
-> > > > > need_wakeup flag was added, and emulating a set of static need_wakeup
-> > > > > flags that will always work for the application.
-> > > > >
-> > > > > Fixes: a4500432c2587cb2a ("libbpf: add support for need_wakeup flag in AF_XDP part")
-> > > > > Reported-by: Eloy Degen <degeneloy@gmail.com>
-> > > > > Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-> > > > > ---
-> > > > >  tools/lib/bpf/xsk.c | 109 +++++++++++++++++++++++++++++++++++++---------------
-> > > > >  1 file changed, 78 insertions(+), 31 deletions(-)
-> > > > >
-> > > > > diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
-> > > > > index a902838..46f9687 100644
-> > > > > --- a/tools/lib/bpf/xsk.c
-> > > > > +++ b/tools/lib/bpf/xsk.c
-> > > > > @@ -44,6 +44,25 @@
-> > > > >   #define PF_XDP AF_XDP
-> > > > >  #endif
-> > > > >
-> > > > > +#define is_mmap_offsets_v1(optlen) \
-> > > > > +     ((optlen) == sizeof(struct xdp_mmap_offsets_v1))
-> > > > > +
-> > > > > +#define get_prod_off(ring) \
-> > > > > +     (is_mmap_offsets_v1(optlen) ? \
-> > > > > +      ((struct xdp_mmap_offsets_v1 *)&off)->ring.producer : \
-> > > > > +      off.ring.producer)
-> > > > > +#define get_cons_off(ring) \
-> > > > > +     (is_mmap_offsets_v1(optlen) ? \
-> > > > > +      ((struct xdp_mmap_offsets_v1 *)&off)->ring.consumer : \
-> > > > > +      off.ring.consumer)
-> > > > > +#define get_desc_off(ring) \
-> > > > > +     (is_mmap_offsets_v1(optlen) ? \
-> > > > > +      ((struct xdp_mmap_offsets_v1 *)&off)->ring.desc : off.ring.desc)
-> > > > > +#define get_flags_off(ring) \
-> > > > > +     (is_mmap_offsets_v1(optlen) ? \
-> > > > > +      ((struct xdp_mmap_offsets_v1 *)&off)->ring.consumer + sizeof(u32) : \
-> > > > > +      off.ring.flags)
-> > > > > +
-> > > >
-> > > > It seems the only thing added was flags right? If so seems we
-> > > > only need the last one there, get_flags_off(). I think it would
-> > > > be a bit cleaner to just use the macros where its actually
-> > > > needed IMO.
-> > >
-> > > The flag is indeed added to the end of struct xdp_ring_offsets, but
-> > > this struct is replicated four times in the struct xdp_mmap_offsets,
-> > > so the added flags are present four time there at different offsets.
-> > > This means that 3 out of the 4 prod, cons and desc variables are
-> > > located at different offsets from the original. Do not know how I can
-> > > get rid of these macros in this case. But it might just be me not
-> > > seeing it, of course :-).
-> >
-> > Not sure I like it but not seeing a cleaner solution that doesn't cause
-> > larger changes so...
-> >
-> > Acked-by: John Fastabend <john.fastabend.gmail.com>
->
-> Frankly above hack looks awful.
-> What is _v1 ?! Is it going to be _v2?
-> What was _v0?
-> I also don't see how this is a fix. imo bpf-next is more appropriate
-> and if "large changes" are necessary then go ahead and do them.
-> We're not doing fixes-branches in libbpf.
-> The library always moves forward and compatible with all older kernels.
+On Thu, Oct 10, 2019 at 06:06:14PM +0000, Alexei Starovoitov wrote:
+> On 10/10/19 10:46 AM, Peter Zijlstra wrote:
 
-The fix in this patch is about making libbpf compatible with older
-kernels (<=5.3). It is not at the moment in bpf. The current code in
-bpf and bpf-next only works with the 5.3-rc kernels, which I think is
-bad and a bug. But please let me know if this is bpf or bpf-next and I
-will adjust accordingly.
+> > All of stack_map_get_build_id_offset() is just disguisting games; I did
+> > tell you guys how to do lockless vma lookups a few years ago -- and yes,
+> > that is invasive core mm surgery. But this is just disguisting hacks for
+> > not wanting to do it right.
+> 
+> you mean speculative page fault stuff?
+> That was my hope as well and I offered Laurent all the help to land it.
+> Yet after a year since we've talked the patches are not any closer
+> to landing.
+> Any other 'invasive mm surgery' you have in mind?
 
-As for the hack, I do not like it and neither did John, but no one
-managed to come up with something better. But if this is a fix for bpf
-(will not work at all for bpf-next for compatibility reasons), we
-could potentially do something like this, as this is only present in
-the 5.4-rc series. Currently the extension of the XDP_MMAP_OFFSETS in
-5.4-rc is from:
+Indeed that series. It had RCU managed VMAs and lockless VMA lookups,
+which is exactly what you need here.
 
-struct xdp_ring_offset {
-       __u64 producer;
-       __u64 consumer;
-       __u64 desc;
-};
+> > Basically the only semi-sane thing to do with that trainwreck is
+> > s/in_nmi()/true/ and pray.
+> > 
+> > On top of that I just hate buildids in general.
+> 
+> Emotions aside... build_id is useful and used in production.
+> It's used widely because it solves real problems.
 
-to:
+AFAIU it solves the problem of you not knowing what version of the
+binary runs where; which I was hoping your cloud infrastructure thing
+would actually know already.
 
-struct xdp_ring_offset {
-       __u64 producer;
-       __u64 consumer;
-       __u64 desc;
-       __u64 flags;
-};
+Anyway, I know what it does, I just don't nessecarily agree it is the
+right way around that particular problem (also, the way I'm personally
+affected is that perf-record is dead slow by default due to built-id
+post processing).
 
-while the overall struct provided to the getsockopt stayed the same:
+And it obviously leads to horrible hacks like the code currently under
+discussion :/
 
-struct xdp_mmap_offsets {
-       struct xdp_ring_offset rx;
-       struct xdp_ring_offset tx;
-       struct xdp_ring_offset fr;
-       struct xdp_ring_offset cr;
-};
+> This dead lock is from real servers and not from some sanitizer wannabe.
 
-If we instead keep the original struct xdp_ring_offset and append the
-new flag offsets at the end of struct xdp_mmap_offsets to something
-like this:
+If you enable CFS bandwidth control and run this function on the
+trace_hrtimer_start() tracepoint, you should be able to trigger a real
+AB-BA lockup.
 
-struct xdp_mmap_offsets {
-       struct xdp_ring_offset rx;
-       struct xdp_ring_offset tx;
-       struct xdp_ring_offset fr;
-       struct xdp_ring_offset cr;
-       __u64 rx_flag;
-       __u64 tx_flag;
-       __u64 fr_flag;
-       __u64 cr_flag;
-};
+> Hence we need to fix it as cleanly as possible and quickly.
+> s/in_nmi/true/ is certainly an option.
 
-the implementation in both the kernel and libbpf becomes much cleaner.
-The only change needed in libbpf and the kernel is to introduce a new
-function for reading the flag field. The other offset reading and
-setting code would stay the same, in contrast to the current scheme.
-None of the current patch's macro crap would be needed. This would
-also simplify the kernel implementation, improving maintainability.
-But this would only be possible to change in bpf. So let me know what
-you think. Do not know what the policy is here, so need some advice
-please.
+That is the best option; because tracepoints / perf-overflow handlers
+really should not be taking any locks.
 
-Cheers: Magnus
+> I'm worried about overhead of doing irq_work_queue() all the time.
+> But I'm not familiar with mechanism enough to justify the concerns.
+> Would it make sense to do s/in_nmi/irgs_disabled/ instead?
+
+irqs_disabled() should work in this particular case because rq->lock
+(and therefore all it's nested locks) are IRQ-safe.
+
