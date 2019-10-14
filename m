@@ -2,151 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 76D95D5F0D
-	for <lists+bpf@lfdr.de>; Mon, 14 Oct 2019 11:36:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FCCDD6220
+	for <lists+bpf@lfdr.de>; Mon, 14 Oct 2019 14:13:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731010AbfJNJg0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Oct 2019 05:36:26 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:55190 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730667AbfJNJg0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Oct 2019 05:36:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=LsMYLS/Y8cXFlMO0GSn0Yr3BGu1XV5VAX95XcUxBpz0=; b=XvAnoRVKvYRsEt/t8d+FAEQPl
-        B2q8swT9UjlU8sRDS9hAToqyHzJLXEvw6tO47ML5EE88nfG6Cs+/lglrJiXTvJsdGiwk7Gn3B+fOg
-        d/KVk71GetGtHjFPkZmmNP9hpm3XNZPvZKHXKJtyG7MXCIxjQO+9ogr3UoyhzPcBvUkXJ/2FGwzjo
-        MT6aDZxByHv6N7QmSF865+Q8m+FdLf45V1GFwZm+UvbwvUKCoYXYwRB7Z7buZsr8Uk/Y1Vjd9nu88
-        SBtwYHS6X1OCWrTuYhgDYfYKmmcGs4/l3uPYqMJ7urLlxx9FG5EHeWRdIq4jHkLNqjUvIcQ2btmcQ
-        ytw851Dow==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1iJwlY-0005EW-2w; Mon, 14 Oct 2019 09:35:48 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 717FC300F3F;
-        Mon, 14 Oct 2019 11:34:50 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 555A926530285; Mon, 14 Oct 2019 11:35:44 +0200 (CEST)
-Date:   Mon, 14 Oct 2019 11:35:44 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, rostedt@goodmis.org,
-        primiano@google.com, rsavitski@google.com, jeffv@google.com,
-        kernel-team@android.com, Alexei Starovoitov <ast@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        bpf@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Morris <jmorris@namei.org>, Jiri Olsa <jolsa@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        linux-security-module@vger.kernel.org,
-        Matthew Garrett <matthewgarrett@google.com>,
-        Namhyung Kim <namhyung@kernel.org>, selinux@vger.kernel.org,
-        Song Liu <songliubraving@fb.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Yonghong Song <yhs@fb.com>
-Subject: Re: [PATCH] perf_event: Add support for LSM and SELinux checks
-Message-ID: <20191014093544.GB2328@hirez.programming.kicks-ass.net>
-References: <20191011160330.199604-1-joel@joelfernandes.org>
+        id S1730478AbfJNMNx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Oct 2019 08:13:53 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:47544 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730314AbfJNMNx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Oct 2019 08:13:53 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9EC9JES116386;
+        Mon, 14 Oct 2019 12:13:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2019-08-05;
+ bh=drowqFol6Rrr0GLm0Fgl3yA2hycpTzI6ZIAW3QCCM6M=;
+ b=bhh6abygd5NYA8NmrkxoQvKLHyYhDhrbYPMDYqsyBbN9gqb30Yckjtjt9Rx+Nq0Emsl5
+ W6tD+fe6l9ktuRFfMkMqU2aBYUh6U3qZ+ED1A0d9u8JYxhFIT+DJdZqyl36Srgnq7ZiG
+ egfQgpB3Yxa29htslJNwfMP7kmieRnw4bdsn8w+GIKDqHDVLvIyJ7rOW3Gf87GwjdHKP
+ FKyjBZRgYQYw0z4PnUHfEtECWxCcjnjKycgfwBtZy84XYkG9QLAola6ADgq6jTJ2S4CK
+ EYsyDEwzIYSLK3HRXhLu/nNFcaezXWgDx5GYuK7+0rWhpEDRKdnzZT7ovAKAM+K0IyIb lg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 2vk7fr0aah-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 14 Oct 2019 12:13:40 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9EC7kbo034741;
+        Mon, 14 Oct 2019 12:13:40 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 2vkry64b9e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 14 Oct 2019 12:13:40 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x9ECDceP009233;
+        Mon, 14 Oct 2019 12:13:38 GMT
+Received: from mwanda (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 14 Oct 2019 12:13:36 +0000
+Date:   Mon, 14 Oct 2019 15:13:30 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     daniel@iogearbox.net
+Cc:     bpf@vger.kernel.org
+Subject: [bug report] bpf, sockmap: convert to generic sk_msg interface
+Message-ID: <20191014121330.GA14089@mwanda>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191011160330.199604-1-joel@joelfernandes.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9409 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=611
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1908290000 definitions=main-1910140120
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9409 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=1 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=714 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
+ definitions=main-1910140120
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 11, 2019 at 12:03:30PM -0400, Joel Fernandes (Google) wrote:
+Hello Daniel Borkmann,
 
-> @@ -4761,6 +4762,7 @@ int perf_event_release_kernel(struct perf_event *event)
->  	}
->  
->  no_ctx:
-> +	security_perf_event_free(event);
->  	put_event(event); /* Must be the 'last' reference */
->  	return 0;
->  }
+This is a semi-automatic email about new static checker warnings.
 
-> @@ -10553,11 +10568,16 @@ perf_event_alloc(struct perf_event_attr *attr, int cpu,
->  		}
->  	}
->  
-> +	err = security_perf_event_alloc(event);
-> +	if (err)
-> +		goto err_security;
-> +
->  	/* symmetric to unaccount_event() in _free_event() */
->  	account_event(event);
->  
->  	return event;
->  
-> +err_security:
->  err_addr_filters:
->  	kfree(event->addr_filter_ranges);
->  
+The patch 604326b41a6f: "bpf, sockmap: convert to generic sk_msg
+interface" from Oct 13, 2018, leads to the following Smatch complaint:
 
-There's a bunch of problems here I think:
+    net/core/skmsg.c:792 sk_psock_write_space()
+    error: we previously assumed 'psock' could be null (see line 790)
 
- - err_security is named wrong; the naming scheme is to name the label
-   after the last thing that succeeded / first thing that needs to be
-   undone.
+net/core/skmsg.c
+   789		psock = sk_psock(sk);
+   790		if (likely(psock && sk_psock_test_state(psock, SK_PSOCK_TX_ENABLED)))
+                           ^^^^^
+Check for NULL
 
- - per that, you're forgetting to undo 'get_callchain_buffers()'
+   791			schedule_work(&psock->work);
+   792		write_space = psock->saved_write_space;
+                              ^^^^^^^^^^^^^^^^^^^^^^^^
 
- - perf_event_release_kernel() is not a full match to
-   perf_event_alloc(), inherited events get created by
-   perf_event_alloc() but never pass through
-   perf_event_release_kernel().
+   793		rcu_read_unlock();
+   794		write_space(sk);
+                ^^^^^^^^^^^^^^
+The warning is on the wrong line.  The dereference is really here.
 
-
-I'm thinking the below patch on top should ammend these issues; please
-verify.
-
----
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -4540,6 +4540,8 @@ static void _free_event(struct perf_even
- 
- 	unaccount_event(event);
- 
-+	security_perf_event_free(event);
-+
- 	if (event->rb) {
- 		/*
- 		 * Can happen when we close an event with re-directed output.
-@@ -4774,7 +4776,6 @@ int perf_event_release_kernel(struct per
- 	}
- 
- no_ctx:
--	security_perf_event_free(event);
- 	put_event(event); /* Must be the 'last' reference */
- 	return 0;
- }
-@@ -10595,14 +10596,18 @@ perf_event_alloc(struct perf_event_attr
- 
- 	err = security_perf_event_alloc(event);
- 	if (err)
--		goto err_security;
-+		goto err_callchain_buffer;
- 
- 	/* symmetric to unaccount_event() in _free_event() */
- 	account_event(event);
- 
- 	return event;
- 
--err_security:
-+err_callchain_buffer:
-+	if (!event->parent) {
-+		if (event->attr.sample_type & PERF_SAMPLE_CALLCHAIN)
-+			put_callchain_buffers();
-+	}
- err_addr_filters:
- 	kfree(event->addr_filter_ranges);
- 
+regards,
+dan carpenter
