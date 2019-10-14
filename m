@@ -2,145 +2,207 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 70D51D596B
-	for <lists+bpf@lfdr.de>; Mon, 14 Oct 2019 03:54:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AFA5D59A5
+	for <lists+bpf@lfdr.de>; Mon, 14 Oct 2019 04:50:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729698AbfJNByg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 13 Oct 2019 21:54:36 -0400
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:38477 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729659AbfJNByg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 13 Oct 2019 21:54:36 -0400
-Received: by mail-oi1-f194.google.com with SMTP id m16so12492219oic.5
-        for <bpf@vger.kernel.org>; Sun, 13 Oct 2019 18:54:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=6X+DcjsMjHwOB6JkPbeUc/ALXoDOCE2zEMdjHf4FHXw=;
-        b=XIUzDc2uX54JyOkNq/Q3w+p/rU489BTXCurHKtE62SPHEw8PG3aQcYfopuA+XbRPHG
-         e1jJ+eb+fDZVeC1A8f6k1mwpvOxtb528maByh/ujYOMRbzH8RPyWcGT1NnjTyttzqH2O
-         sMlZuUIbo6NT7SeTU4anenz+Q4l6MotAvHKSZJ7Rdi5Z0Rap7qAyA9xEDNMFkZyojb/E
-         2mRWiS1ZuahOrvU7QsVZXNVYysgyAtmVK/TxteMjr31HJ6Y0ROWA4KYqWl4DrqL0F3rN
-         jyMh6ohJyg8ZKjTi3ks49z7t+xbCk2ev82thc+EPPrxdEWGhVXxfhZZ4Y/MrimX7AL4H
-         hAVw==
+        id S1729855AbfJNCuI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 13 Oct 2019 22:50:08 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:54230 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729719AbfJNCuI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 13 Oct 2019 22:50:08 -0400
+Received: by mail-io1-f72.google.com with SMTP id w8so24597090iol.20
+        for <bpf@vger.kernel.org>; Sun, 13 Oct 2019 19:50:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=6X+DcjsMjHwOB6JkPbeUc/ALXoDOCE2zEMdjHf4FHXw=;
-        b=kk1+jDyOdy8LyxO+aQ8GTO7ls9o++FsIWOCEn7AibkV5RkgMH294leYOlUQKvKhv/9
-         TUs8qdKjfpYGGDazbWn989+zL9PRUicSLDJnmJzI4BZKVlNpUjCNQY8hKGNrO7oDgAdh
-         9eaKzTu9vohdH2zQUDqBOD1x+L8FRNXoMXR2In3wk88D0tF0Q8fqeOs2gq3IAOjuKvhS
-         y2soKng8BeERgg3RKYKgiyb7snJA4kYSIJmN59uoN3sci2yuvSP4vJOzVz1CGo3Iy5H+
-         24QIcJ4uqybV9ESZGWw3NBjQaRbF3kSJTYdcMgAEgLXSNqQO85MJ4ROOOQpOxnYjtOTp
-         XoSA==
-X-Gm-Message-State: APjAAAUmMb/wGG+4EuvAFF1dOhdeoaS34P1GMO3okSTEDHZb4wteXJDt
-        cZfsUPJ5jb0k1zZ1IKbtbl0=
-X-Google-Smtp-Source: APXvYqx4l1vYgjhaF18ymoDvmARPlkpbH/Q3+b6tAeVvK0Mii2s4svfW0l3kghrLMeeRLMgWbOO5ew==
-X-Received: by 2002:aca:d402:: with SMTP id l2mr22745948oig.127.1571018074913;
-        Sun, 13 Oct 2019 18:54:34 -0700 (PDT)
-Received: from ubuntu-m2-xlarge-x86 ([2604:1380:4111:8b00::1])
-        by smtp.gmail.com with ESMTPSA id 11sm5574669otg.62.2019.10.13.18.54.33
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 13 Oct 2019 18:54:34 -0700 (PDT)
-Date:   Sun, 13 Oct 2019 18:54:32 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andriin@fb.com>,
-        kbuild@01.org, Nick Desaulniers <ndesaulniers@google.com>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        kbuild test robot <lkp@intel.com>
-Subject: Re: [ast:btf_vmlinux 1/7] net/mac80211/./trace.h:253:1: warning:
- redefinition of typedef 'btf_trace_local_only_evt' is a C11 feature
-Message-ID: <20191014015432.GA54176@ubuntu-m2-xlarge-x86>
-References: <201910032202.OVnkgkNP%lkp@intel.com>
- <20191011200059.GA30072@ubuntu-m2-xlarge-x86>
- <CAADnVQJA7otF=us0usjZ9x0pqpX--9UVLZhwZe-+8pVf-PMkpQ@mail.gmail.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=CcrIogTjKFzF/l7cJ7qbuZIlf5n0t5ZZUGxaSHSOJvo=;
+        b=FD5lxQuT//32pxwCBWbGe9NfiBPpR0+v709z0Qa/n1Gl7p0N57JvlsqOdQoHCkQEea
+         HBHKXkxY11mJBc37L/dnRZba+PSzFHXNfSRrTcRBX350oX9bUTr8sGuMSiheepx6qRhl
+         xhuVJlxAYnfDMf7hu951WDGUslFPNseC7lS1YHGC3WUls6CmNHwXP/4a7pI9ijVuXyIi
+         S9No93Japm/dA9l3H/rlK/RUy7BT9G+/nD2mIXD3ZbPY7k6cegMvlDlUEWL+wnMfzsSS
+         VjIzoxRIeoFcBb2J1i5TYYtq1+/SGPk5ryuicmRFbwXGjfVhVn+7JE0Yi9RHsc8rXzRW
+         QHPQ==
+X-Gm-Message-State: APjAAAXa4UTsAJUBqw2gvMheS8cSFDtgm30gGmybNUMNC3vKZLwdVc2m
+        nwEUsuUmnIxXKyB+oN0dVinBagdWQgBiHZ6TyRN3VoTUrC0U
+X-Google-Smtp-Source: APXvYqy+MAKjCZSs4IU5vPLfktPF73tUQy4yGm8fYLvY7OpWigU9k595MItLfOwbcI1XjKaEd6F1rRGGgO7CgbrJafD4pZlp/fX/
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQJA7otF=us0usjZ9x0pqpX--9UVLZhwZe-+8pVf-PMkpQ@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Received: by 2002:a05:6602:240d:: with SMTP id s13mr34652998ioa.228.1571021407358;
+ Sun, 13 Oct 2019 19:50:07 -0700 (PDT)
+Date:   Sun, 13 Oct 2019 19:50:07 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000eb98030594d5ecdb@google.com>
+Subject: KASAN: use-after-free Read in bpf_prog_kallsyms_find (2)
+From:   syzbot <syzbot+0bd67ad376a3f4a8606e@syzkaller.appspotmail.com>
+To:     ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
+        davem@davemloft.net, hawk@kernel.org, jakub.kicinski@netronome.com,
+        joe@wand.net.nz, john.fastabend@gmail.com, kafai@fb.com,
+        linux-kernel@vger.kernel.org, mauricio.vasquez@polito.it,
+        netdev@vger.kernel.org, nicolas.dichtel@6wind.com,
+        quentin.monnet@netronome.com, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Oct 13, 2019 at 06:42:20PM -0700, Alexei Starovoitov wrote:
-> On Fri, Oct 11, 2019 at 1:01 PM Nathan Chancellor
-> <natechancellor@gmail.com> wrote:
-> >
-> > On Thu, Oct 03, 2019 at 10:48:31PM +0800, kbuild test robot wrote:
-> > > CC: kbuild-all@01.org
-> > > TO: Alexei Starovoitov <ast@kernel.org>
-> > >
-> > > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/ast/bpf.git btf_vmlinux
-> > > head:   cc9b0a180111f856b93a805fdfc2fb288c41fab2
-> > > commit: 82b70116b6ba453e1dda06c7126e100d594b8e0a [1/7] bpf: add typecast to help vmlinux BTF generation
-> > > config: x86_64-rhel-7.6 (attached as .config)
-> > > compiler: clang version 10.0.0 (git://gitmirror/llvm_project 38ac6bdb83a9bb76c109901960c20d1714339891)
-> > > reproduce:
-> > >         git checkout 82b70116b6ba453e1dda06c7126e100d594b8e0a
-> > >         # save the attached .config to linux build tree
-> > >         make ARCH=x86_64
-> > >
-> > > If you fix the issue, kindly add following tag
-> > > Reported-by: kbuild test robot <lkp@intel.com>
-> > >
-> > > All warnings (new ones prefixed by >>):
-> > >
-> > >    In file included from net/mac80211/trace.c:11:
-> > >    In file included from net/mac80211/./trace.h:2717:
-> > >    In file included from include/trace/define_trace.h:104:
-> > >    In file included from include/trace/bpf_probe.h:110:
-> > > >> net/mac80211/./trace.h:253:1: warning: redefinition of typedef 'btf_trace_local_only_evt' is a C11 feature [-Wtypedef-redefinition]
-> > >    DEFINE_EVENT(local_only_evt, drv_start,
-> > >    ^
-> > >    include/trace/bpf_probe.h:104:2: note: expanded from macro 'DEFINE_EVENT'
-> > >            __DEFINE_EVENT(template, call, PARAMS(proto), PARAMS(args), 0)
-> > >            ^
-> > >    include/trace/bpf_probe.h:77:16: note: expanded from macro '__DEFINE_EVENT'
-> > >    typedef void (*btf_trace_##template)(void *__data, proto);              \
-> >
-> > Hi Alexei,
-> >
-> > The 0day team has been running clang builds for us for a little bit and
-> > this one popped up. It looks like there are certain tracepoints that use
-> > the same template so clang warns because there are two identical
-> > typedefs. Is there any way to improve this so we don't get noisey
-> > builds? This still occurs as of your latest btf_vmlinux branch even
-> > though this report is from a week ago.
-> 
-> Thanks for headsup. That was indeed a valid bug in my branch.
-> Interestingly gcc didn't complain.
-> I knew that 0day bot is testing my development tree, but
-> I didn't know it's doing it with clang.
-> And for some reason I didn't receive any reports
-> about this breakage.
-> More so I got 'build success' email from 0day for my branch.
-> Something to improve in the bot, I guess.
-> 
-> If you're curious the fix was:
-> -typedef void (*btf_trace_##template)(void *__data, proto);             \
-> +typedef void (*btf_trace_##call)(void *__data, proto);                 \
-> 
-> I forced pushed my btf_vmlinux branch.
-> Please let me know if you still see this issue.
-> 
-> Thanks!
+Hello,
 
-Yes, right now, the 0day build reports for clang are only getting sent
-to our mailing list (clang-built-linux@googlegroups.com) because there
-is a lot of overlap with GCC. We have been manually triaging the build
-warnings and forwarding them along. I think the 0day maintainers
-eventually intend to make these emails more public (maybe have an opt in
-system when maintainers want to see clang build results, with the
-understanding there might be duplicates?). Unfortunately, I cannot speak
-for them.
+syzbot found the following crash on:
 
-I brought down your branch and built the net/ subdirectory with the
-config that produced this warning and I do not see any warnings. Thanks
-for the quick response!
+HEAD commit:    b212921b elf: don't use MAP_FIXED_NOREPLACE for elf execut..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=148abb3f600000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1ec3be9936e004f6
+dashboard link: https://syzkaller.appspot.com/bug?extid=0bd67ad376a3f4a8606e
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15f4f6c3600000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10a1b857600000
 
-Nathan
+The bug was bisected to:
+
+commit 6c4fc209fcf9d27efbaa48368773e4d2bfbd59aa
+Author: Daniel Borkmann <daniel@iogearbox.net>
+Date:   Sat Dec 15 23:49:47 2018 +0000
+
+     bpf: remove useless version check for prog load
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16894e63600000
+final crash:    https://syzkaller.appspot.com/x/report.txt?x=15894e63600000
+console output: https://syzkaller.appspot.com/x/log.txt?x=11894e63600000
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+0bd67ad376a3f4a8606e@syzkaller.appspotmail.com
+Fixes: 6c4fc209fcf9 ("bpf: remove useless version check for prog load")
+
+==================================================================
+BUG: KASAN: use-after-free in __read_once_size include/linux/compiler.h:199  
+[inline]
+BUG: KASAN: use-after-free in __lt_find include/linux/rbtree_latch.h:118  
+[inline]
+BUG: KASAN: use-after-free in latch_tree_find  
+include/linux/rbtree_latch.h:208 [inline]
+BUG: KASAN: use-after-free in bpf_prog_kallsyms_find kernel/bpf/core.c:674  
+[inline]
+BUG: KASAN: use-after-free in bpf_prog_kallsyms_find+0x2a9/0x2c0  
+kernel/bpf/core.c:667
+Read of size 8 at addr ffff8880948217c8 by task syz-executor436/18258
+
+CPU: 0 PID: 18258 Comm: syz-executor436 Not tainted 5.4.0-rc1+ #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+Google 01/01/2011
+Call Trace:
+  __dump_stack lib/dump_stack.c:77 [inline]
+  dump_stack+0x172/0x1f0 lib/dump_stack.c:113
+  print_address_description.constprop.0.cold+0xd4/0x30b mm/kasan/report.c:374
+  __kasan_report.cold+0x1b/0x41 mm/kasan/report.c:506
+  kasan_report+0x12/0x20 mm/kasan/common.c:634
+  __asan_report_load8_noabort+0x14/0x20 mm/kasan/generic_report.c:132
+  __read_once_size include/linux/compiler.h:199 [inline]
+  __lt_find include/linux/rbtree_latch.h:118 [inline]
+  latch_tree_find include/linux/rbtree_latch.h:208 [inline]
+  bpf_prog_kallsyms_find kernel/bpf/core.c:674 [inline]
+  bpf_prog_kallsyms_find+0x2a9/0x2c0 kernel/bpf/core.c:667
+  is_bpf_text_address+0x78/0x170 kernel/bpf/core.c:709
+  kernel_text_address+0x73/0xf0 kernel/extable.c:147
+  __kernel_text_address+0xd/0x40 kernel/extable.c:102
+  unwind_get_return_address arch/x86/kernel/unwind_frame.c:19 [inline]
+  unwind_get_return_address+0x61/0xa0 arch/x86/kernel/unwind_frame.c:14
+  arch_stack_walk+0x97/0xf0 arch/x86/kernel/stacktrace.c:26
+  stack_trace_save+0xac/0xe0 kernel/stacktrace.c:123
+  save_stack+0x23/0x90 mm/kasan/common.c:69
+  set_track mm/kasan/common.c:77 [inline]
+  __kasan_kmalloc mm/kasan/common.c:510 [inline]
+  __kasan_kmalloc.constprop.0+0xcf/0xe0 mm/kasan/common.c:483
+  kasan_kmalloc+0x9/0x10 mm/kasan/common.c:524
+  kmem_cache_alloc_trace+0x158/0x790 mm/slab.c:3550
+  kmalloc include/linux/slab.h:552 [inline]
+  kzalloc include/linux/slab.h:686 [inline]
+  bpf_check+0xd8/0x99c0 kernel/bpf/verifier.c:9227
+  bpf_prog_load+0xe68/0x1660 kernel/bpf/syscall.c:1709
+  __do_sys_bpf+0xa44/0x3350 kernel/bpf/syscall.c:2866
+  __se_sys_bpf kernel/bpf/syscall.c:2825 [inline]
+  __x64_sys_bpf+0x73/0xb0 kernel/bpf/syscall.c:2825
+  do_syscall_64+0xfa/0x760 arch/x86/entry/common.c:290
+  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+RIP: 0033:0x446949
+Code: e8 0c e8 ff ff 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7  
+48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
+ff 0f 83 5b 07 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f134f31edb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446949
+RDX: 0000000000000070 RSI: 0000000020000440 RDI: 0000000000000005
+RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
+R13: 00007ffd29fc3fff R14: 00007f134f31f9c0 R15: 000000000000002d
+
+Allocated by task 18255:
+  save_stack+0x23/0x90 mm/kasan/common.c:69
+  set_track mm/kasan/common.c:77 [inline]
+  __kasan_kmalloc mm/kasan/common.c:510 [inline]
+  __kasan_kmalloc.constprop.0+0xcf/0xe0 mm/kasan/common.c:483
+  kasan_kmalloc+0x9/0x10 mm/kasan/common.c:524
+  kmem_cache_alloc_trace+0x158/0x790 mm/slab.c:3550
+  kmalloc include/linux/slab.h:552 [inline]
+  kzalloc include/linux/slab.h:686 [inline]
+  bpf_prog_alloc_no_stats+0xe6/0x2b0 kernel/bpf/core.c:88
+  jit_subprogs kernel/bpf/verifier.c:8716 [inline]
+  fixup_call_args kernel/bpf/verifier.c:8845 [inline]
+  bpf_check+0x6b3d/0x99c0 kernel/bpf/verifier.c:9349
+  bpf_prog_load+0xe68/0x1660 kernel/bpf/syscall.c:1709
+  __do_sys_bpf+0xa44/0x3350 kernel/bpf/syscall.c:2866
+  __se_sys_bpf kernel/bpf/syscall.c:2825 [inline]
+  __x64_sys_bpf+0x73/0xb0 kernel/bpf/syscall.c:2825
+  do_syscall_64+0xfa/0x760 arch/x86/entry/common.c:290
+  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+
+Freed by task 3233:
+  save_stack+0x23/0x90 mm/kasan/common.c:69
+  set_track mm/kasan/common.c:77 [inline]
+  kasan_set_free_info mm/kasan/common.c:332 [inline]
+  __kasan_slab_free+0x102/0x150 mm/kasan/common.c:471
+  kasan_slab_free+0xe/0x10 mm/kasan/common.c:480
+  __cache_free mm/slab.c:3425 [inline]
+  kfree+0x10a/0x2c0 mm/slab.c:3756
+  __bpf_prog_free+0x87/0xc0 kernel/bpf/core.c:258
+  bpf_jit_free+0x64/0x1b0
+  bpf_prog_free_deferred+0x1a6/0x350 kernel/bpf/core.c:1980
+  process_one_work+0x9af/0x1740 kernel/workqueue.c:2269
+  worker_thread+0x98/0xe40 kernel/workqueue.c:2415
+  kthread+0x361/0x430 kernel/kthread.c:255
+  ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
+
+The buggy address belongs to the object at ffff888094821780
+  which belongs to the cache kmalloc-512 of size 512
+The buggy address is located 72 bytes inside of
+  512-byte region [ffff888094821780, ffff888094821980)
+The buggy address belongs to the page:
+page:ffffea0002520840 refcount:1 mapcount:0 mapping:ffff8880aa400a80  
+index:0x0
+flags: 0x1fffc0000000200(slab)
+raw: 01fffc0000000200 ffffea0002a56b88 ffffea0002a5f048 ffff8880aa400a80
+raw: 0000000000000000 ffff888094821000 0000000100000006 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+  ffff888094821680: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+  ffff888094821700: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+> ffff888094821780: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                               ^
+  ffff888094821800: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+  ffff888094821880: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
+
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this bug, for details see:
+https://goo.gl/tpsmEJ#testing-patches
