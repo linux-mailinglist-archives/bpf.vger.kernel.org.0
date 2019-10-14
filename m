@@ -2,89 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 01C0FD68A3
-	for <lists+bpf@lfdr.de>; Mon, 14 Oct 2019 19:39:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA41DD6909
+	for <lists+bpf@lfdr.de>; Mon, 14 Oct 2019 20:03:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388571AbfJNRjS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Oct 2019 13:39:18 -0400
-Received: from mail-vs1-f68.google.com ([209.85.217.68]:42251 "EHLO
-        mail-vs1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730466AbfJNRjS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Oct 2019 13:39:18 -0400
-Received: by mail-vs1-f68.google.com with SMTP id m22so11315083vsl.9
-        for <bpf@vger.kernel.org>; Mon, 14 Oct 2019 10:39:17 -0700 (PDT)
+        id S2388686AbfJNSCo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Oct 2019 14:02:44 -0400
+Received: from mail-pg1-f173.google.com ([209.85.215.173]:43363 "EHLO
+        mail-pg1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388677AbfJNSCo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Oct 2019 14:02:44 -0400
+Received: by mail-pg1-f173.google.com with SMTP id i32so10520372pgl.10;
+        Mon, 14 Oct 2019 11:02:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=posk.io; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=VoI9PYiBRc2yFBeGZP+9iAWIgLPpQStt5BRdIAs4Iwc=;
-        b=LOGjB5VXo3K65wKJyF8xGk0utXSe6PctPDTy1imQpoNczyzCVwIUKJIdfQ5ummqL/N
-         d24+K5y1+TJbQ5oPH5lAqfB3xSw7+8G/M/nlZm6Y5psvQ5YiIJIoozwjN7zZ8HTkUZE3
-         IJL4+BCk4PcV/zracg933bx8evkNh9A72R193ZZ1g6/tjlaevqyDxf1KzYMceulE0e6q
-         jHZIfkK/H+iG9KPKFltQBk5m0BH4lUAlq4LolrqAMVA7jL5UDaNuRl9+E3fjJ/8Vqh/i
-         Fb3BlKMHr4ZJCrFRDk9knAd1DH4sjC4gUJNY7RcJ0YvgaCKtV02lqrz37MiHBo1BG9GV
-         3bLg==
+        bh=ZkhwpizpfA2VexKlQ2oEQcLnbCJP2Qs7hnm+bKZkprs=;
+        b=iqV1EbgfIrrK/aEn7NY5hcsODJgKghSw3zb0g8qpNu/bxk467ktNsNq30MoFBVM8uJ
+         X9f9RvUeREb/UaN2RNdUpjgVbwJ/nWJVfCHTu4lzIk1qnzPb2onKunKl42JESCjMODG/
+         VGMR2oyaPLm/ancVzJ7VQmoka9YQTnDOj61YUsJ+BVk+t8yVvTg6b8NuVQMQ21RvKZqL
+         EpjfJh1D/Ve0ebvy2ixjspdRP2AZQXLd1LQKePb7NBiGyhybK77eCpJwcaYovkTWJuHZ
+         jCzNhhC0sxgsomND5b2+0V/EWZu4vDM3+fYx4msdr/5MawxBxYHeYqLLLwpRVumP177m
+         +2IA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=VoI9PYiBRc2yFBeGZP+9iAWIgLPpQStt5BRdIAs4Iwc=;
-        b=FuDkCvu2h+mn3t79IMe94r+bQAZkXTeK/TpK6sAsJAO6ncaDtRKEHFvbI1S41V9Tdx
-         LDpXjsk3IUds2fkHnJ7kBMjAgOhfjj6cfnqs6nWtVMdrNJPQX9Ib6cG7huU3oQjl7/Qa
-         VfS+Vo1huW0sFWQ8mnXK0EvWJZu8ip1pl8UNcKLQFCWmfIaShcb7DUbRHuuux1fnUE2z
-         sP0beCn3XGM5vwu6zO8FAjUdgidZMXfVcExcrgGgQDMGK69EXxfCqylyD5UFNq5bXg1n
-         9fIKP/xh1oMme3fc9dp6flRl9IJYghX56UsEGdUdKTASrSWXPG79gmDB6ee2QDoGKpg4
-         eQfg==
-X-Gm-Message-State: APjAAAUR8NK/fLMM+IikcCX19YYoPdTj+6ib+rRnTRZXjX2ND7EUNV48
-        eqFexnThDeqEzO8a1ZhkEfZ3UO5SsrSiz4zYk1+zgA==
-X-Google-Smtp-Source: APXvYqxR4c2e6CtVileO9JfPm9wtZCUMOfQPW71Qva6YMgX83vcteA/M78BLQ0lpjvUSz1wMDHe82YIdxfMVs5dmE5I=
-X-Received: by 2002:a05:6102:1252:: with SMTP id p18mr6056039vsg.32.1571074757566;
- Mon, 14 Oct 2019 10:39:17 -0700 (PDT)
+        bh=ZkhwpizpfA2VexKlQ2oEQcLnbCJP2Qs7hnm+bKZkprs=;
+        b=CDHqkT6iV6Z6q5H3KNg67494VHIop/M47EhxmCs3SUprvUWi5GKorQdoD8133W4eIX
+         Zt4KPmyfPew4QHnym6CcINeyVL+l4CnGCSREqlX2bhawXNp3scZGYZE0/KX/gJltlcHn
+         4hzsLFjQzrCYz65TZHfHk8uvlxAqNj4W3hQLB3GparIWxiVjslwyE3TJadu12UQdbAET
+         AZIx3XQJZtonmtvJaSKrFBxLyu/wqhyLWVWNNXGHnAy0Dpscuam7H1J29OfcP3H8YiFt
+         FIrj8HP4EH7d6aCOPkAFMFKD6/RktydP+1KhM+cBuFIRFf6TO/mDeT7DpO0lTe+KDovu
+         brEQ==
+X-Gm-Message-State: APjAAAVzm5sNNb/uhnpRSlcErom9GWmjYjZEcZoV8JLScI1gmWgGLVaN
+        wWsSTXi4S/TwPhaSlYICD0qVuOLZOSHetLpcyQA=
+X-Google-Smtp-Source: APXvYqxQWcD3OZMgZ13RjzFx9gulMAp7gBH5qy/phpsNrfeg4mjyuhODypsbiToUIfMbUrmcL7a7VzAvGwM09e8wTLs=
+X-Received: by 2002:a63:6b06:: with SMTP id g6mr34436310pgc.104.1571076163157;
+ Mon, 14 Oct 2019 11:02:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <111664d58fe4e9dd9c8014bb3d0b2dab93086a9e.1570609794.git.jbenc@redhat.com>
- <CAADnVQKgXnmbEhBd1FvM16RP_i8s7+risvgM9yftwuP2DejFmA@mail.gmail.com>
-In-Reply-To: <CAADnVQKgXnmbEhBd1FvM16RP_i8s7+risvgM9yftwuP2DejFmA@mail.gmail.com>
-From:   Peter Oskolkov <posk@posk.io>
-Date:   Mon, 14 Oct 2019 10:39:06 -0700
-Message-ID: <CAFTs51WM7yC3Z2HDGy9APSgqy1LCczQtFVG_y+X0WdxY9WSd9Q@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: lwtunnel: fix reroute supplying invalid dst
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Jiri Benc <jbenc@redhat.com>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Peter Oskolkov <posk@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Eric Dumazet <edumazet@google.com>
+References: <00000000000079edde0594d77dd6@google.com> <8a375be8-5a08-4cb5-cd7a-a847a1ec9b31@gmail.com>
+In-Reply-To: <8a375be8-5a08-4cb5-cd7a-a847a1ec9b31@gmail.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Mon, 14 Oct 2019 11:02:31 -0700
+Message-ID: <CAM_iQpUG4_xABqCdjwm77QRhYYh=5B5dV69_ac5SjEuwJa4qNw@mail.gmail.com>
+Subject: Re: INFO: task hung in addrconf_verify_work (2)
+To:     Eric Dumazet <eric.dumazet@gmail.com>
+Cc:     syzbot <syzbot+cf0adbb9c28c8866c788@syzkaller.appspotmail.com>,
+        Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>,
+        David Ahern <dsahern@gmail.com>, hawk@kernel.org,
+        Ido Schimmel <idosch@mellanox.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jiri Pirko <jiri@mellanox.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        Petr Machata <petrm@mellanox.com>,
+        Roopa Prabhu <roopa@cumulusnetworks.com>,
+        Song Liu <songliubraving@fb.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>, yhs@fb.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Oct 12, 2019 at 9:59 AM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Wed, Oct 9, 2019 at 1:31 AM Jiri Benc <jbenc@redhat.com> wrote:
-> >
-> > The dst in bpf_input() has lwtstate field set. As it is of the
-> > LWTUNNEL_ENCAP_BPF type, lwtstate->data is struct bpf_lwt. When the bpf
-> > program returns BPF_LWT_REROUTE, ip_route_input_noref is directly called on
-> > this skb. This causes invalid memory access, as ip_route_input_slow calls
-> > skb_tunnel_info(skb) that expects the dst->lwstate->data to be
-> > struct ip_tunnel_info. This results to struct bpf_lwt being accessed as
-> > struct ip_tunnel_info.
-> >
-> > Drop the dst before calling the IP route input functions (both for IPv4 and
-> > IPv6).
-> >
-> > Reported by KASAN.
-> >
-> > Fixes: 3bd0b15281af ("bpf: add handling of BPF_LWT_REROUTE to lwt_bpf.c")
-> > Cc: Peter Oskolkov <posk@google.com>
-> > Signed-off-by: Jiri Benc <jbenc@redhat.com>
->
-> Peter and other google folks,
-> please review.
+On Sun, Oct 13, 2019 at 10:37 PM Eric Dumazet <eric.dumazet@gmail.com> wrote:
+> Infinite loop because tcf_add_notify() returns -EAGAIN as the message can not be delivered to the socket,
+> since its SO_RCVBUF has been set to 0.
 
-selftests/bpf/test_lwt_ip_encap.sh passes. Seems OK.
+Interesting corner case...
 
-Acked-by: Peter Oskolkov <posk@google.com>
+>
+> Perhaps we need this patch ?
+
+This patch looks reasonable to me, as the -EAGAIN here is mainly (if not
+totally) for the locking retry logic.
+
+Thanks.
