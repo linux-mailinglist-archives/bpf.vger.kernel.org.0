@@ -2,207 +2,324 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 570C3D6A9D
-	for <lists+bpf@lfdr.de>; Mon, 14 Oct 2019 22:14:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44861D6B0A
+	for <lists+bpf@lfdr.de>; Mon, 14 Oct 2019 23:06:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730114AbfJNUNx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Oct 2019 16:13:53 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:59954 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729864AbfJNUNw (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 14 Oct 2019 16:13:52 -0400
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x9EKDVv3021040;
-        Mon, 14 Oct 2019 13:13:32 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=hZdq5eXuDhJgtf/T42jGdzL3qpr6IJg6qMUrkQyFckE=;
- b=eIkhtqDoY27wveVSXaJnuDkRZG7hoZ2GU+REEOZyLDvQRIDOefL8ewyz6JOcNjoc4Owu
- RnCx4ZuAMJer4el+L/24bjpIeaJnQ1jjE6BcRzpn48XZL7txyJ8OfMYh5KkZMKKNC5YJ
- RPGFZRV2duunAuQhd5RCEPnY6OUqETw68FE= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2vky52e6ew-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 14 Oct 2019 13:13:32 -0700
-Received: from ash-exopmbx101.TheFacebook.com (2620:10d:c0a8:82::b) by
- ash-exhub204.TheFacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 14 Oct 2019 13:13:00 -0700
-Received: from ash-exhub104.TheFacebook.com (2620:10d:c0a8:82::d) by
- ash-exopmbx101.TheFacebook.com (2620:10d:c0a8:82::b) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 14 Oct 2019 13:13:00 -0700
-Received: from NAM02-BL2-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.175) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
- via Frontend Transport; Mon, 14 Oct 2019 13:13:00 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Das7vj7goEseKEI9HW9F3Ip4V8iHgXrMS6pMHr5ZGYaOznHmgi4BPbkb7TURe3ujpgqROuzLD9uArkeWCPD5+pWeoAZzs4LVFj3G9F19VDD3hQtadRPgSlYb9y/lNOALg/6l1KxLsLX3z29YmdnHvdLLRJ/SrSS19VkdxcBgtk7RYM27HHJOuqH6KjLKvCW5bIF5KXX7tm1N5SPLrq5EDnX1xrs89xzwRa3aEqWf7HZ0niUlhFQqdLEYcatbHv1HVTHj/kvOY8zPr7C4ckzORvqIdAwf8565kMsw+f+R6cesIbGhHA5fJs62QIAOvIv7ouTXUhtIhnRk5uqJWEQfxQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hZdq5eXuDhJgtf/T42jGdzL3qpr6IJg6qMUrkQyFckE=;
- b=bId9zDYibXOUhui4lgODtFRphFPjWA9rnlEmbkl+rwUcjGNEND3zL8BMJZRr7Of7P94Jwk5aIindgd4ROpRNkW6BWrx8GKB2bP+hEGi5EtLAdZl3oF3aRIo0zHZVz9UtJB3Ml4uXf1jJKdxFxOaXqDLZ3sA54Bcbwba1ewv0UsPVcn/HryNgMrYOtRFbu04M6Z+rsZKzhnQAhT3AFUXobB5SBy0mgv9mzfJWvXq69ZhXHzatlA9xCuJc/svwVPQP2qkTiNhwgKxgJe9Rr/bxVNxW70fGL1/o5DxpzqcYgMPxGomLOGa1hCo601uoybqZaVXMjv9/kXD8EZoq8W8F4g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hZdq5eXuDhJgtf/T42jGdzL3qpr6IJg6qMUrkQyFckE=;
- b=IZkwDcK6xU9MhFINO2NImA2A44ZzH7yTEGAdEf9A4PUVLaaHQhYy7fvx2unfbfOnjxDIKl2u6K24IVzQgTAAgN4YLN73nqFnh3fBXUDIFgGMDSBhvhgFZ4pgewnCUCtfqdeL7OvrjYT4Ampy8xTLQx2OLFBj9t+qblIP4GzuWcU=
-Received: from MWHPR15MB1165.namprd15.prod.outlook.com (10.175.3.22) by
- MWHPR15MB1182.namprd15.prod.outlook.com (10.175.3.21) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2347.16; Mon, 14 Oct 2019 20:12:59 +0000
-Received: from MWHPR15MB1165.namprd15.prod.outlook.com
- ([fe80::fdc8:5546:bace:15f5]) by MWHPR15MB1165.namprd15.prod.outlook.com
- ([fe80::fdc8:5546:bace:15f5%5]) with mapi id 15.20.2347.023; Mon, 14 Oct 2019
- 20:12:59 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-CC:     Alexei Starovoitov <ast@fb.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        id S1732174AbfJNVGL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Oct 2019 17:06:11 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:34892 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732150AbfJNVGL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Oct 2019 17:06:11 -0400
+Received: by mail-io1-f68.google.com with SMTP id q10so41125369iop.2
+        for <bpf@vger.kernel.org>; Mon, 14 Oct 2019 14:06:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=5Fh50IqKsV9DI7qDXmQliZcABf63QxMooRZ2h3IAY6k=;
+        b=L/NbAB3JijK/RLJKceyrd9ouCTGu3WZr5yW68DkgdWytjUkVAO/3sNPIYF8veG+u8w
+         RklFrlQSfLp5ajhmL2DgLsiy7G0EmzepJKzRQ37+lB+QaOCcVAbmMckJTaoiQlSIfCCs
+         YB1QfIDm2ojYiL9wU2SsTYh4ht18EcoYX2Jmz7zakOe/fG1f4Ud88uuoxdenY/6qaKHi
+         7M94x7DwQWlH2oSz0WrMWuC3E18uCAQaeav9dEH5Wfbq1wBrllIEKfO2vUXLlrEXETtr
+         8psL+0JVlFfSjWy9FpcNmG4ErywWFRYy4oq0zWYZsYdj4lbdVjf1egjRNCxv3uvxcr8/
+         x7Wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=5Fh50IqKsV9DI7qDXmQliZcABf63QxMooRZ2h3IAY6k=;
+        b=QMVxOszq4+0F6FBJ2YYbdBk6aK+lZOhtb5l+RsSgrjIbaZG//MnRcidMU/OPfXUKy4
+         1a+wMDDbShu8WWgtfgui0YEtb/fv6ainiywIcV7O7piCZhbAC+4xXDV3asvxMlEDXRJt
+         Ro0tI957mGijpFF7TNhEvoPgyUcjlQDOMwzgyl6QK4gwlp+/hITUI57qLjmeBPnvTE0K
+         1WHgGLGsOSmn6dOh92z5Wc2gUv41hs0Q0P/Uwr9bCefaIxct57Q7N0soD2sSBd334//i
+         JO7JJnQYhaH6ie6993niFVBt7iqVVqWF0TXXaMO29KmV3G92Yep7+vW7zO6f+vtbu34Q
+         34fA==
+X-Gm-Message-State: APjAAAWgmR4WubLbup7VrD8Bch9L0xI3pEkp9qlwbc1nQhNtHDnvb6IE
+        x5REY4tPKKNURq7fN/+LiB9pDA==
+X-Google-Smtp-Source: APXvYqwnLoB+44Z3avtM3EZMI2/MnjmtUkhVWHppjSvExVu8UtTha0EHFRTkuSMXssxHrjmHv5AbGg==
+X-Received: by 2002:a92:7702:: with SMTP id s2mr2557103ilc.248.1571087169985;
+        Mon, 14 Oct 2019 14:06:09 -0700 (PDT)
+Received: from localhost (67-0-10-3.albq.qwest.net. [67.0.10.3])
+        by smtp.gmail.com with ESMTPSA id m15sm1695738ilg.49.2019.10.14.14.06.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Oct 2019 14:06:08 -0700 (PDT)
+Date:   Mon, 14 Oct 2019 14:06:07 -0700 (PDT)
+From:   Paul Walmsley <paul.walmsley@sifive.com>
+X-X-Sender: paulw@viisi.sifive.com
+To:     Shuah Khan <shuah@kernel.org>
+cc:     Palmer Dabbelt <palmer@sifive.com>,
+        David Abdurachmanov <david.abdurachmanov@gmail.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: Re: [PATCH bpf-next 2/2] bpf/stackmap: fix A-A deadlock in
- bpf_get_stack()
-Thread-Topic: [PATCH bpf-next 2/2] bpf/stackmap: fix A-A deadlock in
- bpf_get_stack()
-Thread-Index: AQHVfzKraNK9YMcIS0WwHSwrlFbkdqdTfF0AgACi24CAAAefAIAABZIAgAWzPYCAALmAgA==
-Date:   Mon, 14 Oct 2019 20:12:59 +0000
-Message-ID: <048ED376-246D-4895-B5DA-FB3158C99122@fb.com>
-References: <20191010061916.198761-1-songliubraving@fb.com>
- <20191010061916.198761-3-songliubraving@fb.com>
- <20191010073608.GO2311@hirez.programming.kicks-ass.net>
- <a1d30b11-2759-0293-5612-48150db92775@fb.com>
- <20191010174618.GT2328@hirez.programming.kicks-ass.net>
- <4865df4d-7d13-0655-f3b4-5d025aaa1edb@fb.com>
- <20191014090903.GA2328@hirez.programming.kicks-ass.net>
-In-Reply-To: <20191014090903.GA2328@hirez.programming.kicks-ass.net>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3594.4.19)
-x-originating-ip: [2620:10d:c090:200::2:249a]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b4624f09-0376-481e-58a8-08d750e2e8d9
-x-ms-traffictypediagnostic: MWHPR15MB1182:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MWHPR15MB118262A24774DEB3F147D62EB3900@MWHPR15MB1182.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3513;
-x-forefront-prvs: 01901B3451
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(136003)(346002)(366004)(376002)(396003)(39860400002)(199004)(189003)(52314003)(6436002)(50226002)(8936002)(36756003)(6486002)(4326008)(46003)(6116002)(2906002)(33656002)(11346002)(446003)(86362001)(14444005)(7736002)(229853002)(256004)(305945005)(71190400001)(71200400001)(66446008)(6512007)(102836004)(6506007)(66476007)(53546011)(66556008)(186003)(478600001)(6916009)(2616005)(316002)(5660300002)(476003)(81166006)(81156014)(8676002)(99286004)(66946007)(6246003)(486006)(76116006)(54906003)(25786009)(14454004)(76176011)(64756008)(98474003);DIR:OUT;SFP:1102;SCL:1;SRVR:MWHPR15MB1182;H:MWHPR15MB1165.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: qQUJ7c5bG3SqcTPQTqS1jJ4ZezvGHUapx9WsL8Rasv1GK0EvlGnAR2sIr8j97M0Tj5LSmAGWMjl3fNdNv/peHjO1EpEw3Y/q29Co+WrrFjgsOSFyg/eRbMNMa4g4DhJwg5KJZ8lvMEaV53+xif5Qf7/DYHqaj8IWOqA8ZBTx4T266mz+Ja1QYGted/Sz4yK+b25HIFQMMtkteKvQiE3rgGewN84Oc6xqVP/MaX/+Afu2sZD4TRh117jf16oy6vnikZwWHu9SZbcp2Ge6rTIBmnq1IZhE339wNN2E4kpWnUE/HboQPgRb8SrhexWtbMfPl6nO4O0mmZOjewhooFl7Iklw5brYzCYHXSa6Xq9V24jaHGw3UxxOpDx3GF7DAG0ykKaGJeg0+973bHlNAAqsfY7oX1i+pgoqC5zxx8iXah8=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <E1B63940F9EEE443B9F123C048498F46@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        David Abdurachmanov <david.abdurachmanov@sifive.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Allison Randal <allison@lohutok.net>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        Anup Patel <Anup.Patel@wdc.com>,
+        Vincent Chen <vincentc@andestech.com>,
+        Alan Kao <alankao@andestech.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, me@carlosedp.com
+Subject: Re: [PATCH v2] riscv: add support for SECCOMP and SECCOMP_FILTER
+In-Reply-To: <alpine.DEB.2.21.9999.1910041819230.15827@viisi.sifive.com>
+Message-ID: <alpine.DEB.2.21.9999.1910141405220.12988@viisi.sifive.com>
+References: <20190822205533.4877-1-david.abdurachmanov@sifive.com> <alpine.DEB.2.21.9999.1910041819230.15827@viisi.sifive.com>
+User-Agent: Alpine 2.21.9999 (DEB 301 2018-08-15)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: b4624f09-0376-481e-58a8-08d750e2e8d9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Oct 2019 20:12:59.4064
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 02p02APrS160hJ9JCgo3Z/m4bBwxRYZrA8ZtXuRuUnqHN1B43OqzexHNzDWPeWrAGJ3w5Iw6bB2B8zDdPm6Geg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1182
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
- definitions=2019-10-14_10:2019-10-11,2019-10-14 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- bulkscore=0 priorityscore=1501 adultscore=0 mlxlogscore=999 spamscore=0
- mlxscore=0 suspectscore=0 clxscore=1015 phishscore=0 impostorscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1908290000 definitions=main-1910140168
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=US-ASCII
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Thanks Peter!
+Shuah,
 
-> On Oct 14, 2019, at 2:09 AM, Peter Zijlstra <peterz@infradead.org> wrote:
->=20
-> On Thu, Oct 10, 2019 at 06:06:14PM +0000, Alexei Starovoitov wrote:
->> On 10/10/19 10:46 AM, Peter Zijlstra wrote:
->=20
->>> All of stack_map_get_build_id_offset() is just disguisting games; I did
->>> tell you guys how to do lockless vma lookups a few years ago -- and yes=
-,
->>> that is invasive core mm surgery. But this is just disguisting hacks fo=
-r
->>> not wanting to do it right.
->>=20
->> you mean speculative page fault stuff?
->> That was my hope as well and I offered Laurent all the help to land it.
->> Yet after a year since we've talked the patches are not any closer
->> to landing.
->> Any other 'invasive mm surgery' you have in mind?
->=20
-> Indeed that series. It had RCU managed VMAs and lockless VMA lookups,
-> which is exactly what you need here.
+Could you please take a quick look at this and ack it if you're OK with 
+the tools/testing change?  We'd like to get this merged soon.
 
-Lockless VMA lookups will be really useful. It would resolve all the=20
-pains we are having here.=20
+- Paul
 
-I remember Google folks also mentioned in LPC that they would like=20
-better mechanism to confirm build-id in perf.=20
 
->=20
->>> Basically the only semi-sane thing to do with that trainwreck is
->>> s/in_nmi()/true/ and pray.
->>>=20
->>> On top of that I just hate buildids in general.
->>=20
->> Emotions aside... build_id is useful and used in production.
->> It's used widely because it solves real problems.
->=20
-> AFAIU it solves the problem of you not knowing what version of the
-> binary runs where; which I was hoping your cloud infrastructure thing
-> would actually know already.
->=20
-> Anyway, I know what it does, I just don't nessecarily agree it is the
-> right way around that particular problem (also, the way I'm personally
-> affected is that perf-record is dead slow by default due to built-id
-> post processing).
->=20
-> And it obviously leads to horrible hacks like the code currently under
-> discussion :/
->=20
->> This dead lock is from real servers and not from some sanitizer wannabe.
->=20
-> If you enable CFS bandwidth control and run this function on the
-> trace_hrtimer_start() tracepoint, you should be able to trigger a real
-> AB-BA lockup.
->=20
->> Hence we need to fix it as cleanly as possible and quickly.
->> s/in_nmi/true/ is certainly an option.
->=20
-> That is the best option; because tracepoints / perf-overflow handlers
-> really should not be taking any locks.
->=20
->> I'm worried about overhead of doing irq_work_queue() all the time.
->> But I'm not familiar with mechanism enough to justify the concerns.
->> Would it make sense to do s/in_nmi/irgs_disabled/ instead?
->=20
-> irqs_disabled() should work in this particular case because rq->lock
-> (and therefore all it's nested locks) are IRQ-safe.
+On Fri, 4 Oct 2019, Paul Walmsley wrote:
 
-We worry about the overhead of irq_work for every single stackmap=20
-lookup. So we would like to go with the irqs_disabled() check. I just=20
-sent v2 of the patch.=20
+> Hello Shuah,
+> 
+> On Thu, 22 Aug 2019, David Abdurachmanov wrote:
+> 
+> > This patch was extensively tested on Fedora/RISCV (applied by default on
+> > top of 5.2-rc7 kernel for <2 months). The patch was also tested with 5.3-rc
+> > on QEMU and SiFive Unleashed board.
+> > 
+> > libseccomp (userspace) was rebased:
+> > https://github.com/seccomp/libseccomp/pull/134
+> > 
+> > Fully passes libseccomp regression testing (simulation and live).
+> > 
+> > There is one failing kernel selftest: global.user_notification_signal
+> > 
+> > v1 -> v2:
+> >   - return immediatly if secure_computing(NULL) returns -1
+> >   - fixed whitespace issues
+> >   - add missing seccomp.h
+> >   - remove patch #2 (solved now)
+> >   - add riscv to seccomp kernel selftest
+> > 
+> > Cc: keescook@chromium.org
+> > Cc: me@carlosedp.com
+> > 
+> > Signed-off-by: David Abdurachmanov <david.abdurachmanov@sifive.com>
+> 
+> We'd like to merge this patch through the RISC-V tree.
+> Care to ack the change to tools/testing/selftests/seccomp/seccomp_bpf.c ?  
+> 
+> Kees has already reviewed it:
+> 
+> https://lore.kernel.org/linux-riscv/CAJr-aD=UnCN9E_mdVJ2H5nt=6juRSWikZnA5HxDLQxXLbsRz-w@mail.gmail.com/
+> 
+> 
+> - Paul
+> 
+> 
+> > ---
+> >  arch/riscv/Kconfig                            | 14 ++++++++++
+> >  arch/riscv/include/asm/seccomp.h              | 10 +++++++
+> >  arch/riscv/include/asm/thread_info.h          |  5 +++-
+> >  arch/riscv/kernel/entry.S                     | 27 +++++++++++++++++--
+> >  arch/riscv/kernel/ptrace.c                    | 10 +++++++
+> >  tools/testing/selftests/seccomp/seccomp_bpf.c |  8 +++++-
+> >  6 files changed, 70 insertions(+), 4 deletions(-)
+> >  create mode 100644 arch/riscv/include/asm/seccomp.h
+> > 
+> > diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> > index 59a4727ecd6c..441e63ff5adc 100644
+> > --- a/arch/riscv/Kconfig
+> > +++ b/arch/riscv/Kconfig
+> > @@ -31,6 +31,7 @@ config RISCV
+> >  	select GENERIC_SMP_IDLE_THREAD
+> >  	select GENERIC_ATOMIC64 if !64BIT
+> >  	select HAVE_ARCH_AUDITSYSCALL
+> > +	select HAVE_ARCH_SECCOMP_FILTER
+> >  	select HAVE_MEMBLOCK_NODE_MAP
+> >  	select HAVE_DMA_CONTIGUOUS
+> >  	select HAVE_FUTEX_CMPXCHG if FUTEX
+> > @@ -235,6 +236,19 @@ menu "Kernel features"
+> >  
+> >  source "kernel/Kconfig.hz"
+> >  
+> > +config SECCOMP
+> > +	bool "Enable seccomp to safely compute untrusted bytecode"
+> > +	help
+> > +	  This kernel feature is useful for number crunching applications
+> > +	  that may need to compute untrusted bytecode during their
+> > +	  execution. By using pipes or other transports made available to
+> > +	  the process as file descriptors supporting the read/write
+> > +	  syscalls, it's possible to isolate those applications in
+> > +	  their own address space using seccomp. Once seccomp is
+> > +	  enabled via prctl(PR_SET_SECCOMP), it cannot be disabled
+> > +	  and the task is only allowed to execute a few safe syscalls
+> > +	  defined by each seccomp mode.
+> > +
+> >  endmenu
+> >  
+> >  menu "Boot options"
+> > diff --git a/arch/riscv/include/asm/seccomp.h b/arch/riscv/include/asm/seccomp.h
+> > new file mode 100644
+> > index 000000000000..bf7744ee3b3d
+> > --- /dev/null
+> > +++ b/arch/riscv/include/asm/seccomp.h
+> > @@ -0,0 +1,10 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +
+> > +#ifndef _ASM_SECCOMP_H
+> > +#define _ASM_SECCOMP_H
+> > +
+> > +#include <asm/unistd.h>
+> > +
+> > +#include <asm-generic/seccomp.h>
+> > +
+> > +#endif /* _ASM_SECCOMP_H */
+> > diff --git a/arch/riscv/include/asm/thread_info.h b/arch/riscv/include/asm/thread_info.h
+> > index 905372d7eeb8..a0b2a29a0da1 100644
+> > --- a/arch/riscv/include/asm/thread_info.h
+> > +++ b/arch/riscv/include/asm/thread_info.h
+> > @@ -75,6 +75,7 @@ struct thread_info {
+> >  #define TIF_MEMDIE		5	/* is terminating due to OOM killer */
+> >  #define TIF_SYSCALL_TRACEPOINT  6       /* syscall tracepoint instrumentation */
+> >  #define TIF_SYSCALL_AUDIT	7	/* syscall auditing */
+> > +#define TIF_SECCOMP		8	/* syscall secure computing */
+> >  
+> >  #define _TIF_SYSCALL_TRACE	(1 << TIF_SYSCALL_TRACE)
+> >  #define _TIF_NOTIFY_RESUME	(1 << TIF_NOTIFY_RESUME)
+> > @@ -82,11 +83,13 @@ struct thread_info {
+> >  #define _TIF_NEED_RESCHED	(1 << TIF_NEED_RESCHED)
+> >  #define _TIF_SYSCALL_TRACEPOINT	(1 << TIF_SYSCALL_TRACEPOINT)
+> >  #define _TIF_SYSCALL_AUDIT	(1 << TIF_SYSCALL_AUDIT)
+> > +#define _TIF_SECCOMP		(1 << TIF_SECCOMP)
+> >  
+> >  #define _TIF_WORK_MASK \
+> >  	(_TIF_NOTIFY_RESUME | _TIF_SIGPENDING | _TIF_NEED_RESCHED)
+> >  
+> >  #define _TIF_SYSCALL_WORK \
+> > -	(_TIF_SYSCALL_TRACE | _TIF_SYSCALL_TRACEPOINT | _TIF_SYSCALL_AUDIT)
+> > +	(_TIF_SYSCALL_TRACE | _TIF_SYSCALL_TRACEPOINT | _TIF_SYSCALL_AUDIT | \
+> > +	 _TIF_SECCOMP )
+> >  
+> >  #endif /* _ASM_RISCV_THREAD_INFO_H */
+> > diff --git a/arch/riscv/kernel/entry.S b/arch/riscv/kernel/entry.S
+> > index bc7a56e1ca6f..0bbedfa3e47d 100644
+> > --- a/arch/riscv/kernel/entry.S
+> > +++ b/arch/riscv/kernel/entry.S
+> > @@ -203,8 +203,25 @@ check_syscall_nr:
+> >  	/* Check to make sure we don't jump to a bogus syscall number. */
+> >  	li t0, __NR_syscalls
+> >  	la s0, sys_ni_syscall
+> > -	/* Syscall number held in a7 */
+> > -	bgeu a7, t0, 1f
+> > +	/*
+> > +	 * The tracer can change syscall number to valid/invalid value.
+> > +	 * We use syscall_set_nr helper in syscall_trace_enter thus we
+> > +	 * cannot trust the current value in a7 and have to reload from
+> > +	 * the current task pt_regs.
+> > +	 */
+> > +	REG_L a7, PT_A7(sp)
+> > +	/*
+> > +	 * Syscall number held in a7.
+> > +	 * If syscall number is above allowed value, redirect to ni_syscall.
+> > +	 */
+> > +	bge a7, t0, 1f
+> > +	/*
+> > +	 * Check if syscall is rejected by tracer or seccomp, i.e., a7 == -1.
+> > +	 * If yes, we pretend it was executed.
+> > +	 */
+> > +	li t1, -1
+> > +	beq a7, t1, ret_from_syscall_rejected
+> > +	/* Call syscall */
+> >  	la s0, sys_call_table
+> >  	slli t0, a7, RISCV_LGPTR
+> >  	add s0, s0, t0
+> > @@ -215,6 +232,12 @@ check_syscall_nr:
+> >  ret_from_syscall:
+> >  	/* Set user a0 to kernel a0 */
+> >  	REG_S a0, PT_A0(sp)
+> > +	/*
+> > +	 * We didn't execute the actual syscall.
+> > +	 * Seccomp already set return value for the current task pt_regs.
+> > +	 * (If it was configured with SECCOMP_RET_ERRNO/TRACE)
+> > +	 */
+> > +ret_from_syscall_rejected:
+> >  	/* Trace syscalls, but only if requested by the user. */
+> >  	REG_L t0, TASK_TI_FLAGS(tp)
+> >  	andi t0, t0, _TIF_SYSCALL_WORK
+> > diff --git a/arch/riscv/kernel/ptrace.c b/arch/riscv/kernel/ptrace.c
+> > index 368751438366..63e47c9f85f0 100644
+> > --- a/arch/riscv/kernel/ptrace.c
+> > +++ b/arch/riscv/kernel/ptrace.c
+> > @@ -154,6 +154,16 @@ void do_syscall_trace_enter(struct pt_regs *regs)
+> >  		if (tracehook_report_syscall_entry(regs))
+> >  			syscall_set_nr(current, regs, -1);
+> >  
+> > +	/*
+> > +	 * Do the secure computing after ptrace; failures should be fast.
+> > +	 * If this fails we might have return value in a0 from seccomp
+> > +	 * (via SECCOMP_RET_ERRNO/TRACE).
+> > +	 */
+> > +	if (secure_computing(NULL) == -1) {
+> > +		syscall_set_nr(current, regs, -1);
+> > +		return;
+> > +	}
+> > +
+> >  #ifdef CONFIG_HAVE_SYSCALL_TRACEPOINTS
+> >  	if (test_thread_flag(TIF_SYSCALL_TRACEPOINT))
+> >  		trace_sys_enter(regs, syscall_get_nr(current, regs));
+> > diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
+> > index 6ef7f16c4cf5..492e0adad9d3 100644
+> > --- a/tools/testing/selftests/seccomp/seccomp_bpf.c
+> > +++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
+> > @@ -112,6 +112,8 @@ struct seccomp_data {
+> >  #  define __NR_seccomp 383
+> >  # elif defined(__aarch64__)
+> >  #  define __NR_seccomp 277
+> > +# elif defined(__riscv)
+> > +#  define __NR_seccomp 277
+> >  # elif defined(__hppa__)
+> >  #  define __NR_seccomp 338
+> >  # elif defined(__powerpc__)
+> > @@ -1582,6 +1584,10 @@ TEST_F(TRACE_poke, getpid_runs_normally)
+> >  # define ARCH_REGS	struct user_pt_regs
+> >  # define SYSCALL_NUM	regs[8]
+> >  # define SYSCALL_RET	regs[0]
+> > +#elif defined(__riscv) && __riscv_xlen == 64
+> > +# define ARCH_REGS	struct user_regs_struct
+> > +# define SYSCALL_NUM	a7
+> > +# define SYSCALL_RET	a0
+> >  #elif defined(__hppa__)
+> >  # define ARCH_REGS	struct user_regs_struct
+> >  # define SYSCALL_NUM	gr[20]
+> > @@ -1671,7 +1677,7 @@ void change_syscall(struct __test_metadata *_metadata,
+> >  	EXPECT_EQ(0, ret) {}
+> >  
+> >  #if defined(__x86_64__) || defined(__i386__) || defined(__powerpc__) || \
+> > -    defined(__s390__) || defined(__hppa__)
+> > +    defined(__s390__) || defined(__hppa__) || defined(__riscv)
+> >  	{
+> >  		regs.SYSCALL_NUM = syscall;
+> >  	}
+> > -- 
+> > 2.21.0
+> > 
+> > 
+> 
+> 
+> - Paul
+> 
 
-Thanks again,
-Song
 
