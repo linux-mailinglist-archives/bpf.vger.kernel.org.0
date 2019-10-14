@@ -2,93 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BBEEED69A9
-	for <lists+bpf@lfdr.de>; Mon, 14 Oct 2019 20:45:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 749B4D69B4
+	for <lists+bpf@lfdr.de>; Mon, 14 Oct 2019 20:48:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732193AbfJNSpI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Oct 2019 14:45:08 -0400
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:43195 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730971AbfJNSpI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Oct 2019 14:45:08 -0400
-Received: by mail-lj1-f196.google.com with SMTP id n14so17613641ljj.10;
-        Mon, 14 Oct 2019 11:45:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eUxWIPHMP0PFmpZXC2jVL6Z+f/bCEtwgxXXPzHX8O4c=;
-        b=DXkrF4PUtgHsSPPNrqQzC1ApTctQ4tahNPiJrBqe8+Lq0oP0qp1uGxQBlxP83MAfqs
-         0SmybhYaa17r/7JXbil+iFpnAopTZGX7Yand/U/dclIUhQl9/5UEtR3CPh6her4OlFWz
-         nF/46mgHblgFn03AUedFVXK8+H62WMV0E5poGWd7Qf2+PCNMTo+yJTKdgV/JA2RQwn7O
-         MVexPNz59Z0UQOfLvubxAPa0TXvceVNDRmjVoIw2xADgtEJOWX8XkP5jo/hU5EExi40z
-         WFUsjlgZOA0ubD+tgyHAyfw6fLMeLqjIWaRXCWq/Z3MSm6rH9XQ0BHfYffqPgF8nb8U9
-         uc7g==
+        id S1732149AbfJNSsU convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Mon, 14 Oct 2019 14:48:20 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:37784 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730804AbfJNSsT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Oct 2019 14:48:19 -0400
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com [209.85.167.69])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id EE72581DE0
+        for <bpf@vger.kernel.org>; Mon, 14 Oct 2019 18:48:18 +0000 (UTC)
+Received: by mail-lf1-f69.google.com with SMTP id c7so3019115lfh.9
+        for <bpf@vger.kernel.org>; Mon, 14 Oct 2019 11:48:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eUxWIPHMP0PFmpZXC2jVL6Z+f/bCEtwgxXXPzHX8O4c=;
-        b=t59/eE5suj2h6s+cV4UhBwqQXnNYR3sCUAseymlUI4iq9SYifg4sx4P0WfkX8ATUe0
-         tjaAy5iJ1xUvHeDqYSyeUFrooYwsqBGJ+AgbP/8pUcn6YCyYoVqr4mP7P3s3MFmyY1f7
-         F805uJqeY2Zgr6b5W85I/UME+K1b4nL+d+Rz2gIRGYJfj6GKi62alab5YLHOW7kB3D7Z
-         9VwwxDQoCwBj9DcrZFOcxZFUFM9T5mpdTVzB/3F+dfWfZfbUE8R6vkr+sE7G4sQEdzS1
-         4OKfEjNJLhu/rYlZoIM+n65NMg24GOjvzdLPhxg4bf97pY6w97S1IvCkjSCgfc0jyDpg
-         y1Zg==
-X-Gm-Message-State: APjAAAWp7hhhtwFVnGwQQ6l7rStBKst5t+H2hKmARrSdcalqYrhYmJLZ
-        PY+VfjR6yGmK7PuNzBjn1wP8iTUy3gD9OCTpr/g=
-X-Google-Smtp-Source: APXvYqxRktItFKhpgX2RQhYSQPgUe73TihGFmiZmeh7pJw2jy47Tfiv9ClXZEg/OraYOdsZbZfvwxhFRAFyvtj/eT1M=
-X-Received: by 2002:a2e:9b12:: with SMTP id u18mr20287215lji.142.1571078704060;
- Mon, 14 Oct 2019 11:45:04 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=SRp89eOkih07vlksGf3v7HdYTJDHBKxtvHAyxS+uWvk=;
+        b=YdrWV8GhKQAYru2/MnwTn9MXgIPQ5y3Csbt8hU7puN2Ud2oHYXcU5skJCtVUS9NkQJ
+         ozbGXIpFrJDj0JIhU005r6K8IDCPzVCNG6K9/9fWbNu8vYlSAqKnogVle8/ap/o/WEBo
+         oz2phqeqMwzZ7JMfIwFm83N+r6mnjlEo6cFXfWXCuCYH7sLNJCFX1XbK1XOIoKaKzgXB
+         Uv+vtPwVpgO4vAf1sAdthotEr1LSg5I5Nv+JCEY7LqeLMCbBiUi5ak9UNhAw0Lj1h4hj
+         sEBMDuygvg26Hx5cRSsEQt/kv1O469M3CW1KTIVoBrV85i929n8OuIcBwLPc0vPJp7DK
+         RTcQ==
+X-Gm-Message-State: APjAAAXtoVxOyFHo2kZaHWGbZ0OkPtfK1SbdDCjWPclCQyS8/4et6RYQ
+        u9RDd3CMMWUkf+giN+1bjnPjXQ7vxEsgdTU+C24Bjur8SNVUfedVXT3H9pZL2BA/zIrvp9B6JWy
+        rM95bSLeV83zM
+X-Received: by 2002:ac2:5595:: with SMTP id v21mr6072066lfg.168.1571078897499;
+        Mon, 14 Oct 2019 11:48:17 -0700 (PDT)
+X-Google-Smtp-Source: APXvYqzOOF4YrrolnbdkbUjAC120HAMxIzIpiWYEd9uyfcdN8vtAlgp3lZ8njSA3TC+LCPKqU6ClmQ==
+X-Received: by 2002:ac2:5595:: with SMTP id v21mr6072048lfg.168.1571078897318;
+        Mon, 14 Oct 2019 11:48:17 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a00:7660:6da:443::2])
+        by smtp.gmail.com with ESMTPSA id l5sm4280420lfk.17.2019.10.14.11.48.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Oct 2019 11:48:16 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id A38F118063D; Mon, 14 Oct 2019 20:48:15 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     John Fastabend <john.fastabend@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Marek Majkowski <marek@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next v3 1/5] bpf: Support chain calling multiple BPF programs after each other
+In-Reply-To: <5da4ab712043c_25f42addb7c085b83b@john-XPS-13-9370.notmuch>
+References: <157046883502.2092443.146052429591277809.stgit@alrua-x1> <157046883614.2092443.9861796174814370924.stgit@alrua-x1> <20191007204234.p2bh6sul2uakpmnp@ast-mbp.dhcp.thefacebook.com> <87sgo3lkx9.fsf@toke.dk> <20191009015117.pldowv6n3k5p3ghr@ast-mbp.dhcp.thefacebook.com> <87o8yqjqg0.fsf@toke.dk> <20191010044156.2hno4sszysu3c35g@ast-mbp.dhcp.thefacebook.com> <87v9srijxa.fsf@toke.dk> <5da4ab712043c_25f42addb7c085b83b@john-XPS-13-9370.notmuch>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Mon, 14 Oct 2019 20:48:15 +0200
+Message-ID: <87eezfi2og.fsf@toke.dk>
 MIME-Version: 1.0
-References: <111664d58fe4e9dd9c8014bb3d0b2dab93086a9e.1570609794.git.jbenc@redhat.com>
- <CAADnVQKgXnmbEhBd1FvM16RP_i8s7+risvgM9yftwuP2DejFmA@mail.gmail.com> <CAFTs51WM7yC3Z2HDGy9APSgqy1LCczQtFVG_y+X0WdxY9WSd9Q@mail.gmail.com>
-In-Reply-To: <CAFTs51WM7yC3Z2HDGy9APSgqy1LCczQtFVG_y+X0WdxY9WSd9Q@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 14 Oct 2019 11:44:52 -0700
-Message-ID: <CAADnVQ+vHYwZGdmeKJRiTXkoOuu+6DNmT1F3RsAOCxhkhsOnSg@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: lwtunnel: fix reroute supplying invalid dst
-To:     Peter Oskolkov <posk@posk.io>
-Cc:     Jiri Benc <jbenc@redhat.com>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Peter Oskolkov <posk@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Eric Dumazet <edumazet@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Oct 14, 2019 at 10:39 AM Peter Oskolkov <posk@posk.io> wrote:
->
-> On Sat, Oct 12, 2019 at 9:59 AM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Wed, Oct 9, 2019 at 1:31 AM Jiri Benc <jbenc@redhat.com> wrote:
-> > >
-> > > The dst in bpf_input() has lwtstate field set. As it is of the
-> > > LWTUNNEL_ENCAP_BPF type, lwtstate->data is struct bpf_lwt. When the bpf
-> > > program returns BPF_LWT_REROUTE, ip_route_input_noref is directly called on
-> > > this skb. This causes invalid memory access, as ip_route_input_slow calls
-> > > skb_tunnel_info(skb) that expects the dst->lwstate->data to be
-> > > struct ip_tunnel_info. This results to struct bpf_lwt being accessed as
-> > > struct ip_tunnel_info.
-> > >
-> > > Drop the dst before calling the IP route input functions (both for IPv4 and
-> > > IPv6).
-> > >
-> > > Reported by KASAN.
-> > >
-> > > Fixes: 3bd0b15281af ("bpf: add handling of BPF_LWT_REROUTE to lwt_bpf.c")
-> > > Cc: Peter Oskolkov <posk@google.com>
-> > > Signed-off-by: Jiri Benc <jbenc@redhat.com>
-> >
-> > Peter and other google folks,
-> > please review.
->
-> selftests/bpf/test_lwt_ip_encap.sh passes. Seems OK.
->
-> Acked-by: Peter Oskolkov <posk@google.com>
+John Fastabend <john.fastabend@gmail.com> writes:
 
-Applied to bpf tree. Thanks
+> Toke Høiland-Jørgensen wrote:
+>> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+>> 
+>> > On Wed, Oct 09, 2019 at 10:03:43AM +0200, Toke Høiland-Jørgensen wrote:
+>> >> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+>> >> 
+>> >> > Please implement proper indirect calls and jumps.
+>> >> 
+>> >> I am still not convinced this will actually solve our problem; but OK, I
+>> >> can give it a shot.
+>> >
+>> > If you're not convinced let's talk about it first.
+>> >
+>> > Indirect calls is a building block for debugpoints.
+>> > Let's not call them tracepoints, because Linus banned any discusion
+>> > that includes that name.
+>> > The debugpoints is a way for BPF program to insert points in its
+>> > code to let external facility to do tracing and debugging.
+>> >
+>> > void (*debugpoint1)(struct xdp_buff *, int code);
+>> > void (*debugpoint2)(struct xdp_buff *);
+>> > void (*debugpoint3)(int len);
+>
+> I was considering some basic static linking from libbpf side. Something
+> like,
+>
+>   bpf_object__link_programs(struct bpf_object *obj1, struct bpf_object *obj2);
+>
+> This way you could just 'link' in debugpoint{1,2,3} from libbpf before
+> loading? This would be useful on my side for adding/removing features
+> and handling different kernel versions. So more generally useful IMO.
+
+So that will end up with a single monolithic BPF program being loaded
+(from the kernel PoV), right? That won't do; we want to be able to go
+back to the component programs, and manipulate them as separate kernel
+objects.
+
+-Toke
