@@ -2,138 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1258ED820E
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2019 23:22:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A226D832A
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2019 00:04:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727287AbfJOVWF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Oct 2019 17:22:05 -0400
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:42300 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726480AbfJOVWF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Oct 2019 17:22:05 -0400
-Received: by mail-lj1-f194.google.com with SMTP id y23so21734953lje.9;
-        Tue, 15 Oct 2019 14:22:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ii9vueLaDUep6/QZRi93XICeUHKX9eVAhqWMTcqPbY4=;
-        b=IYGWViEXQODiRiHLJyVtOCJ3jTj9FJ48HkHVJCt7rqKSRt9u5u+SEMhC3sUsq2gAcX
-         6cl+uyCvC/98Z/AapsltFl/tMj4TH+w9dPJg1ODAJH5W1enFNefZ6/Dl648FJ3wyE1+J
-         Vm9plAfYjH/tAmJ/bXFm79B40tvUpsZjsiKU9fjNcKeggo9Gd6YcznFIM2CVQ6zri8zv
-         qS2ZlsTZEUud0KGXkPQtnG4BF5FIFB2BggjPephHpFaEhTaLfDwtg+WaSgGQeDLWDVWQ
-         gCJ7dJUN3QZZZwImXE6TtBjhLskf9tbqNdiReYBQdaA/9NDJ1z4KGxyM+aamJzpVlffv
-         rJ6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ii9vueLaDUep6/QZRi93XICeUHKX9eVAhqWMTcqPbY4=;
-        b=IIsJ9oxQ5dpl1YPpSFFxCA9A2PbexXP2SNGuuvOkBkvNFYX6faGoPIjpvBrDQEcZSJ
-         0dkiUctvfMy54KepV7TTwEDkikiO+cVaek95g4CVaEvORGiq8ixpO3RvM20ks3Cw+SNR
-         Y7/SgeU8zTpUL09fRNyrde8ov4CaKsOVRyGbMqKxQ/noRnOm3sj/Tf8o7d84zZbkl+yN
-         4txoaXE6HDFax9Tw0KWPVKiUpWLHYMRzN8M7Y/V0xLcK8KrSxYOXmB35anxx65Cl4C+4
-         njAd8uLD1Y3vBhejNAOGJa4JQyPMepqT1Y/wpVf7vEGVzl1MUavHGfjs+SA2D+4lw8wZ
-         vRDA==
-X-Gm-Message-State: APjAAAW2MYulDyE16Z11Ppqbra3MiesssN1cVZFJJ+VRTZLvElBkVpIO
-        O6zRb8J30Cg4Kq07C/uuogRBBtDqa7HN43R8fhw=
-X-Google-Smtp-Source: APXvYqzf0h9hf5rTSvOLc63YQEFcPBL4hGQPEx2nK7D5fhBe36D3wXV0rcNvxEM6/Oc7sr+zZfbCL9Yq941njWf0Aqs=
-X-Received: by 2002:a2e:9bc1:: with SMTP id w1mr18305743ljj.136.1571174522283;
- Tue, 15 Oct 2019 14:22:02 -0700 (PDT)
+        id S2387541AbfJOWE0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Oct 2019 18:04:26 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:7786 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2387449AbfJOWE0 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 15 Oct 2019 18:04:26 -0400
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id x9FM4MVw010477
+        for <bpf@vger.kernel.org>; Tue, 15 Oct 2019 15:04:24 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=jjMnzXVW5jk4CavRtoymuxKo6oU/CkH0AIhB5qK9jLs=;
+ b=EFe+ah5EHM8/J5rw63C7+Rle0nODqXrnOXbPois458cTCQE3pzObQmsvgCAPi3n/oWM0
+ hm+xkjFIoj88vB/QIxTbSyT4YTKgnYCZScsaMu0F1B9ZDNMrR5Wz1weukUm+pJnewOPv
+ 5cxDafLUeyQcDUJ8ycW8sRbXjrPCUEDzyfs= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0089730.ppops.net with ESMTP id 2vnccab486-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 15 Oct 2019 15:04:24 -0700
+Received: from 2401:db00:30:6007:face:0:1:0 (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 15 Oct 2019 15:03:55 -0700
+Received: by dev101.prn2.facebook.com (Postfix, from userid 137359)
+        id 53C2A861987; Tue, 15 Oct 2019 15:03:54 -0700 (PDT)
+Smtp-Origin-Hostprefix: dev
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: dev101.prn2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: prn2c23
+Subject: [PATCH bpf-next 0/6] Fix, clean up, and revamp selftests/bpf Makefile
+Date:   Tue, 15 Oct 2019 15:03:46 -0700
+Message-ID: <20191015220352.435884-1-andriin@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-References: <20191011162124.52982-1-sdf@google.com> <CAADnVQLKPLXej_v7ymv3yJakoFLGeQwdZOJ5cZmp7xqOxfebqg@mail.gmail.com>
- <20191012003819.GK2096@mini-arch>
-In-Reply-To: <20191012003819.GK2096@mini-arch>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 15 Oct 2019 14:21:50 -0700
-Message-ID: <CAADnVQKuysEvFAX54+f0YPJ1+cgcRJbhrpVE7xmvLqu-ADrk+Q@mail.gmail.com>
-Subject: debug annotations for bpf progs. Was: [PATCH bpf-next 1/3] bpf:
- preserve command of the process that loaded the program
-To:     Stanislav Fomichev <sdf@fomichev.me>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Stanislav Fomichev <sdf@google.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
+ definitions=2019-10-15_08:2019-10-15,2019-10-15 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015 bulkscore=0
+ priorityscore=1501 lowpriorityscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 malwarescore=0 suspectscore=8 phishscore=0 impostorscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1908290000 definitions=main-1910150189
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 11, 2019 at 5:38 PM Stanislav Fomichev <sdf@fomichev.me> wrote:
->
-> On 10/11, Alexei Starovoitov wrote:
-> > On Fri, Oct 11, 2019 at 9:21 AM Stanislav Fomichev <sdf@google.com> wrote:
-> > >
-> > > Even though we have the pointer to user_struct and can recover
-> > > uid of the user who has created the program, it usually contains
-> > > 0 (root) which is not very informative. Let's store the comm of the
-> > > calling process and export it via bpf_prog_info. This should help
-> > > answer the question "which process loaded this particular program".
-> > >
-> > > Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> > > ---
-> > >  include/linux/bpf.h      | 1 +
-> > >  include/uapi/linux/bpf.h | 2 ++
-> > >  kernel/bpf/syscall.c     | 4 ++++
-> > >  3 files changed, 7 insertions(+)
-> > >
-> > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > > index 5b9d22338606..b03ea396afe5 100644
-> > > --- a/include/linux/bpf.h
-> > > +++ b/include/linux/bpf.h
-> > > @@ -421,6 +421,7 @@ struct bpf_prog_aux {
-> > >                 struct work_struct work;
-> > >                 struct rcu_head rcu;
-> > >         };
-> > > +       char created_by_comm[BPF_CREATED_COMM_LEN];
-> > >  };
-> > >
-> > >  struct bpf_array {
-> > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > > index a65c3b0c6935..4e883ecbba1e 100644
-> > > --- a/include/uapi/linux/bpf.h
-> > > +++ b/include/uapi/linux/bpf.h
-> > > @@ -326,6 +326,7 @@ enum bpf_attach_type {
-> > >  #define BPF_F_NUMA_NODE                (1U << 2)
-> > >
-> > >  #define BPF_OBJ_NAME_LEN 16U
-> > > +#define BPF_CREATED_COMM_LEN   16U
-> >
-> > Nack.
-> > 16 bytes is going to be useless.
-> > We found it the hard way with prog_name.
-> > If you want to embed additional debug information
-> > please use BTF for that.
-> BTF was my natural choice initially, but then I saw created_by_uid and
-> thought created_by_comm might have a chance :-)
->
-> To clarify, by BTF you mean creating some unused global variable
-> and use its name as the debugging info? Or there is some better way?
+This patch set extensively revamps selftests/bpf's Makefile to generalize test
+runner concept and apply it uniformly to test_maps and test_progs test
+runners, along with test_progs' few build "flavors", exercising various ways
+to build BPF programs.
 
-I was thinking about adding new section to .btf.ext with this extra data,
-but global variable is a better idea indeed.
-We'd need to standardize such variables names, so that
-bpftool can parse and print it while doing 'bpftool prog show'.
-We see more and more cases where services use more than
-one program in single .c file to accomplish their goals.
-Tying such debug info (like 'created_by_comm') to each program
-individually isn't quite right.
-In that sense global variables are better, since they cover the
-whole .c file.
-Beyond 'created_by_comm' there are others things that people
-will likely want to know.
-Like which version of llvm was used to compile this .o file.
-Which unix user name compiled it.
-The name of service/daemon that will be using this .o
-and so on.
-May be some standard prefix to such global variables will do?
-Like "bpftool prog show" can scan global data for
-"__annotate_#name" and print both name and string contents ?
-For folks who regularly ssh into servers to debug bpf progs
-that will help a lot.
-May be some annotations llvm can automatically add to .o.
-Thoughts?
+As we do that, we fix dependencies between various phases of test runners, and
+simplify some one-off rules and dependencies currently present in Makefile.
+test_progs' flavors are now built into root $(OUTPUT) directory and can be run
+without any extra steps right from there. E.g., test_progs-alu32 is built and
+is supposed to be run from $(OUTPUT). It will cd into alu32/ subdirectory to
+load correct set of BPF object files (which are different from the ones built
+for test_progs).
+
+Outline:
+- patch #1 teaches test_progs about flavor sub-directories;
+- patch #2 fixes one of CO-RE tests to not depend strictly on process name;
+- patch #3 changes test_maps's usage of map_tests/tests.h to be the same as
+  test_progs' one;
+- patch #4 adds convenient short `make test_progs`-like targets to build only
+  individual tests, if necessary;
+- patch #5 is a main patch in the series; it uses a bunch of make magic
+  (mainly $(call) and $(eval)) to define test runner "skeleton" and apply it
+  to 5 different test runners, lots more details in corresponding commit
+  description;
+- patch #6 does a bit of post-clean up for test_queue_map and test_stack_map
+  BPF programs.
+
+Andrii Nakryiko (6):
+  selftest/bpf: teach test_progs to cd into subdir
+  selftests/bpf: make CO-RE reloc test impartial to test_progs flavor
+  selftests/bpf: switch test_maps to test_progs' test.h format
+  selftests/bpf: add simple per-test targets to Makefile
+  selftests/bpf: replace test_progs and test_maps w/ general rule
+  selftests/bpf: move test_queue_stack_map.h into progs/ where it
+    belongs
+
+ tools/testing/selftests/bpf/.gitignore        |   6 +-
+ tools/testing/selftests/bpf/Makefile          | 344 ++++++++++--------
+ .../selftests/bpf/prog_tests/core_reloc.c     |   4 +-
+ .../selftests/bpf/progs/core_reloc_types.h    |   2 +-
+ .../bpf/progs/test_core_reloc_kernel.c        |   3 +-
+ .../bpf/{ => progs}/test_queue_stack_map.h    |   0
+ tools/testing/selftests/bpf/test_maps.c       |   8 +-
+ tools/testing/selftests/bpf/test_progs.c      |  33 +-
+ 8 files changed, 242 insertions(+), 158 deletions(-)
+ rename tools/testing/selftests/bpf/{ => progs}/test_queue_stack_map.h (100%)
+
+-- 
+2.17.1
+
