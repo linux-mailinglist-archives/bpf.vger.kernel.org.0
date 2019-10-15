@@ -2,121 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D3010D7F18
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2019 20:33:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71BFAD8125
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2019 22:35:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389156AbfJOSdo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Oct 2019 14:33:44 -0400
-Received: from dispatchb-us1.ppe-hosted.com ([148.163.129.53]:32930 "EHLO
-        dispatchb-us1.ppe-hosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727200AbfJOSdn (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 15 Oct 2019 14:33:43 -0400
-X-Virus-Scanned: Proofpoint Essentials engine
-Received: from webmail.solarflare.com (webmail.solarflare.com [12.187.104.26])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1-us2.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTPS id 27AB9680089;
-        Tue, 15 Oct 2019 18:33:42 +0000 (UTC)
-Received: from [10.17.20.203] (10.17.20.203) by ocex03.SolarFlarecom.com
- (10.20.40.36) with Microsoft SMTP Server (TLS) id 15.0.1395.4; Tue, 15 Oct
- 2019 11:33:36 -0700
-Subject: Re: [PATCH bpf-next v3 1/5] bpf: Support chain calling multiple BPF
- programs after each other
-To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        "John Fastabend" <john.fastabend@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-CC:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Marek Majkowski <marek@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        "David Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>
-References: <157046883502.2092443.146052429591277809.stgit@alrua-x1>
- <157046883614.2092443.9861796174814370924.stgit@alrua-x1>
- <20191007204234.p2bh6sul2uakpmnp@ast-mbp.dhcp.thefacebook.com>
- <87sgo3lkx9.fsf@toke.dk>
- <20191009015117.pldowv6n3k5p3ghr@ast-mbp.dhcp.thefacebook.com>
- <87o8yqjqg0.fsf@toke.dk>
- <20191010044156.2hno4sszysu3c35g@ast-mbp.dhcp.thefacebook.com>
- <87v9srijxa.fsf@toke.dk>
- <5da4ab712043c_25f42addb7c085b83b@john-XPS-13-9370.notmuch>
- <87eezfi2og.fsf@toke.dk>
- <f9d5f717-51fe-7d03-6348-dbaf0b9db434@solarflare.com>
- <87r23egdua.fsf@toke.dk>
-From:   Edward Cree <ecree@solarflare.com>
-Message-ID: <70142501-e2dd-1aed-992e-55acd5c30cfd@solarflare.com>
-Date:   Tue, 15 Oct 2019 19:33:35 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S1733223AbfJOUfl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Oct 2019 16:35:41 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:34488 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728737AbfJOUfk (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 15 Oct 2019 16:35:40 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x9FKSPex021349;
+        Tue, 15 Oct 2019 13:35:08 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=a7vQ8MR4cG6/KzIG5Q5Nzz2nUWEkFNLI8QgxDyh7cnU=;
+ b=HxUYUrfuWg/GDsP7d4Ln/mZ6202GafM1Kyh9YTQgfKPMqWFs3HCsUpjPK2blRJy5+A+M
+ +RNd/94I+mHlkS4ladOTip0mtfCM9G7Rp1r6euol+E/awOhdTpAI1nqOj7Xa+WP4475N
+ Bqy2DeY5EqeubisAjIZFebgoQg+5yCqaUBA= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by mx0a-00082601.pphosted.com with ESMTP id 2vna13ubee-8
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Tue, 15 Oct 2019 13:35:08 -0700
+Received: from prn-hub02.TheFacebook.com (2620:10d:c081:35::126) by
+ prn-hub01.TheFacebook.com (2620:10d:c081:35::125) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Tue, 15 Oct 2019 13:34:50 -0700
+Received: from NAM05-BY2-obe.outbound.protection.outlook.com (192.168.54.28)
+ by o365-in.thefacebook.com (192.168.16.26) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
+ via Frontend Transport; Tue, 15 Oct 2019 13:34:50 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UuIZ4S+sNyYm8mgKrBBJ9R75XNfNx5dipLDQH8ByYuCZwC5vYNXzX5nwdhxHv44ApZ8eCW/WpoAv3GV0v6MxOVNKVlfQ5GWwiByDutWYNWNX+V2sC1TAQAVd6h9pD1zbLEQylc74iMh+2meaZn4dmAX27w8IgkgyhiDyxA1f/61BGCqsBCY+WCHecBBEroXaUOotLkpsO33b6nmKq1CdXWv6VgA7LtFt2sNqmSSnnhh4k1R5g/kbB0JDEQzXBoXbpiHDSjyBrL0JRMd+5Zv3RHT1LWfzM4Ca+Of4kwkASSNVMcdSo+VUErjTmO+Bqces84OhcvOqAJV0hTsaCC84hA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=a7vQ8MR4cG6/KzIG5Q5Nzz2nUWEkFNLI8QgxDyh7cnU=;
+ b=lo1x3wgw4Xted5W7sZi9XB9d9A2Ux3sKSJDj4v2MV0gpfegaxMgMWcQPUcaAgN8tPI+2wnLOna9t9mi5HuGQjgctFAUslXyhLO9psYE2hyRTwPJkWBvVqryVhs9CJ4dbanu6Y27d1ctUgLXQHdjI6ak9Pn1CG3N8TryUgV8mH0Gedk/sMCZ0rM5N/x6pHs4VLoECFUGPkrDj0t7ZQ8S/fTN9sEHhAjwrCtMtp++z1NpQHy4nR8PokWQeC9AGvoZ0NKBWcNS/arFOWnESDSQpErh3DzHa8EwVzJtXkuvV7VFt/4sgPdPV/61kEb1R3G4bwacptyYCjiavSYFyDelLng==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=a7vQ8MR4cG6/KzIG5Q5Nzz2nUWEkFNLI8QgxDyh7cnU=;
+ b=hBurzq8EiM5ThF8GLDlZfno005eR3nvfUCi2/zwjhktEh4ij4qTuOvt431syFnRnOIan5753fRWB4N1cAlzYVZLs2wh1FpWcxGcMXSuLqPMRkQ7Zvko3QXSVUs7xKgShKdYBfEkrb+EJeQulgtz1eNsgNvGsMTMXyONk7yTv2LI=
+Received: from MN2PR15MB3213.namprd15.prod.outlook.com (20.179.21.76) by
+ MN2PR15MB3200.namprd15.prod.outlook.com (20.179.21.146) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2347.16; Tue, 15 Oct 2019 20:34:49 +0000
+Received: from MN2PR15MB3213.namprd15.prod.outlook.com
+ ([fe80::d5a4:a2a6:a805:6647]) by MN2PR15MB3213.namprd15.prod.outlook.com
+ ([fe80::d5a4:a2a6:a805:6647%7]) with mapi id 15.20.2347.023; Tue, 15 Oct 2019
+ 20:34:49 +0000
+From:   Martin Lau <kafai@fb.com>
+To:     Stanislav Fomichev <sdf@google.com>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>
+Subject: Re: [PATCH bpf-next 1/2] bpf: allow __sk_buff tstamp in
+ BPF_PROG_TEST_RUN
+Thread-Topic: [PATCH bpf-next 1/2] bpf: allow __sk_buff tstamp in
+ BPF_PROG_TEST_RUN
+Thread-Index: AQHVg4bLB4hf08bSXkSHgnnryd8qBadcKOGA
+Date:   Tue, 15 Oct 2019 20:34:49 +0000
+Message-ID: <20191015203439.ilp7kp63mfruuzpc@kafai-mbp.dhcp.thefacebook.com>
+References: <20191015183125.124413-1-sdf@google.com>
+In-Reply-To: <20191015183125.124413-1-sdf@google.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MW2PR2101CA0035.namprd21.prod.outlook.com
+ (2603:10b6:302:1::48) To MN2PR15MB3213.namprd15.prod.outlook.com
+ (2603:10b6:208:3d::12)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c090:200::2:e6c4]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: c38375a6-4372-4b1e-1677-08d751af1fd2
+x-ms-traffictypediagnostic: MN2PR15MB3200:
+x-microsoft-antispam-prvs: <MN2PR15MB3200CBCB218C6786F9912248D5930@MN2PR15MB3200.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4502;
+x-forefront-prvs: 01917B1794
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(39860400002)(346002)(366004)(136003)(376002)(396003)(189003)(199004)(386003)(6506007)(4326008)(4744005)(14454004)(256004)(102836004)(25786009)(478600001)(71200400001)(52116002)(1076003)(66476007)(76176011)(66446008)(66946007)(305945005)(64756008)(66556008)(99286004)(54906003)(229853002)(7736002)(6916009)(86362001)(9686003)(6512007)(11346002)(6436002)(6116002)(46003)(2906002)(186003)(486006)(476003)(6246003)(71190400001)(6486002)(8936002)(5660300002)(81166006)(81156014)(8676002)(316002)(446003);DIR:OUT;SFP:1102;SCL:1;SRVR:MN2PR15MB3200;H:MN2PR15MB3213.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: blwPvgXENbds19ZDqIrc7hosxHRwoFsuOAmCqT6cz1hLSUGR6NteSoyiLHbxM9zjfbGrhyQtXyTbjdXwK81gvkyzJq3csCmxULGcUsjM4rJnoZShhPuYkN8pI926zJ3S+gXNOHXG+PyNdrJpg19QSvZxXiO/thWHV37GFI57zSWaZSwJPScxlgpEHrrMaYuJ0yYubBri/jhX1cS3oxjbDT7KVl6vwKEjAOprq7cSPdsdA3cwbs8GCnyutnQ6n+mExSptM/KcNg2e3umCj7zn18sEvb9nu0UHkg6r9eyzZViisd3pXlUaYqZ3Ey6Yo+NIH47BAsy6gBIVWZMJGF27q0vvTqAAOyFYvPPqK9p0AqhmG8P/KdkvHrw47WmpTbMzw6s20OLkUgvnZMHoqVHuRt8SViYNbXOzNyyKrCVarpE=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <D9F40777E9FE8B44BE927DD7412C632E@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <87r23egdua.fsf@toke.dk>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Content-Language: en-GB
-X-Originating-IP: [10.17.20.203]
-X-TM-AS-Product-Ver: SMEX-12.5.0.1300-8.5.1010-24978.005
-X-TM-AS-Result: No-0.957600-4.000000-10
-X-TMASE-MatchedRID: eVEkOcJu0F7mLzc6AOD8DfHkpkyUphL93TijyM9Pm06NIyHZwe1QFtGV
-        QrnZJqIeasiy2Gq55dNu8Fu5ca3VaWiqvF73selK4qCB2ZT6yAz4h+uI7dxXxE+86maMM3aSxM4
-        LnHemWNicsoSgKGmgXwsomT4JOOOJhEHl6wFFv6eAO0kpgKezRAILzOoe9wba4ZmC0TPZtohibQ
-        Tt34yFor8sWxR09nTRivZDYfXQrkr/XoXWj+sk7m6HurDH4PpPUb4EdIZGxuBRD5heJnxuK5/DV
-        afvDf6BfsIfixHvnM+IvG1appPoNAhU4yeqg71ukJi1wdeHFtrCWn3gcatca8sh83hywc54nP9s
-        HBbfaKR06g90LjJRaOdzbjlZ7erCkfRhdidsajODGx/OQ1GV8t0H8LFZNFG7CKFCmhdu5cW14Ak
-        etjaBvVZYgdbj4xotNQC5FVraiU9hyIlyPZE5A+vY9CuBUVAhQ2JUiSK5OHeG+T/pjmHIzorTPv
-        /DTrrw+TiDwGH5+omigEHy7J4S6ylkreA5r24aYnCi5itk3iprD5+Qup1qU56oP1a0mRIj
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--0.957600-4.000000
-X-TMASE-Version: SMEX-12.5.0.1300-8.5.1010-24978.005
-X-MDID: 1571164423-RtGudYRNUMs8
+X-MS-Exchange-CrossTenant-Network-Message-Id: c38375a6-4372-4b1e-1677-08d751af1fd2
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Oct 2019 20:34:49.3402
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 1OftrSGvo0oLVWzUCRu+Fb4NoANTH3sVw8gTkR0b7tvIELmlexwFyFHkwfMPrNQ/
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB3200
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
+ definitions=2019-10-15_06:2019-10-15,2019-10-15 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0
+ malwarescore=0 mlxlogscore=833 priorityscore=1501 mlxscore=0 bulkscore=0
+ phishscore=0 suspectscore=0 clxscore=1015 impostorscore=0 adultscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1908290000 definitions=main-1910150175
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 15/10/2019 17:42, Toke Høiland-Jørgensen wrote:
-> Edward Cree <ecree@solarflare.com> writes:
->> On 14/10/2019 19:48, Toke Høiland-Jørgensen wrote:
->>> So that will end up with a single monolithic BPF program being loaded
->>> (from the kernel PoV), right? That won't do; we want to be able to go
->>> back to the component programs, and manipulate them as separate kernel
->>> objects.
->> Why's that? (Since it also applies to the static-linking PoC I'm
->> putting together.) What do you gain by having the components be
->> kernel-visible?
-> Because then userspace will have to keep state to be able to answer
-> questions like "show me the list of programs that are currently loaded
-> (and their call chain)", or do operations like "insert this program into
-> the call chain at position X".
-Userspace keeps state for stuff all the time.  We call them "daemons" ;)
-Now you might have arguments for why putting a given piece of state in
- userspace is a bad idea — there's a reason why not everything is a
- microkernel — but those arguments need to be made.
+On Tue, Oct 15, 2019 at 11:31:24AM -0700, Stanislav Fomichev wrote:
+> It's useful for implementing EDT related tests (set tstamp, run the
+> test, see how the tstamp is changed or observe some other parameter).
+>=20
+> Note that bpf_ktime_get_ns() helper is using monotonic clock, so for
+> the BPF programs that compare tstamp against it, tstamp should be
+> derived from clock_gettime(CLOCK_MONOTONIC, ...).
+Please provide a cover letter next time.  It makes ack-all possible.
 
-> We already keep all this state in the kernel,
-The kernel keeps the state of "current (monolithic) BPF program loaded
- (against each hook)".  Prior to this patch series, the kernel does
- *not* keep any state on what that BPF program was made of (except in
- the sense of BTF debuginfos, which a linker could combine appropriately).
-
-So if we _don't_ add your chained-programs functionality into the kernel,
- and then _do_ implement userspace linking, then there isn't any
- duplicated functionality or even duplicated state — the userland state
- is "what are my components and what's the linker invocation that glues
- them together", the kernel state is "here is one monolithic BPF blob,
- along with a BTF blob to debug it".  The kernel knows nothing of the
- former, and userspace doesn't store (but knows how to recreate) the
- latter.
-
-(That said, proper dynamic linking is better than static linking OR chain
- calls, because it gives us the full flexibility of linking while giving
- you your 'subprogs as kernel objects & kernel state'.  But I think we'll
- need to prototype things with static linking first so that we can be
- sure of the linker semantics we want, before we try to put a new dynamic
- linker in the kernel.)
-
--Ed
+Acked-by: Martin KaFai Lau <kafai@fb.com>
