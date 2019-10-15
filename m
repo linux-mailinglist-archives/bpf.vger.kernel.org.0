@@ -2,105 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E6CCFD8138
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2019 22:44:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B5D0D8174
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2019 23:04:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388321AbfJOUoL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Oct 2019 16:44:11 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:55972 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727673AbfJOUoL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Oct 2019 16:44:11 -0400
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 6B1FD10DCCA5;
-        Tue, 15 Oct 2019 20:44:10 +0000 (UTC)
-Received: from krava (ovpn-204-61.brq.redhat.com [10.40.204.61])
-        by smtp.corp.redhat.com (Postfix) with SMTP id D45D4101E68F;
-        Tue, 15 Oct 2019 20:44:07 +0000 (UTC)
-Date:   Tue, 15 Oct 2019 22:44:07 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>, Daniel Xu <dxu@dxuuu.xyz>
-Subject: Re: [RFC] libbpf: Allow to emit all dependent definitions
-Message-ID: <20191015204407.GA16674@krava>
-References: <20191015130117.32292-1-jolsa@kernel.org>
- <CAEf4BzYdJ-hPHVehZriS_synLWtgad9wx_eoN6-JDBUUHFjfgQ@mail.gmail.com>
+        id S1726706AbfJOVEy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Oct 2019 17:04:54 -0400
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:45347 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726665AbfJOVEy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Oct 2019 17:04:54 -0400
+Received: by mail-lj1-f195.google.com with SMTP id q64so21701365ljb.12;
+        Tue, 15 Oct 2019 14:04:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mMBin2EGtKSHZbpPVK+JW5J0CFqnupXSzgXwGSycYCg=;
+        b=g4tiStYdzxhvLJMQJJkXMZ03jvVudYSRL31JVqNXBqUxLCCC1KYEnThdbR5opx+Llr
+         TO+hhXXJod7TicgMuR4rglQ+1XdbbV8ZLp5BueqQOBm6yZxJC5NTLrubKUQg4UpuCo5o
+         8hRuVYLRKsy8cvl08Q/gWCHNDrTXh5fClS5uIe9dIydDJJKVoZiV0mtXYAD1pHb1tw+T
+         HOmWn+llpU6IWb17qHeiyEA5FLfcRMKucQlkptg2Mfr3swyswGYNOyi1IZgfutdye2rM
+         B9sKZEIqGwi9nWsa+4gW3KWmgjpazdViQJegrgXyllPawoQR8MwMS81V/8rOn9ASYtdu
+         c+kw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mMBin2EGtKSHZbpPVK+JW5J0CFqnupXSzgXwGSycYCg=;
+        b=P0MyXDDC20WFw5UheUPobKf7GyHvB3MGuOIZZvNSefkhtd47iDPXalZz2S3KJ/EvDB
+         PZrLHSUh0JTJJdP5yEuRtNRD3+NkcGwIB3OvobS3OGiM8ufDa4b+y3QlhAYJ3lVKo+wy
+         yxt+QRB6lMKGeRPJzoi0FwyIBCwNt1GtRyPgsg3MBI6OVZ5pwDZGZFZfciL88iwirLm9
+         Tu7Mgui2iB4aa7BjrLItVXiFj1jpDRB5gNQsHGxRHCpaUuXTvSytPLCiLwDLO2QqGcuM
+         qixsH5YC7HVP95o6X3r8/mmWT64h72E38YbW2xdu3U9gF8roF1J3mYqcJHLViPUmHOdc
+         I/2A==
+X-Gm-Message-State: APjAAAVTRR6s6HYT6c6MDdAF7rUoP3aTrGdMLl9GCapr3xR+3mTRVtYR
+        n3WrmVlj4wwyX/6NGX0OTUp4TKEMu8R5NIgAIqw=
+X-Google-Smtp-Source: APXvYqyKzjQVj57ZbrsbnWyBxAXURB3UtzBd39o1PwxM6oJmlYyxNnkKYqRHha7SKEoCCpKN9iKzwEjft1BCrg8uPhQ=
+X-Received: by 2002:a2e:9b12:: with SMTP id u18mr24349207lji.142.1571173491828;
+ Tue, 15 Oct 2019 14:04:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzYdJ-hPHVehZriS_synLWtgad9wx_eoN6-JDBUUHFjfgQ@mail.gmail.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.6.2 (mx1.redhat.com [10.5.110.64]); Tue, 15 Oct 2019 20:44:10 +0000 (UTC)
+References: <20191014122833.64908-1-houtao1@huawei.com> <20191014122833.64908-2-houtao1@huawei.com>
+In-Reply-To: <20191014122833.64908-2-houtao1@huawei.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 15 Oct 2019 14:04:40 -0700
+Message-ID: <CAADnVQ+UJK41VL-epYGxrRzqL_UsC+X=J8EXEn2i8P+TPGA_jg@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/2] block: add support for redirecting IO completion
+ through eBPF
+To:     Hou Tao <houtao1@huawei.com>
+Cc:     linux-block@vger.kernel.org, bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Alexei Starovoitov <ast@kernel.org>, hare@suse.com,
+        osandov@fb.com, ming.lei@redhat.com, damien.lemoal@wdc.com,
+        bvanassche <bvanassche@acm.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 15, 2019 at 09:22:35AM -0700, Andrii Nakryiko wrote:
-> On Tue, Oct 15, 2019 at 6:03 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> >
-> > Currently the bpf dumper does not emit definitions
-> > of pointers to structs. It only emits forward type
-> > declarations.
-> >
-> > Having 2 structs like:
-> >
-> >    struct B {
-> >      int b;
-> >    };
-> >
-> >    struct A {
-> >      struct B *ptr;
-> >    };
-> >
-> > the call to btf_dump__dump_type(id = struct A) dumps:
-> >
-> >    struct B;
-> >    struct A {
-> >      struct B *ptr;
-> >    };
-> >
-> > It'd ease up bpftrace code if we could dump definitions
-> > of all dependent types, like:
-> >
-> >    struct B {
-> >      int b;
-> >    };
-> >    struct A {
-> >      struct B *ptr;
-> >    };
-> >
-> > So we could dereference all the pointers easily, instead
-> > of searching for each access member's type and dumping it
-> > separately.
-> >
-> > Adding struct btf_dump_opts::emit_all to do that.
-> >
-> 
-> Hey Jiri,
-> 
-> Yeah, Daniel Xu mentioned that this would be useful. I haven't thought
-> this through very well yet, but I suspect that this simple change
-> might not be enough to make this work. There are cases where you are
-> not yet allowed to emit definition and have to emit
-> forward-declaration first. I suggest trying to use this on vmlinux BTF
-> and see if resulting header files still compiles with both Clang and
-> GCC. Do you mind checking?
+On Mon, Oct 14, 2019 at 5:21 AM Hou Tao <houtao1@huawei.com> wrote:
+>
+> For network stack, RPS, namely Receive Packet Steering, is used to
+> distribute network protocol processing from hardware-interrupted CPU
+> to specific CPUs and alleviating soft-irq load of the interrupted CPU.
+>
+> For block layer, soft-irq (for single queue device) or hard-irq
+> (for multiple queue device) is used to handle IO completion, so
+> RPS will be useful when the soft-irq load or the hard-irq load
+> of a specific CPU is too high, or a specific CPU set is required
+> to handle IO completion.
+>
+> Instead of setting the CPU set used for handling IO completion
+> through sysfs or procfs, we can attach an eBPF program to the
+> request-queue, provide some useful info (e.g., the CPU
+> which submits the request) to the program, and let the program
+> decides the proper CPU for IO completion handling.
+>
+> Signed-off-by: Hou Tao <houtao1@huawei.com>
+...
+>
+> +       rcu_read_lock();
+> +       prog = rcu_dereference_protected(q->prog, 1);
+> +       if (prog)
+> +               bpf_ccpu = BPF_PROG_RUN(q->prog, NULL);
+> +       rcu_read_unlock();
+> +
+>         cpu = get_cpu();
+> -       if (!test_bit(QUEUE_FLAG_SAME_FORCE, &q->queue_flags))
+> -               shared = cpus_share_cache(cpu, ctx->cpu);
+> +       if (bpf_ccpu < 0 || !cpu_online(bpf_ccpu)) {
+> +               ccpu = ctx->cpu;
+> +               if (!test_bit(QUEUE_FLAG_SAME_FORCE, &q->queue_flags))
+> +                       shared = cpus_share_cache(cpu, ctx->cpu);
+> +       } else
+> +               ccpu = bpf_ccpu;
+>
+> -       if (cpu != ctx->cpu && !shared && cpu_online(ctx->cpu)) {
+> +       if (cpu != ccpu && !shared && cpu_online(ccpu)) {
+>                 rq->csd.func = __blk_mq_complete_request_remote;
+>                 rq->csd.info = rq;
+>                 rq->csd.flags = 0;
+> -               smp_call_function_single_async(ctx->cpu, &rq->csd);
+> +               smp_call_function_single_async(ccpu, &rq->csd);
 
-agh right, my test fails for vmlinux BTF
+Interesting idea.
+Not sure whether such programability makes sense from
+block layer point of view.
 
-> 
-> But also, as we learned over last few months, just adding extra field
-> to an opts struct is not backwards-compatible, so we'll need to add
-> new API and follow the pattern that we used for
-> bpf_object__open_{file,mem).
-
-will check, thanks
-jirka
+From bpf side having a program with NULL input context is
+a bit odd. We never had such things in the past, so this patchset
+won't work as-is.
+Also no-input means that the program choices are quite limited.
+Other than round robin and random I cannot come up with other
+cpu selection ideas.
+I suggest to do writable tracepoint here instead.
+Take a look at trace_nbd_send_request.
+BPF prog can write into 'request'.
+For your use case it will be able to write into 'bpf_ccpu' local variable.
+If you keep it as raw tracepoint and don't add the actual tracepoint
+with TP_STRUCT__entry and TP_fast_assign then it won't be abi
+and you can change it later or remove it altogether.
