@@ -2,34 +2,34 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A226D832A
-	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2019 00:04:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA4F2D832D
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2019 00:04:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387541AbfJOWE0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Oct 2019 18:04:26 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:7786 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2387449AbfJOWE0 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 15 Oct 2019 18:04:26 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id x9FM4MVw010477
+        id S1733261AbfJOWE3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Oct 2019 18:04:29 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:18680 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2387411AbfJOWEZ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 15 Oct 2019 18:04:25 -0400
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x9FM49D8024848
         for <bpf@vger.kernel.org>; Tue, 15 Oct 2019 15:04:24 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=facebook;
- bh=jjMnzXVW5jk4CavRtoymuxKo6oU/CkH0AIhB5qK9jLs=;
- b=EFe+ah5EHM8/J5rw63C7+Rle0nODqXrnOXbPois458cTCQE3pzObQmsvgCAPi3n/oWM0
- hm+xkjFIoj88vB/QIxTbSyT4YTKgnYCZScsaMu0F1B9ZDNMrR5Wz1weukUm+pJnewOPv
- 5cxDafLUeyQcDUJ8ycW8sRbXjrPCUEDzyfs= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0089730.ppops.net with ESMTP id 2vnccab486-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+ : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=facebook; bh=yyfctYuvmYXkots3Jg3Z8Cn8OulDY1k0HKGvHoC1UtA=;
+ b=cRmxh2h++fgqVdIO4OTRF253NWfsXM/l9Q8lWLVVio5TQw2+9VrQbUv4ZsjeKPNZsTib
+ cRq9NwFPQjReOrtMHYgU9OQeDbm80+QthLYtWfOW142bf+yPtZmQpsPnQUVSuc8CrSOf
+ BQij5vfHoO+TjmGJzZpN2Q82BZKm56hwixY= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by mx0a-00082601.pphosted.com with ESMTP id 2vmtajfgte-13
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
         for <bpf@vger.kernel.org>; Tue, 15 Oct 2019 15:04:24 -0700
-Received: from 2401:db00:30:6007:face:0:1:0 (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 15 Oct 2019 15:03:55 -0700
+Received: from 2401:db00:12:909f:face:0:3:0 (2620:10d:c081:10::13) by
+ mail.thefacebook.com (2620:10d:c081:35::130) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
+ Tue, 15 Oct 2019 15:03:58 -0700
 Received: by dev101.prn2.facebook.com (Postfix, from userid 137359)
-        id 53C2A861987; Tue, 15 Oct 2019 15:03:54 -0700 (PDT)
+        id 5D14D861987; Tue, 15 Oct 2019 15:03:56 -0700 (PDT)
 Smtp-Origin-Hostprefix: dev
 From:   Andrii Nakryiko <andriin@fb.com>
 Smtp-Origin-Hostname: dev101.prn2.facebook.com
@@ -38,19 +38,21 @@ To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
 CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
         Andrii Nakryiko <andriin@fb.com>
 Smtp-Origin-Cluster: prn2c23
-Subject: [PATCH bpf-next 0/6] Fix, clean up, and revamp selftests/bpf Makefile
-Date:   Tue, 15 Oct 2019 15:03:46 -0700
-Message-ID: <20191015220352.435884-1-andriin@fb.com>
+Subject: [PATCH bpf-next 1/6] selftest/bpf: teach test_progs to cd into subdir
+Date:   Tue, 15 Oct 2019 15:03:47 -0700
+Message-ID: <20191015220352.435884-2-andriin@fb.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20191015220352.435884-1-andriin@fb.com>
+References: <20191015220352.435884-1-andriin@fb.com>
 X-FB-Internal: Safe
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
  definitions=2019-10-15_08:2019-10-15,2019-10-15 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015 bulkscore=0
- priorityscore=1501 lowpriorityscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 malwarescore=0 suspectscore=8 phishscore=0 impostorscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0 mlxscore=0
+ mlxlogscore=999 suspectscore=8 bulkscore=0 clxscore=1015 impostorscore=0
+ malwarescore=0 spamscore=0 lowpriorityscore=0 phishscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-1908290000 definitions=main-1910150189
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
@@ -58,53 +60,80 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch set extensively revamps selftests/bpf's Makefile to generalize test
-runner concept and apply it uniformly to test_maps and test_progs test
-runners, along with test_progs' few build "flavors", exercising various ways
-to build BPF programs.
+We are building a bunch of "flavors" of test_progs, e.g., w/ alu32 flag
+for Clang when building BPF object. test_progs setup is relying on
+having all the BPF object files and extra resources to be available in
+current working directory, though. But we actually build all these files
+into a separate sub-directory. Next set of patches establishes
+convention of naming "flavored" test_progs (and test runner binaries in
+general) as test_progs-flavor (e.g., test_progs-alu32), for each such
+extra flavor. This patch teaches test_progs binary to automatically
+detect its own extra flavor based on its argv[0], and if present, to
+change current directory to a flavor-specific subdirectory.
 
-As we do that, we fix dependencies between various phases of test runners, and
-simplify some one-off rules and dependencies currently present in Makefile.
-test_progs' flavors are now built into root $(OUTPUT) directory and can be run
-without any extra steps right from there. E.g., test_progs-alu32 is built and
-is supposed to be run from $(OUTPUT). It will cd into alu32/ subdirectory to
-load correct set of BPF object files (which are different from the ones built
-for test_progs).
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+---
+ tools/testing/selftests/bpf/test_progs.c | 33 +++++++++++++++++++++++-
+ 1 file changed, 32 insertions(+), 1 deletion(-)
 
-Outline:
-- patch #1 teaches test_progs about flavor sub-directories;
-- patch #2 fixes one of CO-RE tests to not depend strictly on process name;
-- patch #3 changes test_maps's usage of map_tests/tests.h to be the same as
-  test_progs' one;
-- patch #4 adds convenient short `make test_progs`-like targets to build only
-  individual tests, if necessary;
-- patch #5 is a main patch in the series; it uses a bunch of make magic
-  (mainly $(call) and $(eval)) to define test runner "skeleton" and apply it
-  to 5 different test runners, lots more details in corresponding commit
-  description;
-- patch #6 does a bit of post-clean up for test_queue_map and test_stack_map
-  BPF programs.
-
-Andrii Nakryiko (6):
-  selftest/bpf: teach test_progs to cd into subdir
-  selftests/bpf: make CO-RE reloc test impartial to test_progs flavor
-  selftests/bpf: switch test_maps to test_progs' test.h format
-  selftests/bpf: add simple per-test targets to Makefile
-  selftests/bpf: replace test_progs and test_maps w/ general rule
-  selftests/bpf: move test_queue_stack_map.h into progs/ where it
-    belongs
-
- tools/testing/selftests/bpf/.gitignore        |   6 +-
- tools/testing/selftests/bpf/Makefile          | 344 ++++++++++--------
- .../selftests/bpf/prog_tests/core_reloc.c     |   4 +-
- .../selftests/bpf/progs/core_reloc_types.h    |   2 +-
- .../bpf/progs/test_core_reloc_kernel.c        |   3 +-
- .../bpf/{ => progs}/test_queue_stack_map.h    |   0
- tools/testing/selftests/bpf/test_maps.c       |   8 +-
- tools/testing/selftests/bpf/test_progs.c      |  33 +-
- 8 files changed, 242 insertions(+), 158 deletions(-)
- rename tools/testing/selftests/bpf/{ => progs}/test_queue_stack_map.h (100%)
-
+diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
+index af75a1c7a458..c7e52f4194e2 100644
+--- a/tools/testing/selftests/bpf/test_progs.c
++++ b/tools/testing/selftests/bpf/test_progs.c
+@@ -306,7 +306,7 @@ void *spin_lock_thread(void *arg)
+ }
+ 
+ /* extern declarations for test funcs */
+-#define DEFINE_TEST(name) extern void test_##name();
++#define DEFINE_TEST(name) extern void test_##name(void);
+ #include <prog_tests/tests.h>
+ #undef DEFINE_TEST
+ 
+@@ -518,6 +518,33 @@ static void stdio_restore(void)
+ #endif
+ }
+ 
++/*
++ * Determine if test_progs is running as a "flavored" test runner and switch
++ * into corresponding sub-directory to load correct BPF objects.
++ *
++ * This is done by looking at executable name. If it contains "-flavor"
++ * suffix, then we are running as a flavored test runner.
++ */
++int cd_flavor_subdir(const char *exec_name)
++{
++	/* General form of argv[0] passed here is:
++	 * some/path/to/test_progs[-flavor], where -flavor part is optional.
++	 * First cut out "test_progs[-flavor]" part, then extract "flavor"
++	 * part, if it's there.
++	 */
++	const char *flavor = strrchr(exec_name, '/');
++
++	if (!flavor)
++		return 0;
++	flavor++;
++	flavor = strrchr(flavor, '-');
++	if (!flavor)
++		return 0;
++	flavor++;
++	printf("Switching to flavor '%s' subdirectory...\n", flavor);
++	return chdir(flavor);
++}
++
+ int main(int argc, char **argv)
+ {
+ 	static const struct argp argp = {
+@@ -531,6 +558,10 @@ int main(int argc, char **argv)
+ 	if (err)
+ 		return err;
+ 
++	err = cd_flavor_subdir(argv[0]);
++	if (err)
++		return err;
++
+ 	libbpf_set_print(libbpf_print_fn);
+ 
+ 	srand(time(NULL));
 -- 
 2.17.1
 
