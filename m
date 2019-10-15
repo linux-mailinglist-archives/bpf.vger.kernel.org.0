@@ -2,115 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B4304D6ECB
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2019 07:33:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A0F1D7105
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2019 10:30:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728698AbfJOFcW convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 15 Oct 2019 01:32:22 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:42254 "EHLO
-        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728651AbfJOFcW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Oct 2019 01:32:22 -0400
-Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tip-bot2@linutronix.de>)
-        id 1iKFRL-0000Qr-OZ; Tue, 15 Oct 2019 07:32:11 +0200
-Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 53CD81C06CD;
-        Tue, 15 Oct 2019 07:31:49 +0200 (CEST)
-Date:   Tue, 15 Oct 2019 05:31:49 -0000
-From:   tip-bot2 for =?utf-8?q?Bj=C3=B6rn_T=C3=B6pel?= 
-        <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] perf tools: Make usage of test_attr__* optional for
- perf-sys.h
-Cc:     =?utf-8?q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn.topel@intel.com>,
-        Song Liu <songliubraving@fb.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20191001113307.27796-2-bjorn.topel@gmail.com>
-References: <20191001113307.27796-2-bjorn.topel@gmail.com>
+        id S1728917AbfJOIac (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Oct 2019 04:30:32 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:3758 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726358AbfJOIab (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Oct 2019 04:30:31 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 88D9A3F44917A8B0B694;
+        Tue, 15 Oct 2019 16:30:28 +0800 (CST)
+Received: from [127.0.0.1] (10.177.251.225) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.439.0; Tue, 15 Oct 2019
+ 16:30:18 +0800
+To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <jolsa@redhat.com>, <namhyung@kernel.org>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <kafai@fb.com>, <songliubraving@fb.com>,
+        <yhs@fb.com>, <ilubashe@akamai.com>, <ak@linux.intel.com>,
+        <yeyunfeng@huawei.com>, <kan.liang@linux.intel.com>,
+        <alexey.budankov@linux.intel.com>
+From:   Yunfeng Ye <yeyunfeng@huawei.com>
+CC:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <hushiyuan@huawei.com>,
+        <linfeilong@huawei.com>
+Subject: [PATCH] perf tools: fix resource leak of closedir() on the error
+ paths
+Message-ID: <cd5f7cd2-b80d-6add-20a1-32f4f43e0744@huawei.com>
+Date:   Tue, 15 Oct 2019 16:30:08 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Message-ID: <157111750919.12254.12122425573168365300.tip-bot2@tip-bot2>
-X-Mailer: tip-git-log-daemon
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8BIT
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.177.251.225]
+X-CFilter-Loop: Reflected
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The following commit has been merged into the perf/core branch of tip:
+Both build_mem_topology() and rm_rf_depth_pat() have resource leak of
+closedir() on the error paths.
 
-Commit-ID:     06f84d1989b7e58d56fa2e448664585749d41221
-Gitweb:        https://git.kernel.org/tip/06f84d1989b7e58d56fa2e448664585749d41221
-Author:        Björn Töpel <bjorn.topel@intel.com>
-AuthorDate:    Tue, 01 Oct 2019 13:33:06 +02:00
-Committer:     Arnaldo Carvalho de Melo <acme@redhat.com>
-CommitterDate: Mon, 07 Oct 2019 12:22:17 -03:00
+Fix this by calling closedir() before function returns.
 
-perf tools: Make usage of test_attr__* optional for perf-sys.h
-
-For users of perf-sys.h outside perf, e.g. samples/bpf/bpf_load.c, it's
-convenient not to depend on test_attr__*.
-
-After commit 91854f9a077e ("perf tools: Move everything related to
-sys_perf_event_open() to perf-sys.h"), all users of perf-sys.h will
-depend on test_attr__enabled and test_attr__open.
-
-This commit enables a user to define HAVE_ATTR_TEST to zero in order
-to omit the test dependency.
-
-Fixes: 91854f9a077e ("perf tools: Move everything related to sys_perf_event_open() to perf-sys.h")
-Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
-Acked-by: Song Liu <songliubraving@fb.com>
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: bpf@vger.kernel.org
-Cc: netdev@vger.kernel.org
-Link: http://lore.kernel.org/lkml/20191001113307.27796-2-bjorn.topel@gmail.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Fixes: e2091cedd51b ("perf tools: Add MEM_TOPOLOGY feature to perf data file")
+Fixes: cdb6b0235f17 ("perf tools: Add pattern name checking to rm_rf")
+Signed-off-by: Yunfeng Ye <yeyunfeng@huawei.com>
 ---
- tools/perf/perf-sys.h | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ tools/perf/util/header.c | 4 +++-
+ tools/perf/util/util.c   | 6 ++++--
+ 2 files changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/tools/perf/perf-sys.h b/tools/perf/perf-sys.h
-index 63e4349..15e458e 100644
---- a/tools/perf/perf-sys.h
-+++ b/tools/perf/perf-sys.h
-@@ -15,7 +15,9 @@ void test_attr__init(void);
- void test_attr__open(struct perf_event_attr *attr, pid_t pid, int cpu,
- 		     int fd, int group_fd, unsigned long flags);
- 
--#define HAVE_ATTR_TEST
-+#ifndef HAVE_ATTR_TEST
-+#define HAVE_ATTR_TEST 1
-+#endif
- 
- static inline int
- sys_perf_event_open(struct perf_event_attr *attr,
-@@ -27,7 +29,7 @@ sys_perf_event_open(struct perf_event_attr *attr,
- 	fd = syscall(__NR_perf_event_open, attr, pid, cpu,
- 		     group_fd, flags);
- 
--#ifdef HAVE_ATTR_TEST
-+#if HAVE_ATTR_TEST
- 	if (unlikely(test_attr__enabled))
- 		test_attr__open(attr, pid, cpu, fd, group_fd, flags);
- #endif
+diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
+index 86d9396..becc2d1 100644
+--- a/tools/perf/util/header.c
++++ b/tools/perf/util/header.c
+@@ -1296,8 +1296,10 @@ static int build_mem_topology(struct memory_node *nodes, u64 size, u64 *cntp)
+ 			continue;
+
+ 		if (WARN_ONCE(cnt >= size,
+-			      "failed to write MEM_TOPOLOGY, way too many nodes\n"))
++			"failed to write MEM_TOPOLOGY, way too many nodes\n")) {
++			closedir(dir);
+ 			return -1;
++		}
+
+ 		ret = memory_node__read(&nodes[cnt++], idx);
+ 	}
+diff --git a/tools/perf/util/util.c b/tools/perf/util/util.c
+index 5eda6e1..ae56c76 100644
+--- a/tools/perf/util/util.c
++++ b/tools/perf/util/util.c
+@@ -154,8 +154,10 @@ static int rm_rf_depth_pat(const char *path, int depth, const char **pat)
+ 		if (!strcmp(d->d_name, ".") || !strcmp(d->d_name, ".."))
+ 			continue;
+
+-		if (!match_pat(d->d_name, pat))
+-			return -2;
++		if (!match_pat(d->d_name, pat)) {
++			ret =  -2;
++			break;
++		}
+
+ 		scnprintf(namebuf, sizeof(namebuf), "%s/%s",
+ 			  path, d->d_name);
+-- 
+2.7.4.huawei.3
+
