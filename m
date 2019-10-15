@@ -2,127 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B5D0D8174
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2019 23:04:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1258ED820E
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2019 23:22:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726706AbfJOVEy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Oct 2019 17:04:54 -0400
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:45347 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726665AbfJOVEy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Oct 2019 17:04:54 -0400
-Received: by mail-lj1-f195.google.com with SMTP id q64so21701365ljb.12;
-        Tue, 15 Oct 2019 14:04:52 -0700 (PDT)
+        id S1727287AbfJOVWF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Oct 2019 17:22:05 -0400
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:42300 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726480AbfJOVWF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Oct 2019 17:22:05 -0400
+Received: by mail-lj1-f194.google.com with SMTP id y23so21734953lje.9;
+        Tue, 15 Oct 2019 14:22:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=mMBin2EGtKSHZbpPVK+JW5J0CFqnupXSzgXwGSycYCg=;
-        b=g4tiStYdzxhvLJMQJJkXMZ03jvVudYSRL31JVqNXBqUxLCCC1KYEnThdbR5opx+Llr
-         TO+hhXXJod7TicgMuR4rglQ+1XdbbV8ZLp5BueqQOBm6yZxJC5NTLrubKUQg4UpuCo5o
-         8hRuVYLRKsy8cvl08Q/gWCHNDrTXh5fClS5uIe9dIydDJJKVoZiV0mtXYAD1pHb1tw+T
-         HOmWn+llpU6IWb17qHeiyEA5FLfcRMKucQlkptg2Mfr3swyswGYNOyi1IZgfutdye2rM
-         B9sKZEIqGwi9nWsa+4gW3KWmgjpazdViQJegrgXyllPawoQR8MwMS81V/8rOn9ASYtdu
-         c+kw==
+        bh=Ii9vueLaDUep6/QZRi93XICeUHKX9eVAhqWMTcqPbY4=;
+        b=IYGWViEXQODiRiHLJyVtOCJ3jTj9FJ48HkHVJCt7rqKSRt9u5u+SEMhC3sUsq2gAcX
+         6cl+uyCvC/98Z/AapsltFl/tMj4TH+w9dPJg1ODAJH5W1enFNefZ6/Dl648FJ3wyE1+J
+         Vm9plAfYjH/tAmJ/bXFm79B40tvUpsZjsiKU9fjNcKeggo9Gd6YcznFIM2CVQ6zri8zv
+         qS2ZlsTZEUud0KGXkPQtnG4BF5FIFB2BggjPephHpFaEhTaLfDwtg+WaSgGQeDLWDVWQ
+         gCJ7dJUN3QZZZwImXE6TtBjhLskf9tbqNdiReYBQdaA/9NDJ1z4KGxyM+aamJzpVlffv
+         rJ6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=mMBin2EGtKSHZbpPVK+JW5J0CFqnupXSzgXwGSycYCg=;
-        b=P0MyXDDC20WFw5UheUPobKf7GyHvB3MGuOIZZvNSefkhtd47iDPXalZz2S3KJ/EvDB
-         PZrLHSUh0JTJJdP5yEuRtNRD3+NkcGwIB3OvobS3OGiM8ufDa4b+y3QlhAYJ3lVKo+wy
-         yxt+QRB6lMKGeRPJzoi0FwyIBCwNt1GtRyPgsg3MBI6OVZ5pwDZGZFZfciL88iwirLm9
-         Tu7Mgui2iB4aa7BjrLItVXiFj1jpDRB5gNQsHGxRHCpaUuXTvSytPLCiLwDLO2QqGcuM
-         qixsH5YC7HVP95o6X3r8/mmWT64h72E38YbW2xdu3U9gF8roF1J3mYqcJHLViPUmHOdc
-         I/2A==
-X-Gm-Message-State: APjAAAVTRR6s6HYT6c6MDdAF7rUoP3aTrGdMLl9GCapr3xR+3mTRVtYR
-        n3WrmVlj4wwyX/6NGX0OTUp4TKEMu8R5NIgAIqw=
-X-Google-Smtp-Source: APXvYqyKzjQVj57ZbrsbnWyBxAXURB3UtzBd39o1PwxM6oJmlYyxNnkKYqRHha7SKEoCCpKN9iKzwEjft1BCrg8uPhQ=
-X-Received: by 2002:a2e:9b12:: with SMTP id u18mr24349207lji.142.1571173491828;
- Tue, 15 Oct 2019 14:04:51 -0700 (PDT)
+        bh=Ii9vueLaDUep6/QZRi93XICeUHKX9eVAhqWMTcqPbY4=;
+        b=IIsJ9oxQ5dpl1YPpSFFxCA9A2PbexXP2SNGuuvOkBkvNFYX6faGoPIjpvBrDQEcZSJ
+         0dkiUctvfMy54KepV7TTwEDkikiO+cVaek95g4CVaEvORGiq8ixpO3RvM20ks3Cw+SNR
+         Y7/SgeU8zTpUL09fRNyrde8ov4CaKsOVRyGbMqKxQ/noRnOm3sj/Tf8o7d84zZbkl+yN
+         4txoaXE6HDFax9Tw0KWPVKiUpWLHYMRzN8M7Y/V0xLcK8KrSxYOXmB35anxx65Cl4C+4
+         njAd8uLD1Y3vBhejNAOGJa4JQyPMepqT1Y/wpVf7vEGVzl1MUavHGfjs+SA2D+4lw8wZ
+         vRDA==
+X-Gm-Message-State: APjAAAW2MYulDyE16Z11Ppqbra3MiesssN1cVZFJJ+VRTZLvElBkVpIO
+        O6zRb8J30Cg4Kq07C/uuogRBBtDqa7HN43R8fhw=
+X-Google-Smtp-Source: APXvYqzf0h9hf5rTSvOLc63YQEFcPBL4hGQPEx2nK7D5fhBe36D3wXV0rcNvxEM6/Oc7sr+zZfbCL9Yq941njWf0Aqs=
+X-Received: by 2002:a2e:9bc1:: with SMTP id w1mr18305743ljj.136.1571174522283;
+ Tue, 15 Oct 2019 14:22:02 -0700 (PDT)
 MIME-Version: 1.0
-References: <20191014122833.64908-1-houtao1@huawei.com> <20191014122833.64908-2-houtao1@huawei.com>
-In-Reply-To: <20191014122833.64908-2-houtao1@huawei.com>
+References: <20191011162124.52982-1-sdf@google.com> <CAADnVQLKPLXej_v7ymv3yJakoFLGeQwdZOJ5cZmp7xqOxfebqg@mail.gmail.com>
+ <20191012003819.GK2096@mini-arch>
+In-Reply-To: <20191012003819.GK2096@mini-arch>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 15 Oct 2019 14:04:40 -0700
-Message-ID: <CAADnVQ+UJK41VL-epYGxrRzqL_UsC+X=J8EXEn2i8P+TPGA_jg@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/2] block: add support for redirecting IO completion
- through eBPF
-To:     Hou Tao <houtao1@huawei.com>
-Cc:     linux-block@vger.kernel.org, bpf <bpf@vger.kernel.org>,
+Date:   Tue, 15 Oct 2019 14:21:50 -0700
+Message-ID: <CAADnVQKuysEvFAX54+f0YPJ1+cgcRJbhrpVE7xmvLqu-ADrk+Q@mail.gmail.com>
+Subject: debug annotations for bpf progs. Was: [PATCH bpf-next 1/3] bpf:
+ preserve command of the process that loaded the program
+To:     Stanislav Fomichev <sdf@fomichev.me>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Stanislav Fomichev <sdf@google.com>,
         Network Development <netdev@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Alexei Starovoitov <ast@kernel.org>, hare@suse.com,
-        osandov@fb.com, ming.lei@redhat.com, damien.lemoal@wdc.com,
-        bvanassche <bvanassche@acm.org>,
+        bpf <bpf@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>
+        Yonghong Song <yhs@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Oct 14, 2019 at 5:21 AM Hou Tao <houtao1@huawei.com> wrote:
+On Fri, Oct 11, 2019 at 5:38 PM Stanislav Fomichev <sdf@fomichev.me> wrote:
 >
-> For network stack, RPS, namely Receive Packet Steering, is used to
-> distribute network protocol processing from hardware-interrupted CPU
-> to specific CPUs and alleviating soft-irq load of the interrupted CPU.
+> On 10/11, Alexei Starovoitov wrote:
+> > On Fri, Oct 11, 2019 at 9:21 AM Stanislav Fomichev <sdf@google.com> wrote:
+> > >
+> > > Even though we have the pointer to user_struct and can recover
+> > > uid of the user who has created the program, it usually contains
+> > > 0 (root) which is not very informative. Let's store the comm of the
+> > > calling process and export it via bpf_prog_info. This should help
+> > > answer the question "which process loaded this particular program".
+> > >
+> > > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> > > ---
+> > >  include/linux/bpf.h      | 1 +
+> > >  include/uapi/linux/bpf.h | 2 ++
+> > >  kernel/bpf/syscall.c     | 4 ++++
+> > >  3 files changed, 7 insertions(+)
+> > >
+> > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > > index 5b9d22338606..b03ea396afe5 100644
+> > > --- a/include/linux/bpf.h
+> > > +++ b/include/linux/bpf.h
+> > > @@ -421,6 +421,7 @@ struct bpf_prog_aux {
+> > >                 struct work_struct work;
+> > >                 struct rcu_head rcu;
+> > >         };
+> > > +       char created_by_comm[BPF_CREATED_COMM_LEN];
+> > >  };
+> > >
+> > >  struct bpf_array {
+> > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > > index a65c3b0c6935..4e883ecbba1e 100644
+> > > --- a/include/uapi/linux/bpf.h
+> > > +++ b/include/uapi/linux/bpf.h
+> > > @@ -326,6 +326,7 @@ enum bpf_attach_type {
+> > >  #define BPF_F_NUMA_NODE                (1U << 2)
+> > >
+> > >  #define BPF_OBJ_NAME_LEN 16U
+> > > +#define BPF_CREATED_COMM_LEN   16U
+> >
+> > Nack.
+> > 16 bytes is going to be useless.
+> > We found it the hard way with prog_name.
+> > If you want to embed additional debug information
+> > please use BTF for that.
+> BTF was my natural choice initially, but then I saw created_by_uid and
+> thought created_by_comm might have a chance :-)
 >
-> For block layer, soft-irq (for single queue device) or hard-irq
-> (for multiple queue device) is used to handle IO completion, so
-> RPS will be useful when the soft-irq load or the hard-irq load
-> of a specific CPU is too high, or a specific CPU set is required
-> to handle IO completion.
->
-> Instead of setting the CPU set used for handling IO completion
-> through sysfs or procfs, we can attach an eBPF program to the
-> request-queue, provide some useful info (e.g., the CPU
-> which submits the request) to the program, and let the program
-> decides the proper CPU for IO completion handling.
->
-> Signed-off-by: Hou Tao <houtao1@huawei.com>
-...
->
-> +       rcu_read_lock();
-> +       prog = rcu_dereference_protected(q->prog, 1);
-> +       if (prog)
-> +               bpf_ccpu = BPF_PROG_RUN(q->prog, NULL);
-> +       rcu_read_unlock();
-> +
->         cpu = get_cpu();
-> -       if (!test_bit(QUEUE_FLAG_SAME_FORCE, &q->queue_flags))
-> -               shared = cpus_share_cache(cpu, ctx->cpu);
-> +       if (bpf_ccpu < 0 || !cpu_online(bpf_ccpu)) {
-> +               ccpu = ctx->cpu;
-> +               if (!test_bit(QUEUE_FLAG_SAME_FORCE, &q->queue_flags))
-> +                       shared = cpus_share_cache(cpu, ctx->cpu);
-> +       } else
-> +               ccpu = bpf_ccpu;
->
-> -       if (cpu != ctx->cpu && !shared && cpu_online(ctx->cpu)) {
-> +       if (cpu != ccpu && !shared && cpu_online(ccpu)) {
->                 rq->csd.func = __blk_mq_complete_request_remote;
->                 rq->csd.info = rq;
->                 rq->csd.flags = 0;
-> -               smp_call_function_single_async(ctx->cpu, &rq->csd);
-> +               smp_call_function_single_async(ccpu, &rq->csd);
+> To clarify, by BTF you mean creating some unused global variable
+> and use its name as the debugging info? Or there is some better way?
 
-Interesting idea.
-Not sure whether such programability makes sense from
-block layer point of view.
-
-From bpf side having a program with NULL input context is
-a bit odd. We never had such things in the past, so this patchset
-won't work as-is.
-Also no-input means that the program choices are quite limited.
-Other than round robin and random I cannot come up with other
-cpu selection ideas.
-I suggest to do writable tracepoint here instead.
-Take a look at trace_nbd_send_request.
-BPF prog can write into 'request'.
-For your use case it will be able to write into 'bpf_ccpu' local variable.
-If you keep it as raw tracepoint and don't add the actual tracepoint
-with TP_STRUCT__entry and TP_fast_assign then it won't be abi
-and you can change it later or remove it altogether.
+I was thinking about adding new section to .btf.ext with this extra data,
+but global variable is a better idea indeed.
+We'd need to standardize such variables names, so that
+bpftool can parse and print it while doing 'bpftool prog show'.
+We see more and more cases where services use more than
+one program in single .c file to accomplish their goals.
+Tying such debug info (like 'created_by_comm') to each program
+individually isn't quite right.
+In that sense global variables are better, since they cover the
+whole .c file.
+Beyond 'created_by_comm' there are others things that people
+will likely want to know.
+Like which version of llvm was used to compile this .o file.
+Which unix user name compiled it.
+The name of service/daemon that will be using this .o
+and so on.
+May be some standard prefix to such global variables will do?
+Like "bpftool prog show" can scan global data for
+"__annotate_#name" and print both name and string contents ?
+For folks who regularly ssh into servers to debug bpf progs
+that will help a lot.
+May be some annotations llvm can automatically add to .o.
+Thoughts?
