@@ -2,119 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E33B7D7109
-	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2019 10:30:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15FF3D715A
+	for <lists+bpf@lfdr.de>; Tue, 15 Oct 2019 10:45:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728964AbfJOIap (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Oct 2019 04:30:45 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:42826 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726358AbfJOIap (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Oct 2019 04:30:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=nde+rVxrbKGORynbc7srtKQrRn/wfiVC6y4tD1FT7B0=; b=YbFbFpEk4DpWY6RLhaLCvmJiX
-        Aux8/sNbH48tsLFO5JH6caRTG0co+m0pmYYidLAW8/Lla9Ygzk0kpPQr9UvMWWAxylSf9bNlQB9BW
-        7w7HkmmJ6GBaPp0Om+i17i7ed9q7icxuLV9zpcLLmRNv/5VspmqDE7gMu22tjcHUnmeDpU8VNDHjY
-        KO+y7VmPxVO1I1MlZjm9p4Idv0lnNtxhNH/mOmvzD45K44F/RuNRVgko6j6rkccPhgot44PNlvIwB
-        jocNU+1j2OpQHEWDy5tT9leSUdXiNvXaQpdagTRQ9Ssnk3I5RvxVJ8xgt0vpvqoInIiFI4AmF1BOC
-        Ked5/SBpw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1iKIDe-0005F7-3A; Tue, 15 Oct 2019 08:30:14 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A4E8A303807;
-        Tue, 15 Oct 2019 10:29:14 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id F3CD0284DE58D; Tue, 15 Oct 2019 10:30:08 +0200 (CEST)
-Date:   Tue, 15 Oct 2019 10:30:08 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, rostedt@goodmis.org,
-        primiano@google.com, rsavitski@google.com, jeffv@google.com,
-        kernel-team@android.com, James Morris <jmorris@namei.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        bpf@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        linux-security-module@vger.kernel.org,
-        Matthew Garrett <matthewgarrett@google.com>,
-        Namhyung Kim <namhyung@kernel.org>, selinux@vger.kernel.org,
-        Song Liu <songliubraving@fb.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Yonghong Song <yhs@fb.com>
-Subject: Re: [PATCH v2] perf_event: Add support for LSM and SELinux checks
-Message-ID: <20191015083008.GC2311@hirez.programming.kicks-ass.net>
-References: <20191014170308.70668-1-joel@joelfernandes.org>
+        id S1728989AbfJOIo5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Oct 2019 04:44:57 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:33504 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726430AbfJOIo5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Oct 2019 04:44:57 -0400
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 5625F10CC1F8;
+        Tue, 15 Oct 2019 08:44:56 +0000 (UTC)
+Received: from krava (unknown [10.43.17.61])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 65A125C1D4;
+        Tue, 15 Oct 2019 08:44:51 +0000 (UTC)
+Date:   Tue, 15 Oct 2019 10:44:51 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Yunfeng Ye <yeyunfeng@huawei.com>
+Cc:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        namhyung@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        ilubashe@akamai.com, ak@linux.intel.com, kan.liang@linux.intel.com,
+        alexey.budankov@linux.intel.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, hushiyuan@huawei.com,
+        linfeilong@huawei.com
+Subject: Re: [PATCH] perf tools: fix resource leak of closedir() on the error
+ paths
+Message-ID: <20191015084451.GB10951@krava>
+References: <cd5f7cd2-b80d-6add-20a1-32f4f43e0744@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191014170308.70668-1-joel@joelfernandes.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <cd5f7cd2-b80d-6add-20a1-32f4f43e0744@huawei.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.6.2 (mx1.redhat.com [10.5.110.65]); Tue, 15 Oct 2019 08:44:57 +0000 (UTC)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Oct 14, 2019 at 01:03:08PM -0400, Joel Fernandes (Google) wrote:
-> In current mainline, the degree of access to perf_event_open(2) system
-> call depends on the perf_event_paranoid sysctl.  This has a number of
-> limitations:
+On Tue, Oct 15, 2019 at 04:30:08PM +0800, Yunfeng Ye wrote:
+> Both build_mem_topology() and rm_rf_depth_pat() have resource leak of
+> closedir() on the error paths.
 > 
-> 1. The sysctl is only a single value. Many types of accesses are controlled
->    based on the single value thus making the control very limited and
->    coarse grained.
-> 2. The sysctl is global, so if the sysctl is changed, then that means
->    all processes get access to perf_event_open(2) opening the door to
->    security issues.
+> Fix this by calling closedir() before function returns.
 > 
-> This patch adds LSM and SELinux access checking which will be used in
-> Android to access perf_event_open(2) for the purposes of attaching BPF
-> programs to tracepoints, perf profiling and other operations from
-> userspace. These operations are intended for production systems.
-> 
-> 5 new LSM hooks are added:
-> 1. perf_event_open: This controls access during the perf_event_open(2)
->    syscall itself. The hook is called from all the places that the
->    perf_event_paranoid sysctl is checked to keep it consistent with the
->    systctl. The hook gets passed a 'type' argument which controls CPU,
->    kernel and tracepoint accesses (in this context, CPU, kernel and
->    tracepoint have the same semantics as the perf_event_paranoid sysctl).
->    Additionally, I added an 'open' type which is similar to
->    perf_event_paranoid sysctl == 3 patch carried in Android and several other
->    distros but was rejected in mainline [1] in 2016.
-> 
-> 2. perf_event_alloc: This allocates a new security object for the event
->    which stores the current SID within the event. It will be useful when
->    the perf event's FD is passed through IPC to another process which may
->    try to read the FD. Appropriate security checks will limit access.
-> 
-> 3. perf_event_free: Called when the event is closed.
-> 
-> 4. perf_event_read: Called from the read(2) and mmap(2) syscalls for the event.
-> 
-> 5. perf_event_write: Called from the ioctl(2) syscalls for the event.
-> 
-> [1] https://lwn.net/Articles/696240/
-> 
-> Since Peter had suggest LSM hooks in 2016 [1], I am adding his
-> Suggested-by tag below.
+> Fixes: e2091cedd51b ("perf tools: Add MEM_TOPOLOGY feature to perf data file")
+> Fixes: cdb6b0235f17 ("perf tools: Add pattern name checking to rm_rf")
 
-Thanks, I've queued the patch!
+guilty as charged ;-)
 
-> To use this patch, we set the perf_event_paranoid sysctl to -1 and then
-> apply selinux checking as appropriate (default deny everything, and then
-> add policy rules to give access to domains that need it). In the future
-> we can remove the perf_event_paranoid sysctl altogether.
+Acked-by: Jiri Olsa <jolsa@kernel.org>
 
-This I'm not sure about; the sysctl is only redundant when you actually
-use a security thingy, not everyone is. I always find them things to be
-mightily unfriendly.
+thanks,
+jirka
 
+
+> Signed-off-by: Yunfeng Ye <yeyunfeng@huawei.com>
+> ---
+>  tools/perf/util/header.c | 4 +++-
+>  tools/perf/util/util.c   | 6 ++++--
+>  2 files changed, 7 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
+> index 86d9396..becc2d1 100644
+> --- a/tools/perf/util/header.c
+> +++ b/tools/perf/util/header.c
+> @@ -1296,8 +1296,10 @@ static int build_mem_topology(struct memory_node *nodes, u64 size, u64 *cntp)
+>  			continue;
+> 
+>  		if (WARN_ONCE(cnt >= size,
+> -			      "failed to write MEM_TOPOLOGY, way too many nodes\n"))
+> +			"failed to write MEM_TOPOLOGY, way too many nodes\n")) {
+> +			closedir(dir);
+>  			return -1;
+> +		}
+> 
+>  		ret = memory_node__read(&nodes[cnt++], idx);
+>  	}
+> diff --git a/tools/perf/util/util.c b/tools/perf/util/util.c
+> index 5eda6e1..ae56c76 100644
+> --- a/tools/perf/util/util.c
+> +++ b/tools/perf/util/util.c
+> @@ -154,8 +154,10 @@ static int rm_rf_depth_pat(const char *path, int depth, const char **pat)
+>  		if (!strcmp(d->d_name, ".") || !strcmp(d->d_name, ".."))
+>  			continue;
+> 
+> -		if (!match_pat(d->d_name, pat))
+> -			return -2;
+> +		if (!match_pat(d->d_name, pat)) {
+> +			ret =  -2;
+> +			break;
+> +		}
+> 
+>  		scnprintf(namebuf, sizeof(namebuf), "%s/%s",
+>  			  path, d->d_name);
+> -- 
+> 2.7.4.huawei.3
+> 
