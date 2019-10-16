@@ -2,122 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B7737D9264
-	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2019 15:24:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7C73D929A
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2019 15:34:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389278AbfJPNYq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Oct 2019 09:24:46 -0400
-Received: from imap1.codethink.co.uk ([176.9.8.82]:53629 "EHLO
-        imap1.codethink.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729306AbfJPNYq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Oct 2019 09:24:46 -0400
-Received: from [167.98.27.226] (helo=[10.35.5.173])
-        by imap1.codethink.co.uk with esmtpsa (Exim 4.84_2 #1 (Debian))
-        id 1iKjI8-0000go-EN; Wed, 16 Oct 2019 14:24:40 +0100
-Subject: Re: [Linux-kernel] [PATCH] net: bpf: add static in net/core/filter.c
-From:   Ben Dooks <ben.dooks@codethink.co.uk>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     linux-kernel@lists.codethink.co.uk,
-        Song Liu <songliubraving@fb.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        netdev@vger.kernel.org, John Fastabend <john.fastabend@gmail.com>,
+        id S2405403AbfJPNee convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Wed, 16 Oct 2019 09:34:34 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:55244 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729612AbfJPNee (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Oct 2019 09:34:34 -0400
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 385DAA3CD90;
+        Wed, 16 Oct 2019 13:34:34 +0000 (UTC)
+Received: from carbon (ovpn-200-46.brq.redhat.com [10.40.200.46])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C1D145D6B2;
+        Wed, 16 Oct 2019 13:34:27 +0000 (UTC)
+Date:   Wed, 16 Oct 2019 15:34:26 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Eric Sage <eric@sage.org>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        xdp-newbies@vger.kernel.org, brouer@redhat.org,
         Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        bpf@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org
-References: <20191016110446.24622-1-ben.dooks@codethink.co.uk>
- <20191016122605.GC21367@pc-63.home>
- <e947b15d-1d70-39d9-3b28-0367a3f0f4c0@codethink.co.uk>
- <20191016131020.GE21367@pc-63.home>
- <e3e81678-6c58-191b-3514-629f5f94def2@codethink.co.uk>
-Organization: Codethink Limited.
-Message-ID: <16a0fe4a-f63a-7e33-62a2-d3dfbccd8f63@codethink.co.uk>
-Date:   Wed, 16 Oct 2019 14:24:39 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        Jiri Olsa <jolsa@redhat.com>, brouer@redhat.com
+Subject: Re: [PATCH] samples/bpf: make xdp_monitor use raw_tracepoints
+Message-ID: <20191016153426.1d976f17@carbon>
+In-Reply-To: <20191016042104.GA27738@wizard.attlocal.net>
+References: <20191007045726.21467-1-eric@sage.org>
+        <20191007110020.6bf8dbc2@carbon>
+        <CAEf4BzacEF0Ga921DCuYCVTxR4rFdOzmRt5o0T7HH-H38gEccg@mail.gmail.com>
+        <20191016042104.GA27738@wizard.attlocal.net>
 MIME-Version: 1.0
-In-Reply-To: <e3e81678-6c58-191b-3514-629f5f94def2@codethink.co.uk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.6.2 (mx1.redhat.com [10.5.110.68]); Wed, 16 Oct 2019 13:34:34 +0000 (UTC)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 16/10/2019 14:11, Ben Dooks wrote:
-> On 16/10/2019 14:10, Daniel Borkmann wrote:
->> On Wed, Oct 16, 2019 at 02:02:31PM +0100, Ben Dooks wrote:
->>> On 16/10/2019 13:26, Daniel Borkmann wrote:
->>>> On Wed, Oct 16, 2019 at 12:04:46PM +0100, Ben Dooks (Codethink) wrote:
->>>>> There are a number of structs in net/core/filter.c
->>>>> that are not exported or declared outside of the
->>>>> file. Fix the following warnings by making these
->>>>> all static:
->>>>>
->>>>> net/core/filter.c:8465:31: warning: symbol 'sk_filter_verifier_ops' 
->>>>> was not declared. Should it be static?
->>>>> net/core/filter.c:8472:27: warning: symbol 'sk_filter_prog_ops' was 
->>>>> not declared. Should it be static?
->>>> [...]
->>>>> net/core/filter.c:8935:27: warning: symbol 'sk_reuseport_prog_ops' 
->>>>> was not declared. Should it be static?
->>>>>
->>>>> Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
->>>>> ---
->>>>> Cc: Alexei Starovoitov <ast@kernel.org>
->>>>> Cc: Daniel Borkmann <daniel@iogearbox.net>
->>>>> Cc: Martin KaFai Lau <kafai@fb.com>
->>>>> Cc: Song Liu <songliubraving@fb.com>
->>>>> Cc: Yonghong Song <yhs@fb.com>
->>>>> Cc: "David S. Miller" <davem@davemloft.net>
->>>>> Cc: Jakub Kicinski <jakub.kicinski@netronome.com>
->>>>> Cc: Jesper Dangaard Brouer <hawk@kernel.org>
->>>>> Cc: John Fastabend <john.fastabend@gmail.com>
->>>>> Cc: netdev@vger.kernel.org
->>>>> Cc: bpf@vger.kernel.org
->>>>> Cc: linux-kernel@vger.kernel.org
->>>>> ---
->>>>>    net/core/filter.c | 60 
->>>>> +++++++++++++++++++++++------------------------
->>>>>    1 file changed, 30 insertions(+), 30 deletions(-)
->>>>>
->>>>> diff --git a/net/core/filter.c b/net/core/filter.c
->>>>> index ed6563622ce3..f7338fee41f8 100644
->>>>> --- a/net/core/filter.c
->>>>> +++ b/net/core/filter.c
->>>>> @@ -8462,18 +8462,18 @@ static u32 sk_msg_convert_ctx_access(enum 
->>>>> bpf_access_type type,
->>>>>        return insn - insn_buf;
->>>>>    }
->>>>> -const struct bpf_verifier_ops sk_filter_verifier_ops = {
->>>>> +static const struct bpf_verifier_ops sk_filter_verifier_ops = {
->>>>>        .get_func_proto        = sk_filter_func_proto,
->>>>>        .is_valid_access    = sk_filter_is_valid_access,
->>>>>        .convert_ctx_access    = bpf_convert_ctx_access,
->>>>>        .gen_ld_abs        = bpf_gen_ld_abs,
->>>>>    };
->>>>
->>>> Big obvious NAK. I'm puzzled that you try to fix a compile warning, 
->>>> but without
->>>> even bothering to compile the result after your patch ...
->>>
->>> builds fine. maybe some effort to stop this happening again should be 
->>> made.
->>
->> It doesn't build, because they are used/needed outside:
-> 
-> Hmm, your config it does, I get /none/ of these warnings.
-> 
-> I guess a lot of this is being built whether or not is then used.
+On Tue, 15 Oct 2019 21:21:04 -0700
+Eric Sage <eric@sage.org> wrote:
 
-Without CONFIG_BPF_SYSCALL, a part of net/core/filter.c is being
-built but then not declared or used. Should this be split up or
-the areas not being built be removed?
+> I'm no longer able to build the samples with 'make M=samples/bpf'.
+> 
+> I get errors in task_fd_query_user.c like:
+> 
+> samples/bpf/task_fd_query_user.c:153:29: error: ‘PERF_EVENT_IOC_ENABLE’
+> undeclared.
+> 
+> Am I missing a dependancy?
+
+Have you remembered to run:
+
+ make headers_install
+
+(As described in samples/bpf/README)
 
 -- 
-Ben Dooks				http://www.codethink.co.uk/
-Senior Engineer				Codethink - Providing Genius
-
-https://www.codethink.co.uk/privacy.html
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
