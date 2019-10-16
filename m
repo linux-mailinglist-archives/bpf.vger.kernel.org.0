@@ -2,94 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BD01D867A
-	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2019 05:30:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D4C8D8681
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2019 05:31:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389420AbfJPDaM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Oct 2019 23:30:12 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:45796 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389282AbfJPDaM (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 15 Oct 2019 23:30:12 -0400
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x9G3TcQm005022
-        for <bpf@vger.kernel.org>; Tue, 15 Oct 2019 20:30:10 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=facebook; bh=IH7b2i8Fk+8JFs48Kb/ipE7wiNAEK/byslsVGwvUQSk=;
- b=qYw2WlqbYrvulPbP3GBWMxDNo6lxa4BMAELF1NDkIX81ITGjxgKkNyXuMlFXPccCbltw
- u0x/Hzeyvn71CVJxUYtluhN0TGKe3mzPdJysQGtxCHAzT0Ar18NDZ2aRCeo7ljm2Ugkc
- Sm+O/Zo+jmZxRXIdNfGLitRv1jcDrzK7lV4= 
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by mx0a-00082601.pphosted.com with ESMTP id 2vmtajgjn3-4
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 15 Oct 2019 20:30:10 -0700
-Received: from 2401:db00:12:909f:face:0:3:0 (2620:10d:c081:10::13) by
- mail.thefacebook.com (2620:10d:c081:35::130) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
- Tue, 15 Oct 2019 20:30:07 -0700
-Received: by dev101.prn2.facebook.com (Postfix, from userid 137359)
-        id 4D68D861998; Tue, 15 Oct 2019 20:30:04 -0700 (PDT)
-Smtp-Origin-Hostprefix: dev
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: dev101.prn2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Cluster: prn2c23
-Subject: [PATCH v2 bpf-next 6/6] selftests/bpf: move test_queue_stack_map.h into progs/ where it belongs
-Date:   Tue, 15 Oct 2019 20:29:49 -0700
-Message-ID: <20191016032949.1445888-7-andriin@fb.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20191016032949.1445888-1-andriin@fb.com>
-References: <20191016032949.1445888-1-andriin@fb.com>
-X-FB-Internal: Safe
+        id S2391000AbfJPDbU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Oct 2019 23:31:20 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:55449 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730211AbfJPDbU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Oct 2019 23:31:20 -0400
+Received: from [213.220.153.21] (helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1iKa1t-0008BG-Fb; Wed, 16 Oct 2019 03:31:17 +0000
+Date:   Wed, 16 Oct 2019 05:31:16 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>
+Subject: Re: [PATCH v2 0/3] bpf: switch to new usercopy helpers
+Message-ID: <20191016033115.ljwiae2cfltbdoyo@wittgenstein>
+References: <20191009160907.10981-1-christian.brauner@ubuntu.com>
+ <20191016004138.24845-1-christian.brauner@ubuntu.com>
+ <CAADnVQ+JmXK4EGtt-6pm+KENPooewfikaRE5dZqi1pMBc_jdxw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
- definitions=2019-10-16_01:2019-10-15,2019-10-16 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0 mlxscore=0
- mlxlogscore=889 suspectscore=8 bulkscore=0 clxscore=1015 impostorscore=0
- malwarescore=0 spamscore=0 lowpriorityscore=0 phishscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1908290000 definitions=main-1910160030
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAADnVQ+JmXK4EGtt-6pm+KENPooewfikaRE5dZqi1pMBc_jdxw@mail.gmail.com>
+User-Agent: NeoMutt/20180716
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-test_queue_stack_map.h is used only from BPF programs. Thus it should be
-part of progs/ subdir. An added benefit of moving it there is that new
-TEST_RUNNER_DEFINE_RULES macro-rule will properly capture dependency on
-this header for all BPF objects and trigger re-build, if it changes.
+On Tue, Oct 15, 2019 at 07:14:42PM -0700, Alexei Starovoitov wrote:
+> On Tue, Oct 15, 2019 at 5:41 PM Christian Brauner
+> <christian.brauner@ubuntu.com> wrote:
+> >
+> > Hey everyone,
+> >
+> > In v5.4-rc2 we added two new helpers check_zeroed_user() and
+> > copy_struct_from_user() including selftests (cf. [1]). It is a generic
+> > interface designed to copy a struct from userspace. The helpers will be
+> > especially useful for structs versioned by size of which we have quite a
+> > few.
+> 
+> Was it tested?
+> Either your conversion is incorrect or that generic helper is broken.
+> ./test_progs -n 2
+> and
+> ./test_btf
+> are catching the bug:
+> BTF prog info raw test[8] (line_info (No subprog. zero tailing
+> line_info): do_test_info_raw:6205:FAIL prog_fd:-1
+> expected_prog_load_failure:0 errno:7
+> nonzero tailing record in line_infoprocessed 0 insns (limit 1000000)
+> max_states_per_insn 0 total_states 0 peak_states 0 mark_read 0
 
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- tools/testing/selftests/bpf/Makefile                           | 3 ---
- tools/testing/selftests/bpf/{ => progs}/test_queue_stack_map.h | 0
- 2 files changed, 3 deletions(-)
- rename tools/testing/selftests/bpf/{ => progs}/test_queue_stack_map.h (100%)
+Ugh, I misrememberd what the helper I helped design returns. The fix is:
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 2c5349c651ef..ab7b51a38ec0 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -153,9 +153,6 @@ CLANG_CFLAGS = $(CLANG_SYS_INCLUDES) \
- $(OUTPUT)/test_l4lb_noinline.o: BPF_CFLAGS += -fno-inline
- $(OUTPUT)/test_xdp_noinline.o: BPF_CFLAGS += -fno-inline
- 
--$(OUTPUT)/test_queue_map.o: test_queue_stack_map.h
--$(OUTPUT)/test_stack_map.o: test_queue_stack_map.h
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 5db9887a8f4c..0920593eacd0 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -78,11 +78,8 @@ int bpf_check_uarg_tail_zero(void __user *uaddr,
+                return 0;
+
+        err = check_zeroed_user(uaddr + expected_size, rest);
+-       if (err < 0)
+-               return err;
 -
- $(OUTPUT)/flow_dissector_load.o: flow_dissector_load.h
- 
- # Build BPF object using Clang
-diff --git a/tools/testing/selftests/bpf/test_queue_stack_map.h b/tools/testing/selftests/bpf/progs/test_queue_stack_map.h
-similarity index 100%
-rename from tools/testing/selftests/bpf/test_queue_stack_map.h
-rename to tools/testing/selftests/bpf/progs/test_queue_stack_map.h
--- 
-2.17.1
+-       if (err)
+-               return -E2BIG;
++       if (err <= 0)
++               return err ?: -E2BIG;
 
+        return 0;
+ }
+
+aka check_zeroed_user() returns 0 if non-zero bytes are present, 1 if no
+non-zero bytes were present, and -errno on error.
+
+I'll send a fixed version. The tests pass for me with this.
+
+Christian
