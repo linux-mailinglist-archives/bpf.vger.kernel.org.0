@@ -2,29 +2,29 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D2A5D896B
-	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2019 09:30:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D63ACD8A11
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2019 09:43:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388531AbfJPHac (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Oct 2019 03:30:32 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:35306 "EHLO
+        id S2390082AbfJPHnZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Oct 2019 03:43:25 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:35474 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387700AbfJPHac (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Oct 2019 03:30:32 -0400
+        with ESMTP id S1728201AbfJPHnZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Oct 2019 03:43:25 -0400
 Received: from [213.220.153.21] (helo=wittgenstein)
         by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.86_2)
         (envelope-from <christian.brauner@ubuntu.com>)
-        id 1iKdlN-0005JP-Gq; Wed, 16 Oct 2019 07:30:29 +0000
-Date:   Wed, 16 Oct 2019 09:30:28 +0200
+        id 1iKdxp-0005wu-W5; Wed, 16 Oct 2019 07:43:22 +0000
+Date:   Wed, 16 Oct 2019 09:43:21 +0200
 From:   Christian Brauner <christian.brauner@ubuntu.com>
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
         kafai@fb.com, linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
         songliubraving@fb.com, yhs@fb.com, Aleksa Sarai <cyphar@cyphar.com>
 Subject: Re: [PATCH v3 2/3] bpf: use copy_struct_from_user() in
- bpf_prog_get_info_by_fd()y
-Message-ID: <20191016073027.muvlebjy2zdg2yha@wittgenstein>
+ bpf_prog_get_info_by_fd()
+Message-ID: <20191016074320.smgazuy6cyrfa2ef@wittgenstein>
 References: <20191016004138.24845-1-christian.brauner@ubuntu.com>
  <20191016034432.4418-1-christian.brauner@ubuntu.com>
  <20191016034432.4418-3-christian.brauner@ubuntu.com>
@@ -93,7 +93,11 @@ On Tue, Oct 15, 2019 at 10:25:49PM -0700, Alexei Starovoitov wrote:
 > really?! min?!
 > Frankly I'm disappointed in quality of these patches.
 > Especially considering it's v3.
+> 
+> Just live the code alone.
 
-Ok, then I'm sorry.
+Oh, I didn't see that part. I didn't know that this would upset
+you that much. Sure, I can leave the code alone. Or I try to fix this
+up. If you're not happy with you can just ignore this.
 
 Christian
