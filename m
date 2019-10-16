@@ -2,175 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D454D9BE9
-	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2019 22:48:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95861D9C68
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2019 23:22:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437210AbfJPUsE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Oct 2019 16:48:04 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:46562 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727156AbfJPUsE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Oct 2019 16:48:04 -0400
-Received: by mail-qk1-f196.google.com with SMTP id e66so3557192qkf.13;
-        Wed, 16 Oct 2019 13:48:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UbeoWoE2uZaczN47NwT0wD0UOD+v+MGySpZ07iHNajA=;
-        b=MmhdLiA1djl8h014HSkbfYyQsC8OUpz/vtFvEaCBBArvTELABiN18iEerBMHVgDyOt
-         Mh8F9YUylIAEEq+2CNLuEjC+PYWsuxQ3brn2l8fXUsUzp7yiBXXKZo9LAIkIX8eeDGG5
-         vhLddvQo39oi0iF06PbaRrD4hP39Dy6vZh2fRYBJxitTLrhQOCwKQUp8BSlNoYdgIb6a
-         q2//el4etkLHspZdZyCxFfRB/8z+C1RmnlxubBOM6moCWN9/sist+dh04J8ZJ0V7xBjL
-         pDwkWAlRxi2U0qA2xIJyoJ8sDRpEvBB0c4V+HaU7TspX+G2OcahxZwfrpGUGPIlgzfdp
-         Vryg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UbeoWoE2uZaczN47NwT0wD0UOD+v+MGySpZ07iHNajA=;
-        b=nkXTm5gRX5mjvnM9cCHR4rLyUmTu3dQNdmZ2LCrp5uYUjcDBkh6NAZf3yHOQht+Xze
-         C9Kow4qMl0Gk6MbwP00bUEaMTzR057V+AgKGrZS+Zttiutxcbzx482xHING/pr2x3eas
-         NI8vDW9eIMHOCTcKL8elH8j4uDKPCWhDWuSrUtdwr/323IN2DesNoPKHDj4ztUhi/g/2
-         9+9+aSOQmn8Zw1PxguUbUiqPDhoU2C9T2STMLo7Quctvxi5rUCmQv6R/5HtdnsE3Lvtf
-         7VGs4n53KIcV5blt1kceR0ihRAOs9xV2tGJvn8CYb8C+rg3iOSPdltcKi410swNMRO9n
-         7Wwg==
-X-Gm-Message-State: APjAAAVR55Iv9cMEeG+l5x3CyOtpJS+o/04nHSb4DFt9KGhq69tgYES4
-        6307EzZf/qF4fSusyXK3aqsE0h32o1nrMKAL8EAcHwdTDbo=
-X-Google-Smtp-Source: APXvYqwgbJXcMEGJg3C/4vBpbuqKCMcOL4xEUaMIXzeT0I5U3cjqTgg0WNq4zzYhI69f83ic0ea2msSVgVDu8ZKPpdQ=
-X-Received: by 2002:a37:b447:: with SMTP id d68mr3416545qkf.437.1571258883057;
- Wed, 16 Oct 2019 13:48:03 -0700 (PDT)
+        id S2389621AbfJPVWI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Oct 2019 17:22:08 -0400
+Received: from www62.your-server.de ([213.133.104.62]:47806 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729231AbfJPVWI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Oct 2019 17:22:08 -0400
+Received: from sslproxy01.your-server.de ([88.198.220.130])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1iKqk2-0002cX-Hy; Wed, 16 Oct 2019 23:21:58 +0200
+Received: from [178.197.249.55] (helo=pc-63.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1iKqk2-0001ke-8R; Wed, 16 Oct 2019 23:21:58 +0200
+Subject: Re: [PATCH v3 bpf-next 06/11] bpf: implement accurate raw_tp context
+ access via BTF
+To:     Alexei Starovoitov <ast@kernel.org>, davem@davemloft.net
+Cc:     x86@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@fb.com
+References: <20191016032505.2089704-1-ast@kernel.org>
+ <20191016032505.2089704-7-ast@kernel.org>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <04fab556-9eda-87ec-8f8c-defcab25a80e@iogearbox.net>
+Date:   Wed, 16 Oct 2019 23:21:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <20191016060051.2024182-1-andriin@fb.com> <20191016060051.2024182-6-andriin@fb.com>
- <20191016163249.GD1897241@mini-arch>
-In-Reply-To: <20191016163249.GD1897241@mini-arch>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 16 Oct 2019 13:47:52 -0700
-Message-ID: <CAEf4BzYVWc8RWNSthN8whROYJUEijR1Uh3Lyt6bkuhM2tRsq2Q@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 5/7] selftests/bpf: replace test_progs and
- test_maps w/ general rule
-To:     Stanislav Fomichev <sdf@fomichev.me>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20191016032505.2089704-7-ast@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.101.4/25604/Wed Oct 16 10:53:05 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 16, 2019 at 9:32 AM Stanislav Fomichev <sdf@fomichev.me> wrote:
->
-> On 10/15, Andrii Nakryiko wrote:
-> > Define test runner generation meta-rule that codifies dependencies
-> > between test runner, its tests, and its dependent BPF programs. Use that
-> > for defining test_progs and test_maps test-runners. Also additionally define
-> > 2 flavors of test_progs:
-> > - alu32, which builds BPF programs with 32-bit registers codegen;
-> > - bpf_gcc, which build BPF programs using GCC, if it supports BPF target.
-> Question:
->
-> Why not merge test_maps tests into test_progs framework and have a
-> single binary instead of doing all this makefile-related work?
-> We can independently address the story with alu32/gcc progs (presumably
-> in the same manner, with make defines).
+On 10/16/19 5:25 AM, Alexei Starovoitov wrote:
+> libbpf analyzes bpf C program, searches in-kernel BTF for given type name
+> and stores it into expected_attach_type.
+> The kernel verifier expects this btf_id to point to something like:
+> typedef void (*btf_trace_kfree_skb)(void *, struct sk_buff *skb, void *loc);
+> which represents signature of raw_tracepoint "kfree_skb".
+> 
+> Then btf_ctx_access() matches ctx+0 access in bpf program with 'skb'
+> and 'ctx+8' access with 'loc' arguments of "kfree_skb" tracepoint.
+> In first case it passes btf_id of 'struct sk_buff *' back to the verifier core
+> and 'void *' in second case.
+> 
+> Then the verifier tracks PTR_TO_BTF_ID as any other pointer type.
+> Like PTR_TO_SOCKET points to 'struct bpf_sock',
+> PTR_TO_TCP_SOCK points to 'struct bpf_tcp_sock', and so on.
+> PTR_TO_BTF_ID points to in-kernel structs.
+> If 1234 is btf_id of 'struct sk_buff' in vmlinux's BTF
+> then PTR_TO_BTF_ID#1234 points to one of in kernel skbs.
+> 
+> When PTR_TO_BTF_ID#1234 is dereferenced (like r2 = *(u64 *)r1 + 32)
+> the btf_struct_access() checks which field of 'struct sk_buff' is
+> at offset 32. Checks that size of access matches type definition
+> of the field and continues to track the dereferenced type.
+> If that field was a pointer to 'struct net_device' the r2's type
+> will be PTR_TO_BTF_ID#456. Where 456 is btf_id of 'struct net_device'
+> in vmlinux's BTF.
+> 
+> Such verifier analysis prevents "cheating" in BPF C program.
+> The program cannot cast arbitrary pointer to 'struct sk_buff *'
+> and access it. C compiler would allow type cast, of course,
+> but the verifier will notice type mismatch based on BPF assembly
+> and in-kernel BTF.
+> 
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 
-test_maps wasn't a reason for doing this, alue2/bpf_gcc was. test_maps
-is a simple sub-case that was just easy to convert to. I dare you to
-try solve alu32/bpf_gcc with make defines (whatever you mean by that)
-and in a simpler manner ;)
+Overall set looks great!
 
->
-> I can hardly follow the existing makefile and now with the evals it's
-> 10x more complicated for no good reason.
+[...]
+> +int btf_struct_access(struct bpf_verifier_log *log,
+> +		      const struct btf_type *t, int off, int size,
+> +		      enum bpf_access_type atype,
+> +		      u32 *next_btf_id)
+> +{
+> +	const struct btf_member *member;
+> +	const struct btf_type *mtype;
+> +	const char *tname, *mname;
+> +	int i, moff = 0, msize;
+> +
+> +again:
+> +	tname = __btf_name_by_offset(btf_vmlinux, t->name_off);
 
-I agree that existing Makefile logic is hard to follow, especially
-given it's broken. But I think 10x more complexity is gross
-exaggeration and just means you haven't tried to follow rules' logic.
-The rules inside DEFINE_TEST_RUNNER_RULES are exactly (minus one or
-two ifs to prevent re-definition of target) the rules that should have
-been written for test_progs, test_progs-alu32, test_progs-bpf_gcc.
-They define a chain of BPF .c -> BPF .o -> tests .c -> tests .o ->
-final binary + test.h generation. Previously we were getting away with
-this for, e.g., test_progs-alu32, because we always also built
-test_progs in parallel, which generated necessary stuff. Now with
-recent changes to test_attach_probe.c which now embeds BPF .o file,
-this doesn't work anymore. And it's going to be more and more
-prevalent form, so we need to fix it.
+More of a high-level question wrt btf_ctx_access(), is there a reason the ctx
+access is only done for raw_tp? I presume kprobes is still on todo (?), what
+about uprobes which also have pt_regs and could benefit from this work, but is
+not fixed to btf_vmlinux to search its ctx type.
 
-Surely $(eval) and $(call) are not common for simple Makefiles, but
-just ignore it, we need that to only dynamically generate
-per-test-runner rules. DEFINE_TEST_RUNNER_RULES can be almost read
-like a normal Makefile definitions, module $$(VAR) which is turned
-into a normal $(VAR) upon $(call) evaluation.
+I presume BPF_LDX | BPF_PROBE_MEM | BPF_* would need no additional encoding,
+but JIT emission would have to differ depending on the prog type.
 
-But really, I'd like to be wrong and if there is simpler way to
-achieve the same - go for it, I'll gladly review and ack.
-
->
-> > Overall, this is accomplished through $(eval)'ing a set of generic
-> > rules, which defines Makefile targets dynamically at runtime. See
-> > comments explaining the need for 2 $(evals), though.
-> >
-> > For each test runner we have (test_maps and test_progs, currently), and,
-> > optionally, their flavors, the logic of build process is modeled as
-> > follows (using test_progs as an example):
-> > - all BPF objects are in progs/:
-> >   - BPF object's .o file is built into output directory from
-> >     corresponding progs/.c file;
-> >   - all BPF objects in progs/*.c depend on all progs/*.h headers;
-> >   - all BPF objects depend on bpf_*.h helpers from libbpf (but not
-> >     libbpf archive). There is an extra rule to trigger bpf_helper_defs.h
-> >     (re-)build, if it's not present/outdated);
-> >   - build recipe for BPF object can be re-defined per test runner/flavor;
-> > - test files are built from prog_tests/*.c:
-> >   - all such test file objects are built on individual file basis;
-> >   - currently, every single test file depends on all BPF object files;
-> >     this might be improved in follow up patches to do 1-to-1 dependency,
-> >     but allowing to customize this per each individual test;
-> >   - each test runner definition can specify a list of extra .c and .h
-> >     files to be built along test files and test runner binary; all such
-> >     headers are becoming automatic dependency of each test .c file;
-> >   - due to test files sometimes embedding (using .incbin assembly
-> >     directive) contents of some BPF objects at compilation time, which are
-> >     expected to be in CWD of compiler, compilation for test file object does
-> >     cd into test runner's output directory; to support this mode all the
-> >     include paths are turned into absolute paths using $(abspath) make
-> >     function;
-> > - prog_tests/test.h is automatically (re-)generated with an entry for
-> >   each .c file in prog_tests/;
-> > - final test runner binary is linked together from test object files and
-> >   extra object files, linking together libbpf's archive as well;
-> > - it's possible to specify extra "resource" files/targets, which will be
-> >   copied into test runner output directory, if it differes from
-> >   Makefile-wide $(OUTPUT). This is used to ensure btf_dump test cases and
-> >   urandom_read binary is put into a test runner's CWD for tests to find
-> >   them in runtime.
-> >
-> > For flavored test runners, their output directory is a subdirectory of
-> > common Makefile-wide $(OUTPUT) directory with flavor name used as
-> > subdirectory name.
-> >
-> > BPF objects targets might be reused between different test runners, so
-> > extra checks are employed to not double-define them. Similarly, we have
-> > redefinition guards for output directories and test headers.
-> >
-> > test_verifier follows slightly different patterns and is simple enough
-> > to not justify generalizing TEST_RUNNER_DEFINE/TEST_RUNNER_DEFINE_RULES
-> > further to accomodate these differences. Instead, rules for
-> > test_verifier are minimized and simplified, while preserving correctness
-> > of dependencies.
-> >
-> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> > ---
-> >  tools/testing/selftests/bpf/.gitignore |   5 +-
-> >  tools/testing/selftests/bpf/Makefile   | 313 ++++++++++++++-----------
-> >  2 files changed, 180 insertions(+), 138 deletions(-)
-> >
-
-
-Please truncate irrelevant parts, easier to review.
-
+> +	if (!btf_type_is_struct(t)) {
+> +		bpf_log(log, "Type '%s' is not a struct", tname);
+> +		return -EINVAL;
+> +	}
+> +
+> +	for_each_member(i, t, member) {
+> +		/* offset of the field in bits */
+> +		moff = btf_member_bit_offset(t, member);
+> +
+> +		if (btf_member_bitfield_size(t, member))
+> +			/* bitfields are not supported yet */
+> +			continue;
+> +
+> +		if (off + size <= moff / 8)
+> +			/* won't find anything, field is already too far */
+> +			break;
+> +
+> +		/* type of the field */
+> +		mtype = btf_type_by_id(btf_vmlinux, member->type);
+> +		mname = __btf_name_by_offset(btf_vmlinux, member->name_off);
+> +
+> +		/* skip modifiers */
 [...]
