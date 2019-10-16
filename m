@@ -2,167 +2,222 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 02B26D85E6
-	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2019 04:28:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DE4FD8654
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2019 05:25:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730782AbfJPC24 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Oct 2019 22:28:56 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:35132 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726534AbfJPC24 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Oct 2019 22:28:56 -0400
-Received: by mail-pf1-f195.google.com with SMTP id 205so13711154pfw.2;
-        Tue, 15 Oct 2019 19:28:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=Jm69mMa5/aBKYuDOATPnZC0M6PDEkyeYrzPV6NlHjXI=;
-        b=Q/PT6ewAOlSK5TyR09IH/H9qzg13DDYVDNhQ+5huWT5EcyJtK7dtl4vBACt8EcEYLG
-         yXgDNxDZb7aZQN6r8Fc19SqYl6qbPCllhfiTjkPMLfKohyoWALI6xtkpflfRw/8kJFax
-         ei5jUUTNRPHHZ2BkttXbSG+Vb119TWyealsab1Dhd4AIqRJtn4cGg1zjRW515pSZ9wB1
-         n3HyMR6nzAKpSjkKHfEecOxP0cO2+eyyxOlTPqSAfr3HBWZmt/6sbfGhLpDBQy3mGVDB
-         byqdjfTpAIhPt0PQbqOn1cbb9zew87Lh2AaNgSrgF4ltIXfseni+P71KVYqIelPUTdGB
-         HBag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=Jm69mMa5/aBKYuDOATPnZC0M6PDEkyeYrzPV6NlHjXI=;
-        b=bZmLpVfpbV3PzZpMSBCxhmp8K/s4ByQg+0ZgR2n5XZDP6yFxIP9JfpUs2YzVQTTWGT
-         xLfS1vRseT5EJgJVTlvVvuQAGB5+D/ZYNVfoUbKVaAvY4GkyawCfilQpxLixYVNQnwGk
-         mvGx4VcOI05/9xiKa4xMvKNyezDk3LHK2CZYmwV/1NXXp5+d4QyzyKvSXgFr80yudQxr
-         dAM0jgj6eGdvJCVDPDcRZCAn86dNv2YlgF80YMgBrRDmHZdmkwfQl3DyK+KmwQ36//MK
-         Zk2/A71KHvRkf0DeI5nQ94YFkERkE+eoVWIYF6Bmgtq0g7j1cRIVz22GECfjyXw6gqgq
-         QSeQ==
-X-Gm-Message-State: APjAAAXh/q+MUDy3Daunet/cHljRzK26QTMfsGSp70/ICas1PWWtCPvG
-        vLLgl7g8IhhZfDM6sBULzO4=
-X-Google-Smtp-Source: APXvYqwI9r1JrmZVeEcedzSXRssum+xrzNpOLpu3fIYfaThZdXkwe3+KednWxoWuHpa2ocYMK09msw==
-X-Received: by 2002:a17:90a:858a:: with SMTP id m10mr2057921pjn.128.1571192934703;
-        Tue, 15 Oct 2019 19:28:54 -0700 (PDT)
-Received: from ast-mbp ([2620:10d:c090:180::efaa])
-        by smtp.gmail.com with ESMTPSA id f12sm19091989pgo.85.2019.10.15.19.28.52
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 15 Oct 2019 19:28:53 -0700 (PDT)
-Date:   Tue, 15 Oct 2019 19:28:51 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Marek Majkowski <marek@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next v3 1/5] bpf: Support chain calling multiple BPF
- programs after each other
-Message-ID: <20191016022849.weomgfdtep4aojpm@ast-mbp>
-References: <157046883502.2092443.146052429591277809.stgit@alrua-x1>
- <157046883614.2092443.9861796174814370924.stgit@alrua-x1>
- <20191007204234.p2bh6sul2uakpmnp@ast-mbp.dhcp.thefacebook.com>
- <87sgo3lkx9.fsf@toke.dk>
- <20191009015117.pldowv6n3k5p3ghr@ast-mbp.dhcp.thefacebook.com>
- <87o8yqjqg0.fsf@toke.dk>
- <20191010044156.2hno4sszysu3c35g@ast-mbp.dhcp.thefacebook.com>
- <87v9srijxa.fsf@toke.dk>
+        id S2390824AbfJPDZK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Oct 2019 23:25:10 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:3508 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726973AbfJPDZJ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 15 Oct 2019 23:25:09 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x9G3Kl2j001060
+        for <bpf@vger.kernel.org>; Tue, 15 Oct 2019 20:25:08 -0700
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by mx0a-00082601.pphosted.com with ESMTP id 2vn8jv58ys-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 15 Oct 2019 20:25:08 -0700
+Received: from 2401:db00:30:600c:face:0:1f:0 (2620:10d:c081:10::13) by
+ mail.thefacebook.com (2620:10d:c081:35::129) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
+ Tue, 15 Oct 2019 20:25:06 -0700
+Received: by devbig007.ftw2.facebook.com (Postfix, from userid 572438)
+        id CDB58760F32; Tue, 15 Oct 2019 20:25:05 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Alexei Starovoitov <ast@kernel.org>
+Smtp-Origin-Hostname: devbig007.ftw2.facebook.com
+To:     <davem@davemloft.net>
+CC:     <daniel@iogearbox.net>, <x86@kernel.org>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <kernel-team@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH v3 bpf-next 00/11] bpf: revolutionize bpf tracing
+Date:   Tue, 15 Oct 2019 20:24:54 -0700
+Message-ID: <20191016032505.2089704-1-ast@kernel.org>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87v9srijxa.fsf@toke.dk>
-User-Agent: NeoMutt/20180223
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
+ definitions=2019-10-16_01:2019-10-15,2019-10-16 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
+ mlxlogscore=999 phishscore=0 mlxscore=0 malwarescore=0 clxscore=1034
+ suspectscore=1 lowpriorityscore=0 adultscore=0 spamscore=0 impostorscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1908290000 definitions=main-1910160027
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Oct 14, 2019 at 02:35:45PM +0200, Toke Høiland-Jørgensen wrote:
-> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
-> 
-> > On Wed, Oct 09, 2019 at 10:03:43AM +0200, Toke Høiland-Jørgensen wrote:
-> >> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
-> >> 
-> >> > Please implement proper indirect calls and jumps.
-> >> 
-> >> I am still not convinced this will actually solve our problem; but OK, I
-> >> can give it a shot.
-> >
-> > If you're not convinced let's talk about it first.
-> >
-> > Indirect calls is a building block for debugpoints.
-> > Let's not call them tracepoints, because Linus banned any discusion
-> > that includes that name.
-> > The debugpoints is a way for BPF program to insert points in its
-> > code to let external facility to do tracing and debugging.
-> >
-> > void (*debugpoint1)(struct xdp_buff *, int code);
-> > void (*debugpoint2)(struct xdp_buff *);
-> > void (*debugpoint3)(int len);
-> 
-> So how would these work? Similar to global variables (i.e., the loader
-> creates a single-entry PROG_ARRAY map for each one)? Presumably with
-> some BTF to validate the argument types?
-> 
-> So what would it take to actually support this? It doesn't quite sound
-> trivial to add?
+v2->v3:
+- while trying to adopt btf-based tracing in production service realized
+  that disabling bpf_probe_read() was premature. The real tracing program
+  needs to see much more than this type safe tracking can provide.
+  With these patches the verifier will be able to see that skb->data
+  is a pointer to 'u8 *', but it cannot possibly know how many bytes
+  of it is readable. Hence bpf_probe_read() is necessary to do basic
+  packet reading from tracing program. Some helper can be introduced to
+  solve this particular problem, but there are other similar structures.
+  Another issue is bitfield reading. The support for bitfields
+  is coming to llvm. libbpf will be supporting it eventually as well,
+  but there will be corner cases where bpf_probe_read() is necessary.
+  The long term goal is still the same: get rid of probe_read eventually.
+- fixed build issue with clang reported by Nathan Chancellor.
+- addressed a ton of comments from Andrii.
+  bitfields and arrays are explicitly unsupported in btf-based tracking.
+  This will be improved in the future.
+  Right now the verifier is more strict than necessary.
+  In some cases it can fall back to 'scalar' instead of rejecting
+  the program, but rejection today allows to make better decisions
+  in the future.
+- adjusted testcase to demo bitfield and skb->data reading.
 
-Depends on definition of 'trivial' :)
-The kernel has a luxury of waiting until clean solution is implemented
-instead of resorting to hacks.
+v1->v2:
+- addressed feedback from Andrii and Eric. Thanks a lot for review!
+- added missing check at raw_tp attach time.
+- Andrii noticed that expected_attach_type cannot be reused.
+  Had to introduce new field to bpf_attr.
+- cleaned up logging nicely by introducing bpf_log() helper.
+- rebased.
 
-> > Essentially it's live debugging (tracing) of cooperative bpf programs
-> > that added debugpoints to their code.
-> 
-> Yup, certainly not disputing that this would be useful for debugging;
-> although it'll probably be a while before its use becomes widespread
-> enough that it'll be a reliable tool for people deploying XDP programs...
+Revolutionize bpf tracing and bpf C programming.
+C language allows any pointer to be typecasted to any other pointer
+or convert integer to a pointer.
+Though bpf verifier is operating at assembly level it has strict type
+checking for fixed number of types.
+Known types are defined in 'enum bpf_reg_type'.
+For example:
+PTR_TO_FLOW_KEYS is a pointer to 'struct bpf_flow_keys'
+PTR_TO_SOCKET is a pointer to 'struct bpf_sock',
+and so on.
 
-same for any new api.
+When it comes to bpf tracing there are no types to track.
+bpf+kprobe receives 'struct pt_regs' as input.
+bpf+raw_tracepoint receives raw kernel arguments as an array of u64 values.
+It was up to bpf program to interpret these integers.
+Typical tracing program looks like:
+int bpf_prog(struct pt_regs *ctx)
+{
+    struct net_device *dev;
+    struct sk_buff *skb;
+    int ifindex;
 
-> > Obviously indirect calls can be used for a ton of other things
-> > including proper chaing of progs, but I'm convinced that
-> > you don't need chaining to solve your problem.
-> > You need debugging.
-> 
-> Debugging is certainly also an area that I want to improve. However, I
-> think that focusing on debugging as the driver for chaining programs was
-> a mistake on my part; rudimentary debugging (using a tool such as
-> xdpdump) is something that falls out of program chaining, but it's not
-> the main driver for it.
+    skb = (struct sk_buff *) ctx->di;
+    bpf_probe_read(&dev, sizeof(dev), &skb->dev);
+    bpf_probe_read(&ifindex, sizeof(ifindex), &dev->ifindex);
+}
+Addressing mistakes will not be caught by C compiler or by the verifier.
+The program above could have typecasted ctx->si to skb and page faulted
+on every bpf_probe_read().
+bpf_probe_read() allows reading any address and suppresses page faults.
+Typical program has hundreds of bpf_probe_read() calls to walk
+kernel data structures.
+Not only tracing program would be slow, but there was always a risk
+that bpf_probe_read() would read mmio region of memory and cause
+unpredictable hw behavior.
 
-xdpdump can be done already the way I suggested without adding new kernel
-code and it will work on old-ish kernels. Aside from xdp itself
-the other requirement is to have get_fd_by_id sys_bpf command.
+With introduction of Compile Once Run Everywhere technology in libbpf
+and in LLVM and BPF Type Format (BTF) the verifier is finally ready
+for the next step in program verification.
+Now it can use in-kernel BTF to type check bpf assembly code.
 
-> > If you disagree please explain _your_ problem again.
-> > Saying that fb katran is a use case for chaining is, hrm, not correct.
-> 
-> I never said Katran was the driver for this. I just used Katran as one
-> of the "prior art" examples for my "how are people solving running
-> multiple programs on the same interface" survey.
+Equivalent program will look like:
+struct trace_kfree_skb {
+    struct sk_buff *skb;
+    void *location;
+};
+SEC("raw_tracepoint/kfree_skb")
+int trace_kfree_skb(struct trace_kfree_skb* ctx)
+{
+    struct sk_buff *skb = ctx->skb;
+    struct net_device *dev;
+    int ifindex;
 
-and they solved it. that's the point.
+    __builtin_preserve_access_index(({
+        dev = skb->dev;
+        ifindex = dev->ifindex;
+    }));
+}
 
-> What I want to achieve is simply the ability to run multiple independent
-> XDP programs on the same interface, without having to put any
-> constraints on the programs themselves. I'm not disputing that this is
-> *possible* to do completely in userspace, I just don't believe the
-> resulting solution will be very good.
+These patches teach bpf verifier to recognize kfree_skb's first argument
+as 'struct sk_buff *' because this is what kernel C code is doing.
+The bpf program cannot 'cheat' and say that the first argument
+to kfree_skb raw_tracepoint is some other type.
+The verifier will catch such type mismatch between bpf program
+assumption of kernel code and the actual type in the kernel.
 
-What makes me uneasy about the whole push for program chaining
-is that tc cls_bpf supported multiple independent programs from day one.
-Yet it doesn't help to run two firewalls hooked into tc ingress.
-Similarly cgroup-bpf had a ton discussions on proper multi-prog api.
-Everyone was eventually convinced that it's flexible and generic.
-Yet people who started to use it complain that it's missing features
-to make it truly usable in production.
-Tracing is the only bit where multi-prog works.
-Because kernel always runs all programs there.
-If we could use PROG_RUN_ARRAY for XDP that could have been a solution.
-But we cannot. Return codes matter for XDP.
+Furthermore skb->dev access is type tracked as well.
+The verifier can see which field of skb is being read
+in bpf assembly. It will match offset to type.
+If bpf program has code:
+struct net_device *dev = (void *)skb->len;
+C compiler will not complain and generate bpf assembly code,
+but the verifier will recognize that integer 'len' field
+is being accessed at offsetof(struct sk_buff, len) and will reject
+further dereference of 'dev' variable because it contains
+integer value instead of a pointer.
+
+Such sophisticated type tracking allows calling networking
+bpf helpers from tracing programs.
+This patchset allows calling bpf_skb_event_output() that dumps
+skb data into perf ring buffer.
+It greatly improves observability.
+Now users can not only see packet lenth of the skb
+about to be freed in kfree_skb() kernel function, but can
+dump it to user space via perf ring buffer using bpf helper
+that was previously available only to TC and socket filters.
+See patch 10 for full example.
+
+The end result is safer and faster bpf tracing.
+Safer - because type safe direct load can be used most of the time
+instead of bpf_probe_read().
+Faster - because direct loads are used to walk kernel data structures
+instead of bpf_probe_read() calls.
+Note that such loads can page fault and are supported by
+hidden bpf_probe_read() in interpreter and via exception table
+if program is JITed.
+
+See patches for details.
+
+Alexei Starovoitov (11):
+  bpf: add typecast to raw_tracepoints to help BTF generation
+  bpf: add typecast to bpf helpers to help BTF generation
+  bpf: process in-kernel BTF
+  bpf: add attach_btf_id attribute to program load
+  libbpf: auto-detect btf_id of BTF-based raw_tracepoints
+  bpf: implement accurate raw_tp context access via BTF
+  bpf: attach raw_tp program with BTF via type name
+  bpf: add support for BTF pointers to interpreter
+  bpf: add support for BTF pointers to x86 JIT
+  bpf: check types of arguments passed into helpers
+  selftests/bpf: add kfree_skb raw_tp test
+
+ arch/x86/net/bpf_jit_comp.c                   |  97 +++++-
+ include/linux/bpf.h                           |  39 ++-
+ include/linux/bpf_verifier.h                  |   8 +-
+ include/linux/btf.h                           |   1 +
+ include/linux/extable.h                       |  10 +
+ include/linux/filter.h                        |   6 +-
+ include/trace/bpf_probe.h                     |   3 +-
+ include/uapi/linux/bpf.h                      |  28 +-
+ kernel/bpf/btf.c                              | 329 +++++++++++++++++-
+ kernel/bpf/core.c                             |  39 ++-
+ kernel/bpf/syscall.c                          |  88 +++--
+ kernel/bpf/verifier.c                         | 161 ++++++++-
+ kernel/extable.c                              |   2 +
+ kernel/trace/bpf_trace.c                      |   6 +-
+ net/core/filter.c                             |  15 +-
+ tools/include/uapi/linux/bpf.h                |  28 +-
+ tools/lib/bpf/bpf.c                           |   3 +
+ tools/lib/bpf/libbpf.c                        |  38 +-
+ .../selftests/bpf/prog_tests/kfree_skb.c      |  89 +++++
+ tools/testing/selftests/bpf/progs/kfree_skb.c | 103 ++++++
+ 20 files changed, 1023 insertions(+), 70 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/kfree_skb.c
+ create mode 100644 tools/testing/selftests/bpf/progs/kfree_skb.c
+
+-- 
+2.17.1
 
