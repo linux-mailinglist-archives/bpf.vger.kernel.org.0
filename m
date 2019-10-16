@@ -2,160 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 70061D9335
-	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2019 16:01:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D58BFD95A9
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2019 17:33:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388672AbfJPOBZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Oct 2019 10:01:25 -0400
-Received: from www62.your-server.de ([213.133.104.62]:34726 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388087AbfJPOBY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Oct 2019 10:01:24 -0400
-Received: from [2a02:120b:2c12:c120:71a0:62dd:894c:fd0e] (helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iKjrV-00075a-3a; Wed, 16 Oct 2019 16:01:13 +0200
-Date:   Wed, 16 Oct 2019 16:01:12 +0200
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Stanislav Fomichev <sdf@fomichev.me>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>, Yonghong Song <yhs@fb.com>
-Subject: Re: debug annotations for bpf progs. Was: [PATCH bpf-next 1/3] bpf:
- preserve command of the process that loaded the program
-Message-ID: <20191016140112.GF21367@pc-63.home>
-References: <20191011162124.52982-1-sdf@google.com>
- <CAADnVQLKPLXej_v7ymv3yJakoFLGeQwdZOJ5cZmp7xqOxfebqg@mail.gmail.com>
- <20191012003819.GK2096@mini-arch>
- <CAADnVQKuysEvFAX54+f0YPJ1+cgcRJbhrpVE7xmvLqu-ADrk+Q@mail.gmail.com>
+        id S2390841AbfJPPdS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Oct 2019 11:33:18 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:37616 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726332AbfJPPdS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Oct 2019 11:33:18 -0400
+Received: by mail-wr1-f68.google.com with SMTP id p14so28579029wro.4
+        for <bpf@vger.kernel.org>; Wed, 16 Oct 2019 08:33:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=references:from:to:cc:subject:in-reply-to:date:message-id
+         :mime-version;
+        bh=6bo+Ckv0dvhPOejyCby/622sskdAl0b3Wi8KW98Md0c=;
+        b=oNl+0fKR4nB+v+plQI21tqIgzIzXtsKe2zigQGgDgmUKQARVHq9oMlqVEzdBzBcM5F
+         DemvGgfKNkkOT8VFqUxyw5SGFrKT5LeKdx54BhCXZJLwyE2njAUP+rf7EEkZhyM9pCiM
+         FqToAGEj+0/olMKUob0ORKch0ho/FNoyeXHDFynTRyjlTShKFQwwMbcxB4d53jLRRaCT
+         BXlnFsAT5CJ/prdB0GVRzTUQjlkRK5YuWQtpdeufAO7SXMIjfTK4coXu7/grFwh3sRjr
+         p70Rw2sYX/Q5YAvkdQkzUW1SJd2S+Qsp8IU9zokGrr1eXn0U3VdCUINlh0j3iJWuWQeV
+         6Hrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=6bo+Ckv0dvhPOejyCby/622sskdAl0b3Wi8KW98Md0c=;
+        b=ICtVrUOu9gM7n2LpycxIWoZiKPrM55mflzQSZ9TTYOeappHr1xdGc2wm8xXYew5bEU
+         4rzYyDOH4pS8YZSpQ2/OUzsnA6KwVULYhOSx6rsW/Dl607E+d+VTC/Hu+AGTeTbuziWi
+         3NSfNSMFqaC/OUift5VD7oGjUj2J5v+B1bzG9NxGXgE0yuRfGT/SmUOm4fBSodi7wdrV
+         9BbKisvFfE3AkZ3jL+BJwuSssKKhu46c9dR4ZgEWckiMz6OivYIP2X7ADqsyOlHxkBhq
+         DIo16WPqDrEtOhHIHDHsVZoBRe5DKlLhVAJAWiZ3YeZpbc4CpI7RUNSBB7WoKp/s1TZI
+         RKGg==
+X-Gm-Message-State: APjAAAXaEWl8zVxhSOUK70fZsYLqc4ZvKIIP8lLzo8nSoL5sM31PstTo
+        GddOBQXRTYLrhFlc9RdHTwG13Q==
+X-Google-Smtp-Source: APXvYqwFbEtL60PJnG3/6vq5QdKSDK7Puu6LkU/X1s76sFOr5Vuz277vqDZzIlILurO58Vd5PAjpkQ==
+X-Received: by 2002:adf:ef4f:: with SMTP id c15mr3329021wrp.296.1571239996336;
+        Wed, 16 Oct 2019 08:33:16 -0700 (PDT)
+Received: from cbtest28.netronome.com ([217.38.71.146])
+        by smtp.gmail.com with ESMTPSA id d4sm25054977wrq.22.2019.10.16.08.33.15
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 16 Oct 2019 08:33:15 -0700 (PDT)
+References: <1570864740-16857-1-git-send-email-jiong.wang@netronome.com> <4bcc6709-cbdf-fbdc-7e5f-103a1160d05a@fb.com> <1rvepbpe.fsf@cbtest28.netronome.com>
+From:   Jiong Wang <jiong.wang@netronome.com>
+To:     Jiong Wang <jiong.wang@netronome.com>
+Cc:     Yonghong Song <yhs@fb.com>,
+        "alexei.starovoitov\@gmail.com" <alexei.starovoitov@gmail.com>,
+        "bpf\@vger.kernel.org" <bpf@vger.kernel.org>,
+        "oss-drivers\@netronome.com" <oss-drivers@netronome.com>
+Subject: Re: [LLVM PATCH] bpf: fix wrong truncation elimination when there is back-edge/loop
+In-reply-to: <1rvepbpe.fsf@cbtest28.netronome.com>
+Date:   Wed, 16 Oct 2019 16:33:15 +0100
+Message-ID: <4l08k8n8.fsf@cbtest28.netronome.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQKuysEvFAX54+f0YPJ1+cgcRJbhrpVE7xmvLqu-ADrk+Q@mail.gmail.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.101.4/25604/Wed Oct 16 10:53:05 2019)
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 15, 2019 at 02:21:50PM -0700, Alexei Starovoitov wrote:
-> On Fri, Oct 11, 2019 at 5:38 PM Stanislav Fomichev <sdf@fomichev.me> wrote:
-> > On 10/11, Alexei Starovoitov wrote:
-> > > On Fri, Oct 11, 2019 at 9:21 AM Stanislav Fomichev <sdf@google.com> wrote:
-> > > >
-> > > > Even though we have the pointer to user_struct and can recover
-> > > > uid of the user who has created the program, it usually contains
-> > > > 0 (root) which is not very informative. Let's store the comm of the
-> > > > calling process and export it via bpf_prog_info. This should help
-> > > > answer the question "which process loaded this particular program".
-> > > >
-> > > > Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> > > > ---
-> > > >  include/linux/bpf.h      | 1 +
-> > > >  include/uapi/linux/bpf.h | 2 ++
-> > > >  kernel/bpf/syscall.c     | 4 ++++
-> > > >  3 files changed, 7 insertions(+)
-> > > >
-> > > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > > > index 5b9d22338606..b03ea396afe5 100644
-> > > > --- a/include/linux/bpf.h
-> > > > +++ b/include/linux/bpf.h
-> > > > @@ -421,6 +421,7 @@ struct bpf_prog_aux {
-> > > >                 struct work_struct work;
-> > > >                 struct rcu_head rcu;
-> > > >         };
-> > > > +       char created_by_comm[BPF_CREATED_COMM_LEN];
-> > > >  };
-> > > >
-> > > >  struct bpf_array {
-> > > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > > > index a65c3b0c6935..4e883ecbba1e 100644
-> > > > --- a/include/uapi/linux/bpf.h
-> > > > +++ b/include/uapi/linux/bpf.h
-> > > > @@ -326,6 +326,7 @@ enum bpf_attach_type {
-> > > >  #define BPF_F_NUMA_NODE                (1U << 2)
-> > > >
-> > > >  #define BPF_OBJ_NAME_LEN 16U
-> > > > +#define BPF_CREATED_COMM_LEN   16U
-> > >
-> > > Nack.
-> > > 16 bytes is going to be useless.
-> > > We found it the hard way with prog_name.
-> > > If you want to embed additional debug information
-> > > please use BTF for that.
-> > BTF was my natural choice initially, but then I saw created_by_uid and
-> > thought created_by_comm might have a chance :-)
-> >
-> > To clarify, by BTF you mean creating some unused global variable
-> > and use its name as the debugging info? Or there is some better way?
-> 
-> I was thinking about adding new section to .btf.ext with this extra data,
-> but global variable is a better idea indeed.
-> We'd need to standardize such variables names, so that
-> bpftool can parse and print it while doing 'bpftool prog show'.
 
-+1, much better indeed.
+Jiong Wang writes:
 
-> We see more and more cases where services use more than
-> one program in single .c file to accomplish their goals.
-> Tying such debug info (like 'created_by_comm') to each program
-> individually isn't quite right.
-> In that sense global variables are better, since they cover the
-> whole .c file.
-> Beyond 'created_by_comm' there are others things that people
-> will likely want to know.
-> Like which version of llvm was used to compile this .o file.
-> Which unix user name compiled it.
-> The name of service/daemon that will be using this .o
-> and so on.
+> Yonghong Song writes:
+>
+>> On 10/12/19 12:18 AM, Jiong Wang wrote:
+>>> Currently, BPF backend is doing truncation elimination. If one truncation
+>>> is performed on a value defined by narrow loads, then it could be redundant
+>>> given BPF loads zero extend the destination register implicitly.
+>>> 
+>>> When the definition of the truncated value is a merging value (PHI node)
+>>> that could come from different code paths, then checks need to be done on
+>>> all possible code paths.
+>>> 
+>>> Above described optimization was introduced as r306685, however it doesn't
+>>> work when there is back-edge, for example when loop is used inside BPF
+>>> code.
+>>> 
+>>> For example for the following code, a zero-extended value should be stored
+>>> into b[i], but the "and reg, 0xffff" is wrongly eliminated which then
+>>> generates corrupted data.
+>>> 
+>>> void cal1(unsigned short *a, unsigned long *b, unsigned int k)
+>>> {
+>>>    unsigned short e;
+>>> 
+>>>    e = *a;
+>>>    for (unsigned int i = 0; i < k; i++) {
+>>>      b[i] = e;
+>>>      e = ~e;
+>>>    }
+>>> }
+>>> 
+>>> The reason is r306685 was trying to do the PHI node checks inside isel
+>>> DAG2DAG phase, and the checks are done on MachineInstr. This is actually
+>>> wrong, because MachineInstr is being built during isel phase and the
+>>> associated information is not completed yet. A quick search shows none
+>>> target other than BPF is access MachineInstr info during isel phase.
+>>> 
+>>> For an PHI node, when you reached it during isel phase, it may have all
+>>> predecessors linked, but not successors. It seems successors are linked to
+>>> PHI node only when doing SelectionDAGISel::FinishBasicBlock and this
+>>> happens later than PreprocessISelDAG hook.
+>>> 
+>>> Previously, BPF program doesn't allow loop, there is probably the reason
+>>> why this bug was not exposed.
+>>> 
+>>> This patch therefore fixes the bug by the following approach:
+>>>   - The existing truncation elimination code and the associated
+>>>     "load_to_vreg_" records are removed.
+>>>   - Instead, implement truncation elimination using MachineSSA pass, this
+>>>     is where all information are built, and keep the pass together with other
+>>>     similar peephole optimizations inside BPFMIPeephole.cpp. Redundant move
+>>>     elimination logic is updated accordingly.
+>>>   - Unit testcase included + no compilation errors for kernel BPF selftest.
+>>
+>> Thanks for the fix. The code looks good. Just two minor comments.
+>
+> Thanks Yonghong. Your comments make sense to me, will fix them.
+>
+>> After the fix, could you directly push to the llvm repo?
+>
+> Sure will do.
+>
+> (And I will update my llvm account email first, should be quick, if it takes
+> too long will come back to you for committing help)
 
-Also latest git sha of the source repo, for example.
+Fix pushed after two minor comments addressed and re-unit-tested:
 
-> May be some standard prefix to such global variables will do?
-> Like "bpftool prog show" can scan global data for
-> "__annotate_#name" and print both name and string contents ?
-> For folks who regularly ssh into servers to debug bpf progs
-> that will help a lot.
-> May be some annotations llvm can automatically add to .o.
-> Thoughts?
+  https://github.com/llvm/llvm-project/commit/ec51851026a55e1cfc7f006f0e75f0a19acb32d3
 
-One thing that might be less clear is how information such as comm
-or comm args would be stuffed into BTF here, but perhaps these two
-wouldn't necessarily need to be part of it since these can be retrieved
-today (as in: "which program is currently holding a reference via fd
-to a certain prog/map"). For that bpftool could simply walk procfs
-once and correlate via fdinfo on unique prog/map id, so we could list
-comms in the dump which should be trivial to add:
-
-  # ls -la /proc/30651/fd/10
-  lrwx------ 1 root root 64 Oct 16 15:53 /proc/30651/fd/10 -> anon_inode:bpf-map
-  # cat /proc/30651/fdinfo/10
-  pos:	0
-  flags:	02000002
-  mnt_id:	15
-  map_type:	1
-  key_size:	24
-  value_size:	12
-  max_entries:	65536
-  map_flags:	0x0
-  memlock:	6819840
-  map_id:	384          <---
-  frozen:	0
-  # cat /proc/30651/comm 
-  cilium-agent
-  # cat /proc/30651/cmdline 
-  ./daemon/cilium-agent--ipv4-range10.11.0.0/16[...]--enable-node-port=true
-
-... and similar for progs. Getting the cmdline from kernel side seems
-rather annoying from looking into what detour procfs needs to perform.
-
-But aside from these, such annotations via BTF would be really useful.
-
-Thanks,
-Daniel
+Regards,
+Jiong
