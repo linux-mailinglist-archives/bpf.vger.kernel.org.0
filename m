@@ -2,123 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C251D8819
-	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2019 07:25:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 396E0D8826
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2019 07:37:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732180AbfJPFZx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Oct 2019 01:25:53 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:36080 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726052AbfJPFZx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Oct 2019 01:25:53 -0400
-Received: by mail-pg1-f193.google.com with SMTP id 23so13569148pgk.3;
-        Tue, 15 Oct 2019 22:25:52 -0700 (PDT)
+        id S1732399AbfJPFhW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Oct 2019 01:37:22 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:42008 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729901AbfJPFhW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Oct 2019 01:37:22 -0400
+Received: by mail-qt1-f196.google.com with SMTP id w14so34306613qto.9;
+        Tue, 15 Oct 2019 22:37:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=tgB81cyefpFakuk6zdIviYL9506XtYk1wgoR57DN6ms=;
-        b=t3AjPm/ueds16Gdc4Of68h6MdRIa86PNBEG9y0li57o+Du0tLW/soOBC13TpTMbb5c
-         Jy0I1fdBqm7f7JqN91yx1u+AgkBhw+vHNLeOXb08q9HiI6GHXgioQXuAG1evS8e4Z8oz
-         KCUQaEABhM5N2zjxXb2oUMMox6UUGhPpyeIxKuLpBUK522qJjm5Dkopr33REYbN5TGrf
-         oHNy/z532OpDRetnTf8XSO7EQswSTCl8PdapIoVztalq9+gC+0lHx0cQ0Jx+/1MunUmC
-         LhC5Z7deAAYOgd8L2lpwjSZGNzQGfObMwrJZIf+Y8bqLEVHcyUlcvgi3ud6NSgfzVve9
-         FH1Q==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ifWWzUM+OPvSkjz/VHGuCaLoE+OCDB0c4pqApW6Yu4U=;
+        b=pAg/kPfEqrondc8rRKwGmTJxKN/LY6uoDvUIx9MUOCIFSHzr/w8yrNzfdHTAn1Er1q
+         pY7iHYvexTHEhboKHCQVW3E1LFjQmUKvdddi5+b+3lrkv3eGbQiT/t/2AtQejRZxqbqG
+         uIMyt7xhcmVtp5aTwLKvTmcHcW6bv2CcYs+LcPnd/9riq9yPyt9hRlCtukSzcHGomVHG
+         Ic6sd4zQbUUCSTqWC3TFie6124DsvyjJ43QQVvaGhsBQHluelp/qEXtSE2J+ZqoqfcNo
+         yVStxzXeanELj6WlN2inNX8yfcLmG42rdj/1Z+4crXbAe5vBHUm/hZNpjTxyCulevaWO
+         GRhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=tgB81cyefpFakuk6zdIviYL9506XtYk1wgoR57DN6ms=;
-        b=JPiVBeSSN6rvFAsRl4RM5JQgoZanFhhZuhEV404dRpYluC8+3v2k7cCmkb+Mh7zeE4
-         aLeotgoWnotfiWbonfaEyqLud1kTwoC7sRrHa7rfKgxBbb/qlJK8KhU+XAikMd5rpOZe
-         eg5ux+1oL+uh6PgrZFiV8b00fwaehyZWxHvRjjv0/FhW4/Tj1NZyoM09K4IuOTynpGl1
-         /utNWSs7FEwaAHMs1yqV4PQzHCMAq95MtLS9B91W3IddxNnJIGf1IkETIAqSPM8/iRLH
-         0vAlXnl5hVNtpzpO5RlLtCRULt8m4CU017OxRSXQz3l1m10bRup6epN9tuq+iWOwnBZo
-         wAyw==
-X-Gm-Message-State: APjAAAVeFWZVv2DgTiNvXSJTEAxuDHM8wARLQ3d6TGKdtc+plYuhXtMj
-        d+p8YJd2F2I8cEFQnZHKg1E=
-X-Google-Smtp-Source: APXvYqydb+5ITh8DgK3MAx2K6IDcb2fS1NWR7rTVdKOYao+qPBPYmgM4znQ/lj+TXnVeQTyVa+kO0w==
-X-Received: by 2002:a63:748:: with SMTP id 69mr24364599pgh.109.1571203552176;
-        Tue, 15 Oct 2019 22:25:52 -0700 (PDT)
-Received: from ast-mbp ([2620:10d:c090:180::8bc])
-        by smtp.gmail.com with ESMTPSA id i184sm26355174pge.5.2019.10.15.22.25.50
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 15 Oct 2019 22:25:51 -0700 (PDT)
-Date:   Tue, 15 Oct 2019 22:25:49 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
-        kafai@fb.com, linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        songliubraving@fb.com, yhs@fb.com, Aleksa Sarai <cyphar@cyphar.com>
-Subject: Re: [PATCH v3 2/3] bpf: use copy_struct_from_user() in
- bpf_prog_get_info_by_fd()
-Message-ID: <20191016052548.gktf2ctvee7mrwlr@ast-mbp>
-References: <20191016004138.24845-1-christian.brauner@ubuntu.com>
- <20191016034432.4418-1-christian.brauner@ubuntu.com>
- <20191016034432.4418-3-christian.brauner@ubuntu.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ifWWzUM+OPvSkjz/VHGuCaLoE+OCDB0c4pqApW6Yu4U=;
+        b=k5tg8PfmCuhOJKZg9JVYYrpnxm3FgRzjvzQVNukwp5x9oiaEYZDntWHq2InOS/kFUE
+         ST2vmg52QsAOND5StDc5D6v22p5Ux+VUPG0ZCz9gdqlDqYE2lxIS6wu1uXZXvzTX5h/z
+         mnMwNj/gnavizEzqDTerno2AHDGqlTWokaZAHdrKR+W8jhvUbxXbAU43tCcveIjdzt41
+         FwysIbfRPCLyXHnFcUtpjX4HA8qYGBejP+fNPcQxN+j4lXp3+53AetbiVoQy1L+n/2Ad
+         kXgbhf/fa8u3MVivfyqyfrGuWl2e41FLB+KuFE8ZEdsk5br2dyV6wTg0WnZskbjJmWLF
+         kQ/w==
+X-Gm-Message-State: APjAAAUfaRLUEpdq07p0U+tQmaJqRzfDdeODNIWwaORT6hol7dNM6+jN
+        TAS1GIHAtJwVRZIoRbw3FVre8PfU6uKstmTCF2Q=
+X-Google-Smtp-Source: APXvYqwHQInIy1+kCPmhf9YMPHClikU8XDE/0kCbdlH7vZNC0YoJsjgguPtCOpUo5zJH7J1sLLZ/20zug2jNmUC0BD4=
+X-Received: by 2002:a05:6214:134d:: with SMTP id b13mr39374514qvw.228.1571204239144;
+ Tue, 15 Oct 2019 22:37:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191016034432.4418-3-christian.brauner@ubuntu.com>
-User-Agent: NeoMutt/20180223
+References: <20191016032949.1445888-1-andriin@fb.com> <20191016032949.1445888-6-andriin@fb.com>
+ <112cd221-7403-efe2-3375-bb9cc8140744@fb.com>
+In-Reply-To: <112cd221-7403-efe2-3375-bb9cc8140744@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 15 Oct 2019 22:37:07 -0700
+Message-ID: <CAEf4BzZWESwpMymZSp7bW+701LEJrRCyydr9XpV86huT_vQRFw@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 5/6] selftests/bpf: replace test_progs and
+ test_maps w/ general rule
+To:     Alexei Starovoitov <ast@fb.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        Kernel Team <Kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 16, 2019 at 05:44:31AM +0200, Christian Brauner wrote:
-> In v5.4-rc2 we added a new helper (cf. [1]) copy_struct_from_user().
-> This helper is intended for all codepaths that copy structs from
-> userspace that are versioned by size. bpf_prog_get_info_by_fd() does
-> exactly what copy_struct_from_user() is doing.
-> Note that copy_struct_from_user() is calling min() already. So
-> technically, the min_t() call could go. But the info_len is used further
-> below so leave it.
-> 
-> [1]: f5a1a536fa14 ("lib: introduce copy_struct_from_user() helper")
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: bpf@vger.kernel.org
-> Acked-by: Aleksa Sarai <cyphar@cyphar.com>
-> Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
-> ---
-> /* v1 */
-> Link: https://lore.kernel.org/r/20191009160907.10981-3-christian.brauner@ubuntu.com
-> 
-> /* v2 */
-> Link: https://lore.kernel.org/r/20191016004138.24845-3-christian.brauner@ubuntu.com
-> - Alexei Starovoitov <ast@kernel.org>:
->   - remove unneeded initialization
-> 
-> /* v3 */
-> unchanged
-> ---
->  kernel/bpf/syscall.c | 9 +++------
->  1 file changed, 3 insertions(+), 6 deletions(-)
-> 
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index 40edcaeccd71..151447f314ca 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -2306,20 +2306,17 @@ static int bpf_prog_get_info_by_fd(struct bpf_prog *prog,
->  				   union bpf_attr __user *uattr)
->  {
->  	struct bpf_prog_info __user *uinfo = u64_to_user_ptr(attr->info.info);
-> -	struct bpf_prog_info info = {};
-> +	struct bpf_prog_info info;
->  	u32 info_len = attr->info.info_len;
->  	struct bpf_prog_stats stats;
->  	char __user *uinsns;
->  	u32 ulen;
->  	int err;
->  
-> -	err = bpf_check_uarg_tail_zero(uinfo, sizeof(info), info_len);
-> +	info_len = min_t(u32, sizeof(info), info_len);
-> +	err = copy_struct_from_user(&info, sizeof(info), uinfo, info_len);
+On Tue, Oct 15, 2019 at 10:11 PM Alexei Starovoitov <ast@fb.com> wrote:
+>
+> On 10/15/19 8:29 PM, Andrii Nakryiko wrote:
+> > Makefile:282: warning: overriding recipe for target
+> > `/data/users/andriin/linux/tools/testing/selftests/bpf/test_xdp.o'
+> > Makefile:277: warning: ignoring old recipe for target
+> > `/data/users/andriin/linux/tools/testing/selftests/bpf/test_xdp.o'
+>
+> I thought I can live with it, but no. It's too annoying.
+> Any make clean or make prints it.
 
-really?! min?!
-Frankly I'm disappointed in quality of these patches.
-Especially considering it's v3.
+agree :-)
 
-Just live the code alone.
+>
+> Also looking at commit f96afa767baf ("selftests/bpf: enable (uncomment)
+> all tests in test_libbpf.sh") that introduced this stuff...
+> I think it's all obsolete now.
+> test_libbpf* can be removed. test_progs nowadays do a lot more
+> than this mini-test.
+> Doing a test with clang native | llc -march=bpf is still useful,
+> but at this shape of test_libbpf it's pointless to continue doing so.
+> Such clang native test should be properly integrated into test_progs.
+> For now I suggest to remove this extra test_xdp.o recompilation
+> and remove test_libbpf*
 
+ok, will do in v3
