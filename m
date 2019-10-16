@@ -2,111 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ED025D9B4D
-	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2019 22:15:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B38BD9BD5
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2019 22:29:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732979AbfJPUPg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Oct 2019 16:15:36 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:46094 "EHLO
+        id S2437152AbfJPU3o (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Oct 2019 16:29:44 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:36679 "EHLO
         mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732607AbfJPUPf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Oct 2019 16:15:35 -0400
-Received: by mail-qk1-f196.google.com with SMTP id e66so3465549qkf.13;
-        Wed, 16 Oct 2019 13:15:35 -0700 (PDT)
+        with ESMTP id S1728881AbfJPU3n (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Oct 2019 16:29:43 -0400
+Received: by mail-qk1-f196.google.com with SMTP id y189so24096961qkc.3;
+        Wed, 16 Oct 2019 13:29:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=kf3hDa5YAz/XQp+IPwm8BoZ0nstruffpAZQ7AuOQYiA=;
-        b=VhNFe4oLUouMjdPaNTmIq7DzEvfVsV6OjFzF+6px4TsrNsC5TAcBlnlktrlyOdlvds
-         aI+TzU2SvB2q60nWqPcUMWBBqwVVdOVKaY2omRIh914AlxMlrZsKCxT5SKDfSmF9IO5/
-         frwFiH1HlLGyTVBKRaK+LqTEynVZ8QtiyDrvvzaRyI2Vvyxt03ZMlFdgTjqeKGFvdm3l
-         ql6RbJWwJSbgXhEJP6DpJqBEBQEtffhoLSsfW0LZCc8NpOUplPmIhJ2wU+VVmms8qONA
-         F4mqyW4VK3MqKI4F0xj3HLjDNRILqlxpwkK3TuJPHJP8Rg06zmCYUU84OSJ5YCaUUuKS
-         OMSQ==
+        bh=pjsbzqJi4QofWr6hfDLEGMxJ4eBqrwiepHhxIykIV2w=;
+        b=vNVxT30KJy4SHjMAk0X8VD4q//AiNIxJOYMTxFDPJk8S6JrnigQLmOJ2g2W2J6qKQ7
+         dCne4RF0QN5t4C0Vj+ThIguvOhInc+6IspkDuCjOV3Kh1eBxAfLtAVYzoufOkyC1shxH
+         SAIido1ftQsVboqperyidk7I7w4L85sgItnfPA+E1Xd2OC5a03sNpJqPtMA36VG5rC/x
+         UDDeEhW4D8qJH4L3LYAD66v8uHOj5Y8CEyLVGoHcQjeROI9o53o2qkPplBYRIq91l9cH
+         hCqPuDkK/vVsvF2AmmpopELZw3E2AaeAlDz6CZZhRjmOcKaU4/Ez8oAfzD9eMR8BEBSM
+         6ZVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=kf3hDa5YAz/XQp+IPwm8BoZ0nstruffpAZQ7AuOQYiA=;
-        b=cCyrjyTYhc4RpSLvMLarQBCtZ7Tu3r2pIggsZWSdFM4IoWQrKyUEuOKn16GQxw4e7u
-         nqEkrQeJKWPX+515B72BLltPJk05DgSI5UTgR2xKhCZexaB15SyetnrxU6QHOsksGrTM
-         pRauOwVWiUXmNmFUwt+TZyIbvXgzn1prH8ZVuswFOxMGl7EKPP3mEctmF46Pci0CXyur
-         /Vn4sk8ZfNEvCMFmUHHUJWarmfhXa+JpeXmY2xj8aYlZoMGp6XhXyqBKNRRcgvLZlQwi
-         3f7yEK7FGnEMzzMrR5c+YoFD+WCKcTRcmdCNIfHLfWPKisK3YHsv9/Cos6qnwpKVV1oV
-         WGQw==
-X-Gm-Message-State: APjAAAXFHS/6G7DXZ4klBPNlR6CzSuLDhBoIcOxGhA3aaoa+v5eEPazN
-        ghxkNUq+niUxfzsMu3Gpf32JtLhZ1sI3K88Y3ug=
-X-Google-Smtp-Source: APXvYqwrQxpfhp8YRw2NyS/OgpOa0QmWwAWmewhlV9w9vh6/N/mcD5L9ud40KHPqMF7QdCUTOIQWiJZVQ26kqoexfRc=
-X-Received: by 2002:a37:6d04:: with SMTP id i4mr43912301qkc.36.1571256934394;
- Wed, 16 Oct 2019 13:15:34 -0700 (PDT)
+        bh=pjsbzqJi4QofWr6hfDLEGMxJ4eBqrwiepHhxIykIV2w=;
+        b=WetiXCEwbGeIo6RolxsRXe90ftV7URUh+ciNI3iyRzC2ML65ux7B0+G4P8SRFEG+y5
+         PXEYpcI/to5Yb6wlnO9In0b9aCu3b+u7jOpkSVi9OvOxbsxZLVs0JHNdTki9CxaVEY0D
+         IW+PoW5fMLzmRyTCZc9waZVScIqpYG8f7LqO31QllgC5fU8qbYSRv6etwB4Snm3+kP3R
+         NVZyXyQTtjYUTy/aClqF5rt/hDHw5SB6Lvcde7tGBnmxlL/AwtneO6s3zyvBNAlqVEGD
+         FWKTvYP47XrUod0K1m3nDcvIesBe3PtIAaMJuXnYI+JNZxGwTpmZEWbAvJ7GuFWXDeiT
+         KA4A==
+X-Gm-Message-State: APjAAAVL0YkJ2SRm2BaPuDf5L63IuO6Kzjt+BKsTGlSHo2zcRjkEJNTT
+        BAjjSiqZ5z59F4fR/pSUSLoS8ZJ7d94923ytwi9z1UMt
+X-Google-Smtp-Source: APXvYqwjkgMW/o3T/HcVQYU6B7hOpz76gsRx/Fj5IdAVWEPE9dirNwBHUQxF7nAy60iExhAISUTZg2bmIcOtGUIh4Sg=
+X-Received: by 2002:a37:4c13:: with SMTP id z19mr44970410qka.449.1571257781250;
+ Wed, 16 Oct 2019 13:29:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <20191016032505.2089704-1-ast@kernel.org> <20191016032505.2089704-10-ast@kernel.org>
-In-Reply-To: <20191016032505.2089704-10-ast@kernel.org>
+References: <20191016085811.11700-1-jakub@cloudflare.com>
+In-Reply-To: <20191016085811.11700-1-jakub@cloudflare.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 16 Oct 2019 13:15:23 -0700
-Message-ID: <CAEf4BzZ+p718RBxQUO5hDv3bfXz=KPcuxmLhHw3P9hHKSp4MCA@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 09/11] bpf: add support for BTF pointers to
- x86 JIT
-To:     Alexei Starovoitov <ast@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>, x86@kernel.org,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
+Date:   Wed, 16 Oct 2019 13:29:30 -0700
+Message-ID: <CAEf4BzYUoGx9G6-8EYWReTamNGVmrOcWHEaqemRuv8+np1x17Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] scripts/bpf: Emit an #error directive known
+ types list needs updating
+To:     Jakub Sitnicki <jakub@cloudflare.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        kernel-team@cloudflare.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 16, 2019 at 4:16 AM Alexei Starovoitov <ast@kernel.org> wrote:
+On Wed, Oct 16, 2019 at 6:21 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
 >
-> Pointer to BTF object is a pointer to kernel object or NULL.
-> Such pointers can only be used by BPF_LDX instructions.
-> The verifier changed their opcode from LDX|MEM|size
-> to LDX|PROBE_MEM|size to make JITing easier.
-> The number of entries in extable is the number of BPF_LDX insns
-> that access kernel memory via "pointer to BTF type".
-> Only these load instructions can fault.
-> Since x86 extable is relative it has to be allocated in the same
-> memory region as JITed code.
-> Allocate it prior to last pass of JITing and let the last pass populate it.
-> Pointer to extable in bpf_prog_aux is necessary to make page fault
-> handling fast.
-> Page fault handling is done in two steps:
-> 1. bpf_prog_kallsyms_find() finds BPF program that page faulted.
->    It's done by walking rb tree.
-> 2. then extable for given bpf program is binary searched.
-> This process is similar to how page faulting is done for kernel modules.
-> The exception handler skips over faulting x86 instruction and
-> initializes destination register with zero. This mimics exact
-> behavior of bpf_probe_read (when probe_kernel_read faults dest is zeroed).
+> Make the compiler report a clear error when bpf_helpers_doc.py needs
+> updating rather than rely on the fact that Clang fails to compile
+> English:
 >
-> JITs for other architectures can add support in similar way.
-> Until then they will reject unknown opcode and fallback to interpreter.
+> ../../../lib/bpf/bpf_helper_defs.h:2707:1: error: unknown type name 'Unrecognized'
+> Unrecognized type 'struct bpf_inet_lookup', please add it to known types!
 >
-> Since extable should be aligned and placed near JITed code
-> make bpf_jit_binary_alloc() return 4 byte aligned image offset,
-> so that extable aligning formula in bpf_int_jit_compile() doesn't need
-> to rely on internal implementation of bpf_jit_binary_alloc().
-> On x86 gcc defaults to 16-byte alignment for regular kernel functions
-> due to better performance. JITed code may be aligned to 16 in the future,
-> but it will use 4 in the meantime.
->
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
 > ---
-
-Missed my ack from v2:
-
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-
->  arch/x86/net/bpf_jit_comp.c | 97 +++++++++++++++++++++++++++++++++++--
->  include/linux/bpf.h         |  3 ++
->  include/linux/extable.h     | 10 ++++
->  kernel/bpf/core.c           | 20 +++++++-
->  kernel/bpf/verifier.c       |  1 +
->  kernel/extable.c            |  2 +
->  6 files changed, 128 insertions(+), 5 deletions(-)
+>  scripts/bpf_helpers_doc.py | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
+> diff --git a/scripts/bpf_helpers_doc.py b/scripts/bpf_helpers_doc.py
+> index 7df9ce598ff9..08300bc024da 100755
+> --- a/scripts/bpf_helpers_doc.py
+> +++ b/scripts/bpf_helpers_doc.py
+> @@ -489,7 +489,7 @@ class PrinterHelpers(Printer):
+>          if t in self.mapped_types:
+>              return self.mapped_types[t]
+>          print("")
+> -        print("Unrecognized type '%s', please add it to known types!" % t)
+> +        print("#error \"Unrecognized type '%s', please add it to known types!\"" % t)
 
-[...]
+My bad, this was intended to be printed to stderr, not to stdout
+output. Can you please do a follow up patch turning this into eprint
+instead?
+
+This shouldn't be reported by Clang, rather by tool. And we should
+ensure in libbpf's Makefile that bpf_helper_defs.h is deleted on
+error. I'll do it a bit later, unless you'll beat me to it.
+
+>          sys.exit(1)
+>
+>      seen_helpers = set()
+> --
+> 2.20.1
+>
