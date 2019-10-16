@@ -2,102 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D63ACD8A11
-	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2019 09:43:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDA10D8A90
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2019 10:11:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390082AbfJPHnZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Oct 2019 03:43:25 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:35474 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728201AbfJPHnZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Oct 2019 03:43:25 -0400
-Received: from [213.220.153.21] (helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1iKdxp-0005wu-W5; Wed, 16 Oct 2019 07:43:22 +0000
-Date:   Wed, 16 Oct 2019 09:43:21 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
-        kafai@fb.com, linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        songliubraving@fb.com, yhs@fb.com, Aleksa Sarai <cyphar@cyphar.com>
-Subject: Re: [PATCH v3 2/3] bpf: use copy_struct_from_user() in
- bpf_prog_get_info_by_fd()
-Message-ID: <20191016074320.smgazuy6cyrfa2ef@wittgenstein>
-References: <20191016004138.24845-1-christian.brauner@ubuntu.com>
- <20191016034432.4418-1-christian.brauner@ubuntu.com>
- <20191016034432.4418-3-christian.brauner@ubuntu.com>
- <20191016052548.gktf2ctvee7mrwlr@ast-mbp>
+        id S2390532AbfJPILT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Oct 2019 04:11:19 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:42686 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389335AbfJPILS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Oct 2019 04:11:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=yhp7/wioyWdXQ41hYrVkjHUb5LQ88gTZsVFVxqZKTWk=; b=GY891JeYC2clnL7e+YPp0VCD4
+        rHxKPcTwcGHFJ4Jdkx8VbhwuvztYlZ5GVzfxjhY66QeRmebKcEc/rwaxjbO1G1NDuWAo7UMD5Yyma
+        fm/dQx5Eu6TdhNaymWtYNr0vu9QCqFiZtWaQNiLRewZGRuJWBscXxOE3q/TyYih0/EzM1iXEc7QgT
+        D7Jl9mW+p5tfUYF8L4IaOJVmBwzIS7A7e9O6M4sMDqFGefPIppiuThSr3rhY7kZKaeWClElJ/kI/A
+        j5yDOsZIr0jmreVFFVXnOyO5V9GGhHyDqGuHUlCYXCNedfsSE2ngWoapfXC97wvkTSv2Qaeg2vsA2
+        k/H4sivjA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1iKeOH-0003kn-Al; Wed, 16 Oct 2019 08:10:41 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EFB60305BD3;
+        Wed, 16 Oct 2019 10:09:41 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B806020B972E4; Wed, 16 Oct 2019 10:10:36 +0200 (CEST)
+Date:   Wed, 16 Oct 2019 10:10:36 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Stephen Smalley <sds@tycho.nsa.gov>, linux-kernel@vger.kernel.org,
+        rostedt@goodmis.org, primiano@google.com, rsavitski@google.com,
+        jeffv@google.com, kernel-team@android.com,
+        James Morris <jmorris@namei.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        bpf@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        linux-security-module@vger.kernel.org,
+        Matthew Garrett <matthewgarrett@google.com>,
+        Namhyung Kim <namhyung@kernel.org>, selinux@vger.kernel.org,
+        Song Liu <songliubraving@fb.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Yonghong Song <yhs@fb.com>
+Subject: Re: [PATCH v2] perf_event: Add support for LSM and SELinux checks
+Message-ID: <20191016081036.GN2328@hirez.programming.kicks-ass.net>
+References: <20191014170308.70668-1-joel@joelfernandes.org>
+ <c5bd06a4-54a4-b56e-457c-df36f05d2e3f@tycho.nsa.gov>
+ <20191016003500.GC89937@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191016052548.gktf2ctvee7mrwlr@ast-mbp>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20191016003500.GC89937@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 15, 2019 at 10:25:49PM -0700, Alexei Starovoitov wrote:
-> On Wed, Oct 16, 2019 at 05:44:31AM +0200, Christian Brauner wrote:
-> > In v5.4-rc2 we added a new helper (cf. [1]) copy_struct_from_user().
-> > This helper is intended for all codepaths that copy structs from
-> > userspace that are versioned by size. bpf_prog_get_info_by_fd() does
-> > exactly what copy_struct_from_user() is doing.
-> > Note that copy_struct_from_user() is calling min() already. So
-> > technically, the min_t() call could go. But the info_len is used further
-> > below so leave it.
-> > 
-> > [1]: f5a1a536fa14 ("lib: introduce copy_struct_from_user() helper")
-> > Cc: Alexei Starovoitov <ast@kernel.org>
-> > Cc: Daniel Borkmann <daniel@iogearbox.net>
-> > Cc: bpf@vger.kernel.org
-> > Acked-by: Aleksa Sarai <cyphar@cyphar.com>
-> > Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
-> > ---
-> > /* v1 */
-> > Link: https://lore.kernel.org/r/20191009160907.10981-3-christian.brauner@ubuntu.com
-> > 
-> > /* v2 */
-> > Link: https://lore.kernel.org/r/20191016004138.24845-3-christian.brauner@ubuntu.com
-> > - Alexei Starovoitov <ast@kernel.org>:
-> >   - remove unneeded initialization
-> > 
-> > /* v3 */
-> > unchanged
-> > ---
-> >  kernel/bpf/syscall.c | 9 +++------
-> >  1 file changed, 3 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> > index 40edcaeccd71..151447f314ca 100644
-> > --- a/kernel/bpf/syscall.c
-> > +++ b/kernel/bpf/syscall.c
-> > @@ -2306,20 +2306,17 @@ static int bpf_prog_get_info_by_fd(struct bpf_prog *prog,
-> >  				   union bpf_attr __user *uattr)
-> >  {
-> >  	struct bpf_prog_info __user *uinfo = u64_to_user_ptr(attr->info.info);
-> > -	struct bpf_prog_info info = {};
-> > +	struct bpf_prog_info info;
-> >  	u32 info_len = attr->info.info_len;
-> >  	struct bpf_prog_stats stats;
-> >  	char __user *uinsns;
-> >  	u32 ulen;
-> >  	int err;
-> >  
-> > -	err = bpf_check_uarg_tail_zero(uinfo, sizeof(info), info_len);
-> > +	info_len = min_t(u32, sizeof(info), info_len);
-> > +	err = copy_struct_from_user(&info, sizeof(info), uinfo, info_len);
-> 
-> really?! min?!
-> Frankly I'm disappointed in quality of these patches.
-> Especially considering it's v3.
-> 
-> Just live the code alone.
+On Tue, Oct 15, 2019 at 08:35:00PM -0400, Joel Fernandes wrote:
+> Peter, if you are Ok with it, could you squash the below diff into my
+> original patch? But let me know if you want me to resend the whole patch
+> again. Thanks.
 
-Oh, I didn't see that part. I didn't know that this would upset
-you that much. Sure, I can leave the code alone. Or I try to fix this
-up. If you're not happy with you can just ignore this.
+Folded thanks!
 
-Christian
+I had assumed it was required such that selinux/apparmour/etc.. could
+use these values from their policy.
+
+If that is not required, then moving them private is indeed the right
+thing.
