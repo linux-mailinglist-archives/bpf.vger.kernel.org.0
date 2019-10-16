@@ -2,106 +2,195 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 80EA3D9615
-	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2019 17:57:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0B3CD972D
+	for <lists+bpf@lfdr.de>; Wed, 16 Oct 2019 18:24:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392176AbfJPP5J (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Oct 2019 11:57:09 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:44068 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389769AbfJPP5J (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Oct 2019 11:57:09 -0400
-Received: by mail-oi1-f195.google.com with SMTP id w6so20416692oie.11
-        for <bpf@vger.kernel.org>; Wed, 16 Oct 2019 08:57:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sage.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=9sEGwNR+vs1wvXocKihgDcCfWg7F97MWXpiCKTda+Uo=;
-        b=bhBw5IpPG3f7MC1dp/X9TYLBmZE/AL8nW+PBx/BxtAPR6xKfsP2aEKY9GK8XZhV/dc
-         cH2ruNlDTzUUq/xMGzZDnu1Edx5oYu0sQXWhPeWYA37KQgj6fhMXdSuLPtT7VejbYfFI
-         oxM3bLUnOhIuyFfM5w3akIli/6MA4AedIENPOWe6KZGse1wtkaVWwTaAbypE/nqVEwbt
-         Ehsf6JIQXNqo1tqq31Mco6Aqw1gaoxIn4WEbq7ddktKN+vEPMqOAozB+AiKQKVGqPhL3
-         66dBefHjoowPqoufa8yUAbONsjWCbFQvjFGaBFvJyOysOd16Jo+w7lNxW+qwjmCEffkz
-         KZRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=9sEGwNR+vs1wvXocKihgDcCfWg7F97MWXpiCKTda+Uo=;
-        b=O7wLgfMnDjJHYA1VEOXB4onIukbC3X/ANcvEvNdmO2m2MdkY7SpIFjzTDltU+MEmWV
-         tciKmGwqsRD0GD4QcytURSC6Jy2u7BayTnMJX/ksoakofNnEmJOmXXiVnNwrOe0+F+wt
-         uSVJiySccitQD6efEa9zAIMZWVLoa85GZIuFlmsCpESJ/ax4t2Xei0kGbHf5aQpEge5h
-         Iwyjv0smF2aIdEpw4v1/Hj/std6bDevNZWHoaz52UwZv67fLKdMsaDbgWnXlRZE4Xv6y
-         ldhrPIBTgMSONQaUypVI0PPtkI3oTiBebKloK7j6eGU1FDKSXra8hE37DYPl5zZhJLbi
-         pGoA==
-X-Gm-Message-State: APjAAAURQTeQn1I89Fqo6vmnG7OnWz/m2zQAy2fstTJlONmsoxwjp52i
-        aO0YuPHE6CXOKByP4Nnj8O8iYQ==
-X-Google-Smtp-Source: APXvYqyF9/9fNqu2WQyi04V/AS2P19dOaZraXWn+HvL6HDyHYW+8OHCldpiO9zJQlqVQFJQTnly56A==
-X-Received: by 2002:a05:6808:355:: with SMTP id j21mr3938368oie.160.1571241427024;
-        Wed, 16 Oct 2019 08:57:07 -0700 (PDT)
-Received: from wizard.attlocal.net ([2600:1700:4a30:fd70::13])
-        by smtp.gmail.com with ESMTPSA id n65sm7540433oib.35.2019.10.16.08.57.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Oct 2019 08:57:06 -0700 (PDT)
-Date:   Wed, 16 Oct 2019 08:57:01 -0700
-From:   Eric Sage <eric@sage.org>
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        xdp-newbies@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Subject: Re: [PATCH] samples/bpf: make xdp_monitor use raw_tracepoints
-Message-ID: <20191016155701.GA18708@wizard.attlocal.net>
-References: <20191007045726.21467-1-eric@sage.org>
- <20191007110020.6bf8dbc2@carbon>
- <CAEf4BzacEF0Ga921DCuYCVTxR4rFdOzmRt5o0T7HH-H38gEccg@mail.gmail.com>
- <20191016042104.GA27738@wizard.attlocal.net>
- <20191016153426.1d976f17@carbon>
+        id S2406117AbfJPQY3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Oct 2019 12:24:29 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:43304 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2406242AbfJPQYZ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 16 Oct 2019 12:24:25 -0400
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id x9GGNvUl032056;
+        Wed, 16 Oct 2019 09:24:10 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=Y8b3O0izGH6B6oAvyk29Fca6qMkN85XhYT8t4N2ucvI=;
+ b=T3eq0IbvsFC+wVKXexuoaLFSJrstHV1aVx4FHBO2JfSxjrrOvyD6p5z6B+Ghx7AQkXmb
+ 5TvmxwMdqDXR0E0PBWfqpyuaWAEP9xgJaNPnuM4CfdL4Eo+JPTsSB9CpHFmS4R3VJh/4
+ 9+DCiTxsIr1R6TO/LJ1cWDdq+iIMjcRJDvg= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by m0089730.ppops.net with ESMTP id 2vp3uk0wm0-16
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 16 Oct 2019 09:24:10 -0700
+Received: from prn-hub06.TheFacebook.com (2620:10d:c081:35::130) by
+ prn-hub05.TheFacebook.com (2620:10d:c081:35::129) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Wed, 16 Oct 2019 09:24:09 -0700
+Received: from NAM03-BY2-obe.outbound.protection.outlook.com (192.168.54.28)
+ by o365-in.thefacebook.com (192.168.16.30) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
+ via Frontend Transport; Wed, 16 Oct 2019 09:24:09 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mUKpf6yFjkg5cxguWZkwflZuh9SC4fZdZwluR06xwvUOn3v1xDgsxdOhGOYp1uCYqf2p6JUa+RQCm4u8vrYHbwg2hwjk2PGG5LxHZ3ZK2or86c9mxBNoUnK+05v9FnLgJrtazrl8938NG2VlST6uH031VF6iDG6/qQmpf5mtoW4B1GLlv3J4g7aqxsXaaHg4VBD2oPHDjGBo/28i9KRDEQfp3ULOdOu95U1nCRGchb6fiBsUOHdu0BYsaygNNrnxu5VmOcWtVPm1lQnp5fwenr/Z6K8OJYgzh5HE9lXCmFaoBlvKocqfcu6JeyE53GG8d0VMldWZy0f9vNDicVWhgw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Y8b3O0izGH6B6oAvyk29Fca6qMkN85XhYT8t4N2ucvI=;
+ b=C3n4cpTbyM+4F0/Nu77C8lcq8Fl6j8Depq+kn3w0fdL1HpG2qeiscXRosct+5NIdU19NPMTncqWNRllU/r0kB6FdgLSo9Rc9rgRawK/ixXsxqypjdfqKEUdvvfQHFPxvS7Cd5wZsoer++AMWYgAe0r4cQazosPm5tRcR2yWwGruSch6nM/2YjsOry16wjL1cz7QMR2x2Nyqy6glRBuuyN6yTIdoS4RJr/ZPPpKZ3mix+ELHaYnurjvfKcyRSHG77ghdVqAuXtPxMQuoS9fQV+LlZj4WNwnPvswkzLLBt243RWIaMCovhFmwc0af/CsRInXYpSZZxGmoVSMa/QJxIuQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Y8b3O0izGH6B6oAvyk29Fca6qMkN85XhYT8t4N2ucvI=;
+ b=ixMfxQcW9wvYZ26SGqYqBqqP5HFhfR0mrrJ5+j+M/dxZeJo9TsPLxPZRc77muGUqcVy7K+L+Yifrvr/YZ/tOHYuQ9dFqorHlgsGC1+NQbXOAx+n8Q9BXg6opIFbSUMzfneLPY+s5BGWyIxtKVv0OOvxHIE71XXnFTpVzcDStn58=
+Received: from MN2PR15MB3213.namprd15.prod.outlook.com (20.179.21.76) by
+ MN2PR15MB3037.namprd15.prod.outlook.com (20.178.254.81) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2347.22; Wed, 16 Oct 2019 16:24:08 +0000
+Received: from MN2PR15MB3213.namprd15.prod.outlook.com
+ ([fe80::d5a4:a2a6:a805:6647]) by MN2PR15MB3213.namprd15.prod.outlook.com
+ ([fe80::d5a4:a2a6:a805:6647%7]) with mapi id 15.20.2347.023; Wed, 16 Oct 2019
+ 16:24:08 +0000
+From:   Martin Lau <kafai@fb.com>
+To:     =?iso-8859-1?Q?Toke_H=F8iland-J=F8rgensen?= <toke@redhat.com>
+CC:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@fb.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Subject: Re: [PATCH bpf] xdp: Handle device unregister for devmap_hash map
+ type
+Thread-Topic: [PATCH bpf] xdp: Handle device unregister for devmap_hash map
+ type
+Thread-Index: AQHVhCdnOR3nrj1xGEaiOpwmcUHfkqddc+mA
+Date:   Wed, 16 Oct 2019 16:24:08 +0000
+Message-ID: <20191016162357.b2kdf6cflw3c5gzb@kafai-mbp.dhcp.thefacebook.com>
+References: <20191016132802.2760149-1-toke@redhat.com>
+In-Reply-To: <20191016132802.2760149-1-toke@redhat.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: CO2PR04CA0084.namprd04.prod.outlook.com
+ (2603:10b6:102:1::52) To MN2PR15MB3213.namprd15.prod.outlook.com
+ (2603:10b6:208:3d::12)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c090:180::f9fb]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: fba8a5a1-fa80-4bcc-9e01-08d752554529
+x-ms-traffictypediagnostic: MN2PR15MB3037:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MN2PR15MB303710CF878D8D1DF075F9FED5920@MN2PR15MB3037.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3826;
+x-forefront-prvs: 0192E812EC
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(366004)(376002)(136003)(39860400002)(346002)(396003)(199004)(189003)(11346002)(71200400001)(6506007)(81156014)(316002)(8936002)(81166006)(86362001)(7736002)(478600001)(6916009)(54906003)(8676002)(102836004)(52116002)(76176011)(186003)(6116002)(229853002)(486006)(476003)(305945005)(446003)(14444005)(386003)(256004)(99286004)(25786009)(46003)(71190400001)(6246003)(9686003)(2906002)(4326008)(6486002)(66946007)(66476007)(5660300002)(14454004)(6436002)(66574012)(66446008)(1076003)(64756008)(66556008)(6512007);DIR:OUT;SFP:1102;SCL:1;SRVR:MN2PR15MB3037;H:MN2PR15MB3213.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: bYdKlqimPGi6Qz5rdkOQFaneIOz0Fk+y3CeCWG0eTCpwK0NOX9JrIQ7WuTIUAdC2NXOmNyhs/0j9yGxdsd56tKBW7B1hDZZrbsEM5t4Em31QRpmlcDbsuTPF7btzMbyN1ay9MggEvWBBGxpz+z1M727U51yEYWSlIinwQL1X0asGLWSLqWFubNEVszlMjaEtj4Q68+gzK4CkrWXy8mAhLsZ6HjOeHiCNZlxoJWPKrzEqlGT1AZ4NKY5sRj3kg08ahS6dBtMbZY22D9KIBNs5ER5f+l4MeEXO2LGlH6H2KGgr/Cw8HbAhvB+5M7m+FglLKjNoqZAfiY97Nl6uU9yWitMqc2HNVmGKFaAb+2dVWCZAgcBEPg895FGuS+Wju+0W91TeS2bG7xQ0ttPC2vLjzcX9bVVfR4YrayHc3ue3/aA=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-ID: <4C918A4FAAC0444D87AA2CF002261D22@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20191016153426.1d976f17@carbon>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+X-MS-Exchange-CrossTenant-Network-Message-Id: fba8a5a1-fa80-4bcc-9e01-08d752554529
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Oct 2019 16:24:08.4526
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: bOu6Lh3aBnzOUtgAsUC9gc3vhL9leefJ+EyeGI99/OG6L2+yrJ7SzG4ilCp1sV3q
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB3037
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
+ definitions=2019-10-16_07:2019-10-16,2019-10-16 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
+ mlxlogscore=800 mlxscore=0 phishscore=0 suspectscore=0 malwarescore=0
+ adultscore=0 clxscore=1011 bulkscore=0 spamscore=0 lowpriorityscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1908290000 definitions=main-1910160138
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 16, 2019 at 03:34:26PM +0200, Jesper Dangaard Brouer wrote:
-> On Tue, 15 Oct 2019 21:21:04 -0700
-> Eric Sage <eric@sage.org> wrote:
-> 
-> > I'm no longer able to build the samples with 'make M=samples/bpf'.
-> > 
-> > I get errors in task_fd_query_user.c like:
-> > 
-> > samples/bpf/task_fd_query_user.c:153:29: error: ‘PERF_EVENT_IOC_ENABLE’
-> > undeclared.
-> > 
-> > Am I missing a dependancy?
-> 
-> Have you remembered to run:
-> 
->  make headers_install
-> 
-> (As described in samples/bpf/README)
+On Wed, Oct 16, 2019 at 03:28:02PM +0200, Toke H=F8iland-J=F8rgensen wrote:
+> It seems I forgot to add handling of devmap_hash type maps to the device
+> unregister hook for devmaps. This omission causes devices to not be
+> properly released, which causes hangs.
+>=20
+> Fix this by adding the missing handler.
+>=20
+> Fixes: 6f9d451ab1a3 ("xdp: Add devmap_hash map type for looking up device=
+s by hashed index")
+> Reported-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+> Signed-off-by: Toke H=F8iland-J=F8rgensen <toke@redhat.com>
+> ---
+>  kernel/bpf/devmap.c | 34 ++++++++++++++++++++++++++++++++++
+>  1 file changed, 34 insertions(+)
+>=20
+> diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
+> index d27f3b60ff6d..deb9416341e9 100644
+> --- a/kernel/bpf/devmap.c
+> +++ b/kernel/bpf/devmap.c
+> @@ -719,6 +719,35 @@ const struct bpf_map_ops dev_map_hash_ops =3D {
+>  	.map_check_btf =3D map_check_no_btf,
+>  };
+> =20
+> +static void dev_map_hash_remove_netdev(struct bpf_dtab *dtab,
+> +				       struct net_device *netdev)
+> +{
+> +	int i;
+> +
+> +	for (i =3D 0; i < dtab->n_buckets; i++) {
+> +		struct bpf_dtab_netdev *dev, *odev;
+> +		struct hlist_head *head;
+> +
+> +		head =3D dev_map_index_hash(dtab, i);
+> +		dev =3D hlist_entry_safe(rcu_dereference_raw(hlist_first_rcu(head)),
+> +				       struct bpf_dtab_netdev,
+> +				       index_hlist);
+> +
+> +		while (dev) {
+> +			odev =3D (netdev =3D=3D dev->dev) ? dev : NULL;
+> +			dev =3D hlist_entry_safe(rcu_dereference_raw(hlist_next_rcu(&dev->ind=
+ex_hlist)),
+> +					       struct bpf_dtab_netdev,
+> +					       index_hlist);
+> +
+> +			if (odev) {
+> +				hlist_del_rcu(&odev->index_hlist);
+Would it race with the dev_map_hash's update/delete side?
 
-Yes, I've done that. I've tried:
-
-  make mrproper
-  cp /boot/config-5.2.18-200.fc30.x86_64 .config
-  make olddefconfig
-  make headers_install
-  make M=samples/bpf
-
-which ends with the errors I described.
-> -- 
-> Best regards,
->   Jesper Dangaard Brouer
->   MSc.CS, Principal Kernel Engineer at Red Hat
->   LinkedIn: http://www.linkedin.com/in/brouer
+> +				call_rcu(&odev->rcu,
+> +					 __dev_map_entry_free);
+> +			}
+> +		}
+> +	}
+> +}
+> +
+>  static int dev_map_notification(struct notifier_block *notifier,
+>  				ulong event, void *ptr)
+>  {
+> @@ -735,6 +764,11 @@ static int dev_map_notification(struct notifier_bloc=
+k *notifier,
+>  		 */
+>  		rcu_read_lock();
+>  		list_for_each_entry_rcu(dtab, &dev_map_list, list) {
+> +			if (dtab->map.map_type =3D=3D BPF_MAP_TYPE_DEVMAP_HASH) {
+> +				dev_map_hash_remove_netdev(dtab, netdev);
+> +				continue;
+> +			}
+> +
+>  			for (i =3D 0; i < dtab->map.max_entries; i++) {
+>  				struct bpf_dtab_netdev *dev, *odev;
+> =20
+> --=20
+> 2.23.0
+>=20
