@@ -2,129 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BF98DA6F1
-	for <lists+bpf@lfdr.de>; Thu, 17 Oct 2019 10:09:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D7A0DA77E
+	for <lists+bpf@lfdr.de>; Thu, 17 Oct 2019 10:37:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405173AbfJQIJD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Oct 2019 04:09:03 -0400
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:43628 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727791AbfJQIJD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Oct 2019 04:09:03 -0400
-Received: by mail-lj1-f195.google.com with SMTP id n14so1501080ljj.10
-        for <bpf@vger.kernel.org>; Thu, 17 Oct 2019 01:09:01 -0700 (PDT)
+        id S2393333AbfJQIh5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Oct 2019 04:37:57 -0400
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:42601 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388788AbfJQIh5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Oct 2019 04:37:57 -0400
+Received: by mail-lf1-f65.google.com with SMTP id z12so1168973lfj.9
+        for <bpf@vger.kernel.org>; Thu, 17 Oct 2019 01:37:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=+BHeK/F5ybMDXFZ+AEaCcGCTfMIh3DPn6Dqiw81kHjE=;
-        b=POWdzom6/TY1uJIxOGrqZoCLQ+/GJyt5+x7zpCT6cU0P30gUN5NoDvGNpTGCncee4N
-         J9wDvZ56na6rZbjug8MI6b/Y54VFeDL16SGgBjvIConmvFAQAZFKn2Lqti/5aOkgtRMH
-         1lxP1tHdP2yiVAACMXoSSPy3hR7wQeJCN73QI=
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iyXqf2Y5RVgz0dXJDcgvlyJCh/JIvnGuh8RzmE45oX0=;
+        b=r+BzTn0BajFC/ZI5g1K2t2f9T+3f2xuwJg8Eqd9aSRIRbvS9DXxRYnFMeSLd5TQoVC
+         nzRuRNEuk1bl7KahgGzNEHVBZxJ5w2XEo8Z2OTYgSMpojdFUWKLD4it1wYD/6NPAKKFp
+         MvTDiAc6M4Fk3REMyBDc3b/AeILoexp5m+4JM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=+BHeK/F5ybMDXFZ+AEaCcGCTfMIh3DPn6Dqiw81kHjE=;
-        b=lB8z2tlkEs05lj+Uy/+wjS0eLIVxiTXCkoLE47ISd+WYj5qCZc6G4WvYW1Sxz8EpcF
-         HXHoDTu8u3yULFZ/J6Gm2DLgxmCeF7bPbiCDicpNCQaJNnnwm6iDFWrFvmB8TU6EpIqG
-         dKdFzPbxvHYSxFs/3BCHFX3EjeF/Sd8RUH1UaWIiHFapAcYu879YRkfqZJfBTUxMs3MC
-         0pV0p36Ze2hD5OGMJ6KCY5C8URlw7KWLsOjomV8q883SvXbDXy7fI8xKLZ5sOoG+QFy2
-         EMQqAT199gD5j4DC06f8B0myf3uMb6Nj5fcnbqUbmfP1Vf8Hh7uGbPghii+yaj540sDF
-         SDDA==
-X-Gm-Message-State: APjAAAWqRIUOPOu1G9UFEpkJ163X9qVB0dj6AGTCZVFFvL5HQsvxT+cC
-        NQcDPcPtveJocfzxUsiBccm9bg==
-X-Google-Smtp-Source: APXvYqx80xepcfirbyBDnpnxq8/YGv3RwNzcvHown+88cfYl4xKqMD35oihs3np2nEYxwtWyvGeLGg==
-X-Received: by 2002:a2e:3016:: with SMTP id w22mr1605919ljw.117.1571299741096;
-        Thu, 17 Oct 2019 01:09:01 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iyXqf2Y5RVgz0dXJDcgvlyJCh/JIvnGuh8RzmE45oX0=;
+        b=oFebXskY2m8c2xXHDMLy4e+SOrjhpxy4rFM9ggQ4VBV+MbIm9hz/H2wGuWOjGlkSVB
+         jgms+VD6yR1Vp9hYWBSO9oBkUSWqoiQe0Zv3eHVaf5Ndpd2dXjzYkGrXZ4/kyzb6BB84
+         LuE5P2izlaXwGpNnFP1rifTgZGcnKbWHX3v9PFq0cCQoGeFA3CHv1eDG9jg2LxNr7bnO
+         7HFlpFZxGQ/OmI219G3mL1DJAlkiFaUMN929QMre0mCv9MKmuACSR+9fCdA2rgdtZIvo
+         BlQhz/R2qVegytN2dPG8gUBULgq4Biy0qE7NwEFOiyLTzWBPvuPhSU2cx5bCV9UIoHUz
+         Oftw==
+X-Gm-Message-State: APjAAAVcVQHq7HTSpFC4mmn11a6PBWJwioku4AYY/GD7ydpRZZEN4lYe
+        LTSzi0U42H0C5HV2AamMhxw4D9N3OebfEQ==
+X-Google-Smtp-Source: APXvYqwLL5rugmzKDMycdTY030AImuFDveTcvViXTY8X4oBD724KF5HLxwJ+k2O0HGl3y2NYBlhKwA==
+X-Received: by 2002:a19:dc14:: with SMTP id t20mr1518966lfg.21.1571301473596;
+        Thu, 17 Oct 2019 01:37:53 -0700 (PDT)
 Received: from cloudflare.com ([176.221.114.230])
-        by smtp.gmail.com with ESMTPSA id t24sm657920ljc.23.2019.10.17.01.08.59
+        by smtp.gmail.com with ESMTPSA id n11sm266072lfd.88.2019.10.17.01.37.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Oct 2019 01:09:00 -0700 (PDT)
-References: <20191016060051.2024182-1-andriin@fb.com> <CAADnVQJKESit7tDy0atn0-Q7Se=kLhkCWGAmRPJSVPdNAS8BVg@mail.gmail.com> <CAEf4BzZaSznrp0xLZ6Skpt3yuompUJU6XV863zSOPQfq4VL-UA@mail.gmail.com>
-User-agent: mu4e 1.1.0; emacs 26.1
+        Thu, 17 Oct 2019 01:37:52 -0700 (PDT)
 From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH v4 bpf-next 0/7] Fix, clean up, and revamp selftests/bpf Makefile
-In-reply-to: <CAEf4BzZaSznrp0xLZ6Skpt3yuompUJU6XV863zSOPQfq4VL-UA@mail.gmail.com>
-Date:   Thu, 17 Oct 2019 10:08:59 +0200
-Message-ID: <877e53oktg.fsf@cloudflare.com>
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, kernel-team@cloudflare.com,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>
+Subject: [PATCH bpf-next] selftests/bpf: Restore the netns after flow dissector reattach test
+Date:   Thu, 17 Oct 2019 10:37:52 +0200
+Message-Id: <20191017083752.30999-1-jakub@cloudflare.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 17, 2019 at 08:52 AM CEST, Andrii Nakryiko wrote:
-> On Wed, Oct 16, 2019 at 9:28 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
->>
->> On Wed, Oct 16, 2019 at 4:49 AM Andrii Nakryiko <andriin@fb.com> wrote:
->> >
->> > This patch set extensively revamps selftests/bpf's Makefile to generalize test
->> > runner concept and apply it uniformly to test_maps and test_progs test
->> > runners, along with test_progs' few build "flavors", exercising various ways
->> > to build BPF programs.
->> >
->> > As we do that, we fix dependencies between various phases of test runners, and
->> > simplify some one-off rules and dependencies currently present in Makefile.
->> > test_progs' flavors are now built into root $(OUTPUT) directory and can be run
->> > without any extra steps right from there. E.g., test_progs-alu32 is built and
->> > is supposed to be run from $(OUTPUT). It will cd into alu32/ subdirectory to
->> > load correct set of BPF object files (which are different from the ones built
->> > for test_progs).
->> >
->> > Outline:
->> > - patch #1 teaches test_progs about flavor sub-directories;
->> > - patch #2 fixes one of CO-RE tests to not depend strictly on process name;
->> > - patch #3 changes test_maps's usage of map_tests/tests.h to be the same as
->> >   test_progs' one;
->> > - patch #4 adds convenient short `make test_progs`-like targets to build only
->> >   individual tests, if necessary;
->> > - patch #5 is a main patch in the series; it uses a bunch of make magic
->> >   (mainly $(call) and $(eval)) to define test runner "skeleton" and apply it
->> >   to 4 different test runners, lots more details in corresponding commit
->> >   description;
->> > - patch #6 does a bit of post-clean up for test_queue_map and test_stack_map
->> >   BPF programs;
->> > - patch #7 cleans up test_libbpf.sh/test_libbpf_open superseded by test_progs.
->> >
->> > v3->v4:
->> > - remove accidentally checked in binaries;
->>
->> something really odd here.
->> Before the patchset ./test_progs -n 27 passes
->> after the patch it simply hangs.
->> Though strace -f ./test_progs -n 27 passes.
->> Any idea?
->
-> Interesting. For me test_progs -n27 passes by itself, whether with or
-> without Makefile changes. But when run together with #8
-> flow_dissector_reattach, it fails with
-> "(prog_tests/sockopt_inherit.c:28: errno: Network is unreachable) Fail
-> to connect to server", even without Makefile changes. It doesn't hang,
-> but the test has server and client threads being coordinated, so I
-> wouldn't be surprised that under some specific timing and error
-> conditions it can hang.
->
-> I bisected this failure to f97eea1756f3 ("selftests/bpf: Check that
-> flow dissector can be re-attached"), that's when
-> flow_dissector_reattach test was added. So apparently there is some
-> bad interaction there.
->
-> So I suspect my Makefile changes have nothing to do with this, it
-> would be really bizarre...
->
-> Jakub, do you mind checking as well?
+flow_dissector_reattach test changes the netns we run in but does not
+restore it to the one we started in when finished. This interferes with
+tests that run after it. Fix it by restoring the netns when done.
 
-This is my fault. flow_dissector_reattach test is not returning to the
-netns we started in. Sorry about the oversight. Let me post a fix.
+Fixes: f97eea1756f3 ("selftests/bpf: Check that flow dissector can be re-attached")
+Reported-by: Alexei Starovoitov <ast@kernel.org>
+Reported-by: Andrii Nakryiko <andriin@fb.com>
+Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+---
+ .../bpf/prog_tests/flow_dissector_reattach.c  | 21 +++++++++++++++----
+ 1 file changed, 17 insertions(+), 4 deletions(-)
 
--Jakub
+diff --git a/tools/testing/selftests/bpf/prog_tests/flow_dissector_reattach.c b/tools/testing/selftests/bpf/prog_tests/flow_dissector_reattach.c
+index 777faffc4639..1f51ba66b98b 100644
+--- a/tools/testing/selftests/bpf/prog_tests/flow_dissector_reattach.c
++++ b/tools/testing/selftests/bpf/prog_tests/flow_dissector_reattach.c
+@@ -91,12 +91,18 @@ static void do_flow_dissector_reattach(void)
+ 
+ void test_flow_dissector_reattach(void)
+ {
+-	int init_net, err;
++	int init_net, self_net, err;
++
++	self_net = open("/proc/self/ns/net", O_RDONLY);
++	if (CHECK_FAIL(self_net < 0)) {
++		perror("open(/proc/self/ns/net");
++		return;
++	}
+ 
+ 	init_net = open("/proc/1/ns/net", O_RDONLY);
+ 	if (CHECK_FAIL(init_net < 0)) {
+ 		perror("open(/proc/1/ns/net)");
+-		return;
++		goto out_close;
+ 	}
+ 
+ 	err = setns(init_net, CLONE_NEWNET);
+@@ -108,7 +114,7 @@ void test_flow_dissector_reattach(void)
+ 	if (is_attached(init_net)) {
+ 		test__skip();
+ 		printf("Can't test with flow dissector attached to init_net\n");
+-		return;
++		goto out_setns;
+ 	}
+ 
+ 	/* First run tests in root network namespace */
+@@ -118,10 +124,17 @@ void test_flow_dissector_reattach(void)
+ 	err = unshare(CLONE_NEWNET);
+ 	if (CHECK_FAIL(err)) {
+ 		perror("unshare(CLONE_NEWNET)");
+-		goto out_close;
++		goto out_setns;
+ 	}
+ 	do_flow_dissector_reattach();
+ 
++out_setns:
++	/* Move back to netns we started in. */
++	err = setns(self_net, CLONE_NEWNET);
++	if (CHECK_FAIL(err))
++		perror("setns(/proc/self/ns/net)");
++
+ out_close:
+ 	close(init_net);
++	close(self_net);
+ }
+-- 
+2.20.1
+
