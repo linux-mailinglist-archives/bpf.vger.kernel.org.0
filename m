@@ -2,203 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 52C8CDB6BB
-	for <lists+bpf@lfdr.de>; Thu, 17 Oct 2019 21:02:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36508DB71E
+	for <lists+bpf@lfdr.de>; Thu, 17 Oct 2019 21:13:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406998AbfJQTC5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Oct 2019 15:02:57 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:28298 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728796AbfJQTC4 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 17 Oct 2019 15:02:56 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id x9HJ2TRO025165;
-        Thu, 17 Oct 2019 12:02:36 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=p1IuVNv2X64mMu9EK97GPvvCbpV52kTmI8oWYIFDkxI=;
- b=L50ZtSDqmdL3qKtJ17C2hKp63IjUXBRYW9/p+cYHeNJW3ZAQY+W+VYkqdjBo1kmijWxe
- DAzs/kbYkgBmFD0ZHui9REudPDnFjAkdMOsFT8UrXYnqO6JoRuid24eeeM6AaeEYLjkn
- 8KJblLGu3DTbO5WFmHkvpEtfgnRMQr17Eqk= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net with ESMTP id 2vprq99qha-13
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 17 Oct 2019 12:02:36 -0700
-Received: from ash-exhub101.TheFacebook.com (2620:10d:c0a8:82::e) by
- ash-exhub102.TheFacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 17 Oct 2019 12:02:23 -0700
-Received: from NAM01-BN3-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Thu, 17 Oct 2019 12:02:23 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Xpu+21cbeDfaFQkj7aEKtxFLOdJe4a2HoUWcRtxGZkUhK8IM1NrBzaNw3Xu5T+nwYaWuH6UggbI78K8+Ms87r+cduYIolh5jTdygYlZD2O016Sb7iYgD0oQ86Mq4OTUBjvB+geCqoC7wa3GAagnQuABTnTCluRkjA1GSZa2J+RpW5tvft1t09GUVRaU3MOdOKuK8uAlwwON/rHIDVRNWbq4+Ue3YfxETP3QRN1x2cCFMx85BmEFW8p0vmVfDhNUGRXh4fMGGsnm/OZ+tUw9wjtJLypkhjkyrdd0dxLcrcIRxOiXQcF2YSjib2xo1JhNr6otkKeu5S5k5h0NuUqnXWQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=p1IuVNv2X64mMu9EK97GPvvCbpV52kTmI8oWYIFDkxI=;
- b=csK91K72oYIOxYYls4Sbp0nNSJV/GlGazMrtFncxIgz6Q4v6aisiMfPk6u8FmYi4Ex7uOi2EKgywOYetPtpCX4Opuekj87mNVL1Rj0UqwQt35Q+7nAQrydqPqaFo5Za0SJgzp571bmfoPk8cziH5xAEA5dGnwvTfTCMYPqu45u3ElVGvIH5FGhiR6PCIHbwTqJQG7pWntH8kFpEzpsXsciAMViYI960q3IjXm/PmW/NQcC1Us60PwAyCbPi28pXEfV67XMPZMZDjQqnzaCn4NoVn2cSp7JW5BPacKWjbPxZOqy6pfC5HF4WscGQiSn8IVCF0091LVzxY9gp6vEzV8g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=p1IuVNv2X64mMu9EK97GPvvCbpV52kTmI8oWYIFDkxI=;
- b=cA/8h10CMvgMn6KZ/Ui4bGfh4hvh1HOczlCHF6hxLfyrwFHWA46k3UH7pGKrLtr7elxxj0WtPGvnb8PeDv1LiP61aLqAIUesp5rQGPSgsCe/ZnZqgqeKBk5BfSY8omwOIAakvboy9oJPVPECiZv0Y+1KINjklEfxX/yzasSmROE=
-Received: from DM6PR15MB3210.namprd15.prod.outlook.com (20.179.48.219) by
- DM6PR15MB3609.namprd15.prod.outlook.com (10.141.165.95) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2347.16; Thu, 17 Oct 2019 19:02:22 +0000
-Received: from DM6PR15MB3210.namprd15.prod.outlook.com
- ([fe80::cc98:c18d:1e80:b856]) by DM6PR15MB3210.namprd15.prod.outlook.com
- ([fe80::cc98:c18d:1e80:b856%7]) with mapi id 15.20.2347.023; Thu, 17 Oct 2019
- 19:02:22 +0000
-From:   Martin Lau <kafai@fb.com>
-To:     =?iso-8859-1?Q?Toke_H=F8iland-J=F8rgensen?= <toke@redhat.com>
-CC:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@fb.com>,
+        id S1727646AbfJQTNy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Oct 2019 15:13:54 -0400
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:35190 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727397AbfJQTNy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Oct 2019 15:13:54 -0400
+Received: by mail-lj1-f194.google.com with SMTP id m7so3744978lji.2;
+        Thu, 17 Oct 2019 12:13:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hiHCI/4xP+6XGRJHYldk491YxrAyryE48lujUbC4WCc=;
+        b=eXmeAhvK/sJ3E5EGfYWFSvxHWMNpFBo6jSvkyaZF8GHaTd3kqKxm8DSAYs8GOfM1J8
+         zVo/+q9zJxffXkVmU38XS18+IiqmbKBPrNzMyghR3WqpI+SaqDo3MiTXEICbwD1yBn2v
+         eoWlXXp0cxW7AGa84prfNjU7orZFOr6lbUf6wuEco8rgdvEdANquIcOaUiJY+HaZRhx3
+         e49c0ie44y3ABQAauPkpZwH++6AbBJmkMPRzQb8ezH1xEDqiL+DAVrrKRc3zjQblEgJO
+         UOdm3TbWyX4A+9JRe4JGxGGwOFLzXuEuAmURKIoGEoTZT40bcPYLQe0LrTKFGTSccybj
+         yq8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hiHCI/4xP+6XGRJHYldk491YxrAyryE48lujUbC4WCc=;
+        b=IqHS27qRkiphwnj8sBf2TXLOqVeerDfIABTASB/h3OjFeUC6ex9XQfJ5loXiu2Dd/K
+         nAGY8UR4YRp3F5PUud1dQH17U4aOaexwZZZjJisa2BxDRzamregZ1Fglft9dDI6ZZ4Nm
+         8JZmax5bFyYiIuWHhcQ9dsThMHc0m4/pV8e3V8JJoBU370i/GuEfGrg+Dxj6Ur+VNQWn
+         fWNKu8SLaIN1aKhHkvPIk3ai96wfV9FxMU8xtoYN2YrbO0O0RhPHnxCbltUen9qWK58O
+         qZIwT/qYV5MNsWegBkir50JYQq5xE6Nh1QD682b4WEdoNumUNzzo38GsI697w43lvPv0
+         db9Q==
+X-Gm-Message-State: APjAAAXK6fFtGDZU6Q+tVTp/BvlQWSMfjKbvTCrU6DPiykI+hDRc3IOL
+        WjkcUWjrqJsoCPPinnOH7pPoO1U+WubB2bSvfKNMgw==
+X-Google-Smtp-Source: APXvYqzLnxmLICCObiOwJhAoidKEfRCd1vFPva3bvftPNBmlqGqrwpBzt6xaV8V+4ZPpbqKCiDXBDFizcUCCnxig0lQ=
+X-Received: by 2002:a2e:6c15:: with SMTP id h21mr3560380ljc.10.1571339631812;
+ Thu, 17 Oct 2019 12:13:51 -0700 (PDT)
+MIME-Version: 1.0
+References: <20191017083752.30999-1-jakub@cloudflare.com> <20191017181812.eb23epbwnp3fo5sg@kafai-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20191017181812.eb23epbwnp3fo5sg@kafai-mbp.dhcp.thefacebook.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 17 Oct 2019 12:13:38 -0700
+Message-ID: <CAADnVQ+_i3i2U0A-0w3EcRxAx8v3QVUpgYPqD=bZSZzqA=sV6A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Restore the netns after flow
+ dissector reattach test
+To:     Martin Lau <kafai@fb.com>
+Cc:     Jakub Sitnicki <jakub@cloudflare.com>,
         "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Subject: Re: [PATCH bpf v2] xdp: Handle device unregister for devmap_hash map
- type
-Thread-Topic: [PATCH bpf v2] xdp: Handle device unregister for devmap_hash map
- type
-Thread-Index: AQHVhNkLfZlWSO7mI0yzFNGdtyQQtadfMRqA
-Date:   Thu, 17 Oct 2019 19:02:22 +0000
-Message-ID: <20191017190219.hpphf7jnyn6xapb6@kafai-mbp.dhcp.thefacebook.com>
-References: <20191017105232.2806390-1-toke@redhat.com>
-In-Reply-To: <20191017105232.2806390-1-toke@redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MWHPR04CA0072.namprd04.prod.outlook.com
- (2603:10b6:300:6c::34) To DM6PR15MB3210.namprd15.prod.outlook.com
- (2603:10b6:5:163::27)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:200::1:ee07]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: bc72d716-0426-4d61-ab20-08d753348a6a
-x-ms-traffictypediagnostic: DM6PR15MB3609:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR15MB360928661C3A5B4F547F65CFD56D0@DM6PR15MB3609.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4714;
-x-forefront-prvs: 01930B2BA8
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(396003)(366004)(136003)(376002)(39860400002)(346002)(199004)(189003)(8936002)(9686003)(6512007)(81156014)(8676002)(81166006)(25786009)(6116002)(7736002)(229853002)(305945005)(2906002)(6436002)(256004)(6486002)(14444005)(102836004)(6246003)(186003)(4326008)(476003)(6506007)(386003)(71200400001)(54906003)(11346002)(86362001)(1076003)(76176011)(52116002)(66946007)(71190400001)(486006)(446003)(478600001)(66574012)(316002)(99286004)(64756008)(66556008)(66476007)(66446008)(46003)(5660300002)(6916009)(14454004);DIR:OUT;SFP:1102;SCL:1;SRVR:DM6PR15MB3609;H:DM6PR15MB3210.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: GLZDWFy5Lgf8Cqrj6MAYMxPApexGDBAm8RUEUgKIpaDmGfTTGByZnW5PhVoshbvEcoP2lCvNwDEn4ERFOlAT+KZimjDaKF+yysHUTT8U0xI9eGtS0oU3zHXo6LA3G3g7EpeHSmULLlACtvxkLced6HBDOsx7ytsAmQoPxIpmkOjrjz6B1QgQ/oDezarDJwWIzGNt+MIkS9OQt7Q76SP9vfpW5OF8jyDm7GsYNwnfKDCeTfTfFptSa7HI1TI+UCCsARZ8vmtW1ruWslfXLmt50g2pOF40uE2gCYrHXvZr+2EbXxeerruMvu2TRp5h3zykPpgg18vLAXz0sHY6/niAkduCD26aXT8V7pnGqks6uAQ1nXAL+DN/fGfBYZaAVCN1UnT7JybXKrdNqTp42l7RInXHHkf//9gxk1BMnFoiS3I=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-ID: <B3F3E6A7ECC9E64EBE53C1BB6E1A8909@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: bc72d716-0426-4d61-ab20-08d753348a6a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Oct 2019 19:02:22.3684
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: RTwIc/mqa/auNX7G2s62/Dwfd5EbOjHolQu+wjTayrbHQMxiNSgRbOqITvlyHqDs
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB3609
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
- definitions=2019-10-17_05:2019-10-17,2019-10-17 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0 spamscore=0
- impostorscore=0 clxscore=1015 suspectscore=0 malwarescore=0
- priorityscore=1501 bulkscore=0 mlxscore=0 phishscore=0 mlxlogscore=761
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1908290000 definitions=main-1910170171
-X-FB-Internal: deliver
+        "kernel-team@cloudflare.com" <kernel-team@cloudflare.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 17, 2019 at 12:52:32PM +0200, Toke H=F8iland-J=F8rgensen wrote:
-> It seems I forgot to add handling of devmap_hash type maps to the device
-> unregister hook for devmaps. This omission causes devices to not be
-> properly released, which causes hangs.
->=20
-> Fix this by adding the missing handler.
->=20
-> Fixes: 6f9d451ab1a3 ("xdp: Add devmap_hash map type for looking up device=
-s by hashed index")
-> Reported-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-> Signed-off-by: Toke H=F8iland-J=F8rgensen <toke@redhat.com>
-> ---
-> v2:
->   - Grab the update lock while walking the map and removing entries.
->=20
->  kernel/bpf/devmap.c | 37 +++++++++++++++++++++++++++++++++++++
->  1 file changed, 37 insertions(+)
->=20
-> diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-> index d27f3b60ff6d..a0a1153da5ae 100644
-> --- a/kernel/bpf/devmap.c
-> +++ b/kernel/bpf/devmap.c
-> @@ -719,6 +719,38 @@ const struct bpf_map_ops dev_map_hash_ops =3D {
->  	.map_check_btf =3D map_check_no_btf,
->  };
-> =20
-> +static void dev_map_hash_remove_netdev(struct bpf_dtab *dtab,
-> +				       struct net_device *netdev)
-> +{
-> +	unsigned long flags;
-> +	int i;
-dtab->n_buckets is u32.
+On Thu, Oct 17, 2019 at 11:18 AM Martin Lau <kafai@fb.com> wrote:
+>
+> On Thu, Oct 17, 2019 at 10:37:52AM +0200, Jakub Sitnicki wrote:
+> > flow_dissector_reattach test changes the netns we run in but does not
+> > restore it to the one we started in when finished. This interferes with
+> > tests that run after it. Fix it by restoring the netns when done.
+> >
+> > Fixes: f97eea1756f3 ("selftests/bpf: Check that flow dissector can be re-attached")
+> > Reported-by: Alexei Starovoitov <ast@kernel.org>
+> > Reported-by: Andrii Nakryiko <andriin@fb.com>
+> > Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+> > ---
+> >  .../bpf/prog_tests/flow_dissector_reattach.c  | 21 +++++++++++++++----
+> >  1 file changed, 17 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/flow_dissector_reattach.c b/tools/testing/selftests/bpf/prog_tests/flow_dissector_reattach.c
+> > index 777faffc4639..1f51ba66b98b 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/flow_dissector_reattach.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/flow_dissector_reattach.c
+> > @@ -91,12 +91,18 @@ static void do_flow_dissector_reattach(void)
+> >
+> >  void test_flow_dissector_reattach(void)
+> >  {
+> > -     int init_net, err;
+> > +     int init_net, self_net, err;
+> > +
+> > +     self_net = open("/proc/self/ns/net", O_RDONLY);
+> > +     if (CHECK_FAIL(self_net < 0)) {
+> > +             perror("open(/proc/self/ns/net");
+> > +             return;
+> > +     }
+> >
+> >       init_net = open("/proc/1/ns/net", O_RDONLY);
+> >       if (CHECK_FAIL(init_net < 0)) {
+> >               perror("open(/proc/1/ns/net)");
+> > -             return;
+> > +             goto out_close;
+> Mostly nit.  close(-1) is ok-ish...  The same goes for the "out_close" in
+> do_flow_dissector_reattach().
+>
+> Acked-by: Martin KaFai Lau <kafai@fb.com>
 
-> +
-> +	spin_lock_irqsave(&dtab->index_lock, flags);
-> +	for (i =3D 0; i < dtab->n_buckets; i++) {
-> +		struct bpf_dtab_netdev *dev, *odev;
-> +		struct hlist_head *head;
-> +
-> +		head =3D dev_map_index_hash(dtab, i);
-> +		dev =3D hlist_entry_safe(rcu_dereference_raw(hlist_first_rcu(head)),
-The spinlock has already been held.  Is rcu_deref still needed?
-
-> +				       struct bpf_dtab_netdev,
-> +				       index_hlist);
-> +
-> +		while (dev) {
-> +			odev =3D (netdev =3D=3D dev->dev) ? dev : NULL;
-> +			dev =3D hlist_entry_safe(rcu_dereference_raw(hlist_next_rcu(&dev->ind=
-ex_hlist)),
-> +					       struct bpf_dtab_netdev,
-> +					       index_hlist);
-> +
-> +			if (odev) {
-> +				hlist_del_rcu(&odev->index_hlist);
-> +				call_rcu(&odev->rcu,
-> +					 __dev_map_entry_free);
-> +			}
-> +		}
-> +	}
-> +	spin_unlock_irqrestore(&dtab->index_lock, flags);
-> +}
-> +
->  static int dev_map_notification(struct notifier_block *notifier,
->  				ulong event, void *ptr)
->  {
-> @@ -735,6 +767,11 @@ static int dev_map_notification(struct notifier_bloc=
-k *notifier,
->  		 */
->  		rcu_read_lock();
->  		list_for_each_entry_rcu(dtab, &dev_map_list, list) {
-> +			if (dtab->map.map_type =3D=3D BPF_MAP_TYPE_DEVMAP_HASH) {
-> +				dev_map_hash_remove_netdev(dtab, netdev);
-> +				continue;
-> +			}
-> +
->  			for (i =3D 0; i < dtab->map.max_entries; i++) {
->  				struct bpf_dtab_netdev *dev, *odev;
-> =20
-> --=20
-> 2.23.0
->=20
+Yeah. Not ideal, but applied the fix to bpf-next
+to get selftests working again.
+Please follow up with any cleanups.
+Thanks
