@@ -2,98 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 590CCDA938
-	for <lists+bpf@lfdr.de>; Thu, 17 Oct 2019 11:50:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85F67DA9EF
+	for <lists+bpf@lfdr.de>; Thu, 17 Oct 2019 12:27:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393782AbfJQJue (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Oct 2019 05:50:34 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:32911 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389021AbfJQJue (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Oct 2019 05:50:34 -0400
-Received: by mail-lj1-f193.google.com with SMTP id a22so1874514ljd.0
-        for <bpf@vger.kernel.org>; Thu, 17 Oct 2019 02:50:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=VOpKmwMwV+SX3a2cTSW8olQRM71I/wGBB7bz1Yg3eQM=;
-        b=Iae6zscmX3HbQBgmamadRKQU441b4aYUAVax/2HNJZ7/nJ0MA8q13JUrR57DLlc2jM
-         xMbfG23OTHdOItUjNfwBu5XxFUwp7htQWqhEgcTowgsdKeMqMAjmxirJIdhT84/rcmzF
-         Oqa2uSj22NU/2SSkXCk9RKjoFxwDnFvxsSaGw=
+        id S2405362AbfJQK1S (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Oct 2019 06:27:18 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:39997 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2405108AbfJQK1S (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 17 Oct 2019 06:27:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1571308037;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5HbCUndysV3LVxxKa9QjLpBPu7lfw69q9iON3i9EPWI=;
+        b=ElR22SJw9W8ImPs+CGKEE8QO+HB0X+ZCalbK94L1x98S2Z9OLVVBDZHhAQG3Sr8BfyIfxE
+        PSRCiBc8CqTPQjnM8mTTN2etks7NgZzdZos5GKUtVQonMz65eI8z8fsVswnxKkq6YMXl03
+        /M7p8BPIp8L0J4GSgN8lGBRgMvaYPNc=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-257-mwqPtjEQMFWWMYSRXdgE7A-1; Thu, 17 Oct 2019 06:27:14 -0400
+Received: by mail-lj1-f200.google.com with SMTP id e3so326625ljj.16
+        for <bpf@vger.kernel.org>; Thu, 17 Oct 2019 03:27:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=VOpKmwMwV+SX3a2cTSW8olQRM71I/wGBB7bz1Yg3eQM=;
-        b=A0Cn16j7mUqfXY6b5H2fMiWdjWuYDhPeouVG64pkeliRKjcAXAN42aLudbuwNe7SHO
-         vN/JbPS7rxYQmaQ4DClQvoyeTbxiOKkZHIeyp6RJzpCKtlxw9rsrLmr25hrAlC24DXpJ
-         RWf6GOymSd0QTs4GspzN24qlCNqnRcI6X2Wk+317JBxyyyAF7xe7SAAN6yEzVub4poP1
-         vQYMCwWJGKo38s7WLaZO4yUvZ2GDhRPuCMzVCMO/4MJtvdTNJsa5ZBRA6berUrCxkkNB
-         9oXRgieLWTjo0EYR4GtOl7xg06vpeEDse9Dssl2PJ1oBDKeumU9x4Fbbc2glqHWOsMR5
-         /lWg==
-X-Gm-Message-State: APjAAAXNJmKd7JL2heQH9j0KG4slKT8tDce4wThmIFrDMU/BXLqC4O/m
-        RV4iyxHRpFVfuAeHykpgUB0I3A==
-X-Google-Smtp-Source: APXvYqxEt7OszEvTT4lKuGUk0NtFk4bsU+dbJP6aVrVI3o80DFziyLa+uhtZwI/TMs9kiTQRq3WR+A==
-X-Received: by 2002:a2e:b010:: with SMTP id y16mr1923003ljk.147.1571305831670;
-        Thu, 17 Oct 2019 02:50:31 -0700 (PDT)
-Received: from cloudflare.com ([176.221.114.230])
-        by smtp.gmail.com with ESMTPSA id f6sm777125lfl.78.2019.10.17.02.50.30
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=mtI1tQKCQhTsfvHX3dwJ+I86Ajrl7tuPkb4U57R05Mc=;
+        b=irmqMAvK1N64AbOjjjFovIojFbHQY3OxS5lBO/JAMuF8Cq1npPZ92pCZxsPA5taXIA
+         ucgSjcS454H57GCk0ruvdr86dWLqeIsq8AOmZCW8+6zBEOxplq5TJ1xnAZWWx2/gmjJh
+         8cXaedZOeLHxXNcLEcSK88x0DurX5JRzI4REzfpJ4gtErOYBHIHYXVm7f1tlBVgMmJz6
+         C6WRowfJXZnaiNdfedwBKHv3z2yhK56GWuOvYVqgIXmwpTT81gl6A/i2JOhIkGNArRkp
+         RhhJjcNu0bETlNuf5kPe6Ot2wKb2VLLnOrDlHnA4xNDhVTix+mab72/+zldY7lPNA1oi
+         VQLA==
+X-Gm-Message-State: APjAAAX+KO4aRnW5gHpNot42ctkOtajJmMkUrX36Mfn36lswtVwIYeBh
+        O9b690HgQJj6IeG5I92vitoh0K+yZifxpS2Zceg65UIXPZMCBoQ5CcF1W89WT54lTpB/RBZSKIG
+        5MOIfiLv+vOML
+X-Received: by 2002:a2e:9a99:: with SMTP id p25mr1927576lji.171.1571308032923;
+        Thu, 17 Oct 2019 03:27:12 -0700 (PDT)
+X-Google-Smtp-Source: APXvYqwADMJzLI125M9qegqVCbIuUwb+ZoQXdESooj8W8kLhrEeAHiJCSM2PWTOavnc8zuxoNwOpsg==
+X-Received: by 2002:a2e:9a99:: with SMTP id p25mr1927554lji.171.1571308032484;
+        Thu, 17 Oct 2019 03:27:12 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk (borgediget.toke.dk. [85.204.121.218])
+        by smtp.gmail.com with ESMTPSA id i17sm1064714lfj.35.2019.10.17.03.27.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Oct 2019 02:50:31 -0700 (PDT)
-References: <20191016085811.11700-1-jakub@cloudflare.com> <CAEf4BzYUoGx9G6-8EYWReTamNGVmrOcWHEaqemRuv8+np1x17Q@mail.gmail.com>
-User-agent: mu4e 1.1.0; emacs 26.1
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        kernel-team@cloudflare.com
-Subject: Re: [PATCH bpf-next] scripts/bpf: Emit an #error directive known types list needs updating
-In-reply-to: <CAEf4BzYUoGx9G6-8EYWReTamNGVmrOcWHEaqemRuv8+np1x17Q@mail.gmail.com>
-Date:   Thu, 17 Oct 2019 11:50:30 +0200
-Message-ID: <875zknog49.fsf@cloudflare.com>
+        Thu, 17 Oct 2019 03:27:11 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 52C9A1804C9; Thu, 17 Oct 2019 12:27:11 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Martin Lau <kafai@fb.com>
+Cc:     "daniel\@iogearbox.net" <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@fb.com>,
+        "bpf\@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev\@vger.kernel.org" <netdev@vger.kernel.org>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Subject: Re: [PATCH bpf] xdp: Handle device unregister for devmap_hash map type
+In-Reply-To: <20191016162357.b2kdf6cflw3c5gzb@kafai-mbp.dhcp.thefacebook.com>
+References: <20191016132802.2760149-1-toke@redhat.com> <20191016162357.b2kdf6cflw3c5gzb@kafai-mbp.dhcp.thefacebook.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Thu, 17 Oct 2019 12:27:11 +0200
+Message-ID: <87imonfz0g.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain
+X-MC-Unique: mwqPtjEQMFWWMYSRXdgE7A-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 16, 2019 at 10:29 PM CEST, Andrii Nakryiko wrote:
-> On Wed, Oct 16, 2019 at 6:21 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
->>
->> Make the compiler report a clear error when bpf_helpers_doc.py needs
->> updating rather than rely on the fact that Clang fails to compile
->> English:
->>
->> ../../../lib/bpf/bpf_helper_defs.h:2707:1: error: unknown type name 'Unrecognized'
->> Unrecognized type 'struct bpf_inet_lookup', please add it to known types!
->>
->> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+Martin Lau <kafai@fb.com> writes:
+
+> On Wed, Oct 16, 2019 at 03:28:02PM +0200, Toke H=C3=B8iland-J=C3=B8rgense=
+n wrote:
+>> It seems I forgot to add handling of devmap_hash type maps to the device
+>> unregister hook for devmaps. This omission causes devices to not be
+>> properly released, which causes hangs.
+>>=20
+>> Fix this by adding the missing handler.
+>>=20
+>> Fixes: 6f9d451ab1a3 ("xdp: Add devmap_hash map type for looking up devic=
+es by hashed index")
+>> Reported-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+>> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 >> ---
->>  scripts/bpf_helpers_doc.py | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/scripts/bpf_helpers_doc.py b/scripts/bpf_helpers_doc.py
->> index 7df9ce598ff9..08300bc024da 100755
->> --- a/scripts/bpf_helpers_doc.py
->> +++ b/scripts/bpf_helpers_doc.py
->> @@ -489,7 +489,7 @@ class PrinterHelpers(Printer):
->>          if t in self.mapped_types:
->>              return self.mapped_types[t]
->>          print("")
->> -        print("Unrecognized type '%s', please add it to known types!" % t)
->> +        print("#error \"Unrecognized type '%s', please add it to known types!\"" % t)
->
-> My bad, this was intended to be printed to stderr, not to stdout
-> output. Can you please do a follow up patch turning this into eprint
-> instead?
->
-> This shouldn't be reported by Clang, rather by tool. And we should
-> ensure in libbpf's Makefile that bpf_helper_defs.h is deleted on
-> error. I'll do it a bit later, unless you'll beat me to it.
+>>  kernel/bpf/devmap.c | 34 ++++++++++++++++++++++++++++++++++
+>>  1 file changed, 34 insertions(+)
+>>=20
+>> diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
+>> index d27f3b60ff6d..deb9416341e9 100644
+>> --- a/kernel/bpf/devmap.c
+>> +++ b/kernel/bpf/devmap.c
+>> @@ -719,6 +719,35 @@ const struct bpf_map_ops dev_map_hash_ops =3D {
+>>  =09.map_check_btf =3D map_check_no_btf,
+>>  };
+>> =20
+>> +static void dev_map_hash_remove_netdev(struct bpf_dtab *dtab,
+>> +=09=09=09=09       struct net_device *netdev)
+>> +{
+>> +=09int i;
+>> +
+>> +=09for (i =3D 0; i < dtab->n_buckets; i++) {
+>> +=09=09struct bpf_dtab_netdev *dev, *odev;
+>> +=09=09struct hlist_head *head;
+>> +
+>> +=09=09head =3D dev_map_index_hash(dtab, i);
+>> +=09=09dev =3D hlist_entry_safe(rcu_dereference_raw(hlist_first_rcu(head=
+)),
+>> +=09=09=09=09       struct bpf_dtab_netdev,
+>> +=09=09=09=09       index_hlist);
+>> +
+>> +=09=09while (dev) {
+>> +=09=09=09odev =3D (netdev =3D=3D dev->dev) ? dev : NULL;
+>> +=09=09=09dev =3D hlist_entry_safe(rcu_dereference_raw(hlist_next_rcu(&d=
+ev->index_hlist)),
+>> +=09=09=09=09=09       struct bpf_dtab_netdev,
+>> +=09=09=09=09=09       index_hlist);
+>> +
+>> +=09=09=09if (odev) {
+>> +=09=09=09=09hlist_del_rcu(&odev->index_hlist);
+> Would it race with the dev_map_hash's update/delete side?
 
-This sounds sensible. I could have guessed it. Here's the fix:
+Oh, right, seems I forgot to grab the lock; will send a v2!
 
-https://lore.kernel.org/bpf/20191017094416.7688-1-jakub@cloudflare.com/T/#u
+-Toke
 
--Jakub
