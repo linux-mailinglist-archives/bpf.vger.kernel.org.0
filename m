@@ -2,86 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 63934DB98B
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2019 00:11:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4BF6DB992
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2019 00:13:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438094AbfJQWL4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Oct 2019 18:11:56 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:54603 "EHLO
-        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727050AbfJQWL4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Oct 2019 18:11:56 -0400
-Received: from p5b06da22.dip0.t-ipconnect.de ([91.6.218.34] helo=nanos)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1iLDzf-0007mT-So; Fri, 18 Oct 2019 00:11:40 +0200
-Date:   Fri, 18 Oct 2019 00:11:38 +0200 (CEST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     David Miller <davem@davemloft.net>
-cc:     Sebastian Sewior <bigeasy@linutronix.de>, daniel@iogearbox.net,
-        bpf@vger.kernel.org, ast@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com,
-        Peter Zijlstra <peterz@infradead.org>,
-        Clark Williams <williams@redhat.com>
+        id S2441596AbfJQWNj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Oct 2019 18:13:39 -0400
+Received: from shards.monkeyblade.net ([23.128.96.9]:43006 "EHLO
+        shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2441586AbfJQWNj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Oct 2019 18:13:39 -0400
+Received: from localhost (unknown [IPv6:2601:601:9f00:1e2::d71])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 15D27103DF888;
+        Thu, 17 Oct 2019 15:13:38 -0700 (PDT)
+Date:   Thu, 17 Oct 2019 15:13:35 -0700 (PDT)
+Message-Id: <20191017.151335.597242104804050107.davem@davemloft.net>
+To:     tglx@linutronix.de
+Cc:     bigeasy@linutronix.de, daniel@iogearbox.net, bpf@vger.kernel.org,
+        ast@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        peterz@infradead.org, williams@redhat.com
 Subject: Re: [PATCH] BPF: Disable on PREEMPT_RT
-In-Reply-To: <20191017.132548.2120028117307856274.davem@davemloft.net>
-Message-ID: <alpine.DEB.2.21.1910180006110.1869@nanos.tec.linutronix.de>
-References: <20191017090500.ienqyium2phkxpdo@linutronix.de> <20191017145358.GA26267@pc-63.home> <20191017154021.ndza4la3hntk4d4o@linutronix.de> <20191017.132548.2120028117307856274.davem@davemloft.net>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-2141773991-1571350299=:1869"
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <alpine.DEB.2.21.1910172342090.1869@nanos.tec.linutronix.de>
+References: <20191017154021.ndza4la3hntk4d4o@linutronix.de>
+        <20191017.132548.2120028117307856274.davem@davemloft.net>
+        <alpine.DEB.2.21.1910172342090.1869@nanos.tec.linutronix.de>
+X-Mailer: Mew version 6.8 on Emacs 26.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Thu, 17 Oct 2019 15:13:38 -0700 (PDT)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+From: Thomas Gleixner <tglx@linutronix.de>
+Date: Thu, 17 Oct 2019 23:54:07 +0200 (CEST)
 
---8323329-2141773991-1571350299=:1869
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+> Clark might have some insight from the product side for you how much that
+> impacts usability.
 
-On Thu, 17 Oct 2019, David Miller wrote:
-> From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> Date: Thu, 17 Oct 2019 17:40:21 +0200
-> 
-> > On 2019-10-17 16:53:58 [+0200], Daniel Borkmann wrote:
-> >> On Thu, Oct 17, 2019 at 11:05:01AM +0200, Sebastian Andrzej Siewior wrote:
-> >> > Disable BPF on PREEMPT_RT because
-> >> > - it allocates and frees memory in atomic context
-> >> > - it uses up_read_non_owner()
-> >> > - BPF_PROG_RUN() expects to be invoked in non-preemptible context
-> >> 
-> >> For the latter you'd also need to disable seccomp-BPF and everything
-> >> cBPF related as they are /all/ invoked via BPF_PROG_RUN() ...
-> > 
-> > I looked at tracing and it depended on BPF_SYSCALL so I assumed they all
-> > do… Now looking for BPF_PROG_RUN() there is PPP_FILTER,
-> > NET_TEAM_MODE_LOADBALANCE and probably more.  I didn't find a symbol for
-> > seccomp-BPF. 
-> > Would it make sense to override BPF_PROG_RUN() and make each caller fail
-> > instead? Other recommendations?
-> 
-> I hope you understand that basically you are disabling any packet sniffing
-> on the system with this patch you are proposing.
-> 
-> This means no tcpdump, not wireshark, etc.  They will all become
-> non-functional.
+You won't even be able to load systemd, it uses bpf.
 
-Just for the record.
+We're moving to the point where even LSM modules will be implemented in bpf.
+IR drivers require bpf:
 
-tcpdump and wireshark work perfectly fine on a BPF disabled kernel at least
-in the limited way I am using them.
+	https://lwn.net/Articles/759188/
 
-They might become non functional in a decade from now but I assume that we
-find a solution for those problems until then.
+I understand the problems, and realize they are non-trivial, but this hammer
+is really destructive on a fundamental level.
 
-Thanks,
-
-	tglx
---8323329-2141773991-1571350299=:1869--
+To a certain extent, those who insert bpf programs are explicitly
+changing the kernel so really the onus is on them to make sure the
+programs complete in time which is not only finite (which is
+guaranteed by BPF) but also within the RT constraints.
