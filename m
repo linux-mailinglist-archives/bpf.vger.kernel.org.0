@@ -2,101 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E597DBCB7
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2019 07:11:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1261DBCC2
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2019 07:15:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726595AbfJRFLP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Oct 2019 01:11:15 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:36568 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728069AbfJRFLP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Oct 2019 01:11:15 -0400
-Received: by mail-pf1-f193.google.com with SMTP id y22so3101115pfr.3;
-        Thu, 17 Oct 2019 22:11:15 -0700 (PDT)
+        id S2388594AbfJRFPR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Oct 2019 01:15:17 -0400
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:33026 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727606AbfJRFPR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Oct 2019 01:15:17 -0400
+Received: by mail-pl1-f194.google.com with SMTP id d22so2281934pls.0;
+        Thu, 17 Oct 2019 22:15:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Lt7tB1LeS2Sex/M1UY8JvLWxPnjBGbRvOSpWI/WAnhY=;
-        b=QXtQOSFwlpgYpLscplD6fS8aglXutf62lteg1WU9ZZfAiczK5JpzBC/uj4c6pZCrVi
-         mLC5q+f+vFwCpsUNiZEQ1uxUxAN3UCSFg5SHqGDqwp9Kmgc9vRXxMcYHD0ndJLbgjnb8
-         4unNOzDzJjT1TM3Fr5Fzp72sxR+x0KUonP+H/KD83u+twq8ec16p8JoUU/uVTzhV79t3
-         ndXhFvfUFWbOnsHqNx6h4knny5/Ngrd6Mg3VzOrTpzdHv4oXuH5vCLyK6PiBfo1DMwsi
-         Hz89jCBqPoUCqjv1wzPC2vYWFOf275cKZHiY3KW8cu7va1MdgcPeUz4bxjyYk96hyTDm
-         l+XA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=eKCQEHJp+Bmk1+KxL2VW8ZVDs0l76/RRTSEB8GtoKzU=;
+        b=VNYmFpR+1svH3RklJ/ni4HOgMNYHl7MHEGV9c2RKjwcUsmhFCVwHCd8Lx6MtsoWVte
+         Git34f+i7ciXxxGu+izTqbWE5AxM6LMpwlAhUfDPh5Ki/fqj5/ZAurq5nX/8wqfZhuFx
+         GBzv2FpY+5gkaZoq5UJ8rNnF0b/TofDQ5Xp+lVHw+QBbI4lHwpdkGPzJRzkYMlkplsMf
+         Y5avb3hUqFh/XcCy5y/7Od4OeVLbiQf0WVuUB99THxpC4P/ofAiEkA2ITlSHT/5P5m5f
+         PI3HN+DbW9qrtCpPtPv5uvbqXLG3l3RaWsKUTdL6qDdCg2lddyuwlw/FuZ7C1SP5rVLF
+         TcLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Lt7tB1LeS2Sex/M1UY8JvLWxPnjBGbRvOSpWI/WAnhY=;
-        b=J+VexhfHff1iG2985ZY8ixEf4eDb1lpJlSpGzD+vnFT1PANPCABO8Iwg9df7XcXed6
-         pJDmvfQ2f2f6B6FNvBsewDgj8SdtctfjHtAngFY4RjfYXzhynFkWb7VS9zSFOcn0Grue
-         VdidbSqLezx+8eengjVMED/KyFDEx5XfU3UNadh3VFrFwjTRowHGsHKKepY8lDVZLmoB
-         rnaOjA8oFwNwMKVnujHMgFWcgCAYPuD5WC3f8+O2CrSIa0AOvnPgbCf/bZCvq1SQtW+4
-         kX2IBmBVbBJrezC/kYaD7AJ5wRVaXagqVGeE9XEIXDQpphsajilQW9n0NdbrFeJPikzS
-         XkgA==
-X-Gm-Message-State: APjAAAWWm2LD4AbgXza5tbulbEf1QqWodvugTBq1ifzdY5/KXoI3eQWk
-        qtIe9jNWCZCGpo28oL2No1CQeuX8
-X-Google-Smtp-Source: APXvYqyE+Nt0AFAIr6XgIzy9G75sgU6aYtXbvU7B0Yj2FMFQq8X+HLgJQbeIvbNHLsgOzTK4zp7PuQ==
-X-Received: by 2002:a17:90a:3628:: with SMTP id s37mr8608320pjb.38.1571371770338;
-        Thu, 17 Oct 2019 21:09:30 -0700 (PDT)
-Received: from z400-fedora29.kern.oss.ntt.co.jp ([222.151.198.97])
-        by smtp.gmail.com with ESMTPSA id d11sm4341680pfo.104.2019.10.17.21.09.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Oct 2019 21:09:29 -0700 (PDT)
-From:   Toshiaki Makita <toshiaki.makita1@gmail.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=eKCQEHJp+Bmk1+KxL2VW8ZVDs0l76/RRTSEB8GtoKzU=;
+        b=EensbI4iBJApQ4yw/zv+51REzkZBDCIJK58ob+gndfNt9nNldO/g2RI45wefzbksa7
+         cAHdMxA/egvYhxe9knHfZOj3rPUdAvzv398GIk2jbS6vxILtGWBQPGNtirmXqq9IHdtk
+         aZnvA0I2C/8duBwXWtBd32GBOWKwzn8AaPCoIyrwCSn9evWsdFiiiyEMTe2LyOXz/kAE
+         w1ZZpDrfrFoCHMzW0F7P64KqqQ4KgIbDkJHiqyBBZSoWY0q50q6sRhRklLKmW2LfMV+1
+         r738Lgcf3sG8ADgJKWluBIbz1o5+8QGRXF+k13xAH67jy5oWgMgwPObQvapS1SF7FlMb
+         ZnVA==
+X-Gm-Message-State: APjAAAVJSQtleqkG2TqaZNQXvJW6xhIXh6KytDa6DUmjtD3CVs1aENNt
+        uEqL2Df2qsKcx0HG0W/wraMuKN9w
+X-Google-Smtp-Source: APXvYqzBaCznyjQSXNVi7TS0i1yrqWYhhCfDRmQilWmU7AcgFxRttRhzngCZrFJD7BNJlUiiRY2BpA==
+X-Received: by 2002:a17:902:a50a:: with SMTP id s10mr2720061plq.59.1571372661919;
+        Thu, 17 Oct 2019 21:24:21 -0700 (PDT)
+Received: from ast-mbp ([2620:10d:c090:180::cfd0])
+        by smtp.gmail.com with ESMTPSA id v35sm4253093pgn.89.2019.10.17.21.24.20
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 17 Oct 2019 21:24:21 -0700 (PDT)
+Date:   Thu, 17 Oct 2019 21:24:19 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     Petr Mladek <pmladek@suse.com>, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        Pravin B Shelar <pshelar@ovn.org>
-Cc:     Toshiaki Makita <toshiaki.makita1@gmail.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        William Tu <u9012063@gmail.com>,
-        Stanislav Fomichev <sdf@fomichev.me>
-Subject: [RFC PATCH v2 bpf-next 14/15] i40e: prefetch xdp->data before running XDP prog
-Date:   Fri, 18 Oct 2019 13:07:47 +0900
-Message-Id: <20191018040748.30593-15-toshiaki.makita1@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191018040748.30593-1-toshiaki.makita1@gmail.com>
-References: <20191018040748.30593-1-toshiaki.makita1@gmail.com>
+        bpf@vger.kernel.org, Andrii Nakryiko <andriin@fb.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Subject: Re: [PATCH v2 31/33] tools lib bpf: Renaming pr_warning to pr_warn
+Message-ID: <20191018042416.r4fffxzbxb3u4csg@ast-mbp>
+References: <20191018031710.41052-1-wangkefeng.wang@huawei.com>
+ <20191018031850.48498-1-wangkefeng.wang@huawei.com>
+ <20191018031850.48498-31-wangkefeng.wang@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191018031850.48498-31-wangkefeng.wang@huawei.com>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-XDP progs are likely to read/write xdp->data.
-This improves the performance of xdp_flow.
+On Fri, Oct 18, 2019 at 11:18:48AM +0800, Kefeng Wang wrote:
+> For kernel logging macro, pr_warning is completely removed and
+> replaced by pr_warn, using pr_warn in tools lib bpf for symmetry
+> to kernel logging macro, then we could drop pr_warning in the
+> whole linux code.
+> 
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: Martin KaFai Lau <kafai@fb.com>
+> Cc: Song Liu <songliubraving@fb.com>
+> Cc: Yonghong Song <yhs@fb.com>
+> Cc: bpf@vger.kernel.org
+> Acked-by: Andrii Nakryiko <andriin@fb.com>
+> Reviewed-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> ---
+>  tools/lib/bpf/btf.c             |  56 +--
+>  tools/lib/bpf/btf_dump.c        |  18 +-
+>  tools/lib/bpf/libbpf.c          | 679 ++++++++++++++++----------------
+>  tools/lib/bpf/libbpf_internal.h |   8 +-
+>  tools/lib/bpf/xsk.c             |   4 +-
+>  5 files changed, 379 insertions(+), 386 deletions(-)
 
-Signed-off-by: Toshiaki Makita <toshiaki.makita1@gmail.com>
----
- drivers/net/ethernet/intel/i40e/i40e_txrx.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_txrx.c b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-index e3f29dc..a85a4ae 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-@@ -2207,6 +2207,7 @@ static struct sk_buff *i40e_run_xdp(struct i40e_ring *rx_ring,
- 	if (!xdp_prog)
- 		goto xdp_out;
- 
-+	prefetchw(xdp->data);
- 	prefetchw(xdp->data_hard_start); /* xdp_frame write */
- 
- 	act = bpf_prog_run_xdp(xdp_prog, xdp);
--- 
-1.8.3.1
+Nack.
+I prefer this type of renaming to go via bpf tree.
+It's not a kernel patch. It's touching user space library
+which is under heavy development.
+Doing any other way will cause a ton of conflicts.
 
