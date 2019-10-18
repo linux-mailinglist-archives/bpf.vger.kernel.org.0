@@ -2,93 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AE4DDCA3C
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2019 18:04:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0982FDCAFA
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2019 18:28:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502382AbfJRQED (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Oct 2019 12:04:03 -0400
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:34203 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2502380AbfJRQED (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Oct 2019 12:04:03 -0400
-Received: by mail-pl1-f193.google.com with SMTP id k7so3072238pll.1
-        for <bpf@vger.kernel.org>; Fri, 18 Oct 2019 09:04:03 -0700 (PDT)
+        id S2394099AbfJRQ2l (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Oct 2019 12:28:41 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:38530 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732948AbfJRQ2l (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Oct 2019 12:28:41 -0400
+Received: by mail-qt1-f194.google.com with SMTP id j31so9926087qta.5;
+        Fri, 18 Oct 2019 09:28:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=WyRm5TgT1NppVOAzvM76cGWpZdrCJEG5ZPfeSyW5GBc=;
-        b=WHfqXhuZbG5VlkTSKvkK4q3O4dVt+rJPdJ4dUveg628tVSs4aoifX56fntLqRp+l0G
-         4gRKf3/GNROQmF/RuHiWEayNXCQV+rgjRX97nT/JO0bvHe5LWMUW9U/wdzuSDHEst4Cf
-         pNzoqV9X0e+66TUebGND6FbODUcts1mCHlu1GNETkxO2Bs46dIYaZTyaSreQdamieUGJ
-         U+8nA5fFsywNlZfMjJLgNCuMkRrXd4oG9SKi544D86a+pvStLV+HCVy63HNoeSOFPdKd
-         Z5yTZy5xBSZunFpS7q1/Js9cFq4JwpwrNYWgh16wKwIRXs8kv1pKa6B6NR92eGa47ykS
-         d4Sw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=tN9oYHiUwoH1r7uqZMD+ykxqZWmlQKOgWRW4Qq2HjJY=;
+        b=oeZcOscZtpWxgbAnVrlRee2Jh9eYjtLOUOTbI/yTDxVm+ysmgEuDSmn+3XP40OQ4zW
+         NxLZOD5Pzs4gDDDKRQp52Oi9RuSPGkkSHK5MR+mgGQla7koyzJ5LgbsziogM8LDwKRkF
+         DH77c0o3wUNC63tu9mKQcIrLLSrXUGqMX1h6A3pTHRL0032FzWrcA3JzFgzLEqzoecgB
+         fYAg2kZeYPQdPH37H4LHIdxQOtnw7EhZPerfigUzi6KszDXFWY6gG9H44ssnAEDc5JtD
+         L06aWj7VWuhhm/JBJC7+DW30w1TVJTM4nxMv9oW62GGINJg78DK05WEg6WMhF9cqMbku
+         4Hog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=WyRm5TgT1NppVOAzvM76cGWpZdrCJEG5ZPfeSyW5GBc=;
-        b=IyTvmRtWlzXqbX4CLisXs3DxpVmQLiJb1HuwObcJaEN6epdxWv+6D+gpybSRvDkoIV
-         naqjnMZnuzwk5CUjWO2haU9EZWcPSq/bEalHvVhO8GrKYK3HEj8HffUA3yLK4mudzbtU
-         EcxOozOvnZ+1mupknuWzrA38kaEqR8ut3yHT4WyOqin/aDn8IA2f5hTRMcqOA5Oo7KWk
-         V30E3F9/0skqiCmhwJzfnFrn4Bb9eOhWh6hPe73SerYUFLDzppLMyOM74Ynvrdtg6Q11
-         Fs8+xlqlykFOvqxFFx/d7FvmH/Upc089hC++xW69rA8Bl7s+zvrOFRkYjJCJQMCB7BAQ
-         muNw==
-X-Gm-Message-State: APjAAAWKDlHjZIzWNYlktMf5fkC2u8yJaG4IpIjAvO/tLgAW1cfiNEAu
-        mYeFAai4W65+KkMszYmmxlI=
-X-Google-Smtp-Source: APXvYqxEhVq3h8PKzyBL4MoOwYiOSuaR/fpyXBF6ZX6ZJWTLeb033PXIxbay/f4G6M0AM406y7t6GQ==
-X-Received: by 2002:a17:902:d915:: with SMTP id c21mr2955132plz.264.1571414642491;
-        Fri, 18 Oct 2019 09:04:02 -0700 (PDT)
-Received: from ast-mbp ([2620:10d:c090:180::a579])
-        by smtp.gmail.com with ESMTPSA id 74sm7368145pfy.78.2019.10.18.09.04.00
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 18 Oct 2019 09:04:01 -0700 (PDT)
-Date:   Fri, 18 Oct 2019 09:03:59 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Lorenz Bauer <lmb@cloudflare.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        joe@wand.net.nz
-Subject: Re: [PATCH bpf] bpf: improve htab_map_get_next_key behaviour during
- races
-Message-ID: <20191018160357.rq7twrwywpuc4xax@ast-mbp>
-References: <20191018134311.7284-1-lmb@cloudflare.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=tN9oYHiUwoH1r7uqZMD+ykxqZWmlQKOgWRW4Qq2HjJY=;
+        b=cKFk+12YGpCadouKKAiUqyExddPy/FUXj8IVAFzvvaSyJ3tEf32X8hdgtquz/PxONv
+         nvaVxr/JYR016dVU51hI6xVEP+0uV6zdTVpZMBDEMqoWJC9FgN5nEcWjDQ8inUmqcq23
+         tKmnb015lFjoq2kcJWjKea53HaZO6TmhgVBCsCoJfTmdna5lHiAOcpCUDqRXf2j2OqsO
+         1HMBEGHevC1me7dCR/hjo5/dOIBleh+XzAgwdREhgt4T+HEJO3bILLpNDtjVSVc4r7gw
+         vSwG1P4cJh/ooPIeGQNZ3Fea6O9D9ZzNMPpRp5rZwItyLWlB07uSH7a5IHZjmSv5KVLp
+         gVdg==
+X-Gm-Message-State: APjAAAUVCaeADGajzb+D4BEM5zZFx/tT/k2ivmpXnpB0KFBqqcfOJFIQ
+        imPpgC2TJo1CF3VZLWUg8tIwQiCVVA2Mmi/OKfFI1Pii
+X-Google-Smtp-Source: APXvYqzJIBq0VJxAq6m1hqAL8EDuc3igKbSADUc4R5M5t6LhuntyyzpTkN8grkBb8J50b3I9Sfjn/1l3sYizNhICstQ=
+X-Received: by 2002:aed:35e7:: with SMTP id d36mr3449210qte.59.1571416119718;
+ Fri, 18 Oct 2019 09:28:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191018134311.7284-1-lmb@cloudflare.com>
-User-Agent: NeoMutt/20180223
+References: <20191016132802.2760149-1-toke@redhat.com> <CAEf4BzbshfC2VXXbnWnjCA=Mcz8OSO=ACNSRNrNr2mHOm9uCmw@mail.gmail.com>
+ <87mudye45s.fsf@toke.dk>
+In-Reply-To: <87mudye45s.fsf@toke.dk>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 18 Oct 2019 09:28:28 -0700
+Message-ID: <CAEf4BzZxszYrXCEpDqe6Gi9FggUOnDiQjP9BQTq=EcszwSghKA@mail.gmail.com>
+Subject: Re: [PATCH bpf] xdp: Handle device unregister for devmap_hash map type
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 18, 2019 at 02:43:11PM +0100, Lorenz Bauer wrote:
-> To iterate a BPF map, userspace must use MAP_GET_NEXT_KEY and provide
-> the last retrieved key. The code then scans the hash table bucket
-> for the key and returns the key of the next item.
-> 
-> This presents a problem if the last retrieved key isn't present in the
-> hash table anymore, e.g. due to concurrent deletion. It's not possible
-> to ascertain the location of a key in a given bucket, so there isn't
-> really a correct answer. The implementation currently returns the
-> first key in the first bucket. This guarantees that we never skip an
-> existing key. However, it means that a user space program iterating
-> a heavily modified map may never reach the end of the hash table,
-> forever restarting at the beginning.
-> 
-> Fixing this outright is rather involved. However, we can improve slightly
-> by never revisiting earlier buckets. Instead of the first key in the
-> first bucket we return the first key in the "current" bucket. This
-> doesn't eliminate the problem, but makes it less likely to occur.
-> 
-> Prior to commit 8fe45924387b ("bpf: map_get_next_key to return first key on NULL")
-> passing a non-existent key to MAP_GET_NEXT_KEY was the only way to
-> find the first key. Hence there is a small chance that there is code that
-> will be broken by this change.
+On Fri, Oct 18, 2019 at 3:31 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
+>
+> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+>
+> > On Wed, Oct 16, 2019 at 9:07 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@=
+redhat.com> wrote:
+> >>
+> >> It seems I forgot to add handling of devmap_hash type maps to the devi=
+ce
+> >> unregister hook for devmaps. This omission causes devices to not be
+> >> properly released, which causes hangs.
+> >>
+> >> Fix this by adding the missing handler.
+> >>
+> >> Fixes: 6f9d451ab1a3 ("xdp: Add devmap_hash map type for looking up dev=
+ices by hashed index")
+> >> Reported-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+> >> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> >> ---
+> >>  kernel/bpf/devmap.c | 34 ++++++++++++++++++++++++++++++++++
+> >>  1 file changed, 34 insertions(+)
+> >>
+> >
+> > [...]
+> >
+> >> +
+> >> +               while (dev) {
+> >> +                       odev =3D (netdev =3D=3D dev->dev) ? dev : NULL=
+;
+> >> +                       dev =3D hlist_entry_safe(rcu_dereference_raw(h=
+list_next_rcu(&dev->index_hlist)),
+> >
+> > Please run scripts/checkpatch.pl, this looks like a rather long line.
+>
+> That was a deliberate departure from the usual line length, actually. I
+> don't think it helps readability to split that into three lines just to
+> adhere to a strict line length requirement...
 
-It is 100% chance that it will break older bcc tools that were written
-before NULL was possible argument for get_next_key.
-Please see Yonghong's patches for batched map lookup.
-That's the proper way to solve your problem.
+Wouldn't local variable make it even more readable?
 
+>
+> -Toke
+>
