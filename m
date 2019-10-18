@@ -2,101 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 19863DC58F
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2019 14:58:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1F65DC5AA
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2019 15:02:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733180AbfJRM6E (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Oct 2019 08:58:04 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:42874 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731166AbfJRM6E (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Oct 2019 08:58:04 -0400
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id BDC6989F2B4;
-        Fri, 18 Oct 2019 12:58:03 +0000 (UTC)
-Received: from tagon (ovpn-122-245.rdu2.redhat.com [10.10.122.245])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 083AA5D70E;
-        Fri, 18 Oct 2019 12:58:01 +0000 (UTC)
-Date:   Fri, 18 Oct 2019 07:58:00 -0500
-From:   Clark Williams <williams@redhat.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     David Miller <davem@davemloft.net>,
-        Sebastian Sewior <bigeasy@linutronix.de>, daniel@iogearbox.net,
-        bpf@vger.kernel.org, ast@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: Re: [PATCH] BPF: Disable on PREEMPT_RT
-Message-ID: <20191018075800.238f4f9c@tagon>
-In-Reply-To: <alpine.DEB.2.21.1910181038130.1869@nanos.tec.linutronix.de>
-References: <20191017090500.ienqyium2phkxpdo@linutronix.de>
-        <20191017145358.GA26267@pc-63.home>
-        <20191017154021.ndza4la3hntk4d4o@linutronix.de>
-        <20191017.132548.2120028117307856274.davem@davemloft.net>
-        <alpine.DEB.2.21.1910172342090.1869@nanos.tec.linutronix.de>
-        <20191017214917.18911f58@tagon>
-        <alpine.DEB.2.21.1910181038130.1869@nanos.tec.linutronix.de>
-Organization: Red Hat, Inc
+        id S2439072AbfJRNBg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Oct 2019 09:01:36 -0400
+Received: from www62.your-server.de ([213.133.104.62]:45398 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2410223AbfJRNBf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Oct 2019 09:01:35 -0400
+Received: from 55.249.197.178.dynamic.dsl-lte-bonding.lssmb00p-msn.res.cust.swisscom.ch ([178.197.249.55] helo=localhost)
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1iLRsm-0000UA-Qr; Fri, 18 Oct 2019 15:01:28 +0200
+Date:   Fri, 18 Oct 2019 15:01:28 +0200
+From:   Daniel Borkmann <daniel@iogearbox.net>
+To:     syzbot <syzbot+710043c5d1d5b5013bc7@syzkaller.appspotmail.com>
+Cc:     ast@kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
+        hawk@kernel.org, jakub.kicinski@netronome.com,
+        john.fastabend@gmail.com, kafai@fb.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
+Subject: Re: BUG: unable to handle kernel paging request in
+ is_bpf_text_address
+Message-ID: <20191018130128.GC26267@pc-63.home>
+References: <000000000000410cbb059528d6f7@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.6.2 (mx1.redhat.com [10.5.110.68]); Fri, 18 Oct 2019 12:58:03 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <000000000000410cbb059528d6f7@google.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.101.4/25606/Fri Oct 18 10:58:40 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 18 Oct 2019 10:46:01 +0200 (CEST)
-Thomas Gleixner <tglx@linutronix.de> wrote:
-
-> > >   #3) BPF uses the up_read_non_owner() hackery which was only invented to
-> > >       deal with already existing horrors and not meant to be proliferated.
-> > > 
-> > >       Yes, I know it's a existing facility ....  
-> > 
-> > I'm sure I'll regret asking this, but why is up_read_non_owner() a horror? I mean,
-> > I get the fundamental wrongness of having someone that's not the owner of a semaphore
-> > performing an 'up' on it, but is there an RT-specific reason that it's bad? Is it
-> > totally a blocker for using BPF with RT or is it something we should fix over time?  
+On Thu, Oct 17, 2019 at 10:45:09PM -0700, syzbot wrote:
+> Hello,
 > 
-> RT has strict locker == unlocker semantics simply because the owner
-> (locker) is subject to priority inheritance and a non-owner unlock cannot
-> undo PI on behalf of the locker sanely. Also exposing the locker to PI if
-> the locker is not involved in unlocking is obviously a pointless exercise
-> and potentially a source of unbound priority inversion.
-
-Ok, I forgot about the PI consequences. Thanks teacher :)
-
+> syzbot found the following crash on:
 > 
-> > I do think that we (RT) are going to have to co-exist with BPF, if only due to the
-> > increased use of XDP. I also think that other sub-systems will start to
-> > employ BPF for production purposes (as opposed to debug/analysis which is
-> > how we generally look at tracing, packet sniffing, etc.). I think we *have* to
-> > figure out how to co-exist.  
-> 
-> I'm not saying that RT does not want BPF, quite the contrary, but for the
-> initial merge BPF is not a hard requirement, so disabling it was the
-> straight forward path.
-> 
-> I'm all ears to get pointers how to solve that right now.
->  
+> HEAD commit:    283ea345 coccinelle: api/devm_platform_ioremap_resource: r..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=122f199b600000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=f0a8b0a0736a2ac1
+> dashboard link: https://syzkaller.appspot.com/bug?extid=710043c5d1d5b5013bc7
+> compiler:       clang version 9.0.0 (/home/glider/llvm/clang
+> 80fee25776c2fb61e74c1ecb1a523375c2500b69)
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=142676bb600000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11a2cebb600000
 
-Yeah, put it down to lack of sleep. After waking up and rereading, I first realized
-that we're not immediately affected since RHEL8 doesn't use BPF. But we're going to 
-have to deal with it next year, since we'll be looking at a 5.6+ kernel which will 
-have PREEMPT_RT and the latest BPF bells and whistles. So might as well start the 
-conversations now. 
-
-Arnaldo and I have been having lots of conversations regarding BPF, so we'll extend
-that and dig in on the preemption issue for now. We also need to understand the 
-memory allocation behavior so we can hopefully move it out of atomic regions. I'm not
-sure how we should address the up_read_non_owner() issue at the moment.
-
-Clark
-
--- 
-The United States Coast Guard
-Ruining Natural Selection since 1790
+I'll take a look, thanks!
