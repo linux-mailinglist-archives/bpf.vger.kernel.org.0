@@ -2,105 +2,593 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0982FDCAFA
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2019 18:28:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05140DCB9E
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2019 18:38:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394099AbfJRQ2l (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Oct 2019 12:28:41 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:38530 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732948AbfJRQ2l (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Oct 2019 12:28:41 -0400
-Received: by mail-qt1-f194.google.com with SMTP id j31so9926087qta.5;
-        Fri, 18 Oct 2019 09:28:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=tN9oYHiUwoH1r7uqZMD+ykxqZWmlQKOgWRW4Qq2HjJY=;
-        b=oeZcOscZtpWxgbAnVrlRee2Jh9eYjtLOUOTbI/yTDxVm+ysmgEuDSmn+3XP40OQ4zW
-         NxLZOD5Pzs4gDDDKRQp52Oi9RuSPGkkSHK5MR+mgGQla7koyzJ5LgbsziogM8LDwKRkF
-         DH77c0o3wUNC63tu9mKQcIrLLSrXUGqMX1h6A3pTHRL0032FzWrcA3JzFgzLEqzoecgB
-         fYAg2kZeYPQdPH37H4LHIdxQOtnw7EhZPerfigUzi6KszDXFWY6gG9H44ssnAEDc5JtD
-         L06aWj7VWuhhm/JBJC7+DW30w1TVJTM4nxMv9oW62GGINJg78DK05WEg6WMhF9cqMbku
-         4Hog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=tN9oYHiUwoH1r7uqZMD+ykxqZWmlQKOgWRW4Qq2HjJY=;
-        b=cKFk+12YGpCadouKKAiUqyExddPy/FUXj8IVAFzvvaSyJ3tEf32X8hdgtquz/PxONv
-         nvaVxr/JYR016dVU51hI6xVEP+0uV6zdTVpZMBDEMqoWJC9FgN5nEcWjDQ8inUmqcq23
-         tKmnb015lFjoq2kcJWjKea53HaZO6TmhgVBCsCoJfTmdna5lHiAOcpCUDqRXf2j2OqsO
-         1HMBEGHevC1me7dCR/hjo5/dOIBleh+XzAgwdREhgt4T+HEJO3bILLpNDtjVSVc4r7gw
-         vSwG1P4cJh/ooPIeGQNZ3Fea6O9D9ZzNMPpRp5rZwItyLWlB07uSH7a5IHZjmSv5KVLp
-         gVdg==
-X-Gm-Message-State: APjAAAUVCaeADGajzb+D4BEM5zZFx/tT/k2ivmpXnpB0KFBqqcfOJFIQ
-        imPpgC2TJo1CF3VZLWUg8tIwQiCVVA2Mmi/OKfFI1Pii
-X-Google-Smtp-Source: APXvYqzJIBq0VJxAq6m1hqAL8EDuc3igKbSADUc4R5M5t6LhuntyyzpTkN8grkBb8J50b3I9Sfjn/1l3sYizNhICstQ=
-X-Received: by 2002:aed:35e7:: with SMTP id d36mr3449210qte.59.1571416119718;
- Fri, 18 Oct 2019 09:28:39 -0700 (PDT)
+        id S1726707AbfJRQfQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Oct 2019 12:35:16 -0400
+Received: from smtprelay0047.hostedemail.com ([216.40.44.47]:36329 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730786AbfJRQfQ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 18 Oct 2019 12:35:16 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 626F418264E3F;
+        Fri, 18 Oct 2019 16:35:11 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,:::::::::::::::::,RULES_HIT:4:41:355:379:800:960:966:967:968:973:982:988:989:1260:1277:1311:1313:1314:1345:1437:1515:1516:1518:1593:1594:1605:1730:1747:1777:1792:1801:2196:2198:2199:2200:2393:2525:2559:2563:2682:2685:2828:2859:2898:2899:2901:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3165:3865:3866:3867:3868:3870:3871:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:4385:4605:5007:6119:7903:8603:9010:9025:9040:9592:10004:11026:11232:11473:11657:11658:11914:12043:12294:12296:12297:12438:12555:12691:12737:12760:12986:13439:13845:14096:14097:14394:14659:14877:21080:21433:21451:21611:21627:21740:21789:21811:21819:30022:30045:30051:30054:30070:30075,0,RBL:47.151.135.224:@perches.com:.lbl8.mailshell.net-62.8.0.100 64.201.201.201,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:fn,MSBL:0,DNSBL:neutral,Custom_rules:0:0:0,LFtime:25,LUA_SUMMARY:none
+X-HE-Tag: swim18_4a2a99c5c3b53
+X-Filterd-Recvd-Size: 18853
+Received: from XPS-9350.home (unknown [47.151.135.224])
+        (Authenticated sender: joe@perches.com)
+        by omf04.hostedemail.com (Postfix) with ESMTPA;
+        Fri, 18 Oct 2019 16:35:09 +0000 (UTC)
+Message-ID: <f31b38b9ad515a138edaecf85701b1e3db064114.camel@perches.com>
+Subject: [PATCH] kernel: convert switch/case fallthrough comments to
+ fallthrough;
+From:   Joe Perches <joe@perches.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-audit@redhat.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        kgdb-bugreport@lists.sourceforge.net, linux-pm@vger.kernel.org,
+        linux-block@vger.kernel.org
+Date:   Fri, 18 Oct 2019 09:35:08 -0700
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.32.1-2 
 MIME-Version: 1.0
-References: <20191016132802.2760149-1-toke@redhat.com> <CAEf4BzbshfC2VXXbnWnjCA=Mcz8OSO=ACNSRNrNr2mHOm9uCmw@mail.gmail.com>
- <87mudye45s.fsf@toke.dk>
-In-Reply-To: <87mudye45s.fsf@toke.dk>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 18 Oct 2019 09:28:28 -0700
-Message-ID: <CAEf4BzZxszYrXCEpDqe6Gi9FggUOnDiQjP9BQTq=EcszwSghKA@mail.gmail.com>
-Subject: Re: [PATCH bpf] xdp: Handle device unregister for devmap_hash map type
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 18, 2019 at 3:31 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
-at.com> wrote:
->
-> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
->
-> > On Wed, Oct 16, 2019 at 9:07 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@=
-redhat.com> wrote:
-> >>
-> >> It seems I forgot to add handling of devmap_hash type maps to the devi=
-ce
-> >> unregister hook for devmaps. This omission causes devices to not be
-> >> properly released, which causes hangs.
-> >>
-> >> Fix this by adding the missing handler.
-> >>
-> >> Fixes: 6f9d451ab1a3 ("xdp: Add devmap_hash map type for looking up dev=
-ices by hashed index")
-> >> Reported-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-> >> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> >> ---
-> >>  kernel/bpf/devmap.c | 34 ++++++++++++++++++++++++++++++++++
-> >>  1 file changed, 34 insertions(+)
-> >>
-> >
-> > [...]
-> >
-> >> +
-> >> +               while (dev) {
-> >> +                       odev =3D (netdev =3D=3D dev->dev) ? dev : NULL=
-;
-> >> +                       dev =3D hlist_entry_safe(rcu_dereference_raw(h=
-list_next_rcu(&dev->index_hlist)),
-> >
-> > Please run scripts/checkpatch.pl, this looks like a rather long line.
->
-> That was a deliberate departure from the usual line length, actually. I
-> don't think it helps readability to split that into three lines just to
-> adhere to a strict line length requirement...
+Use the new pseudo keyword "fallthrough;" and not the
+various /* fallthrough */ style comments.
 
-Wouldn't local variable make it even more readable?
+Signed-off-by: Joe Perches <joe@perches.com>
+---
 
->
-> -Toke
->
+This is a single patch for the kernel/ source tree,
+which would otherwise
+be sent through as separate
+patches to 19 maintainer sections.
+
+compilation tested only.
+
+Done by the script in this email:
+https://lore.kernel.org/lkml/9fe980f7e28242c2835ffae34914c5f68e8268a7.camel@perches.com/
+
+ kernel/auditfilter.c               | 2 +-
+ kernel/bpf/cgroup.c                | 4 ++--
+ kernel/bpf/verifier.c              | 4 ++--
+ kernel/capability.c                | 2 +-
+ kernel/compat.c                    | 6 +++---
+ kernel/debug/gdbstub.c             | 6 +++---
+ kernel/debug/kdb/kdb_keyboard.c    | 4 ++--
+ kernel/debug/kdb/kdb_support.c     | 6 +++---
+ kernel/events/core.c               | 3 +--
+ kernel/futex.c                     | 4 ++--
+ kernel/gcov/gcc_3_4.c              | 6 +++---
+ kernel/irq/handle.c                | 3 +--
+ kernel/irq/manage.c                | 5 ++---
+ kernel/kallsyms.c                  | 4 ++--
+ kernel/pid.c                       | 2 +-
+ kernel/power/hibernate.c           | 2 +-
+ kernel/power/qos.c                 | 4 ++--
+ kernel/printk/printk.c             | 2 +-
+ kernel/sched/core.c                | 2 +-
+ kernel/sched/topology.c            | 6 +++---
+ kernel/signal.c                    | 2 +-
+ kernel/sys.c                       | 3 +--
+ kernel/time/hrtimer.c              | 2 +-
+ kernel/time/posix-timers.c         | 4 ++--
+ kernel/time/tick-broadcast.c       | 2 +-
+ kernel/time/timer.c                | 2 +-
+ kernel/trace/blktrace.c            | 2 +-
+ kernel/trace/trace_events_filter.c | 4 ++--
+ 28 files changed, 47 insertions(+), 51 deletions(-)
+
+diff --git a/kernel/auditfilter.c b/kernel/auditfilter.c
+index b0126e9c0743..471cd680479d 100644
+--- a/kernel/auditfilter.c
++++ b/kernel/auditfilter.c
+@@ -674,7 +674,7 @@ static struct audit_rule_data *audit_krule_to_data(struct audit_krule *krule)
+ 				data->values[i] = AUDIT_UID_UNSET;
+ 				break;
+ 			}
+-			/* fall through - if set */
++			fallthrough;	/* if set */
+ 		default:
+ 			data->values[i] = f->val;
+ 		}
+diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+index ddd8addcdb5c..955631f1b77d 100644
+--- a/kernel/bpf/cgroup.c
++++ b/kernel/bpf/cgroup.c
+@@ -797,7 +797,7 @@ cgroup_base_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 	case BPF_FUNC_trace_printk:
+ 		if (capable(CAP_SYS_ADMIN))
+ 			return bpf_get_trace_printk_proto();
+-		/* fall through */
++		fallthrough;
+ 	default:
+ 		return NULL;
+ 	}
+@@ -1439,7 +1439,7 @@ static bool cg_sockopt_is_valid_access(int off, int size,
+ 			return prog->expected_attach_type ==
+ 				BPF_CGROUP_GETSOCKOPT;
+ 		case offsetof(struct bpf_sockopt, optname):
+-			/* fallthrough */
++			fallthrough;
+ 		case offsetof(struct bpf_sockopt, level):
+ 			if (size != size_default)
+ 				return false;
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index ffc3e53f5300..d2b6fd8545e2 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -2249,7 +2249,7 @@ static bool may_access_direct_pkt_data(struct bpf_verifier_env *env,
+ 	case BPF_PROG_TYPE_CGROUP_SKB:
+ 		if (t == BPF_WRITE)
+ 			return false;
+-		/* fallthrough */
++		fallthrough;
+ 
+ 	/* Program types with direct read + write access go here! */
+ 	case BPF_PROG_TYPE_SCHED_CLS:
+@@ -4381,7 +4381,7 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
+ 				off_reg == dst_reg ? dst : src);
+ 			return -EACCES;
+ 		}
+-		/* fall-through */
++		fallthrough;
+ 	default:
+ 		break;
+ 	}
+diff --git a/kernel/capability.c b/kernel/capability.c
+index 1444f3954d75..7c59b096c98a 100644
+--- a/kernel/capability.c
++++ b/kernel/capability.c
+@@ -93,7 +93,7 @@ static int cap_validate_magic(cap_user_header_t header, unsigned *tocopy)
+ 		break;
+ 	case _LINUX_CAPABILITY_VERSION_2:
+ 		warn_deprecated_v2();
+-		/* fall through - v3 is otherwise equivalent to v2. */
++		fallthrough;	/* v3 is otherwise equivalent to v2 */
+ 	case _LINUX_CAPABILITY_VERSION_3:
+ 		*tocopy = _LINUX_CAPABILITY_U32S_3;
+ 		break;
+diff --git a/kernel/compat.c b/kernel/compat.c
+index a2bc1d6ceb57..d9c61f4317be 100644
+--- a/kernel/compat.c
++++ b/kernel/compat.c
+@@ -343,11 +343,11 @@ get_compat_sigset(sigset_t *set, const compat_sigset_t __user *compat)
+ 		return -EFAULT;
+ 	switch (_NSIG_WORDS) {
+ 	case 4: set->sig[3] = v.sig[6] | (((long)v.sig[7]) << 32 );
+-		/* fall through */
++		fallthrough;
+ 	case 3: set->sig[2] = v.sig[4] | (((long)v.sig[5]) << 32 );
+-		/* fall through */
++		fallthrough;
+ 	case 2: set->sig[1] = v.sig[2] | (((long)v.sig[3]) << 32 );
+-		/* fall through */
++		fallthrough;
+ 	case 1: set->sig[0] = v.sig[0] | (((long)v.sig[1]) << 32 );
+ 	}
+ #else
+diff --git a/kernel/debug/gdbstub.c b/kernel/debug/gdbstub.c
+index 4b280fc7dd67..b9d8b7248964 100644
+--- a/kernel/debug/gdbstub.c
++++ b/kernel/debug/gdbstub.c
+@@ -1033,14 +1033,14 @@ int gdb_serial_stub(struct kgdb_state *ks)
+ 				return DBG_PASS_EVENT;
+ 			}
+ #endif
+-			/* Fall through */
++			fallthrough;
+ 		case 'C': /* Exception passing */
+ 			tmp = gdb_cmd_exception_pass(ks);
+ 			if (tmp > 0)
+ 				goto default_handle;
+ 			if (tmp == 0)
+ 				break;
+-			/* Fall through - on tmp < 0 */
++			fallthrough;	/* on tmp < 0 */
+ 		case 'c': /* Continue packet */
+ 		case 's': /* Single step packet */
+ 			if (kgdb_contthread && kgdb_contthread != current) {
+@@ -1049,7 +1049,7 @@ int gdb_serial_stub(struct kgdb_state *ks)
+ 				break;
+ 			}
+ 			dbg_activate_sw_breakpoints();
+-			/* Fall through - to default processing */
++			fallthrough;	/* to default processing */
+ 		default:
+ default_handle:
+ 			error = kgdb_arch_handle_exception(ks->ex_vector,
+diff --git a/kernel/debug/kdb/kdb_keyboard.c b/kernel/debug/kdb/kdb_keyboard.c
+index 750497b0003a..f877a0a0d7cf 100644
+--- a/kernel/debug/kdb/kdb_keyboard.c
++++ b/kernel/debug/kdb/kdb_keyboard.c
+@@ -173,11 +173,11 @@ int kdb_get_kbd_char(void)
+ 	case KT_LATIN:
+ 		if (isprint(keychar))
+ 			break;		/* printable characters */
+-		/* fall through */
++		fallthrough;
+ 	case KT_SPEC:
+ 		if (keychar == K_ENTER)
+ 			break;
+-		/* fall through */
++		fallthrough;
+ 	default:
+ 		return -1;	/* ignore unprintables */
+ 	}
+diff --git a/kernel/debug/kdb/kdb_support.c b/kernel/debug/kdb/kdb_support.c
+index b8e6306e7e13..d636506f695a 100644
+--- a/kernel/debug/kdb/kdb_support.c
++++ b/kernel/debug/kdb/kdb_support.c
+@@ -432,7 +432,7 @@ int kdb_getphysword(unsigned long *word, unsigned long addr, size_t size)
+ 				*word = w8;
+ 			break;
+ 		}
+-		/* fall through */
++		fallthrough;
+ 	default:
+ 		diag = KDB_BADWIDTH;
+ 		kdb_printf("kdb_getphysword: bad width %ld\n", (long) size);
+@@ -481,7 +481,7 @@ int kdb_getword(unsigned long *word, unsigned long addr, size_t size)
+ 				*word = w8;
+ 			break;
+ 		}
+-		/* fall through */
++		fallthrough;
+ 	default:
+ 		diag = KDB_BADWIDTH;
+ 		kdb_printf("kdb_getword: bad width %ld\n", (long) size);
+@@ -525,7 +525,7 @@ int kdb_putword(unsigned long addr, unsigned long word, size_t size)
+ 			diag = kdb_putarea(addr, w8);
+ 			break;
+ 		}
+-		/* fall through */
++		fallthrough;
+ 	default:
+ 		diag = KDB_BADWIDTH;
+ 		kdb_printf("kdb_putword: bad width %ld\n", (long) size);
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 9ec0b0bfddbd..04e75b1144c5 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -9361,8 +9361,7 @@ perf_event_parse_addr_filter(struct perf_event *event, char *fstr,
+ 		case IF_SRC_KERNELADDR:
+ 		case IF_SRC_KERNEL:
+ 			kernel = 1;
+-			/* fall through */
+-
++			fallthrough;
+ 		case IF_SRC_FILEADDR:
+ 		case IF_SRC_FILE:
+ 			if (state != IF_STATE_SOURCE)
+diff --git a/kernel/futex.c b/kernel/futex.c
+index bd18f60e4c6c..ab12b6229d2d 100644
+--- a/kernel/futex.c
++++ b/kernel/futex.c
+@@ -3639,12 +3639,12 @@ long do_futex(u32 __user *uaddr, int op, u32 val, ktime_t *timeout,
+ 	switch (cmd) {
+ 	case FUTEX_WAIT:
+ 		val3 = FUTEX_BITSET_MATCH_ANY;
+-		/* fall through */
++		fallthrough;
+ 	case FUTEX_WAIT_BITSET:
+ 		return futex_wait(uaddr, flags, val, timeout, val3);
+ 	case FUTEX_WAKE:
+ 		val3 = FUTEX_BITSET_MATCH_ANY;
+-		/* fall through */
++		fallthrough;
+ 	case FUTEX_WAKE_BITSET:
+ 		return futex_wake(uaddr, flags, val, val3);
+ 	case FUTEX_REQUEUE:
+diff --git a/kernel/gcov/gcc_3_4.c b/kernel/gcov/gcc_3_4.c
+index 801ee4b0b969..32fc3278166f 100644
+--- a/kernel/gcov/gcc_3_4.c
++++ b/kernel/gcov/gcc_3_4.c
+@@ -455,7 +455,7 @@ int gcov_iter_next(struct gcov_iterator *iter)
+ 	case RECORD_COUNT:
+ 		/* Advance to next count */
+ 		iter->count++;
+-		/* fall through */
++		fallthrough;
+ 	case RECORD_COUNT_LEN:
+ 		if (iter->count < get_func(iter)->n_ctrs[iter->type]) {
+ 			iter->record = 9;
+@@ -465,7 +465,7 @@ int gcov_iter_next(struct gcov_iterator *iter)
+ 		get_type(iter)->offset += iter->count;
+ 		iter->count = 0;
+ 		iter->type++;
+-		/* fall through */
++		fallthrough;
+ 	case RECORD_FUNCTION_CHECK:
+ 		if (iter->type < iter->num_types) {
+ 			iter->record = 7;
+@@ -474,7 +474,7 @@ int gcov_iter_next(struct gcov_iterator *iter)
+ 		/* Advance to next function */
+ 		iter->type = 0;
+ 		iter->function++;
+-		/* fall through */
++		fallthrough;
+ 	case RECORD_TIME_STAMP:
+ 		if (iter->function < iter->info->n_functions)
+ 			iter->record = 3;
+diff --git a/kernel/irq/handle.c b/kernel/irq/handle.c
+index a4ace611f47f..b38d2fd70fe1 100644
+--- a/kernel/irq/handle.c
++++ b/kernel/irq/handle.c
+@@ -165,8 +165,7 @@ irqreturn_t __handle_irq_event_percpu(struct irq_desc *desc, unsigned int *flags
+ 			}
+ 
+ 			__irq_wake_thread(desc, action);
+-
+-			/* Fall through - to add to randomness */
++			fallthrough;	/* to add to randomness */
+ 		case IRQ_HANDLED:
+ 			*flags |= action->flags;
+ 			break;
+diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
+index 1753486b440c..baa86020f243 100644
+--- a/kernel/irq/manage.c
++++ b/kernel/irq/manage.c
+@@ -222,7 +222,7 @@ int irq_do_set_affinity(struct irq_data *data, const struct cpumask *mask,
+ 	case IRQ_SET_MASK_OK:
+ 	case IRQ_SET_MASK_OK_DONE:
+ 		cpumask_copy(desc->irq_common_data.affinity, mask);
+-		/* fall through */
++		fallthrough;
+ 	case IRQ_SET_MASK_OK_NOCOPY:
+ 		irq_validate_effective_affinity(data);
+ 		irq_set_thread_affinity(desc);
+@@ -792,8 +792,7 @@ int __irq_set_trigger(struct irq_desc *desc, unsigned long flags)
+ 	case IRQ_SET_MASK_OK_DONE:
+ 		irqd_clear(&desc->irq_data, IRQD_TRIGGER_MASK);
+ 		irqd_set(&desc->irq_data, flags);
+-		/* fall through */
+-
++		fallthrough;
+ 	case IRQ_SET_MASK_OK_NOCOPY:
+ 		flags = irqd_get_trigger_type(&desc->irq_data);
+ 		irq_settings_set_trigger_mask(desc, flags);
+diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
+index 136ce049c4ad..05ce8a4d4729 100644
+--- a/kernel/kallsyms.c
++++ b/kernel/kallsyms.c
+@@ -651,11 +651,11 @@ int kallsyms_show_value(void)
+ 	case 0:
+ 		if (kallsyms_for_perf())
+ 			return 1;
+-	/* fallthrough */
++		fallthrough;
+ 	case 1:
+ 		if (has_capability_noaudit(current, CAP_SYSLOG))
+ 			return 1;
+-	/* fallthrough */
++		fallthrough;
+ 	default:
+ 		return 0;
+ 	}
+diff --git a/kernel/pid.c b/kernel/pid.c
+index 0a9f2e437217..b2a005a6dea1 100644
+--- a/kernel/pid.c
++++ b/kernel/pid.c
+@@ -144,7 +144,7 @@ void free_pid(struct pid *pid)
+ 			/* Handle a fork failure of the first process */
+ 			WARN_ON(ns->child_reaper);
+ 			ns->pid_allocated = 0;
+-			/* fall through */
++			fallthrough;
+ 		case 0:
+ 			schedule_work(&ns->proc_work);
+ 			break;
+diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
+index 3c0a5a8170b0..d091dcd57557 100644
+--- a/kernel/power/hibernate.c
++++ b/kernel/power/hibernate.c
+@@ -647,7 +647,7 @@ static void power_down(void)
+ 		break;
+ 	case HIBERNATION_PLATFORM:
+ 		hibernation_platform_enter();
+-		/* Fall through */
++		fallthrough;
+ 	case HIBERNATION_SHUTDOWN:
+ 		if (pm_power_off)
+ 			kernel_power_off();
+diff --git a/kernel/power/qos.c b/kernel/power/qos.c
+index 9568a2fe7c11..6bf5295b2ade 100644
+--- a/kernel/power/qos.c
++++ b/kernel/power/qos.c
+@@ -236,7 +236,7 @@ int pm_qos_update_target(struct pm_qos_constraints *c, struct plist_node *node,
+ 		 * changed
+ 		 */
+ 		plist_del(node, &c->list);
+-		/* fall through */
++		fallthrough;
+ 	case PM_QOS_ADD_REQ:
+ 		plist_node_init(node, new_value);
+ 		plist_add(node, &c->list);
+@@ -309,7 +309,7 @@ bool pm_qos_update_flags(struct pm_qos_flags *pqf,
+ 		break;
+ 	case PM_QOS_UPDATE_REQ:
+ 		pm_qos_flags_remove_req(pqf, req);
+-		/* fall through */
++		fallthrough;
+ 	case PM_QOS_ADD_REQ:
+ 		req->flags = val;
+ 		INIT_LIST_HEAD(&req->node);
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index ca65327a6de8..6b3d7c68e6fe 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -1531,7 +1531,7 @@ int do_syslog(int type, char __user *buf, int len, int source)
+ 	/* Read/clear last kernel messages */
+ 	case SYSLOG_ACTION_READ_CLEAR:
+ 		clear = true;
+-		/* FALL THRU */
++		fallthrough;
+ 	/* Read last kernel messages */
+ 	case SYSLOG_ACTION_READ_ALL:
+ 		if (!buf || len < 0)
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index dd05a378631a..050b728728f4 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -2068,7 +2068,7 @@ static int select_fallback_rq(int cpu, struct task_struct *p)
+ 				state = possible;
+ 				break;
+ 			}
+-			/* Fall-through */
++			fallthrough;
+ 		case possible:
+ 			do_set_cpus_allowed(p, cpu_possible_mask);
+ 			state = fail;
+diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+index b5667a273bf6..7d6b84e0caca 100644
+--- a/kernel/sched/topology.c
++++ b/kernel/sched/topology.c
+@@ -1224,13 +1224,13 @@ static void __free_domain_allocs(struct s_data *d, enum s_alloc what,
+ 	case sa_rootdomain:
+ 		if (!atomic_read(&d->rd->refcount))
+ 			free_rootdomain(&d->rd->rcu);
+-		/* Fall through */
++		fallthrough;
+ 	case sa_sd:
+ 		free_percpu(d->sd);
+-		/* Fall through */
++		fallthrough;
+ 	case sa_sd_storage:
+ 		__sdt_free(cpu_map);
+-		/* Fall through */
++		fallthrough;
+ 	case sa_none:
+ 		break;
+ 	}
+diff --git a/kernel/signal.c b/kernel/signal.c
+index c4da1ef56fdf..73bdcc1f2561 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -846,7 +846,7 @@ static int check_kill_permission(int sig, struct kernel_siginfo *info,
+ 			 */
+ 			if (!sid || sid == task_session(current))
+ 				break;
+-			/* fall through */
++			fallthrough;
+ 		default:
+ 			return -EPERM;
+ 		}
+diff --git a/kernel/sys.c b/kernel/sys.c
+index a611d1d58c7d..bad4f30e7f37 100644
+--- a/kernel/sys.c
++++ b/kernel/sys.c
+@@ -1737,8 +1737,7 @@ void getrusage(struct task_struct *p, int who, struct rusage *r)
+ 
+ 		if (who == RUSAGE_CHILDREN)
+ 			break;
+-		/* fall through */
+-
++		fallthrough;
+ 	case RUSAGE_SELF:
+ 		thread_group_cputime_adjusted(p, &tgutime, &tgstime);
+ 		utime += tgutime;
+diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
+index 0d4dc241c0fb..8060a35682e1 100644
+--- a/kernel/time/hrtimer.c
++++ b/kernel/time/hrtimer.c
+@@ -373,7 +373,7 @@ static bool hrtimer_fixup_activate(void *addr, enum debug_obj_state state)
+ 	switch (state) {
+ 	case ODEBUG_STATE_ACTIVE:
+ 		WARN_ON(1);
+-		/* fall through */
++		fallthrough;
+ 	default:
+ 		return false;
+ 	}
+diff --git a/kernel/time/posix-timers.c b/kernel/time/posix-timers.c
+index 0ec5b7a1d769..6cc658391702 100644
+--- a/kernel/time/posix-timers.c
++++ b/kernel/time/posix-timers.c
+@@ -413,12 +413,12 @@ static struct pid *good_sigevent(sigevent_t * event)
+ 		rtn = pid_task(pid, PIDTYPE_PID);
+ 		if (!rtn || !same_thread_group(rtn, current))
+ 			return NULL;
+-		/* FALLTHRU */
++		fallthrough;
+ 	case SIGEV_SIGNAL:
+ 	case SIGEV_THREAD:
+ 		if (event->sigev_signo <= 0 || event->sigev_signo > SIGRTMAX)
+ 			return NULL;
+-		/* FALLTHRU */
++		fallthrough;
+ 	case SIGEV_NONE:
+ 		return pid;
+ 	default:
+diff --git a/kernel/time/tick-broadcast.c b/kernel/time/tick-broadcast.c
+index e51778c312f1..36d7464c8962 100644
+--- a/kernel/time/tick-broadcast.c
++++ b/kernel/time/tick-broadcast.c
+@@ -381,7 +381,7 @@ void tick_broadcast_control(enum tick_broadcast_mode mode)
+ 	switch (mode) {
+ 	case TICK_BROADCAST_FORCE:
+ 		tick_broadcast_forced = 1;
+-		/* fall through */
++		fallthrough;
+ 	case TICK_BROADCAST_ON:
+ 		cpumask_set_cpu(cpu, tick_broadcast_on);
+ 		if (!cpumask_test_and_set_cpu(cpu, tick_broadcast_mask)) {
+diff --git a/kernel/time/timer.c b/kernel/time/timer.c
+index 4820823515e9..6512d721ef57 100644
+--- a/kernel/time/timer.c
++++ b/kernel/time/timer.c
+@@ -653,7 +653,7 @@ static bool timer_fixup_activate(void *addr, enum debug_obj_state state)
+ 
+ 	case ODEBUG_STATE_ACTIVE:
+ 		WARN_ON(1);
+-		/* fall through */
++		fallthrough;
+ 	default:
+ 		return false;
+ 	}
+diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
+index 2d6e93ab0478..0a1753dc69d3 100644
+--- a/kernel/trace/blktrace.c
++++ b/kernel/trace/blktrace.c
+@@ -717,7 +717,7 @@ int blk_trace_ioctl(struct block_device *bdev, unsigned cmd, char __user *arg)
+ #endif
+ 	case BLKTRACESTART:
+ 		start = 1;
+-		/* fall through */
++		fallthrough;
+ 	case BLKTRACESTOP:
+ 		ret = __blk_trace_startstop(q, start);
+ 		break;
+diff --git a/kernel/trace/trace_events_filter.c b/kernel/trace/trace_events_filter.c
+index c9a74f82b14a..78b0bfc4d72e 100644
+--- a/kernel/trace/trace_events_filter.c
++++ b/kernel/trace/trace_events_filter.c
+@@ -499,7 +499,7 @@ predicate_parse(const char *str, int nr_parens, int nr_preds,
+ 					ptr++;
+ 					break;
+ 				}
+-				/* fall through */
++				fallthrough;
+ 			default:
+ 				parse_error(pe, FILT_ERR_TOO_MANY_PREDS,
+ 					    next - str);
+@@ -1273,7 +1273,7 @@ static int parse_pred(const char *str, void *data,
+ 		switch (op) {
+ 		case OP_NE:
+ 			pred->not = 1;
+-			/* Fall through */
++			fallthrough;
+ 		case OP_GLOB:
+ 		case OP_EQ:
+ 			break;
+
+
