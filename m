@@ -2,202 +2,214 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 62165DD0FF
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2019 23:18:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D493DD176
+	for <lists+bpf@lfdr.de>; Sat, 19 Oct 2019 00:01:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436689AbfJRVSk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Oct 2019 17:18:40 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:23322 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2390763AbfJRVSj (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 18 Oct 2019 17:18:39 -0400
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x9ILA5KA031423;
-        Fri, 18 Oct 2019 14:18:24 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=fc3tbpcnEeKSGNZ6t+hn4FAV/SO3NZd5g4g5I7tXMok=;
- b=HRGJo09ACK+6dPw9J8bB4zuRVrPiiHMZvWUVohfAAqZ8J7p8wfuGm+QwYmec7ypHbybe
- eyx4HnfeJzb6cOvCgkwbOCjgLhB+WzoSqCP+lrw0o/5mXxl3QOneeJt1JJ48OS2S1gSt
- 5kM6qtI1BPXtEBFG+t1+IXMuyNBaM9N6kUI= 
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by mx0a-00082601.pphosted.com with ESMTP id 2vqfethsc2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Fri, 18 Oct 2019 14:18:24 -0700
-Received: from prn-mbx01.TheFacebook.com (2620:10d:c081:6::15) by
- prn-hub01.TheFacebook.com (2620:10d:c081:35::125) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Fri, 18 Oct 2019 14:18:23 -0700
-Received: from prn-hub01.TheFacebook.com (2620:10d:c081:35::125) by
- prn-mbx01.TheFacebook.com (2620:10d:c081:6::15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Fri, 18 Oct 2019 14:18:23 -0700
-Received: from NAM01-SN1-obe.outbound.protection.outlook.com (192.168.54.28)
- by o365-in.thefacebook.com (192.168.16.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
- via Frontend Transport; Fri, 18 Oct 2019 14:18:23 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JaMq7l4AZ6yzyPKXVHqIHEerHHo6e265XbJKvyz7IObqJGO7lAmE2AwzEMQ7PjX11pGyh/9jKSB2hcP3uB66S/AyptBFZv4sQGG9CaFVfMESQDgyUIbTzJv5THnphmfGGOuEoXHyN3eR+gM94u7L26NuCuJTaADUfaoWRZ1qh/dynyOW3fA+9rNxICtTXMLOYce2tpuCgryZaAJlUC0uRN7GvTyxWovXzptDdkLu2wBsIt1BTy3efwTXnPyHQc0Bg7h79Z7JLzHLd/nrMkTFfa02DpihUCNqDudJv1kgIDmzbcvfvt/Vt+ThJjSOUsotAKsd/9fGXYJ2JZtF6wiNCg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fc3tbpcnEeKSGNZ6t+hn4FAV/SO3NZd5g4g5I7tXMok=;
- b=fXlaILzNT4OL5PfVWusLYibJt9rvr+p+pxSUAx3Do0ZTybFIfYVQw8J62+0dr/txWyX8vYH/cwl5GsTOLx1V9DxjXNq/UtLYv8//4+H1JtDaWQLsuRU4FYOcQxu3VN6vFTYBIeyIIz4Z6gqxyLIoqjwsD5ykYq0ggrPl3QVYv+XHs1Dekm0xb4aCNoKdjTLRWJZC7hLGaA6Xi0YKRz/E7iooifcicovqwbYY2QKMNKWp+jVmu9UMA1me06DirmN8WIweditnlEw50ytIOaRrgl4y+3I8fu5WUxLVmlM3lLX3SvNaZjdri5+KplRf1Bk/w1kgx1TDiNVKAbdWCjp3pQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fc3tbpcnEeKSGNZ6t+hn4FAV/SO3NZd5g4g5I7tXMok=;
- b=LM7hQiq2wSzNH45kk/Bwi/7HRCisQu8pksYhbDJEgGgNLuciatWEbH2V0k4GD1Nk9OjSh14W/TsA4o9UGoBNNsheXY+r6mUq1Xtu5du0UuTz64250XUJ2VDxJtKTuush7G9L/CdX3nEGUqhvD/tR/jI/d0WRh3XQ+4yjNp5KGN0=
-Received: from MN2PR15MB3213.namprd15.prod.outlook.com (20.179.21.76) by
- MN2PR15MB3134.namprd15.prod.outlook.com (20.178.250.148) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2347.22; Fri, 18 Oct 2019 21:18:22 +0000
-Received: from MN2PR15MB3213.namprd15.prod.outlook.com
- ([fe80::d5a4:a2a6:a805:6647]) by MN2PR15MB3213.namprd15.prod.outlook.com
- ([fe80::d5a4:a2a6:a805:6647%7]) with mapi id 15.20.2347.024; Fri, 18 Oct 2019
- 21:18:21 +0000
-From:   Martin Lau <kafai@fb.com>
-To:     =?iso-8859-1?Q?Toke_H=F8iland-J=F8rgensen?= <toke@redhat.com>
-CC:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@fb.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Subject: Re: [PATCH bpf v3] xdp: Handle device unregister for devmap_hash map
- type
-Thread-Topic: [PATCH bpf v3] xdp: Handle device unregister for devmap_hash map
- type
-Thread-Index: AQHVhex8Q2w7MSXc4EKgdk2tmnyXYKdg50YA
-Date:   Fri, 18 Oct 2019 21:18:21 +0000
-Message-ID: <20191018211818.5e6gfdjwq4zefnez@kafai-mbp>
-References: <20191018194418.2951544-1-toke@redhat.com>
-In-Reply-To: <20191018194418.2951544-1-toke@redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MWHPR14CA0072.namprd14.prod.outlook.com
- (2603:10b6:300:81::34) To MN2PR15MB3213.namprd15.prod.outlook.com
- (2603:10b6:208:3d::12)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:200::51a5]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 53682d45-2450-4894-a679-08d75410b435
-x-ms-traffictypediagnostic: MN2PR15MB3134:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MN2PR15MB31342AE87EFBD8B08C3028BAD56C0@MN2PR15MB3134.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4941;
-x-forefront-prvs: 01949FE337
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(7916004)(396003)(39860400002)(376002)(346002)(366004)(136003)(199004)(189003)(6486002)(478600001)(52116002)(66946007)(6436002)(8936002)(81156014)(81166006)(66556008)(6512007)(4326008)(25786009)(9686003)(8676002)(99286004)(14454004)(76176011)(64756008)(6916009)(66446008)(66476007)(6246003)(6506007)(5660300002)(2906002)(229853002)(86362001)(305945005)(71190400001)(7736002)(54906003)(486006)(186003)(446003)(1076003)(33716001)(46003)(256004)(102836004)(386003)(316002)(14444005)(71200400001)(11346002)(476003)(66574012)(6116002);DIR:OUT;SFP:1102;SCL:1;SRVR:MN2PR15MB3134;H:MN2PR15MB3213.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: guw0k9oC5TtoYEoKbK9jGQ/6xw5GYPFiCifH96xXFHThnFv1DSjOjVwjCZb0pSfsAEBADQWwD/Mxuam5GHfVXE2yQMrduhO9HCFK9VaLJQBW9bKuCUTb0QePD88MNVMnxlV/v954pbRXQ87B9qFTN5wuX+TtdcJFWN3ZMJtV0gUX3VSszo90yIJnqdiYmzwfXx9frzcexeAZxf6sA4ztkPqr/CSDlMd1+HWkNcb/e9ZGX6xqV4b5i5Ajy86FXNTBPd5Qky27UoEoZqyNwye/UfBvHfdZ6FceIQdDnjpgCTL+ECuktb7al5oyqrJPr/qU6AxqnzO5HlTvIRldfWLPoEE+4qs7ujRTMCP+fVfq4GQhvLMhfpTbDpuN50iFqYzFN2PwvoDf86/0joj9SjGKKKL+xZvNAKn4D2JwTyseK40=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-ID: <88CF945621442849B5E53A9B2887DDAB@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 53682d45-2450-4894-a679-08d75410b435
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Oct 2019 21:18:21.8917
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: HUmXRyPjiFs2woP8uGK/E2pXD3hCfRE0XM7XFJqeUWRLljF1lBk+MUE5UtrvaWbG
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB3134
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
- definitions=2019-10-18_05:2019-10-18,2019-10-18 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 bulkscore=0 spamscore=0 phishscore=0 mlxlogscore=983
- lowpriorityscore=0 clxscore=1015 adultscore=0 impostorscore=0
- suspectscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1908290000 definitions=main-1910180187
-X-FB-Internal: deliver
+        id S1726514AbfJRWBR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Oct 2019 18:01:17 -0400
+Received: from mail-pl1-f195.google.com ([209.85.214.195]:42625 "EHLO
+        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726258AbfJRWBR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Oct 2019 18:01:17 -0400
+Received: by mail-pl1-f195.google.com with SMTP id g9so2171147plj.9;
+        Fri, 18 Oct 2019 15:01:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=XK7KVcDbCTN0IO4XQWLIT2UP5RymllsGZ2OhbI8nqu8=;
+        b=C6eIufveBw6ZYR5miBZviDUn5832235US0qTa09STlzDINydw9xMw96zWK6+vkuniU
+         d+3CQylADjMRIgqe/dTa/9xiNzAgQnIV64Dnq5X9Xix5T1Q3MeTOU7t5dBsPMsmUwKOk
+         BBoE3myVkFUqFhRK4v5b3vDaeRebSlqnr7PzLSfsq5/PbsWIwqVKfWIhysQ85VmBnHV9
+         k6fEYVZWe//7b2EQC2RGQsNWZSDzkF6Sswiqd3uJJmllGGoDwnV7ub2r94nY+h3kUG8c
+         bT2c2d24kmiShHmxf0DT23YcC+/lbkOkZq2ZPv22P1fQIpAnMfsIKEFfI+v9S6Kg1mwa
+         /Q1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=XK7KVcDbCTN0IO4XQWLIT2UP5RymllsGZ2OhbI8nqu8=;
+        b=ixw+Sp5zAPZS/xspMDg4etmrN+3SKoTsgEVn7nfHR9c/TwJbDR0V9bpl3IzBYBK5da
+         Iz2deF8FkEy3Q6sA0/R0eWbE8UENH90ad5vt16IIJuHPNAPqZdUSyqWK18pYXIiO7/K4
+         c2LP16RORvbBauuq5thAvQG8m6P1WBvZK7Rsv7ifx8ZvGKTOHIYEoZjR9arjByNfNuJT
+         mcAgNd2U6FheWUhj8P1LyZiXlcU/oKuoCaneorL1WCV7QdrGi2ljn3FWRD4QMWWhsZJY
+         fKnLTCmSQK+ByWEx04S33ZS5x4JkJY+4qYJl3liVja96SbfmGU7Nmkg5kKtpYJ+IPxZ6
+         zRsA==
+X-Gm-Message-State: APjAAAXGuc02Jh1i1EOgFVxNswUZy/yCfiF+lWuszski6LbaYuZwN6Xz
+        fhNyYvb5K1jAH2YTdu4oQg0=
+X-Google-Smtp-Source: APXvYqyjy6vKUg95VkLGXpdWDrpPIMOi9nx+W01MtJUn4j424Fckwwy1aeVPmA4sOh5sfxNeE9e8Rw==
+X-Received: by 2002:a17:902:aa86:: with SMTP id d6mr12507953plr.268.1571436076354;
+        Fri, 18 Oct 2019 15:01:16 -0700 (PDT)
+Received: from localhost ([131.252.137.171])
+        by smtp.gmail.com with ESMTPSA id z13sm8622815pfq.121.2019.10.18.15.01.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Oct 2019 15:01:15 -0700 (PDT)
+Date:   Fri, 18 Oct 2019 15:01:15 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     andriin@fb.com, ast@kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Message-ID: <5daa362b4c9b6_68182abd481885b455@john-XPS-13-9370.notmuch>
+In-Reply-To: <20191018194425.GI26267@pc-63.home>
+References: <157141046629.11948.8937909716570078019.stgit@john-XPS-13-9370>
+ <20191018194425.GI26267@pc-63.home>
+Subject: Re: [bpf-next PATCH] bpf: libbpf, support older style kprobe load
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 18, 2019 at 09:44:18PM +0200, Toke H=F8iland-J=F8rgensen wrote:
-> It seems I forgot to add handling of devmap_hash type maps to the device
-> unregister hook for devmaps. This omission causes devices to not be
-> properly released, which causes hangs.
->=20
-> Fix this by adding the missing handler.
->=20
-> Fixes: 6f9d451ab1a3 ("xdp: Add devmap_hash map type for looking up device=
-s by hashed index")
-> Reported-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-> Signed-off-by: Toke H=F8iland-J=F8rgensen <toke@redhat.com>
-> ---
-> v3:
->   - Use u32 for loop iterator variable
->   - Since we're holding the lock we can just iterate with hlist_for_each_=
-entry_safe()
-> v2:
->   - Grab the update lock while walking the map and removing entries.
->=20
->  kernel/bpf/devmap.c | 30 ++++++++++++++++++++++++++++++
->  1 file changed, 30 insertions(+)
->=20
-> diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-> index c0a48f336997..012dbfb0f54b 100644
-> --- a/kernel/bpf/devmap.c
-> +++ b/kernel/bpf/devmap.c
-> @@ -719,6 +719,31 @@ const struct bpf_map_ops dev_map_hash_ops =3D {
->  	.map_check_btf =3D map_check_no_btf,
->  };
-> =20
-> +static void dev_map_hash_remove_netdev(struct bpf_dtab *dtab,
-> +				       struct net_device *netdev)
-> +{
-> +	unsigned long flags;
-> +	u32 i;
-> +
-> +	spin_lock_irqsave(&dtab->index_lock, flags);
-> +	for (i =3D 0; i < dtab->n_buckets; i++) {
-> +		struct bpf_dtab_netdev *dev;
-> +		struct hlist_head *head;
-> +		struct hlist_node *next;
-> +
-> +		head =3D dev_map_index_hash(dtab, i);
-> +
-> +		hlist_for_each_entry_safe(dev, next, head, index_hlist) {
-> +			if (netdev !=3D dev->dev)
-> +				continue;
-> +
-> +			hlist_del_rcu(&dev->index_hlist);
-There is another issue...
-"dtab->items--;"
+Daniel Borkmann wrote:
+> On Fri, Oct 18, 2019 at 07:54:26AM -0700, John Fastabend wrote:
+> > Following ./Documentation/trace/kprobetrace.rst add support for loading
+> > kprobes programs on older kernels.
+> > 
+> > Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+> > ---
+> >  tools/lib/bpf/libbpf.c |   81 +++++++++++++++++++++++++++++++++++++++++++-----
+> >  1 file changed, 73 insertions(+), 8 deletions(-)
+> > 
+> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > index fcea6988f962..12b3105d112c 100644
+> > --- a/tools/lib/bpf/libbpf.c
+> > +++ b/tools/lib/bpf/libbpf.c
+> > @@ -5005,20 +5005,89 @@ static int determine_uprobe_retprobe_bit(void)
+> >  	return parse_uint_from_file(file, "config:%d\n");
+> >  }
+> >  
+> > +static int use_kprobe_debugfs(const char *name,
+> > +			      uint64_t offset, int pid, bool retprobe)
+> 
+> offset & pid unused?
 
-> +			call_rcu(&dev->rcu, __dev_map_entry_free);
-> +		}
-> +	}
-> +	spin_unlock_irqrestore(&dtab->index_lock, flags);
-> +}
-> +
->  static int dev_map_notification(struct notifier_block *notifier,
->  				ulong event, void *ptr)
->  {
-> @@ -735,6 +760,11 @@ static int dev_map_notification(struct notifier_bloc=
-k *notifier,
->  		 */
->  		rcu_read_lock();
->  		list_for_each_entry_rcu(dtab, &dev_map_list, list) {
-> +			if (dtab->map.map_type =3D=3D BPF_MAP_TYPE_DEVMAP_HASH) {
-> +				dev_map_hash_remove_netdev(dtab, netdev);
-> +				continue;
-> +			}
-> +
->  			for (i =3D 0; i < dtab->map.max_entries; i++) {
->  				struct bpf_dtab_netdev *dev, *odev;
-> =20
-> --=20
-> 2.23.0
->=20
+Well pid should be dropped and I'll add support for offset. I've not
+being using offset so missed it here.
+
+> 
+> > +{
+> > +	const char *file = "/sys/kernel/debug/tracing/kprobe_events";
+> > +	int fd = open(file, O_WRONLY | O_APPEND, 0);
+> > +	char buf[PATH_MAX];
+> > +	int err;
+> > +
+> > +	if (fd < 0) {
+> > +		pr_warning("failed open kprobe_events: %s\n",
+> > +			   strerror(errno));
+> > +		return -errno;
+> > +	}
+> > +
+> > +	snprintf(buf, sizeof(buf), "%c:kprobes/%s %s",
+> > +		 retprobe ? 'r' : 'p', name, name);
+> > +
+> > +	err = write(fd, buf, strlen(buf));
+> > +	close(fd);
+> > +	if (err < 0)
+> > +		return -errno;
+> > +	return 0;
+> > +}
+> > +
+> >  static int perf_event_open_probe(bool uprobe, bool retprobe, const char *name,
+> >  				 uint64_t offset, int pid)
+> >  {
+> >  	struct perf_event_attr attr = {};
+> >  	char errmsg[STRERR_BUFSIZE];
+> > +	uint64_t config1 = 0;
+> >  	int type, pfd, err;
+> >  
+> >  	type = uprobe ? determine_uprobe_perf_type()
+> >  		      : determine_kprobe_perf_type();
+> >  	if (type < 0) {
+> > -		pr_warning("failed to determine %s perf type: %s\n",
+> > -			   uprobe ? "uprobe" : "kprobe",
+> > -			   libbpf_strerror_r(type, errmsg, sizeof(errmsg)));
+> > -		return type;
+> > +		if (uprobe) {
+> > +			pr_warning("failed to determine uprobe perf type %s: %s\n",
+> > +				   name,
+> > +				   libbpf_strerror_r(type,
+> > +						     errmsg, sizeof(errmsg)));
+> > +		} else {
+> > +			/* If we do not have an event_source/../kprobes then we
+> > +			 * can try to use kprobe-base event tracing, for details
+> > +			 * see ./Documentation/trace/kprobetrace.rst
+> > +			 */
+> > +			const char *file = "/sys/kernel/debug/tracing/events/kprobes/";
+> > +			char c[PATH_MAX];
+> > +			int fd, n;
+> > +
+> > +			snprintf(c, sizeof(c), "%s/%s/id", file, name);
+> > +
+> > +			err = use_kprobe_debugfs(name, offset, pid, retprobe);
+> > +			if (err)
+> > +				return err;
+> 
+> Should we throw a pr_warning() here as well when bailing out?
+
+Sure makes sense.
+
+> 
+> > +			type = PERF_TYPE_TRACEPOINT;
+> > +			fd = open(c, O_RDONLY, 0);
+> > +			if (fd < 0) {
+> > +				pr_warning("failed to open tracepoint %s: %s\n",
+> > +					   c, strerror(errno));
+> > +				return -errno;
+> > +			}
+> > +			n = read(fd, c, sizeof(c));
+> > +			close(fd);
+> > +			if (n < 0) {
+> > +				pr_warning("failed to read %s: %s\n",
+> > +					   c, strerror(errno));
+> > +				return -errno;
+> > +			}
+> > +			c[n] = '\0';
+> > +			config1 = strtol(c, NULL, 0);
+> > +			attr.size = sizeof(attr);
+> > +			attr.type = type;
+> > +			attr.config = config1;
+> > +			attr.sample_period = 1;
+> > +			attr.wakeup_events = 1;
+> 
+> Is there a reason you set latter two whereas below they are not set,
+> does it not default to these?
+
+We can drop this.
+
+> 
+> > +		}
+> > +	} else {
+> > +		config1 = ptr_to_u64(name);
+> > +		attr.size = sizeof(attr);
+> > +		attr.type = type;
+> > +		attr.config1 = config1; /* kprobe_func or uprobe_path */
+> > +		attr.config2 = offset;  /* kprobe_addr or probe_offset */
+> >  	}
+> >  	if (retprobe) {
+> >  		int bit = uprobe ? determine_uprobe_retprobe_bit()
+> > @@ -5033,10 +5102,6 @@ static int perf_event_open_probe(bool uprobe, bool retprobe, const char *name,
+> >  		}
+> >  		attr.config |= 1 << bit;
+> >  	}
+> 
+> What happens in case of retprobe, don't you (unwantedly) bail out here
+> again (even through you've set up the retprobe earlier)?
+
+Will fix as well. Looking to see how it passed on my box here but either
+way its cryptic so will clean up.
+
+> 
+> > -	attr.size = sizeof(attr);
+> > -	attr.type = type;
+> > -	attr.config1 = ptr_to_u64(name); /* kprobe_func or uprobe_path */
+> > -	attr.config2 = offset;		 /* kprobe_addr or probe_offset */
+> >  
+> >  	/* pid filter is meaningful only for uprobes */
+> >  	pfd = syscall(__NR_perf_event_open, &attr,
+> > 
+
+
