@@ -2,145 +2,275 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DD0E2DBCC0
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2019 07:15:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE825DBCBD
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2019 07:14:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389797AbfJRFOl convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 18 Oct 2019 01:14:41 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:34526 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727606AbfJRFOk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Oct 2019 01:14:40 -0400
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id E93303090FEE;
-        Fri, 18 Oct 2019 02:49:21 +0000 (UTC)
-Received: from tagon (ovpn-122-32.rdu2.redhat.com [10.10.122.32])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 00BB75F7C0;
-        Fri, 18 Oct 2019 02:49:19 +0000 (UTC)
-Date:   Thu, 17 Oct 2019 21:49:17 -0500
-From:   Clark Williams <williams@redhat.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     David Miller <davem@davemloft.net>,
-        Sebastian Sewior <bigeasy@linutronix.de>, daniel@iogearbox.net,
-        bpf@vger.kernel.org, ast@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: Re: [PATCH] BPF: Disable on PREEMPT_RT
-Message-ID: <20191017214917.18911f58@tagon>
-In-Reply-To: <alpine.DEB.2.21.1910172342090.1869@nanos.tec.linutronix.de>
-References: <20191017090500.ienqyium2phkxpdo@linutronix.de>
-        <20191017145358.GA26267@pc-63.home>
-        <20191017154021.ndza4la3hntk4d4o@linutronix.de>
-        <20191017.132548.2120028117307856274.davem@davemloft.net>
-        <alpine.DEB.2.21.1910172342090.1869@nanos.tec.linutronix.de>
-Organization: Red Hat, Inc
+        id S1732046AbfJRFNz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Oct 2019 01:13:55 -0400
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:45514 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727606AbfJRFNz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Oct 2019 01:13:55 -0400
+Received: by mail-pl1-f193.google.com with SMTP id u12so2249789pls.12;
+        Thu, 17 Oct 2019 22:13:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=ZAQePQ7/QLeSg6o7fSfTOlJs0MDCwCY0jzDB1HxnUcQ=;
+        b=iCpOTOH9CYfmcmecB5Wh8gDJXCHxZoJ+w3WlbTojmcVz/s7aKXUzKW+iQ+ohveaxe0
+         hMtHiiizZUjZwlXnlNQ70sdOe1t41XdEG70tbWk13YGqBnKu25HCcZLcIE7t+4TEL7SJ
+         nNGh5WuQL66Cx5MXSNObE9eU748wZ7WcTbakilfHNyqqg5tvq/byNgi90vWHMt7sT4p4
+         9ryqJmptlr0HXD98u/l4YYRNVWkbImS+fh7FbypBImSsUUVmgqZunZy4AgKmSFzEVyMm
+         Y5f5P99zOOCzGvP4dbV0+grEJWCzEaTE2p0wX/NcZ1y/PdhdapSr+y8W7bM1l2Nu8IQD
+         fk9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=ZAQePQ7/QLeSg6o7fSfTOlJs0MDCwCY0jzDB1HxnUcQ=;
+        b=sadyiA9CyTzOHNtLiIBGgkuTeyaHsRSlYCavit9ttXmiLztWj6QzdLz/5fvFiIs1/Y
+         I/d2FjCt6apK9yBg26/glq+LCNRsjTFqtFsj/M2CofOMeEGJ6dGkMvuof1oZBMuQNnvV
+         phCuzt8SSmMilckv2g9O77azH5hBecJeqRDO4yy0F6VT/MfNj3gmwU1wC1/5LFem376Y
+         F6k9U6imvANnYrU2ZDbQun6ILC7wIWzLrMDsmFxemCAQIN48VBDc6w6ueP2VuCi+wFhW
+         Aw3gf7MpGHvwdZ6LIGvlWFd1QiugIv+0KPO1N5+vXS7dyV6X8uTHvCuh70FDPoLyUtc2
+         3pxQ==
+X-Gm-Message-State: APjAAAXM6uVDJNh/JAc3tzvQFFB//QXAVJ9Bv1po3w2DTphr85pe4m3l
+        Sg6W2kMs5Jq46tIRpVmklI9bIETd
+X-Google-Smtp-Source: APXvYqwoMBLtFgL83xyAx7Sa5V55f25Tj7JBU8z9TKjXc9uRls3ZYbUiyyE2NOZHbmPmfK/+syX/sQ==
+X-Received: by 2002:a17:902:d888:: with SMTP id b8mr7850950plz.259.1571371727060;
+        Thu, 17 Oct 2019 21:08:47 -0700 (PDT)
+Received: from z400-fedora29.kern.oss.ntt.co.jp ([222.151.198.97])
+        by smtp.gmail.com with ESMTPSA id d11sm4341680pfo.104.2019.10.17.21.08.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Oct 2019 21:08:46 -0700 (PDT)
+From:   Toshiaki Makita <toshiaki.makita1@gmail.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        Pravin B Shelar <pshelar@ovn.org>
+Cc:     Toshiaki Makita <toshiaki.makita1@gmail.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        William Tu <u9012063@gmail.com>,
+        Stanislav Fomichev <sdf@fomichev.me>
+Subject: [RFC PATCH v2 bpf-next 05/15] xdp_flow: Attach bpf prog to XDP in kernel after UMH loaded program
+Date:   Fri, 18 Oct 2019 13:07:38 +0900
+Message-Id: <20191018040748.30593-6-toshiaki.makita1@gmail.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20191018040748.30593-1-toshiaki.makita1@gmail.com>
+References: <20191018040748.30593-1-toshiaki.makita1@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.43]); Fri, 18 Oct 2019 02:49:22 +0000 (UTC)
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-+acme
+As UMH runs under RTNL, it cannot attach XDP from userspace. Thus the
+kernel, xdp_flow module, installs the XDP program.
 
-On Thu, 17 Oct 2019 23:54:07 +0200 (CEST)
-Thomas Gleixner <tglx@linutronix.de> wrote:
-> On Thu, 17 Oct 2019, David Miller wrote:
-> 
-> > From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> > Date: Thu, 17 Oct 2019 17:40:21 +0200
-> >   
-> > > On 2019-10-17 16:53:58 [+0200], Daniel Borkmann wrote:  
-> > >> On Thu, Oct 17, 2019 at 11:05:01AM +0200, Sebastian Andrzej Siewior wrote:  
-> > >> > Disable BPF on PREEMPT_RT because
-> > >> > - it allocates and frees memory in atomic context
-> > >> > - it uses up_read_non_owner()
-> > >> > - BPF_PROG_RUN() expects to be invoked in non-preemptible context  
-> > >> 
-> > >> For the latter you'd also need to disable seccomp-BPF and everything
-> > >> cBPF related as they are /all/ invoked via BPF_PROG_RUN() ...  
-> > > 
-> > > I looked at tracing and it depended on BPF_SYSCALL so I assumed they all
-> > > do… Now looking for BPF_PROG_RUN() there is PPP_FILTER,
-> > > NET_TEAM_MODE_LOADBALANCE and probably more.  I didn't find a symbol for
-> > > seccomp-BPF. 
-> > > Would it make sense to override BPF_PROG_RUN() and make each caller fail
-> > > instead? Other recommendations?  
-> > 
-> > I hope you understand that basically you are disabling any packet sniffing
-> > on the system with this patch you are proposing.
-> > 
-> > This means no tcpdump, not wireshark, etc.  They will all become
-> > non-functional.
-> > 
-> > Turning off BPF just because PREEMPT_RT is enabled is a non-starter it is
-> > absolutely essential functionality for a Linux system at this point.  
-> 
-> I'm all ears for an alternative solution. Here are the pain points:
-> 
->   #1) BPF disables preemption unconditionally with no way to do a proper RT
->       substitution like most other infrastructure in the kernel provides
->       via spinlocks or other locking primitives.
+Signed-off-by: Toshiaki Makita <toshiaki.makita1@gmail.com>
+---
+ net/xdp_flow/xdp_flow_kern_mod.c | 109 ++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 103 insertions(+), 6 deletions(-)
 
-As I understand it, BPF programs cannot loop and are limited to 4096 instructions.
-Has anyone done any timing to see just how much having preemption off while a
-BPF program executes is going to affect us? Are we talking 1us or 50us? or longer?
-I wonder if there's some instrumentation we could use to determine the maximum time
-spent running a BPF program. Maybe some perf mojo...
-
-> 
->   #2) BPF does allocations in atomic contexts, which is a dubious decision
->       even for non RT. That's related to #1
-
-I guess my question here is, are the allocations done on behalf of an about-to-run
-BPF program, or as a result of executing BPF code?  Is it something we might be able
-to satisfy from a pre-allocated pool rather than kmalloc()? Ok, I need to go dive
-into BPF a bit deeper.
-
-> 
->   #3) BPF uses the up_read_non_owner() hackery which was only invented to
->       deal with already existing horrors and not meant to be proliferated.
-> 
->       Yes, I know it's a existing facility ....
-
-I'm sure I'll regret asking this, but why is up_read_non_owner() a horror? I mean,
-I get the fundamental wrongness of having someone that's not the owner of a semaphore
-performing an 'up' on it, but is there an RT-specific reason that it's bad? Is it
-totally a blocker for using BPF with RT or is it something we should fix over time?
-
-> 
-> TBH, I have no idea how to deal with those things. So the only way forward
-> for RT right now is to disable the whole thing.
-> 
-> Clark might have some insight from the product side for you how much that
-> impacts usability.
-> 
-> Thanks,
-> 
-> 	tglx
-
-
-Clark is only just starting his journey with BPF, so not an expert.
-
-I do think that we (RT) are going to have to co-exist with BPF, if only due to the
-increased use of XDP. I also think that other sub-systems will start to
-employ BPF for production purposes (as opposed to debug/analysis which is
-how we generally look at tracing, packet sniffing, etc.). I think we *have* to
-figure out how to co-exist. 
-
-Guess my "hey, that look interesting, think I'll leisurely read up on it" just got
-a little less leisurely. I'm out most of the day tomorrow but I'll catch up on email
-over the weekend.
-
-
-Clark
-
+diff --git a/net/xdp_flow/xdp_flow_kern_mod.c b/net/xdp_flow/xdp_flow_kern_mod.c
+index 14e06ee..2c80590 100644
+--- a/net/xdp_flow/xdp_flow_kern_mod.c
++++ b/net/xdp_flow/xdp_flow_kern_mod.c
+@@ -3,10 +3,27 @@
+ #include <linux/module.h>
+ #include <linux/umh.h>
+ #include <linux/sched/signal.h>
++#include <linux/rhashtable.h>
+ #include <linux/rtnetlink.h>
++#include <linux/filter.h>
+ #include "xdp_flow.h"
+ #include "msgfmt.h"
+ 
++struct xdp_flow_prog {
++	struct rhash_head ht_node;
++	struct net_device *dev;
++	struct bpf_prog *prog;
++};
++
++static const struct rhashtable_params progs_params = {
++	.key_len = sizeof(struct net_devce *),
++	.key_offset = offsetof(struct xdp_flow_prog, dev),
++	.head_offset = offsetof(struct xdp_flow_prog, ht_node),
++	.automatic_shrinking = true,
++};
++
++static struct rhashtable progs;
++
+ extern char xdp_flow_umh_start;
+ extern char xdp_flow_umh_end;
+ 
+@@ -116,10 +133,17 @@ static int xdp_flow_setup_block_cb(enum tc_setup_type type, void *type_data,
+ static int xdp_flow_setup_bind(struct net_device *dev,
+ 			       struct netlink_ext_ack *extack)
+ {
++	u32 flags = XDP_FLAGS_DRV_MODE | XDP_FLAGS_UPDATE_IF_NOEXIST;
++	struct xdp_flow_prog *prog_node;
+ 	struct mbox_request *req;
++	struct bpf_prog *prog;
+ 	u32 id = 0;
+ 	int err;
+ 
++	err = dev_check_xdp(dev, extack, true, NULL, flags);
++	if (err)
++		return err;
++
+ 	req = kzalloc(sizeof(*req), GFP_KERNEL);
+ 	if (!req)
+ 		return -ENOMEM;
+@@ -129,21 +153,83 @@ static int xdp_flow_setup_bind(struct net_device *dev,
+ 
+ 	/* Load bpf in UMH and get prog id */
+ 	err = transact_umh(req, &id);
++	if (err)
++		goto out;
++
++	prog = bpf_prog_get_type_dev_by_id(id, BPF_PROG_TYPE_XDP, true);
++	if (IS_ERR(prog)) {
++		err = PTR_ERR(prog);
++		goto err_umh;
++	}
+ 
+-	/* TODO: id will be used to attach bpf prog to XDP
+-	 * As we have rtnl_lock, UMH cannot attach prog to XDP
+-	 */
++	err = dev_change_xdp(dev, extack, prog, flags);
++	if (err)
++		goto err_prog;
+ 
++	prog_node = kzalloc(sizeof(*prog_node), GFP_KERNEL);
++	if (!prog_node) {
++		err = -ENOMEM;
++		goto err_xdp;
++	}
++
++	prog_node->dev = dev;
++	prog_node->prog = prog;
++	err = rhashtable_insert_fast(&progs, &prog_node->ht_node, progs_params);
++	if (err)
++		goto err_pnode;
++
++	prog = bpf_prog_inc(prog);
++	if (IS_ERR(prog)) {
++		err = PTR_ERR(prog);
++		goto err_rht;
++	}
++out:
+ 	kfree(req);
+ 
+ 	return err;
++err_rht:
++	rhashtable_remove_fast(&progs, &prog_node->ht_node, progs_params);
++err_pnode:
++	kfree(prog_node);
++err_xdp:
++	dev_change_xdp(dev, extack, NULL, flags);
++err_prog:
++	bpf_prog_put(prog);
++err_umh:
++	req->cmd = XDP_FLOW_CMD_UNLOAD;
++	transact_umh(req, NULL);
++
++	goto out;
+ }
+ 
+ static int xdp_flow_setup_unbind(struct net_device *dev,
+ 				 struct netlink_ext_ack *extack)
+ {
++	struct xdp_flow_prog *prog_node;
++	u32 flags = XDP_FLAGS_DRV_MODE;
+ 	struct mbox_request *req;
+-	int err;
++	int err, ret = 0;
++	u32 prog_id = 0;
++
++	prog_node = rhashtable_lookup_fast(&progs, &dev, progs_params);
++	if (!prog_node) {
++		pr_warn_once("%s: xdp_flow unbind was requested before bind\n",
++			     dev->name);
++		return -ENOENT;
++	}
++
++	err = dev_check_xdp(dev, extack, false, &prog_id, flags);
++	if (!err && prog_id == prog_node->prog->aux->id) {
++		err = dev_change_xdp(dev, extack, NULL, flags);
++		if (err) {
++			pr_warn("Failed to uninstall XDP prog: %d\n", err);
++			ret = err;
++		}
++	}
++
++	bpf_prog_put(prog_node->prog);
++	rhashtable_remove_fast(&progs, &prog_node->ht_node, progs_params);
++	kfree(prog_node);
+ 
+ 	req = kzalloc(sizeof(*req), GFP_KERNEL);
+ 	if (!req)
+@@ -153,10 +239,12 @@ static int xdp_flow_setup_unbind(struct net_device *dev,
+ 	req->ifindex = dev->ifindex;
+ 
+ 	err = transact_umh(req, NULL);
++	if (err)
++		ret = err;
+ 
+ 	kfree(req);
+ 
+-	return err;
++	return ret;
+ }
+ 
+ static int xdp_flow_setup(struct net_device *dev, bool do_bind,
+@@ -214,7 +302,11 @@ static int start_umh(void)
+ 
+ static int __init load_umh(void)
+ {
+-	int err = 0;
++	int err;
++
++	err = rhashtable_init(&progs, &progs_params);
++	if (err)
++		return err;
+ 
+ 	mutex_lock(&xdp_flow_ops.lock);
+ 	if (!xdp_flow_ops.stop) {
+@@ -230,8 +322,12 @@ static int __init load_umh(void)
+ 	xdp_flow_ops.setup = &xdp_flow_setup;
+ 	xdp_flow_ops.start = &start_umh;
+ 	xdp_flow_ops.module = THIS_MODULE;
++
++	mutex_unlock(&xdp_flow_ops.lock);
++	return 0;
+ err:
+ 	mutex_unlock(&xdp_flow_ops.lock);
++	rhashtable_destroy(&progs);
+ 	return err;
+ }
+ 
+@@ -244,6 +340,7 @@ static void __exit fini_umh(void)
+ 	xdp_flow_ops.setup = NULL;
+ 	xdp_flow_ops.setup_cb = NULL;
+ 	mutex_unlock(&xdp_flow_ops.lock);
++	rhashtable_destroy(&progs);
+ }
+ module_init(load_umh);
+ module_exit(fini_umh);
 -- 
-The United States Coast Guard
-Ruining Natural Selection since 1790
+1.8.3.1
+
