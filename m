@@ -2,593 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 05140DCB9E
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2019 18:38:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B076BDCBC5
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2019 18:44:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726707AbfJRQfQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Oct 2019 12:35:16 -0400
-Received: from smtprelay0047.hostedemail.com ([216.40.44.47]:36329 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730786AbfJRQfQ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 18 Oct 2019 12:35:16 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 626F418264E3F;
-        Fri, 18 Oct 2019 16:35:11 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,:::::::::::::::::,RULES_HIT:4:41:355:379:800:960:966:967:968:973:982:988:989:1260:1277:1311:1313:1314:1345:1437:1515:1516:1518:1593:1594:1605:1730:1747:1777:1792:1801:2196:2198:2199:2200:2393:2525:2559:2563:2682:2685:2828:2859:2898:2899:2901:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3165:3865:3866:3867:3868:3870:3871:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:4385:4605:5007:6119:7903:8603:9010:9025:9040:9592:10004:11026:11232:11473:11657:11658:11914:12043:12294:12296:12297:12438:12555:12691:12737:12760:12986:13439:13845:14096:14097:14394:14659:14877:21080:21433:21451:21611:21627:21740:21789:21811:21819:30022:30045:30051:30054:30070:30075,0,RBL:47.151.135.224:@perches.com:.lbl8.mailshell.net-62.8.0.100 64.201.201.201,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:fn,MSBL:0,DNSBL:neutral,Custom_rules:0:0:0,LFtime:25,LUA_SUMMARY:none
-X-HE-Tag: swim18_4a2a99c5c3b53
-X-Filterd-Recvd-Size: 18853
-Received: from XPS-9350.home (unknown [47.151.135.224])
-        (Authenticated sender: joe@perches.com)
-        by omf04.hostedemail.com (Postfix) with ESMTPA;
-        Fri, 18 Oct 2019 16:35:09 +0000 (UTC)
-Message-ID: <f31b38b9ad515a138edaecf85701b1e3db064114.camel@perches.com>
-Subject: [PATCH] kernel: convert switch/case fallthrough comments to
- fallthrough;
-From:   Joe Perches <joe@perches.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-audit@redhat.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        kgdb-bugreport@lists.sourceforge.net, linux-pm@vger.kernel.org,
-        linux-block@vger.kernel.org
-Date:   Fri, 18 Oct 2019 09:35:08 -0700
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.32.1-2 
+        id S2409050AbfJRQo2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Oct 2019 12:44:28 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:22016 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2408749AbfJRQo1 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 18 Oct 2019 12:44:27 -0400
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x9IGh0HD015651;
+        Fri, 18 Oct 2019 09:44:09 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=+UkI4WlqGnJwH5++X/Da96giXkUGNE5rspp9tEDj6xI=;
+ b=EwD8TFAs9kVBBEDmdlvzsBKcrfVJbErUy4sSjZIFfzobR3zC2CvS2CB5Gt2HgA4AuSmL
+ rsqcU3cJzlfnXg+3IsBA41XojXnhhknI1Y/XxSYUrLnZdbKjeyya6tf8SXhF9f3DwURX
+ cNCHJI/94biCNynDn+cHoDZil5gCjBKnj7k= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by mx0a-00082601.pphosted.com with ESMTP id 2vqeungrq4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Fri, 18 Oct 2019 09:44:09 -0700
+Received: from prn-mbx05.TheFacebook.com (2620:10d:c081:6::19) by
+ prn-hub05.TheFacebook.com (2620:10d:c081:35::129) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Fri, 18 Oct 2019 09:44:08 -0700
+Received: from prn-hub03.TheFacebook.com (2620:10d:c081:35::127) by
+ prn-mbx05.TheFacebook.com (2620:10d:c081:6::19) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Fri, 18 Oct 2019 09:44:08 -0700
+Received: from NAM04-SN1-obe.outbound.protection.outlook.com (192.168.54.28)
+ by o365-in.thefacebook.com (192.168.16.27) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
+ via Frontend Transport; Fri, 18 Oct 2019 09:44:08 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=boesN+O++I2/gg6/6OfD/b1cSAk+je/71q0yefXLYX1A7KAhzBF0I8L6FJcy4cNASgyaG3Ne1LiRoUFYoF+w7VCuzyDjyaLA8tA9eY3oSSxNRUDWFWACbd3l2JuWWJ3qpDPwy5uxeLVji/Fs4ElZ09MudXaOC2vskCsyBKvth9zTUpaCuMGCSNgLJOaeSBjuwZk0GrrJ8NkJHItrvemwNBse2LY4KQ2tomWBwEBNjELI4c6H5Gb/s87vqWO6JJoWaBAr/bjvaMX4AQISEkuI9cyvtSMYyO/D6Pt49zQ9UJOo175vW8VcpfomQhdgByVSEepXrQ+2RxHV7IAoXh3UGQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+UkI4WlqGnJwH5++X/Da96giXkUGNE5rspp9tEDj6xI=;
+ b=JXQSVJUsxnbWK0Bv2jwsCU4exyTq7ImvhPNix0bvpzMArn6BDUEm8Gy+FubZ2RvGi4ZO3Xa7Cv6sYC+6m0U1Y6LwbKQu/982JIe+enBeqyRK+VN/RCIQnthGQ/5O23x0qNpkYJS3qOcydV4+FgJ1aQVMSeGNGpW3LXjQqoIEl1Tco3nQ/yO2tdaPUDUdeRtkcrqjE6TUVeL1TIFzEP01i9QrerBqo36wseui4YSZMCfRfEpVJtcAYowaroFNERaXPNRLR/TqX3k1jiOj3HRSHjJG+BgrPpL7zE/7cQax0hlRTdmPmYPkbvsbFaP+x0ZMVrC4Kt8D4ODcOgzHaqA19A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+UkI4WlqGnJwH5++X/Da96giXkUGNE5rspp9tEDj6xI=;
+ b=h8al7OZJugEtx2nawCV2undULNBeTKH9priBzlpmy1PdUrZooG/QiHs/C/Wfuvzj8IIpIVs9qCdZNjT6UuDi9GCEORbtJj23D8aPnxjJA3EhekLR8nGt0dir/wKv9gk6Mu7jR00h8WXWJ6yaoPFKvYFKer0bEnllGsNNEpKX/E4=
+Received: from BYAPR15MB3384.namprd15.prod.outlook.com (20.179.60.27) by
+ BYAPR15MB3159.namprd15.prod.outlook.com (20.178.207.220) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2347.16; Fri, 18 Oct 2019 16:44:00 +0000
+Received: from BYAPR15MB3384.namprd15.prod.outlook.com
+ ([fe80::b92c:ebd2:58dc:6b8d]) by BYAPR15MB3384.namprd15.prod.outlook.com
+ ([fe80::b92c:ebd2:58dc:6b8d%5]) with mapi id 15.20.2347.024; Fri, 18 Oct 2019
+ 16:44:00 +0000
+From:   Yonghong Song <yhs@fb.com>
+To:     =?utf-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@fb.com>
+CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Subject: Re: [PATCH bpf] xdp: Prevent overflow in devmap_hash cost calculation
+ for 32-bit builds
+Thread-Topic: [PATCH bpf] xdp: Prevent overflow in devmap_hash cost
+ calculation for 32-bit builds
+Thread-Index: AQHVhNnFD9d5pJIOhEuDmXWPa+fSQqdgnMSA
+Date:   Fri, 18 Oct 2019 16:44:00 +0000
+Message-ID: <bad3785d-e4d9-82e7-c5ef-f70e44616711@fb.com>
+References: <20191017105702.2807093-1-toke@redhat.com>
+In-Reply-To: <20191017105702.2807093-1-toke@redhat.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MWHPR01CA0046.prod.exchangelabs.com (2603:10b6:300:101::32)
+ To BYAPR15MB3384.namprd15.prod.outlook.com (2603:10b6:a03:112::27)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c090:200::3:3455]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 10dc147a-faae-4db7-4c68-08d753ea6086
+x-ms-traffictypediagnostic: BYAPR15MB3159:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR15MB315920F1F2A952801619E08FD36C0@BYAPR15MB3159.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:758;
+x-forefront-prvs: 01949FE337
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(396003)(376002)(136003)(39860400002)(346002)(366004)(189003)(199004)(2616005)(6246003)(81166006)(81156014)(86362001)(8676002)(4326008)(110136005)(36756003)(31696002)(6636002)(14444005)(11346002)(316002)(256004)(446003)(186003)(476003)(54906003)(6116002)(486006)(46003)(25786009)(66574012)(2906002)(6436002)(305945005)(229853002)(66476007)(66446008)(66556008)(66946007)(99286004)(14454004)(4744005)(6512007)(102836004)(52116002)(53546011)(478600001)(7736002)(5660300002)(2501003)(6506007)(386003)(31686004)(6486002)(8936002)(76176011)(71200400001)(71190400001)(64756008);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB3159;H:BYAPR15MB3384.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: XG64HEwQpcnScKwkWn278NRpIIv+EGAWPmIG/i0NKFCCMfNaKfGGY9cGhjNgYopeRJ5eaxxRFrsACcFWBl8o+YDk7vY4UP4D2KU4fK9q96RlvcGz2QMwq+pbKKNQ2j3qXDEZE5hmylH9rYR3ebFdtO/fY5rLfbC7AcnoTls2jMkIMQTgqVakbWm7ETGWQUOg+0U8D6nRAuDri62i0PtQ4B1ub0n3lSoFl0ObTveqYsWjRKv+nJk5lqnUTTfSpsSRKvJKjns+ES1d9vNszqsqqQwWwYxkOkR0e8xky0MqNKZ/pPsMAt+GZ1kc18jk952zKMILpAcF3y7L2Kf0lzmqcCzwYRq5OmWLdvgWnIZUyYaL8yy6yFeU1bNsxc7e556yjSn6DVI8u1nmRaJlrpAl7SLJvGQWpuLr+u3rnElgPCw=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <A03305F5B331214796BF2F00BE615EB3@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-CrossTenant-Network-Message-Id: 10dc147a-faae-4db7-4c68-08d753ea6086
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Oct 2019 16:44:00.6089
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: iBy9w3xifP5jNGdOt1rRBuYnJCZznUbwuPsKzTB5OFYmuWz5OXpGBwc4wBn3ZZ22
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3159
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
+ definitions=2019-10-18_04:2019-10-18,2019-10-18 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ phishscore=0 priorityscore=1501 mlxlogscore=999 bulkscore=0 clxscore=1011
+ spamscore=0 adultscore=0 suspectscore=0 impostorscore=0 mlxscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1908290000 definitions=main-1910180152
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Use the new pseudo keyword "fallthrough;" and not the
-various /* fallthrough */ style comments.
-
-Signed-off-by: Joe Perches <joe@perches.com>
----
-
-This is a single patch for the kernel/ source tree,
-which would otherwise
-be sent through as separate
-patches to 19 maintainer sections.
-
-compilation tested only.
-
-Done by the script in this email:
-https://lore.kernel.org/lkml/9fe980f7e28242c2835ffae34914c5f68e8268a7.camel@perches.com/
-
- kernel/auditfilter.c               | 2 +-
- kernel/bpf/cgroup.c                | 4 ++--
- kernel/bpf/verifier.c              | 4 ++--
- kernel/capability.c                | 2 +-
- kernel/compat.c                    | 6 +++---
- kernel/debug/gdbstub.c             | 6 +++---
- kernel/debug/kdb/kdb_keyboard.c    | 4 ++--
- kernel/debug/kdb/kdb_support.c     | 6 +++---
- kernel/events/core.c               | 3 +--
- kernel/futex.c                     | 4 ++--
- kernel/gcov/gcc_3_4.c              | 6 +++---
- kernel/irq/handle.c                | 3 +--
- kernel/irq/manage.c                | 5 ++---
- kernel/kallsyms.c                  | 4 ++--
- kernel/pid.c                       | 2 +-
- kernel/power/hibernate.c           | 2 +-
- kernel/power/qos.c                 | 4 ++--
- kernel/printk/printk.c             | 2 +-
- kernel/sched/core.c                | 2 +-
- kernel/sched/topology.c            | 6 +++---
- kernel/signal.c                    | 2 +-
- kernel/sys.c                       | 3 +--
- kernel/time/hrtimer.c              | 2 +-
- kernel/time/posix-timers.c         | 4 ++--
- kernel/time/tick-broadcast.c       | 2 +-
- kernel/time/timer.c                | 2 +-
- kernel/trace/blktrace.c            | 2 +-
- kernel/trace/trace_events_filter.c | 4 ++--
- 28 files changed, 47 insertions(+), 51 deletions(-)
-
-diff --git a/kernel/auditfilter.c b/kernel/auditfilter.c
-index b0126e9c0743..471cd680479d 100644
---- a/kernel/auditfilter.c
-+++ b/kernel/auditfilter.c
-@@ -674,7 +674,7 @@ static struct audit_rule_data *audit_krule_to_data(struct audit_krule *krule)
- 				data->values[i] = AUDIT_UID_UNSET;
- 				break;
- 			}
--			/* fall through - if set */
-+			fallthrough;	/* if set */
- 		default:
- 			data->values[i] = f->val;
- 		}
-diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-index ddd8addcdb5c..955631f1b77d 100644
---- a/kernel/bpf/cgroup.c
-+++ b/kernel/bpf/cgroup.c
-@@ -797,7 +797,7 @@ cgroup_base_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 	case BPF_FUNC_trace_printk:
- 		if (capable(CAP_SYS_ADMIN))
- 			return bpf_get_trace_printk_proto();
--		/* fall through */
-+		fallthrough;
- 	default:
- 		return NULL;
- 	}
-@@ -1439,7 +1439,7 @@ static bool cg_sockopt_is_valid_access(int off, int size,
- 			return prog->expected_attach_type ==
- 				BPF_CGROUP_GETSOCKOPT;
- 		case offsetof(struct bpf_sockopt, optname):
--			/* fallthrough */
-+			fallthrough;
- 		case offsetof(struct bpf_sockopt, level):
- 			if (size != size_default)
- 				return false;
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index ffc3e53f5300..d2b6fd8545e2 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -2249,7 +2249,7 @@ static bool may_access_direct_pkt_data(struct bpf_verifier_env *env,
- 	case BPF_PROG_TYPE_CGROUP_SKB:
- 		if (t == BPF_WRITE)
- 			return false;
--		/* fallthrough */
-+		fallthrough;
- 
- 	/* Program types with direct read + write access go here! */
- 	case BPF_PROG_TYPE_SCHED_CLS:
-@@ -4381,7 +4381,7 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
- 				off_reg == dst_reg ? dst : src);
- 			return -EACCES;
- 		}
--		/* fall-through */
-+		fallthrough;
- 	default:
- 		break;
- 	}
-diff --git a/kernel/capability.c b/kernel/capability.c
-index 1444f3954d75..7c59b096c98a 100644
---- a/kernel/capability.c
-+++ b/kernel/capability.c
-@@ -93,7 +93,7 @@ static int cap_validate_magic(cap_user_header_t header, unsigned *tocopy)
- 		break;
- 	case _LINUX_CAPABILITY_VERSION_2:
- 		warn_deprecated_v2();
--		/* fall through - v3 is otherwise equivalent to v2. */
-+		fallthrough;	/* v3 is otherwise equivalent to v2 */
- 	case _LINUX_CAPABILITY_VERSION_3:
- 		*tocopy = _LINUX_CAPABILITY_U32S_3;
- 		break;
-diff --git a/kernel/compat.c b/kernel/compat.c
-index a2bc1d6ceb57..d9c61f4317be 100644
---- a/kernel/compat.c
-+++ b/kernel/compat.c
-@@ -343,11 +343,11 @@ get_compat_sigset(sigset_t *set, const compat_sigset_t __user *compat)
- 		return -EFAULT;
- 	switch (_NSIG_WORDS) {
- 	case 4: set->sig[3] = v.sig[6] | (((long)v.sig[7]) << 32 );
--		/* fall through */
-+		fallthrough;
- 	case 3: set->sig[2] = v.sig[4] | (((long)v.sig[5]) << 32 );
--		/* fall through */
-+		fallthrough;
- 	case 2: set->sig[1] = v.sig[2] | (((long)v.sig[3]) << 32 );
--		/* fall through */
-+		fallthrough;
- 	case 1: set->sig[0] = v.sig[0] | (((long)v.sig[1]) << 32 );
- 	}
- #else
-diff --git a/kernel/debug/gdbstub.c b/kernel/debug/gdbstub.c
-index 4b280fc7dd67..b9d8b7248964 100644
---- a/kernel/debug/gdbstub.c
-+++ b/kernel/debug/gdbstub.c
-@@ -1033,14 +1033,14 @@ int gdb_serial_stub(struct kgdb_state *ks)
- 				return DBG_PASS_EVENT;
- 			}
- #endif
--			/* Fall through */
-+			fallthrough;
- 		case 'C': /* Exception passing */
- 			tmp = gdb_cmd_exception_pass(ks);
- 			if (tmp > 0)
- 				goto default_handle;
- 			if (tmp == 0)
- 				break;
--			/* Fall through - on tmp < 0 */
-+			fallthrough;	/* on tmp < 0 */
- 		case 'c': /* Continue packet */
- 		case 's': /* Single step packet */
- 			if (kgdb_contthread && kgdb_contthread != current) {
-@@ -1049,7 +1049,7 @@ int gdb_serial_stub(struct kgdb_state *ks)
- 				break;
- 			}
- 			dbg_activate_sw_breakpoints();
--			/* Fall through - to default processing */
-+			fallthrough;	/* to default processing */
- 		default:
- default_handle:
- 			error = kgdb_arch_handle_exception(ks->ex_vector,
-diff --git a/kernel/debug/kdb/kdb_keyboard.c b/kernel/debug/kdb/kdb_keyboard.c
-index 750497b0003a..f877a0a0d7cf 100644
---- a/kernel/debug/kdb/kdb_keyboard.c
-+++ b/kernel/debug/kdb/kdb_keyboard.c
-@@ -173,11 +173,11 @@ int kdb_get_kbd_char(void)
- 	case KT_LATIN:
- 		if (isprint(keychar))
- 			break;		/* printable characters */
--		/* fall through */
-+		fallthrough;
- 	case KT_SPEC:
- 		if (keychar == K_ENTER)
- 			break;
--		/* fall through */
-+		fallthrough;
- 	default:
- 		return -1;	/* ignore unprintables */
- 	}
-diff --git a/kernel/debug/kdb/kdb_support.c b/kernel/debug/kdb/kdb_support.c
-index b8e6306e7e13..d636506f695a 100644
---- a/kernel/debug/kdb/kdb_support.c
-+++ b/kernel/debug/kdb/kdb_support.c
-@@ -432,7 +432,7 @@ int kdb_getphysword(unsigned long *word, unsigned long addr, size_t size)
- 				*word = w8;
- 			break;
- 		}
--		/* fall through */
-+		fallthrough;
- 	default:
- 		diag = KDB_BADWIDTH;
- 		kdb_printf("kdb_getphysword: bad width %ld\n", (long) size);
-@@ -481,7 +481,7 @@ int kdb_getword(unsigned long *word, unsigned long addr, size_t size)
- 				*word = w8;
- 			break;
- 		}
--		/* fall through */
-+		fallthrough;
- 	default:
- 		diag = KDB_BADWIDTH;
- 		kdb_printf("kdb_getword: bad width %ld\n", (long) size);
-@@ -525,7 +525,7 @@ int kdb_putword(unsigned long addr, unsigned long word, size_t size)
- 			diag = kdb_putarea(addr, w8);
- 			break;
- 		}
--		/* fall through */
-+		fallthrough;
- 	default:
- 		diag = KDB_BADWIDTH;
- 		kdb_printf("kdb_putword: bad width %ld\n", (long) size);
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 9ec0b0bfddbd..04e75b1144c5 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -9361,8 +9361,7 @@ perf_event_parse_addr_filter(struct perf_event *event, char *fstr,
- 		case IF_SRC_KERNELADDR:
- 		case IF_SRC_KERNEL:
- 			kernel = 1;
--			/* fall through */
--
-+			fallthrough;
- 		case IF_SRC_FILEADDR:
- 		case IF_SRC_FILE:
- 			if (state != IF_STATE_SOURCE)
-diff --git a/kernel/futex.c b/kernel/futex.c
-index bd18f60e4c6c..ab12b6229d2d 100644
---- a/kernel/futex.c
-+++ b/kernel/futex.c
-@@ -3639,12 +3639,12 @@ long do_futex(u32 __user *uaddr, int op, u32 val, ktime_t *timeout,
- 	switch (cmd) {
- 	case FUTEX_WAIT:
- 		val3 = FUTEX_BITSET_MATCH_ANY;
--		/* fall through */
-+		fallthrough;
- 	case FUTEX_WAIT_BITSET:
- 		return futex_wait(uaddr, flags, val, timeout, val3);
- 	case FUTEX_WAKE:
- 		val3 = FUTEX_BITSET_MATCH_ANY;
--		/* fall through */
-+		fallthrough;
- 	case FUTEX_WAKE_BITSET:
- 		return futex_wake(uaddr, flags, val, val3);
- 	case FUTEX_REQUEUE:
-diff --git a/kernel/gcov/gcc_3_4.c b/kernel/gcov/gcc_3_4.c
-index 801ee4b0b969..32fc3278166f 100644
---- a/kernel/gcov/gcc_3_4.c
-+++ b/kernel/gcov/gcc_3_4.c
-@@ -455,7 +455,7 @@ int gcov_iter_next(struct gcov_iterator *iter)
- 	case RECORD_COUNT:
- 		/* Advance to next count */
- 		iter->count++;
--		/* fall through */
-+		fallthrough;
- 	case RECORD_COUNT_LEN:
- 		if (iter->count < get_func(iter)->n_ctrs[iter->type]) {
- 			iter->record = 9;
-@@ -465,7 +465,7 @@ int gcov_iter_next(struct gcov_iterator *iter)
- 		get_type(iter)->offset += iter->count;
- 		iter->count = 0;
- 		iter->type++;
--		/* fall through */
-+		fallthrough;
- 	case RECORD_FUNCTION_CHECK:
- 		if (iter->type < iter->num_types) {
- 			iter->record = 7;
-@@ -474,7 +474,7 @@ int gcov_iter_next(struct gcov_iterator *iter)
- 		/* Advance to next function */
- 		iter->type = 0;
- 		iter->function++;
--		/* fall through */
-+		fallthrough;
- 	case RECORD_TIME_STAMP:
- 		if (iter->function < iter->info->n_functions)
- 			iter->record = 3;
-diff --git a/kernel/irq/handle.c b/kernel/irq/handle.c
-index a4ace611f47f..b38d2fd70fe1 100644
---- a/kernel/irq/handle.c
-+++ b/kernel/irq/handle.c
-@@ -165,8 +165,7 @@ irqreturn_t __handle_irq_event_percpu(struct irq_desc *desc, unsigned int *flags
- 			}
- 
- 			__irq_wake_thread(desc, action);
--
--			/* Fall through - to add to randomness */
-+			fallthrough;	/* to add to randomness */
- 		case IRQ_HANDLED:
- 			*flags |= action->flags;
- 			break;
-diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
-index 1753486b440c..baa86020f243 100644
---- a/kernel/irq/manage.c
-+++ b/kernel/irq/manage.c
-@@ -222,7 +222,7 @@ int irq_do_set_affinity(struct irq_data *data, const struct cpumask *mask,
- 	case IRQ_SET_MASK_OK:
- 	case IRQ_SET_MASK_OK_DONE:
- 		cpumask_copy(desc->irq_common_data.affinity, mask);
--		/* fall through */
-+		fallthrough;
- 	case IRQ_SET_MASK_OK_NOCOPY:
- 		irq_validate_effective_affinity(data);
- 		irq_set_thread_affinity(desc);
-@@ -792,8 +792,7 @@ int __irq_set_trigger(struct irq_desc *desc, unsigned long flags)
- 	case IRQ_SET_MASK_OK_DONE:
- 		irqd_clear(&desc->irq_data, IRQD_TRIGGER_MASK);
- 		irqd_set(&desc->irq_data, flags);
--		/* fall through */
--
-+		fallthrough;
- 	case IRQ_SET_MASK_OK_NOCOPY:
- 		flags = irqd_get_trigger_type(&desc->irq_data);
- 		irq_settings_set_trigger_mask(desc, flags);
-diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
-index 136ce049c4ad..05ce8a4d4729 100644
---- a/kernel/kallsyms.c
-+++ b/kernel/kallsyms.c
-@@ -651,11 +651,11 @@ int kallsyms_show_value(void)
- 	case 0:
- 		if (kallsyms_for_perf())
- 			return 1;
--	/* fallthrough */
-+		fallthrough;
- 	case 1:
- 		if (has_capability_noaudit(current, CAP_SYSLOG))
- 			return 1;
--	/* fallthrough */
-+		fallthrough;
- 	default:
- 		return 0;
- 	}
-diff --git a/kernel/pid.c b/kernel/pid.c
-index 0a9f2e437217..b2a005a6dea1 100644
---- a/kernel/pid.c
-+++ b/kernel/pid.c
-@@ -144,7 +144,7 @@ void free_pid(struct pid *pid)
- 			/* Handle a fork failure of the first process */
- 			WARN_ON(ns->child_reaper);
- 			ns->pid_allocated = 0;
--			/* fall through */
-+			fallthrough;
- 		case 0:
- 			schedule_work(&ns->proc_work);
- 			break;
-diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
-index 3c0a5a8170b0..d091dcd57557 100644
---- a/kernel/power/hibernate.c
-+++ b/kernel/power/hibernate.c
-@@ -647,7 +647,7 @@ static void power_down(void)
- 		break;
- 	case HIBERNATION_PLATFORM:
- 		hibernation_platform_enter();
--		/* Fall through */
-+		fallthrough;
- 	case HIBERNATION_SHUTDOWN:
- 		if (pm_power_off)
- 			kernel_power_off();
-diff --git a/kernel/power/qos.c b/kernel/power/qos.c
-index 9568a2fe7c11..6bf5295b2ade 100644
---- a/kernel/power/qos.c
-+++ b/kernel/power/qos.c
-@@ -236,7 +236,7 @@ int pm_qos_update_target(struct pm_qos_constraints *c, struct plist_node *node,
- 		 * changed
- 		 */
- 		plist_del(node, &c->list);
--		/* fall through */
-+		fallthrough;
- 	case PM_QOS_ADD_REQ:
- 		plist_node_init(node, new_value);
- 		plist_add(node, &c->list);
-@@ -309,7 +309,7 @@ bool pm_qos_update_flags(struct pm_qos_flags *pqf,
- 		break;
- 	case PM_QOS_UPDATE_REQ:
- 		pm_qos_flags_remove_req(pqf, req);
--		/* fall through */
-+		fallthrough;
- 	case PM_QOS_ADD_REQ:
- 		req->flags = val;
- 		INIT_LIST_HEAD(&req->node);
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index ca65327a6de8..6b3d7c68e6fe 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -1531,7 +1531,7 @@ int do_syslog(int type, char __user *buf, int len, int source)
- 	/* Read/clear last kernel messages */
- 	case SYSLOG_ACTION_READ_CLEAR:
- 		clear = true;
--		/* FALL THRU */
-+		fallthrough;
- 	/* Read last kernel messages */
- 	case SYSLOG_ACTION_READ_ALL:
- 		if (!buf || len < 0)
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index dd05a378631a..050b728728f4 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -2068,7 +2068,7 @@ static int select_fallback_rq(int cpu, struct task_struct *p)
- 				state = possible;
- 				break;
- 			}
--			/* Fall-through */
-+			fallthrough;
- 		case possible:
- 			do_set_cpus_allowed(p, cpu_possible_mask);
- 			state = fail;
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index b5667a273bf6..7d6b84e0caca 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -1224,13 +1224,13 @@ static void __free_domain_allocs(struct s_data *d, enum s_alloc what,
- 	case sa_rootdomain:
- 		if (!atomic_read(&d->rd->refcount))
- 			free_rootdomain(&d->rd->rcu);
--		/* Fall through */
-+		fallthrough;
- 	case sa_sd:
- 		free_percpu(d->sd);
--		/* Fall through */
-+		fallthrough;
- 	case sa_sd_storage:
- 		__sdt_free(cpu_map);
--		/* Fall through */
-+		fallthrough;
- 	case sa_none:
- 		break;
- 	}
-diff --git a/kernel/signal.c b/kernel/signal.c
-index c4da1ef56fdf..73bdcc1f2561 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -846,7 +846,7 @@ static int check_kill_permission(int sig, struct kernel_siginfo *info,
- 			 */
- 			if (!sid || sid == task_session(current))
- 				break;
--			/* fall through */
-+			fallthrough;
- 		default:
- 			return -EPERM;
- 		}
-diff --git a/kernel/sys.c b/kernel/sys.c
-index a611d1d58c7d..bad4f30e7f37 100644
---- a/kernel/sys.c
-+++ b/kernel/sys.c
-@@ -1737,8 +1737,7 @@ void getrusage(struct task_struct *p, int who, struct rusage *r)
- 
- 		if (who == RUSAGE_CHILDREN)
- 			break;
--		/* fall through */
--
-+		fallthrough;
- 	case RUSAGE_SELF:
- 		thread_group_cputime_adjusted(p, &tgutime, &tgstime);
- 		utime += tgutime;
-diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
-index 0d4dc241c0fb..8060a35682e1 100644
---- a/kernel/time/hrtimer.c
-+++ b/kernel/time/hrtimer.c
-@@ -373,7 +373,7 @@ static bool hrtimer_fixup_activate(void *addr, enum debug_obj_state state)
- 	switch (state) {
- 	case ODEBUG_STATE_ACTIVE:
- 		WARN_ON(1);
--		/* fall through */
-+		fallthrough;
- 	default:
- 		return false;
- 	}
-diff --git a/kernel/time/posix-timers.c b/kernel/time/posix-timers.c
-index 0ec5b7a1d769..6cc658391702 100644
---- a/kernel/time/posix-timers.c
-+++ b/kernel/time/posix-timers.c
-@@ -413,12 +413,12 @@ static struct pid *good_sigevent(sigevent_t * event)
- 		rtn = pid_task(pid, PIDTYPE_PID);
- 		if (!rtn || !same_thread_group(rtn, current))
- 			return NULL;
--		/* FALLTHRU */
-+		fallthrough;
- 	case SIGEV_SIGNAL:
- 	case SIGEV_THREAD:
- 		if (event->sigev_signo <= 0 || event->sigev_signo > SIGRTMAX)
- 			return NULL;
--		/* FALLTHRU */
-+		fallthrough;
- 	case SIGEV_NONE:
- 		return pid;
- 	default:
-diff --git a/kernel/time/tick-broadcast.c b/kernel/time/tick-broadcast.c
-index e51778c312f1..36d7464c8962 100644
---- a/kernel/time/tick-broadcast.c
-+++ b/kernel/time/tick-broadcast.c
-@@ -381,7 +381,7 @@ void tick_broadcast_control(enum tick_broadcast_mode mode)
- 	switch (mode) {
- 	case TICK_BROADCAST_FORCE:
- 		tick_broadcast_forced = 1;
--		/* fall through */
-+		fallthrough;
- 	case TICK_BROADCAST_ON:
- 		cpumask_set_cpu(cpu, tick_broadcast_on);
- 		if (!cpumask_test_and_set_cpu(cpu, tick_broadcast_mask)) {
-diff --git a/kernel/time/timer.c b/kernel/time/timer.c
-index 4820823515e9..6512d721ef57 100644
---- a/kernel/time/timer.c
-+++ b/kernel/time/timer.c
-@@ -653,7 +653,7 @@ static bool timer_fixup_activate(void *addr, enum debug_obj_state state)
- 
- 	case ODEBUG_STATE_ACTIVE:
- 		WARN_ON(1);
--		/* fall through */
-+		fallthrough;
- 	default:
- 		return false;
- 	}
-diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
-index 2d6e93ab0478..0a1753dc69d3 100644
---- a/kernel/trace/blktrace.c
-+++ b/kernel/trace/blktrace.c
-@@ -717,7 +717,7 @@ int blk_trace_ioctl(struct block_device *bdev, unsigned cmd, char __user *arg)
- #endif
- 	case BLKTRACESTART:
- 		start = 1;
--		/* fall through */
-+		fallthrough;
- 	case BLKTRACESTOP:
- 		ret = __blk_trace_startstop(q, start);
- 		break;
-diff --git a/kernel/trace/trace_events_filter.c b/kernel/trace/trace_events_filter.c
-index c9a74f82b14a..78b0bfc4d72e 100644
---- a/kernel/trace/trace_events_filter.c
-+++ b/kernel/trace/trace_events_filter.c
-@@ -499,7 +499,7 @@ predicate_parse(const char *str, int nr_parens, int nr_preds,
- 					ptr++;
- 					break;
- 				}
--				/* fall through */
-+				fallthrough;
- 			default:
- 				parse_error(pe, FILT_ERR_TOO_MANY_PREDS,
- 					    next - str);
-@@ -1273,7 +1273,7 @@ static int parse_pred(const char *str, void *data,
- 		switch (op) {
- 		case OP_NE:
- 			pred->not = 1;
--			/* Fall through */
-+			fallthrough;
- 		case OP_GLOB:
- 		case OP_EQ:
- 			break;
-
-
+DQoNCk9uIDEwLzE3LzE5IDM6NTcgQU0sIFRva2UgSMO4aWxhbmQtSsO4cmdlbnNlbiB3cm90ZToN
+Cj4gVGV0c3VvIHBvaW50ZWQgb3V0IHRoYXQgd2l0aG91dCBhbiBleHBsaWNpdCBjYXN0LCB0aGUg
+Y29zdCBjYWxjdWxhdGlvbiBmb3INCj4gZGV2bWFwX2hhc2ggdHlwZSBtYXBzIGNvdWxkIG92ZXJm
+bG93IG9uIDMyLWJpdCBidWlsZHMuIFRoaXMgYWRkcyB0aGUNCj4gbWlzc2luZyBjYXN0Lg0KPiAN
+Cj4gRml4ZXM6IDZmOWQ0NTFhYjFhMyAoInhkcDogQWRkIGRldm1hcF9oYXNoIG1hcCB0eXBlIGZv
+ciBsb29raW5nIHVwIGRldmljZXMgYnkgaGFzaGVkIGluZGV4IikNCj4gUmVwb3J0ZWQtYnk6IFRl
+dHN1byBIYW5kYSA8cGVuZ3Vpbi1rZXJuZWxAaS1sb3ZlLnNha3VyYS5uZS5qcD4NCj4gU2lnbmVk
+LW9mZi1ieTogVG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIDx0b2tlQHJlZGhhdC5jb20+DQoNCkFj
+a2VkLWJ5OiBZb25naG9uZyBTb25nIDx5aHNAZmIuY29tPg0KDQo+IC0tLQ0KPiAgIGtlcm5lbC9i
+cGYvZGV2bWFwLmMgfCAyICstDQo+ICAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAx
+IGRlbGV0aW9uKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEva2VybmVsL2JwZi9kZXZtYXAuYyBiL2tl
+cm5lbC9icGYvZGV2bWFwLmMNCj4gaW5kZXggYTBhMTE1M2RhNWFlLi5lMzRmYWM2MDIyZWIgMTAw
+NjQ0DQo+IC0tLSBhL2tlcm5lbC9icGYvZGV2bWFwLmMNCj4gKysrIGIva2VybmVsL2JwZi9kZXZt
+YXAuYw0KPiBAQCAtMTI4LDcgKzEyOCw3IEBAIHN0YXRpYyBpbnQgZGV2X21hcF9pbml0X21hcChz
+dHJ1Y3QgYnBmX2R0YWIgKmR0YWIsIHVuaW9uIGJwZl9hdHRyICphdHRyKQ0KPiAgIA0KPiAgIAkJ
+aWYgKCFkdGFiLT5uX2J1Y2tldHMpIC8qIE92ZXJmbG93IGNoZWNrICovDQo+ICAgCQkJcmV0dXJu
+IC1FSU5WQUw7DQo+IC0JCWNvc3QgKz0gc2l6ZW9mKHN0cnVjdCBobGlzdF9oZWFkKSAqIGR0YWIt
+Pm5fYnVja2V0czsNCj4gKwkJY29zdCArPSAodTY0KSBzaXplb2Yoc3RydWN0IGhsaXN0X2hlYWQp
+ICogZHRhYi0+bl9idWNrZXRzOw0KPiAgIAl9DQo+ICAgDQo+ICAgCS8qIGlmIG1hcCBzaXplIGlz
+IGxhcmdlciB0aGFuIG1lbWxvY2sgbGltaXQsIHJlamVjdCBpdCAqLw0KPiANCg==
