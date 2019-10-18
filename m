@@ -2,82 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E1A51DD54D
-	for <lists+bpf@lfdr.de>; Sat, 19 Oct 2019 01:25:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6F48DD553
+	for <lists+bpf@lfdr.de>; Sat, 19 Oct 2019 01:28:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727129AbfJRXZi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Oct 2019 19:25:38 -0400
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:36462 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726374AbfJRXZh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Oct 2019 19:25:37 -0400
-Received: by mail-lf1-f65.google.com with SMTP id u16so5881895lfq.3;
-        Fri, 18 Oct 2019 16:25:36 -0700 (PDT)
+        id S1732283AbfJRX2C (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Oct 2019 19:28:02 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:40893 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726374AbfJRX2C (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Oct 2019 19:28:02 -0400
+Received: by mail-pg1-f195.google.com with SMTP id e13so4156225pga.7;
+        Fri, 18 Oct 2019 16:28:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=rFiYPayfcivIbmyPJvmhsYUQTBH3urjiuUpOoo0qm0I=;
-        b=TpaYyPASr9QMRXcx8zhYtzpX/P8eew9ufgkxbdfROjqtSHiRpQ7He055bT9dl3rf0E
-         fGsLedD+6p/QJfsNjvHQnYDF1mQLjsbYXTphKJqF+3NrVnomLYjIawji0QkScRfNNayC
-         mQ2n3YSnI9J5szXGQq35OuMP/tN9vbilKqLZ0lhbjZKytqF9PGECmzXREL/q5pAh79VR
-         bGYU3WKyKdQOqu3tFFp+UZKE55fjO3kUJKYYEhTkdigalj3/DRC7OVubhJfQkWARQOag
-         3CiVBnCsyBS8eBNAdD3JL8LlPbncyCB4wdTT4oAZP4vChrl4bIPkURASXkAcGwya8rtG
-         9hPw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=o0R3SyRraCYFgVgsB5u2m67oRVRURyDN4oM3OQMhLd8=;
+        b=bGMPOosORfDuftN5n0wtfJCp5crEfKFpnJYZ82SyZuvJqJ2g+x4NHfp6DkIhJQOnkc
+         +hwj6myIZ6VOq27otny1g3tseHmRgkASYlk/bND7N8tVEaIaak6adGWC728OlmNcmpak
+         2HVilYdRLCEzD4GDT+TugdUWxld1vt9qB8z0bZ9XsTsxi+Dgn4AsOkQA+YYjU1bczafx
+         RMF3TK8nLUM/e01Rs1cMjHerWREsPMU/TVFVrGbxvQ2aweQ7yO41tiJErR24O/xu+og5
+         D5lVT2S7NyHwz2eIJgp1eHvZwS9G4iwMZBbwJ9uG4cd/bEDrflfrSArs9aMcTEpC2Dkr
+         FCAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=rFiYPayfcivIbmyPJvmhsYUQTBH3urjiuUpOoo0qm0I=;
-        b=UTnrm5dgY4j5tmLZGmpJ3tLxjNlfvdlaX7Xe7qdsrW3Lwten+0oHfThe4jnxKGjhad
-         56RbX7/T1bw7VBwkXquUdxF/9HT3paEivWDDb5FaSD/gey56wu2VmOO0QLSc6HLjBv7v
-         DUrw+R60PiGGrw3Oy24zfF1u0SU+hY4CTArvkXd2/Ktjf3L8nS7c7mc0ESTBUN+hAeUd
-         e4LcH+x38PLTqMV8wCId9CPjuRZ87UJb56S5K3q9pkfUTkl43djIIap074bw/eS63p0x
-         asMZxw+d6LY1mIATFJ3+iH6lUJ6oxaApkOvyu7qBtXRO5H9HHgVL6l6RrkIYiouJ4wA8
-         giAA==
-X-Gm-Message-State: APjAAAUs9cummdhDSGx+Kz2kQg/0uhZeN0hsIDX/khLpfL/6DLlsASQp
-        WlQ3f4gBEKejeD0zv+O+HalOkGPbRdRxNmP191Q=
-X-Google-Smtp-Source: APXvYqzlUV3L2ccv5Z7zC6mdOGEngeDFKQ6j940wSxsA0u2DxuIKOWo/jdhYEkMJ0EK4R1mA2+vQ2dNuUweU+/Op7vY=
-X-Received: by 2002:a19:f80d:: with SMTP id a13mr7551957lff.6.1571441135421;
- Fri, 18 Oct 2019 16:25:35 -0700 (PDT)
-MIME-Version: 1.0
-References: <20191017105702.2807093-1-toke@redhat.com>
-In-Reply-To: <20191017105702.2807093-1-toke@redhat.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=o0R3SyRraCYFgVgsB5u2m67oRVRURyDN4oM3OQMhLd8=;
+        b=Eu1xGY/nrvaPRlIl0Kw5T0nGVQhiRUItPYNnfLjMgq2LxdbMPIaR/gYox1LovUdwVY
+         ZQeSeLSK4JMmWMTXeMVkeOnVNiZT+0Xca35AWkwbWkQ+kon4w/GFRh9YNbOFGVbRiBqF
+         +J/6xTYE9lsnVHG4nmIKAChNbEaLcz9lhnL633V5tK8sJLZpm2Mdv+DXwZ4h+xePkJMF
+         ge8qt0CjgJbFEVJcZSLkiCX72StBbhsptM8f/M8BFZtK8PevGkXQr6EZBb5OkDLfGQ5P
+         nzcVcLQboq2EXcbhDIv047Ey36j0QAf8Tn5u0cxU0ucLMyt3avk9fbKJfrRvZlF1UOIY
+         RuJw==
+X-Gm-Message-State: APjAAAVlVFD95gwK5+q15WxG2T1fNJlHxayD+13PkftkEm2xNhsVBlZr
+        QVTP+iDjwI++LjluJcEeANQ=
+X-Google-Smtp-Source: APXvYqxW38q5b5LG4zDiowueOjD4jrk+ucC9DSBK1BYWfFUNsvDPbUsQfBa7/hNxK/thEb0mxws1gw==
+X-Received: by 2002:a62:2643:: with SMTP id m64mr9228282pfm.232.1571441281466;
+        Fri, 18 Oct 2019 16:28:01 -0700 (PDT)
+Received: from ast-mbp ([2620:10d:c090:180::6038])
+        by smtp.gmail.com with ESMTPSA id w12sm9211275pfq.138.2019.10.18.16.27.59
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 18 Oct 2019 16:28:00 -0700 (PDT)
+Date:   Fri, 18 Oct 2019 16:27:58 -0700
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 18 Oct 2019 16:25:24 -0700
-Message-ID: <CAADnVQKDaMAVT6UxGy8w+CPUmzvgVWAjXmHexiz09yZJ8CbAeQ@mail.gmail.com>
-Subject: Re: [PATCH bpf] xdp: Prevent overflow in devmap_hash cost calculation
- for 32-bit builds
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@fb.com>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Jakub Kicinski <kubakici@wp.pl>, Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+To:     Magnus Karlsson <magnus.karlsson@intel.com>
+Cc:     bjorn.topel@intel.com, ast@kernel.org, daniel@iogearbox.net,
+        netdev@vger.kernel.org, jonathan.lemon@gmail.com,
+        linux-doc@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH bpf v2] xsk: improve documentation for AF_XDP
+Message-ID: <20191018232756.akn4yvyxmi63dl5b@ast-mbp>
+References: <1571391220-22835-1-git-send-email-magnus.karlsson@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1571391220-22835-1-git-send-email-magnus.karlsson@intel.com>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 18, 2019 at 8:36 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
-at.com> wrote:
->
-> Tetsuo pointed out that without an explicit cast, the cost calculation fo=
-r
-> devmap_hash type maps could overflow on 32-bit builds. This adds the
-> missing cast.
->
-> Fixes: 6f9d451ab1a3 ("xdp: Add devmap_hash map type for looking up device=
-s by hashed index")
-> Reported-by: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+On Fri, Oct 18, 2019 at 11:33:40AM +0200, Magnus Karlsson wrote:
+> +
+> +   #include <linux/bpf.h>
+> +   #include "bpf_helpers.h"
+> +
+> +   #define MAX_SOCKS 16
+> +
+> +   struct {
+> +        __uint(type, BPF_MAP_TYPE_XSKMAP);
+> +        __uint(max_entries, MAX_SOCKS);
+> +        __uint(key_size, sizeof(int));
+> +        __uint(value_size, sizeof(int));
+> +   } xsks_map SEC(".maps");
+> +
+> +   struct {
+> +        __uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
+> +        __uint(max_entries, 1);
+> +        __type(key, int);
+> +        __type(value, unsigned int);
+> +   } rr_map SEC(".maps");
 
-gmail delivery lags by a day :(
-I applied this patch along with Yonghong's ack to bpf tree
-(though I don't have it in my mail box, but it's there in patchworks).
+hmm. does xsks_map compile?
 
-I'm not sure that cleanup Jakub is proposing is possible or better.
-Not everything is array_size here and in other places
-where cost is computed. u64 is imo much cleaner.
+> +
+> +   SEC("xdp_sock") int xdp_sock_prog(struct xdp_md *ctx)
+> +   {
+> +	int key = 0, idx;
+> +	unsigned int *rr;
+> +
+> +	rr = bpf_map_lookup_elem(&rr_map, &key);
+> +	if (!rr)
+> +	   return XDP_ABORTED;
+
+could you please use global data and avoid lookup?
+The run-time will be much faster.
+
