@@ -2,101 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 00747DBD84
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2019 08:09:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85428DBD95
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2019 08:20:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392117AbfJRGJg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Oct 2019 02:09:36 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:29128 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2392128AbfJRGJg (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 18 Oct 2019 02:09:36 -0400
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x9I69VCq008146
-        for <bpf@vger.kernel.org>; Thu, 17 Oct 2019 23:09:35 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2vq2nkryr8-8
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 17 Oct 2019 23:09:35 -0700
-Received: from 2401:db00:2050:5076:face:0:1f:0 (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 17 Oct 2019 23:09:34 -0700
-Received: by devbig007.ftw2.facebook.com (Postfix, from userid 572438)
-        id 7A84D760F52; Thu, 17 Oct 2019 23:09:33 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Alexei Starovoitov <ast@kernel.org>
-Smtp-Origin-Hostname: devbig007.ftw2.facebook.com
-To:     <davem@davemloft.net>
-CC:     <daniel@iogearbox.net>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <kernel-team@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next] bpf: fix bpf_attr.attach_btf_id check
-Date:   Thu, 17 Oct 2019 23:09:33 -0700
-Message-ID: <20191018060933.2950231-1-ast@kernel.org>
-X-Mailer: git-send-email 2.17.1
-X-FB-Internal: Safe
+        id S2504296AbfJRGUB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Oct 2019 02:20:01 -0400
+Received: from mail-lj1-f171.google.com ([209.85.208.171]:39287 "EHLO
+        mail-lj1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2504151AbfJRGUB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Oct 2019 02:20:01 -0400
+Received: by mail-lj1-f171.google.com with SMTP id y3so4967148ljj.6;
+        Thu, 17 Oct 2019 23:20:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kcNReyNrRltv4yUc/bRjZ6f05nyo0YbTID+WXyc7yUw=;
+        b=F8Zlmc+G7JGaVnDlzKXea5IHzdDeExc1KIg/2F2lV0ELcfJg+0GsGCzV/2khUaoTVm
+         ZKCEfq6klIJuVgO6UByk61ng/SPBxh5iUt6rJKom0+qmstodqWmAalr8WsI+a9obpofc
+         f4ECJVH7Prv34K4Hd3FN8OagNXrWDUoCGT6oUH/SQ/Lrsl8/POLmHJfPrvtBiT1NrgXI
+         LhYwYQcvA/vHlMN4FmZh0nnf75prnigOfa6pP8Ka/zmORCmbAaEmVJMjIbGRVX4lTl7/
+         l0xl848ToYu1MTEL0Q0ysZIA8iKN6zBjEr/HstPMuTSiV8bmtDaZeLi4y+o7fqMjIJ6j
+         k86Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kcNReyNrRltv4yUc/bRjZ6f05nyo0YbTID+WXyc7yUw=;
+        b=T7dKUnM+3K8oKMAcnXdHErUOvFOqWutdkPVGQpblPtg1bJnmp5OUjHIsTkWiwp51ts
+         XI5Di14uXjn66o8ecOnhW+6/tbvnPxLaVcdtjypyvWN7DuKRIMPZZBIATpwKH898GPO5
+         M2v7k0xPI1bWGOpyH0NvMu+RlGPblMgPgOxZBO7HhIFoUU/Z3H6dsOiRVwo0BUZKxHU3
+         /CBR0vqce/6aZbg+U1LyT5yq0ki9qKM+IoFnejPeDIi2pvazVsREj34w2Ch1DlI7gdjX
+         JzZwT+OqV4LQQrYLTrY3h628ANfAKvij1NBht27w3td3m430n5+ovkNB7IB6IgOS/D3P
+         pcBw==
+X-Gm-Message-State: APjAAAWfxHa99RHJEIPJ4IdDoQ4PJAZrwTbkwwDTb/Y/vGMTo0zuQcs9
+        9agAI+oMWWDCqO/baGXAZA8xGQmgRyEkeIRpxkE=
+X-Google-Smtp-Source: APXvYqwaqW9qj45Xdr3fBSMuYny2RKFAHScC1TfqUMnsaoHH34NY+u7sffDnaHabNIRBK71UzSt7LLB7zPyfVjqAz2s=
+X-Received: by 2002:a2e:9cc9:: with SMTP id g9mr4855977ljj.188.1571379599375;
+ Thu, 17 Oct 2019 23:19:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
- definitions=2019-10-18_01:2019-10-17,2019-10-18 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=660
- spamscore=0 clxscore=1015 suspectscore=1 bulkscore=0 impostorscore=0
- mlxscore=0 malwarescore=0 lowpriorityscore=0 adultscore=0 phishscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1908290000 definitions=main-1910180059
-X-FB-Internal: deliver
+References: <20191011162124.52982-1-sdf@google.com> <CAADnVQLKPLXej_v7ymv3yJakoFLGeQwdZOJ5cZmp7xqOxfebqg@mail.gmail.com>
+ <20191012003819.GK2096@mini-arch> <CAADnVQKuysEvFAX54+f0YPJ1+cgcRJbhrpVE7xmvLqu-ADrk+Q@mail.gmail.com>
+ <20191016140112.GF21367@pc-63.home> <20191017162843.GB2090@mini-arch>
+In-Reply-To: <20191017162843.GB2090@mini-arch>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 17 Oct 2019 23:19:47 -0700
+Message-ID: <CAADnVQKWN87F=xnbBwwm+B04rt5HTRRmwMjepqWrgsxuS+sPHA@mail.gmail.com>
+Subject: Re: debug annotations for bpf progs. Was: [PATCH bpf-next 1/3] bpf:
+ preserve command of the process that loaded the program
+To:     Stanislav Fomichev <sdf@fomichev.me>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>, Yonghong Song <yhs@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Only raw_tracepoint program type can have bpf_attr.attach_btf_id >= 0.
-Make sure to reject other program types that accidentally set it to non-zero.
+On Thu, Oct 17, 2019 at 9:28 AM Stanislav Fomichev <sdf@fomichev.me> wrote:
+> Tried to do the following:
+>
+> 1. Add: static volatile const char __annotate_source1[] = __FILE__;
+>    to test_rdonly_maps.c and I think it got optimized away :-/
+>    At least I don't see it in the 'bpftool btf dump' output.
+>
+> 2. Add: char __annotate_source2[] SEC(".meta") = __FILE__;
+>    to test_rdonly_maps.c and do all the required plumbing in libbpf
+>    to treat .meta like .rodata. I think it works, but the map
+>    disappears after bpftool exits because this data is not referenced
+>    in the prog and the refcount drops to zero :-(
+>
+> Am I missing something?
 
-Fixes: ccfe29eb29c2 ("bpf: Add attach_btf_id attribute to program load")
-Reported-by: Andrii Nakryiko <andriin@fb.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
----
- kernel/bpf/syscall.c | 17 +++++++++++------
- 1 file changed, 11 insertions(+), 6 deletions(-)
+"Some assembly required".
 
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 523e3ac15a08..16ea3c0db4f6 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -1570,6 +1570,17 @@ bpf_prog_load_check_attach(enum bpf_prog_type prog_type,
- 			   enum bpf_attach_type expected_attach_type,
- 			   u32 btf_id)
- {
-+	switch (prog_type) {
-+	case BPF_PROG_TYPE_RAW_TRACEPOINT:
-+		if (btf_id > BTF_MAX_TYPE)
-+			return -EINVAL;
-+		break;
-+	default:
-+		if (btf_id)
-+			return -EINVAL;
-+		break;
-+	}
-+
- 	switch (prog_type) {
- 	case BPF_PROG_TYPE_CGROUP_SOCK:
- 		switch (expected_attach_type) {
-@@ -1610,13 +1621,7 @@ bpf_prog_load_check_attach(enum bpf_prog_type prog_type,
- 		default:
- 			return -EINVAL;
- 		}
--	case BPF_PROG_TYPE_RAW_TRACEPOINT:
--		if (btf_id > BTF_MAX_TYPE)
--			return -EINVAL;
--		return 0;
- 	default:
--		if (btf_id)
--			return -EINVAL;
- 		return 0;
- 	}
- }
--- 
-2.17.1
-
+I think first variant should work at the end.
+I don't think extra section should be a requirement.
+Sounds like with 2 it's pretty close. Just need to make sure
+that prog side sees the map as referenced.
+And more importantly bpftool can find that map from prog later.
