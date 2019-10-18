@@ -2,73 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B5196DC2C2
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2019 12:27:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD72ADC2CA
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2019 12:31:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408101AbfJRK1C (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Oct 2019 06:27:02 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:41363 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404894AbfJRK1C (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Oct 2019 06:27:02 -0400
-Received: by mail-io1-f71.google.com with SMTP id m25so7857148ioo.8
-        for <bpf@vger.kernel.org>; Fri, 18 Oct 2019 03:27:01 -0700 (PDT)
+        id S2405433AbfJRKbT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Oct 2019 06:31:19 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:54804 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729479AbfJRKbT (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 18 Oct 2019 06:31:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1571394678;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RyWTDv2opN/j8TOXO1IF6a5hFBLZbgfuyG4kY3TepQo=;
+        b=KNr4EO3/6+aWS/j7O5CQFhkgrbcXVHFHRy0acycNo/PQ983mT++T/V7CrTP8ZyA0qVwfXi
+        S+s0GHS9kdFv9ZSZhN+1rOIQF/URhWJxk7C91NgibYFUATJ5LusNsZyqsypYcnDHMdwB6c
+        pm+H5pisRvUD+Yqepp3HSnLLN1jxDRQ=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-54-A9DUVRL6PEKUsJ7lN0oJ_Q-1; Fri, 18 Oct 2019 06:31:15 -0400
+Received: by mail-lf1-f70.google.com with SMTP id d11so1191778lfj.3
+        for <bpf@vger.kernel.org>; Fri, 18 Oct 2019 03:31:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=4JoPCUxM0SmhsnlFHKFjSP4adziJaRApk9VYV5+Ut5c=;
-        b=dK3TU/K8cHSztn9dACifZHOgyRLA/H1yPRBCj07Y9NgKK5uACs3jbNtiIGaU97c4/7
-         xqt4phJ2fCXNaqXC+PBS4W6ycpDLynfDp8ClAXGYyeLzUdhGfguZdDtl8LtV+4mlFdcl
-         CiVAXEjO0tryzlDHxNLACdW5W1MQ5dDclvr0KzcIWx/moAcFbKEBagmg4O4iAuTTpCKN
-         oVJbXkpSBes1pdH8cR0l6XEQdyqMI6VZTev1I/0DzMLxFK5W177F5Ozkx1n+HbX9uC30
-         +NmQE9n7rvuBwsZa719swKOTwLvedqzH4ntUHavcNgfDbMzr22YzUeYUn2COcOiAblKG
-         QT8A==
-X-Gm-Message-State: APjAAAW9igIBj2QkpC8522WJnatSJ1OAqCf9BAD4xYkmKtr4x6IDhBoS
-        2WY3iVKsAgKSOtGvnmgiwruFpk8Lpqk5lcic2mQx6rjPLnTj
-X-Google-Smtp-Source: APXvYqwLOMpW6VAezBgHBiWGwlAKQuAIHa3svUkCYFs+Ik2sdZOXklZJzjUj6Elt89PUXjwILVjKRboMtHG/HjPXYU5BCTXlvWNy
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=RyWTDv2opN/j8TOXO1IF6a5hFBLZbgfuyG4kY3TepQo=;
+        b=pQV34esigfIWjHLJakypvDcFmBXEYfwkW0en+gU/WTQh42UnU4hTEpXq4gmX/C6eUX
+         mCUwIjPncXA/wSQJgTSZhSc9nFdGQ89Ef5tiYh36+5yUkXIrzoNocUGIbeJtNtk6pCOD
+         QOQKl+2cr7dBvRT8a8qMAJitGeWpVWZKrniD8qy8WPSkFDfWIzr8kJClDmvUuE+w87pM
+         hJqxXxwR5PADrenjTRu+C9FKBpiyGGc9icF8ueSX8eQ1kYQNXoZzm2YA8yMmt6XYormQ
+         MEtkW+iRYizdtE2JCSQ4cAEtoASd9EMd5d0tbVdDKiqDQjAJ7/M7+KpmHh6ZEspLLP1E
+         +zWw==
+X-Gm-Message-State: APjAAAWZvWwPanEGdkhCdWJsiG35o0tSxlvqykoYtmfC1bwMxAVM84KQ
+        bZmBvxGRvwsrjfqiyw/PlOj+dRFAEC9hPblZKXrezOzWN3AqEAbaio4aT8fhCVrOFnO4YjJjhqo
+        9XQq0DOh46VrR
+X-Received: by 2002:a19:f018:: with SMTP id p24mr5669103lfc.51.1571394674220;
+        Fri, 18 Oct 2019 03:31:14 -0700 (PDT)
+X-Google-Smtp-Source: APXvYqwXJquEiTp7cR5TCatXHt0waFvN649XaDhE7Bk4m1v1YrayJKyZgT850zi36wQxiZQsy+Xk6w==
+X-Received: by 2002:a19:f018:: with SMTP id p24mr5669091lfc.51.1571394674045;
+        Fri, 18 Oct 2019 03:31:14 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a00:7660:6da:443::2])
+        by smtp.gmail.com with ESMTPSA id q124sm2584065ljb.28.2019.10.18.03.31.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Oct 2019 03:31:13 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 78D721804C9; Fri, 18 Oct 2019 12:31:12 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Subject: Re: [PATCH bpf] xdp: Handle device unregister for devmap_hash map type
+In-Reply-To: <CAEf4BzbshfC2VXXbnWnjCA=Mcz8OSO=ACNSRNrNr2mHOm9uCmw@mail.gmail.com>
+References: <20191016132802.2760149-1-toke@redhat.com> <CAEf4BzbshfC2VXXbnWnjCA=Mcz8OSO=ACNSRNrNr2mHOm9uCmw@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Fri, 18 Oct 2019 12:31:11 +0200
+Message-ID: <87mudye45s.fsf@toke.dk>
 MIME-Version: 1.0
-X-Received: by 2002:a92:d784:: with SMTP id d4mr9462227iln.110.1571394421258;
- Fri, 18 Oct 2019 03:27:01 -0700 (PDT)
-Date:   Fri, 18 Oct 2019 03:27:01 -0700
-In-Reply-To: <000000000000410cbb059528d6f7@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000048021005952cc62b@google.com>
-Subject: Re: BUG: unable to handle kernel paging request in is_bpf_text_address
-From:   syzbot <syzbot+710043c5d1d5b5013bc7@syzkaller.appspotmail.com>
-To:     ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
-        davem@davemloft.net, hawk@kernel.org, jakub.kicinski@netronome.com,
-        joe@wand.net.nz, joeypabalinas@gmail.com, john.fastabend@gmail.com,
-        kafai@fb.com, linux-kernel@vger.kernel.org,
-        mauricio.vasquez@polito.it, netdev@vger.kernel.org,
-        quentin.monnet@netronome.com, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+X-MC-Unique: A9DUVRL6PEKUsJ7lN0oJ_Q-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-syzbot has bisected this bug to:
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-commit 6c4fc209fcf9d27efbaa48368773e4d2bfbd59aa
-Author: Daniel Borkmann <daniel@iogearbox.net>
-Date:   Sat Dec 15 23:49:47 2018 +0000
+> On Wed, Oct 16, 2019 at 9:07 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
+dhat.com> wrote:
+>>
+>> It seems I forgot to add handling of devmap_hash type maps to the device
+>> unregister hook for devmaps. This omission causes devices to not be
+>> properly released, which causes hangs.
+>>
+>> Fix this by adding the missing handler.
+>>
+>> Fixes: 6f9d451ab1a3 ("xdp: Add devmap_hash map type for looking up devic=
+es by hashed index")
+>> Reported-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+>> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+>> ---
+>>  kernel/bpf/devmap.c | 34 ++++++++++++++++++++++++++++++++++
+>>  1 file changed, 34 insertions(+)
+>>
+>
+> [...]
+>
+>> +
+>> +               while (dev) {
+>> +                       odev =3D (netdev =3D=3D dev->dev) ? dev : NULL;
+>> +                       dev =3D hlist_entry_safe(rcu_dereference_raw(hli=
+st_next_rcu(&dev->index_hlist)),
+>
+> Please run scripts/checkpatch.pl, this looks like a rather long line.
 
-     bpf: remove useless version check for prog load
+That was a deliberate departure from the usual line length, actually. I
+don't think it helps readability to split that into three lines just to
+adhere to a strict line length requirement...
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14306908e00000
-start commit:   283ea345 coccinelle: api/devm_platform_ioremap_resource: r..
-git tree:       upstream
-final crash:    https://syzkaller.appspot.com/x/report.txt?x=16306908e00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=12306908e00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f0a8b0a0736a2ac1
-dashboard link: https://syzkaller.appspot.com/bug?extid=710043c5d1d5b5013bc7
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=142676bb600000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11a2cebb600000
+-Toke
 
-Reported-by: syzbot+710043c5d1d5b5013bc7@syzkaller.appspotmail.com
-Fixes: 6c4fc209fcf9 ("bpf: remove useless version check for prog load")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
