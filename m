@@ -2,112 +2,179 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 747DBDC7B4
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2019 16:49:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF9EADC7DC
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2019 16:54:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408588AbfJROtY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Oct 2019 10:49:24 -0400
-Received: from mail-io1-f67.google.com ([209.85.166.67]:43075 "EHLO
+        id S2634261AbfJROyl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Oct 2019 10:54:41 -0400
+Received: from mail-io1-f67.google.com ([209.85.166.67]:33400 "EHLO
         mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728033AbfJROtY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Oct 2019 10:49:24 -0400
-Received: by mail-io1-f67.google.com with SMTP id v2so7726814iob.10;
-        Fri, 18 Oct 2019 07:49:22 -0700 (PDT)
+        with ESMTP id S2634249AbfJROyl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Oct 2019 10:54:41 -0400
+Received: by mail-io1-f67.google.com with SMTP id z19so7829174ior.0;
+        Fri, 18 Oct 2019 07:54:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=FEppI0h+E7E6OfAxqCsyFwD0NTotM0BhHygP43OvOMU=;
-        b=MJPTk2oc9EjoTbLUqBdXU7K/C8FWsa+Re8x7rTxcLjzWwcvfXFb+kslEbnPwDp3zsv
-         LQ+aPxrTw18m/b9+tPpJ2M1CZvlVlUsGIXa5w4WscF3OghK+DPlipzJWFvGe6qUwY/Mj
-         3cCK/VLM/AEs6pvsEBelrbM/DzfK2dUyNe09DNAMnxhjP5qwWcg7JWb8FtfvLwjd3XCX
-         EzZXsWaJ5qVU/ZZmFN4M0kFMNndiAOBHJCeRZf/iBqh+8gibes6yjLfPayVlUQSh31kj
-         Rs+73dw8S1qaHgS7T3rq8qs27komUi8E1qjGJz/wG9oQGhu5lCuVhv0PEMHeoqguMffd
-         NLFQ==
+        h=subject:from:to:cc:date:message-id:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=gEBvQG945nw6PeIGCHJGYkG1Klh1FidBj3ztTvMKYBs=;
+        b=N6EOAFQ2a7O9MKI+Z8IxNJe/A8YLej0PCXCjXgwqpe4/jio5eqp+PtYvmicAHBvFSM
+         aiNAyuRTe78VLn5mHkf6mopFvDOBkWwl7yChNA+e3ViwqspRXcmQk1VwedaMSmvB0/9H
+         S9DK1AS93cwQFcCkEwZ3GtOUqN5EBy+rEZkC67lYr5eV33QE93zOK/Y+1Zeu+O93ADOE
+         jVK6xuYLDh2c19aAB70Eyo3RR7QcX9DklIUV6yOkjPzQSSTzIKY5WWCQTsCPcadVMmAw
+         if7RN2mTHmkN3QfDR5Jh1iGBCMaVik7U+io4PYtcQDAb/bMdQTlQbiLQIUPVynFcpjDz
+         MnLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=FEppI0h+E7E6OfAxqCsyFwD0NTotM0BhHygP43OvOMU=;
-        b=pMlZyAEaKAlCJGKnTXo8MICmcydPRDJwQnvYXMVvVnKK/vQR1o0wMFEG+QL7Fun4Ve
-         My6MM4NIIlisYQGiE4bRX9Nt5J2jY+Y7CDGgwS+ep+X3qbSzC7hysXXDR/XdZpzAFzUN
-         uq5P4F85GitCRZEoWXAdDKMTLO/qGQGcj0nJ1fmC5KbMYRwiuXXYWrfapXYaQbcGrcRi
-         IVddW1DEUz11KAGyNTZD7gyMNI7JiMfXZXV7dJ/cgmEuZqEux4rJZctDzcg0ATGGrRZ7
-         xP6A1B1/GtnJ3Nd5nYx1E1k4R2ZE32NGxNzEvr4txXcMU/3gu7avT1hjHnM0EYQxP8eI
-         WfEg==
-X-Gm-Message-State: APjAAAU35qdTmwFl2ukfk9ZGyUdRdcDJl3Vn63Z77oECWtWlbZ7yGRKx
-        7ykPY4zhU4LwDhHtGP5AvhY=
-X-Google-Smtp-Source: APXvYqyJK9fmV19uGRZHGacg0FM1BcvxjzCXWx29SXt4iZXpAoKd7Vr9Cj3PUolnn7ejNlC2Mym9Kw==
-X-Received: by 2002:a5d:8a16:: with SMTP id w22mr5003254iod.254.1571410162395;
-        Fri, 18 Oct 2019 07:49:22 -0700 (PDT)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id f8sm1847163ioo.27.2019.10.18.07.49.19
+        h=x-gm-message-state:subject:from:to:cc:date:message-id:user-agent
+         :mime-version:content-transfer-encoding;
+        bh=gEBvQG945nw6PeIGCHJGYkG1Klh1FidBj3ztTvMKYBs=;
+        b=Z8d4gzBKwhUfUOKhyg3+MeW5hTtIrndPBsF+lHn3tt5VtMdHcR8g021kD3QCkEZaJV
+         zlQvAgay6Mh0JK2aTKDjQUCLJf+qpshPoFRIvO/RzEc0P4G5xUlnLxYMOzcsmFcDD/9Q
+         1k4XHBtt5M/pLN6HsxC3bHlA6EeWIcLJQjb3zxLABT9t6AvyDLMHi0eo68wZQ7ltKEye
+         wgekbFgijh9C6erc1csDaMSbHMR4T8oUWhfe9yt0w1FK98zxy+NxJaSuVJh+vCAVjcvk
+         4n8NrsToWdwKd3cPD0tm1N70/rfFPN2K/FodFKTQ1M0sIdo899qsfMAHLEvmlOjLTphr
+         Pz3g==
+X-Gm-Message-State: APjAAAW4zG6lBV//YuKhfOgkRBE17I7TK4hEfpDc1LMKpPWz/9fhLda9
+        6pOJ/s7DapL8mJzT+1qitQE=
+X-Google-Smtp-Source: APXvYqwBStv5BfhCS5uZgaXdkePDhGiYLBLRwiuOfx3ZOIcjy1Gd5x4VdKe/oNnY4ulhsQtfyj7s/w==
+X-Received: by 2002:a05:6602:2205:: with SMTP id n5mr9174331ion.258.1571410479704;
+        Fri, 18 Oct 2019 07:54:39 -0700 (PDT)
+Received: from [127.0.1.1] ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id o26sm1731264ioo.61.2019.10.18.07.54.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Oct 2019 07:49:21 -0700 (PDT)
-Date:   Fri, 18 Oct 2019 07:49:13 -0700
+        Fri, 18 Oct 2019 07:54:39 -0700 (PDT)
+Subject: [bpf-next PATCH] bpf: libbpf, support older style kprobe load
 From:   John Fastabend <john.fastabend@gmail.com>
-To:     John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <ast@fb.com>
-Cc:     John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>
-Message-ID: <5da9d0e9bca63_1a132ad0125505c044@john-XPS-13-9370.notmuch>
-In-Reply-To: <5d976c62bb52b_583b2ae668e6e5b41@john-XPS-13-9370.notmuch>
-References: <20191004030058.2248514-1-andriin@fb.com>
- <20191004030058.2248514-2-andriin@fb.com>
- <5d97519e9e7f3_4e6d2b183260e5bcbf@john-XPS-13-9370.notmuch>
- <CAEf4BzbP=k72O2UXA=Om+Gv1Laj+Ya4QaTNKy7AVkMze6GqLEw@mail.gmail.com>
- <fb67f98a-08b4-3184-22f8-7d3fb91c9515@fb.com>
- <CAEf4BzbUSQdYqce+gyjO7-VSrF45nqXuLBMU6qRd63LHD+-JLg@mail.gmail.com>
- <5d976c62bb52b_583b2ae668e6e5b41@john-XPS-13-9370.notmuch>
-Subject: Re: [PATCH bpf-next 1/2] libbpf: stop enforcing kern_version,
- populate it for users
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+To:     andriin@fb.com, ast@kernel.org, daniel@iogearbox.net
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        john.fastabend@gmail.com
+Date:   Fri, 18 Oct 2019 07:54:26 -0700
+Message-ID: <157141046629.11948.8937909716570078019.stgit@john-XPS-13-9370>
+User-Agent: StGit/0.17.1-dirty
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-John Fastabend wrote:
-> Andrii Nakryiko wrote:
-> > On Fri, Oct 4, 2019 at 7:36 AM Alexei Starovoitov <ast@fb.com> wrote:
-> > >
-> > > On 10/4/19 7:32 AM, Andrii Nakryiko wrote:
-> > > >> If we are not going to validate the section should we also skip collect'ing it?
-> > > > Well, if user supplied version, we will parse and use it to override
-> > > > out prepopulated one, so in that sense we do have validation.
-> > > >
-> > > > But I think it's fine just to drop it altogether. Will do in v3.
-> > > >
-> > >
-> > > what about older kernel that still enforce it?
-> > > May be populate it in bpf_attr while loading, but
-> > > don't check it in elf from libbpf?
-> > 
-> > That's what my change does. I pre-populate correct kernel version in
-> > bpf_object->kern_version from uname(). If ELF has "version" section,
-> > we still parse it and override bpf_object->kern_version.
-> > bpf_object->kern_version then is always specified as part of
-> > bpf_prog_load->kern_version.
-> > 
-> > So what we are discussing here is to not even look at user-provided
-> > version, but just always specify correct current kernel version. So I
-> > don't think we are going to break anything, except we might allow to
-> > pass some programs that were failing before due to unspecified or zero
-> > version.
-> > 
-> > So with that, do you think it's ok to get rid of version section altogether?
-> 
-> Should be fine on my side. Go for it.
+Following ./Documentation/trace/kprobetrace.rst add support for loading
+kprobes programs on older kernels.
 
-... Actually it turns out this broke some kernels that report via uname()
-incorrect version info. Sent a patch out to add just the bits back we need
-to get it working again.
+Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+---
+ tools/lib/bpf/libbpf.c |   81 +++++++++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 73 insertions(+), 8 deletions(-)
 
-To bad but I can't fix distributions that are deployed so...
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index fcea6988f962..12b3105d112c 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -5005,20 +5005,89 @@ static int determine_uprobe_retprobe_bit(void)
+ 	return parse_uint_from_file(file, "config:%d\n");
+ }
+ 
++static int use_kprobe_debugfs(const char *name,
++			      uint64_t offset, int pid, bool retprobe)
++{
++	const char *file = "/sys/kernel/debug/tracing/kprobe_events";
++	int fd = open(file, O_WRONLY | O_APPEND, 0);
++	char buf[PATH_MAX];
++	int err;
++
++	if (fd < 0) {
++		pr_warning("failed open kprobe_events: %s\n",
++			   strerror(errno));
++		return -errno;
++	}
++
++	snprintf(buf, sizeof(buf), "%c:kprobes/%s %s",
++		 retprobe ? 'r' : 'p', name, name);
++
++	err = write(fd, buf, strlen(buf));
++	close(fd);
++	if (err < 0)
++		return -errno;
++	return 0;
++}
++
+ static int perf_event_open_probe(bool uprobe, bool retprobe, const char *name,
+ 				 uint64_t offset, int pid)
+ {
+ 	struct perf_event_attr attr = {};
+ 	char errmsg[STRERR_BUFSIZE];
++	uint64_t config1 = 0;
+ 	int type, pfd, err;
+ 
+ 	type = uprobe ? determine_uprobe_perf_type()
+ 		      : determine_kprobe_perf_type();
+ 	if (type < 0) {
+-		pr_warning("failed to determine %s perf type: %s\n",
+-			   uprobe ? "uprobe" : "kprobe",
+-			   libbpf_strerror_r(type, errmsg, sizeof(errmsg)));
+-		return type;
++		if (uprobe) {
++			pr_warning("failed to determine uprobe perf type %s: %s\n",
++				   name,
++				   libbpf_strerror_r(type,
++						     errmsg, sizeof(errmsg)));
++		} else {
++			/* If we do not have an event_source/../kprobes then we
++			 * can try to use kprobe-base event tracing, for details
++			 * see ./Documentation/trace/kprobetrace.rst
++			 */
++			const char *file = "/sys/kernel/debug/tracing/events/kprobes/";
++			char c[PATH_MAX];
++			int fd, n;
++
++			snprintf(c, sizeof(c), "%s/%s/id", file, name);
++
++			err = use_kprobe_debugfs(name, offset, pid, retprobe);
++			if (err)
++				return err;
++
++			type = PERF_TYPE_TRACEPOINT;
++			fd = open(c, O_RDONLY, 0);
++			if (fd < 0) {
++				pr_warning("failed to open tracepoint %s: %s\n",
++					   c, strerror(errno));
++				return -errno;
++			}
++			n = read(fd, c, sizeof(c));
++			close(fd);
++			if (n < 0) {
++				pr_warning("failed to read %s: %s\n",
++					   c, strerror(errno));
++				return -errno;
++			}
++			c[n] = '\0';
++			config1 = strtol(c, NULL, 0);
++			attr.size = sizeof(attr);
++			attr.type = type;
++			attr.config = config1;
++			attr.sample_period = 1;
++			attr.wakeup_events = 1;
++		}
++	} else {
++		config1 = ptr_to_u64(name);
++		attr.size = sizeof(attr);
++		attr.type = type;
++		attr.config1 = config1; /* kprobe_func or uprobe_path */
++		attr.config2 = offset;  /* kprobe_addr or probe_offset */
+ 	}
+ 	if (retprobe) {
+ 		int bit = uprobe ? determine_uprobe_retprobe_bit()
+@@ -5033,10 +5102,6 @@ static int perf_event_open_probe(bool uprobe, bool retprobe, const char *name,
+ 		}
+ 		attr.config |= 1 << bit;
+ 	}
+-	attr.size = sizeof(attr);
+-	attr.type = type;
+-	attr.config1 = ptr_to_u64(name); /* kprobe_func or uprobe_path */
+-	attr.config2 = offset;		 /* kprobe_addr or probe_offset */
+ 
+ 	/* pid filter is meaningful only for uprobes */
+ 	pfd = syscall(__NR_perf_event_open, &attr,
+
