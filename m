@@ -2,121 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DE4E2DC7A1
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2019 16:41:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 747DBDC7B4
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2019 16:49:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2634200AbfJROlk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Oct 2019 10:41:40 -0400
-Received: from mail-il1-f193.google.com ([209.85.166.193]:37483 "EHLO
-        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2408509AbfJROlk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Oct 2019 10:41:40 -0400
-Received: by mail-il1-f193.google.com with SMTP id l12so5756240ilq.4;
-        Fri, 18 Oct 2019 07:41:39 -0700 (PDT)
+        id S2408588AbfJROtY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Oct 2019 10:49:24 -0400
+Received: from mail-io1-f67.google.com ([209.85.166.67]:43075 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728033AbfJROtY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Oct 2019 10:49:24 -0400
+Received: by mail-io1-f67.google.com with SMTP id v2so7726814iob.10;
+        Fri, 18 Oct 2019 07:49:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:from:to:cc:date:message-id:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=Aq0PTqhMU9mcsFxuwG5v4rceCh6bNboo4dvG6SU3rOA=;
-        b=vMFMMv017N/WKAIOnqLWztCQ9b8658GyqGDHCFvU6x/DxWFUb1vOweFyfeQGPD302W
-         EpQZXbWTLi3u3+DHawJf/CLZOF+NhcmnEKWdMKKxjxqxH8+X0N5YPETmo0T+CHk1nNYw
-         pPr2MRjg4g/4g0yOUi0w7NpyD7JZvITixyZPKrHQOA+0Z+sjawBEwxJNiiyTanD+M//Q
-         Az0Nz4JhXj1ddEnYKXq+aokCY28EiT/2FSXOC8/jLVmOZ42rrmCZBS+vaBzXrygXeH0C
-         W9GPPt7PLslbGScVlHtv+RHXKJ3JO00fepeU/3/qovuYtfL3yPAUFL2DtMYCv0hrYm9p
-         BefA==
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=FEppI0h+E7E6OfAxqCsyFwD0NTotM0BhHygP43OvOMU=;
+        b=MJPTk2oc9EjoTbLUqBdXU7K/C8FWsa+Re8x7rTxcLjzWwcvfXFb+kslEbnPwDp3zsv
+         LQ+aPxrTw18m/b9+tPpJ2M1CZvlVlUsGIXa5w4WscF3OghK+DPlipzJWFvGe6qUwY/Mj
+         3cCK/VLM/AEs6pvsEBelrbM/DzfK2dUyNe09DNAMnxhjP5qwWcg7JWb8FtfvLwjd3XCX
+         EzZXsWaJ5qVU/ZZmFN4M0kFMNndiAOBHJCeRZf/iBqh+8gibes6yjLfPayVlUQSh31kj
+         Rs+73dw8S1qaHgS7T3rq8qs27komUi8E1qjGJz/wG9oQGhu5lCuVhv0PEMHeoqguMffd
+         NLFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:date:message-id:user-agent
-         :mime-version:content-transfer-encoding;
-        bh=Aq0PTqhMU9mcsFxuwG5v4rceCh6bNboo4dvG6SU3rOA=;
-        b=ZE1MQ/zfxsXU3XqnWCMametb6o9hFN0E54eAt/GMHrmgGrT+wTHrrOlfuXQ6LZIeoR
-         RiODakFM1J9OCEmaS6vvxMOIV6URcRqoLFul9DeeHf+K7kpipv646kyuS04xTQMYLqrY
-         z0TQfXssRcK1VVMON7+lPFQMc2Px5rdiQko45z2XanlMVi8NW7ILk9nj5MJhTtrk6m/T
-         ErqjCbPEBPOOh5S3CyZ+fW4fozxuGVbDvYxUQ6MS676RYQdxRqVhUEkEkGsO1Hs14bru
-         YpedjOfasubxnK+ojB9OomhmRqU3+Dr7P2N8amquoKGeXU3LOaGv3xWM2u2y8ojvtqg5
-         DtUw==
-X-Gm-Message-State: APjAAAVH9Uk4yUotNd08oITPgx4h1AjCC5fTVOqxwMZmzxCVnv4DlHEr
-        mRkjsfpW96ZOcaqJHQMOD9Q=
-X-Google-Smtp-Source: APXvYqwdfVuZ+KXTrEfNaDhWqS2Bx2FRqgHn+YMHAlcU95PVqnsnFTgHcRzdUh59gdHyqcj7qqlYHQ==
-X-Received: by 2002:a92:475a:: with SMTP id u87mr10855362ila.26.1571409699079;
-        Fri, 18 Oct 2019 07:41:39 -0700 (PDT)
-Received: from [127.0.1.1] ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id b138sm338072iof.17.2019.10.18.07.41.31
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=FEppI0h+E7E6OfAxqCsyFwD0NTotM0BhHygP43OvOMU=;
+        b=pMlZyAEaKAlCJGKnTXo8MICmcydPRDJwQnvYXMVvVnKK/vQR1o0wMFEG+QL7Fun4Ve
+         My6MM4NIIlisYQGiE4bRX9Nt5J2jY+Y7CDGgwS+ep+X3qbSzC7hysXXDR/XdZpzAFzUN
+         uq5P4F85GitCRZEoWXAdDKMTLO/qGQGcj0nJ1fmC5KbMYRwiuXXYWrfapXYaQbcGrcRi
+         IVddW1DEUz11KAGyNTZD7gyMNI7JiMfXZXV7dJ/cgmEuZqEux4rJZctDzcg0ATGGrRZ7
+         xP6A1B1/GtnJ3Nd5nYx1E1k4R2ZE32NGxNzEvr4txXcMU/3gu7avT1hjHnM0EYQxP8eI
+         WfEg==
+X-Gm-Message-State: APjAAAU35qdTmwFl2ukfk9ZGyUdRdcDJl3Vn63Z77oECWtWlbZ7yGRKx
+        7ykPY4zhU4LwDhHtGP5AvhY=
+X-Google-Smtp-Source: APXvYqyJK9fmV19uGRZHGacg0FM1BcvxjzCXWx29SXt4iZXpAoKd7Vr9Cj3PUolnn7ejNlC2Mym9Kw==
+X-Received: by 2002:a5d:8a16:: with SMTP id w22mr5003254iod.254.1571410162395;
+        Fri, 18 Oct 2019 07:49:22 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id f8sm1847163ioo.27.2019.10.18.07.49.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Oct 2019 07:41:38 -0700 (PDT)
-Subject: [bpf-next PATCH] bpf: libbpf,
- add kernel version section parsing back
+        Fri, 18 Oct 2019 07:49:21 -0700 (PDT)
+Date:   Fri, 18 Oct 2019 07:49:13 -0700
 From:   John Fastabend <john.fastabend@gmail.com>
-To:     andriin@fb.com, ast@kernel.org, daniel@iogearbox.net
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        john.fastabend@gmail.com
-Date:   Fri, 18 Oct 2019 07:41:26 -0700
-Message-ID: <157140968634.9073.6407090804163937103.stgit@john-XPS-13-9370>
-User-Agent: StGit/0.17.1-dirty
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+To:     John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <ast@fb.com>
+Cc:     John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <Kernel-team@fb.com>
+Message-ID: <5da9d0e9bca63_1a132ad0125505c044@john-XPS-13-9370.notmuch>
+In-Reply-To: <5d976c62bb52b_583b2ae668e6e5b41@john-XPS-13-9370.notmuch>
+References: <20191004030058.2248514-1-andriin@fb.com>
+ <20191004030058.2248514-2-andriin@fb.com>
+ <5d97519e9e7f3_4e6d2b183260e5bcbf@john-XPS-13-9370.notmuch>
+ <CAEf4BzbP=k72O2UXA=Om+Gv1Laj+Ya4QaTNKy7AVkMze6GqLEw@mail.gmail.com>
+ <fb67f98a-08b4-3184-22f8-7d3fb91c9515@fb.com>
+ <CAEf4BzbUSQdYqce+gyjO7-VSrF45nqXuLBMU6qRd63LHD+-JLg@mail.gmail.com>
+ <5d976c62bb52b_583b2ae668e6e5b41@john-XPS-13-9370.notmuch>
+Subject: Re: [PATCH bpf-next 1/2] libbpf: stop enforcing kern_version,
+ populate it for users
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-With commit "libbpf: stop enforcing kern_version,..." we removed the
-kernel version section parsing in favor of querying for the kernel
-using uname() and populating the version using the result of the
-query. After this any version sections were simply ignored.
+John Fastabend wrote:
+> Andrii Nakryiko wrote:
+> > On Fri, Oct 4, 2019 at 7:36 AM Alexei Starovoitov <ast@fb.com> wrote:
+> > >
+> > > On 10/4/19 7:32 AM, Andrii Nakryiko wrote:
+> > > >> If we are not going to validate the section should we also skip collect'ing it?
+> > > > Well, if user supplied version, we will parse and use it to override
+> > > > out prepopulated one, so in that sense we do have validation.
+> > > >
+> > > > But I think it's fine just to drop it altogether. Will do in v3.
+> > > >
+> > >
+> > > what about older kernel that still enforce it?
+> > > May be populate it in bpf_attr while loading, but
+> > > don't check it in elf from libbpf?
+> > 
+> > That's what my change does. I pre-populate correct kernel version in
+> > bpf_object->kern_version from uname(). If ELF has "version" section,
+> > we still parse it and override bpf_object->kern_version.
+> > bpf_object->kern_version then is always specified as part of
+> > bpf_prog_load->kern_version.
+> > 
+> > So what we are discussing here is to not even look at user-provided
+> > version, but just always specify correct current kernel version. So I
+> > don't think we are going to break anything, except we might allow to
+> > pass some programs that were failing before due to unspecified or zero
+> > version.
+> > 
+> > So with that, do you think it's ok to get rid of version section altogether?
+> 
+> Should be fine on my side. Go for it.
 
-Unfortunately, the world of kernels is not so friendly. I've found some
-customized kernels where uname() does not match the in kernel version.
-To fix this so programs can load in this environment this patch adds
-back parsing the section and if it exists uses the user specified
-kernel version to override the uname() result. However, keep most the
-kernel uname() discovery bits so users are not required to insert the
-version except in these odd cases.
+... Actually it turns out this broke some kernels that report via uname()
+incorrect version info. Sent a patch out to add just the bits back we need
+to get it working again.
 
-Fixes: 5e61f27070292 ("libbpf: stop enforcing kern_version, populate it for users")
-Signed-off-by: John Fastabend <john.fastabend@gmail.com>
----
- tools/lib/bpf/libbpf.c |   21 ++++++++++++++++++++-
- 1 file changed, 20 insertions(+), 1 deletion(-)
-
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index fcea6988f962..675383131179 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -656,6 +656,21 @@ bpf_object__init_license(struct bpf_object *obj, void *data, size_t size)
- 	return 0;
- }
- 
-+static int
-+bpf_object__init_kversion(struct bpf_object *obj, void *data, size_t size)
-+{
-+	__u32 kver;
-+
-+	if (size != sizeof(kver)) {
-+		pr_warning("invalid kver section in %s\n", obj->path);
-+		return -LIBBPF_ERRNO__FORMAT;
-+	}
-+	memcpy(&kver, data, sizeof(kver));
-+	obj->kern_version = kver;
-+	pr_debug("kernel version of %s is %x\n", obj->path, obj->kern_version);
-+	return 0;
-+}
-+
- static int compare_bpf_map(const void *_a, const void *_b)
- {
- 	const struct bpf_map *a = _a;
-@@ -1573,7 +1588,11 @@ static int bpf_object__elf_collect(struct bpf_object *obj, int flags)
- 			if (err)
- 				return err;
- 		} else if (strcmp(name, "version") == 0) {
--			/* skip, we don't need it anymore */
-+			err = bpf_object__init_kversion(obj,
-+							data->d_buf,
-+							data->d_size);
-+			if (err)
-+				return err;
- 		} else if (strcmp(name, "maps") == 0) {
- 			obj->efile.maps_shndx = idx;
- 		} else if (strcmp(name, MAPS_ELF_SEC) == 0) {
-
+To bad but I can't fix distributions that are deployed so...
