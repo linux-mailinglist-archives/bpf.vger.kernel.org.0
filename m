@@ -2,110 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AD72ADC2CA
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2019 12:31:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20439DC2D3
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2019 12:34:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405433AbfJRKbT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Oct 2019 06:31:19 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:54804 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729479AbfJRKbT (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 18 Oct 2019 06:31:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1571394678;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RyWTDv2opN/j8TOXO1IF6a5hFBLZbgfuyG4kY3TepQo=;
-        b=KNr4EO3/6+aWS/j7O5CQFhkgrbcXVHFHRy0acycNo/PQ983mT++T/V7CrTP8ZyA0qVwfXi
-        S+s0GHS9kdFv9ZSZhN+1rOIQF/URhWJxk7C91NgibYFUATJ5LusNsZyqsypYcnDHMdwB6c
-        pm+H5pisRvUD+Yqepp3HSnLLN1jxDRQ=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-54-A9DUVRL6PEKUsJ7lN0oJ_Q-1; Fri, 18 Oct 2019 06:31:15 -0400
-Received: by mail-lf1-f70.google.com with SMTP id d11so1191778lfj.3
-        for <bpf@vger.kernel.org>; Fri, 18 Oct 2019 03:31:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=RyWTDv2opN/j8TOXO1IF6a5hFBLZbgfuyG4kY3TepQo=;
-        b=pQV34esigfIWjHLJakypvDcFmBXEYfwkW0en+gU/WTQh42UnU4hTEpXq4gmX/C6eUX
-         mCUwIjPncXA/wSQJgTSZhSc9nFdGQ89Ef5tiYh36+5yUkXIrzoNocUGIbeJtNtk6pCOD
-         QOQKl+2cr7dBvRT8a8qMAJitGeWpVWZKrniD8qy8WPSkFDfWIzr8kJClDmvUuE+w87pM
-         hJqxXxwR5PADrenjTRu+C9FKBpiyGGc9icF8ueSX8eQ1kYQNXoZzm2YA8yMmt6XYormQ
-         MEtkW+iRYizdtE2JCSQ4cAEtoASd9EMd5d0tbVdDKiqDQjAJ7/M7+KpmHh6ZEspLLP1E
-         +zWw==
-X-Gm-Message-State: APjAAAWZvWwPanEGdkhCdWJsiG35o0tSxlvqykoYtmfC1bwMxAVM84KQ
-        bZmBvxGRvwsrjfqiyw/PlOj+dRFAEC9hPblZKXrezOzWN3AqEAbaio4aT8fhCVrOFnO4YjJjhqo
-        9XQq0DOh46VrR
-X-Received: by 2002:a19:f018:: with SMTP id p24mr5669103lfc.51.1571394674220;
-        Fri, 18 Oct 2019 03:31:14 -0700 (PDT)
-X-Google-Smtp-Source: APXvYqwXJquEiTp7cR5TCatXHt0waFvN649XaDhE7Bk4m1v1YrayJKyZgT850zi36wQxiZQsy+Xk6w==
-X-Received: by 2002:a19:f018:: with SMTP id p24mr5669091lfc.51.1571394674045;
-        Fri, 18 Oct 2019 03:31:14 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a00:7660:6da:443::2])
-        by smtp.gmail.com with ESMTPSA id q124sm2584065ljb.28.2019.10.18.03.31.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Oct 2019 03:31:13 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 78D721804C9; Fri, 18 Oct 2019 12:31:12 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Subject: Re: [PATCH bpf] xdp: Handle device unregister for devmap_hash map type
-In-Reply-To: <CAEf4BzbshfC2VXXbnWnjCA=Mcz8OSO=ACNSRNrNr2mHOm9uCmw@mail.gmail.com>
-References: <20191016132802.2760149-1-toke@redhat.com> <CAEf4BzbshfC2VXXbnWnjCA=Mcz8OSO=ACNSRNrNr2mHOm9uCmw@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 18 Oct 2019 12:31:11 +0200
-Message-ID: <87mudye45s.fsf@toke.dk>
+        id S2408227AbfJRKeH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Oct 2019 06:34:07 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:52858 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2408220AbfJRKeH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Oct 2019 06:34:07 -0400
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 1A91B18C4276;
+        Fri, 18 Oct 2019 10:34:07 +0000 (UTC)
+Received: from krava.brq.redhat.com (unknown [10.43.17.61])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4C935600C1;
+        Fri, 18 Oct 2019 10:34:05 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>
+Subject: [PATCH] bpftool: Try to read btf as raw data if elf read fails
+Date:   Fri, 18 Oct 2019 12:34:04 +0200
+Message-Id: <20191018103404.12999-1-jolsa@kernel.org>
 MIME-Version: 1.0
-X-MC-Unique: A9DUVRL6PEKUsJ7lN0oJ_Q-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.6.2 (mx1.redhat.com [10.5.110.62]); Fri, 18 Oct 2019 10:34:07 +0000 (UTC)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+The bpftool interface stays the same, but now it's possible
+to run it over BTF raw data, like:
 
-> On Wed, Oct 16, 2019 at 9:07 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
-dhat.com> wrote:
->>
->> It seems I forgot to add handling of devmap_hash type maps to the device
->> unregister hook for devmaps. This omission causes devices to not be
->> properly released, which causes hangs.
->>
->> Fix this by adding the missing handler.
->>
->> Fixes: 6f9d451ab1a3 ("xdp: Add devmap_hash map type for looking up devic=
-es by hashed index")
->> Reported-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
->> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->> ---
->>  kernel/bpf/devmap.c | 34 ++++++++++++++++++++++++++++++++++
->>  1 file changed, 34 insertions(+)
->>
->
-> [...]
->
->> +
->> +               while (dev) {
->> +                       odev =3D (netdev =3D=3D dev->dev) ? dev : NULL;
->> +                       dev =3D hlist_entry_safe(rcu_dereference_raw(hli=
-st_next_rcu(&dev->index_hlist)),
->
-> Please run scripts/checkpatch.pl, this looks like a rather long line.
+  $ bpftool btf dump file /sys/kernel/btf/vmlinux
+  libbpf: failed to get EHDR from /sys/kernel/btf/vmlinux
+  [1] INT '(anon)' size=4 bits_offset=0 nr_bits=32 encoding=(none)
+  [2] INT 'long unsigned int' size=8 bits_offset=0 nr_bits=64 encoding=(none)
+  [3] CONST '(anon)' type_id=2
 
-That was a deliberate departure from the usual line length, actually. I
-don't think it helps readability to split that into three lines just to
-adhere to a strict line length requirement...
+I'm also adding err init to 0 because I was getting uninitialized
+warnings from gcc.
 
--Toke
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+---
+ tools/bpf/bpftool/btf.c | 47 ++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 42 insertions(+), 5 deletions(-)
+
+diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
+index 9a9376d1d3df..100fb7e02329 100644
+--- a/tools/bpf/bpftool/btf.c
++++ b/tools/bpf/bpftool/btf.c
+@@ -12,6 +12,9 @@
+ #include <libbpf.h>
+ #include <linux/btf.h>
+ #include <linux/hashtable.h>
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <unistd.h>
+ 
+ #include "btf.h"
+ #include "json_writer.h"
+@@ -388,6 +391,35 @@ static int dump_btf_c(const struct btf *btf,
+ 	return err;
+ }
+ 
++static struct btf *btf__parse_raw(const char *file)
++{
++	struct btf *btf = ERR_PTR(-EINVAL);
++	__u8 *buf = NULL;
++	struct stat st;
++	FILE *f;
++
++	if (stat(file, &st))
++		return btf;
++
++	f = fopen(file, "rb");
++	if (!f)
++		return btf;
++
++	buf = malloc(st.st_size);
++	if (!buf)
++		goto err;
++
++	if ((size_t) st.st_size != fread(buf, 1, st.st_size, f))
++		goto err;
++
++	btf = btf__new(buf, st.st_size);
++
++err:
++	free(buf);
++	fclose(f);
++	return btf;
++}
++
+ static int do_dump(int argc, char **argv)
+ {
+ 	struct btf *btf = NULL;
+@@ -397,7 +429,7 @@ static int do_dump(int argc, char **argv)
+ 	__u32 btf_id = -1;
+ 	const char *src;
+ 	int fd = -1;
+-	int err;
++	int err = 0;
+ 
+ 	if (!REQ_ARGS(2)) {
+ 		usage();
+@@ -468,10 +500,15 @@ static int do_dump(int argc, char **argv)
+ 		btf = btf__parse_elf(*argv, NULL);
+ 		if (IS_ERR(btf)) {
+ 			err = PTR_ERR(btf);
+-			btf = NULL;
+-			p_err("failed to load BTF from %s: %s", 
+-			      *argv, strerror(err));
+-			goto done;
++			if (err == -LIBBPF_ERRNO__FORMAT)
++				btf = btf__parse_raw(*argv);
++			if (IS_ERR(btf)) {
++				btf = NULL;
++				/* Display the original error value. */
++				p_err("failed to load BTF from %s: %s",
++				      *argv, strerror(err));
++				goto done;
++			}
+ 		}
+ 		NEXT_ARG();
+ 	} else {
+-- 
+2.21.0
 
