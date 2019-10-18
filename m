@@ -2,32 +2,36 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CBCE0DBA4E
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2019 01:50:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6235FDBAC5
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2019 02:22:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441779AbfJQXuV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Oct 2019 19:50:21 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:54679 "EHLO
+        id S1728605AbfJRAW5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Oct 2019 20:22:57 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:54930 "EHLO
         Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2438680AbfJQXuU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Oct 2019 19:50:20 -0400
+        with ESMTP id S1728495AbfJRAW5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Oct 2019 20:22:57 -0400
 Received: from p5b06da22.dip0.t-ipconnect.de ([91.6.218.34] helo=nanos)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1iLFWz-0000L5-OD; Fri, 18 Oct 2019 01:50:09 +0200
-Date:   Fri, 18 Oct 2019 01:50:08 +0200 (CEST)
+        id 1iLG2T-0000ki-Ui; Fri, 18 Oct 2019 02:22:42 +0200
+Date:   Fri, 18 Oct 2019 02:22:40 +0200 (CEST)
 From:   Thomas Gleixner <tglx@linutronix.de>
-To:     David Miller <davem@davemloft.net>
-cc:     Sebastian Sewior <bigeasy@linutronix.de>, daniel@iogearbox.net,
-        bpf@vger.kernel.org, ast@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com,
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+cc:     David Miller <davem@davemloft.net>,
+        Sebastian Sewior <bigeasy@linutronix.de>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Clark Williams <williams@redhat.com>
 Subject: Re: [PATCH] BPF: Disable on PREEMPT_RT
-In-Reply-To: <20191017.151335.597242104804050107.davem@davemloft.net>
-Message-ID: <alpine.DEB.2.21.1910180041430.1869@nanos.tec.linutronix.de>
-References: <20191017154021.ndza4la3hntk4d4o@linutronix.de> <20191017.132548.2120028117307856274.davem@davemloft.net> <alpine.DEB.2.21.1910172342090.1869@nanos.tec.linutronix.de> <20191017.151335.597242104804050107.davem@davemloft.net>
+In-Reply-To: <CAADnVQJPJubTx0TxcXnbCfavcQDZeu8VTnYYpa8JYpWw9Ze4qg@mail.gmail.com>
+Message-ID: <alpine.DEB.2.21.1910180152110.1869@nanos.tec.linutronix.de>
+References: <20191017090500.ienqyium2phkxpdo@linutronix.de> <20191017145358.GA26267@pc-63.home> <20191017154021.ndza4la3hntk4d4o@linutronix.de> <20191017.132548.2120028117307856274.davem@davemloft.net> <alpine.DEB.2.21.1910172342090.1869@nanos.tec.linutronix.de>
+ <CAADnVQJPJubTx0TxcXnbCfavcQDZeu8VTnYYpa8JYpWw9Ze4qg@mail.gmail.com>
 User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -39,77 +43,76 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-David,
-
-On Thu, 17 Oct 2019, David Miller wrote:
-> From: Thomas Gleixner <tglx@linutronix.de>
-> Date: Thu, 17 Oct 2019 23:54:07 +0200 (CEST)
+On Thu, 17 Oct 2019, Alexei Starovoitov wrote:
+> On Thu, Oct 17, 2019 at 2:54 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+> >
+> > I'm all ears for an alternative solution. Here are the pain points:
 > 
-> > Clark might have some insight from the product side for you how much that
-> > impacts usability.
+> Let's talk about them one by one.
 > 
-> You won't even be able to load systemd, it uses bpf.
-
-As I said before: At some point in the future from now.
-
-Right now I'm writing this mail from a Debian testing system which runs a
-kernel with Sebastians patch applied. That means a halfways recent systemd
-started just fine and everything works.
-
-You surely made your point.
- 
-> We're moving to the point where even LSM modules will be implemented in bpf.
-
-Emphasis on 'We're moving'. Which means this is in progress and not after
-the fact. 
-
-> IR drivers require bpf:
+> >   #1) BPF disables preemption unconditionally with no way to do a proper RT
+> >       substitution like most other infrastructure in the kernel provides
+> >       via spinlocks or other locking primitives.
 > 
-> 	https://lwn.net/Articles/759188/
+> Kernel has a ton of code that disables preemption.
+> Why BPF is somehow special?
+> Are you saying RT kernel doesn't disable preemption at all?
+> I'm complete noob in RT.
 
-The fact that IR drivers require BPF is not a real convincing argument
-either.
+The basic principle of RT is to break up the arbitrary long
+preemption/interrupt disabled sections of the mainline kernel.
 
-  Guess how many RT systems depend on functional IR drivers?
+Most preempt/interrupt disabled sections are implicit by taking locks
+(spinlock, rwlock). Just a few are explicit by issuing
+preempt/local_irq_disable()
 
-  Guess how many other subsystems are not RT safe and disabled on RT and
-  still RT is successfully deployed in production?
+RT substitutes spinlock/rwlock with RT aware counterparts which
 
-Quoting from the other end of that thread just to avoid fragmentation:
+ - Do not disable preemption/interrupts
 
-> > tcpdump and wireshark work perfectly fine on a BPF disabled kernel at least
-> > in the limited way I am using them.
->
-> Yes it works, but with every packet flowing through the system getting
-> copied into userspace.  This takes us back to 1992 :-)
+ - Prevent migration to keep the implicit migrate disable semantics
+   of preempt disable
 
-Guess what? RT real world deployments survived for the past 15 years on the
-packet sniffing state of 1992. There is a world outside of networking...
+ - Convert the underlying lock primitive to a priority inheritance aware
+   mechanism, aka. rtmutex.
 
-> I understand the problems, and realize they are non-trivial, but this hammer
-> is really destructive on a fundamental level.
+In order to make the above work, RT forces interrupt and soft interrupt
+processing into thread context except for interrupts which are explicitely
+marked as interrupt safe (IRQF_NOTHREAD).
 
-The fundamentally desctructive component is that this whole thread does not
-provide any form of constructive feedback.
+As a consequence most of the kernel code becomes fully preemptible. Of
+course there are still code parts which require that preemption/interrupts
+are hard disabled. That's pretty much initial low level entry code, hard
+interrupt handling code (which just wakes up the threads), context switch
+code and some other rather low level functions (vmenter/exit ....).
 
- - Sebastians changelog has a list of the issues
- - I expanded on those
+That also requires that we have still locks which disable
+preemption/interrupts. That's why we have raw_spinlock and
+spinlock. spinlock is substituted with a RT primitive while raw_spinlock
+behaves like the traditional spinlock on a non RT kernel (disables
+preemption/interrupts).
 
-All we got as a reply is a destructive NO along with a long list of half
-baken arguments why temporary disabling of this functionality solely for RT
-is unacceptable.
+But that also means any code which explcitely disables preemption or
+interrupts without taking a spin/rw lock can trigger the following issues:
 
-It's probably also solely my (our / RT folks) problem that BPF made design
-decisions which are focussed on (network) performance without considering
-any other already existing constraints.
+  - Calling into code which requires to be preemtible/sleepable on RT
+    results in a might sleep splat.
 
-Sure we have the usual policy that we don't care about out of tree stuff
-and it's the problem of the out of tree folks to deal with that, but I
-politely ask you to think hard about this in the context of RT.
+  - Has in RT terms potentially unbound or undesired runtime length without
+    any chance for the scheduler to control it.
 
-I'm going to shut up for now and wait for constructive and reasonable
-feedback how to tackle these issues on a technical level.
+Aside of that RT has a more strict view vs. lock ownership because almost
+all lock primitives except real counting semaphores are substituted by
+priority inheritance aware counterparts. PI aware locks have not only the
+requirement that they can only be taken in preemptible context (see above),
+they also have a strict locker == unlocker requirement for obvious reasons.
+up_read_non_owner() can't obviously fulfil that requirement.
 
-Thanks,
+I surely answered more than your initial question and probably not enough,
+so feel free to ask for clarification.
 
-	Thomas
+Thanks for caring!
+
+       Thomas
+
+
