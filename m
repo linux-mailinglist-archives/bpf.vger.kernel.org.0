@@ -2,85 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CB59DBDFE
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2019 09:05:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8024DC017
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2019 10:38:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727315AbfJRHFB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Oct 2019 03:05:01 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38934 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727011AbfJRHFB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Oct 2019 03:05:01 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 51E31AC18;
-        Fri, 18 Oct 2019 07:04:59 +0000 (UTC)
-Date:   Fri, 18 Oct 2019 09:04:57 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Kefeng Wang <wangkefeng.wang@huawei.com>,
-        linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        bpf@vger.kernel.org, Andrii Nakryiko <andriin@fb.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Subject: Re: [PATCH v2 31/33] tools lib bpf: Renaming pr_warning to pr_warn
-Message-ID: <20191018070457.ge3wcpdle6pwtsxd@pathway.suse.cz>
-References: <20191018031710.41052-1-wangkefeng.wang@huawei.com>
- <20191018031850.48498-1-wangkefeng.wang@huawei.com>
- <20191018031850.48498-31-wangkefeng.wang@huawei.com>
- <20191018042416.r4fffxzbxb3u4csg@ast-mbp>
+        id S2404406AbfJRIiN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Oct 2019 04:38:13 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:56015 "EHLO
+        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727903AbfJRIiN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Oct 2019 04:38:13 -0400
+Received: from p5b06da22.dip0.t-ipconnect.de ([91.6.218.34] helo=nanos)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1iLNlv-0001vH-EG; Fri, 18 Oct 2019 10:38:07 +0200
+Date:   Fri, 18 Oct 2019 10:38:06 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     David Miller <davem@davemloft.net>
+cc:     Clark Williams <williams@redhat.com>,
+        Sebastian Sewior <bigeasy@linutronix.de>, daniel@iogearbox.net,
+        bpf@vger.kernel.org, ast@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: Re: [PATCH] BPF: Disable on PREEMPT_RT
+In-Reply-To: <20191017.215739.1133924746697268824.davem@davemloft.net>
+Message-ID: <alpine.DEB.2.21.1910181031040.1869@nanos.tec.linutronix.de>
+References: <20191017.132548.2120028117307856274.davem@davemloft.net> <alpine.DEB.2.21.1910172342090.1869@nanos.tec.linutronix.de> <20191017214917.18911f58@tagon> <20191017.215739.1133924746697268824.davem@davemloft.net>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191018042416.r4fffxzbxb3u4csg@ast-mbp>
-User-Agent: NeoMutt/20170912 (1.9.0)
+Content-Type: text/plain; charset=US-ASCII
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu 2019-10-17 21:24:19, Alexei Starovoitov wrote:
-> On Fri, Oct 18, 2019 at 11:18:48AM +0800, Kefeng Wang wrote:
-> > For kernel logging macro, pr_warning is completely removed and
-> > replaced by pr_warn, using pr_warn in tools lib bpf for symmetry
-> > to kernel logging macro, then we could drop pr_warning in the
-> > whole linux code.
-> > 
-> > Cc: Alexei Starovoitov <ast@kernel.org>
-> > Cc: Daniel Borkmann <daniel@iogearbox.net>
-> > Cc: Martin KaFai Lau <kafai@fb.com>
-> > Cc: Song Liu <songliubraving@fb.com>
-> > Cc: Yonghong Song <yhs@fb.com>
-> > Cc: bpf@vger.kernel.org
-> > Acked-by: Andrii Nakryiko <andriin@fb.com>
-> > Reviewed-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-> > Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-> > ---
-> >  tools/lib/bpf/btf.c             |  56 +--
-> >  tools/lib/bpf/btf_dump.c        |  18 +-
-> >  tools/lib/bpf/libbpf.c          | 679 ++++++++++++++++----------------
-> >  tools/lib/bpf/libbpf_internal.h |   8 +-
-> >  tools/lib/bpf/xsk.c             |   4 +-
-> >  5 files changed, 379 insertions(+), 386 deletions(-)
+On Thu, 17 Oct 2019, David Miller wrote:
+
+> From: Clark Williams <williams@redhat.com>
+> Date: Thu, 17 Oct 2019 21:49:17 -0500
 > 
-> Nack.
-> I prefer this type of renaming to go via bpf tree.
-> It's not a kernel patch. It's touching user space library
-> which is under heavy development.
-> Doing any other way will cause a ton of conflicts.
+> > BPF programs cannot loop and are limited to 4096 instructions.
+> 
+> The limit was increased to 1 million not too long ago.
 
-Fair enough. I'll ignore this patch. Could I assume that it will
-be taken via bpf tree, please?
+Assuming a instruction/cycle ratio of 1.0 and a CPU frequency of 2GHz,
+that's 500us of preempt disabled time. Out of bounds by at least one order
+of magntiude for a lot of RT scenarios.
 
-I'll also postpone the patch that removes pr_warning() to avoid
-synchronization problems. I'll push it later when changes in
-bpf[*] subsystem are merged.
+Thanks,
 
-[*] I am going to check conflicts against 5.4-rc1. I'll probably
-ask more subsystems to take their changes to avoid conflicts
-and make it smooth.
+	tglx
 
-Best Regards,
-Petr
+
