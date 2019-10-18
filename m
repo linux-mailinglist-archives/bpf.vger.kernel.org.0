@@ -2,80 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8874FDBD46
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2019 07:54:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00747DBD84
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2019 08:09:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391955AbfJRFyu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Oct 2019 01:54:50 -0400
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:37763 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727328AbfJRFyu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Oct 2019 01:54:50 -0400
-Received: by mail-pg1-f195.google.com with SMTP id p1so2735088pgi.4
-        for <bpf@vger.kernel.org>; Thu, 17 Oct 2019 22:54:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=O64k64LFwOm51ZSh8xkoD1TCVFNCTSCla81D5pSJ7kw=;
-        b=XZ3mjYmCEMuMa2vmopUKHKPKXqQcrSlMRexjLnfWoaWYV7KsE0DHJ3TZyovBqopaxN
-         dyvF/McWfSNbORm39kBOBJB6o0sPlatc9XXFCIPRgcpqFHeiQu9DC4ypYTyjz7DP6Zl4
-         27X6AmzkQXCVy4Og4vZXta8Kr+9nRemz9g0kmmot5DLJsIf5N2Gmq7RHK0qVTpx7VHco
-         DTdlyaKGu50zpJ0S2hlcg0wRFQSJmHrfVwqCvOES5pHi+GN7NdMKh/xWj+/djnYLvj+C
-         qpqdK+UKUNWYLR7Yvfw/3AZt88NyA3fYVYDnQLe4ApjZymp/uhvmR3iNaozjxJ0eWaHx
-         Tv7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=O64k64LFwOm51ZSh8xkoD1TCVFNCTSCla81D5pSJ7kw=;
-        b=UICfmTKPNbyoPfj5zOCZnIl0mCdFDCeZb94RC9TDeeincfaF9DKkRDKFNDfeMtZe83
-         AND0pIakgW5PyRygFfsF7/18ZzpKdo8TW76sO5d4YfDV1SAiLrjI/U4DUBz1ppoQmHez
-         vQ4gSkDLI78q7oUovp7g8yzMYXi+9uULOKjt0J5lUgDF4G84n3uz9Zjdu6An4iOtO7+1
-         2QJR4p96dvymB1g/VF/ftgaJunirPI0K/EDyeV8uUOTebyr1iy/Qi2LxD+QqeYVatsyz
-         eBmgzKccuoL01NEBA1SiQgwGYt8qAiKNOu+U8jpBBlf39PgQGscNudWoNr5uw8RnZ0fZ
-         54XA==
-X-Gm-Message-State: APjAAAUtwlR23KdTnF220TblZeJn1iknyw8WqD2Rt7rTyI6Z4/M54Ikz
-        vjpIO8iheI2ZIERi1RpY5AM=
-X-Google-Smtp-Source: APXvYqwGoOzI2HEUfmjzn/oM+s/j3UivCjqY4aPk+FPhrvreB9pgZclNsdKlVhOPDAER3GN4fx1vSQ==
-X-Received: by 2002:a63:6782:: with SMTP id b124mr8649462pgc.220.1571378089797;
-        Thu, 17 Oct 2019 22:54:49 -0700 (PDT)
-Received: from ast-mbp ([2620:10d:c090:180::cfd0])
-        by smtp.gmail.com with ESMTPSA id s14sm4242415pfe.52.2019.10.17.22.54.47
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 17 Oct 2019 22:54:48 -0700 (PDT)
-Date:   Thu, 17 Oct 2019 22:54:47 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     David Miller <davem@davemloft.net>
-Cc:     williams@redhat.com, tglx@linutronix.de, bigeasy@linutronix.de,
-        daniel@iogearbox.net, bpf@vger.kernel.org, ast@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        peterz@infradead.org, acme@redhat.com
-Subject: Re: [PATCH] BPF: Disable on PREEMPT_RT
-Message-ID: <20191018055445.wpesq2xmeu7v6ysg@ast-mbp>
-References: <20191017.132548.2120028117307856274.davem@davemloft.net>
- <alpine.DEB.2.21.1910172342090.1869@nanos.tec.linutronix.de>
- <20191017214917.18911f58@tagon>
- <20191017.215739.1133924746697268824.davem@davemloft.net>
+        id S2392117AbfJRGJg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Oct 2019 02:09:36 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:29128 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2392128AbfJRGJg (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 18 Oct 2019 02:09:36 -0400
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x9I69VCq008146
+        for <bpf@vger.kernel.org>; Thu, 17 Oct 2019 23:09:35 -0700
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2vq2nkryr8-8
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 17 Oct 2019 23:09:35 -0700
+Received: from 2401:db00:2050:5076:face:0:1f:0 (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 17 Oct 2019 23:09:34 -0700
+Received: by devbig007.ftw2.facebook.com (Postfix, from userid 572438)
+        id 7A84D760F52; Thu, 17 Oct 2019 23:09:33 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Alexei Starovoitov <ast@kernel.org>
+Smtp-Origin-Hostname: devbig007.ftw2.facebook.com
+To:     <davem@davemloft.net>
+CC:     <daniel@iogearbox.net>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <kernel-team@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next] bpf: fix bpf_attr.attach_btf_id check
+Date:   Thu, 17 Oct 2019 23:09:33 -0700
+Message-ID: <20191018060933.2950231-1-ast@kernel.org>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191017.215739.1133924746697268824.davem@davemloft.net>
-User-Agent: NeoMutt/20180223
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
+ definitions=2019-10-18_01:2019-10-17,2019-10-18 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=660
+ spamscore=0 clxscore=1015 suspectscore=1 bulkscore=0 impostorscore=0
+ mlxscore=0 malwarescore=0 lowpriorityscore=0 adultscore=0 phishscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1908290000 definitions=main-1910180059
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 17, 2019 at 09:57:39PM -0700, David Miller wrote:
-> From: Clark Williams <williams@redhat.com>
-> Date: Thu, 17 Oct 2019 21:49:17 -0500
-> 
-> > BPF programs cannot loop and are limited to 4096 instructions.
-> 
-> The limit was increased to 1 million not too long ago.
+Only raw_tracepoint program type can have bpf_attr.attach_btf_id >= 0.
+Make sure to reject other program types that accidentally set it to non-zero.
 
-Right.
-And it's easy to limit to 100 instructions per program for PREEMPT_RT.
-I doubt it's necessary.
+Fixes: ccfe29eb29c2 ("bpf: Add attach_btf_id attribute to program load")
+Reported-by: Andrii Nakryiko <andriin@fb.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+---
+ kernel/bpf/syscall.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
+
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 523e3ac15a08..16ea3c0db4f6 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -1570,6 +1570,17 @@ bpf_prog_load_check_attach(enum bpf_prog_type prog_type,
+ 			   enum bpf_attach_type expected_attach_type,
+ 			   u32 btf_id)
+ {
++	switch (prog_type) {
++	case BPF_PROG_TYPE_RAW_TRACEPOINT:
++		if (btf_id > BTF_MAX_TYPE)
++			return -EINVAL;
++		break;
++	default:
++		if (btf_id)
++			return -EINVAL;
++		break;
++	}
++
+ 	switch (prog_type) {
+ 	case BPF_PROG_TYPE_CGROUP_SOCK:
+ 		switch (expected_attach_type) {
+@@ -1610,13 +1621,7 @@ bpf_prog_load_check_attach(enum bpf_prog_type prog_type,
+ 		default:
+ 			return -EINVAL;
+ 		}
+-	case BPF_PROG_TYPE_RAW_TRACEPOINT:
+-		if (btf_id > BTF_MAX_TYPE)
+-			return -EINVAL;
+-		return 0;
+ 	default:
+-		if (btf_id)
+-			return -EINVAL;
+ 		return 0;
+ 	}
+ }
+-- 
+2.17.1
 
