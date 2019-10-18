@@ -2,99 +2,159 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F1261DBCC2
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2019 07:15:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAD60DBD2F
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2019 07:45:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388594AbfJRFPR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Oct 2019 01:15:17 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:33026 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727606AbfJRFPR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Oct 2019 01:15:17 -0400
-Received: by mail-pl1-f194.google.com with SMTP id d22so2281934pls.0;
-        Thu, 17 Oct 2019 22:15:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=eKCQEHJp+Bmk1+KxL2VW8ZVDs0l76/RRTSEB8GtoKzU=;
-        b=VNYmFpR+1svH3RklJ/ni4HOgMNYHl7MHEGV9c2RKjwcUsmhFCVwHCd8Lx6MtsoWVte
-         Git34f+i7ciXxxGu+izTqbWE5AxM6LMpwlAhUfDPh5Ki/fqj5/ZAurq5nX/8wqfZhuFx
-         GBzv2FpY+5gkaZoq5UJ8rNnF0b/TofDQ5Xp+lVHw+QBbI4lHwpdkGPzJRzkYMlkplsMf
-         Y5avb3hUqFh/XcCy5y/7Od4OeVLbiQf0WVuUB99THxpC4P/ofAiEkA2ITlSHT/5P5m5f
-         PI3HN+DbW9qrtCpPtPv5uvbqXLG3l3RaWsKUTdL6qDdCg2lddyuwlw/FuZ7C1SP5rVLF
-         TcLQ==
+        id S2442044AbfJRFpK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Oct 2019 01:45:10 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:47166 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2442040AbfJRFpK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Oct 2019 01:45:10 -0400
+Received: by mail-io1-f70.google.com with SMTP id k14so7143976iot.14
+        for <bpf@vger.kernel.org>; Thu, 17 Oct 2019 22:45:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=eKCQEHJp+Bmk1+KxL2VW8ZVDs0l76/RRTSEB8GtoKzU=;
-        b=EensbI4iBJApQ4yw/zv+51REzkZBDCIJK58ob+gndfNt9nNldO/g2RI45wefzbksa7
-         cAHdMxA/egvYhxe9knHfZOj3rPUdAvzv398GIk2jbS6vxILtGWBQPGNtirmXqq9IHdtk
-         aZnvA0I2C/8duBwXWtBd32GBOWKwzn8AaPCoIyrwCSn9evWsdFiiiyEMTe2LyOXz/kAE
-         w1ZZpDrfrFoCHMzW0F7P64KqqQ4KgIbDkJHiqyBBZSoWY0q50q6sRhRklLKmW2LfMV+1
-         r738Lgcf3sG8ADgJKWluBIbz1o5+8QGRXF+k13xAH67jy5oWgMgwPObQvapS1SF7FlMb
-         ZnVA==
-X-Gm-Message-State: APjAAAVJSQtleqkG2TqaZNQXvJW6xhIXh6KytDa6DUmjtD3CVs1aENNt
-        uEqL2Df2qsKcx0HG0W/wraMuKN9w
-X-Google-Smtp-Source: APXvYqzBaCznyjQSXNVi7TS0i1yrqWYhhCfDRmQilWmU7AcgFxRttRhzngCZrFJD7BNJlUiiRY2BpA==
-X-Received: by 2002:a17:902:a50a:: with SMTP id s10mr2720061plq.59.1571372661919;
-        Thu, 17 Oct 2019 21:24:21 -0700 (PDT)
-Received: from ast-mbp ([2620:10d:c090:180::cfd0])
-        by smtp.gmail.com with ESMTPSA id v35sm4253093pgn.89.2019.10.17.21.24.20
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 17 Oct 2019 21:24:21 -0700 (PDT)
-Date:   Thu, 17 Oct 2019 21:24:19 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Petr Mladek <pmladek@suse.com>, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        bpf@vger.kernel.org, Andrii Nakryiko <andriin@fb.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Subject: Re: [PATCH v2 31/33] tools lib bpf: Renaming pr_warning to pr_warn
-Message-ID: <20191018042416.r4fffxzbxb3u4csg@ast-mbp>
-References: <20191018031710.41052-1-wangkefeng.wang@huawei.com>
- <20191018031850.48498-1-wangkefeng.wang@huawei.com>
- <20191018031850.48498-31-wangkefeng.wang@huawei.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=vCOypHBh3OECg2Eq/MSq4Gogvi0GJhz25khFxxlbxeM=;
+        b=F0LTQFGpTVNJ2Ihf3LYWI5ZVTk/lqM+WH1knKzcC29M5uZc6fOXohwuwFQwXXedfSO
+         rdKBHvvq5H0DwNjNtbAT5v38LdtAWbeiDg/EogHOmmUb5KiWDHJcXVlBFtpb8lCYwkzJ
+         oZul2qCKpiQ0d8Ct0QdAWmsK3Pid6UbW2pOcx6kvaxZlMjnmeZ8gAkg5DYLFOBVOKSCD
+         MAeAUdk29MgkAbmLjSjcfJqDg6jd1i9R/C+Ll8lRaHA+z8Vzx9XxgPvGmvbIFHbDnxFV
+         GjHYQLV2spnIAQmFrRqNhxKtwhS6tVvzEqqPK0jo61dLTQWIxX0jcK8Dyp0k/M5gb1IE
+         5gOQ==
+X-Gm-Message-State: APjAAAUeFCCMuPjA6HAsaVFKwgJ0olRDWsYhcOVApOeWSgDy4RtmOLXq
+        wcBlSC0qpbJI9MucL8ObXBcidJMefNbMI3qA1iGacN4v8syj
+X-Google-Smtp-Source: APXvYqyU7ec5NOQhQcBvzoX8VA2HSA6C/TBnohh8EXdUdOyEEpcGW3LriSforDgxomfKpOf62LRNhxOtq3gF3yVfbY5D0x5zW/jx
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191018031850.48498-31-wangkefeng.wang@huawei.com>
-User-Agent: NeoMutt/20180223
+X-Received: by 2002:a6b:d104:: with SMTP id l4mr6984812iob.50.1571377509368;
+ Thu, 17 Oct 2019 22:45:09 -0700 (PDT)
+Date:   Thu, 17 Oct 2019 22:45:09 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000410cbb059528d6f7@google.com>
+Subject: BUG: unable to handle kernel paging request in is_bpf_text_address
+From:   syzbot <syzbot+710043c5d1d5b5013bc7@syzkaller.appspotmail.com>
+To:     ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
+        davem@davemloft.net, hawk@kernel.org, jakub.kicinski@netronome.com,
+        john.fastabend@gmail.com, kafai@fb.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 18, 2019 at 11:18:48AM +0800, Kefeng Wang wrote:
-> For kernel logging macro, pr_warning is completely removed and
-> replaced by pr_warn, using pr_warn in tools lib bpf for symmetry
-> to kernel logging macro, then we could drop pr_warning in the
-> whole linux code.
-> 
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Martin KaFai Lau <kafai@fb.com>
-> Cc: Song Liu <songliubraving@fb.com>
-> Cc: Yonghong Song <yhs@fb.com>
-> Cc: bpf@vger.kernel.org
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
-> Reviewed-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-> ---
->  tools/lib/bpf/btf.c             |  56 +--
->  tools/lib/bpf/btf_dump.c        |  18 +-
->  tools/lib/bpf/libbpf.c          | 679 ++++++++++++++++----------------
->  tools/lib/bpf/libbpf_internal.h |   8 +-
->  tools/lib/bpf/xsk.c             |   4 +-
->  5 files changed, 379 insertions(+), 386 deletions(-)
+Hello,
 
-Nack.
-I prefer this type of renaming to go via bpf tree.
-It's not a kernel patch. It's touching user space library
-which is under heavy development.
-Doing any other way will cause a ton of conflicts.
+syzbot found the following crash on:
 
+HEAD commit:    283ea345 coccinelle: api/devm_platform_ioremap_resource: r..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=122f199b600000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f0a8b0a0736a2ac1
+dashboard link: https://syzkaller.appspot.com/bug?extid=710043c5d1d5b5013bc7
+compiler:       clang version 9.0.0 (/home/glider/llvm/clang  
+80fee25776c2fb61e74c1ecb1a523375c2500b69)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=142676bb600000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11a2cebb600000
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+710043c5d1d5b5013bc7@syzkaller.appspotmail.com
+
+BUG: unable to handle page fault for address: ffffc90001923030
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+PGD aa551067 P4D aa551067 PUD aa552067 PMD a572b067 PTE 80000000a1173163
+Oops: 0000 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 7982 Comm: syz-executor912 Not tainted 5.4.0-rc3+ #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+Google 01/01/2011
+RIP: 0010:bpf_jit_binary_hdr include/linux/filter.h:787 [inline]
+RIP: 0010:bpf_get_prog_addr_region kernel/bpf/core.c:531 [inline]
+RIP: 0010:bpf_tree_comp kernel/bpf/core.c:600 [inline]
+RIP: 0010:__lt_find include/linux/rbtree_latch.h:115 [inline]
+RIP: 0010:latch_tree_find include/linux/rbtree_latch.h:208 [inline]
+RIP: 0010:bpf_prog_kallsyms_find kernel/bpf/core.c:674 [inline]
+RIP: 0010:is_bpf_text_address+0x184/0x3b0 kernel/bpf/core.c:709
+Code: 89 df e8 ff dd 2e 00 48 8b 1b 48 8d 7b 30 48 89 f8 48 c1 e8 03 48 b9  
+00 00 00 00 00 fc ff df 80 3c 08 00 74 05 e8 dc dd 2e 00 <4c> 8b 63 30 48  
+c7 c0 00 f0 ff ff 49 21 c4 48 83 c3 02 48 89 d8 48
+RSP: 0018:ffff88809569f9c8 EFLAGS: 00010246
+RAX: 1ffff92000324606 RBX: ffffc90001923000 RCX: dffffc0000000000
+RDX: ffff88809d900500 RSI: ffff8880a8227838 RDI: ffffc90001923030
+RBP: ffff88809569fa00 R08: ffffffff817d9d5a R09: ffffed1015d46b05
+R10: ffffed1015d46b05 R11: 0000000000000000 R12: ffff88809d900500
+R13: 0000000000000000 R14: 0000000000000000 R15: ffff8880a8227838
+FS:  0000000000728880(0000) GS:ffff8880aea00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffc90001923030 CR3: 0000000096dc4000 CR4: 00000000001406f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+  kernel_text_address kernel/extable.c:147 [inline]
+  __kernel_text_address+0x9a/0x110 kernel/extable.c:102
+  unwind_get_return_address+0x4c/0x90 arch/x86/kernel/unwind_frame.c:19
+  arch_stack_walk+0x98/0xe0 arch/x86/kernel/stacktrace.c:26
+  stack_trace_save+0xb6/0x150 kernel/stacktrace.c:123
+  save_stack mm/kasan/common.c:69 [inline]
+  set_track mm/kasan/common.c:77 [inline]
+  __kasan_kmalloc+0x11c/0x1b0 mm/kasan/common.c:510
+  kasan_slab_alloc+0xf/0x20 mm/kasan/common.c:518
+  slab_post_alloc_hook mm/slab.h:584 [inline]
+  slab_alloc mm/slab.c:3319 [inline]
+  kmem_cache_alloc+0x1f5/0x2e0 mm/slab.c:3483
+  getname_flags+0xba/0x640 fs/namei.c:138
+  getname+0x19/0x20 fs/namei.c:209
+  do_sys_open+0x261/0x560 fs/open.c:1091
+  __do_sys_open fs/open.c:1115 [inline]
+  __se_sys_open fs/open.c:1110 [inline]
+  __x64_sys_open+0x87/0x90 fs/open.c:1110
+  do_syscall_64+0xf7/0x1c0 arch/x86/entry/common.c:290
+  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+RIP: 0033:0x4011a0
+Code: 01 f0 ff ff 0f 83 c0 0b 00 00 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f  
+44 00 00 83 3d 2d 15 2d 00 00 75 14 b8 02 00 00 00 0f 05 <48> 3d 01 f0 ff  
+ff 0f 83 94 0b 00 00 c3 48 83 ec 08 e8 fa 00 00 00
+RSP: 002b:00007ffd6d953f58 EFLAGS: 00000246 ORIG_RAX: 0000000000000002
+RAX: ffffffffffffffda RBX: 00007ffd6d953f84 RCX: 00000000004011a0
+RDX: 00007ffd6d953f8a RSI: 0000000000080001 RDI: 00000000004a2422
+RBP: 00007ffd6d953f80 R08: 0000000000000000 R09: 0000000000000004
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004021c0
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+Modules linked in:
+CR2: ffffc90001923030
+---[ end trace a62c6ddd9792af6a ]---
+RIP: 0010:bpf_jit_binary_hdr include/linux/filter.h:787 [inline]
+RIP: 0010:bpf_get_prog_addr_region kernel/bpf/core.c:531 [inline]
+RIP: 0010:bpf_tree_comp kernel/bpf/core.c:600 [inline]
+RIP: 0010:__lt_find include/linux/rbtree_latch.h:115 [inline]
+RIP: 0010:latch_tree_find include/linux/rbtree_latch.h:208 [inline]
+RIP: 0010:bpf_prog_kallsyms_find kernel/bpf/core.c:674 [inline]
+RIP: 0010:is_bpf_text_address+0x184/0x3b0 kernel/bpf/core.c:709
+Code: 89 df e8 ff dd 2e 00 48 8b 1b 48 8d 7b 30 48 89 f8 48 c1 e8 03 48 b9  
+00 00 00 00 00 fc ff df 80 3c 08 00 74 05 e8 dc dd 2e 00 <4c> 8b 63 30 48  
+c7 c0 00 f0 ff ff 49 21 c4 48 83 c3 02 48 89 d8 48
+RSP: 0018:ffff88809569f9c8 EFLAGS: 00010246
+RAX: 1ffff92000324606 RBX: ffffc90001923000 RCX: dffffc0000000000
+RDX: ffff88809d900500 RSI: ffff8880a8227838 RDI: ffffc90001923030
+RBP: ffff88809569fa00 R08: ffffffff817d9d5a R09: ffffed1015d46b05
+R10: ffffed1015d46b05 R11: 0000000000000000 R12: ffff88809d900500
+R13: 0000000000000000 R14: 0000000000000000 R15: ffff8880a8227838
+FS:  0000000000728880(0000) GS:ffff8880aea00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffc90001923030 CR3: 0000000096dc4000 CR4: 00000000001406f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this bug, for details see:
+https://goo.gl/tpsmEJ#testing-patches
