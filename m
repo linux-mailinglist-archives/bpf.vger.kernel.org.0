@@ -2,57 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B1F65DC5AA
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2019 15:02:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7938DC666
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2019 15:43:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439072AbfJRNBg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Oct 2019 09:01:36 -0400
-Received: from www62.your-server.de ([213.133.104.62]:45398 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2410223AbfJRNBf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Oct 2019 09:01:35 -0400
-Received: from 55.249.197.178.dynamic.dsl-lte-bonding.lssmb00p-msn.res.cust.swisscom.ch ([178.197.249.55] helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iLRsm-0000UA-Qr; Fri, 18 Oct 2019 15:01:28 +0200
-Date:   Fri, 18 Oct 2019 15:01:28 +0200
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     syzbot <syzbot+710043c5d1d5b5013bc7@syzkaller.appspotmail.com>
-Cc:     ast@kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
-        hawk@kernel.org, jakub.kicinski@netronome.com,
-        john.fastabend@gmail.com, kafai@fb.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
-Subject: Re: BUG: unable to handle kernel paging request in
- is_bpf_text_address
-Message-ID: <20191018130128.GC26267@pc-63.home>
-References: <000000000000410cbb059528d6f7@google.com>
+        id S2392518AbfJRNno (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Oct 2019 09:43:44 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:40474 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388989AbfJRNno (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Oct 2019 09:43:44 -0400
+Received: by mail-wr1-f66.google.com with SMTP id o28so6335358wro.7
+        for <bpf@vger.kernel.org>; Fri, 18 Oct 2019 06:43:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SEzw38cDAC9xaprp9rRLe2ZVJoGCVxx2c6YAK/9vnss=;
+        b=tCXCYl9NxZIduQLKAT3pdBJH2Tz+HjkAV6s4CrmlFofLB3DFnza9LGvhED5mIHrr4u
+         26190+2TKrBN+a2IS9Qv5jj6mouKW/HsJoR5loI+noQ66dg6/PilZnwjw2Wj+E98xylG
+         VsBn1kJ3rOcfbvRMuwmXpMpPNFpitTu4jcVGA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SEzw38cDAC9xaprp9rRLe2ZVJoGCVxx2c6YAK/9vnss=;
+        b=IeHun1FcHO0hOWPhRRuug1gofTxbYqOppZGraU44hcIE9qudchTwXqX9LDw+SINTwI
+         o1ShDC5c4APL+dI0jsINzc+RvzEdUc47c2uxBUYkmOnYXhXxj0XM0GjXUuNH8ZtlX2jF
+         swA1FmJyemOUr0CI/U2IsPqEXJR+s3rusSHtvXr+whSeUU4ldrOUpQvzrcxPBnnw7t20
+         pMN4/E/72FiJYuoa1fzGS7xv44gQiNw//lpxiHkBYBNbDqheTJY5YU9G8o4CPMQzLome
+         /9AlqUQFv+msmBC4Po5M2A7FF2gjyr9Yc4gpKmWYxab5h04qXR25Qe1TpCn9Hn1iynuu
+         4IZQ==
+X-Gm-Message-State: APjAAAWXzGvM92qEV8fD6beUYQPlKJEusORD1uM7qE01ODHZHOImnCX/
+        hgdK7j+lEHsZP/vHW1cT+VKs7F8MWYY=
+X-Google-Smtp-Source: APXvYqwNrzgfSACK1p91ss5HVrJ0AwEGaifoDq8aiifNnaQE+CfhwK4Ga42+Q5eAqC7e06DhYQNGxw==
+X-Received: by 2002:adf:f101:: with SMTP id r1mr8411079wro.320.1571406220465;
+        Fri, 18 Oct 2019 06:43:40 -0700 (PDT)
+Received: from localhost.localdomain ([2a06:98c0:1000:8250:24df:f8cf:746a:57f5])
+        by smtp.gmail.com with ESMTPSA id z142sm6315491wmc.24.2019.10.18.06.43.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Oct 2019 06:43:39 -0700 (PDT)
+From:   Lorenz Bauer <lmb@cloudflare.com>
+To:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net
+Cc:     joe@wand.net.nz, Lorenz Bauer <lmb@cloudflare.com>
+Subject: [PATCH bpf] bpf: improve htab_map_get_next_key behaviour during races
+Date:   Fri, 18 Oct 2019 14:43:11 +0100
+Message-Id: <20191018134311.7284-1-lmb@cloudflare.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000000000000410cbb059528d6f7@google.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.101.4/25606/Fri Oct 18 10:58:40 2019)
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 17, 2019 at 10:45:09PM -0700, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following crash on:
-> 
-> HEAD commit:    283ea345 coccinelle: api/devm_platform_ioremap_resource: r..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=122f199b600000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=f0a8b0a0736a2ac1
-> dashboard link: https://syzkaller.appspot.com/bug?extid=710043c5d1d5b5013bc7
-> compiler:       clang version 9.0.0 (/home/glider/llvm/clang
-> 80fee25776c2fb61e74c1ecb1a523375c2500b69)
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=142676bb600000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11a2cebb600000
+To iterate a BPF map, userspace must use MAP_GET_NEXT_KEY and provide
+the last retrieved key. The code then scans the hash table bucket
+for the key and returns the key of the next item.
 
-I'll take a look, thanks!
+This presents a problem if the last retrieved key isn't present in the
+hash table anymore, e.g. due to concurrent deletion. It's not possible
+to ascertain the location of a key in a given bucket, so there isn't
+really a correct answer. The implementation currently returns the
+first key in the first bucket. This guarantees that we never skip an
+existing key. However, it means that a user space program iterating
+a heavily modified map may never reach the end of the hash table,
+forever restarting at the beginning.
+
+Fixing this outright is rather involved. However, we can improve slightly
+by never revisiting earlier buckets. Instead of the first key in the
+first bucket we return the first key in the "current" bucket. This
+doesn't eliminate the problem, but makes it less likely to occur.
+
+Prior to commit 8fe45924387b ("bpf: map_get_next_key to return first key on NULL")
+passing a non-existent key to MAP_GET_NEXT_KEY was the only way to
+find the first key. Hence there is a small chance that there is code that
+will be broken by this change.
+
+Fixes: 8fe45924387b ("bpf: map_get_next_key to return first key on NULL")
+Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+---
+ kernel/bpf/hashtab.c                    | 4 +++-
+ tools/testing/selftests/bpf/test_maps.c | 2 +-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+index 22066a62c8c9..30f0dab488f0 100644
+--- a/kernel/bpf/hashtab.c
++++ b/kernel/bpf/hashtab.c
+@@ -613,6 +613,9 @@ static int htab_map_get_next_key(struct bpf_map *map, void *key, void *next_key)
+ 
+ 	head = select_bucket(htab, hash);
+ 
++	/* don't iterate previous buckets */
++	i = hash & (htab->n_buckets - 1);
++
+ 	/* lookup the key */
+ 	l = lookup_nulls_elem_raw(head, hash, key, key_size, htab->n_buckets);
+ 
+@@ -630,7 +633,6 @@ static int htab_map_get_next_key(struct bpf_map *map, void *key, void *next_key)
+ 	}
+ 
+ 	/* no more elements in this hash list, go to the next bucket */
+-	i = hash & (htab->n_buckets - 1);
+ 	i++;
+ 
+ find_first_elem:
+diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/selftests/bpf/test_maps.c
+index 806b298397d3..6f351e532ddc 100644
+--- a/tools/testing/selftests/bpf/test_maps.c
++++ b/tools/testing/selftests/bpf/test_maps.c
+@@ -100,7 +100,7 @@ static void test_hashmap(unsigned int task, void *data)
+ 	assert(bpf_map_get_next_key(fd, NULL, &first_key) == 0 &&
+ 	       (first_key == 1 || first_key == 2));
+ 	assert(bpf_map_get_next_key(fd, &key, &next_key) == 0 &&
+-	       (next_key == first_key));
++	       (next_key == 1 || next_key == 2));
+ 	assert(bpf_map_get_next_key(fd, &next_key, &next_key) == 0 &&
+ 	       (next_key == 1 || next_key == 2) &&
+ 	       (next_key != first_key));
+-- 
+2.20.1
+
