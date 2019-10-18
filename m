@@ -2,60 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A929BDC444
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2019 14:00:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CC63DC536
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2019 14:43:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392732AbfJRMA4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Oct 2019 08:00:56 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:44508 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392487AbfJRMA4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Oct 2019 08:00:56 -0400
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 0CE89C08E2B0;
-        Fri, 18 Oct 2019 12:00:56 +0000 (UTC)
-Received: from griffin.upir.cz (unknown [10.40.205.208])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 17CFC5D9CA;
-        Fri, 18 Oct 2019 12:00:54 +0000 (UTC)
-From:   Jiri Benc <jbenc@redhat.com>
-To:     bpf@vger.kernel.org, netdev@vger.kernel.org
-Cc:     Peter Oskolkov <posk@google.com>
-Subject: [PATCH bpf] selftests/bpf: More compatible nc options in test_tc_edt
-Date:   Fri, 18 Oct 2019 14:00:42 +0200
-Message-Id: <f5bf07dccd8b552a76c84d49e80b86c5aa071122.1571400024.git.jbenc@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.31]); Fri, 18 Oct 2019 12:00:56 +0000 (UTC)
+        id S2633903AbfJRMnq convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 18 Oct 2019 08:43:46 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:56707 "EHLO
+        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2633871AbfJRMnq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Oct 2019 08:43:46 -0400
+Received: from bigeasy by Galois.linutronix.de with local (Exim 4.80)
+        (envelope-from <bigeasy@linutronix.de>)
+        id 1iLRbV-00072Z-6y; Fri, 18 Oct 2019 14:43:37 +0200
+Date:   Fri, 18 Oct 2019 14:43:37 +0200
+From:   Sebastian Sewior <bigeasy@linutronix.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Clark Williams <williams@redhat.com>,
+        David Miller <davem@davemloft.net>, daniel@iogearbox.net,
+        bpf@vger.kernel.org, ast@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: Re: [PATCH] BPF: Disable on PREEMPT_RT
+Message-ID: <20191018124337.eycbrt25jmxfmar6@linutronix.de>
+References: <20191017090500.ienqyium2phkxpdo@linutronix.de>
+ <20191017145358.GA26267@pc-63.home>
+ <20191017154021.ndza4la3hntk4d4o@linutronix.de>
+ <20191017.132548.2120028117307856274.davem@davemloft.net>
+ <alpine.DEB.2.21.1910172342090.1869@nanos.tec.linutronix.de>
+ <20191017214917.18911f58@tagon>
+ <alpine.DEB.2.21.1910181038130.1869@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <alpine.DEB.2.21.1910181038130.1869@nanos.tec.linutronix.de>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Out of the three nc implementations widely in use, at least two (BSD netcat
-and nmap-ncat) do not support -l combined with -s. Modify the nc invocation
-to be accepted by all of them.
+On 2019-10-18 10:46:01 [+0200], Thomas Gleixner wrote:
+> Clark,
+> 
+> On Thu, 17 Oct 2019, Clark Williams wrote:
+> > On Thu, 17 Oct 2019 23:54:07 +0200 (CEST)
+> > Thomas Gleixner <tglx@linutronix.de> wrote:
+> > >   #2) BPF does allocations in atomic contexts, which is a dubious decision
+> > >       even for non RT. That's related to #1
+> > 
+> > I guess my question here is, are the allocations done on behalf of an about-to-run
+> > BPF program, or as a result of executing BPF code?  Is it something we might be able
+> > to satisfy from a pre-allocated pool rather than kmalloc()? Ok, I need to go dive
+> > into BPF a bit deeper.
+> 
+> Sebastion?
 
-Fixes: 7df5e3db8f63 ("selftests: bpf: tc-bpf flow shaping with EDT")
-Cc: Peter Oskolkov <posk@google.com>
-Signed-off-by: Jiri Benc <jbenc@redhat.com>
----
- tools/testing/selftests/bpf/test_tc_edt.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The data structures use raw_spinlock_t as protection. This is where the
+atomic context is from.
+lpm_trie with trie_update_elem() allocates a new element while holding
+the lock. I tried to make it a spinlock_t which wouldn't have the
+problem but then
+   https://lore.kernel.org/bpf/4150a0db-18f9-aa93-cdb4-8cf047093740@iogearbox.net/
 
-diff --git a/tools/testing/selftests/bpf/test_tc_edt.sh b/tools/testing/selftests/bpf/test_tc_edt.sh
-index f38567ef694b..daa7d1b8d309 100755
---- a/tools/testing/selftests/bpf/test_tc_edt.sh
-+++ b/tools/testing/selftests/bpf/test_tc_edt.sh
-@@ -59,7 +59,7 @@ ip netns exec ${NS_SRC} tc filter add dev veth_src egress \
+pointed out that it has been made raw_spinlock_t due to kprobe on -RT.
+Commit ac00881f92210 ("bpf: convert hashtab lock to raw lock") was
+"okay" back then (according to Steven Rostedt) but it got wrong with the
+memory allocation which came in later.
+
+In order to tackle one thing at a time, I would say that kprobe isn't
+our biggest concern…
  
- # start the listener
- ip netns exec ${NS_DST} bash -c \
--	"nc -4 -l -s ${IP_DST} -p 9000 >/dev/null &"
-+	"nc -4 -l -p 9000 >/dev/null &"
- declare -i NC_PID=$!
- sleep 1
- 
--- 
-2.18.1
+> 	tglx
 
+Sebastian
