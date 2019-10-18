@@ -2,137 +2,155 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 20439DC2D3
-	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2019 12:34:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7A34DC3F6
+	for <lists+bpf@lfdr.de>; Fri, 18 Oct 2019 13:28:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408227AbfJRKeH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Oct 2019 06:34:07 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:52858 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2408220AbfJRKeH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Oct 2019 06:34:07 -0400
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 1A91B18C4276;
-        Fri, 18 Oct 2019 10:34:07 +0000 (UTC)
-Received: from krava.brq.redhat.com (unknown [10.43.17.61])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4C935600C1;
-        Fri, 18 Oct 2019 10:34:05 +0000 (UTC)
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>
-Subject: [PATCH] bpftool: Try to read btf as raw data if elf read fails
-Date:   Fri, 18 Oct 2019 12:34:04 +0200
-Message-Id: <20191018103404.12999-1-jolsa@kernel.org>
+        id S2442564AbfJRL2b (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Oct 2019 07:28:31 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:56541 "EHLO
+        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389257AbfJRL2b (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Oct 2019 07:28:31 -0400
+Received: from p5b06da22.dip0.t-ipconnect.de ([91.6.218.34] helo=nanos)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1iLQQg-0005w0-Q6; Fri, 18 Oct 2019 13:28:22 +0200
+Date:   Fri, 18 Oct 2019 13:28:21 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+cc:     David Miller <davem@davemloft.net>,
+        Sebastian Sewior <bigeasy@linutronix.de>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Clark Williams <williams@redhat.com>
+Subject: Re: [PATCH] BPF: Disable on PREEMPT_RT
+In-Reply-To: <20191018055222.cwx5dmj6pppqzcpc@ast-mbp>
+Message-ID: <alpine.DEB.2.21.1910181256120.1869@nanos.tec.linutronix.de>
+References: <20191017090500.ienqyium2phkxpdo@linutronix.de> <20191017145358.GA26267@pc-63.home> <20191017154021.ndza4la3hntk4d4o@linutronix.de> <20191017.132548.2120028117307856274.davem@davemloft.net> <alpine.DEB.2.21.1910172342090.1869@nanos.tec.linutronix.de>
+ <CAADnVQJPJubTx0TxcXnbCfavcQDZeu8VTnYYpa8JYpWw9Ze4qg@mail.gmail.com> <alpine.DEB.2.21.1910180152110.1869@nanos.tec.linutronix.de> <20191018055222.cwx5dmj6pppqzcpc@ast-mbp>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.6.2 (mx1.redhat.com [10.5.110.62]); Fri, 18 Oct 2019 10:34:07 +0000 (UTC)
+Content-Type: text/plain; charset=US-ASCII
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The bpftool interface stays the same, but now it's possible
-to run it over BTF raw data, like:
+Alexei,
 
-  $ bpftool btf dump file /sys/kernel/btf/vmlinux
-  libbpf: failed to get EHDR from /sys/kernel/btf/vmlinux
-  [1] INT '(anon)' size=4 bits_offset=0 nr_bits=32 encoding=(none)
-  [2] INT 'long unsigned int' size=8 bits_offset=0 nr_bits=64 encoding=(none)
-  [3] CONST '(anon)' type_id=2
+On Thu, 17 Oct 2019, Alexei Starovoitov wrote:
+> On Fri, Oct 18, 2019 at 02:22:40AM +0200, Thomas Gleixner wrote:
+> > 
+> > But that also means any code which explcitely disables preemption or
+> > interrupts without taking a spin/rw lock can trigger the following issues:
+> > 
+> >   - Calling into code which requires to be preemtible/sleepable on RT
+> >     results in a might sleep splat.
+> > 
+> >   - Has in RT terms potentially unbound or undesired runtime length without
+> >     any chance for the scheduler to control it.
+> 
+> Much appreciate the explanation. Few more questions:
+> There is a ton of kernel code that does preempt_disable()
+> and proceeds to do per-cpu things. How is it handled in RT?
 
-I'm also adding err init to 0 because I was getting uninitialized
-warnings from gcc.
+There is not really tons of it, at least not tons which actually hurt. Most
+of those sections are extremly small or actually required even on RT
+(e.g. scheduler, lock internals ...)
 
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- tools/bpf/bpftool/btf.c | 47 ++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 42 insertions(+), 5 deletions(-)
+> Are you saying that every preempt_disable has to be paired with some lock?
+> I don't think it's a practical requirement for fulfill, so I probably
+> misunderstood something.
 
-diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
-index 9a9376d1d3df..100fb7e02329 100644
---- a/tools/bpf/bpftool/btf.c
-+++ b/tools/bpf/bpftool/btf.c
-@@ -12,6 +12,9 @@
- #include <libbpf.h>
- #include <linux/btf.h>
- #include <linux/hashtable.h>
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <unistd.h>
- 
- #include "btf.h"
- #include "json_writer.h"
-@@ -388,6 +391,35 @@ static int dump_btf_c(const struct btf *btf,
- 	return err;
- }
- 
-+static struct btf *btf__parse_raw(const char *file)
-+{
-+	struct btf *btf = ERR_PTR(-EINVAL);
-+	__u8 *buf = NULL;
-+	struct stat st;
-+	FILE *f;
-+
-+	if (stat(file, &st))
-+		return btf;
-+
-+	f = fopen(file, "rb");
-+	if (!f)
-+		return btf;
-+
-+	buf = malloc(st.st_size);
-+	if (!buf)
-+		goto err;
-+
-+	if ((size_t) st.st_size != fread(buf, 1, st.st_size, f))
-+		goto err;
-+
-+	btf = btf__new(buf, st.st_size);
-+
-+err:
-+	free(buf);
-+	fclose(f);
-+	return btf;
-+}
-+
- static int do_dump(int argc, char **argv)
- {
- 	struct btf *btf = NULL;
-@@ -397,7 +429,7 @@ static int do_dump(int argc, char **argv)
- 	__u32 btf_id = -1;
- 	const char *src;
- 	int fd = -1;
--	int err;
-+	int err = 0;
- 
- 	if (!REQ_ARGS(2)) {
- 		usage();
-@@ -468,10 +500,15 @@ static int do_dump(int argc, char **argv)
- 		btf = btf__parse_elf(*argv, NULL);
- 		if (IS_ERR(btf)) {
- 			err = PTR_ERR(btf);
--			btf = NULL;
--			p_err("failed to load BTF from %s: %s", 
--			      *argv, strerror(err));
--			goto done;
-+			if (err == -LIBBPF_ERRNO__FORMAT)
-+				btf = btf__parse_raw(*argv);
-+			if (IS_ERR(btf)) {
-+				btf = NULL;
-+				/* Display the original error value. */
-+				p_err("failed to load BTF from %s: %s",
-+				      *argv, strerror(err));
-+				goto done;
-+			}
- 		}
- 		NEXT_ARG();
- 	} else {
--- 
-2.21.0
+See above. The ones RT cares about are:
 
+    - Long and potentially unbound preempt/interrupt disabled sections
+
+    - Preempt disabled sections which call into code which might sleep
+      under RT due to the magic 'sleeping' spin/rw_locks which we use
+      as substitution.
+
+> In BPF we disable preemption because of per-cpu maps and per-cpu data structures
+> that are shared between bpf program execution and kernel execution.
+> 
+> BPF doesn't call into code that might sleep.
+
+Sure, not if you look at it from the mainline perspective. RT changes the
+picture there because due to forced interrupt/soft interrupt threading and
+the lock substitution 'innocent' code becomes sleepable. That's especially
+true for the memory allocators, which are required to be called with
+preemption enabled on RT. But again, most GFP_ATOMIC allocations happen
+from within spin/rwlock held sections, which are already made preemptible
+by RT magically. The ones which were inside of contexts which are atomic
+even on RT have been moved out of the atomic sections already (except for
+the BPF ones).
+
+The problem with standalone preempt_disable() and local_irq_disable() is
+that the protection scope is not defined. These two are basically per CPU
+big kernel locks. We all know how well the BKL semantics worked :)
+
+One of the mechanisms RT uses to substitute standalone preempt_disable()
+and local_irq_disable() which are not related to a lock operation with so
+called local_locks. We haven't submitted the local_lock code yet, but that
+might be a way out. The way it works is simple:
+
+DEFINE_LOCAL_LOCK(this_scope);
+
+in the code:
+
+-	preempt_disable();
++	local_lock(this_scope);
+
+and all kind of variants local_lock_bh/irq/irqsave(). You get the idea.
+
+On a non RT enabled build these primitives just resolve to
+preempt_disable(), local_bh_disable(), local_irq_disable() and
+local_irq_save().
+
+On RT the local lock is actually a per CPU lock which allows nesting. i.e.
+
+      preempt_disable();
+      ...
+      local_irq_disable();
+
+becomes
+
+	local_lock(this_scope);
+	...
+	local_lock_irq(this_scope);
+
+The local lock is a 'sleeping' spinlock on RT (PI support) and as any other
+RT substituted lock it also ensures that the task cannot be migrated when
+it is held, which makes per cpu assumptions work - the kernel has lots of
+them. :)
+
+That works as long as the scope is well defined and clear. It does not work
+when preempt_disable() or any of the other scopeless protections is used to
+protect random (unidentifiable) code against each other, which means the
+protection has the dreaded per CPU BKL semantics, i.e. undefined.
+
+One nice thing about local_lock even aside of RT is that it annotates the
+code in terms of protection scope which actually gives you also lockdep
+coverage. We found already a few bugs that way in the past, where data was
+protected with preempt_disable() when the code was introduced and later
+access from interrupt code was added without anyone noticing for years....
+
+> BPF also doesn't have unbound runtime.
+> So two above issues are actually non-issues.
+
+That'd be nice :)
+
+Anyway, we'll have a look whether this can be solved with local locks which
+would be nice, but that still does not solve the issue with the non_owner
+release of the rwsem.
+
+Thanks,
+
+	tglx
