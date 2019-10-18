@@ -2,177 +2,166 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1291DDD4FF
-	for <lists+bpf@lfdr.de>; Sat, 19 Oct 2019 00:39:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14439DD52B
+	for <lists+bpf@lfdr.de>; Sat, 19 Oct 2019 01:05:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727498AbfJRWjQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Oct 2019 18:39:16 -0400
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:38154 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727137AbfJRWjQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Oct 2019 18:39:16 -0400
-Received: by mail-lf1-f66.google.com with SMTP id q28so2563051lfa.5
-        for <bpf@vger.kernel.org>; Fri, 18 Oct 2019 15:39:14 -0700 (PDT)
+        id S1727780AbfJRXFt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Oct 2019 19:05:49 -0400
+Received: from mail-pl1-f196.google.com ([209.85.214.196]:39316 "EHLO
+        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727399AbfJRXFt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Oct 2019 19:05:49 -0400
+Received: by mail-pl1-f196.google.com with SMTP id s17so3537436plp.6
+        for <bpf@vger.kernel.org>; Fri, 18 Oct 2019 16:05:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :organization:mime-version:content-transfer-encoding;
-        bh=Tu+y8NQHPJdpH5zk4JXjcOJf2x2sdRfeWLWJG+FKhFs=;
-        b=iAQIR5fnIsTR2Ts309v6YQ/kn615UlLrE03SeNj9KpK0GUbnuTu/+5dED86PZyWoDc
-         dOPBuWT2q6yGKk47t7fZ8pr7muZpcTc5gJrDCtaJlNLKQ5MYaXJlKcXtktaZJrtBwooI
-         uUVNuqi20TMA3Y3YhOtZz+bWL+hnEvUz8LrZZHG3yZgdwvLuV5V0so3llr3O1dWGRQe5
-         ViXJK1MHCvQ17LJtZZOeBhJ+RC0GnTSzIUICkDs8lO3YG5emAUTrnWl2IQeYz8LMn0MJ
-         VQ+CTaF+/RkMV/cY8ra2onYlmmEXI7y+PDLWOXTjmINTje7CEeONJZk80L/NhVFQzgfV
-         ToAA==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=AH3jrOFqzFSDzm5MfjtOgoAoOgfHRxzMVOBqcozOwFo=;
+        b=LW8UcDdVGwW2bYTwGCLaIYNVagQGILt+rVTTLMWlddXsHu3UseQcc4vY1pe5iN0JkC
+         /2VHBWqcSXe5IRhSxakKIhPlX7rDYTxPy36PggeI6cj2O2DCMAOTgS/xytMFiRstsKwF
+         i4PoWaZG7Z9CtNP7XcgmpfqfUbR337+l2Lmf6tBJPUk/oehkSCml0g/MfBaUUXrI2ERD
+         RAVKIwHG77cEIxyg7FTfnHJFcLCXbCMK3WHYnmNB5W9fcOnFX+wYg37Ppf9MvF6SBU5l
+         DjvN0BE9eYBGs0fbZOzvn2Phi8s0J2c0uy2lMyCKepSRN6wWKbF6lbGujfwWTH9r/ZHW
+         4n8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=Tu+y8NQHPJdpH5zk4JXjcOJf2x2sdRfeWLWJG+FKhFs=;
-        b=AtCVm/GMQ6aDGja61GqGNqvaMWpiKQxRR+QHd7TlPbANc2wtzUng9G3A4LDMSEOqcl
-         UEDqP/oEnlF75K4HbVCMNqZNKohsJmmMnHlayFBJ/25xPaDDM3sOrhBn7Ffo3lz//590
-         PUrKeJBA2FsQTWM+0DJx/4aNDOgj/ypodUuxJzuvVFPAEhxT1d/jL/ECB5pbcZ1GRAS7
-         q9yOMiwk5bYttAl3aEWk+NWqGOpQWFTFtggOEjtaqfkDnon3aqmJJeaHsziF1Ekc0cqs
-         01/huAKkQ1HcDkEflxe4krQeXuoZRMcDbzby7W4QSVpx1bjgU3wCiL4iSFEK8uiUixRZ
-         yfhg==
-X-Gm-Message-State: APjAAAVdwl7b10ZuY+VzW9vS3Kojk7NY98PRM0AdBww+dSJj3jIAPl9B
-        7uDBXAOejiB330/nPWN7iJBwtg==
-X-Google-Smtp-Source: APXvYqy4edffS/arTAA9zeCX329BJi3gMMUpHPH5hrbydZapeR2ditRHVTk/m4NSbykVWZSi0AkvkA==
-X-Received: by 2002:ac2:5477:: with SMTP id e23mr7493688lfn.5.1571438353677;
-        Fri, 18 Oct 2019 15:39:13 -0700 (PDT)
-Received: from cakuba.netronome.com ([66.60.152.14])
-        by smtp.gmail.com with ESMTPSA id l7sm2885363lji.46.2019.10.18.15.39.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Oct 2019 15:39:13 -0700 (PDT)
-Date:   Fri, 18 Oct 2019 15:39:05 -0700
-From:   Jakub Kicinski <jakub.kicinski@netronome.com>
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Andrii Nakryiko <andriin@fb.com>,
-        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>
-Subject: Re: [PATCH] bpftool: Try to read btf as raw data if elf read fails
-Message-ID: <20191018153905.600d7c8a@cakuba.netronome.com>
-In-Reply-To: <20191018103404.12999-1-jolsa@kernel.org>
-References: <20191018103404.12999-1-jolsa@kernel.org>
-Organization: Netronome Systems, Ltd.
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=AH3jrOFqzFSDzm5MfjtOgoAoOgfHRxzMVOBqcozOwFo=;
+        b=FfqV+B023e0ZS6G8WrUddUI4WVL7ORtRaviwxoFWp0V0435STkjmjQYS68EgWNZeR7
+         8aMC8fn3TXCLN00YQ2BCBuY1TUPz/sZ4h9auYCxCeD7y/GHZtOmjN3xKOIPEkOzrMFAj
+         rYyBX226vCeenTQ7wemfB3OFlywDRLSHrwSyN2y9DgdN7qmstPVj982fHz7SkLKHUGHU
+         cmyRxUZV9aQEJ+V3PKQwvZ46ph6WXcAr/Dl6fkvNBmQNIYrhLg7KZlZD/WVyDZBUiesN
+         0rOSQs8IqUnBFjTHORu+gLFKvVw6Vn2l9zfjbKHNSZQGU0RmzhdDsi1GC9nPxa4lVsL8
+         0wXg==
+X-Gm-Message-State: APjAAAVzLltG0pLtdV+/THC+f4bl/3yh7RK0RZq7duaZXYkS4gvJ6vcw
+        IQoOcAIuAoE4vOcnjBddFFo=
+X-Google-Smtp-Source: APXvYqxzY00J7ZU5QilwRylLFRrUVY6bMMNrVebXfCKS6HdF+jjlpwPjCq8Tdnu4hRlbWaSK/ogvKg==
+X-Received: by 2002:a17:902:9002:: with SMTP id a2mr12753047plp.147.1571439946322;
+        Fri, 18 Oct 2019 16:05:46 -0700 (PDT)
+Received: from ast-mbp ([2620:10d:c090:180::6038])
+        by smtp.gmail.com with ESMTPSA id t12sm5870334pjq.18.2019.10.18.16.05.44
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 18 Oct 2019 16:05:45 -0700 (PDT)
+Date:   Fri, 18 Oct 2019 16:05:43 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     David Miller <davem@davemloft.net>,
+        Sebastian Sewior <bigeasy@linutronix.de>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Clark Williams <williams@redhat.com>
+Subject: Re: [PATCH] BPF: Disable on PREEMPT_RT
+Message-ID: <20191018230540.l6e4jtrlu44hk7q5@ast-mbp>
+References: <20191017090500.ienqyium2phkxpdo@linutronix.de>
+ <20191017145358.GA26267@pc-63.home>
+ <20191017154021.ndza4la3hntk4d4o@linutronix.de>
+ <20191017.132548.2120028117307856274.davem@davemloft.net>
+ <alpine.DEB.2.21.1910172342090.1869@nanos.tec.linutronix.de>
+ <CAADnVQJPJubTx0TxcXnbCfavcQDZeu8VTnYYpa8JYpWw9Ze4qg@mail.gmail.com>
+ <alpine.DEB.2.21.1910180152110.1869@nanos.tec.linutronix.de>
+ <20191018055222.cwx5dmj6pppqzcpc@ast-mbp>
+ <alpine.DEB.2.21.1910181256120.1869@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.21.1910181256120.1869@nanos.tec.linutronix.de>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 18 Oct 2019 12:34:04 +0200, Jiri Olsa wrote:
-> The bpftool interface stays the same, but now it's possible
-> to run it over BTF raw data, like:
+On Fri, Oct 18, 2019 at 01:28:21PM +0200, Thomas Gleixner wrote:
 > 
->   $ bpftool btf dump file /sys/kernel/btf/vmlinux
->   libbpf: failed to get EHDR from /sys/kernel/btf/vmlinux
->   [1] INT '(anon)' size=4 bits_offset=0 nr_bits=32 encoding=(none)
->   [2] INT 'long unsigned int' size=8 bits_offset=0 nr_bits=64 encoding=(none)
->   [3] CONST '(anon)' type_id=2
+> On a non RT enabled build these primitives just resolve to
+> preempt_disable(), local_bh_disable(), local_irq_disable() and
+> local_irq_save().
 > 
-> I'm also adding err init to 0 because I was getting uninitialized
-> warnings from gcc.
+> On RT the local lock is actually a per CPU lock which allows nesting. i.e.
 > 
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  tools/bpf/bpftool/btf.c | 47 ++++++++++++++++++++++++++++++++++++-----
->  1 file changed, 42 insertions(+), 5 deletions(-)
+>       preempt_disable();
+>       ...
+>       local_irq_disable();
 > 
-> diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
-> index 9a9376d1d3df..100fb7e02329 100644
-> --- a/tools/bpf/bpftool/btf.c
-> +++ b/tools/bpf/bpftool/btf.c
-> @@ -12,6 +12,9 @@
->  #include <libbpf.h>
->  #include <linux/btf.h>
->  #include <linux/hashtable.h>
-> +#include <sys/types.h>
-> +#include <sys/stat.h>
-> +#include <unistd.h>
->  
->  #include "btf.h"
->  #include "json_writer.h"
-> @@ -388,6 +391,35 @@ static int dump_btf_c(const struct btf *btf,
->  	return err;
->  }
->  
-> +static struct btf *btf__parse_raw(const char *file)
-> +{
-> +	struct btf *btf = ERR_PTR(-EINVAL);
-> +	__u8 *buf = NULL;
+> becomes
+> 
+> 	local_lock(this_scope);
+> 	...
+> 	local_lock_irq(this_scope);
+> 
+> The local lock is a 'sleeping' spinlock on RT (PI support) and as any other
+> RT substituted lock it also ensures that the task cannot be migrated when
+> it is held, which makes per cpu assumptions work - the kernel has lots of
+> them. :)
+> 
+> That works as long as the scope is well defined and clear. It does not work
+> when preempt_disable() or any of the other scopeless protections is used to
+> protect random (unidentifiable) code against each other, which means the
+> protection has the dreaded per CPU BKL semantics, i.e. undefined.
+> 
+> One nice thing about local_lock even aside of RT is that it annotates the
+> code in terms of protection scope which actually gives you also lockdep
+> coverage. We found already a few bugs that way in the past, where data was
+> protected with preempt_disable() when the code was introduced and later
+> access from interrupt code was added without anyone noticing for years....
 
-Please drop the inits
+The concept on local_lock() makes sense to me.
+The magic macro you're proposing that will convert it to old school
+preempt_disable() on !RT should hopefully make the changes across
+net and bpf land mostly mechanical.
+One thing to clarify:
+when networking core interacts with bpf we know that bh doesn't migrate,
+so per-cpu datastructres that bpf side populates are accessed later
+by networking core when program finishes.
+Similar thing happens between tracing bits and bpf progs.
+It feels to me that local_lock() approach should work here as well.
+napi processing bits will grab it. Later bpf will grab potentially
+the same lock again.
+The weird bit that such lock will have numbe_of_lockers >= 1
+for long periods of time. At least until napi runners won't see
+any more incoming packets. I'm not sure yet where such local_lock
+will be placed in the napi code (may be in drivers too for xdp).
+Does this make sense from RT perspective?
 
-> +	struct stat st;
-> +	FILE *f;
-> +
-> +	if (stat(file, &st))
-> +		return btf;
+> > BPF also doesn't have unbound runtime.
+> > So two above issues are actually non-issues.
+> 
+> That'd be nice :)
+> 
+> Anyway, we'll have a look whether this can be solved with local locks which
+> would be nice, but that still does not solve the issue with the non_owner
+> release of the rwsem.
 
-And return constants here
+Sure. We can discuss this separately.
+up_read_non_owner is used only by build_id mode of stack collectors.
+We can disable it for RT for long time. We're using stack with build_id heavily
+and have no plans to use RT. I believe datacenters, in general, are not going
+to use RT for foreseeable future, so a trade off between stack with build_id
+vs RT, I think, is acceptable.
 
-> +	f = fopen(file, "rb");
-> +	if (!f)
-> +		return btf;
+But reading your other replies the gradual approach we're discussing here
+doesn't sound acceptable ? And you guys insist on disabling bpf under RT
+just to merge some out of tree code ? I find this rude and not acceptable.
 
-and here
+If RT wants to get merged it should be disabled when BPF is on
+and not the other way around.
+Something like this:
+diff --git a/kernel/Kconfig.preempt b/kernel/Kconfig.preempt
+index deff97217496..b3dbc5f9a6de 100644
+--- a/kernel/Kconfig.preempt
++++ b/kernel/Kconfig.preempt
+@@ -57,7 +57,7 @@ config PREEMPT
 
-> +	buf = malloc(st.st_size);
-> +	if (!buf)
-> +		goto err;
-
-and jump to the right place here.
-
-> +	if ((size_t) st.st_size != fread(buf, 1, st.st_size, f))
-> +		goto err;
-> +
-> +	btf = btf__new(buf, st.st_size);
-> +
-> +err:
-
-The prefix for error labels which is shared with non-error path is exit_
-
-> +	free(buf);
-> +	fclose(f);
-> +	return btf;
-> +}
-> +
->  static int do_dump(int argc, char **argv)
->  {
->  	struct btf *btf = NULL;
-> @@ -397,7 +429,7 @@ static int do_dump(int argc, char **argv)
->  	__u32 btf_id = -1;
->  	const char *src;
->  	int fd = -1;
-> -	int err;
-> +	int err = 0;
-
-This change looks unnecessary.
-
->  	if (!REQ_ARGS(2)) {
->  		usage();
-> @@ -468,10 +500,15 @@ static int do_dump(int argc, char **argv)
->  		btf = btf__parse_elf(*argv, NULL);
->  		if (IS_ERR(btf)) {
->  			err = PTR_ERR(btf);
-> -			btf = NULL;
-> -			p_err("failed to load BTF from %s: %s", 
-> -			      *argv, strerror(err));
-> -			goto done;
-> +			if (err == -LIBBPF_ERRNO__FORMAT)
-> +				btf = btf__parse_raw(*argv);
-> +			if (IS_ERR(btf)) {
-> +				btf = NULL;
-> +				/* Display the original error value. */
-> +				p_err("failed to load BTF from %s: %s",
-> +				      *argv, strerror(err));
-> +				goto done;
-> +			}
->  		}
->  		NEXT_ARG();
->  	} else {
+ config PREEMPT_RT
+        bool "Fully Preemptible Kernel (Real-Time)"
+-       depends on EXPERT && ARCH_SUPPORTS_RT
++       depends on EXPERT && ARCH_SUPPORTS_RT && !BPF_SYSCALL
+        select PREEMPTION
+        help
+          This option turns the kernel into a real-time kernel by replacing
 
