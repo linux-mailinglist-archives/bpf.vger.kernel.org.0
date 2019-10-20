@@ -2,128 +2,251 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 69CABDDD6C
-	for <lists+bpf@lfdr.de>; Sun, 20 Oct 2019 11:06:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEC10DDE10
+	for <lists+bpf@lfdr.de>; Sun, 20 Oct 2019 12:15:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726019AbfJTJGi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 20 Oct 2019 05:06:38 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:60111 "EHLO
-        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725893AbfJTJGi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 20 Oct 2019 05:06:38 -0400
-Received: from p5b06da22.dip0.t-ipconnect.de ([91.6.218.34] helo=nanos)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1iM7AK-0006wx-Kg; Sun, 20 Oct 2019 11:06:20 +0200
-Date:   Sun, 20 Oct 2019 11:06:13 +0200 (CEST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-cc:     David Miller <davem@davemloft.net>,
-        Sebastian Sewior <bigeasy@linutronix.de>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Clark Williams <williams@redhat.com>
-Subject: Re: [PATCH] BPF: Disable on PREEMPT_RT
-In-Reply-To: <20191018230540.l6e4jtrlu44hk7q5@ast-mbp>
-Message-ID: <alpine.DEB.2.21.1910201043460.2090@nanos.tec.linutronix.de>
-References: <20191017090500.ienqyium2phkxpdo@linutronix.de> <20191017145358.GA26267@pc-63.home> <20191017154021.ndza4la3hntk4d4o@linutronix.de> <20191017.132548.2120028117307856274.davem@davemloft.net> <alpine.DEB.2.21.1910172342090.1869@nanos.tec.linutronix.de>
- <CAADnVQJPJubTx0TxcXnbCfavcQDZeu8VTnYYpa8JYpWw9Ze4qg@mail.gmail.com> <alpine.DEB.2.21.1910180152110.1869@nanos.tec.linutronix.de> <20191018055222.cwx5dmj6pppqzcpc@ast-mbp> <alpine.DEB.2.21.1910181256120.1869@nanos.tec.linutronix.de>
- <20191018230540.l6e4jtrlu44hk7q5@ast-mbp>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        id S1726063AbfJTKO7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 20 Oct 2019 06:14:59 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:58413 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726027AbfJTKO6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 20 Oct 2019 06:14:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1571566497;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rBMRx7VKl+U03kBuVO96Nk+z6cMJJlJhVPE1Ji9EtVo=;
+        b=JuDS+MAMgIXppET/tfhBnOikKjLCKkLBlnjukj/8Kzzbcft9LjbDhq7E2FRpTeJSU0THdZ
+        2fWi4fBXH2iiAtrD7Fv5iYhZCrq0SrnCMmikR6wfOZkLYWEuB/n/aO3X7yEIHmP7R63iHa
+        TGy/hvHPLhrqcuQ1Z4ZPoqjAMymfKHw=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-47-Pl9uv1_UNvuBFX_Vj7ejMA-1; Sun, 20 Oct 2019 06:14:53 -0400
+Received: by mail-lj1-f200.google.com with SMTP id 5so1923557lje.12
+        for <bpf@vger.kernel.org>; Sun, 20 Oct 2019 03:14:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=lXtTDTE7K2RmqsVX0VCIrU7dqQ+2zlkBv2Zk4TX90ZI=;
+        b=SL8f2vqQkq9ifuq1fgd8ihtUL4zf9kfxSXeculGliE44dzc4L7D55lslMngHL3p7hY
+         ypFRx+YuewkC8sHKAoeslPvpvlV0dPMgJ78432kuJZ4gtqI688xIUIkjeuPtjNNKexiB
+         9YDyrTSTB49t7RLcmWiLX3mDFkde/khdXnwIvhEQIMB8L7FYNuinOvezCH4hM4yaftod
+         7kF2RZr61jV2BJ9iRrM0IXO00J9voTsK6yEptSpigyD8R06pghCN4vuxsvuyVLffMbhr
+         ba6szJmcfYFsvT1n8153w2XiBVZ/MF1S65vPaStOMRF0c85T/RDD8QyiKgZYZCKHjQt9
+         2CXw==
+X-Gm-Message-State: APjAAAV5JyTexxJmowwHRk/ANQdzy0/EDAGF5tZgOH/04TZZsYn8WCFy
+        kn7J18RlotuZgb31a9WGvJkm4Rg7UQJ+wIHYVTSgUJhqswFbG1hfN0LH8Xwx9Jw/61fDw/a59Bp
+        qMNEV+sQH6p+V
+X-Received: by 2002:a2e:81cf:: with SMTP id s15mr9829346ljg.99.1571566492255;
+        Sun, 20 Oct 2019 03:14:52 -0700 (PDT)
+X-Google-Smtp-Source: APXvYqwk3PE8wyqtm9E0FO88pbqr/0aL7k1Lp5yiQfGBzgWtbyOMvfKaYdhTmahXXB++Ngh5GJPbgw==
+X-Received: by 2002:a2e:81cf:: with SMTP id s15mr9829335ljg.99.1571566491980;
+        Sun, 20 Oct 2019 03:14:51 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a00:7660:6da:443::2])
+        by smtp.gmail.com with ESMTPSA id x3sm4685598ljm.103.2019.10.20.03.14.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 20 Oct 2019 03:14:50 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id BD30C1804C8; Sun, 20 Oct 2019 12:14:49 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        "Samudrala\, Sridhar" <sridhar.samudrala@intel.com>
+Cc:     Jakub Kicinski <jakub.kicinski@netronome.com>,
+        "Karlsson\, Magnus" <magnus.karlsson@intel.com>,
+        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Netdev <netdev@vger.kernel.org>,
+        "bpf\@vger.kernel.org" <bpf@vger.kernel.org>,
+        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
+        "Fijalkowski\, Maciej" <maciej.fijalkowski@intel.com>,
+        "Herbert\, Tom" <tom.herbert@intel.com>
+Subject: Re: FW: [PATCH bpf-next 2/4] xsk: allow AF_XDP sockets to receive packets directly from a queue
+In-Reply-To: <20191019022525.w5xbwkav2cpqkfwi@ast-mbp>
+References: <1570515415-45593-3-git-send-email-sridhar.samudrala@intel.com> <CAADnVQ+XxmvY0cs8MYriMMd7=2TSEm4zCtB+fs2vkwdUY6UgAQ@mail.gmail.com> <3ED8E928C4210A4289A677D2FEB48235140134CE@fmsmsx111.amr.corp.intel.com> <2bc26acd-170d-634e-c066-71557b2b3e4f@intel.com> <CAADnVQ+qq6RLMjh5bB1ugXP5p7vYM2F1fLGFQ2pL=2vhCLiBdA@mail.gmail.com> <2032d58c-916f-d26a-db14-bd5ba6ad92b9@intel.com> <CAADnVQ+CH1YM52+LfybLS+NK16414Exrvk1QpYOF=HaT4KRaxg@mail.gmail.com> <acf69635-5868-f876-f7da-08954d1f690e@intel.com> <20191019001449.fk3gnhih4nx724pm@ast-mbp> <6f281517-3785-ce46-65de-e2f78576783b@intel.com> <20191019022525.w5xbwkav2cpqkfwi@ast-mbp>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Sun, 20 Oct 2019 12:14:49 +0200
+Message-ID: <877e4zd8py.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+X-MC-Unique: Pl9uv1_UNvuBFX_Vj7ejMA-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 18 Oct 2019, Alexei Starovoitov wrote:
-> On Fri, Oct 18, 2019 at 01:28:21PM +0200, Thomas Gleixner wrote:
-> The concept on local_lock() makes sense to me.
-> The magic macro you're proposing that will convert it to old school
-> preempt_disable() on !RT should hopefully make the changes across
-> net and bpf land mostly mechanical.
-> One thing to clarify:
-> when networking core interacts with bpf we know that bh doesn't migrate,
-> so per-cpu datastructres that bpf side populates are accessed later
-> by networking core when program finishes.
-> Similar thing happens between tracing bits and bpf progs.
-> It feels to me that local_lock() approach should work here as well.
-> napi processing bits will grab it. Later bpf will grab potentially
-> the same lock again.
-> The weird bit that such lock will have numbe_of_lockers >= 1
-> for long periods of time. At least until napi runners won't see
-> any more incoming packets. I'm not sure yet where such local_lock
-> will be placed in the napi code (may be in drivers too for xdp).
-> Does this make sense from RT perspective?
+Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
 
-I don't see why the lock would have more than one locker. The code in BPF
-does
+> On Fri, Oct 18, 2019 at 05:45:26PM -0700, Samudrala, Sridhar wrote:
+>> On 10/18/2019 5:14 PM, Alexei Starovoitov wrote:
+>> > On Fri, Oct 18, 2019 at 11:40:07AM -0700, Samudrala, Sridhar wrote:
+>> > >=20
+>> > > Perf report for "AF_XDP default rxdrop" with patched kernel - mitiga=
+tions ON
+>> > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D
+>> > > Samples: 44K of event 'cycles', Event count (approx.): 38532389541
+>> > > Overhead  Command          Shared Object              Symbol
+>> > >    15.31%  ksoftirqd/28     [i40e]                     [k] i40e_clea=
+n_rx_irq_zc
+>> > >    10.50%  ksoftirqd/28     bpf_prog_80b55d8a76303785  [k] bpf_prog_=
+80b55d8a76303785
+>> > >     9.48%  xdpsock          [i40e]                     [k] i40e_clea=
+n_rx_irq_zc
+>> > >     8.62%  xdpsock          xdpsock                    [.] main
+>> > >     7.11%  ksoftirqd/28     [kernel.vmlinux]           [k] xsk_rcv
+>> > >     5.81%  ksoftirqd/28     [kernel.vmlinux]           [k] xdp_do_re=
+direct
+>> > >     4.46%  xdpsock          bpf_prog_80b55d8a76303785  [k] bpf_prog_=
+80b55d8a76303785
+>> > >     3.83%  xdpsock          [kernel.vmlinux]           [k] xsk_rcv
+>> >=20
+>> > why everything is duplicated?
+>> > Same code runs in different tasks ?
+>>=20
+>> Yes. looks like these functions run from both the app(xdpsock) context a=
+nd ksoftirqd context.
+>>=20
+>> >=20
+>> > >     2.81%  ksoftirqd/28     [kernel.vmlinux]           [k] bpf_xdp_r=
+edirect_map
+>> > >     2.78%  ksoftirqd/28     [kernel.vmlinux]           [k] xsk_map_l=
+ookup_elem
+>> > >     2.44%  xdpsock          [kernel.vmlinux]           [k] xdp_do_re=
+direct
+>> > >     2.19%  ksoftirqd/28     [kernel.vmlinux]           [k] __xsk_map=
+_redirect
+>> > >     1.62%  ksoftirqd/28     [kernel.vmlinux]           [k] xsk_umem_=
+peek_addr
+>> > >     1.57%  xdpsock          [kernel.vmlinux]           [k] xsk_umem_=
+peek_addr
+>> > >     1.32%  ksoftirqd/28     [kernel.vmlinux]           [k] dma_direc=
+t_sync_single_for_cpu
+>> > >     1.28%  xdpsock          [kernel.vmlinux]           [k] bpf_xdp_r=
+edirect_map
+>> > >     1.15%  xdpsock          [kernel.vmlinux]           [k] dma_direc=
+t_sync_single_for_device
+>> > >     1.12%  xdpsock          [kernel.vmlinux]           [k] xsk_map_l=
+ookup_elem
+>> > >     1.06%  xdpsock          [kernel.vmlinux]           [k] __xsk_map=
+_redirect
+>> > >     0.94%  ksoftirqd/28     [kernel.vmlinux]           [k] dma_direc=
+t_sync_single_for_device
+>> > >     0.75%  ksoftirqd/28     [kernel.vmlinux]           [k] __x86_ind=
+irect_thunk_rax
+>> > >     0.66%  ksoftirqd/28     [i40e]                     [k] i40e_clea=
+n_programming_status
+>> > >     0.64%  ksoftirqd/28     [kernel.vmlinux]           [k] net_rx_ac=
+tion
+>> > >     0.64%  swapper          [kernel.vmlinux]           [k] intel_idl=
+e
+>> > >     0.62%  ksoftirqd/28     [i40e]                     [k] i40e_napi=
+_poll
+>> > >     0.57%  xdpsock          [kernel.vmlinux]           [k] dma_direc=
+t_sync_single_for_cpu
+>> > >=20
+>> > > Perf report for "AF_XDP direct rxdrop" with patched kernel - mitigat=
+ions ON
+>> > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D
+>> > > Samples: 46K of event 'cycles', Event count (approx.): 38387018585
+>> > > Overhead  Command          Shared Object             Symbol
+>> > >    21.94%  ksoftirqd/28     [i40e]                    [k] i40e_clean=
+_rx_irq_zc
+>> > >    14.36%  xdpsock          xdpsock                   [.] main
+>> > >    11.53%  ksoftirqd/28     [kernel.vmlinux]          [k] xsk_rcv
+>> > >    11.32%  xdpsock          [i40e]                    [k] i40e_clean=
+_rx_irq_zc
+>> > >     4.02%  xdpsock          [kernel.vmlinux]          [k] xsk_rcv
+>> > >     2.91%  ksoftirqd/28     [kernel.vmlinux]          [k] xdp_do_red=
+irect
+>> > >     2.45%  ksoftirqd/28     [kernel.vmlinux]          [k] xsk_umem_p=
+eek_addr
+>> > >     2.19%  xdpsock          [kernel.vmlinux]          [k] xsk_umem_p=
+eek_addr
+>> > >     2.08%  ksoftirqd/28     [kernel.vmlinux]          [k] bpf_direct=
+_xsk
+>> > >     2.07%  ksoftirqd/28     [kernel.vmlinux]          [k] dma_direct=
+_sync_single_for_cpu
+>> > >     1.53%  ksoftirqd/28     [kernel.vmlinux]          [k] dma_direct=
+_sync_single_for_device
+>> > >     1.39%  xdpsock          [kernel.vmlinux]          [k] dma_direct=
+_sync_single_for_device
+>> > >     1.22%  ksoftirqd/28     [kernel.vmlinux]          [k] xdp_get_xs=
+k_from_qid
+>> > >     1.12%  ksoftirqd/28     [i40e]                    [k] i40e_clean=
+_programming_status
+>> > >     0.96%  ksoftirqd/28     [i40e]                    [k] i40e_napi_=
+poll
+>> > >     0.95%  ksoftirqd/28     [kernel.vmlinux]          [k] net_rx_act=
+ion
+>> > >     0.89%  xdpsock          [kernel.vmlinux]          [k] xdp_do_red=
+irect
+>> > >     0.83%  swapper          [i40e]                    [k] i40e_clean=
+_rx_irq_zc
+>> > >     0.70%  swapper          [kernel.vmlinux]          [k] intel_idle
+>> > >     0.66%  xdpsock          [kernel.vmlinux]          [k] dma_direct=
+_sync_single_for_cpu
+>> > >     0.60%  xdpsock          [kernel.vmlinux]          [k] bpf_direct=
+_xsk
+>> > >     0.50%  ksoftirqd/28     [kernel.vmlinux]          [k] xsk_umem_d=
+iscard_addr
+>> > >=20
+>> > > Based on the perf reports comparing AF_XDP default and direct rxdrop=
+, we can say that
+>> > > AF_XDP direct rxdrop codepath is avoiding the overhead of going thro=
+ugh these functions
+>> > > =09bpf_prog_xxx
+>> > >          bpf_xdp_redirect_map
+>> > > =09xsk_map_lookup_elem
+>> > >          __xsk_map_redirect
+>> > > With AF_XDP direct, xsk_rcv() is directly called via bpf_direct_xsk(=
+) in xdp_do_redirect()
+>> >=20
+>> > I don't think you're identifying the overhead correctly.
+>> > xsk_map_lookup_elem is 1%
+>> > but bpf_xdp_redirect_map() suppose to call __xsk_map_lookup_elem()
+>> > which is a different function:
+>> > ffffffff81493fe0 T __xsk_map_lookup_elem
+>> > ffffffff81492e80 t xsk_map_lookup_elem
+>> >=20
+>> > 10% for bpf_prog_80b55d8a76303785 is huge.
+>> > It's the actual code of the program _without_ any helpers.
+>> > How does the program actually look?
+>>=20
+>> It is the xdp program that is loaded via xsk_load_xdp_prog() in tools/li=
+b/bpf/xsk.c
+>> https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/to=
+ols/lib/bpf/xsk.c#n268
+>
+> I see. Looks like map_gen_lookup was never implemented for xskmap.
+> How about adding it first the way array_map_gen_lookup() is implemented?
+> This will easily give 2x perf gain.
 
-	preempt_disable();
-	some operation
-	preempt_enable();
+I guess we should implement this for devmaps as well now that we allow
+lookups into those.
 
-So how should that gain more than one context per CPU locking it?
+However, in this particular example, the lookup from BPF is not actually
+needed, since bpf_redirect_map() will return a configurable error value
+when the map lookup fails (for exactly this use case).
 
-> > > BPF also doesn't have unbound runtime.
-> > > So two above issues are actually non-issues.
-> > 
-> > That'd be nice :)
-> > 
-> > Anyway, we'll have a look whether this can be solved with local locks which
-> > would be nice, but that still does not solve the issue with the non_owner
-> > release of the rwsem.
-> 
-> Sure. We can discuss this separately.
-> up_read_non_owner is used only by build_id mode of stack collectors.
-> We can disable it for RT for long time. We're using stack with build_id heavily
-> and have no plans to use RT. I believe datacenters, in general, are not going
-> to use RT for foreseeable future, so a trade off between stack with build_id
-> vs RT, I think, is acceptable.
-> 
-> But reading your other replies the gradual approach we're discussing here
-> doesn't sound acceptable ?
+So replacing:
 
-I don't know how you read anything like that out of my replies. I clearly
-said that we are interested in supporting BPF and you are replying to a
-sentence where I clearly said:
+if (bpf_map_lookup_elem(&xsks_map, &index))
+    return bpf_redirect_map(&xsks_map, index, 0);
 
-  Anyway, we'll have a look whether this can be solved with local locks...
+with simply
 
-> And you guys insist on disabling bpf under RT just to merge some out of
-> tree code ?
+return bpf_redirect_map(&xsks_map, index, XDP_PASS);
 
-Where did I insist on that?
+would save the call to xsk_map_lookup_elem().
 
-Also you might have to accept that there is a world outside of BPF and that
-the 'some out of tree code' which we are talking about is the last part of
-a 15+ years effort which significantly helped to bring the Linux kernel
-into the shape it is today.
+-Toke
 
-> I find this rude and not acceptable.
-
-I call it a pragmatic approach to solve a real world problem.
-
-> If RT wants to get merged it should be disabled when BPF is on
-> and not the other way around.
-
-Of course I could have done that right away without even talking to
-you. That'd have been dishonest and sneaky.
-
-It's sad that the discussion between the two of us which started perfectly
-fine on a purely technical level had to degrade this way.
-
-If your attitude of wilfully misinterpreting my mails and intentions
-continues, I'm surely going this route.
-
-Thanks,
-
-	tglx
