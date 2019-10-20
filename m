@@ -2,112 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5177ADDD42
-	for <lists+bpf@lfdr.de>; Sun, 20 Oct 2019 10:14:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69CABDDD6C
+	for <lists+bpf@lfdr.de>; Sun, 20 Oct 2019 11:06:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726016AbfJTIOC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 20 Oct 2019 04:14:02 -0400
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:43218 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725893AbfJTIOB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 20 Oct 2019 04:14:01 -0400
-Received: by mail-ot1-f67.google.com with SMTP id o44so8480490ota.10;
-        Sun, 20 Oct 2019 01:14:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HpUJVWaqyr08ZCxugzApAFgoYaCw9VplNEWkq3ounSQ=;
-        b=h3KSuO5I6Q4YtqGnxsuuWQCnpAp2/7m4Whj0spUjXefNFr450rV51MPPFDJhqqQeto
-         2UyBVKqIsMWCHPJJXQLC584qBqg1tzJLzPvRiuBudj+HTJNfqHaXMxQ1WrEOPsVzZ/Re
-         CGk2UyvtOXOdu5qWq/A9OSySQ30J2qntUxQKsuyX4sXi/pymZ1HgKrvt4EYVD1raNrXO
-         P2c6exvAuOXqALrqL1ja02f4GYcpV2xOT+Q6Osutwq1nTxQmfX9O0VmqLD+Y9rBFF2VY
-         Hf0cP2AxZEMu1VdasOVQ39e2IyCIhe7pLnhUQ+i8i5bv5WrDX/5fAk3a8EObILuc4gp6
-         njWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HpUJVWaqyr08ZCxugzApAFgoYaCw9VplNEWkq3ounSQ=;
-        b=J+9MEM73NlnrUsNjIhJAnq15qXc5e8ocsLse7w5H4QC16KPHIziDKjfvJ0u2NJd5AP
-         ZWuSyKGz/gehZnaxbyROuKM0f9RbmbCNrVSyV2qlg6gkT0ddrp5xqSKiazImzMnF652Y
-         pVz6vT7o6qPHH3QHklll+j8m68dkhvaBtNYEn01SXKw2sRgy2Rt6rGhoRwYFp9DKUd11
-         X8ZtpvJBY/H2oSrXZhTWvdxbXiflm7AlcPV013z97NY7rMg9PZr+N2D4uFIkgwSFX7Gf
-         8EajMaNhNJwHqxsZO7+lLuMiqUgx0nsCNGzmNxtHzKUYjuwgLmMDxKYvx6FGh3VsfyPe
-         U53A==
-X-Gm-Message-State: APjAAAXsblcvFELNr5CWQRbK4Qhc3OnGF8NkGN0uwHaz73l7XW7tqNOM
-        y22NrJlcRDuMUDDOOb8oNjfx8zrfI/xQVlNdv2PZI7JFk9hZFQ==
-X-Google-Smtp-Source: APXvYqxSRXNV3xq2Yj2t3CLZGyXdvMVnlRan+Nss2scChXmvU8RNwm1INgaKOiQoXhkvM4fymXKK2ua7UINTkF8xbdI=
-X-Received: by 2002:a9d:286:: with SMTP id 6mr14288527otl.192.1571559240753;
- Sun, 20 Oct 2019 01:14:00 -0700 (PDT)
-MIME-Version: 1.0
-References: <1571391220-22835-1-git-send-email-magnus.karlsson@intel.com> <20191018232756.akn4yvyxmi63dl5b@ast-mbp>
-In-Reply-To: <20191018232756.akn4yvyxmi63dl5b@ast-mbp>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Sun, 20 Oct 2019 10:13:49 +0200
-Message-ID: <CAJ8uoz292vhqb=L0khWeUs89HF42d+UAgzb1z1tf8my1PaU5Fg@mail.gmail.com>
-Subject: Re: [PATCH bpf v2] xsk: improve documentation for AF_XDP
+        id S1726019AbfJTJGi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 20 Oct 2019 05:06:38 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:60111 "EHLO
+        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725893AbfJTJGi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 20 Oct 2019 05:06:38 -0400
+Received: from p5b06da22.dip0.t-ipconnect.de ([91.6.218.34] helo=nanos)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1iM7AK-0006wx-Kg; Sun, 20 Oct 2019 11:06:20 +0200
+Date:   Sun, 20 Oct 2019 11:06:13 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Magnus Karlsson <magnus.karlsson@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+cc:     David Miller <davem@davemloft.net>,
+        Sebastian Sewior <bigeasy@linutronix.de>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Clark Williams <williams@redhat.com>
+Subject: Re: [PATCH] BPF: Disable on PREEMPT_RT
+In-Reply-To: <20191018230540.l6e4jtrlu44hk7q5@ast-mbp>
+Message-ID: <alpine.DEB.2.21.1910201043460.2090@nanos.tec.linutronix.de>
+References: <20191017090500.ienqyium2phkxpdo@linutronix.de> <20191017145358.GA26267@pc-63.home> <20191017154021.ndza4la3hntk4d4o@linutronix.de> <20191017.132548.2120028117307856274.davem@davemloft.net> <alpine.DEB.2.21.1910172342090.1869@nanos.tec.linutronix.de>
+ <CAADnVQJPJubTx0TxcXnbCfavcQDZeu8VTnYYpa8JYpWw9Ze4qg@mail.gmail.com> <alpine.DEB.2.21.1910180152110.1869@nanos.tec.linutronix.de> <20191018055222.cwx5dmj6pppqzcpc@ast-mbp> <alpine.DEB.2.21.1910181256120.1869@nanos.tec.linutronix.de>
+ <20191018230540.l6e4jtrlu44hk7q5@ast-mbp>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Oct 19, 2019 at 11:48 AM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Fri, Oct 18, 2019 at 11:33:40AM +0200, Magnus Karlsson wrote:
-> > +
-> > +   #include <linux/bpf.h>
-> > +   #include "bpf_helpers.h"
-> > +
-> > +   #define MAX_SOCKS 16
-> > +
-> > +   struct {
-> > +        __uint(type, BPF_MAP_TYPE_XSKMAP);
-> > +        __uint(max_entries, MAX_SOCKS);
-> > +        __uint(key_size, sizeof(int));
-> > +        __uint(value_size, sizeof(int));
-> > +   } xsks_map SEC(".maps");
-> > +
-> > +   struct {
-> > +        __uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
-> > +        __uint(max_entries, 1);
-> > +        __type(key, int);
-> > +        __type(value, unsigned int);
-> > +   } rr_map SEC(".maps");
->
-> hmm. does xsks_map compile?
+On Fri, 18 Oct 2019, Alexei Starovoitov wrote:
+> On Fri, Oct 18, 2019 at 01:28:21PM +0200, Thomas Gleixner wrote:
+> The concept on local_lock() makes sense to me.
+> The magic macro you're proposing that will convert it to old school
+> preempt_disable() on !RT should hopefully make the changes across
+> net and bpf land mostly mechanical.
+> One thing to clarify:
+> when networking core interacts with bpf we know that bh doesn't migrate,
+> so per-cpu datastructres that bpf side populates are accessed later
+> by networking core when program finishes.
+> Similar thing happens between tracing bits and bpf progs.
+> It feels to me that local_lock() approach should work here as well.
+> napi processing bits will grab it. Later bpf will grab potentially
+> the same lock again.
+> The weird bit that such lock will have numbe_of_lockers >= 1
+> for long periods of time. At least until napi runners won't see
+> any more incoming packets. I'm not sure yet where such local_lock
+> will be placed in the napi code (may be in drivers too for xdp).
+> Does this make sense from RT perspective?
 
-Yes. Actually, I wrote a new sample to demonstrate this feature and to
-test the code above. I will send that patch set (contains some small
-additions to libbpf also to be able to support this) to bpf-next.
-Though, if I used the __type declarations of the rr_map PERCPU_ARRAY I
-got this warning: "pr_warning("Error in
-bpf_create_map_xattr(%s):%s(%d). Retrying without BTF.\n")", so I had
-to change it to the type above that is also used for SOCKMAP. Some
-enablement that is missing for XSKMAP? Have not dug into it.
+I don't see why the lock would have more than one locker. The code in BPF
+does
 
-> > +
-> > +   SEC("xdp_sock") int xdp_sock_prog(struct xdp_md *ctx)
-> > +   {
-> > +     int key = 0, idx;
-> > +     unsigned int *rr;
-> > +
-> > +     rr = bpf_map_lookup_elem(&rr_map, &key);
-> > +     if (!rr)
-> > +        return XDP_ABORTED;
->
-> could you please use global data and avoid lookup?
-> The run-time will be much faster.
+	preempt_disable();
+	some operation
+	preempt_enable();
 
-Good idea. Will do and change the new sample app too.
+So how should that gain more than one context per CPU locking it?
+
+> > > BPF also doesn't have unbound runtime.
+> > > So two above issues are actually non-issues.
+> > 
+> > That'd be nice :)
+> > 
+> > Anyway, we'll have a look whether this can be solved with local locks which
+> > would be nice, but that still does not solve the issue with the non_owner
+> > release of the rwsem.
+> 
+> Sure. We can discuss this separately.
+> up_read_non_owner is used only by build_id mode of stack collectors.
+> We can disable it for RT for long time. We're using stack with build_id heavily
+> and have no plans to use RT. I believe datacenters, in general, are not going
+> to use RT for foreseeable future, so a trade off between stack with build_id
+> vs RT, I think, is acceptable.
+> 
+> But reading your other replies the gradual approach we're discussing here
+> doesn't sound acceptable ?
+
+I don't know how you read anything like that out of my replies. I clearly
+said that we are interested in supporting BPF and you are replying to a
+sentence where I clearly said:
+
+  Anyway, we'll have a look whether this can be solved with local locks...
+
+> And you guys insist on disabling bpf under RT just to merge some out of
+> tree code ?
+
+Where did I insist on that?
+
+Also you might have to accept that there is a world outside of BPF and that
+the 'some out of tree code' which we are talking about is the last part of
+a 15+ years effort which significantly helped to bring the Linux kernel
+into the shape it is today.
+
+> I find this rude and not acceptable.
+
+I call it a pragmatic approach to solve a real world problem.
+
+> If RT wants to get merged it should be disabled when BPF is on
+> and not the other way around.
+
+Of course I could have done that right away without even talking to
+you. That'd have been dishonest and sneaky.
+
+It's sad that the discussion between the two of us which started perfectly
+fine on a purely technical level had to degrade this way.
+
+If your attitude of wilfully misinterpreting my mails and intentions
+continues, I'm surely going this route.
+
+Thanks,
+
+	tglx
