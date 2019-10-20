@@ -2,114 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E4389DDFB3
-	for <lists+bpf@lfdr.de>; Sun, 20 Oct 2019 19:25:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B219BDE027
+	for <lists+bpf@lfdr.de>; Sun, 20 Oct 2019 21:12:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726561AbfJTRZL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 20 Oct 2019 13:25:11 -0400
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:36645 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726556AbfJTRZK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 20 Oct 2019 13:25:10 -0400
-Received: by mail-pf1-f194.google.com with SMTP id y22so6841033pfr.3;
-        Sun, 20 Oct 2019 10:25:09 -0700 (PDT)
+        id S1726687AbfJTTMN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 20 Oct 2019 15:12:13 -0400
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:35459 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726251AbfJTTMN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 20 Oct 2019 15:12:13 -0400
+Received: by mail-ot1-f67.google.com with SMTP id z6so9200196otb.2;
+        Sun, 20 Oct 2019 12:12:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=bfdCbxekAsldwt8m5pwg+qcM6L4Gc2Nz/dBiQdkpxT4=;
-        b=PHl01K37HlDkd3UgvSZjOWWJatkA2fo2yhPQp4UdQb4kbxo1sq/ljBLWQfKCr7SRgT
-         4OfvaGk9f6kGFv3G4p7hb8tS8zs4EmWblG6uZiYdvxDGEfFvDqPswjiEeyuuixSZc69t
-         Q9uI1Nyz1tJJR/DzT+Jjr4Ficf9C8aavKMD3K1VJ1jEUNFrb6KcViG4pj6fvnkNmQnDB
-         oiE9CTudGFTd+URAN0gwrSX4nMciqI+qed4kf80Hp2TC+Bsq3xpTo/x+t6wgd/yMXaps
-         RI6lmD8vRzafYvV/ft0ANoZPg4h0Ekn28O4v23BoYwfOMT5hWGddanSQobUIMAYy8NMZ
-         kYTw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Qf/sVe4OaaSu5coc+u2XBYohKmJFVapNYY/Vba9pEeg=;
+        b=e/KmxsLe64muElk1bHBqvk5BB6G4+df8Hx6+RkiEOT+mYKGx/nzW7DGQz3DVwZ+Xo2
+         cR0+tneiIJV8M4fWTOpjqfUMpJh3/QdT42kHox7auZERy1bTOmHv/nqBrH2EKNzSE1iq
+         VUM7R2liP4dwuTnCrPtvWlSGomr1A57WGANS8ls+hCB245620RAvWw16fMi2ssgUH13o
+         t7wewyGCZ+1RYOikA6nGZcQ1zR4UuAmts7SeJ4Npf3SXoxK9C8ZAwP9VSlcRf3iQLOn4
+         qAm3R21a3qz0bmWdgp/wb6nZwPBYLK79HFF0mMbE4jOqOYIc9QI/uFAstsNZche95+D+
+         duHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=bfdCbxekAsldwt8m5pwg+qcM6L4Gc2Nz/dBiQdkpxT4=;
-        b=r7qvUU+kqymPIoTayOBR+l0MNUyIDA9WlttWjOviH+HoiUTvjyYcmpxz1C99lsThHI
-         SHkVK5uM76QKwGSN1ce1H0TX1jLjdrVdUuS1132qeSX0oS84DMAw6k1ppCtEjBB3XF/v
-         Swe0OgXbNW8NEdiN22o3l5u9QtFvtS+rbbz/oyI7gFsBJhKKQ/4CQjsWwiXoe1R4sSEV
-         IPjRHjlwIHgYn2WELWv2VJ/iPIrgQjiHnoBiHP+NyV8LK4/VyWmrRN03z6Zdzx5Lmtzx
-         uYkEUVWCzSdWfbBM1t7l9N9ZnZXil7sEZNlid0W1gWkJgE4eDGw8e9DoYW4GIPK2Iu2p
-         UtVw==
-X-Gm-Message-State: APjAAAXe/B6UpEroK036A8ki5+7cc+8dhHKRYdnuAnZoQ5zSfX7yKHxi
-        rpxZ+9SNW8hgMeMDPXHsI0k=
-X-Google-Smtp-Source: APXvYqxe+eXydeDD7Rlvl4Gux1bcp9C4lbIrbHlqNHXEp9Ykn1NBoiaoiF4CPg2ene8PgXS7sLjeyw==
-X-Received: by 2002:a63:7405:: with SMTP id p5mr8956730pgc.264.1571592308594;
-        Sun, 20 Oct 2019 10:25:08 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:180::421e])
-        by smtp.gmail.com with ESMTPSA id w25sm12048831pfi.60.2019.10.20.10.25.06
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 20 Oct 2019 10:25:07 -0700 (PDT)
-Date:   Sun, 20 Oct 2019 10:25:05 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Qf/sVe4OaaSu5coc+u2XBYohKmJFVapNYY/Vba9pEeg=;
+        b=Bodw7nF6K3emXiCyu6ynkeNmIwW3SwzxL3l2WHyNypHiKiYHUAFGk9oQRM2UWlnkOz
+         vifEN6BoQKKNR+GPV6pbyKe6Iaa0LtmedH1ztsNr6A2wFNzSwTa7qU770+SATh//Bapp
+         IDC0IoI/RIwGGv8gk0s/+kc9r29LlPhdCxlQtpyqFhax6j4kh0bK8hM9lXsfWl3RH9lL
+         8qa/LOomz9kc3NcenX0RyBnCIRqNjrownj3nMSFyp7uQJ+ihFvT4Rw9AD2MXJfx8U3Tv
+         hMLTSNXntkoT12C6gC8CvrAtBlItCzebNQy73yJy7XHJh69Co2bwesGPJubxKslKBNWf
+         aGoA==
+X-Gm-Message-State: APjAAAW8HSYGaDgP0k2JPmpAgzJJ7xene4wYttzJSwjuOhiSQbXeN+lH
+        lgFHSvCLsX6m8OsNT2u94GYknApKE89pbYdw86c=
+X-Google-Smtp-Source: APXvYqzhVFAdFslCNWIJXXjZu/NkaMPU3XVTcluJ7My62pWakGb26uJDD5Y5tarArW0KRgR/rg7bEzq2Kg3pPWBM6Fs=
+X-Received: by 2002:a9d:6247:: with SMTP id i7mr15903045otk.139.1571598732021;
+ Sun, 20 Oct 2019 12:12:12 -0700 (PDT)
+MIME-Version: 1.0
+References: <1571391220-22835-1-git-send-email-magnus.karlsson@intel.com>
+ <20191018232756.akn4yvyxmi63dl5b@ast-mbp> <CAJ8uoz292vhqb=L0khWeUs89HF42d+UAgzb1z1tf8my1PaU5Fg@mail.gmail.com>
+ <20191020172503.qeee2olqxxnynm6v@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20191020172503.qeee2olqxxnynm6v@ast-mbp.dhcp.thefacebook.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Sun, 20 Oct 2019 21:12:01 +0200
+Message-ID: <CAJ8uoz18+4fFP_JMu0kzFehZceATs5aAD8VUMQY2ax-S2=7Pvg@mail.gmail.com>
+Subject: Re: [PATCH bpf v2] xsk: improve documentation for AF_XDP
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     Magnus Karlsson <magnus.karlsson@intel.com>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Network Development <netdev@vger.kernel.org>,
         Jonathan Lemon <jonathan.lemon@gmail.com>,
         "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
         bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf v2] xsk: improve documentation for AF_XDP
-Message-ID: <20191020172503.qeee2olqxxnynm6v@ast-mbp.dhcp.thefacebook.com>
-References: <1571391220-22835-1-git-send-email-magnus.karlsson@intel.com>
- <20191018232756.akn4yvyxmi63dl5b@ast-mbp>
- <CAJ8uoz292vhqb=L0khWeUs89HF42d+UAgzb1z1tf8my1PaU5Fg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJ8uoz292vhqb=L0khWeUs89HF42d+UAgzb1z1tf8my1PaU5Fg@mail.gmail.com>
-User-Agent: NeoMutt/20180223
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Oct 20, 2019 at 10:13:49AM +0200, Magnus Karlsson wrote:
-> On Sat, Oct 19, 2019 at 11:48 AM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
+On Sun, Oct 20, 2019 at 7:25 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Sun, Oct 20, 2019 at 10:13:49AM +0200, Magnus Karlsson wrote:
+> > On Sat, Oct 19, 2019 at 11:48 AM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Fri, Oct 18, 2019 at 11:33:40AM +0200, Magnus Karlsson wrote:
+> > > > +
+> > > > +   #include <linux/bpf.h>
+> > > > +   #include "bpf_helpers.h"
+> > > > +
+> > > > +   #define MAX_SOCKS 16
+> > > > +
+> > > > +   struct {
+> > > > +        __uint(type, BPF_MAP_TYPE_XSKMAP);
+> > > > +        __uint(max_entries, MAX_SOCKS);
+> > > > +        __uint(key_size, sizeof(int));
+> > > > +        __uint(value_size, sizeof(int));
+> > > > +   } xsks_map SEC(".maps");
+> > > > +
+> > > > +   struct {
+> > > > +        __uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
+> > > > +        __uint(max_entries, 1);
+> > > > +        __type(key, int);
+> > > > +        __type(value, unsigned int);
+> > > > +   } rr_map SEC(".maps");
+> > >
+> > > hmm. does xsks_map compile?
 > >
-> > On Fri, Oct 18, 2019 at 11:33:40AM +0200, Magnus Karlsson wrote:
-> > > +
-> > > +   #include <linux/bpf.h>
-> > > +   #include "bpf_helpers.h"
-> > > +
-> > > +   #define MAX_SOCKS 16
-> > > +
-> > > +   struct {
-> > > +        __uint(type, BPF_MAP_TYPE_XSKMAP);
-> > > +        __uint(max_entries, MAX_SOCKS);
-> > > +        __uint(key_size, sizeof(int));
-> > > +        __uint(value_size, sizeof(int));
-> > > +   } xsks_map SEC(".maps");
-> > > +
-> > > +   struct {
-> > > +        __uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
-> > > +        __uint(max_entries, 1);
-> > > +        __type(key, int);
-> > > +        __type(value, unsigned int);
-> > > +   } rr_map SEC(".maps");
-> >
-> > hmm. does xsks_map compile?
-> 
-> Yes. Actually, I wrote a new sample to demonstrate this feature and to
-> test the code above. I will send that patch set (contains some small
-> additions to libbpf also to be able to support this) to bpf-next.
-> Though, if I used the __type declarations of the rr_map PERCPU_ARRAY I
-> got this warning: "pr_warning("Error in
-> bpf_create_map_xattr(%s):%s(%d). Retrying without BTF.\n")", so I had
-> to change it to the type above that is also used for SOCKMAP. Some
-> enablement that is missing for XSKMAP? Have not dug into it.
+> > Yes. Actually, I wrote a new sample to demonstrate this feature and to
+> > test the code above. I will send that patch set (contains some small
+> > additions to libbpf also to be able to support this) to bpf-next.
+> > Though, if I used the __type declarations of the rr_map PERCPU_ARRAY I
+> > got this warning: "pr_warning("Error in
+> > bpf_create_map_xattr(%s):%s(%d). Retrying without BTF.\n")", so I had
+> > to change it to the type above that is also used for SOCKMAP. Some
+> > enablement that is missing for XSKMAP? Have not dug into it.
+>
+> Ahh. Right. xskmap explicitly prohibits BTF for key/value.
+> const struct bpf_map_ops xsk_map_ops = {
+>         ...
+>         .map_check_btf = map_check_no_btf,
+> };
+> I guess it's time to add support for it.
 
-Ahh. Right. xskmap explicitly prohibits BTF for key/value.
-const struct bpf_map_ops xsk_map_ops = {
-        ...
-        .map_check_btf = map_check_no_btf,
-};
-I guess it's time to add support for it.
+Agreed. I will implement that in a separate patch set for bpf-next and
+include a patch to update the documentation too in that patch set.
 
+>
