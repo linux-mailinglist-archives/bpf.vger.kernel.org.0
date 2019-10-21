@@ -2,136 +2,228 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E692ADF5DC
-	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2019 21:20:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 050CDDF685
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2019 22:10:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730115AbfJUTSq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Oct 2019 15:18:46 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:33426 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730057AbfJUTSq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Oct 2019 15:18:46 -0400
-Received: by mail-qt1-f196.google.com with SMTP id r5so22862502qtd.0;
-        Mon, 21 Oct 2019 12:18:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VfnDb/zq0ubkvSmBH9Xjbewqwm4bLsA3kSGFNJnQEKk=;
-        b=KsX5yEjftCnBCXyDmEypT+gOhpwexr6tRUxlQuJTdqsvus9V6gAzlxhtmK0GlL4vS3
-         DXtXCuQUipnNLsZybWX8iqQYYZj5i5sfc3nGLRbYzweMaSfzAtO4LxQH5HEO818TWZrW
-         51a/mfMfwc/A1KxrLgNVaDO4nN0lw/uje82gN/2weQg//DxQrJRGwhjturSZCYFLscxq
-         dksjFqQLM6hze7MEiQulkMCXtnr6l4IcqK92um1+xGFOgmkSEW0HTa+Q3LDtayXamWvh
-         ARF8ITb/gi9wcpAZ3lxE0CkaUGQbtChptkS7Nm0kNDmk9k7r7Yc4kNmVprR9sjY0qJ3P
-         W+fQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VfnDb/zq0ubkvSmBH9Xjbewqwm4bLsA3kSGFNJnQEKk=;
-        b=E441JxV0bZCf+62SizU1AJYzsuGO5SzBA9ZzmfEOZi6V4OrHbB0uq19a9HZB0Fl3R5
-         lDaFuATgisM2m3twvfY0aoPBrqoX/uNl3y1x69SzYu2K1N0g1FaB8QRFSeQ7auQkVjWy
-         FqQdlmWd8AdlqMTcQsJlC42xOIWSGRHd8W20sJ+kzxMOGLO5mm7IEm+MmlytcfQP5TCC
-         RSsaeCaKNhGMLz4w8d+Y5bK7HoKq5ppbf/KBs8YU1xh37V5+fTz+jnXvPfjsMp/oASTu
-         cgpo93QAUKx01W8RM2XXAASeZnmcFKJvF0TxAvpQQGPttWhRmlf/zLzftOb/wWy7WhBY
-         Q2dA==
-X-Gm-Message-State: APjAAAXmug4pW93IjRkxlezWMfetKFBT7Mmy6pe4cs/tw3ct2enviFtC
-        Dp0tJn6gAWQmjW3HguHNCs2drBurE9RjsRtzYxQdZOWT
-X-Google-Smtp-Source: APXvYqwSsQu5LcFTruiehJrueTCy/e9ggYWyd/Bx2OmrKgPfS0PuebNPttFRa5qeXFG7YKgNm+vKox4ourc6vKqsUCc=
-X-Received: by 2002:ac8:1242:: with SMTP id g2mr25772527qtj.141.1571685524859;
- Mon, 21 Oct 2019 12:18:44 -0700 (PDT)
+        id S1730267AbfJUUK2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Oct 2019 16:10:28 -0400
+Received: from mga12.intel.com ([192.55.52.136]:57609 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726672AbfJUUK2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Oct 2019 16:10:28 -0400
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 21 Oct 2019 13:10:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.67,324,1566889200"; 
+   d="scan'208";a="201468756"
+Received: from unknown (HELO [10.241.228.144]) ([10.241.228.144])
+  by orsmga006.jf.intel.com with ESMTP; 21 Oct 2019 13:10:26 -0700
+Subject: Re: [Intel-wired-lan] FW: [PATCH bpf-next 2/4] xsk: allow AF_XDP
+ sockets to receive packets directly from a queue
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Netdev <netdev@vger.kernel.org>,
+        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
+        "Herbert, Tom" <tom.herbert@intel.com>,
+        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>
+References: <1570515415-45593-3-git-send-email-sridhar.samudrala@intel.com>
+ <CAADnVQ+XxmvY0cs8MYriMMd7=2TSEm4zCtB+fs2vkwdUY6UgAQ@mail.gmail.com>
+ <3ED8E928C4210A4289A677D2FEB48235140134CE@fmsmsx111.amr.corp.intel.com>
+ <2bc26acd-170d-634e-c066-71557b2b3e4f@intel.com>
+ <CAADnVQ+qq6RLMjh5bB1ugXP5p7vYM2F1fLGFQ2pL=2vhCLiBdA@mail.gmail.com>
+ <2032d58c-916f-d26a-db14-bd5ba6ad92b9@intel.com>
+ <CAADnVQ+CH1YM52+LfybLS+NK16414Exrvk1QpYOF=HaT4KRaxg@mail.gmail.com>
+ <acf69635-5868-f876-f7da-08954d1f690e@intel.com>
+ <20191019001449.fk3gnhih4nx724pm@ast-mbp>
+ <6f281517-3785-ce46-65de-e2f78576783b@intel.com>
+ <20191019022525.w5xbwkav2cpqkfwi@ast-mbp> <877e4zd8py.fsf@toke.dk>
+ <CAJ+HfNj07FwmU2GGpUYw56PRwu4pHyHNSkbCOogbMB5zB2QqWA@mail.gmail.com>
+From:   "Samudrala, Sridhar" <sridhar.samudrala@intel.com>
+Message-ID: <7642a460-9ba3-d9f7-6cf8-aac45c7eef0d@intel.com>
+Date:   Mon, 21 Oct 2019 13:10:26 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-References: <20191017150032.14359-1-cneirabustos@gmail.com>
- <20191017150032.14359-5-cneirabustos@gmail.com> <d88ce3ca-d235-cd9c-c1a9-c2d01a01541d@fb.com>
- <CAEf4BzbsDbxjALMJ119B-nweD1xEZ_PHX9r9k8qDpekraaHR2w@mail.gmail.com> <20191021191449.GA16484@ebpf00.byteswizards.com>
-In-Reply-To: <20191021191449.GA16484@ebpf00.byteswizards.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 21 Oct 2019 12:18:33 -0700
-Message-ID: <CAEf4BzY5ZMQJYwU5p-r4bnOcZLGsR1_1iY3-0KKnZyttRbyr6g@mail.gmail.com>
-Subject: Re: [PATCH v14 4/5] tools/testing/selftests/bpf: Add self-tests for
- new helper.
-To:     Carlos Antonio Neira Bustos <cneirabustos@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "ebiederm@xmission.com" <ebiederm@xmission.com>,
-        "brouer@redhat.com" <brouer@redhat.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAJ+HfNj07FwmU2GGpUYw56PRwu4pHyHNSkbCOogbMB5zB2QqWA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Oct 21, 2019 at 12:14 PM Carlos Antonio Neira Bustos
-<cneirabustos@gmail.com> wrote:
->
-> On Mon, Oct 21, 2019 at 11:20:01AM -0700, Andrii Nakryiko wrote:
-> > On Sat, Oct 19, 2019 at 1:58 AM Yonghong Song <yhs@fb.com> wrote:
-> > >
-> > >
-> > >
-> > > On 10/17/19 8:00 AM, Carlos Neira wrote:
-> > > > Self tests added for new helper
-> > > >
-> > > > Signed-off-by: Carlos Neira <cneirabustos@gmail.com>
-> > > > ---
-> > > >   .../bpf/prog_tests/get_ns_current_pid_tgid.c  | 96 +++++++++++++++++++
-> > > >   .../bpf/progs/get_ns_current_pid_tgid_kern.c  | 53 ++++++++++
-> >
-> > It looks like typical naming convention is:
-> >
-> > prog_test/<something>.c
-> > progs/test_<something>.c
-> >
-> > Let's keep this consistent. I'm about to do a bit smarter Makefile
-> > that will capture this convention, so it's good to have less exception
-> > to create. Thanks!
-> >
-> > Otherwise, besides what Yonghong mentioned, this look good to me.
-> >
-> >
-> > > >   2 files changed, 149 insertions(+)
-> > > >   create mode 100644 tools/testing/selftests/bpf/prog_tests/get_ns_current_pid_tgid.c
-> > > >   create mode 100644 tools/testing/selftests/bpf/progs/get_ns_current_pid_tgid_kern.c
-> > > >
-> >
-> > [...]
-> >
-> > > > +     prog = bpf_object__find_program_by_title(obj, probe_name);
-> > > > +     if (CHECK(!prog, "find_probe",
-> > > > +               "prog '%s' not found\n", probe_name))
-> > > > +             goto cleanup;
-> > > > +
-> > > > +     bpf_program__set_type(prog, BPF_PROG_TYPE_RAW_TRACEPOINT);
-> > >
-> > > Do we need this? I thought libbpf should automatically
-> > > infer program type from section name?
-> >
-> > We used to, until the patch set that Daniel landed today. Now it can be dropped.
-> >
-> > >
-> > > > +
-> > > > +     load_attr.obj = obj;
-> > > > +     load_attr.log_level = 0;
-> > > > +     load_attr.target_btf_path = NULL;
-> > > > +     err = bpf_object__load_xattr(&load_attr);
-> > > > +     if (CHECK(err, "obj_load",
-> > > > +               "failed to load prog '%s': %d\n",
-> > > > +               probe_name, err))
-> > > > +             goto cleanup;
-> > >
-> >
-> > [...]
->
-> Thanks Andrii,
-> I have a doubt, I don't find in prog_tests/rdonly_map.c  where is "test_rdo.bss" defined ?, is called in line 43 but I'm missing how to is it used as I don't see it defined.
->
+On 10/20/2019 10:12 AM, Björn Töpel wrote:
+> On Sun, 20 Oct 2019 at 12:15, Toke Høiland-Jørgensen <toke@redhat.com> wrote:
+>>
+>> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+>>
+>>> On Fri, Oct 18, 2019 at 05:45:26PM -0700, Samudrala, Sridhar wrote:
+>>>> On 10/18/2019 5:14 PM, Alexei Starovoitov wrote:
+>>>>> On Fri, Oct 18, 2019 at 11:40:07AM -0700, Samudrala, Sridhar wrote:
+>>>>>>
+>>>>>> Perf report for "AF_XDP default rxdrop" with patched kernel - mitigations ON
+>>>>>> ==========================================================================
+>>>>>> Samples: 44K of event 'cycles', Event count (approx.): 38532389541
+>>>>>> Overhead  Command          Shared Object              Symbol
+>>>>>>     15.31%  ksoftirqd/28     [i40e]                     [k] i40e_clean_rx_irq_zc
+>>>>>>     10.50%  ksoftirqd/28     bpf_prog_80b55d8a76303785  [k] bpf_prog_80b55d8a76303785
+>>>>>>      9.48%  xdpsock          [i40e]                     [k] i40e_clean_rx_irq_zc
+>>>>>>      8.62%  xdpsock          xdpsock                    [.] main
+>>>>>>      7.11%  ksoftirqd/28     [kernel.vmlinux]           [k] xsk_rcv
+>>>>>>      5.81%  ksoftirqd/28     [kernel.vmlinux]           [k] xdp_do_redirect
+>>>>>>      4.46%  xdpsock          bpf_prog_80b55d8a76303785  [k] bpf_prog_80b55d8a76303785
+>>>>>>      3.83%  xdpsock          [kernel.vmlinux]           [k] xsk_rcv
+>>>>>
+>>>>> why everything is duplicated?
+>>>>> Same code runs in different tasks ?
+>>>>
+>>>> Yes. looks like these functions run from both the app(xdpsock) context and ksoftirqd context.
+>>>>
+>>>>>
+>>>>>>      2.81%  ksoftirqd/28     [kernel.vmlinux]           [k] bpf_xdp_redirect_map
+>>>>>>      2.78%  ksoftirqd/28     [kernel.vmlinux]           [k] xsk_map_lookup_elem
+>>>>>>      2.44%  xdpsock          [kernel.vmlinux]           [k] xdp_do_redirect
+>>>>>>      2.19%  ksoftirqd/28     [kernel.vmlinux]           [k] __xsk_map_redirect
+>>>>>>      1.62%  ksoftirqd/28     [kernel.vmlinux]           [k] xsk_umem_peek_addr
+>>>>>>      1.57%  xdpsock          [kernel.vmlinux]           [k] xsk_umem_peek_addr
+>>>>>>      1.32%  ksoftirqd/28     [kernel.vmlinux]           [k] dma_direct_sync_single_for_cpu
+>>>>>>      1.28%  xdpsock          [kernel.vmlinux]           [k] bpf_xdp_redirect_map
+>>>>>>      1.15%  xdpsock          [kernel.vmlinux]           [k] dma_direct_sync_single_for_device
+>>>>>>      1.12%  xdpsock          [kernel.vmlinux]           [k] xsk_map_lookup_elem
+>>>>>>      1.06%  xdpsock          [kernel.vmlinux]           [k] __xsk_map_redirect
+>>>>>>      0.94%  ksoftirqd/28     [kernel.vmlinux]           [k] dma_direct_sync_single_for_device
+>>>>>>      0.75%  ksoftirqd/28     [kernel.vmlinux]           [k] __x86_indirect_thunk_rax
+>>>>>>      0.66%  ksoftirqd/28     [i40e]                     [k] i40e_clean_programming_status
+>>>>>>      0.64%  ksoftirqd/28     [kernel.vmlinux]           [k] net_rx_action
+>>>>>>      0.64%  swapper          [kernel.vmlinux]           [k] intel_idle
+>>>>>>      0.62%  ksoftirqd/28     [i40e]                     [k] i40e_napi_poll
+>>>>>>      0.57%  xdpsock          [kernel.vmlinux]           [k] dma_direct_sync_single_for_cpu
+>>>>>>
+>>>>>> Perf report for "AF_XDP direct rxdrop" with patched kernel - mitigations ON
+>>>>>> ==========================================================================
+>>>>>> Samples: 46K of event 'cycles', Event count (approx.): 38387018585
+>>>>>> Overhead  Command          Shared Object             Symbol
+>>>>>>     21.94%  ksoftirqd/28     [i40e]                    [k] i40e_clean_rx_irq_zc
+>>>>>>     14.36%  xdpsock          xdpsock                   [.] main
+>>>>>>     11.53%  ksoftirqd/28     [kernel.vmlinux]          [k] xsk_rcv
+>>>>>>     11.32%  xdpsock          [i40e]                    [k] i40e_clean_rx_irq_zc
+>>>>>>      4.02%  xdpsock          [kernel.vmlinux]          [k] xsk_rcv
+>>>>>>      2.91%  ksoftirqd/28     [kernel.vmlinux]          [k] xdp_do_redirect
+>>>>>>      2.45%  ksoftirqd/28     [kernel.vmlinux]          [k] xsk_umem_peek_addr
+>>>>>>      2.19%  xdpsock          [kernel.vmlinux]          [k] xsk_umem_peek_addr
+>>>>>>      2.08%  ksoftirqd/28     [kernel.vmlinux]          [k] bpf_direct_xsk
+>>>>>>      2.07%  ksoftirqd/28     [kernel.vmlinux]          [k] dma_direct_sync_single_for_cpu
+>>>>>>      1.53%  ksoftirqd/28     [kernel.vmlinux]          [k] dma_direct_sync_single_for_device
+>>>>>>      1.39%  xdpsock          [kernel.vmlinux]          [k] dma_direct_sync_single_for_device
+>>>>>>      1.22%  ksoftirqd/28     [kernel.vmlinux]          [k] xdp_get_xsk_from_qid
+>>>>>>      1.12%  ksoftirqd/28     [i40e]                    [k] i40e_clean_programming_status
+>>>>>>      0.96%  ksoftirqd/28     [i40e]                    [k] i40e_napi_poll
+>>>>>>      0.95%  ksoftirqd/28     [kernel.vmlinux]          [k] net_rx_action
+>>>>>>      0.89%  xdpsock          [kernel.vmlinux]          [k] xdp_do_redirect
+>>>>>>      0.83%  swapper          [i40e]                    [k] i40e_clean_rx_irq_zc
+>>>>>>      0.70%  swapper          [kernel.vmlinux]          [k] intel_idle
+>>>>>>      0.66%  xdpsock          [kernel.vmlinux]          [k] dma_direct_sync_single_for_cpu
+>>>>>>      0.60%  xdpsock          [kernel.vmlinux]          [k] bpf_direct_xsk
+>>>>>>      0.50%  ksoftirqd/28     [kernel.vmlinux]          [k] xsk_umem_discard_addr
+>>>>>>
+>>>>>> Based on the perf reports comparing AF_XDP default and direct rxdrop, we can say that
+>>>>>> AF_XDP direct rxdrop codepath is avoiding the overhead of going through these functions
+>>>>>>   bpf_prog_xxx
+>>>>>>           bpf_xdp_redirect_map
+>>>>>>   xsk_map_lookup_elem
+>>>>>>           __xsk_map_redirect
+>>>>>> With AF_XDP direct, xsk_rcv() is directly called via bpf_direct_xsk() in xdp_do_redirect()
+>>>>>
+>>>>> I don't think you're identifying the overhead correctly.
+>>>>> xsk_map_lookup_elem is 1%
+>>>>> but bpf_xdp_redirect_map() suppose to call __xsk_map_lookup_elem()
+>>>>> which is a different function:
+>>>>> ffffffff81493fe0 T __xsk_map_lookup_elem
+>>>>> ffffffff81492e80 t xsk_map_lookup_elem
+>>>>>
+>>>>> 10% for bpf_prog_80b55d8a76303785 is huge.
+>>>>> It's the actual code of the program _without_ any helpers.
+>>>>> How does the program actually look?
+>>>>
+>>>> It is the xdp program that is loaded via xsk_load_xdp_prog() in tools/lib/bpf/xsk.c
+>>>> https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/tools/lib/bpf/xsk.c#n268
+>>>
+>>> I see. Looks like map_gen_lookup was never implemented for xskmap.
+>>> How about adding it first the way array_map_gen_lookup() is implemented?
+>>> This will easily give 2x perf gain.
+>>
+>> I guess we should implement this for devmaps as well now that we allow
+>> lookups into those.
+>>
+>> However, in this particular example, the lookup from BPF is not actually
+>> needed, since bpf_redirect_map() will return a configurable error value
+>> when the map lookup fails (for exactly this use case).
+>>
+>> So replacing:
+>>
+>> if (bpf_map_lookup_elem(&xsks_map, &index))
+>>      return bpf_redirect_map(&xsks_map, index, 0);
+>>
+>> with simply
+>>
+>> return bpf_redirect_map(&xsks_map, index, XDP_PASS);
+>>
+>> would save the call to xsk_map_lookup_elem().
+>>
+> 
+> Thanks for the reminder! I just submitted a patch. Still, doing the
+> map_gen_lookup()  for xsk/devmaps still makes sense!
+> 
 
-This map is created by libbpf implicitly from global variables used by
-BPF object. You just look it up by name, set its value to whatever you
-need global variables to be set up to, and that value will be
-available to BPF program. From BPF program side, when you update
-global variable, that value can be read from user space using that
-same test_rdo.bss map. Does it make sense?
+I tried Bjorn's patch that avoids the lookups in the BPF prog.
+https://lore.kernel.org/netdev/20191021105938.11820-1-bjorn.topel@gmail.com/
 
-> Bests
+With this patch I am also seeing around 3-4% increase in xdpsock rxdrop performance and
+the perf report looks like this.
+
+Samples: 44K of event 'cycles', Event count (approx.): 38749965204
+Overhead  Command          Shared Object              Symbol
+   16.06%  ksoftirqd/28     [i40e]                     [k] i40e_clean_rx_irq_zc
+   10.18%  ksoftirqd/28     bpf_prog_3c8251c7e0fef8db  [k] bpf_prog_3c8251c7e0fef8db
+   10.15%  xdpsock          [i40e]                     [k] i40e_clean_rx_irq_zc
+   10.06%  ksoftirqd/28     [kernel.vmlinux]           [k] xsk_rcv
+    7.45%  xdpsock          xdpsock                    [.] main
+    5.76%  ksoftirqd/28     [kernel.vmlinux]           [k] xdp_do_redirect
+    4.51%  xdpsock          bpf_prog_3c8251c7e0fef8db  [k] bpf_prog_3c8251c7e0fef8db
+    3.67%  xdpsock          [kernel.vmlinux]           [k] xsk_rcv
+    3.06%  ksoftirqd/28     [kernel.vmlinux]           [k] bpf_xdp_redirect_map
+    2.34%  ksoftirqd/28     [kernel.vmlinux]           [k] __xsk_map_redirect
+    2.33%  xdpsock          [kernel.vmlinux]           [k] xdp_do_redirect
+    1.69%  ksoftirqd/28     [kernel.vmlinux]           [k] xsk_umem_peek_addr
+    1.69%  xdpsock          [kernel.vmlinux]           [k] xsk_umem_peek_addr
+    1.42%  ksoftirqd/28     [kernel.vmlinux]           [k] dma_direct_sync_single_for_cpu
+    1.19%  xdpsock          [kernel.vmlinux]           [k] bpf_xdp_redirect_map
+    1.13%  xdpsock          [kernel.vmlinux]           [k] dma_direct_sync_single_for_device
+    0.95%  ksoftirqd/28     [kernel.vmlinux]           [k] dma_direct_sync_single_for_device
+    0.92%  swapper          [kernel.vmlinux]           [k] intel_idle
+    0.92%  xdpsock          [kernel.vmlinux]           [k] __xsk_map_redirect
+    0.80%  ksoftirqd/28     [kernel.vmlinux]           [k] __x86_indirect_thunk_rax
+    0.73%  ksoftirqd/28     [i40e]                     [k] i40e_clean_programming_status
+    0.71%  ksoftirqd/28     [kernel.vmlinux]           [k] __xsk_map_lookup_elem
+    0.63%  ksoftirqd/28     [kernel.vmlinux]           [k] net_rx_action
+    0.62%  ksoftirqd/28     [i40e]                     [k] i40e_napi_poll
+    0.58%  xdpsock          [kernel.vmlinux]           [k] dma_direct_sync_single_for_cpu
+
+So with this patch applied, direct receive performance improvement comes down from 46% to 42%.
+I think it is still substantial enough to provide an option to allow direct receive for
+certain use cases. If it is OK, i can re-spin and submit the patches on top of the latest bpf-next
+
+Thanks
+Sridhar
+
+
+
+
