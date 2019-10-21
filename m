@@ -2,52 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B9AADEABE
-	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2019 13:23:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B15CDEB52
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2019 13:47:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727571AbfJULXj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Oct 2019 07:23:39 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:39211 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727433AbfJULXi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Oct 2019 07:23:38 -0400
-Received: by mail-qk1-f195.google.com with SMTP id 4so12197478qki.6;
-        Mon, 21 Oct 2019 04:23:36 -0700 (PDT)
+        id S1727725AbfJULr1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Oct 2019 07:47:27 -0400
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:40529 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727831AbfJULr0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Oct 2019 07:47:26 -0400
+Received: by mail-pf1-f195.google.com with SMTP id x127so8286253pfb.7;
+        Mon, 21 Oct 2019 04:47:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=4SIKg7fkKv4f5oFDvoKTFfO1xQS++1EKIUX0O9ZXAm0=;
-        b=O4yQJ8969KS6QyYr8aiiUkpRHg4e6b/Ndys4gKsb9kSt/U4m6ZlzIbSgsdzxkt0sG+
-         3k6KAK87KmCwo73LyOkI6+VQ+QUEgt7RZSuwxwAlpzr8KV0sQL0FV50NY4r1cNHZoAy4
-         Hl7VwQtvP1m15wM0TSkqTBG7tRGBO1vFZu+i2kaJWZs2hYZfO/wACqZ/dqGX6lfQ7zZh
-         VNRa/WBtC7v6btRyM0qAnH2o0GEmyMg/ebWgX3UfibWLq9fQzWcofGSHJuKj1188tYdT
-         IAyKf3jnltsUMHqcCM3SXiM6J3emh5bFrlmt+ge/8GOmBM7YCdFlUHMJZPn2ExRVsTy/
-         ZdjQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=pxuyK2J8Zv4RiKfi5R/IvONY3RKXJZcwRIOIT1s+V5Y=;
+        b=YjBPDWhb0qC7qfbYdQCSh833ufO9oM3ufqCj/fNKmpR5DzFG73dwGQwCauBf4aIzfz
+         CoCvBeRDQCVaq4OR1dAcnxLohErHSg1byu/0unv6VXz4uh+r16jiTcRPPvSL0VGSiX6L
+         PJ20Jg41AH7/e3/5fpIlvVn8nRMYnPOjCOWbTXmrHHNxuKHnwCNbIU855yawe776Rurv
+         uv+PfXHI6w52/BponRxV6Mh4JqZcvmo88utViYmTDRtOutKG2VPOkeRVkEgb2kaqKzSx
+         4xFGAW+9AKxwzoQfiII8INp9dW1lmyjkqNGqTvQoFUe0wrveJlDRDiEmQj3SeXuf9x4a
+         aJ7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=4SIKg7fkKv4f5oFDvoKTFfO1xQS++1EKIUX0O9ZXAm0=;
-        b=U+RV4DL2lewe6lfrR7uHbdisHbMyxgn9xAxrqeE333N68QAv5IfkbQpdM7CaZHkOPi
-         z/IfW2nqGEfQFOKZM+TTiL3SlR+WS3iasaNp2Dn5+EAXiD4/nW8uLZmJupqUtxeWuNze
-         miiee2sXYj9zqVD8W7kfplp/OUwIvfe5I8S72N66LLM/1XI+hCMMGr2CCVc+x/0oxuUI
-         3ytPei7IyrR0hdoISJa4di3+ozOjYU20r5tFD3btaFg9abTw5D9UFQTkCVSfOl0rVB1V
-         AERq1BkEryamedmip+6WbvXicp1mXc6djUP2/jiMfU23paYg5nZdDGwVcRe4SZ6oh0R+
-         On4g==
-X-Gm-Message-State: APjAAAUVEx7AJtWyGXekw0uf1H2DOGQ/FZlwSWzGN14Y90azak+NXUQo
-        lnsAl4yfb5kB3AHoc7R50aOdQOTSzF+6UzPLrdWmmf69AS52Rg==
-X-Google-Smtp-Source: APXvYqyb3cq9iqVgxSuE6BHAwvkJujJTOf6AscDEx6NWojVeM+uHa/0awpDTJBoTEsuFk1OSmoxI29XNKv01M1jsQW4=
-X-Received: by 2002:a05:620a:13f2:: with SMTP id h18mr21436800qkl.218.1571657015774;
- Mon, 21 Oct 2019 04:23:35 -0700 (PDT)
-MIME-Version: 1.0
-References: <20191018040748.30593-1-toshiaki.makita1@gmail.com>
-In-Reply-To: <20191018040748.30593-1-toshiaki.makita1@gmail.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Mon, 21 Oct 2019 13:23:23 +0200
-Message-ID: <CAJ+HfNga=XFeutQuGvGXkuWKSsDCqak-rjutOzqu-r-pwLL1-w@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=pxuyK2J8Zv4RiKfi5R/IvONY3RKXJZcwRIOIT1s+V5Y=;
+        b=d2nv7GLoezQgF0KyiMlJ7FqM8lAjtfKx3wTI7SImLtfUK6ZCSV8Csfr7qIKAy2qCdX
+         1NJFhg/K5vZkJCnmSLoFPrF/ioVEYG7aWHSxYRGM3W8Y2ZuvRqjfPH2DgZvWTLU7B5gL
+         cUHVD5K5gN83qaTAbHriWDUldiHe+5VSHRj7Cet7QKSJ2fxp9dP7TtudRzAmnL3E6dDE
+         bbjd/PBIZbf2tGClNQ1HLSNvZdkqtB+n5P7tvGB9T0YwKLEvQlPBWWB2K5dgX4eiw3RL
+         mz7hX1bIanuTK5KBGuoQxk8wymIDo5Qyvz/L6W+cyfdi5+Y65sFogXkOx4KhmZQ6wj7z
+         TW5g==
+X-Gm-Message-State: APjAAAV0wNvBCdBdjnnZZ3n5necf3ckK9XKQzEqlQVFBJXjW4SbYZ7bg
+        mw0jjmaG2QctDLY/unBRtLY=
+X-Google-Smtp-Source: APXvYqyO7KhTEKa8BGtvKo847jWrgMDLYwdwECPs/k+Tk5uOd7EX7Ec9hGP6Dcpw37a2RHoY38QhKA==
+X-Received: by 2002:a62:60c7:: with SMTP id u190mr22348821pfb.256.1571658445921;
+        Mon, 21 Oct 2019 04:47:25 -0700 (PDT)
+Received: from [172.20.20.103] ([222.151.198.97])
+        by smtp.gmail.com with ESMTPSA id l23sm14491937pjy.12.2019.10.21.04.47.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Oct 2019 04:47:24 -0700 (PDT)
 Subject: Re: [RFC PATCH v2 bpf-next 00/15] xdp_flow: Flow offload to XDP
-To:     Toshiaki Makita <toshiaki.makita1@gmail.com>
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        William Tu <u9012063@gmail.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
@@ -64,164 +64,67 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Florian Westphal <fw@strlen.de>,
         Pravin B Shelar <pshelar@ovn.org>,
         Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        William Tu <u9012063@gmail.com>,
         Stanislav Fomichev <sdf@fomichev.me>,
         "Karlsson, Magnus" <magnus.karlsson@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+References: <20191018040748.30593-1-toshiaki.makita1@gmail.com>
+ <CAJ+HfNga=XFeutQuGvGXkuWKSsDCqak-rjutOzqu-r-pwLL1-w@mail.gmail.com>
+From:   Toshiaki Makita <toshiaki.makita1@gmail.com>
+Message-ID: <25ade2e7-a8fe-2adb-8d4c-6cc6add21267@gmail.com>
+Date:   Mon, 21 Oct 2019 20:47:17 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
+MIME-Version: 1.0
+In-Reply-To: <CAJ+HfNga=XFeutQuGvGXkuWKSsDCqak-rjutOzqu-r-pwLL1-w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 19 Oct 2019 at 00:31, Toshiaki Makita
-<toshiaki.makita1@gmail.com> wrote:
->
-[...]
->
-> * About OVS AF_XDP netdev
->
-> Recently OVS has added AF_XDP netdev type support. This also makes use
-> of XDP, but in some ways different from this patch set.
->
-> - AF_XDP work originally started in order to bring BPF's flexibility to
->   OVS, which enables us to upgrade datapath without updating kernel.
->   AF_XDP solution uses userland datapath so it achieved its goal.
->   xdp_flow will not replace OVS datapath completely, but offload it
->   partially just for speed up.
->
-> - OVS AF_XDP requires PMD for the best performance so consumes 100% CPU
->   as well as using another core for softirq.
->
+On 2019/10/21 20:23, Björn Töpel wrote:
+> On Sat, 19 Oct 2019 at 00:31, Toshiaki Makita
+> <toshiaki.makita1@gmail.com> wrote:
+>>
+> [...]
+>>
+>> * About OVS AF_XDP netdev
+>>
+>> Recently OVS has added AF_XDP netdev type support. This also makes use
+>> of XDP, but in some ways different from this patch set.
+>>
+>> - AF_XDP work originally started in order to bring BPF's flexibility to
+>>    OVS, which enables us to upgrade datapath without updating kernel.
+>>    AF_XDP solution uses userland datapath so it achieved its goal.
+>>    xdp_flow will not replace OVS datapath completely, but offload it
+>>    partially just for speed up.
+>>
+>> - OVS AF_XDP requires PMD for the best performance so consumes 100% CPU
+>>    as well as using another core for softirq.
+>>
+> 
+> Disclaimer; I haven't studied the OVS AF_XDP code, so this is about
+> AF_XDP in general.
+> 
+> One of the nice things about AF_XDP is that it *doesn't* force a user
+> to busy-poll (burn CPUs) like a regular userland pull-mode driver.
+> Yes, you can do that if you're extremely latency sensitive, but for
+> most users (and I think some OVS deployments might fit into this
+> category) not pinning cores/interrupts and using poll() syscalls (need
+> wakeup patch [1]) is the way to go. The scenario you're describing
+> with ksoftirqd spinning on one core, and user application on another
+> is not something I'd recommend, rather run your packet processing
+> application on one core together with the softirq processing.
 
-Disclaimer; I haven't studied the OVS AF_XDP code, so this is about
-AF_XDP in general.
+Thank you for the information.
+I want to evaluate AF_XDP solution more appropriately.
 
-One of the nice things about AF_XDP is that it *doesn't* force a user
-to busy-poll (burn CPUs) like a regular userland pull-mode driver.
-Yes, you can do that if you're extremely latency sensitive, but for
-most users (and I think some OVS deployments might fit into this
-category) not pinning cores/interrupts and using poll() syscalls (need
-wakeup patch [1]) is the way to go. The scenario you're describing
-with ksoftirqd spinning on one core, and user application on another
-is not something I'd recommend, rather run your packet processing
-application on one core together with the softirq processing.
+William, please correct me if I'm saying something wrong here.
+Or guide me if more appropriate configuration to achieve best performance is possible.
 
-Bj=C3=B6rn
-[1] https://lore.kernel.org/bpf/1565767643-4908-1-git-send-email-magnus.kar=
-lsson@intel.com/#t
+> 
+> Björn
+> [1] https://lore.kernel.org/bpf/1565767643-4908-1-git-send-email-magnus.karlsson@intel.com/#t
 
-
-
-> - OVS AF_XDP needs packet copy when forwarding packets.
->
-> - xdp_flow can be used not only for OVS. It works for direct use of TC
->   flower and nftables.
->
->
-> * About alternative userland (ovs-vswitchd etc.) implementation
->
-> Maybe a similar logic can be implemented in ovs-vswitchd offload
-> mechanism, instead of adding code to kernel. I just thought offloading
-> TC is more generic and allows wider usage with direct TC command.
->
-> For example, considering that OVS inserts a flow to kernel only when
-> flow miss happens in kernel, we can in advance add offloaded flows via
-> tc filter to avoid flow insertion latency for certain sensitive flows.
-> TC flower usage without using OVS is also possible.
->
-> Also as written above nftables can be offloaded to XDP with this
-> mechanism as well.
->
-> Another way to achieve this from userland is to add notifications in
-> flow_offload kernel code to inform userspace of flow addition and
-> deletion events, and listen them by a deamon which in turn loads eBPF
-> programs, attach them to XDP, and modify eBPF maps. Although this may
-> open up more use cases, I'm not thinking this is the best solution
-> because it requires emulation of kernel behavior as an offload engine
-> but flow related code is heavily changing which is difficult to follow
-> from out of tree.
->
-> * Note
->
-> This patch set is based on top of commit 5bc60de50dfe ("selftests: bpf:
-> Don't try to read files without read permission") on bpf-next, but need
-> to backport commit 98beb3edeb97 ("samples/bpf: Add a workaround for
-> asm_inline") from bpf tree to successfully build the module.
->
-> * Changes
->
-> RFC v2:
->  - Use indr block instead of modifying TC core, feedback from Jakub
->    Kicinski.
->  - Rename tc-offload-xdp to flow-offload-xdp since this works not only
->    for TC but also for nftables, as now I use indr flow block.
->  - Factor out XDP program validation code in net/core and use it to
->    attach a program to XDP from xdp_flow.
->  - Use /dev/kmsg instead of syslog.
->
-> Any feedback is welcome.
-> Thanks!
->
-> Signed-off-by: Toshiaki Makita <toshiaki.makita1@gmail.com>
->
-> Toshiaki Makita (15):
->   xdp_flow: Add skeleton of XDP based flow offload driver
->   xdp_flow: Add skeleton bpf program for XDP
->   bpf: Add API to get program from id
->   xdp: Export dev_check_xdp and dev_change_xdp
->   xdp_flow: Attach bpf prog to XDP in kernel after UMH loaded program
->   xdp_flow: Prepare flow tables in bpf
->   xdp_flow: Add flow entry insertion/deletion logic in UMH
->   xdp_flow: Add flow handling and basic actions in bpf prog
->   xdp_flow: Implement flow replacement/deletion logic in xdp_flow kmod
->   xdp_flow: Add netdev feature for enabling flow offload to XDP
->   xdp_flow: Implement redirect action
->   xdp_flow: Implement vlan_push action
->   bpf, selftest: Add test for xdp_flow
->   i40e: prefetch xdp->data before running XDP prog
->   bpf, hashtab: Compare keys in long
->
->  drivers/net/ethernet/intel/i40e/i40e_txrx.c  |    1 +
->  include/linux/bpf.h                          |    8 +
->  include/linux/netdev_features.h              |    2 +
->  include/linux/netdevice.h                    |    4 +
->  kernel/bpf/hashtab.c                         |   27 +-
->  kernel/bpf/syscall.c                         |   42 +-
->  net/Kconfig                                  |    1 +
->  net/Makefile                                 |    1 +
->  net/core/dev.c                               |  113 ++-
->  net/core/ethtool.c                           |    1 +
->  net/xdp_flow/.gitignore                      |    1 +
->  net/xdp_flow/Kconfig                         |   16 +
->  net/xdp_flow/Makefile                        |  112 +++
->  net/xdp_flow/msgfmt.h                        |  102 +++
->  net/xdp_flow/umh_bpf.h                       |   34 +
->  net/xdp_flow/xdp_flow.h                      |   28 +
->  net/xdp_flow/xdp_flow_core.c                 |  180 +++++
->  net/xdp_flow/xdp_flow_kern_bpf.c             |  358 +++++++++
->  net/xdp_flow/xdp_flow_kern_bpf_blob.S        |    7 +
->  net/xdp_flow/xdp_flow_kern_mod.c             |  699 +++++++++++++++++
->  net/xdp_flow/xdp_flow_umh.c                  | 1043 ++++++++++++++++++++=
-++++++
->  net/xdp_flow/xdp_flow_umh_blob.S             |    7 +
->  tools/testing/selftests/bpf/Makefile         |    1 +
->  tools/testing/selftests/bpf/test_xdp_flow.sh |  106 +++
->  24 files changed, 2864 insertions(+), 30 deletions(-)
->  create mode 100644 net/xdp_flow/.gitignore
->  create mode 100644 net/xdp_flow/Kconfig
->  create mode 100644 net/xdp_flow/Makefile
->  create mode 100644 net/xdp_flow/msgfmt.h
->  create mode 100644 net/xdp_flow/umh_bpf.h
->  create mode 100644 net/xdp_flow/xdp_flow.h
->  create mode 100644 net/xdp_flow/xdp_flow_core.c
->  create mode 100644 net/xdp_flow/xdp_flow_kern_bpf.c
->  create mode 100644 net/xdp_flow/xdp_flow_kern_bpf_blob.S
->  create mode 100644 net/xdp_flow/xdp_flow_kern_mod.c
->  create mode 100644 net/xdp_flow/xdp_flow_umh.c
->  create mode 100644 net/xdp_flow/xdp_flow_umh_blob.S
->  create mode 100755 tools/testing/selftests/bpf/test_xdp_flow.sh
->
-> --
-> 1.8.3.1
->
+Toshiaki Makita
