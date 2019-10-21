@@ -2,158 +2,166 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C7DFDE84D
-	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2019 11:40:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98857DEA44
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2019 12:59:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727154AbfJUJkE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Oct 2019 05:40:04 -0400
-Received: from regular1.263xmail.com ([211.150.70.203]:58456 "EHLO
-        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726725AbfJUJkD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Oct 2019 05:40:03 -0400
-X-Greylist: delayed 495 seconds by postgrey-1.27 at vger.kernel.org; Mon, 21 Oct 2019 05:40:02 EDT
-Received: from localhost (unknown [192.168.167.209])
-        by regular1.263xmail.com (Postfix) with ESMTP id B8DB1428;
-        Mon, 21 Oct 2019 17:31:38 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-SKE-CHECKED: 1
-X-ABS-CHECKED: 1
-Received: from localhost.localdomain (unknown [14.18.236.69])
-        by smtp.263.net (postfix) whith ESMTP id P469T140195813033728S1571650292121018_;
-        Mon, 21 Oct 2019 17:31:39 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <6d3ea6ca7491250ed483a3c849e1089c>
-X-RL-SENDER: yili@winhong.com
-X-SENDER: yili@winhong.com
-X-LOGIN-NAME: yili@winhong.com
-X-FST-TO: yili@winhong.com
-X-SENDER-IP: 14.18.236.69
-X-ATTACHMENT-NUM: 0
-X-DNS-TYPE: 0
-From:   Yi Li <yili@winhong.com>
-Cc:     yili@winhong.com, Yi Li <yilikernel@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Changbin Du <changbin.du@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH] perf tools: Use of the macro IS_ERR_OR_NULL
-Date:   Mon, 21 Oct 2019 17:29:33 +0800
-Message-Id: <1571650178-15686-1-git-send-email-yili@winhong.com>
-X-Mailer: git-send-email 2.7.5
+        id S1727805AbfJUK7x (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Oct 2019 06:59:53 -0400
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:38919 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727685AbfJUK7x (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Oct 2019 06:59:53 -0400
+Received: by mail-pf1-f195.google.com with SMTP id v4so8206820pff.6;
+        Mon, 21 Oct 2019 03:59:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xYJmFIAnwmpDh6n3dceHfPEBPW6vUu2fNHKsRa+36qM=;
+        b=vF9kAuAiLRmZ3+vqcWOGftu3pQvftFtrimwiZbJfbrOKnDFTCZDi4Zu5J861kic5pl
+         Ak63Daov7n3DhJOHISNt07xKou1Q0riKV24SrKN4wZxqRgjH2gBx7b5EInLPAAHNRCB0
+         zEW0MCAy2MMMyg08t4gXrij0w8/Ie9f8JkU8V/UtvGPr8ZNLyUiBN2AUfB9LWUM60J7n
+         60AGprz8VMeoDM3WMB/wFYzMpCTB0Z9q81W6Ty6mv3Js6Eg6TY9akfix2C1YJXS5HvNW
+         I9Z7FZQxMKrsD62LZFCI/06bWkf2aqIqPn7VwNBKfsGKQg3UtEHxVirujKT64c1arTuo
+         XcFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xYJmFIAnwmpDh6n3dceHfPEBPW6vUu2fNHKsRa+36qM=;
+        b=UdJpjZ26CyhLdyfyBtHmvBn32XeLy/yyv7RhxbhK2ILS/yL8ljDBZD3Ta5uBZCK/HE
+         dGYG4T6HyrZiaRqD9USIGIJwkkOJMdH56qTL3tjwFk+nzVD6WXxDFnt9r0N6x9a21qLt
+         g/Lq4WFQgF4bSPLbr/J1QwfJmJ9ccK1Is0wFgVHJ/AUz7OJKxGb3B7k0cDXT2L3lghvU
+         QeEgDyWrtmQ6Twq6bO4OaGzzRORhbZgvUO11hwPV1IKvTqLMdLmBfGsIIe9JgIOBp4a0
+         QIe4SuATrIU/BOyvaRGLxH09TVx52BasjnRYfh84aaLRbIDhRIBBWX4L22zZtJ+3IPOL
+         OdTg==
+X-Gm-Message-State: APjAAAWHtbYnLY6neruvRMiKVwy3Al7QhueTZdyQYiJIfdMGCfSQHbhL
+        UY/XUjVaeALcI2FK9MaXGxdb9lNbTWjhjQ==
+X-Google-Smtp-Source: APXvYqxwu8G3WHGBdmF1YseCXgYAELA6ZT0xAWBEs1V5eHheu0aPkLE8dfxp09/wwdeYgLyzhBS6fQ==
+X-Received: by 2002:aa7:955a:: with SMTP id w26mr23066097pfq.193.1571655592396;
+        Mon, 21 Oct 2019 03:59:52 -0700 (PDT)
+Received: from btopel-mobl.ger.intel.com ([192.55.54.44])
+        by smtp.gmail.com with ESMTPSA id 6sm13870040pgl.40.2019.10.21.03.59.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Oct 2019 03:59:51 -0700 (PDT)
+From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
+To:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net
+Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
+        bpf@vger.kernel.org, magnus.karlsson@gmail.com,
+        magnus.karlsson@intel.com, toke@redhat.com,
+        sridhar.samudrala@intel.com
+Subject: [PATCH bpf-next v2] libbpf: use implicit XSKMAP lookup from AF_XDP XDP program
+Date:   Mon, 21 Oct 2019 12:59:38 +0200
+Message-Id: <20191021105938.11820-1-bjorn.topel@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Yi Li <yilikernel@gmail.com>
+From: Björn Töpel <bjorn.topel@intel.com>
 
-This patch introduces the use of the macro IS_ERR_OR_NULL in place of
-tests for NULL and IS_ERR.
+In commit 43e74c0267a3 ("bpf_xdp_redirect_map: Perform map lookup in
+eBPF helper") the bpf_redirect_map() helper learned to do map lookup,
+which means that the explicit lookup in the XDP program for AF_XDP is
+not needed for post-5.3 kernels.
 
-The following Coccinelle semantic patch was used for making the change:
+This commit adds the implicit map lookup with default action, which
+improves the performance for the "rx_drop" [1] scenario with ~4%.
 
-@@
-expression e;
-@@
+For pre-5.3 kernels, the bpf_redirect_map() returns XDP_ABORTED, and a
+fallback path for backward compatibility is entered, where explicit
+lookup is still performed. This means a slight regression for older
+kernels (an additional bpf_redirect_map() call), but I consider that a
+fair punishment for users not upgrading their kernels. ;-)
 
-- !e || IS_ERR(e)
-+ IS_ERR_OR_NULL(e)
- || ...
+v1->v2: Backward compatibility (Toke) [2]
 
-Signed-off-by: Yi Li <yilikernel@gmail.com>
+[1] # xdpsock -i eth0 -z -r
+[2] https://lore.kernel.org/bpf/87pnirb3dc.fsf@toke.dk/
+
+Suggested-by: Toke Høiland-Jørgensen <toke@redhat.com>
+Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
 ---
- tools/perf/util/bpf-loader.c   | 13 +++++++------
- tools/perf/util/parse-events.c |  2 +-
- 2 files changed, 8 insertions(+), 7 deletions(-)
+ tools/lib/bpf/xsk.c | 45 +++++++++++++++++++++++++++++++++++----------
+ 1 file changed, 35 insertions(+), 10 deletions(-)
 
-diff --git a/tools/perf/util/bpf-loader.c b/tools/perf/util/bpf-loader.c
-index 10c187b..b14d224 100644
---- a/tools/perf/util/bpf-loader.c
-+++ b/tools/perf/util/bpf-loader.c
-@@ -426,7 +426,7 @@ preproc_gen_prologue(struct bpf_program *prog, int n,
- 	size_t prologue_cnt = 0;
- 	int i, err;
- 
--	if (IS_ERR(priv) || !priv || priv->is_tp)
-+	if (IS_ERR_OR_NULL(priv) || priv->is_tp)
- 		goto errout;
- 
- 	pev = &priv->pev;
-@@ -578,7 +578,7 @@ static int hook_load_preprocessor(struct bpf_program *prog)
- 	bool need_prologue = false;
- 	int err, i;
- 
--	if (IS_ERR(priv) || !priv) {
-+	if (IS_ERR_OR_NULL(priv)) {
- 		pr_debug("Internal error when hook preprocessor\n");
- 		return -BPF_LOADER_ERRNO__INTERNAL;
- 	}
-@@ -650,8 +650,9 @@ int bpf__probe(struct bpf_object *obj)
- 			goto out;
- 
- 		priv = bpf_program__priv(prog);
--		if (IS_ERR(priv) || !priv) {
--			err = PTR_ERR(priv);
-+		if (IS_ERR_OR_NULL(priv)) {
-+			pr_debug("bpf: failed to get private field\n");
-+			err = -BPF_LOADER_ERRNO__INTERNAL;
- 			goto out;
- 		}
- 
-@@ -701,7 +702,7 @@ int bpf__unprobe(struct bpf_object *obj)
- 		struct bpf_prog_priv *priv = bpf_program__priv(prog);
- 		int i;
- 
--		if (IS_ERR(priv) || !priv || priv->is_tp)
-+		if (IS_ERR_OR_NULL(priv) || priv->is_tp)
- 			continue;
- 
- 		for (i = 0; i < priv->pev.ntevs; i++) {
-@@ -759,7 +760,7 @@ int bpf__foreach_event(struct bpf_object *obj,
- 		struct perf_probe_event *pev;
- 		int i, fd;
- 
--		if (IS_ERR(priv) || !priv) {
-+		if (IS_ERR_OR_NULL(priv)) {
- 			pr_debug("bpf: failed to get private field\n");
- 			return -BPF_LOADER_ERRNO__INTERNAL;
- 		}
-diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-index b5e2ade..609c31f 100644
---- a/tools/perf/util/parse-events.c
-+++ b/tools/perf/util/parse-events.c
-@@ -690,7 +690,7 @@ int parse_events_load_bpf_obj(struct parse_events_state *parse_state,
- 	struct __add_bpf_event_param param = {parse_state, list, head_config};
- 	static bool registered_unprobe_atexit = false;
- 
--	if (IS_ERR(obj) || !obj) {
-+	if (IS_ERR_OR_NULL(obj)) {
- 		snprintf(errbuf, sizeof(errbuf),
- 			 "Internal error: load bpf obj with NULL");
- 		err = -EINVAL;
+diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
+index b0f532544c91..391a126b3fd8 100644
+--- a/tools/lib/bpf/xsk.c
++++ b/tools/lib/bpf/xsk.c
+@@ -274,33 +274,58 @@ static int xsk_load_xdp_prog(struct xsk_socket *xsk)
+ 	/* This is the C-program:
+ 	 * SEC("xdp_sock") int xdp_sock_prog(struct xdp_md *ctx)
+ 	 * {
+-	 *     int index = ctx->rx_queue_index;
++	 *     int ret, index = ctx->rx_queue_index;
+ 	 *
+ 	 *     // A set entry here means that the correspnding queue_id
+ 	 *     // has an active AF_XDP socket bound to it.
++	 *     ret = bpf_redirect_map(&xsks_map, index, XDP_PASS);
++	 *     ret &= XDP_PASS | XDP_REDIRECT;
++	 *     if (ret)
++	 *         return ret;
++	 *
++	 *     // Fallback for pre-5.3 kernels, not supporting default
++	 *     // action in the flags parameter.
+ 	 *     if (bpf_map_lookup_elem(&xsks_map, &index))
+ 	 *         return bpf_redirect_map(&xsks_map, index, 0);
+-	 *
+ 	 *     return XDP_PASS;
+ 	 * }
+ 	 */
+ 	struct bpf_insn prog[] = {
+-		/* r1 = *(u32 *)(r1 + 16) */
+-		BPF_LDX_MEM(BPF_W, BPF_REG_1, BPF_REG_1, 16),
+-		/* *(u32 *)(r10 - 4) = r1 */
+-		BPF_STX_MEM(BPF_W, BPF_REG_10, BPF_REG_1, -4),
++		/* r2 = *(u32 *)(r1 + 16) */
++		BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1, 16),
++		/* *(u32 *)(r10 - 4) = r2 */
++		BPF_STX_MEM(BPF_W, BPF_REG_10, BPF_REG_2, -4),
++		/* r1 = xskmap[] */
++		BPF_LD_MAP_FD(BPF_REG_1, xsk->xsks_map_fd),
++		/* r3 = XDP_PASS */
++		BPF_MOV64_IMM(BPF_REG_3, 2),
++		/* call bpf_redirect_map */
++		BPF_EMIT_CALL(BPF_FUNC_redirect_map),
++		/* r0 &= XDP_PASS | XDP_REDIRECT */
++		BPF_ALU64_IMM(BPF_AND, BPF_REG_0, XDP_PASS | XDP_REDIRECT),
++		/* if r0 != 0 goto pc+13 */
++		BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 13),
++		/* r2 = r10 */
+ 		BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
++		/* r2 += -4 */
+ 		BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -4),
++		/* r1 = xskmap[] */
+ 		BPF_LD_MAP_FD(BPF_REG_1, xsk->xsks_map_fd),
++		/* call bpf_map_lookup_elem */
+ 		BPF_EMIT_CALL(BPF_FUNC_map_lookup_elem),
++		/* r1 = r0 */
+ 		BPF_MOV64_REG(BPF_REG_1, BPF_REG_0),
+-		BPF_MOV32_IMM(BPF_REG_0, 2),
+-		/* if r1 == 0 goto +5 */
++		/* r0 = XDP_PASS */
++		BPF_MOV64_IMM(BPF_REG_0, 2),
++		/* if r1 == 0 goto pc+5 */
+ 		BPF_JMP_IMM(BPF_JEQ, BPF_REG_1, 0, 5),
+ 		/* r2 = *(u32 *)(r10 - 4) */
+-		BPF_LD_MAP_FD(BPF_REG_1, xsk->xsks_map_fd),
+ 		BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_10, -4),
+-		BPF_MOV32_IMM(BPF_REG_3, 0),
++		/* r1 = xskmap[] */
++		BPF_LD_MAP_FD(BPF_REG_1, xsk->xsks_map_fd),
++		/* r3 = 0 */
++		BPF_MOV64_IMM(BPF_REG_3, 0),
++		/* call bpf_redirect_map */
+ 		BPF_EMIT_CALL(BPF_FUNC_redirect_map),
+ 		/* The jumps are to this instruction */
+ 		BPF_EXIT_INSN(),
 -- 
-2.7.5
-
-
+2.20.1
 
