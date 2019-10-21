@@ -2,118 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 52B9BDF4F8
-	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2019 20:20:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEAD4DF586
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2019 21:01:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729880AbfJUSUQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Oct 2019 14:20:16 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:36018 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726672AbfJUSUP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Oct 2019 14:20:15 -0400
-Received: by mail-qk1-f195.google.com with SMTP id y189so13593863qkc.3;
-        Mon, 21 Oct 2019 11:20:13 -0700 (PDT)
+        id S1729906AbfJUTBw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Oct 2019 15:01:52 -0400
+Received: from mail-lf1-f67.google.com ([209.85.167.67]:42706 "EHLO
+        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728513AbfJUTBv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Oct 2019 15:01:51 -0400
+Received: by mail-lf1-f67.google.com with SMTP id z12so10989235lfj.9
+        for <bpf@vger.kernel.org>; Mon, 21 Oct 2019 12:01:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EqPGNnMebZz4c/xVZrozzj12KPSZJh44zwjeVidbrD8=;
-        b=WJqUYFMQY9dYgqIvx8hj0iArBpnWpnGlSsZfVOT7qQR+OJ7WxMFkW/WLt1U3WN/JeQ
-         UGhYe1iQsSLHD6py0aKFusQ0reHvIfqysVmULZvaSZxwKBwa3+pk8wCbDxZVMQQjPck6
-         d1XuwpL3pU5ny0v0SzmKQHwsaBv3ZBizRcxb1x9SS3KVEjwxP0ZaMAGOI0EzafmVSZsz
-         K0juGO65TGeBPs3Dr6U31nI2lrVJcDeUZW5jpXvrE9J7yRiwed7saeEhh6COItutR2vm
-         dAmsajboI2P+1vkBjMmP481ts0hyh9fmBfWWW16PLj9B1lQGxRk5AvXD2N6uc+4mhDwc
-         cCnA==
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=PLOcZ03vS2EwYkFJj8DRoXWrjJmTGUnZtnTzndssys4=;
+        b=XSrQi1vIm6ZFvXVRDwjxjlYFZBuGk6dczFvD8d2rnmL8q8A5UYHDLKiCZQ2Llm4fIM
+         d9nFK/VVOyJKOa1ZRlqnOgXlUme68evtUG2Eq20ZqfZ9N3RQOnDdyi0Gla3vcDlC7IzV
+         6ojlHpjsTyElAC3AovaNCWMxCdTw+UsHzERuY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EqPGNnMebZz4c/xVZrozzj12KPSZJh44zwjeVidbrD8=;
-        b=biWelejj0sYR3Ma8IDqKr9/uEfFmhUAOpzeM3QwMk/dMn6pmQNcfcIuO7mDuqDoWW+
-         FSfUq9EqVP5OD5OpnzgrRmEDLKxt7DsEE4kDLrbe2MYeoCz7rBdELNDOl0B7gwESMz4J
-         leLAWgQosxwFmFN+xanE8SnHUk9lKbKX8ewlMgrtKmDBUOvUM7CpiqW2tKNNzhmO1oka
-         oqX5TDPOlAcDLuidBq9WRovOBRKysYmpF12iKMB5NKTbdItLVvXCJEooc/a4czEp8m7H
-         5wgXELoZpwAaHLYB9Rd6GwqUoy699kifSGPwJnUHWWHpAFpoNMr5Lu3kvqV7xGwVDBQZ
-         ANvQ==
-X-Gm-Message-State: APjAAAXaaV2e3weYZ3rQeuzhKBRGCFAmR2Ghfsk1E0+sZGeoF776D7jN
-        hM5RSBBIRGTgNn+TK+FvQvH5MUw5jbLkm0ak2IeuPzBr
-X-Google-Smtp-Source: APXvYqxYSShwEgtqvT4qtfO+uTUk1FuxmBbbqCf22Ct4weLEJEe8FbOAGDo34S/zVwEFx8tn1DUAdQaVxEZ4AmzqCi0=
-X-Received: by 2002:a37:b447:: with SMTP id d68mr24091046qkf.437.1571682013124;
- Mon, 21 Oct 2019 11:20:13 -0700 (PDT)
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=PLOcZ03vS2EwYkFJj8DRoXWrjJmTGUnZtnTzndssys4=;
+        b=o3oQz/SUz5saMtiee96KfiSoDxgo33HFjK1fVLBqdgZnCWbuP60i7/uau+UECNtGpo
+         9t+NVfmkITmplN4yo9wnEm1y6GVhGslEc/TZXFcIEJZOisGb8wqyuyILkeuxlswBp9uu
+         fmDWMmL5jRHIn5GyA3uWSX0OGk+44jSz4GizP0K24LpF5c6UBG3+u0TUGZANgwmRj/DW
+         rOWDCrwKXaBtbVlluoAhHMWizjBD2iKPdQApv9RNpggLArrLY5Fh+46+Sqlo2P/+g3eH
+         ZHvCRj5Qt2duU1d+kCNJgfbGgq+wsIklPkG1Bs4BDdOOpwYEFWzYdRu5yCnpWVEgQG1J
+         ngow==
+X-Gm-Message-State: APjAAAWj/BYwOxE/gDWBrSDNOLHUUd8NAL8uDIKAnLn9aHhEV8sU3B+N
+        okkOHi10lJV7iq4d0poGZDVFQQ==
+X-Google-Smtp-Source: APXvYqzA4yZnkeOQZqaobJL8WRSpadsYX3l+ahOhwgyEZK7fcdaoJbDqbV7TVda5soiN2pat/pzsVQ==
+X-Received: by 2002:ac2:55b4:: with SMTP id y20mr16013272lfg.173.1571684508959;
+        Mon, 21 Oct 2019 12:01:48 -0700 (PDT)
+Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
+        by smtp.gmail.com with ESMTPSA id q16sm6847947lfb.74.2019.10.21.12.01.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Oct 2019 12:01:48 -0700 (PDT)
+References: <20191021165744.2116648-1-andriin@fb.com>
+User-agent: mu4e 1.1.0; emacs 26.1
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
+        daniel@iogearbox.net, andrii.nakryiko@gmail.com, kernel-team@fb.com
+Subject: Re: [PATCH bpf-next] libbpf: make LIBBPF_OPTS macro strictly a variable declaration
+In-reply-to: <20191021165744.2116648-1-andriin@fb.com>
+Date:   Mon, 21 Oct 2019 21:01:47 +0200
+Message-ID: <87mudtdisk.fsf@cloudflare.com>
 MIME-Version: 1.0
-References: <20191017150032.14359-1-cneirabustos@gmail.com>
- <20191017150032.14359-5-cneirabustos@gmail.com> <d88ce3ca-d235-cd9c-c1a9-c2d01a01541d@fb.com>
-In-Reply-To: <d88ce3ca-d235-cd9c-c1a9-c2d01a01541d@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 21 Oct 2019 11:20:01 -0700
-Message-ID: <CAEf4BzbsDbxjALMJ119B-nweD1xEZ_PHX9r9k8qDpekraaHR2w@mail.gmail.com>
-Subject: Re: [PATCH v14 4/5] tools/testing/selftests/bpf: Add self-tests for
- new helper.
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Carlos Neira <cneirabustos@gmail.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "ebiederm@xmission.com" <ebiederm@xmission.com>,
-        "brouer@redhat.com" <brouer@redhat.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Oct 19, 2019 at 1:58 AM Yonghong Song <yhs@fb.com> wrote:
+On Mon, Oct 21, 2019 at 06:57 PM CEST, Andrii Nakryiko wrote:
+> LIBBPF_OPTS is implemented as a mix of field declaration and memset
+> + assignment. This makes it neither variable declaration nor purely
+> statements, which is a problem, because you can't mix it with either
+> other variable declarations nor other function statements, because C90
+> compiler mode emits warning on mixing all that together.
 >
+> This patch changes LIBBPF_OPTS into a strictly declaration of variable
+> and solves this problem, as can be seen in case of bpftool, which
+> previously would emit compiler warning, if done this way (LIBBPF_OPTS as
+> part of function variables declaration block).
 >
->
-> On 10/17/19 8:00 AM, Carlos Neira wrote:
-> > Self tests added for new helper
-> >
-> > Signed-off-by: Carlos Neira <cneirabustos@gmail.com>
-> > ---
-> >   .../bpf/prog_tests/get_ns_current_pid_tgid.c  | 96 +++++++++++++++++++
-> >   .../bpf/progs/get_ns_current_pid_tgid_kern.c  | 53 ++++++++++
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> ---
 
-It looks like typical naming convention is:
+Just a suggestion - macro helpers like this usually have DECLARE in
+their name. At least in the kernel. For instance DECLARE_COMPLETION.
 
-prog_test/<something>.c
-progs/test_<something>.c
-
-Let's keep this consistent. I'm about to do a bit smarter Makefile
-that will capture this convention, so it's good to have less exception
-to create. Thanks!
-
-Otherwise, besides what Yonghong mentioned, this look good to me.
-
-
-> >   2 files changed, 149 insertions(+)
-> >   create mode 100644 tools/testing/selftests/bpf/prog_tests/get_ns_current_pid_tgid.c
-> >   create mode 100644 tools/testing/selftests/bpf/progs/get_ns_current_pid_tgid_kern.c
-> >
-
-[...]
-
-> > +     prog = bpf_object__find_program_by_title(obj, probe_name);
-> > +     if (CHECK(!prog, "find_probe",
-> > +               "prog '%s' not found\n", probe_name))
-> > +             goto cleanup;
-> > +
-> > +     bpf_program__set_type(prog, BPF_PROG_TYPE_RAW_TRACEPOINT);
->
-> Do we need this? I thought libbpf should automatically
-> infer program type from section name?
-
-We used to, until the patch set that Daniel landed today. Now it can be dropped.
-
->
-> > +
-> > +     load_attr.obj = obj;
-> > +     load_attr.log_level = 0;
-> > +     load_attr.target_btf_path = NULL;
-> > +     err = bpf_object__load_xattr(&load_attr);
-> > +     if (CHECK(err, "obj_load",
-> > +               "failed to load prog '%s': %d\n",
-> > +               probe_name, err))
-> > +             goto cleanup;
->
-
-[...]
+-Jakub
