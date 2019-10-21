@@ -2,107 +2,153 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BCAAEDE048
-	for <lists+bpf@lfdr.de>; Sun, 20 Oct 2019 21:53:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F507DE176
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2019 02:35:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725938AbfJTTx0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 20 Oct 2019 15:53:26 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:21591 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725933AbfJTTx0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 20 Oct 2019 15:53:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1571601204;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/RoTulD9MOFa0djSkZWXs2Pa14XJ8IT9sFb5LBl9c74=;
-        b=FUKRrDoaLTLKY3Jfoe2fClKQBoUI1XuVN+CHQLxiSTitkYy1o6I4AzlpsspMK/H7/K05he
-        KjUOEJAZmKmZJ0Xst9jZGDNU6zR1Sf3TNfWTVyNr3lc8ie8RtG5Hgy4q0YwRx26R0Z6JBc
-        UX82OTlL2mxK4hTgFfG01W1ORL1DaTo=
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
- [209.85.208.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-6-J2uCy1woMs2j_cqUGAPD1w-1; Sun, 20 Oct 2019 15:53:23 -0400
-Received: by mail-lj1-f200.google.com with SMTP id z20so2091838ljz.0
-        for <bpf@vger.kernel.org>; Sun, 20 Oct 2019 12:53:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=/RoTulD9MOFa0djSkZWXs2Pa14XJ8IT9sFb5LBl9c74=;
-        b=CfdU+K07jPqfgP8PR+CMKhJFY6XFbcRsruinzUdWP0lGPVv8y3EVeL4lLhKfX/cdgL
-         XUL3hL/Tv0darsRHbxR7DlXMrQragE/gLHE02/mXD9S32/R9Eit+Da5ITCCRM5ZTu2OY
-         hzzFonJTB0TI/3IpLOtvYGh8fkmb404Xc1Hxl/aQR6+BEJcMSeVDtAG5IhICcZEOBDxi
-         HISfG/myLunsBEsEjRo6CjE0lufu/Uh303zmYr9fxPDAGk4TMDsuYkg0GvMRZTWvZdv/
-         Sp99hzzn37DMr0SprWVI8sBxpppPjjTofmAPa2i3RPW1t3F81baD6R8QhhMODZaH4G/I
-         UzmQ==
-X-Gm-Message-State: APjAAAXKqAZQ4rNJQSYail/G4sn5LsXdpg3i9VY0y9pySajQz9vXpvdg
-        4QTfGtg1LPVM299Ta1/8SeGTHV0x2FXHLzqpenUH/2hnJ5/q5CrXCyQDrWpf1Z7oT7gzq8dMbyn
-        BT0iCsO2Z+KTv
-X-Received: by 2002:a2e:b010:: with SMTP id y16mr12754070ljk.147.1571601202073;
-        Sun, 20 Oct 2019 12:53:22 -0700 (PDT)
-X-Google-Smtp-Source: APXvYqx4ufgaRtQlS1mi37PhH0ZYcQojIe7K50PX7Ic+eL6f7Tms3i7R8zmzNBStFWmMLp8JKE/W+w==
-X-Received: by 2002:a2e:b010:: with SMTP id y16mr12754058ljk.147.1571601201789;
-        Sun, 20 Oct 2019 12:53:21 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a00:7660:6da:443::2])
-        by smtp.gmail.com with ESMTPSA id f28sm5937387lfp.28.2019.10.20.12.53.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Oct 2019 12:53:20 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 24BE7180321; Sun, 20 Oct 2019 21:53:19 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net
-Cc:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        bpf@vger.kernel.org, magnus.karlsson@gmail.com,
-        magnus.karlsson@intel.com, sridhar.samudrala@intel.com
-Subject: Re: [PATCH bpf-next] libbpf: remove explicit XSKMAP lookup from AF_XDP XDP program
-In-Reply-To: <20191020170711.22082-1-bjorn.topel@gmail.com>
-References: <20191020170711.22082-1-bjorn.topel@gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Sun, 20 Oct 2019 21:53:19 +0200
-Message-ID: <87pnirb3dc.fsf@toke.dk>
+        id S1726607AbfJUAfC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 20 Oct 2019 20:35:02 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:1936 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726576AbfJUAfC (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 20 Oct 2019 20:35:02 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x9L0U98n013814;
+        Sun, 20 Oct 2019 17:35:00 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=5KVIrpshlF7cliYpZVJFJ+C/DSWE+cdN5cko/Vojatw=;
+ b=hpdjmWFxAby09iv0i9dGtmSVBvz7xM77w7Ss/7qLd5xjY6fsfkXVuMQZ/vQQ1866tvwq
+ Tta2dJtXvbH1PWNppW5Tut8DAss7ItBFEExY/L1tX9rom0pX7TNp9hlRpi0Jo9s5c+ER
+ baccUxe1gA9cCjGuuWdukSn55QSuvZ1gFu8= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by mx0a-00082601.pphosted.com with ESMTP id 2vrj5dt2th-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Sun, 20 Oct 2019 17:34:59 -0700
+Received: from prn-hub03.TheFacebook.com (2620:10d:c081:35::127) by
+ prn-hub02.TheFacebook.com (2620:10d:c081:35::126) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Sun, 20 Oct 2019 17:34:56 -0700
+Received: from NAM05-DM3-obe.outbound.protection.outlook.com (192.168.54.28)
+ by o365-in.thefacebook.com (192.168.16.27) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
+ via Frontend Transport; Sun, 20 Oct 2019 17:34:56 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aZX/6LlUqmBZf4AL6hHJmhHeVG7qbmGgd6V7De55dAh9aCzXtN1Mak7C7DtxwnbeIr/BTKzWTD5ulbruMdb3N/MprGGRZ4ncQkJLI9h2mEG+p7eS7UQ1K/v++81yAkfTNjntNYa4ZZXLPgpmPbdfX/34iB2Jz34WJU/ra+H6zYzV38h4KRT3vvMhHBsdHholNSgVRzrCaifjs5uj6y/svpfRYujpWdRaedfo2UmNjgT0IacSig15zkXu4B0hkdRcti3tB5RhzEWj+MSbJLGG0XlqysC64rqV3GgNv0z8TqKfpLrGn0RHNcAY0vzKsjd9m71kZ0J8HJlw4qgboiYjHQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5KVIrpshlF7cliYpZVJFJ+C/DSWE+cdN5cko/Vojatw=;
+ b=JVi7t6H3oDUc8HSPycfOmxQssmNp0vMDv0T7yW8kSqafXTYPlBvkic1z1PERiEIXuhSlf45sS4AB/1Xlw1NyFuM/3nHJqGv6vO+6eB5WHpfHp337mv4kTZSvX8vGZGoBI8GR3ylJv8qGKQ539XDOw80VDtjpf4t+zJbx6s7hYC+kYrdK7zXa7vi5akNjIiW/HMOXfpW5F5lbKirW7ai/IjVTcjL5zC5V3SBxRXPqG5bwo0EYkv32+KypbdRoQAnJsEM5uw+owr2iMgv82ug6A2PSxLLPcceleGxM63K+SJEPmcArVI17ydXokfqpseSDtosSG+w5ES85/p1giwWkbA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5KVIrpshlF7cliYpZVJFJ+C/DSWE+cdN5cko/Vojatw=;
+ b=N6v8iXc4wGXx4K+4EwngQ/6QRt/f0TUTwu6T9Yav0Z095POHY34rHxLSYs/UdXgCrqmGDVLjGioLPBbXhkngP2nbMlBPBBIf0tywpekxNzN+/tQhxWZieOXYlpIDSy5sLwsag6g16efyGiwUGIvr/K1FZApgRvoVM1OUL+2hcTs=
+Received: from BYAPR15MB3384.namprd15.prod.outlook.com (20.179.60.27) by
+ BYAPR15MB3256.namprd15.prod.outlook.com (20.179.59.88) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2347.17; Mon, 21 Oct 2019 00:34:55 +0000
+Received: from BYAPR15MB3384.namprd15.prod.outlook.com
+ ([fe80::b92c:ebd2:58dc:6b8d]) by BYAPR15MB3384.namprd15.prod.outlook.com
+ ([fe80::b92c:ebd2:58dc:6b8d%5]) with mapi id 15.20.2347.029; Mon, 21 Oct 2019
+ 00:34:55 +0000
+From:   Yonghong Song <yhs@fb.com>
+To:     Jakub Sitnicki <jakub@cloudflare.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "kernel-team@cloudflare.com" <kernel-team@cloudflare.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Subject: Re: [PATCH bpf-next v2] scripts/bpf: Print an error when known types
+ list needs updating
+Thread-Topic: [PATCH bpf-next v2] scripts/bpf: Print an error when known types
+ list needs updating
+Thread-Index: AQHVhzjaAX/sugXa5UOs6F5f+UUBH6dkQEAA
+Date:   Mon, 21 Oct 2019 00:34:55 +0000
+Message-ID: <0b94f736-17f1-6358-f661-33b6fb348532@fb.com>
+References: <20191020112344.19395-1-jakub@cloudflare.com>
+In-Reply-To: <20191020112344.19395-1-jakub@cloudflare.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MWHPR02CA0035.namprd02.prod.outlook.com
+ (2603:10b6:301:60::24) To BYAPR15MB3384.namprd15.prod.outlook.com
+ (2603:10b6:a03:112::27)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c090:180::ee3a]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 49e26029-4c02-472d-6b18-08d755be7e36
+x-ms-traffictypediagnostic: BYAPR15MB3256:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR15MB3256E880F19062666248B3DFD3690@BYAPR15MB3256.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:597;
+x-forefront-prvs: 0197AFBD92
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(376002)(136003)(396003)(366004)(346002)(39860400002)(189003)(199004)(36756003)(6486002)(478600001)(256004)(316002)(4326008)(31686004)(2501003)(31696002)(229853002)(5660300002)(8676002)(102836004)(14444005)(6512007)(81166006)(81156014)(6436002)(52116002)(2906002)(99286004)(6116002)(110136005)(66446008)(66556008)(66946007)(66476007)(71200400001)(76176011)(86362001)(8936002)(6246003)(54906003)(71190400001)(25786009)(14454004)(2616005)(46003)(11346002)(446003)(476003)(386003)(6506007)(53546011)(305945005)(486006)(186003)(7736002)(64756008);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB3256;H:BYAPR15MB3384.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: EZ/7X6h5MO9zqY8rV9KTC3NbH57m1DeqKiqq6hgiMwN25OZifnhsdNBV8sUnvJ9n3oyWC7NJ++BuU7OcpRBc10cjNwTF4u7ALfJgltGxolFK2iukSK1i1zZ4sb7DK6IMy7i7yZDRX1eSJ93FRQpRGhsSyxl3QHdk8SiWRikD62cFCxVoC7Xf335a4ar1Ufx0eNoc4kY9i2dKh7LiBm3ZQYz/29Dndzb1L8ZaKiLI29nEiic3chEfj91/OBv9qJ/0yUFPFb9LkS/z6cLx0TMsj6bE3WyH5efgULg9m/Y42be21LhWav2DbYqW73OScsEHm4PNh0TJ2aDp7jSR0oIcUbas3QSpuBYQhXK0N4+2i5K0kObaR7GCnUaHZX6W6Rsvy3U5Mn0mmFR5ttbil3KACjKud6yYrpncHvg0ww0vGelwyVij5OZtRmBHyt/fzYrh
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <586BD5093CE9E1488DC6C2082DBBD2F8@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-MC-Unique: J2uCy1woMs2j_cqUGAPD1w-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-CrossTenant-Network-Message-Id: 49e26029-4c02-472d-6b18-08d755be7e36
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Oct 2019 00:34:55.0884
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: l+jr4galZK6JJIAyY2HGIe5sXSvSg5JrCN3fwixvhe7Whi+3nqi+/E4kFoMWcFAi
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3256
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
+ definitions=2019-10-20_06:2019-10-18,2019-10-20 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0 mlxscore=0
+ clxscore=1011 mlxlogscore=999 impostorscore=0 adultscore=0 malwarescore=0
+ lowpriorityscore=0 bulkscore=0 priorityscore=1501 spamscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-1908290000
+ definitions=main-1910210002
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> writes:
-
-> From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
->
-> In commit 43e74c0267a3 ("bpf_xdp_redirect_map: Perform map lookup in
-> eBPF helper") the bpf_redirect_map() helper learned to do map lookup,
-> which means that the explicit lookup in the XDP program for AF_XDP is
-> not needed.
->
-> This commit removes the map lookup, which simplifies the BPF code and
-> improves the performance for the "rx_drop" [1] scenario with ~4%.
-
-Nice, 4% is pretty good!
-
-I wonder if the program needs to be backwards-compatible (with pre-5.3
-kernels), though?
-
-You can do that by something like this:
-
-ret =3D bpf_redirect_map(&xsks_map, index, XDP_PASS);
-if (ret > 0)
-  return ret;
-
-if (bpf_map_lookup_elem(&xsks_map, &index))
-   return bpf_redirect_map(&xsks_map, index, 0);
-return XDP_PASS;
-
-
-This works because bpf_redirect_map() prior to 43e74c0267a3 will return
-XDP_ABORTED on a non-0 flags value.
-
--Toke
-
+DQoNCk9uIDEwLzIwLzE5IDQ6MjMgQU0sIEpha3ViIFNpdG5pY2tpIHdyb3RlOg0KPiBEb24ndCBn
+ZW5lcmF0ZSBhIGJyb2tlbiBicGZfaGVscGVyX2RlZnMuaCBoZWFkZXIgaWYgdGhlIGhlbHBlciBz
+Y3JpcHQgbmVlZHMNCj4gdXBkYXRpbmcgYmVjYXVzZSBpdCBkb2Vzbid0IHJlY29nbml6ZSBhIG5l
+d2x5IGFkZGVkIHR5cGUuIEluc3RlYWQgcHJpbnQgYW4NCj4gZXJyb3IgdGhhdCBleHBsYWlucyB3
+aHkgdGhlIGJ1aWxkIGlzIGZhaWxpbmcsIGNsZWFuIHVwIHRoZSBwYXJ0aWFsbHkNCj4gZ2VuZXJh
+dGVkIGhlYWRlciBhbmQgc3RvcC4NCj4gDQo+IHYxLT52MjoNCj4gLSBTd2l0Y2hlZCBmcm9tIHRl
+bXBvcmFyeSBmaWxlIHRvIC5ERUxFVEVfT05fRVJST1IuDQo+IA0KPiBGaXhlczogNDU2YTUxM2Ji
+NWQ0ICgic2NyaXB0cy9icGY6IEVtaXQgYW4gI2Vycm9yIGRpcmVjdGl2ZSBrbm93biB0eXBlcyBs
+aXN0IG5lZWRzIHVwZGF0aW5nIikNCj4gU3VnZ2VzdGVkLWJ5OiBBbmRyaWkgTmFrcnlpa28gPGFu
+ZHJpaW5AZmIuY29tPg0KPiBTaWduZWQtb2ZmLWJ5OiBKYWt1YiBTaXRuaWNraSA8amFrdWJAY2xv
+dWRmbGFyZS5jb20+DQoNCkFja2VkLWJ5OiBZb25naG9uZyBTb25nIDx5aHNAZmIuY29tPg0KDQo+
+IC0tLQ0KPiAgIHNjcmlwdHMvYnBmX2hlbHBlcnNfZG9jLnB5IHwgNCArKy0tDQo+ICAgdG9vbHMv
+bGliL2JwZi9NYWtlZmlsZSAgICAgfCAzICsrKw0KPiAgIDIgZmlsZXMgY2hhbmdlZCwgNSBpbnNl
+cnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL3NjcmlwdHMvYnBm
+X2hlbHBlcnNfZG9jLnB5IGIvc2NyaXB0cy9icGZfaGVscGVyc19kb2MucHkNCj4gaW5kZXggMDgz
+MDBiYzAyNGRhLi43NTQ4NTY5ZTgwNzYgMTAwNzU1DQo+IC0tLSBhL3NjcmlwdHMvYnBmX2hlbHBl
+cnNfZG9jLnB5DQo+ICsrKyBiL3NjcmlwdHMvYnBmX2hlbHBlcnNfZG9jLnB5DQo+IEBAIC00ODgs
+OCArNDg4LDggQEAgY2xhc3MgUHJpbnRlckhlbHBlcnMoUHJpbnRlcik6DQo+ICAgICAgICAgICAg
+ICAgcmV0dXJuIHQNCj4gICAgICAgICAgIGlmIHQgaW4gc2VsZi5tYXBwZWRfdHlwZXM6DQo+ICAg
+ICAgICAgICAgICAgcmV0dXJuIHNlbGYubWFwcGVkX3R5cGVzW3RdDQo+IC0gICAgICAgIHByaW50
+KCIiKQ0KPiAtICAgICAgICBwcmludCgiI2Vycm9yIFwiVW5yZWNvZ25pemVkIHR5cGUgJyVzJywg
+cGxlYXNlIGFkZCBpdCB0byBrbm93biB0eXBlcyFcIiIgJSB0KQ0KPiArICAgICAgICBwcmludCgi
+VW5yZWNvZ25pemVkIHR5cGUgJyVzJywgcGxlYXNlIGFkZCBpdCB0byBrbm93biB0eXBlcyEiICUg
+dCwNCj4gKyAgICAgICAgICAgICAgZmlsZT1zeXMuc3RkZXJyKQ0KPiAgICAgICAgICAgc3lzLmV4
+aXQoMSkNCj4gICANCj4gICAgICAgc2Vlbl9oZWxwZXJzID0gc2V0KCkNCj4gZGlmZiAtLWdpdCBh
+L3Rvb2xzL2xpYi9icGYvTWFrZWZpbGUgYi90b29scy9saWIvYnBmL01ha2VmaWxlDQo+IGluZGV4
+IDc1YjUzODU3N2MxNy4uNTRmZjgwZmFhOGRmIDEwMDY0NA0KPiAtLS0gYS90b29scy9saWIvYnBm
+L01ha2VmaWxlDQo+ICsrKyBiL3Rvb2xzL2xpYi9icGYvTWFrZWZpbGUNCj4gQEAgLTI4NiwzICsy
+ODYsNiBAQCB0YWdzOg0KPiAgICMgRGVjbGFyZSB0aGUgY29udGVudHMgb2YgdGhlIC5QSE9OWSB2
+YXJpYWJsZSBhcyBwaG9ueS4gIFdlIGtlZXAgdGhhdA0KPiAgICMgaW5mb3JtYXRpb24gaW4gYSB2
+YXJpYWJsZSBzbyB3ZSBjYW4gdXNlIGl0IGluIGlmX2NoYW5nZWQgYW5kIGZyaWVuZHMuDQo+ICAg
+LlBIT05ZOiAkKFBIT05ZKQ0KPiArDQo+ICsjIERlbGV0ZSBwYXJ0aWFsbHkgdXBkYXRlZCAoY29y
+cnVwdGVkKSBmaWxlcyBvbiBlcnJvcg0KPiArLkRFTEVURV9PTl9FUlJPUjoNCj4gDQo=
