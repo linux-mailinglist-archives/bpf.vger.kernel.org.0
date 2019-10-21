@@ -2,107 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E7FBDF871
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2019 01:16:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5050FDF8CC
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2019 01:51:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730350AbfJUXQF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Oct 2019 19:16:05 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:46916 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730276AbfJUXQE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Oct 2019 19:16:04 -0400
-Received: by mail-pf1-f196.google.com with SMTP id q5so9368824pfg.13
-        for <bpf@vger.kernel.org>; Mon, 21 Oct 2019 16:16:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :organization:mime-version:content-transfer-encoding;
-        bh=SIazbGGrODWbrTu58S9RmN4EpuuCS7YJjAB2It/OA0k=;
-        b=oHMv5HG1Ss7uQiQr0HZqS0JqLJqa6fUER36ipCFDLxHLr5wqqqBig5LpXYkdS6MhVE
-         8+RHZ10Q/KdNvZ/NMkZDmuXOanyMRkwpMF3js+0LP2Zxob4BAsSN/Ey6Kq29NdwMB3LN
-         8C2xdub6zuszZNLDjs9eu3crx9kpgd7yUflIIH160ThihJMPJ9DmBY70pNcm8unfl14y
-         ++oi/35LtKt8bx4eM48LK6++0ZT14sstZGvuH757ZpXfBiUkma+GoV/kuhaYQe3k11sg
-         WFUkYoElkLZwU21+jMvtZkpfIkVcdjh7EKoEYkG+9IioGUjnLXFOF09w6vUwjxOpeKmi
-         PjwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=SIazbGGrODWbrTu58S9RmN4EpuuCS7YJjAB2It/OA0k=;
-        b=sx+6FhnxVZJYf8mCLvcP9+QY1avV2zp76ZazTvtaxGfEhnEDXEBiTgxSpAy5r+1kkn
-         84neR+AQQ5ItN8ghj4Qi7s8zOCPTE4S8L9fhdAFop0ENuOkPzWztC6ui2iw6xsPVXrz2
-         U0+zKJhSTsbGWrfaNUrdYWdlGzm9XTh9D956W/7qSL2ozwkQ4HQ5OCcug/mlcRXcZDVD
-         RvNNdkYJJNiIe/BM+KdT1mot2d7HPSBTXh0dyLtxWEqe5cVLp7um3JDX22dv+x5P8rd9
-         KFbuEvdg98PZMj4FLN1a2t1QzofwYAwhUTVBXAMk8AeuzorPUIil40JMV8iq4VbX7Xkt
-         03gw==
-X-Gm-Message-State: APjAAAW5nmz0/iqm//PY5RrM22qMsdOA4I3NFgAhEXglwAjjE8XyNCGM
-        19n5s2QX/c3N+2BoIcabFiJIqQ==
-X-Google-Smtp-Source: APXvYqwUupoLUquBzzVqMXRG2rPQmVWyjAJrS7NMYXMcTAUeIZu/lU/4IiVC3ni9FdOQFFk7rsfT1g==
-X-Received: by 2002:a17:90a:a88e:: with SMTP id h14mr247045pjq.42.1571699763985;
-        Mon, 21 Oct 2019 16:16:03 -0700 (PDT)
-Received: from cakuba.netronome.com (c-73-202-202-92.hsd1.ca.comcast.net. [73.202.202.92])
-        by smtp.gmail.com with ESMTPSA id n2sm17412294pgg.77.2019.10.21.16.16.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Oct 2019 16:16:03 -0700 (PDT)
-Date:   Mon, 21 Oct 2019 16:16:00 -0700
-From:   Jakub Kicinski <jakub.kicinski@netronome.com>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Andrii Nakryiko <andriin@fb.com>,
-        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>
-Subject: Re: [PATCH] bpftool: Try to read btf as raw data if elf read fails
-Message-ID: <20191021161600.282c04fb@cakuba.netronome.com>
-In-Reply-To: <20191021140227.GD32718@krava>
-References: <20191018103404.12999-1-jolsa@kernel.org>
-        <20191018153905.600d7c8a@cakuba.netronome.com>
-        <20191021140227.GD32718@krava>
-Organization: Netronome Systems, Ltd.
+        id S1730172AbfJUXvU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Oct 2019 19:51:20 -0400
+Received: from dispatch1-us1.ppe-hosted.com ([67.231.154.164]:45878 "EHLO
+        dispatch1-us1.ppe-hosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729718AbfJUXvU (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 21 Oct 2019 19:51:20 -0400
+X-Virus-Scanned: Proofpoint Essentials engine
+Received: from webmail.solarflare.com (webmail.solarflare.com [12.187.104.26])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1-us5.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTPS id 6F3BC4C0058;
+        Mon, 21 Oct 2019 23:51:18 +0000 (UTC)
+Received: from [10.17.20.203] (10.17.20.203) by ocex03.SolarFlarecom.com
+ (10.20.40.36) with Microsoft SMTP Server (TLS) id 15.0.1395.4; Mon, 21 Oct
+ 2019 16:51:12 -0700
+Subject: Re: [PATCH bpf-next v3 1/5] bpf: Support chain calling multiple BPF
+ programs after each other
+From:   Edward Cree <ecree@solarflare.com>
+To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        "John Fastabend" <john.fastabend@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+CC:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Marek Majkowski <marek@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        "David Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>
+References: <157046883502.2092443.146052429591277809.stgit@alrua-x1>
+ <157046883614.2092443.9861796174814370924.stgit@alrua-x1>
+ <20191007204234.p2bh6sul2uakpmnp@ast-mbp.dhcp.thefacebook.com>
+ <87sgo3lkx9.fsf@toke.dk>
+ <20191009015117.pldowv6n3k5p3ghr@ast-mbp.dhcp.thefacebook.com>
+ <87o8yqjqg0.fsf@toke.dk>
+ <20191010044156.2hno4sszysu3c35g@ast-mbp.dhcp.thefacebook.com>
+ <87v9srijxa.fsf@toke.dk>
+ <5da4ab712043c_25f42addb7c085b83b@john-XPS-13-9370.notmuch>
+ <87eezfi2og.fsf@toke.dk>
+ <f9d5f717-51fe-7d03-6348-dbaf0b9db434@solarflare.com>
+ <87r23egdua.fsf@toke.dk>
+ <70142501-e2dd-1aed-992e-55acd5c30cfd@solarflare.com>
+Message-ID: <e968af34-b538-d1d3-1cf1-5b4e22294a78@solarflare.com>
+Date:   Tue, 22 Oct 2019 00:51:11 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <70142501-e2dd-1aed-992e-55acd5c30cfd@solarflare.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.17.20.203]
+X-TM-AS-Product-Ver: SMEX-12.5.0.1300-8.5.1010-24990.005
+X-TM-AS-Result: No-8.133900-4.000000-10
+X-TMASE-MatchedRID: fE0JoqABJp3mLzc6AOD8DfHkpkyUphL9IiTd2l7lf6GuNd+pu3dTGg6Q
+        J3m2Fr47hBgW1oWqoGkWr39K8vorPoeEblCEuUZaiVJZi91I9Jh02ZC6RJyIuLkyLBU2tuXnXUC
+        QpaQ/+KfREzGIv6wO3jQUkohHLxxaY8o+fcjxpOT4vYawCsCC2qbsRRaTaNLRmJBe2bRXwlNyMB
+        AlYDmp4j0KKqGcyZ1Z04LY8Bk2g+1dxEg+iEaV6p3bt4XlQMWj21y0oPfgygpoe+v2w6RhK3Ioz
+        Ga69omdowV+mkFB3ea8eHU+jqFqzXZW0C+m8SohrMcMK3Nm8dmpvf+jmz45wxvvaBlBXZew+QvP
+        BNKffRnARoIcSvIvLKOwbF0w9VOsbWNBitJBrR/C0TXpqtexIuBwxa/RDufiTIqcL+xT7KlARXr
+        3iG5/5+fOVcxjDhcwPcCXjNqUmkV5zdAzex5xZqgdZ197Ssb/p5P4zSQ2X91NS+rGHHX2H6rmcS
+        BGUK9niIyodu7J+teUTGVAhB5EbQ==
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--8.133900-4.000000
+X-TMASE-Version: SMEX-12.5.0.1300-8.5.1010-24990.005
+X-MDID: 1571701879-PlLC6XqtyU25
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 21 Oct 2019 16:02:27 +0200, Jiri Olsa wrote:
-> > >  static int do_dump(int argc, char **argv)
-> > >  {
-> > >  	struct btf *btf = NULL;
-> > > @@ -397,7 +429,7 @@ static int do_dump(int argc, char **argv)
-> > >  	__u32 btf_id = -1;
-> > >  	const char *src;
-> > >  	int fd = -1;
-> > > -	int err;
-> > > +	int err = 0;  
-> > 
-> > This change looks unnecessary.  
-> 
-> I'm getting confusing warnings from gcc about this,
-> but there is a code path where do_dump would return
-> untouched err:
-> 
->   do_dump
->      int err;
-> 
->      } else if (is_prefix(src, "file")) {
->        btf = btf__parse_elf(*argv, NULL);   // succeeds
-> 
->      }
-> 
->      while (argc) {
->        if (is_prefix(*argv, "format")) {
->        else {                                // in here
->           goto done;
->        }
-> 
->      done:
->        return err;
+On 15/10/2019 19:33, Edward Cree wrote:
+> But I think we'll
+>  need to prototype things with static linking first so that we can be
+>  sure of the linker semantics we want, before we try to put a new dynamic
+>  linker in the kernel.
+For anyone wanting to follow my progress on this, the first-draft eBPF
+ linker 'ebld.py' can now be found at
+ https://github.com/solarflarecom/ebpf_asm/tree/linker
 
-ugh, right those look legit, although unrelated to you change.
+It's able to resolve inter-object calls (at least in a _really simple_ test
+ I did, where prog A was "call pass_fn; exit" and prog B was "pass_fn:
+ ld r0, XDP_PASS; exit"), but I haven't got as far as feeding the resulting
+ object file to the kernel (no obvious reason that shouldn't work, I just
+ haven't tried it yet).
+What it _doesn't_ do yet is deal with BTF — it just silently discards any
+ BTF or BTF.ext sections in the input object files.  I'll need to re-read
+ the BTF spec to see what's changed there since last I was involved (I hope
+ the spec has been kept up to date as BTF has evolved...!)
 
-err should always be set before jumping to 'done'. The error
-setting in this function looks super messy :( Sometimes is returns
-errno codes, sometimes positive values, sometimes negative, sometimes
-just -1. Sometimes it jumps to 'done' for no good reason, ahh :/
+But with the basic linker there, I think a prototype daemon is probably a
+ higher priority than getting fully-featured with BTF, so that's what I
+ plan to do next.
+
+-Ed
+
+PS: Yes, it's in Python.  I started out in C, and quickly backed myself
+ into a corner trying to keep the data structures simple.  Having first-
+ class dictionaries Really Helps.
