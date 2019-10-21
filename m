@@ -2,141 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 20704DE2A3
-	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2019 05:39:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5DDDDE370
+	for <lists+bpf@lfdr.de>; Mon, 21 Oct 2019 07:03:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727069AbfJUDja (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 20 Oct 2019 23:39:30 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:4148 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727021AbfJUDj3 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 20 Oct 2019 23:39:29 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id x9L3U6AN029846
-        for <bpf@vger.kernel.org>; Sun, 20 Oct 2019 20:39:28 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=facebook; bh=YCPor7IDddhS2XsHLQmmePjuLiX3llqVS2QljwMr5uM=;
- b=qaOoJ5on8JLJpZUGirrvXTKxFvk33+06e+Xaty8z0isJElIrZZ4UhiKWpTaJkV4RDFDe
- 7io8hk/0LwDXk3CpyEa5VPaaPp4iaavC0/HyDmozvZpWNM4GxtztJEko7Z2pMl+2UacA
- /5c85VQgU3gy7FFHEOCfxq+swUN0iEECQPE= 
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by m0089730.ppops.net with ESMTP id 2vqwyyd5k2-7
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Sun, 20 Oct 2019 20:39:28 -0700
-Received: from 2401:db00:12:909f:face:0:3:0 (2620:10d:c081:10::13) by
- mail.thefacebook.com (2620:10d:c081:35::125) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
- Sun, 20 Oct 2019 20:39:25 -0700
-Received: by dev101.prn2.facebook.com (Postfix, from userid 137359)
-        id 3135F861976; Sun, 20 Oct 2019 20:39:20 -0700 (PDT)
-Smtp-Origin-Hostprefix: dev
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: dev101.prn2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Cluster: prn2c23
-Subject: [PATCH bpf-next 7/7] selftest/bpf: get rid of a bunch of explicit BPF program type setting
-Date:   Sun, 20 Oct 2019 20:39:02 -0700
-Message-ID: <20191021033902.3856966-8-andriin@fb.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20191021033902.3856966-1-andriin@fb.com>
-References: <20191021033902.3856966-1-andriin@fb.com>
-X-FB-Internal: Safe
+        id S1727078AbfJUFDi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Oct 2019 01:03:38 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:38081 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727047AbfJUFDh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Oct 2019 01:03:37 -0400
+Received: by mail-qt1-f196.google.com with SMTP id o25so5673822qtr.5;
+        Sun, 20 Oct 2019 22:03:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=yNA4IJh7IyVo9n7MPHM6S3n+LSxLyl9PYyPGaB6d5jg=;
+        b=vEUGlEnp1rwVVxS5Jx61vGmhip0OwhHMmGyL0yVwzQ0FCripho21Z0NtCXyGe8INhh
+         pSPdtRohJLUiifxn9saAlL/DmVE3vXz/J0UZwG9JeXd3bdFAXzUgJh65mNZKE2jUAtL0
+         BBIV1MOc4xycQbIrmkdNc1LoOKPxrxjCZM2+HFLEeFJtz7N9cr7z0S25+oKU/RmzOTrG
+         EcmgbeqHNZCBirRJ46GNQcodBWKZMGbEODnUEBZSk8C4MwQfej6j0xxjTDOvdAvQiaPU
+         Mr6KhW46ejKmti8qJYuhwsJJ5YC8+qobJhMD86T0SFOWma2cL7QG0Bx03REq+Rr8nle7
+         yLMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=yNA4IJh7IyVo9n7MPHM6S3n+LSxLyl9PYyPGaB6d5jg=;
+        b=C6f0TG5PHA8LCsz3hG8XIZB/fKcMJt8v6wrygRwMF2LrX/jepF2ZaKrLbWCH0TSaDH
+         KgqxjAaV1cab9pamsiwyQiUNFbxM6nWvXSS4kl8FBr28mksEbT2tK7eaD+dhxNJCz2uS
+         i5gAU5OXqDUyLPYBfaEnpO0+CjK5PLDt1Bizvjpn7Lz3kLyE2fSiAKR6N7bzuzSM5mH3
+         WomTviKol3GFEbc26o3QHztvGUqXill4qh99Um+eYSin1TkkEBgV9Hcsycpd3NpzbetE
+         JJZZNL3m8e2iqpWy6Dc3oLA3N6DVxXSH2x18zoSS05YkXmHr809ZF2jzjGPDaAb6+FbE
+         LO+g==
+X-Gm-Message-State: APjAAAXHQOIE4Ybv98DWL6Hkrq5C87tUlsjF5leVGD4spRGGPQN4JWwp
+        9c7JXfNEkvDevliyA49STZ97d91Zd+TS5RYP2gg=
+X-Google-Smtp-Source: APXvYqx+kG6LmHZ83Z0ALN68pee6pOEFXjATi0Z0/HaeHUJfEgdNcXyfZQcm+JF430XF2xZ15b8hGOYvuWC1oLROoM8=
+X-Received: by 2002:ac8:2f90:: with SMTP id l16mr16097989qta.359.1571634216731;
+ Sun, 20 Oct 2019 22:03:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
- definitions=2019-10-21_01:2019-10-18,2019-10-21 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0 mlxscore=0
- lowpriorityscore=0 suspectscore=8 mlxlogscore=530 impostorscore=0
- spamscore=0 adultscore=0 priorityscore=1501 clxscore=1015 phishscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1908290000 definitions=main-1910210029
-X-FB-Internal: deliver
+References: <20191020170711.22082-1-bjorn.topel@gmail.com> <87pnirb3dc.fsf@toke.dk>
+In-Reply-To: <87pnirb3dc.fsf@toke.dk>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Mon, 21 Oct 2019 07:03:25 +0200
+Message-ID: <CAJ+HfNh+RFUQr852HDmq0DufxzrkyD_Tu99UtJUtd==L+tgB8w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: remove explicit XSKMAP lookup from
+ AF_XDP XDP program
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Netdev <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        bpf <bpf@vger.kernel.org>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        "Samudrala, Sridhar" <sridhar.samudrala@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Now that libbpf can correctly guess BPF program types from section
-names, remove a bunch of explicit bpf_program__set_type() calls
-throughout tests.
+On Sun, 20 Oct 2019 at 21:53, Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat=
+.com> wrote:
+>
+> Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> writes:
+>
+> > From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+> >
+> > In commit 43e74c0267a3 ("bpf_xdp_redirect_map: Perform map lookup in
+> > eBPF helper") the bpf_redirect_map() helper learned to do map lookup,
+> > which means that the explicit lookup in the XDP program for AF_XDP is
+> > not needed.
+> >
+> > This commit removes the map lookup, which simplifies the BPF code and
+> > improves the performance for the "rx_drop" [1] scenario with ~4%.
+>
+> Nice, 4% is pretty good!
+>
+> I wonder if the program needs to be backwards-compatible (with pre-5.3
+> kernels), though?
+>
+> You can do that by something like this:
+>
+> ret =3D bpf_redirect_map(&xsks_map, index, XDP_PASS);
+> if (ret > 0)
+>   return ret;
+>
+> if (bpf_map_lookup_elem(&xsks_map, &index))
+>    return bpf_redirect_map(&xsks_map, index, 0);
+> return XDP_PASS;
+>
 
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- tools/testing/selftests/bpf/prog_tests/attach_probe.c | 5 -----
- tools/testing/selftests/bpf/prog_tests/core_reloc.c   | 1 -
- tools/testing/selftests/bpf/prog_tests/rdonly_maps.c  | 4 ----
- tools/testing/selftests/bpf/test_maps.c               | 4 ----
- 4 files changed, 14 deletions(-)
+Ah, yes. Thanks for pointing that out. I'll do a respin.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/attach_probe.c b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-index 4f50d32c4abb..0ee1ce100a4a 100644
---- a/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-+++ b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-@@ -99,11 +99,6 @@ void test_attach_probe(void)
- 		  "prog '%s' not found\n", uretprobe_name))
- 		goto cleanup;
- 
--	bpf_program__set_kprobe(kprobe_prog);
--	bpf_program__set_kprobe(kretprobe_prog);
--	bpf_program__set_kprobe(uprobe_prog);
--	bpf_program__set_kprobe(uretprobe_prog);
--
- 	/* create maps && load programs */
- 	err = bpf_object__load(obj);
- 	if (CHECK(err, "obj_load", "err %d\n", err))
-diff --git a/tools/testing/selftests/bpf/prog_tests/core_reloc.c b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-index 2b3586dc6c86..523dca82dc82 100644
---- a/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-+++ b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-@@ -391,7 +391,6 @@ void test_core_reloc(void)
- 		if (CHECK(!prog, "find_probe",
- 			  "prog '%s' not found\n", probe_name))
- 			goto cleanup;
--		bpf_program__set_type(prog, BPF_PROG_TYPE_RAW_TRACEPOINT);
- 
- 		load_attr.obj = obj;
- 		load_attr.log_level = 0;
-diff --git a/tools/testing/selftests/bpf/prog_tests/rdonly_maps.c b/tools/testing/selftests/bpf/prog_tests/rdonly_maps.c
-index 9bf9de0aaeea..d90acc13d1ec 100644
---- a/tools/testing/selftests/bpf/prog_tests/rdonly_maps.c
-+++ b/tools/testing/selftests/bpf/prog_tests/rdonly_maps.c
-@@ -36,10 +36,6 @@ void test_rdonly_maps(void)
- 	if (CHECK(IS_ERR(obj), "obj_open", "err %ld\n", PTR_ERR(obj)))
- 		return;
- 
--	bpf_object__for_each_program(prog, obj) {
--		bpf_program__set_raw_tracepoint(prog);
--	}
--
- 	err = bpf_object__load(obj);
- 	if (CHECK(err, "obj_load", "err %d errno %d\n", err, errno))
- 		goto cleanup;
-diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/selftests/bpf/test_maps.c
-index 806b298397d3..02eae1e864c2 100644
---- a/tools/testing/selftests/bpf/test_maps.c
-+++ b/tools/testing/selftests/bpf/test_maps.c
-@@ -1142,7 +1142,6 @@ static void test_sockmap(unsigned int tasks, void *data)
- #define MAPINMAP_PROG "./test_map_in_map.o"
- static void test_map_in_map(void)
- {
--	struct bpf_program *prog;
- 	struct bpf_object *obj;
- 	struct bpf_map *map;
- 	int mim_fd, fd, err;
-@@ -1179,9 +1178,6 @@ static void test_map_in_map(void)
- 		goto out_map_in_map;
- 	}
- 
--	bpf_object__for_each_program(prog, obj) {
--		bpf_program__set_xdp(prog);
--	}
- 	bpf_object__load(obj);
- 
- 	map = bpf_object__find_map_by_name(obj, "mim_array");
--- 
-2.17.1
 
+Thanks,
+Bj=C3=B6rn
+
+>
+> This works because bpf_redirect_map() prior to 43e74c0267a3 will return
+> XDP_ABORTED on a non-0 flags value.
+>
+> -Toke
+>
