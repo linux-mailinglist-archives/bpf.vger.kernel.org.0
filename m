@@ -2,43 +2,31 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 40C5AE0CB6
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2019 21:42:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C14AFE0DCA
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2019 23:30:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732691AbfJVTmd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Oct 2019 15:42:33 -0400
-Received: from www62.your-server.de ([213.133.104.62]:46196 "EHLO
+        id S1731765AbfJVVar (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Oct 2019 17:30:47 -0400
+Received: from www62.your-server.de ([213.133.104.62]:41034 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731806AbfJVTmd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Oct 2019 15:42:33 -0400
+        with ESMTP id S1731437AbfJVVar (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Oct 2019 17:30:47 -0400
 Received: from 13.249.197.178.dynamic.dsl-lte-bonding.lssmb00p-msn.res.cust.swisscom.ch ([178.197.249.13] helo=localhost)
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1iN030-0005QE-Ii; Tue, 22 Oct 2019 21:42:26 +0200
-Date:   Tue, 22 Oct 2019 21:42:26 +0200
+        id 1iN1jp-000617-8M; Tue, 22 Oct 2019 23:30:45 +0200
 From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     "Ben Dooks (Codethink)" <ben.dooks@codethink.co.uk>
-Cc:     linux-kernel@lists.codethink.co.uk,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] xdp: fix type of string pointer in __XDP_ACT_SYM_TAB
-Message-ID: <20191022194226.GD31343@pc-66.home>
-References: <20191022125925.10508-1-ben.dooks@codethink.co.uk>
+To:     ast@kernel.org
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>
+Subject: [PATCH bpf] bpf: Fix use after free in bpf_get_prog_name
+Date:   Tue, 22 Oct 2019 23:30:38 +0200
+Message-Id: <875f2906a7c1a0691f2d567b4d8e4ea2739b1e88.1571779205.git.daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191022125925.10508-1-ben.dooks@codethink.co.uk>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+Content-Transfer-Encoding: 8bit
 X-Authenticated-Sender: daniel@iogearbox.net
 X-Virus-Scanned: Clear (ClamAV 0.101.4/25610/Tue Oct 22 10:54:26 2019)
 Sender: bpf-owner@vger.kernel.org
@@ -46,25 +34,53 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 22, 2019 at 01:59:25PM +0100, Ben Dooks (Codethink) wrote:
-> The table entry in __XDP_ACT_SYM_TAB for the last item is set
-> to { -1, 0 } where it should be { -1, NULL } as the second item
-> is a pointer to a string.
-> 
-> Fixes the following sparse warnings:
-> 
-> ./include/trace/events/xdp.h:28:1: warning: Using plain integer as NULL pointer
-> ./include/trace/events/xdp.h:53:1: warning: Using plain integer as NULL pointer
-> ./include/trace/events/xdp.h:82:1: warning: Using plain integer as NULL pointer
-> ./include/trace/events/xdp.h:140:1: warning: Using plain integer as NULL pointer
-> ./include/trace/events/xdp.h:155:1: warning: Using plain integer as NULL pointer
-> ./include/trace/events/xdp.h:190:1: warning: Using plain integer as NULL pointer
-> ./include/trace/events/xdp.h:225:1: warning: Using plain integer as NULL pointer
-> ./include/trace/events/xdp.h:260:1: warning: Using plain integer as NULL pointer
-> ./include/trace/events/xdp.h:318:1: warning: Using plain integer as NULL pointer
-> ./include/trace/events/xdp.h:356:1: warning: Using plain integer as NULL pointer
-> ./include/trace/events/xdp.h:390:1: warning: Using plain integer as NULL pointer
-> 
-> Signed-off-by: Ben Dooks (Codethink) <ben.dooks@codethink.co.uk>
+There is one more problematic case I noticed while recently fixing BPF kallsyms
+handling in cd7455f1013e ("bpf: Fix use after free in subprog's jited symbol
+removal") and that is bpf_get_prog_name().
 
-Applied, thanks!
+If BTF has been attached to the prog, then we may be able to fetch the function
+signature type id in kallsyms through prog->aux->func_info[prog->aux->func_idx].type_id.
+However, while the BTF object itself is torn down via RCU callback, the prog's
+aux->func_info is immediately freed via kvfree(prog->aux->func_info) once the
+prog's refcount either hit zero or when subprograms were already exposed via
+kallsyms and we hit the error path added in 5482e9a93c83 ("bpf: Fix memleak in
+aux->func_info and aux->btf").
+
+This violates RCU as well since kallsyms could be walked in parallel where we
+could access aux->func_info. Hence, defer kvfree() to after RCU grace period.
+Looking at ba64e7d85252 ("bpf: btf: support proper non-jit func info") there
+is no reason/dependency where we couldn't defer the kvfree(aux->func_info) into
+the RCU callback.
+
+Fixes: 5482e9a93c83 ("bpf: Fix memleak in aux->func_info and aux->btf")
+Fixes: ba64e7d85252 ("bpf: btf: support proper non-jit func info")
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Yonghong Song <yhs@fb.com>
+Cc: Martin KaFai Lau <kafai@fb.com>
+---
+ kernel/bpf/syscall.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index bcfc362de4f2..0937719b87e2 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -1326,6 +1326,7 @@ static void __bpf_prog_put_rcu(struct rcu_head *rcu)
+ {
+ 	struct bpf_prog_aux *aux = container_of(rcu, struct bpf_prog_aux, rcu);
+ 
++	kvfree(aux->func_info);
+ 	free_used_maps(aux);
+ 	bpf_prog_uncharge_memlock(aux->prog);
+ 	security_bpf_prog_free(aux);
+@@ -1336,7 +1337,6 @@ static void __bpf_prog_put_noref(struct bpf_prog *prog, bool deferred)
+ {
+ 	bpf_prog_kallsyms_del_all(prog);
+ 	btf_put(prog->aux->btf);
+-	kvfree(prog->aux->func_info);
+ 	bpf_prog_free_linfo(prog);
+ 
+ 	if (deferred)
+-- 
+2.21.0
+
