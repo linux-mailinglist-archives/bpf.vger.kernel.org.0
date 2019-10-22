@@ -2,159 +2,276 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 71D98DFCC2
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2019 06:34:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4709DFCF7
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2019 07:09:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731026AbfJVEb0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Oct 2019 00:31:26 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:48102 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725907AbfJVEb0 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 22 Oct 2019 00:31:26 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x9M4UrkF029574
-        for <bpf@vger.kernel.org>; Mon, 21 Oct 2019 21:31:25 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=facebook;
- bh=bV9URkldOALXlV5J70wqTrtFb9G8fhOx7xRULQYXeIA=;
- b=mA77wLI5Kpd20HrT46OqHSnASTWwacG6LYLMHS29+B/YEqxqF16G8gdHcbkGJED0uEtZ
- TuXL4zVti9FaLtkB/Hh+yNi969+R7wTsMgjAkvJnTP9NBbefQbJ0Jwne2Z0yGI0mYwT7
- vB0Sypi6H+Yj9bzWOhRjJhTm4mFMnuLVzCI= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2vst9704ey-4
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 21 Oct 2019 21:31:25 -0700
-Received: from 2401:db00:2120:80d4:face:0:39:0 (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 21 Oct 2019 21:31:23 -0700
-Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
-        id CA3CC3702FC5; Mon, 21 Oct 2019 21:31:19 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Yonghong Song <yhs@fb.com>
-Smtp-Origin-Hostname: devbig003.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        Jiong Wang <jiong.wang@netronome.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next v2] tools/bpf: turn on llvm alu32 attribute by default
-Date:   Mon, 21 Oct 2019 21:31:19 -0700
-Message-ID: <20191022043119.2625263-1-yhs@fb.com>
-X-Mailer: git-send-email 2.17.1
-X-FB-Internal: Safe
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
- definitions=2019-10-22_02:2019-10-21,2019-10-22 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
- malwarescore=0 lowpriorityscore=0 bulkscore=0 adultscore=0 mlxlogscore=999
- spamscore=0 suspectscore=1 priorityscore=1501 mlxscore=0 phishscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1908290000 definitions=main-1910220045
-X-FB-Internal: deliver
+        id S1731095AbfJVFIK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Oct 2019 01:08:10 -0400
+Received: from mail-il1-f196.google.com ([209.85.166.196]:43041 "EHLO
+        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725887AbfJVFIK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Oct 2019 01:08:10 -0400
+Received: by mail-il1-f196.google.com with SMTP id t5so14196583ilh.10;
+        Mon, 21 Oct 2019 22:08:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=52b3tWAnG7HQZrTutbvURPwKuRo+pGYx/Wk2X/DQqSY=;
+        b=Fj5lbiKW1YS3E69FeauD0Qn/oI0pzCVHUy+ucvPH6oncnBcNTK8ySQX2rpUlRox2zp
+         HHOSXiOKAlEmQInxbL8d6FZ5LOo9JWK476HUUF2gp7B9FV/qwzyX4cWp6yfWchgp+cox
+         UCWvbErzm5DGIpvskYfLD59MftxygQGIbhRqlg1V74NMwRbgSngVOEQJwM+7iGkyJuLk
+         QB6IT0XmkFh0wfGf/59eqCE9O5/gEo0J4muVKMPv9OcFwJAqcWGKYVHiraJ9mgaOyU+C
+         PGqegGiFdUO5YdilCICQNPpKQm/+R5J42aDVev9jn7ztJnMqWtM50nAH4CL1vUbJ7H4k
+         CYdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=52b3tWAnG7HQZrTutbvURPwKuRo+pGYx/Wk2X/DQqSY=;
+        b=FzLiEF6MKXPCwgL3g2dF0CBRhURmW+JAKfSpqi0L3xb+HanR/yBOvP03IdnWNHzlb/
+         vATumgAgcDsCgjXLCF1q4eRNFlAuIzeipjjDc7x++BNIN/3UrC5/FSoWVJCu+mpCu5r+
+         COa7ohPKKRoaEj66HdpoAEDRzCZ8U3v8AX6VYgEowyYruq2URSBuptORG0BZKxsXs+AY
+         QitJiM/3i8iSl7WU0c5dj9OURBAz/zXKX72wpLDG8KL0jDv0hYMk9ZksR02fUDf4ebjy
+         9Duwy23JTMLa1PMTFw/cttXdqoaHWtZKQwB4c5HT4IRTnq4IJ9pDF8b7PAw/C9t/MwgR
+         25GQ==
+X-Gm-Message-State: APjAAAVuyG5TeeUMsSpN9zgzh0PfjGFT18Gz//zhl19LZL8HU/qsxdjr
+        yeuvvDnE4wDMJVX8+4ea7tuqzV12Khs=
+X-Google-Smtp-Source: APXvYqzhADfLKqfKAtuOxIXy9I/GZqmEflDsjk3Di/Q2qEp1DhcnPuFjj1t05aoL+Ky01ST+IOiu5w==
+X-Received: by 2002:a92:8dd9:: with SMTP id w86mr28782910ill.93.1571720889151;
+        Mon, 21 Oct 2019 22:08:09 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id d21sm5173310iom.29.2019.10.21.22.08.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Oct 2019 22:08:08 -0700 (PDT)
+Date:   Mon, 21 Oct 2019 22:07:59 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Message-ID: <5dae8eafbf615_2abd2b0d886345b4b2@john-XPS-13-9370.notmuch>
+In-Reply-To: <CAEf4Bzbsg1dMBqPAL4NjXwAQ=nW-OX-Siv5NpC4Ad5ZY1ny4uQ@mail.gmail.com>
+References: <157141046629.11948.8937909716570078019.stgit@john-XPS-13-9370>
+ <CAEf4Bzbsg1dMBqPAL4NjXwAQ=nW-OX-Siv5NpC4Ad5ZY1ny4uQ@mail.gmail.com>
+Subject: Re: [bpf-next PATCH] bpf: libbpf, support older style kprobe load
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-llvm alu32 was introduced in llvm7:
-  https://reviews.llvm.org/rL325987
-  https://reviews.llvm.org/rL325989
-Experiments showed that in general performance
-is better with alu32 enabled:
-  https://lwn.net/Articles/775316/
+Andrii Nakryiko wrote:
+> On Sat, Oct 19, 2019 at 1:30 AM John Fastabend <john.fastabend@gmail.com> wrote:
+> >
+> > Following ./Documentation/trace/kprobetrace.rst add support for loading
+> > kprobes programs on older kernels.
+> >
+> 
+> My main concern with this is that this code is born bit-rotten,
+> because selftests are never testing the legacy code path. How did you
+> think about testing this and ensuring that this keeps working going
+> forward?
+> 
 
-This patch turned on alu32 with no-flavor test_progs
-which is tested most often. The flavor test at
-no_alu32/test_progs can be used to test without
-alu32 enabled. The Makefile check for whether
-llvm supports '-mattr=+alu32 -mcpu=v3' is
-removed as llvm7 should be available for recent
-distributions and also latest llvm is preferred
-to run bpf selftests.
+Well we use it, but I see your point and actually I even broke the retprobe
+piece hastily fixing merge conflicts in this patch. When I ran tests on it
+I missed running retprobe tests on the set of kernels that would hit that
+code.
 
-Note that jmp32 is checked by -mcpu=probe and
-will be enabled if the host kernel supports it.
+> > Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+> > ---
+> >  tools/lib/bpf/libbpf.c |   81 +++++++++++++++++++++++++++++++++++++++++++-----
+> >  1 file changed, 73 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > index fcea6988f962..12b3105d112c 100644
+> > --- a/tools/lib/bpf/libbpf.c
+> > +++ b/tools/lib/bpf/libbpf.c
+> > @@ -5005,20 +5005,89 @@ static int determine_uprobe_retprobe_bit(void)
+> >         return parse_uint_from_file(file, "config:%d\n");
+> >  }
+> >
+> > +static int use_kprobe_debugfs(const char *name,
+> > +                             uint64_t offset, int pid, bool retprobe)
+> > +{
+> > +       const char *file = "/sys/kernel/debug/tracing/kprobe_events";
+> > +       int fd = open(file, O_WRONLY | O_APPEND, 0);
+> > +       char buf[PATH_MAX];
+> > +       int err;
+> > +
+> > +       if (fd < 0) {
+> > +               pr_warning("failed open kprobe_events: %s\n",
+> > +                          strerror(errno));
+> > +               return -errno;
+> 
+> errno after pr_warning() call might be clobbered, you need to save it
+> locally first
 
-Cc: Jiong Wang <jiong.wang@netronome.com>
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- tools/testing/selftests/bpf/Makefile | 28 ++++++++--------------------
- 1 file changed, 8 insertions(+), 20 deletions(-)
+Seems so thanks.
 
-Changelogs:
- v1 -> v2:
-   . add test_progs-no_alu32 to initial TEST_GEN_PROGS definition
-     unconditionally.
+> 
+> > +       }
+> > +
+> > +       snprintf(buf, sizeof(buf), "%c:kprobes/%s %s",
+> > +                retprobe ? 'r' : 'p', name, name);
+> 
+> remember result, check it to detect overflow, and use it in write below?
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 4ff5f4aada08..11ff34e7311b 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -30,17 +30,7 @@ TEST_GEN_PROGS = test_verifier test_tag test_maps test_lru_map test_lpm_map test
- 	test_sock test_btf test_sockmap get_cgroup_id_user test_socket_cookie \
- 	test_cgroup_storage test_select_reuseport test_section_names \
- 	test_netcnt test_tcpnotify_user test_sock_fields test_sysctl test_hashmap \
--	test_cgroup_attach xdping
--
--# Also test sub-register code-gen if LLVM has eBPF v3 processor support which
--# contains both ALU32 and JMP32 instructions.
--SUBREG_CODEGEN := $(shell echo "int cal(int a) { return a > 0; }" | \
--			$(CLANG) -target bpf -O2 -emit-llvm -S -x c - -o - | \
--			$(LLC) -mattr=+alu32 -mcpu=v3 2>&1 | \
--			grep 'if w')
--ifneq ($(SUBREG_CODEGEN),)
--TEST_GEN_PROGS += test_progs-alu32
--endif
-+	test_cgroup_attach xdping test_progs-no_alu32
- 
- # Also test bpf-gcc, if present
- ifneq ($(BPF_GCC),)
-@@ -179,7 +169,7 @@ endef
- # $eval()) and pass control to DEFINE_TEST_RUNNER_RULES.
- # Parameters:
- # $1 - test runner base binary name (e.g., test_progs)
--# $2 - test runner extra "flavor" (e.g., alu32, gcc-bpf, etc)
-+# $2 - test runner extra "flavor" (e.g., no_alu32, gcc-bpf, etc)
- define DEFINE_TEST_RUNNER
- 
- TRUNNER_OUTPUT := $(OUTPUT)$(if $2,/)$2
-@@ -201,7 +191,7 @@ endef
- # Using TRUNNER_XXX variables, provided by callers of DEFINE_TEST_RUNNER and
- # set up by DEFINE_TEST_RUNNER itself, create test runner build rules with:
- # $1 - test runner base binary name (e.g., test_progs)
--# $2 - test runner extra "flavor" (e.g., alu32, gcc-bpf, etc)
-+# $2 - test runner extra "flavor" (e.g., no_alu32, gcc-bpf, etc)
- define DEFINE_TEST_RUNNER_RULES
- 
- ifeq ($($(TRUNNER_OUTPUT)-dir),)
-@@ -272,14 +262,12 @@ TRUNNER_EXTRA_FILES := $(OUTPUT)/urandom_read				\
- 		       $(wildcard progs/btf_dump_test_case_*.c)
- TRUNNER_BPF_BUILD_RULE := CLANG_BPF_BUILD_RULE
- TRUNNER_BPF_CFLAGS := -I. -I$(OUTPUT) $(BPF_CFLAGS) $(CLANG_CFLAGS)
--TRUNNER_BPF_LDFLAGS :=
-+TRUNNER_BPF_LDFLAGS := -mattr=+alu32
- $(eval $(call DEFINE_TEST_RUNNER,test_progs))
- 
--# Define test_progs-alu32 test runner.
--ifneq ($(SUBREG_CODEGEN),)
--TRUNNER_BPF_LDFLAGS += -mattr=+alu32
--$(eval $(call DEFINE_TEST_RUNNER,test_progs,alu32))
--endif
-+# Define test_progs-no_alu32 test runner.
-+TRUNNER_BPF_LDFLAGS :=
-+$(eval $(call DEFINE_TEST_RUNNER,test_progs,no_alu32))
- 
- # Define test_progs BPF-GCC-flavored test runner.
- ifneq ($(BPF_GCC),)
-@@ -319,4 +307,4 @@ $(OUTPUT)/test_verifier: test_verifier.c verifier/tests.h $(BPFOBJ) | $(OUTPUT)
- 
- EXTRA_CLEAN := $(TEST_CUSTOM_PROGS)					\
- 	prog_tests/tests.h map_tests/tests.h verifier/tests.h		\
--	feature $(OUTPUT)/*.o $(OUTPUT)/alu32 $(OUTPUT)/bpf_gcc
-+	feature $(OUTPUT)/*.o $(OUTPUT)/no_alu32 $(OUTPUT)/bpf_gcc
--- 
-2.17.1
+sure seems more robust. If someone has names longer than PATH_MAX though
+it seems a bit much.
 
+> 
+> > +
+> > +       err = write(fd, buf, strlen(buf));
+> > +       close(fd);
+> > +       if (err < 0)
+> > +               return -errno;
+> > +       return 0;
+> > +}
+> > +
+> >  static int perf_event_open_probe(bool uprobe, bool retprobe, const char *name,
+> >                                  uint64_t offset, int pid)
+> >  {
+> >         struct perf_event_attr attr = {};
+> >         char errmsg[STRERR_BUFSIZE];
+> > +       uint64_t config1 = 0;
+> >         int type, pfd, err;
+> >
+> >         type = uprobe ? determine_uprobe_perf_type()
+> >                       : determine_kprobe_perf_type();
+> >         if (type < 0) {
+> > -               pr_warning("failed to determine %s perf type: %s\n",
+> > -                          uprobe ? "uprobe" : "kprobe",
+> > -                          libbpf_strerror_r(type, errmsg, sizeof(errmsg)));
+> > -               return type;
+> > +               if (uprobe) {
+> > +                       pr_warning("failed to determine uprobe perf type %s: %s\n",
+> > +                                  name,
+> > +                                  libbpf_strerror_r(type,
+> > +                                                    errmsg, sizeof(errmsg)));
+> > +               } else {
+> 
+> I think this legacy kprobe setup deserves its own function (maybe even
+> combine it with use_kprobe_debugfs to do entire attribute setup from A
+> to Z?)
+> 
+> These 2 levels of nestedness is also unfortunate, how about having two
+> functions that are filling out perf_event_attr? Something like:
+> 
+> err = determine_perf_probe_attr(...)
+> if (err)
+>     err = determine_legacy_probe_attr(...)
+> if (!err)
+>     <bail out>
+> do perf call here
+> 
+
+Perhaps it makes sense to even uplevel this into the API? Something like
+bpf_program__attach_legacy_kprobe() then we could test it easer?
+
+> 
+> > +                       /* If we do not have an event_source/../kprobes then we
+> > +                        * can try to use kprobe-base event tracing, for details
+> > +                        * see ./Documentation/trace/kprobetrace.rst
+> > +                        */
+> > +                       const char *file = "/sys/kernel/debug/tracing/events/kprobes/";
+> > +                       char c[PATH_MAX];
+> 
+> what does c stand for?
+
+Can name it file and push the path into snprintf() below.
+
+> 
+> > +                       int fd, n;
+> > +
+> > +                       snprintf(c, sizeof(c), "%s/%s/id", file, name);
+> 
+> check result? also, is there a reason to not use
+> "/sys/kernel/debug/tracing/events/kprobes/" directly in format string?
+> 
+
+I believe when I wrote that I just like the it as a const char better.
+But no reason if you like it inline better.
+
+> > +
+> > +                       err = use_kprobe_debugfs(name, offset, pid, retprobe);
+> > +                       if (err)
+> > +                               return err;
+> > +
+> > +                       type = PERF_TYPE_TRACEPOINT;
+> > +                       fd = open(c, O_RDONLY, 0);
+> > +                       if (fd < 0) {
+> > +                               pr_warning("failed to open tracepoint %s: %s\n",
+> > +                                          c, strerror(errno));
+> > +                               return -errno;
+> > +                       }
+> > +                       n = read(fd, c, sizeof(c));
+> > +                       close(fd);
+> > +                       if (n < 0) {
+> > +                               pr_warning("failed to read %s: %s\n",
+> > +                                          c, strerror(errno));
+> 
+> It's a bit fishy that you are reading into c and then print out c on
+> error. Its contents might be corrupted at this point.
+> 
+> And same thing about errno as above.
+
+Sure just didn't see much point in using yet another buffer. We can
+just make the pr_warning general enough that the buffer isn't needed.
+
+> 
+> > +                               return -errno;
+> > +                       }
+> > +                       c[n] = '\0';
+> > +                       config1 = strtol(c, NULL, 0);
+> 
+> no need for config1 variable, just attr.config = strtol(...)?
+
+yes, fallout from some code churn. But no reason for it.
+
+> 
+> > +                       attr.size = sizeof(attr);
+> > +                       attr.type = type;
+> > +                       attr.config = config1;
+> > +                       attr.sample_period = 1;
+> > +                       attr.wakeup_events = 1;
+> > +               }
+> > +       } else {
+> > +               config1 = ptr_to_u64(name);
+> 
+> same, just straight attr.config1 = ... ?
+
+yes.
+
+> 
+> > +               attr.size = sizeof(attr);
+> > +               attr.type = type;
+> > +               attr.config1 = config1; /* kprobe_func or uprobe_path */
+> > +               attr.config2 = offset;  /* kprobe_addr or probe_offset */
+> >         }
+> >         if (retprobe) {
+> >                 int bit = uprobe ? determine_uprobe_retprobe_bit()
+> > @@ -5033,10 +5102,6 @@ static int perf_event_open_probe(bool uprobe, bool retprobe, const char *name,
+> >                 }
+> >                 attr.config |= 1 << bit;
+> >         }
+> > -       attr.size = sizeof(attr);
+> > -       attr.type = type;
+> > -       attr.config1 = ptr_to_u64(name); /* kprobe_func or uprobe_path */
+> > -       attr.config2 = offset;           /* kprobe_addr or probe_offset */
+> >
+> >         /* pid filter is meaningful only for uprobes */
+> >         pfd = syscall(__NR_perf_event_open, &attr,
+> >
+> 
+> What about the detaching? Would closing perf event FD be enough?
+> Wouldn't we need to clear a probe with -:<event>?
+
+It seems to be enough to close the fd. From an API standpoint might
+make sense to have a detach() though if adding an attach().
