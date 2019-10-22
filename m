@@ -2,96 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 441BDE0B6B
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2019 20:29:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F564E0B9F
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2019 20:42:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729666AbfJVS3c (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Oct 2019 14:29:32 -0400
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:37471 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726702AbfJVS3c (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Oct 2019 14:29:32 -0400
-Received: by mail-lj1-f195.google.com with SMTP id l21so18272794lje.4;
-        Tue, 22 Oct 2019 11:29:30 -0700 (PDT)
+        id S1732251AbfJVSm2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Oct 2019 14:42:28 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:39440 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731740AbfJVSm2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Oct 2019 14:42:28 -0400
+Received: by mail-qk1-f194.google.com with SMTP id 4so17248732qki.6;
+        Tue, 22 Oct 2019 11:42:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uxMt9H3LtJ7pqzPSuyrIM24uiwA0nTK1MUHdhFbeMb8=;
-        b=PiAnv00bcmsJPhL9rkYry1ebqzZoDitqWAbx65kYao8BKYY1ncoD4nLJ4o4QR4ORbU
-         GQg+glL5E68Co1wl2U4gGELEcf/oModpXJjasQWm5jtjD7cx49FgEqV/Hea3nN8JGhio
-         V5DLajQPcIoP7crrCNfDgqCQMDopE4UU7eQKMAACrr7bvwtarObyYFm8h+OosPiwQn2L
-         7FM1eEofvJItp0GcZa6xDqDTP35h2N7nWGx+19UqjxzqsSbLtlgTidYcXN9Qvj5fA4io
-         4y1o9HsGwCnWIWduXXwK076dZSCRNQGxDEQUN3wlOtWE1kDEFlWPXaph+egJr8tQomoH
-         IaAQ==
+         :cc:content-transfer-encoding;
+        bh=z5E1UgKK0swToOdaVE1vrj3rS3+MfFMI5KCYTwUDvjE=;
+        b=ouZ+YfdYnsqEG5Mrfhnl/oCGv5/i4ar9VvOIlc4u5soJ6wiKu3idpcvTMQzeVKdYJj
+         YKlbkjvMGpn2hsI8O7MDIylhFSi3KWkYOVyN4K/dWGUedAQh9kUXg7v6LvwZEIrtRHCw
+         8ttqR5gF74VH2eD20Nkmclpcr/DlXhdynNrMkGDkAHiWXaivE0V4KSp7gtq75ZPzqW17
+         0SQS0+7fTMR/oe9ubNe8NBEkNdavt/TH9NwMkKpkEhWzd9g/4mQQr8wKHqC9WgwZaW3S
+         xa2cQAjhQ9BzPkXRSuMA0ys/rEybm8dKUHo+sFTQW7ezmeMbSUIjCMSnc0e+9+Gm/N5F
+         QwWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uxMt9H3LtJ7pqzPSuyrIM24uiwA0nTK1MUHdhFbeMb8=;
-        b=GdRcZr8GWpXuLvOgzGW3TJpZgoGyTzh8n9+GIX1Wax1cCDgCcZq6eqY6VWUw04A5x/
-         tl59YQKaX41tdMsBtfEy7RbIKvEDQBNkEZ0BB1hKNUvG2E8QrMcGvNYrsWN3b0yUilmU
-         gS+3yNYA029ZNIvpITSxgF/dF25et/AU+E2fJEjfa7m4Z5vD8HCWmNdhjChVPALwsipb
-         g1gunzonvg89GoP9fyDpk7Qh/onJBL7un03BWWY6e1Ht7A4LYubK5+w4oC4w7FWXIe1v
-         czYA2rYa+WTdhA6mMHpk87E+uENEuGtAGDXB24vSyd/2D3vEnmwx8hpaVPSXubc8hs/z
-         iwNA==
-X-Gm-Message-State: APjAAAVRPZOkmv0PYn7YwRWYMHOrG3zWwYqb/gCnqWdZRmTPx//Mqmvh
-        wNWw8MO+8oYm3kmbdhZrjKBMF8FULpbBxthjEESsEQ==
-X-Google-Smtp-Source: APXvYqxznjs4ukuAeKRHApg+x3X8+OGoWHGAtuPwqYX7BKTMv33fLwj5/VSFNB0WtYVxST94TzGzbLHHcp1sLFgNB00=
-X-Received: by 2002:a2e:9b12:: with SMTP id u18mr20149416lji.142.1571768969771;
- Tue, 22 Oct 2019 11:29:29 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=z5E1UgKK0swToOdaVE1vrj3rS3+MfFMI5KCYTwUDvjE=;
+        b=pO1O1ASq5PQBZY6aDMWeUVnlqcbZICVpo2NcmUWSz5J93g9r1WoNUDQ11VULmrHnC8
+         NuoS+cDLQJycn616/evaehottnmpap1YaqeO4DrEGCmPxcX61CvVtYnrGxBTNfBi8KIl
+         TYayl++NDYYwahOT/hJ+SEGdKbVboFOM6MIASYqSi1J+Xz5bkzqvn85lBe2qYmbNKtQQ
+         r4JZV9wxo3QXu3qVsq8lqkJj4jy/3ZzPZJWiiX34HW+KZsfphRIMSAOtvQgirIEC53KO
+         92Na/1VgoAPw6ZD6BvwXrHLosjGKt5u602srQ5yLphDd3i8zP6rxAW+av8GBjr3CJnm3
+         nCog==
+X-Gm-Message-State: APjAAAW8t7FzrfZu94BbRTj/KIUBQ2BHwcZ2wam4vlOh41eWEQ4eQoBd
+        U+bxNnpUgKqRQHwxlrpEfFiF4CIb7ZdhYRWStM0=
+X-Google-Smtp-Source: APXvYqwpkAk0xmfVNKx19v7ZUhWLtfpcp58XLtRa4vpl3aPIwquhkdFer4zqDaPeSE6KVtnzx6aaV1JPQjXM3H3VgXk=
+X-Received: by 2002:a37:9a8a:: with SMTP id c132mr4487196qke.92.1571769745663;
+ Tue, 22 Oct 2019 11:42:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <55f6367324c2d7e9583fa9ccf5385dcbba0d7a6e.1571752452.git.daniel@iogearbox.net>
-In-Reply-To: <55f6367324c2d7e9583fa9ccf5385dcbba0d7a6e.1571752452.git.daniel@iogearbox.net>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 22 Oct 2019 11:29:18 -0700
-Message-ID: <CAADnVQLgMRfN0iawBbeoA5mFenzDiTecuCnVPtQ7oXbhKkt4qA@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: Fix use after free in subprog's jited symbol removal
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        syzbot+710043c5d1d5b5013bc7@syzkaller.appspotmail.com
+References: <20191022141833.5706-1-kpsingh@chromium.org>
+In-Reply-To: <20191022141833.5706-1-kpsingh@chromium.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 22 Oct 2019 11:42:14 -0700
+Message-ID: <CAEf4BzY5YYtiWOtHWfis2F28gmsCvJ=JuM7yHKrbBCdERwr2ew@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: Fix strncat bounds error in libbpf_prog_type_by_name
+To:     KP Singh <kpsingh@chromium.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Florent Revest <revest@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 22, 2019 at 6:57 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+On Tue, Oct 22, 2019 at 7:19 AM KP Singh <kpsingh@chromium.org> wrote:
 >
-> syzkaller managed to trigger the following crash:
+> From: KP Singh <kpsingh@google.com>
 >
->   [...]
->   BUG: unable to handle page fault for address: ffffc90001923030
->   #PF: supervisor read access in kernel mode
->   #PF: error_code(0x0000) - not-present page
->   PGD aa551067 P4D aa551067 PUD aa552067 PMD a572b067 PTE 80000000a1173163
->   Oops: 0000 [#1] PREEMPT SMP KASAN
->   CPU: 0 PID: 7982 Comm: syz-executor912 Not tainted 5.4.0-rc3+ #0
->   Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
->   RIP: 0010:bpf_jit_binary_hdr include/linux/filter.h:787 [inline]
->   RIP: 0010:bpf_get_prog_addr_region kernel/bpf/core.c:531 [inline]
->   RIP: 0010:bpf_tree_comp kernel/bpf/core.c:600 [inline]
->   RIP: 0010:__lt_find include/linux/rbtree_latch.h:115 [inline]
->   RIP: 0010:latch_tree_find include/linux/rbtree_latch.h:208 [inline]
->   RIP: 0010:bpf_prog_kallsyms_find kernel/bpf/core.c:674 [inline]
->   RIP: 0010:is_bpf_text_address+0x184/0x3b0 kernel/bpf/core.c:709
-> After further debugging it turns out that we walk kallsyms while in parallel
-> we tear down a BPF program which contains subprograms that have been JITed
-> though the program itself has not been fully exposed and is eventually bailing
-> out with error.
+> On compiling samples with this change, one gets an error:
 >
-> The bpf_prog_kallsyms_del_subprogs() in bpf_prog_load()'s error path removes
-> the symbols, however, bpf_prog_free() tears down the JIT memory too early via
-> scheduled work. Instead, it needs to properly respect RCU grace period as the
-> kallsyms walk for BPF is under RCU.
+>  error: =E2=80=98strncat=E2=80=99 specified bound 118 equals destination =
+size
+>   [-Werror=3Dstringop-truncation]
 >
-> Fix it by refactoring __bpf_prog_put()'s tear down and reuse it in our error
-> path where we defer final destruction when we have subprogs in the program.
+>     strncat(dst, name + section_names[i].len,
+>     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>      sizeof(raw_tp_btf_name) - (dst - raw_tp_btf_name));
+>      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 >
-> Fixes: 7d1982b4e335 ("bpf: fix panic in prog load calls cleanup")
-> Fixes: 1c2a088a6626 ("bpf: x64: add JIT support for multi-function programs")
-> Reported-and-tested-by: syzbot+710043c5d1d5b5013bc7@syzkaller.appspotmail.com
-> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+> strncat requires the destination to have enough space for the
+> terminating null byte.
+>
+> Fixes: f75a697e09137 ("libbpf: Auto-detect btf_id of BTF-based raw_tracep=
+oint")
+> Signed-off-by: KP Singh <kpsingh@google.com>
+> ---
+>  tools/lib/bpf/libbpf.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 9364e66d755d..5fff3f15d705 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -4666,7 +4666,7 @@ int libbpf_prog_type_by_name(const char *name, enum=
+ bpf_prog_type *prog_type,
+>                         }
+>                         /* prepend "btf_trace_" prefix per kernel convent=
+ion */
+>                         strncat(dst, name + section_names[i].len,
+> -                               sizeof(raw_tp_btf_name) - (dst - raw_tp_b=
+tf_name));
+> +                               sizeof(raw_tp_btf_name) - (dst - raw_tp_b=
+tf_name + 1));
 
-Applied. Thanks!
+Just:
+
+sizeof(raw_tp_btf_name) - sizeof("btf_trace_")
+
+?
+
+>                         ret =3D btf__find_by_name(btf, raw_tp_btf_name);
+>                         btf__free(btf);
+>                         if (ret <=3D 0) {
+> --
+> 2.20.1
+>
