@@ -2,175 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 01A12E0AC5
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2019 19:37:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2819BE0AD5
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2019 19:42:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727154AbfJVRha (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Oct 2019 13:37:30 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:36819 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725837AbfJVRha (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Oct 2019 13:37:30 -0400
-Received: by mail-qk1-f195.google.com with SMTP id y189so17058035qkc.3;
-        Tue, 22 Oct 2019 10:37:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=DBoXiMo1Ww5J4RL33+vqmYoMKt+Afg6FuK0Fio0nDA8=;
-        b=A9OCz0/293hQ5ETxWZeZyzzEMLNX0w7KlksnsaTG1eIA5DXvl0gEKJQR/UcHxQEvRx
-         +R0vOyNdZTwkW5iG8NcXyhUAh/1i3A2OGdQk9ElgN7huG+IvTtPhkRlmgnfPesGzk+ET
-         FmVkEUXKmIv20/h5InYmizuxTByRjygArK1d/b/khYomGcuVy2OBcn0YXUtfnRMKd1SF
-         bXpqmGRkkXWMxnHoxefYX6OuMfqHdh40OywV5Wxkch2SgT4d1OX2bNDUABK8IiMF8IOB
-         I3WdZw6YfG67Cw+mUxGLWh0YWYdi1awvGQeUYiJntbrmeEmIB+RN09VG2CSVSjTNJbvZ
-         /eZQ==
+        id S1731053AbfJVRmH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Oct 2019 13:42:07 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:42968 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727154AbfJVRmH (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 22 Oct 2019 13:42:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1571766126;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LpfkEMXmZt1WFPnGraTJgtnhIR/gR2WUdMmGfh42Rqs=;
+        b=UExe9PcYfSVsQ1ZRKuiuuCO+lxd6pWTLCENBNysGJj0hU5kig02WdP4MYHMJ6l/bqrkp3A
+        YcRA2bjSnc+pGV/nuxN6tfu2Nn7SSwYGthxff+GFqjmhr0zNRzqcR1EAlWc5ejVFxSFeK3
+        5LXTuh3ZAGFjnmSdKnySevF1NTdhJpw=
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
+ [209.85.208.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-325-Pl54trZ1P8mrrNaZvG_37w-1; Tue, 22 Oct 2019 13:42:05 -0400
+Received: by mail-lj1-f198.google.com with SMTP id g28so744171ljl.10
+        for <bpf@vger.kernel.org>; Tue, 22 Oct 2019 10:42:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=DBoXiMo1Ww5J4RL33+vqmYoMKt+Afg6FuK0Fio0nDA8=;
-        b=Lb3EYXXfAnzz6Sj3zWNjnaloEaxCkuruxc2k6UO0MC9svGcb6oc9thtyRkcRySLTWQ
-         oo143CVWrUZH7ERoTNtqOnInoXpZMSJ189fdOgANGPWfmXimggwZfPTmXdWUKS5JeCZB
-         SMe9h5bwpMXOvKJP9jujL3tOk6Up8vax41wMnzuh8DKwfUVHXiN2ujnW2x5clr+wUP8N
-         VNN1ZJDPjICCCfZHqA8A+ES8aT2RoloVafgouRxkhwwLVeZ6KoY70U9vN5lVPKSes71Q
-         3uPi7a8FmfY+lAPLsM4WZ+3x4RqCMAq3v5Abschf6hw1vOBSsvKWcdUnB2QhUI6MbWy7
-         89wA==
-X-Gm-Message-State: APjAAAUx8UCrHoLHg1xLh7MlYvDqeYKaT2vzXlIztn7gewS1xIKbLsQ6
-        mrhJAl367K1CIhY2P+XFOvAs3qJRAnzGmwSnX2w=
-X-Google-Smtp-Source: APXvYqwf/ORL7W6Evz3AZ7Kt6katWIB1MaAbHNZBi8fNOk28oVevDDXORPhS++eU7klYj5tsbqEQCqq8EOAeOtYL5oA=
-X-Received: by 2002:a37:520a:: with SMTP id g10mr4188717qkb.39.1571765848782;
- Tue, 22 Oct 2019 10:37:28 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=p4Ptj3uKdMq6GjmS+mQFiC7l4xjbjGQnVWvpWc/EejU=;
+        b=h+XXmp1gDA3j42T20RRpQOtzu/XfuUJyXzMxVUIeb/mckYPegzVZ31X1WTE5B3oabo
+         oDPJIyMNr2AuLWT6AX5H2wmvNplUcngL+9B5nwmT1pPMtYRn98I/FkZs0zOdi9HYcXhQ
+         nL8GJnAheSXlhIY4qlFi6rqnbV0Hy6MOl5MnZSFvalxAuOIyQaPP9yQh9cMq4gH3HqN2
+         1xk4K2kipjT9Sj4miACpN5vTRHt7be8GONoNn1GQvd+v6dW7W2Ht75G+LnUXNOj8dDrB
+         fCXo5zttEBBYGc3/2nAItma/z+H/QM3DhMBA0900zji6QQ0oipJgTXCRro7sLviJYlZM
+         h0Tg==
+X-Gm-Message-State: APjAAAV4SUKUcim+r8UJWyYoajqTp4fYH4NFTlC64VhpwAqR6BAW16Lw
+        kMGNLb/t7Cdzfyeln3Nsvks/vBod1a8UsU/tpTwfCF5JpZ0TfLNGsy6Y03hSR+aG8XVJ9ac1Jq7
+        KPzrF0pj9VGpT
+X-Received: by 2002:ac2:47ed:: with SMTP id b13mr15510529lfp.43.1571766123958;
+        Tue, 22 Oct 2019 10:42:03 -0700 (PDT)
+X-Google-Smtp-Source: APXvYqwXH2l/yNrfKnO1j1J6tqaWWFT7bGLQEGy61vpzhv7Hh0Jh3G8Iow41oIQefEd4zdmGobctLw==
+X-Received: by 2002:ac2:47ed:: with SMTP id b13mr15510518lfp.43.1571766123769;
+        Tue, 22 Oct 2019 10:42:03 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk (borgediget.toke.dk. [85.204.121.218])
+        by smtp.gmail.com with ESMTPSA id i11sm8998963ljb.74.2019.10.22.10.42.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Oct 2019 10:42:03 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 0522A1804B1; Tue, 22 Oct 2019 19:42:02 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, ast@fb.com, daniel@iogearbox.net
+Cc:     andrii.nakryiko@gmail.com, kernel-team@fb.com,
+        Andrii Nakryiko <andriin@fb.com>
+Subject: Re: [PATCH v2 bpf-next] libbpf: make DECLARE_LIBBPF_OPTS macro strictly a variable declaration
+In-Reply-To: <20191022172100.3281465-1-andriin@fb.com>
+References: <20191022172100.3281465-1-andriin@fb.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 22 Oct 2019 19:42:01 +0200
+Message-ID: <87imogoexi.fsf@toke.dk>
 MIME-Version: 1.0
-References: <157175668770.112621.17344362302386223623.stgit@toke.dk> <157175668879.112621.10917994557478417780.stgit@toke.dk>
-In-Reply-To: <157175668879.112621.10917994557478417780.stgit@toke.dk>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 22 Oct 2019 10:37:17 -0700
-Message-ID: <CAEf4BzatAgkOiS2+EpauWsUWymmjM4YRBJcSqYj15Ywk8aP6Lw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/3] libbpf: Store map pin path in struct bpf_map
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MC-Unique: Pl54trZ1P8mrrNaZvG_37w-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 22, 2019 at 9:08 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
-at.com> wrote:
->
-> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->
-> When pinning a map, store the pin path in struct bpf_map so it can be
-> re-used later for un-pinning. This simplifies the later addition of per-m=
-ap
-> pin paths.
->
-> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> ---
->  tools/lib/bpf/libbpf.c |   19 ++++++++++---------
->  1 file changed, 10 insertions(+), 9 deletions(-)
->
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index cccfd9355134..b4fdd8ee3bbd 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -226,6 +226,7 @@ struct bpf_map {
->         void *priv;
->         bpf_map_clear_priv_t clear_priv;
->         enum libbpf_map_type libbpf_type;
-> +       char *pin_path;
->  };
->
->  struct bpf_secdata {
-> @@ -1929,6 +1930,7 @@ int bpf_map__reuse_fd(struct bpf_map *map, int fd)
->         if (err)
->                 goto err_close_new_fd;
->         free(map->name);
-> +       zfree(&map->pin_path);
->
+Andrii Nakryiko <andriin@fb.com> writes:
 
-While you are touching this function, can you please also fix error
-handling in it? We should store -errno locally on error, before we
-call close() which might change errno.
-
->         map->fd =3D new_fd;
->         map->name =3D new_name;
-> @@ -4022,6 +4024,7 @@ int bpf_map__pin(struct bpf_map *map, const char *p=
-ath)
->                 return -errno;
->         }
+> LIBBPF_OPTS is implemented as a mix of field declaration and memset
+> + assignment. This makes it neither variable declaration nor purely
+> statements, which is a problem, because you can't mix it with either
+> other variable declarations nor other function statements, because C90
+> compiler mode emits warning on mixing all that together.
 >
-> +       map->pin_path =3D strdup(path);
+> This patch changes LIBBPF_OPTS into a strictly declaration of variable
+> and solves this problem, as can be seen in case of bpftool, which
+> previously would emit compiler warning, if done this way (LIBBPF_OPTS as
+> part of function variables declaration block).
+>
+> This patch also renames LIBBPF_OPTS into DECLARE_LIBBPF_OPTS to follow
+> kernel convention for similar macros more closely.
+>
+> v1->v2:
+> - rename LIBBPF_OPTS into DECLARE_LIBBPF_OPTS (Jakub Sitnicki).
+>
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 
-if (!map->pin_path) {
-    err =3D -errno;
-    goto err_close_new_fd;
-}
+Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 
 
->         pr_debug("pinned map '%s'\n", path);
->
->         return 0;
-> @@ -4031,6 +4034,9 @@ int bpf_map__unpin(struct bpf_map *map, const char =
-*path)
->  {
->         int err;
->
-> +       if (!path)
-> +               path =3D map->pin_path;
+> +#define DECLARE_LIBBPF_OPTS(TYPE, NAME, ...)=09=09=09=09    \
+> +=09struct TYPE NAME =3D ({ =09=09=09=09=09=09    \
+> +=09=09memset(&NAME, 0, sizeof(struct TYPE));=09=09=09    \
+> +=09=09(struct TYPE) {=09=09=09=09=09=09    \
+> +=09=09=09.sz =3D sizeof(struct TYPE),=09=09=09    \
+> +=09=09=09__VA_ARGS__=09=09=09=09=09    \
+> +=09=09};=09=09=09=09=09=09=09    \
+> +=09})
 
-This semantics is kind of weird. Given we now remember pin_path,
-should we instead check that user-provided path is actually correct
-and matches what we stored? Alternatively, bpf_map__unpin() w/o path
-argument looks like a cleaner API.
+Found a reference with an explanation of why this works, BTW; turns out
+it's a GCC extension:
 
-> +
->         err =3D check_path(path);
->         if (err)
->                 return err;
-> @@ -4044,6 +4050,7 @@ int bpf_map__unpin(struct bpf_map *map, const char =
-*path)
->         if (err !=3D 0)
->                 return -errno;
->         pr_debug("unpinned map '%s'\n", path);
-> +       zfree(&map->pin_path);
->
->         return 0;
->  }
-> @@ -4088,17 +4095,10 @@ int bpf_object__pin_maps(struct bpf_object *obj, =
-const char *path)
->
->  err_unpin_maps:
->         while ((map =3D bpf_map__prev(map, obj))) {
-> -               char buf[PATH_MAX];
-> -               int len;
-> -
-> -               len =3D snprintf(buf, PATH_MAX, "%s/%s", path,
-> -                              bpf_map__name(map));
-> -               if (len < 0)
-> -                       continue;
-> -               else if (len >=3D PATH_MAX)
-> +               if (!map->pin_path)
->                         continue;
->
-> -               bpf_map__unpin(map, buf);
-> +               bpf_map__unpin(map, NULL);
->         }
->
->         return err;
-> @@ -4248,6 +4248,7 @@ void bpf_object__close(struct bpf_object *obj)
->
->         for (i =3D 0; i < obj->nr_maps; i++) {
->                 zfree(&obj->maps[i].name);
-> +               zfree(&obj->maps[i].pin_path);
->                 if (obj->maps[i].clear_priv)
->                         obj->maps[i].clear_priv(&obj->maps[i],
->                                                 obj->maps[i].priv);
->
+http://gcc.gnu.org/onlinedocs/gcc/Statement-Exprs.html#Statement-Exprs
+
+-Toke
+
