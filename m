@@ -2,114 +2,174 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F564E0B9F
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2019 20:42:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F17CE0BA8
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2019 20:45:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732251AbfJVSm2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Oct 2019 14:42:28 -0400
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:39440 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731740AbfJVSm2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Oct 2019 14:42:28 -0400
-Received: by mail-qk1-f194.google.com with SMTP id 4so17248732qki.6;
-        Tue, 22 Oct 2019 11:42:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=z5E1UgKK0swToOdaVE1vrj3rS3+MfFMI5KCYTwUDvjE=;
-        b=ouZ+YfdYnsqEG5Mrfhnl/oCGv5/i4ar9VvOIlc4u5soJ6wiKu3idpcvTMQzeVKdYJj
-         YKlbkjvMGpn2hsI8O7MDIylhFSi3KWkYOVyN4K/dWGUedAQh9kUXg7v6LvwZEIrtRHCw
-         8ttqR5gF74VH2eD20Nkmclpcr/DlXhdynNrMkGDkAHiWXaivE0V4KSp7gtq75ZPzqW17
-         0SQS0+7fTMR/oe9ubNe8NBEkNdavt/TH9NwMkKpkEhWzd9g/4mQQr8wKHqC9WgwZaW3S
-         xa2cQAjhQ9BzPkXRSuMA0ys/rEybm8dKUHo+sFTQW7ezmeMbSUIjCMSnc0e+9+Gm/N5F
-         QwWg==
+        id S1732322AbfJVSpG convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Tue, 22 Oct 2019 14:45:06 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:43466 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732316AbfJVSpG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Oct 2019 14:45:06 -0400
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com [209.85.208.197])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 869C2C057E9F
+        for <bpf@vger.kernel.org>; Tue, 22 Oct 2019 18:45:05 +0000 (UTC)
+Received: by mail-lj1-f197.google.com with SMTP id q185so3148749ljb.20
+        for <bpf@vger.kernel.org>; Tue, 22 Oct 2019 11:45:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=z5E1UgKK0swToOdaVE1vrj3rS3+MfFMI5KCYTwUDvjE=;
-        b=pO1O1ASq5PQBZY6aDMWeUVnlqcbZICVpo2NcmUWSz5J93g9r1WoNUDQ11VULmrHnC8
-         NuoS+cDLQJycn616/evaehottnmpap1YaqeO4DrEGCmPxcX61CvVtYnrGxBTNfBi8KIl
-         TYayl++NDYYwahOT/hJ+SEGdKbVboFOM6MIASYqSi1J+Xz5bkzqvn85lBe2qYmbNKtQQ
-         r4JZV9wxo3QXu3qVsq8lqkJj4jy/3ZzPZJWiiX34HW+KZsfphRIMSAOtvQgirIEC53KO
-         92Na/1VgoAPw6ZD6BvwXrHLosjGKt5u602srQ5yLphDd3i8zP6rxAW+av8GBjr3CJnm3
-         nCog==
-X-Gm-Message-State: APjAAAW8t7FzrfZu94BbRTj/KIUBQ2BHwcZ2wam4vlOh41eWEQ4eQoBd
-        U+bxNnpUgKqRQHwxlrpEfFiF4CIb7ZdhYRWStM0=
-X-Google-Smtp-Source: APXvYqwpkAk0xmfVNKx19v7ZUhWLtfpcp58XLtRa4vpl3aPIwquhkdFer4zqDaPeSE6KVtnzx6aaV1JPQjXM3H3VgXk=
-X-Received: by 2002:a37:9a8a:: with SMTP id c132mr4487196qke.92.1571769745663;
- Tue, 22 Oct 2019 11:42:25 -0700 (PDT)
-MIME-Version: 1.0
-References: <20191022141833.5706-1-kpsingh@chromium.org>
-In-Reply-To: <20191022141833.5706-1-kpsingh@chromium.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 22 Oct 2019 11:42:14 -0700
-Message-ID: <CAEf4BzY5YYtiWOtHWfis2F28gmsCvJ=JuM7yHKrbBCdERwr2ew@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: Fix strncat bounds error in libbpf_prog_type_by_name
-To:     KP Singh <kpsingh@chromium.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=fK6KU9+jt/PI0Yf4JBx3TAHMCuwyZftBgg3z8f1NuQY=;
+        b=S7kQp6WW25GvmLATE/HulHsuwXHCau9ilbZu//qhiyP8f7Hjj5mbiyIBJKfq5ziyUJ
+         Dry3Ea/KRqbPpR0S92HItmIgxWqLH0QM5wQ1+LQ5RUYaKG8lRJATSmFOfruygNCthZz2
+         93hSAJ5JpAGFydjGbP+a3y3oU1Xifq/hffaCoxpJG5M5B+931Bbd2xYuZgW4fJGBiljQ
+         TVydIrNIlRQ6oW8nkR3FI37b8hzHAzYrzU3Bqyv0R+OY7KCbzLHslb4LCr4BKxtDabpo
+         /HIEM9S07wl5xCCKaeXadASvaogTnAN3xY6qquuRWlNBf4WGF5TNZrrlrrndSgZ+aPe7
+         j2FA==
+X-Gm-Message-State: APjAAAXZF1GmGgLasDTGRgh/3JQdLbFHlFs94QPvUj3GaCAqQ3772MrA
+        e6DG7Pe+6AHf4QTSto0TD3iA8RPCCBf1a9JxRI2fEdfLQ5d6QSV6rnDetxl7r5M6uCI9nZfV3VP
+        7vqYupvhBWB7E
+X-Received: by 2002:ac2:4345:: with SMTP id o5mr4937511lfl.60.1571769903946;
+        Tue, 22 Oct 2019 11:45:03 -0700 (PDT)
+X-Google-Smtp-Source: APXvYqxuZB+ANgre+Jh5lJtS8meRgdKB+C/D2sofJQ2kVK1GbnNjJoJM12jifrAkyuA6FduKQs5xLA==
+X-Received: by 2002:ac2:4345:: with SMTP id o5mr4937493lfl.60.1571769903646;
+        Tue, 22 Oct 2019 11:45:03 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a00:7660:6da:443::2])
+        by smtp.gmail.com with ESMTPSA id m6sm8074879ljj.3.2019.10.22.11.45.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Oct 2019 11:45:02 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id DE1F01804B1; Tue, 22 Oct 2019 20:45:01 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Florent Revest <revest@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 1/3] libbpf: Store map pin path in struct bpf_map
+In-Reply-To: <CAEf4BzapbVb=u_GPLSv-KEctwZz=K3FUb_B6p2HmWnqz06n4Rg@mail.gmail.com>
+References: <157175668770.112621.17344362302386223623.stgit@toke.dk> <157175668879.112621.10917994557478417780.stgit@toke.dk> <CAEf4BzatAgkOiS2+EpauWsUWymmjM4YRBJcSqYj15Ywk8aP6Lw@mail.gmail.com> <87blu8odhf.fsf@toke.dk> <CAEf4BzapbVb=u_GPLSv-KEctwZz=K3FUb_B6p2HmWnqz06n4Rg@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 22 Oct 2019 20:45:01 +0200
+Message-ID: <878spcoc0i.fsf@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 22, 2019 at 7:19 AM KP Singh <kpsingh@chromium.org> wrote:
->
-> From: KP Singh <kpsingh@google.com>
->
-> On compiling samples with this change, one gets an error:
->
->  error: =E2=80=98strncat=E2=80=99 specified bound 118 equals destination =
-size
->   [-Werror=3Dstringop-truncation]
->
->     strncat(dst, name + section_names[i].len,
->     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->      sizeof(raw_tp_btf_name) - (dst - raw_tp_btf_name));
->      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->
-> strncat requires the destination to have enough space for the
-> terminating null byte.
->
-> Fixes: f75a697e09137 ("libbpf: Auto-detect btf_id of BTF-based raw_tracep=
-oint")
-> Signed-off-by: KP Singh <kpsingh@google.com>
-> ---
->  tools/lib/bpf/libbpf.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 9364e66d755d..5fff3f15d705 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -4666,7 +4666,7 @@ int libbpf_prog_type_by_name(const char *name, enum=
- bpf_prog_type *prog_type,
->                         }
->                         /* prepend "btf_trace_" prefix per kernel convent=
-ion */
->                         strncat(dst, name + section_names[i].len,
-> -                               sizeof(raw_tp_btf_name) - (dst - raw_tp_b=
-tf_name));
-> +                               sizeof(raw_tp_btf_name) - (dst - raw_tp_b=
-tf_name + 1));
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-Just:
+> On Tue, Oct 22, 2019 at 11:13 AM Toke Høiland-Jørgensen <toke@redhat.com> wrote:
+>>
+>> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+>>
+>> > On Tue, Oct 22, 2019 at 9:08 AM Toke Høiland-Jørgensen <toke@redhat.com> wrote:
+>> >>
+>> >> From: Toke Høiland-Jørgensen <toke@redhat.com>
+>> >>
+>> >> When pinning a map, store the pin path in struct bpf_map so it can be
+>> >> re-used later for un-pinning. This simplifies the later addition of per-map
+>> >> pin paths.
+>> >>
+>> >> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+>> >> ---
+>> >>  tools/lib/bpf/libbpf.c |   19 ++++++++++---------
+>> >>  1 file changed, 10 insertions(+), 9 deletions(-)
+>> >>
+>> >> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+>> >> index cccfd9355134..b4fdd8ee3bbd 100644
+>> >> --- a/tools/lib/bpf/libbpf.c
+>> >> +++ b/tools/lib/bpf/libbpf.c
+>> >> @@ -226,6 +226,7 @@ struct bpf_map {
+>> >>         void *priv;
+>> >>         bpf_map_clear_priv_t clear_priv;
+>> >>         enum libbpf_map_type libbpf_type;
+>> >> +       char *pin_path;
+>> >>  };
+>> >>
+>> >>  struct bpf_secdata {
+>> >> @@ -1929,6 +1930,7 @@ int bpf_map__reuse_fd(struct bpf_map *map, int fd)
+>> >>         if (err)
+>> >>                 goto err_close_new_fd;
+>> >>         free(map->name);
+>> >> +       zfree(&map->pin_path);
+>> >>
+>> >
+>> > While you are touching this function, can you please also fix error
+>> > handling in it? We should store -errno locally on error, before we
+>> > call close() which might change errno.
+>>
+>> Didn't actually look much at the surrounding function, TBH. I do expect
+>> that I will need to go poke into this for the follow-on "automatic reuse
+>> of pinned maps" series anyway. But sure, I can do a bit of cleanup in a
+>> standalone patch first :)
+>>
+>> >>         map->fd = new_fd;
+>> >>         map->name = new_name;
+>> >> @@ -4022,6 +4024,7 @@ int bpf_map__pin(struct bpf_map *map, const char *path)
+>> >>                 return -errno;
+>> >>         }
+>> >>
+>> >> +       map->pin_path = strdup(path);
+>> >
+>> > if (!map->pin_path) {
+>> >     err = -errno;
+>> >     goto err_close_new_fd;
+>> > }
+>>
+>> Right.
+>>
+>> >>         pr_debug("pinned map '%s'\n", path);
+>> >>
+>> >>         return 0;
+>> >> @@ -4031,6 +4034,9 @@ int bpf_map__unpin(struct bpf_map *map, const char *path)
+>> >>  {
+>> >>         int err;
+>> >>
+>> >> +       if (!path)
+>> >> +               path = map->pin_path;
+>> >
+>> > This semantics is kind of weird. Given we now remember pin_path,
+>> > should we instead check that user-provided path is actually correct
+>> > and matches what we stored? Alternatively, bpf_map__unpin() w/o path
+>> > argument looks like a cleaner API.
+>>
+>> Yeah, I guess the function without a path argument would make the most
+>> sense. However, we can't really change the API of bpf_map__unpin()
+>> (unless you're proposing a symbol-versioned new version?). Dunno if it's
+>> worth it to include a new, somewhat oddly-named, function to achieve
+>> this? For the internal libbpf uses at least it's easy enough for the
+>> caller to just go bpf_map__unpin(map, map->pin_path), so I could also
+>> just drop this change? WDYT?
+>
+> I'd probably do strcmp(map->pin_path, path), if path is specified.
+> This will support existing use cases, will allow NULL if we don't want
+> to bother remembering pin_path, will prevent weird use case of pinning
+> to one path, but unpinning another one.
 
-sizeof(raw_tp_btf_name) - sizeof("btf_trace_")
+So something like
+
+if (path && map->pin_path && strcmp(path, map->pin_path))
+ return -EINVAL
+else if (!path)
+ path = map->pin_path;
 
 ?
 
->                         ret =3D btf__find_by_name(btf, raw_tp_btf_name);
->                         btf__free(btf);
->                         if (ret <=3D 0) {
-> --
-> 2.20.1
->
+> Ideally, all this pinning will just be done declaratively and will
+> happen automatically, so users won't even have to know about this API
+> :)
+
+Yeah, that's where I'm hoping to get to. But, well, the pin/unpin
+functions already exist so we do need to keep them working...
+
+-Toke
