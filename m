@@ -2,107 +2,163 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E5A7FE0AEF
-	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2019 19:45:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3EF0E0B32
+	for <lists+bpf@lfdr.de>; Tue, 22 Oct 2019 20:07:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727881AbfJVRpM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Oct 2019 13:45:12 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:31908 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727152AbfJVRpL (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 22 Oct 2019 13:45:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1571766310;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=84NOK6JlBnakomHmdK8lEf2i89cFK17pqxVXj9BUO1k=;
-        b=Bwh8qDWBDVdylOUwwGYGRPJvJpKg2tfPUOUdTb1h9Q7RbsFwurXwyVFVyHSgRe2nbRDUM+
-        OqHf7DIp+hBqZaHZTeG4ieDSiZByOkSCD3MCIdMW0ESCoKsP9ySFKGykR4UYGg+gHwZdKn
-        XAk/nCu2tIKWGmn7DFwBu73h10WiKIo=
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
- [209.85.208.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-29-GXtWpp5RPjOptOVIsyuuxg-1; Tue, 22 Oct 2019 13:45:08 -0400
-Received: by mail-lj1-f197.google.com with SMTP id v24so3103853ljh.23
-        for <bpf@vger.kernel.org>; Tue, 22 Oct 2019 10:45:08 -0700 (PDT)
+        id S1731556AbfJVSHq convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Tue, 22 Oct 2019 14:07:46 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:54600 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726702AbfJVSHq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Oct 2019 14:07:46 -0400
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com [209.85.167.70])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id C800B81F0C
+        for <bpf@vger.kernel.org>; Tue, 22 Oct 2019 18:07:45 +0000 (UTC)
+Received: by mail-lf1-f70.google.com with SMTP id 23so3372928lft.15
+        for <bpf@vger.kernel.org>; Tue, 22 Oct 2019 11:07:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=84NOK6JlBnakomHmdK8lEf2i89cFK17pqxVXj9BUO1k=;
-        b=FQc+N0m1N/ne3lggTbtuWYXaxcMW9ahzmqyb2zezNh0+IfHG/eu5XIKcjJrPf9qDdm
-         5d4dWXLRbjIOTB9SjfXFzaK/IjIBBRTvQbGDZGI/KQERNM23NFx0ubXMgbHPZQB0v4po
-         Wyh6oVHRbJwQM47MNKDbuGxSBYQZJaCxCcio4Z63DPYtQ0sJdnYk9hM3W1eWBsFqAW4x
-         5S6HuN07eDlat2aOjh8YCbF/vrkCTdlV0z+gmG5+PjGDk7rbRF6TxfPYCn+Ur6dSxK75
-         V6UVUhGi56WNx3uNfGzP0sg8+ujI8yBCaYfxPNRRHPjxUAZvUpLSd/abINxZaWK24H/y
-         LPSA==
-X-Gm-Message-State: APjAAAXnfMrgeVWuTAzWE9xu1f1GQYl1zDZVzrDv5v3qDYZSAifGdDzP
-        AgJ71opJflkn4p3sIOVks3eDX84RnjcpXC2kFRFZxZzw0B09O/6ZYD0BziL8lUmNOfkDSci3wNX
-        e17N6AySrL6cV
-X-Received: by 2002:a19:6759:: with SMTP id e25mr18854011lfj.80.1571766307516;
-        Tue, 22 Oct 2019 10:45:07 -0700 (PDT)
-X-Google-Smtp-Source: APXvYqyWaFofKCqI5Dh4lYpflNmAetMBkkoN5rdIx4shy+jTuAP5JoYEhNPwO1ylG1Uqw2N1zImLUw==
-X-Received: by 2002:a19:6759:: with SMTP id e25mr18853990lfj.80.1571766307340;
-        Tue, 22 Oct 2019 10:45:07 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a00:7660:6da:443::2])
-        by smtp.gmail.com with ESMTPSA id a18sm5692318lfi.15.2019.10.22.10.45.06
+         :message-id:mime-version:content-transfer-encoding;
+        bh=QMev1t8/rRusscmilkGORiYqeo2jydWjbzFjuHZcypw=;
+        b=kvjV6fcUiaxQbLYhwDr6Z3dcfysDNKkOezqmzpvViqy24rZCup30PzusRoDAd5ilbt
+         8ujpW57yhEvNBr0Esl/vJEhXY4q5YS6/9NXrjmzikNto7pde293c96vU9Jf/8T390gX2
+         IwQOU6RClcgScyZL/fiTlIDWCxibMnNj17i4R0AtSsgMDhmcLdVkswMRMIx9mG9UvsNo
+         Kjia/GuID902Huc2Ne3Mf5W/3/3zbE58mwPrLFzoEsuo51qgy7A9+nodlrhersEJZEkk
+         JaP9hp5Jj3yKnQ27i+s6WS5iL7FH+jzr2JSE4+YauVC80Z82AxgE9K3yYtfMbM5/40Ox
+         jEOg==
+X-Gm-Message-State: APjAAAV6Zzal0Kk1dDBLlK28jk5vE9QGqSdmkz4GbrCCSnsk/WyerDqu
+        3Tjg5m0PH6MvsO9g+tzCtqdoFB8oBJchkHd6i/T+JpJbf9COKjcbhFxa6KO69GZF6OkHqtTXvYY
+        A3xQc3XFvah9C
+X-Received: by 2002:a19:6759:: with SMTP id e25mr18905122lfj.80.1571767664183;
+        Tue, 22 Oct 2019 11:07:44 -0700 (PDT)
+X-Google-Smtp-Source: APXvYqzO0HxlanDX40SXZBPdlgeEJamp1nro6mu/mG7zvv+PQiAmPfdxyRtvndLzMeSJyvivAyIseg==
+X-Received: by 2002:a19:6759:: with SMTP id e25mr18905109lfj.80.1571767663933;
+        Tue, 22 Oct 2019 11:07:43 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk (borgediget.toke.dk. [85.204.121.218])
+        by smtp.gmail.com with ESMTPSA id a7sm4382907ljn.4.2019.10.22.11.07.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Oct 2019 10:45:06 -0700 (PDT)
+        Tue, 22 Oct 2019 11:07:43 -0700 (PDT)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id BF9081804B1; Tue, 22 Oct 2019 19:45:05 +0200 (CEST)
+        id 62CD91804B1; Tue, 22 Oct 2019 20:07:42 +0200 (CEST)
 From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     John Fastabend <john.fastabend@gmail.com>,
-        Toshiaki Makita <toshiaki.makita1@gmail.com>,
+To:     Edward Cree <ecree@solarflare.com>,
         John Fastabend <john.fastabend@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        Pravin B Shelar <pshelar@ovn.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        William Tu <u9012063@gmail.com>,
-        Stanislav Fomichev <sdf@fomichev.me>
-Subject: Re: [RFC PATCH v2 bpf-next 00/15] xdp_flow: Flow offload to XDP
-In-Reply-To: <5daf34614a4af_30ac2b1cb5d205bce4@john-XPS-13-9370.notmuch>
-References: <20191018040748.30593-1-toshiaki.makita1@gmail.com> <5da9d8c125fd4_31cf2adc704105c456@john-XPS-13-9370.notmuch> <22e6652c-e635-4349-c863-255d6c1c548b@gmail.com> <5daf34614a4af_30ac2b1cb5d205bce4@john-XPS-13-9370.notmuch>
+        Marek Majkowski <marek@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next v3 1/5] bpf: Support chain calling multiple BPF programs after each other
+In-Reply-To: <aeae7b94-090a-a850-4740-0274ab8178d5@solarflare.com>
+References: <157046883502.2092443.146052429591277809.stgit@alrua-x1> <157046883614.2092443.9861796174814370924.stgit@alrua-x1> <20191007204234.p2bh6sul2uakpmnp@ast-mbp.dhcp.thefacebook.com> <87sgo3lkx9.fsf@toke.dk> <20191009015117.pldowv6n3k5p3ghr@ast-mbp.dhcp.thefacebook.com> <87o8yqjqg0.fsf@toke.dk> <20191010044156.2hno4sszysu3c35g@ast-mbp.dhcp.thefacebook.com> <87v9srijxa.fsf@toke.dk> <5da4ab712043c_25f42addb7c085b83b@john-XPS-13-9370.notmuch> <87eezfi2og.fsf@toke.dk> <f9d5f717-51fe-7d03-6348-dbaf0b9db434@solarflare.com> <87r23egdua.fsf@toke.dk> <70142501-e2dd-1aed-992e-55acd5c30cfd@solarflare.com> <874l07fu61.fsf@toke.dk> <aeae7b94-090a-a850-4740-0274ab8178d5@solarflare.com>
 X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 22 Oct 2019 19:45:05 +0200
-Message-ID: <87h840oese.fsf@toke.dk>
+Date:   Tue, 22 Oct 2019 20:07:42 +0200
+Message-ID: <87eez4odqp.fsf@toke.dk>
 MIME-Version: 1.0
-X-MC-Unique: GXtWpp5RPjOptOVIsyuuxg-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=WINDOWS-1252
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-John Fastabend <john.fastabend@gmail.com> writes:
+Edward Cree <ecree@solarflare.com> writes:
 
-> I think for sysadmins in general (not OVS) use case I would work
-> with Jesper and Toke. They seem to be working on this specific
-> problem.
+> On 17/10/2019 13:11, Toke Høiland-Jørgensen wrote:
+>> I think there's a conceptual disconnect here in how we view what an XDP
+>> program is. In my mind, an XDP program is a stand-alone entity tied to a
+>> particular application; not a library function that can just be inserted
+>> into another program.
 
-We're definitely thinking about how we can make "XDP magically speeds up
-my network stack" a reality, if that's what you mean. Not that we have
-arrived at anything specific yet...
+> To me, an XDP (or any other eBPF) program is a function that is already
+>  being 'inserted into another program', namely, the kernel.  It's a
+>  function that's being wired up to a hook in the kernel.  Which isn't
+>  so different to wiring it up to a hook in a function that's wired up to
+>  a hook in the kernel (which is what my proposal effectively does).
 
-And yeah, I'd also be happy to discuss what it would take to make a
-native XDP implementation of the OVS datapath; including what (if
-anything) is missing from the current XDP feature set to make this
-feasible. I must admit that I'm not quite clear on why that wasn't the
-approach picked for the first attempt to speed up OVS using XDP...
+Yes, see: Different mental models leading to different notions of what
+is the natural way to do things :)
+
+>> Setting aside that for a moment; the reason I don't think this belongs
+>> in userspace is that putting it there would carry a complexity cost that
+>> is higher than having it in the kernel.
+> Complexity in the kernel is more expensive than in userland.  There are
+>  several reasons for this, such as:
+> * The kernel's reliability requirements are stricter — a daemon that
+>   crashes can be restarted, a kernel that crashes ruins your day.
+> * Userland has libraries available for many common tasks that can't be
+>   used in the kernel.
+> * Anything ABI-visible (which this would be) has to be kept forever even
+>   if it turns out to be a Bad Idea™, because We Do Not Break
+> Userspace™.
+
+To me, the first and last of those are actually arguments for putting
+this into the kernel (from the consuming application's PoV). Surely we
+want something that's reliable and well-supported? ;)
+
+> The last of these is the big one, and means that wherever possible the
+> proper course is to prototype functionality in userspace, and then
+> once the ABI is solid and known-useful, it can move to the kernel if
+> there's an advantage to doing so
+
+To me, the prototyping was the tail call-based stuff Facebook and
+Cloudflare has been doing, and this is an attempt to synthesise that
+into something that we can actually agree to support as part of the XDP
+feature set.
+
+>> - Add a new dependency to using XDP (now you not only need the kernel
+>>   and libraries, you'll also need the daemon).
+> You'll need *a* daemon. You won't be tied to a specific
+> implementation.
+
+But the point is that I *want* this to be a specific implementation; or
+rather, a specific interface. I.e., I want this to be an interface that
+people can rely on being available, rather than have a proliferation of
+slightly different ways to achieve this that are subtly incompatible.
+
+>>     - Keeping track of which XDP programs are loaded and attached to
+>>       each interface
+> There's already an API to query this.
+
+There's an API, but the daemon still has to deal with it.
+
+> You would probably want an atomic cmpxchg operation, so that you can
+> detect if someone else is fiddling with XDP and scream noisy warnings.
+
+Yup, probably going to do some sort of atomic program replace API in any
+case :)
+
+>>     - Some kind of interface with the verifier; if an app does
+>>       xdpd_rpc_load(prog), how is the verifier result going to get back
+>>       to the caller?
+> The daemon will get the verifier log back when it tries to update the
+> program; it might want to do a bit of translation before passing it
+> on, but an RPC call can definitely return errors to the caller.
+
+I wasn't implying that it was impossible to report errors over RPC.
+I was saying that you "a bit of translation" is not as trivial as you
+make it out to be...
+
+
+> In the Ideal World of kernel dynamic linking, of course, each app prog
+> gets submitted to the verifier by the app to create a floating function
+> in the kernel that's not bound to any XDP hook (app gets its verifier
+> responses at this point)
+
+I believe this is what Alexei means by "indirect calls". That is
+different, though, because it implies that each program lives as a
+separate object in the kernel - and so it might actually work. What you
+were talking about (until this paragraph) was something that was
+entirely in userspace, and all the kernel sees is a blob of the eBPF
+equivalent of `cat *.so > my_composite_prog.so`.
 
 -Toke
-
