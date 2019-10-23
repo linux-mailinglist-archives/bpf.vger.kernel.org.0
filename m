@@ -2,109 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BDE5E21F5
-	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2019 19:42:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7F15E22B3
+	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2019 20:49:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729283AbfJWRmO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 23 Oct 2019 13:42:14 -0400
-Received: from mail-lf1-f68.google.com ([209.85.167.68]:35869 "EHLO
-        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731112AbfJWRmO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 23 Oct 2019 13:42:14 -0400
-Received: by mail-lf1-f68.google.com with SMTP id u16so16808079lfq.3;
-        Wed, 23 Oct 2019 10:42:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DZCbcR5Iy8/K2bF0tkHCyOQWDKeY6OQ5I8XUt1jrWCM=;
-        b=YUs/2M2PHadXLRMoF7pOYzScYZGY5PCeCsacPCyueqtEj0qdNzM4Hr6KLafL5+NB07
-         GZPx8D8QEvJLLeMKadbuv97D8R2zpdg0Ziauh0POYTa4DPFb380D6bfvf/LfcKADPWF/
-         0qmN8vv+uAK24QP9PUMsMke4QlFhVSzinnXBeVLZvy+gPrPezAXDgfnZuSmCcpWMHhMa
-         k/iCPSGipJ73bZ5YaIE7GFlkKvX4d3vmHazVrnv+RnqYPcY+lWoo6w2rva77ZnXx6DTF
-         bpa88lWkJnl4YI/LBrWDClkO7dX0gzpd0qyrcRCBYBeMCAKAzseVbzr49j4PF5Fg1MV0
-         +OvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DZCbcR5Iy8/K2bF0tkHCyOQWDKeY6OQ5I8XUt1jrWCM=;
-        b=Wg8VsB7zSUcg0WIJP1rrbTUCVaaK934vHIEH0MS5eMbE2JrhHKID/Axqy7bsUYBqeY
-         FR7jLf62JPYS4zf2OwrimUe/l4JuKwvq7KF3eBKZOnbGByyGStXRXumaL8I+ndoWmkje
-         YmKILwIqvBkC94F0XXN/gH9wEuW2YvjtAvXxJypocaCb74lxpxXrxuJc1VxlVFT9sJ64
-         J10hh0jMQzCvBC8kGTeXTTv+P3Ix3ZAGlf55ytX3JK3xwXeCYdJ2YyV6hhUiA3S4F+Z+
-         LrOAMdIqyL6oKkqdf8iSayBrTsTOZOmZMmRni035t1x4HaQvbU7d+978Zjsj1LuAhxte
-         e3XQ==
-X-Gm-Message-State: APjAAAWFRgFweiVae+1BuQ3TTp8xxdezQvHvfEUG8ZlBaEzsGldBaYVL
-        Jl5DoqA7vk0RSCVAe07tgqrsoi9OXNNF8oISujs=
-X-Google-Smtp-Source: APXvYqxbM46DYnjFMelwxJ6ieSaTahz1CzBnxDFA50cYAXoSzWE707p5aV7UO5MvdUZUvwLsXF7/fX6INTZgyFoEx+g=
-X-Received: by 2002:a19:fc1e:: with SMTP id a30mr10401625lfi.167.1571852531741;
- Wed, 23 Oct 2019 10:42:11 -0700 (PDT)
+        id S2390380AbfJWStO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 23 Oct 2019 14:49:14 -0400
+Received: from smtprelay0242.hostedemail.com ([216.40.44.242]:57924 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726506AbfJWStN (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 23 Oct 2019 14:49:13 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id B81DA1822327E;
+        Wed, 23 Oct 2019 18:49:11 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,:::::::::::::::::::,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2689:2693:2828:3138:3139:3140:3141:3142:3352:3622:3865:3867:3868:3870:3871:3873:4321:5007:10004:10400:11232:11658:11914:12050:12297:12740:12760:12895:13069:13255:13311:13357:13439:14181:14659:14721:21080:21451:21627:30054:30090:30091,0,RBL:47.151.135.224:@perches.com:.lbl8.mailshell.net-62.8.0.100 64.201.201.201,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:fn,MSBL:0,DNSBL:neutral,Custom_rules:0:0:0,LFtime:25,LUA_SUMMARY:none
+X-HE-Tag: seed76_500e99da2a55d
+X-Filterd-Recvd-Size: 1829
+Received: from XPS-9350.home (unknown [47.151.135.224])
+        (Authenticated sender: joe@perches.com)
+        by omf09.hostedemail.com (Postfix) with ESMTPA;
+        Wed, 23 Oct 2019 18:49:10 +0000 (UTC)
+Message-ID: <bff0a1c4fc69b83c763ffbce42a0152e1573499a.camel@perches.com>
+Subject: Re: [Kgdb-bugreport] [PATCH] kernel: convert switch/case
+ fallthrough comments to fallthrough;
+From:   Joe Perches <joe@perches.com>
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-pm@vger.kernel.org, kgdb-bugreport@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-audit@redhat.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Date:   Wed, 23 Oct 2019 11:49:08 -0700
+In-Reply-To: <20191021090909.yjyed4qodjjcioqc@holly.lan>
+References: <f31b38b9ad515a138edaecf85701b1e3db064114.camel@perches.com>
+         <20191021090909.yjyed4qodjjcioqc@holly.lan>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.32.1-2 
 MIME-Version: 1.0
-References: <1570515415-45593-3-git-send-email-sridhar.samudrala@intel.com>
- <CAADnVQ+XxmvY0cs8MYriMMd7=2TSEm4zCtB+fs2vkwdUY6UgAQ@mail.gmail.com>
- <3ED8E928C4210A4289A677D2FEB48235140134CE@fmsmsx111.amr.corp.intel.com>
- <2bc26acd-170d-634e-c066-71557b2b3e4f@intel.com> <CAADnVQ+qq6RLMjh5bB1ugXP5p7vYM2F1fLGFQ2pL=2vhCLiBdA@mail.gmail.com>
- <2032d58c-916f-d26a-db14-bd5ba6ad92b9@intel.com> <CAADnVQ+CH1YM52+LfybLS+NK16414Exrvk1QpYOF=HaT4KRaxg@mail.gmail.com>
- <acf69635-5868-f876-f7da-08954d1f690e@intel.com> <20191019001449.fk3gnhih4nx724pm@ast-mbp>
- <6f281517-3785-ce46-65de-e2f78576783b@intel.com> <20191019022525.w5xbwkav2cpqkfwi@ast-mbp>
- <877e4zd8py.fsf@toke.dk> <CAJ+HfNj07FwmU2GGpUYw56PRwu4pHyHNSkbCOogbMB5zB2QqWA@mail.gmail.com>
- <7642a460-9ba3-d9f7-6cf8-aac45c7eef0d@intel.com> <CAADnVQ+jiEO+jnFR-G=xG=zz7UOSBieZbc1NN=sSnAwvPaJjUQ@mail.gmail.com>
- <8956a643-0163-5345-34fa-3566762a2b7d@intel.com>
-In-Reply-To: <8956a643-0163-5345-34fa-3566762a2b7d@intel.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 23 Oct 2019 10:42:00 -0700
-Message-ID: <CAADnVQKwnMChzeGaC66A99cHn5szB4hPZaGXq8JAhd8sjrdGeA@mail.gmail.com>
-Subject: Re: [Intel-wired-lan] FW: [PATCH bpf-next 2/4] xsk: allow AF_XDP
- sockets to receive packets directly from a queue
-To:     "Samudrala, Sridhar" <sridhar.samudrala@intel.com>
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Netdev <netdev@vger.kernel.org>,
-        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
-        "Herbert, Tom" <tom.herbert@intel.com>,
-        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 22, 2019 at 12:06 PM Samudrala, Sridhar
-<sridhar.samudrala@intel.com> wrote:
->
-> OK. Here is another data point that shows the perf report with the same test but CPU mitigations
-> turned OFF. Here bpf_prog overhead goes down from almost (10.18 + 4.51)% to (3.23 + 1.44%).
->
->    21.40%  ksoftirqd/28     [i40e]                     [k] i40e_clean_rx_irq_zc
->    14.13%  xdpsock          [i40e]                     [k] i40e_clean_rx_irq_zc
->     8.33%  ksoftirqd/28     [kernel.vmlinux]           [k] xsk_rcv
->     6.09%  ksoftirqd/28     [kernel.vmlinux]           [k] xdp_do_redirect
->     5.19%  xdpsock          xdpsock                    [.] main
->     3.48%  ksoftirqd/28     [kernel.vmlinux]           [k] bpf_xdp_redirect_map
->     3.23%  ksoftirqd/28     bpf_prog_3c8251c7e0fef8db  [k] bpf_prog_3c8251c7e0fef8db
->
-> So a major component of the bpf_prog overhead seems to be due to the CPU vulnerability mitigations.
+On Mon, 2019-10-21 at 10:09 +0100, Daniel Thompson wrote:
+> On Fri, Oct 18, 2019 at 09:35:08AM -0700, Joe Perches wrote:
+> > Use the new pseudo keyword "fallthrough;" and not the
+> > various /* fallthrough */ style comments.
+> > 
+> > Signed-off-by: Joe Perches <joe@perches.com>
+> > ---
+> > 
+> > This is a single patch for the kernel/ source tree,
+> > which would otherwise be sent through as separate
+> > patches to 19 maintainer sections.
+> 
+> For the kernel/debug/ files:
+> 
+> Acked-by: Daniel Thompson <daniel.thompson@linaro.org>
+> 
+> Will you be putting this in an immutable branch once you've collected
+> enough acks?
 
-I feel that it's an incorrect conclusion because JIT is not doing
-any retpolines (because there are no indirect calls in bpf).
-There should be no difference in bpf_prog runtime with or without mitigations.
-Also you're running root, so no spectre mitigations either.
+No, I expect Linus will either run the script
+or apply this patch one day.
 
-This 3% seems like a lot for a function that does few loads that should
-hit d-cache and one direct call.
-Please investigate why you're seeing this 10% cpu cost when mitigations are on.
-perf report/annotate is the best.
-Also please double check that you're using the latest perf.
-Since bpf performance analysis was greatly improved several versions ago.
-I don't think old perf will be showing bogus numbers, but better to
-run the latest.
 
-> The other component is the bpf_xdp_redirect_map() codepath.
->
-> Let me know if it helps to collect any other data that should further help with the perf analysis.
->
