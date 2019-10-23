@@ -2,98 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E4420E1ACF
-	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2019 14:38:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 041C0E1BBC
+	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2019 15:05:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389224AbfJWMiG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 23 Oct 2019 08:38:06 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:42452 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732361AbfJWMiF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 23 Oct 2019 08:38:05 -0400
-Received: by mail-qt1-f195.google.com with SMTP id w14so31972806qto.9;
-        Wed, 23 Oct 2019 05:38:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=TTxfg8uYCGG6i9hFGyJ0oHAZKHi72jFC6jG4zn1k97Q=;
-        b=XFffVwVqJgOaIQp+xpGltzSaVRG+X5kt3ObAyXI3K5+lughh1ATjfvD5NBAAsJODbg
-         HsjXmpYjQXMwiTmn+kQwGO7Zh+MnJbsPc3PZ0ETxzY49ibWz8LJaEka/WhGxHsZBW3jw
-         KEQ07OaCHixpqhZsL87owKp3ce9pEaiwtTkRkWRZBHa1VJtHMsB8Kp2APGLarSCNs4Pb
-         DgQTb3rzxRhW8bxN8jIe6kirZ6yD2aAvcIr69f1khmiiRMygKHbT4kGeOBUdU33i6x72
-         oLriPVYKYapGah8V3QQ9/XlTr2cpq7r2dO+CKqg4uG75XMKzjvbWQqg8DyBvzRl9HE7y
-         UWGg==
+        id S2405550AbfJWNFW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 23 Oct 2019 09:05:22 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:49856 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2405549AbfJWNFW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 23 Oct 2019 09:05:22 -0400
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com [209.85.167.72])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 9C0754DB1F
+        for <bpf@vger.kernel.org>; Wed, 23 Oct 2019 13:05:21 +0000 (UTC)
+Received: by mail-lf1-f72.google.com with SMTP id f3so4108655lfa.16
+        for <bpf@vger.kernel.org>; Wed, 23 Oct 2019 06:05:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=TTxfg8uYCGG6i9hFGyJ0oHAZKHi72jFC6jG4zn1k97Q=;
-        b=mjDRZv4TAKFAIfcPUwQrPZ2zBw02kkYsunsNurS4XaDrHpNnLWjrhqJIWnDjVlSbka
-         IjLtzXov5arywOF6dia/HXOPedLmGtt9EMfbfauD9EYnw9siluxW3Mm+WJp4AWMuA9EV
-         9N1+GCRR09o+8qQyXQ4quhN7S5jTmcrERImpZvQc8PiFNUM/dYXrgypK9aKLVZWSJUpr
-         YO4RV3gNHLUsEPrt6lfONnH5th2IHV1NyIpKAAVbr1o3OwR/eTxTC/DQo3XnYZ3HJNtU
-         yPMhuEnU79jQUY/J0ikOG1dbHrowOFe2FL3yLPVcJBLfJXwGW+Dxh+09QZpHtkcGFIDw
-         w3xg==
-X-Gm-Message-State: APjAAAVA2iU9H01zY5FW0fdy9lsAh2NbHwaWQXdiySfxz0dlxQpbaMSz
-        3U58E0vNw3cLbFoqCMM2aI8=
-X-Google-Smtp-Source: APXvYqy5SFIZq5y+J9shsYPIP3Rc3PCvPhXKek+NFYEwkCT27cfLiqu5oPR8Dlza+24DhsBZV56BwQ==
-X-Received: by 2002:ac8:2c1a:: with SMTP id d26mr3448187qta.287.1571834284717;
-        Wed, 23 Oct 2019 05:38:04 -0700 (PDT)
-Received: from quaco.ghostprotocols.net ([179.97.35.50])
-        by smtp.gmail.com with ESMTPSA id x13sm10000312qki.9.2019.10.23.05.38.03
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=ayShX9eSwI2mf/Z2LSvzkLt/5bIb4viERXJyj+kghaQ=;
+        b=ZTJSFSCCUQ8d8fFbly+x3rFWWCBkrXwEb/yVKCkAgETNP9/LkB5AY9fzePdOEemPz9
+         ZrBb0ufMjAspCWHlSb4MbfiTBeiqTTL22DZut2iAvH6wHxJ85Z/aQIaBL13zihm1tugN
+         BypQH4tYtnSzUTjm7lUDzKjuZK9aa6EuWw5n+EIgWpdM800WT7mSF89bcCm6OPBpynZU
+         EORkOGYVugxDYpI9n8ZcfksvgxC5h807pI44m47AYKk/NRr1UtCKfAcMRvlkU4RSZXy7
+         +K8sKdcS6x8wi1bMKIDQxcec0CfXYIy99wWKcDvfB58mHrgEUCQqVuuppZx/eRQ0t6K3
+         pJJg==
+X-Gm-Message-State: APjAAAUCbgfNjhqtSPN1zBZ0/nINIQ0BV0quNu3K6IuHcEX7LaliIxda
+        TlnUUQkFmc5HToW8GvPkIY9Z4bbaXLzrd7moIqtBu5ozlauu2P+Bhw/oRSJ4bvxoe9Tkdhr5x4j
+        zmUm3zqP5IXq+
+X-Received: by 2002:ac2:46d8:: with SMTP id p24mr19215841lfo.28.1571835920144;
+        Wed, 23 Oct 2019 06:05:20 -0700 (PDT)
+X-Google-Smtp-Source: APXvYqzwZtLPghpRsZMbUAONvnb70ijFg4cju+eSJepEBx9DBET3MVwXX1/NPhUB4xKvuIlos6F1jg==
+X-Received: by 2002:ac2:46d8:: with SMTP id p24mr19215817lfo.28.1571835919863;
+        Wed, 23 Oct 2019 06:05:19 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk (borgediget.toke.dk. [85.204.121.218])
+        by smtp.gmail.com with ESMTPSA id g21sm18349357lje.67.2019.10.23.06.05.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Oct 2019 05:38:04 -0700 (PDT)
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 463884DDC9; Wed, 23 Oct 2019 09:38:02 -0300 (-03)
-Date:   Wed, 23 Oct 2019 09:38:02 -0300
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        Wed, 23 Oct 2019 06:05:19 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 5D77A1804B1; Wed, 23 Oct 2019 15:05:18 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH v2 5/9] perf tools: avoid a malloc for array events
-Message-ID: <20191023123802.GB15998@kernel.org>
-References: <20191017170531.171244-1-irogers@google.com>
- <20191023005337.196160-1-irogers@google.com>
- <20191023005337.196160-6-irogers@google.com>
- <20191023085830.GG22919@krava>
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 2/3] libbpf: Support configurable pinning of maps from BTF annotations
+In-Reply-To: <6c0e6ebf-aebc-5e80-0e32-aa81857f3a74@iogearbox.net>
+References: <157175668770.112621.17344362302386223623.stgit@toke.dk> <157175668991.112621.14204565208520782920.stgit@toke.dk> <CAEf4BzaM32j4iLhvcuwMS+dPDBd52KwviwJuoAwVVr8EwoRpHA@mail.gmail.com> <875zkgobf3.fsf@toke.dk> <CAEf4BzY-buKFadzzAKpCdjAZ+1_UwSpQobdRH7yQn_fFXQYX0w@mail.gmail.com> <87r233n8pl.fsf@toke.dk> <6c0e6ebf-aebc-5e80-0e32-aa81857f3a74@iogearbox.net>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 23 Oct 2019 15:05:18 +0200
+Message-ID: <87a79rmx2p.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191023085830.GG22919@krava>
-X-Url:  http://acmel.wordpress.com
-User-Agent: Mutt/1.12.1 (2019-06-15)
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Wed, Oct 23, 2019 at 10:58:30AM +0200, Jiri Olsa escreveu:
-> On Tue, Oct 22, 2019 at 05:53:33PM -0700, Ian Rogers wrote:
-> > Use realloc rather than malloc+memcpy to possibly avoid a memory
-> > allocation when appending array elements.
-> > 
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> 
-> Acked-by: Jiri Olsa <jolsa@kernel.org>
+> You are worried about the case where an application should be able to
+> unpin the map before loading a new one so it doesn't get reused?
 
-Thanks, applied,
+No, I'm worried about the opposite: Someone running (the equivalent of)
+'ip link set dev eth0 xdp off', and then wondering why all resources
+aren't freed.
 
-- Arnaldo
+I do believe that the common case could be solved by a logic similar to
+the one I proposed, though:
+
+>> Hmm, but I guess it could do that anyway; so maybe what we need is just
+>> a "try to find all pinned maps of this program" function? That could
+>> then to something like:
+>> 
+>> - Get the maps IDs and names of all maps attached to that program from
+>>    the kernel.
+>> 
+>> - Look for each map name in /sys/fs/bpf
+>> 
+>> - If a pinned map with the same name exists, compare the IDs, and unlink
+>>    if they match
+>> 
+>> I don't suppose it'll be possible to do all that in a race-free manner,
+>> but that would go for any use of unlink() unless I'm missing something?
