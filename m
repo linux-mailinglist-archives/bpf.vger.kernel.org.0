@@ -2,153 +2,374 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BEF64E1056
-	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2019 05:05:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C000CE112D
+	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2019 06:48:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732196AbfJWDFI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Oct 2019 23:05:08 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:40868 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727831AbfJWDFH (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 22 Oct 2019 23:05:07 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id x9MLYqCS004221;
-        Tue, 22 Oct 2019 20:05:04 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=I8YyIQ6INq4jUz3JXc3RaIS1OdvLlfxoxaAiS6clumo=;
- b=OrpnQXWiuhYy4WmPqSA/hJkum3/iHjctDSOsOVbnUvDVeYwUkjM4me29iBlMggkl9KN/
- eMuJZbS865ba7iz85cLsY3TZxOGG9xFL0rEXFG/Xt6Ik9gU3+wP4ZWB9vGv7IxbJAYFa
- aQZlKpEkBo8Ey/U7l1HS0S9EeSd5GCTnITQ= 
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by m0089730.ppops.net with ESMTP id 2vt9teh3vb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 22 Oct 2019 20:05:04 -0700
-Received: from prn-hub05.TheFacebook.com (2620:10d:c081:35::129) by
- prn-hub01.TheFacebook.com (2620:10d:c081:35::125) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Tue, 22 Oct 2019 20:05:03 -0700
-Received: from NAM01-SN1-obe.outbound.protection.outlook.com (192.168.54.28)
- by o365-in.thefacebook.com (192.168.16.29) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
- via Frontend Transport; Tue, 22 Oct 2019 20:05:02 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gf4X87YDRMYAnLOQOamAeAdY2B9JGpmbKKw+LIuF+o3Wp26VgFykKRp+RqQm9i8gswozV4e0QXLflTAbTmAQ0dx4uF68mf7JyO+47ypTQle09L3iwh+tnA0nNCM/O5TI4yZbpGNpxjiAWcxg85YzOOk4We+Nl7HvhAD7/c1gaT3UfHP/wxHEfEvVpM9dEQOGBJXw5AsUxL9Bf4CCh2jq57ST5Tj6kprZ007Hzd3yvn1me0POhv2p7OaBzlTZFVe22pId8e92stLzZx4PQIRy3esLC+YeE5mpA1cWlabU870BZzeP38PAnzLhdXvXlzaIb9Zfhe6rgJYAiV8joR+G9Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=I8YyIQ6INq4jUz3JXc3RaIS1OdvLlfxoxaAiS6clumo=;
- b=fmEK1B/Enncm3f/82hiwaEO+AfVy67dlrw6LnUyLwjKREVjTxq1JrtFDwCV/h/AlzYJlNw3wNKvOIXuyOVVQcuPbuI5dOEALTonPW/Do2qAy1AsK2qAAYJ5EN0eKNmW+64XuGpvaSqL15fllHSqK3y/YArAiR52SxjNweYKIu32dIiu9popW/6ZcESRw7LVZbkFq2IbKhSHAf4d/D3OPXbqqMncd5nCA1VM4VbI2J+ueokSYIpJDEgefCAdtWrmGTPqria/yAoUAiMzXjGk36OzwNOPHwfIrsHLWPqqTrEDtX9YECoPgaiaTNn2WGo3qoWD/frxujvX7wn7a428+HQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=I8YyIQ6INq4jUz3JXc3RaIS1OdvLlfxoxaAiS6clumo=;
- b=D3uIcO1nErT6Sd4cLrLwRWjbzFrPf+CKNmpguSPpdiROjtdxo6sWbiUj1UoeeAvC6vD/GvhEt4+QbM3UaZ49Zwe81XVlT7et9F3U9s7ixaS9AqMzS0CikvUu5YdP/vlxnsqUR4UZD2JPFmsIfiD+QPVviLR/rU9u/W+Pg65FFCE=
-Received: from BYAPR15MB3384.namprd15.prod.outlook.com (20.179.60.27) by
- BYAPR15MB2456.namprd15.prod.outlook.com (52.135.193.12) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2347.21; Wed, 23 Oct 2019 03:05:01 +0000
-Received: from BYAPR15MB3384.namprd15.prod.outlook.com
- ([fe80::b92c:ebd2:58dc:6b8d]) by BYAPR15MB3384.namprd15.prod.outlook.com
- ([fe80::b92c:ebd2:58dc:6b8d%5]) with mapi id 15.20.2387.019; Wed, 23 Oct 2019
- 03:05:01 +0000
-From:   Yonghong Song <yhs@fb.com>
-To:     Carlos Neira <cneirabustos@gmail.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-CC:     "ebiederm@xmission.com" <ebiederm@xmission.com>,
-        "brouer@redhat.com" <brouer@redhat.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: Re: [PATCH v15 1/5] fs/nsfs.c: added ns_match
-Thread-Topic: [PATCH v15 1/5] fs/nsfs.c: added ns_match
-Thread-Index: AQHViQ10L4Sk4Hu3bUSGIRdEQH4YW6dnizGA
-Date:   Wed, 23 Oct 2019 03:05:01 +0000
-Message-ID: <7b7ba580-14f8-d5aa-65d5-0d6042e7a566@fb.com>
-References: <20191022191751.3780-1-cneirabustos@gmail.com>
- <20191022191751.3780-2-cneirabustos@gmail.com>
-In-Reply-To: <20191022191751.3780-2-cneirabustos@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MWHPR1601CA0016.namprd16.prod.outlook.com
- (2603:10b6:300:da::26) To BYAPR15MB3384.namprd15.prod.outlook.com
- (2603:10b6:a03:112::27)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:180::b6b9]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 10bfaf71-b4a3-450c-a115-08d75765cb99
-x-ms-traffictypediagnostic: BYAPR15MB2456:
-x-microsoft-antispam-prvs: <BYAPR15MB2456A2ED0B8E3C49663A8300D36B0@BYAPR15MB2456.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4714;
-x-forefront-prvs: 019919A9E4
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(979002)(366004)(396003)(376002)(346002)(39860400002)(136003)(199004)(189003)(478600001)(14454004)(5660300002)(54906003)(31686004)(6246003)(316002)(6436002)(66946007)(6486002)(229853002)(31696002)(25786009)(64756008)(66556008)(4326008)(66476007)(6512007)(76176011)(36756003)(2501003)(99286004)(476003)(2906002)(8936002)(52116002)(486006)(6506007)(305945005)(186003)(7736002)(2616005)(6116002)(386003)(71200400001)(46003)(110136005)(86362001)(446003)(102836004)(66446008)(256004)(8676002)(11346002)(81166006)(81156014)(71190400001)(53546011)(969003)(989001)(999001)(1009001)(1019001);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB2456;H:BYAPR15MB3384.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: no67lepQw87GFjo9dNyPKqY22eJBwCwF+rigHctDV28Mt5OQlcdnpPnKvJ2w3z3qztrKHUTQENyef1/qI+4Q86gWhXm58AQdx+ApSgjF/sEFLcwK7jTvpQ288B5SK3XNnu0/m5FjXiXAbwXCGFfe+9fhqNPwxVJPNuX1FbsK/F9luORojVKiY70hszWa/JMw+Z1MsEVgDjPOsnSoC7tob3YKb5835J4j5yWd3piz6O5A0aIrzE/svMuePfWeo60wtN0jmZKL8aTplFng/lY3ON1fhVqFNHeRq8azPaVVBcV7A+50aZ/GtUIKMZ4QmH/9VcKmyUvDNBGVONlhL+u2wvRk5Gb7VsmUssT+eBAxLJ7mlKmMMXqu2/FjdIyCLoUomxrIxtgRA1TjapF+/wOPYCSpoeY4nA3+1b0QcnaEU49ZyhasDB/hV5ad3cvPEZu+
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <DD6050F7A12D4C48834D5D584AEA6DF4@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1732196AbfJWEs3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 23 Oct 2019 00:48:29 -0400
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:40337 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731061AbfJWEs2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 23 Oct 2019 00:48:28 -0400
+Received: by mail-qk1-f193.google.com with SMTP id y81so14720660qkb.7;
+        Tue, 22 Oct 2019 21:48:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=QGCatDdqF1V6G+fwU2IG6VijceqBZw9QgREt23lEy44=;
+        b=k+kSdnZkm41g1nCPrfy9B5OEnEqyzst9Sxji6x+iXu4t8hi68cSL4qiPCmLTw4BdHy
+         9kvkJn+O9GRaPML5PpsQijTXSND/ZEwtIUpN5BPdEwoZK7c02+n1QAKdY3aMt9SwSjoG
+         j54T+YKWjF5RS9N+f6qrs8e1WJjPLb3VSQyzw+5a/8wNvTn1CdBmwzn+JdUOXMybtmV7
+         WQgAReJLSVl9lENkBWqxHO93GRqal2WVABsH8I3/H9jPE2sn6khuBSfKS79MtLYFsrGA
+         ubR9XvyZKAz+ikFr/yKQxW9/6g4wowNnbcQ5nCEYd3uI8SFlcvqMhRBXLBLMJcXTnlDy
+         0VYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=QGCatDdqF1V6G+fwU2IG6VijceqBZw9QgREt23lEy44=;
+        b=feR6m0OJOJ8FWx9gRS1sDRfIcI0M5jcnlraTR3Pj9zyB5gxdvdOVUFOjA/HDP//0/O
+         Yt7HcmW0CbTnGh5vn6vh0wcwpDFyKQLSO0Qtr32j1qnQGWqv2j1z+fLFwjA8XeKN4u/u
+         pEmv2FvJb9wrptao7gH1Bcmn7gkpm+BpFI/UQGlMCTkNkrWDLML685eCGvaOhTHIM5l3
+         RNjyyu5nnfQiaK3Srp4Hef1wlnIc9a5Rh7bLiyDQEXLLL1d4fJfublk6tCW8lG6iMdbx
+         qoH4b3+I/jOLh5+evGQ6sRmc5PxR97RVN9fRf95j6bpWnTXkDdeMeR3R9+Vz0qbEe19Z
+         xdhg==
+X-Gm-Message-State: APjAAAXllDBsHT8YhsPK/jZDytv3IaBFnHUni4VTSgp3XWNTwcwC5HlV
+        c2vFezNJUV/uir0mLGJRutU4oUk/eTtNzAGrRzwHT29ae6A=
+X-Google-Smtp-Source: APXvYqypcc9338ZTcH3L5++7saigCUhqptQnysx3r+U/K7YQJQmwkbmfoM/wSkodCUv+NDvFIvX8XO0O5tKSbP6KHBo=
+X-Received: by 2002:a37:8046:: with SMTP id b67mr2256453qkd.437.1571805626748;
+ Tue, 22 Oct 2019 21:40:26 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 10bfaf71-b4a3-450c-a115-08d75765cb99
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Oct 2019 03:05:01.7279
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: T6MR64TT0YJ4KtmfanJoHlCb6PZWt7J7PYiUm382GEMbgEZH1UZZ3SfA9UGmecBH
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2456
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
- definitions=2019-10-22_06:2019-10-22,2019-10-22 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
- mlxlogscore=999 priorityscore=1501 impostorscore=0 malwarescore=0
- adultscore=0 clxscore=1015 lowpriorityscore=0 phishscore=0 suspectscore=0
- mlxscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1908290000 definitions=main-1910220185
-X-FB-Internal: deliver
+References: <157175668770.112621.17344362302386223623.stgit@toke.dk>
+ <157175668991.112621.14204565208520782920.stgit@toke.dk> <CAEf4BzaM32j4iLhvcuwMS+dPDBd52KwviwJuoAwVVr8EwoRpHA@mail.gmail.com>
+ <875zkgobf3.fsf@toke.dk>
+In-Reply-To: <875zkgobf3.fsf@toke.dk>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 22 Oct 2019 21:40:15 -0700
+Message-ID: <CAEf4BzY-buKFadzzAKpCdjAZ+1_UwSpQobdRH7yQn_fFXQYX0w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/3] libbpf: Support configurable pinning of maps
+ from BTF annotations
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-DQpIaSwgRXJpYywNCg0KQ291bGQgeW91IHRha2UgYSBsb29rIGF0IHRoaXMgcGF0Y2ggdGhlIHNl
-cmllcyBhcyB3ZWxsPw0KSWYgaXQgbG9va3MgZ29vZCwgY291bGQgeW91IGFjayB0aGUgcGF0Y2gg
-IzE/DQoNClRoYW5rcyENCg0KT24gMTAvMjIvMTkgMTI6MTcgUE0sIENhcmxvcyBOZWlyYSB3cm90
-ZToNCj4gbnNfbWF0Y2ggcmV0dXJucyB0cnVlIGlmIHRoZSBuYW1lc3BhY2UgaW5vZGUgYW5kIGRl
-dl90IG1hdGNoZXMgdGhlIG9uZXMNCj4gcHJvdmlkZWQgYnkgdGhlIGNhbGxlci4NCj4gDQo+IFNp
-Z25lZC1vZmYtYnk6IENhcmxvcyBOZWlyYSA8Y25laXJhYnVzdG9zQGdtYWlsLmNvbT4NCj4gLS0t
-DQo+ICAgZnMvbnNmcy5jICAgICAgICAgICAgICAgfCAxNCArKysrKysrKysrKysrKw0KPiAgIGlu
-Y2x1ZGUvbGludXgvcHJvY19ucy5oIHwgIDIgKysNCj4gICAyIGZpbGVzIGNoYW5nZWQsIDE2IGlu
-c2VydGlvbnMoKykNCj4gDQo+IGRpZmYgLS1naXQgYS9mcy9uc2ZzLmMgYi9mcy9uc2ZzLmMNCj4g
-aW5kZXggYTA0MzE2NDJjNmI1Li5lZjU5Y2YzNDcyODUgMTAwNjQ0DQo+IC0tLSBhL2ZzL25zZnMu
-Yw0KPiArKysgYi9mcy9uc2ZzLmMNCj4gQEAgLTI0NSw2ICsyNDUsMjAgQEAgc3RydWN0IGZpbGUg
-KnByb2NfbnNfZmdldChpbnQgZmQpDQo+ICAgCXJldHVybiBFUlJfUFRSKC1FSU5WQUwpOw0KPiAg
-IH0NCj4gICANCj4gKy8qKg0KPiArICogbnNfbWF0Y2goKSAtIFJldHVybnMgdHJ1ZSBpZiBjdXJy
-ZW50IG5hbWVzcGFjZSBtYXRjaGVzIGRldi9pbm8gcHJvdmlkZWQuDQo+ICsgKiBAbnNfY29tbW9u
-OiBjdXJyZW50IG5zDQo+ICsgKiBAZGV2OiBkZXZfdCBmcm9tIG5zZnMgdGhhdCB3aWxsIGJlIG1h
-dGNoZWQgYWdhaW5zdCBjdXJyZW50IG5zZnMNCj4gKyAqIEBpbm86IGlub190IGZyb20gbnNmcyB0
-aGF0IHdpbGwgYmUgbWF0Y2hlZCBhZ2FpbnN0IGN1cnJlbnQgbnNmcw0KPiArICoNCj4gKyAqIFJl
-dHVybjogdHJ1ZSBpZiBkZXYgYW5kIGlubyBtYXRjaGVzIHRoZSBjdXJyZW50IG5zZnMuDQo+ICsg
-Ki8NCj4gK2Jvb2wgbnNfbWF0Y2goY29uc3Qgc3RydWN0IG5zX2NvbW1vbiAqbnMsIGRldl90IGRl
-diwgaW5vX3QgaW5vKQ0KPiArew0KPiArCXJldHVybiAobnMtPmludW0gPT0gaW5vKSAmJiAobnNm
-c19tbnQtPm1udF9zYi0+c19kZXYgPT0gZGV2KTsNCj4gK30NCj4gKw0KPiArDQo+ICAgc3RhdGlj
-IGludCBuc2ZzX3Nob3dfcGF0aChzdHJ1Y3Qgc2VxX2ZpbGUgKnNlcSwgc3RydWN0IGRlbnRyeSAq
-ZGVudHJ5KQ0KPiAgIHsNCj4gICAJc3RydWN0IGlub2RlICppbm9kZSA9IGRfaW5vZGUoZGVudHJ5
-KTsNCj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvcHJvY19ucy5oIGIvaW5jbHVkZS9saW51
-eC9wcm9jX25zLmgNCj4gaW5kZXggZDMxY2I2MjE1OTA1Li4xZGE5ZjMzNDg5ZjMgMTAwNjQ0DQo+
-IC0tLSBhL2luY2x1ZGUvbGludXgvcHJvY19ucy5oDQo+ICsrKyBiL2luY2x1ZGUvbGludXgvcHJv
-Y19ucy5oDQo+IEBAIC04Miw2ICs4Miw4IEBAIHR5cGVkZWYgc3RydWN0IG5zX2NvbW1vbiAqbnNf
-Z2V0X3BhdGhfaGVscGVyX3Qodm9pZCAqKTsNCj4gICBleHRlcm4gdm9pZCAqbnNfZ2V0X3BhdGhf
-Y2Ioc3RydWN0IHBhdGggKnBhdGgsIG5zX2dldF9wYXRoX2hlbHBlcl90IG5zX2dldF9jYiwNCj4g
-ICAJCQkgICAgdm9pZCAqcHJpdmF0ZV9kYXRhKTsNCj4gICANCj4gK2V4dGVybiBib29sIG5zX21h
-dGNoKGNvbnN0IHN0cnVjdCBuc19jb21tb24gKm5zLCBkZXZfdCBkZXYsIGlub190IGlubyk7DQo+
-ICsNCj4gICBleHRlcm4gaW50IG5zX2dldF9uYW1lKGNoYXIgKmJ1Ziwgc2l6ZV90IHNpemUsIHN0
-cnVjdCB0YXNrX3N0cnVjdCAqdGFzaywNCj4gICAJCQljb25zdCBzdHJ1Y3QgcHJvY19uc19vcGVy
-YXRpb25zICpuc19vcHMpOw0KPiAgIGV4dGVybiB2b2lkIG5zZnNfaW5pdCh2b2lkKTsNCj4gDQo=
+On Tue, Oct 22, 2019 at 11:57 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@red=
+hat.com> wrote:
+>
+> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+>
+> > On Tue, Oct 22, 2019 at 9:08 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@=
+redhat.com> wrote:
+> >>
+> >> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> >>
+> >> This adds support to libbpf for setting map pinning information as par=
+t of
+> >> the BTF map declaration. We introduce a new pair of functions to pin a=
+nd
+> >> unpin maps based on this setting, as well as a getter and setter funct=
+ion
+> >> for the pin information that callers can use after map load.
+> >>
+> >> The pin_type supports two modes: LOCAL pinning, which requires the cal=
+ler
+> >> to set a pin path using bpf_object_pin_opts, and a global mode, where =
+the
+> >> path can still be overridden, but defaults to /sys/fs/bpf. This is ins=
+pired
+> >> by the two modes supported by the iproute2 map definitions. In particu=
+lar,
+> >> it should be possible to express the current iproute2 operating mode i=
+n
+> >> terms of the options introduced here.
+> >>
+> >> The new pin functions will skip any maps that do not have a pinning ty=
+pe
+> >> set, unless the 'override_type' option is set, in which case all maps =
+will
+> >> be pinning using the pin type set in that option. This also makes it
+> >> possible to express the old pin_maps and unpin_maps functions in terms=
+ of
+> >> the new option-based functions.
+> >>
+> >> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> >> ---
+> >
+> > So few high-level thoughts.
+> >
+> > 1. I'd start with just NONE and GLOBAL as two pinning modes. It might
+> > be worth-while to name GLOBAL something different just to specify that
+> > it is just pinning, either to default /sys/fs/bpf root or some other
+> > user-provided root path.
+> > 1a. LOCAL seems to behave exactly like GLOBAL, just uses separate
+> > option for a path. So we effectively have two GLOBAL modes, one with
+> > default (but overrideable) /sys/fs/bpf, another with user-provided
+> > mandatory path. The distinction seem rather small and arbitrary.
+> > What's the use case?
+>
+> Supporting iproute2, mostly :)
+>
+> Don't terribly mind dropping LOCAL, though; I don't have any particular
+> use case in mind for it myself.
+>
+> > 2. When is pin type override useful? Either specify it once
+> > declaratively in map definition, or just do pinning programmatically?
+>
+> Dunno if it's really useful, actually.
+
+Ok then, let's add minimal amount of new stuff that satisfies known
+use cases. If we need more, thankfully, BTF-based stuff is easily
+extendable.
+
+>
+> > 3. I think we should make pinning path override into
+> > bpf_object_open_opts and keep bpf_object__pin_maps simple. We are
+> > probably going to make map pinning/sharing automatic anyway, so that
+> > will need to happen as part of either open or load operation.
+>
+> I actually started with just writing automatic map pinning logic for
+> open(), but found myself re-implementing most of the logic in map_pin().
+> So figured I might as well expose it to that as well.
+>
+> For open/load I think the logic should be that we parse the pinning
+> attribute on open and set map->pin_path from that. Then load() looks at
+> pin_path and does the reuse/create dance. That way, an application can
+> set its own pin_paths between open and load to support legacy formats
+> (like iproute2 needs to).
+
+Yeah, makes sense. That's impression I got from reading the code as well.
+
+>
+> > 4. Once pinned, map knows its pinned path, just use that, I don't see
+> > any reasonable use case where you'd want to override path just for
+> > unpinning.
+>
+> Well, unpinning may need to re-construct the pin path. E.g.,
+> applications that exit after loading and are re-run after unloading,
+> such as iproute2, probably want to be able to unpin maps. Unfortunately
+> I don't think there is a way to get the pin path(s) of an object from
+> the kernel, though, is there? That would be kinda neat for implementing
+> something like `ip link set dev eth0 xdp off unpin`.
+
+Hm... It seems to me that if application exits and another instance
+starts, it should generate pin path using the same logic, then check
+if map is already pinned. Then based on settings, either reuse or
+unpin first. Either way, pin_path needs to be calculated from map
+attributes, not "guessed" by application.
+
+>
+> > Does it make sense?
+> >
+> >>  tools/lib/bpf/bpf_helpers.h |    8 +++
+> >>  tools/lib/bpf/libbpf.c      |  123 ++++++++++++++++++++++++++++++++++=
+++-------
+> >>  tools/lib/bpf/libbpf.h      |   33 ++++++++++++
+> >>  tools/lib/bpf/libbpf.map    |    4 +
+> >>  4 files changed, 148 insertions(+), 20 deletions(-)
+> >>
+> >> diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
+> >> index 2203595f38c3..a23cf55d41b1 100644
+> >> --- a/tools/lib/bpf/bpf_helpers.h
+> >> +++ b/tools/lib/bpf/bpf_helpers.h
+> >> @@ -38,4 +38,12 @@ struct bpf_map_def {
+> >>         unsigned int map_flags;
+> >>  };
+> >>
+> >> +enum libbpf_pin_type {
+> >> +       LIBBPF_PIN_NONE,
+> >> +       /* PIN_LOCAL: pin maps by name in path specified by caller */
+> >> +       LIBBPF_PIN_LOCAL,
+> >
+> > Daniel mentioned in previous discussions that LOCAL mode is never
+> > used. I'd like to avoid supporting unnecessary stuff. Is it really
+> > useful?
+>
+> Oh, he did? In that case, let's definitely get rid of it :)
+>
+> >> +       /* PIN_GLOBAL: pin maps by name in global path (/sys/fs/bpf by=
+ default) */
+> >> +       LIBBPF_PIN_GLOBAL,
+> >> +};
+> >> +
+> >>  #endif
+> >> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> >> index b4fdd8ee3bbd..aea3916de341 100644
+> >> --- a/tools/lib/bpf/libbpf.c
+> >> +++ b/tools/lib/bpf/libbpf.c
+> >> @@ -226,6 +226,7 @@ struct bpf_map {
+> >>         void *priv;
+> >>         bpf_map_clear_priv_t clear_priv;
+> >>         enum libbpf_map_type libbpf_type;
+> >> +       enum libbpf_pin_type pinning;
+> >>         char *pin_path;
+> >>  };
+> >>
+> >> @@ -1270,6 +1271,22 @@ static int bpf_object__init_user_btf_map(struct=
+ bpf_object *obj,
+> >>                         }
+> >>                         map->def.value_size =3D sz;
+> >>                         map->btf_value_type_id =3D t->type;
+> >> +               } else if (strcmp(name, "pinning") =3D=3D 0) {
+> >> +                       __u32 val;
+> >> +
+> >> +                       if (!get_map_field_int(map_name, obj->btf, def=
+, m,
+> >> +                                              &val))
+> >> +                               return -EINVAL;
+> >> +                       pr_debug("map '%s': found pinning =3D %u.\n",
+> >> +                                map_name, val);
+> >> +
+> >> +                       if (val && val !=3D LIBBPF_PIN_LOCAL &&
+> >> +                           val !=3D LIBBPF_PIN_GLOBAL) {
+> >
+> > let's write out LIBBPF_PIN_NONE explicitly, instead of just `val`?
+>
+> OK.
+>
+> >> +                               pr_warning("map '%s': invalid pinning =
+value %u.\n",
+> >> +                                          map_name, val);
+> >> +                               return -EINVAL;
+> >> +                       }
+> >> +                       map->pinning =3D val;
+> >>                 } else {
+> >>                         if (strict) {
+> >>                                 pr_warning("map '%s': unknown field '%=
+s'.\n",
+> >> @@ -4055,10 +4072,51 @@ int bpf_map__unpin(struct bpf_map *map, const =
+char *path)
+> >>         return 0;
+> >>  }
+> >>
+> >> -int bpf_object__pin_maps(struct bpf_object *obj, const char *path)
+> >> +static int get_pin_path(char *buf, size_t buf_len,
+> >> +                       struct bpf_map *map, struct bpf_object_pin_opt=
+s *opts,
+> >> +                       bool mkdir)
+> >> +{
+> >> +       enum libbpf_pin_type type;
+> >> +       const char *path;
+> >> +       int err, len;
+> >> +
+> >> +       type =3D OPTS_GET(opts, override_type, 0) ?: map->pinning;
+> >> +
+> >> +       if (type =3D=3D LIBBPF_PIN_GLOBAL) {
+> >> +               path =3D OPTS_GET(opts, path_global, NULL);
+> >> +               if (!path)
+> >> +                       path =3D "/sys/fs/bpf";
+> >> +       } else if (type =3D=3D LIBBPF_PIN_LOCAL) {
+> >> +               path =3D OPTS_GET(opts, path_local, NULL);
+> >> +               if (!path) {
+> >> +                       pr_warning("map '%s' set pinning to PIN_LOCAL,=
+ "
+> >> +                                  "but no local path provided. Skippi=
+ng.\n",
+> >> +                                  bpf_map__name(map));
+> >> +                       return 0;
+> >> +               }
+> >> +       } else {
+> >> +               return 0;
+> >> +       }
+> >> +
+> >> +       if (mkdir) {
+> >> +               err =3D make_dir(path);
+> >> +               if (err)
+> >> +                       return err;
+> >> +       }
+> >> +
+> >> +       len =3D snprintf(buf, buf_len, "%s/%s", path, bpf_map__name(ma=
+p));
+> >> +       if (len < 0)
+> >> +               return -EINVAL;
+> >> +       else if (len >=3D buf_len)
+> >> +               return -ENAMETOOLONG;
+> >> +       return len;
+> >> +}
+> >> +
+> >> +int bpf_object__pin_maps_opts(struct bpf_object *obj,
+> >> +                             struct bpf_object_pin_opts *opts)
+> >>  {
+> >>         struct bpf_map *map;
+> >> -       int err;
+> >> +       int err, len;
+> >>
+> >>         if (!obj)
+> >>                 return -ENOENT;
+> >> @@ -4068,21 +4126,17 @@ int bpf_object__pin_maps(struct bpf_object *ob=
+j, const char *path)
+> >>                 return -ENOENT;
+> >>         }
+> >>
+> >> -       err =3D make_dir(path);
+> >> -       if (err)
+> >> -               return err;
+> >> +       if (!OPTS_VALID(opts, bpf_object_pin_opts))
+> >> +               return -EINVAL;
+> >>
+> >>         bpf_object__for_each_map(map, obj) {
+> >>                 char buf[PATH_MAX];
+> >> -               int len;
+> >>
+> >> -               len =3D snprintf(buf, PATH_MAX, "%s/%s", path,
+> >> -                              bpf_map__name(map));
+> >> -               if (len < 0) {
+> >> -                       err =3D -EINVAL;
+> >> -                       goto err_unpin_maps;
+> >> -               } else if (len >=3D PATH_MAX) {
+> >> -                       err =3D -ENAMETOOLONG;
+> >> +               len =3D get_pin_path(buf, PATH_MAX, map, opts, true);
+> >> +               if (len =3D=3D 0) {
+> >> +                       continue;
+> >> +               } else if (len < 0) {
+> >> +                       err =3D len;
+> >>                         goto err_unpin_maps;
+> >>                 }
+> >>
+> >> @@ -4104,7 +4158,16 @@ int bpf_object__pin_maps(struct bpf_object *obj=
+, const char *path)
+> >>         return err;
+> >>  }
+> >>
+> >> -int bpf_object__unpin_maps(struct bpf_object *obj, const char *path)
+> >> +int bpf_object__pin_maps(struct bpf_object *obj, const char *path)
+> >> +{
+> >> +       LIBBPF_OPTS(bpf_object_pin_opts, opts,
+> >> +                   .path_global =3D path,
+> >> +                   .override_type =3D LIBBPF_PIN_GLOBAL);
+> >
+> > style nit: extra line between declaration and statements
+> >
+> >> +       return bpf_object__pin_maps_opts(obj, &opts);
+> >> +}
+> >> +
+> >> +int bpf_object__unpin_maps_opts(struct bpf_object *obj,
+> >> +                             struct bpf_object_pin_opts *opts)
+> >>  {
+> >>         struct bpf_map *map;
+> >>         int err;
+> >> @@ -4112,16 +4175,18 @@ int bpf_object__unpin_maps(struct bpf_object *=
+obj, const char *path)
+> >>         if (!obj)
+> >>                 return -ENOENT;
+> >>
+> >> +       if (!OPTS_VALID(opts, bpf_object_pin_opts))
+> >> +               return -EINVAL;
+> >
+> > specifying pin options for unpin operation looks cumbersome. We know
+> > the pinned path, just use that and keep unpinning simple?
+>
+> You are right, but see above re: recreating pin paths on re-run.>
+>
+> -Toke
