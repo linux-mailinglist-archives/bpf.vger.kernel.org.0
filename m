@@ -2,69 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C7F15E22B3
-	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2019 20:49:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AB4DE26DA
+	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2019 01:03:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390380AbfJWStO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 23 Oct 2019 14:49:14 -0400
-Received: from smtprelay0242.hostedemail.com ([216.40.44.242]:57924 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726506AbfJWStN (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 23 Oct 2019 14:49:13 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id B81DA1822327E;
-        Wed, 23 Oct 2019 18:49:11 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,:::::::::::::::::::,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2689:2693:2828:3138:3139:3140:3141:3142:3352:3622:3865:3867:3868:3870:3871:3873:4321:5007:10004:10400:11232:11658:11914:12050:12297:12740:12760:12895:13069:13255:13311:13357:13439:14181:14659:14721:21080:21451:21627:30054:30090:30091,0,RBL:47.151.135.224:@perches.com:.lbl8.mailshell.net-62.8.0.100 64.201.201.201,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:fn,MSBL:0,DNSBL:neutral,Custom_rules:0:0:0,LFtime:25,LUA_SUMMARY:none
-X-HE-Tag: seed76_500e99da2a55d
-X-Filterd-Recvd-Size: 1829
-Received: from XPS-9350.home (unknown [47.151.135.224])
-        (Authenticated sender: joe@perches.com)
-        by omf09.hostedemail.com (Postfix) with ESMTPA;
-        Wed, 23 Oct 2019 18:49:10 +0000 (UTC)
-Message-ID: <bff0a1c4fc69b83c763ffbce42a0152e1573499a.camel@perches.com>
-Subject: Re: [Kgdb-bugreport] [PATCH] kernel: convert switch/case
- fallthrough comments to fallthrough;
-From:   Joe Perches <joe@perches.com>
-To:     Daniel Thompson <daniel.thompson@linaro.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-pm@vger.kernel.org, kgdb-bugreport@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-audit@redhat.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Date:   Wed, 23 Oct 2019 11:49:08 -0700
-In-Reply-To: <20191021090909.yjyed4qodjjcioqc@holly.lan>
-References: <f31b38b9ad515a138edaecf85701b1e3db064114.camel@perches.com>
-         <20191021090909.yjyed4qodjjcioqc@holly.lan>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.32.1-2 
+        id S2406227AbfJWXDv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 23 Oct 2019 19:03:51 -0400
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:42492 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733196AbfJWXDv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 23 Oct 2019 19:03:51 -0400
+Received: by mail-pg1-f193.google.com with SMTP id f14so12992297pgi.9;
+        Wed, 23 Oct 2019 16:03:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version;
+        bh=/OHxiXD2KyXURICS7ZLFhn4YJcbAYHn2yp+8MzAvfDc=;
+        b=spC33OlITWelnU7Z8JWyAbqDTQvQywvirjEaDIyHeT0QVWGLczOmCa5xCp0DVwywjR
+         msJY8gY9kornpUrkl+cVGEcIBGhjTh/jxUT1E6d9A1L87mxVBMYrbgYD80Tzy/0u8nHY
+         3icB+hu4GJobS22XqmGng/Ewvrz+tRltrbQS4y015GxTjShJVbBxpboZZwxsLLsqYhwM
+         YTxtbgYWBE7OuslRYPmPkbcYIiWHZPANhBMbw3je3CWJH18AvwZJAlNBnMsarje6COYw
+         Zo/n9cWmYRPom3E3jeZmTUBKk0u2UGzNuXKNaUJNwrYYfZdEizz9qzui1uv0RMo9lrts
+         O30A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version;
+        bh=/OHxiXD2KyXURICS7ZLFhn4YJcbAYHn2yp+8MzAvfDc=;
+        b=JKNGeEUv+W7wlRPXfh4366uwwbwxULcgbneH5E0CEUi4AKAXQHW8VH4R7+/9i0aIv6
+         Y35ap/WcmxK6uJKXzCRthMVJxfa0NL9tgbOCxJ/Sks4BDY6Vj+0a4IaVJaA1f32YXSs4
+         fvkWqb0G//Cxw/CaKSBARdGOeTT/nmYXDMS6/gjbz+lr4KQbqFp47OMBr0E10qNNnzxy
+         5EbeThKuZFa2tWLuwIP7CnmmMZDywLOD7bpP/d9ZscQ+YKCdx9vnyJtssCn0VvgvJ9oG
+         36izUo7u1eK2LJ2UnLBHkFFZ5Vdry3rGV+f5WftFLJnbbxl7hUMY24wbEizg5Fy7N9Ue
+         5qvw==
+X-Gm-Message-State: APjAAAXwr2N7MBiqKu92zG+AzNPHwi0uA0LtgiH23TJNcfy0lHi373BB
+        QqtdzwxcUvo1p6X0Uqr9CzE=
+X-Google-Smtp-Source: APXvYqy7Jps/4WrxQ+4F846S7kPT3OEJ2c0PSYVG+Y1beL2fC2dtGNo/1v5tyXd/G8GbepPoYvyWKA==
+X-Received: by 2002:a63:2326:: with SMTP id j38mr12500963pgj.283.1571871830405;
+        Wed, 23 Oct 2019 16:03:50 -0700 (PDT)
+Received: from [172.26.117.3] ([2620:10d:c090:180::cbd8])
+        by smtp.gmail.com with ESMTPSA id w2sm19272129pgm.18.2019.10.23.16.03.48
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 23 Oct 2019 16:03:49 -0700 (PDT)
+From:   "Jonathan Lemon" <jonathan.lemon@gmail.com>
+To:     "Magnus Karlsson" <magnus.karlsson@intel.com>
+Cc:     bjorn.topel@intel.com, ast@kernel.org, daniel@iogearbox.net,
+        netdev@vger.kernel.org, kal.conley@dectris.com, bpf@vger.kernel.org
+Subject: Re: [PATCH bpf] xsk: fix registration of Rx-only sockets
+Date:   Wed, 23 Oct 2019 16:03:48 -0700
+X-Mailer: MailMate (1.13r5655)
+Message-ID: <B551C016-76AE-46D3-B2F5-15AFF9073735@gmail.com>
+In-Reply-To: <1571645818-16244-1-git-send-email-magnus.karlsson@intel.com>
+References: <1571645818-16244-1-git-send-email-magnus.karlsson@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 2019-10-21 at 10:09 +0100, Daniel Thompson wrote:
-> On Fri, Oct 18, 2019 at 09:35:08AM -0700, Joe Perches wrote:
-> > Use the new pseudo keyword "fallthrough;" and not the
-> > various /* fallthrough */ style comments.
-> > 
-> > Signed-off-by: Joe Perches <joe@perches.com>
-> > ---
-> > 
-> > This is a single patch for the kernel/ source tree,
-> > which would otherwise be sent through as separate
-> > patches to 19 maintainer sections.
-> 
-> For the kernel/debug/ files:
-> 
-> Acked-by: Daniel Thompson <daniel.thompson@linaro.org>
-> 
-> Will you be putting this in an immutable branch once you've collected
-> enough acks?
+On 21 Oct 2019, at 1:16, Magnus Karlsson wrote:
 
-No, I expect Linus will either run the script
-or apply this patch one day.
+> Having Rx-only AF_XDP sockets can potentially lead to a crash in the
+> system by a NULL pointer dereference in xsk_umem_consume_tx(). This
+> function iterates through a list of all sockets tied to a umem and
+> checks if there are any packets to send on the Tx ring. Rx-only
+> sockets do not have a Tx ring, so this will cause a NULL pointer
+> dereference. This will happen if you have registered one or more
+> Rx-only sockets to a umem and the driver is checking the Tx ring even
+> on Rx, or if the XDP_SHARED_UMEM mode is used and there is a mix of
+> Rx-only and other sockets tied to the same umem.
+>
+> Fixed by only putting sockets with a Tx component on the list that
+> xsk_umem_consume_tx() iterates over.
 
+A future improvement might be renaming umem->xsk_list to umem->xsk_tx_list
+or similar, in order to make it clear that the list is only used on the
+TX path.
 
+>
+> Fixes: ac98d8aab61b ("xsk: wire upp Tx zero-copy functions")
+> Reported-by: Kal Cutter Conley <kal.conley@dectris.com>
+> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+
+Acked-by: Jonathan Lemon <jonathan.lemon@gmail.com>
+
+-- 
+Jonathan
