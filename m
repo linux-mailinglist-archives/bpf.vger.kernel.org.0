@@ -2,125 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4219AE1A33
-	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2019 14:30:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2BAEE1AC9
+	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2019 14:37:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391326AbfJWMam (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 23 Oct 2019 08:30:42 -0400
-Received: from www62.your-server.de ([213.133.104.62]:51794 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389735AbfJWMam (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 23 Oct 2019 08:30:42 -0400
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iNFmZ-0003sD-9j; Wed, 23 Oct 2019 14:30:31 +0200
-Received: from [2a02:120b:2c12:c120:71a0:62dd:894c:fd0e] (helo=pc-66.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iNFmZ-000VID-0w; Wed, 23 Oct 2019 14:30:31 +0200
-Subject: Re: [PATCH bpf-next 2/3] libbpf: Support configurable pinning of maps
- from BTF annotations
-To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        id S1731301AbfJWMhg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 23 Oct 2019 08:37:36 -0400
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:36922 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389224AbfJWMhg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 23 Oct 2019 08:37:36 -0400
+Received: by mail-qk1-f193.google.com with SMTP id u184so19581808qkd.4;
+        Wed, 23 Oct 2019 05:37:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=qUcU8tYS8AaPxbMdH2brsHpiQ65c4Xn61wez29PlY7w=;
+        b=a1zbOdUzyDkz1r/Z8QKDQd6doLVOv25lwRWV2KL3H3Iifhgsq8JC4A/JvxADFOS+2T
+         ESN7+yx4dqRy7d98KiLWdUDp1c9MLOfX67Z2PODH3qpn5SlcM804otdmXcEqJnFz3fan
+         x7wTIuDO0MEgLnIbJ7iQODrlMA/iNNzDInWatOfffN6y1AP0X4AKc21isQcWiaUf4MND
+         PeNWPr6oAZmMoZ54movCMHLJ6dOn55HXSCISbCTeMSr1D2/T2sBBKxeGj2DUQiOOodED
+         1LC62UX9y+Iyc9ALDWnpOFl0ZJFVxX15ZNAY9/4q1YbESOj/5mTDBj9LwTVXJGLKVDf3
+         Stgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=qUcU8tYS8AaPxbMdH2brsHpiQ65c4Xn61wez29PlY7w=;
+        b=DB52R3VvdO0gO4+IYoeizcQNL+ajyk1GXxU2KjXHmYERbnrZsk9BF+A8+nmqjWjR6b
+         D9cmqKu32pPPqeEHbRoFY5eBuW5ar0ykzfyE8nXULJ2PMfZpUJ1Z9kTlLdQV1ZOvZYGM
+         C2JsS6JI5cS+82JGUd8XYT7jXo2UhialRw8qJnRXuUfUtm+Tw6ozC6za+DnbIexnzXiL
+         9x2fjI3EhqqL6Kc2jjt3w6tEixMCoKfILO536p8hz/wPr4UT4qTSCoEGXTQbuXjDi9vR
+         mfpGxJDjL9IhYk8UxcvNNHg+jbcaxq0VwGo4cfI6Ran0FrraMrNkIlPJByFbIf2ZnAvj
+         3fRA==
+X-Gm-Message-State: APjAAAWjjTMCISmXsFrT72UAvemyYuOuRH6zK7lKvuJrP2EVQvlDlHsU
+        WO1tDgx213ugXeWNM7Rtz3g=
+X-Google-Smtp-Source: APXvYqwb4Gxxg0bNqt0B8QNBEa3brTRep/8MetjOjp/uOjvmNW6Hp5pfihBsy/Tb0A6fY+H2Ch0fCQ==
+X-Received: by 2002:a05:620a:a53:: with SMTP id j19mr8350870qka.11.1571834255264;
+        Wed, 23 Oct 2019 05:37:35 -0700 (PDT)
+Received: from quaco.ghostprotocols.net ([179.97.35.50])
+        by smtp.gmail.com with ESMTPSA id g8sm16132987qta.67.2019.10.23.05.37.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Oct 2019 05:37:34 -0700 (PDT)
+From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 2EC364DDC9; Wed, 23 Oct 2019 09:37:32 -0300 (-03)
+Date:   Wed, 23 Oct 2019 09:37:32 -0300
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-References: <157175668770.112621.17344362302386223623.stgit@toke.dk>
- <157175668991.112621.14204565208520782920.stgit@toke.dk>
- <CAEf4BzaM32j4iLhvcuwMS+dPDBd52KwviwJuoAwVVr8EwoRpHA@mail.gmail.com>
- <875zkgobf3.fsf@toke.dk>
- <CAEf4BzY-buKFadzzAKpCdjAZ+1_UwSpQobdRH7yQn_fFXQYX0w@mail.gmail.com>
- <87r233n8pl.fsf@toke.dk>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <6c0e6ebf-aebc-5e80-0e32-aa81857f3a74@iogearbox.net>
-Date:   Wed, 23 Oct 2019 14:30:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Andi Kleen <ak@linux.intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH v2 4/9] perf tools: move ALLOC_LIST into a function
+Message-ID: <20191023123732.GA15998@kernel.org>
+References: <20191017170531.171244-1-irogers@google.com>
+ <20191023005337.196160-1-irogers@google.com>
+ <20191023005337.196160-5-irogers@google.com>
+ <20191023085559.GF22919@krava>
 MIME-Version: 1.0
-In-Reply-To: <87r233n8pl.fsf@toke.dk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.101.4/25611/Wed Oct 23 10:58:37 2019)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191023085559.GF22919@krava>
+X-Url:  http://acmel.wordpress.com
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/23/19 10:53 AM, Toke Høiland-Jørgensen wrote:
-> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+Em Wed, Oct 23, 2019 at 10:55:59AM +0200, Jiri Olsa escreveu:
+> On Tue, Oct 22, 2019 at 05:53:32PM -0700, Ian Rogers wrote:
+> > Having a YYABORT in a macro makes it hard to free memory for components
+> > of a rule. Separate the logic out.
 > 
->>>> 4. Once pinned, map knows its pinned path, just use that, I don't see
->>>> any reasonable use case where you'd want to override path just for
->>>> unpinning.
->>>
->>> Well, unpinning may need to re-construct the pin path. E.g.,
->>> applications that exit after loading and are re-run after unloading,
->>> such as iproute2, probably want to be able to unpin maps. Unfortunately
->>> I don't think there is a way to get the pin path(s) of an object from
->>> the kernel, though, is there? That would be kinda neat for implementing
->>> something like `ip link set dev eth0 xdp off unpin`.
+> Acked-by: Jiri Olsa <jolsa@kernel.org>
 
-Yep, there is no way to get the pinned path(s) of an object from the
-kernel, there could be multiple bpf fs mounts (note that /sys/fs/bpf is
-just one/default location but not limited to that) where the map is pinned,
-even in different mount namespaces (e.g. container A has its own private
-mount ns and container B as well, both independent from each other, but
-in both could be pinned map X under some path), there could be various
-hard links etc, so the only way would be to query *all* system-wide bpf
-fs mounts for that given map id.
+Thanks, applied.
 
->> Hm... It seems to me that if application exits and another instance
->> starts, it should generate pin path using the same logic, then check
->> if map is already pinned. Then based on settings, either reuse or
->> unpin first. Either way, pin_path needs to be calculated from map
->> attributes, not "guessed" by application.
-> 
-> Yeah, ideally. However, the bpf object file may not be available (it's
-> not for iproute2, for instance). I'm not sure there's really anything we
-> *can* do about that, though, other than have the application guess.
-> Unless we add more state to the kernel.
-> 
-> Would it make sense to store the fact that a map was auto-pinned as a
-> flag in the kernel map info? That way, an application could read that
-> flag along with the name and go looking in /sys/fs/bpf.
-
-Don't think it makes sense, see above. I'm not 100% certain I'm following
-the use case. You are worried about the case where an application should
-be able to unpin the map before loading a new one so it doesn't get reused?
-We have similar use-case in Cilium: iproute2 bails out if map properties
-mismatch from the pinned map and the map in the object file. In some cases
-like tail call maps where they can be fully reloaded and state wouldn't
-need to be preserved across Cilium agents restarts, we simply move the
-currently active and pinned tail call map to a temp location in the BPF fs
-instance, reload the new program into the kernel and upon success just
-delete the old tail call map so kernel can recycle its resources, but in
-case the new program failed to load, we move the old map back to the old
-location thus the data path is kept alive and can be re-upgraded at a later
-point in time. Most of the map management in terms of cleanup or reuse is
-handled by the Cilium agent; iproute2 is mostly acting dumb on purpose in
-that it first probes whether the map name is present in BPF fs, if so, it
-retrieves the fd and reuses it, and it not, it creates a new one and pins
-it to the location.
-
-> Hmm, but I guess it could do that anyway; so maybe what we need is just
-> a "try to find all pinned maps of this program" function? That could
-> then to something like:
-> 
-> - Get the maps IDs and names of all maps attached to that program from
->    the kernel.
-> 
-> - Look for each map name in /sys/fs/bpf
-> 
-> - If a pinned map with the same name exists, compare the IDs, and unlink
->    if they match
-> 
-> I don't suppose it'll be possible to do all that in a race-free manner,
-> but that would go for any use of unlink() unless I'm missing something?
+- Arnaldo
