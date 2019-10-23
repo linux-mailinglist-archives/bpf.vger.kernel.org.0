@@ -2,37 +2,37 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A1BF8E1455
-	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2019 10:36:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 946D4E147D
+	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2019 10:40:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390183AbfJWIgV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 23 Oct 2019 04:36:21 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:32610 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2390020AbfJWIgV (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 23 Oct 2019 04:36:21 -0400
+        id S2390353AbfJWIkv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 23 Oct 2019 04:40:51 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:45628 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2390314AbfJWIkv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 23 Oct 2019 04:40:51 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1571819779;
+        s=mimecast20190719; t=1571820050;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=48N02/jvRuAsgRhdv+Mi4mPU3dLRpyX+8I00gXgPOW0=;
-        b=SJszAXdGkx+tohpD5j8J3QGylMsL9CMzwlRP3Zy+y3Rgc/+yt7Swmwv1spg/UWGuL9QkAP
-        CZnAji2Qw+poPrHyFS0kW4GP+/iXQyV2bpLUwyEOYSIzbiJPsyKHuw6OXZsw6slxlgk1VO
-        CgsPe2RFVC1A7a7DxLPCN7AdWOyaNVE=
+        bh=Leo1i+YgTzOAxyY1K0L+NX63hVj5HiYTBpizOFvje2U=;
+        b=C8i4c9owWLo9ELGFMx0EgsC5LvJTAmpyeUaS34sSBa41veIUd7TE1CiY+lujUsQazKtoMr
+        /5vCjW72xS8UELAKiJvXqzvq+qohN8bEf7rvy5MoJWW2pXttCSH6oy+5Lhb9cpBSL5vOXO
+        UjfheVFNaVEZDVgMG+iEv2byU4pE2Ys=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-338-4xhr8qFvOJ-YzFpi8NFASg-1; Wed, 23 Oct 2019 04:36:17 -0400
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+ us-mta-182-apkC9BGkO-e0K5zNBfDeLA-1; Wed, 23 Oct 2019 04:40:46 -0400
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 623CC107AD31;
-        Wed, 23 Oct 2019 08:36:15 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 44F761800D6B;
+        Wed, 23 Oct 2019 08:40:44 +0000 (UTC)
 Received: from krava (unknown [10.43.17.61])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 36E185DD78;
-        Wed, 23 Oct 2019 08:36:09 +0000 (UTC)
-Date:   Wed, 23 Oct 2019 10:36:08 +0200
+        by smtp.corp.redhat.com (Postfix) with SMTP id 1FEE360BE1;
+        Wed, 23 Oct 2019 08:40:39 +0000 (UTC)
+Date:   Wed, 23 Oct 2019 10:40:39 +0200
 From:   Jiri Olsa <jolsa@redhat.com>
 To:     Ian Rogers <irogers@google.com>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -53,16 +53,17 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
         bpf@vger.kernel.org, clang-built-linux@googlegroups.com,
         Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH v2 1/9] perf tools: add parse events append error
-Message-ID: <20191023083608.GC22919@krava>
+Subject: Re: [PATCH v2 2/9] perf tools: splice events onto evlist even on
+ error
+Message-ID: <20191023084039.GD22919@krava>
 References: <20191017170531.171244-1-irogers@google.com>
  <20191023005337.196160-1-irogers@google.com>
- <20191023005337.196160-2-irogers@google.com>
+ <20191023005337.196160-3-irogers@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20191023005337.196160-2-irogers@google.com>
+In-Reply-To: <20191023005337.196160-3-irogers@google.com>
 User-Agent: Mutt/1.12.1 (2019-06-15)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
-X-MC-Unique: 4xhr8qFvOJ-YzFpi8NFASg-1
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-MC-Unique: apkC9BGkO-e0K5zNBfDeLA-1
 X-Mimecast-Spam-Score: 0
 Content-Type: text/plain; charset=WINDOWS-1252
 Content-Transfer-Encoding: quoted-printable
@@ -72,75 +73,65 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 22, 2019 at 05:53:29PM -0700, Ian Rogers wrote:
-> Parse event error handling may overwrite one error string with another
-> creating memory leaks and masking errors. Introduce a helper routine
-> that appends error messages and avoids the memory leak.
-
-good idea, it became little messy with time ;-)
-some comments below
-
-thanks,
-jirka
-
-
+On Tue, Oct 22, 2019 at 05:53:30PM -0700, Ian Rogers wrote:
+> If event parsing fails the event list is leaked, instead splice the list
+> onto the out result and let the caller cleanup.
 >=20
 > Signed-off-by: Ian Rogers <irogers@google.com>
 > ---
->  tools/perf/util/parse-events.c | 102 ++++++++++++++++++++++-----------
->  tools/perf/util/parse-events.h |   2 +
->  tools/perf/util/pmu.c          |  36 ++++++------
->  3 files changed, 89 insertions(+), 51 deletions(-)
+>  tools/perf/util/parse-events.c | 17 +++++++++++------
+>  1 file changed, 11 insertions(+), 6 deletions(-)
 >=20
 > diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-event=
 s.c
-> index db882f630f7e..4d42344698b8 100644
+> index 4d42344698b8..a8f8801bd127 100644
 > --- a/tools/perf/util/parse-events.c
 > +++ b/tools/perf/util/parse-events.c
-> @@ -182,6 +182,34 @@ static int tp_event_has_id(const char *dir_path, str=
-uct dirent *evt_dir)
+> @@ -1962,15 +1962,20 @@ int parse_events(struct evlist *evlist, const cha=
+r *str,
 > =20
->  #define MAX_EVENT_LENGTH 512
-> =20
-> +void parse_events__append_error(struct parse_events_error *err, int idx,
-> +=09=09=09=09char *str, char *help)
-> +{
-> +=09char *new_str =3D NULL;
+>  =09ret =3D parse_events__scanner(str, &parse_state, PE_START_EVENTS);
+>  =09perf_pmu__parse_cleanup();
 > +
-> +=09WARN(!str, "WARNING: failed to provide error string");
 
-should we also bail out if str is NULL?
+I dont understand.. is there something on the list in case we fail?
 
-> +=09if (err->str) {
-> +=09=09int ret;
-> +
-> +=09=09if (err->help)
-> +=09=09=09ret =3D asprintf(&new_str,
-> +=09=09=09=09"%s (previous error: %s(help: %s))",
-> +=09=09=09=09str, err->str, err->help);
-> +=09=09else
-
-please use {} for multiline condition legs
-
-> +=09=09=09ret =3D asprintf(&new_str,
-> +=09=09=09=09"%s (previous error: %s)",
-> +=09=09=09=09str, err->str);
-
-does this actualy happen? could you please provide output
-of this in the changelog?
-
-> +=09=09if (ret < 0)
-> +=09=09=09new_str =3D NULL;
-> +=09=09else
-> +=09=09=09zfree(&str);
+> +=09if (list_empty(&parse_state.list)) {
+> +=09=09WARN_ONCE(true, "WARNING: event parser found nothing\n");
+> +=09=09return -1;
 > +=09}
-> +=09err->idx =3D idx;
-> +=09free(err->str);
-> +=09err->str =3D new_str ?: str;
-> +=09free(err->help);
-> +=09err->help =3D help;
-> +}
-> =20
 
-SNIP
+this will display extra warning message for fail case:
+
+[jolsa@krava perf]$ ./perf record -e krava ls
+WARNING: event parser found nothing
+event syntax error: 'krava'
+                     \___ parser error
+
+we don't want that
+
+jirka
+
+> +
+> +=09/*
+> +=09 * Add list to the evlist even with errors to allow callers to clean =
+up.
+> +=09 */
+> +=09perf_evlist__splice_list_tail(evlist, &parse_state.list);
+> +
+>  =09if (!ret) {
+>  =09=09struct evsel *last;
+> =20
+> -=09=09if (list_empty(&parse_state.list)) {
+> -=09=09=09WARN_ONCE(true, "WARNING: event parser found nothing\n");
+> -=09=09=09return -1;
+> -=09=09}
+> -
+> -=09=09perf_evlist__splice_list_tail(evlist, &parse_state.list);
+>  =09=09evlist->nr_groups +=3D parse_state.nr_groups;
+>  =09=09last =3D evlist__last(evlist);
+>  =09=09last->cmdline_group_boundary =3D true;
+> --=20
+> 2.23.0.866.gb869b98d4c-goog
+>=20
 
