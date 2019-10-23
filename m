@@ -2,89 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BB221E2199
-	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2019 19:17:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9AC8E21A0
+	for <lists+bpf@lfdr.de>; Wed, 23 Oct 2019 19:19:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728185AbfJWRQ4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 23 Oct 2019 13:16:56 -0400
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:46367 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727079AbfJWRQ4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 23 Oct 2019 13:16:56 -0400
-Received: by mail-lf1-f66.google.com with SMTP id t8so16714420lfc.13;
-        Wed, 23 Oct 2019 10:16:55 -0700 (PDT)
+        id S1728733AbfJWRTM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 23 Oct 2019 13:19:12 -0400
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:39729 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728549AbfJWRTL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 23 Oct 2019 13:19:11 -0400
+Received: by mail-lj1-f193.google.com with SMTP id y3so21945418ljj.6;
+        Wed, 23 Oct 2019 10:19:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tAGIDyCvzaUQiVW8HnOQRjnGR59uwSAgLSNMCVSn8UA=;
-        b=OhqkF6ypLpu3utPjOksqLUFkKqpf4D4fHwkkzrgBapLXEE7lY2EPN9UKtf7xErw7gh
-         AcDbrAZ1z0y3wK3qMU1mNl4StouFrKZKmENJg662lKdGefiPyrjJf6aL3Qj7kHwgK8QX
-         N0O1dURxeG1BrCZRdq42g1qV4HansrRBxQ1tgeNidcL7ukfspWAMfdvKfLzx2Ezv11df
-         cHw/bIJyDEWvF9HZVwXJWcD0Qq92ICJ7FuiFrSIpp/9dtX+4hRqlSBGoQjbXpoCIMvHO
-         WBBHLXhMVB+MqlC9QheCiNzdO9Dw3ipJTcbQH0fuCd63QsaHu4AgNPBNeQ7KzBpT5Cbj
-         0jSA==
+         :cc:content-transfer-encoding;
+        bh=DnypHcyiSmDYpsEnrDTzJLRsh2gQEWlfzVr6c4JGW3s=;
+        b=IXEvy/Cs3F9Yw8kyCFMhSn+IrR/NXoG5FUCcrmhgxsxYeM32T0bAZWB5BSSGb5FQeQ
+         ic5Rr4dM4ZPwQ8pzEvB8yyOMZDhv6J0BRJ0XrBNqgtODlOwjvjXmj78gdcfdIzktgPsw
+         C0V59cUWLFMOrHqlw64fz/uQCuANctsbTbS7SDEpK7CSz0lRLQYEvsrFu1WxKJmw4onP
+         5tU8wbryvjWcV8J178St8tD2bIzl8teG86w3r6f7C34EvaM9/ZkDwY7rCa5pXAjcm6qL
+         wod1T1qUgG8L4CDU8T6/D0/izlClk0wg6h+c19Uw5gyI6Bl2jx/eAvAYgHIQETcf9vHt
+         sKSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tAGIDyCvzaUQiVW8HnOQRjnGR59uwSAgLSNMCVSn8UA=;
-        b=eoOyI9L/VnsFI3U0MUzI6PSXzHT/L1PFc42c9VT9FVRvl9FsDQi87b/rWWfPgPVIf+
-         e31U1epG3lwygxWapLu7UCLhueP7MZvS0cwF58uBGTkCUwCZjVE8vt0gnZXqwrMtIouK
-         H69hznnvbiJxSm9d679Anuofo9cH2/HquwF7uvottEDk4ZWb5aTj3UEhSNEjfMA4+fKW
-         3xvLm7aJwtKdV6pmxEKrw2E4U43WsHXQY/DISabWhgD//90GquJyvRC+tP0hnr2zLCtS
-         3TmhNNM7aVX/eQPK5NA/RTWGb1vqkyq8W58jjAzucPe9aqzK+qCCzEAjDwL7ysyrq0k6
-         eIuA==
-X-Gm-Message-State: APjAAAV/8WT/plpIN0eFn7p/Lb/IiR52MZmozHR2rmi+THfTogNoLUn4
-        ZKpURgk3TxJcYa3QtK1MAxFtOLk8aaNniA3mKGQM1Q==
-X-Google-Smtp-Source: APXvYqxt9kVx137WpFNyjdPBSpbAvxLxgBQI6+1rNHuGkIzw/VVLqUL4s20zRvafvbkA7l9FO5mRcMyX440b2H20+YM=
-X-Received: by 2002:a19:ac48:: with SMTP id r8mr8077941lfc.181.1571851014154;
- Wed, 23 Oct 2019 10:16:54 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=DnypHcyiSmDYpsEnrDTzJLRsh2gQEWlfzVr6c4JGW3s=;
+        b=q/hMHfdCT14TYgcJWIPwIYbYMfjdMMBt01DDZfvHcFG0xgzoY/XdiF3ZPUz8W9up6p
+         9eOefk75ySlORyRd2smxIHqEIyvV94UaGoWOIIPTBioxIy2qbSkWmYVorEFxeDLPqVWo
+         7QeAUAeLAz26pOmiQ2NRDCPp1D2lym/5Roc5nbqx4AY54Eblv/wNROPiYRwpe7v6WZjz
+         5GFBwExUjkLOZGwiCf4VljwVabYQdreVY8FsZPlA5qtzr5PMrD+FX9yyZwageMs/nop3
+         1GeaXaoCMa4My4iWgL6o2ZYct1mblo+e1p4gQOysT+iCoC/lsQ4Lrw/fRwwLFidfwA5d
+         RBCQ==
+X-Gm-Message-State: APjAAAXDBZIazYBJhDHzKQJQTWV0+tjc4a5gyvaYLIuWDq7t5s1d8N+r
+        gBIbKA5IxLnm9bhEXR/43ekoJMnGALxMJTRNGeI=
+X-Google-Smtp-Source: APXvYqytM3ljI+jWm3E+FZrjToihDhEk8GstYb412o1d3uBbgrjAaU2m0S2ecGjhHvSgvnPxlWWM1qTMQcAeO5jGqDE=
+X-Received: by 2002:a2e:9b12:: with SMTP id u18mr23724844lji.142.1571851149345;
+ Wed, 23 Oct 2019 10:19:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <1571648224-16889-1-git-send-email-magnus.karlsson@intel.com>
-In-Reply-To: <1571648224-16889-1-git-send-email-magnus.karlsson@intel.com>
+References: <20191023154038.24075-1-kpsingh@chromium.org>
+In-Reply-To: <20191023154038.24075-1-kpsingh@chromium.org>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 23 Oct 2019 10:16:42 -0700
-Message-ID: <CAADnVQKMJX1eADxgK8ixmUd7XFKOOjdhbCybFcLCLEaUXUSuAw@mail.gmail.com>
-Subject: Re: [PATCH bpf v3] xsk: improve documentation for AF_XDP
-To:     Magnus Karlsson <magnus.karlsson@intel.com>
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+Date:   Wed, 23 Oct 2019 10:18:57 -0700
+Message-ID: <CAADnVQJFyM9fDE0DoJmKFk71D9MScHzmzjDmvq3s-KjK1D6bVw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] libbpf: Fix strncat bounds error in libbpf_prog_type_by_name
+To:     KP Singh <kpsingh@chromium.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Florent Revest <revest@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Oct 21, 2019 at 1:57 AM Magnus Karlsson
-<magnus.karlsson@intel.com> wrote:
+On Wed, Oct 23, 2019 at 8:40 AM KP Singh <kpsingh@chromium.org> wrote:
 >
-> Added sections on all the bind flags, libbpf, all the setsockopts and
-> all the getsockopts. Also updated the document to reflect the latest
-> features and to correct some spelling errors.
+> From: KP Singh <kpsingh@google.com>
 >
-> v1 -> v2:
-> * Updated XDP program with latest BTF map format
-> * Added one more FAQ entry
-> * Some minor edits and corrections
+> On compiling samples with this change, one gets an error:
 >
-> v2 -> v3:
-> * Simplified XDP_SHARED_UMEM example XDP program
+>  error: =E2=80=98strncat=E2=80=99 specified bound 118 equals destination =
+size
+>   [-Werror=3Dstringop-truncation]
 >
-> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-..
-> +   struct xdp_statistics {
-> +         __u64 rx_dropped; /* Dropped for reasons other than invalid desc */
-> +         __u64 rx_invalid_descs; /* Dropped due to invalid descriptor */
-> +         __u64 tx_invalid_descs; /* Dropped due to invalid descriptor */
-> +   };
+>     strncat(dst, name + section_names[i].len,
+>     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>      sizeof(raw_tp_btf_name) - (dst - raw_tp_btf_name));
+>      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>
+> strncat requires the destination to have enough space for the
+> terminating null byte.
+>
+> Fixes: f75a697e09137 ("libbpf: Auto-detect btf_id of BTF-based raw_tracep=
+oint")
+> Signed-off-by: KP Singh <kpsingh@google.com>
 
-there was small space/tab damage in the above.
-I fixed it up and applied to bpf-next.
-Sounds like there could be tweaks to this doc in this release cycle
-when you follow up with btf and libbpf additions.
+Applied. Thanks
