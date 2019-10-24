@@ -2,58 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 53A12E38F1
-	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2019 18:56:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAA73E390F
+	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2019 18:59:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409951AbfJXQ4R (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Oct 2019 12:56:17 -0400
-Received: from mail-io1-f46.google.com ([209.85.166.46]:44826 "EHLO
-        mail-io1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726168AbfJXQ4R (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Oct 2019 12:56:17 -0400
-Received: by mail-io1-f46.google.com with SMTP id w12so30339944iol.11;
-        Thu, 24 Oct 2019 09:56:17 -0700 (PDT)
+        id S2407583AbfJXQ7d (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Oct 2019 12:59:33 -0400
+Received: from mail-il1-f196.google.com ([209.85.166.196]:43341 "EHLO
+        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405976AbfJXQ7d (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Oct 2019 12:59:33 -0400
+Received: by mail-il1-f196.google.com with SMTP id t5so23036603ilh.10;
+        Thu, 24 Oct 2019 09:59:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:message-id:in-reply-to:references:subject
          :mime-version:content-transfer-encoding;
-        bh=wvcNv5xIFN846zQWLu3cY20MZbw7dwnexWPSClFQ4xU=;
-        b=bnJWmYtsMkDFfrksxxonX0WtNv9WdkaqUp332rLvu5PuPcgXrurJ+lh81Z3kt//baW
-         7uge+ziO9QPECrcQ8hSvralarVirtHvDp3jZUJuE7V8gFD8Kcs+1/NRHCjjN6UkBbEe+
-         4IHyUbauPwLc4s1b35XEbgbpgcOrbuGJCi9xmFP27o2+5ma6jljzixNWZaQ4GGyUcXHy
-         1leg5rf8ElbYTIgHJ+K1zTkqyoH4KJr0ppCfCAoxr0mu1QwWm8+wKKYWvzjb4byfGtBn
-         CXVSjD6wpCp0VCmelLXaDCFIJg1SNGZTw3yZzbTsOvbY6t7RLAJEpBqPxvnGNKCU2d32
-         kSxg==
+        bh=J6cIyEOWdjlCo3WxpSxbJw4O5SIfcJm1CPBXanfu+xM=;
+        b=Ptq8nTS5o6TzUrMm9MB8ANO2yHy34z0C/j40+jeauPrMK1ui+Cj2l1U2REFdPofCO3
+         guMvB27Jbh8fe5GXqQn9wi4fKIsXcUxN6NoWnKS+xTeXyzHe2oxGZOLLHYrp6W/mly5L
+         NhTfWY1NJtjptXbxh9vTVVT8RDuDJ1Qsu9B/HR+xp3YOPuIVI2PCTwEm5R87MnTlRyYY
+         9v+d9sazNvxqJVnTrGgfHS7nXqN35yq++KIxc+jadIxA4Xb0LPPQcFDFsBP0pDbG9ya/
+         gGL7WakmpSkwzLJh2fphhZNLx+agJQXWL9oFUedrf5dy8mRAOu6Z3UsNMAuCZPBK1Fum
+         mHcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
          :references:subject:mime-version:content-transfer-encoding;
-        bh=wvcNv5xIFN846zQWLu3cY20MZbw7dwnexWPSClFQ4xU=;
-        b=XLA2fqcleZkZCE8zwTrTWX586eHCjOvAAiVsYXzK2ARSqhja81ph5qkZOmAmGsQnfC
-         m4Y+UnUFLulS6evCAWlKiR5abc+KdSs1lOfulDCAwiKLIGRyKmtHgxGbX+zwn3MPNhTV
-         nRpPo53JCmAMsBi9NQ6KQts4BnqwfNfsSjJYYE603S/nzUYjCfuXQ9jKjknmWjwnAAn+
-         kjBXIUsDXG3jUkFYo35Lh3v+v77uxTSuTlKD2pBYiXmikcBYg5eawteHKgzst67iQj+8
-         uHYzU/2cCTxSs04BujvsVMFMlVN7dEBZ8QNxJzvQRrheDEWB0jZLBpbFdCfVyg3360nx
-         shIA==
-X-Gm-Message-State: APjAAAVZKumuibR3wEIEEsgl4iHsayLhjyNcpBwjg+vHJX6dhgK6DJlU
-        36QhgJA929rZIayhuigH0GVZ0cAGU+g=
-X-Google-Smtp-Source: APXvYqwMMt1NAoU/JFqW8EXxDcrG3v05x+TvywkwWATpKnW98Iv6i5MtG5BrosbPpoHSok1YX56OGA==
-X-Received: by 2002:a5e:c642:: with SMTP id s2mr9665676ioo.218.1571936176596;
-        Thu, 24 Oct 2019 09:56:16 -0700 (PDT)
+        bh=J6cIyEOWdjlCo3WxpSxbJw4O5SIfcJm1CPBXanfu+xM=;
+        b=mTc6pIu6y3JP0Q8sxmlTUibHy6/2nLrWNFIN7ReOSRWda5+GFUm1JApoHTfcPQ3DBA
+         GmwW7YNsaIsVwz1vNLcLv3wyURQfN2VnwhbBWEEYiugm0E5d3r7XlL4pGEim0UgtJ37b
+         o9mcksf4S3k20ujyUlTthoaqfKpidDhpwkFs953RP83s7/Mr2kHJIgzK9e7Q4K1WIQWF
+         4qZ44mfGcb5aOZBU+iSJtvDDPSmhc7fwE2y4g6+AEo2t2NZgqss+gKtz/BvNbJurexhn
+         W4NgQ1rYbNnYwZfRMcPtmPdLE9Qqk4kV/u7LNB6/1yEAqhwA6B1u4J9aHlSp1GVtw+qJ
+         aCCg==
+X-Gm-Message-State: APjAAAXWgk3oLGL7dRhkzicvzo2C75AHhVvkEYUE8I2gMfASqwUWcuMd
+        L+GHWMuZyq7LHFZC1ilDLH0=
+X-Google-Smtp-Source: APXvYqyRHcHwApDP3qZCLoIWShsLsHHVj943atq34QEfH7qMjbYAvVAfDNDHQCguOw/3shGV+BrKgg==
+X-Received: by 2002:a92:ccd0:: with SMTP id u16mr47017799ilq.296.1571936372309;
+        Thu, 24 Oct 2019 09:59:32 -0700 (PDT)
 Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id z19sm2409237ilj.49.2019.10.24.09.56.14
+        by smtp.gmail.com with ESMTPSA id d6sm7527320iop.34.2019.10.24.09.59.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Oct 2019 09:56:16 -0700 (PDT)
-Date:   Thu, 24 Oct 2019 09:56:08 -0700
+        Thu, 24 Oct 2019 09:59:31 -0700 (PDT)
+Date:   Thu, 24 Oct 2019 09:59:22 -0700
 From:   John Fastabend <john.fastabend@gmail.com>
 To:     Jakub Sitnicki <jakub@cloudflare.com>, bpf@vger.kernel.org
 Cc:     John Fastabend <john.fastabend@gmail.com>,
         Martin KaFai Lau <kafai@fb.com>, netdev@vger.kernel.org,
         kernel-team@cloudflare.com
-Message-ID: <5db1d7a810bdb_5c282ada047205c08f@john-XPS-13-9370.notmuch>
-In-Reply-To: <20191022113730.29303-1-jakub@cloudflare.com>
+Message-ID: <5db1d86ad61ae_5c282ada047205c0a8@john-XPS-13-9370.notmuch>
+In-Reply-To: <20191022113730.29303-2-jakub@cloudflare.com>
 References: <20191022113730.29303-1-jakub@cloudflare.com>
-Subject: RE: [RFC bpf-next 0/5] Extend SOCKMAP to store listening sockets
+ <20191022113730.29303-2-jakub@cloudflare.com>
+Subject: RE: [RFC bpf-next 1/5] bpf, sockmap: Let BPF helpers use lookup
+ operation on SOCKMAP
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
@@ -64,44 +66,36 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 Jakub Sitnicki wrote:
-> This patch set is a follow up on a suggestion from LPC '19 discussions to
-> make SOCKMAP (or a new map type derived from it) a generic type for storing
-> established as well as listening sockets.
+> Don't require the BPF helpers that need to access SOCKMAP maps to live in
+> the sock_map module. Expose SOCKMAP lookup to all kernel-land.
 > 
-> We found ourselves in need of a map type that keeps references to listening
-> sockets when working on making the socket lookup programmable, aka BPF
-> inet_lookup [1].  Initially we repurposed REUSEPORT_SOCKARRAY but found it
-> problematic to extend due to being tightly coupled with reuseport
-> logic (see slides [2]). So we've turned our attention to SOCKMAP instead.
+> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+> ---
+>  net/core/sock_map.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
-> As it turns out the changes needed to make SOCKMAP suitable for storing
-> listening sockets are self-contained and have use outside of programming
-> the socket lookup. Hence this patch set.
+> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+> index eb114ee419b6..facacc296e6c 100644
+> --- a/net/core/sock_map.c
+> +++ b/net/core/sock_map.c
+> @@ -271,7 +271,9 @@ static struct sock *__sock_map_lookup_elem(struct bpf_map *map, u32 key)
+>  
+>  static void *sock_map_lookup(struct bpf_map *map, void *key)
+>  {
+> -	return ERR_PTR(-EOPNOTSUPP);
+> +	u32 index = *(u32 *)key;
+> +
+> +	return __sock_map_lookup_elem(map, index);
+>  }
+>  
+>  static int __sock_map_delete(struct bpf_stab *stab, struct sock *sk_test,
+> -- 
+> 2.20.1
 > 
-> With these patches SOCKMAP can be used in SK_REUSEPORT BPF programs as a
-> drop-in replacement for REUSEPORT_SOCKARRAY for TCP. This can hopefully
-> lead to code consolidation between the two map types in the future.
-> 
-> Having said that, the main intention here is to lay groundwork for using
-> SOCKMAP in the next iteration of programmable socket lookup patches.
-> 
-> I'm looking for feedback if there's anything fundamentally wrong with
-> extending SOCKMAP map type like this that I might have missed.
 
-I think this looks good. The main reason I blocked it off before is mostly
-because I had no use-case for it and the complication with what to do with
-child sockets. Clearing the psock state seems OK to me if user wants to
-add it back to a map they can simply grab it again from a sockops event.
+OK, I'm looking into the latest BTF bits to see if we can do something
+more useful here to keep the type information when the lookup is done so
+the sock can be feed from sk_lookup and actually read.
 
-By the way I would eventually like to see the lookup hook return the
-correct type (PTR_TO_SOCKET_OR_NULL) so that the verifier "knows" the type
-and the socket can be used the same as if it was pulled from a sk_lookup
-helper.
-
-> 
-> Thanks,
-> Jakub
-> 
-> [1] https://lore.kernel.org/bpf/20190828072250.29828-1-jakub@cloudflare.com/
-> [2] https://linuxplumbersconf.org/event/4/contributions/487/attachments/238/417/Programmable_socket_lookup_LPC_19.pdf
-> 
+As this series stands after the lookup its just an opaque ptr_to_map_value
+right?
