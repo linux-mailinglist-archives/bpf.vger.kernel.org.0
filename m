@@ -2,117 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B475E3B2F
-	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2019 20:42:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B431DE3B60
+	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2019 20:55:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504101AbfJXSmh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Oct 2019 14:42:37 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:59626 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726925AbfJXSmh (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 24 Oct 2019 14:42:37 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x9OIbsXY089694
-        for <bpf@vger.kernel.org>; Thu, 24 Oct 2019 14:42:36 -0400
-Received: from e06smtp02.uk.ibm.com (e06smtp02.uk.ibm.com [195.75.94.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2vufmr40vs-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 24 Oct 2019 14:42:36 -0400
-Received: from localhost
-        by e06smtp02.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
-        Thu, 24 Oct 2019 19:42:34 +0100
-Received: from b06avi18878370.portsmouth.uk.ibm.com (9.149.26.194)
-        by e06smtp02.uk.ibm.com (192.168.101.132) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Thu, 24 Oct 2019 19:42:31 +0100
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x9OIgSr236241700
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 24 Oct 2019 18:42:28 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A45FD4C052;
-        Thu, 24 Oct 2019 18:42:28 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 746584C05A;
-        Thu, 24 Oct 2019 18:42:28 +0000 (GMT)
-Received: from white.boeblingen.de.ibm.com (unknown [9.152.99.235])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 24 Oct 2019 18:42:28 +0000 (GMT)
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>
-Cc:     bpf@vger.kernel.org, Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH bpf-next] selftest/bpf: Use -m{little,big}-endian for clang
-Date:   Thu, 24 Oct 2019 20:42:26 +0200
-X-Mailer: git-send-email 2.23.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-x-cbid: 19102418-0008-0000-0000-000003270B4A
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19102418-0009-0000-0000-00004A463FF3
-Message-Id: <20191024184226.1851-1-iii@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-10-24_10:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1908290000 definitions=main-1910240174
+        id S2504117AbfJXSzR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Oct 2019 14:55:17 -0400
+Received: from mail-il1-f195.google.com ([209.85.166.195]:35526 "EHLO
+        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2504111AbfJXSzQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Oct 2019 14:55:16 -0400
+Received: by mail-il1-f195.google.com with SMTP id p8so13698515ilp.2;
+        Thu, 24 Oct 2019 11:55:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=2jIZ3P8SxC61SeUyKQQ+E+2OIhkUpA8TOkD/mduVVcI=;
+        b=AcHR0SlzTBIqSSa1VISld28KgVkOH8Upse82N/gZAO3JhnDZRnL+0KaTg8uMciXIrj
+         uzkAJAfm4p99zZ2eKl5x5l0lykkdiIyOjD5/XO380DmN/gK4sdzbZssEZHYrIwcz9CWN
+         STPriGVbzDvGlNqqVsI2cDGMzUzYu2keYdU6+1ASn2Nj7TPkIRnkHJO9xAze07VxqivP
+         DTlyH26ttUCYO9Vm6ymxLdVjZrDBu8HGH3ERTqJJIGpd9olkNQjBj38/dRQ/7P08KwF2
+         0siyYRj0egK6MbOiLLo3MPANMv6Z4/IZXjtbt8AFG+NYKv9Zw7IHjv7dRIiF4X8jjp2/
+         NXjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=2jIZ3P8SxC61SeUyKQQ+E+2OIhkUpA8TOkD/mduVVcI=;
+        b=sfV72CxONvo8CYsZd2TU5QkbssyoHZWRutfOWgAYcXXiM+XecrXPbN9ftf792Bqsbb
+         T+GNhI9J5kWnKbpfDSSYriqfgHiyxfw8nF0KT5m2DO4RBDgjnOaMQZJ6BCdvqVRkddMj
+         R0nNqAH7F4aOIGHQEStKfTyeisr0CdAnOLE7SyAKJdVQhLwnuK3CoiVI1QsSnpoM07rW
+         qGnie0dGbMyEvDzdR0WvAxv3pbBYPQI6s7x/jJ4/VkDWTxZDmF7wyQ6waL90ZNb9DkfY
+         cl+e2dH/HpUnpNsLLOSh8Us7UQpFKRB/vNSemXXULKTXXaBvYlduZV9FIA6X7LkFfTBD
+         e5BQ==
+X-Gm-Message-State: APjAAAWMeDcIEDwQETFG+TC7dqlyTw62a/xPLDBBAf5Ra+J4uAEYYnJi
+        85gef6rZaNENgDSKJ1RnaY0=
+X-Google-Smtp-Source: APXvYqyY2fTID2j64DIo2eZveuvMWNs/3p0uSWBq9Muubhj2u7fdfzuc5peePzWtTHF2chr437YXRw==
+X-Received: by 2002:a92:4514:: with SMTP id s20mr49367450ila.232.1571943314243;
+        Thu, 24 Oct 2019 11:55:14 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id s70sm844412ili.13.2019.10.24.11.55.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Oct 2019 11:55:13 -0700 (PDT)
+Date:   Thu, 24 Oct 2019 11:55:05 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Message-ID: <5db1f389aa6f2_5c282ada047205c012@john-XPS-13-9370.notmuch>
+In-Reply-To: <CAEf4BzbBoE=mVyxS9OHNn6eSvfEMgbcqiBh2b=nVmhWiLGEBNQ@mail.gmail.com>
+References: <157141046629.11948.8937909716570078019.stgit@john-XPS-13-9370>
+ <CAEf4Bzbsg1dMBqPAL4NjXwAQ=nW-OX-Siv5NpC4Ad5ZY1ny4uQ@mail.gmail.com>
+ <5dae8eafbf615_2abd2b0d886345b4b2@john-XPS-13-9370.notmuch>
+ <20191022072023.GA31343@pc-66.home>
+ <CAEf4BzbBoE=mVyxS9OHNn6eSvfEMgbcqiBh2b=nVmhWiLGEBNQ@mail.gmail.com>
+Subject: Re: [bpf-next PATCH] bpf: libbpf, support older style kprobe load
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When cross-compiling tests from x86 to s390, the resulting BPF objects
-fail to load due to endianness mismatch.
+Andrii Nakryiko wrote:
+> On Tue, Oct 22, 2019 at 12:20 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+> >
+> > On Mon, Oct 21, 2019 at 10:07:59PM -0700, John Fastabend wrote:
+> > > Andrii Nakryiko wrote:
+> > > > On Sat, Oct 19, 2019 at 1:30 AM John Fastabend <john.fastabend@gmail.com> wrote:
+> > > > >
+> > > > > Following ./Documentation/trace/kprobetrace.rst add support for loading
+> > > > > kprobes programs on older kernels.
+> > > >
+> > > > My main concern with this is that this code is born bit-rotten,
+> > > > because selftests are never testing the legacy code path. How did you
+> > > > think about testing this and ensuring that this keeps working going
+> > > > forward?
+> > >
+> > > Well we use it, but I see your point and actually I even broke the retprobe
+> > > piece hastily fixing merge conflicts in this patch. When I ran tests on it
+> > > I missed running retprobe tests on the set of kernels that would hit that
+> > > code.
+> >
+> > If it also gets explicitly exposed as bpf_program__attach_legacy_kprobe() or
+> > such, it should be easy to add BPF selftests for that API to address the test
+> > coverage concern. Generally more selftests for exposed libbpf APIs is good to
+> > have anyway.
+> >
+> 
+> Agree about tests. Disagree about more APIs, especially that the only
+> difference will be which underlying kernel machinery they are using to
+> set everything up. We should ideally avoid exposing that to users.
 
-Fix by using BPF-GCC endianness check for clang as well.
+Maybe a build flag to build with only the older style supported for testing?
+Then we could build, test in selftests at least. Be clear the flag is only
+for testing and can not be relied upon.
 
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
----
- tools/testing/selftests/bpf/Makefile | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 11ff34e7311b..59b93a5667c8 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -131,10 +131,16 @@ $(shell $(1) -v -E - </dev/null 2>&1 \
- 	| sed -n '/<...> search starts here:/,/End of search list./{ s| \(/.*\)|-idirafter \1|p }')
- endef
- 
-+# Determine target endianness.
-+IS_LITTLE_ENDIAN = $(shell $(CC) -dM -E - </dev/null | \
-+			grep 'define __BYTE_ORDER__ __ORDER_LITTLE_ENDIAN__')
-+MENDIAN=$(if $(IS_LITTLE_ENDIAN),-mlittle-endian,-mbig-endian)
-+
- CLANG_SYS_INCLUDES = $(call get_sys_includes,$(CLANG))
- BPF_CFLAGS = -g -D__TARGET_ARCH_$(SRCARCH) 				\
- 	     -I. -I./include/uapi -I$(APIDIR)				\
--	     -I$(BPFDIR) -I$(abspath $(OUTPUT)/../usr/include)
-+	     -I$(BPFDIR) -I$(abspath $(OUTPUT)/../usr/include)		\
-+	     $(MENDIAN)
- 
- CLANG_CFLAGS = $(CLANG_SYS_INCLUDES) \
- 	       -Wno-compare-distinct-pointer-types
-@@ -271,12 +277,8 @@ $(eval $(call DEFINE_TEST_RUNNER,test_progs,no_alu32))
- 
- # Define test_progs BPF-GCC-flavored test runner.
- ifneq ($(BPF_GCC),)
--IS_LITTLE_ENDIAN = $(shell $(CC) -dM -E - </dev/null | \
--			grep 'define __BYTE_ORDER__ __ORDER_LITTLE_ENDIAN__')
--MENDIAN=$(if $(IS_LITTLE_ENDIAN),-mlittle-endian,-mbig-endian)
--
- TRUNNER_BPF_BUILD_RULE := GCC_BPF_BUILD_RULE
--TRUNNER_BPF_CFLAGS := $(BPF_CFLAGS) $(call get_sys_includes,gcc) $(MENDIAN)
-+TRUNNER_BPF_CFLAGS := $(BPF_CFLAGS) $(call get_sys_includes,gcc)
- TRUNNER_BPF_LDFLAGS :=
- $(eval $(call DEFINE_TEST_RUNNER,test_progs,bpf_gcc))
- endif
--- 
-2.23.0
-
+> 
+> > Cheers,
+> > Daniel
