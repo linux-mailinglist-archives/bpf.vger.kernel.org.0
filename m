@@ -2,90 +2,286 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AB4DE26DA
-	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2019 01:03:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C634E274F
+	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2019 02:10:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406227AbfJWXDv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 23 Oct 2019 19:03:51 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:42492 "EHLO
+        id S2392812AbfJXAKi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 23 Oct 2019 20:10:38 -0400
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:44910 "EHLO
         mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733196AbfJWXDv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 23 Oct 2019 19:03:51 -0400
-Received: by mail-pg1-f193.google.com with SMTP id f14so12992297pgi.9;
-        Wed, 23 Oct 2019 16:03:50 -0700 (PDT)
+        with ESMTP id S2392153AbfJXAKi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 23 Oct 2019 20:10:38 -0400
+Received: by mail-pg1-f193.google.com with SMTP id e10so13080808pgd.11;
+        Wed, 23 Oct 2019 17:10:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version;
-        bh=/OHxiXD2KyXURICS7ZLFhn4YJcbAYHn2yp+8MzAvfDc=;
-        b=spC33OlITWelnU7Z8JWyAbqDTQvQywvirjEaDIyHeT0QVWGLczOmCa5xCp0DVwywjR
-         msJY8gY9kornpUrkl+cVGEcIBGhjTh/jxUT1E6d9A1L87mxVBMYrbgYD80Tzy/0u8nHY
-         3icB+hu4GJobS22XqmGng/Ewvrz+tRltrbQS4y015GxTjShJVbBxpboZZwxsLLsqYhwM
-         YTxtbgYWBE7OuslRYPmPkbcYIiWHZPANhBMbw3je3CWJH18AvwZJAlNBnMsarje6COYw
-         Zo/n9cWmYRPom3E3jeZmTUBKk0u2UGzNuXKNaUJNwrYYfZdEizz9qzui1uv0RMo9lrts
-         O30A==
+        bh=tSWb4QttAdCeMSDg05JKLAWlJHpDAqSxHnHlE7DDoXo=;
+        b=LgEOAh58uUqJt4fd3DS8E1vx9+3epBJi9Fcqe4kurYGj50ivvmfy+KVly6Q1N/9rkB
+         77GdchtPn8Iu8QnSnxOjjnMLTW6tZrl1m+lOClL6ySXJ6AVYrffJzKjRCkktKmX+oMDI
+         WbCIgNs8XoDg+Xp471d5oe8c2zLVfkjQ5ezx5TLrr2MziDlMdqqe3C+aa9plNF34ypIt
+         LqDI3zaPt+leXCeNgLMWUgHXXAsYm+PLN43a16GAdHMv15aQjct0zxgQHe5Ym73ne2dE
+         N60VUjPwblbTyJlQGVqXZHi26T71USA5pZC7tBebJZ873ipVlba87zntyD1MafZBbC5g
+         N73A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version;
-        bh=/OHxiXD2KyXURICS7ZLFhn4YJcbAYHn2yp+8MzAvfDc=;
-        b=JKNGeEUv+W7wlRPXfh4366uwwbwxULcgbneH5E0CEUi4AKAXQHW8VH4R7+/9i0aIv6
-         Y35ap/WcmxK6uJKXzCRthMVJxfa0NL9tgbOCxJ/Sks4BDY6Vj+0a4IaVJaA1f32YXSs4
-         fvkWqb0G//Cxw/CaKSBARdGOeTT/nmYXDMS6/gjbz+lr4KQbqFp47OMBr0E10qNNnzxy
-         5EbeThKuZFa2tWLuwIP7CnmmMZDywLOD7bpP/d9ZscQ+YKCdx9vnyJtssCn0VvgvJ9oG
-         36izUo7u1eK2LJ2UnLBHkFFZ5Vdry3rGV+f5WftFLJnbbxl7hUMY24wbEizg5Fy7N9Ue
-         5qvw==
-X-Gm-Message-State: APjAAAXwr2N7MBiqKu92zG+AzNPHwi0uA0LtgiH23TJNcfy0lHi373BB
-        QqtdzwxcUvo1p6X0Uqr9CzE=
-X-Google-Smtp-Source: APXvYqy7Jps/4WrxQ+4F846S7kPT3OEJ2c0PSYVG+Y1beL2fC2dtGNo/1v5tyXd/G8GbepPoYvyWKA==
-X-Received: by 2002:a63:2326:: with SMTP id j38mr12500963pgj.283.1571871830405;
-        Wed, 23 Oct 2019 16:03:50 -0700 (PDT)
+        bh=tSWb4QttAdCeMSDg05JKLAWlJHpDAqSxHnHlE7DDoXo=;
+        b=N/KKjJeqIIvVyjSZxLUNZp7HdWqyT9h62s0ddfGQXfohVdBXUrlSqJziJayiUDoJ4O
+         O9DQCSN+Rk5P16x+UsgEmau/mjwiEUNe8Jx73Jq1QAFkhDTvKhS2N6UYs6Z2cMzmlqyt
+         PjaMCZPR3QTl9AxF5yZGTz1xts9DAh6aM0L1bP/UCzFTYH4g38HKjOlxZZT98Yl0LlJd
+         Q/UoW1A56xHuDZT5n1enSYIpKarXovC7TI1/LARbRYugQh/PExCNHUeBYMpVNJUsngmB
+         Ljk+sKB139VVorY8IFosVcYqCWsVXQ+UGXqDZMfw1Jf4lI87bB1WBhcB2PDDS6+mviwp
+         WUEg==
+X-Gm-Message-State: APjAAAUch9VmWB5sedkImbFkKU6tZX/x5LvViBKPGObAuT4voYWUAbpH
+        t0bWSEFD7jNbr4CXK5b5rtM=
+X-Google-Smtp-Source: APXvYqwbXktZGWaLczTHuTda4z2K8PmqiDeNvNMhbco45ESWNsMicgmTf2gAVMatYvIQufqDQ/eUsg==
+X-Received: by 2002:a17:90a:8d06:: with SMTP id c6mr3174671pjo.141.1571875835945;
+        Wed, 23 Oct 2019 17:10:35 -0700 (PDT)
 Received: from [172.26.117.3] ([2620:10d:c090:180::cbd8])
-        by smtp.gmail.com with ESMTPSA id w2sm19272129pgm.18.2019.10.23.16.03.48
+        by smtp.gmail.com with ESMTPSA id f185sm27392836pfb.183.2019.10.23.17.10.34
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 23 Oct 2019 16:03:49 -0700 (PDT)
+        Wed, 23 Oct 2019 17:10:34 -0700 (PDT)
 From:   "Jonathan Lemon" <jonathan.lemon@gmail.com>
 To:     "Magnus Karlsson" <magnus.karlsson@intel.com>
 Cc:     bjorn.topel@intel.com, ast@kernel.org, daniel@iogearbox.net,
-        netdev@vger.kernel.org, kal.conley@dectris.com, bpf@vger.kernel.org
-Subject: Re: [PATCH bpf] xsk: fix registration of Rx-only sockets
-Date:   Wed, 23 Oct 2019 16:03:48 -0700
+        netdev@vger.kernel.org, bpf@vger.kernel.org, degeneloy@gmail.com,
+        john.fastabend@gmail.com
+Subject: Re: [PATCH bpf-next v2] libbpf: fix compatibility for kernels without
+ need_wakeup
+Date:   Wed, 23 Oct 2019 17:10:33 -0700
 X-Mailer: MailMate (1.13r5655)
-Message-ID: <B551C016-76AE-46D3-B2F5-15AFF9073735@gmail.com>
-In-Reply-To: <1571645818-16244-1-git-send-email-magnus.karlsson@intel.com>
-References: <1571645818-16244-1-git-send-email-magnus.karlsson@intel.com>
+Message-ID: <E216E06A-0BE4-4221-BBF6-03017AB7D720@gmail.com>
+In-Reply-To: <1571732756-20692-1-git-send-email-magnus.karlsson@intel.com>
+References: <1571732756-20692-1-git-send-email-magnus.karlsson@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; format=flowed
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 21 Oct 2019, at 1:16, Magnus Karlsson wrote:
 
-> Having Rx-only AF_XDP sockets can potentially lead to a crash in the
-> system by a NULL pointer dereference in xsk_umem_consume_tx(). This
-> function iterates through a list of all sockets tied to a umem and
-> checks if there are any packets to send on the Tx ring. Rx-only
-> sockets do not have a Tx ring, so this will cause a NULL pointer
-> dereference. This will happen if you have registered one or more
-> Rx-only sockets to a umem and the driver is checking the Tx ring even
-> on Rx, or if the XDP_SHARED_UMEM mode is used and there is a mix of
-> Rx-only and other sockets tied to the same umem.
+
+On 22 Oct 2019, at 1:25, Magnus Karlsson wrote:
+
+> When the need_wakeup flag was added to AF_XDP, the format of the
+> XDP_MMAP_OFFSETS getsockopt was extended. Code was added to the
+> kernel to take care of compatibility issues arrising from running
+> applications using any of the two formats. However, libbpf was
+> not extended to take care of the case when the application/libbpf
+> uses the new format but the kernel only supports the old
+> format. This patch adds support in libbpf for parsing the old
+> format, before the need_wakeup flag was added, and emulating a
+> set of static need_wakeup flags that will always work for the
+> application.
 >
-> Fixed by only putting sockets with a Tx component on the list that
-> xsk_umem_consume_tx() iterates over.
-
-A future improvement might be renaming umem->xsk_list to umem->xsk_tx_list
-or similar, in order to make it clear that the list is only used on the
-TX path.
-
+> v1 -> v2:
+> * Rebased to bpf-next
+> * Rewrote the code as the previous version made you blind
 >
-> Fixes: ac98d8aab61b ("xsk: wire upp Tx zero-copy functions")
-> Reported-by: Kal Cutter Conley <kal.conley@dectris.com>
+> Fixes: a4500432c2587cb2a ("libbpf: add support for need_wakeup flag in 
+> AF_XDP part")
+> Reported-by: Eloy Degen <degeneloy@gmail.com>
 > Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+> ---
+>  tools/lib/bpf/xsk.c | 79 
+> +++++++++++++++++++++++++++++++++++++++++++++--------
+>  1 file changed, 67 insertions(+), 12 deletions(-)
+>
+> diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
+> index 7866500..aa16458 100644
+> --- a/tools/lib/bpf/xsk.c
+> +++ b/tools/lib/bpf/xsk.c
+> @@ -73,6 +73,21 @@ struct xsk_nl_info {
+>  	int fd;
+>  };
+>
+> +/* Up until and including Linux 5.3 */
+> +struct xdp_ring_offset_no_flags {
+> +	__u64 producer;
+> +	__u64 consumer;
+> +	__u64 desc;
+> +};
+> +
+> +/* Up until and including Linux 5.3 */
+> +struct xdp_mmap_offsets_no_flags {
+> +	struct xdp_ring_offset_no_flags rx;
+> +	struct xdp_ring_offset_no_flags tx;
+> +	struct xdp_ring_offset_no_flags fr;
+> +	struct xdp_ring_offset_no_flags cr;
+> +};
 
-Acked-by: Jonathan Lemon <jonathan.lemon@gmail.com>
+Why not name these with "_v1" instead of "_no_flags" in order to match
+the same definitions in net/xdp/xsk.h?  I'd rather not have two 
+identical
+structures different names if it can be avoided.
+
+
+> +
+>  int xsk_umem__fd(const struct xsk_umem *umem)
+>  {
+>  	return umem ? umem->fd : -EINVAL;
+> @@ -133,6 +148,54 @@ static int xsk_set_xdp_socket_config(struct 
+> xsk_socket_config *cfg,
+>  	return 0;
+>  }
+>
+> +static bool xsk_mmap_offsets_has_flags(socklen_t optlen)
+> +{
+> +	return (optlen == sizeof(struct xdp_mmap_offsets)) ? true : false;
+> +}
+> +
+> +static int xsk_get_mmap_offsets(int fd, struct xdp_mmap_offsets *off)
+> +{
+> +	struct xdp_mmap_offsets_no_flags off_no_flag;
+> +	socklen_t optlen;
+> +	int err;
+> +
+> +	optlen = sizeof(*off);
+> +	err = getsockopt(fd, SOL_XDP, XDP_MMAP_OFFSETS, off, &optlen);
+> +	if (err)
+> +		return err;
+> +
+> +	if (xsk_mmap_offsets_has_flags(optlen))
+
+I'd just use "if (optlen == sizeof(*off))" here.
+
+
+> +		return 0;
+> +
+> +	/* getsockopt on a kernel <= 5.3 has no flags fields.
+> +	 * Copy over the offsets to the correct places in the >=5.4 format
+> +	 * and put the flags where they would have been on that kernel.
+> +	 */
+
+Would it be worthwhile adding a length check here?
+Something like:
+
+     if (optlen == sizeof(struct xdp_mmap_offsets_v1)
+         return xsk_mmap_offset_v1(off);
+
+     return -EINVAL;
+
+Which makes it easy to revisit this later if the same
+problem crops up again.
+
+> +	memcpy(&off_no_flag, off, sizeof(off_no_flag));
+> +
+> +	off->rx.producer = off_no_flag.rx.producer;
+> +	off->rx.consumer = off_no_flag.rx.consumer;
+> +	off->rx.desc = off_no_flag.rx.desc;
+> +	off->rx.flags = off_no_flag.rx.consumer + sizeof(u32);
+> +
+> +	off->tx.producer = off_no_flag.tx.producer;
+> +	off->tx.consumer = off_no_flag.tx.consumer;
+> +	off->tx.desc = off_no_flag.tx.desc;
+> +	off->tx.flags = off_no_flag.tx.consumer + sizeof(u32);
+> +
+> +	off->fr.producer = off_no_flag.fr.producer;
+> +	off->fr.consumer = off_no_flag.fr.consumer;
+> +	off->fr.desc = off_no_flag.fr.desc;
+> +	off->fr.flags = off_no_flag.fr.consumer + sizeof(u32);
+> +
+> +	off->cr.producer = off_no_flag.cr.producer;
+> +	off->cr.consumer = off_no_flag.cr.consumer;
+> +	off->cr.desc = off_no_flag.cr.desc;
+> +	off->cr.flags = off_no_flag.cr.consumer + sizeof(u32);
+
+
+Then all this moves into a xsk_mmap_offset_v1() helper.
 
 -- 
 Jonathan
+
+> +
+> +	return 0;
+> +}
+> +
+>  int xsk_umem__create_v0_0_4(struct xsk_umem **umem_ptr, void 
+> *umem_area,
+>  			    __u64 size, struct xsk_ring_prod *fill,
+>  			    struct xsk_ring_cons *comp,
+> @@ -141,7 +204,6 @@ int xsk_umem__create_v0_0_4(struct xsk_umem 
+> **umem_ptr, void *umem_area,
+>  	struct xdp_mmap_offsets off;
+>  	struct xdp_umem_reg mr;
+>  	struct xsk_umem *umem;
+> -	socklen_t optlen;
+>  	void *map;
+>  	int err;
+>
+> @@ -190,8 +252,7 @@ int xsk_umem__create_v0_0_4(struct xsk_umem 
+> **umem_ptr, void *umem_area,
+>  		goto out_socket;
+>  	}
+>
+> -	optlen = sizeof(off);
+> -	err = getsockopt(umem->fd, SOL_XDP, XDP_MMAP_OFFSETS, &off, 
+> &optlen);
+> +	err = xsk_get_mmap_offsets(umem->fd, &off);
+>  	if (err) {
+>  		err = -errno;
+>  		goto out_socket;
+> @@ -492,7 +553,6 @@ int xsk_socket__create(struct xsk_socket 
+> **xsk_ptr, const char *ifname,
+>  	struct sockaddr_xdp sxdp = {};
+>  	struct xdp_mmap_offsets off;
+>  	struct xsk_socket *xsk;
+> -	socklen_t optlen;
+>  	int err;
+>
+>  	if (!umem || !xsk_ptr || !rx || !tx)
+> @@ -551,8 +611,7 @@ int xsk_socket__create(struct xsk_socket 
+> **xsk_ptr, const char *ifname,
+>  		}
+>  	}
+>
+> -	optlen = sizeof(off);
+> -	err = getsockopt(xsk->fd, SOL_XDP, XDP_MMAP_OFFSETS, &off, &optlen);
+> +	err = xsk_get_mmap_offsets(xsk->fd, &off);
+>  	if (err) {
+>  		err = -errno;
+>  		goto out_socket;
+> @@ -638,7 +697,6 @@ int xsk_socket__create(struct xsk_socket 
+> **xsk_ptr, const char *ifname,
+>  int xsk_umem__delete(struct xsk_umem *umem)
+>  {
+>  	struct xdp_mmap_offsets off;
+> -	socklen_t optlen;
+>  	int err;
+>
+>  	if (!umem)
+> @@ -647,8 +705,7 @@ int xsk_umem__delete(struct xsk_umem *umem)
+>  	if (umem->refcount)
+>  		return -EBUSY;
+>
+> -	optlen = sizeof(off);
+> -	err = getsockopt(umem->fd, SOL_XDP, XDP_MMAP_OFFSETS, &off, 
+> &optlen);
+> +	err = xsk_get_mmap_offsets(umem->fd, &off);
+>  	if (!err) {
+>  		munmap(umem->fill->ring - off.fr.desc,
+>  		       off.fr.desc + umem->config.fill_size * sizeof(__u64));
+> @@ -666,7 +723,6 @@ void xsk_socket__delete(struct xsk_socket *xsk)
+>  {
+>  	size_t desc_sz = sizeof(struct xdp_desc);
+>  	struct xdp_mmap_offsets off;
+> -	socklen_t optlen;
+>  	int err;
+>
+>  	if (!xsk)
+> @@ -677,8 +733,7 @@ void xsk_socket__delete(struct xsk_socket *xsk)
+>  		close(xsk->prog_fd);
+>  	}
+>
+> -	optlen = sizeof(off);
+> -	err = getsockopt(xsk->fd, SOL_XDP, XDP_MMAP_OFFSETS, &off, &optlen);
+> +	err = xsk_get_mmap_offsets(xsk->fd, &off);
+>  	if (!err) {
+>  		if (xsk->rx) {
+>  			munmap(xsk->rx->ring - off.rx.desc,
+> -- 
+> 2.7.4
