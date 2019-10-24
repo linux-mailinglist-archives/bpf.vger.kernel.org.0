@@ -2,113 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 349ABE3953
-	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2019 19:06:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D8A7E3A6A
+	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2019 19:54:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409946AbfJXRGs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Oct 2019 13:06:48 -0400
-Received: from mail-io1-f68.google.com ([209.85.166.68]:41934 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405931AbfJXRGs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Oct 2019 13:06:48 -0400
-Received: by mail-io1-f68.google.com with SMTP id r144so18528290iod.8;
-        Thu, 24 Oct 2019 10:06:47 -0700 (PDT)
+        id S2394056AbfJXRyT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Oct 2019 13:54:19 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:42472 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390064AbfJXRyT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Oct 2019 13:54:19 -0400
+Received: by mail-pf1-f194.google.com with SMTP id 21so4342835pfj.9
+        for <bpf@vger.kernel.org>; Thu, 24 Oct 2019 10:54:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=A5rK7AirPxFC6W3rHrnbmAsb0wvrVj+jlakvazM3nbU=;
-        b=epD26dEESOYvc7p1GOEg3nv3A4tlGsoLvbmuJNRZ/qfpN/HXTtkF6sqBFVHjoWvwRw
-         eOg8LNlaVKbkxSQ4zgwuhQZw51eAUj/y8OyEN5pYWZc99WfUn6pecYtMRpnYS6Z0XuY5
-         PRWURsVhj4Jcopv/p00ObA7W4wtIdhAnNEf7a8A0OOciB6yPXuE5Cr9BIGJO2/xcnfq4
-         YmEUtElrVF9yYxEhzseYcV8a1CZ3LQDspEdJXMOgNdicM3eA+r/P1QCngxgdDNwFFL4u
-         gfb1B53qxA7rybj5+jEvVmYQeQO/WA13jsOql2SVU4t3d6hWcpBdnR/CHOGDwMpTebFf
-         4Vig==
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :organization:mime-version:content-transfer-encoding;
+        bh=FHbGa3ER6wZpRAwAU1c1migL7nlX7O5LX92sLHEgyWU=;
+        b=FSOA26uFfwBgfOB8QyYlOihVruT5XJrbSTPGhplaxgmoRb1zRwmxQD6CB4JyHieI4q
+         wud/imuDc9O907NOZTz1cjDL0s4nyLS5zaq4mAmFsGST7Z/asS97pXuCs/mm6CCe9939
+         EaDs2jlcsVc0QNMIqLQfYojH6zEAZopXkIg1446B7XCv4TI23PxlKCDmzIJj9ghcOenU
+         ZzuuU6Z/oqjh3Yau+ozwI1Fp0wJ+B4stnSiFx5UekJ5w8KwI689e4QMh0mQmBGh1PtLf
+         GUQJjiYAnJMQmANMki8E5ZiRMsa2p21CPdDz4yyktxear2U+8AA5RFv4K0SEUEEAfkXS
+         rqQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=A5rK7AirPxFC6W3rHrnbmAsb0wvrVj+jlakvazM3nbU=;
-        b=TlliG6oqVcod4Jya1lkjCuEwIjkzt3e82dWXLN0JHzx3Ja+wzx0URBAwg3pFi5nEPX
-         oA5Of9WmnKTLS/LqU/k9LOTCJ6GeSjDhXBDi0hANNodpwG0ttNXXVr5b0F4QRJkhV+69
-         SRcgNZuAK038EXlGdbFbN5OHEXfZLj11Lfa8YCkfE5FSEzw77za++wPgXJBO61K7xOyO
-         BGFDdmEO55FUTU4rWoU7vsq3fwYuWUN+CJ5cCQ+xR3DdQE/fzDuLafdVXvQbVIBxtMGr
-         UFt089TzsEzsEIGPaWW0QEfbCmcHMWGuLKag9S2435kdBWO0AqDQYvQ3rn1688so3WXL
-         Nrog==
-X-Gm-Message-State: APjAAAU+fbeteUhB7nG7BFRvvclE3/m+iErXP/PHMDkP91xJstPV4vJ3
-        sUTdzy+0syNBbA4FjDiwEuk=
-X-Google-Smtp-Source: APXvYqw9oDMsg7qoHAxPPWIX1VgEVrAPJTlcyTdDdfrpMM12R7ZltfZo1IOeBIUAutIpCtAdxDgZiQ==
-X-Received: by 2002:a02:1ac5:: with SMTP id 188mr217824jai.77.1571936806854;
-        Thu, 24 Oct 2019 10:06:46 -0700 (PDT)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id y5sm7650391ill.86.2019.10.24.10.06.45
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=FHbGa3ER6wZpRAwAU1c1migL7nlX7O5LX92sLHEgyWU=;
+        b=mFTyF3IVheB6fDahp2rJ/EL35w/Q8UD/eRetc1G3oq9qWxlvGodKRi8Is6Vp/L4qIV
+         S3uv4bJL8Pi2M7TrmYiiJ+0/Ym3LQ/iziXobWJm/xEwxHQCMkn+kmsxNs/fKFELmZ+IO
+         lhTn/cwgd+n5SE5lgZQulhLOPlrFUAvRwJjv8TJneBslnu1mWxyRMV7z/G4s8HH1jcW1
+         +gGS9+KK9i3gC2aI9+R1v8UzgvCoLD/JbMsqlU2G8Ukcp9ltZ37e4biy0IePZbrWwcbm
+         2roen2UeIM5AILYQ8nA861Q8Tq6JF/VeSzdxZRCa/eto0x61eEpVX6Q9CE9yE2AbjjGx
+         GQYA==
+X-Gm-Message-State: APjAAAXuNxccu+z0InT9sF03FNCg7fS2qx95pfYTXPo0ZJv7E/Q63Umg
+        ahrahvKIbsGoKk1aEUgK8395Kw==
+X-Google-Smtp-Source: APXvYqw2+Qp3rmS2w8vU5VTZ7UId6S5CyCjH/s+z3owyJiGPvIZkwGVVPbA27jMq2j3g+aZa+rCWKg==
+X-Received: by 2002:a63:cf18:: with SMTP id j24mr18548527pgg.406.1571939658771;
+        Thu, 24 Oct 2019 10:54:18 -0700 (PDT)
+Received: from cakuba.hsd1.ca.comcast.net (c-73-202-202-92.hsd1.ca.comcast.net. [73.202.202.92])
+        by smtp.gmail.com with ESMTPSA id h186sm34013244pfb.63.2019.10.24.10.54.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Oct 2019 10:06:46 -0700 (PDT)
-Date:   Thu, 24 Oct 2019 10:06:40 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Jakub Sitnicki <jakub@cloudflare.com>, bpf@vger.kernel.org
-Cc:     John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>, netdev@vger.kernel.org,
-        kernel-team@cloudflare.com
-Message-ID: <5db1da20174b1_5c282ada047205c046@john-XPS-13-9370.notmuch>
-In-Reply-To: <20191022113730.29303-3-jakub@cloudflare.com>
-References: <20191022113730.29303-1-jakub@cloudflare.com>
- <20191022113730.29303-3-jakub@cloudflare.com>
-Subject: RE: [RFC bpf-next 2/5] bpf, sockmap: Allow inserting listening TCP
- sockets into SOCKMAP
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+        Thu, 24 Oct 2019 10:54:18 -0700 (PDT)
+Date:   Thu, 24 Oct 2019 10:54:14 -0700
+From:   Jakub Kicinski <jakub.kicinski@netronome.com>
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Andrii Nakryiko <andriin@fb.com>,
+        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>
+Subject: Re: [PATCHv2] bpftool: Try to read btf as raw data if elf read
+ fails
+Message-ID: <20191024105414.65f7e323@cakuba.hsd1.ca.comcast.net>
+In-Reply-To: <20191024132341.8943-1-jolsa@kernel.org>
+References: <20191024132341.8943-1-jolsa@kernel.org>
+Organization: Netronome Systems, Ltd.
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Jakub Sitnicki wrote:
-> In order for SOCKMAP type to become a generic collection for storing socket
-> references we need to loosen the checks in update callback.
+On Thu, 24 Oct 2019 15:23:41 +0200, Jiri Olsa wrote:
+> The bpftool interface stays the same, but now it's possible
+> to run it over BTF raw data, like:
 > 
-> Currently SOCKMAP requires the TCP socket to be in established state, which
-> prevents us from using it to keep references to listening sockets.
-> 
-> Change the update pre-checks so that it is sufficient for socket to be in a
-> hash table, i.e. have a local address/port, to be inserted.
-> 
-> Return -EINVAL if the condition is not met to be consistent with
-> REUSEPORT_SOCKARRY map type.
-> 
-> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+>   $ bpftool btf dump file /sys/kernel/btf/vmlinux
+>   [1] INT '(anon)' size=4 bits_offset=0 nr_bits=32 encoding=(none)
+>   [2] INT 'long unsigned int' size=8 bits_offset=0 nr_bits=64 encoding=(none)
+>   [3] CONST '(anon)' type_id=2
+
+My knee jerk reaction would be to implement a new keyword, like:
+
+$ bpftool btf dump rawfile /sys/kernel/btf/vmlinux
+
+Or such. But perhaps the auto-detection is the standard way of dealing
+with different formats in the compiler world. Regardless if anyone has
+an opinion one way or the other please share!!
+
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
+> v2 changes:
+>  - added is_btf_raw to find out which btf__parse_* function to call
+>  - changed labels and error propagation in btf__parse_raw 
+>  - drop the err initialization, which is not needed under this change
 
-We need to also have some tests then to verify redirecting to this listen socket
-does the correct thing. Once its in the map we can redirect (ingress or egress)
-to it and need to be sure the semantics are sane.
+The code looks good, thanks for the changes! One question below..
 
->  net/core/sock_map.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
-> 
-> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-> index facacc296e6c..222036393b90 100644
-> --- a/net/core/sock_map.c
-> +++ b/net/core/sock_map.c
-> @@ -415,11 +415,14 @@ static int sock_map_update_elem(struct bpf_map *map, void *key,
->  		ret = -EINVAL;
->  		goto out;
->  	}
-> -	if (!sock_map_sk_is_suitable(sk) ||
-> -	    sk->sk_state != TCP_ESTABLISHED) {
-> +	if (!sock_map_sk_is_suitable(sk)) {
->  		ret = -EOPNOTSUPP;
->  		goto out;
->  	}
-> +	if (!sk_hashed(sk)) {
-> +		ret = -EINVAL;
-> +		goto out;
-> +	}
->  
->  	sock_map_sk_acquire(sk);
->  	ret = sock_map_update_common(map, idx, sk, flags);
-> -- 
-> 2.20.1
-> 
+> diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
+> index 9a9376d1d3df..a7b8bf233cf5 100644
+> --- a/tools/bpf/bpftool/btf.c
+> +++ b/tools/bpf/bpftool/btf.c
+
+> +static bool is_btf_raw(const char *file)
+> +{
+> +	__u16 magic = 0;
+> +	int fd;
+> +
+> +	fd = open(file, O_RDONLY);
+> +	if (fd < 0)
+> +		return false;
+> +
+> +	read(fd, &magic, sizeof(magic));
+> +	close(fd);
+> +	return magic == BTF_MAGIC;
+
+Isn't it suspicious to read() 2 bytes into an u16 and compare to a
+constant like endianness doesn't matter? Quick grep doesn't reveal
+BTF_MAGIC being endian-aware..
+
+> +}
+> +
+>  static int do_dump(int argc, char **argv)
+>  {
+>  	struct btf *btf = NULL;
+> @@ -465,7 +516,11 @@ static int do_dump(int argc, char **argv)
+>  		}
+>  		NEXT_ARG();
+>  	} else if (is_prefix(src, "file")) {
+> -		btf = btf__parse_elf(*argv, NULL);
+> +		if (is_btf_raw(*argv))
+> +			btf = btf__parse_raw(*argv);
+> +		else
+> +			btf = btf__parse_elf(*argv, NULL);
+>  		if (IS_ERR(btf)) {
+>  			err = PTR_ERR(btf);
+>  			btf = NULL;
+
