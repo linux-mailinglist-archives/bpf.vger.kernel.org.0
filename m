@@ -2,132 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 43ED6E33D4
-	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2019 15:21:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 804F0E33E5
+	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2019 15:23:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733289AbfJXNVY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Oct 2019 09:21:24 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:47298 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732060AbfJXNVY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Oct 2019 09:21:24 -0400
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com [209.85.208.198])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S2502542AbfJXNXu convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Thu, 24 Oct 2019 09:23:50 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:33432 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2502538AbfJXNXu (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 24 Oct 2019 09:23:50 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-176-wO9KscYiPCSyp26VDH7ZDQ-1; Thu, 24 Oct 2019 09:23:45 -0400
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 2E818112D81
-        for <bpf@vger.kernel.org>; Thu, 24 Oct 2019 13:21:24 +0000 (UTC)
-Received: by mail-lj1-f198.google.com with SMTP id e3so3995740ljj.16
-        for <bpf@vger.kernel.org>; Thu, 24 Oct 2019 06:21:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GuoLFI180GdL56vV8nO50qFTF6fdq6eDG+c2BybpcyU=;
-        b=EmoI97jG2xvJVbbh+/jDz/uPEPX88DZjDi/vxuNquKHLZ+Rp8oYqOeGY2wdA84OrZA
-         SDSIQEsdIj3U0TMySWyl+fAA7ZbLrpfz/zZB8ay3agmSegRWWUorvA9LpmF1LhUHXdpL
-         Thq9XQi7vlzGBMRyFQmd71S6tuL8Rf/+9PU5S/Q2/Qvu4k/pVo4p9x1ItULm2VF3wBTd
-         vjDDuMPeW/a0PdBdIeOK9/JyLo1Rsd8+mg4mrgSteC8Tjsp9SsDBHVFeFQfswPBBXIrc
-         8+9atnXbWD66tKY+Kxn+aXln2Db/9HvulUdHFeivJsZCKGSKF+mUYbOf/Num2gif/Jp4
-         w1Ew==
-X-Gm-Message-State: APjAAAV96/8Y8IXeWhaXDbuK+brp7dd6pnfL/fhxcywl+WpibYBSbK59
-        yWGN/GdiAKBpIeekD2TeGj/9T87ME75/FQaJBBNH3ewaQC0dGb4QxjJz6poHTHpB92qNPmlYSk5
-        Yc6Is1xUxQPBx
-X-Received: by 2002:a2e:6c15:: with SMTP id h21mr1339855ljc.10.1571923282360;
-        Thu, 24 Oct 2019 06:21:22 -0700 (PDT)
-X-Google-Smtp-Source: APXvYqzTkbKGPfYCEvo/cXPu1tP1v+SxyEJBzuGQZ2v+4MNmHQpt+R5XWVeBbQeSwjMdSlLAmFC2MA==
-X-Received: by 2002:a2e:6c15:: with SMTP id h21mr1339816ljc.10.1571923281703;
-        Thu, 24 Oct 2019 06:21:21 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a00:7660:6da:443::2])
-        by smtp.gmail.com with ESMTPSA id b19sm10948284lji.41.2019.10.24.06.21.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Oct 2019 06:21:21 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 226091804B1; Thu, 24 Oct 2019 15:21:20 +0200 (CEST)
-From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     daniel@iogearbox.net, ast@fb.com
-Cc:     =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        bpf@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH bpf-next] libbpf: Add libbpf_set_log_level() function to adjust logging
-Date:   Thu, 24 Oct 2019 15:21:07 +0200
-Message-Id: <20191024132107.237336-1-toke@redhat.com>
-X-Mailer: git-send-email 2.23.0
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4AEB41005500;
+        Thu, 24 Oct 2019 13:23:44 +0000 (UTC)
+Received: from krava.redhat.com (unknown [10.43.17.61])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 32F771054FE9;
+        Thu, 24 Oct 2019 13:23:42 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>
+Subject: [PATCHv2] bpftool: Try to read btf as raw data if elf read fails
+Date:   Thu, 24 Oct 2019 15:23:41 +0200
+Message-Id: <20191024132341.8943-1-jolsa@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+X-MC-Unique: wO9KscYiPCSyp26VDH7ZDQ-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: 8BIT
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Currently, the only way to change the logging output of libbpf is to
-override the print function with libbpf_set_print(). This is somewhat
-cumbersome if one just wants to change the logging level (e.g., to enable
-debugging), so add another function that just adjusts the default output
-printing by adjusting the filtering of messages.
+The bpftool interface stays the same, but now it's possible
+to run it over BTF raw data, like:
 
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+  $ bpftool btf dump file /sys/kernel/btf/vmlinux
+  [1] INT '(anon)' size=4 bits_offset=0 nr_bits=32 encoding=(none)
+  [2] INT 'long unsigned int' size=8 bits_offset=0 nr_bits=64 encoding=(none)
+  [3] CONST '(anon)' type_id=2
+
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- tools/lib/bpf/libbpf.c   | 12 +++++++++++-
- tools/lib/bpf/libbpf.h   |  2 ++
- tools/lib/bpf/libbpf.map |  1 +
- 3 files changed, 14 insertions(+), 1 deletion(-)
+v2 changes:
+ - added is_btf_raw to find out which btf__parse_* function to call
+ - changed labels and error propagation in btf__parse_raw 
+ - drop the err initialization, which is not needed under this change
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index d1c4440a678e..93909d9a423d 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -67,10 +67,12 @@
+ tools/bpf/bpftool/btf.c | 57 ++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 56 insertions(+), 1 deletion(-)
+
+diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
+index 9a9376d1d3df..a7b8bf233cf5 100644
+--- a/tools/bpf/bpftool/btf.c
++++ b/tools/bpf/bpftool/btf.c
+@@ -12,6 +12,9 @@
+ #include <libbpf.h>
+ #include <linux/btf.h>
+ #include <linux/hashtable.h>
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <unistd.h>
  
- #define __printf(a, b)	__attribute__((format(printf, a, b)))
- 
-+static enum libbpf_print_level __libbpf_log_level = LIBBPF_INFO;
-+
- static int __base_pr(enum libbpf_print_level level, const char *format,
- 		     va_list args)
- {
--	if (level == LIBBPF_DEBUG)
-+	if (level > __libbpf_log_level)
- 		return 0;
- 
- 	return vfprintf(stderr, format, args);
-@@ -86,6 +88,14 @@ libbpf_print_fn_t libbpf_set_print(libbpf_print_fn_t fn)
- 	return old_print_fn;
+ #include "btf.h"
+ #include "json_writer.h"
+@@ -388,6 +391,54 @@ static int dump_btf_c(const struct btf *btf,
+ 	return err;
  }
  
-+enum libbpf_print_level libbpf_set_log_level(enum libbpf_print_level level)
++static struct btf *btf__parse_raw(const char *file)
 +{
-+	enum libbpf_print_level old_level = __libbpf_log_level;
++	struct btf *btf;
++	struct stat st;
++	__u8 *buf;
++	FILE *f;
 +
-+	__libbpf_log_level = level;
-+	return old_level;
++	if (stat(file, &st))
++		return NULL;
++
++	f = fopen(file, "rb");
++	if (!f)
++		return NULL;
++
++	buf = malloc(st.st_size);
++	if (!buf) {
++		btf = ERR_PTR(-ENOMEM);
++		goto exit_close;
++	}
++
++	if ((size_t) st.st_size != fread(buf, 1, st.st_size, f)) {
++		btf = ERR_PTR(-EINVAL);
++		goto exit_free;
++	}
++
++	btf = btf__new(buf, st.st_size);
++
++exit_free:
++	free(buf);
++exit_close:
++	fclose(f);
++	return btf;
 +}
 +
- __printf(2, 3)
- void libbpf_print(enum libbpf_print_level level, const char *format, ...)
++static bool is_btf_raw(const char *file)
++{
++	__u16 magic = 0;
++	int fd;
++
++	fd = open(file, O_RDONLY);
++	if (fd < 0)
++		return false;
++
++	read(fd, &magic, sizeof(magic));
++	close(fd);
++	return magic == BTF_MAGIC;
++}
++
+ static int do_dump(int argc, char **argv)
  {
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index c63e2ff84abc..0bba6c2259f1 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -58,6 +58,8 @@ typedef int (*libbpf_print_fn_t)(enum libbpf_print_level level,
- 				 const char *, va_list ap);
- 
- LIBBPF_API libbpf_print_fn_t libbpf_set_print(libbpf_print_fn_t fn);
-+LIBBPF_API enum libbpf_print_level
-+libbpf_set_log_level(enum libbpf_print_level level);
- 
- /* Hide internal to user */
- struct bpf_object;
-diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-index d1473ea4d7a5..c3f79418c2be 100644
---- a/tools/lib/bpf/libbpf.map
-+++ b/tools/lib/bpf/libbpf.map
-@@ -197,4 +197,5 @@ LIBBPF_0.0.6 {
- 		bpf_object__open_mem;
- 		bpf_program__get_expected_attach_type;
- 		bpf_program__get_type;
-+		libbpf_set_log_level;
- } LIBBPF_0.0.5;
+ 	struct btf *btf = NULL;
+@@ -465,7 +516,11 @@ static int do_dump(int argc, char **argv)
+ 		}
+ 		NEXT_ARG();
+ 	} else if (is_prefix(src, "file")) {
+-		btf = btf__parse_elf(*argv, NULL);
++		if (is_btf_raw(*argv))
++			btf = btf__parse_raw(*argv);
++		else
++			btf = btf__parse_elf(*argv, NULL);
++
+ 		if (IS_ERR(btf)) {
+ 			err = PTR_ERR(btf);
+ 			btf = NULL;
 -- 
-2.23.0
+2.21.0
 
