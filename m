@@ -2,102 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E2BF1E28F4
-	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2019 05:39:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 874F8E298D
+	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2019 06:27:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437329AbfJXDjH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 23 Oct 2019 23:39:07 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:36293 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2408351AbfJXDjG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 23 Oct 2019 23:39:06 -0400
-Received: by mail-pl1-f196.google.com with SMTP id j11so11140297plk.3
-        for <bpf@vger.kernel.org>; Wed, 23 Oct 2019 20:39:05 -0700 (PDT)
+        id S2406597AbfJXE1L (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Oct 2019 00:27:11 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:36766 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725919AbfJXE1L (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Oct 2019 00:27:11 -0400
+Received: by mail-io1-f68.google.com with SMTP id c16so7953324ioc.3;
+        Wed, 23 Oct 2019 21:27:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=W8sgLGjMxM6EuY1mpsS+9Tn33OqsmcrGz0uhv99VAHA=;
-        b=T2bbeZtvsO039PfGe+EjPR125EqRdU9mKD894GYoR0zBnNNVcSR1u3DGiXZFKGUrwF
-         Q1L4mEl5u7aBDGEgAvXjkzTOXSSGhbHMY7JwyTtpuA/1lUXfeioaDSSD5DwpPF81FKT1
-         ajJMYUZOWHJQq3Czs4YHreOwy2CVWx9lD7yEqbXak5+nnWYpgJsNSp3cviar/kEx8g3A
-         JL2eoJFhv69W7IpzFJO3QBiRSBRWpD2PYo0i6gZ0SVVJGOTgtJG3panMDXQqq/fdjcQQ
-         JYHL/HihPBR2U1KB50B+TI1h2RA9YPd7A7tX1ZQWp7kanwYzwZ3TCAZYt7pKgxi2zf4H
-         C+5w==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=d5jH9KvaBj8Gt/g4n58IX0lMT/HPC62LoxmQTBDg4Cc=;
+        b=KsH8aPscRq1W9od3evAQiSyNUwt9aKz58BdimUnwONKGvAuBrZvZ1s6aEhmRnVFaFZ
+         39nSNvqZH+UI+oFGnHbA5mF4umxUXElW5UOG55RaPaJHICtABAJI+uecqvSN7pnNK/Mm
+         IXF30wiPsMdhzazxUBLD+fVAyLgmf43IkqkxRuFZx2tR45m2+e/Sn1Az4EJo0KN0rgw7
+         R5ULCgGAjp8tDX4gnXaAB0T9Y/iMl2dMYtGeeg6GlIbkyhC+ZEY4qBZmTsIh891Brl+y
+         jsSVm8msKImu1G74rNiREfpo1m7fGQoDDdjtKLMU/hT/mCOqeJMiT4lQtPVj1zWOGbvR
+         5TQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=W8sgLGjMxM6EuY1mpsS+9Tn33OqsmcrGz0uhv99VAHA=;
-        b=QrzvpiZfO+dPbr9qWVB+fQB7tfP0iAK22MoUMmaQGIEsJM9DhWUBfsMInQH6xBubAc
-         IAlJF7/KNFqVVpQdfw2OocaZOtlxhQ9hf0bC/tOryaKDKMqp7jZcn0vfF5FQZw87WZ0N
-         uCZ0rpH9G4UR3LV2y+u8/rmWMzH6Fc6BSMaL7yNAWkJp5JXDf1wXwRiYrJJCpn+k3v9a
-         NLUtMlPBtJ9OFwPjU4dQMOFh8/inpNaMMfkcZO28MrcGwJ15C75O924f4ctt1BWfcAX1
-         5DmCq2d8GynXTqbamm6bm19lpuS9+13jPz/vlkMmaAhC6Fo7rw2wzMcibYtPWbol4nEc
-         VV1A==
-X-Gm-Message-State: APjAAAX+x2vUnbFVqyxymUDGLeqNWiljwJqMm3GigHoz5eqcDkgWsSDf
-        N74gPO+wVP7oZgjVNAuz4lTPWj4voPmgvQ==
-X-Google-Smtp-Source: APXvYqzjuWYGP5CVydefv3aAYM4Zf7GeakbWEIFeuKC0sgKLKckuazE4qo+gNK3oOsra0rup9w7uiQ==
-X-Received: by 2002:a17:902:968f:: with SMTP id n15mr13304176plp.191.1571888344349;
-        Wed, 23 Oct 2019 20:39:04 -0700 (PDT)
-Received: from [192.168.1.188] ([66.219.217.79])
-        by smtp.gmail.com with ESMTPSA id b17sm9759144pfr.17.2019.10.23.20.39.01
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 23 Oct 2019 20:39:03 -0700 (PDT)
-Subject: Re: [Kgdb-bugreport] [PATCH] kernel: convert switch/case fallthrough
- comments to fallthrough;
-To:     Joe Perches <joe@perches.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-pm@vger.kernel.org, kgdb-bugreport@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-audit@redhat.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-References: <f31b38b9ad515a138edaecf85701b1e3db064114.camel@perches.com>
- <20191021090909.yjyed4qodjjcioqc@holly.lan>
- <bff0a1c4fc69b83c763ffbce42a0152e1573499a.camel@perches.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <2808c960-6178-17b8-23d7-a6945987a658@kernel.dk>
-Date:   Wed, 23 Oct 2019 21:39:01 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
-MIME-Version: 1.0
-In-Reply-To: <bff0a1c4fc69b83c763ffbce42a0152e1573499a.camel@perches.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=d5jH9KvaBj8Gt/g4n58IX0lMT/HPC62LoxmQTBDg4Cc=;
+        b=I7aoH6lTHqdAuZP0yDC546XcZaLFV/MOxxJdXBTTowM4pqCdwg/b/3/fTB8z6sjod8
+         X+2wugsVGoed2/TIhjIKOrkT+Vf9AFjkhRZpfj/3g9a2c7CnI5xd3Wq6oMycXnCNImbr
+         gbUdqmsvwora0GIGYnmzCDC2NDFPxlSX8rrSlW41GvPNwuPYNsw0DooLR+v1qGjDJUc0
+         TxKG+gfLYZWZ3tfFDMQl9ARjzUkJrsDxA6VSPVLNhbS7t2vhPM3tMRE01D/DvS1W0B2V
+         dmaB4A6YHKB1gR0yt4fuTL7NV5/w/1XFRGT/sYwpdrgow4bfaNwY7xx83Lb4ueyK4P2V
+         g/4w==
+X-Gm-Message-State: APjAAAUn73s/dQ9JWUWWjKotUhXvXsAo2hF2So6udnRr0ifTP66HnRdm
+        AUN8pZl1SXh5COMpWWBEj70=
+X-Google-Smtp-Source: APXvYqxggO2OHzr3yNotv+4nHEH29qI8GCFioDjrAcIAxxiZxfNOLcLb2z7nNNXSHfTvhiRcinlEhg==
+X-Received: by 2002:a5d:8910:: with SMTP id b16mr7032917ion.157.1571891230682;
+        Wed, 23 Oct 2019 21:27:10 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id m17sm6938467ilb.5.2019.10.23.21.27.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Oct 2019 21:27:09 -0700 (PDT)
+Date:   Wed, 23 Oct 2019 21:27:01 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Toshiaki Makita <toshiaki.makita1@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        Pravin B Shelar <pshelar@ovn.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        William Tu <u9012063@gmail.com>,
+        Stanislav Fomichev <sdf@fomichev.me>
+Message-ID: <5db128153c75_549d2affde7825b85e@john-XPS-13-9370.notmuch>
+In-Reply-To: <87h840oese.fsf@toke.dk>
+References: <20191018040748.30593-1-toshiaki.makita1@gmail.com>
+ <5da9d8c125fd4_31cf2adc704105c456@john-XPS-13-9370.notmuch>
+ <22e6652c-e635-4349-c863-255d6c1c548b@gmail.com>
+ <5daf34614a4af_30ac2b1cb5d205bce4@john-XPS-13-9370.notmuch>
+ <87h840oese.fsf@toke.dk>
+Subject: Re: [RFC PATCH v2 bpf-next 00/15] xdp_flow: Flow offload to XDP
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/23/19 12:49 PM, Joe Perches wrote:
-> On Mon, 2019-10-21 at 10:09 +0100, Daniel Thompson wrote:
->> On Fri, Oct 18, 2019 at 09:35:08AM -0700, Joe Perches wrote:
->>> Use the new pseudo keyword "fallthrough;" and not the
->>> various /* fallthrough */ style comments.
->>>
->>> Signed-off-by: Joe Perches <joe@perches.com>
->>> ---
->>>
->>> This is a single patch for the kernel/ source tree,
->>> which would otherwise be sent through as separate
->>> patches to 19 maintainer sections.
->>
->> For the kernel/debug/ files:
->>
->> Acked-by: Daniel Thompson <daniel.thompson@linaro.org>
->>
->> Will you be putting this in an immutable branch once you've collected
->> enough acks?
-> 
-> No, I expect Linus will either run the script
-> or apply this patch one day.
+Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> John Fastabend <john.fastabend@gmail.com> writes:
+> =
 
-Please coordinate and get something like this run/applied a few days
-before -rc1 to cause the least amount of needless merge issues.
+> > I think for sysadmins in general (not OVS) use case I would work
+> > with Jesper and Toke. They seem to be working on this specific
+> > problem.
+> =
 
--- 
-Jens Axboe
+> We're definitely thinking about how we can make "XDP magically speeds u=
+p
+> my network stack" a reality, if that's what you mean. Not that we have
+> arrived at anything specific yet...
+
+There seemed to be two thoughts in the cover letter one how to make
+OVS flow tc path faster via XDP. And the other how to make other
+users of tc flower software stack faster.
+
+For the OVS case seems to me that OVS should create its own XDP datapath
+if its 5x faster than the tc flower datapath. Although missing from the
+data was comparing against ovs kmod so that comparison would also be
+interesting. This way OVS could customize things and create only what
+they need.
+
+But the other case for a transparent tc flower XDP a set of user tools
+could let users start using XDP for this use case without having to
+write their own BPF code. Anyways I had the impression that might be
+something you and Jesper are thinking about, general usability for
+users that are not necessarily writing their own network.
+
+> =
+
+> And yeah, I'd also be happy to discuss what it would take to make a
+> native XDP implementation of the OVS datapath; including what (if
+> anything) is missing from the current XDP feature set to make this
+> feasible. I must admit that I'm not quite clear on why that wasn't the
+> approach picked for the first attempt to speed up OVS using XDP...
+> =
+
+> -Toke
+> =
+
+
 
