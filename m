@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C936AE3BB1
-	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2019 21:03:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 467C8E3B9D
+	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2019 21:02:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504290AbfJXTCT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Oct 2019 15:02:19 -0400
-Received: from mail-pf1-f202.google.com ([209.85.210.202]:38559 "EHLO
-        mail-pf1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2504287AbfJXTCT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Oct 2019 15:02:19 -0400
-Received: by mail-pf1-f202.google.com with SMTP id d126so19770188pfd.5
-        for <bpf@vger.kernel.org>; Thu, 24 Oct 2019 12:02:18 -0700 (PDT)
+        id S2504308AbfJXTCZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Oct 2019 15:02:25 -0400
+Received: from mail-yw1-f73.google.com ([209.85.161.73]:35042 "EHLO
+        mail-yw1-f73.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2504298AbfJXTCX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Oct 2019 15:02:23 -0400
+Received: by mail-yw1-f73.google.com with SMTP id t2so15228092ywd.2
+        for <bpf@vger.kernel.org>; Thu, 24 Oct 2019 12:02:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=9DHgkR7cmmDrBt85CUovVuVoj+UrHvSyU5cnghVTVvs=;
-        b=njrWeh+sbAdONIL4M+qDAPy6FeUbjIz8Y+r75zIJrT+FpwypYZgyu8D7Cnh9BEDBoO
-         fkb+GBgNs7BxxS3qLlDK+SAMaTbGuatl/eRoSg5aU+gUJr5iaa/saQvKOS175o40lrJQ
-         VMF8uWSXsc7IwqXZUwckFBCCIWZ/pmJ0D+DC9aITKmUH+0KbCbHjTtIHWr1K0blw6KZ4
-         JFP5IZKF4HNNUdCWL6hg7Mw61tq7ZVk+3FFouiPonzJvHF1vJeFHlOb7rYu7SutA09HH
-         8r3SoBtLVutU5ZU/mKJRMR0TMHYMnwealITu9gIJRZvnFIuvik2ceA7M1zcdL+EKPCfF
-         /SVQ==
+        bh=98x/ZBLRTnMz91JDf+r9eCkgM4R/aoJz7oABA29poQw=;
+        b=ZDhWZ5D7Wad+xuhdcDWVOwjHsUewHijXR4y/lysN14gT4QR+/zxGLfhiRxlGwAByFJ
+         wvV2FnISzVdGITQXf0PO2HsO/HkwjZV7v2BE0VRLy04+b4hbSO4FKoY7WN4sz/JBP1ZV
+         o3uEIPfSt625AEJBsANTLrgdPcGYLg6rMD08yGPhw2CvVkaj5YJyGZa4ERxFIT7hZQQx
+         HeODyGP/Z5W+sz6bzgLTdAN+HCfRn7izfeYB2gAdWXzraeS/rDA+lGdfOdKktC7MJl0b
+         YSufsmH3+5ztriU/uDRYbI53ZDXG2wUof1NI+EYLa+Zt3raRx1eQYkWBjgz3t8EjKwgQ
+         YxqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=9DHgkR7cmmDrBt85CUovVuVoj+UrHvSyU5cnghVTVvs=;
-        b=mG9J+GVDS/bXSDKwEWtrkcFiYPm1j32pbIuv6wLq+4STJmRDYSjhY5yxQ8Y+POeFom
-         MG7xZ0l2iWQskvfKxefzaJ1PxTJqbl65fDae3V8WSdYrxgIV9i1lyb7zsywWA19UcFdC
-         jDHcRjVmQstohOy8Bqv4THQhlRrMewVm5Op+zi0citdbF4TwEFf3sn1/e6tb2r4N14d8
-         t0iFF54o2ccW5BtVi36Jgu+29FkzoobgRqa5GqkKCwbH6v8O//0FV/cmb/ubHG1gnSp8
-         aJ5M5/KFoTEcNOAilWjsnDfZXL4Pp676jjKlhqSO2ZSKJZt6ZbBCvrDB7TltQmlKlUtH
-         1Yug==
-X-Gm-Message-State: APjAAAX/Bvoe5Hh1Xb6CQ3tK1Ftqo6MDa+RpM3SChBB/cd0gfihZpTtC
-        b+xMb9YJThqi0mdC//AwsJ6wJNIJc0oV
-X-Google-Smtp-Source: APXvYqzelXf36KO1GuY7vPLyoOqoDTOAhASTvcfwB+CjhBS6/0GCLK8yl7e6WIPyqX2LqkwViOrAiVHhMT5K
-X-Received: by 2002:a63:1511:: with SMTP id v17mr18054703pgl.34.1571943738017;
- Thu, 24 Oct 2019 12:02:18 -0700 (PDT)
-Date:   Thu, 24 Oct 2019 12:01:57 -0700
+        bh=98x/ZBLRTnMz91JDf+r9eCkgM4R/aoJz7oABA29poQw=;
+        b=G2ueu7eofBOm1piZDNZDOtFqF9FpMaOlh0xX7xEGEqR6zjSxh6cBvIoP4Cv1VT73AV
+         cyBofloXtW5ZhNVFW1cW7iv5tAJPgSml7nD1mf2HMxugBOiybBohVxy3xdFDC+E1JAzs
+         F0DTkN8+H6brTGI4R+hX5UId35brW1qlV9u4V/gMbAUEbx0O7iQJqGy1tSH/uKrRcs3M
+         i+DIdVUAmf6bP+Bb+6wdUwyHrRfSETweCv/ED23CaJ0di7BtywBJ6F09DTtQT8pcIv1U
+         li+kMlpp062jCirDo514xCVbVhkVFotjFbuvJ1tfkyYXUS5r/Gd7Ja/irMSobjT9RGMZ
+         m+sA==
+X-Gm-Message-State: APjAAAXBpY8q2mDtlC9XCnVXVwxlnMIy1QkvGXbaIYn6ltmWG7pv7S68
+        B7GUiTPB/aChhOXxBm7U2BkOrp++wcV3
+X-Google-Smtp-Source: APXvYqy0z0w7HaNQVrFGbWenHVtVo7T0wRW7iIgngW02X25slgtdxq4MgrTgKqZ5Bo3fCcCgjigLNvemKmy6
+X-Received: by 2002:a81:58d6:: with SMTP id m205mr8304346ywb.293.1571943740635;
+ Thu, 24 Oct 2019 12:02:20 -0700 (PDT)
+Date:   Thu, 24 Oct 2019 12:01:58 -0700
 In-Reply-To: <20191024190202.109403-1-irogers@google.com>
-Message-Id: <20191024190202.109403-5-irogers@google.com>
+Message-Id: <20191024190202.109403-6-irogers@google.com>
 Mime-Version: 1.0
 References: <20191023005337.196160-1-irogers@google.com> <20191024190202.109403-1-irogers@google.com>
 X-Mailer: git-send-email 2.23.0.866.gb869b98d4c-goog
-Subject: [PATCH v3 4/9] perf tools: move ALLOC_LIST into a function
+Subject: [PATCH v3 5/9] perf tools: avoid a malloc for array events
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -74,202 +74,36 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Having a YYABORT in a macro makes it hard to free memory for components
-of a rule. Separate the logic out.
+Use realloc rather than malloc+memcpy to possibly avoid a memory
+allocation when appending array elements.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/parse-events.y | 65 ++++++++++++++++++++++------------
- 1 file changed, 43 insertions(+), 22 deletions(-)
+ tools/perf/util/parse-events.y | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
 diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
-index 27d6b187c9b1..26cb65798522 100644
+index 26cb65798522..545ab7cefc20 100644
 --- a/tools/perf/util/parse-events.y
 +++ b/tools/perf/util/parse-events.y
-@@ -25,12 +25,17 @@ do { \
- 		YYABORT; \
- } while (0)
+@@ -691,14 +691,12 @@ array_terms ',' array_term
+ 	struct parse_events_array new_array;
  
--#define ALLOC_LIST(list) \
--do { \
--	list = malloc(sizeof(*list)); \
--	ABORT_ON(!list);              \
--	INIT_LIST_HEAD(list);         \
--} while (0)
-+static struct list_head* alloc_list()
-+{
-+	struct list_head *list;
-+
-+	list = malloc(sizeof(*list));
-+	if (!list)
-+		return NULL;
-+
-+	INIT_LIST_HEAD(list);
-+	return list;
-+}
- 
- static void inc_group_count(struct list_head *list,
- 		       struct parse_events_state *parse_state)
-@@ -238,7 +243,8 @@ PE_NAME opt_pmu_config
- 	if (error)
- 		error->idx = @1.first_column;
- 
--	ALLOC_LIST(list);
-+	list = alloc_list();
-+	ABORT_ON(!list);
- 	if (parse_events_add_pmu(_parse_state, list, $1, $2, false, false)) {
- 		struct perf_pmu *pmu = NULL;
- 		int ok = 0;
-@@ -306,7 +312,8 @@ value_sym '/' event_config '/'
- 	int type = $1 >> 16;
- 	int config = $1 & 255;
- 
--	ALLOC_LIST(list);
-+	list = alloc_list();
-+	ABORT_ON(!list);
- 	ABORT_ON(parse_events_add_numeric(_parse_state, list, type, config, $3));
- 	parse_events_terms__delete($3);
- 	$$ = list;
-@@ -318,7 +325,8 @@ value_sym sep_slash_slash_dc
- 	int type = $1 >> 16;
- 	int config = $1 & 255;
- 
--	ALLOC_LIST(list);
-+	list = alloc_list();
-+	ABORT_ON(!list);
- 	ABORT_ON(parse_events_add_numeric(_parse_state, list, type, config, NULL));
- 	$$ = list;
+ 	new_array.nr_ranges = $1.nr_ranges + $3.nr_ranges;
+-	new_array.ranges = malloc(sizeof(new_array.ranges[0]) *
+-				  new_array.nr_ranges);
++	new_array.ranges = realloc($1.ranges,
++				sizeof(new_array.ranges[0]) *
++				new_array.nr_ranges);
+ 	ABORT_ON(!new_array.ranges);
+-	memcpy(&new_array.ranges[0], $1.ranges,
+-	       $1.nr_ranges * sizeof(new_array.ranges[0]));
+ 	memcpy(&new_array.ranges[$1.nr_ranges], $3.ranges,
+ 	       $3.nr_ranges * sizeof(new_array.ranges[0]));
+-	free($1.ranges);
+ 	free($3.ranges);
+ 	$$ = new_array;
  }
-@@ -327,7 +335,8 @@ PE_VALUE_SYM_TOOL sep_slash_slash_dc
- {
- 	struct list_head *list;
- 
--	ALLOC_LIST(list);
-+	list = alloc_list();
-+	ABORT_ON(!list);
- 	ABORT_ON(parse_events_add_tool(_parse_state, list, $1));
- 	$$ = list;
- }
-@@ -339,7 +348,8 @@ PE_NAME_CACHE_TYPE '-' PE_NAME_CACHE_OP_RESULT '-' PE_NAME_CACHE_OP_RESULT opt_e
- 	struct parse_events_error *error = parse_state->error;
- 	struct list_head *list;
- 
--	ALLOC_LIST(list);
-+	list = alloc_list();
-+	ABORT_ON(!list);
- 	ABORT_ON(parse_events_add_cache(list, &parse_state->idx, $1, $3, $5, error, $6));
- 	parse_events_terms__delete($6);
- 	$$ = list;
-@@ -351,7 +361,8 @@ PE_NAME_CACHE_TYPE '-' PE_NAME_CACHE_OP_RESULT opt_event_config
- 	struct parse_events_error *error = parse_state->error;
- 	struct list_head *list;
- 
--	ALLOC_LIST(list);
-+	list = alloc_list();
-+	ABORT_ON(!list);
- 	ABORT_ON(parse_events_add_cache(list, &parse_state->idx, $1, $3, NULL, error, $4));
- 	parse_events_terms__delete($4);
- 	$$ = list;
-@@ -363,7 +374,8 @@ PE_NAME_CACHE_TYPE opt_event_config
- 	struct parse_events_error *error = parse_state->error;
- 	struct list_head *list;
- 
--	ALLOC_LIST(list);
-+	list = alloc_list();
-+	ABORT_ON(!list);
- 	ABORT_ON(parse_events_add_cache(list, &parse_state->idx, $1, NULL, NULL, error, $2));
- 	parse_events_terms__delete($2);
- 	$$ = list;
-@@ -375,7 +387,8 @@ PE_PREFIX_MEM PE_VALUE '/' PE_VALUE ':' PE_MODIFIER_BP sep_dc
- 	struct parse_events_state *parse_state = _parse_state;
- 	struct list_head *list;
- 
--	ALLOC_LIST(list);
-+	list = alloc_list();
-+	ABORT_ON(!list);
- 	ABORT_ON(parse_events_add_breakpoint(list, &parse_state->idx,
- 					     (void *) $2, $6, $4));
- 	$$ = list;
-@@ -386,7 +399,8 @@ PE_PREFIX_MEM PE_VALUE '/' PE_VALUE sep_dc
- 	struct parse_events_state *parse_state = _parse_state;
- 	struct list_head *list;
- 
--	ALLOC_LIST(list);
-+	list = alloc_list();
-+	ABORT_ON(!list);
- 	ABORT_ON(parse_events_add_breakpoint(list, &parse_state->idx,
- 					     (void *) $2, NULL, $4));
- 	$$ = list;
-@@ -397,7 +411,8 @@ PE_PREFIX_MEM PE_VALUE ':' PE_MODIFIER_BP sep_dc
- 	struct parse_events_state *parse_state = _parse_state;
- 	struct list_head *list;
- 
--	ALLOC_LIST(list);
-+	list = alloc_list();
-+	ABORT_ON(!list);
- 	ABORT_ON(parse_events_add_breakpoint(list, &parse_state->idx,
- 					     (void *) $2, $4, 0));
- 	$$ = list;
-@@ -408,7 +423,8 @@ PE_PREFIX_MEM PE_VALUE sep_dc
- 	struct parse_events_state *parse_state = _parse_state;
- 	struct list_head *list;
- 
--	ALLOC_LIST(list);
-+	list = alloc_list();
-+	ABORT_ON(!list);
- 	ABORT_ON(parse_events_add_breakpoint(list, &parse_state->idx,
- 					     (void *) $2, NULL, 0));
- 	$$ = list;
-@@ -421,7 +437,8 @@ tracepoint_name opt_event_config
- 	struct parse_events_error *error = parse_state->error;
- 	struct list_head *list;
- 
--	ALLOC_LIST(list);
-+	list = alloc_list();
-+	ABORT_ON(!list);
- 	if (error)
- 		error->idx = @1.first_column;
- 
-@@ -457,7 +474,8 @@ PE_VALUE ':' PE_VALUE opt_event_config
- {
- 	struct list_head *list;
- 
--	ALLOC_LIST(list);
-+	list = alloc_list();
-+	ABORT_ON(!list);
- 	ABORT_ON(parse_events_add_numeric(_parse_state, list, (u32)$1, $3, $4));
- 	parse_events_terms__delete($4);
- 	$$ = list;
-@@ -468,7 +486,8 @@ PE_RAW opt_event_config
- {
- 	struct list_head *list;
- 
--	ALLOC_LIST(list);
-+	list = alloc_list();
-+	ABORT_ON(!list);
- 	ABORT_ON(parse_events_add_numeric(_parse_state, list, PERF_TYPE_RAW, $1, $2));
- 	parse_events_terms__delete($2);
- 	$$ = list;
-@@ -480,7 +499,8 @@ PE_BPF_OBJECT opt_event_config
- 	struct parse_events_state *parse_state = _parse_state;
- 	struct list_head *list;
- 
--	ALLOC_LIST(list);
-+	list = alloc_list();
-+	ABORT_ON(!list);
- 	ABORT_ON(parse_events_load_bpf(parse_state, list, $1, false, $2));
- 	parse_events_terms__delete($2);
- 	$$ = list;
-@@ -490,7 +510,8 @@ PE_BPF_SOURCE opt_event_config
- {
- 	struct list_head *list;
- 
--	ALLOC_LIST(list);
-+	list = alloc_list();
-+	ABORT_ON(!list);
- 	ABORT_ON(parse_events_load_bpf(_parse_state, list, $1, true, $2));
- 	parse_events_terms__delete($2);
- 	$$ = list;
 -- 
 2.23.0.866.gb869b98d4c-goog
 
