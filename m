@@ -2,127 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D1407E2E6F
-	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2019 12:13:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2F01E331B
+	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2019 14:53:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733098AbfJXKNR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Oct 2019 06:13:17 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:53865 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2390611AbfJXKNQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Oct 2019 06:13:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1571911995;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yFGC+pXdSvp7vqOlIqKp+e+pzxyzHrdtw3msqscabak=;
-        b=SlTMPxwaxYVxvzcJb6R4jYTqME5BA7aIIbjnlSXjEYZnh/EW3hYbpxGvuAWbmrNCaugH6C
-        7AtAz0sJ1KgN519rkmQWRCtgbcteVAIopQggCo4KwTZHRObTGHpUfm87DvbeeqItehpzKG
-        ESHNWL3rchJFXwCHVCQnYYIz0RXGO8I=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-38-TV3uus_NOD2CaWwtyiqqUA-1; Thu, 24 Oct 2019 06:13:13 -0400
-Received: by mail-wr1-f71.google.com with SMTP id k10so3544470wrl.22
-        for <bpf@vger.kernel.org>; Thu, 24 Oct 2019 03:13:12 -0700 (PDT)
+        id S2502197AbfJXMxY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Oct 2019 08:53:24 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:44916 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2502191AbfJXMxY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Oct 2019 08:53:24 -0400
+Received: by mail-ot1-f65.google.com with SMTP id n48so5601281ota.11;
+        Thu, 24 Oct 2019 05:53:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iLUdayC1zl/A71isLCny+Z1Qkj5ghZH/Yn9ahtTVvRA=;
+        b=dVR4ac4VrRYtlXkGqUqO1Eat2FSFFubXhmsJwduZgw5eXmuFUmJvfXtZDp4xGBmUi1
+         G32ArzXx8HnI+0H7LX+ElVxTNizz4o+uJt+SXkE0UHDKK2qbqmqEcH56oTnBUa2dtbcr
+         EogZKcUH2r5GYYraPuNuoKU9DzFv92/pbj9eRGr7XYsuo4J3rgJVdt/oqdR9QwkeDpBH
+         R1kXcYQ0wwZmLJMBo/d5wNxoZhq6Bqn6UQneHOvXiwde4UMh3ksftpnybc+nVMyGR3lK
+         BzO+3fKDIigbBN61S9Z3w/MBmZhhQ1UcyuHl//mLzmJIpMjwAi8lei53A4pejwAWWvze
+         i6qQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=yFGC+pXdSvp7vqOlIqKp+e+pzxyzHrdtw3msqscabak=;
-        b=WEYcMHTO8DS4yeZsdgZ0c811z2jMY2U63g+zxDOJyrLNJ2D9aLwt09D+eWGLvJ7XYq
-         14wvC/uve7pb+PSTGBkyEFgAPd5OUJxYaHZb5sFikSPY7CpkFi2dQEWg1KT4YEibxPSz
-         KObAt589/thBEwgXKksT3Mx++Mv0VfCBacVA6jmsWZ82hdXyU7k6gbnGvFrBuG79Xdsh
-         172NoX+br8GvKleZgwVo841fbM4WLcW/G6i0hqoyiRe4X+PA02D5LlQ/d22v34BmLlc1
-         RaLf8hOHI08zJPWV9tUaEEdmQlwmyyMqBJvN+SOcICFtR1vBsHBVeYWh6mMPi+ce+2xi
-         gcgg==
-X-Gm-Message-State: APjAAAVC/dw88gX/vEycsJj/wBl5Qd8mNR/TWTs9YsWR5g2jzRizvxbX
-        iA7Z0mbiz65XAoiV1AFlG911caDzSKjeJCnPVupjTrZLssvgqDBAMUGGIr6t+3ELTCFIGAXJ89w
-        bbqzObDeIfhH2
-X-Received: by 2002:adf:e7c2:: with SMTP id e2mr3054568wrn.29.1571911991955;
-        Thu, 24 Oct 2019 03:13:11 -0700 (PDT)
-X-Google-Smtp-Source: APXvYqxbjWsk+uYJ5GCUImfWcetRrlFjzBnZkqyCrD7do492wiZxHkC9gZGPWW3T+D/g68EBJcNoQg==
-X-Received: by 2002:adf:e7c2:: with SMTP id e2mr3054534wrn.29.1571911991687;
-        Thu, 24 Oct 2019 03:13:11 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a00:7660:6da:443::2])
-        by smtp.gmail.com with ESMTPSA id 6sm2277393wmd.36.2019.10.24.03.13.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Oct 2019 03:13:10 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 08AA51804B1; Thu, 24 Oct 2019 12:13:10 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     John Fastabend <john.fastabend@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Toshiaki Makita <toshiaki.makita1@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iLUdayC1zl/A71isLCny+Z1Qkj5ghZH/Yn9ahtTVvRA=;
+        b=nahb+STzdNiTIlS4Rbcz/1ueVbzAPq19AWugVgxeq46OUdxtE/SNU7o1ssvpngbz8t
+         T9CU++EXqUU60N8zrAxeYzcTeslLDcaN67gh8fd+p5HWconYR9qS+bnF0VgyCfBtJYmD
+         9yCi7eMbSp7dS4VL4BQ/8e4rpQ2Jb5LjqK8rz/yI0Re2YOuO18I1aBSJx6T8PI24fiDj
+         iKo6t1Jb8wkbcDHhKegxVF5k1yYqbv8PxsNZ8sN+CUKsmvc1d0r3FMZqaR/IlGf/4Jbw
+         az228sqPDl95RpZuxKl8PTunut9kUUZ6WZCHAs92mUT9To1lWT59MwLMWsCHJKZ/aQ3V
+         s24Q==
+X-Gm-Message-State: APjAAAWSfXBRZq6Rm+T8wIKr2DphjVUaiqL70TcvB7rDfTbt3W8AoQ88
+        2SaHSHX3zOUki2W4hFU8vtLgSJX425mdZ1nyGoc=
+X-Google-Smtp-Source: APXvYqwr1zO7v3Xyinzs9OZoZjfQgjDfEuqNcfbY28COpLbGRAK4iXjZ3A1DurXICx0+wPvcpd1vuAynlQFm45PZvr4=
+X-Received: by 2002:a9d:286:: with SMTP id 6mr11758074otl.192.1571921601960;
+ Thu, 24 Oct 2019 05:53:21 -0700 (PDT)
+MIME-Version: 1.0
+References: <1571645818-16244-1-git-send-email-magnus.karlsson@intel.com> <B551C016-76AE-46D3-B2F5-15AFF9073735@gmail.com>
+In-Reply-To: <B551C016-76AE-46D3-B2F5-15AFF9073735@gmail.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Thu, 24 Oct 2019 14:53:10 +0200
+Message-ID: <CAJ8uoz2FDkygCG5myz_OzAPHSiCPGR1Y-OHEi6xNjQEHoAia8w@mail.gmail.com>
+Subject: Re: [PATCH bpf] xsk: fix registration of Rx-only sockets
+To:     Jonathan Lemon <jonathan.lemon@gmail.com>
+Cc:     Magnus Karlsson <magnus.karlsson@intel.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        Pravin B Shelar <pshelar@ovn.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        William Tu <u9012063@gmail.com>,
-        Stanislav Fomichev <sdf@fomichev.me>
-Subject: Re: [RFC PATCH v2 bpf-next 00/15] xdp_flow: Flow offload to XDP
-In-Reply-To: <5db128153c75_549d2affde7825b85e@john-XPS-13-9370.notmuch>
-References: <20191018040748.30593-1-toshiaki.makita1@gmail.com> <5da9d8c125fd4_31cf2adc704105c456@john-XPS-13-9370.notmuch> <22e6652c-e635-4349-c863-255d6c1c548b@gmail.com> <5daf34614a4af_30ac2b1cb5d205bce4@john-XPS-13-9370.notmuch> <87h840oese.fsf@toke.dk> <5db128153c75_549d2affde7825b85e@john-XPS-13-9370.notmuch>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 24 Oct 2019 12:13:09 +0200
-Message-ID: <87sgniladm.fsf@toke.dk>
-MIME-Version: 1.0
-X-MC-Unique: TV3uus_NOD2CaWwtyiqqUA-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+        Network Development <netdev@vger.kernel.org>,
+        Kal Cutter Conley <kal.conley@dectris.com>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-John Fastabend <john.fastabend@gmail.com> writes:
-
-> Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->> John Fastabend <john.fastabend@gmail.com> writes:
->>=20
->> > I think for sysadmins in general (not OVS) use case I would work
->> > with Jesper and Toke. They seem to be working on this specific
->> > problem.
->>=20
->> We're definitely thinking about how we can make "XDP magically speeds up
->> my network stack" a reality, if that's what you mean. Not that we have
->> arrived at anything specific yet...
+On Thu, Oct 24, 2019 at 12:47 PM Jonathan Lemon
+<jonathan.lemon@gmail.com> wrote:
 >
-> There seemed to be two thoughts in the cover letter one how to make
-> OVS flow tc path faster via XDP. And the other how to make other users
-> of tc flower software stack faster.
+> On 21 Oct 2019, at 1:16, Magnus Karlsson wrote:
 >
-> For the OVS case seems to me that OVS should create its own XDP
-> datapath if its 5x faster than the tc flower datapath. Although
-> missing from the data was comparing against ovs kmod so that
-> comparison would also be interesting. This way OVS could customize
-> things and create only what they need.
+> > Having Rx-only AF_XDP sockets can potentially lead to a crash in the
+> > system by a NULL pointer dereference in xsk_umem_consume_tx(). This
+> > function iterates through a list of all sockets tied to a umem and
+> > checks if there are any packets to send on the Tx ring. Rx-only
+> > sockets do not have a Tx ring, so this will cause a NULL pointer
+> > dereference. This will happen if you have registered one or more
+> > Rx-only sockets to a umem and the driver is checking the Tx ring even
+> > on Rx, or if the XDP_SHARED_UMEM mode is used and there is a mix of
+> > Rx-only and other sockets tied to the same umem.
+> >
+> > Fixed by only putting sockets with a Tx component on the list that
+> > xsk_umem_consume_tx() iterates over.
 >
-> But the other case for a transparent tc flower XDP a set of user tools
-> could let users start using XDP for this use case without having to
-> write their own BPF code. Anyways I had the impression that might be
-> something you and Jesper are thinking about, general usability for
-> users that are not necessarily writing their own network.
+> A future improvement might be renaming umem->xsk_list to umem->xsk_tx_list
+> or similar, in order to make it clear that the list is only used on the
+> TX path.
 
-Yeah, you are right that it's something we're thinking about. I'm not
-sure we'll actually have the bandwidth to implement a complete solution
-ourselves, but we are very much interested in helping others do this,
-including smoothing out any rough edges (or adding missing features) in
-the core XDP feature set that is needed to achieve this :)
+Agreed. Had that exact name in my first internal version of the patch
+:-), but that rename touched a lot of places so it obfuscated the fix
+and therefore I removed it to make it clearer. But I can submit a
+patch with the rename to bpf-next.
 
--Toke
-
+> >
+> > Fixes: ac98d8aab61b ("xsk: wire upp Tx zero-copy functions")
+> > Reported-by: Kal Cutter Conley <kal.conley@dectris.com>
+> > Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+>
+> Acked-by: Jonathan Lemon <jonathan.lemon@gmail.com>
+>
+> --
+> Jonathan
