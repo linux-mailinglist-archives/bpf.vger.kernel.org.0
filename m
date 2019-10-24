@@ -2,164 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E57CE3AB3
-	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2019 20:12:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5228DE3B2D
+	for <lists+bpf@lfdr.de>; Thu, 24 Oct 2019 20:42:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504027AbfJXSM5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Oct 2019 14:12:57 -0400
-Received: from mga12.intel.com ([192.55.52.136]:36867 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2504015AbfJXSM5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Oct 2019 14:12:57 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 24 Oct 2019 11:12:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,225,1569308400"; 
-   d="scan'208";a="399854012"
-Received: from unknown (HELO [10.241.228.119]) ([10.241.228.119])
-  by fmsmga006.fm.intel.com with ESMTP; 24 Oct 2019 11:12:56 -0700
-To:     alexei.starovoitov@gmail.com
-Cc:     bjorn.topel@gmail.com, bjorn.topel@intel.com, bpf@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org, jakub.kicinski@netronome.com,
-        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
-        netdev@vger.kernel.org, sridhar.samudrala@intel.com,
-        toke@redhat.com, tom.herbert@intel.com
-References: <CAADnVQKwnMChzeGaC66A99cHn5szB4hPZaGXq8JAhd8sjrdGeA@mail.gmail.com>
-Subject: Re: [Intel-wired-lan] FW: [PATCH bpf-next 2/4] xsk: allow AF_XDP
- sockets to receive packets directly from a queue
-From:   "Samudrala, Sridhar" <sridhar.samudrala@intel.com>
-Message-ID: <68d6e154-8646-7904-f081-10ec32115496@intel.com>
-Date:   Thu, 24 Oct 2019 11:12:55 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S2504100AbfJXSmW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Oct 2019 14:42:22 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:46572 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726925AbfJXSmW (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 24 Oct 2019 14:42:22 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x9OIe9vo053341
+        for <bpf@vger.kernel.org>; Thu, 24 Oct 2019 14:42:19 -0400
+Received: from e06smtp04.uk.ibm.com (e06smtp04.uk.ibm.com [195.75.94.100])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2vuecy6wrk-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 24 Oct 2019 14:42:19 -0400
+Received: from localhost
+        by e06smtp04.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
+        Thu, 24 Oct 2019 19:42:17 +0100
+Received: from b06avi18878370.portsmouth.uk.ibm.com (9.149.26.194)
+        by e06smtp04.uk.ibm.com (192.168.101.134) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Thu, 24 Oct 2019 19:42:15 +0100
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x9OIgE1p40435994
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 24 Oct 2019 18:42:14 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EDF1D4C040;
+        Thu, 24 Oct 2019 18:42:13 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A80C84C050;
+        Thu, 24 Oct 2019 18:42:13 +0000 (GMT)
+Received: from white.boeblingen.de.ibm.com (unknown [9.152.99.235])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 24 Oct 2019 18:42:13 +0000 (GMT)
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>
+Cc:     bpf@vger.kernel.org, Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [PATCH bpf-next] selftests/bpf: restore $(OUTPUT)/test_stub.o rule
+Date:   Thu, 24 Oct 2019 20:42:05 +0200
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-In-Reply-To: <CAADnVQKwnMChzeGaC66A99cHn5szB4hPZaGXq8JAhd8sjrdGeA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+x-cbid: 19102418-0016-0000-0000-000002BD0C8D
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19102418-0017-0000-0000-0000331E530C
+Message-Id: <20191024184205.1798-1-iii@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-10-24_10:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1908290000 definitions=main-1910240174
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+`make O=/linux-build kselftest TARGETS=bpf` fails with
 
-> > OK. Here is another data point that shows the perf report with the same test but CPU mitigations
-> > turned OFF. Here bpf_prog overhead goes down from almost (10.18 + 4.51)% to (3.23 + 1.44%).
-> >
-> >    21.40%  ksoftirqd/28     [i40e]                     [k] i40e_clean_rx_irq_zc
-> >    14.13%  xdpsock          [i40e]                     [k] i40e_clean_rx_irq_zc
-> >     8.33%  ksoftirqd/28     [kernel.vmlinux]           [k] xsk_rcv
-> >     6.09%  ksoftirqd/28     [kernel.vmlinux]           [k] xdp_do_redirect
-> >     5.19%  xdpsock          xdpsock                    [.] main
-> >     3.48%  ksoftirqd/28     [kernel.vmlinux]           [k] bpf_xdp_redirect_map
-> >     3.23%  ksoftirqd/28     bpf_prog_3c8251c7e0fef8db  [k] bpf_prog_3c8251c7e0fef8db
-> >
-> > So a major component of the bpf_prog overhead seems to be due to the CPU vulnerability mitigations.
+	make[3]: *** No rule to make target '/linux-build/bpf/test_stub.o', needed by '/linux-build/bpf/test_verifier'
 
-> I feel that it's an incorrect conclusion because JIT is not doing
-> any retpolines (because there are no indirect calls in bpf).
-> There should be no difference in bpf_prog runtime with or without mitigations.
-> Also you're running root, so no spectre mitigations either.
+The same command without the O= part works, presumably thanks to the
+implicit rule.
 
-> This 3% seems like a lot for a function that does few loads that should
-> hit d-cache and one direct call.
-> Please investigate why you're seeing this 10% cpu cost when mitigations are on.
-> perf report/annotate is the best.
-> Also please double check that you're using the latest perf.
-> Since bpf performance analysis was greatly improved several versions ago.
-> I don't think old perf will be showing bogus numbers, but better to
-> run the latest.
+Fix by restoring the explicit $(OUTPUT)/test_stub.o rule.
 
-Here is perf annotate output for bpf_prog_ with and without mitigations turned ON
-Using the perf built from the bpf-next tree.
-   perf version 5.3.g4071324a76c1
+Fixes: 74b5a5968fe8 ("selftests/bpf: Replace test_progs and test_maps w/ general rule")
+Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+---
+ tools/testing/selftests/bpf/Makefile | 3 +++
+ 1 file changed, 3 insertions(+)
 
-With mitigations ON
--------------------
-Samples: 6K of event 'cycles', 4000 Hz, Event count (approx.): 5646512726
-bpf_prog_3c8251c7e0fef8db  bpf_prog_3c8251c7e0fef8db [Percent: local period]
-  45.05      push   %rbp
-   0.02      mov    %rsp,%rbp
-   0.03      sub    $0x8,%rsp
-  22.09      push   %rbx
-   7.66      push   %r13
-   1.08      push   %r14
-   1.85      push   %r15
-   0.63      pushq  $0x0
-   1.13      mov    0x28(%rdi),%rsi
-   0.47      mov    0x8(%rsi),%esi
-   3.47      mov    %esi,-0x4(%rbp)
-   0.02      movabs $0xffff8ab414a83e00,%rdi
-   0.90      mov    $0x2,%edx
-   2.85      callq  *ffffffffd149fc5f
-   1.55      and    $0x6,%rax
-             test   %rax,%rax
-   1.48      jne    72
-             mov    %rbp,%rsi
-             add    $0xfffffffffffffffc,%rsi
-             movabs $0xffff8ab414a83e00,%rdi
-             callq  *ffffffffd0e5fd5f
-             mov    %rax,%rdi
-             mov    $0x2,%eax
-             test   %rdi,%rdi
-             je     72
-             mov    -0x4(%rbp),%esi
-             movabs $0xffff8ab414a83e00,%rdi
-             xor    %edx,%edx
-             callq  *ffffffffd149fc5f
-        72:  pop    %rbx
-             pop    %r15
-   1.90      pop    %r14
-   1.93      pop    %r13
-             pop    %rbx
-   3.63      leaveq
-   2.27      retq
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index 59b93a5667c8..9d63a12f932b 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -89,6 +89,9 @@ $(notdir $(TEST_GEN_PROGS)						\
+ $(OUTPUT)/urandom_read: urandom_read.c
+ 	$(CC) -o $@ $< -Wl,--build-id
+ 
++$(OUTPUT)/test_stub.o: test_stub.c
++	$(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
++
+ BPFOBJ := $(OUTPUT)/libbpf.a
+ 
+ $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED): $(OUTPUT)/test_stub.o $(BPFOBJ)
+-- 
+2.23.0
 
-With mitigations OFF
---------------------
-Samples: 2K of event 'cycles', 4000 Hz, Event count (approx.): 1872116166
-bpf_prog_3c8251c7e0fef8db  bpf_prog_3c8251c7e0fef8db [Percent: local period]
-   0.15      push   %rbp
-             mov    %rsp,%rbp
-  13.79      sub    $0x8,%rsp
-   0.30      push   %rbx
-   0.15      push   %r13
-   0.20      push   %r14
-  14.50      push   %r15
-   0.20      pushq  $0x0
-             mov    0x28(%rdi),%rsi
-   0.25      mov    0x8(%rsi),%esi
-  14.37      mov    %esi,-0x4(%rbp)
-   0.25      movabs $0xffff8ea2c673b800,%rdi
-             mov    $0x2,%edx
-  13.60      callq  *ffffffffe50c2f38
-  14.33      and    $0x6,%rax
-             test   %rax,%rax
-             jne    72
-             mov    %rbp,%rsi
-             add    $0xfffffffffffffffc,%rsi
-             movabs $0xffff8ea2c673b800,%rdi
-             callq  *ffffffffe4a83038
-             mov    %rax,%rdi
-             mov    $0x2,%eax
-             test   %rdi,%rdi
-             je     72
-             mov    -0x4(%rbp),%esi
-             movabs $0xffff8ea2c673b800,%rdi
-             xor    %edx,%edx
-             callq  *ffffffffe50c2f38
-        72:  pop    %rbx
-             pop    %r15
-  13.97      pop    %r14
-   0.10      pop    %r13
-             pop    %rbx
-  13.71      leaveq
-   0.15      retq
-
-Do you see any issues with this data? With mitigations ON push %rbp and push %rbx overhead seems to
-be pretty high.
-
-Thanks
-Sridhar
