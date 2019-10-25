@@ -2,96 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 78C84E545C
-	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2019 21:30:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD01EE54D2
+	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2019 22:03:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727135AbfJYTaU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 25 Oct 2019 15:30:20 -0400
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:43001 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725775AbfJYTaU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 25 Oct 2019 15:30:20 -0400
-Received: by mail-pf1-f194.google.com with SMTP id 21so2228272pfj.9;
-        Fri, 25 Oct 2019 12:30:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version;
-        bh=0Ol0Q9d+nzw7reP27LbGXzVnDznqVRhprPqADBgH/xI=;
-        b=jjAQriQ7nUxcSr1XFJkzKM1qjyQMsg0rjgisDNSiP7tBFzuDmawJSLzKQxDaZ1TZqX
-         rRFCyhh6VL8xnaVoLNG+6mDcY4JOLz9HaSzB59a1aE8ZU2Zqe/goi0KB2XWie302QG3N
-         bRf+D6Q0CDarWB91xusGQD7iYFGBfvZHbBlcCFeYWZuAoTBDdttlah8yTnxCpji2F8tq
-         tTD2bYTqPGX2ful7uVyRb9VRubALyTsWUDb4pEJLfaNTS3Ji+V4HUlZoqdbnf3n1JXp6
-         923ISWPmEHrN6Ys8ghc8HfVL4HSaK8D6tv2+cj9RkmGS+pY5sYRMVa8d7dbr2RuAZO7l
-         0FIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version;
-        bh=0Ol0Q9d+nzw7reP27LbGXzVnDznqVRhprPqADBgH/xI=;
-        b=mCUFU4/zBUQoyX3Rm3kcS2ugPOQ1JaMIfKSVFVj1bMBAmwy8T3QudNuL7fS+NNu3SM
-         Eab4Ijh++VzibJkcd8oye3J7Uondmj0Xmt4IVOgMhoB8YyFhy49h+W2EvDN5I6c/0hiB
-         v5XmO4v1R7/EtX4RxbwFFAOcoHcMb2hsg13FhPc8clYVhqaHbksk+bcSj9rALdDTdZLM
-         SblZ+crwz0fOVmIzjOlrrMF4JUu5coK+pAX0CHN25HT0orRGvEZCAQ5koAD7mB31LF7E
-         NJGJ7g6YV1xR+2HPGMWghyq/g0ngKxETKopYfahQtiA8JFZ2caCoQDv7QqvmTsFmnZHA
-         knQw==
-X-Gm-Message-State: APjAAAW02uTyz3zkhefs09RvZf0xRD0/YCQsGmJn1uHfW76BxDPmZpXd
-        aTAhxcdcBoWjD8Z1oB9Mx5tNr/pB
-X-Google-Smtp-Source: APXvYqwZimV4wJux6JvoxjKcLblnon0CqTabNqkGEQa5sFF7dlM4OLeZoXS9X2fTJb58AjZjF2LISA==
-X-Received: by 2002:aa7:838f:: with SMTP id u15mr6327200pfm.74.1572031819294;
-        Fri, 25 Oct 2019 12:30:19 -0700 (PDT)
-Received: from [172.20.54.239] ([2620:10d:c090:200::1:4b93])
-        by smtp.gmail.com with ESMTPSA id v4sm3068298pff.181.2019.10.25.12.30.18
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 25 Oct 2019 12:30:18 -0700 (PDT)
-From:   "Jonathan Lemon" <jonathan.lemon@gmail.com>
-To:     "Magnus Karlsson" <magnus.karlsson@intel.com>
-Cc:     bjorn.topel@intel.com, ast@kernel.org, daniel@iogearbox.net,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, degeneloy@gmail.com,
-        john.fastabend@gmail.com
-Subject: Re: [PATCH bpf-next v3] libbpf: fix compatibility for kernels without
- need_wakeup
-Date:   Fri, 25 Oct 2019 12:30:18 -0700
-X-Mailer: MailMate (1.13r5655)
-Message-ID: <9CF134CD-CB33-48D0-BFAF-BCFC2F9AE6AD@gmail.com>
-In-Reply-To: <1571995035-21889-1-git-send-email-magnus.karlsson@intel.com>
-References: <1571995035-21889-1-git-send-email-magnus.karlsson@intel.com>
+        id S1727787AbfJYUD7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 25 Oct 2019 16:03:59 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:47001 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726463AbfJYUD7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 25 Oct 2019 16:03:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1572033838;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=E26WgcwzyJ2kYdYldjeHK6d/+LLmrRMeJ9oJGNDaMNQ=;
+        b=SmNuhs9uOr981dZPv3r0l/Jt2KmUuMEmrgdQvA6CXffsu86irEQNeiHCcmQhAutdIQy5rM
+        GkFUCXg/Iuvu+RBSlBluKdSIJj+02g6RgJVYCb8g4QN+x88He5DZul/WiV5iYBPGD7tpjd
+        TX1NtfZTZ/7iOMy6SoDQaZNatvlHW3g=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-257-QDhHsAe8P3SQUeXnGNa-WQ-1; Fri, 25 Oct 2019 16:03:56 -0400
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D24C1801E66;
+        Fri, 25 Oct 2019 20:03:54 +0000 (UTC)
+Received: from krava (ovpn-204-56.brq.redhat.com [10.40.204.56])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 60AD8600CD;
+        Fri, 25 Oct 2019 20:03:52 +0000 (UTC)
+Date:   Fri, 25 Oct 2019 22:03:51 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Jakub Kicinski <jakub.kicinski@netronome.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Andrii Nakryiko <andriin@fb.com>,
+        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>
+Subject: Re: [PATCH] bpftool: Allow to read btf as raw data
+Message-ID: <20191025200351.GA31835@krava>
+References: <20191024133025.10691-1-jolsa@kernel.org>
+ <20191025113901.5a7e121e@cakuba.hsd1.ca.comcast.net>
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
+In-Reply-To: <20191025113901.5a7e121e@cakuba.hsd1.ca.comcast.net>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-MC-Unique: QDhHsAe8P3SQUeXnGNa-WQ-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Fri, Oct 25, 2019 at 11:39:01AM -0700, Jakub Kicinski wrote:
+> On Thu, 24 Oct 2019 15:30:25 +0200, Jiri Olsa wrote:
+> > The bpftool interface stays the same, but now it's possible
+> > to run it over BTF raw data, like:
+> >=20
+> >   $ bpftool btf dump file /sys/kernel/btf/vmlinux
+> >   [1] INT '(anon)' size=3D4 bits_offset=3D0 nr_bits=3D32 encoding=3D(no=
+ne)
+> >   [2] INT 'long unsigned int' size=3D8 bits_offset=3D0 nr_bits=3D64 enc=
+oding=3D(none)
+> >   [3] CONST '(anon)' type_id=3D2
+> >=20
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+>=20
+> Acked-by: Jakub Kicinski <jakub.kicinski@netronome.com>
 
+[root@ibm-z-107 bpftool]# ./bpftool btf dump file /sys/kernel/btf/vmlinux  =
+| head -3
+[1] INT '(anon)' size=3D4 bits_offset=3D0 nr_bits=3D32 encoding=3D(none)
+[2] INT 'long unsigned int' size=3D8 bits_offset=3D0 nr_bits=3D64 encoding=
+=3D(none)
+[3] CONST '(anon)' type_id=3D2
+[root@ibm-z-107 bpftool]# lscpu | grep Endian
+Byte Order:          Big Endian
 
-On 25 Oct 2019, at 2:17, Magnus Karlsson wrote:
+thanks,
+jirka
 
-> When the need_wakeup flag was added to AF_XDP, the format of the
-> XDP_MMAP_OFFSETS getsockopt was extended. Code was added to the
-> kernel to take care of compatibility issues arrising from running
-> applications using any of the two formats. However, libbpf was
-> not extended to take care of the case when the application/libbpf
-> uses the new format but the kernel only supports the old
-> format. This patch adds support in libbpf for parsing the old
-> format, before the need_wakeup flag was added, and emulating a
-> set of static need_wakeup flags that will always work for the
-> application.
->
-> v2 -> v3:
-> * Incorporated code improvements suggested by Jonathan Lemon
-
-Thanks for doing this, Magnus!  It looks much simpler now.
-
-
->
-> v1 -> v2:
-> * Rebased to bpf-next
-> * Rewrote the code as the previous version made you blind
->
-> Fixes: a4500432c2587cb2a ("libbpf: add support for need_wakeup flag in 
-> AF_XDP part")
-> Reported-by: Eloy Degen <degeneloy@gmail.com>
-> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-
-Acked-by: Jonathan Lemon <jonathan.lemon@gmail.com>
