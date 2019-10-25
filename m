@@ -2,134 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F1C13E4207
-	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2019 05:20:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56BDBE421F
+	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2019 05:39:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387538AbfJYDUJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Oct 2019 23:20:09 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:40491 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731941AbfJYDUJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Oct 2019 23:20:09 -0400
-Received: by mail-qt1-f195.google.com with SMTP id o49so1194591qta.7;
-        Thu, 24 Oct 2019 20:20:08 -0700 (PDT)
+        id S2388276AbfJYDjg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Oct 2019 23:39:36 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:40110 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727145AbfJYDjg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Oct 2019 23:39:36 -0400
+Received: by mail-qt1-f194.google.com with SMTP id o49so1245107qta.7;
+        Thu, 24 Oct 2019 20:39:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=TXoMu70Skd+AjU0XvxD9gZV0D2TDPPVNchRF+onkavU=;
-        b=oJ1CkIhGxUtW/fUs7P9kgo+4Me2erAFSX59kTV0sLQ6b8fK1SCYt85Af4vYpm9lmwl
-         zALVByfZNlmdRuJ1fLSkyBF2XXHVISbcCoV9ecoJXu9LOLxGu+vZthckihmRx3zJzdRM
-         /GtqphhI+K3WS5RDmu5W/s+XuL5cFqNV0anV/ixRm+agh9G+a1hYclUD45KxMXDwdxeP
-         mGnWhibB6Yuhm7KSu2hSDmxWOY6Ina+nE4WuRdu7hqhL9ph4T46Q377mvQskJZUeYRN0
-         0luq5nPHmaZCOEyuK6KViDnDj+sdq4yVHzwd1WwVMY9y5nu1P2irWVYQR/KmgWwpuJmC
-         RIOA==
+         :cc;
+        bh=cd4TOVbvPNZYn1igZctkezc1pztol2h8rYUeMEkk5eY=;
+        b=NrUZ3isi0OKlyLOrM+bkB67cPUAFOTqokLi4n1X8o2n0wIZPzcsgixV1Peog3ITT4L
+         P6L2AeT/RdtSWnoRf0HKqi8uZBa3zmyiNMl8cCZjvYNoYGy3I3enNuc84nPuOBu8ytWQ
+         cvlsVxujTgFmQB5NTc/bRKrbhRhEkknf6a0zlkmV8aH6M7+jGc5H1Oe+80o4jVtXSx+E
+         mblZHzowY9NeECWhHfKI7vbgH0zIKthgl1gbXtvMTVGf6khqfNfv5NZAHXASmui/9c19
+         tAhH836dU+tOQA+Xb+biCgXNzb4oUM0kKjy+aXLhHcokh6II98iJHMjJvu5ZeYdOH94B
+         kSFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=TXoMu70Skd+AjU0XvxD9gZV0D2TDPPVNchRF+onkavU=;
-        b=HLR9neT4D8N+9lW+ven/HCecvk2BsRLltNN27ogNiZfr5jsWbdnfXBVu3vHJz1K+Yn
-         jHFnZnmZTUtR6kE+EDz6cZLn7t1RtJeIKzVqjKDh+4hHU9mBHmFru9s+LxrePWc+4Jsw
-         qq3N6CX503uLrhjzaXfnIF490mv/ztknyJzGbD3l4GCiJc7k9wJmR1sFdR9dyFaGDXpw
-         8L1XGNbVEaPfckiGzPvyHvC4fWxhZeR7L+VWFrS7kTLaKUb8ITxF+Xv9gBqALyNNdEuz
-         Qj2aZwC6izEvP7vXu7eY5lDrhViBeKh7tRNasaCoYxF0w9KFYkWVhm9f/nM7wGXozu2A
-         Fs0g==
-X-Gm-Message-State: APjAAAVnF/VuhGnff3oYUEgQCjpySXr3I9sYi8gmyVTYItrm0tN4Wiej
-        /7ajcv8W6x0wxsBXsCLDa6uaqFunRKIuQv1WIgA=
-X-Google-Smtp-Source: APXvYqzSvHf+kdIRRSJY+Ggp0N0kupP7Hc+WUthE6IlMm9g4aSDtMz8IrDDFWj6k/y/gTUqlb7+Z8V9MSTFGrI1TF1Y=
-X-Received: by 2002:a05:6214:16c5:: with SMTP id d5mr1145417qvz.247.1571973607706;
- Thu, 24 Oct 2019 20:20:07 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=cd4TOVbvPNZYn1igZctkezc1pztol2h8rYUeMEkk5eY=;
+        b=TejdSdERgNyPCzL47b1PSzQJHJ2dGGJ8VF7QzHTlmNHEVrJohR+Zp9GpNiAlfVYEny
+         CCDnovgyEZ6aTqdx7/U9f7zOmy7KvT2DZzTLfsA+oIE638LWKNb5KB2q+vZXcNksmrqN
+         ZM+b2w1PDnMl1fiwzkc05HfQc1U+j4ASnSbbRh7bLMfdmQXQzTXUluF3c6I2iiMyieET
+         T/xXLn9czT87fP6rg5+qXVathk7BqfgCZJkfX6uNtZ8Zp/zUXgB6MA8GU9T+uxADfx09
+         zdeJaypgV0MsvRJr9xpvwOeUR+xCtw+LVOqwC/GikrIK7FeSo9QMxcSPM5qgjNWWDm2L
+         mWBg==
+X-Gm-Message-State: APjAAAVTGpvDtfozuazWDWDpSYE9PKHWMsomVGIQqOdHVpByozieB9pW
+        UZ0g56Wt3+n4oMM87WKcYqxeBDxiirODXdTl5LY=
+X-Google-Smtp-Source: APXvYqxRXF2fNyWevku302i8H0rWb1y4GmLGm3DZj281dHyZZUabqge5PWK6zGE8wU3bTxFg6cpY6PDWk26NnTWqzoA=
+X-Received: by 2002:a05:6214:16c5:: with SMTP id d5mr1192917qvz.247.1571974775162;
+ Thu, 24 Oct 2019 20:39:35 -0700 (PDT)
 MIME-Version: 1.0
-References: <157192269744.234778.11792009511322809519.stgit@toke.dk> <157192270077.234778.5965993521171571751.stgit@toke.dk>
-In-Reply-To: <157192270077.234778.5965993521171571751.stgit@toke.dk>
+References: <157141046629.11948.8937909716570078019.stgit@john-XPS-13-9370>
+ <CAEf4Bzbsg1dMBqPAL4NjXwAQ=nW-OX-Siv5NpC4Ad5ZY1ny4uQ@mail.gmail.com>
+ <5dae8eafbf615_2abd2b0d886345b4b2@john-XPS-13-9370.notmuch>
+ <20191022072023.GA31343@pc-66.home> <CAEf4BzbBoE=mVyxS9OHNn6eSvfEMgbcqiBh2b=nVmhWiLGEBNQ@mail.gmail.com>
+ <5db1f389aa6f2_5c282ada047205c012@john-XPS-13-9370.notmuch>
+In-Reply-To: <5db1f389aa6f2_5c282ada047205c012@john-XPS-13-9370.notmuch>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 24 Oct 2019 20:19:56 -0700
-Message-ID: <CAEf4BzYeMBYDx6TXAqdkpWpW43yKWNbGaA+67LV1zPao-u779A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 3/4] libbpf: Support configurable pinning of
- maps from BTF annotations
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Date:   Thu, 24 Oct 2019 20:39:23 -0700
+Message-ID: <CAEf4BzZ2SrR0CBhbXo64bwWuBq-=JDS6p6=KRaLtH1bCGBwa3w@mail.gmail.com>
+Subject: Re: [bpf-next PATCH] bpf: libbpf, support older style kprobe load
+To:     John Fastabend <john.fastabend@gmail.com>
 Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        David Miller <davem@davemloft.net>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 24, 2019 at 6:11 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
-at.com> wrote:
+On Thu, Oct 24, 2019 at 11:55 AM John Fastabend
+<john.fastabend@gmail.com> wrote:
 >
-> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> Andrii Nakryiko wrote:
+> > On Tue, Oct 22, 2019 at 12:20 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+> > >
+> > > On Mon, Oct 21, 2019 at 10:07:59PM -0700, John Fastabend wrote:
+> > > > Andrii Nakryiko wrote:
+> > > > > On Sat, Oct 19, 2019 at 1:30 AM John Fastabend <john.fastabend@gmail.com> wrote:
+> > > > > >
+> > > > > > Following ./Documentation/trace/kprobetrace.rst add support for loading
+> > > > > > kprobes programs on older kernels.
+> > > > >
+> > > > > My main concern with this is that this code is born bit-rotten,
+> > > > > because selftests are never testing the legacy code path. How did you
+> > > > > think about testing this and ensuring that this keeps working going
+> > > > > forward?
+> > > >
+> > > > Well we use it, but I see your point and actually I even broke the retprobe
+> > > > piece hastily fixing merge conflicts in this patch. When I ran tests on it
+> > > > I missed running retprobe tests on the set of kernels that would hit that
+> > > > code.
+> > >
+> > > If it also gets explicitly exposed as bpf_program__attach_legacy_kprobe() or
+> > > such, it should be easy to add BPF selftests for that API to address the test
+> > > coverage concern. Generally more selftests for exposed libbpf APIs is good to
+> > > have anyway.
+> > >
+> >
+> > Agree about tests. Disagree about more APIs, especially that the only
+> > difference will be which underlying kernel machinery they are using to
+> > set everything up. We should ideally avoid exposing that to users.
 >
-> This adds support to libbpf for setting map pinning information as part o=
-f
-> the BTF map declaration. We introduce a version new
-> bpf_object__map_pin_opts() function to pin maps based on this setting, as
-> well as a getter and setter function for the pin information that callers
-> can use after map load.
+> Maybe a build flag to build with only the older style supported for testing?
+> Then we could build, test in selftests at least. Be clear the flag is only
+> for testing and can not be relied upon.
+
+Build flag will necessitate another "flavor" of test_progs just to
+test this. That seems like an overkill.
+
+How about this approach:
+
+$ cat silent-features.c
+#include <stdio.h>
+
+int __attribute__((weak)) __bpf_internal__force_legacy_kprobe;
+
+int main() {
+        if (__bpf_internal__force_legacy_kprobe)
+                printf("LEGACY MODE!\n");
+        else
+                printf("FANCY NEW MODE!\n");
+        return 0;
+}
+$ cat silent-features-testing.c
+int __bpf_internal__force_legacy_kprobe = 1;
+$ cc -g -O2 silent-features.c -o silent-features && ./silent-features
+FANCY NEW MODE!
+$ cc -g -O2 silent-features.c silent-features-testing.c -o
+silent-features && ./silent-features
+LEGACY MODE!
+
+This seems like an extensible mechanism without introducing any new
+public APIs or knobs, and we can control that in runtime. Some good
+naming convention to emphasize this is only for testing and internal
+needs, and I think it should be fine.
+
 >
-> The pinning type currently only supports a single PIN_BY_NAME mode, where
-> each map will be pinned by its name in a path that can be overridden, but
-> defaults to /sys/fs/bpf.
->
-> The pinning options supports a 'pin_all' setting, which corresponds to th=
-e
-> old bpf_object__map_pin() function with an explicit path. In addition, th=
-e
-> function now defaults to just skipping over maps that are already
-> pinned (since the previous commit started recording this in struct
-> bpf_map). This behaviour can be turned off with the 'no_skip_pinned' opti=
-on.
->
-> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> ---
-
-I think you are overcomplicating this... Here's how I think we can
-satisfy both simplicity goals, as well as good usability:
-
-1. add `const char *pin_root_path` to bpf_object_open_opts. This
-pinning path override doesn't need to leave in some separate set of
-options, it's BPF object's parameter, so let's put it into open
-settings.
-
-2. If BTF-defined map definition has pinning set to PIN_BY_NAME, that
-means bpf_object__load should do auto-pinning. If not, no
-auto-pinning, only if manually requested by explicit bpf_map__pin.
-Further, if someone wants to auto-pin map to a custom location, do
-bpf_map__set_pin_path() before bpf_object__load(), and load should
-auto-pin it as well.
-
-3. bpf_map__get_pinning/bpf_map__set_pinning are unnecessary, at least
-for now. Let's not add unnecessary APIs.
-
-4. pin_all/skip_pinned seems unnecessary. What scenarios are you
-solving with them? Given #1 and #4, just drop
-bpf_object__pin_maps_opts().
-
-The way I see it, libbpf should behave sanely for declarative use
-case, but allow custom tuning programmatically. If map is set to
-PIN_BY_NAME in map definition - we derive pin_path (potentially taking
-into account custom pin root path from open opts) and auto-pin on load
-(unless application set pin_path manually). In a weird case, where map
-is declaratively defined as auto-pinnable, but application for
-whatever reason decides not to do it - it can unset pin_path with
-bpf_map__set_pin_path(NULL).
-
-Full control, but simple and intuitive default behavior? Does it make sense=
-?
-
-
->  tools/lib/bpf/bpf_helpers.h |    6 ++
->  tools/lib/bpf/libbpf.c      |  134 ++++++++++++++++++++++++++++++++++---=
-------
->  tools/lib/bpf/libbpf.h      |   26 ++++++++
->  tools/lib/bpf/libbpf.map    |    3 +
->  4 files changed, 142 insertions(+), 27 deletions(-)
->
+> >
+> > > Cheers,
+> > > Daniel
