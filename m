@@ -2,173 +2,220 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B8CFCE46A3
-	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2019 11:07:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01999E46E8
+	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2019 11:17:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438276AbfJYJHn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 25 Oct 2019 05:07:43 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:42222 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2438275AbfJYJHm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 25 Oct 2019 05:07:42 -0400
-Received: by mail-qt1-f193.google.com with SMTP id w14so2167732qto.9;
-        Fri, 25 Oct 2019 02:07:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=BNqUVl5JhXUGBG9kreQv4HQ6twYK66HGwyTPZIQqshk=;
-        b=Rci22rH4VHCMDPeHpym/2wdi2vheAEio8Qg2GpN9W4xFixcqI4UzxmQaU+6Zv7gkd4
-         wphtW8txmNMgXPwyuKVzmGd/qbhARLp/t6w1N3FMo0WubfD2rP1PlNPF9TbzTcx7Ml/r
-         aKi+87vNx+GvJuBi3fXA30V8uL7HUYY9dM5ANg7e3txJ0SZSf7YU8mSBiNV7kX1Gavv7
-         9zKilWJABoRsS7EUUEjrXoPIVt71yPShD2oUu6Z8b8aN96cZUA8GoA4ulgnZg/k02z//
-         joaehTqK0VepMEDvL7Y9sI4SzPIdmT6P3zIKZ1HH6C4McvsPE49Na6ukY5uq1YJL8/1x
-         iZGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=BNqUVl5JhXUGBG9kreQv4HQ6twYK66HGwyTPZIQqshk=;
-        b=HQdGmJ4OhNOpZz9LkSzywCPXKTKM0QumPQjuxaY/DgW9pVEhvLRmtW2PAdRJtBOYX5
-         bS8EFdgni4Dgyb8jXW7Cvonb3sVXqeYun80U4oZysCY3KGef//mGhJpii9/ilvMD833O
-         p77LyWKHlpeEmv4fBw3/seyb7HDdfE2vFVVZugNFfI0ZMz0kPVl2J4Qtpa7G67azSJcl
-         66Ec3LxCmbrYQTCJd9i8baw+F7W9HF983rWZ2Irou1tgZlLk9pMKJMaaB0C5MjWOra5k
-         U4EIPkuXSTqgFkuZAddwSBTcP3ilk0fEpDJ+RSrSXnfqv+cGI5L12xOAUncOGVRZov8H
-         +tmQ==
-X-Gm-Message-State: APjAAAWp5uYW/D0ecfw9lAC+BZP2xL/dMXR6BtAP8738I6f7cTJ9U49E
-        /1GTyjF0WwZzLW3u67VppW9ZwkctD1qbCHS+mR8=
-X-Google-Smtp-Source: APXvYqyxqvo8WixxaonOOhUTCm5R01BrvfpXOlJUiwbEp++GSuah1ZRQf06SzbZ+x5qTV0X3MFfTGRdDDH1b3jmZ0QY=
-X-Received: by 2002:ac8:2a5d:: with SMTP id l29mr2069242qtl.36.1571994461390;
- Fri, 25 Oct 2019 02:07:41 -0700 (PDT)
-MIME-Version: 1.0
-References: <1570515415-45593-3-git-send-email-sridhar.samudrala@intel.com>
- <CAADnVQ+XxmvY0cs8MYriMMd7=2TSEm4zCtB+fs2vkwdUY6UgAQ@mail.gmail.com>
- <3ED8E928C4210A4289A677D2FEB48235140134CE@fmsmsx111.amr.corp.intel.com>
- <2bc26acd-170d-634e-c066-71557b2b3e4f@intel.com> <CAADnVQ+qq6RLMjh5bB1ugXP5p7vYM2F1fLGFQ2pL=2vhCLiBdA@mail.gmail.com>
- <2032d58c-916f-d26a-db14-bd5ba6ad92b9@intel.com> <CAADnVQ+CH1YM52+LfybLS+NK16414Exrvk1QpYOF=HaT4KRaxg@mail.gmail.com>
- <acf69635-5868-f876-f7da-08954d1f690e@intel.com> <20191019001449.fk3gnhih4nx724pm@ast-mbp>
- <6f281517-3785-ce46-65de-e2f78576783b@intel.com> <20191019022525.w5xbwkav2cpqkfwi@ast-mbp>
- <877e4zd8py.fsf@toke.dk> <CAJ+HfNj07FwmU2GGpUYw56PRwu4pHyHNSkbCOogbMB5zB2QqWA@mail.gmail.com>
- <7642a460-9ba3-d9f7-6cf8-aac45c7eef0d@intel.com> <CAADnVQ+jiEO+jnFR-G=xG=zz7UOSBieZbc1NN=sSnAwvPaJjUQ@mail.gmail.com>
- <8956a643-0163-5345-34fa-3566762a2b7d@intel.com> <CAADnVQKwnMChzeGaC66A99cHn5szB4hPZaGXq8JAhd8sjrdGeA@mail.gmail.com>
-In-Reply-To: <CAADnVQKwnMChzeGaC66A99cHn5szB4hPZaGXq8JAhd8sjrdGeA@mail.gmail.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Fri, 25 Oct 2019 11:07:29 +0200
-Message-ID: <CAJ+HfNg8NMS7k+f4K3PH-cjA9XFbBbEetfZT55J0ntZejxV-PQ@mail.gmail.com>
-Subject: Re: [Intel-wired-lan] FW: [PATCH bpf-next 2/4] xsk: allow AF_XDP
- sockets to receive packets directly from a queue
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     "Samudrala, Sridhar" <sridhar.samudrala@intel.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Netdev <netdev@vger.kernel.org>,
-        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
-        "Herbert, Tom" <tom.herbert@intel.com>,
-        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S1727125AbfJYJRW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 25 Oct 2019 05:17:22 -0400
+Received: from mga14.intel.com ([192.55.52.115]:15204 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726541AbfJYJRW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 25 Oct 2019 05:17:22 -0400
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 25 Oct 2019 02:17:21 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.68,228,1569308400"; 
+   d="scan'208";a="349976481"
+Received: from mkarlsso-mobl.ger.corp.intel.com (HELO VM.isw.intel.com) ([10.103.211.42])
+  by orsmga004.jf.intel.com with ESMTP; 25 Oct 2019 02:17:18 -0700
+From:   Magnus Karlsson <magnus.karlsson@intel.com>
+To:     magnus.karlsson@intel.com, bjorn.topel@intel.com, ast@kernel.org,
+        daniel@iogearbox.net, netdev@vger.kernel.org,
+        jonathan.lemon@gmail.com
+Cc:     bpf@vger.kernel.org, degeneloy@gmail.com, john.fastabend@gmail.com
+Subject: [PATCH bpf-next v3] libbpf: fix compatibility for kernels without need_wakeup
+Date:   Fri, 25 Oct 2019 11:17:15 +0200
+Message-Id: <1571995035-21889-1-git-send-email-magnus.karlsson@intel.com>
+X-Mailer: git-send-email 2.7.4
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 23 Oct 2019 at 19:42, Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Tue, Oct 22, 2019 at 12:06 PM Samudrala, Sridhar
-> <sridhar.samudrala@intel.com> wrote:
-> >
-> > OK. Here is another data point that shows the perf report with the same=
- test but CPU mitigations
-> > turned OFF. Here bpf_prog overhead goes down from almost (10.18 + 4.51)=
-% to (3.23 + 1.44%).
-> >
-> >    21.40%  ksoftirqd/28     [i40e]                     [k] i40e_clean_r=
-x_irq_zc
-> >    14.13%  xdpsock          [i40e]                     [k] i40e_clean_r=
-x_irq_zc
-> >     8.33%  ksoftirqd/28     [kernel.vmlinux]           [k] xsk_rcv
-> >     6.09%  ksoftirqd/28     [kernel.vmlinux]           [k] xdp_do_redir=
-ect
-> >     5.19%  xdpsock          xdpsock                    [.] main
-> >     3.48%  ksoftirqd/28     [kernel.vmlinux]           [k] bpf_xdp_redi=
-rect_map
-> >     3.23%  ksoftirqd/28     bpf_prog_3c8251c7e0fef8db  [k] bpf_prog_3c8=
-251c7e0fef8db
-> >
-> > So a major component of the bpf_prog overhead seems to be due to the CP=
-U vulnerability mitigations.
->
-> I feel that it's an incorrect conclusion because JIT is not doing
-> any retpolines (because there are no indirect calls in bpf).
-> There should be no difference in bpf_prog runtime with or without mitigat=
-ions.
-> Also you're running root, so no spectre mitigations either.
->
-> This 3% seems like a lot for a function that does few loads that should
-> hit d-cache and one direct call.
-> Please investigate why you're seeing this 10% cpu cost when mitigations a=
-re on.
-> perf report/annotate is the best.
-> Also please double check that you're using the latest perf.
-> Since bpf performance analysis was greatly improved several versions ago.
-> I don't think old perf will be showing bogus numbers, but better to
-> run the latest.
->
+When the need_wakeup flag was added to AF_XDP, the format of the
+XDP_MMAP_OFFSETS getsockopt was extended. Code was added to the
+kernel to take care of compatibility issues arrising from running
+applications using any of the two formats. However, libbpf was
+not extended to take care of the case when the application/libbpf
+uses the new format but the kernel only supports the old
+format. This patch adds support in libbpf for parsing the old
+format, before the need_wakeup flag was added, and emulating a
+set of static need_wakeup flags that will always work for the
+application.
 
-For comparison, on my Skylake 3GHz with mitigations off. (I have one
-internal patch that inlines xsk_rcv() into __xsk_map_redirect, so
-that's why it's not showing xsk_rcv(). I'll upstream that...)
+v2 -> v3:
+* Incorporated code improvements suggested by Jonathan Lemon
 
-  41.79%  [kernel]                   [k] i40e_clean_rx_irq_zc
-  15.55%  [kernel]                   [k] __xsk_map_redirect
-   9.87%  [kernel]                   [k] xdp_do_redirect
-   6.89%  [kernel]                   [k] xsk_umem_peek_addr
-   6.37%  [kernel]                   [k] bpf_xdp_redirect_map
-   5.02%  bpf_prog_992d9ddc835e5629  [k] bpf_prog_992d9ddc835e5629
+v1 -> v2:
+* Rebased to bpf-next
+* Rewrote the code as the previous version made you blind
 
-Again, it might look weird that simple functions like
-bpf_xdp_redirect_map and the XDP program is 6% and 5%.
+Fixes: a4500432c2587cb2a ("libbpf: add support for need_wakeup flag in AF_XDP part")
+Reported-by: Eloy Degen <degeneloy@gmail.com>
+Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+---
+ tools/lib/bpf/xsk.c | 83 +++++++++++++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 71 insertions(+), 12 deletions(-)
 
-Let's dig into that. I let the xdpsock program (rxdrop) run on one
-core 22, and the ksoftirqd on core 20. Core 20 is only processing
-packets, plus the regular kernel householding. I did a processor trace
-for core 20 for 207 936 packets.
+diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
+index 9a2af44..280010c 100644
+--- a/tools/lib/bpf/xsk.c
++++ b/tools/lib/bpf/xsk.c
+@@ -73,6 +73,21 @@ struct xsk_nl_info {
+ 	int fd;
+ };
+ 
++/* Up until and including Linux 5.3 */
++struct xdp_ring_offset_v1 {
++	__u64 producer;
++	__u64 consumer;
++	__u64 desc;
++};
++
++/* Up until and including Linux 5.3 */
++struct xdp_mmap_offsets_v1 {
++	struct xdp_ring_offset_v1 rx;
++	struct xdp_ring_offset_v1 tx;
++	struct xdp_ring_offset_v1 fr;
++	struct xdp_ring_offset_v1 cr;
++};
++
+ int xsk_umem__fd(const struct xsk_umem *umem)
+ {
+ 	return umem ? umem->fd : -EINVAL;
+@@ -133,6 +148,58 @@ static int xsk_set_xdp_socket_config(struct xsk_socket_config *cfg,
+ 	return 0;
+ }
+ 
++static void xsk_mmap_offsets_v1(struct xdp_mmap_offsets *off)
++{
++	struct xdp_mmap_offsets_v1 off_v1;
++
++	/* getsockopt on a kernel <= 5.3 has no flags fields.
++	 * Copy over the offsets to the correct places in the >=5.4 format
++	 * and put the flags where they would have been on that kernel.
++	 */
++	memcpy(&off_v1, off, sizeof(off_v1));
++
++	off->rx.producer = off_v1.rx.producer;
++	off->rx.consumer = off_v1.rx.consumer;
++	off->rx.desc = off_v1.rx.desc;
++	off->rx.flags = off_v1.rx.consumer + sizeof(u32);
++
++	off->tx.producer = off_v1.tx.producer;
++	off->tx.consumer = off_v1.tx.consumer;
++	off->tx.desc = off_v1.tx.desc;
++	off->tx.flags = off_v1.tx.consumer + sizeof(u32);
++
++	off->fr.producer = off_v1.fr.producer;
++	off->fr.consumer = off_v1.fr.consumer;
++	off->fr.desc = off_v1.fr.desc;
++	off->fr.flags = off_v1.fr.consumer + sizeof(u32);
++
++	off->cr.producer = off_v1.cr.producer;
++	off->cr.consumer = off_v1.cr.consumer;
++	off->cr.desc = off_v1.cr.desc;
++	off->cr.flags = off_v1.cr.consumer + sizeof(u32);
++}
++
++static int xsk_get_mmap_offsets(int fd, struct xdp_mmap_offsets *off)
++{
++	socklen_t optlen;
++	int err;
++
++	optlen = sizeof(*off);
++	err = getsockopt(fd, SOL_XDP, XDP_MMAP_OFFSETS, off, &optlen);
++	if (err)
++		return err;
++
++	if (optlen == sizeof(*off))
++		return 0;
++
++	if (optlen == sizeof(struct xdp_mmap_offsets_v1)) {
++		xsk_mmap_offsets_v1(off);
++		return 0;
++	}
++
++	return -EINVAL;
++}
++
+ int xsk_umem__create_v0_0_4(struct xsk_umem **umem_ptr, void *umem_area,
+ 			    __u64 size, struct xsk_ring_prod *fill,
+ 			    struct xsk_ring_cons *comp,
+@@ -141,7 +208,6 @@ int xsk_umem__create_v0_0_4(struct xsk_umem **umem_ptr, void *umem_area,
+ 	struct xdp_mmap_offsets off;
+ 	struct xdp_umem_reg mr;
+ 	struct xsk_umem *umem;
+-	socklen_t optlen;
+ 	void *map;
+ 	int err;
+ 
+@@ -190,8 +256,7 @@ int xsk_umem__create_v0_0_4(struct xsk_umem **umem_ptr, void *umem_area,
+ 		goto out_socket;
+ 	}
+ 
+-	optlen = sizeof(off);
+-	err = getsockopt(umem->fd, SOL_XDP, XDP_MMAP_OFFSETS, &off, &optlen);
++	err = xsk_get_mmap_offsets(umem->fd, &off);
+ 	if (err) {
+ 		err = -errno;
+ 		goto out_socket;
+@@ -514,7 +579,6 @@ int xsk_socket__create(struct xsk_socket **xsk_ptr, const char *ifname,
+ 	struct sockaddr_xdp sxdp = {};
+ 	struct xdp_mmap_offsets off;
+ 	struct xsk_socket *xsk;
+-	socklen_t optlen;
+ 	int err;
+ 
+ 	if (!umem || !xsk_ptr || !rx || !tx)
+@@ -573,8 +637,7 @@ int xsk_socket__create(struct xsk_socket **xsk_ptr, const char *ifname,
+ 		}
+ 	}
+ 
+-	optlen = sizeof(off);
+-	err = getsockopt(xsk->fd, SOL_XDP, XDP_MMAP_OFFSETS, &off, &optlen);
++	err = xsk_get_mmap_offsets(xsk->fd, &off);
+ 	if (err) {
+ 		err = -errno;
+ 		goto out_socket;
+@@ -660,7 +723,6 @@ int xsk_socket__create(struct xsk_socket **xsk_ptr, const char *ifname,
+ int xsk_umem__delete(struct xsk_umem *umem)
+ {
+ 	struct xdp_mmap_offsets off;
+-	socklen_t optlen;
+ 	int err;
+ 
+ 	if (!umem)
+@@ -669,8 +731,7 @@ int xsk_umem__delete(struct xsk_umem *umem)
+ 	if (umem->refcount)
+ 		return -EBUSY;
+ 
+-	optlen = sizeof(off);
+-	err = getsockopt(umem->fd, SOL_XDP, XDP_MMAP_OFFSETS, &off, &optlen);
++	err = xsk_get_mmap_offsets(umem->fd, &off);
+ 	if (!err) {
+ 		munmap(umem->fill->ring - off.fr.desc,
+ 		       off.fr.desc + umem->config.fill_size * sizeof(__u64));
+@@ -688,7 +749,6 @@ void xsk_socket__delete(struct xsk_socket *xsk)
+ {
+ 	size_t desc_sz = sizeof(struct xdp_desc);
+ 	struct xdp_mmap_offsets off;
+-	socklen_t optlen;
+ 	int err;
+ 
+ 	if (!xsk)
+@@ -699,8 +759,7 @@ void xsk_socket__delete(struct xsk_socket *xsk)
+ 		close(xsk->prog_fd);
+ 	}
+ 
+-	optlen = sizeof(off);
+-	err = getsockopt(xsk->fd, SOL_XDP, XDP_MMAP_OFFSETS, &off, &optlen);
++	err = xsk_get_mmap_offsets(xsk->fd, &off);
+ 	if (!err) {
+ 		if (xsk->rx) {
+ 			munmap(xsk->rx->ring - off.rx.desc,
+-- 
+2.7.4
 
-In total it's 84,407,427 instructions, and bpf_xdp_redirect_map() is
-8,109,504 instructions, which is 9.6%. bpf_xdp_redirect_map() executes
-39 instructions for AF_XDP. As perf is reporting less than 9.6% means
-that the IPC count of that function is more than the average which
-perf-stat reports as IPC of 2.88.
-
-The BPF program executes fewer instructions than
-bpf_xdp_redirect_map(), so given that perf shows 5%, means that the
-IPC count is better than average here as well.
-
-So, it's roughly 405 instructions per packet, and with an IPC of 2.88
-that'll give ~140 cycles per packet, which on this machine
-(3,000,000,000/140) is ~21.4 Mpps. The xdpsock application reports
-21. This is sane.
-
-The TL;DR version is: 6% and 5% for bpf_xdp_redirect_map and
-bpf_prog_992d9ddc835e5629 might seem high, but it's just that the
-total number of instruction executing is fairly low. So, even though
-the functions are small in size, it will show up as non-negligible
-percentage in perf.
-
-At these speeds, really small things have an impact on
-performance. DPDK has ~50 cycles per packet.
-
-
-Bj=C3=B6rn
-
-
-
-> > The other component is the bpf_xdp_redirect_map() codepath.
-> >
-> > Let me know if it helps to collect any other data that should further h=
-elp with the perf analysis.
-> >
