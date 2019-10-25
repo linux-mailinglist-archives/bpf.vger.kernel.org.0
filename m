@@ -2,271 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D899E4CEC
-	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2019 15:56:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CBEFE4EC2
+	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2019 16:19:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505280AbfJYN4f (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 25 Oct 2019 09:56:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50932 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502245AbfJYN4f (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 25 Oct 2019 09:56:35 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 893EE222BE;
-        Fri, 25 Oct 2019 13:56:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1572011793;
-        bh=7hCaC+bxFRU1Eu5yH2PlliAuOIhMMw1O1zsTrxAdc2s=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HWIeJkrWLZXz1pezJdxo3oZP/lOG1HlG+0qqk8VVd2EwnLCkxi2DeKbT3Bt51pgKg
-         EigutokTxkQuVZbYFCtcJcrudKUrvy+sOkT3e0UExkE3PBWtHgo1j9lhyuustor3gG
-         YUP1GHTjqtRsgEK7414nB1shpk+zKEAs21lvm1XE=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Nicolas Dichtel <nicolas.dichtel@6wind.com>,
-        Lorenzo Colitti <lorenzo@google.com>,
-        Benedict Wong <benedictwong@google.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Shannon Nelson <shannon.nelson@oracle.com>,
-        Antony Antony <antony@phenome.org>,
-        Eyal Birger <eyal.birger@gmail.com>,
-        Julien Floret <julien.floret@6wind.com>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 16/37] xfrm interface: fix memory leak on creation
-Date:   Fri, 25 Oct 2019 09:55:40 -0400
-Message-Id: <20191025135603.25093-16-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191025135603.25093-1-sashal@kernel.org>
-References: <20191025135603.25093-1-sashal@kernel.org>
-MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+        id S1729743AbfJYOTG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 25 Oct 2019 10:19:06 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:42872 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729544AbfJYOTG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 25 Oct 2019 10:19:06 -0400
+Received: by mail-io1-f68.google.com with SMTP id i26so2577615iog.9;
+        Fri, 25 Oct 2019 07:19:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=2jFeG2dUcr+Q7csipkPUf6YfvtHqZfoRNXMbriXYupI=;
+        b=mmafdueEKa7k1jkCLhfmsMo7VlYyA9wSpyIts4A3m+sDCCOCJyi0AQLe1Cy739Nb9r
+         aY0Ie4Gb7MwS1bQPO253l4OJj7RgN07RnGlwPnXIHlgmR08RSYTD2A/LEbRthJ2zbcF9
+         PgSjGf2a45K/0zZptIcYq9SKqQkdMrvKzf7mgdIjjQCdrDooUV+zEvWGQtHy7xvOGNt0
+         2gf3zwEF9K3oMpXrb8H/eYt/CyNy9NZGn/f+/Dp/mnzOBxGgLkNs7mb2aNf6UdNZ3XoN
+         VHqpVyfO+maovB+bhVybGF1A0azRUQD8KAHd8yzyEpjKHXOiNW8HpFGPV4jKX3Ca27ni
+         bugw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=2jFeG2dUcr+Q7csipkPUf6YfvtHqZfoRNXMbriXYupI=;
+        b=Mp25H/eCOkn5rpr5OkqjGY3aR90/RaXHXgLQkPCOMgmjAMdNjPAe0RxUMMf4Y813bi
+         FTEHuSY6cYuKOi90pQisqGygMhNnpPIDivRukteFGmAflS2IplRkRX18KmT0sjKi7Pz4
+         RJfN6PsTlDt9bimT9Cs1Q90aLNYixFe6/j3v0UWt1U2FGCmKBlTfovcncpp6e1WaeDqb
+         UW1An8/ixFycbuByADdoq6w3jQ9gUQFjuWr2ZwEwFDzK82TXxf0ML9n3xaMMtExWQNqv
+         36fqMVsviK/4bzPpDkXHLFrSFK7HTS/N9jVmBPxxo8i4Rk8kcdzsX+7y6Mj16sRNUJJf
+         /ZKQ==
+X-Gm-Message-State: APjAAAXjXOnACStqqaixHIz+bbrzTvIU+SWQWaOjdLTJRV0fanNRxO96
+        PShhUvgEU+odh/VmWT7lE+I=
+X-Google-Smtp-Source: APXvYqx/wGZ0iiL3VvW2qhbOevq3mUSVhYVqkeqX1nFtKciqDcJKI+chDzAcMM67YScoeET3kYwrDw==
+X-Received: by 2002:a6b:ee18:: with SMTP id i24mr3877990ioh.163.1572013144337;
+        Fri, 25 Oct 2019 07:19:04 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id t16sm296728iol.12.2019.10.25.07.19.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Oct 2019 07:19:02 -0700 (PDT)
+Date:   Fri, 25 Oct 2019 07:18:55 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Jakub Sitnicki <jakub@cloudflare.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        netdev@vger.kernel.org, kernel-team@cloudflare.com
+Message-ID: <5db3044f82e10_36802aec12c585b83b@john-XPS-13-9370.notmuch>
+In-Reply-To: <87lft9ch0k.fsf@cloudflare.com>
+References: <20191022113730.29303-1-jakub@cloudflare.com>
+ <5db1d7a810bdb_5c282ada047205c08f@john-XPS-13-9370.notmuch>
+ <87lft9ch0k.fsf@cloudflare.com>
+Subject: Re: [RFC bpf-next 0/5] Extend SOCKMAP to store listening sockets
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Nicolas Dichtel <nicolas.dichtel@6wind.com>
+Jakub Sitnicki wrote:
+> On Thu, Oct 24, 2019 at 06:56 PM CEST, John Fastabend wrote:
+> > Jakub Sitnicki wrote:
+> 
+> [...]
+> 
+> >> I'm looking for feedback if there's anything fundamentally wrong with
+> >> extending SOCKMAP map type like this that I might have missed.
+> >
+> > I think this looks good. The main reason I blocked it off before is mostly
+> > because I had no use-case for it and the complication with what to do with
+> > child sockets. Clearing the psock state seems OK to me if user wants to
+> > add it back to a map they can simply grab it again from a sockops
+> > event.
+> 
+> Thanks for taking a look at the code.
+> 
+> > By the way I would eventually like to see the lookup hook return the
+> > correct type (PTR_TO_SOCKET_OR_NULL) so that the verifier "knows" the type
+> > and the socket can be used the same as if it was pulled from a sk_lookup
+> > helper.
+> 
+> Wait... you had me scratching my head there for a minute.
+> 
+> I haven't whitelisted bpf_map_lookup_elem for SOCKMAP in
+> check_map_func_compatibility so verifier won't allow lookups from BPF.
+> 
+> If we wanted to do that, I don't actually have a use-case for it, I
+> think would have to extend get_func_proto for SK_SKB and SK_REUSEPORT
+> prog types. At least that's what docs for bpf_map_lookup_elem suggest:
 
-[ Upstream commit 56c5ee1a5823e9cf5288b84ae6364cb4112f8225 ]
+Right, so its not required for your series just letting you know I will
+probably look to do this shortly. It would be useful for some use cases
+we have.
 
-The following commands produce a backtrace and return an error but the xfrm
-interface is created (in the wrong netns):
-$ ip netns add foo
-$ ip netns add bar
-$ ip -n foo netns set bar 0
-$ ip -n foo link add xfrmi0 link-netnsid 0 type xfrm dev lo if_id 23
-RTNETLINK answers: Invalid argument
-$ ip -n bar link ls xfrmi0
-2: xfrmi0@lo: <NOARP,M-DOWN> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
-    link/none 00:00:00:00:00:00 brd 00:00:00:00:00:00
+> 
+> /* If kernel subsystem is allowing eBPF programs to call this function,
+>  * inside its own verifier_ops->get_func_proto() callback it should return
+>  * bpf_map_lookup_elem_proto, so that verifier can properly check the arguments
+>  *
+>  * Different map implementations will rely on rcu in map methods
+>  * lookup/update/delete, therefore eBPF programs must run under rcu lock
+>  * if program is allowed to access maps, so check rcu_read_lock_held in
+>  * all three functions.
+>  */
+> BPF_CALL_2(bpf_map_lookup_elem, struct bpf_map *, map, void *, key)
+> {
+> 	WARN_ON_ONCE(!rcu_read_lock_held());
+> 	return (unsigned long) map->ops->map_lookup_elem(map, key);
+> }
+> 
+> -Jakub
 
-Here is the backtrace:
-[   79.879174] WARNING: CPU: 0 PID: 1178 at net/core/dev.c:8172 rollback_registered_many+0x86/0x3c1
-[   79.880260] Modules linked in: xfrm_interface nfsv3 nfs_acl auth_rpcgss nfsv4 nfs lockd grace sunrpc fscache button parport_pc parport serio_raw evdev pcspkr loop ext4 crc16 mbcache jbd2 crc32c_generic ide_cd_mod ide_gd_mod cdrom ata_$
-eneric ata_piix libata scsi_mod 8139too piix psmouse i2c_piix4 ide_core 8139cp mii i2c_core floppy
-[   79.883698] CPU: 0 PID: 1178 Comm: ip Not tainted 5.2.0-rc6+ #106
-[   79.884462] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.10.2-1 04/01/2014
-[   79.885447] RIP: 0010:rollback_registered_many+0x86/0x3c1
-[   79.886120] Code: 01 e8 d7 7d c6 ff 0f 0b 48 8b 45 00 4c 8b 20 48 8d 58 90 49 83 ec 70 48 8d 7b 70 48 39 ef 74 44 8a 83 d0 04 00 00 84 c0 75 1f <0f> 0b e8 61 cd ff ff 48 b8 00 01 00 00 00 00 ad de 48 89 43 70 66
-[   79.888667] RSP: 0018:ffffc900015ab740 EFLAGS: 00010246
-[   79.889339] RAX: ffff8882353e5700 RBX: ffff8882353e56a0 RCX: ffff8882353e5710
-[   79.890174] RDX: ffffc900015ab7e0 RSI: ffffc900015ab7e0 RDI: ffff8882353e5710
-[   79.891029] RBP: ffffc900015ab7e0 R08: ffffc900015ab7e0 R09: ffffc900015ab7e0
-[   79.891866] R10: ffffc900015ab7a0 R11: ffffffff82233fec R12: ffffc900015ab770
-[   79.892728] R13: ffffffff81eb7ec0 R14: ffff88822ed6cf00 R15: 00000000ffffffea
-[   79.893557] FS:  00007ff350f31740(0000) GS:ffff888237a00000(0000) knlGS:0000000000000000
-[   79.894581] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   79.895317] CR2: 00000000006c8580 CR3: 000000022c272000 CR4: 00000000000006f0
-[   79.896137] Call Trace:
-[   79.896464]  unregister_netdevice_many+0x12/0x6c
-[   79.896998]  __rtnl_newlink+0x6e2/0x73b
-[   79.897446]  ? __kmalloc_node_track_caller+0x15e/0x185
-[   79.898039]  ? pskb_expand_head+0x5f/0x1fe
-[   79.898556]  ? stack_access_ok+0xd/0x2c
-[   79.899009]  ? deref_stack_reg+0x12/0x20
-[   79.899462]  ? stack_access_ok+0xd/0x2c
-[   79.899927]  ? stack_access_ok+0xd/0x2c
-[   79.900404]  ? __module_text_address+0x9/0x4f
-[   79.900910]  ? is_bpf_text_address+0x5/0xc
-[   79.901390]  ? kernel_text_address+0x67/0x7b
-[   79.901884]  ? __kernel_text_address+0x1a/0x25
-[   79.902397]  ? unwind_get_return_address+0x12/0x23
-[   79.903122]  ? __cmpxchg_double_slab.isra.37+0x46/0x77
-[   79.903772]  rtnl_newlink+0x43/0x56
-[   79.904217]  rtnetlink_rcv_msg+0x200/0x24c
-
-In fact, each time a xfrm interface was created, a netdev was allocated
-by __rtnl_newlink()/rtnl_create_link() and then another one by
-xfrmi_newlink()/xfrmi_create(). Only the second one was registered, it's
-why the previous commands produce a backtrace: dev_change_net_namespace()
-was called on a netdev with reg_state set to NETREG_UNINITIALIZED (the
-first one).
-
-CC: Lorenzo Colitti <lorenzo@google.com>
-CC: Benedict Wong <benedictwong@google.com>
-CC: Steffen Klassert <steffen.klassert@secunet.com>
-CC: Shannon Nelson <shannon.nelson@oracle.com>
-CC: Antony Antony <antony@phenome.org>
-CC: Eyal Birger <eyal.birger@gmail.com>
-Fixes: f203b76d7809 ("xfrm: Add virtual xfrm interfaces")
-Reported-by: Julien Floret <julien.floret@6wind.com>
-Signed-off-by: Nicolas Dichtel <nicolas.dichtel@6wind.com>
-Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- net/xfrm/xfrm_interface.c | 98 +++++++++++----------------------------
- 1 file changed, 28 insertions(+), 70 deletions(-)
-
-diff --git a/net/xfrm/xfrm_interface.c b/net/xfrm/xfrm_interface.c
-index 555ee2aca6c01..e1265fda30351 100644
---- a/net/xfrm/xfrm_interface.c
-+++ b/net/xfrm/xfrm_interface.c
-@@ -133,7 +133,7 @@ static void xfrmi_dev_free(struct net_device *dev)
- 	free_percpu(dev->tstats);
- }
- 
--static int xfrmi_create2(struct net_device *dev)
-+static int xfrmi_create(struct net_device *dev)
- {
- 	struct xfrm_if *xi = netdev_priv(dev);
- 	struct net *net = dev_net(dev);
-@@ -156,54 +156,7 @@ static int xfrmi_create2(struct net_device *dev)
- 	return err;
- }
- 
--static struct xfrm_if *xfrmi_create(struct net *net, struct xfrm_if_parms *p)
--{
--	struct net_device *dev;
--	struct xfrm_if *xi;
--	char name[IFNAMSIZ];
--	int err;
--
--	if (p->name[0]) {
--		strlcpy(name, p->name, IFNAMSIZ);
--	} else {
--		err = -EINVAL;
--		goto failed;
--	}
--
--	dev = alloc_netdev(sizeof(*xi), name, NET_NAME_UNKNOWN, xfrmi_dev_setup);
--	if (!dev) {
--		err = -EAGAIN;
--		goto failed;
--	}
--
--	dev_net_set(dev, net);
--
--	xi = netdev_priv(dev);
--	xi->p = *p;
--	xi->net = net;
--	xi->dev = dev;
--	xi->phydev = dev_get_by_index(net, p->link);
--	if (!xi->phydev) {
--		err = -ENODEV;
--		goto failed_free;
--	}
--
--	err = xfrmi_create2(dev);
--	if (err < 0)
--		goto failed_dev_put;
--
--	return xi;
--
--failed_dev_put:
--	dev_put(xi->phydev);
--failed_free:
--	free_netdev(dev);
--failed:
--	return ERR_PTR(err);
--}
--
--static struct xfrm_if *xfrmi_locate(struct net *net, struct xfrm_if_parms *p,
--				   int create)
-+static struct xfrm_if *xfrmi_locate(struct net *net, struct xfrm_if_parms *p)
- {
- 	struct xfrm_if __rcu **xip;
- 	struct xfrm_if *xi;
-@@ -211,17 +164,11 @@ static struct xfrm_if *xfrmi_locate(struct net *net, struct xfrm_if_parms *p,
- 
- 	for (xip = &xfrmn->xfrmi[0];
- 	     (xi = rtnl_dereference(*xip)) != NULL;
--	     xip = &xi->next) {
--		if (xi->p.if_id == p->if_id) {
--			if (create)
--				return ERR_PTR(-EEXIST);
--
-+	     xip = &xi->next)
-+		if (xi->p.if_id == p->if_id)
- 			return xi;
--		}
--	}
--	if (!create)
--		return ERR_PTR(-ENODEV);
--	return xfrmi_create(net, p);
-+
-+	return NULL;
- }
- 
- static void xfrmi_dev_uninit(struct net_device *dev)
-@@ -689,21 +636,33 @@ static int xfrmi_newlink(struct net *src_net, struct net_device *dev,
- 			struct netlink_ext_ack *extack)
- {
- 	struct net *net = dev_net(dev);
--	struct xfrm_if_parms *p;
-+	struct xfrm_if_parms p;
- 	struct xfrm_if *xi;
-+	int err;
- 
--	xi = netdev_priv(dev);
--	p = &xi->p;
--
--	xfrmi_netlink_parms(data, p);
-+	xfrmi_netlink_parms(data, &p);
- 
- 	if (!tb[IFLA_IFNAME])
- 		return -EINVAL;
- 
--	nla_strlcpy(p->name, tb[IFLA_IFNAME], IFNAMSIZ);
-+	nla_strlcpy(p.name, tb[IFLA_IFNAME], IFNAMSIZ);
- 
--	xi = xfrmi_locate(net, p, 1);
--	return PTR_ERR_OR_ZERO(xi);
-+	xi = xfrmi_locate(net, &p);
-+	if (xi)
-+		return -EEXIST;
-+
-+	xi = netdev_priv(dev);
-+	xi->p = p;
-+	xi->net = net;
-+	xi->dev = dev;
-+	xi->phydev = dev_get_by_index(net, p.link);
-+	if (!xi->phydev)
-+		return -ENODEV;
-+
-+	err = xfrmi_create(dev);
-+	if (err < 0)
-+		dev_put(xi->phydev);
-+	return err;
- }
- 
- static void xfrmi_dellink(struct net_device *dev, struct list_head *head)
-@@ -720,9 +679,8 @@ static int xfrmi_changelink(struct net_device *dev, struct nlattr *tb[],
- 
- 	xfrmi_netlink_parms(data, &xi->p);
- 
--	xi = xfrmi_locate(net, &xi->p, 0);
--
--	if (IS_ERR_OR_NULL(xi)) {
-+	xi = xfrmi_locate(net, &xi->p);
-+	if (!xi) {
- 		xi = netdev_priv(dev);
- 	} else {
- 		if (xi->dev != dev)
--- 
-2.20.1
 
