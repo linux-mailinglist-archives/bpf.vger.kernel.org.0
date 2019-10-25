@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B27AE5360
-	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2019 20:09:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04DA4E5347
+	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2019 20:09:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733185AbfJYSIp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 25 Oct 2019 14:08:45 -0400
-Received: from mail-pl1-f202.google.com ([209.85.214.202]:55743 "EHLO
-        mail-pl1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733155AbfJYSIo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 25 Oct 2019 14:08:44 -0400
-Received: by mail-pl1-f202.google.com with SMTP id g11so1986508plm.22
-        for <bpf@vger.kernel.org>; Fri, 25 Oct 2019 11:08:44 -0700 (PDT)
+        id S1733247AbfJYSIt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 25 Oct 2019 14:08:49 -0400
+Received: from mail-pg1-f201.google.com ([209.85.215.201]:46153 "EHLO
+        mail-pg1-f201.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733221AbfJYSIs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 25 Oct 2019 14:08:48 -0400
+Received: by mail-pg1-f201.google.com with SMTP id 195so2351768pgc.13
+        for <bpf@vger.kernel.org>; Fri, 25 Oct 2019 11:08:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=2S2DsvKndhCCCwXhy7APxIUiBul3NbHlVg5iB3GS6wI=;
-        b=S1GOx2chJq005n3l26PE/OxzhX5C+hRjXWDeFhCkywyuslxoRAeqypOqIuChfSPfUu
-         NA1KhxahOriQwx+Z0BGci3W2BvxgOZ4rdrGOZxI1SKIQSknC8epGu4qXsv/k893YtYdg
-         WpOhSw/4+Afdl6vLLCjgFzadtYVTPJe27sil2puX6SEQfWnaOqwv913miQpe9jhpgNVP
-         IwZ+wOOqqRJZaO2uGGzu2DukYz3QSOj4FjyMPSnCsMFkongN9d6l+UzyX9w+4bZESB6O
-         tq6e2DSiaqb5XaJ+mIvS6WrlxxKexhmJKDP+A/AIzZiyYL3a3f8E1zVVOEwkFpBnODLK
-         Q0aA==
+        bh=Ozw9D+vclIFM2icN5y6LJ8c4+4sMg5YbQ5WcIa5mPKI=;
+        b=lTwv/eB1vvUrtK55Es+3jXhBGjnnYgmNWQK59Qb/+YzRNjqlhFS3AYPxqPH4v1iXi5
+         eprA7oVUZ5OKMWCbnQ9m0qyj2I+eV8HltanVFKk3jKF8zieUgcjaJjFvZt1rOCzRZx58
+         qommgWmHtuXi1KvnF8HhzO6l+0SPG5Aiyrjpcaekl4bCNMhMJSNyOMlRr+5i0mayny0/
+         K4XLHkUMuoTOsLa8iYrtm30WMINkAmKuaUtTGvpBP9T+PtzjAZgciGR4zssanoipDQOt
+         kZ/LBQyEqgDQYtBsojKIXrIquVaKqm3Qjng2pB10Lz5obqWKr0tfQ8Wcs+ap/waXBSlv
+         2nPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=2S2DsvKndhCCCwXhy7APxIUiBul3NbHlVg5iB3GS6wI=;
-        b=TEq3LkDI4hg10IWwh0c91wQdYGlcWhfKt74inIsBKYf6R38GXQlEf7K5tHV7RpWxU1
-         doP07XN4q4xQEA2k83wFTBf+eS11ZJgGzMGYZQjjc1WMX2f81vNhDPo1QWzy4gEUerzv
-         rHw1GAFbVOPQjrgFO7Kx1pe91TifZ1hd/blGOCt47VXuh8NdMHe9/o+FFPxVEBs7Hxgf
-         I+DelevL3WzfziURBBK4PnrMdJeXzUVlWNdbYY+RDpTHqfKVG4B0meXEah70uwcWxdyi
-         r2jLJl+nRW9IFTmuieSP7sJYSi5VXgf5nu0B0GYUk7qUhM+itd8Nl90ENnUgbHyJOAJG
-         JDmg==
-X-Gm-Message-State: APjAAAXG6/SRubcE3QTvhng6+l1+oSsYM7KFkXjEg0vT6225sw4IKX5W
-        NbSeflPn5bOjU96gqhpFwrvETmcKqYUT
-X-Google-Smtp-Source: APXvYqwCiOCxWKogyeiMwYvwOtugEYW5dgD9xy0gca9fx0LItS/FqQFuYGbkyTwUtw9zrUcH6p/Wu4erFpVv
-X-Received: by 2002:a63:e60b:: with SMTP id g11mr3770780pgh.119.1572026923546;
- Fri, 25 Oct 2019 11:08:43 -0700 (PDT)
-Date:   Fri, 25 Oct 2019 11:08:21 -0700
+        bh=Ozw9D+vclIFM2icN5y6LJ8c4+4sMg5YbQ5WcIa5mPKI=;
+        b=EsJeWi7Y6JdAIGqgor17K+0FFjnexmocVm8EpaoLlpLkVU4kjNoC50PRDbUeV1q6hr
+         6iNlRm8w7AlCKczWRy7HjlAoFTmE/KYv43o/qnn4b+47LiH/LrZkbcpGMUz7Mw9nmBLz
+         Pi7hOTpoNZ+TYtDTx3i8y6oKKQ5Fg/LlSikJhpzJXR1Pw1DixPV9wDgAcJfwn5dvqbky
+         NOpk3dLB+5fo639jXQA5mE0yIQLWobzTR0GiK1KsTZoahSxdF/dnDcsQhQ+d+WDCLgLQ
+         Qix6vIetDnUAiozwKMcnbk7k5R5q6/GjUKTNB2ffxiA6CNhfXT4Hv/DajRVLSDQ3ElMD
+         +/uw==
+X-Gm-Message-State: APjAAAWMuICwiqPTEpYrVJYoV0wsA3lJ9EiexDcpubIYeBmyQG4UPVWU
+        jbwSJTau7s10j+fWAxyr01Y8roitUIcV
+X-Google-Smtp-Source: APXvYqx33NkWbQAkNP63ERssM3E3pdl09Lr04Jhh9Vw9pwW28jHSa68V3TMfScFCvranyOLpFs5J5pnqED1o
+X-Received: by 2002:a65:53ce:: with SMTP id z14mr5963399pgr.445.1572026926291;
+ Fri, 25 Oct 2019 11:08:46 -0700 (PDT)
+Date:   Fri, 25 Oct 2019 11:08:22 -0700
 In-Reply-To: <20191025180827.191916-1-irogers@google.com>
-Message-Id: <20191025180827.191916-4-irogers@google.com>
+Message-Id: <20191025180827.191916-5-irogers@google.com>
 Mime-Version: 1.0
 References: <20191024190202.109403-1-irogers@google.com> <20191025180827.191916-1-irogers@google.com>
 X-Mailer: git-send-email 2.24.0.rc0.303.g954a862665-goog
-Subject: [PATCH v4 3/9] perf tools: avoid a malloc for array events
+Subject: [PATCH v4 4/9] perf tools: splice events onto evlist even on error
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -74,36 +74,48 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Use realloc rather than malloc+memcpy to possibly avoid a memory
-allocation when appending array elements.
+If event parsing fails the event list is leaked, instead splice the list
+onto the out result and let the caller cleanup.
+
+An example input for parse_events found by libFuzzer that reproduces
+this memory leak is 'm{'.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/parse-events.y | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ tools/perf/util/parse-events.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
-diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
-index 5863acb34780..ffa1a1b63796 100644
---- a/tools/perf/util/parse-events.y
-+++ b/tools/perf/util/parse-events.y
-@@ -689,14 +689,12 @@ array_terms ',' array_term
- 	struct parse_events_array new_array;
+diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
+index c516d0cce946..4c4c6f3e866a 100644
+--- a/tools/perf/util/parse-events.c
++++ b/tools/perf/util/parse-events.c
+@@ -1952,15 +1952,20 @@ int parse_events(struct evlist *evlist, const char *str,
  
- 	new_array.nr_ranges = $1.nr_ranges + $3.nr_ranges;
--	new_array.ranges = malloc(sizeof(new_array.ranges[0]) *
--				  new_array.nr_ranges);
-+	new_array.ranges = realloc($1.ranges,
-+				sizeof(new_array.ranges[0]) *
-+				new_array.nr_ranges);
- 	ABORT_ON(!new_array.ranges);
--	memcpy(&new_array.ranges[0], $1.ranges,
--	       $1.nr_ranges * sizeof(new_array.ranges[0]));
- 	memcpy(&new_array.ranges[$1.nr_ranges], $3.ranges,
- 	       $3.nr_ranges * sizeof(new_array.ranges[0]));
--	free($1.ranges);
- 	free($3.ranges);
- 	$$ = new_array;
- }
+ 	ret = parse_events__scanner(str, &parse_state, PE_START_EVENTS);
+ 	perf_pmu__parse_cleanup();
++
++	if (!ret && list_empty(&parse_state.list)) {
++		WARN_ONCE(true, "WARNING: event parser found nothing\n");
++		return -1;
++	}
++
++	/*
++	 * Add list to the evlist even with errors to allow callers to clean up.
++	 */
++	perf_evlist__splice_list_tail(evlist, &parse_state.list);
++
+ 	if (!ret) {
+ 		struct evsel *last;
+ 
+-		if (list_empty(&parse_state.list)) {
+-			WARN_ONCE(true, "WARNING: event parser found nothing\n");
+-			return -1;
+-		}
+-
+-		perf_evlist__splice_list_tail(evlist, &parse_state.list);
+ 		evlist->nr_groups += parse_state.nr_groups;
+ 		last = evlist__last(evlist);
+ 		last->cmdline_group_boundary = true;
 -- 
 2.24.0.rc0.303.g954a862665-goog
 
