@@ -2,218 +2,173 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F068E45B3
-	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2019 10:27:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8CFCE46A3
+	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2019 11:07:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438009AbfJYI12 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 25 Oct 2019 04:27:28 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:60168 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2438006AbfJYI12 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 25 Oct 2019 04:27:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1571992047;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qcI5t6CsVJQabA12BdZ1TYYosDenntzCg3SsjvCibXY=;
-        b=JhPv5ImWGuCDMRheD6A3eWczLHOSi1FyBaB9mBHTG2Yn2o0CY42HMH4x9Cswj8/WEQrGlx
-        2l6Pid07J3l5WlGGpu7LRqlKGXC7fkkn9rTmNWBlyxkiB5kkhcV47TjBaCN/3asObIOiiw
-        JkQDTe8OUU2iX8Z7CxzCok06QwoEpto=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-17-5c6reNZEMcu2u6L7u5k0yQ-1; Fri, 25 Oct 2019 04:27:21 -0400
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D615B1800E00;
-        Fri, 25 Oct 2019 08:27:18 +0000 (UTC)
-Received: from krava (unknown [10.43.17.61])
-        by smtp.corp.redhat.com (Postfix) with SMTP id B8291194B6;
-        Fri, 25 Oct 2019 08:27:14 +0000 (UTC)
-Date:   Fri, 25 Oct 2019 10:27:14 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH v3 6/9] perf tools: add destructors for parse event terms
-Message-ID: <20191025082714.GH31679@krava>
-References: <20191023005337.196160-1-irogers@google.com>
- <20191024190202.109403-1-irogers@google.com>
- <20191024190202.109403-7-irogers@google.com>
+        id S2438276AbfJYJHn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 25 Oct 2019 05:07:43 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:42222 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2438275AbfJYJHm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 25 Oct 2019 05:07:42 -0400
+Received: by mail-qt1-f193.google.com with SMTP id w14so2167732qto.9;
+        Fri, 25 Oct 2019 02:07:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=BNqUVl5JhXUGBG9kreQv4HQ6twYK66HGwyTPZIQqshk=;
+        b=Rci22rH4VHCMDPeHpym/2wdi2vheAEio8Qg2GpN9W4xFixcqI4UzxmQaU+6Zv7gkd4
+         wphtW8txmNMgXPwyuKVzmGd/qbhARLp/t6w1N3FMo0WubfD2rP1PlNPF9TbzTcx7Ml/r
+         aKi+87vNx+GvJuBi3fXA30V8uL7HUYY9dM5ANg7e3txJ0SZSf7YU8mSBiNV7kX1Gavv7
+         9zKilWJABoRsS7EUUEjrXoPIVt71yPShD2oUu6Z8b8aN96cZUA8GoA4ulgnZg/k02z//
+         joaehTqK0VepMEDvL7Y9sI4SzPIdmT6P3zIKZ1HH6C4McvsPE49Na6ukY5uq1YJL8/1x
+         iZGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=BNqUVl5JhXUGBG9kreQv4HQ6twYK66HGwyTPZIQqshk=;
+        b=HQdGmJ4OhNOpZz9LkSzywCPXKTKM0QumPQjuxaY/DgW9pVEhvLRmtW2PAdRJtBOYX5
+         bS8EFdgni4Dgyb8jXW7Cvonb3sVXqeYun80U4oZysCY3KGef//mGhJpii9/ilvMD833O
+         p77LyWKHlpeEmv4fBw3/seyb7HDdfE2vFVVZugNFfI0ZMz0kPVl2J4Qtpa7G67azSJcl
+         66Ec3LxCmbrYQTCJd9i8baw+F7W9HF983rWZ2Irou1tgZlLk9pMKJMaaB0C5MjWOra5k
+         U4EIPkuXSTqgFkuZAddwSBTcP3ilk0fEpDJ+RSrSXnfqv+cGI5L12xOAUncOGVRZov8H
+         +tmQ==
+X-Gm-Message-State: APjAAAWp5uYW/D0ecfw9lAC+BZP2xL/dMXR6BtAP8738I6f7cTJ9U49E
+        /1GTyjF0WwZzLW3u67VppW9ZwkctD1qbCHS+mR8=
+X-Google-Smtp-Source: APXvYqyxqvo8WixxaonOOhUTCm5R01BrvfpXOlJUiwbEp++GSuah1ZRQf06SzbZ+x5qTV0X3MFfTGRdDDH1b3jmZ0QY=
+X-Received: by 2002:ac8:2a5d:: with SMTP id l29mr2069242qtl.36.1571994461390;
+ Fri, 25 Oct 2019 02:07:41 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20191024190202.109403-7-irogers@google.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-X-MC-Unique: 5c6reNZEMcu2u6L7u5k0yQ-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=WINDOWS-1252
+References: <1570515415-45593-3-git-send-email-sridhar.samudrala@intel.com>
+ <CAADnVQ+XxmvY0cs8MYriMMd7=2TSEm4zCtB+fs2vkwdUY6UgAQ@mail.gmail.com>
+ <3ED8E928C4210A4289A677D2FEB48235140134CE@fmsmsx111.amr.corp.intel.com>
+ <2bc26acd-170d-634e-c066-71557b2b3e4f@intel.com> <CAADnVQ+qq6RLMjh5bB1ugXP5p7vYM2F1fLGFQ2pL=2vhCLiBdA@mail.gmail.com>
+ <2032d58c-916f-d26a-db14-bd5ba6ad92b9@intel.com> <CAADnVQ+CH1YM52+LfybLS+NK16414Exrvk1QpYOF=HaT4KRaxg@mail.gmail.com>
+ <acf69635-5868-f876-f7da-08954d1f690e@intel.com> <20191019001449.fk3gnhih4nx724pm@ast-mbp>
+ <6f281517-3785-ce46-65de-e2f78576783b@intel.com> <20191019022525.w5xbwkav2cpqkfwi@ast-mbp>
+ <877e4zd8py.fsf@toke.dk> <CAJ+HfNj07FwmU2GGpUYw56PRwu4pHyHNSkbCOogbMB5zB2QqWA@mail.gmail.com>
+ <7642a460-9ba3-d9f7-6cf8-aac45c7eef0d@intel.com> <CAADnVQ+jiEO+jnFR-G=xG=zz7UOSBieZbc1NN=sSnAwvPaJjUQ@mail.gmail.com>
+ <8956a643-0163-5345-34fa-3566762a2b7d@intel.com> <CAADnVQKwnMChzeGaC66A99cHn5szB4hPZaGXq8JAhd8sjrdGeA@mail.gmail.com>
+In-Reply-To: <CAADnVQKwnMChzeGaC66A99cHn5szB4hPZaGXq8JAhd8sjrdGeA@mail.gmail.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Fri, 25 Oct 2019 11:07:29 +0200
+Message-ID: <CAJ+HfNg8NMS7k+f4K3PH-cjA9XFbBbEetfZT55J0ntZejxV-PQ@mail.gmail.com>
+Subject: Re: [Intel-wired-lan] FW: [PATCH bpf-next 2/4] xsk: allow AF_XDP
+ sockets to receive packets directly from a queue
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     "Samudrala, Sridhar" <sridhar.samudrala@intel.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Netdev <netdev@vger.kernel.org>,
+        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
+        "Herbert, Tom" <tom.herbert@intel.com>,
+        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 24, 2019 at 12:01:59PM -0700, Ian Rogers wrote:
-> If parsing fails then destructors are ran to clean the up the stack.
-> Rename the head union member to make the term and evlist use cases more
-> distinct, this simplifies matching the correct destructor.
+On Wed, 23 Oct 2019 at 19:42, Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Tue, Oct 22, 2019 at 12:06 PM Samudrala, Sridhar
+> <sridhar.samudrala@intel.com> wrote:
+> >
+> > OK. Here is another data point that shows the perf report with the same=
+ test but CPU mitigations
+> > turned OFF. Here bpf_prog overhead goes down from almost (10.18 + 4.51)=
+% to (3.23 + 1.44%).
+> >
+> >    21.40%  ksoftirqd/28     [i40e]                     [k] i40e_clean_r=
+x_irq_zc
+> >    14.13%  xdpsock          [i40e]                     [k] i40e_clean_r=
+x_irq_zc
+> >     8.33%  ksoftirqd/28     [kernel.vmlinux]           [k] xsk_rcv
+> >     6.09%  ksoftirqd/28     [kernel.vmlinux]           [k] xdp_do_redir=
+ect
+> >     5.19%  xdpsock          xdpsock                    [.] main
+> >     3.48%  ksoftirqd/28     [kernel.vmlinux]           [k] bpf_xdp_redi=
+rect_map
+> >     3.23%  ksoftirqd/28     bpf_prog_3c8251c7e0fef8db  [k] bpf_prog_3c8=
+251c7e0fef8db
+> >
+> > So a major component of the bpf_prog overhead seems to be due to the CP=
+U vulnerability mitigations.
+>
+> I feel that it's an incorrect conclusion because JIT is not doing
+> any retpolines (because there are no indirect calls in bpf).
+> There should be no difference in bpf_prog runtime with or without mitigat=
+ions.
+> Also you're running root, so no spectre mitigations either.
+>
+> This 3% seems like a lot for a function that does few loads that should
+> hit d-cache and one direct call.
+> Please investigate why you're seeing this 10% cpu cost when mitigations a=
+re on.
+> perf report/annotate is the best.
+> Also please double check that you're using the latest perf.
+> Since bpf performance analysis was greatly improved several versions ago.
+> I don't think old perf will be showing bogus numbers, but better to
+> run the latest.
+>
 
-nice did not know about this.. looks like it's been in bison for some time,=
- right?
+For comparison, on my Skylake 3GHz with mitigations off. (I have one
+internal patch that inlines xsk_rcv() into __xsk_map_redirect, so
+that's why it's not showing xsk_rcv(). I'll upstream that...)
 
->=20
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/util/parse-events.y | 69 +++++++++++++++++++++++-----------
->  1 file changed, 48 insertions(+), 21 deletions(-)
->=20
-> diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-event=
-s.y
-> index 545ab7cefc20..4725b14b9db4 100644
-> --- a/tools/perf/util/parse-events.y
-> +++ b/tools/perf/util/parse-events.y
-> @@ -12,6 +12,7 @@
->  #include <stdio.h>
->  #include <linux/compiler.h>
->  #include <linux/types.h>
-> +#include <linux/zalloc.h>
->  #include "pmu.h"
->  #include "evsel.h"
->  #include "parse-events.h"
-> @@ -37,6 +38,25 @@ static struct list_head* alloc_list()
->  =09return list;
->  }
-> =20
-> +static void free_list_evsel(struct list_head* list_evsel)
-> +{
-> +=09struct perf_evsel *pos, *tmp;
-> +
-> +=09list_for_each_entry_safe(pos, tmp, list_evsel, node) {
-> +=09=09list_del_init(&pos->node);
-> +=09=09perf_evsel__delete(pos);
-> +=09}
-> +=09free(list_evsel);
+  41.79%  [kernel]                   [k] i40e_clean_rx_irq_zc
+  15.55%  [kernel]                   [k] __xsk_map_redirect
+   9.87%  [kernel]                   [k] xdp_do_redirect
+   6.89%  [kernel]                   [k] xsk_umem_peek_addr
+   6.37%  [kernel]                   [k] bpf_xdp_redirect_map
+   5.02%  bpf_prog_992d9ddc835e5629  [k] bpf_prog_992d9ddc835e5629
 
-I think you need to iterate 'struct evsel' in here, not 'struct perf_evsel'
+Again, it might look weird that simple functions like
+bpf_xdp_redirect_map and the XDP program is 6% and 5%.
 
-should be:
+Let's dig into that. I let the xdpsock program (rxdrop) run on one
+core 22, and the ksoftirqd on core 20. Core 20 is only processing
+packets, plus the regular kernel householding. I did a processor trace
+for core 20 for 207 936 packets.
 
-=09struct evsel *evsel, *tmp;
+In total it's 84,407,427 instructions, and bpf_xdp_redirect_map() is
+8,109,504 instructions, which is 9.6%. bpf_xdp_redirect_map() executes
+39 instructions for AF_XDP. As perf is reporting less than 9.6% means
+that the IPC count of that function is more than the average which
+perf-stat reports as IPC of 2.88.
 
-=09list_for_each_entry_safe(evsel, tmp, list_evsel, core.node) {
-=09=09list_del_init(&evsel->core.node);
-=09=09evsel__delete(evsel);
-=09}
+The BPF program executes fewer instructions than
+bpf_xdp_redirect_map(), so given that perf shows 5%, means that the
+IPC count is better than average here as well.
 
-thanks,
-jirka
+So, it's roughly 405 instructions per packet, and with an IPC of 2.88
+that'll give ~140 cycles per packet, which on this machine
+(3,000,000,000/140) is ~21.4 Mpps. The xdpsock application reports
+21. This is sane.
 
-> +}
-> +
-> +static void free_term(struct parse_events_term *term)
-> +{
-> +=09if (term->type_val =3D=3D PARSE_EVENTS__TERM_TYPE_STR)
-> +=09=09free(term->val.str);
-> +=09zfree(&term->array.ranges);
-> +=09free(term);
-> +}
-> +
->  static void inc_group_count(struct list_head *list,
->  =09=09       struct parse_events_state *parse_state)
->  {
-> @@ -66,6 +86,7 @@ static void inc_group_count(struct list_head *list,
->  %type <num> PE_VALUE_SYM_TOOL
->  %type <num> PE_RAW
->  %type <num> PE_TERM
-> +%type <num> value_sym
->  %type <str> PE_NAME
->  %type <str> PE_BPF_OBJECT
->  %type <str> PE_BPF_SOURCE
-> @@ -76,37 +97,43 @@ static void inc_group_count(struct list_head *list,
->  %type <str> PE_EVENT_NAME
->  %type <str> PE_PMU_EVENT_PRE PE_PMU_EVENT_SUF PE_KERNEL_PMU_EVENT
->  %type <str> PE_DRV_CFG_TERM
-> -%type <num> value_sym
-> -%type <head> event_config
-> -%type <head> opt_event_config
-> -%type <head> opt_pmu_config
-> +%destructor { free ($$); } <str>
->  %type <term> event_term
-> -%type <head> event_pmu
-> -%type <head> event_legacy_symbol
-> -%type <head> event_legacy_cache
-> -%type <head> event_legacy_mem
-> -%type <head> event_legacy_tracepoint
-> +%destructor { free_term ($$); } <term>
-> +%type <list_terms> event_config
-> +%type <list_terms> opt_event_config
-> +%type <list_terms> opt_pmu_config
-> +%destructor { parse_events_terms__delete ($$); } <list_terms>
-> +%type <list_evsel> event_pmu
-> +%type <list_evsel> event_legacy_symbol
-> +%type <list_evsel> event_legacy_cache
-> +%type <list_evsel> event_legacy_mem
-> +%type <list_evsel> event_legacy_tracepoint
-> +%type <list_evsel> event_legacy_numeric
-> +%type <list_evsel> event_legacy_raw
-> +%type <list_evsel> event_bpf_file
-> +%type <list_evsel> event_def
-> +%type <list_evsel> event_mod
-> +%type <list_evsel> event_name
-> +%type <list_evsel> event
-> +%type <list_evsel> events
-> +%type <list_evsel> group_def
-> +%type <list_evsel> group
-> +%type <list_evsel> groups
-> +%destructor { free_list_evsel ($$); } <list_evsel>
->  %type <tracepoint_name> tracepoint_name
-> -%type <head> event_legacy_numeric
-> -%type <head> event_legacy_raw
-> -%type <head> event_bpf_file
-> -%type <head> event_def
-> -%type <head> event_mod
-> -%type <head> event_name
-> -%type <head> event
-> -%type <head> events
-> -%type <head> group_def
-> -%type <head> group
-> -%type <head> groups
-> +%destructor { free ($$.sys); free ($$.event); } <tracepoint_name>
->  %type <array> array
->  %type <array> array_term
->  %type <array> array_terms
-> +%destructor { free ($$.ranges); } <array>
-> =20
->  %union
->  {
->  =09char *str;
->  =09u64 num;
-> -=09struct list_head *head;
-> +=09struct list_head *list_evsel;
-> +=09struct list_head *list_terms;
->  =09struct parse_events_term *term;
->  =09struct tracepoint_name {
->  =09=09char *sys;
-> --=20
-> 2.23.0.866.gb869b98d4c-goog
->=20
+The TL;DR version is: 6% and 5% for bpf_xdp_redirect_map and
+bpf_prog_992d9ddc835e5629 might seem high, but it's just that the
+total number of instruction executing is fairly low. So, even though
+the functions are small in size, it will show up as non-negligible
+percentage in perf.
 
+At these speeds, really small things have an impact on
+performance. DPDK has ~50 cycles per packet.
+
+
+Bj=C3=B6rn
+
+
+
+> > The other component is the bpf_xdp_redirect_map() codepath.
+> >
+> > Let me know if it helps to collect any other data that should further h=
+elp with the perf analysis.
+> >
