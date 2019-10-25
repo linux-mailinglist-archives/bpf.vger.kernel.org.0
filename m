@@ -2,119 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 44355E4441
-	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2019 09:19:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28A67E44BC
+	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2019 09:43:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406797AbfJYHTK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 25 Oct 2019 03:19:10 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:41199 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733140AbfJYHTK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 25 Oct 2019 03:19:10 -0400
-Received: by mail-pf1-f196.google.com with SMTP id q7so964190pfh.8;
-        Fri, 25 Oct 2019 00:19:10 -0700 (PDT)
+        id S2407488AbfJYHnA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 25 Oct 2019 03:43:00 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:36872 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406055AbfJYHnA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 25 Oct 2019 03:43:00 -0400
+Received: by mail-qk1-f196.google.com with SMTP id u184so899925qkd.4;
+        Fri, 25 Oct 2019 00:42:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=mo8rOOqPFlG4QlkfJoaqtn8M+VuNhB7qr9CO3I9Sol8=;
-        b=onmWZbYmFNyW/W17hYRLHnG/39H4xsFvpzypuaxpe2138vh0/bGEqboDtAgxfoGyHl
-         OnHtPhZqRGrfgl9VQ0zDFMbNREf2KjYWqiCgnJqufF0L8gjhfqHD5/uXVRXq6a1O6U8A
-         oMpOOo1/dsTMS7qkrsiu15uXX/fpArz5NEKhhwDqMRmmo0H9EB7BK1qFBqzVlhZGiE2+
-         dPCgjOkQanFyeVsJcN0cUCuYoGWGAWhLoYPLhDzxOH2BiFG797tUiasNxGrMhILCrw0H
-         V5tTYe5yxoRbBbEe1bpEKFSjbhY6W0kgoEGXwiP8LTk2qC1g6qZOkLFqj9OJJ+H3Ic/S
-         LOqw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=eCMciiCDbX8jb8plKVhdLrZ15B5tJHlk2Aev+kt9I0Y=;
+        b=OIySZeld5ZznaaMF7UAE9qMFtXh1IB2VRU3p1eJPKquocjhrD2MrZwKu+w4EUj4Ewb
+         /PL29wNJp5woqhAUq8cZJI71qSvNwE0zrmdgh7wRhnaVF0v8YNox2icBdhgux7J04Xop
+         7QW7Dx4e51m46raceMTlDq0B5EE0gmUyNLjjafvUFVyKfvkFbbFA2xrUBiAuumet8wkV
+         nsGOqYUJYdazJ7v4phthGuM3/q//fRcybEWgwuUD+h2qxyBN5n6tqT/a/NX5/hqWHLOc
+         DfOYUmKr6rwwwuGflGgx4B9fsUxKlK5oUys2BLcDdwYfxfkIHm5cju/t6M64SmFjsylv
+         X/YQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=mo8rOOqPFlG4QlkfJoaqtn8M+VuNhB7qr9CO3I9Sol8=;
-        b=tn1lUaO5THc9QH+petLf2xv+IcZps3I7hhs8GT/6mnUtoaJLGnI0czncpwvgRKv2k0
-         u9vnOVH6lGbpYqJCzxZQAieGvzPNn8/6lQh4UayhXytkQCzsrcUtt9kaSMJAEizElCt0
-         j5WeO9o/D5mlV8TUEKKBKzl5BNfwcTSg2g8erakOPvP3azNzwdR/9I+62zxsq1fW0LDJ
-         Xa0bwJamxCHI/jxguALwiruYxKqd5hBppUHjq+6j70pB9RZfCn+WCuMJYw/kXtuQXWJ6
-         hS1NsLsyfZn71cj1wlSac/DLiMoCiRbDcBoDD3Etgw3oZ9lrFXCimFc8dSYeTwKPOnzS
-         Bp9w==
-X-Gm-Message-State: APjAAAV8on93QHD0Fjj2Ag0Bdtjybk7dfi8lOU02xahovEgmBNaeb8ym
-        6XlDRrOPUfV0W9qnmOymJe8cEd6hg7Q=
-X-Google-Smtp-Source: APXvYqxYVEvur7K0NcoEgailuf8bB1/YBUuKU9e8ZQDp+SgDpuyQZgF3qckzirQdQB2nsxKlEkzIGg==
-X-Received: by 2002:a17:90a:a401:: with SMTP id y1mr2208493pjp.118.1571987949461;
-        Fri, 25 Oct 2019 00:19:09 -0700 (PDT)
-Received: from btopel-mobl.ger.intel.com (fmdmzpr04-ext.fm.intel.com. [192.55.55.39])
-        by smtp.gmail.com with ESMTPSA id t27sm1165065pfq.169.2019.10.25.00.19.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Oct 2019 00:19:09 -0700 (PDT)
-From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
-To:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        jakub.kicinski@netronome.com
-Cc:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        bpf@vger.kernel.org, magnus.karlsson@gmail.com,
-        magnus.karlsson@intel.com, toke@redhat.com
-Subject: [PATCH bpf-next v2 2/2] bpf: implement map_gen_lookup() callback for XSKMAP
-Date:   Fri, 25 Oct 2019 09:18:41 +0200
-Message-Id: <20191025071842.7724-3-bjorn.topel@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191025071842.7724-1-bjorn.topel@gmail.com>
-References: <20191025071842.7724-1-bjorn.topel@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=eCMciiCDbX8jb8plKVhdLrZ15B5tJHlk2Aev+kt9I0Y=;
+        b=LuZwwImLsEZj/MlAWWVNCtxIQ2ljY+fJwmZ2/qyQM+lCGuglywJgntnsTYXlPAj4d5
+         vZ3Z2HdKhE94VMfGy4+dDG4ePVcDmf6G/wdd2R0TWbjtZ2RdHP5yIQnn0ZdXxcE4fuKH
+         YJTiCIoH3H23qdsMqcTqOK8mXQz50UUDE4wmsneK/ixILCBUA25xxS6iQoyp8OU+M6eZ
+         poomIM8yyOTLJyyoBSTRY0baRYg0Djbjp2O4BOdaibnAkBjq5q8E2Hpru2I1AK2TLIcK
+         BD33G7scHhcElfuiU/pluQjtE6oyJkoIxkfO7+09pMPKq87JD8lkLhE18LlEO0N36bBY
+         P3iw==
+X-Gm-Message-State: APjAAAXqoYzNNrYTv1YzXF8SWvTdpCdDW7xAmUFOUd3DX4c679p7DBzL
+        M/XnwP787qlBpMgn/suAckhKiUNMsesCqYQ3zxI=
+X-Google-Smtp-Source: APXvYqz2mkOWlXqUiqJIVqOJ424SlOwwLymNgGGU85rHsFJC3Ef4nmL1rnIzPWnQWIws50w22LyxDiZyyVapjvYpdH4=
+X-Received: by 2002:a05:620a:1364:: with SMTP id d4mr1692290qkl.218.1571989379371;
+ Fri, 25 Oct 2019 00:42:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAADnVQKwnMChzeGaC66A99cHn5szB4hPZaGXq8JAhd8sjrdGeA@mail.gmail.com>
+ <68d6e154-8646-7904-f081-10ec32115496@intel.com>
+In-Reply-To: <68d6e154-8646-7904-f081-10ec32115496@intel.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Fri, 25 Oct 2019 09:42:48 +0200
+Message-ID: <CAJ+HfNigHWVk2b+UJPhdCWCTcW=Eh=yfRNHg4=Fr1mv98Pq=cA@mail.gmail.com>
+Subject: Re: [Intel-wired-lan] FW: [PATCH bpf-next 2/4] xsk: allow AF_XDP
+ sockets to receive packets directly from a queue
+To:     "Samudrala, Sridhar" <sridhar.samudrala@intel.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        bpf <bpf@vger.kernel.org>,
+        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        Netdev <netdev@vger.kernel.org>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        "Herbert, Tom" <tom.herbert@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+On Thu, 24 Oct 2019 at 20:12, Samudrala, Sridhar
+<sridhar.samudrala@intel.com> wrote:
+>
+[...]
+>
+> With mitigations ON
+> -------------------
+> Samples: 6K of event 'cycles', 4000 Hz, Event count (approx.): 5646512726
+> bpf_prog_3c8251c7e0fef8db  bpf_prog_3c8251c7e0fef8db [Percent: local peri=
+od]
+>   45.05      push   %rbp
+>    0.02      mov    %rsp,%rbp
+>    0.03      sub    $0x8,%rsp
+>   22.09      push   %rbx
 
-I gave a shot for implementing map_gen_lookup() for xskmap just to wipe
-away the tears from the bulk redirect struggle... not sure whether it's
-still needed anyway since Bjorn posted a patch where he removes the
-bpf_map_lookup_elem call from XDP program that libbpf is attaching for
-AF_XDP socks.
+[...]
 
-Let me know what you think, tested it out and seems to do the job,
-didn't check the perf difference. If that's useful, then devmap would
-have mostly the same implementation.
+>
+> Do you see any issues with this data? With mitigations ON push %rbp and p=
+ush %rbx overhead seems to
+> be pretty high.
 
-Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
----
- kernel/bpf/xskmap.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+That's sample skid from the retpoline thunk when entring the XDP
+program. Pretty expensive push otherwise! :-)
 
-diff --git a/kernel/bpf/xskmap.c b/kernel/bpf/xskmap.c
-index a83e92fe2971..62ce88e57d98 100644
---- a/kernel/bpf/xskmap.c
-+++ b/kernel/bpf/xskmap.c
-@@ -163,6 +163,22 @@ struct xdp_sock *__xsk_map_lookup_elem(struct bpf_map *map, u32 key)
- 	return xs;
- }
- 
-+static u32 xsk_map_gen_lookup(struct bpf_map *map, struct bpf_insn *insn_buf)
-+{
-+	const int ret = BPF_REG_0, mp = BPF_REG_1, index = BPF_REG_2;
-+	struct bpf_insn *insn = insn_buf;
-+
-+	*insn++ = BPF_LDX_MEM(BPF_W, ret, index, 0);
-+	*insn++ = BPF_JMP_IMM(BPF_JGE, ret, map->max_entries, 5);
-+	*insn++ = BPF_ALU64_IMM(BPF_LSH, ret, ilog2(sizeof(struct xsk_sock *)));
-+	*insn++ = BPF_ALU64_IMM(BPF_ADD, mp, offsetof(struct xsk_map, xsk_map));
-+	*insn++ = BPF_ALU64_REG(BPF_ADD, ret, mp);
-+	*insn++ = BPF_LDX_MEM(BPF_DW, ret, ret, 0);
-+	*insn++ = BPF_JMP_IMM(BPF_JA, 0, 0, 1);
-+	*insn++ = BPF_MOV64_IMM(ret, 0);
-+	return insn - insn_buf;
-+}
-+
- int __xsk_map_redirect(struct bpf_map *map, struct xdp_buff *xdp,
- 		       struct xdp_sock *xs)
- {
-@@ -303,6 +319,7 @@ const struct bpf_map_ops xsk_map_ops = {
- 	.map_free = xsk_map_free,
- 	.map_get_next_key = xsk_map_get_next_key,
- 	.map_lookup_elem = xsk_map_lookup_elem,
-+	.map_gen_lookup = xsk_map_gen_lookup,
- 	.map_lookup_elem_sys_only = xsk_map_lookup_elem_sys_only,
- 	.map_update_elem = xsk_map_update_elem,
- 	.map_delete_elem = xsk_map_delete_elem,
--- 
-2.20.1
+Another thought; Disclaimer: I'm no spectrev2 expert, and probably not
+getting the mitigations well enough. So this is me trying to swim at
+the deep end! Would it be possible to avoid the retpoline when
+entering the XDP program. At least for some XDP program that can be
+proved "safe"? If so, PeterZ's upcoming static_call could be used from
+the driver side.
 
+
+Bj=C3=B6rn
