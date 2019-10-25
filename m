@@ -2,87 +2,185 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EA06E4787
-	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2019 11:41:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3C5FE4B10
+	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2019 14:32:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436710AbfJYJlk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 25 Oct 2019 05:41:40 -0400
-Received: from mail-lj1-f171.google.com ([209.85.208.171]:36989 "EHLO
-        mail-lj1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2438737AbfJYJlk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 25 Oct 2019 05:41:40 -0400
-Received: by mail-lj1-f171.google.com with SMTP id l21so1953532lje.4
-        for <bpf@vger.kernel.org>; Fri, 25 Oct 2019 02:41:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=6NfBzBODp+mvvMTG0sObTS1pzfB38qWD7gIfxONgitA=;
-        b=yQ7gCExzdPxwkXltZC+lHDsW6hVL1LMHb6vnSzWaWs/NgO0fEFdjqjCX1kB4yKn8dy
-         Ql1/h7AuQjOhw8NI9R3ewTyQf6nZOzPCYpSxA6ih9daDMEJWImQI2cdgWxkQhgNd7FR/
-         lWM81f0OuRQ34vZCSCF3J0MrI6QeYREW0ELsM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=6NfBzBODp+mvvMTG0sObTS1pzfB38qWD7gIfxONgitA=;
-        b=H163TOch0eQ1XQQo9Q8vw6Kaou2gP1jgKtTf9eoOtcEXLWL81ZhYaKjBZesLA6XaU2
-         ghrgtqAJyaHFqWphXGW7cnTDGsmxH9qm8PzfKEk9ocMADScTv3ryjNZSuw2tg46wqn+m
-         cTFZOynlYwZm+pFM9gIjU3bSsLFGinbwX6ZNGLFJ5v9FLW89pd5InjEOMNBa3+yThL2E
-         2uTg1rJKGHZm2gCcpKagSaApKsaI3lEeXEuB89pLA6y3+isS8mw2hFnP4uGSNkjNl9Q3
-         eJa8+h60u7cpaWCBhkOSb37iFGS4rh1PBROXvPRnGZb+PMnVXeYDgbChTmnUumSunbw2
-         KSjg==
-X-Gm-Message-State: APjAAAUV8ZTx9LhZDqbF9hv8kMlBygfmUY0UJd35PiQ1F2aOghfNouK3
-        dUXW9r71a3ub5xVXfXxDZoFbzEQbXfUVvA==
-X-Google-Smtp-Source: APXvYqx42XUvXibIk8HAf3vkyMQNpwJARHxfEFCRIFuJYZ1UWBzpHnKMXcXkJFvvx1OnXzCbwb/fIw==
-X-Received: by 2002:a2e:87ca:: with SMTP id v10mr1709790ljj.43.1571996498157;
-        Fri, 25 Oct 2019 02:41:38 -0700 (PDT)
-Received: from cloudflare.com ([176.221.114.230])
-        by smtp.gmail.com with ESMTPSA id y8sm555637ljh.21.2019.10.25.02.41.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Oct 2019 02:41:37 -0700 (PDT)
-References: <20191022113730.29303-1-jakub@cloudflare.com> <20191022113730.29303-3-jakub@cloudflare.com> <5db1da20174b1_5c282ada047205c046@john-XPS-13-9370.notmuch>
-User-agent: mu4e 1.1.0; emacs 26.1
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        netdev@vger.kernel.org, kernel-team@cloudflare.com
-Subject: Re: [RFC bpf-next 2/5] bpf, sockmap: Allow inserting listening TCP sockets into SOCKMAP
-In-reply-to: <5db1da20174b1_5c282ada047205c046@john-XPS-13-9370.notmuch>
-Date:   Fri, 25 Oct 2019 11:41:36 +0200
-Message-ID: <87k18tcgbz.fsf@cloudflare.com>
+        id S2439002AbfJYMcW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 25 Oct 2019 08:32:22 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:48526 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2438954AbfJYMcW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 25 Oct 2019 08:32:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1572006741;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=g04fRvWpLJOl6APLyZDpLmq+uVvPo5Fylj6B2BnXRdA=;
+        b=Sf3zVVaKFrzshZtYJ+U6Xl6bs+xZkitajYLTybhIrD4mIVsIx8NCnTJi5806f8/6BXITAc
+        m1Y1oshe2/BuYtRQKyyoAOaZ/kgdTIVe3habp1sjCkyC3kqclxpNaPGK7NBhDtblskQHlg
+        kVrNCoHS2czF/QioE6LuehlDGSUY7hY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-75-gb1Fe7ouMZ6a8wiQmDKI7Q-1; Fri, 25 Oct 2019 08:32:17 -0400
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BF2B11800E00;
+        Fri, 25 Oct 2019 12:32:14 +0000 (UTC)
+Received: from carbon (ovpn-200-21.brq.redhat.com [10.40.200.21])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4D88960852;
+        Fri, 25 Oct 2019 12:32:05 +0000 (UTC)
+Date:   Fri, 25 Oct 2019 14:32:03 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, brouer@redhat.com
+Subject: Re: [PATCH bpf-next v2 3/4] libbpf: Support configurable pinning of
+ maps from BTF annotations
+Message-ID: <20191025143203.7e8fd0b4@carbon>
+In-Reply-To: <157192270077.234778.5965993521171571751.stgit@toke.dk>
+References: <157192269744.234778.11792009511322809519.stgit@toke.dk>
+        <157192270077.234778.5965993521171571751.stgit@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-MC-Unique: gb1Fe7ouMZ6a8wiQmDKI7Q-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 24, 2019 at 07:06 PM CEST, John Fastabend wrote:
-> Jakub Sitnicki wrote:
->> In order for SOCKMAP type to become a generic collection for storing socket
->> references we need to loosen the checks in update callback.
->>
->> Currently SOCKMAP requires the TCP socket to be in established state, which
->> prevents us from using it to keep references to listening sockets.
->>
->> Change the update pre-checks so that it is sufficient for socket to be in a
->> hash table, i.e. have a local address/port, to be inserted.
->>
->> Return -EINVAL if the condition is not met to be consistent with
->> REUSEPORT_SOCKARRY map type.
->>
->> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
->> ---
->
-> We need to also have some tests then to verify redirecting to this listen socket
-> does the correct thing. Once its in the map we can redirect (ingress or egress)
-> to it and need to be sure the semantics are sane.
+On Thu, 24 Oct 2019 15:11:40 +0200
+Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com> wrote:
 
-You're right. The redirect BPF helpers that operate on SOCMAP might be
-relying on an assumption that sockets are in established state. I need
-look into that.
+> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+>=20
+> This adds support to libbpf for setting map pinning information as part o=
+f
+> the BTF map declaration. We introduce a version new
+> bpf_object__map_pin_opts() function to pin maps based on this setting, as
+> well as a getter and setter function for the pin information that callers
+> can use after map load.
+>=20
+> The pinning type currently only supports a single PIN_BY_NAME mode, where
+> each map will be pinned by its name in a path that can be overridden, but
+> defaults to /sys/fs/bpf.
+>=20
+> The pinning options supports a 'pin_all' setting, which corresponds to th=
+e
+> old bpf_object__map_pin() function with an explicit path. In addition, th=
+e
+> function now defaults to just skipping over maps that are already
+> pinned (since the previous commit started recording this in struct
+> bpf_map). This behaviour can be turned off with the 'no_skip_pinned' opti=
+on.
+>=20
+> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> ---
+>  tools/lib/bpf/bpf_helpers.h |    6 ++
+>  tools/lib/bpf/libbpf.c      |  134 ++++++++++++++++++++++++++++++++++---=
+------
+>  tools/lib/bpf/libbpf.h      |   26 ++++++++
+>  tools/lib/bpf/libbpf.map    |    3 +
+>  4 files changed, 142 insertions(+), 27 deletions(-)
+>=20
+> diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
+> index 2203595f38c3..0c7d28292898 100644
+> --- a/tools/lib/bpf/bpf_helpers.h
+> +++ b/tools/lib/bpf/bpf_helpers.h
+> @@ -38,4 +38,10 @@ struct bpf_map_def {
+>  =09unsigned int map_flags;
+>  };
+> =20
+> +enum libbpf_pin_type {
+> +=09LIBBPF_PIN_NONE,
+> +=09/* PIN_BY_NAME: pin maps by name (in /sys/fs/bpf by default) */
+> +=09LIBBPF_PIN_BY_NAME,
+> +};
+> +
+>  #endif
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 848e6710b8e6..179c9911458d 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -226,6 +226,7 @@ struct bpf_map {
+>  =09void *priv;
+>  =09bpf_map_clear_priv_t clear_priv;
+>  =09enum libbpf_map_type libbpf_type;
+> +=09enum libbpf_pin_type pinning;
+>  =09char *pin_path;
+>  =09bool pinned;
+>  };
+> @@ -1271,6 +1272,22 @@ static int bpf_object__init_user_btf_map(struct bp=
+f_object *obj,
+>  =09=09=09}
+>  =09=09=09map->def.value_size =3D sz;
+>  =09=09=09map->btf_value_type_id =3D t->type;
+> +=09=09} else if (strcmp(name, "pinning") =3D=3D 0) {
+> +=09=09=09__u32 val;
+> +
+> +=09=09=09if (!get_map_field_int(map_name, obj->btf, def, m,
+> +=09=09=09=09=09       &val))
+> +=09=09=09=09return -EINVAL;
+> +=09=09=09pr_debug("map '%s': found pinning =3D %u.\n",
+> +=09=09=09=09 map_name, val);
+> +
+> +=09=09=09if (val !=3D LIBBPF_PIN_NONE &&
+> +=09=09=09    val !=3D LIBBPF_PIN_BY_NAME) {
+> +=09=09=09=09pr_warning("map '%s': invalid pinning value %u.\n",
+> +=09=09=09=09=09   map_name, val);
+> +=09=09=09=09return -EINVAL;
+> +=09=09=09}
+> +=09=09=09map->pinning =3D val;
+>  =09=09} else {
+>  =09=09=09if (strict) {
+>  =09=09=09=09pr_warning("map '%s': unknown field '%s'.\n",
+[...]
 
-Thanks,
-Jakub
+How does this prepare for being compatible with iproute2 pinning?
+
+iproute2 have these defines (in include/bpf_elf.h):
+
+ /* Object pinning settings */
+ #define PIN_NONE                0
+ #define PIN_OBJECT_NS           1
+ #define PIN_GLOBAL_NS           2
+
+I do know above strcmp(name, "pinning") look at BTF info 'name' and not
+directly at the ELF struct for maps.  I don't know enough about BTF
+(yet), but won't BTF automatically create a "pinning" info 'name' ???
+(with above defines as content/values)
+
+--=20
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
+From above enum:
+ LIBBPF_PIN_BY_NAME =3D 1=20
+
+iproute2 ELF map struct:
+
+/* ELF map definition */
+struct bpf_elf_map {
+        __u32 type;
+        __u32 size_key;
+        __u32 size_value;
+        __u32 max_elem;
+        __u32 flags;
+        __u32 id;
+        __u32 pinning;
+        __u32 inner_id;
+        __u32 inner_idx;
+};
 
