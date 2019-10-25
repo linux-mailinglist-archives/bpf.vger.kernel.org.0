@@ -2,220 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 01999E46E8
-	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2019 11:17:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08A5DE4711
+	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2019 11:26:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727125AbfJYJRW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 25 Oct 2019 05:17:22 -0400
-Received: from mga14.intel.com ([192.55.52.115]:15204 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726541AbfJYJRW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 25 Oct 2019 05:17:22 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 25 Oct 2019 02:17:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,228,1569308400"; 
-   d="scan'208";a="349976481"
-Received: from mkarlsso-mobl.ger.corp.intel.com (HELO VM.isw.intel.com) ([10.103.211.42])
-  by orsmga004.jf.intel.com with ESMTP; 25 Oct 2019 02:17:18 -0700
-From:   Magnus Karlsson <magnus.karlsson@intel.com>
-To:     magnus.karlsson@intel.com, bjorn.topel@intel.com, ast@kernel.org,
-        daniel@iogearbox.net, netdev@vger.kernel.org,
-        jonathan.lemon@gmail.com
-Cc:     bpf@vger.kernel.org, degeneloy@gmail.com, john.fastabend@gmail.com
-Subject: [PATCH bpf-next v3] libbpf: fix compatibility for kernels without need_wakeup
-Date:   Fri, 25 Oct 2019 11:17:15 +0200
-Message-Id: <1571995035-21889-1-git-send-email-magnus.karlsson@intel.com>
-X-Mailer: git-send-email 2.7.4
+        id S2438526AbfJYJ04 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 25 Oct 2019 05:26:56 -0400
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:32794 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2438439AbfJYJ04 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 25 Oct 2019 05:26:56 -0400
+Received: by mail-lj1-f196.google.com with SMTP id a22so1929166ljd.0
+        for <bpf@vger.kernel.org>; Fri, 25 Oct 2019 02:26:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=5YmWlMhofV9UFzyROlgUUggoCeCMirNbDKHUIreDPVU=;
+        b=OKzuRUOV39ft2lC25Neyoc6NlxLbwOIQ2yMwKhHam3NkeMXt7UZ7fe2p9nLz8pkw+Y
+         c+m76Nbk9ZlMRB5V7WW/IZj9eum8fHSYHqit3IfmZKu7ByKUIiqvOc6Ww4ej+TJaYK1t
+         0VvXciIrPNU+r0q85joL39PmfV3Zw6THCasZE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=5YmWlMhofV9UFzyROlgUUggoCeCMirNbDKHUIreDPVU=;
+        b=MozR7RCwekbaQt/xvecmBdUFyKNw1set2WDcKvVDQuoyiBeprYpheM6TnQBN7Qga3A
+         rzj/bMOnd89UGN1BXhUe4P8Z1t+3Ha9SahEGZrTZulo9mf0N8gxScNMG6dMOvUiwJOpF
+         WoPlqfkzUdcOjG7rr3fTWs3lUGYRaAyuVGNArQWW+weqR1fO3Sn83PvgOK60rXzRMLjN
+         zzLA8uZF/Rs4InPcCB+6dDuu1/7Z0i9xMoN6IaevYqnRbwoAt6U2HbGwvDYXwVD4B630
+         568humAyJJmHoSJdrrJbGz/aweqNMBu0k7DfG/Uhy0CIDAkd7YkXqETONseJDfLeG3LY
+         bF8g==
+X-Gm-Message-State: APjAAAWlWJPH+nZUZtN5d/9NHJ21zya+2qA/0c2Tg2CCDi+0ZCqPmbWS
+        cm+DttqKjiM9msZg3DTsof+h/Q==
+X-Google-Smtp-Source: APXvYqxZYJAe3juNGwBgIgGihlxIcqJ5w+jaXUwdDERJ55YbZ33AF3HYVRInu2e063vTpaUc2lkbEA==
+X-Received: by 2002:a2e:89c9:: with SMTP id c9mr1638643ljk.108.1571995612785;
+        Fri, 25 Oct 2019 02:26:52 -0700 (PDT)
+Received: from cloudflare.com ([176.221.114.230])
+        by smtp.gmail.com with ESMTPSA id 3sm537079lfq.55.2019.10.25.02.26.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Oct 2019 02:26:52 -0700 (PDT)
+References: <20191022113730.29303-1-jakub@cloudflare.com> <5db1d7a810bdb_5c282ada047205c08f@john-XPS-13-9370.notmuch>
+User-agent: mu4e 1.1.0; emacs 26.1
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        netdev@vger.kernel.org, kernel-team@cloudflare.com
+Subject: Re: [RFC bpf-next 0/5] Extend SOCKMAP to store listening sockets
+In-reply-to: <5db1d7a810bdb_5c282ada047205c08f@john-XPS-13-9370.notmuch>
+Date:   Fri, 25 Oct 2019 11:26:51 +0200
+Message-ID: <87lft9ch0k.fsf@cloudflare.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When the need_wakeup flag was added to AF_XDP, the format of the
-XDP_MMAP_OFFSETS getsockopt was extended. Code was added to the
-kernel to take care of compatibility issues arrising from running
-applications using any of the two formats. However, libbpf was
-not extended to take care of the case when the application/libbpf
-uses the new format but the kernel only supports the old
-format. This patch adds support in libbpf for parsing the old
-format, before the need_wakeup flag was added, and emulating a
-set of static need_wakeup flags that will always work for the
-application.
+On Thu, Oct 24, 2019 at 06:56 PM CEST, John Fastabend wrote:
+> Jakub Sitnicki wrote:
 
-v2 -> v3:
-* Incorporated code improvements suggested by Jonathan Lemon
+[...]
 
-v1 -> v2:
-* Rebased to bpf-next
-* Rewrote the code as the previous version made you blind
+>> I'm looking for feedback if there's anything fundamentally wrong with
+>> extending SOCKMAP map type like this that I might have missed.
+>
+> I think this looks good. The main reason I blocked it off before is mostly
+> because I had no use-case for it and the complication with what to do with
+> child sockets. Clearing the psock state seems OK to me if user wants to
+> add it back to a map they can simply grab it again from a sockops
+> event.
 
-Fixes: a4500432c2587cb2a ("libbpf: add support for need_wakeup flag in AF_XDP part")
-Reported-by: Eloy Degen <degeneloy@gmail.com>
-Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
----
- tools/lib/bpf/xsk.c | 83 +++++++++++++++++++++++++++++++++++++++++++++--------
- 1 file changed, 71 insertions(+), 12 deletions(-)
+Thanks for taking a look at the code.
 
-diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
-index 9a2af44..280010c 100644
---- a/tools/lib/bpf/xsk.c
-+++ b/tools/lib/bpf/xsk.c
-@@ -73,6 +73,21 @@ struct xsk_nl_info {
- 	int fd;
- };
- 
-+/* Up until and including Linux 5.3 */
-+struct xdp_ring_offset_v1 {
-+	__u64 producer;
-+	__u64 consumer;
-+	__u64 desc;
-+};
-+
-+/* Up until and including Linux 5.3 */
-+struct xdp_mmap_offsets_v1 {
-+	struct xdp_ring_offset_v1 rx;
-+	struct xdp_ring_offset_v1 tx;
-+	struct xdp_ring_offset_v1 fr;
-+	struct xdp_ring_offset_v1 cr;
-+};
-+
- int xsk_umem__fd(const struct xsk_umem *umem)
- {
- 	return umem ? umem->fd : -EINVAL;
-@@ -133,6 +148,58 @@ static int xsk_set_xdp_socket_config(struct xsk_socket_config *cfg,
- 	return 0;
- }
- 
-+static void xsk_mmap_offsets_v1(struct xdp_mmap_offsets *off)
-+{
-+	struct xdp_mmap_offsets_v1 off_v1;
-+
-+	/* getsockopt on a kernel <= 5.3 has no flags fields.
-+	 * Copy over the offsets to the correct places in the >=5.4 format
-+	 * and put the flags where they would have been on that kernel.
-+	 */
-+	memcpy(&off_v1, off, sizeof(off_v1));
-+
-+	off->rx.producer = off_v1.rx.producer;
-+	off->rx.consumer = off_v1.rx.consumer;
-+	off->rx.desc = off_v1.rx.desc;
-+	off->rx.flags = off_v1.rx.consumer + sizeof(u32);
-+
-+	off->tx.producer = off_v1.tx.producer;
-+	off->tx.consumer = off_v1.tx.consumer;
-+	off->tx.desc = off_v1.tx.desc;
-+	off->tx.flags = off_v1.tx.consumer + sizeof(u32);
-+
-+	off->fr.producer = off_v1.fr.producer;
-+	off->fr.consumer = off_v1.fr.consumer;
-+	off->fr.desc = off_v1.fr.desc;
-+	off->fr.flags = off_v1.fr.consumer + sizeof(u32);
-+
-+	off->cr.producer = off_v1.cr.producer;
-+	off->cr.consumer = off_v1.cr.consumer;
-+	off->cr.desc = off_v1.cr.desc;
-+	off->cr.flags = off_v1.cr.consumer + sizeof(u32);
-+}
-+
-+static int xsk_get_mmap_offsets(int fd, struct xdp_mmap_offsets *off)
-+{
-+	socklen_t optlen;
-+	int err;
-+
-+	optlen = sizeof(*off);
-+	err = getsockopt(fd, SOL_XDP, XDP_MMAP_OFFSETS, off, &optlen);
-+	if (err)
-+		return err;
-+
-+	if (optlen == sizeof(*off))
-+		return 0;
-+
-+	if (optlen == sizeof(struct xdp_mmap_offsets_v1)) {
-+		xsk_mmap_offsets_v1(off);
-+		return 0;
-+	}
-+
-+	return -EINVAL;
-+}
-+
- int xsk_umem__create_v0_0_4(struct xsk_umem **umem_ptr, void *umem_area,
- 			    __u64 size, struct xsk_ring_prod *fill,
- 			    struct xsk_ring_cons *comp,
-@@ -141,7 +208,6 @@ int xsk_umem__create_v0_0_4(struct xsk_umem **umem_ptr, void *umem_area,
- 	struct xdp_mmap_offsets off;
- 	struct xdp_umem_reg mr;
- 	struct xsk_umem *umem;
--	socklen_t optlen;
- 	void *map;
- 	int err;
- 
-@@ -190,8 +256,7 @@ int xsk_umem__create_v0_0_4(struct xsk_umem **umem_ptr, void *umem_area,
- 		goto out_socket;
- 	}
- 
--	optlen = sizeof(off);
--	err = getsockopt(umem->fd, SOL_XDP, XDP_MMAP_OFFSETS, &off, &optlen);
-+	err = xsk_get_mmap_offsets(umem->fd, &off);
- 	if (err) {
- 		err = -errno;
- 		goto out_socket;
-@@ -514,7 +579,6 @@ int xsk_socket__create(struct xsk_socket **xsk_ptr, const char *ifname,
- 	struct sockaddr_xdp sxdp = {};
- 	struct xdp_mmap_offsets off;
- 	struct xsk_socket *xsk;
--	socklen_t optlen;
- 	int err;
- 
- 	if (!umem || !xsk_ptr || !rx || !tx)
-@@ -573,8 +637,7 @@ int xsk_socket__create(struct xsk_socket **xsk_ptr, const char *ifname,
- 		}
- 	}
- 
--	optlen = sizeof(off);
--	err = getsockopt(xsk->fd, SOL_XDP, XDP_MMAP_OFFSETS, &off, &optlen);
-+	err = xsk_get_mmap_offsets(xsk->fd, &off);
- 	if (err) {
- 		err = -errno;
- 		goto out_socket;
-@@ -660,7 +723,6 @@ int xsk_socket__create(struct xsk_socket **xsk_ptr, const char *ifname,
- int xsk_umem__delete(struct xsk_umem *umem)
- {
- 	struct xdp_mmap_offsets off;
--	socklen_t optlen;
- 	int err;
- 
- 	if (!umem)
-@@ -669,8 +731,7 @@ int xsk_umem__delete(struct xsk_umem *umem)
- 	if (umem->refcount)
- 		return -EBUSY;
- 
--	optlen = sizeof(off);
--	err = getsockopt(umem->fd, SOL_XDP, XDP_MMAP_OFFSETS, &off, &optlen);
-+	err = xsk_get_mmap_offsets(umem->fd, &off);
- 	if (!err) {
- 		munmap(umem->fill->ring - off.fr.desc,
- 		       off.fr.desc + umem->config.fill_size * sizeof(__u64));
-@@ -688,7 +749,6 @@ void xsk_socket__delete(struct xsk_socket *xsk)
- {
- 	size_t desc_sz = sizeof(struct xdp_desc);
- 	struct xdp_mmap_offsets off;
--	socklen_t optlen;
- 	int err;
- 
- 	if (!xsk)
-@@ -699,8 +759,7 @@ void xsk_socket__delete(struct xsk_socket *xsk)
- 		close(xsk->prog_fd);
- 	}
- 
--	optlen = sizeof(off);
--	err = getsockopt(xsk->fd, SOL_XDP, XDP_MMAP_OFFSETS, &off, &optlen);
-+	err = xsk_get_mmap_offsets(xsk->fd, &off);
- 	if (!err) {
- 		if (xsk->rx) {
- 			munmap(xsk->rx->ring - off.rx.desc,
--- 
-2.7.4
+> By the way I would eventually like to see the lookup hook return the
+> correct type (PTR_TO_SOCKET_OR_NULL) so that the verifier "knows" the type
+> and the socket can be used the same as if it was pulled from a sk_lookup
+> helper.
 
+Wait... you had me scratching my head there for a minute.
+
+I haven't whitelisted bpf_map_lookup_elem for SOCKMAP in
+check_map_func_compatibility so verifier won't allow lookups from BPF.
+
+If we wanted to do that, I don't actually have a use-case for it, I
+think would have to extend get_func_proto for SK_SKB and SK_REUSEPORT
+prog types. At least that's what docs for bpf_map_lookup_elem suggest:
+
+/* If kernel subsystem is allowing eBPF programs to call this function,
+ * inside its own verifier_ops->get_func_proto() callback it should return
+ * bpf_map_lookup_elem_proto, so that verifier can properly check the arguments
+ *
+ * Different map implementations will rely on rcu in map methods
+ * lookup/update/delete, therefore eBPF programs must run under rcu lock
+ * if program is allowed to access maps, so check rcu_read_lock_held in
+ * all three functions.
+ */
+BPF_CALL_2(bpf_map_lookup_elem, struct bpf_map *, map, void *, key)
+{
+	WARN_ON_ONCE(!rcu_read_lock_held());
+	return (unsigned long) map->ops->map_lookup_elem(map, key);
+}
+
+-Jakub
