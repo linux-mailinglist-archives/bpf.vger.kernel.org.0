@@ -2,94 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B0CD4E519F
-	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2019 18:53:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0404E51C9
+	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2019 18:59:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502619AbfJYQxV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 25 Oct 2019 12:53:21 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:33839 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2502311AbfJYQxT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 25 Oct 2019 12:53:19 -0400
-Received: by mail-qk1-f196.google.com with SMTP id f18so2386394qkm.1;
-        Fri, 25 Oct 2019 09:53:18 -0700 (PDT)
+        id S2502622AbfJYQ7F (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 25 Oct 2019 12:59:05 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:33490 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2502697AbfJYQ7E (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 25 Oct 2019 12:59:04 -0400
+Received: by mail-qt1-f196.google.com with SMTP id r5so4313090qtd.0;
+        Fri, 25 Oct 2019 09:59:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fXySVCbtUFQUIjZ5IC2GZJTsKcpAKCopoZ/FlZT140g=;
-        b=A3jagB2V0AdjVDOsm6a/Gc2+ftWVNuOHuMymBoha/0iXyp9tYXgUvuBGz5ddIc2eaW
-         AaM8E7dvKA6A20X+omoNML6cf/6peHOprkVIN1iipy3SFg2agrgU2ys9K9h8AbK4eGaV
-         HwZ4PlocxJQed3JQbXyGT7H9nhBaaxMZyKJa1efTkIDt6nxRMz3fsGX3WQnpoMRuorJt
-         HmA2KEiJtpTpr/y8Rqj/dMZb/Rrv22NndEFy8i0UBW7wI2K92FXXoLa9+5WWyJfUUiro
-         8f8heL6e4EPn7cpiu2b3uPoQL2JU7hn4QoxVtRFFCqLMsoNDZ5Edx4Upv+J+Dcj2iLoz
-         0LoA==
+         :cc:content-transfer-encoding;
+        bh=rvKi/i+Tyee4cFcdz2c2Xy8hqQ7IiTEl+NCG1+kZZ98=;
+        b=BPg3cThH+YtThwPubLteiNOzUFGRR14esJ5hHm5iqJZy6huPmLGDLguaRaVmPgvQ4t
+         akEOcqJiJFA7P1HfB9vPrZlWRq5tOnpDGnQhfoQ/RARqFlxG/J4FJCHl+nS3kg+m0NqG
+         NjYh8/C7pJCzTEMvS9zE3vod28g7Y3vadN2f0YKKHZv9O9Zd5N6bMXpL0y1NtqxcvllC
+         44tb8DD8oKUlPrIcSeLjePkwl36QJuRYl6eHV82NZT+7qGaiUhlWHzoBMfeiayD5vgLL
+         yLvlACf3Z3KqgXhAoMWef9Rrx3urA0wrlvWrdYnJLBa11Cu6zmq3KMM6LJ/xG3bge+mV
+         DJWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fXySVCbtUFQUIjZ5IC2GZJTsKcpAKCopoZ/FlZT140g=;
-        b=F3xjbfNOw3+7ozNSNMVsNgdlIBNVJRn5/jG3OXklTbDiI+Lqdj3009KUlDlrI7y7O9
-         F1nMitHkf2x/j09FZu+ppFqUyl0M5l5y1b2ob1MmlB6rJkanU1MVQxVrq74S+E0tViQN
-         poWxRM3SRVWzW1J7VPtIe7J8xa5889xXXkNbBtbXnyLnLwpLOnDbSESWDfqgm2pEyBjq
-         NsuD8UKsxp32A8TL6HoKLggiMRkicSryeWwReEpolQRP2h8vTQhE7cYY++NICc6zzRY9
-         A8REatDVnRQPLZ0FzNNs6ouHcBsM8bUvxSR/n3mDxFgPWFSWewIthM18R4Hirplan5Ku
-         KzYQ==
-X-Gm-Message-State: APjAAAVOepnDRq+GYH2NjMyjWjB2qfVJKADjFKeBnCBUg7efpAjZWkZX
-        h2yK90pBMbjfQDNE4bTe7GCTLvUQvO4sLQjAoc8=
-X-Google-Smtp-Source: APXvYqyu4fZHMUTfEeEPRzcnpvomOsyw/PeR+9TvbF/TDCLUr57FcahzSz4cKOfwSxf4TBWIAKbw5n3GzplNkg/zvtM=
-X-Received: by 2002:a37:9a8a:: with SMTP id c132mr3823467qke.92.1572022398292;
- Fri, 25 Oct 2019 09:53:18 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=rvKi/i+Tyee4cFcdz2c2Xy8hqQ7IiTEl+NCG1+kZZ98=;
+        b=i1QVPx+M11hqUKjxmP1MMsaVoCzI/ot+MlQTSCsIh31SYgqvpNt4ed6RPslCTsSJ6L
+         q4T1+032zZ1FChdPfzgJ/zfHZ4skfYYvNDDIk/tgOBMTt+E7XL20H5vqZQQJzBqNSeCd
+         /vMk9bojZxBHZfLES2IUNLua6/J+EoXK3aZC+TitgghRQ3Uc99slbanTe9wkckb0Jh4T
+         hb/1+JSfZIMUihl9NenrYLNtzp76Agj1Zx5bTfDrPOpMBrnESINywWnKRizp3Id2kZQh
+         SECU8ErF7+YEYOTUwjlyf2hFJ4fH7UT75aHqosQfDqVkQyYlp24NA0QVHvI3AtAxkK7G
+         KwoA==
+X-Gm-Message-State: APjAAAXNRyN/Wt4EIkhiU4HMB9OpStjyISOOzuna2S5L12fM7NMKVte6
+        VhtqmGEYEIhatIQK8pjkGDlmWRwwZFnO1nMX0K4=
+X-Google-Smtp-Source: APXvYqz4Fxt4i8buB4XelIJF4Joba353chUndFCa0CZq0wkEYAgO08RD1G8l2JSrNKjzVU49fawEQPoShRPNJRH7SfI=
+X-Received: by 2002:a05:6214:2aa:: with SMTP id m10mr2365848qvv.224.1572022743597;
+ Fri, 25 Oct 2019 09:59:03 -0700 (PDT)
 MIME-Version: 1.0
-References: <20191024132341.8943-1-jolsa@kernel.org> <20191024105414.65f7e323@cakuba.hsd1.ca.comcast.net>
- <aeb566cd-42a7-9b3a-d495-c71cdca08b86@fb.com> <20191025093116.67756660@cakuba.hsd1.ca.comcast.net>
-In-Reply-To: <20191025093116.67756660@cakuba.hsd1.ca.comcast.net>
+References: <20191024132107.237336-1-toke@redhat.com>
+In-Reply-To: <20191024132107.237336-1-toke@redhat.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 25 Oct 2019 09:53:07 -0700
-Message-ID: <CAEf4BzY5o3rR3HXBPORm4NkX4SzDGTQ24p+TMmY8hxyb9+dN2g@mail.gmail.com>
-Subject: Re: [PATCHv2] bpftool: Try to read btf as raw data if elf read fails
-To:     Jakub Kicinski <jakub.kicinski@netronome.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Yonghong Song <yhs@fb.com>, Martin Lau <kafai@fb.com>
+Date:   Fri, 25 Oct 2019 09:58:52 -0700
+Message-ID: <CAEf4BzZAutRXf+W+ExaHjFMtWCfot9HkTWZNGuPckBiXqFcJeQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: Add libbpf_set_log_level() function to
+ adjust logging
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 25, 2019 at 9:31 AM Jakub Kicinski
-<jakub.kicinski@netronome.com> wrote:
+On Fri, Oct 25, 2019 at 4:50 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
 >
-> On Fri, 25 Oct 2019 05:01:17 +0000, Andrii Nakryiko wrote:
-> > >> +static bool is_btf_raw(const char *file)
-> > >> +{
-> > >> +  __u16 magic = 0;
-> > >> +  int fd;
-> > >> +
-> > >> +  fd = open(file, O_RDONLY);
-> > >> +  if (fd < 0)
-> > >> +          return false;
-> > >> +
-> > >> +  read(fd, &magic, sizeof(magic));
-> > >> +  close(fd);
-> > >> +  return magic == BTF_MAGIC;
-> > >
-> > > Isn't it suspicious to read() 2 bytes into an u16 and compare to a
-> > > constant like endianness doesn't matter? Quick grep doesn't reveal
-> > > BTF_MAGIC being endian-aware..
-> >
-> > Right now we support only loading BTF in native endianness, so I think
-> > this should do. If we ever add ability to load non-native endianness,
-> > then we'll have to adjust this.
->
-> This doesn't do native endianness, this does LE-only. It will not work
-> on BE machines.
+> Currently, the only way to change the logging output of libbpf is to
+> override the print function with libbpf_set_print(). This is somewhat
+> cumbersome if one just wants to change the logging level (e.g., to enable
 
-How is this LE-only? You have 2 first bytes in BE-encoding on BE
-machines and in LE-encoding on LE machines. You read those two bytes
-as is into u16, then do comparison to u16. Given all of that is
-supposed to be in native encoding, this will work. What am I missing?
+No, it's not. Having one way of doing things is good, proliferation of
+APIs is not a good thing. Either way you require application to write
+some additional code. Doing simple vprintf-based (or whatever
+application is using to print logs, which libbpf shouldn't care
+about!) function with single if is not hard and is not cumbersome. If
+you care about helping users to be less confused on how to do that, I
+think it would be a good idea to have some sort of libbpf-specific FAQ
+with code samples on how to achieve typical and common stuff, like
+this one. So please instead consider doing that.
+
+
+> debugging), so add another function that just adjusts the default output
+> printing by adjusting the filtering of messages.
+>
+> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> ---
+>  tools/lib/bpf/libbpf.c   | 12 +++++++++++-
+>  tools/lib/bpf/libbpf.h   |  2 ++
+>  tools/lib/bpf/libbpf.map |  1 +
+>  3 files changed, 14 insertions(+), 1 deletion(-)
+>
+
+[...]
