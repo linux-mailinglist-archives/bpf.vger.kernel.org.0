@@ -2,89 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F6E9E4140
-	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2019 03:47:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 053FAE41B5
+	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2019 04:46:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389245AbfJYBru (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Oct 2019 21:47:50 -0400
-Received: from mail-lf1-f68.google.com ([209.85.167.68]:40892 "EHLO
-        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389214AbfJYBru (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Oct 2019 21:47:50 -0400
-Received: by mail-lf1-f68.google.com with SMTP id i15so313854lfo.7;
-        Thu, 24 Oct 2019 18:47:48 -0700 (PDT)
+        id S2390620AbfJYCqo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Oct 2019 22:46:44 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:36638 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728416AbfJYCqo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Oct 2019 22:46:44 -0400
+Received: by mail-qt1-f193.google.com with SMTP id d17so1140361qto.3;
+        Thu, 24 Oct 2019 19:46:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/I/Iq8VXvm0UwQiulgADEMSKcfpgrehFgjobcylNDOM=;
-        b=I+tSU7wcAHPxxizaia0JfBmh0YAhZyey9V1j3LBZHHIzNm2mwgRb8a3obRhkXEh5Wj
-         qepBpjf5MTfPJL/KoHJo3odUNlA4ZPBCO6OHBSo50y4qE+Oeu098YQbzy1HDWFPcsSOS
-         S7kHDmeTqrCuei1XKa81GwWrmrkRqKQCpyV6qnKlWa/YEawVEIviI9FltFvfJdk3WtLU
-         63dCMzibhBR21mUWWJxmycSJzIa0HQIlnfXYwt1KEdJApbGPgER+NYIMKM/zQaw5AAZQ
-         6lp8bNZceKL2fI3usEThVjiIQ8n/SH3z3LTunaedt0u41b6vWf1pFvum6g/IK2uRMYas
-         poBw==
+         :cc:content-transfer-encoding;
+        bh=Uk0O+1Wy0f1d6NdxP+VRsck/NtQSLTDySSKs+mdVowY=;
+        b=PuXQ0KCnl2P4yaeHfvqSabFoaJBb7wgVu0ce9SZksqs7DKyR9UZj6NHadNaRAVfrs6
+         sdI1NgXt7wn1EC6VEzpOjtZXQzJYp8bN/3+AnzGNBHwtitcKpR0RAkyEaoXfZRciHQyJ
+         VIJgBJyclempLkkOYILP7ilPVscM3zd146VNL69sdN5CHRy8NskNV4CiNIB9LsO3ohJ8
+         fUdBo8k+XZFNKLlqr8ISVYPTEHAVZ0kr3rRLBMnjHDguXZZQstvXAKx3mMka3DA5CBes
+         f/TrCXdtq4aq80UJAyEndBv2dpUICBwBYekaca+wRBoLfqaXbe6TK2OLiPLHFrazaTN1
+         C9xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/I/Iq8VXvm0UwQiulgADEMSKcfpgrehFgjobcylNDOM=;
-        b=Q9Eg4AlvvQp9fOURlGbIMSVsfEOk9a8NYHyGltsmd7vYvvTCA4BP5OA7zd1ONt7aPs
-         Yu6Hf33nPfAB8lQwqBOGw81aT9zVFOYptLIaHIy96Rkj0NOZNWGlyNBczlgVP7HJC3SU
-         xbH5pi0Y8M1Gbb5vfRDvWwCt/QTygtq+iQBkkfXjv/soJSViPCin7iTzPMldGMW9Rk1X
-         GnWP9xZ3dKnsldCIzbGDi3S6VwcyNyeeLmPHru5WCytIQuWi7ReuFMZEi3XfxpHyff5C
-         ctFSrYRnqBgis+AcwMuahgmirC4yhLRwPEQVL+uxx8pM6UFkOH54JJuQ6QxK0oxGQgr0
-         2uEg==
-X-Gm-Message-State: APjAAAU4TkQG9ierqi4IPQ9lTCAykBKOshr6H5Gs3hmsC4JwXV1kdbRC
-        fxrQQdAaQbBf901QOg78VUWJTRH2A7jXjax/XZPACQ==
-X-Google-Smtp-Source: APXvYqy9aI8lQnEcD87DEEvajRu4YglzZbNgw5ZpUHMa3oR0Hq073BWGsitbvJUkEy0utoCxKKHsBmXzaVP8rK7np/0=
-X-Received: by 2002:ac2:5627:: with SMTP id b7mr700649lff.6.1571968067896;
- Thu, 24 Oct 2019 18:47:47 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Uk0O+1Wy0f1d6NdxP+VRsck/NtQSLTDySSKs+mdVowY=;
+        b=QNHi8gA2cEJstmMs6xJgBQu8Loj1m4N9blhkSO0Vp8vv5IBCVS07DBTPGknRxiDi1j
+         vysv0XE+v7tQtFEe5yC+i46qTv/5Ub2H8s2j/TTLIbT0j9LMsILIsQDDcQYDI65XV/nT
+         HsGiKCAqDSYLXLpVc3ypespnC/Q226kGmiN2IVfQEtWxEbXZPNV7TvwzlOocf8pJfGDO
+         Fwov7Lt/IDyikKmHCa9nPmBLUrmDFHgCXYXkU44ki2hNAOcqHdQQPE7b9oYJ6kgm1HF+
+         77qUGsC/w0HkEGebTMFh8RTZq3YFjGcFu1hjswXsffciaXgZYnMMplLaSkUflmoXpT+z
+         /JBg==
+X-Gm-Message-State: APjAAAXz9LdOGOPEMiMzbHKQtAoFiXS0jbKnTilALCthshSUk1UncjiW
+        ZdXeody86B4MMeY2sU+n3bj+NjVelKrF7XvgvCE=
+X-Google-Smtp-Source: APXvYqzZFlki7XvE0PhidpQ6wNk28XXjDGbkhyCAkn+YCRu/7+ZaMJy37cwTVv+GgZmDMSbrU2cH3JsyjF0BYqpTJTU=
+X-Received: by 2002:ac8:66d9:: with SMTP id m25mr886913qtp.117.1571971603014;
+ Thu, 24 Oct 2019 19:46:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <20191025001811.1718491-1-kafai@fb.com>
-In-Reply-To: <20191025001811.1718491-1-kafai@fb.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 24 Oct 2019 18:47:36 -0700
-Message-ID: <CAADnVQKVtRcOex-2Gw7Gg1ut6SBnYCNxE+F2gj9oN604hV1wLw@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next] bpf: Prepare btf_ctx_access for non raw_tp
- use case
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
+References: <157192269744.234778.11792009511322809519.stgit@toke.dk> <157192269854.234778.6284587028332090249.stgit@toke.dk>
+In-Reply-To: <157192269854.234778.6284587028332090249.stgit@toke.dk>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 24 Oct 2019 19:46:31 -0700
+Message-ID: <CAEf4BzaazESQUQNYVJdDX_7WY-=UBoKbKJk_pTK_PguHxoo8uQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/4] libbpf: Fix error handling in bpf_map__reuse_fd()
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
         David Miller <davem@davemloft.net>,
-        Kernel Team <kernel-team@fb.com>
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 24, 2019 at 5:18 PM Martin KaFai Lau <kafai@fb.com> wrote:
+On Thu, Oct 24, 2019 at 6:11 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
 >
-> This patch makes a few changes to btf_ctx_access() to prepare
-> it for non raw_tp use case where the attach_btf_id is not
-> necessary a BTF_KIND_TYPEDEF.
+> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 >
-> It moves the "btf_trace_" prefix check and typedef-follow logic to a new
-> function "check_attach_btf_id()" which is called only once during
-> bpf_check().  btf_ctx_access() only operates on a BTF_KIND_FUNC_PROTO
-> type now. That should also be more efficient since it is done only
-> one instead of every-time check_ctx_access() is called.
+> bpf_map__reuse_fd() was calling close() in the error path before returnin=
+g
+> an error value based on errno. However, close can change errno, so that c=
+an
+> lead to potentially misleading error messages. Instead, explicitly store
+> errno in the err variable before each goto.
 >
-> "check_attach_btf_id()" needs to find the func_proto type from
-> the attach_btf_id.  It needs to store the result into the
-> newly added prog->aux->attach_func_proto.  func_proto
-> btf type has no name, so a proper name should be stored into
-> "attach_func_name" also.
->
-> v2:
-> - Move the "btf_trace_" check to an earlier verifier phase (Alexei)
->
-> Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> ---
 
-Thank you for sending it early. It's right in the place that I'm
-hacking as well.
-I'll refactor my work to base on this.
-Applied. Thanks.
+Thanks!
+
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+
+>  tools/lib/bpf/libbpf.c |   14 ++++++++++----
+>  1 file changed, 10 insertions(+), 4 deletions(-)
+>
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index cccfd9355134..a2a7d074ac48 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -1918,16 +1918,22 @@ int bpf_map__reuse_fd(struct bpf_map *map, int fd=
+)
+>                 return -errno;
+>
+>         new_fd =3D open("/", O_RDONLY | O_CLOEXEC);
+> -       if (new_fd < 0)
+> +       if (new_fd < 0) {
+> +               err =3D -errno;
+>                 goto err_free_new_name;
+> +       }
+>
+>         new_fd =3D dup3(fd, new_fd, O_CLOEXEC);
+> -       if (new_fd < 0)
+> +       if (new_fd < 0) {
+> +               err =3D -errno;
+>                 goto err_close_new_fd;
+> +       }
+>
+>         err =3D zclose(map->fd);
+> -       if (err)
+> +       if (err) {
+> +               err =3D -errno;
+>                 goto err_close_new_fd;
+> +       }
+>         free(map->name);
+>
+>         map->fd =3D new_fd;
+> @@ -1946,7 +1952,7 @@ int bpf_map__reuse_fd(struct bpf_map *map, int fd)
+>         close(new_fd);
+>  err_free_new_name:
+>         free(new_name);
+> -       return -errno;
+> +       return err;
+>  }
+>
+>  int bpf_map__resize(struct bpf_map *map, __u32 max_entries)
+>
