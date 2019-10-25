@@ -2,105 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 08A5DE4711
-	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2019 11:26:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0ED9E4753
+	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2019 11:32:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438526AbfJYJ04 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 25 Oct 2019 05:26:56 -0400
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:32794 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2438439AbfJYJ04 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 25 Oct 2019 05:26:56 -0400
-Received: by mail-lj1-f196.google.com with SMTP id a22so1929166ljd.0
-        for <bpf@vger.kernel.org>; Fri, 25 Oct 2019 02:26:53 -0700 (PDT)
+        id S2438653AbfJYJco (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 25 Oct 2019 05:32:44 -0400
+Received: from mail-pl1-f196.google.com ([209.85.214.196]:47009 "EHLO
+        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729612AbfJYJcn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 25 Oct 2019 05:32:43 -0400
+Received: by mail-pl1-f196.google.com with SMTP id q21so926310plr.13;
+        Fri, 25 Oct 2019 02:32:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=5YmWlMhofV9UFzyROlgUUggoCeCMirNbDKHUIreDPVU=;
-        b=OKzuRUOV39ft2lC25Neyoc6NlxLbwOIQ2yMwKhHam3NkeMXt7UZ7fe2p9nLz8pkw+Y
-         c+m76Nbk9ZlMRB5V7WW/IZj9eum8fHSYHqit3IfmZKu7ByKUIiqvOc6Ww4ej+TJaYK1t
-         0VvXciIrPNU+r0q85joL39PmfV3Zw6THCasZE=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DXh+yrlEGWqyM/YeU+cYaVv7lpfTaFS2kr3FXz/JMY8=;
+        b=WB3BOpuoPqlDTju2hNP5McPQOiOl4crQpHxo4q3N4Yz0CohdBoNDZIDfahNJbAYHec
+         w0lEpYAUbBB8fN1UjxDUSiNduwGjXCB+5IKeUYjPpoWq8jrjXzqaBCJIKJ+2jMMEXePa
+         /b2SVLmTcKFZjtcxF4F41TLjWdGdhUdNPmbMqDJ4M2D2S/kZ6BcOgXfxL0GEaFyTHR6n
+         1ClbD9Wi5kN8mBjf3E0xz5Uy39AJMsd4o7taP7AnV3O3Ppz9O3vnAInMZgpVtUFxRUsQ
+         Gw0E/sKvtzPYSuDVXFeFCNmlA5jrbvpF/N2h2rh+tHcqyMbbE7iLVpxGKlJPuX9Q2/wY
+         WvxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=5YmWlMhofV9UFzyROlgUUggoCeCMirNbDKHUIreDPVU=;
-        b=MozR7RCwekbaQt/xvecmBdUFyKNw1set2WDcKvVDQuoyiBeprYpheM6TnQBN7Qga3A
-         rzj/bMOnd89UGN1BXhUe4P8Z1t+3Ha9SahEGZrTZulo9mf0N8gxScNMG6dMOvUiwJOpF
-         WoPlqfkzUdcOjG7rr3fTWs3lUGYRaAyuVGNArQWW+weqR1fO3Sn83PvgOK60rXzRMLjN
-         zzLA8uZF/Rs4InPcCB+6dDuu1/7Z0i9xMoN6IaevYqnRbwoAt6U2HbGwvDYXwVD4B630
-         568humAyJJmHoSJdrrJbGz/aweqNMBu0k7DfG/Uhy0CIDAkd7YkXqETONseJDfLeG3LY
-         bF8g==
-X-Gm-Message-State: APjAAAWlWJPH+nZUZtN5d/9NHJ21zya+2qA/0c2Tg2CCDi+0ZCqPmbWS
-        cm+DttqKjiM9msZg3DTsof+h/Q==
-X-Google-Smtp-Source: APXvYqxZYJAe3juNGwBgIgGihlxIcqJ5w+jaXUwdDERJ55YbZ33AF3HYVRInu2e063vTpaUc2lkbEA==
-X-Received: by 2002:a2e:89c9:: with SMTP id c9mr1638643ljk.108.1571995612785;
-        Fri, 25 Oct 2019 02:26:52 -0700 (PDT)
-Received: from cloudflare.com ([176.221.114.230])
-        by smtp.gmail.com with ESMTPSA id 3sm537079lfq.55.2019.10.25.02.26.51
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DXh+yrlEGWqyM/YeU+cYaVv7lpfTaFS2kr3FXz/JMY8=;
+        b=acfdKq9jMEH0CSKt7CNp4fPPIrJfZJglupd8HzCAswX5qgbOWiYc13J/7n17VakgjD
+         mpW61r+srmpyEy2X9yLUKYUoyepyGgxDzP0BcTi8UaMUAAPXHOemnI8KIm9N9bNPx+LZ
+         3mKTSNVeuJvkQFvxo9bX6+U3P99QMi7mgtEeK2+Shdj87AUM4Xj9RKF+uEd5SagZpQhG
+         3KumGK09kRT/B7grZuxjcjuf1S+D3Sp8+bYRuvbZJmeO2VdgO5UFOXn1oTrPrGmqpc87
+         LTasLs90jZ5gGlyzfz0LTbVXKTaoSOj7KcJ/4yl+B3BFxiT8J9gnwVtlfAuacInWCcI4
+         y6SA==
+X-Gm-Message-State: APjAAAXLxShydwmZMCr9aUY5d/jvTuK4MvjDjgX0vwjpJAPdy81Iffi0
+        c2cKbqOzqvOuErsrR6nSsBn01fLiCg5Pyw==
+X-Google-Smtp-Source: APXvYqyea9xEQnf5IVYarffboMct+GEhzm5RoJIhGU1v0SzOrz19m6dlSOsz5GOEEB3H/2PgWYxg2w==
+X-Received: by 2002:a17:902:9888:: with SMTP id s8mr2739782plp.193.1571995962799;
+        Fri, 25 Oct 2019 02:32:42 -0700 (PDT)
+Received: from btopel-mobl.ger.intel.com ([192.55.54.42])
+        by smtp.gmail.com with ESMTPSA id k24sm1110557pgl.6.2019.10.25.02.32.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Oct 2019 02:26:52 -0700 (PDT)
-References: <20191022113730.29303-1-jakub@cloudflare.com> <5db1d7a810bdb_5c282ada047205c08f@john-XPS-13-9370.notmuch>
-User-agent: mu4e 1.1.0; emacs 26.1
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        netdev@vger.kernel.org, kernel-team@cloudflare.com
-Subject: Re: [RFC bpf-next 0/5] Extend SOCKMAP to store listening sockets
-In-reply-to: <5db1d7a810bdb_5c282ada047205c08f@john-XPS-13-9370.notmuch>
-Date:   Fri, 25 Oct 2019 11:26:51 +0200
-Message-ID: <87lft9ch0k.fsf@cloudflare.com>
+        Fri, 25 Oct 2019 02:32:42 -0700 (PDT)
+From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
+To:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        jakub.kicinski@netronome.com
+Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>,
+        bpf@vger.kernel.org, magnus.karlsson@gmail.com,
+        magnus.karlsson@intel.com, maciej.fijalkowski@intel.com,
+        jonathan.lemon@gmail.com, toke@redhat.com
+Subject: [PATCH bpf-next v3 0/2] xsk: XSKMAP lookup improvements
+Date:   Fri, 25 Oct 2019 11:32:17 +0200
+Message-Id: <20191025093219.10290-1-bjorn.topel@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 24, 2019 at 06:56 PM CEST, John Fastabend wrote:
-> Jakub Sitnicki wrote:
+Let's try that again. I managed to mess up Maciej's commit message.
 
-[...]
+This small set consists of two patches from Maciej and myself which
+are optimizing the XSKMAP lookups.  In the first patch, the sockets
+are moved to be stored at the tail of the struct xsk_map. The second
+patch, Maciej implements map_gen_lookup() for XSKMAP.
 
->> I'm looking for feedback if there's anything fundamentally wrong with
->> extending SOCKMAP map type like this that I might have missed.
->
-> I think this looks good. The main reason I blocked it off before is mostly
-> because I had no use-case for it and the complication with what to do with
-> child sockets. Clearing the psock state seems OK to me if user wants to
-> add it back to a map they can simply grab it again from a sockops
-> event.
+Based on the XDP program from tools/lib/bpf/xsk.c where
+bpf_map_lookup_elem() is explicitly called, this work yields a 5%
+improvement for xdpsock's rxdrop scenario.
 
-Thanks for taking a look at the code.
+Cheers,
+Björn and Maciej
 
-> By the way I would eventually like to see the lookup hook return the
-> correct type (PTR_TO_SOCKET_OR_NULL) so that the verifier "knows" the type
-> and the socket can be used the same as if it was pulled from a sk_lookup
-> helper.
+v1->v2: * Change size/cost to size_t and use {struct, array}_size
+          where appropriate. (Jakub)
+v2->v3: * Proper commit message for patch 2.
 
-Wait... you had me scratching my head there for a minute.
+Björn Töpel (1):
+  xsk: store struct xdp_sock as a flexible array member of the XSKMAP
 
-I haven't whitelisted bpf_map_lookup_elem for SOCKMAP in
-check_map_func_compatibility so verifier won't allow lookups from BPF.
+Maciej Fijalkowski (1):
+  bpf: implement map_gen_lookup() callback for XSKMAP
 
-If we wanted to do that, I don't actually have a use-case for it, I
-think would have to extend get_func_proto for SK_SKB and SK_REUSEPORT
-prog types. At least that's what docs for bpf_map_lookup_elem suggest:
+ kernel/bpf/xskmap.c | 72 +++++++++++++++++++++++++--------------------
+ 1 file changed, 40 insertions(+), 32 deletions(-)
 
-/* If kernel subsystem is allowing eBPF programs to call this function,
- * inside its own verifier_ops->get_func_proto() callback it should return
- * bpf_map_lookup_elem_proto, so that verifier can properly check the arguments
- *
- * Different map implementations will rely on rcu in map methods
- * lookup/update/delete, therefore eBPF programs must run under rcu lock
- * if program is allowed to access maps, so check rcu_read_lock_held in
- * all three functions.
- */
-BPF_CALL_2(bpf_map_lookup_elem, struct bpf_map *, map, void *, key)
-{
-	WARN_ON_ONCE(!rcu_read_lock_held());
-	return (unsigned long) map->ops->map_lookup_elem(map, key);
-}
+-- 
+2.20.1
 
--Jakub
