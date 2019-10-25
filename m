@@ -2,212 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FFDBE5248
-	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2019 19:28:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AA3AE525F
+	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2019 19:32:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502776AbfJYR2s (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 25 Oct 2019 13:28:48 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:44242 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388862AbfJYR2s (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 25 Oct 2019 13:28:48 -0400
-Received: by mail-qt1-f195.google.com with SMTP id z22so4347906qtq.11;
-        Fri, 25 Oct 2019 10:28:47 -0700 (PDT)
+        id S2505906AbfJYRc0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 25 Oct 2019 13:32:26 -0400
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:36700 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2505867AbfJYRc0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 25 Oct 2019 13:32:26 -0400
+Received: by mail-pg1-f194.google.com with SMTP id 23so1978972pgk.3
+        for <bpf@vger.kernel.org>; Fri, 25 Oct 2019 10:32:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=p7h6fsMVzWmEPbOxKVS4V3YoKJBe4ip66W1L8W/KVsQ=;
-        b=Ak7eVEnVOrwg9oLJM6tbIVtJINTLyJ5kbPHL3Q3SFIFXLs2lkI0Hk7teya9Mf851oc
-         POecwTRu8ExLo9cLJJ6qxmYzb0Tf5q0d+V26r/Ww+bJQlLwCjRSKRNEkccgLrq+7GcFH
-         57bbMsk2IUT6dyFedtaok7dpq86tgNJnlJlMp1/8NvwCWvM8C3xfUcZu0bI2MImDGCYb
-         3wO8ubcsxI4y0IWqSbe9yw0zGiRp7PR+ALlcnSdr7Qjp36Fv6IWIosS6MEwU2nWP3pTu
-         SgwlN5zt6bycWu6bQdrLtCKcbE/tuplw1JERJsun6CZssPBnsHTw80F2Ajoio8MOHdx+
-         gL/w==
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :organization:mime-version:content-transfer-encoding;
+        bh=24Vup2W3++5vYZGl1stBcX2iZStl3z6uK5jR1VdjI8E=;
+        b=fHBV3ImxSnzLptFNGwEmvsnR8b/+avimMH08zIkzvjBsRW7E4FZZcEyHcgRRPWeOp4
+         6WqX9RBJI+Er8rFQn2p7IfXd/H6HF9nAm44OvmZbpbhbFWBfrL20xV4ZhX8mK+PkOuvn
+         McWHMxbf6lcuPvVOYD6v7pBwHlNxA1c7WRXDTskdqrrtCjegZ+UWCD59mLj0RFE5KIsl
+         nmgrTnDuoAnqjl/coDu3NZr8DFGFy65f/ZrIMWKB9v7QZgc2ot/iOUDuNosiP7h6tqWa
+         880/gtibEc48OmJRXcLYEtnUs7oSeHDSuyEjxn5WF+oFupPqA4/S/RoGSJQXCvno1L/N
+         FE3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=p7h6fsMVzWmEPbOxKVS4V3YoKJBe4ip66W1L8W/KVsQ=;
-        b=iOgfamCC/t0vOCu7vD5bfenxh0em6VuZ1njgycHWF1rOLQwwQF1f+LZz3e31khgnrY
-         a8SSH8leLC6dFd+C6cMdglPbLgI32+KZH9JkzhAan2EPFtIVYmYYvi71TexWhH+CDE6D
-         rh0suowLPsH0JV7jWH/Ey47tYpedGHAkxQVIkue9HvxMsBgdcWkyzqoIA9ok7Ym0SkHi
-         OosOapu9xskPoF5dvL8E1KlJMt//UlDKUGEu/wPhiLGDqa0m76M7CgYWU734VHKbe75M
-         XX8kll5j9N1loVnghsVgmDNgDfXEbJmEzHZQNhQeLO9z2PGMrwUhvQ2MeoS48YjJJdWp
-         SWfQ==
-X-Gm-Message-State: APjAAAU58ENNFlusc/myeCjRze/puH10snlHzJVAhLSb+qcppXh6d8/7
-        jeft37NGpN3xx18MyMQqJZ/ROVCvsiITxgWDDEI=
-X-Google-Smtp-Source: APXvYqy3/Ljb8PhO+YvgHRZpqKxpysU3KjMZ1jzYlnhthXMyco7czuWJE9uZ2QKBCOSB+45LkVbf6gFfpHs1E2bCwGA=
-X-Received: by 2002:ac8:108e:: with SMTP id a14mr4155376qtj.171.1572024526609;
- Fri, 25 Oct 2019 10:28:46 -0700 (PDT)
-MIME-Version: 1.0
-References: <157192269744.234778.11792009511322809519.stgit@toke.dk>
- <157192270077.234778.5965993521171571751.stgit@toke.dk> <20191025143203.7e8fd0b4@carbon>
-In-Reply-To: <20191025143203.7e8fd0b4@carbon>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 25 Oct 2019 10:28:35 -0700
-Message-ID: <CAEf4BzYeRSSr0Vqjjter6RF_QKvex8P6ctbToOud7vW+p1c28A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 3/4] libbpf: Support configurable pinning of
- maps from BTF annotations
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=24Vup2W3++5vYZGl1stBcX2iZStl3z6uK5jR1VdjI8E=;
+        b=JglXNgVGJt2dsN0QGJgtVC5BrWz7+RDioHOjtKp3y6hOZDW9wfCzqqHNUpWJOT9ftg
+         PwSdL3zICrCADLMPBagPa95slZ4fYK3QqEkOI+V+4ilH7iCyvEsJdWzCuTxIMgqznPXj
+         X1XrDCThq/lZyFHShf6AQGViIUSRIqAntH1p5wGnJ6qYgLKHzfgro+FoNI0/0idqSAlt
+         YxnRFiVtvIEU8KaXrq4uXi/P+IN3wWSQZLSZilzy7qNi2K9HisbtsTfTgb7TfdqPo5kO
+         oZdiTJmt6+AXIkfd3WiIrb8tfUOceGSnGm6mtHitL0GrO5yPbee1NhTLuRZ7m9+xUoiR
+         YJ1w==
+X-Gm-Message-State: APjAAAXqTrnL8Vr1CQM0syNsAh2TqZOBaF/OL2izqnF0f623FZasSXnz
+        YsfOzmHptQHEczloSJtYFUQWow==
+X-Google-Smtp-Source: APXvYqzWYjBkO+Ucbe2JGcCequ4PmeDRkTO4YebyEoa2L0kXlqC3baEh2R4XeFtVNYid9hfqjgGxlw==
+X-Received: by 2002:a65:6781:: with SMTP id e1mr5881573pgr.173.1572024745622;
+        Fri, 25 Oct 2019 10:32:25 -0700 (PDT)
+Received: from cakuba.hsd1.ca.comcast.net (c-73-202-202-92.hsd1.ca.comcast.net. [73.202.202.92])
+        by smtp.gmail.com with ESMTPSA id o185sm3054384pfg.136.2019.10.25.10.32.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Oct 2019 10:32:25 -0700 (PDT)
+Date:   Fri, 25 Oct 2019 10:32:20 -0700
+From:   Jakub Kicinski <jakub.kicinski@netronome.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, Jiri Olsa <jolsa@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Yonghong Song <yhs@fb.com>, Martin Lau <kafai@fb.com>
+Subject: Re: [PATCHv2] bpftool: Try to read btf as raw data if elf read
+ fails
+Message-ID: <20191025103220.5df729a0@cakuba.hsd1.ca.comcast.net>
+In-Reply-To: <CAEf4BzY5o3rR3HXBPORm4NkX4SzDGTQ24p+TMmY8hxyb9+dN2g@mail.gmail.com>
+References: <20191024132341.8943-1-jolsa@kernel.org>
+        <20191024105414.65f7e323@cakuba.hsd1.ca.comcast.net>
+        <aeb566cd-42a7-9b3a-d495-c71cdca08b86@fb.com>
+        <20191025093116.67756660@cakuba.hsd1.ca.comcast.net>
+        <CAEf4BzY5o3rR3HXBPORm4NkX4SzDGTQ24p+TMmY8hxyb9+dN2g@mail.gmail.com>
+Organization: Netronome Systems, Ltd.
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 25, 2019 at 5:32 AM Jesper Dangaard Brouer
-<brouer@redhat.com> wrote:
->
-> On Thu, 24 Oct 2019 15:11:40 +0200
-> Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com> wrote:
->
-> > From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+On Fri, 25 Oct 2019 09:53:07 -0700, Andrii Nakryiko wrote:
+> On Fri, Oct 25, 2019 at 9:31 AM Jakub Kicinski wrote:
+> > On Fri, 25 Oct 2019 05:01:17 +0000, Andrii Nakryiko wrote:  
+> > > >> +static bool is_btf_raw(const char *file)
+> > > >> +{
+> > > >> +  __u16 magic = 0;
+> > > >> +  int fd;
+> > > >> +
+> > > >> +  fd = open(file, O_RDONLY);
+> > > >> +  if (fd < 0)
+> > > >> +          return false;
+> > > >> +
+> > > >> +  read(fd, &magic, sizeof(magic));
+> > > >> +  close(fd);
+> > > >> +  return magic == BTF_MAGIC;  
+> > > >
+> > > > Isn't it suspicious to read() 2 bytes into an u16 and compare to a
+> > > > constant like endianness doesn't matter? Quick grep doesn't reveal
+> > > > BTF_MAGIC being endian-aware..  
+> > >
+> > > Right now we support only loading BTF in native endianness, so I think
+> > > this should do. If we ever add ability to load non-native endianness,
+> > > then we'll have to adjust this.  
 > >
-> > This adds support to libbpf for setting map pinning information as part=
- of
-> > the BTF map declaration. We introduce a version new
-> > bpf_object__map_pin_opts() function to pin maps based on this setting, =
-as
-> > well as a getter and setter function for the pin information that calle=
-rs
-> > can use after map load.
-> >
-> > The pinning type currently only supports a single PIN_BY_NAME mode, whe=
-re
-> > each map will be pinned by its name in a path that can be overridden, b=
-ut
-> > defaults to /sys/fs/bpf.
-> >
-> > The pinning options supports a 'pin_all' setting, which corresponds to =
-the
-> > old bpf_object__map_pin() function with an explicit path. In addition, =
-the
-> > function now defaults to just skipping over maps that are already
-> > pinned (since the previous commit started recording this in struct
-> > bpf_map). This behaviour can be turned off with the 'no_skip_pinned' op=
-tion.
-> >
-> > Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> > ---
-> >  tools/lib/bpf/bpf_helpers.h |    6 ++
-> >  tools/lib/bpf/libbpf.c      |  134 ++++++++++++++++++++++++++++++++++-=
---------
-> >  tools/lib/bpf/libbpf.h      |   26 ++++++++
-> >  tools/lib/bpf/libbpf.map    |    3 +
-> >  4 files changed, 142 insertions(+), 27 deletions(-)
-> >
-> > diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
-> > index 2203595f38c3..0c7d28292898 100644
-> > --- a/tools/lib/bpf/bpf_helpers.h
-> > +++ b/tools/lib/bpf/bpf_helpers.h
-> > @@ -38,4 +38,10 @@ struct bpf_map_def {
-> >       unsigned int map_flags;
-> >  };
-> >
-> > +enum libbpf_pin_type {
-> > +     LIBBPF_PIN_NONE,
-> > +     /* PIN_BY_NAME: pin maps by name (in /sys/fs/bpf by default) */
-> > +     LIBBPF_PIN_BY_NAME,
-> > +};
-> > +
-> >  #endif
-> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > index 848e6710b8e6..179c9911458d 100644
-> > --- a/tools/lib/bpf/libbpf.c
-> > +++ b/tools/lib/bpf/libbpf.c
-> > @@ -226,6 +226,7 @@ struct bpf_map {
-> >       void *priv;
-> >       bpf_map_clear_priv_t clear_priv;
-> >       enum libbpf_map_type libbpf_type;
-> > +     enum libbpf_pin_type pinning;
-> >       char *pin_path;
-> >       bool pinned;
-> >  };
-> > @@ -1271,6 +1272,22 @@ static int bpf_object__init_user_btf_map(struct =
-bpf_object *obj,
-> >                       }
-> >                       map->def.value_size =3D sz;
-> >                       map->btf_value_type_id =3D t->type;
-> > +             } else if (strcmp(name, "pinning") =3D=3D 0) {
-> > +                     __u32 val;
-> > +
-> > +                     if (!get_map_field_int(map_name, obj->btf, def, m=
-,
-> > +                                            &val))
-> > +                             return -EINVAL;
-> > +                     pr_debug("map '%s': found pinning =3D %u.\n",
-> > +                              map_name, val);
-> > +
-> > +                     if (val !=3D LIBBPF_PIN_NONE &&
-> > +                         val !=3D LIBBPF_PIN_BY_NAME) {
-> > +                             pr_warning("map '%s': invalid pinning val=
-ue %u.\n",
-> > +                                        map_name, val);
-> > +                             return -EINVAL;
-> > +                     }
-> > +                     map->pinning =3D val;
-> >               } else {
-> >                       if (strict) {
-> >                               pr_warning("map '%s': unknown field '%s'.=
-\n",
-> [...]
->
-> How does this prepare for being compatible with iproute2 pinning?
->
-> iproute2 have these defines (in include/bpf_elf.h):
->
->  /* Object pinning settings */
->  #define PIN_NONE                0
->  #define PIN_OBJECT_NS           1
->  #define PIN_GLOBAL_NS           2
->
-> I do know above strcmp(name, "pinning") look at BTF info 'name' and not
-> directly at the ELF struct for maps.  I don't know enough about BTF
-> (yet), but won't BTF automatically create a "pinning" info 'name' ???
-> (with above defines as content/values)
+> > This doesn't do native endianness, this does LE-only. It will not work
+> > on BE machines.  
+> 
+> How is this LE-only? You have 2 first bytes in BE-encoding on BE
+> machines and in LE-encoding on LE machines. You read those two bytes
+> as is into u16, then do comparison to u16. Given all of that is
+> supposed to be in native encoding, this will work. What am I missing?
 
-We are not supporting iproute2's BTF map definitions as is, we are
-trying to support all the functionality needed to support iproute2's
-ways of doing things, but it will require iproute2 to do some gluing,
-of course. We don't intend to support any conceivable legacy format
-out there in libbpf, rather make libbpf powerful, flexible, and
-expressive enough to support those use case, but with the help of
-tools like iprout2 to do "translations" necessary.
+I see so the on-disk format depends on the endianness of the writer?
+You write it broken and therefore you can also read it broken.
+And cross compilation etc. is, I presume, on the TODO list?
 
-For "modern" iprout2 BPF programs that are using BTF-defined maps and
-stuff - yes, that will work as is without iproute2 having to do much.
-
->
-> --
-> Best regards,
->   Jesper Dangaard Brouer
->   MSc.CS, Principal Kernel Engineer at Red Hat
->   LinkedIn: http://www.linkedin.com/in/brouer
->
-> From above enum:
->  LIBBPF_PIN_BY_NAME =3D 1
->
-> iproute2 ELF map struct:
->
-> /* ELF map definition */
-> struct bpf_elf_map {
->         __u32 type;
->         __u32 size_key;
->         __u32 size_value;
->         __u32 max_elem;
->         __u32 flags;
->         __u32 id;
->         __u32 pinning;
->         __u32 inner_id;
->         __u32 inner_idx;
-> };
->
+Got it.
