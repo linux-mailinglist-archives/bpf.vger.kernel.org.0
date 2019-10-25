@@ -2,115 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 22A9DE4757
-	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2019 11:32:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EA06E4787
+	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2019 11:41:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438720AbfJYJcx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 25 Oct 2019 05:32:53 -0400
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:34050 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729612AbfJYJcx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 25 Oct 2019 05:32:53 -0400
-Received: by mail-pl1-f193.google.com with SMTP id k7so959568pll.1;
-        Fri, 25 Oct 2019 02:32:53 -0700 (PDT)
+        id S2436710AbfJYJlk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 25 Oct 2019 05:41:40 -0400
+Received: from mail-lj1-f171.google.com ([209.85.208.171]:36989 "EHLO
+        mail-lj1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2438737AbfJYJlk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 25 Oct 2019 05:41:40 -0400
+Received: by mail-lj1-f171.google.com with SMTP id l21so1953532lje.4
+        for <bpf@vger.kernel.org>; Fri, 25 Oct 2019 02:41:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=RMWe0n3x6S4X3BKlEdpwQaU1tD5j4F4KqNTGoocQo+U=;
-        b=fjBCRKAx3V3QQlWfCwrK3skDRWW3NxLNkVcvkM4U6IAIBFnMSi2GLAJFjACSFrwYBh
-         x1AIcJHXMm1FKxQS0oQS16AxVcuwIMxfQgpP4ZgnPd7I7kiIV0RW0GHHQKDvkwshW7MY
-         9R8gETGncLd6R1yvr8wFDkL6u373T+G7WPCyccV7hWXHMNi3NJPXJDX+iHbkDZT+Qzns
-         5yfzP5Xm2VK4kN9CtO27xSGJT7hs/HS95IH2BVjKhrCFOLpb9OSP7+rzDgvAzmsgMLXe
-         SrfYjwijyHk/V0whtI5xv49nCroSCmP6H7LTdvqOxWap0H2RwqWMwrODsFR+BZ3oeS8O
-         T14Q==
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=6NfBzBODp+mvvMTG0sObTS1pzfB38qWD7gIfxONgitA=;
+        b=yQ7gCExzdPxwkXltZC+lHDsW6hVL1LMHb6vnSzWaWs/NgO0fEFdjqjCX1kB4yKn8dy
+         Ql1/h7AuQjOhw8NI9R3ewTyQf6nZOzPCYpSxA6ih9daDMEJWImQI2cdgWxkQhgNd7FR/
+         lWM81f0OuRQ34vZCSCF3J0MrI6QeYREW0ELsM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=RMWe0n3x6S4X3BKlEdpwQaU1tD5j4F4KqNTGoocQo+U=;
-        b=Edr99Kcy+M4866nM2cJ12bx/lbyBfAWE2cFyLk1q8nmY+iAhQqrthejOCdVeq3po9j
-         FvXDbZ6GISJcgC7Hw0MVWFGYKkmoHEa6fO9WmOxe7GlptJXtRuD2A91PsvibifKe3kzR
-         80ZPMPj5FEQvVQeaHimv0ldjuxu3T7BlStHo6ZQvadrBXHrzD/I2xiVWUOUWteFcXCEK
-         uJlSY7yZXsRyZyS78kmypqPco/4HqFm553f0c6/J3KBw9myl5kJDFdBfDCzBkobYyXvu
-         XZGAS1QJpxsvxAHUNPpL+ab+OnkSep+fmXeq28AU/p7HZK0PelP9ktF/bbURomowtLc/
-         MCQw==
-X-Gm-Message-State: APjAAAX4PjT3iDIrw5A7FCLTIV9P/KqKo2qL6kO9mzZ8IFR8SgDBPyfc
-        d14IRV5cuMF4QB0DjhOOebfTy1EZAVw15g==
-X-Google-Smtp-Source: APXvYqyleOsApi6ZCMnKGwYOk2qQUSayXui/Byje61Fdad6lzCCHq+EROB+jhOTeGsqFyk05W/OHOw==
-X-Received: by 2002:a17:902:d68f:: with SMTP id v15mr2655730ply.206.1571995972363;
-        Fri, 25 Oct 2019 02:32:52 -0700 (PDT)
-Received: from btopel-mobl.ger.intel.com ([192.55.54.42])
-        by smtp.gmail.com with ESMTPSA id k24sm1110557pgl.6.2019.10.25.02.32.47
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=6NfBzBODp+mvvMTG0sObTS1pzfB38qWD7gIfxONgitA=;
+        b=H163TOch0eQ1XQQo9Q8vw6Kaou2gP1jgKtTf9eoOtcEXLWL81ZhYaKjBZesLA6XaU2
+         ghrgtqAJyaHFqWphXGW7cnTDGsmxH9qm8PzfKEk9ocMADScTv3ryjNZSuw2tg46wqn+m
+         cTFZOynlYwZm+pFM9gIjU3bSsLFGinbwX6ZNGLFJ5v9FLW89pd5InjEOMNBa3+yThL2E
+         2uTg1rJKGHZm2gCcpKagSaApKsaI3lEeXEuB89pLA6y3+isS8mw2hFnP4uGSNkjNl9Q3
+         eJa8+h60u7cpaWCBhkOSb37iFGS4rh1PBROXvPRnGZb+PMnVXeYDgbChTmnUumSunbw2
+         KSjg==
+X-Gm-Message-State: APjAAAUV8ZTx9LhZDqbF9hv8kMlBygfmUY0UJd35PiQ1F2aOghfNouK3
+        dUXW9r71a3ub5xVXfXxDZoFbzEQbXfUVvA==
+X-Google-Smtp-Source: APXvYqx42XUvXibIk8HAf3vkyMQNpwJARHxfEFCRIFuJYZ1UWBzpHnKMXcXkJFvvx1OnXzCbwb/fIw==
+X-Received: by 2002:a2e:87ca:: with SMTP id v10mr1709790ljj.43.1571996498157;
+        Fri, 25 Oct 2019 02:41:38 -0700 (PDT)
+Received: from cloudflare.com ([176.221.114.230])
+        by smtp.gmail.com with ESMTPSA id y8sm555637ljh.21.2019.10.25.02.41.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Oct 2019 02:32:51 -0700 (PDT)
-From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
-To:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        jakub.kicinski@netronome.com
-Cc:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        bpf@vger.kernel.org, magnus.karlsson@gmail.com,
-        magnus.karlsson@intel.com, jonathan.lemon@gmail.com,
-        toke@redhat.com
-Subject: [PATCH bpf-next v3 2/2] bpf: implement map_gen_lookup() callback for XSKMAP
-Date:   Fri, 25 Oct 2019 11:32:19 +0200
-Message-Id: <20191025093219.10290-3-bjorn.topel@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191025093219.10290-1-bjorn.topel@gmail.com>
-References: <20191025093219.10290-1-bjorn.topel@gmail.com>
+        Fri, 25 Oct 2019 02:41:37 -0700 (PDT)
+References: <20191022113730.29303-1-jakub@cloudflare.com> <20191022113730.29303-3-jakub@cloudflare.com> <5db1da20174b1_5c282ada047205c046@john-XPS-13-9370.notmuch>
+User-agent: mu4e 1.1.0; emacs 26.1
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        netdev@vger.kernel.org, kernel-team@cloudflare.com
+Subject: Re: [RFC bpf-next 2/5] bpf, sockmap: Allow inserting listening TCP sockets into SOCKMAP
+In-reply-to: <5db1da20174b1_5c282ada047205c046@john-XPS-13-9370.notmuch>
+Date:   Fri, 25 Oct 2019 11:41:36 +0200
+Message-ID: <87k18tcgbz.fsf@cloudflare.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+On Thu, Oct 24, 2019 at 07:06 PM CEST, John Fastabend wrote:
+> Jakub Sitnicki wrote:
+>> In order for SOCKMAP type to become a generic collection for storing socket
+>> references we need to loosen the checks in update callback.
+>>
+>> Currently SOCKMAP requires the TCP socket to be in established state, which
+>> prevents us from using it to keep references to listening sockets.
+>>
+>> Change the update pre-checks so that it is sufficient for socket to be in a
+>> hash table, i.e. have a local address/port, to be inserted.
+>>
+>> Return -EINVAL if the condition is not met to be consistent with
+>> REUSEPORT_SOCKARRY map type.
+>>
+>> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+>> ---
+>
+> We need to also have some tests then to verify redirecting to this listen socket
+> does the correct thing. Once its in the map we can redirect (ingress or egress)
+> to it and need to be sure the semantics are sane.
 
-Inline the xsk_map_lookup_elem() via implementing the map_gen_lookup()
-callback. This results in emitting the bpf instructions in place of
-bpf_map_lookup_elem() helper call and better performance of bpf
-programs.
+You're right. The redirect BPF helpers that operate on SOCMAP might be
+relying on an assumption that sockets are in established state. I need
+look into that.
 
-Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
----
- kernel/bpf/xskmap.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
-
-diff --git a/kernel/bpf/xskmap.c b/kernel/bpf/xskmap.c
-index a83e92fe2971..62ce88e57d98 100644
---- a/kernel/bpf/xskmap.c
-+++ b/kernel/bpf/xskmap.c
-@@ -163,6 +163,22 @@ struct xdp_sock *__xsk_map_lookup_elem(struct bpf_map *map, u32 key)
- 	return xs;
- }
- 
-+static u32 xsk_map_gen_lookup(struct bpf_map *map, struct bpf_insn *insn_buf)
-+{
-+	const int ret = BPF_REG_0, mp = BPF_REG_1, index = BPF_REG_2;
-+	struct bpf_insn *insn = insn_buf;
-+
-+	*insn++ = BPF_LDX_MEM(BPF_W, ret, index, 0);
-+	*insn++ = BPF_JMP_IMM(BPF_JGE, ret, map->max_entries, 5);
-+	*insn++ = BPF_ALU64_IMM(BPF_LSH, ret, ilog2(sizeof(struct xsk_sock *)));
-+	*insn++ = BPF_ALU64_IMM(BPF_ADD, mp, offsetof(struct xsk_map, xsk_map));
-+	*insn++ = BPF_ALU64_REG(BPF_ADD, ret, mp);
-+	*insn++ = BPF_LDX_MEM(BPF_DW, ret, ret, 0);
-+	*insn++ = BPF_JMP_IMM(BPF_JA, 0, 0, 1);
-+	*insn++ = BPF_MOV64_IMM(ret, 0);
-+	return insn - insn_buf;
-+}
-+
- int __xsk_map_redirect(struct bpf_map *map, struct xdp_buff *xdp,
- 		       struct xdp_sock *xs)
- {
-@@ -303,6 +319,7 @@ const struct bpf_map_ops xsk_map_ops = {
- 	.map_free = xsk_map_free,
- 	.map_get_next_key = xsk_map_get_next_key,
- 	.map_lookup_elem = xsk_map_lookup_elem,
-+	.map_gen_lookup = xsk_map_gen_lookup,
- 	.map_lookup_elem_sys_only = xsk_map_lookup_elem_sys_only,
- 	.map_update_elem = xsk_map_update_elem,
- 	.map_delete_elem = xsk_map_delete_elem,
--- 
-2.20.1
+Thanks,
+Jakub
 
