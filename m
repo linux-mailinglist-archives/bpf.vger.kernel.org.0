@@ -2,121 +2,382 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D8D41E3F51
-	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2019 00:23:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C4DBE4081
+	for <lists+bpf@lfdr.de>; Fri, 25 Oct 2019 02:18:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731234AbfJXWXu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Oct 2019 18:23:50 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:34847 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729789AbfJXWXu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Oct 2019 18:23:50 -0400
-Received: by mail-wr1-f67.google.com with SMTP id l10so172025wrb.2
-        for <bpf@vger.kernel.org>; Thu, 24 Oct 2019 15:23:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gtv/AetZaEOiawKFy28xNaVVHmDK6h02djfjqXb1qLs=;
-        b=rrCvlwyTk7Y1kcDek9hF7FDbJnVPSoc7d6iffpQzkvL5ItNiIN4QUlhz+csQ9Ha2c3
-         7m5AFyAzXxqJ+eJqkUr2K+fKTnyqhif/mFIVY8Of87XGwOuH2OAYcT/tZrhegXgukqgw
-         tryDWX3BvimOf3vjXk9kc8fVFZsUkHz7zNWqd1+g6xr0vYXBsSebXHeUalhvAD8LEPQ1
-         6JUs8z+OrR90B1i9wT0v5CfEeuWO7KP9exHwFlHuqUOJwJteMIj1abSu71LsHff2wvsJ
-         mQalbxN2u8SPUhQLsZPMoSk91Mec+mevtsaw3Puxj4PqvKY0cwh1nD3KUtqGh47QEKT0
-         Cbiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gtv/AetZaEOiawKFy28xNaVVHmDK6h02djfjqXb1qLs=;
-        b=U7Lp9gFSsWOvHsOh2EKrNO7+Q9Y0ycwyV9/4wpSqFUnOJsPT5dG/SNhz0Qdy5Qwk5W
-         ywKQsrWq6oComsMmQqNuaufirnTwrjeWiyueKChux/ZcTEf4iCYxBzYYm8GnKGrJ2l+l
-         I9sshw1DCcrJZvIQ+88VbEFkLUzM2ObRXyvsp3PQqYc7mZZnVlgFXKsIWja6+rWKiW92
-         R/WgqWTFh7f9xUk94TttcI/Db8bRxJtdo+tFQZVnZAhTn6akrxdTiU5UMKUERq/GQeEw
-         i/O2G16kCrRO4av0SDTSBAqzRbPJS9JuGrXh0lkWG1qy8UsyPuY8+HNMXamCQCoM1VUo
-         fFSg==
-X-Gm-Message-State: APjAAAWhlRx+dZYVYm+yuSwjQUCZ4cVYXgRkVg50qwcUePe3ple+5wvL
-        VALZpvfH6uPmudE89kVQfftcxludt8TbhrG1pdqQsAq1
-X-Google-Smtp-Source: APXvYqzQacM77eeXfVeljnlIazZDyc4wR98JJMV5RFFNBVyVUJQZKJs0OVHR87sYlKBSuJHwXwaB5BkMIxrmFT2xYXM=
-X-Received: by 2002:a5d:5609:: with SMTP id l9mr5758717wrv.113.1571955825937;
- Thu, 24 Oct 2019 15:23:45 -0700 (PDT)
+        id S1733026AbfJYASQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Oct 2019 20:18:16 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:45970 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732374AbfJYASQ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 24 Oct 2019 20:18:16 -0400
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x9P0HuV8030361
+        for <bpf@vger.kernel.org>; Thu, 24 Oct 2019 17:18:15 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=NZiG9O33fntUJ/c7gNBy33V3qrchqSEVaLCmusy7340=;
+ b=XxI8g7MGyJI8bGqqfpWk+tDappx4n/aGEYCkl5Y5UKhLWp1gweYQafewlaj2xLoQJnWe
+ ZPMhziNAIYzYsBT3sE+IKzDLJt0VA1AglWVc96YAtVJjQPh5j0ngHdtwms7KXxaNwO6n
+ jPBQB4Fiz+PERqDAH6dT88dbr9erW6zRzoQ= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2vtyd6xak3-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 24 Oct 2019 17:18:15 -0700
+Received: from 2401:db00:2120:81ca:face:0:31:0 (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 24 Oct 2019 17:18:13 -0700
+Received: by devbig005.ftw2.facebook.com (Postfix, from userid 6611)
+        id A3D3B2943218; Thu, 24 Oct 2019 17:18:11 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Martin KaFai Lau <kafai@fb.com>
+Smtp-Origin-Hostname: devbig005.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>, <kernel-team@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH v2 bpf-next] bpf: Prepare btf_ctx_access for non raw_tp use case
+Date:   Thu, 24 Oct 2019 17:18:11 -0700
+Message-ID: <20191025001811.1718491-1-kafai@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-References: <20191022043119.2625263-1-yhs@fb.com> <20191022192953.GB31343@pc-66.home>
- <f666fdcd-9b02-ca47-509b-aaffb3cf7c09@fb.com>
-In-Reply-To: <f666fdcd-9b02-ca47-509b-aaffb3cf7c09@fb.com>
-From:   Jiong Wang <jiong.wang@netronome.com>
-Date:   Thu, 24 Oct 2019 23:23:42 +0100
-Message-ID: <CAMsOgNDHEF5qYNFLvXfbXr9CBeYD_2W3465=t7mbmQnPbSv88A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] tools/bpf: turn on llvm alu32 attribute by default
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Kernel Team <Kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
+ definitions=2019-10-24_13:2019-10-23,2019-10-24 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=999
+ impostorscore=0 bulkscore=0 adultscore=0 mlxscore=0 suspectscore=9
+ phishscore=0 spamscore=0 lowpriorityscore=0 clxscore=1015 malwarescore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1908290000 definitions=main-1910250002
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 23, 2019 at 3:27 AM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 10/22/19 12:29 PM, Daniel Borkmann wrote:
-> > On Mon, Oct 21, 2019 at 09:31:19PM -0700, Yonghong Song wrote:
-> >> llvm alu32 was introduced in llvm7:
-> >>    https://urldefense.proofpoint.com/v2/url?u=https-3A__reviews.llvm.org_rL325987&d=DwIBAg&c=5VD0RTtNlTh3ycd41b3MUw&r=DA8e1B5r073vIqRrFz7MRA&m=0VCVs-aItkaVLRJ9Jp7YeX0We2JPKzcY7p_83Hlkso4&s=M0ANvh80tDNZb5JzE5vj9IETkKD87L1jFkcRHShC6Rk&e=
-> >>    https://urldefense.proofpoint.com/v2/url?u=https-3A__reviews.llvm.org_rL325989&d=DwIBAg&c=5VD0RTtNlTh3ycd41b3MUw&r=DA8e1B5r073vIqRrFz7MRA&m=0VCVs-aItkaVLRJ9Jp7YeX0We2JPKzcY7p_83Hlkso4&s=LABlrq9E6tmCwrbU2bCQa_LwchCaL8Tk5GczMCO5Cvs&e=
-> >> Experiments showed that in general performance
-> >> is better with alu32 enabled:
-> >>    https://urldefense.proofpoint.com/v2/url?u=https-3A__lwn.net_Articles_775316_&d=DwIBAg&c=5VD0RTtNlTh3ycd41b3MUw&r=DA8e1B5r073vIqRrFz7MRA&m=0VCVs-aItkaVLRJ9Jp7YeX0We2JPKzcY7p_83Hlkso4&s=qSDIIkauxw9Y_8rYH0AlvB4nvu06reDuhsb0GxSpoBo&e=
-> >>
-> >> This patch turned on alu32 with no-flavor test_progs
-> >> which is tested most often. The flavor test at
-> >> no_alu32/test_progs can be used to test without
-> >> alu32 enabled. The Makefile check for whether
-> >> llvm supports '-mattr=+alu32 -mcpu=v3' is
-> >> removed as llvm7 should be available for recent
-> >> distributions and also latest llvm is preferred
-> >> to run bpf selftests.
-> >>
-> >> Note that jmp32 is checked by -mcpu=probe and
-> >> will be enabled if the host kernel supports it.
-> >>
-> >> Cc: Jiong Wang <jiong.wang@netronome.com>
-> >> Acked-by: Andrii Nakryiko <andriin@fb.com>
-> >> Signed-off-by: Yonghong Song <yhs@fb.com>
-> >
-> > Applied, thanks!
-> >
-> > Would it make sense to include -mattr=+alu32 also into -mcpu=probe
-> > on LLVM side or is the rationale to not do it that this causes a
-> > penalty for various other, non-x86 archs when done by default
-> > (although they could opt-out at the same time via -mattr=-alu32)?
->
-> The current -mcpu=probe is mostly to provide whether particular
-> instruction(s) are supported by the kernel or not. This follows
-> traditional cpu concept. For -mattr=+alu32 case, instruction set
-> remains the same, but we need to probe verifier capability.
->
-> But I agree that for bpf probing verifier for alu32 support
-> is totally reasonable.
->
-> Jiong, could you help do an implementation in llvm side since
-> you are more familiar with what alu32 capability needs to be
-> checked for verifier? Thanks!
+This patch makes a few changes to btf_ctx_access() to prepare
+it for non raw_tp use case where the attach_btf_id is not
+necessary a BTF_KIND_TYPEDEF.
 
-I think alu32 code-gen becomes good and stable after jmp32
-instructions (cpu=v3) supported,  so if we want to enable alu32 at
-default, perhaps could just link it with v3 probe, and also Daniel's
-opt-out suggestion makes sense.
+It moves the "btf_trace_" prefix check and typedef-follow logic to a new
+function "check_attach_btf_id()" which is called only once during
+bpf_check().  btf_ctx_access() only operates on a BTF_KIND_FUNC_PROTO
+type now. That should also be more efficient since it is done only
+one instead of every-time check_ctx_access() is called.
 
-Will try to do one impl but not sure could catch the timeline
-tomorrow. For what it's worth, tomorrow will be my last day using
-Netronome email, I will use wong.kwongyuan.tools@gmail.com for
-bpf/kernel contributing temporarily.
+"check_attach_btf_id()" needs to find the func_proto type from
+the attach_btf_id.  It needs to store the result into the
+newly added prog->aux->attach_func_proto.  func_proto
+btf type has no name, so a proper name should be stored into
+"attach_func_name" also.
 
+v2:
+- Move the "btf_trace_" check to an earlier verifier phase (Alexei)
+
+Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+---
+ include/linux/bpf.h      |  5 +++
+ include/linux/btf.h      | 31 +++++++++++++++++
+ kernel/bpf/btf.c         | 73 +++++++---------------------------------
+ kernel/bpf/syscall.c     |  4 +--
+ kernel/bpf/verifier.c    | 52 +++++++++++++++++++++++++++-
+ kernel/trace/bpf_trace.c |  2 ++
+ 6 files changed, 103 insertions(+), 64 deletions(-)
+
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 2c2c29b49845..171be30fe0ae 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -392,6 +392,11 @@ struct bpf_prog_aux {
+ 	u32 attach_btf_id; /* in-kernel BTF type id to attach to */
+ 	bool verifier_zext; /* Zero extensions has been inserted by verifier. */
+ 	bool offload_requested;
++	bool attach_btf_trace; /* true if attaching to BTF-enabled raw tp */
++	/* BTF_KIND_FUNC_PROTO for valid attach_btf_id */
++	const struct btf_type *attach_func_proto;
++	/* function name for valid attach_btf_id */
++	const char *attach_func_name;
+ 	struct bpf_prog **func;
+ 	void *jit_data; /* JIT specific data. arch dependent */
+ 	struct latch_tree_node ksym_tnode;
+diff --git a/include/linux/btf.h b/include/linux/btf.h
+index 55d43bc856be..9dee00859c5f 100644
+--- a/include/linux/btf.h
++++ b/include/linux/btf.h
+@@ -5,6 +5,7 @@
+ #define _LINUX_BTF_H 1
+ 
+ #include <linux/types.h>
++#include <uapi/linux/btf.h>
+ 
+ struct btf;
+ struct btf_member;
+@@ -53,6 +54,36 @@ bool btf_member_is_reg_int(const struct btf *btf, const struct btf_type *s,
+ int btf_find_spin_lock(const struct btf *btf, const struct btf_type *t);
+ bool btf_type_is_void(const struct btf_type *t);
+ 
++static inline bool btf_type_is_ptr(const struct btf_type *t)
++{
++	return BTF_INFO_KIND(t->info) == BTF_KIND_PTR;
++}
++
++static inline bool btf_type_is_int(const struct btf_type *t)
++{
++	return BTF_INFO_KIND(t->info) == BTF_KIND_INT;
++}
++
++static inline bool btf_type_is_enum(const struct btf_type *t)
++{
++	return BTF_INFO_KIND(t->info) == BTF_KIND_ENUM;
++}
++
++static inline bool btf_type_is_typedef(const struct btf_type *t)
++{
++	return BTF_INFO_KIND(t->info) == BTF_KIND_TYPEDEF;
++}
++
++static inline bool btf_type_is_func(const struct btf_type *t)
++{
++	return BTF_INFO_KIND(t->info) == BTF_KIND_FUNC;
++}
++
++static inline bool btf_type_is_func_proto(const struct btf_type *t)
++{
++	return BTF_INFO_KIND(t->info) == BTF_KIND_FUNC_PROTO;
++}
++
+ #ifdef CONFIG_BPF_SYSCALL
+ const struct btf_type *btf_type_by_id(const struct btf *btf, u32 type_id);
+ const char *btf_name_by_offset(const struct btf *btf, u32 offset);
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index f7557af39756..128d89601d73 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -336,16 +336,6 @@ static bool btf_type_is_fwd(const struct btf_type *t)
+ 	return BTF_INFO_KIND(t->info) == BTF_KIND_FWD;
+ }
+ 
+-static bool btf_type_is_func(const struct btf_type *t)
+-{
+-	return BTF_INFO_KIND(t->info) == BTF_KIND_FUNC;
+-}
+-
+-static bool btf_type_is_func_proto(const struct btf_type *t)
+-{
+-	return BTF_INFO_KIND(t->info) == BTF_KIND_FUNC_PROTO;
+-}
+-
+ static bool btf_type_nosize(const struct btf_type *t)
+ {
+ 	return btf_type_is_void(t) || btf_type_is_fwd(t) ||
+@@ -377,16 +367,6 @@ static bool btf_type_is_array(const struct btf_type *t)
+ 	return BTF_INFO_KIND(t->info) == BTF_KIND_ARRAY;
+ }
+ 
+-static bool btf_type_is_ptr(const struct btf_type *t)
+-{
+-	return BTF_INFO_KIND(t->info) == BTF_KIND_PTR;
+-}
+-
+-static bool btf_type_is_int(const struct btf_type *t)
+-{
+-	return BTF_INFO_KIND(t->info) == BTF_KIND_INT;
+-}
+-
+ static bool btf_type_is_var(const struct btf_type *t)
+ {
+ 	return BTF_INFO_KIND(t->info) == BTF_KIND_VAR;
+@@ -3442,54 +3422,27 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
+ 		    const struct bpf_prog *prog,
+ 		    struct bpf_insn_access_aux *info)
+ {
++	const struct btf_type *t = prog->aux->attach_func_proto;
++	const char *tname = prog->aux->attach_func_name;
+ 	struct bpf_verifier_log *log = info->log;
+-	u32 btf_id = prog->aux->attach_btf_id;
+ 	const struct btf_param *args;
+-	const struct btf_type *t;
+-	const char prefix[] = "btf_trace_";
+-	const char *tname;
+ 	u32 nr_args, arg;
+ 
+-	if (!btf_id)
+-		return true;
+-
+-	if (IS_ERR(btf_vmlinux)) {
+-		bpf_log(log, "btf_vmlinux is malformed\n");
+-		return false;
+-	}
+-
+-	t = btf_type_by_id(btf_vmlinux, btf_id);
+-	if (!t || BTF_INFO_KIND(t->info) != BTF_KIND_TYPEDEF) {
+-		bpf_log(log, "btf_id is invalid\n");
+-		return false;
+-	}
+-
+-	tname = __btf_name_by_offset(btf_vmlinux, t->name_off);
+-	if (strncmp(prefix, tname, sizeof(prefix) - 1)) {
+-		bpf_log(log, "btf_id points to wrong type name %s\n", tname);
+-		return false;
+-	}
+-	tname += sizeof(prefix) - 1;
+-
+-	t = btf_type_by_id(btf_vmlinux, t->type);
+-	if (!btf_type_is_ptr(t))
+-		return false;
+-	t = btf_type_by_id(btf_vmlinux, t->type);
+-	if (!btf_type_is_func_proto(t))
+-		return false;
+-
+ 	if (off % 8) {
+-		bpf_log(log, "raw_tp '%s' offset %d is not multiple of 8\n",
++		bpf_log(log, "func '%s' offset %d is not multiple of 8\n",
+ 			tname, off);
+ 		return false;
+ 	}
+ 	arg = off / 8;
+ 	args = (const struct btf_param *)(t + 1);
+-	/* skip first 'void *__data' argument in btf_trace_##name typedef */
+-	args++;
+-	nr_args = btf_type_vlen(t) - 1;
++	nr_args = btf_type_vlen(t);
++	if (prog->aux->attach_btf_trace) {
++		/* skip first 'void *__data' argument in btf_trace_##name typedef */
++		args++;
++		nr_args--;
++	}
+ 	if (arg >= nr_args) {
+-		bpf_log(log, "raw_tp '%s' doesn't have %d-th argument\n",
++		bpf_log(log, "func '%s' doesn't have %d-th argument\n",
+ 			tname, arg);
+ 		return false;
+ 	}
+@@ -3503,7 +3456,7 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
+ 		return true;
+ 	if (!btf_type_is_ptr(t)) {
+ 		bpf_log(log,
+-			"raw_tp '%s' arg%d '%s' has type %s. Only pointer access is allowed\n",
++			"func '%s' arg%d '%s' has type %s. Only pointer access is allowed\n",
+ 			tname, arg,
+ 			__btf_name_by_offset(btf_vmlinux, t->name_off),
+ 			btf_kind_str[BTF_INFO_KIND(t->info)]);
+@@ -3526,11 +3479,11 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
+ 		t = btf_type_by_id(btf_vmlinux, t->type);
+ 	if (!btf_type_is_struct(t)) {
+ 		bpf_log(log,
+-			"raw_tp '%s' arg%d type %s is not a struct\n",
++			"func '%s' arg%d type %s is not a struct\n",
+ 			tname, arg, btf_kind_str[BTF_INFO_KIND(t->info)]);
+ 		return false;
+ 	}
+-	bpf_log(log, "raw_tp '%s' arg%d has btf_id %d type %s '%s'\n",
++	bpf_log(log, "func '%s' arg%d has btf_id %d type %s '%s'\n",
+ 		tname, arg, info->btf_id, btf_kind_str[BTF_INFO_KIND(t->info)],
+ 		__btf_name_by_offset(btf_vmlinux, t->name_off));
+ 	return true;
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 16ea3c0db4f6..ff5225759553 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -1848,9 +1848,7 @@ static int bpf_raw_tracepoint_open(const union bpf_attr *attr)
+ 			goto out_put_prog;
+ 		}
+ 		/* raw_tp name is taken from type name instead */
+-		tp_name = kernel_type_name(prog->aux->attach_btf_id);
+-		/* skip the prefix */
+-		tp_name += sizeof("btf_trace_") - 1;
++		tp_name = prog->aux->attach_func_name;
+ 	} else {
+ 		if (strncpy_from_user(buf,
+ 				      u64_to_user_ptr(attr->raw_tracepoint.name),
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 556e82f8869b..c59778c0fc4d 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -9372,6 +9372,52 @@ static void print_verification_stats(struct bpf_verifier_env *env)
+ 		env->peak_states, env->longest_mark_read_walk);
+ }
+ 
++static int check_attach_btf_id(struct bpf_verifier_env *env)
++{
++	struct bpf_prog *prog = env->prog;
++	u32 btf_id = prog->aux->attach_btf_id;
++	const struct btf_type *t;
++	const char *tname;
++
++	if (prog->type == BPF_PROG_TYPE_RAW_TRACEPOINT && btf_id) {
++		const char prefix[] = "btf_trace_";
++
++		t = btf_type_by_id(btf_vmlinux, btf_id);
++		if (!t) {
++			verbose(env, "attach_btf_id %u is invalid\n", btf_id);
++			return -EINVAL;
++		}
++		if (!btf_type_is_typedef(t)) {
++			verbose(env, "attach_btf_id %u is not a typedef\n",
++				btf_id);
++			return -EINVAL;
++		}
++		tname = btf_name_by_offset(btf_vmlinux, t->name_off);
++		if (!tname || strncmp(prefix, tname, sizeof(prefix) - 1)) {
++			verbose(env, "attach_btf_id %u points to wrong type name %s\n",
++				btf_id, tname);
++			return -EINVAL;
++		}
++		tname += sizeof(prefix) - 1;
++		t = btf_type_by_id(btf_vmlinux, t->type);
++		if (!btf_type_is_ptr(t))
++			/* should never happen in valid vmlinux build */
++			return -EINVAL;
++		t = btf_type_by_id(btf_vmlinux, t->type);
++		if (!btf_type_is_func_proto(t))
++			/* should never happen in valid vmlinux build */
++			return -EINVAL;
++
++		/* remember two read only pointers that are valid for
++		 * the life time of the kernel
++		 */
++		prog->aux->attach_func_name = tname;
++		prog->aux->attach_func_proto = t;
++		prog->aux->attach_btf_trace = true;
++	}
++	return 0;
++}
++
+ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr,
+ 	      union bpf_attr __user *uattr)
+ {
+@@ -9435,9 +9481,13 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr,
+ 		/* Either gcc or pahole or kernel are broken. */
+ 		verbose(env, "in-kernel BTF is malformed\n");
+ 		ret = PTR_ERR(btf_vmlinux);
+-		goto err_unlock;
++		goto skip_full_check;
+ 	}
+ 
++	ret = check_attach_btf_id(env);
++	if (ret)
++		goto skip_full_check;
++
+ 	env->strict_alignment = !!(attr->prog_flags & BPF_F_STRICT_ALIGNMENT);
+ 	if (!IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS))
+ 		env->strict_alignment = true;
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index c3240898cc44..571c25d60710 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -1080,6 +1080,8 @@ static bool raw_tp_prog_is_valid_access(int off, int size,
+ 		return false;
+ 	if (off % size != 0)
+ 		return false;
++	if (!prog->aux->attach_btf_id)
++		return true;
+ 	return btf_ctx_access(off, size, type, prog, info);
+ }
+ 
 -- 
-Regards,
-Jiong
+2.17.1
+
