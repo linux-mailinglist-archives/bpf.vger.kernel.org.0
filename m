@@ -2,110 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 86311E5C97
-	for <lists+bpf@lfdr.de>; Sat, 26 Oct 2019 15:31:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A1B7E5DAF
+	for <lists+bpf@lfdr.de>; Sat, 26 Oct 2019 16:26:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728156AbfJZNTN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 26 Oct 2019 09:19:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41118 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726330AbfJZNTM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 26 Oct 2019 09:19:12 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 648F92070B;
-        Sat, 26 Oct 2019 13:19:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1572095952;
-        bh=OIZ6EXwHD5c8//jk+AXuRD+N7T25MxUNW2lB0iTm3+I=;
-        h=From:To:Cc:Subject:Date:From;
-        b=0ICES4KRgOu7rWK827qRoOmctrE7BQmBGlTeL2Na+VAjHkKnVs34uPZBy1QCVmk+x
-         Org01q//TpfDdbVjzdbgIMNuChrFrqJRsM5qhyPK5r0U9keEXhDULVBPiSOk0uU3ll
-         /4zoZyKegSFXgcTq9n+SDciwfMzlZ5diCZOeKYr0=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Song Liu <songliubraving@fb.com>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 01/59] tools: bpf: Use !building_out_of_srctree to determine srctree
-Date:   Sat, 26 Oct 2019 09:18:12 -0400
-Message-Id: <20191026131910.3435-1-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
+        id S1726202AbfJZO0X (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 26 Oct 2019 10:26:23 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:58780 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726185AbfJZO0X (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 26 Oct 2019 10:26:23 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9QEORdr139601;
+        Sat, 26 Oct 2019 14:25:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2019-08-05;
+ bh=g0EobvnuNtLD/kX6AGj4Z/TZ+7lRKu7nyaQLzoUBx5I=;
+ b=BQlez8emRUWSibANBLQXkIRr+NQC5XfbrmMQf4rd3PBr0hHWd0cGYQ5Wgo22VVDH7WU5
+ XYbo1LqrNUAUOfEH47zkqnmQ+Uu1v0YVOFHDxbP60xx7cqB7AJ8zHwhS+JqY3F0nzfyl
+ T+hvFL1INqhN7UhL3/3sxumzqVCRiXlcrmiyy99fIVDluB7v5CHxVJVWSciqMd2w9IXG
+ nCLUdGe1JXuPGTY1Qn7d54PYUmhjOMnTjo+jVr0QcAbCc3jKrR3f03bKQBe/EJh16g6B
+ lQSLWGq5dzu0sntRKT8NdU23ACvKJxeuaR1eZHeGndyqXA43S70v51R9SU3CQzBeHPoy Fw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 2vve3ptf4w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 26 Oct 2019 14:25:27 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9QEO9rj011950;
+        Sat, 26 Oct 2019 14:25:27 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 2vvb8wkseq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 26 Oct 2019 14:25:27 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x9QEPCHp031477;
+        Sat, 26 Oct 2019 14:25:12 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sat, 26 Oct 2019 07:25:12 -0700
+Date:   Sat, 26 Oct 2019 17:24:58 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     zhanglin <zhang.lin16@zte.com.cn>
+Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        jakub.kicinski@netronome.com, hawk@kernel.org,
+        john.fastabend@gmail.com, mkubecek@suse.cz, jiri@mellanox.com,
+        pablo@netfilter.org, f.fainelli@gmail.com,
+        maxime.chevallier@bootlin.com, lirongqing@baidu.com,
+        vivien.didelot@gmail.com, linyunsheng@huawei.com,
+        natechancellor@gmail.com, arnd@arndb.de, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        xue.zhihong@zte.com.cn, wang.yi59@zte.com.cn,
+        jiang.xuexin@zte.com.cn
+Subject: Re: [PATCH] net: Zeroing the structure ethtool_wolinfo in
+ ethtool_get_wol()
+Message-ID: <20191026142458.GJ23523@kadam>
+References: <1572076456-12463-1-git-send-email-zhang.lin16@zte.com.cn>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1572076456-12463-1-git-send-email-zhang.lin16@zte.com.cn>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9422 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1908290000 definitions=main-1910260146
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9422 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=1 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
+ definitions=main-1910260146
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Shuah Khan <skhan@linuxfoundation.org>
+On Sat, Oct 26, 2019 at 03:54:16PM +0800, zhanglin wrote:
+> memset() the structure ethtool_wolinfo that has padded bytes
+> but the padded bytes have not been zeroed out.
+> 
+> Signed-off-by: zhanglin <zhang.lin16@zte.com.cn>
+> ---
+>  net/core/ethtool.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/net/core/ethtool.c b/net/core/ethtool.c
+> index aeabc48..563a845 100644
+> --- a/net/core/ethtool.c
+> +++ b/net/core/ethtool.c
+> @@ -1471,11 +1471,13 @@ static int ethtool_reset(struct net_device *dev, char __user *useraddr)
+>  
+>  static int ethtool_get_wol(struct net_device *dev, char __user *useraddr)
+>  {
+> -	struct ethtool_wolinfo wol = { .cmd = ETHTOOL_GWOL };
+> +	struct ethtool_wolinfo wol;
+>  
 
-[ Upstream commit 55d554f5d14071f7c2c5dbd88d0a2eb695c97d16 ]
+How did you detect that they weren't initialized?  Is this a KASAN
+thing?
 
-make TARGETS=bpf kselftest fails with:
+Most of the time GCC will zero out the padding bytes when you have an
+initializer like this, but sometimes it just makes the intialization a
+series of assignments which leaves the holes uninitialized.  I wish I
+knew the rules so that I could check for it in Smatch.  Or even better,
+I wish that there were an option to always zero the holes in this
+situation...
 
-Makefile:127: tools/build/Makefile.include: No such file or directory
-
-When the bpf tool make is invoked from tools Makefile, srctree is
-cleared and the current logic check for srctree equals to empty
-string to determine srctree location from CURDIR.
-
-When the build in invoked from selftests/bpf Makefile, the srctree
-is set to "." and the same logic used for srctree equals to empty is
-needed to determine srctree.
-
-Check building_out_of_srctree undefined as the condition for both
-cases to fix "make TARGETS=bpf kselftest" build failure.
-
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Acked-by: Song Liu <songliubraving@fb.com>
-Link: https://lore.kernel.org/bpf/20190927011344.4695-1-skhan@linuxfoundation.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- tools/bpf/Makefile     | 6 +++++-
- tools/lib/bpf/Makefile | 6 +++++-
- 2 files changed, 10 insertions(+), 2 deletions(-)
-
-diff --git a/tools/bpf/Makefile b/tools/bpf/Makefile
-index 53b60ad452f5d..93a84965345dc 100644
---- a/tools/bpf/Makefile
-+++ b/tools/bpf/Makefile
-@@ -12,7 +12,11 @@ INSTALL ?= install
- CFLAGS += -Wall -O2
- CFLAGS += -D__EXPORTED_HEADERS__ -I$(srctree)/include/uapi -I$(srctree)/include
- 
--ifeq ($(srctree),)
-+# This will work when bpf is built in tools env. where srctree
-+# isn't set and when invoked from selftests build, where srctree
-+# is set to ".". building_out_of_srctree is undefined for in srctree
-+# builds
-+ifndef building_out_of_srctree
- srctree := $(patsubst %/,%,$(dir $(CURDIR)))
- srctree := $(patsubst %/,%,$(dir $(srctree)))
- endif
-diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
-index 3624557550a1f..5cd2786cc437c 100644
---- a/tools/lib/bpf/Makefile
-+++ b/tools/lib/bpf/Makefile
-@@ -7,7 +7,11 @@ BPF_EXTRAVERSION = 1
- 
- MAKEFLAGS += --no-print-directory
- 
--ifeq ($(srctree),)
-+# This will work when bpf is built in tools env. where srctree
-+# isn't set and when invoked from selftests build, where srctree
-+# is a ".". building_out_of_srctree is undefined for in srctree
-+# builds
-+ifndef building_out_of_srctree
- srctree := $(patsubst %/,%,$(dir $(CURDIR)))
- srctree := $(patsubst %/,%,$(dir $(srctree)))
- srctree := $(patsubst %/,%,$(dir $(srctree)))
--- 
-2.20.1
+regards,
+dan carpenter
 
