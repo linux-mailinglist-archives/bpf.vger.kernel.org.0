@@ -2,127 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 855ECE5F6E
-	for <lists+bpf@lfdr.de>; Sat, 26 Oct 2019 22:18:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AB04E5FF1
+	for <lists+bpf@lfdr.de>; Sun, 27 Oct 2019 00:40:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726442AbfJZUSE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 26 Oct 2019 16:18:04 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:45844 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726422AbfJZUSE (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 26 Oct 2019 16:18:04 -0400
-X-IronPort-AV: E=Sophos;i="5.68,233,1569276000"; 
-   d="scan'208";a="408476953"
-Received: from ip-121.net-89-2-166.rev.numericable.fr (HELO hadrien) ([89.2.166.121])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 26 Oct 2019 22:17:59 +0200
-Date:   Sat, 26 Oct 2019 22:17:59 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@lip6.fr>
-X-X-Sender: jll@hadrien
-To:     Joe Perches <joe@perches.com>
-cc:     zhanglin <zhang.lin16@zte.com.cn>, davem@davemloft.net,
-        cocci <cocci@systeme.lip6.fr>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        mkubecek@suse.cz, jakub.kicinski@netronome.com, ast@kernel.org,
-        jiang.xuexin@zte.com.cn, f.fainelli@gmail.com,
-        daniel@iogearbox.net, john.fastabend@gmail.com,
-        lirongqing@baidu.com, maxime.chevallier@bootlin.com,
-        vivien.didelot@gmail.com, dan.carpenter@oracle.com,
-        wang.yi59@zte.com.cn, hawk@kernel.org, arnd@arndb.de,
-        jiri@mellanox.com, xue.zhihong@zte.com.cn,
-        natechancellor@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linyunsheng@huawei.com,
-        pablo@netfilter.org, bpf@vger.kernel.org
-Subject: Re: [Cocci] [PATCH] net: Zeroing the structure ethtool_wolinfo in
- ethtool_get_wol()
-In-Reply-To: <c790578751dd69fb1080b355f5847c9ea5fb0e15.camel@perches.com>
-Message-ID: <alpine.DEB.2.21.1910262207540.5545@hadrien>
-References: <1572076456-12463-1-git-send-email-zhang.lin16@zte.com.cn> <c790578751dd69fb1080b355f5847c9ea5fb0e15.camel@perches.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        id S1726473AbfJZWkT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 26 Oct 2019 18:40:19 -0400
+Received: from www62.your-server.de ([213.133.104.62]:43546 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726263AbfJZWkT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 26 Oct 2019 18:40:19 -0400
+Received: from 33.249.197.178.dynamic.dsl-lte-bonding.lssmb00p-msn.res.cust.swisscom.ch ([178.197.249.33] helo=localhost)
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1iOUj9-0008Jp-Dk; Sun, 27 Oct 2019 00:40:07 +0200
+From:   Daniel Borkmann <daniel@iogearbox.net>
+To:     davem@davemloft.net
+Cc:     jakub.kicinski@netronome.com, daniel@iogearbox.net, ast@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: pull-request: bpf 2019-10-27
+Date:   Sun, 27 Oct 2019 00:40:06 +0200
+Message-Id: <20191026224006.18149-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.101.4/25614/Sat Oct 26 11:04:41 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Hi David,
 
+The following pull-request contains BPF updates for your *net* tree.
 
-On Sat, 26 Oct 2019, Joe Perches wrote:
+We've added 7 non-merge commits during the last 11 day(s) which contain
+a total of 7 files changed, 66 insertions(+), 16 deletions(-).
 
-> On Sat, 2019-10-26 at 15:54 +0800, zhanglin wrote:
-> > memset() the structure ethtool_wolinfo that has padded bytes
-> > but the padded bytes have not been zeroed out.
-> []
-> > diff --git a/net/core/ethtool.c b/net/core/ethtool.c
-> []
-> > @@ -1471,11 +1471,13 @@ static int ethtool_reset(struct net_device *dev, char __user *useraddr)
-> >
-> >  static int ethtool_get_wol(struct net_device *dev, char __user *useraddr)
-> >  {
-> > -	struct ethtool_wolinfo wol = { .cmd = ETHTOOL_GWOL };
-> > +	struct ethtool_wolinfo wol;
-> >
-> >  	if (!dev->ethtool_ops->get_wol)
-> >  		return -EOPNOTSUPP;
-> >
-> > +	memset(&wol, 0, sizeof(struct ethtool_wolinfo));
-> > +	wol.cmd = ETHTOOL_GWOL;
-> >  	dev->ethtool_ops->get_wol(dev, &wol);
-> >
-> >  	if (copy_to_user(useraddr, &wol, sizeof(wol)))
->
-> It seems likely there are more of these.
->
-> Is there any way for coccinelle to find them?
->
-> There are ~4000 structs in include/uapi and
-> there are ~3000 uses of copy_to_user in the tree.
->
-> $ git grep -P '\bstruct\s+\w+\s*{' include/uapi/ | cut -f2 -d" "|sort|uniq|wc -l
-> 3785
-> $ git grep -w copy_to_user|wc -l
-> 2854
->
-> A trivial grep and manual search using:
->
-> $ git grep -B20 -w copy_to_user | grep -A20 -P '\bstruct\s+\w+\s*=\s*{'
->
-> shows at least 1 (I didn't look very hard and stopped after finding 1):
->
->    include/uapi/linux/utsname.h:struct oldold_utsname {
->    include/uapi/linux/utsname.h-   char sysname[9];
->    include/uapi/linux/utsname.h-   char nodename[9];
->    include/uapi/linux/utsname.h-   char release[9];
->    include/uapi/linux/utsname.h-   char version[9];
->    include/uapi/linux/utsname.h-   char machine[9];
->    include/uapi/linux/utsname.h-};
->
-> and
->
->    kernel/sys.c-	struct oldold_utsname tmp = {};
->    kernel/sys.c-
->    kernel/sys.c-	if (!name)
->    kernel/sys.c-		return -EFAULT;
->    kernel/sys.c-
->    kernel/sys.c-	down_read(&uts_sem);
->    kernel/sys.c-	memcpy(&tmp.sysname, &utsname()->sysname, __OLD_UTS_LEN);
->    kernel/sys.c-	memcpy(&tmp.nodename, &utsname()->nodename, __OLD_UTS_LEN);
->    kernel/sys.c-	memcpy(&tmp.release, &utsname()->release, __OLD_UTS_LEN);
->    kernel/sys.c-	memcpy(&tmp.version, &utsname()->version, __OLD_UTS_LEN);
->    kernel/sys.c-	memcpy(&tmp.machine, &utsname()->machine, __OLD_UTS_LEN);
->    kernel/sys.c-	up_read(&uts_sem);
->    kernel/sys.c:	if (copy_to_user(name, &tmp, sizeof(tmp)))
->
-> where there is likely 3 bytes of padding after 45 bytes of data
-> in the struct.
+The main changes are:
 
-I looked into this at one point, but didn't get as far as generating
-patches.  I think that the approach was roughly to collect the types of
-the fields, and then generate code that would use BUILD_BUG_ON to complain
-if the sum of the sizes was not the same as the size of the structure.
-The problem was that I wasn't sure what was a real problem, nor what was
-the best way to solve it.
+1) Fix two use-after-free bugs in relation to RCU in jited symbol exposure to
+   kallsyms, from Daniel Borkmann.
 
-julia
+2) Fix NULL pointer dereference in AF_XDP rx-only sockets, from Magnus Karlsson.
+
+3) Fix hang in netdev unregister for hash based devmap as well as another overflow
+   bug on 32 bit archs in memlock cost calculation, from Toke Høiland-Jørgensen.
+
+4) Fix wrong memory access in LWT BPF programs on reroute due to invalid dst.
+   Also fix BPF selftests to use more compatible nc options, from Jiri Benc.
+
+Please consider pulling these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+
+Thanks a lot!
+
+Also thanks to reporters, reviewers and testers of commits in this pull-request:
+
+Jonathan Lemon, Kal Cutter Conley, Martin KaFai Lau, Peter Oskolkov, 
+Tetsuo Handa, Yonghong Song
+
+----------------------------------------------------------------
+
+The following changes since commit 33902b4a4227877896dd9368ac10f4ca0d100de5:
+
+  netdevsim: Fix error handling in nsim_fib_init and nsim_fib_exit (2019-10-13 11:30:14 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git 
+
+for you to fetch changes up to 2afd23f78f39da84937006ecd24aa664a4ab052b:
+
+  xsk: Fix registration of Rx-only sockets (2019-10-23 20:22:11 -0700)
+
+----------------------------------------------------------------
+Daniel Borkmann (2):
+      bpf: Fix use after free in subprog's jited symbol removal
+      bpf: Fix use after free in bpf_get_prog_name
+
+Jiri Benc (2):
+      bpf: lwtunnel: Fix reroute supplying invalid dst
+      selftests/bpf: More compatible nc options in test_tc_edt
+
+Magnus Karlsson (1):
+      xsk: Fix registration of Rx-only sockets
+
+Toke Høiland-Jørgensen (2):
+      xdp: Prevent overflow in devmap_hash cost calculation for 32-bit builds
+      xdp: Handle device unregister for devmap_hash map type
+
+ include/linux/filter.h                     |  1 -
+ kernel/bpf/core.c                          |  2 +-
+ kernel/bpf/devmap.c                        | 33 +++++++++++++++++++++++++++++-
+ kernel/bpf/syscall.c                       | 31 ++++++++++++++++++----------
+ net/core/lwt_bpf.c                         |  7 ++++++-
+ net/xdp/xdp_umem.c                         |  6 ++++++
+ tools/testing/selftests/bpf/test_tc_edt.sh |  2 +-
+ 7 files changed, 66 insertions(+), 16 deletions(-)
