@@ -2,62 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 98EDBE6259
-	for <lists+bpf@lfdr.de>; Sun, 27 Oct 2019 13:04:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4DA1E626F
+	for <lists+bpf@lfdr.de>; Sun, 27 Oct 2019 13:15:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726934AbfJ0MEj convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Sun, 27 Oct 2019 08:04:39 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:41472 "EHLO mx1.redhat.com"
+        id S1726814AbfJ0MP1 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Sun, 27 Oct 2019 08:15:27 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:46502 "EHLO mx1.redhat.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726931AbfJ0MEj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 27 Oct 2019 08:04:39 -0400
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com [209.85.208.198])
+        id S1726661AbfJ0MP0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 27 Oct 2019 08:15:26 -0400
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com [209.85.208.199])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 110743B735
-        for <bpf@vger.kernel.org>; Sun, 27 Oct 2019 12:04:39 +0000 (UTC)
-Received: by mail-lj1-f198.google.com with SMTP id y12so1406143ljc.8
-        for <bpf@vger.kernel.org>; Sun, 27 Oct 2019 05:04:38 -0700 (PDT)
+        by mx1.redhat.com (Postfix) with ESMTPS id 865593DE04
+        for <bpf@vger.kernel.org>; Sun, 27 Oct 2019 12:15:26 +0000 (UTC)
+Received: by mail-lj1-f199.google.com with SMTP id g28so1410306ljl.10
+        for <bpf@vger.kernel.org>; Sun, 27 Oct 2019 05:15:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
          :message-id:mime-version:content-transfer-encoding;
-        bh=WAC0ltLf5/k9Fk3oOw2pDdZIy6OL9TvyNRdiY94Gu8M=;
-        b=BqGmNti1oBcjCFAxNwLcgHvXt1bB7MF51Th4Wi20hPreVVmZmVTDz1T45uT88FhfNg
-         QKr1iuNUGpo3ShaW4CdRI1Dz0ylVqjg1nRKAQ3hwanWhETkQLjF8mQoM69E7G8S/QPIw
-         A+knGgKBboN6Y4u34zuTNhRWh8/0po9oGw7bMbuPvqiIKvgwkXe2givB3TWciClUt2vo
-         CKWTtBnNsidwNOdBip30HgiZRF2pGyGkrJnCdYEA8ayrk/vdxlQg776ws8O5Ofa2WLSv
-         0hQgpE8qcNuSwdUYvHR+x2Av6lP/i3luhmSXBZdLKzJprrgB2/1U7zA/ATQ7re6ajRh1
-         F+oA==
-X-Gm-Message-State: APjAAAVZLUkDI7MqwfAhAwvdH8e/v7s29xXqhh1gGallimSIsPNgEG4V
-        Y6rnmPjUHYf5JwX0Ic3xVqezkK4h0YzkBy7G8UH1H+IfJ/B+SxFZozjLPKAtmnLrfeWXyPtX5NA
-        Nu2UknP8mz1Pq
-X-Received: by 2002:a2e:9e1a:: with SMTP id e26mr8590143ljk.17.1572177877303;
-        Sun, 27 Oct 2019 05:04:37 -0700 (PDT)
-X-Google-Smtp-Source: APXvYqwXLhFqhvcNHt87IB3WnN1OtKoJglNbImP2QD7dO/JqDftrb1/lzIvLRTW0OSsLn8HiQDk3Sw==
-X-Received: by 2002:a2e:9e1a:: with SMTP id e26mr8590129ljk.17.1572177877099;
-        Sun, 27 Oct 2019 05:04:37 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk (borgediget.toke.dk. [85.204.121.218])
-        by smtp.gmail.com with ESMTPSA id c24sm3857946lfm.20.2019.10.27.05.04.36
+        bh=jrp3HDZF4U7ETNImEv4XdaWW8L0YNGlI70P2aQswsvk=;
+        b=DOr3pSByxOWR0uEqoJkmh5gwLkUt6RnnXEV7MPJB5TYVuMtMZz4SZRP1EKCX+fPAkO
+         z2y58FPqDTFmdTO4gk2Y1dX91kQTMuI0o3iv4XKwQFgNjiJMmitA/e26uMMVotS4LqvF
+         LMwJ3b2KBJkbV1Q9E0UVUlepcNvGYms8F5WgrsLaeqbTTZxoW6NiSdi2f3iYkFtl9Sut
+         T35SoJ0UFt5eHKjARsrAtYxdCIUEruLAHvF+7uYZMaai/8qAmJeZon1WDnG5JmbX8Imt
+         gIL9Awb4CxijHpQbviwZQYyM0uobusOiIRytebHDtmPJKSNhWUZDoVAPtzn+I5gwX/Nj
+         ffBA==
+X-Gm-Message-State: APjAAAUenpIjuDtHPZ8C8faL9x5YEJRTQLzbFAgZLo/BxZ3VbOHZjO2K
+        t/d8xS0eg90/EJt1/v8yvICj0U1voc0GuQus1HNEU+F7wxVCIEmiSxFSWTewnC8DW6n+Y+M4rdz
+        agaaLINj8Kk2F
+X-Received: by 2002:a2e:a302:: with SMTP id l2mr8742048lje.190.1572178525131;
+        Sun, 27 Oct 2019 05:15:25 -0700 (PDT)
+X-Google-Smtp-Source: APXvYqzvtxIwTRYpVocH++ENF8OywmvPFzHQsDmunuJZ8LRUl4cWTGNO/gMAM+Pi03e7x5mzpsXyog==
+X-Received: by 2002:a2e:a302:: with SMTP id l2mr8742043lje.190.1572178524972;
+        Sun, 27 Oct 2019 05:15:24 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a00:7660:6da:443::2])
+        by smtp.gmail.com with ESMTPSA id r63sm1618645ljr.10.2019.10.27.05.15.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Oct 2019 05:04:36 -0700 (PDT)
+        Sun, 27 Oct 2019 05:15:23 -0700 (PDT)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 5255A1818B4; Sun, 27 Oct 2019 13:04:35 +0100 (CET)
+        id 272841818B4; Sun, 27 Oct 2019 13:15:22 +0100 (CET)
 From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <ast@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Marek Majkowski <marek@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Alan Maguire <alan.maguire@oracle.com>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
         David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v2 4/4] libbpf: Add option to auto-pin maps when opening BPF object
-In-Reply-To: <CAEf4BzbBmm3GfytbEtHwoD71p2XfuxuSYjhbb7rqPwUaYqvk7g@mail.gmail.com>
-References: <157192269744.234778.11792009511322809519.stgit@toke.dk> <157192270189.234778.14607584397750494265.stgit@toke.dk> <CAEf4BzbBmm3GfytbEtHwoD71p2XfuxuSYjhbb7rqPwUaYqvk7g@mail.gmail.com>
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
+Subject: Re: bpf indirect calls
+In-Reply-To: <CAADnVQKOJZhova8GsUug364+QETPFq1DmGO5-P7YBjyDF99y9Q@mail.gmail.com>
+References: <157046883502.2092443.146052429591277809.stgit@alrua-x1> <157046883614.2092443.9861796174814370924.stgit@alrua-x1> <20191007204234.p2bh6sul2uakpmnp@ast-mbp.dhcp.thefacebook.com> <87sgo3lkx9.fsf@toke.dk> <20191009015117.pldowv6n3k5p3ghr@ast-mbp.dhcp.thefacebook.com> <87o8yqjqg0.fsf@toke.dk> <20191010044156.2hno4sszysu3c35g@ast-mbp.dhcp.thefacebook.com> <87v9srijxa.fsf@toke.dk> <20191016022849.weomgfdtep4aojpm@ast-mbp> <8736fshk7b.fsf@toke.dk> <20191019200939.kiwuaj7c4bg25vqs@ast-mbp> <874l03d6ov.fsf@toke.dk> <CAADnVQKOJZhova8GsUug364+QETPFq1DmGO5-P7YBjyDF99y9Q@mail.gmail.com>
 X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Sun, 27 Oct 2019 13:04:35 +0100
-Message-ID: <87pniijsx8.fsf@toke.dk>
+Date:   Sun, 27 Oct 2019 13:15:21 +0100
+Message-ID: <87lft6jsfa.fsf@toke.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8BIT
@@ -66,65 +70,41 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
 
-> On Thu, Oct 24, 2019 at 6:11 AM Toke Høiland-Jørgensen <toke@redhat.com> wrote:
->>
->> From: Toke Høiland-Jørgensen <toke@redhat.com>
->>
->> With the functions added in previous commits that can automatically pin
->> maps based on their 'pinning' setting, we can support auto-pinning of maps
->> by the simple setting of an option to bpf_object__open.
->>
->> Since auto-pinning only does something if any maps actually have a
->> 'pinning' BTF attribute set, we default the new option to enabled, on the
->> assumption that seamless pinning is what most callers want.
->>
->> When a map has a pin_path set at load time, libbpf will compare the map
->> pinned at that location (if any), and if the attributes match, will re-use
->> that map instead of creating a new one. If no existing map is found, the
->> newly created map will instead be pinned at the location.
->>
->> Programs wanting to customise the pinning can override the pinning paths
->> using bpf_map__set_pin_path() before calling bpf_object__load().
->>
->> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
->> ---
+> On Sun, Oct 20, 2019 at 3:58 AM Toke Høiland-Jørgensen <toke@redhat.com> wrote:
+>> Great! I think it's probably more productive for everyone involved if I
+>> just wait for you to get around to this, rather than try my own hand at
+>> this. I'll go hash out the userspace management semantics of chain calls
+>> in the meantime (using my kernel support patch), since that will surely
+>> be needed anyway.
 >
-> How have you tested this? From reading the code, all the maps will be
-> pinned irregardless of their .pinning setting?
+> No problem. Indirect calls are next on my todo list.
+> Shouldn't take long.
 
-No, build_pin_path() checks map->pinning :)
+Awesome!
 
-> Please add proper tests to test_progs, testing various modes and
-> overrides.
+> Right now I'm hacking accelerated kretprobes for tracing.
+> I've shared first rough draft of patches with few folks and they
+> quickly pointed out that the same logic can be used to
+> create arbitrary call chains.
+> To make kretprobe+bpf fast I'm replacing:
+>   call foo
+> with
+>   prologue
+>   capture args
+>   call foo
+>   capture return
+>   call bpf_prog
+>   epilogue
+> That "call foo" can be anything. Including another bpf prog.
+> Patches are too rough for public review.
+> I hope to get them cleaned up by the end of next week.
+>
+> Jesper request to capture both struct xdp_md and return
+> value after prog returns will be possible soon.
+> xdpdump before and after xdp prog.. here I come :)
 
-Can do.
-
-> You keep trying to add more and more knobs :) Please stop doing that,
-> even if we have a good mechanism for extensibility, it doesn't mean we
-> need to increase a proliferation of options.
-
-But I like options! ;)
-
-> Each option has to be tested. In current version of your patches, you
-> have something like 4 or 5 different knobs, do you really want to
-> write tests testing each of them? ;)
-
-Heh, I guess I can cut down the number of options to the number of tests :P
-
-> Another high-level feedback. I think having separate passes over all
-> maps (build_map_pin_paths, reuse, then we already have create_maps) is
-> actually making everything more verbose and harder to extend. I'm
-> thinking about all these as sub-steps of map creation. Can you please
-> try refactoring so all these steps are happening per each map in one
-> place: if map needs to be pinned, check if it can be reused, if not -
-> create it. This actually will allow to handle races better, because
-> you will be able to retry easily, while if it's all spread in
-> independent passes, it becomes much harder. Please consider that.
-
-We'll need at least two passes: set pin_path on open, and check reuse /
-create / pin on load. Don't have any objections to consolidating the
-other passes into create_maps; will fix, along with your comments below.
+Sounds promising! Looking forward to seeing where this is going :)
 
 -Toke
