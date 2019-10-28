@@ -2,184 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AD8B5E6C16
-	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2019 06:53:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48FF1E6E54
+	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2019 09:36:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729790AbfJ1FxC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Oct 2019 01:53:02 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:15136 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725932AbfJ1FxC (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 28 Oct 2019 01:53:02 -0400
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x9S5o7iL020586;
-        Sun, 27 Oct 2019 22:52:59 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=1msbrGl+5SHDfVDNs6mZoSxdxHPDmTkovGERK+srMIU=;
- b=L57M0yiFr+Tahog+ZVbaiw+GyCXSc2sidFRZBJhpZcwr4t1buH/WeYf4LSHQ9hciX5pR
- pEUnkI9t8Cfin5GZV3DQxXU47n9K5n060L6fblOXYtildOn4whCw4kBko8pM8QnTxo0j
- +nsmbU/cmERNQZm/yHUu5sWbyZ5KR2gQvIc= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2vw5uauhtk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Sun, 27 Oct 2019 22:52:59 -0700
-Received: from ash-exhub204.TheFacebook.com (2620:10d:c0a8:83::4) by
- ash-exhub102.TheFacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Sun, 27 Oct 2019 22:52:58 -0700
-Received: from NAM01-BY2-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Sun, 27 Oct 2019 22:52:58 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iRuoVHjesRtKHubkiaWlMEGSZg0PgYfV/czUCctXDDNy7p1CwiKG2NsmU1c/E/nhasY8z2GE0Wm/sKoUCBktcEmxz4BsD1F5aKN0wKAbukdjTf46YAyd7aJ3aqyyDKQptQtwKya3LcAZ0Iv0cqLcpoO2g6vSUVHyCR/HJ/VoomFug69gEMg1LK17vfeC8gvznYPa0tJKNEsv08KcPFrVnm2o1hsdYNfeuiGlER/gCkK65uWRrXvtRx0Sa5L7KCTyL1yMWqbyVYt57xRf7S9sqkK2jEMJUvORu+g6wSSDGrUHIHkEbX6eaR6fPoC1vwEP4MahQhprTvD2rcS1ha20JQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1msbrGl+5SHDfVDNs6mZoSxdxHPDmTkovGERK+srMIU=;
- b=LfkoQIDZjXEZHDWu+QnHfrd6MwKK4juv0tDpc2aBrcwcgyWA9lcFMgV0WEiCX7MoUOvrCh3bqyZfgKc7HAaxcdeHifkzHN4XPiS+FQmWGn1Qen+7z6u8HjVxgSPLIdpEPBVdvMe2sd8f5JnIhyELMGr8Dn/95V7COBmhXKEguiPLRg1pEMlfcYt37CU9e3XXYfQG2OR0nIEBzjN41Li7YkdRlKbX02YmexXzncaONqtijMZ0KG4xIErxhxVJforrqifazKfnt+QTx0V4q49AXt+2weZurlR2790TduNJ1vgYpxvIcRp0jFdDdqEL2FnFJ1VJfNX8cVSpnKBSh423/g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1msbrGl+5SHDfVDNs6mZoSxdxHPDmTkovGERK+srMIU=;
- b=RmL4Q0pZhP+GBjv4qdiuVpYb/My3lt6PJmkACuBEn/2c86k+l6lKrxl4bCt3YuNIOCvLLZ1sMIGbhohcYENfIgdhQ8MV5l3RpAijXSo9appL33ekd56cAurpxPSzR7h25+j8C08/DlMpF/UxVAmORvnqjvjBgk7Zs0F/Efn5Z9Y=
-Received: from MN2PR15MB3213.namprd15.prod.outlook.com (20.179.21.76) by
- MN2PR15MB3407.namprd15.prod.outlook.com (20.179.23.23) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2387.24; Mon, 28 Oct 2019 05:52:57 +0000
-Received: from MN2PR15MB3213.namprd15.prod.outlook.com
- ([fe80::d5a4:a2a6:a805:6647]) by MN2PR15MB3213.namprd15.prod.outlook.com
- ([fe80::d5a4:a2a6:a805:6647%7]) with mapi id 15.20.2387.023; Mon, 28 Oct 2019
- 05:52:57 +0000
-From:   Martin Lau <kafai@fb.com>
-To:     Jakub Sitnicki <jakub@cloudflare.com>
-CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        id S1731667AbfJ1Ig3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Oct 2019 04:36:29 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:60355 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1731608AbfJ1Ig3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Oct 2019 04:36:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1572251787;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JRuL2BkbB+a2GJ+8JaKpKSwC2v1Z0RtMywL1CPTxmnM=;
+        b=Fq7QE4WmfktjcTd7HLQa/mKOo44XydN+p9LXxPvGxk6PtJoT7D4tSrKy3Lz9JCS38ppGTg
+        YUeQwUGsnpyMNVjXp8ohxf7/SDmlSVfunYP+bPqeTNe72k4QEDnEAFqIzTscHA0Y/lGiDx
+        DbE5uZW7CAUoH+fXny/viLfOmkmOp2I=
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
+ [209.85.167.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-216-PLJ8I5zDMOuLo3Aag0eB6A-1; Mon, 28 Oct 2019 04:36:25 -0400
+Received: by mail-lf1-f72.google.com with SMTP id s30so2133942lfo.9
+        for <bpf@vger.kernel.org>; Mon, 28 Oct 2019 01:36:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=JRuL2BkbB+a2GJ+8JaKpKSwC2v1Z0RtMywL1CPTxmnM=;
+        b=rMpBkjjZRUdT7Jn3BaWIt8an7QLamKaDb9gkeoPbo5J85m+XAPpZLVIlFwlFvdanT5
+         6M3NVndwZaYj2NixCCovg7CWY5mAwyxJ7VDYaIdpSxDgGhDten3FbeiTs+u2wk81g+Hu
+         YigExS4DuODcUQan0H5mRlXFSa2jJcTzOT2/9qhjnArnyaqToKXWZUZiWGMY79L0OaJA
+         1cBTOhC/C4BDz0LuZ4dY2Blqis8y4coOXuQLuCgWeRKhe0WaTUmrFTv+U7M1bVhPBVpD
+         k8vkjHCdh81oMCWqsctvwESJp6PLYgwHOy3r+EbEi8Gp+WTg1100LVRi/Oxn8u0QXUna
+         tfpQ==
+X-Gm-Message-State: APjAAAWQMFpHh19nxRE77DwCl8M2iBCRAcuscWfiz7VBAEq14gKo15PG
+        hiD3mu6dGyxuLB7k+7nRwnd4E4AVTQM/46upIJTYQh6m54pYjYTHIv//zbRF4XXgdgEED+4venl
+        Ra+MbIXER/+TY
+X-Received: by 2002:ac2:5c1b:: with SMTP id r27mr10568394lfp.172.1572251783813;
+        Mon, 28 Oct 2019 01:36:23 -0700 (PDT)
+X-Google-Smtp-Source: APXvYqybrSiG3iGTQBRgdSqi/nOXWRKJK0ZAvTlqP1CnZDT99j5pVGWuRBov3U5MLvB6wWlxd1tV/A==
+X-Received: by 2002:ac2:5c1b:: with SMTP id r27mr10568368lfp.172.1572251783528;
+        Mon, 28 Oct 2019 01:36:23 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a00:7660:6da:443::2])
+        by smtp.gmail.com with ESMTPSA id y28sm4846689lfg.31.2019.10.28.01.36.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Oct 2019 01:36:14 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id AB6DF1800E2; Mon, 28 Oct 2019 09:36:12 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     David Ahern <dsahern@gmail.com>,
+        Toshiaki Makita <toshiaki.makita1@gmail.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "kernel-team@cloudflare.com" <kernel-team@cloudflare.com>
-Subject: Re: [RFC bpf-next 0/5] Extend SOCKMAP to store listening sockets
-Thread-Topic: [RFC bpf-next 0/5] Extend SOCKMAP to store listening sockets
-Thread-Index: AQHViM0cMelp7mfgSECOn4gRCJXJt6dvlj+A
-Date:   Mon, 28 Oct 2019 05:52:56 +0000
-Message-ID: <20191028055247.bh5bctgxfvmr3zjh@kafai-mbp.dhcp.thefacebook.com>
-References: <20191022113730.29303-1-jakub@cloudflare.com>
-In-Reply-To: <20191022113730.29303-1-jakub@cloudflare.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MWHPR17CA0075.namprd17.prod.outlook.com
- (2603:10b6:300:c2::13) To MN2PR15MB3213.namprd15.prod.outlook.com
- (2603:10b6:208:3d::12)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:180::c4b]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: df9194a8-a738-423e-f84a-08d75b6b14f2
-x-ms-traffictypediagnostic: MN2PR15MB3407:
-x-ms-exchange-purlcount: 2
-x-microsoft-antispam-prvs: <MN2PR15MB3407149A2BD87AA1BFC662A9D5660@MN2PR15MB3407.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-forefront-prvs: 0204F0BDE2
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(396003)(346002)(366004)(376002)(39860400002)(136003)(189003)(199004)(316002)(386003)(54906003)(81156014)(81166006)(8676002)(8936002)(11346002)(446003)(476003)(7736002)(6116002)(305945005)(25786009)(486006)(2906002)(6506007)(6916009)(52116002)(6306002)(99286004)(76176011)(102836004)(14454004)(6512007)(1076003)(478600001)(6246003)(71190400001)(71200400001)(86362001)(66556008)(64756008)(66446008)(66476007)(9686003)(5024004)(186003)(6486002)(6436002)(5660300002)(14444005)(46003)(66946007)(4326008)(229853002)(256004)(966005);DIR:OUT;SFP:1102;SCL:1;SRVR:MN2PR15MB3407;H:MN2PR15MB3213.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ZglWWsXuVoH0VcSEY4i1BWRqvCFMkWpoPGurKRIXuzLB9Fytj4pUdHN4yC05XHi6iVICrxPWGw+szxDVi+mfZrnn42s2K9LiTxRlniQEB505E0FqWmiifAfHZNs5oddykOAm61fiPvtwU2YKElikjv+h1fl9Rp/7b799N+EeFFODY7mzDns3QuF+GjgsxcdopAfXdXCZn0xPaGxAIbFP1aSwIqewA8IcrKFuUAWm6+x+SnorrFD9QJaDYLWDg8RgnHkwolIx1fbV4CQ/v7F6rj1wpO6etZ7GKIR5DUeu4/v4U6+ECyXSSIPm3ypMTwTunzoQxUeg425QIOFm9LxtCDu0VW3CAviUfqj/XUjYy0IHpcEAZmk/a5YkhCcqfHFczHNMzZTkxmE1w2Dc8LBHRM2Cd7szbnRJyeQkm7z78K/QMXCqusWKJ0ycq+Nm6zXVNlSZeczsn/WiuGEDZe2D67hMaWePQMHWkDdNCcVmXcc=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <8F5A927D35117E4CAFB267977C04D95E@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        Pravin B Shelar <pshelar@ovn.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        William Tu <u9012063@gmail.com>,
+        Stanislav Fomichev <sdf@fomichev.me>
+Subject: Re: [RFC PATCH v2 bpf-next 00/15] xdp_flow: Flow offload to XDP
+In-Reply-To: <47f1a7e2-0d3a-e324-20c5-ba3aed216ddf@gmail.com>
+References: <20191018040748.30593-1-toshiaki.makita1@gmail.com> <5da9d8c125fd4_31cf2adc704105c456@john-XPS-13-9370.notmuch> <22e6652c-e635-4349-c863-255d6c1c548b@gmail.com> <5daf34614a4af_30ac2b1cb5d205bce4@john-XPS-13-9370.notmuch> <87h840oese.fsf@toke.dk> <5db128153c75_549d2affde7825b85e@john-XPS-13-9370.notmuch> <87sgniladm.fsf@toke.dk> <a7f3d86b-c83c-7b0d-c426-684b8dfe4344@gmail.com> <87zhhmrz7w.fsf@toke.dk> <47f1a7e2-0d3a-e324-20c5-ba3aed216ddf@gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Mon, 28 Oct 2019 09:36:12 +0100
+Message-ID: <87o8y1s1vn.fsf@toke.dk>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: df9194a8-a738-423e-f84a-08d75b6b14f2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Oct 2019 05:52:56.9299
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: reTrthk2qqzjkLUFaJS3ttiOV+XE5JNsaRozKpsFAZdSysL/+ctVWZ+1mWPDu5R7
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB3407
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
- definitions=2019-10-28_02:2019-10-25,2019-10-28 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 phishscore=0
- lowpriorityscore=0 suspectscore=0 bulkscore=0 mlxlogscore=999 adultscore=0
- clxscore=1015 priorityscore=1501 spamscore=0 malwarescore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1908290000 definitions=main-1910280058
-X-FB-Internal: deliver
+X-MC-Unique: PLJ8I5zDMOuLo3Aag0eB6A-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 22, 2019 at 01:37:25PM +0200, Jakub Sitnicki wrote:
-> This patch set is a follow up on a suggestion from LPC '19 discussions to
-> make SOCKMAP (or a new map type derived from it) a generic type for stori=
-ng
-> established as well as listening sockets.
->=20
-> We found ourselves in need of a map type that keeps references to listeni=
-ng
-> sockets when working on making the socket lookup programmable, aka BPF
-> inet_lookup [1].  Initially we repurposed REUSEPORT_SOCKARRAY but found i=
-t
-> problematic to extend due to being tightly coupled with reuseport
-> logic (see slides [2]).
-> So we've turned our attention to SOCKMAP instead.
->=20
-> As it turns out the changes needed to make SOCKMAP suitable for storing
-> listening sockets are self-contained and have use outside of programming
-> the socket lookup. Hence this patch set.
->=20
-> With these patches SOCKMAP can be used in SK_REUSEPORT BPF programs as a
-> drop-in replacement for REUSEPORT_SOCKARRAY for TCP. This can hopefully
-> lead to code consolidation between the two map types in the future.
-What is the plan for UDP support in sockmap?
+David Ahern <dsahern@gmail.com> writes:
 
->=20
-> Having said that, the main intention here is to lay groundwork for using
-> SOCKMAP in the next iteration of programmable socket lookup patches.
-What may be the minimal to get only lookup work for UDP sockmap?
-.close() and .unhash()?
+> On 10/27/19 9:21 AM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>> Rather, what we should be doing is exposing the functionality through
+>> helpers so XDP can hook into the data structures already present in the
+>> kernel and make decisions based on what is contained there. We already
+>> have that for routing; L2 bridging, and some kind of connection
+>> tracking, are obvious contenders for similar additions.
+>
+> The way OVS is coded and expected to flow (ovs_vport_receive ->
+> ovs_dp_process_packet -> ovs_execute_actions -> do_execute_actions) I do
+> not see any way to refactor it to expose a hook to XDP. But, if the use
+> case is not doing anything big with OVS (e.g., just ACLs and forwarding)
+> that is easy to replicate in XDP - but then that means duplicate data
+> and code.
 
->=20
-> I'm looking for feedback if there's anything fundamentally wrong with
-> extending SOCKMAP map type like this that I might have missed.
->=20
-> Thanks,
-> Jakub
->=20
-> [1] https://lore.kernel.org/bpf/20190828072250.29828-1-jakub@cloudflare.c=
-om/
-> [2] https://urldefense.proofpoint.com/v2/url?u=3Dhttps-3A__linuxplumbersc=
-onf.org_event_4_contributions_487_attachments_238_417_Programmable-5Fsocket=
--5Flookup-5FLPC-5F19.pdf&d=3DDwIDAg&c=3D5VD0RTtNlTh3ycd41b3MUw&r=3DVQnoQ7Lv=
-ghIj0gVEaiQSUw&m=3DY-Ap1QuRBsqsu8gATb1wH3rPT89No2mam2qINt1BGDI&s=3D_sfXVfJh=
-B2eR7znE7-WBk660dQXIBxuDLRi7jvXVpsg&e=3D=20
->=20
->=20
-> Jakub Sitnicki (5):
->   bpf, sockmap: Let BPF helpers use lookup operation on SOCKMAP
->   bpf, sockmap: Allow inserting listening TCP sockets into SOCKMAP
->   bpf, sockmap: Don't let child socket inherit psock or its ops on copy
->   bpf: Allow selecting reuseport socket from a SOCKMAP
->   selftests/bpf: Extend SK_REUSEPORT tests to cover SOCKMAP
->=20
->  kernel/bpf/verifier.c                         |   6 +-
->  net/core/sock_map.c                           |  11 +-
->  net/ipv4/tcp_bpf.c                            |  30 ++++
->  tools/testing/selftests/bpf/Makefile          |   7 +-
->  .../selftests/bpf/test_select_reuseport.c     | 141 ++++++++++++++----
->  .../selftests/bpf/test_select_reuseport.sh    |  14 ++
->  6 files changed, 173 insertions(+), 36 deletions(-)
->  create mode 100755 tools/testing/selftests/bpf/test_select_reuseport.sh
->=20
-> --=20
-> 2.20.1
->=20
+Yeah, I didn't mean that part for OVS, that was a general comment for
+reusing kernel functionality.
+
+> Linux bridge on the other hand seems fairly straightforward to
+> refactor. One helper is needed to convert ingress <port,mac,vlan> to
+> an L2 device (and needs to consider stacked devices) and then a second
+> one to access the fdb for that device.
+
+Why not just a single lookup like what you did for routing? Not too
+familiar with the routing code...
+
+> Either way, bypassing the bridge has mixed results: latency improves
+> but throughput takes a hit (no GRO).
+
+Well, for some traffic mixes XDP should be able to keep up without GRO.
+And longer term, we probably want to support GRO with XDP anyway
+(I believe Jesper has plans for supporting bigger XDP frames)...
+
+-Toke
+
