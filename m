@@ -2,148 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E3264E6F7D
-	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2019 11:08:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6147CE6F90
+	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2019 11:21:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388153AbfJ1KIx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Oct 2019 06:08:53 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:53217 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730905AbfJ1KIx (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 28 Oct 2019 06:08:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1572257331;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BpDbywNaCDb3vLF/eHQmY1ae1u7iu+BzTbc3zMkDXW4=;
-        b=XBAUjT7ZLHAS4SybxpwczQ/Mz43q6fCEOKukulUtVlF09s4/pMu+/jemUbv0YqOwXfilO9
-        SXeJur61adONGe+pFoNEM34cJORe1f0Fra43mX5s0JGFZmq/2kCTnqKErQJOW20W8MCanq
-        gnGB7b8+rcHEof9K0VpPXwxa58PUHEQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-232-w_h-wWUxMkWF0Wcx2lo1rQ-1; Mon, 28 Oct 2019 06:08:48 -0400
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 950D1476;
-        Mon, 28 Oct 2019 10:08:45 +0000 (UTC)
-Received: from carbon (ovpn-200-19.brq.redhat.com [10.40.200.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B8FB65C541;
-        Mon, 28 Oct 2019 10:08:32 +0000 (UTC)
-Date:   Mon, 28 Oct 2019 11:08:28 +0100
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-To:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>
-Cc:     David Ahern <dsahern@gmail.com>,
-        Toshiaki Makita <toshiaki.makita1@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        Pravin B Shelar <pshelar@ovn.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, William Tu <u9012063@gmail.com>,
-        Stanislav Fomichev <sdf@fomichev.me>
-Subject: Re: [RFC PATCH v2 bpf-next 00/15] xdp_flow: Flow offload to XDP
-Message-ID: <20191028110828.512eb99c@carbon>
-In-Reply-To: <87o8y1s1vn.fsf@toke.dk>
-References: <20191018040748.30593-1-toshiaki.makita1@gmail.com>
-        <5da9d8c125fd4_31cf2adc704105c456@john-XPS-13-9370.notmuch>
-        <22e6652c-e635-4349-c863-255d6c1c548b@gmail.com>
-        <5daf34614a4af_30ac2b1cb5d205bce4@john-XPS-13-9370.notmuch>
-        <87h840oese.fsf@toke.dk>
-        <5db128153c75_549d2affde7825b85e@john-XPS-13-9370.notmuch>
-        <87sgniladm.fsf@toke.dk>
-        <a7f3d86b-c83c-7b0d-c426-684b8dfe4344@gmail.com>
-        <87zhhmrz7w.fsf@toke.dk>
-        <47f1a7e2-0d3a-e324-20c5-ba3aed216ddf@gmail.com>
-        <87o8y1s1vn.fsf@toke.dk>
-Organization: Red Hat Inc.
+        id S1732803AbfJ1KVA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Oct 2019 06:21:00 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:19398 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732186AbfJ1KU7 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 28 Oct 2019 06:20:59 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x9SAHJCV080147
+        for <bpf@vger.kernel.org>; Mon, 28 Oct 2019 06:20:58 -0400
+Received: from e06smtp04.uk.ibm.com (e06smtp04.uk.ibm.com [195.75.94.100])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2vwt4x7crv-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 28 Oct 2019 06:20:58 -0400
+Received: from localhost
+        by e06smtp04.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
+        Mon, 28 Oct 2019 10:20:56 -0000
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (9.149.109.195)
+        by e06smtp04.uk.ibm.com (192.168.101.134) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Mon, 28 Oct 2019 10:20:53 -0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x9SAKpvV44499128
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 28 Oct 2019 10:20:51 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6D8CF4204B;
+        Mon, 28 Oct 2019 10:20:51 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 29EB842047;
+        Mon, 28 Oct 2019 10:20:51 +0000 (GMT)
+Received: from white.boeblingen.de.ibm.com (unknown [9.152.97.44])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 28 Oct 2019 10:20:51 +0000 (GMT)
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>
+Cc:     bpf@vger.kernel.org, Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [PATCH bpf-next v2] selftest/bpf: Use -m{little,big}-endian for clang
+Date:   Mon, 28 Oct 2019 11:20:49 +0100
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
-X-MC-Unique: w_h-wWUxMkWF0Wcx2lo1rQ-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+x-cbid: 19102810-0016-0000-0000-000002BE559D
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19102810-0017-0000-0000-0000331FA6C5
+Message-Id: <20191028102049.7489-1-iii@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-10-28_04:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1908290000 definitions=main-1910280104
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 28 Oct 2019 09:36:12 +0100
-Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com> wrote:
+When cross-compiling tests from x86 to s390, the resulting BPF objects
+fail to load due to endianness mismatch.
 
-> David Ahern <dsahern@gmail.com> writes:
->=20
-> > On 10/27/19 9:21 AM, Toke H=C3=B8iland-J=C3=B8rgensen wrote: =20
-> >> Rather, what we should be doing is exposing the functionality through
-> >> helpers so XDP can hook into the data structures already present in th=
-e
-> >> kernel and make decisions based on what is contained there. We already
-> >> have that for routing; L2 bridging, and some kind of connection
-> >> tracking, are obvious contenders for similar additions. =20
-> >
-> > The way OVS is coded and expected to flow (ovs_vport_receive ->
-> > ovs_dp_process_packet -> ovs_execute_actions -> do_execute_actions) I d=
-o
-> > not see any way to refactor it to expose a hook to XDP. But, if the use
-> > case is not doing anything big with OVS (e.g., just ACLs and forwarding=
-)
-> > that is easy to replicate in XDP - but then that means duplicate data
-> > and code. =20
->=20
-> Yeah, I didn't mean that part for OVS, that was a general comment for
-> reusing kernel functionality.
->=20
-> > Linux bridge on the other hand seems fairly straightforward to
-> > refactor. One helper is needed to convert ingress <port,mac,vlan> to
-> > an L2 device (and needs to consider stacked devices) and then a second
-> > one to access the fdb for that device. =20
->=20
-> Why not just a single lookup like what you did for routing? Not too
-> familiar with the routing code...
+Fix by using BPF-GCC endianness check for clang as well.
 
-I'm also very interested in hearing more about how we can create an XDP
-bridge lookup BPF-helper...
+Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+---
+v1 -> v2: Put $(MENDIAN) closer to related options.
 
+tools/testing/selftests/bpf/Makefile | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-> > Either way, bypassing the bridge has mixed results: latency improves
-> > but throughput takes a hit (no GRO). =20
->=20
-> Well, for some traffic mixes XDP should be able to keep up without GRO.
-> And longer term, we probably want to support GRO with XDP anyway
-
-Do you have any numbers to back up your expected throughput decrease,
-due to lack of GRO?  Or is it a theory?
-
-GRO mainly gains performance due to the bulking effect.  XDP redirect
-also have bulking.  For bridging, I would claim that XDP redirect
-bulking works better, because it does bulking based on egress
-net_device. (Even for intermixed packets per NAPI budget).  You might
-worry that XDP will do a bridge-lookup per frame, but as the likely fit
-in the CPU I-cache, then this will have very little effect.
-
-
-> (I believe Jesper has plans for supporting bigger XDP frames)...
-
-Yes [1], but it's orthogonal and mostly that to support HW features,
-like TSO, jumbo-frames, packet header split.
-
- [1] https://github.com/xdp-project/xdp-project/blob/master/areas/core/xdp-=
-multi-buffer01-design.org
---=20
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index 933f39381039..3209c208f3b3 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -131,8 +131,13 @@ $(shell $(1) -v -E - </dev/null 2>&1 \
+ 	| sed -n '/<...> search starts here:/,/End of search list./{ s| \(/.*\)|-idirafter \1|p }')
+ endef
+ 
++# Determine target endianness.
++IS_LITTLE_ENDIAN = $(shell $(CC) -dM -E - </dev/null | \
++			grep 'define __BYTE_ORDER__ __ORDER_LITTLE_ENDIAN__')
++MENDIAN=$(if $(IS_LITTLE_ENDIAN),-mlittle-endian,-mbig-endian)
++
+ CLANG_SYS_INCLUDES = $(call get_sys_includes,$(CLANG))
+-BPF_CFLAGS = -g -D__TARGET_ARCH_$(SRCARCH) 				\
++BPF_CFLAGS = -g -D__TARGET_ARCH_$(SRCARCH) $(MENDIAN) 			\
+ 	     -I. -I./include/uapi -I$(APIDIR)				\
+ 	     -I$(BPFDIR) -I$(abspath $(OUTPUT)/../usr/include)
+ 
+@@ -271,12 +276,8 @@ $(eval $(call DEFINE_TEST_RUNNER,test_progs,no_alu32))
+ 
+ # Define test_progs BPF-GCC-flavored test runner.
+ ifneq ($(BPF_GCC),)
+-IS_LITTLE_ENDIAN = $(shell $(CC) -dM -E - </dev/null | \
+-			grep 'define __BYTE_ORDER__ __ORDER_LITTLE_ENDIAN__')
+-MENDIAN=$(if $(IS_LITTLE_ENDIAN),-mlittle-endian,-mbig-endian)
+-
+ TRUNNER_BPF_BUILD_RULE := GCC_BPF_BUILD_RULE
+-TRUNNER_BPF_CFLAGS := $(BPF_CFLAGS) $(call get_sys_includes,gcc) $(MENDIAN)
++TRUNNER_BPF_CFLAGS := $(BPF_CFLAGS) $(call get_sys_includes,gcc)
+ TRUNNER_BPF_LDFLAGS :=
+ $(eval $(call DEFINE_TEST_RUNNER,test_progs,bpf_gcc))
+ endif
+-- 
+2.23.0
 
