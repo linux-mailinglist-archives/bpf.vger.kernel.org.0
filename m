@@ -2,138 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C0597E78E6
-	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2019 20:04:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6948E78E9
+	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2019 20:06:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729522AbfJ1TEP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Oct 2019 15:04:15 -0400
-Received: from mail-il1-f193.google.com ([209.85.166.193]:36969 "EHLO
-        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729515AbfJ1TEO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Oct 2019 15:04:14 -0400
-Received: by mail-il1-f193.google.com with SMTP id v2so9144054ilq.4;
-        Mon, 28 Oct 2019 12:04:14 -0700 (PDT)
+        id S1728880AbfJ1TGB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Oct 2019 15:06:01 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:38207 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727664AbfJ1TGB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Oct 2019 15:06:01 -0400
+Received: by mail-pg1-f195.google.com with SMTP id w3so7531188pgt.5;
+        Mon, 28 Oct 2019 12:06:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=Fgj0+cmuyw3kpGGJgOiwsQKRP0sLXClz7tOy5zx6qWM=;
-        b=bF9cCkJfjPN3d63nHG29IaD+E5Y5RqjT1ehDIsR3hgBIT6s9QC9sTufz0OhJ7GaUdw
-         dlzVRzOReGi8vurHNoT/0Le5No8PyliwLiBeq5rbZB7astEhwtuA/TKaPPjuaZ30vQn9
-         LXGVsKkjlwOkq6s7ip0Xv9Mo4BX957uEkhK/rPyRewGbgm4QNNdckIQBVuqn2BAYu0QS
-         wMvPVffZ1XSH7UmdJrxhCWmz7A/GP9bPvBrWrEpvAE+JxEM3g7zlLSWK5J9UNAWvHmyy
-         cbgDAUk+GDGA2v0Wt6zM8yn87hy2XNKxGeQxd2C1vcJBUc/rN/SeurEnNTGLO1ccPLxL
-         4/NA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=5h2PU41fFxWFYJuJOkyzXIIJnTs6zaZYKkn4ZROqqSg=;
+        b=p+EX8RYWhBQKAKVmJCQ5zKWxGxvgDpwT2DQ/rdk5UHQ6H8W2HM4cPLmlyTTt4q7W9B
+         eqo3MBW9yacRFdTkdUiLPhPpavaqAhVdKdEWXYC/mObwQjiK6cTvoP2Xwt1NcGrjjXWm
+         J+LneOHvwuKPL7cW29rXA8zcdXl93Cb3/OcOvw5VxwO87s+CNsVSj84C22Wqf/1+TVym
+         b538n84c1TmoctrmSX3qpDuRmpZeOOb1OX3xfzO33P7HuEeYoUTqNkKu3N21qWusbCEE
+         duQu/2/MUNVprBDAYgGrjjB0RhgrTaoGZJmqQcKT2BbC930IeRUGUpYuIpLAoKSnrWhB
+         gSUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=Fgj0+cmuyw3kpGGJgOiwsQKRP0sLXClz7tOy5zx6qWM=;
-        b=ceaZX2lto6vrWXotOoTKMwNNyi3d3Y/9yxsUo5pOM6vo3YlO1FV+Jmdpk/ng8PlLSb
-         6+PMn6Q6tCsgdBdszEsXzhw2fuG5Z//296EYAbqFM+cR+Huw414grkrhZq8/jK/qWVsv
-         STHOA/ZllYRKM52HH42lkZGIdL/R+/9VqaUahl4SGVdPCE0l30W629tfY1+FFe2TD7RF
-         sF5Z52Ay8RqdDDej6hE3tDXnaplxqgkjWu+JveSrOGt3B9O1xTZSot5wlXk8hQw+0HQV
-         o29yXARw45CbBf6nAWFNrKeWdXbzSO/BEvPQ7XZ+eDJc0XBDofQgdICDvnSE4r1KgSjZ
-         Ue1Q==
-X-Gm-Message-State: APjAAAV9dC6RKTm1AOG/G3nu7Fu49F0Q179Sb/me0MgWeasPqnwJ5tPp
-        77oam4YlFBVZBIMRcMpPdZc=
-X-Google-Smtp-Source: APXvYqzXda+emE2pMMZUWBaL3wivJLIcPbgOqBLeWbjn3sL+VKIyf3JYfzM5x/mf+JnixLig7BObeg==
-X-Received: by 2002:a92:9cce:: with SMTP id x75mr22449382ill.31.1572289453604;
-        Mon, 28 Oct 2019 12:04:13 -0700 (PDT)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id t5sm1116609ilo.32.2019.10.28.12.04.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Oct 2019 12:04:13 -0700 (PDT)
-Date:   Mon, 28 Oct 2019 12:04:05 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Jakub Sitnicki <jakub@cloudflare.com>, Martin Lau <kafai@fb.com>
-Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5h2PU41fFxWFYJuJOkyzXIIJnTs6zaZYKkn4ZROqqSg=;
+        b=ZTGsLQVzKgYaAhEiQU7T11+zeMEG+v3YsuoCIpJMb1ZoObwdR/GJ+WDkyWaEGXcQna
+         b1/o9xlrv8sAT4A1WxYDLCfC320DFA2afyWUV6HXKGZQVuFBKtzBNYUCtOCBNzloWUh6
+         RXvQhGeYcUWq9m6oB32H/KZicIlSOAg1NladH9lZt4UuushIRKqBysXgmZ4//mwNMp3u
+         PoSAMKuB4xUBxKMqYVjJtRLpZKdiDDRAyKIl26eYpA39rAs87NqobN4L0fJxVwPlbjvu
+         DcFtZfXKFx4vLxnpjeJ4o2C5xiRtHO9S4Opi2DIZfDnUTudasgwINWRpPniVUSMDGaeo
+         oXNw==
+X-Gm-Message-State: APjAAAU2laEzOrffPnv0adkRxxlr+zggJ+N3R0lc6/N4lFsVAXos/7nR
+        9nem9FFERhVSTDNWsD0thp0=
+X-Google-Smtp-Source: APXvYqwu3nA2QMraZIgSQyihZMGbtrLDRa8knzEtR1m5gcL2PG6adcebntoSLXqcMLxi6CmHQKecVg==
+X-Received: by 2002:aa7:8210:: with SMTP id k16mr22125721pfi.84.1572289560396;
+        Mon, 28 Oct 2019 12:06:00 -0700 (PDT)
+Received: from dahern-DO-MB.local ([2601:284:8202:10b0:9e2:b1b6:1e7e:b71e])
+        by smtp.googlemail.com with ESMTPSA id t15sm7159414pfh.31.2019.10.28.12.05.57
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 28 Oct 2019 12:05:59 -0700 (PDT)
+Subject: Re: [RFC PATCH v2 bpf-next 00/15] xdp_flow: Flow offload to XDP
+To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Toshiaki Makita <toshiaki.makita1@gmail.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "kernel-team@cloudflare.com" <kernel-team@cloudflare.com>
-Message-ID: <5db73ba5afec7_54d42af0819565b855@john-XPS-13-9370.notmuch>
-In-Reply-To: <875zk9oxo1.fsf@cloudflare.com>
-References: <20191022113730.29303-1-jakub@cloudflare.com>
- <20191028055247.bh5bctgxfvmr3zjh@kafai-mbp.dhcp.thefacebook.com>
- <875zk9oxo1.fsf@cloudflare.com>
-Subject: Re: [RFC bpf-next 0/5] Extend SOCKMAP to store listening sockets
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        Pravin B Shelar <pshelar@ovn.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        William Tu <u9012063@gmail.com>,
+        Stanislav Fomichev <sdf@fomichev.me>
+References: <20191018040748.30593-1-toshiaki.makita1@gmail.com>
+ <5da9d8c125fd4_31cf2adc704105c456@john-XPS-13-9370.notmuch>
+ <22e6652c-e635-4349-c863-255d6c1c548b@gmail.com>
+ <5daf34614a4af_30ac2b1cb5d205bce4@john-XPS-13-9370.notmuch>
+ <87h840oese.fsf@toke.dk>
+ <5db128153c75_549d2affde7825b85e@john-XPS-13-9370.notmuch>
+ <87sgniladm.fsf@toke.dk> <a7f3d86b-c83c-7b0d-c426-684b8dfe4344@gmail.com>
+ <87zhhmrz7w.fsf@toke.dk> <47f1a7e2-0d3a-e324-20c5-ba3aed216ddf@gmail.com>
+ <87o8y1s1vn.fsf@toke.dk>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <e6fb6738-429d-d8bf-0380-eeb2ff4735dc@gmail.com>
+Date:   Mon, 28 Oct 2019 13:05:56 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
+ Gecko/20100101 Thunderbird/60.9.0
+MIME-Version: 1.0
+In-Reply-To: <87o8y1s1vn.fsf@toke.dk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Jakub Sitnicki wrote:
-> On Mon, Oct 28, 2019 at 06:52 AM CET, Martin Lau wrote:
-> > On Tue, Oct 22, 2019 at 01:37:25PM +0200, Jakub Sitnicki wrote:
-> >> This patch set is a follow up on a suggestion from LPC '19 discussions to
-> >> make SOCKMAP (or a new map type derived from it) a generic type for storing
-> >> established as well as listening sockets.
-> >>
-> >> We found ourselves in need of a map type that keeps references to listening
-> >> sockets when working on making the socket lookup programmable, aka BPF
-> >> inet_lookup [1].  Initially we repurposed REUSEPORT_SOCKARRAY but found it
-> >> problematic to extend due to being tightly coupled with reuseport
-> >> logic (see slides [2]).
-> >> So we've turned our attention to SOCKMAP instead.
-> >>
-> >> As it turns out the changes needed to make SOCKMAP suitable for storing
-> >> listening sockets are self-contained and have use outside of programming
-> >> the socket lookup. Hence this patch set.
-> >>
-> >> With these patches SOCKMAP can be used in SK_REUSEPORT BPF programs as a
-> >> drop-in replacement for REUSEPORT_SOCKARRAY for TCP. This can hopefully
-> >> lead to code consolidation between the two map types in the future.
-> > What is the plan for UDP support in sockmap?
+On 10/28/19 2:36 AM, Toke Høiland-Jørgensen wrote:
 > 
-> It's on our road-map because without SOCKMAP support for UDP we won't be
-> able to move away from TPROXY [1] and custom SO_BINDTOPREFIX extension
-> [2] for steering new UDP flows to receiving sockets. Also we would like
-> to look into using SOCKMAP for connected UDP socket splicing in the
-> future [3].
+>> Linux bridge on the other hand seems fairly straightforward to
+>> refactor. One helper is needed to convert ingress <port,mac,vlan> to
+>> an L2 device (and needs to consider stacked devices) and then a second
+>> one to access the fdb for that device.
 > 
-> I was planning to split work as follows:
-> 
-> 1. SOCKMAP support for listening sockets (this series)
-> 2. programmable socket lookup for TCP (cut-down version of [4])
-> 3. SOCKMAP support for UDP (work not started)
-> 4. programmable socket lookup for UDP (rest of [4])
-> 
-> I'm open to suggestions on how to organize it.
+> Why not just a single lookup like what you did for routing? Not too
+> familiar with the routing code...
 
-Looks good to me. I've had UDP support on my todo list for awhile now
-but it hasn't got to the top yet so glad to see this.
+The current code for routing only works for forwarding across ports
+without vlans or other upper level devices. That is a very limited use
+case and needs to be extended for VLANs and bonds (I have a POC for both).
 
-Also perhaps not necessary for your work but I have some patches on my
-stack I'll try to get out soon to get ktls + receive hooks working.
+The API is setup for the extra layers:
 
-> 
-> >> Having said that, the main intention here is to lay groundwork for using
-> >> SOCKMAP in the next iteration of programmable socket lookup patches.
-> > What may be the minimal to get only lookup work for UDP sockmap?
-> > .close() and .unhash()?
-> 
-> John would know better. I haven't tried doing it yet.
+struct bpf_fib_lookup {
+    ...
+    /* input: L3 device index for lookup
+     * output: device index from FIB lookup
+     */
+    __u32   ifindex;
+   ...
 
-Right, I don't think its too complicated we just need the hooks and then
-to be sure the socket state checks are OK. Having listening support should
-help with the UDP case.
+For bridging, certainly step 1 is the same - define a bpf_fdb_lookup
+struct and helper that takes on L2 device index and returns a
+<port,vlan> pair.
 
-> 
-> From just reading the code - override the two proto ops you mentioned,
-> close and unhash, and adapt the socket checks in SOCKMAP.
-
-+1.
-
-> 
-> -Jakub
-> 
-> [1] https://blog.cloudflare.com/how-we-built-spectrum/
-> [2] https://lore.kernel.org/netdev/1458699966-3752-1-git-send-email-gilberto.bertin@gmail.com/
-> [3] https://lore.kernel.org/bpf/20190828072250.29828-1-jakub@cloudflare.com/
-> [4] https://blog.cloudflare.com/sockmap-tcp-splicing-of-the-future/
-
-
+However, this thread is about bridging with VMs / containers. A viable
+solution for this use case MUST handle both vlans and bonds.
