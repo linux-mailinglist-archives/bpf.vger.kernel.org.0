@@ -2,52 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ACB3EE7863
-	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2019 19:25:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54752E78AD
+	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2019 19:43:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733217AbfJ1SY4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Oct 2019 14:24:56 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:46224 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403837AbfJ1SY4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Oct 2019 14:24:56 -0400
-Received: by mail-qt1-f194.google.com with SMTP id u22so15943063qtq.13;
-        Mon, 28 Oct 2019 11:24:54 -0700 (PDT)
+        id S1727154AbfJ1Sn0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Oct 2019 14:43:26 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:38095 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726822AbfJ1Sn0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Oct 2019 14:43:26 -0400
+Received: by mail-qt1-f193.google.com with SMTP id t26so6041237qtr.5;
+        Mon, 28 Oct 2019 11:43:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=3zJwbQM+m0kNvyytSzMYQCGjR91jpmPC53JHF6JCkJw=;
-        b=GnWrfbrkLJpI7l0hIshwUUtOh3YnRBzI69WyEMTYgcxyTXSFYWzpL+EwL+Atmncw5+
-         VXBRAOcenjJs675QPRnJn7OXxDHnQ6mA3yPwFwA5RMqtkD/X6j/G++97dtJyn0PtuZvy
-         MchZBOtNhRsqnp6EzU+/7YPaIVBHA+5wMBRkVE7+77ft3y3yXoU6twYcUHOIaLSRUr1V
-         zAid2zAd2OO+T8N+r6+8htpQ8zo6Q2doMDDaMNLqtc7n+YvJ2ZiY1vD97nGVQGRt/qVI
-         83DDX9AcXjI/Btl4GFRSVo6dBvOo6WPSDlEmg7NbGYePHLox9G/NQCh+NSF3c+2rDQO5
-         UFPQ==
+        bh=3BNJfD66jRJDdvcQiIti5lw3kf5uDFmZbb4exmHMhAA=;
+        b=RDya/XLS2h+byE7Kaar9+V7Nu+RRvjBJ+cJ7aOlcq1Mk7bA3pP9ZdO8FfEhWOpuBCR
+         E8OQ12fHG99z0wRFV/4HFSnKSaaEP0Fq3RWY6tygNrodKpDqmDrHY/+bJSJWY/I0bIdO
+         mlRj6JMTa1Pxh/toQbzW3O2DyPPYQ4OpuB1UOQSt7EZafNY81MNkMcO5u5ZLcRbL1aLM
+         B6Glhxaaj42r9UHjVvnCj36Ke4f+eSbZXA9fDsWrj9i7NvnzCCntAPUg5o0g0OmPmi0o
+         PnqwmbWHqXc45mnG1pcyLEoQ6HKLK3NKOXK7ev0OWPXKSmwkIfL1Q0C+imLxhhizWzwH
+         mDCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=3zJwbQM+m0kNvyytSzMYQCGjR91jpmPC53JHF6JCkJw=;
-        b=pT3aZd2PWaVKw4fIb+urJqigDpa1rsH4jaDJU1TTu0NLItdY8euW0gIH98txE18VMq
-         bBfGC9TKbRDHHUqrSDxMwE9/mJasTc/kBjbbSEErU4uEtkRoCCR3UFT2KOEsIvuP7CNP
-         4giki6iMx8i8exvgiUc1ncD7902KohIob4HoYMsYpA5KwP61sFQF7PU6D2r6ej7SqeZ8
-         pxAN4l9tpdUx58WOxGljd3fwAyRfmY62Sec0KKJDnUNfIdhkRgRxis30pa0lNc6dNJmG
-         UZev4IBpNWTcm0uQrus6o/7X7+1Uygxcd2HhzVVLpt383hysNqYW4MAz+0Eb33Sr8bhk
-         NoFQ==
-X-Gm-Message-State: APjAAAXBerwF4b6eMc0P+gT1y0o+1mjw+IEG4MLsF8+1OvIX5Rv2vF29
-        FVTPEjbGXjUzXpWTzROgOjC1sdKUpUVRTLps01k=
-X-Google-Smtp-Source: APXvYqwVr+pX1yxAjX5Uje0kXjEQ67gHodrRpyfM26K/C7SHVeanTaiYey/X8bEIpgxlJktGQ21l0rT4TMQfcXnzscQ=
-X-Received: by 2002:ac8:108e:: with SMTP id a14mr18360542qtj.171.1572287093851;
- Mon, 28 Oct 2019 11:24:53 -0700 (PDT)
+        bh=3BNJfD66jRJDdvcQiIti5lw3kf5uDFmZbb4exmHMhAA=;
+        b=pg/Z/vcq9m1THc4DiLuZ8tgoC8GiMrNPUOnbDKB93vNuzJcM1vxdPp0K5Fl6rgg7+T
+         u5K4sd4pB4XM3Bl5NY/ApStPsMNStkYHuHPQXejQ7yfi6HaGHM9MufofBH49TgBC2IaJ
+         dPXV7y97sFcIsm29Vanu4O6nsTqujR9YLZcj19l3UaZ8S9UtGm3hLE+ELiUqkLuaBimG
+         e/YL5EgQy/YQv7E1E7nwM8HO9eLomg8mu/D08lh50cpvJPL656/YzxQPKOLwVUMozK/P
+         pz6/lbWOfZJr8Jr+vh6WvOJ95be9LugWyeocXQhgQRUPdOhKpHqaslj0SgzoEcEQgDPV
+         ZaUA==
+X-Gm-Message-State: APjAAAUggNSYGO3RrmCRmJhqPQ2LrfOeenKTELo5qjMnBXt8ZVtPZotn
+        d0J1bxdI8Ir9Npuns21QHgDdpeKMffJc+VoSXZI=
+X-Google-Smtp-Source: APXvYqwQuhj5NPy3nlTzAz6h++Thd7OKuFGzicOxBIGZNdb+nUwx8dUDWWdwJEnEEf6lbz91zbVjf9/WkdxNcoBS4bU=
+X-Received: by 2002:aed:35e7:: with SMTP id d36mr18618698qte.59.1572288203373;
+ Mon, 28 Oct 2019 11:43:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <157220959547.48922.6623938299823744715.stgit@toke.dk> <157220959873.48922.4763375792594816553.stgit@toke.dk>
-In-Reply-To: <157220959873.48922.4763375792594816553.stgit@toke.dk>
+References: <157220959547.48922.6623938299823744715.stgit@toke.dk> <157220959980.48922.12100884213362040360.stgit@toke.dk>
+In-Reply-To: <157220959980.48922.12100884213362040360.stgit@toke.dk>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 28 Oct 2019 11:24:42 -0700
-Message-ID: <CAEf4BzYoEPKNFnzOEAhhE2w=U11cYfTN4o_23kjzY4ByEt5y-g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 3/4] libbpf: Add auto-pinning of maps when
- loading BPF objects
+Date:   Mon, 28 Oct 2019 11:43:11 -0700
+Message-ID: <CAEf4BzZdXX0P=3O_-tWWUqZwDHNofme+_nC6+TyUV+ngW343GA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 4/4] selftests: Add tests for automatic map pinning
 To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
 Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -68,173 +67,169 @@ at.com> wrote:
 >
 > From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 >
-> This adds support to libbpf for setting map pinning information as part o=
-f
-> the BTF map declaration, to get automatic map pinning (and reuse) on load=
-.
-> The pinning type currently only supports a single PIN_BY_NAME mode, where
-> each map will be pinned by its name in a path that can be overridden, but
-> defaults to /sys/fs/bpf.
->
-> Since auto-pinning only does something if any maps actually have a
-> 'pinning' BTF attribute set, we default the new option to enabled, on the
-> assumption that seamless pinning is what most callers want.
->
-> When a map has a pin_path set at load time, libbpf will compare the map
-> pinned at that location (if any), and if the attributes match, will re-us=
-e
-> that map instead of creating a new one. If no existing map is found, the
-> newly created map will instead be pinned at the location.
->
-> Programs wanting to customise the pinning can override the pinning paths
-> using bpf_map__set_pin_path() before calling bpf_object__load() (includin=
-g
-> setting it to NULL to disable pinning of a particular map).
+> This adds a new BPF selftest to exercise the new automatic map pinning
+> code.
 >
 > Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 > ---
->  tools/lib/bpf/bpf_helpers.h |    6 ++
->  tools/lib/bpf/libbpf.c      |  142 +++++++++++++++++++++++++++++++++++++=
-+++++-
->  tools/lib/bpf/libbpf.h      |   11 +++
->  3 files changed, 154 insertions(+), 5 deletions(-)
+>  tools/testing/selftests/bpf/prog_tests/pinning.c |   91 ++++++++++++++++=
+++++++
+>  tools/testing/selftests/bpf/progs/test_pinning.c |   29 +++++++
+>  2 files changed, 120 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/pinning.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_pinning.c
 >
-
-[...]
-
->
-> -static int bpf_object__init_maps(struct bpf_object *obj, bool relaxed_ma=
-ps)
-> +static int bpf_object__build_map_pin_paths(struct bpf_object *obj,
-> +                                          const char *path)
+> diff --git a/tools/testing/selftests/bpf/prog_tests/pinning.c b/tools/tes=
+ting/selftests/bpf/prog_tests/pinning.c
+> new file mode 100644
+> index 000000000000..d4a63de72f5a
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/pinning.c
+> @@ -0,0 +1,91 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include <sys/types.h>
+> +#include <sys/stat.h>
+> +#include <unistd.h>
+> +#include <test_progs.h>
+> +
+> +__u32 get_map_id(struct bpf_object *obj, const char *name)
 > +{
-> +       struct bpf_map *map;
-> +
-> +       if (!path)
-> +               path =3D "/sys/fs/bpf";
-> +
-> +       bpf_object__for_each_map(map, obj) {
-> +               char buf[PATH_MAX];
-> +               int err, len;
-> +
-> +               if (map->pinning !=3D LIBBPF_PIN_BY_NAME)
-> +                       continue;
-
-still think it's better be done from map definition parsing code
-instead of a separate path, which will ignore most of maps anyways (of
-course by extracting this whole buffer creation logic into a
-function).
-
-
-> +
-> +               len =3D snprintf(buf, PATH_MAX, "%s/%s", path, bpf_map__n=
-ame(map));
-> +               if (len < 0)
-> +                       return -EINVAL;
-> +               else if (len >=3D PATH_MAX)
-
-[...]
-
->         return 0;
->  }
->
-> +static bool map_is_reuse_compat(const struct bpf_map *map,
-> +                               int map_fd)
-
-nit: this should fit on single line?
-
-> +{
+> +       __u32 map_info_len, duration, retval;
 > +       struct bpf_map_info map_info =3D {};
-> +       char msg[STRERR_BUFSIZE];
-> +       __u32 map_info_len;
+> +       struct bpf_map *map;
+> +       int err;
 > +
 > +       map_info_len =3D sizeof(map_info);
 > +
-> +       if (bpf_obj_get_info_by_fd(map_fd, &map_info, &map_info_len)) {
-> +               pr_warn("failed to get map info for map FD %d: %s\n",
-> +                       map_fd, libbpf_strerror_r(errno, msg, sizeof(msg)=
-));
-> +               return false;
-> +       }
-> +
-> +       return (map_info.type =3D=3D map->def.type &&
-> +               map_info.key_size =3D=3D map->def.key_size &&
-> +               map_info.value_size =3D=3D map->def.value_size &&
-> +               map_info.max_entries =3D=3D map->def.max_entries &&
-> +               map_info.map_flags =3D=3D map->def.map_flags &&
-> +               map_info.btf_key_type_id =3D=3D map->btf_key_type_id &&
-> +               map_info.btf_value_type_id =3D=3D map->btf_value_type_id)=
+> +       map =3D bpf_object__find_map_by_name(obj, name);
+> +       if (!CHECK(!map, "find map", "NULL map")) {
+
+please follow the pattern of "if (CHECK()) { return or goto cleanup
+}". There is literally zero cases where we have `if (!CHECK())` in
+selftests.
+
+> +               err =3D bpf_obj_get_info_by_fd(bpf_map__fd(map),
+> +                                            &map_info, &map_info_len);
+> +               CHECK(err, "get map info", "err %d errno %d", err, errno)=
 ;
-
-If map was pinned by older version of the same app, key and value type
-id are probably gonna be different, even if the type definition itself
-it correct. We probably shouldn't check that?
-
-> +}
-> +
-> +static int
-> +bpf_object__reuse_map(struct bpf_map *map)
-> +{
-> +       char *cp, errmsg[STRERR_BUFSIZE];
-> +       int err, pin_fd;
-> +
-> +       pin_fd =3D bpf_obj_get(map->pin_path);
-> +       if (pin_fd < 0) {
-> +               if (errno =3D=3D ENOENT) {
-> +                       pr_debug("found no pinned map to reuse at '%s'\n"=
-,
-> +                                map->pin_path);
-> +                       return 0;
-> +               }
-> +
-> +               cp =3D libbpf_strerror_r(errno, errmsg, sizeof(errmsg));
-> +               pr_warn("couldn't retrieve pinned map '%s': %s\n",
-> +                       map->pin_path, cp);
-> +               return -errno;
-
-store errno locally
-
-
+> +               return map_info.id;
 > +       }
-> +
-> +       if (!map_is_reuse_compat(map, pin_fd)) {
-> +               pr_warn("couldn't reuse pinned map at '%s': "
-> +                       "parameter mismatch\n", map->pin_path);
-> +               close(pin_fd);
-> +               return -EINVAL;
-> +       }
-> +
-> +       err =3D bpf_map__reuse_fd(map, pin_fd);
-> +       if (err) {
-> +               close(pin_fd);
-> +               return err;
-> +       }
-> +       map->pinned =3D true;
-> +       pr_debug("reused pinned map at '%s'\n", map->pin_path);
-> +
 > +       return 0;
 > +}
 > +
-
-[...]
-
-> +enum libbpf_pin_type {
-> +       LIBBPF_PIN_NONE,
-> +       /* PIN_BY_NAME: pin maps by name (in /sys/fs/bpf by default) */
-> +       LIBBPF_PIN_BY_NAME,
-> +};
+> +void test_pinning(void)
+> +{
+> +       __u32 duration, retval, size, map_id, map_id2;
+> +       const char *custpinpath =3D "/sys/fs/bpf/custom/pinmap";
+> +       const char *nopinpath =3D "/sys/fs/bpf/nopinmap";
+> +       const char *custpath =3D "/sys/fs/bpf/custom";
+> +       const char *pinpath =3D "/sys/fs/bpf/pinmap";
+> +       const char *file =3D "./test_pinning.o";
+> +       struct stat statbuf =3D {};
+> +       struct bpf_object *obj;
+> +       DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts,
+> +               .auto_pin_path =3D custpath,
+> +       );
 > +
->  LIBBPF_API int bpf_object__pin_maps(struct bpf_object *obj, const char *=
-path);
+> +       int err;
+> +       obj =3D bpf_object__open_file(file, NULL);
+> +       if (CHECK_FAIL(libbpf_get_error(obj)))
+> +               return;
+> +
+> +       err =3D bpf_object__load(obj);
+> +       CHECK(err, "default load", "err %d errno %d\n", err, errno);
 
-pin_maps should take into account opts->auto_pin_path, shouldn't it?
+cleanup and exit, you don't have a valid set up to proceed with
+testing. Same for almost every check below.
 
-Which is why I also think that auto_pin_path is bad name, because it's
-not only for auto-pinning, it's a pinning root path, so something like
-pin_root_path or just pin_root is better and less misleading name.
+> +
+> +       /* check that pinmap was pinned */
+> +       err =3D stat(pinpath, &statbuf);
+> +       CHECK(err, "stat pinpath", "err %d errno %d\n", err, errno);
+> +
+> +        /* check that nopinmap was *not* pinned */
+> +       err =3D stat(nopinpath, &statbuf);
+> +       CHECK(errno !=3D ENOENT, "stat nopinpath", "err %d errno %d\n", e=
+rr, errno);
 
+if previous stat succeeded, errno might be from other syscall, you
+have to check both
 
+> +
+> +        map_id =3D get_map_id(obj, "pinmap");
 
->  LIBBPF_API int bpf_object__unpin_maps(struct bpf_object *obj,
->                                       const char *path);
+formatting? check that get_map_id succeeded?
+
+> +       bpf_object__close(obj);
+> +
+> +       obj =3D bpf_object__open_file(file, NULL);
+> +       if (CHECK_FAIL(libbpf_get_error(obj)))
+> +               return;
+> +
+> +       err =3D bpf_object__load(obj);
+> +       CHECK(err, "default load", "err %d errno %d\n", err, errno);
+> +
+> +       /* check that same map ID was reused for second load */
+> +       map_id2 =3D get_map_id(obj, "pinmap");
+> +       CHECK(map_id !=3D map_id2, "check reuse",
+> +             "err %d errno %d id %d id2 %d\n", err, errno, map_id, map_i=
+d2);
+> +       unlink(pinpath);
+> +       bpf_object__close(obj);
+> +
+> +       err =3D mkdir(custpath, 0700);
+> +       CHECK(err, "mkdir custpath",  "err %d errno %d\n", err, errno);
+> +
+> +       obj =3D bpf_object__open_file(file, &opts);
+> +       if (CHECK_FAIL(libbpf_get_error(obj)))
+> +               return;
+> +
+> +       err =3D bpf_object__load(obj);
+> +       CHECK(err, "custom load", "err %d errno %d\n", err, errno);
+> +
+> +       /* check that pinmap was pinned at the custom path */
+> +       err =3D stat(custpinpath, &statbuf);
+> +       CHECK(err, "stat custpinpath", "err %d errno %d\n", err, errno);
+> +
+> +       unlink(custpinpath);
+> +       rmdir(custpath);
+> +       bpf_object__close(obj);
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/test_pinning.c b/tools/tes=
+ting/selftests/bpf/progs/test_pinning.c
+> new file mode 100644
+> index 000000000000..ff2d7447777e
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/test_pinning.c
+> @@ -0,0 +1,29 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include <linux/bpf.h>
+> +#include "bpf_helpers.h"
+> +
+> +int _version SEC("version") =3D 1;
+> +
+> +struct {
+> +       __uint(type, BPF_MAP_TYPE_ARRAY);
+> +       __uint(max_entries, 1);
+> +       __type(key, __u32);
+> +       __type(value, __u64);
+> +       __uint(pinning, LIBBPF_PIN_BY_NAME);
+> +} pinmap SEC(".maps");
+> +
+> +struct {
+> +       __uint(type, BPF_MAP_TYPE_ARRAY);
+> +       __uint(max_entries, 1);
+> +       __type(key, __u32);
+> +       __type(value, __u64);
+> +} nopinmap SEC(".maps");
+> +
+> +SEC("xdp_prog")
+> +int _xdp_prog(struct xdp_md *xdp)
+> +{
+> +       return XDP_PASS;
+> +}
+> +
+> +char _license[] SEC("license") =3D "GPL";
 >
