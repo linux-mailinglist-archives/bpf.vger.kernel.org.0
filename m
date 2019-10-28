@@ -2,62 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3974BE77E2
-	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2019 18:55:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4C4CE7802
+	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2019 19:01:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731262AbfJ1RzN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Oct 2019 13:55:13 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:42691 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730978AbfJ1RzN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Oct 2019 13:55:13 -0400
-Received: by mail-pg1-f193.google.com with SMTP id f14so7376808pgi.9
-        for <bpf@vger.kernel.org>; Mon, 28 Oct 2019 10:55:12 -0700 (PDT)
+        id S2404262AbfJ1SBG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Oct 2019 14:01:06 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:38290 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729738AbfJ1SBC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Oct 2019 14:01:02 -0400
+Received: by mail-pg1-f195.google.com with SMTP id w3so7396015pgt.5
+        for <bpf@vger.kernel.org>; Mon, 28 Oct 2019 11:01:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=netronome-com.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:in-reply-to:references
          :organization:mime-version:content-transfer-encoding;
-        bh=XzpTan8+i3B861bOkzCgxWVBcpdZyq9MdPABjYUZBgQ=;
-        b=oSy+4rOh8KWTH/gIyqSaytcg7to4HP8L8rh7yGFyrKygpn7vuTWG1Y4quilc3aX4dW
-         Quq+GiHWZ1SiV3QId+vN6XMHjSJsmTnwsvdsvp/zAPO9ELfFpHyj6yZZpJNSfym+NVgw
-         HzSvO5YaC9G6UiBFjUsIQ6dw70Ujc+c8gGusIZp94sB4exmhtoOb9URSq1Dx/RfOPFEs
-         a9bD12RsLVBhYkRmFwEyZDi6xkiwKshdO5lYIhI7SmGlL7S/NahyCgXZF0EzZ9F71L3q
-         oWqiDkaVJUtS9jf6otdaODvMAhqRD3INHQ8qey5joUdm8UfFYeu3t3TpgYlcKoKImkjU
-         KaRg==
+        bh=mFR9DJBz4aaSJA6Lp+Gxf14PeSYZwISp0W0+RRJlLaY=;
+        b=TxZ1dYYP5sCvuc/G/vsVQZeFEQV6aPYwbiShE+J0+/hTuDkChBkPUWKH31XeHoyFWP
+         mp469jb3ziur13QTCBOSpZypO5WPKrylEZfGFg9Hn16P4v8b8UvpGAQUc91pN2g98Lrj
+         vf4JYpxfR2GSy6o83cK2SCNr1rz2EslYifVV5pINWltfakM+8HrZReuL2N+RtebqO860
+         oz7CQuGhAXI9o28TJ3u273/VuogvrvQ75DLMVjsppvgzU1PS48PrqX9FPQCiN8A2LXKR
+         OuOvW+k1sIcQb63WjURoniXxXjf9YlAyBrNIV7S3Mq6w/1n9UzUxdkIK9wWjEFFlckXg
+         G+Lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
          :references:organization:mime-version:content-transfer-encoding;
-        bh=XzpTan8+i3B861bOkzCgxWVBcpdZyq9MdPABjYUZBgQ=;
-        b=TP8N9r+onJI/SHNNg6pigQ5roCP+5hu0VsBpGTXT8Hj5CRlr0pX/q6+nrDzkqo3Ped
-         salgwhDJHNLzUrpoNUnfTlAVCmaVZvhGawFp270onxOXh4zJA25s0ExE5MN52n62/nTW
-         as7qWITnF9ioTNB0cs1rdO7YdD/gGc74RA97swnGZPCecYhlSdXKe975fEfGgdld8OQH
-         GhR0NnI9q8xW7k+VteiA/prFhEHNAVBZ9jqbGWSkDHITs0XUrkhcwiuEnnYlpekZ9+LY
-         HY36egb40+uNFyFQbI6Ga+Dnbnk703M/+Y/hLwRGLQPS7I76W522AjV1r3QZCu6aJXNy
-         TkOg==
-X-Gm-Message-State: APjAAAVCWwS7mXfagTm38+dZ2NvqN5Tx9r7L8pkZjGelCIlDIh4Ir7cc
-        XgLLIWOXlfq1NXjOnp6fG7nvvQ==
-X-Google-Smtp-Source: APXvYqw9h0io44UIDPb6BEpXUzgy/w877Ppb+p+ryUkh+wd7UWlExOeW5pyTQArXeU2xjBzv2aqfKQ==
-X-Received: by 2002:aa7:9295:: with SMTP id j21mr22355815pfa.223.1572285312139;
-        Mon, 28 Oct 2019 10:55:12 -0700 (PDT)
+        bh=mFR9DJBz4aaSJA6Lp+Gxf14PeSYZwISp0W0+RRJlLaY=;
+        b=J9Tu8yw0OY2dSTaxMI/QVhqpzpudxqeYv5Veufajl4s9h9W9h10gO3i99Zbp4W64O/
+         OFDyj+WA/VeCsahpU9Kgykfsd+Hkqn8zdHen7Mzy7hF/Z48YRSKEzXdTtZVUxqSEj3Ix
+         d3xAeUR/VoS3O+zfGmdNpigJ1l6UDkjO5C9ZWPAeSOiua09D6O/tAYQ1QjJfuF/HQcAI
+         nTaGggqL4ubwYEqr1c1Pftfa9uyfCZhAwMbKAPLUagF9vDSfnI91Kq65FTupJ5Zhc3f6
+         DP2NkxaOqpmmdcMoiCqoNfMOdejaGnRxZoH+wq2GY5GgOc+/qrQOiCsxU5vMGbAotNnm
+         edCA==
+X-Gm-Message-State: APjAAAVFqS7Zk8AG9ltyqDNZ/b8E1oY6uyDruSqw8tNDi0MXz3+3ZDik
+        XYGOrFP4eQnL7f5aHthIb9nLqg==
+X-Google-Smtp-Source: APXvYqzPxwLVdq14TKHElmnIG+DCNhkQfxGivfW43j+TLX4y79TdDmbfnHUQXDTexo9uvgwpyylFvg==
+X-Received: by 2002:a17:90a:741:: with SMTP id s1mr639682pje.113.1572285660180;
+        Mon, 28 Oct 2019 11:01:00 -0700 (PDT)
 Received: from cakuba.hsd1.ca.comcast.net ([66.60.152.14])
-        by smtp.gmail.com with ESMTPSA id w27sm9763868pgc.20.2019.10.28.10.55.11
+        by smtp.gmail.com with ESMTPSA id r19sm11312566pgj.43.2019.10.28.11.00.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Oct 2019 10:55:11 -0700 (PDT)
-Date:   Mon, 28 Oct 2019 10:55:08 -0700
+        Mon, 28 Oct 2019 11:01:00 -0700 (PDT)
+Date:   Mon, 28 Oct 2019 11:00:56 -0700
 From:   Jakub Kicinski <jakub.kicinski@netronome.com>
 To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
 Cc:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
         =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
         bpf@vger.kernel.org, magnus.karlsson@gmail.com,
         magnus.karlsson@intel.com, maciej.fijalkowski@intel.com,
-        toke@redhat.com
-Subject: Re: [PATCH bpf-next v2 1/2] xsk: store struct xdp_sock as a
+        jonathan.lemon@gmail.com, toke@redhat.com
+Subject: Re: [PATCH bpf-next v3 1/2] xsk: store struct xdp_sock as a
  flexible array member of the XSKMAP
-Message-ID: <20191028105508.4173bf8b@cakuba.hsd1.ca.comcast.net>
-In-Reply-To: <20191025071842.7724-2-bjorn.topel@gmail.com>
-References: <20191025071842.7724-1-bjorn.topel@gmail.com>
-        <20191025071842.7724-2-bjorn.topel@gmail.com>
+Message-ID: <20191028110056.17eea9fb@cakuba.hsd1.ca.comcast.net>
+In-Reply-To: <20191025093219.10290-2-bjorn.topel@gmail.com>
+References: <20191025093219.10290-1-bjorn.topel@gmail.com>
+        <20191025093219.10290-2-bjorn.topel@gmail.com>
 Organization: Netronome Systems, Ltd.
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -67,7 +67,7 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 25 Oct 2019 09:18:40 +0200, Bj=C3=B6rn T=C3=B6pel wrote:
+On Fri, 25 Oct 2019 11:32:18 +0200, Bj=C3=B6rn T=C3=B6pel wrote:
 > From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
 >=20
 > Prior this commit, the array storing XDP socket instances were stored
@@ -77,82 +77,6 @@ On Fri, 25 Oct 2019 09:18:40 +0200, Bj=C3=B6rn T=C3=B6pel wrote:
 >=20
 > Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
 
-Thanks for the re-spin.
+Damn, looks like I managed to reply to v2.=20
 
-> diff --git a/kernel/bpf/xskmap.c b/kernel/bpf/xskmap.c
-> index 82a1ffe15dfa..a83e92fe2971 100644
-> --- a/kernel/bpf/xskmap.c
-> +++ b/kernel/bpf/xskmap.c
-
-> @@ -92,44 +93,35 @@ static struct bpf_map *xsk_map_alloc(union bpf_attr *=
-attr)
->  	    attr->map_flags & ~(BPF_F_NUMA_NODE | BPF_F_RDONLY | BPF_F_WRONLY))
->  		return ERR_PTR(-EINVAL);
-> =20
-> -	m =3D kzalloc(sizeof(*m), GFP_USER);
-> -	if (!m)
-> +	numa_node =3D bpf_map_attr_numa_node(attr);
-> +	size =3D struct_size(m, xsk_map, attr->max_entries);
-> +	cost =3D size + array_size(sizeof(*m->flush_list), num_possible_cpus());
-
-Now we didn't use array_size() previously because the sum here may
-overflow.
-
-We could use __ab_c_size() here, the name is probably too ugly to use
-directly and IDK what we'd have to name such a accumulation helper...
-
-So maybe just make cost and size a u64 and we should be in the clear.
-
-> +	err =3D bpf_map_charge_init(&mem, cost);
-> +	if (err < 0)
-> +		return ERR_PTR(err);
-> +
-> +	m =3D bpf_map_area_alloc(size, numa_node);
-> +	if (!m) {
-> +		bpf_map_charge_finish(&mem);
->  		return ERR_PTR(-ENOMEM);
-> +	}
-> =20
->  	bpf_map_init_from_attr(&m->map, attr);
-> +	bpf_map_charge_move(&m->map.memory, &mem);
->  	spin_lock_init(&m->lock);
-> =20
-> -	cost =3D (u64)m->map.max_entries * sizeof(struct xdp_sock *);
-> -	cost +=3D sizeof(struct list_head) * num_possible_cpus();
-> -
-> -	/* Notice returns -EPERM on if map size is larger than memlock limit */
-> -	err =3D bpf_map_charge_init(&m->map.memory, cost);
-> -	if (err)
-> -		goto free_m;
-> -
-> -	err =3D -ENOMEM;
-> -
->  	m->flush_list =3D alloc_percpu(struct list_head);
-> -	if (!m->flush_list)
-> -		goto free_charge;
-> +	if (!m->flush_list) {
-> +		bpf_map_charge_finish(&m->map.memory);
-> +		bpf_map_area_free(m);
-> +		return ERR_PTR(-ENOMEM);
-> +	}
-> =20
->  	for_each_possible_cpu(cpu)
->  		INIT_LIST_HEAD(per_cpu_ptr(m->flush_list, cpu));
-> =20
-> -	m->xsk_map =3D bpf_map_area_alloc(m->map.max_entries *
-> -					sizeof(struct xdp_sock *),
-> -					m->map.numa_node);
-> -	if (!m->xsk_map)
-> -		goto free_percpu;
->  	return &m->map;
-> -
-> -free_percpu:
-> -	free_percpu(m->flush_list);
-> -free_charge:
-> -	bpf_map_charge_finish(&m->map.memory);
-> -free_m:
-> -	kfree(m);
-> -	return ERR_PTR(err);
->  }
-> =20
->  static void xsk_map_free(struct bpf_map *map)
+I think the size maths may overflow on 32bit machines on the addition.
