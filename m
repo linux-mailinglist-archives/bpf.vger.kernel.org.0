@@ -2,114 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A89BCE716A
-	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2019 13:35:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C3C5E725C
+	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2019 14:06:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389094AbfJ1Mfb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Oct 2019 08:35:31 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:45480 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726931AbfJ1Mfb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Oct 2019 08:35:31 -0400
-Received: by mail-lj1-f193.google.com with SMTP id q64so11097480ljb.12
-        for <bpf@vger.kernel.org>; Mon, 28 Oct 2019 05:35:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=zLkZX9qx2P17GLcgAe1vG+UBGpFHGA4/zPraTmeHYSw=;
-        b=OFvPBp7Vg2UpIkRgRb9jVTXaGST/waO25X9tSbEVJPQLCIqBH5+Rb4EETySADEp7fF
-         4GbAto0zybKkk7b7Az1MaG9bcHbGg87hs0HFY2mP/smZ+sS7G3VOkr6vB94dNubJxOlZ
-         a7z65QjlacTFzC0Edys5wYDix05YMZcNNnJWE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=zLkZX9qx2P17GLcgAe1vG+UBGpFHGA4/zPraTmeHYSw=;
-        b=kGwOfsGTFCHliYJowiH70ssCeUgcD9KG8PrQBjMRwsJGoIZmiNaRkBweISUyEVoRoX
-         +4fLc5Cc2Q+sMg6jdvaujuufHgMvh7YmvozcSYPkY9ysb4NG6edBhJwnb2fMdeIc9xxO
-         NeVvATaQA9A1yBIAr1RXqoZGOnfEzGFfpBbGp7vm/U3nKLSWXjm8bRGQ+V68hrS2RSx/
-         Dx25VhHO+QWgcTghQGj9Ydeq5z3wR63EMMqgb8RAtnY03cTgAYhBb70Fzg9Tk8BeNhdU
-         tGbR7jie1AxHAnLf3nZb/OdPoQNJwcI7gLVTZ13UNVn3de7uQIs2pzg35KIvhN2dWeFY
-         imUA==
-X-Gm-Message-State: APjAAAW/jr8qrUjDgVssBIIC3d+KX93Duugf5D/96J4FrqBRw0e36hol
-        G1GNsW7/AFX7MuTo7cCRrzvw7NxB1GPu5Q==
-X-Google-Smtp-Source: APXvYqyfuZlbbVwVQRNPAso+bzp3wV280wNV8pAxeraP4ab/uNAnjm1F8C/akXd8Oi/1QynzhImTqw==
-X-Received: by 2002:a2e:9149:: with SMTP id q9mr12137846ljg.49.1572266127720;
-        Mon, 28 Oct 2019 05:35:27 -0700 (PDT)
-Received: from cloudflare.com ([176.221.114.230])
-        by smtp.gmail.com with ESMTPSA id t6sm6216464ljd.102.2019.10.28.05.35.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Oct 2019 05:35:26 -0700 (PDT)
-References: <20191022113730.29303-1-jakub@cloudflare.com> <20191028055247.bh5bctgxfvmr3zjh@kafai-mbp.dhcp.thefacebook.com>
-User-agent: mu4e 1.1.0; emacs 26.1
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Martin Lau <kafai@fb.com>
-Cc:     "bpf\@vger.kernel.org" <bpf@vger.kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "netdev\@vger.kernel.org" <netdev@vger.kernel.org>,
-        "kernel-team\@cloudflare.com" <kernel-team@cloudflare.com>
-Subject: Re: [RFC bpf-next 0/5] Extend SOCKMAP to store listening sockets
-In-reply-to: <20191028055247.bh5bctgxfvmr3zjh@kafai-mbp.dhcp.thefacebook.com>
-Date:   Mon, 28 Oct 2019 13:35:26 +0100
-Message-ID: <875zk9oxo1.fsf@cloudflare.com>
+        id S1726623AbfJ1NGl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Oct 2019 09:06:41 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:37971 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730837AbfJ1NGl (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 28 Oct 2019 09:06:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1572268000;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oGrbVCBkV20SbSjbFrHblua1QCyKVnk3uyHwY5NqyHU=;
+        b=OVNwJjTGUkPvQ8hugCmG3D6w/Yo7+aBEWklf6qKD6Hxx801hao3pk4fU9Az3QwqmmJiQBE
+        Hi0TP1/NxzlgQhknFylRfWmSlFrmm+L0CjIZsJDGw2KYHWiAJBhsOcznI6nGKkNt2FGyyV
+        8v71KeYBa6oLfcK5QynDViNwMybB8IA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-250-PfJS1Z2XPKe_I-NAOzpRgw-1; Mon, 28 Oct 2019 09:06:36 -0400
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9A61A1005509;
+        Mon, 28 Oct 2019 13:06:34 +0000 (UTC)
+Received: from carbon (ovpn-200-19.brq.redhat.com [10.40.200.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C905B1C95A;
+        Mon, 28 Oct 2019 13:06:26 +0000 (UTC)
+Date:   Mon, 28 Oct 2019 14:06:24 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, brouer@redhat.com
+Subject: Re: [PATCH bpf-next v3 4/4] selftests: Add tests for automatic map
+ pinning
+Message-ID: <20191028140624.584bcc1e@carbon>
+In-Reply-To: <157220959980.48922.12100884213362040360.stgit@toke.dk>
+References: <157220959547.48922.6623938299823744715.stgit@toke.dk>
+        <157220959980.48922.12100884213362040360.stgit@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-MC-Unique: PfJS1Z2XPKe_I-NAOzpRgw-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Oct 28, 2019 at 06:52 AM CET, Martin Lau wrote:
-> On Tue, Oct 22, 2019 at 01:37:25PM +0200, Jakub Sitnicki wrote:
->> This patch set is a follow up on a suggestion from LPC '19 discussions to
->> make SOCKMAP (or a new map type derived from it) a generic type for storing
->> established as well as listening sockets.
->>
->> We found ourselves in need of a map type that keeps references to listening
->> sockets when working on making the socket lookup programmable, aka BPF
->> inet_lookup [1].  Initially we repurposed REUSEPORT_SOCKARRAY but found it
->> problematic to extend due to being tightly coupled with reuseport
->> logic (see slides [2]).
->> So we've turned our attention to SOCKMAP instead.
->>
->> As it turns out the changes needed to make SOCKMAP suitable for storing
->> listening sockets are self-contained and have use outside of programming
->> the socket lookup. Hence this patch set.
->>
->> With these patches SOCKMAP can be used in SK_REUSEPORT BPF programs as a
->> drop-in replacement for REUSEPORT_SOCKARRAY for TCP. This can hopefully
->> lead to code consolidation between the two map types in the future.
-> What is the plan for UDP support in sockmap?
+On Sun, 27 Oct 2019 21:53:19 +0100
+Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com> wrote:
 
-It's on our road-map because without SOCKMAP support for UDP we won't be
-able to move away from TPROXY [1] and custom SO_BINDTOPREFIX extension
-[2] for steering new UDP flows to receiving sockets. Also we would like
-to look into using SOCKMAP for connected UDP socket splicing in the
-future [3].
+> diff --git a/tools/testing/selftests/bpf/progs/test_pinning.c b/tools/tes=
+ting/selftests/bpf/progs/test_pinning.c
+> new file mode 100644
+> index 000000000000..ff2d7447777e
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/test_pinning.c
+> @@ -0,0 +1,29 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include <linux/bpf.h>
+> +#include "bpf_helpers.h"
+> +
+> +int _version SEC("version") =3D 1;
+> +
+> +struct {
+> +=09__uint(type, BPF_MAP_TYPE_ARRAY);
+> +=09__uint(max_entries, 1);
+> +=09__type(key, __u32);
+> +=09__type(value, __u64);
+> +=09__uint(pinning, LIBBPF_PIN_BY_NAME);
+> +} pinmap SEC(".maps");
 
-I was planning to split work as follows:
+So, this is the new BTF-defined maps syntax.
 
-1. SOCKMAP support for listening sockets (this series)
-2. programmable socket lookup for TCP (cut-down version of [4])
-3. SOCKMAP support for UDP (work not started)
-4. programmable socket lookup for UDP (rest of [4])
+Please remind me, what version of LLVM do we need to compile this?
 
-I'm open to suggestions on how to organize it.
+Or was there a dependency on pahole?
 
->> Having said that, the main intention here is to lay groundwork for using
->> SOCKMAP in the next iteration of programmable socket lookup patches.
-> What may be the minimal to get only lookup work for UDP sockmap?
-> .close() and .unhash()?
 
-John would know better. I haven't tried doing it yet.
+> +struct {
+> +=09__uint(type, BPF_MAP_TYPE_ARRAY);
+> +=09__uint(max_entries, 1);
+> +=09__type(key, __u32);
+> +=09__type(value, __u64);
+> +} nopinmap SEC(".maps");
+> +
+> +SEC("xdp_prog")
+> +int _xdp_prog(struct xdp_md *xdp)
+> +{
+> +=09return XDP_PASS;
+> +}
+> +
+> +char _license[] SEC("license") =3D "GPL";
+>=20
 
-From just reading the code - override the two proto ops you mentioned,
-close and unhash, and adapt the socket checks in SOCKMAP.
 
--Jakub
 
-[1] https://blog.cloudflare.com/how-we-built-spectrum/
-[2] https://lore.kernel.org/netdev/1458699966-3752-1-git-send-email-gilberto.bertin@gmail.com/
-[3] https://lore.kernel.org/bpf/20190828072250.29828-1-jakub@cloudflare.com/
-[4] https://blog.cloudflare.com/sockmap-tcp-splicing-of-the-future/
+--=20
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
