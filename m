@@ -2,104 +2,182 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E802DE78ED
-	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2019 20:07:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FCE8E793F
+	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2019 20:32:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729091AbfJ1TH7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Oct 2019 15:07:59 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:34806 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727664AbfJ1TH7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Oct 2019 15:07:59 -0400
-Received: by mail-pf1-f195.google.com with SMTP id b128so7548000pfa.1;
-        Mon, 28 Oct 2019 12:07:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=sWlJ7B/9Vfh+xQYxGKKS4F2uqwdNOzC/mhNw49wSeZA=;
-        b=LwNpyX6nS4G0f1n0NT4S7E9jMRR5sxZSi4tQK7RiCEM6QViBr/3E1kMT8EvIZToFhi
-         pCs7hC6+iY/di/OgWaKjzx9dzouoR4CBxuU/flV9T9MU1imhuV5WnYwy9Xa2jpOD6XkX
-         dlXKdK8kaUCmJ3W1fh3YT7rlUYNNn93++wdfKjq0j5zYDkvAntHEwXnnx9wYUfZ5bM1d
-         iwqT/KlUDSrEL8lMDdoL8GIFVLFbGaqSIAVm2aq9nrdi92MGy5szfUfdZWwSue5wD+4p
-         A7fBIEXM/2l9NrE+KWREnuy/ZkrDJRPehURLsYx1+eUa4khlj11R9LGMG21QwjVjZtQp
-         thyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=sWlJ7B/9Vfh+xQYxGKKS4F2uqwdNOzC/mhNw49wSeZA=;
-        b=YOdD5f6MCCFfzgJYhXGxWg/y0CicUnhL4SE/XRzcVCsv3tI0GhFHYtjLYXx3ynPXne
-         ftvfmZ0pHRLyZtc/cimsHNAlpppONmj/viJSQ9WjnfEWGwd5f/rLYhVYku/wMGk2ToIS
-         X2rojV6kf91u1bwW+7O0cZQPuPhuRkvWWNTXAWhr6S5p3rhcazLJP7tihhK9SIPWkZAG
-         CQuFdICAxwC/Vamhqj5nUBKeZyZaPOWlll7mhZp3GyzR6Zxl+MMkfUanApwftVtceGZ/
-         F55Zjw5OK/wGdOsnZo5eDpdGWb1yZaKW8xjOCTpDakPCGXTKZZ8pTH7Z12acUajnFnbl
-         qHvw==
-X-Gm-Message-State: APjAAAVjWDQ97Elm0UpZFq6JUBF+cC3ridLLSk02kdG6U/G9V8xLqh9n
-        HZ7k0VR2gYszNzfCOWfI5LA=
-X-Google-Smtp-Source: APXvYqx4MSKJ70mZgf/paKh3ZbYyC5V9YY0iuNKWHOA2FjWmakMhBkoQmVsAYoWoq2/qrArg8RugxQ==
-X-Received: by 2002:a63:a5b:: with SMTP id z27mr19262444pgk.416.1572289677196;
-        Mon, 28 Oct 2019 12:07:57 -0700 (PDT)
-Received: from dahern-DO-MB.local ([2601:284:8202:10b0:9e2:b1b6:1e7e:b71e])
-        by smtp.googlemail.com with ESMTPSA id x190sm12799777pfc.89.2019.10.28.12.07.54
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 28 Oct 2019 12:07:56 -0700 (PDT)
-Subject: Re: [RFC PATCH v2 bpf-next 00/15] xdp_flow: Flow offload to XDP
-To:     Jesper Dangaard Brouer <jbrouer@redhat.com>,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>
-Cc:     Toshiaki Makita <toshiaki.makita1@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
+        id S1730999AbfJ1Tcj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Oct 2019 15:32:39 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:54512 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730396AbfJ1Tcj (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 28 Oct 2019 15:32:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1572291157;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=YIoVA/fFJrGQ97aiYNbpnayE4EinXi0s2gJ+zmT21Gs=;
+        b=aP/LBvmibzKJnm1KM3Akz5MV9mUjhsJFtrVYKcrVPeKYrzZCMpZCrjCmbhFBQQCHuFY/Ds
+        wGgj0RLiiU7JBiFkT0+Dhj/1KgIYIYJjD5Q0xf1qZ3uJp4JJYQCtot9EEueGJG4b6flDWX
+        nHRJOuZftNPa7a8XyS8Rs9EhAMJUjpw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-274-NOa2wEhTPFy97C6tgrEGpQ-1; Mon, 28 Oct 2019 15:32:34 -0400
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D3EB7107AD28;
+        Mon, 28 Oct 2019 19:32:30 +0000 (UTC)
+Received: from krava (ovpn-204-45.brq.redhat.com [10.40.204.45])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 7AD9E46;
+        Mon, 28 Oct 2019 19:32:25 +0000 (UTC)
+Date:   Mon, 28 Oct 2019 20:32:24 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        Pravin B Shelar <pshelar@ovn.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, William Tu <u9012063@gmail.com>,
-        Stanislav Fomichev <sdf@fomichev.me>
-References: <20191018040748.30593-1-toshiaki.makita1@gmail.com>
- <5da9d8c125fd4_31cf2adc704105c456@john-XPS-13-9370.notmuch>
- <22e6652c-e635-4349-c863-255d6c1c548b@gmail.com>
- <5daf34614a4af_30ac2b1cb5d205bce4@john-XPS-13-9370.notmuch>
- <87h840oese.fsf@toke.dk>
- <5db128153c75_549d2affde7825b85e@john-XPS-13-9370.notmuch>
- <87sgniladm.fsf@toke.dk> <a7f3d86b-c83c-7b0d-c426-684b8dfe4344@gmail.com>
- <87zhhmrz7w.fsf@toke.dk> <47f1a7e2-0d3a-e324-20c5-ba3aed216ddf@gmail.com>
- <87o8y1s1vn.fsf@toke.dk> <20191028110828.512eb99c@carbon>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <8b23e06d-f3b3-65b3-2aa6-363812e71817@gmail.com>
-Date:   Mon, 28 Oct 2019 13:07:54 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
- Gecko/20100101 Thunderbird/60.9.0
+        Andi Kleen <ak@linux.intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        LKML <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH v3 1/9] perf tools: add parse events append error
+Message-ID: <20191028193224.GB28772@krava>
+References: <20191023005337.196160-1-irogers@google.com>
+ <20191024190202.109403-1-irogers@google.com>
+ <20191024190202.109403-2-irogers@google.com>
+ <20191025075820.GE31679@krava>
+ <CAP-5=fV3yruuFagTz4=8b9t6Y1tzZpFU=VhVcOmrSMiV+h2fQA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20191028110828.512eb99c@carbon>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CAP-5=fV3yruuFagTz4=8b9t6Y1tzZpFU=VhVcOmrSMiV+h2fQA@mail.gmail.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-MC-Unique: NOa2wEhTPFy97C6tgrEGpQ-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/28/19 4:08 AM, Jesper Dangaard Brouer wrote:
->>> Either way, bypassing the bridge has mixed results: latency improves
->>> but throughput takes a hit (no GRO).  
->>
->> Well, for some traffic mixes XDP should be able to keep up without GRO.
->> And longer term, we probably want to support GRO with XDP anyway
-> 
-> Do you have any numbers to back up your expected throughput decrease,
-> due to lack of GRO?  Or is it a theory?
-> 
+On Fri, Oct 25, 2019 at 08:14:36AM -0700, Ian Rogers wrote:
+> On Fri, Oct 25, 2019 at 12:58 AM Jiri Olsa <jolsa@redhat.com> wrote:
+> >
+> > On Thu, Oct 24, 2019 at 12:01:54PM -0700, Ian Rogers wrote:
+> > > Parse event error handling may overwrite one error string with anothe=
+r
+> > > creating memory leaks and masking errors. Introduce a helper routine
+> > > that appends error messages and avoids the memory leak.
+> > >
+> > > A reproduction of this problem can be seen with:
+> > >   perf stat -e c/c/
+> > > After this change this produces:
+> > > event syntax error: 'c/c/'
+> > >                        \___ unknown term (previous error: unknown ter=
+m (previous error: unknown term (previous error: unknown term (previous err=
+or: unknown term (previous error: unknown term (previous error: unknown ter=
+m (previous error: unknown term (previous error: unknown term (previous err=
+or: unknown term (previous error: unknown term (previous error: unknown ter=
+m (previous error: unknown term (previous error: unknown term (previous err=
+or: unknown term (previous error: unknown term (previous error: unknown ter=
+m (previous error: unknown term (previous error: unknown term (previous err=
+or: unknown term (previous error: unknown term (previous error: Cannot find=
+ PMU `c'. Missing kernel support?)(help: valid terms: event,filter_rem,filt=
+er_opc0,edge,filter_isoc,filter_tid,filter_loc,filter_nc,inv,umask,filter_o=
+pc1,tid_en,thresh,filter_all_op,filter_not_nm,filter_state,filter_nm,config=
+,config1,config2,name,period,percore))(help: valid terms: event,filter_rem,=
+filter_opc0,edge,filter_isoc,filter_tid,filter_loc,filter_nc,inv,umask,filt=
+er_opc1,tid_en,thresh,filter_all_op,filter_not_nm,filter_state,filter_nm,co=
+nfig,config1,config2,name,period,percore))(help: valid terms: event,filter_=
+rem,filter_opc0,edge,filter_isoc,filter_tid,filter_loc,filter_nc,inv,umask,=
+filter_opc1,tid_en,thresh,filter_all_op,filter_not_nm,filter_state,filter_n=
+m,config,config1,config2,name,period,percore))(help: valid terms: event,fil=
+ter_rem,filter_opc0,edge,filter_isoc,filter_tid,filter_loc,filter_nc,inv,um=
+ask,filter_opc1,tid_en,thresh,filter_all_op,filter_not_nm,filter_state,filt=
+er_nm,config,config1,config2,name,period,percore))(help: valid terms: event=
+,filter_rem,filter_opc0,edge,filter_isoc,filter_tid,filter_loc,filter_nc,in=
+v,umask,filter_opc1,tid_en,thresh,filter_all_op,filter_not_nm,filter_state,=
+filter_nm,config,config1,config2,name,period,percore))(help: valid terms: e=
+vent,filter_rem,filter_opc0,edge,filter_isoc,filter_tid,filter_loc,filter_n=
+c,inv,umask,filter_opc1,tid_en,thresh,filter_all_op,filter_not_nm,filter_st=
+ate,filter_nm,config,config1,config2,name,period,percore))(help: valid term=
+s: event,pc,in_tx,edge,any,offcore_rsp,in_tx_cp,ldlat,inv,umask,frontend,cm=
+ask,config,config1,config2,name,period,percore))(help: valid terms: event,f=
+ilter_rem,filter_opc0,edge,filter_isoc,filter_tid,filter_loc,filter_nc,inv,=
+umask,filter_opc1,tid_en,thresh,filter_all_op,filter_not_nm,filter_state,fi=
+lter_nm,config,config1,config2,name,period,percore))(help: valid terms: eve=
+nt,filter_rem,filter_opc0,edge,filter_isoc,filter_tid,filter_loc,filter_nc,=
+inv,umask,filter_opc1,tid_en,thresh,filter_all_op,filter_not_nm,filter_stat=
+e,filter_nm,config,config1,config2,name,period,percore))(help: valid terms:=
+ event,config,config1,config2,name,period,percore))(help: valid terms: even=
+t,filter_rem,filter_opc0,edge,filter_isoc,filter_tid,filter_loc,filter_nc,i=
+nv,umask,filter_opc1,tid_en,thresh,filter_all_op,filter_not_nm,filter_state=
+,filter_nm,config,config1,config2,name,period,percore))(help: valid terms: =
+event,filter_rem,filter_opc0,edge,filter_isoc,filter_tid,filter_loc,filter_=
+nc,inv,umask,filter_opc1,tid_en,thresh,filter_all_op,filter_not_nm,filter_s=
+tate,filter_nm,config,config1,config2,name,period,percore))(help: valid ter=
+ms: event,filter_rem,filter_opc0,edge,filter_isoc,filter_tid,filter_loc,fil=
+ter_nc,inv,umask,filter_opc1,tid_en,thresh,filter_all_op,filter_not_nm,filt=
+er_state,filter_nm,config,config1,config2,name,period,percore))(help: valid=
+ terms: event,filter_rem,filter_opc0,edge,filter_isoc,filter_tid,filter_loc=
+,filter_nc,inv,umask,filter_opc1,tid_en,thresh,filter_all_op,filter_not_nm,=
+filter_state,filter_nm,config,config1,config2,name,period,percore))(help: v=
+alid terms: event,config,config1,config2,name,period,percore))(help: valid =
+terms: event,filter_rem,filter_opc0,edge,filter_isoc,filter_tid,filter_loc,=
+filter_nc,inv,umask,filter_opc1,tid_en,thresh,filter_all_op,filter_not_nm,f=
+ilter_state,filter_nm,config,config1,config2,name,period,percore))(help: va=
+lid terms: event,filter_rem,filter_opc0,edge,filter_isoc,filter_tid,filter_=
+loc,filter_nc,inv,umask,filter_opc1,tid_en,thresh,filter_all_op,filter_not_=
+nm,filter_state,filter_nm,config,config1,config2,name,period,percore))(help=
+: valid terms: event,filter_rem,filter_opc0,edge,filter_isoc,filter_tid,fil=
+ter_loc,filter_nc,inv,umask,filter_opc1,tid_en,thresh,filter_all_op,filter_=
+not_nm,filter_state,filter_nm,config,config1,config2,name,period,percore))(=
+help: valid terms: event,filter_rem,filter_opc0,edge,filter_isoc,filter_tid=
+,filter_loc,filter_nc,inv,umask,filter_opc1,tid_en,thresh,filter_all_op,fil=
+ter_not_nm,filter_state,filter_nm,config,config1,config2,name,period,percor=
+e))(help: valid terms: event,filter_rem,filter_opc0,edge,filter_isoc,filter=
+_tid,filter_loc,filter_nc,inv,umask,filter_opc1,tid_en,thresh,filter_all_op=
+,filter_not_nm,filter_state,filter_nm,config,config1,config2,name,period,pe=
+rcore))
+> >
+> >
+> > hum... I'd argue that the previous state was better:
+> >
+> > [jolsa@krava perf]$ ./perf stat -e c/c/
+> > event syntax error: 'c/c/'
+> >                        \___ unknown term
+> >
+> >
+> > jirka
+>=20
+> I am agnostic. We can either have the previous state or the new state,
+> I'm keen to resolve the memory leak. Another alternative is to warn
+> that multiple errors have occurred before dropping or printing the
+> previous error. As the code is shared in memory places the approach
+> taken here was to try to not conceal anything that could potentially
+> be useful. Given this, is the preference to keep the status quo
+> without any warning?
 
-of course. I'll start a new thread about this rather than go too far
-down this tangent relative to the current patches.
+if the other alternative is string above, yes.. but perhaps
+keeping just the first error would be the best way?
+
+here it seems to be the:
+   "Cannot find PMU `c'. Missing kernel support?)(help: valid..."
+
+jirka
+
