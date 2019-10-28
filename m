@@ -2,101 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A8674E6572
-	for <lists+bpf@lfdr.de>; Sun, 27 Oct 2019 21:55:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88211E6B5C
+	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2019 04:16:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728063AbfJ0UzX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 27 Oct 2019 16:55:23 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:32832 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727913AbfJ0UzX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 27 Oct 2019 16:55:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1572209721;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YeHUYCK/IlKxUH3CfOmqQ3rs9pcC2CQcmpmIoy5aShA=;
-        b=i7HCSxm1M/6LtMtr3z6ZlsCUgaVbp9pSYAAmIN3iKtxjeivsgM85tudzQNvdhS4R5f7+Nm
-        nNpQgQVNKFUrcT6htXjAzcwTY+or9soam+qyTjAIbK0a9+aIb4w0ATime7BqGK//nR794L
-        WSBfn6yZFtn0aWEE/LNb+/j3QIzD6vU=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-141-4IsADKQuOMKmWrTgghqZUQ-1; Sun, 27 Oct 2019 16:55:18 -0400
-Received: by mail-lf1-f70.google.com with SMTP id o2so1434737lfb.12
-        for <bpf@vger.kernel.org>; Sun, 27 Oct 2019 13:55:18 -0700 (PDT)
+        id S1726794AbfJ1DQs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 27 Oct 2019 23:16:48 -0400
+Received: from mail-io1-f66.google.com ([209.85.166.66]:38419 "EHLO
+        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726711AbfJ1DQr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 27 Oct 2019 23:16:47 -0400
+Received: by mail-io1-f66.google.com with SMTP id u8so9097076iom.5;
+        Sun, 27 Oct 2019 20:16:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=aqAqtrPtaQ6SOYmf4+7ZtG8UMxXeG76gJLsRBVsOpfY=;
+        b=kJkeQLjgwySWAlgE8Q5Gbq/6tuaBeAA1QvXD3s0dmIEz8BS99gduUlmUgQyZCmprN8
+         S0NladyzZwKaQBZfcAn08zwj00XMhISXvUMLlmTk6JGYeivb84UEfsPFLbJNPtxJ5NlX
+         iTqWz9B4A5kuM0QNu1Y9yGtVUTpW+Lj4RP030YoSIf6J6kdfhspZ3TjYGZpFvWEtjkxP
+         62SUtI44rtbOHACsTWLjDABmunBSBcpi4MAbYXwouUoAGXBmZGxK8/ivgK8QjTDa2oki
+         VAyFwGgLoGAVm9fGVh7qqOafa6T8n8tVgjmNqHY4o0U08IO4WwDnOKocT/2tJcqdx4W2
+         VgOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=YeHUYCK/IlKxUH3CfOmqQ3rs9pcC2CQcmpmIoy5aShA=;
-        b=pgP80c4+10QMt9lN1HmQhyQTmA1c5h+I2DnQNb4PP54V96cXboXo8fUg1lQFbzfe09
-         haPDMknYx1sUV8hAOtES/HWy8grxg60vHm9ayu9dtgjyUE+xZYRZvy7bPa9a4ksipO9M
-         tSDeZOYNwzgeuheqyLioTyTzC5wbo+9JpqpRYUfhlzDpnEeb9yMG30aXyLnRNGqNKZHT
-         sSLFSvUuwJ78wtX0kLDsWiVHHzqX+8TD1e2KDzvUgln2sqAtau1y0K7WEmpnTDY3n/M8
-         F+lkLSFa7lH3oAcfZnSwf2JSifycSU+G1XQx3MVO2gDNnRu6YdtaN1nkNdEQGqPtSoiR
-         ofiQ==
-X-Gm-Message-State: APjAAAXzkgGh68fOgSqr8dRheIb1wsTWTdICZ25fLAmRnxrYyyKVQR4O
-        o8N08ThS5VQBl9MXhMFnxslUvuIIJv5btGe8Qg2DYfxgTbgSewogQy/aqCYTs7aDPjVeE9p9aC0
-        OWIGh1krwl+51
-X-Received: by 2002:a2e:9cc9:: with SMTP id g9mr9290432ljj.188.1572209717128;
-        Sun, 27 Oct 2019 13:55:17 -0700 (PDT)
-X-Google-Smtp-Source: APXvYqy8FZtSydpSq2B0agUrJg7VC+Rb3bBR6I8HYekHP5er16FCw9Rq8EupBGmuyRy55z6PpS6gSw==
-X-Received: by 2002:a2e:9cc9:: with SMTP id g9mr9290421ljj.188.1572209716984;
-        Sun, 27 Oct 2019 13:55:16 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk (borgediget.toke.dk. [85.204.121.218])
-        by smtp.gmail.com with ESMTPSA id v10sm2040801lji.46.2019.10.27.13.55.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Oct 2019 13:55:16 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 738191818B6; Sun, 27 Oct 2019 21:55:15 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>
-Subject: Re: [PATCH bpf-next] libbpf: Add libbpf_set_log_level() function to adjust logging
-In-Reply-To: <CAEf4BzYC6U-QC48nRkicb9YHNt+6xPkQAmTZcoEFt+u_vkExYw@mail.gmail.com>
-References: <20191024132107.237336-1-toke@redhat.com> <CAEf4BzZAutRXf+W+ExaHjFMtWCfot9HkTWZNGuPckBiXqFcJeQ@mail.gmail.com> <87sgnejvij.fsf@toke.dk> <CAEf4BzYC6U-QC48nRkicb9YHNt+6xPkQAmTZcoEFt+u_vkExYw@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Sun, 27 Oct 2019 21:55:15 +0100
-Message-ID: <87r22xsybw.fsf@toke.dk>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=aqAqtrPtaQ6SOYmf4+7ZtG8UMxXeG76gJLsRBVsOpfY=;
+        b=bcHD1ffQ/KKgS2QZk+nnHiQ3ok0FLYQcKcMLY8FddBZmKff3AXe77RqUzagX03BklZ
+         ndigo3mannOTpHezOBE2WP8QBoiPUp8ES0pc3Nltn0npB6+oxjbc+JNyZJ8ibOKaHfzZ
+         15ilJw1GbZkj5EBq16CqOXy6hbNKaD3xKmJpuwFixRtKVHuvS8qRFvl9f3OTEjm/TQTz
+         jGcKjMOVj9mYk58NSIGoYeZBOAwOf/NOawclypMujsXOzDoVY3SrYQxYNr9UreSx21/G
+         XLNK1J98hKCwq3jgT4L+pOoWoAcRKlUa1VugdEVh1kmmW6gmfPZUp515I02HiM1DbWJ+
+         krrg==
+X-Gm-Message-State: APjAAAX7c3RaqdJ/RIvTmhoquavqYvreEXU6tU+aGpPyVd/3Hgqv588z
+        UpcGhiQChVZKHIKnAKnf+Hk=
+X-Google-Smtp-Source: APXvYqwpz/txjnYaIF2QPrUDMnRkFRB0pWdNykXTjbHChVA+/IutmJCkl6OPT+7RgTuNLBGHHPiIJw==
+X-Received: by 2002:a5e:d707:: with SMTP id v7mr16397874iom.226.1572232605632;
+        Sun, 27 Oct 2019 20:16:45 -0700 (PDT)
+Received: from dahern-DO-MB.local ([2601:284:8202:10b0:9e2:b1b6:1e7e:b71e])
+        by smtp.googlemail.com with ESMTPSA id f25sm1305021ila.71.2019.10.27.20.16.42
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 27 Oct 2019 20:16:44 -0700 (PDT)
+Subject: Re: [RFC PATCH v2 bpf-next 00/15] xdp_flow: Flow offload to XDP
+To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Toshiaki Makita <toshiaki.makita1@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        Pravin B Shelar <pshelar@ovn.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        William Tu <u9012063@gmail.com>,
+        Stanislav Fomichev <sdf@fomichev.me>
+References: <20191018040748.30593-1-toshiaki.makita1@gmail.com>
+ <5da9d8c125fd4_31cf2adc704105c456@john-XPS-13-9370.notmuch>
+ <22e6652c-e635-4349-c863-255d6c1c548b@gmail.com>
+ <5daf34614a4af_30ac2b1cb5d205bce4@john-XPS-13-9370.notmuch>
+ <87h840oese.fsf@toke.dk>
+ <5db128153c75_549d2affde7825b85e@john-XPS-13-9370.notmuch>
+ <87sgniladm.fsf@toke.dk> <a7f3d86b-c83c-7b0d-c426-684b8dfe4344@gmail.com>
+ <87zhhmrz7w.fsf@toke.dk>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <47f1a7e2-0d3a-e324-20c5-ba3aed216ddf@gmail.com>
+Date:   Sun, 27 Oct 2019 21:16:42 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
+ Gecko/20100101 Thunderbird/60.9.0
 MIME-Version: 1.0
-X-MC-Unique: 4IsADKQuOMKmWrTgghqZUQ-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <87zhhmrz7w.fsf@toke.dk>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+On 10/27/19 9:21 AM, Toke Høiland-Jørgensen wrote:
+> Rather, what we should be doing is exposing the functionality through
+> helpers so XDP can hook into the data structures already present in the
+> kernel and make decisions based on what is contained there. We already
+> have that for routing; L2 bridging, and some kind of connection
+> tracking, are obvious contenders for similar additions.
 
-> On Sun, Oct 27, 2019 at 4:08 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
-dhat.com> wrote:
->>
->> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
->>
->> > On Fri, Oct 25, 2019 at 4:50 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke=
-@redhat.com> wrote:
->> >>
->> >> Currently, the only way to change the logging output of libbpf is to
->> >> override the print function with libbpf_set_print(). This is somewhat
->> >> cumbersome if one just wants to change the logging level (e.g., to en=
-able
->> >
->> > No, it's not.
->>
->> Yes, it is :)
->
-> As much fun as it is to keep exchanging subjective statements, I won't
-> do that.
+The way OVS is coded and expected to flow (ovs_vport_receive ->
+ovs_dp_process_packet -> ovs_execute_actions -> do_execute_actions) I do
+not see any way to refactor it to expose a hook to XDP. But, if the use
+case is not doing anything big with OVS (e.g., just ACLs and forwarding)
+that is easy to replicate in XDP - but then that means duplicate data
+and code.
 
-Heh, yeah. Even though I think the current behaviour is incredibly
-annoying, it's also somewhat of a bikeshedding issue, so let's just
-agree to disagree on this, drop this patch and move on :)
+Linux bridge on the other hand seems fairly straightforward to refactor.
+One helper is needed to convert ingress <port,mac,vlan> to an L2 device
+(and needs to consider stacked devices) and then a second one to access
+the fdb for that device.
 
--Toke
-
+Either way, bypassing the bridge has mixed results: latency improves but
+throughput takes a hit (no GRO).
