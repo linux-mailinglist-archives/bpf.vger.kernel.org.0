@@ -2,388 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C7A4E73E1
-	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2019 15:42:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BC79E7531
+	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2019 16:32:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390264AbfJ1Om6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Oct 2019 10:42:58 -0400
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:42415 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727982AbfJ1Om6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Oct 2019 10:42:58 -0400
-Received: by mail-pl1-f193.google.com with SMTP id c16so5672308plz.9;
-        Mon, 28 Oct 2019 07:42:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=KXTM9wjTCDEhM+U2wdS5axezLQ6AWvEGDvrrE8C/yZc=;
-        b=cpAkNaGj2hVuLXgZkaRW3QeITKW+CE3nnry7VYPitqbG8l05G3I9nx/KZWDKHK7tKX
-         3JoStWl/sBaEcSn5fXdUQyVAn5yx/hbHWQBKifEiJiEwQlB8vzaqyfBpd10/b1aEDlwV
-         XSGbOBl5v5Rab+6X4nkqLJJCxfSVUb+eMFD/XhNEs7bMr9VdSgU3D6IWLoK9CFfhqi7S
-         5XpqWQ3QfWd0DQNY7d4jruu+QSh1gF+PVmrVQf4f6/RdaqsxyICkgBnKywztLP75W4eQ
-         WgO8U8gs5k/VdeV6tzAEXmp9HFVplCO443b6GQxfI3/GU3T8v3P9lH7O/VmW5u9bmwll
-         IoIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=KXTM9wjTCDEhM+U2wdS5axezLQ6AWvEGDvrrE8C/yZc=;
-        b=LdgwWamzrj7BZ5Lf6+pfQMvyhiKh+jtWIqpKuu1rbDcAmtd84uoL6YPd3c1IJ4W8I9
-         FdIb1fqQ4OCIJ2MDDzqjMIv+8q/6QxNLsIRHwmmWeZSfR0HODVFNztak+x8R50gwGFFM
-         q3ZP0M+1U+puEOzAJQxmUKtr7G/lsEOn5W0fdB2WHnygLSlncfwcbyM2Lp9k/kE9yK4v
-         UCYyCIpWTIFxuss4vd1cr/oVl6M3bYvqLs8a25CYj3MqD9B7p5gquQLcZS+T1wBY2ZW/
-         zmLpU/Jlu94MTKdFz89o6HOlPitokUasRp70WJ/FF8JgQ6skqMO/8Flvi0b6iwJVQfxi
-         yYyQ==
-X-Gm-Message-State: APjAAAUasLG59os6eRfNIO6KtJavKPWjn1E00eHmwZljHsIWXRBBK7wY
-        ATJNph6a8lHWcyWe26HbC81E37Wm3BA=
-X-Google-Smtp-Source: APXvYqyY74FVbGwmCd3X46ff1RRxYtFUOULDqD6z6ffwBC2lnn3s+D+pbUqjaS8eEXAGis4Uw7ZySQ==
-X-Received: by 2002:a17:902:a610:: with SMTP id u16mr19507837plq.130.1572273776040;
-        Mon, 28 Oct 2019 07:42:56 -0700 (PDT)
-Received: from ubuntu-18.04-x8664 ([128.1.49.85])
-        by smtp.gmail.com with ESMTPSA id c128sm11068545pfc.166.2019.10.28.07.42.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Oct 2019 07:42:55 -0700 (PDT)
-From:   Wenbo Zhang <ethercflow@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     yhs@fb.com, daniel@iogearbox.net, netdev@vger.kernel.org,
-        Wenbo Zhang <ethercflow@gmail.com>
-Subject: [PATCH bpf-next] selftests/bpf: test for bpf_fd2path() from raw tracepoint
-Date:   Mon, 28 Oct 2019 10:42:44 -0400
-Message-Id: <20191028144244.16507-1-ethercflow@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S1730174AbfJ1Pcy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Oct 2019 11:32:54 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:47190 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726323AbfJ1Pcx (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 28 Oct 2019 11:32:53 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x9SFLWxx007336;
+        Mon, 28 Oct 2019 08:32:37 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=hocJIu0tlAZ+1ba2AlJ3FY+F+oaDxBfAGd5sNVxB60M=;
+ b=IFbysQKd5KeHFwI3IRASfmIHBD9BNlk4pjFm4b/N8I3ZnRr3CA6G89avh03dJbV3Pwvo
+ 5pskV5SY9eBEuLGj48Jp0hXQukgA7FgLsUSZUIgAkOATCmNqpr7jb16EAtbl+7CBlm0P
+ 6vMin403mviNaJVEZFKGJSEJL5a+bkXjBsM= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2vw5tedn5n-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 28 Oct 2019 08:32:37 -0700
+Received: from ash-exhub203.TheFacebook.com (2620:10d:c0a8:83::5) by
+ ash-exhub201.TheFacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 28 Oct 2019 08:32:35 -0700
+Received: from NAM04-BN3-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
+ via Frontend Transport; Mon, 28 Oct 2019 08:32:35 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Fn7EMAIstVF+Bi3s6ftF4I9asxhr1th34Ztfwf/MP6M5R+F4lEH/Bjwa5z2H/h2jST40g3np3ThfyL+TiL1DwNAHwHV6S7D9FfXsZQDl7P028yW3iGi+tbw+ZkLYQjkGcga+xV8fTSm3mSLZRxT+ThB+ZESF5x0/6mdsPnCyEFMmml9apUAWLW0c4Q4ktYRdhPMP8noKFMNh6k+2d685+cup4J0WebhTCH/l6fo1J6mwFGlK/cttQVQpI2RZyItoPd+7FRzDI1oXXatzs2okn1uHWGeb56rL5YJv6+9M4mzQVw6WrytihqFsFtcj1YY+1VEhxh2YJdmB689Km6VdKw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hocJIu0tlAZ+1ba2AlJ3FY+F+oaDxBfAGd5sNVxB60M=;
+ b=fwylyqGo/zLZ4+GJeqW9G1voAVLr9m/YCv/+jeeOOOmNe4lybq8Kx9I3vSihhSsi/T08ZNWQwH3NIm1Y/mBXROCk/QK8c6leDLU3d0PJmvUQNQJU0jCrYEE6/f79gm1lIP82wwV3ERHD3ScH+wFHF5vsgLaBSsqQWSVDbshgPpoMID8CG/+q5SLlxw8K9JA+kYObhY3/33LOjZ7bseKeUMgFdBN6LiMYEqGcSnwtvxKS3GtSH9ssSKmFjOSfuY+Gg1pS6w7raWHkCUs00IdH+l0GQinwAqzFddX6KaQGLVd+UFCv5g9sZM6Pfa8gRqjCOI22th3Oba5MBcmJC28X/w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hocJIu0tlAZ+1ba2AlJ3FY+F+oaDxBfAGd5sNVxB60M=;
+ b=GOEUqNQf/HhzZyVxidATeySd8RLqAY3OMxefJNvoYwjU9c/40CPCeEi0jtS5AnoFdah5BpWl3wekiFvmjdOQsdKTx3su2XBk6+c+gx9V8OuxjCMMK84cuAcsnXfQVI8c5lIBBvGKy6P1dxrtquVfFwWkalTXRR7962CNInUOTpQ=
+Received: from BYAPR15MB3384.namprd15.prod.outlook.com (20.179.60.27) by
+ BYAPR15MB3095.namprd15.prod.outlook.com (20.178.239.14) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2387.24; Mon, 28 Oct 2019 15:32:27 +0000
+Received: from BYAPR15MB3384.namprd15.prod.outlook.com
+ ([fe80::b92c:ebd2:58dc:6b8d]) by BYAPR15MB3384.namprd15.prod.outlook.com
+ ([fe80::b92c:ebd2:58dc:6b8d%5]) with mapi id 15.20.2387.021; Mon, 28 Oct 2019
+ 15:32:27 +0000
+From:   Yonghong Song <yhs@fb.com>
+To:     =?utf-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        "Jesper Dangaard Brouer" <brouer@redhat.com>
+CC:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        "David Miller" <davem@davemloft.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: Re: [PATCH bpf-next v3 4/4] selftests: Add tests for automatic map
+ pinning
+Thread-Topic: [PATCH bpf-next v3 4/4] selftests: Add tests for automatic map
+ pinning
+Thread-Index: AQHVjQia1fv19x2VTE6bg++ySY3NyadwBu4AgAACqgCAACYggA==
+Date:   Mon, 28 Oct 2019 15:32:26 +0000
+Message-ID: <483546c6-14b9-e1f1-b4c1-424d6b8d4ace@fb.com>
+References: <157220959547.48922.6623938299823744715.stgit@toke.dk>
+ <157220959980.48922.12100884213362040360.stgit@toke.dk>
+ <20191028140624.584bcc1e@carbon> <87imo9roxf.fsf@toke.dk>
+In-Reply-To: <87imo9roxf.fsf@toke.dk>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: CO2PR04CA0085.namprd04.prod.outlook.com
+ (2603:10b6:104:6::11) To BYAPR15MB3384.namprd15.prod.outlook.com
+ (2603:10b6:a03:112::27)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c090:200::2:ec6a]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 03f6f8bb-046d-44ed-1f4e-08d75bbc0943
+x-ms-traffictypediagnostic: BYAPR15MB3095:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR15MB309585202BAB6E77E8C0E9E8D3660@BYAPR15MB3095.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2512;
+x-forefront-prvs: 0204F0BDE2
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(396003)(366004)(346002)(136003)(376002)(39860400002)(199004)(189003)(6246003)(6436002)(11346002)(478600001)(102836004)(71200400001)(386003)(6506007)(53546011)(71190400001)(86362001)(5660300002)(186003)(6512007)(76176011)(229853002)(14454004)(6116002)(36756003)(6486002)(8936002)(256004)(54906003)(4326008)(81166006)(2906002)(8676002)(81156014)(486006)(446003)(31696002)(476003)(2616005)(66574012)(7736002)(305945005)(31686004)(110136005)(25786009)(316002)(46003)(66556008)(99286004)(66476007)(66446008)(64756008)(66946007)(52116002);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB3095;H:BYAPR15MB3384.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 2bamUK6kiD17c47eKLJcT5BGJRUJPTVIhrF36es5D1Zzn4lJQ3OI5kyUJIgiG0y4pvLjD6lusEN0vH9bH52H6fwbFAoY0/WA+jmqqkac5evcidOehOr9prRMcJm9Gqj8C/gInQ+MSSvGiFe3bpvHsdvtYZX7CujzZx8HGIe16JcNU0aIcE4xP747Mzam8CLOxPOP0I4FM+OdueJHvGjXKgxZcTVdGA3TzJ2UWztT6B2GiROtgs8mpkwb1oC/STcQZ4vTLjv8fpKdDbrNSeW2eiYUS5qxoy+QoSkshwMk+akVfT4AqmVFY9GwonEa8JXFj3xbgbknCG4Jfd7SQmlVd8yGylkAw8VpDdj3Lqcfcisn7Sc2dZLTSHPj311wP6HhEEk0QFYMbBPGOLniI+pBhAdJ93iJ8niGjNAL3rTqeZv/VBa40EbGbUhm4sRe9HTc
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <E860019A318CFE4BB91DBC95015A5665@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: 03f6f8bb-046d-44ed-1f4e-08d75bbc0943
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Oct 2019 15:32:26.6136
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: qw4TltMiJJWNK1PgaL2vgdtGiJDMYsiZgTsneeoB6TuZIvYd+4UXZMyjDcAMEKYp
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3095
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
+ definitions=2019-10-28_06:2019-10-28,2019-10-28 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
+ priorityscore=1501 lowpriorityscore=0 mlxlogscore=999 malwarescore=0
+ mlxscore=0 bulkscore=0 spamscore=0 suspectscore=0 phishscore=0
+ adultscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1908290000 definitions=main-1910280156
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-trace fstat events by raw tracepoint sys_enter:newfstat, and handle events
-only produced by fd2path_loadgen, the fd2path_loadgen call fstat on several
-different types of files to test bpf_fd2path's feature.
-
-Signed-off-by: Wenbo Zhang <ethercflow@gmail.com>
----
- tools/testing/selftests/bpf/Makefile          |   8 +-
- tools/testing/selftests/bpf/fd2path_loadgen.c |  75 ++++++++++
- .../selftests/bpf/prog_tests/fd2path.c        | 130 ++++++++++++++++++
- .../selftests/bpf/progs/test_fd2path.c        |  58 ++++++++
- 4 files changed, 269 insertions(+), 2 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/fd2path_loadgen.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/fd2path.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_fd2path.c
-
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 933f39381039..32883cca7ea7 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -72,7 +72,7 @@ TEST_GEN_PROGS_EXTENDED = test_sock_addr test_skb_cgroup_id_user \
- 	flow_dissector_load test_flow_dissector test_tcp_check_syncookie_user \
- 	test_lirc_mode2_user
- 
--TEST_CUSTOM_PROGS = urandom_read
-+TEST_CUSTOM_PROGS = urandom_read fd2path_loadgen
- 
- include ../lib.mk
- 
-@@ -89,6 +89,9 @@ $(notdir $(TEST_GEN_PROGS)						\
- $(OUTPUT)/urandom_read: urandom_read.c
- 	$(CC) -o $@ $< -Wl,--build-id
- 
-+$(OUTPUT)/fd2path_loadgen: fd2path_loadgen.c
-+	$(CC) -o $@ $< -Wl,--build-id
-+
- BPFOBJ := $(OUTPUT)/libbpf.a
- 
- $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED): $(OUTPUT)/test_stub.o $(BPFOBJ)
-@@ -258,7 +261,8 @@ TRUNNER_TESTS_DIR := prog_tests
- TRUNNER_BPF_PROGS_DIR := progs
- TRUNNER_EXTRA_SOURCES := test_progs.c cgroup_helpers.c trace_helpers.c	\
- 			 flow_dissector_load.h
--TRUNNER_EXTRA_FILES := $(OUTPUT)/urandom_read				\
-+TRUNNER_EXTRA_FILES := $(OUTPUT)/urandom_read 				\
-+		       $(OUTPUT)/fd2path_loadgen                        \
- 		       $(wildcard progs/btf_dump_test_case_*.c)
- TRUNNER_BPF_BUILD_RULE := CLANG_BPF_BUILD_RULE
- TRUNNER_BPF_CFLAGS := -I. -I$(OUTPUT) $(BPF_CFLAGS) $(CLANG_CFLAGS)
-diff --git a/tools/testing/selftests/bpf/fd2path_loadgen.c b/tools/testing/selftests/bpf/fd2path_loadgen.c
-new file mode 100644
-index 000000000000..afa9d6b233b2
---- /dev/null
-+++ b/tools/testing/selftests/bpf/fd2path_loadgen.c
-@@ -0,0 +1,75 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#define _GNU_SOURCE
-+#include <stdio.h>
-+#include <unistd.h>
-+#include <fcntl.h>
-+#include <sys/socket.h>
-+#include <alloca.h>
-+#include <sys/stat.h>
-+
-+enum FS_TYPE {
-+	PIPE_0,
-+	PIPE_1,
-+	SOCK,
-+	PROC,
-+	DEV,
-+	LOCAL,
-+	INDICATOR,
-+	MAX_FDS
-+};
-+
-+#ifndef MAX_LOOP_TIMES
-+#define MAX_LOOP_TIMES		100
-+#endif
-+
-+int main(int argc, char *argv[])
-+{
-+	int *fds = alloca(sizeof(int) * MAX_FDS);
-+	int *pipefd = fds;
-+	int *sockfd = fds + SOCK;
-+	int *procfd = fds + PROC;
-+	int *devfd = fds + DEV;
-+	int *localfd = fds + LOCAL;
-+	int *indicatorfd = fds + INDICATOR;
-+	int times = MAX_LOOP_TIMES;
-+
-+	/* unmountable pseudo-filesystems */
-+	if (pipe(pipefd) < 0)
-+		return 1;
-+
-+	/* unmountable pseudo-filesystems */
-+	*sockfd = socket(AF_INET, SOCK_STREAM, 0);
-+	if (sockfd < 0)
-+		return 1;
-+
-+	/* mountable pseudo-filesystems */
-+	*procfd = open("/proc/self/comm", O_RDONLY);
-+	if (procfd < 0)
-+		return 1;
-+
-+	*devfd = open("/dev/urandom", O_RDONLY);
-+	if (devfd < 0)
-+		return 1;
-+
-+	*localfd = open("/tmp/fd2path_loadgen.txt", O_CREAT|O_RDONLY);
-+	if (localfd < 0)
-+		return 1;
-+
-+	*indicatorfd = open("/tmp/", O_PATH);
-+
-+	while (times--) {
-+		struct stat fileStat;
-+
-+		for (int i = 0; i < MAX_FDS; i++) {
-+			fstat(fds[i], &fileStat);
-+			usleep(1);
-+		}
-+	}
-+
-+	for (int i = 0; i < MAX_FDS; i++)
-+		close(fds[i]);
-+
-+	remove("/tmp/fd2path_loadgen.txt");
-+
-+	return 0;
-+}
-diff --git a/tools/testing/selftests/bpf/prog_tests/fd2path.c b/tools/testing/selftests/bpf/prog_tests/fd2path.c
-new file mode 100644
-index 000000000000..3b7532afceb5
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/fd2path.c
-@@ -0,0 +1,130 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#define _GNU_SOURCE
-+#include <pthread.h>
-+#include <test_progs.h>
-+
-+#ifndef MAX_PATH_LENGTH
-+#define MAX_PATH_LENGTH		128
-+#endif
-+
-+#ifndef TASK_COMM_LEN
-+#define TASK_COMM_LEN		16
-+#endif
-+
-+#ifndef MAX_STAT_EVENTS
-+#define MAX_STAT_EVENTS		64ull
-+#endif
-+
-+struct get_path_trace_t {
-+	int pid;
-+	unsigned long fd;
-+	char comm[TASK_COMM_LEN];
-+	char path[MAX_PATH_LENGTH];
-+};
-+
-+static const char *loadgen = "./fd2path_loadgen";
-+static int exp_cnt = MAX_STAT_EVENTS;
-+
-+void *thread_loadgen(void *arg)
-+{
-+	assert(system(loadgen) == 0);
-+	return NULL;
-+}
-+
-+static void get_path_print_output(void *ctx, int cpu, void *data, __u32 size)
-+{
-+	struct get_path_trace_t *e = data;
-+	char pathname[MAX_PATH_LENGTH] = {'0'};
-+	char buf[MAX_PATH_LENGTH] = {'0'};
-+	int ret, duration = 0;
-+
-+	if (strncmp(e->comm, &loadgen[2], MAX_PATH_LENGTH))
-+		return;
-+	snprintf(pathname, MAX_PATH_LENGTH, "/proc/%d/fd/%lu", e->pid, e->fd);
-+	readlink(pathname, buf, MAX_PATH_LENGTH);
-+	exp_cnt--;
-+	ret = strncmp(buf, e->path, MAX_PATH_LENGTH);
-+	CHECK(ret != 0, "fd2path", "failed to get path: %lu->%s\n",
-+			e->fd, e->path);
-+}
-+
-+void test_fd2path(void)
-+{
-+	const char *prog_name = "raw_tracepoint/sys_enter:newfstat";
-+	const char *file = "./test_fd2path.o";
-+	int err, nr_cpus, duration = 0;
-+	struct perf_buffer_opts pb_opts = {};
-+	struct perf_buffer *pb = NULL;
-+	struct bpf_map *perf_buf_map;
-+	cpu_set_t cpu_set, cpu_seen;
-+	struct bpf_link *link = NULL;
-+	struct timespec tv = {0, 10};
-+	struct bpf_program *prog;
-+	struct bpf_object *obj;
-+	pthread_t t = 0;
-+
-+	obj = bpf_object__open_file(file, NULL);
-+	if (CHECK(IS_ERR(obj), "obj_open", "err %ld\n", PTR_ERR(obj)))
-+		return;
-+
-+	err = bpf_object__load(obj);
-+	if (CHECK(err, "obj_load", "err %d errno %d\n", err, errno))
-+		goto out_close;
-+
-+	prog = bpf_object__find_program_by_title(obj, prog_name);
-+	if (CHECK(!prog, "find_prog", "prog '%s' not found\n", prog_name))
-+		goto out_close;
-+
-+	link = bpf_program__attach_raw_tracepoint(prog, "sys_enter");
-+	if (CHECK(IS_ERR(link), "attach_tp", "err %ld\n", PTR_ERR(link)))
-+		goto out_close;
-+
-+	nr_cpus = libbpf_num_possible_cpus();
-+	if (CHECK(nr_cpus < 0, "nr_cpus", "err %d\n", nr_cpus))
-+		goto out_close;
-+
-+	CPU_ZERO(&cpu_seen);
-+	for (int i = 0; i < nr_cpus; i++) {
-+		CPU_ZERO(&cpu_set);
-+		CPU_SET(i, &cpu_set);
-+
-+		err = pthread_setaffinity_np(pthread_self(), sizeof(cpu_set),
-+				&cpu_set);
-+		if (err && CHECK(err, "set_affinity", "cpu #%d, err %d\n",
-+				i, err))
-+			goto out_detach;
-+
-+		usleep(1);
-+	}
-+
-+	perf_buf_map = bpf_object__find_map_by_name(obj, "perfmap");
-+	if (CHECK(!perf_buf_map, "bpf_find_map", "not found\n"))
-+		goto out_close;
-+
-+	pb_opts.sample_cb = get_path_print_output;
-+	pb_opts.ctx = &cpu_seen;
-+	pb = perf_buffer__new(bpf_map__fd(perf_buf_map), 1, &pb_opts);
-+	if (CHECK(IS_ERR(pb), "perf_buf__new", "err %ld\n", PTR_ERR(pb)))
-+		goto out_detach;
-+
-+	pthread_create(&t, NULL, thread_loadgen, NULL);
-+
-+	/* trigger some fstat syscall action */
-+	for (int i = 0; i < MAX_STAT_EVENTS; i++)
-+		nanosleep(&tv, NULL);
-+
-+	while (exp_cnt > 0) {
-+		err = perf_buffer__poll(pb, 100);
-+		if (err < 0 && CHECK(err < 0, "pb__poll", "err %d\n", err))
-+			goto out_free_pb;
-+	}
-+
-+out_free_pb:
-+	perf_buffer__free(pb);
-+out_detach:
-+	bpf_link__destroy(link);
-+out_close:
-+	bpf_object__close(obj);
-+
-+	pthread_join(t, NULL);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_fd2path.c b/tools/testing/selftests/bpf/progs/test_fd2path.c
-new file mode 100644
-index 000000000000..5e29807a8fba
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_fd2path.c
-@@ -0,0 +1,58 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/bpf.h>
-+#include <linux/ptrace.h>
-+#include <stdbool.h>
-+#include <string.h>
-+#include "bpf_helpers.h"
-+
-+#ifndef MAX_PATH_LENGTH
-+#define MAX_PATH_LENGTH		128
-+#endif
-+
-+#ifndef TASK_COMM_LEN
-+#define TASK_COMM_LEN		16
-+#endif
-+
-+struct path_trace_t {
-+	int pid;
-+	unsigned long fd;
-+	char comm[TASK_COMM_LEN];
-+	char path[MAX_PATH_LENGTH];
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
-+	__uint(max_entries, 128);
-+	__uint(key_size, sizeof(int));
-+	__uint(value_size, sizeof(__u32));
-+} perfmap SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
-+	__uint(max_entries, 1);
-+	__type(key, __u32);
-+	__type(value, struct path_trace_t);
-+} pathdata_map SEC(".maps");
-+
-+SEC("raw_tracepoint/sys_enter:newfstat")
-+int bpf_prog(struct bpf_raw_tracepoint_args *ctx)
-+{
-+	struct path_trace_t *data;
-+	struct pt_regs *regs;
-+	__u32 key = 0;
-+
-+	data = bpf_map_lookup_elem(&pathdata_map, &key);
-+	if (!data)
-+		return 0;
-+	data->pid = bpf_get_current_pid_tgid() >> 32;
-+	regs = (struct pt_regs *)ctx->args[0];
-+	bpf_probe_read(&data->fd, sizeof(data->fd), &regs->rdi);
-+	bpf_get_current_comm(&data->comm, TASK_COMM_LEN);
-+	if (bpf_fd2path(data->path, MAX_PATH_LENGTH, data->fd) < 0)
-+		return 0;
-+	bpf_perf_event_output(ctx, &perfmap, BPF_F_CURRENT_CPU,
-+			data, sizeof(*data));
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.17.1
-
+DQoNCk9uIDEwLzI4LzE5IDY6MTUgQU0sIFRva2UgSMO4aWxhbmQtSsO4cmdlbnNlbiB3cm90ZToN
+Cj4gSmVzcGVyIERhbmdhYXJkIEJyb3VlciA8YnJvdWVyQHJlZGhhdC5jb20+IHdyaXRlczoNCj4g
+DQo+PiBPbiBTdW4sIDI3IE9jdCAyMDE5IDIxOjUzOjE5ICswMTAwDQo+PiBUb2tlIEjDuGlsYW5k
+LUrDuHJnZW5zZW4gPHRva2VAcmVkaGF0LmNvbT4gd3JvdGU6DQo+Pg0KPj4+IGRpZmYgLS1naXQg
+YS90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9icGYvcHJvZ3MvdGVzdF9waW5uaW5nLmMgYi90b29s
+cy90ZXN0aW5nL3NlbGZ0ZXN0cy9icGYvcHJvZ3MvdGVzdF9waW5uaW5nLmMNCj4+PiBuZXcgZmls
+ZSBtb2RlIDEwMDY0NA0KPj4+IGluZGV4IDAwMDAwMDAwMDAwMC4uZmYyZDc0NDc3NzdlDQo+Pj4g
+LS0tIC9kZXYvbnVsbA0KPj4+ICsrKyBiL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2JwZi9wcm9n
+cy90ZXN0X3Bpbm5pbmcuYw0KPj4+IEBAIC0wLDAgKzEsMjkgQEANCj4+PiArLy8gU1BEWC1MaWNl
+bnNlLUlkZW50aWZpZXI6IEdQTC0yLjANCj4+PiArDQo+Pj4gKyNpbmNsdWRlIDxsaW51eC9icGYu
+aD4NCj4+PiArI2luY2x1ZGUgImJwZl9oZWxwZXJzLmgiDQo+Pj4gKw0KPj4+ICtpbnQgX3ZlcnNp
+b24gU0VDKCJ2ZXJzaW9uIikgPSAxOw0KPj4+ICsNCj4+PiArc3RydWN0IHsNCj4+PiArCV9fdWlu
+dCh0eXBlLCBCUEZfTUFQX1RZUEVfQVJSQVkpOw0KPj4+ICsJX191aW50KG1heF9lbnRyaWVzLCAx
+KTsNCj4+PiArCV9fdHlwZShrZXksIF9fdTMyKTsNCj4+PiArCV9fdHlwZSh2YWx1ZSwgX191NjQp
+Ow0KPj4+ICsJX191aW50KHBpbm5pbmcsIExJQkJQRl9QSU5fQllfTkFNRSk7DQo+Pj4gK30gcGlu
+bWFwIFNFQygiLm1hcHMiKTsNCj4+DQo+PiBTbywgdGhpcyBpcyB0aGUgbmV3IEJURi1kZWZpbmVk
+IG1hcHMgc3ludGF4Lg0KPj4NCj4+IFBsZWFzZSByZW1pbmQgbWUsIHdoYXQgdmVyc2lvbiBvZiBM
+TFZNIGRvIHdlIG5lZWQgdG8gY29tcGlsZSB0aGlzPw0KPiANCj4gTm8gaWRlYSB3aGF0IHRoZSBt
+aW5pbXVtIHZlcnNpb24gaXMuIEknbSBydW5uaW5nIExMVk0gOS4wIDopDQoNCkxMVk0gOS4wIHN0
+YXJ0cyB0byBzdXBwb3J0IC5tYXBzLg0KVGhlcmUgaXMgbm8gZGVwZW5kZW5jeSBvbiBwYWhvbGUu
+DQoNCj4gDQo+PiBPciB3YXMgdGhlcmUgYSBkZXBlbmRlbmN5IG9uIHBhaG9sZT8NCj4gDQo+IERv
+bid0IHRoaW5rIHNvLi4uDQo+IA0KPiAtVG9rZQ0KPiANCg==
