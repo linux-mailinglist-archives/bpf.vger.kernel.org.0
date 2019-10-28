@@ -2,234 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 54752E78AD
-	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2019 19:43:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0597E78E6
+	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2019 20:04:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727154AbfJ1Sn0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Oct 2019 14:43:26 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:38095 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726822AbfJ1Sn0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Oct 2019 14:43:26 -0400
-Received: by mail-qt1-f193.google.com with SMTP id t26so6041237qtr.5;
-        Mon, 28 Oct 2019 11:43:24 -0700 (PDT)
+        id S1729522AbfJ1TEP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Oct 2019 15:04:15 -0400
+Received: from mail-il1-f193.google.com ([209.85.166.193]:36969 "EHLO
+        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729515AbfJ1TEO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Oct 2019 15:04:14 -0400
+Received: by mail-il1-f193.google.com with SMTP id v2so9144054ilq.4;
+        Mon, 28 Oct 2019 12:04:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=3BNJfD66jRJDdvcQiIti5lw3kf5uDFmZbb4exmHMhAA=;
-        b=RDya/XLS2h+byE7Kaar9+V7Nu+RRvjBJ+cJ7aOlcq1Mk7bA3pP9ZdO8FfEhWOpuBCR
-         E8OQ12fHG99z0wRFV/4HFSnKSaaEP0Fq3RWY6tygNrodKpDqmDrHY/+bJSJWY/I0bIdO
-         mlRj6JMTa1Pxh/toQbzW3O2DyPPYQ4OpuB1UOQSt7EZafNY81MNkMcO5u5ZLcRbL1aLM
-         B6Glhxaaj42r9UHjVvnCj36Ke4f+eSbZXA9fDsWrj9i7NvnzCCntAPUg5o0g0OmPmi0o
-         PnqwmbWHqXc45mnG1pcyLEoQ6HKLK3NKOXK7ev0OWPXKSmwkIfL1Q0C+imLxhhizWzwH
-         mDCA==
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=Fgj0+cmuyw3kpGGJgOiwsQKRP0sLXClz7tOy5zx6qWM=;
+        b=bF9cCkJfjPN3d63nHG29IaD+E5Y5RqjT1ehDIsR3hgBIT6s9QC9sTufz0OhJ7GaUdw
+         dlzVRzOReGi8vurHNoT/0Le5No8PyliwLiBeq5rbZB7astEhwtuA/TKaPPjuaZ30vQn9
+         LXGVsKkjlwOkq6s7ip0Xv9Mo4BX957uEkhK/rPyRewGbgm4QNNdckIQBVuqn2BAYu0QS
+         wMvPVffZ1XSH7UmdJrxhCWmz7A/GP9bPvBrWrEpvAE+JxEM3g7zlLSWK5J9UNAWvHmyy
+         cbgDAUk+GDGA2v0Wt6zM8yn87hy2XNKxGeQxd2C1vcJBUc/rN/SeurEnNTGLO1ccPLxL
+         4/NA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=3BNJfD66jRJDdvcQiIti5lw3kf5uDFmZbb4exmHMhAA=;
-        b=pg/Z/vcq9m1THc4DiLuZ8tgoC8GiMrNPUOnbDKB93vNuzJcM1vxdPp0K5Fl6rgg7+T
-         u5K4sd4pB4XM3Bl5NY/ApStPsMNStkYHuHPQXejQ7yfi6HaGHM9MufofBH49TgBC2IaJ
-         dPXV7y97sFcIsm29Vanu4O6nsTqujR9YLZcj19l3UaZ8S9UtGm3hLE+ELiUqkLuaBimG
-         e/YL5EgQy/YQv7E1E7nwM8HO9eLomg8mu/D08lh50cpvJPL656/YzxQPKOLwVUMozK/P
-         pz6/lbWOfZJr8Jr+vh6WvOJ95be9LugWyeocXQhgQRUPdOhKpHqaslj0SgzoEcEQgDPV
-         ZaUA==
-X-Gm-Message-State: APjAAAUggNSYGO3RrmCRmJhqPQ2LrfOeenKTELo5qjMnBXt8ZVtPZotn
-        d0J1bxdI8Ir9Npuns21QHgDdpeKMffJc+VoSXZI=
-X-Google-Smtp-Source: APXvYqwQuhj5NPy3nlTzAz6h++Thd7OKuFGzicOxBIGZNdb+nUwx8dUDWWdwJEnEEf6lbz91zbVjf9/WkdxNcoBS4bU=
-X-Received: by 2002:aed:35e7:: with SMTP id d36mr18618698qte.59.1572288203373;
- Mon, 28 Oct 2019 11:43:23 -0700 (PDT)
-MIME-Version: 1.0
-References: <157220959547.48922.6623938299823744715.stgit@toke.dk> <157220959980.48922.12100884213362040360.stgit@toke.dk>
-In-Reply-To: <157220959980.48922.12100884213362040360.stgit@toke.dk>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 28 Oct 2019 11:43:11 -0700
-Message-ID: <CAEf4BzZdXX0P=3O_-tWWUqZwDHNofme+_nC6+TyUV+ngW343GA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 4/4] selftests: Add tests for automatic map pinning
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=Fgj0+cmuyw3kpGGJgOiwsQKRP0sLXClz7tOy5zx6qWM=;
+        b=ceaZX2lto6vrWXotOoTKMwNNyi3d3Y/9yxsUo5pOM6vo3YlO1FV+Jmdpk/ng8PlLSb
+         6+PMn6Q6tCsgdBdszEsXzhw2fuG5Z//296EYAbqFM+cR+Huw414grkrhZq8/jK/qWVsv
+         STHOA/ZllYRKM52HH42lkZGIdL/R+/9VqaUahl4SGVdPCE0l30W629tfY1+FFe2TD7RF
+         sF5Z52Ay8RqdDDej6hE3tDXnaplxqgkjWu+JveSrOGt3B9O1xTZSot5wlXk8hQw+0HQV
+         o29yXARw45CbBf6nAWFNrKeWdXbzSO/BEvPQ7XZ+eDJc0XBDofQgdICDvnSE4r1KgSjZ
+         Ue1Q==
+X-Gm-Message-State: APjAAAV9dC6RKTm1AOG/G3nu7Fu49F0Q179Sb/me0MgWeasPqnwJ5tPp
+        77oam4YlFBVZBIMRcMpPdZc=
+X-Google-Smtp-Source: APXvYqzXda+emE2pMMZUWBaL3wivJLIcPbgOqBLeWbjn3sL+VKIyf3JYfzM5x/mf+JnixLig7BObeg==
+X-Received: by 2002:a92:9cce:: with SMTP id x75mr22449382ill.31.1572289453604;
+        Mon, 28 Oct 2019 12:04:13 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id t5sm1116609ilo.32.2019.10.28.12.04.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Oct 2019 12:04:13 -0700 (PDT)
+Date:   Mon, 28 Oct 2019 12:04:05 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Jakub Sitnicki <jakub@cloudflare.com>, Martin Lau <kafai@fb.com>
+Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "kernel-team@cloudflare.com" <kernel-team@cloudflare.com>
+Message-ID: <5db73ba5afec7_54d42af0819565b855@john-XPS-13-9370.notmuch>
+In-Reply-To: <875zk9oxo1.fsf@cloudflare.com>
+References: <20191022113730.29303-1-jakub@cloudflare.com>
+ <20191028055247.bh5bctgxfvmr3zjh@kafai-mbp.dhcp.thefacebook.com>
+ <875zk9oxo1.fsf@cloudflare.com>
+Subject: Re: [RFC bpf-next 0/5] Extend SOCKMAP to store listening sockets
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Oct 27, 2019 at 1:53 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
-at.com> wrote:
->
-> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->
-> This adds a new BPF selftest to exercise the new automatic map pinning
-> code.
->
-> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> ---
->  tools/testing/selftests/bpf/prog_tests/pinning.c |   91 ++++++++++++++++=
-++++++
->  tools/testing/selftests/bpf/progs/test_pinning.c |   29 +++++++
->  2 files changed, 120 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/pinning.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_pinning.c
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/pinning.c b/tools/tes=
-ting/selftests/bpf/prog_tests/pinning.c
-> new file mode 100644
-> index 000000000000..d4a63de72f5a
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/pinning.c
-> @@ -0,0 +1,91 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include <sys/types.h>
-> +#include <sys/stat.h>
-> +#include <unistd.h>
-> +#include <test_progs.h>
-> +
-> +__u32 get_map_id(struct bpf_object *obj, const char *name)
-> +{
-> +       __u32 map_info_len, duration, retval;
-> +       struct bpf_map_info map_info =3D {};
-> +       struct bpf_map *map;
-> +       int err;
-> +
-> +       map_info_len =3D sizeof(map_info);
-> +
-> +       map =3D bpf_object__find_map_by_name(obj, name);
-> +       if (!CHECK(!map, "find map", "NULL map")) {
+Jakub Sitnicki wrote:
+> On Mon, Oct 28, 2019 at 06:52 AM CET, Martin Lau wrote:
+> > On Tue, Oct 22, 2019 at 01:37:25PM +0200, Jakub Sitnicki wrote:
+> >> This patch set is a follow up on a suggestion from LPC '19 discussions to
+> >> make SOCKMAP (or a new map type derived from it) a generic type for storing
+> >> established as well as listening sockets.
+> >>
+> >> We found ourselves in need of a map type that keeps references to listening
+> >> sockets when working on making the socket lookup programmable, aka BPF
+> >> inet_lookup [1].  Initially we repurposed REUSEPORT_SOCKARRAY but found it
+> >> problematic to extend due to being tightly coupled with reuseport
+> >> logic (see slides [2]).
+> >> So we've turned our attention to SOCKMAP instead.
+> >>
+> >> As it turns out the changes needed to make SOCKMAP suitable for storing
+> >> listening sockets are self-contained and have use outside of programming
+> >> the socket lookup. Hence this patch set.
+> >>
+> >> With these patches SOCKMAP can be used in SK_REUSEPORT BPF programs as a
+> >> drop-in replacement for REUSEPORT_SOCKARRAY for TCP. This can hopefully
+> >> lead to code consolidation between the two map types in the future.
+> > What is the plan for UDP support in sockmap?
+> 
+> It's on our road-map because without SOCKMAP support for UDP we won't be
+> able to move away from TPROXY [1] and custom SO_BINDTOPREFIX extension
+> [2] for steering new UDP flows to receiving sockets. Also we would like
+> to look into using SOCKMAP for connected UDP socket splicing in the
+> future [3].
+> 
+> I was planning to split work as follows:
+> 
+> 1. SOCKMAP support for listening sockets (this series)
+> 2. programmable socket lookup for TCP (cut-down version of [4])
+> 3. SOCKMAP support for UDP (work not started)
+> 4. programmable socket lookup for UDP (rest of [4])
+> 
+> I'm open to suggestions on how to organize it.
 
-please follow the pattern of "if (CHECK()) { return or goto cleanup
-}". There is literally zero cases where we have `if (!CHECK())` in
-selftests.
+Looks good to me. I've had UDP support on my todo list for awhile now
+but it hasn't got to the top yet so glad to see this.
 
-> +               err =3D bpf_obj_get_info_by_fd(bpf_map__fd(map),
-> +                                            &map_info, &map_info_len);
-> +               CHECK(err, "get map info", "err %d errno %d", err, errno)=
-;
-> +               return map_info.id;
-> +       }
-> +       return 0;
-> +}
-> +
-> +void test_pinning(void)
-> +{
-> +       __u32 duration, retval, size, map_id, map_id2;
-> +       const char *custpinpath =3D "/sys/fs/bpf/custom/pinmap";
-> +       const char *nopinpath =3D "/sys/fs/bpf/nopinmap";
-> +       const char *custpath =3D "/sys/fs/bpf/custom";
-> +       const char *pinpath =3D "/sys/fs/bpf/pinmap";
-> +       const char *file =3D "./test_pinning.o";
-> +       struct stat statbuf =3D {};
-> +       struct bpf_object *obj;
-> +       DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts,
-> +               .auto_pin_path =3D custpath,
-> +       );
-> +
-> +       int err;
-> +       obj =3D bpf_object__open_file(file, NULL);
-> +       if (CHECK_FAIL(libbpf_get_error(obj)))
-> +               return;
-> +
-> +       err =3D bpf_object__load(obj);
-> +       CHECK(err, "default load", "err %d errno %d\n", err, errno);
+Also perhaps not necessary for your work but I have some patches on my
+stack I'll try to get out soon to get ktls + receive hooks working.
 
-cleanup and exit, you don't have a valid set up to proceed with
-testing. Same for almost every check below.
+> 
+> >> Having said that, the main intention here is to lay groundwork for using
+> >> SOCKMAP in the next iteration of programmable socket lookup patches.
+> > What may be the minimal to get only lookup work for UDP sockmap?
+> > .close() and .unhash()?
+> 
+> John would know better. I haven't tried doing it yet.
 
-> +
-> +       /* check that pinmap was pinned */
-> +       err =3D stat(pinpath, &statbuf);
-> +       CHECK(err, "stat pinpath", "err %d errno %d\n", err, errno);
-> +
-> +        /* check that nopinmap was *not* pinned */
-> +       err =3D stat(nopinpath, &statbuf);
-> +       CHECK(errno !=3D ENOENT, "stat nopinpath", "err %d errno %d\n", e=
-rr, errno);
+Right, I don't think its too complicated we just need the hooks and then
+to be sure the socket state checks are OK. Having listening support should
+help with the UDP case.
 
-if previous stat succeeded, errno might be from other syscall, you
-have to check both
+> 
+> From just reading the code - override the two proto ops you mentioned,
+> close and unhash, and adapt the socket checks in SOCKMAP.
 
-> +
-> +        map_id =3D get_map_id(obj, "pinmap");
++1.
 
-formatting? check that get_map_id succeeded?
+> 
+> -Jakub
+> 
+> [1] https://blog.cloudflare.com/how-we-built-spectrum/
+> [2] https://lore.kernel.org/netdev/1458699966-3752-1-git-send-email-gilberto.bertin@gmail.com/
+> [3] https://lore.kernel.org/bpf/20190828072250.29828-1-jakub@cloudflare.com/
+> [4] https://blog.cloudflare.com/sockmap-tcp-splicing-of-the-future/
 
-> +       bpf_object__close(obj);
-> +
-> +       obj =3D bpf_object__open_file(file, NULL);
-> +       if (CHECK_FAIL(libbpf_get_error(obj)))
-> +               return;
-> +
-> +       err =3D bpf_object__load(obj);
-> +       CHECK(err, "default load", "err %d errno %d\n", err, errno);
-> +
-> +       /* check that same map ID was reused for second load */
-> +       map_id2 =3D get_map_id(obj, "pinmap");
-> +       CHECK(map_id !=3D map_id2, "check reuse",
-> +             "err %d errno %d id %d id2 %d\n", err, errno, map_id, map_i=
-d2);
-> +       unlink(pinpath);
-> +       bpf_object__close(obj);
-> +
-> +       err =3D mkdir(custpath, 0700);
-> +       CHECK(err, "mkdir custpath",  "err %d errno %d\n", err, errno);
-> +
-> +       obj =3D bpf_object__open_file(file, &opts);
-> +       if (CHECK_FAIL(libbpf_get_error(obj)))
-> +               return;
-> +
-> +       err =3D bpf_object__load(obj);
-> +       CHECK(err, "custom load", "err %d errno %d\n", err, errno);
-> +
-> +       /* check that pinmap was pinned at the custom path */
-> +       err =3D stat(custpinpath, &statbuf);
-> +       CHECK(err, "stat custpinpath", "err %d errno %d\n", err, errno);
-> +
-> +       unlink(custpinpath);
-> +       rmdir(custpath);
-> +       bpf_object__close(obj);
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/test_pinning.c b/tools/tes=
-ting/selftests/bpf/progs/test_pinning.c
-> new file mode 100644
-> index 000000000000..ff2d7447777e
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/test_pinning.c
-> @@ -0,0 +1,29 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include <linux/bpf.h>
-> +#include "bpf_helpers.h"
-> +
-> +int _version SEC("version") =3D 1;
-> +
-> +struct {
-> +       __uint(type, BPF_MAP_TYPE_ARRAY);
-> +       __uint(max_entries, 1);
-> +       __type(key, __u32);
-> +       __type(value, __u64);
-> +       __uint(pinning, LIBBPF_PIN_BY_NAME);
-> +} pinmap SEC(".maps");
-> +
-> +struct {
-> +       __uint(type, BPF_MAP_TYPE_ARRAY);
-> +       __uint(max_entries, 1);
-> +       __type(key, __u32);
-> +       __type(value, __u64);
-> +} nopinmap SEC(".maps");
-> +
-> +SEC("xdp_prog")
-> +int _xdp_prog(struct xdp_md *xdp)
-> +{
-> +       return XDP_PASS;
-> +}
-> +
-> +char _license[] SEC("license") =3D "GPL";
->
+
