@@ -2,79 +2,50 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F3B9E779B
-	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2019 18:32:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8303DE77A6
+	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2019 18:35:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731930AbfJ1Rcl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Oct 2019 13:32:41 -0400
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:32778 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731917AbfJ1Rck (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Oct 2019 13:32:40 -0400
-Received: by mail-lj1-f195.google.com with SMTP id t5so4422035ljk.0;
-        Mon, 28 Oct 2019 10:32:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5FilHHLZDaJVtvWFtCYcCAhZY22iViXiwl01pdpanDE=;
-        b=kJOnL1zu00cU6AIB3ANGSLRnVAy0sEtzlfZwc5U5bbJVImX/jG+vkVbdUBSgYC0T4u
-         VIJE/KSJV7tBBAafm/erazpEXjcN8b1pxnOg72jB6L8POffrf6lzZ8ZQ9km9+eIM33Y9
-         ZohB9ytTFbR52U6tY87VLOreay5IEHgKrksAXUJ7K+7jywptv+eBu1lYqiuPJ/7vW7VS
-         5d7kqZ6YmMlEw+xl6ufc8tpfSnPFqgOcc4O+w5bFpB84E8qgt5ansW9U9lSWf9cqBDtB
-         UPT+NO01fCztOnpsOX+TMzSRee5jRKkUlu6xMRiE1mgTUe4dZDznhUBXoHOc9q946Hoh
-         OBuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5FilHHLZDaJVtvWFtCYcCAhZY22iViXiwl01pdpanDE=;
-        b=TWnRIBaojtaZtqCG6GS41zr/bDRacnQbjyIl1PLtfCkC9TeVcS5jEvd6i0ONytbWIe
-         fDXCGG2o+w5pnxFY8IdWhJlbIaYQCIYyqOS7ynZ4xqHsFcdwj+qFOBiZsamjxsuqCPct
-         AHIBRnbzgaYyp1vpMJfJbqeM63xFDQ8bERKWB4V8LMq1pYxumc2E14BqJ+AQOD7u4Qfu
-         tVCTJgV/4lLpFZoV3BAAH44c04OuiUSN87XnjjvnIkI4vnqd+iYp4pjqs7jjwxEoulBW
-         etzrf1u7taHPaHGJctmLe02OaYWLnxK5N9odRYF+tZp0821GTKUYUrK5xwwMFgTbUHC8
-         EsZw==
-X-Gm-Message-State: APjAAAWjb44Rq48eDlSyGHDfon2URaQQhyXQGeAlW3Sp58fJ+PAzN4Z/
-        zIORZp4YhnYVEq27Pku8ef+KGuusVOW8LBiKCaA=
-X-Google-Smtp-Source: APXvYqye0j4NL6Qk0XEscCAsEQWDP5b99dNybQUMq6K1ce8WzT32YvRDIlRYXouK2KRYRbs0v+iwc/0+A6JrgpP4iv8=
-X-Received: by 2002:a2e:82cd:: with SMTP id n13mr12472445ljh.2.1572283958241;
- Mon, 28 Oct 2019 10:32:38 -0700 (PDT)
+        id S1730149AbfJ1RfJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Oct 2019 13:35:09 -0400
+Received: from www62.your-server.de ([213.133.104.62]:50194 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729246AbfJ1RfJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Oct 2019 13:35:09 -0400
+Received: from 49.249.197.178.dynamic.dsl-lte-bonding.lssmb00p-msn.res.cust.swisscom.ch ([178.197.249.49] helo=localhost)
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1iP8v0-0007ck-9w; Mon, 28 Oct 2019 18:35:02 +0100
+Date:   Mon, 28 Oct 2019 18:35:01 +0100
+From:   Daniel Borkmann <daniel@iogearbox.net>
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Subject: Re: [PATCH bpf-next v2] selftest/bpf: Use -m{little,big}-endian for
+ clang
+Message-ID: <20191028173501.GH14547@pc-63.home>
+References: <20191028102049.7489-1-iii@linux.ibm.com>
 MIME-Version: 1.0
-References: <157220959547.48922.6623938299823744715.stgit@toke.dk>
- <157220959980.48922.12100884213362040360.stgit@toke.dk> <20191028140624.584bcc1e@carbon>
- <87imo9roxf.fsf@toke.dk> <483546c6-14b9-e1f1-b4c1-424d6b8d4ace@fb.com> <20191028171303.3e7e4601@carbon>
-In-Reply-To: <20191028171303.3e7e4601@carbon>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 28 Oct 2019 10:32:25 -0700
-Message-ID: <CAADnVQLoZ4YLNh+xPEvEYTmQjQppXUbTUNyYKxQ-fhn8_2QW8w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 4/4] selftests: Add tests for automatic map pinning
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     Yonghong Song <yhs@fb.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        David Miller <davem@davemloft.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Anton Protopopov <aspsk2@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191028102049.7489-1-iii@linux.ibm.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.101.4/25616/Mon Oct 28 09:57:02 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Oct 28, 2019 at 9:13 AM Jesper Dangaard Brouer
-<brouer@redhat.com> wrote:
->
-> LLVM 9.0.0 is still very new:
->  - 19 September 2019: LLVM 9.0.0 is now available
->
-> For my XDP-tutorial[1], I cannot required people to have this new llvm
-> version.
+On Mon, Oct 28, 2019 at 11:20:49AM +0100, Ilya Leoshkevich wrote:
+> When cross-compiling tests from x86 to s390, the resulting BPF objects
+> fail to load due to endianness mismatch.
+> 
+> Fix by using BPF-GCC endianness check for clang as well.
+> 
+> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-what's a concern?
-It's a released version.
-We recommend the latest kernel for new features. Same goes for compiler.
+Applied, thanks!
