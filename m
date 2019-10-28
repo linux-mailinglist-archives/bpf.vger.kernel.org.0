@@ -2,104 +2,211 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EAB1E727A
-	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2019 14:16:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B03AE736E
+	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2019 15:11:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726508AbfJ1NQA convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Mon, 28 Oct 2019 09:16:00 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:55055 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728954AbfJ1NQA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Oct 2019 09:16:00 -0400
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com [209.85.167.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 7A05681F0F
-        for <bpf@vger.kernel.org>; Mon, 28 Oct 2019 13:15:59 +0000 (UTC)
-Received: by mail-lf1-f71.google.com with SMTP id u16so1086476lfg.20
-        for <bpf@vger.kernel.org>; Mon, 28 Oct 2019 06:15:59 -0700 (PDT)
+        id S1730120AbfJ1OLJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Oct 2019 10:11:09 -0400
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:33435 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728383AbfJ1OLJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Oct 2019 10:11:09 -0400
+Received: by mail-pl1-f193.google.com with SMTP id y8so5650358plk.0;
+        Mon, 28 Oct 2019 07:11:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=Wr2qSyKGZ5IFDokw96ZYkbcrvyw06+H0FC+Bn5dRPyo=;
+        b=e6slJevoqQo/YVUh8Xnkc+rmtrZ19Jfw4qAIzn3tx/aoR18jKNZ2RWjMZtr6UnBIn4
+         ahqcsijX/DfE4GJ6miHo/D3a+49jUmz6NKP84n7W7X4Ak+s+18Pz5hyngNb3qvSXNsLU
+         5N0svGRhafuwDhPbDBFApjgerE6qkjMXUMxmA+QbGO0goIKG3Rg1TwIMSX8jARhFXTr3
+         JT7O52ag5m1tgkcgudzyyeU48v91jV11m0muPjRmI81XW0D3aV0gNsDKF+E+wFTWBYCC
+         oIYckdKaTahVaiVPvl4LUQTZZpsUrz8F28nQT5qxROw/0Q7uR62SA7VWPoeXeWEq6ZaP
+         9hqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=vjNtaWXzYQYyO8/vxi1Mscz2AA+NYniSnjak3yf+ka0=;
-        b=Ml69FT51e8TvAANN9MZAmMxzjVTEBN5YV/aEm/I1jsv20avypFXkcMBAJ6XCyC15QU
-         4qMJyrAyoLIhn2Cryi5mJI+OdBc37Fj+SDIGzAjfoCHiXFXgYmT9uO7wIdZ9Wq5TSD9P
-         kpWzdVpYNZZzL2j5K5fd5Bq3J+61bWmTGdYvIC9guQULbizBC2gFawbCZ/v2eHEwUboB
-         DhvNL1Nw11uqfnVh7lWlEx7v6eTHEoHrT2x1RoHFAU68/lDwWfc7ui47JeaFOF+F94R9
-         VevmMDCk+VfAGmsXXqfSLInq/1fItstvI5ArRiTDieG/raQPUdPkHGwRkTQJ5I2oTTf0
-         VkVg==
-X-Gm-Message-State: APjAAAX5TwOGXNNdycbK6uxMaBF+u1JdZSCQd4PPDRaoU+sBHvBqjnq0
-        4kLio5o+z1x6IIdk1z3kDBpUtOrNVtesOQBSV4xOZAUEBP3ZKMLbvqNZx7FEA9g98Sl+jj89N1p
-        oQqbFjhSNCktg
-X-Received: by 2002:a19:c7d3:: with SMTP id x202mr7932585lff.127.1572268558041;
-        Mon, 28 Oct 2019 06:15:58 -0700 (PDT)
-X-Google-Smtp-Source: APXvYqwGIt65mCxNJVDQOyNX2zDzBS+yqjzOl0BiO2TOQDbfJ06SZNvNsTmpP9PJhkdPfeL/kiKrJw==
-X-Received: by 2002:a19:c7d3:: with SMTP id x202mr7932567lff.127.1572268557816;
-        Mon, 28 Oct 2019 06:15:57 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a00:7660:6da:443::2])
-        by smtp.gmail.com with ESMTPSA id x1sm10131396lff.90.2019.10.28.06.15.56
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Wr2qSyKGZ5IFDokw96ZYkbcrvyw06+H0FC+Bn5dRPyo=;
+        b=CjhBigvY2rwqs4uIx/o49dF8ldDTxdLzBjKThTUBvXNsty8B2F5knV/AQCzJ7efHEu
+         DG50DD2pMUcsjAbtkv8lZF2mdbxBFgVpumIE0ySUdsj4QD2o8IlNppELg8q+a5Xz5q8Q
+         WqU27taD9Cm6JyDQ3GaHT3csUD43uToTd5LIg/befkqJQkbt6zfky3xf8Q/QGDSwP+9Q
+         RyrwFo/DncTrMoFULRboY36ED8y16TGJQQ5OtVmGD903eyWvY/cDQ4G3MjghqxukBWH7
+         e6LLkfyUFRkeL36+EYJYtkihxJt2uXnpF8qN2ssztyFAPjzauEiIOgnjR5MBPdT0AXD7
+         cO0Q==
+X-Gm-Message-State: APjAAAXztbXOfFMZV8srZfNoo5IqbwUoNClo/K0XpKQPrZMoc5REaDFm
+        asDB39NGMCTVgeM3zOjpGUkUbKeMMXo=
+X-Google-Smtp-Source: APXvYqxBY5ok3G+PuasR6A0BTc8qsqOZ+7HIbeyw3CsDHVDTrB+P06rbxpdYq98lDdiAApXjsBaIsA==
+X-Received: by 2002:a17:902:6a81:: with SMTP id n1mr19182160plk.173.1572271867602;
+        Mon, 28 Oct 2019 07:11:07 -0700 (PDT)
+Received: from ubuntu-18.04-x8664 ([128.1.49.85])
+        by smtp.gmail.com with ESMTPSA id a5sm2579125pfk.172.2019.10.28.07.11.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Oct 2019 06:15:57 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 15B291800E2; Mon, 28 Oct 2019 14:15:56 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, brouer@redhat.com
-Subject: Re: [PATCH bpf-next v3 4/4] selftests: Add tests for automatic map pinning
-In-Reply-To: <20191028140624.584bcc1e@carbon>
-References: <157220959547.48922.6623938299823744715.stgit@toke.dk> <157220959980.48922.12100884213362040360.stgit@toke.dk> <20191028140624.584bcc1e@carbon>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Mon, 28 Oct 2019 14:15:56 +0100
-Message-ID: <87imo9roxf.fsf@toke.dk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+        Mon, 28 Oct 2019 07:11:07 -0700 (PDT)
+From:   Wenbo Zhang <ethercflow@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     yhs@fb.com, daniel@iogearbox.net, netdev@vger.kernel.org,
+        Wenbo Zhang <ethercflow@gmail.com>
+Subject: [PATCH bpf-next v4] bpf: add new helper fd2path for mapping a file descriptor to a pathname
+Date:   Mon, 28 Oct 2019 10:10:53 -0400
+Message-Id: <20191028141053.12267-1-ethercflow@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Jesper Dangaard Brouer <brouer@redhat.com> writes:
+When people want to identify which file system files are being opened,
+read, and written to, they can use this helper with file descriptor as
+input to achieve this goal. Other pseudo filesystems are also supported.
 
-> On Sun, 27 Oct 2019 21:53:19 +0100
-> Toke Høiland-Jørgensen <toke@redhat.com> wrote:
->
->> diff --git a/tools/testing/selftests/bpf/progs/test_pinning.c b/tools/testing/selftests/bpf/progs/test_pinning.c
->> new file mode 100644
->> index 000000000000..ff2d7447777e
->> --- /dev/null
->> +++ b/tools/testing/selftests/bpf/progs/test_pinning.c
->> @@ -0,0 +1,29 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +
->> +#include <linux/bpf.h>
->> +#include "bpf_helpers.h"
->> +
->> +int _version SEC("version") = 1;
->> +
->> +struct {
->> +	__uint(type, BPF_MAP_TYPE_ARRAY);
->> +	__uint(max_entries, 1);
->> +	__type(key, __u32);
->> +	__type(value, __u64);
->> +	__uint(pinning, LIBBPF_PIN_BY_NAME);
->> +} pinmap SEC(".maps");
->
-> So, this is the new BTF-defined maps syntax.
->
-> Please remind me, what version of LLVM do we need to compile this?
+This requirement is mainly discussed here:
 
-No idea what the minimum version is. I'm running LLVM 9.0 :)
+  https://github.com/iovisor/bcc/issues/237
 
-> Or was there a dependency on pahole?
+v3->v4:
+- fix missing fdput()
+- move fd2path from kernel/bpf/trace.c to kernel/trace/bpf_trace.c
+- move fd2path's test code to another patch
 
-Don't think so...
+v2->v3:
+- remove unnecessary LOCKDOWN_BPF_READ
+- refactor error handling section for enhanced readability
+- provide a test case in tools/testing/selftests/bpf
 
--Toke
+v1->v2:
+- fix backward compatibility
+- add this helper description
+- fix signed-off name
+
+Signed-off-by: Wenbo Zhang <ethercflow@gmail.com>
+---
+ include/uapi/linux/bpf.h       | 14 +++++++++++-
+ kernel/trace/bpf_trace.c       | 40 ++++++++++++++++++++++++++++++++++
+ tools/include/uapi/linux/bpf.h | 14 +++++++++++-
+ 3 files changed, 66 insertions(+), 2 deletions(-)
+
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 4af8b0819a32..124632b2a697 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -2775,6 +2775,17 @@ union bpf_attr {
+  * 		restricted to raw_tracepoint bpf programs.
+  * 	Return
+  * 		0 on success, or a negative error in case of failure.
++ *
++ * int bpf_fd2path(char *path, u32 size, int fd)
++ *	Description
++ *		Get **file** atrribute from the current task by *fd*, then call
++ *		**d_path** to get it's absolute path and copy it as string into
++ *		*path* of *size*. The **path** also support pseudo filesystems
++ *		(whether or not it can be mounted). The *size* must be strictly
++ *		positive. On success, the helper makes sure that the *path* is
++ *		NUL-terminated. On failure, it is filled with zeroes.
++ *	Return
++ *		0 on success, or a negative error in case of failure.
+  */
+ #define __BPF_FUNC_MAPPER(FN)		\
+ 	FN(unspec),			\
+@@ -2888,7 +2899,8 @@ union bpf_attr {
+ 	FN(sk_storage_delete),		\
+ 	FN(send_signal),		\
+ 	FN(tcp_gen_syncookie),		\
+-	FN(skb_output),
++	FN(skb_output),			\
++	FN(fd2path),
+ 
+ /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+  * function eBPF program intends to call
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 571c25d60710..dd7b070df3d6 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -683,6 +683,44 @@ static const struct bpf_func_proto bpf_send_signal_proto = {
+ 	.arg1_type	= ARG_ANYTHING,
+ };
+ 
++BPF_CALL_3(bpf_fd2path, char *, dst, u32, size, int, fd)
++{
++	struct fd f;
++	char *p;
++	int ret = -EINVAL;
++
++	/* Use fdget_raw instead of fdget to support O_PATH */
++	f = fdget_raw(fd);
++	if (!f.file)
++		goto error;
++
++	p = d_path(&f.file->f_path, dst, size);
++	if (IS_ERR_OR_NULL(p)) {
++		ret = PTR_ERR(p);
++		goto error;
++	}
++
++	ret = strlen(p);
++	memmove(dst, p, ret);
++	dst[ret] = '\0';
++	goto end;
++
++error:
++	memset(dst, '0', size);
++end:
++	fdput(f);
++	return ret;
++}
++
++static const struct bpf_func_proto bpf_fd2path_proto = {
++	.func       = bpf_fd2path,
++	.gpl_only   = true,
++	.ret_type   = RET_INTEGER,
++	.arg1_type  = ARG_PTR_TO_UNINIT_MEM,
++	.arg2_type  = ARG_CONST_SIZE,
++	.arg3_type  = ARG_ANYTHING,
++};
++
+ static const struct bpf_func_proto *
+ tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ {
+@@ -735,6 +773,8 @@ tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ #endif
+ 	case BPF_FUNC_send_signal:
+ 		return &bpf_send_signal_proto;
++	case BPF_FUNC_fd2path:
++		return &bpf_fd2path_proto;
+ 	default:
+ 		return NULL;
+ 	}
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 4af8b0819a32..124632b2a697 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -2775,6 +2775,17 @@ union bpf_attr {
+  * 		restricted to raw_tracepoint bpf programs.
+  * 	Return
+  * 		0 on success, or a negative error in case of failure.
++ *
++ * int bpf_fd2path(char *path, u32 size, int fd)
++ *	Description
++ *		Get **file** atrribute from the current task by *fd*, then call
++ *		**d_path** to get it's absolute path and copy it as string into
++ *		*path* of *size*. The **path** also support pseudo filesystems
++ *		(whether or not it can be mounted). The *size* must be strictly
++ *		positive. On success, the helper makes sure that the *path* is
++ *		NUL-terminated. On failure, it is filled with zeroes.
++ *	Return
++ *		0 on success, or a negative error in case of failure.
+  */
+ #define __BPF_FUNC_MAPPER(FN)		\
+ 	FN(unspec),			\
+@@ -2888,7 +2899,8 @@ union bpf_attr {
+ 	FN(sk_storage_delete),		\
+ 	FN(send_signal),		\
+ 	FN(tcp_gen_syncookie),		\
+-	FN(skb_output),
++	FN(skb_output),			\
++	FN(fd2path),
+ 
+ /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+  * function eBPF program intends to call
+-- 
+2.17.1
+
