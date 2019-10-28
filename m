@@ -2,37 +2,37 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D5B3BE7B02
-	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2019 22:07:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9702EE7B6C
+	for <lists+bpf@lfdr.de>; Mon, 28 Oct 2019 22:36:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391201AbfJ1VH1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Oct 2019 17:07:27 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:53104 "EHLO
+        id S1730626AbfJ1Vgp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Oct 2019 17:36:45 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:27184 "EHLO
         us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2391196AbfJ1VHY (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 28 Oct 2019 17:07:24 -0400
+        by vger.kernel.org with ESMTP id S1728338AbfJ1Vgp (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 28 Oct 2019 17:36:45 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1572296843;
+        s=mimecast20190719; t=1572298603;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=vaN691EUnxF95m8CQyGbqME6xNGoyr91KYIIBfK7uXs=;
-        b=NsYY3RCcrSSRK7N43bEJtZ75r4ut492io9M3kXqnv1Vnd2QxLuOUk2tRBmrI0f7Xc6siyu
-        PLyC2rwit7/d19vH3a4fMivKPMHLVxqCFihwoi7g76UrbDkdmmdWqwNKP0/Ke/hF7eILQP
-        5sycfsZPQXb9TKA2RCgr4zZ9MT7NfHY=
+        bh=Brfy7mrD97bCpvfB3FBCa9L0t2S1CRB6c2tZSeFAi8A=;
+        b=KyellVToQO/AwrtadvcZ9vkWjPvKhdE9H1PoUGeKtWf352qzJS2OyF0Ivhy9FNUwkVkY8v
+        4u5xoQd26/eL2smhZCg63DIjsb8xPBeFA7ixRW6z45ipeJvlWA3Xtq8/tShVqoKwEMawVY
+        bjGw1Fg5PE5bXW23BKQrTFRrm3VCJ0Y=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-124-pWsCm5gWORa93cR4oE7e_g-1; Mon, 28 Oct 2019 17:07:20 -0400
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+ us-mta-223-ae2TBSuRM5GBbekG5sh_Wg-1; Mon, 28 Oct 2019 17:36:39 -0400
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 851AF1804971;
-        Mon, 28 Oct 2019 21:07:17 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C11DF801E5C;
+        Mon, 28 Oct 2019 21:36:36 +0000 (UTC)
 Received: from krava (ovpn-204-45.brq.redhat.com [10.40.204.45])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 4928926359;
-        Mon, 28 Oct 2019 21:07:13 +0000 (UTC)
-Date:   Mon, 28 Oct 2019 22:07:12 +0100
+        by smtp.corp.redhat.com (Postfix) with SMTP id BB6515D9C8;
+        Mon, 28 Oct 2019 21:36:31 +0000 (UTC)
+Date:   Mon, 28 Oct 2019 22:36:30 +0100
 From:   Jiri Olsa <jolsa@redhat.com>
 To:     Ian Rogers <irogers@google.com>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -50,20 +50,24 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Adrian Hunter <adrian.hunter@intel.com>,
         Kan Liang <kan.liang@linux.intel.com>,
         John Garry <john.garry@huawei.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, clang-built-linux@googlegroups.com,
+        LKML <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
         Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH v4 4/9] perf tools: splice events onto evlist even on
- error
-Message-ID: <20191028210712.GB6158@krava>
-References: <20191024190202.109403-1-irogers@google.com>
- <20191025180827.191916-1-irogers@google.com>
- <20191025180827.191916-5-irogers@google.com>
+Subject: Re: [PATCH v3 1/9] perf tools: add parse events append error
+Message-ID: <20191028213630.GE28772@krava>
+References: <20191023005337.196160-1-irogers@google.com>
+ <20191024190202.109403-1-irogers@google.com>
+ <20191024190202.109403-2-irogers@google.com>
+ <20191025075820.GE31679@krava>
+ <CAP-5=fV3yruuFagTz4=8b9t6Y1tzZpFU=VhVcOmrSMiV+h2fQA@mail.gmail.com>
+ <20191028193224.GB28772@krava>
+ <CAP-5=fWqzT24JwuYYdH=4auB0EB2P4MMw4bvqGd02fTShXnJfg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20191025180827.191916-5-irogers@google.com>
+In-Reply-To: <CAP-5=fWqzT24JwuYYdH=4auB0EB2P4MMw4bvqGd02fTShXnJfg@mail.gmail.com>
 User-Agent: Mutt/1.12.1 (2019-06-15)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-X-MC-Unique: pWsCm5gWORa93cR4oE7e_g-1
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-MC-Unique: ae2TBSuRM5GBbekG5sh_Wg-1
 X-Mimecast-Spam-Score: 0
 Content-Type: text/plain; charset=WINDOWS-1252
 Content-Transfer-Encoding: quoted-printable
@@ -73,59 +77,125 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Oct 25, 2019 at 11:08:22AM -0700, Ian Rogers wrote:
-> If event parsing fails the event list is leaked, instead splice the list
-> onto the out result and let the caller cleanup.
+On Mon, Oct 28, 2019 at 02:06:24PM -0700, Ian Rogers wrote:
+> On Mon, Oct 28, 2019 at 12:32 PM Jiri Olsa <jolsa@redhat.com> wrote:
+> >
+> > On Fri, Oct 25, 2019 at 08:14:36AM -0700, Ian Rogers wrote:
+> > > On Fri, Oct 25, 2019 at 12:58 AM Jiri Olsa <jolsa@redhat.com> wrote:
+> > > >
+> > > > On Thu, Oct 24, 2019 at 12:01:54PM -0700, Ian Rogers wrote:
+> > > > > Parse event error handling may overwrite one error string with an=
+other
+> > > > > creating memory leaks and masking errors. Introduce a helper rout=
+ine
+> > > > > that appends error messages and avoids the memory leak.
+> > > > >
+> > > > > A reproduction of this problem can be seen with:
+> > > > >   perf stat -e c/c/
+> > > > > After this change this produces:
+> > > > > event syntax error: 'c/c/'
+> > > > >                        \___ unknown term (previous error: unknown=
+ term (previous error: unknown term (previous error: unknown term (previous=
+ error: unknown term (previous error: unknown term (previous error: unknown=
+ term (previous error: unknown term (previous error: unknown term (previous=
+ error: unknown term (previous error: unknown term (previous error: unknown=
+ term (previous error: unknown term (previous error: unknown term (previous=
+ error: unknown term (previous error: unknown term (previous error: unknown=
+ term (previous error: unknown term (previous error: unknown term (previous=
+ error: unknown term (previous error: unknown term (previous error: Cannot =
+find PMU `c'. Missing kernel support?)(help: valid terms: event,filter_rem,=
+filter_opc0,edge,filter_isoc,filter_tid,filter_loc,filter_nc,inv,umask,filt=
+er_opc1,tid_en,thresh,filter_all_op,filter_not_nm,filter_state,filter_nm,co=
+nfig,config1,config2,name,period,percore))(help: valid terms: event,filter_=
+rem,filter_opc0,edge,filter_isoc,filter_tid,filter_loc,filter_nc,inv,umask,=
+filter_opc1,tid_en,thresh,filter_all_op,filter_not_nm,filter_state,filter_n=
+m,config,config1,config2,name,period,percore))(help: valid terms: event,fil=
+ter_rem,filter_opc0,edge,filter_isoc,filter_tid,filter_loc,filter_nc,inv,um=
+ask,filter_opc1,tid_en,thresh,filter_all_op,filter_not_nm,filter_state,filt=
+er_nm,config,config1,config2,name,period,percore))(help: valid terms: event=
+,filter_rem,filter_opc0,edge,filter_isoc,filter_tid,filter_loc,filter_nc,in=
+v,umask,filter_opc1,tid_en,thresh,filter_all_op,filter_not_nm,filter_state,=
+filter_nm,config,config1,config2,name,period,percore))(help: valid terms: e=
+vent,filter_rem,filter_opc0,edge,filter_isoc,filter_tid,filter_loc,filter_n=
+c,inv,umask,filter_opc1,tid_en,thresh,filter_all_op,filter_not_nm,filter_st=
+ate,filter_nm,config,config1,config2,name,period,percore))(help: valid term=
+s: event,filter_rem,filter_opc0,edge,filter_isoc,filter_tid,filter_loc,filt=
+er_nc,inv,umask,filter_opc1,tid_en,thresh,filter_all_op,filter_not_nm,filte=
+r_state,filter_nm,config,config1,config2,name,period,percore))(help: valid =
+terms: event,pc,in_tx,edge,any,offcore_rsp,in_tx_cp,ldlat,inv,umask,fronten=
+d,cmask,config,config1,config2,name,period,percore))(help: valid terms: eve=
+nt,filter_rem,filter_opc0,edge,filter_isoc,filter_tid,filter_loc,filter_nc,=
+inv,umask,filter_opc1,tid_en,thresh,filter_all_op,filter_not_nm,filter_stat=
+e,filter_nm,config,config1,config2,name,period,percore))(help: valid terms:=
+ event,filter_rem,filter_opc0,edge,filter_isoc,filter_tid,filter_loc,filter=
+_nc,inv,umask,filter_opc1,tid_en,thresh,filter_all_op,filter_not_nm,filter_=
+state,filter_nm,config,config1,config2,name,period,percore))(help: valid te=
+rms: event,config,config1,config2,name,period,percore))(help: valid terms: =
+event,filter_rem,filter_opc0,edge,filter_isoc,filter_tid,filter_loc,filter_=
+nc,inv,umask,filter_opc1,tid_en,thresh,filter_all_op,filter_not_nm,filter_s=
+tate,filter_nm,config,config1,config2,name,period,percore))(help: valid ter=
+ms: event,filter_rem,filter_opc0,edge,filter_isoc,filter_tid,filter_loc,fil=
+ter_nc,inv,umask,filter_opc1,tid_en,thresh,filter_all_op,filter_not_nm,filt=
+er_state,filter_nm,config,config1,config2,name,period,percore))(help: valid=
+ terms: event,filter_rem,filter_opc0,edge,filter_isoc,filter_tid,filter_loc=
+,filter_nc,inv,umask,filter_opc1,tid_en,thresh,filter_all_op,filter_not_nm,=
+filter_state,filter_nm,config,config1,config2,name,period,percore))(help: v=
+alid terms: event,filter_rem,filter_opc0,edge,filter_isoc,filter_tid,filter=
+_loc,filter_nc,inv,umask,filter_opc1,tid_en,thresh,filter_all_op,filter_not=
+_nm,filter_state,filter_nm,config,config1,config2,name,period,percore))(hel=
+p: valid terms: event,config,config1,config2,name,period,percore))(help: va=
+lid terms: event,filter_rem,filter_opc0,edge,filter_isoc,filter_tid,filter_=
+loc,filter_nc,inv,umask,filter_opc1,tid_en,thresh,filter_all_op,filter_not_=
+nm,filter_state,filter_nm,config,config1,config2,name,period,percore))(help=
+: valid terms: event,filter_rem,filter_opc0,edge,filter_isoc,filter_tid,fil=
+ter_loc,filter_nc,inv,umask,filter_opc1,tid_en,thresh,filter_all_op,filter_=
+not_nm,filter_state,filter_nm,config,config1,config2,name,period,percore))(=
+help: valid terms: event,filter_rem,filter_opc0,edge,filter_isoc,filter_tid=
+,filter_loc,filter_nc,inv,umask,filter_opc1,tid_en,thresh,filter_all_op,fil=
+ter_not_nm,filter_state,filter_nm,config,config1,config2,name,period,percor=
+e))(help: valid terms: event,filter_rem,filter_opc0,edge,filter_isoc,filter=
+_tid,filter_loc,filter_nc,inv,umask,filter_opc1,tid_en,thresh,filter_all_op=
+,filter_not_nm,filter_state,filter_nm,config,config1,config2,name,period,pe=
+rcore))(help: valid terms: event,filter_rem,filter_opc0,edge,filter_isoc,fi=
+lter_tid,filter_loc,filter_nc,inv,umask,filter_opc1,tid_en,thresh,filter_al=
+l_op,filter_not_nm,filter_state,filter_nm,config,config1,config2,name,perio=
+d,percore))
+> > > >
+> > > >
+> > > > hum... I'd argue that the previous state was better:
+> > > >
+> > > > [jolsa@krava perf]$ ./perf stat -e c/c/
+> > > > event syntax error: 'c/c/'
+> > > >                        \___ unknown term
+> > > >
+> > > >
+> > > > jirka
+> > >
+> > > I am agnostic. We can either have the previous state or the new state=
+,
+> > > I'm keen to resolve the memory leak. Another alternative is to warn
+> > > that multiple errors have occurred before dropping or printing the
+> > > previous error. As the code is shared in memory places the approach
+> > > taken here was to try to not conceal anything that could potentially
+> > > be useful. Given this, is the preference to keep the status quo
+> > > without any warning?
+> >
+> > if the other alternative is string above, yes.. but perhaps
+> > keeping just the first error would be the best way?
+> >
+> > here it seems to be the:
+> >    "Cannot find PMU `c'. Missing kernel support?)(help: valid..."
 >=20
-> An example input for parse_events found by libFuzzer that reproduces
-> this memory leak is 'm{'.
->=20
-> Signed-off-by: Ian Rogers <irogers@google.com>
+> I think this is a reasonable idea. I'd propose doing it as an
+> additional patch, the purpose of this patch is to avoid a possible
+> memory leak. I can write the patch and base it on this series.
+> To resolve the issue, I'd add an extra first error to the struct
+> parse_events_error. All callers would need to be responsible for
+> cleaning this up when present, which is why I'd rather not make it
+> part of this patch.
+> Does this sound reasonable?
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
+yep, sounds good
 
-thanks,
 jirka
-
-> ---
->  tools/perf/util/parse-events.c | 17 +++++++++++------
->  1 file changed, 11 insertions(+), 6 deletions(-)
->=20
-> diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-event=
-s.c
-> index c516d0cce946..4c4c6f3e866a 100644
-> --- a/tools/perf/util/parse-events.c
-> +++ b/tools/perf/util/parse-events.c
-> @@ -1952,15 +1952,20 @@ int parse_events(struct evlist *evlist, const cha=
-r *str,
-> =20
->  =09ret =3D parse_events__scanner(str, &parse_state, PE_START_EVENTS);
->  =09perf_pmu__parse_cleanup();
-> +
-> +=09if (!ret && list_empty(&parse_state.list)) {
-> +=09=09WARN_ONCE(true, "WARNING: event parser found nothing\n");
-> +=09=09return -1;
-> +=09}
-> +
-> +=09/*
-> +=09 * Add list to the evlist even with errors to allow callers to clean =
-up.
-> +=09 */
-> +=09perf_evlist__splice_list_tail(evlist, &parse_state.list);
-> +
->  =09if (!ret) {
->  =09=09struct evsel *last;
-> =20
-> -=09=09if (list_empty(&parse_state.list)) {
-> -=09=09=09WARN_ONCE(true, "WARNING: event parser found nothing\n");
-> -=09=09=09return -1;
-> -=09=09}
-> -
-> -=09=09perf_evlist__splice_list_tail(evlist, &parse_state.list);
->  =09=09evlist->nr_groups +=3D parse_state.nr_groups;
->  =09=09last =3D evlist__last(evlist);
->  =09=09last->cmdline_group_boundary =3D true;
-> --=20
-> 2.24.0.rc0.303.g954a862665-goog
->=20
 
