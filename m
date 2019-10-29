@@ -2,77 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C3A6DE89D9
-	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2019 14:44:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A5ADE8AA2
+	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2019 15:20:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388799AbfJ2NoZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 29 Oct 2019 09:44:25 -0400
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:42288 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388734AbfJ2NoY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 29 Oct 2019 09:44:24 -0400
-Received: by mail-lj1-f195.google.com with SMTP id a21so15318268ljh.9;
-        Tue, 29 Oct 2019 06:44:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=JYn1Uu+shCSnLq+0ZvQ3I1FPEGlcJ3N+UYZ+2/Wurpw=;
-        b=eKxdQ5z/HByrO2cHLfgL5FvESnBsKMt81/DMCZzQViWEEddusYjeC3pcq3Db+q0EC3
-         PViwkCgr6exD64xA43VB9neZ3o9mZZ08Myl3TpdCO/+T4ZtCg5IaE+vwsvNeNdTGlA02
-         Crgc++LXNRFZkMuCEAh/HhPREqnIKVw4BuAHNQiUtOm5s6z1j9KsyfBtfMjvHUduzZA2
-         yMrtefWiE4C6c2PKx9zWteFkOyAtvBFXomt+9ZhQCTR1JxUpyoJZeAdRY6pyJL/t3K09
-         nNBlUuDc3qXgPvcNrS6PIuL7amE0FtVLNdFvlN4aEUA+GOrV6of9Si0oaTxBX5gZy81n
-         4LWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=JYn1Uu+shCSnLq+0ZvQ3I1FPEGlcJ3N+UYZ+2/Wurpw=;
-        b=I6krA63rTurYpqdti/luPdNqp70PvObp9UgJzbijvuBFUstBMURKDjFfidhPJStBMZ
-         SLz592TtxJp0LKdXdNO+UxHCuZTBNTfibFQlnHGbGuTdOnyMzDVRCxNrSod1qjOgzxHF
-         6pUt8bWDgOira4GT2QjAXftJLoYHQQO2km81IUrTMAMWAD6hH0bRv5wB5J21r0FC4j+5
-         5XXEIDp6fwvds62qXBXy2YzomxQfjo8I8DCaD1ZD6XT2evqsRcxIdGK5W5qZjWi9gMMj
-         I1vnc0kKmmficy0g0QOBS2xfQJjxHx+UgHP6NFw9ViSPmEIwvk/fBZXpBxPo+GZjZXDO
-         iwLQ==
-X-Gm-Message-State: APjAAAUkJoR0VSgTnqkIE5iY8GQ20mXz0INSHI1YeRNIZOecATWzQsSa
-        lofIjJKFLzFyItERCGgkFFKh4BtkYmQ8PJclh1M=
-X-Google-Smtp-Source: APXvYqyR7P9o96unTDHQPezVgHocaeFLVWlBzxpoNUL4lvk0eR+qH44WaXoH/qsQQ5/BdGIwrl/NN3dgeLHTolKv08s=
-X-Received: by 2002:a2e:85c2:: with SMTP id h2mr2750520ljj.188.1572356662920;
- Tue, 29 Oct 2019 06:44:22 -0700 (PDT)
-MIME-Version: 1.0
-References: <20191025071842.7724-1-bjorn.topel@gmail.com> <20191025071842.7724-2-bjorn.topel@gmail.com>
- <20191028105508.4173bf8b@cakuba.hsd1.ca.comcast.net> <CAJ+HfNhVZFNV3bZPhhiAd8ObechCJ5CdODM=W1Qf0wdN97TL=w@mail.gmail.com>
- <20191028152629.0dec07d1@cakuba.hsd1.ca.comcast.net> <CAJ+HfNjDzNg9wdNkhx7BVkK5Udd3_WP0UMT8jTyssd254M6NsQ@mail.gmail.com>
-In-Reply-To: <CAJ+HfNjDzNg9wdNkhx7BVkK5Udd3_WP0UMT8jTyssd254M6NsQ@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 29 Oct 2019 06:44:10 -0700
-Message-ID: <CAADnVQLFY3rNSbc5vqPuWmyuczvT6y-tD=zgTcJZX1yeqbVq8w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/2] xsk: store struct xdp_sock as a flexible
- array member of the XSKMAP
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Cc:     Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Netdev <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        bpf <bpf@vger.kernel.org>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S2389169AbfJ2OUI convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Tue, 29 Oct 2019 10:20:08 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:56428 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389167AbfJ2OUI (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 29 Oct 2019 10:20:08 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x9TE8MHh001444
+        for <bpf@vger.kernel.org>; Tue, 29 Oct 2019 10:20:07 -0400
+Received: from e06smtp03.uk.ibm.com (e06smtp03.uk.ibm.com [195.75.94.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2vxf6uye0n-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 29 Oct 2019 10:20:05 -0400
+Received: from localhost
+        by e06smtp03.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
+        Tue, 29 Oct 2019 14:19:43 -0000
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (9.149.109.196)
+        by e06smtp03.uk.ibm.com (192.168.101.133) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Tue, 29 Oct 2019 14:19:40 -0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x9TEJdMC38666482
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 29 Oct 2019 14:19:39 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3A823AE057;
+        Tue, 29 Oct 2019 14:19:39 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F16CEAE055;
+        Tue, 29 Oct 2019 14:19:38 +0000 (GMT)
+Received: from dyn-9-152-96-221.boeblingen.de.ibm.com (unknown [9.152.96.221])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 29 Oct 2019 14:19:38 +0000 (GMT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.0 \(3594.4.19\))
+Subject: Re: [PATCH bpf] bpf: allow narrow loads of bpf_sysctl fields with
+ offset > 0
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+In-Reply-To: <CAEf4BzajQL463pCogVAnX1H5Tg-+kj9p_-mAJs=n1r6OfZ2mXg@mail.gmail.com>
+Date:   Tue, 29 Oct 2019 15:19:38 +0100
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>, Andrey Ignatov <rdna@fb.com>
+Content-Transfer-Encoding: 8BIT
+References: <20191028122902.9763-1-iii@linux.ibm.com>
+ <CAEf4BzajQL463pCogVAnX1H5Tg-+kj9p_-mAJs=n1r6OfZ2mXg@mail.gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+X-Mailer: Apple Mail (2.3594.4.19)
+X-TM-AS-GCONF: 00
+x-cbid: 19102914-0012-0000-0000-0000035ECDF1
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19102914-0013-0000-0000-0000219A0FE2
+Message-Id: <9B04A778-42CE-4451-A276-5A41D6290055@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-10-29_04:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=3 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=968 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1908290000 definitions=main-1910290138
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Oct 28, 2019 at 11:21 PM Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.c=
-om> wrote:
-> Changing bpf_map_charge_init()/bpf_map_area_alloc() size to u64 would
-> be the smallest change, together with a 64-to-32 overflow check in
-> those functions.
+> Am 29.10.2019 um 05:36 schrieb Andrii Nakryiko <andrii.nakryiko@gmail.com>:
+> 
+> On Mon, Oct 28, 2019 at 1:09 PM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
+>> 
+>> --- a/kernel/bpf/cgroup.c
+>> +++ b/kernel/bpf/cgroup.c
+>> @@ -1311,12 +1311,12 @@ static bool sysctl_is_valid_access(int off, int size, enum bpf_access_type type,
+>>                return false;
+>> 
+>>        switch (off) {
+>> -       case offsetof(struct bpf_sysctl, write):
+>> +       case bpf_ctx_range(struct bpf_sysctl, write):
+> 
+> this will actually allow reads pas t write field (e.g., offset = 2, size = 4).
 
-+1. bpf_map_charge_init() already has such check.
-Changing them to u64 is probably good idea.
+Wouldn't
+
+	if (off < 0 || off + size > sizeof(struct bpf_sysctl) || off % size)
+		return false;
+
+prevent all OOB read-write attempts? Especially the off % size part - I
+think it has the effect of preventing OOB accesses for fields. In
+particular, it would filter offset = 2, size = 4 case.
+
+I have also checked the other usages of bpf_ctx_range, for example,
+bpf_skb_is_valid_access, and they don't seem to be doing anything
+special.
+
+> 
+>>                if (type != BPF_READ)
+>>                        return false;
+>>                bpf_ctx_record_field_size(info, size_default);
+>>                return bpf_ctx_narrow_access_ok(off, size, size_default);
+>> -       case offsetof(struct bpf_sysctl, file_pos):
+>> +       case bpf_ctx_range(struct bpf_sysctl, file_pos)
+> 
+> this will allow read past context struct altogether. When we allow
+> ranges, we will have to adjust allowed read size.
+
+Same here.
