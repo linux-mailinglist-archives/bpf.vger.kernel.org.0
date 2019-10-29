@@ -2,84 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C181FE82EF
-	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2019 09:06:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69AE8E8318
+	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2019 09:20:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728550AbfJ2IGD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 29 Oct 2019 04:06:03 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:55961 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726246AbfJ2IGC (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 29 Oct 2019 04:06:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1572336361;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YaB5XtQ/QGZvr2h5W63rFZo7WkD/6qyYty4a6W3kSYg=;
-        b=K8o8s3TL4QGPjukD3CEJjXNUgbTvRlrHeIUmOXybpvTMpF8q9z7kKp2OwSaqt4RW/uqQT3
-        YW9AocBONAcoNXP7Ve9RqQC+B1NwwQXZQ3RDdpkUDbhX4GKKTTGpQhk5IwW5cu8MdSTyxF
-        Y1uDHxAfCi+u0pAKApJF9Pvo07u0sEI=
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
- [209.85.208.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-159-UcIJEDq7MZS_3ICNYrcs0Q-1; Tue, 29 Oct 2019 04:05:58 -0400
-Received: by mail-lj1-f197.google.com with SMTP id r13so1926109ljk.18
-        for <bpf@vger.kernel.org>; Tue, 29 Oct 2019 01:05:57 -0700 (PDT)
+        id S1729057AbfJ2ITy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 29 Oct 2019 04:19:54 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:39519 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729040AbfJ2ITy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 29 Oct 2019 04:19:54 -0400
+Received: by mail-qt1-f195.google.com with SMTP id t8so18961986qtc.6;
+        Tue, 29 Oct 2019 01:19:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=PVI2OQ5lGd+deR12IVFnVb/9vuCzshNV43sWHU4PiNM=;
+        b=SHYbO8tiuE55WImyXvZMkhiwlSxgF1ecP6g54mh/sslqzxwHDAhhzaWbdI4Lkot+x6
+         7WsMSNMCCBeYE2/wzx2GcUCQJGdUEAaCklzKglXCEeJOeH8lW44sPQFWJlqHKt5CfBHU
+         BvqE1LTRRdJKei5FZH9Zs1Uon8mWzVGp4ot+ZF38f8+PPVJCABtWHaEBg/koaUfRY542
+         apdHgytTm+V1gT0/xobuko012T6TGg0wgT48hegYXVPKGFgoyScYogl7z8rh3KBWzwQF
+         eEmPh1RHIuWxP9iBR4qmXrFfJJIEi4DtVvaw/enQHkwRTyLKvx32OW8ybfkNcjquKERB
+         Wiig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=rLGoW7SRG4SMfs2KFUdiBrGDzI0FTu0D10Lnaw21e2w=;
-        b=CnoJj7eNrmFzAzVt6h17tgRQGBSBuQqmp7eCaCClEvOKvhnBZORYS6xPSEOtdwMSzF
-         JMBrF7dljge6ZmfhQkcob4QV9MKF/wywDD695DiJDvJPrD65RUfkWVbGQ7Q7XoKYKE1U
-         3woNE2CyqHdmfmDik/S7YFgw7R9nomxfD6wfL/Qr8F/KvOJxuMQFocOD5NLprWxKDklG
-         lGucsBtup5k6eQjsKLemw7NGQW2LBuJkrCTrHr9pPAhiSQkPdjWQfvmeFreLCg+HCUyb
-         bSQk/Ou2aG4FoVAWwKhMtC7sDzuY29iFXoV3XXLqXf2sSZWWXdPmN4qtiohSfdx/+QWw
-         gniA==
-X-Gm-Message-State: APjAAAWHFoGpG29wfO+EmXKeNLpgTuFIo65BRJ454eH05/eYCPpBUy5Q
-        KRg8eJgCHVtJChHsC2/7RdZWnZCyYHlTuUo2Ab+J93MsAUBluSLuoAMX1FddCQJlToa9a2SNAMh
-        SqaHJKJMMhJw2
-X-Received: by 2002:a05:651c:ce:: with SMTP id 14mr1507318ljr.23.1572336356521;
-        Tue, 29 Oct 2019 01:05:56 -0700 (PDT)
-X-Google-Smtp-Source: APXvYqzJsOBMRDixarYBapn4qSz+u/tA8XqjuW+RpKGFNawFnUPPOXneS0LHPE70VJ/fIbfF/6PbNA==
-X-Received: by 2002:a05:651c:ce:: with SMTP id 14mr1507294ljr.23.1572336356300;
-        Tue, 29 Oct 2019 01:05:56 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk (borgediget.toke.dk. [85.204.121.218])
-        by smtp.gmail.com with ESMTPSA id b23sm7638795lfj.49.2019.10.29.01.05.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Oct 2019 01:05:55 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 719931818B6; Tue, 29 Oct 2019 09:05:54 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, ast@fb.com, daniel@iogearbox.net
-Cc:     andrii.nakryiko@gmail.com, kernel-team@fb.com,
-        Andrii Nakryiko <andriin@fb.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>
-Subject: Re: [PATCH bpf-next] libbpf: don't use kernel-side u32 type in xsk.c
-In-Reply-To: <20191029055953.2461336-1-andriin@fb.com>
-References: <20191029055953.2461336-1-andriin@fb.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 29 Oct 2019 09:05:54 +0100
-Message-ID: <87ftjcrn6l.fsf@toke.dk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=PVI2OQ5lGd+deR12IVFnVb/9vuCzshNV43sWHU4PiNM=;
+        b=kiG6rLYyXBPJB7ups9BmZTdlynGUW2LFkP5iX4ZL0091kgyIo7yfSWV8bk2AQUeXWI
+         e1OgYqwGP6IKe03nyu/kUG/nWkJHAXMmNC5TFaAlBFKSW3Nt1zkklgb+OI1T+WvVZ43o
+         gLo2Gi21Pw5N/d/BHCeyfLUEXVWgD9WCKOwTkyuBmJKmffi/EFG/l2FJ/PDhgma6Xbzh
+         3OruWswOvTPmlfqF0XObmV2eFOJjpgaknTamkh3Zv2z3kP6lxaZgBntm3Z1fyzTGncnA
+         kayN/+aTTCmvlOiGjzIYCEg2wAgwUtKiBoWr+DBzKhyta8IukRX5pbSIBmPdJYhSxysL
+         NOkQ==
+X-Gm-Message-State: APjAAAVBiUEyqMyINaEXFVc4c9gam/e2DS8jBcnBH/QssMkpFsYQtcUf
+        5wx3MFKEid3ACNHgBHveFWgkaelLrJtpJ5qkDBU=
+X-Google-Smtp-Source: APXvYqzIRO6n4UNkzmiBnah4OuxcFzBzQ+s8JAdrDdxIvfT4haEldEjC55ikFhQmznl7onOx/p2kU7WTGMBxE8OzGIA=
+X-Received: by 2002:a05:6214:1ca:: with SMTP id c10mr21843161qvt.233.1572337193364;
+ Tue, 29 Oct 2019 01:19:53 -0700 (PDT)
 MIME-Version: 1.0
-X-MC-Unique: UcIJEDq7MZS_3ICNYrcs0Q-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=WINDOWS-1252
+References: <20191029055953.2461336-1-andriin@fb.com>
+In-Reply-To: <20191029055953.2461336-1-andriin@fb.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Tue, 29 Oct 2019 09:19:41 +0100
+Message-ID: <CAJ+HfNgOHwSDpkMh=+Z42V5Y2K+-BsTkuux7XCO=5Qk=d6hSLg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: don't use kernel-side u32 type in xsk.c
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Netdev <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Kernel Team <kernel-team@fb.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andriin@fb.com> writes:
-
+On Tue, 29 Oct 2019 at 08:26, Andrii Nakryiko <andriin@fb.com> wrote:
+>
 > u32 is a kernel-side typedef. User-space library is supposed to use __u32=
 .
 > This breaks Github's projection of libbpf. Do u32 -> __u32 fix.
+>
+> Fixes: 94ff9ebb49a5 ("libbpf: Fix compatibility for kernels without need_=
+wakeup")
+> Cc: Magnus Karlsson <magnus.karlsson@intel.com>
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 
-I've always wondered about this, actually. Why are they different?
+Thanks Andrii!
 
--Toke
+Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
 
+> ---
+>  tools/lib/bpf/xsk.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
+> index d54111133123..74d84f36a5b2 100644
+> --- a/tools/lib/bpf/xsk.c
+> +++ b/tools/lib/bpf/xsk.c
+> @@ -161,22 +161,22 @@ static void xsk_mmap_offsets_v1(struct xdp_mmap_off=
+sets *off)
+>         off->rx.producer =3D off_v1.rx.producer;
+>         off->rx.consumer =3D off_v1.rx.consumer;
+>         off->rx.desc =3D off_v1.rx.desc;
+> -       off->rx.flags =3D off_v1.rx.consumer + sizeof(u32);
+> +       off->rx.flags =3D off_v1.rx.consumer + sizeof(__u32);
+>
+>         off->tx.producer =3D off_v1.tx.producer;
+>         off->tx.consumer =3D off_v1.tx.consumer;
+>         off->tx.desc =3D off_v1.tx.desc;
+> -       off->tx.flags =3D off_v1.tx.consumer + sizeof(u32);
+> +       off->tx.flags =3D off_v1.tx.consumer + sizeof(__u32);
+>
+>         off->fr.producer =3D off_v1.fr.producer;
+>         off->fr.consumer =3D off_v1.fr.consumer;
+>         off->fr.desc =3D off_v1.fr.desc;
+> -       off->fr.flags =3D off_v1.fr.consumer + sizeof(u32);
+> +       off->fr.flags =3D off_v1.fr.consumer + sizeof(__u32);
+>
+>         off->cr.producer =3D off_v1.cr.producer;
+>         off->cr.consumer =3D off_v1.cr.consumer;
+>         off->cr.desc =3D off_v1.cr.desc;
+> -       off->cr.flags =3D off_v1.cr.consumer + sizeof(u32);
+> +       off->cr.flags =3D off_v1.cr.consumer + sizeof(__u32);
+>  }
+>
+>  static int xsk_get_mmap_offsets(int fd, struct xdp_mmap_offsets *off)
+> --
+> 2.17.1
+>
