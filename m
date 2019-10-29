@@ -2,55 +2,49 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DF13E8F11
-	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2019 19:13:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E74B2E8F64
+	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2019 19:36:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730830AbfJ2SNT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 29 Oct 2019 14:13:19 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:39312 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730417AbfJ2SNS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 29 Oct 2019 14:13:18 -0400
-Received: by mail-qt1-f196.google.com with SMTP id t8so21585101qtc.6;
-        Tue, 29 Oct 2019 11:13:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=wOUGHyZJSqHSdDOp6Oe0hXLgA63blFUIb0ipoUBNEmg=;
-        b=J5jgWLEW8NrsY4XZo+ZHNhe2TD3BMlshfH/IDTMp5h2j+a0lK8GLUnyaNBvYGkD0X2
-         Xaa/ZWZqU7N6s/ushVas7qwq+2QbskTYFMJi7HcoVWVK2TMepHG8sfDSFcyx+XcJw8fh
-         V66yZbZdjFbHnm72WJdu77WhsYopBOjJGCG2u4CchZBBO/2nhkFYwA411kL5gLWgCnnY
-         np27h9ceQ3xlF1aL8a6/9YRcXGWxZpQ0l/sMrmYWVh2F7gUTdPcElszuWIOMvPOcfG+S
-         +cQyVRRRAgi6lKR+/tIhbuss+QlFIEQ9ezUspyfgyK8IUMd0TRc8uO9Q54K91Yhv8Z7A
-         2yUg==
+        id S1731856AbfJ2SgR convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Tue, 29 Oct 2019 14:36:17 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:41432 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731847AbfJ2SgR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 29 Oct 2019 14:36:17 -0400
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com [209.85.167.71])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 5A4408535D
+        for <bpf@vger.kernel.org>; Tue, 29 Oct 2019 18:36:16 +0000 (UTC)
+Received: by mail-lf1-f71.google.com with SMTP id c13so2747684lfk.23
+        for <bpf@vger.kernel.org>; Tue, 29 Oct 2019 11:36:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=wOUGHyZJSqHSdDOp6Oe0hXLgA63blFUIb0ipoUBNEmg=;
-        b=IMOuJ0KpfphvfJYvDujiRwpNtE9r4ciVBUfPi68FpTQ0kyjTs7v2ilIrCoAS9mrl++
-         a0H0NmpSCgmcQztkfQ4JPRcLap4Ui2ywCu92Ti4+CbIZfMy+XgW/OgYk0f5NMBsn3bXD
-         lNxVtQ8uabTcxuzl/BmssOUkZGeDbq9qDalEyRM09w9kGu468OXpW3E6E8+zUYbjgaAJ
-         Xsdc4/e7nQ7EQZzsdbwBG3NMOf35SXLsbhbrEKqD3WYxQSWN0Qqqe5/2hrjGJjoKLJ9o
-         zeI9inSMXeG5IDK1OBjFtlXhaMSP7ijmnbw8Cig2woe5oSTseiZ4VW/rQbwAskaK6SSU
-         x9WQ==
-X-Gm-Message-State: APjAAAX23lhcHbqGKlLYMMN2y6QmleoKWGjlYYhPlsz5hzYA/6jc5lId
-        maUiyJCc8DxorXn3V4psDvKeamPg59Nm5PrADzY=
-X-Google-Smtp-Source: APXvYqxn+aNwQhNzlP5TYj078aonMbgx7dDcB4vzU63NP/PXlYLijV3g0UDzo+3f0hGqnzWkWzuKRnK4qA2errbxGgM=
-X-Received: by 2002:ad4:4e4a:: with SMTP id eb10mr16456355qvb.228.1572372795743;
- Tue, 29 Oct 2019 11:13:15 -0700 (PDT)
-MIME-Version: 1.0
-References: <157220959547.48922.6623938299823744715.stgit@toke.dk>
- <157220959873.48922.4763375792594816553.stgit@toke.dk> <CAEf4BzYoEPKNFnzOEAhhE2w=U11cYfTN4o_23kjzY4ByEt5y-g@mail.gmail.com>
- <877e4nsxth.fsf@toke.dk>
-In-Reply-To: <877e4nsxth.fsf@toke.dk>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 29 Oct 2019 11:13:04 -0700
-Message-ID: <CAEf4BzZe6h=0KN+uWdKcGU5VoRDDsvjNzyqh0=aT1u+EvT1x_g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 3/4] libbpf: Add auto-pinning of maps when
- loading BPF objects
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=kd1BOd0Hbp7Czg/dVidOPyIgI3QlB5iTNf2+aaNF89s=;
+        b=bQskenFQOjlr+Z6TUYwX7b6CFtvYaaIsyVX5+VfeYFdnI2wyp6faAXqrqSBN4SYh/u
+         SkwL5rESOTszU9j9VXMmCsohpSoAh08J1eFcD4tLoMpUugZWx8T40Ote02sMm02MsF9M
+         myZJ7UmcP7mpAQfxwyc3AQe2WqzkWeQsXEbNzDdZREh0LdKNOqMJvMIc8RHbpc2UEKaO
+         W/PUIaqIM4ibUpLSAgeYGZuF3d/MCd6uGijrmXDiPlSnPiBwlwacULrSpIBhGlAW4Aqq
+         S7GyHTf+5PremGwJ7UZZMUvVEUd516LmzKl+H4c4Z4SWkHHGmx8nwT9jYyl2ne5G/1Sl
+         lHWg==
+X-Gm-Message-State: APjAAAXhKKbDU/x4JQHle/ed90TQXmZhswc6NrIdlazK/Yy7paO5ArDU
+        y6HaYmxJJy1IZAt4v/Oxk+tQsr5wspcsUR8dogybo7BUNtizgQdgEDWQUrVex+rpdN6ksqtnT28
+        k+H64FgOAArHj
+X-Received: by 2002:a2e:b013:: with SMTP id y19mr3770543ljk.157.1572374174785;
+        Tue, 29 Oct 2019 11:36:14 -0700 (PDT)
+X-Google-Smtp-Source: APXvYqz2RMuOXeu2knMg5U4tdFIIFpH9ACr5uIX8glALCJnMSaOZ8rVaRDgaCCQcU9wUWmIdQfQSKQ==
+X-Received: by 2002:a2e:b013:: with SMTP id y19mr3770531ljk.157.1572374174521;
+        Tue, 29 Oct 2019 11:36:14 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a00:7660:6da:443::2])
+        by smtp.gmail.com with ESMTPSA id u11sm4796731lfq.54.2019.10.29.11.36.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Oct 2019 11:36:13 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 5798C1818B6; Tue, 29 Oct 2019 19:36:12 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <ast@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
@@ -58,237 +52,217 @@ Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
         David Miller <davem@davemloft.net>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next v3 2/4] libbpf: Store map pin path and status in struct bpf_map
+In-Reply-To: <CAEf4Bzb_FdXRo-LcgpjDqPe78hZoUkQsKZZET3HM-vZWc5SYZg@mail.gmail.com>
+References: <157220959547.48922.6623938299823744715.stgit@toke.dk> <157220959765.48922.14916417301812812065.stgit@toke.dk> <CAEf4Bzb-CewiZhsGEmSNSCGHLKQiXFO3gS+cJgD1Tx_L_gpiMg@mail.gmail.com> <87a79krkma.fsf@toke.dk> <CAEf4Bzb_FdXRo-LcgpjDqPe78hZoUkQsKZZET3HM-vZWc5SYZg@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 29 Oct 2019 19:36:12 +0100
+Message-ID: <87bltzqu03.fsf@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 29, 2019 at 2:30 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
-at.com> wrote:
->
-> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
->
-> > On Sun, Oct 27, 2019 at 1:53 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@=
-redhat.com> wrote:
-> >>
-> >> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> >>
-> >> This adds support to libbpf for setting map pinning information as par=
-t of
-> >> the BTF map declaration, to get automatic map pinning (and reuse) on l=
-oad.
-> >> The pinning type currently only supports a single PIN_BY_NAME mode, wh=
-ere
-> >> each map will be pinned by its name in a path that can be overridden, =
-but
-> >> defaults to /sys/fs/bpf.
-> >>
-> >> Since auto-pinning only does something if any maps actually have a
-> >> 'pinning' BTF attribute set, we default the new option to enabled, on =
-the
-> >> assumption that seamless pinning is what most callers want.
-> >>
-> >> When a map has a pin_path set at load time, libbpf will compare the ma=
-p
-> >> pinned at that location (if any), and if the attributes match, will re=
--use
-> >> that map instead of creating a new one. If no existing map is found, t=
-he
-> >> newly created map will instead be pinned at the location.
-> >>
-> >> Programs wanting to customise the pinning can override the pinning pat=
-hs
-> >> using bpf_map__set_pin_path() before calling bpf_object__load() (inclu=
-ding
-> >> setting it to NULL to disable pinning of a particular map).
-> >>
-> >> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> >> ---
-> >>  tools/lib/bpf/bpf_helpers.h |    6 ++
-> >>  tools/lib/bpf/libbpf.c      |  142 ++++++++++++++++++++++++++++++++++=
-++++++++-
-> >>  tools/lib/bpf/libbpf.h      |   11 +++
-> >>  3 files changed, 154 insertions(+), 5 deletions(-)
-> >>
-> >
-> > [...]
-> >
-> >>
-> >> -static int bpf_object__init_maps(struct bpf_object *obj, bool relaxed=
-_maps)
-> >> +static int bpf_object__build_map_pin_paths(struct bpf_object *obj,
-> >> +                                          const char *path)
-> >> +{
-> >> +       struct bpf_map *map;
-> >> +
-> >> +       if (!path)
-> >> +               path =3D "/sys/fs/bpf";
-> >> +
-> >> +       bpf_object__for_each_map(map, obj) {
-> >> +               char buf[PATH_MAX];
-> >> +               int err, len;
-> >> +
-> >> +               if (map->pinning !=3D LIBBPF_PIN_BY_NAME)
-> >> +                       continue;
-> >
-> > still think it's better be done from map definition parsing code
-> > instead of a separate path, which will ignore most of maps anyways (of
-> > course by extracting this whole buffer creation logic into a
-> > function).
->
-> Hmm, okay, can do that. I think we should still store the actual value
-> of the 'pinning' attribute, though; and even have a getter for it. The
-> app may want to do something with that information instead of having to
-> infer it from map->pin_path. Certainly when we add other values of the
-> pinning attribute, but we may as well add the API to get the value
-> now...
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-Let's now expose more stuff than what we need to expose. If we really
-will have a need for that, it's really easy to add. Right now you
-won't even need to store pinning attribute in bpf_map, because you'll
-be just setting proper pin_path in init_user_maps(), as suggested
-above.
-
+> On Tue, Oct 29, 2019 at 2:01 AM Toke Høiland-Jørgensen <toke@redhat.com> wrote:
+>>
+>> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+>>
+>> > On Sun, Oct 27, 2019 at 1:53 PM Toke Høiland-Jørgensen <toke@redhat.com> wrote:
+>> >>
+>> >> From: Toke Høiland-Jørgensen <toke@redhat.com>
+>> >>
+>> >> Support storing and setting a pin path in struct bpf_map, which can be used
+>> >> for automatic pinning. Also store the pin status so we can avoid attempts
+>> >> to re-pin a map that has already been pinned (or reused from a previous
+>> >> pinning).
+>> >>
+>> >> Acked-by: Andrii Nakryiko <andriin@fb.com>
+>> >> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+>> >> ---
+>> >>  tools/lib/bpf/libbpf.c   |  115 ++++++++++++++++++++++++++++++++++++----------
+>> >>  tools/lib/bpf/libbpf.h   |    3 +
+>> >>  tools/lib/bpf/libbpf.map |    3 +
+>> >>  3 files changed, 97 insertions(+), 24 deletions(-)
+>> >>
+>> >> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+>> >> index ce5ef3ddd263..eb1c5e6ad4a3 100644
+>> >> --- a/tools/lib/bpf/libbpf.c
+>> >> +++ b/tools/lib/bpf/libbpf.c
+>> >> @@ -226,6 +226,8 @@ struct bpf_map {
+>> >>         void *priv;
+>> >>         bpf_map_clear_priv_t clear_priv;
+>> >>         enum libbpf_map_type libbpf_type;
+>> >> +       char *pin_path;
+>> >> +       bool pinned;
+>> >>  };
+>> >>
+>> >>  struct bpf_secdata {
+>> >> @@ -4025,47 +4027,118 @@ int bpf_map__pin(struct bpf_map *map, const char *path)
+>> >>         char *cp, errmsg[STRERR_BUFSIZE];
+>> >>         int err;
+>> >>
+>> >> -       err = check_path(path);
+>> >> -       if (err)
+>> >> -               return err;
+>> >> -
+>> >>         if (map == NULL) {
+>> >>                 pr_warn("invalid map pointer\n");
+>> >>                 return -EINVAL;
+>> >>         }
+>> >>
+>> >> -       if (bpf_obj_pin(map->fd, path)) {
+>> >> -               cp = libbpf_strerror_r(errno, errmsg, sizeof(errmsg));
+>> >> -               pr_warn("failed to pin map: %s\n", cp);
+>> >> -               return -errno;
+>> >> +       if (map->pinned) {
+>> >> +               pr_warn("map already pinned\n");
+>> >
+>> > it would be helpful to print the name of the map, otherwise user will
+>> > have to guess
+>>
+>> Well, the existing error message didn't include the map name, so I was
+>> just being consistent. But sure I can change it (and the old message as
+>> well).
+>>
+>> >> +               return -EEXIST;
+>> >> +       }
+>> >> +
+>> >> +       if (path && map->pin_path && strcmp(path, map->pin_path)) {
+>> >> +               pr_warn("map already has pin path '%s' different from '%s'\n",
+>> >> +                       map->pin_path, path);
+>> >
+>> > here pin_path probably would be unique enough, but for consistency we
+>> > might want to print map name as well
+>> >
+>> >> +               return -EINVAL;
+>> >> +       }
+>> >> +
+>> >> +       if (!map->pin_path && !path) {
+>> >> +               pr_warn("missing pin path\n");
+>> >
+>> > and here?
+>> >
+>> >> +               return -EINVAL;
+>> >>         }
+>> >>
+>> >> -       pr_debug("pinned map '%s'\n", path);
+>> >> +       if (!map->pin_path) {
+>> >> +               map->pin_path = strdup(path);
+>> >> +               if (!map->pin_path) {
+>> >> +                       err = -errno;
+>> >> +                       goto out_err;
+>> >> +               }
+>> >> +       }
+>> >
+>> > There is a bit of repetition of if conditions, based on whether we
+>> > have map->pin_path set (which is the most critical piece we care
+>> > about), so that makes it a bit harder to follow what's going on. How
+>> > about this structure, would it make a bit clearer what the error
+>> > conditions are? Not insisting, though.
+>> >
+>> > if (map->pin_path) {
+>> >   if (path && strcmp(...))
+>> >     bad, exit
+>> > else { /* no pin_path */
+>> >   if (!path)
+>> >     very bad, exit
+>> >   map->pin_path = strdup(..)
+>> >   if (!map->pin_path)
+>> >     also bad, exit
+>> > }
+>>
+>> Hmm, yeah, this may be better...
+>>
+>> >> +
+>> >> +       err = check_path(map->pin_path);
+>> >> +       if (err)
+>> >> +               return err;
+>> >> +
+>> >
+>> > [...]
+>> >
+>> >>
+>> >> +int bpf_map__set_pin_path(struct bpf_map *map, const char *path)
+>> >> +{
+>> >> +       char *old = map->pin_path, *new;
+>> >> +
+>> >> +       if (path) {
+>> >> +               new = strdup(path);
+>> >> +               if (!new)
+>> >> +                       return -errno;
+>> >> +       } else {
+>> >> +               new = NULL;
+>> >> +       }
+>> >> +
+>> >> +       map->pin_path = new;
+>> >> +       if (old)
+>> >> +               free(old);
+>> >
+>> > you don't really need old, just free map->pin_path before setting it
+>> > to new. Also assigning new = NULL will simplify if above.
+>>
+>> Right, will fix.
+>>
+>> >> +
+>> >> +       return 0;
+>> >> +}
+>> >> +
+>> >> +const char *bpf_map__get_pin_path(struct bpf_map *map)
+>> >> +{
+>> >> +       return map->pin_path;
+>> >> +}
+>> >> +
+>> >> +bool bpf_map__is_pinned(struct bpf_map *map)
+>> >> +{
+>> >> +       return map->pinned;
+>> >> +}
+>> >> +
+>> >>  int bpf_object__pin_maps(struct bpf_object *obj, const char *path)
+>> >>  {
+>> >>         struct bpf_map *map;
+>> >> @@ -4106,17 +4179,10 @@ int bpf_object__pin_maps(struct bpf_object *obj, const char *path)
+>> >
+>> > I might have missed something the change in some other patch, but
+>> > shouldn't pin_maps ignore already pinned maps? Otherwise we'll be
+>> > generating unnecessary warnings?
+>>
+>> Well, in the previous version this was in one of the options you didn't
+>> like. If I just change pin_maps() unconditionally, that will be a change
+>> in behaviour in an existing API. So I figured it would be better to
+>> leave this as-is. I don't think this function is really useful along
+>> with the auto-pinning anyway. If you're pinning all maps, why use
+>> auto-pinning? And if you want to do something custom to all the
+>> non-pinned maps you'd probably iterate through them yourself anyway and
+>> can react appropriately?
 >
-> >> +
-> >> +               len =3D snprintf(buf, PATH_MAX, "%s/%s", path, bpf_map=
-__name(map));
-> >> +               if (len < 0)
-> >> +                       return -EINVAL;
-> >> +               else if (len >=3D PATH_MAX)
-> >
-> > [...]
-> >
-> >>         return 0;
-> >>  }
-> >>
-> >> +static bool map_is_reuse_compat(const struct bpf_map *map,
-> >> +                               int map_fd)
-> >
-> > nit: this should fit on single line?
-> >
-> >> +{
-> >> +       struct bpf_map_info map_info =3D {};
-> >> +       char msg[STRERR_BUFSIZE];
-> >> +       __u32 map_info_len;
-> >> +
-> >> +       map_info_len =3D sizeof(map_info);
-> >> +
-> >> +       if (bpf_obj_get_info_by_fd(map_fd, &map_info, &map_info_len)) =
-{
-> >> +               pr_warn("failed to get map info for map FD %d: %s\n",
-> >> +                       map_fd, libbpf_strerror_r(errno, msg, sizeof(m=
-sg)));
-> >> +               return false;
-> >> +       }
-> >> +
-> >> +       return (map_info.type =3D=3D map->def.type &&
-> >> +               map_info.key_size =3D=3D map->def.key_size &&
-> >> +               map_info.value_size =3D=3D map->def.value_size &&
-> >> +               map_info.max_entries =3D=3D map->def.max_entries &&
-> >> +               map_info.map_flags =3D=3D map->def.map_flags &&
-> >> +               map_info.btf_key_type_id =3D=3D map->btf_key_type_id &=
-&
-> >> +               map_info.btf_value_type_id =3D=3D map->btf_value_type_=
-id);
-> >
-> > If map was pinned by older version of the same app, key and value type
-> > id are probably gonna be different, even if the type definition itself
-> > it correct. We probably shouldn't check that?
+> Auto-pinned maps didn't exist before, so interaction between
+> auto-pinned and explicitly pinned maps is a new behavior.
 >
-> Oh, I thought the type IDs would stay relatively stable. If not then I
-> agree that we shouldn't be checking them here. Will fix.
+> With current code using explicit pin_maps and auto-pinned maps is
+> impossible, or am I missing something? While admittedly scenarios in
+> which you'll have to use explicit bpf_object__pin_maps() while you
+> have auto-pinned maps and bpf_map__set_pin_path() are quite exotic
+> (e.g., auto-pin some maps at default path and pin all the rest at some
+> other custom root), I think we should still try to make existing APIs
+> combinable in some sane way.
 
-type IDs are just an ordered index of a type, as generated by Clang.
-No stability guarantees. Just adding extra typedef somewhere in
-unrelated type might shift all the type IDs around.
+Sure, I'm not objecting to making things play nicely with each other to
+the largest extent possible. I'm just vary of changing existing
+behaviour.
 
->
-> >> +}
-> >> +
-> >> +static int
-> >> +bpf_object__reuse_map(struct bpf_map *map)
-> >> +{
-> >> +       char *cp, errmsg[STRERR_BUFSIZE];
-> >> +       int err, pin_fd;
-> >> +
-> >> +       pin_fd =3D bpf_obj_get(map->pin_path);
-> >> +       if (pin_fd < 0) {
-> >> +               if (errno =3D=3D ENOENT) {
-> >> +                       pr_debug("found no pinned map to reuse at '%s'=
-\n",
-> >> +                                map->pin_path);
-> >> +                       return 0;
-> >> +               }
-> >> +
-> >> +               cp =3D libbpf_strerror_r(errno, errmsg, sizeof(errmsg)=
-);
-> >> +               pr_warn("couldn't retrieve pinned map '%s': %s\n",
-> >> +                       map->pin_path, cp);
-> >> +               return -errno;
-> >
-> > store errno locally
->
-> *shrugs* okay, if you insist...
+> The only downside of ignoring already pinned maps is that while
+> previously calling pin_maps() twice in a row would fail fails second
+> time, now the second pin_maps() will be a noop. I think that's benign
+> and acceptable change in behavior? WDYT?
 
-I guess I do insist on correct handling of errno, instead of
-potentially returning garbage value from some unrelated syscall from
-inside of pr_warn's user-provided callback.
+Changing something that would previously fail to just silently succeed
+does make me a bit twitchy. However, I suppose that as long as we try to
+make sure it really is a no-op (i.e., re-pinning a map *in the same
+path* can "succeed" silently). Will try something to that effect...
 
-Even libbpf_strerror_r can garble errno (e.g., through its strerror_r
-call), so make sure you store it before passing into
-libbpf_strerror_r().
-
->
-> >> +       }
-> >> +
-> >> +       if (!map_is_reuse_compat(map, pin_fd)) {
-> >> +               pr_warn("couldn't reuse pinned map at '%s': "
-> >> +                       "parameter mismatch\n", map->pin_path);
-> >> +               close(pin_fd);
-> >> +               return -EINVAL;
-> >> +       }
-> >> +
-> >> +       err =3D bpf_map__reuse_fd(map, pin_fd);
-> >> +       if (err) {
-> >> +               close(pin_fd);
-> >> +               return err;
-> >> +       }
-> >> +       map->pinned =3D true;
-> >> +       pr_debug("reused pinned map at '%s'\n", map->pin_path);
-> >> +
-> >> +       return 0;
-> >> +}
-> >> +
-> >
-> > [...]
-> >
-> >> +enum libbpf_pin_type {
-> >> +       LIBBPF_PIN_NONE,
-> >> +       /* PIN_BY_NAME: pin maps by name (in /sys/fs/bpf by default) *=
-/
-> >> +       LIBBPF_PIN_BY_NAME,
-> >> +};
-> >> +
-> >>  LIBBPF_API int bpf_object__pin_maps(struct bpf_object *obj, const cha=
-r *path);
-> >
-> > pin_maps should take into account opts->auto_pin_path, shouldn't it?
-> >
-> > Which is why I also think that auto_pin_path is bad name, because it's
-> > not only for auto-pinning, it's a pinning root path, so something like
-> > pin_root_path or just pin_root is better and less misleading name.
->
-> I view auto_pin_path as something that is used specifically for the
-> automatic pinning based on the 'pinning' attribute. Any other use of
-> pinning is for custom use and the user can pass a custom pin path to
-> those functions.
-
-What's the benefit of restricting it to just this use case? If app
-wants to use something other than /sys/fs/bpf as a default root path,
-why would that be restricted only to auto-pinned maps? It seems to me
-that having set this on bpf_object__open() and then calling
-bpf_object__pin_maps(NULL) should just take this overridden root path
-into account. Isn't that a logical behavior?
+-Toke
