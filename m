@@ -2,153 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B9A4E8BBF
-	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2019 16:24:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B047E8C0C
+	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2019 16:43:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389878AbfJ2PYs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 29 Oct 2019 11:24:48 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:37366 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389695AbfJ2PYr (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 29 Oct 2019 11:24:47 -0400
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x9TFNHe3029493;
-        Tue, 29 Oct 2019 08:24:27 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=wtN8PdjdefXXGDZzvQmbd/ceqlzGHiiD10ergLqROIs=;
- b=P4Cct0G7EZ9M0/CwDcc8xixQ8jGeIf9mBU0ehJ4VbJMCNvjXOwMiSnlDmp+RXDgOcpVG
- WDkyNb4Q0QQDTmaTfF4X82CErQH11bhB2J3oboqbFqrWUKN5tuWiXe4fN3FuStX76dX3
- ZwXgOZ8X22O6Nl+Bp3TjPsLuqfkMryg3CYk= 
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by mx0a-00082601.pphosted.com with ESMTP id 2vw5usumkh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 29 Oct 2019 08:24:27 -0700
-Received: from prn-hub03.TheFacebook.com (2620:10d:c081:35::127) by
- prn-hub03.TheFacebook.com (2620:10d:c081:35::127) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Tue, 29 Oct 2019 08:24:26 -0700
-Received: from NAM01-SN1-obe.outbound.protection.outlook.com (192.168.54.28)
- by o365-in.thefacebook.com (192.168.16.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
- via Frontend Transport; Tue, 29 Oct 2019 08:24:26 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dsT/UrlMLWL3sZQiG5+jL8GtgovEQZ2B9uxPVNZK/TJ9UtVsw5NcTKgNaWn1hq2luhvZdrmCzhb1rGDHEZstYGCDHbPoOL8KFzleAOWNZvS7pXcqolX3pUtOIpAjOLzqZgJB7tOa+KLjpkLTd2YibrnpWUkcwinHulFoAHs8TViPdDiw7LmytPlEvIncC9bdAcJClQ/5HQRU+OqQgGetrljLJifNASEUi+cTsKexbTgvTQLLC27/wL1RvMWd5gPagwiP2XP3D5QJAR8EZHlhu/Q68MxsYTBgKGhMlC0XTNIAksGlSVPiPiG4SZkKB05tBdJk8BdyU9xsaLD1max5VQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wtN8PdjdefXXGDZzvQmbd/ceqlzGHiiD10ergLqROIs=;
- b=HtJZqGlRsc5FgSKO0EtfzN1m4rC7Bz+5YPB20yYed27aq6+rMN0VaCG8qtss8YK6oFi0kKMP6phQV9nd8Czw5gqBS9piDSLcOX4+kdQJldJM2aStAwgM0y5/PHwXhQ3VUKg4OWQzEX9qAO+Qm4pO+hIQQbm5iR0HzF1oJt+SVb+o6cYdcNq0/nhXd6U0w3wIvc64p66xakmS6+YP3VLV33vuHAYwabyDpsKULLmpldCYIQvgk6stCfDV75vnRWSCU2pD88QNrMTsvRjKBD+ruAsDWR3wMUfUDmnMMkK6/Hdv43qJhshXVBFxipQjHAXOrYPAPi/vjiOSc9hZQy7tXA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wtN8PdjdefXXGDZzvQmbd/ceqlzGHiiD10ergLqROIs=;
- b=dSSVerrfDogJsIpDTNOW77ocAwckfHeWmzO+ipqE0039bTCvbDWQro8e+JMKjBs0B/sJOXVC9bOXztIy1yCVjkxg/LSp+jnDokHgparexKPTOW5SBtaCmwngEEYSdY5REG8mAbvgHAqZHraF4MyUIGbgNQ6qttUlOf0kouuJlxo=
-Received: from MWHPR15MB1375.namprd15.prod.outlook.com (10.173.233.21) by
- MWHPR15MB1869.namprd15.prod.outlook.com (10.174.100.23) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2387.24; Tue, 29 Oct 2019 15:24:24 +0000
-Received: from MWHPR15MB1375.namprd15.prod.outlook.com
- ([fe80::e917:269c:162c:2142]) by MWHPR15MB1375.namprd15.prod.outlook.com
- ([fe80::e917:269c:162c:2142%12]) with mapi id 15.20.2387.025; Tue, 29 Oct
- 2019 15:24:24 +0000
-From:   Andrey Ignatov <rdna@fb.com>
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-CC:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: test narrow load from
- bpf_sysctl.write
-Thread-Topic: [PATCH bpf-next] selftests/bpf: test narrow load from
- bpf_sysctl.write
-Thread-Index: AQHVjmWKEYg+r57vMkSTUFaYrhGjTqdxvRUA
-Date:   Tue, 29 Oct 2019 15:24:23 +0000
-Message-ID: <20191029152422.GB84963@rdna-mbp>
-References: <20191029143027.28681-1-iii@linux.ibm.com>
-In-Reply-To: <20191029143027.28681-1-iii@linux.ibm.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MWHPR2001CA0022.namprd20.prod.outlook.com
- (2603:10b6:301:15::32) To MWHPR15MB1375.namprd15.prod.outlook.com
- (2603:10b6:300:ba::21)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:200::b373]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 24a8b262-01c6-411e-f1e1-08d75c8413d9
-x-ms-traffictypediagnostic: MWHPR15MB1869:
-x-microsoft-antispam-prvs: <MWHPR15MB18699CD508CE011BF30350DCA8610@MWHPR15MB1869.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2043;
-x-forefront-prvs: 0205EDCD76
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(7916004)(136003)(346002)(396003)(39860400002)(376002)(366004)(199004)(189003)(186003)(256004)(33716001)(14444005)(71190400001)(5024004)(99286004)(102836004)(46003)(71200400001)(4326008)(2906002)(11346002)(6246003)(6506007)(54906003)(386003)(6116002)(446003)(478600001)(316002)(6916009)(476003)(25786009)(33656002)(6436002)(86362001)(52116002)(66556008)(66476007)(64756008)(66446008)(486006)(76176011)(7736002)(6512007)(229853002)(6486002)(81156014)(14454004)(5660300002)(66946007)(9686003)(8936002)(305945005)(1076003)(8676002)(81166006)(4001150100001);DIR:OUT;SFP:1102;SCL:1;SRVR:MWHPR15MB1869;H:MWHPR15MB1375.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: FH5Bguj6L0tHhf6fJNzUVqc00v6RgqB9v5FAtTeT3mbggAxZW+CJ/QNsFmb1s9J+dOBhrwKr4YnTPmdFiVLZVHkXjrzIqbqBxHpVwlghwuyOq5HmU+4koDGF3yj66/vg9eQjQuzIt28RYANbSt8pvPfe7rfw/RG4/Ncvln9XG5HIjJuLX+osqGlK8RftVqiEMkVjM9g3Mt2WnshJLjWZCS3xTwlnbSu6v0OeDq0hIQ6BX/cHiwPhg5d/d8fOpoQSIgFfkg3Nsh9kLq76lzLOgbj6myqyoVTb+yU7jfDvXcS0fPnnfjW1lhqaqqYDUr8bUliD7VoL7IbT8VufX/zcoTkp0YNrON9G2CjRWn9xivE5NvJ0JP8lyzrFrs/qn4qi2oaewW36Jb5Px1e/TXEDf4YXn14bRF4IrtMjRrQtiCpT5zQ2MHFdAY0ZmOnOaEoA
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <4AD9B1A9DD5AA54E90852B952B1D16E5@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S2390033AbfJ2Pn2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 29 Oct 2019 11:43:28 -0400
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:33983 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389902AbfJ2Pn2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 29 Oct 2019 11:43:28 -0400
+Received: by mail-pg1-f194.google.com with SMTP id e4so5569000pgs.1;
+        Tue, 29 Oct 2019 08:43:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xmVlNmzBbyTwx/IxkGsqdEPQpOfewWkcmkNfJI6xuFY=;
+        b=BVpF0bZN8Ak/inmLo0ckzoUgQlrkN4VYtAOIBGP+txOA6OT4Poa+bSzUV0kUKBiDaF
+         oJi9srOM3nOy8o/WoiiKBqRuDGL//Ws80oWf8G52pzkENR7P6io1slcFDY7+klf8AZ7d
+         90UPYCs3tg+nbBDBicLoSAni3I1cj8IrKV2HKYT8PZL8oEp4y9kv+Om/1P+qJjWGIaTX
+         x0f+JaiKsuC6MC70ibOtNl6hTGES+PXoYM4BssGvGA8m6NGyW5m4rxgh96lSOGW7jbgU
+         QqGRWkEjLK56N/pZ//mDIXus0wj0DL/YS/Gm1bBOfMS7qpK12ECWE3PsbxWBH12HEP8w
+         Qh/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xmVlNmzBbyTwx/IxkGsqdEPQpOfewWkcmkNfJI6xuFY=;
+        b=Kpld1MqP9PBvp36C8FJQYkCTUbQGXWvrji6ydvef6i057OwhIy53MUCszcRicdzCet
+         BVQMFwW5xFLvalxwsrjB9S7zjKvSbz8HijZeM6+p4Ii/YYW3dK2bH5UyaAmFGmDSFsyo
+         DHFN0/8um7T03J89r1DpNkyeGcGVhurULu1lKM3IAn2Wh+ywITEdBomL5uGCCy8Px4DG
+         LWDevdUJaKq+6Eht4f+Se86lX5Mg5dHkQ12M7YwPsuas5BRkMp/4FHOQV8QTssp4+LbL
+         G7nV2Qs9BE1TPIU+inwPL0c5WSsdZny9s9ztqys77WW+yPSDdyRAQ/0Mng9u7A8nW0Id
+         4QsQ==
+X-Gm-Message-State: APjAAAV0FV6bdVQN2uuPcbNPcAuDDbuCsApXPNrslzaFkYyZsWNae8LC
+        cTuKsbLWya5jXtBNEVWAw9BEIwUbL8HCCw==
+X-Google-Smtp-Source: APXvYqyM5W5C0xbj43qQRNVhDEhwINVpdhTh7XUNzl4LXK74Fbm1nViB32VljwAf/PU63S5TOj9y6A==
+X-Received: by 2002:a17:90a:9201:: with SMTP id m1mr7631347pjo.74.1572363807348;
+        Tue, 29 Oct 2019 08:43:27 -0700 (PDT)
+Received: from btopel-mobl.ger.intel.com (fmdmzpr03-ext.fm.intel.com. [192.55.54.38])
+        by smtp.gmail.com with ESMTPSA id z7sm14304032pfr.165.2019.10.29.08.43.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 29 Oct 2019 08:43:26 -0700 (PDT)
+From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
+To:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net
+Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
+        bpf@vger.kernel.org, jakub.kicinski@netronome.com, toke@redhat.com
+Subject: [PATCH bpf] bpf: change size to u64 for bpf_map_{area_alloc,charge_init}()
+Date:   Tue, 29 Oct 2019 16:43:07 +0100
+Message-Id: <20191029154307.23053-1-bjorn.topel@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 24a8b262-01c6-411e-f1e1-08d75c8413d9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Oct 2019 15:24:23.8011
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: S4P24x0RdYkWPnn8IdT2SmSUSWkJW3dGwc8uAIEgMTNiCHIIODF4B2XfOIzXEk5I
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1869
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
- definitions=2019-10-29_05:2019-10-28,2019-10-29 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=999
- phishscore=0 adultscore=0 spamscore=0 bulkscore=0 clxscore=1015 mlxscore=0
- lowpriorityscore=0 impostorscore=0 malwarescore=0 suspectscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1908290000 definitions=main-1910290143
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-SWx5YSBMZW9zaGtldmljaCA8aWlpQGxpbnV4LmlibS5jb20+IFtUdWUsIDIwMTktMTAtMjkgMDc6
-MzEgLTA3MDBdOg0KPiBUaGVyZSBhcmUgdGVzdHMgZm9yIGZ1bGwgYW5kIG5hcnJvd3MgbG9hZHMg
-ZnJvbSBicGZfc3lzY3RsLmZpbGVfcG9zLCBidXQNCj4gZm9yIGJwZl9zeXNjdGwud3JpdGUgb25s
-eSBmdWxsIGxvYWQgaXMgdGVzdGVkLiBBZGQgdGhlIG1pc3NpbmcgdGVzdC4NCj4gDQo+IFN1Z2dl
-c3RlZC1ieTogQW5kcmV5IElnbmF0b3YgPHJkbmFAZmIuY29tPg0KPiBTaWduZWQtb2ZmLWJ5OiBJ
-bHlhIExlb3Noa2V2aWNoIDxpaWlAbGludXguaWJtLmNvbT4NCg0KVGhhbmsgeW91IQ0KDQpBY2tl
-ZC1ieTogQW5kcmV5IElnbmF0b3YgPHJkbmFAZmIuY29tPg0KDQo+IC0tLQ0KPiAgdG9vbHMvdGVz
-dGluZy9zZWxmdGVzdHMvYnBmL3Rlc3Rfc3lzY3RsLmMgfCAyMyArKysrKysrKysrKysrKysrKysr
-KysrKw0KPiAgMSBmaWxlIGNoYW5nZWQsIDIzIGluc2VydGlvbnMoKykNCj4gDQo+IGRpZmYgLS1n
-aXQgYS90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9icGYvdGVzdF9zeXNjdGwuYyBiL3Rvb2xzL3Rl
-c3Rpbmcvc2VsZnRlc3RzL2JwZi90ZXN0X3N5c2N0bC5jDQo+IGluZGV4IGEzMjBlMzg0NGIxNy4u
-N2FmZjkwNzAwM2QzIDEwMDY0NA0KPiAtLS0gYS90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9icGYv
-dGVzdF9zeXNjdGwuYw0KPiArKysgYi90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9icGYvdGVzdF9z
-eXNjdGwuYw0KPiBAQCAtMTIwLDYgKzEyMCwyOSBAQCBzdGF0aWMgc3RydWN0IHN5c2N0bF90ZXN0
-IHRlc3RzW10gPSB7DQo+ICAJCS5uZXd2YWwgPSAiKG5vbmUpIiwgLyogc2FtZSBhcyBkZWZhdWx0
-LCBzaG91bGQgZmFpbCBhbnl3YXkgKi8NCj4gIAkJLnJlc3VsdCA9IE9QX0VQRVJNLA0KPiAgCX0s
-DQo+ICsJew0KPiArCQkuZGVzY3IgPSAiY3R4OndyaXRlIHN5c2N0bDp3cml0ZSByZWFkIG9rIG5h
-cnJvdyIsDQo+ICsJCS5pbnNucyA9IHsNCj4gKwkJCS8qIHU2NCB3ID0gKHUxNil3cml0ZSAmIDE7
-ICovDQo+ICsjaWYgX19CWVRFX09SREVSID09IF9fTElUVExFX0VORElBTg0KPiArCQkJQlBGX0xE
-WF9NRU0oQlBGX0gsIEJQRl9SRUdfNywgQlBGX1JFR18xLA0KPiArCQkJCSAgICBvZmZzZXRvZihz
-dHJ1Y3QgYnBmX3N5c2N0bCwgd3JpdGUpKSwNCj4gKyNlbHNlDQo+ICsJCQlCUEZfTERYX01FTShC
-UEZfSCwgQlBGX1JFR183LCBCUEZfUkVHXzEsDQo+ICsJCQkJICAgIG9mZnNldG9mKHN0cnVjdCBi
-cGZfc3lzY3RsLCB3cml0ZSkgKyAyKSwNCj4gKyNlbmRpZg0KPiArCQkJQlBGX0FMVTY0X0lNTShC
-UEZfQU5ELCBCUEZfUkVHXzcsIDEpLA0KPiArCQkJLyogcmV0dXJuIDEgLSB3OyAqLw0KPiArCQkJ
-QlBGX01PVjY0X0lNTShCUEZfUkVHXzAsIDEpLA0KPiArCQkJQlBGX0FMVTY0X1JFRyhCUEZfU1VC
-LCBCUEZfUkVHXzAsIEJQRl9SRUdfNyksDQo+ICsJCQlCUEZfRVhJVF9JTlNOKCksDQo+ICsJCX0s
-DQo+ICsJCS5hdHRhY2hfdHlwZSA9IEJQRl9DR1JPVVBfU1lTQ1RMLA0KPiArCQkuc3lzY3RsID0g
-Imtlcm5lbC9kb21haW5uYW1lIiwNCj4gKwkJLm9wZW5fZmxhZ3MgPSBPX1dST05MWSwNCj4gKwkJ
-Lm5ld3ZhbCA9ICIobm9uZSkiLCAvKiBzYW1lIGFzIGRlZmF1bHQsIHNob3VsZCBmYWlsIGFueXdh
-eSAqLw0KPiArCQkucmVzdWx0ID0gT1BfRVBFUk0sDQo+ICsJfSwNCj4gIAl7DQo+ICAJCS5kZXNj
-ciA9ICJjdHg6d3JpdGUgc3lzY3RsOnJlYWQgd3JpdGUgcmVqZWN0IiwNCj4gIAkJLmluc25zID0g
-ew0KPiAtLSANCj4gMi4yMy4wDQo+IA0KDQotLSANCkFuZHJleSBJZ25hdG92DQo=
+From: Björn Töpel <bjorn.topel@intel.com>
+
+The functions bpf_map_area_alloc() and bpf_map_charge_init() prior
+this commit passed the size parameter as size_t. In this commit this
+is changed to u64.
+
+All users of these functions avoid size_t overflows on 32-bit systems,
+by explicitly using u64 when calculating the allocation size and
+memory charge cost. However, since the result was narrowed by the
+size_t when passing size and cost to the functions, the overflow
+handling was in vain.
+
+Instead of changing all call sites to size_t and handle overflow at
+the call site, the parameter is changed to u64 and checked in the
+functions above.
+
+Fixes: d407bd25a204 ("bpf: don't trigger OOM killer under pressure with map alloc")
+Fixes: c85d69135a91 ("bpf: move memory size checks to bpf_map_charge_init()")
+Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
+---
+ include/linux/bpf.h  | 4 ++--
+ kernel/bpf/syscall.c | 7 +++++--
+ 2 files changed, 7 insertions(+), 4 deletions(-)
+
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 5b9d22338606..3bf3835d0e86 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -656,11 +656,11 @@ void bpf_map_put_with_uref(struct bpf_map *map);
+ void bpf_map_put(struct bpf_map *map);
+ int bpf_map_charge_memlock(struct bpf_map *map, u32 pages);
+ void bpf_map_uncharge_memlock(struct bpf_map *map, u32 pages);
+-int bpf_map_charge_init(struct bpf_map_memory *mem, size_t size);
++int bpf_map_charge_init(struct bpf_map_memory *mem, u64 size);
+ void bpf_map_charge_finish(struct bpf_map_memory *mem);
+ void bpf_map_charge_move(struct bpf_map_memory *dst,
+ 			 struct bpf_map_memory *src);
+-void *bpf_map_area_alloc(size_t size, int numa_node);
++void *bpf_map_area_alloc(u64 size, int numa_node);
+ void bpf_map_area_free(void *base);
+ void bpf_map_init_from_attr(struct bpf_map *map, union bpf_attr *attr);
+ 
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 0937719b87e2..ace1cfaa24b6 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -126,7 +126,7 @@ static struct bpf_map *find_and_alloc_map(union bpf_attr *attr)
+ 	return map;
+ }
+ 
+-void *bpf_map_area_alloc(size_t size, int numa_node)
++void *bpf_map_area_alloc(u64 size, int numa_node)
+ {
+ 	/* We really just want to fail instead of triggering OOM killer
+ 	 * under memory pressure, therefore we set __GFP_NORETRY to kmalloc,
+@@ -141,6 +141,9 @@ void *bpf_map_area_alloc(size_t size, int numa_node)
+ 	const gfp_t flags = __GFP_NOWARN | __GFP_ZERO;
+ 	void *area;
+ 
++	if (size >= SIZE_MAX)
++		return NULL;
++
+ 	if (size <= (PAGE_SIZE << PAGE_ALLOC_COSTLY_ORDER)) {
+ 		area = kmalloc_node(size, GFP_USER | __GFP_NORETRY | flags,
+ 				    numa_node);
+@@ -197,7 +200,7 @@ static void bpf_uncharge_memlock(struct user_struct *user, u32 pages)
+ 		atomic_long_sub(pages, &user->locked_vm);
+ }
+ 
+-int bpf_map_charge_init(struct bpf_map_memory *mem, size_t size)
++int bpf_map_charge_init(struct bpf_map_memory *mem, u64 size)
+ {
+ 	u32 pages = round_up(size, PAGE_SIZE) >> PAGE_SHIFT;
+ 	struct user_struct *user;
+-- 
+2.20.1
+
