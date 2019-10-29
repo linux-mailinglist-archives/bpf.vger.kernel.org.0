@@ -2,116 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 69AE8E8318
-	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2019 09:20:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C967BE834A
+	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2019 09:36:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729057AbfJ2ITy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 29 Oct 2019 04:19:54 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:39519 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729040AbfJ2ITy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 29 Oct 2019 04:19:54 -0400
-Received: by mail-qt1-f195.google.com with SMTP id t8so18961986qtc.6;
-        Tue, 29 Oct 2019 01:19:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=PVI2OQ5lGd+deR12IVFnVb/9vuCzshNV43sWHU4PiNM=;
-        b=SHYbO8tiuE55WImyXvZMkhiwlSxgF1ecP6g54mh/sslqzxwHDAhhzaWbdI4Lkot+x6
-         7WsMSNMCCBeYE2/wzx2GcUCQJGdUEAaCklzKglXCEeJOeH8lW44sPQFWJlqHKt5CfBHU
-         BvqE1LTRRdJKei5FZH9Zs1Uon8mWzVGp4ot+ZF38f8+PPVJCABtWHaEBg/koaUfRY542
-         apdHgytTm+V1gT0/xobuko012T6TGg0wgT48hegYXVPKGFgoyScYogl7z8rh3KBWzwQF
-         eEmPh1RHIuWxP9iBR4qmXrFfJJIEi4DtVvaw/enQHkwRTyLKvx32OW8ybfkNcjquKERB
-         Wiig==
+        id S1729302AbfJ2IgH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 29 Oct 2019 04:36:07 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:50338 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728892AbfJ2IgG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 29 Oct 2019 04:36:06 -0400
+Received: by mail-io1-f72.google.com with SMTP id t193so10525516iof.17
+        for <bpf@vger.kernel.org>; Tue, 29 Oct 2019 01:36:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=PVI2OQ5lGd+deR12IVFnVb/9vuCzshNV43sWHU4PiNM=;
-        b=kiG6rLYyXBPJB7ups9BmZTdlynGUW2LFkP5iX4ZL0091kgyIo7yfSWV8bk2AQUeXWI
-         e1OgYqwGP6IKe03nyu/kUG/nWkJHAXMmNC5TFaAlBFKSW3Nt1zkklgb+OI1T+WvVZ43o
-         gLo2Gi21Pw5N/d/BHCeyfLUEXVWgD9WCKOwTkyuBmJKmffi/EFG/l2FJ/PDhgma6Xbzh
-         3OruWswOvTPmlfqF0XObmV2eFOJjpgaknTamkh3Zv2z3kP6lxaZgBntm3Z1fyzTGncnA
-         kayN/+aTTCmvlOiGjzIYCEg2wAgwUtKiBoWr+DBzKhyta8IukRX5pbSIBmPdJYhSxysL
-         NOkQ==
-X-Gm-Message-State: APjAAAVBiUEyqMyINaEXFVc4c9gam/e2DS8jBcnBH/QssMkpFsYQtcUf
-        5wx3MFKEid3ACNHgBHveFWgkaelLrJtpJ5qkDBU=
-X-Google-Smtp-Source: APXvYqzIRO6n4UNkzmiBnah4OuxcFzBzQ+s8JAdrDdxIvfT4haEldEjC55ikFhQmznl7onOx/p2kU7WTGMBxE8OzGIA=
-X-Received: by 2002:a05:6214:1ca:: with SMTP id c10mr21843161qvt.233.1572337193364;
- Tue, 29 Oct 2019 01:19:53 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=cw6cok1K17kDzbl+jeM+X/kALvXMwvoSlXYp5f7esrs=;
+        b=tSIlrcrZujPLlFtjwriREnHZgX0fgKRmqYuqmiOQMrmHtHKQeI4b2jMFPQVcDSKx56
+         Tip+zR90KYAjIlSLoxpoBEAbSp88n7oOMLvFd9O5x4P2Pfa5ZjCRiIPrjFH2cIU15+ue
+         G8Cs/bsVliJaoocycQacSyPch1DwvljgrxiDr875uO6fZTIkdjS638duUI4I6dyHyH/d
+         SbUNQOTiyQgRcyzqmLrf0Xh0zVz1cD+UM0Qqlg+ZligXnmuXzmf74SaMIfJsjHrbImJ2
+         BIw/DuP9UD9/p1wgBs35anwfxnif7Br53AiTzP7pdrSo/2zJ3N261xn79lxMrLFI2mkO
+         SxEg==
+X-Gm-Message-State: APjAAAXyMMxKLLDaqWsp3tjCktyfYlgImbt85OWlaLuSnaDuS7iSm1Qw
+        A9E3XSl0nXfZCKxMAfoC87Ub6Ks7z2fc4k0TukGd9Szb6T01
+X-Google-Smtp-Source: APXvYqx8tJ7rkDhUNSoMTNMjB0yHs96gPAyCaHWhA8L952o958ZmrxoUQNx+nf8qU8tnTuT4NH3iN+86HFUmmgLqrC9MNMq0vidS
 MIME-Version: 1.0
-References: <20191029055953.2461336-1-andriin@fb.com>
-In-Reply-To: <20191029055953.2461336-1-andriin@fb.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Tue, 29 Oct 2019 09:19:41 +0100
-Message-ID: <CAJ+HfNgOHwSDpkMh=+Z42V5Y2K+-BsTkuux7XCO=5Qk=d6hSLg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: don't use kernel-side u32 type in xsk.c
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Netdev <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Kernel Team <kernel-team@fb.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Received: by 2002:a92:1696:: with SMTP id 22mr24696502ilw.243.1572338165821;
+ Tue, 29 Oct 2019 01:36:05 -0700 (PDT)
+Date:   Tue, 29 Oct 2019 01:36:05 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d73b12059608812b@google.com>
+Subject: WARNING in print_bfs_bug
+From:   syzbot <syzbot+62ebe501c1ce9a91f68c@syzkaller.appspotmail.com>
+To:     ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
+        davem@davemloft.net, dsahern@gmail.com, f.fainelli@gmail.com,
+        hawk@kernel.org, idosch@mellanox.com, jakub.kicinski@netronome.com,
+        jiri@mellanox.com, johannes.berg@intel.com,
+        john.fastabend@gmail.com, kafai@fb.com,
+        linux-kernel@vger.kernel.org, mkubecek@suse.cz,
+        netdev@vger.kernel.org, petrm@mellanox.com,
+        roopa@cumulusnetworks.com, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 29 Oct 2019 at 08:26, Andrii Nakryiko <andriin@fb.com> wrote:
->
-> u32 is a kernel-side typedef. User-space library is supposed to use __u32=
-.
-> This breaks Github's projection of libbpf. Do u32 -> __u32 fix.
->
-> Fixes: 94ff9ebb49a5 ("libbpf: Fix compatibility for kernels without need_=
-wakeup")
-> Cc: Magnus Karlsson <magnus.karlsson@intel.com>
-> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+Hello,
 
-Thanks Andrii!
+syzbot found the following crash on:
 
-Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+HEAD commit:    65921376 Merge branch 'net-fix-nested-device-bugs'
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=13ee0a97600000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e0ac4d9b35046343
+dashboard link: https://syzkaller.appspot.com/bug?extid=62ebe501c1ce9a91f68c
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
 
-> ---
->  tools/lib/bpf/xsk.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
-> index d54111133123..74d84f36a5b2 100644
-> --- a/tools/lib/bpf/xsk.c
-> +++ b/tools/lib/bpf/xsk.c
-> @@ -161,22 +161,22 @@ static void xsk_mmap_offsets_v1(struct xdp_mmap_off=
-sets *off)
->         off->rx.producer =3D off_v1.rx.producer;
->         off->rx.consumer =3D off_v1.rx.consumer;
->         off->rx.desc =3D off_v1.rx.desc;
-> -       off->rx.flags =3D off_v1.rx.consumer + sizeof(u32);
-> +       off->rx.flags =3D off_v1.rx.consumer + sizeof(__u32);
->
->         off->tx.producer =3D off_v1.tx.producer;
->         off->tx.consumer =3D off_v1.tx.consumer;
->         off->tx.desc =3D off_v1.tx.desc;
-> -       off->tx.flags =3D off_v1.tx.consumer + sizeof(u32);
-> +       off->tx.flags =3D off_v1.tx.consumer + sizeof(__u32);
->
->         off->fr.producer =3D off_v1.fr.producer;
->         off->fr.consumer =3D off_v1.fr.consumer;
->         off->fr.desc =3D off_v1.fr.desc;
-> -       off->fr.flags =3D off_v1.fr.consumer + sizeof(u32);
-> +       off->fr.flags =3D off_v1.fr.consumer + sizeof(__u32);
->
->         off->cr.producer =3D off_v1.cr.producer;
->         off->cr.consumer =3D off_v1.cr.consumer;
->         off->cr.desc =3D off_v1.cr.desc;
-> -       off->cr.flags =3D off_v1.cr.consumer + sizeof(u32);
-> +       off->cr.flags =3D off_v1.cr.consumer + sizeof(__u32);
->  }
->
->  static int xsk_get_mmap_offsets(int fd, struct xdp_mmap_offsets *off)
-> --
-> 2.17.1
->
+Unfortunately, I don't have any reproducer for this crash yet.
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+62ebe501c1ce9a91f68c@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+lockdep bfs error:-1
+WARNING: CPU: 0 PID: 27915 at kernel/locking/lockdep.c:1696  
+print_bfs_bug+0x5c/0x80 kernel/locking/lockdep.c:1696
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 0 PID: 27915 Comm: syz-executor.1 Not tainted 5.4.0-rc3+ #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+Google 01/01/2011
+Call Trace:
+  __dump_stack lib/dump_stack.c:77 [inline]
+  dump_stack+0x172/0x1f0 lib/dump_stack.c:113
+  panic+0x2e3/0x75c kernel/panic.c:221
+  __warn.cold+0x2f/0x35 kernel/panic.c:582
+  report_bug+0x289/0x300 lib/bug.c:195
+  fixup_bug arch/x86/kernel/traps.c:179 [inline]
+  fixup_bug arch/x86/kernel/traps.c:174 [inline]
+  do_error_trap+0x11b/0x200 arch/x86/kernel/traps.c:272
+  do_invalid_op+0x37/0x50 arch/x86/kernel/traps.c:291
+  invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1028
+RIP: 0010:print_bfs_bug+0x5c/0x80 kernel/locking/lockdep.c:1696
+Code: 07 00 74 2d 48 c7 c7 00 5f aa 8a c6 07 00 0f 1f 40 00 85 db 75 05 5b  
+41 5c 5d c3 44 89 e6 48 c7 c7 e0 17 ac 87 e8 cc e0 eb ff <0f> 0b 5b 41 5c  
+5d c3 0f 0b 48 c7 c7 d8 1f f3 88 e8 bf fc 55 00 eb
+RSP: 0018:ffff88801a307688 EFLAGS: 00010082
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: 00000000000135ee RSI: ffffffff815cb646 RDI: ffffed1003460ec3
+RBP: ffff88801a307698 R08: ffff88809b026340 R09: ffffed1015d04101
+R10: ffffed1015d04100 R11: ffff8880ae820807 R12: 00000000ffffffff
+R13: ffff88809b026bd8 R14: ffff88801a307710 R15: 00000000000003b0
+  check_path+0x36/0x40 kernel/locking/lockdep.c:1772
+  check_noncircular+0x16d/0x3e0 kernel/locking/lockdep.c:1797
+  check_prev_add kernel/locking/lockdep.c:2476 [inline]
+  check_prevs_add kernel/locking/lockdep.c:2581 [inline]
+  validate_chain kernel/locking/lockdep.c:2971 [inline]
+  __lock_acquire+0x2596/0x4a00 kernel/locking/lockdep.c:3955
+  lock_acquire+0x190/0x410 kernel/locking/lockdep.c:4487
+  __mutex_lock_common kernel/locking/mutex.c:956 [inline]
+  __mutex_lock+0x156/0x13c0 kernel/locking/mutex.c:1103
+  mutex_lock_nested+0x16/0x20 kernel/locking/mutex.c:1118
+  rtnl_lock+0x17/0x20 net/core/rtnetlink.c:72
+  vlan_ioctl_handler+0xd2/0xf93 net/8021q/vlan.c:554
+  sock_ioctl+0x518/0x790 net/socket.c:1147
+  vfs_ioctl fs/ioctl.c:46 [inline]
+  file_ioctl fs/ioctl.c:509 [inline]
+  do_vfs_ioctl+0xdb6/0x13e0 fs/ioctl.c:696
+  ksys_ioctl+0xab/0xd0 fs/ioctl.c:713
+  __do_sys_ioctl fs/ioctl.c:720 [inline]
+  __se_sys_ioctl fs/ioctl.c:718 [inline]
+  __x64_sys_ioctl+0x73/0xb0 fs/ioctl.c:718
+  do_syscall_64+0xfa/0x760 arch/x86/entry/common.c:290
+  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+RIP: 0033:0x459f39
+Code: ad b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7  
+48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
+ff 0f 83 7b b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f81d8fbec78 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000459f39
+RDX: 0000000020000000 RSI: 0800000000008982 RDI: 0000000000000003
+RBP: 000000000075bf20 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007f81d8fbf6d4
+R13: 00000000004c1521 R14: 00000000004d4dc0 R15: 00000000ffffffff
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
+
+
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
