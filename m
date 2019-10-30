@@ -2,359 +2,256 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A879EA652
-	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2019 23:35:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 990C4EA734
+	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2019 23:53:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727511AbfJ3WfW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Oct 2019 18:35:22 -0400
-Received: from mail-pg1-f202.google.com ([209.85.215.202]:52406 "EHLO
-        mail-pg1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727545AbfJ3WfV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 30 Oct 2019 18:35:21 -0400
-Received: by mail-pg1-f202.google.com with SMTP id e15so2716575pgh.19
-        for <bpf@vger.kernel.org>; Wed, 30 Oct 2019 15:35:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=OX6v9W/RwB1FnmAHi/ViJDv088XbC8QO/KsWRubigJ8=;
-        b=qs68OdZO/1E8+EnsBJL8qC5UADwWYoU/47eaqwh13IAkQxpkYS6gaL+TVBy5iS9bHa
-         e5xGY8JSXPgM9foQrYIe+ORYfpgZqK8sykheVScwAQF8IbPpmO3MMyKma17YDgMJZaIL
-         VE6VQQdhmtFi+KB1uW2iR/v+qAlrY8dyjftmjuECbv3yLMzHfdyp0SKeIXZL2nyvfgsg
-         iPgX0kjGkYf5M5jK4IIz+WHxTFaMxL+/+VYpiHVAHmUNRW/sIJetRKg3Amy4nijXy0sD
-         GOluW8L3rB8UFvNVV9JVhz1gJyRGvPJvnSH36dcfj7cosQAnjeUpLKef9kBjUt9tPKyl
-         O4WA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=OX6v9W/RwB1FnmAHi/ViJDv088XbC8QO/KsWRubigJ8=;
-        b=XJZqDxi3YH5ZHXywZ1SpBXpVHrLLYi4mUqJNkQWywhI03RNgcFcM25emEf+zHQgsJX
-         MzZxVTBtdwLml4oWvEqFHUOxdY7yqNCz8+oVxOvm8tubDeSHN12BPAu7ucVwJq/jwCA1
-         Tj81WuzpolyW+Fp/VqWIyhl4AYwWW4pFFlI2MzzEoOVZ9zo94DV+7n1x65xfivG1pRN2
-         J+ckMxxzL9HlmVx0LT4p8jKW8+a8IPbz3ttNaCDtD2UGHb/k+2MuuNu7czn+kSZjY2ga
-         lud3EBjhqEg6aIi/Xz6AVdGJmYnuzyVPMk+ybGvBXd94YhE1/d9qNTrmdVcT5YwWpJqx
-         ZtUw==
-X-Gm-Message-State: APjAAAWm3ruXPxxjvJXrwKk5GVCz4BOn4JoDnS7kNjBJ9TxBB1T0///G
-        8srkWNi9EwujmWQxrNtpQOJMsFqSdZ8q
-X-Google-Smtp-Source: APXvYqxqO5FmFDL8ghx5pAsFXGsDqyGM6xp7zRxXz1v0pQzg86XC4lN28u7HhWhsxPe2WPZHZBp+OM+SZtf0
-X-Received: by 2002:a63:5847:: with SMTP id i7mr1868803pgm.387.1572474920146;
- Wed, 30 Oct 2019 15:35:20 -0700 (PDT)
-Date:   Wed, 30 Oct 2019 15:34:48 -0700
-In-Reply-To: <20191030223448.12930-1-irogers@google.com>
-Message-Id: <20191030223448.12930-11-irogers@google.com>
-Mime-Version: 1.0
-References: <20191025180827.191916-1-irogers@google.com> <20191030223448.12930-1-irogers@google.com>
-X-Mailer: git-send-email 2.24.0.rc1.363.gb1bccd3e3d-goog
-Subject: [PATCH v5 10/10] perf tools: report initial event parsing error
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, clang-built-linux@googlegroups.com
-Cc:     Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
+        id S1727250AbfJ3Wtn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Oct 2019 18:49:43 -0400
+Received: from hqemgate15.nvidia.com ([216.228.121.64]:5214 "EHLO
+        hqemgate15.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727064AbfJ3Wtn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 30 Oct 2019 18:49:43 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate15.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5dba13850001>; Wed, 30 Oct 2019 15:49:41 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Wed, 30 Oct 2019 15:49:34 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Wed, 30 Oct 2019 15:49:34 -0700
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 30 Oct
+ 2019 22:49:34 +0000
+Received: from rnnvemgw01.nvidia.com (10.128.109.123) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Wed, 30 Oct 2019 22:49:33 +0000
+Received: from blueforge.nvidia.com (Not Verified[10.110.48.28]) by rnnvemgw01.nvidia.com with Trustwave SEG (v7,5,8,10121)
+        id <B5dba137b0002>; Wed, 30 Oct 2019 15:49:32 -0700
+From:   John Hubbard <jhubbard@nvidia.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     Al Viro <viro@zeniv.linux.org.uk>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, <bpf@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <kvm@vger.kernel.org>,
+        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <linux-media@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <netdev@vger.kernel.org>,
+        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>
+Subject: [PATCH 00/19] mm/gup: track dma-pinned pages: FOLL_PIN, FOLL_LONGTERM
+Date:   Wed, 30 Oct 2019 15:49:11 -0700
+Message-ID: <20191030224930.3990755-1-jhubbard@nvidia.com>
+X-Mailer: git-send-email 2.23.0
+MIME-Version: 1.0
+X-NVConfidentiality: public
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1572475781; bh=hGPWt3QMTkMrTVgcNxptwRVsRQFog4chezBSn5RrX48=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+         MIME-Version:X-NVConfidentiality:Content-Type:
+         Content-Transfer-Encoding;
+        b=oSHxJf1EatQQbMkaqcITETA6JEtlVNEdgum3xhm5ffOxR+XNpeSZn2n8WTQHBmpXQ
+         XlkO24RsW/LfP+8EN9BTaQwIJCQeS6tAdSrqh0UNPmHthTKHhTKpacZ0s3MALr4vP4
+         itdh7PP+CYbjuibtGti4rkBun1FGTraZnTUXeqaBCjMHeV5JXay6xNR7ZezCZ5Svft
+         FFN/X5vLeUp/Ci4mFUSlT4/inZ55UOWuZDRaqx1HBrshBWu8j4oFc9DE2XSBK2JNQX
+         6Jh4/4uKc510NHecCig4JLuKjY+bJQdP2CLVRpOkMVKoGbX2eD/Zh91jJYPyPfFHGf
+         vWCpcQszWYTnQ==
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Record the first event parsing error and report. Implementing feedback
-from Jiri Olsa:
-https://lkml.org/lkml/2019/10/28/680
+Hi,
 
-An example error is:
+This applies cleanly to linux-next and mmotm, and also to linux.git if
+linux-next's commit 20cac10710c9 ("mm/gup_benchmark: fix MAP_HUGETLB
+case") is first applied there.
 
-$ tools/perf/perf stat -e c/c/
-WARNING: multiple event parsing errors
-event syntax error: 'c/c/'
-                       \___ unknown term
+This provides tracking of dma-pinned pages. This is a prerequisite to
+solving the larger problem of proper interactions between file-backed
+pages, and [R]DMA activities, as discussed in [1], [2], [3], and in
+a remarkable number of email threads since about 2017. :)
 
-valid terms: event,filter_rem,filter_opc0,edge,filter_isoc,filter_tid,filter_loc,filter_nc,inv,umask,filter_opc1,tid_en,thresh,filter_all_op,filter_not_nm,filter_state,filter_nm,config,config1,config2,name,period,percore
+A new internal gup flag, FOLL_PIN is introduced, and thoroughly
+documented in the last patch's Documentation/vm/pin_user_pages.rst.
 
-Initial error:
-event syntax error: 'c/c/'
-                    \___ Cannot find PMU `c'. Missing kernel support?
-Run 'perf list' for a list of valid events
+I believe that this will provide a good starting point for doing the
+layout lease work that Ira Weiny has been working on. That's because
+these new wrapper functions provide a clean, constrained, systematically
+named set of functionality that, again, is required in order to even
+know if a page is "dma-pinned".
 
- Usage: perf stat [<options>] [<command>]
+In contrast to earlier approaches, the page tracking can be
+incrementally applied to the kernel call sites that, until now, have
+been simply calling get_user_pages() ("gup"). In other words, opt-in by
+changing from this:
 
-    -e, --event <event>   event selector. use 'perf list' to list available events
+    get_user_pages() (sets FOLL_GET)
+    put_page()
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/arch/powerpc/util/kvm-stat.c |  9 ++-
- tools/perf/builtin-stat.c               |  2 +
- tools/perf/builtin-trace.c              | 16 ++++--
- tools/perf/tests/parse-events.c         |  3 +-
- tools/perf/util/metricgroup.c           |  2 +-
- tools/perf/util/parse-events.c          | 73 ++++++++++++++++++-------
- tools/perf/util/parse-events.h          |  4 ++
- 7 files changed, 82 insertions(+), 27 deletions(-)
+to this:
+    pin_user_pages() (sets FOLL_PIN)
+    put_user_page()
 
-diff --git a/tools/perf/arch/powerpc/util/kvm-stat.c b/tools/perf/arch/powerpc/util/kvm-stat.c
-index 9cc1c4a9dec4..30f5310373ca 100644
---- a/tools/perf/arch/powerpc/util/kvm-stat.c
-+++ b/tools/perf/arch/powerpc/util/kvm-stat.c
-@@ -113,10 +113,15 @@ static int is_tracepoint_available(const char *str, struct evlist *evlist)
- 	struct parse_events_error err;
- 	int ret;
- 
--	err.str = NULL;
-+	bzero(&err, sizeof(err));
- 	ret = parse_events(evlist, str, &err);
--	if (err.str)
-+	if (err.str) {
- 		pr_err("%s : %s\n", str, err.str);
-+		free(&err->str);
-+		free(&err->help);
-+		free(&err->first_str);
-+		free(&err->first_help);
-+	}
- 	return ret;
- }
- 
-diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-index c88d4e118409..5d2fc8bed5f8 100644
---- a/tools/perf/builtin-stat.c
-+++ b/tools/perf/builtin-stat.c
-@@ -1260,6 +1260,7 @@ static int add_default_attributes(void)
- 	if (stat_config.null_run)
- 		return 0;
- 
-+	bzero(&errinfo, sizeof(errinfo));
- 	if (transaction_run) {
- 		/* Handle -T as -M transaction. Once platform specific metrics
- 		 * support has been added to the json files, all archictures
-@@ -1317,6 +1318,7 @@ static int add_default_attributes(void)
- 			return -1;
- 		}
- 		if (err) {
-+			parse_events_print_error(&errinfo, smi_cost_attrs);
- 			fprintf(stderr, "Cannot set up SMI cost events\n");
- 			return -1;
- 		}
-diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
-index 43c05eae1768..46a72ecac427 100644
---- a/tools/perf/builtin-trace.c
-+++ b/tools/perf/builtin-trace.c
-@@ -3016,11 +3016,18 @@ static bool evlist__add_vfs_getname(struct evlist *evlist)
- {
- 	bool found = false;
- 	struct evsel *evsel, *tmp;
--	struct parse_events_error err = { .idx = 0, };
--	int ret = parse_events(evlist, "probe:vfs_getname*", &err);
-+	struct parse_events_error err;
-+	int ret;
- 
--	if (ret)
-+	bzero(&err, sizeof(err));
-+	ret = parse_events(evlist, "probe:vfs_getname*", &err);
-+	if (ret) {
-+		free(err.str);
-+		free(err.help);
-+		free(err.first_str);
-+		free(err.first_help);
- 		return false;
-+	}
- 
- 	evlist__for_each_entry_safe(evlist, evsel, tmp) {
- 		if (!strstarts(perf_evsel__name(evsel), "probe:vfs_getname"))
-@@ -4832,8 +4839,9 @@ int cmd_trace(int argc, const char **argv)
- 	 * wrong in more detail.
- 	 */
- 	if (trace.perfconfig_events != NULL) {
--		struct parse_events_error parse_err = { .idx = 0, };
-+		struct parse_events_error parse_err;
- 
-+		bzero(&parse_err, sizeof(parse_err));
- 		err = parse_events(trace.evlist, trace.perfconfig_events, &parse_err);
- 		if (err) {
- 			parse_events_print_error(&parse_err, trace.perfconfig_events);
-diff --git a/tools/perf/tests/parse-events.c b/tools/perf/tests/parse-events.c
-index 25e0ed2eedfc..091c3aeccc27 100644
---- a/tools/perf/tests/parse-events.c
-+++ b/tools/perf/tests/parse-events.c
-@@ -1768,10 +1768,11 @@ static struct terms_test test__terms[] = {
- 
- static int test_event(struct evlist_test *e)
- {
--	struct parse_events_error err = { .idx = 0, };
-+	struct parse_events_error err;
- 	struct evlist *evlist;
- 	int ret;
- 
-+	bzero(&err, sizeof(err));
- 	if (e->valid && !e->valid()) {
- 		pr_debug("... SKIP");
- 		return 0;
-diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-index a7c0424dbda3..6a4d350d5cdb 100644
---- a/tools/perf/util/metricgroup.c
-+++ b/tools/perf/util/metricgroup.c
-@@ -523,7 +523,7 @@ int metricgroup__parse_groups(const struct option *opt,
- 	if (ret)
- 		return ret;
- 	pr_debug("adding %s\n", extra_events.buf);
--	memset(&parse_error, 0, sizeof(struct parse_events_error));
-+	bzero(&parse_error, sizeof(parse_error));
- 	ret = parse_events(perf_evlist, extra_events.buf, &parse_error);
- 	if (ret) {
- 		parse_events_print_error(&parse_error, extra_events.buf);
-diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-index 6d18ff9bce49..28fa6ec7d2a2 100644
---- a/tools/perf/util/parse-events.c
-+++ b/tools/perf/util/parse-events.c
-@@ -189,12 +189,29 @@ void parse_events__handle_error(struct parse_events_error *err, int idx,
- 		free(help);
- 		return;
- 	}
--	WARN_ONCE(err->str, "WARNING: multiple event parsing errors\n");
--	err->idx = idx;
--	free(err->str);
--	err->str = str;
--	free(err->help);
--	err->help = help;
-+	switch (err->num_errors) {
-+	case 0:
-+		err->idx = idx;
-+		err->str = str;
-+		err->help = help;
-+		break;
-+	case 1:
-+		err->first_idx = err->idx;
-+		err->idx = idx;
-+		err->first_str = err->str;
-+		err->str = str;
-+		err->first_help = err->help;
-+		err->help = help;
-+		break;
-+	default:
-+		WARN_ONCE(1, "WARNING: multiple event parsing errors\n");
-+		free(err->str);
-+		err->str = str;
-+		free(err->help);
-+		err->help = help;
-+		break;
-+	}
-+	err->num_errors++;
- }
- 
- struct tracepoint_path *tracepoint_id_to_path(u64 config)
-@@ -2007,15 +2024,14 @@ static int get_term_width(void)
- 	return ws.ws_col > MAX_WIDTH ? MAX_WIDTH : ws.ws_col;
- }
- 
--void parse_events_print_error(struct parse_events_error *err,
--			      const char *event)
-+static void __parse_events_print_error(int err_idx, const char *err_str,
-+				const char *err_help, const char *event)
- {
- 	const char *str = "invalid or unsupported event: ";
- 	char _buf[MAX_WIDTH];
- 	char *buf = (char *) event;
- 	int idx = 0;
--
--	if (err->str) {
-+	if (err_str) {
- 		/* -2 for extra '' in the final fprintf */
- 		int width       = get_term_width() - 2;
- 		int len_event   = strlen(event);
-@@ -2038,8 +2054,8 @@ void parse_events_print_error(struct parse_events_error *err,
- 		buf = _buf;
- 
- 		/* We're cutting from the beginning. */
--		if (err->idx > max_err_idx)
--			cut = err->idx - max_err_idx;
-+		if (err_idx > max_err_idx)
-+			cut = err_idx - max_err_idx;
- 
- 		strncpy(buf, event + cut, max_len);
- 
-@@ -2052,16 +2068,33 @@ void parse_events_print_error(struct parse_events_error *err,
- 			buf[max_len] = 0;
- 		}
- 
--		idx = len_str + err->idx - cut;
-+		idx = len_str + err_idx - cut;
- 	}
- 
- 	fprintf(stderr, "%s'%s'\n", str, buf);
- 	if (idx) {
--		fprintf(stderr, "%*s\\___ %s\n", idx + 1, "", err->str);
--		if (err->help)
--			fprintf(stderr, "\n%s\n", err->help);
--		zfree(&err->str);
--		zfree(&err->help);
-+		fprintf(stderr, "%*s\\___ %s\n", idx + 1, "", err_str);
-+		if (err_help)
-+			fprintf(stderr, "\n%s\n", err_help);
-+	}
-+}
-+
-+void parse_events_print_error(struct parse_events_error *err,
-+			      const char *event)
-+{
-+	if (!err->num_errors)
-+		return;
-+
-+	__parse_events_print_error(err->idx, err->str, err->help, event);
-+	zfree(&err->str);
-+	zfree(&err->help);
-+
-+	if (err->num_errors > 1) {
-+		fputs("\nInitial error:\n", stderr);
-+		__parse_events_print_error(err->first_idx, err->first_str,
-+					err->first_help, event);
-+		zfree(&err->first_str);
-+		zfree(&err->first_help);
- 	}
- }
- 
-@@ -2071,7 +2104,9 @@ int parse_events_option(const struct option *opt, const char *str,
- 			int unset __maybe_unused)
- {
- 	struct evlist *evlist = *(struct evlist **)opt->value;
--	struct parse_events_error err = { .idx = 0, };
-+	struct parse_events_error err;
-+
-+	bzero(&err, sizeof(err));
- 	int ret = parse_events(evlist, str, &err);
- 
- 	if (ret) {
-diff --git a/tools/perf/util/parse-events.h b/tools/perf/util/parse-events.h
-index 5ee8ac93840c..ff367f248fe8 100644
---- a/tools/perf/util/parse-events.h
-+++ b/tools/perf/util/parse-events.h
-@@ -110,9 +110,13 @@ struct parse_events_term {
- };
- 
- struct parse_events_error {
-+	int   num_errors;       /* number of errors encountered */
- 	int   idx;	/* index in the parsed string */
- 	char *str;      /* string to display at the index */
- 	char *help;	/* optional help string */
-+	int   first_idx;/* as above, but for the first encountered error */
-+	char *first_str;
-+	char *first_help;
- };
- 
- struct parse_events_state {
--- 
-2.24.0.rc1.363.gb1bccd3e3d-goog
+Because there are interdependencies with FOLL_LONGTERM, a similar
+conversion as for FOLL_PIN, was applied. The change was from this:
+
+    get_user_pages(FOLL_LONGTERM) (also sets FOLL_GET)
+    put_page()
+
+to this:
+    pin_longterm_pages() (sets FOLL_PIN | FOLL_LONGTERM)
+    put_user_page()
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Patch summary:
+
+* Patches 1-4: refactoring and preparatory cleanup, independent fixes
+    (Patch 4: V4L2-core bug fix (can be separately applied))
+
+* Patch 5: introduce pin_user_pages(), FOLL_PIN, but no functional
+           changes yet
+* Patches 6-11: Convert existing put_user_page() callers, to use the
+                new pin*()
+* Patch 12: Activate tracking of FOLL_PIN pages.
+* Patches 13-15: convert FOLL_LONGTERM callers
+* Patches: 16-17: gup_benchmark and run_vmtests support
+* Patch 18: enforce FOLL_LONGTERM as a gup-internal (only) flag
+* Patch 19: Documentation/vm/pin_user_pages.rst
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Testing:
+
+* I've done some overall kernel testing (LTP, and a few other goodies),
+  and some directed testing to exercise some of the changes. And as you
+  can see, gup_benchmark is enhanced to exercise this. Basically, I've been
+  able to runtime test the core get_user_pages() and pin_user_pages() and
+  related routines, but not so much on several of the call sites--but those
+  are generally just a couple of lines changed, each.
+
+  Not much of the kernel is actually using this, which on one hand
+  reduces risk quite a lot. But on the other hand, testing coverage
+  is low. So I'd love it if, in particular, the Infiniband and PowerPC
+  folks could do a smoke test of this series for me.
+
+  Also, my runtime testing for the call sites so far is very weak:
+
+    * io_uring: Some directed tests from liburing exercise this, and they p=
+ass.
+    * process_vm_access.c: A small directed test passes.
+    * gup_benchmark: the enhanced version hits the new gup.c code, and pass=
+es.
+    * infiniband (still only have crude "IB pingpong" working, on a
+                  good day: it's not exercising my conversions at runtime..=
+.)
+    * VFIO: compiles (I'm vowing to set up a run time test soon, but it's
+                      not ready just yet)
+    * powerpc: it compiles...
+    * drm/via: compiles...
+    * goldfish: compiles...
+    * net/xdp: compiles...
+    * media/v4l2: compiles...
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Next:
+
+* Get the block/bio_vec sites converted to use pin_user_pages().
+
+* Work with Ira and Dave Chinner to weave this together with the
+  layout lease stuff.
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+[1] Some slow progress on get_user_pages() (Apr 2, 2019): https://lwn.net/A=
+rticles/784574/
+[2] DMA and get_user_pages() (LPC: Dec 12, 2018): https://lwn.net/Articles/=
+774411/
+[3] The trouble with get_user_pages() (Apr 30, 2018): https://lwn.net/Artic=
+les/753027/
+
+John Hubbard (19):
+  mm/gup: pass flags arg to __gup_device_* functions
+  mm/gup: factor out duplicate code from four routines
+  goldish_pipe: rename local pin_user_pages() routine
+  media/v4l2-core: set pages dirty upon releasing DMA buffers
+  mm/gup: introduce pin_user_pages*() and FOLL_PIN
+  goldish_pipe: convert to pin_user_pages() and put_user_page()
+  infiniband: set FOLL_PIN, FOLL_LONGTERM via pin_longterm_pages*()
+  mm/process_vm_access: set FOLL_PIN via pin_user_pages_remote()
+  drm/via: set FOLL_PIN via pin_user_pages_fast()
+  fs/io_uring: set FOLL_PIN via pin_user_pages()
+  net/xdp: set FOLL_PIN via pin_user_pages()
+  mm/gup: track FOLL_PIN pages
+  media/v4l2-core: pin_longterm_pages (FOLL_PIN) and put_user_page()
+    conversion
+  vfio, mm: pin_longterm_pages (FOLL_PIN) and put_user_page() conversion
+  powerpc: book3s64: convert to pin_longterm_pages() and put_user_page()
+  mm/gup_benchmark: support pin_user_pages() and related calls
+  selftests/vm: run_vmtests: invoke gup_benchmark with basic FOLL_PIN
+    coverage
+  mm/gup: remove support for gup(FOLL_LONGTERM)
+  Documentation/vm: add pin_user_pages.rst
+
+ Documentation/vm/index.rst                  |   1 +
+ Documentation/vm/pin_user_pages.rst         | 213 +++++++
+ arch/powerpc/mm/book3s64/iommu_api.c        |  15 +-
+ drivers/gpu/drm/via/via_dmablit.c           |   2 +-
+ drivers/infiniband/core/umem.c              |   5 +-
+ drivers/infiniband/core/umem_odp.c          |  10 +-
+ drivers/infiniband/hw/hfi1/user_pages.c     |   4 +-
+ drivers/infiniband/hw/mthca/mthca_memfree.c |   3 +-
+ drivers/infiniband/hw/qib/qib_user_pages.c  |   8 +-
+ drivers/infiniband/hw/qib/qib_user_sdma.c   |   2 +-
+ drivers/infiniband/hw/usnic/usnic_uiom.c    |   9 +-
+ drivers/infiniband/sw/siw/siw_mem.c         |   5 +-
+ drivers/media/v4l2-core/videobuf-dma-sg.c   |  10 +-
+ drivers/platform/goldfish/goldfish_pipe.c   |  35 +-
+ drivers/vfio/vfio_iommu_type1.c             |  15 +-
+ fs/io_uring.c                               |   5 +-
+ include/linux/mm.h                          | 133 ++++-
+ include/linux/mmzone.h                      |   2 +
+ include/linux/page_ref.h                    |  10 +
+ mm/gup.c                                    | 622 ++++++++++++++++----
+ mm/gup_benchmark.c                          |  81 ++-
+ mm/huge_memory.c                            |  32 +-
+ mm/hugetlb.c                                |  28 +-
+ mm/memremap.c                               |   4 +-
+ mm/process_vm_access.c                      |  28 +-
+ mm/vmstat.c                                 |   2 +
+ net/xdp/xdp_umem.c                          |   4 +-
+ tools/testing/selftests/vm/gup_benchmark.c  |  28 +-
+ tools/testing/selftests/vm/run_vmtests      |  22 +
+ 29 files changed, 1066 insertions(+), 272 deletions(-)
+ create mode 100644 Documentation/vm/pin_user_pages.rst
+
+--=20
+2.23.0
 
