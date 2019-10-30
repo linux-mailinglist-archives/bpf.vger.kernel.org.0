@@ -2,153 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C15ACE9A96
-	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2019 12:06:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3987BE9B34
+	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2019 12:56:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726607AbfJ3LGL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Oct 2019 07:06:11 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:26778 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726082AbfJ3LGK (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 30 Oct 2019 07:06:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1572433569;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=i7I2LBO3foUDB/5ZE0ixnicShI637mLGxaYmf81WNPQ=;
-        b=YymahIbSaNqCTsSO2hyu+pJQ/LyeqF3vSeqRY9o73xWEHYOFbvzafqdi21Q0QjhUU4apKR
-        ebdk82chNhpup16jceOJakAkGnzlY0P8tpu/fM1Xx0DdKqDKqzf6REUtkwpozgdWbmk780
-        0ZRz+oNeRBtCRNp6BaJOtHSqmklawOc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-357-17shLM9zMgO_atjVng0yAw-1; Wed, 30 Oct 2019 07:06:05 -0400
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F2E751800DFD;
-        Wed, 30 Oct 2019 11:06:03 +0000 (UTC)
-Received: from carbon (ovpn-200-19.brq.redhat.com [10.40.200.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D715710016DA;
-        Wed, 30 Oct 2019 11:05:52 +0000 (UTC)
-Date:   Wed, 30 Oct 2019 12:05:51 +0100
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Cc:     Daniel Borkmann <borkmann@iogearbox.net>,
+        id S1726332AbfJ3L4e (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Oct 2019 07:56:34 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:36343 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726109AbfJ3L4e (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 30 Oct 2019 07:56:34 -0400
+Received: by mail-qt1-f194.google.com with SMTP id x14so2810043qtq.3;
+        Wed, 30 Oct 2019 04:56:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=9VRvwupe1Us8UkNQwMDn+6sFPpjxIr5st7RpNyH9QM4=;
+        b=TPN+erso+wzp3wJvXdGWSctMy6KBHzbD6wR04o/Aqvn3k79RXz6tgq9PpfG5jvad+m
+         GJA5uiTG3ccIQ0yhpGJellPz6PbO8XNVXF1HGw2lruzU3qv3jJslIQsq83EU+fLB8LHe
+         w/VBs1tnlPR2R2DPCwckiCqKUOhHT553zr22j2JjzkoYCmuRhYS/MvxmN4GCGRMXKlgs
+         1Gv6oC0g4VAFxgqnRKBp6OFtjojanjv8ZopqE6Y/sX+91nSsBhrpopvPZvTtEmxyGe0b
+         FrpSCh7FDHqxe8L7e5jED6DIY72JeGgEbh6Xd7HHFHsS5ugiEoDABdqG/fII54i5S+Qd
+         ZMow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=9VRvwupe1Us8UkNQwMDn+6sFPpjxIr5st7RpNyH9QM4=;
+        b=dokMnhQXiOIPOcd3Orre4lvS0RSwDSOvmo45/caDaArS/rSc6zeDrs+ikSfLAoqQVJ
+         KWG7e5Ig7gdG0aVX6EJRoGTC5S+zqTvl1lE8vPAw6z3lJ+CY5B08N12NoQp7eAdeUnHK
+         zWNibFnuoJtqH5knJrB7y6qw8NBOP7goxwEvo//UyPgJvO6UoaXIPwPLklJMUIuIHyn2
+         Yf/ryRdIE4TqSKJTbgzTQQL+JfDVbPqWR4OJ6t6iIR7Hze4lySx8HcoshimdGvhWE7zA
+         CYf/JiKsti8AOBiR1J1ydUY8y+7eeAxy0W2dd/geucfeUSNxCOpMDu8qlI77eKAdta1X
+         4uhA==
+X-Gm-Message-State: APjAAAXS7DkSUsxEQe5bbRDL63skw4udPiX86tiCWFv4jK1qiehLE/hQ
+        3W0yL3xOATwVTC2Fr2wjhdA=
+X-Google-Smtp-Source: APXvYqxxqesP5RziDOAjL4/Qu38GF5afIzyj0oWgUb8Gys4rgwSK0lCEzGixCSGV08mdx8RZSN+ObQ==
+X-Received: by 2002:aed:3e75:: with SMTP id m50mr4307731qtf.87.1572436593246;
+        Wed, 30 Oct 2019 04:56:33 -0700 (PDT)
+Received: from quaco.ghostprotocols.net ([179.97.35.50])
+        by smtp.gmail.com with ESMTPSA id w15sm1200336qtk.43.2019.10.30.04.56.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Oct 2019 04:56:32 -0700 (PDT)
+From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 28557410D7; Wed, 30 Oct 2019 08:56:30 -0300 (-03)
+Date:   Wed, 30 Oct 2019 08:56:30 -0300
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        BPF-dev-list <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Eric Sage <eric@sage.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
-        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        brouer@redhat.com
-Subject: Re: Compile build issues with samples/bpf/ again
-Message-ID: <20191030120551.68f8b67b@carbon>
-In-Reply-To: <CAJ+HfNhSsnFXFG1ZHYCxSmYjdv0bWWszToJzmH1KFn7G5CBavQ@mail.gmail.com>
-References: <20191030114313.75b3a886@carbon>
-        <CAJ+HfNhSsnFXFG1ZHYCxSmYjdv0bWWszToJzmH1KFn7G5CBavQ@mail.gmail.com>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH v4 4/9] perf tools: splice events onto evlist even on
+ error
+Message-ID: <20191030115630.GC27327@kernel.org>
+References: <20191024190202.109403-1-irogers@google.com>
+ <20191025180827.191916-1-irogers@google.com>
+ <20191025180827.191916-5-irogers@google.com>
+ <20191028210712.GB6158@krava>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
-X-MC-Unique: 17shLM9zMgO_atjVng0yAw-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191028210712.GB6158@krava>
+X-Url:  http://acmel.wordpress.com
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 30 Oct 2019 11:53:21 +0100
-Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> wrote:
+Em Mon, Oct 28, 2019 at 10:07:12PM +0100, Jiri Olsa escreveu:
+> On Fri, Oct 25, 2019 at 11:08:22AM -0700, Ian Rogers wrote:
+> > If event parsing fails the event list is leaked, instead splice the list
+> > onto the out result and let the caller cleanup.
+> > 
+> > An example input for parse_events found by libFuzzer that reproduces
+> > this memory leak is 'm{'.
+> > 
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+> 
+> Acked-by: Jiri Olsa <jolsa@kernel.org>
 
-> On Wed, 30 Oct 2019 at 11:43, Jesper Dangaard Brouer <brouer@redhat.com> =
-wrote:
-> >
-> > Hi Maintainers,
-> >
-> > It is annoy to experience that simply building kernel tree samples/bpf/
-> > is broken as often as it is.  Right now, build is broken in both DaveM
-> > net.git and bpf.git.  ACME have some build fixes queued from Bj=C3=B6rn
-> > T=C3=B6pel. But even with those fixes, build (for samples/bpf/task_fd_q=
-uery_user.c)
-> > are still broken, as reported by Eric Sage (15 Oct), which I have a fix=
- for.
-> > =20
->=20
-> Hmm, something else than commit e55190f26f92 ("samples/bpf: Fix build
-> for task_fd_query_user.c")?
+Thanks, applied.
+ 
+> thanks,
+> jirka
+> 
+> > ---
+> >  tools/perf/util/parse-events.c | 17 +++++++++++------
+> >  1 file changed, 11 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
+> > index c516d0cce946..4c4c6f3e866a 100644
+> > --- a/tools/perf/util/parse-events.c
+> > +++ b/tools/perf/util/parse-events.c
+> > @@ -1952,15 +1952,20 @@ int parse_events(struct evlist *evlist, const char *str,
+> >  
+> >  	ret = parse_events__scanner(str, &parse_state, PE_START_EVENTS);
+> >  	perf_pmu__parse_cleanup();
+> > +
+> > +	if (!ret && list_empty(&parse_state.list)) {
+> > +		WARN_ONCE(true, "WARNING: event parser found nothing\n");
+> > +		return -1;
+> > +	}
+> > +
+> > +	/*
+> > +	 * Add list to the evlist even with errors to allow callers to clean up.
+> > +	 */
+> > +	perf_evlist__splice_list_tail(evlist, &parse_state.list);
+> > +
+> >  	if (!ret) {
+> >  		struct evsel *last;
+> >  
+> > -		if (list_empty(&parse_state.list)) {
+> > -			WARN_ONCE(true, "WARNING: event parser found nothing\n");
+> > -			return -1;
+> > -		}
+> > -
+> > -		perf_evlist__splice_list_tail(evlist, &parse_state.list);
+> >  		evlist->nr_groups += parse_state.nr_groups;
+> >  		last = evlist__last(evlist);
+> >  		last->cmdline_group_boundary = true;
+> > -- 
+> > 2.24.0.rc0.303.g954a862665-goog
+> > 
 
-I see, you already fixed this... and it is in the bpf.git tree.
+-- 
 
-Then we only need your other fixes from ACME's tree.  I just cloned a
-fresh version of git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
-to check that 'make M=3Dsamples/bpf' still fails.
-
-
-> > Could maintainers add building samples/bpf/ to their build test scripts=
-?
-> > (make headers_install && make M=3Dsamples/bpf)
-> >
-> > Also I discovered, the command to build have also recently changed:
-> > - Before : make samples/bpf/   or  simply make in subdir samples/bpf/
-> > - new cmd: make M=3Dsamples/bpf  and in subdir is broken
-> >
-> > Anyone knows what commit introduced this change?
-> > (I need it for a fixes tag, when updating README.rst doc)
-
-The make cmdline change is confusing, because the old command
-'make samples/bpf/' reports success (remember last '/') ... this could
-be why maintainers are not catching this.
-
-See: old make cmd
-
- $ touch samples/bpf/*kern.c
- $ make samples/bpf/
-   CALL    scripts/checksyscalls.sh
-   CALL    scripts/atomic/check-atomics.sh
-   DESCEND  objtool
- $
-
-
-New make cmd fails:
-
-$ make M=3Dsamples/bpf
-samples/bpf/Makefile:209: WARNING: Detected possible issues with include pa=
-th.
-samples/bpf/Makefile:210: WARNING: Please install kernel headers locally (m=
-ake headers_install).
-  AR      samples/bpf/built-in.a
-make -C /home/hawk/git/kernel/bpf/samples/bpf/../../tools/lib/bpf/ RM=3D'rm=
- -rf' LDFLAGS=3D srctree=3D/home/hawk/git/kernel/bpf/samples/bpf/../../ O=
-=3D
-  HOSTCC  samples/bpf/test_lru_dist
-  HOSTCC  samples/bpf/sock_example
-  HOSTCC  samples/bpf/fds_example.o
-  HOSTLD  samples/bpf/fds_example
-  HOSTCC  samples/bpf/sockex1_user.o
-  HOSTLD  samples/bpf/sockex1
-  HOSTCC  samples/bpf/sockex2_user.o
-  HOSTLD  samples/bpf/sockex2
-  HOSTCC  samples/bpf/bpf_load.o
-  HOSTCC  samples/bpf/sockex3_user.o
-  HOSTLD  samples/bpf/sockex3
-/usr/bin/ld: samples/bpf/bpf_load.o: in function `do_load_bpf_file.part.2':
-bpf_load.c:(.text+0x91a): undefined reference to `test_attr__enabled'
-/usr/bin/ld: bpf_load.c:(.text+0x1403): undefined reference to `test_attr__=
-open'
-collect2: error: ld returned 1 exit status
-make[1]: *** [scripts/Makefile.host:116: samples/bpf/sockex3] Error 1
-make: *** [Makefile:1649: samples/bpf] Error 2
-
---=20
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
-
+- Arnaldo
