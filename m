@@ -2,27 +2,22 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D8E7EE90CD
-	for <lists+bpf@lfdr.de>; Tue, 29 Oct 2019 21:30:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53E86E9532
+	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2019 04:05:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726747AbfJ2UaG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 29 Oct 2019 16:30:06 -0400
-Received: from smtp-sh2.infomaniak.ch ([128.65.195.6]:49289 "EHLO
-        smtp-sh2.infomaniak.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725840AbfJ2UaF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 29 Oct 2019 16:30:05 -0400
-Received: from smtp8.infomaniak.ch (smtp8.infomaniak.ch [83.166.132.38])
-        by smtp-sh2.infomaniak.ch (8.14.4/8.14.4/Debian-8+deb8u2) with ESMTP id x9THFUnj119194
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 29 Oct 2019 18:15:31 +0100
-Received: from localhost (ns3096276.ip-94-23-54.eu [94.23.54.103])
-        (authenticated bits=0)
-        by smtp8.infomaniak.ch (8.14.5/8.14.5) with ESMTP id x9THFU5P168850;
-        Tue, 29 Oct 2019 18:15:30 +0100
-From:   =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S1727008AbfJ3DFS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 29 Oct 2019 23:05:18 -0400
+Received: from mail.hallyn.com ([178.63.66.53]:45984 "EHLO mail.hallyn.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726714AbfJ3DFS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 29 Oct 2019 23:05:18 -0400
+X-Greylist: delayed 533 seconds by postgrey-1.27 at vger.kernel.org; Tue, 29 Oct 2019 23:05:15 EDT
+Received: by mail.hallyn.com (Postfix, from userid 1001)
+        id A8A80AC2; Tue, 29 Oct 2019 21:56:21 -0500 (CDT)
+Date:   Tue, 29 Oct 2019 21:56:21 -0500
+From:   "Serge E. Hallyn" <serge@hallyn.com>
+To:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
+Cc:     linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Andy Lutomirski <luto@amacapital.net>,
         Casey Schaufler <casey@schaufler-ca.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -34,7 +29,7 @@ Cc:     =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
         Kees Cook <keescook@chromium.org>,
         KP Singh <kpsingh@chromium.org>,
         Michael Kerrisk <mtk.manpages@gmail.com>,
-        =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mickael.salaun@ssi.gouv.fr>,
+        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mickael.salaun@ssi.gouv.fr>,
         Paul Moore <paul@paul-moore.com>,
         Sargun Dhillon <sargun@sargun.me>,
         "Serge E . Hallyn" <serge@hallyn.com>,
@@ -45,658 +40,290 @@ Cc:     =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
         Will Drewry <wad@chromium.org>, bpf@vger.kernel.org,
         kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
         linux-security-module@vger.kernel.org
-Subject: [PATCH bpf-next v11 6/7] bpf,landlock: Add tests for the Landlock ptrace program type
-Date:   Tue, 29 Oct 2019 18:15:04 +0100
-Message-Id: <20191029171505.6650-7-mic@digikod.net>
-X-Mailer: git-send-email 2.24.0.rc1
-In-Reply-To: <20191029171505.6650-1-mic@digikod.net>
+Subject: Re: [PATCH bpf-next v11 2/7] landlock: Add the management of domains
+Message-ID: <20191030025621.GA27626@mail.hallyn.com>
 References: <20191029171505.6650-1-mic@digikod.net>
+ <20191029171505.6650-3-mic@digikod.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Antivirus: Dr.Web (R) for Unix mail servers drweb plugin ver.6.0.2.8
-X-Antivirus-Code: 0x100000
+In-Reply-To: <20191029171505.6650-3-mic@digikod.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Test eBPF program context access and ptrace hooks semantic.
+On Tue, Oct 29, 2019 at 06:15:00PM +0100, Micka�l Sala�n wrote:
+> A Landlock domain is a set of eBPF programs.  There is a list for each
+> different program types that can be run on a specific Landlock hook
+> (e.g. ptrace).  A domain is tied to a set of subjects (i.e. tasks).  A
+> Landlock program should not try (nor be able) to infer which subject is
+> currently enforced, but to have a unique security policy for all
+> subjects tied to the same domain.  This make the reasoning much easier
+> and help avoid pitfalls.
+> 
+> The next commits tie a domain to a task's credentials thanks to
+> seccomp(2), but we could use cgroups or a security file-system to
+> enforce a sysadmin-defined policy .
+> 
+> Signed-off-by: Micka�l Sala�n <mic@digikod.net>
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Andy Lutomirski <luto@amacapital.net>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: James Morris <jmorris@namei.org>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Serge E. Hallyn <serge@hallyn.com>
+> Cc: Will Drewry <wad@chromium.org>
+> ---
+> 
+> Changes since v10:
+> * rename files and names to clearly define a domain
+> * create a standalone patch to ease review
+> ---
 
-Signed-off-by: Mickaël Salaün <mic@digikod.net>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Andy Lutomirski <luto@amacapital.net>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: James Morris <jmorris@namei.org>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Serge E. Hallyn <serge@hallyn.com>
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: Will Drewry <wad@chromium.org>
----
+[...]
 
-Changes since v10:
-* rework tests with new Landlock ptrace programs which restrict ptrace
-  thanks to the task_landlock_ptrace_ancestor() helper
-* simplify ptrace tests (make expect_ptrace implicit)
-* add tests:
-  * check a child process tracing its parent
-  * check Landlock domain without ptrace enforcement (e.g. useful for
-    audit/signaling purpose)
-  * check inherited-only domains
-  * check task pointer arithmetic
-* fix flaky test for multi-core
-* increase log size
-* cosmetic renames
-* update and improve the Makefile
+> +/**
+> + * store_landlock_prog - prepend and deduplicate a Landlock prog_list
+> + *
+> + * Prepend @prog to @init_domain while ignoring @prog if they are already in
+> + * @ref_domain.  Whatever is the result of this function call, you can call
+> + * bpf_prog_put(@prog) after.
+> + *
+> + * @init_domain: empty domain to prepend to
+> + * @ref_domain: domain to check for duplicate programs
+> + * @prog: program to prepend
+> + *
+> + * Return -errno on error or 0 if @prog was successfully stored.
+> + */
+> +static int store_landlock_prog(struct landlock_domain *init_domain,
+> +		const struct landlock_domain *ref_domain,
+> +		struct bpf_prog *prog)
+> +{
+> +	struct landlock_prog_list *tmp_list = NULL;
+> +	int err;
+> +	size_t hook;
+> +	enum landlock_hook_type last_type;
+> +	struct bpf_prog *new = prog;
+> +
+> +	/* allocate all the memory we need */
+> +	struct landlock_prog_list *new_list;
+> +
+> +	last_type = get_hook_type(new);
+> +
+> +	/* ignore duplicate programs */
 
-Changes since v9:
-* replace subtype with expected_attach_type and expected_attach_triggers
-* rename inode_map_lookup() into inode_map_lookup_elem()
-* check for inode map entry without value (which is now possible thanks
-  to the pointer null check)
-* use read-only inode map for Landlock programs
+This comment should be "don't allow" rather than "ignore", right?
 
-Changes since v8:
-* update eBPF include path for macros
-* use TEST_GEN_PROGS and use the generic "clean" target
-* add more verbose errors
-* update the bpf/verifier files
-* remove chain tests (from landlock and bpf/verifier)
-* replace the whitelist tests with blacklist tests (because of stateless
-  Landlock programs): remove "dotdot" tests and other depth tests
-* sync the landlock Makefile with its bpf sibling directory and use
-  bpf_load_program_xattr()
+> +	if (ref_domain) {
+> +		struct landlock_prog_list *ref;
+> +
+> +		hook = get_hook_index(get_hook_type(new));
+> +		for (ref = ref_domain->programs[hook]; ref;
+> +				ref = ref->prev) {
+> +			if (ref->prog == new)
+> +				return -EINVAL;
+> +		}
+> +	}
+> +
+> +	new = bpf_prog_inc(new);
+> +	if (IS_ERR(new)) {
+> +		err = PTR_ERR(new);
+> +		goto put_tmp_list;
+> +	}
+> +	new_list = kzalloc(sizeof(*new_list), GFP_KERNEL);
+> +	if (!new_list) {
+> +		bpf_prog_put(new);
+> +		err = -ENOMEM;
+> +		goto put_tmp_list;
+> +	}
+> +	/* ignore Landlock types in this tmp_list */
+> +	new_list->prog = new;
+> +	new_list->prev = tmp_list;
+> +	refcount_set(&new_list->usage, 1);
+> +	tmp_list = new_list;
+> +
+> +	if (!tmp_list)
+> +		/* inform user space that this program was already added */
 
-Changes since v7:
-* update tests and add new ones for filesystem hierarchy and Landlock
-  chains.
+I'm not following this.  You just kzalloc'd new_list, pointed
+tmp_list to new_list, so how could tmp_list be NULL?  Was there
+a bad code reorg here, or am i being dense?
 
-Changes since v6:
-* use the new kselftest_harness.h
-* use const variables
-* replace ASSERT_STEP with ASSERT_*
-* rename BPF_PROG_TYPE_LANDLOCK to BPF_PROG_TYPE_LANDLOCK_RULE
-* force sample library rebuild
-* fix install target
-
-Changes since v5:
-* add subtype test
-* add ptrace tests
-* split and rename files
-* cleanup and rebase
----
- scripts/bpf_helpers_doc.py                    |   1 +
- tools/include/uapi/linux/bpf.h                |  23 +-
- tools/include/uapi/linux/landlock.h           |  22 ++
- tools/lib/bpf/libbpf_probes.c                 |   3 +
- tools/testing/selftests/bpf/config            |   3 +
- tools/testing/selftests/bpf/test_verifier.c   |   1 +
- .../testing/selftests/bpf/verifier/landlock.c |  56 +++++
- tools/testing/selftests/landlock/.gitignore   |   5 +
- tools/testing/selftests/landlock/Makefile     |  27 +++
- tools/testing/selftests/landlock/config       |   5 +
- tools/testing/selftests/landlock/test.h       |  48 ++++
- tools/testing/selftests/landlock/test_base.c  |  24 ++
- .../testing/selftests/landlock/test_ptrace.c  | 210 ++++++++++++++++++
- 13 files changed, 427 insertions(+), 1 deletion(-)
- create mode 100644 tools/include/uapi/linux/landlock.h
- create mode 100644 tools/testing/selftests/bpf/verifier/landlock.c
- create mode 100644 tools/testing/selftests/landlock/.gitignore
- create mode 100644 tools/testing/selftests/landlock/Makefile
- create mode 100644 tools/testing/selftests/landlock/config
- create mode 100644 tools/testing/selftests/landlock/test.h
- create mode 100644 tools/testing/selftests/landlock/test_base.c
- create mode 100644 tools/testing/selftests/landlock/test_ptrace.c
-
-diff --git a/scripts/bpf_helpers_doc.py b/scripts/bpf_helpers_doc.py
-index 7548569e8076..8e4c0fe75663 100755
---- a/scripts/bpf_helpers_doc.py
-+++ b/scripts/bpf_helpers_doc.py
-@@ -466,6 +466,7 @@ class PrinterHelpers(Printer):
-             'const struct sk_buff': 'const struct __sk_buff',
-             'struct sk_msg_buff': 'struct sk_msg_md',
-             'struct xdp_buff': 'struct xdp_md',
-+            'struct task_struct': 'void',
-     }
- 
-     def print_header(self):
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 4af8b0819a32..c88436b97163 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -173,6 +173,7 @@ enum bpf_prog_type {
- 	BPF_PROG_TYPE_CGROUP_SYSCTL,
- 	BPF_PROG_TYPE_RAW_TRACEPOINT_WRITABLE,
- 	BPF_PROG_TYPE_CGROUP_SOCKOPT,
-+	BPF_PROG_TYPE_LANDLOCK_HOOK,
- };
- 
- enum bpf_attach_type {
-@@ -199,6 +200,7 @@ enum bpf_attach_type {
- 	BPF_CGROUP_UDP6_RECVMSG,
- 	BPF_CGROUP_GETSOCKOPT,
- 	BPF_CGROUP_SETSOCKOPT,
-+	BPF_LANDLOCK_PTRACE,
- 	__MAX_BPF_ATTACH_TYPE
- };
- 
-@@ -2775,6 +2777,24 @@ union bpf_attr {
-  * 		restricted to raw_tracepoint bpf programs.
-  * 	Return
-  * 		0 on success, or a negative error in case of failure.
-+ *
-+ * int bpf_task_landlock_ptrace_ancestor(struct task_struct *parent, struct task_struct *child)
-+ *	Description
-+ *		Check the relation of a potentially parent task with a child
-+ *		one, according to their Landlock ptrace hook programs.
-+ *	Return
-+ *		**-EINVAL** if the child's ptrace programs are not comparable
-+ *		to the parent ones, i.e. one of them is an empty set.
-+ *
-+ *		**-ENOENT** if the parent's ptrace programs are either in a
-+ *		separate hierarchy of the child ones, or if the parent's ptrace
-+ *		programs are a superset of the child ones.
-+ *
-+ *		0 if the parent's ptrace programs are the same as the child
-+ *		ones.
-+ *
-+ *		1 if the parent's ptrace programs are indeed a subset of the
-+ *		child ones.
-  */
- #define __BPF_FUNC_MAPPER(FN)		\
- 	FN(unspec),			\
-@@ -2888,7 +2908,8 @@ union bpf_attr {
- 	FN(sk_storage_delete),		\
- 	FN(send_signal),		\
- 	FN(tcp_gen_syncookie),		\
--	FN(skb_output),
-+	FN(skb_output),			\
-+	FN(task_landlock_ptrace_ancestor),
- 
- /* integer value in 'imm' field of BPF_CALL instruction selects which helper
-  * function eBPF program intends to call
-diff --git a/tools/include/uapi/linux/landlock.h b/tools/include/uapi/linux/landlock.h
-new file mode 100644
-index 000000000000..3db2d190c4e7
---- /dev/null
-+++ b/tools/include/uapi/linux/landlock.h
-@@ -0,0 +1,22 @@
-+/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-+/*
-+ * Landlock - UAPI headers
-+ *
-+ * Copyright © 2017-2019 Mickaël Salaün <mic@digikod.net>
-+ * Copyright © 2018-2019 ANSSI
-+ */
-+
-+#ifndef _UAPI__LINUX_LANDLOCK_H__
-+#define _UAPI__LINUX_LANDLOCK_H__
-+
-+#include <linux/types.h>
-+
-+#define LANDLOCK_RET_ALLOW	0
-+#define LANDLOCK_RET_DENY	1
-+
-+struct landlock_context_ptrace {
-+	__u64 tracer;
-+	__u64 tracee;
-+};
-+
-+#endif /* _UAPI__LINUX_LANDLOCK_H__ */
-diff --git a/tools/lib/bpf/libbpf_probes.c b/tools/lib/bpf/libbpf_probes.c
-index 4b0b0364f5fc..1e0d6346a7c7 100644
---- a/tools/lib/bpf/libbpf_probes.c
-+++ b/tools/lib/bpf/libbpf_probes.c
-@@ -78,6 +78,9 @@ probe_load(enum bpf_prog_type prog_type, const struct bpf_insn *insns,
- 	case BPF_PROG_TYPE_KPROBE:
- 		xattr.kern_version = get_kernel_version();
- 		break;
-+	case BPF_PROG_TYPE_LANDLOCK_HOOK:
-+		xattr.expected_attach_type = BPF_LANDLOCK_PTRACE;
-+		break;
- 	case BPF_PROG_TYPE_UNSPEC:
- 	case BPF_PROG_TYPE_SOCKET_FILTER:
- 	case BPF_PROG_TYPE_SCHED_CLS:
-diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
-index 5dc109f4c097..3161a88a6059 100644
---- a/tools/testing/selftests/bpf/config
-+++ b/tools/testing/selftests/bpf/config
-@@ -35,3 +35,6 @@ CONFIG_MPLS_ROUTING=m
- CONFIG_MPLS_IPTUNNEL=m
- CONFIG_IPV6_SIT=m
- CONFIG_BPF_JIT=y
-+CONFIG_SECCOMP_FILTER=y
-+CONFIG_SECURITY=y
-+CONFIG_SECURITY_LANDLOCK=y
-diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
-index d27fd929abb9..74f249dafc0b 100644
---- a/tools/testing/selftests/bpf/test_verifier.c
-+++ b/tools/testing/selftests/bpf/test_verifier.c
-@@ -30,6 +30,7 @@
- #include <linux/bpf.h>
- #include <linux/if_ether.h>
- #include <linux/btf.h>
-+#include <linux/landlock.h>
- 
- #include <bpf/bpf.h>
- #include <bpf/libbpf.h>
-diff --git a/tools/testing/selftests/bpf/verifier/landlock.c b/tools/testing/selftests/bpf/verifier/landlock.c
-new file mode 100644
-index 000000000000..59cd333745dc
---- /dev/null
-+++ b/tools/testing/selftests/bpf/verifier/landlock.c
-@@ -0,0 +1,56 @@
-+{
-+	"landlock/ptrace: always accept",
-+	.prog_type = BPF_PROG_TYPE_LANDLOCK_HOOK,
-+	.expected_attach_type = BPF_LANDLOCK_PTRACE,
-+	.insns = {
-+		BPF_MOV32_IMM(BPF_REG_0, 0),
-+		BPF_EXIT_INSN(),
-+	},
-+	.result = ACCEPT,
-+},
-+{
-+	"landlock/ptrace: forbid arbitrary return value",
-+	.prog_type = BPF_PROG_TYPE_LANDLOCK_HOOK,
-+	.expected_attach_type = BPF_LANDLOCK_PTRACE,
-+	.insns = {
-+		BPF_MOV32_IMM(BPF_REG_0, 2),
-+		BPF_EXIT_INSN(),
-+	},
-+	.result = REJECT,
-+	.errstr = "At program exit the register R0 has value (0x2; 0x0) should have been in (0x0; 0x1)",
-+},
-+{
-+	"landlock/ptrace: read context and call dedicated helper",
-+	.prog_type = BPF_PROG_TYPE_LANDLOCK_HOOK,
-+	.expected_attach_type = BPF_LANDLOCK_PTRACE,
-+	.insns = {
-+		BPF_MOV64_REG(BPF_REG_6, BPF_REG_1),
-+		BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_6,
-+			offsetof(struct landlock_context_ptrace, tracer)),
-+		BPF_LDX_MEM(BPF_DW, BPF_REG_2, BPF_REG_6,
-+			offsetof(struct landlock_context_ptrace, tracer)),
-+		BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0,
-+				BPF_FUNC_task_landlock_ptrace_ancestor),
-+		BPF_MOV32_IMM(BPF_REG_0, 0),
-+		BPF_EXIT_INSN(),
-+	},
-+	.result = ACCEPT,
-+},
-+{
-+	"landlock/ptrace: forbid pointer arithmetic",
-+	.prog_type = BPF_PROG_TYPE_LANDLOCK_HOOK,
-+	.expected_attach_type = BPF_LANDLOCK_PTRACE,
-+	.insns = {
-+		BPF_MOV64_REG(BPF_REG_6, BPF_REG_1),
-+		BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_6,
-+			offsetof(struct landlock_context_ptrace, tracer)),
-+		BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, 1),
-+		BPF_LDX_MEM(BPF_DW, BPF_REG_2, BPF_REG_6,
-+			offsetof(struct landlock_context_ptrace, tracee)),
-+		BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, 1),
-+		BPF_MOV32_IMM(BPF_REG_0, 0),
-+		BPF_EXIT_INSN(),
-+	},
-+	.result = REJECT,
-+	.errstr = "R1 pointer arithmetic on task prohibited",
-+},
-diff --git a/tools/testing/selftests/landlock/.gitignore b/tools/testing/selftests/landlock/.gitignore
-new file mode 100644
-index 000000000000..4c5c01d23fe0
---- /dev/null
-+++ b/tools/testing/selftests/landlock/.gitignore
-@@ -0,0 +1,5 @@
-+/feature
-+/fixdep
-+/*libbpf*
-+/test_base
-+/test_ptrace
-diff --git a/tools/testing/selftests/landlock/Makefile b/tools/testing/selftests/landlock/Makefile
-new file mode 100644
-index 000000000000..2da77c30e77f
---- /dev/null
-+++ b/tools/testing/selftests/landlock/Makefile
-@@ -0,0 +1,27 @@
-+# SPDX-License-Identifier: GPL-2.0
-+
-+LIBDIR := $(abspath ../../../lib)
-+BPFDIR := $(LIBDIR)/bpf
-+TOOLSDIR := $(abspath ../../../include)
-+APIDIR := $(TOOLSDIR)/uapi
-+
-+CFLAGS += -g -Wall -O2 -I$(APIDIR) -I$(LIBDIR) -I$(TOOLSDIR)
-+LDLIBS += -lelf
-+
-+test_src = $(wildcard test_*.c)
-+
-+TEST_GEN_PROGS := $(test_src:.c=)
-+
-+include ../lib.mk
-+
-+BPFOBJ := $(OUTPUT)/libbpf.a
-+
-+$(TEST_GEN_PROGS): $(BPFOBJ) ../kselftest_harness.h
-+
-+.PHONY: force
-+
-+# force a rebuild of BPFOBJ when its dependencies are updated
-+force:
-+
-+$(BPFOBJ): force
-+	$(MAKE) -C $(BPFDIR) OUTPUT=$(OUTPUT)/
-diff --git a/tools/testing/selftests/landlock/config b/tools/testing/selftests/landlock/config
-new file mode 100644
-index 000000000000..fa5081b840ad
---- /dev/null
-+++ b/tools/testing/selftests/landlock/config
-@@ -0,0 +1,5 @@
-+CONFIG_BPF=y
-+CONFIG_BPF_SYSCALL=y
-+CONFIG_SECCOMP_FILTER=y
-+CONFIG_SECURITY=y
-+CONFIG_SECURITY_LANDLOCK=y
-diff --git a/tools/testing/selftests/landlock/test.h b/tools/testing/selftests/landlock/test.h
-new file mode 100644
-index 000000000000..836df68b6bb8
---- /dev/null
-+++ b/tools/testing/selftests/landlock/test.h
-@@ -0,0 +1,48 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Landlock helpers
-+ *
-+ * Copyright © 2017-2019 Mickaël Salaün <mic@digikod.net>
-+ * Copyright © 2019 ANSSI
-+ */
-+
-+#include <bpf/bpf.h>
-+#include <errno.h>
-+#include <linux/filter.h>
-+#include <linux/landlock.h>
-+#include <linux/seccomp.h>
-+#include <sys/prctl.h>
-+#include <sys/syscall.h>
-+
-+#include "../kselftest_harness.h"
-+#include "../../../../samples/bpf/bpf_load.h"
-+
-+#ifndef SECCOMP_PREPEND_LANDLOCK_PROG
-+#define SECCOMP_PREPEND_LANDLOCK_PROG	4
-+#endif
-+
-+#ifndef seccomp
-+static int __attribute__((unused)) seccomp(unsigned int op, unsigned int flags,
-+		void *args)
-+{
-+	errno = 0;
-+	return syscall(__NR_seccomp, op, flags, args);
-+}
-+#endif
-+
-+static int __attribute__((unused)) ll_bpf_load_program(
-+		const struct bpf_insn *bpf_insns, size_t insns_len,
-+		char *log_buf, size_t log_buf_sz,
-+		const enum bpf_attach_type attach_type)
-+{
-+	struct bpf_load_program_attr load_attr;
-+
-+	memset(&load_attr, 0, sizeof(struct bpf_load_program_attr));
-+	load_attr.prog_type = BPF_PROG_TYPE_LANDLOCK_HOOK;
-+	load_attr.expected_attach_type = attach_type;
-+	load_attr.insns = bpf_insns;
-+	load_attr.insns_cnt = insns_len / sizeof(struct bpf_insn);
-+	load_attr.license = "GPL";
-+
-+	return bpf_load_program_xattr(&load_attr, log_buf, log_buf_sz);
-+}
-diff --git a/tools/testing/selftests/landlock/test_base.c b/tools/testing/selftests/landlock/test_base.c
-new file mode 100644
-index 000000000000..db46f39048cb
---- /dev/null
-+++ b/tools/testing/selftests/landlock/test_base.c
-@@ -0,0 +1,24 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Landlock tests - base
-+ *
-+ * Copyright © 2017-2019 Mickaël Salaün <mic@digikod.net>
-+ */
-+
-+#define _GNU_SOURCE
-+#include <errno.h>
-+
-+#include "test.h"
-+
-+TEST(seccomp_landlock)
-+{
-+	int ret;
-+
-+	ret = seccomp(SECCOMP_PREPEND_LANDLOCK_PROG, 0, NULL);
-+	EXPECT_EQ(-1, ret);
-+	EXPECT_EQ(EFAULT, errno) {
-+		TH_LOG("Kernel does not support CONFIG_SECURITY_LANDLOCK");
-+	}
-+}
-+
-+TEST_HARNESS_MAIN
-diff --git a/tools/testing/selftests/landlock/test_ptrace.c b/tools/testing/selftests/landlock/test_ptrace.c
-new file mode 100644
-index 000000000000..f4ee67126394
---- /dev/null
-+++ b/tools/testing/selftests/landlock/test_ptrace.c
-@@ -0,0 +1,210 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Landlock tests - ptrace
-+ *
-+ * Copyright © 2017-2019 Mickaël Salaün <mic@digikod.net>
-+ * Copyright © 2019 ANSSI
-+ */
-+
-+#define _GNU_SOURCE
-+#include <signal.h> /* raise */
-+#include <sys/ptrace.h>
-+#include <sys/types.h> /* waitpid */
-+#include <sys/wait.h> /* waitpid */
-+#include <unistd.h> /* fork, pipe */
-+
-+#include "test.h"
-+
-+#define LOG_SIZE 512
-+
-+static void create_domain(struct __test_metadata *_metadata,
-+		bool scoped_ptrace, bool inherited_only)
-+{
-+	const struct bpf_insn prog_void[] = {
-+		BPF_MOV32_IMM(BPF_REG_0, LANDLOCK_RET_ALLOW),
-+		BPF_EXIT_INSN(),
-+	};
-+	const struct bpf_insn prog_check[] = {
-+		BPF_ALU64_REG(BPF_MOV, BPF_REG_6, BPF_REG_1),
-+		BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_6,
-+			offsetof(struct landlock_context_ptrace, tracer)),
-+		BPF_LDX_MEM(BPF_DW, BPF_REG_2, BPF_REG_6,
-+			offsetof(struct landlock_context_ptrace, tracee)),
-+		BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0,
-+				BPF_FUNC_task_landlock_ptrace_ancestor),
-+		/* if @tracee is an ancestor or at the same level of @tracer,
-+		 * then allow ptrace (warning: do not use BPF_JGE 0) */
-+		BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, inherited_only ? 0 : 1, 2),
-+		BPF_MOV32_IMM(BPF_REG_0, LANDLOCK_RET_DENY),
-+		BPF_EXIT_INSN(),
-+		BPF_MOV32_IMM(BPF_REG_0, LANDLOCK_RET_ALLOW),
-+		BPF_EXIT_INSN(),
-+	};
-+	int prog;
-+	char log[LOG_SIZE] = "";
-+
-+	if (scoped_ptrace)
-+		prog = ll_bpf_load_program(prog_check, sizeof(prog_check),
-+				log, sizeof(log), BPF_LANDLOCK_PTRACE);
-+	else
-+		prog = ll_bpf_load_program(prog_void, sizeof(prog_void),
-+				log, sizeof(log), BPF_LANDLOCK_PTRACE);
-+	ASSERT_NE(-1, prog) {
-+		TH_LOG("Failed to load the %s program: %s\n%s",
-+				scoped_ptrace ? "check" : "void",
-+				strerror(errno), log);
-+	}
-+	ASSERT_EQ(0, seccomp(SECCOMP_PREPEND_LANDLOCK_PROG, 0, &prog)) {
-+		TH_LOG("Failed to create a Landlock domain: %s", strerror(errno));
-+	}
-+	EXPECT_EQ(0, close(prog));
-+}
-+
-+/* test PTRACE_TRACEME and PTRACE_ATTACH for parent and child */
-+static void _check_ptrace(struct __test_metadata *_metadata,
-+		bool scoped_ptrace, bool domain_both,
-+		bool domain_parent, bool domain_child)
-+{
-+	pid_t child, parent;
-+	int status;
-+	int pipe_child[2], pipe_parent[2];
-+	char buf_parent;
-+	const bool inherited_only = domain_both && !domain_parent && !domain_child;
-+
-+	parent = getpid();
-+
-+	ASSERT_EQ(0, pipe(pipe_child));
-+	ASSERT_EQ(0, pipe(pipe_parent));
-+	if (domain_both)
-+		create_domain(_metadata, scoped_ptrace, inherited_only);
-+
-+	child = fork();
-+	ASSERT_LE(0, child);
-+	if (child == 0) {
-+		char buf_child;
-+
-+		EXPECT_EQ(0, close(pipe_parent[1]));
-+		EXPECT_EQ(0, close(pipe_child[0]));
-+		if (domain_child)
-+			create_domain(_metadata, scoped_ptrace, inherited_only);
-+
-+		/* sync #1 */
-+		ASSERT_EQ(1, read(pipe_parent[0], &buf_child, 1)) {
-+			TH_LOG("Failed to read() sync #1 from parent");
-+		}
-+		ASSERT_EQ('.', buf_child);
-+
-+		/* test the parent protection */
-+		ASSERT_EQ((domain_child && scoped_ptrace) ? -1 : 0,
-+				ptrace(PTRACE_ATTACH, parent, NULL, 0));
-+		if (domain_child && scoped_ptrace) {
-+			ASSERT_EQ(EPERM, errno);
-+		} else {
-+			ASSERT_EQ(parent, waitpid(parent, &status, 0));
-+			ASSERT_EQ(1, WIFSTOPPED(status));
-+			ASSERT_EQ(0, ptrace(PTRACE_DETACH, parent, NULL, 0));
-+		}
-+
-+		/* sync #2 */
-+		ASSERT_EQ(1, write(pipe_child[1], ".", 1)) {
-+			TH_LOG("Failed to write() sync #2 to parent");
-+		}
-+
-+		/* test traceme */
-+		ASSERT_EQ((domain_parent && scoped_ptrace) ? -1 : 0,
-+				ptrace(PTRACE_TRACEME));
-+		if (domain_parent && scoped_ptrace) {
-+			ASSERT_EQ(EPERM, errno);
-+		} else {
-+			ASSERT_EQ(0, raise(SIGSTOP));
-+		}
-+
-+		/* sync #3 */
-+		ASSERT_EQ(1, read(pipe_parent[0], &buf_child, 1)) {
-+			TH_LOG("Failed to read() sync #3 from parent");
-+		}
-+		ASSERT_EQ('.', buf_child);
-+		_exit(_metadata->passed ? EXIT_SUCCESS : EXIT_FAILURE);
-+	}
-+
-+	EXPECT_EQ(0, close(pipe_child[1]));
-+	EXPECT_EQ(0, close(pipe_parent[0]));
-+	if (domain_parent)
-+		create_domain(_metadata, scoped_ptrace, inherited_only);
-+
-+	/* sync #1 */
-+	ASSERT_EQ(1, write(pipe_parent[1], ".", 1)) {
-+		TH_LOG("Failed to write() sync #1 to child");
-+	}
-+
-+	/* test the parent protection */
-+	/* sync #2 */
-+	ASSERT_EQ(1, read(pipe_child[0], &buf_parent, 1)) {
-+		TH_LOG("Failed to read() sync #2 from child");
-+	}
-+	ASSERT_EQ('.', buf_parent);
-+
-+	/* test traceme */
-+	if (!(domain_parent && scoped_ptrace)) {
-+		ASSERT_EQ(child, waitpid(child, &status, 0));
-+		ASSERT_EQ(1, WIFSTOPPED(status));
-+		ASSERT_EQ(0, ptrace(PTRACE_DETACH, child, NULL, 0));
-+	}
-+	/* test attach */
-+	ASSERT_EQ((domain_parent && scoped_ptrace) ? -1 : 0,
-+			ptrace(PTRACE_ATTACH, child, NULL, 0));
-+	if (domain_parent && scoped_ptrace) {
-+		ASSERT_EQ(EPERM, errno);
-+	} else {
-+		ASSERT_EQ(child, waitpid(child, &status, 0));
-+		ASSERT_EQ(1, WIFSTOPPED(status));
-+		ASSERT_EQ(0, ptrace(PTRACE_DETACH, child, NULL, 0));
-+	}
-+
-+	/* sync #3 */
-+	ASSERT_EQ(1, write(pipe_parent[1], ".", 1)) {
-+		TH_LOG("Failed to write() sync #3 to child");
-+	}
-+	ASSERT_EQ(child, waitpid(child, &status, 0));
-+	if (WIFSIGNALED(status) || WEXITSTATUS(status))
-+		_metadata->passed = 0;
-+}
-+
-+/* keep the *_scoped order to check program inheritance */
-+#define CHECK_PTRACE(name, domain_both, domain_parent, domain_child) \
-+	TEST(name ## _unscoped) { \
-+		_check_ptrace(_metadata, false, domain_both, domain_parent, \
-+				domain_child); \
-+	} \
-+	TEST(name ## _scoped) { \
-+		_check_ptrace(_metadata, false, domain_both, domain_parent, \
-+				domain_child); \
-+		_check_ptrace(_metadata, true, domain_both, domain_parent, \
-+				domain_child); \
-+	}
-+
-+/* no domain */
-+CHECK_PTRACE(allow_without_domain, false, false, false);
-+
-+/* child domain */
-+CHECK_PTRACE(allow_with_one_domain, false, false, true);
-+
-+/* parent domain */
-+CHECK_PTRACE(deny_with_parent_domain, false, true, false);
-+
-+/* parent and child domain */
-+CHECK_PTRACE(deny_with_sibling_domain, false, true, true);
-+
-+/* inherited domain */
-+CHECK_PTRACE(allow_sibling_domain, true, false, false);
-+
-+/* inherited and child domain */
-+CHECK_PTRACE(allow_with_nested_domain, true, false, true);
-+
-+/* inherited and parent domain */
-+CHECK_PTRACE(deny_with_nested_and_parent_domain, true, true, false);
-+
-+/* inherited, parent and child domain */
-+CHECK_PTRACE(deny_with_forked_domain, true, true, true);
-+
-+TEST_HARNESS_MAIN
--- 
-2.23.0
-
+> +		return -EEXIST;
+> +
+> +	/* properly store the list (without error cases) */
+> +	while (tmp_list) {
+> +		struct landlock_prog_list *new_list;
+> +
+> +		new_list = tmp_list;
+> +		tmp_list = tmp_list->prev;
+> +		/* do not increment the previous prog list usage */
+> +		hook = get_hook_index(get_hook_type(new_list->prog));
+> +		new_list->prev = init_domain->programs[hook];
+> +		/* no need to add from the last program to the first because
+> +		 * each of them are a different Landlock type */
+> +		smp_store_release(&init_domain->programs[hook], new_list);
+> +	}
+> +	return 0;
+> +
+> +put_tmp_list:
+> +	put_landlock_prog_list(tmp_list);
+> +	return err;
+> +}
+> +
+> +/* limit Landlock programs set to 256KB */
+> +#define LANDLOCK_PROGRAMS_MAX_PAGES (1 << 6)
+> +
+> +/**
+> + * landlock_prepend_prog - attach a Landlock prog_list to @current_domain
+> + *
+> + * Whatever is the result of this function call, you can call
+> + * bpf_prog_put(@prog) after.
+> + *
+> + * @current_domain: landlock_domain pointer, must be (RCU-)locked (if needed)
+> + *                  to prevent a concurrent put/free. This pointer must not be
+> + *                  freed after the call.
+> + * @prog: non-NULL Landlock prog_list to prepend to @current_domain. @prog will
+> + *        be owned by landlock_prepend_prog() and freed if an error happened.
+> + *
+> + * Return @current_domain or a new pointer when OK. Return a pointer error
+> + * otherwise.
+> + */
+> +struct landlock_domain *landlock_prepend_prog(
+> +		struct landlock_domain *current_domain,
+> +		struct bpf_prog *prog)
+> +{
+> +	struct landlock_domain *new_domain = current_domain;
+> +	unsigned long pages;
+> +	int err;
+> +	size_t i;
+> +	struct landlock_domain tmp_domain = {};
+> +
+> +	if (prog->type != BPF_PROG_TYPE_LANDLOCK_HOOK)
+> +		return ERR_PTR(-EINVAL);
+> +
+> +	/* validate memory size allocation */
+> +	pages = prog->pages;
+> +	if (current_domain) {
+> +		size_t i;
+> +
+> +		for (i = 0; i < ARRAY_SIZE(current_domain->programs); i++) {
+> +			struct landlock_prog_list *walker_p;
+> +
+> +			for (walker_p = current_domain->programs[i];
+> +					walker_p; walker_p = walker_p->prev)
+> +				pages += walker_p->prog->pages;
+> +		}
+> +		/* count a struct landlock_domain if we need to allocate one */
+> +		if (refcount_read(&current_domain->usage) != 1)
+> +			pages += round_up(sizeof(*current_domain), PAGE_SIZE)
+> +				/ PAGE_SIZE;
+> +	}
+> +	if (pages > LANDLOCK_PROGRAMS_MAX_PAGES)
+> +		return ERR_PTR(-E2BIG);
+> +
+> +	/* ensure early that we can allocate enough memory for the new
+> +	 * prog_lists */
+> +	err = store_landlock_prog(&tmp_domain, current_domain, prog);
+> +	if (err)
+> +		return ERR_PTR(err);
+> +
+> +	/*
+> +	 * Each task_struct points to an array of prog list pointers.  These
+> +	 * tables are duplicated when additions are made (which means each
+> +	 * table needs to be refcounted for the processes using it). When a new
+> +	 * table is created, all the refcounters on the prog_list are bumped
+> +	 * (to track each table that references the prog). When a new prog is
+> +	 * added, it's just prepended to the list for the new table to point
+> +	 * at.
+> +	 *
+> +	 * Manage all the possible errors before this step to not uselessly
+> +	 * duplicate current_domain and avoid a rollback.
+> +	 */
+> +	if (!new_domain) {
+> +		/*
+> +		 * If there is no Landlock domain used by the current task,
+> +		 * then create a new one.
+> +		 */
+> +		new_domain = new_landlock_domain();
+> +		if (IS_ERR(new_domain))
+> +			goto put_tmp_lists;
+> +	} else if (refcount_read(&current_domain->usage) > 1) {
+> +		/*
+> +		 * If the current task is not the sole user of its Landlock
+> +		 * domain, then duplicate it.
+> +		 */
+> +		new_domain = new_landlock_domain();
+> +		if (IS_ERR(new_domain))
+> +			goto put_tmp_lists;
+> +		for (i = 0; i < ARRAY_SIZE(new_domain->programs); i++) {
+> +			new_domain->programs[i] =
+> +				READ_ONCE(current_domain->programs[i]);
+> +			if (new_domain->programs[i])
+> +				refcount_inc(&new_domain->programs[i]->usage);
+> +		}
+> +
+> +		/*
+> +		 * Landlock domain from the current task will not be freed here
+> +		 * because the usage is strictly greater than 1. It is only
+> +		 * prevented to be freed by another task thanks to the caller
+> +		 * of landlock_prepend_prog() which should be locked if needed.
+> +		 */
+> +		landlock_put_domain(current_domain);
+> +	}
+> +
+> +	/* prepend tmp_domain to new_domain */
+> +	for (i = 0; i < ARRAY_SIZE(tmp_domain.programs); i++) {
+> +		/* get the last new list */
+> +		struct landlock_prog_list *last_list =
+> +			tmp_domain.programs[i];
+> +
+> +		if (last_list) {
+> +			while (last_list->prev)
+> +				last_list = last_list->prev;
+> +			/* no need to increment usage (pointer replacement) */
+> +			last_list->prev = new_domain->programs[i];
+> +			new_domain->programs[i] = tmp_domain.programs[i];
+> +		}
+> +	}
+> +	return new_domain;
+> +
+> +put_tmp_lists:
+> +	for (i = 0; i < ARRAY_SIZE(tmp_domain.programs); i++)
+> +		put_landlock_prog_list(tmp_domain.programs[i]);
+> +	return new_domain;
+> +}
+> diff --git a/security/landlock/domain_manage.h b/security/landlock/domain_manage.h
+> new file mode 100644
+> index 000000000000..5b5b49f6e3e8
+> --- /dev/null
+> +++ b/security/landlock/domain_manage.h
+> @@ -0,0 +1,23 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/*
+> + * Landlock LSM - domain management headers
+> + *
+> + * Copyright � 2016-2019 Micka�l Sala�n <mic@digikod.net>
+> + * Copyright � 2018-2019 ANSSI
+> + */
+> +
+> +#ifndef _SECURITY_LANDLOCK_DOMAIN_MANAGE_H
+> +#define _SECURITY_LANDLOCK_DOMAIN_MANAGE_H
+> +
+> +#include <linux/filter.h>
+> +
+> +#include "common.h"
+> +
+> +void landlock_get_domain(struct landlock_domain *dom);
+> +void landlock_put_domain(struct landlock_domain *dom);
+> +
+> +struct landlock_domain *landlock_prepend_prog(
+> +		struct landlock_domain *current_domain,
+> +		struct bpf_prog *prog);
+> +
+> +#endif /* _SECURITY_LANDLOCK_DOMAIN_MANAGE_H */
+> -- 
+> 2.23.0
