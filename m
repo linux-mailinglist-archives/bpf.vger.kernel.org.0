@@ -2,52 +2,39 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EC1DE9A68
-	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2019 11:53:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C15ACE9A96
+	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2019 12:06:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726262AbfJ3Kxd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Oct 2019 06:53:33 -0400
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:37354 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726096AbfJ3Kxd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 30 Oct 2019 06:53:33 -0400
-Received: by mail-qk1-f194.google.com with SMTP id u184so2216606qkd.4;
-        Wed, 30 Oct 2019 03:53:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=8zfQv3Xki4Cwco9FWvIu+r1BeLLDFHeAY3R7QSmiuMo=;
-        b=Glb/pI8vDZQT+iB1Ltkzc9PN1qYd+MB8Z1qRCP/KQih+4RPEk4C3vkbB1NkMED7lSc
-         ZBKjH7X+FVQgD/2vngEhE79Mw6QRMj4vrkgGte1f1jV+VqFajDkfHm/FJCykKak0wZQB
-         A3m/fpAifNUHRXajaeNwdCyIMF+5LIjdx2hCarVmkAdGPOJRs/Ap2n9hX+t3j2jpgKRe
-         fzJ2RZuc43Vvdb6jMTvw7YXoJHFXVjQwTg6a1NF6kqxRHqOVxTkUbrxxoDd1liOiNqUH
-         iRKSB6p/5LL2QQiiUV1WqBG2h2hERCQoRhaXhxZAr9DEKnNpjGv1KaBGyzbwoudL9GSM
-         seyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=8zfQv3Xki4Cwco9FWvIu+r1BeLLDFHeAY3R7QSmiuMo=;
-        b=eJ+F2yuX8dLJHhP1upu4s2bF3uLPBedp2ppbyhOb0nQOATc1sD6ypIv3J3YLXwvJGU
-         FD3tXtcm9h+G17gMPX5fWurV4YL2nn/YPodFeJCAdal1MBjF8e0t7F3B+onPF+p2SIe8
-         lCfu47Vk/Ex+auepDYjZsZhEzbXEWwimMNv6h0GbpPMlGDhda9Dumf1twQq4WkUB7+RG
-         mpPPDqnExOs83IHpurOTe//qdk9a94Q0iR1kOXUGfSoRI4yx7ktkIHrpH+pgiX/tY1RF
-         GIFOTyq/p+HtX9nOq6K8LaVIBw0EJ6UwAL0QLa7IPJc1bpMmpRZqhlssfmvoB5G8zood
-         C4dA==
-X-Gm-Message-State: APjAAAWas+hFbxlMk/r8lzcIlF16kmSPeT2Yp9ZirVenmi5Wz1CJGJcX
-        XqyYOCRN4BeFCRgqYSMEuLravwO622LRcT/7/44=
-X-Google-Smtp-Source: APXvYqz1DHXJvOx3DQNntXZk6zfb54piZB5aA5siCOTzUlgd8mL4J9ciwq9W1fGLzrcU6fLeXPrkDJZCQJiT9hlGHCU=
-X-Received: by 2002:a05:620a:1364:: with SMTP id d4mr26418046qkl.218.1572432812006;
- Wed, 30 Oct 2019 03:53:32 -0700 (PDT)
-MIME-Version: 1.0
-References: <20191030114313.75b3a886@carbon>
-In-Reply-To: <20191030114313.75b3a886@carbon>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Wed, 30 Oct 2019 11:53:21 +0100
-Message-ID: <CAJ+HfNhSsnFXFG1ZHYCxSmYjdv0bWWszToJzmH1KFn7G5CBavQ@mail.gmail.com>
-Subject: Re: Compile build issues with samples/bpf/ again
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
+        id S1726607AbfJ3LGL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Oct 2019 07:06:11 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:26778 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726082AbfJ3LGK (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 30 Oct 2019 07:06:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1572433569;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=i7I2LBO3foUDB/5ZE0ixnicShI637mLGxaYmf81WNPQ=;
+        b=YymahIbSaNqCTsSO2hyu+pJQ/LyeqF3vSeqRY9o73xWEHYOFbvzafqdi21Q0QjhUU4apKR
+        ebdk82chNhpup16jceOJakAkGnzlY0P8tpu/fM1Xx0DdKqDKqzf6REUtkwpozgdWbmk780
+        0ZRz+oNeRBtCRNp6BaJOtHSqmklawOc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-357-17shLM9zMgO_atjVng0yAw-1; Wed, 30 Oct 2019 07:06:05 -0400
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F2E751800DFD;
+        Wed, 30 Oct 2019 11:06:03 +0000 (UTC)
+Received: from carbon (ovpn-200-19.brq.redhat.com [10.40.200.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D715710016DA;
+        Wed, 30 Oct 2019 11:05:52 +0000 (UTC)
+Date:   Wed, 30 Oct 2019 12:05:51 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
 Cc:     Daniel Borkmann <borkmann@iogearbox.net>,
         Alexei Starovoitov <ast@kernel.org>,
         BPF-dev-list <bpf@vger.kernel.org>,
@@ -57,46 +44,111 @@ Cc:     Daniel Borkmann <borkmann@iogearbox.net>,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
         =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
         Jiri Olsa <jolsa@redhat.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
         Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        brouer@redhat.com
+Subject: Re: Compile build issues with samples/bpf/ again
+Message-ID: <20191030120551.68f8b67b@carbon>
+In-Reply-To: <CAJ+HfNhSsnFXFG1ZHYCxSmYjdv0bWWszToJzmH1KFn7G5CBavQ@mail.gmail.com>
+References: <20191030114313.75b3a886@carbon>
+        <CAJ+HfNhSsnFXFG1ZHYCxSmYjdv0bWWszToJzmH1KFn7G5CBavQ@mail.gmail.com>
+MIME-Version: 1.0
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+X-MC-Unique: 17shLM9zMgO_atjVng0yAw-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 30 Oct 2019 at 11:43, Jesper Dangaard Brouer <brouer@redhat.com> wr=
-ote:
->
-> Hi Maintainers,
->
-> It is annoy to experience that simply building kernel tree samples/bpf/
-> is broken as often as it is.  Right now, build is broken in both DaveM
-> net.git and bpf.git.  ACME have some build fixes queued from Bj=C3=B6rn
-> T=C3=B6pel. But even with those fixes, build (for samples/bpf/task_fd_que=
-ry_user.c)
-> are still broken, as reported by Eric Sage (15 Oct), which I have a fix f=
-or.
->
+On Wed, 30 Oct 2019 11:53:21 +0100
+Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> wrote:
 
-Hmm, something else than commit e55190f26f92 ("samples/bpf: Fix build
-for task_fd_query_user.c")?
+> On Wed, 30 Oct 2019 at 11:43, Jesper Dangaard Brouer <brouer@redhat.com> =
+wrote:
+> >
+> > Hi Maintainers,
+> >
+> > It is annoy to experience that simply building kernel tree samples/bpf/
+> > is broken as often as it is.  Right now, build is broken in both DaveM
+> > net.git and bpf.git.  ACME have some build fixes queued from Bj=C3=B6rn
+> > T=C3=B6pel. But even with those fixes, build (for samples/bpf/task_fd_q=
+uery_user.c)
+> > are still broken, as reported by Eric Sage (15 Oct), which I have a fix=
+ for.
+> > =20
+>=20
+> Hmm, something else than commit e55190f26f92 ("samples/bpf: Fix build
+> for task_fd_query_user.c")?
 
-> Could maintainers add building samples/bpf/ to their build test scripts?
-> (make headers_install && make M=3Dsamples/bpf)
->
-> Also I discovered, the command to build have also recently changed:
-> - Before : make samples/bpf/   or  simply make in subdir samples/bpf/
-> - new cmd: make M=3Dsamples/bpf  and in subdir is broken
->
-> Anyone knows what commit introduced this change?
-> (I need it for a fixes tag, when updating README.rst doc)
->
-> --
-> Best regards,
->   Jesper Dangaard Brouer
->   MSc.CS, Principal Kernel Engineer at Red Hat
->   LinkedIn: http://www.linkedin.com/in/brouer
->
+I see, you already fixed this... and it is in the bpf.git tree.
+
+Then we only need your other fixes from ACME's tree.  I just cloned a
+fresh version of git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+to check that 'make M=3Dsamples/bpf' still fails.
+
+
+> > Could maintainers add building samples/bpf/ to their build test scripts=
+?
+> > (make headers_install && make M=3Dsamples/bpf)
+> >
+> > Also I discovered, the command to build have also recently changed:
+> > - Before : make samples/bpf/   or  simply make in subdir samples/bpf/
+> > - new cmd: make M=3Dsamples/bpf  and in subdir is broken
+> >
+> > Anyone knows what commit introduced this change?
+> > (I need it for a fixes tag, when updating README.rst doc)
+
+The make cmdline change is confusing, because the old command
+'make samples/bpf/' reports success (remember last '/') ... this could
+be why maintainers are not catching this.
+
+See: old make cmd
+
+ $ touch samples/bpf/*kern.c
+ $ make samples/bpf/
+   CALL    scripts/checksyscalls.sh
+   CALL    scripts/atomic/check-atomics.sh
+   DESCEND  objtool
+ $
+
+
+New make cmd fails:
+
+$ make M=3Dsamples/bpf
+samples/bpf/Makefile:209: WARNING: Detected possible issues with include pa=
+th.
+samples/bpf/Makefile:210: WARNING: Please install kernel headers locally (m=
+ake headers_install).
+  AR      samples/bpf/built-in.a
+make -C /home/hawk/git/kernel/bpf/samples/bpf/../../tools/lib/bpf/ RM=3D'rm=
+ -rf' LDFLAGS=3D srctree=3D/home/hawk/git/kernel/bpf/samples/bpf/../../ O=
+=3D
+  HOSTCC  samples/bpf/test_lru_dist
+  HOSTCC  samples/bpf/sock_example
+  HOSTCC  samples/bpf/fds_example.o
+  HOSTLD  samples/bpf/fds_example
+  HOSTCC  samples/bpf/sockex1_user.o
+  HOSTLD  samples/bpf/sockex1
+  HOSTCC  samples/bpf/sockex2_user.o
+  HOSTLD  samples/bpf/sockex2
+  HOSTCC  samples/bpf/bpf_load.o
+  HOSTCC  samples/bpf/sockex3_user.o
+  HOSTLD  samples/bpf/sockex3
+/usr/bin/ld: samples/bpf/bpf_load.o: in function `do_load_bpf_file.part.2':
+bpf_load.c:(.text+0x91a): undefined reference to `test_attr__enabled'
+/usr/bin/ld: bpf_load.c:(.text+0x1403): undefined reference to `test_attr__=
+open'
+collect2: error: ld returned 1 exit status
+make[1]: *** [scripts/Makefile.host:116: samples/bpf/sockex3] Error 1
+make: *** [Makefile:1649: samples/bpf] Error 2
+
+--=20
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
