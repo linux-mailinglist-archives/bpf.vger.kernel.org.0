@@ -2,181 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 661E9EA781
-	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2019 00:05:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F96BEA7C9
+	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2019 00:30:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727208AbfJ3XF2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Oct 2019 19:05:28 -0400
-Received: from hqemgate14.nvidia.com ([216.228.121.143]:17582 "EHLO
-        hqemgate14.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727064AbfJ3XF2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 30 Oct 2019 19:05:28 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqemgate14.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5dba17390001>; Wed, 30 Oct 2019 16:05:29 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Wed, 30 Oct 2019 16:05:23 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Wed, 30 Oct 2019 16:05:23 -0700
-Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 30 Oct
- 2019 23:05:22 +0000
-Subject: Re: [PATCH 14/19] vfio, mm: pin_longterm_pages (FOLL_PIN) and
- put_user_page() conversion
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, <bpf@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <kvm@vger.kernel.org>,
-        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-media@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>, <netdev@vger.kernel.org>,
-        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>
-References: <20191030224930.3990755-1-jhubbard@nvidia.com>
- <20191030224930.3990755-15-jhubbard@nvidia.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-X-Nvconfidentiality: public
-Message-ID: <cfa579f0-999c-9712-494a-9d519bbc4314@nvidia.com>
-Date:   Wed, 30 Oct 2019 16:05:22 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1727429AbfJ3Xa1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Oct 2019 19:30:27 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:56216 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726273AbfJ3Xa1 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 30 Oct 2019 19:30:27 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x9UNSUpZ004276
+        for <bpf@vger.kernel.org>; Wed, 30 Oct 2019 16:30:25 -0700
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by mx0a-00082601.pphosted.com with ESMTP id 2vxwfqeqnw-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 30 Oct 2019 16:30:25 -0700
+Received: from 2401:db00:2120:80e1:face:0:29:0 (2620:10d:c081:10::13) by
+ mail.thefacebook.com (2620:10d:c081:35::128) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
+ Wed, 30 Oct 2019 16:30:23 -0700
+Received: by devbig007.ftw2.facebook.com (Postfix, from userid 572438)
+        id 9CFD0760EEC; Wed, 30 Oct 2019 16:30:19 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Alexei Starovoitov <ast@kernel.org>
+Smtp-Origin-Hostname: devbig007.ftw2.facebook.com
+To:     <davem@davemloft.net>
+CC:     <daniel@iogearbox.net>, <jolsa@redhat.com>,
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <kernel-team@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next] bpf: Fix bpf jit kallsym access
+Date:   Wed, 30 Oct 2019 16:30:19 -0700
+Message-ID: <20191030233019.1187404-1-ast@kernel.org>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-In-Reply-To: <20191030224930.3990755-15-jhubbard@nvidia.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1572476729; bh=53l+EYxovXaJJmkDDYPwp5PBwN0eKGoaifL7qKM0Mds=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=md/zgeBc2zml8TuAaTKRK2oyv1Btng0H6ozq8zn2sRJiXmTfxKbYsvkGcjK6gQS+q
-         3nPYnJq+1Eps5VG6ooIJSjGzkjOCMYIGUlSFcOJoUyjFNZ1H0vd+dWvWBSOqDkH5Uc
-         dvFo63nthImmg9iCDmU6xj0EE8b8pgUM6g95EetFKN1/r0QnPl5BygVRpoyVLlCyiH
-         iCMwhme/pZSwh1q5oOeHae8CYEOAkIwb1y6ebulV3/7WSgE5bb3SmwuYCg/xWfmbmX
-         iPDY0K1xyswztlMvQmBw8+uJFpl2scC5scONZ/nlQeN+ZcWegNbDORlz6y4lLuTxuj
-         WJ+vmX9yZfaww==
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
+ definitions=2019-10-30_09:2019-10-30,2019-10-30 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=940
+ phishscore=0 adultscore=0 suspectscore=1 impostorscore=0 mlxscore=0
+ spamscore=0 lowpriorityscore=0 clxscore=1015 priorityscore=1501
+ malwarescore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1908290000 definitions=main-1910300211
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/30/19 3:49 PM, John Hubbard wrote:
-> This also fixes one or two likely bugs.
+Jiri reported crash when JIT is on, but net.core.bpf_jit_kallsyms is off.
+bpf_prog_kallsyms_find() was skipping addr->bpf_prog resolution
+logic in oops and stack traces. That's incorrect.
+It should only skip addr->name resolution for 'cat /proc/kallsyms'.
+That's what bpf_jit_kallsyms and bpf_jit_harden protect.
 
-Well, actually just one...
+Reported-by: Jiri Olsa <jolsa@redhat.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Fixes: 3dec541b2e63 ("bpf: Add support for BTF pointers to x86 JIT")
+---
+ kernel/bpf/core.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-> 
-> 1. Change vfio from get_user_pages(FOLL_LONGTERM), to
-> pin_longterm_pages(), which sets both FOLL_LONGTERM and FOLL_PIN.
-> 
-> Note that this is a change in behavior, because the
-> get_user_pages_remote() call was not setting FOLL_LONGTERM, but the
-> new pin_user_pages_remote() call that replaces it, *is* setting
-> FOLL_LONGTERM. It is important to set FOLL_LONGTERM, because the
-> DMA case requires it. Please see the FOLL_PIN documentation in
-> include/linux/mm.h, and Documentation/pin_user_pages.rst for details.
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 673f5d40a93e..8d3fbc86ca5e 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -668,9 +668,6 @@ static struct bpf_prog *bpf_prog_kallsyms_find(unsigned long addr)
+ {
+ 	struct latch_tree_node *n;
+ 
+-	if (!bpf_jit_kallsyms_enabled())
+-		return NULL;
+-
+ 	n = latch_tree_find((void *)addr, &bpf_tree, &bpf_tree_ops);
+ 	return n ?
+ 	       container_of(n, struct bpf_prog_aux, ksym_tnode)->prog :
+-- 
+2.17.1
 
-Correction: the above comment is stale and wrong. I wrote it before 
-getting further into the details, and the patch doesn't do this. 
-
-Instead, it keeps exactly the old behavior: pin_longterm_pages_remote()
-is careful to avoid setting FOLL_LONGTERM. Instead of setting that flag,
-it drops in a "TODO" comment nearby. :)
-
-I'll update the commit description in the next version of the series.
-
-
-thanks,
-
-John Hubbard
-NVIDIA
-
-> 
-> 2. Because all FOLL_PIN-acquired pages must be released via
-> put_user_page(), also convert the put_page() call over to
-> put_user_pages().
-> 
-> Note that this effectively changes the code's behavior in
-> vfio_iommu_type1.c: put_pfn(): it now ultimately calls
-> set_page_dirty_lock(), instead of set_page_dirty(). This is
-> probably more accurate.
-> 
-> As Christoph Hellwig put it, "set_page_dirty() is only safe if we are
-> dealing with a file backed page where we have reference on the inode it
-> hangs off." [1]
-> 
-> [1] https://lore.kernel.org/r/20190723153640.GB720@lst.de
-> 
-> Cc: Alex Williamson <alex.williamson@redhat.com>
-> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
-> ---
->  drivers/vfio/vfio_iommu_type1.c | 15 +++++++--------
->  1 file changed, 7 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-> index d864277ea16f..795e13f3ef08 100644
-> --- a/drivers/vfio/vfio_iommu_type1.c
-> +++ b/drivers/vfio/vfio_iommu_type1.c
-> @@ -327,9 +327,8 @@ static int put_pfn(unsigned long pfn, int prot)
->  {
->  	if (!is_invalid_reserved_pfn(pfn)) {
->  		struct page *page = pfn_to_page(pfn);
-> -		if (prot & IOMMU_WRITE)
-> -			SetPageDirty(page);
-> -		put_page(page);
-> +
-> +		put_user_pages_dirty_lock(&page, 1, prot & IOMMU_WRITE);
->  		return 1;
->  	}
->  	return 0;
-> @@ -349,11 +348,11 @@ static int vaddr_get_pfn(struct mm_struct *mm, unsigned long vaddr,
->  
->  	down_read(&mm->mmap_sem);
->  	if (mm == current->mm) {
-> -		ret = get_user_pages(vaddr, 1, flags | FOLL_LONGTERM, page,
-> -				     vmas);
-> +		ret = pin_longterm_pages(vaddr, 1, flags, page, vmas);
->  	} else {
-> -		ret = get_user_pages_remote(NULL, mm, vaddr, 1, flags, page,
-> -					    vmas, NULL);
-> +		ret = pin_longterm_pages_remote(NULL, mm, vaddr, 1,
-> +						flags, page, vmas,
-> +						NULL);
->  		/*
->  		 * The lifetime of a vaddr_get_pfn() page pin is
->  		 * userspace-controlled. In the fs-dax case this could
-> @@ -363,7 +362,7 @@ static int vaddr_get_pfn(struct mm_struct *mm, unsigned long vaddr,
->  		 */
->  		if (ret > 0 && vma_is_fsdax(vmas[0])) {
->  			ret = -EOPNOTSUPP;
-> -			put_page(page[0]);
-> +			put_user_page(page[0]);
->  		}
->  	}
->  	up_read(&mm->mmap_sem);
-> 
