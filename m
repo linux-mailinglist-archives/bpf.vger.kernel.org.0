@@ -2,122 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 462F1EA1F6
-	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2019 17:44:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35EAAEA380
+	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2019 19:40:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726942AbfJ3QoZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Oct 2019 12:44:25 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:35101 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726435AbfJ3QoZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 30 Oct 2019 12:44:25 -0400
-Received: by mail-lj1-f193.google.com with SMTP id m7so3465244lji.2;
-        Wed, 30 Oct 2019 09:44:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=K0D4yeQMJikScQHXpqJp1kFntebsgKejFlvwAhgD9Lk=;
-        b=KcQhoIHKUCKGCKV6wdZKmBmngUdCe9GtyHfARmXB59NuL0EmJ4cRxSPTBkGfzmrNA5
-         NiONgf3HwZJKQh1YP6QKOWEOGLZFhz6jQodwbEmnM/u1U32GhutQhQEG/8d28rcMzF/s
-         TCGK/2jBkEtyeC6pqZ0KsVImLW5XHztsqf2uxmrqv6l2XrZv+Q/RNwJSnSdvhf63kEuT
-         xPP4dhEbHwbPReRTT5MdPLc326wJH/inV2RmzhiBauOnPboTO2qcVwhf8CLpQphZq9Bg
-         65Cvw66bZzy9kWrONtUCTK30K2upFRTgAE8H6RH+1B27E7pskQ5PH+FToZyn9s3M3prt
-         957A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=K0D4yeQMJikScQHXpqJp1kFntebsgKejFlvwAhgD9Lk=;
-        b=hkOAVWV3DGkl5aN3WsyjA+MrJdqvml1Ymhqthxg3OQnDDF8bNw6VrCwLr27MKU14d7
-         6sLtbC9ruVpzYyTio7LZmqZR9+K9gy4/kx3mEltXN00NDzDBbVMOiDobNVUrzxPUc2xm
-         5JkkGHlSjYZ6e8ZBxMAUCc/lBrDeDgKYTAVc4yq/1lrMuvHhom8Wxh1Ri68W9wxaeVR6
-         0hKtzuvykvA6uCGALlCmDABY/ndJim68axoNuCSg13W6UUorGKyEbbhjvTAL8qeBcwbs
-         eUywH3AVL66Yt++XDGW2YgoxV2+QgwWeYTEpV1BYdpk6jl2m28vd8RjyMF9EhcHFTxyY
-         QUGQ==
-X-Gm-Message-State: APjAAAU1z1vnur+w8eEYH694APDwReULiPamSM1UyfCN0M+kMpuP3y2i
-        g+PaBpEse0s5svdpKSKYQaoVR+5fQPt99ooZxQo=
-X-Google-Smtp-Source: APXvYqxop8bbuy5p7HId7hh2NI5zpbgTOFrY9XmemW+tdbr2uaOs7YrJK2wSi/JNHoJ7pfp2mH8RIO1vtcjL0GvlqYE=
-X-Received: by 2002:a2e:3304:: with SMTP id d4mr519739ljc.142.1572453863058;
- Wed, 30 Oct 2019 09:44:23 -0700 (PDT)
-MIME-Version: 1.0
-References: <20191030154323.GJ20826@krava>
-In-Reply-To: <20191030154323.GJ20826@krava>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 30 Oct 2019 09:44:11 -0700
-Message-ID: <CAADnVQKNJ9H9yxxuHn72ikfjii4vciVi8S6ztJ4oJCGk5A3FrA@mail.gmail.com>
-Subject: Re: [BUG] bpf:
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
+        id S1726403AbfJ3SkQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Oct 2019 14:40:16 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:53290 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726242AbfJ3SkQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 30 Oct 2019 14:40:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=5yjTD0vSgrB/yBE3DW3WbNpFuPl1Y2o6+3IHmE5qv2E=; b=PyViZqtUR4cuRQwG7Cbsa+m62
+        o14pLDdczzOHm7K8vK7BdPRpMPrAC1MoCCCEIGrwBTwSFZ7aZdbjUKSkjnzx9mQxplTJBaEHS20q0
+        smnQU4y8FuEsVpPy1Nf1fdSSBxK1MsB+rBgII5iKsMUofCPK4lp6KMfe+rbEL5Y63Uv1qWT+3tsxg
+        hoH+cdZPw0sXOphLTE4d6UMoYIiOxBf6PsUrDTuboxHS7H20Kb7OMA69rnz+ETqsl2vxqpWNVCnZ/
+        AbZLh0GGc9H6P9KEeU4dXjhyImYQEWMUOPmGdYRdSWW9cV2/FRAWq/DZ/BsDxAhhxT24oQ6nTVDzi
+        SI4x9Xnvw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1iPssl-0001sb-7n; Wed, 30 Oct 2019 18:39:47 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 490D330610C;
+        Wed, 30 Oct 2019 19:38:43 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 9261129AB4E95; Wed, 30 Oct 2019 19:39:44 +0100 (CET)
+Date:   Wed, 30 Oct 2019 19:39:44 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "adobriyan@gmail.com" <adobriyan@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "rppt@kernel.org" <rppt@kernel.org>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "kirill@shutemov.name" <kirill@shutemov.name>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "rppt@linux.ibm.com" <rppt@linux.ibm.com>,
+        "arnd@arndb.de" <arnd@arndb.de>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        X86 ML <x86@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH RFC] mm: add MAP_EXCLUSIVE to create exclusive user
+ mappings
+Message-ID: <20191030183944.GV4114@hirez.programming.kicks-ass.net>
+References: <1572171452-7958-2-git-send-email-rppt@kernel.org>
+ <20191028123124.ogkk5ogjlamvwc2s@box>
+ <20191028130018.GA7192@rapoport-lnx>
+ <20191028131623.zwuwguhm4v4s5imh@box>
+ <20191028135521.GB4097@hirez.programming.kicks-ass.net>
+ <0a35765f7412937c1775daa05177b20113760aee.camel@intel.com>
+ <20191028210052.GM4643@worktop.programming.kicks-ass.net>
+ <69c57f7fa9a1be145827673b37beff155a3adc3c.camel@intel.com>
+ <20191030100418.GV4097@hirez.programming.kicks-ass.net>
+ <CAADnVQ+3LeLWv-rpATyfAbdS1w9L=sCQFuyy=paCZVBUr0rK6Q@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQ+3LeLWv-rpATyfAbdS1w9L=sCQFuyy=paCZVBUr0rK6Q@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 30, 2019 at 8:43 AM Jiri Olsa <jolsa@redhat.com> wrote:
->
->
-> hi,
-> I'm getting oops when running the kfree_skb test:
->
-> dell-r440-01 login: [  758.049877] BUG: kernel NULL pointer dereference, address: 0000000000000000^M
-> [  758.056834] #PF: supervisor read access in kernel mode^M
-> [  758.061975] #PF: error_code(0x0000) - not-present page^M
-> [  758.067112] PGD 8000000befba8067 P4D 8000000befba8067 PUD bffe11067 PMD 0 ^M
-> [  758.073987] Oops: 0000 [#1] SMP PTI^M
-> [  758.077478] CPU: 16 PID: 6854 Comm: test_progs Not tainted 5.4.0-rc3+ #96^M
-> [  758.084263] Hardware name: Dell Inc. PowerEdge R440/08CYF7, BIOS 1.7.0 12/14/2018^M
-> [  758.091745] RIP: 0010:0xffffffffc03b672c^M
-> [  758.095669] Code: 4c 8b 6a 00 4c 89 6d c0 8b 77 00 89 75 cc 31 ff 89 75 fc 48 8b 71 00 48 01 fe bf 78 00 00 00 48 89 da 48 01 fa bf 08 00 00 00 <4c> 8b 76 00 4c 89 f6 48 01 fe 4c 8b 7e 00 48 89 ef 48 83 c7 f9 be^M
-> [  758.114414] RSP: 0018:ffffaa3287583d20 EFLAGS: 00010286^M
-> [  758.119640] RAX: ffffffffc03b66ac RBX: ffff9cef028c3900 RCX: ffff9cef0a652018^M
-> [  758.126775] RDX: ffff9cef028c3978 RSI: 0000000000000000 RDI: 0000000000000008^M
-> [  758.133906] RBP: ffffaa3287583d90 R08: 00000000000000b0 R09: 0000000000000000^M
-> [  758.141040] R10: 98ff036c00000000 R11: 0000000000000040 R12: ffffffffba8b5c37^M
-> [  758.148170] R13: ffff9cfb05daf440 R14: 0000000000000000 R15: 000000000000004a^M
-> [  758.155303] FS:  00007f08a18d3740(0000) GS:ffff9cef10c00000(0000) knlGS:0000000000000000^M
-> [  758.163392] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033^M
-> [  758.169136] CR2: 0000000000000000 CR3: 0000000c08e50001 CR4: 00000000007606e0^M
-> [  758.176268] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000^M
-> [  758.183401] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400^M
-> [  758.190534] PKRU: 55555554^M
-> [  758.193248] Call Trace:^M
-> [  758.195704]  ? bpf_test_run+0x13d/0x230^M
-> [  758.199539]  ? _cond_resched+0x15/0x30^M
-> [  758.203304]  bpf_trace_run2+0x37/0x90^M
-> [  758.206967]  ? bpf_prog_test_run_skb+0x337/0x450^M
-> [  758.211589]  kfree_skb+0x73/0xa0^M
-> [  758.214820]  bpf_prog_test_run_skb+0x337/0x450^M
-> [  758.219293]  __do_sys_bpf+0x82e/0x1730^M
-> [  758.223043]  ? ep_show_fdinfo+0x80/0x80^M
-> [  758.226885]  do_syscall_64+0x5b/0x180^M
-> [  758.230550]  entry_SYSCALL_64_after_hwframe+0x44/0xa9^M
-> [  758.235620] RIP: 0033:0x7f08a19e91fd^M
-> [  758.239198] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 5b 8c 0c 00 f7 d8 64 89 01 48^M
->
->
-> this seems to be the culprit:
->
-> ; ptr = dev->ifalias->rcuhead.next;
->   80:   mov    0x0(%rsi),%r14
+On Wed, Oct 30, 2019 at 08:35:09AM -0700, Alexei Starovoitov wrote:
+> On Wed, Oct 30, 2019 at 3:06 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > On Tue, Oct 29, 2019 at 05:27:43PM +0000, Edgecombe, Rick P wrote:
+> > > On Mon, 2019-10-28 at 22:00 +0100, Peter Zijlstra wrote:
+> >
+> > > > That should be limited to the module range. Random data maps could
+> > > > shatter the world.
+> > >
+> > > BPF has one vmalloc space allocation for the byte code and one for the module
+> > > space allocation for the JIT. Both get RO also set on the direct map alias of
+> > > the pages, and reset RW when freed.
+> >
+> > Argh, I didn't know they mapped the bytecode RO; why does it do that? It
+> > can throw out the bytecode once it's JIT'ed.
+> 
+> because of endless security "concerns" that some folks had.
+> Like what if something can exploit another bug in the kernel
+> and modify bytecode that was already verified
+> then interpreter will execute that modified bytecode.
 
-with rsi being zero. yes. that's the point of the test.
+But when it's JIT'ed the bytecode is no longer of relevance, right? So
+any scenario with a JIT on can then toss the bytecode and certainly
+doesn't need to map it RO.
 
-> I used the patch below to bypass the crash, but I guess
-> verifier should not let this through
+> Sort of similar reasoning why .text is read-only.
+> I think it's not a realistic attack, but I didn't bother to argue back then.
+> The mere presence of interpreter itself is a real security concern.
+> People that care about speculation attacks should
+> have CONFIG_BPF_JIT_ALWAYS_ON=y,
 
-Could you please send me your .config and the way you
-run test_progs ?
-Is it with or without jit?
+This isn't about speculation attacks, it is about breaking buffer limits
+and being able to write to memory. And in that respect being able to
+change the current task state (write it's effective PID to 0) is much
+simpler than writing to text or bytecode, but if you cannot reach/find
+the task struct but can reach/find text..
 
-I thought I've tested all combinations. Something slipped through.
+> so modifying bytecode via another exploit will be pointless.
+> Getting rid of RO for bytecode will save a ton of memory too,
+> since we won't need to allocate full page for each small programs.
 
-> also the net_device struct in the test seems outdated
-
-It's not outdated. It's specifically done this way on purpose.
+So I'm thinking we can get rid of that for any scenario that has the JIT
+enabled -- not only JIT_ALWAYS_ON.
