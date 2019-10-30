@@ -2,146 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3987BE9B34
-	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2019 12:56:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05E28E9C61
+	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2019 14:34:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726332AbfJ3L4e (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Oct 2019 07:56:34 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:36343 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726109AbfJ3L4e (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 30 Oct 2019 07:56:34 -0400
-Received: by mail-qt1-f194.google.com with SMTP id x14so2810043qtq.3;
-        Wed, 30 Oct 2019 04:56:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=9VRvwupe1Us8UkNQwMDn+6sFPpjxIr5st7RpNyH9QM4=;
-        b=TPN+erso+wzp3wJvXdGWSctMy6KBHzbD6wR04o/Aqvn3k79RXz6tgq9PpfG5jvad+m
-         GJA5uiTG3ccIQ0yhpGJellPz6PbO8XNVXF1HGw2lruzU3qv3jJslIQsq83EU+fLB8LHe
-         w/VBs1tnlPR2R2DPCwckiCqKUOhHT553zr22j2JjzkoYCmuRhYS/MvxmN4GCGRMXKlgs
-         1Gv6oC0g4VAFxgqnRKBp6OFtjojanjv8ZopqE6Y/sX+91nSsBhrpopvPZvTtEmxyGe0b
-         FrpSCh7FDHqxe8L7e5jED6DIY72JeGgEbh6Xd7HHFHsS5ugiEoDABdqG/fII54i5S+Qd
-         ZMow==
+        id S1726209AbfJ3NeG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Oct 2019 09:34:06 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:58923 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726239AbfJ3NeF (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 30 Oct 2019 09:34:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1572442443;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/yfV7mAwap9xE4doXKmlY5Fg862APAqsO952Ql5bPWU=;
+        b=QVjpFGeBr25F9Iepfbe68rq2LYwxhfvkuiQqPqvqB6UyAqa9NpeabTG2ku3KB7YvL8Qknj
+        gE4GYEgWLEdrEvVEz4sEM+0Gv3gFuxQipJDUpnRp/zvabiblh7tQDrNMxl7rlskMzqrk2i
+        xU9COovxqnlLNKUz31kyKj/AmLV/fV8=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-287-6iZc7PzLMuyi4EyUaomTeQ-1; Wed, 30 Oct 2019 09:34:02 -0400
+Received: by mail-lj1-f200.google.com with SMTP id z15so634507ljz.4
+        for <bpf@vger.kernel.org>; Wed, 30 Oct 2019 06:34:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=9VRvwupe1Us8UkNQwMDn+6sFPpjxIr5st7RpNyH9QM4=;
-        b=dokMnhQXiOIPOcd3Orre4lvS0RSwDSOvmo45/caDaArS/rSc6zeDrs+ikSfLAoqQVJ
-         KWG7e5Ig7gdG0aVX6EJRoGTC5S+zqTvl1lE8vPAw6z3lJ+CY5B08N12NoQp7eAdeUnHK
-         zWNibFnuoJtqH5knJrB7y6qw8NBOP7goxwEvo//UyPgJvO6UoaXIPwPLklJMUIuIHyn2
-         Yf/ryRdIE4TqSKJTbgzTQQL+JfDVbPqWR4OJ6t6iIR7Hze4lySx8HcoshimdGvhWE7zA
-         CYf/JiKsti8AOBiR1J1ydUY8y+7eeAxy0W2dd/geucfeUSNxCOpMDu8qlI77eKAdta1X
-         4uhA==
-X-Gm-Message-State: APjAAAXS7DkSUsxEQe5bbRDL63skw4udPiX86tiCWFv4jK1qiehLE/hQ
-        3W0yL3xOATwVTC2Fr2wjhdA=
-X-Google-Smtp-Source: APXvYqxxqesP5RziDOAjL4/Qu38GF5afIzyj0oWgUb8Gys4rgwSK0lCEzGixCSGV08mdx8RZSN+ObQ==
-X-Received: by 2002:aed:3e75:: with SMTP id m50mr4307731qtf.87.1572436593246;
-        Wed, 30 Oct 2019 04:56:33 -0700 (PDT)
-Received: from quaco.ghostprotocols.net ([179.97.35.50])
-        by smtp.gmail.com with ESMTPSA id w15sm1200336qtk.43.2019.10.30.04.56.31
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=/yfV7mAwap9xE4doXKmlY5Fg862APAqsO952Ql5bPWU=;
+        b=ktBxQtTvmNPI7B8HKTNU88qbU4RYKCrY4APgSo4v3Ozkm1btX9Xt8s6N8xheUu+DL8
+         Cwo0h+sxJxao/9Ii89fDRixT3aJ89WiQU/E1y0q48FYyfZWO6zuVCg6R202PgeWA7nbb
+         kd2FlXGwQeeZK8vB1ztyPsrsbJ2crWEAnosC5drgU8hziS1eMIebkzr43Rt0mjSNqClw
+         QlPzQQE0iRMCy+C7It6/JiqzhPj6NY1rgTguyB4Q2QJpD7P3Urw4tmVVxMCHq90vGebX
+         Ch0zzFnrdYbMGna/54awlmorp1iGnoNVui5Q21VlfQBgUk/x3xM7rLqaA7w0oIyGmyuG
+         u1AA==
+X-Gm-Message-State: APjAAAX1sxEUFI9CmK0d18WJfCY4epcoPwmsgxw80SFgxlNM6fN+g9KA
+        fPvBfBIpro9XWpjQaHMpy+5t1xraRSb315C04Ymv5ec32ryA+W9ykcChvsk9nhET3TSOwW/W8DT
+        rzbJaipW+MupK
+X-Received: by 2002:a2e:481:: with SMTP id a1mr6840677ljf.209.1572442440577;
+        Wed, 30 Oct 2019 06:34:00 -0700 (PDT)
+X-Google-Smtp-Source: APXvYqx04gjfhdWvERCCRcdDRxQA/3nUSdUoktgDKW4u9jhkQF+xVo46F0PDD71b3/NGSY0G2uRiyQ==
+X-Received: by 2002:a2e:481:: with SMTP id a1mr6840663ljf.209.1572442440351;
+        Wed, 30 Oct 2019 06:34:00 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk (borgediget.toke.dk. [85.204.121.218])
+        by smtp.gmail.com with ESMTPSA id d3sm37748lfm.83.2019.10.30.06.33.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Oct 2019 04:56:32 -0700 (PDT)
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 28557410D7; Wed, 30 Oct 2019 08:56:30 -0300 (-03)
-Date:   Wed, 30 Oct 2019 08:56:30 -0300
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH v4 4/9] perf tools: splice events onto evlist even on
- error
-Message-ID: <20191030115630.GC27327@kernel.org>
-References: <20191024190202.109403-1-irogers@google.com>
- <20191025180827.191916-1-irogers@google.com>
- <20191025180827.191916-5-irogers@google.com>
- <20191028210712.GB6158@krava>
+        Wed, 30 Oct 2019 06:33:59 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 507E31818B3; Wed, 30 Oct 2019 14:33:58 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Magnus Karlsson <magnus.karlsson@intel.com>,
+        magnus.karlsson@intel.com, bjorn.topel@intel.com, ast@kernel.org,
+        daniel@iogearbox.net, netdev@vger.kernel.org,
+        jonathan.lemon@gmail.com
+Cc:     bpf@vger.kernel.org, degeneloy@gmail.com, john.fastabend@gmail.com
+Subject: Re: [PATCH bpf-next v3] libbpf: fix compatibility for kernels without need_wakeup
+In-Reply-To: <1571995035-21889-1-git-send-email-magnus.karlsson@intel.com>
+References: <1571995035-21889-1-git-send-email-magnus.karlsson@intel.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 30 Oct 2019 14:33:58 +0100
+Message-ID: <87tv7qpdbt.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191028210712.GB6158@krava>
-X-Url:  http://acmel.wordpress.com
-User-Agent: Mutt/1.12.1 (2019-06-15)
+X-MC-Unique: 6iZc7PzLMuyi4EyUaomTeQ-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Mon, Oct 28, 2019 at 10:07:12PM +0100, Jiri Olsa escreveu:
-> On Fri, Oct 25, 2019 at 11:08:22AM -0700, Ian Rogers wrote:
-> > If event parsing fails the event list is leaked, instead splice the list
-> > onto the out result and let the caller cleanup.
-> > 
-> > An example input for parse_events found by libFuzzer that reproduces
-> > this memory leak is 'm{'.
-> > 
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> 
-> Acked-by: Jiri Olsa <jolsa@kernel.org>
+Magnus Karlsson <magnus.karlsson@intel.com> writes:
 
-Thanks, applied.
- 
-> thanks,
-> jirka
-> 
-> > ---
-> >  tools/perf/util/parse-events.c | 17 +++++++++++------
-> >  1 file changed, 11 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-> > index c516d0cce946..4c4c6f3e866a 100644
-> > --- a/tools/perf/util/parse-events.c
-> > +++ b/tools/perf/util/parse-events.c
-> > @@ -1952,15 +1952,20 @@ int parse_events(struct evlist *evlist, const char *str,
-> >  
-> >  	ret = parse_events__scanner(str, &parse_state, PE_START_EVENTS);
-> >  	perf_pmu__parse_cleanup();
-> > +
-> > +	if (!ret && list_empty(&parse_state.list)) {
-> > +		WARN_ONCE(true, "WARNING: event parser found nothing\n");
-> > +		return -1;
-> > +	}
-> > +
-> > +	/*
-> > +	 * Add list to the evlist even with errors to allow callers to clean up.
-> > +	 */
-> > +	perf_evlist__splice_list_tail(evlist, &parse_state.list);
-> > +
-> >  	if (!ret) {
-> >  		struct evsel *last;
-> >  
-> > -		if (list_empty(&parse_state.list)) {
-> > -			WARN_ONCE(true, "WARNING: event parser found nothing\n");
-> > -			return -1;
-> > -		}
-> > -
-> > -		perf_evlist__splice_list_tail(evlist, &parse_state.list);
-> >  		evlist->nr_groups += parse_state.nr_groups;
-> >  		last = evlist__last(evlist);
-> >  		last->cmdline_group_boundary = true;
-> > -- 
-> > 2.24.0.rc0.303.g954a862665-goog
-> > 
+> When the need_wakeup flag was added to AF_XDP, the format of the
+> XDP_MMAP_OFFSETS getsockopt was extended. Code was added to the
+> kernel to take care of compatibility issues arrising from running
+> applications using any of the two formats. However, libbpf was
+> not extended to take care of the case when the application/libbpf
+> uses the new format but the kernel only supports the old
+> format. This patch adds support in libbpf for parsing the old
+> format, before the need_wakeup flag was added, and emulating a
+> set of static need_wakeup flags that will always work for the
+> application.
 
--- 
+Hi Magnus
 
-- Arnaldo
+While you're looking at backwards compatibility issues with xsk: libbpf
+currently fails to compile on a system that has old kernel headers
+installed (this is with kernel-headers 5.3):
+
+$ echo "#include <bpf/xsk.h>" | gcc -x c -=20
+In file included from <stdin>:1:
+/usr/include/bpf/xsk.h: In function =E2=80=98xsk_ring_prod__needs_wakeup=E2=
+=80=99:
+/usr/include/bpf/xsk.h:82:21: error: =E2=80=98XDP_RING_NEED_WAKEUP=E2=80=99=
+ undeclared (first use in this function)
+   82 |  return *r->flags & XDP_RING_NEED_WAKEUP;
+      |                     ^~~~~~~~~~~~~~~~~~~~
+/usr/include/bpf/xsk.h:82:21: note: each undeclared identifier is reported =
+only once for each function it appears in
+/usr/include/bpf/xsk.h: In function =E2=80=98xsk_umem__extract_addr=E2=80=
+=99:
+/usr/include/bpf/xsk.h:173:16: error: =E2=80=98XSK_UNALIGNED_BUF_ADDR_MASK=
+=E2=80=99 undeclared (first use in this function)
+  173 |  return addr & XSK_UNALIGNED_BUF_ADDR_MASK;
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/include/bpf/xsk.h: In function =E2=80=98xsk_umem__extract_offset=E2=80=
+=99:
+/usr/include/bpf/xsk.h:178:17: error: =E2=80=98XSK_UNALIGNED_BUF_OFFSET_SHI=
+FT=E2=80=99 undeclared (first use in this function)
+  178 |  return addr >> XSK_UNALIGNED_BUF_OFFSET_SHIFT;
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+How would you prefer to handle this? A patch like the one below will fix
+the compile errors, but I'm not sure it makes sense semantically?
+
+-Toke
+
+diff --git a/tools/lib/bpf/xsk.h b/tools/lib/bpf/xsk.h
+index 584f6820a639..954d66e85208 100644
+--- a/tools/lib/bpf/xsk.h
++++ b/tools/lib/bpf/xsk.h
+@@ -79,7 +79,11 @@ xsk_ring_cons__rx_desc(const struct xsk_ring_cons *rx, _=
+_u32 idx)
+=20
+ static inline int xsk_ring_prod__needs_wakeup(const struct xsk_ring_prod *=
+r)
+ {
++#ifdef XDP_RING_NEED_WAKEUP
+        return *r->flags & XDP_RING_NEED_WAKEUP;
++#else
++       return 0;
++#endif
+ }
+=20
+ static inline __u32 xsk_prod_nb_free(struct xsk_ring_prod *r, __u32 nb)
+@@ -170,12 +174,20 @@ static inline void *xsk_umem__get_data(void *umem_are=
+a, __u64 addr)
+=20
+ static inline __u64 xsk_umem__extract_addr(__u64 addr)
+ {
++#ifdef XSK_UNALIGNED_BUF_ADDR_MASK
+        return addr & XSK_UNALIGNED_BUF_ADDR_MASK;
++#else
++       return addr;
++#endif
+ }
+=20
+ static inline __u64 xsk_umem__extract_offset(__u64 addr)
+ {
++#ifdef XSK_UNALIGNED_BUF_OFFSET_SHIFT
+        return addr >> XSK_UNALIGNED_BUF_OFFSET_SHIFT;
++#else
++       return 0;
++#endif
+ }
+=20
+ static inline __u64 xsk_umem__add_offset_to_addr(__u64 addr)
+
