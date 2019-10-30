@@ -2,108 +2,165 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BD88E9F2A
-	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2019 16:35:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E046E9F60
+	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2019 16:43:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726472AbfJ3PfZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Oct 2019 11:35:25 -0400
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:39778 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726404AbfJ3PfZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 30 Oct 2019 11:35:25 -0400
-Received: by mail-lj1-f196.google.com with SMTP id y3so3184934ljj.6;
-        Wed, 30 Oct 2019 08:35:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6/cUvxppfvco+q/svBW0l1eTrvr4r1OMCG7AkgiKpcQ=;
-        b=tR6noo5CwOi34VQIokfGyMdP+tJf/ZPULHPz8KIcLua8ZoHBLlO50xCqeMHaAGvVQa
-         48WC0IzF8IxRv33JMgEH6NVNXDntgXn7Qbh44b6Itm/zy8iGjwULy02N0bndCfuE2mWn
-         J5Gwpff3AsiQbdxaPgA4+tL1vptqqQI4FjSr8FVKo2VUEXTe05i7hepKReBSN4ewi9tv
-         zbaqlMUmmjqzytwjIcNNu6xS9h9lWk0Eaj0NjvRt2/CJPLu+0YZNb2skTCtzBUyPYFNU
-         4LvGej/Mi9HNnkRrWKHopWrOtOHpFc32BVA/CVOOxGZuSTldPR3GNZh63N8HGJiB7fSn
-         K3Pg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6/cUvxppfvco+q/svBW0l1eTrvr4r1OMCG7AkgiKpcQ=;
-        b=a7G85NUd3PiSRYyz+PPHcvUPX8XFnp5xRv/fKEIFPBEaTClzadmxu2vw6e7wJlSfaK
-         /8BhwdjhG8RA7hDngdBoUi4STefYxbch3zK4rJmsJLs4xeZ6oEv5WuQOtPXHy1xBXtEI
-         abwQQXErdvqypLwf1Qm3puufAlGwyh+a96OxvcpKr7U2r0iaRZsMFfFvT03kSgua1Xvh
-         VevTTT6xctaJi2Ji954Qu4UtotJisPEnCB1Z1wwJAjUP5vY3ybhGxC0ms4JoqrA6doG+
-         6phCen7SOXVc3TYJoav2qwLi5ZgQHee6421/MgTQs5dfVf3P+wuxaSZZOqNGEr/VV8dr
-         cvvQ==
-X-Gm-Message-State: APjAAAUjf/oa0D64VtIqsqwlegW8iB8kED66rUkEAMUtLHn9uG3g28ro
-        Pwo4rzKn2cNKW8d2T1AkQkTkogdQ0Cx+0w/J90Q=
-X-Google-Smtp-Source: APXvYqxBvl31pTcQQnHQbXcbxQLKZEYYjr+em5rKZ5EtZ+2iT0oglxx0fEQ8/RXMOehSCT8SBwLe+R0VTmgUsFSdHMc=
-X-Received: by 2002:a2e:2412:: with SMTP id k18mr217604ljk.243.1572449721198;
- Wed, 30 Oct 2019 08:35:21 -0700 (PDT)
+        id S1727524AbfJ3Pnb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Oct 2019 11:43:31 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:52323 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727507AbfJ3Pna (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 30 Oct 2019 11:43:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1572450209;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=gdd9cCjAtlepKq87OMAJm91YGZlanwB5qxkXhBSjz/M=;
+        b=fqjmu6NY5URssyOrCx+kkwVwxNoF0CVoElNt9FWf9aLaev68Gun16QzTjfKH04t6PNz7x3
+        DCNtHUrZU2HHv9hPNEZM86vnK3k82qFbVhLg3OPNuiZt+iv/1RVHEsihahLm373Zx1vJXf
+        fqsDF122uUFEV20kHznGm9dN4wHH4Qc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-99-VclQOFIiOK-GfgwiohyncQ-1; Wed, 30 Oct 2019 11:43:27 -0400
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 03192800EB5;
+        Wed, 30 Oct 2019 15:43:26 +0000 (UTC)
+Received: from krava (unknown [10.43.17.61])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 6E886619A9;
+        Wed, 30 Oct 2019 15:43:24 +0000 (UTC)
+Date:   Wed, 30 Oct 2019 16:43:23 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Alexei Starovoitov <ast@kernel.org>
+Cc:     davem@davemloft.net, daniel@iogearbox.net, x86@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com
+Subject: [BUG] bpf:
+Message-ID: <20191030154323.GJ20826@krava>
 MIME-Version: 1.0
-References: <1572171452-7958-1-git-send-email-rppt@kernel.org>
- <1572171452-7958-2-git-send-email-rppt@kernel.org> <20191028123124.ogkk5ogjlamvwc2s@box>
- <20191028130018.GA7192@rapoport-lnx> <20191028131623.zwuwguhm4v4s5imh@box>
- <20191028135521.GB4097@hirez.programming.kicks-ass.net> <0a35765f7412937c1775daa05177b20113760aee.camel@intel.com>
- <20191028210052.GM4643@worktop.programming.kicks-ass.net> <69c57f7fa9a1be145827673b37beff155a3adc3c.camel@intel.com>
- <20191030100418.GV4097@hirez.programming.kicks-ass.net>
-In-Reply-To: <20191030100418.GV4097@hirez.programming.kicks-ass.net>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 30 Oct 2019 08:35:09 -0700
-Message-ID: <CAADnVQ+3LeLWv-rpATyfAbdS1w9L=sCQFuyy=paCZVBUr0rK6Q@mail.gmail.com>
-Subject: Re: [PATCH RFC] mm: add MAP_EXCLUSIVE to create exclusive user mappings
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "adobriyan@gmail.com" <adobriyan@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "rppt@kernel.org" <rppt@kernel.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "kirill@shutemov.name" <kirill@shutemov.name>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "rppt@linux.ibm.com" <rppt@linux.ibm.com>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mutt/1.12.1 (2019-06-15)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-MC-Unique: VclQOFIiOK-GfgwiohyncQ-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 30, 2019 at 3:06 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Tue, Oct 29, 2019 at 05:27:43PM +0000, Edgecombe, Rick P wrote:
-> > On Mon, 2019-10-28 at 22:00 +0100, Peter Zijlstra wrote:
->
-> > > That should be limited to the module range. Random data maps could
-> > > shatter the world.
-> >
-> > BPF has one vmalloc space allocation for the byte code and one for the module
-> > space allocation for the JIT. Both get RO also set on the direct map alias of
-> > the pages, and reset RW when freed.
->
-> Argh, I didn't know they mapped the bytecode RO; why does it do that? It
-> can throw out the bytecode once it's JIT'ed.
 
-because of endless security "concerns" that some folks had.
-Like what if something can exploit another bug in the kernel
-and modify bytecode that was already verified
-then interpreter will execute that modified bytecode.
-Sort of similar reasoning why .text is read-only.
-I think it's not a realistic attack, but I didn't bother to argue back then.
-The mere presence of interpreter itself is a real security concern.
-People that care about speculation attacks should
-have CONFIG_BPF_JIT_ALWAYS_ON=y,
-so modifying bytecode via another exploit will be pointless.
-Getting rid of RO for bytecode will save a ton of memory too,
-since we won't need to allocate full page for each small programs.
+hi,
+I'm getting oops when running the kfree_skb test:
+
+dell-r440-01 login: [  758.049877] BUG: kernel NULL pointer dereference, ad=
+dress: 0000000000000000^M
+[  758.056834] #PF: supervisor read access in kernel mode^M
+[  758.061975] #PF: error_code(0x0000) - not-present page^M
+[  758.067112] PGD 8000000befba8067 P4D 8000000befba8067 PUD bffe11067 PMD =
+0 ^M
+[  758.073987] Oops: 0000 [#1] SMP PTI^M
+[  758.077478] CPU: 16 PID: 6854 Comm: test_progs Not tainted 5.4.0-rc3+ #9=
+6^M
+[  758.084263] Hardware name: Dell Inc. PowerEdge R440/08CYF7, BIOS 1.7.0 1=
+2/14/2018^M
+[  758.091745] RIP: 0010:0xffffffffc03b672c^M
+[  758.095669] Code: 4c 8b 6a 00 4c 89 6d c0 8b 77 00 89 75 cc 31 ff 89 75 =
+fc 48 8b 71 00 48 01 fe bf 78 00 00 00 48 89 da 48 01 fa bf 08 00 00 00 <4c=
+> 8b 76 00 4c 89 f6 48 01 fe 4c 8b 7e 00 48 89 ef 48 83 c7 f9 be^M
+[  758.114414] RSP: 0018:ffffaa3287583d20 EFLAGS: 00010286^M
+[  758.119640] RAX: ffffffffc03b66ac RBX: ffff9cef028c3900 RCX: ffff9cef0a6=
+52018^M
+[  758.126775] RDX: ffff9cef028c3978 RSI: 0000000000000000 RDI: 00000000000=
+00008^M
+[  758.133906] RBP: ffffaa3287583d90 R08: 00000000000000b0 R09: 00000000000=
+00000^M
+[  758.141040] R10: 98ff036c00000000 R11: 0000000000000040 R12: ffffffffba8=
+b5c37^M
+[  758.148170] R13: ffff9cfb05daf440 R14: 0000000000000000 R15: 00000000000=
+0004a^M
+[  758.155303] FS:  00007f08a18d3740(0000) GS:ffff9cef10c00000(0000) knlGS:=
+0000000000000000^M
+[  758.163392] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033^M
+[  758.169136] CR2: 0000000000000000 CR3: 0000000c08e50001 CR4: 00000000007=
+606e0^M
+[  758.176268] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 00000000000=
+00000^M
+[  758.183401] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 00000000000=
+00400^M
+[  758.190534] PKRU: 55555554^M
+[  758.193248] Call Trace:^M
+[  758.195704]  ? bpf_test_run+0x13d/0x230^M
+[  758.199539]  ? _cond_resched+0x15/0x30^M
+[  758.203304]  bpf_trace_run2+0x37/0x90^M
+[  758.206967]  ? bpf_prog_test_run_skb+0x337/0x450^M
+[  758.211589]  kfree_skb+0x73/0xa0^M
+[  758.214820]  bpf_prog_test_run_skb+0x337/0x450^M
+[  758.219293]  __do_sys_bpf+0x82e/0x1730^M
+[  758.223043]  ? ep_show_fdinfo+0x80/0x80^M
+[  758.226885]  do_syscall_64+0x5b/0x180^M
+[  758.230550]  entry_SYSCALL_64_after_hwframe+0x44/0xa9^M
+[  758.235620] RIP: 0033:0x7f08a19e91fd^M
+[  758.239198] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 =
+89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48=
+> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 5b 8c 0c 00 f7 d8 64 89 01 48^M
+
+
+this seems to be the culprit:
+
+; ptr =3D dev->ifalias->rcuhead.next;
+  80:   mov    0x0(%rsi),%r14
+
+I used the patch below to bypass the crash, but I guess
+verifier should not let this through
+
+also the net_device struct in the test seems outdated
+
+thanks,
+jirka
+
+
+---
+ tools/testing/selftests/bpf/progs/kfree_skb.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/progs/kfree_skb.c b/tools/testing/=
+selftests/bpf/progs/kfree_skb.c
+index 89af8a921ee4..64d8c0237186 100644
+--- a/tools/testing/selftests/bpf/progs/kfree_skb.c
++++ b/tools/testing/selftests/bpf/progs/kfree_skb.c
+@@ -3,6 +3,7 @@
+ #include <linux/bpf.h>
+ #include "bpf_helpers.h"
+ #include "bpf_endian.h"
++#include "bpf_core_read.h"
+=20
+ char _license[] SEC("license") =3D "GPL";
+ struct {
+@@ -70,14 +71,12 @@ int trace_kfree_skb(struct trace_kfree_skb *ctx)
+ =09unsigned short pkt_data;
+ =09char pkt_type;
+=20
+-=09__builtin_preserve_access_index(({
+-=09=09users =3D skb->users.refs.counter;
+-=09=09data =3D skb->data;
+-=09=09dev =3D skb->dev;
+-=09=09ifindex =3D dev->ifindex;
+-=09=09ptr =3D dev->ifalias->rcuhead.next;
+-=09=09func =3D ptr->func;
+-=09}));
++=09users   =3D BPF_CORE_READ(skb, users.refs.counter);
++=09data    =3D BPF_CORE_READ(skb, data);
++=09dev     =3D BPF_CORE_READ(skb, dev);
++=09ifindex =3D BPF_CORE_READ(dev, ifindex);
++=09ptr     =3D BPF_CORE_READ(dev, ifalias, rcuhead.next);
++=09func    =3D BPF_CORE_READ(ptr, func);
+=20
+ =09bpf_probe_read(&pkt_type, sizeof(pkt_type), _(&skb->__pkt_type_offset))=
+;
+ =09pkt_type &=3D 7;
+--=20
+2.21.0
+
