@@ -2,98 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EAB86EA5EB
-	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2019 23:03:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E649EA632
+	for <lists+bpf@lfdr.de>; Wed, 30 Oct 2019 23:32:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726864AbfJ3WDI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Oct 2019 18:03:08 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:34954 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727415AbfJ3WDI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 30 Oct 2019 18:03:08 -0400
-Received: by mail-qt1-f196.google.com with SMTP id l3so5569601qtp.2;
-        Wed, 30 Oct 2019 15:03:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2m07ki5VoBt8Vb2fFCDnZahPA0NaP0f1n5/euJcW01s=;
-        b=V+YVlo/vfWa4lNRq2t1ii7FuxAy4DhX+wtWZH5YSakpS6Y7P0r0BF0oNlfmhVHh8a8
-         YxJ3hUG/aw9CWjQWWaEnZtIwLtimiB3jdNkdOKkG8yhB8Y8/oJ33W5kWKdIwqHJ4m43C
-         Rnn8LJrad0Oh5jdhrQTtc0quqtUj4X6ronTfPaw2PPvA+jrJLKqzAlb5hqNTFFB9zECf
-         XEd0A4uFwlLD6UYD7Nem2jE994dVrrZGmOvGLehp6jN5+qgVEp1GVrk9AVjqu7jRUdPF
-         SAQqjno8YdmVFfPNA6EUsnzYhp2IuB5XpR5lawwihSNwXQLZ8nKqUVFxUprS3NmCGw+U
-         tBLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2m07ki5VoBt8Vb2fFCDnZahPA0NaP0f1n5/euJcW01s=;
-        b=HJ3GH/VB1fqvw6RqsObKv1lcqfdLVaH1YqHqaH4IlFKe0lH/QwpQrHGfy1wWaCayNK
-         foog+TdEamP9eaLjUxMOgMjz0Jir8IWpUl2fgyHqCSK/UdnTevsE0swIg4DBgnHLHJK9
-         Dt/rEDuRlDuPuZMds6nybb8E2iTWkF5GZMgO8wDM/VuJExnKVhc6QwOZmbEa8hN5lQ+h
-         zZBykK+XewpChdUcJ7fbh88FWHFco3FV0qvS0L2FVSVs4rITSWnsrmbev1cgaV2dZg0r
-         zSAAtJsx/4Oe6hQz8l2RoUYk48cmsZiJXt+tGc6F/K7hIUKt4d1aBwmiODwOYT2Shavk
-         0SJA==
-X-Gm-Message-State: APjAAAVonIFA68cDJREqSD/STTgEHYnzwziGuTzckwAzpRkY+/IG28Q9
-        yhxRbOdJISbz/wDoRnk/Z1duVXY4yPyxyN1ioBXe8w==
-X-Google-Smtp-Source: APXvYqyiMvIfMHJa6jtTNF7WOQHsMxOkSldNyn8MUHNdWP3Fj7opTDOfnLFJq4JdlGDKxe64vgWOdgJCE3pWYgnGJM4=
-X-Received: by 2002:ac8:4890:: with SMTP id i16mr2339246qtq.141.1572472987115;
- Wed, 30 Oct 2019 15:03:07 -0700 (PDT)
+        id S1726793AbfJ3WcQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Oct 2019 18:32:16 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:7296 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726538AbfJ3WcQ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 30 Oct 2019 18:32:16 -0400
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x9UMUm9l014646
+        for <bpf@vger.kernel.org>; Wed, 30 Oct 2019 15:32:15 -0700
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2vxwn6x8tt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 30 Oct 2019 15:32:15 -0700
+Received: from 2401:db00:2050:5076:face:0:1f:0 (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 30 Oct 2019 15:32:14 -0700
+Received: by devbig007.ftw2.facebook.com (Postfix, from userid 572438)
+        id 1DD5F760903; Wed, 30 Oct 2019 15:32:12 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Alexei Starovoitov <ast@kernel.org>
+Smtp-Origin-Hostname: devbig007.ftw2.facebook.com
+To:     <davem@davemloft.net>
+CC:     <daniel@iogearbox.net>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <kernel-team@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH v2 bpf-next 0/2] bpf: cleanup BTF-enabled raw_tp
+Date:   Wed, 30 Oct 2019 15:32:10 -0700
+Message-ID: <20191030223212.953010-1-ast@kernel.org>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-References: <20191030193532.262014-1-ast@kernel.org> <20191030193532.262014-2-ast@kernel.org>
-In-Reply-To: <20191030193532.262014-2-ast@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 30 Oct 2019 15:02:54 -0700
-Message-ID: <CAEf4BzaD6j=MFkHAK344BaqBihoE-Ym5ahxvL2x_mgRHn1S2Lw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: replace prog_raw_tp+btf_id with prog_tracing
-To:     Alexei Starovoitov <ast@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
+ definitions=2019-10-30_09:2019-10-30,2019-10-30 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=636
+ mlxscore=0 spamscore=0 clxscore=1034 phishscore=0 impostorscore=0
+ bulkscore=0 priorityscore=1501 lowpriorityscore=0 suspectscore=1
+ malwarescore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-1908290000 definitions=main-1910300200
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 30, 2019 at 12:36 PM Alexei Starovoitov <ast@kernel.org> wrote:
->
-> The bpf program type raw_tp together with 'expected_attach_type'
-> was the most appropriate api to indicate BTF-enabled raw_tp programs.
-> But during development it became apparent that 'expected_attach_type'
-> cannot be used and new 'attach_btf_id' field had to be introduced.
-> Which means that the information is duplicated in two fields where
-> one of them is ignored.
-> Clean it up by introducing new program type where both
-> 'expected_attach_type' and 'attach_btf_id' fields have
-> specific meaning.
-> In the future 'expected_attach_type' will be extended
-> with other attach points that have similar semantics to raw_tp.
-> This patch is replacing BTF-enabled BPF_PROG_TYPE_RAW_TRACEPOINT with
-> prog_type = BPF_RPOG_TYPE_TRACING
-> expected_attach_type = BPF_TRACE_RAW_TP
-> attach_btf_id = btf_id of raw tracepoint inside the kernel
-> Future patches will add
-> expected_attach_type = BPF_TRACE_FENTRY or BPF_TRACE_FEXIT
-> where programs have the same input context and the same helpers,
-> but different attach points.
->
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> ---
+v1->v2: addressed Andrii's feedback
 
-LGTM.
+When BTF-enabled raw_tp were introduced the plan was to follow up
+with BTF-enabled kprobe and kretprobe reusing PROG_RAW_TRACEPOINT
+and PROG_KPROBE types. But k[ret]probe expect pt_regs while
+BTF-enabled program ctx will be the same as raw_tp.
+kretprobe is indistinguishable from kprobe while BTF-enabled
+kretprobe will have access to retval while kprobe will not.
+Hence PROG_KPROBE type is not reusable and reusing
+PROG_RAW_TRACEPOINT no longer fits well.
+Hence introduce 'umbrella' prog type BPF_PROG_TYPE_TRACING
+that will cover different BTF-enabled tracing attach points.
+The changes make libbpf side cleaner as well.
+check_attach_btf_id() is cleaner too.
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+Alexei Starovoitov (2):
+  bpf: replace prog_raw_tp+btf_id with prog_tracing
+  libbpf: add support for prog_tracing
 
->  include/linux/bpf.h       |  5 +++++
->  include/linux/bpf_types.h |  1 +
->  include/uapi/linux/bpf.h  |  2 ++
->  kernel/bpf/syscall.c      |  6 +++---
->  kernel/bpf/verifier.c     | 34 +++++++++++++++++++++---------
->  kernel/trace/bpf_trace.c  | 44 ++++++++++++++++++++++++++++++++-------
->  6 files changed, 71 insertions(+), 21 deletions(-)
->
+ include/linux/bpf.h            |  5 +++
+ include/linux/bpf_types.h      |  1 +
+ include/uapi/linux/bpf.h       |  2 +
+ kernel/bpf/syscall.c           |  6 +--
+ kernel/bpf/verifier.c          | 34 ++++++++++-----
+ kernel/trace/bpf_trace.c       | 44 +++++++++++++++----
+ tools/include/uapi/linux/bpf.h |  2 +
+ tools/lib/bpf/bpf.c            |  8 ++--
+ tools/lib/bpf/bpf.h            |  5 ++-
+ tools/lib/bpf/libbpf.c         | 79 ++++++++++++++++++++++++----------
+ tools/lib/bpf/libbpf.h         |  2 +
+ tools/lib/bpf/libbpf.map       |  2 +
+ tools/lib/bpf/libbpf_probes.c  |  1 +
+ 13 files changed, 142 insertions(+), 49 deletions(-)
 
-[...]
+-- 
+2.17.1
+
