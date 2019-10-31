@@ -2,209 +2,345 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5410BEB85A
-	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2019 21:23:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27FB9EB874
+	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2019 21:39:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728259AbfJaUXT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 31 Oct 2019 16:23:19 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:46478 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726741AbfJaUXT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 31 Oct 2019 16:23:19 -0400
-Received: by mail-qk1-f195.google.com with SMTP id e66so8349879qkf.13;
-        Thu, 31 Oct 2019 13:23:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=2M2BwaKCLMXwWU2elFFBxvcV56uTW9J4XSP1/NC5+qo=;
-        b=q+RyzBCtlH5cQnQw5r9f4hpW8odswvKqF2gB6F0HklcnADHh+hMAkR7dgq0a+7Yi87
-         uXawUiGY6JmmFIHfqOq6CpdDT0ZLO+sDEMVVEJkCMGrld34KCIvGUFwTw2Nw70D/pIv7
-         zF11Gk1XJepIH075R72oW+cctCcCWoEp7+wHHKt8TWlxBhh/6cpn4G9mhMllT+W0UfYH
-         LPwCOoOTRysbzoJe0PKYkQvb+hzNLmTmpa6UPstHqx1IsZxTRQoEytwSl1gYUbv5KF58
-         FssZa1zClvOtjq7Wr8LcSTAOVp53DpNC3wtHXVs6xkuT/okgESr9v81dFV7yEHv821Ez
-         pQRg==
+        id S1728234AbfJaUjK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 31 Oct 2019 16:39:10 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:40703 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726741AbfJaUjJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 31 Oct 2019 16:39:09 -0400
+Received: by mail-il1-f197.google.com with SMTP id x17so6341231ill.7
+        for <bpf@vger.kernel.org>; Thu, 31 Oct 2019 13:39:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=2M2BwaKCLMXwWU2elFFBxvcV56uTW9J4XSP1/NC5+qo=;
-        b=fvxvHosLSrXIaLC15Jss56l8Htk6Vgp5VaTqo/sg3kIDWxMMus2GSGYkITztOI6rJF
-         whV5ynuYP6v1ftPf/GecefOsCK2lUIqwojsJKX5v6MLTngd0xIVP+jygsD5t4lyRByRP
-         M7EjqbZT3TXxWQLuzEVNE0gOamZl1MhE+9G5FcwJiLZLszKvDrB4KraJa7G7eBPhtRsH
-         kWfOQPaUcB9BSW/eUCpb/spvrU+OVqNUySNAWvbY5FZpZF7eW8aFJUWDb+/lWYwh3s3k
-         juiQazfW6fO6QumaizAzb5DLHS7TlSZXz7j2f5IcOcaCrXjlHXz0xKJt1PSDen9wmk02
-         Q1lA==
-X-Gm-Message-State: APjAAAXOMfux+oHo1SvGI7sRXYB4D+9E+M3sQX3PhXEP4VIBFyAMK4/m
-        hfYm38WsvHZaai/1ogZyFWNLQde67Txjthdahqc=
-X-Google-Smtp-Source: APXvYqxrVW7t0r0wBPC4/KFZD/wbOIYtvHQD/HyzM1AzLs3YP9OZfv8IK/Lva9eBvqwmjU0BxTlIQUHoqMc1zwWylU4=
-X-Received: by 2002:a05:620a:1011:: with SMTP id z17mr7204890qkj.39.1572553397587;
- Thu, 31 Oct 2019 13:23:17 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=BfvGwbaIFFN0El2d0LgRz+jgyXk+CNV/Nzo+FOawyc0=;
+        b=YSvUMyGI3WoTib9k/xF61S0hzirBBXEievhHoOctGK81EskUp3t5lNC3jPCfQSkw0c
+         6znkHZERxotj+UwGj5pPgDhiOE3vPF+XSdn/j2oe/kotDlvRma8hyofdpaWS8pddZ1NC
+         FsCxofa5Si6Enkh5RaHa74C3XM9hRTPx5I6FrRcl9WIRR3B+Lf+FGDpwtr4LxN0eGbEZ
+         cS8ZipK2X4D9YtEJYJfrrxW5Lg/9VFHbl0c15LHOhDwdpLJuTnBptzVGtJoYrCEKLmTQ
+         +oWLW7OZoU4RfZiQa2J/U3sFgmc5KfarhOldUUuTxvyGKDLuPl2jfq8VSfSJn7Iyo9h1
+         MGxA==
+X-Gm-Message-State: APjAAAXE1Lnztz3WSW1KI3Q7RfXp99m5Sn1CE+0lNcNYfO4zsgdPPTiK
+        ASa9ezMTzP0xsb4sPNnBNr5+GAFsstxLxm/1gbaYaNwUJa5r
+X-Google-Smtp-Source: APXvYqx1ZmxVlWFAkRa+zO6CcVQUSZCrWb+H/yGltFq8jZNpW/0YRPG06BT7UuDimWtyRVxkqe1MzIJYircp/aN3keSHOxslfOa8
 MIME-Version: 1.0
-References: <1571995035-21889-1-git-send-email-magnus.karlsson@intel.com>
- <87tv7qpdbt.fsf@toke.dk> <CAJ8uoz3BPA41wmT8-Jhhs=kJ=GbsAswSvx2pEmuWJDvh+b+_yw@mail.gmail.com>
- <CAJ+HfNimRqftmKASOdceXFJmgbLvXnNBZATTnfA9LMF2amGzzA@mail.gmail.com>
- <CAADnVQJRe4Pm-Rxx9zobn8YRHh9i+xQp7HX4gidqq9Mse7PJ5g@mail.gmail.com>
- <87lft1ngtn.fsf@toke.dk> <CAADnVQLrg6f_zjvNfiEVfdjcx9+DW_RFjVGetavvMNo=VXAR+g@mail.gmail.com>
- <87imo5ng7w.fsf@toke.dk> <CAADnVQLJ2JTsbxd2am6XY0EiocMgM29JqFVRnZ9PBcwqd7-dAQ@mail.gmail.com>
- <87d0ednf0t.fsf@toke.dk> <CAADnVQ+V4OMjJqSdE_OQ1Vr99kqTF=ZB3UUMKiCSg=3=c+exqg@mail.gmail.com>
-In-Reply-To: <CAADnVQ+V4OMjJqSdE_OQ1Vr99kqTF=ZB3UUMKiCSg=3=c+exqg@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 31 Oct 2019 13:23:06 -0700
-Message-ID: <CAEf4Bzak3Cu1voYvKi1NY_iH61jFzPdb_A5iqo4m=5wyCKNveg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3] libbpf: fix compatibility for kernels without need_wakeup
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        bpf <bpf@vger.kernel.org>, degeneloy@gmail.com,
-        John Fastabend <john.fastabend@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Received: by 2002:a5e:a819:: with SMTP id c25mr2729233ioa.117.1572554348592;
+ Thu, 31 Oct 2019 13:39:08 -0700 (PDT)
+Date:   Thu, 31 Oct 2019 13:39:08 -0700
+In-Reply-To: <000000000000d73b12059608812b@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000568a9105963ad7ac@google.com>
+Subject: Re: WARNING in print_bfs_bug
+From:   syzbot <syzbot+62ebe501c1ce9a91f68c@syzkaller.appspotmail.com>
+To:     ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
+        davem@davemloft.net, dsahern@gmail.com, f.fainelli@gmail.com,
+        hawk@kernel.org, idosch@mellanox.com, jakub.kicinski@netronome.com,
+        jiri@mellanox.com, johannes.berg@intel.com,
+        john.fastabend@gmail.com, kafai@fb.com, kuznet@ms2.inr.ac.ru,
+        linux-kernel@vger.kernel.org, mkubecek@suse.cz,
+        netdev@vger.kernel.org, petrm@mellanox.com,
+        roopa@cumulusnetworks.com, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com,
+        yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 31, 2019 at 8:18 AM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Thu, Oct 31, 2019 at 7:52 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
-dhat.com> wrote:
-> >
-> > Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
-> >
-> > > On Thu, Oct 31, 2019 at 7:26 AM Toke H=C3=B8iland-J=C3=B8rgensen <tok=
-e@redhat.com> wrote:
-> > >>
-> > >> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
-> > >>
-> > >> > On Thu, Oct 31, 2019 at 7:13 AM Toke H=C3=B8iland-J=C3=B8rgensen <=
-toke@redhat.com> wrote:
-> > >> >>
-> > >> >> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
-> > >> >>
-> > >> >> > On Thu, Oct 31, 2019 at 1:03 AM Bj=C3=B6rn T=C3=B6pel <bjorn.to=
-pel@gmail.com> wrote:
-> > >> >> >>
-> > >> >> >> On Thu, 31 Oct 2019 at 08:17, Magnus Karlsson <magnus.karlsson=
-@gmail.com> wrote:
-> > >> >> >> >
-> > >> >> >> > On Wed, Oct 30, 2019 at 2:36 PM Toke H=C3=B8iland-J=C3=B8rge=
-nsen <toke@redhat.com> wrote:
-> > >> >> >> > >
-> > >> >> >> > > Magnus Karlsson <magnus.karlsson@intel.com> writes:
-> > >> >> >> > >
-> > >> >> >> > > > When the need_wakeup flag was added to AF_XDP, the forma=
-t of the
-> > >> >> >> > > > XDP_MMAP_OFFSETS getsockopt was extended. Code was added=
- to the
-> > >> >> >> > > > kernel to take care of compatibility issues arrising fro=
-m running
-> > >> >> >> > > > applications using any of the two formats. However, libb=
-pf was
-> > >> >> >> > > > not extended to take care of the case when the applicati=
-on/libbpf
-> > >> >> >> > > > uses the new format but the kernel only supports the old
-> > >> >> >> > > > format. This patch adds support in libbpf for parsing th=
-e old
-> > >> >> >> > > > format, before the need_wakeup flag was added, and emula=
-ting a
-> > >> >> >> > > > set of static need_wakeup flags that will always work fo=
-r the
-> > >> >> >> > > > application.
-> > >> >> >> > >
-> > >> >> >> > > Hi Magnus
-> > >> >> >> > >
-> > >> >> >> > > While you're looking at backwards compatibility issues wit=
-h xsk: libbpf
-> > >> >> >> > > currently fails to compile on a system that has old kernel=
- headers
-> > >> >> >> > > installed (this is with kernel-headers 5.3):
-> > >> >> >> > >
-> > >> >> >> > > $ echo "#include <bpf/xsk.h>" | gcc -x c -
-> > >> >> >> > > In file included from <stdin>:1:
-> > >> >> >> > > /usr/include/bpf/xsk.h: In function =E2=80=98xsk_ring_prod=
-__needs_wakeup=E2=80=99:
-> > >> >> >> > > /usr/include/bpf/xsk.h:82:21: error: =E2=80=98XDP_RING_NEE=
-D_WAKEUP=E2=80=99 undeclared (first use in this function)
-> > >> >> >> > >    82 |  return *r->flags & XDP_RING_NEED_WAKEUP;
-> > >> >> >> > >       |                     ^~~~~~~~~~~~~~~~~~~~
-> > >> >> >> > > /usr/include/bpf/xsk.h:82:21: note: each undeclared identi=
-fier is reported only once for each function it appears in
-> > >> >> >> > > /usr/include/bpf/xsk.h: In function =E2=80=98xsk_umem__ext=
-ract_addr=E2=80=99:
-> > >> >> >> > > /usr/include/bpf/xsk.h:173:16: error: =E2=80=98XSK_UNALIGN=
-ED_BUF_ADDR_MASK=E2=80=99 undeclared (first use in this function)
-> > >> >> >> > >   173 |  return addr & XSK_UNALIGNED_BUF_ADDR_MASK;
-> > >> >> >> > >       |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > >> >> >> > > /usr/include/bpf/xsk.h: In function =E2=80=98xsk_umem__ext=
-ract_offset=E2=80=99:
-> > >> >> >> > > /usr/include/bpf/xsk.h:178:17: error: =E2=80=98XSK_UNALIGN=
-ED_BUF_OFFSET_SHIFT=E2=80=99 undeclared (first use in this function)
-> > >> >> >> > >   178 |  return addr >> XSK_UNALIGNED_BUF_OFFSET_SHIFT;
-> > >> >> >> > >       |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > >> >> >> > >
-> > >> >> >> > >
-> > >> >> >> > >
-> > >> >> >> > > How would you prefer to handle this? A patch like the one =
-below will fix
-> > >> >> >> > > the compile errors, but I'm not sure it makes sense semant=
-ically?
-> > >> >> >> >
-> > >> >> >> > Thanks Toke for finding this. Of course it should be possibl=
-e to
-> > >> >> >> > compile this on an older kernel, but without getting any of =
-the newer
-> > >> >> >> > functionality that is not present in that older kernel.
-> > >> >> >>
-> > >> >> >> Is the plan to support source compatibility for the headers on=
-ly, or
-> > >> >> >> the whole the libbpf itself? Is the usecase here, that you've =
-built
-> > >> >> >> libbpf.so with system headers X, and then would like to use th=
-e
-> > >> >> >> library on a system with older system headers X~10? XDP socket=
-s? BTF?
-> > >> >> >
-> > >> >> > libbpf has to be backward and forward compatible.
-> > >> >> > Once compiled it has to run on older and newer kernels.
-> > >> >> > Conditional compilation is not an option obviously.
-> > >> >>
-> > >> >> So what do we do, then? Redefine the constants in libbpf/xsh.h if
-> > >> >> they're not in the kernel header file?
-> > >> >
-> > >> > why? How and whom it will help?
-> > >> > To libbpf.rpm creating person or to end user?
-> > >>
-> > >> Anyone who tries to compile a new libbpf against an older kernel. Yo=
-u're
-> > >> saying yourself that "libbpf has to be backward and forward compatib=
-le".
-> > >> Surely that extends to compile time as well as runtime?
-> > >
-> > > how old that older kernel?
-> > > Does it have up-to-date bpf.h in /usr/include ?
-> > > Also consider that running kernel is often not the same
-> > > thing as installed in /usr/include
-> > > vmlinux and /usr/include are different packages.
-> >
-> > In this case, it's a constant introduced in the kernel in the current
-> > (5.4) cycle; so currently, you can't compile libbpf with
-> > kernel-headers-5.3. And we're discussing how to handle this in a
-> > backwards compatible way in libbpf...
+syzbot has found a reproducer for the following crash on:
 
-If someone is compiling libbpf from sources, he has to make sure to
-use libbpf's include directory (see
-https://github.com/libbpf/libbpf/blob/master/include/uapi/linux/if_xdp.h),
-it has all the latest XDP stuff, including XDP_RING_NEED_WAKEUP.
+HEAD commit:    49afce6d Add linux-next specific files for 20191031
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=11eea36ce00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3c5f119b33031056
+dashboard link: https://syzkaller.appspot.com/bug?extid=62ebe501c1ce9a91f68c
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14c162f4e00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=131b5eb8e00000
 
->
-> you simply don't.
-> It's not a problem to begin with.
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+62ebe501c1ce9a91f68c@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+lockdep bfs error:-1
+WARNING: CPU: 0 PID: 12077 at kernel/locking/lockdep.c:1696  
+print_bfs_bug+0x5c/0x80 kernel/locking/lockdep.c:1696
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 0 PID: 12077 Comm: syz-executor941 Not tainted 5.4.0-rc5-next-20191031  
+#0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+Google 01/01/2011
+Call Trace:
+  __dump_stack lib/dump_stack.c:77 [inline]
+  dump_stack+0x172/0x1f0 lib/dump_stack.c:113
+  panic+0x2e3/0x75c kernel/panic.c:221
+  __warn.cold+0x2f/0x35 kernel/panic.c:582
+  report_bug+0x289/0x300 lib/bug.c:195
+  fixup_bug arch/x86/kernel/traps.c:174 [inline]
+  fixup_bug arch/x86/kernel/traps.c:169 [inline]
+  do_error_trap+0x11b/0x200 arch/x86/kernel/traps.c:267
+  do_invalid_op+0x37/0x50 arch/x86/kernel/traps.c:286
+  invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1027
+RIP: 0010:print_bfs_bug+0x5c/0x80 kernel/locking/lockdep.c:1696
+Code: 07 00 74 2d 48 c7 c7 00 5f ac 8a c6 07 00 0f 1f 40 00 85 db 75 05 5b  
+41 5c 5d c3 44 89 e6 48 c7 c7 60 1e ac 87 e8 fc ba eb ff <0f> 0b 5b 41 5c  
+5d c3 0f 0b 48 c7 c7 58 23 f3 88 e8 1f 95 56 00 eb
+RSP: 0018:ffff88813c747288 EFLAGS: 00010082
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: ffffffff815d0816 RDI: ffffed10278e8e43
+RBP: ffff88813c747298 R08: ffff8880935244c0 R09: fffffbfff11f41ed
+R10: fffffbfff11f41ec R11: ffffffff88fa0f63 R12: 00000000ffffffff
+R13: ffff888093524d88 R14: ffff88813c747310 R15: 00000000000000de
+  check_path+0x36/0x40 kernel/locking/lockdep.c:1772
+  check_noncircular+0x16d/0x3e0 kernel/locking/lockdep.c:1797
+  check_prev_add kernel/locking/lockdep.c:2476 [inline]
+  check_prevs_add kernel/locking/lockdep.c:2581 [inline]
+  validate_chain kernel/locking/lockdep.c:2971 [inline]
+  __lock_acquire+0x2596/0x4a00 kernel/locking/lockdep.c:3955
+  lock_acquire+0x190/0x410 kernel/locking/lockdep.c:4487
+  __raw_spin_lock_bh include/linux/spinlock_api_smp.h:135 [inline]
+  _raw_spin_lock_bh+0x33/0x50 kernel/locking/spinlock.c:175
+  spin_lock_bh include/linux/spinlock.h:343 [inline]
+  igmp6_group_dropped+0x15b/0x8c0 net/ipv6/mcast.c:704
+  ipv6_mc_down+0x64/0xf0 net/ipv6/mcast.c:2541
+  ipv6_mc_destroy_dev+0x21/0x180 net/ipv6/mcast.c:2603
+  addrconf_ifdown+0xca2/0x1220 net/ipv6/addrconf.c:3842
+  addrconf_notify+0x5db/0x23b0 net/ipv6/addrconf.c:3633
+  notifier_call_chain+0xc2/0x230 kernel/notifier.c:83
+  __raw_notifier_call_chain kernel/notifier.c:361 [inline]
+  raw_notifier_call_chain+0x2e/0x40 kernel/notifier.c:368
+  call_netdevice_notifiers_info net/core/dev.c:1893 [inline]
+  call_netdevice_notifiers_info+0xba/0x130 net/core/dev.c:1878
+  call_netdevice_notifiers_extack net/core/dev.c:1905 [inline]
+  call_netdevice_notifiers net/core/dev.c:1919 [inline]
+  rollback_registered_many+0x850/0x10d0 net/core/dev.c:8743
+  rollback_registered+0x109/0x1d0 net/core/dev.c:8788
+  register_netdevice+0xbac/0x1020 net/core/dev.c:9347
+  register_netdev+0x30/0x50 net/core/dev.c:9437
+  ip6gre_init_net+0x3ac/0x5f0 net/ipv6/ip6_gre.c:1582
+  ops_init+0xb3/0x420 net/core/net_namespace.c:137
+  setup_net+0x2d5/0x8b0 net/core/net_namespace.c:335
+  copy_net_ns+0x29e/0x520 net/core/net_namespace.c:476
+  create_new_namespaces+0x400/0x7b0 kernel/nsproxy.c:103
+  unshare_nsproxy_namespaces+0xc2/0x200 kernel/nsproxy.c:202
+  ksys_unshare+0x444/0x980 kernel/fork.c:2889
+  __do_sys_unshare kernel/fork.c:2957 [inline]
+  __se_sys_unshare kernel/fork.c:2955 [inline]
+  __x64_sys_unshare+0x31/0x40 kernel/fork.c:2955
+  do_syscall_64+0xfa/0x760 arch/x86/entry/common.c:290
+  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+RIP: 0033:0x4439c9
+Code: Bad RIP value.
+RSP: 002b:00007ffc2b2cd878 EFLAGS: 00000246 ORIG_RAX: 0000000000000110
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00000000004439c9
+RDX: 00000000004439c9 RSI: 0000000000000000 RDI: 000000006c060000
+RBP: 0000000000000000 R08: 00000000004aaeff R09: 00000000004aaeff
+R10: 00000000004aaeff R11: 0000000000000246 R12: 0000000000000b5b
+R13: 00000000004047d0 R14: 0000000000000000 R15: 0000000000000000
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 12077 at kernel/locking/mutex.c:1419  
+mutex_trylock+0x279/0x2f0 kernel/locking/mutex.c:1427
+Modules linked in:
+CPU: 0 PID: 12077 Comm: syz-executor941 Not tainted 5.4.0-rc5-next-20191031  
+#0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+Google 01/01/2011
+RIP: 0010:mutex_trylock+0x279/0x2f0 kernel/locking/mutex.c:1419
+Code: c9 41 b8 01 00 00 00 31 c9 ba 01 00 00 00 31 f6 e8 3c b8 03 fa 58 48  
+8d 65 d8 b8 01 00 00 00 5b 41 5c 41 5d 41 5e 41 5f 5d c3 <0f> 0b e9 0c fe  
+ff ff 48 c7 c7 a0 a1 b0 8a 48 89 4d d0 e8 f0 78 59
+RSP: 0018:ffff88813c746e48 EFLAGS: 00010006
+RAX: 0000000080000403 RBX: 1ffff110278e8dd1 RCX: 0000000000000004
+RDX: 0000000000000000 RSI: ffffffff816a6cf5 RDI: ffffffff88fc9fa0
+RBP: ffff88813c746e78 R08: 0000000000000001 R09: fffffbfff11f4751
+R10: fffffbfff11f4750 R11: ffffffff88fa3a83 R12: ffffffff8ab0a1a0
+R13: 0000000000000000 R14: ffffffff8158bb00 R15: ffffffff88fc9fa0
+FS:  00000000013d6940(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000000044399f CR3: 000000013c5bf000 CR4: 00000000001406f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+  __crash_kexec+0x91/0x200 kernel/kexec_core.c:948
+  panic+0x308/0x75c kernel/panic.c:241
+  __warn.cold+0x2f/0x35 kernel/panic.c:582
+  report_bug+0x289/0x300 lib/bug.c:195
+  fixup_bug arch/x86/kernel/traps.c:174 [inline]
+  fixup_bug arch/x86/kernel/traps.c:169 [inline]
+  do_error_trap+0x11b/0x200 arch/x86/kernel/traps.c:267
+  do_invalid_op+0x37/0x50 arch/x86/kernel/traps.c:286
+  invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1027
+RIP: 0010:print_bfs_bug+0x5c/0x80 kernel/locking/lockdep.c:1696
+Code: 07 00 74 2d 48 c7 c7 00 5f ac 8a c6 07 00 0f 1f 40 00 85 db 75 05 5b  
+41 5c 5d c3 44 89 e6 48 c7 c7 60 1e ac 87 e8 fc ba eb ff <0f> 0b 5b 41 5c  
+5d c3 0f 0b 48 c7 c7 58 23 f3 88 e8 1f 95 56 00 eb
+RSP: 0018:ffff88813c747288 EFLAGS: 00010082
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: ffffffff815d0816 RDI: ffffed10278e8e43
+RBP: ffff88813c747298 R08: ffff8880935244c0 R09: fffffbfff11f41ed
+R10: fffffbfff11f41ec R11: ffffffff88fa0f63 R12: 00000000ffffffff
+R13: ffff888093524d88 R14: ffff88813c747310 R15: 00000000000000de
+  check_path+0x36/0x40 kernel/locking/lockdep.c:1772
+  check_noncircular+0x16d/0x3e0 kernel/locking/lockdep.c:1797
+  check_prev_add kernel/locking/lockdep.c:2476 [inline]
+  check_prevs_add kernel/locking/lockdep.c:2581 [inline]
+  validate_chain kernel/locking/lockdep.c:2971 [inline]
+  __lock_acquire+0x2596/0x4a00 kernel/locking/lockdep.c:3955
+  lock_acquire+0x190/0x410 kernel/locking/lockdep.c:4487
+  __raw_spin_lock_bh include/linux/spinlock_api_smp.h:135 [inline]
+  _raw_spin_lock_bh+0x33/0x50 kernel/locking/spinlock.c:175
+  spin_lock_bh include/linux/spinlock.h:343 [inline]
+  igmp6_group_dropped+0x15b/0x8c0 net/ipv6/mcast.c:704
+  ipv6_mc_down+0x64/0xf0 net/ipv6/mcast.c:2541
+  ipv6_mc_destroy_dev+0x21/0x180 net/ipv6/mcast.c:2603
+  addrconf_ifdown+0xca2/0x1220 net/ipv6/addrconf.c:3842
+  addrconf_notify+0x5db/0x23b0 net/ipv6/addrconf.c:3633
+  notifier_call_chain+0xc2/0x230 kernel/notifier.c:83
+  __raw_notifier_call_chain kernel/notifier.c:361 [inline]
+  raw_notifier_call_chain+0x2e/0x40 kernel/notifier.c:368
+  call_netdevice_notifiers_info net/core/dev.c:1893 [inline]
+  call_netdevice_notifiers_info+0xba/0x130 net/core/dev.c:1878
+  call_netdevice_notifiers_extack net/core/dev.c:1905 [inline]
+  call_netdevice_notifiers net/core/dev.c:1919 [inline]
+  rollback_registered_many+0x850/0x10d0 net/core/dev.c:8743
+  rollback_registered+0x109/0x1d0 net/core/dev.c:8788
+  register_netdevice+0xbac/0x1020 net/core/dev.c:9347
+  register_netdev+0x30/0x50 net/core/dev.c:9437
+  ip6gre_init_net+0x3ac/0x5f0 net/ipv6/ip6_gre.c:1582
+  ops_init+0xb3/0x420 net/core/net_namespace.c:137
+  setup_net+0x2d5/0x8b0 net/core/net_namespace.c:335
+  copy_net_ns+0x29e/0x520 net/core/net_namespace.c:476
+  create_new_namespaces+0x400/0x7b0 kernel/nsproxy.c:103
+  unshare_nsproxy_namespaces+0xc2/0x200 kernel/nsproxy.c:202
+  ksys_unshare+0x444/0x980 kernel/fork.c:2889
+  __do_sys_unshare kernel/fork.c:2957 [inline]
+  __se_sys_unshare kernel/fork.c:2955 [inline]
+  __x64_sys_unshare+0x31/0x40 kernel/fork.c:2955
+  do_syscall_64+0xfa/0x760 arch/x86/entry/common.c:290
+  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+RIP: 0033:0x4439c9
+Code: Bad RIP value.
+RSP: 002b:00007ffc2b2cd878 EFLAGS: 00000246 ORIG_RAX: 0000000000000110
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00000000004439c9
+RDX: 00000000004439c9 RSI: 0000000000000000 RDI: 000000006c060000
+RBP: 0000000000000000 R08: 00000000004aaeff R09: 00000000004aaeff
+R10: 00000000004aaeff R11: 0000000000000246 R12: 0000000000000b5b
+R13: 00000000004047d0 R14: 0000000000000000 R15: 0000000000000000
+irq event stamp: 149354
+hardirqs last  enabled at (149353): [<ffffffff8146110a>]  
+__local_bh_enable_ip+0x15a/0x270 kernel/softirq.c:194
+hardirqs last disabled at (149351): [<ffffffff814610ca>]  
+__local_bh_enable_ip+0x11a/0x270 kernel/softirq.c:171
+softirqs last  enabled at (149352): [<ffffffff864ee3d4>]  
+ipv6_ac_destroy_dev+0x144/0x1b0 net/ipv6/anycast.c:402
+softirqs last disabled at (149354): [<ffffffff865cbc13>]  
+ipv6_mc_down+0x23/0xf0 net/ipv6/mcast.c:2538
+---[ end trace c8d5cabde4ea777a ]---
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 12077 at kernel/locking/mutex.c:737  
+mutex_unlock+0x1d/0x30 kernel/locking/mutex.c:744
+Modules linked in:
+CPU: 0 PID: 12077 Comm: syz-executor941 Tainted: G        W          
+5.4.0-rc5-next-20191031 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+Google 01/01/2011
+RIP: 0010:mutex_unlock+0x1d/0x30 kernel/locking/mutex.c:737
+Code: 4c 89 ff e8 45 84 59 fa e9 8c fb ff ff 55 65 8b 05 80 31 ac 78 a9 00  
+ff 1f 00 48 89 e5 75 0b 48 8b 75 08 e8 45 f9 ff ff 5d c3 <0f> 0b 48 8b 75  
+08 e8 38 f9 ff ff 5d c3 66 0f 1f 44 00 00 48 b8 00
+RSP: 0018:ffff88813c746e78 EFLAGS: 00010006
+RAX: 0000000080000403 RBX: 1ffff110278e8dd1 RCX: ffffffff816a6d0d
+RDX: 0000000000000000 RSI: ffffffff816a6d6f RDI: ffffffff88fc9fa0
+RBP: ffff88813c746e78 R08: ffff8880935244c0 R09: 0000000000000000
+R10: fffffbfff11f93f4 R11: ffffffff88fc9fa7 R12: 0000000000000001
+R13: 0000000000000000 R14: ffffffff8158bb00 R15: 00000000000006a0
+FS:  00000000013d6940(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000000044399f CR3: 000000013c5bf000 CR4: 00000000001406f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+  __crash_kexec+0x10b/0x200 kernel/kexec_core.c:957
+  panic+0x308/0x75c kernel/panic.c:241
+  __warn.cold+0x2f/0x35 kernel/panic.c:582
+  report_bug+0x289/0x300 lib/bug.c:195
+  fixup_bug arch/x86/kernel/traps.c:174 [inline]
+  fixup_bug arch/x86/kernel/traps.c:169 [inline]
+  do_error_trap+0x11b/0x200 arch/x86/kernel/traps.c:267
+  do_invalid_op+0x37/0x50 arch/x86/kernel/traps.c:286
+  invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1027
+RIP: 0010:print_bfs_bug+0x5c/0x80 kernel/locking/lockdep.c:1696
+Code: 07 00 74 2d 48 c7 c7 00 5f ac 8a c6 07 00 0f 1f 40 00 85 db 75 05 5b  
+41 5c 5d c3 44 89 e6 48 c7 c7 60 1e ac 87 e8 fc ba eb ff <0f> 0b 5b 41 5c  
+5d c3 0f 0b 48 c7 c7 58 23 f3 88 e8 1f 95 56 00 eb
+RSP: 0018:ffff88813c747288 EFLAGS: 00010082
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: ffffffff815d0816 RDI: ffffed10278e8e43
+RBP: ffff88813c747298 R08: ffff8880935244c0 R09: fffffbfff11f41ed
+R10: fffffbfff11f41ec R11: ffffffff88fa0f63 R12: 00000000ffffffff
+R13: ffff888093524d88 R14: ffff88813c747310 R15: 00000000000000de
+  check_path+0x36/0x40 kernel/locking/lockdep.c:1772
+  check_noncircular+0x16d/0x3e0 kernel/locking/lockdep.c:1797
+  check_prev_add kernel/locking/lockdep.c:2476 [inline]
+  check_prevs_add kernel/locking/lockdep.c:2581 [inline]
+  validate_chain kernel/locking/lockdep.c:2971 [inline]
+  __lock_acquire+0x2596/0x4a00 kernel/locking/lockdep.c:3955
+  lock_acquire+0x190/0x410 kernel/locking/lockdep.c:4487
+  __raw_spin_lock_bh include/linux/spinlock_api_smp.h:135 [inline]
+  _raw_spin_lock_bh+0x33/0x50 kernel/locking/spinlock.c:175
+  spin_lock_bh include/linux/spinlock.h:343 [inline]
+  igmp6_group_dropped+0x15b/0x8c0 net/ipv6/mcast.c:704
+  ipv6_mc_down+0x64/0xf0 net/ipv6/mcast.c:2541
+  ipv6_mc_destroy_dev+0x21/0x180 net/ipv6/mcast.c:2603
+  addrconf_ifdown+0xca2/0x1220 net/ipv6/addrconf.c:3842
+  addrconf_notify+0x5db/0x23b0 net/ipv6/addrconf.c:3633
+  notifier_call_chain+0xc2/0x230 kernel/notifier.c:83
+  __raw_notifier_call_chain kernel/notifier.c:361 [inline]
+  raw_notifier_call_chain+0x2e/0x40 kernel/notifier.c:368
+  call_netdevice_notifiers_info net/core/dev.c:1893 [inline]
+  call_netdevice_notifiers_info+0xba/0x130 net/core/dev.c:1878
+  call_netdevice_notifiers_extack net/core/dev.c:1905 [inline]
+  call_netdevice_notifiers net/core/dev.c:1919 [inline]
+  rollback_registered_many+0x850/0x10d0 net/core/dev.c:8743
+  rollback_registered+0x109/0x1d0 net/core/dev.c:8788
+  register_netdevice+0xbac/0x1020 net/core/dev.c:9347
+  register_netdev+0x30/0x50 net/core/dev.c:9437
+  ip6gre_init_net+0x3ac/0x5f0 net/ipv6/ip6_gre.c:1582
+  ops_init+0xb3/0x420 net/core/net_namespace.c:137
+  setup_net+0x2d5/0x8b0 net/core/net_namespace.c:335
+  copy_net_ns+0x29e/0x520 net/core/net_namespace.c:476
+  create_new_namespaces+0x400/0x7b0 kernel/nsproxy.c:103
+  unshare_nsproxy_namespaces+0xc2/0x200 kernel/nsproxy.c:202
+  ksys_unshare+0x444/0x980 kernel/fork.c:2889
+  __do_sys_unshare kernel/fork.c:2957 [inline]
+  __se_sys_unshare kernel/fork.c:2955 [inline]
+  __x64_sys_unshare+0x31/0x40 kernel/fork.c:2955
+  do_syscall_64+0xfa/0x760 arch/x86/entry/common.c:290
+  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+RIP: 0033:0x4439c9
+Code: Bad RIP value.
+RSP: 002b:00007ffc2b2cd878 EFLAGS: 00000246 ORIG_RAX: 0000000000000110
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00000000004439c9
+RDX: 00000000004439c9 RSI: 0000000000000000 RDI: 000000006c060000
+RBP: 0000000000000000 R08: 00000000004aaeff R09: 00000000004aaeff
+R10: 00000000004aaeff R11: 0000000000000246 R12: 0000000000000b5b
+R13: 00000000004047d0 R14: 0000000000000000 R15: 0000000000000000
+irq event stamp: 149354
+hardirqs last  enabled at (149353): [<ffffffff8146110a>]  
+__local_bh_enable_ip+0x15a/0x270 kernel/softirq.c:194
+hardirqs last disabled at (149351): [<ffffffff814610ca>]  
+__local_bh_enable_ip+0x11a/0x270 kernel/softirq.c:171
+softirqs last  enabled at (149352): [<ffffffff864ee3d4>]  
+ipv6_ac_destroy_dev+0x144/0x1b0 net/ipv6/anycast.c:402
+softirqs last disabled at (149354): [<ffffffff865cbc13>]  
+ipv6_mc_down+0x23/0xf0 net/ipv6/mcast.c:2538
+---[ end trace c8d5cabde4ea777b ]---
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
+
