@@ -2,62 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F3F0EB8A1
-	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2019 21:59:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EBF4EB8C4
+	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2019 22:10:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728199AbfJaU75 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 31 Oct 2019 16:59:57 -0400
-Received: from www62.your-server.de ([213.133.104.62]:52970 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727742AbfJaU75 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 31 Oct 2019 16:59:57 -0400
-Received: from 38.249.197.178.dynamic.dsl-lte-bonding.lssmb00p-msn.res.cust.swisscom.ch ([178.197.249.38] helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iQHXu-0002uN-Fj; Thu, 31 Oct 2019 21:59:54 +0100
-Date:   Thu, 31 Oct 2019 21:59:53 +0100
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>
-Cc:     netdev@vger.kernel.org, ast@kernel.org,
+        id S1729815AbfJaVJ7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 31 Oct 2019 17:09:59 -0400
+Received: from mga01.intel.com ([192.55.52.88]:43170 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727957AbfJaVJ6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 31 Oct 2019 17:09:58 -0400
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 31 Oct 2019 14:09:57 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.68,253,1569308400"; 
+   d="scan'208";a="375376881"
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
+  by orsmga005.jf.intel.com with ESMTP; 31 Oct 2019 14:09:55 -0700
+Date:   Thu, 31 Oct 2019 14:09:55 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
-        bpf@vger.kernel.org, jakub.kicinski@netronome.com, toke@redhat.com
-Subject: Re: [PATCH bpf] bpf: change size to u64 for
- bpf_map_{area_alloc,charge_init}()
-Message-ID: <20191031205953.GB24528@pc-63.home>
-References: <20191029154307.23053-1-bjorn.topel@gmail.com>
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, bpf@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, kvm@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
+        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>
+Subject: Re: [PATCH 02/19] mm/gup: factor out duplicate code from four
+ routines
+Message-ID: <20191031210954.GE14771@iweiny-DESK2.sc.intel.com>
+References: <20191030224930.3990755-1-jhubbard@nvidia.com>
+ <20191030224930.3990755-3-jhubbard@nvidia.com>
+ <20191031183549.GC14771@iweiny-DESK2.sc.intel.com>
+ <75b557f7-24b2-740c-2640-2f914d131600@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20191029154307.23053-1-bjorn.topel@gmail.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.101.4/25619/Thu Oct 31 09:55:29 2019)
+In-Reply-To: <75b557f7-24b2-740c-2640-2f914d131600@nvidia.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Oct 29, 2019 at 04:43:07PM +0100, Björn Töpel wrote:
-> From: Björn Töpel <bjorn.topel@intel.com>
+On Thu, Oct 31, 2019 at 11:43:37AM -0700, John Hubbard wrote:
+> On 10/31/19 11:35 AM, Ira Weiny wrote:
+> > On Wed, Oct 30, 2019 at 03:49:13PM -0700, John Hubbard wrote:
+> ...
+> >> +
+> >> +static void __remove_refs_from_head(struct page *page, int refs)
+> >> +{
+> >> +	/* Do a get_page() first, in case refs == page->_refcount */
+> >> +	get_page(page);
+> >> +	page_ref_sub(page, refs);
+> >> +	put_page(page);
+> >> +}
+> > 
+> > I wonder if this is better implemented as "put_compound_head()"?  To match the
+> > try_get_compound_head() call below?
 > 
-> The functions bpf_map_area_alloc() and bpf_map_charge_init() prior
-> this commit passed the size parameter as size_t. In this commit this
-> is changed to u64.
+> Hi Ira,
 > 
-> All users of these functions avoid size_t overflows on 32-bit systems,
-> by explicitly using u64 when calculating the allocation size and
-> memory charge cost. However, since the result was narrowed by the
-> size_t when passing size and cost to the functions, the overflow
-> handling was in vain.
+> Good idea, I'll rename it to that.
 > 
-> Instead of changing all call sites to size_t and handle overflow at
-> the call site, the parameter is changed to u64 and checked in the
-> functions above.
+> > 
+> >> +
+> >> +static int __huge_pt_done(struct page *head, int nr_recorded_pages, int *nr)
+> >> +{
+> >> +	*nr += nr_recorded_pages;
+> >> +	SetPageReferenced(head);
+> >> +	return 1;
+> > 
+> > When will this return anything but 1?
+> > 
 > 
-> Fixes: d407bd25a204 ("bpf: don't trigger OOM killer under pressure with map alloc")
-> Fixes: c85d69135a91 ("bpf: move memory size checks to bpf_map_charge_init()")
-> Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
+> Never, but it saves a line at all four call sites, by having it return like that.
+> 
+> I could see how maybe people would prefer to just have it be a void function,
+> and return 1 directly at the call sites. Since this was a lower line count I
+> thought maybe it would be slightly better, but it's hard to say really.
 
-Applied, thanks!
+It is a NIT perhaps but I feel like the signature of a function should stand on
+it's own.  What this does is mix the meaning of this function with those
+calling it.  Which IMO is not good style.
+
+We can see what others say.
+
+Ira
+
+> 
+> thanks,
+> 
+> John Hubbard
+> NVIDIA
+> 
