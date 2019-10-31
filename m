@@ -2,167 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 74F13EACDC
-	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2019 10:50:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19477EAD54
+	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2019 11:22:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727185AbfJaJul (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 31 Oct 2019 05:50:41 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:26095 "EHLO
+        id S1727347AbfJaKWk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 31 Oct 2019 06:22:40 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:56533 "EHLO
         us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726897AbfJaJul (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 31 Oct 2019 05:50:41 -0400
+        with ESMTP id S1726864AbfJaKWj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 31 Oct 2019 06:22:39 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1572515439;
+        s=mimecast20190719; t=1572517358;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=2L4Tl+UeB1xHx8kUfxkmKnMRxJrK1JkQKe0a5oMFop8=;
-        b=d8Nz61OiUB/VImvn/LZASkq4RpojJwKSjCclkjPP28BDtb/j/ysbJmqgVoxesA4EaFPnRf
-        r8WDjdDdnkBi9ijQxrKrgK1aiM7meVD4DJhCRbJWjpR/Hlm16fIS3fLCw4Ill91H+PtNY2
-        nbWpqGsDa6EuXegEtoe7QgUxjAfGEwc=
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
- [209.85.208.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-155-XxD70EcPPEy6a6e0YMKTZw-1; Thu, 31 Oct 2019 05:50:38 -0400
-Received: by mail-lj1-f198.google.com with SMTP id d5so950513ljj.2
-        for <bpf@vger.kernel.org>; Thu, 31 Oct 2019 02:50:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=2L4Tl+UeB1xHx8kUfxkmKnMRxJrK1JkQKe0a5oMFop8=;
-        b=X9sL5JcN97roJiMfT8eA3gBA2KFbadSPwpJfOhfXskOZPmeXF72eZbNupPPjw6WDwp
-         0R159PaRfOpbBX6A+DIqApN1w+cJI1b4NqAtaU0DCDP+/1Rl92LHCIrrwqqZ/XYqBpGE
-         g8wz9LyfM3b/D1jblM9yXvqVqbpX5RQNpygsaeZcKBB2kphgID3kJOf/Le3siRZ60riU
-         ei2Y8OhZmxR7hAmgpailuC6Lv+b2G/MtrsprstDcUi+d3HU7BVBePMpZq3fIZet0t9ys
-         6aWKB5YoVR6vE0dtRqluZqfvcUqmSkLWKW1aVszZjkksXKB1Z7c+qPZ3rdZ056k4OXRG
-         eLAA==
-X-Gm-Message-State: APjAAAXju+bR/QamtjzDI95tlV5iZGxwJX0de9p5GZF+KKx8/qv8SmmC
-        vsrMSas4a268xQAoVu8Ut+ltrnezR3A4kjF23Qtv3OFu0bffPgmBMzt7xSLktYq+8bry9MMpnxr
-        r/heKwdN2/Git
-X-Received: by 2002:a05:651c:331:: with SMTP id b17mr3394297ljp.133.1572515436557;
-        Thu, 31 Oct 2019 02:50:36 -0700 (PDT)
-X-Google-Smtp-Source: APXvYqwQA6mGOciiyXa4d/BkzuBNJn3vEC2QlCbs9tLwzRYN2dK8f0Z47d0SO8jPQjzNUx0Rux4h7Q==
-X-Received: by 2002:a05:651c:331:: with SMTP id b17mr3394275ljp.133.1572515436336;
-        Thu, 31 Oct 2019 02:50:36 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk (borgediget.toke.dk. [85.204.121.218])
-        by smtp.gmail.com with ESMTPSA id y189sm2311572lfc.9.2019.10.31.02.50.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Oct 2019 02:50:35 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id D0B421818B5; Thu, 31 Oct 2019 10:50:34 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>,
-        =?utf-8?B?QmrDtnJuIFQ=?= =?utf-8?B?w7ZwZWw=?= 
-        <bjorn.topel@gmail.com>
-Cc:     Magnus Karlsson <magnus.karlsson@intel.com>,
-        =?utf-8?B?QmrDtnJuIFQ=?= =?utf-8?B?w7ZwZWw=?= 
-        <bjorn.topel@intel.com>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        bpf <bpf@vger.kernel.org>, degeneloy@gmail.com,
-        John Fastabend <john.fastabend@gmail.com>
-Subject: Re: [PATCH bpf-next v3] libbpf: fix compatibility for kernels without need_wakeup
-In-Reply-To: <CAJ8uoz0XTo=LcTxL_tBwzz0TAYw+=M6EDXHW7P5_LG3SN3+NBQ@mail.gmail.com>
-References: <1571995035-21889-1-git-send-email-magnus.karlsson@intel.com> <87tv7qpdbt.fsf@toke.dk> <CAJ8uoz3BPA41wmT8-Jhhs=kJ=GbsAswSvx2pEmuWJDvh+b+_yw@mail.gmail.com> <CAJ+HfNimRqftmKASOdceXFJmgbLvXnNBZATTnfA9LMF2amGzzA@mail.gmail.com> <CAJ8uoz0XTo=LcTxL_tBwzz0TAYw+=M6EDXHW7P5_LG3SN3+NBQ@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 31 Oct 2019 10:50:34 +0100
-Message-ID: <87eeytp7kl.fsf@toke.dk>
+        bh=2k3svT9De3L0lWfpdoQdAnva/hB6fqGWLxfhXOerFXU=;
+        b=HQRmrPHilJCK7AfovC/QgKJYaKnJMerniIm4zzTDxrHN6OpaagY1DfL7KZ+6+aQAekBmmM
+        qIrMphjBS0vRI7ea5HljL9Kjj/SqdLqTcQ331BuLO9YaqjygSb8ct9RA3VBEIigaLuE45m
+        TAg8H3zicRdVFLhAZfTkmVVc3EQQdko=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-324-5VX4BvhyN1SeqyjhNAg0ow-1; Thu, 31 Oct 2019 06:22:33 -0400
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 78E791800D56;
+        Thu, 31 Oct 2019 10:22:32 +0000 (UTC)
+Received: from krava (unknown [10.40.205.171])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 7CAFC5E24A;
+        Thu, 31 Oct 2019 10:22:30 +0000 (UTC)
+Date:   Thu, 31 Oct 2019 11:22:29 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Alexei Starovoitov <ast@kernel.org>
+Cc:     davem@davemloft.net, daniel@iogearbox.net, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH bpf-next] bpf: Fix bpf jit kallsym access
+Message-ID: <20191031102229.GA2794@krava>
+References: <20191030233019.1187404-1-ast@kernel.org>
 MIME-Version: 1.0
-X-MC-Unique: XxD70EcPPEy6a6e0YMKTZw-1
+In-Reply-To: <20191030233019.1187404-1-ast@kernel.org>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-MC-Unique: 5VX4BvhyN1SeqyjhNAg0ow-1
 X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=WINDOWS-1252
 Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Magnus Karlsson <magnus.karlsson@gmail.com> writes:
+On Wed, Oct 30, 2019 at 04:30:19PM -0700, Alexei Starovoitov wrote:
+> Jiri reported crash when JIT is on, but net.core.bpf_jit_kallsyms is off.
+> bpf_prog_kallsyms_find() was skipping addr->bpf_prog resolution
+> logic in oops and stack traces. That's incorrect.
+> It should only skip addr->name resolution for 'cat /proc/kallsyms'.
+> That's what bpf_jit_kallsyms and bpf_jit_harden protect.
+>=20
+> Reported-by: Jiri Olsa <jolsa@redhat.com>
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> Fixes: 3dec541b2e63 ("bpf: Add support for BTF pointers to x86 JIT")
 
-> On Thu, Oct 31, 2019 at 9:03 AM Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.=
-com> wrote:
->>
->> On Thu, 31 Oct 2019 at 08:17, Magnus Karlsson <magnus.karlsson@gmail.com=
-> wrote:
->> >
->> > On Wed, Oct 30, 2019 at 2:36 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke=
-@redhat.com> wrote:
->> > >
->> > > Magnus Karlsson <magnus.karlsson@intel.com> writes:
->> > >
->> > > > When the need_wakeup flag was added to AF_XDP, the format of the
->> > > > XDP_MMAP_OFFSETS getsockopt was extended. Code was added to the
->> > > > kernel to take care of compatibility issues arrising from running
->> > > > applications using any of the two formats. However, libbpf was
->> > > > not extended to take care of the case when the application/libbpf
->> > > > uses the new format but the kernel only supports the old
->> > > > format. This patch adds support in libbpf for parsing the old
->> > > > format, before the need_wakeup flag was added, and emulating a
->> > > > set of static need_wakeup flags that will always work for the
->> > > > application.
->> > >
->> > > Hi Magnus
->> > >
->> > > While you're looking at backwards compatibility issues with xsk: lib=
-bpf
->> > > currently fails to compile on a system that has old kernel headers
->> > > installed (this is with kernel-headers 5.3):
->> > >
->> > > $ echo "#include <bpf/xsk.h>" | gcc -x c -
->> > > In file included from <stdin>:1:
->> > > /usr/include/bpf/xsk.h: In function =E2=80=98xsk_ring_prod__needs_wa=
-keup=E2=80=99:
->> > > /usr/include/bpf/xsk.h:82:21: error: =E2=80=98XDP_RING_NEED_WAKEUP=
-=E2=80=99 undeclared (first use in this function)
->> > >    82 |  return *r->flags & XDP_RING_NEED_WAKEUP;
->> > >       |                     ^~~~~~~~~~~~~~~~~~~~
->> > > /usr/include/bpf/xsk.h:82:21: note: each undeclared identifier is re=
-ported only once for each function it appears in
->> > > /usr/include/bpf/xsk.h: In function =E2=80=98xsk_umem__extract_addr=
-=E2=80=99:
->> > > /usr/include/bpf/xsk.h:173:16: error: =E2=80=98XSK_UNALIGNED_BUF_ADD=
-R_MASK=E2=80=99 undeclared (first use in this function)
->> > >   173 |  return addr & XSK_UNALIGNED_BUF_ADDR_MASK;
->> > >       |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~
->> > > /usr/include/bpf/xsk.h: In function =E2=80=98xsk_umem__extract_offse=
-t=E2=80=99:
->> > > /usr/include/bpf/xsk.h:178:17: error: =E2=80=98XSK_UNALIGNED_BUF_OFF=
-SET_SHIFT=E2=80=99 undeclared (first use in this function)
->> > >   178 |  return addr >> XSK_UNALIGNED_BUF_OFFSET_SHIFT;
->> > >       |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->> > >
->> > >
->> > >
->> > > How would you prefer to handle this? A patch like the one below will=
- fix
->> > > the compile errors, but I'm not sure it makes sense semantically?
->> >
->> > Thanks Toke for finding this. Of course it should be possible to
->> > compile this on an older kernel, but without getting any of the newer
->> > functionality that is not present in that older kernel.
->>
->> Is the plan to support source compatibility for the headers only, or
->> the whole the libbpf itself? Is the usecase here, that you've built
->> libbpf.so with system headers X, and then would like to use the
->> library on a system with older system headers X~10? XDP sockets? BTF?
->
-> Good question. I let someone with more insight answer this. Providing
-> the support Toke wants does make the header files less pleasant to
-> look at for sure. But in any case, I think we should provide an error
-> when you try to enable a new kernel feature using an old libbpf that
-> has no support for it. Just in case someone mixes things up.
+it fixes the crash for me, thanks for quick fix
 
-Yup, I agree. Removing the functions completely is fine with me. As for
-the flags, I agree that having a check in libbpf would make sense; I can
-see someone upgrading their kernel, but still using the distro-specified
-libbpf and running into weird errors otherwise.
+jirka
 
-Maybe we should define XDP_FLAGS_ALL in if_xdp.h and use that for the
-check in both libbpf and the kernel? We'd still need conditional defines
-for backwards compatibility, but at least we wouldn't need to keep
-updating that as new flags are added?
-
--Toke
+> ---
+>  kernel/bpf/core.c | 3 ---
+>  1 file changed, 3 deletions(-)
+>=20
+> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> index 673f5d40a93e..8d3fbc86ca5e 100644
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -668,9 +668,6 @@ static struct bpf_prog *bpf_prog_kallsyms_find(unsign=
+ed long addr)
+>  {
+>  =09struct latch_tree_node *n;
+> =20
+> -=09if (!bpf_jit_kallsyms_enabled())
+> -=09=09return NULL;
+> -
+>  =09n =3D latch_tree_find((void *)addr, &bpf_tree, &bpf_tree_ops);
+>  =09return n ?
+>  =09       container_of(n, struct bpf_prog_aux, ksym_tnode)->prog :
+> --=20
+> 2.17.1
+>=20
 
