@@ -2,53 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 44C85EB660
-	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2019 18:52:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8D30EB691
+	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2019 19:02:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728561AbfJaRw0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 31 Oct 2019 13:52:26 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:36754 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726602AbfJaRw0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 31 Oct 2019 13:52:26 -0400
-Received: by mail-qt1-f196.google.com with SMTP id y10so2904959qto.3;
-        Thu, 31 Oct 2019 10:52:25 -0700 (PDT)
+        id S1729033AbfJaSCg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 31 Oct 2019 14:02:36 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:40029 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726602AbfJaSCg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 31 Oct 2019 14:02:36 -0400
+Received: by mail-qt1-f195.google.com with SMTP id o49so9737262qta.7;
+        Thu, 31 Oct 2019 11:02:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=Hfk+K9qrWDpBqH3RfKPkhH1YRZ8SGtePqAqPB9mEUPw=;
-        b=ZkeKVTwjZkq/UXu8i8FooOCY/KTaDD0T2susibFEABV8dIhn0YUicvQJNG+nu3OwYV
-         0aasa0K44LIWvMxeXnO4bXiAC9WJqbWGIE/vms9GALjH1sY4nMdDTOcmGDEbnAeYAdJj
-         PZvqy2LCok+PAiFq0O+8wSc4CCcg2UdjRXEHvYe/Y2wxl5NXGJitdDvjmRfO+RUNGCtJ
-         0N1Z9LLpd1NxOc8oEoHrYw7qJ20dlVv8PaGx+XCTZaM8ab/g+pbIa2Z7lgZjmbR8SkXb
-         OPOdFZhOy/nvQNlEb44y7NplIORlLGjl1AjfBNIFHs/Sc0Zbwj3lbezAhDZgLO8SvqyM
-         bFRw==
+        bh=EmsJxDxXZo8hGavu2AeDIgchhwdEKp5t2d8n6gOkGaU=;
+        b=vNEkw3+hnBdrqXGfXR1iutZFPpr/+rTopd1n8OmIHUyjr663rlCA842x2ZzocxRuZK
+         J0j6QwriJc33ZNzhd8mCrz3zqpECeCz4QKilc4dAlKE/ytPJazUH0iOyP4EcOxZsfApD
+         4jKBPqhw7ll1NQMcOhLmo3fclFYvkBJU/l5vIj3p64HvodNzVgDstEVdrtDHrykyzA7R
+         bOedHLzZDT3dDLUy8U0bfdAYZDoLKMesl+2L8ojeCFyb2+4GC80d4jwyLzcxUUtngRdX
+         OZhaMxs7fsEN4YI/ZowB4Mqgf0qRIxCqRSm1RQCtMxe3MayVb83+0vDFabMbMi/tnoaD
+         hTwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Hfk+K9qrWDpBqH3RfKPkhH1YRZ8SGtePqAqPB9mEUPw=;
-        b=avcPnHv8AeRYqb/HCTp/uhKQSJVITKTicf39NP2aw7lXTGuIEvrXsrNRN5lMZFkTEn
-         jcysZBt5lvVruJuY57pIVdGv0HVJ1bwZHxekqYpwyGGzTur3fqciEnsCKzW4oEVdYRQz
-         J2R+IT0rBxwmgu95yuRBvL6ePPPyRoeX8Nv3KSSfJzarCiKap/98sXD4yWSJm5v4G9ZM
-         EQgP7GEjk9Rz8akU+2EunRQ5LHBRq0UBbQYH/nT4keBan1VlZYyTs5JxkxXHiPQ0fw/x
-         +hF4g5NmDtnOkBQ8fsejaRc8yOe4Ef6Y5pjC9dgox2fUDwofLYZuWLdW4dx716NxxXDx
-         OdMw==
-X-Gm-Message-State: APjAAAXfxFent76a18xN8a63O1bZNLtOQRgenk5mj9azoWPgJJVUq9q9
-        16IVQ7xFeHlwJ4rFiQzQUsJyg5ihsnBnIfc/hLE=
-X-Google-Smtp-Source: APXvYqx8/ZhgVKIxm5NYIUVpL6fc6RKZvqb8MXAWYiAPrz8KKhRVnUuFx2lZy6DSamiGBD6vJUceIJom5N9L7pEd9xw=
-X-Received: by 2002:ad4:558e:: with SMTP id e14mr5831258qvx.247.1572544344770;
- Thu, 31 Oct 2019 10:52:24 -0700 (PDT)
+        bh=EmsJxDxXZo8hGavu2AeDIgchhwdEKp5t2d8n6gOkGaU=;
+        b=E0hvENtbyi/XpJ+C2Og6CYIJAAY8nP4dMUFPEXLxZ3HTF0az08gYrWyETwEJ7XEY8O
+         eAZpIgE0EvrhhrN1dlcaBwXrlniUuk0Je+BFutcnPyRCF2foujvbwkvMEDBD6Z3F96AT
+         dywesdoK7kNtobt78wIudUYRWmx3rQjIgjwl8Ad8MIygxYmcEqpRMy1cYhfAx13klGI3
+         QojUhLRwBa44Cy+6J8anfsuaJV2HjOphYwT/W40An18pxO0Tbv+jOK3rDitPg+gQD6JU
+         CKJmGtNhXwR2YS4BGgQq1o9JxLa8v7jcy3ac1j2oE5dj4g08VRez4yGq69alYimuF6yB
+         jPgA==
+X-Gm-Message-State: APjAAAX2YccBTkXak6FykoP9oVYefQXQ56Y6HrOPFNWPKyhuA3VEMTEg
+        GzMJ7hWTXJmHbYprAxFjFeIRid7pjj9viAc/ch8=
+X-Google-Smtp-Source: APXvYqxZNPsfBDBRpb8pOnE8i11Upbr0YO5dqwefH0BQg1NyNi8F+Z0F6GIaXokUCQhhSOTqSdzN/3W/ttuDG2TIZPc=
+X-Received: by 2002:aed:35e7:: with SMTP id d36mr6750300qte.59.1572544954503;
+ Thu, 31 Oct 2019 11:02:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <157237796219.169521.2129132883251452764.stgit@toke.dk>
- <157237796671.169521.11697832576102917566.stgit@toke.dk> <CAEf4BzYsFGm4BzFxcN37KVtjS0Zw0Zgw8on9OsP4_=Stew72Nw@mail.gmail.com>
-In-Reply-To: <CAEf4BzYsFGm4BzFxcN37KVtjS0Zw0Zgw8on9OsP4_=Stew72Nw@mail.gmail.com>
+References: <157237796219.169521.2129132883251452764.stgit@toke.dk> <157237796779.169521.16760790702202542513.stgit@toke.dk>
+In-Reply-To: <157237796779.169521.16760790702202542513.stgit@toke.dk>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 31 Oct 2019 10:52:13 -0700
-Message-ID: <CAEf4BzZ3Yf4fvM2bo0ES9_NzBgVdhXBkV-u4wbPGrSej+uB4Xw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 4/5] libbpf: Add auto-pinning of maps when
- loading BPF objects
+Date:   Thu, 31 Oct 2019 11:02:23 -0700
+Message-ID: <CAEf4BzZ6OYFYZNfQ4n7gPjyg0tWtsAaNWzZie3L23TE9KNtOoA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 5/5] selftests: Add tests for automatic map pinning
 To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
 Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -64,114 +62,191 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 31, 2019 at 10:37 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Tue, Oct 29, 2019 at 12:39 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@red=
+hat.com> wrote:
 >
-> On Tue, Oct 29, 2019 at 12:39 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@r=
-edhat.com> wrote:
-> >
-> > From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> >
-> > This adds support to libbpf for setting map pinning information as part=
- of
-> > the BTF map declaration, to get automatic map pinning (and reuse) on lo=
-ad.
-> > The pinning type currently only supports a single PIN_BY_NAME mode, whe=
-re
-> > each map will be pinned by its name in a path that can be overridden, b=
-ut
-> > defaults to /sys/fs/bpf.
-> >
-> > Since auto-pinning only does something if any maps actually have a
-> > 'pinning' BTF attribute set, we default the new option to enabled, on t=
-he
-> > assumption that seamless pinning is what most callers want.
-> >
-> > When a map has a pin_path set at load time, libbpf will compare the map
-> > pinned at that location (if any), and if the attributes match, will re-=
-use
-> > that map instead of creating a new one. If no existing map is found, th=
-e
-> > newly created map will instead be pinned at the location.
-> >
-> > Programs wanting to customise the pinning can override the pinning path=
-s
-> > using bpf_map__set_pin_path() before calling bpf_object__load() (includ=
-ing
-> > setting it to NULL to disable pinning of a particular map).
-> >
-> > Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> > ---
+> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 >
-> Please fix unconditional pin_path setting, with that:
+> This adds a new BPF selftest to exercise the new automatic map pinning
+> code.
 >
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
+> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> ---
+>  tools/testing/selftests/bpf/prog_tests/pinning.c |  157 ++++++++++++++++=
+++++++
+>  tools/testing/selftests/bpf/progs/test_pinning.c |   29 ++++
+>  2 files changed, 186 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/pinning.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_pinning.c
 >
-> >  tools/lib/bpf/bpf_helpers.h |    6 ++
-> >  tools/lib/bpf/libbpf.c      |  144 +++++++++++++++++++++++++++++++++++=
-++++++--
-> >  tools/lib/bpf/libbpf.h      |   13 ++++
-> >  3 files changed, 154 insertions(+), 9 deletions(-)
-> >
-> > diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
-> > index 2203595f38c3..0c7d28292898 100644
-> > --- a/tools/lib/bpf/bpf_helpers.h
-> > +++ b/tools/lib/bpf/bpf_helpers.h
-> > @@ -38,4 +38,10 @@ struct bpf_map_def {
-> >         unsigned int map_flags;
-> >  };
-> >
->
-> [...]
->
-> > @@ -1270,6 +1292,28 @@ static int bpf_object__init_user_btf_map(struct =
-bpf_object *obj,
-> >                         }
-> >                         map->def.value_size =3D sz;
-> >                         map->btf_value_type_id =3D t->type;
-> > +               } else if (strcmp(name, "pinning") =3D=3D 0) {
-> > +                       __u32 val;
-> > +                       int err;
-> > +
-> > +                       if (!get_map_field_int(map_name, obj->btf, def,=
- m,
-> > +                                              &val))
-> > +                               return -EINVAL;
-> > +                       pr_debug("map '%s': found pinning =3D %u.\n",
-> > +                                map_name, val);
-> > +
-> > +                       if (val !=3D LIBBPF_PIN_NONE &&
-> > +                           val !=3D LIBBPF_PIN_BY_NAME) {
-> > +                               pr_warn("map '%s': invalid pinning valu=
-e %u.\n",
-> > +                                       map_name, val);
-> > +                               return -EINVAL;
-> > +                       }
-> > +                       err =3D build_map_pin_path(map, pin_root_path);
->
-> uhm... only if (val =3D=3D LIBBPF_PIN_BY_NAME)?.. maybe extend tests with
-> a mix if auto-pinned and never pinned map to catch issue like this?
+> diff --git a/tools/testing/selftests/bpf/prog_tests/pinning.c b/tools/tes=
+ting/selftests/bpf/prog_tests/pinning.c
+> new file mode 100644
+> index 000000000000..71f7dc51edc7
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/pinning.c
+> @@ -0,0 +1,157 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include <sys/types.h>
+> +#include <sys/stat.h>
+> +#include <unistd.h>
+> +#include <test_progs.h>
+> +
+> +__u32 get_map_id(struct bpf_object *obj, const char *name)
+> +{
+> +       __u32 map_info_len, duration, retval;
+> +       struct bpf_map_info map_info =3D {};
+> +       struct bpf_map *map;
+> +       int err;
+> +
+> +       map_info_len =3D sizeof(map_info);
+> +
+> +       map =3D bpf_object__find_map_by_name(obj, name);
+> +       if (CHECK(!map, "find map", "NULL map"))
+> +               return 0;
+> +
+> +       err =3D bpf_obj_get_info_by_fd(bpf_map__fd(map),
+> +                                    &map_info, &map_info_len);
+> +       CHECK(err, "get map info", "err %d errno %d", err, errno);
+> +       return map_info.id;
+> +}
+> +
+> +void test_pinning(void)
+> +{
+> +       __u32 duration, retval, size, map_id, map_id2;
+> +       const char *custpinpath =3D "/sys/fs/bpf/custom/pinmap";
+> +       const char *nopinpath =3D "/sys/fs/bpf/nopinmap";
+> +       const char *custpath =3D "/sys/fs/bpf/custom";
 
-I was wondering why your selftest didn't catch this, got puzzled for a
-bit. It's because this code path will be executed only when map
-defintion has __uint(pinning, LIBBPF_PIN_NONE), can you please add
-that to selftest as well?
+Should this test mount/unmount (if necessary) /sys/fs/bpf? They will
+all fail if BPF FS is not mounted, right?
 
+> +       const char *pinpath =3D "/sys/fs/bpf/pinmap";
+> +       const char *file =3D "./test_pinning.o";
+> +       struct stat statbuf =3D {};
+> +       struct bpf_object *obj;
+> +       struct bpf_map *map;
+> +       DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts,
+> +               .pin_root_path =3D custpath,
+> +       );
+> +
+> +       int err;
+> +       obj =3D bpf_object__open_file(file, NULL);
+> +       if (CHECK_FAIL(libbpf_get_error(obj)))
+> +               return;
+> +
+> +       err =3D bpf_object__load(obj);
+> +       if (CHECK(err, "default load", "err %d errno %d\n", err, errno))
+> +               goto out;
+> +
+> +       /* check that pinmap was pinned */
+> +       err =3D stat(pinpath, &statbuf);
+> +       if (CHECK(err, "stat pinpath", "err %d errno %d\n", err, errno))
+> +               goto out;
+> +
+> +        /* check that nopinmap was *not* pinned */
+> +       err =3D stat(nopinpath, &statbuf);
+> +       if (CHECK(!err || errno !=3D ENOENT, "stat nopinpath",
+> +                 "err %d errno %d\n", err, errno))
+> +               goto out;
+> +
+> +        map_id =3D get_map_id(obj, "pinmap");
+
+something wrong with whitespaces here? can you please run
+scripts/checkpatch.pl to double-check?
+
+> +       if (!map_id)
+> +               goto out;
+> +
+> +       bpf_object__close(obj);
+> +
+> +       obj =3D bpf_object__open_file(file, NULL);
+> +       if (CHECK_FAIL(libbpf_get_error(obj)))
+
+obj =3D NULL here before you go to out
+
+> +               goto out;
+> +
+> +       err =3D bpf_object__load(obj);
+> +       if (CHECK(err, "default load", "err %d errno %d\n", err, errno))
+> +               goto out;
+> +
+
+[...]
+
+> +       err =3D rmdir(custpath);
+> +       if (CHECK(err, "rmdir custpindir", "err %d errno %d\n", err, errn=
+o))
+> +               goto out;
+> +
+> +       bpf_object__close(obj);
+> +
+> +       /* test auto-pinning at custom path with open opt */
+> +       obj =3D bpf_object__open_file(file, &opts);
+> +       if (CHECK_FAIL(libbpf_get_error(obj)))
+> +               return;
+
+obj =3D NULL; goto out; to ensure pinpath is unlinked?
+
+> +
+> +       err =3D bpf_object__load(obj);
+> +       if (CHECK(err, "custom load", "err %d errno %d\n", err, errno))
+> +               goto out;
+> +
+> +       /* check that pinmap was pinned at the custom path */
+> +       err =3D stat(custpinpath, &statbuf);
+> +       if (CHECK(err, "stat custpinpath", "err %d errno %d\n", err, errn=
+o))
+> +               goto out;
+> +
+> +out:
+> +       unlink(pinpath);
+> +       unlink(nopinpath);
+> +       unlink(custpinpath);
+> +       rmdir(custpath);
+> +       if (obj)
+> +               bpf_object__close(obj);
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/test_pinning.c b/tools/tes=
+ting/selftests/bpf/progs/test_pinning.c
+> new file mode 100644
+> index 000000000000..ff2d7447777e
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/test_pinning.c
+> @@ -0,0 +1,29 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include <linux/bpf.h>
+> +#include "bpf_helpers.h"
+> +
+> +int _version SEC("version") =3D 1;
+> +
+> +struct {
+> +       __uint(type, BPF_MAP_TYPE_ARRAY);
+> +       __uint(max_entries, 1);
+> +       __type(key, __u32);
+> +       __type(value, __u64);
+> +       __uint(pinning, LIBBPF_PIN_BY_NAME);
+> +} pinmap SEC(".maps");
+> +
+> +struct {
+> +       __uint(type, BPF_MAP_TYPE_ARRAY);
+> +       __uint(max_entries, 1);
+> +       __type(key, __u32);
+> +       __type(value, __u64);
+> +} nopinmap SEC(".maps");
+
+
+would be nice to ensure that __uint(pinning, LIBBPF_PIN_NONE) also
+works as expected, do you mind adding one extra map?
+
+> +
+> +SEC("xdp_prog")
+> +int _xdp_prog(struct xdp_md *xdp)
+> +{
+> +       return XDP_PASS;
+> +}
+> +
+> +char _license[] SEC("license") =3D "GPL";
 >
-> > +                       if (err) {
-> > +                               pr_warn("map '%s': couldn't build pin p=
-ath.\n",
-> > +                                       map_name);
-> > +                               return err;
-> > +                       }
-> >                 } else {
-> >                         if (strict) {
-> >                                 pr_warn("map '%s': unknown field '%s'.\=
-n",
-> > @@ -1289,7 +1333,8 @@ static int bpf_object__init_user_btf_map(struct b=
-pf_object *obj,
-> >         return 0;
-> >  }
-> >
->
-> [...]
