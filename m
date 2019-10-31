@@ -2,49 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D42AEEB62A
-	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2019 18:31:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 713F7EB63A
+	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2019 18:37:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728929AbfJaRbF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 31 Oct 2019 13:31:05 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:33686 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728917AbfJaRbF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 31 Oct 2019 13:31:05 -0400
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com [209.85.167.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id DAF1385362
-        for <bpf@vger.kernel.org>; Thu, 31 Oct 2019 17:31:04 +0000 (UTC)
-Received: by mail-lf1-f71.google.com with SMTP id r21so1597270lff.1
-        for <bpf@vger.kernel.org>; Thu, 31 Oct 2019 10:31:04 -0700 (PDT)
+        id S1729008AbfJaRhh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 31 Oct 2019 13:37:37 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:38048 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728988AbfJaRhh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 31 Oct 2019 13:37:37 -0400
+Received: by mail-qk1-f195.google.com with SMTP id e2so7871577qkn.5;
+        Thu, 31 Oct 2019 10:37:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=e+VYZZnLKZGTMRc5D6Xzedv4GtgENJ5DgDtFjihyewQ=;
+        b=JImKNmG/pWuGerdRv1Ox2WtKApORw5Achm8+OuX34P/x3HbiQe75Dntg2SB99+Obkc
+         ptT+7o2fbmvv/u0d+T/aleFM1IHWMwPCQPoP6o5WlQ0w2eCeLVEMwPCM+MQnhPUXQwz3
+         QhPNx0uR/DM4OueVR8bZvxjSfeuClCt2hJv1P03UAw+uH26pbm8JHTdxD73ouXfy3yWr
+         wwviLtfyEVpwpkeC5dgGIy6aEsWdjdwcYk+9dq+n6VYQKjsRAJaxDqFBbQKwpcI+CM0I
+         kNFHR9M1OfrRKWY7XNy1hX01E6miYK++s1zsYBq28srJ3tNjRQrYr9kYuTzJ27t0enJc
+         UQvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=A98ZbpLN02ShHsjGWgvbK5h5LF9r2lohJMdJTRe83QQ=;
-        b=C5ZmT9ASnUD9XDpLpl1SWPHAJj6mUnyDd4AqfX6pcJqIQkb2cXSEG/ucqVmktp6/tE
-         RRecVWCs9bCVqWP8UqczVAZh/V4Gsz0X4pd1ZmfZGLzgNo0WItj9eas8Bmzscuknz2RC
-         lCXF5oSk2aAQdUDQkeOtUuGZSRORby5jH/0c8MSahJtUMIsWs7PKpU0d6LWOMNc2Fdk1
-         UnNOHcKynXblRBzQ0KDMH5kfQCPHuzn3gp+JZVvoDgiejNv3VYkJpwh26v2UjVmrwubC
-         RA1PFuGX2DWHef7HgES30/gtSVU+0DNJ1YzZfZzKWYgJa6NbGzOz0lUjYLK+HQ8qbzkI
-         tVvQ==
-X-Gm-Message-State: APjAAAUTRe5ckuI1NDHI6KxTs+YWK0txgolPUYSflqWabL1FOT0sjXpZ
-        ilozRfE4eYJBJTrznXf9NIPDY3u0KFq61P2b4fteE1gQ6hYHg9MEBR4iadZAwPWWH7zGmdx8E4E
-        lO9c01CiehE1/
-X-Received: by 2002:a19:ec02:: with SMTP id b2mr1416138lfa.121.1572543063424;
-        Thu, 31 Oct 2019 10:31:03 -0700 (PDT)
-X-Google-Smtp-Source: APXvYqzuZ0u8TDe2F08iwASeJ9Xwym2M/KWxW+rywOa70uTTQU7n4oioBxCGIFSuTPr5r+A9CZdy8g==
-X-Received: by 2002:a19:ec02:: with SMTP id b2mr1416122lfa.121.1572543063280;
-        Thu, 31 Oct 2019 10:31:03 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a00:7660:6da:443::2])
-        by smtp.gmail.com with ESMTPSA id y6sm1386921ljm.95.2019.10.31.10.31.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Oct 2019 10:31:02 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 002561818B5; Thu, 31 Oct 2019 18:31:01 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=e+VYZZnLKZGTMRc5D6Xzedv4GtgENJ5DgDtFjihyewQ=;
+        b=UEHL3Hpln3yMj/6EOhm1C2HOmiMAm3z8Via+0f4vqKQjduoLtbzcXLb2E28BH1r3rP
+         8EjoVcQs1vqaDe1nnzGijJOdck5qXUW/LAGC3pKk5jz7u4i326PDldKPBkt3hgqcLI7q
+         +bBnSa3zOIaKkr/qt9gNEVKV0ZYWOz8wpBDZQyG1UF3s9zZDuIQ5L7sw9G5++TZ699k3
+         74Vx6526E3aUPIY4QETkMW97HjVDK5QO7uAGdhvzLHRwhaQAipVDXo/rMtQC3ddIJ2cO
+         Dxdy1XeqQG88ZMCd6pQ8EMk4q/bzxUMosPju/rjk1RRcTw2/O9CeeWS+fIa/+LhVpng2
+         E4NQ==
+X-Gm-Message-State: APjAAAXYK3txme0nBFzP9Va6gTJrRo3/TCBItpO0WxU/ivHZ7qju+17O
+        6UWCK5/lmv50VWwC13DI3DX1FMYYu6qFzuiqfgQ=
+X-Google-Smtp-Source: APXvYqwMWbhd7WlgCDxrWAPg3nFOMaAMB2c+51rxudCb7jHEWHbodl5Kr+86D4efx+H8YqDKiUPqsz5W1uz6slsGWls=
+X-Received: by 2002:a37:8f83:: with SMTP id r125mr1680272qkd.36.1572543456135;
+ Thu, 31 Oct 2019 10:37:36 -0700 (PDT)
+MIME-Version: 1.0
+References: <157237796219.169521.2129132883251452764.stgit@toke.dk> <157237796671.169521.11697832576102917566.stgit@toke.dk>
+In-Reply-To: <157237796671.169521.11697832576102917566.stgit@toke.dk>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 31 Oct 2019 10:37:25 -0700
+Message-ID: <CAEf4BzYsFGm4BzFxcN37KVtjS0Zw0Zgw8on9OsP4_=Stew72Nw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 4/5] libbpf: Add auto-pinning of maps when
+ loading BPF objects
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
 Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <ast@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
@@ -52,36 +56,107 @@ Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
         David Miller <davem@davemloft.net>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v4 2/5] libbpf: Store map pin path and status in struct bpf_map
-In-Reply-To: <CAEf4BzZ4pRLhwX+5Hh1jKsEhBAkrZbC14rBgAVgUt1gf3qJ+KQ@mail.gmail.com>
-References: <157237796219.169521.2129132883251452764.stgit@toke.dk> <157237796448.169521.1399805620810530569.stgit@toke.dk> <CAEf4BzZ4pRLhwX+5Hh1jKsEhBAkrZbC14rBgAVgUt1gf3qJ+KQ@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 31 Oct 2019 18:31:01 +0100
-Message-ID: <8736f8om96.fsf@toke.dk>
-MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
-
-> [...]
+On Tue, Oct 29, 2019 at 12:39 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@red=
+hat.com> wrote:
 >
->>
->>         return err;
->> @@ -4131,17 +4205,24 @@ int bpf_object__unpin_maps(struct bpf_object *obj, const char *path)
->>                 return -ENOENT;
->>
->>         bpf_object__for_each_map(map, obj) {
->> +               char *pin_path = NULL;
->>                 char buf[PATH_MAX];
+> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 >
-> you can call buf as pin_path and get rid of extra pointer?
+> This adds support to libbpf for setting map pinning information as part o=
+f
+> the BTF map declaration, to get automatic map pinning (and reuse) on load=
+.
+> The pinning type currently only supports a single PIN_BY_NAME mode, where
+> each map will be pinned by its name in a path that can be overridden, but
+> defaults to /sys/fs/bpf.
+>
+> Since auto-pinning only does something if any maps actually have a
+> 'pinning' BTF attribute set, we default the new option to enabled, on the
+> assumption that seamless pinning is what most callers want.
+>
+> When a map has a pin_path set at load time, libbpf will compare the map
+> pinned at that location (if any), and if the attributes match, will re-us=
+e
+> that map instead of creating a new one. If no existing map is found, the
+> newly created map will instead be pinned at the location.
+>
+> Programs wanting to customise the pinning can override the pinning paths
+> using bpf_map__set_pin_path() before calling bpf_object__load() (includin=
+g
+> setting it to NULL to disable pinning of a particular map).
+>
+> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> ---
 
-The idea here is to end up with bpf_map__unpin(map, NULL) if path is
-unset. GCC complains if I reassign a static array pointer, so don't
-think I can actually get rid of this?
+Please fix unconditional pin_path setting, with that:
 
--Toke
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+
+>  tools/lib/bpf/bpf_helpers.h |    6 ++
+>  tools/lib/bpf/libbpf.c      |  144 +++++++++++++++++++++++++++++++++++++=
+++++--
+>  tools/lib/bpf/libbpf.h      |   13 ++++
+>  3 files changed, 154 insertions(+), 9 deletions(-)
+>
+> diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
+> index 2203595f38c3..0c7d28292898 100644
+> --- a/tools/lib/bpf/bpf_helpers.h
+> +++ b/tools/lib/bpf/bpf_helpers.h
+> @@ -38,4 +38,10 @@ struct bpf_map_def {
+>         unsigned int map_flags;
+>  };
+>
+
+[...]
+
+> @@ -1270,6 +1292,28 @@ static int bpf_object__init_user_btf_map(struct bp=
+f_object *obj,
+>                         }
+>                         map->def.value_size =3D sz;
+>                         map->btf_value_type_id =3D t->type;
+> +               } else if (strcmp(name, "pinning") =3D=3D 0) {
+> +                       __u32 val;
+> +                       int err;
+> +
+> +                       if (!get_map_field_int(map_name, obj->btf, def, m=
+,
+> +                                              &val))
+> +                               return -EINVAL;
+> +                       pr_debug("map '%s': found pinning =3D %u.\n",
+> +                                map_name, val);
+> +
+> +                       if (val !=3D LIBBPF_PIN_NONE &&
+> +                           val !=3D LIBBPF_PIN_BY_NAME) {
+> +                               pr_warn("map '%s': invalid pinning value =
+%u.\n",
+> +                                       map_name, val);
+> +                               return -EINVAL;
+> +                       }
+> +                       err =3D build_map_pin_path(map, pin_root_path);
+
+uhm... only if (val =3D=3D LIBBPF_PIN_BY_NAME)?.. maybe extend tests with
+a mix if auto-pinned and never pinned map to catch issue like this?
+
+> +                       if (err) {
+> +                               pr_warn("map '%s': couldn't build pin pat=
+h.\n",
+> +                                       map_name);
+> +                               return err;
+> +                       }
+>                 } else {
+>                         if (strict) {
+>                                 pr_warn("map '%s': unknown field '%s'.\n"=
+,
+> @@ -1289,7 +1333,8 @@ static int bpf_object__init_user_btf_map(struct bpf=
+_object *obj,
+>         return 0;
+>  }
+>
+
+[...]
