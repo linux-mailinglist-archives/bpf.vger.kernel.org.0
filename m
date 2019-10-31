@@ -2,83 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F96BEA7C9
-	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2019 00:30:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45976EA827
+	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2019 01:18:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727429AbfJ3Xa1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Oct 2019 19:30:27 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:56216 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726273AbfJ3Xa1 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 30 Oct 2019 19:30:27 -0400
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x9UNSUpZ004276
-        for <bpf@vger.kernel.org>; Wed, 30 Oct 2019 16:30:25 -0700
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by mx0a-00082601.pphosted.com with ESMTP id 2vxwfqeqnw-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 30 Oct 2019 16:30:25 -0700
-Received: from 2401:db00:2120:80e1:face:0:29:0 (2620:10d:c081:10::13) by
- mail.thefacebook.com (2620:10d:c081:35::128) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
- Wed, 30 Oct 2019 16:30:23 -0700
-Received: by devbig007.ftw2.facebook.com (Postfix, from userid 572438)
-        id 9CFD0760EEC; Wed, 30 Oct 2019 16:30:19 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Alexei Starovoitov <ast@kernel.org>
-Smtp-Origin-Hostname: devbig007.ftw2.facebook.com
-To:     <davem@davemloft.net>
-CC:     <daniel@iogearbox.net>, <jolsa@redhat.com>,
-        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <kernel-team@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next] bpf: Fix bpf jit kallsym access
-Date:   Wed, 30 Oct 2019 16:30:19 -0700
-Message-ID: <20191030233019.1187404-1-ast@kernel.org>
-X-Mailer: git-send-email 2.17.1
-X-FB-Internal: Safe
+        id S1727223AbfJaASY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Oct 2019 20:18:24 -0400
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:37615 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727179AbfJaASY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 30 Oct 2019 20:18:24 -0400
+Received: by mail-pg1-f193.google.com with SMTP id p1so2697922pgi.4;
+        Wed, 30 Oct 2019 17:18:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=0kmTHfPFpdbOZHtCWVJhYouNhiCuWxfHJlg7g7Dc/aw=;
+        b=UFuu+8oSWz405Kyrf092ZtZFnHK1Dw3xd/PDalFkq02Bt4TsHHOpAGrF4Dg6SU+4/Q
+         lqhH7Vof2c7J+jJofpjDtcSV4Pwo+uXkiwzyWtkzpDfhstt7q6+wpuLcD6GnFBlWlOfb
+         i4rf6BPsJ8vwJM6Y+32uJzIdOe8gvLl9sXlnhD6437SCC6WM8nuHZwUbGyUfQDE6oM5x
+         2MjYAQIeLCe1m2Jq1xDwa91tx5dzW2oSf1qgjnmjdKJljLAnKuwRfbebsccfx3xkzMwH
+         Z4ER7zCqH9yuzHcxekPiKtI1uNRBqoyARyc7GNEZWDQ+pYErBbBLsM3rW3WaZS9peNuH
+         aI6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=0kmTHfPFpdbOZHtCWVJhYouNhiCuWxfHJlg7g7Dc/aw=;
+        b=hvDFhqAQWrC03f6rp/2lmYjdfZi2Z6Xv59ZWPzzV2EXR3JWPurmH4gCZUQvVL1Jjwx
+         lxjMPNR+N9RbzLEEOkfEwPQTS65YNm8SeqWvn7aisasluAZXJOp40DpO3PQMlJJ6174X
+         NbkLpfpm5ACjPOLuL+WMj8hnQvvUGLFvcD1YpOMORuXhCkqHVJVN345KAycQ3EEObtLp
+         C8gcQDLR1ye/FJ8UCg44yK6ZfekL6Qqlk49TVzl97ytpzS79t9UCMG+8ynMap685qccP
+         5eG47CqmLHOMNnXL5JBIBDKewI0FV8bLZnyIgsbGNdNsVA9obTd+BhTmpcrZlSnvOZUg
+         mQ5Q==
+X-Gm-Message-State: APjAAAVk5p01IzvIQ3ahv81+/DenfR7wzyoQjRjECnZ0G5YmfNfF4225
+        Iq0fl+hSyvL6LVeYzxFNXfw=
+X-Google-Smtp-Source: APXvYqwXZ+ZeJuZCoj4Hnc/1lmA055V+hPN+9gnmslT/Ux9RrqDDSW5rlrAn+LI4kJxRMEa3YtBXfQ==
+X-Received: by 2002:a17:90a:f00b:: with SMTP id bt11mr2667937pjb.47.1572481103933;
+        Wed, 30 Oct 2019 17:18:23 -0700 (PDT)
+Received: from [172.20.20.103] ([222.151.198.97])
+        by smtp.gmail.com with ESMTPSA id y129sm1022329pgb.28.2019.10.30.17.18.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Oct 2019 17:18:22 -0700 (PDT)
+Subject: Re: [RFC PATCH v2 bpf-next 00/15] xdp_flow: Flow offload to XDP
+To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        Pravin B Shelar <pshelar@ovn.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        William Tu <u9012063@gmail.com>,
+        Stanislav Fomichev <sdf@fomichev.me>
+References: <20191018040748.30593-1-toshiaki.makita1@gmail.com>
+ <5da9d8c125fd4_31cf2adc704105c456@john-XPS-13-9370.notmuch>
+ <22e6652c-e635-4349-c863-255d6c1c548b@gmail.com>
+ <5daf34614a4af_30ac2b1cb5d205bce4@john-XPS-13-9370.notmuch>
+ <87h840oese.fsf@toke.dk>
+ <5db128153c75_549d2affde7825b85e@john-XPS-13-9370.notmuch>
+ <87sgniladm.fsf@toke.dk> <a7f3d86b-c83c-7b0d-c426-684b8dfe4344@gmail.com>
+ <87zhhmrz7w.fsf@toke.dk>
+From:   Toshiaki Makita <toshiaki.makita1@gmail.com>
+Message-ID: <b2ecf3e6-a8f1-cfd9-0dd3-e5f4d5360c0b@gmail.com>
+Date:   Thu, 31 Oct 2019 09:18:15 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
- definitions=2019-10-30_09:2019-10-30,2019-10-30 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=940
- phishscore=0 adultscore=0 suspectscore=1 impostorscore=0 mlxscore=0
- spamscore=0 lowpriorityscore=0 clxscore=1015 priorityscore=1501
- malwarescore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1908290000 definitions=main-1910300211
-X-FB-Internal: deliver
+In-Reply-To: <87zhhmrz7w.fsf@toke.dk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Jiri reported crash when JIT is on, but net.core.bpf_jit_kallsyms is off.
-bpf_prog_kallsyms_find() was skipping addr->bpf_prog resolution
-logic in oops and stack traces. That's incorrect.
-It should only skip addr->name resolution for 'cat /proc/kallsyms'.
-That's what bpf_jit_kallsyms and bpf_jit_harden protect.
+On 2019/10/28 0:21, Toke Høiland-Jørgensen wrote:
+> Toshiaki Makita <toshiaki.makita1@gmail.com> writes:
+>>> Yeah, you are right that it's something we're thinking about. I'm not
+>>> sure we'll actually have the bandwidth to implement a complete solution
+>>> ourselves, but we are very much interested in helping others do this,
+>>> including smoothing out any rough edges (or adding missing features) in
+>>> the core XDP feature set that is needed to achieve this :)
+>>
+>> I'm very interested in general usability solutions.
+>> I'd appreciate if you could join the discussion.
+>>
+>> Here the basic idea of my approach is to reuse HW-offload infrastructure
+>> in kernel.
+>> Typical networking features in kernel have offload mechanism (TC flower,
+>> nftables, bridge, routing, and so on).
+>> In general these are what users want to accelerate, so easy XDP use also
+>> should support these features IMO. With this idea, reusing existing
+>> HW-offload mechanism is a natural way to me. OVS uses TC to offload
+>> flows, then use TC for XDP as well...
+> 
+> I agree that XDP should be able to accelerate existing kernel
+> functionality. However, this does not necessarily mean that the kernel
+> has to generate an XDP program and install it, like your patch does.
+> Rather, what we should be doing is exposing the functionality through
+> helpers so XDP can hook into the data structures already present in the
+> kernel and make decisions based on what is contained there. We already
+> have that for routing; L2 bridging, and some kind of connection
+> tracking, are obvious contenders for similar additions.
 
-Reported-by: Jiri Olsa <jolsa@redhat.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Fixes: 3dec541b2e63 ("bpf: Add support for BTF pointers to x86 JIT")
----
- kernel/bpf/core.c | 3 ---
- 1 file changed, 3 deletions(-)
+Thanks, adding helpers itself should be good, but how does this let users
+start using XDP without having them write their own BPF code?
 
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 673f5d40a93e..8d3fbc86ca5e 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -668,9 +668,6 @@ static struct bpf_prog *bpf_prog_kallsyms_find(unsigned long addr)
- {
- 	struct latch_tree_node *n;
- 
--	if (!bpf_jit_kallsyms_enabled())
--		return NULL;
--
- 	n = latch_tree_find((void *)addr, &bpf_tree, &bpf_tree_ops);
- 	return n ?
- 	       container_of(n, struct bpf_prog_aux, ksym_tnode)->prog :
--- 
-2.17.1
-
+Toshiaki Makita
