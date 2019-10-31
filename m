@@ -2,103 +2,209 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AC5D8EB845
-	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2019 21:12:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5410BEB85A
+	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2019 21:23:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728190AbfJaUMS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 31 Oct 2019 16:12:18 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:39826 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726741AbfJaUMS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 31 Oct 2019 16:12:18 -0400
-Received: by mail-qt1-f196.google.com with SMTP id t8so10257534qtc.6;
-        Thu, 31 Oct 2019 13:12:17 -0700 (PDT)
+        id S1728259AbfJaUXT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 31 Oct 2019 16:23:19 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:46478 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726741AbfJaUXT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 31 Oct 2019 16:23:19 -0400
+Received: by mail-qk1-f195.google.com with SMTP id e66so8349879qkf.13;
+        Thu, 31 Oct 2019 13:23:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TOrQ7p/Ach8XhH3X0o1czbRwLqqDeVKyqWWNz0yiniw=;
-        b=u5Ir3i7XwgUWHQakHPAg7OSyAnncurxagXjQYRJNB5Bz/OnG6DxOQxYgVkz0/e97K2
-         YCmTP2Yr+LlxhW1iQD9eS8PRToH+Rmze39XExl5vUtE0GCYBjYpxRZsFHq3c2SvOs7RF
-         3TfE11ynzDRPaVry9/XVq0o69vfrG5LwXl62oTmexeSY1J64JTLJlP6yZw2t24+r0VV8
-         fQiD+udwJ8FiEE0yW+qHDPBLlXAoq3Y22tlRAq40kv9hIDpHeDWgBld3q+2mbh8cWDcH
-         y7LPpdwb3xpGK8VOfB6kEvLWkM9SdLzLanrXgs/1x6s3fLLj63ZtvDnGHsfn8o7EFN18
-         e6vw==
+         :cc:content-transfer-encoding;
+        bh=2M2BwaKCLMXwWU2elFFBxvcV56uTW9J4XSP1/NC5+qo=;
+        b=q+RyzBCtlH5cQnQw5r9f4hpW8odswvKqF2gB6F0HklcnADHh+hMAkR7dgq0a+7Yi87
+         uXawUiGY6JmmFIHfqOq6CpdDT0ZLO+sDEMVVEJkCMGrld34KCIvGUFwTw2Nw70D/pIv7
+         zF11Gk1XJepIH075R72oW+cctCcCWoEp7+wHHKt8TWlxBhh/6cpn4G9mhMllT+W0UfYH
+         LPwCOoOTRysbzoJe0PKYkQvb+hzNLmTmpa6UPstHqx1IsZxTRQoEytwSl1gYUbv5KF58
+         FssZa1zClvOtjq7Wr8LcSTAOVp53DpNC3wtHXVs6xkuT/okgESr9v81dFV7yEHv821Ez
+         pQRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TOrQ7p/Ach8XhH3X0o1czbRwLqqDeVKyqWWNz0yiniw=;
-        b=P9YceeAY66VSKuG3miAL5bovFrzv2wqZ+LMS3cg2FWLUN23Kx1qvRRrwFcbBCpGymo
-         ibeUfBknN4H3g5fApS+TrBK4fdt6KVl6Ym6IDffoqT749eSO9GPPorqap2WvILVlhrJA
-         rEKyTj8/pcnjmgji+7S9qKVWieILqXGnUSX+0S8lhyTh3vetA4Drg8YQi6Khf728WcdS
-         GWzP/O5bhGlt0kx4gA2Wi86l7slVIpgjxZelG84y2NT2DTTRcalHZQ5J5GvaWMltSfs2
-         aDkAbyyyZVdZXyxp8xbOdnoI70amrq1Ml5oJQz+hkYELTDOfND/PsmKqvmbk3ejlTmqW
-         7TGQ==
-X-Gm-Message-State: APjAAAUWGr/1Ietxy7OCYilBgyvkBRah7YBWOJa7gIa19qMuRa8CypQ/
-        bNpJ9a4LgPw9xX6m5PLZdwAwGP8nRVqyZTTAQQY=
-X-Google-Smtp-Source: APXvYqwUbLxRSprlO8zTvGYboDGaSb472nBPxyFRV86ljkBgVEKKDkwJaf4GDTJkTea4V2HfLpC3c77jNPvzz+dScbA=
-X-Received: by 2002:a0c:e982:: with SMTP id z2mr6630820qvn.196.1572552736888;
- Thu, 31 Oct 2019 13:12:16 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=2M2BwaKCLMXwWU2elFFBxvcV56uTW9J4XSP1/NC5+qo=;
+        b=fvxvHosLSrXIaLC15Jss56l8Htk6Vgp5VaTqo/sg3kIDWxMMus2GSGYkITztOI6rJF
+         whV5ynuYP6v1ftPf/GecefOsCK2lUIqwojsJKX5v6MLTngd0xIVP+jygsD5t4lyRByRP
+         M7EjqbZT3TXxWQLuzEVNE0gOamZl1MhE+9G5FcwJiLZLszKvDrB4KraJa7G7eBPhtRsH
+         kWfOQPaUcB9BSW/eUCpb/spvrU+OVqNUySNAWvbY5FZpZF7eW8aFJUWDb+/lWYwh3s3k
+         juiQazfW6fO6QumaizAzb5DLHS7TlSZXz7j2f5IcOcaCrXjlHXz0xKJt1PSDen9wmk02
+         Q1lA==
+X-Gm-Message-State: APjAAAXOMfux+oHo1SvGI7sRXYB4D+9E+M3sQX3PhXEP4VIBFyAMK4/m
+        hfYm38WsvHZaai/1ogZyFWNLQde67Txjthdahqc=
+X-Google-Smtp-Source: APXvYqxrVW7t0r0wBPC4/KFZD/wbOIYtvHQD/HyzM1AzLs3YP9OZfv8IK/Lva9eBvqwmjU0BxTlIQUHoqMc1zwWylU4=
+X-Received: by 2002:a05:620a:1011:: with SMTP id z17mr7204890qkj.39.1572553397587;
+ Thu, 31 Oct 2019 13:23:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1572483054.git.daniel@iogearbox.net> <59ffcedeed70cdae86fbd803b87cc581a82577d7.1572483054.git.daniel@iogearbox.net>
-In-Reply-To: <59ffcedeed70cdae86fbd803b87cc581a82577d7.1572483054.git.daniel@iogearbox.net>
+References: <1571995035-21889-1-git-send-email-magnus.karlsson@intel.com>
+ <87tv7qpdbt.fsf@toke.dk> <CAJ8uoz3BPA41wmT8-Jhhs=kJ=GbsAswSvx2pEmuWJDvh+b+_yw@mail.gmail.com>
+ <CAJ+HfNimRqftmKASOdceXFJmgbLvXnNBZATTnfA9LMF2amGzzA@mail.gmail.com>
+ <CAADnVQJRe4Pm-Rxx9zobn8YRHh9i+xQp7HX4gidqq9Mse7PJ5g@mail.gmail.com>
+ <87lft1ngtn.fsf@toke.dk> <CAADnVQLrg6f_zjvNfiEVfdjcx9+DW_RFjVGetavvMNo=VXAR+g@mail.gmail.com>
+ <87imo5ng7w.fsf@toke.dk> <CAADnVQLJ2JTsbxd2am6XY0EiocMgM29JqFVRnZ9PBcwqd7-dAQ@mail.gmail.com>
+ <87d0ednf0t.fsf@toke.dk> <CAADnVQ+V4OMjJqSdE_OQ1Vr99kqTF=ZB3UUMKiCSg=3=c+exqg@mail.gmail.com>
+In-Reply-To: <CAADnVQ+V4OMjJqSdE_OQ1Vr99kqTF=ZB3UUMKiCSg=3=c+exqg@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 31 Oct 2019 13:12:06 -0700
-Message-ID: <CAEf4BzZ=pBcoUA7jxS7MiO8dYT4s-JGR1HG++DmbmqoKYM5qWw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/8] uaccess: Add strict non-pagefault
- kernel-space read function
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+Date:   Thu, 31 Oct 2019 13:23:06 -0700
+Message-ID: <CAEf4Bzak3Cu1voYvKi1NY_iH61jFzPdb_A5iqo4m=5wyCKNveg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3] libbpf: fix compatibility for kernels without need_wakeup
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>, x86@kernel.org
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Network Development <netdev@vger.kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        bpf <bpf@vger.kernel.org>, degeneloy@gmail.com,
+        John Fastabend <john.fastabend@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 30, 2019 at 6:00 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+On Thu, Oct 31, 2019 at 8:18 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> Add two new probe_kernel_read_strict() and strncpy_from_unsafe_strict()
-> helpers which by default alias to the __probe_kernel_read() and the
-> __strncpy_from_unsafe(), respectively, but can be overridden by archs
-> which have non-overlapping address ranges for kernel space and user
-> space in order to bail out with -EFAULT when attempting to probe user
-> memory including non-canonical user access addresses [0].
->
-> The idea is that these helpers are complementary to the probe_user_read()
-> and strncpy_from_unsafe_user() which probe user-only memory. Both added
-> helpers here do the same, but for kernel-only addresses.
->
-> Both set of helpers are going to be used for BPF tracing. They also
-> explicitly avoid throwing the splat for non-canonical user addresses from
-> 00c42373d397 ("x86-64: add warning for non-canonical user access address
-> dereferences").
->
-> For compat, the current probe_kernel_read() and strncpy_from_unsafe() are
-> left as-is.
->
->   [0] Documentation/x86/x86_64/mm.txt
->
->       4-level page tables: 0x0000800000000000 - 0xffff7fffffffffff
->       5-level page tables: 0x0100000000000000 - 0xfeffffffffffffff
->
-> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Linus Torvalds <torvalds@linux-foundation.org>
-> Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> Cc: x86@kernel.org
-> ---
+> On Thu, Oct 31, 2019 at 7:52 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
+dhat.com> wrote:
+> >
+> > Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+> >
+> > > On Thu, Oct 31, 2019 at 7:26 AM Toke H=C3=B8iland-J=C3=B8rgensen <tok=
+e@redhat.com> wrote:
+> > >>
+> > >> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+> > >>
+> > >> > On Thu, Oct 31, 2019 at 7:13 AM Toke H=C3=B8iland-J=C3=B8rgensen <=
+toke@redhat.com> wrote:
+> > >> >>
+> > >> >> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+> > >> >>
+> > >> >> > On Thu, Oct 31, 2019 at 1:03 AM Bj=C3=B6rn T=C3=B6pel <bjorn.to=
+pel@gmail.com> wrote:
+> > >> >> >>
+> > >> >> >> On Thu, 31 Oct 2019 at 08:17, Magnus Karlsson <magnus.karlsson=
+@gmail.com> wrote:
+> > >> >> >> >
+> > >> >> >> > On Wed, Oct 30, 2019 at 2:36 PM Toke H=C3=B8iland-J=C3=B8rge=
+nsen <toke@redhat.com> wrote:
+> > >> >> >> > >
+> > >> >> >> > > Magnus Karlsson <magnus.karlsson@intel.com> writes:
+> > >> >> >> > >
+> > >> >> >> > > > When the need_wakeup flag was added to AF_XDP, the forma=
+t of the
+> > >> >> >> > > > XDP_MMAP_OFFSETS getsockopt was extended. Code was added=
+ to the
+> > >> >> >> > > > kernel to take care of compatibility issues arrising fro=
+m running
+> > >> >> >> > > > applications using any of the two formats. However, libb=
+pf was
+> > >> >> >> > > > not extended to take care of the case when the applicati=
+on/libbpf
+> > >> >> >> > > > uses the new format but the kernel only supports the old
+> > >> >> >> > > > format. This patch adds support in libbpf for parsing th=
+e old
+> > >> >> >> > > > format, before the need_wakeup flag was added, and emula=
+ting a
+> > >> >> >> > > > set of static need_wakeup flags that will always work fo=
+r the
+> > >> >> >> > > > application.
+> > >> >> >> > >
+> > >> >> >> > > Hi Magnus
+> > >> >> >> > >
+> > >> >> >> > > While you're looking at backwards compatibility issues wit=
+h xsk: libbpf
+> > >> >> >> > > currently fails to compile on a system that has old kernel=
+ headers
+> > >> >> >> > > installed (this is with kernel-headers 5.3):
+> > >> >> >> > >
+> > >> >> >> > > $ echo "#include <bpf/xsk.h>" | gcc -x c -
+> > >> >> >> > > In file included from <stdin>:1:
+> > >> >> >> > > /usr/include/bpf/xsk.h: In function =E2=80=98xsk_ring_prod=
+__needs_wakeup=E2=80=99:
+> > >> >> >> > > /usr/include/bpf/xsk.h:82:21: error: =E2=80=98XDP_RING_NEE=
+D_WAKEUP=E2=80=99 undeclared (first use in this function)
+> > >> >> >> > >    82 |  return *r->flags & XDP_RING_NEED_WAKEUP;
+> > >> >> >> > >       |                     ^~~~~~~~~~~~~~~~~~~~
+> > >> >> >> > > /usr/include/bpf/xsk.h:82:21: note: each undeclared identi=
+fier is reported only once for each function it appears in
+> > >> >> >> > > /usr/include/bpf/xsk.h: In function =E2=80=98xsk_umem__ext=
+ract_addr=E2=80=99:
+> > >> >> >> > > /usr/include/bpf/xsk.h:173:16: error: =E2=80=98XSK_UNALIGN=
+ED_BUF_ADDR_MASK=E2=80=99 undeclared (first use in this function)
+> > >> >> >> > >   173 |  return addr & XSK_UNALIGNED_BUF_ADDR_MASK;
+> > >> >> >> > >       |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > >> >> >> > > /usr/include/bpf/xsk.h: In function =E2=80=98xsk_umem__ext=
+ract_offset=E2=80=99:
+> > >> >> >> > > /usr/include/bpf/xsk.h:178:17: error: =E2=80=98XSK_UNALIGN=
+ED_BUF_OFFSET_SHIFT=E2=80=99 undeclared (first use in this function)
+> > >> >> >> > >   178 |  return addr >> XSK_UNALIGNED_BUF_OFFSET_SHIFT;
+> > >> >> >> > >       |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > >> >> >> > >
+> > >> >> >> > >
+> > >> >> >> > >
+> > >> >> >> > > How would you prefer to handle this? A patch like the one =
+below will fix
+> > >> >> >> > > the compile errors, but I'm not sure it makes sense semant=
+ically?
+> > >> >> >> >
+> > >> >> >> > Thanks Toke for finding this. Of course it should be possibl=
+e to
+> > >> >> >> > compile this on an older kernel, but without getting any of =
+the newer
+> > >> >> >> > functionality that is not present in that older kernel.
+> > >> >> >>
+> > >> >> >> Is the plan to support source compatibility for the headers on=
+ly, or
+> > >> >> >> the whole the libbpf itself? Is the usecase here, that you've =
+built
+> > >> >> >> libbpf.so with system headers X, and then would like to use th=
+e
+> > >> >> >> library on a system with older system headers X~10? XDP socket=
+s? BTF?
+> > >> >> >
+> > >> >> > libbpf has to be backward and forward compatible.
+> > >> >> > Once compiled it has to run on older and newer kernels.
+> > >> >> > Conditional compilation is not an option obviously.
+> > >> >>
+> > >> >> So what do we do, then? Redefine the constants in libbpf/xsh.h if
+> > >> >> they're not in the kernel header file?
+> > >> >
+> > >> > why? How and whom it will help?
+> > >> > To libbpf.rpm creating person or to end user?
+> > >>
+> > >> Anyone who tries to compile a new libbpf against an older kernel. Yo=
+u're
+> > >> saying yourself that "libbpf has to be backward and forward compatib=
+le".
+> > >> Surely that extends to compile time as well as runtime?
+> > >
+> > > how old that older kernel?
+> > > Does it have up-to-date bpf.h in /usr/include ?
+> > > Also consider that running kernel is often not the same
+> > > thing as installed in /usr/include
+> > > vmlinux and /usr/include are different packages.
+> >
+> > In this case, it's a constant introduced in the kernel in the current
+> > (5.4) cycle; so currently, you can't compile libbpf with
+> > kernel-headers-5.3. And we're discussing how to handle this in a
+> > backwards compatible way in libbpf...
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+If someone is compiling libbpf from sources, he has to make sure to
+use libbpf's include directory (see
+https://github.com/libbpf/libbpf/blob/master/include/uapi/linux/if_xdp.h),
+it has all the latest XDP stuff, including XDP_RING_NEED_WAKEUP.
 
->  arch/x86/mm/Makefile    |  2 +-
->  arch/x86/mm/maccess.c   | 38 ++++++++++++++++++++++++++++++++++++++
->  include/linux/uaccess.h |  4 ++++
->  mm/maccess.c            | 25 ++++++++++++++++++++++++-
->  4 files changed, 67 insertions(+), 2 deletions(-)
->  create mode 100644 arch/x86/mm/maccess.c
 >
-
-[...]
+> you simply don't.
+> It's not a problem to begin with.
