@@ -2,145 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B6A0EAFEA
-	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2019 13:12:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64291EB200
+	for <lists+bpf@lfdr.de>; Thu, 31 Oct 2019 15:01:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726462AbfJaMMP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 31 Oct 2019 08:12:15 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:22903 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726540AbfJaMMP (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 31 Oct 2019 08:12:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1572523933;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sg2kihRjjgIQkH/w1dLyFs7FBPG7gi2l8czoqmJwrAo=;
-        b=cFTyD+95Xy3Z3QflpeI+8ESoOUOFplqWJ4Ruxx+cfciVRUPfZ/eM9ZnBMKYGVWKKziB7HS
-        ZJghTdLY2okIn1v2wVMyPk0/D7WHYAmOgpQY8ntgAadYAF/HcKwIJCIUyhFAkmHGFgqXUo
-        PEHAOBubc5n3CHiQn6Jis31Py1qBArA=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-360-ZZ2lyFzEOAuHEHhccG-pOw-1; Thu, 31 Oct 2019 08:12:10 -0400
-Received: by mail-lf1-f70.google.com with SMTP id c15so1312273lfg.4
-        for <bpf@vger.kernel.org>; Thu, 31 Oct 2019 05:12:10 -0700 (PDT)
+        id S1728048AbfJaOBL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 31 Oct 2019 10:01:11 -0400
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:37467 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727589AbfJaOBL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 31 Oct 2019 10:01:11 -0400
+Received: by mail-lf1-f65.google.com with SMTP id b20so4771709lfp.4;
+        Thu, 31 Oct 2019 07:01:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Bge6GLoZUXMCt/tsVrT0fhVdEglwvYwkDp9kDy2ReOY=;
+        b=kK9SdjxP9g0QkpknD416zbIjdCGJSvb24I3tzZbIc68h2WGUiruQSvf9dZa5oaDlRA
+         rDA+ngxxXgdQWzh381JZMJUz0XpRk+9YmvtikXCDCOiajM2OBVuzIj0MUsjtpDZk+qJX
+         MwE1fXwQxCyonyv7Qlx/fneh4ab7zo/Xln3h+vY3S/pcsVg0mKZxqbA5qQd99Fabrlx6
+         4CDzvDGOHvNJCVW6/cW39JtMb7CmY6bRe+KW24DVGEEhegZ5cTUkYpIWAEzFd18jytnA
+         DLqa0xUI1tLuH1bdgqCy99dJzDu0POVGkMxxc6mpIovJxsKGk1KKBkePVo9flMux0sNJ
+         3tCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=WFDBGr9Ywa4IUDdAKK/ciZtmngvMAKi5lQDjdYRC0uM=;
-        b=C0nJtZX69Iy/cKvFUCAEX2vT31HUvTQP7Qsj2A0ZiE8WR3qm5tCC9RHCceqOfgUoZR
-         w8HS0TrIWQ6sxuRO07SGTavcobPylYE7nfwNXMYunqMKJt82lE3oBEuXD5bGPAr/M5GM
-         M5KFHGcAkYPetXIi6PmtLVQTHC+43/+X2I++Hx5QjcHEe69HVxulmUQDYeGPQ0B4M4Ug
-         QpX+sPgaFXp8x1Kq+EnGJP+u8vrKmxTZsyfwmG8aBgq2ZDQgyCp5luNLtzPOd+GgE9XV
-         bKCQcADw7ik/cew0pgmH55T3bFU0j0aJ3HLWkWc5Wi7uy6oTbCon6Z+04MinForVRAP5
-         eR8A==
-X-Gm-Message-State: APjAAAWz5ea3xDQLoeZz5cqcNJWnBmtFrinEbnxmOj6V3gM7msT4chHc
-        jcFCPQ0WXwKypCl7rUHnaTwNWoBo0I91Y2kG4HjR776D+n1Xw3kGyehiHcdQBsjah+PoPRmXO+b
-        F2Lf4KzDq3ITO
-X-Received: by 2002:a2e:82cd:: with SMTP id n13mr3899673ljh.2.1572523929464;
-        Thu, 31 Oct 2019 05:12:09 -0700 (PDT)
-X-Google-Smtp-Source: APXvYqzutWi8V1kbCaY6gZfirhl0dF87096w5grmFMNrO2/Eane2hIEhWDBIPpyTRok9dMDGs3ir/w==
-X-Received: by 2002:a2e:82cd:: with SMTP id n13mr3899658ljh.2.1572523929255;
-        Thu, 31 Oct 2019 05:12:09 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a00:7660:6da:443::2])
-        by smtp.gmail.com with ESMTPSA id g26sm1548451lfh.1.2019.10.31.05.12.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Oct 2019 05:12:08 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 139331818B5; Thu, 31 Oct 2019 13:12:07 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Toshiaki Makita <toshiaki.makita1@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Bge6GLoZUXMCt/tsVrT0fhVdEglwvYwkDp9kDy2ReOY=;
+        b=HLwdQdXP9bOBF++Tq729IsShzZIcTpt6EOpS+S8veUv7Hi/ndeifyDN36exA8GD/Y4
+         ps9cuCxTbwH6WwwEDrKs2pnZBmewai2TnzaxeG6mSHokUbkHvCeoQ/xcLf0f1Obw3rIX
+         DWDPdPuQBHuoxLtJ2jg/+Ve6ZaV2tRjGMXenDxJ7P9IMc/Aj0aDaCy8BOMHxqAW7cfEX
+         9i5qQNOIndsDHjIVIAgfONOn9KklRkTEVoCeQqPItW8OibbNHKcBRch0k69dGokIu76g
+         U1G8FEgiVLDEllyoW1dmbyTvq0GA90++eJAEd9wQW68ArLvJGOL8FrURdzVCmJOdnm+l
+         Ijdw==
+X-Gm-Message-State: APjAAAWh73XjFIDZQx94psVt7tb3wlspyqClFo+djv1ORvuCIJneSgll
+        StAksdkYIklhi1bLKKdNLoB/Lon4jAf/ZFytaoU=
+X-Google-Smtp-Source: APXvYqzG8891cwAwz9CX5GVR/wnZOUzHNkY4s+WVeM/lsh1ReUHmk+riekB2rIy/7o8Q0oSJqRfV+N9+vnbYEswM7Yk=
+X-Received: by 2002:a19:4848:: with SMTP id v69mr3660588lfa.6.1572530469094;
+ Thu, 31 Oct 2019 07:01:09 -0700 (PDT)
+MIME-Version: 1.0
+References: <1571995035-21889-1-git-send-email-magnus.karlsson@intel.com>
+ <87tv7qpdbt.fsf@toke.dk> <CAJ8uoz3BPA41wmT8-Jhhs=kJ=GbsAswSvx2pEmuWJDvh+b+_yw@mail.gmail.com>
+ <CAJ+HfNimRqftmKASOdceXFJmgbLvXnNBZATTnfA9LMF2amGzzA@mail.gmail.com>
+In-Reply-To: <CAJ+HfNimRqftmKASOdceXFJmgbLvXnNBZATTnfA9LMF2amGzzA@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 31 Oct 2019 07:00:55 -0700
+Message-ID: <CAADnVQJRe4Pm-Rxx9zobn8YRHh9i+xQp7HX4gidqq9Mse7PJ5g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3] libbpf: fix compatibility for kernels without need_wakeup
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Cc:     Magnus Karlsson <magnus.karlsson@gmail.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        Pravin B Shelar <pshelar@ovn.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        William Tu <u9012063@gmail.com>,
-        Stanislav Fomichev <sdf@fomichev.me>
-Subject: Re: [RFC PATCH v2 bpf-next 00/15] xdp_flow: Flow offload to XDP
-In-Reply-To: <b2ecf3e6-a8f1-cfd9-0dd3-e5f4d5360c0b@gmail.com>
-References: <20191018040748.30593-1-toshiaki.makita1@gmail.com> <5da9d8c125fd4_31cf2adc704105c456@john-XPS-13-9370.notmuch> <22e6652c-e635-4349-c863-255d6c1c548b@gmail.com> <5daf34614a4af_30ac2b1cb5d205bce4@john-XPS-13-9370.notmuch> <87h840oese.fsf@toke.dk> <5db128153c75_549d2affde7825b85e@john-XPS-13-9370.notmuch> <87sgniladm.fsf@toke.dk> <a7f3d86b-c83c-7b0d-c426-684b8dfe4344@gmail.com> <87zhhmrz7w.fsf@toke.dk> <b2ecf3e6-a8f1-cfd9-0dd3-e5f4d5360c0b@gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 31 Oct 2019 13:12:07 +0100
-Message-ID: <87zhhhnmg8.fsf@toke.dk>
-MIME-Version: 1.0
-X-MC-Unique: ZZ2lyFzEOAuHEHhccG-pOw-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=UTF-8
+        Network Development <netdev@vger.kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        bpf <bpf@vger.kernel.org>, degeneloy@gmail.com,
+        John Fastabend <john.fastabend@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Toshiaki Makita <toshiaki.makita1@gmail.com> writes:
-
-> On 2019/10/28 0:21, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->> Toshiaki Makita <toshiaki.makita1@gmail.com> writes:
->>>> Yeah, you are right that it's something we're thinking about. I'm not
->>>> sure we'll actually have the bandwidth to implement a complete solutio=
-n
->>>> ourselves, but we are very much interested in helping others do this,
->>>> including smoothing out any rough edges (or adding missing features) i=
-n
->>>> the core XDP feature set that is needed to achieve this :)
->>>
->>> I'm very interested in general usability solutions.
->>> I'd appreciate if you could join the discussion.
->>>
->>> Here the basic idea of my approach is to reuse HW-offload infrastructur=
-e
->>> in kernel.
->>> Typical networking features in kernel have offload mechanism (TC flower=
-,
->>> nftables, bridge, routing, and so on).
->>> In general these are what users want to accelerate, so easy XDP use als=
-o
->>> should support these features IMO. With this idea, reusing existing
->>> HW-offload mechanism is a natural way to me. OVS uses TC to offload
->>> flows, then use TC for XDP as well...
->>=20
->> I agree that XDP should be able to accelerate existing kernel
->> functionality. However, this does not necessarily mean that the kernel
->> has to generate an XDP program and install it, like your patch does.
->> Rather, what we should be doing is exposing the functionality through
->> helpers so XDP can hook into the data structures already present in the
->> kernel and make decisions based on what is contained there. We already
->> have that for routing; L2 bridging, and some kind of connection
->> tracking, are obvious contenders for similar additions.
+On Thu, Oct 31, 2019 at 1:03 AM Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.co=
+m> wrote:
 >
-> Thanks, adding helpers itself should be good, but how does this let users
-> start using XDP without having them write their own BPF code?
+> On Thu, 31 Oct 2019 at 08:17, Magnus Karlsson <magnus.karlsson@gmail.com>=
+ wrote:
+> >
+> > On Wed, Oct 30, 2019 at 2:36 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@=
+redhat.com> wrote:
+> > >
+> > > Magnus Karlsson <magnus.karlsson@intel.com> writes:
+> > >
+> > > > When the need_wakeup flag was added to AF_XDP, the format of the
+> > > > XDP_MMAP_OFFSETS getsockopt was extended. Code was added to the
+> > > > kernel to take care of compatibility issues arrising from running
+> > > > applications using any of the two formats. However, libbpf was
+> > > > not extended to take care of the case when the application/libbpf
+> > > > uses the new format but the kernel only supports the old
+> > > > format. This patch adds support in libbpf for parsing the old
+> > > > format, before the need_wakeup flag was added, and emulating a
+> > > > set of static need_wakeup flags that will always work for the
+> > > > application.
+> > >
+> > > Hi Magnus
+> > >
+> > > While you're looking at backwards compatibility issues with xsk: libb=
+pf
+> > > currently fails to compile on a system that has old kernel headers
+> > > installed (this is with kernel-headers 5.3):
+> > >
+> > > $ echo "#include <bpf/xsk.h>" | gcc -x c -
+> > > In file included from <stdin>:1:
+> > > /usr/include/bpf/xsk.h: In function =E2=80=98xsk_ring_prod__needs_wak=
+eup=E2=80=99:
+> > > /usr/include/bpf/xsk.h:82:21: error: =E2=80=98XDP_RING_NEED_WAKEUP=E2=
+=80=99 undeclared (first use in this function)
+> > >    82 |  return *r->flags & XDP_RING_NEED_WAKEUP;
+> > >       |                     ^~~~~~~~~~~~~~~~~~~~
+> > > /usr/include/bpf/xsk.h:82:21: note: each undeclared identifier is rep=
+orted only once for each function it appears in
+> > > /usr/include/bpf/xsk.h: In function =E2=80=98xsk_umem__extract_addr=
+=E2=80=99:
+> > > /usr/include/bpf/xsk.h:173:16: error: =E2=80=98XSK_UNALIGNED_BUF_ADDR=
+_MASK=E2=80=99 undeclared (first use in this function)
+> > >   173 |  return addr & XSK_UNALIGNED_BUF_ADDR_MASK;
+> > >       |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > > /usr/include/bpf/xsk.h: In function =E2=80=98xsk_umem__extract_offset=
+=E2=80=99:
+> > > /usr/include/bpf/xsk.h:178:17: error: =E2=80=98XSK_UNALIGNED_BUF_OFFS=
+ET_SHIFT=E2=80=99 undeclared (first use in this function)
+> > >   178 |  return addr >> XSK_UNALIGNED_BUF_OFFSET_SHIFT;
+> > >       |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > >
+> > >
+> > >
+> > > How would you prefer to handle this? A patch like the one below will =
+fix
+> > > the compile errors, but I'm not sure it makes sense semantically?
+> >
+> > Thanks Toke for finding this. Of course it should be possible to
+> > compile this on an older kernel, but without getting any of the newer
+> > functionality that is not present in that older kernel.
+>
+> Is the plan to support source compatibility for the headers only, or
+> the whole the libbpf itself? Is the usecase here, that you've built
+> libbpf.so with system headers X, and then would like to use the
+> library on a system with older system headers X~10? XDP sockets? BTF?
 
-It wouldn't in itself. But it would make it possible to write XDP
-programs that could provide the same functionality; people would then
-need to run those programs to actually opt-in to this.
-
-For some cases this would be a simple "on/off switch", e.g.,
-"xdp-route-accel --load <dev>", which would install an XDP program that
-uses the regular kernel routing table (and the same with bridging). We
-are planning to collect such utilities in the xdp-tools repo - I am
-currently working on a simple packet filter:
-https://github.com/xdp-project/xdp-tools/tree/xdp-filter
-
-For more advanced use cases (such as OVS), the application packages will
-need to integrate and load their own XDP support. We should encourage
-that, and help smooth out any rough edges (such as missing features)
-needed for this to happen.
-
--Toke
-
+libbpf has to be backward and forward compatible.
+Once compiled it has to run on older and newer kernels.
+Conditional compilation is not an option obviously.
