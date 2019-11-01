@@ -2,261 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E66BAEC8C7
-	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2019 19:59:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ADB1EC91F
+	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2019 20:36:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727655AbfKAS7k (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 Nov 2019 14:59:40 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:3206 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727666AbfKAS7k (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 1 Nov 2019 14:59:40 -0400
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xA1Ix7Tu000525
-        for <bpf@vger.kernel.org>; Fri, 1 Nov 2019 11:59:38 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=facebook; bh=aSGcfh6ex9njTDFpSX49uNDWYR2KB1ucdKt2ZQGPr9w=;
- b=Htg9uvJz+9BhiQdo575jh4fUHV4slLzLkzBK4W2S4ol73857yRoKOI+DJ4KMesSfjTW1
- sp6qqFj3eDinoenwclweQUGjQTkA7iB8dDfU9kg3Ckce6oECE8prr+Vpa6GEpkf4WmqC
- SnOuvcuCi4jJtViwgTeXPkYrskd3D8cZ+1o= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2vyw33rkn7-11
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 01 Nov 2019 11:59:38 -0700
-Received: from 2401:db00:30:600c:face:0:1f:0 (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Fri, 1 Nov 2019 11:59:26 -0700
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 97C2B2EC1A58; Fri,  1 Nov 2019 11:59:25 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next 5/5] selftests/bpf: add field size relocation tests
-Date:   Fri, 1 Nov 2019 11:59:11 -0700
-Message-ID: <20191101185912.594925-6-andriin@fb.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20191101185912.594925-1-andriin@fb.com>
-References: <20191101185912.594925-1-andriin@fb.com>
-X-FB-Internal: Safe
+        id S1726623AbfKATgM convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 1 Nov 2019 15:36:12 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:39018 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726900AbfKATgL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 1 Nov 2019 15:36:11 -0400
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com [209.85.167.70])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 2B5E98665A
+        for <bpf@vger.kernel.org>; Fri,  1 Nov 2019 19:36:11 +0000 (UTC)
+Received: by mail-lf1-f70.google.com with SMTP id o9so2202636lfd.7
+        for <bpf@vger.kernel.org>; Fri, 01 Nov 2019 12:36:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=SsmstKUpBF7ofr68Bfnp8iZ5GYfX4M6aq588iloFPg8=;
+        b=fQExmJHgOsSdNQMEqNtoPVB/Re/VeM5DAb2ZelVn70+pXcxSqZsLMNpjxX2gDqOXtz
+         pIb0B1QcvLOH194/u8eewQD6K4mfYFKpehvTu8nzvVGXNj5/xtSxiRHzIM44YM30NGLj
+         ijmZzY3kDdxDle4GWYjuFa4AejE1jNFqmmVgGJe1ycVl8NoQCQytBYug7MkayKLcV2I8
+         XEBVeR/7NFcHGqr6j2H05gNHGvRJnDM8GE+jwErC7ynwQ8c/wdEXHa3Do2iXR91Gqrmg
+         pPzYlYIUcw7oPPaH6/w/PTGkAJk9V7K4t+eaWGAqmBr/xDkCoktFVK7GeJ1F7AmUtdfL
+         F8bg==
+X-Gm-Message-State: APjAAAU79fP1tpmFtctqt7npIJhVsLtcxe6Pmf0hZaQwq91vHnJsN9qm
+        lUh9Z2USwyFAyw8vdjiMKzBraUAKsQS8qUSduCI8Mcs11oHlM8R+q8B9BYEq5dm3Yq5YexgPOv0
+        ZHx2sfuhjD8I4
+X-Received: by 2002:ac2:46d7:: with SMTP id p23mr8291825lfo.104.1572636966390;
+        Fri, 01 Nov 2019 12:36:06 -0700 (PDT)
+X-Google-Smtp-Source: APXvYqzJVHQ5klNWvpRqGYN+Ta+wS+uO2/UVCP7ZzvSxgiNwulnPJddFdLrnVv+P0HgCyjem9yB5cA==
+X-Received: by 2002:ac2:46d7:: with SMTP id p23mr8291797lfo.104.1572636966136;
+        Fri, 01 Nov 2019 12:36:06 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk (borgediget.toke.dk. [85.204.121.218])
+        by smtp.gmail.com with ESMTPSA id v21sm2865146lfe.68.2019.11.01.12.36.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Nov 2019 12:36:05 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id B327A1818B5; Fri,  1 Nov 2019 20:36:04 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Jiri Olsa <jolsa@redhat.com>
+Cc:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Network Development <netdev@vger.kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        bpf <bpf@vger.kernel.org>, degeneloy@gmail.com,
+        John Fastabend <john.fastabend@gmail.com>
+Subject: Re: [PATCH bpf-next v3] libbpf: fix compatibility for kernels without need_wakeup
+In-Reply-To: <CAADnVQJnTuADcPizsD+hFx4Rvot0nqiX83M+ku4Nu_qLh2_vyg@mail.gmail.com>
+References: <87lft1ngtn.fsf@toke.dk> <CAADnVQLrg6f_zjvNfiEVfdjcx9+DW_RFjVGetavvMNo=VXAR+g@mail.gmail.com> <87imo5ng7w.fsf@toke.dk> <CAADnVQLJ2JTsbxd2am6XY0EiocMgM29JqFVRnZ9PBcwqd7-dAQ@mail.gmail.com> <87d0ednf0t.fsf@toke.dk> <CAADnVQ+V4OMjJqSdE_OQ1Vr99kqTF=ZB3UUMKiCSg=3=c+exqg@mail.gmail.com> <20191031174208.GC2794@krava> <CAADnVQJ=cEeFdYFGnfu6hLyTABWf2==e_1LEhBup5Phe6Jg5hw@mail.gmail.com> <20191031191815.GD2794@krava> <CAADnVQJdAZS9AHx_B3SZTcWRdigZZsK1ccsYZK0qUsd1yZQqbw@mail.gmail.com> <20191101072707.GE2794@krava> <CAADnVQJnTuADcPizsD+hFx4Rvot0nqiX83M+ku4Nu_qLh2_vyg@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Fri, 01 Nov 2019 20:36:04 +0100
+Message-ID: <87bltvmlsr.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
- definitions=2019-11-01_07:2019-11-01,2019-11-01 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
- suspectscore=67 priorityscore=1501 adultscore=0 clxscore=1015 spamscore=0
- phishscore=0 lowpriorityscore=0 mlxlogscore=999 malwarescore=0
- impostorscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1908290000 definitions=main-1911010172
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add test verifying correctness and logic of field size relocation support in
-libbpf.
+Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
 
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- .../selftests/bpf/prog_tests/core_reloc.c     | 39 ++++++++++++--
- .../bpf/progs/btf__core_reloc_size.c          |  3 ++
- .../progs/btf__core_reloc_size___diff_sz.c    |  3 ++
- .../selftests/bpf/progs/core_reloc_types.h    | 31 +++++++++++
- .../bpf/progs/test_core_reloc_size.c          | 51 +++++++++++++++++++
- 5 files changed, 122 insertions(+), 5 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_size.c
- create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_size___diff_sz.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_core_reloc_size.c
+> On Fri, Nov 1, 2019 at 12:27 AM Jiri Olsa <jolsa@redhat.com> wrote:
+>>
+>> On Thu, Oct 31, 2019 at 01:39:12PM -0700, Alexei Starovoitov wrote:
+>> > On Thu, Oct 31, 2019 at 12:18 PM Jiri Olsa <jolsa@redhat.com> wrote:
+>> > > >
+>> > > > yes. older vmlinux and newer installed libbpf.so
+>> > > > or any version of libbpf.a that is statically linked into apps
+>> > > > is something that libbpf code has to support.
+>> > > > The server can be rebooted into older than libbpf kernel and
+>> > > > into newer than libbpf kernel. libbpf has to recognize all these
+>> > > > combinations and work appropriately.
+>> > > > That's what backward and forward compatibility is.
+>> > > > That's what makes libbpf so difficult to test, develop and code review.
+>> > > > What that particular server has in /usr/include is irrelevant.
+>> > >
+>> > > sure, anyway we can't compile following:
+>> > >
+>> > >         tredaell@aldebaran ~ $ echo "#include <bpf/xsk.h>" | gcc -x c -
+>> > >         In file included from <stdin>:1:
+>> > >         /usr/include/bpf/xsk.h: In function ‘xsk_ring_prod__needs_wakeup’:
+>> > >         /usr/include/bpf/xsk.h:82:21: error: ‘XDP_RING_NEED_WAKEUP’ undeclared (first use in this function)
+>> > >            82 |  return *r->flags & XDP_RING_NEED_WAKEUP;
+>> > >         ...
+>> > >
+>> > >         XDP_RING_NEED_WAKEUP is defined in kernel v5.4-rc1 (77cd0d7b3f257fd0e3096b4fdcff1a7d38e99e10).
+>> > >         XSK_UNALIGNED_BUF_ADDR_MASK and XSK_UNALIGNED_BUF_OFFSET_SHIFT are defined in kernel v5.4-rc1 (c05cd3645814724bdeb32a2b4d953b12bdea5f8c).
+>> > >
+>> > > with:
+>> > >   kernel-headers-5.3.6-300.fc31.x86_64
+>> > >   libbpf-0.0.5-1.fc31.x86_64
+>> > >
+>> > > if you're saying this is not supported, I guess we could be postponing
+>> > > libbpf rpm releases until we have the related fedora kernel released
+>> >
+>> > why? github/libbpf is the source of truth for building packages
+>> > and afaik it builds fine.
+>>
+>> because we will get issues like above if there's no kernel
+>> avilable that we could compile libbpf against
+>
+> what is the issue again?
+> bpf-next builds fine. github/libbpf builds fine.
+> If distro is doing something else it's distro's mistake.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/core_reloc.c b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-index 8b934085c9fd..7a2e2c35738f 100644
---- a/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-+++ b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-@@ -174,15 +174,11 @@
- 	.fails = true,							\
- }
- 
--#define EXISTENCE_DATA(struct_name) STRUCT_TO_CHAR_PTR(struct_name) {	\
--	.a = 42,							\
--}
--
- #define EXISTENCE_CASE_COMMON(name)					\
- 	.case_name = #name,						\
- 	.bpf_obj_file = "test_core_reloc_existence.o",			\
- 	.btf_src_file = "btf__core_reloc_" #name ".o",			\
--	.relaxed_core_relocs = true					\
-+	.relaxed_core_relocs = true
- 
- #define EXISTENCE_ERR_CASE(name) {					\
- 	EXISTENCE_CASE_COMMON(name),					\
-@@ -208,6 +204,35 @@
- 	.fails = true,							\
- }
- 
-+#define SIZE_CASE_COMMON(name)						\
-+	.case_name = #name,						\
-+	.bpf_obj_file = "test_core_reloc_size.o",			\
-+	.btf_src_file = "btf__core_reloc_" #name ".o",			\
-+	.relaxed_core_relocs = true
-+
-+#define SIZE_OUTPUT_DATA(type)						\
-+	STRUCT_TO_CHAR_PTR(core_reloc_size_output) {			\
-+		.int_sz = sizeof(((type *)0)->int_field),		\
-+		.struct_sz = sizeof(((type *)0)->struct_field),		\
-+		.union_sz = sizeof(((type *)0)->union_field),		\
-+		.arr_sz = sizeof(((type *)0)->arr_field),		\
-+		.arr_elem_sz = sizeof(((type *)0)->arr_field[0]),	\
-+		.ptr_sz = sizeof(((type *)0)->ptr_field),		\
-+		.enum_sz = sizeof(((type *)0)->enum_field),	\
-+	}
-+
-+#define SIZE_CASE(name) {						\
-+	SIZE_CASE_COMMON(name),						\
-+	.input_len = 0,							\
-+	.output = SIZE_OUTPUT_DATA(struct core_reloc_##name),		\
-+	.output_len = sizeof(struct core_reloc_size_output),		\
-+}
-+
-+#define SIZE_ERR_CASE(name) {						\
-+	SIZE_CASE_COMMON(name),						\
-+	.fails = true,							\
-+}
-+
- struct core_reloc_test_case {
- 	const char *case_name;
- 	const char *bpf_obj_file;
-@@ -405,6 +430,10 @@ static struct core_reloc_test_case test_cases[] = {
- 		.ub2 = 0x0812345678FEDCBA,
- 	}),
- 	BITFIELDS_ERR_CASE(bitfields___err_too_big_bitfield),
-+
-+	/* size relocation checks */
-+	SIZE_CASE(size),
-+	SIZE_CASE(size___diff_sz),
- };
- 
- struct data {
-diff --git a/tools/testing/selftests/bpf/progs/btf__core_reloc_size.c b/tools/testing/selftests/bpf/progs/btf__core_reloc_size.c
-new file mode 100644
-index 000000000000..3c80903da5a4
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/btf__core_reloc_size.c
-@@ -0,0 +1,3 @@
-+#include "core_reloc_types.h"
-+
-+void f(struct core_reloc_size x) {}
-diff --git a/tools/testing/selftests/bpf/progs/btf__core_reloc_size___diff_sz.c b/tools/testing/selftests/bpf/progs/btf__core_reloc_size___diff_sz.c
-new file mode 100644
-index 000000000000..6dbd14436b52
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/btf__core_reloc_size___diff_sz.c
-@@ -0,0 +1,3 @@
-+#include "core_reloc_types.h"
-+
-+void f(struct core_reloc_size___diff_sz x) {}
-diff --git a/tools/testing/selftests/bpf/progs/core_reloc_types.h b/tools/testing/selftests/bpf/progs/core_reloc_types.h
-index a5ba3643696b..448199ff9eb8 100644
---- a/tools/testing/selftests/bpf/progs/core_reloc_types.h
-+++ b/tools/testing/selftests/bpf/progs/core_reloc_types.h
-@@ -734,3 +734,34 @@ struct core_reloc_bitfields___err_too_big_bitfield {
- 	uint32_t	u32;
- 	uint32_t	s32;
- } __attribute__((packed)) ;
-+
-+/*
-+ * SIZE
-+ */
-+struct core_reloc_size_output {
-+	int int_sz;
-+	int struct_sz;
-+	int union_sz;
-+	int arr_sz;
-+	int arr_elem_sz;
-+	int ptr_sz;
-+	int enum_sz;
-+};
-+
-+struct core_reloc_size {
-+	int int_field;
-+	struct { int x; } struct_field;
-+	union { int x; } union_field;
-+	int arr_field[4];
-+	void *ptr_field;
-+	enum { VALUE = 123 } enum_field;
-+};
-+
-+struct core_reloc_size___diff_sz {
-+	uint64_t int_field;
-+	struct { int x; int y; int z; } struct_field;
-+	union { int x; char bla[123]; } union_field;
-+	char arr_field[10];
-+	void *ptr_field;
-+	enum { OTHER_VALUE = 0xFFFFFFFFFFFFFFFF } enum_field;
-+};
-diff --git a/tools/testing/selftests/bpf/progs/test_core_reloc_size.c b/tools/testing/selftests/bpf/progs/test_core_reloc_size.c
-new file mode 100644
-index 000000000000..9a92998d9107
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_core_reloc_size.c
-@@ -0,0 +1,51 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2019 Facebook
-+
-+#include <linux/bpf.h>
-+#include <stdint.h>
-+#include "bpf_helpers.h"
-+#include "bpf_core_read.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+static volatile struct data {
-+	char in[256];
-+	char out[256];
-+} data;
-+
-+struct core_reloc_size_output {
-+	int int_sz;
-+	int struct_sz;
-+	int union_sz;
-+	int arr_sz;
-+	int arr_elem_sz;
-+	int ptr_sz;
-+	int enum_sz;
-+};
-+
-+struct core_reloc_size {
-+	int int_field;
-+	struct { int x; } struct_field;
-+	union { int x; } union_field;
-+	int arr_field[4];
-+	void *ptr_field;
-+	enum { VALUE = 123 } enum_field;
-+};
-+
-+SEC("raw_tracepoint/sys_enter")
-+int test_core_size(void *ctx)
-+{
-+	struct core_reloc_size *in = (void *)&data.in;
-+	struct core_reloc_size_output *out = (void *)&data.out;
-+
-+	out->int_sz = bpf_core_field_size(in->int_field);
-+	out->struct_sz = bpf_core_field_size(in->struct_field);
-+	out->union_sz = bpf_core_field_size(in->union_field);
-+	out->arr_sz = bpf_core_field_size(in->arr_field);
-+	out->arr_elem_sz = bpf_core_field_size(in->arr_field[0]);
-+	out->ptr_sz = bpf_core_field_size(in->ptr_field);
-+	out->enum_sz = bpf_core_field_size(in->enum_field);
-+
-+	return 0;
-+}
-+
--- 
-2.17.1
+With that you're saying that distros should always keep their kernel
+headers and libbpf version in sync. Which is fine in itself; they can
+certainly do that.
 
+The only concern with this is that without a flow of bugfixes into the
+'bpf' tree (and stable), users may end up with buggy versions of libbpf.
+Which is in no one's interest. So how do we avoid that?
+
+-Toke
