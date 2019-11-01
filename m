@@ -2,102 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E7118EBE04
-	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2019 07:39:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 218EEEBE74
+	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2019 08:27:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725280AbfKAGjC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 Nov 2019 02:39:02 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:46142 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725936AbfKAGjA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 1 Nov 2019 02:39:00 -0400
-Received: by mail-wr1-f66.google.com with SMTP id b3so2897144wrs.13
-        for <bpf@vger.kernel.org>; Thu, 31 Oct 2019 23:38:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=q8xxggueWc9SK8fO9sy3bGuMW1+BCaPWGBD1aFLNHtY=;
-        b=F3ia3X6MXBb03XQBIXR/fP9jRX9cF+BAP7q9KJvSceSqLKXwlaheeWP044TV5rRiTn
-         Olx4jU2TUhUCGC6vtz7TU+HWbiSM/uSpaA3NGovuOXjBeeyGAFWbdp0H0l59SKGz3s+m
-         xG75GL+LoYKzCCFBVkSMBI4nNBehqOyHenDi7hmkqBwPjMUCobTmIhoBEutKbDGmtEfM
-         /JGAvR91IE6W0zgMGZrs1DijbBl1E7dXQR1lWfNtw71ohWvZxg6oqTq3OoUiAG/9BweP
-         PUa372Hwqi/FRMnOYPCqW48SKaLKtK1WaukrHpuYKQLSgE2slMLuiS3LzgLXS+/UOabJ
-         yNsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=q8xxggueWc9SK8fO9sy3bGuMW1+BCaPWGBD1aFLNHtY=;
-        b=r/puHZ8F9zHroktvATE6Xvi2MKsflB3V8qifbGjMLJb1l8WcvLwrn3ysXuY6kU3H/z
-         RzJJDZeptHswgu+k/tjPOrC8SiEa2oGaUa6AHMZgIu6XC2RQskC5szw/FjXLPqArVsQo
-         j5h3aEFUhW0IFGM3gfxc57iJrWDiLM7ka4l9eRXjWVcqG/e8QXc9X5/8hmxUzftfHxAc
-         m4+nosqeORjgK4GAeHpSUeGLDwjCnJOyoszyrrG4BOgP6TLRqcfuKhqU2N8GuQeYwXMW
-         hpw1nQ1llvwDZcLhlN66MQRUB3wgaHyXycwPKjCrUG3TZkNQaMN7KDbI+V9F+lwxkfvi
-         pP+w==
-X-Gm-Message-State: APjAAAXzbpiNFU8fIsmqK7DaBz4sd24tOsd9WwPID9KZocP7ljMPWKO5
-        BXd8X/M5rY+3o/hUayK9hDaq1Q==
-X-Google-Smtp-Source: APXvYqzGtGp/2u2warx9lzTK7cuyPK1dJJagFF8+ziq2k/OwA8bxzIUbHg0uj1o+1qgSe5qK/2q5lQ==
-X-Received: by 2002:adf:ab41:: with SMTP id r1mr9872230wrc.281.1572590337081;
-        Thu, 31 Oct 2019 23:38:57 -0700 (PDT)
-Received: from localhost (jirka.pirko.cz. [84.16.102.26])
-        by smtp.gmail.com with ESMTPSA id p18sm7609681wmi.42.2019.10.31.23.38.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Oct 2019 23:38:56 -0700 (PDT)
-Date:   Fri, 1 Nov 2019 07:38:55 +0100
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     Jakub Kicinski <jakub.kicinski@netronome.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        id S1729951AbfKAH1Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 Nov 2019 03:27:25 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:33554 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729485AbfKAH1Z (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 1 Nov 2019 03:27:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1572593243;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=laDWjvNbXIFKYvploSabRjOsKUCAu+GBR5BrNsrJUVQ=;
+        b=eHVj03bzVbwVfvapXg9MLFmqKlA6NA8lfjpOSbNLo0iYov4BO4m98BppT7+aaHNOWxZB4K
+        CPcgXPrZ5Z2eq++JC2GC0cib8MyiEpQwIhA5D2ZlOsa9BejnxUEmV+Ub6s1vWEjIcX99bc
+        nS94m+hL10EEthCIpA8be0RULhgTi6U=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-54-aCO756TxPDidFuTNT5AzGA-1; Fri, 01 Nov 2019 03:27:17 -0400
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 682B41800D67;
+        Fri,  1 Nov 2019 07:27:15 +0000 (UTC)
+Received: from krava (ovpn-204-176.brq.redhat.com [10.40.204.176])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C37E7600D1;
+        Fri,  1 Nov 2019 07:27:08 +0000 (UTC)
+Date:   Fri, 1 Nov 2019 08:27:07 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Network Development <netdev@vger.kernel.org>,
-        OSS Drivers <oss-drivers@netronome.com>,
-        bpf <bpf@vger.kernel.org>
-Subject: Re: [oss-drivers] Re: [PATCH bpf-next] Revert "selftests: bpf: Don't
- try to read files without read permission"
-Message-ID: <20191101063855.GC3209@nanopsycho.orion>
-References: <20191101005127.1355-1-jakub.kicinski@netronome.com>
- <CAADnVQKZbgqs3DJOsV4dtOY-ZXG8oQ7kWmJrJ_dS842qDrwABw@mail.gmail.com>
- <20191031182835.0451d472@cakuba.netronome.com>
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        bpf <bpf@vger.kernel.org>, degeneloy@gmail.com,
+        John Fastabend <john.fastabend@gmail.com>
+Subject: Re: [PATCH bpf-next v3] libbpf: fix compatibility for kernels
+ without need_wakeup
+Message-ID: <20191101072707.GE2794@krava>
+References: <87lft1ngtn.fsf@toke.dk>
+ <CAADnVQLrg6f_zjvNfiEVfdjcx9+DW_RFjVGetavvMNo=VXAR+g@mail.gmail.com>
+ <87imo5ng7w.fsf@toke.dk>
+ <CAADnVQLJ2JTsbxd2am6XY0EiocMgM29JqFVRnZ9PBcwqd7-dAQ@mail.gmail.com>
+ <87d0ednf0t.fsf@toke.dk>
+ <CAADnVQ+V4OMjJqSdE_OQ1Vr99kqTF=ZB3UUMKiCSg=3=c+exqg@mail.gmail.com>
+ <20191031174208.GC2794@krava>
+ <CAADnVQJ=cEeFdYFGnfu6hLyTABWf2==e_1LEhBup5Phe6Jg5hw@mail.gmail.com>
+ <20191031191815.GD2794@krava>
+ <CAADnVQJdAZS9AHx_B3SZTcWRdigZZsK1ccsYZK0qUsd1yZQqbw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191031182835.0451d472@cakuba.netronome.com>
+In-Reply-To: <CAADnVQJdAZS9AHx_B3SZTcWRdigZZsK1ccsYZK0qUsd1yZQqbw@mail.gmail.com>
 User-Agent: Mutt/1.12.1 (2019-06-15)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-MC-Unique: aCO756TxPDidFuTNT5AzGA-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fri, Nov 01, 2019 at 02:28:35AM CET, jakub.kicinski@netronome.com wrote:
->On Thu, 31 Oct 2019 17:56:46 -0700, Alexei Starovoitov wrote:
->> On Thu, Oct 31, 2019 at 5:51 PM Jakub Kicinski
->> <jakub.kicinski@netronome.com> wrote:
->> >
->> > This reverts commit 5bc60de50dfe ("selftests: bpf: Don't try to read
->> > files without read permission").
->> >
->> > Quoted commit does not work at all, and was never tested.
->> > Script requires root permissions (and tests for them)
->> > and os.access() will always return true for root.
->> >
->> > The correct fix is needed in the bpf tree, so let's just
->> > revert and save ourselves the merge conflict.
->> >
->> > Signed-off-by: Jakub Kicinski <jakub.kicinski@netronome.com>  
->> 
->> Acked-by: Alexei Starovoitov <ast@kernel.org>
->> Since original commit is broken may be apply directly to net-next ?
->> I'm fine whichever way.
->
->I'm 3 fixes down to get test_offloads.py to work again. One for
->cls_bpf, one for the test itself and one for net/core/dev.c logic.
->Should I target all those at net?
->
->Are you and Daniel running test_offloads.py?  It looks like it lots of
->things slipped in since I last run it :(
->
->> I would wait for Jiri to reply first though.
->
->Not sure what he can contribute at this point but sure :/
+On Thu, Oct 31, 2019 at 01:39:12PM -0700, Alexei Starovoitov wrote:
+> On Thu, Oct 31, 2019 at 12:18 PM Jiri Olsa <jolsa@redhat.com> wrote:
+> > >
+> > > yes. older vmlinux and newer installed libbpf.so
+> > > or any version of libbpf.a that is statically linked into apps
+> > > is something that libbpf code has to support.
+> > > The server can be rebooted into older than libbpf kernel and
+> > > into newer than libbpf kernel. libbpf has to recognize all these
+> > > combinations and work appropriately.
+> > > That's what backward and forward compatibility is.
+> > > That's what makes libbpf so difficult to test, develop and code revie=
+w.
+> > > What that particular server has in /usr/include is irrelevant.
+> >
+> > sure, anyway we can't compile following:
+> >
+> >         tredaell@aldebaran ~ $ echo "#include <bpf/xsk.h>" | gcc -x c -
+> >         In file included from <stdin>:1:
+> >         /usr/include/bpf/xsk.h: In function =E2=80=98xsk_ring_prod__nee=
+ds_wakeup=E2=80=99:
+> >         /usr/include/bpf/xsk.h:82:21: error: =E2=80=98XDP_RING_NEED_WAK=
+EUP=E2=80=99 undeclared (first use in this function)
+> >            82 |  return *r->flags & XDP_RING_NEED_WAKEUP;
+> >         ...
+> >
+> >         XDP_RING_NEED_WAKEUP is defined in kernel v5.4-rc1 (77cd0d7b3f2=
+57fd0e3096b4fdcff1a7d38e99e10).
+> >         XSK_UNALIGNED_BUF_ADDR_MASK and XSK_UNALIGNED_BUF_OFFSET_SHIFT =
+are defined in kernel v5.4-rc1 (c05cd3645814724bdeb32a2b4d953b12bdea5f8c).
+> >
+> > with:
+> >   kernel-headers-5.3.6-300.fc31.x86_64
+> >   libbpf-0.0.5-1.fc31.x86_64
+> >
+> > if you're saying this is not supported, I guess we could be postponing
+> > libbpf rpm releases until we have the related fedora kernel released
+>=20
+> why? github/libbpf is the source of truth for building packages
+> and afaik it builds fine.
 
-I'm okay with Jakub taking care of the fix. Thanks!
+because we will get issues like above if there's no kernel
+avilable that we could compile libbpf against
+
+>=20
+> > or how about inluding uapi headers in libbpf-devel.. but that might
+> > actualy cause more confusion
+>=20
+> Libraries (libbpf or any other) should not install headers that
+> typically go into /usr/include/
+> if_xdp.h case is not unique.
+> We'll surely add another #define, enum, etc to uapi/linux/bpf.h tomorrow.
+> And we will not copy paste these constants and types into tools/lib/bpf/.
+> In kernel tree libbpf development is using kernel tree headers.
+> No problem there for libbpf developers.
+> Packages are built out of github/libbpf that has a copy of uapi headers
+> necessary to create packages.
+> No problem there for package builders either.
+> But libbpf package is not going to install those uapi headers.
+> libbpf package installs only libbpf own headers (like libbpf.h)
+> The users that want to build against the latest libbpf package need
+> to install corresponding uapi headers package.
+> I don't think such dependency is specified in rpm scripts.
+> May be it is something to fix? Or may be not.
+
+I'll check if we can add some kernel version/package dependency
+
+> Some folks might not want to update all of /usr/include to bring libbpf-d=
+evel.
+> Then it would be their responsibility to get fresh /usr/include headers.
+
+jirka
+
