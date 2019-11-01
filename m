@@ -2,98 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C98A8EC734
-	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2019 18:04:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94255EC87F
+	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2019 19:31:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729332AbfKAREN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 Nov 2019 13:04:13 -0400
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:41021 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729187AbfKAREN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 1 Nov 2019 13:04:13 -0400
-Received: by mail-lj1-f194.google.com with SMTP id m9so10905200ljh.8
-        for <bpf@vger.kernel.org>; Fri, 01 Nov 2019 10:04:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :organization:mime-version:content-transfer-encoding;
-        bh=Fam+z25B/04SOccZYxR2B2sfzA41JoO78DCFCd98Ab8=;
-        b=Fa6HF3bjVm/9MrAjB4qmpT/aJFsDBLWse5nZNiD4VcBF0O7zSNqEV5cFQVYScBw2s/
-         XtKvVbWZue5jCxr4aWQ2E2Ci+fDZLFAORnwOdj0ZpbcK6PNA55YAz3PjWpL4STHvAQbZ
-         NzXyJ8r0NRNQApd5uVnAqHz3pPOqaay2x0SoKCaMNfzONkoVayhVEbQuXkUDvaTQ5gzE
-         eeeQZZh8XFEJhNR6F6SKvmXTPglBRq6KRe+a/IiWElip60Hhie+jVsY+ipsKn+LTYkCm
-         G60IGPValqPm5jCzPJWQbpgMEUTSUY0+KoM8uejp6eXYTw7uVEScxqQbjGt7L/QV6irD
-         eeXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=Fam+z25B/04SOccZYxR2B2sfzA41JoO78DCFCd98Ab8=;
-        b=sSB/wdBLjxcFGdUcgGsQoL1Tdq+dig4DX9aaT5KlZw+NGX8HiuSwexvAcEcyamn+k2
-         GYHNOP+HCC6H8UZzUXOPV75qLrwYEdIuoEwNZnlUTYQmxEj5SKq+2mv8VgYBddU7n+SM
-         uG2kVWS0qDAFDoQPqlQ+YgYd5eDKukPY1pncPOocohjfbUWqndFNUJ/4DRd+1tMWKIfI
-         2KIl/R0CY14ojfRMChu6rK+wDgQeZPHX00oNn0RF2wT8RzRYDxcHQ5pTE2U59GJgi+pN
-         5Bb11kkBwpFlCy0uEzUIv6+N+kTaQEodU/d0MRSFcr0A8bdKTQ/hx70E9ub9RJdGiggO
-         bEGg==
-X-Gm-Message-State: APjAAAWDGg9lxYZ7E0ix0zp8syhhiwqjRP8IGI/8zUBpfhITTWNSqsta
-        4fbl2OgAn8Fevi4JMOQ4nx6atQ==
-X-Google-Smtp-Source: APXvYqzqNoveNQ1Ty4Z9wrD7FdRt2Yd4zvIAMlS1Vip9p7XiC5QRF/ERu01kzPaa0vzrinUlfKs2ng==
-X-Received: by 2002:a2e:998a:: with SMTP id w10mr8744964lji.152.1572627851131;
-        Fri, 01 Nov 2019 10:04:11 -0700 (PDT)
-Received: from cakuba.netronome.com ([66.60.152.14])
-        by smtp.gmail.com with ESMTPSA id y20sm5754321ljd.99.2019.11.01.10.04.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Nov 2019 10:04:10 -0700 (PDT)
-Date:   Fri, 1 Nov 2019 10:03:59 -0700
-From:   Jakub Kicinski <jakub.kicinski@netronome.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     davem@davemloft.net, alexei.starovoitov@gmail.com,
-        bpf@vger.kernel.org, netdev@vger.kernel.org,
-        oss-drivers@netronome.com
-Subject: Re: [PATCH net 0/3] fix BPF offload related bugs
-Message-ID: <20191101100359.712d663a@cakuba.netronome.com>
-In-Reply-To: <fe57af03-c42d-0f87-b712-30c5048764ad@iogearbox.net>
-References: <20191101030700.13080-1-jakub.kicinski@netronome.com>
-        <fe57af03-c42d-0f87-b712-30c5048764ad@iogearbox.net>
-Organization: Netronome Systems, Ltd.
+        id S1727348AbfKASbM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 Nov 2019 14:31:12 -0400
+Received: from mga11.intel.com ([192.55.52.93]:48099 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727222AbfKASbM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 1 Nov 2019 14:31:12 -0400
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 01 Nov 2019 11:31:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.68,256,1569308400"; 
+   d="scan'208";a="194755221"
+Received: from unknown (HELO [10.241.228.226]) ([10.241.228.226])
+  by orsmga008.jf.intel.com with ESMTP; 01 Nov 2019 11:31:11 -0700
+Subject: Re: Re: [Intel-wired-lan] FW: [PATCH bpf-next 2/4] xsk: allow AF_XDP
+ sockets to receive packets directly from a queue
+To:     Jakub Kicinski <jakub.kicinski@netronome.com>
+Cc:     bjorn.topel@gmail.com, alexei.starovoitov@gmail.com,
+        bjorn.topel@intel.com, bpf@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org, maciej.fijalkowski@intel.com,
+        magnus.karlsson@intel.com, netdev@vger.kernel.org, toke@redhat.com,
+        tom.herbert@intel.com, David Miller <davem@davemloft.net>
+References: <CAJ+HfNigHWVk2b+UJPhdCWCTcW=Eh=yfRNHg4=Fr1mv98Pq=cA@mail.gmail.com>
+ <2e27b8d9-4615-cd8d-93de-2adb75d8effa@intel.com>
+ <20191031172148.0290b11f@cakuba.netronome.com>
+From:   "Samudrala, Sridhar" <sridhar.samudrala@intel.com>
+Message-ID: <8481fe0a-fa7b-c689-1e51-1a3253176509@intel.com>
+Date:   Fri, 1 Nov 2019 11:31:11 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20191031172148.0290b11f@cakuba.netronome.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 1 Nov 2019 13:10:13 +0100, Daniel Borkmann wrote:
-> On 11/1/19 4:06 AM, Jakub Kicinski wrote:
-> > Hi!
-> > 
-> > test_offload.py catches some recently added bugs.
-> > 
-> > First of a bug in test_offload.py itself after recent changes
-> > to netdevsim is fixed.
-> > 
-> > Second patch fixes a bug in cls_bpf, and last one addresses
-> > a problem with the recently added XDP installation optimization.
-> > 
-> > Jakub Kicinski (3):
-> >    selftests: bpf: Skip write only files in debugfs
-> >    net: cls_bpf: fix NULL deref on offload filter removal
-> >    net: fix installing orphaned programs
-> > 
-> >   net/core/dev.c                              | 3 ++-
-> >   net/sched/cls_bpf.c                         | 8 ++++++--
-> >   tools/testing/selftests/bpf/test_offload.py | 5 +++++
-> >   3 files changed, 13 insertions(+), 3 deletions(-)  
+On 10/31/2019 5:21 PM, Jakub Kicinski wrote:
+> On Thu, 31 Oct 2019 15:38:42 -0700, Samudrala, Sridhar wrote:
+>> Do you think it will be possible to avoid this overhead when mitigations are turned ON?
+>> The other part of the overhead is going through the redirect path.
 > 
-> Should this go via -bpf or -net? Either way is fine, but asking
-> given it's BPF related fixes; planning to do a PR in the evening,
-> set looks good to me in any case.
+> Yes, you should help Maciej with the XDP bulking.
+> 
+>> Can i assume that your silence as an indication that you are now okay with optional bypass
+>> flag as long as it doesn't effect the normal XDP datapath. If so, i will respin and submit
+>> the patches against the latest bpf-next
+> 
+> This logic baffles me. I absolutely hate when people repost patches
+> after I nack them without even as much as mentioning my objections in
+> the cover letter.
 
-FWIW I'm fine either way, too. I made it net after Alexei wondered if 
-we should apply the revert to net-next, but since you took the revert 
-to bpf-next perhaps bpf makes sense.
+Sorry if you got the impression that i didn't take your feedback. I CCed you
+and also included the kernel rxdrop data that you requested in the original
+series.
 
-To state the obvious the only thing that matters is for the revert to
-be in net-next when these are merged into net-next (IOW bpf-next PR is
-what matters most at this point ;)).
+> 
+> My concern was that we want the applications to encode fast path logic
+> in BPF and load that into the kernel. So your patch works fundamentally
+> against that goal:
+
+So looks like you are saying that the fundamental requirement is that all AF_XDP
+packets need to go via a BPF program.
+
+The reason i proposed direct receive is because of the overhead we are seeing
+with going via BPF program for apps that want to receive all the packets on a
+specific queue.
+
+I agree that there is work going on to reduce this overhead with bulking and avoiding
+the retpoline.
+We can revisit after these optimizations get in and then see if it is still useful
+to provide a direct receive option.
+
+-Sridhar
