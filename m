@@ -2,80 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EC3BEBB8D
-	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2019 02:02:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA947EBB94
+	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2019 02:03:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728074AbfKABCE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 31 Oct 2019 21:02:04 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:47290 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727455AbfKABCE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 31 Oct 2019 21:02:04 -0400
-Received: by mail-io1-f72.google.com with SMTP id r84so6113457ior.14
-        for <bpf@vger.kernel.org>; Thu, 31 Oct 2019 18:02:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=g5b/uq1jPzIHWKTG4KkvcGY51W0aJ/wSvlfQDeK7EKs=;
-        b=fTcUK6MFKyuCoklD/byVjoBpEMTz2OJhBVo/+5F/dgak1E242rNxiwjf+yNyh98mrW
-         SttrRsTG5yJWcj3YZy8ytdBHZ6Cj9TXYOaS7OqTL/dSMzRjTdTcgiAqPSC8Qs43aKQLZ
-         giJLgsTT1v4xFLCKmrt4JDvxai7yla2c/8xTsTEMrROexHgvU5oNIlC+35rc9KPqDWjV
-         giHmdekYiLSwOC/XQmwnr7X9Pyc4lwN0D9hIaLH5RhgUEFBdr5mNasqfPcWYVhvu5F70
-         39DeMDyz1FT1IQzuRuLLg+H6j9viFAkfnHloeixJwids5XfbvZDeeQxTxDc0gCip+BZl
-         iJ9g==
-X-Gm-Message-State: APjAAAXkGbv28k53D8TaDr23fixJvB0rS71tPIYJA/FPV0cjm5TE/Tfm
-        rYStlnCsRMQMoktTYNQ64CB9gFKedTDEW/bpuEaGesTkClZg
-X-Google-Smtp-Source: APXvYqxZsTelPOF42qriET4H2YWOnXA8pSOyk4C53x/sSGq8f4RGlUtiE6R/yVt6douHfDWehA+zCy3otomUVEeICPtM27LaOmVm
+        id S1727383AbfKABDl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 31 Oct 2019 21:03:41 -0400
+Received: from www62.your-server.de ([213.133.104.62]:34162 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726772AbfKABDl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 31 Oct 2019 21:03:41 -0400
+Received: from sslproxy01.your-server.de ([88.198.220.130])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1iQLLj-0007Mf-Bd; Fri, 01 Nov 2019 02:03:35 +0100
+Received: from [178.197.249.38] (helo=pc-63.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1iQLLi-0005lR-Te; Fri, 01 Nov 2019 02:03:35 +0100
+Subject: Re: [PATCH v2 bpf-next 1/2] bpf: replace prog_raw_tp+btf_id with
+ prog_tracing
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>, davem@davemloft.net,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com
+References: <20191030223212.953010-1-ast@kernel.org>
+ <20191030223212.953010-2-ast@kernel.org>
+ <5ef95166-dace-28be-8274-a9343900025e@iogearbox.net>
+ <20191031233642.xnqlz6qjfwzlmilt@ast-mbp.dhcp.thefacebook.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <afe594ea-de2c-e796-8ae6-7c721ecfb6dd@iogearbox.net>
+Date:   Fri, 1 Nov 2019 02:03:33 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-X-Received: by 2002:a5e:c302:: with SMTP id a2mr7896816iok.295.1572570121338;
- Thu, 31 Oct 2019 18:02:01 -0700 (PDT)
-Date:   Thu, 31 Oct 2019 18:02:01 -0700
-In-Reply-To: <000000000000d73b12059608812b@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000077853c05963e8313@google.com>
-Subject: Re: WARNING in print_bfs_bug
-From:   syzbot <syzbot+62ebe501c1ce9a91f68c@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, dsahern@gmail.com,
-        f.fainelli@gmail.com, hannes@cmpxchg.org, hawk@kernel.org,
-        hughd@google.com, idosch@mellanox.com,
-        jakub.kicinski@netronome.com, jglisse@redhat.com,
-        jiri@mellanox.com, johannes.berg@intel.com,
-        john.fastabend@gmail.com, kafai@fb.com,
-        kirill.shutemov@linux.intel.com, kuznet@ms2.inr.ac.ru,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, mkubecek@suse.cz,
-        netdev@vger.kernel.org, petrm@mellanox.com,
-        roopa@cumulusnetworks.com, sfr@canb.auug.org.au,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
-        william.kucharski@oracle.com, willy@infradead.org, yhs@fb.com,
-        yoshfuji@linux-ipv6.org
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+In-Reply-To: <20191031233642.xnqlz6qjfwzlmilt@ast-mbp.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.101.4/25619/Thu Oct 31 09:55:29 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-syzbot has bisected this bug to:
+On 11/1/19 12:36 AM, Alexei Starovoitov wrote:
+> On Fri, Nov 01, 2019 at 12:20:13AM +0100, Daniel Borkmann wrote:
+>> On 10/30/19 11:32 PM, Alexei Starovoitov wrote:
+>>> The bpf program type raw_tp together with 'expected_attach_type'
+>>> was the most appropriate api to indicate BTF-enabled raw_tp programs.
+>>> But during development it became apparent that 'expected_attach_type'
+>>> cannot be used and new 'attach_btf_id' field had to be introduced.
+>>> Which means that the information is duplicated in two fields where
+>>> one of them is ignored.
+>>> Clean it up by introducing new program type where both
+>>> 'expected_attach_type' and 'attach_btf_id' fields have
+>>> specific meaning.
+>>
+>> Hm, just for my understanding, the expected_attach_type is unused for
+>> tracing so far. Are you aware of anyone (bcc / bpftrace / etc) leaving
+>> uninitialized garbage in there?
+> 
+> I'm not aware, but the risk is there. Better safe than sorry.
+> If we need to revert in the future that would be massive.
+> I'm already worried about new CHECK_ATTR check in raw_tp_open.
+> Equally unlikely user space breakage, but that one is easy to revert
+> whereas what you're proposing would mean revert everything.
 
-commit 9c61acffe2b8833152041f7b6a02d1d0a17fd378
-Author: Song Liu <songliubraving@fb.com>
-Date:   Wed Oct 23 00:24:28 2019 +0000
+Hmm, yeah, it's unfortunate that expected_attach_type is not enforced as
+0. We sort of implicitly do for older kernels where expected_attach_type
+is not known to it, but there is still non-zero risk given there seems
+plenty of stuff in the wild on BPF tracing and not all might rely on libbpf.
+Perhaps we should probably enforce it for all new program types, so we can
+reuse it in future.
 
-     mm,thp: recheck each page before collapsing file THP
+>> Just seems confusing that we have all
+>> the different tracing prog types and now adding yet another one as
+>> BPF_RPOG_TYPE_TRACING which will act as umbrella one and again have
+>> different attach types some of which probably resemble existing tracing
+>> prog types again (kprobes / kretprobes for example). Sounds like this
+>> new type would implicitly deprecate all the existing types (sort of as
+>> we're replacing them with new sub-types)?
+> 
+> All existing once are still supported and may grow its own helpers and what not.
+> Having new prog type makes things grow independently much easier.
+> I was thinking to call it BPF_PROG_TYPE_BTF_ENABLED or BPF_PROG_TYPE_GENERIC,
+> since I suspect upcoming lsm and others will fit right in,
+> but I think it's cleaner to define categories of bpf programs now
+> instead of specific purpose types like we had in the past before BTF.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15be4e14e00000
-start commit:   49afce6d Add linux-next specific files for 20191031
-git tree:       linux-next
-final crash:    https://syzkaller.appspot.com/x/report.txt?x=17be4e14e00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=13be4e14e00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3c5f119b33031056
-dashboard link: https://syzkaller.appspot.com/bug?extid=62ebe501c1ce9a91f68c
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14c162f4e00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=131b5eb8e00000
+Yes, otherwise we likely would have BPF_PROG_TYPE_GENERIC as last one and
+would keep defining sub-types. ;)
 
-Reported-by: syzbot+62ebe501c1ce9a91f68c@syzkaller.appspotmail.com
-Fixes: 9c61acffe2b8 ("mm,thp: recheck each page before collapsing file THP")
+>> True that k[ret]probe expects pt_regs whereas BTF enabled program context
+>> will be the same as raw_tp as well, but couldn't this logic be hidden in
+>> the kernel e.g. via attach_btf_id as well since this is an opt-in? Could
+>> the fentry/fexit be described through attach_btf_id as well?
+> 
+> That's what I tried first, but the code grows too ugly.
+> Also for attaching fentry/fexit I'm adding new bpf_trace_open command
+> similar to bpf_raw_tp_open, since existing kprobe attach style doesn't
+> work at all. imo the code is much cleaner now.
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Ok, fair enough that the fentry/fexit approach doesn't have too much in common
+after all with plain kprobes. Applied then, thanks!
