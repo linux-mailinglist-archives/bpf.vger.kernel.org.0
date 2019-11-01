@@ -2,150 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FEDFECA5F
-	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2019 22:41:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20A95ECAD2
+	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2019 23:09:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727025AbfKAVll convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 1 Nov 2019 17:41:41 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:60870 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725989AbfKAVlk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 1 Nov 2019 17:41:40 -0400
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com [209.85.208.197])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 3095583F3C
-        for <bpf@vger.kernel.org>; Fri,  1 Nov 2019 21:41:40 +0000 (UTC)
-Received: by mail-lj1-f197.google.com with SMTP id o21so2026506ljj.23
-        for <bpf@vger.kernel.org>; Fri, 01 Nov 2019 14:41:40 -0700 (PDT)
+        id S1727184AbfKAWJC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 Nov 2019 18:09:02 -0400
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:36069 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726023AbfKAWJC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 1 Nov 2019 18:09:02 -0400
+Received: by mail-lj1-f195.google.com with SMTP id x9so6859286lji.3;
+        Fri, 01 Nov 2019 15:08:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=EuosfU8HVrK4UuVI81P9UOcJin2WH4zGeZ+/Zcb3V38=;
+        b=nNXFqEqGqbaNlIu6WrdEL+7SvusL9DNvty+w93L4B27sn0GGw6YCqwYSX1l0i13+kV
+         QFxm6AAIPJTF2Jw6/be5mc6MUoSvvz14Fjn0AeCKhmTvpIv428tjYPDegDArExl2tWoy
+         pTCVSZQ7+yFQtHtw5O16/slOy5Mlr3EQB7r+bpQgLuG2N54kcS4cSsxa9SCwtKGl2QZJ
+         9FKGGW2vj9jANzraUWeBEhVU5MnE5fRNo6nXI2t60ZqYydmqrgkM05HvfHrmHdGRlXD8
+         1JZNTCO4ohhzsjHF3IiDmiNS9VRREdojYisBRw8fmNvOuuxTh/ORz3PBjk4v2RYhIECD
+         LH9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=fjcnPmrQoA0PCrDaD/leSIuSuHVONcL18GmYVzheyO8=;
-        b=W6cqyy5kdmp2X8GQpj+tLmw0QHD4kHbbGztB+SeAcBBP2Y2o7nhEjZ7eMGlc8jDd04
-         QngQ8KeEHpll7jtSE1VN8B/64Vu3hgN5F6rYYnfrE8piUgaB8EJ+9Bb/ohKtYkSgRCPX
-         wFaikwXAR5dOTis+7DuSTM1V0bm2jCjf+pmzeGljzhG8F+8JlDiuGPmTaYtr9+I4Zo6U
-         QLNpPGkK6A9lt3hCBmCEXbblbN/ZRqxAeQDPWijSyiTZJG5umt2nxdT8ACzgjFuzmUM6
-         QV0gmT59RIMqn+8rXIA7Y35ZTJPgWB6qtEokPY1jFuqo9zwJzapj9Yo1EQHroZyUct2U
-         gYHA==
-X-Gm-Message-State: APjAAAXQGsx0juwtXwT7UkZDIbIhm4L/NdUvZWlKWGv1sJBX6k0RsA+/
-        rspiFwBvY7J9pj64BXvCQ3mFiLGUjTvh7/lrCOgozd0sSU+qi3UcF51gurmdROfUfPJD7cjPoty
-        mZaAk+Jy1Rj7c
-X-Received: by 2002:a19:8196:: with SMTP id c144mr8321995lfd.129.1572644497846;
-        Fri, 01 Nov 2019 14:41:37 -0700 (PDT)
-X-Google-Smtp-Source: APXvYqyNr7cebB4cE4Ajj3mY+WhWx7IhirEPQE1ymGG/2jXclx6VS4tBzt/IEOi4pxX5u6iAdx7WOA==
-X-Received: by 2002:a19:8196:: with SMTP id c144mr8321975lfd.129.1572644497609;
-        Fri, 01 Nov 2019 14:41:37 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a00:7660:6da:443::2])
-        by smtp.gmail.com with ESMTPSA id z17sm2336835ljm.16.2019.11.01.14.41.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Nov 2019 14:41:36 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id A27D41818B5; Fri,  1 Nov 2019 22:41:35 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=EuosfU8HVrK4UuVI81P9UOcJin2WH4zGeZ+/Zcb3V38=;
+        b=igTpeSgxa5cCYsEIaX6yhRGvb4tfpjoWNYULszTfoaP2kbULnBtTRIFu1Vn10/Q6jJ
+         8nf386XTCVPlzkaQN+NUqM+9HuOFuhiRncb7gRuMTYkunRjRSYqkgeI1mG3jqTioyZzH
+         WB0mwBPsFrKY4S8VTEaiN/muI6vL/NwZjhSdq16E4TU6qP51Nb8ixpfcbZrcJ5r2vtPl
+         17L5WFJ4feLg6HszCyFexVi0egvp6NYN5PWRqiriCtyQ9eO6Rn9FCKCo4vu1z+MisdiB
+         vxAKdEUlSWUXuwIMIWLdPbycancl2XxQgcdLbZedCvFyBwJoYonFfYZYpch9xuZnL+K3
+         7lrQ==
+X-Gm-Message-State: APjAAAXXJeXV90O2UYkshJkYOTEwdf7Zw60IPzOJQIAB6lJx7WwllLPI
+        yj1PiJpJ4nVtueO5aC/LzDN2zkA1//ZulRyTPYY=
+X-Google-Smtp-Source: APXvYqx45yQi4Nn8NsMYE4x5+AdevvWz2o9Ylm5bp3roKx7oscc6/pR0BrgHniM7wZzzuqrGyzOCV/FI/Z3HtVa7Aak=
+X-Received: by 2002:a2e:b5b8:: with SMTP id f24mr9436923ljn.188.1572646138880;
+ Fri, 01 Nov 2019 15:08:58 -0700 (PDT)
+MIME-Version: 1.0
+References: <87lft1ngtn.fsf@toke.dk> <CAADnVQLrg6f_zjvNfiEVfdjcx9+DW_RFjVGetavvMNo=VXAR+g@mail.gmail.com>
+ <87imo5ng7w.fsf@toke.dk> <CAADnVQLJ2JTsbxd2am6XY0EiocMgM29JqFVRnZ9PBcwqd7-dAQ@mail.gmail.com>
+ <87d0ednf0t.fsf@toke.dk> <CAADnVQ+V4OMjJqSdE_OQ1Vr99kqTF=ZB3UUMKiCSg=3=c+exqg@mail.gmail.com>
+ <20191031174208.GC2794@krava> <CAADnVQJ=cEeFdYFGnfu6hLyTABWf2==e_1LEhBup5Phe6Jg5hw@mail.gmail.com>
+ <20191031191815.GD2794@krava> <CAADnVQJdAZS9AHx_B3SZTcWRdigZZsK1ccsYZK0qUsd1yZQqbw@mail.gmail.com>
+ <20191101072707.GE2794@krava> <CAADnVQJnTuADcPizsD+hFx4Rvot0nqiX83M+ku4Nu_qLh2_vyg@mail.gmail.com>
+ <87bltvmlsr.fsf@toke.dk> <CAADnVQJJcx8NszLBMSN0wiR43UEgGki38u0etnWvpMVG=8+ngg@mail.gmail.com>
+ <878sozmfzk.fsf@toke.dk>
+In-Reply-To: <878sozmfzk.fsf@toke.dk>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 1 Nov 2019 15:08:47 -0700
+Message-ID: <CAADnVQL8XT1ejAxzaV2TZHu8fhyYZ6nKSg1mtzX33ZSooar27Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3] libbpf: fix compatibility for kernels without need_wakeup
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
 Cc:     Jiri Olsa <jolsa@redhat.com>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
         Magnus Karlsson <magnus.karlsson@gmail.com>,
         Magnus Karlsson <magnus.karlsson@intel.com>,
-        =?utf-8?B?QmrDtnJuIFTDtnBl?= =?utf-8?B?bA==?= 
-        <bjorn.topel@intel.com>, Alexei Starovoitov <ast@kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Network Development <netdev@vger.kernel.org>,
         Jonathan Lemon <jonathan.lemon@gmail.com>,
         bpf <bpf@vger.kernel.org>, degeneloy@gmail.com,
         John Fastabend <john.fastabend@gmail.com>
-Subject: Re: [PATCH bpf-next v3] libbpf: fix compatibility for kernels without need_wakeup
-In-Reply-To: <CAADnVQJJcx8NszLBMSN0wiR43UEgGki38u0etnWvpMVG=8+ngg@mail.gmail.com>
-References: <87lft1ngtn.fsf@toke.dk> <CAADnVQLrg6f_zjvNfiEVfdjcx9+DW_RFjVGetavvMNo=VXAR+g@mail.gmail.com> <87imo5ng7w.fsf@toke.dk> <CAADnVQLJ2JTsbxd2am6XY0EiocMgM29JqFVRnZ9PBcwqd7-dAQ@mail.gmail.com> <87d0ednf0t.fsf@toke.dk> <CAADnVQ+V4OMjJqSdE_OQ1Vr99kqTF=ZB3UUMKiCSg=3=c+exqg@mail.gmail.com> <20191031174208.GC2794@krava> <CAADnVQJ=cEeFdYFGnfu6hLyTABWf2==e_1LEhBup5Phe6Jg5hw@mail.gmail.com> <20191031191815.GD2794@krava> <CAADnVQJdAZS9AHx_B3SZTcWRdigZZsK1ccsYZK0qUsd1yZQqbw@mail.gmail.com> <20191101072707.GE2794@krava> <CAADnVQJnTuADcPizsD+hFx4Rvot0nqiX83M+ku4Nu_qLh2_vyg@mail.gmail.com> <87bltvmlsr.fsf@toke.dk> <CAADnVQJJcx8NszLBMSN0wiR43UEgGki38u0etnWvpMVG=8+ngg@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 01 Nov 2019 22:41:35 +0100
-Message-ID: <878sozmfzk.fsf@toke.dk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
-
-> On Fri, Nov 1, 2019 at 12:36 PM Toke Høiland-Jørgensen <toke@redhat.com> wrote:
->>
->> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
->>
->> > On Fri, Nov 1, 2019 at 12:27 AM Jiri Olsa <jolsa@redhat.com> wrote:
->> >>
->> >> On Thu, Oct 31, 2019 at 01:39:12PM -0700, Alexei Starovoitov wrote:
->> >> > On Thu, Oct 31, 2019 at 12:18 PM Jiri Olsa <jolsa@redhat.com> wrote:
->> >> > > >
->> >> > > > yes. older vmlinux and newer installed libbpf.so
->> >> > > > or any version of libbpf.a that is statically linked into apps
->> >> > > > is something that libbpf code has to support.
->> >> > > > The server can be rebooted into older than libbpf kernel and
->> >> > > > into newer than libbpf kernel. libbpf has to recognize all these
->> >> > > > combinations and work appropriately.
->> >> > > > That's what backward and forward compatibility is.
->> >> > > > That's what makes libbpf so difficult to test, develop and code review.
->> >> > > > What that particular server has in /usr/include is irrelevant.
->> >> > >
->> >> > > sure, anyway we can't compile following:
->> >> > >
->> >> > >         tredaell@aldebaran ~ $ echo "#include <bpf/xsk.h>" | gcc -x c -
->> >> > >         In file included from <stdin>:1:
->> >> > >         /usr/include/bpf/xsk.h: In function ‘xsk_ring_prod__needs_wakeup’:
->> >> > >         /usr/include/bpf/xsk.h:82:21: error: ‘XDP_RING_NEED_WAKEUP’ undeclared (first use in this function)
->> >> > >            82 |  return *r->flags & XDP_RING_NEED_WAKEUP;
->> >> > >         ...
->> >> > >
->> >> > >         XDP_RING_NEED_WAKEUP is defined in kernel v5.4-rc1 (77cd0d7b3f257fd0e3096b4fdcff1a7d38e99e10).
->> >> > >         XSK_UNALIGNED_BUF_ADDR_MASK and XSK_UNALIGNED_BUF_OFFSET_SHIFT are defined in kernel v5.4-rc1 (c05cd3645814724bdeb32a2b4d953b12bdea5f8c).
->> >> > >
->> >> > > with:
->> >> > >   kernel-headers-5.3.6-300.fc31.x86_64
->> >> > >   libbpf-0.0.5-1.fc31.x86_64
->> >> > >
->> >> > > if you're saying this is not supported, I guess we could be postponing
->> >> > > libbpf rpm releases until we have the related fedora kernel released
->> >> >
->> >> > why? github/libbpf is the source of truth for building packages
->> >> > and afaik it builds fine.
->> >>
->> >> because we will get issues like above if there's no kernel
->> >> avilable that we could compile libbpf against
->> >
->> > what is the issue again?
->> > bpf-next builds fine. github/libbpf builds fine.
->> > If distro is doing something else it's distro's mistake.
->>
->> With that you're saying that distros should always keep their kernel
->> headers and libbpf version in sync. Which is fine in itself; they can
->> certainly do that.
+On Fri, Nov 1, 2019 at 2:41 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redha=
+t.com> wrote:
 >
-> No. I'm not suggesting that.
-> distro is free to package whatever /usr/include headers.
-> kernel version is often != /usr/include headers
-
-I did say kernel *headers*. By which I mean the files in /usr/include.
-E.g., on my machine:
-
-$ pacman -Qo /usr/include/linux/if_xdp.h                                                                /usr/include/linux/if_xdp.h is owned by linux-api-headers 5.3.1-1
-
-
->> The only concern with this is that without a flow of bugfixes into the
->> 'bpf' tree (and stable), users may end up with buggy versions of libbpf.
->> Which is in no one's interest. So how do we avoid that?
+> >> The only concern with this is that without a flow of bugfixes into the
+> >> 'bpf' tree (and stable), users may end up with buggy versions of libbp=
+f.
+> >> Which is in no one's interest. So how do we avoid that?
+> >
+> > As I explained earlier. There is no 'bpf' tree for libbpf. It always
+> > moves forward.
 >
-> As I explained earlier. There is no 'bpf' tree for libbpf. It always
-> moves forward.
+> Yes, you did. And I was just pointing out that this means that there
+> will be no bug fixes in older versions. So the only way to update is to
+> move to an entirely new version of libbpf, including updating all the
+> headers in /usr/include. And when that is not feasible, then the only
+> choice left is to ship a buggy libbpf... Unless you have a third option
+> I'm missing?
 
-Yes, you did. And I was just pointing out that this means that there
-will be no bug fixes in older versions. So the only way to update is to
-move to an entirely new version of libbpf, including updating all the
-headers in /usr/include. And when that is not feasible, then the only
-choice left is to ship a buggy libbpf... Unless you have a third option
-I'm missing?
+I'm not seeing the problem still.
+Say there is a bug in installed libbpf package.
+A bunch of services are using it as libbpf.so
+The admin upgrades libbpf package. New libbpf.so is installed
+and services should continue work as-is, since we're preserving
+api binary compatibility.
+Now if you're a developer you install libbpf-devel and the first thing
+you'll hit is that /usr/include is so old that it doesn't have basic things
+to start writing bpf progs. So recent linux-api-headers package
+would have to be installed.
+You keep developing stuff. Few month passes by. New libbpf is released.
+At the current pace of the development one release contains
+a bunch of features and a bunch of fixes.
+If you're upgrading it you'd need to refresh api-headers too.
+So where is the problem?
 
--Toke
+Of course there is an option to branch existing libbpf releases, but let's
+cross that bridge when we actually need to do that.
