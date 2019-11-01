@@ -2,112 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FCB1EBB7A
-	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2019 01:48:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F8EBEBB85
+	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2019 01:51:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728620AbfKAAsr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 31 Oct 2019 20:48:47 -0400
-Received: from hqemgate15.nvidia.com ([216.228.121.64]:10301 "EHLO
-        hqemgate15.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727516AbfKAAsq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 31 Oct 2019 20:48:46 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate15.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5dbb80eb0000>; Thu, 31 Oct 2019 17:48:43 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Thu, 31 Oct 2019 17:48:37 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Thu, 31 Oct 2019 17:48:37 -0700
-Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 1 Nov
- 2019 00:48:36 +0000
-Subject: Re: [PATCH 19/19] Documentation/vm: add pin_user_pages.rst
-To:     Ira Weiny <ira.weiny@intel.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, <bpf@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <kvm@vger.kernel.org>,
-        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-media@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>, <netdev@vger.kernel.org>,
-        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>
-References: <20191030224930.3990755-1-jhubbard@nvidia.com>
- <20191030224930.3990755-20-jhubbard@nvidia.com>
- <20191031234922.GM14771@iweiny-DESK2.sc.intel.com>
-X-Nvconfidentiality: public
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <8f92713c-7df8-9463-93f2-40967eba27b5@nvidia.com>
-Date:   Thu, 31 Oct 2019 17:48:36 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1727516AbfKAAvl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 31 Oct 2019 20:51:41 -0400
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:45521 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726803AbfKAAvl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 31 Oct 2019 20:51:41 -0400
+Received: by mail-lf1-f65.google.com with SMTP id v8so6037853lfa.12
+        for <bpf@vger.kernel.org>; Thu, 31 Oct 2019 17:51:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7MKIuXyw5t1sYq66/m6OQwaXeRIeCWIlU6RP0tUgVBA=;
+        b=GP+bnz3duEEFA84llAms/mV/2V9xmY+lczW1wxpnaQESMLp4BMJlHq1U5CWYBDYfyB
+         prptJa1SsLd+GBE5L2rv55N8gQTEZj/GG7dhA+nfzaW9WtnWPUwR7nlHPVJ9V7hy+oMn
+         ow7l4djMCfWF6t1lPToh43Iu5Hxjkpn/+j8ag+7AxTXfqu/yhfRsKVJW7xYtRoC5BxDo
+         celtasUX/Arurq5wgAFzdxQG73r1HiqOeYBAKJsmcf7nYFg64cSnQ/JxlhavM5BwqjKv
+         sHzlfDIjttBRCoXBJH5dy3k8rUm1p130n4OUx7rDnqobquOjUbT+6ud5WG1QjyTbKY3w
+         czMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7MKIuXyw5t1sYq66/m6OQwaXeRIeCWIlU6RP0tUgVBA=;
+        b=PEv/pG5nXy+W6h7Ajc9Fqp/8Un0zgNYDH6HxVXVoa6hFyAUUvJ0CMqoNWzyA+eZ6Kh
+         t+H9t7zsNnR8jNbZEvWNQ4NoJNmmX78pyLb/tSU8LomzXYMOG/4BPBZ+5FiAXlEQAzaD
+         PGzQrMb6x0uVPj9RL7tZWWm53zPPjr5CiaVjA5h/pc6czI6x1vmFlleMd3VaFz9tg+ZD
+         vIUA3FmfxPDije2gMqrk2jazoGz/d953/jKBP7do5cSBOM/3xh9ivwUC8hGLzTLUXq04
+         rMHxaRq1as3KhNSwBDQ08Vx3cdS/Dd3ESXiSAUt4YwfRpfGzpJM0+2zAKM/XuJJPXQER
+         3jmw==
+X-Gm-Message-State: APjAAAXY1Fdz/i897x1peYLu+Mz38fCPNCplMS9sCRmmHQ48k1uEpb7h
+        WP6dCxt00Uc2GisXK6/kQpLdog==
+X-Google-Smtp-Source: APXvYqyHfd/IaNRQBi5oidrpYHoXFA07acAGkJ3+eBEn50KgQcoHwxI071aUqui3L3Q5lGR/UkRZ1g==
+X-Received: by 2002:a19:895:: with SMTP id 143mr5346751lfi.158.1572569499890;
+        Thu, 31 Oct 2019 17:51:39 -0700 (PDT)
+Received: from jkicinski-Precision-T1700.netronome.com ([66.60.152.14])
+        by smtp.gmail.com with ESMTPSA id y10sm2214009ljn.81.2019.10.31.17.51.37
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 31 Oct 2019 17:51:39 -0700 (PDT)
+From:   Jakub Kicinski <jakub.kicinski@netronome.com>
+To:     alexei.starovoitov@gmail.com, daniel@iogearbox.net
+Cc:     netdev@vger.kernel.org, oss-drivers@netronome.com,
+        bpf@vger.kernel.org, jiri@resnulli.us,
+        Jakub Kicinski <jakub.kicinski@netronome.com>
+Subject: [PATCH bpf-next] Revert "selftests: bpf: Don't try to read files without read permission"
+Date:   Thu, 31 Oct 2019 17:51:27 -0700
+Message-Id: <20191101005127.1355-1-jakub.kicinski@netronome.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-In-Reply-To: <20191031234922.GM14771@iweiny-DESK2.sc.intel.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1572569323; bh=5RHzCGcb3FFZzaA/uQgYrgLcorAAk8gLyrsrWdqCg0c=;
-        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=jb4OmT2UIK+29Kq6gyh3/B0GMYEYeQey6Q7av8aHODFF7iM3g87GXz+0+crrEhDuP
-         ES91FHKZ2TRd6nelEsvX1Ees+632xFVXWCQcNiNfBlThFOHS+Mq1DZ+VJ6HtPA43u6
-         Ynb5UhoXiX2+2DJcjRCsgJU7otXcWVOJr09yZe43vdQrzd13x1b0cKY4hBXDGaRMUL
-         j+EkbcXcmrT2jSkaz6YzKoEolu/+k4osy9BAQew7kbxk+1/wC4eflk8358pt5RFQn7
-         yh6waII5ieUtayl8B5UKc7eHNJXPir5mjj/cq3SpudLXylqcwjl1IrKdwtTrjKlzPg
-         OjOeqmfrEDTrQ==
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/31/19 4:49 PM, Ira Weiny wrote:
-> On Wed, Oct 30, 2019 at 03:49:30PM -0700, John Hubbard wrote:
-...
->> +TODO: There is also a special case when the pages are DAX pages: in addition to
->> +the above flags, the caller needs something like a layout lease on the
->> +associated file. This is yet to be implemented. When it is implemented, it's
->> +expected that the lease will be a prerequisite to setting FOLL_LONGTERM.
-> 
-> For now we probably want to leave this note out until we figure out how this is
-> going to work.  Best to say something like:
-> 
-> Some pages, such as DAX pages, can't be pinned with longterm pins and will
-> fail.
-> 
+This reverts commit 5bc60de50dfe ("selftests: bpf: Don't try to read
+files without read permission").
 
-OK, I have this wording queued up for the v2 patch:
+Quoted commit does not work at all, and was never tested.
+Script requires root permissions (and tests for them)
+and os.access() will always return true for root.
 
-NOTE: Some pages, such as DAX pages, cannot be pinned with longterm pins. That's
-because DAX pages do not have a separate page cache, and so "pinning" implies
-locking down file system blocks, which is not (yet) supported in that way.
+The correct fix is needed in the bpf tree, so let's just
+revert and save ourselves the merge conflict.
 
+Signed-off-by: Jakub Kicinski <jakub.kicinski@netronome.com>
+---
+ tools/testing/selftests/bpf/test_offload.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-thanks,
+diff --git a/tools/testing/selftests/bpf/test_offload.py b/tools/testing/selftests/bpf/test_offload.py
+index c44c650bde3a..15a666329a34 100755
+--- a/tools/testing/selftests/bpf/test_offload.py
++++ b/tools/testing/selftests/bpf/test_offload.py
+@@ -312,7 +312,7 @@ def bpftool_prog_load(sample, file_name, maps=[], prog_type="xdp", dev=None,
+             if f == "ports":
+                 continue
+             p = os.path.join(path, f)
+-            if os.path.isfile(p) and os.access(p, os.R_OK):
++            if os.path.isfile(p):
+                 _, out = cmd('cat %s/%s' % (path, f))
+                 dfs[f] = out.strip()
+             elif os.path.isdir(p):
+-- 
+2.23.0
 
-John Hubbard
-NVIDIA
