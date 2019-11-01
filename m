@@ -2,136 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 206D4EC061
-	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2019 10:16:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A247CEC0CE
+	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2019 10:53:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728226AbfKAJQ5 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 1 Nov 2019 05:16:57 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:36284 "EHLO mx1.redhat.com"
+        id S1728070AbfKAJxA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 Nov 2019 05:53:00 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:35484 "EHLO mx1.redhat.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728206AbfKAJQ5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 1 Nov 2019 05:16:57 -0400
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com [209.85.167.72])
+        id S1727666AbfKAJxA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 1 Nov 2019 05:53:00 -0400
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com [209.85.208.197])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id A703F59449
-        for <bpf@vger.kernel.org>; Fri,  1 Nov 2019 09:16:56 +0000 (UTC)
-Received: by mail-lf1-f72.google.com with SMTP id o140so1905949lff.18
-        for <bpf@vger.kernel.org>; Fri, 01 Nov 2019 02:16:56 -0700 (PDT)
+        by mx1.redhat.com (Postfix) with ESMTPS id E23C34E8B8
+        for <bpf@vger.kernel.org>; Fri,  1 Nov 2019 09:52:59 +0000 (UTC)
+Received: by mail-lj1-f197.google.com with SMTP id v16so1642086ljh.11
+        for <bpf@vger.kernel.org>; Fri, 01 Nov 2019 02:52:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=Dkl3aHb5bKrEXW75qkROq0EGnFR82jvIZST+34q38vQ=;
-        b=qR/NGezbLHYj8N9Vrxz4p/GnBENmoDscFj4UmZ68w29sHwaWgaYGHnmH7EPcmnqp/w
-         6QQ8CZ7v13JjU5yijKA1d27Q6CrArKz2E2BOvYgA0Np92PQeSfWYWapxBzSc3s7Z9vME
-         p9b5yxPIpd+N9IRlSHGZ3OSe2lZjibA7/76Ut1BBjNrW0ku6HA/D2VaDxJ0LKltgPsul
-         fNko5CeCDaE/fNruLc9Dx52GURhqsIgKjD6THesVBhrtipM2cqWURI4WrT0kWl5qFzTy
-         SQJObKlqfQpRfLInVL1ygXAPjHdU8gJ4nqRKe7UZ1fWp/ASLnLGq7zOB8sgZG6B30IPk
-         /xwA==
-X-Gm-Message-State: APjAAAXoLLV7dHnIpXy59UYBafh6fYxH5jPawJxeN+AvQyStai8FLa2s
-        NaMaUgCxE74df1QSByiyDB8yl3USWaqvq6CVCdrdu7MJ+D9faWeJknusYD7Wu5xNb5PYgtalWw9
-        3iHXnfelTZwzj
-X-Received: by 2002:a2e:3807:: with SMTP id f7mr7518768lja.241.1572599813286;
-        Fri, 01 Nov 2019 02:16:53 -0700 (PDT)
-X-Google-Smtp-Source: APXvYqxFk5cohwcAac9ROKmVcbyZ06Unn9LDLz/uVc6cFTwxopCUrWZXfy4+5auWRTX485e2Ep6o2Q==
-X-Received: by 2002:a2e:3807:: with SMTP id f7mr7518742lja.241.1572599813038;
-        Fri, 01 Nov 2019 02:16:53 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a00:7660:6da:443::2])
-        by smtp.gmail.com with ESMTPSA id u10sm641296lfn.48.2019.11.01.02.16.51
+        h=x-gm-message-state:subject:from:to:cc:date:message-id:user-agent
+         :mime-version:content-transfer-encoding;
+        bh=bUMEVvjsDg4NLEuvGgXAJxxFoYgda9ta8kXkBAkKZWc=;
+        b=N8qu+S6AoivH+Voi5/g1XFPkARFiUyiYmRea3OV3KqymU3XA7jrrNQbDwTK77lKVgc
+         ILRkHhiZ+vFZIMyu6fIGOcvRyixOVOeEFZRRrnVMQkN4JC3aN7TyJeGzctTBNY+sd5Hk
+         DyuSK+yUGp0aaxuk03rDLBR0MultsPctYbGxZYqJdqMwnjKgI3GxK567nGXBZk5eVXXo
+         l1RdGzzOrrh8V0B7lrbunz/x4//LZB5i6SmUrHmrMgFBpgKmUhHNrJYAZBNSMIU8RWxH
+         b8DbZ9AewecGxOd4bcJllFI86pR7NhxpHT5UmTiymj0e2V5X23wlkrgE1LNCKRKFsmDO
+         OnGw==
+X-Gm-Message-State: APjAAAVkueP3FPtjY4e0l9snRdl6tOR2W+nKNbEtTc4lvRgzC7AXjjOV
+        Np6bJAJnEG3I/GTHOv/a3YYrk4dA+ZGvbgStqqAn2xIMk6WMhqVgJL82KNuy/CPRA/MSFFYTfe1
+        FR9qqwTZPP8MI
+X-Received: by 2002:a2e:874e:: with SMTP id q14mr353429ljj.105.1572601978426;
+        Fri, 01 Nov 2019 02:52:58 -0700 (PDT)
+X-Google-Smtp-Source: APXvYqwfauGwIPycGNE1ve3E4wbBZHxPFveS9jCM0be7CxN+DgF7VKG4SuTz8dcjlmErIBxSRX2Nuw==
+X-Received: by 2002:a2e:874e:: with SMTP id q14mr353423ljj.105.1572601978248;
+        Fri, 01 Nov 2019 02:52:58 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk (borgediget.toke.dk. [85.204.121.218])
+        by smtp.gmail.com with ESMTPSA id 71sm2623960lfh.87.2019.11.01.02.52.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Nov 2019 02:16:51 -0700 (PDT)
+        Fri, 01 Nov 2019 02:52:57 -0700 (PDT)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id E28961818B5; Fri,  1 Nov 2019 10:16:50 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        bpf <bpf@vger.kernel.org>, degeneloy@gmail.com,
-        John Fastabend <john.fastabend@gmail.com>
-Subject: Re: [PATCH bpf-next v3] libbpf: fix compatibility for kernels without need_wakeup
-In-Reply-To: <CAADnVQJdAZS9AHx_B3SZTcWRdigZZsK1ccsYZK0qUsd1yZQqbw@mail.gmail.com>
-References: <CAJ+HfNimRqftmKASOdceXFJmgbLvXnNBZATTnfA9LMF2amGzzA@mail.gmail.com> <CAADnVQJRe4Pm-Rxx9zobn8YRHh9i+xQp7HX4gidqq9Mse7PJ5g@mail.gmail.com> <87lft1ngtn.fsf@toke.dk> <CAADnVQLrg6f_zjvNfiEVfdjcx9+DW_RFjVGetavvMNo=VXAR+g@mail.gmail.com> <87imo5ng7w.fsf@toke.dk> <CAADnVQLJ2JTsbxd2am6XY0EiocMgM29JqFVRnZ9PBcwqd7-dAQ@mail.gmail.com> <87d0ednf0t.fsf@toke.dk> <CAADnVQ+V4OMjJqSdE_OQ1Vr99kqTF=ZB3UUMKiCSg=3=c+exqg@mail.gmail.com> <20191031174208.GC2794@krava> <CAADnVQJ=cEeFdYFGnfu6hLyTABWf2==e_1LEhBup5Phe6Jg5hw@mail.gmail.com> <20191031191815.GD2794@krava> <CAADnVQJdAZS9AHx_B3SZTcWRdigZZsK1ccsYZK0qUsd1yZQqbw@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 01 Nov 2019 10:16:50 +0100
-Message-ID: <87tv7olzwd.fsf@toke.dk>
+        id 8CF1B1818B5; Fri,  1 Nov 2019 10:52:56 +0100 (CET)
+Subject: [PATCH bpf-next v5 0/5] libbpf: Support automatic pinning of maps
+ using 'pinning' BTF attribute
+From:   =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Date:   Fri, 01 Nov 2019 10:52:56 +0100
+Message-ID: <157260197645.335202.2393286837980792460.stgit@toke.dk>
+User-Agent: StGit/0.20
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+This series adds support to libbpf for reading 'pinning' settings from BTF-based
+map definitions. It introduces a new open option which can set the pinning path;
+if no path is set, /sys/fs/bpf is used as the default. Callers can customise the
+pinning between open and load by setting the pin path per map, and still get the
+automatic reuse feature.
 
-> On Thu, Oct 31, 2019 at 12:18 PM Jiri Olsa <jolsa@redhat.com> wrote:
->> >
->> > yes. older vmlinux and newer installed libbpf.so
->> > or any version of libbpf.a that is statically linked into apps
->> > is something that libbpf code has to support.
->> > The server can be rebooted into older than libbpf kernel and
->> > into newer than libbpf kernel. libbpf has to recognize all these
->> > combinations and work appropriately.
->> > That's what backward and forward compatibility is.
->> > That's what makes libbpf so difficult to test, develop and code review.
->> > What that particular server has in /usr/include is irrelevant.
->>
->> sure, anyway we can't compile following:
->>
->>         tredaell@aldebaran ~ $ echo "#include <bpf/xsk.h>" | gcc -x c -
->>         In file included from <stdin>:1:
->>         /usr/include/bpf/xsk.h: In function ‘xsk_ring_prod__needs_wakeup’:
->>         /usr/include/bpf/xsk.h:82:21: error: ‘XDP_RING_NEED_WAKEUP’ undeclared (first use in this function)
->>            82 |  return *r->flags & XDP_RING_NEED_WAKEUP;
->>         ...
->>
->>         XDP_RING_NEED_WAKEUP is defined in kernel v5.4-rc1 (77cd0d7b3f257fd0e3096b4fdcff1a7d38e99e10).
->>         XSK_UNALIGNED_BUF_ADDR_MASK and XSK_UNALIGNED_BUF_OFFSET_SHIFT are defined in kernel v5.4-rc1 (c05cd3645814724bdeb32a2b4d953b12bdea5f8c).
->>
->> with:
->>   kernel-headers-5.3.6-300.fc31.x86_64
->>   libbpf-0.0.5-1.fc31.x86_64
->>
->> if you're saying this is not supported, I guess we could be postponing
->> libbpf rpm releases until we have the related fedora kernel released
->
-> why? github/libbpf is the source of truth for building packages
-> and afaik it builds fine.
->
->> or how about inluding uapi headers in libbpf-devel.. but that might
->> actualy cause more confusion
->
-> Libraries (libbpf or any other) should not install headers that
-> typically go into /usr/include/
-> if_xdp.h case is not unique.
-> We'll surely add another #define, enum, etc to uapi/linux/bpf.h tomorrow.
-> And we will not copy paste these constants and types into tools/lib/bpf/.
-> In kernel tree libbpf development is using kernel tree headers.
-> No problem there for libbpf developers.
-> Packages are built out of github/libbpf that has a copy of uapi headers
-> necessary to create packages.
-> No problem there for package builders either.
-> But libbpf package is not going to install those uapi headers.
-> libbpf package installs only libbpf own headers (like libbpf.h)
-> The users that want to build against the latest libbpf package need
-> to install corresponding uapi headers package.
-> I don't think such dependency is specified in rpm scripts.
-> May be it is something to fix? Or may be not.
-> Some folks might not want to update all of /usr/include to bring libbpf-devel.
-> Then it would be their responsibility to get fresh /usr/include headers.
+The semantics of the pinning is similar to the iproute2 "PIN_GLOBAL" setting,
+and the eventual goal is to move the iproute2 implementation to be based on
+libbpf and the functions introduced in this series.
 
-We can certainly tie libbpf to the kernel version. The obvious way to do
-that is to just ship the version of libbpf that's in the kernel tree of
-whatever kernel version the distro ships. But how will we handle
-bugfixes, then? You've explicitly stated that libbpf gets no bugfixes
-outside of bpf-next...
+Changelog:
 
--Toke
+v5:
+  - Don't pin maps with pinning set, but with a value of LIBBPF_PIN_NONE
+  - Add a few more selftests:
+    - Should not pin map with pinning set, but value LIBBPF_PIN_NONE
+    - Should fail to load a map with an invalid pinning value
+    - Should fail to re-use maps with parameter mismatch
+  - Alphabetise libbpf.map
+  - Whitespace and typo fixes
+
+v4:
+  - Don't check key_type_id and value_type_id when checking for map reuse
+    compatibility.
+  - Move building of map->pin_path into init_user_btf_map()
+  - Get rid of 'pinning' attribute in struct bpf_map
+  - Make sure we also create parent directory on auto-pin (new patch 3).
+  - Abort the selftest on error instead of attempting to continue.
+  - Support unpinning all pinned maps with bpf_object__unpin_maps(obj, NULL)
+  - Support pinning at map->pin_path with bpf_object__pin_maps(obj, NULL)
+  - Make re-pinning a map at the same path a noop
+  - Rename the open option to pin_root_path
+  - Add a bunch more self-tests for pin_maps(NULL) and unpin_maps(NULL)
+  - Fix a couple of smaller nits
+
+v3:
+  - Drop bpf_object__pin_maps_opts() and just use an open option to customise
+    the pin path; also don't touch bpf_object__{un,}pin_maps()
+  - Integrate pinning and reuse into bpf_object__create_maps() instead of having
+    multiple loops though the map structure
+  - Make errors in map reuse and pinning fatal to the load procedure
+  - Add selftest to exercise pinning feature
+  - Rebase series to latest bpf-next
+
+v2:
+  - Drop patch that adds mounting of bpffs
+  - Only support a single value of the pinning attribute
+  - Add patch to fixup error handling in reuse_fd()
+  - Implement the full automatic pinning and map reuse logic on load
+
+---
+
+Toke Høiland-Jørgensen (5):
+      libbpf: Fix error handling in bpf_map__reuse_fd()
+      libbpf: Store map pin path and status in struct bpf_map
+      libbpf: Move directory creation into _pin() functions
+      libbpf: Add auto-pinning of maps when loading BPF objects
+      selftests: Add tests for automatic map pinning
+
+
+ tools/lib/bpf/bpf_helpers.h                        |    6 
+ tools/lib/bpf/libbpf.c                             |  385 ++++++++++++++++----
+ tools/lib/bpf/libbpf.h                             |   21 +
+ tools/lib/bpf/libbpf.map                           |    3 
+ tools/testing/selftests/bpf/prog_tests/pinning.c   |  208 +++++++++++
+ tools/testing/selftests/bpf/progs/test_pinning.c   |   31 ++
+ .../selftests/bpf/progs/test_pinning_invalid.c     |   16 +
+ 7 files changed, 589 insertions(+), 81 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/pinning.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_pinning.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_pinning_invalid.c
+
