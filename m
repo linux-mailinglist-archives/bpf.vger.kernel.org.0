@@ -2,108 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AA947EBB94
-	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2019 02:03:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6A3EEBBB0
+	for <lists+bpf@lfdr.de>; Fri,  1 Nov 2019 02:28:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727383AbfKABDl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 31 Oct 2019 21:03:41 -0400
-Received: from www62.your-server.de ([213.133.104.62]:34162 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726772AbfKABDl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 31 Oct 2019 21:03:41 -0400
-Received: from sslproxy01.your-server.de ([88.198.220.130])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iQLLj-0007Mf-Bd; Fri, 01 Nov 2019 02:03:35 +0100
-Received: from [178.197.249.38] (helo=pc-63.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iQLLi-0005lR-Te; Fri, 01 Nov 2019 02:03:35 +0100
-Subject: Re: [PATCH v2 bpf-next 1/2] bpf: replace prog_raw_tp+btf_id with
- prog_tracing
+        id S1727335AbfKAB2q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 31 Oct 2019 21:28:46 -0400
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:42358 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727133AbfKAB2p (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 31 Oct 2019 21:28:45 -0400
+Received: by mail-lj1-f194.google.com with SMTP id a21so8590790ljh.9
+        for <bpf@vger.kernel.org>; Thu, 31 Oct 2019 18:28:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :organization:mime-version:content-transfer-encoding;
+        bh=lXj6Io/zy+l3kVnc3VZS6EAplgmsAUnC50Emckcf5uw=;
+        b=jc8CjvgznCj5dE3iW+NracNWKhZPt+cVZJWMvjvcO10KhdpAVZMzOTBJ6sIiLcrNxi
+         iJg2EKZElThQufiCWzOcflMEgqlylFKfsOEjXgWZUCt1cIXdmPwLhHYr0jxB4sEcd43z
+         xcaWcZowpHrn4mQQWErYz+sWqG9pa5icY6NhEe1JTarc/b5NkmJLJVG9rnjKEi2nl6Fn
+         eJRupvHa38ImiVLRJxUNDXROnEGnVnyT4shuZyyCzjwH+bR9fln/wDMFyS94QmPMvrGl
+         LYWCrLF0B2+qf8snDr8Ac/E5ouoixSBDOpv9UHahSU86NsGs7sa8R0ri93W7ZhnaPKux
+         fjng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=lXj6Io/zy+l3kVnc3VZS6EAplgmsAUnC50Emckcf5uw=;
+        b=Ul5DrMGxyEv9zCkZth2+M5idLabmHWNdCxkl39BdQt6K5P46rh9MPAnkl7d8rIUCiK
+         gXfYt/+k45C3K4c/HPuyqxZ7PDINKL8pCGAt0wDalfspBkGU9/hTtBQoMiwyYFmGAXjo
+         8VxARd08ALiP7oyoGNXTHlE9bbuFZCfIzqTViiAwTU6lH+rp7h3eMJUbClKrrHHzC+Be
+         TlCSXD3rgvEE6nIUGmpdvVz9hqeqyxWu6NrcmvuQB/oKq92UtduG/qF+R/OKh3tAM9Xj
+         XBm8LL/kn2MbCkkQGmtgWY68AjCG7yqCBerZyr8eSPIZelwcCu7Mv0dm9o3pfaDLkF3h
+         x9yg==
+X-Gm-Message-State: APjAAAW8nE/dBuHoBz4OutnU3fN7myGuYAggijft+P9Uyma/ool9NvsA
+        f5KPhU5WFGe11Kj5g0PeHyeThQ==
+X-Google-Smtp-Source: APXvYqx8EXYES5u0M40yjQO42GK3R2hgk4vHXXUMRQuuD1jFgVU4Q+Fd1v/yW+EiVdrQ+xp2BJcyPw==
+X-Received: by 2002:a2e:63c9:: with SMTP id s70mr6263078lje.73.1572571723584;
+        Thu, 31 Oct 2019 18:28:43 -0700 (PDT)
+Received: from cakuba.netronome.com ([66.60.152.14])
+        by smtp.gmail.com with ESMTPSA id c22sm2106176lfj.28.2019.10.31.18.28.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 31 Oct 2019 18:28:43 -0700 (PDT)
+Date:   Thu, 31 Oct 2019 18:28:35 -0700
+From:   Jakub Kicinski <jakub.kicinski@netronome.com>
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>, davem@davemloft.net,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com
-References: <20191030223212.953010-1-ast@kernel.org>
- <20191030223212.953010-2-ast@kernel.org>
- <5ef95166-dace-28be-8274-a9343900025e@iogearbox.net>
- <20191031233642.xnqlz6qjfwzlmilt@ast-mbp.dhcp.thefacebook.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <afe594ea-de2c-e796-8ae6-7c721ecfb6dd@iogearbox.net>
-Date:   Fri, 1 Nov 2019 02:03:33 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Network Development <netdev@vger.kernel.org>,
+        OSS Drivers <oss-drivers@netronome.com>,
+        bpf <bpf@vger.kernel.org>, Jiri Pirko <jiri@resnulli.us>
+Subject: Re: [oss-drivers] Re: [PATCH bpf-next] Revert "selftests: bpf:
+ Don't try to read files without read permission"
+Message-ID: <20191031182835.0451d472@cakuba.netronome.com>
+In-Reply-To: <CAADnVQKZbgqs3DJOsV4dtOY-ZXG8oQ7kWmJrJ_dS842qDrwABw@mail.gmail.com>
+References: <20191101005127.1355-1-jakub.kicinski@netronome.com>
+        <CAADnVQKZbgqs3DJOsV4dtOY-ZXG8oQ7kWmJrJ_dS842qDrwABw@mail.gmail.com>
+Organization: Netronome Systems, Ltd.
 MIME-Version: 1.0
-In-Reply-To: <20191031233642.xnqlz6qjfwzlmilt@ast-mbp.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.101.4/25619/Thu Oct 31 09:55:29 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/1/19 12:36 AM, Alexei Starovoitov wrote:
-> On Fri, Nov 01, 2019 at 12:20:13AM +0100, Daniel Borkmann wrote:
->> On 10/30/19 11:32 PM, Alexei Starovoitov wrote:
->>> The bpf program type raw_tp together with 'expected_attach_type'
->>> was the most appropriate api to indicate BTF-enabled raw_tp programs.
->>> But during development it became apparent that 'expected_attach_type'
->>> cannot be used and new 'attach_btf_id' field had to be introduced.
->>> Which means that the information is duplicated in two fields where
->>> one of them is ignored.
->>> Clean it up by introducing new program type where both
->>> 'expected_attach_type' and 'attach_btf_id' fields have
->>> specific meaning.
->>
->> Hm, just for my understanding, the expected_attach_type is unused for
->> tracing so far. Are you aware of anyone (bcc / bpftrace / etc) leaving
->> uninitialized garbage in there?
+On Thu, 31 Oct 2019 17:56:46 -0700, Alexei Starovoitov wrote:
+> On Thu, Oct 31, 2019 at 5:51 PM Jakub Kicinski
+> <jakub.kicinski@netronome.com> wrote:
+> >
+> > This reverts commit 5bc60de50dfe ("selftests: bpf: Don't try to read
+> > files without read permission").
+> >
+> > Quoted commit does not work at all, and was never tested.
+> > Script requires root permissions (and tests for them)
+> > and os.access() will always return true for root.
+> >
+> > The correct fix is needed in the bpf tree, so let's just
+> > revert and save ourselves the merge conflict.
+> >
+> > Signed-off-by: Jakub Kicinski <jakub.kicinski@netronome.com>  
 > 
-> I'm not aware, but the risk is there. Better safe than sorry.
-> If we need to revert in the future that would be massive.
-> I'm already worried about new CHECK_ATTR check in raw_tp_open.
-> Equally unlikely user space breakage, but that one is easy to revert
-> whereas what you're proposing would mean revert everything.
+> Acked-by: Alexei Starovoitov <ast@kernel.org>
+> Since original commit is broken may be apply directly to net-next ?
+> I'm fine whichever way.
 
-Hmm, yeah, it's unfortunate that expected_attach_type is not enforced as
-0. We sort of implicitly do for older kernels where expected_attach_type
-is not known to it, but there is still non-zero risk given there seems
-plenty of stuff in the wild on BPF tracing and not all might rely on libbpf.
-Perhaps we should probably enforce it for all new program types, so we can
-reuse it in future.
+I'm 3 fixes down to get test_offloads.py to work again. One for
+cls_bpf, one for the test itself and one for net/core/dev.c logic.
+Should I target all those at net?
 
->> Just seems confusing that we have all
->> the different tracing prog types and now adding yet another one as
->> BPF_RPOG_TYPE_TRACING which will act as umbrella one and again have
->> different attach types some of which probably resemble existing tracing
->> prog types again (kprobes / kretprobes for example). Sounds like this
->> new type would implicitly deprecate all the existing types (sort of as
->> we're replacing them with new sub-types)?
-> 
-> All existing once are still supported and may grow its own helpers and what not.
-> Having new prog type makes things grow independently much easier.
-> I was thinking to call it BPF_PROG_TYPE_BTF_ENABLED or BPF_PROG_TYPE_GENERIC,
-> since I suspect upcoming lsm and others will fit right in,
-> but I think it's cleaner to define categories of bpf programs now
-> instead of specific purpose types like we had in the past before BTF.
+Are you and Daniel running test_offloads.py?  It looks like it lots of
+things slipped in since I last run it :(
 
-Yes, otherwise we likely would have BPF_PROG_TYPE_GENERIC as last one and
-would keep defining sub-types. ;)
+> I would wait for Jiri to reply first though.
 
->> True that k[ret]probe expects pt_regs whereas BTF enabled program context
->> will be the same as raw_tp as well, but couldn't this logic be hidden in
->> the kernel e.g. via attach_btf_id as well since this is an opt-in? Could
->> the fentry/fexit be described through attach_btf_id as well?
-> 
-> That's what I tried first, but the code grows too ugly.
-> Also for attaching fentry/fexit I'm adding new bpf_trace_open command
-> similar to bpf_raw_tp_open, since existing kprobe attach style doesn't
-> work at all. imo the code is much cleaner now.
-
-Ok, fair enough that the fentry/fexit approach doesn't have too much in common
-after all with plain kprobes. Applied then, thanks!
+Not sure what he can contribute at this point but sure :/
