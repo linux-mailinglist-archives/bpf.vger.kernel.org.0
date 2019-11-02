@@ -2,103 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 681B6ECCD3
-	for <lists+bpf@lfdr.de>; Sat,  2 Nov 2019 02:27:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15627ECD41
+	for <lists+bpf@lfdr.de>; Sat,  2 Nov 2019 06:08:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726932AbfKBB1P (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 Nov 2019 21:27:15 -0400
-Received: from www62.your-server.de ([213.133.104.62]:43516 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726892AbfKBB1P (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 1 Nov 2019 21:27:15 -0400
-Received: from 38.249.197.178.dynamic.dsl-lte-bonding.lssmb00p-msn.res.cust.swisscom.ch ([178.197.249.38] helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iQiC2-0003PL-RR; Sat, 02 Nov 2019 02:27:06 +0100
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     davem@davemloft.net
-Cc:     jakub.kicinski@netronome.com, daniel@iogearbox.net, ast@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: pull-request: bpf 2019-11-02
-Date:   Sat,  2 Nov 2019 02:27:06 +0100
-Message-Id: <20191102012706.31533-1-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
+        id S1726111AbfKBFIL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 2 Nov 2019 01:08:11 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:45252 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725842AbfKBFIL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 2 Nov 2019 01:08:11 -0400
+Received: by mail-qt1-f195.google.com with SMTP id x21so15807519qto.12;
+        Fri, 01 Nov 2019 22:08:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=CArxfq9JiPlQkcRrbvVOMl9cqlwVD7wA50QdqFjV2ck=;
+        b=tnqBkGiG780NOuBwyM9RQUFVr6D55Tu1maXU98yB/MnOzcuGC3PvwZTa8NvIs+9LuJ
+         337FsFvBEdCc8+dGL9SVei46ZttE2bim+ncaUUkui3+wnbvgrOpeMJUMz3qkfGGganby
+         kRO0K/LLETk1Q88kGou2GIw85WNEWL5dmOy7KY1DuB243VhAQKgj+JN6c9rcigce/yJT
+         TQPS7tDQDqa6vKSIFpELUMWH4UvUPM3TCwcmIzdl/5gkqWN86U6hkY6lJoKIT5LbE0tU
+         etsOtIdeM2FQ6OhuAV/M3pwTDpWkYggYRBU0KZO34SIX6IXUQsNuwSesIRATOg9Rg1Bt
+         EIeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=CArxfq9JiPlQkcRrbvVOMl9cqlwVD7wA50QdqFjV2ck=;
+        b=oF1rh6beqekjf4ZHLDnpQzr5MgLE11NrNUQpmGcK41Rft99yRuWx7uz7LmndU/Cyd+
+         Ib0e9Mk2L2sM4xrbnyqtxEO2JHsiA2h7k4eU3A5mqBXTo1tZS7/tC5tbPkDYyJKiAF/M
+         oGI5r1zB5EO9IzrYrbI1pnti6af1ukoQ1aMFH/0ty749hwamXVaIi3qHPq+ailydnm+k
+         zeKu66BF7liruBdThtlA8NbxELpITg6iHzXeZ5UzbAOEIYH8GgpeZs6rnC6Equ6EXicb
+         jv5EuSWVqCFpxWZCaNKpGDwwoATnLS43W9e0qnRMLYEfXTZwVWbrupfMOj2ModDdLgAi
+         1UyA==
+X-Gm-Message-State: APjAAAW3gSebtcIbtA0A7o4yHVHtp5Qgqy2zKTgB11Cfqyb16YjHYVNF
+        9kJZkWZm+bqc6FIVNzXV8uJ8pjRen9NkmipOh+Q=
+X-Google-Smtp-Source: APXvYqyRAjec4VONtAs6OQzOBIipEh5P4ryYwblHuUu2FSJr4M/AFSQ83tPUUMMmg9hpERE7Z+jncPoHAIFXuKLK4BQ=
+X-Received: by 2002:ac8:4890:: with SMTP id i16mr3197520qtq.141.1572671289898;
+ Fri, 01 Nov 2019 22:08:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.101.4/25620/Fri Nov  1 10:04:15 2019)
+References: <157260197645.335202.2393286837980792460.stgit@toke.dk> <157260198209.335202.12139424443191715742.stgit@toke.dk>
+In-Reply-To: <157260198209.335202.12139424443191715742.stgit@toke.dk>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 1 Nov 2019 22:07:58 -0700
+Message-ID: <CAEf4BzYWgnek1QYyQm4U0qakP=Si0vEJ2bLKHeJhambyX7EnCQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 5/5] selftests: Add tests for automatic map pinning
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi David,
+On Fri, Nov 1, 2019 at 2:53 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redha=
+t.com> wrote:
+>
+> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+>
+> This adds a new BPF selftest to exercise the new automatic map pinning
+> code.
+>
+> Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-The following pull-request contains BPF updates for your *net* tree.
+I don't believe I acked this patch before, must have been added by
+mistake. But either way thanks for improving tests and testing a good
+variety of scenarios, I appreciate the work. Please fix bpf_object
+leak below and keep my Acked-by :)
 
-We've added 6 non-merge commits during the last 6 day(s) which contain
-a total of 8 files changed, 35 insertions(+), 9 deletions(-).
+> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> ---
+>  tools/testing/selftests/bpf/prog_tests/pinning.c   |  208 ++++++++++++++=
+++++++
+>  tools/testing/selftests/bpf/progs/test_pinning.c   |   31 +++
+>  .../selftests/bpf/progs/test_pinning_invalid.c     |   16 ++
+>  3 files changed, 255 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/pinning.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_pinning.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_pinning_invali=
+d.c
+>
 
-The main changes are:
+[...]
 
-1) Fix ppc BPF JIT's tail call implementation by performing a second pass
-   to gather a stable JIT context before opcode emission, from Eric Dumazet.
+> +       /* should fail because of map parameter mismatch */
+> +       err =3D bpf_object__load(obj);
+> +       if (CHECK(err !=3D -EINVAL, "param mismatch load", "err %d errno =
+%d\n", err, errno))
+> +               goto out;
+> +
 
-2) Fix build of BPF samples sys_perf_event_open() usage to compiled out
-   unavailable test_attr__{enabled,open} checks. Also fix potential overflows
-   in bpf_map_{area_alloc,charge_init} on 32 bit archs, from Björn Töpel.
+You need to close obj here, before overwriting it below?
 
-3) Fix narrow loads of bpf_sysctl context fields with offset > 0 on big endian
-   archs like s390x and also improve the test coverage, from Ilya Leoshkevich.
+> +       /* test auto-pinning at custom path with open opt */
+> +       obj =3D bpf_object__open_file(file, &opts);
+> +       if (CHECK_FAIL(libbpf_get_error(obj))) {
+> +               obj =3D NULL;
+> +               goto out;
+> +       }
 
-Please consider pulling these changes from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
-
-Thanks a lot!
-
-Also thanks to reporters, reviewers and testers of commits in this pull-request:
-
-Alexei Starovoitov, Andrey Ignatov, Andrii Nakryiko, Jakub Kicinski, KP 
-Singh, Song Liu
-
-----------------------------------------------------------------
-
-The following changes since commit fc11078dd3514c65eabce166b8431a56d8a667cb:
-
-  Merge git://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf (2019-10-27 12:13:16 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git 
-
-for you to fetch changes up to 7de086909365cd60a5619a45af3f4152516fd75c:
-
-  powerpc/bpf: Fix tail call implementation (2019-11-02 00:32:26 +0100)
-
-----------------------------------------------------------------
-Björn Töpel (3):
-      perf tools: Make usage of test_attr__* optional for perf-sys.h
-      samples/bpf: fix build by setting HAVE_ATTR_TEST to zero
-      bpf: Change size to u64 for bpf_map_{area_alloc, charge_init}()
-
-Daniel Borkmann (1):
-      bpf, doc: Add Andrii as official reviewer to BPF subsystem
-
-Eric Dumazet (1):
-      powerpc/bpf: Fix tail call implementation
-
-Ilya Leoshkevich (1):
-      bpf: Allow narrow loads of bpf_sysctl fields with offset > 0
-
- MAINTAINERS                               |  1 +
- arch/powerpc/net/bpf_jit_comp64.c         | 13 +++++++++++++
- include/linux/bpf.h                       |  4 ++--
- kernel/bpf/cgroup.c                       |  4 ++--
- kernel/bpf/syscall.c                      |  7 +++++--
- samples/bpf/Makefile                      |  1 +
- tools/perf/perf-sys.h                     |  6 ++++--
- tools/testing/selftests/bpf/test_sysctl.c |  8 +++++++-
- 8 files changed, 35 insertions(+), 9 deletions(-)
+[...]
