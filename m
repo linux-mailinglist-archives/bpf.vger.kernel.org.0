@@ -2,50 +2,31 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 58582ECC20
-	for <lists+bpf@lfdr.de>; Sat,  2 Nov 2019 01:06:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 681B6ECCD3
+	for <lists+bpf@lfdr.de>; Sat,  2 Nov 2019 02:27:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726230AbfKBAGL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 1 Nov 2019 20:06:11 -0400
-Received: from www62.your-server.de ([213.133.104.62]:59478 "EHLO
+        id S1726932AbfKBB1P (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 1 Nov 2019 21:27:15 -0400
+Received: from www62.your-server.de ([213.133.104.62]:43516 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726023AbfKBAGL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 1 Nov 2019 20:06:11 -0400
-Received: from sslproxy06.your-server.de ([78.46.172.3])
+        with ESMTP id S1726892AbfKBB1P (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 1 Nov 2019 21:27:15 -0400
+Received: from 38.249.197.178.dynamic.dsl-lte-bonding.lssmb00p-msn.res.cust.swisscom.ch ([178.197.249.38] helo=localhost)
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1iQgvU-0003xU-Ra; Sat, 02 Nov 2019 01:05:56 +0100
-Received: from [178.197.249.38] (helo=pc-63.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iQgvU-000Mxc-Gu; Sat, 02 Nov 2019 01:05:56 +0100
-Subject: Re: [PATCH net] powerpc/bpf: fix tail call implementation
-To:     Eric Dumazet <edumazet@google.com>,
-        Alexei Starovoitov <ast@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        netdev <netdev@vger.kernel.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Sandipan Das <sandipan@linux.ibm.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>
-References: <20191101033444.143741-1-edumazet@google.com>
+        id 1iQiC2-0003PL-RR; Sat, 02 Nov 2019 02:27:06 +0100
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <91aba3b7-ab80-f748-dfac-9933ff095139@iogearbox.net>
-Date:   Sat, 2 Nov 2019 01:05:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+To:     davem@davemloft.net
+Cc:     jakub.kicinski@netronome.com, daniel@iogearbox.net, ast@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: pull-request: bpf 2019-11-02
+Date:   Sat,  2 Nov 2019 02:27:06 +0100
+Message-Id: <20191102012706.31533-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-In-Reply-To: <20191101033444.143741-1-edumazet@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Authenticated-Sender: daniel@iogearbox.net
 X-Virus-Scanned: Clear (ClamAV 0.101.4/25620/Fri Nov  1 10:04:15 2019)
 Sender: bpf-owner@vger.kernel.org
@@ -53,45 +34,71 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/1/19 4:34 AM, Eric Dumazet wrote:
-> We have seen many crashes on powerpc hosts while loading bpf programs.
-> 
-> The problem here is that bpf_int_jit_compile() does a first pass
-> to compute the program length.
-> 
-> Then it allocates memory to store the generated program and
-> calls bpf_jit_build_body() a second time (and a third time
-> later)
-> 
-> What I have observed is that the second bpf_jit_build_body()
-> could end up using few more words than expected.
-> 
-> If bpf_jit_binary_alloc() put the space for the program
-> at the end of the allocated page, we then write on
-> a non mapped memory.
-> 
-> It appears that bpf_jit_emit_tail_call() calls
-> bpf_jit_emit_common_epilogue() while ctx->seen might not
-> be stable.
-> 
-> Only after the second pass we can be sure ctx->seen wont be changed.
-> 
-> Trying to avoid a second pass seems quite complex and probably
-> not worth it.
-> 
-> Fixes: ce0761419faef ("powerpc/bpf: Implement support for tail calls")
-> Signed-off-by: Eric Dumazet <edumazet@google.com>
-> Cc: "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
-> Cc: Sandipan Das <sandipan@linux.ibm.com>
-> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> Cc: Paul Mackerras <paulus@samba.org>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Martin KaFai Lau <kafai@fb.com>
-> Cc: Song Liu <songliubraving@fb.com>
-> Cc: Yonghong Song <yhs@fb.com>
-> Cc: netdev@vger.kernel.org
-> Cc: bpf@vger.kernel.org
+Hi David,
 
-Applied, thanks!
+The following pull-request contains BPF updates for your *net* tree.
+
+We've added 6 non-merge commits during the last 6 day(s) which contain
+a total of 8 files changed, 35 insertions(+), 9 deletions(-).
+
+The main changes are:
+
+1) Fix ppc BPF JIT's tail call implementation by performing a second pass
+   to gather a stable JIT context before opcode emission, from Eric Dumazet.
+
+2) Fix build of BPF samples sys_perf_event_open() usage to compiled out
+   unavailable test_attr__{enabled,open} checks. Also fix potential overflows
+   in bpf_map_{area_alloc,charge_init} on 32 bit archs, from Björn Töpel.
+
+3) Fix narrow loads of bpf_sysctl context fields with offset > 0 on big endian
+   archs like s390x and also improve the test coverage, from Ilya Leoshkevich.
+
+Please consider pulling these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+
+Thanks a lot!
+
+Also thanks to reporters, reviewers and testers of commits in this pull-request:
+
+Alexei Starovoitov, Andrey Ignatov, Andrii Nakryiko, Jakub Kicinski, KP 
+Singh, Song Liu
+
+----------------------------------------------------------------
+
+The following changes since commit fc11078dd3514c65eabce166b8431a56d8a667cb:
+
+  Merge git://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf (2019-10-27 12:13:16 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git 
+
+for you to fetch changes up to 7de086909365cd60a5619a45af3f4152516fd75c:
+
+  powerpc/bpf: Fix tail call implementation (2019-11-02 00:32:26 +0100)
+
+----------------------------------------------------------------
+Björn Töpel (3):
+      perf tools: Make usage of test_attr__* optional for perf-sys.h
+      samples/bpf: fix build by setting HAVE_ATTR_TEST to zero
+      bpf: Change size to u64 for bpf_map_{area_alloc, charge_init}()
+
+Daniel Borkmann (1):
+      bpf, doc: Add Andrii as official reviewer to BPF subsystem
+
+Eric Dumazet (1):
+      powerpc/bpf: Fix tail call implementation
+
+Ilya Leoshkevich (1):
+      bpf: Allow narrow loads of bpf_sysctl fields with offset > 0
+
+ MAINTAINERS                               |  1 +
+ arch/powerpc/net/bpf_jit_comp64.c         | 13 +++++++++++++
+ include/linux/bpf.h                       |  4 ++--
+ kernel/bpf/cgroup.c                       |  4 ++--
+ kernel/bpf/syscall.c                      |  7 +++++--
+ samples/bpf/Makefile                      |  1 +
+ tools/perf/perf-sys.h                     |  6 ++++--
+ tools/testing/selftests/bpf/test_sysctl.c |  8 +++++++-
+ 8 files changed, 35 insertions(+), 9 deletions(-)
