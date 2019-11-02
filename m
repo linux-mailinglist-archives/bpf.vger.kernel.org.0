@@ -2,155 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C56A8ED06C
-	for <lists+bpf@lfdr.de>; Sat,  2 Nov 2019 20:37:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1690ED080
+	for <lists+bpf@lfdr.de>; Sat,  2 Nov 2019 21:08:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726841AbfKBThw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 2 Nov 2019 15:37:52 -0400
-Received: from mail-lf1-f68.google.com ([209.85.167.68]:40804 "EHLO
-        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726762AbfKBThv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 2 Nov 2019 15:37:51 -0400
-Received: by mail-lf1-f68.google.com with SMTP id f4so9476970lfk.7;
-        Sat, 02 Nov 2019 12:37:50 -0700 (PDT)
+        id S1726861AbfKBUIz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 2 Nov 2019 16:08:55 -0400
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:45067 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726523AbfKBUIz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 2 Nov 2019 16:08:55 -0400
+Received: by mail-pg1-f194.google.com with SMTP id r1so8588628pgj.12;
+        Sat, 02 Nov 2019 13:08:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=PI1pz1Mj8qVxeQOjA2I9QCG36K5gXfimkl2vr/rf+nM=;
-        b=V09FG3XScxezECesi4NRouuEYT0f+ckqz56GbiFjULHcc56/2CJ6xnZsRILR5H6ovD
-         p+tac9HHf1qJA17cKf2SxX+PzR6Dxuz3mcLIO46JUjoTEJEii/BQJh0Uh6CNumqLS+dR
-         9Q1mhtW6tl942vsvdbp/F1hyhkk14l5cLkGVf7ejs1PCL7nPtxLxkDx1UHGG0jY3a9Vu
-         bytG7EhYN4D0CnznPOXSqtWSAGa/bDThCMi/8ucqzcO4b1V5KJFvEIcTBnNyfiLbxV0n
-         uD+RGq/KJj3el4nSZcFJk/3uPCWnqLASldCeXmcwF6/Nh6ZKPN90FcURk782u42pBYTC
-         7RRw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=zXYT/ZeHsCXMOP8AZMsrYS79rL9tXXrExzyfPs19B/o=;
+        b=h7IvU709Edudo+yyjBuJBbYljj67d8fFRjiKkFYe1tcSdWoViubaKuTLw+idC3ecKQ
+         U7inLhioU6kn0mJS1MFqHAo0uEhpnJKWNzsEan+w3ifT5Rfr9mtUbGiQi3mMaDomeGYN
+         4Oq/9QKx0GfHPem10oPvJxFidW5I4tgc37UAjU7LWTO905PBu2nMOHbHpLp9/3bvUtE0
+         7iv3v61UB4O/Qvza8RecM8qZI6ILBqq7Er6rbCn5bSqUj/WJb0BXkg3OrMSQHQd+12X3
+         Jk6RsEMXBLd8Uo4XpP4mBR18giZWRs+Vo+UbRR+LmjUEolb8IPPQWKW2MMkWDbjngF+y
+         9dJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=PI1pz1Mj8qVxeQOjA2I9QCG36K5gXfimkl2vr/rf+nM=;
-        b=Ps0K08jNQ7nm9Yxgl0FFJvrV/vZs2Kj3EE1rvznjqyj5p1Wd2UZ6H9r3CySizREQlI
-         POJMNn6Ls2RV8TX/aI9Rt8tLoZh4XkpUPHZz3jQKfuqySgGsVuhaMCMA4MJy1ZePFhKQ
-         qSgDypxxaHQrW414xBePXZ1ZJWLR7GJcDbN1AXad0orsCjnW3doE//g2vFgcdpxtF7Hv
-         Ta55BdVRp/QCY9cd8jidCvo9t/SaI2WV8NUHZsXzDUaeDCx8OUCEK5nyg5duXJjFdmX2
-         LgTSncZ6XTFpgwVxWOsSHAr7EjwCh6X32iUgM4nHDZlQem3gb8RYsvcC0tCWR34C1MW0
-         ngGA==
-X-Gm-Message-State: APjAAAWmEG3hxoIFKyc9OEXxeFy6POJ1VxEI6i0ikfr0FKKlvCLHCy26
-        xE1g7HsORe3sknXt3+9+XFU2dXb8B4uEXeIHorU=
-X-Google-Smtp-Source: APXvYqzyN+fZcRaQ+4DmXwiB0/IffT2uGiu2YHKUFW2S16+3dtUmqqEBHI1UQFGvU0l9JaBegwIFRL4503Rh0SgxNKc=
-X-Received: by 2002:a19:7511:: with SMTP id y17mr11948597lfe.19.1572723469300;
- Sat, 02 Nov 2019 12:37:49 -0700 (PDT)
-MIME-Version: 1.0
-References: <157269297658.394725.10672376245672095901.stgit@toke.dk> <CAEf4BzYXhoaiH5x9YZ99ABUMngsjBVRAYJBm+oMbnAHnpn-18g@mail.gmail.com>
-In-Reply-To: <CAEf4BzYXhoaiH5x9YZ99ABUMngsjBVRAYJBm+oMbnAHnpn-18g@mail.gmail.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=zXYT/ZeHsCXMOP8AZMsrYS79rL9tXXrExzyfPs19B/o=;
+        b=C6p7dsT67PBDA+ivnHI7hvNt79Q8izfHKYXFBHtosXFvyV1BdO9RSGA/0wVGzVY/or
+         mgzWFs/1EW2N7gfs4XJzJqsP+oQhbHa2wVEgrXvjk194U5F4liTOlkx0X7uZxzl+8M5n
+         VP0FrDypThr9Yy8ZExG9rZ0gAPq+jutGtk//DZHMsWfB9U7KBeHRM4apmex8hiFjxgB3
+         nazjD1y/4ERj8f5vo7kfmQUtakV7lnWzXmaMErBpZgC1ER4Vltq/KWjAxsajMHlIkf3w
+         ZxV/uT2BaA4ZN+S+oa14SMVHgZ6Pw6dZznqRaOJPYy5t4kI5jmuBFjTv+a+EATrAat42
+         yhIQ==
+X-Gm-Message-State: APjAAAXGQFbcDD9BAE6VO9QKG1Tmq9+ibKN961iBCVZCnPe+I6RyZmQF
+        NIvxOs1wpQnykV9E76gBHwo=
+X-Google-Smtp-Source: APXvYqzky6bIyPy8AJunDvpI4UPDIRRI8D8sEIBrqhtW6ZSz22wzKSj8yzav+NjNlNycgOmTSubxtQ==
+X-Received: by 2002:a65:4489:: with SMTP id l9mr2358594pgq.106.1572725334359;
+        Sat, 02 Nov 2019 13:08:54 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:180::f3bc])
+        by smtp.gmail.com with ESMTPSA id s69sm231025pgs.65.2019.11.02.13.08.53
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 02 Nov 2019 13:08:53 -0700 (PDT)
+Date:   Sat, 2 Nov 2019 13:08:52 -0700
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Sat, 2 Nov 2019 12:37:37 -0700
-Message-ID: <CAADnVQKcG8a39Ai-h2vbWieZiMNLUVE6L_meUv7NeJPCMw2Eig@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 0/5] libbpf: Support automatic pinning of maps
- using 'pinning' BTF attribute
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
+        andrii.nakryiko@gmail.com, john.fastabend@gmail.com
+Subject: Re: [PATCH bpf-next v3 0/8] Fix BPF probe memory helpers
+Message-ID: <20191102200850.cyf3ql5ao43p7vmz@ast-mbp.dhcp.thefacebook.com>
+References: <cover.1572649915.git.daniel@iogearbox.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1572649915.git.daniel@iogearbox.net>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Nov 2, 2019 at 12:09 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Sat, Nov 2, 2019 at 4:09 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@red=
-hat.com> wrote:
-> >
-> > This series adds support to libbpf for reading 'pinning' settings from =
-BTF-based
-> > map definitions. It introduces a new open option which can set the pinn=
-ing path;
-> > if no path is set, /sys/fs/bpf is used as the default. Callers can cust=
-omise the
-> > pinning between open and load by setting the pin path per map, and stil=
-l get the
-> > automatic reuse feature.
-> >
-> > The semantics of the pinning is similar to the iproute2 "PIN_GLOBAL" se=
-tting,
-> > and the eventual goal is to move the iproute2 implementation to be base=
-d on
-> > libbpf and the functions introduced in this series.
-> >
-> > Changelog:
-> >
-> > v6:
-> >   - Fix leak of struct bpf_object in selftest
-> >   - Make struct bpf_map arg const in bpf_map__is_pinned() and bpf_map__=
-get_pin_path()
-> >
-> > v5:
-> >   - Don't pin maps with pinning set, but with a value of LIBBPF_PIN_NON=
-E
-> >   - Add a few more selftests:
-> >     - Should not pin map with pinning set, but value LIBBPF_PIN_NONE
-> >     - Should fail to load a map with an invalid pinning value
-> >     - Should fail to re-use maps with parameter mismatch
-> >   - Alphabetise libbpf.map
-> >   - Whitespace and typo fixes
-> >
-> > v4:
-> >   - Don't check key_type_id and value_type_id when checking for map reu=
-se
-> >     compatibility.
-> >   - Move building of map->pin_path into init_user_btf_map()
-> >   - Get rid of 'pinning' attribute in struct bpf_map
-> >   - Make sure we also create parent directory on auto-pin (new patch 3)=
-.
-> >   - Abort the selftest on error instead of attempting to continue.
-> >   - Support unpinning all pinned maps with bpf_object__unpin_maps(obj, =
-NULL)
-> >   - Support pinning at map->pin_path with bpf_object__pin_maps(obj, NUL=
-L)
-> >   - Make re-pinning a map at the same path a noop
-> >   - Rename the open option to pin_root_path
-> >   - Add a bunch more self-tests for pin_maps(NULL) and unpin_maps(NULL)
-> >   - Fix a couple of smaller nits
-> >
-> > v3:
-> >   - Drop bpf_object__pin_maps_opts() and just use an open option to cus=
-tomise
-> >     the pin path; also don't touch bpf_object__{un,}pin_maps()
-> >   - Integrate pinning and reuse into bpf_object__create_maps() instead =
-of having
-> >     multiple loops though the map structure
-> >   - Make errors in map reuse and pinning fatal to the load procedure
-> >   - Add selftest to exercise pinning feature
-> >   - Rebase series to latest bpf-next
-> >
-> > v2:
-> >   - Drop patch that adds mounting of bpffs
-> >   - Only support a single value of the pinning attribute
-> >   - Add patch to fixup error handling in reuse_fd()
-> >   - Implement the full automatic pinning and map reuse logic on load
-> >
-> > ---
-> >
-> > Toke H=C3=B8iland-J=C3=B8rgensen (5):
-> >       libbpf: Fix error handling in bpf_map__reuse_fd()
-> >       libbpf: Store map pin path and status in struct bpf_map
-> >       libbpf: Move directory creation into _pin() functions
-> >       libbpf: Add auto-pinning of maps when loading BPF objects
-> >       selftests: Add tests for automatic map pinning
-> >
-> >
->
-> For the series:
->
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
+On Sat, Nov 02, 2019 at 12:17:55AM +0100, Daniel Borkmann wrote:
+> This set adds probe_read_{user,kernel}(), probe_read_str_{user,kernel}()
+> helpers, fixes probe_write_user() helper and selftests. For details please
+> see individual patches.
+> 
+> Thanks!
+> 
+> v2 -> v3:
+>   - noticed two more things that are fixed in here:
+>    - bpf uapi helper description used 'int size' for *_str helpers, now u32
+>    - we need TASK_SIZE_MAX + guard page on x86-64 in patch 2 otherwise
+>      we'll trigger the 00c42373d397 warn as well, so full range covered now
 
-Applied. Thanks!
+Applied and I wish I could say: "queued up for -stable".
+
+The warning added by
+commit 00c42373d397 ("x86-64: add warning for non-canonical user access address dereferences")
+dumps the stack trace that looks like kernel panic.  It was reported numerous
+times by scared users and crash detection tools. Until now bpf tracing
+programs couldn't be fixed to avoid that warning. This patch set is a big step
+forward solving user vs kernel access issue. User space tool 'bpftrace'
+provisioned language feature 'kaddr' and 'uaddr' in anticipation of the
+bpf_probe_read_user() helper.
+Thank you Daniel for implementing this fix.
