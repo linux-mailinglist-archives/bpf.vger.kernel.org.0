@@ -2,114 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 80101EE1E1
-	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2019 15:08:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F35EFEE23C
+	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2019 15:27:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727939AbfKDOIJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 4 Nov 2019 09:08:09 -0500
-Received: from smtprelay0214.hostedemail.com ([216.40.44.214]:47015 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727766AbfKDOIJ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 4 Nov 2019 09:08:09 -0500
-X-Greylist: delayed 538 seconds by postgrey-1.27 at vger.kernel.org; Mon, 04 Nov 2019 09:08:08 EST
-Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
-        by smtpgrave07.hostedemail.com (Postfix) with ESMTP id 631D018026108;
-        Mon,  4 Nov 2019 13:59:11 +0000 (UTC)
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id A5FAF18223251;
-        Mon,  4 Nov 2019 13:59:09 +0000 (UTC)
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,rostedt@goodmis.org,:::::::::::::::::::::::::::::::::::::::,RULES_HIT:41:69:355:379:541:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1431:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2693:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3870:3871:3872:3873:4605:5007:6261:6742:7576:7875:8603:8957:10004:10400:10848:10967:11026:11232:11658:11914:12043:12296:12297:12438:12683:12740:12760:12895:13439:14096:14097:14181:14659:14721:21080:21451:21627:30054:30064:30080:30090:30091,0,RBL:146.247.46.6:@goodmis.org:.lbl8.mailshell.net-62.8.41.100 64.201.201.201,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:fn,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:24,LUA_SUMMARY:none
-X-HE-Tag: pot84_899e0f45ebd55
-X-Filterd-Recvd-Size: 3574
-Received: from grimm.local.home (unknown [146.247.46.6])
-        (Authenticated sender: rostedt@goodmis.org)
-        by omf08.hostedemail.com (Postfix) with ESMTPA;
-        Mon,  4 Nov 2019 13:59:05 +0000 (UTC)
-Date:   Mon, 4 Nov 2019 08:59:01 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
-        Li Zefan <lizefan@huawei.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Song Liu <liu.song.a23@gmail.com>, cgroups@vger.kernel.org,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S1728012AbfKDO1S (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 4 Nov 2019 09:27:18 -0500
+Received: from www62.your-server.de ([213.133.104.62]:40298 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727838AbfKDO1S (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 4 Nov 2019 09:27:18 -0500
+Received: from [2a02:120b:2c12:c120:71a0:62dd:894c:fd0e] (helo=localhost)
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1iRdK4-00007m-8c; Mon, 04 Nov 2019 15:27:12 +0100
+From:   Daniel Borkmann <daniel@iogearbox.net>
+To:     davem@davemloft.net
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-block@vger.kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] kernfs: Convert to u64 id
-Message-ID: <20191104085901.06035a26@grimm.local.home>
-In-Reply-To: <20191104084520.398584-2-namhyung@kernel.org>
-References: <20191104084520.398584-1-namhyung@kernel.org>
-        <20191104084520.398584-2-namhyung@kernel.org>
-X-Mailer: Claws Mail 3.17.4git49 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Alexei Starovoitov <ast@kernel.org>
+Subject: [PATCH net-next] bpf: re-fix skip write only files in debugfs
+Date:   Mon,  4 Nov 2019 15:27:02 +0100
+Message-Id: <94ba2eebd8d6c48ca6da8626c9fa37f186d15f92.1572876157.git.daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.101.4/25623/Mon Nov  4 10:57:58 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon,  4 Nov 2019 17:45:19 +0900
-Namhyung Kim <namhyung@kernel.org> wrote:
+Commit 5bc60de50dfe ("selftests: bpf: Don't try to read files without
+read permission") got reverted as the fix was not working as expected
+and real fix came in via 8101e069418d ("selftests: bpf: Skip write
+only files in debugfs"). When bpf-next got merged into net-next, the
+test_offload.py had a small conflict. Fix the resolution in ae8a76fb8b5d
+iby not reintroducing 5bc60de50dfe again.
 
-> From: Tejun Heo <tj@kernel.org>
-> 
-> The kernfs_id was an union type sharing a 64bit id with 32bit ino +
-> gen.  But it resulted in using 32bit inode even on 64bit systems.
-> Also dealing with an union is annoying especially if you just want to
-> use a single id.
-> 
-> Thus let's get rid of the kernfs_node_id type and use u64 directly.
-> The upper 32bit is used for gen and lower is for ino on 32bit systems.
-> The kernfs_id_ino() and kernfs_id_gen() helpers will take care of the
-> bit handling depends on the system word size.
-> 
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Martin KaFai Lau <kafai@fb.com>
-> Cc: Song Liu <songliubraving@fb.com>
-> Cc: Yonghong Song <yhs@fb.com>
-> Cc: Jens Axboe <axboe@kernel.dk>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: linux-block@vger.kernel.org
-> Cc: bpf@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Signed-off-by: Tejun Heo <tj@kernel.org>
-> [namhyung: fix build error in bpf_get_current_cgroup_id()]
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> ---
->  fs/kernfs/dir.c                  | 36 ++++++++-----
->  fs/kernfs/file.c                 |  4 +-
->  fs/kernfs/inode.c                |  4 +-
->  fs/kernfs/kernfs-internal.h      |  2 -
->  fs/kernfs/mount.c                | 92 +++++++++++++++++++-------------
->  include/linux/cgroup.h           | 17 +++---
->  include/linux/exportfs.h         |  5 ++
->  include/linux/kernfs.h           | 47 +++++++++-------
+Fixes: ae8a76fb8b5d ("Merge git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next")
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Jakub Kicinski <jakub.kicinski@netronome.com>
+Cc: Alexei Starovoitov <ast@kernel.org>
+---
+ [
+   Hey Jakub, please take a look at the below merge fix ... still trying
+   to figure out why the netdev doesn't appear on my test node when I
+   wanted to run the test script, but seems independent of the fix.
 
->  include/trace/events/writeback.h | 92 ++++++++++++++++----------------
+   [...]
+   [ 1901.270493] netdevsim: probe of netdevsim4 failed with error -17
+   [...]
 
-I only looked at the above file, and didn't see anything bad about it.
+   # ./test_offload.py
+   Test destruction of generic XDP...
+   Traceback (most recent call last):
+    File "./test_offload.py", line 800, in <module>
+     simdev = NetdevSimDev()
+    File "./test_offload.py", line 355, in __init__
+     self.wait_for_netdevs(port_count)
+    File "./test_offload.py", line 390, in wait_for_netdevs
+     raise Exception("netdevices did not appear within timeout")
+   Exception: netdevices did not appear within timeout
+ ]
 
-Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+ tools/testing/selftests/bpf/test_offload.py | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
--- Steve
-
-
->  kernel/bpf/helpers.c             |  2 +-
->  kernel/cgroup/cgroup.c           |  5 +-
->  kernel/trace/blktrace.c          | 66 +++++++++++------------
->  net/core/filter.c                |  4 +-
->  13 files changed, 207 insertions(+), 169 deletions(-)
+diff --git a/tools/testing/selftests/bpf/test_offload.py b/tools/testing/selftests/bpf/test_offload.py
+index fc8a4319c1b2..1afa22c88e42 100755
+--- a/tools/testing/selftests/bpf/test_offload.py
++++ b/tools/testing/selftests/bpf/test_offload.py
+@@ -314,7 +314,10 @@ def bpftool_prog_load(sample, file_name, maps=[], prog_type="xdp", dev=None,
+                 continue
+ 
+             p = os.path.join(path, f)
+-            if os.path.isfile(p) and os.access(p, os.R_OK):
++            if not os.stat(p).st_mode & stat.S_IRUSR:
++                continue
++
++            if os.path.isfile(p):
+                 _, out = cmd('cat %s/%s' % (path, f))
+                 dfs[f] = out.strip()
+             elif os.path.isdir(p):
+-- 
+2.21.0
 
