@@ -2,143 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CA7AEDC53
-	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2019 11:18:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BFE6EDC5A
+	for <lists+bpf@lfdr.de>; Mon,  4 Nov 2019 11:21:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728346AbfKDKSc convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Mon, 4 Nov 2019 05:18:32 -0500
-Received: from mx1.redhat.com ([209.132.183.28]:34424 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726633AbfKDKSb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 4 Nov 2019 05:18:31 -0500
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com [209.85.208.197])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 7EEE287634
-        for <bpf@vger.kernel.org>; Mon,  4 Nov 2019 10:18:30 +0000 (UTC)
-Received: by mail-lj1-f197.google.com with SMTP id o20so332395ljg.0
-        for <bpf@vger.kernel.org>; Mon, 04 Nov 2019 02:18:30 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=+7qFcNlUl+8M23vTnMU10G5kkgLKUsBOQSDTGQQBufc=;
-        b=kAeZ8iLFhQPqwZqiZxHbZaDDFYUkMLVSs8hT6r45BzVhbIXbEz3ejqR/RtGvB8/0jD
-         CM8MzzuUfo9mbrUYjp4EnHaUQ+07+riAnuW52U3vpJkhKoVR9EPYtcZ4NBwE+aGBw9ak
-         LsLQR1/CnGhcxYIjMR/U4M+Xemuls5ZUj2xUe1xIK20F3gAmho4JvyUTp1EUsSgFB+Pi
-         6aQFE066CkYuJ4UMiuO073Kgax/zkWQufjaiHY5PQucokUADo39qrxlzS2S90BEen+ZY
-         Xh2QOGcmIeAQtcSUeB9uhPzrNKVM8avgydIfDlSVNofqS4Sblv5HQfSmPvT0hDmCf5fl
-         cmDA==
-X-Gm-Message-State: APjAAAW0MGghaYYqiSyBsvxGed+FTd6RBFB73d7ffh30Pn3jwPgdtlvd
-        dSnMGOctYSu1xFjY2ajU7AGFgqvwfqi2jvKslpdaT/aObqomrrrsuP7FhA0QqUxJDQz3RDnEvC6
-        d4gF9srdX7dAN
-X-Received: by 2002:a2e:9094:: with SMTP id l20mr17387419ljg.246.1572862708795;
-        Mon, 04 Nov 2019 02:18:28 -0800 (PST)
-X-Google-Smtp-Source: APXvYqywzFF2qNaZfGs4Gjhy68LoH5Zq/aodrWDlObf36tW8H0TMV0Z3L1zomKXCLeWnvenxd02kOw==
-X-Received: by 2002:a2e:9094:: with SMTP id l20mr17387398ljg.246.1572862708581;
-        Mon, 04 Nov 2019 02:18:28 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk (borgediget.toke.dk. [85.204.121.218])
-        by smtp.gmail.com with ESMTPSA id q189sm3405061ljq.79.2019.11.04.02.18.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Nov 2019 02:18:27 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id A796E1818B5; Mon,  4 Nov 2019 11:18:26 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v6 0/5] libbpf: Support automatic pinning of maps using 'pinning' BTF attribute
-In-Reply-To: <CAEf4BzYXhoaiH5x9YZ99ABUMngsjBVRAYJBm+oMbnAHnpn-18g@mail.gmail.com>
-References: <157269297658.394725.10672376245672095901.stgit@toke.dk> <CAEf4BzYXhoaiH5x9YZ99ABUMngsjBVRAYJBm+oMbnAHnpn-18g@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Mon, 04 Nov 2019 11:18:26 +0100
-Message-ID: <87lfswkkr1.fsf@toke.dk>
+        id S1727322AbfKDKVo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 4 Nov 2019 05:21:44 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:59470 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726441AbfKDKVo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 4 Nov 2019 05:21:44 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xA4A89KP154426;
+        Mon, 4 Nov 2019 10:21:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : references : date : in-reply-to : message-id : mime-version :
+ content-type; s=corp-2019-08-05;
+ bh=HhlZPJXEwbAOsmaU0YyhVSI5tsiYMX2rE1wf8OBs0dY=;
+ b=eHI83e+rnN2SV9Fi/7MjhGz1LV2L6fVfhrYGWMDPGNUjYqut1fgFe7v9GwbB2CHl19MO
+ rE1UPRoU34dMxMLFrj4OSQL9jrnOuPltUKy7/hbYhmrPILw9zkGdQ4lepoOddNqJHfUs
+ hBtimhtBbtqvWqzgaBzouQVSu5Rs/c03NMzBNxh9/TvnMiWlyRJ7X8Pufya437UIlCGo
+ QpD/xwt5fGTGSWlV+5Pu4FWbhfQU20tYUu3ocwot3PonAPnEZrPfEcJPVSaa+uV0iio8
+ KF0SJCmVeWAv/epDqzsVq5//gh1o3R0BikpQB+CKW/cPgTK0G8bdCKWObVcv4qnJeNlW JQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 2w12eqx4r1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 04 Nov 2019 10:21:41 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xA4A7StD128539;
+        Mon, 4 Nov 2019 10:21:40 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 2w1kaadftc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 04 Nov 2019 10:21:40 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id xA4ALePI010595;
+        Mon, 4 Nov 2019 10:21:40 GMT
+Received: from termi.oracle.com (/10.175.62.217)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 04 Nov 2019 02:21:39 -0800
+From:   jose.marchesi@oracle.com (Jose E. Marchesi)
+To:     Yonghong Song <yhs@fb.com>
+Cc:     "bpf\@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: Re: initiated discussion to support attribute address_space in clang
+References: <87lfutgvsu.fsf@oracle.com>
+        <79a43f7f-b463-5f40-7830-f488d178b0a4@fb.com>
+Date:   Mon, 04 Nov 2019 11:21:34 +0100
+In-Reply-To: <79a43f7f-b463-5f40-7830-f488d178b0a4@fb.com> (Yonghong Song's
+        message of "Thu, 24 Oct 2019 16:56:06 +0000")
+Message-ID: <87tv7kyma9.fsf@oracle.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9430 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1908290000 definitions=main-1911040101
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9430 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
+ definitions=main-1911040101
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-> On Sat, Nov 2, 2019 at 4:09 AM Toke Høiland-Jørgensen <toke@redhat.com> wrote:
->>
->> This series adds support to libbpf for reading 'pinning' settings from BTF-based
->> map definitions. It introduces a new open option which can set the pinning path;
->> if no path is set, /sys/fs/bpf is used as the default. Callers can customise the
->> pinning between open and load by setting the pin path per map, and still get the
->> automatic reuse feature.
->>
->> The semantics of the pinning is similar to the iproute2 "PIN_GLOBAL" setting,
->> and the eventual goal is to move the iproute2 implementation to be based on
->> libbpf and the functions introduced in this series.
->>
->> Changelog:
->>
->> v6:
->>   - Fix leak of struct bpf_object in selftest
->>   - Make struct bpf_map arg const in bpf_map__is_pinned() and bpf_map__get_pin_path()
->>
->> v5:
->>   - Don't pin maps with pinning set, but with a value of LIBBPF_PIN_NONE
->>   - Add a few more selftests:
->>     - Should not pin map with pinning set, but value LIBBPF_PIN_NONE
->>     - Should fail to load a map with an invalid pinning value
->>     - Should fail to re-use maps with parameter mismatch
->>   - Alphabetise libbpf.map
->>   - Whitespace and typo fixes
->>
->> v4:
->>   - Don't check key_type_id and value_type_id when checking for map reuse
->>     compatibility.
->>   - Move building of map->pin_path into init_user_btf_map()
->>   - Get rid of 'pinning' attribute in struct bpf_map
->>   - Make sure we also create parent directory on auto-pin (new patch 3).
->>   - Abort the selftest on error instead of attempting to continue.
->>   - Support unpinning all pinned maps with bpf_object__unpin_maps(obj, NULL)
->>   - Support pinning at map->pin_path with bpf_object__pin_maps(obj, NULL)
->>   - Make re-pinning a map at the same path a noop
->>   - Rename the open option to pin_root_path
->>   - Add a bunch more self-tests for pin_maps(NULL) and unpin_maps(NULL)
->>   - Fix a couple of smaller nits
->>
->> v3:
->>   - Drop bpf_object__pin_maps_opts() and just use an open option to customise
->>     the pin path; also don't touch bpf_object__{un,}pin_maps()
->>   - Integrate pinning and reuse into bpf_object__create_maps() instead of having
->>     multiple loops though the map structure
->>   - Make errors in map reuse and pinning fatal to the load procedure
->>   - Add selftest to exercise pinning feature
->>   - Rebase series to latest bpf-next
->>
->> v2:
->>   - Drop patch that adds mounting of bpffs
->>   - Only support a single value of the pinning attribute
->>   - Add patch to fixup error handling in reuse_fd()
->>   - Implement the full automatic pinning and map reuse logic on load
->>
->> ---
->>
->> Toke Høiland-Jørgensen (5):
->>       libbpf: Fix error handling in bpf_map__reuse_fd()
->>       libbpf: Store map pin path and status in struct bpf_map
->>       libbpf: Move directory creation into _pin() functions
->>       libbpf: Add auto-pinning of maps when loading BPF objects
->>       selftests: Add tests for automatic map pinning
->>
->>
->
-> For the series:
->
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
+Hi Yonghong.
+    
+    I just initiated a discussion (RFC patch 
+    https://reviews.llvm.org/D69393) for llvm/clang to support user 
+    address_space attribute.
+    
+    I am not able to add your name in subscriber list as you probably
+    not registered with llvm mailing list or phabricator.
+    
+    Just let you know so we can have an eventual proposal which
+    will be also good for gcc. Please participate in discussion.
 
-Awesome! Thank you for your thorough reviews :)
+Thanks for reaching out, and sorry for the delay in replying: I needed
+some time to process my backlog after a couple of weeks off.
 
--Toke
+I just created an account in phabricator (jemarch).  Will follow up
+there.
+
+Salud!
