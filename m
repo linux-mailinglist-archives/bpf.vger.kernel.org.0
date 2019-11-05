@@ -2,110 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 003E8EFFCF
-	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2019 15:32:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0431F01AE
+	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2019 16:40:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730671AbfKEOcD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 Nov 2019 09:32:03 -0500
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:40011 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727888AbfKEOcD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 5 Nov 2019 09:32:03 -0500
-Received: by mail-pf1-f195.google.com with SMTP id r4so15555805pfl.7;
-        Tue, 05 Nov 2019 06:32:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=x1ZY+pRuLvj8PjCeylb49ZokNTiENjUK443/DNBfF84=;
-        b=iN8FBBuGC6xd9sMBFu7GTzC72weRBViDl3bsEGR4CTmAPj/dc7jqf+h0og9aZKluUc
-         oAoroySxQELZ4aUd8u/UROV7u+ncvkHnYkyaUdVIeafXRMy3aSIvjdwwR/w9myfYr4hg
-         27gioQjmXIFkkA14Kn5SgJFZN5T4ymuYWP2727PvblfH8/1MvKqGn8fIEoXwRmKsn6lH
-         e4jYzt0UM4+bMtMEgMC2e8GByCLOKhwvWad5SQVSBIfZeP06X8ipUfjyxo+b1JTPnl3x
-         Gs68rUXmAq8MlZFFI3cUtTkDr/6SVQaVfK54KiJ4QYcHulK04kwFfGcpfjvy8/etevZy
-         CXqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=x1ZY+pRuLvj8PjCeylb49ZokNTiENjUK443/DNBfF84=;
-        b=FP06kH/A/tFyJniSayUmH49WqHibzrbBe2Pp7wOUAaiVYA1yQNeXpEB9DbgACxOCGU
-         LafnYAG5BJiYqIMcqpmVD46ysFL44KCr7Sz/fc/vHOOTN2p29tWyrKJ7gAOvlR4VdJEN
-         OMNKs21yF3BGHO9gy9+K4pppu/L/K9siwmY+7bDVf2j24JEKiQu6NGVLhm8oSYsESQGB
-         j/iyfSW3Oc06qAEKOyC0E6AKY7FUEKIIlxwa90hVxr41TfztufNzVdcxnX2acHQgutMW
-         ryiyrCHjpbBzCJj+jBMAk3l20UhJ62I8ilczlwPdKgj7k+a//bNTFQ9lo12a80AjfEF6
-         SDnQ==
-X-Gm-Message-State: APjAAAUU76XZaRYGl4E0hdnqG+IlziDgF15kVVMMbCzm8Cs+q6xCZ22Z
-        eeXtSo9Rf5eSg/S70g+hhZo=
-X-Google-Smtp-Source: APXvYqzNOq1oXIxpMrBOJEVGfQS1+teAlyJYM6LCrm8oCZHXUDmNqkoyUNwiBVbDCP9hZBXf7cTvpw==
-X-Received: by 2002:a63:a34e:: with SMTP id v14mr120527pgn.58.1572964321247;
-        Tue, 05 Nov 2019 06:32:01 -0800 (PST)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:180::770a])
-        by smtp.gmail.com with ESMTPSA id e1sm18505868pgv.82.2019.11.05.06.31.57
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 05 Nov 2019 06:31:58 -0800 (PST)
-Date:   Tue, 5 Nov 2019 06:31:56 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Alexei Starovoitov <ast@kernel.org>
-Cc:     davem@davemloft.net, daniel@iogearbox.net, peterz@infradead.org,
-        rostedt@goodmis.org, x86@kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, kernel-team@fb.com
+        id S2389557AbfKEPkc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 Nov 2019 10:40:32 -0500
+Received: from smtprelay0160.hostedemail.com ([216.40.44.160]:51043 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2389507AbfKEPkc (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 5 Nov 2019 10:40:32 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 7EE5E182CF669;
+        Tue,  5 Nov 2019 15:40:30 +0000 (UTC)
+X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
+X-Spam-Summary: 30,2,0,,d41d8cd98f00b204,rostedt@goodmis.org,:::::::::::::::::::::,RULES_HIT:41:355:379:541:599:800:960:966:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1431:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2194:2196:2198:2199:2200:2201:2393:2553:2559:2562:2693:2739:2895:2914:2987:3138:3139:3140:3141:3142:3354:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:4250:4385:5007:6119:6120:6261:7514:7875:7901:7903:8778:10010:10400:10848:10967:11026:11232:11658:11914:12043:12050:12296:12297:12438:12663:12740:12760:12895:13161:13229:13439:13972:14096:14097:14181:14659:14721:21080:21324:21433:21627:21740:21789:21939:30054:30070:30083:30090:30091,0,RBL:146.247.46.6:@goodmis.org:.lbl8.mailshell.net-62.14.41.100 64.201.201.201,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:fn,MSBL:0,DNSBL:neutral,Custom_rules:0:1:0,LFtime:25,LUA_SUMMARY:none
+X-HE-Tag: mom97_3e4e71219012e
+X-Filterd-Recvd-Size: 3221
+Received: from grimm.local.home (unknown [146.247.46.6])
+        (Authenticated sender: rostedt@goodmis.org)
+        by omf20.hostedemail.com (Postfix) with ESMTPA;
+        Tue,  5 Nov 2019 15:40:27 +0000 (UTC)
+Date:   Tue, 5 Nov 2019 10:40:24 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>, davem@davemloft.net,
+        daniel@iogearbox.net, peterz@infradead.org, x86@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>
 Subject: Re: [PATCH bpf-next 0/7] Introduce BPF trampoline
-Message-ID: <20191105143154.umojkotnvcx4yeuq@ast-mbp.dhcp.thefacebook.com>
+Message-ID: <20191105104024.4e99a630@grimm.local.home>
+In-Reply-To: <20191105143154.umojkotnvcx4yeuq@ast-mbp.dhcp.thefacebook.com>
 References: <20191102220025.2475981-1-ast@kernel.org>
+        <20191105143154.umojkotnvcx4yeuq@ast-mbp.dhcp.thefacebook.com>
+X-Mailer: Claws Mail 3.17.4git49 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191102220025.2475981-1-ast@kernel.org>
-User-Agent: NeoMutt/20180223
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Nov 02, 2019 at 03:00:18PM -0700, Alexei Starovoitov wrote:
-> Introduce BPF trampoline that works as a bridge between kernel functions and
-> BPF programs. The first use case is fentry/fexit BPF programs that are roughly
-> equivalent to kprobe/kretprobe. Unlike k[ret]probe there is practically zero
-> overhead to call a set of BPF programs before or after kernel function. In the
-> future patches networking use cases will be explored. For example: BPF
-> trampoline can be used to call XDP programs from drivers with direct calls or
-> wrapping BPF program into another BPF program.
-> 
-> The patch set depends on register_ftrace_direct() API. It's not upstream yet
-> and available in [1]. The first patch is a hack to workaround this dependency.
-> The idea is to land this set via bpf-next tree and land register_ftrace_direct
-> via Steven's ftrace tree. Then during the merge window revert the first patch.
+On Tue, 5 Nov 2019 06:31:56 -0800
+Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+
 > Steven,
-> do you think it's workable?
-> As an alternative we can route register_ftrace_direct patches via bpf-next ?
-> 
-> Peter's static_call patches [2] are solving the issue of indirect call overhead
-> for large class of kernel use cases, but unfortunately don't help calling into
-> a set of BPF programs.  BPF trampoline's first goal is to translate kernel
-> calling convention into BPF calling convention. The second goal is to call a
-> set of programs efficiently. In the future we can replace BPF_PROG_RUN_ARRAY
-> with BPF trampoline variant. Another future work is to add support for static_key,
-> static_jmp and static_call inside generated BPF trampoline.
-> 
-> Please see patch 3 for details.
-> 
-> [1]
-> https://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git/commit/?h=ftrace/direct&id=3ac423d902727884a389699fd7294c0e2e94b29c
+> look slike your branch hasn't been updated in 13 days.
+> Are you still planning to fix the bugs and send it in for the merge window?
+> I cannot afford to wait a full release, since I have my own follow for
+> XDP/networking based on this and other folks are building their stuff on top of
+> BPF trampoline too. So I'm thinking for v2 I will switch to using text_poke()
+> and add appropriate guard checks, so it will be safe out of the box without
+> ftrace dependency. If register_ftrace_direct() indeed comes in soon I'll
+> switch to that and will make bpf trampoline to co-operate with ftrace.
+> text_poke approach will make it such that what ever comes first to trace the
+> fentry (either bpf trampoline or ftrace) will grab the nop and the other system
+> will not be able to attach. That's safe and correct, but certainly not nice
+> long term. So the fix will be needed. The key point that switching to text_poke
+> will remove the register_ftrace_direct() dependency, unblock bpf developers and
+> will give you time to land your stuff at your pace.
 
-Steven,
-look slike your branch hasn't been updated in 13 days.
-Are you still planning to fix the bugs and send it in for the merge window?
-I cannot afford to wait a full release, since I have my own follow for
-XDP/networking based on this and other folks are building their stuff on top of
-BPF trampoline too. So I'm thinking for v2 I will switch to using text_poke()
-and add appropriate guard checks, so it will be safe out of the box without
-ftrace dependency. If register_ftrace_direct() indeed comes in soon I'll
-switch to that and will make bpf trampoline to co-operate with ftrace.
-text_poke approach will make it such that what ever comes first to trace the
-fentry (either bpf trampoline or ftrace) will grab the nop and the other system
-will not be able to attach. That's safe and correct, but certainly not nice
-long term. So the fix will be needed. The key point that switching to text_poke
-will remove the register_ftrace_direct() dependency, unblock bpf developers and
-will give you time to land your stuff at your pace.
+Alexei,
 
+I am still working on it, and if it seems stable enough I will submit
+it for this merge window, but there's no guarantees. It's ready when
+it's ready. I gave 5 talks last week (4 in Lyon, and one is Sofia,
+Bulgaria), thus I did not have time to work on it then. I'm currently
+in the Sofia office, and I got a version working that seems to be
+stable. But I still have to break it up into a patch series, and run it
+through more stress tests.
+
+If you have to wait you may need to wait. The Linux kernel isn't
+something that is suppose to put in temporary hacks, just to satisfy
+someone's deadline. Feel free to fork the kernel if you need to. That's
+what everyone else does.
+
+The RT patch has been out of tree specifically because we never pushed
+in the hacks to make it work. We could have landed RT in the tree years
+ago, but we *never* pushed in something that wasn't ready. I suggest
+the BPF folks follow suit.
+
+-- Steve
