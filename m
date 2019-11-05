@@ -2,125 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 14E4DF04A8
-	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2019 19:04:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 806C8F04DC
+	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2019 19:16:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389356AbfKESED (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 Nov 2019 13:04:03 -0500
-Received: from smtp-sh2.infomaniak.ch ([128.65.195.6]:36975 "EHLO
-        smtp-sh2.infomaniak.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388711AbfKESED (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 5 Nov 2019 13:04:03 -0500
-Received: from smtp6.infomaniak.ch (smtp6.infomaniak.ch [83.166.132.19])
-        by smtp-sh2.infomaniak.ch (8.14.4/8.14.4/Debian-8+deb8u2) with ESMTP id xA5I1n5F051832
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 5 Nov 2019 19:01:49 +0100
-Received: from ns3096276.ip-94-23-54.eu (ns3096276.ip-94-23-54.eu [94.23.54.103])
-        (authenticated bits=0)
-        by smtp6.infomaniak.ch (8.14.5/8.14.5) with ESMTP id xA5I1fcs055903
-        (version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=NO);
-        Tue, 5 Nov 2019 19:01:42 +0100
-Subject: Re: [PATCH bpf-next v13 4/7] landlock: Add ptrace LSM hooks
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Drysdale <drysdale@google.com>,
-        Florent Revest <revest@chromium.org>,
-        James Morris <jmorris@namei.org>, Jann Horn <jann@thejh.net>,
-        John Johansen <john.johansen@canonical.com>,
+        id S2390520AbfKESQb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 Nov 2019 13:16:31 -0500
+Received: from hqemgate14.nvidia.com ([216.228.121.143]:11085 "EHLO
+        hqemgate14.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390476AbfKESQb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 5 Nov 2019 13:16:31 -0500
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate14.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5dc1bc810000>; Tue, 05 Nov 2019 10:16:33 -0800
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Tue, 05 Nov 2019 10:16:27 -0800
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Tue, 05 Nov 2019 10:16:27 -0800
+Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 5 Nov
+ 2019 18:16:25 +0000
+Subject: Re: [PATCH 09/19] drm/via: set FOLL_PIN via pin_user_pages_fast()
+To:     Ira Weiny <ira.weiny@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
         Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        KP Singh <kpsingh@chromium.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mickael.salaun@ssi.gouv.fr>,
-        Paul Moore <paul@paul-moore.com>,
-        Sargun Dhillon <sargun@sargun.me>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Paul Mackerras <paulus@samba.org>,
         Shuah Khan <shuah@kernel.org>,
-        Stephen Smalley <sds@tycho.nsa.gov>, Tejun Heo <tj@kernel.org>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Tycho Andersen <tycho@tycho.ws>,
-        Will Drewry <wad@chromium.org>, bpf@vger.kernel.org,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-security-module@vger.kernel.org, netdev@vger.kernel.org
-References: <20191104172146.30797-1-mic@digikod.net>
- <20191104172146.30797-5-mic@digikod.net>
- <20191105171824.dfve44gjiftpnvy7@ast-mbp.dhcp.thefacebook.com>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Openpgp: preference=signencrypt
-Message-ID: <23acf523-dbc4-855b-ca49-2bbfa5e7117e@digikod.net>
-Date:   Tue, 5 Nov 2019 19:01:41 +0100
-User-Agent: 
+        Vlastimil Babka <vbabka@suse.cz>, <bpf@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <kvm@vger.kernel.org>,
+        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <linux-media@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <netdev@vger.kernel.org>,
+        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>
+References: <20191030224930.3990755-1-jhubbard@nvidia.com>
+ <20191030224930.3990755-10-jhubbard@nvidia.com>
+ <20191031233628.GI14771@iweiny-DESK2.sc.intel.com>
+ <20191104181055.GP10326@phenom.ffwll.local>
+ <48d22c77-c313-59ff-4847-bc9a9813b8a7@nvidia.com>
+ <20191105094936.GZ10326@phenom.ffwll.local>
+From:   John Hubbard <jhubbard@nvidia.com>
+X-Nvconfidentiality: public
+Message-ID: <9b9637f4-34e0-a665-a9c8-8fd59ff71063@nvidia.com>
+Date:   Tue, 5 Nov 2019 10:16:25 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20191105171824.dfve44gjiftpnvy7@ast-mbp.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=iso-8859-15
+In-Reply-To: <20191105094936.GZ10326@phenom.ffwll.local>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Antivirus: Dr.Web (R) for Unix mail servers drweb plugin ver.6.0.2.8
-X-Antivirus-Code: 0x100000
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1572977793; bh=R0RxaBiDFTq2JKu4s4y6dD52czu96JnYA/nMzL9A6aE=;
+        h=X-PGP-Universal:Subject:To:References:From:X-Nvconfidentiality:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=ZSBhPlkU00U2SId5ohXT4qfb7S3CRfF2QxUJyZ0MYASa23SxluEpDZf1THjnsB9k6
+         3RTrsq64bDaJH6/fLXRNFkXaPhRm5A6gkx6RZdlDie0bGzD/RBx0po9cAdeDcz/1hI
+         lKGfT57a8xEYWihKfruZKPu2iv+9HpU34riNOb6hU1aeKe+Fw0TM0CdzQuEAMyVnn3
+         zPBLdfbRqsxHTlb9Dt1LPnE+4oLXwLOgCALb/FxR0bVQqL9MMuMnHnx6cwBXcGJC2q
+         423PWzhyAI/MHMUhEHpOr+pguDR21zYFt0jsH+WX73ZsVIDhQ9aKqbWLguXDJ6ZEPH
+         qkWctNU3sUmkw==
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-On 05/11/2019 18:18, Alexei Starovoitov wrote:
-> On Mon, Nov 04, 2019 at 06:21:43PM +0100, Mickaël Salaün wrote:
->> Add a first Landlock hook that can be used to enforce a security policy
->> or to audit some process activities.  For a sandboxing use-case, it is
->> needed to inform the kernel if a task can legitimately debug another.
->> ptrace(2) can also be used by an attacker to impersonate another task
->> and remain undetected while performing malicious activities.
+On 11/5/19 1:49 AM, Daniel Vetter wrote:
+> On Mon, Nov 04, 2019 at 11:20:38AM -0800, John Hubbard wrote:
+>> On 11/4/19 10:10 AM, Daniel Vetter wrote:
+>>> On Thu, Oct 31, 2019 at 04:36:28PM -0700, Ira Weiny wrote:
+>>>> On Wed, Oct 30, 2019 at 03:49:20PM -0700, John Hubbard wrote:
+>>>>> Convert drm/via to use the new pin_user_pages_fast() call, which sets
+>>>>> FOLL_PIN. Setting FOLL_PIN is now required for code that requires
+>>>>> tracking of pinned pages, and therefore for any code that calls
+>>>>> put_user_page().
+>>>>>
+>>>>
+>>>> Reviewed-by: Ira Weiny <ira.weiny@intel.com>
+>>>
+>>> No one's touching the via driver anymore, so feel free to merge this
+>>> through whatever tree suits best (aka I'll drop this on the floor and
+>>> forget about it now).
+>>>
+>>> Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+>>>
 >>
->> Using ptrace(2) and related features on a target process can lead to a
->> privilege escalation.  A sandboxed task must then be able to tell the
->> kernel if another task is more privileged, via ptrace_may_access().
->>
->> Signed-off-by: Mickaël Salaün <mic@digikod.net>
-> ...
->> +static int check_ptrace(struct landlock_domain *domain,
->> +		struct task_struct *tracer, struct task_struct *tracee)
->> +{
->> +	struct landlock_hook_ctx_ptrace ctx_ptrace = {
->> +		.prog_ctx = {
->> +			.tracer = (uintptr_t)tracer,
->> +			.tracee = (uintptr_t)tracee,
->> +		},
->> +	};
+>> OK, great. Yes, in fact, I'm hoping Andrew can just push the whole series
+>> in through the mm tree, because that would allow it to be done in one 
+>> shot, in 5.5
 > 
-> So you're passing two kernel pointers obfuscated as u64 into bpf program
-> yet claiming that the end goal is to make landlock unprivileged?!
-> The most basic security hole in the tool that is aiming to provide security.
+> btw is there more? We should have a bunch more userptr stuff in various
+> drivers, so was really surprised that drm/via is the only thing in your
+> series.
 
-How could you used these pointers without dedicated BPF helpers? This
-context items are typed as PTR_TO_TASK and can't be used without a
-dedicated helper able to deal with ARG_PTR_TO_TASK. Moreover, pointer
-arithmetic is explicitly forbidden (and I added tests for that). Did I
-miss something?
 
-> 
-> I think the only way bpf-based LSM can land is both landlock and KRSI
-> developers work together on a design that solves all use cases.
+There is more, but:
 
-As I said in a previous cover letter [1], that would be great. I think
-that the current Landlock bases (almost everything from this series
-except the seccomp interface) should meet both needs, but I would like
-to have the point of view of the KRSI developers.
+1) Fortunately, the opt-in nature of FOLL_PIN allows converting a few call
+sites at a time. And so this patchset limits itself to converting the bare
+minimum required to get started, which is: 
 
-[1] https://lore.kernel.org/lkml/20191029171505.6650-1-mic@digikod.net/
+    a) calls sites that have already been converted to put_user_page(), 
+       and
 
-> BPF is capable
-> to be a superset of all existing LSMs whereas landlock and KRSI propsals today
-> are custom solutions to specific security concerns. BPF subsystem was extended
-> with custom things in the past. In networking we have lwt, skb, tc, xdp, sk
-> program types with a lot of overlapping functionality. We couldn't figure out
-> how to generalize them into single 'networking' program. Now we can and we
-> should. Accepting two partially overlapping bpf-based LSMs would be repeating
-> the same mistake again.
+    b) call sites that set FOLL_LONGTERM.
 
-I'll let the LSM maintainers comment on whether BPF could be a superset
-of all LSM, but given the complexity of an access-control system, I have
-some doubts though. Anyway, we need to start somewhere and then iterate.
-This patch series is a first step.
+So yes, follow-up patches will be required. This is not everything.
+In fact, if I can fix this series up quickly enough that it makes it into
+mmotm soon-ish, then there may be time to get some follow-patches on top
+of it, in time for 5.5.
+
+
+2) If I recall correctly, Jerome and maybe others are working to remove
+as many get_user_pages() callers from drm as possible, and instead use
+a non-pinned page approach, with mmu notifiers instead.  I'm not sure of
+the exact status of that work, but I see that etnaviv, amdgpu, i915, and
+radeon still call gup() in linux-next.
+
+Anyway, some of those call sites will disappear. Although I'd expect a 
+few to remain, because I doubt the simpler GPUs can support page faulting.
+
+
+
+thanks,
+
+John Hubbard
+NVIDIA
