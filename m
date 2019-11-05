@@ -2,631 +2,166 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E4B06F09DC
-	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2019 23:51:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8294AF0A24
+	for <lists+bpf@lfdr.de>; Wed,  6 Nov 2019 00:18:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730141AbfKEWvY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 Nov 2019 17:51:24 -0500
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:43360 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730054AbfKEWvY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 5 Nov 2019 17:51:24 -0500
-Received: by mail-pf1-f193.google.com with SMTP id 3so17171623pfb.10;
-        Tue, 05 Nov 2019 14:51:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=BHLb89IQn4CwvFYvlyVSrgWaNN60kDciRLkDgxoLy1g=;
-        b=kxzf5beQ32Ix7uUotx30KiPllHcdfFHp936ZjmuxJGYlI+m9IFW3CePA7WdSzIZfeO
-         JaBKbFThohleE4n6Jm+56zopYW3yHpTKrHavdi1DVSn2mWSeJHAgRVF9Y1rwzNFsJoVH
-         FcA4Rj4FA1CG83ltnneYioOmUoq7if3sxSsloKr2TVeGZSsK9ISU6DlQ9WrBXLp8lAQ8
-         1tWrgvktQeHdQ8m8d2J5UB6JH8cG1AFbenvqk+2kbf/t07LKOBdbXixsJtciO4jf0t0M
-         3TTOjqpy/v6iBXvam6ciax5gp5ntcYsD705fWARVsYleg860vnAiVfbhVQyV1N6gi8Qm
-         7BRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=BHLb89IQn4CwvFYvlyVSrgWaNN60kDciRLkDgxoLy1g=;
-        b=lyHNFvlknHHTENonSEnKs0srE3VjXJY0QJJFZsBof6r4mYeA9fR9VKxdj9fObcrTBd
-         yQmD9n2tpc/RL8/C0RMO2giZn1w3Kn2bxeD1nXfhpKTgQ0QoysT+mGrTGFIN4PYUW2kL
-         UsgGVHUjvRdKZPJmyEiVRMl+Duh5lRA7lVvP1kWAX5a4+/tk3iAmU7KDRYFW82FlEGLZ
-         sJBdnOWrZemOrUaS9utGLAR0O3xPFK92h6A5mm6b1RKpvGDtJ0pN5s/Js43iC380lXVc
-         SAkB8ECt5d611EbzzTRRUsV3uDAPMRFZVRY+dFjeuuEA1FQTDLeFrDjzMxwCk1GCAdLC
-         +UXw==
-X-Gm-Message-State: APjAAAXt9hO3itzJkZ+dcl4x8fJaHlb8Muk5F0Xk/D1r+DfhRBy1GN5N
-        GnwkMcMvj1JHu9S8vDuT3Q==
-X-Google-Smtp-Source: APXvYqwXS0CRSCwpeb6PCi7BvZl2PmqCavudexonVSquS87kWXZ5Jr7LuQfYjYLV9qglhs3rf7itFw==
-X-Received: by 2002:a63:f10a:: with SMTP id f10mr40329936pgi.168.1572994283172;
-        Tue, 05 Nov 2019 14:51:23 -0800 (PST)
-Received: from localhost.localdomain ([110.35.161.54])
-        by smtp.gmail.com with ESMTPSA id r10sm18292739pgn.68.2019.11.05.14.51.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Nov 2019 14:51:22 -0800 (PST)
-From:   "Daniel T. Lee" <danieltimlee@gmail.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH,bpf-next 2/2] samples: bpf: update map definition to new syntax BTF-defined map
-Date:   Wed,  6 Nov 2019 07:51:11 +0900
-Message-Id: <20191105225111.4940-3-danieltimlee@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191105225111.4940-1-danieltimlee@gmail.com>
-References: <20191105225111.4940-1-danieltimlee@gmail.com>
+        id S1728810AbfKEXSv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 Nov 2019 18:18:51 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:39330 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726820AbfKEXSv (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 5 Nov 2019 18:18:51 -0500
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xA5NAQPU009470;
+        Tue, 5 Nov 2019 15:18:03 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=46SPVbuJW9CxUtmCqh8uLYeQmyDSgMTFsieyL9SZGHI=;
+ b=dUlA4g3M73X89dZqWoknFwqROEdCEGq4bIqCvYI+FU81WEkoAtyA5Ogquzycewvo+8DU
+ 2FN7WUfe2DS2g/ndaKGxZKbqdwh2FqMiXX7fgjBYWwZAVJDd8CgUM3eBB8OOd/UPiHdj
+ yhL1t571a1Ta8h2Rr05KxcDRgTrM/TxQW/U= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by mx0a-00082601.pphosted.com with ESMTP id 2w3ddet1a1-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Tue, 05 Nov 2019 15:18:03 -0800
+Received: from prn-mbx04.TheFacebook.com (2620:10d:c081:6::18) by
+ prn-hub02.TheFacebook.com (2620:10d:c081:35::126) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Tue, 5 Nov 2019 15:18:03 -0800
+Received: from prn-hub03.TheFacebook.com (2620:10d:c081:35::127) by
+ prn-mbx04.TheFacebook.com (2620:10d:c081:6::18) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Tue, 5 Nov 2019 15:18:02 -0800
+Received: from NAM01-BN3-obe.outbound.protection.outlook.com (192.168.54.28)
+ by o365-in.thefacebook.com (192.168.16.27) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
+ via Frontend Transport; Tue, 5 Nov 2019 15:18:02 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AR/yJUC1icDGrtYybeeKSL5TKSnrVSJJ3Ygv5yoVOtlTOeagzpozRF1pIimOKcJOat9kN02uEfkBEDeoqvTSkTwKxqyXmepJxInoYmzeBfuNIf6b2eP8oqFGchqOpco62JDoBj+v76cVnQRZArzsVGbb+e7wLgQFbxDamAKiLUEJAjCyG+1bH4K3okjsddeu1ZSTfeAqZf7XGbF4MQx81HTG4xQki4gW5EbcuozcgACkoU62mQFVaCSO9wOcyDD2fVW+Zt4bGM8QSZSYqa3F7UwpyZlDDfVI+MXXgi0WzVB+RCW7nZyIi1sSQMNwqDlYexUT3AzaL2YDQ0awb5Tdow==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=46SPVbuJW9CxUtmCqh8uLYeQmyDSgMTFsieyL9SZGHI=;
+ b=jtSgMHBsoLwocc9ct7rcSU86Rtpia8Na3eVncOTGx6U5GQELkJWYHkbzR3bJtsyhxBqItXfHh7FeT5FkcX/Q8oYEs3gqTVP2DhKx2ZjEcCiJAJvBYjL1oYBwQcesrWLXYAb7evjKpoX0QKhX8lNW5fz6hckyRzXuu4qay24nJhpefHzpe7gQkdpMj0F70g0GhlGhsE5nmWthtGZaaE18Iadfr/hP8VEyhUSvvc/VKCfci/qKV+KbjhHPw4nAb/P4nX9RsMMmhDQIe5jGgR4t2vcUZEvgsm51QN9NuLiw+fi1ppSdgt8xEQ6l6Xt761NooyWiEvbGZg1qVQ8cRrk1aQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=46SPVbuJW9CxUtmCqh8uLYeQmyDSgMTFsieyL9SZGHI=;
+ b=HAsZjVpmWCx5YjQ5YeJSXGBf5Cd0E0caPaVnZDntiP/pSHyP7ZduvEofMNlvvikKF45J4vHF12927sd6jSfsofOvf5Z4WLXV/tBP/9XSpNgU98ti5X3Lgy7KGbjmLgdYsPO9DOnrBeDixjGsK7omZJ4xT/ViI+cfXHtMlrzm5HM=
+Received: from BYAPR15MB2501.namprd15.prod.outlook.com (52.135.196.11) by
+ BYAPR15MB2869.namprd15.prod.outlook.com (20.178.206.91) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2408.24; Tue, 5 Nov 2019 23:17:59 +0000
+Received: from BYAPR15MB2501.namprd15.prod.outlook.com
+ ([fe80::707c:3161:d472:18c5]) by BYAPR15MB2501.namprd15.prod.outlook.com
+ ([fe80::707c:3161:d472:18c5%4]) with mapi id 15.20.2408.024; Tue, 5 Nov 2019
+ 23:17:59 +0000
+From:   Alexei Starovoitov <ast@fb.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>
+CC:     "David S. Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Peter Ziljstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next 4/7] libbpf: Add support to attach to
+ fentry/fexit tracing progs
+Thread-Topic: [PATCH bpf-next 4/7] libbpf: Add support to attach to
+ fentry/fexit tracing progs
+Thread-Index: AQHVkcj3gN05b8hPR0mG8BMjU5r+Tad9GWcAgAAhiIA=
+Date:   Tue, 5 Nov 2019 23:17:59 +0000
+Message-ID: <2456bb02-4d26-4fce-2d5e-5abb59ba3644@fb.com>
+References: <20191102220025.2475981-1-ast@kernel.org>
+ <20191102220025.2475981-5-ast@kernel.org>
+ <CAEf4BzbJ3Y4_rjvr9Xu2MR87Ghdx_1n=KOOaeqM_F7+OwPihRw@mail.gmail.com>
+In-Reply-To: <CAEf4BzbJ3Y4_rjvr9Xu2MR87Ghdx_1n=KOOaeqM_F7+OwPihRw@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: CO2PR06CA0061.namprd06.prod.outlook.com
+ (2603:10b6:104:3::19) To BYAPR15MB2501.namprd15.prod.outlook.com
+ (2603:10b6:a02:88::11)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c090:200::1:47d0]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 3ecdd29d-5612-4b6a-dbb4-08d7624665ad
+x-ms-traffictypediagnostic: BYAPR15MB2869:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR15MB28693C0EE258DA747DED4FC4D77E0@BYAPR15MB2869.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-forefront-prvs: 0212BDE3BE
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(396003)(346002)(366004)(376002)(39860400002)(136003)(189003)(199004)(46003)(66476007)(186003)(6116002)(5660300002)(386003)(53546011)(6506007)(305945005)(25786009)(81156014)(8936002)(52116002)(81166006)(8676002)(76176011)(102836004)(64756008)(6436002)(14454004)(229853002)(6486002)(66446008)(66556008)(6246003)(478600001)(31696002)(66946007)(4326008)(7736002)(2906002)(6512007)(86362001)(256004)(11346002)(486006)(2616005)(31686004)(5024004)(476003)(99286004)(36756003)(71190400001)(54906003)(71200400001)(446003)(316002)(110136005);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB2869;H:BYAPR15MB2501.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 7a74lC6S3j9SowOmbxEVj5D+BIIylJkiQtoltbGTqAWrafk+gIIK8dzB6hhalD+bye++eJ4czmqEARXFMQzvmltLYhZQ7INRr9GmgkgzhM/ZWlfCSgK7pMsJtpzD6B1J7OH1+LsYLeAmIlaju0lZ3aupp2PcBIMD1S1W/jKZs9ZdzeFGOZnZW0r+pyaFOPt2CSxQM7qsdYqKtFxJNsa/UxhptMM0A3bp8+7eXt5yv9GPDvi5jIfioWzN2P2D9SaMZ0JZfuhuPhQSIC21G32eM6AHQVwq2ptX1cd99CxVD+scisp78/GYdV9BFY9W3lspBuW9NWFeXpnesEBEg9sAUOgkDhKVwCM7h10QClpx5NBcDYZClgLID9lgQ3iaFcicU4MzCHHZOuLVQIDe27v3uVOXCEp3tU4Lnxzgb4Tw68wD8fLJuHAbAPaU/beuD6Ug
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <876C0FD3BC9FDE48A7713721DF3840E6@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3ecdd29d-5612-4b6a-dbb4-08d7624665ad
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Nov 2019 23:17:59.1488
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ie3LxOD+WinM2Z0PsGQbG8mtkYhdeqvL9KmbbbUNjei3UHqWVIPNiNM7zM8U8HNj
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2869
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
+ definitions=2019-11-05_08:2019-11-05,2019-11-05 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ spamscore=0 mlxscore=0 suspectscore=0 mlxlogscore=999 phishscore=0
+ clxscore=1015 priorityscore=1501 bulkscore=0 impostorscore=0 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1908290000 definitions=main-1911050188
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Since, the new syntax of BTF-defined map has been introduced,
-the syntax for using maps under samples directory are mixed up.
-For example, some are already using the new syntax, and some are using
-existing syntax by calling them as 'legacy'.
-
-As stated at commit abd29c931459 ("libbpf: allow specifying map
-definitions using BTF"), the BTF-defined map has more compatablility
-with extending supported map definition features.
-
-The commit doesn't replace all of the map to new BTF-defined map,
-because some of the samples still use bpf_load instead of libbpf, which
-can't properly create BTF-defined map.
-
-This will only updates the samples which uses libbpf API for loading bpf
-program. (ex. bpf_prog_load_xattr)
-
-Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
----
- samples/bpf/sockex1_kern.c          |  12 ++--
- samples/bpf/sockex2_kern.c          |  12 ++--
- samples/bpf/xdp1_kern.c             |  12 ++--
- samples/bpf/xdp2_kern.c             |  12 ++--
- samples/bpf/xdp_adjust_tail_kern.c  |  12 ++--
- samples/bpf/xdp_fwd_kern.c          |  13 ++--
- samples/bpf/xdp_redirect_cpu_kern.c | 108 ++++++++++++++--------------
- samples/bpf/xdp_redirect_kern.c     |  24 +++----
- samples/bpf/xdp_redirect_map_kern.c |  24 +++----
- samples/bpf/xdp_router_ipv4_kern.c  |  64 ++++++++---------
- samples/bpf/xdp_rxq_info_kern.c     |  36 +++++-----
- samples/bpf/xdp_tx_iptunnel_kern.c  |  26 +++----
- 12 files changed, 177 insertions(+), 178 deletions(-)
-
-diff --git a/samples/bpf/sockex1_kern.c b/samples/bpf/sockex1_kern.c
-index f96943f443ab..493f102711c0 100644
---- a/samples/bpf/sockex1_kern.c
-+++ b/samples/bpf/sockex1_kern.c
-@@ -5,12 +5,12 @@
- #include "bpf_helpers.h"
- #include "bpf_legacy.h"
- 
--struct bpf_map_def SEC("maps") my_map = {
--	.type = BPF_MAP_TYPE_ARRAY,
--	.key_size = sizeof(u32),
--	.value_size = sizeof(long),
--	.max_entries = 256,
--};
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(key_size, sizeof(u32));
-+	__uint(value_size, sizeof(long));
-+	__uint(max_entries, 256);
-+} my_map SEC(".maps");
- 
- SEC("socket1")
- int bpf_prog1(struct __sk_buff *skb)
-diff --git a/samples/bpf/sockex2_kern.c b/samples/bpf/sockex2_kern.c
-index 5566fa7d92fa..bd756494625b 100644
---- a/samples/bpf/sockex2_kern.c
-+++ b/samples/bpf/sockex2_kern.c
-@@ -190,12 +190,12 @@ struct pair {
- 	long bytes;
- };
- 
--struct bpf_map_def SEC("maps") hash_map = {
--	.type = BPF_MAP_TYPE_HASH,
--	.key_size = sizeof(__be32),
--	.value_size = sizeof(struct pair),
--	.max_entries = 1024,
--};
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(key_size, sizeof(__be32));
-+	__uint(value_size, sizeof(struct pair));
-+	__uint(max_entries, 1024);
-+} hash_map SEC(".maps");
- 
- SEC("socket2")
- int bpf_prog2(struct __sk_buff *skb)
-diff --git a/samples/bpf/xdp1_kern.c b/samples/bpf/xdp1_kern.c
-index 219742106bfd..a0a181164087 100644
---- a/samples/bpf/xdp1_kern.c
-+++ b/samples/bpf/xdp1_kern.c
-@@ -14,12 +14,12 @@
- #include <linux/ipv6.h>
- #include "bpf_helpers.h"
- 
--struct bpf_map_def SEC("maps") rxcnt = {
--	.type = BPF_MAP_TYPE_PERCPU_ARRAY,
--	.key_size = sizeof(u32),
--	.value_size = sizeof(long),
--	.max_entries = 256,
--};
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
-+	__uint(key_size, sizeof(u32));
-+	__uint(value_size, sizeof(long));
-+	__uint(max_entries, 256);
-+} rxcnt SEC(".maps");
- 
- static int parse_ipv4(void *data, u64 nh_off, void *data_end)
- {
-diff --git a/samples/bpf/xdp2_kern.c b/samples/bpf/xdp2_kern.c
-index e01288867d15..21564a95561b 100644
---- a/samples/bpf/xdp2_kern.c
-+++ b/samples/bpf/xdp2_kern.c
-@@ -14,12 +14,12 @@
- #include <linux/ipv6.h>
- #include "bpf_helpers.h"
- 
--struct bpf_map_def SEC("maps") rxcnt = {
--	.type = BPF_MAP_TYPE_PERCPU_ARRAY,
--	.key_size = sizeof(u32),
--	.value_size = sizeof(long),
--	.max_entries = 256,
--};
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
-+	__uint(key_size, sizeof(u32));
-+	__uint(value_size, sizeof(long));
-+	__uint(max_entries, 256);
-+} rxcnt SEC(".maps");
- 
- static void swap_src_dst_mac(void *data)
- {
-diff --git a/samples/bpf/xdp_adjust_tail_kern.c b/samples/bpf/xdp_adjust_tail_kern.c
-index c616508befb9..6de45a4a2c3e 100644
---- a/samples/bpf/xdp_adjust_tail_kern.c
-+++ b/samples/bpf/xdp_adjust_tail_kern.c
-@@ -28,12 +28,12 @@
- /* volatile to prevent compiler optimizations */
- static volatile __u32 max_pcktsz = MAX_PCKT_SIZE;
- 
--struct bpf_map_def SEC("maps") icmpcnt = {
--	.type = BPF_MAP_TYPE_ARRAY,
--	.key_size = sizeof(__u32),
--	.value_size = sizeof(__u64),
--	.max_entries = 1,
--};
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(key_size, sizeof(__u32));
-+	__uint(value_size, sizeof(__u64));
-+	__uint(max_entries, 1);
-+} icmpcnt SEC(".maps");
- 
- static __always_inline void count_icmp(void)
- {
-diff --git a/samples/bpf/xdp_fwd_kern.c b/samples/bpf/xdp_fwd_kern.c
-index 701a30f258b1..d013029aeaa2 100644
---- a/samples/bpf/xdp_fwd_kern.c
-+++ b/samples/bpf/xdp_fwd_kern.c
-@@ -23,13 +23,12 @@
- 
- #define IPV6_FLOWINFO_MASK              cpu_to_be32(0x0FFFFFFF)
- 
--/* For TX-traffic redirect requires net_device ifindex to be in this devmap */
--struct bpf_map_def SEC("maps") xdp_tx_ports = {
--	.type = BPF_MAP_TYPE_DEVMAP,
--	.key_size = sizeof(int),
--	.value_size = sizeof(int),
--	.max_entries = 64,
--};
-+struct {
-+	__uint(type, BPF_MAP_TYPE_DEVMAP);
-+	__uint(key_size, sizeof(int));
-+	__uint(value_size, sizeof(int));
-+	__uint(max_entries, 64);
-+} xdp_tx_ports SEC(".maps");
- 
- /* from include/net/ip.h */
- static __always_inline int ip_decrease_ttl(struct iphdr *iph)
-diff --git a/samples/bpf/xdp_redirect_cpu_kern.c b/samples/bpf/xdp_redirect_cpu_kern.c
-index a306d1c75622..1f472506aa54 100644
---- a/samples/bpf/xdp_redirect_cpu_kern.c
-+++ b/samples/bpf/xdp_redirect_cpu_kern.c
-@@ -18,12 +18,12 @@
- #define MAX_CPUS 64 /* WARNING - sync with _user.c */
- 
- /* Special map type that can XDP_REDIRECT frames to another CPU */
--struct bpf_map_def SEC("maps") cpu_map = {
--	.type		= BPF_MAP_TYPE_CPUMAP,
--	.key_size	= sizeof(u32),
--	.value_size	= sizeof(u32),
--	.max_entries	= MAX_CPUS,
--};
-+struct {
-+	__uint(type, BPF_MAP_TYPE_CPUMAP);
-+	__uint(key_size, sizeof(u32));
-+	__uint(value_size, sizeof(u32));
-+	__uint(max_entries, MAX_CPUS);
-+} cpu_map SEC(".maps");
- 
- /* Common stats data record to keep userspace more simple */
- struct datarec {
-@@ -35,67 +35,67 @@ struct datarec {
- /* Count RX packets, as XDP bpf_prog doesn't get direct TX-success
-  * feedback.  Redirect TX errors can be caught via a tracepoint.
-  */
--struct bpf_map_def SEC("maps") rx_cnt = {
--	.type		= BPF_MAP_TYPE_PERCPU_ARRAY,
--	.key_size	= sizeof(u32),
--	.value_size	= sizeof(struct datarec),
--	.max_entries	= 1,
--};
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
-+	__uint(key_size, sizeof(u32));
-+	__uint(value_size, sizeof(struct datarec));
-+	__uint(max_entries, 1);
-+} rx_cnt SEC(".maps");
- 
- /* Used by trace point */
--struct bpf_map_def SEC("maps") redirect_err_cnt = {
--	.type		= BPF_MAP_TYPE_PERCPU_ARRAY,
--	.key_size	= sizeof(u32),
--	.value_size	= sizeof(struct datarec),
--	.max_entries	= 2,
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
-+	__uint(key_size, sizeof(u32));
-+	__uint(value_size, sizeof(struct datarec));
-+	__uint(max_entries, 2);
- 	/* TODO: have entries for all possible errno's */
--};
-+} redirect_err_cnt SEC(".maps");
- 
- /* Used by trace point */
--struct bpf_map_def SEC("maps") cpumap_enqueue_cnt = {
--	.type		= BPF_MAP_TYPE_PERCPU_ARRAY,
--	.key_size	= sizeof(u32),
--	.value_size	= sizeof(struct datarec),
--	.max_entries	= MAX_CPUS,
--};
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
-+	__uint(key_size, sizeof(u32));
-+	__uint(value_size, sizeof(struct datarec));
-+	__uint(max_entries, MAX_CPUS);
-+} cpumap_enqueue_cnt SEC(".maps");
- 
- /* Used by trace point */
--struct bpf_map_def SEC("maps") cpumap_kthread_cnt = {
--	.type		= BPF_MAP_TYPE_PERCPU_ARRAY,
--	.key_size	= sizeof(u32),
--	.value_size	= sizeof(struct datarec),
--	.max_entries	= 1,
--};
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
-+	__uint(key_size, sizeof(u32));
-+	__uint(value_size, sizeof(struct datarec));
-+	__uint(max_entries, 1);
-+} cpumap_kthread_cnt SEC(".maps");
- 
- /* Set of maps controlling available CPU, and for iterating through
-  * selectable redirect CPUs.
-  */
--struct bpf_map_def SEC("maps") cpus_available = {
--	.type		= BPF_MAP_TYPE_ARRAY,
--	.key_size	= sizeof(u32),
--	.value_size	= sizeof(u32),
--	.max_entries	= MAX_CPUS,
--};
--struct bpf_map_def SEC("maps") cpus_count = {
--	.type		= BPF_MAP_TYPE_ARRAY,
--	.key_size	= sizeof(u32),
--	.value_size	= sizeof(u32),
--	.max_entries	= 1,
--};
--struct bpf_map_def SEC("maps") cpus_iterator = {
--	.type		= BPF_MAP_TYPE_PERCPU_ARRAY,
--	.key_size	= sizeof(u32),
--	.value_size	= sizeof(u32),
--	.max_entries	= 1,
--};
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(key_size, sizeof(u32));
-+	__uint(value_size, sizeof(u32));
-+	__uint(max_entries, MAX_CPUS);
-+} cpus_available SEC(".maps");
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(key_size, sizeof(u32));
-+	__uint(value_size, sizeof(u32));
-+	__uint(max_entries, 1);
-+} cpus_count SEC(".maps");
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
-+	__uint(key_size, sizeof(u32));
-+	__uint(value_size, sizeof(u32));
-+	__uint(max_entries, 1);
-+} cpus_iterator SEC(".maps");
- 
- /* Used by trace point */
--struct bpf_map_def SEC("maps") exception_cnt = {
--	.type		= BPF_MAP_TYPE_PERCPU_ARRAY,
--	.key_size	= sizeof(u32),
--	.value_size	= sizeof(struct datarec),
--	.max_entries	= 1,
--};
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
-+	__uint(key_size, sizeof(u32));
-+	__uint(value_size, sizeof(struct datarec));
-+	__uint(max_entries, 1);
-+} exception_cnt SEC(".maps");
- 
- /* Helper parse functions */
- 
-diff --git a/samples/bpf/xdp_redirect_kern.c b/samples/bpf/xdp_redirect_kern.c
-index 8abb151e385f..205fa07eb135 100644
---- a/samples/bpf/xdp_redirect_kern.c
-+++ b/samples/bpf/xdp_redirect_kern.c
-@@ -19,22 +19,22 @@
- #include <linux/ipv6.h>
- #include "bpf_helpers.h"
- 
--struct bpf_map_def SEC("maps") tx_port = {
--	.type = BPF_MAP_TYPE_ARRAY,
--	.key_size = sizeof(int),
--	.value_size = sizeof(int),
--	.max_entries = 1,
--};
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(key_size, sizeof(int));
-+	__uint(value_size, sizeof(int));
-+	__uint(max_entries, 1);
-+} tx_port SEC(".maps");
- 
- /* Count RX packets, as XDP bpf_prog doesn't get direct TX-success
-  * feedback.  Redirect TX errors can be caught via a tracepoint.
-  */
--struct bpf_map_def SEC("maps") rxcnt = {
--	.type = BPF_MAP_TYPE_PERCPU_ARRAY,
--	.key_size = sizeof(u32),
--	.value_size = sizeof(long),
--	.max_entries = 1,
--};
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
-+	__uint(key_size, sizeof(u32));
-+	__uint(value_size, sizeof(long));
-+	__uint(max_entries, 1);
-+} rxcnt SEC(".maps");
- 
- static void swap_src_dst_mac(void *data)
- {
-diff --git a/samples/bpf/xdp_redirect_map_kern.c b/samples/bpf/xdp_redirect_map_kern.c
-index 740a529ba84f..ed5870e305a3 100644
---- a/samples/bpf/xdp_redirect_map_kern.c
-+++ b/samples/bpf/xdp_redirect_map_kern.c
-@@ -19,22 +19,22 @@
- #include <linux/ipv6.h>
- #include "bpf_helpers.h"
- 
--struct bpf_map_def SEC("maps") tx_port = {
--	.type = BPF_MAP_TYPE_DEVMAP,
--	.key_size = sizeof(int),
--	.value_size = sizeof(int),
--	.max_entries = 100,
--};
-+struct {
-+	__uint(type, BPF_MAP_TYPE_DEVMAP);
-+	__uint(key_size, sizeof(int));
-+	__uint(value_size, sizeof(int));
-+	__uint(max_entries, 100);
-+} tx_port SEC(".maps");
- 
- /* Count RX packets, as XDP bpf_prog doesn't get direct TX-success
-  * feedback.  Redirect TX errors can be caught via a tracepoint.
-  */
--struct bpf_map_def SEC("maps") rxcnt = {
--	.type = BPF_MAP_TYPE_PERCPU_ARRAY,
--	.key_size = sizeof(u32),
--	.value_size = sizeof(long),
--	.max_entries = 1,
--};
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
-+	__uint(key_size, sizeof(u32));
-+	__uint(value_size, sizeof(long));
-+	__uint(max_entries, 1);
-+} rxcnt SEC(".maps");
- 
- static void swap_src_dst_mac(void *data)
- {
-diff --git a/samples/bpf/xdp_router_ipv4_kern.c b/samples/bpf/xdp_router_ipv4_kern.c
-index 993f56bc7b9a..92809c5d8c63 100644
---- a/samples/bpf/xdp_router_ipv4_kern.c
-+++ b/samples/bpf/xdp_router_ipv4_kern.c
-@@ -42,44 +42,44 @@ struct direct_map {
- };
- 
- /* Map for trie implementation*/
--struct bpf_map_def SEC("maps") lpm_map = {
--	.type = BPF_MAP_TYPE_LPM_TRIE,
--	.key_size = 8,
--	.value_size = sizeof(struct trie_value),
--	.max_entries = 50,
--	.map_flags = BPF_F_NO_PREALLOC,
--};
-+struct {
-+	__uint(type, BPF_MAP_TYPE_LPM_TRIE);
-+	__uint(key_size, 8);
-+	__uint(value_size, sizeof(struct trie_value));
-+	__uint(max_entries, 50);
-+	__uint(map_flags, BPF_F_NO_PREALLOC);
-+} lpm_map SEC(".maps");
- 
- /* Map for counter*/
--struct bpf_map_def SEC("maps") rxcnt = {
--	.type = BPF_MAP_TYPE_PERCPU_ARRAY,
--	.key_size = sizeof(u32),
--	.value_size = sizeof(u64),
--	.max_entries = 256,
--};
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
-+	__uint(key_size, sizeof(u32));
-+	__uint(value_size, sizeof(u64));
-+	__uint(max_entries, 256);
-+} rxcnt SEC(".maps");
- 
- /* Map for ARP table*/
--struct bpf_map_def SEC("maps") arp_table = {
--	.type = BPF_MAP_TYPE_HASH,
--	.key_size = sizeof(__be32),
--	.value_size = sizeof(__be64),
--	.max_entries = 50,
--};
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(key_size, sizeof(__be32));
-+	__uint(value_size, sizeof(__be64));
-+	__uint(max_entries, 50);
-+} arp_table SEC(".maps");
- 
- /* Map to keep the exact match entries in the route table*/
--struct bpf_map_def SEC("maps") exact_match = {
--	.type = BPF_MAP_TYPE_HASH,
--	.key_size = sizeof(__be32),
--	.value_size = sizeof(struct direct_map),
--	.max_entries = 50,
--};
--
--struct bpf_map_def SEC("maps") tx_port = {
--	.type = BPF_MAP_TYPE_DEVMAP,
--	.key_size = sizeof(int),
--	.value_size = sizeof(int),
--	.max_entries = 100,
--};
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(key_size, sizeof(__be32));
-+	__uint(value_size, sizeof(struct direct_map));
-+	__uint(max_entries, 50);
-+} exact_match SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_DEVMAP);
-+	__uint(key_size, sizeof(int));
-+	__uint(value_size, sizeof(int));
-+	__uint(max_entries, 100);
-+} tx_port SEC(".maps");
- 
- /* Function to set source and destination mac of the packet */
- static inline void set_src_dst_mac(void *data, void *src, void *dst)
-diff --git a/samples/bpf/xdp_rxq_info_kern.c b/samples/bpf/xdp_rxq_info_kern.c
-index 222a83eed1cb..6a78f399113d 100644
---- a/samples/bpf/xdp_rxq_info_kern.c
-+++ b/samples/bpf/xdp_rxq_info_kern.c
-@@ -23,12 +23,13 @@ enum cfg_options_flags {
- 	READ_MEM = 0x1U,
- 	SWAP_MAC = 0x2U,
- };
--struct bpf_map_def SEC("maps") config_map = {
--	.type		= BPF_MAP_TYPE_ARRAY,
--	.key_size	= sizeof(int),
--	.value_size	= sizeof(struct config),
--	.max_entries	= 1,
--};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(key_size, sizeof(int));
-+	__uint(value_size, sizeof(struct config));
-+	__uint(max_entries, 1);
-+} config_map SEC(".maps");
- 
- /* Common stats data record (shared with userspace) */
- struct datarec {
-@@ -36,22 +37,22 @@ struct datarec {
- 	__u64 issue;
- };
- 
--struct bpf_map_def SEC("maps") stats_global_map = {
--	.type		= BPF_MAP_TYPE_PERCPU_ARRAY,
--	.key_size	= sizeof(u32),
--	.value_size	= sizeof(struct datarec),
--	.max_entries	= 1,
--};
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
-+	__uint(key_size, sizeof(u32));
-+	__uint(value_size, sizeof(struct datarec));
-+	__uint(max_entries, 1);
-+} stats_global_map SEC(".maps");
- 
- #define MAX_RXQs 64
- 
- /* Stats per rx_queue_index (per CPU) */
--struct bpf_map_def SEC("maps") rx_queue_index_map = {
--	.type		= BPF_MAP_TYPE_PERCPU_ARRAY,
--	.key_size	= sizeof(u32),
--	.value_size	= sizeof(struct datarec),
--	.max_entries	= MAX_RXQs + 1,
--};
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
-+	__uint(key_size, sizeof(u32));
-+	__uint(value_size, sizeof(struct datarec));
-+	__uint(max_entries, MAX_RXQs + 1);
-+} rx_queue_index_map SEC(".maps");
- 
- static __always_inline
- void swap_src_dst_mac(void *data)
-diff --git a/samples/bpf/xdp_tx_iptunnel_kern.c b/samples/bpf/xdp_tx_iptunnel_kern.c
-index 0f4f6e8c8611..044b6f3edfeb 100644
---- a/samples/bpf/xdp_tx_iptunnel_kern.c
-+++ b/samples/bpf/xdp_tx_iptunnel_kern.c
-@@ -19,19 +19,19 @@
- #include "bpf_helpers.h"
- #include "xdp_tx_iptunnel_common.h"
- 
--struct bpf_map_def SEC("maps") rxcnt = {
--	.type = BPF_MAP_TYPE_PERCPU_ARRAY,
--	.key_size = sizeof(__u32),
--	.value_size = sizeof(__u64),
--	.max_entries = 256,
--};
--
--struct bpf_map_def SEC("maps") vip2tnl = {
--	.type = BPF_MAP_TYPE_HASH,
--	.key_size = sizeof(struct vip),
--	.value_size = sizeof(struct iptnl_info),
--	.max_entries = MAX_IPTNL_ENTRIES,
--};
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
-+	__uint(key_size, sizeof(__u32));
-+	__uint(value_size, sizeof(__u64));
-+	__uint(max_entries, 256);
-+} rxcnt SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(key_size, sizeof(struct vip));
-+	__uint(value_size, sizeof(struct iptnl_info));
-+	__uint(max_entries, MAX_IPTNL_ENTRIES);
-+} vip2tnl SEC(".maps");
- 
- static __always_inline void count_tx(u32 protocol)
- {
--- 
-2.23.0
-
+T24gMTEvNS8xOSAxOjE3IFBNLCBBbmRyaWkgTmFrcnlpa28gd3JvdGU6DQo+IE9uIFNhdCwgTm92
+IDIsIDIwMTkgYXQgMzowMyBQTSBBbGV4ZWkgU3Rhcm92b2l0b3YgPGFzdEBrZXJuZWwub3JnPiB3
+cm90ZToNCj4+DQo+PiBUZWFjaCBsaWJicGYgdG8gcmVjb2duaXplIHRyYWNpbmcgcHJvZ3JhbXMg
+dHlwZXMgYW5kIGF0dGFjaCB0aGVtIHRvDQo+PiBmZW50cnkvZmV4aXQuDQo+Pg0KPj4gU2lnbmVk
+LW9mZi1ieTogQWxleGVpIFN0YXJvdm9pdG92IDxhc3RAa2VybmVsLm9yZz4NCj4+IC0tLQ0KPj4g
+ICB0b29scy9pbmNsdWRlL3VhcGkvbGludXgvYnBmLmggfCAgMiArKw0KPj4gICB0b29scy9saWIv
+YnBmL2xpYmJwZi5jICAgICAgICAgfCA1NSArKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0t
+LS0tDQo+PiAgIHRvb2xzL2xpYi9icGYvbGliYnBmLmggICAgICAgICB8ICAyICsrDQo+PiAgIHRv
+b2xzL2xpYi9icGYvbGliYnBmLm1hcCAgICAgICB8ICAxICsNCj4+ICAgNCBmaWxlcyBjaGFuZ2Vk
+LCA1MyBpbnNlcnRpb25zKCspLCA3IGRlbGV0aW9ucygtKQ0KPj4NCj4+IGRpZmYgLS1naXQgYS90
+b29scy9pbmNsdWRlL3VhcGkvbGludXgvYnBmLmggYi90b29scy9pbmNsdWRlL3VhcGkvbGludXgv
+YnBmLmgNCj4+IGluZGV4IGRmNjgwOWE3NjQwNC4uNjljMjAwZTZlNjk2IDEwMDY0NA0KPj4gLS0t
+IGEvdG9vbHMvaW5jbHVkZS91YXBpL2xpbnV4L2JwZi5oDQo+PiArKysgYi90b29scy9pbmNsdWRl
+L3VhcGkvbGludXgvYnBmLmgNCj4+IEBAIC0yMDEsNiArMjAxLDggQEAgZW51bSBicGZfYXR0YWNo
+X3R5cGUgew0KPj4gICAgICAgICAgQlBGX0NHUk9VUF9HRVRTT0NLT1BULA0KPj4gICAgICAgICAg
+QlBGX0NHUk9VUF9TRVRTT0NLT1BULA0KPj4gICAgICAgICAgQlBGX1RSQUNFX1JBV19UUCwNCj4+
+ICsgICAgICAgQlBGX1RSQUNFX0ZFTlRSWSwNCj4+ICsgICAgICAgQlBGX1RSQUNFX0ZFWElULA0K
+Pj4gICAgICAgICAgX19NQVhfQlBGX0FUVEFDSF9UWVBFDQo+PiAgIH07DQo+Pg0KPj4gZGlmZiAt
+LWdpdCBhL3Rvb2xzL2xpYi9icGYvbGliYnBmLmMgYi90b29scy9saWIvYnBmL2xpYmJwZi5jDQo+
+PiBpbmRleCA3YWEyYTJhMjJjZWYuLjAzZTc4NGYzNmRkOSAxMDA2NDQNCj4+IC0tLSBhL3Rvb2xz
+L2xpYi9icGYvbGliYnBmLmMNCj4+ICsrKyBiL3Rvb2xzL2xpYi9icGYvbGliYnBmLmMNCj4+IEBA
+IC0zNzQ0LDcgKzM3NDQsNyBAQCBicGZfb2JqZWN0X19sb2FkX3Byb2dzKHN0cnVjdCBicGZfb2Jq
+ZWN0ICpvYmosIGludCBsb2dfbGV2ZWwpDQo+PiAgICAgICAgICByZXR1cm4gMDsNCj4+ICAgfQ0K
+Pj4NCj4+IC1zdGF0aWMgaW50IGxpYmJwZl9hdHRhY2hfYnRmX2lkX2J5X25hbWUoY29uc3QgY2hh
+ciAqbmFtZSwgX191MzIgKmJ0Zl9pZCk7DQo+PiArc3RhdGljIGludCBsaWJicGZfYXR0YWNoX2J0
+Zl9pZF9ieV9uYW1lKGNvbnN0IGNoYXIgKm5hbWUsIF9fdTMyICpidGZfaWQsIGJvb2wgcmF3X3Rw
+KTsNCj4gDQo+IEJvb2xzIGFyZSBoYXJkIHRvIGZvbGxvdyBpbiBjb2RlLCB3aHkgbm90IGp1c3Qg
+cGFzc2luZyBmdWxsDQo+IGF0dGFjaF90eXBlIGluc3RlYWQ/IEl0IHdpbGwgYWxzbyBiZSBtb3Jl
+IGZ1dHVyZS1wcm9vZiwgaWYgd2UgbmVlZA0KPiBhbm90aGVyIHRyaWNrLCBzaW1pbGFyIHRvICJi
+cGZfdHJhY2VfIiBwcmVmaXggZm9yIHJhd190cD8NCj4gDQo+IEFsc28sIEkgaGF2ZSBhIG1pbGQg
+cHJlZmVyZW5jZSBmb3IgaGF2aW5nIG91dHB1dCBhcmd1bWVudHMgdG8gYmUgdGhlDQo+IHZlcnkg
+bGFzdCBpbiB0aGUgYXJndW1lbnQgbGlzdC4gRG8geW91IG1pbmQgcmVvcmRlcmluZyBzbyB0aGFy
+IGJvb2wNCj4gcmF3X3RwIGlzIHNlY29uZD8NCg0KQWdyZWUgb24gYm90aCBjb3VudHMuIFNwb3R0
+ZWQgYW5vdGhlciBzbWFsbCBuaXQgaW4gdGhpcyBmdW5jdGlvbg0Kd2hpbGUgdGVzdGluZyBjb3Ju
+ZXIgY2FzZXMuDQpXaWxsIGZpeCB0aGlzIGFuZCBmZWVkYmFjayB0byA1LzcsIDcvNyBpbiB0aGUg
+bmV4dCB2ZXJzaW9uLg0K
