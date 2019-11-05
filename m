@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 61556F087C
-	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2019 22:37:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8007BF08B4
+	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2019 22:50:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729961AbfKEVhs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 Nov 2019 16:37:48 -0500
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:41039 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729830AbfKEVhr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 5 Nov 2019 16:37:47 -0500
-Received: by mail-qt1-f195.google.com with SMTP id o3so31308680qtj.8;
-        Tue, 05 Nov 2019 13:37:45 -0800 (PST)
+        id S1728178AbfKEVud (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 Nov 2019 16:50:33 -0500
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:34373 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726751AbfKEVuc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 5 Nov 2019 16:50:32 -0500
+Received: by mail-qk1-f194.google.com with SMTP id 205so21356453qkk.1;
+        Tue, 05 Nov 2019 13:50:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=UdTF48D5Kt/CE3Gcwyq07ed3jwz9oZyEExI7mYpVFj0=;
-        b=mGCuTlCIywx7flepTari4xa/KazmeMpZL8TxPtn6RyWbUMfz/7Ss2onvHED4Tqz1Hl
-         sgGfJUAw8swFR7bbiWogiXfUv4WxHadAKYqHwUPw2bpZeoYynAQJWpmu7EbIyUSE9cki
-         kfIYEwtuKU7HEfnYXWY5R1jVQWHozeBaw9EGnMMANRg4yGHp1RDeaIQAVqSVnM7yAfm9
-         4SHXHQt0pjkq727UmYalY0ic+l6nsH2bNyEWa/SXkdcv64cEPJe+jipMuQ9swMtx33mP
-         DWSJz1fN96TBUmj6aKA+E7Q/sdSLwTvPhlUSx7zjD9/AtU1iuBSafKVWNyjM0u6nMeWx
-         08nQ==
+        bh=H4ZJkkXh66JgD7Y8RaA75Q3ueTUt9xl1ZxQcRHfv1z8=;
+        b=Pid5aTEwjJeMy5eeifg85fPF1KGUW8ncs2WfOityerGiilw1C51PAGUszTnh7F9kMy
+         CQyK17iR2m1qVNimKB9at/w8xEVKZ2yFmVLZ3wewS2CaEsDIWseoaJzl600lbruE0dLC
+         GRMTU8kHHdyXd4GlNKEqC5vE1WkXiiaI1Cv2uNgE/Ak+PPIqYEpr4FkmGlHLTT6fZ3zB
+         SHYW0LX7mxFYX3sHxmv3tn3SA3EDA3FNrzqax+B5Qzo7tLVPx4VA3E8fy/DqovR4eJ34
+         Fj5rg9dsKs76BtcAz333QSH7pZscpj70MVlmZPv8FH+vi7aMkzyoIaRfoX5NhtNZtxB2
+         URkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=UdTF48D5Kt/CE3Gcwyq07ed3jwz9oZyEExI7mYpVFj0=;
-        b=pcTZZQWM0K9keFEkilcQ/YO55QDHeNR9KvczV5iC8xXvPRplKCYfhMxl5hwvZ6PEbq
-         vnb9AnjNSG09Ll/SsnNNxHMldOF0Fp+4TvYiwaFHwrebY6AoHjWkMNBga9i6nfnDPTof
-         wg26+48Qk3Ek5ukqhStCTU5N6oGqb0c2FlRvrCFoRz9qNpaFlPnJmOv7yksI6Ba+2mTt
-         h8fXqMJE9oZYxtRJntWuu7aCmyEGSj4Gnl+Ka4NilkUqiaZO8eKhza1IGnGkqWVZiipz
-         P6FozT6G+fYLFyo+qNLejNeRawYRAgRQcKHhFayjT2ubTmqOHzqAt3EMVnYlP47aFmO5
-         1FDQ==
-X-Gm-Message-State: APjAAAVcDuK/Anwlx8xSLRGx0oORETOA0CDjfNDr1lGQ1OdXs7q8KHL6
-        OflTi+k7Ze35Soq5mYBr+7op3q4hvmPDXsM3pjI=
-X-Google-Smtp-Source: APXvYqwhQcfSRtp91KwBkkmkWWAs1ZaKnh4kJpbPY5LRcJ/+zI1oXSCI6xkhwq91Vzch79szgnn340NqLi3i2mWiQno=
-X-Received: by 2002:ac8:199d:: with SMTP id u29mr18905966qtj.93.1572989864989;
- Tue, 05 Nov 2019 13:37:44 -0800 (PST)
+        bh=H4ZJkkXh66JgD7Y8RaA75Q3ueTUt9xl1ZxQcRHfv1z8=;
+        b=B+gUZYSZJvM9eFyJxMTDUTQ8PqLdJJlGg4yot8nEfKSp1hRmxKTT1wCKxMZQqiOKpl
+         oeW8V0tpOb8UEBHOyEJWmOUw75+7BnzDfBMnY1nr79VOgclKcMQcEv3H2w4sYNHAV7X2
+         wrnzE8bC99UTNrJHDbBQwGffErInmtR+GfPQhqAuGZieRDpZJNy+9NT0/UuevdEsS2KK
+         l7sPYlVvw3+XFLC4v3uXjJx/C/rb2OIafHdMMbi1CNu+EzXmc1wZ7YzRiCxReqRMzKqO
+         PaIDdvMqwOUgDpeHon/qvehH4rDZIpkz5lmTQ8uXCO8sNWnDY1C/rLyIwixBzqJw4Zl0
+         SdGw==
+X-Gm-Message-State: APjAAAVfvBhgrfhE3CZH9SoAvBXOWw5HVBb1kzsrZzETEQpAMX5EDvtP
+        GbcARLZE7zWA7aUoKqS2xN2LLptZnAlopBqpoh0=
+X-Google-Smtp-Source: APXvYqzRwq7/iHq3U+iPF4ksumKyEoCIo92JpwqtlZPjGaZvGmv02xVRknwCJrdUVBR/OjG1PW2cHRsXSggnlRW3WTU=
+X-Received: by 2002:a37:aa8b:: with SMTP id t133mr4275429qke.449.1572990630176;
+ Tue, 05 Nov 2019 13:50:30 -0800 (PST)
 MIME-Version: 1.0
-References: <20191102220025.2475981-1-ast@kernel.org> <20191102220025.2475981-6-ast@kernel.org>
-In-Reply-To: <20191102220025.2475981-6-ast@kernel.org>
+References: <20191102220025.2475981-1-ast@kernel.org> <20191102220025.2475981-8-ast@kernel.org>
+In-Reply-To: <20191102220025.2475981-8-ast@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 5 Nov 2019 13:37:33 -0800
-Message-ID: <CAEf4BzY+dm2O3BwrEOiC5RJj3dN2D-FQ=ZJZraeO1iGijQirtA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 5/7] selftest/bpf: Simple test for fentry/fexit
+Date:   Tue, 5 Nov 2019 13:50:19 -0800
+Message-ID: <CAEf4BzZCHGXCAdVNm2MoxrjgXxNHqXrZgw70j=byQuo4LSNQfg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 7/7] selftests/bpf: Add test for BPF trampoline
 To:     Alexei Starovoitov <ast@kernel.org>
 Cc:     "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -62,74 +62,93 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Sat, Nov 2, 2019 at 3:04 PM Alexei Starovoitov <ast@kernel.org> wrote:
 >
-> Add simple test for fentry and fexit programs around eth_type_trans.
+> Add sanity test for BPF trampoline that checks kernel functions
+> with up to 6 arguments of different sizes.
 >
 > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 > ---
-
-LGTM, but please fix formatting.
-
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-
->  .../selftests/bpf/prog_tests/kfree_skb.c      | 37 +++++++++++--
->  tools/testing/selftests/bpf/progs/kfree_skb.c | 52 +++++++++++++++++++
->  2 files changed, 86 insertions(+), 3 deletions(-)
+>  tools/lib/bpf/bpf_helpers.h                   | 13 +++
+>  .../selftests/bpf/prog_tests/fentry_test.c    | 65 ++++++++++++++
+>  .../testing/selftests/bpf/progs/fentry_test.c | 90 +++++++++++++++++++
+>  3 files changed, 168 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/fentry_test.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/fentry_test.c
 >
-> diff --git a/tools/testing/selftests/bpf/prog_tests/kfree_skb.c b/tools/testing/selftests/bpf/prog_tests/kfree_skb.c
-> index 430b50de1583..d3402261bbae 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/kfree_skb.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/kfree_skb.c
-> @@ -30,15 +30,17 @@ void test_kfree_skb(void)
->                 .file = "./kfree_skb.o",
->         };
+> diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
+> index 0c7d28292898..c63ab1add126 100644
+> --- a/tools/lib/bpf/bpf_helpers.h
+> +++ b/tools/lib/bpf/bpf_helpers.h
+> @@ -44,4 +44,17 @@ enum libbpf_pin_type {
+>         LIBBPF_PIN_BY_NAME,
+>  };
 >
-> +       struct bpf_link *link = NULL, *link_fentry = NULL, *link_fexit = NULL;
-> +       struct bpf_program *prog, *fentry, *fexit;
->         struct bpf_object *obj, *obj2 = NULL;
->         struct perf_buffer_opts pb_opts = {};
->         struct perf_buffer *pb = NULL;
-> -       struct bpf_link *link = NULL;
-> -       struct bpf_map *perf_buf_map;
-> -       struct bpf_program *prog;
-> +       struct bpf_map *perf_buf_map, *global_data;
->         __u32 duration, retval;
->         int err, pkt_fd, kfree_skb_fd;
->         bool passed = false;
-> +       const int zero = 0;
-> +       bool test_ok[2];
->
->         err = bpf_prog_load("./test_pkt_access.o", BPF_PROG_TYPE_SCHED_CLS, &obj, &pkt_fd);
+> +/* The following types should be used by BPF_PROG_TYPE_TRACING program to
+> + * access kernel function arguments. BPF trampoline and raw tracepoints
+> + * typecast arguments to 'unsigned long long'.
+> + */
+> +typedef int __attribute__((aligned(8))) ks32;
+> +typedef char __attribute__((aligned(8))) ks8;
+> +typedef short __attribute__((aligned(8))) ks16;
+> +typedef long long __attribute__((aligned(8))) ks64;
+> +typedef unsigned int __attribute__((aligned(8))) ku32;
+> +typedef unsigned char __attribute__((aligned(8))) ku8;
+> +typedef unsigned short __attribute__((aligned(8))) ku16;
+> +typedef unsigned long long __attribute__((aligned(8))) ku64;
+> +
+>  #endif
 
-too long ;)
+[...]
 
->         if (CHECK(err, "prog_load sched cls", "err %d errno %d\n", err, errno))
-> @@ -51,9 +53,26 @@ void test_kfree_skb(void)
->         prog = bpf_object__find_program_by_title(obj2, "tp_btf/kfree_skb");
->         if (CHECK(!prog, "find_prog", "prog kfree_skb not found\n"))
->                 goto close_prog;
-> +       fentry = bpf_object__find_program_by_title(obj2, "fentry/eth_type_trans");
-> +       if (CHECK(!fentry, "find_prog", "prog eth_type_trans not found\n"))
-> +               goto close_prog;
-> +       fexit = bpf_object__find_program_by_title(obj2, "fexit/eth_type_trans");
-> +       if (CHECK(!fexit, "find_prog", "prog eth_type_trans not found\n"))
+> +
+> +       err = bpf_prog_load("./test_pkt_access.o", BPF_PROG_TYPE_SCHED_CLS,
+> +                           &pkt_obj, &pkt_fd);
+> +       if (CHECK(err, "prog_load sched cls", "err %d errno %d\n", err, errno))
+> +               return;
+> +       err = bpf_prog_load_xattr(&attr, &obj, &kfree_skb_fd);
+> +       if (CHECK(err, "prog_load fail", "err %d errno %d\n", err, errno))
 > +               goto close_prog;
 > +
-> +       global_data = bpf_object__find_map_by_name(obj2, "kfree_sk.bss");
-> +       if (CHECK(!global_data, "find global data", "not found\n"))
+> +       for (i = 0; i < 6; i++) {
+> +               prog_name[sizeof(prog_name) - 2] = '1' + i;
+> +               prog[i] = bpf_object__find_program_by_title(obj, prog_name);
+> +               if (CHECK(!prog[i], "find_prog", "prog %s not found\n", prog_name))
+> +                       goto close_prog;
+> +               link[i] = bpf_program__attach_trace(prog[i]);
+
+CHECK() here?
+
+> +       }
+> +       data_map = bpf_object__find_map_by_name(obj, "fentry_t.bss");
+> +       if (CHECK(!data_map, "find_data_map", "data map not found\n"))
 > +               goto close_prog;
 > +
->         link = bpf_program__attach_raw_tracepoint(prog, NULL);
->         if (CHECK(IS_ERR(link), "attach_raw_tp", "err %ld\n", PTR_ERR(link)))
->                 goto close_prog;
-> +       link_fentry = bpf_program__attach_trace(fentry);
-> +       if (CHECK(IS_ERR(link_fentry), "attach fentry", "err %ld\n", PTR_ERR(link_fentry)))
+> +       err = bpf_prog_test_run(pkt_fd, 1, &pkt_v6, sizeof(pkt_v6),
+> +                               NULL, NULL, &retval, &duration);
+> +       CHECK(err || retval, "ipv6",
+> +             "err %d errno %d retval %d duration %d\n",
+> +             err, errno, retval, duration);
+> +
+> +       err = bpf_map_lookup_elem(bpf_map__fd(data_map), &zero, &result);
+> +       if (CHECK(err, "get_result",
+> +                 "failed to get output data: %d\n", err))
 > +               goto close_prog;
-> +       link_fexit = bpf_program__attach_trace(fexit);
-> +       if (CHECK(IS_ERR(link_fexit), "attach fexit", "err %ld\n", PTR_ERR(link_fexit)))
+> +
+> +       for (i = 0; i < 6; i++)
+> +               if (CHECK(result[i] != 1, "result", "bpf_fentry_test%d failed err %ld\n",
+> +                         i + 1, result[i]))
+> +                       goto close_prog;
+> +
+> +       passed = true;
+> +       CHECK_FAIL(!passed);
 
-checkpatch.pl?
+passed and CHECK_FAIL are completely redundant?
 
-> +               goto close_prog;
->
+> +close_prog:
+> +       for (i = 0; i < 6; i++)
+> +               if (!IS_ERR_OR_NULL(link[i]))
+> +                       bpf_link__destroy(link[i]);
+> +       bpf_object__close(obj);
+> +       bpf_object__close(pkt_obj);
+> +}
 
 [...]
