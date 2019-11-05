@@ -2,152 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F0E56EF386
-	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2019 03:32:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DBE0EF39F
+	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2019 03:46:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730184AbfKECcj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 4 Nov 2019 21:32:39 -0500
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:34733 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730118AbfKECci (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 4 Nov 2019 21:32:38 -0500
-Received: by mail-qt1-f194.google.com with SMTP id h2so13970567qto.1
-        for <bpf@vger.kernel.org>; Mon, 04 Nov 2019 18:32:37 -0800 (PST)
+        id S1729855AbfKECp7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 4 Nov 2019 21:45:59 -0500
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:35183 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729801AbfKECp7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 4 Nov 2019 21:45:59 -0500
+Received: by mail-lj1-f194.google.com with SMTP id r7so11287088ljg.2
+        for <bpf@vger.kernel.org>; Mon, 04 Nov 2019 18:45:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=4urm9i82HUz7ctZoqeaJ+eDwbY+Le9I8/NmP0pY1rnA=;
-        b=RrEUUprScGGCs1P3lOuGj4a5RoiWbVbfDZ4+HpgRvyTXCYVlJAXQB+MYamRZtedVHY
-         f5+sxNxk2K5wkp7PjMMeD8HJWFAJHo3RtLYXlCrUl00LuH1GNIO+43+qB9VoRPGoMtd2
-         MhxxJSrVmcyNdw2dcAOft+ieDHmjkqcbx3xo51HlgztpG3sVxpkHZVlG9m+fgORfqdhb
-         XySrfwIPRDIjnSUQNZ9F7DSfvHrKSEQZxN/D+pZKoiFoN1H+0mMnDQ/zYc1NegbKO5Qw
-         fR/889wgnwS9AagFL4h4X1w9N0H+8w+Cg8HTo2zBy3ABWuxHxMoo0KJgJWvcNzShW5B1
-         QLlQ==
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :organization:mime-version:content-transfer-encoding;
+        bh=+FDcCstIIOjapCXSv7mnuJ/rUCWrh35Neal7kZlmcF4=;
+        b=KN8/Wp7lwFy1gLJn5CO2zmPNm3BlLtANbvaQUUxggSaDRgwjyuy0wmyFq5W7RlWU15
+         LbQt0jJNwzaM3pmDeQtxG/tqSXGsN9hnxoQtzd1N+Dk3u5U9DqaLg5esMep6PDoids7f
+         aGVuwHzJKMZGr/0Ci3xXjoQM7Uz7Y/tDArKas66pASS/HOhvh+7P/LzDr7XZ7H/u9fA+
+         dFLB2GlJbg/q48PzTZ3QhMR8OrEMFyIvK8qkj8beVCG6mWv7tcvW7U943HQMEoJLl8TJ
+         9u0iLTu410tA/m8CLlkeZt3z1fY8ccPC1nXAVrlVUgAMP85R/ugVeKAyi4rgTuDHkkQy
+         SpPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=4urm9i82HUz7ctZoqeaJ+eDwbY+Le9I8/NmP0pY1rnA=;
-        b=ITVRqHQENG0ia7IZwuFhUyQczr0XE/gV11eYJFgZxOYWOLuyCeF059BVvyDrcbMPLn
-         +YN7aEXN1DBynafMcmVD42Ma3NYj7kGuJXu4DvXhbxuM1dRsyjHpR2Zb3r56CvN7EXYr
-         NMXDXROkFmMiggTXtjljdZPyUSHhLQNGJw4Pi36JGNbnmUkniGsHbpWRA206f+CXYnN6
-         bdjjExENDN6qC8Whv4LChv5Bq/MZzeSwVqMDZeLU19KQWDisqPHY2cInepldiINZ/qtG
-         XWWNvkho2aqOCdUKZW/o5NI1F11SH1u0paeUc6iLOmMXUO3q0x8Ybp/0Vkog4mmv8oWJ
-         W8CQ==
-X-Gm-Message-State: APjAAAU4vefF6mx4OCcqN33lARZtbKbnTjFhsxEQVHXOhkuAmAGiZQ+U
-        EHV/cN3TqUUNsxmxhtgOnfnLLw==
-X-Google-Smtp-Source: APXvYqzymmufBg1PiSWGxkk4f7LXgsvyOrzTuuRBB+uFmwh9UO+iQP682ubsI0h94l7eDVroneUqZg==
-X-Received: by 2002:a0c:9838:: with SMTP id c53mr25556531qvd.250.1572921156814;
-        Mon, 04 Nov 2019 18:32:36 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
-        by smtp.gmail.com with ESMTPSA id t65sm8907102qkh.23.2019.11.04.18.32.36
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 04 Nov 2019 18:32:36 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1iRoe3-0002uH-K9; Mon, 04 Nov 2019 22:32:35 -0400
-Date:   Mon, 4 Nov 2019 22:32:35 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jens Axboe <axboe@kernel.dk>, Jonathan Corbet <corbet@lwn.net>,
-        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, bpf@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, kvm@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
-        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 07/18] infiniband: set FOLL_PIN, FOLL_LONGTERM via
- pin_longterm_pages*()
-Message-ID: <20191105023235.GA11093@ziepe.ca>
-References: <20191103211813.213227-1-jhubbard@nvidia.com>
- <20191103211813.213227-8-jhubbard@nvidia.com>
- <20191104203346.GF30938@ziepe.ca>
- <578c1760-7221-4961-9f7d-c07c22e5c259@nvidia.com>
- <20191104205738.GH30938@ziepe.ca>
- <1560fa00-0c2b-0f3b-091c-d628f021ce09@nvidia.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=+FDcCstIIOjapCXSv7mnuJ/rUCWrh35Neal7kZlmcF4=;
+        b=Ftrql1gCzD+TQazYWkEUXovoKdokz+Rask+ZU52WNlGHGn5bTM8DGV/wAhSHuYZrJU
+         6HHFFqBI4/CxRaKHjzJV6ZTpL+NL7A6J8qZ4Nw+FSw/xIYGM70IX7A3/V1AjhQEtoFgk
+         frW7itmOzrKYvRmpYeIuhswiHKZ7J1gGvaqOTCrHSGbaWV0P9rGG6aN2PV2GT+tic6UK
+         9Ah8T1rY7Ji3ywk8IIT+cgWSdBemEbEHchbA9evxSZoGkc9Ewf2ZZpoEKS1xwNxDCpLf
+         j2pQtL1O8uEtqwIUagOeAK/wE6A3w7AaDZzZ2eOnWG51bTocY6RpLkUrU9naB0NSLQbW
+         39bA==
+X-Gm-Message-State: APjAAAU5wPdUpLSdgxN+Akll3idKX0mURaD1eQlzzcGbTB9mIxU1L/Bw
+        TU+Wci1GgcZoLIISZf2wxv2ixQ==
+X-Google-Smtp-Source: APXvYqyCxT/6jRcd03iBSSQ85tFktytduN9L7wK/LczLithZ8tHu/nnaqTY/EkrLFKp9bR05sH+nMA==
+X-Received: by 2002:a2e:8e21:: with SMTP id r1mr21231510ljk.81.1572921957654;
+        Mon, 04 Nov 2019 18:45:57 -0800 (PST)
+Received: from cakuba.netronome.com ([66.60.152.14])
+        by smtp.gmail.com with ESMTPSA id 68sm5065655ljf.26.2019.11.04.18.45.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Nov 2019 18:45:57 -0800 (PST)
+Date:   Mon, 4 Nov 2019 18:45:50 -0800
+From:   Jakub Kicinski <jakub.kicinski@netronome.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     davem@davemloft.net, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jiri Pirko <jiri@resnulli.us>
+Subject: Re: [PATCH net-next] bpf: re-fix skip write only files in debugfs
+Message-ID: <20191104184550.73e839f8@cakuba.netronome.com>
+In-Reply-To: <94ba2eebd8d6c48ca6da8626c9fa37f186d15f92.1572876157.git.daniel@iogearbox.net>
+References: <94ba2eebd8d6c48ca6da8626c9fa37f186d15f92.1572876157.git.daniel@iogearbox.net>
+Organization: Netronome Systems, Ltd.
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1560fa00-0c2b-0f3b-091c-d628f021ce09@nvidia.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 04, 2019 at 02:03:43PM -0800, John Hubbard wrote:
-> On 11/4/19 12:57 PM, Jason Gunthorpe wrote:
-> > On Mon, Nov 04, 2019 at 12:48:13PM -0800, John Hubbard wrote:
-> >> On 11/4/19 12:33 PM, Jason Gunthorpe wrote:
-> >> ...
-> >>>> diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
-> >>>> index 24244a2f68cc..c5a78d3e674b 100644
-> >>>> +++ b/drivers/infiniband/core/umem.c
-> >>>> @@ -272,11 +272,10 @@ struct ib_umem *ib_umem_get(struct ib_udata *udata, unsigned long addr,
-> >>>>  
-> >>>>  	while (npages) {
-> >>>>  		down_read(&mm->mmap_sem);
-> >>>> -		ret = get_user_pages(cur_base,
-> >>>> +		ret = pin_longterm_pages(cur_base,
-> >>>>  				     min_t(unsigned long, npages,
-> >>>>  					   PAGE_SIZE / sizeof (struct page *)),
-> >>>> -				     gup_flags | FOLL_LONGTERM,
-> >>>> -				     page_list, NULL);
-> >>>> +				     gup_flags, page_list, NULL);
-> >>>
-> >>> FWIW, this one should be converted to fast as well, I think we finally
-> >>> got rid of all the blockers for that?
-> >>>
-> >>
-> >> I'm not aware of any blockers on the gup.c end, anyway. The only broken thing we
-> >> have there is "gup remote + FOLL_LONGTERM". But we can do "gup fast + LONGTERM". 
-> > 
-> > I mean the use of the mmap_sem here is finally in a way where we can
-> > just delete the mmap_sem and use _fast
-> >  
-> > ie, AFAIK there is no need for the mmap_sem to be held during
-> > ib_umem_add_sg_table()
-> > 
-> > This should probably be a standalone patch however
-> > 
+On Mon,  4 Nov 2019 15:27:02 +0100, Daniel Borkmann wrote:
+>  [
+>    Hey Jakub, please take a look at the below merge fix ... still trying
+>    to figure out why the netdev doesn't appear on my test node when I
+>    wanted to run the test script, but seems independent of the fix.
 > 
-> Yes. Oh, actually I guess the patch flow should be: change to 
-> get_user_pages_fast() and remove the mmap_sem calls, as one patch. And then change 
-> to pin_longterm_pages_fast() as the next patch. Otherwise, the internal fallback
-> from _fast to slow gup would attempt to take the mmap_sem (again) in the same
-> thread, which is not good. :)
+>    [...]
+>    [ 1901.270493] netdevsim: probe of netdevsim4 failed with error -17
+>    [...]
 > 
-> Or just defer the change until after this series. Either way is fine, let me
-> know if you prefer one over the other.
-> 
-> The patch itself is trivial, but runtime testing to gain confidence that
-> it's solid is much harder. Is there a stress test you would recommend for that?
-> (I'm not promising I can quickly run it yet--my local IB setup is still nascent 
-> at best.)
+>    # ./test_offload.py
+>    Test destruction of generic XDP...
+>    Traceback (most recent call last):
+>     File "./test_offload.py", line 800, in <module>
+>      simdev = NetdevSimDev()
+>     File "./test_offload.py", line 355, in __init__
+>      self.wait_for_netdevs(port_count)
+>     File "./test_offload.py", line 390, in wait_for_netdevs
+>      raise Exception("netdevices did not appear within timeout")
+>    Exception: netdevices did not appear within timeout
+>  ]
 
-If you make a patch we can probably get it tested, it is something
-we should do I keep forgetting about.
+I got this fixed, looks like the merged also added back some duplicated
+code, surreptitiously.
 
-Jason
+I'm still debugging another issue with the devlink.sh test which looks
+broken.
