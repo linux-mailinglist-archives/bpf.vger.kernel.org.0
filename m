@@ -2,93 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A251FF0496
-	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2019 18:59:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14E4DF04A8
+	for <lists+bpf@lfdr.de>; Tue,  5 Nov 2019 19:04:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390452AbfKER7K (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 Nov 2019 12:59:10 -0500
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:38523 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389356AbfKER7K (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 5 Nov 2019 12:59:10 -0500
-Received: by mail-pf1-f193.google.com with SMTP id c13so16120575pfp.5;
-        Tue, 05 Nov 2019 09:59:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Zh8BqzKcHu4iycvFl+0Q9G2gU0hTqTDiqPfROxKjNUc=;
-        b=cPuQWlLf0D+msHuC+LXMAGEwLjzyestgxxzyEizwUYsgE1h0VtZXAbjhBVeDzhLT3n
-         MlEpTbBCTNN0pjWtP03+KLtph0dt8ySEbqRj0eXKGtDl8TlUsD0Tsjte/AmtxI1C2VbD
-         3/A9Xi6DDGpR7ccJaTy6VDSUIrrTBYsCVQSAo8H41sFVI6oNb6iBRzFEFQesvx09bJGq
-         Dpn1M4igRJH913oZYaEQDLBLJNIJynHTX6daHAVt6zNFDk6Vq67xyvgBSQe4lbx37ghE
-         yBuCpynzSqOPgLUpGGxDfEC9hn6gH390gy3FwEDvdcZJUY94wiyrpCFhrJXXO/6jPMTT
-         4BzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Zh8BqzKcHu4iycvFl+0Q9G2gU0hTqTDiqPfROxKjNUc=;
-        b=GH9Pr5w/YjywA7QxoUf5x8IK3sai8DZl5Ws/h0szxJQAHMmfApa5Rn0Avwgm8bNPkn
-         J0PeVJFSCTwuDgizK8AqE70CAOzyjxNvoJHHG1Tn8Pxu0UeyPVxMxFV525lUG764DvFv
-         6THFV7+3S3Kj4EbpDHVblg1kbDP/5ZGAjRcPt/HvSX8ea/OWZ5PedICw1exH8/OtXVml
-         uxeewX9XzrUAy8hJzJ2jcINd7YcXSPcvSl5K8IcQvjhMnV+snhAbHdcqHrA7hRo9O3Hf
-         0E7OilwrTIzjsyMl4mMHwLEjSdPOe/fREqShBJvgPJ+E4FXWHP9LvVEjLKBn92DGM4Ga
-         YTng==
-X-Gm-Message-State: APjAAAV9mOrjFWHx0k6ukFmE6Cf0O0RAEJ2eY2NXTMNed6ZIhFnNS0TC
-        FAASsEa8hNebQ3iiAK2+TJk=
-X-Google-Smtp-Source: APXvYqwTPnk+nOy3MD/RDOJYpXAPDD1i8QxGTTSd1VvEIbiJXJvlo7ZS4X7Ww7SYv2hvJt9l5Ex9Bg==
-X-Received: by 2002:a17:90a:3281:: with SMTP id l1mr350261pjb.43.1572976749115;
-        Tue, 05 Nov 2019 09:59:09 -0800 (PST)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:200::1:47d0])
-        by smtp.gmail.com with ESMTPSA id q20sm7523789pff.134.2019.11.05.09.59.07
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 05 Nov 2019 09:59:08 -0800 (PST)
-Date:   Tue, 5 Nov 2019 09:59:07 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>, davem@davemloft.net,
-        daniel@iogearbox.net, peterz@infradead.org, x86@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH bpf-next 0/7] Introduce BPF trampoline
-Message-ID: <20191105175905.fenzkyottcnsw6kx@ast-mbp.dhcp.thefacebook.com>
-References: <20191102220025.2475981-1-ast@kernel.org>
- <20191105143154.umojkotnvcx4yeuq@ast-mbp.dhcp.thefacebook.com>
- <20191105104024.4e99a630@grimm.local.home>
- <20191105154709.utmzm6qvtlux4hww@ast-mbp.dhcp.thefacebook.com>
- <20191105110028.7775192f@grimm.local.home>
- <20191105162801.sffoqe2yedrrplnn@ast-mbp.dhcp.thefacebook.com>
- <20191105122629.29aecc69@grimm.local.home>
+        id S2389356AbfKESED (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 Nov 2019 13:04:03 -0500
+Received: from smtp-sh2.infomaniak.ch ([128.65.195.6]:36975 "EHLO
+        smtp-sh2.infomaniak.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388711AbfKESED (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 5 Nov 2019 13:04:03 -0500
+Received: from smtp6.infomaniak.ch (smtp6.infomaniak.ch [83.166.132.19])
+        by smtp-sh2.infomaniak.ch (8.14.4/8.14.4/Debian-8+deb8u2) with ESMTP id xA5I1n5F051832
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 5 Nov 2019 19:01:49 +0100
+Received: from ns3096276.ip-94-23-54.eu (ns3096276.ip-94-23-54.eu [94.23.54.103])
+        (authenticated bits=0)
+        by smtp6.infomaniak.ch (8.14.5/8.14.5) with ESMTP id xA5I1fcs055903
+        (version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=NO);
+        Tue, 5 Nov 2019 19:01:42 +0100
+Subject: Re: [PATCH bpf-next v13 4/7] landlock: Add ptrace LSM hooks
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Drysdale <drysdale@google.com>,
+        Florent Revest <revest@chromium.org>,
+        James Morris <jmorris@namei.org>, Jann Horn <jann@thejh.net>,
+        John Johansen <john.johansen@canonical.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        KP Singh <kpsingh@chromium.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mickael.salaun@ssi.gouv.fr>,
+        Paul Moore <paul@paul-moore.com>,
+        Sargun Dhillon <sargun@sargun.me>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Stephen Smalley <sds@tycho.nsa.gov>, Tejun Heo <tj@kernel.org>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        Tycho Andersen <tycho@tycho.ws>,
+        Will Drewry <wad@chromium.org>, bpf@vger.kernel.org,
+        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-security-module@vger.kernel.org, netdev@vger.kernel.org
+References: <20191104172146.30797-1-mic@digikod.net>
+ <20191104172146.30797-5-mic@digikod.net>
+ <20191105171824.dfve44gjiftpnvy7@ast-mbp.dhcp.thefacebook.com>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Openpgp: preference=signencrypt
+Message-ID: <23acf523-dbc4-855b-ca49-2bbfa5e7117e@digikod.net>
+Date:   Tue, 5 Nov 2019 19:01:41 +0100
+User-Agent: 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191105122629.29aecc69@grimm.local.home>
-User-Agent: NeoMutt/20180223
+In-Reply-To: <20191105171824.dfve44gjiftpnvy7@ast-mbp.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Antivirus: Dr.Web (R) for Unix mail servers drweb plugin ver.6.0.2.8
+X-Antivirus-Code: 0x100000
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 05, 2019 at 12:26:29PM -0500, Steven Rostedt wrote:
+
+On 05/11/2019 18:18, Alexei Starovoitov wrote:
+> On Mon, Nov 04, 2019 at 06:21:43PM +0100, Mickaël Salaün wrote:
+>> Add a first Landlock hook that can be used to enforce a security policy
+>> or to audit some process activities.  For a sandboxing use-case, it is
+>> needed to inform the kernel if a task can legitimately debug another.
+>> ptrace(2) can also be used by an attacker to impersonate another task
+>> and remain undetected while performing malicious activities.
+>>
+>> Using ptrace(2) and related features on a target process can lead to a
+>> privilege escalation.  A sandboxed task must then be able to tell the
+>> kernel if another task is more privileged, via ptrace_may_access().
+>>
+>> Signed-off-by: Mickaël Salaün <mic@digikod.net>
+> ...
+>> +static int check_ptrace(struct landlock_domain *domain,
+>> +		struct task_struct *tracer, struct task_struct *tracee)
+>> +{
+>> +	struct landlock_hook_ctx_ptrace ctx_ptrace = {
+>> +		.prog_ctx = {
+>> +			.tracer = (uintptr_t)tracer,
+>> +			.tracee = (uintptr_t)tracee,
+>> +		},
+>> +	};
 > 
-> I'm guessing it will use kprobes (or optimized probes). I haven't had a
-> chance to look at your patches.
+> So you're passing two kernel pointers obfuscated as u64 into bpf program
+> yet claiming that the end goal is to make landlock unprivileged?!
+> The most basic security hole in the tool that is aiming to provide security.
 
-People complained that kprobe and especially kretprobe is too slow and too
-unpredictable (not guarantees that prog will be executed and k*probe won't be
-missed). For bpf to attach to fentry/fexit none of k*probe stuff is needed.
+How could you used these pointers without dedicated BPF helpers? This
+context items are typed as PTR_TO_TASK and can't be used without a
+dedicated helper able to deal with ARG_PTR_TO_TASK. Moreover, pointer
+arithmetic is explicitly forbidden (and I added tests for that). Did I
+miss something?
 
-> I still think using the register_ftrace_direct() will be cleaner (as it
-> is built on top of code that's been in the kernel for a decade).
-> Perhaps we can make it work even without the full ftrace code.
+> 
+> I think the only way bpf-based LSM can land is both landlock and KRSI
+> developers work together on a design that solves all use cases.
 
-Yes and I still agree that long term using register_ftrace_direct() is cleaner.
-What I strongly disagree is that bpf developers need to wait for it to land.
-Especially when there is no direct dependency. It's nice to have both bpf
-trampoline and ftrace to be functional at the same time tracing the same kernel
-function. But for the time being running one or another is an acceptable
-limitation. Especially since the path to making it clean is already defined and
-agreed.
+As I said in a previous cover letter [1], that would be great. I think
+that the current Landlock bases (almost everything from this series
+except the seccomp interface) should meet both needs, but I would like
+to have the point of view of the KRSI developers.
 
+[1] https://lore.kernel.org/lkml/20191029171505.6650-1-mic@digikod.net/
+
+> BPF is capable
+> to be a superset of all existing LSMs whereas landlock and KRSI propsals today
+> are custom solutions to specific security concerns. BPF subsystem was extended
+> with custom things in the past. In networking we have lwt, skb, tc, xdp, sk
+> program types with a lot of overlapping functionality. We couldn't figure out
+> how to generalize them into single 'networking' program. Now we can and we
+> should. Accepting two partially overlapping bpf-based LSMs would be repeating
+> the same mistake again.
+
+I'll let the LSM maintainers comment on whether BPF could be a superset
+of all LSM, but given the complexity of an access-control system, I have
+some doubts though. Anyway, we need to start somewhere and then iterate.
+This patch series is a first step.
