@@ -2,90 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 73EC7F1C90
-	for <lists+bpf@lfdr.de>; Wed,  6 Nov 2019 18:37:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB638F1D11
+	for <lists+bpf@lfdr.de>; Wed,  6 Nov 2019 19:02:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727633AbfKFRhG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Nov 2019 12:37:06 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:47490 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727286AbfKFRhG (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 6 Nov 2019 12:37:06 -0500
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id xA6HYNTI017298
-        for <bpf@vger.kernel.org>; Wed, 6 Nov 2019 09:37:05 -0800
+        id S1728370AbfKFSCP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Nov 2019 13:02:15 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:9820 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726963AbfKFSCP (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 6 Nov 2019 13:02:15 -0500
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xA6I06fF026193
+        for <bpf@vger.kernel.org>; Wed, 6 Nov 2019 10:02:14 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : mime-version : content-type; s=facebook;
- bh=Nj7rvl/wLad+h5Td+KHDBVmi8A0VUl1Ru23PmARYP74=;
- b=UppDPNUPMkeCQu7igm1kCpsWKO4P8GQS0IQyUivugLQzJ1lozODs1ZHXZiddIyqtmu8k
- /+MP8pM7qL7Y7QVIhZu2PQQRAHAC/+m2FvXm6LV1CPcWNH8VA6k4JZMvGBlW2+hCIhoc
- KQOVEMmWPzEEYl+ktJ2D+shCA+yKNMSDry4= 
+ bh=PvqFEXNBoHkmIi1zRu3NcMaSANd1HCAy11FibpsN+EU=;
+ b=V9qwnnW8h3I6qI03PiX3sjzIulUgjAsvMAs2O84cfjSuNndXNBLF0ZuZ0/2OtoASfkHv
+ ymscPcDCFE+qeNArcoKgoVsS3uygyyneMD15oJm997ZTeDZ1kIdu4ipCNuBqeI4UmcyI
+ KUA8EKL3bsj6QbtEJELfdOBNCxC3/yTHTE4= 
 Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by m0089730.ppops.net with ESMTP id 2w41w1ga05-3
+        by mx0a-00082601.pphosted.com with ESMTP id 2w41un0dvx-4
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 06 Nov 2019 09:37:05 -0800
-Received: from 2401:db00:2050:5076:face:0:7:0 (2620:10d:c081:10::13) by
+        for <bpf@vger.kernel.org>; Wed, 06 Nov 2019 10:02:14 -0800
+Received: from 2401:db00:30:600c:face:0:39:0 (2620:10d:c081:10::13) by
  mail.thefacebook.com (2620:10d:c081:35::129) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
- Wed, 6 Nov 2019 09:37:03 -0800
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 599AB2EC18E9; Wed,  6 Nov 2019 09:37:02 -0800 (PST)
+ Wed, 6 Nov 2019 10:02:13 -0800
+Received: by devbig005.ftw2.facebook.com (Postfix, from userid 6611)
+        id 118A6294200E; Wed,  6 Nov 2019 10:02:12 -0800 (PST)
 Smtp-Origin-Hostprefix: devbig
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
+From:   Martin KaFai Lau <kafai@fb.com>
+Smtp-Origin-Hostname: devbig005.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>, <kernel-team@fb.com>
 Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next] selftests/bps: clean up removed ints relocations negative tests
-Date:   Wed, 6 Nov 2019 09:36:59 -0800
-Message-ID: <20191106173659.1978131-1-andriin@fb.com>
+Subject: [PATCH bpf-next 0/2] bpf: Add array support to btf_struct_access
+Date:   Wed, 6 Nov 2019 10:02:12 -0800
+Message-ID: <20191106180212.2175046-1-kafai@fb.com>
 X-Mailer: git-send-email 2.17.1
 X-FB-Internal: Safe
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
  definitions=2019-11-06_06:2019-11-06,2019-11-06 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
- lowpriorityscore=0 malwarescore=0 priorityscore=1501 impostorscore=0
- bulkscore=0 mlxlogscore=691 adultscore=0 spamscore=0 phishscore=0
- clxscore=1015 suspectscore=8 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-1910280000 definitions=main-1911060170
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0 bulkscore=0
+ mlxscore=0 spamscore=0 suspectscore=8 impostorscore=0 mlxlogscore=680
+ lowpriorityscore=0 clxscore=1015 malwarescore=0 priorityscore=1501
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-1911060175
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-As part of 42765ede5c54 ("selftests/bpf: Remove too strict field offset relo
-test cases"), few ints relocations negative (supposed to fail) tests were
-removed, but not completely. Due to them being negative, some leftovers in
-prog_tests/core_reloc.c went unnoticed. Clean them up.
+This series adds array support to btf_struct_access().
+Please see individual patch for details.
 
-Fixes: 42765ede5c54 ("selftests/bpf: Remove too strict field offset relo test cases")
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- tools/testing/selftests/bpf/prog_tests/core_reloc.c | 6 ------
- 1 file changed, 6 deletions(-)
+Martin KaFai Lau (2):
+  bpf: Add array support to btf_struct_access
+  bpf: Add cb access in kfree_skb test
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/core_reloc.c b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-index 00f1f3229542..f94bd071536b 100644
---- a/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-+++ b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-@@ -337,12 +337,6 @@ static struct core_reloc_test_case test_cases[] = {
- 	INTS_CASE(ints___bool),
- 	INTS_CASE(ints___reverse_sign),
- 
--	INTS_ERR_CASE(ints___err_bitfield),
--	INTS_ERR_CASE(ints___err_wrong_sz_8),
--	INTS_ERR_CASE(ints___err_wrong_sz_16),
--	INTS_ERR_CASE(ints___err_wrong_sz_32),
--	INTS_ERR_CASE(ints___err_wrong_sz_64),
--	
- 	/* validate edge cases of capturing relocations */
- 	{
- 		.case_name = "misc",
+ kernel/bpf/btf.c                              | 187 +++++++++++++++---
+ .../selftests/bpf/prog_tests/kfree_skb.c      |  54 +++--
+ tools/testing/selftests/bpf/progs/kfree_skb.c |  25 ++-
+ 3 files changed, 220 insertions(+), 46 deletions(-)
+
 -- 
 2.17.1
 
