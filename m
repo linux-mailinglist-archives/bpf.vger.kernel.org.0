@@ -2,214 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 68E98F18E2
-	for <lists+bpf@lfdr.de>; Wed,  6 Nov 2019 15:39:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B1F2F1ADE
+	for <lists+bpf@lfdr.de>; Wed,  6 Nov 2019 17:12:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732082AbfKFOjV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Nov 2019 09:39:21 -0500
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:40472 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728383AbfKFOjV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Nov 2019 09:39:21 -0500
-Received: by mail-qt1-f196.google.com with SMTP id o49so33885909qta.7;
-        Wed, 06 Nov 2019 06:39:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=lPCixJQnRcBD0c5p0tZ1Pszikd0T2GsXeZOZpWPEV90=;
-        b=S/H+0cHuo3kMWiR+Xz0C5SxG+JllAosLufeEsQ5zovichapVBPLp3mMQ52cAyk9ttH
-         3HP7vJXXn1V4+pazSiii1SStzyMbIWvVTCkfN2mDQinJf/XdDyn5Xeu9PqA38vkqVb/8
-         2iqd7+qkmCwtEt2UjDNk1Mb7qTneD7GYQmcHJ3sWrqhfKPaMof7a+kdx7oho773A0WC6
-         RT6ZZgf+WVM9jGoU4BraeTp3vli82dvQ51YQxZUYDiEDehLbWnkD3josCr/7UocY/u6v
-         lJgsgN7c4NTfNc55ezD+jGzo2QPBN74R6jYO2Vn3H7GIJi1z7cmk1PozJuVj3ayje/wT
-         EM7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=lPCixJQnRcBD0c5p0tZ1Pszikd0T2GsXeZOZpWPEV90=;
-        b=fM3ID30KUeLBAJNfdVvDemhplnFYh5IaxoomYfqcZkt1OvtyQTY33CyPd+FixwUeCZ
-         e9L4fs3XFnYppQtwO3WQlJvMe7QPE9Thj6kzdcUTxAsUJY9zJ9WtQO9iXiib5jSCl0x/
-         Mril4JgHzcevZFC4iOc5iNEgjaNTm0SPjU0JahHevGN3ZoYEzIbJRXhy1VFY3KDfF5gJ
-         ha9tCnkEEITm012kZtnSs/wV4K80vtb+Ap07ijzuDlMhs8iEjEYaeB6HzRCHhhIM0lXN
-         I02qCdLbuwVTR1523iCmq/LIajpdw7cKNDD+ZVmGV0/7Kn+xOl7d+kj1ljZfmv5dX+UP
-         C26Q==
-X-Gm-Message-State: APjAAAWn1guDqDTvgcWJm8f32x7/2OEjpcEiT1uElfigOLZNQFb0dk2i
-        4SarTtD4kTxDqO0DhwTeVIQ=
-X-Google-Smtp-Source: APXvYqwiDiXMhraahcYlpzbeNOhluE0gyBtlhGPEW4m4pSQb9qL77rPuWWs/5qGhXmX14QtQRoYXKg==
-X-Received: by 2002:aed:228b:: with SMTP id p11mr2729632qtc.196.1573051159674;
-        Wed, 06 Nov 2019 06:39:19 -0800 (PST)
-Received: from quaco.ghostprotocols.net ([179.97.35.50])
-        by smtp.gmail.com with ESMTPSA id t132sm13057929qke.51.2019.11.06.06.39.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Nov 2019 06:39:19 -0800 (PST)
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 374D440B1D; Wed,  6 Nov 2019 11:39:17 -0300 (-03)
-Date:   Wed, 6 Nov 2019 11:39:17 -0300
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH v5 09/10] perf tools: add a deep delete for parse event
- terms
-Message-ID: <20191106143917.GG6259@kernel.org>
-References: <20191025180827.191916-1-irogers@google.com>
- <20191030223448.12930-1-irogers@google.com>
- <20191030223448.12930-10-irogers@google.com>
- <20191106142444.GI30214@krava>
+        id S1729392AbfKFQMO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Nov 2019 11:12:14 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:58102 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727570AbfKFQMN (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 6 Nov 2019 11:12:13 -0500
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id xA6G55fE046114
+        for <bpf@vger.kernel.org>; Wed, 6 Nov 2019 11:12:12 -0500
+Received: from e06smtp03.uk.ibm.com (e06smtp03.uk.ibm.com [195.75.94.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2w3yv34wxu-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 06 Nov 2019 11:12:12 -0500
+Received: from localhost
+        by e06smtp03.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
+        Wed, 6 Nov 2019 16:12:09 -0000
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (9.149.109.198)
+        by e06smtp03.uk.ibm.com (192.168.101.133) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Wed, 6 Nov 2019 16:12:07 -0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id xA6GC6Jo32899304
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 6 Nov 2019 16:12:06 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 22AEA4C04A;
+        Wed,  6 Nov 2019 16:12:06 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CE0B74C058;
+        Wed,  6 Nov 2019 16:12:05 +0000 (GMT)
+Received: from white.boeblingen.de.ibm.com (unknown [9.152.99.170])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed,  6 Nov 2019 16:12:05 +0000 (GMT)
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>
+Cc:     bpf@vger.kernel.org, Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [RFC PATCH bpf-next] bpf: allow JIT debugging if CONFIG_BPF_JIT_ALWAYS_ON is set
+Date:   Wed,  6 Nov 2019 17:12:04 +0100
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191106142444.GI30214@krava>
-X-Url:  http://acmel.wordpress.com
-User-Agent: Mutt/1.12.1 (2019-06-15)
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+x-cbid: 19110616-0012-0000-0000-00000361467B
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19110616-0013-0000-0000-0000219CA441
+Message-Id: <20191106161204.87261-1-iii@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-11-06_05:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1908290000 definitions=main-1911060154
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Wed, Nov 06, 2019 at 03:24:44PM +0100, Jiri Olsa escreveu:
-> On Wed, Oct 30, 2019 at 03:34:47PM -0700, Ian Rogers wrote:
-> > Add a parse_events_term deep delete function so that owned strings and
-> > arrays are freed.
-> > 
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> 
-> Acked-by: Jiri Olsa <jolsa@kernel.org>
+Currently it's not possible to set bpf_jit_enable = 2 when
+CONFIG_BPF_JIT_ALWAYS_ON is set, which makes debugging certain problems
+harder.
 
-Thanks, applied,
+It looks as if it's safe to allow this, because setting this knob
+requires root anyway, but I'm not sure about all the security
+implications, so sending this as an RFC.
 
-- Arnaldo
-> 
-> thanks,
-> jirka
-> 
-> > ---
-> >  tools/perf/util/parse-events.c | 16 +++++++++++++---
-> >  tools/perf/util/parse-events.h |  1 +
-> >  tools/perf/util/parse-events.y | 12 ++----------
-> >  tools/perf/util/pmu.c          |  2 +-
-> >  4 files changed, 17 insertions(+), 14 deletions(-)
-> > 
-> > diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-> > index a0a80f4e7038..6d18ff9bce49 100644
-> > --- a/tools/perf/util/parse-events.c
-> > +++ b/tools/perf/util/parse-events.c
-> > @@ -2812,6 +2812,18 @@ int parse_events_term__clone(struct parse_events_term **new,
-> >  	return new_term(new, &temp, str, 0);
-> >  }
-> >  
-> > +void parse_events_term__delete(struct parse_events_term *term)
-> > +{
-> > +	if (term->array.nr_ranges)
-> > +		zfree(&term->array.ranges);
-> > +
-> > +	if (term->type_val != PARSE_EVENTS__TERM_TYPE_NUM)
-> > +		zfree(&term->val.str);
-> > +
-> > +	zfree(&term->config);
-> > +	free(term);
-> > +}
-> > +
-> >  int parse_events_copy_term_list(struct list_head *old,
-> >  				 struct list_head **new)
-> >  {
-> > @@ -2842,10 +2854,8 @@ void parse_events_terms__purge(struct list_head *terms)
-> >  	struct parse_events_term *term, *h;
-> >  
-> >  	list_for_each_entry_safe(term, h, terms, list) {
-> > -		if (term->array.nr_ranges)
-> > -			zfree(&term->array.ranges);
-> >  		list_del_init(&term->list);
-> > -		free(term);
-> > +		parse_events_term__delete(term);
-> >  	}
-> >  }
-> >  
-> > diff --git a/tools/perf/util/parse-events.h b/tools/perf/util/parse-events.h
-> > index 34f58d24a06a..5ee8ac93840c 100644
-> > --- a/tools/perf/util/parse-events.h
-> > +++ b/tools/perf/util/parse-events.h
-> > @@ -139,6 +139,7 @@ int parse_events_term__sym_hw(struct parse_events_term **term,
-> >  			      char *config, unsigned idx);
-> >  int parse_events_term__clone(struct parse_events_term **new,
-> >  			     struct parse_events_term *term);
-> > +void parse_events_term__delete(struct parse_events_term *term);
-> >  void parse_events_terms__delete(struct list_head *terms);
-> >  void parse_events_terms__purge(struct list_head *terms);
-> >  void parse_events__clear_array(struct parse_events_array *a);
-> > diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
-> > index 376b19855470..4cac830015be 100644
-> > --- a/tools/perf/util/parse-events.y
-> > +++ b/tools/perf/util/parse-events.y
-> > @@ -49,14 +49,6 @@ static void free_list_evsel(struct list_head* list_evsel)
-> >  	free(list_evsel);
-> >  }
-> >  
-> > -static void free_term(struct parse_events_term *term)
-> > -{
-> > -	if (term->type_val == PARSE_EVENTS__TERM_TYPE_STR)
-> > -		free(term->val.str);
-> > -	zfree(&term->array.ranges);
-> > -	free(term);
-> > -}
-> > -
-> >  static void inc_group_count(struct list_head *list,
-> >  		       struct parse_events_state *parse_state)
-> >  {
-> > @@ -99,7 +91,7 @@ static void inc_group_count(struct list_head *list,
-> >  %type <str> PE_DRV_CFG_TERM
-> >  %destructor { free ($$); } <str>
-> >  %type <term> event_term
-> > -%destructor { free_term ($$); } <term>
-> > +%destructor { parse_events_term__delete ($$); } <term>
-> >  %type <list_terms> event_config
-> >  %type <list_terms> opt_event_config
-> >  %type <list_terms> opt_pmu_config
-> > @@ -694,7 +686,7 @@ event_config ',' event_term
-> >  	struct parse_events_term *term = $3;
-> >  
-> >  	if (!head) {
-> > -		free_term(term);
-> > +		parse_events_term__delete(term);
-> >  		YYABORT;
-> >  	}
-> >  	list_add_tail(&term->list, head);
-> > diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-> > index f9f427d4c313..db1e57113f4b 100644
-> > --- a/tools/perf/util/pmu.c
-> > +++ b/tools/perf/util/pmu.c
-> > @@ -1260,7 +1260,7 @@ int perf_pmu__check_alias(struct perf_pmu *pmu, struct list_head *head_terms,
-> >  		info->metric_name = alias->metric_name;
-> >  
-> >  		list_del_init(&term->list);
-> > -		free(term);
-> > +		parse_events_term__delete(term);
-> >  	}
-> >  
-> >  	/*
-> > -- 
-> > 2.24.0.rc1.363.gb1bccd3e3d-goog
-> > 
+Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+---
+ net/core/sysctl_net_core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/net/core/sysctl_net_core.c b/net/core/sysctl_net_core.c
+index eb29e5adc84d..09f1218b5656 100644
+--- a/net/core/sysctl_net_core.c
++++ b/net/core/sysctl_net_core.c
+@@ -389,7 +389,7 @@ static struct ctl_table net_core_table[] = {
+ 		.proc_handler	= proc_dointvec_minmax_bpf_enable,
+ # ifdef CONFIG_BPF_JIT_ALWAYS_ON
+ 		.extra1		= SYSCTL_ONE,
+-		.extra2		= SYSCTL_ONE,
++		.extra2		= &two,
+ # else
+ 		.extra1		= SYSCTL_ZERO,
+ 		.extra2		= &two,
 -- 
+2.23.0
 
-- Arnaldo
