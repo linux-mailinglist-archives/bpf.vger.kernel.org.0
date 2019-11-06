@@ -2,214 +2,420 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4884FF2087
-	for <lists+bpf@lfdr.de>; Wed,  6 Nov 2019 22:19:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68D3FF2104
+	for <lists+bpf@lfdr.de>; Wed,  6 Nov 2019 22:46:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726949AbfKFVTC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Nov 2019 16:19:02 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:18368 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726798AbfKFVTC (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 6 Nov 2019 16:19:02 -0500
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id xA6LDvb8013064;
-        Wed, 6 Nov 2019 13:18:50 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=g2ZCTMKcoUEjIMBpIH8gji0ZK9gvJmgt+ax1sGvdnzc=;
- b=XhRpSp7uGFs7ALiJFwMlrC+jWWC3spKSB9rdum/uoQQasFbPa+/rrerp1L7BTNwrwqlM
- +dXxLWBF23GxAyw+7IRjps3/JkGMec4i3wULJTPaoEz08vElQ+xzKkLf8d0JBTfVprTQ
- nnDwJ/ZdjmqJyrJsjlPrTb6FfQIk2rWGWeU= 
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by m0089730.ppops.net with ESMTP id 2w41w1hchy-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 06 Nov 2019 13:18:49 -0800
-Received: from prn-hub01.TheFacebook.com (2620:10d:c081:35::125) by
- prn-hub06.TheFacebook.com (2620:10d:c081:35::130) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Wed, 6 Nov 2019 13:18:49 -0800
-Received: from NAM03-CO1-obe.outbound.protection.outlook.com (192.168.54.28)
- by o365-in.thefacebook.com (192.168.16.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
- via Frontend Transport; Wed, 6 Nov 2019 13:18:48 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SIc9f5DtzI1r4yHbt11PNnaCsYZtki8zCGL4yoaVpAF+D7PIzL2SuAZ/3cqrOS8drGjPBuDdD+xGQSb2S1z4N9Q5YZaH9sfpHikwAFoZvJNR4IILanFWjXMIPMZmMuu8vS6+GH8eVFMQjyM2NYsYJVDTaCgweP4Zy9YQE+1JcPdeddooa/NDqVcySMOV7s4kq6U25qdoVKjnWU5rD6X/tTH75dGLeM9f+EJDgZRP4PIKloiSyTd2TevElq4O2YFxb2bAgwKCBM2YgN+BrlUVj9qYyfG3nRT/vKG6OZ6Oh4IY8l8fwWpyV3s/oUmdMZP/9QeFpUHRiMENTraoLyZ5KQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=g2ZCTMKcoUEjIMBpIH8gji0ZK9gvJmgt+ax1sGvdnzc=;
- b=N6TaupdOsG5M3spU5EaEO2gW6NeW47Scgq62qDh8X3u9ZRbbkEYi6adY9ib49EGs/aGc34v6fTXpuLw+pQLQjoR7d9qXhKs0xjdgLH1DJR7qn1r3HQiWkSMWQ1QAvlCwmmVc0/wUZssLbTuiT3+uxjhuePxpTnL1+mNzEXpplf2Ws7GJl2tBpoV0iLCQBuT99TcMuCqUpExoC1F1unj2PzO8f2Q16drQHFuPeIn2IiDJZU4F6KelhRkrcZRStHB4NL6huRU9JE3f40+ziIPsEgnEGANVbv8evSj2qBM8dD7msSzMxVkdx96tC56EBaChjBr8pCVhHUY1cJKYLiGyGQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=g2ZCTMKcoUEjIMBpIH8gji0ZK9gvJmgt+ax1sGvdnzc=;
- b=D8OQCneMLN1PXdKgQaPvlHvXwsxVFhfsaSDEwuTc4ivxkGz5dT9UsX0s8/JiKCv+Tc0JSrseuIjoxPWRJ/seY+jbjVPOmRctHGlAFhQRHzZs8PAYYb9Nh+lW2IGc3M2qymz4je7CFVMDUgn1R/rE/slcMXFdU52gEBKEm/R+sOo=
-Received: from BYAPR15MB3384.namprd15.prod.outlook.com (20.179.60.27) by
- BYAPR15MB3432.namprd15.prod.outlook.com (20.179.59.152) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2408.24; Wed, 6 Nov 2019 21:18:48 +0000
-Received: from BYAPR15MB3384.namprd15.prod.outlook.com
- ([fe80::b92c:ebd2:58dc:6b8d]) by BYAPR15MB3384.namprd15.prod.outlook.com
- ([fe80::b92c:ebd2:58dc:6b8d%5]) with mapi id 15.20.2408.025; Wed, 6 Nov 2019
- 21:18:48 +0000
-From:   Yonghong Song <yhs@fb.com>
-To:     Andrii Nakryiko <andriin@fb.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>
-CC:     "andrii.nakryiko@gmail.com" <andrii.nakryiko@gmail.com>,
-        Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH bpf-next] libbpf: simplify BPF_CORE_READ_BITFIELD_PROBED
- usage
-Thread-Topic: [PATCH bpf-next] libbpf: simplify BPF_CORE_READ_BITFIELD_PROBED
- usage
-Thread-Index: AQHVlN7mdqeCPuu5akK2gbR1A6tGyad+pcwA
-Date:   Wed, 6 Nov 2019 21:18:47 +0000
-Message-ID: <bdc51aac-6d39-13a6-f50e-8fca3d329b4b@fb.com>
-References: <20191106201500.2582438-1-andriin@fb.com>
-In-Reply-To: <20191106201500.2582438-1-andriin@fb.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MWHPR1601CA0016.namprd16.prod.outlook.com
- (2603:10b6:300:da::26) To BYAPR15MB3384.namprd15.prod.outlook.com
- (2603:10b6:a03:112::27)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:200::1:5052]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 40d93f70-ca91-4e21-62c6-08d762fee987
-x-ms-traffictypediagnostic: BYAPR15MB3432:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR15MB34323268557082BE8405D12FD3790@BYAPR15MB3432.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2887;
-x-forefront-prvs: 02135EB356
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(136003)(376002)(346002)(39860400002)(396003)(366004)(199004)(189003)(53546011)(102836004)(6506007)(52116002)(46003)(6486002)(186003)(229853002)(386003)(76176011)(99286004)(6512007)(25786009)(2616005)(11346002)(66946007)(36756003)(6436002)(66556008)(64756008)(66446008)(2906002)(6246003)(66476007)(6116002)(81156014)(8676002)(81166006)(2501003)(486006)(5660300002)(478600001)(476003)(14454004)(31686004)(2201001)(86362001)(4326008)(446003)(316002)(110136005)(54906003)(14444005)(256004)(71200400001)(8936002)(71190400001)(7736002)(305945005)(31696002);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB3432;H:BYAPR15MB3384.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: QZO8AChug4OlQu9vVdNuTNGxALMvN6Rn7VBGPJLMJ7rOj9HC0GeZ/tGCEX8di4OJwsPaYx9kDrK0hmxCB4g8NhpvNfdqjKeyNwM2ndvSHFZVii+09xOmpTZA4wJjk+VGB5JalMQPc9n1Ew3HtgCopdoCVNOL4Ozqtrrv7DvyxQlMaQPH4P8kUjUYROZ90FObN6X8tYexMdPGmaFEUq9+vpQELh73vij+rngM+2eNSbT/ylG7fB6vtKbBmBQqo7eRss5gyfYbz4gg4wIgevrxzX8mWfDOiQq3Wjn8Z/NbHbgBU2jIONo1lEkDQiPkPO+wsCeHh2x6K2c0Vqycn7DtrFGwsCjAWPtvbUxnpP0oNvJqqP4s7+zRT/hKc0B4ZyicTfGO/OCQ5ZrRSy+Ym32YqL+nAdJSPkzNVbGAsP0+/YLC6xZD5RLw5HKTThbiZRVp
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <52B723A96D5EB048AAE0E012744178C3@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1727033AbfKFVqF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Nov 2019 16:46:05 -0500
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:41405 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732304AbfKFVpt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Nov 2019 16:45:49 -0500
+Received: by mail-pl1-f193.google.com with SMTP id d29so5729446plj.8
+        for <bpf@vger.kernel.org>; Wed, 06 Nov 2019 13:45:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=wHTfhRohaRD5+YSmn4w/tSNSPwRjR2Kg2q+1zQkt4iA=;
+        b=F807TyZKEzeWi4NbHz+to+x3TpcNcfrYZWWTqgXNxaBYjgIQe724YD+lT9GO1IaMPh
+         lAAQ6Y+6cGPwhZ/IXuWoUdjIkFqLQpFCMIt3Ocg/1yt1t0BAZuH1DtoDcu8RMLEFY8Xm
+         XIvj0IsMN/+/fOh8/0Te74LsJUb2oJc2d32+Y=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=wHTfhRohaRD5+YSmn4w/tSNSPwRjR2Kg2q+1zQkt4iA=;
+        b=kATDfj1fGaFF2yjyCEMjcSxJXwXLUmOaETFbrGoRDsf7HBFlutMq00toIr/PxDVjLC
+         cBHbKeednYpkLvAaOWlyh6x4r9V9P2lr6J/BqNGCdf48tHHxatUVBSDLXNoukSDcYSHK
+         uVdX8Y0i1xH1GbNPK/gy6oleV7yzjhv91lSghV8FEh2rc+ZZZxXui/tGPpW4XRrkQyjq
+         g/8BzdQxgfKiyI9XAEc7bHfZM/JMkSClBDPfMowUFaA65FRC+C9HrX4FyDxsvyRVvH59
+         gq9jtiSeMg6WdSd5Mz9D/T5yYAd9PH+p4cyprgRkx392z3Y1gecc1FD+RcBurLFDksTs
+         QUyQ==
+X-Gm-Message-State: APjAAAXxWNRt1SOojHzeTN2y+piKVTz78VGDDztNnjg8x8Z7Fj56WjsM
+        AE/l72aPfzN+GzvkaayNDIiN/A==
+X-Google-Smtp-Source: APXvYqzJI3smLMVgrak3bMVAMNdOtDewOJhibyW0/pIikIwy+Kzub2+iiZp8mOLYLBdMNTzlMWQZPQ==
+X-Received: by 2002:a17:902:904c:: with SMTP id w12mr5115222plz.144.1573076747293;
+        Wed, 06 Nov 2019 13:45:47 -0800 (PST)
+Received: from chromium.org ([122.173.128.252])
+        by smtp.gmail.com with ESMTPSA id c12sm32820159pfp.178.2019.11.06.13.45.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Nov 2019 13:45:46 -0800 (PST)
+From:   KP Singh <kpsingh@chromium.org>
+X-Google-Original-From: KP Singh <kpsingh>
+Date:   Thu, 7 Nov 2019 03:15:26 +0530
+To:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Drysdale <drysdale@google.com>,
+        Florent Revest <revest@chromium.org>,
+        James Morris <jmorris@namei.org>, Jann Horn <jann@thejh.net>,
+        John Johansen <john.johansen@canonical.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mickael.salaun@ssi.gouv.fr>,
+        Paul Moore <paul@paul-moore.com>,
+        Sargun Dhillon <sargun@sargun.me>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Stephen Smalley <sds@tycho.nsa.gov>, Tejun Heo <tj@kernel.org>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        Tycho Andersen <tycho@tycho.ws>,
+        Will Drewry <wad@chromium.org>, bpf@vger.kernel.org,
+        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-security-module@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH bpf-next v13 4/7] landlock: Add ptrace LSM hooks
+Message-ID: <20191106214526.GA22244@chromium.org>
+References: <20191104172146.30797-1-mic@digikod.net>
+ <20191104172146.30797-5-mic@digikod.net>
+ <20191105171824.dfve44gjiftpnvy7@ast-mbp.dhcp.thefacebook.com>
+ <23acf523-dbc4-855b-ca49-2bbfa5e7117e@digikod.net>
+ <20191105193446.s4pswwwhrmgk6hcx@ast-mbp.dhcp.thefacebook.com>
+ <20191106100655.GA18815@chromium.org>
+ <813cedde-8ed7-2d3b-883d-909efa978d41@digikod.net>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 40d93f70-ca91-4e21-62c6-08d762fee987
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Nov 2019 21:18:47.8801
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 9OPQf0BqVXgbKw9syAATld4fsAbFqj122amrvCyfR/keemYfGHInOr2HM3ehQ2+w
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3432
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
- definitions=2019-11-06_07:2019-11-06,2019-11-06 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
- lowpriorityscore=0 malwarescore=0 priorityscore=1501 impostorscore=0
- bulkscore=0 mlxlogscore=999 adultscore=0 spamscore=0 phishscore=0
- clxscore=1015 suspectscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-1910280000 definitions=main-1911060208
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <813cedde-8ed7-2d3b-883d-909efa978d41@digikod.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-DQoNCk9uIDExLzYvMTkgMTI6MTUgUE0sIEFuZHJpaSBOYWtyeWlrbyB3cm90ZToNCj4gU3RyZWFt
-bGluZSBCUEZfQ09SRV9SRUFEX0JJVEZJRUxEX1BST0JFRCBpbnRlcmZhY2UgdG8gZm9sbG93DQo+
-IEJQRl9DT1JFX1JFQURfQklURklFTEQgKGRpcmVjdCkgYW5kIEJQRl9DT1JFX1JFQUQsIGluIGdl
-bmVyYWwsIGkuZS4sIGp1c3QNCj4gcmV0dXJuIHJlYWQgcmVzdWx0IG9yIDAsIGlmIHVuZGVybHlp
-bmcgYnBmX3Byb2JlX3JlYWQoKSBmYWlsZWQuDQo+IA0KPiBJbiBwcmFjdGljZSwgcmVhbCBhcHBs
-aWNhdGlvbnMgcmFyZWx5IGNoZWNrIGJwZl9wcm9iZV9yZWFkKCkgcmVzdWx0LCBiZWNhdXNlDQo+
-IGl0IGhhcyB0byBhbHdheXMgd29yayBvciBvdGhlcndpc2UgaXQncyBhIGJ1Zy4gU28gcHJvcGFn
-YXRpbmcgaW50ZXJuYWwNCj4gYnBmX3Byb2JlX3JlYWQoKSBlcnJvciBmcm9tIHRoaXMgbWFjcm8g
-aHVydHMgdXNhYmlsaXR5IHdpdGhvdXQgcHJvdmlkaW5nIHJlYWwNCj4gYmVuZWZpdHMgaW4gcHJh
-Y3RpY2UuIFRoaXMgcGF0Y2ggZml4ZXMgdGhlIGlzc3VlIGFuZCBzaW1wbGlmaWVzIHVzYWdlLA0K
-PiBub3RpY2VhYmxlIGV2ZW4gaW4gc2VsZnRlc3QgaXRzZWxmLg0KDQpBZ3JlZWQuIFRoaXMgd2ls
-bCBiZSBjb25zaXN0ZW50IHdpdGggZGlyZWN0IHJlYWQgd2hlcmUNCnJldHVybmluZyB2YWx1ZSB3
-aWxsIGJlIDAgaWYgYW55IGZhdWx0IGhhcHBlbnMuDQoNCkluIHJlYWxseSByYXJlIGNhc2VzLCBp
-ZiB1c2VyIHdhbnQgdG8gZGlzdGluZ3Vpc2ggZ29vZCB2YWx1ZSAwIGZyb20NCmJwZl9wcm9iZV9y
-ZWFkKCkgcmV0dXJuaW5nIGVycm9yLCBhbGwgYnVpbGRpbmcgbWFjcm9zIGFyZSBpbiB0aGUgaGVh
-ZGVyDQpmaWxlLCB1c2VyIGNhbiBoYXZlIGEgY3VzdG9tIHNvbHV0aW9uLiBCdXQgbGV0IHVzIGhh
-dmUgQVBJIHdvcmsNCmZvciBjb21tb24gdXNlIGNhc2Ugd2l0aCBnb29kIHVzYWJpbGl0eS4NCg0K
-PiANCj4gQ2M6IFlvbmdob25nIFNvbmcgPHloc0BmYi5jb20+DQo+IFNpZ25lZC1vZmYtYnk6IEFu
-ZHJpaSBOYWtyeWlrbyA8YW5kcmlpbkBmYi5jb20+DQoNCkFja2VkLWJ5OiBZb25naG9uZyBTb25n
-IDx5aHNAZmIuY29tPg0KDQoNCj4gLS0tDQo+ICAgdG9vbHMvbGliL2JwZi9icGZfY29yZV9yZWFk
-LmggICAgICAgICAgICAgICAgIHwgMjcgKysrKysrKystLS0tLS0tLS0tLQ0KPiAgIC4uLi9wcm9n
-cy90ZXN0X2NvcmVfcmVsb2NfYml0ZmllbGRzX3Byb2JlZC5jICB8IDE5ICsrKysrLS0tLS0tLS0N
-Cj4gICAyIGZpbGVzIGNoYW5nZWQsIDE4IGluc2VydGlvbnMoKyksIDI4IGRlbGV0aW9ucygtKQ0K
-PiANCj4gZGlmZiAtLWdpdCBhL3Rvb2xzL2xpYi9icGYvYnBmX2NvcmVfcmVhZC5oIGIvdG9vbHMv
-bGliL2JwZi9icGZfY29yZV9yZWFkLmgNCj4gaW5kZXggMTE0NjFiMjYyM2IwLi43MDA5ZGM5MGUw
-MTIgMTAwNjQ0DQo+IC0tLSBhL3Rvb2xzL2xpYi9icGYvYnBmX2NvcmVfcmVhZC5oDQo+ICsrKyBi
-L3Rvb2xzL2xpYi9icGYvYnBmX2NvcmVfcmVhZC5oDQo+IEBAIC0zOSwzMiArMzksMjcgQEAgZW51
-bSBicGZfZmllbGRfaW5mb19raW5kIHsNCj4gICAjZW5kaWYNCj4gICANCj4gICAvKg0KPiAtICog
-RXh0cmFjdCBiaXRmaWVsZCwgaWRlbnRpZmllZCBieSBzcmMtPmZpZWxkLCBhbmQgcHV0IGl0cyB2
-YWx1ZSBpbnRvIHU2NA0KPiAtICogKnJlcy4gQWxsIHRoaXMgaXMgZG9uZSBpbiByZWxvY2F0YWJs
-ZSBtYW5uZXIsIHNvIGJpdGZpZWxkIGNoYW5nZXMgc3VjaCBhcw0KPiArICogRXh0cmFjdCBiaXRm
-aWVsZCwgaWRlbnRpZmllZCBieSBzLT5maWVsZCwgYW5kIHJldHVybiBpdHMgdmFsdWUgYXMgdTY0
-Lg0KPiArICogQWxsIHRoaXMgaXMgZG9uZSBpbiByZWxvY2F0YWJsZSBtYW5uZXIsIHNvIGJpdGZp
-ZWxkIGNoYW5nZXMgc3VjaCBhcw0KPiAgICAqIHNpZ25lZG5lc3MsIGJpdCBzaXplLCBvZmZzZXQg
-Y2hhbmdlcywgdGhpcyB3aWxsIGJlIGhhbmRsZWQgYXV0b21hdGljYWxseS4NCj4gICAgKiBUaGlz
-IHZlcnNpb24gb2YgbWFjcm8gaXMgdXNpbmcgYnBmX3Byb2JlX3JlYWQoKSB0byByZWFkIHVuZGVy
-bHlpbmcgaW50ZWdlcg0KPiAgICAqIHN0b3JhZ2UuIE1hY3JvIGZ1bmN0aW9ucyBhcyBhbiBleHBy
-ZXNzaW9uIGFuZCBpdHMgcmV0dXJuIHR5cGUgaXMNCj4gICAgKiBicGZfcHJvYmVfcmVhZCgpJ3Mg
-cmV0dXJuIHZhbHVlOiAwLCBvbiBzdWNjZXNzLCA8MCBvbiBlcnJvci4NCj4gICAgKi8NCj4gLSNk
-ZWZpbmUgQlBGX0NPUkVfUkVBRF9CSVRGSUVMRF9QUk9CRUQoc3JjLCBmaWVsZCwgcmVzKSAoewkJ
-ICAgICAgXA0KPiAtCXVuc2lnbmVkIGxvbmcgbG9uZyB2YWw7CQkJCQkJICAgICAgXA0KPiArI2Rl
-ZmluZSBCUEZfQ09SRV9SRUFEX0JJVEZJRUxEX1BST0JFRChzLCBmaWVsZCkgKHsJCQkgICAgICBc
-DQo+ICsJdW5zaWduZWQgbG9uZyBsb25nIHZhbCA9IDA7CQkJCQkgICAgICBcDQo+ICAgCQkJCQkJ
-CQkJICAgICAgXA0KPiAtCSpyZXMgPSAwOwkJCQkJCQkgICAgICBcDQo+IC0JdmFsID0gX19DT1JF
-X0JJVEZJRUxEX1BST0JFX1JFQUQocmVzLCBzcmMsIGZpZWxkKTsJCSAgICAgIFwNCj4gLQlpZiAo
-IXZhbCkgewkJCQkJCQkgICAgICBcDQo+IC0JCSpyZXMgPDw9IF9fQ09SRV9SRUxPKHNyYywgZmll
-bGQsIExTSElGVF9VNjQpOwkJICAgICAgXA0KPiAtCQl2YWwgPSBfX0NPUkVfUkVMTyhzcmMsIGZp
-ZWxkLCBSU0hJRlRfVTY0KTsJCSAgICAgIFwNCj4gLQkJaWYgKF9fQ09SRV9SRUxPKHNyYywgZmll
-bGQsIFNJR05FRCkpCQkJICAgICAgXA0KPiAtCQkJKnJlcyA9ICgobG9uZyBsb25nKSpyZXMpID4+
-IHZhbDsJCSAgICAgIFwNCj4gLQkJZWxzZQkJCQkJCQkgICAgICBcDQo+IC0JCQkqcmVzID0gKCh1
-bnNpZ25lZCBsb25nIGxvbmcpKnJlcykgPj4gdmFsOwkgICAgICBcDQo+IC0JCXZhbCA9IDA7CQkJ
-CQkJICAgICAgXA0KPiAtCX0JCQkJCQkJCSAgICAgIFwNCj4gKwlfX0NPUkVfQklURklFTERfUFJP
-QkVfUkVBRCgmdmFsLCBzLCBmaWVsZCk7CQkJICAgICAgXA0KPiArCXZhbCA8PD0gX19DT1JFX1JF
-TE8ocywgZmllbGQsIExTSElGVF9VNjQpOwkJCSAgICAgIFwNCj4gKwlpZiAoX19DT1JFX1JFTE8o
-cywgZmllbGQsIFNJR05FRCkpCQkJCSAgICAgIFwNCj4gKwkJdmFsID0gKChsb25nIGxvbmcpdmFs
-KSA+PiBfX0NPUkVfUkVMTyhzLCBmaWVsZCwgUlNISUZUX1U2NCk7ICBcDQo+ICsJZWxzZQkJCQkJ
-CQkJICAgICAgXA0KPiArCQl2YWwgPSB2YWwgPj4gX19DT1JFX1JFTE8ocywgZmllbGQsIFJTSElG
-VF9VNjQpOwkJICAgICAgXA0KPiAgIAl2YWw7CQkJCQkJCQkgICAgICBcDQo+ICAgfSkNCj4gICAN
-Cj4gICAvKg0KPiAtICogRXh0cmFjdCBiaXRmaWVsZCwgaWRlbnRpZmllZCBieSBzcmMtPmZpZWxk
-LCBhbmQgcmV0dXJuIGl0cyB2YWx1ZSBhcyB1NjQuDQo+ICsgKiBFeHRyYWN0IGJpdGZpZWxkLCBp
-ZGVudGlmaWVkIGJ5IHMtPmZpZWxkLCBhbmQgcmV0dXJuIGl0cyB2YWx1ZSBhcyB1NjQuDQo+ICAg
-ICogVGhpcyB2ZXJzaW9uIG9mIG1hY3JvIGlzIHVzaW5nIGRpcmVjdCBtZW1vcnkgcmVhZHMgYW5k
-IHNob3VsZCBiZSB1c2VkIGZyb20NCj4gICAgKiBCUEYgcHJvZ3JhbSB0eXBlcyB0aGF0IHN1cHBv
-cnQgc3VjaCBmdW5jdGlvbmFsaXR5IChlLmcuLCB0eXBlZCByYXcNCj4gICAgKiB0cmFjZXBvaW50
-cykuDQo+IGRpZmYgLS1naXQgYS90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9icGYvcHJvZ3MvdGVz
-dF9jb3JlX3JlbG9jX2JpdGZpZWxkc19wcm9iZWQuYyBiL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3Rz
-L2JwZi9wcm9ncy90ZXN0X2NvcmVfcmVsb2NfYml0ZmllbGRzX3Byb2JlZC5jDQo+IGluZGV4IGEz
-ODFmOGFjMjQxOS4uZTQ2NmUzYWI3ZGU0IDEwMDY0NA0KPiAtLS0gYS90b29scy90ZXN0aW5nL3Nl
-bGZ0ZXN0cy9icGYvcHJvZ3MvdGVzdF9jb3JlX3JlbG9jX2JpdGZpZWxkc19wcm9iZWQuYw0KPiAr
-KysgYi90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9icGYvcHJvZ3MvdGVzdF9jb3JlX3JlbG9jX2Jp
-dGZpZWxkc19wcm9iZWQuYw0KPiBAQCAtMzcsMTEgKzM3LDYgQEAgc3RydWN0IGNvcmVfcmVsb2Nf
-Yml0ZmllbGRzX291dHB1dCB7DQo+ICAgCWludDY0X3QJCXMzMjsNCj4gICB9Ow0KPiAgIA0KPiAt
-I2RlZmluZSBUUkFOU0ZFUl9CSVRGSUVMRChpbiwgb3V0LCBmaWVsZCkJCQkJXA0KPiAtCWlmIChC
-UEZfQ09SRV9SRUFEX0JJVEZJRUxEX1BST0JFRChpbiwgZmllbGQsICZyZXMpKQkJXA0KPiAtCQly
-ZXR1cm4gMTsJCQkJCQlcDQo+IC0Jb3V0LT5maWVsZCA9IHJlcw0KPiAtDQo+ICAgU0VDKCJyYXdf
-dHJhY2Vwb2ludC9zeXNfZW50ZXIiKQ0KPiAgIGludCB0ZXN0X2NvcmVfYml0ZmllbGRzKHZvaWQg
-KmN0eCkNCj4gICB7DQo+IEBAIC00OSwxMyArNDQsMTMgQEAgaW50IHRlc3RfY29yZV9iaXRmaWVs
-ZHModm9pZCAqY3R4KQ0KPiAgIAlzdHJ1Y3QgY29yZV9yZWxvY19iaXRmaWVsZHNfb3V0cHV0ICpv
-dXQgPSAodm9pZCAqKSZkYXRhLm91dDsNCj4gICAJdWludDY0X3QgcmVzOw0KPiAgIA0KPiAtCVRS
-QU5TRkVSX0JJVEZJRUxEKGluLCBvdXQsIHViMSk7DQo+IC0JVFJBTlNGRVJfQklURklFTEQoaW4s
-IG91dCwgdWIyKTsNCj4gLQlUUkFOU0ZFUl9CSVRGSUVMRChpbiwgb3V0LCB1YjcpOw0KPiAtCVRS
-QU5TRkVSX0JJVEZJRUxEKGluLCBvdXQsIHNiNCk7DQo+IC0JVFJBTlNGRVJfQklURklFTEQoaW4s
-IG91dCwgc2IyMCk7DQo+IC0JVFJBTlNGRVJfQklURklFTEQoaW4sIG91dCwgdTMyKTsNCj4gLQlU
-UkFOU0ZFUl9CSVRGSUVMRChpbiwgb3V0LCBzMzIpOw0KPiArCW91dC0+dWIxID0gQlBGX0NPUkVf
-UkVBRF9CSVRGSUVMRF9QUk9CRUQoaW4sIHViMSk7DQo+ICsJb3V0LT51YjIgPSBCUEZfQ09SRV9S
-RUFEX0JJVEZJRUxEX1BST0JFRChpbiwgdWIyKTsNCj4gKwlvdXQtPnViNyA9IEJQRl9DT1JFX1JF
-QURfQklURklFTERfUFJPQkVEKGluLCB1YjcpOw0KPiArCW91dC0+c2I0ID0gQlBGX0NPUkVfUkVB
-RF9CSVRGSUVMRF9QUk9CRUQoaW4sIHNiNCk7DQo+ICsJb3V0LT5zYjIwID0gQlBGX0NPUkVfUkVB
-RF9CSVRGSUVMRF9QUk9CRUQoaW4sIHNiMjApOw0KPiArCW91dC0+dTMyID0gQlBGX0NPUkVfUkVB
-RF9CSVRGSUVMRF9QUk9CRUQoaW4sIHUzMik7DQo+ICsJb3V0LT5zMzIgPSBCUEZfQ09SRV9SRUFE
-X0JJVEZJRUxEX1BST0JFRChpbiwgczMyKTsNCj4gICANCj4gICAJcmV0dXJuIDA7DQo+ICAgfQ0K
-PiANCg==
+On 06-Nov 17:55, Mickaël Salaün wrote:
+> 
+> On 06/11/2019 11:06, KP Singh wrote:
+> > On 05-Nov 11:34, Alexei Starovoitov wrote:
+> >> On Tue, Nov 05, 2019 at 07:01:41PM +0100, Mickaël Salaün wrote:
+> >>> On 05/11/2019 18:18, Alexei Starovoitov wrote:
+> 
+> [...]
+> 
+> >>>> I think the only way bpf-based LSM can land is both landlock and KRSI
+> >>>> developers work together on a design that solves all use cases.
+> >>>
+> >>> As I said in a previous cover letter [1], that would be great. I think
+> >>> that the current Landlock bases (almost everything from this series
+> >>> except the seccomp interface) should meet both needs, but I would like
+> >>> to have the point of view of the KRSI developers.
+> >>>
+> >>> [1] https://lore.kernel.org/lkml/20191029171505.6650-1-mic@digikod.net/
+> >>>
+> >>>> BPF is capable
+> >>>> to be a superset of all existing LSMs whereas landlock and KRSI propsals today
+> >>>> are custom solutions to specific security concerns. BPF subsystem was extended
+> >>>> with custom things in the past. In networking we have lwt, skb, tc, xdp, sk
+> >>>> program types with a lot of overlapping functionality. We couldn't figure out
+> >>>> how to generalize them into single 'networking' program. Now we can and we
+> >>>> should. Accepting two partially overlapping bpf-based LSMs would be repeating
+> >>>> the same mistake again.
+> >>>
+> >>> I'll let the LSM maintainers comment on whether BPF could be a superset
+> >>> of all LSM, but given the complexity of an access-control system, I have
+> >>> some doubts though. Anyway, we need to start somewhere and then iterate.
+> >>> This patch series is a first step.
+> >>
+> >> I would like KRSI folks to speak up. So far I don't see any sharing happening
+> >> between landlock and KRSI. You're claiming this set is a first step. They're
+> >> claiming the same about their patches. I'd like to set a patchset that was
+> >> jointly developed.
+> > 
+> > We are willing to collaborate with the Landlock developers and come up
+> > with a common approach that would work for Landlock and KRSI. I want
+> > to mention that this collaboration and the current Landlock approach
+> > of using an eBPF based LSM for unprivileged sandboxing only makes sense
+> > if unprivileged usage of eBPF is going to be ever allowed.
+> 
+> The ability to *potentially* do unprivileged sandboxing is definitely
+> not tied nor a blocker to the unprivileged usage of eBPF. As explained
+> in the documentation [1] (cf. Guiding principles / Unprivileged use),
+> Landlock is designed to be as safe as possible (from a security point of
+> view). The impact is more complex and important than just using
+> unprivileged eBPF, which may not be required. Unprivileged use of eBPF
+> would be nice, but I think the current direction is to extend the Linux
+> capabilities with one or multiple dedicated to eBPF [2] (e.g. CAP_BPF +
+> something else), which may be even better (and a huge difference with
+> CAP_SYS_ADMIN, a.k.a. privileged mode or root). Landlock is designed to
+> deal with unprivileged (i.e. non-root) use cases, but of course, if the
+> Landlock architecture may enable to do unprivileged stuff, it definitely
+> can do privileged stuff too. However, having an architecture designed
+> with safe unprivileged use in mind can't be achieve afterwards.
+> 
+> [1] https://lore.kernel.org/lkml/20191104172146.30797-8-mic@digikod.net/
+> [2] https://lore.kernel.org/bpf/20190827205213.456318-1-ast@kernel.org/
+> 
+> 
+> > 
+> > Purely from a technical standpoint, both the current designs for
+> > Landlock and KRSI target separate use cases and it would not be
+> > possible to build "one on top of the other". We've tried to identify
+> > the lowest denominator ("eBPF+LSM") requirements for both Landlock
+> > (unprivileged sandboxing / Discretionary Access Control) and KRSI
+> > (flexibility and unification of privileged MAC and Audit) and
+> > prototyped an implementation based on the newly added / upcoming
+> > features in BPF.
+> 
+> This is not as binary as that. Sandboxing can be seen as DAC but also as
+> MAC, depending on the subject which apply the security policy and the
+> subjects which are enforced by this policy. If the sandboxing is applied
+> system-wide, it is what we usually call MAC. DAC, in the Linux world,
+> enables any user to restrict access to their files to other users.
+> 
+> With Landlock it is not the same because a process can restrict itself
+> but also enforce these restrictions on all its future children (which
+> may be malicious, whatever their UID/GID). The threat and the definition
+> of the attacker are not the same in both cases. With the Linux DAC the
+> potentially malicious subjects are the other users, whereas with
+> Landlock the potentially malicious subjects are (for now) the current
+> process and all its children. Another way to explain it, and how
+> Landlock is designed, is that a specific enforcement (i.e. a set of BPF
+> programs) is tied to a domain, in which a set of subject are. From this
+> perspective, this approach (subjects/tasks in a domain) is orthogonal to
+> the DAC system (subjects/users). This design may apply to a system-wide
+> MAC system by putting all the system tasks in one domain, and managing
+> restrictions (by subject) with other means (e.g. task's UID,
+> command-line strings, environment variables). In short, Landlock (in
+> this patch series) is closer to a (potentially scoped) MAC system. But
+> thanks to eBPF, Landlock is firstly a programmatic access-control, which
+> means that the one who write the programs and tie them to a set of
+> tasks, can implement their own access-control system (e.g. RBAC,
+> time-based…), or something else (e.g. an audit system).
+> 
+> The audit part can simply be achieve with dedicated helpers and programs
+> that always allow accesses.
+> 
+> Landlock evolved over multiple iterations and is now designed to be very
+> flexible. The current way to enforce a security policy is to go through
+> the seccomp syscall (which makes sense for multiple reasons explained
+> and accepted before). But Landlock is designed to enable similar
+> enforcements (or audit) with other ways to define a domain (e.g. cgroups
+> [3], or system-wide securityfs as done in KRSI). Indeed, the only part
+> tied to this scoped enforcement is in the domain_syscall.c file. A new
+> file domain_fs.c could be added to implement a securityfs for a
+> system-wide enforcement (and have other features as KRSI does).
+> 
+
+Given the current way landlock exposes LSM hooks, I don't think it's
+possible to build system-wide detections. But let’s try to come to a
+consensus on the semantics of the how the LSM hooks are exposed to
+BPF. At the moment I think we should:
+
+
+* Bring the core interface exposed to eBPF closer to the LSM surface in
+  a way that supports both use cases. One way Landlock can still provide
+  a more abstract interface is by providing some BPF helper libraries
+  that build on top of the core framework.
+
+* Use a single BPF program type; this is necessary for a key requirement
+  of KRSI, i.e. runtime instrumentation. The upcoming prototype should
+  illustrate how this works for KRSI - note that it’s possible to vary
+  the context types exposed by different hooks.
+
+
+It would be nice to get the BPF maintainers’ opinion on these points.
+
+
+> [3] https://lore.kernel.org/lkml/20160914072415.26021-17-mic@digikod.net/
+> 
+> One possible important difference between Landlock and KRSI right now is
+> the BPF program management. Both manage a list of programs per hook.
+> However KRSI needs to be able to replace a program in these lists. This
+> is not implemented in this Landlock patch series, first because it is
+> not the main use-case and it is safer to have an append-only way to add
+> restrictions (cf. seccomp-bpf model), and second because it is simpler
+> to deal with immutable lists. However, it is worth considering extending
+> the Landlock domain management with the ability to update the program
+> lists. One challenge may be to identify which program should be replaced
+> (which KRSI does with the program name). I think it would be wiser to
+> implement this in a second step though, maybe not for the syscall
+> interface (thanks to a new seccomp operation), but first with the
+> securityfs one.
+> 
+> 
+> > 
+> > We've been successfully able to prototype the use cases for KRSI
+> > (privileged MAC and Audit) using this "eBPF+LSM" and shared our
+> > approach at the Linux Security Summit [1]:
+> > 
+> > * Use the new in-kernel BTF (CO-RE eBPF programs) [2] and the ability
+> >   of the BPF verifier to use the BTF information for access validation
+> >   to provide a more generic way to attach to the various LSM hooks.
+> >   This potentially saves a lot of redundant work:
+> > 
+> >    - Creation of new program types.
+> >    - Multiple types of contexts (or a single context with Unions).
+> >    - Changes to the verifier and creation of new BPF argument types 
+> >      (eg. PTR_TO_TASK)
+> 
+> As I understood from the LSS talk, KRSI's approach is to use the same
+> hooks as LSM (cf. the securityfs). As said Alexei [4] "It must not make
+> LSM hooks into stable ABI".  Moveover, the LSM hooks may change
+> according to internal kernel evolution, and their semantic may not make
+
+I think you misunderstand Alexei here. I will let him elaborate.
+
+> sense from a user space point of view. This is one reason for which
+> Lanlock abstract those hooks into something that is simpler and designed
+> to fit well with eBPF (program contexts and their attached types, as
+> explained in the documentation).
+> 
+> [4]
+> https://lore.kernel.org/lkml/20191105215453.szhdkrvuekwfz6le@ast-mbp.dhcp.thefacebook.com/
+> 
+> How does KRSI plan to deal with one LSM hook being split in two hooks in
+> a next version of the kernel (cf. [5])?
+
+How often has that happened in the past? And even if it does happen,
+it can still be handled as a part of the base framework we are trying
+to implement.
+
+> 
+> [5] https://lore.kernel.org/lkml/20190910115527.5235-6-kpsingh@chromium.org/
+> 
+> 
+> Another reason to have multiple different attach types/contexts (cf.
+> landlock_domain->programs[]) is to limit useless BPF program
+> interpretation (in addition to the non-system-wide scoped of programs).
+>  It also enables to handle and verify strict context use (which is also
+> explain in the Guiding principles). It would be a huge wast of time to
+> run every BPF programs for all LSM hooks. KRSI does the same but instead
+> of relying on the program type it rely on the list tied to the
+> securityfs file.
+> 
+> BTF is great, but as far as I know, it's goal is to easily deal with the
+> moving kernel ABI (e.g. task_struct layout, config/constant variables),
+> and it is definitely useful to programs using bpf_probe_read() and
+> similar accessors. However, I don't see how KRSI would avoid BPF types
+> thanks to BTF.
+> 
+
+This should become clearer once we post our updated patch-set. Do note
+that I am currently traveling and will be away for the next couple of
+weeks.
+
+> There is only one program type for Landlock (i.e.
+> BPF_PROG_TYPE_LANDLOCK_HOOK), and I don't see why adding new program
+> *attach* types (e.g. BPF_LANDLOCK_PTRACE) may be an issue. The kernel
+> will still need to be modified to implement new hooks and the new BPF
+> helpers anyway, BTF will not change that, except maybe if the internal
+> LSM API is exposed in a way or another to BPF (thanks to BTF), which
+> does not seem acceptable. Am I missing something?
+> 
+> 
+> The current KRSI approach is to allow a common set of helpers to be
+> called by all programs (because there is no way to differentiate them
+> with their type).
+> How KRSI would deal with kernel objects other than the current task
+> (e.g. a ptrace hook with a tracer and a tracee, a file open/read) with
+> the struct krsi_ctx unions [6]?
+> 
+> [6] https://lore.kernel.org/lkml/20190910115527.5235-7-kpsingh@chromium.org/
+> 
+
+The best part of BTF is that it can provide a common way to pass
+different contexts to the various attachments points and the verifier
+can use the BTF information to validate accesses which essentially
+allows us to change the helpers from:
+
+       is_running_executable(magical_krsi_ctx)
+
+          to
+
+       is_running_executable(inode)
+
+
+which can work on any inode (ARG_PTR_TO_BTF_ID = btf_id(struct inode))
+
+This makes the helpers much more useful and generic. All this is
+better explained in our upcoming patch-set.
+
+> 
+> How does KRSI plan to deal with security blobs?
+
+The new prototype uses security blobs but does not expose them to
+user-space. These blobs are then used in various helpers like
+“is_running_executable” which uses blobs on the inode and the
+task_struct. This should become clearer when the next patchset is
+posted.
+
+I don’t think it’s currently possible to allow the blobs to be set
+using eBPF programs with the main reason being that the blob will only
+be set after the program is loaded. The answer to
+“is_running_executable” becomes dependent on whether the file was
+executed before the blob setting eBPF program was loaded.
+
+Blob management with eBPF is not possible unless we can load eBPF
+programs that can set blobs at boot-time.
+In short, the next KRSI version will not give eBPF
+programs access to arbitrarily write security blobs.
+
+> 
+> 
+> > 
+> > * These new BPF features also alleviate the original concerns that we
+> >   raised when initially proposing KRSI and designing for precise BPF
+> >   helpers. We have some patches coming up which incorporate these new
+> >   changes and will be sharing something on the mailing list after some
+> >   cleanup.
+> > 
+> > We can use the common "eBPF+LSM" for both privileged MAC and Audit and
+> > unprivileged sandboxing i.e. Discretionary Access Control.
+> > Here's what it could look like:
+> > 
+> > * Common infrastructure allows attachment to all hooks which works well
+> >   for privileged MAC and Audit. This could be extended to provide
+> >   another attachment type for unprivileged DAC, which can restrict the
+> >   hooks that can be attached to, and also the information that is
+> >   exposed to the eBPF programs which is something that Landlock could
+> >   build.
+> 
+> I agree that the "privileged-only" hooks should be a superset of the
+> "security-safe-and-potentially-unprivileged" hooks. :)
+> However, as said previously, I'm convinced it is a requirement to have
+> abstract hooks (and associated program attach types) as defined by Landlock.
+
+I would like to hear the BPF maintainers’ perspective on this. I am
+not sure they agree with you here.
+
+- KP Singh
+
+> 
+> I'm not sure what you mean by "the information that is exposed to the
+> eBPF program". Is it the current Landlock implementation of specific
+> contexts and attach types?
+> 
+> > 
+> > * This attachment could use the proposed landlock domains and attach to
+> >   the task_struct providing the discretionary access control semantics.
+> 
+> Not task_struct but creds, yes. This is a characteristic of sandboxing,
+> which may not be useful for the KRSI use case. It makes sense for KRSI
+> to attach program sets (or Landlock domains) to the whole system, then
+> using the creds does not make sense here. This difference is small and a
+> previous version of Landlock already validated this use case with
+> cgroups [3] (which is postponed to simplify the patch series).
+> 
+> [3] https://lore.kernel.org/lkml/20160914072415.26021-17-mic@digikod.net/
+> 
+> 
+> > 
+> > [1] https://static.sched.com/hosted_files/lsseu2019/a2/Kernel%20Runtime%20Security%20Instrumentation.pdf
+> > [2] http://vger.kernel.org/bpfconf2019_talks/bpf-core.pdf
+> > 
+> > - KP Singh
+> 
+> I think it should be OK to first land something close to this Landlock
+> patch series and then we could extend the domain management features and
+> add the securityfs support that KRSI needs. The main concern seems to be
+> about hook definitions.
+> 
+> Another approach would be to land Landlock and KRSI as distinct LSM
+> while trying as much as possible to mutualize code/helpers.
