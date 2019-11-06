@@ -2,56 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4577EF227B
-	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2019 00:23:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 043EAF22BC
+	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2019 00:38:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727409AbfKFXX1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Nov 2019 18:23:27 -0500
-Received: from www62.your-server.de ([213.133.104.62]:38674 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727316AbfKFXX1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Nov 2019 18:23:27 -0500
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iSUdz-0002JK-BT; Thu, 07 Nov 2019 00:23:19 +0100
-Received: from [178.197.248.39] (helo=pc-63.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iSUdz-0000Pl-0J; Thu, 07 Nov 2019 00:23:19 +0100
-Subject: Re: [PATCH bpf] bpf: offload: unlock on error in
- bpf_offload_dev_create()
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>
-Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andriin@fb.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-References: <20191104091536.GB31509@mwanda>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <7c831580-49e5-6582-16df-86e70bad242e@iogearbox.net>
-Date:   Thu, 7 Nov 2019 00:23:18 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1729591AbfKFXiD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Nov 2019 18:38:03 -0500
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:46572 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727029AbfKFXiD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Nov 2019 18:38:03 -0500
+Received: by mail-lf1-f65.google.com with SMTP id 19so27492lft.13;
+        Wed, 06 Nov 2019 15:38:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3FsspPdAx8GGQ7PlRVWn0MeB4amgg8OXjRJl49LtVq0=;
+        b=IJAIUEbQwzfAgX6BwmV8dnF2q/Wh7j7GWXc197EBVfs5Vp+TuatiiUI8Aqu0H8+/CB
+         hT6i558V3H/mjDxjjP21lfAN3G/oDfcEYF9zhThWV1RvuEcNChNqDmT9m4BH6joSC4GS
+         JO4jsgyFoAH0vCpLUSEvbclU1rPgnRKidYu7wQRobXDcwNfGnk9PYxzzBjGOUhgneNyG
+         Ca7c7M0UPlVkITPOK8cf/vYzNv6aR15eCS5kKxqw3+rO+FWV4XJ4t+uT3JxOiAhYQwP9
+         d/U6tSGZnI14q+oJBXmeMbuog5+SJ6UWLKFjG2p46PHmw1OFSlsWHbNvGTSouz/8oAXA
+         xU2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3FsspPdAx8GGQ7PlRVWn0MeB4amgg8OXjRJl49LtVq0=;
+        b=baD2ys2o0qQ0GoKGQBlOGJSjryXK7LiwQRi3c9E2lUeGX7mic9X0Vrs6zjMl+wIB2E
+         lc0e2Yqii3bvTkUU+jyQocEIRvRVDm6gyY+METRc8D65kyHxIqq6a6629nH8G6jSxNlg
+         x7v7vXn+RUsRopB6b+JREkMumqbNeyzatcKzj1aRyYEcNGpRK5PSAH3aR2R7INvChAAu
+         utQbSk56mgEELf+53wtk/x20iVrtN/aBGHmfq7OluLCrjP3cWVtQNXkRPJfw7V/5SCN4
+         w9WDfTHuBJ0XRtMHlkVXq6q3gEIlRRNH9+7nrEKxIUJAK/9YVezhchDmr4T2V4c2m6ga
+         GP9Q==
+X-Gm-Message-State: APjAAAWtb4U6oPIZC1vC/wu+HBiI/h28BXToulzGKMAXHwoyNSMX1CVw
+        niWn7R68d/7H+vGmuCX+lW+P8JdDv8LVhtHtKcc=
+X-Google-Smtp-Source: APXvYqyC9616NNMDTB6Bz6B/n4Yr1+Lph18VghyKHwb8qZ3omB0a5929XK5b3cC3SOfuDfIHcqHELq/cC5v1OMdZxyA=
+X-Received: by 2002:ac2:5453:: with SMTP id d19mr21495lfn.181.1573083480756;
+ Wed, 06 Nov 2019 15:38:00 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20191104091536.GB31509@mwanda>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.101.4/25625/Wed Nov  6 10:44:04 2019)
+References: <20191106231210.3615828-1-kafai@fb.com>
+In-Reply-To: <20191106231210.3615828-1-kafai@fb.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 6 Nov 2019 15:37:49 -0800
+Message-ID: <CAADnVQLv+QjNmaLhuesjbtDFGfEiqxjMJgRf1mH2OeSfwAvskw@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 0/2] bpf: Add array support to btf_struct_access
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/4/19 10:15 AM, Dan Carpenter wrote:
-> We need to drop the bpf_devs_lock on error before returning.
-> 
-> Fixes: 9fd7c5559165 ("bpf: offload: aggregate offloads per-device")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+On Wed, Nov 6, 2019 at 3:12 PM Martin KaFai Lau <kafai@fb.com> wrote:
+>
+> This series adds array support to btf_struct_access().
+> Please see individual patch for details.
+>
+> v2:
+> - Fix a divide-by-zero when there is empty array in
+>   a struct (e.g. "__u8 __cloned_offset[0];" in skbuff)
+> - Add 'static' to a global var in prog_tests/kfree_skb.c
 
-Applied, thanks!
+still something wrong:
+sysctl net.core.bpf_jit_enable=0
+ ./test_progs -n 11
+libbpf: failed to guess program type based on ELF section name 'test1'
+libbpf: supported section(type) names are: socket kprobe/ uprobe/
+kretprobe/ uretprobe/ classifier action tracepoint/ tp/
+raw_tracepoint/ raw_tp/ tp_btf/ xdp perf_event lwt_in lwt_out lwt_xmit
+lwt_seg6local cgroup_skb/ingress cgroup_skb/t
+test_kfree_skb:PASS:prog_load sched cls 0 nsec
+test_kfree_skb:PASS:prog_load raw tp 0 nsec
+test_kfree_skb:PASS:find_prog 0 nsec
+test_kfree_skb:PASS:attach_raw_tp 0 nsec
+test_kfree_skb:PASS:find_perf_buf_map 0 nsec
+test_kfree_skb:PASS:perf_buf__new 0 nsec
+test_kfree_skb:PASS:ipv6 5219 nsec
+on_sample:PASS:check_size 0 nsec
+on_sample:PASS:check_meta_ifindex 0 nsec
+on_sample:FAIL:check_cb8_0 cb8_0 0 != 84
+test_kfree_skb:PASS:perf_buffer__poll 5219 nsec
+test_kfree_skb:FAIL:114
+#11 kfree_skb:FAIL
+Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
+
+Though it passes when JITed.
