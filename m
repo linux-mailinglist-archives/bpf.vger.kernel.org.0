@@ -2,168 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 296A6F13B2
-	for <lists+bpf@lfdr.de>; Wed,  6 Nov 2019 11:16:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB88DF17ED
+	for <lists+bpf@lfdr.de>; Wed,  6 Nov 2019 15:07:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729964AbfKFKQT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Nov 2019 05:16:19 -0500
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:39103 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731565AbfKFKQS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Nov 2019 05:16:18 -0500
-Received: by mail-pg1-f193.google.com with SMTP id 29so5499937pgm.6
-        for <bpf@vger.kernel.org>; Wed, 06 Nov 2019 02:16:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=LWhaWOk3qJ6PhGYnB7tu0nDt84GiXSttuOOylRuzwNc=;
-        b=ObNh5sfXqEx18MUAaYvkcPImWOLTjuhO7VKVPtL2nZEQG+EET68NKQivKeOwF6Dm4g
-         FGQDbUs1KTCi3/lY8t5Ij25W0NdnN6/CYRsQAMYKOsHYM5yhWFQ+A7x1Z+fYLo/UeL+r
-         rId5mISetQvkVdgiBepwWG09mM8m0nqrmzFrE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=LWhaWOk3qJ6PhGYnB7tu0nDt84GiXSttuOOylRuzwNc=;
-        b=BrEMoeHGQGGYgV/EDkUSlmvIL3p8WOlQDMFt+fUf4ORR5imRjdo2PuF+jqCENPbgxF
-         aj5+Gh4MyHEgCeG7mujvkDwtRehjh+dlR33Q5TDSYAxJhrSDNU3JtGzAraxGPsekkTzC
-         D7XFseUnCwKOEphoqpsrjsjtZj2U9jZNDXagF2awVrQoY6vPSUbV6ohTULTbZBNYVQ82
-         gEQbKWpRN9VhP7ifPUryOqN+Sp3NxqgHKw8bGLj7aKQMznYVYLXRoiSCx+nsoCf+th42
-         0/LU0fFFSIsxGXUE2xi/RYUg/r9SO7NQDCsPKan/cefiF/qeCbEKHW/EcFedTw0uuYAd
-         1a3w==
-X-Gm-Message-State: APjAAAUNaqMukTUWnnr4wmnLdM7dD2ZR0Hfgh+H9TcvsSegc1+OS7x5T
-        P2I9Nl1y01i0qF7o8DhQpdhe1Q==
-X-Google-Smtp-Source: APXvYqwxV7gDGYqEbtfgNl/MhyaITnpP/bBp/7zKAiqa0AArpIsZ6CMrCVE9eZTO2YbYXGUFpP/66Q==
-X-Received: by 2002:a17:90a:901:: with SMTP id n1mr2761705pjn.113.1573035375469;
-        Wed, 06 Nov 2019 02:16:15 -0800 (PST)
-Received: from chromium.org ([122.173.128.252])
-        by smtp.gmail.com with ESMTPSA id y36sm21074021pgk.66.2019.11.06.02.16.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Nov 2019 02:16:14 -0800 (PST)
-From:   KP Singh <kpsingh@chromium.org>
-X-Google-Original-From: KP Singh <kpsingh>
-Date:   Wed, 6 Nov 2019 15:45:58 +0530
-To:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Casey Schaufler <casey@schaufler-ca.com>,
+        id S1727074AbfKFOHK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Nov 2019 09:07:10 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:57103 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726926AbfKFOHG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Nov 2019 09:07:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1573049225;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kQUJhTS5ZQPa+H7gyw31F1k30QCMAlnrwuTj8cTiw28=;
+        b=gLaTYVUn6kD9WkF0dMmEDGdz2CosD2e3eoxCQT5zEMq07ip7LyRlWM20eaBadufyP328N2
+        W+CZZttraCUlln0w3VsMbZ2ohh1e5oIt4TXccsdeMuKQXdPAFxEhMOfdouXMz2Nkya5ZJd
+        wH1/fHMAhFu6KxbOZy2rOzypHwj4R+o=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-37-HIuIU22MPBuvr-Q7-vH7Vw-1; Wed, 06 Nov 2019 09:06:59 -0500
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 257561005500;
+        Wed,  6 Nov 2019 14:06:57 +0000 (UTC)
+Received: from krava (unknown [10.43.17.48])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 513F25DA76;
+        Wed,  6 Nov 2019 14:06:51 +0000 (UTC)
+Date:   Wed, 6 Nov 2019 15:06:50 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        David Drysdale <drysdale@google.com>,
-        Florent Revest <revest@chromium.org>,
-        James Morris <jmorris@namei.org>, Jann Horn <jann@thejh.net>,
-        John Johansen <john.johansen@canonical.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mickael.salaun@ssi.gouv.fr>,
-        Paul Moore <paul@paul-moore.com>,
-        Sargun Dhillon <sargun@sargun.me>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Stephen Smalley <sds@tycho.nsa.gov>, Tejun Heo <tj@kernel.org>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Tycho Andersen <tycho@tycho.ws>,
-        Will Drewry <wad@chromium.org>, bpf@vger.kernel.org,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-security-module@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next v13 4/7] landlock: Add ptrace LSM hooks
-Message-ID: <20191106101558.GA19467@chromium.org>
-References: <20191104172146.30797-1-mic@digikod.net>
- <20191104172146.30797-5-mic@digikod.net>
- <20191105171824.dfve44gjiftpnvy7@ast-mbp.dhcp.thefacebook.com>
- <23acf523-dbc4-855b-ca49-2bbfa5e7117e@digikod.net>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH v5 01/10] perf tools: add parse events handle error
+Message-ID: <20191106140650.GE30214@krava>
+References: <20191025180827.191916-1-irogers@google.com>
+ <20191030223448.12930-1-irogers@google.com>
+ <20191030223448.12930-2-irogers@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+In-Reply-To: <20191030223448.12930-2-irogers@google.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-MC-Unique: HIuIU22MPBuvr-Q7-vH7Vw-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <23acf523-dbc4-855b-ca49-2bbfa5e7117e@digikod.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 05-Nov 19:01, Mickaël Salaün wrote:
-> 
-> On 05/11/2019 18:18, Alexei Starovoitov wrote:
-> > On Mon, Nov 04, 2019 at 06:21:43PM +0100, Mickaël Salaün wrote:
-> >> Add a first Landlock hook that can be used to enforce a security policy
-> >> or to audit some process activities.  For a sandboxing use-case, it is
-> >> needed to inform the kernel if a task can legitimately debug another.
-> >> ptrace(2) can also be used by an attacker to impersonate another task
-> >> and remain undetected while performing malicious activities.
-> >>
-> >> Using ptrace(2) and related features on a target process can lead to a
-> >> privilege escalation.  A sandboxed task must then be able to tell the
-> >> kernel if another task is more privileged, via ptrace_may_access().
-> >>
-> >> Signed-off-by: Mickaël Salaün <mic@digikod.net>
-> > ...
-> >> +static int check_ptrace(struct landlock_domain *domain,
-> >> +		struct task_struct *tracer, struct task_struct *tracee)
-> >> +{
-> >> +	struct landlock_hook_ctx_ptrace ctx_ptrace = {
-> >> +		.prog_ctx = {
-> >> +			.tracer = (uintptr_t)tracer,
-> >> +			.tracee = (uintptr_t)tracee,
-> >> +		},
-> >> +	};
-> > 
-> > So you're passing two kernel pointers obfuscated as u64 into bpf program
-> > yet claiming that the end goal is to make landlock unprivileged?!
-> > The most basic security hole in the tool that is aiming to provide security.
-> 
-> How could you used these pointers without dedicated BPF helpers? This
-> context items are typed as PTR_TO_TASK and can't be used without a
-> dedicated helper able to deal with ARG_PTR_TO_TASK. Moreover, pointer
-> arithmetic is explicitly forbidden (and I added tests for that). Did I
-> miss something?
-> 
-> > 
-> > I think the only way bpf-based LSM can land is both landlock and KRSI
-> > developers work together on a design that solves all use cases.
-> 
-> As I said in a previous cover letter [1], that would be great. I think
-> that the current Landlock bases (almost everything from this series
-> except the seccomp interface) should meet both needs, but I would like
-> to have the point of view of the KRSI developers.
+On Wed, Oct 30, 2019 at 03:34:39PM -0700, Ian Rogers wrote:
+> Parse event error handling may overwrite one error string with another
+> creating memory leaks. Introduce a helper routine that warns about
+> multiple error messages as well as avoiding the memory leak.
+>=20
+> A reproduction of this problem can be seen with:
+>   perf stat -e c/c/
+> After this change this produces:
+> WARNING: multiple event parsing errors
+> event syntax error: 'c/c/'
+>                        \___ unknown term
+>=20
+> valid terms: event,filter_rem,filter_opc0,edge,filter_isoc,filter_tid,fil=
+ter_loc,filter_nc,inv,umask,filter_opc1,tid_en,thresh,filter_all_op,filter_=
+not_nm,filter_state,filter_nm,config,config1,config2,name,period,percore
+> Run 'perf list' for a list of valid events
+>=20
+>  Usage: perf stat [<options>] [<command>]
+>=20
+>     -e, --event <event>   event selector. use 'perf list' to list availab=
+le events
+>=20
+> Signed-off-by: Ian Rogers <irogers@google.com>
 
-As I mentioned we are willing to collaborate but the current landlock
-patches does not meet the needs for KRSI:
+Acked-by: Jiri Olsa <jolsa@kernel.org>
 
-* One program type per use-case (eg. LANDLOCK_PROG_PTRACE) as opposed to
-  a single program type. This is something that KRSI proposed in it's
-  initial design [1] and the new common "eBPF + LSM" based approach
-  [2] would maintain as well.
+thanks,
+jirka
 
-* Landlock chooses to have multiple LSM hooks per landlock hook which is
-  more restrictive. It's not easy to write precise MAC and Audit
-  policies for a privileged LSM based on this and this ends up bloating
-  the context that needs to be maintained and requires avoidable
-  boilerplate work in the kernel.
-
-[1] https://lore.kernel.org/patchwork/project/lkml/list/?series=410101
-[2] https://lore.kernel.org/bpf/20191106100655.GA18815@chromium.org/T/#u
-
-- KP Singh
-
-> 
-> [1] https://lore.kernel.org/lkml/20191029171505.6650-1-mic@digikod.net/
-> 
-> > BPF is capable
-> > to be a superset of all existing LSMs whereas landlock and KRSI propsals today
-> > are custom solutions to specific security concerns. BPF subsystem was extended
-> > with custom things in the past. In networking we have lwt, skb, tc, xdp, sk
-> > program types with a lot of overlapping functionality. We couldn't figure out
-> > how to generalize them into single 'networking' program. Now we can and we
-> > should. Accepting two partially overlapping bpf-based LSMs would be repeating
-> > the same mistake again.
-> 
-> I'll let the LSM maintainers comment on whether BPF could be a superset
-> of all LSM, but given the complexity of an access-control system, I have
-> some doubts though. Anyway, we need to start somewhere and then iterate.
-> This patch series is a first step.
