@@ -2,293 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 361C8F2371
-	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2019 01:44:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADF6BF2388
+	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2019 01:52:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732777AbfKGAoZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Nov 2019 19:44:25 -0500
-Received: from mail-yw1-f66.google.com ([209.85.161.66]:35757 "EHLO
-        mail-yw1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732771AbfKGAoY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Nov 2019 19:44:24 -0500
-Received: by mail-yw1-f66.google.com with SMTP id r131so39714ywh.2;
-        Wed, 06 Nov 2019 16:44:23 -0800 (PST)
+        id S1727684AbfKGAwC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Nov 2019 19:52:02 -0500
+Received: from mail-pf1-f177.google.com ([209.85.210.177]:39110 "EHLO
+        mail-pf1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725989AbfKGAwC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Nov 2019 19:52:02 -0500
+Received: by mail-pf1-f177.google.com with SMTP id x28so759419pfo.6;
+        Wed, 06 Nov 2019 16:52:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hcG67Ce8h5UfdKDICfDjiYsFK/6mwAJRU+th+1S4+mo=;
-        b=pkC1CWcaW9m1YJvPeeEYTzoEBYWPHux/UKkzJtIwqRHGVP5VvM+cldmWRpLGgcpFdK
-         VQXq/GddIl/HrIjeMCoSc5XeSpbzHSC2VnoDQj0cFK97P/MHtL9LGLSjqXM+QV34By4s
-         81TZZSQFVEZtGnSiUEwhOzXgzW+7IwBZ2Ppb+01yUiwSxvXBOjD3JIt+ZxKRGDbkANPE
-         qeZE2YhYtZzULpl39TFmzbo/MtltDbjws5aiqbc7WlQQpTg6tBdVIT8NFdXC4eUG8t+O
-         kncbUFpSWZCjoauIbe2dIom2TZla3COjNlj9PV9NskyyVBl+ATVztZHITWS6nTQ96Mqs
-         QByg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=D/M9OydzPO/UgaX+FYiSgWUI1xGo+eZfOL/yXoivzNI=;
+        b=gzvgBfYt2PvGYYZJxI91RnIxbiMUB/LjlOArQTN6ZZaCVw5/laYC5rEo/22A16nDI4
+         bGyahsvnM/SbxG7Mug/QW5dwwIL8rX2t7lQGRKf4x/6KMdUuPWkDw78L1ojF5noK1zWM
+         7BgtzL3sFZLGattFmVOgjXGqrsM2p+3NonU3rbCzskQTcQW4AacTmclKWeuqfqMalI3Z
+         UmltPKrbsb5sWgn6Sa5dlPfNz5MN8EO2zT8AUWw8yPMpEiIPlV/Gp0Srv2m1GcVZWUuY
+         6bmYzHAil2UCOtedUOzb5GTrZqqWU2HGJYBzu8dQiIeBsQPplcGjqfvq5pBxeD6RPdQT
+         Q8Ig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hcG67Ce8h5UfdKDICfDjiYsFK/6mwAJRU+th+1S4+mo=;
-        b=Hxc9dX+QCuKddEUVBf123Bcvh/zM3IdHdJw1hbpuu/bjzjAZYc3rceCV3DdRuToTkb
-         yEaDnkJO8oqu3p2gs6d3WuvtOBBbL6dr/JfUTA/uuAiSzPTJOiJv7P9ynHlIrF3u+pUC
-         OEDfQ8ZyCZ2R2HvXcB3+GruxFPbORzTq2SJQBygf4g95PiwbVSQhcRaQzejWocpkzhp4
-         2sLBaB19p7b5q4KW1XzQcSQpuicr9ZMTm0/Pa54y+/525dtrq1OhLtGnh78RJ/rNeKtx
-         HkSxV4mT8odwg7P/3UHRcOK1lPcMf83Fwfza1r/vcF55czDMpZ5NnGbfDLnDmXo+pN48
-         RRzQ==
-X-Gm-Message-State: APjAAAWuJDcW4WevMIzrAsJpUq7GR8hfmqebrOKXeCYPe1bBDflvtunk
-        h38dlDedd8b+emyI8UaR5oKq/wZ4y+stZd4n6w==
-X-Google-Smtp-Source: APXvYqwcUIydJzVpWqKETG7VKd1OPWdqzMQ0D1SLuIxg/SlZ3S0gYZO5zWbivtyCnymRR1vRpijglyvr34nOVAOlGZ8=
-X-Received: by 2002:a0d:e447:: with SMTP id n68mr327247ywe.46.1573087463174;
- Wed, 06 Nov 2019 16:44:23 -0800 (PST)
-MIME-Version: 1.0
-References: <20191105225111.4940-1-danieltimlee@gmail.com> <20191105225111.4940-3-danieltimlee@gmail.com>
- <CAEf4BzapG=xt57i2jEViydA=R2RpkS2bMB-u28-S2Kj7pxe2GA@mail.gmail.com>
-In-Reply-To: <CAEf4BzapG=xt57i2jEViydA=R2RpkS2bMB-u28-S2Kj7pxe2GA@mail.gmail.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=D/M9OydzPO/UgaX+FYiSgWUI1xGo+eZfOL/yXoivzNI=;
+        b=QL5sLfAb5tcT0vEuLnZ1XFxNuNd3Trtn58AryGeCYh6yNQ9ujwrWzFHnDMfSzvoTkH
+         s8H1FlvLlQKc7y4ACMMflJ+8BmB8qJvlIGHxrW2tlWhjwx+w0N1XSsPFDkhj9/Z1o6eJ
+         NoWVsMtqGg5wObh3RvY9q3u8xERVbT81P00u2B2d+AgwMFRjRX1zdo032yzksDnIxskM
+         Qi9lNLW5c6fB3ZwqL2X5w6jxGQL7Moy1MR0NkWsn2TNHdL+VxYFbVk7wdc/mpl/6E+xY
+         M9jwAjstPyFCXAMWWxfGLUCdc7ueUsZF5gZ9zrChZOURkTEH6fLbcVFVJGKpMwdCJMOZ
+         OeCg==
+X-Gm-Message-State: APjAAAVG+cZLSNcAmB28yuvofzPyCVy6JZCpbHrONgJSUZboLLUdICUr
+        LzEriwbId8uvTri+vAZuaqFEehD16JmV
+X-Google-Smtp-Source: APXvYqwE0Kw1Lr57hJrKf2YCBvaywsdXkSsaqQ5vjkTWRFNXWT65U04S2Bn4exhtUmO+e2EEslEZxg==
+X-Received: by 2002:a63:ff26:: with SMTP id k38mr1016742pgi.128.1573087921090;
+        Wed, 06 Nov 2019 16:52:01 -0800 (PST)
+Received: from localhost.localdomain ([110.35.161.54])
+        by smtp.gmail.com with ESMTPSA id m68sm186606pfb.122.2019.11.06.16.51.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Nov 2019 16:52:00 -0800 (PST)
 From:   "Daniel T. Lee" <danieltimlee@gmail.com>
-Date:   Thu, 7 Nov 2019 09:44:09 +0900
-Message-ID: <CAEKGpzgz4U68ast=OSMFq66OKNipMB_BN9E2_N4PEO_+s+LByQ@mail.gmail.com>
-Subject: Re: [PATCH,bpf-next 2/2] samples: bpf: update map definition to new
- syntax BTF-defined map
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+To:     Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Andrii Nakryiko <andriin@fb.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH,bpf-next v2 0/2] samples: bpf: update map definition to new syntax BTF-defined map
+Date:   Thu,  7 Nov 2019 09:51:51 +0900
+Message-Id: <20191107005153.31541-1-danieltimlee@gmail.com>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 6, 2019 at 11:14 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Tue, Nov 5, 2019 at 2:52 PM Daniel T. Lee <danieltimlee@gmail.com> wrote:
-> >
-> > Since, the new syntax of BTF-defined map has been introduced,
-> > the syntax for using maps under samples directory are mixed up.
-> > For example, some are already using the new syntax, and some are using
-> > existing syntax by calling them as 'legacy'.
-> >
-> > As stated at commit abd29c931459 ("libbpf: allow specifying map
-> > definitions using BTF"), the BTF-defined map has more compatablility
-> > with extending supported map definition features.
-> >
-> > The commit doesn't replace all of the map to new BTF-defined map,
-> > because some of the samples still use bpf_load instead of libbpf, which
-> > can't properly create BTF-defined map.
-> >
-> > This will only updates the samples which uses libbpf API for loading bpf
-> > program. (ex. bpf_prog_load_xattr)
-> >
-> > Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
-> > ---
->
->
-> Please try to stick to __type() for key/value, where possible (all the
-> arrays, hashes, per-cpu arrays definitely work). Some of the special
-> CPUMAP, DEVMAP might not work. Not sure about TRIEs, please try.
->
+Since, the new syntax of BTF-defined map has been introduced,
+the syntax for using maps under samples directory are mixed up.
+For example, some are already using the new syntax, and some are using
+existing syntax by calling them as 'legacy'.
 
-Will apply feedback right away!
-Thanks for the review!
+As stated at commit abd29c931459 ("libbpf: allow specifying map
+definitions using BTF"), the BTF-defined map has more compatablility
+with extending supported map definition features.
 
-> >  samples/bpf/sockex1_kern.c          |  12 ++--
-> >  samples/bpf/sockex2_kern.c          |  12 ++--
-> >  samples/bpf/xdp1_kern.c             |  12 ++--
-> >  samples/bpf/xdp2_kern.c             |  12 ++--
-> >  samples/bpf/xdp_adjust_tail_kern.c  |  12 ++--
-> >  samples/bpf/xdp_fwd_kern.c          |  13 ++--
-> >  samples/bpf/xdp_redirect_cpu_kern.c | 108 ++++++++++++++--------------
-> >  samples/bpf/xdp_redirect_kern.c     |  24 +++----
-> >  samples/bpf/xdp_redirect_map_kern.c |  24 +++----
-> >  samples/bpf/xdp_router_ipv4_kern.c  |  64 ++++++++---------
-> >  samples/bpf/xdp_rxq_info_kern.c     |  36 +++++-----
-> >  samples/bpf/xdp_tx_iptunnel_kern.c  |  26 +++----
-> >  12 files changed, 177 insertions(+), 178 deletions(-)
-> >
-> > diff --git a/samples/bpf/sockex1_kern.c b/samples/bpf/sockex1_kern.c
-> > index f96943f443ab..493f102711c0 100644
-> > --- a/samples/bpf/sockex1_kern.c
-> > +++ b/samples/bpf/sockex1_kern.c
-> > @@ -5,12 +5,12 @@
-> >  #include "bpf_helpers.h"
-> >  #include "bpf_legacy.h"
-> >
-> > -struct bpf_map_def SEC("maps") my_map = {
-> > -       .type = BPF_MAP_TYPE_ARRAY,
-> > -       .key_size = sizeof(u32),
-> > -       .value_size = sizeof(long),
-> > -       .max_entries = 256,
-> > -};
-> > +struct {
-> > +       __uint(type, BPF_MAP_TYPE_ARRAY);
-> > +       __uint(key_size, sizeof(u32));
-> > +       __uint(value_size, sizeof(long));
-> > +       __uint(max_entries, 256);
-> > +} my_map SEC(".maps");
-> >
-> >  SEC("socket1")
-> >  int bpf_prog1(struct __sk_buff *skb)
-> > diff --git a/samples/bpf/sockex2_kern.c b/samples/bpf/sockex2_kern.c
-> > index 5566fa7d92fa..bd756494625b 100644
-> > --- a/samples/bpf/sockex2_kern.c
-> > +++ b/samples/bpf/sockex2_kern.c
-> > @@ -190,12 +190,12 @@ struct pair {
-> >         long bytes;
-> >  };
-> >
-> > -struct bpf_map_def SEC("maps") hash_map = {
-> > -       .type = BPF_MAP_TYPE_HASH,
-> > -       .key_size = sizeof(__be32),
-> > -       .value_size = sizeof(struct pair),
-> > -       .max_entries = 1024,
-> > -};
-> > +struct {
-> > +       __uint(type, BPF_MAP_TYPE_HASH);
-> > +       __uint(key_size, sizeof(__be32));
-> > +       __uint(value_size, sizeof(struct pair));
->
-> let's use __type(key, __be32) and __type(value, struct pair) here and
-> in most other places where we have maps supporting BTF
->
-> > +       __uint(max_entries, 1024);
-> > +} hash_map SEC(".maps");
-> >
-> >  SEC("socket2")
-> >  int bpf_prog2(struct __sk_buff *skb)
-> > diff --git a/samples/bpf/xdp1_kern.c b/samples/bpf/xdp1_kern.c
-> > index 219742106bfd..a0a181164087 100644
-> > --- a/samples/bpf/xdp1_kern.c
-> > +++ b/samples/bpf/xdp1_kern.c
-> > @@ -14,12 +14,12 @@
-> >  #include <linux/ipv6.h>
-> >  #include "bpf_helpers.h"
-> >
-> > -struct bpf_map_def SEC("maps") rxcnt = {
-> > -       .type = BPF_MAP_TYPE_PERCPU_ARRAY,
-> > -       .key_size = sizeof(u32),
-> > -       .value_size = sizeof(long),
-> > -       .max_entries = 256,
-> > -};
-> > +struct {
-> > +       __uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
-> > +       __uint(key_size, sizeof(u32));
-> > +       __uint(value_size, sizeof(long));
-> > +       __uint(max_entries, 256);
-> > +} rxcnt SEC(".maps");
-> >
-> >  static int parse_ipv4(void *data, u64 nh_off, void *data_end)
-> >  {
-> > diff --git a/samples/bpf/xdp2_kern.c b/samples/bpf/xdp2_kern.c
-> > index e01288867d15..21564a95561b 100644
-> > --- a/samples/bpf/xdp2_kern.c
-> > +++ b/samples/bpf/xdp2_kern.c
-> > @@ -14,12 +14,12 @@
-> >  #include <linux/ipv6.h>
-> >  #include "bpf_helpers.h"
-> >
-> > -struct bpf_map_def SEC("maps") rxcnt = {
-> > -       .type = BPF_MAP_TYPE_PERCPU_ARRAY,
-> > -       .key_size = sizeof(u32),
-> > -       .value_size = sizeof(long),
-> > -       .max_entries = 256,
-> > -};
-> > +struct {
-> > +       __uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
-> > +       __uint(key_size, sizeof(u32));
-> > +       __uint(value_size, sizeof(long));
-> > +       __uint(max_entries, 256);
-> > +} rxcnt SEC(".maps");
-> >
-> >  static void swap_src_dst_mac(void *data)
-> >  {
-> > diff --git a/samples/bpf/xdp_adjust_tail_kern.c b/samples/bpf/xdp_adjust_tail_kern.c
-> > index c616508befb9..6de45a4a2c3e 100644
-> > --- a/samples/bpf/xdp_adjust_tail_kern.c
-> > +++ b/samples/bpf/xdp_adjust_tail_kern.c
-> > @@ -28,12 +28,12 @@
-> >  /* volatile to prevent compiler optimizations */
-> >  static volatile __u32 max_pcktsz = MAX_PCKT_SIZE;
-> >
-> > -struct bpf_map_def SEC("maps") icmpcnt = {
-> > -       .type = BPF_MAP_TYPE_ARRAY,
-> > -       .key_size = sizeof(__u32),
-> > -       .value_size = sizeof(__u64),
-> > -       .max_entries = 1,
-> > -};
-> > +struct {
-> > +       __uint(type, BPF_MAP_TYPE_ARRAY);
-> > +       __uint(key_size, sizeof(__u32));
-> > +       __uint(value_size, sizeof(__u64));
-> > +       __uint(max_entries, 1);
-> > +} icmpcnt SEC(".maps");
-> >
-> >  static __always_inline void count_icmp(void)
-> >  {
-> > diff --git a/samples/bpf/xdp_fwd_kern.c b/samples/bpf/xdp_fwd_kern.c
-> > index 701a30f258b1..d013029aeaa2 100644
-> > --- a/samples/bpf/xdp_fwd_kern.c
-> > +++ b/samples/bpf/xdp_fwd_kern.c
-> > @@ -23,13 +23,12 @@
-> >
-> >  #define IPV6_FLOWINFO_MASK              cpu_to_be32(0x0FFFFFFF)
-> >
-> > -/* For TX-traffic redirect requires net_device ifindex to be in this devmap */
-> > -struct bpf_map_def SEC("maps") xdp_tx_ports = {
-> > -       .type = BPF_MAP_TYPE_DEVMAP,
-> > -       .key_size = sizeof(int),
-> > -       .value_size = sizeof(int),
-> > -       .max_entries = 64,
-> > -};
-> > +struct {
-> > +       __uint(type, BPF_MAP_TYPE_DEVMAP);
-> > +       __uint(key_size, sizeof(int));
-> > +       __uint(value_size, sizeof(int));
-> > +       __uint(max_entries, 64);
-> > +} xdp_tx_ports SEC(".maps");
->
-> DEVMAP might be special, I don't remember, so key_size/value_size
-> might be necessary
+Also, unifying the map definition to BTF-defined map will help reduce
+confusion between new syntax and existing syntax.
 
-As you've mentioned, DEVMAP does not work with __type.
+The commit doesn't replace all of the map to new BTF-defined map,
+because some of the samples still use bpf_load instead of libbpf, which
+can't properly create BTF-defined map.
 
->
-> >
-> >  /* from include/net/ip.h */
-> >  static __always_inline int ip_decrease_ttl(struct iphdr *iph)
-> > diff --git a/samples/bpf/xdp_redirect_cpu_kern.c b/samples/bpf/xdp_redirect_cpu_kern.c
-> > index a306d1c75622..1f472506aa54 100644
-> > --- a/samples/bpf/xdp_redirect_cpu_kern.c
-> > +++ b/samples/bpf/xdp_redirect_cpu_kern.c
-> > @@ -18,12 +18,12 @@
-> >  #define MAX_CPUS 64 /* WARNING - sync with _user.c */
-> >
-> >  /* Special map type that can XDP_REDIRECT frames to another CPU */
-> > -struct bpf_map_def SEC("maps") cpu_map = {
-> > -       .type           = BPF_MAP_TYPE_CPUMAP,
-> > -       .key_size       = sizeof(u32),
-> > -       .value_size     = sizeof(u32),
-> > -       .max_entries    = MAX_CPUS,
-> > -};
-> > +struct {
-> > +       __uint(type, BPF_MAP_TYPE_CPUMAP);
-> > +       __uint(key_size, sizeof(u32));
-> > +       __uint(value_size, sizeof(u32));
-> > +       __uint(max_entries, MAX_CPUS);
-> > +} cpu_map SEC(".maps");
-> >
->
-> same for CPUMAP, but would be nice to double-check.
->
+This will only updates the samples which uses libbpf API for loading bpf
+program. (ex. bpf_prog_load_xattr)
 
-Same for the CPUMAP. Just checked.
-Seems TRIE doesn't work either. it uses __uint(key_size, 8);
-and __type(key, 8); is not acceptable.
+This patchset fixes some of the outdated error message regarded to loading
+bpf program (load_bpf_file -> bpf_prog_load_xattr), and updates map
+definition to new syntax of BTF-defined map.
 
-[...]
+v1 -> v2:
+  - stick to __type() instead of __uint({key,value}_size) where possible
 
-Thank you for your time and effort for the review.
+Daniel T. Lee (2):
+  samples: bpf: update outdated error message
+  samples: bpf: update map definition to new syntax BTF-defined map
 
-Thanks,
-Daniel
+ samples/bpf/hbm.c                   |   2 +-
+ samples/bpf/sockex1_kern.c          |  12 ++--
+ samples/bpf/sockex2_kern.c          |  12 ++--
+ samples/bpf/xdp1_kern.c             |  12 ++--
+ samples/bpf/xdp1_user.c             |   2 +-
+ samples/bpf/xdp2_kern.c             |  12 ++--
+ samples/bpf/xdp_adjust_tail_kern.c  |  12 ++--
+ samples/bpf/xdp_fwd_kern.c          |  13 ++--
+ samples/bpf/xdp_redirect_cpu_kern.c | 108 ++++++++++++++--------------
+ samples/bpf/xdp_redirect_kern.c     |  24 +++----
+ samples/bpf/xdp_redirect_map_kern.c |  24 +++----
+ samples/bpf/xdp_router_ipv4_kern.c  |  64 ++++++++---------
+ samples/bpf/xdp_rxq_info_kern.c     |  37 +++++-----
+ samples/bpf/xdp_rxq_info_user.c     |   6 +-
+ samples/bpf/xdp_sample_pkts_user.c  |   2 +-
+ samples/bpf/xdp_tx_iptunnel_kern.c  |  26 +++----
+ samples/bpf/xdp_tx_iptunnel_user.c  |   2 +-
+ 17 files changed, 185 insertions(+), 185 deletions(-)
+
+-- 
+2.23.0
+
