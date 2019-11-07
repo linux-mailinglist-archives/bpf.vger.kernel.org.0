@@ -2,113 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 42DC2F26AD
-	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2019 05:45:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B86AF2732
+	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2019 06:41:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733094AbfKGEpD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Nov 2019 23:45:03 -0500
-Received: from mail-yb1-f193.google.com ([209.85.219.193]:37707 "EHLO
-        mail-yb1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733035AbfKGEpD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Nov 2019 23:45:03 -0500
-Received: by mail-yb1-f193.google.com with SMTP id e13so481320ybh.4;
-        Wed, 06 Nov 2019 20:45:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iJhzGnu0ImDPOaNbn03CyYLCDVtrE0HHQ6fA/Qe4tlU=;
-        b=Qa93JpTX3X1QsPLuK3o1gH4MrOWHyTW9B43I8/jzUgnbzLddAYAwP5lg4CzJcFDGST
-         NoGVo+JDzEcR4qSrCqo5G5pj1er8MN1aN5LsRJTqi2xrRuJrp2SDhFFx3xMlAt769Myh
-         50RJCw0TAFM/7vDsAuRXRIyZmbzibyCCrpYuxy/JoYnAV914gGxA7KvNo29VNsI56pV7
-         +ismONlHUjOxnj1laC1slM3UZL863xX6x0Ki8cweNeur6BsOsRHqNBmUR9YAZoTyhmxD
-         p/CIOmv+52VD9m3IlKuxJBcT5k4zzjrG9b+M+5SRO3gw4+JQSHu+0uBuC96Uj/QCsehj
-         3+7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iJhzGnu0ImDPOaNbn03CyYLCDVtrE0HHQ6fA/Qe4tlU=;
-        b=TH/Ab7gbnxrzh30Kl38OhbKZJGqcjeSYnQqQal3CtTJqe2RX7sLFW8Mlcj2G9RU9bp
-         Hi43b5e7/FOTfxu4TOoaDOjg+Uwsf3p9s6FZUGh2igAf/3pt70hk/RoXKx698FQPWa8P
-         pYMgaWzK3XsxLuOFjtnCrUHjvpbf6gAMdptu9X4Hkz00rqnLgXQVmC5BhbRVocr7ckVX
-         ijKrM4l/436nNB2M63GQPndSefx+xKlST4v5eEWiKjVXq3HzI1MGTJdba0JoihWbtJ9T
-         zlqH8sKBhmTDLssqz8NV8xOHVHPGHPQtV7UtQx0w85qiURGivYrswBIo+xRWiVxvnetg
-         ySMg==
-X-Gm-Message-State: APjAAAUNPw5CpvUMh2ZcKVCM8JjLEso1y/dKYWmYg0CMWE6sWYM6FAZ6
-        5qd3AYjR4BbSSEIoQjj1kA6t3nTt4UxRj2QnpQ==
-X-Google-Smtp-Source: APXvYqx3llFeZAmPtYMN67UeE1PwxeheJx4YWooNG3jJdjHYk2tPRDW7WxUaoinbDonEYcPu9I5aERjhH+u6hPTnDlE=
-X-Received: by 2002:a25:145:: with SMTP id 66mr1559693ybb.180.1573101901916;
- Wed, 06 Nov 2019 20:45:01 -0800 (PST)
+        id S1726016AbfKGFli (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 Nov 2019 00:41:38 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:25824 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725770AbfKGFli (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 7 Nov 2019 00:41:38 -0500
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xA75cUO1028645
+        for <bpf@vger.kernel.org>; Wed, 6 Nov 2019 21:41:37 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=xT9c5WXsY/u7B/iMMKsPZxGpGWSoy/2SqAGfSKxlDAs=;
+ b=PrTSVxaojH1LZ2XLo56vGf0g4xFvhBIuzIbn8PkSL1BjBnwN/byTZmWwx2lXdWi/1v6y
+ zOaX5o4dPify0oNZketFHylKYV8davXuBUhuVcGVGC0MHoRnfpAqCgs+cVoK7JR5bHRA
+ ZFOcppsUAnGCuJtWt715UGbfAQNZlHWemkM= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by mx0a-00082601.pphosted.com with ESMTP id 2w41w6ue3h-8
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 06 Nov 2019 21:41:37 -0800
+Received: from 2401:db00:2050:5076:face:0:1f:0 (2620:10d:c081:10::13) by
+ mail.thefacebook.com (2620:10d:c081:35::130) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
+ Wed, 6 Nov 2019 21:41:10 -0800
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 53D122EC1967; Wed,  6 Nov 2019 21:41:08 -0800 (PST)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>, <jonathan.lemon@gmail.com>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next] libbpf: fix negative FD close() in xsk_setup_xdp_prog()
+Date:   Wed, 6 Nov 2019 21:40:59 -0800
+Message-ID: <20191107054059.313884-1-andriin@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-References: <20191107005153.31541-1-danieltimlee@gmail.com>
- <20191107005153.31541-3-danieltimlee@gmail.com> <CAEf4BzZpBqPAKy1fKUQYSm3Wxez29EuBYqu_n2SayCfDt_ziUg@mail.gmail.com>
-In-Reply-To: <CAEf4BzZpBqPAKy1fKUQYSm3Wxez29EuBYqu_n2SayCfDt_ziUg@mail.gmail.com>
-From:   "Daniel T. Lee" <danieltimlee@gmail.com>
-Date:   Thu, 7 Nov 2019 13:44:48 +0900
-Message-ID: <CAEKGpzi5qz14TWm4ZSmk8zWcw_z2f9iM+dW10Tu6evJg60aa_g@mail.gmail.com>
-Subject: Re: [PATCH,bpf-next v2 2/2] samples: bpf: update map definition to
- new syntax BTF-defined map
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
+ definitions=2019-11-06_09:2019-11-06,2019-11-06 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
+ phishscore=0 mlxscore=0 bulkscore=0 malwarescore=0 impostorscore=0
+ adultscore=0 priorityscore=1501 suspectscore=8 spamscore=0 mlxlogscore=697
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-1911070058
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 7, 2019 at 11:53 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Wed, Nov 6, 2019 at 4:52 PM Daniel T. Lee <danieltimlee@gmail.com> wrote:
-> >
-> > Since, the new syntax of BTF-defined map has been introduced,
-> > the syntax for using maps under samples directory are mixed up.
-> > For example, some are already using the new syntax, and some are using
-> > existing syntax by calling them as 'legacy'.
-> >
-> > As stated at commit abd29c931459 ("libbpf: allow specifying map
-> > definitions using BTF"), the BTF-defined map has more compatablility
-> > with extending supported map definition features.
-> >
-> > The commit doesn't replace all of the map to new BTF-defined map,
-> > because some of the samples still use bpf_load instead of libbpf, which
-> > can't properly create BTF-defined map.
-> >
-> > This will only updates the samples which uses libbpf API for loading bpf
-> > program. (ex. bpf_prog_load_xattr)
-> >
-> > Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
-> > ---
-> > Changes in v2:
-> >  - stick to __type() instead of __uint({key,value}_size) where possible
-> >
-> >  samples/bpf/sockex1_kern.c          |  12 ++--
-> >  samples/bpf/sockex2_kern.c          |  12 ++--
-> >  samples/bpf/xdp1_kern.c             |  12 ++--
-> >  samples/bpf/xdp2_kern.c             |  12 ++--
-> >  samples/bpf/xdp_adjust_tail_kern.c  |  12 ++--
-> >  samples/bpf/xdp_fwd_kern.c          |  13 ++--
-> >  samples/bpf/xdp_redirect_cpu_kern.c | 108 ++++++++++++++--------------
-> >  samples/bpf/xdp_redirect_kern.c     |  24 +++----
-> >  samples/bpf/xdp_redirect_map_kern.c |  24 +++----
-> >  samples/bpf/xdp_router_ipv4_kern.c  |  64 ++++++++---------
-> >  samples/bpf/xdp_rxq_info_kern.c     |  37 +++++-----
-> >  samples/bpf/xdp_tx_iptunnel_kern.c  |  26 +++----
-> >  12 files changed, 178 insertions(+), 178 deletions(-)
->
-> Heh, 1-to-1 insertions/deletions, no excuse to use old syntax ;)
->
-> Thanks for completing conversion!
->
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
->
-> [...]
+Fix issue reported by static analysis (Coverity). If bpf_prog_get_fd_by_id()
+fails, xsk_lookup_bpf_maps() will fail as well and clean-up code will attempt
+close() with fd=-1. Fix by checking bpf_prog_get_fd_by_id() return result and
+exiting early.
 
-Thank you for your time and effort for the review.
+Fixes: 10a13bb40e54 ("libbpf: remove qidconf and better support external bpf programs.")
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+---
+ tools/lib/bpf/xsk.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Thanks,
-Daniel
+diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
+index 74d84f36a5b2..86c1b61017f6 100644
+--- a/tools/lib/bpf/xsk.c
++++ b/tools/lib/bpf/xsk.c
+@@ -553,6 +553,8 @@ static int xsk_setup_xdp_prog(struct xsk_socket *xsk)
+ 		}
+ 	} else {
+ 		xsk->prog_fd = bpf_prog_get_fd_by_id(prog_id);
++		if (xsk->prog_fd < 0)
++			return -errno;
+ 		err = xsk_lookup_bpf_maps(xsk);
+ 		if (err) {
+ 			close(xsk->prog_fd);
+-- 
+2.17.1
+
