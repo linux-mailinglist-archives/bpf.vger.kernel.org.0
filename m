@@ -2,161 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 528CDF3BC3
-	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2019 23:52:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 520E9F3BD2
+	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2019 23:55:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727824AbfKGWv7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 Nov 2019 17:51:59 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:44736 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725992AbfKGWv7 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 7 Nov 2019 17:51:59 -0500
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xA7Moaj2031291;
-        Thu, 7 Nov 2019 14:51:44 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=AFpddRMRxBvOo3GVG9feQc/9oEjctkNTgFXNcFcaL4U=;
- b=FdwX6jfLV9w4lmezNHgee3uke+14gKbxQ/AsxQH4kj3IyZc+pjrrJ685HHSW9soEbRC+
- MLr2FT0KfXDokuV7gv6Z70beMhLhKRq3S2uJqkICeYHwVJ5JFIHUNoxItUg5rnoQNt9Y
- /ox63pVW6XJ6Y0bWmQqxkWIASXraQG9FU8M= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2w41ue7xjj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 07 Nov 2019 14:51:44 -0800
-Received: from ash-exopmbx201.TheFacebook.com (2620:10d:c0a8:83::8) by
- ash-exhub202.TheFacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 7 Nov 2019 14:51:43 -0800
-Received: from ash-exhub102.TheFacebook.com (2620:10d:c0a8:82::f) by
- ash-exopmbx201.TheFacebook.com (2620:10d:c0a8:83::8) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 7 Nov 2019 14:51:42 -0800
-Received: from NAM01-SN1-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.172) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Thu, 7 Nov 2019 14:51:42 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PHaxlf+SQKfEFyAvsMYajB1Rv6FH3okIPVs5dq3zvTRG6t3Yhu0sKTY1pvhO/8JLd8qV6Y2rkFB65hKpxRPR/3qOSuvGr/de8gdK816qg5UykaMe1ynYbFCxd/eLPMkl6oSomze+tU/SOzYrYrlI5UUS3Td/sf2yUfW1iL/qel9i96B+ucmYxSnvGG/Vlh3xhQJm7Bl3kmyKB5a79h1gkQbxQN95dr/sKfst2ndubZH9CDDrndLENAE8iaJ4OoVV9Z3WiQ1eKHjZMschJRhQ6A/Jk9NY2fv5TZa4NDvda9kTJ3Ia8V1euOIbzmPaskTS8FDQDhGxVZuo5tYOqjpP1Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AFpddRMRxBvOo3GVG9feQc/9oEjctkNTgFXNcFcaL4U=;
- b=bTjf3Pt2alg0Kw984MxwLuPWafKXm6sTQUcJeQ3Po9GzcWMcBzracw4GjUHIw9Bp3fL0coGA5FxgMot/M94fh8D+o82n57EKxT33188MoBzKzRv/JlIMDFM4S+8Z8TJefxRHqiOHdvTQOuwDp6xmrTsb7Ojq05XA5jdD0lpd6Fn2oudVWRWBqPNGtXXFcDRFXfJd0dkjV9lEoBg6XS36IQpr2gbIBaIEAcyXcSykLUujr+mL2Hnkn+t19gRtbvDU6lx6b9ZtWH6gkVZNNULevDHwAkol9TEiKSoGZW3Ar0Jkw8+zPpeNKsek1LjtuqX7GQqfKukDwau3SZmu/0r2bw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AFpddRMRxBvOo3GVG9feQc/9oEjctkNTgFXNcFcaL4U=;
- b=BxBCM5asMLBJhF9HddzQDGSdEfXIDs/5/Hvg5X9O6hG6L9UXGMdJjbt68cebVqLm6JKPuZDLcs9hXXnVTH6J7LTo2cH0+eW/ImWOXp/kR4IPY/tBKgzjpc4HeyvkULTUmUhQl0wFZsCY4t6VHGOYJ/YJ6YK9+YMXdlxVFGVmS5M=
-Received: from MWHPR15MB1165.namprd15.prod.outlook.com (10.175.3.22) by
- MWHPR15MB1485.namprd15.prod.outlook.com (10.173.234.151) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2430.22; Thu, 7 Nov 2019 22:51:41 +0000
-Received: from MWHPR15MB1165.namprd15.prod.outlook.com
- ([fe80::fdc8:5546:bace:15f5]) by MWHPR15MB1165.namprd15.prod.outlook.com
- ([fe80::fdc8:5546:bace:15f5%5]) with mapi id 15.20.2430.020; Thu, 7 Nov 2019
- 22:51:41 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Alexei Starovoitov <ast@kernel.org>
-CC:     David Miller <davem@davemloft.net>,
+        id S1725940AbfKGWz6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 Nov 2019 17:55:58 -0500
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:36058 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725882AbfKGWz6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 Nov 2019 17:55:58 -0500
+Received: by mail-pg1-f194.google.com with SMTP id k13so2910421pgh.3;
+        Thu, 07 Nov 2019 14:55:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=J293tw8bq2htqxRBo29h5G6Xx/f4qBI6NvHqoa3psYE=;
+        b=onzPuPpEb4E8aO0zqCLZ4jclD051dBLPrsmzw607ntcW21ojcIQKYY0Cni9RY+NNI+
+         X51FyUaLBBFYUt8iN722XMjGuaYGcIao0F8kjYbbkoykMdyPN30PdOWaEdGUmT9jYun/
+         3htdzR6o0S2qvwIkhbDtxCxK2xG4cZ9690XbFbSDWFYI2ipdk0aggCuWpEfk4IVNFPGh
+         FP0wB24/4e55yXYmDbme3IoAJQvynBijwuaF3qNyNSbz8qwj/QfUvpfWUrv8LgPIYYEr
+         qFp+NEuw6JnA8f3nKwHicdh/RBgcGGZYEaqvHa8Vuht+2d/0AF7AMa88er1x4dINz5X+
+         iVmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=J293tw8bq2htqxRBo29h5G6Xx/f4qBI6NvHqoa3psYE=;
+        b=hs3Xb4EKpDY/0JZcGSryRvf6YkaPQByC5RBqOL3RMyeSnL9RZe91BkEsy42AvrQtS7
+         SFNHLtOoqlogZ1qcYFpDSPlPRN/hyTI5OpFHzNQac/beIXcj4JbwpejuNR2gX6I4yhzF
+         /eXdcybQUsbVn1/GlBCdKLTxMGLp01nkbHTdVZepr9K+viASCgMtkj7qogZ0hoZ2Dl+5
+         PihmLQhyfBGz9ZxEBuxH2Z07pj4HT720Ap2vE5wpDc+9p4E4pXSas2B4pzVT5UyacFY/
+         5vt/I0isCgI5bZ9Lp4TlBOoV321dcKXMt3u1b3VQdVnFLwAuWVjCpm7NGu+7jeXMzpXN
+         YXyw==
+X-Gm-Message-State: APjAAAVPVZ1jj0yIInFCkqpzI0eekx4oUdXFxc9SVOnJ6J5E3Scb6sUc
+        HOxjlj6aa/RmHn8hLB8EihM=
+X-Google-Smtp-Source: APXvYqzxevMA8D1Vm3+YzZOmP/PFech/qkYka8ii1jbGmehlsxLX1cs55W6SJAqGiibiQIVxv6a8PA==
+X-Received: by 2002:a63:fc16:: with SMTP id j22mr7787321pgi.35.1573167357047;
+        Thu, 07 Nov 2019 14:55:57 -0800 (PST)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:200::2:d046])
+        by smtp.gmail.com with ESMTPSA id y24sm4666242pfr.116.2019.11.07.14.55.55
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 07 Nov 2019 14:55:56 -0800 (PST)
+Date:   Thu, 7 Nov 2019 14:55:54 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
         "daniel@iogearbox.net" <daniel@iogearbox.net>,
         "x86@kernel.org" <x86@kernel.org>,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
         "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
         Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH v2 bpf-next 04/17] libbpf: Add support to attach to
- fentry/fexit tracing progs
-Thread-Topic: [PATCH v2 bpf-next 04/17] libbpf: Add support to attach to
- fentry/fexit tracing progs
-Thread-Index: AQHVlS7jYVIzh19QiEmCQVoPVUOiDaeAUXgA
-Date:   Thu, 7 Nov 2019 22:51:41 +0000
-Message-ID: <693CECA2-5588-43AD-9AC9-CF5AF30C4589@fb.com>
+Subject: Re: [PATCH v2 bpf-next 03/17] bpf: Introduce BPF trampoline
+Message-ID: <20191107225553.vnnos6nblxlwx24a@ast-mbp.dhcp.thefacebook.com>
 References: <20191107054644.1285697-1-ast@kernel.org>
- <20191107054644.1285697-5-ast@kernel.org>
-In-Reply-To: <20191107054644.1285697-5-ast@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3601.0.10)
-x-originating-ip: [2620:10d:c090:200::1:11cf]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: e0404093-58c3-4e42-acb2-08d763d50e1f
-x-ms-traffictypediagnostic: MWHPR15MB1485:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MWHPR15MB14858F584249596B15EB9266B3780@MWHPR15MB1485.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1186;
-x-forefront-prvs: 0214EB3F68
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(396003)(376002)(346002)(136003)(39860400002)(366004)(199004)(189003)(33656002)(229853002)(305945005)(86362001)(36756003)(8936002)(4744005)(4326008)(5660300002)(71200400001)(8676002)(76116006)(54906003)(6116002)(14454004)(66946007)(71190400001)(66556008)(66476007)(316002)(64756008)(66446008)(50226002)(81156014)(46003)(5024004)(6486002)(186003)(446003)(256004)(6436002)(99286004)(6916009)(486006)(81166006)(25786009)(6246003)(11346002)(2616005)(476003)(2906002)(6506007)(53546011)(7736002)(102836004)(6512007)(478600001)(76176011);DIR:OUT;SFP:1102;SCL:1;SRVR:MWHPR15MB1485;H:MWHPR15MB1165.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: cjwO0taubwlh6AWwegoJLUAHa+IQzoempPrOc/PFF6dS7PtdWJWvhWPshd+pIpaGh6ozYMBO4zTbLaZFwmkCr2s6Q1hRdCIee/yHf1RjAANN/qY5TrSxYvsf1bu9r/pnPRB+C5cT3oDe8q3b6GW84i9sYNLlKCbOXhDhaO2o6l9/tPeS+YzGzktaYqsnwHU6Lkx42yGxpmC91o5GibIdaAWOg3L+ckHwQBMhHYFWc5STp4s47kGLg1wufV4P8czbJR7Gsky/gXXjwcVHF2zUgd1h+o9/8mkvN80QBRwNdJopnFVxCF2I39GlLnJt3rEz9ziMdTqwU9B9b9cy5WQN7R0o4jnWWArrVaUYP8tRvVZ0Oz92Vh289tl5dT30JqQsy8fwRuDbNs2mhGwMJLxcYG5Xl7yMk8FqpBmMmlgrracTR2GxE9FVI1w7AeUE20R2
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <828F2382CCC2FB459CD720F15E6BAC72@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+ <20191107054644.1285697-4-ast@kernel.org>
+ <5967F93A-235B-447E-9B70-E7768998B718@fb.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: e0404093-58c3-4e42-acb2-08d763d50e1f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Nov 2019 22:51:41.0745
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Fc6/uby6mE0rVLQNBEXihpJ97VDLzlqdYgLzIjOSjdj9n5bV1Xb1kE4jUHkVeUSxaEgKERZ/TVY1afv205amqw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1485
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
- definitions=2019-11-07_07:2019-11-07,2019-11-07 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- clxscore=1015 malwarescore=0 mlxlogscore=908 suspectscore=0 adultscore=0
- mlxscore=0 bulkscore=0 phishscore=0 priorityscore=1501 impostorscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1910280000 definitions=main-1911070209
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5967F93A-235B-447E-9B70-E7768998B718@fb.com>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Thu, Nov 07, 2019 at 10:37:19PM +0000, Song Liu wrote:
+> 
+> 
+> > On Nov 6, 2019, at 9:46 PM, Alexei Starovoitov <ast@kernel.org> wrote:
+> > 
+> 
+> [...]
+> 
+> > 
+> > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> > Acked-by: Andrii Nakryiko <andriin@fb.com>
+> > ---
+> > arch/x86/net/bpf_jit_comp.c | 227 ++++++++++++++++++++++++++++++--
+> > include/linux/bpf.h         |  98 ++++++++++++++
+> > include/uapi/linux/bpf.h    |   2 +
+> > kernel/bpf/Makefile         |   1 +
+> > kernel/bpf/btf.c            |  77 ++++++++++-
+> > kernel/bpf/core.c           |   1 +
+> > kernel/bpf/syscall.c        |  53 +++++++-
+> > kernel/bpf/trampoline.c     | 252 ++++++++++++++++++++++++++++++++++++
+> > kernel/bpf/verifier.c       |  39 ++++++
+> > 9 files changed, 732 insertions(+), 18 deletions(-)
+> > create mode 100644 kernel/bpf/trampoline.c
+> > 
+> > diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+> > index 8631d3bd637f..44169e8bffc0 100644
+> > --- a/arch/x86/net/bpf_jit_comp.c
+> > +++ b/arch/x86/net/bpf_jit_comp.c
+> > @@ -98,6 +98,7 @@ static int bpf_size_to_x86_bytes(int bpf_size)
+> > 
+> > /* Pick a register outside of BPF range for JIT internal work */
+> > #define AUX_REG (MAX_BPF_JIT_REG + 1)
+> > +#define X86_REG_R9 (MAX_BPF_JIT_REG + 2)
+> > 
+> > /*
+> >  * The following table maps BPF registers to x86-64 registers.
+> > @@ -123,6 +124,7 @@ static const int reg2hex[] = {
+> > 	[BPF_REG_FP] = 5, /* RBP readonly */
+> > 	[BPF_REG_AX] = 2, /* R10 temp register */
+> > 	[AUX_REG] = 3,    /* R11 temp register */
+> > +	[X86_REG_R9] = 1, /* R9 register, 6th function argument */
+> 
+> We should update the comment above this:
+> 
+>  * Also x86-64 register R9 is unused. ...
 
+good point. fixed.
 
-> On Nov 6, 2019, at 9:46 PM, Alexei Starovoitov <ast@kernel.org> wrote:
->=20
-> Teach libbpf to recognize tracing programs types and attach them to
-> fentry/fexit.
->=20
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> > +	/* One half of the page has active running trampoline.
+> > +	 * Another half is an area for next trampoline.
+> > +	 * Make sure the trampoline generation logic doesn't overflow.
+> > +	 */
+> > +	if (WARN_ON_ONCE(prog - (u8 *)image > PAGE_SIZE / 2 - BPF_INSN_SAFETY))
+> > +		return -EFAULT;
+> 
+> Given max number of args, can we catch this error at compile time? 
 
-Acked-by: Song Liu <songliubraving@fb.com>
+I don't see how to do that. I was thinking about having fake __init function
+that would call it with flags that can generate the longest trampoline, but
+it's not fool proof either.
+So I've added a test for it instead. See patch 10.
 
-With nit below:
+> > +
+> > +static int bpf_trampoline_update(struct bpf_prog *prog)
+> 
+> Seems argument "prog" is not used at all? 
 
-> ---
-> tools/include/uapi/linux/bpf.h |  2 ++
-> tools/lib/bpf/libbpf.c         | 61 +++++++++++++++++++++++++++++-----
-> tools/lib/bpf/libbpf.h         |  5 +++
-> tools/lib/bpf/libbpf.map       |  2 ++
-> 4 files changed, 61 insertions(+), 9 deletions(-)
->=20
+like one below ? ;)
 
-[...]
+> > +{
+> > +	struct bpf_trampoline *tr = prog->aux->trampoline;
+> > +	void *old_image = tr->image + ((tr->selector + 1) & 1) * PAGE_SIZE/2;
+> > +	void *new_image = tr->image + (tr->selector & 1) * PAGE_SIZE/2;
+> > +	if (err)
+> > +		goto out;
+> > +	tr->selector++;
+> 
+> Shall we do selector-- for unlink?
 
->=20
-> /* Accessors of bpf_program */
-> struct bpf_program;
-> @@ -248,6 +251,8 @@ LIBBPF_API struct bpf_link *
-> bpf_program__attach_raw_tracepoint(struct bpf_program *prog,
-> 				   const char *tp_name);
->=20
-> +LIBBPF_API struct bpf_link *
-> +bpf_program__attach_trace(struct bpf_program *prog);
-> struct bpf_insn;
+It's a bit flip. I think it would be more confusing with --
 
-attach_trace is not very clear. I guess we cannot call it=20
-attach_ftrace? Maybe we call it attach_fentry and attach_fexit
-(two names pointing to same function)?=20
