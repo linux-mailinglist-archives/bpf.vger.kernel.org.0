@@ -2,194 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B5C17F3822
-	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2019 20:08:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B15C6F3A56
+	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2019 22:20:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726973AbfKGTID (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 Nov 2019 14:08:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46156 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726917AbfKGTID (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 Nov 2019 14:08:03 -0500
-Received: from quaco.ghostprotocols.net (179-240-172-58.3g.claro.net.br [179.240.172.58])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 861B12084D;
-        Thu,  7 Nov 2019 19:07:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1573153681;
-        bh=x0U+idijloZ3ABTyDoe6njQvzv2HnpI5hJKa44rEGO8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BF0KSk+cd/dEuV3DFZ/8IvhwQl93OH5dbYGwHJdd2N5umhn2oj/9756C7YWyRK/sv
-         IkENsjfyqBKJnoszABbOuyax4OC1NgG+TVDFwDakZMFo84P57qKEVdyZt5CMaVrPc9
-         hZx7XygFlK8YjOmqI6xHN9T85hfhqL90saqX23q8=
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-        Clark Williams <williams@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        id S1725946AbfKGVU6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 Nov 2019 16:20:58 -0500
+Received: from mail-vs1-f73.google.com ([209.85.217.73]:54805 "EHLO
+        mail-vs1-f73.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726111AbfKGVU6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 Nov 2019 16:20:58 -0500
+Received: by mail-vs1-f73.google.com with SMTP id y125so1015711vsb.21
+        for <bpf@vger.kernel.org>; Thu, 07 Nov 2019 13:20:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=6u+JVwA832DZQxhqfbOLyuFUBvBp6cNKT0wKluwBqRo=;
+        b=lEBiQrXrWG2wgDQ5zKGOW/z/xlj8J49kypK3w0hinwPeCT677Eg7dvxvkhFgzLrVqp
+         S++7WbHgea82mstavCEFzyAMWY2wuwq8Gerfc6BtUeAYtbIRoNAQRmlMIlYfTHwz7oKj
+         KEqkrXA7ENGPmHoLzYoeQsjdWmgeezFvZWulnoQQvenVlih4e3cFhM06gBQhN7u8Ct/c
+         ApHxqmKj8SoZKcMNLlIfyG6E1KlG42g+IqSSbvwQGSrrpxeCZEs8ICdFG5Umpkqyzwx7
+         z2KtetpehWpXXq2oXZktoFUXD3+AfQW2EySMRbXSOosav1cNFn9Nko7ktJP3P63PHCm9
+         4q8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=6u+JVwA832DZQxhqfbOLyuFUBvBp6cNKT0wKluwBqRo=;
+        b=A8yNlKCft1DHR24k6PsuQm2aICAyT7HJetUp/7Z6Ju2+Q/F4peiAf8yaioSHv1+FLO
+         v4TmPJyW+CzCvP4VVH9DTmjmYtjHTYFShvkrAwYzH+NzmQAlGwBVKI9k9myeHTQUvYya
+         BQFbDPl5ifJcRwhIksllVsDM9WKs49gCIMXH31PJD1+DlGc5oMXAtKU5/mD6iO7PHu1g
+         yo2Skb0kBD1W3kvc2xoF00wX+epYULPiTsHbiA5X0MVB7GsbgZJggBoVU67bnvs98jxP
+         KNsvm7LZX0wjT0h3aepeTgOdAG3V+J7X73jF8MXk0nxkEa07rPmKbUTZnUErkRF39LoM
+         +wZw==
+X-Gm-Message-State: APjAAAX6+2LIJRTaW9SZ43YAyKHlglVpK0jBxJ7UFDA2giTfDMNAfSX1
+        w4R4/rm/bd+uIG33vEp7CmvYKFEeQh4e
+X-Google-Smtp-Source: APXvYqzpumSDeu8ZP1lfOlkqBFt9sUKekSDorrhgsHkr2cVXPIkQgi5uqfL4smd7tma3keIpb+KCpr07/yBA
+X-Received: by 2002:ac5:c7b1:: with SMTP id d17mr1927609vkn.90.1573161657334;
+ Thu, 07 Nov 2019 13:20:57 -0800 (PST)
+Date:   Thu,  7 Nov 2019 13:20:20 -0800
+Message-Id: <20191107212023.171208-1-brianvv@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.24.0.432.g9d3f5f5b63-goog
+Subject: [RFC bpf-next 0/3] bpf: adding map batch processing support
+From:   Brian Vazquez <brianvv@google.com>
+To:     Brian Vazquez <brianvv.kernel@gmail.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Song Liu <songliubraving@fb.com>,
-        Stephane Eranian <eranian@google.com>,
-        Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
-        clang-built-linux@googlegroups.com, netdev@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 46/63] perf parse: Add a deep delete for parse event terms
-Date:   Thu,  7 Nov 2019 15:59:54 -0300
-Message-Id: <20191107190011.23924-47-acme@kernel.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20191107190011.23924-1-acme@kernel.org>
-References: <20191107190011.23924-1-acme@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        "David S . Miller" <davem@davemloft.net>
+Cc:     Stanislav Fomichev <sdf@google.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Brian Vazquez <brianvv@google.com>, Yonghong Song <yhs@fb.com>,
+        Petar Penkov <ppenkov@google.com>,
+        Willem de Bruijn <willemb@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Ian Rogers <irogers@google.com>
+This is a follow up in the effort to batch bpf map operations to reduce
+the syscall overhead with the map_ops. I initially proposed the idea and
+the discussion is here:
+https://lore.kernel.org/bpf/20190724165803.87470-1-brianvv@google.com/
 
-Add a parse_events_term deep delete function so that owned strings and
-arrays are freed.
+Yonghong talked at the LPC about this and also proposed and idea that
+handles the special weird case of hashtables by doing traversing using
+the buckets as a reference instead of a key. Discussion is here:
+https://lore.kernel.org/bpf/20190906225434.3635421-1-yhs@fb.com/
 
-Signed-off-by: Ian Rogers <irogers@google.com>
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Andi Kleen <ak@linux.intel.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Jin Yao <yao.jin@linux.intel.com>
-Cc: John Garry <john.garry@huawei.com>
-Cc: Kan Liang <kan.liang@linux.intel.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Martin KaFai Lau <kafai@fb.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Song Liu <songliubraving@fb.com>
-Cc: Stephane Eranian <eranian@google.com>
-Cc: Yonghong Song <yhs@fb.com>
-Cc: bpf@vger.kernel.org
-Cc: clang-built-linux@googlegroups.com
-Cc: netdev@vger.kernel.org
-Link: http://lore.kernel.org/lkml/20191030223448.12930-10-irogers@google.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
----
- tools/perf/util/parse-events.c | 16 +++++++++++++---
- tools/perf/util/parse-events.h |  1 +
- tools/perf/util/parse-events.y | 12 ++----------
- tools/perf/util/pmu.c          |  2 +-
- 4 files changed, 17 insertions(+), 14 deletions(-)
+This RFC proposes a way to extend batch operations for more data
+structures by creating generic batch functions that can be used instead
+of implementing the operations for each individual data structure,
+reducing the code that needs to be maintained. The series contains the
+patches used in Yonghong's RFC and the patch that adds the generic
+implementation of the operations plus some testing with pcpu hashmaps
+and arrays. Note that pcpu hashmap shouldn't use the generic
+implementation and it either should have its own implementation or share
+the one introduced by Yonghong, I added that just as an example to show
+that the generic implementation can be easily added to a data structure.
 
-diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-index a0a80f4e7038..6d18ff9bce49 100644
---- a/tools/perf/util/parse-events.c
-+++ b/tools/perf/util/parse-events.c
-@@ -2812,6 +2812,18 @@ int parse_events_term__clone(struct parse_events_term **new,
- 	return new_term(new, &temp, str, 0);
- }
- 
-+void parse_events_term__delete(struct parse_events_term *term)
-+{
-+	if (term->array.nr_ranges)
-+		zfree(&term->array.ranges);
-+
-+	if (term->type_val != PARSE_EVENTS__TERM_TYPE_NUM)
-+		zfree(&term->val.str);
-+
-+	zfree(&term->config);
-+	free(term);
-+}
-+
- int parse_events_copy_term_list(struct list_head *old,
- 				 struct list_head **new)
- {
-@@ -2842,10 +2854,8 @@ void parse_events_terms__purge(struct list_head *terms)
- 	struct parse_events_term *term, *h;
- 
- 	list_for_each_entry_safe(term, h, terms, list) {
--		if (term->array.nr_ranges)
--			zfree(&term->array.ranges);
- 		list_del_init(&term->list);
--		free(term);
-+		parse_events_term__delete(term);
- 	}
- }
- 
-diff --git a/tools/perf/util/parse-events.h b/tools/perf/util/parse-events.h
-index 34f58d24a06a..5ee8ac93840c 100644
---- a/tools/perf/util/parse-events.h
-+++ b/tools/perf/util/parse-events.h
-@@ -139,6 +139,7 @@ int parse_events_term__sym_hw(struct parse_events_term **term,
- 			      char *config, unsigned idx);
- int parse_events_term__clone(struct parse_events_term **new,
- 			     struct parse_events_term *term);
-+void parse_events_term__delete(struct parse_events_term *term);
- void parse_events_terms__delete(struct list_head *terms);
- void parse_events_terms__purge(struct list_head *terms);
- void parse_events__clear_array(struct parse_events_array *a);
-diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
-index 376b19855470..4cac830015be 100644
---- a/tools/perf/util/parse-events.y
-+++ b/tools/perf/util/parse-events.y
-@@ -49,14 +49,6 @@ static void free_list_evsel(struct list_head* list_evsel)
- 	free(list_evsel);
- }
- 
--static void free_term(struct parse_events_term *term)
--{
--	if (term->type_val == PARSE_EVENTS__TERM_TYPE_STR)
--		free(term->val.str);
--	zfree(&term->array.ranges);
--	free(term);
--}
--
- static void inc_group_count(struct list_head *list,
- 		       struct parse_events_state *parse_state)
- {
-@@ -99,7 +91,7 @@ static void inc_group_count(struct list_head *list,
- %type <str> PE_DRV_CFG_TERM
- %destructor { free ($$); } <str>
- %type <term> event_term
--%destructor { free_term ($$); } <term>
-+%destructor { parse_events_term__delete ($$); } <term>
- %type <list_terms> event_config
- %type <list_terms> opt_event_config
- %type <list_terms> opt_pmu_config
-@@ -694,7 +686,7 @@ event_config ',' event_term
- 	struct parse_events_term *term = $3;
- 
- 	if (!head) {
--		free_term(term);
-+		parse_events_term__delete(term);
- 		YYABORT;
- 	}
- 	list_add_tail(&term->list, head);
-diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-index f9f427d4c313..db1e57113f4b 100644
---- a/tools/perf/util/pmu.c
-+++ b/tools/perf/util/pmu.c
-@@ -1260,7 +1260,7 @@ int perf_pmu__check_alias(struct perf_pmu *pmu, struct list_head *head_terms,
- 		info->metric_name = alias->metric_name;
- 
- 		list_del_init(&term->list);
--		free(term);
-+		parse_events_term__delete(term);
- 	}
- 
- 	/*
+What I want to achieve with this RFC is to collect early feedback and see if
+there's any major concern about this before I move forward. I do plan
+to better separate this into different patches and explain them properly
+in the commit messages.
+
+Current known issues where I would like to discuss are the followings:
+
+- Because Yonghong's UAPI definition was done specifically for
+  iterating buckets, the batch field is u64 and is treated as an u64
+  instead of an opaque pointer, this won't work for other data structures
+  that are going to use a key as a batch token with a size greater than
+  64. Although I think at this point the only key that couldn't be
+  treated as a u64 is the key of a hashmap, and the hashmap won't use
+  the generic interface.
+- Not all the data structures use delete (because it's not a valid
+  operation) i.e. arrays. So maybe lookup_and_delete_batch command is
+  not needed and we can handle that operation with a lookup_batch and a
+  flag.
+- For delete_batch (not just the lookup_and_delete_batch). Is this
+  operation really needed? If so, shouldn't it be better if the
+  behaviour is delete the keys provided? I did that with my generic
+  implementation but Yonghong's delete_batch for a hashmap deletes
+  buckets.
+
+Brian Vazquez (1):
+  bpf: add generic batch support
+
+Yonghong Song (2):
+  bpf: adding map batch processing support
+  tools/bpf: test bpf_map_lookup_and_delete_batch()
+
+ include/linux/bpf.h                           |  21 +
+ include/uapi/linux/bpf.h                      |  22 +
+ kernel/bpf/arraymap.c                         |   4 +
+ kernel/bpf/hashtab.c                          | 331 ++++++++++
+ kernel/bpf/syscall.c                          | 573 ++++++++++++++----
+ tools/include/uapi/linux/bpf.h                |  22 +
+ tools/lib/bpf/bpf.c                           |  59 ++
+ tools/lib/bpf/bpf.h                           |  13 +
+ tools/lib/bpf/libbpf.map                      |   4 +
+ .../map_tests/map_lookup_and_delete_batch.c   | 245 ++++++++
+ .../map_lookup_and_delete_batch_array.c       | 118 ++++
+ 11 files changed, 1292 insertions(+), 120 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/map_tests/map_lookup_and_delete_batch.c
+ create mode 100644 tools/testing/selftests/bpf/map_tests/map_lookup_and_delete_batch_array.c
+
 -- 
-2.21.0
+2.24.0.432.g9d3f5f5b63-goog
 
