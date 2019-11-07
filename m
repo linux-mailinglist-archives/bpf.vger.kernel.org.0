@@ -2,49 +2,48 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 59A0AF3508
+	by mail.lfdr.de (Postfix) with ESMTP id C3762F3509
 	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2019 17:52:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730048AbfKGQwV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 Nov 2019 11:52:21 -0500
-Received: from mx1.redhat.com ([209.132.183.28]:58560 "EHLO mx1.redhat.com"
+        id S1729846AbfKGQwW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 Nov 2019 11:52:22 -0500
+Received: from mx1.redhat.com ([209.132.183.28]:35418 "EHLO mx1.redhat.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729895AbfKGQwV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 Nov 2019 11:52:21 -0500
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com [209.85.167.72])
+        id S1729895AbfKGQwW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 Nov 2019 11:52:22 -0500
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com [209.85.208.198])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 3F26D882FF
+        by mx1.redhat.com (Postfix) with ESMTPS id F1C3DC0568FD
         for <bpf@vger.kernel.org>; Thu,  7 Nov 2019 16:52:21 +0000 (UTC)
-Received: by mail-lf1-f72.google.com with SMTP id m2so608186lfo.20
+Received: by mail-lj1-f198.google.com with SMTP id r13so620568ljk.18
         for <bpf@vger.kernel.org>; Thu, 07 Nov 2019 08:52:21 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:date:message-id:user-agent
-         :mime-version:content-transfer-encoding;
-        bh=0BBAmTpKYKtRa4E0s0gZNYrlDfe81XFkwTQZ3QzuVV4=;
-        b=qpfZ3g1712MoYq+nLlMlgrqXYVahphBc7xBmnKD3DoE+OfxHD+VAkYn8m6MTHGeuIE
-         ytpfHOhkHJ4RXqCcrxAS3EgNmEWYLMjRynEbXW+NpVOvuyOeEG4kYM2+/Jl+6zDNEnS8
-         YIQ9ZnQY1L7Ag/LvwcNUfcudzLXe3dsIOt+HBeDcCO5rwat3rOZku06IYq+dVmdnFbfI
-         OFUPBVyrpLb22ExoEyzfGI1wcV3zTRQu6AzSOBnmp/wLaeTGNYEV8YfrEeq53SPP9k+c
-         5gtV7196ckRpbwPAWjRnuQ10YztFQWmcy/ZWXFu+AWrt/CHxABN7EMeo8476clrmo1Ic
-         9A7A==
-X-Gm-Message-State: APjAAAX36bHDW4lFAoCYswYwJauy1EebG32nW6iYLxQ61Gc5uXhWECph
-        aDMbJfqT64cLME+D+vayYfpLTVFLi4kKdMQ939SlThxwDvXmOhvYOgmwZvEx8iGnLEAGFK60k3e
-        se3FOJaASi/gX
-X-Received: by 2002:a05:651c:119b:: with SMTP id w27mr2911703ljo.221.1573145539757;
-        Thu, 07 Nov 2019 08:52:19 -0800 (PST)
-X-Google-Smtp-Source: APXvYqyvh6SnIcvtmdcSrZ44czQIeqN1mbj8fe/RtNaif4GTsvB+66jflHvNikk8DxnRiiDWnRBQ2Q==
-X-Received: by 2002:a05:651c:119b:: with SMTP id w27mr2911691ljo.221.1573145539595;
-        Thu, 07 Nov 2019 08:52:19 -0800 (PST)
+        h=x-gm-message-state:subject:from:to:cc:date:message-id:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=BDBuQGGuryZdFC2mytmeTsDW60yIijvjdJ6tk9Q7yvk=;
+        b=BMxZjZe3rGKLI0vdopdYvYcdzv3PIs8ojJww0jBchEN7Zlj1J826E+PrKpAOluL4rL
+         By0Cy2pQmmohoQEfpwx+piEWKORWyUmTblm98ltdnsD12RRmGb3EhEw/AXVO7ZyARXX4
+         mJIdW6Wpw5Kk13oEelHS+3kfX+Wi+dRFIWVHt9ovi8cFSbDEE5m6FdZGF6E0ySCBT5Vm
+         TGpOCnnB07EE1gBfWzXBryoUmgGQjdA6oB36FJh7dWrcTUAjfCC66rcLijR9Vxux7dpO
+         cczUNTQn0oA+wLalpSpwcby2p54G/g3vMFvogLgLIbcIc2FJVS6HsNvblG79dulyOeki
+         D0xg==
+X-Gm-Message-State: APjAAAXPFRoN6OygqxhxUZg9e6Rt9Cdf+F7SrW7jtS8UPemvYTrndaSM
+        VkKpjlNdt8DTTleJd4XmroO4s+god8jw6bAk46ITLvOt1IYLsoWXBvUWtbPZr/ccLIOZpODhMiL
+        A9FZ973jFbsx2
+X-Received: by 2002:ac2:4357:: with SMTP id o23mr3114241lfl.51.1573145540512;
+        Thu, 07 Nov 2019 08:52:20 -0800 (PST)
+X-Google-Smtp-Source: APXvYqyztUwKn0ZDDZvELT03Vq3JsK1NYnSFM8mYV+q5H4jaBst6pLfxQpAN2R7xa9dkCing0MwB8w==
+X-Received: by 2002:ac2:4357:: with SMTP id o23mr3114231lfl.51.1573145540322;
+        Thu, 07 Nov 2019 08:52:20 -0800 (PST)
 Received: from alrua-x1.borgediget.toke.dk ([2a00:7660:6da:443::2])
-        by smtp.gmail.com with ESMTPSA id a11sm1342086ljp.97.2019.11.07.08.52.18
+        by smtp.gmail.com with ESMTPSA id m26sm1373508lfc.7.2019.11.07.08.52.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Thu, 07 Nov 2019 08:52:19 -0800 (PST)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 2714D1818B5; Thu,  7 Nov 2019 17:52:18 +0100 (CET)
-Subject: [PATCH bpf-next 0/6] libbpf: Fix pinning and error message bugs and
- add new getters
+        id 42C881818B6; Thu,  7 Nov 2019 17:52:19 +0100 (CET)
+Subject: [PATCH bpf-next 1/6] libbpf: Unpin auto-pinned maps if loading fails
 From:   =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
 To:     Daniel Borkmann <daniel@iogearbox.net>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
@@ -54,8 +53,10 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Date:   Thu, 07 Nov 2019 17:52:18 +0100
-Message-ID: <157314553801.693412.15522462897300280861.stgit@toke.dk>
+Date:   Thu, 07 Nov 2019 17:52:19 +0100
+Message-ID: <157314553913.693412.16341111239421040141.stgit@toke.dk>
+In-Reply-To: <157314553801.693412.15522462897300280861.stgit@toke.dk>
+References: <157314553801.693412.15522462897300280861.stgit@toke.dk>
 User-Agent: StGit/0.20
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -65,47 +66,81 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This series fixes a few bugs in libbpf that I discovered while playing around
-with the new auto-pinning code, and writing the first utility in xdp-tools[0]:
+From: Toke Høiland-Jørgensen <toke@redhat.com>
 
-- If object loading fails, libbpf does not clean up the pinnings created by the
-  auto-pinning mechanism.
-- EPERM is not propagated to the caller on program load
-- Netlink functions write error messages directly to stderr
+Since the automatic map-pinning happens during load, it will leave pinned
+maps around if the load fails at a later stage. Fix this by unpinning any
+pinned maps on cleanup. To avoid unpinning pinned maps that were reused
+rather than newly pinned, add a new boolean property on struct bpf_map to
+keep track of whether that map was reused or not; and only unpin those maps
+that were not reused.
 
-In addition, libbpf currently only has a somewhat limited getter function for
-XDP link info, which makes it impossible to discover whether an attached program
-is in SKB mode or not. So the last patch in the series adds a new getter for XDP
-link info which returns all the information returned via netlink (and which can
-be extended later).
-
-Finally, add a getter for BPF program size, which can be used by the caller to
-estimate the amount of locked memory needed to load a program.
-
-A selftest is added for the pinning change, while the other features were tested
-in the xdp-filter tool from the xdp-tools repo. The 'new-libbpf-features' branch
-contains the commits that make use of the new XDP getter and the corrected EPERM
-error code.
-
-[0] https://github.com/xdp-project/xdp-tools
-
+Fixes: 57a00f41644f ("libbpf: Add auto-pinning of maps when loading BPF objects")
+Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
 ---
+ tools/lib/bpf/libbpf.c |   16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
 
-Toke Høiland-Jørgensen (6):
-      libbpf: Unpin auto-pinned maps if loading fails
-      selftests/bpf: Add tests for automatic map unpinning on load failure
-      libbpf: Propagate EPERM to caller on program load
-      libbpf: Use pr_warn() when printing netlink errors
-      libbpf: Add bpf_get_link_xdp_info() function to get more XDP information
-      libbpf: Add getter for program size
-
-
- tools/lib/bpf/libbpf.c                           |   25 +++++--
- tools/lib/bpf/libbpf.h                           |   11 +++
- tools/lib/bpf/libbpf.map                         |    2 +
- tools/lib/bpf/netlink.c                          |   81 ++++++++++++++--------
- tools/lib/bpf/nlattr.c                           |   10 +--
- tools/testing/selftests/bpf/prog_tests/pinning.c |   20 +++++
- tools/testing/selftests/bpf/progs/test_pinning.c |    2 -
- 7 files changed, 109 insertions(+), 42 deletions(-)
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index be4af95d5a2c..cea61b2ec9d3 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -229,6 +229,7 @@ struct bpf_map {
+ 	enum libbpf_map_type libbpf_type;
+ 	char *pin_path;
+ 	bool pinned;
++	bool was_reused;
+ };
+ 
+ struct bpf_secdata {
+@@ -1995,6 +1996,7 @@ int bpf_map__reuse_fd(struct bpf_map *map, int fd)
+ 	map->def.map_flags = info.map_flags;
+ 	map->btf_key_type_id = info.btf_key_type_id;
+ 	map->btf_value_type_id = info.btf_value_type_id;
++	map->was_reused = true;
+ 
+ 	return 0;
+ 
+@@ -4007,15 +4009,18 @@ bpf_object__open_buffer(const void *obj_buf, size_t obj_buf_sz,
+ 	return bpf_object__open_mem(obj_buf, obj_buf_sz, &opts);
+ }
+ 
+-int bpf_object__unload(struct bpf_object *obj)
++static int __bpf_object__unload(struct bpf_object *obj, bool unpin)
+ {
+ 	size_t i;
+ 
+ 	if (!obj)
+ 		return -EINVAL;
+ 
+-	for (i = 0; i < obj->nr_maps; i++)
++	for (i = 0; i < obj->nr_maps; i++) {
+ 		zclose(obj->maps[i].fd);
++		if (unpin && obj->maps[i].pinned && !obj->maps[i].was_reused)
++			bpf_map__unpin(&obj->maps[i], NULL);
++	}
+ 
+ 	for (i = 0; i < obj->nr_programs; i++)
+ 		bpf_program__unload(&obj->programs[i]);
+@@ -4023,6 +4028,11 @@ int bpf_object__unload(struct bpf_object *obj)
+ 	return 0;
+ }
+ 
++int bpf_object__unload(struct bpf_object *obj)
++{
++	return __bpf_object__unload(obj, false);
++}
++
+ int bpf_object__load_xattr(struct bpf_object_load_attr *attr)
+ {
+ 	struct bpf_object *obj;
+@@ -4047,7 +4057,7 @@ int bpf_object__load_xattr(struct bpf_object_load_attr *attr)
+ 
+ 	return 0;
+ out:
+-	bpf_object__unload(obj);
++	__bpf_object__unload(obj, true);
+ 	pr_warn("failed to load object '%s'\n", obj->path);
+ 	return err;
+ }
 
