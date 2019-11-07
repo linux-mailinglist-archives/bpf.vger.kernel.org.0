@@ -2,241 +2,282 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CF9AEF36A7
-	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2019 19:09:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3777EF37C7
+	for <lists+bpf@lfdr.de>; Thu,  7 Nov 2019 20:02:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725710AbfKGSJN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 Nov 2019 13:09:13 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:30274 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725806AbfKGSJM (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 7 Nov 2019 13:09:12 -0500
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xA7I8NOg032465
-        for <bpf@vger.kernel.org>; Thu, 7 Nov 2019 10:09:11 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=facebook; bh=JL++fvaC8FmfDQuaMXPMZlgTgm1EVUBKy7zpoUaWJ3U=;
- b=gEmoBP9x55VaGFSUxNj70BuQcj5Je8G+lah1qumcgYRIQ8Ou1YhJZa9NhPRAbSIYJ0uJ
- mKpAwkav14XYCYsKuA1e/p1p3JhllrRgSmnvPi9A0YNb3UUW8iBrDEtRGAtFibfw6+S3
- DPcgaBuvazUEzV1xRXci8uk56pL78cgPDiA= 
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by mx0a-00082601.pphosted.com with ESMTP id 2w41w6phgc-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 07 Nov 2019 10:09:11 -0800
-Received: from 2401:db00:2120:80d4:face:0:39:0 (2620:10d:c081:10::13) by
- mail.thefacebook.com (2620:10d:c081:35::125) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
- Thu, 7 Nov 2019 10:09:09 -0800
-Received: by devbig005.ftw2.facebook.com (Postfix, from userid 6611)
-        id 4D22B294193C; Thu,  7 Nov 2019 10:09:05 -0800 (PST)
-Smtp-Origin-Hostprefix: devbig
-From:   Martin KaFai Lau <kafai@fb.com>
-Smtp-Origin-Hostname: devbig005.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
+        id S1726061AbfKGTCK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 Nov 2019 14:02:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41360 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725851AbfKGTCK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 Nov 2019 14:02:10 -0500
+Received: from quaco.ghostprotocols.net (179-240-172-58.3g.claro.net.br [179.240.172.58])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6B3C42085B;
+        Thu,  7 Nov 2019 19:01:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1573153328;
+        bh=/uMza9E8a9VTLNEHHurGZzavvLfKCAQ2PHm1FyqSbAU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=kfm70IPUF2D64BLpVAKR5sOpC/n9u8w5RnZEX6pPsgHMKOzNqqRkJqxcvuOXWN1yN
+         qeDUh6hpYmUu66lV/TdkaddHjwR816C8Hp4/fzyte+mbQk28hOetxO/JLMSpclewu0
+         ovsVzh5od5T0S+xvHHBJ9H6N5yccrg/g+fMwzl5U=
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+        Clark Williams <williams@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>, <kernel-team@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH v4 bpf-next 2/2] bpf: Add cb access in kfree_skb test
-Date:   Thu, 7 Nov 2019 10:09:05 -0800
-Message-ID: <20191107180905.4097871-1-kafai@fb.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20191107180901.4097452-1-kafai@fb.com>
-References: <20191107180901.4097452-1-kafai@fb.com>
-X-FB-Internal: Safe
+        Jin Yao <yao.jin@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Song Liu <songliubraving@fb.com>,
+        Stephane Eranian <eranian@google.com>,
+        Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
+        clang-built-linux@googlegroups.com, netdev@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: [PATCH 11/63] perf tools: Move ALLOC_LIST into a function
+Date:   Thu,  7 Nov 2019 15:59:19 -0300
+Message-Id: <20191107190011.23924-12-acme@kernel.org>
+X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20191107190011.23924-1-acme@kernel.org>
+References: <20191107190011.23924-1-acme@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
- definitions=2019-11-07_05:2019-11-07,2019-11-07 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
- lowpriorityscore=0 phishscore=0 mlxscore=0 adultscore=0 clxscore=1015
- mlxlogscore=999 suspectscore=9 impostorscore=0 malwarescore=0
- priorityscore=1501 spamscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-1910280000 definitions=main-1911070169
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Access the skb->cb[] in the kfree_skb test.
+From: Ian Rogers <irogers@google.com>
 
-Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+Having a YYABORT in a macro makes it hard to free memory for components
+of a rule. Separate the logic out.
+
+Signed-off-by: Ian Rogers <irogers@google.com>
+Acked-by: Jiri Olsa <jolsa@kernel.org>
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Andi Kleen <ak@linux.intel.com>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Jin Yao <yao.jin@linux.intel.com>
+Cc: John Garry <john.garry@huawei.com>
+Cc: Kan Liang <kan.liang@linux.intel.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Martin KaFai Lau <kafai@fb.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Song Liu <songliubraving@fb.com>
+Cc: Stephane Eranian <eranian@google.com>
+Cc: Yonghong Song <yhs@fb.com>
+Cc: bpf@vger.kernel.org
+Cc: clang-built-linux@googlegroups.com
+Cc: netdev@vger.kernel.org
+Link: http://lore.kernel.org/lkml/20191023005337.196160-5-irogers@google.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- .../selftests/bpf/prog_tests/kfree_skb.c      | 54 +++++++++++++++----
- tools/testing/selftests/bpf/progs/kfree_skb.c | 25 +++++++--
- 2 files changed, 63 insertions(+), 16 deletions(-)
+ tools/perf/util/parse-events.y | 65 ++++++++++++++++++++++------------
+ 1 file changed, 43 insertions(+), 22 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/kfree_skb.c b/tools/testing/selftests/bpf/prog_tests/kfree_skb.c
-index 430b50de1583..55d36856e621 100644
---- a/tools/testing/selftests/bpf/prog_tests/kfree_skb.c
-+++ b/tools/testing/selftests/bpf/prog_tests/kfree_skb.c
-@@ -1,15 +1,38 @@
- // SPDX-License-Identifier: GPL-2.0
- #include <test_progs.h>
+diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
+index 48126ae4cd13..5863acb34780 100644
+--- a/tools/perf/util/parse-events.y
++++ b/tools/perf/util/parse-events.y
+@@ -25,12 +25,17 @@ do { \
+ 		YYABORT; \
+ } while (0)
  
-+struct meta {
-+	int ifindex;
-+	__u32 cb32_0;
-+	__u8 cb8_0;
-+};
+-#define ALLOC_LIST(list) \
+-do { \
+-	list = malloc(sizeof(*list)); \
+-	ABORT_ON(!list);              \
+-	INIT_LIST_HEAD(list);         \
+-} while (0)
++static struct list_head* alloc_list()
++{
++	struct list_head *list;
 +
-+static union {
-+	__u32 cb32[5];
-+	__u8 cb8[20];
-+} cb = {
-+	.cb32[0] = 0x81828384,
-+};
++	list = malloc(sizeof(*list));
++	if (!list)
++		return NULL;
 +
- static void on_sample(void *ctx, int cpu, void *data, __u32 size)
- {
--	int ifindex = *(int *)data, duration = 0;
--	struct ipv6_packet *pkt_v6 = data + 4;
-+	struct meta *meta = (struct meta *)data;
-+	struct ipv6_packet *pkt_v6 = data + sizeof(*meta);
-+	int duration = 0;
++	INIT_LIST_HEAD(list);
++	return list;
++}
  
--	if (ifindex != 1)
-+	if (CHECK(size != 72 + sizeof(*meta), "check_size", "size %u != %zu\n",
-+		  size, 72 + sizeof(*meta)))
-+		return;
-+	if (CHECK(meta->ifindex != 1, "check_meta_ifindex",
-+		  "meta->ifindex = %d\n", meta->ifindex))
- 		/* spurious kfree_skb not on loopback device */
- 		return;
--	if (CHECK(size != 76, "check_size", "size %u != 76\n", size))
-+	if (CHECK(meta->cb8_0 != cb.cb8[0], "check_cb8_0", "cb8_0 %x != %x\n",
-+		  meta->cb8_0, cb.cb8[0]))
-+		return;
-+	if (CHECK(meta->cb32_0 != cb.cb32[0], "check_cb32_0",
-+		  "cb32_0 %x != %x\n",
-+		  meta->cb32_0, cb.cb32[0]))
- 		return;
- 	if (CHECK(pkt_v6->eth.h_proto != 0xdd86, "check_eth",
- 		  "h_proto %x\n", pkt_v6->eth.h_proto))
-@@ -26,6 +49,13 @@ static void on_sample(void *ctx, int cpu, void *data, __u32 size)
+ static void inc_group_count(struct list_head *list,
+ 		       struct parse_events_state *parse_state)
+@@ -238,7 +243,8 @@ PE_NAME opt_pmu_config
+ 	if (error)
+ 		error->idx = @1.first_column;
  
- void test_kfree_skb(void)
- {
-+	struct __sk_buff skb = {};
-+	struct bpf_prog_test_run_attr tattr = {
-+		.data_in = &pkt_v6,
-+		.data_size_in = sizeof(pkt_v6),
-+		.ctx_in = &skb,
-+		.ctx_size_in = sizeof(skb),
-+	};
- 	struct bpf_prog_load_attr attr = {
- 		.file = "./kfree_skb.o",
- 	};
-@@ -36,11 +66,12 @@ void test_kfree_skb(void)
- 	struct bpf_link *link = NULL;
- 	struct bpf_map *perf_buf_map;
- 	struct bpf_program *prog;
--	__u32 duration, retval;
--	int err, pkt_fd, kfree_skb_fd;
-+	int err, kfree_skb_fd;
- 	bool passed = false;
-+	__u32 duration = 0;
+-	ALLOC_LIST(list);
++	list = alloc_list();
++	ABORT_ON(!list);
+ 	if (parse_events_add_pmu(_parse_state, list, $1, $2, false, false)) {
+ 		struct perf_pmu *pmu = NULL;
+ 		int ok = 0;
+@@ -306,7 +312,8 @@ value_sym '/' event_config '/'
+ 	int type = $1 >> 16;
+ 	int config = $1 & 255;
  
--	err = bpf_prog_load("./test_pkt_access.o", BPF_PROG_TYPE_SCHED_CLS, &obj, &pkt_fd);
-+	err = bpf_prog_load("./test_pkt_access.o", BPF_PROG_TYPE_SCHED_CLS,
-+			    &obj, &tattr.prog_fd);
- 	if (CHECK(err, "prog_load sched cls", "err %d errno %d\n", err, errno))
- 		return;
+-	ALLOC_LIST(list);
++	list = alloc_list();
++	ABORT_ON(!list);
+ 	ABORT_ON(parse_events_add_numeric(_parse_state, list, type, config, $3));
+ 	parse_events_terms__delete($3);
+ 	$$ = list;
+@@ -318,7 +325,8 @@ value_sym sep_slash_slash_dc
+ 	int type = $1 >> 16;
+ 	int config = $1 & 255;
  
-@@ -66,11 +97,12 @@ void test_kfree_skb(void)
- 	if (CHECK(IS_ERR(pb), "perf_buf__new", "err %ld\n", PTR_ERR(pb)))
- 		goto close_prog;
- 
--	err = bpf_prog_test_run(pkt_fd, 1, &pkt_v6, sizeof(pkt_v6),
--				NULL, NULL, &retval, &duration);
--	CHECK(err || retval, "ipv6",
-+	memcpy(skb.cb, &cb, sizeof(cb));
-+	err = bpf_prog_test_run_xattr(&tattr);
-+	duration = tattr.duration;
-+	CHECK(err || tattr.retval, "ipv6",
- 	      "err %d errno %d retval %d duration %d\n",
--	      err, errno, retval, duration);
-+	      err, errno, tattr.retval, duration);
- 
- 	/* read perf buffer */
- 	err = perf_buffer__poll(pb, 100);
-diff --git a/tools/testing/selftests/bpf/progs/kfree_skb.c b/tools/testing/selftests/bpf/progs/kfree_skb.c
-index 489319ea1d6a..f769fdbf6725 100644
---- a/tools/testing/selftests/bpf/progs/kfree_skb.c
-+++ b/tools/testing/selftests/bpf/progs/kfree_skb.c
-@@ -43,6 +43,7 @@ struct sk_buff {
- 	refcount_t users;
- 	unsigned char *data;
- 	char __pkt_type_offset[0];
-+	char cb[48];
- };
- 
- /* copy arguments from
-@@ -57,28 +58,41 @@ struct trace_kfree_skb {
- 	void *location;
- };
- 
-+struct meta {
-+	int ifindex;
-+	__u32 cb32_0;
-+	__u8 cb8_0;
-+};
-+
- SEC("tp_btf/kfree_skb")
- int trace_kfree_skb(struct trace_kfree_skb *ctx)
- {
- 	struct sk_buff *skb = ctx->skb;
- 	struct net_device *dev;
--	int ifindex;
- 	struct callback_head *ptr;
- 	void *func;
- 	int users;
- 	unsigned char *data;
- 	unsigned short pkt_data;
-+	struct meta meta = {};
- 	char pkt_type;
-+	__u32 *cb32;
-+	__u8 *cb8;
- 
- 	__builtin_preserve_access_index(({
- 		users = skb->users.refs.counter;
- 		data = skb->data;
- 		dev = skb->dev;
--		ifindex = dev->ifindex;
- 		ptr = dev->ifalias->rcuhead.next;
- 		func = ptr->func;
-+		cb8 = (__u8 *)&skb->cb;
-+		cb32 = (__u32 *)&skb->cb;
- 	}));
- 
-+	meta.ifindex = _(dev->ifindex);
-+	meta.cb8_0 = cb8[8];
-+	meta.cb32_0 = cb32[2];
-+
- 	bpf_probe_read_kernel(&pkt_type, sizeof(pkt_type), _(&skb->__pkt_type_offset));
- 	pkt_type &= 7;
- 
-@@ -90,14 +104,15 @@ int trace_kfree_skb(struct trace_kfree_skb *ctx)
- 		   _(skb->len), users, pkt_type);
- 	bpf_printk("skb->queue_mapping %d\n", _(skb->queue_mapping));
- 	bpf_printk("dev->ifindex %d data %llx pkt_data %x\n",
--		   ifindex, data, pkt_data);
-+		   meta.ifindex, data, pkt_data);
-+	bpf_printk("cb8_0:%x cb32_0:%x\n", meta.cb8_0, meta.cb32_0);
- 
--	if (users != 1 || pkt_data != bpf_htons(0x86dd) || ifindex != 1)
-+	if (users != 1 || pkt_data != bpf_htons(0x86dd) || meta.ifindex != 1)
- 		/* raw tp ignores return value */
- 		return 0;
- 
- 	/* send first 72 byte of the packet to user space */
- 	bpf_skb_output(skb, &perf_buf_map, (72ull << 32) | BPF_F_CURRENT_CPU,
--		       &ifindex, sizeof(ifindex));
-+		       &meta, sizeof(meta));
- 	return 0;
+-	ALLOC_LIST(list);
++	list = alloc_list();
++	ABORT_ON(!list);
+ 	ABORT_ON(parse_events_add_numeric(_parse_state, list, type, config, NULL));
+ 	$$ = list;
  }
+@@ -327,7 +335,8 @@ PE_VALUE_SYM_TOOL sep_slash_slash_dc
+ {
+ 	struct list_head *list;
+ 
+-	ALLOC_LIST(list);
++	list = alloc_list();
++	ABORT_ON(!list);
+ 	ABORT_ON(parse_events_add_tool(_parse_state, list, $1));
+ 	$$ = list;
+ }
+@@ -339,7 +348,8 @@ PE_NAME_CACHE_TYPE '-' PE_NAME_CACHE_OP_RESULT '-' PE_NAME_CACHE_OP_RESULT opt_e
+ 	struct parse_events_error *error = parse_state->error;
+ 	struct list_head *list;
+ 
+-	ALLOC_LIST(list);
++	list = alloc_list();
++	ABORT_ON(!list);
+ 	ABORT_ON(parse_events_add_cache(list, &parse_state->idx, $1, $3, $5, error, $6));
+ 	parse_events_terms__delete($6);
+ 	$$ = list;
+@@ -351,7 +361,8 @@ PE_NAME_CACHE_TYPE '-' PE_NAME_CACHE_OP_RESULT opt_event_config
+ 	struct parse_events_error *error = parse_state->error;
+ 	struct list_head *list;
+ 
+-	ALLOC_LIST(list);
++	list = alloc_list();
++	ABORT_ON(!list);
+ 	ABORT_ON(parse_events_add_cache(list, &parse_state->idx, $1, $3, NULL, error, $4));
+ 	parse_events_terms__delete($4);
+ 	$$ = list;
+@@ -363,7 +374,8 @@ PE_NAME_CACHE_TYPE opt_event_config
+ 	struct parse_events_error *error = parse_state->error;
+ 	struct list_head *list;
+ 
+-	ALLOC_LIST(list);
++	list = alloc_list();
++	ABORT_ON(!list);
+ 	ABORT_ON(parse_events_add_cache(list, &parse_state->idx, $1, NULL, NULL, error, $2));
+ 	parse_events_terms__delete($2);
+ 	$$ = list;
+@@ -375,7 +387,8 @@ PE_PREFIX_MEM PE_VALUE '/' PE_VALUE ':' PE_MODIFIER_BP sep_dc
+ 	struct parse_events_state *parse_state = _parse_state;
+ 	struct list_head *list;
+ 
+-	ALLOC_LIST(list);
++	list = alloc_list();
++	ABORT_ON(!list);
+ 	ABORT_ON(parse_events_add_breakpoint(list, &parse_state->idx,
+ 					     (void *) $2, $6, $4));
+ 	$$ = list;
+@@ -386,7 +399,8 @@ PE_PREFIX_MEM PE_VALUE '/' PE_VALUE sep_dc
+ 	struct parse_events_state *parse_state = _parse_state;
+ 	struct list_head *list;
+ 
+-	ALLOC_LIST(list);
++	list = alloc_list();
++	ABORT_ON(!list);
+ 	ABORT_ON(parse_events_add_breakpoint(list, &parse_state->idx,
+ 					     (void *) $2, NULL, $4));
+ 	$$ = list;
+@@ -397,7 +411,8 @@ PE_PREFIX_MEM PE_VALUE ':' PE_MODIFIER_BP sep_dc
+ 	struct parse_events_state *parse_state = _parse_state;
+ 	struct list_head *list;
+ 
+-	ALLOC_LIST(list);
++	list = alloc_list();
++	ABORT_ON(!list);
+ 	ABORT_ON(parse_events_add_breakpoint(list, &parse_state->idx,
+ 					     (void *) $2, $4, 0));
+ 	$$ = list;
+@@ -408,7 +423,8 @@ PE_PREFIX_MEM PE_VALUE sep_dc
+ 	struct parse_events_state *parse_state = _parse_state;
+ 	struct list_head *list;
+ 
+-	ALLOC_LIST(list);
++	list = alloc_list();
++	ABORT_ON(!list);
+ 	ABORT_ON(parse_events_add_breakpoint(list, &parse_state->idx,
+ 					     (void *) $2, NULL, 0));
+ 	$$ = list;
+@@ -421,7 +437,8 @@ tracepoint_name opt_event_config
+ 	struct parse_events_error *error = parse_state->error;
+ 	struct list_head *list;
+ 
+-	ALLOC_LIST(list);
++	list = alloc_list();
++	ABORT_ON(!list);
+ 	if (error)
+ 		error->idx = @1.first_column;
+ 
+@@ -457,7 +474,8 @@ PE_VALUE ':' PE_VALUE opt_event_config
+ {
+ 	struct list_head *list;
+ 
+-	ALLOC_LIST(list);
++	list = alloc_list();
++	ABORT_ON(!list);
+ 	ABORT_ON(parse_events_add_numeric(_parse_state, list, (u32)$1, $3, $4));
+ 	parse_events_terms__delete($4);
+ 	$$ = list;
+@@ -468,7 +486,8 @@ PE_RAW opt_event_config
+ {
+ 	struct list_head *list;
+ 
+-	ALLOC_LIST(list);
++	list = alloc_list();
++	ABORT_ON(!list);
+ 	ABORT_ON(parse_events_add_numeric(_parse_state, list, PERF_TYPE_RAW, $1, $2));
+ 	parse_events_terms__delete($2);
+ 	$$ = list;
+@@ -480,7 +499,8 @@ PE_BPF_OBJECT opt_event_config
+ 	struct parse_events_state *parse_state = _parse_state;
+ 	struct list_head *list;
+ 
+-	ALLOC_LIST(list);
++	list = alloc_list();
++	ABORT_ON(!list);
+ 	ABORT_ON(parse_events_load_bpf(parse_state, list, $1, false, $2));
+ 	parse_events_terms__delete($2);
+ 	$$ = list;
+@@ -490,7 +510,8 @@ PE_BPF_SOURCE opt_event_config
+ {
+ 	struct list_head *list;
+ 
+-	ALLOC_LIST(list);
++	list = alloc_list();
++	ABORT_ON(!list);
+ 	ABORT_ON(parse_events_load_bpf(_parse_state, list, $1, true, $2));
+ 	parse_events_terms__delete($2);
+ 	$$ = list;
 -- 
-2.17.1
+2.21.0
 
