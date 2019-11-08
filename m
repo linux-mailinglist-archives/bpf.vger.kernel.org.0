@@ -2,52 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7773BF3F33
-	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2019 06:03:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7683DF3F79
+	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2019 06:13:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726424AbfKHFDp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Nov 2019 00:03:45 -0500
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:39075 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725765AbfKHFDo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Nov 2019 00:03:44 -0500
-Received: by mail-qk1-f196.google.com with SMTP id 15so4188231qkh.6;
-        Thu, 07 Nov 2019 21:03:44 -0800 (PST)
+        id S1725769AbfKHFNt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Nov 2019 00:13:49 -0500
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:39040 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725765AbfKHFNs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Nov 2019 00:13:48 -0500
+Received: by mail-qt1-f193.google.com with SMTP id t8so5117616qtc.6;
+        Thu, 07 Nov 2019 21:13:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=oZ9NmCe+QKCUl1JcPeiJrOvospkKvnGTD0rfCkZJ57k=;
-        b=PjYxSk1n+1U8d1IbXnNrvHPESDYw8nDcsDIjS4f7rBj+I1yVv4GZhQOsWquE1BbxUz
-         HNzrmpKY/LUokc3e3F8twmVVQPDGYYRolWBCEPhQRDSRjQUQ1ZqY+7+m8isv7ysQ584f
-         p8iFk5ywwdotHwhJppy93g2j1Wr1T44VLSlHZm8OOtx5ONRlbU8xQZsio5P5RZN9xVFu
-         uQtaAb/hLNOs7vGMNkw2gh4c713UOJ23MLcNV6EFBvButqclGI4uRB7BzR3dPgbtWirR
-         SA6QAtF1Nl1kz7wgO6Qq107pmHYBEdTR3s3FXfir72my6SmwN5TgWJBv4hy7n2mygr5T
-         rEYA==
+        bh=8j7bDwfjS0FaCs6vUIGJvUGPTayAptmBC1yLK9hJfBM=;
+        b=qesBbMVMWKf98yPU/EXG/JCr5GeVoqcfUKqqG3kQBGkN6hRtS4epfz+xAAQp4/ao4f
+         tlkizDYvOOIr506+M5Zf8ezAf6zIugtFnPG5wyyRO5W/x1Pl9X75O8YHycUsRMWT/dK6
+         fXwA0fsF8UerRzDuK+xpVT4WKK2jI6VDP8yEBXW2NKbbQ7Azei4SxVqFkH4foIP0vFWB
+         LF0ReCxzxc57FcHkMNu4ybZfa0tH1CLEu0zq614yIvwkwGzd7VqKqCThH/l19OfVM1A/
+         NsDF54xcWwbgsuMgnX3WeuVV5ujs+8Gb77c3CPNa1MIP67PiZTJq4y3mSrg1Vg9uPyFp
+         oROg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=oZ9NmCe+QKCUl1JcPeiJrOvospkKvnGTD0rfCkZJ57k=;
-        b=mHl4YkItA/xrQfrRvWJBQReD2hiwJjD/ksD3IbBdvsPLY7lsbzMLDL0KqlzBBtOB7K
-         Oz8a15qt3pjq33Gz/QYsOzx+JovFP8m+oaBgTIJnHGsEn0IXNIKHfNulmR3gMfZnjR0q
-         rO49CPL9UliCOx3BzMGrrmppECRc0BkmZV0tnaD+Lbu4pYb+EMS1xeo9loRbyRo2/M8a
-         vw+G8bSQP1TiDfz3/WjOe6MEoj4dQkV1gTIglcSJCWsQVS8j4S+itPi+qYuy3fHKSJ1K
-         OTGUEubDUOdUEKRPvJ6hPfdpb1uB1r8C9kl8sDYaPEMcpvpranhWkXqv/Rjn/o+jgbpS
-         Ldfw==
-X-Gm-Message-State: APjAAAXbi/RkDpekiGgpbf6flsBtfbp7op5dGDrIIvQbzMEurVjUqrzG
-        SHjf0X1w6DZuwKzN5ErfZDNRkVuBEVSateY+sFBJCQ==
-X-Google-Smtp-Source: APXvYqwQb7E1b0FjAz4AdCTxke4BudPptxI0nk+Ema767ok0paAgExhMP9j4lE8j5I4cLNR64SB8JWDuBu/16hvLd3U=
-X-Received: by 2002:a37:aa8b:: with SMTP id t133mr7433938qke.449.1573189423413;
- Thu, 07 Nov 2019 21:03:43 -0800 (PST)
+        bh=8j7bDwfjS0FaCs6vUIGJvUGPTayAptmBC1yLK9hJfBM=;
+        b=TjIRB/dOdSYIwJJ7FmR7PEZyDycyBA3Z2ylRDctikT3jYOKHA4ICq5GFrENKEzEeCK
+         uhbxFgQkmPGHeZhMs7sLEUKLzlSxLUL7h1yEULKsHOLyae9EAAfAq7GVSHkqUOiqu3sI
+         rgMmcIvhcW68mOD1w/gwB6M7RwoNW2ArFjWaLMUr2gFhUo6PgKpSbsmsE7hSojJ2de+b
+         m2Mv3dhA4La8tITXBthDfhhQlIBCSAuOP9LiiDj1waf+yM6xgUOMI8XZhH9B0I9YbVyD
+         ksz3p4Auqpe/o5w1j7TgS5mWJN94tR+kcFGkghpp4J2y29N8IKxdGvOgWlYsvoMYLBWb
+         roiw==
+X-Gm-Message-State: APjAAAUDqVIS9dgbyxkXthHJTe+OhjjUOTE6VftXizbGJ3uur3rE/wzQ
+        URdHtNBoRhiU4IyoBQb2TceCdkBau6DuduCQ4yhd3A==
+X-Google-Smtp-Source: APXvYqwG9pebI0KmDpSAgZVIkrqBvNmtTfcUnQBXQkSXz35/q7zXvnDZXbP5sEuXP1V3WYmAdV2eRjmyxFn0omsuP2E=
+X-Received: by 2002:ac8:4890:: with SMTP id i16mr8213327qtq.141.1573190027618;
+ Thu, 07 Nov 2019 21:13:47 -0800 (PST)
 MIME-Version: 1.0
-References: <20191107054644.1285697-1-ast@kernel.org> <20191107054644.1285697-12-ast@kernel.org>
-In-Reply-To: <20191107054644.1285697-12-ast@kernel.org>
+References: <20191107054644.1285697-1-ast@kernel.org> <20191107054644.1285697-13-ast@kernel.org>
+In-Reply-To: <20191107054644.1285697-13-ast@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 7 Nov 2019 21:03:32 -0800
-Message-ID: <CAEf4BzZM2+tYPkKK03edzM+H0qcnHD3k=tbzdVQ9qBF8Tjbh0A@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 11/17] bpf: Reserver space for BPF trampoline
- in BPF programs
+Date:   Thu, 7 Nov 2019 21:13:36 -0800
+Message-ID: <CAEf4BzZ0Brfa+8yA5-J=T2nFmk55TQBsfSygXFOX3dmKt3rFGw@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 12/17] bpf: Fix race in btf_resolve_helper_id()
 To:     Alexei Starovoitov <ast@kernel.org>
 Cc:     "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>, x86@kernel.org,
@@ -61,29 +60,47 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Wed, Nov 6, 2019 at 9:48 PM Alexei Starovoitov <ast@kernel.org> wrote:
 >
-> BPF trampoline can be made to work with existing 5 bytes of BPF program
-> prologue, but let's add 5 bytes of NOPs to the beginning of every JITed BPF
-> program to make BPF trampoline job easier. They can be removed in the future.
+> btf_resolve_helper_id() caching logic is racy, since under root the verifier
+> can verify several programs in parallel. Fix it with extra spin_lock.
 >
+> Fixes: a7658e1a4164 ("bpf: Check types of arguments passed into helpers")
 > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 > ---
-
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-
->  arch/x86/net/bpf_jit_comp.c | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
+>  include/linux/bpf.h   |  3 ++-
+>  kernel/bpf/btf.c      | 34 +++++++++++++++++++++++++++++++++-
+>  kernel/bpf/verifier.c |  6 +-----
+>  3 files changed, 36 insertions(+), 7 deletions(-)
 >
-> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> index 44169e8bffc0..260f61276f18 100644
-> --- a/arch/x86/net/bpf_jit_comp.c
-> +++ b/arch/x86/net/bpf_jit_comp.c
-> @@ -206,7 +206,7 @@ struct jit_context {
->  /* number of bytes emit_call() needs to generate call instruction */
->  #define X86_CALL_SIZE          5
->
-> -#define PROLOGUE_SIZE          20
-> +#define PROLOGUE_SIZE          25
 
-nit: define as 20 + X86_CALL_SIZE ?
+[...]
+
+> +       /* ok to race the search. The result is the same */
+> +       ret = __btf_resolve_helper_id(log, fn->func, arg);
+> +       if (!ret) {
+> +               bpf_log(log, "BTF resolution bug\n");
+> +               return -EFAULT;
+> +       }
+> +       spin_lock(&btf_resolve_lock);
+> +       if (*btf_id) {
+> +               ret = *btf_id;
+> +               goto out;
+> +       }
+> +       *btf_id = ret;
+> +out:
+> +       spin_unlock(&btf_resolve_lock);
+
+Is this race a problem? Does it cause any issues? Given that even if
+you do parallel resolutions at the same time, they all will have to
+result in the same btf_id, so just setting it unconditionally multiple
+times without locking should be ok, no? Maybe WRITE_ONCE, but not sure
+why all the way to spinlock.
+
+
+> +       return ret;
+> +}
+> +
+>  static int __get_type_size(struct btf *btf, u32 btf_id,
+>                            const struct btf_type **bad_type)
+>  {
 
 [...]
