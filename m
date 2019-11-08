@@ -2,147 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 279B1F5329
-	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2019 19:03:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6410AF5342
+	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2019 19:09:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726462AbfKHSDW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Nov 2019 13:03:22 -0500
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:41147 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726446AbfKHSDW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Nov 2019 13:03:22 -0500
-Received: by mail-pl1-f193.google.com with SMTP id d29so4418990plj.8;
-        Fri, 08 Nov 2019 10:03:21 -0800 (PST)
+        id S1727558AbfKHSJl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Nov 2019 13:09:41 -0500
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:40510 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727210AbfKHSJl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Nov 2019 13:09:41 -0500
+Received: by mail-oi1-f193.google.com with SMTP id 22so6036137oip.7;
+        Fri, 08 Nov 2019 10:09:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Cf/MzkLmYD+yZFPvoSKA3+NfS3oVHMt1KomSDwacCxw=;
-        b=Qbod+qYZa+0KIsIAfPgI2qF7uAcwF5AnZcYgOJd46QeIumaZUA0tr3lTHQ2kru8g6T
-         N4jsZ2eTZr6DnyD1WS9iDLi1cqjf0oU8nmmVGRd1Dewc117UTjS/1n1a8ZrjGR4t1FNj
-         Dke9HWpwVoq13FUVvmcvaTBIcyFTMPyX6iy4TZKfRUc2nXCXhqGAetbQoXgkxkOzD15z
-         9GuEokDd3qJ6TtbH5Eofixpgwd9n22WQy4m56vhOTagn5E+aBoyeGiD4NYU64I75XXgy
-         omSQDHPX3P8bsGPsym3Z3/kricv4GfPbMdHsod+bS1xtrGuGA7EoJghqHymTOgbxcjxz
-         T7MQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kRCVyyl/YnI1yfjpVYJBvX64WaEBRDLl4gl0UviBlJ0=;
+        b=PHNBDlcdlf4kTBH6jGPgnrs0BChmOlR4TL/vbG01xnN1UcBsA6smHWEujTioj2AV+r
+         PnNKYvzPsBdIbE5dfi6NcYDJnHQQ7VuhYrO9LvI5hQRlm9UdfjUZIAs7UZ+dlWmGgsNP
+         xRy+BZFbLjMW2dQP0J6vyS3UyWlO8y6hwEp52yfKhnxu4qD9GsKZDtS8FOJBWJGF1sQ9
+         lE/i5NE2Ichik0No1SdhBL5O8zQgYWLLDu3S2d1nrvjGFFB8t/DTrJOqYq8oFmVqqriO
+         xcRSp1KgmfK8lmkMgdRN4pN+UFoqB8seDX44fULG0rBnWTDidIAA6H4mUSCJtpfdASfA
+         hZzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Cf/MzkLmYD+yZFPvoSKA3+NfS3oVHMt1KomSDwacCxw=;
-        b=cKtPNUfMhmrfBtxb46fuCbd8q4uA0RJsDhHamCrRyVKKSTT6b4cIUmFYmM/cq9+ub3
-         n/VWwmzoLmTVvz5TD8EYi7eLoxPos0JmAeMTVyk0cVe8m5ku81ybnU18JWkmRt3JztyV
-         t7YTZNFuWsGlYBDQyObtJSBl7U1N4YJPTaMjoIh7SZN3QhOdv9bxRbluLq/XEQTVFOqL
-         E8ab2FAfUpBKiLCd9/19kw7RUhQ9ZnXQ81bqUisBOYyAK+PL55rMVbZlhzwKfowAt7vk
-         E9dmfgGMn2zfOnt+REdb0R8e3/qrOFbM86eN/g0YrY8yB9b3XYpvVdQ5+0H26Ohlmqa5
-         xQUA==
-X-Gm-Message-State: APjAAAWxmw4+Wl4oFIBVntXkus2BQIcrqyf9MgqP21Ig9I9KNKjhoHlb
-        e4gtMVdVPxywjlPGpUl1TCuYA/R3XQs=
-X-Google-Smtp-Source: APXvYqwtrcmn0ooctEksvsu8/NHBMlCnPo4tGJpYjPkaD6kmCYD27yJyV/IOMO7eVifevpVehXC07w==
-X-Received: by 2002:a17:902:6f01:: with SMTP id w1mr12354984plk.35.1573236201119;
-        Fri, 08 Nov 2019 10:03:21 -0800 (PST)
-Received: from gmail.com ([66.170.99.95])
-        by smtp.gmail.com with ESMTPSA id w69sm781803pfc.164.2019.11.08.10.03.19
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 08 Nov 2019 10:03:20 -0800 (PST)
-Date:   Fri, 8 Nov 2019 10:03:14 -0800
-From:   William Tu <u9012063@gmail.com>
-To:     Magnus Karlsson <magnus.karlsson@intel.com>
-Cc:     bjorn.topel@intel.com, ast@kernel.org, daniel@iogearbox.net,
-        netdev@vger.kernel.org, jonathan.lemon@gmail.com,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next 1/5] libbpf: support XDP_SHARED_UMEM with
- external XDP program
-Message-ID: <20191108180314.GA30004@gmail.com>
-References: <1573148860-30254-1-git-send-email-magnus.karlsson@intel.com>
- <1573148860-30254-2-git-send-email-magnus.karlsson@intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kRCVyyl/YnI1yfjpVYJBvX64WaEBRDLl4gl0UviBlJ0=;
+        b=NL7dY8Qi0eWC004yeO6fD7Fb7BX81o5CUI+PnwVseVC06cL0Q6kANUGSKEdNkBOZqO
+         iRar7XVB0nVvTtpL0iZCqn6C15LRBlPruCXK2VZoQZE7mZUtGkR8q5WbA4UwVHEyry+x
+         xAuuTNruwXXghJLWEqlbaeQn6kN1UxxbV+tevm1Zazi+tGA18yG9D47GTBazR3xZyPsR
+         nFktfkjK5rbrFarFJi3FTgYwyKi6ENSWk9Ep69typZdEYHgXsYnE7dC9gMSjU44TE6GS
+         5WSvSYeLx4Yd8Url03ImeVucxuyQVHdux4YI4jaKTzJsluMzEp8FEzLefLngBNPMeZO0
+         xLDA==
+X-Gm-Message-State: APjAAAXK84VPLWsM4anfeO5NbuMcAjC9JNyn8KtbvkqNK/iRdb8m2apx
+        JEBQjkrNKsC6uFEOl4n+LhK1+GTN87idMzWkiMW3Lqa3
+X-Google-Smtp-Source: APXvYqyjW9//dwO1wrlaGFSUDCBgp2bYwFRPMrrOmcWYCVG5KtkxNqQ8Asxw4v2yfgXz5q8kFVZKb+XDzGlyjNk8NHA=
+X-Received: by 2002:aca:c753:: with SMTP id x80mr10262051oif.115.1573236578319;
+ Fri, 08 Nov 2019 10:09:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1573148860-30254-2-git-send-email-magnus.karlsson@intel.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+References: <1573148860-30254-1-git-send-email-magnus.karlsson@intel.com> <20191108145738.GC36440@gmail.com>
+In-Reply-To: <20191108145738.GC36440@gmail.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Fri, 8 Nov 2019 19:09:27 +0100
+Message-ID: <CAJ8uoz2oNHtyBaHtKJv-37oKRZykAtC3Q_ok8CmvO7RmdJoTNg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/5] Extend libbpf to support shared umems and
+ Rx|Tx-only sockets
+To:     William Tu <u9012063@gmail.com>
+Cc:     Magnus Karlsson <magnus.karlsson@intel.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Network Development <netdev@vger.kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Magnus,
+On Fri, Nov 8, 2019 at 3:58 PM William Tu <u9012063@gmail.com> wrote:
+>
+> On Thu, Nov 07, 2019 at 06:47:35PM +0100, Magnus Karlsson wrote:
+> > This patch set extends libbpf and the xdpsock sample program to
+> > demonstrate the shared umem mode (XDP_SHARED_UMEM) as well as Rx-only
+> > and Tx-only sockets. This in order for users to have an example to use
+> > as a blue print and also so that these modes will be exercised more
+> > frequently.
+> >
+> > Note that the user needs to supply an XDP program with the
+> > XDP_SHARED_UMEM mode that distributes the packets over the sockets
+> > according to some policy. There is an example supplied with the
+> > xdpsock program, but there is no default one in libbpf similarly to
+> > when XDP_SHARED_UMEM is not used. The reason for this is that I felt
+> > that supplying one that would work for all users in this mode is
+> > futile. There are just tons of ways to distribute packets, so whatever
+> > I come up with and build into libbpf would be wrong in most cases.
+> >
+> Hi Magnus,
+>
+> Thanks for the patch.
+> I look at the sample code and it's sharing a umem among multiple queues in
+> the same netdev. Is it possible to shared one umem across multiple netdevs?
 
-Thanks for the patch.
+It should be possible to register the same umem area multiple times
+(wasting memory in the current implementation though). I have not
+tried this though, so I might be surprised. You really have to make
+sure that you only give a buffer (through the Tx or fill rings) to a
+single device. If you do not, your packets will be garbled. But this
+needs some testing first and some extension to libbpf to make it
+simple. I can try it out, but this will be another patch set.
 
-On Thu, Nov 07, 2019 at 06:47:36PM +0100, Magnus Karlsson wrote:
-> Add support in libbpf to create multiple sockets that share a single
-> umem. Note that an external XDP program need to be supplied that
-> routes the incoming traffic to the desired sockets. So you need to
-> supply the libbpf_flag XSK_LIBBPF_FLAGS__INHIBIT_PROG_LOAD and load
-> your own XDP program.
-> 
-> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-> ---
->  tools/lib/bpf/xsk.c | 27 +++++++++++++++++----------
->  1 file changed, 17 insertions(+), 10 deletions(-)
-> 
-> diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
-> index 86c1b61..8ebd810 100644
-> --- a/tools/lib/bpf/xsk.c
-> +++ b/tools/lib/bpf/xsk.c
-> @@ -586,15 +586,21 @@ int xsk_socket__create(struct xsk_socket **xsk_ptr, const char *ifname,
->  	if (!umem || !xsk_ptr || !rx || !tx)
->  		return -EFAULT;
->  
-> -	if (umem->refcount) {
-> -		pr_warn("Error: shared umems not supported by libbpf.\n");
-> -		return -EBUSY;
-> -	}
-> -
->  	xsk = calloc(1, sizeof(*xsk));
->  	if (!xsk)
->  		return -ENOMEM;
->  
-> +	err = xsk_set_xdp_socket_config(&xsk->config, usr_config);
-> +	if (err)
-> +		goto out_xsk_alloc;
-> +
-> +	if (umem->refcount &&
-> +	    !(xsk->config.libbpf_flags & XSK_LIBBPF_FLAGS__INHIBIT_PROG_LOAD)) {
-> +		pr_warn("Error: shared umems not supported by libbpf supplied XDP program.\n");
+/Magnus
 
-Why can't we use the existing default one in libbpf?
-If users don't want to redistribute packet to different queue,
-then they can still use the libbpf default one.
-
-William
-> +		err = -EBUSY;
-> +		goto out_xsk_alloc;
-> +	}
-> +
->  	if (umem->refcount++ > 0) {
->  		xsk->fd = socket(AF_XDP, SOCK_RAW, 0);
->  		if (xsk->fd < 0) {
-> @@ -616,10 +622,6 @@ int xsk_socket__create(struct xsk_socket **xsk_ptr, const char *ifname,
->  	memcpy(xsk->ifname, ifname, IFNAMSIZ - 1);
->  	xsk->ifname[IFNAMSIZ - 1] = '\0';
->  
-> -	err = xsk_set_xdp_socket_config(&xsk->config, usr_config);
-> -	if (err)
-> -		goto out_socket;
-> -
->  	if (rx) {
->  		err = setsockopt(xsk->fd, SOL_XDP, XDP_RX_RING,
->  				 &xsk->config.rx_size,
-> @@ -687,7 +689,12 @@ int xsk_socket__create(struct xsk_socket **xsk_ptr, const char *ifname,
->  	sxdp.sxdp_family = PF_XDP;
->  	sxdp.sxdp_ifindex = xsk->ifindex;
->  	sxdp.sxdp_queue_id = xsk->queue_id;
-> -	sxdp.sxdp_flags = xsk->config.bind_flags;
-> +	if (umem->refcount > 1) {
-> +		sxdp.sxdp_flags = XDP_SHARED_UMEM;
-> +		sxdp.sxdp_shared_umem_fd = umem->fd;
-> +	} else {
-> +		sxdp.sxdp_flags = xsk->config.bind_flags;
-> +	}
->  
->  	err = bind(xsk->fd, (struct sockaddr *)&sxdp, sizeof(sxdp));
->  	if (err) {
-> -- 
-> 2.7.4
-> 
+> For example in OVS, one might create multiple tap/veth devices (using skb-mode
+> or native-mode). And I want to save memory by having just one shared umem for
+> these devices.
+>
+> Thanks
+> --William
+>
+> > This patch has been applied against commit 30ee348c1267 ("Merge branch 'bpf-libbpf-fixes'")
+> >
+> > Structure of the patch set:
+> >
+> > Patch 1: Adds shared umem support to libbpf
+> > Patch 2: Shared umem support and example XPD program added to xdpsock sample
+> > Patch 3: Adds Rx-only and Tx-only support to libbpf
+> > Patch 4: Uses Rx-only sockets for rxdrop and Tx-only sockets for txpush in
+> >          the xdpsock sample
+> > Patch 5: Add documentation entries for these two features
+> >
+> > Thanks: Magnus
+> >
+> > Magnus Karlsson (5):
+> >   libbpf: support XDP_SHARED_UMEM with external XDP program
+> >   samples/bpf: add XDP_SHARED_UMEM support to xdpsock
+> >   libbpf: allow for creating Rx or Tx only AF_XDP sockets
+> >   samples/bpf: use Rx-only and Tx-only sockets in xdpsock
+> >   xsk: extend documentation for Rx|Tx-only sockets and shared umems
+> >
+> >  Documentation/networking/af_xdp.rst |  28 +++++--
+> >  samples/bpf/Makefile                |   1 +
+> >  samples/bpf/xdpsock.h               |  11 +++
+> >  samples/bpf/xdpsock_kern.c          |  24 ++++++
+> >  samples/bpf/xdpsock_user.c          | 158 ++++++++++++++++++++++++++----------
+> >  tools/lib/bpf/xsk.c                 |  32 +++++---
+> >  6 files changed, 195 insertions(+), 59 deletions(-)
+> >  create mode 100644 samples/bpf/xdpsock.h
+> >  create mode 100644 samples/bpf/xdpsock_kern.c
+> >
+> > --
+> > 2.7.4
