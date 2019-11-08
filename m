@@ -2,119 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 81E3EF3E1C
-	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2019 03:33:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33E96F3E50
+	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2019 04:11:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728096AbfKHCdd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 Nov 2019 21:33:33 -0500
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:41734 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726219AbfKHCdd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 Nov 2019 21:33:33 -0500
-Received: by mail-pf1-f193.google.com with SMTP id p26so3685442pfq.8;
-        Thu, 07 Nov 2019 18:33:33 -0800 (PST)
+        id S1726094AbfKHDLk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 Nov 2019 22:11:40 -0500
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:33685 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725930AbfKHDLk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 Nov 2019 22:11:40 -0500
+Received: by mail-lj1-f196.google.com with SMTP id t5so4603259ljk.0;
+        Thu, 07 Nov 2019 19:11:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=1baxNtgpBmJVIgMPxLLA9d+ZZLVZ++lDBeUowvPugUg=;
-        b=iTqxtNGeHvluR2HdvC8SKuWTO98ORSYeMFZ5p8/ftInvgtTEtUgDJce+UmfI/Y40ZH
-         cuJyqQYDmZF3SE61VFOJtzOXlLtJBh9Ymlt/rWEqb09+Q8LweoBGk/d4uLMHeodu+l7R
-         i3rjA4KA9smJs6YzbFj9NHKvkEnB0oZcy0jAK2OSTuzgW93eUYM3BlUlLcHyIlrF77lm
-         mABPShfPAAy36KlYtrTJ7LVdsvW4n3aNiYWDjlK/syGOvm9LULHidgpf/KlSCs83jVsF
-         MKahF8AZ4ZP83QdSf9TIfXYrcje5KcVmzuyUmcTa6EeiKH3Uw4ncoRnWfgjRqGjJW6sf
-         4FkQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rO8PWH86rEULEG3Z32w/xnCW9m7mnv5f5DT7fUHq5lg=;
+        b=vMznWiXynsj/01aU2ohlA6kXFOQ9DunohAvUJolwddZ3eKQhWce/93lNFgPyjfEtpZ
+         p3pjQA1nEF9BAuV+ynUChNwpdz7tBZB1qR8mrXR9m0pSBhIWvX0v0MWFDbxjkv5SXYjC
+         6CE+Q5wA1ii/dQa7/s8RC3NHTLTStyfj4gChjARjkEpkDO8diU6ba5EMVwNcH5OP0BLu
+         HDZHM3Ts3JXlmPPZjkD2Nq0BAVoar8X+T0y3u5J4rNdGOm3YbfMlJKRcny+m3Zbq5Hj1
+         ZNaK+L7Kc/C0Mn32CsD2LbaEzctmw3vq6H4b8VTRGbTATBog0MUEE23q8djxPOOwiSV4
+         pKiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=1baxNtgpBmJVIgMPxLLA9d+ZZLVZ++lDBeUowvPugUg=;
-        b=EKeUZYZtMm/KXp2VJErr8QplC2Fw/xxfX/ErszqX8fECCPX+LrEqopgDPNoHXv9P8K
-         K8wmsG/IS5UPk0c+U7b+t3i9mVD8sSgsRdysfmvVVz7+L94RX8ijCnAOJukhLUtbkHNt
-         wKZpWOi6JNl2v7pjqKJXZnYaAn819wEebavECLz8x3jf6cEyYDnJ475PXf3AfDNwp6Yk
-         DD+1ulmFUr1FQMMjWvYTenmfhhnMeRrbQql23J6o6GUUjsXXitVgwJO+mxqWnJhERVxB
-         rM1GYW7yB8doMixmZkQJL69+X8qFa0POxX2B75U2nvFhqnF4wtovffmsoRoqDpI3iefW
-         OmUA==
-X-Gm-Message-State: APjAAAVEmWh4RffG+5eZhoZ0jiYA1bYHri7YWREaMPtoGCPrgoUAWu4b
-        6p7XzijwNfvRq3OdKzIOZktU5EVW
-X-Google-Smtp-Source: APXvYqzu0Er3/StLhuKqKDRxY1wE8Qsk8YFYtdP54IH3rJ9EJHW/jEIunl+ki7D9kCDzGPRu6e11hw==
-X-Received: by 2002:a62:e708:: with SMTP id s8mr8711701pfh.80.1573180412480;
-        Thu, 07 Nov 2019 18:33:32 -0800 (PST)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:200::2:d046])
-        by smtp.gmail.com with ESMTPSA id s26sm3787170pga.67.2019.11.07.18.33.31
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 07 Nov 2019 18:33:31 -0800 (PST)
-Date:   Thu, 7 Nov 2019 18:33:30 -0800
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rO8PWH86rEULEG3Z32w/xnCW9m7mnv5f5DT7fUHq5lg=;
+        b=rBcE0vxI+y4ItZpx0yioBikmtc9cAOXCe8eM8B9T0ufihWKGg71q48Jmg6rcbT3GSj
+         ug2U1uY8B1IDvyUDaeAqIkIM4873P05oRZB5lQMr7vKzHUII6nZIDR8+CdbRK1MlcPci
+         gknWWTk3D3x6BRqkNjXE1x9bhuof5svdyXuMCfKyz0UVqAzukyO28JfW/bwNQaAHBnNB
+         8t+xD/bjIpg1W1PoT6PMY3mIXebiI75J4JzOZp8QapaVQ9GdV6nR9lrV4BSjjHc/VvqZ
+         dd1eFGNsMZ87auJi/BZM2Tms6WNJ5f/Z03qKlv+Uw9F3BZqkwVsW50/Zdk5HNLrlk9CL
+         5T/Q==
+X-Gm-Message-State: APjAAAXoiv9tEABdEcfnrojB9aeuYVtcJIILgVXYaXQIEYvzEJ52lhUP
+        Tz4hR3zytQ8W7hFD1W8McCYRVDzbe30fHW7pPcg=
+X-Google-Smtp-Source: APXvYqywNdTKa16OQ0arS/L1heY5wYcSqlKGWroM5w8n12kBZxJ97sPBbPFFod40Ah0DXO/jxZvRb5Y91s5219kBqtc=
+X-Received: by 2002:a2e:8508:: with SMTP id j8mr4816342lji.136.1573182696439;
+ Thu, 07 Nov 2019 19:11:36 -0800 (PST)
+MIME-Version: 1.0
+References: <20191107054644.1285697-1-ast@kernel.org> <20191107054644.1285697-4-ast@kernel.org>
+ <5967F93A-235B-447E-9B70-E7768998B718@fb.com> <20191107225553.vnnos6nblxlwx24a@ast-mbp.dhcp.thefacebook.com>
+ <FABEB3EB-2AC4-43F8-984B-EFD1DA621A3E@fb.com> <20191107230923.knpejhp6fbyzioxi@ast-mbp.dhcp.thefacebook.com>
+ <22015BB9-7A84-4F5E-A8A5-D10CB9DA3AEE@fb.com> <20191108000941.r4umt2624o3j45p7@ast-mbp.dhcp.thefacebook.com>
+ <CAPhsuW4gYU=HJTe2ueDXhiyY__V1ZBF1ZEhCasHb5m8XgkTtww@mail.gmail.com>
+In-Reply-To: <CAPhsuW4gYU=HJTe2ueDXhiyY__V1ZBF1ZEhCasHb5m8XgkTtww@mail.gmail.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        David Miller <davem@davemloft.net>,
+Date:   Thu, 7 Nov 2019 19:11:24 -0800
+Message-ID: <CAADnVQJFNo3wcyMKkOhX-LVYpgg302-K-As9ZKkPUXxRdGN0nw@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 03/17] bpf: Introduce BPF trampoline
+To:     Song Liu <liu.song.a23@gmail.com>
+Cc:     Song Liu <songliubraving@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
         "daniel@iogearbox.net" <daniel@iogearbox.net>,
         "x86@kernel.org" <x86@kernel.org>,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
         "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
         Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH v2 bpf-next 07/17] selftests/bpf: Add test for BPF
- trampoline
-Message-ID: <20191108023328.fmq5suz7bcmyqenb@ast-mbp.dhcp.thefacebook.com>
-References: <20191107054644.1285697-1-ast@kernel.org>
- <20191107054644.1285697-8-ast@kernel.org>
- <1929869B-945B-4DBC-B6CD-0B6C397DA4EA@fb.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1929869B-945B-4DBC-B6CD-0B6C397DA4EA@fb.com>
-User-Agent: NeoMutt/20180223
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 08, 2019 at 01:17:50AM +0000, Song Liu wrote:
-> 
-> 
-> > On Nov 6, 2019, at 9:46 PM, Alexei Starovoitov <ast@kernel.org> wrote:
-> > 
-> > Add sanity test for BPF trampoline that checks kernel functions
-> > with up to 6 arguments of different sizes.
-> > 
-> > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> > ---
-> > tools/lib/bpf/bpf_helpers.h                   | 13 +++
-> > .../selftests/bpf/prog_tests/fentry_test.c    | 64 +++++++++++++
-> > .../testing/selftests/bpf/progs/fentry_test.c | 90 +++++++++++++++++++
-> > 3 files changed, 167 insertions(+)
-> > create mode 100644 tools/testing/selftests/bpf/prog_tests/fentry_test.c
-> > create mode 100644 tools/testing/selftests/bpf/progs/fentry_test.c
-> > 
-> > diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
-> > index 0c7d28292898..c63ab1add126 100644
-> > --- a/tools/lib/bpf/bpf_helpers.h
-> > +++ b/tools/lib/bpf/bpf_helpers.h
-> > @@ -44,4 +44,17 @@ enum libbpf_pin_type {
-> > 	LIBBPF_PIN_BY_NAME,
-> > };
-> > 
-> > +/* The following types should be used by BPF_PROG_TYPE_TRACING program to
-> > + * access kernel function arguments. BPF trampoline and raw tracepoints
-> > + * typecast arguments to 'unsigned long long'.
-> > + */
-> > +typedef int __attribute__((aligned(8))) ks32;
-> > +typedef char __attribute__((aligned(8))) ks8;
-> > +typedef short __attribute__((aligned(8))) ks16;
-> > +typedef long long __attribute__((aligned(8))) ks64;
-> > +typedef unsigned int __attribute__((aligned(8))) ku32;
-> > +typedef unsigned char __attribute__((aligned(8))) ku8;
-> > +typedef unsigned short __attribute__((aligned(8))) ku16;
-> > +typedef unsigned long long __attribute__((aligned(8))) ku64;
-> > +
-> > #endif
-> 
-> Maybe a separate patch for bpf_helpers.h?
+On Thu, Nov 7, 2019 at 5:10 PM Song Liu <liu.song.a23@gmail.com> wrote:
+> > > >>>>> +               goto out;
+> > > >>>>> +       tr->selector++;
+> > > >>>>
+> > > >>>> Shall we do selector-- for unlink?
+> > > >>>
+> > > >>> It's a bit flip. I think it would be more confusing with --
+> > > >>
+> > > >> Right.. Maybe should use int instead of u64 for selector?
+> > > >
+> > > > No, since int can overflow.
+> > >
+> > > I guess it is OK to overflow, no?
+> >
+> > overflow is not ok, since transition 0->1 should use nop->call patching
+> > whereas 1->2, 2->3 should use call->call.
+> >
+> > In my initial implementation (one I didn't share with anyone) I had
+> > trampoline_mutex taken inside bpf_trampoline_update(). And multiple link()
+> > operation were allowed. The idea was to attach multiple progs and update
+> > trampoline once. But then I realized that I cannot do that since 'unlink +
+> > update' where only 'update' is taking lock will not guarantee success. Since
+> > other 'link' operations can race and 'update' can potentially fail in
+> > arch_prepare_bpf_trampoline() due to new things that 'link' brought in. In that
+> > version (since there several fentry/fexit progs can come in at once) I used
+> > separate 'selector' ticker to pick the side of the page. Once I realized the
+> > issue (to guarantee that unlink+update == always success) I moved mutex all the
+> > way to unlink and link and left 'selector' as-is. Just now I realized that
+> > 'selector' can be removed.  fentry_cnt + fexit_cnt can be used instead. This
+> > sum of counters will change 1 bit at a time. Am I right?
+>
+> Yeah, I think fentry_cnt + fexit_cnt is cleaner.
 
-I squashed them to reduce the number of patches. It's already at 17
-and I had to add another one. So v3 will have 18.
-
-> Otherwise, 
-> 
-> Acked-by: Song Liu <songliubraving@fb.com>
+... and that didn't work.
+It's transition that matters. Either need to remember previous sum value
+or have separate selector. imo selector is cleaner, so I'm back to that.
