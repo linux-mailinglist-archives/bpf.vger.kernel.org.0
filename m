@@ -2,114 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A822AF3EB7
-	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2019 05:08:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C91F2F3EC3
+	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2019 05:20:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729669AbfKHEI1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 Nov 2019 23:08:27 -0500
-Received: from mail-lf1-f68.google.com ([209.85.167.68]:34880 "EHLO
-        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729641AbfKHEI1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 Nov 2019 23:08:27 -0500
-Received: by mail-lf1-f68.google.com with SMTP id y6so3351264lfj.2;
-        Thu, 07 Nov 2019 20:08:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=H78vnncv8XIX6vF849Af3zw3Wc9WfiSJimph1ZztaME=;
-        b=fpUq8lWIe4UfR2n3cwXXSXcybpuWGNUL5F+PEojPiwDOm7ATLoaAtGIQC0NMVNRRD9
-         RvN7dk8/HHC+c84rseK0iakiQZWkEu2fXAIJYO3JFqlJD25eothFvgljH4eC+gKlCsWC
-         Srq+apMsK9pxRJ4sHuWwFqBSThlULhNtuDjeSz81nkNDdBNVLct9LtqJ0KYpQ0V951E8
-         mITHN9z/onLD2dOuj9LLTcr/3m7jCAhkMyxZRNFgLtkFfxKBFqxWKJWFxxe9uwlyGl2T
-         lbF5ASoJgyLcmmlhuUnlDDyaETHxW0IOAW2sCntOQByzdWarBXugnvPF8TBJVtgOwm/i
-         qLUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=H78vnncv8XIX6vF849Af3zw3Wc9WfiSJimph1ZztaME=;
-        b=DMaf9dsOx9c3y0+MlbjMNhtxpBUEq+Jst56215cbfC7X2rCKacuqC27+94kPmQdSlE
-         sxYiPvVYxmam0oogOwmKrsMiZ6OIqtZfTFnv6zwN1F/YGBQPnh8uaCaM+DFcaW/iOk0D
-         NK7znY0n75hsDDgOtoOqH8c4cZ0Osrpv+XeTpr2EdEVMSvdAufXXZqwV2Lj8lGa5P2XL
-         2Uv07S0wnhKcgs5GESN3+nW0zup58CwVRLj/Tde7qs0qLe/HzpQod/9yTOeBDV6lWSxo
-         E1LxqqVowrVRTntVEqI5zaxUyiN0qwVYXPizc8u1l0DaC4jF5xtsKXczScL0vien8Uhq
-         vgTA==
-X-Gm-Message-State: APjAAAWmvksXgJjVMzSJLbN2T9zgHW7BVDCkz+kWsQmnIRL8W4fA98U9
-        hI+fkK7ol/szu5BdDtSoWzg0LIfLAxYkKAdMKdc=
-X-Google-Smtp-Source: APXvYqx2a2iAtPXorfRicWaTlE8tf2SqitSujGD+li9r8yhlvyyXZLLDcAqgoUqg1VSYe1On3b6sX7LeJNPG8mD7Wu4=
-X-Received: by 2002:a19:7511:: with SMTP id y17mr5014469lfe.19.1573186105008;
- Thu, 07 Nov 2019 20:08:25 -0800 (PST)
+        id S1727024AbfKHEUr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 Nov 2019 23:20:47 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:63542 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726219AbfKHEUr (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 7 Nov 2019 23:20:47 -0500
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id xA84C49r019940
+        for <bpf@vger.kernel.org>; Thu, 7 Nov 2019 20:20:45 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=3wXOvqwWqtSRCarD3S0whkHi9qTivXaF8erfbqGKlRk=;
+ b=mr7BVoIKSrYa7njdYGNAGFRv5MscFm7TuhoHA/7s+w7+gbX0PLIHICzymy0DjAY1nMYo
+ Ona4xTnWQUR3FB8zbDVHkgBU2NuqdH5GCY10h6ng2CfrGX6EXcsZV5g98ClfPSWsgabe
+ w/h5WdPykJMOl0KB+SXo79xP7qyq7H9Btvc= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0001303.ppops.net with ESMTP id 2w4tyjhs38-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 07 Nov 2019 20:20:45 -0800
+Received: from 2401:db00:2050:5076:face:0:9:0 (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 7 Nov 2019 20:20:44 -0800
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id B937A2EC19DF; Thu,  7 Nov 2019 20:20:43 -0800 (PST)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next 0/3] Add support for memory-mapping BPF array maps
+Date:   Thu, 7 Nov 2019 20:20:38 -0800
+Message-ID: <20191108042041.1549144-1-andriin@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-References: <20191107054644.1285697-1-ast@kernel.org> <20191107054644.1285697-4-ast@kernel.org>
- <5967F93A-235B-447E-9B70-E7768998B718@fb.com> <20191107225553.vnnos6nblxlwx24a@ast-mbp.dhcp.thefacebook.com>
- <FABEB3EB-2AC4-43F8-984B-EFD1DA621A3E@fb.com> <20191107230923.knpejhp6fbyzioxi@ast-mbp.dhcp.thefacebook.com>
- <22015BB9-7A84-4F5E-A8A5-D10CB9DA3AEE@fb.com> <20191108000941.r4umt2624o3j45p7@ast-mbp.dhcp.thefacebook.com>
- <CAPhsuW4gYU=HJTe2ueDXhiyY__V1ZBF1ZEhCasHb5m8XgkTtww@mail.gmail.com>
- <CAADnVQJFNo3wcyMKkOhX-LVYpgg302-K-As9ZKkPUXxRdGN0nw@mail.gmail.com> <3000B3E1-25DE-4653-B11C-AAF61492B0FF@fb.com>
-In-Reply-To: <3000B3E1-25DE-4653-B11C-AAF61492B0FF@fb.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 7 Nov 2019 20:08:13 -0800
-Message-ID: <CAADnVQLz9fWBm3qYWaw9n60WOHFWtzO1RXheHYj6nd+jg--TkA@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 03/17] bpf: Introduce BPF trampoline
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Song Liu <liu.song.a23@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
+ definitions=2019-11-07_07:2019-11-07,2019-11-07 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0 mlxscore=0
+ clxscore=1015 bulkscore=0 priorityscore=1501 malwarescore=0 suspectscore=8
+ phishscore=0 lowpriorityscore=0 mlxlogscore=502 impostorscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-1911080040
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 7, 2019 at 8:06 PM Song Liu <songliubraving@fb.com> wrote:
->
->
->
-> > On Nov 7, 2019, at 7:11 PM, Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Thu, Nov 7, 2019 at 5:10 PM Song Liu <liu.song.a23@gmail.com> wrote:
-> >>>>>>>>> +               goto out;
-> >>>>>>>>> +       tr->selector++;
-> >>>>>>>>
-> >>>>>>>> Shall we do selector-- for unlink?
-> >>>>>>>
-> >>>>>>> It's a bit flip. I think it would be more confusing with --
-> >>>>>>
-> >>>>>> Right.. Maybe should use int instead of u64 for selector?
-> >>>>>
-> >>>>> No, since int can overflow.
-> >>>>
-> >>>> I guess it is OK to overflow, no?
-> >>>
-> >>> overflow is not ok, since transition 0->1 should use nop->call patching
-> >>> whereas 1->2, 2->3 should use call->call.
-> >>>
-> >>> In my initial implementation (one I didn't share with anyone) I had
-> >>> trampoline_mutex taken inside bpf_trampoline_update(). And multiple link()
-> >>> operation were allowed. The idea was to attach multiple progs and update
-> >>> trampoline once. But then I realized that I cannot do that since 'unlink +
-> >>> update' where only 'update' is taking lock will not guarantee success. Since
-> >>> other 'link' operations can race and 'update' can potentially fail in
-> >>> arch_prepare_bpf_trampoline() due to new things that 'link' brought in. In that
-> >>> version (since there several fentry/fexit progs can come in at once) I used
-> >>> separate 'selector' ticker to pick the side of the page. Once I realized the
-> >>> issue (to guarantee that unlink+update == always success) I moved mutex all the
-> >>> way to unlink and link and left 'selector' as-is. Just now I realized that
-> >>> 'selector' can be removed.  fentry_cnt + fexit_cnt can be used instead. This
-> >>> sum of counters will change 1 bit at a time. Am I right?
-> >>
-> >> Yeah, I think fentry_cnt + fexit_cnt is cleaner.
-> >
-> > ... and that didn't work.
-> > It's transition that matters. Either need to remember previous sum value
-> > or have separate selector. imo selector is cleaner, so I'm back to that.
->
-> Hmm.. is this because of the error handling path?
+This patch set adds ability to memory-map BPF array maps (single- and
+multi-element). The primary use case is memory-mapping BPF array maps, created
+to back global data variables, created by libbpf implicitly. This allows for
+much better usability, along with avoiding syscalls to read or update data
+completely.
 
-No. Because of transition 1->2 and 2->1 are the same.
+Due to memory-mapping requirements, BPF array map that is supposed to be
+memory-mapped, has to be created with special BPF_F_MMAPABLE attribute, which
+triggers slightly different memory allocation strategy internally. See
+patch 1 for details.
+
+Libbpf is extended to detect kernel support for this flag, and if supported,
+will specify it for all global data maps automatically.
+
+Andrii Nakryiko (3):
+  bpf: add mmap() support for BPF_MAP_TYPE_ARRAY
+  libbpf: make global data internal arrays mmap()-able, if possible
+  selftests/bpf: add BPF_TYPE_MAP_ARRAY mmap() tests
+
+ include/linux/bpf.h                           |   8 +-
+ include/uapi/linux/bpf.h                      |   3 +
+ kernel/bpf/arraymap.c                         |  96 ++++++++++-
+ kernel/bpf/syscall.c                          |  39 +++++
+ tools/include/uapi/linux/bpf.h                |   3 +
+ tools/lib/bpf/libbpf.c                        |  31 +++-
+ .../selftests/bpf/prog_tests/core_reloc.c     |  45 +++--
+ tools/testing/selftests/bpf/prog_tests/mmap.c | 154 ++++++++++++++++++
+ tools/testing/selftests/bpf/progs/test_mmap.c |  31 ++++
+ 9 files changed, 380 insertions(+), 30 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/mmap.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_mmap.c
+
+-- 
+2.17.1
+
