@@ -2,131 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9406DF3C38
-	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2019 00:29:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE493F3C97
+	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2019 01:09:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726292AbfKGX27 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 Nov 2019 18:28:59 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:45126 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726118AbfKGX27 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 7 Nov 2019 18:28:59 -0500
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id xA7NQdcY023830;
-        Thu, 7 Nov 2019 15:28:43 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=J1YhkR7V+mcZJUwsf0RUJBGELrqZInL7derj2/twxcs=;
- b=VH0evexf6xvpPWRRjJxc6kqNZMRIa88wxDxS4cTe7ELc89BXQOiSxG82KGWB9oNCBpCq
- kAMxRrbWZR7aaLLGit8yuRoRfBzr88kzYrViE5ywBvQp9C3kba0YhLMngcoM97bIJcDh
- BYhFj8s3Rk5LuBNn1SpEdZceCNFs7PtB4nE= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net with ESMTP id 2w4tyjgp5c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 07 Nov 2019 15:28:43 -0800
-Received: from ash-exhub202.TheFacebook.com (2620:10d:c0a8:83::6) by
- ash-exhub202.TheFacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 7 Nov 2019 15:28:42 -0800
-Received: from NAM05-DM3-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Thu, 7 Nov 2019 15:28:42 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VUVyGulftl+wr29NVgTr9ZqOUTLXLeNmjdRiO8YUXO6Z/iQZASzGOa0bufcmllY5yKYtqsG2/70ngg9GX2pUhhmj0dyMxvYqp9JTcdC5J3r+xCdEIV2W777gLczX6lDZT7G1ZG33YU8cu0PRPenmm4l+D6VG2/WBVQ/rgyFh4wnWoIHG5oFRucF4r6PDIDIJ/fY5I/apxgBIpyNmPnyKfEBhZWptKnQVw02a2ch8IUM/vITpPDkONt9vpt2HeQ3F5m3hK6N5ooswJ2dKzZritjFVtQ6jbkgBHsW2KXGG70v8zorohMUe8xPcBPXFs2uizVT+g0IuET3BYb72UY91Tw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=J1YhkR7V+mcZJUwsf0RUJBGELrqZInL7derj2/twxcs=;
- b=CW+fjpSFAbdTinRFz0UqUaYXvJt2ROePY1zK9MygbixMgMTrV1aFUiiWAWya4PyH1XFVykYtARcJvJ1oiISZfPaU5ecJeNmO3bsjA/hqpfeLs5yXkQEX2luFWAOvIZkN2PSm1RWEKXu+ReksSXVRn+n6+yI1ec5CF+AHNmgykQUwOZizf0OGyO7RI+5EYDVqN/ry75aaXoy/FoHio3Coku2xmZ7yi/EwZMBKwpdqgkTAx/dnvj2zDca5Lh5vPOKPAWQogZM5/f0nyrWIxP9hmcUOMCcEGg2wzLRRu+41aP/oBS8baWgbwGjQsVEgGsfFgftt5xnLCxQ5EkwWzVxm8A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=J1YhkR7V+mcZJUwsf0RUJBGELrqZInL7derj2/twxcs=;
- b=MR1Z66LSZPL0YmNnLZ0E3Xnezh1iqLoqLHBjgCv3VgVhQunCVhEOnw5VqLEcwTJbfplvC9RPSvlDhls9aLn6E7by61bkpa4T+nn1jvp3BO10QA0yrYLsOMjBW8pPbtcPkGPGR2YqdAKy1h9WyR0Xq12wpi8yZNSr+V58YoQFQGM=
-Received: from MWHPR15MB1165.namprd15.prod.outlook.com (10.175.3.22) by
- MWHPR15MB1503.namprd15.prod.outlook.com (10.173.234.135) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2430.22; Thu, 7 Nov 2019 23:28:41 +0000
-Received: from MWHPR15MB1165.namprd15.prod.outlook.com
- ([fe80::fdc8:5546:bace:15f5]) by MWHPR15MB1165.namprd15.prod.outlook.com
- ([fe80::fdc8:5546:bace:15f5%5]) with mapi id 15.20.2430.020; Thu, 7 Nov 2019
- 23:28:41 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Alexei Starovoitov <ast@kernel.org>
-CC:     David Miller <davem@davemloft.net>,
+        id S1727695AbfKHAJs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 Nov 2019 19:09:48 -0500
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:45920 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727428AbfKHAJs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 Nov 2019 19:09:48 -0500
+Received: by mail-pf1-f194.google.com with SMTP id z4so3497812pfn.12;
+        Thu, 07 Nov 2019 16:09:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=zCR8oUQK5kp581mP/9rQKPpZgXuEy24IW0l4icrKZ4g=;
+        b=Mlv7i7E9HgBvRVYHjrP+5+XFDpAteTyNzjobGa4ve2Q7hcMknaMXFi8TH09TA4nr/7
+         rgDt+Xpz8v4mcXQuPPiWoH2wr/POrplf/IHIr9CyY6dlqSnpx0vE2jnsP2BtFkL/uXfg
+         gV+rbkBN6hsBmxtbMHFW0jnPBf0EMcJ3NNKWdUhiUXQqRUujMzbaV/806mNZqRwT7R4S
+         UWysJkXW6zprkAxcaSpUhEQjhIxh3czPpLZS/xAHms7EJyaNlKpPHb8B0MLrJzWq4J5t
+         lklA3wKe3DFaHwc8jjyw6RfGWOCgw8a/rO1JRJFdOc4DtXuMlYymTApLkNaWPQ+CSQNC
+         TNwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=zCR8oUQK5kp581mP/9rQKPpZgXuEy24IW0l4icrKZ4g=;
+        b=Jp/rkLWO25Cf9GlmbxI46IjP3R+xmP9/2SF7nJW52faVF2DaK4lgQ7TpwcNo8jWiIr
+         kSqzM4nubjxXpsUDzwyF0wQ2vN+kSJHlWSY2uJNFOH/SCY9sINNlR/CQtX6e72MYmlea
+         rzamo0z+oersRvMlPvuB+11TrGT2TH1znKEG7bPV6xE3ikkD74/X1q67WxeZVToDOjyL
+         mk/Ufvis1IqU6SPsjDfHgqva+T9vXSuGWZ7SUI3v7q+6Kq+WYv5DvZ91K9VjCGouxRfA
+         fMIKTLZLeu98CzhAip8UicXxZ7vD7K+7cyksjYZnNqvqx8lncIKofCs4+e4B9yeONzIh
+         JTaA==
+X-Gm-Message-State: APjAAAWw9qKoBZe5WosfCzQlMhGycFrEN56NTFmVLnbHKV4DEuvIYzS5
+        Fm/EvPoykTzci6UMhyTnWoT3dqVX
+X-Google-Smtp-Source: APXvYqzYhgn7kyjgBHfW6W2xhGF4SoRGQl7R9nKdJ7SLCx6xj4G0UK6r/AgJaC5FZgxbWivSAhcAfg==
+X-Received: by 2002:a63:5605:: with SMTP id k5mr8231883pgb.14.1573171785665;
+        Thu, 07 Nov 2019 16:09:45 -0800 (PST)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:200::2:d046])
+        by smtp.gmail.com with ESMTPSA id 6sm3676514pfz.156.2019.11.07.16.09.44
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 07 Nov 2019 16:09:44 -0800 (PST)
+Date:   Thu, 7 Nov 2019 16:09:43 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
         "daniel@iogearbox.net" <daniel@iogearbox.net>,
         "x86@kernel.org" <x86@kernel.org>,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
         "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
         Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH v2 bpf-next 06/17] bpf: Add kernel test functions for
- fentry testing
-Thread-Topic: [PATCH v2 bpf-next 06/17] bpf: Add kernel test functions for
- fentry testing
-Thread-Index: AQHVlS7qIYReVB+/Q0mffTpI5Hn2K6eAW84A
-Date:   Thu, 7 Nov 2019 23:28:40 +0000
-Message-ID: <B3C921F1-276C-4C99-90F8-7FAAE089B80B@fb.com>
+Subject: Re: [PATCH v2 bpf-next 03/17] bpf: Introduce BPF trampoline
+Message-ID: <20191108000941.r4umt2624o3j45p7@ast-mbp.dhcp.thefacebook.com>
 References: <20191107054644.1285697-1-ast@kernel.org>
- <20191107054644.1285697-7-ast@kernel.org>
-In-Reply-To: <20191107054644.1285697-7-ast@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3601.0.10)
-x-originating-ip: [2620:10d:c090:200::1:11cf]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1737581f-7f9f-4bb2-3c08-08d763da3949
-x-ms-traffictypediagnostic: MWHPR15MB1503:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MWHPR15MB15034D438FE9467484FC23D3B3780@MWHPR15MB1503.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3826;
-x-forefront-prvs: 0214EB3F68
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(39860400002)(376002)(136003)(346002)(366004)(396003)(189003)(199004)(11346002)(66476007)(6436002)(7736002)(478600001)(36756003)(558084003)(99286004)(229853002)(256004)(8936002)(6916009)(186003)(6116002)(4326008)(14454004)(46003)(316002)(2906002)(54906003)(6506007)(81156014)(305945005)(50226002)(76116006)(86362001)(76176011)(6486002)(81166006)(53546011)(66946007)(66446008)(25786009)(5660300002)(102836004)(33656002)(71190400001)(6512007)(6246003)(486006)(476003)(71200400001)(2616005)(446003)(8676002)(66556008)(64756008);DIR:OUT;SFP:1102;SCL:1;SRVR:MWHPR15MB1503;H:MWHPR15MB1165.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: FUGgpMTDnFjyLkLLrBThpuz1iA4GLKphdVt4vsryesZDIlZTwsP8lN/K3XuFSCNnefIgGxt+yJRGPg75GDWvQdGmTvdbaVq6i1Jro0VFWj5yI6NwmmwPTX0ZB0GECvtAkjNE35tD16JsqcNJgukBBU4Zdm9fKJehWGADVz7PpvLyJtN3fNkxQYhx+BK0hnIPq2tZE9hX+vmxF2EV8xsEDBpjI1WhkcPzvHS6qo2f2XGq9L7dZcOBMe3vjN5JD2fLtnazW8i0Vzqv7s1WdUo1GFLoaV+n64/TCIp28KHxTgc1ahLO8SCCqiYnsLQYRowGBOFvCwnk+mijKF1rI/W7FBYaDmGlKfoNURgIU4xZxKmJxwqxT6kG/wQ928NfmIv4xM8giCDkvyFdLGWT1EJsHWXEcpbXrgom1OD/nuzyyLfoFnjHTHygrQIXBDKeoRkE
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <4B9208CF9A3400439D7B6E63C37186F2@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+ <20191107054644.1285697-4-ast@kernel.org>
+ <5967F93A-235B-447E-9B70-E7768998B718@fb.com>
+ <20191107225553.vnnos6nblxlwx24a@ast-mbp.dhcp.thefacebook.com>
+ <FABEB3EB-2AC4-43F8-984B-EFD1DA621A3E@fb.com>
+ <20191107230923.knpejhp6fbyzioxi@ast-mbp.dhcp.thefacebook.com>
+ <22015BB9-7A84-4F5E-A8A5-D10CB9DA3AEE@fb.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1737581f-7f9f-4bb2-3c08-08d763da3949
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Nov 2019 23:28:40.9286
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ClGzzmJje/2Is1W0MZ6/CAE6muDB/R1zSxyqg3hKGpxvV4iuUW39ZA456y4nrGI9d722QUgiDYppNbucFGX48g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1503
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
- definitions=2019-11-07_07:2019-11-07,2019-11-07 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0 mlxscore=0
- clxscore=1015 bulkscore=0 priorityscore=1501 malwarescore=0 suspectscore=0
- phishscore=0 lowpriorityscore=0 mlxlogscore=882 impostorscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1910280000 definitions=main-1911070216
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <22015BB9-7A84-4F5E-A8A5-D10CB9DA3AEE@fb.com>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Thu, Nov 07, 2019 at 11:16:20PM +0000, Song Liu wrote:
+> 
+> 
+> > On Nov 7, 2019, at 3:09 PM, Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> > 
+> > On Thu, Nov 07, 2019 at 11:07:21PM +0000, Song Liu wrote:
+> >> 
+> >> 
+> >>> 
+> >>> 
+> >>>>> +
+> >>>>> +static int bpf_trampoline_update(struct bpf_prog *prog)
+> >>>> 
+> >>>> Seems argument "prog" is not used at all? 
+> >>> 
+> >>> like one below ? ;)
+> >> e... I was really dumb... sorry..
+> >> 
+> >> Maybe we should just pass the tr in? 
+> > 
+> > that would be imbalanced.
+> 
+> Hmm.. what do you mean by imbalanced?
 
+I take it back. Yeah. It can be tr.
 
-> On Nov 6, 2019, at 9:46 PM, Alexei Starovoitov <ast@kernel.org> wrote:
->=20
-> Add few kernel functions with various number of arguments,
-> their types and sizes for BPF trampoline testing to cover
-> different calling conventions.
->=20
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> 
+> > 
+> >>> 
+> >>>>> +{
+> >>>>> +	struct bpf_trampoline *tr = prog->aux->trampoline;
+> >>>>> +	void *old_image = tr->image + ((tr->selector + 1) & 1) * PAGE_SIZE/2;
+> >>>>> +	void *new_image = tr->image + (tr->selector & 1) * PAGE_SIZE/2;
+> >>>>> +	if (err)
+> >>>>> +		goto out;
+> >>>>> +	tr->selector++;
+> >>>> 
+> >>>> Shall we do selector-- for unlink?
+> >>> 
+> >>> It's a bit flip. I think it would be more confusing with --
+> >> 
+> >> Right.. Maybe should use int instead of u64 for selector? 
+> > 
+> > No, since int can overflow.
+> 
+> I guess it is OK to overflow, no?
 
-Acked-by: Song Liu <songliubraving@fb.com>
+overflow is not ok, since transition 0->1 should use nop->call patching
+whereas 1->2, 2->3 should use call->call.
+
+In my initial implementation (one I didn't share with anyone) I had
+trampoline_mutex taken inside bpf_trampoline_update(). And multiple link()
+operation were allowed. The idea was to attach multiple progs and update
+trampoline once. But then I realized that I cannot do that since 'unlink +
+update' where only 'update' is taking lock will not guarantee success. Since
+other 'link' operations can race and 'update' can potentially fail in
+arch_prepare_bpf_trampoline() due to new things that 'link' brought in. In that
+version (since there several fentry/fexit progs can come in at once) I used
+separate 'selector' ticker to pick the side of the page. Once I realized the
+issue (to guarantee that unlink+update == always success) I moved mutex all the
+way to unlink and link and left 'selector' as-is. Just now I realized that
+'selector' can be removed.  fentry_cnt + fexit_cnt can be used instead. This
+sum of counters will change 1 bit at a time. Am I right?
+
