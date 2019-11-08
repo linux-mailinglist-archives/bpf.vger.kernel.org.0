@@ -2,120 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D24C2F59F6
-	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2019 22:34:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A122F5A29
+	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2019 22:46:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732170AbfKHVdR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Nov 2019 16:33:17 -0500
-Received: from mx1.redhat.com ([209.132.183.28]:34524 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732513AbfKHVdO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Nov 2019 16:33:14 -0500
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com [209.85.208.200])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 83D0C859FE
-        for <bpf@vger.kernel.org>; Fri,  8 Nov 2019 21:33:14 +0000 (UTC)
-Received: by mail-lj1-f200.google.com with SMTP id h9so1547642ljc.6
-        for <bpf@vger.kernel.org>; Fri, 08 Nov 2019 13:33:14 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:date:message-id:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=GBjYCkvy2GbEH7Q23GeY3ESuFtUK5AcyN8OZ2vuJJlc=;
-        b=GPaSx2REo2X28nJG7xoClwboHf9dJYyE3S4Q4S46PxCe0rBLqedsHPhDK8Sjh98rui
-         jM9Kh4HqJbv/lnOfpWR7h818jmXd6JMb/VlrtpQxP/si3SJ6ilhTD1crBR6KqSbxZ5pP
-         uqU0FXKwSyUb9CQVv7wppnts53xldghdz3UvpZeNxYosJdXoE40IcHwN0qakImPfgxwk
-         jp8bYhJWDO6p1lA5ctos8ETAoZMQIOfeUIBb43TTb5fDh1BMIPboai7ohFLpz0dLncAj
-         OuDy7H+kTN3f1pBquhfF0hvv8tSGpzdoQzSynecN42X3YVDBJviUnR9Bwhoh1PXvSktN
-         JFYQ==
-X-Gm-Message-State: APjAAAUl3qehIUOnf86YBQat22IeXPeOWZAuvjJiXnrov3K06KO/0Ot+
-        GBsa95czQzpUaDjDeDJX9fcdU1r2Bd9DOF2OlBxNfzkXpLoWcdXWQ7aMZgLX+KQiafH5sYSvXWp
-        79x7CoY3F5Mvj
-X-Received: by 2002:ac2:5b1d:: with SMTP id v29mr7905212lfn.54.1573248793110;
-        Fri, 08 Nov 2019 13:33:13 -0800 (PST)
-X-Google-Smtp-Source: APXvYqyctTL3kNwz/34TK8mIxExHhHL9/rEa+UQvCWQxPGhApNLDQroCsBY/4KDberzmnIS0GFFUkQ==
-X-Received: by 2002:ac2:5b1d:: with SMTP id v29mr7905193lfn.54.1573248792938;
-        Fri, 08 Nov 2019 13:33:12 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk (borgediget.toke.dk. [85.204.121.218])
-        by smtp.gmail.com with ESMTPSA id c19sm2977825ljj.61.2019.11.08.13.33.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Nov 2019 13:33:12 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id CD3C91800BD; Fri,  8 Nov 2019 22:33:11 +0100 (CET)
-Subject: [PATCH bpf-next v2 6/6] libbpf: Add getter for program size
-From:   =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
+        id S2387971AbfKHVgl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Nov 2019 16:36:41 -0500
+Received: from merlin.infradead.org ([205.233.59.134]:50140 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731657AbfKHVgk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Nov 2019 16:36:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=u/rXS9sACG8pfSIHTvZQbSWH3YOQncP+X2SVgkQxufo=; b=hZbEh+4B/QnOGUfYFGT7EAdGE
+        dUv4QSgb1HY12qyYvdwKcGwV61D0MzoqshMefhCYdEPsANMopZL46i9TTr1123A6kdP0EJckPnTO0
+        ZTF4AONEnUtXajbL+M8gKzeXxTRzNwb7CWksrulW7nj2qvBGuVMe87dQWwRaulCz+DJBJyN3a4VEH
+        kXox3UfpNTb4h5POpuBefNV5mmcPcxugiJGW+IeOd2Og+AW92Q1T/3xHeOr38dxjGsFTWuA9tY+8p
+        G6NtfZ+Rplo+2OCsEYq1ApL99fTwMPu/dAuKot6cKDsh8r/FoDq12nR0som5Sy/L/f6+O2waEBcjh
+        6bwWqEzmw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1iTBvf-0003kZ-FS; Fri, 08 Nov 2019 21:36:27 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 48530980E2D; Fri,  8 Nov 2019 22:36:24 +0100 (CET)
+Date:   Fri, 8 Nov 2019 22:36:24 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Date:   Fri, 08 Nov 2019 22:33:11 +0100
-Message-ID: <157324879178.910124.2574532467255490597.stgit@toke.dk>
-In-Reply-To: <157324878503.910124.12936814523952521484.stgit@toke.dk>
-References: <157324878503.910124.12936814523952521484.stgit@toke.dk>
-User-Agent: StGit/0.21
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>
+Subject: Re: [PATCH v3 bpf-next 02/18] bpf: Add bpf_arch_text_poke() helper
+Message-ID: <20191108213624.GM3079@worktop.programming.kicks-ass.net>
+References: <20191108064039.2041889-1-ast@kernel.org>
+ <20191108064039.2041889-3-ast@kernel.org>
+ <20191108091156.GG4114@hirez.programming.kicks-ass.net>
+ <20191108093607.GO5671@hirez.programming.kicks-ass.net>
+ <59d3af80-a781-9765-4d01-4c8006cd574f@fb.com>
+ <CAADnVQKmrVGVHM70OT0jc7reRp1LdWTM8dhE1Gde21oxw++jwg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQKmrVGVHM70OT0jc7reRp1LdWTM8dhE1Gde21oxw++jwg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Toke Høiland-Jørgensen <toke@redhat.com>
+On Fri, Nov 08, 2019 at 11:32:41AM -0800, Alexei Starovoitov wrote:
+> On Fri, Nov 8, 2019 at 5:42 AM Alexei Starovoitov <ast@fb.com> wrote:
+> >
+> > On 11/8/19 1:36 AM, Peter Zijlstra wrote:
+> > > On Fri, Nov 08, 2019 at 10:11:56AM +0100, Peter Zijlstra wrote:
+> > >> On Thu, Nov 07, 2019 at 10:40:23PM -0800, Alexei Starovoitov wrote:
+> > >>> Add bpf_arch_text_poke() helper that is used by BPF trampoline logic to patch
+> > >>> nops/calls in kernel text into calls into BPF trampoline and to patch
+> > >>> calls/nops inside BPF programs too.
+> > >>
+> > >> This thing assumes the text is unused, right? That isn't spelled out
+> > >> anywhere. The implementation is very much unsafe vs concurrent execution
+> > >> of the text.
+> > >
+> > > Also, what NOP/CALL instructions will you be hijacking? If you're
+> > > planning on using the fentry nops, then what ensures this and ftrace
+> > > don't trample on one another? Similar for kprobes.
+> > >
+> > > In general, what ensures every instruction only has a single modifier?
+> >
+> > Looks like you didn't bother reading cover letter and missed a month
 
-This adds a new getter for the BPF program size (in bytes). This is useful
-for a caller that is trying to predict how much memory will be locked by
-loading a BPF object into the kernel.
+I did indeed not. A Changelog should be self sufficient and this one is
+sorely lacking. The cover leter is not preserved and should therefore
+not contain anything of value that is not also covered in the
+Changelogs.
 
-Acked-by: Song Liu <songliubraving@fb.com>
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
----
- tools/lib/bpf/libbpf.c   |    5 +++++
- tools/lib/bpf/libbpf.h   |    1 +
- tools/lib/bpf/libbpf.map |    1 +
- 3 files changed, 7 insertions(+)
+> > of discussions between my and Steven regarding exactly this topic
+> > though you were directly cc-ed in all threads :(
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 582c0fd16697..facd5e1a3a0b 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -4790,6 +4790,11 @@ int bpf_program__fd(const struct bpf_program *prog)
- 	return bpf_program__nth_fd(prog, 0);
- }
- 
-+size_t bpf_program__size(const struct bpf_program *prog)
-+{
-+	return prog->insns_cnt * sizeof(struct bpf_insn);
-+}
-+
- int bpf_program__set_prep(struct bpf_program *prog, int nr_instances,
- 			  bpf_program_prep_t prep)
- {
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index f0947cc949d2..10875dc68ec8 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -213,6 +213,7 @@ LIBBPF_API void bpf_program__set_ifindex(struct bpf_program *prog,
- 
- LIBBPF_API const char *bpf_program__title(const struct bpf_program *prog,
- 					  bool needs_copy);
-+LIBBPF_API size_t bpf_program__size(const struct bpf_program *prog);
- 
- LIBBPF_API int bpf_program__load(struct bpf_program *prog, char *license,
- 				 __u32 kern_version);
-diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-index d1a782a3a58d..9f39ee06b2d4 100644
---- a/tools/lib/bpf/libbpf.map
-+++ b/tools/lib/bpf/libbpf.map
-@@ -203,4 +203,5 @@ LIBBPF_0.0.6 {
- 		bpf_program__get_type;
- 		bpf_program__is_tracing;
- 		bpf_program__set_tracing;
-+		bpf_program__size;
- } LIBBPF_0.0.5;
+I read some of it; it is a sad fact that I cannot read all email in my
+inbox, esp. not if, like in the last week or so, I'm busy hunting a
+regression.
 
+And what I did remember of the emails I saw left me with the questions
+that were not answered by the changelog.
+
+> > tldr for kernel fentry nops it will be converted to use
+> > register_ftrace_direct() whenever it's available.
+
+So why the rush and not wait for that work to complete? It appears to me
+that without due coordination between bpf and ftrace badness could
+happen.
+
+> > For all other nops, calls, jumps that are inside BPF programs BPF infra
+> > will continue modifying them through this helper.
+> > Daniel's upcoming bpf_tail_call() optimization will use text_poke as well.
+
+This is probably off topic, but isn't tail-call optimization something
+done at JIT time and therefore not in need ot text_poke()?
+
+> >  > I'm very uncomfortable letting random bpf proglets poke around in the
+> > kernel text.
+> >
+> > 1. There is no such thing as 'proglet'. Please don't invent meaningless
+> > names.
+
+Again offtopic, but I'm not inventing stuff here:
+
+  /prog'let/ [UK] A short extempore program written to meet an immediate, transient need.
+
+which, methinks, succinctly captures the spirit of BPF.
+
+> > 2. BPF programs have no ability to modify kernel text.
+
+OK, that is good.
+
+> > 3. BPF infra taking all necessary measures to make sure that poking
+> > kernel's and BPF generated text is safe.
+
+From the other subthread and your response below, it seems you are aware
+that you in fact need text_poke_bp(). Again, it would've been excellent
+Changelog/comment material to call out that the patch as presented is in
+fact broken.
+
+> I was thinking more about this.
+> Peter,
+> do you mind we apply your first patch:
+> https://lore.kernel.org/lkml/20191007081944.88332264.2@infradead.org/
+> to both tip and bpf-next trees?
+
+That would indeed be a much better solution. I'll repost much of that on
+Monday, and then we'll work on getting at the very least that one patch
+in a tip/branch we can share.
+
+> Then I can use text_poke_bp() as-is without any additional ugliness
+> on my side that would need to be removed in few weeks.
+
+This I do _NOT_ understand. Why are you willing to merge a known broken
+patch? What is the rush, why can't you wait for all the prerequisites to
+land?
