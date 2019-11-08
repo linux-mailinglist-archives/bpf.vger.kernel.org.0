@@ -2,475 +2,188 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F527F538F
-	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2019 19:34:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09AE0F53AD
+	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2019 19:43:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726446AbfKHSdx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Nov 2019 13:33:53 -0500
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:39016 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726394AbfKHSdx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Nov 2019 13:33:53 -0500
-Received: by mail-ot1-f65.google.com with SMTP id e17so6033756otk.6;
-        Fri, 08 Nov 2019 10:33:51 -0800 (PST)
+        id S1727559AbfKHSn2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Nov 2019 13:43:28 -0500
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:36192 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726349AbfKHSn2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Nov 2019 13:43:28 -0500
+Received: by mail-pf1-f193.google.com with SMTP id v19so5211952pfm.3;
+        Fri, 08 Nov 2019 10:43:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=66mbh+p74Oc1VZ4I1Ko+v1HQ54Rpx1W68/eeQIKjw/E=;
-        b=r5JeXgSvwzhCJnHQ2cxS1uNSAhVrAmDHL3YXDohCn0yi5CiI/qe+oFR6gNli1CZ5ix
-         +TRl7nl5vWgLOD9GF15rJXQR3X7DL9XfxkHSmcJFmdNaglyc1AN4ktm7IMxA5K+Lrjgq
-         pbnLOesJnECdis4AN7RbLseTLM6601s04nvedGLGX7ArGjLpKF3EfCMkKInbnrIZ1XZE
-         nlUzCNIHhvOg2YCJdfKRF62Eju7gBgyXsyaZj2TtTW70NLhb3bBp66RbMt0VS9o7pJ+u
-         KLsR/XA29CvPnBeUDX1pfgYQ1qWWJpk/oRV5BBpRH8MoDpk8y5G1LYoB02jY8F7mwhR7
-         qzqA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=HOpLK1w/qhJoesKNOR8u2qvXt9U8qsoD3oRvjl03HUQ=;
+        b=QIHuZNt/LevlJDgPCe/zb4b8ZQqjU7tPyEcoRrMwAAokexGpwwBN4eApY7R/VaKbkq
+         ssqL64T/SH1tj0PMGO5zPNrjZK/+QzjHZv1EfhFBQcA6ISJXqioK7MBkqdKPUBOtMrWX
+         irYWLIz/Zzcv3huK7x77xS8PyFt0wG4VN6rbT6/pH5ooXTSnsErU+hXmvHUeosHs8agB
+         xz+8s6FeYyqzzzRYFYseE8Ay4CNsb1Bn7M30IwGts5gW1aUSyBEpeYv3jFu/RaOWD7v5
+         Rb8hvCdsfx83qSCsi2y6IGx9GBXPe0de9iuDigci4Le6rORSO1MkmMDcUjWkx/r8ViQZ
+         nnRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=66mbh+p74Oc1VZ4I1Ko+v1HQ54Rpx1W68/eeQIKjw/E=;
-        b=Im3V1jXYwtG87FnJ/PddP40HBOJFhEOeDoFlYNmFJgJbVyGaKC8Hhgpv5uzdtR1Vu6
-         KpCZnKzMtLyttu86ICFhFyyusxqE1/yoZNUsYXCDeBM8Bau8ti2jet6Z8YkaX+mBfkTA
-         0I2uf4HmOYgwlTmt82nXL5B/Eq38/cvrLl8ux4oPiTxdZ0b03bFZKPH6019UP9PrdkXi
-         LkKehYL6f4cXQ3o3Hv52CnARW+1ipvPVccw79ZFcjah8ZJd5RlhD9OTfch8aXsr/CExY
-         KAua1RJFrWFY0V/DR0zptbaM5vu8Wn9hfKe0+NSEjK6emY2mZCo6cyOS2lFj9pAZv/RM
-         0oIA==
-X-Gm-Message-State: APjAAAXMVeoMiXwyNCeXrfIN9QsZwB4YaCSg6a7cqLT/WJI/OYoxsL/K
-        /5VOrO/pFFfLkBm3ZXKRuOK+Uhi4wYhj+Mj20CU=
-X-Google-Smtp-Source: APXvYqwSvAxUI2yijUmM+9biVLXQeGx31N0cyiZSKJ3pndCzrZrARyMc49dfOqvb/8N1NKusmfRjXCWxHH/Ld8l0uDA=
-X-Received: by 2002:a05:6830:2363:: with SMTP id r3mr10184507oth.39.1573238030918;
- Fri, 08 Nov 2019 10:33:50 -0800 (PST)
-MIME-Version: 1.0
-References: <1573148860-30254-1-git-send-email-magnus.karlsson@intel.com>
- <1573148860-30254-3-git-send-email-magnus.karlsson@intel.com> <20191108181330.GB30004@gmail.com>
-In-Reply-To: <20191108181330.GB30004@gmail.com>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Fri, 8 Nov 2019 19:33:40 +0100
-Message-ID: <CAJ8uoz1pvFCpBXFkdEVEfnNC_sc0UEGFaQOc+PeELiXNvEaQCg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/5] samples/bpf: add XDP_SHARED_UMEM support to xdpsock
-To:     William Tu <u9012063@gmail.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=HOpLK1w/qhJoesKNOR8u2qvXt9U8qsoD3oRvjl03HUQ=;
+        b=PlgV4k8VoqrFU/qbizMhEs/nlYyF+vGqLNXNh1gugYSCa+529FkTmKx1YQIxWwonIY
+         mQM72lElKoqGGeO78C2Oy1yB9g049SNQdZzo/rAFGQsmXOxiYtP8ygpZ+y9WfyWZgKeY
+         l5ViLDzjto+WoCOJtoKws7bawF5Eh85VtChpzAx5YuAkW8K/FiCriVtU1YxRxv0EyYnj
+         HQa4N6Ts0wMp2pDALFlwCpiiGixVwzYzKGZGb7Qo8imd9hDde96wCoxljbvnzTcn1nUr
+         AExArEbSw8B56KcD5HOg7sNXbjGTjqQt/ZdQ8ahPX/IDPa8hY+K91f3206rE0mT9Tikq
+         cwYg==
+X-Gm-Message-State: APjAAAWUYPQYwa9kJ57QR5b1VfX5zkAMzgIs15Xo2NSHe+YDf2ndcKah
+        eY3FGowx3QEvOcsgODYEumZCn9vz4LM=
+X-Google-Smtp-Source: APXvYqy/GuDm863eWXETUUmoMmn3Tpm11h8lFMjRzjpLZXzae+P2n2v+2MYhett9nKRjhehGVHGZSg==
+X-Received: by 2002:a63:9543:: with SMTP id t3mr13783191pgn.350.1573238602403;
+        Fri, 08 Nov 2019 10:43:22 -0800 (PST)
+Received: from gmail.com ([66.170.99.95])
+        by smtp.gmail.com with ESMTPSA id g6sm6397548pfh.125.2019.11.08.10.43.21
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 08 Nov 2019 10:43:21 -0800 (PST)
+Date:   Fri, 8 Nov 2019 10:43:20 -0800
+From:   William Tu <u9012063@gmail.com>
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>
 Cc:     Magnus Karlsson <magnus.karlsson@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Network Development <netdev@vger.kernel.org>,
         Jonathan Lemon <jonathan.lemon@gmail.com>,
         bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH bpf-next 1/5] libbpf: support XDP_SHARED_UMEM with
+ external XDP program
+Message-ID: <20191108184320.GC30004@gmail.com>
+References: <1573148860-30254-1-git-send-email-magnus.karlsson@intel.com>
+ <1573148860-30254-2-git-send-email-magnus.karlsson@intel.com>
+ <20191108180314.GA30004@gmail.com>
+ <CAJ8uoz0DJx0sbsAU1GyjZcX3JvcEq7QKFRM5sYrZ_ScAHgEE=A@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJ8uoz0DJx0sbsAU1GyjZcX3JvcEq7QKFRM5sYrZ_ScAHgEE=A@mail.gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 8, 2019 at 7:15 PM William Tu <u9012063@gmail.com> wrote:
->
-> On Thu, Nov 07, 2019 at 06:47:37PM +0100, Magnus Karlsson wrote:
-> > Add support for the XDP_SHARED_UMEM mode to the xdpsock sample
-> > application. As libbpf does not have a built in XDP program for this
-> > mode, we use an explicitly loaded XDP program. This also serves as an
-> > example on how to write your own XDP program that can route to an
-> > AF_XDP socket.
+On Fri, Nov 08, 2019 at 07:19:18PM +0100, Magnus Karlsson wrote:
+> On Fri, Nov 8, 2019 at 7:03 PM William Tu <u9012063@gmail.com> wrote:
 > >
-> > Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-> > ---
-> >  samples/bpf/Makefile       |   1 +
-> >  samples/bpf/xdpsock.h      |  11 ++++
-> >  samples/bpf/xdpsock_kern.c |  24 ++++++++
-> >  samples/bpf/xdpsock_user.c | 141 +++++++++++++++++++++++++++++++--------------
-> >  4 files changed, 135 insertions(+), 42 deletions(-)
-> >  create mode 100644 samples/bpf/xdpsock.h
-> >  create mode 100644 samples/bpf/xdpsock_kern.c
+> > Hi Magnus,
 > >
-> > diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-> > index 4df11dd..8a9af3a 100644
-> > --- a/samples/bpf/Makefile
-> > +++ b/samples/bpf/Makefile
-> > @@ -167,6 +167,7 @@ always += xdp_sample_pkts_kern.o
-> >  always += ibumad_kern.o
-> >  always += hbm_out_kern.o
-> >  always += hbm_edt_kern.o
-> > +always += xdpsock_kern.o
+> > Thanks for the patch.
 > >
-> >  ifeq ($(ARCH), arm)
-> >  # Strip all except -D__LINUX_ARM_ARCH__ option needed to handle linux
-> > diff --git a/samples/bpf/xdpsock.h b/samples/bpf/xdpsock.h
-> > new file mode 100644
-> > index 0000000..b7eca15
-> > --- /dev/null
-> > +++ b/samples/bpf/xdpsock.h
-> > @@ -0,0 +1,11 @@
-> > +/* SPDX-License-Identifier: GPL-2.0
-> > + *
-> > + * Copyright(c) 2019 Intel Corporation.
-> > + */
-> > +
-> > +#ifndef XDPSOCK_H_
-> > +#define XDPSOCK_H_
-> > +
-> > +#define MAX_SOCKS 4
-> > +
-> > +#endif /* XDPSOCK_H */
-> > diff --git a/samples/bpf/xdpsock_kern.c b/samples/bpf/xdpsock_kern.c
-> > new file mode 100644
-> > index 0000000..a06177c
-> > --- /dev/null
-> > +++ b/samples/bpf/xdpsock_kern.c
-> > @@ -0,0 +1,24 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +#include <linux/bpf.h>
-> > +#include "bpf_helpers.h"
-> > +#include "xdpsock.h"
-> > +
-> > +/* This XDP program is only needed for the XDP_SHARED_UMEM mode.
-> > + * If you do not use this mode, libbpf can supply an XDP program for you.
-> > + */
-> > +
-> > +struct {
-> > +     __uint(type, BPF_MAP_TYPE_XSKMAP);
-> > +     __uint(max_entries, MAX_SOCKS);
-> > +     __uint(key_size, sizeof(int));
-> > +     __uint(value_size, sizeof(int));
-> > +} xsks_map SEC(".maps");
-> > +
-> > +static unsigned int rr;
-> > +
-> > +SEC("xdp_sock") int xdp_sock_prog(struct xdp_md *ctx)
-> > +{
-> > +     rr = (rr + 1) & (MAX_SOCKS - 1);
-> > +
-> > +     return bpf_redirect_map(&xsks_map, rr, XDP_DROP);
-> > +}
-> > diff --git a/samples/bpf/xdpsock_user.c b/samples/bpf/xdpsock_user.c
-> > index 405c4e0..d3dba93 100644
-> > --- a/samples/bpf/xdpsock_user.c
-> > +++ b/samples/bpf/xdpsock_user.c
-> > @@ -29,6 +29,7 @@
+> > On Thu, Nov 07, 2019 at 06:47:36PM +0100, Magnus Karlsson wrote:
+> > > Add support in libbpf to create multiple sockets that share a single
+> > > umem. Note that an external XDP program need to be supplied that
+> > > routes the incoming traffic to the desired sockets. So you need to
+> > > supply the libbpf_flag XSK_LIBBPF_FLAGS__INHIBIT_PROG_LOAD and load
+> > > your own XDP program.
+> > >
+> > > Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+> > > ---
+> > >  tools/lib/bpf/xsk.c | 27 +++++++++++++++++----------
+> > >  1 file changed, 17 insertions(+), 10 deletions(-)
+> > >
+> > > diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
+> > > index 86c1b61..8ebd810 100644
+> > > --- a/tools/lib/bpf/xsk.c
+> > > +++ b/tools/lib/bpf/xsk.c
+> > > @@ -586,15 +586,21 @@ int xsk_socket__create(struct xsk_socket **xsk_ptr, const char *ifname,
+> > >       if (!umem || !xsk_ptr || !rx || !tx)
+> > >               return -EFAULT;
+> > >
+> > > -     if (umem->refcount) {
+> > > -             pr_warn("Error: shared umems not supported by libbpf.\n");
+> > > -             return -EBUSY;
+> > > -     }
+> > > -
+> > >       xsk = calloc(1, sizeof(*xsk));
+> > >       if (!xsk)
+> > >               return -ENOMEM;
+> > >
+> > > +     err = xsk_set_xdp_socket_config(&xsk->config, usr_config);
+> > > +     if (err)
+> > > +             goto out_xsk_alloc;
+> > > +
+> > > +     if (umem->refcount &&
+> > > +         !(xsk->config.libbpf_flags & XSK_LIBBPF_FLAGS__INHIBIT_PROG_LOAD)) {
+> > > +             pr_warn("Error: shared umems not supported by libbpf supplied XDP program.\n");
 > >
-> >  #include "libbpf.h"
-> >  #include "xsk.h"
-> > +#include "xdpsock.h"
-> >  #include <bpf/bpf.h>
-> >
-> >  #ifndef SOL_XDP
-> > @@ -47,7 +48,6 @@
-> >  #define BATCH_SIZE 64
-> >
-> >  #define DEBUG_HEXDUMP 0
-> > -#define MAX_SOCKS 8
-> >
-> >  typedef __u64 u64;
-> >  typedef __u32 u32;
-> > @@ -75,7 +75,8 @@ static u32 opt_xdp_bind_flags;
-> >  static int opt_xsk_frame_size = XSK_UMEM__DEFAULT_FRAME_SIZE;
-> >  static int opt_timeout = 1000;
-> >  static bool opt_need_wakeup = true;
-> > -static __u32 prog_id;
-> > +static u32 opt_num_xsks = 1;
-> > +static u32 prog_id;
-> >
-> >  struct xsk_umem_info {
-> >       struct xsk_ring_prod fq;
-> > @@ -179,7 +180,7 @@ static void *poller(void *arg)
-> >
-> >  static void remove_xdp_program(void)
-> >  {
-> > -     __u32 curr_prog_id = 0;
-> > +     u32 curr_prog_id = 0;
-> >
-> >       if (bpf_get_link_xdp_id(opt_ifindex, &curr_prog_id, opt_xdp_flags)) {
-> >               printf("bpf_get_link_xdp_id failed\n");
-> > @@ -196,11 +197,11 @@ static void remove_xdp_program(void)
-> >  static void int_exit(int sig)
-> >  {
-> >       struct xsk_umem *umem = xsks[0]->umem->umem;
-> > -
-> > -     (void)sig;
-> > +     int i;
-> >
-> >       dump_stats();
-> > -     xsk_socket__delete(xsks[0]->xsk);
-> > +     for (i = 0; i < num_socks; i++)
-> > +             xsk_socket__delete(xsks[i]->xsk);
-> >       (void)xsk_umem__delete(umem);
-> >       remove_xdp_program();
-> >
-> > @@ -290,8 +291,8 @@ static struct xsk_umem_info *xsk_configure_umem(void *buffer, u64 size)
-> >               .frame_headroom = XSK_UMEM__DEFAULT_FRAME_HEADROOM,
-> >               .flags = opt_umem_flags
-> >       };
-> > -
-> > -     int ret;
-> > +     int ret, i;
-> > +     u32 idx;
-> >
-> >       umem = calloc(1, sizeof(*umem));
-> >       if (!umem)
-> > @@ -303,6 +304,15 @@ static struct xsk_umem_info *xsk_configure_umem(void *buffer, u64 size)
-> >       if (ret)
-> >               exit_with_error(-ret);
-> >
-> > +     ret = xsk_ring_prod__reserve(&umem->fq,
-> > +                                  XSK_RING_PROD__DEFAULT_NUM_DESCS, &idx);
-> > +     if (ret != XSK_RING_PROD__DEFAULT_NUM_DESCS)
-> > +             exit_with_error(-ret);
-> > +     for (i = 0; i < XSK_RING_PROD__DEFAULT_NUM_DESCS; i++)
-> > +             *xsk_ring_prod__fill_addr(&umem->fq, idx++) =
-> > +                     i * opt_xsk_frame_size;
-> > +     xsk_ring_prod__submit(&umem->fq, XSK_RING_PROD__DEFAULT_NUM_DESCS);
-> > +
-> >       umem->buffer = buffer;
-> >       return umem;
-> >  }
-> > @@ -312,8 +322,6 @@ static struct xsk_socket_info *xsk_configure_socket(struct xsk_umem_info *umem)
-> >       struct xsk_socket_config cfg;
-> >       struct xsk_socket_info *xsk;
-> >       int ret;
-> > -     u32 idx;
-> > -     int i;
-> >
-> >       xsk = calloc(1, sizeof(*xsk));
-> >       if (!xsk)
-> > @@ -322,11 +330,15 @@ static struct xsk_socket_info *xsk_configure_socket(struct xsk_umem_info *umem)
-> >       xsk->umem = umem;
-> >       cfg.rx_size = XSK_RING_CONS__DEFAULT_NUM_DESCS;
-> >       cfg.tx_size = XSK_RING_PROD__DEFAULT_NUM_DESCS;
-> > -     cfg.libbpf_flags = 0;
-> > +     if (opt_num_xsks > 1)
-> > +             cfg.libbpf_flags = XSK_LIBBPF_FLAGS__INHIBIT_PROG_LOAD;
->
-> I think we can still load our own XDP program, and don't set
-> XSK_LIBBPF_FLAGS__INHIBIT_PROG_LOAD.
-> So the xsk_setup_xdp_prog() will find the the loaded XDP program
-> and sets the xsk map.
+> > Why can't we use the existing default one in libbpf?
+> > If users don't want to redistribute packet to different queue,
+> > then they can still use the libbpf default one.
+> 
+> Is there any point in creating two or more sockets tied to the same
+> umem and directing all traffic to just one socket? IMHO, I believe
 
-So what you are saying is that you would like libbpf to be smarter and
-insert the sockets into the xskmap automatically? Doable in the simple
-case, but what if the XDP program has multiple xskmaps, or an xskmap
-with a different name? Seems complicated to do this in the general
-case. Or maybe I am just chicken to say the user has to load and
-manage his/her own XDP program when XDP_SHARED_UMEM is used :-).
+When using build-in XDP, isn't the traffic being directed to its
+own xsk on its queue? (so not just one xsk socket)
 
-> > +     else
-> > +             cfg.libbpf_flags = 0;
-> >       cfg.xdp_flags = opt_xdp_flags;
-> >       cfg.bind_flags = opt_xdp_bind_flags;
->
-> Do we need to
-> cfg.bind_flags |= XDP_SHARED_UMEM?
+So using build-in XDP, for example, queue1/xsk1 and queue2/xsk2, and
+sharing one umem. Both xsk1 and xsk2 receive packets from their queue.
 
-It is set by libbpf automatically, so no need here.
+> that most users in this case would want to distribute the packets over
+> the sockets in some way. I also think that users might be unpleasantly
+> surprised if they create multiple sockets and all packets only get to
+> a single socket because libbpf loaded an XDP program that makes little
+> sense in the XDP_SHARED_UMEM case. If we force them to supply an XDP
 
-> Thanks
-> William
->
-> > -     ret = xsk_socket__create(&xsk->xsk, opt_if, opt_queue, umem->umem,
-> > -                              &xsk->rx, &xsk->tx, &cfg);
-> > +
-> > +     ret = xsk_socket__create(&xsk->xsk, opt_if, opt_queue,
-> > +                              umem->umem, &xsk->rx, &xsk->tx, &cfg);
-> >       if (ret)
-> >               exit_with_error(-ret);
-> >
-> > @@ -334,17 +346,6 @@ static struct xsk_socket_info *xsk_configure_socket(struct xsk_umem_info *umem)
-> >       if (ret)
-> >               exit_with_error(-ret);
-> >
-> > -     ret = xsk_ring_prod__reserve(&xsk->umem->fq,
-> > -                                  XSK_RING_PROD__DEFAULT_NUM_DESCS,
-> > -                                  &idx);
-> > -     if (ret != XSK_RING_PROD__DEFAULT_NUM_DESCS)
-> > -             exit_with_error(-ret);
-> > -     for (i = 0; i < XSK_RING_PROD__DEFAULT_NUM_DESCS; i++)
-> > -             *xsk_ring_prod__fill_addr(&xsk->umem->fq, idx++) =
-> > -                     i * opt_xsk_frame_size;
-> > -     xsk_ring_prod__submit(&xsk->umem->fq,
-> > -                           XSK_RING_PROD__DEFAULT_NUM_DESCS);
-> > -
-> >       return xsk;
-> >  }
-> >
-> > @@ -363,6 +364,7 @@ static struct option long_options[] = {
-> >       {"frame-size", required_argument, 0, 'f'},
-> >       {"no-need-wakeup", no_argument, 0, 'm'},
-> >       {"unaligned", no_argument, 0, 'u'},
-> > +     {"shared-umem", no_argument, 0, 'M'},
-> >       {0, 0, 0, 0}
-> >  };
-> >
-> > @@ -386,6 +388,7 @@ static void usage(const char *prog)
-> >               "  -m, --no-need-wakeup Turn off use of driver need wakeup flag.\n"
-> >               "  -f, --frame-size=n   Set the frame size (must be a power of two in aligned mode, default is %d).\n"
-> >               "  -u, --unaligned      Enable unaligned chunk placement\n"
-> > +             "  -M, --shared-umem    Enable XDP_SHARED_UMEM\n"
-> >               "\n";
-> >       fprintf(stderr, str, prog, XSK_UMEM__DEFAULT_FRAME_SIZE);
-> >       exit(EXIT_FAILURE);
-> > @@ -398,7 +401,7 @@ static void parse_command_line(int argc, char **argv)
-> >       opterr = 0;
-> >
-> >       for (;;) {
-> > -             c = getopt_long(argc, argv, "Frtli:q:psSNn:czf:mu",
-> > +             c = getopt_long(argc, argv, "Frtli:q:psSNn:czf:muM",
-> >                               long_options, &option_index);
-> >               if (c == -1)
-> >                       break;
-> > @@ -448,11 +451,14 @@ static void parse_command_line(int argc, char **argv)
-> >                       break;
-> >               case 'f':
-> >                       opt_xsk_frame_size = atoi(optarg);
-> > +                     break;
-> >               case 'm':
-> >                       opt_need_wakeup = false;
-> >                       opt_xdp_bind_flags &= ~XDP_USE_NEED_WAKEUP;
-> >                       break;
-> > -
-> > +             case 'M':
-> > +                     opt_num_xsks = MAX_SOCKS;
-> > +                     break;
-> >               default:
-> >                       usage(basename(argv[0]));
-> >               }
-> > @@ -586,11 +592,9 @@ static void rx_drop(struct xsk_socket_info *xsk, struct pollfd *fds)
-> >
-> >  static void rx_drop_all(void)
-> >  {
-> > -     struct pollfd fds[MAX_SOCKS + 1];
-> > +     struct pollfd fds[MAX_SOCKS] = {};
-> >       int i, ret;
-> >
-> > -     memset(fds, 0, sizeof(fds));
-> > -
-> >       for (i = 0; i < num_socks; i++) {
-> >               fds[i].fd = xsk_socket__fd(xsks[i]->xsk);
-> >               fds[i].events = POLLIN;
-> > @@ -633,11 +637,10 @@ static void tx_only(struct xsk_socket_info *xsk, u32 frame_nb)
-> >
-> >  static void tx_only_all(void)
-> >  {
-> > -     struct pollfd fds[MAX_SOCKS];
-> > +     struct pollfd fds[MAX_SOCKS] = {};
-> >       u32 frame_nb[MAX_SOCKS] = {};
-> >       int i, ret;
-> >
-> > -     memset(fds, 0, sizeof(fds));
-> >       for (i = 0; i < num_socks; i++) {
-> >               fds[0].fd = xsk_socket__fd(xsks[i]->xsk);
-> >               fds[0].events = POLLOUT;
-> > @@ -706,11 +709,9 @@ static void l2fwd(struct xsk_socket_info *xsk, struct pollfd *fds)
-> >
-> >  static void l2fwd_all(void)
-> >  {
-> > -     struct pollfd fds[MAX_SOCKS];
-> > +     struct pollfd fds[MAX_SOCKS] = {};
-> >       int i, ret;
-> >
-> > -     memset(fds, 0, sizeof(fds));
-> > -
-> >       for (i = 0; i < num_socks; i++) {
-> >               fds[i].fd = xsk_socket__fd(xsks[i]->xsk);
-> >               fds[i].events = POLLOUT | POLLIN;
-> > @@ -728,13 +729,65 @@ static void l2fwd_all(void)
-> >       }
-> >  }
-> >
-> > +static void load_xdp_program(char **argv, struct bpf_object **obj)
-> > +{
-> > +     struct bpf_prog_load_attr prog_load_attr = {
-> > +             .prog_type      = BPF_PROG_TYPE_XDP,
-> > +     };
-> > +     char xdp_filename[256];
-> > +     int prog_fd;
-> > +
-> > +     snprintf(xdp_filename, sizeof(xdp_filename), "%s_kern.o", argv[0]);
-> > +     prog_load_attr.file = xdp_filename;
-> > +
-> > +     if (bpf_prog_load_xattr(&prog_load_attr, obj, &prog_fd))
-> > +             exit(EXIT_FAILURE);
-> > +     if (prog_fd < 0) {
-> > +             fprintf(stderr, "ERROR: no program found: %s\n",
-> > +                     strerror(prog_fd));
-> > +             exit(EXIT_FAILURE);
-> > +     }
-> > +
-> > +     if (bpf_set_link_xdp_fd(opt_ifindex, prog_fd, opt_xdp_flags) < 0) {
-> > +             fprintf(stderr, "ERROR: link set xdp fd failed\n");
-> > +             exit(EXIT_FAILURE);
-> > +     }
-> > +}
-> > +
-> > +static void enter_xsks_into_map(struct bpf_object *obj)
-> > +{
-> > +     struct bpf_map *map;
-> > +     int i, xsks_map;
-> > +
-> > +     map = bpf_object__find_map_by_name(obj, "xsks_map");
-> > +     xsks_map = bpf_map__fd(map);
-> > +     if (xsks_map < 0) {
-> > +             fprintf(stderr, "ERROR: no xsks map found: %s\n",
-> > +                     strerror(xsks_map));
-> > +                     exit(EXIT_FAILURE);
-> > +     }
-> > +
-> > +     for (i = 0; i < num_socks; i++) {
-> > +             int fd = xsk_socket__fd(xsks[i]->xsk);
-> > +             int key, ret;
-> > +
-> > +             key = i;
-> > +             ret = bpf_map_update_elem(xsks_map, &key, &fd, 0);
-> > +             if (ret) {
-> > +                     fprintf(stderr, "ERROR: bpf_map_update_elem %d\n", i);
-> > +                     exit(EXIT_FAILURE);
-> > +             }
-> > +     }
-> > +}
-> > +
-> >  int main(int argc, char **argv)
-> >  {
-> >       struct rlimit r = {RLIM_INFINITY, RLIM_INFINITY};
-> >       struct xsk_umem_info *umem;
-> > +     struct bpf_object *obj;
-> >       pthread_t pt;
-> > +     int i, ret;
-> >       void *bufs;
-> > -     int ret;
-> >
-> >       parse_command_line(argc, argv);
-> >
-> > @@ -744,6 +797,9 @@ int main(int argc, char **argv)
-> >               exit(EXIT_FAILURE);
-> >       }
-> >
-> > +     if (opt_num_xsks > 1)
-> > +             load_xdp_program(argv, &obj);
-> > +
-> >       /* Reserve memory for the umem. Use hugepages if unaligned chunk mode */
-> >       bufs = mmap(NULL, NUM_FRAMES * opt_xsk_frame_size,
-> >                   PROT_READ | PROT_WRITE,
-> > @@ -752,16 +808,17 @@ int main(int argc, char **argv)
-> >               printf("ERROR: mmap failed\n");
-> >               exit(EXIT_FAILURE);
-> >       }
-> > -       /* Create sockets... */
-> > +
-> > +     /* Create sockets... */
-> >       umem = xsk_configure_umem(bufs, NUM_FRAMES * opt_xsk_frame_size);
-> > -     xsks[num_socks++] = xsk_configure_socket(umem);
-> > +     for (i = 0; i < opt_num_xsks; i++)
-> > +             xsks[num_socks++] = xsk_configure_socket(umem);
-> >
-> > -     if (opt_bench == BENCH_TXONLY) {
-> > -             int i;
-> > +     for (i = 0; i < NUM_FRAMES; i++)
-> > +             gen_eth_frame(umem, i * opt_xsk_frame_size);
-> >
-> > -             for (i = 0; i < NUM_FRAMES; i++)
-> > -                     (void)gen_eth_frame(umem, i * opt_xsk_frame_size);
-> > -     }
-> > +     if (opt_num_xsks > 1 && opt_bench != BENCH_TXONLY)
-> > +             enter_xsks_into_map(obj);
-> >
-> >       signal(SIGINT, int_exit);
-> >       signal(SIGTERM, int_exit);
-> > --
-> > 2.7.4
-> >
+Do I misunderstand the code?
+I looked at xsk_setup_xdp_prog, xsk_load_xdp_prog, and xsk_set_bpf_maps.
+The build-in prog will distribute packets to different xsk sockets,
+not a single socket.
+
+> program, they need to make this decision. I also wanted to extend the
+> sample with an explicit user loaded XDP program as an example of how
+> to do this. What do you think?
+
+Yes, I like it. Like previous version having the xdpsock_kern.c as an
+example for people to follow.
+
+William
+
+> 
+> /Magnus
+> 
+> > William
+> > > +             err = -EBUSY;
+> > > +             goto out_xsk_alloc;
+> > > +     }
+> > > +
+> > >       if (umem->refcount++ > 0) {
+> > >               xsk->fd = socket(AF_XDP, SOCK_RAW, 0);
+> > >               if (xsk->fd < 0) {
+> > > @@ -616,10 +622,6 @@ int xsk_socket__create(struct xsk_socket **xsk_ptr, const char *ifname,
+> > >       memcpy(xsk->ifname, ifname, IFNAMSIZ - 1);
+> > >       xsk->ifname[IFNAMSIZ - 1] = '\0';
+> > >
+> > > -     err = xsk_set_xdp_socket_config(&xsk->config, usr_config);
+> > > -     if (err)
+> > > -             goto out_socket;
+> > > -
+> > >       if (rx) {
+> > >               err = setsockopt(xsk->fd, SOL_XDP, XDP_RX_RING,
+> > >                                &xsk->config.rx_size,
+> > > @@ -687,7 +689,12 @@ int xsk_socket__create(struct xsk_socket **xsk_ptr, const char *ifname,
+> > >       sxdp.sxdp_family = PF_XDP;
+> > >       sxdp.sxdp_ifindex = xsk->ifindex;
+> > >       sxdp.sxdp_queue_id = xsk->queue_id;
+> > > -     sxdp.sxdp_flags = xsk->config.bind_flags;
+> > > +     if (umem->refcount > 1) {
+> > > +             sxdp.sxdp_flags = XDP_SHARED_UMEM;
+> > > +             sxdp.sxdp_shared_umem_fd = umem->fd;
+> > > +     } else {
+> > > +             sxdp.sxdp_flags = xsk->config.bind_flags;
+> > > +     }
+> > >
+> > >       err = bind(xsk->fd, (struct sockaddr *)&sxdp, sizeof(sxdp));
+> > >       if (err) {
+> > > --
+> > > 2.7.4
+> > >
