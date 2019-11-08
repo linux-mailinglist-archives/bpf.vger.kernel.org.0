@@ -2,61 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 98001F5051
-	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2019 16:57:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D54C3F528D
+	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2019 18:28:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726438AbfKHP5V (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Nov 2019 10:57:21 -0500
-Received: from mail-pf1-f181.google.com ([209.85.210.181]:37425 "EHLO
-        mail-pf1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726152AbfKHP5V (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Nov 2019 10:57:21 -0500
-Received: by mail-pf1-f181.google.com with SMTP id p24so4872706pfn.4
-        for <bpf@vger.kernel.org>; Fri, 08 Nov 2019 07:57:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=networkplumber-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zg20/KfpDQtibg9VE6Kw3JALOb34pK+kKNB57M2ut1M=;
-        b=L6blUi/5iEQmfXqMdHF9OxpqVaQx7DifIEWIxPC7fJA914cVFwMinbXgB9KBS2buB3
-         8tZ8d8Xvm6xEwdV52gy6XzzJWXXIaUgYzB2qEH8IKgpZfdZqwKmM4auClOzzLh7pcD54
-         loAx2xAP2bO0e6uKwW/m8psOm1h9yrh3R4j2iIG7q3EYHz/YY6i0wxdqMpKKHkRuuaXb
-         Q/07q3AcFkepx0jfTfsDkjIKnfW1xiwp0IoSCfbLCZeEmmu7V59ZbyEsyb9HxNuqA7bh
-         LEuU7tWgY8Yk/ibI5OP2inknSuAcdcthzrAvkEw1A31HTI/VOuyaAe1aXwdbnc5oPOe0
-         Bc4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zg20/KfpDQtibg9VE6Kw3JALOb34pK+kKNB57M2ut1M=;
-        b=S1tIO1fAMGLuWfCYC9qSo2tto5VlFkheXpbfe/SZybAPLPXsuhNCdjQPeoh2x0+tMf
-         dEKq02aA5+eMe9l0UGdqndP1gS7Coa1gPEaF0Oxy1rnXCT6ISI2F0hByiNYa9DXFf0l+
-         nLKw6v/v143dlL7av4dljkiSOL/SIiWaG6OWyDIhUSnePOw9PX+/nzn7FxuwQPrXYjMf
-         SrlJ/UAh8OoICJlrIJ85P+6SXWb3WVYScVEcoiwd2lJ3ZUTRZh5XIikHX7dFj2MR7OVG
-         bXCaPyh4aWp+9z7uqv2Ua7QEb8sPNtnaUDpbSnkrziqO4U/KcdqPXEzQdfGXhJv1QYF5
-         MxXw==
-X-Gm-Message-State: APjAAAXBJ9rfXbN/7RtvA9VtZx8h33uzZf2xHNbfiAwJzOxwITkUou4Y
-        LrwwSPJ24uDh26LWBbFcmm1ZuA==
-X-Google-Smtp-Source: APXvYqwN0zTm4gstCiPzgoDJ5hcz7JUChQKzMwcRb6iR/WVPFW6oRR7QtzVlFMab+IOH90kS8ibyEw==
-X-Received: by 2002:a63:6f47:: with SMTP id k68mr12347217pgc.92.1573228640615;
-        Fri, 08 Nov 2019 07:57:20 -0800 (PST)
-Received: from hermes.lan (204-195-22-127.wavecable.com. [204.195.22.127])
-        by smtp.gmail.com with ESMTPSA id p3sm8403038pfb.163.2019.11.08.07.57.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Nov 2019 07:57:20 -0800 (PST)
-Date:   Fri, 8 Nov 2019 07:57:11 -0800
-From:   Stephen Hemminger <stephen@networkplumber.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>
-Cc:     bpf@vger.kernel.org
-Subject: Fw: [Bug 205469] New: x86_32: bpf: multiple test_bpf failures using
- eBPF JIT
-Message-ID: <20191108075711.115a5f94@hermes.lan>
+        id S1726199AbfKHR2n (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Nov 2019 12:28:43 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:14270 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726121AbfKHR2n (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 8 Nov 2019 12:28:43 -0500
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id xA8HJes2007380;
+        Fri, 8 Nov 2019 09:28:27 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=yTUWAXOtmD0bn0cYiFV9MvYZSQZiC0kzLxuCaSodJ7g=;
+ b=lLW7opwFm4/D4+tG1HjLyL2j1ts1rht3PQuHGqq7lgyXsiU58WVRvNbUcGP2+rxPfWN0
+ rdLO2ipzQ7AP/ORQlxQIdEGpZKT65IqTjJCUjtF5zbmOUADzvofC34m6586F4Qruz8NT
+ 5E5BDTVlCuDG16fC0mdZqEPHhf6nEw6WBFo= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by m0089730.ppops.net with ESMTP id 2w5ckcg2dc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Fri, 08 Nov 2019 09:28:27 -0800
+Received: from prn-hub05.TheFacebook.com (2620:10d:c081:35::129) by
+ prn-hub05.TheFacebook.com (2620:10d:c081:35::129) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Fri, 8 Nov 2019 09:28:26 -0800
+Received: from NAM02-BL2-obe.outbound.protection.outlook.com (192.168.54.28)
+ by o365-in.thefacebook.com (192.168.16.29) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
+ via Frontend Transport; Fri, 8 Nov 2019 09:28:25 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=R1r80nA+xdmaDYxXPKxxqFaU3YOMyTCbKrEVK43W0c8o8RHr+2WvkdM7z7vOsi1cui1bFucSMLGG6FFJEuZTPRPzB2XbxHQqRCGmw7Y1uZ23hHjbDrMBxQr+eEoRTyeWBcbD+cLb48B27ABq8iFuKFbajSPffoy25CckJREPbQCYbEtpcNQ9iKD3gsX8Efi0pECXUfs7ovgMuU/+UIbw0ISZZDKtj4vPFioxPbrStAdM2ns3sSx07eIbktlAoKbjXYS9UmIN+hVnBOvOT6ah7n5j+diD/mMwDkGHVEUWjl7NdwL6d6plsFFhIJcAAcgPEXecgkTKfFqqsl4xHcCe4g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yTUWAXOtmD0bn0cYiFV9MvYZSQZiC0kzLxuCaSodJ7g=;
+ b=PoMbWsqu3h2L+LrtYVbIkQM9Cq4eI+q3J1W6gHerTs9hzpCFqkG+8A6EkHugaR1sdfplhPBh5CPGQC7bFuh0OzKBVvDf4cJq7N11dY9wgKdChnhEyzcRCkNbPPV6obmxHLiwrIe7WI+OcBchthencPdge0Yn4iDeelMS4WlBTvzS9uG6waP6lsXc0bVswoPsI5wtXB3J7Te1WNfrmSD8W6ygUkfbPV2lcU8wkrwE1w09eDeT7qX8GXRWjdYQsb5exKAyo0OxAtWG6mUY5jQBrzM+ZPM8AsikoZzY+FW/t5T79IsYzAb1y1Q6yG/03tZbQUpyprJWmk9ZW3lTWtojSQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yTUWAXOtmD0bn0cYiFV9MvYZSQZiC0kzLxuCaSodJ7g=;
+ b=eQbvHyJtZXT6QmsJ+sMiwnBRy1rp15JAGhNrPsqYnxEoxiho6c/H8lAvOmIGdHSMcJt7B4XDruoYhx/MibuhXxyQBujpKsY2CU1ZM3UktCufzgi+43CJjYG4ZZ94tWnxA3ANz0SjJPfYlXEKK/72BLZFM25igC9Tb7PnN6ycqUA=
+Received: from MWHPR15MB1165.namprd15.prod.outlook.com (10.175.3.22) by
+ MWHPR15MB1935.namprd15.prod.outlook.com (10.174.96.149) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2430.24; Fri, 8 Nov 2019 17:28:24 +0000
+Received: from MWHPR15MB1165.namprd15.prod.outlook.com
+ ([fe80::fdc8:5546:bace:15f5]) by MWHPR15MB1165.namprd15.prod.outlook.com
+ ([fe80::fdc8:5546:bace:15f5%5]) with mapi id 15.20.2430.020; Fri, 8 Nov 2019
+ 17:28:24 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Alexei Starovoitov <ast@kernel.org>
+CC:     David Miller <davem@davemloft.net>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>
+Subject: Re: [PATCH v3 bpf-next 14/18] bpf: Compare BTF types of functions
+ arguments with actual types
+Thread-Topic: [PATCH v3 bpf-next 14/18] bpf: Compare BTF types of functions
+ arguments with actual types
+Thread-Index: AQHVlf+bHUIhx96v2Ey15OIsHx2+aaeBh9iA
+Date:   Fri, 8 Nov 2019 17:28:24 +0000
+Message-ID: <0A1C27F0-25D9-455C-86DF-97AC19674D8D@fb.com>
+References: <20191108064039.2041889-1-ast@kernel.org>
+ <20191108064039.2041889-15-ast@kernel.org>
+In-Reply-To: <20191108064039.2041889-15-ast@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3601.0.10)
+x-originating-ip: [2620:10d:c090:200::b292]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 94bd7c61-9553-4346-ee57-08d764710f1b
+x-ms-traffictypediagnostic: MWHPR15MB1935:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MWHPR15MB19352F70305737FD67AFD332B37B0@MWHPR15MB1935.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6790;
+x-forefront-prvs: 0215D7173F
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(376002)(346002)(396003)(136003)(366004)(39860400002)(199004)(189003)(86362001)(54906003)(11346002)(446003)(2616005)(486006)(476003)(36756003)(76116006)(66946007)(64756008)(66556008)(66476007)(186003)(81166006)(81156014)(33656002)(14454004)(46003)(6486002)(6436002)(53546011)(66446008)(229853002)(6512007)(50226002)(6506007)(6246003)(99286004)(102836004)(8936002)(5660300002)(4744005)(4326008)(76176011)(2906002)(71190400001)(71200400001)(6116002)(256004)(14444005)(5024004)(305945005)(7736002)(6916009)(8676002)(25786009)(478600001)(316002);DIR:OUT;SFP:1102;SCL:1;SRVR:MWHPR15MB1935;H:MWHPR15MB1165.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: PLFwnKcS5ZauObfFsv7c4HjOjsXJll25QLGHLlnxSEtNqtErb4kBUvVDPDkttmMQ2qGAb7qFQPioHI85517VJLN+hr5jcxM+zw7xiVwyg+pGzrLdKopZvIvpTbkI1L9eYDivwfUbQ29uCHj9siFhxjlm65T5NdwpSte9YuTeSNgrn/AxeNTj1YNHpHUHxnGPXglmHhPpuxQnUOKshtYzAD+02XH3LIa6ExrDE/Tj23QKUjQbcJX5C76FN9QmhPQfFGATum3HbsW4rgObqwAygQg86xUNgMnkNbedHWDk1evk7vc7Rd+is3wZ5bQwMRWliFp2shv1o8yB7HZ5jOtr0JsZYDSplOCrHtrPIGsAWFS6hGoq2OQ6vWpDx8hi5Q8EHhWO+7Hp/7H/l7uqLjC9IsJaagnol+bDmpRt2yw1dpOf9tLLxR8Fkke9OcoMyRnJ
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <FECE34AF8C00284C94CD62388E1B1607@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-CrossTenant-Network-Message-Id: 94bd7c61-9553-4346-ee57-08d764710f1b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Nov 2019 17:28:24.2226
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: LKU96IXCIak/SIFc0QHXvYQ6s3yCw5/O6c35GyTs6qQp8HFKlbXGNUFOpGJzfXKCtSKrKgj3YxFdpCpJceix4g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1935
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
+ definitions=2019-11-08_06:2019-11-08,2019-11-08 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 lowpriorityscore=0 clxscore=1015
+ mlxlogscore=411 impostorscore=0 spamscore=0 bulkscore=0 phishscore=0
+ mlxscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-1911080170
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
@@ -64,75 +121,23 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-Begin forwarded message:
+> On Nov 7, 2019, at 10:40 PM, Alexei Starovoitov <ast@kernel.org> wrote:
+>=20
+> Make the verifier check that BTF types of function arguments match actual=
+ types
+> passed into top-level BPF program and into BPF-to-BPF calls. If types mat=
+ch
+> such BPF programs and sub-programs will have full support of BPF trampoli=
+ne. If
+> types mismatch the trampoline has to be conservative. It has to save/rest=
+ore
+> all 5 program arguments and assume 64-bit scalars. If FENTRY/FEXIT progra=
+m is
+> attached to this program in the future such FENTRY/FEXIT program will be =
+able
+> to follow pointers only via bpf_probe_read_kernel().
+>=20
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 
-Date: Fri, 08 Nov 2019 07:35:59 +0000
-From: bugzilla-daemon@bugzilla.kernel.org
-To: stephen@networkplumber.org
-Subject: [Bug 205469] New: x86_32: bpf: multiple test_bpf failures using eBPF JIT
+Acked-by: Song Liu <songliubraving@fb.com>
 
-
-https://bugzilla.kernel.org/show_bug.cgi?id=205469
-
-            Bug ID: 205469
-           Summary: x86_32: bpf: multiple test_bpf failures using eBPF JIT
-           Product: Networking
-           Version: 2.5
-    Kernel Version: 4.19.81 LTS
-          Hardware: i386
-                OS: Linux
-              Tree: Mainline
-            Status: NEW
-          Severity: normal
-          Priority: P1
-         Component: Other
-          Assignee: stephen@networkplumber.org
-          Reporter: itugrok@yahoo.com
-                CC: itugrok@yahoo.com
-        Regression: No
-
-Created attachment 285829
-  --> https://bugzilla.kernel.org/attachment.cgi?id=285829&action=edit  
-test_bpf failures: kernel 4.19.81/x86_32 (OpenWrt)
-
-Summary:
-========
-
-Running the 4.19.81 LTS kernel on QEMU/x86_32, the standard test_bpf.ko
-testsuite generates multiple errors with the eBPF JIT enabled:
-
-  ...
-  test_bpf: #32 JSET jited:1 40 ret 0 != 20 46 FAIL
-  test_bpf: #321 LD_IND word positive offset jited:1 ret 0 != -291897430 FAIL
-  test_bpf: #322 LD_IND word negative offset jited:1 ret 0 != -1437222042 FAIL
-  test_bpf: #323 LD_IND word unaligned (addr & 3 == 2) jited:1 ret 0 !=
--1150890889 FAIL
-  test_bpf: #326 LD_IND word positive offset, all ff jited:1 ret 0 != -1 FAIL
-  ...
-  test_bpf: Summary: 373 PASSED, 5 FAILED, [344/366 JIT'ed]
-
-However, with eBPF JIT disabled (net.core.bpf_jit_enable=0) all tests pass.
-
-
-Steps to Reproduce:
-===================
-
-  # sysctl net.core.bpf_jit_enable=1
-  # modprobe test_bpf
-  <Kernel log with failures and test summary>
-
-
-Affected Systems Tested:
-========================
-
-  OpenWrt master on QEMU/pc-q35(x86_32) [LTS kernel 4.19.81]
-
-
-Kernel Logs:
-============
-
-Boot log with test results is attached.
-
--- 
-You are receiving this mail because:
-You are the assignee for the bug.
