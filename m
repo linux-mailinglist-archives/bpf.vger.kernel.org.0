@@ -2,148 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D2A0BF5BF2
-	for <lists+bpf@lfdr.de>; Sat,  9 Nov 2019 00:42:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C050F5C08
+	for <lists+bpf@lfdr.de>; Sat,  9 Nov 2019 00:47:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728266AbfKHXmj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Nov 2019 18:42:39 -0500
-Received: from www62.your-server.de ([213.133.104.62]:58932 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726394AbfKHXmj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Nov 2019 18:42:39 -0500
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iTDtk-0002o0-0v; Sat, 09 Nov 2019 00:42:36 +0100
-Received: from [178.197.248.27] (helo=pc-9.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iTDtj-0008v1-LY; Sat, 09 Nov 2019 00:42:35 +0100
-Subject: Fwd: [Bug 205459] New: mips: bpf: test_bpf failures, eBPF JIT on
- mips32 outputs invalid 64-bit insns
-References: <bug-205459-65011@https.bugzilla.kernel.org/>
-To:     Paul Burton <paulburton@kernel.org>, linux-mips@vger.kernel.org,
-        Ralf Baechle <ralf@linux-mips.org>,
-        James Hogan <jhogan@kernel.org>,
-        Hassan Naveed <hnaveed@wavecomp.com>,
-        Matt Redfearn <matt.redfearn@mips.com>,
-        David Daney <david.daney@cavium.com>
-Cc:     bpf@vger.kernel.org, itugrok@yahoo.com
-From:   Daniel Borkmann <daniel@iogearbox.net>
-X-Forwarded-Message-Id: <bug-205459-65011@https.bugzilla.kernel.org/>
-Message-ID: <073db6b1-9f0e-4d2e-78bd-68698a63e608@iogearbox.net>
-Date:   Sat, 9 Nov 2019 00:42:34 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1729973AbfKHXrH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Nov 2019 18:47:07 -0500
+Received: from mail-qv1-f65.google.com ([209.85.219.65]:42800 "EHLO
+        mail-qv1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726307AbfKHXrG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Nov 2019 18:47:06 -0500
+Received: by mail-qv1-f65.google.com with SMTP id c9so2898177qvz.9;
+        Fri, 08 Nov 2019 15:47:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pdaTyuO8wYrV/7xvqbSHtKCASuB+OKSh/iIe2H42fEA=;
+        b=VPWpmpsZlKO7ChvTZ+GMSXLc8D6Rr+xxDzpkU6FFnCxsJW0WZQJ+8bmXvg63wl6FN2
+         to41nJRdZVSrPnJilRdHC5jmNUwXFFcGzlQF2F1pZXmNrKv5qydK9Cz4M7MxnYK09nfZ
+         tdilalmZyRbZZ30DYsadYUCXhfS1M7FeU47K8HXZmn7EFpc1gXDJb2NdMcg9jKnbbPkr
+         9nyr+HJamz8R8mtsQUZCHPiduNYns1YXCioJYrgdDMJ0oWstjuszrP4A+3XCgCbhJqFK
+         RCYSRP+HhLHtgjuHDuzA47sTUFCcgqzzP0cHTKOqps848nixiMumLa1RKQvEdQh7C1kd
+         00LQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pdaTyuO8wYrV/7xvqbSHtKCASuB+OKSh/iIe2H42fEA=;
+        b=fTk+pfytn7Ljn7HFVh06Gp3vR8SNFpOjE3FXvvGbKFkwgBBaUvZjPgoN7CPQVWhwMz
+         z0DcM+GKV/030M41F1XTKjfIDFwOia/1N9HfVuB6rTVywTw12AIzJDjLGtYD1eMkiPnO
+         BwSRIvpuBLyQo76tkX9htfgzz9+Hp6DrsYjxSLjN/5d90hnHnh69O57Hs0aCn+DGqGZf
+         3KD4ISLmBy53pxfxt/ykFWYRqHEmETlemDQCjyM0l3aCRcJUrzbeiMzwK6a2ea7+0p7l
+         fT7MosSU3c9eWbqPWzz/xNPAZMaVSeatiwP4IgPeCXb9E0FdsCjJBeXo6C5fVf13OXEt
+         F+JQ==
+X-Gm-Message-State: APjAAAXfm97Jz68EFuTN2T4tVNZ1mRhYIB1rsvuHN9EVwkqy0hhrtbAj
+        2mp8iWYUqrX1fVERvExdUmejQcZO5WZyHEWu6T6d7A==
+X-Google-Smtp-Source: APXvYqzMyBfMQ6b7r1wxbnby3PzUO9TnKlKTR5+DPkAjcblbyFJC1li1lGVzaqcrQfPaqhVef/boTrZdFWthNo7Mwr0=
+X-Received: by 2002:ad4:58a9:: with SMTP id ea9mr12495622qvb.179.1573256825668;
+ Fri, 08 Nov 2019 15:47:05 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <bug-205459-65011@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.101.4/25627/Fri Nov  8 11:02:39 2019)
+References: <20191108064039.2041889-1-ast@kernel.org> <20191108064039.2041889-15-ast@kernel.org>
+In-Reply-To: <20191108064039.2041889-15-ast@kernel.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 8 Nov 2019 15:46:54 -0800
+Message-ID: <CAEf4BzYLSaXLwp3Ujk07TcjQSvOo1RKcGE6fT7jh_tOpREne2w@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 14/18] bpf: Compare BTF types of functions
+ arguments with actual types
+To:     Alexei Starovoitov <ast@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>, x86@kernel.org,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-[ Cc MIPS folks ]
+On Thu, Nov 7, 2019 at 10:42 PM Alexei Starovoitov <ast@kernel.org> wrote:
+>
+> Make the verifier check that BTF types of function arguments match actual types
+> passed into top-level BPF program and into BPF-to-BPF calls. If types match
+> such BPF programs and sub-programs will have full support of BPF trampoline. If
+> types mismatch the trampoline has to be conservative. It has to save/restore
+> all 5 program arguments and assume 64-bit scalars. If FENTRY/FEXIT program is
+> attached to this program in the future such FENTRY/FEXIT program will be able
+> to follow pointers only via bpf_probe_read_kernel().
+>
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> ---
 
-Hassan, James, Paul, others, please take a look. Thanks!
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 
--------- Forwarded Message --------
-Subject: [Bug 205459] New: mips: bpf: test_bpf failures, eBPF JIT on mips32 outputs invalid 64-bit insns
-Date: Thu, 07 Nov 2019 06:41:21 +0000
-From: bugzilla-daemon@bugzilla.kernel.org
-To: daniel@iogearbox.net
+>  include/linux/bpf.h          |   8 +++
+>  include/linux/bpf_verifier.h |   1 +
+>  kernel/bpf/btf.c             | 117 +++++++++++++++++++++++++++++++++++
+>  kernel/bpf/syscall.c         |   1 +
+>  kernel/bpf/verifier.c        |  18 +++++-
+>  5 files changed, 142 insertions(+), 3 deletions(-)
+>
 
-https://bugzilla.kernel.org/show_bug.cgi?id=205459
-
-             Bug ID: 205459
-            Summary: mips: bpf: test_bpf failures, eBPF JIT on mips32
-                     outputs invalid 64-bit insns
-            Product: Networking
-            Version: 2.5
-     Kernel Version: 5.2.17
-           Hardware: Mips32
-                 OS: Linux
-               Tree: Mainline
-             Status: NEW
-           Severity: high
-           Priority: P1
-          Component: Other
-           Assignee: stephen@networkplumber.org
-           Reporter: itugrok@yahoo.com
-         Regression: No
-
-Created attachment 285809
-   --> https://bugzilla.kernel.org/attachment.cgi?id=285809&action=edit
-EXCEPTION/failures: kernel 5.2.17/mips32 (Debian 10.1)
-
-Summary:
-========
-
-Linux 5.2.x added an eBPF JIT for MIPS32 (yay!). Based on discussion of the
-original submission (https://www.spinics.net/lists/mips/msg77008.html) I
-expected that:
-
-   (1) all tests from module test_bpf.ko would pass, and
-   (2) any previously JITed tests (i.e. cBPF) would still be JITed.
-
-However, I can't reproduce the above based on my testing as per the attached
-log.
-
-Point (2) doesn't stand since the first ~30 tests are not JITed, but were
-previously cBPF JITed for the most part.
-
-As for point (1), the full test set doesn't complete, but errors out early on
-with a "Reserved instruction in kernel code[#1]" error. Manually hopping
-through some of the tests yields the same error for many:
-
-   #68 ALU_MOV_K: 0x0000ffffffff0000 = 0x00000000ffffffff jited:1
-   #73 ALU_ADD_X: 1 + 2 = 3 jited:1
-   #74 ALU_ADD_X: 1 + 4294967294 = 4294967295 jited:1
-   #75 ALU_ADD_X: 2 + 4294967294 = 0 jited:1
-   #79 ALU_ADD_K: 1 + 2 = 3 jited:1
-   (.. and so on ...)
-
-Disassembling the JITed code for test #68 shows incorrect MIPS64 instructions:
-
-   24 03 00 20     li    v1,32
-   34 05 ff ff     li    a1,0xffff
-   00 05 2c 38     dsll  a1,a1,0x10      <=== MIPS64 insn
-   34 a5 ff ff     ori   a1,a1,0xffff
-   00 05 2c 38     dsll  a1,a1,0x10      <=== MIPS64 insn
-   34 06 ff ff     li    a2,0xffff
-   00 06 34 38     dsll  a2,a2,0x10      <=== MIPS64 insn
-   34 c6 ff ff     ori   a2,a2,0xffff
-
-Since this was tested in the past, I'm really hoping there's a simple solution
-to these problems, or else a case of "operator error". A review by someone more
-knowledgeable with the MIPS32 eBPF JIT would be appreciated.
-
-Steps to Reproduce:
-===================
-
-   # sysctl net.core.bpf_jit_enable=1
-   # modprobe test_bpf
-   <Kernel log with "Reserved instruction" exception>
-
-
-Affected Systems Tested:
-========================
-
-   Debian 10.1 on QEMU/malta(mips32_be) [distro kernel 5.2.17-1~bpo10+1
-(2019-09-30)]
-
-
-Kernel Logs:
-============
-
-Boot log with test results up to first failure is attached.
-
--- 
-You are receiving this mail because:
-You are watching the assignee of the bug.
+[...]
