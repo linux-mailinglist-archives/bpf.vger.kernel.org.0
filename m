@@ -2,77 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 42342F576F
-	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2019 21:05:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 739F2F5792
+	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2019 21:06:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390442AbfKHTVo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Nov 2019 14:21:44 -0500
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:43990 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732277AbfKHTVm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Nov 2019 14:21:42 -0500
-Received: by mail-qt1-f195.google.com with SMTP id l24so7663635qtp.10;
-        Fri, 08 Nov 2019 11:21:41 -0800 (PST)
+        id S1730745AbfKHT1O (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Nov 2019 14:27:14 -0500
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:42833 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730649AbfKHT1N (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Nov 2019 14:27:13 -0500
+Received: by mail-qt1-f194.google.com with SMTP id t20so7698830qtn.9;
+        Fri, 08 Nov 2019 11:27:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ra8yemMZeXDVMotWUu1vzgR1BP5lkdIOuqLFfjRb37k=;
-        b=cWd6EY308WFAJb4j1HGeeWvbagaFNkVVwEC30xUwVwGXj7g5cvy6NyDotPqKtoX9+C
-         0pLjrqCiHUxCARu84EfTwhbBgtCdAIlzcwbhhT84c/D5P6li1kXwcUgI97Ed57uE2kVn
-         t7MLG2q82YOQVWfxg98dL6OSojgGYT0L+AhZ0PXI4bzcrLN+RG8y4vLVLQYVW5BW5o61
-         tAsNnsjNQWNFKdG+A5/iEz3U9NjbUMKZQ/Y+9L5uiCmt5BfTDTzawfdOZslBRUNwTjSm
-         WMfTdMMsJxUYLNM2rgXju4J8NUUHOn+poPmZguyJy0NqyDP8PTCdHZgIAzKj/WnPmDzw
-         mq7Q==
+         :cc:content-transfer-encoding;
+        bh=bx4/nJP8jQ7cX3XnfK6fNYAYA7WHBCX82wHsa/B8TTg=;
+        b=ndFL8t3+s5eU+2qKQ/7BmP5WWW3wDPXzbUjUCur9zt2a8craFiCEXtuQyflQ6e/LrJ
+         iduF/CIp0pZS+fUTNv70NIK6GKvPCKSD2mIGwJcUsD4mcvUw4ZfED4TfdgiAsSPuaAd7
+         mp8WBj6vuRK5ZiyO2IgWB6YZLUgTpUVCspUysPDVsgIiR0/BnU8fd26IP4tu6qJncKPL
+         dav+NSjcbSszIfihgpVIu9thUzR7tB5eAdTknuS9cKoLhylyL4Mtz2eNUcAOW+E9Fcpl
+         vOkiWUq4vJDkvW1vSpVqyxq9T5MkVnCKatxPnjgmmsEGN+B7c/zDjZcydGh97FlHJZ5k
+         gdwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ra8yemMZeXDVMotWUu1vzgR1BP5lkdIOuqLFfjRb37k=;
-        b=lbl1zf2UwZfrGAXxZm9kW7fkAszIRI45R0eed8JFakFmBHXbnN4s1pxkQB5I7IfA1k
-         xmcfmTtDmljoDRqKd2BEgb9ZvV4jjoA6PfoHewFsaMmayz2f8NOrQxV0phRMaug16KRP
-         EFE5pTAnN4K+ISx8r0A4VEYOh8J+WgqRJ/HSskIYIfyWRR87+FdWCeBp4aWgFYqYgAz6
-         07KoNKxyer9U2YPooUBEgq3omcI9JIpFC8egVD0WBlbW+l/Acns2GFvo0zgeL5v61wPN
-         srAbAkWQFjwuMzq4In0WRQYd715Ar8mZTk9s0wi4hwNUHixihbDKHQcgLN91o9aU/wx5
-         AZ7Q==
-X-Gm-Message-State: APjAAAW0hOshUo0RWGhRbviZQECH6CYZ0WGBXpnvwGPQi9Qqm0HMf+HT
-        oEmDUJe+QoePGGTnxsciLgELM/zOjwytZ0KfwoU=
-X-Google-Smtp-Source: APXvYqz51fG+VzsO8hGFUkCd661Ol4AWF4F4OISgP2ig/MM7szWKEQpWFypTNI6OMUijXBhjmU7JudMq1gYe2X0nihk=
-X-Received: by 2002:ac8:7116:: with SMTP id z22mr12339900qto.117.1573240901345;
- Fri, 08 Nov 2019 11:21:41 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=bx4/nJP8jQ7cX3XnfK6fNYAYA7WHBCX82wHsa/B8TTg=;
+        b=Q4x4bzTbZi6BGFFKMdM+0zdGLI8GNqR2cHpel6HXdqc/jEbyYoOHKySX6O2S23EkFz
+         1aXHfrktKRHql7shyGnEMvjTO1GnI2v6IV8EssE6S+P0s1iECx8rIVGXKdc7P2Y8iADH
+         DB+uDpUUJzU37IG9FCFdLts4zXcK9Te4yvWg2mU+xBLEPkRDuOhfyovIvb/uyzDVlQpQ
+         NVH65lKp3zJmZTu2RPLvyEOI31Jx1hmxxsEDv7jeCR0GrYaPvzqxqV8+SO7DGnIw8DzB
+         8x0agLppCg2fuep3sZi7ZjWdn1s98OctiUruRJVTbfPbP7rM4kARLhp+rQ2uFNgDpBsk
+         Q98w==
+X-Gm-Message-State: APjAAAWDdXviSBg6s4GL8KGgY8wwNG4uVk8pmFxWg48A6HsMOl1fgDX4
+        XNV9g6RVfhs+obFCmInEiMv9mHrbzuuDM1KatrE=
+X-Google-Smtp-Source: APXvYqx9EIe0ePIH0fdEw8fJzJInxVIZbLJZNOPWX18k2EhnO53NL+jUJ16hy8CU8ZUecvn3THpPHyPC5VLOEa04hTI=
+X-Received: by 2002:ac8:2f45:: with SMTP id k5mr12316187qta.183.1573241232005;
+ Fri, 08 Nov 2019 11:27:12 -0800 (PST)
 MIME-Version: 1.0
-References: <20191108064039.2041889-1-ast@kernel.org> <20191108064039.2041889-5-ast@kernel.org>
-In-Reply-To: <20191108064039.2041889-5-ast@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 8 Nov 2019 11:21:30 -0800
-Message-ID: <CAEf4BzY0=KSEdG2vp2X9ZSKE1h7XNyHLFhdJQg2_iF5h=FxDeQ@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 04/18] libbpf: Introduce btf__find_by_name_kind()
-To:     Alexei Starovoitov <ast@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>, x86@kernel.org,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
+References: <157314553801.693412.15522462897300280861.stgit@toke.dk> <157314553913.693412.16341111239421040141.stgit@toke.dk>
+In-Reply-To: <157314553913.693412.16341111239421040141.stgit@toke.dk>
+From:   Song Liu <liu.song.a23@gmail.com>
+Date:   Fri, 8 Nov 2019 11:27:00 -0800
+Message-ID: <CAPhsuW5yr1EX8r3iRT_Hb8+hnz1MJzW=rc__FoP1-A5+K4Pb2A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/6] libbpf: Unpin auto-pinned maps if loading fails
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 7, 2019 at 10:41 PM Alexei Starovoitov <ast@kernel.org> wrote:
+On Thu, Nov 7, 2019 at 8:52 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redha=
+t.com> wrote:
 >
-> Introduce btf__find_by_name_kind() helper to search BTF by name and kind, since
-> name alone can be ambiguous.
+> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 >
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> ---
+> Since the automatic map-pinning happens during load, it will leave pinned
+> maps around if the load fails at a later stage. Fix this by unpinning any
+> pinned maps on cleanup. To avoid unpinning pinned maps that were reused
+> rather than newly pinned, add a new boolean property on struct bpf_map to
+> keep track of whether that map was reused or not; and only unpin those ma=
+ps
+> that were not reused.
+>
+> Fixes: 57a00f41644f ("libbpf: Add auto-pinning of maps when loading BPF o=
+bjects")
+> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 
-Ok, makes sense.
-
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-
->  tools/lib/bpf/btf.c      | 22 ++++++++++++++++++++++
->  tools/lib/bpf/btf.h      |  2 ++
->  tools/lib/bpf/libbpf.map |  1 +
->  3 files changed, 25 insertions(+)
-
-[...]
+Acked-by: Song Liu <songliubraving@fb.com>
