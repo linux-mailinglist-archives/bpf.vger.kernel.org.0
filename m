@@ -2,149 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C16CF5000
-	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2019 16:41:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98001F5051
+	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2019 16:57:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726101AbfKHPlM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Nov 2019 10:41:12 -0500
-Received: from smtp-sh2.infomaniak.ch ([128.65.195.6]:36977 "EHLO
-        smtp-sh2.infomaniak.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726039AbfKHPlL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Nov 2019 10:41:11 -0500
-Received: from smtp7.infomaniak.ch (smtp7.infomaniak.ch [83.166.132.30])
-        by smtp-sh2.infomaniak.ch (8.14.4/8.14.4/Debian-8+deb8u2) with ESMTP id xA8Fe0wD187815
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 8 Nov 2019 16:40:00 +0100
-Received: from ns3096276.ip-94-23-54.eu (ns3096276.ip-94-23-54.eu [94.23.54.103])
-        (authenticated bits=0)
-        by smtp7.infomaniak.ch (8.14.5/8.14.5) with ESMTP id xA8FduEU195949
-        (version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=NO);
-        Fri, 8 Nov 2019 16:39:56 +0100
-Subject: Re: [PATCH bpf-next v13 4/7] landlock: Add ptrace LSM hooks
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     KP Singh <kpsingh@chromium.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        David Drysdale <drysdale@google.com>,
-        Florent Revest <revest@chromium.org>,
-        James Morris <jmorris@namei.org>, Jann Horn <jann@thejh.net>,
-        John Johansen <john.johansen@canonical.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mickael.salaun@ssi.gouv.fr>,
-        Paul Moore <paul@paul-moore.com>,
-        Sargun Dhillon <sargun@sargun.me>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Stephen Smalley <sds@tycho.nsa.gov>, Tejun Heo <tj@kernel.org>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Tycho Andersen <tycho@tycho.ws>,
-        Will Drewry <wad@chromium.org>, bpf@vger.kernel.org,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-security-module@vger.kernel.org, netdev@vger.kernel.org
-References: <20191104172146.30797-1-mic@digikod.net>
- <20191104172146.30797-5-mic@digikod.net>
- <20191105171824.dfve44gjiftpnvy7@ast-mbp.dhcp.thefacebook.com>
- <23acf523-dbc4-855b-ca49-2bbfa5e7117e@digikod.net>
- <20191105193446.s4pswwwhrmgk6hcx@ast-mbp.dhcp.thefacebook.com>
- <20191106100655.GA18815@chromium.org>
- <813cedde-8ed7-2d3b-883d-909efa978d41@digikod.net>
- <20191106214526.GA22244@chromium.org>
- <3e208632-e7ab-3405-5196-ab1d770e20c3@digikod.net>
- <5d0f1dc5-5a99-bd6a-4acc-0cdcd062a0c9@iogearbox.net>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Openpgp: preference=signencrypt
-Message-ID: <78b75ea3-3a7c-103c-ee00-a9c6c41bcd9c@digikod.net>
-Date:   Fri, 8 Nov 2019 16:39:55 +0100
-User-Agent: 
+        id S1726438AbfKHP5V (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Nov 2019 10:57:21 -0500
+Received: from mail-pf1-f181.google.com ([209.85.210.181]:37425 "EHLO
+        mail-pf1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726152AbfKHP5V (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Nov 2019 10:57:21 -0500
+Received: by mail-pf1-f181.google.com with SMTP id p24so4872706pfn.4
+        for <bpf@vger.kernel.org>; Fri, 08 Nov 2019 07:57:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=networkplumber-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zg20/KfpDQtibg9VE6Kw3JALOb34pK+kKNB57M2ut1M=;
+        b=L6blUi/5iEQmfXqMdHF9OxpqVaQx7DifIEWIxPC7fJA914cVFwMinbXgB9KBS2buB3
+         8tZ8d8Xvm6xEwdV52gy6XzzJWXXIaUgYzB2qEH8IKgpZfdZqwKmM4auClOzzLh7pcD54
+         loAx2xAP2bO0e6uKwW/m8psOm1h9yrh3R4j2iIG7q3EYHz/YY6i0wxdqMpKKHkRuuaXb
+         Q/07q3AcFkepx0jfTfsDkjIKnfW1xiwp0IoSCfbLCZeEmmu7V59ZbyEsyb9HxNuqA7bh
+         LEuU7tWgY8Yk/ibI5OP2inknSuAcdcthzrAvkEw1A31HTI/VOuyaAe1aXwdbnc5oPOe0
+         Bc4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zg20/KfpDQtibg9VE6Kw3JALOb34pK+kKNB57M2ut1M=;
+        b=S1tIO1fAMGLuWfCYC9qSo2tto5VlFkheXpbfe/SZybAPLPXsuhNCdjQPeoh2x0+tMf
+         dEKq02aA5+eMe9l0UGdqndP1gS7Coa1gPEaF0Oxy1rnXCT6ISI2F0hByiNYa9DXFf0l+
+         nLKw6v/v143dlL7av4dljkiSOL/SIiWaG6OWyDIhUSnePOw9PX+/nzn7FxuwQPrXYjMf
+         SrlJ/UAh8OoICJlrIJ85P+6SXWb3WVYScVEcoiwd2lJ3ZUTRZh5XIikHX7dFj2MR7OVG
+         bXCaPyh4aWp+9z7uqv2Ua7QEb8sPNtnaUDpbSnkrziqO4U/KcdqPXEzQdfGXhJv1QYF5
+         MxXw==
+X-Gm-Message-State: APjAAAXBJ9rfXbN/7RtvA9VtZx8h33uzZf2xHNbfiAwJzOxwITkUou4Y
+        LrwwSPJ24uDh26LWBbFcmm1ZuA==
+X-Google-Smtp-Source: APXvYqwN0zTm4gstCiPzgoDJ5hcz7JUChQKzMwcRb6iR/WVPFW6oRR7QtzVlFMab+IOH90kS8ibyEw==
+X-Received: by 2002:a63:6f47:: with SMTP id k68mr12347217pgc.92.1573228640615;
+        Fri, 08 Nov 2019 07:57:20 -0800 (PST)
+Received: from hermes.lan (204-195-22-127.wavecable.com. [204.195.22.127])
+        by smtp.gmail.com with ESMTPSA id p3sm8403038pfb.163.2019.11.08.07.57.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Nov 2019 07:57:20 -0800 (PST)
+Date:   Fri, 8 Nov 2019 07:57:11 -0800
+From:   Stephen Hemminger <stephen@networkplumber.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>
+Cc:     bpf@vger.kernel.org
+Subject: Fw: [Bug 205469] New: x86_32: bpf: multiple test_bpf failures using
+ eBPF JIT
+Message-ID: <20191108075711.115a5f94@hermes.lan>
 MIME-Version: 1.0
-In-Reply-To: <5d0f1dc5-5a99-bd6a-4acc-0cdcd062a0c9@iogearbox.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Antivirus: Dr.Web (R) for Unix mail servers drweb plugin ver.6.0.2.8
-X-Antivirus-Code: 0x100000
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 
-On 08/11/2019 15:34, Daniel Borkmann wrote:
-> On 11/8/19 3:08 PM, Mickaël Salaün wrote:
->> On 06/11/2019 22:45, KP Singh wrote:
->>> On 06-Nov 17:55, Mickaël Salaün wrote:
->>>> On 06/11/2019 11:06, KP Singh wrote:
->>>>> On 05-Nov 11:34, Alexei Starovoitov wrote:
->>>>>> On Tue, Nov 05, 2019 at 07:01:41PM +0100, Mickaël Salaün wrote:
->>>>>>> On 05/11/2019 18:18, Alexei Starovoitov wrote:
-> [...]
->>> * Use a single BPF program type; this is necessary for a key requirement
->>>    of KRSI, i.e. runtime instrumentation. The upcoming prototype should
->>>    illustrate how this works for KRSI - note that it’s possible to vary
->>>    the context types exposed by different hooks.
->>
->> Why a single BPF program type? Do you mean *attach* types? Landlock only
->> use one program type, but will use multiple attach types.
->>
->> Why do you think it is necessary for KRSI or for runtime instrumentation?
->>
->> If it is justified, it could be a dedicated program attach type (e.g.
->> BPF_LANDLOCK_INTROSPECTION).
->>
->> What is the advantage to have the possibility to vary the context types
->> over dedicated *typed* contexts? I don't see any advantages, but at
->> least one main drawback: to require runtime checks (when helpers use
->> this generic context) instead of load time checks (thanks to static type
->> checking of the context).
-> 
-> Lets take security_sock_rcv_skb(struct sock *sk, struct sk_buff *skb)
-> as one specific example here: the running kernel has its own internal
-> btf_vmlinux and therefore a complete description of itself. From verifier
-> side we can retrieve & introspect the security_sock_rcv_skb signatue
 
-OK, this is indeed the signature defined by the kernel API. What happen
-if this API change (e.g. if struct sock is replaced with a struct
-sock_meta)?
+Begin forwarded message:
+
+Date: Fri, 08 Nov 2019 07:35:59 +0000
+From: bugzilla-daemon@bugzilla.kernel.org
+To: stephen@networkplumber.org
+Subject: [Bug 205469] New: x86_32: bpf: multiple test_bpf failures using eBPF JIT
 
 
-> and
-> thus know that the given BPF attachment point has struct sock and struct
-> sk_buff as input arguments
+https://bugzilla.kernel.org/show_bug.cgi?id=205469
 
-How does the verifier know a given BPF attachment point for a program
-without relying on its type or attach type? How and where is registered
-this mapping?
+            Bug ID: 205469
+           Summary: x86_32: bpf: multiple test_bpf failures using eBPF JIT
+           Product: Networking
+           Version: 2.5
+    Kernel Version: 4.19.81 LTS
+          Hardware: i386
+                OS: Linux
+              Tree: Mainline
+            Status: NEW
+          Severity: normal
+          Priority: P1
+         Component: Other
+          Assignee: stephen@networkplumber.org
+          Reporter: itugrok@yahoo.com
+                CC: itugrok@yahoo.com
+        Regression: No
 
-To say it another way, if there is no way to differentiate two program
-targeting different hook, I don't understand how the verifier could
-check if a given program can legitimately call a helper which could read
-the tracer and tracee fields (legitimate for a ptrace hook), whereas
-this program may be attached to a sock_rcv_skb hook (and there is no way
-to know that).
+Created attachment 285829
+  --> https://bugzilla.kernel.org/attachment.cgi?id=285829&action=edit  
+test_bpf failures: kernel 4.19.81/x86_32 (OpenWrt)
+
+Summary:
+========
+
+Running the 4.19.81 LTS kernel on QEMU/x86_32, the standard test_bpf.ko
+testsuite generates multiple errors with the eBPF JIT enabled:
+
+  ...
+  test_bpf: #32 JSET jited:1 40 ret 0 != 20 46 FAIL
+  test_bpf: #321 LD_IND word positive offset jited:1 ret 0 != -291897430 FAIL
+  test_bpf: #322 LD_IND word negative offset jited:1 ret 0 != -1437222042 FAIL
+  test_bpf: #323 LD_IND word unaligned (addr & 3 == 2) jited:1 ret 0 !=
+-1150890889 FAIL
+  test_bpf: #326 LD_IND word positive offset, all ff jited:1 ret 0 != -1 FAIL
+  ...
+  test_bpf: Summary: 373 PASSED, 5 FAILED, [344/366 JIT'ed]
+
+However, with eBPF JIT disabled (net.core.bpf_jit_enable=0) all tests pass.
 
 
-> which can then be accessed generically by the
-> prog in order to allow sk_filter_trim_cap() to pass or to drop the skb.
-> The same generic approach can be done for many of the other lsm hooks, so
-> single program type would be enough there and context is derived
-> automatically,
-> no dedicated extra context per attach type would be needed and no runtime
-> checks as you mentioned above since its still all asserted at verification
-> time.
+Steps to Reproduce:
+===================
 
-I mentioned runtime check because I though a helper should handle the
-case when it doesn't make sense for a program attached to a specific
-point/hook (e.g. ptrace) to use an input argument (e.g. sk) defined for
-another point/hook (e.g. sock_rcv_skb).
+  # sysctl net.core.bpf_jit_enable=1
+  # modprobe test_bpf
+  <Kernel log with failures and test summary>
 
 
-> 
-> Thanks,
-> Daniel
-> 
+Affected Systems Tested:
+========================
 
-Thanks for this explanation Daniel.
+  OpenWrt master on QEMU/pc-q35(x86_32) [LTS kernel 4.19.81]
+
+
+Kernel Logs:
+============
+
+Boot log with test results is attached.
+
+-- 
+You are receiving this mail because:
+You are the assignee for the bug.
