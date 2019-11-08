@@ -2,96 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AD3C2F57A7
-	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2019 21:06:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5F36F57AC
+	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2019 21:06:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387899AbfKHTeA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Nov 2019 14:34:00 -0500
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:35855 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387798AbfKHTeA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Nov 2019 14:34:00 -0500
-Received: by mail-qk1-f194.google.com with SMTP id d13so6326128qko.3;
-        Fri, 08 Nov 2019 11:33:59 -0800 (PST)
+        id S2388293AbfKHTeo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Nov 2019 14:34:44 -0500
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:32915 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387798AbfKHTen (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Nov 2019 14:34:43 -0500
+Received: by mail-qk1-f196.google.com with SMTP id 71so6351496qkl.0;
+        Fri, 08 Nov 2019 11:34:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=vVjFDTyHHoe23R65Js+fJ8Q7TkZs+QvYfoQUfDVq0/w=;
-        b=TcEjfklmtjueAi+SFsccwG240WSdsdJRa6/jtA1GROQxG7rcZHbUBhL+oqhbTaPS2B
-         HLW4w0RTrcnomUwXQ2CKOXzAOiDm3+/VsCQt6vOTYGk0tAf7iAnipqO/XNIKfJNfbuZb
-         2aVoZjPHiJZ0nYPSrvWhQRYAu6PRzj7qZGJ/1LqVTcLnlW4vNIHMLefM43rFhUnS0yrh
-         KIGmPCnC3Di9gJvqBzLG5lg6u093NbTwqak4ZcRIZ2diIGSFVt6j4/cflEABsVKuk6ss
-         dB5g/n+vGUJTgcWuiO4eiHscNMxMjnhnZBkh9H8k1KzK42/YR7fkFSfFdtlTezneHXT2
-         Rx7Q==
+         :cc;
+        bh=z6RHi+GPBXIkgHwfeIMhb6lJP0WXm9EYjHAxNtIieV4=;
+        b=R6Xz8U68TrE4OuYWkBhBougQx/6S9v6gq/vsWsv1mJxa0KQdRPkBXwjqICO0W+0yYg
+         o+EyqLVgs1MSWa7xINxs7/8DTqMUxXPTAgKDYYdK5ZsqM58uPOX2QAn4a4zkdQ/1zpdL
+         ALYwSPXYkTzxtmqISU26ErPL9gfFyemU19FilBhU+IF8Q/MaxoOUDnINQLiGBTCCgzCH
+         EcK62pzC9ZPrvyjJbSmSNRnnIzZhShRkfHgn3rvYhl/rDan8Gocnj4DbQM4/5J2Nj8+z
+         +Oi1liRRPiswpndWgb9xORYOyDpr46XfSTR2Mb3zgB805yp7bXR0gHGsdpzMMH5Z4KG9
+         Bslw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=vVjFDTyHHoe23R65Js+fJ8Q7TkZs+QvYfoQUfDVq0/w=;
-        b=DzGU+fpawzzdM48aHy2qlomtJsLSmhmw1NMEkq9oLdR6AnDlJcQgKcQrEFhMMZkM+6
-         2MATH336Xem9jGuCgPzM4q6dl70hsuorsxKlqHtGjwlOIe/E56aWwawctlUjRhF7KFow
-         Cvus81gJeix68gsRhklSAPl85fe0Dz6m0BmCfO1ywmCqJdFi0ALIj4mj70tteG+7i9kK
-         UOFa3A8cuUoNuhes8dvaM/EABiV3IzwsQ3kfE78FKYLKVYEzkjEopvQ/PjK4X2WzaKqT
-         WG3gs/k23MZ5V9BW7eK59LoyithMC+i3mxBEibpF4Sb7Z2i79kT3qFvlC7vlvPaMWBhq
-         1wFQ==
-X-Gm-Message-State: APjAAAWbmWrqUsSyTQlpVomqIqBUIj7TxAVf2SfaJOVAe6mwha1Nc7VC
-        rVjSp5HoIIwxu7xQvtB771MfJrRZXm7l8vw1Kz0QlQ==
-X-Google-Smtp-Source: APXvYqye2s1OlQRwGHpX8Y5BDWB9Uf1rhcLgoUQOpOrXjN3c0oMJ7m916whutYY/N1N9le/ODEvqTaA5Glbl7aU7I+Q=
-X-Received: by 2002:a37:b801:: with SMTP id i1mr10915924qkf.497.1573241639236;
- Fri, 08 Nov 2019 11:33:59 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=z6RHi+GPBXIkgHwfeIMhb6lJP0WXm9EYjHAxNtIieV4=;
+        b=gnXXHQE2Fy68s1EjvFuQDTdq+2jSpo3nkda/coS24UNXal1Eta+cB4TlwFD7L0TBAa
+         zCtPRfjnzG4pbFFs5QUJqXlfU5ksc8lyVFYC+xYH5mzdR2cg+F6pnpTwu557Kac/42Hl
+         xhR7dkdvZk3OLUKo3JTXH2plEIs6MfmOyXyWqWtX/3F3touYgrpmdtyCiVpOVPStiGlk
+         NFuSDKd3ELPGZyR+5PdIHAxvuZkcAupQ3ST31/DSKm6hBRWM2pqmObrUP/5qT+VIJuOP
+         cQn0EIgSf1oCUTUNSn64eBX49KZ/ooXMBhUOm+SLLDkrXaOCExCsdyYKDeKDGIuMCXjg
+         2n4w==
+X-Gm-Message-State: APjAAAV74N57XLVG3bnGLwS1G3wDv2fZyGRVXktxVbdA+e/kZ0uvaV0W
+        MkPc6hQ26dqmaXLu5JPikItVXCdKejl5zN2j1PN5ug==
+X-Google-Smtp-Source: APXvYqwkzRKHMdjUzn6fjnfGAkW+XBAk6uzVxRdO4MKwqREPWscev95ygoYd3I2yFXVqPI8n+N4Qjl0k8GEBLWfRbkI=
+X-Received: by 2002:a05:620a:12b2:: with SMTP id x18mr10976764qki.437.1573241682667;
+ Fri, 08 Nov 2019 11:34:42 -0800 (PST)
 MIME-Version: 1.0
-References: <157314553801.693412.15522462897300280861.stgit@toke.dk> <157314554027.693412.3764267220990589755.stgit@toke.dk>
-In-Reply-To: <157314554027.693412.3764267220990589755.stgit@toke.dk>
-From:   Song Liu <liu.song.a23@gmail.com>
-Date:   Fri, 8 Nov 2019 11:33:48 -0800
-Message-ID: <CAPhsuW5stGGGiVH9dSHC4i0kwNcrUhj892DypkfzL=b7woRLvA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/6] selftests/bpf: Add tests for automatic map
- unpinning on load failure
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+References: <20191108042041.1549144-1-andriin@fb.com> <20191108042041.1549144-2-andriin@fb.com>
+ <94BD3FAC-CA98-4448-B467-3FC7307174F9@fb.com>
+In-Reply-To: <94BD3FAC-CA98-4448-B467-3FC7307174F9@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 8 Nov 2019 11:34:31 -0800
+Message-ID: <CAEf4BzY2gp9DR+cdcr4DFhOYc8xkHOOSSf9MiJ6P+54USa8zog@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/3] bpf: add mmap() support for BPF_MAP_TYPE_ARRAY
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        Kernel Team <Kernel-team@fb.com>,
+        Rik van Riel <riel@surriel.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 7, 2019 at 8:52 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redha=
-t.com> wrote:
+On Thu, Nov 7, 2019 at 10:39 PM Song Liu <songliubraving@fb.com> wrote:
 >
-> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 >
-> This add tests for the different variations of automatic map unpinning on
-> load failure.
 >
-> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> ---
-
-[...]
-
-> diff --git a/tools/testing/selftests/bpf/progs/test_pinning.c b/tools/tes=
-ting/selftests/bpf/progs/test_pinning.c
-> index f69a4a50d056..f20e7e00373f 100644
-> --- a/tools/testing/selftests/bpf/progs/test_pinning.c
-> +++ b/tools/testing/selftests/bpf/progs/test_pinning.c
-> @@ -21,7 +21,7 @@ struct {
->  } nopinmap SEC(".maps");
+> > On Nov 7, 2019, at 8:20 PM, Andrii Nakryiko <andriin@fb.com> wrote:
+> >
+> > Add ability to memory-map contents of BPF array map. This is extremely useful
+> > for working with BPF global data from userspace programs. It allows to avoid
+> > typical bpf_map_{lookup,update}_elem operations, improving both performance
+> > and usability.
+> >
+> > There had to be special considerations for map freezing, to avoid having
+> > writable memory view into a frozen map. To solve this issue, map freezing and
+> > mmap-ing is happening under mutex now:
+> >  - if map is already frozen, no writable mapping is allowed;
+> >  - if map has writable memory mappings active (accounted in map->writecnt),
+> >    map freezing will keep failing with -EBUSY;
+> >  - once number of writable memory mappings drops to zero, map freezing can be
+> >    performed again.
+> >
+> > Only non-per-CPU arrays are supported right now. Maps with spinlocks can't be
+> > memory mapped either.
+> >
+> > Cc: Rik van Riel <riel@surriel.com>
+> > Cc: Johannes Weiner <hannes@cmpxchg.org>
+> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 >
->  struct {
-> -       __uint(type, BPF_MAP_TYPE_ARRAY);
-> +       __uint(type, BPF_MAP_TYPE_HASH);
+> Acked-by: Song Liu <songliubraving@fb.com>
+>
+> With one nit below.
+>
+>
+> [...]
+>
+> > -     if (percpu)
+> > +     data_size = 0;
+> > +     if (percpu) {
+> >               array_size += (u64) max_entries * sizeof(void *);
+> > -     else
+> > -             array_size += (u64) max_entries * elem_size;
+>
+> > +     } else {
+> > +             if (attr->map_flags & BPF_F_MMAPABLE) {
+> > +                     data_size = (u64) max_entries * elem_size;
+> > +                     data_size = round_up(data_size, PAGE_SIZE);
+> > +             } else {
+> > +                     array_size += (u64) max_entries * elem_size;
+> > +             }
+> > +     }
+> >
+> >       /* make sure there is no u32 overflow later in round_up() */
+> > -     cost = array_size;
+> > +     cost = array_size + data_size;
+>
+>
+>
+> This is a little confusing. Maybe we can do
+>
 
-Why do we need this change?
+I don't think I can do that without even bigger code churn. In
+non-mmap()-able case, array_size specifies the size of one chunk of
+memory, which consists of sizeof(struct bpf_array) bytes, followed by
+actual data. This is accomplished in one allocation. That's current
+case for arrays.
 
->         __uint(max_entries, 1);
->         __type(key, __u32);
->         __type(value, __u64);
+For BPF_F_MMAPABLE case, though, we have to do 2 separate allocations,
+to make sure that mmap()-able part is allocated with vmalloc() and is
+page-aligned. So array_size keeps track of number of bytes allocated
+for struct bpf_array plus, optionally, per-cpu or non-mmapable array
+data, while data_size is explicitly for vmalloc()-ed mmap()-able chunk
+of data. If not for this, I'd just keep adjusting array_size.
+
+So the invariant for per-cpu and non-mmapable case is that data_size =
+0, array_size = sizeof(struct bpf_array) + whatever amount of data we
+need. For mmapable case: array_size = sizeof(struct bpf_array),
+data_size = actual amount of array data.
+
+
+>         data_size = (u64) max_entries * (per_cpu ? sizeof(void *) : elem_size;
+>         if (attr->map_flags & BPF_F_MMAPABLE)
+>                 data_size = round_up(data_size, PAGE_SIZE);
+>
+>         cost = array_size + data_size;
+>
+> So we use data_size in all cases.
+>
+> Maybe also rename array_size.
+>
+>
+> >       if (percpu)
+> >               cost += (u64)attr->max_entries * elem_size * num_possible_cpus();
+>
+> And maybe we can also include this in data_size.
+
+see above.
+
+>
+> [...]
 >
