@@ -2,50 +2,49 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B1C8F5BD3
-	for <lists+bpf@lfdr.de>; Sat,  9 Nov 2019 00:32:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CA4DF5BD5
+	for <lists+bpf@lfdr.de>; Sat,  9 Nov 2019 00:33:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726819AbfKHXcQ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 8 Nov 2019 18:32:16 -0500
-Received: from mx1.redhat.com ([209.132.183.28]:55466 "EHLO mx1.redhat.com"
+        id S1727148AbfKHXd2 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 8 Nov 2019 18:33:28 -0500
+Received: from mx1.redhat.com ([209.132.183.28]:55628 "EHLO mx1.redhat.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726804AbfKHXcP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Nov 2019 18:32:15 -0500
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com [209.85.167.72])
+        id S1726231AbfKHXd2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Nov 2019 18:33:28 -0500
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 8478F51146
-        for <bpf@vger.kernel.org>; Fri,  8 Nov 2019 23:32:15 +0000 (UTC)
-Received: by mail-lf1-f72.google.com with SMTP id g143so1589451lfd.22
-        for <bpf@vger.kernel.org>; Fri, 08 Nov 2019 15:32:15 -0800 (PST)
+        by mx1.redhat.com (Postfix) with ESMTPS id D850E59445
+        for <bpf@vger.kernel.org>; Fri,  8 Nov 2019 23:33:27 +0000 (UTC)
+Received: by mail-ed1-f72.google.com with SMTP id g16so5914445edp.13
+        for <bpf@vger.kernel.org>; Fri, 08 Nov 2019 15:33:27 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
          :message-id:mime-version:content-transfer-encoding;
-        bh=zaH3uPdvPvPQ2Ntn+DAYM/vhLtCymY6ZD93gXXjWnbs=;
-        b=YPGSsdaB3b0WA4X4S52CqjlSbztB/6kFxwy09FF2Vc/UxJYzicXiSnDnjH9cSxbUzv
-         B7e0gWVo7xzjy3/6W8HkNWasEUmBqyv7RuhXtS7p9hRU7AwyvMpkRsVfBj145Gcz78Cn
-         by5u/PeGHBwvquuOCECMf3DFcn0BJmTr87Mry/4HRSgxaeY+99qYYAeBFtkXLaSjcKBF
-         AVO+dTVbB7ZLHSC7AaZ6jD+8sw2NF/XrwbG+zEyowMVqfd6z++rgrY07z7MHpnnjm4Yi
-         boivs40ZET25lpsAZZc9K2DYtazJ4v8/wdQDhkr/Go3TCwO1XUeBvXQO2sObEzuLeVKm
-         XtQQ==
-X-Gm-Message-State: APjAAAUrHpFfAX88SJDfeRnLTaSFmQpy/L0+KiksYKTKB0aLAiPL5ror
-        I6Y9CLQ44n2A3YZXOZb9e10+hrobL1D++yKeftJZWuTxxWI4Z8nsTT1Tg2FlOaB6LbBQ422RYsj
-        Euj+eOQ9SHih5
-X-Received: by 2002:a19:cc47:: with SMTP id c68mr8010639lfg.95.1573255934062;
-        Fri, 08 Nov 2019 15:32:14 -0800 (PST)
-X-Google-Smtp-Source: APXvYqyNnXjO/UwqbirlT/zMlVjyzbCBHyKIbmkU2ersXZS4DllykDKV2EsHYH2J5nHPofu9Qmg5Jg==
-X-Received: by 2002:a19:cc47:: with SMTP id c68mr8010621lfg.95.1573255933783;
-        Fri, 08 Nov 2019 15:32:13 -0800 (PST)
+        bh=aiD5DM7IjlHQUmR9oZ59QRk6NCPbebCs5xbskEv3VzE=;
+        b=SuGPlEJgeHh0uPs68Fav6SUbfcgC7Pyh1jcnrc+AC1FCLs6vk2u349dME1d9elUmBF
+         fxquzS9rkp9iJF62Omk8I61sO/p9rOQfnKfoB9dizA589rGoS0YFCF+7YAtM2TKem/p6
+         nuAgq/4lIs1ktx1hZCi5HAgUwgDHIMg4WKw0vVk/7GgTa3P6OOIMCq8b4P2nBPxcq4Nm
+         5BfQ5LAPj187b++244gtdZlkyQPWZXw2qp86SjUhmH6bxY3+q5YgWU/9DvAsHKvuaATY
+         4QwUfDDPPp8m5NlHU0HFjOkCxISe/hE1z7nLOgOOEnN7b1uqcLpiFxZQ9pxT03g1qFf+
+         MzDQ==
+X-Gm-Message-State: APjAAAWv5jE4YTcVnlQ4B6USXNI4pwwVPGqoAlgCvC6d33JhFtZuwznK
+        CMN8ThLhUB/+9+8P3FFochF9Tqx1t3uAZ0lDvYerNeJtxyrwLo8nVQCDlRJ4gavRevaTvI86e0I
+        /zJ1m/5PRN6St
+X-Received: by 2002:a17:906:27cc:: with SMTP id k12mr11453255ejc.181.1573256006575;
+        Fri, 08 Nov 2019 15:33:26 -0800 (PST)
+X-Google-Smtp-Source: APXvYqxzaJNtLS4BcxKGjnbmW7YrQygu55+PRtTm50fdDNdSDhaaBAl0XxbkGhe2u5cHNo6Tgwd+5g==
+X-Received: by 2002:a17:906:27cc:: with SMTP id k12mr11453240ejc.181.1573256006331;
+        Fri, 08 Nov 2019 15:33:26 -0800 (PST)
 Received: from alrua-x1.borgediget.toke.dk ([2a00:7660:6da:443::2])
-        by smtp.gmail.com with ESMTPSA id n19sm3200940lfl.85.2019.11.08.15.32.13
+        by smtp.gmail.com with ESMTPSA id t24sm181060edc.56.2019.11.08.15.33.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Nov 2019 15:32:13 -0800 (PST)
+        Fri, 08 Nov 2019 15:33:25 -0800 (PST)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 2EC961800CC; Sat,  9 Nov 2019 00:32:12 +0100 (CET)
+        id 2B1D01800CC; Sat,  9 Nov 2019 00:33:25 +0100 (CET)
 From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <ast@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
@@ -53,12 +52,12 @@ Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
         David Miller <davem@davemloft.net>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v2 3/6] libbpf: Propagate EPERM to caller on program load
-In-Reply-To: <20191108231757.7egzqebli6gcplfq@ast-mbp.dhcp.thefacebook.com>
-References: <157324878503.910124.12936814523952521484.stgit@toke.dk> <157324878850.910124.10106029353677591175.stgit@toke.dk> <CAEf4BzZxcvhZG-FHF+0iqia72q3YA0dCgsgFchibiW7dkFQm2A@mail.gmail.com> <20191108231757.7egzqebli6gcplfq@ast-mbp.dhcp.thefacebook.com>
+Subject: Re: [PATCH bpf-next v2 1/6] libbpf: Unpin auto-pinned maps if loading fails
+In-Reply-To: <CAEf4BzbqwpxtDRkYZLNsM7POc9WHAVpM-vvMX5jnEtYUV2PQaA@mail.gmail.com>
+References: <157324878503.910124.12936814523952521484.stgit@toke.dk> <157324878624.910124.5124587166846797199.stgit@toke.dk> <CAEf4BzbqwpxtDRkYZLNsM7POc9WHAVpM-vvMX5jnEtYUV2PQaA@mail.gmail.com>
 X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Sat, 09 Nov 2019 00:32:12 +0100
-Message-ID: <87sgmyq70j.fsf@toke.dk>
+Date:   Sat, 09 Nov 2019 00:33:25 +0100
+Message-ID: <87pni2q6yi.fsf@toke.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8BIT
@@ -67,52 +66,94 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-> On Fri, Nov 08, 2019 at 02:50:43PM -0800, Andrii Nakryiko wrote:
->> On Fri, Nov 8, 2019 at 1:33 PM Toke Høiland-Jørgensen <toke@redhat.com> wrote:
->> >
->> > From: Toke Høiland-Jørgensen <toke@redhat.com>
->> >
->> > When loading an eBPF program, libbpf overrides the return code for EPERM
->> > errors instead of returning it to the caller. This makes it hard to figure
->> > out what went wrong on load.
->> >
->> > In particular, EPERM is returned when the system rlimit is too low to lock
->> > the memory required for the BPF program. Previously, this was somewhat
->> > obscured because the rlimit error would be hit on map creation (which does
->> > return it correctly). However, since maps can now be reused, object load
->> > can proceed all the way to loading programs without hitting the error;
->> > propagating it even in this case makes it possible for the caller to react
->> > appropriately (and, e.g., attempt to raise the rlimit before retrying).
->> >
->> > Acked-by: Song Liu <songliubraving@fb.com>
->> > Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
->> > ---
->> >  tools/lib/bpf/libbpf.c |    4 ++--
->> >  1 file changed, 2 insertions(+), 2 deletions(-)
->> >
->> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
->> > index cea61b2ec9d3..582c0fd16697 100644
->> > --- a/tools/lib/bpf/libbpf.c
->> > +++ b/tools/lib/bpf/libbpf.c
->> > @@ -3721,7 +3721,7 @@ load_program(struct bpf_program *prog, struct bpf_insn *insns, int insns_cnt,
->> >                 free(log_buf);
->> >                 goto retry_load;
->> >         }
->> > -       ret = -LIBBPF_ERRNO__LOAD;
->> > +       ret = (errno == EPERM) ? -errno : -LIBBPF_ERRNO__LOAD;
+> On Fri, Nov 8, 2019 at 1:33 PM Toke Høiland-Jørgensen <toke@redhat.com> wrote:
+>>
+>> From: Toke Høiland-Jørgensen <toke@redhat.com>
+>>
+>> Since the automatic map-pinning happens during load, it will leave pinned
+>> maps around if the load fails at a later stage. Fix this by unpinning any
+>> pinned maps on cleanup. To avoid unpinning pinned maps that were reused
+>> rather than newly pinned, add a new boolean property on struct bpf_map to
+>> keep track of whether that map was reused or not; and only unpin those maps
+>> that were not reused.
+>>
+>> Fixes: 57a00f41644f ("libbpf: Add auto-pinning of maps when loading BPF objects")
+>> Acked-by: Song Liu <songliubraving@fb.com>
+>> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+>> ---
+>>  tools/lib/bpf/libbpf.c |   16 +++++++++++++---
+>>  1 file changed, 13 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+>> index be4af95d5a2c..cea61b2ec9d3 100644
+>> --- a/tools/lib/bpf/libbpf.c
+>> +++ b/tools/lib/bpf/libbpf.c
+>> @@ -229,6 +229,7 @@ struct bpf_map {
+>>         enum libbpf_map_type libbpf_type;
+>>         char *pin_path;
+>>         bool pinned;
+>> +       bool was_reused;
 >
-> ouch. so libbpf was supressing all errnos for loading and that was a commit
-> from 2015. No wonder it's hard to debug. I grepped every where I could and it
-> doesn't look like anyone is using this code. There are other codes that can
-> come from sys_bpf(prog_load). Not sure why such decision was made back then. I
-> guess noone was really paying attention. I think we better propagate all codes.
-> I don't see why EPERM should be special.
+> nit: just reused, similar to pinned?
+>
+>>  };
+>>
+>>  struct bpf_secdata {
+>> @@ -1995,6 +1996,7 @@ int bpf_map__reuse_fd(struct bpf_map *map, int fd)
+>>         map->def.map_flags = info.map_flags;
+>>         map->btf_key_type_id = info.btf_key_type_id;
+>>         map->btf_value_type_id = info.btf_value_type_id;
+>> +       map->was_reused = true;
+>>
+>>         return 0;
+>>
+>> @@ -4007,15 +4009,18 @@ bpf_object__open_buffer(const void *obj_buf, size_t obj_buf_sz,
+>>         return bpf_object__open_mem(obj_buf, obj_buf_sz, &opts);
+>>  }
+>>
+>> -int bpf_object__unload(struct bpf_object *obj)
+>> +static int __bpf_object__unload(struct bpf_object *obj, bool unpin)
+>>  {
+>>         size_t i;
+>>
+>>         if (!obj)
+>>                 return -EINVAL;
+>>
+>> -       for (i = 0; i < obj->nr_maps; i++)
+>> +       for (i = 0; i < obj->nr_maps; i++) {
+>>                 zclose(obj->maps[i].fd);
+>> +               if (unpin && obj->maps[i].pinned && !obj->maps[i].was_reused)
+>> +                       bpf_map__unpin(&obj->maps[i], NULL);
+>> +       }
+>>
+>>         for (i = 0; i < obj->nr_programs; i++)
+>>                 bpf_program__unload(&obj->programs[i]);
+>> @@ -4023,6 +4028,11 @@ int bpf_object__unload(struct bpf_object *obj)
+>>         return 0;
+>>  }
+>>
+>> +int bpf_object__unload(struct bpf_object *obj)
+>> +{
+>> +       return __bpf_object__unload(obj, false);
+>> +}
+>> +
+>>  int bpf_object__load_xattr(struct bpf_object_load_attr *attr)
+>>  {
+>>         struct bpf_object *obj;
+>> @@ -4047,7 +4057,7 @@ int bpf_object__load_xattr(struct bpf_object_load_attr *attr)
+>>
+>>         return 0;
+>>  out:
+>> -       bpf_object__unload(obj);
+>> +       __bpf_object__unload(obj, true);
+>
+> giving this is the only (special) case of auto-unpinning auto-pinned
+> maps, why not do a trivial loop here, instead of having this extra
+> unpin flag and extra __bpf_object__unload function?
 
-Fine with me; I just assumed there was a good reason for the current
-behaviour :)
-
-Will do a v3 that just passes through the errors from the kernel.
+Oh, you mean just do a loop in addition to the call to __unload? Sure, I
+guess we can do that instead...
 
 -Toke
