@@ -2,173 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D6E81F59EB
-	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2019 22:32:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28E1FF59EC
+	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2019 22:34:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730009AbfKHVcS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Nov 2019 16:32:18 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:46129 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726900AbfKHVcR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Nov 2019 16:32:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1573248735;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hAF6j0a+V/9BFfwv/2EgMhHlMLkaM6wfXE6fGRZ+mgs=;
-        b=FeXLI/IkvCIc/ELbzEZKebtqfrhw01sHCyCZb17l5+tefv1K3uCzubiwZihAt9MZzZXXB7
-        MdyXkMnPoeP9Ym2iaP4B16cgDQqMOIcoHT2S+p3KDjzWPsfwILywsBtSPtg3P95gVvqvjX
-        eInw5evDKhLdEoWQFxIl2qc19gS/pBc=
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
- [209.85.167.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-18-KykZBbrSOMWXBB5i0nvGPw-1; Fri, 08 Nov 2019 16:32:14 -0500
-Received: by mail-lf1-f72.google.com with SMTP id v7so1548340lfi.2
-        for <bpf@vger.kernel.org>; Fri, 08 Nov 2019 13:32:14 -0800 (PST)
+        id S1730596AbfKHVdI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Nov 2019 16:33:08 -0500
+Received: from mx1.redhat.com ([209.132.183.28]:55848 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730009AbfKHVdI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Nov 2019 16:33:08 -0500
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com [209.85.208.198])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 2A5E7821D9
+        for <bpf@vger.kernel.org>; Fri,  8 Nov 2019 21:33:08 +0000 (UTC)
+Received: by mail-lj1-f198.google.com with SMTP id o20so1547924ljg.0
+        for <bpf@vger.kernel.org>; Fri, 08 Nov 2019 13:33:08 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=hAF6j0a+V/9BFfwv/2EgMhHlMLkaM6wfXE6fGRZ+mgs=;
-        b=txsfebznnxGpM6jjIKS9ESNdNeHPaOeFpazwx0Cp9x5mDhpg0iPX0Y1nxvln3SAVot
-         sojHdM7Lx0p2FiI6UDk5NQ94bRApZZo2feQVHlwvPBa89YvKhSIVf5EaGtVShVBBFRBV
-         7YKa81qaBJOLKACcFrIqe75xmKlWM8365w2m9D53ZtST1vu+Iifh8IuIKqaqGZv+f7st
-         Ykjhn7PZ5rXGpLjwv/RY6ZBP+UyuVgmasPpdYUE/hEZLK8+jgk8mNTyY6/QzdU693LBj
-         oWQBXNa/yo/t/6MLnZvtqJbKxzkIUJQvS/G59XoRkGWtXByPWZ1lYBEERVfdHrlr9TA3
-         FTgg==
-X-Gm-Message-State: APjAAAXU3EKptayNmGka2H9NQA5ZR7rWFarSwJ5wISCYDR1oYrsFVk+5
-        TZIDF0oD/2OEy933+HEODOwEYzlEpwlOsLHHr+VuYusqmpnqi4kzZVaTagXi9J1b7zQbu3iUm6q
-        4HXS9f2Urqpex
-X-Received: by 2002:ac2:5236:: with SMTP id i22mr311471lfl.19.1573248732809;
-        Fri, 08 Nov 2019 13:32:12 -0800 (PST)
-X-Google-Smtp-Source: APXvYqxfDxNQc/NKvD3Zy3CPyWE6esJ1059V8jFnFmTBhucKpQzRjpt8AY+n1tvyZ3aT1YoZ/wahEQ==
-X-Received: by 2002:ac2:5236:: with SMTP id i22mr311462lfl.19.1573248732596;
-        Fri, 08 Nov 2019 13:32:12 -0800 (PST)
+        h=x-gm-message-state:subject:from:to:cc:date:message-id:user-agent
+         :mime-version:content-transfer-encoding;
+        bh=f9G7ifn6IeScMKogPmkF62Xe41eRO8dRYDdQ01G+h9Y=;
+        b=JHOJ65MBdje5Ax8Z/K3xtSAQ34u9oVPg1ytmi7PGs+hIWpzwjnZDYrjg+e5r+I7P1P
+         Oe9hsDniHsVMhOqdfxq0LtgKCsRhBtPKAwvy0xnsF2Qmm8uJxOM7aJzNqrwCTltn931v
+         EvBIacpSQ4WGEH1dgpN6SUU4j4YzgrQ+zflhMO/7pLnF1jmht4VuEcfnJQLzughtYmq7
+         2VWUGxsROxBRcvZC3g+yL1ZzWNG3pGzUh5JvBg51hq0exI+8GYT9B1pM2ApmciBrFpf9
+         CUltRdRYQBHJ8rR+YTutR66+4nZ8HS//Ii74HAPcZ7Ct2NVBP+dXK+yugOsjINX+1Ets
+         M6/w==
+X-Gm-Message-State: APjAAAX84Pq4KZuY1i14dZPvj5SV/9/6s5Co0lM3Spfm+4nQF9mnyfbf
+        cTziPuzZfLS1rwVgtsheJ2repV28Mz1W+jjNJjZ6YfL4s7jTSjuPkdhFcKmB0z9U4je674jr7pZ
+        BgkXoTAKftFk/
+X-Received: by 2002:a05:651c:1059:: with SMTP id x25mr3891823ljm.255.1573248786667;
+        Fri, 08 Nov 2019 13:33:06 -0800 (PST)
+X-Google-Smtp-Source: APXvYqxH5IsNOnALiXwaJmnRtU+9Blz9TfCCMAbWhWiRYR8R/9dp8YTIX1Qic5MPcVqDSyqwCULPKw==
+X-Received: by 2002:a05:651c:1059:: with SMTP id x25mr3891810ljm.255.1573248786489;
+        Fri, 08 Nov 2019 13:33:06 -0800 (PST)
 Received: from alrua-x1.borgediget.toke.dk ([2a00:7660:6da:443::2])
-        by smtp.gmail.com with ESMTPSA id a8sm3391806ljf.47.2019.11.08.13.32.11
+        by smtp.gmail.com with ESMTPSA id y6sm3504046lfj.75.2019.11.08.13.33.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Nov 2019 13:32:11 -0800 (PST)
+        Fri, 08 Nov 2019 13:33:05 -0800 (PST)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 9174A1800BD; Fri,  8 Nov 2019 22:32:10 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>, davem@davemloft.net,
-        daniel@iogearbox.net, x86@kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v3 bpf-next 15/18] bpf: Support attaching tracing BPF program to other BPF programs
-In-Reply-To: <20191108211400.m6kuuyvkp2p56gmo@ast-mbp.dhcp.thefacebook.com>
-References: <20191108064039.2041889-1-ast@kernel.org> <20191108064039.2041889-16-ast@kernel.org> <87pni2ced3.fsf@toke.dk> <20191108211400.m6kuuyvkp2p56gmo@ast-mbp.dhcp.thefacebook.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 08 Nov 2019 22:32:10 +0100
-Message-ID: <87mud6caw5.fsf@toke.dk>
+        id 3A4901800BD; Fri,  8 Nov 2019 22:33:05 +0100 (CET)
+Subject: [PATCH bpf-next v2 0/6] libbpf: Fix pinning and error message bugs
+ and add new getters
+From:   =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Date:   Fri, 08 Nov 2019 22:33:05 +0100
+Message-ID: <157324878503.910124.12936814523952521484.stgit@toke.dk>
+User-Agent: StGit/0.21
 MIME-Version: 1.0
-X-MC-Unique: KykZBbrSOMWXBB5i0nvGPw-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+This series fixes a few bugs in libbpf that I discovered while playing around
+with the new auto-pinning code, and writing the first utility in xdp-tools[0]:
 
-> On Fri, Nov 08, 2019 at 09:17:12PM +0100, Toke H=C3=B8iland-J=C3=B8rgense=
-n wrote:
->> Alexei Starovoitov <ast@kernel.org> writes:
->>=20
->> > Allow FENTRY/FEXIT BPF programs to attach to other BPF programs of any=
- type
->> > including their subprograms. This feature allows snooping on input and=
- output
->> > packets in XDP, TC programs including their return values. In order to=
- do that
->> > the verifier needs to track types not only of vmlinux, but types of ot=
-her BPF
->> > programs as well. The verifier also needs to translate uapi/linux/bpf.=
-h types
->> > used by networking programs into kernel internal BTF types used by FEN=
-TRY/FEXIT
->> > BPF programs. In some cases LLVM optimizations can remove arguments fr=
-om BPF
->> > subprograms without adjusting BTF info that LLVM backend knows. When B=
-TF info
->> > disagrees with actual types that the verifiers sees the BPF trampoline=
- has to
->> > fallback to conservative and treat all arguments as u64. The FENTRY/FE=
-XIT
->> > program can still attach to such subprograms, but won't be able to rec=
-ognize
->> > pointer types like 'struct sk_buff *' into won't be able to pass them =
-to
->> > bpf_skb_output() for dumping to user space.
->> >
->> > The BPF_PROG_LOAD command is extended with attach_prog_fd field. When =
-it's set
->> > to zero the attach_btf_id is one vmlinux BTF type ids. When attach_pro=
-g_fd
->> > points to previously loaded BPF program the attach_btf_id is BTF type =
-id of
->> > main function or one of its subprograms.
->> >
->> > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
->>=20
->> This is cool! Certainly solves the xdpdump use case; thanks!
->>=20
->> I do have a few questions (thinking about whether it can also be used
->> for running multiple XDP programs):
->
-> excellent questions.
->
->> - Can a FEXIT function loaded this way only *observe* the return code of
->>   the BPF program it attaches to, or can it also change it?
->
-> yes. the verifier can be taught to support that for certain class of prog=
-rams.
-> That needs careful thinking to make sure it's safe.
+- If object loading fails, libbpf does not clean up the pinnings created by the
+  auto-pinning mechanism.
+- EPERM is not propagated to the caller on program load
+- Netlink functions write error messages directly to stderr
 
-OK. I think this could potentially be useful to have for XDP (for
-instance, to have xdpdump "steal" any packets it is observing by
-changing the return code to XDP_DROP).
+In addition, libbpf currently only has a somewhat limited getter function for
+XDP link info, which makes it impossible to discover whether an attached program
+is in SKB mode or not. So the last patch in the series adds a new getter for XDP
+link info which returns all the information returned via netlink (and which can
+be extended later).
 
->> - Is it possible to attach multiple FENTRY/FEXIT programs to the same
->>   XDP program=20
->
-> Yes. Already possible. See fexit_stress.c that attaches 40 progs to the s=
-ame
-> kernel function. Same thing when attaching fexit BPF to any XDP program.
-> Since all of them are read only tracing prog all progs have access to skb=
- on
-> input and ouput along with unmodified return value.
+Finally, add a getter for BPF program size, which can be used by the caller to
+estimate the amount of locked memory needed to load a program.
 
-Right, cool.
+A selftest is added for the pinning change, while the other features were tested
+in the xdp-filter tool from the xdp-tools repo. The 'new-libbpf-features' branch
+contains the commits that make use of the new XDP getter and the corrected EPERM
+error code.
 
->> and/or to recursively attach FENTRY/FEXIT programs to each
->>   other?
->
-> Not right now to avoid complex logic of detecting cycles. See simple bit:
->    if (tgt_prog->type =3D=3D BPF_PROG_TYPE_TRACING) {
->            /* prevent cycles */
->            verbose(env, "Cannot recursively attach\n");
+[0] https://github.com/xdp-project/xdp-tools
 
-OK, that is probably a reasonable tradeoff.
+Changelog:
 
->> - Could it be possible for an FENTRY/FEXIT program to call into another
->>   XDP program (i.e., one that has the regular XDP program type)?
->
-> It's possible to teach verifier to do that, but we probably shouldn't tak=
-e that
-> route. Instead I've started exploring the idea of dynamic linking. The
-> trampoline logic will be used to replace existing BPF program or subprogr=
-am
-> instead of attaching read-only to it. If types match the new program can
-> replace existing one. The concept allows to build any kind of callchain
-> programmatically. Pretty much what Ed proposed with static linking, but d=
-oing
-> it dynamically. I'll start a separate email thread explaining details.
+v2:
+  - Keep function names in libbpf.map sorted properly
 
-SGTM; will wait for the sequel, then :)
+---
 
--Toke
+Toke Høiland-Jørgensen (6):
+      libbpf: Unpin auto-pinned maps if loading fails
+      selftests/bpf: Add tests for automatic map unpinning on load failure
+      libbpf: Propagate EPERM to caller on program load
+      libbpf: Use pr_warn() when printing netlink errors
+      libbpf: Add bpf_get_link_xdp_info() function to get more XDP information
+      libbpf: Add getter for program size
+
+
+ tools/lib/bpf/libbpf.c                           |   25 +++++--
+ tools/lib/bpf/libbpf.h                           |   11 +++
+ tools/lib/bpf/libbpf.map                         |    2 +
+ tools/lib/bpf/netlink.c                          |   81 ++++++++++++++--------
+ tools/lib/bpf/nlattr.c                           |   10 +--
+ tools/testing/selftests/bpf/prog_tests/pinning.c |   20 +++++
+ tools/testing/selftests/bpf/progs/test_pinning.c |    2 -
+ 7 files changed, 109 insertions(+), 42 deletions(-)
 
