@@ -2,52 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CE2FF5B30
-	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2019 23:43:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6381F5B54
+	for <lists+bpf@lfdr.de>; Fri,  8 Nov 2019 23:51:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726227AbfKHWnl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Nov 2019 17:43:41 -0500
-Received: from mail-qv1-f67.google.com ([209.85.219.67]:36244 "EHLO
-        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726121AbfKHWnk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Nov 2019 17:43:40 -0500
-Received: by mail-qv1-f67.google.com with SMTP id f12so2861519qvu.3;
-        Fri, 08 Nov 2019 14:43:40 -0800 (PST)
+        id S1726804AbfKHWu4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Nov 2019 17:50:56 -0500
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:43770 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726095AbfKHWuz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Nov 2019 17:50:55 -0500
+Received: by mail-qk1-f196.google.com with SMTP id z23so6720089qkj.10;
+        Fri, 08 Nov 2019 14:50:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=Y18Oyt5B0ILtbblHMT7QPaKaVlkGY0dyBEO5Gq9ppU0=;
-        b=Uy27EHov/XZjUWPWYaqmkNnZeMl40gGf7qN56TNEbwDiKO+7GDj41F2rfbmTbBywg5
-         /PW6rnHQp5lKXuZBQJhSRTU2VU/vRl8kj48kHWpTzreIyz0dpnmD5IdVCGivXGOhZdtj
-         5yImIev5DubXpk/j5n1nF6CWzX5AXm5EyPAMJLkpVW4pcBjfsFxHK2W3L6AcUL2ZoDPE
-         MvPA/rl4VhMRC0uJE5373oKhSIu2UjQYKQ2GNK5uM9LehiO3YFaKYQE0LWeSR0FWK4t+
-         ehWa4ILKoqwZoQZL72YmW79KKxd8URZOj3FAjWNm5MciPTrPPBNF4zmQtxA76I6EVA4h
-         vI9w==
+        bh=7nSB+QohS5sigWBoZJznnXIK0WJL+cpXl/mjxZlP6Gw=;
+        b=mhMibkO9sXhsew/qx7eYsa3KqD/WTIpFkrSH5CTBSZnTJl5+uIQLu4LaahwBAc5PfO
+         qh+euGm4WDtb6AwHzzMKkHYBHgsuv+519dL3Jhv7wnWIVk92P0avf0Oo6gxw0v1HNeR7
+         8BVsy4cEa27mRmW71WnGSbDXRKG3WRVLn5nzvO8BywoqB7vO1FUhEZZp2bUPlbLnGnjZ
+         k/HxX+jplUHx7FBdKpHZRGARjsk4PPK4mNGpsKe69Yq9x1B3mJvs4X4UCN+LHQtsF5Jp
+         3wuOwyw2Wuj0MgZE1IK7UMpUw6jsYL7WtiCPtFz3pvN4o5n23FcnC2SDzg0hPj6I1JDh
+         hirw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Y18Oyt5B0ILtbblHMT7QPaKaVlkGY0dyBEO5Gq9ppU0=;
-        b=ra0pwcdXDonB+A3n7McM5okQ7KPBhJktAwBoupGexQdMMZT+8LYX7ihZcKGiRl6Rsd
-         3BZ3YNv416jWtn2DoBt4oNZTIpHfHOWEkWFHn7o4jCHB8MbYHjAFxE8Xkcjg/ldUEjE3
-         POQBuPkmc4MzUu4hj2m6Sf0DbGdTm/zH9ecRe4eoE1oQlJFiZ+HZZQGPueRIf7OWJWeS
-         pjNhc7J/XIptqIhfpjjJo/pG1DpE/XNlUBQogQiWv4CZSpPDYSG4WEraVx3cmbHmKO9g
-         eIT0ryOWLgH+HxVdJDWfxZnAdgj9MHJN8ypxiFn1TfaK9gYhPfxKLWPy3wvLVIgX0g9A
-         QdJg==
-X-Gm-Message-State: APjAAAUEVjo9h8w/yMrE6Ol7LBIqeXRu4MjmohNzLo9Fy3tsedOhkRHs
-        wKeeTJWgeZDZvI8IgDu4JIhVyG7Uzbxie5QRylb40UNq
-X-Google-Smtp-Source: APXvYqyazE2morUwcCVJGqnXJpL/VMMQ/h/VrJZKHMVwJ2GltA7pC6x8l8Qp+YshIV7i7N/oIWeJ6V+tNEMZMkE+oEk=
-X-Received: by 2002:a05:6214:90f:: with SMTP id dj15mr12038002qvb.224.1573253019561;
- Fri, 08 Nov 2019 14:43:39 -0800 (PST)
+        bh=7nSB+QohS5sigWBoZJznnXIK0WJL+cpXl/mjxZlP6Gw=;
+        b=aQ3AObqbIdhZ16FRuwxYJviS53t4m05yhyMyJOM65ohpf5OuxD3yiiEnPdbADd4t/v
+         p3n29O+4X2zd+1WtQqJz3cDEWUBok+KpF8U8qwtQsuTJtZow5iv2BXH1beW/y7S5M31e
+         bRLm6wGBlqVfM0lBZA4ArpQxgCLjElgszxmC2oojm6ky+GET1KrmIYJWGfJi765Yk10W
+         L9vMbbu7x1Zbz72T9+ZCpNZvAwy5RmxWw/3xz44Nsj1ZGb+odp3Y5n2m9pbE6sESt3zz
+         c+1hgGYxFqu9fhC9glHm/Ojuhfhd765Q25SyAcOXZc3psS3eAm5tPSygIB8YdviqZoWf
+         12NQ==
+X-Gm-Message-State: APjAAAUddyTEAonpfAz14O6dLy4r/TLKedwUhpIF5bSFO5jlv/hPj9qT
+        DUr90zlryd8uyi9ctUVMACSJy7FOHve+XmhR+TQ=
+X-Google-Smtp-Source: APXvYqyvB80rgmp0RPpa+TEubehvXskirm8OtcAtsxlSBmje/EB2rJlVbwgWLX6mypnrpF3FZawIMU7+Om5zJZRrdFc=
+X-Received: by 2002:a05:620a:1011:: with SMTP id z17mr11657852qkj.39.1573253454667;
+ Fri, 08 Nov 2019 14:50:54 -0800 (PST)
 MIME-Version: 1.0
-References: <157324878503.910124.12936814523952521484.stgit@toke.dk> <157324878734.910124.13947548477668878554.stgit@toke.dk>
-In-Reply-To: <157324878734.910124.13947548477668878554.stgit@toke.dk>
+References: <157324878503.910124.12936814523952521484.stgit@toke.dk> <157324878850.910124.10106029353677591175.stgit@toke.dk>
+In-Reply-To: <157324878850.910124.10106029353677591175.stgit@toke.dk>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 8 Nov 2019 14:43:27 -0800
-Message-ID: <CAEf4BzZpOdoackvjHP3v+Xv8+6adf_Fu70sNbJEU0amc6YOvqw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/6] selftests/bpf: Add tests for automatic
- map unpinning on load failure
+Date:   Fri, 8 Nov 2019 14:50:43 -0800
+Message-ID: <CAEf4BzZxcvhZG-FHF+0iqia72q3YA0dCgsgFchibiW7dkFQm2A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 3/6] libbpf: Propagate EPERM to caller on
+ program load
 To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
 Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -68,18 +68,58 @@ t.com> wrote:
 >
 > From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 >
-> This add tests for the different variations of automatic map unpinning on
-> load failure.
+> When loading an eBPF program, libbpf overrides the return code for EPERM
+> errors instead of returning it to the caller. This makes it hard to figur=
+e
+> out what went wrong on load.
 >
+> In particular, EPERM is returned when the system rlimit is too low to loc=
+k
+> the memory required for the BPF program. Previously, this was somewhat
+> obscured because the rlimit error would be hit on map creation (which doe=
+s
+> return it correctly). However, since maps can now be reused, object load
+> can proceed all the way to loading programs without hitting the error;
+> propagating it even in this case makes it possible for the caller to reac=
+t
+> appropriately (and, e.g., attempt to raise the rlimit before retrying).
+>
+> Acked-by: Song Liu <songliubraving@fb.com>
 > Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 > ---
-
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-
->  tools/testing/selftests/bpf/prog_tests/pinning.c |   20 ++++++++++++++++=
-+---
->  tools/testing/selftests/bpf/progs/test_pinning.c |    2 +-
->  2 files changed, 18 insertions(+), 4 deletions(-)
+>  tools/lib/bpf/libbpf.c |    4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 >
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index cea61b2ec9d3..582c0fd16697 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -3721,7 +3721,7 @@ load_program(struct bpf_program *prog, struct bpf_i=
+nsn *insns, int insns_cnt,
+>                 free(log_buf);
+>                 goto retry_load;
+>         }
+> -       ret =3D -LIBBPF_ERRNO__LOAD;
+> +       ret =3D (errno =3D=3D EPERM) ? -errno : -LIBBPF_ERRNO__LOAD;
+>         cp =3D libbpf_strerror_r(errno, errmsg, sizeof(errmsg));
+>         pr_warn("load bpf program failed: %s\n", cp);
+>
+> @@ -3749,7 +3749,7 @@ load_program(struct bpf_program *prog, struct bpf_i=
+nsn *insns, int insns_cnt,
+>                         }
+>                 }
+>
+> -               if (log_buf)
+> +               if (log_buf && ret !=3D -EPERM)
+>                         ret =3D -LIBBPF_ERRNO__KVER;
 
-[...]
+This whole special casing of EPERM looks weird. Should we just pass
+through all the errors instead?
+
+But also, I don't think you can assume that if you get EPERM, then it
+must be setrlimit problem...
+
+
+>         }
+>
+>
