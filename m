@@ -2,52 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 766CDF5C77
-	for <lists+bpf@lfdr.de>; Sat,  9 Nov 2019 01:44:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3D6CF5C8E
+	for <lists+bpf@lfdr.de>; Sat,  9 Nov 2019 01:51:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726399AbfKIAoh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Nov 2019 19:44:37 -0500
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:44290 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726252AbfKIAoh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Nov 2019 19:44:37 -0500
-Received: by mail-qt1-f195.google.com with SMTP id o11so8622186qtr.11;
-        Fri, 08 Nov 2019 16:44:36 -0800 (PST)
+        id S1726191AbfKIAvP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Nov 2019 19:51:15 -0500
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:37157 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726092AbfKIAvP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Nov 2019 19:51:15 -0500
+Received: by mail-qt1-f196.google.com with SMTP id g50so8673796qtb.4;
+        Fri, 08 Nov 2019 16:51:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=Z9kVO/aI0vQCOguMnN3PqF5N+QLFFqD/sJOMV8589sA=;
-        b=Q1eyHZXKUj2gI4YdlKteQ3Hwpnl+uDOF1DMg6KLUr7p71nK8PHkUTR9H4V7nvUEMzI
-         2vg0KRIktP8XIPsyoQoO+PzZSg1MP1k46VhGRZnYelBpoIq2uYoET2Bzq1WpMeLmmc8f
-         +nuK4p0x/L8+uXLp+vBFfUA8ezbVZgtPJjOmasK9nsd4dr5J+tXRCr/oLOF8wOcpeWd4
-         KV8Qfu2eFZVc6E32rrLFgWmVn2HCCA2dBVxyZgEq8tRsfrdUmPJCE88zEfAA7wMbyO0s
-         ydds18f3sR38FoUBYD+GguaoglLJi+9ObYeJLrfNtwrtboZZNPJEjcLo32fRbXP4REZS
-         IEvg==
+        bh=MdlO8VSAOVIeytkK27+o2cB/y/ljZsfnURutKT8DXT0=;
+        b=JdceBSK67YSb6IK70LbVcQtCv8nug5GRt2gq+U46nKuKoJGUqaqrEyOfoOqzZeXdU0
+         6Ch6h7A4YKgDTaq6Yj1SeROdEpuc3Ujpt2E/XDGIMeJI72z1QVMcm956G3odJBXoK/OJ
+         A7J6pU6LGEkrIVZBJGEJ92K7Cw02bv+fJhRQj665sum+D/EHdDMdQ6Hj/lcM3DoJUAoq
+         5jHIrqAg4uO4Ui649lwYcPj1doVy/JokeOgEEyCwPhoB+3OHd38onqbGpKUFlIpWSEAh
+         RlP5wuHUUYIwVjArcHRlDt8v7MJVSeSXmDUuxRAaQb3euitGFveVQe/kMdgx4XZck3Ia
+         X7eA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Z9kVO/aI0vQCOguMnN3PqF5N+QLFFqD/sJOMV8589sA=;
-        b=kkARuqcDoy+9w28Ky4kVVWvasAINv9bNTPv+oF+V1Zu+r2kxyT30W92cZIVEmtiles
-         VKZ/Piiba7LVFjOfQk/WfqxNbBeiDe4xte+rMbEkza2FEpImTTdWCD25k4rjeYmgwhYV
-         CJ4pOlZoAvzV26lBUyaOBv8irLc97KWKlw8z8QVJrJM16zqmQ9NpUf0orFU73a2QwPzA
-         3OX9AnjKFFZUfy/C90kSiDbsgKRJmS3Q4NEbEIFKgQuVXasbG7uNBx4yzE2KYzl+tRVS
-         muesxpyMp5IUMBAt0KHX1gMM4DJ9SnfIYQ0RAzRjtLWGc6G9so7Ov6H5BBvDIF0pjZdc
-         HWLA==
-X-Gm-Message-State: APjAAAWnoXrhdtIADIH81HkyrlFyzjQkLh9wgM3bOeFWCM9TvyPDTQPK
-        mITQmrufb4kYyOkrq7RJRhKEmfsMCq/DMyPvzoULRCzg
-X-Google-Smtp-Source: APXvYqzX2a2HdcctkCayIFHJ2qylYLIcPsTZJiE0uupqgpcLs+O9j/JRPUQh/j2H1nEvIGOw8cQlyTLYYbXT84p0frE=
-X-Received: by 2002:ac8:293a:: with SMTP id y55mr14310980qty.118.1573260275928;
- Fri, 08 Nov 2019 16:44:35 -0800 (PST)
+        bh=MdlO8VSAOVIeytkK27+o2cB/y/ljZsfnURutKT8DXT0=;
+        b=gCas5wG+vklSc3JdSvlGNfV4M+4DncdhCY6ISPrVg7C6XTufiF2UL0jPXr3MeHLwB9
+         mG6b2M29amckgf5dyKqEXP+ESPKxJ/ZvyOalmUTqbRj1TxkD+ibVI9HGW5UlJsCnAZSt
+         rkFjRveD93j29AhlkJV2DAdSV04Q4UnSB+Z8Crg3jY8LM+TqXnJHwc04enRueyscw4lW
+         kpejsKsws7/Hr7R9uXAFLA6O8DEKKdk9eIO+K66rnjg8j9Vf9fyWUSO0JGXRyDZVycNc
+         pY30Ed4eClxEa0NjC2KESbhggTYYxx1Si89XkiNbttdMPqwcWVZGdkt0BoZS8wfMw2Nx
+         k5SA==
+X-Gm-Message-State: APjAAAURLnwVhg6QcyAwVBxgm3phb2cpB/xDP6EYrgfzJStXq32ub9hC
+        lDN5qO517hho/LkUmrGno+2TxsJpTdZxp6APKG4=
+X-Google-Smtp-Source: APXvYqwyXbUwpdtnK14sNV/xOIfyCiUr6uuhPsxJXSJR8oxpkFo+NYK1/aMwlT3pNJIY33i2hnGtw7WQ7vDVV1PlRmg=
+X-Received: by 2002:aed:35e7:: with SMTP id d36mr13815932qte.59.1573260674455;
+ Fri, 08 Nov 2019 16:51:14 -0800 (PST)
 MIME-Version: 1.0
-References: <157325765467.27401.1930972466188738545.stgit@toke.dk> <157325765795.27401.949901357190446266.stgit@toke.dk>
-In-Reply-To: <157325765795.27401.949901357190446266.stgit@toke.dk>
+References: <157325765467.27401.1930972466188738545.stgit@toke.dk> <157325766011.27401.5278664694085166014.stgit@toke.dk>
+In-Reply-To: <157325766011.27401.5278664694085166014.stgit@toke.dk>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 8 Nov 2019 16:44:24 -0800
-Message-ID: <CAEf4Bza7OxXsc3Wh0Skw6PnoPaOKggBqxFn12g+Gi8CUvQBVqg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 3/6] libbpf: Propagate EPERM to caller on
- program load
+Date:   Fri, 8 Nov 2019 16:51:03 -0800
+Message-ID: <CAEf4BzYvv6pCHygeNyOBE4MRtcLxE1XP4Ww+sxoaPgQw5i1Rjw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 5/6] libbpf: Add bpf_get_link_xdp_info()
+ function to get more XDP information
 To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
 Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -68,31 +68,73 @@ t.com> wrote:
 >
 > From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 >
-> When loading an eBPF program, libbpf overrides the return code for EPERM
-> errors instead of returning it to the caller. This makes it hard to figur=
-e
-> out what went wrong on load.
->
-> In particular, EPERM is returned when the system rlimit is too low to loc=
-k
-> the memory required for the BPF program. Previously, this was somewhat
-> obscured because the rlimit error would be hit on map creation (which doe=
-s
-> return it correctly). However, since maps can now be reused, object load
-> can proceed all the way to loading programs without hitting the error;
-> propagating it even in this case makes it possible for the caller to reac=
-t
-> appropriately (and, e.g., attempt to raise the rlimit before retrying).
+> Currently, libbpf only provides a function to get a single ID for the XDP
+> program attached to the interface. However, it can be useful to get the
+> full set of program IDs attached, along with the attachment mode, in one
+> go. Add a new getter function to support this, using an extendible
+> structure to carry the information. Express the old bpf_get_link_id()
+> function in terms of the new function.
 >
 > Acked-by: David S. Miller <davem@davemloft.net>
 > Acked-by: Song Liu <songliubraving@fb.com>
 > Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 > ---
+>  tools/lib/bpf/libbpf.h   |   10 ++++++
+>  tools/lib/bpf/libbpf.map |    1 +
+>  tools/lib/bpf/netlink.c  |   82 ++++++++++++++++++++++++++++++----------=
+------
+>  3 files changed, 65 insertions(+), 28 deletions(-)
+>
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+[...]
 
->  tools/lib/bpf/libbpf.c |   27 +++++++++++----------------
->  1 file changed, 11 insertions(+), 16 deletions(-)
+>
+> -int bpf_get_link_xdp_id(int ifindex, __u32 *prog_id, __u32 flags)
+> +int bpf_get_link_xdp_info(int ifindex, struct xdp_link_info *info,
+> +                         size_t info_size, __u32 flags)
+>  {
+>         struct xdp_id_md xdp_id =3D {};
+>         int sock, ret;
+>         __u32 nl_pid;
+>         __u32 mask;
+>
+> -       if (flags & ~XDP_FLAGS_MASK)
+> +       if (flags & ~XDP_FLAGS_MASK || info_size < sizeof(*info))
+>                 return -EINVAL;
+
+Well, now it's backwards-incompatible: older program passes smaller
+(but previously perfectly valid) sizeof(struct xdp_link_info) to newer
+version of libbpf. This has to go both ways: smaller struct should be
+supported as long as program doesn't request (using flags) something,
+that can't be put into allowed space.
+
+I know it's PITA to support this, but that's what we have to do for
+forward/backward compatibility.
+
+>
+>         /* Check whether the single {HW,DRV,SKB} mode is set */
+> @@ -274,14 +272,42 @@ int bpf_get_link_xdp_id(int ifindex, __u32 *prog_id=
+, __u32 flags)
+>         xdp_id.ifindex =3D ifindex;
+>         xdp_id.flags =3D flags;
+>
+> -       ret =3D libbpf_nl_get_link(sock, nl_pid, get_xdp_id, &xdp_id);
+> -       if (!ret)
+> -               *prog_id =3D xdp_id.id;
+> +       ret =3D libbpf_nl_get_link(sock, nl_pid, get_xdp_info, &xdp_id);
+> +       if (!ret) {
+> +               memset(info, 0, info_size);
+> +               memcpy(info, &xdp_id.info, min(info_size, sizeof(xdp_id.i=
+nfo)));
+
+nit: memset above should start at info + min(info_size, sizeof(xdp_id.info)=
+)
+
+> +       }
+>
+>         close(sock);
+>         return ret;
+>  }
 >
 
 [...]
