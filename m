@@ -2,139 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F3D6CF5C8E
-	for <lists+bpf@lfdr.de>; Sat,  9 Nov 2019 01:51:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B72D5F5D2B
+	for <lists+bpf@lfdr.de>; Sat,  9 Nov 2019 04:26:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726191AbfKIAvP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Nov 2019 19:51:15 -0500
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:37157 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726092AbfKIAvP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Nov 2019 19:51:15 -0500
-Received: by mail-qt1-f196.google.com with SMTP id g50so8673796qtb.4;
-        Fri, 08 Nov 2019 16:51:15 -0800 (PST)
+        id S1725943AbfKID0i (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Nov 2019 22:26:38 -0500
+Received: from mail-lj1-f173.google.com ([209.85.208.173]:38381 "EHLO
+        mail-lj1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725895AbfKID0i (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Nov 2019 22:26:38 -0500
+Received: by mail-lj1-f173.google.com with SMTP id v8so8239492ljh.5;
+        Fri, 08 Nov 2019 19:26:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=MdlO8VSAOVIeytkK27+o2cB/y/ljZsfnURutKT8DXT0=;
-        b=JdceBSK67YSb6IK70LbVcQtCv8nug5GRt2gq+U46nKuKoJGUqaqrEyOfoOqzZeXdU0
-         6Ch6h7A4YKgDTaq6Yj1SeROdEpuc3Ujpt2E/XDGIMeJI72z1QVMcm956G3odJBXoK/OJ
-         A7J6pU6LGEkrIVZBJGEJ92K7Cw02bv+fJhRQj665sum+D/EHdDMdQ6Hj/lcM3DoJUAoq
-         5jHIrqAg4uO4Ui649lwYcPj1doVy/JokeOgEEyCwPhoB+3OHd38onqbGpKUFlIpWSEAh
-         RlP5wuHUUYIwVjArcHRlDt8v7MJVSeSXmDUuxRAaQb3euitGFveVQe/kMdgx4XZck3Ia
-         X7eA==
+         :cc;
+        bh=6mWpHOx7d3RC93m4tPpgEfkg8hGRzXNMxcpawVMB0/U=;
+        b=gyz/kW81uFp5O10kUeR0WLM/DkBFXyGdlMpBa+/SEnymxBe78dLg74Uf7a42oWb3ZB
+         w3k3peXe3cUOtgeUG8i7A/2LU3RvgGjGgxHYzQcroTEyzwbif+71ueA2mNVj1wG0nDcE
+         Xh8fpumZCEr/Lvt+vJBRSRAKQRuU378rLdU3CimTa59YSMkeQllamtDzMW79PpSD3ClX
+         kNQJCUkg3+FJkSscFrXEMI3ERjLAjVizeO+dHA9mZAlfY8Q3NJqTgZEd7xr33CdxSeG2
+         om+hRroMi6G53/tXXCYzBNYywMjgmxc/AM72bEEj8eUbtEG8RBN6R60OUL0nj1qWNVQM
+         kB/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=MdlO8VSAOVIeytkK27+o2cB/y/ljZsfnURutKT8DXT0=;
-        b=gCas5wG+vklSc3JdSvlGNfV4M+4DncdhCY6ISPrVg7C6XTufiF2UL0jPXr3MeHLwB9
-         mG6b2M29amckgf5dyKqEXP+ESPKxJ/ZvyOalmUTqbRj1TxkD+ibVI9HGW5UlJsCnAZSt
-         rkFjRveD93j29AhlkJV2DAdSV04Q4UnSB+Z8Crg3jY8LM+TqXnJHwc04enRueyscw4lW
-         kpejsKsws7/Hr7R9uXAFLA6O8DEKKdk9eIO+K66rnjg8j9Vf9fyWUSO0JGXRyDZVycNc
-         pY30Ed4eClxEa0NjC2KESbhggTYYxx1Si89XkiNbttdMPqwcWVZGdkt0BoZS8wfMw2Nx
-         k5SA==
-X-Gm-Message-State: APjAAAURLnwVhg6QcyAwVBxgm3phb2cpB/xDP6EYrgfzJStXq32ub9hC
-        lDN5qO517hho/LkUmrGno+2TxsJpTdZxp6APKG4=
-X-Google-Smtp-Source: APXvYqwyXbUwpdtnK14sNV/xOIfyCiUr6uuhPsxJXSJR8oxpkFo+NYK1/aMwlT3pNJIY33i2hnGtw7WQ7vDVV1PlRmg=
-X-Received: by 2002:aed:35e7:: with SMTP id d36mr13815932qte.59.1573260674455;
- Fri, 08 Nov 2019 16:51:14 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=6mWpHOx7d3RC93m4tPpgEfkg8hGRzXNMxcpawVMB0/U=;
+        b=c6u2ekwNA+6XP7tTtCZ7IV230qDlwSVFe+GzIaKktsGOi/uvlpSr5XqFsRp4ZbLSWp
+         b+9kK2tztplvaP85Ex19ONGTS9g9gnpz0lyvTLTGdWh5+oT3jQ8Ym0kHt5tKDMGzE0eG
+         S9YNw9/12YWbRevmGeVJQQ3K02lE8Pek0n62XV2UVXXDSRnl1x7CtrPCWJQd9X072Hd2
+         bhtWz6vo5Pujf0sAFbOKZkbCKXmf/S9KxrS49a4OIPmYTWdEkd7tWGggm08sj3H85FzF
+         rFEU7My0xAkdTYXCmpUNGMMT+nOHDA6Gp3uk6xuXB4P9f/FGmt+xSrn6LF5YkD8ZrFzk
+         OprQ==
+X-Gm-Message-State: APjAAAXBYwAwuVZTcBErHXPozWRqNlSSG6g/Eztd1Z8dn6Z4gi7ZRE97
+        TQNUm/30i1L8VCQ1/Sq7hz8q7s3EttdrFV8SSNw=
+X-Google-Smtp-Source: APXvYqy8ps35ipYMBZMhRxqth0qghotkaQzYujvBcxNzMmvLQdMgFR4+1VJlVEaxMISJPKUAQO3L2fFFVkJ+VqVhyMU=
+X-Received: by 2002:a2e:92c4:: with SMTP id k4mr8854685ljh.10.1573269996294;
+ Fri, 08 Nov 2019 19:26:36 -0800 (PST)
 MIME-Version: 1.0
-References: <157325765467.27401.1930972466188738545.stgit@toke.dk> <157325766011.27401.5278664694085166014.stgit@toke.dk>
-In-Reply-To: <157325766011.27401.5278664694085166014.stgit@toke.dk>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 8 Nov 2019 16:51:03 -0800
-Message-ID: <CAEf4BzYvv6pCHygeNyOBE4MRtcLxE1XP4Ww+sxoaPgQw5i1Rjw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 5/6] libbpf: Add bpf_get_link_xdp_info()
- function to get more XDP information
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+References: <20191107005153.31541-1-danieltimlee@gmail.com>
+ <20191107005153.31541-3-danieltimlee@gmail.com> <CAEf4BzZpBqPAKy1fKUQYSm3Wxez29EuBYqu_n2SayCfDt_ziUg@mail.gmail.com>
+ <CAEKGpzi5qz14TWm4ZSmk8zWcw_z2f9iM+dW10Tu6evJg60aa_g@mail.gmail.com>
+In-Reply-To: <CAEKGpzi5qz14TWm4ZSmk8zWcw_z2f9iM+dW10Tu6evJg60aa_g@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 8 Nov 2019 19:26:24 -0800
+Message-ID: <CAADnVQJp9RyWX9d9DKMgvC-kaYQiPv0ae0DMHJx4KENechoYeA@mail.gmail.com>
+Subject: Re: [PATCH,bpf-next v2 2/2] samples: bpf: update map definition to
+ new syntax BTF-defined map
+To:     "Daniel T. Lee" <danieltimlee@gmail.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        David Miller <davem@davemloft.net>,
+        Andrii Nakryiko <andriin@fb.com>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 8, 2019 at 4:01 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redha=
-t.com> wrote:
+On Wed, Nov 6, 2019 at 8:45 PM Daniel T. Lee <danieltimlee@gmail.com> wrote:
 >
-> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->
-> Currently, libbpf only provides a function to get a single ID for the XDP
-> program attached to the interface. However, it can be useful to get the
-> full set of program IDs attached, along with the attachment mode, in one
-> go. Add a new getter function to support this, using an extendible
-> structure to carry the information. Express the old bpf_get_link_id()
-> function in terms of the new function.
->
-> Acked-by: David S. Miller <davem@davemloft.net>
-> Acked-by: Song Liu <songliubraving@fb.com>
-> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> ---
->  tools/lib/bpf/libbpf.h   |   10 ++++++
->  tools/lib/bpf/libbpf.map |    1 +
->  tools/lib/bpf/netlink.c  |   82 ++++++++++++++++++++++++++++++----------=
-------
->  3 files changed, 65 insertions(+), 28 deletions(-)
->
+> On Thu, Nov 7, 2019 at 11:53 AM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Wed, Nov 6, 2019 at 4:52 PM Daniel T. Lee <danieltimlee@gmail.com> wrote:
+> > >
+> > > Since, the new syntax of BTF-defined map has been introduced,
+> > > the syntax for using maps under samples directory are mixed up.
+> > > For example, some are already using the new syntax, and some are using
+> > > existing syntax by calling them as 'legacy'.
+> > >
+> > > As stated at commit abd29c931459 ("libbpf: allow specifying map
+> > > definitions using BTF"), the BTF-defined map has more compatablility
+> > > with extending supported map definition features.
+> > >
+> > > The commit doesn't replace all of the map to new BTF-defined map,
+> > > because some of the samples still use bpf_load instead of libbpf, which
+> > > can't properly create BTF-defined map.
+> > >
+> > > This will only updates the samples which uses libbpf API for loading bpf
+> > > program. (ex. bpf_prog_load_xattr)
+> > >
+> > > Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
 
-[...]
-
->
-> -int bpf_get_link_xdp_id(int ifindex, __u32 *prog_id, __u32 flags)
-> +int bpf_get_link_xdp_info(int ifindex, struct xdp_link_info *info,
-> +                         size_t info_size, __u32 flags)
->  {
->         struct xdp_id_md xdp_id =3D {};
->         int sock, ret;
->         __u32 nl_pid;
->         __u32 mask;
->
-> -       if (flags & ~XDP_FLAGS_MASK)
-> +       if (flags & ~XDP_FLAGS_MASK || info_size < sizeof(*info))
->                 return -EINVAL;
-
-Well, now it's backwards-incompatible: older program passes smaller
-(but previously perfectly valid) sizeof(struct xdp_link_info) to newer
-version of libbpf. This has to go both ways: smaller struct should be
-supported as long as program doesn't request (using flags) something,
-that can't be put into allowed space.
-
-I know it's PITA to support this, but that's what we have to do for
-forward/backward compatibility.
-
->
->         /* Check whether the single {HW,DRV,SKB} mode is set */
-> @@ -274,14 +272,42 @@ int bpf_get_link_xdp_id(int ifindex, __u32 *prog_id=
-, __u32 flags)
->         xdp_id.ifindex =3D ifindex;
->         xdp_id.flags =3D flags;
->
-> -       ret =3D libbpf_nl_get_link(sock, nl_pid, get_xdp_id, &xdp_id);
-> -       if (!ret)
-> -               *prog_id =3D xdp_id.id;
-> +       ret =3D libbpf_nl_get_link(sock, nl_pid, get_xdp_info, &xdp_id);
-> +       if (!ret) {
-> +               memset(info, 0, info_size);
-> +               memcpy(info, &xdp_id.info, min(info_size, sizeof(xdp_id.i=
-nfo)));
-
-nit: memset above should start at info + min(info_size, sizeof(xdp_id.info)=
-)
-
-> +       }
->
->         close(sock);
->         return ret;
->  }
->
-
-[...]
+Applied. Thanks
