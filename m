@@ -2,51 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B718F5C6A
-	for <lists+bpf@lfdr.de>; Sat,  9 Nov 2019 01:43:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 766CDF5C77
+	for <lists+bpf@lfdr.de>; Sat,  9 Nov 2019 01:44:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726804AbfKIAmx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Nov 2019 19:42:53 -0500
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:37882 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726462AbfKIAmx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Nov 2019 19:42:53 -0500
-Received: by mail-qt1-f193.google.com with SMTP id g50so8648181qtb.4;
-        Fri, 08 Nov 2019 16:42:52 -0800 (PST)
+        id S1726399AbfKIAoh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Nov 2019 19:44:37 -0500
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:44290 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726252AbfKIAoh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Nov 2019 19:44:37 -0500
+Received: by mail-qt1-f195.google.com with SMTP id o11so8622186qtr.11;
+        Fri, 08 Nov 2019 16:44:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=4J4w1SEE54AqDXNfUf21/fjI9lr1KuVau2TR9nWF9dY=;
-        b=muOSZOj2KR5L8qgj/6v2h5U1ryVbfMRvI9twvUdiZ1yjgQOWGIc9xB67o5K5Uwyg7K
-         yoa1kGco2QE+bhAA9LpJ8ar+LhO/ERA2jpNeQ8LUQh/JGMKo2oOnaRFrcxSqvyU4jlC4
-         YHaIdscN/J75Ykj5tN2ud/DQdyHoxIgx/otqtFzhM+NQXXzm1Ihd6hAaS6tLXM/qTKtR
-         1WkgAw+oxq6FguSTcS0x32ldgdkJZI4ZpN8RHLphdFi0kYzMDH9jgZuof8v/h1YPoD3x
-         ynPYBdoOL6dE5yL9kSZoCWi8PUjspDzKDbmxjpHm47PfLAFZSP2Kbrhj7HROSA1EeQ/a
-         BO1w==
+        bh=Z9kVO/aI0vQCOguMnN3PqF5N+QLFFqD/sJOMV8589sA=;
+        b=Q1eyHZXKUj2gI4YdlKteQ3Hwpnl+uDOF1DMg6KLUr7p71nK8PHkUTR9H4V7nvUEMzI
+         2vg0KRIktP8XIPsyoQoO+PzZSg1MP1k46VhGRZnYelBpoIq2uYoET2Bzq1WpMeLmmc8f
+         +nuK4p0x/L8+uXLp+vBFfUA8ezbVZgtPJjOmasK9nsd4dr5J+tXRCr/oLOF8wOcpeWd4
+         KV8Qfu2eFZVc6E32rrLFgWmVn2HCCA2dBVxyZgEq8tRsfrdUmPJCE88zEfAA7wMbyO0s
+         ydds18f3sR38FoUBYD+GguaoglLJi+9ObYeJLrfNtwrtboZZNPJEjcLo32fRbXP4REZS
+         IEvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=4J4w1SEE54AqDXNfUf21/fjI9lr1KuVau2TR9nWF9dY=;
-        b=iUpjgIrbpuwd/0kyBcz8y4RHl15Ej+piDcEf+8c9oMSui+h0Iei9x2zIovxo2Q7KKt
-         QQ0JmtrETpoxoBcBj6qU35JLCZtkRIwc65gdSA70k66ZZTN3HJvJBtxpkUR8727e51Cg
-         3rqQwr6Y9iAI2fhmmk9cFKUZcWc/wJbSI7GQ+Hr/2ybsf1Dy/C6Xr1VXVXFn0t7Wi3Lv
-         QPTL9msSYezC+HDfq3mBnvwOvC5VeaV1nbjaD9+0lS5NMt2p4bf4N8pha9/TQImmbsID
-         JAYj6sHQedn9AwEfo86WHzaDTPBqN54qWAxNrbQFT4MLL/00CuXTZ87HTpTHwmbBId5N
-         zMmg==
-X-Gm-Message-State: APjAAAUdcv3hCL7lh3Yps+GNF04hKm9lp8/mM5nY8KCZdo22j+5hrGot
-        /zfNkPqnUirhKXhi2SRAZCwerPsiW+4dl+6+3dg=
-X-Google-Smtp-Source: APXvYqxhsCS9nQXouT/9vI/4moTna50swr1GLjFRutvJWzvaVu0xzgpsD/choFbMmQ4LO9THk5xq/LxuGT1OOstT0Qw=
-X-Received: by 2002:ac8:3fed:: with SMTP id v42mr13977804qtk.171.1573260172294;
- Fri, 08 Nov 2019 16:42:52 -0800 (PST)
+        bh=Z9kVO/aI0vQCOguMnN3PqF5N+QLFFqD/sJOMV8589sA=;
+        b=kkARuqcDoy+9w28Ky4kVVWvasAINv9bNTPv+oF+V1Zu+r2kxyT30W92cZIVEmtiles
+         VKZ/Piiba7LVFjOfQk/WfqxNbBeiDe4xte+rMbEkza2FEpImTTdWCD25k4rjeYmgwhYV
+         CJ4pOlZoAvzV26lBUyaOBv8irLc97KWKlw8z8QVJrJM16zqmQ9NpUf0orFU73a2QwPzA
+         3OX9AnjKFFZUfy/C90kSiDbsgKRJmS3Q4NEbEIFKgQuVXasbG7uNBx4yzE2KYzl+tRVS
+         muesxpyMp5IUMBAt0KHX1gMM4DJ9SnfIYQ0RAzRjtLWGc6G9so7Ov6H5BBvDIF0pjZdc
+         HWLA==
+X-Gm-Message-State: APjAAAWnoXrhdtIADIH81HkyrlFyzjQkLh9wgM3bOeFWCM9TvyPDTQPK
+        mITQmrufb4kYyOkrq7RJRhKEmfsMCq/DMyPvzoULRCzg
+X-Google-Smtp-Source: APXvYqzX2a2HdcctkCayIFHJ2qylYLIcPsTZJiE0uupqgpcLs+O9j/JRPUQh/j2H1nEvIGOw8cQlyTLYYbXT84p0frE=
+X-Received: by 2002:ac8:293a:: with SMTP id y55mr14310980qty.118.1573260275928;
+ Fri, 08 Nov 2019 16:44:35 -0800 (PST)
 MIME-Version: 1.0
-References: <157325765467.27401.1930972466188738545.stgit@toke.dk> <157325765579.27401.11576433476621158813.stgit@toke.dk>
-In-Reply-To: <157325765579.27401.11576433476621158813.stgit@toke.dk>
+References: <157325765467.27401.1930972466188738545.stgit@toke.dk> <157325765795.27401.949901357190446266.stgit@toke.dk>
+In-Reply-To: <157325765795.27401.949901357190446266.stgit@toke.dk>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 8 Nov 2019 16:42:41 -0800
-Message-ID: <CAEf4Bzb9_1SUQSjiGfc6F-eybMrXBm7p90zauKtgBxj0SZPTog@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/6] libbpf: Unpin auto-pinned maps if loading fails
+Date:   Fri, 8 Nov 2019 16:44:24 -0800
+Message-ID: <CAEf4Bza7OxXsc3Wh0Skw6PnoPaOKggBqxFn12g+Gi8CUvQBVqg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 3/6] libbpf: Propagate EPERM to caller on
+ program load
 To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
 Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -62,26 +63,36 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 8, 2019 at 4:00 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redha=
+On Fri, Nov 8, 2019 at 4:01 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redha=
 t.com> wrote:
 >
 > From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 >
-> Since the automatic map-pinning happens during load, it will leave pinned
-> maps around if the load fails at a later stage. Fix this by unpinning any
-> pinned maps on cleanup. To avoid unpinning pinned maps that were reused
-> rather than newly pinned, add a new boolean property on struct bpf_map to
-> keep track of whether that map was reused or not; and only unpin those ma=
-ps
-> that were not reused.
+> When loading an eBPF program, libbpf overrides the return code for EPERM
+> errors instead of returning it to the caller. This makes it hard to figur=
+e
+> out what went wrong on load.
 >
-> Fixes: 57a00f41644f ("libbpf: Add auto-pinning of maps when loading BPF o=
-bjects")
+> In particular, EPERM is returned when the system rlimit is too low to loc=
+k
+> the memory required for the BPF program. Previously, this was somewhat
+> obscured because the rlimit error would be hit on map creation (which doe=
+s
+> return it correctly). However, since maps can now be reused, object load
+> can proceed all the way to loading programs without hitting the error;
+> propagating it even in this case makes it possible for the caller to reac=
+t
+> appropriately (and, e.g., attempt to raise the rlimit before retrying).
+>
 > Acked-by: David S. Miller <davem@davemloft.net>
 > Acked-by: Song Liu <songliubraving@fb.com>
 > Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 > ---
 
 Acked-by: Andrii Nakryiko <andriin@fb.com>
+
+>  tools/lib/bpf/libbpf.c |   27 +++++++++++----------------
+>  1 file changed, 11 insertions(+), 16 deletions(-)
+>
 
 [...]
