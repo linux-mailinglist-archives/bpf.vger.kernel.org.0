@@ -2,168 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7776EF67D8
-	for <lists+bpf@lfdr.de>; Sun, 10 Nov 2019 08:17:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA177F67F8
+	for <lists+bpf@lfdr.de>; Sun, 10 Nov 2019 09:19:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726586AbfKJHRu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 10 Nov 2019 02:17:50 -0500
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:42050 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726582AbfKJHRu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 10 Nov 2019 02:17:50 -0500
-Received: by mail-qk1-f193.google.com with SMTP id m4so8667880qke.9;
-        Sat, 09 Nov 2019 23:17:49 -0800 (PST)
+        id S1726608AbfKJITK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 10 Nov 2019 03:19:10 -0500
+Received: from mail-pl1-f196.google.com ([209.85.214.196]:43873 "EHLO
+        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726594AbfKJITK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 10 Nov 2019 03:19:10 -0500
+Received: by mail-pl1-f196.google.com with SMTP id a18so6217545plm.10;
+        Sun, 10 Nov 2019 00:19:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JnZi9ds09RNl/dasLwKJzzJAoFVUnwihAUt4GRMgaJQ=;
-        b=U8n7gvaJ1u9SORWpxkuUGHVVjalwvR3Pfo+/MRVEml1ra7whwZDxieXIPkUHjD65e0
-         jQMg9zRl53oHccjdZtBaAxISRtsdiW707tJOTRuUJzSmBgp7W1j9dule2knKW0aEdyTf
-         2oxjcOD81l9IxgsKmLNNLX1J1WnQmvdO1dqHO0ndxUP/9KoX5SG5fko0b3Xur9wRZMbg
-         Kddlt8wz6aB852ODptEBSkQ2YIG4VrMjDWDoQnYqimxVmFpjmvlUSa9ZnTaKfdMvo7jp
-         X98qzGUfA9krXHalJPKKJWF2bisWNoF8mqflD0pukK1iAKw5CCvfuPbjiE7i40jUon14
-         As4A==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GhJqmGp+VrFnHMV4gta1TdxW0mlhmCCtJxbmydFgDMg=;
+        b=ea8bHgMxuQMGLBYLRDYDzUEcOsKbJ1pv5aowPj6B5zZVYLN8pVFjjoCwzxBc+53wgV
+         BF3lYo14zsAc+W68wlIXYrZ7abEf9Qj4UtA6/zIYXTyZlfslcDyFma7aYaeU4qCAd2Wd
+         lci5XtWBtm+h78U1c5e9KVgT1j8Aim+QZrcf8SsFPCg4I9FMZ+jH/ev84OTPfvLgWd0m
+         Ki0PdNGQX8tGHao2R33D8L6UyKbHeyqg4AoBVpwpOeL8Dok1xUXEuHOQq7h498Dk2FIB
+         D/ir8QZZe7G85HM8zakF1s6O0jmTEa/ejemWdrcvpy8ciM2FeT+aQxvv33/bCEc8OZ9H
+         L9NA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JnZi9ds09RNl/dasLwKJzzJAoFVUnwihAUt4GRMgaJQ=;
-        b=c3FkEjB+L+4UeKNPDS6kAmCAVnpMl9z6zlk4T6g5/M+XhYJ5aTKNVoRtjGM2/CwN8O
-         CsPuA50HG6VjkKglc6mY386P5u5wLAa77C8xvLoGfQ/6o1Ci1JsYHc5KsJnIsEO/suHx
-         Lw74LbLMm0DgyXgrdJyeB/RYwhKwx8PTtC7IlyPjpG3rwoZp8Mrzler4LnozaSJj53N+
-         v7479OVdu9scXaqmFugvP3Q5ygKkJP2MsydN/MWVwrJzjdUTl2z/PPh+11VD+z09Wc0g
-         w99Kr5ax5/XI/OaNd6exG0d2W0Q9C2Q09LZmyEaz21zl8IvymPqyJ2oJSKs+R5fted8G
-         LL+A==
-X-Gm-Message-State: APjAAAWJNPzyqQK8y0LUCIsd7UXDd98BLzK3Ea2A7xoO5gI4s2G2nhJ9
-        XW4nmkDh3rCLZIxF1XEeuTtbk2oxnnhVmM0ZdPI=
-X-Google-Smtp-Source: APXvYqy3+OYnK1B71YLsarnICWQpyK/QffrGpXjatBq8pf/8spPKBz+mMM00hXnFTodBSUjw5rDC/TyFDDggD21kbSs=
-X-Received: by 2002:a05:620a:12b2:: with SMTP id x18mr5298605qki.437.1573370268735;
- Sat, 09 Nov 2019 23:17:48 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GhJqmGp+VrFnHMV4gta1TdxW0mlhmCCtJxbmydFgDMg=;
+        b=VPgF/gmbMq2AJwPd/SzkM82rrt90+e4Jq5x9Iv1eG4Sq9LhtoXskCXh9tz4ExRxV3b
+         vwxeUzNRpoKFwKC1uE8wrrlsPyK0Vhl/fRPSFZEzpWV1iIcCSSbIAuF5Fs6bTvhCSyVa
+         fUvenp8tbBEGZvIpuU6xKRp2LFBcK+xEcdR9zaQTXZ6OKXxExRKAC9I0fLXjyo8QdjrR
+         jr9jWgqZevD0NZWgBt0AwOu1H2V8uYZ+fooXLEI8CpcSKTNDKB7dpUixA+l+8tdPIw/1
+         fXxBmLLYYV4L+3E0LK8IAGLDD7QmNfXQaDFFQKjx3RMzZih72OZ2Xbi2vsump/TXRM3n
+         QUpw==
+X-Gm-Message-State: APjAAAWyvNBBzAolWV2S3cnOlJpKwJQZOWlcn68TAkcI4GND9ZgzzUU9
+        LnSkl6D08Dq+ctjvhekUTA==
+X-Google-Smtp-Source: APXvYqyZc6FtR+1FtjGfTAsodm0F1j6viostVz1EWz5ph7EmwAdu1VCMLYvdmothPTcnPXvPFIaaWg==
+X-Received: by 2002:a17:902:aa02:: with SMTP id be2mr19995669plb.326.1573373948018;
+        Sun, 10 Nov 2019 00:19:08 -0800 (PST)
+Received: from localhost.localdomain ([110.35.161.54])
+        by smtp.gmail.com with ESMTPSA id j23sm10617265pfe.95.2019.11.10.00.19.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Nov 2019 00:19:07 -0800 (PST)
+From:   "Daniel T. Lee" <danieltimlee@gmail.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH] samples: bpf: fix outdated README build command
+Date:   Sun, 10 Nov 2019 17:19:01 +0900
+Message-Id: <20191110081901.20851-1-danieltimlee@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20191108064039.2041889-1-ast@kernel.org> <20191108064039.2041889-16-ast@kernel.org>
-In-Reply-To: <20191108064039.2041889-16-ast@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Sat, 9 Nov 2019 23:17:37 -0800
-Message-ID: <CAEf4BzZAEqv4kJy133PAMt81xaDBTcYDqNHSJP81X+2AitHpOQ@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 15/18] bpf: Support attaching tracing BPF
- program to other BPF programs
-To:     Alexei Starovoitov <ast@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>, x86@kernel.org,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 7, 2019 at 10:41 PM Alexei Starovoitov <ast@kernel.org> wrote:
->
-> Allow FENTRY/FEXIT BPF programs to attach to other BPF programs of any type
-> including their subprograms. This feature allows snooping on input and output
-> packets in XDP, TC programs including their return values. In order to do that
-> the verifier needs to track types not only of vmlinux, but types of other BPF
-> programs as well. The verifier also needs to translate uapi/linux/bpf.h types
-> used by networking programs into kernel internal BTF types used by FENTRY/FEXIT
-> BPF programs. In some cases LLVM optimizations can remove arguments from BPF
-> subprograms without adjusting BTF info that LLVM backend knows. When BTF info
-> disagrees with actual types that the verifiers sees the BPF trampoline has to
-> fallback to conservative and treat all arguments as u64. The FENTRY/FEXIT
-> program can still attach to such subprograms, but won't be able to recognize
-> pointer types like 'struct sk_buff *' into won't be able to pass them to
-> bpf_skb_output() for dumping to user space.
->
-> The BPF_PROG_LOAD command is extended with attach_prog_fd field. When it's set
-> to zero the attach_btf_id is one vmlinux BTF type ids. When attach_prog_fd
-> points to previously loaded BPF program the attach_btf_id is BTF type id of
-> main function or one of its subprograms.
->
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> ---
->  arch/x86/net/bpf_jit_comp.c |  3 +-
->  include/linux/bpf.h         |  2 +
->  include/linux/btf.h         |  1 +
->  include/uapi/linux/bpf.h    |  1 +
->  kernel/bpf/btf.c            | 58 +++++++++++++++++++---
->  kernel/bpf/core.c           |  2 +
->  kernel/bpf/syscall.c        | 19 +++++--
->  kernel/bpf/verifier.c       | 98 +++++++++++++++++++++++++++++--------
->  kernel/trace/bpf_trace.c    |  2 -
->  9 files changed, 151 insertions(+), 35 deletions(-)
->
+Currently, building the bpf samples under samples/bpf directory isn't
+working. Running make from the directory 'samples/bpf' will just shows
+following result without compiling any samples.
 
-[...]
+ $ make
+ make -C ../../ /git/linux/samples/bpf/ BPF_SAMPLES_PATH=/git/linux/samples/bpf
+ make[1]: Entering directory '/git/linux'
+   CALL    scripts/checksyscalls.sh
+   CALL    scripts/atomic/check-atomics.sh
+   DESCEND  objtool
+ make[1]: Leaving directory '/git/linux'
 
-> +
-> +static bool btf_translate_to_vmlinux(struct bpf_verifier_log *log,
-> +                                    struct btf *btf,
-> +                                    const struct btf_type *t,
-> +                                    struct bpf_insn_access_aux *info)
-> +{
-> +       const char *tname = __btf_name_by_offset(btf, t->name_off);
-> +       int btf_id;
-> +
-> +       if (!tname) {
-> +               bpf_log(log, "Program's type doesn't have a name\n");
-> +               return false;
-> +       }
-> +       if (strcmp(tname, "__sk_buff") == 0) {
+Due to commit 394053f4a4b3 ("kbuild: make single targets work more
+correctly"), building samples/bpf without support of samples/Makefile
+is unavailable. Instead, building the samples with 'make M=samples/bpf'
+from the root source directory will solve this issue.[1]
 
-might be a good idea to ensure that t's type is also a struct?
+This commit fixes the outdated README build command with samples/bpf.
 
-> +               btf_id = btf_resolve_helper_id(log, &bpf_skb_output_proto, 0);
+[0]: https://patchwork.kernel.org/patch/11168393/
 
-This is kind of ugly and high-maintenance. Have you considered having
-something like this, to do this mapping:
+Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
+---
+ samples/bpf/README.rst | 19 +++++++++----------
+ 1 file changed, 9 insertions(+), 10 deletions(-)
 
-struct bpf_ctx_mapping {
-    struct sk_buff *__sk_buff;
-    struct xdp_buff *xdp_md;
-};
+diff --git a/samples/bpf/README.rst b/samples/bpf/README.rst
+index 5f27e4faca50..bfd2405705ed 100644
+--- a/samples/bpf/README.rst
++++ b/samples/bpf/README.rst
+@@ -32,12 +32,10 @@ Compiling
+ For building the BPF samples, issue the below command from the kernel
+ top level directory::
+ 
+- make samples/bpf/
++ make M=samples/bpf
+ 
+-Do notice the "/" slash after the directory name.
+-
+-It is also possible to call make from this directory.  This will just
+-hide the the invocation of make as above with the appended "/".
++Due to samples/bpf cannot be built without support in the
++samples/Makefile, it is unavailable to call make from this directory.
+ 
+ Manually compiling LLVM with 'bpf' support
+ ------------------------------------------
+@@ -63,14 +61,15 @@ Quick sniplet for manually compiling LLVM and clang
+ It is also possible to point make to the newly compiled 'llc' or
+ 'clang' command via redefining LLC or CLANG on the make command line::
+ 
+- make samples/bpf/ LLC=~/git/llvm/build/bin/llc CLANG=~/git/llvm/build/bin/clang
++ make M=samples/bpf LLC=~/git/llvm/build/bin/llc CLANG=~/git/llvm/build/bin/clang
+ 
+ Cross compiling samples
+ -----------------------
+ In order to cross-compile, say for arm64 targets, export CROSS_COMPILE and ARCH
+ environment variables before calling make. This will direct make to build
+-samples for the cross target.
++samples for the cross target.::
++
++ export ARCH=arm64
++ export CROSS_COMPILE="aarch64-linux-gnu-"
++ make M=samples/bpf LLC=~/git/llvm/build/bin/llc CLANG=~/git/llvm/build/bin/clang
+ 
+-export ARCH=arm64
+-export CROSS_COMPILE="aarch64-linux-gnu-"
+-make samples/bpf/ LLC=~/git/llvm/build/bin/llc CLANG=~/git/llvm/build/bin/clang
+-- 
+2.20.1
 
-So field name is a name you are trying to match, while field type is
-actual type you are mapping to? You won't need to find special
-function protos (like bpf_skb_output_proto), it will be easy to
-extend, you'll have real vmlinux types automatically captured for you
-(you'll just have to initially find bpf_ctx_mapping's btf_id).
-
-
-> +               if (btf_id < 0)
-> +                       return false;
-> +               info->btf_id = btf_id;
-> +               return true;
-> +       }
-> +       return false;
-> +}
->
-
-[...]
-
-> +               if (tgt_prog && conservative) {
-> +                       struct btf_func_model *m = &tr->func.model;
-> +
-> +                       /* BTF function prototype doesn't match the verifier types.
-> +                        * Fall back to 5 u64 args.
-> +                        */
-> +                       for (i = 0; i < 5; i++)
-> +                               m->arg_size[i] = 8;
-> +                       m->ret_size = 8;
-> +                       m->nr_args = 5;
-> +                       prog->aux->attach_func_proto = NULL;
-> +               } else {
-> +                       ret = btf_distill_func_proto(&env->log, btf, t,
-> +                                                    tname, &tr->func.model);
-
-there is nothing preventing some parallel thread to modify
-tr->func.model in parallel, right? Should these modifications be
-either locked or at least WRITE_ONCE, similar to
-btf_resolve_helper_id?
-
-
-> +                       if (ret < 0)
-> +                               goto out;
-> +               }
-
-[...]
