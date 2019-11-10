@@ -2,78 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F4F0F6A0A
-	for <lists+bpf@lfdr.de>; Sun, 10 Nov 2019 17:13:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E37A9F6A60
+	for <lists+bpf@lfdr.de>; Sun, 10 Nov 2019 17:56:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726843AbfKJQNG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 10 Nov 2019 11:13:06 -0500
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:37706 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726726AbfKJQNG (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 10 Nov 2019 11:13:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1573402385;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DeEcU+OUUfGi87zoTUrvCIzzna0OpY7ziEHJ67ao9MU=;
-        b=ImqkK+W1bAEUAmLt1FwDzdWBIzqaiCciMnmzM1SxaIxwFWWYs8+NenuGZKaNsXmLQ9ZJoy
-        wstK8bElb7ENUtaPl7i2YmwPxR2WYbcHmsA9fklzCUpqT7oGAqRmB5jlGxGMjyp2LGWyjA
-        w9WAzpTI3NCvpOL7Ac+EzmKezv1Lnj4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-389-P3xD4WhOPhSbi5Kaiyvc0A-1; Sun, 10 Nov 2019 11:13:02 -0500
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9F8FD107ACC5;
-        Sun, 10 Nov 2019 16:13:00 +0000 (UTC)
-Received: from carbon (ovpn-200-19.brq.redhat.com [10.40.200.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id ACDCD6106B;
-        Sun, 10 Nov 2019 16:12:54 +0000 (UTC)
-Date:   Sun, 10 Nov 2019 17:12:53 +0100
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     David Miller <davem@davemloft.net>
-Cc:     brouer@redhat.com, ast@kernel.org, daniel@iogearbox.net,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: Re: net --> net-next merge
-Message-ID: <20191110171253.63098254@carbon>
-In-Reply-To: <20191109.122917.550362329016169460.davem@davemloft.net>
-References: <20191109.122917.550362329016169460.davem@davemloft.net>
+        id S1726651AbfKJQ4w (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 10 Nov 2019 11:56:52 -0500
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:40786 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726616AbfKJQ4w (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 10 Nov 2019 11:56:52 -0500
+Received: by mail-qt1-f195.google.com with SMTP id o49so13002291qta.7;
+        Sun, 10 Nov 2019 08:56:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xVYwZddW2uQrv1wJIe3JywKXsEgtkCno1xUXOY49qNw=;
+        b=FRNBroMJ5xyl+PhMMl1AA5TkaRZXQo5VzQjL1oJFOY4jK39KLiNJWgJUuTF4YNmYbr
+         3pMumk4/oPeEgG4wwyzRPJivl+fKlK63G/Z0wNp7jiXnFmsEdowlTZhaAP/iY7QnyjPT
+         Kf2mLMXKRV5LIAYNUj7KgLmM0zfoJbbUaiBtOYXS1c8jsLcKk6XA//ChtX0LUE0ejMlN
+         1PbobQuoG3mFihm//WkfJ9FmvUyxaSpKXPZKsq+WKntAST99mHFsYc0z3bmCjpDso/02
+         AZcZtV2jQxfzskJ2qlE6kubKUp/iZVG4/1lUz6zITC8yVWm/Hq2g+K0WTOAZRrKzsQ7Y
+         Rs6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xVYwZddW2uQrv1wJIe3JywKXsEgtkCno1xUXOY49qNw=;
+        b=c9BBsZ3fVUWDK7H8lAGO2N7nDaPzc6uwxa4KE1r41XG7peOJBm1GzpRn3h/3AoJYaH
+         X+jZ7oI7z4uHt52cZ4IXOaHZSMHKDoF804iFLblqNRGEcOnO35VWSswTMG5yPnuEuwCh
+         bMey6yaKqtdBBZgCHN4sDtPwh/x7/HH7+C/iA75UPIlis0BDYsTPAFa+6JFMxSVp2LQ7
+         qezFT51LD1GxkrLtHPPCLa3cMzKpyRD2D9oYdN5MT9i4xZyRxgGtAS2QEQ6HTyqeX4lI
+         1qigxjbUFOMiRRe3THlfwF56sxb9Dm0W4CuGunGXV4x4aMb9XVB802pda4tgLwr11Xen
+         USFQ==
+X-Gm-Message-State: APjAAAUyDDImVOYNsuquxQ95esF3CLdZuw6TxV40eny45MxTAJkuU1uN
+        YAduNNw0uo1yRxB1L4qNOHCKfCGkXiWd4nxQwu8=
+X-Google-Smtp-Source: APXvYqyXQOTSsiEvVB/ipLtj9q8qguN04P8k40irGmlTAME7baKhfd5yZcSJU8fNDnNfGSbsoknNWSdhvR/YUekeeEI=
+X-Received: by 2002:ac8:3fed:: with SMTP id v42mr21677051qtk.171.1573405009448;
+ Sun, 10 Nov 2019 08:56:49 -0800 (PST)
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
-X-MC-Unique: P3xD4WhOPhSbi5Kaiyvc0A-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+References: <20191108064039.2041889-1-ast@kernel.org> <20191108064039.2041889-17-ast@kernel.org>
+In-Reply-To: <20191108064039.2041889-17-ast@kernel.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Sun, 10 Nov 2019 08:56:38 -0800
+Message-ID: <CAEf4BzY1iEAM8K+iD1KO-s31VTD82C8H9t5g4wRMin+LajKryQ@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 16/18] libbpf: Add support for attaching BPF
+ programs to other BPF programs
+To:     Alexei Starovoitov <ast@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>, x86@kernel.org,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 09 Nov 2019 12:29:17 -0800 (PST)
-David Miller <davem@davemloft.net> wrote:
+On Thu, Nov 7, 2019 at 10:41 PM Alexei Starovoitov <ast@kernel.org> wrote:
+>
+> Extend libbpf api to pass attach_prog_fd into bpf_object__open.
+>
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> ---
+>  tools/include/uapi/linux/bpf.h |  1 +
+>  tools/lib/bpf/bpf.c            |  9 +++--
+>  tools/lib/bpf/bpf.h            |  5 ++-
+>  tools/lib/bpf/libbpf.c         | 65 +++++++++++++++++++++++++++++-----
+>  tools/lib/bpf/libbpf.h         |  3 +-
+>  5 files changed, 69 insertions(+), 14 deletions(-)
+>
+> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+> index 69c200e6e696..4842a134b202 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -425,6 +425,7 @@ union bpf_attr {
+>                 __aligned_u64   line_info;      /* line info */
+>                 __u32           line_info_cnt;  /* number of bpf_line_info records */
+>                 __u32           attach_btf_id;  /* in-kernel BTF type id to attach to */
+> +               __u32           attach_prog_fd; /* 0 to attach to vmlinux */
+>         };
+>
+>         struct { /* anonymous struct used by BPF_OBJ_* commands */
+> diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+> index b3e3e99a0f28..f805787c8efd 100644
+> --- a/tools/lib/bpf/bpf.c
+> +++ b/tools/lib/bpf/bpf.c
+> @@ -228,10 +228,14 @@ int bpf_load_program_xattr(const struct bpf_load_program_attr *load_attr,
+>         memset(&attr, 0, sizeof(attr));
+>         attr.prog_type = load_attr->prog_type;
+>         attr.expected_attach_type = load_attr->expected_attach_type;
+> -       if (attr.prog_type == BPF_PROG_TYPE_TRACING)
+> +       if (attr.prog_type == BPF_PROG_TYPE_TRACING) {
+>                 attr.attach_btf_id = load_attr->attach_btf_id;
+> -       else
+> +               if (load_attr->attach_prog_fd)
+> +                       attr.attach_prog_fd = load_attr->attach_prog_fd;
 
-> Please double check my conflict resoltuion for samples/bpf/Makefile
+why the if? if it's zero, attr.attach_prog_fd will stay zero.
 
-Looks okay[1] -- I have a patch doing exactly the same adjustment to
-Bj=C3=B8rns patch which conflicted with Ivan's patch 10cb3d8706db
-("samples/bpf: Use own flags but not HOSTCFLAGS").
+> +       } else {
+>                 attr.prog_ifindex = load_attr->prog_ifindex;
+> +               attr.kern_version = load_attr->kern_version;
+> +       }
+>         attr.insn_cnt = (__u32)load_attr->insns_cnt;
+>         attr.insns = ptr_to_u64(load_attr->insns);
+>         attr.license = ptr_to_u64(load_attr->license);
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git/diff=
-/samples/bpf/Makefile?id=3D14684b93019a2d2ece0df5acaf921924541b928d
+[...]
 
-Thanks for merging these, as the fixes for samples/bpf/ now seems to
-have reached your tree.  I'll send a followup to fix the rest and also
-adjust/correct the documentation in samples/bpf/README.rst.
+>         CHECK_ERR(bpf_object__elf_init(obj), err, out);
+>         CHECK_ERR(bpf_object__check_endianness(obj), err, out);
+> @@ -3927,10 +3934,12 @@ __bpf_object__open(const char *path, const void *obj_buf, size_t obj_buf_sz,
+>                 bpf_program__set_expected_attach_type(prog, attach_type);
+>                 if (prog_type == BPF_PROG_TYPE_TRACING) {
+>                         err = libbpf_attach_btf_id_by_name(prog->section_name,
+> -                                                          attach_type);
+> +                                                          attach_type,
+> +                                                          attach_prog_fd);
 
---=20
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+libbpf_find_attach_btf_id seems like a better name at this point
 
+>                         if (err <= 0)
+>                                 goto out;
+>                         prog->attach_btf_id = err;
+> +                       prog->attach_prog_fd = attach_prog_fd;
+>                 }
+>         }
+>
+
+[...]
