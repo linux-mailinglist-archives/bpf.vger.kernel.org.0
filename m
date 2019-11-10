@@ -2,197 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DBABDF692F
-	for <lists+bpf@lfdr.de>; Sun, 10 Nov 2019 14:53:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F4F0F6A0A
+	for <lists+bpf@lfdr.de>; Sun, 10 Nov 2019 17:13:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726805AbfKJNxx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 10 Nov 2019 08:53:53 -0500
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:38460 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726436AbfKJNxw (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 10 Nov 2019 08:53:52 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01422;MF=wenyang@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0ThdvM89_1573394021;
-Received: from IT-C02W23QPG8WN.local(mailfrom:wenyang@linux.alibaba.com fp:SMTPD_---0ThdvM89_1573394021)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sun, 10 Nov 2019 21:53:42 +0800
-Subject: Re: [PATCH] net: core: fix unbalanced qdisc_run_begin/qdisc_run_end
-To:     davem@davemloft.net
-Cc:     zhiche.yy@alibaba-inc.com, xlpang@linux.alibaba.com,
-        Eric Dumazet <edumazet@google.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Kevin Athey <kda@google.com>,
-        Xiaotian Pei <xiaotian@google.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20191110020149.65307-1-wenyang@linux.alibaba.com>
-From:   Wen Yang <wenyang@linux.alibaba.com>
-Message-ID: <be7dd49a-0da9-1dd1-0fec-3f6485531fb6@linux.alibaba.com>
-Date:   Sun, 10 Nov 2019 21:53:41 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.1.1
+        id S1726843AbfKJQNG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 10 Nov 2019 11:13:06 -0500
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:37706 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726726AbfKJQNG (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 10 Nov 2019 11:13:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1573402385;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DeEcU+OUUfGi87zoTUrvCIzzna0OpY7ziEHJ67ao9MU=;
+        b=ImqkK+W1bAEUAmLt1FwDzdWBIzqaiCciMnmzM1SxaIxwFWWYs8+NenuGZKaNsXmLQ9ZJoy
+        wstK8bElb7ENUtaPl7i2YmwPxR2WYbcHmsA9fklzCUpqT7oGAqRmB5jlGxGMjyp2LGWyjA
+        w9WAzpTI3NCvpOL7Ac+EzmKezv1Lnj4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-389-P3xD4WhOPhSbi5Kaiyvc0A-1; Sun, 10 Nov 2019 11:13:02 -0500
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9F8FD107ACC5;
+        Sun, 10 Nov 2019 16:13:00 +0000 (UTC)
+Received: from carbon (ovpn-200-19.brq.redhat.com [10.40.200.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id ACDCD6106B;
+        Sun, 10 Nov 2019 16:12:54 +0000 (UTC)
+Date:   Sun, 10 Nov 2019 17:12:53 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     David Miller <davem@davemloft.net>
+Cc:     brouer@redhat.com, ast@kernel.org, daniel@iogearbox.net,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: Re: net --> net-next merge
+Message-ID: <20191110171253.63098254@carbon>
+In-Reply-To: <20191109.122917.550362329016169460.davem@davemloft.net>
+References: <20191109.122917.550362329016169460.davem@davemloft.net>
 MIME-Version: 1.0
-In-Reply-To: <20191110020149.65307-1-wenyang@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-MC-Unique: P3xD4WhOPhSbi5Kaiyvc0A-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Sorry, after analyzing the assembly code of this function,
+On Sat, 09 Nov 2019 12:29:17 -0800 (PST)
+David Miller <davem@davemloft.net> wrote:
 
-the semantics of the short circuit, there is no problem in this place.
+> Please double check my conflict resoltuion for samples/bpf/Makefile
 
-we will continue to analyze, please ignore this patch, thank you.
+Looks okay[1] -- I have a patch doing exactly the same adjustment to
+Bj=C3=B8rns patch which conflicted with Ivan's patch 10cb3d8706db
+("samples/bpf: Use own flags but not HOSTCFLAGS").
 
---
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git/diff=
+/samples/bpf/Makefile?id=3D14684b93019a2d2ece0df5acaf921924541b928d
 
-Regards,
+Thanks for merging these, as the fixes for samples/bpf/ now seems to
+have reached your tree.  I'll send a followup to fix the rest and also
+adjust/correct the documentation in samples/bpf/README.rst.
 
-Wen
+--=20
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
-
-On 2019/11/10 10:01 上午, Wen Yang wrote:
-> 3598 static inline int __dev_xmit_skb(struct sk_buff *skb, struct Qdisc *q,
-> 3599                                  struct net_device *dev,
-> 3600                                  struct netdev_queue *txq)
-> 3601 {
-> ...
-> 3650         } else if ((q->flags & TCQ_F_CAN_BYPASS) && !qdisc_qlen(q) &&
-> 3651                    qdisc_run_begin(q)) {
->
-> ---> Those multiple *and conditions* in this if statement are not
->       necessarily executed sequentially. If the qdisc_run_begin(q)
->       statement is executed first and the other conditions are not
->       satisfied, qdisc_run_end will have no chance to be executed,
->       and the lowest bit of q->running will always be 1.
->       This may lead to a softlockup:
->       https://bugzilla.kernel.org/show_bug.cgi?id=205427
-> ...
-> 3657
-> 3658                 qdisc_bstats_update(q, skb);
-> ...
-> 3661                         if (unlikely(contended)) {
-> 3662                                 spin_unlock(&q->busylock);
-> 3663                                 contended = false;
-> 3664                         }
-> 3665                         __qdisc_run(q);
-> 3666                 }
-> 3667
-> 3668                 qdisc_run_end(q);
-> 3669                 rc = NET_XMIT_SUCCESS;
-> 3670         }
-> ...
->
-> We ensure the correct execution order by explicitly
-> specifying those dependencies.
-> Fixes: edb09eb17ed8 ("net: sched: do not acquire qdisc spinlock in qdisc/class stats dump")
-> Signed-off-by: Wen Yang <wenyang@linux.alibaba.com>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Eric Dumazet <edumazet@google.com>
-> Cc: Cong Wang <xiyou.wangcong@gmail.com>
-> Cc: Jamal Hadi Salim <jhs@mojatatu.com>
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: Kevin Athey <kda@google.com>
-> Cc: Xiaotian Pei <xiaotian@google.com>
-> Cc: netdev@vger.kernel.org
-> Cc: bpf@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> ---
->   net/core/dev.c | 63 ++++++++++++++++++++++++++++++----------------------------
->   1 file changed, 33 insertions(+), 30 deletions(-)
->
-> diff --git a/net/core/dev.c b/net/core/dev.c
-> index 20c7a67..d2690ee 100644
-> --- a/net/core/dev.c
-> +++ b/net/core/dev.c
-> @@ -3602,27 +3602,28 @@ static inline int __dev_xmit_skb(struct sk_buff *skb, struct Qdisc *q,
->   	spinlock_t *root_lock = qdisc_lock(q);
->   	struct sk_buff *to_free = NULL;
->   	bool contended;
-> -	int rc;
-> +	int rc = NET_XMIT_SUCCESS;
->   
->   	qdisc_calculate_pkt_len(skb, q);
->   
->   	if (q->flags & TCQ_F_NOLOCK) {
-> -		if ((q->flags & TCQ_F_CAN_BYPASS) && q->empty &&
-> -		    qdisc_run_begin(q)) {
-> -			if (unlikely(test_bit(__QDISC_STATE_DEACTIVATED,
-> -					      &q->state))) {
-> -				__qdisc_drop(skb, &to_free);
-> -				rc = NET_XMIT_DROP;
-> -				goto end_run;
-> -			}
-> -			qdisc_bstats_cpu_update(q, skb);
-> +		if ((q->flags & TCQ_F_CAN_BYPASS) && q->empty) {
-> +			if (qdisc_run_begin(q)) {
-> +				if (unlikely(test_bit(__QDISC_STATE_DEACTIVATED,
-> +						      &q->state))) {
-> +					__qdisc_drop(skb, &to_free);
-> +					rc = NET_XMIT_DROP;
-> +					goto end_run;
-> +				}
-> +				qdisc_bstats_cpu_update(q, skb);
->   
-> -			rc = NET_XMIT_SUCCESS;
-> -			if (sch_direct_xmit(skb, q, dev, txq, NULL, true))
-> -				__qdisc_run(q);
-> +				if (sch_direct_xmit(skb, q, dev, txq, NULL,
-> +						    true))
-> +					__qdisc_run(q);
->   
->   end_run:
-> -			qdisc_run_end(q);
-> +				qdisc_run_end(q);
-> +			}
->   		} else {
->   			rc = q->enqueue(skb, q, &to_free) & NET_XMIT_MASK;
->   			qdisc_run(q);
-> @@ -3647,26 +3648,28 @@ static inline int __dev_xmit_skb(struct sk_buff *skb, struct Qdisc *q,
->   	if (unlikely(test_bit(__QDISC_STATE_DEACTIVATED, &q->state))) {
->   		__qdisc_drop(skb, &to_free);
->   		rc = NET_XMIT_DROP;
-> -	} else if ((q->flags & TCQ_F_CAN_BYPASS) && !qdisc_qlen(q) &&
-> -		   qdisc_run_begin(q)) {
-> -		/*
-> -		 * This is a work-conserving queue; there are no old skbs
-> -		 * waiting to be sent out; and the qdisc is not running -
-> -		 * xmit the skb directly.
-> -		 */
-> +	} else if ((q->flags & TCQ_F_CAN_BYPASS) && !qdisc_qlen(q)) {
-> +		if (qdisc_run_begin(q)) {
-> +			/* This is a work-conserving queue;
-> +			 * there are no old skbs waiting to be sent out;
-> +			 * and the qdisc is not running -
-> +			 * xmit the skb directly.
-> +			 */
->   
-> -		qdisc_bstats_update(q, skb);
-> +			qdisc_bstats_update(q, skb);
->   
-> -		if (sch_direct_xmit(skb, q, dev, txq, root_lock, true)) {
-> -			if (unlikely(contended)) {
-> -				spin_unlock(&q->busylock);
-> -				contended = false;
-> +			if (sch_direct_xmit(skb, q, dev, txq, root_lock,
-> +					    true)) {
-> +				if (unlikely(contended)) {
-> +					spin_unlock(&q->busylock);
-> +					contended = false;
-> +				}
-> +				__qdisc_run(q);
->   			}
-> -			__qdisc_run(q);
-> -		}
->   
-> -		qdisc_run_end(q);
-> -		rc = NET_XMIT_SUCCESS;
-> +			qdisc_run_end(q);
-> +			rc = NET_XMIT_SUCCESS;
-> +		}
->   	} else {
->   		rc = q->enqueue(skb, q, &to_free) & NET_XMIT_MASK;
->   		if (qdisc_run_begin(q)) {
