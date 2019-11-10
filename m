@@ -2,27 +2,27 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F33BF6652
-	for <lists+bpf@lfdr.de>; Sun, 10 Nov 2019 04:13:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CA47F6505
+	for <lists+bpf@lfdr.de>; Sun, 10 Nov 2019 04:04:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728060AbfKJCmx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 9 Nov 2019 21:42:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39672 "EHLO mail.kernel.org"
+        id S1727247AbfKJDEE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 9 Nov 2019 22:04:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51758 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727974AbfKJCmw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 9 Nov 2019 21:42:52 -0500
+        id S1729220AbfKJCrA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 9 Nov 2019 21:47:00 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C9CC721882;
-        Sun, 10 Nov 2019 02:42:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2255D2085B;
+        Sun, 10 Nov 2019 02:46:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1573353771;
-        bh=5ZDLL2jzO0bYUJZZV6wHwNTMpEYiGBSQOV5StXzn/1U=;
+        s=default; t=1573354019;
+        bh=46aynxYa1blruQAizaAJje0TP9KsL3W8yOgn6Hl7da0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OZqIEXh01Redyj5gTHP/XPqjaA3ZcqVbfmoOj7zu5enkShekz80JENK06SkzXqPCQ
-         jYAPTuTedvk74t6jHXmO+9nKdmdk7Z5tpxC93EsNTFhM8dxRgOXWPLVqi3tiJSGbEy
-         EcRaTHnwDA2vdaG6aVIgzw+lxXXMNTyOs3Njdb2M=
+        b=IM8kMdVN/A2E2G7ocmmJSEu4ac+QlZ6Bd4lrvQ0ep5qyP+fObnVrVBfwmzj18obpu
+         VNxkrjDtkcWzcwnDrBQWzHaE7zysedzGKq2Uc6Rrrju1bRuXzku0M8UazSnEo9XAvN
+         TkfZKUdOHEbRAo0GLu68VubUIE4+d6JhANYmeoNU=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Prashant Bhole <bhole_prashant_q7@lab.ntt.co.jp>,
@@ -30,12 +30,12 @@ Cc:     Prashant Bhole <bhole_prashant_q7@lab.ntt.co.jp>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 082/191] samples/bpf: fix compilation failure
-Date:   Sat,  9 Nov 2019 21:38:24 -0500
-Message-Id: <20191110024013.29782-82-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 042/109] samples/bpf: fix compilation failure
+Date:   Sat,  9 Nov 2019 21:44:34 -0500
+Message-Id: <20191110024541.31567-42-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191110024013.29782-1-sashal@kernel.org>
-References: <20191110024013.29782-1-sashal@kernel.org>
+In-Reply-To: <20191110024541.31567-1-sashal@kernel.org>
+References: <20191110024541.31567-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -163,7 +163,7 @@ index 95907f8d2b17d..c527b57d3ec8a 100644
  
  	value = bpf_map_lookup_elem(&hash_map, &key);
 diff --git a/samples/bpf/sockex3_user.c b/samples/bpf/sockex3_user.c
-index 22f74d0e14934..9d02e0404719a 100644
+index 4d75674bee35e..741b899b693f3 100644
 --- a/samples/bpf/sockex3_user.c
 +++ b/samples/bpf/sockex3_user.c
 @@ -13,7 +13,7 @@
