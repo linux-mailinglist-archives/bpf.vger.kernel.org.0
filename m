@@ -2,103 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 14EA2F7A6D
-	for <lists+bpf@lfdr.de>; Mon, 11 Nov 2019 19:01:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28B61F7BE4
+	for <lists+bpf@lfdr.de>; Mon, 11 Nov 2019 19:41:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726927AbfKKSBo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 11 Nov 2019 13:01:44 -0500
-Received: from dispatch1-us1.ppe-hosted.com ([67.231.154.164]:38292 "EHLO
-        dispatch1-us1.ppe-hosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726910AbfKKSBo (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 11 Nov 2019 13:01:44 -0500
-X-Virus-Scanned: Proofpoint Essentials engine
-Received: from webmail.solarflare.com (uk.solarflare.com [193.34.186.16])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1-us5.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTPS id 79175580051;
-        Mon, 11 Nov 2019 18:01:41 +0000 (UTC)
-Received: from [10.17.20.203] (10.17.20.203) by ukex01.SolarFlarecom.com
- (10.17.10.4) with Microsoft SMTP Server (TLS) id 15.0.1395.4; Mon, 11 Nov
- 2019 18:01:33 +0000
-Subject: Re: [PATCH net-next] sfc: trace_xdp_exception on XDP failure
-To:     Arthur Fabre <afabre@cloudflare.com>
-CC:     Solarflare linux maintainers <linux-net-drivers@solarflare.com>,
-        "Charles McLachlan" <cmclachlan@solarflare.com>,
-        Martin Habets <mhabets@solarflare.com>,
-        David Miller <davem@davemloft.net>,
-        "Alexei Starovoitov" <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "Jakub Kicinski" <jakub.kicinski@netronome.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>
-References: <20191111105100.2992-1-afabre@cloudflare.com>
- <f58a73a8-631c-a9a1-25e9-a5f0050df13c@solarflare.com>
- <CAOn4ftvqib3y+Gfhq+dS4cUeWQVyGDM+rNeLnoVoYz9O_VLYLA@mail.gmail.com>
-From:   Edward Cree <ecree@solarflare.com>
-Message-ID: <6a3705cc-809d-0c7a-d39f-97d61c4ce58c@solarflare.com>
-Date:   Mon, 11 Nov 2019 18:01:30 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S1728850AbfKKSlB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 11 Nov 2019 13:41:01 -0500
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:37196 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726988AbfKKSlA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 11 Nov 2019 13:41:00 -0500
+Received: by mail-pg1-f196.google.com with SMTP id z24so9978455pgu.4
+        for <bpf@vger.kernel.org>; Mon, 11 Nov 2019 10:41:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :organization:mime-version:content-transfer-encoding;
+        bh=5e0w3CQksxVMU/lpN+cxiiEhTWlz5Cq8XlCAAEMfzs0=;
+        b=jsmHBM1kJhwgwx4Wg9T663bZvEh4kV1pO8gOynTMTjaA7lsSEKYPmM64ghgH1rTNTU
+         +6Z3DczHUjRPP6rzAwysi6eDjHin2m6Mjlgylu/RhpAVtsqnA2N39u5uLFrDp4ZQ0jlA
+         0RvQ4JqvZGUGtPTxBgAkqsihip17fGun9vUcaozTmioiKJELuOLIA/VP5X4VUCRgc1aM
+         SMIsfD+eaIpItc4Dkx6jK6ekf3GTNp5XwsD+eU/3eFQewQLNHrQEvpahexBs92RzpqV4
+         JBVzWXbRz85oBX5GrEHxKriP+XTU/gPWVcirRm5wcADqV52RpACvOcXprkTWHlpXJoh2
+         SGUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=5e0w3CQksxVMU/lpN+cxiiEhTWlz5Cq8XlCAAEMfzs0=;
+        b=GfY76z/apmJib1ULmLq49RJVqS+BY8K/3teqp0PrnNP8snN7v9FzBgQLd7BygLkz6i
+         e2jfBzPVBIukpS4XOW2ggUdkhilI1NqiVedzdSoBxJih9t7DVvqoRahjaLNrdFp/RjC4
+         8K+B2eapSL6J+8/weqszuoXzqeyGb9cdz4oqif+5prHsWH+JOGi9GMJImvjLaO+JUajy
+         VtessqH9Wet/pbtKHMI1Dglylto6B6GFD+zNJh2KGRpMWjr8iBlwKVXZ2LtO5QO1MN5N
+         ayAMBpf2Ep+0UqwVPKumV2LlcbhSeJSgti1G6UllGsWn7CHc5Jj9IciZzTXWhORGCHvw
+         9Vxw==
+X-Gm-Message-State: APjAAAX3ODttyO+YHrs5Xf1Wr77JmfG+y4edK4arTX/apeq5YRN1Qj+s
+        IqmXB36QH7zLLOaAOD6J5KrFZgelBaY=
+X-Google-Smtp-Source: APXvYqzEVIpxxwFp43Qk9kb+rMQROh8++y6Dlv3qoOGQ/XhcfQv5UkkhbMLGtlmEtDj0J+deE/EVJg==
+X-Received: by 2002:aa7:870c:: with SMTP id b12mr31547925pfo.30.1573497659902;
+        Mon, 11 Nov 2019 10:40:59 -0800 (PST)
+Received: from cakuba (c-73-202-202-92.hsd1.ca.comcast.net. [73.202.202.92])
+        by smtp.gmail.com with ESMTPSA id c16sm14673943pfo.34.2019.11.11.10.40.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Nov 2019 10:40:59 -0800 (PST)
+Date:   Mon, 11 Nov 2019 10:40:57 -0800
+From:   Jakub Kicinski <jakub.kicinski@netronome.com>
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>, <andrii.nakryiko@gmail.com>,
+        <kernel-team@fb.com>
+Subject: Re: [PATCH v2 bpf-next 2/3] libbpf: make global data internal
+ arrays mmap()-able, if possible
+Message-ID: <20191111104057.0a9dfd84@cakuba>
+In-Reply-To: <20191109080633.2855561-3-andriin@fb.com>
+References: <20191109080633.2855561-1-andriin@fb.com>
+        <20191109080633.2855561-3-andriin@fb.com>
+Organization: Netronome Systems, Ltd.
 MIME-Version: 1.0
-In-Reply-To: <CAOn4ftvqib3y+Gfhq+dS4cUeWQVyGDM+rNeLnoVoYz9O_VLYLA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.17.20.203]
-X-ClientProxiedBy: ocex03.SolarFlarecom.com (10.20.40.36) To
- ukex01.SolarFlarecom.com (10.17.10.4)
-X-TM-AS-Product-Ver: SMEX-12.5.0.1300-8.5.1010-25036.003
-X-TM-AS-Result: No-6.224200-8.000000-10
-X-TMASE-MatchedRID: QW5G6BKkLTrmLzc6AOD8DfHkpkyUphL9SeIjeghh/zNcpms3pMhT0ciT
-        Wug2C4DNl1M7KT9/aqDCGaYSzXQ4OcxAixoJws1YA9lly13c/gHYuVu0X/rOkPa7agslQWYYS8X
-        QUmo7QNjtxcbrBYMsBPI1z1fnOPlxeW+Dbewdu5u84C/3iwAgxBfbPFE2GHrVX30pMm+iz0jD1l
-        mWT+88Nu0ooccEm+Y0l57hPGdoWxvti3IwtSm+K5qvoi7RQmPSBnIRIVcCWN9Z+M9E/Hx6KHs6g
-        pw5sMWK4vM1YF6AJbZFi+KwZZttL7ew1twePJJB3QfwsVk0UbsIoUKaF27lxbFqR/fS2lRWQI+Z
-        YiTJvTP3JJ+Vk6CDGYP9zRn7y7SSAPJbQtdK6V5drZQZg8ilGyo0N27D4SnfxH+VL6lfYyS5tBV
-        HNvTD6aKAQfLsnhLrKWSt4DmvbhpicKLmK2TeKmsPn5C6nWpTnqg/VrSZEiM=
-X-TM-AS-User-Approved-Sender: Yes
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--6.224200-8.000000
-X-TMASE-Version: SMEX-12.5.0.1300-8.5.1010-25036.003
-X-MDID: 1573495303-L0Xg_U-n0USA
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/11/2019 17:38, Arthur Fabre wrote:
-> On Mon, Nov 11, 2019 at 5:27 PM Edward Cree <ecree@solarflare.com> wrote:
->>
->> On 11/11/2019 10:51, Arthur Fabre wrote:
->>> diff --git a/drivers/net/ethernet/sfc/rx.c b/drivers/net/ethernet/sfc/rx.c
->>> index a7d9841105d8..5bfe1f6112a1 100644
->>> --- a/drivers/net/ethernet/sfc/rx.c
->>> +++ b/drivers/net/ethernet/sfc/rx.c
->>> @@ -678,6 +678,7 @@ static bool efx_do_xdp(struct efx_nic *efx, struct efx_channel *channel,
->>>                                 "XDP is not possible with multiple receive fragments (%d)\n",
->>>                                 channel->rx_pkt_n_frags);
->>>               channel->n_rx_xdp_bad_drops++;
->>> +             trace_xdp_exception(efx->net_dev, xdp_prog, xdp_act);
->>>               return false;
->>>       }
->> AIUI trace_xdp_exception() is improper here as we have not run
->>  the XDP program (and xdp_act is thus uninitialised).
->>
->> The other three, below, appear to be correct.
->> -Ed
->>
-> 
-> Good point. Do you know under what conditions we'd end up with
-> "fragmented" packets? As far as I can tell this isn't IP
-> fragmentation?
+On Sat, 9 Nov 2019 00:06:31 -0800, Andrii Nakryiko wrote:
+> +static int bpf_object__probe_array_mmap(struct bpf_object *obj)
+> +{
+> +	struct bpf_create_map_attr attr = {
+> +		.map_type = BPF_MAP_TYPE_ARRAY,
+> +		.map_flags = BPF_F_MMAPABLE,
+> +		.key_size = sizeof(int),
+> +		.value_size = sizeof(int),
+> +		.max_entries = 1,
+> +	};
+> +	int fd = bpf_create_map_xattr(&attr);
+> +
+> +	if (fd >= 0) {
 
-Fragments in this case means that the packet data are spread across
- multiple RX buffers (~= memory pages).  This should only happen if
- the RX packet is too big to fit in a single buffer, and when
- enabling XDP we ensure that the MTU is small enough to prevent
- that.  So in theory this can't happen if the NIC is functioning
- correctly.
+The point of the empty line between variable declarations and code in
+the Linux coding style is to provide a visual separation between
+variables and code.
 
--Ed
+If you call a complex function in variable init and then check for
+errors in the code that really breaks that principle.
+
+> +		obj->caps.array_mmap = 1;
+> +		close(fd);
+> +		return 1;
+> +	}
+> +
+> +	return 0;
+> +}
+
