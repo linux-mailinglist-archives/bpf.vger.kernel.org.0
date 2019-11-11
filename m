@@ -2,60 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 28B61F7BE4
-	for <lists+bpf@lfdr.de>; Mon, 11 Nov 2019 19:41:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14908F7F09
+	for <lists+bpf@lfdr.de>; Mon, 11 Nov 2019 20:08:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728850AbfKKSlB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 11 Nov 2019 13:41:01 -0500
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:37196 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726988AbfKKSlA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 11 Nov 2019 13:41:00 -0500
-Received: by mail-pg1-f196.google.com with SMTP id z24so9978455pgu.4
-        for <bpf@vger.kernel.org>; Mon, 11 Nov 2019 10:41:00 -0800 (PST)
+        id S1727563AbfKKTH3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 11 Nov 2019 14:07:29 -0500
+Received: from mail-pl1-f195.google.com ([209.85.214.195]:35213 "EHLO
+        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727290AbfKKShs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 11 Nov 2019 13:37:48 -0500
+Received: by mail-pl1-f195.google.com with SMTP id s10so8147570plp.2
+        for <bpf@vger.kernel.org>; Mon, 11 Nov 2019 10:37:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=netronome-com.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:in-reply-to:references
          :organization:mime-version:content-transfer-encoding;
-        bh=5e0w3CQksxVMU/lpN+cxiiEhTWlz5Cq8XlCAAEMfzs0=;
-        b=jsmHBM1kJhwgwx4Wg9T663bZvEh4kV1pO8gOynTMTjaA7lsSEKYPmM64ghgH1rTNTU
-         +6Z3DczHUjRPP6rzAwysi6eDjHin2m6Mjlgylu/RhpAVtsqnA2N39u5uLFrDp4ZQ0jlA
-         0RvQ4JqvZGUGtPTxBgAkqsihip17fGun9vUcaozTmioiKJELuOLIA/VP5X4VUCRgc1aM
-         SMIsfD+eaIpItc4Dkx6jK6ekf3GTNp5XwsD+eU/3eFQewQLNHrQEvpahexBs92RzpqV4
-         JBVzWXbRz85oBX5GrEHxKriP+XTU/gPWVcirRm5wcADqV52RpACvOcXprkTWHlpXJoh2
-         SGUg==
+        bh=XOOoBZ0re6Ve1q2YuhhAZNQkL2NgQkbUu3Jh3Rye1tk=;
+        b=TxYshMCdbP5TCGKLfCSTUv0fMznilQ9G2WFtv1pXk+y365BLer6Km1l/7JlK6fOfHi
+         wxiH4nxUt26GY+Y+pIhVcCs2APSYNYWw1ppktjgjuKrsPZxM9v6Do6Nkx6WIUYrtHjwM
+         JdXUXs7bI/4vqB6ujDqZvRUUW/l/Ijh/l9TGHPn+hswU9lYir2GkAijBREnofHecRTY1
+         f56Z3hRRN7zMxjBHcvJfhgWhyAC9fF1Zu5ui+u+UjVwYhSgp07TWYkp4rv7iL5TAGD6b
+         MpaYGCO85YpTDqGHp7ddsYZdXPClkeXQckV5Ckrt1TVOyJygmGTRk8EXWDvi6yHJX2XD
+         7n0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
          :references:organization:mime-version:content-transfer-encoding;
-        bh=5e0w3CQksxVMU/lpN+cxiiEhTWlz5Cq8XlCAAEMfzs0=;
-        b=GfY76z/apmJib1ULmLq49RJVqS+BY8K/3teqp0PrnNP8snN7v9FzBgQLd7BygLkz6i
-         e2jfBzPVBIukpS4XOW2ggUdkhilI1NqiVedzdSoBxJih9t7DVvqoRahjaLNrdFp/RjC4
-         8K+B2eapSL6J+8/weqszuoXzqeyGb9cdz4oqif+5prHsWH+JOGi9GMJImvjLaO+JUajy
-         VtessqH9Wet/pbtKHMI1Dglylto6B6GFD+zNJh2KGRpMWjr8iBlwKVXZ2LtO5QO1MN5N
-         ayAMBpf2Ep+0UqwVPKumV2LlcbhSeJSgti1G6UllGsWn7CHc5Jj9IciZzTXWhORGCHvw
-         9Vxw==
-X-Gm-Message-State: APjAAAX3ODttyO+YHrs5Xf1Wr77JmfG+y4edK4arTX/apeq5YRN1Qj+s
-        IqmXB36QH7zLLOaAOD6J5KrFZgelBaY=
-X-Google-Smtp-Source: APXvYqzEVIpxxwFp43Qk9kb+rMQROh8++y6Dlv3qoOGQ/XhcfQv5UkkhbMLGtlmEtDj0J+deE/EVJg==
-X-Received: by 2002:aa7:870c:: with SMTP id b12mr31547925pfo.30.1573497659902;
-        Mon, 11 Nov 2019 10:40:59 -0800 (PST)
+        bh=XOOoBZ0re6Ve1q2YuhhAZNQkL2NgQkbUu3Jh3Rye1tk=;
+        b=qFIBTkdmW+gAU9FKmWg+5ntuSq5jvt4bECAhyhybLjgTci246IkCS6MUbN1eS9NGCJ
+         XyL+dIgGz/p7XsgThdGMWmzR1eZ2L7SyrIr22ds0SGHwObXhq+Pr4H+86O7S7+HTpm7+
+         VZNUi4ZZaj98KEY1ttFl1XVVVaVU7apI440SE1pMisE1aNmg8oVj5LiAhtV0bWxGCL8L
+         pROpU9XKlw6wKG9BygBIpt40tEAHrGK1iOkTlGMArQSNNdZJLWx8aP2ZoIIlGPTPtsZb
+         Z1YDtGShUah8H7P2dvdIOhp0hCBeKwwmiMGZLYoM4m4BdyIdriVXWAx/hIjfCyoJXJWb
+         H8cQ==
+X-Gm-Message-State: APjAAAXCGKHL228jQzXpnqEOXy5OkxTMZIt/0cCCvmmoH+irdGELYIGl
+        tfdE/Lr2BrtMTLq+/SoIre3nCg==
+X-Google-Smtp-Source: APXvYqyMQBUyQf6Gl4KA2tQxYftn7cNhpbPzeLivgGlsCF2E02Jz5hoKgzYxZ8zY2vaet9QD3NJZrA==
+X-Received: by 2002:a17:902:fe10:: with SMTP id g16mr532442plj.102.1573497467456;
+        Mon, 11 Nov 2019 10:37:47 -0800 (PST)
 Received: from cakuba (c-73-202-202-92.hsd1.ca.comcast.net. [73.202.202.92])
-        by smtp.gmail.com with ESMTPSA id c16sm14673943pfo.34.2019.11.11.10.40.59
+        by smtp.gmail.com with ESMTPSA id z23sm14003206pgu.16.2019.11.11.10.37.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Nov 2019 10:40:59 -0800 (PST)
-Date:   Mon, 11 Nov 2019 10:40:57 -0800
+        Mon, 11 Nov 2019 10:37:47 -0800 (PST)
+Date:   Mon, 11 Nov 2019 10:37:43 -0800
 From:   Jakub Kicinski <jakub.kicinski@netronome.com>
 To:     Andrii Nakryiko <andriin@fb.com>
 Cc:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
         <daniel@iogearbox.net>, <andrii.nakryiko@gmail.com>,
-        <kernel-team@fb.com>
-Subject: Re: [PATCH v2 bpf-next 2/3] libbpf: make global data internal
- arrays mmap()-able, if possible
-Message-ID: <20191111104057.0a9dfd84@cakuba>
-In-Reply-To: <20191109080633.2855561-3-andriin@fb.com>
+        <kernel-team@fb.com>, Rik van Riel <riel@surriel.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Subject: Re: [PATCH v2 bpf-next 1/3] bpf: add mmap() support for
+ BPF_MAP_TYPE_ARRAY
+Message-ID: <20191111103743.1c3a38a3@cakuba>
+In-Reply-To: <20191109080633.2855561-2-andriin@fb.com>
 References: <20191109080633.2855561-1-andriin@fb.com>
-        <20191109080633.2855561-3-andriin@fb.com>
+        <20191109080633.2855561-2-andriin@fb.com>
 Organization: Netronome Systems, Ltd.
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -65,32 +66,37 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 9 Nov 2019 00:06:31 -0800, Andrii Nakryiko wrote:
-> +static int bpf_object__probe_array_mmap(struct bpf_object *obj)
-> +{
-> +	struct bpf_create_map_attr attr = {
-> +		.map_type = BPF_MAP_TYPE_ARRAY,
-> +		.map_flags = BPF_F_MMAPABLE,
-> +		.key_size = sizeof(int),
-> +		.value_size = sizeof(int),
-> +		.max_entries = 1,
-> +	};
-> +	int fd = bpf_create_map_xattr(&attr);
-> +
-> +	if (fd >= 0) {
+On Sat, 9 Nov 2019 00:06:30 -0800, Andrii Nakryiko wrote:
+> With BPF_F_MMAPABLE array allocating data in separate chunk of memory,
+> array_map_gen_lookup has to accomodate these changes. For non-memory-mapped
+> there are no changes and no extra instructions. For BPF_F_MMAPABLE case,
+> pointer to where array data is stored has to be dereferenced first.
+> 
+> Generated code for non-memory-mapped array:
+> 
+> ; p = bpf_map_lookup_elem(&data_map, &zero);
+>   22: (18) r1 = map[id:19]
+>   24: (07) r1 += 408			/* array->inline_data offset */
+>   25: (61) r0 = *(u32 *)(r2 +0)
+>   26: (35) if r0 >= 0x3 goto pc+3
+>   27: (67) r0 <<= 3
+>   28: (0f) r0 += r1
+>   29: (05) goto pc+1
+>   30: (b7) r0 = 0
+> 
+> Generated code for memory-mapped array:
+> 
+> ; p = bpf_map_lookup_elem(&data_map, &zero);
+>   22: (18) r1 = map[id:27]
+>   24: (07) r1 += 400			/* array->data offset */
+>   25: (79) r1 = *(u64 *)(r1 +0)		/* extra dereference */
+>   26: (61) r0 = *(u32 *)(r2 +0)
+>   27: (35) if r0 >= 0x3 goto pc+3
+>   28: (67) r0 <<= 3
+>   29: (0f) r0 += r1
+>   30: (05) goto pc+1
+>   31: (b7) r0 = 0
 
-The point of the empty line between variable declarations and code in
-the Linux coding style is to provide a visual separation between
-variables and code.
-
-If you call a complex function in variable init and then check for
-errors in the code that really breaks that principle.
-
-> +		obj->caps.array_mmap = 1;
-> +		close(fd);
-> +		return 1;
-> +	}
-> +
-> +	return 0;
-> +}
-
+Would it not be possible to overallocate the memory and align the start
+of the bpf_map in case of BPF_F_MMAPABLE so that no extra dereference
+is needed?
