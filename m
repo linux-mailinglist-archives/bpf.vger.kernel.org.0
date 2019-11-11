@@ -2,92 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B7946F6D53
-	for <lists+bpf@lfdr.de>; Mon, 11 Nov 2019 04:32:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E10BEF6E68
+	for <lists+bpf@lfdr.de>; Mon, 11 Nov 2019 07:09:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726847AbfKKDch (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 10 Nov 2019 22:32:37 -0500
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:40809 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726742AbfKKDcg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 10 Nov 2019 22:32:36 -0500
-Received: by mail-lj1-f193.google.com with SMTP id q2so12142531ljg.7;
-        Sun, 10 Nov 2019 19:32:35 -0800 (PST)
+        id S1726804AbfKKGJr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 11 Nov 2019 01:09:47 -0500
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:37381 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726652AbfKKGJr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 11 Nov 2019 01:09:47 -0500
+Received: by mail-qt1-f193.google.com with SMTP id g50so14503144qtb.4;
+        Sun, 10 Nov 2019 22:09:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=fjrlLOqhWKlzcoLQZLawlMPEkn3YR9OEmvuIBToqV08=;
-        b=GqkVKpKphVcDj0tnMUN+GZrFtpn/Q1aN7g3pagDZzK0KbuUhrvmXvjH8EuuOQeCR4N
-         ksL6RgNjcUYrSJKzZXcXNJ5InBTn2RT3cOrF4HeVrzlT7YNfHKGpuhkkZajEp26Lw1Gg
-         M7YEvrurLSjcXfUM1jn7yOlBx7CyV5pQtXAq8IJM8A5RsLU/WJ+vDMVlKJAn8eeuKMo4
-         aID/9niqCRRavvYCpl7LJIU3FIECwb60Wqib6oSQ0iu5at9XFR3mJ4KS3VZPQvg1bI6e
-         QmKQs5hAZqJYGvGidTBPrsZwbLC7trD5c01O4Omz24dcGuQRAXwHV6l1HWvy1niWaSct
-         eG9w==
+        bh=S6NQzB3WBxIeLZV4LIcFE2waNjc0WRlZ5UskUxWA7TQ=;
+        b=msqiXp95r8XzOdEtevAVWtBwB+2wLXbRzCsjOUq/jvOHa08d6UFIwC8hGmdZC+MGB9
+         1BkR3XQRslIZa0c1PU5F6TXP1YNqc+Qooj7Ja7+z4UIRA8AyKzPQobwfJ3+IohhdHUiQ
+         HCDJiBDh3Vi351u4xz8veAVOkVQCpndlOjOdYrWSqQgiO0j99xehc8Va/67Nfew3maxS
+         vq/PA0fHhcTQq3ccsYioXCbnysudH2hGxltsaoxghBGA27/0aryEW8Cc/xcwZADBcWvz
+         otRUDHqyulkryBL1GI/ANKVV8q4mdI/EJl2MZSIWA8VMh7+dsZmvhNLTjSAaUnSdAFhg
+         jd0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=fjrlLOqhWKlzcoLQZLawlMPEkn3YR9OEmvuIBToqV08=;
-        b=R9QxIp9UszLvXvSrVFr7i3CMwM7ncgzemEOtmxIFOkQBPrQFzAeAsxVjkrqLSir5sW
-         huy1G9n10Xg3im+AUgLOETutvLDKFT6hg1HvMMQbkmOuMc4sdjSv6WeXdF5V4tnHpxmW
-         UtSby7BqSaa4eJl0QH6TvvIlFyVzAhWRI2+8C+/uvzkJ3PtecNNbYsF3Vjy6sJFzAyTm
-         CuFiN6jGu1KoXa889Pubz6GHT1smWUFLp8GCrdLuQr8beG3/ynh2Uf6u9uQ+YajYjsjq
-         dYdLsR1w8Wj61wgekxlu0QwUYYG47pGBK5EWh6JmC417rpFElBu8AJ8YcFPqeutDwTa/
-         /fjg==
-X-Gm-Message-State: APjAAAUDLQ0LIlHhGpZMMalBqlwObmK1hFM0mCIQHfZcBZaOP1hd0D8P
-        GXY9TQGkJnjISzIbj1eNNoz9gQ9RQ+Te+nveiEg=
-X-Google-Smtp-Source: APXvYqzQZvfqpiP2yP0IpurIl1+pVIXGcfxcfgwkoumw49Ou1o7b7Agml9EIlKuu5CP4e+lNDWj7NLAPOkSnVwPkvSE=
-X-Received: by 2002:a2e:85d5:: with SMTP id h21mr14542574ljj.243.1573443154489;
- Sun, 10 Nov 2019 19:32:34 -0800 (PST)
+        bh=S6NQzB3WBxIeLZV4LIcFE2waNjc0WRlZ5UskUxWA7TQ=;
+        b=D/5iwQoee34HbxWK48pfVI+nyIU7SEcSbI8y79Nqm+lSJ5UTvJ6BN161xQHU51C7Oh
+         MU7gBkPfr2wXNuinT0+I0J7Cqv371UIf2heVRQwUzaTCNzQBb9vGW9gHvrIwbB1e0lue
+         YeiPf3z50/erniNAlR4fdAKeANW7noIJCGmDOm6cwCgJMsBh+xykY5hg7j+z9C0jip0N
+         5ZZ4uO+3zybhL7r0wHoPNNA7H3EHOFEML45jjkS6p0rvgx9TYR38548IH1LRuNEK1k/O
+         fRMKvTKovMBVmWFmkNeLxdd1Rz0vxBWvE85IFM+g/dDMOwrVdpq5HIBGy850VU/s4O2K
+         313w==
+X-Gm-Message-State: APjAAAVMs/DU/EfNVIX2dOdZ9Abrzo8PygC+GtPU29uHmF8rCaBrfMwt
+        5RsiFzA1H+kM5x4Nj5D9BBnOlL1mGTJ8tib5P7I=
+X-Google-Smtp-Source: APXvYqxt+1LMRVuJjIMYPfY0o826lJldjZnUHsWYpAZfR878wzkrwE4iivcqbx3WZlVnQLjhqdqGj3Nl8ODWkrGkbwI=
+X-Received: by 2002:ac8:7116:: with SMTP id z22mr24468816qto.117.1573452585876;
+ Sun, 10 Nov 2019 22:09:45 -0800 (PST)
 MIME-Version: 1.0
-References: <1573148860-30254-1-git-send-email-magnus.karlsson@intel.com>
-In-Reply-To: <1573148860-30254-1-git-send-email-magnus.karlsson@intel.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Sun, 10 Nov 2019 19:32:22 -0800
-Message-ID: <CAADnVQLUsqv_zuyDfXh5q-chsGbSzBQRmFgZHd4DDF8JUauJAw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/5] Extend libbpf to support shared umems and
- Rx|Tx-only sockets
-To:     Magnus Karlsson <magnus.karlsson@intel.com>
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+References: <20191110081901.20851-1-danieltimlee@gmail.com>
+In-Reply-To: <20191110081901.20851-1-danieltimlee@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Sun, 10 Nov 2019 22:09:34 -0800
+Message-ID: <CAEf4BzYRqeg5vFm+Ac2TVVeAw=N+qhosy5qF9Dr_ka3hn8DsPg@mail.gmail.com>
+Subject: Re: [PATCH] samples: bpf: fix outdated README build command
+To:     "Daniel T. Lee" <danieltimlee@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        William Tu <u9012063@gmail.com>, bpf <bpf@vger.kernel.org>
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 7, 2019 at 9:48 AM Magnus Karlsson
-<magnus.karlsson@intel.com> wrote:
+On Sun, Nov 10, 2019 at 12:19 AM Daniel T. Lee <danieltimlee@gmail.com> wrote:
 >
-> This patch set extends libbpf and the xdpsock sample program to
-> demonstrate the shared umem mode (XDP_SHARED_UMEM) as well as Rx-only
-> and Tx-only sockets. This in order for users to have an example to use
-> as a blue print and also so that these modes will be exercised more
-> frequently.
+> Currently, building the bpf samples under samples/bpf directory isn't
+> working. Running make from the directory 'samples/bpf' will just shows
+> following result without compiling any samples.
 >
-> Note that the user needs to supply an XDP program with the
-> XDP_SHARED_UMEM mode that distributes the packets over the sockets
-> according to some policy. There is an example supplied with the
-> xdpsock program, but there is no default one in libbpf similarly to
-> when XDP_SHARED_UMEM is not used. The reason for this is that I felt
-> that supplying one that would work for all users in this mode is
-> futile. There are just tons of ways to distribute packets, so whatever
-> I come up with and build into libbpf would be wrong in most cases.
->
-> This patch has been applied against commit 30ee348c1267 ("Merge branch 'bpf-libbpf-fixes'")
->
-> Structure of the patch set:
->
-> Patch 1: Adds shared umem support to libbpf
-> Patch 2: Shared umem support and example XPD program added to xdpsock sample
-> Patch 3: Adds Rx-only and Tx-only support to libbpf
-> Patch 4: Uses Rx-only sockets for rxdrop and Tx-only sockets for txpush in
->          the xdpsock sample
-> Patch 5: Add documentation entries for these two features
 
-Applied. Thanks
+Do you mind trying to see if it's possible to detect that plain `make`
+is being run from samples/bpf subdirectory, and if that's the case,
+just running something like `make M=samples/bpf -C ../../`? If that's
+not too hard, it would be a nice touch to still have it working old
+(and intuitive) way, IMO.
+
+
+>  $ make
+>  make -C ../../ /git/linux/samples/bpf/ BPF_SAMPLES_PATH=/git/linux/samples/bpf
+>  make[1]: Entering directory '/git/linux'
+>    CALL    scripts/checksyscalls.sh
+>    CALL    scripts/atomic/check-atomics.sh
+>    DESCEND  objtool
+>  make[1]: Leaving directory '/git/linux'
+>
+> Due to commit 394053f4a4b3 ("kbuild: make single targets work more
+> correctly"), building samples/bpf without support of samples/Makefile
+> is unavailable. Instead, building the samples with 'make M=samples/bpf'
+> from the root source directory will solve this issue.[1]
+>
+> This commit fixes the outdated README build command with samples/bpf.
+>
+> [0]: https://patchwork.kernel.org/patch/11168393/
+>
+> Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
+> ---
+>  samples/bpf/README.rst | 19 +++++++++----------
+>  1 file changed, 9 insertions(+), 10 deletions(-)
+>
+
+[...]
