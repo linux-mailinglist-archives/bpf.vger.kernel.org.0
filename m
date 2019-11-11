@@ -2,98 +2,157 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E10BEF6E68
-	for <lists+bpf@lfdr.de>; Mon, 11 Nov 2019 07:09:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3F4DF6F0E
+	for <lists+bpf@lfdr.de>; Mon, 11 Nov 2019 08:32:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726804AbfKKGJr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 11 Nov 2019 01:09:47 -0500
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:37381 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726652AbfKKGJr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 11 Nov 2019 01:09:47 -0500
-Received: by mail-qt1-f193.google.com with SMTP id g50so14503144qtb.4;
-        Sun, 10 Nov 2019 22:09:46 -0800 (PST)
+        id S1726927AbfKKHcR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 11 Nov 2019 02:32:17 -0500
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:34851 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726770AbfKKHcR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 11 Nov 2019 02:32:17 -0500
+Received: by mail-pg1-f196.google.com with SMTP id q22so8937245pgk.2;
+        Sun, 10 Nov 2019 23:32:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=S6NQzB3WBxIeLZV4LIcFE2waNjc0WRlZ5UskUxWA7TQ=;
-        b=msqiXp95r8XzOdEtevAVWtBwB+2wLXbRzCsjOUq/jvOHa08d6UFIwC8hGmdZC+MGB9
-         1BkR3XQRslIZa0c1PU5F6TXP1YNqc+Qooj7Ja7+z4UIRA8AyKzPQobwfJ3+IohhdHUiQ
-         HCDJiBDh3Vi351u4xz8veAVOkVQCpndlOjOdYrWSqQgiO0j99xehc8Va/67Nfew3maxS
-         vq/PA0fHhcTQq3ccsYioXCbnysudH2hGxltsaoxghBGA27/0aryEW8Cc/xcwZADBcWvz
-         otRUDHqyulkryBL1GI/ANKVV8q4mdI/EJl2MZSIWA8VMh7+dsZmvhNLTjSAaUnSdAFhg
-         jd0w==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=tfah8ydTbV4Vk21leuNsBaqVuTT+p9Q97bnJKdVRE1U=;
+        b=pcz3zIi1RFLVb86rSL+Lha//pWcJTdie7cEdnb4aDPledvFRDseO7QXzEfntErDL7D
+         GTRNHXnY0eoZ/lZvT8p0KeJ9F1PxFcJ9d0xtUlmA4PX/SoAzcsyBlYXj5uJ8q/hykaUN
+         Ho1g5jrh3aZHUuy49KC5x3QCrMQra6o8HkdheEjtcK4FVq3MWwkZ3dvcFY7RsqYRO4GJ
+         LLywLSTS5sSRHUTIaodbGdSR2JtSgW0EUFkKJ20IyeFUfWu+T1NmoB4sYn0UmjH4QDXY
+         vVbq6M0QAEduOxISNl5dZUv6tUVC2DUgRWt6Z3yBmBBnVdPB/XijpGurEdE+unAG5hSj
+         AfWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=S6NQzB3WBxIeLZV4LIcFE2waNjc0WRlZ5UskUxWA7TQ=;
-        b=D/5iwQoee34HbxWK48pfVI+nyIU7SEcSbI8y79Nqm+lSJ5UTvJ6BN161xQHU51C7Oh
-         MU7gBkPfr2wXNuinT0+I0J7Cqv371UIf2heVRQwUzaTCNzQBb9vGW9gHvrIwbB1e0lue
-         YeiPf3z50/erniNAlR4fdAKeANW7noIJCGmDOm6cwCgJMsBh+xykY5hg7j+z9C0jip0N
-         5ZZ4uO+3zybhL7r0wHoPNNA7H3EHOFEML45jjkS6p0rvgx9TYR38548IH1LRuNEK1k/O
-         fRMKvTKovMBVmWFmkNeLxdd1Rz0vxBWvE85IFM+g/dDMOwrVdpq5HIBGy850VU/s4O2K
-         313w==
-X-Gm-Message-State: APjAAAVMs/DU/EfNVIX2dOdZ9Abrzo8PygC+GtPU29uHmF8rCaBrfMwt
-        5RsiFzA1H+kM5x4Nj5D9BBnOlL1mGTJ8tib5P7I=
-X-Google-Smtp-Source: APXvYqxt+1LMRVuJjIMYPfY0o826lJldjZnUHsWYpAZfR878wzkrwE4iivcqbx3WZlVnQLjhqdqGj3Nl8ODWkrGkbwI=
-X-Received: by 2002:ac8:7116:: with SMTP id z22mr24468816qto.117.1573452585876;
- Sun, 10 Nov 2019 22:09:45 -0800 (PST)
-MIME-Version: 1.0
-References: <20191110081901.20851-1-danieltimlee@gmail.com>
-In-Reply-To: <20191110081901.20851-1-danieltimlee@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Sun, 10 Nov 2019 22:09:34 -0800
-Message-ID: <CAEf4BzYRqeg5vFm+Ac2TVVeAw=N+qhosy5qF9Dr_ka3hn8DsPg@mail.gmail.com>
-Subject: Re: [PATCH] samples: bpf: fix outdated README build command
-To:     "Daniel T. Lee" <danieltimlee@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=tfah8ydTbV4Vk21leuNsBaqVuTT+p9Q97bnJKdVRE1U=;
+        b=jm/nqTV//Fphu/5kgOAFoc0ou8RQb3V4ACt4pjOR5blfg7ci1Z5BxgYi/xm9A34vCG
+         qpuHPtOVXKCJFEYUm+EHvn+3+co97zfOAcPzM36kdwbxYbLZD6d+p1PRBeoDI1K9rXvS
+         2RPUxrW78ZcmSzD9jvSjPpaixm0p02K3MxegZ+8yK6rYRt4zOW2ZoAsEsw/RKpBckixL
+         Gn/QNARE+lGnoYI2J6YNIg5/ZRX+mXDscnzIuze4hOplL23EATBqVEQ/YfUTmdcKQTBF
+         al2eIrS/seXgmlZ0ImjX8Yf9WnXRHFQ9GaY6a0lQiCvX3BOoUgXVsORUofloLn22Y8f8
+         m18Q==
+X-Gm-Message-State: APjAAAXATeeb31ITLvzFcMF4iW/kzmgSyVXe6/PKWwFP13ea8ry/aayj
+        VPkmCXqyM4Cs4ShAZi4cw2k=
+X-Google-Smtp-Source: APXvYqwcZky3xdKe2nKzljJvSq4p3aGqu3RU8ApbQxT5QDsZin2TU1N21iF5AmlPXABW834z8pTL/A==
+X-Received: by 2002:a63:934d:: with SMTP id w13mr26629783pgm.185.1573457536519;
+        Sun, 10 Nov 2019 23:32:16 -0800 (PST)
+Received: from [172.20.20.103] ([222.151.198.97])
+        by smtp.gmail.com with ESMTPSA id w7sm15677228pfb.101.2019.11.10.23.32.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 10 Nov 2019 23:32:15 -0800 (PST)
+Subject: Re: [RFC PATCH v2 bpf-next 00/15] xdp_flow: Flow offload to XDP
+To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        Pravin B Shelar <pshelar@ovn.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        William Tu <u9012063@gmail.com>,
+        Stanislav Fomichev <sdf@fomichev.me>
+References: <20191018040748.30593-1-toshiaki.makita1@gmail.com>
+ <5da9d8c125fd4_31cf2adc704105c456@john-XPS-13-9370.notmuch>
+ <22e6652c-e635-4349-c863-255d6c1c548b@gmail.com>
+ <5daf34614a4af_30ac2b1cb5d205bce4@john-XPS-13-9370.notmuch>
+ <87h840oese.fsf@toke.dk>
+ <5db128153c75_549d2affde7825b85e@john-XPS-13-9370.notmuch>
+ <87sgniladm.fsf@toke.dk> <a7f3d86b-c83c-7b0d-c426-684b8dfe4344@gmail.com>
+ <87zhhmrz7w.fsf@toke.dk> <b2ecf3e6-a8f1-cfd9-0dd3-e5f4d5360c0b@gmail.com>
+ <87zhhhnmg8.fsf@toke.dk>
+From:   Toshiaki Makita <toshiaki.makita1@gmail.com>
+Message-ID: <640418c3-54ba-cd62-304f-fd9f73f25a42@gmail.com>
+Date:   Mon, 11 Nov 2019 16:32:08 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
+MIME-Version: 1.0
+In-Reply-To: <87zhhhnmg8.fsf@toke.dk>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Nov 10, 2019 at 12:19 AM Daniel T. Lee <danieltimlee@gmail.com> wrote:
->
-> Currently, building the bpf samples under samples/bpf directory isn't
-> working. Running make from the directory 'samples/bpf' will just shows
-> following result without compiling any samples.
->
+Hi Toke,
 
-Do you mind trying to see if it's possible to detect that plain `make`
-is being run from samples/bpf subdirectory, and if that's the case,
-just running something like `make M=samples/bpf -C ../../`? If that's
-not too hard, it would be a nice touch to still have it working old
-(and intuitive) way, IMO.
+Sorry for the delay.
 
+On 2019/10/31 21:12, Toke Høiland-Jørgensen wrote:
+> Toshiaki Makita <toshiaki.makita1@gmail.com> writes:
+> 
+>> On 2019/10/28 0:21, Toke Høiland-Jørgensen wrote:
+>>> Toshiaki Makita <toshiaki.makita1@gmail.com> writes:
+>>>>> Yeah, you are right that it's something we're thinking about. I'm not
+>>>>> sure we'll actually have the bandwidth to implement a complete solution
+>>>>> ourselves, but we are very much interested in helping others do this,
+>>>>> including smoothing out any rough edges (or adding missing features) in
+>>>>> the core XDP feature set that is needed to achieve this :)
+>>>>
+>>>> I'm very interested in general usability solutions.
+>>>> I'd appreciate if you could join the discussion.
+>>>>
+>>>> Here the basic idea of my approach is to reuse HW-offload infrastructure
+>>>> in kernel.
+>>>> Typical networking features in kernel have offload mechanism (TC flower,
+>>>> nftables, bridge, routing, and so on).
+>>>> In general these are what users want to accelerate, so easy XDP use also
+>>>> should support these features IMO. With this idea, reusing existing
+>>>> HW-offload mechanism is a natural way to me. OVS uses TC to offload
+>>>> flows, then use TC for XDP as well...
+>>>
+>>> I agree that XDP should be able to accelerate existing kernel
+>>> functionality. However, this does not necessarily mean that the kernel
+>>> has to generate an XDP program and install it, like your patch does.
+>>> Rather, what we should be doing is exposing the functionality through
+>>> helpers so XDP can hook into the data structures already present in the
+>>> kernel and make decisions based on what is contained there. We already
+>>> have that for routing; L2 bridging, and some kind of connection
+>>> tracking, are obvious contenders for similar additions.
+>>
+>> Thanks, adding helpers itself should be good, but how does this let users
+>> start using XDP without having them write their own BPF code?
+> 
+> It wouldn't in itself. But it would make it possible to write XDP
+> programs that could provide the same functionality; people would then
+> need to run those programs to actually opt-in to this.
+> 
+> For some cases this would be a simple "on/off switch", e.g.,
+> "xdp-route-accel --load <dev>", which would install an XDP program that
+> uses the regular kernel routing table (and the same with bridging). We
+> are planning to collect such utilities in the xdp-tools repo - I am
+> currently working on a simple packet filter:
+> https://github.com/xdp-project/xdp-tools/tree/xdp-filter
 
->  $ make
->  make -C ../../ /git/linux/samples/bpf/ BPF_SAMPLES_PATH=/git/linux/samples/bpf
->  make[1]: Entering directory '/git/linux'
->    CALL    scripts/checksyscalls.sh
->    CALL    scripts/atomic/check-atomics.sh
->    DESCEND  objtool
->  make[1]: Leaving directory '/git/linux'
->
-> Due to commit 394053f4a4b3 ("kbuild: make single targets work more
-> correctly"), building samples/bpf without support of samples/Makefile
-> is unavailable. Instead, building the samples with 'make M=samples/bpf'
-> from the root source directory will solve this issue.[1]
->
-> This commit fixes the outdated README build command with samples/bpf.
->
-> [0]: https://patchwork.kernel.org/patch/11168393/
->
-> Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
-> ---
->  samples/bpf/README.rst | 19 +++++++++----------
->  1 file changed, 9 insertions(+), 10 deletions(-)
->
+Let me confirm how this tool adds filter rules.
+Is this adding another commandline tool for firewall?
 
-[...]
+If so, that is different from my goal.
+Introducing another commandline tool will require people to learn more.
+
+My proposal is to reuse kernel interface to minimize such need for learning.
+
+Toshiaki Makita
+
+> For more advanced use cases (such as OVS), the application packages will
+> need to integrate and load their own XDP support. We should encourage
+> that, and help smooth out any rough edges (such as missing features)
+> needed for this to happen.
+> 
+> -Toke
+> 
