@@ -2,82 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E7F8F7660
-	for <lists+bpf@lfdr.de>; Mon, 11 Nov 2019 15:30:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AA87F7875
+	for <lists+bpf@lfdr.de>; Mon, 11 Nov 2019 17:10:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726877AbfKKOaT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 11 Nov 2019 09:30:19 -0500
-Received: from www62.your-server.de ([213.133.104.62]:42786 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726811AbfKKOaT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 11 Nov 2019 09:30:19 -0500
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iUAhs-0000gH-V6; Mon, 11 Nov 2019 15:30:16 +0100
-Received: from [2a02:1205:507e:bf80:bef8:7f66:49c8:72e5] (helo=pc-11.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iUAhs-0005R7-IA; Mon, 11 Nov 2019 15:30:16 +0100
-Subject: Re: [net-next PATCH] samples/bpf: adjust Makefile and README.rst
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     bpf@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        netdev@vger.kernel.org, Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-References: <157340347607.14617.683175264051058224.stgit@firesoul>
- <a1e149a5-af72-0602-d48d-ec7e6939df22@iogearbox.net>
- <20191111145628.23bea8fe@carbon>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <da2efacb-b8a9-68e8-c04b-c771aeab26e0@iogearbox.net>
-Date:   Mon, 11 Nov 2019 15:30:15 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1726889AbfKKQKx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 11 Nov 2019 11:10:53 -0500
+Received: from ms.lwn.net ([45.79.88.28]:34572 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726845AbfKKQKx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 11 Nov 2019 11:10:53 -0500
+Received: from localhost.localdomain (localhost [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 710522C0;
+        Mon, 11 Nov 2019 16:10:52 +0000 (UTC)
+Date:   Mon, 11 Nov 2019 09:10:50 -0700
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     David Miller <davem@davemloft.net>, alexei.starovoitov@gmail.com,
+        ast@kernel.org, daniel@iogearbox.net, x86@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, Kernel-team@fb.com
+Subject: Re: [PATCH v3 bpf-next 02/18] bpf: Add bpf_arch_text_poke() helper
+Message-ID: <20191111091050.3ece5112@lwn.net>
+In-Reply-To: <20191111081403.GM4131@hirez.programming.kicks-ass.net>
+References: <59d3af80-a781-9765-4d01-4c8006cd574f@fb.com>
+        <CAADnVQKmrVGVHM70OT0jc7reRp1LdWTM8dhE1Gde21oxw++jwg@mail.gmail.com>
+        <20191108213624.GM3079@worktop.programming.kicks-ass.net>
+        <20191108.133924.1397692397131607421.davem@davemloft.net>
+        <20191111081403.GM4131@hirez.programming.kicks-ass.net>
+Organization: LWN.net
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20191111145628.23bea8fe@carbon>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.101.4/25630/Mon Nov 11 10:59:49 2019)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/11/19 2:56 PM, Jesper Dangaard Brouer wrote:
-> On Mon, 11 Nov 2019 14:49:51 +0100
-> Daniel Borkmann <daniel@iogearbox.net> wrote:
->> On 11/10/19 5:31 PM, Jesper Dangaard Brouer wrote:
->>> Side effect of some kbuild changes resulted in breaking the
->>> documented way to build samples/bpf/.
->>>
->>> This patch change the samples/bpf/Makefile to work again, when
->>> invoking make from the subdir samples/bpf/. Also update the
->>> documentation in README.rst, to reflect the new way to build.
->>>
->>> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
->>
->> Please make sure to have bpf@vger.kernel.org Cc'ed in future as well
->> (done here). Given net-next in subject, any specific reason you need
->> this expedited over normal bpf-next route? Looks like there is no
->> conflict either way.
+On Mon, 11 Nov 2019 09:14:03 +0100
+Peter Zijlstra <peterz@infradead.org> wrote:
+
+> On Fri, Nov 08, 2019 at 01:39:24PM -0800, David Miller wrote:
+> > From: Peter Zijlstra <peterz@infradead.org>
+> > Date: Fri, 8 Nov 2019 22:36:24 +0100
+> >   
+> > > The cover leter is not preserved and should therefore  
+> >  ...
+> > 
+> > The cover letter is +ALWAYS+ preserved, we put them in the merge
+> > commit.  
 > 
-> When I created this patch, bpf-next didn't have the other fixes for
-> samples/bpf/.  If you have sync'ed with net-next, then I'm fine with
+> Good to know; is this a netdev special? I've not seen this before.
 
-Correct, as they were just merged by Linus over the weekend. For bpf-next,
-we fast-fwd after every PR that is sent for net-next. For fixes the route
-is bpf -> net -> linus -> net-next -> bpf-next.
+I read a *lot* of merge commit changelogs; it's not just netdev that does
+this.  I try to do it with significant documentation sets as well.  I
+agree that changelogs should contain all relevant information, but there
+is value in an overview as well.  But then, I make my living in the
+overview business...:)
 
-> you taking this change (as it will propagate back to DaveM's tree soon
-> enough).
-
-Ok, I don't think the M= adjustment to get it back in line with the samples
-README is urgent, but lets go with net-next directly then and have it
-propagate back later this week, sent my Acked-by previously for carrying on.
-
-Thanks,
-Daniel
+jon
