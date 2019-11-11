@@ -2,79 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E4FC8F6AD3
-	for <lists+bpf@lfdr.de>; Sun, 10 Nov 2019 19:35:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8D0EF6D4A
+	for <lists+bpf@lfdr.de>; Mon, 11 Nov 2019 04:29:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727113AbfKJSfs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 10 Nov 2019 13:35:48 -0500
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:38435 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726832AbfKJSfs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 10 Nov 2019 13:35:48 -0500
-Received: by mail-qt1-f195.google.com with SMTP id p20so13211255qtq.5;
-        Sun, 10 Nov 2019 10:35:46 -0800 (PST)
+        id S1726793AbfKKD3Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 10 Nov 2019 22:29:24 -0500
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:33281 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726742AbfKKD3Y (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 10 Nov 2019 22:29:24 -0500
+Received: by mail-lj1-f193.google.com with SMTP id t5so12159838ljk.0;
+        Sun, 10 Nov 2019 19:29:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=M+7XtFRR1aFUJ5RUHT/ta5/osbGsH0+8LVuCJxRQH00=;
-        b=o9jZzuVpAgavEg97GZZ/1x1Kg5DDDTb0pR9b5BhIKP7Mm2EgFRcidzXXWGeIl7afmk
-         tb6qVJrSB6C3dY1p6WeW3N2c56cocVJHB4fSpkdtZEXTCN0aRdAPrIgskNv5dU6cQV7E
-         G9B/jkhV8qgUZBwslMr0OkrnwguduEHk3uotr2grtUTWIw3l9mPFf0TbxJg3Jx43MlK4
-         /QUNTmqaPYBHx+dvWytUPTCkuNioJU2v4IOupVTrZx222YOwt6Dy5aMNk2FKfScGEGDb
-         re23njS/wtWf+v8iv6p+BMgchSzbzHn59lYTxsp5raQROkQrbpXTGheSdI2OSOvjSHIp
-         AG7A==
+         :cc:content-transfer-encoding;
+        bh=dSu5P7at4A5HmomswAGNarjUX/ilYNhxexUoEMw0I/M=;
+        b=lGyWbb+Zw1+8fisjF9Hs+LyVaefKq5wFMB1N86b5EUUhieJxbh+Fm8n/U912vifvcf
+         xV9M1mrdXpv0dyQVpB0D2ATI8kiFHjhOhU1S+DBvMMqc3wJtKBBWN0uGVTE5Mr7JJAzE
+         iC813V8Qf1SjVGyzTTMbMLATL+uNoOHbwe9+vahKu1eB4FAFOugweufw0otodmZOyS5+
+         IaaNKQF5j6YkxGkA0YojFWjch6vZZSvjS8VLRi+1e5AGXihoo19UEXE/4R8Su14O09By
+         ZClukSBpbrAK0l2871CLs+ow5/0MQQMgx1mKDJfS07HR/XvgszeUl19xykUcu0d+PSDh
+         VbTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=M+7XtFRR1aFUJ5RUHT/ta5/osbGsH0+8LVuCJxRQH00=;
-        b=Yg1Fpyg4yaFytb1GzlE8iuBILsPTr3SEef7yic67WJdu4vtumzBIGGT8Gdf9JcRqp+
-         m5fWQH69heYUoTC4AmNNQ+05HaX38vzbL3l17gcKM5PXMfGO/vOTtLGBm9PUXwjv2hal
-         +1UlF4rXCVIHbBBX0q7QFbdqQSx3L7ZwuqUn1/V1/smBqG3ieAnrtIAybAZqsaKjVUxu
-         6GUGqS/v/3yGGRkSQUTRWRTPfDxJMpW7Oes7emmpNOj2/JcLxaJvddQrT2leurYkqMCo
-         8RbRTR9v1lE8FEzRtaG5dGuEoBDxzP+lW43P9JsoqJbj5+U2pg6TPXYsc2MIhjWuN5BG
-         I5CA==
-X-Gm-Message-State: APjAAAVGI3MzIlGINMS0Kc5Yhpqdtd/CyJWj4GMa1UQvhiOi2pFLA6zj
-        dVh7eO8hZoaZs5MsUot2M9sQJlRukoVk3BRH7zOmNF1x5Dk=
-X-Google-Smtp-Source: APXvYqxM/HK7YEbXQUxq2BrqICxpBhgxJ/H1ynd7F+hb8D9ZieLu1E1M2Xw1lpJMYHsJXxUFHLM92JJ7VwyRqs9LN90=
-X-Received: by 2002:ac8:17ce:: with SMTP id r14mr22870237qtk.301.1573410945893;
- Sun, 10 Nov 2019 10:35:45 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=dSu5P7at4A5HmomswAGNarjUX/ilYNhxexUoEMw0I/M=;
+        b=euUkqP4aBPNlBjAlEjhw4mSUBBdc7ZGVjkIguJLHSYgJ54AfbhFnLnCqg/QkUgD43h
+         0DYJhk8Qz3a4j8F/sZKZZt92m1safLTDuAs6GHXZdBqlZXZ1cKZT6m0JTDqTpAqYmNbg
+         PXkprT0KWclZ1Ma/XWg0XC3OGdEkUGHmfphoWRl/zYbcRgRhkMEQNeyT3IMJ6KLbfflL
+         HfjHJwD8rjcjDFpeQGz2730MsqpKC3NwHScBMe5ghy9ycWBFWhkekohx+Vbb6cL0C+21
+         R3wL5WlqkJv7D7kK7eIzAezv++Q9nw4SO4StAl4Su5rl8hyzPZBFlJew3LEie0UMg42L
+         gMAg==
+X-Gm-Message-State: APjAAAV6wZKNQf2muf9EKD9GsUbPW4J1gdfFVRS4bxOsEw1p2O0MSfUl
+        lVp5b09GI80MaYAI7+lKrvVDT4tubxk09fF4iwA=
+X-Google-Smtp-Source: APXvYqwPjQaU3Xia1cyHiD6cheU9VW9chFLuPuO/KQKtKx0UtQPJER+khiRO1bK2FOEGN+CcQLaSwfhM9VGmhpuSMy8=
+X-Received: by 2002:a2e:7d17:: with SMTP id y23mr166980ljc.228.1573442962001;
+ Sun, 10 Nov 2019 19:29:22 -0800 (PST)
 MIME-Version: 1.0
-References: <1573148860-30254-1-git-send-email-magnus.karlsson@intel.com>
- <1573148860-30254-6-git-send-email-magnus.karlsson@intel.com> <7C1BBFA7-8811-46CE-BDCF-3F93F5AB1C6F@gmail.com>
-In-Reply-To: <7C1BBFA7-8811-46CE-BDCF-3F93F5AB1C6F@gmail.com>
-From:   William Tu <u9012063@gmail.com>
-Date:   Sun, 10 Nov 2019 10:35:07 -0800
-Message-ID: <CALDO+SZx+TbDH-PhpF52ypPmgg6EovSnjXw33SbxqFsdYU78cg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 5/5] xsk: extend documentation for Rx|Tx-only
- sockets and shared umems
-To:     Jonathan Lemon <jonathan.lemon@gmail.com>
-Cc:     Magnus Karlsson <magnus.karlsson@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+References: <157333184619.88376.13377736576285554047.stgit@toke.dk>
+In-Reply-To: <157333184619.88376.13377736576285554047.stgit@toke.dk>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Sun, 10 Nov 2019 19:29:10 -0800
+Message-ID: <CAADnVQ+qFOf0bchRNr270=dJ08R1wVgnYLAqJ8QnXwNt=fgNMQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 0/6] libbpf: Fix pinning and error message
+ bugs and add new getters
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        David Miller <davem@davemloft.net>,
+        Network Development <netdev@vger.kernel.org>,
         bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 8, 2019 at 3:03 PM Jonathan Lemon <jonathan.lemon@gmail.com> wrote:
+On Sat, Nov 9, 2019 at 12:37 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
 >
+> This series fixes a few bugs in libbpf that I discovered while playing ar=
+ound
+> with the new auto-pinning code, and writing the first utility in xdp-tool=
+s[0]:
 >
+> - If object loading fails, libbpf does not clean up the pinnings created =
+by the
+>   auto-pinning mechanism.
+> - EPERM is not propagated to the caller on program load
+> - Netlink functions write error messages directly to stderr
 >
-> On 7 Nov 2019, at 9:47, Magnus Karlsson wrote:
+> In addition, libbpf currently only has a somewhat limited getter function=
+ for
+> XDP link info, which makes it impossible to discover whether an attached =
+program
+> is in SKB mode or not. So the last patch in the series adds a new getter =
+for XDP
+> link info which returns all the information returned via netlink (and whi=
+ch can
+> be extended later).
 >
-> > Add more documentation about the new Rx-only and Tx-only sockets in
-> > libbpf and also how libbpf can now support shared umems. Also found
-> > two pieces that could be improved in the text, that got fixed in this
-> > commit.
-> >
-> > Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+> Finally, add a getter for BPF program size, which can be used by the call=
+er to
+> estimate the amount of locked memory needed to load a program.
 >
-> Acked-by: Jonathan Lemon <jonathan.lemon@gmail.com>
+> A selftest is added for the pinning change, while the other features were=
+ tested
+> in the xdp-filter tool from the xdp-tools repo. The 'new-libbpf-features'=
+ branch
+> contains the commits that make use of the new XDP getter and the correcte=
+d EPERM
+> error code.
+>
+> [0] https://github.com/xdp-project/xdp-tools
+>
+> Changelog:
+>
+> v4:
+>   - Don't do any size checks on struct xdp_info, just copy (and/or zero)
+>     whatever size the caller supplied.
 
-Tested-by: William Tu <u9012063@gmail.com>
+Applied. Thanks
