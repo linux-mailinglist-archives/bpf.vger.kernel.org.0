@@ -2,182 +2,269 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B8B48F94CD
-	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2019 16:54:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 005DAF9572
+	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2019 17:20:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726376AbfKLPyL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Nov 2019 10:54:11 -0500
-Received: from mail-il1-f200.google.com ([209.85.166.200]:42552 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726954AbfKLPyL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Nov 2019 10:54:11 -0500
-Received: by mail-il1-f200.google.com with SMTP id n16so20337297ilm.9
-        for <bpf@vger.kernel.org>; Tue, 12 Nov 2019 07:54:10 -0800 (PST)
+        id S1726952AbfKLQUU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Nov 2019 11:20:20 -0500
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:54717 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726008AbfKLQUT (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 12 Nov 2019 11:20:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1573575618;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=r//zjTOaVUMtQnKHa6rCIADzB9+4K853UxgF2HLsC2M=;
+        b=CLmWREaTuvBjqBK5QFvNaLYZ22L63YX0yxFHmmWDlpyxEuifSn6RFFPcRsQ0+eIl5Wv3S4
+        lxJpFNw8lBReoDY1IW8CHeVLQO4uZy2EIdqPv6siUGGRkgEDVvnO4HkgZOKWha8b3ED9if
+        A/lpEEuD8tfptDV1O3PRXUr4pvMoNfA=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-167--NtsjxVGP2iN7sLxueHCPQ-1; Tue, 12 Nov 2019 11:20:11 -0500
+Received: by mail-lf1-f71.google.com with SMTP id a4so3983700lfg.23
+        for <bpf@vger.kernel.org>; Tue, 12 Nov 2019 08:20:11 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to
-         :content-transfer-encoding;
-        bh=zjKfYX9Y71KeSUb/1gQKHQ2wvEhUa2rjdLhzJ/Qo+7w=;
-        b=Y5Wq71eAaewJQMz6YCmtWl0Y97zcQR/DjmYCty00YykDz23C8L8FHeCNH1c9ktbkDQ
-         6MJ8xOuz7wg/RLR44s8yzEUr4utqImZ4RhssZyXh84lHUq0Sdfy7GfYkwqPGPd4OmSQ3
-         onooH/7IYaWprWGt/TYsEGXKea4EXxGobzmHgIzkhrInLJubJvwh4PSPGga3hd+wMc9U
-         2UQ1egk6XaUvDSpHbGI3Uwr46qaL5PaXm3bLNF4nuvGi8CEKiOZmZM4eYbeEFdtrySHE
-         1GqvNXy+dkXaBzR4eB78eKI27XCrn6VCM2Ex+Nd+a3q7RgEywlo+q1O0hTSHZHzXMj/4
-         37TA==
-X-Gm-Message-State: APjAAAXSuqPe3U7ok6CLUunoA87fRaCjSZ8nqnBg1Xkmqwq6NKUX/bE6
-        O5/M1qf1VrlIOmmObdYHGEf9ltgHwwXRP/gm/5PDb/b9HzaJ
-X-Google-Smtp-Source: APXvYqw/hbNacQYIaTJ57lcm3uv119lqRh7ltTADYTIJNW1e5PVkACAFQzIMx/QAlZOFWIx2S701jet22tIaRl5p0XBhM+LZNR3e
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=g9UzlHbJ8q5OmzDADfQDucyzYQNRZ7LJRzCaSfLicEQ=;
+        b=RRwnCqr33R+4pXO7dWIXk03p39RX6Dtyn15NzmRxsc2h1NhkPP3gMUnAHVZRsEWtMf
+         iZdrVwWR+h/pR+aQ6io20yZbqaAHhlrokEcuZq8FSoGqZvQVFww7drEadStph5BOsXEG
+         S6Omy5caIEP3nvXBgvTFc91qFAYG5OgDRA47hXxMHGkC7M5A+ydqqGW+26HnSqmkpl/t
+         xjDWHIWVaxLDHxRx46g0UAuv9FtUiAeqhyG+nqH8W+R7A+oA878Q2Zqe9c71zXZgm09r
+         I6ueXToLCKDlWVFAiwJyu3yqIvV77v95bOoMTPfZXpTF/ZeHe6b1VWbZVBRG90gybMK4
+         K0xw==
+X-Gm-Message-State: APjAAAX4pIAkbe1/CIxXZMcyBt5ogt4jXXxC7RlStUXC/YApSf0hKlI3
+        yrEoQPBi5bylvJcCVuGtI1iFHq9I8TguO9vklBCm+fb0LOiIpmgrBJxoi1jNH5ahFeMb++4tjTa
+        TtAraIbvwTQXK
+X-Received: by 2002:a19:c7d3:: with SMTP id x202mr20066335lff.127.1573575609842;
+        Tue, 12 Nov 2019 08:20:09 -0800 (PST)
+X-Google-Smtp-Source: APXvYqxBOXGr1L/tAinew64XtQqCagu697U8sz7IZa3xNhXK0zM9rPwXCIH32RnxyVF9kIMzhlpgsw==
+X-Received: by 2002:a19:c7d3:: with SMTP id x202mr20066308lff.127.1573575609540;
+        Tue, 12 Nov 2019 08:20:09 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a00:7660:6da:443::2])
+        by smtp.gmail.com with ESMTPSA id 186sm2763590lfb.28.2019.11.12.08.20.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Nov 2019 08:20:08 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id C0F2B1803C7; Tue, 12 Nov 2019 17:20:07 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Edward Cree <ecree@solarflare.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Marek Majkowski <marek@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: static and dynamic linking. Was: [PATCH bpf-next v3 1/5] bpf: Support chain calling multiple BPF
+In-Reply-To: <20191112025112.bhzmrrh2pr76ssnh@ast-mbp.dhcp.thefacebook.com>
+References: <20191010044156.2hno4sszysu3c35g@ast-mbp.dhcp.thefacebook.com> <87v9srijxa.fsf@toke.dk> <5da4ab712043c_25f42addb7c085b83b@john-XPS-13-9370.notmuch> <87eezfi2og.fsf@toke.dk> <f9d5f717-51fe-7d03-6348-dbaf0b9db434@solarflare.com> <87r23egdua.fsf@toke.dk> <70142501-e2dd-1aed-992e-55acd5c30cfd@solarflare.com> <874l07fu61.fsf@toke.dk> <aeae7b94-090a-a850-4740-0274ab8178d5@solarflare.com> <87eez4odqp.fsf@toke.dk> <20191112025112.bhzmrrh2pr76ssnh@ast-mbp.dhcp.thefacebook.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 12 Nov 2019 17:20:07 +0100
+Message-ID: <87h839oymg.fsf@toke.dk>
 MIME-Version: 1.0
-X-Received: by 2002:a02:b602:: with SMTP id h2mr13833907jam.26.1573574049822;
- Tue, 12 Nov 2019 07:54:09 -0800 (PST)
-Date:   Tue, 12 Nov 2019 07:54:09 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000447eb705972842c6@google.com>
-Subject: KMSAN: uninit-value in __skb_flow_dissect (2)
-From:   syzbot <syzbot+591798c238c7b7108f72@syzkaller.appspotmail.com>
-To:     ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
-        davem@davemloft.net, edumazet@google.com, glider@google.com,
-        jakub@cloudflare.com, jiri@mellanox.com, kafai@fb.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        paulb@mellanox.com, sdf@google.com, songliubraving@fb.com,
-        soukjin.bae@samsung.com, syzkaller-bugs@googlegroups.com,
-        yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-Content-Transfer-Encoding: base64
+X-MC-Unique: -NtsjxVGP2iN7sLxueHCPQ-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-SGVsbG8sDQoNCnN5emJvdCBmb3VuZCB0aGUgZm9sbG93aW5nIGNyYXNoIG9uOg0KDQpIRUFEIGNv
-bW1pdDogICAgZmExNjkwMjUga21zYW46IGdldCByaWQgb2YgdW51c2VkIHN0YXRpYyBmdW5jdGlv
-bnMgaW4ga21zYS4uDQpnaXQgdHJlZTogICAgICAgaHR0cHM6Ly9naXRodWIuY29tL2dvb2dsZS9r
-bXNhbi5naXQgbWFzdGVyDQpjb25zb2xlIG91dHB1dDogaHR0cHM6Ly9zeXprYWxsZXIuYXBwc3Bv
-dC5jb20veC9sb2cudHh0P3g9MTQ5OGRkZTc2MDAwMDANCmtlcm5lbCBjb25maWc6ICBodHRwczov
-L3N5emthbGxlci5hcHBzcG90LmNvbS94Ly5jb25maWc/eD00OTU0ODc5OGU4N2QzMmQ3DQpkYXNo
-Ym9hcmQgbGluazogaHR0cHM6Ly9zeXprYWxsZXIuYXBwc3BvdC5jb20vYnVnP2V4dGlkPTU5MTc5
-OGMyMzhjN2I3MTA4ZjcyDQpjb21waWxlcjogICAgICAgY2xhbmcgdmVyc2lvbiA5LjAuMCAoL2hv
-bWUvZ2xpZGVyL2xsdm0vY2xhbmcgIA0KODBmZWUyNTc3NmMyZmI2MWU3NGMxZWNiMWE1MjMzNzVj
-MjUwMGI2OSkNCg0KVW5mb3J0dW5hdGVseSwgSSBkb24ndCBoYXZlIGFueSByZXByb2R1Y2VyIGZv
-ciB0aGlzIGNyYXNoIHlldC4NCg0KSU1QT1JUQU5UOiBpZiB5b3UgZml4IHRoZSBidWcsIHBsZWFz
-ZSBhZGQgdGhlIGZvbGxvd2luZyB0YWcgdG8gdGhlIGNvbW1pdDoNClJlcG9ydGVkLWJ5OiBzeXpi
-b3QrNTkxNzk4YzIzOGM3YjcxMDhmNzJAc3l6a2FsbGVyLmFwcHNwb3RtYWlsLmNvbQ0KDQpkZXZp
-Y2UgbnIwASBlbnRlcmVkIHByb21pc2N1b3VzIG1vZGUNCj09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09DQpCVUc6IEtNU0FOOiB1bmluaXQtdmFsdWUg
-aW4gX19za2JfZmxvd19kaXNzZWN0KzB4MjA3ZS8weDdhNDAgIA0KbmV0L2NvcmUvZmxvd19kaXNz
-ZWN0b3IuYzo5NTcNCkNQVTogMSBQSUQ6IDIxMjQzIENvbW06IHN5ei1leGVjdXRvci4xIE5vdCB0
-YWludGVkIDUuNC4wLXJjMisgIzANCkhhcmR3YXJlIG5hbWU6IEdvb2dsZSBHb29nbGUgQ29tcHV0
-ZSBFbmdpbmUvR29vZ2xlIENvbXB1dGUgRW5naW5lLCBCSU9TICANCkdvb2dsZSAwMS8wMS8yMDEx
-DQpDYWxsIFRyYWNlOg0KICBfX2R1bXBfc3RhY2sgbGliL2R1bXBfc3RhY2suYzo3NyBbaW5saW5l
-XQ0KICBkdW1wX3N0YWNrKzB4MTkxLzB4MWYwIGxpYi9kdW1wX3N0YWNrLmM6MTEzDQogIGttc2Fu
-X3JlcG9ydCsweDE0ZS8weDJjMCBtbS9rbXNhbi9rbXNhbl9yZXBvcnQuYzoxMTANCiAgX19tc2Fu
-X3dhcm5pbmcrMHg3My8weGUwIG1tL2ttc2FuL2ttc2FuX2luc3RyLmM6MjQ1DQogIF9fc2tiX2Zs
-b3dfZGlzc2VjdCsweDIwN2UvMHg3YTQwIG5ldC9jb3JlL2Zsb3dfZGlzc2VjdG9yLmM6OTU3DQog
-IF9fc2tiX2dldF9oYXNoX3N5bW1ldHJpYysweDEwOC8weDI2MCBuZXQvY29yZS9mbG93X2Rpc3Nl
-Y3Rvci5jOjE1MjMNCiAgZmFub3V0X2RlbXV4X2hhc2ggbmV0L3BhY2tldC9hZl9wYWNrZXQuYzox
-MzE0IFtpbmxpbmVdDQogIHBhY2tldF9yY3ZfZmFub3V0KzB4YTczLzB4MjU1MCBuZXQvcGFja2V0
-L2FmX3BhY2tldC5jOjE0MjkNCiAgZGVsaXZlcl9za2IgbmV0L2NvcmUvZGV2LmM6MTk2OSBbaW5s
-aW5lXQ0KICBfX25ldGlmX3JlY2VpdmVfc2tiX2NvcmUrMHgxY2FiLzB4NTFhMCBuZXQvY29yZS9k
-ZXYuYzo0ODk2DQogIF9fbmV0aWZfcmVjZWl2ZV9za2Jfb25lX2NvcmUgbmV0L2NvcmUvZGV2LmM6
-NTAwOCBbaW5saW5lXQ0KICBfX25ldGlmX3JlY2VpdmVfc2tiIG5ldC9jb3JlL2Rldi5jOjUxMjQg
-W2lubGluZV0NCiAgbmV0aWZfcmVjZWl2ZV9za2JfaW50ZXJuYWwrMHgzY2MvMHhjMjAgbmV0L2Nv
-cmUvZGV2LmM6NTIxNA0KICBuZXRpZl9yZWNlaXZlX3NrYisweDFkYS8weDNhMCBuZXQvY29yZS9k
-ZXYuYzo1MjczDQogIHR1bl9yeF9iYXRjaGVkIGRyaXZlcnMvbmV0L3R1bi5jOjE1NTMgW2lubGlu
-ZV0NCiAgdHVuX2dldF91c2VyKzB4NmM0NC8weDZmNzAgZHJpdmVycy9uZXQvdHVuLmM6MTk5Mw0K
-ICB0dW5fY2hyX3dyaXRlX2l0ZXIrMHgxZjIvMHgzNjAgZHJpdmVycy9uZXQvdHVuLmM6MjAyMg0K
-ICBjYWxsX3dyaXRlX2l0ZXIgaW5jbHVkZS9saW51eC9mcy5oOjE4OTUgW2lubGluZV0NCiAgbmV3
-X3N5bmNfd3JpdGUgZnMvcmVhZF93cml0ZS5jOjQ4MyBbaW5saW5lXQ0KICBfX3Zmc193cml0ZSsw
-eGEyYy8weGNiMCBmcy9yZWFkX3dyaXRlLmM6NDk2DQogIHZmc193cml0ZSsweDQ4MS8weDkyMCBm
-cy9yZWFkX3dyaXRlLmM6NTU4DQogIGtzeXNfd3JpdGUrMHgyNjUvMHg0MzAgZnMvcmVhZF93cml0
-ZS5jOjYxMQ0KICBfX2RvX3N5c193cml0ZSBmcy9yZWFkX3dyaXRlLmM6NjIzIFtpbmxpbmVdDQog
-IF9fc2Vfc3lzX3dyaXRlKzB4OTIvMHhiMCBmcy9yZWFkX3dyaXRlLmM6NjIwDQogIF9feDY0X3N5
-c193cml0ZSsweDRhLzB4NzAgZnMvcmVhZF93cml0ZS5jOjYyMA0KICBkb19zeXNjYWxsXzY0KzB4
-YjYvMHgxNjAgYXJjaC94ODYvZW50cnkvY29tbW9uLmM6MjkxDQogIGVudHJ5X1NZU0NBTExfNjRf
-YWZ0ZXJfaHdmcmFtZSsweDYzLzB4ZTcNClJJUDogMDAzMzoweDQ1OWE1OQ0KQ29kZTogZmQgYjcg
-ZmIgZmYgYzMgNjYgMmUgMGYgMWYgODQgMDAgMDAgMDAgMDAgMDAgNjYgOTAgNDggODkgZjggNDgg
-ODkgZjcgIA0KNDggODkgZDYgNDggODkgY2EgNGQgODkgYzIgNGQgODkgYzggNGMgOGIgNGMgMjQg
-MDggMGYgMDUgPDQ4PiAzZCAwMSBmMCBmZiAgDQpmZiAwZiA4MyBjYiBiNyBmYiBmZiBjMyA2NiAy
-ZSAwZiAxZiA4NCAwMCAwMCAwMCAwMA0KUlNQOiAwMDJiOjAwMDA3ZjA3M2Q2MmFjNzggRUZMQUdT
-OiAwMDAwMDI0NiBPUklHX1JBWDogMDAwMDAwMDAwMDAwMDAwMQ0KUkFYOiBmZmZmZmZmZmZmZmZm
-ZmRhIFJCWDogMDAwMDAwMDAwMDAwMDAwMyBSQ1g6IDAwMDAwMDAwMDA0NTlhNTkNClJEWDogMDAw
-MDAwMDAwMDAwYjEwNyBSU0k6IDAwMDAwMDAwMjAwMDAwYzAgUkRJOiAwMDAwMDAwMDAwMDAwMDA1
-DQpSQlA6IDAwMDAwMDAwMDA3NWJmMjAgUjA4OiAwMDAwMDAwMDAwMDAwMDAwIFIwOTogMDAwMDAw
-MDAwMDAwMDAwMA0KUjEwOiAwMDAwMDAwMDAwMDAwMDAwIFIxMTogMDAwMDAwMDAwMDAwMDI0NiBS
-MTI6IDAwMDA3ZjA3M2Q2MmI2ZDQNClIxMzogMDAwMDAwMDAwMDRjOWVhMCBSMTQ6IDAwMDAwMDAw
-MDA0ZTFhYzAgUjE1OiAwMDAwMDAwMGZmZmZmZmZmDQoNClVuaW5pdCB3YXMgc3RvcmVkIHRvIG1l
-bW9yeSBhdDoNCiAga21zYW5fc2F2ZV9zdGFja193aXRoX2ZsYWdzIG1tL2ttc2FuL2ttc2FuLmM6
-MTU0IFtpbmxpbmVdDQogIGttc2FuX2ludGVybmFsX2NoYWluX29yaWdpbisweGJkLzB4MTcwIG1t
-L2ttc2FuL2ttc2FuLmM6MzIxDQogIF9fbXNhbl9jaGFpbl9vcmlnaW4rMHg2Yi8weGUwIG1tL2tt
-c2FuL2ttc2FuX2luc3RyLmM6MTc5DQogIF9fc2tiX2Zsb3dfZGlzc2VjdCsweDMwZWUvMHg3YTQw
-IG5ldC9jb3JlL2Zsb3dfZGlzc2VjdG9yLmM6MTA2MA0KICBfX3NrYl9nZXRfaGFzaF9zeW1tZXRy
-aWMrMHgxMDgvMHgyNjAgbmV0L2NvcmUvZmxvd19kaXNzZWN0b3IuYzoxNTIzDQogIGZhbm91dF9k
-ZW11eF9oYXNoIG5ldC9wYWNrZXQvYWZfcGFja2V0LmM6MTMxNCBbaW5saW5lXQ0KICBwYWNrZXRf
-cmN2X2Zhbm91dCsweGE3My8weDI1NTAgbmV0L3BhY2tldC9hZl9wYWNrZXQuYzoxNDI5DQogIGRl
-bGl2ZXJfc2tiIG5ldC9jb3JlL2Rldi5jOjE5NjkgW2lubGluZV0NCiAgX19uZXRpZl9yZWNlaXZl
-X3NrYl9jb3JlKzB4MWNhYi8weDUxYTAgbmV0L2NvcmUvZGV2LmM6NDg5Ng0KICBfX25ldGlmX3Jl
-Y2VpdmVfc2tiX29uZV9jb3JlIG5ldC9jb3JlL2Rldi5jOjUwMDggW2lubGluZV0NCiAgX19uZXRp
-Zl9yZWNlaXZlX3NrYiBuZXQvY29yZS9kZXYuYzo1MTI0IFtpbmxpbmVdDQogIG5ldGlmX3JlY2Vp
-dmVfc2tiX2ludGVybmFsKzB4M2NjLzB4YzIwIG5ldC9jb3JlL2Rldi5jOjUyMTQNCiAgbmV0aWZf
-cmVjZWl2ZV9za2IrMHgxZGEvMHgzYTAgbmV0L2NvcmUvZGV2LmM6NTI3Mw0KICB0dW5fcnhfYmF0
-Y2hlZCBkcml2ZXJzL25ldC90dW4uYzoxNTUzIFtpbmxpbmVdDQogIHR1bl9nZXRfdXNlcisweDZj
-NDQvMHg2ZjcwIGRyaXZlcnMvbmV0L3R1bi5jOjE5OTMNCiAgdHVuX2Nocl93cml0ZV9pdGVyKzB4
-MWYyLzB4MzYwIGRyaXZlcnMvbmV0L3R1bi5jOjIwMjINCiAgY2FsbF93cml0ZV9pdGVyIGluY2x1
-ZGUvbGludXgvZnMuaDoxODk1IFtpbmxpbmVdDQogIG5ld19zeW5jX3dyaXRlIGZzL3JlYWRfd3Jp
-dGUuYzo0ODMgW2lubGluZV0NCiAgX192ZnNfd3JpdGUrMHhhMmMvMHhjYjAgZnMvcmVhZF93cml0
-ZS5jOjQ5Ng0KICB2ZnNfd3JpdGUrMHg0ODEvMHg5MjAgZnMvcmVhZF93cml0ZS5jOjU1OA0KICBr
-c3lzX3dyaXRlKzB4MjY1LzB4NDMwIGZzL3JlYWRfd3JpdGUuYzo2MTENCiAgX19kb19zeXNfd3Jp
-dGUgZnMvcmVhZF93cml0ZS5jOjYyMyBbaW5saW5lXQ0KICBfX3NlX3N5c193cml0ZSsweDkyLzB4
-YjAgZnMvcmVhZF93cml0ZS5jOjYyMA0KICBfX3g2NF9zeXNfd3JpdGUrMHg0YS8weDcwIGZzL3Jl
-YWRfd3JpdGUuYzo2MjANCiAgZG9fc3lzY2FsbF82NCsweGI2LzB4MTYwIGFyY2gveDg2L2VudHJ5
-L2NvbW1vbi5jOjI5MQ0KICBlbnRyeV9TWVNDQUxMXzY0X2FmdGVyX2h3ZnJhbWUrMHg2My8weGU3
-DQoNClVuaW5pdCB3YXMgc3RvcmVkIHRvIG1lbW9yeSBhdDoNCiAga21zYW5fc2F2ZV9zdGFja193
-aXRoX2ZsYWdzIG1tL2ttc2FuL2ttc2FuLmM6MTU0IFtpbmxpbmVdDQogIGttc2FuX2ludGVybmFs
-X2NoYWluX29yaWdpbisweGJkLzB4MTcwIG1tL2ttc2FuL2ttc2FuLmM6MzIxDQogIF9fbXNhbl9j
-aGFpbl9vcmlnaW4rMHg2Yi8weGUwIG1tL2ttc2FuL2ttc2FuX2luc3RyLmM6MTc5DQogIHZsYW5f
-c2V0X2VuY2FwX3Byb3RvIGluY2x1ZGUvbGludXgvc2tidWZmLmg6MTU4NyBbaW5saW5lXQ0KICBz
-a2Jfdmxhbl91bnRhZysweDZiYy8weGQyMCBuZXQvY29yZS9za2J1ZmYuYzo1MzI5DQogIF9fbmV0
-aWZfcmVjZWl2ZV9za2JfY29yZSsweDgzMy8weDUxYTAgbmV0L2NvcmUvZGV2LmM6NDg1NQ0KICBf
-X25ldGlmX3JlY2VpdmVfc2tiX29uZV9jb3JlIG5ldC9jb3JlL2Rldi5jOjUwMDggW2lubGluZV0N
-CiAgX19uZXRpZl9yZWNlaXZlX3NrYiBuZXQvY29yZS9kZXYuYzo1MTI0IFtpbmxpbmVdDQogIG5l
-dGlmX3JlY2VpdmVfc2tiX2ludGVybmFsKzB4M2NjLzB4YzIwIG5ldC9jb3JlL2Rldi5jOjUyMTQN
-CiAgbmV0aWZfcmVjZWl2ZV9za2IrMHgxZGEvMHgzYTAgbmV0L2NvcmUvZGV2LmM6NTI3Mw0KICB0
-dW5fcnhfYmF0Y2hlZCBkcml2ZXJzL25ldC90dW4uYzoxNTUzIFtpbmxpbmVdDQogIHR1bl9nZXRf
-dXNlcisweDZjNDQvMHg2ZjcwIGRyaXZlcnMvbmV0L3R1bi5jOjE5OTMNCiAgdHVuX2Nocl93cml0
-ZV9pdGVyKzB4MWYyLzB4MzYwIGRyaXZlcnMvbmV0L3R1bi5jOjIwMjINCiAgY2FsbF93cml0ZV9p
-dGVyIGluY2x1ZGUvbGludXgvZnMuaDoxODk1IFtpbmxpbmVdDQogIG5ld19zeW5jX3dyaXRlIGZz
-L3JlYWRfd3JpdGUuYzo0ODMgW2lubGluZV0NCiAgX192ZnNfd3JpdGUrMHhhMmMvMHhjYjAgZnMv
-cmVhZF93cml0ZS5jOjQ5Ng0KICB2ZnNfd3JpdGUrMHg0ODEvMHg5MjAgZnMvcmVhZF93cml0ZS5j
-OjU1OA0KICBrc3lzX3dyaXRlKzB4MjY1LzB4NDMwIGZzL3JlYWRfd3JpdGUuYzo2MTENCiAgX19k
-b19zeXNfd3JpdGUgZnMvcmVhZF93cml0ZS5jOjYyMyBbaW5saW5lXQ0KICBfX3NlX3N5c193cml0
-ZSsweDkyLzB4YjAgZnMvcmVhZF93cml0ZS5jOjYyMA0KICBfX3g2NF9zeXNfd3JpdGUrMHg0YS8w
-eDcwIGZzL3JlYWRfd3JpdGUuYzo2MjANCiAgZG9fc3lzY2FsbF82NCsweGI2LzB4MTYwIGFyY2gv
-eDg2L2VudHJ5L2NvbW1vbi5jOjI5MQ0KICBlbnRyeV9TWVNDQUxMXzY0X2FmdGVyX2h3ZnJhbWUr
-MHg2My8weGU3DQoNClVuaW5pdCB3YXMgY3JlYXRlZCBhdDoNCiAga21zYW5fc2F2ZV9zdGFja193
-aXRoX2ZsYWdzIG1tL2ttc2FuL2ttc2FuLmM6MTU0IFtpbmxpbmVdDQogIGttc2FuX2ludGVybmFs
-X3BvaXNvbl9zaGFkb3crMHg2MC8weDEyMCBtbS9rbXNhbi9rbXNhbi5jOjEzNw0KICBrbXNhbl9z
-bGFiX2FsbG9jKzB4YWEvMHgxMjAgbW0va21zYW4va21zYW5faG9va3MuYzoxMDMNCiAgc2xhYl9h
-bGxvY19ub2RlIG1tL3NsdWIuYzoyNzkyIFtpbmxpbmVdDQogIF9fa21hbGxvY19ub2RlX3RyYWNr
-X2NhbGxlcisweGI1NS8weDEzMjAgbW0vc2x1Yi5jOjQzOTANCiAgX19rbWFsbG9jX3Jlc2VydmUg
-bmV0L2NvcmUvc2tidWZmLmM6MTQxIFtpbmxpbmVdDQogIF9fYWxsb2Nfc2tiKzB4MzA2LzB4YTEw
-IG5ldC9jb3JlL3NrYnVmZi5jOjIwOQ0KICBhbGxvY19za2IgaW5jbHVkZS9saW51eC9za2J1ZmYu
-aDoxMDUwIFtpbmxpbmVdDQogIGFsbG9jX3NrYl93aXRoX2ZyYWdzKzB4MThjLzB4YTgwIG5ldC9j
-b3JlL3NrYnVmZi5jOjU2NTkNCiAgc29ja19hbGxvY19zZW5kX3Bza2IrMHhhZmQvMHgxMGEwIG5l
-dC9jb3JlL3NvY2suYzoyMjQwDQogIHR1bl9hbGxvY19za2IgZHJpdmVycy9uZXQvdHVuLmM6MTUy
-OSBbaW5saW5lXQ0KICB0dW5fZ2V0X3VzZXIrMHgxMTMyLzB4NmY3MCBkcml2ZXJzL25ldC90dW4u
-YzoxODQzDQogIHR1bl9jaHJfd3JpdGVfaXRlcisweDFmMi8weDM2MCBkcml2ZXJzL25ldC90dW4u
-YzoyMDIyDQogIGNhbGxfd3JpdGVfaXRlciBpbmNsdWRlL2xpbnV4L2ZzLmg6MTg5NSBbaW5saW5l
-XQ0KICBuZXdfc3luY193cml0ZSBmcy9yZWFkX3dyaXRlLmM6NDgzIFtpbmxpbmVdDQogIF9fdmZz
-X3dyaXRlKzB4YTJjLzB4Y2IwIGZzL3JlYWRfd3JpdGUuYzo0OTYNCiAgdmZzX3dyaXRlKzB4NDgx
-LzB4OTIwIGZzL3JlYWRfd3JpdGUuYzo1NTgNCiAga3N5c193cml0ZSsweDI2NS8weDQzMCBmcy9y
-ZWFkX3dyaXRlLmM6NjExDQogIF9fZG9fc3lzX3dyaXRlIGZzL3JlYWRfd3JpdGUuYzo2MjMgW2lu
-bGluZV0NCiAgX19zZV9zeXNfd3JpdGUrMHg5Mi8weGIwIGZzL3JlYWRfd3JpdGUuYzo2MjANCiAg
-X194NjRfc3lzX3dyaXRlKzB4NGEvMHg3MCBmcy9yZWFkX3dyaXRlLmM6NjIwDQogIGRvX3N5c2Nh
-bGxfNjQrMHhiNi8weDE2MCBhcmNoL3g4Ni9lbnRyeS9jb21tb24uYzoyOTENCiAgZW50cnlfU1lT
-Q0FMTF82NF9hZnRlcl9od2ZyYW1lKzB4NjMvMHhlNw0KPT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCg0KDQotLS0NClRoaXMgYnVnIGlzIGdlbmVy
-YXRlZCBieSBhIGJvdC4gSXQgbWF5IGNvbnRhaW4gZXJyb3JzLg0KU2VlIGh0dHBzOi8vZ29vLmds
-L3Rwc21FSiBmb3IgbW9yZSBpbmZvcm1hdGlvbiBhYm91dCBzeXpib3QuDQpzeXpib3QgZW5naW5l
-ZXJzIGNhbiBiZSByZWFjaGVkIGF0IHN5emthbGxlckBnb29nbGVncm91cHMuY29tLg0KDQpzeXpi
-b3Qgd2lsbCBrZWVwIHRyYWNrIG9mIHRoaXMgYnVnIHJlcG9ydC4gU2VlOg0KaHR0cHM6Ly9nb28u
-Z2wvdHBzbUVKI3N0YXR1cyBmb3IgaG93IHRvIGNvbW11bmljYXRlIHdpdGggc3l6Ym90Lg0K
+Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+
+> On Tue, Oct 22, 2019 at 08:07:42PM +0200, Toke H=C3=B8iland-J=C3=B8rgense=
+n wrote:
+>>=20
+>> I believe this is what Alexei means by "indirect calls". That is
+>> different, though, because it implies that each program lives as a
+>> separate object in the kernel - and so it might actually work. What you
+>> were talking about (until this paragraph) was something that was
+>> entirely in userspace, and all the kernel sees is a blob of the eBPF
+>> equivalent of `cat *.so > my_composite_prog.so`.
+>
+> So I've looked at indirect calls and realized that they're _indirect_ cal=
+ls.
+> The retpoline overhead will be around, so a solution has to work without =
+them.
+> I still think they're necessary for all sorts of things, but priority shi=
+fted.
+>
+> I think what Ed is proposing with static linking is the best generic solu=
+tion.
+> The chaining policy doesn't belong in the kernel. A user space can expres=
+s the
+> chaining logic in the form of BPF program. Static linking achieves that. =
+There
+> could be a 'root' bpf program (let's call it rootlet.o) that looks like:
+> int xdp_firewall_placeholder1(struct xdp_md *ctx)
+> {
+>    return XDP_PASS;
+> }
+> int xdp_firewall_placeholder2(struct xdp_md *ctx)
+> {
+>    return XDP_PASS;
+> }
+> int xdp_load_balancer_placeholder1(struct xdp_md *ctx)
+> {
+>    return XDP_PASS;
+> }
+> int main_xdp_prog(struct xdp_md *ctx)
+> {
+>    int ret;
+>
+>    ret =3D xdp_firewall_placeholder1(ctx);
+>    switch (ret) {
+>    case XDP_PASS: break;
+>    case XDP_PROP: return XDP_DROP;
+>    case XDP_TX: case XDP_REDIRECT:
+>       /* buggy firewall */
+>       bpf_perf_event_output(ctx,...);
+>    default: break; /* or whatever else */
+>    }
+>   =20
+>    ret =3D xdp_firewall_placeholder2(ctx);
+>    switch (ret) {
+>    case XDP_PASS: break;
+>    case XDP_PROP: return XDP_DROP;
+>    default: break;
+>    }
+>
+>    ret =3D xdp_load_balancer_placeholder1(ctx);
+>    switch (ret) {
+>    case XDP_PASS: break;
+>    case XDP_PROP: return XDP_DROP;
+>    case XDP_TX: return XDP_TX;
+>    case XDP_REDIRECT: return XDP_REDIRECT;
+>    default: break; /* or whatever else */
+>    }
+>    return XDP_PASS;
+> }
+>
+> When firewall1.rpm is installed it needs to use either a central daemon o=
+r
+> common library (let's call it libxdp.so) that takes care of orchestration=
+. The
+> library would need to keep a state somewhere (like local file or a databa=
+se).
+> The state will include rootlet.o and new firewall1.o that wants to be lin=
+ked
+> into the existing program chain. When firewall2.rpm gets installed it cal=
+ls the
+> same libxdp.so functions that operate on shared state. libxdp.so needs to=
+ link
+> firewall1.o + firewall2.o + rootlet.o into one program and attach it to n=
+etdev.
+> This is static linking. The existing kernel infrastructure already suppor=
+ts
+> such model and I think it's enough for a lot of use cases. In particular =
+fb's
+> firewall+katran XDP style will fit right in. But bpf_tail_calls are
+> incompatible with bpf2bpf calls that static linking will use and I think
+> cloudlfare folks expressed the interest to use them for some reason even =
+within
+> single firewall ? so we need to improve the model a bit.
+>
+> We can introduce dynamic linking. The second part of 'BPF trampoline'
+> patches allows tracing programs to attach to other BPF programs. The
+> idea of dynamic linking is to replace a program or subprogram instead
+> of attaching to it. The firewall1.rpm application will still use
+> libxdp.so, but instead of statically linking it will ask kernel to
+> replace a subprogram rootlet_fd + btf_id_of_xdp_firewall_placeholder1
+> with new firewall1.o. The same interface is used for attaching tracing
+> prog to networking prog.
+
+Hmm, let's see if I'm understanding you correctly. In this model, to
+attach program #2 (assuming the first one is already loaded on an
+interface), userspace would need to do something like:
+
+old_fd =3D get_xdp_fd(eth0);
+new_fd =3D load_bpf("newprog.o"); // verifies newprog.o
+proglet =3D load_bpf("xdp-run-2-progs.o"); // or dynamically generate this
+replace_subprog(proglet, 0, old_fd); // similar to map FD replacement?
+replace_subprog(proglet, 1, new_fd);
+proglet_fd =3D load_bpf(proglet); // verifier reuses sub-fd prog verdicts
+
+bpf_tracing_prog_attach(old_fd, proglet_fd, FLAG_REPLACE);
+
+
+So the two component programs would still exist as kernel objects,
+right? And the trampolines would keep individual stats for each one (if
+BPF stats are enabled)? Could userspace also extract the prog IDs being
+referenced by the "glue" proglet? Similar to how bpftool shows which map
+IDs a program refers to today?
+
+What about attaching a third program? Would that work by recursion (as
+above, but with the old proglet as old_fd), or should the library build
+a whole new sequence from the component programs?
+
+Finally, what happens if someone where to try to attach a retprobe to
+one of the component programs? Could it be possible to do that even
+while program is being run from proglet dispatch? That way we can still
+debug an individual XDP program even though it's run as part of a chain.
+
+> Initially I plan to keep the verifier job simple and allow replacing
+> xdp-equivalent subprogram with xdp program. Meaning that subprogram
+> (in above case xdp_firewall_placeholder1) needs to have exactly one
+> argument and it has to be 'struct xdp_md *'.
+
+That's fine.
+
+> Then during the loading of firewall1.o the verifier wouldn't need to
+> re-verify the whole thing. BTF type matching that the verifier is
+> doing as part of 'BPF trampoline' series will be reused for this
+> purpose. Longer term I'd like to allow more than one argument while
+> preserving partial verification model. The rootlet.o calls into
+> firewall1.o directly. So no retpoline to worry about and firewall1.o
+> can use bpf_tail_call() if it wants so. That tail_call will still
+> return back to rootlet.o which will make policy decision. This
+> rootlet.o can be automatically generated by libxdp.so.
+
+Sounds reasonable. Any reason libxdp.so couldn't be part of libbpf?
+
+> If in the future we figure out how to do two load-balancers libxdp.so
+> will be able to accommodate that new policy.
+
+Yeah, it would be cool if we could move things across CPUs; like with
+cpumap, but executing another XDP program on the target CPU.
+
+> This firewall1.o can be developed and tested independently of other
+> xdp programs. The key gotcha here is that the verifier needs to allow
+> more than 512 stack usage for the rootlet.o. I think that's
+> acceptable.
+
+Right, cool.
+
+> In the future indirect calls will allow rootlet.o to be cleaner:
+> typedef int (*ptr_to_xdp_prog)(struct xdp_md *ctx);
+> ptr_to_xdp_prog prog_array[100];
+> int main_xdp_prog(struct xdp_md *ctx)
+> {
+>    int ret, i;
+>
+>    for (i =3D 0; i < 100; i++) {
+>        ret =3D prog_array[i](ctx);
+>        switch (ret) {
+>        case XDP_PASS: break;
+>        case XDP_PROP: return XDP_DROP;
+>        ..
+>    }
+> }
+> but they're indirect calls and retpoline. Hence lower priority atm.
+
+Yes, this was what I was envisioning when you first said 'indirect
+calls'. This would be wonderfully flexible... But a shame about the
+indirect calls, performance-wise.
+
+-Toke
+
