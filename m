@@ -2,28 +2,28 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D0610F8DED
-	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2019 12:18:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93A20F8E22
+	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2019 12:20:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727481AbfKLLSX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Nov 2019 06:18:23 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:33833 "EHLO
+        id S1727524AbfKLLS2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Nov 2019 06:18:28 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:33927 "EHLO
         Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727458AbfKLLSX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Nov 2019 06:18:23 -0500
+        with ESMTP id S1727507AbfKLLS2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Nov 2019 06:18:28 -0500
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1iUUBP-0000JX-2l; Tue, 12 Nov 2019 12:18:03 +0100
+        id 1iUUBK-0000Ji-Kl; Tue, 12 Nov 2019 12:17:58 +0100
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 4F8621C04A9;
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id BAEAF1C04C9;
         Tue, 12 Nov 2019 12:17:56 +0100 (CET)
-Date:   Tue, 12 Nov 2019 11:17:55 -0000
+Date:   Tue, 12 Nov 2019 11:17:56 -0000
 From:   "tip-bot2 for Ian Rogers" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] perf parse: Add a deep delete for parse event terms
+Subject: [tip: perf/core] perf parse: If pmu configuration fails free terms
 Cc:     Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
         Adrian Hunter <adrian.hunter@intel.com>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
@@ -44,10 +44,10 @@ Cc:     Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
         Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20191030223448.12930-10-irogers@google.com>
-References: <20191030223448.12930-10-irogers@google.com>
+In-Reply-To: <20191030223448.12930-9-irogers@google.com>
+References: <20191030223448.12930-9-irogers@google.com>
 MIME-Version: 1.0
-Message-ID: <157355747597.29376.8966956495102275134.tip-bot2@tip-bot2>
+Message-ID: <157355747641.29376.8277642487437732660.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -63,17 +63,16 @@ X-Mailing-List: bpf@vger.kernel.org
 
 The following commit has been merged into the perf/core branch of tip:
 
-Commit-ID:     1dc925568f015edfdbb89e20ad41755bb70538b9
-Gitweb:        https://git.kernel.org/tip/1dc925568f015edfdbb89e20ad41755bb70538b9
+Commit-ID:     38f2c4226e6bc3e8c41c318242821ba5dc825aba
+Gitweb:        https://git.kernel.org/tip/38f2c4226e6bc3e8c41c318242821ba5dc825aba
 Author:        Ian Rogers <irogers@google.com>
-AuthorDate:    Wed, 30 Oct 2019 15:34:47 -07:00
+AuthorDate:    Wed, 30 Oct 2019 15:34:46 -07:00
 Committer:     Arnaldo Carvalho de Melo <acme@redhat.com>
 CommitterDate: Thu, 07 Nov 2019 08:30:18 -03:00
 
-perf parse: Add a deep delete for parse event terms
+perf parse: If pmu configuration fails free terms
 
-Add a parse_events_term deep delete function so that owned strings and
-arrays are freed.
+Avoid a memory leak when the configuration fails.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 Acked-by: Jiri Olsa <jolsa@kernel.org>
@@ -95,109 +94,30 @@ Cc: Yonghong Song <yhs@fb.com>
 Cc: bpf@vger.kernel.org
 Cc: clang-built-linux@googlegroups.com
 Cc: netdev@vger.kernel.org
-Link: http://lore.kernel.org/lkml/20191030223448.12930-10-irogers@google.com
+Link: http://lore.kernel.org/lkml/20191030223448.12930-9-irogers@google.com
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- tools/perf/util/parse-events.c | 16 +++++++++++++---
- tools/perf/util/parse-events.h |  1 +
- tools/perf/util/parse-events.y | 12 ++----------
- tools/perf/util/pmu.c          |  2 +-
- 4 files changed, 17 insertions(+), 14 deletions(-)
+ tools/perf/util/parse-events.c |  9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
 diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-index a0a80f4..6d18ff9 100644
+index 578288c..a0a80f4 100644
 --- a/tools/perf/util/parse-events.c
 +++ b/tools/perf/util/parse-events.c
-@@ -2812,6 +2812,18 @@ int parse_events_term__clone(struct parse_events_term **new,
- 	return new_term(new, &temp, str, 0);
- }
+@@ -1388,8 +1388,15 @@ int parse_events_add_pmu(struct parse_events_state *parse_state,
+ 	if (get_config_terms(head_config, &config_terms))
+ 		return -ENOMEM;
  
-+void parse_events_term__delete(struct parse_events_term *term)
-+{
-+	if (term->array.nr_ranges)
-+		zfree(&term->array.ranges);
+-	if (perf_pmu__config(pmu, &attr, head_config, parse_state->error))
++	if (perf_pmu__config(pmu, &attr, head_config, parse_state->error)) {
++		struct perf_evsel_config_term *pos, *tmp;
 +
-+	if (term->type_val != PARSE_EVENTS__TERM_TYPE_NUM)
-+		zfree(&term->val.str);
-+
-+	zfree(&term->config);
-+	free(term);
-+}
-+
- int parse_events_copy_term_list(struct list_head *old,
- 				 struct list_head **new)
- {
-@@ -2842,10 +2854,8 @@ void parse_events_terms__purge(struct list_head *terms)
- 	struct parse_events_term *term, *h;
++		list_for_each_entry_safe(pos, tmp, &config_terms, list) {
++			list_del_init(&pos->list);
++			free(pos);
++		}
+ 		return -EINVAL;
++	}
  
- 	list_for_each_entry_safe(term, h, terms, list) {
--		if (term->array.nr_ranges)
--			zfree(&term->array.ranges);
- 		list_del_init(&term->list);
--		free(term);
-+		parse_events_term__delete(term);
- 	}
- }
- 
-diff --git a/tools/perf/util/parse-events.h b/tools/perf/util/parse-events.h
-index 34f58d2..5ee8ac9 100644
---- a/tools/perf/util/parse-events.h
-+++ b/tools/perf/util/parse-events.h
-@@ -139,6 +139,7 @@ int parse_events_term__sym_hw(struct parse_events_term **term,
- 			      char *config, unsigned idx);
- int parse_events_term__clone(struct parse_events_term **new,
- 			     struct parse_events_term *term);
-+void parse_events_term__delete(struct parse_events_term *term);
- void parse_events_terms__delete(struct list_head *terms);
- void parse_events_terms__purge(struct list_head *terms);
- void parse_events__clear_array(struct parse_events_array *a);
-diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
-index 376b198..4cac830 100644
---- a/tools/perf/util/parse-events.y
-+++ b/tools/perf/util/parse-events.y
-@@ -49,14 +49,6 @@ static void free_list_evsel(struct list_head* list_evsel)
- 	free(list_evsel);
- }
- 
--static void free_term(struct parse_events_term *term)
--{
--	if (term->type_val == PARSE_EVENTS__TERM_TYPE_STR)
--		free(term->val.str);
--	zfree(&term->array.ranges);
--	free(term);
--}
--
- static void inc_group_count(struct list_head *list,
- 		       struct parse_events_state *parse_state)
- {
-@@ -99,7 +91,7 @@ static void inc_group_count(struct list_head *list,
- %type <str> PE_DRV_CFG_TERM
- %destructor { free ($$); } <str>
- %type <term> event_term
--%destructor { free_term ($$); } <term>
-+%destructor { parse_events_term__delete ($$); } <term>
- %type <list_terms> event_config
- %type <list_terms> opt_event_config
- %type <list_terms> opt_pmu_config
-@@ -694,7 +686,7 @@ event_config ',' event_term
- 	struct parse_events_term *term = $3;
- 
- 	if (!head) {
--		free_term(term);
-+		parse_events_term__delete(term);
- 		YYABORT;
- 	}
- 	list_add_tail(&term->list, head);
-diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-index f9f427d..db1e571 100644
---- a/tools/perf/util/pmu.c
-+++ b/tools/perf/util/pmu.c
-@@ -1260,7 +1260,7 @@ int perf_pmu__check_alias(struct perf_pmu *pmu, struct list_head *head_terms,
- 		info->metric_name = alias->metric_name;
- 
- 		list_del_init(&term->list);
--		free(term);
-+		parse_events_term__delete(term);
- 	}
- 
- 	/*
+ 	evsel = __add_event(list, &parse_state->idx, &attr,
+ 			    get_config_name(head_config), pmu,
