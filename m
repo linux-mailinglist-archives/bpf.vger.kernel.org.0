@@ -2,96 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 27793F95B5
-	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2019 17:32:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C22B9F95D9
+	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2019 17:42:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726799AbfKLQco (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Nov 2019 11:32:44 -0500
-Received: from dispatch1-us1.ppe-hosted.com ([148.163.129.52]:39306 "EHLO
+        id S1726388AbfKLQmq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Nov 2019 11:42:46 -0500
+Received: from dispatch1-us1.ppe-hosted.com ([67.231.154.164]:49456 "EHLO
         dispatch1-us1.ppe-hosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726738AbfKLQco (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 12 Nov 2019 11:32:44 -0500
+        by vger.kernel.org with ESMTP id S1726008AbfKLQmq (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 12 Nov 2019 11:42:46 -0500
 X-Virus-Scanned: Proofpoint Essentials engine
 Received: from webmail.solarflare.com (uk.solarflare.com [193.34.186.16])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mx1-us5.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTPS id 5E1BC80083;
-        Tue, 12 Nov 2019 16:32:39 +0000 (UTC)
+        by mx1-us5.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTPS id 50BB558006B;
+        Tue, 12 Nov 2019 16:42:44 +0000 (UTC)
 Received: from [10.17.20.203] (10.17.20.203) by ukex01.SolarFlarecom.com
  (10.17.10.4) with Microsoft SMTP Server (TLS) id 15.0.1395.4; Tue, 12 Nov
- 2019 16:32:30 +0000
-Subject: Re: static and dynamic linking. Was: [PATCH bpf-next v3 1/5] bpf:
- Support chain calling multiple BPF
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>
-CC:     John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+ 2019 16:42:36 +0000
+Subject: Re: [PATCH v2 net-next] sfc: trace_xdp_exception on XDP failure
+To:     Arthur Fabre <afabre@cloudflare.com>,
+        Solarflare linux maintainers <linux-net-drivers@solarflare.com>,
+        Charles McLachlan <cmclachlan@solarflare.com>,
+        Martin Habets <mhabets@solarflare.com>,
+        "David Miller" <davem@davemloft.net>,
         Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Marek Majkowski <marek@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        David Miller <davem@davemloft.net>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>
-References: <20191010044156.2hno4sszysu3c35g@ast-mbp.dhcp.thefacebook.com>
- <87v9srijxa.fsf@toke.dk>
- <5da4ab712043c_25f42addb7c085b83b@john-XPS-13-9370.notmuch>
- <87eezfi2og.fsf@toke.dk>
- <f9d5f717-51fe-7d03-6348-dbaf0b9db434@solarflare.com>
- <87r23egdua.fsf@toke.dk>
- <70142501-e2dd-1aed-992e-55acd5c30cfd@solarflare.com>
- <874l07fu61.fsf@toke.dk>
- <aeae7b94-090a-a850-4740-0274ab8178d5@solarflare.com>
- <87eez4odqp.fsf@toke.dk>
- <20191112025112.bhzmrrh2pr76ssnh@ast-mbp.dhcp.thefacebook.com>
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
+CC:     <kernel-team@cloudflare.com>
+References: <20191112153601.5849-1-afabre@cloudflare.com>
 From:   Edward Cree <ecree@solarflare.com>
-Message-ID: <c1ef53cc-2877-2ae1-b003-7e30596d5df1@solarflare.com>
-Date:   Tue, 12 Nov 2019 16:32:27 +0000
+Message-ID: <29aea663-e252-4c4f-1d29-d575395206ea@solarflare.com>
+Date:   Tue, 12 Nov 2019 16:42:33 +0000
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <20191112025112.bhzmrrh2pr76ssnh@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20191112153601.5849-1-afabre@cloudflare.com>
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
 X-Originating-IP: [10.17.20.203]
 X-ClientProxiedBy: ocex03.SolarFlarecom.com (10.20.40.36) To
  ukex01.SolarFlarecom.com (10.17.10.4)
 X-TM-AS-Product-Ver: SMEX-12.5.0.1300-8.5.1010-25038.003
-X-TM-AS-Result: No-0.670100-8.000000-10
-X-TMASE-MatchedRID: scwq2vQP8OHmLzc6AOD8DfHkpkyUphL9B4Id7CiQcz8QjsHZD9zVXvmB
-        zpqQiI1Nu/qspqV62H89vUc08rywOgML7je50JKE4qCB2ZT6yAxSL7MLcz37wU0SXxd4W9zIXEL
-        8JW7sdCNDE3gwgXa3fL/Cve01/XYWxGSfUEm6OV3OeIV+MVeoznIFLjP03wGMuU98jGdvYMtU7b
-        LqnQz/DB4ymOiBXHkaVjENcDpuoDMM8jMXjBF+sIMbH85DUZXyYxU/PH+vZxv6C0ePs7A07Y6HM
-        5rqDwqtcB/GDRtDsouO3TWMVpAYDE+NDoYyXXaI5W7wnxiRGDEeIIC+gtyz9HJEyDpPULR7Lp4R
-        jrKxjAFdnZkuyPr7rlO7JFF+mf7u4vn0zMfSmjYrbLOj1GuP3A+hgLflG6KEo9QjuF9BKnm9EgI
-        V0R0692cjFnImzvyS
+X-TM-AS-Result: No-0.331100-8.000000-10
+X-TMASE-MatchedRID: 5+1rHnqhWUTmLzc6AOD8DfHkpkyUphL9SWg+u4ir2NNpsnGGIgWMmSUL
+        izGxgJgi+H4tK0sV2EtUAnueMw/a9b0GYUxZsfvIM71h0SMVl8L5awEvkHdlMZsoi2XrUn/JyeM
+        tMD9QOgCY/fxzcM2LJMce5dMCYKFd3QfwsVk0UbuZ/dgf3Hl0lT+/NOhE1QTyNb6FP0RjU60Bh4
+        4+iA8Q+EXpQkE665TKmeZpUFZo7zcM5cYZIqzaRV4Fqk6hA49GvElm7Yg+db5YSpSC0RmOAKKAQ
+        fLsnhLrKWSt4DmvbhpicKLmK2TeKmsPn5C6nWpTiTSgm8kJVKRDDKa3G4nrLQ==
 X-TM-AS-User-Approved-Sender: Yes
 X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10-0.670100-8.000000
+X-TMASE-Result: 10-0.331100-8.000000
 X-TMASE-Version: SMEX-12.5.0.1300-8.5.1010-25038.003
-X-MDID: 1573576360-k4m46YBXRlEx
+X-MDID: 1573576965-aCx6MmK-vyYX
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 12/11/2019 02:51, Alexei Starovoitov wrote:
-> There
-> could be a 'root' bpf program (let's call it rootlet.o) that looks like:
-This looks a lot like what I had in mind...
-> We can introduce dynamic linking. The second part of 'BPF trampoline' patches
-> allows tracing programs to attach to other BPF programs. The idea of dynamic
-> linking is to replace a program or subprogram instead of attaching to it.
-... as does this, particularly the "partial verification" / verify a subprog
- as a separate unit with its own contract.
-> The rootlet.o calls into firewall1.o directly. So no retpoline to worry about
-> and firewall1.o can use bpf_tail_call() if it wants so. That tail_call will
-> still return back to rootlet.o
-Yep, that's a really nice gain that comes out of partial verification.
-
-+1 to this whole proposal.
-
--Ed
+On 12/11/2019 15:36, Arthur Fabre wrote:
+> The sfc driver can drop packets processed with XDP, notably when running
+> out of buffer space on XDP_TX, or returning an unknown XDP action.
+> This increments the rx_xdp_bad_drops ethtool counter.
+>
+> Call trace_xdp_exception everywhere rx_xdp_bad_drops is incremented,
+> except for fragmented RX packets as the XDP program hasn't run yet.
+> This allows it to easily be monitored from userspace.
+>
+> This mirrors the behavior of other drivers.
+>
+> Signed-off-by: Arthur Fabre <afabre@cloudflare.com>
+Acked-by: Edward Cree <ecree@solarflare.com>
