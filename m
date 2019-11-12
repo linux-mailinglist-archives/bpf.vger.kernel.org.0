@@ -2,117 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EB840F9799
-	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2019 18:50:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EF1EF998D
+	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2019 20:18:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726645AbfKLRu5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Nov 2019 12:50:57 -0500
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:45311 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725997AbfKLRu4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Nov 2019 12:50:56 -0500
-Received: by mail-qk1-f193.google.com with SMTP id q70so15207101qke.12;
-        Tue, 12 Nov 2019 09:50:54 -0800 (PST)
+        id S1727001AbfKLTSA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Nov 2019 14:18:00 -0500
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:39761 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726977AbfKLTSA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Nov 2019 14:18:00 -0500
+Received: by mail-lj1-f196.google.com with SMTP id p18so19109912ljc.6
+        for <bpf@vger.kernel.org>; Tue, 12 Nov 2019 11:17:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ylsEy4MlIJErY/GVeWNeaZDzsBVBxc5FEWIayo4Qyjo=;
-        b=L/AvwS0/Y1MZ20SMB3ivYZroc8LBgL6ZFMjiW/GsU0vEGMoroGXsFu71DJSTUaF40F
-         HAnASGcyjiPzyMkkcPF4J/awvnGmPMcF1A6nJS2CSSZ8EnfNLouTDmM+DQG3AFkBpfsG
-         GEp2Tjl1zaGARAEmcluupriVsrqFTpJo6SG/7Ay1tRpZVaPJ/kKSAYzPhpLUKX9FLUOl
-         h/C2M/XMoS6JF3OuJNgktD93BmGjWRPwV0x7jqiAxLj7Qk3l5Db9ssKNEovzM+PyTexR
-         0ExP7CZqYj2lj2OATyPVKgR4cbxmkKvCo5sp6MMawFtamaix3UU5nHrlK6Ns6uLcKIeS
-         3MnQ==
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :organization:mime-version:content-transfer-encoding;
+        bh=1kWYIraaT/XfpcPhtfE2LW+E738Svg2k2/zd4/7T1y4=;
+        b=cMLwHeU3DwLApFzFzxhSdMhSpcgSZylFeuyPJKUfaRi+dJiXtMNu6/lac3XlcL7mZZ
+         hU1ptfM1qfav/NdUVC+rNtwl1P98Q6nEkAp8+AnuFZrUN1hHg99VMA8qoq4CiEQfqQz5
+         gSP7YGeH+z+8+/tIE5zZ2r8YjLI/VFDy5E+SGMrjyNYeJmviWPZkqK187tndtvC5PBlf
+         Wh3ij+QtwI4V7Nj440dz9SHR83XwcKrqyJDywRKbSwpVRZSNg1CftOmASNRxT2ksXXob
+         t5l1s6o9upBm6NntEAvcUZJWhGxQWnf2JPge+1XeAZKGHcOElaPunYT/fK3cM5Nbv5HP
+         qnEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ylsEy4MlIJErY/GVeWNeaZDzsBVBxc5FEWIayo4Qyjo=;
-        b=DCUJQh2a9KWBLewV5qKbzFUaTfm+q08eF/dplIarMHHWwRDiGjmeo6uNirFVDgDcOd
-         L3u1MCwXJa7pqmrdVoipeA/D/ykAQxfaRqIrsud4KJNUwNqQCD7q03xWkVllo41ftAvR
-         e7gQfk2mfwCShZAl4MwgGTRXJwtpkU6p8MVMRXU1i61rJe7JdTW24nc1YaO7tz4qU7tz
-         bqvcBFqriZCcrX4DZ+7sTG74csu08GcMIjH0h3SFK/FmEc2Bl9ruEJhamOkRyu2x6efT
-         nrHGD/l6NaO80QPKXQi3F9DO+tiBbLKSRKcBrz8FQl5739RDkxO0NMUJq0RwsmeBG2+o
-         S1MA==
-X-Gm-Message-State: APjAAAXQH2K1BR1Taw/7Fy78uZL8XsbSC4U4gfzo6bZ06gtx1f/uL2mO
-        +eDO6doFPI42NYxYXI/6J1QVqnowHoNFrUN0y+s=
-X-Google-Smtp-Source: APXvYqyoB8p+nd3VwU28X4m1ygubakyjyy3i940CLBO0CujySu+a32k1m4E67Wuew0ZPLfOfe2cqiMju5WI84VEKfpU=
-X-Received: by 2002:a37:8a01:: with SMTP id m1mr1867882qkd.147.1573581054354;
- Tue, 12 Nov 2019 09:50:54 -0800 (PST)
-MIME-Version: 1.0
-References: <87h840oese.fsf@toke.dk> <282d61fe-7178-ebf1-e0da-bdc3fb724e4b@gmail.com>
- <87wocqrz2v.fsf@toke.dk> <20191027.121727.1776345635168200501.davem@davemloft.net>
- <09817958-e331-63e9-efbf-05341623a006@gmail.com>
-In-Reply-To: <09817958-e331-63e9-efbf-05341623a006@gmail.com>
-From:   William Tu <u9012063@gmail.com>
-Date:   Tue, 12 Nov 2019 09:50:17 -0800
-Message-ID: <CALDO+SaxbNpON+=3zA4r4k6BE7UhbGU1WovW8Owyi8-9J_Wbkw@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 bpf-next 00/15] xdp_flow: Flow offload to XDP
-To:     Toshiaki Makita <toshiaki.makita1@gmail.com>
-Cc:     David Miller <davem@davemloft.net>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=1kWYIraaT/XfpcPhtfE2LW+E738Svg2k2/zd4/7T1y4=;
+        b=C6M66Ch8N4fEOFf1yzRHcqRb+bjPmmFg9f3OBaGSDTJs5MXwHnFLLzHBucNKs0komy
+         2h6hEBJXpKCqNncOgC6TSDVK1B9xW6G7nlUByD6XeOwE78tnQhPUEVdpZtr/JScITCrY
+         obS+/q9hxbkzx46jEgLnSbltQ2LhM+cO4sQ5TTpNqtms/UCI6/9rcDkwhRGUoQwre5iB
+         AAu8aDhrV4UK4oGZq/d2rtPfamjyOxR95m1czuD/ZgrDfEkbskUaYAYtqtDbiKW8Es2D
+         EkP++BnJDtB3y1X9zseFJO/Gp3ty6rAKp7dUVy8fFa7oZXsqJunT6voE+ldFBqaRIZ85
+         6ASA==
+X-Gm-Message-State: APjAAAVps099ExJdJnY+Q9IaY3Okuvi2WOPV9WUI18yceMnmFDiHN73D
+        UZUIj/iriwyYaJYGtDcm0td5yQ==
+X-Google-Smtp-Source: APXvYqzNWIsqkYNlBh8G2/Kjxp+Ko53ku3BivLZk5V2q8Xergo2UgM7e05OSC6xq2dyuFaiI3HO89g==
+X-Received: by 2002:a2e:89c2:: with SMTP id c2mr21390441ljk.161.1573586278084;
+        Tue, 12 Nov 2019 11:17:58 -0800 (PST)
+Received: from cakuba ([66.60.152.14])
+        by smtp.gmail.com with ESMTPSA id q2sm1362954lfp.26.2019.11.12.11.17.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Nov 2019 11:17:57 -0800 (PST)
+Date:   Tue, 12 Nov 2019 11:17:50 -0800
+From:   Jakub Kicinski <jakub.kicinski@netronome.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        pravin shelar <pshelar@ovn.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Stanislav Fomichev <sdf@fomichev.me>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Kernel Team <kernel-team@fb.com>,
+        Rik van Riel <riel@surriel.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Subject: Re: [PATCH v2 bpf-next 1/3] bpf: add mmap() support for
+ BPF_MAP_TYPE_ARRAY
+Message-ID: <20191112111750.2168b131@cakuba>
+In-Reply-To: <CAEf4Bzay-sCd5+5Y1+toJuEd6vNh+R7pkosYA7V7wDqTdoDxdw@mail.gmail.com>
+References: <20191109080633.2855561-1-andriin@fb.com>
+        <20191109080633.2855561-2-andriin@fb.com>
+        <20191111103743.1c3a38a3@cakuba>
+        <CAEf4Bzay-sCd5+5Y1+toJuEd6vNh+R7pkosYA7V7wDqTdoDxdw@mail.gmail.com>
+Organization: Netronome Systems, Ltd.
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Oct 30, 2019 at 5:32 PM Toshiaki Makita
-<toshiaki.makita1@gmail.com> wrote:
->
-> On 2019/10/28 4:17, David Miller wrote:
-> > From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> > Date: Sun, 27 Oct 2019 16:24:24 +0100
-> >
-> >> The results in the paper also shows somewhat disappointing performance
-> >> for the eBPF implementation, but that is not too surprising given that
-> >> it's implemented as a TC eBPF hook, not an XDP program. I seem to reca=
-ll
-> >> that this was also one of the things puzzling to me back when this was
-> >> presented...
-> >
-> > Also, no attempt was made to dyanamically optimize the data structures
-> > and code generated in response to features actually used.
-> >
-> > That's the big error.
-> >
-> > The full OVS key is huge, OVS is really quite a monster.
-> >
-> > But people don't use the entire key, nor do they use the totality of
-> > the data paths.
-> >
-> > So just doing a 1-to-1 translation of the OVS datapath into BPF makes
-> > absolutely no sense whatsoever and it is guaranteed to have worse
-> > performance.
+On Mon, 11 Nov 2019 18:06:42 -0800, Andrii Nakryiko wrote:
+> So let's say if sizeof(struct bpf_array) is 300, then I'd have to either:
+> 
+> - somehow make sure that I allocate 4k (for data) + 300 (for struct
+> bpf_array) in such a way that those 4k of data are 4k-aligned. Is
+> there any way to do that?
+> - assuming there isn't, then another way would be to allocate entire
+> 4k page for struct bpf_array itself, but put it at the end of that
+> page, so that 4k of data is 4k-aligned. While wasteful, the bigger
+> problem is that pointer to bpf_array is not a pointer to allocated
+> memory anymore, so we'd need to remember that and adjust address
+> before calling vfree().
+> 
+> Were you suggesting #2 as a solution? Or am I missing some other way to do this?
 
-1-to-1 translation has nothing to do with performance.
+I am suggesting #2, that's the way to do it in the kernel.
 
-eBPF/XDP is faster only when you can by-pass/shortcut some code.
-If the number of features required are the same, then an eBPF
-implementation should be less than or equal to a kernel module's
-performance. "less than" because eBPF usually has some limitations
-so you have to redesign the data structure.
+You could make the assumption that if you're allocating memory aligned
+to PAGE_SIZE, the address for vfree() is:
 
-It's possible that after redesigning your data structure to eBPF,
-it becomes faster. But there is no such case in my experience.
+	addr = map;
+	if (map->flags & MMAPABLE)
+		addr = round_down(addr, PAGE_SIZE);
+	vfree(addr);
 
-Regards,
-William
+Just make a note of the fact that we depend on vmalloc()s alignment in
+bpf_map_area_alloc().
