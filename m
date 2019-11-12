@@ -2,290 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E3279F8E12
-	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2019 12:19:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91274F8ED3
+	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2019 12:45:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727738AbfKLLTO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Nov 2019 06:19:14 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:34117 "EHLO
-        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726697AbfKLLTN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Nov 2019 06:19:13 -0500
-Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tip-bot2@linutronix.de>)
-        id 1iUUBm-0000gs-2t; Tue, 12 Nov 2019 12:18:26 +0100
-Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 6775D1C04C9;
-        Tue, 12 Nov 2019 12:18:15 +0100 (CET)
-Date:   Tue, 12 Nov 2019 11:18:15 -0000
-From:   "tip-bot2 for Ian Rogers" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] perf tools: Move ALLOC_LIST into a function
-Cc:     Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Song Liu <songliubraving@fb.com>,
-        Stephane Eranian <eranian@google.com>,
-        Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
-        clang-built-linux@googlegroups.com, netdev@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20191023005337.196160-5-irogers@google.com>
-References: <20191023005337.196160-5-irogers@google.com>
+        id S1726376AbfKLLps (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Nov 2019 06:45:48 -0500
+Received: from mail-yb1-f194.google.com ([209.85.219.194]:44357 "EHLO
+        mail-yb1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726008AbfKLLpr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Nov 2019 06:45:47 -0500
+Received: by mail-yb1-f194.google.com with SMTP id g38so7449303ybe.11;
+        Tue, 12 Nov 2019 03:45:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Zze64Tjkpcna3jw2z4tcVgFoaR/PTDyV/TrWdLqNFp0=;
+        b=JKKSqD83FUdkdnT5Dki0Sba5fcso+rZpA8tmSf7pku6J303dvhwHIXtIUj/RooAUMl
+         1UAeFFl7S7H+HB+dQJZatpl7pY/rnJoQ89pgbplkDLAAqrLxNJhRDiobQ//m9KR9Q/YP
+         fu/D+evgqhdbB9TkyMPQakIkZsh8USkuXXt2cJb/y17dmEMXgGFxZcL7GAgpjvpZyyHo
+         MkHAXgBFwhBTUIl53iHIzbRx/5QgT7wam+tOrYa00PG4o0cgr8kUfcuV8HgzooorJeEP
+         0YZJr+3NEEiLjQ8s6xm7zO6ysz6xvC3OE7mTcFxmeZXspaW9VWFRETE3Y1bQURcAfsRd
+         1QqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Zze64Tjkpcna3jw2z4tcVgFoaR/PTDyV/TrWdLqNFp0=;
+        b=FxX0LSJEwlCbIy3dCtdS99sheOrsq/bZ8jidYUm3RyzicRwFwg9f26hKW+Fu9QxVvY
+         6HnWe+jecoc32cUBJnkmNpXEjaqof2XRLSkTaFYs0tNRlBRsq595wRE0tOlhYR/4QGTf
+         sTzX+ecMMQK0+83yXBx+x0BbbX1AunsG0oUbept+1Xsf5lZoGrvuC22TVZrHlU+yob02
+         J1NRBPB5HhJ4UFQpy4qQ6kVEp3FLdkjlfYKKb4mHRx63kp7SEVVT4aX2c8cDv5k/Mes9
+         URD8WXbxpoDXtC1OZBm+LWu0vMgQdHujettpArXK32Sz1UmhdmykV34GwW/HADaXqTjF
+         S8+Q==
+X-Gm-Message-State: APjAAAVp32PjQoyroGz+qJ+vVnhshdzqiJO8D30C9jZ6GbB3ycpRAr5w
+        4La2qXhZ7knI7jPgLsp+Sx+bS25xM64tAVJUDQ==
+X-Google-Smtp-Source: APXvYqzXVvPlqePTpm4+7jSq28ds4cuofCbIayRQNE4ktjkhekkJ4Fuvxn0KKSAlL8HCnHnSLOxNSFjTPAMQC6PuG7w=
+X-Received: by 2002:a25:c503:: with SMTP id v3mr11928306ybe.333.1573559146429;
+ Tue, 12 Nov 2019 03:45:46 -0800 (PST)
 MIME-Version: 1.0
-Message-ID: <157355749506.29376.11432356501118173873.tip-bot2@tip-bot2>
-X-Mailer: tip-git-log-daemon
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+References: <20191110081901.20851-1-danieltimlee@gmail.com> <CAEf4BzYRqeg5vFm+Ac2TVVeAw=N+qhosy5qF9Dr_ka3hn8DsPg@mail.gmail.com>
+In-Reply-To: <CAEf4BzYRqeg5vFm+Ac2TVVeAw=N+qhosy5qF9Dr_ka3hn8DsPg@mail.gmail.com>
+From:   "Daniel T. Lee" <danieltimlee@gmail.com>
+Date:   Tue, 12 Nov 2019 20:45:31 +0900
+Message-ID: <CAEKGpzhEuNfZq+XGfTau4uaHhijtx316sLQmQWm7-P_H=iZ=bA@mail.gmail.com>
+Subject: Re: [PATCH] samples: bpf: fix outdated README build command
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The following commit has been merged into the perf/core branch of tip:
+On Mon, Nov 11, 2019 at 3:09 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Sun, Nov 10, 2019 at 12:19 AM Daniel T. Lee <danieltimlee@gmail.com> wrote:
+> >
+> > Currently, building the bpf samples under samples/bpf directory isn't
+> > working. Running make from the directory 'samples/bpf' will just shows
+> > following result without compiling any samples.
+> >
+>
+> Do you mind trying to see if it's possible to detect that plain `make`
+> is being run from samples/bpf subdirectory, and if that's the case,
+> just running something like `make M=samples/bpf -C ../../`? If that's
+> not too hard, it would be a nice touch to still have it working old
+> (and intuitive) way, IMO.
+>
 
-Commit-ID:     a26e47162d7670ddea4f67978ecf848dc23ef671
-Gitweb:        https://git.kernel.org/tip/a26e47162d7670ddea4f67978ecf848dc23ef671
-Author:        Ian Rogers <irogers@google.com>
-AuthorDate:    Tue, 22 Oct 2019 17:53:32 -07:00
-Committer:     Arnaldo Carvalho de Melo <acme@redhat.com>
-CommitterDate: Wed, 06 Nov 2019 15:43:05 -03:00
+Thanks for the review!
+And seems it works with `make M=samples/bpf -C ../../` and it's better
+solution!
 
-perf tools: Move ALLOC_LIST into a function
+It's just the issue has been solved as Daniel Borkmann mentioned.
+Anyway, thanks for the review!
 
-Having a YYABORT in a macro makes it hard to free memory for components
-of a rule. Separate the logic out.
+Best,
+Daniel
 
-Signed-off-by: Ian Rogers <irogers@google.com>
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Andi Kleen <ak@linux.intel.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Jin Yao <yao.jin@linux.intel.com>
-Cc: John Garry <john.garry@huawei.com>
-Cc: Kan Liang <kan.liang@linux.intel.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Martin KaFai Lau <kafai@fb.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Song Liu <songliubraving@fb.com>
-Cc: Stephane Eranian <eranian@google.com>
-Cc: Yonghong Song <yhs@fb.com>
-Cc: bpf@vger.kernel.org
-Cc: clang-built-linux@googlegroups.com
-Cc: netdev@vger.kernel.org
-Link: http://lore.kernel.org/lkml/20191023005337.196160-5-irogers@google.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
----
- tools/perf/util/parse-events.y | 65 +++++++++++++++++++++------------
- 1 file changed, 43 insertions(+), 22 deletions(-)
-
-diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
-index 48126ae..5863acb 100644
---- a/tools/perf/util/parse-events.y
-+++ b/tools/perf/util/parse-events.y
-@@ -25,12 +25,17 @@ do { \
- 		YYABORT; \
- } while (0)
- 
--#define ALLOC_LIST(list) \
--do { \
--	list = malloc(sizeof(*list)); \
--	ABORT_ON(!list);              \
--	INIT_LIST_HEAD(list);         \
--} while (0)
-+static struct list_head* alloc_list()
-+{
-+	struct list_head *list;
-+
-+	list = malloc(sizeof(*list));
-+	if (!list)
-+		return NULL;
-+
-+	INIT_LIST_HEAD(list);
-+	return list;
-+}
- 
- static void inc_group_count(struct list_head *list,
- 		       struct parse_events_state *parse_state)
-@@ -238,7 +243,8 @@ PE_NAME opt_pmu_config
- 	if (error)
- 		error->idx = @1.first_column;
- 
--	ALLOC_LIST(list);
-+	list = alloc_list();
-+	ABORT_ON(!list);
- 	if (parse_events_add_pmu(_parse_state, list, $1, $2, false, false)) {
- 		struct perf_pmu *pmu = NULL;
- 		int ok = 0;
-@@ -306,7 +312,8 @@ value_sym '/' event_config '/'
- 	int type = $1 >> 16;
- 	int config = $1 & 255;
- 
--	ALLOC_LIST(list);
-+	list = alloc_list();
-+	ABORT_ON(!list);
- 	ABORT_ON(parse_events_add_numeric(_parse_state, list, type, config, $3));
- 	parse_events_terms__delete($3);
- 	$$ = list;
-@@ -318,7 +325,8 @@ value_sym sep_slash_slash_dc
- 	int type = $1 >> 16;
- 	int config = $1 & 255;
- 
--	ALLOC_LIST(list);
-+	list = alloc_list();
-+	ABORT_ON(!list);
- 	ABORT_ON(parse_events_add_numeric(_parse_state, list, type, config, NULL));
- 	$$ = list;
- }
-@@ -327,7 +335,8 @@ PE_VALUE_SYM_TOOL sep_slash_slash_dc
- {
- 	struct list_head *list;
- 
--	ALLOC_LIST(list);
-+	list = alloc_list();
-+	ABORT_ON(!list);
- 	ABORT_ON(parse_events_add_tool(_parse_state, list, $1));
- 	$$ = list;
- }
-@@ -339,7 +348,8 @@ PE_NAME_CACHE_TYPE '-' PE_NAME_CACHE_OP_RESULT '-' PE_NAME_CACHE_OP_RESULT opt_e
- 	struct parse_events_error *error = parse_state->error;
- 	struct list_head *list;
- 
--	ALLOC_LIST(list);
-+	list = alloc_list();
-+	ABORT_ON(!list);
- 	ABORT_ON(parse_events_add_cache(list, &parse_state->idx, $1, $3, $5, error, $6));
- 	parse_events_terms__delete($6);
- 	$$ = list;
-@@ -351,7 +361,8 @@ PE_NAME_CACHE_TYPE '-' PE_NAME_CACHE_OP_RESULT opt_event_config
- 	struct parse_events_error *error = parse_state->error;
- 	struct list_head *list;
- 
--	ALLOC_LIST(list);
-+	list = alloc_list();
-+	ABORT_ON(!list);
- 	ABORT_ON(parse_events_add_cache(list, &parse_state->idx, $1, $3, NULL, error, $4));
- 	parse_events_terms__delete($4);
- 	$$ = list;
-@@ -363,7 +374,8 @@ PE_NAME_CACHE_TYPE opt_event_config
- 	struct parse_events_error *error = parse_state->error;
- 	struct list_head *list;
- 
--	ALLOC_LIST(list);
-+	list = alloc_list();
-+	ABORT_ON(!list);
- 	ABORT_ON(parse_events_add_cache(list, &parse_state->idx, $1, NULL, NULL, error, $2));
- 	parse_events_terms__delete($2);
- 	$$ = list;
-@@ -375,7 +387,8 @@ PE_PREFIX_MEM PE_VALUE '/' PE_VALUE ':' PE_MODIFIER_BP sep_dc
- 	struct parse_events_state *parse_state = _parse_state;
- 	struct list_head *list;
- 
--	ALLOC_LIST(list);
-+	list = alloc_list();
-+	ABORT_ON(!list);
- 	ABORT_ON(parse_events_add_breakpoint(list, &parse_state->idx,
- 					     (void *) $2, $6, $4));
- 	$$ = list;
-@@ -386,7 +399,8 @@ PE_PREFIX_MEM PE_VALUE '/' PE_VALUE sep_dc
- 	struct parse_events_state *parse_state = _parse_state;
- 	struct list_head *list;
- 
--	ALLOC_LIST(list);
-+	list = alloc_list();
-+	ABORT_ON(!list);
- 	ABORT_ON(parse_events_add_breakpoint(list, &parse_state->idx,
- 					     (void *) $2, NULL, $4));
- 	$$ = list;
-@@ -397,7 +411,8 @@ PE_PREFIX_MEM PE_VALUE ':' PE_MODIFIER_BP sep_dc
- 	struct parse_events_state *parse_state = _parse_state;
- 	struct list_head *list;
- 
--	ALLOC_LIST(list);
-+	list = alloc_list();
-+	ABORT_ON(!list);
- 	ABORT_ON(parse_events_add_breakpoint(list, &parse_state->idx,
- 					     (void *) $2, $4, 0));
- 	$$ = list;
-@@ -408,7 +423,8 @@ PE_PREFIX_MEM PE_VALUE sep_dc
- 	struct parse_events_state *parse_state = _parse_state;
- 	struct list_head *list;
- 
--	ALLOC_LIST(list);
-+	list = alloc_list();
-+	ABORT_ON(!list);
- 	ABORT_ON(parse_events_add_breakpoint(list, &parse_state->idx,
- 					     (void *) $2, NULL, 0));
- 	$$ = list;
-@@ -421,7 +437,8 @@ tracepoint_name opt_event_config
- 	struct parse_events_error *error = parse_state->error;
- 	struct list_head *list;
- 
--	ALLOC_LIST(list);
-+	list = alloc_list();
-+	ABORT_ON(!list);
- 	if (error)
- 		error->idx = @1.first_column;
- 
-@@ -457,7 +474,8 @@ PE_VALUE ':' PE_VALUE opt_event_config
- {
- 	struct list_head *list;
- 
--	ALLOC_LIST(list);
-+	list = alloc_list();
-+	ABORT_ON(!list);
- 	ABORT_ON(parse_events_add_numeric(_parse_state, list, (u32)$1, $3, $4));
- 	parse_events_terms__delete($4);
- 	$$ = list;
-@@ -468,7 +486,8 @@ PE_RAW opt_event_config
- {
- 	struct list_head *list;
- 
--	ALLOC_LIST(list);
-+	list = alloc_list();
-+	ABORT_ON(!list);
- 	ABORT_ON(parse_events_add_numeric(_parse_state, list, PERF_TYPE_RAW, $1, $2));
- 	parse_events_terms__delete($2);
- 	$$ = list;
-@@ -480,7 +499,8 @@ PE_BPF_OBJECT opt_event_config
- 	struct parse_events_state *parse_state = _parse_state;
- 	struct list_head *list;
- 
--	ALLOC_LIST(list);
-+	list = alloc_list();
-+	ABORT_ON(!list);
- 	ABORT_ON(parse_events_load_bpf(parse_state, list, $1, false, $2));
- 	parse_events_terms__delete($2);
- 	$$ = list;
-@@ -490,7 +510,8 @@ PE_BPF_SOURCE opt_event_config
- {
- 	struct list_head *list;
- 
--	ALLOC_LIST(list);
-+	list = alloc_list();
-+	ABORT_ON(!list);
- 	ABORT_ON(parse_events_load_bpf(_parse_state, list, $1, true, $2));
- 	parse_events_terms__delete($2);
- 	$$ = list;
+>
+> >  $ make
+> >  make -C ../../ /git/linux/samples/bpf/ BPF_SAMPLES_PATH=/git/linux/samples/bpf
+> >  make[1]: Entering directory '/git/linux'
+> >    CALL    scripts/checksyscalls.sh
+> >    CALL    scripts/atomic/check-atomics.sh
+> >    DESCEND  objtool
+> >  make[1]: Leaving directory '/git/linux'
+> >
+> > Due to commit 394053f4a4b3 ("kbuild: make single targets work more
+> > correctly"), building samples/bpf without support of samples/Makefile
+> > is unavailable. Instead, building the samples with 'make M=samples/bpf'
+> > from the root source directory will solve this issue.[1]
+> >
+> > This commit fixes the outdated README build command with samples/bpf.
+> >
+> > [0]: https://patchwork.kernel.org/patch/11168393/
+> >
+> > Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
+> > ---
+> >  samples/bpf/README.rst | 19 +++++++++----------
+> >  1 file changed, 9 insertions(+), 10 deletions(-)
+> >
+>
+> [...]
