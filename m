@@ -2,131 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F3A16F9BDB
-	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2019 22:15:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F24F5F9C37
+	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2019 22:26:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726952AbfKLVPE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Nov 2019 16:15:04 -0500
-Received: from hqemgate14.nvidia.com ([216.228.121.143]:15900 "EHLO
-        hqemgate14.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726376AbfKLVPE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Nov 2019 16:15:04 -0500
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate14.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5dcb20d50000>; Tue, 12 Nov 2019 13:15:01 -0800
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Tue, 12 Nov 2019 13:14:58 -0800
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Tue, 12 Nov 2019 13:14:58 -0800
-Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 12 Nov
- 2019 21:14:57 +0000
-Subject: Re: [PATCH v3 11/23] IB/{core,hw,umem}: set FOLL_PIN, FOLL_LONGTERM
- via pin_longterm_pages*()
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jens Axboe <axboe@kernel.dk>, Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, <bpf@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <kvm@vger.kernel.org>,
-        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-media@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>, <netdev@vger.kernel.org>,
-        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>
-References: <20191112000700.3455038-1-jhubbard@nvidia.com>
- <20191112000700.3455038-12-jhubbard@nvidia.com>
- <20191112204449.GF5584@ziepe.ca>
-From:   John Hubbard <jhubbard@nvidia.com>
-X-Nvconfidentiality: public
-Message-ID: <3513d317-8e29-006f-1624-e9aa94ce9ad5@nvidia.com>
-Date:   Tue, 12 Nov 2019 13:14:57 -0800
+        id S1726995AbfKLVZ1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Nov 2019 16:25:27 -0500
+Received: from dispatch1-us1.ppe-hosted.com ([67.231.154.164]:58506 "EHLO
+        dispatch1-us1.ppe-hosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726906AbfKLVZ1 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 12 Nov 2019 16:25:27 -0500
+X-Virus-Scanned: Proofpoint Essentials engine
+Received: from webmail.solarflare.com (uk.solarflare.com [193.34.186.16])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTPS id 8B6FA400098;
+        Tue, 12 Nov 2019 21:25:25 +0000 (UTC)
+Received: from [10.17.20.203] (10.17.20.203) by ukex01.SolarFlarecom.com
+ (10.17.10.4) with Microsoft SMTP Server (TLS) id 15.0.1395.4; Tue, 12 Nov
+ 2019 21:25:10 +0000
+Subject: Re: static and dynamic linking. Was: [PATCH bpf-next v3 1/5] bpf:
+ Support chain calling multiple BPF
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>
+CC:     John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Marek Majkowski <marek@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        David Miller <davem@davemloft.net>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>
+References: <5da4ab712043c_25f42addb7c085b83b@john-XPS-13-9370.notmuch>
+ <87eezfi2og.fsf@toke.dk>
+ <f9d5f717-51fe-7d03-6348-dbaf0b9db434@solarflare.com>
+ <87r23egdua.fsf@toke.dk>
+ <70142501-e2dd-1aed-992e-55acd5c30cfd@solarflare.com>
+ <874l07fu61.fsf@toke.dk>
+ <aeae7b94-090a-a850-4740-0274ab8178d5@solarflare.com>
+ <87eez4odqp.fsf@toke.dk>
+ <20191112025112.bhzmrrh2pr76ssnh@ast-mbp.dhcp.thefacebook.com>
+ <87h839oymg.fsf@toke.dk>
+ <20191112195223.cp5kcmkko54dsfbg@ast-mbp.dhcp.thefacebook.com>
+From:   Edward Cree <ecree@solarflare.com>
+Message-ID: <8c251f3d-67bd-9bc2-8037-a15d93b48674@solarflare.com>
+Date:   Tue, 12 Nov 2019 21:25:06 +0000
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <20191112204449.GF5584@ziepe.ca>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
+In-Reply-To: <20191112195223.cp5kcmkko54dsfbg@ast-mbp.dhcp.thefacebook.com>
 Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1573593301; bh=IA5cc3Ug8y/Soy37I3lcgnCK4KJuS9HA5F969hpkGDk=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=M+zD7DiTvJEHWyZUscBaWsNyvdd7nW2Z8MINjy6zlNtzbk8yDqUSKZUYoDkjLfsT1
-         jhJdgaW8sOVEVYkkTrDIJJa4fwOit67TvUa2zybzBPmS46CYVBpq/47LCJQvGX/3++
-         kN6TX/8r3rAiSK8yfXz19Ap8X1CeF0WYNvVBYngtzVePIwXr6m7SCdxfr4dOboh5Y+
-         2hlHGc9hiYvLqwfEFqtP6wQ0eViLmw5Mlq+PhJcVMOubS+xNo9DKWwkDLrS4gEKUIZ
-         bPZcwVTnmn5+kG5LhprB02X6C6BdeIO1M4uKbavcouV5mwBgzW09isv1UnQ87weLii
-         Kt8d5q/apbk1g==
+X-Originating-IP: [10.17.20.203]
+X-ClientProxiedBy: ocex03.SolarFlarecom.com (10.20.40.36) To
+ ukex01.SolarFlarecom.com (10.17.10.4)
+X-TM-AS-Product-Ver: SMEX-12.5.0.1300-8.5.1010-25038.003
+X-TM-AS-Result: No-3.376300-8.000000-10
+X-TMASE-MatchedRID: VfovoVrt/obmLzc6AOD8DfHkpkyUphL92oQN+Q/21gTXLRpcXl5f6Hi1
+        9VmdeeTeTEki2VoSh3OahIW1kCatWsuRBwUhxclNBjNCJF/iXbG6s6UL48vRAMsh83hywc54NyR
+        9yudqy2SRTH9S8o7AzQlzvpzzhhC0jeydHFnA4nkFKwjjJHbgBFWBVWOe7+fX0HC66mQRqD/V9x
+        7gL2l/MkmWjzn4zelHjVwOiEQlwVPUP+i/4eUoEnw6481wsCtCFTFJRL+t8UtGMe+tDjQ3Fq5Pq
+        qbCfIUPvgeYjOys8+fl5ftrM+CQ9q+/EguYor8cgxsfzkNRlfLdB/CxWTRRuwihQpoXbuXFlnu+
+        TS9e3C7i5vg6AE5Ku30/m/3qz/XjDndCTNqDNTXwPBjnakTbmXW36pe/wPJ5VGl3mPvY+jXOnZY
+        ws3d4dGCiAEKXfTTlooBB8uyeEuspZK3gOa9uGmJwouYrZN4qaw+fkLqdalOeqD9WtJkSIw==
+X-TM-AS-User-Approved-Sender: Yes
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--3.376300-8.000000
+X-TMASE-Version: SMEX-12.5.0.1300-8.5.1010-25038.003
+X-MDID: 1573593926-vjhoyKufPu4S
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On 12/11/2019 19:52, Alexei Starovoitov wrote:
+> We haven't yet defined what 'extern' keyword in the program means.
+> There are a preliminary patches for llvm to support extern variables. Extern
+> functions are not done yet. We have to walk before we run. With dynamic linking
+> I'm proposing an api for the kernel that I think will work regardless of how
+> libbpf and llvm decide to define the meaning of 'extern'.
+Fwiw the 'natural' C way of doing it would be that for any extern symbol in
+ the C file, the ELF file gets a symbol entry with st_shndx=SHN_UNDEF, and
+ code in .text that uses that symbol gets relocation entries.  That's (AIUI)
+ how it works on 'normal' architectures, and that's what my ebld linker
+ understands; when it sees a definition in another file for that symbol
+ (matched just by the symbol name) it applies all the relocations of the
+ symbol to the appropriate progbits.
+I don't really see what else you could define 'extern' to mean.
 
-On 11/12/19 12:44 PM, Jason Gunthorpe wrote:
-> On Mon, Nov 11, 2019 at 04:06:48PM -0800, John Hubbard wrote:
->> @@ -542,7 +541,7 @@ static int ib_umem_odp_map_dma_single_page(
->>  	}
->>  
->>  out:
->> -	put_user_page(page);
->> +	put_page(page);
->>  
->>  	if (remove_existing_mapping) {
->>  		ib_umem_notifier_start_account(umem_odp);
->> @@ -639,13 +638,14 @@ int ib_umem_odp_map_dma_pages(struct ib_umem_odp *umem_odp, u64 user_virt,
->>  		/*
->>  		 * Note: this might result in redundent page getting. We can
->>  		 * avoid this by checking dma_list to be 0 before calling
->> -		 * get_user_pages. However, this make the code much more
->> -		 * complex (and doesn't gain us much performance in most use
->> -		 * cases).
->> +		 * get_user_pages. However, this makes the code much
->> +		 * more complex (and doesn't gain us much performance in most
->> +		 * use cases).
->>  		 */
->>  		npages = get_user_pages_remote(owning_process, owning_mm,
->> -				user_virt, gup_num_pages,
->> -				flags, local_page_list, NULL, NULL);
->> +					       user_virt, gup_num_pages,
->> +					       flags, local_page_list, NULL,
->> +					       NULL);
->>  		up_read(&owning_mm->mmap_sem);
-> 
-> This is just whitespace churn? Drop it..
-> 
+> Partial verification should be available regardless of
+> whether kernel performs dynamic linking or libbpf staticly links multiple .o
+> together.
+It's not clear to me how partial verification would work for statically
+ linked programs — could you elaborate on this?
 
-
-Whoops, yes. It got there because of going through the pin*() conversion
-and then a revert, and now it's just whitespace. I'll drop it, thanks for
-catching that.
-
-
-thanks,
-
-John Hubbard
-NVIDIA
+-Ed
