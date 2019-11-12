@@ -2,101 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F24F5F9C37
-	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2019 22:26:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DEE0F9CA7
+	for <lists+bpf@lfdr.de>; Tue, 12 Nov 2019 22:57:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726995AbfKLVZ1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Nov 2019 16:25:27 -0500
-Received: from dispatch1-us1.ppe-hosted.com ([67.231.154.164]:58506 "EHLO
-        dispatch1-us1.ppe-hosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726906AbfKLVZ1 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 12 Nov 2019 16:25:27 -0500
-X-Virus-Scanned: Proofpoint Essentials engine
-Received: from webmail.solarflare.com (uk.solarflare.com [193.34.186.16])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTPS id 8B6FA400098;
-        Tue, 12 Nov 2019 21:25:25 +0000 (UTC)
-Received: from [10.17.20.203] (10.17.20.203) by ukex01.SolarFlarecom.com
- (10.17.10.4) with Microsoft SMTP Server (TLS) id 15.0.1395.4; Tue, 12 Nov
- 2019 21:25:10 +0000
-Subject: Re: static and dynamic linking. Was: [PATCH bpf-next v3 1/5] bpf:
- Support chain calling multiple BPF
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>
-CC:     John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Marek Majkowski <marek@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        David Miller <davem@davemloft.net>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>
-References: <5da4ab712043c_25f42addb7c085b83b@john-XPS-13-9370.notmuch>
- <87eezfi2og.fsf@toke.dk>
- <f9d5f717-51fe-7d03-6348-dbaf0b9db434@solarflare.com>
- <87r23egdua.fsf@toke.dk>
- <70142501-e2dd-1aed-992e-55acd5c30cfd@solarflare.com>
- <874l07fu61.fsf@toke.dk>
- <aeae7b94-090a-a850-4740-0274ab8178d5@solarflare.com>
- <87eez4odqp.fsf@toke.dk>
- <20191112025112.bhzmrrh2pr76ssnh@ast-mbp.dhcp.thefacebook.com>
- <87h839oymg.fsf@toke.dk>
- <20191112195223.cp5kcmkko54dsfbg@ast-mbp.dhcp.thefacebook.com>
-From:   Edward Cree <ecree@solarflare.com>
-Message-ID: <8c251f3d-67bd-9bc2-8037-a15d93b48674@solarflare.com>
-Date:   Tue, 12 Nov 2019 21:25:06 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S1726958AbfKLV5j (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Nov 2019 16:57:39 -0500
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:38652 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726932AbfKLV5j (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Nov 2019 16:57:39 -0500
+Received: by mail-ot1-f68.google.com with SMTP id z25so2427886oti.5
+        for <bpf@vger.kernel.org>; Tue, 12 Nov 2019 13:57:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GVsjPqJbGl0vB/+Gk+mdS3wPD6eGzXnfLsFoQJ3IvwY=;
+        b=Xi5VpxURlOvKgdnc2CCM8ogRa/H5/0k5sFmSuFB8dP7mdDgr87G2ihgcoAULaWG/WG
+         Hj8o+3+ie5rrJujDRUeLRQcOeiNzn8YKMM2VBeVNBKVsnBN0FQns+w7w3PsW4i65s8a5
+         N+VULX92Qszd6uoAo9krZIME0J3xIfL4gJiRjCsCskWvVjLpfyuINcuFYSor/+iuZuqF
+         2TY8xkdKZQu+VBpockLjH+8q98S3mNVqmKjCD+wTD8kkFuDZ2LtRYTFByjXSsRxruC6f
+         SXuVKXEgsV4rmu18ICvQbVomOgOwxUGMXKdLYloN5hq1WNlcDitiNl2/AmVQ4Ykyplh2
+         IsGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GVsjPqJbGl0vB/+Gk+mdS3wPD6eGzXnfLsFoQJ3IvwY=;
+        b=CrRA5BGeD2lpxwj53V62cDHSHI8ECF1/peE4QIJMKs1jPiDaS8F4+6I/My6h2GkgZN
+         9wZtqVAGRlHXD5QRGTQMSA4Kd2H7Ezz3yKzcKRrnY3x5wBw+t4ypZlrKcdz9ygoZYxAz
+         j+OElNQJXhes3TgNoAvHqn7XJaBYnIFrinj3kgF39x1DeLODgtuPYQTu+6AAhmFOfVul
+         xz2INaFefahcwfPMAAkQpMkyWUVO3f3N6DzXF063VL2YB0bLiyDz76q0FmcTpc+4lNjX
+         T43vhy2E49aHa+WMIV5kwGFEkgwlCmBjHYHa/GSTphJJ5p/8QtuUmm6rVGceF17nBxX8
+         5+zg==
+X-Gm-Message-State: APjAAAXShIAiy72C9c6Qo3c9JRXGkye4i7i5QUl3bs43brUCpRiCFqVR
+        lo3YNuvaWpKkuC3TmWYKGBmUWVdeteD3vJ718f9RnQ==
+X-Google-Smtp-Source: APXvYqzkEVRCSmKc+X1f3BY1LRLo7eG1sZvx8YX/MxrMpGOBy0kbPmD/k6U1Bv0DnK/agC4LCbQG5TvJ1BrQq2DF3mo=
+X-Received: by 2002:a9d:5f11:: with SMTP id f17mr5454287oti.207.1573595857896;
+ Tue, 12 Nov 2019 13:57:37 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20191112195223.cp5kcmkko54dsfbg@ast-mbp.dhcp.thefacebook.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.17.20.203]
-X-ClientProxiedBy: ocex03.SolarFlarecom.com (10.20.40.36) To
- ukex01.SolarFlarecom.com (10.17.10.4)
-X-TM-AS-Product-Ver: SMEX-12.5.0.1300-8.5.1010-25038.003
-X-TM-AS-Result: No-3.376300-8.000000-10
-X-TMASE-MatchedRID: VfovoVrt/obmLzc6AOD8DfHkpkyUphL92oQN+Q/21gTXLRpcXl5f6Hi1
-        9VmdeeTeTEki2VoSh3OahIW1kCatWsuRBwUhxclNBjNCJF/iXbG6s6UL48vRAMsh83hywc54NyR
-        9yudqy2SRTH9S8o7AzQlzvpzzhhC0jeydHFnA4nkFKwjjJHbgBFWBVWOe7+fX0HC66mQRqD/V9x
-        7gL2l/MkmWjzn4zelHjVwOiEQlwVPUP+i/4eUoEnw6481wsCtCFTFJRL+t8UtGMe+tDjQ3Fq5Pq
-        qbCfIUPvgeYjOys8+fl5ftrM+CQ9q+/EguYor8cgxsfzkNRlfLdB/CxWTRRuwihQpoXbuXFlnu+
-        TS9e3C7i5vg6AE5Ku30/m/3qz/XjDndCTNqDNTXwPBjnakTbmXW36pe/wPJ5VGl3mPvY+jXOnZY
-        ws3d4dGCiAEKXfTTlooBB8uyeEuspZK3gOa9uGmJwouYrZN4qaw+fkLqdalOeqD9WtJkSIw==
-X-TM-AS-User-Approved-Sender: Yes
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--3.376300-8.000000
-X-TMASE-Version: SMEX-12.5.0.1300-8.5.1010-25038.003
-X-MDID: 1573593926-vjhoyKufPu4S
+References: <20191112000700.3455038-1-jhubbard@nvidia.com> <20191112000700.3455038-9-jhubbard@nvidia.com>
+In-Reply-To: <20191112000700.3455038-9-jhubbard@nvidia.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Tue, 12 Nov 2019 13:57:27 -0800
+Message-ID: <CAPcyv4hgKEqoxeQJH9R=YiZosvazj308Kk7jJA1NLxJkNenDcQ@mail.gmail.com>
+Subject: Re: [PATCH v3 08/23] vfio, mm: fix get_user_pages_remote() and FOLL_LONGTERM
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, bpf@vger.kernel.org,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>, KVM list <kvm@vger.kernel.org>,
+        linux-block@vger.kernel.org,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org,
+        "Linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Netdev <netdev@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 12/11/2019 19:52, Alexei Starovoitov wrote:
-> We haven't yet defined what 'extern' keyword in the program means.
-> There are a preliminary patches for llvm to support extern variables. Extern
-> functions are not done yet. We have to walk before we run. With dynamic linking
-> I'm proposing an api for the kernel that I think will work regardless of how
-> libbpf and llvm decide to define the meaning of 'extern'.
-Fwiw the 'natural' C way of doing it would be that for any extern symbol in
- the C file, the ELF file gets a symbol entry with st_shndx=SHN_UNDEF, and
- code in .text that uses that symbol gets relocation entries.  That's (AIUI)
- how it works on 'normal' architectures, and that's what my ebld linker
- understands; when it sees a definition in another file for that symbol
- (matched just by the symbol name) it applies all the relocations of the
- symbol to the appropriate progbits.
-I don't really see what else you could define 'extern' to mean.
+On Mon, Nov 11, 2019 at 4:07 PM John Hubbard <jhubbard@nvidia.com> wrote:
+>
+> As it says in the updated comment in gup.c: current FOLL_LONGTERM
+> behavior is incompatible with FAULT_FLAG_ALLOW_RETRY because of the
+> FS DAX check requirement on vmas.
+>
+> However, the corresponding restriction in get_user_pages_remote() was
+> slightly stricter than is actually required: it forbade all
+> FOLL_LONGTERM callers, but we can actually allow FOLL_LONGTERM callers
+> that do not set the "locked" arg.
+>
+> Update the code and comments accordingly, and update the VFIO caller
+> to take advantage of this, fixing a bug as a result: the VFIO caller
+> is logically a FOLL_LONGTERM user.
+>
+> Thanks to Jason Gunthorpe for pointing out a clean way to fix this.
+>
+> Suggested-by: Jason Gunthorpe <jgg@ziepe.ca>
+> Cc: Jerome Glisse <jglisse@redhat.com>
+> Cc: Ira Weiny <ira.weiny@intel.com>
+> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+> ---
+>  drivers/vfio/vfio_iommu_type1.c | 30 +++++++++++++-----------------
+>  mm/gup.c                        | 13 ++++++++-----
+>  2 files changed, 21 insertions(+), 22 deletions(-)
+>
+> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+> index d864277ea16f..017689b7c32b 100644
+> --- a/drivers/vfio/vfio_iommu_type1.c
+> +++ b/drivers/vfio/vfio_iommu_type1.c
+> @@ -348,24 +348,20 @@ static int vaddr_get_pfn(struct mm_struct *mm, unsigned long vaddr,
+>                 flags |= FOLL_WRITE;
+>
+>         down_read(&mm->mmap_sem);
+> -       if (mm == current->mm) {
+> -               ret = get_user_pages(vaddr, 1, flags | FOLL_LONGTERM, page,
+> -                                    vmas);
+> -       } else {
+> -               ret = get_user_pages_remote(NULL, mm, vaddr, 1, flags, page,
+> -                                           vmas, NULL);
+> -               /*
+> -                * The lifetime of a vaddr_get_pfn() page pin is
+> -                * userspace-controlled. In the fs-dax case this could
+> -                * lead to indefinite stalls in filesystem operations.
+> -                * Disallow attempts to pin fs-dax pages via this
+> -                * interface.
+> -                */
+> -               if (ret > 0 && vma_is_fsdax(vmas[0])) {
+> -                       ret = -EOPNOTSUPP;
+> -                       put_page(page[0]);
+> -               }
+> +       ret = get_user_pages_remote(NULL, mm, vaddr, 1, flags | FOLL_LONGTERM,
+> +                                   page, vmas, NULL);
 
-> Partial verification should be available regardless of
-> whether kernel performs dynamic linking or libbpf staticly links multiple .o
-> together.
-It's not clear to me how partial verification would work for statically
- linked programs — could you elaborate on this?
+Hmm, what's the point of passing FOLL_LONGTERM to
+get_user_pages_remote() if get_user_pages_remote() is not going to
+check the vma? I think we got to this code state because the
+get_user_pages() vs get_user_pages_remote() split predated the
+introduction of FOLL_LONGTERM.
 
--Ed
+I think check_vma_flags() should do the ((FOLL_LONGTERM | FOLL_GET) &&
+vma_is_fsdax()) check and that would also remove the need for
+__gup_longterm_locked.
