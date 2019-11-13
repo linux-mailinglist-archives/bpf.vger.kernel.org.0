@@ -2,42 +2,43 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 35AC1FA52E
-	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2019 03:21:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14D29FA51F
+	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2019 03:21:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728696AbfKMBxx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Nov 2019 20:53:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43914 "EHLO mail.kernel.org"
+        id S1729342AbfKMCVG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Nov 2019 21:21:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44516 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728686AbfKMBxw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Nov 2019 20:53:52 -0500
+        id S1727935AbfKMByI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Nov 2019 20:54:08 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C0F67222CD;
-        Wed, 13 Nov 2019 01:53:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 58E85222CD;
+        Wed, 13 Nov 2019 01:54:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1573610030;
-        bh=7kkQdKM17MDDKEtGn+Zxkx5RKER3gUy2kCYhpw782+w=;
+        s=default; t=1573610047;
+        bh=seh6PmXvSTkNpVGMUR2DlyeDVyJ5I38GlRYzKWTGXiY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=azWy3I/gL/mms2CtiGKHtEGeZpddEd9BKaVm3rARQ1SwHULq+838OppUiFxoiFJ6n
-         K7rWjSvB28sSHFBGK2lU9QJzqrOWlP2qfc9U6D3/cOkLpcOgiGdgcg+saEAg2dLeNi
-         y2J8EkSbYwDUvLYwTPr0T0Q+cPYTyNy+FZWGduuc=
+        b=tNTQnJAdprWe3WgsAAUyrABxhg4t0YvYma9tyjkU66TPWKjrzP2x/NG8SoIHzHC3A
+         R4NFaoKHx6BKqn2S5WJAx5VKDoO0M1LcREyJzO2KfDC0J1dr6+FLBz7/qtkjd0O/on
+         5Cw6nYwTh6sDYAfeGo2JQJ2xzB7MvXfp2KIE/G8I=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Davide Caratti <dcaratti@redhat.com>,
-        Lucas Bates <lucasb@mojatatu.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: [PATCH AUTOSEL 4.19 124/209] tc-testing: fix build of eBPF programs
-Date:   Tue, 12 Nov 2019 20:49:00 -0500
-Message-Id: <20191113015025.9685-124-sashal@kernel.org>
+Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 135/209] xsk: proper AF_XDP socket teardown ordering
+Date:   Tue, 12 Nov 2019 20:49:11 -0500
+Message-Id: <20191113015025.9685-135-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191113015025.9685-1-sashal@kernel.org>
 References: <20191113015025.9685-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -46,168 +47,102 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Davide Caratti <dcaratti@redhat.com>
+From: Björn Töpel <bjorn.topel@intel.com>
 
-[ Upstream commit cf5eafbfa586d030f9321cee516b91d089e38280 ]
+[ Upstream commit 541d7fdd7694560404c502f64298a90ffe017e6b ]
 
-rely on uAPI headers in the current kernel tree, rather than requiring the
-correct version installed on the test system. While at it, group all
-sections in a single binary and test the 'section' parameter.
+The AF_XDP socket struct can exist in three different, implicit
+states: setup, bound and released. Setup is prior the socket has been
+bound to a device. Bound is when the socket is active for receive and
+send. Released is when the process/userspace side of the socket is
+released, but the sock object is still lingering, e.g. when there is a
+reference to the socket in an XSKMAP after process termination.
 
-Reported-by: Lucas Bates <lucasb@mojatatu.com>
-Signed-off-by: Davide Caratti <dcaratti@redhat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+The Rx fast-path code uses the "dev" member of struct xdp_sock to
+check whether a socket is bound or relased, and the Tx code uses the
+struct xdp_umem "xsk_list" member in conjunction with "dev" to
+determine the state of a socket.
+
+However, the transition from bound to released did not tear the socket
+down in correct order.
+
+On the Rx side "dev" was cleared after synchronize_net() making the
+synchronization useless. On the Tx side, the internal queues were
+destroyed prior removing them from the "xsk_list".
+
+This commit corrects the cleanup order, and by doing so
+xdp_del_sk_umem() can be simplified and one synchronize_net() can be
+removed.
+
+Fixes: 965a99098443 ("xsk: add support for bind for Rx")
+Fixes: ac98d8aab61b ("xsk: wire upp Tx zero-copy functions")
+Reported-by: Jesper Dangaard Brouer <brouer@redhat.com>
+Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
+Acked-by: Song Liu <songliubraving@fb.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../testing/selftests/tc-testing/bpf/Makefile | 29 +++++++++++++++++++
- .../testing/selftests/tc-testing/bpf/action.c | 23 +++++++++++++++
- .../tc-testing/tc-tests/actions/bpf.json      | 16 +++++-----
- .../selftests/tc-testing/tdc_config.py        |  4 ++-
- 4 files changed, 63 insertions(+), 9 deletions(-)
- create mode 100644 tools/testing/selftests/tc-testing/bpf/Makefile
- create mode 100644 tools/testing/selftests/tc-testing/bpf/action.c
+ net/xdp/xdp_umem.c | 11 +++--------
+ net/xdp/xsk.c      | 13 ++++++++-----
+ 2 files changed, 11 insertions(+), 13 deletions(-)
 
-diff --git a/tools/testing/selftests/tc-testing/bpf/Makefile b/tools/testing/selftests/tc-testing/bpf/Makefile
-new file mode 100644
-index 0000000000000..dc92eb271d9a1
---- /dev/null
-+++ b/tools/testing/selftests/tc-testing/bpf/Makefile
-@@ -0,0 +1,29 @@
-+# SPDX-License-Identifier: GPL-2.0
-+
-+APIDIR := ../../../../include/uapi
-+TEST_GEN_FILES = action.o
-+
-+top_srcdir = ../../../../..
-+include ../../lib.mk
-+
-+CLANG ?= clang
-+LLC   ?= llc
-+PROBE := $(shell $(LLC) -march=bpf -mcpu=probe -filetype=null /dev/null 2>&1)
-+
-+ifeq ($(PROBE),)
-+  CPU ?= probe
-+else
-+  CPU ?= generic
-+endif
-+
-+CLANG_SYS_INCLUDES := $(shell $(CLANG) -v -E - </dev/null 2>&1 \
-+	| sed -n '/<...> search starts here:/,/End of search list./{ s| \(/.*\)|-idirafter \1|p }')
-+
-+CLANG_FLAGS = -I. -I$(APIDIR) \
-+	      $(CLANG_SYS_INCLUDES) \
-+	      -Wno-compare-distinct-pointer-types
-+
-+$(OUTPUT)/%.o: %.c
-+	$(CLANG) $(CLANG_FLAGS) \
-+		 -O2 -target bpf -emit-llvm -c $< -o - |      \
-+	$(LLC) -march=bpf -mcpu=$(CPU) $(LLC_FLAGS) -filetype=obj -o $@
-diff --git a/tools/testing/selftests/tc-testing/bpf/action.c b/tools/testing/selftests/tc-testing/bpf/action.c
-new file mode 100644
-index 0000000000000..c32b99b80e19e
---- /dev/null
-+++ b/tools/testing/selftests/tc-testing/bpf/action.c
-@@ -0,0 +1,23 @@
-+/* SPDX-License-Identifier: GPL-2.0
-+ * Copyright (c) 2018 Davide Caratti, Red Hat inc.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of version 2 of the GNU General Public
-+ * License as published by the Free Software Foundation.
-+ */
-+
-+#include <linux/bpf.h>
-+#include <linux/pkt_cls.h>
-+
-+__attribute__((section("action-ok"),used)) int action_ok(struct __sk_buff *s)
-+{
-+	return TC_ACT_OK;
-+}
-+
-+__attribute__((section("action-ko"),used)) int action_ko(struct __sk_buff *s)
-+{
-+	s->data = 0x0;
-+	return TC_ACT_OK;
-+}
-+
-+char _license[] __attribute__((section("license"),used)) = "GPL";
-diff --git a/tools/testing/selftests/tc-testing/tc-tests/actions/bpf.json b/tools/testing/selftests/tc-testing/tc-tests/actions/bpf.json
-index 6f289a49e5ecf..1a9b282dd0be2 100644
---- a/tools/testing/selftests/tc-testing/tc-tests/actions/bpf.json
-+++ b/tools/testing/selftests/tc-testing/tc-tests/actions/bpf.json
-@@ -55,7 +55,7 @@
-             "bpf"
-         ],
-         "setup": [
--            "printf '#include <linux/bpf.h>\nchar l[] __attribute__((section(\"license\"),used))=\"GPL\"; __attribute__((section(\"action\"),used)) int m(struct __sk_buff *s) { return 2; }' | clang -O2 -x c -c - -target bpf -o _b.o",
-+            "make -C bpf",
-             [
-                 "$TC action flush action bpf",
-                 0,
-@@ -63,14 +63,14 @@
-                 255
-             ]
-         ],
--        "cmdUnderTest": "$TC action add action bpf object-file _b.o index 667",
-+        "cmdUnderTest": "$TC action add action bpf object-file $EBPFDIR/action.o section action-ok index 667",
-         "expExitCode": "0",
-         "verifyCmd": "$TC action get action bpf index 667",
--        "matchPattern": "action order [0-9]*: bpf _b.o:\\[action\\] id [0-9]* tag 3b185187f1855c4c( jited)? default-action pipe.*index 667 ref",
-+        "matchPattern": "action order [0-9]*: bpf action.o:\\[action-ok\\] id [0-9]* tag [0-9a-f]{16}( jited)? default-action pipe.*index 667 ref",
-         "matchCount": "1",
-         "teardown": [
-             "$TC action flush action bpf",
--            "rm -f _b.o"
-+            "make -C bpf clean"
-         ]
-     },
-     {
-@@ -81,7 +81,7 @@
-             "bpf"
-         ],
-         "setup": [
--            "printf '#include <linux/bpf.h>\nchar l[] __attribute__((section(\"license\"),used))=\"GPL\"; __attribute__((section(\"action\"),used)) int m(struct __sk_buff *s) { s->data = 0x0; return 2; }' | clang -O2 -x c -c - -target bpf -o _c.o",
-+            "make -C bpf",
-             [
-                 "$TC action flush action bpf",
-                 0,
-@@ -89,10 +89,10 @@
-                 255
-             ]
-         ],
--        "cmdUnderTest": "$TC action add action bpf object-file _c.o index 667",
-+        "cmdUnderTest": "$TC action add action bpf object-file $EBPFDIR/action.o section action-ko index 667",
-         "expExitCode": "255",
-         "verifyCmd": "$TC action get action bpf index 667",
--        "matchPattern": "action order [0-9]*: bpf _c.o:\\[action\\] id [0-9].*index 667 ref",
-+        "matchPattern": "action order [0-9]*: bpf action.o:\\[action-ko\\] id [0-9].*index 667 ref",
-         "matchCount": "0",
-         "teardown": [
-             [
-@@ -101,7 +101,7 @@
-                 1,
-                 255
-             ],
--            "rm -f _c.o"
-+            "make -C bpf clean"
-         ]
-     },
-     {
-diff --git a/tools/testing/selftests/tc-testing/tdc_config.py b/tools/testing/selftests/tc-testing/tdc_config.py
-index a023d0d62b25c..d651bc1501bdb 100644
---- a/tools/testing/selftests/tc-testing/tdc_config.py
-+++ b/tools/testing/selftests/tc-testing/tdc_config.py
-@@ -16,7 +16,9 @@ NAMES = {
-           'DEV2': '',
-           'BATCH_FILE': './batch.txt',
-           # Name of the namespace to use
--          'NS': 'tcut'
-+          'NS': 'tcut',
-+          # Directory containing eBPF test programs
-+          'EBPFDIR': './bpf'
-         }
+diff --git a/net/xdp/xdp_umem.c b/net/xdp/xdp_umem.c
+index 8cab91c482ff5..d9117ab035f7c 100644
+--- a/net/xdp/xdp_umem.c
++++ b/net/xdp/xdp_umem.c
+@@ -32,14 +32,9 @@ void xdp_del_sk_umem(struct xdp_umem *umem, struct xdp_sock *xs)
+ {
+ 	unsigned long flags;
  
+-	if (xs->dev) {
+-		spin_lock_irqsave(&umem->xsk_list_lock, flags);
+-		list_del_rcu(&xs->list);
+-		spin_unlock_irqrestore(&umem->xsk_list_lock, flags);
+-
+-		if (umem->zc)
+-			synchronize_net();
+-	}
++	spin_lock_irqsave(&umem->xsk_list_lock, flags);
++	list_del_rcu(&xs->list);
++	spin_unlock_irqrestore(&umem->xsk_list_lock, flags);
+ }
  
+ int xdp_umem_query(struct net_device *dev, u16 queue_id)
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index 661504042d304..ff15207036dc5 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -343,12 +343,18 @@ static int xsk_release(struct socket *sock)
+ 	local_bh_enable();
+ 
+ 	if (xs->dev) {
++		struct net_device *dev = xs->dev;
++
+ 		/* Wait for driver to stop using the xdp socket. */
+-		synchronize_net();
+-		dev_put(xs->dev);
++		xdp_del_sk_umem(xs->umem, xs);
+ 		xs->dev = NULL;
++		synchronize_net();
++		dev_put(dev);
+ 	}
+ 
++	xskq_destroy(xs->rx);
++	xskq_destroy(xs->tx);
++
+ 	sock_orphan(sk);
+ 	sock->sk = NULL;
+ 
+@@ -707,9 +713,6 @@ static void xsk_destruct(struct sock *sk)
+ 	if (!sock_flag(sk, SOCK_DEAD))
+ 		return;
+ 
+-	xskq_destroy(xs->rx);
+-	xskq_destroy(xs->tx);
+-	xdp_del_sk_umem(xs->umem, xs);
+ 	xdp_put_umem(xs->umem);
+ 
+ 	sk_refcnt_debug_dec(sk);
 -- 
 2.20.1
 
