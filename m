@@ -2,169 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FFEBFB5D1
-	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2019 18:00:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36BC3FB790
+	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2019 19:30:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727171AbfKMRAS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 Nov 2019 12:00:18 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:49694 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726195AbfKMRAS (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 13 Nov 2019 12:00:18 -0500
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id xADGvh73084632
-        for <bpf@vger.kernel.org>; Wed, 13 Nov 2019 12:00:17 -0500
-Received: from e06smtp03.uk.ibm.com (e06smtp03.uk.ibm.com [195.75.94.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2w8kkkdk73-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 13 Nov 2019 12:00:16 -0500
-Received: from localhost
-        by e06smtp03.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
-        Wed, 13 Nov 2019 17:00:12 -0000
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (9.149.109.198)
-        by e06smtp03.uk.ibm.com (192.168.101.133) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Wed, 13 Nov 2019 17:00:10 -0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id xADH09xB54198488
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 13 Nov 2019 17:00:09 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 38D6B4C063;
-        Wed, 13 Nov 2019 17:00:09 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 00C824C04E;
-        Wed, 13 Nov 2019 17:00:09 +0000 (GMT)
-Received: from white.boeblingen.de.ibm.com (unknown [9.152.98.44])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 13 Nov 2019 17:00:08 +0000 (GMT)
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>
-Cc:     bpf@vger.kernel.org, Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH bpf-next] bpf: make bpf_jit_binary_alloc support alignment > 4
-Date:   Wed, 13 Nov 2019 18:00:05 +0100
-X-Mailer: git-send-email 2.23.0
+        id S1728315AbfKMSaT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 Nov 2019 13:30:19 -0500
+Received: from dispatchb-us1.ppe-hosted.com ([148.163.129.53]:47620 "EHLO
+        dispatchb-us1.ppe-hosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727687AbfKMSaT (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 13 Nov 2019 13:30:19 -0500
+X-Virus-Scanned: Proofpoint Essentials engine
+Received: from webmail.solarflare.com (uk.solarflare.com [193.34.186.16])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1-us3.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTPS id 3DDD7480079;
+        Wed, 13 Nov 2019 18:30:17 +0000 (UTC)
+Received: from [10.17.20.203] (10.17.20.203) by ukex01.SolarFlarecom.com
+ (10.17.10.4) with Microsoft SMTP Server (TLS) id 15.0.1395.4; Wed, 13 Nov
+ 2019 18:30:07 +0000
+Subject: Re: static and dynamic linking. Was: [PATCH bpf-next v3 1/5] bpf:
+ Support chain calling multiple BPF
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+CC:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        "John Fastabend" <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Marek Majkowski <marek@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        "Jesper Dangaard Brouer" <brouer@redhat.com>,
+        David Miller <davem@davemloft.net>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>
+References: <f9d5f717-51fe-7d03-6348-dbaf0b9db434@solarflare.com>
+ <87r23egdua.fsf@toke.dk>
+ <70142501-e2dd-1aed-992e-55acd5c30cfd@solarflare.com>
+ <874l07fu61.fsf@toke.dk>
+ <aeae7b94-090a-a850-4740-0274ab8178d5@solarflare.com>
+ <87eez4odqp.fsf@toke.dk>
+ <20191112025112.bhzmrrh2pr76ssnh@ast-mbp.dhcp.thefacebook.com>
+ <87h839oymg.fsf@toke.dk>
+ <20191112195223.cp5kcmkko54dsfbg@ast-mbp.dhcp.thefacebook.com>
+ <8c251f3d-67bd-9bc2-8037-a15d93b48674@solarflare.com>
+ <20191112231822.o3gir44yskmntgnq@ast-mbp.dhcp.thefacebook.com>
+From:   Edward Cree <ecree@solarflare.com>
+Message-ID: <0c90adc4-5992-8648-88bf-4993252e8992@solarflare.com>
+Date:   Wed, 13 Nov 2019 18:30:04 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
+In-Reply-To: <20191112231822.o3gir44yskmntgnq@ast-mbp.dhcp.thefacebook.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-x-cbid: 19111317-0012-0000-0000-0000036358DA
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19111317-0013-0000-0000-0000219ECE9B
-Message-Id: <20191113170005.48813-1-iii@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-11-13_04:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1910280000 definitions=main-1911130147
+Content-Language: en-US
+X-Originating-IP: [10.17.20.203]
+X-ClientProxiedBy: ocex03.SolarFlarecom.com (10.20.40.36) To
+ ukex01.SolarFlarecom.com (10.17.10.4)
+X-TM-AS-Product-Ver: SMEX-12.5.0.1300-8.5.1010-25040.003
+X-TM-AS-Result: No-11.123400-8.000000-10
+X-TMASE-MatchedRID: gTucSmrmRMPmLzc6AOD8DfHkpkyUphL9WDtrCb/B2hD4qcrtH/xgFZG7
+        2NzIAVHbSR6AUQrJJcuJjnQgB0y4MyH/qIKp8YHgzYdkhvBj72YGchEhVwJY3/yQXCBzKijhKMB
+        +A3R9wpjQnvspXsHGGjgVYVRiAYcYIly/lfs5uYll2ityh8f8abzETYfYS4xZkYldHqNEW7jVYV
+        lghh6bHLbVdljeKYS0SxgQeJeJcbtveCKWtaLcaNz4Qeg3eDOXNACXtweanwY26TIMgH4duvlgF
+        +Kg8U8ROcDxuFovi7sJc76c84YQtEY1icyaSXl7iVJZi91I9JipXdWa4gU0SyuGKh4AkqKVTx7y
+        4qsCFyjPNMvOUpFAAcC9Ectx7blhS6sB4alhNseSa1tNw2nFhJmuAlCliTSzSsLSc3Pt6d8cM+9
+        sw875Dq0O70YxrIQWboiPOocsN2Rzzu7iu0I3xElR2DE0NRda3V4UShoTXaeZt08TfNy6OGUsfN
+        azqaz0vi+sWY5pLUTAAptcaK2X1JH+r1dm7Q1Zec1y1wrvN8VRGnhVKO1nEseQfu6iwSfsL3cbW
+        SYN50zZT+PYC0MLLugYO29BmH8mcD+UkqIXD16Ev01fZOqaQPf6ZSoNZQrIIyM6bqaAlytOoawJ
+        u9w+jEGuPlleiAosuiY3Jd7OxZ1JT04BD0+0vjBgCmbnj9JmfS0Ip2eEHnzUHQeTVDUrItRnEQC
+        UU+jz9xS3mVzWUuA4wHSyGpeEevhHs6Nly492z6NxPA1Vi8Bk1F/HwgJmfnmyphMWrxPqzp5NFf
+        iy5h8=
+X-TM-AS-User-Approved-Sender: Yes
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--11.123400-8.000000
+X-TMASE-Version: SMEX-12.5.0.1300-8.5.1010-25040.003
+X-MDID: 1573669818-l01CeIA_ftqE
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Currently passing alignment greater than 4 to bpf_jit_binary_alloc does
-not work: in such cases it aligns only to 4 bytes.
+On 12/11/2019 23:18, Alexei Starovoitov wrote:
+> On Tue, Nov 12, 2019 at 09:25:06PM +0000, Edward Cree wrote:
+>> Fwiw the 'natural' C way of doing it would be that for any extern symbol in
+>>  the C file, the ELF file gets a symbol entry with st_shndx=SHN_UNDEF, and
+>>  code in .text that uses that symbol gets relocation entries.  That's (AIUI)
+>>  how it works on 'normal' architectures, and that's what my ebld linker
+>>  understands; when it sees a definition in another file for that symbol
+>>  (matched just by the symbol name) it applies all the relocations of the
+>>  symbol to the appropriate progbits.
+>> I don't really see what else you could define 'extern' to mean.
+> That's exactly the problem with standard 'extern'. ELF preserves the name only.
+> There is no type.
+But if you have BTFs, then you can look up each symbol's type at link time and
+ check that they match.  Point being that the BTF is for validation (and
+ therefore strictly optional at this point) rather than using it to identify a
+ symbol.  Trouble with the latter is that BTF ids get renumbered on linking, so
+ any references to them have to change, whereas symbol names stay the same.
 
-However, this is required on s390, where in order to load a constant
-from memory in a large (>512k) BPF program, one must use lgrl
-instruction, whose memory operand must be aligned on an 8-byte boundary.
+> There is also
+> no way to place extern into a section. Currently SEC("..") is a standard way to
+> annotate bpf programs.
+While the symbol itself doesn't have a section, each _use_ of the symbol has a
+ reloc, and the SHT_REL[A] in which that reloc resides has a sh_info specifying
+ "the section header index of the section to which the relocation applies."  So
+ can't that be used if symbol visibility needs to depend on section?  Tbh I
+ can't exactly see why externs need placing in a section in the first place.
 
-This patch makes it possible to request an arbitrary power-of-2
-alignment from bpf_jit_binary_alloc by allocating extra padding bytes
-and aligning the resulting pointer rather than the start offset.
+> I think reliable 'extern' has to have more than just
+> name. 'extern int foo;' can be a reference to 'int foo;' in another BPF ELF
+> file, or it can be a reference to 'int foo;' in already loaded BPF prog, or it
+> can be a reference to 'int foo;' inside the kernel itself, or it can be a
+> reference to pseudo variable that libbpf should replace. For example 'extern
+> int kernel_version;' or 'extern int CONFIG_HZ;' would be useful extern-like
+> variables that program might want to use. Disambiguating by name is probably
+> not enough. We can define an order of resolution. libbpf will search in other
+> .o first, then will search in loaded bpf progs, than in kernel, and if all
+> fails than will resolve things like 'extern int CONFIG_HZ' on its own. It feels
+> fragile though.
+It sounds perfectly reasonable and not fragile to me.  The main alternative
+ I see, about equally good, is to not allow defining symbols that are already
+ (non-weakly) defined; so if a bpf prog tries to globally declare "int CONFIG_HZ"
+ or "int netif_receive_skb(struct sk_buff *skb)" then it gets rejected.
 
-An alternative would be to simply increase the alignment of
-bpf_binary_header.image to 8, but this would increase the risk of
-wasting a page on arches that don't need it, and would also be
-insufficient in case someone needs e.g. 16-byte alignment in the
-future.
+> I think we need to be able to specify something like section to
+> extern variables and functions.
+It seems unnecessary to have the user code specify this.  Another a bad
+ analogy: in userland C code you don't have to annotate the function protos in
+ your header files to say whether they come from another .o file, a random
+ library or the libc.  You just declare "a function called this exists somewhere
+ and we'll find it at link time".
 
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
----
- include/linux/filter.h |  6 ++++--
- kernel/bpf/core.c      | 22 +++++++++++++++++-----
- 2 files changed, 21 insertions(+), 7 deletions(-)
+> I was imagining that the verifier will do per-function verification
+> of program with sub-programs instead of analyzing from root.
+Ah I see.  Yes, that's a very attractive design.
 
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index 7a6f8f6f1da4..351a31eec24b 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -515,10 +515,12 @@ struct sock_fprog_kern {
- 	struct sock_filter	*filter;
- };
- 
-+/* Some arches need word alignment for their instructions */
-+#define BPF_IMAGE_ALIGNMENT 4
-+
- struct bpf_binary_header {
- 	u32 pages;
--	/* Some arches need word alignment for their instructions */
--	u8 image[] __aligned(4);
-+	u8 image[] __aligned(BPF_IMAGE_ALIGNMENT);
- };
- 
- struct bpf_prog {
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index c1fde0303280..75dd3a43ada0 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -31,6 +31,8 @@
- #include <linux/rcupdate.h>
- #include <linux/perf_event.h>
- #include <linux/extable.h>
-+#include <linux/kernel.h>
-+#include <linux/log2.h>
- #include <asm/unaligned.h>
- 
- /* Registers */
-@@ -812,14 +814,20 @@ bpf_jit_binary_alloc(unsigned int proglen, u8 **image_ptr,
- 		     unsigned int alignment,
- 		     bpf_jit_fill_hole_t bpf_fill_ill_insns)
- {
-+	u32 size, hole, start, pages, padding;
- 	struct bpf_binary_header *hdr;
--	u32 size, hole, start, pages;
-+
-+	WARN_ON_ONCE(!is_power_of_2(alignment));
-+	if (alignment <= BPF_IMAGE_ALIGNMENT)
-+		padding = 0;
-+	else
-+		padding = alignment - BPF_IMAGE_ALIGNMENT + 1;
- 
- 	/* Most of BPF filters are really small, but if some of them
- 	 * fill a page, allow at least 128 extra bytes to insert a
- 	 * random section of illegal instructions.
- 	 */
--	size = round_up(proglen + sizeof(*hdr) + 128, PAGE_SIZE);
-+	size = round_up(proglen + sizeof(*hdr) + padding + 128, PAGE_SIZE);
- 	pages = size / PAGE_SIZE;
- 
- 	if (bpf_jit_charge_modmem(pages))
-@@ -834,12 +842,16 @@ bpf_jit_binary_alloc(unsigned int proglen, u8 **image_ptr,
- 	bpf_fill_ill_insns(hdr, size);
- 
- 	hdr->pages = pages;
--	hole = min_t(unsigned int, size - (proglen + sizeof(*hdr)),
-+	hole = min_t(unsigned int,
-+		     size - (proglen + sizeof(*hdr) + padding),
- 		     PAGE_SIZE - sizeof(*hdr));
--	start = (get_random_int() % hole) & ~(alignment - 1);
-+	start = get_random_int() % hole;
- 
- 	/* Leave a random number of instructions before BPF code. */
--	*image_ptr = &hdr->image[start];
-+	if (alignment <= BPF_IMAGE_ALIGNMENT)
-+		*image_ptr = &hdr->image[start & ~(alignment - 1)];
-+	else
-+		*image_ptr = PTR_ALIGN(&hdr->image[start], alignment);
- 
- 	return hdr;
- }
--- 
-2.23.0
+If we make it from a sufficiently generic idea of pre/postconditions, then it
+ could also be useful for e.g. loop bodies (user-supplied annotations that allow
+ us to walk the body only once instead of N times); then a function call just
+ gets standard pre/postconditions generated from its argument types if the user
+ didn't specify something else.
 
+That would then also support things like:
+> The next step is to extend this thought process to integers.
+> int foo(struct xdp_md *arg1, int arg2);
+> The verifier can check that the program is valid for any valid arg1 and
+> arg2 = mark_reg_unbounded().
+... this but arg2 isn't unbounded.
+However, it might be difficult to do this without exposing details of the
+ verifier into the ABI.  Still, if we can it sounds like it would make John
+ quite happy too.  And of course it doesn't need to have the user annotations
+ from the beginning, it can start out as just the kernel generating pre/post
+ conditions internally.
+
+-Ed
