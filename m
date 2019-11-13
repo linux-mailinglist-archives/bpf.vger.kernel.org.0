@@ -2,91 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 85871FA420
-	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2019 03:16:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E6B8FA363
+	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2019 03:12:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729486AbfKMCOG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Nov 2019 21:14:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50578 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729760AbfKMB5X (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Nov 2019 20:57:23 -0500
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1753E2245C;
-        Wed, 13 Nov 2019 01:57:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1573610242;
-        bh=HBHtmJu5V/blqrrfin0uViVbx9hl+U8z088qsdK+aUc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Qj9bzx+9LQTZto+891B9w+FeoGOvl37bLjalvr0FTvZzs55mFg3baFOEg4diIyf41
-         A9lbesQDYWSH7pL19aAc+DUrJ1tdgGKsCMNPyYiWeoMsff0ZQO3xdMlg4WiAs+TitS
-         nj49cloQPbAXJy7xvmQh/eF9D5KElwYlvg9BUal0=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Radoslaw Tyl <radoslawx.tyl@intel.com>,
-        Andrew Bowers <andrewx.bowers@intel.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 042/115] ixgbe: Fix ixgbe TX hangs with XDP_TX beyond queue limit
-Date:   Tue, 12 Nov 2019 20:55:09 -0500
-Message-Id: <20191113015622.11592-42-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191113015622.11592-1-sashal@kernel.org>
-References: <20191113015622.11592-1-sashal@kernel.org>
+        id S1728858AbfKMCJM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Nov 2019 21:09:12 -0500
+Received: from hqemgate15.nvidia.com ([216.228.121.64]:7386 "EHLO
+        hqemgate15.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728220AbfKMCJL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Nov 2019 21:09:11 -0500
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqemgate15.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5dcb65c50002>; Tue, 12 Nov 2019 18:09:09 -0800
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Tue, 12 Nov 2019 18:09:09 -0800
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Tue, 12 Nov 2019 18:09:09 -0800
+Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 13 Nov
+ 2019 02:09:09 +0000
+Subject: Re: [PATCH v3 08/23] vfio, mm: fix get_user_pages_remote() and
+ FOLL_LONGTERM
+To:     Dan Williams <dan.j.williams@intel.com>
+CC:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jens Axboe <axboe@kernel.dk>, Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, <bpf@vger.kernel.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>, KVM list <kvm@vger.kernel.org>,
+        <linux-block@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>,
+        "Linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Netdev <netdev@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20191112000700.3455038-1-jhubbard@nvidia.com>
+ <20191112000700.3455038-9-jhubbard@nvidia.com>
+ <20191112204338.GE5584@ziepe.ca>
+ <0db36e86-b779-01af-77e7-469af2a2e19c@nvidia.com>
+ <CAPcyv4hAEgw6ySNS+EFRS4yNRVGz9A3Fu1vOk=XtpjYC64kQJw@mail.gmail.com>
+ <20191112234250.GA19615@ziepe.ca>
+ <CAPcyv4hwFKmsQpp04rS6diCmZwGtbnriCjfY2ofWV485qT9kzg@mail.gmail.com>
+ <28355eb0-4ee5-3418-b430-59302d15b478@nvidia.com>
+ <CAPcyv4hdYZ__3+KJHh+0uX--f-U=pLiZfdO0JDhyBE-nZ=i4FQ@mail.gmail.com>
+From:   John Hubbard <jhubbard@nvidia.com>
+X-Nvconfidentiality: public
+Message-ID: <c6f035f5-8290-2bc0-a645-d63e3a47f588@nvidia.com>
+Date:   Tue, 12 Nov 2019 18:09:08 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAPcyv4hdYZ__3+KJHh+0uX--f-U=pLiZfdO0JDhyBE-nZ=i4FQ@mail.gmail.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1573610949; bh=B6pkyHmGh6yhjKCidrVzgID/vhDeCAvfXP4nK4Pk4sU=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=RV5dPXEXGk2wPs6itxn+ysd+tryNIcHtFe7cNPEDa6fUJR+mqhDFmpWJh1cxUznfM
+         u/dSVfFdxe/eLLU3UZJsFyG0KQve3tMf4SbX/eLAZ3PsvXvDC9d9Vo1jj5Z6rn0Yor
+         1EXyMK0mBMr99qCD9+AZ++P4gO+L3VPJHPXksjDueAgSTRvM0AvLDqBIchBRO93HWN
+         flXai7XrgmMwanL4FueloUnCWoIRpUo5voQGwqOd0jdXOidJNNwAYlQZLipkiht6xZ
+         1PIwF7tPrWLfM+J/GXeR6mCfSxY22FrqYpx7yQ6peaaRvxPNUSU6UqLCTPNv27OnhW
+         6xjI9w2mLclog==
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Radoslaw Tyl <radoslawx.tyl@intel.com>
+On 11/12/19 5:35 PM, Dan Williams wrote:
+> On Tue, Nov 12, 2019 at 5:08 PM John Hubbard <jhubbard@nvidia.com> wrote:
+>>
+>> On 11/12/19 4:58 PM, Dan Williams wrote:
+>> ...
+>>>>> It's not redundant relative to upstream which does not do anything the
+>>>>> FOLL_LONGTERM in the gup-slow path... but I have not looked at patches
+>>>>> 1-7 to see if something there made it redundant.
+>>>>
+>>>> Oh, the hunk John had below for get_user_pages_remote() also needs to
+>>>> call __gup_longterm_locked() when FOLL_LONGTERM is specified, then
+>>>> that calls check_dax_vmas() which duplicates the vma_is_fsdax() check
+>>>> above.
+>>>
+>>> Oh true, good eye. It is redundant if it does additionally call
+>>> __gup_longterm_locked(), and it needs to do that otherwises it undoes
+>>> the CMA migration magic that Aneesh added.
+>>>
+>>
+>> OK. So just to be clear, I'll be removing this from the patch:
+>>
+>>         /*
+>>          * The lifetime of a vaddr_get_pfn() page pin is
+>>          * userspace-controlled. In the fs-dax case this could
+>>          * lead to indefinite stalls in filesystem operations.
+>>          * Disallow attempts to pin fs-dax pages via this
+>>          * interface.
+>>          */
+>>         if (ret > 0 && vma_is_fsdax(vmas[0])) {
+>>                 ret = -EOPNOTSUPP;
+>>                 put_page(page[0]);
+>>         }
+>>
+>> (and the declaration of "vmas", as well).
+> 
+> ...and add a call to __gup_longterm_locked internal to
+> get_user_pages_remote(), right?
+> 
 
-[ Upstream commit 8d7179b1e2d64b3493c0114916486fe92e6109a9 ]
+Yes, and thanks for double-checking. I think I got a little dizzy following
+the call stack there. :)  And now I see that this also affects the
+implementation of pin_longterm_pages_remote(), because that will need the
+same logic that get_user_pages_remote() has. 
 
-We have Tx hang when number Tx and XDP queues are more than 64.
-In XDP always is MTQC == 0x0 (64TxQs). We need more space for Tx queues.
 
-Signed-off-by: Radoslaw Tyl <radoslawx.tyl@intel.com>
-Tested-by: Andrew Bowers <andrewx.bowers@intel.com>
-Signed-off-by: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-index 01c120d656c54..d1472727ef882 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-@@ -3490,12 +3490,18 @@ static void ixgbe_setup_mtqc(struct ixgbe_adapter *adapter)
- 		else
- 			mtqc |= IXGBE_MTQC_64VF;
- 	} else {
--		if (tcs > 4)
-+		if (tcs > 4) {
- 			mtqc = IXGBE_MTQC_RT_ENA | IXGBE_MTQC_8TC_8TQ;
--		else if (tcs > 1)
-+		} else if (tcs > 1) {
- 			mtqc = IXGBE_MTQC_RT_ENA | IXGBE_MTQC_4TC_4TQ;
--		else
--			mtqc = IXGBE_MTQC_64Q_1PB;
-+		} else {
-+			u8 max_txq = adapter->num_tx_queues +
-+				adapter->num_xdp_queues;
-+			if (max_txq > 63)
-+				mtqc = IXGBE_MTQC_RT_ENA | IXGBE_MTQC_4TC_4TQ;
-+			else
-+				mtqc = IXGBE_MTQC_64Q_1PB;
-+		}
- 	}
- 
- 	IXGBE_WRITE_REG(hw, IXGBE_MTQC, mtqc);
+thanks,
 -- 
-2.20.1
-
+John Hubbard
+NVIDIA
