@@ -2,134 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B4ECCFB9E5
-	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2019 21:31:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42F45FBA08
+	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2019 21:38:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726521AbfKMUax (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 Nov 2019 15:30:53 -0500
-Received: from hqemgate14.nvidia.com ([216.228.121.143]:5469 "EHLO
-        hqemgate14.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726270AbfKMUax (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 13 Nov 2019 15:30:53 -0500
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate14.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5dcc67fb0000>; Wed, 13 Nov 2019 12:30:51 -0800
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Wed, 13 Nov 2019 12:30:48 -0800
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Wed, 13 Nov 2019 12:30:48 -0800
-Received: from [10.2.160.107] (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 13 Nov
- 2019 20:30:47 +0000
-Subject: Re: [PATCH v3 00/23] mm/gup: track dma-pinned pages: FOLL_PIN,
- FOLL_LONGTERM
-To:     Jan Kara <jack@suse.cz>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ira Weiny <ira.weiny@intel.com>, Jens Axboe <axboe@kernel.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, bpf <bpf@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        <kvm@vger.kernel.org>, <linux-block@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        netdev <netdev@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20191112000700.3455038-1-jhubbard@nvidia.com>
- <20191112203802.GD5584@ziepe.ca>
- <02fa935c-3469-b766-b691-5660084b60b9@nvidia.com>
- <CAKMK7uHvk+ti00mCCF2006U003w1dofFg9nSfmZ4bS2Z2pEDNQ@mail.gmail.com>
- <7b671bf9-4d94-f2cc-8453-863acd5a1115@nvidia.com>
- <20191113101210.GD6367@quack2.suse.cz>
- <20191113114311.GP23790@phenom.ffwll.local>
-From:   John Hubbard <jhubbard@nvidia.com>
-X-Nvconfidentiality: public
-Message-ID: <283b121d-f526-f43f-de45-dc2f8318d860@nvidia.com>
-Date:   Wed, 13 Nov 2019 12:28:02 -0800
+        id S1726185AbfKMUii (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 Nov 2019 15:38:38 -0500
+Received: from www62.your-server.de ([213.133.104.62]:33884 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726162AbfKMUii (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 13 Nov 2019 15:38:38 -0500
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1iUzPO-0005Rx-VP; Wed, 13 Nov 2019 21:38:35 +0100
+Received: from [178.197.248.57] (helo=pc-9.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1iUzPO-000IZo-7z; Wed, 13 Nov 2019 21:38:34 +0100
+Subject: Re: [PATCH v3 bpf-next 1/3] bpf: add mmap() support for
+ BPF_MAP_TYPE_ARRAY
+To:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, ast@fb.com
+Cc:     andrii.nakryiko@gmail.com, kernel-team@fb.com,
+        Rik van Riel <riel@surriel.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+References: <20191113031518.155618-1-andriin@fb.com>
+ <20191113031518.155618-2-andriin@fb.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <4460626d-93e6-6566-9909-68b15e515f4e@iogearbox.net>
+Date:   Wed, 13 Nov 2019 21:38:33 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20191113114311.GP23790@phenom.ffwll.local>
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <20191113031518.155618-2-andriin@fb.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1573677051; bh=w2mV+XepuxnOtihiYgL/XuqwUYU2QI7jYfF/MppVAWE=;
-        h=X-PGP-Universal:Subject:To:References:From:X-Nvconfidentiality:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=K3ELKy0LEaE4Frm6QQ4jLw8cJF3zobatTYiyQ/Vg2jO630IkqTksnY4sEeXMrgt5a
-         b46qAh7TsgPVJKCPcTPIoUnjxNn6h2xUdpivOkXuz3queuSeoxqaSFBxc3yHdAdKf1
-         weqLMTvKu8Vs4tf6la1SbXQc5ZvBvuc6pK240FvHmEYJ0o2WePNqZANag+FSCa5U1i
-         2iyzSKadjF0T/uRVrR4KM4Ey20Bg7sJaaQBcaSS9Pr1q7odGMaBmeJ4hRBriIHKA4P
-         1LTpfohPn7iHAuSCtXbApQkiiVLKyUBXMKbsJDCLOd3JNZEji1iUk1dM5atghZtAzC
-         EJVJspvV4f3sw==
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.101.4/25632/Wed Nov 13 10:48:25 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/13/19 3:43 AM, Daniel Vetter wrote:
-...
->>>> Can't we call this unpin_user_page then, for some symmetry? Or is that
->>>> even more churn?
->>>>
->>>> Looking from afar the naming here seems really confusing.
->>>
->>>
->>> That look from afar is valuable, because I'm too close to the problem to see
->>> how the naming looks. :)
->>>
->>> unpin_user_page() sounds symmetrical. It's true that it would cause more
->>> churn (which is why I started off with a proposal that avoids changing the
->>> names of put_user_page*() APIs). But OTOH, the amount of churn is proportional
->>> to the change in direction here, and it's really only 10 or 20 lines changed,
->>> in the end.
->>>
->>> So I'm open to changing to that naming. It would be nice to hear what others
->>> prefer, too...
->>
->> FWIW I'd find unpin_user_page() also better than put_user_page() as a
->> counterpart to pin_user_pages().
+On 11/13/19 4:15 AM, Andrii Nakryiko wrote:
+> Add ability to memory-map contents of BPF array map. This is extremely useful
+> for working with BPF global data from userspace programs. It allows to avoid
+> typical bpf_map_{lookup,update}_elem operations, improving both performance
+> and usability.
 > 
-> One more point from afar on pin/unpin: We use that a lot in graphics for
-> permanently pinned graphics buffer objects. Which really only should be
-> used for scanout. So at least graphics folks should have an appropriate
-> mindset and try to make sure we don't overuse this stuff.
-> -Daniel
+> There had to be special considerations for map freezing, to avoid having
+> writable memory view into a frozen map. To solve this issue, map freezing and
+> mmap-ing is happening under mutex now:
+>    - if map is already frozen, no writable mapping is allowed;
+>    - if map has writable memory mappings active (accounted in map->writecnt),
+>      map freezing will keep failing with -EBUSY;
+>    - once number of writable memory mappings drops to zero, map freezing can be
+>      performed again.
 > 
+> Only non-per-CPU plain arrays are supported right now. Maps with spinlocks
+> can't be memory mapped either.
+> 
+> For BPF_F_MMAPABLE array, memory allocation has to be done through vmalloc()
+> to be mmap()'able. We also need to make sure that array data memory is
+> page-sized and page-aligned, so we over-allocate memory in such a way that
+> struct bpf_array is at the end of a single page of memory with array->value
+> being aligned with the start of the second page. On deallocation we need to
+> accomodate this memory arrangement to free vmalloc()'ed memory correctly.
+> 
+> Cc: Rik van Riel <riel@surriel.com>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Acked-by: Song Liu <songliubraving@fb.com>
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 
-OK, Ira also likes "unpin", and so far no one has said *anything* in favor
-of the "put_user_page" names, so I think we have a winner! I'll change the
-names to unpin_user_page*().
+Overall set looks good to me! One comment below:
 
+[...]
+> @@ -117,7 +131,20 @@ static struct bpf_map *array_map_alloc(union bpf_attr *attr)
+>   		return ERR_PTR(ret);
+>   
+>   	/* allocate all map elements and zero-initialize them */
+> -	array = bpf_map_area_alloc(array_size, numa_node);
+> +	if (attr->map_flags & BPF_F_MMAPABLE) {
+> +		void *data;
+> +
+> +		/* kmalloc'ed memory can't be mmap'ed, use explicit vmalloc */
+> +		data = vzalloc_node(array_size, numa_node);
+> +		if (!data) {
+> +			bpf_map_charge_finish(&mem);
+> +			return ERR_PTR(-ENOMEM);
+> +		}
+> +		array = data + round_up(sizeof(struct bpf_array), PAGE_SIZE)
+> +			- offsetof(struct bpf_array, value);
+> +	} else {
+> +		array = bpf_map_area_alloc(array_size, numa_node);
+> +	}
 
-thanks,
--- 
-John Hubbard
-NVIDIA
+Can't we place/extend all this logic inside bpf_map_area_alloc() and
+bpf_map_area_free() API instead of hard-coding it here?
+
+Given this is a generic feature of which global data is just one consumer,
+my concern is that this reintroduces similar issues that mentioned API was
+trying to solve already meaning failing early instead of trying hard and
+triggering OOM if the array is large.
+
+Consolidating this into bpf_map_area_alloc()/bpf_map_area_free() would
+make sure all the rest has same semantics.
+
+>   	if (!array) {
+>   		bpf_map_charge_finish(&mem);
+>   		return ERR_PTR(-ENOMEM);
+> @@ -365,7 +392,10 @@ static void array_map_free(struct bpf_map *map)
+>   	if (array->map.map_type == BPF_MAP_TYPE_PERCPU_ARRAY)
+>   		bpf_array_free_percpu(array);
+>   
+> -	bpf_map_area_free(array);
+> +	if (array->map.map_flags & BPF_F_MMAPABLE)
+> +		bpf_map_area_free((void *)round_down((long)array, PAGE_SIZE));
+> +	else
+> +		bpf_map_area_free(array);
+>   }
+>   
+>   static void array_map_seq_show_elem(struct bpf_map *map, void *key,
+[...]
