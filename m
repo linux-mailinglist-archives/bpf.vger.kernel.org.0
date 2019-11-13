@@ -2,39 +2,40 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3733CFA4D4
-	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2019 03:20:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85871FA420
+	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2019 03:16:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728858AbfKMCTB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Nov 2019 21:19:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47120 "EHLO mail.kernel.org"
+        id S1729486AbfKMCOG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Nov 2019 21:14:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50578 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729117AbfKMBz2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Nov 2019 20:55:28 -0500
+        id S1729760AbfKMB5X (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Nov 2019 20:57:23 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 47773222CD;
-        Wed, 13 Nov 2019 01:55:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1753E2245C;
+        Wed, 13 Nov 2019 01:57:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1573610128;
-        bh=eJF2Lv1JO7SGTrNnwUZO9cfYP9zZZ6tpTHTU0INEZ64=;
+        s=default; t=1573610242;
+        bh=HBHtmJu5V/blqrrfin0uViVbx9hl+U8z088qsdK+aUc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ntoEW3NC7YBzzgdtWPpD4y+/WdXWizmVutsxPwqrBWlxgd/WGIGvWCfWdCr5UP01d
-         JnsO63of80XtbEZE2aQY0cRSSd5+2ZR0c5gtqoXJTZ+4unSh/U8V/U8wYYMSJe+uKy
-         RdTLTM9YzaLEtCOsM56S2DKRRaYc1KpJeJfYq7OI=
+        b=Qj9bzx+9LQTZto+891B9w+FeoGOvl37bLjalvr0FTvZzs55mFg3baFOEg4diIyf41
+         A9lbesQDYWSH7pL19aAc+DUrJ1tdgGKsCMNPyYiWeoMsff0ZQO3xdMlg4WiAs+TitS
+         nj49cloQPbAXJy7xvmQh/eF9D5KElwYlvg9BUal0=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+Cc:     Radoslaw Tyl <radoslawx.tyl@intel.com>,
+        Andrew Bowers <andrewx.bowers@intel.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 178/209] net: fix generic XDP to handle if eth header was mangled
-Date:   Tue, 12 Nov 2019 20:49:54 -0500
-Message-Id: <20191113015025.9685-178-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 042/115] ixgbe: Fix ixgbe TX hangs with XDP_TX beyond queue limit
+Date:   Tue, 12 Nov 2019 20:55:09 -0500
+Message-Id: <20191113015622.11592-42-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191113015025.9685-1-sashal@kernel.org>
-References: <20191113015025.9685-1-sashal@kernel.org>
+In-Reply-To: <20191113015622.11592-1-sashal@kernel.org>
+References: <20191113015622.11592-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -44,73 +45,48 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Jesper Dangaard Brouer <brouer@redhat.com>
+From: Radoslaw Tyl <radoslawx.tyl@intel.com>
 
-[ Upstream commit 2972495699320229b55b8e5065a310be5c81485b ]
+[ Upstream commit 8d7179b1e2d64b3493c0114916486fe92e6109a9 ]
 
-XDP can modify (and resize) the Ethernet header in the packet.
+We have Tx hang when number Tx and XDP queues are more than 64.
+In XDP always is MTQC == 0x0 (64TxQs). We need more space for Tx queues.
 
-There is a bug in generic-XDP, because skb->protocol and skb->pkt_type
-are setup before reaching (netif_receive_)generic_xdp.
-
-This bug was hit when XDP were popping VLAN headers (changing
-eth->h_proto), as skb->protocol still contains VLAN-indication
-(ETH_P_8021Q) causing invocation of skb_vlan_untag(skb), which corrupt
-the packet (basically popping the VLAN again).
-
-This patch catch if XDP changed eth header in such a way, that SKB
-fields needs to be updated.
-
-V2: on request from Song Liu, use ETH_HLEN instead of mac_len,
-in __skb_push() as eth_type_trans() use ETH_HLEN in paired skb_pull_inline().
-
-Fixes: d445516966dc ("net: xdp: support xdp generic on virtual devices")
-Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Radoslaw Tyl <radoslawx.tyl@intel.com>
+Tested-by: Andrew Bowers <andrewx.bowers@intel.com>
+Signed-off-by: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/core/dev.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
-diff --git a/net/core/dev.c b/net/core/dev.c
-index ddd8aab20adf2..3e8b468a9f264 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -4296,6 +4296,9 @@ static u32 netif_receive_generic_xdp(struct sk_buff *skb,
- 	struct netdev_rx_queue *rxqueue;
- 	void *orig_data, *orig_data_end;
- 	u32 metalen, act = XDP_DROP;
-+	__be16 orig_eth_type;
-+	struct ethhdr *eth;
-+	bool orig_bcast;
- 	int hlen, off;
- 	u32 mac_len;
- 
-@@ -4336,6 +4339,9 @@ static u32 netif_receive_generic_xdp(struct sk_buff *skb,
- 	xdp->data_hard_start = skb->data - skb_headroom(skb);
- 	orig_data_end = xdp->data_end;
- 	orig_data = xdp->data;
-+	eth = (struct ethhdr *)xdp->data;
-+	orig_bcast = is_multicast_ether_addr_64bits(eth->h_dest);
-+	orig_eth_type = eth->h_proto;
- 
- 	rxqueue = netif_get_rxqueue(skb);
- 	xdp->rxq = &rxqueue->xdp_rxq;
-@@ -4359,6 +4365,14 @@ static u32 netif_receive_generic_xdp(struct sk_buff *skb,
- 
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+index 01c120d656c54..d1472727ef882 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+@@ -3490,12 +3490,18 @@ static void ixgbe_setup_mtqc(struct ixgbe_adapter *adapter)
+ 		else
+ 			mtqc |= IXGBE_MTQC_64VF;
+ 	} else {
+-		if (tcs > 4)
++		if (tcs > 4) {
+ 			mtqc = IXGBE_MTQC_RT_ENA | IXGBE_MTQC_8TC_8TQ;
+-		else if (tcs > 1)
++		} else if (tcs > 1) {
+ 			mtqc = IXGBE_MTQC_RT_ENA | IXGBE_MTQC_4TC_4TQ;
+-		else
+-			mtqc = IXGBE_MTQC_64Q_1PB;
++		} else {
++			u8 max_txq = adapter->num_tx_queues +
++				adapter->num_xdp_queues;
++			if (max_txq > 63)
++				mtqc = IXGBE_MTQC_RT_ENA | IXGBE_MTQC_4TC_4TQ;
++			else
++				mtqc = IXGBE_MTQC_64Q_1PB;
++		}
  	}
  
-+	/* check if XDP changed eth hdr such SKB needs update */
-+	eth = (struct ethhdr *)xdp->data;
-+	if ((orig_eth_type != eth->h_proto) ||
-+	    (orig_bcast != is_multicast_ether_addr_64bits(eth->h_dest))) {
-+		__skb_push(skb, ETH_HLEN);
-+		skb->protocol = eth_type_trans(skb, skb->dev);
-+	}
-+
- 	switch (act) {
- 	case XDP_REDIRECT:
- 	case XDP_TX:
+ 	IXGBE_WRITE_REG(hw, IXGBE_MTQC, mtqc);
 -- 
 2.20.1
 
