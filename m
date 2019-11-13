@@ -2,133 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E8A21FB9A4
-	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2019 21:22:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6BE8FB9A1
+	for <lists+bpf@lfdr.de>; Wed, 13 Nov 2019 21:21:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726428AbfKMUWh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 Nov 2019 15:22:37 -0500
-Received: from hqemgate15.nvidia.com ([216.228.121.64]:3801 "EHLO
-        hqemgate15.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726548AbfKMUWh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 13 Nov 2019 15:22:37 -0500
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqemgate15.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5dcc660b0000>; Wed, 13 Nov 2019 12:22:35 -0800
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Wed, 13 Nov 2019 12:22:36 -0800
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Wed, 13 Nov 2019 12:22:36 -0800
-Received: from [10.2.160.107] (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 13 Nov
- 2019 20:22:35 +0000
-Subject: Re: [PATCH v4 08/23] vfio, mm: fix get_user_pages_remote() and
- FOLL_LONGTERM
-To:     Ira Weiny <ira.weiny@intel.com>, Jason Gunthorpe <jgg@ziepe.ca>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>, Jan Kara <jack@suse.cz>,
-        Jens Axboe <axboe@kernel.dk>, Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, <bpf@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <kvm@vger.kernel.org>,
-        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-media@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>, <netdev@vger.kernel.org>,
-        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>
-References: <20191113042710.3997854-1-jhubbard@nvidia.com>
- <20191113042710.3997854-9-jhubbard@nvidia.com>
- <20191113130202.GA26068@ziepe.ca>
- <20191113191705.GE12947@iweiny-DESK2.sc.intel.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-X-Nvconfidentiality: public
-Message-ID: <290ba4aa-247e-6570-9eff-ccf2087e1120@nvidia.com>
-Date:   Wed, 13 Nov 2019 12:19:50 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <20191113191705.GE12947@iweiny-DESK2.sc.intel.com>
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+        id S1727046AbfKMUVt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 Nov 2019 15:21:49 -0500
+Received: from mail-il1-f169.google.com ([209.85.166.169]:34494 "EHLO
+        mail-il1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726162AbfKMUVt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 13 Nov 2019 15:21:49 -0500
+Received: by mail-il1-f169.google.com with SMTP id p6so3036402ilp.1;
+        Wed, 13 Nov 2019 12:21:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=BpcTbLaRWudEGQfN/LEwSFlyaDv7GvOqLZgmkBiETUw=;
+        b=ZGGT3dVagNxjQ1GG7ZNI2cAVz3sGg7eW61AVKzF8diRye6nJW1WsgMTMExQQfWqOTx
+         8y5XVY2j85F+1qSfi9VL+rin2BlSbEmLTQpq7vlvPLbq7WmVlhUkbY5TKk1tSnqj45gX
+         lsnI8DpoLKeeYooC1ADolx2sqLXtc/XNHcwX0Jtrx8l1mh/ghX/dpb+ceDtkQYxS177C
+         jL5DXkIgapmLyZvE33AHX0BgoGaezOHIExhfhhlejr60ZvZ9GJUhrLvSeghcwosHaNkH
+         vnbnzcCUz/8nVadWSX756YqH82LI6sEwG42fK7BIvcyX3WsRD6OXGucz2SuunnViZQFP
+         HedQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=BpcTbLaRWudEGQfN/LEwSFlyaDv7GvOqLZgmkBiETUw=;
+        b=JVwroUKBnPdHTrRiJWpbUixeP4aknlob1KJIlJuwtmux0+6nfOEF508h6efhxYYAQV
+         zXJeiQYvxyw2rg0zDhhCnr7p62JcQRQNz0tg5exP36ZWZcvnoNAHFCyK5JQGEx+tHEzy
+         3FbHgXupZBednGOCotBbQiGrJHGwH2P03uN0i3ddmPKU4XvaWbT4XFc0NwJDe4ZR+krk
+         kgnDjkEjzjCsQ+iu+UCSd1kW5lIyJMsi6vXh2hpjikaSnuwaCkrZkDm3zZjEj4QlIZ8l
+         lRXzBe+GuJvovFxHOwAyfomWBIk7coyXAI4Lokuifrpi2tyPE/xOLijR8f3+oTk5B0bs
+         tehA==
+X-Gm-Message-State: APjAAAWJeyB4ztI/9g7bw9kdXQ0BaNWqCHOFGuDRUCYGTO7M1l+o5LJj
+        Y708woxz/uqmuWFis9y7Vsw=
+X-Google-Smtp-Source: APXvYqzzKXbawntG3wgVCrAKU5wyXTMg2Wx6dqxfGtd03ynKPupLVFUGpq6xQxYA5VyOrMGF3fOCpg==
+X-Received: by 2002:a92:484f:: with SMTP id v76mr6085538ila.279.1573676508198;
+        Wed, 13 Nov 2019 12:21:48 -0800 (PST)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id t185sm290672iod.25.2019.11.13.12.21.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Nov 2019 12:21:47 -0800 (PST)
+Date:   Wed, 13 Nov 2019 12:21:39 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, ast@fb.com, daniel@iogearbox.net
+Cc:     andrii.nakryiko@gmail.com, kernel-team@fb.com,
+        Andrii Nakryiko <andriin@fb.com>
+Message-ID: <5dcc65d33bdfa_14082b1d9b77e5b4eb@john-XPS-13-9370.notmuch>
+In-Reply-To: <20191113031518.155618-3-andriin@fb.com>
+References: <20191113031518.155618-1-andriin@fb.com>
+ <20191113031518.155618-3-andriin@fb.com>
+Subject: RE: [PATCH v3 bpf-next 2/3] libbpf: make global data internal arrays
+ mmap()-able, if possible
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1573676555; bh=FW0krwPwWqciO/Z2LS4wGz5Cikl4rg4mIFXWQ1mXpqU=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=n1t9MMHier43EuFZpftpwQVDKG8oSo9TdOvV+OMzrOIN0Kprv6dkR4Jpu6/PqCqXm
-         /jCxLMJDxPPXF7oklQ45MeW/Fl3jyAJJ4cfyLvk1YJ3ZXQloakTUN/6QsjTZ2e8wLd
-         Vi5ItQz0+ykvg9G6LEUGgX0gLMaFmq2awJU2Kk5qVpihlMSAmAuGK9LjnFEEtlsHOE
-         JOaWrzJR8vtoHRO1QeIa0YnKmF32io8xAGlhrbiuGj5eUhM/rh5jJ0AdTIvnBhqGbA
-         tSsPrYCj4XsKBHj/d5S4XMsaWdBoBg5n+7WnTPKexUFAUitbBsugmf2TNoS/6cs3Dr
-         dZibHSHNj0z1Q==
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/13/19 11:17 AM, Ira Weiny wrote:
-...
->>> @@ -348,33 +347,13 @@ static int vaddr_get_pfn(struct mm_struct *mm, unsigned long vaddr,
->>>   		flags |= FOLL_WRITE;
->>>   
->>>   	down_read(&mm->mmap_sem);
->>> -	if (mm == current->mm) {
->>> -		ret = get_user_pages(vaddr, 1, flags | FOLL_LONGTERM, page,
->>> -				     vmas);
->>> -	} else {
->>> -		ret = get_user_pages_remote(NULL, mm, vaddr, 1, flags, page,
->>> -					    vmas, NULL);
->>> -		/*
->>> -		 * The lifetime of a vaddr_get_pfn() page pin is
->>> -		 * userspace-controlled. In the fs-dax case this could
->>> -		 * lead to indefinite stalls in filesystem operations.
->>> -		 * Disallow attempts to pin fs-dax pages via this
->>> -		 * interface.
->>> -		 */
->>> -		if (ret > 0 && vma_is_fsdax(vmas[0])) {
->>> -			ret = -EOPNOTSUPP;
->>> -			put_page(page[0]);
->>> -		}
->>> -	}
->>> -	up_read(&mm->mmap_sem);
->>> -
->>> +	ret = get_user_pages_remote(NULL, mm, vaddr, 1, flags | FOLL_LONGTERM,
->>> +				    page, NULL, NULL);
->>>   	if (ret == 1) {
->>>   		*pfn = page_to_pfn(page[0]);
->>>   		return 0;
->>
->> Mind the return with the lock held this needs some goto unwind
+Andrii Nakryiko wrote:
+> Add detection of BPF_F_MMAPABLE flag support for arrays and add it as an extra
+> flag to internal global data maps, if supported by kernel. This allows users
+> to memory-map global data and use it without BPF map operations, greatly
+> simplifying user experience.
 > 
-> Ah yea...  retract my reviewed by...  :-(
-> 
+> Acked-by: Song Liu <songliubraving@fb.com>
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> ---
 
-ooops, embarrassed that I missed that, good catch. Will repost with it fixed.
+[...]
 
+>  /*
+> @@ -856,8 +858,6 @@ bpf_object__init_internal_map(struct bpf_object *obj, enum libbpf_map_type type,
+>  		pr_warn("failed to alloc map name\n");
+>  		return -ENOMEM;
+>  	}
+> -	pr_debug("map '%s' (global data): at sec_idx %d, offset %zu.\n",
+> -		 map_name, map->sec_idx, map->sec_offset);
+>  
+>  	def = &map->def;
+>  	def->type = BPF_MAP_TYPE_ARRAY;
+> @@ -865,6 +865,12 @@ bpf_object__init_internal_map(struct bpf_object *obj, enum libbpf_map_type type,
+>  	def->value_size = data->d_size;
+>  	def->max_entries = 1;
+>  	def->map_flags = type == LIBBPF_MAP_RODATA ? BPF_F_RDONLY_PROG : 0;
+> +	if (obj->caps.array_mmap)
+> +		def->map_flags |= BPF_F_MMAPABLE;
+> +
+> +	pr_debug("map '%s' (global data): at sec_idx %d, offset %zu, flags %x.\n",
+> +		 map_name, map->sec_idx, map->sec_offset, def->map_flags);
+> +
+>  	if (data_buff) {
+>  		*data_buff = malloc(data->d_size);
+>  		if (!*data_buff) {
+> @@ -2160,6 +2166,27 @@ static int bpf_object__probe_btf_datasec(struct bpf_object *obj)
+>  	return 0;
+>  }
 
+I was a bit concerned we should fall back to making the call without the
+BPF_F_MMAPABLE flag set if it fails but did a quick walk through the call
+path and it seems like it shouldn't fail except if vmalloc/vzalloc failures
+so seems fine.
 
-thanks,
--- 
-John Hubbard
-NVIDIA
-
+Acked-by: John Fastabend <john.fastabend@gmail.com>
