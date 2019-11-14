@@ -2,73 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C740BFC83D
-	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2019 14:59:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CC41FC951
+	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2019 15:55:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726528AbfKNN7C (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Nov 2019 08:59:02 -0500
-Received: from merlin.infradead.org ([205.233.59.134]:49660 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726374AbfKNN7B (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Nov 2019 08:59:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=RO0R2uX0myetPZy48Pt/keNvG06wRn8KGY9AfrvLL9w=; b=fDF2HEor8gvhw4Pm2d2dZsEuY6
-        hr3efgYJQK4s6muLfa50ubDy7JM+a3TNIPwqyuF4OG1x0nMt3G+m7cAPerQMZKoGfjx//JLLppk9i
-        b6qGJuWK2mpIFb0Z6/CeRD0x7r7/xPLhmB7i1qN48GXafH2eGh2dVJyDhP40StFSaUSz82O4Uv+2U
-        aoqsKCxRiHUtR3WwLIVJl/6wXP4vLEvg1EqWPEe+3hx9Jev5yIV8/cGeiNKu4zVVCUYUJDnYLPALq
-        p211Yt6/ZpyXzVPZuA/J5isFOFNaUgKAGWC2Zay8+jtArcBeFlAbFsotsi4pPl6TECMl6ux54JI0G
-        eY5gQxzg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1iVFe5-0007TP-8Q; Thu, 14 Nov 2019 13:58:49 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E62E730018B;
-        Thu, 14 Nov 2019 14:57:39 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A107F203A589D; Thu, 14 Nov 2019 14:58:47 +0100 (CET)
-Date:   Thu, 14 Nov 2019 14:58:47 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>
-Cc:     Edward Cree <ecree@solarflare.com>,
-        Netdev <netdev@vger.kernel.org>,
+        id S1726443AbfKNOz5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Nov 2019 09:55:57 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:35090 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726410AbfKNOz5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Nov 2019 09:55:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1573743355;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uVXcjwtBf3NZ36Eq0yDSwVNdrCXxD9u9+76H1pXkzIY=;
+        b=fgCMZPehSmH+4TzAfdlwXjl2DD5FMLl7DAu7kSmoWex6R41nYHQ89Txe/L0fNwD4Ks2Dmy
+        UtlKV75qIf2xO38bzrLb/3Z25DwxPA/gwN5DSeMBFFChSlznDPOwBvqFfg7DTuSqmyKocr
+        CPh/ukzl/v+YjJnBtDW0cSWvvFoKB4U=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-244-Jwi_QT5xNNuXMHBL88Rmtw-1; Thu, 14 Nov 2019 09:55:54 -0500
+Received: by mail-lf1-f71.google.com with SMTP id d11so2051713lfj.3
+        for <bpf@vger.kernel.org>; Thu, 14 Nov 2019 06:55:54 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=rIBZiL1FWythDUin873DaL6ByyNzCAJsvbPWa35uar8=;
+        b=AWPpoEp+Aw9+N12jtUxEVAhXnyQBM9qMLRC0L25ZztWH/bn2kAt8IwFpxLCiqgXeCS
+         nWrSNeqbfOAfOX1o2talhDKhZqOSdqDZttXRdkvhJ9JPiPUHvtO1LP/vebyupO9Fmww+
+         RrJxJqqdm/C01LyjDBJWMgL03UYU9JGojk7XkiDRMJtf930lDdW7uZ91KHnVtx5FczUn
+         1HCbNETcZlymfeUVmq8sr7dlxB0jfpxRL+5WXPI67v4qPOVMq7oj/5ppR4maVOaTsGXz
+         qn7E058KdkYQq3SQRbtTldUlHu1Ov0mko+c1tkIAdMyzyA62WsmKGKmTuvG7J8VYhWR2
+         IWnQ==
+X-Gm-Message-State: APjAAAXX/D5uadn/Ms19xpPCs6vT/9F1Y4/2MWRyZlAw/V5ZHg/HJ9C4
+        260pve+qtqNNYXA/DyCE9KLTyIs6zZoNWqrWteVToHAp7g5HuXcq1gZsxsiAK/iju6r1MUM2FdB
+        6O1TEUx+kBhw8
+X-Received: by 2002:a19:ccd7:: with SMTP id c206mr6954009lfg.165.1573743352965;
+        Thu, 14 Nov 2019 06:55:52 -0800 (PST)
+X-Google-Smtp-Source: APXvYqyDdMh8yqEOtvSSTWb+aD+1/y4JfNENnZFitaJOBGmj/dwnGACpjvDyAvuaqu4R5CeK4afWRg==
+X-Received: by 2002:a19:ccd7:: with SMTP id c206mr6953994lfg.165.1573743352754;
+        Thu, 14 Nov 2019 06:55:52 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk (borgediget.toke.dk. [85.204.121.218])
+        by smtp.gmail.com with ESMTPSA id d17sm2941336lja.27.2019.11.14.06.55.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Nov 2019 06:55:52 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 3827B1803C7; Thu, 14 Nov 2019 15:55:51 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Netdev <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
+        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
         bpf <bpf@vger.kernel.org>,
         Magnus Karlsson <magnus.karlsson@gmail.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        "Karlsson\, Magnus" <magnus.karlsson@intel.com>,
         Jonathan Lemon <jonathan.lemon@gmail.com>
 Subject: Re: [RFC PATCH bpf-next 2/4] bpf: introduce BPF dispatcher
-Message-ID: <20191114135847.GY4131@hirez.programming.kicks-ass.net>
-References: <20191113204737.31623-1-bjorn.topel@gmail.com>
- <20191113204737.31623-3-bjorn.topel@gmail.com>
- <fa188bb2-6223-5aef-98e4-b5f7976ed485@solarflare.com>
- <CAJ+HfNiDa912Uwt41_KMv+Z-sGr8fU7s4ncBPiUSx4PPAMQQqQ@mail.gmail.com>
- <96811723-ab08-b987-78c7-2c9f2a0a972c@solarflare.com>
- <CAJ+HfNhaOj+V7JuLb-SCAMf=7BudcE-C4EZAQrzT6P_NGpwvsw@mail.gmail.com>
+In-Reply-To: <CAJ+HfNhPhCi4=taK7NcYuCvdcRBXVDobn7fpD3mi1eppTL7zLA@mail.gmail.com>
+References: <20191113204737.31623-1-bjorn.topel@gmail.com> <20191113204737.31623-3-bjorn.topel@gmail.com> <87o8xeod0s.fsf@toke.dk> <7893c97d-3d3f-35cc-4ea0-ac34d3d84dbc@iogearbox.net> <CAJ+HfNhPhCi4=taK7NcYuCvdcRBXVDobn7fpD3mi1eppTL7zLA@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Thu, 14 Nov 2019 15:55:51 +0100
+Message-ID: <874kz6o6bs.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJ+HfNhaOj+V7JuLb-SCAMf=7BudcE-C4EZAQrzT6P_NGpwvsw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-MC-Unique: Jwi_QT5xNNuXMHBL88Rmtw-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 14, 2019 at 12:21:27PM +0100, Björn Töpel wrote:
-> Again, thanks for the pointers. PeterZ is (hopefully) still working on
-> the static_call stuff [3]. The static_call_inline would be a good fit
-> here, and maybe even using static_call as a patchpad/dispatcher like
-> you did is a better route. I will checkout Nadav's work!
+Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> writes:
 
-Yes, I'll repost that once the current pile of text_poke and ftrace
-changes lands.
+> On Thu, 14 Nov 2019 at 14:03, Daniel Borkmann <daniel@iogearbox.net> wrot=
+e:
+>>
+>> On 11/14/19 1:31 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>> > Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> writes:
+>> >> From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+>> >>
+>> >> The BPF dispatcher builds on top of the BPF trampoline ideas;
+>> >> Introduce bpf_arch_text_poke() and (re-)use the BPF JIT generate
+>> >> code. The dispatcher builds a dispatch table for XDP programs, for
+>> >> retpoline avoidance. The table is a simple binary search model, so
+>> >> lookup is O(log n). Here, the dispatch table is limited to four
+>> >> entries (for laziness reason -- only 1B relative jumps :-P). If the
+>> >> dispatch table is full, it will fallback to the retpoline path.
+>> >
+>> > So it's O(log n) with n =3D=3D 4? Have you compared the performance of=
+ just
+>> > doing four linear compare-and-jumps? Seems to me it may not be that bi=
+g
+>> > of a difference for such a small N?
+>>
+>> Did you perform some microbenchmarks wrt search tree? Mainly wondering
+>> since for code emission for switch/case statements, clang/gcc turns off
+>> indirect calls entirely under retpoline, see [0] from back then.
+>>
+>
+> As Toke stated, binsearch is not needed for 4 entries. I started out
+> with 16 (and explicit ids instead of pointers), and there it made more
+> sense. If folks think it's a good idea to move forward -- and with 4
+> entries, it makes sense to make the code generator easier, or maybe
+> based on static_calls like Ed did.
+
+I don't really have anything to back it up, but my hunch is that only 4
+entries will end up being a limit that people are going to end up
+hitting. And since the performance falls off quite the cliff after
+hitting that limit, I do fear that this is something we will hear about
+quite emphatically :)
+
+-Toke
+
