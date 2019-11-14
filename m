@@ -2,111 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F548FC538
-	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2019 12:21:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39F3EFC65A
+	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2019 13:31:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726087AbfKNLVj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Nov 2019 06:21:39 -0500
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:37346 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725977AbfKNLVj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Nov 2019 06:21:39 -0500
-Received: by mail-qk1-f195.google.com with SMTP id e187so4621170qkf.4;
-        Thu, 14 Nov 2019 03:21:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=qnir/943HdjW4FYs5LyFt4N8B6VgzgwDFUTMjClycUs=;
-        b=mPnTQwcILp1UQ+qTwM0nZmxDfOd8srLvhdr15BNoD4gJVp8BxcUSq+wrjeQTIzQyFr
-         I0eZwrKH+ezmgiPD8dxaL3gHf4fuzi+SwB+aaWlD9oz7p0XvaKdHYtnQWkc/Y785OozZ
-         ZTkRwSk7jSTMm9fq0Bn/W8apRet+Q7Uv3ca33+nNOVhj8J6P9VZCv4sf+vUdOBYiKsKS
-         EtSTJH+QjSAmxNQzKDSohYUofzGPmKJXDvOuqerGnEjq5223xeDTTXGe8xStYoiY6ktM
-         GNKmxIOpKXf/qnhK9H7CKJ9I3AAa+6wwqJu4PRVSq+32LJPmzzO7uKovYsqs0jk1Pfnv
-         dd0A==
+        id S1726185AbfKNMbV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Nov 2019 07:31:21 -0500
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:40464 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726139AbfKNMbV (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 14 Nov 2019 07:31:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1573734679;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XhE8xXmj9Z10HCp53338fqgsIScQRA8Qbn5n78q0HLM=;
+        b=KZ8on4A82KHsEcQLGwD5bOQyyk5ZH+bk5sJWnqvApNHsQi+12w9ZK9al0HDoyxJZvSLDvv
+        x2u5lCYLwlorAJtcRduuBselXsskPbLHKGcUwBD9l15CyRkdqmEodwy3nMqRPA1rVWi8G3
+        P3anW7vMb49b5VpVSHuK4mIE+GEL8zE=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-262-U6gSZz3rNv6bIQmGseEJGA-1; Thu, 14 Nov 2019 07:31:18 -0500
+Received: by mail-lf1-f69.google.com with SMTP id r127so1919902lff.1
+        for <bpf@vger.kernel.org>; Thu, 14 Nov 2019 04:31:18 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=qnir/943HdjW4FYs5LyFt4N8B6VgzgwDFUTMjClycUs=;
-        b=uGQhJT4lr+HARGsrrOvlR9PkgmhmVatlsMh6UzVLgkH2dCzgeMJPGUM6iy7I/msoRr
-         I7JOs8Vmhs3AIRbGuJFSIr9Ym4TpK8aiPyV0ApmM1qzEysZXQaa7plGdvonAoyWGWgHr
-         U8krkyRRvO3Vjdu6FIxRSenE+HpAjod52XjTBHa499k1CcK0121b3WCt8z6HVfPtYC7+
-         iWdWvAXF+0aJUkYYlg3KUy0VATGiJvJPeRnLZXakItlvfghHeh9I8ktDXtjMXOPxj7jh
-         hPnT9D+NDHNy1ytQP2R8ykM6kAugI5ndc4b9N2YikPUzcQM+BmBBxchggWLqiKqpNNAK
-         RvqQ==
-X-Gm-Message-State: APjAAAXDa5+Uvd8Zzlo3GDze8JEQ1tVqgRuYy24nMUIpUGYnY+81s3UB
-        xbZ99IbBesG3gSvvmU7YweQTiSfr+QqloxylsX0=
-X-Google-Smtp-Source: APXvYqx3d3lBIGaVbPyR7iAQKABWY7/L0q8mcsVuss+UMgEUkM7BteiKN4N4BVzHZzJ13qaniCgvmVewkF29c/CpCpU=
-X-Received: by 2002:a37:4146:: with SMTP id o67mr6849359qka.232.1573730498219;
- Thu, 14 Nov 2019 03:21:38 -0800 (PST)
-MIME-Version: 1.0
-References: <20191113204737.31623-1-bjorn.topel@gmail.com> <20191113204737.31623-3-bjorn.topel@gmail.com>
- <fa188bb2-6223-5aef-98e4-b5f7976ed485@solarflare.com> <CAJ+HfNiDa912Uwt41_KMv+Z-sGr8fU7s4ncBPiUSx4PPAMQQqQ@mail.gmail.com>
- <96811723-ab08-b987-78c7-2c9f2a0a972c@solarflare.com>
-In-Reply-To: <96811723-ab08-b987-78c7-2c9f2a0a972c@solarflare.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Thu, 14 Nov 2019 12:21:27 +0100
-Message-ID: <CAJ+HfNhaOj+V7JuLb-SCAMf=7BudcE-C4EZAQrzT6P_NGpwvsw@mail.gmail.com>
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=XhE8xXmj9Z10HCp53338fqgsIScQRA8Qbn5n78q0HLM=;
+        b=SDkTfZz67PgKqZqGLblHpi9ac+ikBU/8o8oCZbXsWPXclbk3fKtaGmaAFMPgGj5/Wf
+         073G8rbhYep2s3ujNhbb8K7oM4ng1zTUGuJNLGJpJI7XHZo1PZikpwSFMe68V+s3d8Tj
+         +8SoB4IM368P6ruiBcP0mOqbnMimwGj8g3MZIVve/VgYzVUeF2r0J980N6XaDV0CevYI
+         vq/BMQ6fWcvRhfHvWFegUh9XxYdxrlL6Cfqr9DebBlX6LwiPFhnWYrvYD40xljTBpS7S
+         vYCpvq9a1+KaPW1AoxDFujblmtFDXo7Oal16955X6UzNZii+AsAR6Qlc65McWN0VAtCU
+         F/fQ==
+X-Gm-Message-State: APjAAAUAZFgDDDUlZ8CrdpSBpDRRXtBwY37cnAjFNYAMHdz8nDj1qwWW
+        epK1nk1ePlKwO/3ueAEw/XmyLHJsnGASfBZAYggepbL34LXPbaKKf8WugJWDWBXki6PdUpY6i3g
+        GGuPB+PbkxJK9
+X-Received: by 2002:a2e:8188:: with SMTP id e8mr6371711ljg.152.1573734677046;
+        Thu, 14 Nov 2019 04:31:17 -0800 (PST)
+X-Google-Smtp-Source: APXvYqxGJRRLcesQFw2O4Hh8Ga/RpXJ0X4addeIb99orB44DGObzCBFjjx9JM7maP75fzoyae4L39w==
+X-Received: by 2002:a2e:8188:: with SMTP id e8mr6371687ljg.152.1573734676719;
+        Thu, 14 Nov 2019 04:31:16 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a00:7660:6da:443::2])
+        by smtp.gmail.com with ESMTPSA id i18sm2864083lfc.82.2019.11.14.04.31.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Nov 2019 04:31:16 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 2EC4C1803C7; Thu, 14 Nov 2019 13:31:15 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <thoiland@redhat.com>
+To:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net
+Cc:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        bpf@vger.kernel.org, magnus.karlsson@gmail.com,
+        magnus.karlsson@intel.com, jonathan.lemon@gmail.com
 Subject: Re: [RFC PATCH bpf-next 2/4] bpf: introduce BPF dispatcher
-To:     Edward Cree <ecree@solarflare.com>
-Cc:     Netdev <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        bpf <bpf@vger.kernel.org>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20191113204737.31623-3-bjorn.topel@gmail.com>
+References: <20191113204737.31623-1-bjorn.topel@gmail.com> <20191113204737.31623-3-bjorn.topel@gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Thu, 14 Nov 2019 13:31:15 +0100
+Message-ID: <87o8xeod0s.fsf@toke.dk>
+MIME-Version: 1.0
+X-MC-Unique: U6gSZz3rNv6bIQmGseEJGA-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 14 Nov 2019 at 11:19, Edward Cree <ecree@solarflare.com> wrote:
+Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> writes:
+
+> From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
 >
-> On 14/11/2019 06:29, Bj=C3=B6rn T=C3=B6pel wrote:
-[...]
-> > My rationale was that this mechanism would almost exclusively be used
-> > by physical HW NICs using XDP. My hunch was that the number of netdevs
-> > would be ~4, and typically less using XDP, so a more sophisticated
-> > mechanism didn't really make sense IMO.
-> That seems reasonable in most cases, although I can imagine systems with
->  a couple of four-port boards being a thing.  I suppose the netdevs are
->  likely to all have the same XDP prog, though, and if I'm reading your
->  code right it seems they'd share a slot in that case.
->
+> The BPF dispatcher builds on top of the BPF trampoline ideas;
+> Introduce bpf_arch_text_poke() and (re-)use the BPF JIT generate
+> code. The dispatcher builds a dispatch table for XDP programs, for
+> retpoline avoidance. The table is a simple binary search model, so
+> lookup is O(log n). Here, the dispatch table is limited to four
+> entries (for laziness reason -- only 1B relative jumps :-P). If the
+> dispatch table is full, it will fallback to the retpoline path.
 
-Yup, correct!
+So it's O(log n) with n =3D=3D 4? Have you compared the performance of just
+doing four linear compare-and-jumps? Seems to me it may not be that big
+of a difference for such a small N?
 
-> > However, your approach is more
-> > generic and doesn't require any arch specific work. What was the push
-> > back for your work?
-> Mainly that I couldn't demonstrate a performance benefit from the few
->  call sites I annotated, and others working in the area felt that
->  manual annotation wouldn't scale =E2=80=94 Nadav Amit had a different ap=
-proach
->  [2] that used a GCC plugin to apply a dispatcher on an opt-out basis
->  to all the indirect calls in the kernel; the discussion on that got
->  bogged down in interactions between text patching and perf tracing
->  which all went *waaaay* over my head.  AFAICT the static_call series I
->  was depending on never got merged, and I'm not sure if anyone's still
->  working on it.
->
+> An example: A module/driver allocates a dispatcher. The dispatcher is
+> shared for all netdevs. Each netdev allocate a slot in the dispatcher
+> and a BPF program. The netdev then uses the dispatcher to call the
+> correct program with a direct call (actually a tail-call).
 
-Again, thanks for the pointers. PeterZ is (hopefully) still working on
-the static_call stuff [3]. The static_call_inline would be a good fit
-here, and maybe even using static_call as a patchpad/dispatcher like
-you did is a better route. I will checkout Nadav's work!
+Is it really accurate to call it a tail call? To me, that would imply
+that it increments the tail call limit counter and all that? Isn't this
+just a direct jump using the trampoline stuff?
 
+-Toke
 
-Bj=C3=B6rn
-
-[3] https://lore.kernel.org/lkml/20191007090225.44108711.6@infradead.org/#r
-
-> -Ed
->
-> [2] https://lkml.org/lkml/2018/12/31/19
