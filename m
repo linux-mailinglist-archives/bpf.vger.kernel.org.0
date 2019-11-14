@@ -2,234 +2,224 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 88CAEFC9B7
-	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2019 16:18:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C2EFFCA19
+	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2019 16:41:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726598AbfKNPSg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Nov 2019 10:18:36 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:28494 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726318AbfKNPSg (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 14 Nov 2019 10:18:36 -0500
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id xAEFGcPp056217
-        for <bpf@vger.kernel.org>; Thu, 14 Nov 2019 10:18:35 -0500
-Received: from e06smtp03.uk.ibm.com (e06smtp03.uk.ibm.com [195.75.94.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2w98jparrs-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 14 Nov 2019 10:18:33 -0500
-Received: from localhost
-        by e06smtp03.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
-        Thu, 14 Nov 2019 15:18:27 -0000
-Received: from b06avi18626390.portsmouth.uk.ibm.com (9.149.26.192)
-        by e06smtp03.uk.ibm.com (192.168.101.133) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Thu, 14 Nov 2019 15:18:24 -0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id xAEFHk7B42402114
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 14 Nov 2019 15:17:46 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 45999A4069;
-        Thu, 14 Nov 2019 15:18:23 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 02F51A405D;
-        Thu, 14 Nov 2019 15:18:23 +0000 (GMT)
-Received: from white.boeblingen.de.ibm.com (unknown [9.152.99.199])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 14 Nov 2019 15:18:22 +0000 (GMT)
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>
-Cc:     bpf@vger.kernel.org, Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH bpf-next] s390/bpf: make sure JIT passes do not increase code size
-Date:   Thu, 14 Nov 2019 16:18:20 +0100
-X-Mailer: git-send-email 2.23.0
+        id S1726505AbfKNPlI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Nov 2019 10:41:08 -0500
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:29773 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726473AbfKNPlI (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 14 Nov 2019 10:41:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1573746066;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TsUJgGUVpXmofLpPKpc4ZZrOh9LKGy0txkuAyysjhio=;
+        b=S0/6f0Y1yZYRSU6BqHmXzYY9uTLU1YWNGJpnMHLWZvEjIaYbcNlkeEBuQp95AkyznStD5K
+        sLINAiK4h+NY8diCxeEjse5YN12mZDRwaEW4TTxraFozUqIAn0HW0GVbu/zAbYbpHAtUxP
+        B9Ut9FvBDWK+vcpA/5FUf2BDh1Kpxzk=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-218-4TN_GUMtNemYFdwWF92eBA-1; Thu, 14 Nov 2019 10:41:05 -0500
+Received: by mail-lf1-f69.google.com with SMTP id t6so2074719lfd.13
+        for <bpf@vger.kernel.org>; Thu, 14 Nov 2019 07:41:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=GLlkNjP2tY8QkKUF/OUq6PPbMjkE8ofUEdh3FKzNTPE=;
+        b=r7SR56RN2r0cRVFZfgZ/ZMIusgKJL3ylhaqU/yMvuPhmcLAHl5SdVtfkpSnxrNh/J+
+         XjlW+J0V3/HdWpzJnhoRAUxoQMIl39b8ya1nAuD+39BffizNOkz7vtPo0m2o4331raBl
+         FbQCuF/v25qK2A0C/Ljop0FnqJl1cadjISiNOR9TGo/olNPXO9FhjcBOIKLuyptiisVY
+         N4WF24kJRIkhP/7PmdDWT1fVBKbrAbEisBCJXJpTbzxg1Jhmumi4LjSDtesjIv26/bUb
+         G5kU5rnSmKsaxCG7LzjRQOzqbjBB+rQ1Jfz6hu1luFvk+W0T1xvXxKJ2QJB1bx3FT2D+
+         dd8Q==
+X-Gm-Message-State: APjAAAXTc6wKagIIP1BNlsVzyGh1sgW30KG0r+q3PjK8VKnzlAuddPY5
+        8NkRSVFPOxtxHGslHM6KaiPzt9ZgGTRaKsPCYZs3f6TcbOcbdznozjniQPQBdKUwMuKerTXl7HB
+        piIAuQKnkZJU2
+X-Received: by 2002:a19:6d12:: with SMTP id i18mr7332762lfc.153.1573746063791;
+        Thu, 14 Nov 2019 07:41:03 -0800 (PST)
+X-Google-Smtp-Source: APXvYqw7DlklcocOm5Bieb8jiL3ND9ar6KSd0KbOYO2zf8WREILKU6HiWQQTMUYBqv+4ssIvPPyCTQ==
+X-Received: by 2002:a19:6d12:: with SMTP id i18mr7332736lfc.153.1573746063358;
+        Thu, 14 Nov 2019 07:41:03 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk (borgediget.toke.dk. [85.204.121.218])
+        by smtp.gmail.com with ESMTPSA id g14sm2885065lfj.17.2019.11.14.07.41.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Nov 2019 07:41:02 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id B4D781803C7; Thu, 14 Nov 2019 16:41:01 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Edward Cree <ecree@solarflare.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Marek Majkowski <marek@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: static and dynamic linking. Was: [PATCH bpf-next v3 1/5] bpf: Support chain calling multiple BPF
+In-Reply-To: <20191112195223.cp5kcmkko54dsfbg@ast-mbp.dhcp.thefacebook.com>
+References: <5da4ab712043c_25f42addb7c085b83b@john-XPS-13-9370.notmuch> <87eezfi2og.fsf@toke.dk> <f9d5f717-51fe-7d03-6348-dbaf0b9db434@solarflare.com> <87r23egdua.fsf@toke.dk> <70142501-e2dd-1aed-992e-55acd5c30cfd@solarflare.com> <874l07fu61.fsf@toke.dk> <aeae7b94-090a-a850-4740-0274ab8178d5@solarflare.com> <87eez4odqp.fsf@toke.dk> <20191112025112.bhzmrrh2pr76ssnh@ast-mbp.dhcp.thefacebook.com> <87h839oymg.fsf@toke.dk> <20191112195223.cp5kcmkko54dsfbg@ast-mbp.dhcp.thefacebook.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Thu, 14 Nov 2019 16:41:01 +0100
+Message-ID: <87y2wimpo2.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-x-cbid: 19111415-0012-0000-0000-00000363A0DD
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19111415-0013-0000-0000-0000219F1AC2
-Message-Id: <20191114151820.53222-1-iii@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-11-14_03:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=901 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1910280000 definitions=main-1911140141
+X-MC-Unique: 4TN_GUMtNemYFdwWF92eBA-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The upcoming s390 branch length extension patches rely on "passes do
-not increase code size" property in order to consistently choose between
-short and long branches. Currently this property does not hold between
-the first and the second passes for register save/restore sequences, as
-well as various code fragments that depend on SEEN_* flags.
+Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
 
-Generate the code during the first pass conservatively: assume register
-save/restore sequences have the maximum possible length, and that all
-SEEN_* flags are set.
+[...]
 
-Also refuse to JIT if this happens anyway (e.g. due to a bug), as this
-might lead to verifier bypass once long branches are introduced.
+> Back to your question of how fw2 will get loaded.. I'm thinking the follo=
+wing:
+> 1. Static linking:
+>   obj =3D bpf_object__open("rootlet.o", "fw1.o", "fw2.o");
+>   // libbpf adjusts call offsets and links into single loadable bpf_objec=
+t
+>   bpf_object__load(obj);
+>   bpf_set_link_xdp_fd()
+> No kernel changes are necessary to support program chaining via static li=
+nking.
+>
+> 2. Dynamic linking:
+>   // assuming libxdp.so manages eth0
+>   rootlet_fd =3D get_xdp_fd(eth0);
+>   subprog_btf_id =3D libbpf_find_prog_btf_id("name_of_placeholder", roole=
+t_fd);
+>   //                  ^ this function is in patch 16/18 of trampoline
+>   attr.attach_prog_fd =3D roolet_fd;
+>   attr.attach_btf_id =3D subprog_btf_id;
+>   // pair (prog_fd, btf_id) needs to be specified at load time
+>   obj =3D bpf_object__open("fw2.o", attr);
+>   bpf_object__load(obj);
+>   prog =3D bpf_object__find_program_by_title(obj);
+>   link =3D bpf_program__replace(prog); // similar to bpf_program__attach_=
+trace()
+>   // no extra arguments during 'replace'.
+>   // Target (prog_fd, btf_id) already known to the kernel and verified
 
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
----
- arch/s390/net/bpf_jit_comp.c | 74 ++++++++++++++++++++++++++++++++----
- 1 file changed, 66 insertions(+), 8 deletions(-)
+OK, this makes sense.
 
-diff --git a/arch/s390/net/bpf_jit_comp.c b/arch/s390/net/bpf_jit_comp.c
-index ce88211b9c6c..f667fe5bbae4 100644
---- a/arch/s390/net/bpf_jit_comp.c
-+++ b/arch/s390/net/bpf_jit_comp.c
-@@ -306,6 +306,24 @@ static inline void reg_set_seen(struct bpf_jit *jit, u32 b1)
- 	}							\
- })
- 
-+/*
-+ * Return whether this is the first pass. The first pass is special, since we
-+ * don't know any sizes yet, and thus must be conservative.
-+ */
-+static bool is_first_pass(struct bpf_jit *jit)
-+{
-+	return jit->size == 0;
-+}
-+
-+/*
-+ * Return whether this is the code generation pass. The code generation pass is
-+ * special, since we should change as little as possible.
-+ */
-+static bool is_codegen_pass(struct bpf_jit *jit)
-+{
-+	return jit->prg_buf;
-+}
-+
- /*
-  * Fill whole space with illegal instructions
-  */
-@@ -383,9 +401,18 @@ static int get_end(struct bpf_jit *jit, int start)
-  */
- static void save_restore_regs(struct bpf_jit *jit, int op, u32 stack_depth)
- {
--
-+	const int last = 15, save_restore_size = 6;
- 	int re = 6, rs;
- 
-+	if (is_first_pass(jit)) {
-+		/*
-+		 * We don't know yet which registers are used. Reserve space
-+		 * conservatively.
-+		 */
-+		jit->prg += (last - re + 1) * save_restore_size;
-+		return;
-+	}
-+
- 	do {
- 		rs = get_start(jit, re);
- 		if (!rs)
-@@ -396,7 +423,7 @@ static void save_restore_regs(struct bpf_jit *jit, int op, u32 stack_depth)
- 		else
- 			restore_regs(jit, rs, re, stack_depth);
- 		re++;
--	} while (re <= 15);
-+	} while (re <= last);
- }
- 
- /*
-@@ -420,21 +447,21 @@ static void bpf_jit_prologue(struct bpf_jit *jit, u32 stack_depth)
- 	/* Save registers */
- 	save_restore_regs(jit, REGS_SAVE, stack_depth);
- 	/* Setup literal pool */
--	if (jit->seen & SEEN_LITERAL) {
-+	if (is_first_pass(jit) || (jit->seen & SEEN_LITERAL)) {
- 		/* basr %r13,0 */
- 		EMIT2(0x0d00, REG_L, REG_0);
- 		jit->base_ip = jit->prg;
- 	}
- 	/* Setup stack and backchain */
--	if (jit->seen & SEEN_STACK) {
--		if (jit->seen & SEEN_FUNC)
-+	if (is_first_pass(jit) || (jit->seen & SEEN_STACK)) {
-+		if (is_first_pass(jit) || (jit->seen & SEEN_FUNC))
- 			/* lgr %w1,%r15 (backchain) */
- 			EMIT4(0xb9040000, REG_W1, REG_15);
- 		/* la %bfp,STK_160_UNUSED(%r15) (BPF frame pointer) */
- 		EMIT4_DISP(0x41000000, BPF_REG_FP, REG_15, STK_160_UNUSED);
- 		/* aghi %r15,-STK_OFF */
- 		EMIT4_IMM(0xa70b0000, REG_15, -(STK_OFF + stack_depth));
--		if (jit->seen & SEEN_FUNC)
-+		if (is_first_pass(jit) || (jit->seen & SEEN_FUNC))
- 			/* stg %w1,152(%r15) (backchain) */
- 			EMIT6_DISP_LH(0xe3000000, 0x0024, REG_W1, REG_0,
- 				      REG_15, 152);
-@@ -476,7 +503,7 @@ static void bpf_jit_epilogue(struct bpf_jit *jit, u32 stack_depth)
- 	_EMIT2(0x07fe);
- 
- 	if (__is_defined(CC_USING_EXPOLINE) && !nospec_disable &&
--	    (jit->seen & SEEN_FUNC)) {
-+	    (is_first_pass(jit) || (jit->seen & SEEN_FUNC))) {
- 		jit->r1_thunk_ip = jit->prg;
- 		/* Generate __s390_indirect_jump_r1 thunk */
- 		if (test_facility(35)) {
-@@ -1285,6 +1312,34 @@ static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp,
- 	return insn_count;
- }
- 
-+/*
-+ * Return whether new i-th instruction address does not violate any invariant
-+ */
-+static bool bpf_is_new_addr_sane(struct bpf_jit *jit, int i)
-+{
-+	/* On the first pass anything goes */
-+	if (is_first_pass(jit))
-+		return true;
-+
-+	/* The codegen pass must not change anything */
-+	if (is_codegen_pass(jit))
-+		return jit->addrs[i] == jit->prg;
-+
-+	/* Passes in between must not increase code size */
-+	return jit->addrs[i] >= jit->prg;
-+}
-+
-+/*
-+ * Update the address of i-th instruction
-+ */
-+static int bpf_set_addr(struct bpf_jit *jit, int i)
-+{
-+	if (!bpf_is_new_addr_sane(jit, i))
-+		return -1;
-+	jit->addrs[i] = jit->prg;
-+	return 0;
-+}
-+
- /*
-  * Compile eBPF program into s390x code
-  */
-@@ -1297,12 +1352,15 @@ static int bpf_jit_prog(struct bpf_jit *jit, struct bpf_prog *fp,
- 	jit->prg = 0;
- 
- 	bpf_jit_prologue(jit, fp->aux->stack_depth);
-+	if (bpf_set_addr(jit, 0) < 0)
-+		return -1;
- 	for (i = 0; i < fp->len; i += insn_count) {
- 		insn_count = bpf_jit_insn(jit, fp, i, extra_pass);
- 		if (insn_count < 0)
- 			return -1;
- 		/* Next instruction address */
--		jit->addrs[i + insn_count] = jit->prg;
-+		if (bpf_set_addr(jit, i + insn_count) < 0)
-+			return -1;
- 	}
- 	bpf_jit_epilogue(jit, fp->aux->stack_depth);
- 
--- 
-2.23.0
+>> So the two component programs would still exist as kernel objects,
+>> right?=20
+>
+> yes. Both fw1.o and fw2.o will be loaded and running instead of placehold=
+ers.
+>
+>> And the trampolines would keep individual stats for each one (if
+>> BPF stats are enabled)?=20
+>
+> In case of dynamic linking both fw1.o and fw2.o will be seen as individua=
+l
+> programs from 'bpftool p s' point of view. And both will have
+> individual stats.
+
+Right, this is important, and I think it's where my skepticism about
+static linking comes from. With static linking, each XDP program will be
+"reduced" to a subprog instead of a full stand-alone program. Which
+means that its execution will be different depending on whether it is
+just attached directly to an interface, or if it's been linked with a
+rootlet before loading.
+
+I'll admit I don't know enough about how subprograms actually work to
+know if it's a *meaningful* difference, so I guess I'll go play around
+with it. If nothing else, experimenting with static linking can be a way
+to hash out the semantics until dynamic linking lands.
+
+>> Could userspace also extract the prog IDs being
+>> referenced by the "glue" proglet?=20
+>
+> Not sure I follow. Both fw1.o and fw2.o will have their own prog ids.
+> fw1_prog->aux->linked_prog =3D=3D rootlet_prog
+> fw2_prog->aux->linked_prog =3D=3D rootlet_prog
+> Unloading and detaching fw1.o will make kernel to switch back to placehol=
+der
+> subprog in roolet_prog. I believe roolet_prog should not keep a list of p=
+rogs
+> that attached to it (or replaced its subprogs) to avoid circular
+> dependency.
+
+Well I did mean the link in the other direction. But thinking about it
+some more, I don't think it really matters. The important bit is that
+userspace can answer the question "given that rootlet ID X is currently
+attached on eth0, which two program IDs Y and Z will actually run on
+that interface?". And if there's a link in the other direction, it could
+just iterate over all loaded programs in the kernel to find them, so
+that is OK; as long as we can also tell in which "slot" in the rootlet a
+given program is currently attached.
+
+> Due to that detaching roolet_prog from netdev will stop the flow of
+> packets into fw1.o, but refcnt of rootlet_prog will not go to zero, so
+> it will stay in memory until both fw1.o and fw2.o detach from
+> rootlet.o.
+
+OK, that is probably fine. I think we should teach most utilities to
+deal with this anyway; in particular, iproute2 should know about
+multi-progs (i.e., link against libxdp).
+
+>> What about attaching a third program? Would that work by recursion (as
+>> above, but with the old proglet as old_fd), or should the library build
+>> a whole new sequence from the component programs?
+>
+> This choice is up to libxdp.so. It can have a number of placeholders
+> ready to be replaced by new progs. Or it can re-generate rootlet.o
+> every time new fwX.o comes along. Short term I would start development
+> with auto-generated roolet.o and static linking done by libbpf
+> while the policy and roolet are done by libxdp.so, since this work
+> doesn't depend on any kernel changes. Long term auto-generation
+> can stay in libxdp.so if it turns out to be sufficient.
+
+Yes, as I said above this sounds like at least it's a start.
+
+>> Finally, what happens if someone where to try to attach a retprobe to
+>> one of the component programs? Could it be possible to do that even
+>> while program is being run from proglet dispatch? That way we can still
+>> debug an individual XDP program even though it's run as part of a chain.
+>
+> Right. The fentry/fexit tracing is orthogonal to static/dynamic linking.
+> It will be available for all prog types after trampoline patches land.
+> See fexit_bpf2bpf.c example in the last 18/18 patch.
+> We will be able to debug XDP program regardless whether it's a rootlet
+> or a subprogram. Doesn't matter whether linking was static or dynamic.
+
+OK, that's great, and certainly resolved one point of skepticism :)
+
+> With fentry/fexit we will be able to do different stats too.
+> Right now bpf program stats are limited to cycles and I resisted a lot
+> of pressure to add more hard coded stats. With fentry/fexit we can
+> collect arbitrary counters per program. Like number of L1-cache misses
+> or number of TLB misses in a given XDP prog.
+
+Yeah, that makes a lot of sense, of course. Great!
+
+>> Sounds reasonable. Any reason libxdp.so couldn't be part of libbpf?
+>
+> libxdp.so is a policy specifier while libbpf is a tool. It makes more
+> sense for them to be separate. libbpf has strong api compatibility
+> guarantees. While I don't think anyone knows at this point how libxdp
+> api should look and it will take some time for it to mature.
+
+Well, we'd want libxdp to have the same strong API guarantees,
+eventually. Which would be a reason to just include it in libbpf. But
+sure, I wasn't suggesting to do this from the get-go; we can start out
+with something separate and decide later when/if it makes sense to
+integrate. As long as libbpf can do the heavy lifting on the actual
+linking that is fine with me.
+
+-Toke
 
