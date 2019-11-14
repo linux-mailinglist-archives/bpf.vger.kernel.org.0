@@ -2,251 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DEEC0FCE61
-	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2019 19:58:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62D0FFD131
+	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2019 23:55:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727121AbfKNS6L convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 14 Nov 2019 13:58:11 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:17330 "EHLO
+        id S1726910AbfKNWz5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Nov 2019 17:55:57 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:17080 "EHLO
         mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726549AbfKNS6G (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 14 Nov 2019 13:58:06 -0500
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xAEIdSUj001183
-        for <bpf@vger.kernel.org>; Thu, 14 Nov 2019 10:58:05 -0800
+        by vger.kernel.org with ESMTP id S1726852AbfKNWz4 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 14 Nov 2019 17:55:56 -0500
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xAEMrDGE004516;
+        Thu, 14 Nov 2019 14:55:40 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=J42is4jtvayQyerE9SFIzEB9I5cakeuV4r82SdRIqY0=;
+ b=NCar1fBandWEYl5Aa9IRjt+hGZWkcC2Aawn3I8Lh7K61arX6pWEHyM5QYrxAkTo+rc3P
+ Z1SzS4laLS/LV37oZJ/7DC1u8BiAM884iEhMnOEwERvVF0ef5Yi3ldi7qRx4z5PihxBV
+ u+02i5PMQWVx9CzPOIdA0W54MqNawF3vvi8= 
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2w90t83j0c-9
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 14 Nov 2019 10:58:05 -0800
-Received: from 2401:db00:2050:5076:face:0:1f:0 (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
+        by mx0a-00082601.pphosted.com with ESMTP id 2w8tnf8gbe-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 14 Nov 2019 14:55:40 -0800
+Received: from ash-exopmbx201.TheFacebook.com (2620:10d:c0a8:83::8) by
+ ash-exhub101.TheFacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 14 Nov 2019 10:58:03 -0800
-Received: by devbig007.ftw2.facebook.com (Postfix, from userid 572438)
-        id 0B90C76071B; Thu, 14 Nov 2019 10:58:02 -0800 (PST)
-Smtp-Origin-Hostprefix: devbig
-From:   Alexei Starovoitov <ast@kernel.org>
-Smtp-Origin-Hostname: devbig007.ftw2.facebook.com
-To:     <davem@davemloft.net>
-CC:     <daniel@iogearbox.net>, <x86@kernel.org>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <kernel-team@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH v4 bpf-next 20/20] selftests/bpf: Add a test for attaching BPF prog to another BPF prog and subprog
-Date:   Thu, 14 Nov 2019 10:57:20 -0800
-Message-ID: <20191114185720.1641606-21-ast@kernel.org>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20191114185720.1641606-1-ast@kernel.org>
+ 15.1.1713.5; Thu, 14 Nov 2019 14:55:39 -0800
+Received: from ash-exhub101.TheFacebook.com (2620:10d:c0a8:82::e) by
+ ash-exopmbx201.TheFacebook.com (2620:10d:c0a8:83::8) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 14 Nov 2019 14:55:39 -0800
+Received: from NAM04-BN3-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Thu, 14 Nov 2019 14:55:39 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YHbc1EgUdKHLDjt8vNHOlRdftNzpkTavIJDSMVb1tVQHFzzIPY9qwKbAjYzJZGnfwOXZNbIi1gAPRbF0l2G2phylZgjyefAkfZfvv/61nlMdO7NiTDUdJypCPSjI9rT0iEdUZBKW42eTJ3eYlGp3UodXTmbwFH/oaym7glkcLNQFpcEPyitguGgQlOgQsmH7Fk8SDmr81dSKeg1eAYHDdzEKNeLWQ4W3ajThKC6tvdM4XO1ct/ldnUKcSSQFklyv/+mK4UMXxt0jJwX2y0igCoQHa70POK4RqhIf2Nqbx+bk7cndNZjLfQVvxrPkl7exjO3hCCsfOtOPneLRvJl+YA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=J42is4jtvayQyerE9SFIzEB9I5cakeuV4r82SdRIqY0=;
+ b=oEQ1t0QSSmGcaV7D9nyQExHRC0iR9pNPoe3gfd5ff4y547fNY8upcnFwPO9jsgVtbMcfVbCrj1kMPQzPjVT6pa8uYiw/KV65QtSJR3J7nPBFDuChy6OPGwv1rjcLuqAKOE8irE6ZrSGJ38NCwtJF2pmbXQoZ1GnOH5AruZ2hMT7QoUQH203pw0XTSni2OfCkwTd9+DLKj8XFeI0qmhTtCTY9Vber8eMmQ3qwk+BOlR6iS7BJjVFCG5KwBhgz8sILt7FdeMCKZSK9Y8mDbzRXIYSVS+IKLq+qYx+u0oUmXOYAFYnvGWxWU+M9xUwLFwfw9Ofa+WHlbPhwTnN8E0FCbA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=J42is4jtvayQyerE9SFIzEB9I5cakeuV4r82SdRIqY0=;
+ b=apLvhwEckPF6txyIxOA/31yYK3zrdldGpeJVIOKA2IggnZ18xnzh/EJdbb4P+ooI+5ItDICA5h/xuqo81AA6EdtfnLTE8FAyoKfaHk+dmC6FrXMCqKlv+cKwNRenHmzN3qlbEoZnIoVM3sbdeEaVCaU0mZWjzuueLZtoUTeg1y4=
+Received: from MWHPR15MB1165.namprd15.prod.outlook.com (10.175.3.22) by
+ MWHPR15MB1310.namprd15.prod.outlook.com (10.175.2.142) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2451.27; Thu, 14 Nov 2019 22:55:38 +0000
+Received: from MWHPR15MB1165.namprd15.prod.outlook.com
+ ([fe80::f831:d112:6187:90d9]) by MWHPR15MB1165.namprd15.prod.outlook.com
+ ([fe80::f831:d112:6187:90d9%4]) with mapi id 15.20.2451.027; Thu, 14 Nov 2019
+ 22:55:38 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Alexei Starovoitov <ast@kernel.org>
+CC:     "davem@davemloft.net" <davem@davemloft.net>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>
+Subject: Re: [PATCH v4 bpf-next 15/20] bpf: Annotate context types
+Thread-Topic: [PATCH v4 bpf-next 15/20] bpf: Annotate context types
+Thread-Index: AQHVmx12SNoDMBP720G92P3g3yLwPaeLRweA
+Date:   Thu, 14 Nov 2019 22:55:37 +0000
+Message-ID: <7092A2D7-BE2A-431F-B6A4-55BA963C36BF@fb.com>
 References: <20191114185720.1641606-1-ast@kernel.org>
+ <20191114185720.1641606-16-ast@kernel.org>
+In-Reply-To: <20191114185720.1641606-16-ast@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3601.0.10)
+x-originating-ip: [2620:10d:c090:200::3:e9ac]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: b98a227d-c6e6-416c-3739-08d76955c431
+x-ms-traffictypediagnostic: MWHPR15MB1310:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MWHPR15MB13105039DB860BD8A47C29BEB3710@MWHPR15MB1310.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4125;
+x-forefront-prvs: 02213C82F8
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(39860400002)(376002)(366004)(396003)(136003)(346002)(189003)(199004)(6116002)(66946007)(66476007)(66556008)(64756008)(66446008)(476003)(86362001)(486006)(8676002)(2906002)(2616005)(25786009)(50226002)(6246003)(6486002)(229853002)(6916009)(76116006)(8936002)(81166006)(81156014)(6512007)(6436002)(186003)(5660300002)(102836004)(11346002)(446003)(53546011)(6506007)(14454004)(305945005)(46003)(7736002)(4326008)(76176011)(478600001)(14444005)(36756003)(33656002)(316002)(71200400001)(71190400001)(99286004)(256004)(54906003);DIR:OUT;SFP:1102;SCL:1;SRVR:MWHPR15MB1310;H:MWHPR15MB1165.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: fEoAMjTiRrfdEyoyiKbAhKEPbgR+AbUh+HmHzpdVxaf4hbJkic7ovY/QBlCEH/nsgkKTDfIQ6nbtW4r3UuI+PeHgpqBkO48dxCFsTlk++KeG3NYae23q70D/Ua2iRm61Ghc4HaPyk3DnO3VDuh3yhOEhZGxo0/aFsCpbWKsZlWAM9iIlRbC+itiAA+0nkVQiXk3Srw4BTCneLxce5I9dtCbRUP4BxtsFXhsHV2YNrRl4WVZ1xTb+pxOcf6BDehvzCe298acdyLJxonEkQRcK1yd1rt9OoL76aQXZ1VQAdWaq7/xgVQRfdj5vph1if+ncQ9gxjKsifZsdDvCRZ+2m7oRvm3vXc2/8DMcaVYQfveDoOSkKF8jT6/96Af5ld510ClVEKMdPYi+Fh35tw6y5tbrREWDajo+pejH/UGUkMJtncX8CZ3EEqOhLSSkK9P+/
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <8063377CAF41D548AEB27963F3033E28@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
+X-MS-Exchange-CrossTenant-Network-Message-Id: b98a227d-c6e6-416c-3739-08d76955c431
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Nov 2019 22:55:37.9011
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: BQZvuqw7v/FgL+/vPLuhV9SdoljM341Oi/31P1+wXGg+fN7WuoIxNsxuhs7lKPcXl6aX4wZiW6gkeAHtTikLUA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1310
+X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
  definitions=2019-11-14_05:2019-11-14,2019-11-14 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0 adultscore=0
- malwarescore=0 priorityscore=1501 mlxscore=0 mlxlogscore=781 phishscore=0
- spamscore=0 impostorscore=0 clxscore=1015 suspectscore=1
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1910280000 definitions=main-1911140157
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
+ lowpriorityscore=0 suspectscore=0 clxscore=1015 impostorscore=0
+ bulkscore=0 phishscore=0 adultscore=0 priorityscore=1501 mlxlogscore=967
+ spamscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-1911140186
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add a test that attaches one FEXIT program to main sched_cls networking program
-and two other FEXIT programs to subprograms. All three tracing programs
-access return values and skb->len of networking program and subprograms.
 
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Acked-by: Song Liu <songliubraving@fb.com>
-Acked-by: Andrii Nakryiko <andriin@fb.com>
----
- .../selftests/bpf/prog_tests/fexit_bpf2bpf.c  | 76 ++++++++++++++++
- .../selftests/bpf/progs/fexit_bpf2bpf.c       | 91 +++++++++++++++++++
- 2 files changed, 167 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
- create mode 100644 tools/testing/selftests/bpf/progs/fexit_bpf2bpf.c
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c b/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
-new file mode 100644
-index 000000000000..15c7378362dd
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
-@@ -0,0 +1,76 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2019 Facebook */
-+#include <test_progs.h>
-+
-+#define PROG_CNT 3
-+
-+void test_fexit_bpf2bpf(void)
-+{
-+	const char *prog_name[PROG_CNT] = {
-+		"fexit/test_pkt_access",
-+		"fexit/test_pkt_access_subprog1",
-+		"fexit/test_pkt_access_subprog2",
-+	};
-+	struct bpf_object *obj = NULL, *pkt_obj;
-+	int err, pkt_fd, i;
-+	struct bpf_link *link[PROG_CNT] = {};
-+	struct bpf_program *prog[PROG_CNT];
-+	__u32 duration, retval;
-+	struct bpf_map *data_map;
-+	const int zero = 0;
-+	u64 result[PROG_CNT];
-+
-+	err = bpf_prog_load("./test_pkt_access.o", BPF_PROG_TYPE_UNSPEC,
-+			    &pkt_obj, &pkt_fd);
-+	if (CHECK(err, "prog_load sched cls", "err %d errno %d\n", err, errno))
-+		return;
-+	DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts,
-+			    .attach_prog_fd = pkt_fd,
-+			   );
-+
-+	obj = bpf_object__open_file("./fexit_bpf2bpf.o", &opts);
-+	if (CHECK(IS_ERR_OR_NULL(obj), "obj_open",
-+		  "failed to open fexit_bpf2bpf: %ld\n",
-+		  PTR_ERR(obj)))
-+		goto close_prog;
-+
-+	err = bpf_object__load(obj);
-+	if (CHECK(err, "obj_load", "err %d\n", err))
-+		goto close_prog;
-+
-+	for (i = 0; i < PROG_CNT; i++) {
-+		prog[i] = bpf_object__find_program_by_title(obj, prog_name[i]);
-+		if (CHECK(!prog[i], "find_prog", "prog %s not found\n", prog_name[i]))
-+			goto close_prog;
-+		link[i] = bpf_program__attach_trace(prog[i]);
-+		if (CHECK(IS_ERR(link[i]), "attach_trace", "failed to link\n"))
-+			goto close_prog;
-+	}
-+	data_map = bpf_object__find_map_by_name(obj, "fexit_bp.bss");
-+	if (CHECK(!data_map, "find_data_map", "data map not found\n"))
-+		goto close_prog;
-+
-+	err = bpf_prog_test_run(pkt_fd, 1, &pkt_v6, sizeof(pkt_v6),
-+				NULL, NULL, &retval, &duration);
-+	CHECK(err || retval, "ipv6",
-+	      "err %d errno %d retval %d duration %d\n",
-+	      err, errno, retval, duration);
-+
-+	err = bpf_map_lookup_elem(bpf_map__fd(data_map), &zero, &result);
-+	if (CHECK(err, "get_result",
-+		  "failed to get output data: %d\n", err))
-+		goto close_prog;
-+
-+	for (i = 0; i < PROG_CNT; i++)
-+		if (CHECK(result[i] != 1, "result", "fexit_bpf2bpf failed err %ld\n",
-+			  result[i]))
-+			goto close_prog;
-+
-+close_prog:
-+	for (i = 0; i < PROG_CNT; i++)
-+		if (!IS_ERR_OR_NULL(link[i]))
-+			bpf_link__destroy(link[i]);
-+	if (!IS_ERR_OR_NULL(obj))
-+		bpf_object__close(obj);
-+	bpf_object__close(pkt_obj);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/fexit_bpf2bpf.c b/tools/testing/selftests/bpf/progs/fexit_bpf2bpf.c
-new file mode 100644
-index 000000000000..981f0474da5a
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/fexit_bpf2bpf.c
-@@ -0,0 +1,91 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2019 Facebook */
-+#include <linux/bpf.h>
-+#include "bpf_helpers.h"
-+
-+struct sk_buff {
-+	unsigned int len;
-+};
-+
-+struct args {
-+	struct sk_buff *skb;
-+	ks32 ret;
-+};
-+static volatile __u64 test_result;
-+SEC("fexit/test_pkt_access")
-+int test_main(struct args *ctx)
-+{
-+	struct sk_buff *skb = ctx->skb;
-+	int len;
-+
-+	__builtin_preserve_access_index(({
-+		len = skb->len;
-+	}));
-+	if (len != 74 || ctx->ret != 0)
-+		return 0;
-+	test_result = 1;
-+	return 0;
-+}
-+
-+struct args_subprog1 {
-+	struct sk_buff *skb;
-+	ks32 ret;
-+};
-+static volatile __u64 test_result_subprog1;
-+SEC("fexit/test_pkt_access_subprog1")
-+int test_subprog1(struct args_subprog1 *ctx)
-+{
-+	struct sk_buff *skb = ctx->skb;
-+	int len;
-+
-+	__builtin_preserve_access_index(({
-+		len = skb->len;
-+	}));
-+	if (len != 74 || ctx->ret != 148)
-+		return 0;
-+	test_result_subprog1 = 1;
-+	return 0;
-+}
-+
-+/* Though test_pkt_access_subprog2() is defined in C as:
-+ * static __attribute__ ((noinline))
-+ * int test_pkt_access_subprog2(int val, volatile struct __sk_buff *skb)
-+ * {
-+ *     return skb->len * val;
-+ * }
-+ * llvm optimizations remove 'int val' argument and generate BPF assembly:
-+ *   r0 = *(u32 *)(r1 + 0)
-+ *   w0 <<= 1
-+ *   exit
-+ * In such case the verifier falls back to conservative and
-+ * tracing program can access arguments and return value as u64
-+ * instead of accurate types.
-+ */
-+struct args_subprog2 {
-+	ku64 args[5];
-+	ku64 ret;
-+};
-+static volatile __u64 test_result_subprog2;
-+SEC("fexit/test_pkt_access_subprog2")
-+int test_subprog2(struct args_subprog2 *ctx)
-+{
-+	struct sk_buff *skb = (void *)ctx->args[0];
-+	__u64 ret;
-+	int len;
-+
-+	bpf_probe_read_kernel(&len, sizeof(len),
-+			      __builtin_preserve_access_index(&skb->len));
-+
-+	ret = ctx->ret;
-+	/* bpf_prog_load() loads "test_pkt_access.o" with BPF_F_TEST_RND_HI32
-+	 * which randomizes upper 32 bits after BPF_ALU32 insns.
-+	 * Hence after 'w0 <<= 1' upper bits of $rax are random.
-+	 * That is expected and correct. Trim them.
-+	 */
-+	ret = (__u32) ret;
-+	if (len != 74 || ret != 148)
-+		return 0;
-+	test_result_subprog2 = 1;
-+	return 0;
-+}
-+char _license[] SEC("license") = "GPL";
--- 
-2.23.0
+> On Nov 14, 2019, at 10:57 AM, Alexei Starovoitov <ast@kernel.org> wrote:
+>=20
+> Annotate BPF program context types with program-side type and kernel-side=
+ type.
+> This type information is used by the verifier. btf_get_prog_ctx_type() is
+> used in the later patches to verify that BTF type of ctx in BPF program m=
+atches to
+> kernel expected ctx type. For example, the XDP program type is:
+> BPF_PROG_TYPE(BPF_PROG_TYPE_XDP, xdp, struct xdp_md, struct xdp_buff)
+> That means that XDP program should be written as:
+> int xdp_prog(struct xdp_md *ctx) { ... }
+>=20
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+>=20
 
+[...]
+
+> +	/* only compare that prog's ctx type name is the same as
+> +	 * kernel expects. No need to compare field by field.
+> +	 * It's ok for bpf prog to do:
+> +	 * struct __sk_buff {};
+> +	 * int socket_filter_bpf_prog(struct __sk_buff *skb)
+> +	 * { // no fields of skb are ever used }
+> +	 */
+> +	if (strcmp(ctx_tname, tname))
+> +		return NULL;
+
+Do we need to check size of the two struct? I guess we should not=20
+allow something like
+
+	struct __sk_buff {
+		char data[REALLY_BIG_NUM];=20
+	};
+	int socket_filter_bpf_prog(struct __sk_buff *skb)
+	{ /* access end of skb */ }
+
+Or did I miss the size check?=20
+
+Thanks,
+Song=
