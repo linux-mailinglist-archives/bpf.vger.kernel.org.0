@@ -2,195 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 86874FC3BB
-	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2019 11:11:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35307FC3DF
+	for <lists+bpf@lfdr.de>; Thu, 14 Nov 2019 11:19:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726567AbfKNKLp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Nov 2019 05:11:45 -0500
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:40153 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726409AbfKNKLp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Nov 2019 05:11:45 -0500
-Received: by mail-pg1-f195.google.com with SMTP id 15so3461750pgt.7;
-        Thu, 14 Nov 2019 02:11:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=HffFdVjmwEs9ZOtDod+7zZx3yqjMlEqkq4943CeHBYw=;
-        b=LRFXF/y3MlOziXBXy+gznC/sQeGuK6RPW1sc8T+MhLE1aooRpm5l9ve4J4dTwbgGMF
-         41CITp1XSPoF702jv5lbOHL9ScLjKOYwW+ecw2DpHYaJ4+vB+sYqtC/m2a3RCTpBx2HQ
-         6Q16CC/1FdI2ZUHJY3vM3+u6zhgSii9+aLiFubm1TLGcqssMuCKZpCMS26jBE4MJPy/E
-         FA3SwuhtCAeK4UJwxU3bRsMd9CSA1mUjivGhwNXsCG7fCmQfsG0FtMrjCOngGD62HuJH
-         wHqRN/bLfBl/Y2EADoYw+DFfzrBEIJuJoHRHEex8PqxrWXijsgirPEqRDcfBNjd/H8fu
-         uLwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=HffFdVjmwEs9ZOtDod+7zZx3yqjMlEqkq4943CeHBYw=;
-        b=DqOkdaz5m2E3EepTnU7e0viQWU2YPkbS5u1Doc4IgRJ4frwqEY+5tE3l/U8wdycwLI
-         iqnPLD63zGoe771Ty7/RxLcGZdhkItXqykvNUWbrutTUBVBX7VPc8s2V4oCrCAnVdqcT
-         /kREieZKrfYguBed4pUCY+d3H9R6IHluXcgc3B2QviZBSGO2yac9G7gLR3twCSdeu8sH
-         74NDm9Sa/pvS4tep6kLGcvKI9o6zc71p6Kfgsb+Y8Itgko64GppL1N+GmCvF21tY+HPZ
-         O05VXDoUPRr0uoHDrAyOwddfpgmIG2SeJfrVOb8lXhl7/Y9io7c+fYE58THJv2LoluP0
-         bLqQ==
-X-Gm-Message-State: APjAAAWsJL4+bhD0qZ8OVGhKU7Vg280wC345Hv86Pxh5aOYtt2YwTk3J
-        oBhXd/B18unTt2zaBMxputQ=
-X-Google-Smtp-Source: APXvYqzx0TsofFXQQKZorTOo3Pw2KOiByTz2iqBUKNqkYfn3CPMtBqFwsm6v/LMnYfw4xHdinvNNEQ==
-X-Received: by 2002:a62:b607:: with SMTP id j7mr6416156pff.39.1573726303895;
-        Thu, 14 Nov 2019 02:11:43 -0800 (PST)
-Received: from [172.20.20.103] ([222.151.198.97])
-        by smtp.gmail.com with ESMTPSA id m67sm5412557pje.32.2019.11.14.02.11.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Nov 2019 02:11:43 -0800 (PST)
-Subject: Re: [RFC PATCH v2 bpf-next 00/15] xdp_flow: Flow offload to XDP
-To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
+        id S1726865AbfKNKTK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Nov 2019 05:19:10 -0500
+Received: from dispatch1-us1.ppe-hosted.com ([67.231.154.164]:50762 "EHLO
+        dispatch1-us1.ppe-hosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726505AbfKNKTK (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 14 Nov 2019 05:19:10 -0500
+X-Virus-Scanned: Proofpoint Essentials engine
+Received: from webmail.solarflare.com (uk.solarflare.com [193.34.186.16])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1-us5.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTPS id 6644B4C0066;
+        Thu, 14 Nov 2019 10:19:07 +0000 (UTC)
+Received: from [10.17.20.203] (10.17.20.203) by ukex01.SolarFlarecom.com
+ (10.17.10.4) with Microsoft SMTP Server (TLS) id 15.0.1395.4; Thu, 14 Nov
+ 2019 10:18:59 +0000
+Subject: Re: [RFC PATCH bpf-next 2/4] bpf: introduce BPF dispatcher
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+CC:     Netdev <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        Pravin B Shelar <pshelar@ovn.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        William Tu <u9012063@gmail.com>,
-        Stanislav Fomichev <sdf@fomichev.me>
-References: <20191018040748.30593-1-toshiaki.makita1@gmail.com>
- <5da9d8c125fd4_31cf2adc704105c456@john-XPS-13-9370.notmuch>
- <22e6652c-e635-4349-c863-255d6c1c548b@gmail.com>
- <5daf34614a4af_30ac2b1cb5d205bce4@john-XPS-13-9370.notmuch>
- <87h840oese.fsf@toke.dk>
- <5db128153c75_549d2affde7825b85e@john-XPS-13-9370.notmuch>
- <87sgniladm.fsf@toke.dk> <a7f3d86b-c83c-7b0d-c426-684b8dfe4344@gmail.com>
- <87zhhmrz7w.fsf@toke.dk> <b2ecf3e6-a8f1-cfd9-0dd3-e5f4d5360c0b@gmail.com>
- <87zhhhnmg8.fsf@toke.dk> <640418c3-54ba-cd62-304f-fd9f73f25a42@gmail.com>
- <87blthox30.fsf@toke.dk>
-From:   Toshiaki Makita <toshiaki.makita1@gmail.com>
-Message-ID: <c1b7ff64-6574-74c7-cd6b-5aa353ec80ce@gmail.com>
-Date:   Thu, 14 Nov 2019 19:11:36 +0900
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        bpf <bpf@vger.kernel.org>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>
+References: <20191113204737.31623-1-bjorn.topel@gmail.com>
+ <20191113204737.31623-3-bjorn.topel@gmail.com>
+ <fa188bb2-6223-5aef-98e4-b5f7976ed485@solarflare.com>
+ <CAJ+HfNiDa912Uwt41_KMv+Z-sGr8fU7s4ncBPiUSx4PPAMQQqQ@mail.gmail.com>
+From:   Edward Cree <ecree@solarflare.com>
+Message-ID: <96811723-ab08-b987-78c7-2c9f2a0a972c@solarflare.com>
+Date:   Thu, 14 Nov 2019 10:18:55 +0000
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <87blthox30.fsf@toke.dk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+In-Reply-To: <CAJ+HfNiDa912Uwt41_KMv+Z-sGr8fU7s4ncBPiUSx4PPAMQQqQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.17.20.203]
+X-ClientProxiedBy: ocex03.SolarFlarecom.com (10.20.40.36) To
+ ukex01.SolarFlarecom.com (10.17.10.4)
+X-TM-AS-Product-Ver: SMEX-12.5.0.1300-8.5.1010-25042.003
+X-TM-AS-Result: No-6.773600-8.000000-10
+X-TMASE-MatchedRID: oHOSwQSJZWjmLzc6AOD8DfHkpkyUphL9WDtrCb/B2hCL76yI7MxYJd3o
+        UtLnebnZ8PxmVvwArq1eKE5I5ZUPHP+j7mX1lKC+PE3khmVvHO4jmtmWxqcghfkuQv9PIVnNY9g
+        fdlvEXXSL9VH/M1mj8I8a4JkbB3qj8mSY8pCopWVFd2K6RlAKAalHaQwZyzDtgOlK2zN496l6xL
+        6D9mrQLn661BcNrPuogiJroqebj3V41hKqyBRVQUM/y5EMs/JmUb4EdIZGxuBJfyfUaPjAATwc8
+        MUw3x8i4HEFwUDiSZ4DTO7t0MJ81QgD4C8clR7Vggra2NOo2i1kAa0IkTbdiE+86maMM3aSd/X/
+        X8atqku5dS8rfLvDVLvTPBmQOKTatjezNnTwro6JUlmL3Uj0mDsY2/UEG7fkt17WNImWY5DDi9z
+        /5KX8tlcEwZrkbL18l+IrlvQnhmKvMyWwzFWyi51U1lojafr/fS0Ip2eEHnxlgn288nW9IAuTLp
+        o5HEc1joczmuoPCq2Y/rC/ht97wGv385DMLr8xy1ZMtZ0r+5Dc+hNhe9IxQOFfg3KapaFv
+X-TM-AS-User-Approved-Sender: Yes
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--6.773600-8.000000
+X-TMASE-Version: SMEX-12.5.0.1300-8.5.1010-25042.003
+X-MDID: 1573726749-PPAhnXFB58cq
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2019/11/13 1:53, Toke Høiland-Jørgensen wrote:
-> Toshiaki Makita <toshiaki.makita1@gmail.com> writes:
->>
->> Hi Toke,
->>
->> Sorry for the delay.
->>
->> On 2019/10/31 21:12, Toke Høiland-Jørgensen wrote:
->>> Toshiaki Makita <toshiaki.makita1@gmail.com> writes:
->>>
->>>> On 2019/10/28 0:21, Toke Høiland-Jørgensen wrote:
->>>>> Toshiaki Makita <toshiaki.makita1@gmail.com> writes:
->>>>>>> Yeah, you are right that it's something we're thinking about. I'm not
->>>>>>> sure we'll actually have the bandwidth to implement a complete solution
->>>>>>> ourselves, but we are very much interested in helping others do this,
->>>>>>> including smoothing out any rough edges (or adding missing features) in
->>>>>>> the core XDP feature set that is needed to achieve this :)
->>>>>>
->>>>>> I'm very interested in general usability solutions.
->>>>>> I'd appreciate if you could join the discussion.
->>>>>>
->>>>>> Here the basic idea of my approach is to reuse HW-offload infrastructure
->>>>>> in kernel.
->>>>>> Typical networking features in kernel have offload mechanism (TC flower,
->>>>>> nftables, bridge, routing, and so on).
->>>>>> In general these are what users want to accelerate, so easy XDP use also
->>>>>> should support these features IMO. With this idea, reusing existing
->>>>>> HW-offload mechanism is a natural way to me. OVS uses TC to offload
->>>>>> flows, then use TC for XDP as well...
->>>>>
->>>>> I agree that XDP should be able to accelerate existing kernel
->>>>> functionality. However, this does not necessarily mean that the kernel
->>>>> has to generate an XDP program and install it, like your patch does.
->>>>> Rather, what we should be doing is exposing the functionality through
->>>>> helpers so XDP can hook into the data structures already present in the
->>>>> kernel and make decisions based on what is contained there. We already
->>>>> have that for routing; L2 bridging, and some kind of connection
->>>>> tracking, are obvious contenders for similar additions.
->>>>
->>>> Thanks, adding helpers itself should be good, but how does this let users
->>>> start using XDP without having them write their own BPF code?
->>>
->>> It wouldn't in itself. But it would make it possible to write XDP
->>> programs that could provide the same functionality; people would then
->>> need to run those programs to actually opt-in to this.
->>>
->>> For some cases this would be a simple "on/off switch", e.g.,
->>> "xdp-route-accel --load <dev>", which would install an XDP program that
->>> uses the regular kernel routing table (and the same with bridging). We
->>> are planning to collect such utilities in the xdp-tools repo - I am
->>> currently working on a simple packet filter:
->>> https://github.com/xdp-project/xdp-tools/tree/xdp-filter
->>
->> Let me confirm how this tool adds filter rules.
->> Is this adding another commandline tool for firewall?
->>
->> If so, that is different from my goal.
->> Introducing another commandline tool will require people to learn
->> more.
->>
->> My proposal is to reuse kernel interface to minimize such need for
->> learning.
-> 
-> I wasn't proposing that this particular tool should be a replacement for
-> the kernel packet filter; it's deliberately fairly limited in
-> functionality. My point was that we could create other such tools for
-> specific use cases which could be more or less drop-in (similar to how
-> nftables has a command line tool that is compatible with the iptables
-> syntax).
-> 
-> I'm all for exposing more of the existing kernel capabilities to XDP.
-> However, I think it's the wrong approach to do this by reimplementing
-> the functionality in eBPF program and replicating the state in maps;
-> instead, it's better to refactor the existing kernel functionality to it
-> can be called directly from an eBPF helper function. And then ship a
-> tool as part of xdp-tools that installs an XDP program to make use of
-> these helpers to accelerate the functionality.
-> 
-> Take your example of TC rules: You were proposing a flow like this:
-> 
-> Userspace TC rule -> kernel rule table -> eBPF map -> generated XDP
-> program
-> 
-> Whereas what I mean is that we could do this instead:
-> 
-> Userspace TC rule -> kernel rule table
-> 
-> and separately
-> 
-> XDP program -> bpf helper -> lookup in kernel rule table
+On 14/11/2019 06:29, Björn Töpel wrote:
+> On Wed, 13 Nov 2019 at 22:41, Edward Cree <ecree@solarflare.com> wrote:
+>> On 13/11/2019 20:47, Björn Töpel wrote:
+>> The first-come-first-served model for dispatcher slots might mean that
+>>  a low-traffic user ends up getting priority while a higher-traffic
+>>  user is stuck with the retpoline fallback.  Have you considered using
+>>  a learning mechanism, like in my dynamic call RFC [1] earlier this
+>>  year?  (Though I'm sure a better learning mechanism than the one I
+>>  used there could be devised.)
+> My rationale was that this mechanism would almost exclusively be used
+> by physical HW NICs using XDP. My hunch was that the number of netdevs
+> would be ~4, and typically less using XDP, so a more sophisticated
+> mechanism didn't really make sense IMO.
+That seems reasonable in most cases, although I can imagine systems with
+ a couple of four-port boards being a thing.  I suppose the netdevs are
+ likely to all have the same XDP prog, though, and if I'm reading your
+ code right it seems they'd share a slot in that case.
 
-Thanks, now I see what you mean.
-You expect an XDP program like this, right?
+> However, your approach is more
+> generic and doesn't require any arch specific work. What was the push
+> back for your work?
+Mainly that I couldn't demonstrate a performance benefit from the few
+ call sites I annotated, and others working in the area felt that
+ manual annotation wouldn't scale — Nadav Amit had a different approach
+ [2] that used a GCC plugin to apply a dispatcher on an opt-out basis
+ to all the indirect calls in the kernel; the discussion on that got
+ bogged down in interactions between text patching and perf tracing
+ which all went *waaaay* over my head.  AFAICT the static_call series I
+ was depending on never got merged, and I'm not sure if anyone's still
+ working on it.
 
-int xdp_tc(struct xdp_md *ctx)
-{
-	int act = bpf_xdp_tc_filter(ctx);
-	return act;
-}
+-Ed
 
-But doesn't this way lose a chance to reduce/minimize the program
-to only use necessary features for this device?
-
-Toshiaki Makita
+[2] https://lkml.org/lkml/2018/12/31/19
