@@ -2,78 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F090FD6EA
-	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2019 08:27:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BB48FD76E
+	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2019 08:57:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726605AbfKOH1k (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 Nov 2019 02:27:40 -0500
-Received: from www62.your-server.de ([213.133.104.62]:33546 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726182AbfKOH1k (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 15 Nov 2019 02:27:40 -0500
-Received: from 57.248.197.178.dynamic.dsl-lte-bonding.zhbmb00p-msn.res.cust.swisscom.ch ([178.197.248.57] helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iVW14-0004dT-NR; Fri, 15 Nov 2019 08:27:38 +0100
-Date:   Fri, 15 Nov 2019 08:27:38 +0100
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     ast@kernel.org, john.fastabend@gmail.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH rfc bpf-next 7/8] bpf, x86: emit patchable direct jump as
- tail call
-Message-ID: <20191115072738.GB3957@pc-9.home>
-References: <cover.1573779287.git.daniel@iogearbox.net>
- <78a8cbc4887d00b3dc4705347f05572630650cbf.1573779287.git.daniel@iogearbox.net>
- <20191115032345.loei6qqgyo4tdbuq@ast-mbp.dhcp.thefacebook.com>
+        id S1726983AbfKOH5M (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 Nov 2019 02:57:12 -0500
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:41957 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726182AbfKOH5L (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 15 Nov 2019 02:57:11 -0500
+Received: by mail-qk1-f194.google.com with SMTP id m125so7403391qkd.8;
+        Thu, 14 Nov 2019 23:57:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=F+aS45e+tp3qf3Ydob9f2pyeaLNqmi833pMJJ3DlQVk=;
+        b=DAjX27o5q96qF83it+oHtsrQatRWEZg/Qv3scklzjxT4QRhfDPT9JYZhm9I6+5gCZC
+         yCFqgq2SR2sFuMFzSyfgH7AxhdvpCgZbYruNgmiQ/AUitkwkwZNguD2fVaZS28Rg/vqQ
+         LLhGugqK7wDLNKUrZ4rNme4PyTdAtAjU6cbmTweW14aaJ0ieL7yuxcZjjhwe+hi7Mvhm
+         zqR2iFsyMh1DFbEppfO2GQitQ8FyT9T9pkVpP8CDhi2+Tg7v9GL77f6NUla2bePTykBJ
+         UIQSTy5TD8UsOenYTpNWcgkc4oKw+Y+WSRr5WXRNHcWH9o8MUVI6IRn1MNHtL441xXG9
+         qVvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=F+aS45e+tp3qf3Ydob9f2pyeaLNqmi833pMJJ3DlQVk=;
+        b=KWfCijm8HsPp3pKotbScQXfBX4g4ci0+FkEkqmZ5pS5TWPBqYlEiOeu9HOJy4O4Oka
+         4rYUBRoL+cvqcC0j2VrjTINts7frLTB2Evn9/oAfjhoW0HmsBBXzv5NFx7svELxgKCda
+         NMzruI3L4yEV4sMRE+Dj6i/a9iyKttyBmRcqEHJRya6rvtXS9ET0cw61fLw0wJicZLX2
+         gxTsKrDH44Qo0G3t6vNofti/9Rd2TAkPcceZhb7Jwwhyn1n2+Omz+eGeSHsT8ipmFeMV
+         SOCX/pBrGiVlm4hqNObURLSDTVMXDhKBS3ZiVBI0dkyTTXbP4tkvSMFi/a1lQy9Mol+l
+         NkTQ==
+X-Gm-Message-State: APjAAAUjMMv59nl4CzY547hAG7224JHiJ4yQHInaaWrxop5p5JHQsNEF
+        +UDlqL9JZWSg4lDA4+dmQesKkzCddci2xw1+G+s=
+X-Google-Smtp-Source: APXvYqx2N5FsU1ezDf2HNNL2a1lzjMS2gkxoqVlUgcCHLWwEf+2QsbwNK84VzVRj74ygDDE7Nm+NkoUwWk5Oq8Pu+OY=
+X-Received: by 2002:a05:620a:113b:: with SMTP id p27mr11492421qkk.333.1573804630673;
+ Thu, 14 Nov 2019 23:57:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191115032345.loei6qqgyo4tdbuq@ast-mbp.dhcp.thefacebook.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.101.4/25633/Thu Nov 14 10:50:04 2019)
+References: <20191113204737.31623-1-bjorn.topel@gmail.com> <20191113204737.31623-3-bjorn.topel@gmail.com>
+ <20191115003024.h7eg2kbve23jmzqn@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20191115003024.h7eg2kbve23jmzqn@ast-mbp.dhcp.thefacebook.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Fri, 15 Nov 2019 08:56:59 +0100
+Message-ID: <CAJ+HfNhKWND35Jnwe=99=8rWt81fhy9pRpXCVRYTu=C=aj13KQ@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 2/4] bpf: introduce BPF dispatcher
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Netdev <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        bpf <bpf@vger.kernel.org>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Edward Cree <ecree@solarflare.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 14, 2019 at 07:23:46PM -0800, Alexei Starovoitov wrote:
-> On Fri, Nov 15, 2019 at 02:04:01AM +0100, Daniel Borkmann wrote:
-> > for later modifications. In ii) fixup_bpf_tail_call_direct() walks
-> > over the progs poke_tab, locks the tail call maps poke_mutex to
-> > prevent from parallel updates and patches in the right locations via
-> ...
-> > @@ -1610,6 +1671,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
-> >  		prog->bpf_func = (void *)image;
-> >  		prog->jited = 1;
-> >  		prog->jited_len = proglen;
-> > +		fixup_bpf_tail_call_direct(prog);
-> 
-> Why not to move fixup_bpf_tail_call_direct() just before
-> bpf_jit_binary_lock_ro() and use simple memcpy instead of text_poke ?
+On Fri, 15 Nov 2019 at 01:30, Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+[...]
+>
+> Could you try optimizing emit_mov_imm64() to recognize s32 ?
+> iirc there was a single x86 insns that could move and sign extend.
+> That should cut down on bytecode size and probably make things a bit fast=
+er?
+> Another alternative is compare lower 32-bit only, since on x86-64 upper 3=
+2
+> should be ~0 anyway for bpf prog pointers.
 
-Thinking about it, I'll move it right into the branch before we lock ...
+Good ideas, thanks! I'll do the optimization, extend it to >4 entries
+(as Toke suggested), and do a non-RFC respin.
 
-  if (!prog->is_func || extra_pass) {
-    bpf_tail_call_fixup_direct(prog);
-    bpf_jit_binary_lock_ro(header);
-  } else { [...]
+> Looking at bookkeeping code, I think I should be able to generalize bpf
+> trampoline a bit and share the code for bpf dispatch.
 
-... and I'll add a __bpf_arch_text_poke() handler which passes in the
-a plain memcpy() callback instead of text_poke_bp(), so it keeps reusing
-most of the logic/checks from __bpf_arch_text_poke() which we also have
-at a later point once the program is live.
+Ok, good!
 
-> imo this logic in patch 7:
-> case BPF_JMP | BPF_TAIL_CALL:
-> +   if (imm32)
-> +            emit_bpf_tail_call_direct(&bpf_prog->aux->poke_tab[imm32 - 1],
-> would have been easier to understand if patch 7 and 8 were swapped.
+> Could you also try aligning jmp target a bit by inserting nops?
+> Some x86 cpus are sensitive to jmp target alignment. Even without conside=
+ring
+> JCC bug it could be helpful. Especially since we're talking about XDP/AF_=
+XDP
+> here that will be pushing millions of calls through bpf dispatch.
+>
 
-Makes sense, it's totally fine to swap them, so I'll go do that. Thanks
-for the feedback!
+Yeah, I need to address the Jcc bug anyway, so that makes sense.
 
-Cheers,
-Daniel
+Another thought; I'm using the fentry nop as patch point, so it wont
+play nice with other users of fentry atm -- but the plan is to move to
+Steve's *_ftrace_direct work at some point, correct?
+
+
+Bj=C3=B6rn
