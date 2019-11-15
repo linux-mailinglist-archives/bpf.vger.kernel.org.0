@@ -2,104 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BB48FD76E
-	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2019 08:57:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EE09FD98D
+	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2019 10:43:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726983AbfKOH5M (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 Nov 2019 02:57:12 -0500
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:41957 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726182AbfKOH5L (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 15 Nov 2019 02:57:11 -0500
-Received: by mail-qk1-f194.google.com with SMTP id m125so7403391qkd.8;
-        Thu, 14 Nov 2019 23:57:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=F+aS45e+tp3qf3Ydob9f2pyeaLNqmi833pMJJ3DlQVk=;
-        b=DAjX27o5q96qF83it+oHtsrQatRWEZg/Qv3scklzjxT4QRhfDPT9JYZhm9I6+5gCZC
-         yCFqgq2SR2sFuMFzSyfgH7AxhdvpCgZbYruNgmiQ/AUitkwkwZNguD2fVaZS28Rg/vqQ
-         LLhGugqK7wDLNKUrZ4rNme4PyTdAtAjU6cbmTweW14aaJ0ieL7yuxcZjjhwe+hi7Mvhm
-         zqR2iFsyMh1DFbEppfO2GQitQ8FyT9T9pkVpP8CDhi2+Tg7v9GL77f6NUla2bePTykBJ
-         UIQSTy5TD8UsOenYTpNWcgkc4oKw+Y+WSRr5WXRNHcWH9o8MUVI6IRn1MNHtL441xXG9
-         qVvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=F+aS45e+tp3qf3Ydob9f2pyeaLNqmi833pMJJ3DlQVk=;
-        b=KWfCijm8HsPp3pKotbScQXfBX4g4ci0+FkEkqmZ5pS5TWPBqYlEiOeu9HOJy4O4Oka
-         4rYUBRoL+cvqcC0j2VrjTINts7frLTB2Evn9/oAfjhoW0HmsBBXzv5NFx7svELxgKCda
-         NMzruI3L4yEV4sMRE+Dj6i/a9iyKttyBmRcqEHJRya6rvtXS9ET0cw61fLw0wJicZLX2
-         gxTsKrDH44Qo0G3t6vNofti/9Rd2TAkPcceZhb7Jwwhyn1n2+Omz+eGeSHsT8ipmFeMV
-         SOCX/pBrGiVlm4hqNObURLSDTVMXDhKBS3ZiVBI0dkyTTXbP4tkvSMFi/a1lQy9Mol+l
-         NkTQ==
-X-Gm-Message-State: APjAAAUjMMv59nl4CzY547hAG7224JHiJ4yQHInaaWrxop5p5JHQsNEF
-        +UDlqL9JZWSg4lDA4+dmQesKkzCddci2xw1+G+s=
-X-Google-Smtp-Source: APXvYqx2N5FsU1ezDf2HNNL2a1lzjMS2gkxoqVlUgcCHLWwEf+2QsbwNK84VzVRj74ygDDE7Nm+NkoUwWk5Oq8Pu+OY=
-X-Received: by 2002:a05:620a:113b:: with SMTP id p27mr11492421qkk.333.1573804630673;
- Thu, 14 Nov 2019 23:57:10 -0800 (PST)
-MIME-Version: 1.0
-References: <20191113204737.31623-1-bjorn.topel@gmail.com> <20191113204737.31623-3-bjorn.topel@gmail.com>
- <20191115003024.h7eg2kbve23jmzqn@ast-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20191115003024.h7eg2kbve23jmzqn@ast-mbp.dhcp.thefacebook.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Fri, 15 Nov 2019 08:56:59 +0100
-Message-ID: <CAJ+HfNhKWND35Jnwe=99=8rWt81fhy9pRpXCVRYTu=C=aj13KQ@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 2/4] bpf: introduce BPF dispatcher
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Netdev <netdev@vger.kernel.org>,
+        id S1727524AbfKOJnt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 Nov 2019 04:43:49 -0500
+Received: from www262.sakura.ne.jp ([202.181.97.72]:56013 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727509AbfKOJnt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 15 Nov 2019 04:43:49 -0500
+Received: from fsav102.sakura.ne.jp (fsav102.sakura.ne.jp [27.133.134.229])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id xAF9hluQ013037;
+        Fri, 15 Nov 2019 18:43:47 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav102.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav102.sakura.ne.jp);
+ Fri, 15 Nov 2019 18:43:47 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav102.sakura.ne.jp)
+Received: from [192.168.1.9] (softbank126040052248.bbtec.net [126.40.52.248])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id xAF9hfEU013011
+        (version=TLSv1.2 cipher=AES256-SHA bits=256 verify=NO);
+        Fri, 15 Nov 2019 18:43:46 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: unregister_netdevice: waiting for DEV to become free (2)
+To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        bpf <bpf@vger.kernel.org>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Edward Cree <ecree@solarflare.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        syzbot <syzbot+30209ea299c09d8785c9@syzkaller.appspotmail.com>,
+        ddstreet@ieee.org, Dmitry Vyukov <dvyukov@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        bpf <bpf@vger.kernel.org>, Yonghong Song <yhs@fb.com>
+References: <00000000000056268e05737dcb95@google.com>
+ <0000000000007d22100573d66078@google.com>
+ <063a57ba-7723-6513-043e-ee99c5797271@I-love.SAKURA.ne.jp>
+ <CAADnVQJ7BZMVSt9on4updWrWsFWq6b5J1qEGwTdGYV+BLqH7tg@mail.gmail.com>
+ <87imopgere.fsf@toke.dk>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <6f69f704-b51d-c3cb-02c6-8e6eb93f4194@i-love.sakura.ne.jp>
+Date:   Fri, 15 Nov 2019 18:43:36 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.1
+MIME-Version: 1.0
+In-Reply-To: <87imopgere.fsf@toke.dk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 15 Nov 2019 at 01:30, Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-[...]
->
-> Could you try optimizing emit_mov_imm64() to recognize s32 ?
-> iirc there was a single x86 insns that could move and sign extend.
-> That should cut down on bytecode size and probably make things a bit fast=
-er?
-> Another alternative is compare lower 32-bit only, since on x86-64 upper 3=
-2
-> should be ~0 anyway for bpf prog pointers.
+Hello.
 
-Good ideas, thanks! I'll do the optimization, extend it to >4 entries
-(as Toke suggested), and do a non-RFC respin.
+syzbot is still reporting that bpf(BPF_MAP_UPDATE_ELEM) causes
+unregister_netdevice() to hang. It seems that commit 546ac1ffb70d25b5
+("bpf: add devmap, a map for storing net device references") assigned
+dtab->netdev_map[i] at dev_map_update_elem() but commit 6f9d451ab1a33728
+("xdp: Add devmap_hash map type for looking up devices by hashed index")
+forgot to assign dtab->netdev_map[idx] at __dev_map_hash_update_elem()
+when dev is newly allocated by __dev_map_alloc_node(). As far as I and
+syzbot tested, https://syzkaller.appspot.com/x/patch.diff?x=140dd206e00000
+can avoid the problem, but I don't know whether this is right location to
+assign it. Please check and fix.
 
-> Looking at bookkeeping code, I think I should be able to generalize bpf
-> trampoline a bit and share the code for bpf dispatch.
-
-Ok, good!
-
-> Could you also try aligning jmp target a bit by inserting nops?
-> Some x86 cpus are sensitive to jmp target alignment. Even without conside=
-ring
-> JCC bug it could be helpful. Especially since we're talking about XDP/AF_=
-XDP
-> here that will be pushing millions of calls through bpf dispatch.
->
-
-Yeah, I need to address the Jcc bug anyway, so that makes sense.
-
-Another thought; I'm using the fentry nop as patch point, so it wont
-play nice with other users of fentry atm -- but the plan is to move to
-Steve's *_ftrace_direct work at some point, correct?
-
-
-Bj=C3=B6rn
