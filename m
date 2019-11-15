@@ -2,53 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 80854FD295
-	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2019 02:50:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8503FFD2D6
+	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2019 03:13:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727239AbfKOBuG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Nov 2019 20:50:06 -0500
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:34041 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726956AbfKOBuG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Nov 2019 20:50:06 -0500
-Received: by mail-pf1-f195.google.com with SMTP id n13so5554321pff.1;
-        Thu, 14 Nov 2019 17:50:05 -0800 (PST)
+        id S1727264AbfKOCNY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Nov 2019 21:13:24 -0500
+Received: from mail-pl1-f181.google.com ([209.85.214.181]:37991 "EHLO
+        mail-pl1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727053AbfKOCNY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Nov 2019 21:13:24 -0500
+Received: by mail-pl1-f181.google.com with SMTP id w8so3579032plq.5;
+        Thu, 14 Nov 2019 18:13:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=c61Ig9SwSoDqV7zYUXQJVmC/opkuC1ckBKs3j2LfZ8E=;
-        b=X6cVeiofk1m8oDoYmfhokhr3mDnJcd6YUIivEM8+ec8ZYmmMpARpo2iMJLxrvQk7Ll
-         09YorFNiMK6vBqQi4MMXXc+Pw6ANivhcI2G0zJZ2ssO72/fif7cwwi0ZuUg7yqsN00GS
-         iy+2N59lvsdwVCk9lVsLEfU51xfTceJ+FpxYEDdJ04dTCShiU/0/BKnON3bSC6sz0NBP
-         awAFgc/WuB2JpgkGubQacYjGS0Zk3AXgBJHuhCr2vbzlEi0hlpeqzCtkC+/nN9XECtSC
-         7kxP1/5hC2kfPiwY8249dyf6vXAdPGwOXNGMHzcHKlcSvomXrPpvk+Pn2wo0iRWc4n00
-         U7Gg==
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=+CdVfcfXukusFlzSs9OadIqqjeGIFwrHJWdF7J1JrZk=;
+        b=TqvcFOyT07AzXsW+lDTtfRhowXoqJH/+f9rgPSyQQuviDUUDBdAPMfQ02LGKVkeWAM
+         X5Oh3nmWirKkU4EChJXlm3US5ZMjhfIm+uk7KNp5acN51KZnKrr5StzNuLN/S9J0zBIj
+         mRGWjxR08gdrFSWgX+7yE7qvFq1jW3QTGSw5XD9KbroUScsVJ2lMVUPRK2aGr9oRZc/u
+         HPt3+C8yImykHqmg9V7DYdQ8KCgBLwCmORWihjNzzzysXs6LySjWpzZQBzfhAN7MCqCz
+         BXKvx8wD+PeJu5Gv12zFx31mOyrYTUs1m/dTZ0kOdIG2ujn42LhzQDXNaO8ztwo3LI2Y
+         iOUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=c61Ig9SwSoDqV7zYUXQJVmC/opkuC1ckBKs3j2LfZ8E=;
-        b=sV26QJC6Icbc2Vkm8190t1ntQW35ngGZ6h9FFoauQded4OpfL5ELQQp4tOhNgs6VTb
-         zv7TvJMk1uvXLX5Z3cxV4wTIJvAxFUHoLnonXLoqF6Du0B+G7izPeXzsonfPxw+PGY/n
-         SibYH1t6LBvYeKmulZS/WsePFelXa8FhTdMUN3Dq8JxoF264YxH1ePL8GU+o3iPofqla
-         jLpRAzob1tt/D92CaMzg6L2Ul8b9aZClzAyP203Rmf9NCUomi4K8vezXQ/F8Dm7rEYZY
-         BrPv2yRUDwEAZ1yM7lx0/KJleYub5sU9jM9yMdPGkI4jydXxJOYt5PkoYQXuuvxNKovV
-         vFAg==
-X-Gm-Message-State: APjAAAVaUt4of8riQyqILlv2qhJGLakg2IcDPTY+L06VPu1MR1UiHhi6
-        D+hHVDMYM5Cj3dTsznqK4bA=
-X-Google-Smtp-Source: APXvYqweRFwLYD1YzcH+8o+vHooL43IMa8Qu6x4b+uHj1uQmVERPeMJ4ClvjfiV8YKDES/ckY8kDIA==
-X-Received: by 2002:a17:90a:ba81:: with SMTP id t1mr16166868pjr.139.1573782605331;
-        Thu, 14 Nov 2019 17:50:05 -0800 (PST)
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=+CdVfcfXukusFlzSs9OadIqqjeGIFwrHJWdF7J1JrZk=;
+        b=NBCXRHCT8xPFNYGmiimsVoDWv2B+MC9r6tuQEpG1y6r3rc2A0bEjBY0dsva+CSUo/q
+         RdWhD66XurtYAJfnPg/+u0hjEig04BHQKrByvZ79bm5s3Z0zHhJoJ866lUcM+gZPzqXq
+         5Pgi5ZpUk2pyMJ1zlXi7xg/h8+VMyxXMQfmY5LPNstwyVHokXOJQJ0TUHh7sJD4r1w04
+         Td6wDWL6K/KIVQs3KgNymQYaXUBr7zfN8x+NIylwWtMz10si6KMtR1uMDg+sU9MYX9to
+         slK+bZqlfeVxViRdObYr8Cs8i0+BIx01jbEl/PpA9kDIzsiBi3Gxavr/hJmEMTSksYJ0
+         J9lQ==
+X-Gm-Message-State: APjAAAXA0W/hFRRPwfFUF9uwkDZKuXuNrul/ZYKDOAJiGSc10cAc5X6k
+        6GB39XoNeZKehw0kchveSqbKIQ0R
+X-Google-Smtp-Source: APXvYqzzOuHDtgVFgkH1+adMfwt2qKexKxa7pYaEglmRDGzwX06iBm4DMtR3Jjm2mlvXhb/LF41Uag==
+X-Received: by 2002:a17:90a:fc91:: with SMTP id ci17mr16190432pjb.13.1573784003140;
+        Thu, 14 Nov 2019 18:13:23 -0800 (PST)
 Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:200::6ab4])
-        by smtp.gmail.com with ESMTPSA id w15sm7407109pfn.13.2019.11.14.17.50.03
+        by smtp.gmail.com with ESMTPSA id v15sm8810994pfc.85.2019.11.14.18.13.21
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 14 Nov 2019 17:50:04 -0800 (PST)
-Date:   Thu, 14 Nov 2019 17:50:02 -0800
+        Thu, 14 Nov 2019 18:13:22 -0800 (PST)
+Date:   Thu, 14 Nov 2019 18:13:19 -0800
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     John Fastabend <john.fastabend@gmail.com>
+To:     Edward Cree <ecree@solarflare.com>
 Cc:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Edward Cree <ecree@solarflare.com>,
+        John Fastabend <john.fastabend@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <ast@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
@@ -61,7 +63,7 @@ Cc:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
         bpf@vger.kernel.org
 Subject: Re: static and dynamic linking. Was: [PATCH bpf-next v3 1/5] bpf:
  Support chain calling multiple BPF
-Message-ID: <20191115015001.iyqipxhoqt77iade@ast-mbp.dhcp.thefacebook.com>
+Message-ID: <20191115021318.sj5zfokruljugcno@ast-mbp.dhcp.thefacebook.com>
 References: <70142501-e2dd-1aed-992e-55acd5c30cfd@solarflare.com>
  <874l07fu61.fsf@toke.dk>
  <aeae7b94-090a-a850-4740-0274ab8178d5@solarflare.com>
@@ -69,93 +71,73 @@ References: <70142501-e2dd-1aed-992e-55acd5c30cfd@solarflare.com>
  <20191112025112.bhzmrrh2pr76ssnh@ast-mbp.dhcp.thefacebook.com>
  <87h839oymg.fsf@toke.dk>
  <20191112195223.cp5kcmkko54dsfbg@ast-mbp.dhcp.thefacebook.com>
- <5dcb3f4e8be4_3202ae6af4ec5bcac@john-XPS-13-9370.notmuch>
- <20191113002058.bkch563wm6vhmn3l@ast-mbp.dhcp.thefacebook.com>
- <5dcb959eb9d15_6dcc2b08358745c0f9@john-XPS-13-9370.notmuch>
+ <8c251f3d-67bd-9bc2-8037-a15d93b48674@solarflare.com>
+ <20191112231822.o3gir44yskmntgnq@ast-mbp.dhcp.thefacebook.com>
+ <0c90adc4-5992-8648-88bf-4993252e8992@solarflare.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <5dcb959eb9d15_6dcc2b08358745c0f9@john-XPS-13-9370.notmuch>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0c90adc4-5992-8648-88bf-4993252e8992@solarflare.com>
 User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 12, 2019 at 09:33:18PM -0800, John Fastabend wrote:
-> 
-> In addition to above flow something like this to load libraries first should
-> also work?
-> 
->    // here fw2 is a library its never attached to anything but can be
->    // used to pull functions from
->    obj = bpf_object__open("fw2.o", attr);
->    bpf_object__load(obj);
->    prog = bpf_object__find_program_by_title(obj);
->    subprog_btf_id0 = libbpf_find_obj_btf_id("name of function", obj);
->    subprog_btf_id1 = libbpf_find_obj_btf_id("name of function", obj);
-> 
->    // all pairs of (prog_fd, btf_id) need to be specified at load time
->    attr.attach[0].prog_fd = fw2_fd;
->    attr.attach[0].btf_id = subprog_btf_id0;
->    attr.attach[1].prog_fd = fw2_fd;
->    attr.attach[1].btf_id = subprog_btf_id1;
->    obj = bpf_object__open("rootlet.o", attr)
->    bpf_object__load(obj)
->    prog = bpf_object__find_program_by_title(obj);
->    link = bpf_program__replace(prog);
->    // attach rootlet.o at this point with subprog_btf_id
+On Wed, Nov 13, 2019 at 06:30:04PM +0000, Edward Cree wrote:
+> > There is also
+> > no way to place extern into a section. Currently SEC("..") is a standard way to
+> > annotate bpf programs.
+> While the symbol itself doesn't have a section, each _use_ of the symbol has a
+>  reloc, and the SHT_REL[A] in which that reloc resides has a sh_info specifying
+>  "the section header index of the section to which the relocation applies."  So
+>  can't that be used if symbol visibility needs to depend on section?  Tbh I
+>  can't exactly see why externs need placing in a section in the first place.
 
-The point I'm arguing that these:
-   attr.attach[0].prog_fd = fw2_fd;
-   attr.attach[0].btf_id = subprog_btf_id0;
-   attr.attach[1].prog_fd = fw2_fd;
-   attr.attach[1].btf_id = subprog_btf_id1;
-should not be part of libbpf api. Instead libbpf should be able to adjust
-relocations inside the program. You're proposing to do linking via explicit
-calls, I'm saying such linking should be declarative. libbpf should be able to
-derive the intent from the program and patch calls.
+I think section for extern can give a scope of search and make libbpf decisions
+more predictable? May be we can live without it for now, but we need BTF of
+extern symbols. See my example in reply to John.
 
-Example:
-helpers.o:
-int foo(struct xdp_md *ctx, int var) {...}
-int bar(int *array, bpf_size_t size) {...}
-obj = bpf_object__open("helpers.o", attr)
-bpf_object__load(obj);
-// load and verify helpers. 'foo' and 'bar' are not attachable to anything.
-// These two programs don't have program type.
-// The kernel loaded and verified them.
-main_prog.o:
-int foo(struct xdp_md *ctx, int var);
-int bar(int *array, bpf_size_t size);
-int main_prog(struct xdp_md *ctx) 
-{ 
-  int ar[5], ret;
-  ret = foo(ctx, 1) + bar(ar, 5);
+> > I think we need to be able to specify something like section to
+> > extern variables and functions.
+> It seems unnecessary to have the user code specify this.  Another a bad
+>  analogy: in userland C code you don't have to annotate the function protos in
+>  your header files to say whether they come from another .o file, a random
+>  library or the libc.  You just declare "a function called this exists somewhere
+>  and we'll find it at link time".
+
+yeah. good analogy.
+
+> > I was imagining that the verifier will do per-function verification
+> > of program with sub-programs instead of analyzing from root.
+> Ah I see.  Yes, that's a very attractive design.
+> 
+> If we make it from a sufficiently generic idea of pre/postconditions, then it
+>  could also be useful for e.g. loop bodies (user-supplied annotations that allow
+>  us to walk the body only once instead of N times); then a function call just
+>  gets standard pre/postconditions generated from its argument types if the user
+>  didn't specify something else.
+
+regarding pre/post conditions.
+I think we have them already. These conditions are the function prototypes.
+Instead of making the verifier figuring the conditions it's simpler to use
+function prototypes instead. If program author is saying that argument to the
+function is 'struct xpd_md *' the verifier will check that the function is safe
+when such pointer is passed into it. Then to verify the callsite the verifier
+only need to check that what is passed into such function matches the type. I
+think it's easy to see when such type is context. Like 'struct __sk_buff *'.
+But the idea applies to pointer to int too. I believe you were arguing that
+instead of tnum_unknown there could be cases with tnum_range(0-2) as
+pre-condition is useful. May be. I think it will simplify the verifier logic
+quite a bit if we avoid going fine grain.
+Say we have a function:
+int foo(struct __sk_buff *skb, int arg)
+{
+   if (arg > 2)
+      return 0;
+   // do safe stuff with skb depending whether arg is 0, 1, or 2.
 }
-// 'foo' and 'bar' are extern functions from main_prog pov.
-obj = bpf_object__open("main_prog.o", attr)
-bpf_object__load(obj);
-// libbpf finds foo/bar in the kernel and adjusts two call instructions inside
-// main_prog to point to prog_fd+btf_id
-
-That is the second use case of dynamic linking I've been talking earlier. The
-same thing should be possible to do with static linking. Then libbpf will
-adjust calls inside main_prog to be 'call pc+123' and 'foo' and 'bar' will
-become traditional bpf subprograms. main_prog() has single 'struct xdp_md *'
-argument. It is normal attachable XDP program.
-
-Loading main_prog.o first and then loading helpers.o should be possible as
-well. The verifier needs BTF of extern 'foo' and 'bar' symbols to be able to
-verify main_prog() independently. For example to check that main_prog() is
-passing correct ctx into foo(). That is the main difference vs traditional
-dynamic linking. I think we all agree that we want bpf programs to be verified
-independently. To do that the verifier needs to have BTF (function prototypes)
-of extern symbols. One can argue that it's not necessary and helpers.o can be
-loaded first. I don't think that will work in all cases. There could be many
-dependencies between helpers1.o calling another helpers2.o and so on and there
-will be no good order where calling extern foo() can be avoided.
-
-This thread is getting long :) and sounds like we're converging. I'm thinking
-to combine everything we've discussed so far into dynamic/static linking doc.
+That first 'if' is enough to turn pre-conditions into 'any skb' and 'any arg'.
+That is exactly what BTF says about this function.
 
