@@ -2,217 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 77013FE48B
-	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2019 19:06:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19AEEFE680
+	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2019 21:43:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726365AbfKOSGe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 Nov 2019 13:06:34 -0500
-Received: from mga05.intel.com ([192.55.52.43]:12098 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726131AbfKOSGe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 15 Nov 2019 13:06:34 -0500
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 15 Nov 2019 10:06:33 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,309,1569308400"; 
-   d="scan'208";a="203454343"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
-  by fmsmga008.fm.intel.com with ESMTP; 15 Nov 2019 10:06:32 -0800
-Date:   Fri, 15 Nov 2019 10:06:32 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, bpf@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, kvm@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
-        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 09/24] vfio, mm: fix get_user_pages_remote() and
- FOLL_LONGTERM
-Message-ID: <20191115180631.GA23832@iweiny-DESK2.sc.intel.com>
-References: <20191115055340.1825745-1-jhubbard@nvidia.com>
- <20191115055340.1825745-10-jhubbard@nvidia.com>
+        id S1726995AbfKOUnC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 Nov 2019 15:43:02 -0500
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:39588 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726549AbfKOUnC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 15 Nov 2019 15:43:02 -0500
+Received: by mail-lf1-f68.google.com with SMTP id j14so8973270lfk.6
+        for <bpf@vger.kernel.org>; Fri, 15 Nov 2019 12:43:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :organization:mime-version:content-transfer-encoding;
+        bh=t1kmXn3DyN+oFbpE0GUcOMwvt7CaLBdPQtzGMkEvuuo=;
+        b=L4BOM+ma7vZ+5IMmlzYDyPuXeIG8inY6qKkKLmdIa6fwTU1Oox/CRwFDH6cEUwPHvn
+         gUhmjArFefBw2iBF0sXANS3OtgQ9ldypJP+hiBYPfEslHky01GluebRRvCmT64ajDOd9
+         W1SQkD+Mryy7+KtbKHkBoaLJRcO/GVJZX6ez7FQKD7XRFxdq3Z/lXV7wrAku7l6OZaQQ
+         t9qIEEnzXTQaz63YQainhYftsVm15y8xLJ0dwDHCsSN4Z9HZj6cr8Dz7xV9D7Ks+KU23
+         aY3lg9rfRbycQaoDe2H0h6YeiLJ03jXx/1FdYNhWl3uD39HDxc0e/B8NNRvF3UMHlI/1
+         x06w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=t1kmXn3DyN+oFbpE0GUcOMwvt7CaLBdPQtzGMkEvuuo=;
+        b=dZK5ByebzcY6YyD+00bgU+QyzB+uPQSSwm0R3jantF4ja8lLyfykxM5IYS4hnx++dq
+         9NpEdjgDRi0OHSBj1il47qLva0ChYm+lIjbzqY//fNwbFhj0c1OhZcfuk6zsyytyHxRu
+         lEglUNf6UiPdUIXmsjoyTMkEF/okPh1HzeFPRfsI36VCnuKzGpf302DYsXrFDXIofL5f
+         x0SVhYkiqxNEGApHV3/QRCTtqZ/PHFDM9xOqvIeIkeCyj2noHz7IBEvwn6UIHDyxW1MD
+         sXjejmzJLAVpWkzPHwMiuX2zdzAVuU1vDtW0Kn3O9hWJBvWLdBmACR7K0QnOTW4aIBzF
+         U3Wg==
+X-Gm-Message-State: APjAAAVZ1ehK2XIiqlDxYCo1z9xwx18iUtUrrwaj23Qub21CavfZsNUS
+        U+E9FKr5Zg2Kya08NkV4osfHNw==
+X-Google-Smtp-Source: APXvYqxfIcKVLtbBh2FpSLw2e7hTrC36NJile3EdMyK78ZMtjgyZxfmfvXXqKdVHw+zm2Tv0rY9Dfw==
+X-Received: by 2002:a19:cb4a:: with SMTP id b71mr12475061lfg.90.1573850579868;
+        Fri, 15 Nov 2019 12:42:59 -0800 (PST)
+Received: from cakuba.netronome.com ([66.60.152.14])
+        by smtp.gmail.com with ESMTPSA id 30sm4539202ljw.29.2019.11.15.12.42.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Nov 2019 12:42:59 -0800 (PST)
+Date:   Fri, 15 Nov 2019 12:42:49 -0800
+From:   Jakub Kicinski <jakub.kicinski@netronome.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Rik van Riel <riel@surriel.com>
+Subject: Re: [PATCH v4 bpf-next 2/4] bpf: add mmap() support for
+ BPF_MAP_TYPE_ARRAY
+Message-ID: <20191115124249.0ad3496d@cakuba.netronome.com>
+In-Reply-To: <CAEf4Bzat=GDcZWWpGkPWYBJvpKA=PvhhP0QZrEcOOkQz3WvnaA@mail.gmail.com>
+References: <20191115040225.2147245-1-andriin@fb.com>
+        <20191115040225.2147245-3-andriin@fb.com>
+        <20191115044518.sqh3y3bwtjfp5zex@ast-mbp.dhcp.thefacebook.com>
+        <CAEf4BzbE+1s_4=jpWEgNj+T0HyMXt1yjiRncq4sB3vfx6A3Sxw@mail.gmail.com>
+        <20191115050824.76gmttbxd32jnnhb@ast-mbp.dhcp.thefacebook.com>
+        <CAEf4BzbsJSEgnW14F7Xt+E911NC_ZqEUeLg0pxrUbaoj1Zzkyg@mail.gmail.com>
+        <CAEf4Bzat=GDcZWWpGkPWYBJvpKA=PvhhP0QZrEcOOkQz3WvnaA@mail.gmail.com>
+Organization: Netronome Systems, Ltd.
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191115055340.1825745-10-jhubbard@nvidia.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 14, 2019 at 09:53:25PM -0800, John Hubbard wrote:
-> As it says in the updated comment in gup.c: current FOLL_LONGTERM
-> behavior is incompatible with FAULT_FLAG_ALLOW_RETRY because of the
-> FS DAX check requirement on vmas.
+On Fri, 15 Nov 2019 08:36:56 -0800, Andrii Nakryiko wrote:
+> Alternatively we can use spinlock. I don't think it's too ugly, tbh. See below.
 > 
-> However, the corresponding restriction in get_user_pages_remote() was
-> slightly stricter than is actually required: it forbade all
-> FOLL_LONGTERM callers, but we can actually allow FOLL_LONGTERM callers
-> that do not set the "locked" arg.
+> From 0da495b911adad495857f1c0fc3596f1d06a705f Mon Sep 17 00:00:00 2001
+> From: Andrii Nakryiko <andriin@fb.com>
+> Date: Fri, 15 Nov 2019 08:32:43 -0800
+> Subject: [PATCH bpf-next] bpf: switch freeze locking to use spin_lock and save
+>  space
 > 
-> Update the code and comments accordingly, and update the VFIO caller
-> to take advantage of this, fixing a bug as a result: the VFIO caller
-> is logically a FOLL_LONGTERM user.
-> 
-> Also, remove an unnessary pair of calls that were releasing and
-> reacquiring the mmap_sem. There is no need to avoid holding mmap_sem
-> just in order to call page_to_pfn().
-> 
-> Also, move the DAX check ("if a VMA is DAX, don't allow long term
-> pinning") from the VFIO call site, all the way into the internals
-> of get_user_pages_remote() and __gup_longterm_locked(). That is:
-> get_user_pages_remote() calls __gup_longterm_locked(), which in turn
-> calls check_dax_vmas(). It's lightly explained in the comments as well.
-> 
-> Thanks to Jason Gunthorpe for pointing out a clean way to fix this,
-> and to Dan Williams for helping clarify the DAX refactoring.
-> 
-> Suggested-by: Jason Gunthorpe <jgg@ziepe.ca>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: Jerome Glisse <jglisse@redhat.com>
-> Cc: Ira Weiny <ira.weiny@intel.com>
+> Switch to spin_lock in favor of mutex. Due to mmap-ing itself happening not
+> under spinlock, there needs to be an extra "correction" step for writecnt, if
+> mapping fails.
 
-Reviewed-by: Ira Weiny <ira.weiny@intel.com>
-
-> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
-> ---
->  drivers/vfio/vfio_iommu_type1.c | 30 +++++-------------------------
->  mm/gup.c                        | 27 ++++++++++++++++++++++-----
->  2 files changed, 27 insertions(+), 30 deletions(-)
-> 
-> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-> index d864277ea16f..c7a111ad9975 100644
-> --- a/drivers/vfio/vfio_iommu_type1.c
-> +++ b/drivers/vfio/vfio_iommu_type1.c
-> @@ -340,7 +340,6 @@ static int vaddr_get_pfn(struct mm_struct *mm, unsigned long vaddr,
->  {
->  	struct page *page[1];
->  	struct vm_area_struct *vma;
-> -	struct vm_area_struct *vmas[1];
->  	unsigned int flags = 0;
->  	int ret;
->  
-> @@ -348,33 +347,14 @@ static int vaddr_get_pfn(struct mm_struct *mm, unsigned long vaddr,
->  		flags |= FOLL_WRITE;
->  
->  	down_read(&mm->mmap_sem);
-> -	if (mm == current->mm) {
-> -		ret = get_user_pages(vaddr, 1, flags | FOLL_LONGTERM, page,
-> -				     vmas);
-> -	} else {
-> -		ret = get_user_pages_remote(NULL, mm, vaddr, 1, flags, page,
-> -					    vmas, NULL);
-> -		/*
-> -		 * The lifetime of a vaddr_get_pfn() page pin is
-> -		 * userspace-controlled. In the fs-dax case this could
-> -		 * lead to indefinite stalls in filesystem operations.
-> -		 * Disallow attempts to pin fs-dax pages via this
-> -		 * interface.
-> -		 */
-> -		if (ret > 0 && vma_is_fsdax(vmas[0])) {
-> -			ret = -EOPNOTSUPP;
-> -			put_page(page[0]);
-> -		}
-> -	}
-> -	up_read(&mm->mmap_sem);
-> -
-> +	ret = get_user_pages_remote(NULL, mm, vaddr, 1, flags | FOLL_LONGTERM,
-> +				    page, NULL, NULL);
->  	if (ret == 1) {
->  		*pfn = page_to_pfn(page[0]);
-> -		return 0;
-> +		ret = 0;
-> +		goto done;
->  	}
->  
-> -	down_read(&mm->mmap_sem);
-> -
->  	vaddr = untagged_addr(vaddr);
->  
->  	vma = find_vma_intersection(mm, vaddr, vaddr + 1);
-> @@ -384,7 +364,7 @@ static int vaddr_get_pfn(struct mm_struct *mm, unsigned long vaddr,
->  		if (is_invalid_reserved_pfn(*pfn))
->  			ret = 0;
->  	}
-> -
-> +done:
->  	up_read(&mm->mmap_sem);
->  	return ret;
->  }
-> diff --git a/mm/gup.c b/mm/gup.c
-> index b859bd4da4d7..6cf613bfe7dc 100644
-> --- a/mm/gup.c
-> +++ b/mm/gup.c
-> @@ -29,6 +29,13 @@ struct follow_page_context {
->  	unsigned int page_mask;
->  };
->  
-> +static __always_inline long __gup_longterm_locked(struct task_struct *tsk,
-> +						  struct mm_struct *mm,
-> +						  unsigned long start,
-> +						  unsigned long nr_pages,
-> +						  struct page **pages,
-> +						  struct vm_area_struct **vmas,
-> +						  unsigned int flags);
->  /*
->   * Return the compound head page with ref appropriately incremented,
->   * or NULL if that failed.
-> @@ -1167,13 +1174,23 @@ long get_user_pages_remote(struct task_struct *tsk, struct mm_struct *mm,
->  		struct vm_area_struct **vmas, int *locked)
->  {
->  	/*
-> -	 * FIXME: Current FOLL_LONGTERM behavior is incompatible with
-> +	 * Parts of FOLL_LONGTERM behavior are incompatible with
->  	 * FAULT_FLAG_ALLOW_RETRY because of the FS DAX check requirement on
-> -	 * vmas.  As there are no users of this flag in this call we simply
-> -	 * disallow this option for now.
-> +	 * vmas. However, this only comes up if locked is set, and there are
-> +	 * callers that do request FOLL_LONGTERM, but do not set locked. So,
-> +	 * allow what we can.
->  	 */
-> -	if (WARN_ON_ONCE(gup_flags & FOLL_LONGTERM))
-> -		return -EINVAL;
-> +	if (gup_flags & FOLL_LONGTERM) {
-> +		if (WARN_ON_ONCE(locked))
-> +			return -EINVAL;
-> +		/*
-> +		 * This will check the vmas (even if our vmas arg is NULL)
-> +		 * and return -ENOTSUPP if DAX isn't allowed in this case:
-> +		 */
-> +		return __gup_longterm_locked(tsk, mm, start, nr_pages, pages,
-> +					     vmas, gup_flags | FOLL_TOUCH |
-> +					     FOLL_REMOTE);
-> +	}
->  
->  	return __get_user_pages_locked(tsk, mm, start, nr_pages, pages, vmas,
->  				       locked,
-> -- 
-> 2.24.0
-> 
+FWIW I was pondering that too, and thought your initial design was
+nicer, the transient errors sometimes become a major PITA.
