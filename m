@@ -2,44 +2,48 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 021C6FE8C2
-	for <lists+bpf@lfdr.de>; Sat, 16 Nov 2019 00:42:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5969AFE8CC
+	for <lists+bpf@lfdr.de>; Sat, 16 Nov 2019 00:44:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727136AbfKOXms (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 Nov 2019 18:42:48 -0500
-Received: from www62.your-server.de ([213.133.104.62]:58362 "EHLO
+        id S1727431AbfKOXov (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 Nov 2019 18:44:51 -0500
+Received: from www62.your-server.de ([213.133.104.62]:58544 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727083AbfKOXms (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 15 Nov 2019 18:42:48 -0500
+        with ESMTP id S1727056AbfKOXov (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 15 Nov 2019 18:44:51 -0500
 Received: from sslproxy05.your-server.de ([78.46.172.2])
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1iVlEj-0004sB-E5; Sat, 16 Nov 2019 00:42:45 +0100
+        id 1iVlGg-0004xi-FY; Sat, 16 Nov 2019 00:44:46 +0100
 Received: from [178.197.248.45] (helo=pc-9.home)
         by sslproxy05.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89)
         (envelope-from <daniel@iogearbox.net>)
-        id 1iVlEj-000QIP-5f; Sat, 16 Nov 2019 00:42:45 +0100
-Subject: Re: [PATCH rfc bpf-next 1/8] bpf, x86: generalize and extend
- bpf_arch_text_poke for direct jumps
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        john fastabend <john.fastabend@gmail.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-References: <cover.1573779287.git.daniel@iogearbox.net>
- <d2364bbaca1569b04e2434d8b58a458f21c685ef.1573779287.git.daniel@iogearbox.net>
- <CAEf4BzZau9d-feGEsOu617b7cd2aSfmmSi2TgwZbf4XZGBHASg@mail.gmail.com>
+        id 1iVlGg-0007qB-4D; Sat, 16 Nov 2019 00:44:46 +0100
+Subject: Re: [PATCH v4 bpf-next 2/4] bpf: add mmap() support for
+ BPF_MAP_TYPE_ARRAY
+To:     Alexei Starovoitov <ast@fb.com>, Andrii Nakryiko <andriin@fb.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Cc:     "andrii.nakryiko@gmail.com" <andrii.nakryiko@gmail.com>,
+        Kernel Team <Kernel-team@fb.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Rik van Riel <riel@surriel.com>
+References: <20191115040225.2147245-1-andriin@fb.com>
+ <20191115040225.2147245-3-andriin@fb.com>
+ <888858f7-97fb-4434-4440-a5c0ec5cbac8@iogearbox.net>
+ <293bb2fe-7599-3825-1bfe-d52224e5c357@fb.com>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <17b06848-c0e0-e766-912e-e11f85de9eca@iogearbox.net>
-Date:   Sat, 16 Nov 2019 00:42:44 +0100
+Message-ID: <3287b984-6335-cacb-da28-3d374afb7f77@iogearbox.net>
+Date:   Sat, 16 Nov 2019 00:44:45 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzZau9d-feGEsOu617b7cd2aSfmmSi2TgwZbf4XZGBHASg@mail.gmail.com>
+In-Reply-To: <293bb2fe-7599-3825-1bfe-d52224e5c357@fb.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Authenticated-Sender: daniel@iogearbox.net
 X-Virus-Scanned: Clear (ClamAV 0.101.4/25634/Fri Nov 15 10:44:37 2019)
 Sender: bpf-owner@vger.kernel.org
@@ -47,87 +51,82 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/16/19 12:22 AM, Andrii Nakryiko wrote:
-> On Thu, Nov 14, 2019 at 5:04 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+On 11/16/19 12:37 AM, Alexei Starovoitov wrote:
+> On 11/15/19 3:31 PM, Daniel Borkmann wrote:
+>> On 11/15/19 5:02 AM, Andrii Nakryiko wrote:
+>>> Add ability to memory-map contents of BPF array map. This is extremely
+>>> useful
+>>> for working with BPF global data from userspace programs. It allows to
+>>> avoid
+>>> typical bpf_map_{lookup,update}_elem operations, improving both
+>>> performance
+>>> and usability.
+>>>
+>>> There had to be special considerations for map freezing, to avoid having
+>>> writable memory view into a frozen map. To solve this issue, map
+>>> freezing and
+>>> mmap-ing is happening under mutex now:
+>>>     - if map is already frozen, no writable mapping is allowed;
+>>>     - if map has writable memory mappings active (accounted in
+>>> map->writecnt),
+>>>       map freezing will keep failing with -EBUSY;
+>>>     - once number of writable memory mappings drops to zero, map
+>>> freezing can be
+>>>       performed again.
+>>>
+>>> Only non-per-CPU plain arrays are supported right now. Maps with
+>>> spinlocks
+>>> can't be memory mapped either.
+>>>
+>>> For BPF_F_MMAPABLE array, memory allocation has to be done through
+>>> vmalloc()
+>>> to be mmap()'able. We also need to make sure that array data memory is
+>>> page-sized and page-aligned, so we over-allocate memory in such a way
+>>> that
+>>> struct bpf_array is at the end of a single page of memory with
+>>> array->value
+>>> being aligned with the start of the second page. On deallocation we
+>>> need to
+>>> accomodate this memory arrangement to free vmalloc()'ed memory correctly.
+>>>
+>>> One important consideration regarding how memory-mapping subsystem
+>>> functions.
+>>> Memory-mapping subsystem provides few optional callbacks, among them
+>>> open()
+>>> and close().  close() is called for each memory region that is
+>>> unmapped, so
+>>> that users can decrease their reference counters and free up
+>>> resources, if
+>>> necessary. open() is *almost* symmetrical: it's called for each memory
+>>> region
+>>> that is being mapped, **except** the very first one. So bpf_map_mmap does
+>>> initial refcnt bump, while open() will do any extra ones after that. Thus
+>>> number of close() calls is equal to number of open() calls plus one more.
+>>>
+>>> Cc: Johannes Weiner <hannes@cmpxchg.org>
+>>> Cc: Rik van Riel <riel@surriel.com>
+>>> Acked-by: Song Liu <songliubraving@fb.com>
+>>> Acked-by: John Fastabend <john.fastabend@gmail.com>
+>>> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 >>
->> Add BPF_MOD_{NOP_TO_JUMP,JUMP_TO_JUMP,JUMP_TO_NOP} patching for x86
->> JIT in order to be able to patch direct jumps or nop them out. We need
->> this facility in order to patch tail call jumps and in later work also
->> BPF static keys.
+>> [...]
+>>> +/* called for any extra memory-mapped regions (except initial) */
+>>> +static void bpf_map_mmap_open(struct vm_area_struct *vma)
+>>> +{
+>>> +    struct bpf_map *map = vma->vm_file->private_data;
+>>> +
+>>> +    bpf_map_inc(map);
 >>
->> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
->> ---
+>> This would also need to inc uref counter since it's technically a reference
+>> of this map into user space as otherwise if map->ops->map_release_uref
+>> would
+>> be used for maps supporting mmap, then the callback would trigger even
+>> if user
+>> space still has a reference to it.
 > 
-> just naming nits, looks good otherwise
-> 
->>   arch/x86/net/bpf_jit_comp.c | 64 ++++++++++++++++++++++++++-----------
->>   include/linux/bpf.h         |  6 ++++
->>   2 files changed, 52 insertions(+), 18 deletions(-)
->>
->> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
->> index 2e586f579945..66921f2aeece 100644
->> --- a/arch/x86/net/bpf_jit_comp.c
->> +++ b/arch/x86/net/bpf_jit_comp.c
->> @@ -203,8 +203,9 @@ struct jit_context {
->>   /* Maximum number of bytes emitted while JITing one eBPF insn */
->>   #define BPF_MAX_INSN_SIZE      128
->>   #define BPF_INSN_SAFETY                64
->> -/* number of bytes emit_call() needs to generate call instruction */
->> -#define X86_CALL_SIZE          5
->> +
->> +/* Number of bytes emit_patchable() needs to generate instructions */
->> +#define X86_PATCHABLE_SIZE     5
->>
->>   #define PROLOGUE_SIZE          25
->>
->> @@ -215,7 +216,7 @@ struct jit_context {
->>   static void emit_prologue(u8 **pprog, u32 stack_depth, bool ebpf_from_cbpf)
->>   {
->>          u8 *prog = *pprog;
->> -       int cnt = X86_CALL_SIZE;
->> +       int cnt = X86_PATCHABLE_SIZE;
->>
->>          /* BPF trampoline can be made to work without these nops,
->>           * but let's waste 5 bytes for now and optimize later
->> @@ -480,64 +481,91 @@ static void emit_stx(u8 **pprog, u32 size, u32 dst_reg, u32 src_reg, int off)
->>          *pprog = prog;
->>   }
->>
->> -static int emit_call(u8 **pprog, void *func, void *ip)
->> +static int emit_patchable(u8 **pprog, void *func, void *ip, u8 b1)
-> 
-> I'd strongly prefer opcode instead of b1 :) also would emit_patch() be
-> a terrible name?
+> I thought we use uref only for array that can hold FDs ?
+> That's why I suggested Andrii earlier to drop uref++.
 
-Hmm, been using b1 since throughout the JIT we use u8 b1/b2/b3/.. for our
-EMIT*() macros to denote the encoding positions. So I thought it would be
-more conventional, but could also change to op if preferred.
-
->>   {
->>          u8 *prog = *pprog;
->>          int cnt = 0;
->>          s64 offset;
->>
-> 
-> [...]
-> 
->>          case BPF_MOD_CALL_TO_NOP:
->> -               if (memcmp(ip, old_insn, X86_CALL_SIZE))
->> +       case BPF_MOD_JUMP_TO_NOP:
->> +               if (memcmp(ip, old_insn, X86_PATCHABLE_SIZE))
->>                          goto out;
->> -               text_poke_bp(ip, ideal_nops[NOP_ATOMIC5], X86_CALL_SIZE, NULL);
->> +               text_poke_bp(ip, ideal_nops[NOP_ATOMIC5], X86_PATCHABLE_SIZE,
-> 
-> maybe keep it shorter with X86_PATCH_SIZE?
-
-Sure, then X86_PATCH_SIZE and emit_patch() it is.
-
->> +                            NULL);
->>                  break;
->>          }
->>          ret = 0;
-> 
-> [...]
-> 
-
+Yeah, only for fd array currently. Question is, if we ever reuse that map_release_uref
+callback in future for something else, will we remember that we earlier missed to add
+it here? :/
