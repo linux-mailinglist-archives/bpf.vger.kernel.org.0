@@ -2,85 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 39B9CFD342
-	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2019 04:23:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F17AEFD38C
+	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2019 05:03:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726674AbfKODXu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Nov 2019 22:23:50 -0500
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:46010 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726491AbfKODXu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Nov 2019 22:23:50 -0500
-Received: by mail-pf1-f196.google.com with SMTP id z4so5657915pfn.12;
-        Thu, 14 Nov 2019 19:23:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=mc9ObuKZI129W8OSfy3VEYUS0DDz4uy5r2u0ZDpAVtk=;
-        b=bVfxmkS1boVUkiynerVs4TW6Da1TBNqMIDoN0ev79uPhJvX08WefcrNTMpXSvxkd5B
-         rJqRPvIzeeiU+I5TTqrLVOvtyaTphrPdiFHfsC6FSUgmaTJCwbWBicc5mINq3SbF/2m4
-         ABd53qScBP8AM3WfeFKtQIQ2WDrSl10PyyvPo9Gy7W9RrnATEHXXyDprutAtlxhhs2xG
-         qqrz/27pnEfGIkqC0wkoB43/LVYmOtbrLpApnLbOPzSM2LV/MeptsM2Xo2mlqT27Fmil
-         jcyXgnAIX4gYmVFKO20GWgEGr18w76Qm2+SfMmRgPRz/9aFrCnBtqJzXBvYdZZ98T8M6
-         anug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=mc9ObuKZI129W8OSfy3VEYUS0DDz4uy5r2u0ZDpAVtk=;
-        b=i+Zrp5/6IvH5HvkCUtIiDD4poyhTqN0QzotiKr//ESftTkMA+26VyrAjSyc1s7eLsY
-         7kDwsPXYfZ6jDTUyWUozzfFR8W1HbZOx+YelnCSl05oDNHT5GAfDRmYQRiM6E7tGpuFB
-         62UAtaUcmVZulzSGOQJCI2iremPtYvGyVBXmiZ+ZuWcwo6O9T14FSHmSRTV7X8nQggos
-         9lEzd4MI+Yoo46mHLQ31fP2VrNmSwdRCZLeiu7RHc6bDr9Bsdsa01WagI2PRzv0asgqo
-         JxNXSK/y86G4G1RDrIZb5P7kNn+YLr/nLrxAHPB6rcZaHhAiX4l3BibP8DsOXFvwMOMs
-         iKcA==
-X-Gm-Message-State: APjAAAU3U2VgUBoV4wDvNwuX0rulOi0x/JAs+sOTdimE2mvnmniHYg9n
-        G3MLQ4dOL/EafUPHpcNdUDE=
-X-Google-Smtp-Source: APXvYqyuAf6dvTW+dhuK2J1TbuNaJ/JMPCB6e+aHJU8fAN5/JOIxhGx5+AzZfIqItKPtiB90IZAClA==
-X-Received: by 2002:a63:115c:: with SMTP id 28mr13765973pgr.6.1573788229212;
-        Thu, 14 Nov 2019 19:23:49 -0800 (PST)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:200::6ab4])
-        by smtp.gmail.com with ESMTPSA id k32sm8165332pje.10.2019.11.14.19.23.47
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 14 Nov 2019 19:23:48 -0800 (PST)
-Date:   Thu, 14 Nov 2019 19:23:46 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     ast@kernel.org, john.fastabend@gmail.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH rfc bpf-next 7/8] bpf, x86: emit patchable direct jump as
- tail call
-Message-ID: <20191115032345.loei6qqgyo4tdbuq@ast-mbp.dhcp.thefacebook.com>
-References: <cover.1573779287.git.daniel@iogearbox.net>
- <78a8cbc4887d00b3dc4705347f05572630650cbf.1573779287.git.daniel@iogearbox.net>
+        id S1727089AbfKOEDH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Nov 2019 23:03:07 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:26248 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726958AbfKOEDH (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 14 Nov 2019 23:03:07 -0500
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xAF42wfT013923
+        for <bpf@vger.kernel.org>; Thu, 14 Nov 2019 20:03:05 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=NjD6iYWWXMn0edcBKgfvhlw6MnG/DFIs2+m4hGfsSm8=;
+ b=mb2EJDZ2qIR1UaujUnsf79m7DMkoNimJb/5DQEK8D2NSTjn0i+bc2Imw/zcUSnHU8sLO
+ rMaoXzQG6DASVc1kxQXQ9mkGAMgal+0tIk2Rr3odjwJ6SgRcH23rLRkKPDY1LGOiI7U6
+ 1q0u7YxuLYhoWCGawdwqSOxH597PdUwAIp8= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by mx0a-00082601.pphosted.com with ESMTP id 2w9gffu7n2-11
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 14 Nov 2019 20:03:05 -0800
+Received: from 2401:db00:2120:81ca:face:0:31:0 (2620:10d:c081:10::13) by
+ mail.thefacebook.com (2620:10d:c081:35::129) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
+ Thu, 14 Nov 2019 20:02:53 -0800
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 4057F2EC1AEC; Thu, 14 Nov 2019 20:02:49 -0800 (PST)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH v4 bpf-next 0/4] Add support for memory-mapping BPF array maps
+Date:   Thu, 14 Nov 2019 20:02:21 -0800
+Message-ID: <20191115040225.2147245-1-andriin@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <78a8cbc4887d00b3dc4705347f05572630650cbf.1573779287.git.daniel@iogearbox.net>
-User-Agent: NeoMutt/20180223
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
+ definitions=2019-11-14_07:2019-11-14,2019-11-14 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
+ bulkscore=0 mlxscore=0 clxscore=1015 malwarescore=0 mlxlogscore=521
+ suspectscore=8 lowpriorityscore=0 phishscore=0 adultscore=0
+ priorityscore=1501 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-1910280000 definitions=main-1911150035
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 15, 2019 at 02:04:01AM +0100, Daniel Borkmann wrote:
-> for later modifications. In ii) fixup_bpf_tail_call_direct() walks
-> over the progs poke_tab, locks the tail call maps poke_mutex to
-> prevent from parallel updates and patches in the right locations via
-...
-> @@ -1610,6 +1671,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
->  		prog->bpf_func = (void *)image;
->  		prog->jited = 1;
->  		prog->jited_len = proglen;
-> +		fixup_bpf_tail_call_direct(prog);
+This patch set adds ability to memory-map BPF array maps (single- and
+multi-element). The primary use case is memory-mapping BPF array maps, created
+to back global data variables, created by libbpf implicitly. This allows for
+much better usability, along with avoiding syscalls to read or update data
+completely.
 
-Why not to move fixup_bpf_tail_call_direct() just before
-bpf_jit_binary_lock_ro() and use simple memcpy instead of text_poke ?
+Due to memory-mapping requirements, BPF array map that is supposed to be
+memory-mapped, has to be created with special BPF_F_MMAPABLE attribute, which
+triggers slightly different memory allocation strategy internally. See
+patch 1 for details.
 
-imo this logic in patch 7:
-case BPF_JMP | BPF_TAIL_CALL:
-+   if (imm32)
-+            emit_bpf_tail_call_direct(&bpf_prog->aux->poke_tab[imm32 - 1],
-would have been easier to understand if patch 7 and 8 were swapped.
+Libbpf is extended to detect kernel support for this flag, and if supported,
+will specify it for all global data maps automatically.
+
+Patch #1 refactors bpf_map_inc() and converts bpf_map's refcnt to atomic64_t
+to make refcounting never fail.
+
+v3->v4:
+- add mmap's open() callback to fix refcounting (Johannes);
+- switch to remap_vmalloc_pages() instead of custom fault handler (Johannes);
+- converted bpf_map's refcnt/usercnt into atomic64_t;
+- provide default bpf_map_default_vmops handling open/close properly;
+
+v2->v3:
+- change allocation strategy to avoid extra pointer dereference (Jakub);
+
+v1->v2:
+- fix map lookup code generation for BPF_F_MMAPABLE case;
+- prevent BPF_F_MMAPABLE flag for all but plain array map type;
+- centralize ref-counting in generic bpf_map_mmap();
+- don't use uref counting (Alexei);
+- use vfree() directly;
+- print flags with %x (Song);
+- extend tests to verify bpf_map_{lookup,update}_elem() logic as well.
+
+
+Andrii Nakryiko (4):
+  bpf: switch bpf_map ref counter to 64bit so bpf_map_inc never fails
+  bpf: add mmap() support for BPF_MAP_TYPE_ARRAY
+  libbpf: make global data internal arrays mmap()-able, if possible
+  selftests/bpf: add BPF_TYPE_MAP_ARRAY mmap() tests
+
+ .../net/ethernet/netronome/nfp/bpf/offload.c  |   4 +-
+ include/linux/bpf.h                           |  21 +-
+ include/linux/vmalloc.h                       |   1 +
+ include/uapi/linux/bpf.h                      |   3 +
+ kernel/bpf/arraymap.c                         |  59 ++++-
+ kernel/bpf/inode.c                            |   2 +-
+ kernel/bpf/map_in_map.c                       |   2 +-
+ kernel/bpf/syscall.c                          | 150 +++++++++---
+ kernel/bpf/verifier.c                         |   6 +-
+ kernel/bpf/xskmap.c                           |   6 +-
+ mm/vmalloc.c                                  |  20 ++
+ net/core/bpf_sk_storage.c                     |   2 +-
+ tools/include/uapi/linux/bpf.h                |   3 +
+ tools/lib/bpf/libbpf.c                        |  32 ++-
+ .../selftests/bpf/prog_tests/core_reloc.c     |  45 ++--
+ tools/testing/selftests/bpf/prog_tests/mmap.c | 220 ++++++++++++++++++
+ tools/testing/selftests/bpf/progs/test_mmap.c |  45 ++++
+ 17 files changed, 540 insertions(+), 81 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/mmap.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_mmap.c
+
+-- 
+2.17.1
 
