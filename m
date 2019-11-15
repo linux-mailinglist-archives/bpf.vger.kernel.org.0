@@ -2,132 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BC77EFDE08
-	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2019 13:37:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16895FDE1C
+	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2019 13:42:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727359AbfKOMhb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 Nov 2019 07:37:31 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:2254 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727355AbfKOMhb (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 15 Nov 2019 07:37:31 -0500
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xAFCWwgx037002
-        for <bpf@vger.kernel.org>; Fri, 15 Nov 2019 07:37:29 -0500
-Received: from e06smtp02.uk.ibm.com (e06smtp02.uk.ibm.com [195.75.94.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2w9nsmedq7-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 15 Nov 2019 07:37:29 -0500
-Received: from localhost
-        by e06smtp02.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
-        Fri, 15 Nov 2019 12:37:27 -0000
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (9.149.109.194)
-        by e06smtp02.uk.ibm.com (192.168.101.132) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Fri, 15 Nov 2019 12:37:26 -0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id xAFCbO8952101274
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 15 Nov 2019 12:37:25 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D413742041;
-        Fri, 15 Nov 2019 12:37:24 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 85D9F4203F;
-        Fri, 15 Nov 2019 12:37:24 +0000 (GMT)
-Received: from white.boeblingen.de.ibm.com (unknown [9.152.96.62])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 15 Nov 2019 12:37:24 +0000 (GMT)
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>
-Cc:     bpf@vger.kernel.org, Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH bpf-next v2] bpf: support doubleword alignment in bpf_jit_binary_alloc
-Date:   Fri, 15 Nov 2019 13:37:22 +0100
-X-Mailer: git-send-email 2.23.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-x-cbid: 19111512-0008-0000-0000-0000032F4595
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19111512-0009-0000-0000-00004A4E5834
-Message-Id: <20191115123722.58462-1-iii@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
- definitions=2019-11-15_03:2019-11-15,2019-11-15 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 adultscore=0
- malwarescore=0 impostorscore=0 mlxscore=0 spamscore=0 phishscore=0
- mlxlogscore=999 suspectscore=0 priorityscore=1501 bulkscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1910280000 definitions=main-1911150117
+        id S1727421AbfKOMm5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 Nov 2019 07:42:57 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:46054 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727272AbfKOMm4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 15 Nov 2019 07:42:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1573821775;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=VKSgyufm9lCSTbG6iAHD70fQpWTZJML7/dJPhf6V5lk=;
+        b=Z8kbReFgt3KEXC3uP2w2YwB0YAoj2RrjrnxjQt+7/vk3kOaomCD6vo3DD8g+E7MBnwaibF
+        Ab6S7pLUEjaemiK1eh7Q8ou+09Yks55oPew6L5pcX0FNvWtVJxOjk79YDYZ5RUNis7VMfK
+        f/C6+xUthFNBiFFWthKeRShm0yAJlXk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-79-vYiBxy1BNMmK6MDubHF4dg-1; Fri, 15 Nov 2019 07:42:53 -0500
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C9D2E1802CE3;
+        Fri, 15 Nov 2019 12:42:51 +0000 (UTC)
+Received: from griffin.upir.cz (unknown [10.40.206.11])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E860E5C548;
+        Fri, 15 Nov 2019 12:42:50 +0000 (UTC)
+From:   Jiri Benc <jbenc@redhat.com>
+To:     bpf@vger.kernel.org, netdev@vger.kernel.org
+Cc:     Alan Maguire <alan.maguire@oracle.com>
+Subject: [PATCH bpf] selftests: bpf: xdping is not meant to be run standalone
+Date:   Fri, 15 Nov 2019 13:42:32 +0100
+Message-Id: <4365c81198f62521344c2215909634407184387e.1573821726.git.jbenc@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+X-MC-Unique: vYiBxy1BNMmK6MDubHF4dg-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Currently passing alignment greater than 4 to bpf_jit_binary_alloc does
-not work: in such cases it silently aligns only to 4 bytes.
+The actual test to run is test_xdping.sh, which is already in TEST_PROGS.
+The xdping program alone is not runnable with 'make run_tests', it
+immediatelly fails due to missing arguments.
 
-On s390, in order to load a constant from memory in a large (>512k) BPF
-program, one must use lgrl instruction, whose memory operand must be
-aligned on an 8-byte boundary.
+Move xdping to TEST_GEN_PROGS_EXTENDED in order to be built but not run.
 
-This patch makes it possible to request 8-byte alignment from
-bpf_jit_binary_alloc, and also makes it issue a warning when an
-unsupported alignment is requested.
-
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Fixes: cd5385029f1d ("selftests/bpf: measure RTT from xdp using xdping")
+Cc: Alan Maguire <alan.maguire@oracle.com>
+Signed-off-by: Jiri Benc <jbenc@redhat.com>
 ---
+ tools/testing/selftests/bpf/Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-v1 -> v2: Simply bump alignment to 8, don't try to be too generic.
-
- include/linux/filter.h | 6 ++++--
- kernel/bpf/core.c      | 4 ++++
- 2 files changed, 8 insertions(+), 2 deletions(-)
-
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index 7a6f8f6f1da4..ad80e9c6111c 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -515,10 +515,12 @@ struct sock_fprog_kern {
- 	struct sock_filter	*filter;
- };
- 
-+/* Some arches need doubleword alignment for their instructions and/or data */
-+#define BPF_IMAGE_ALIGNMENT 8
-+
- struct bpf_binary_header {
- 	u32 pages;
--	/* Some arches need word alignment for their instructions */
--	u8 image[] __aligned(4);
-+	u8 image[] __aligned(BPF_IMAGE_ALIGNMENT);
- };
- 
- struct bpf_prog {
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index c1fde0303280..99693f3c4e99 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -31,6 +31,7 @@
- #include <linux/rcupdate.h>
- #include <linux/perf_event.h>
- #include <linux/extable.h>
-+#include <linux/log2.h>
- #include <asm/unaligned.h>
- 
- /* Registers */
-@@ -815,6 +816,9 @@ bpf_jit_binary_alloc(unsigned int proglen, u8 **image_ptr,
- 	struct bpf_binary_header *hdr;
- 	u32 size, hole, start, pages;
- 
-+	WARN_ON_ONCE(!is_power_of_2(alignment) ||
-+		     alignment > BPF_IMAGE_ALIGNMENT);
-+
- 	/* Most of BPF filters are really small, but if some of them
- 	 * fill a page, allow at least 128 extra bytes to insert a
- 	 * random section of illegal instructions.
--- 
-2.23.0
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests=
+/bpf/Makefile
+index 6889c19a628c..99193a241bc7 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -29,7 +29,7 @@ TEST_GEN_PROGS =3D test_verifier test_tag test_maps test_=
+lru_map test_lpm_map test
+ =09test_sock test_btf test_sockmap get_cgroup_id_user test_socket_cookie \
+ =09test_cgroup_storage test_select_reuseport test_section_names \
+ =09test_netcnt test_tcpnotify_user test_sock_fields test_sysctl test_hashm=
+ap \
+-=09test_btf_dump test_cgroup_attach xdping
++=09test_btf_dump test_cgroup_attach
+=20
+ BPF_OBJ_FILES =3D $(patsubst %.c,%.o, $(notdir $(wildcard progs/*.c)))
+ TEST_GEN_FILES =3D $(BPF_OBJ_FILES)
+@@ -82,7 +82,7 @@ TEST_PROGS_EXTENDED :=3D with_addr.sh \
+ # Compile but not part of 'make run_tests'
+ TEST_GEN_PROGS_EXTENDED =3D test_libbpf_open test_sock_addr test_skb_cgrou=
+p_id_user \
+ =09flow_dissector_load test_flow_dissector test_tcp_check_syncookie_user \
+-=09test_lirc_mode2_user
++=09test_lirc_mode2_user xdping
+=20
+ include ../lib.mk
+=20
+--=20
+2.18.1
 
