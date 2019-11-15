@@ -2,140 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A8490FDC85
-	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2019 12:48:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC77EFDE08
+	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2019 13:37:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726983AbfKOLs4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 Nov 2019 06:48:56 -0500
-Received: from mail-oi1-f174.google.com ([209.85.167.174]:40874 "EHLO
-        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727135AbfKOLsz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 15 Nov 2019 06:48:55 -0500
-Received: by mail-oi1-f174.google.com with SMTP id d22so1422121oic.7
-        for <bpf@vger.kernel.org>; Fri, 15 Nov 2019 03:48:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9GPmR1RHoM5XEidlvhXl8DpCMhSSpVMr2s8LhTaetUo=;
-        b=caDlsscO5M4zQIh58q+dXUMxvXiuxQRJuU2wP18uYJ8cxeIS9f1jxwaI4xV8lQoPy4
-         xr1nk59+5ZbsSPfLBDb94VzuIXfQ/Udb5UPBWs3SntlUCHhqRHP3vylj2n1J2hgOLZHK
-         bSexU1qchwK6fgNCpnQ8dXzOTuQiIPgkMRAas=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9GPmR1RHoM5XEidlvhXl8DpCMhSSpVMr2s8LhTaetUo=;
-        b=ba94sWViBn+DlANezibpCc2o5NtHTSLlkmqPoiyKcbxFBuL1CEBVwbxvRf3XlwMSP6
-         eNcsT0tXvZ1NC4TkmHgwSY2yKPo+Uf8uksXPhOXUYh8XFjwk62tVZB88Z7rMrGb+4Myj
-         N24dwiPSMexkhEgMCOlrTK8QKohADkV0V05ySxsmTPhGcMOquqcFWT2cXbmtNs4DNHr1
-         qBFymyE5d9MKi+vGvMoACvPxv1La2JB1r5rcqPKhHQWowVgmsd3PHp4SgQkQOTXrnlUI
-         EhfFhTaezMOhvRWDw/aP03Hme9X91ifYO+kLdNxxPq2KiyM0BFTXYZNOd7By9R4WvaH1
-         J6MQ==
-X-Gm-Message-State: APjAAAWo84l4YpleLFMxD8g8h3D2hJd+jdWAbza+Y+ZqVDLMKop/7vUZ
-        5JuQTzD/tA1XnzFPIWV49gtytiFxIlhUpPb1xLFALg==
-X-Google-Smtp-Source: APXvYqwHA7DX4s2fSU4j+a929BjylFpQuxPWMmBxeY+lV5DSTZLISTZYnV77TJnwW4DVSxPIfreJuOgk17CI3BrxZjc=
-X-Received: by 2002:aca:d803:: with SMTP id p3mr7623323oig.13.1573818533550;
- Fri, 15 Nov 2019 03:48:53 -0800 (PST)
+        id S1727359AbfKOMhb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 Nov 2019 07:37:31 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:2254 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727355AbfKOMhb (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 15 Nov 2019 07:37:31 -0500
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xAFCWwgx037002
+        for <bpf@vger.kernel.org>; Fri, 15 Nov 2019 07:37:29 -0500
+Received: from e06smtp02.uk.ibm.com (e06smtp02.uk.ibm.com [195.75.94.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2w9nsmedq7-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 15 Nov 2019 07:37:29 -0500
+Received: from localhost
+        by e06smtp02.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
+        Fri, 15 Nov 2019 12:37:27 -0000
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (9.149.109.194)
+        by e06smtp02.uk.ibm.com (192.168.101.132) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Fri, 15 Nov 2019 12:37:26 -0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id xAFCbO8952101274
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 15 Nov 2019 12:37:25 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D413742041;
+        Fri, 15 Nov 2019 12:37:24 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 85D9F4203F;
+        Fri, 15 Nov 2019 12:37:24 +0000 (GMT)
+Received: from white.boeblingen.de.ibm.com (unknown [9.152.96.62])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 15 Nov 2019 12:37:24 +0000 (GMT)
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>
+Cc:     bpf@vger.kernel.org, Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [PATCH bpf-next v2] bpf: support doubleword alignment in bpf_jit_binary_alloc
+Date:   Fri, 15 Nov 2019 13:37:22 +0100
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-References: <20191010044156.2hno4sszysu3c35g@ast-mbp.dhcp.thefacebook.com>
- <87v9srijxa.fsf@toke.dk> <5da4ab712043c_25f42addb7c085b83b@john-XPS-13-9370.notmuch>
- <87eezfi2og.fsf@toke.dk> <f9d5f717-51fe-7d03-6348-dbaf0b9db434@solarflare.com>
- <87r23egdua.fsf@toke.dk> <70142501-e2dd-1aed-992e-55acd5c30cfd@solarflare.com>
- <874l07fu61.fsf@toke.dk> <aeae7b94-090a-a850-4740-0274ab8178d5@solarflare.com>
- <87eez4odqp.fsf@toke.dk> <20191112025112.bhzmrrh2pr76ssnh@ast-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20191112025112.bhzmrrh2pr76ssnh@ast-mbp.dhcp.thefacebook.com>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Fri, 15 Nov 2019 11:48:42 +0000
-Message-ID: <CACAyw98dcpu1b2nUf7ize2SJGJGd=mhqRK+PYQTx96gSBtbkNQ@mail.gmail.com>
-Subject: Re: static and dynamic linking. Was: [PATCH bpf-next v3 1/5] bpf:
- Support chain calling multiple BPF
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Edward Cree <ecree@solarflare.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Marek Majkowski <marek@cloudflare.com>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+x-cbid: 19111512-0008-0000-0000-0000032F4595
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19111512-0009-0000-0000-00004A4E5834
+Message-Id: <20191115123722.58462-1-iii@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
+ definitions=2019-11-15_03:2019-11-15,2019-11-15 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 adultscore=0
+ malwarescore=0 impostorscore=0 mlxscore=0 spamscore=0 phishscore=0
+ mlxlogscore=999 suspectscore=0 priorityscore=1501 bulkscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-1911150117
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 12 Nov 2019 at 02:51, Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> This is static linking. The existing kernel infrastructure already supports
-> such model and I think it's enough for a lot of use cases. In particular fb's
-> firewall+katran XDP style will fit right in. But bpf_tail_calls are
-> incompatible with bpf2bpf calls that static linking will use and I think
-> cloudlfare folks expressed the interest to use them for some reason even within
-> single firewall ? so we need to improve the model a bit.
+Currently passing alignment greater than 4 to bpf_jit_binary_alloc does
+not work: in such cases it silently aligns only to 4 bytes.
 
-We several components that we'd like to keep (logically) separate. At a high
-level, our rootlet would look like this:
+On s390, in order to load a constant from memory in a large (>512k) BPF
+program, one must use lgrl instruction, whose memory operand must be
+aligned on an 8-byte boundary.
 
-  sample_packets(ctx);
-  if (ddos_mitigate(ctx) != XDP_PASS) {
-     return XDP_DROP;
-  }
-  return l4lb(ctx);
+This patch makes it possible to request 8-byte alignment from
+bpf_jit_binary_alloc, and also makes it issue a warning when an
+unsupported alignment is requested.
 
-I think we could statically link ddos_mitigate() together from
-multiple separate .o.
-It depends on how complicated our rules become. Maybe we'd use dynamic linking,
-to reduce the overhead of re-verification.
+Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+---
 
-The rootlet would use dynamic linking, to be able to debug / inspect
-sampling, ddos
-mitigation and the l4lb separately. Combined with the ability to hook
-arbitrary BPF
-programs at entry / exit we could probably get rid of our tail_call
-use. I don't think
-you have to change the model for us to fit into it.
+v1 -> v2: Simply bump alignment to 8, don't try to be too generic.
 
-> We can introduce dynamic linking. The second part of 'BPF trampoline' patches
-> allows tracing programs to attach to other BPF programs. The idea of dynamic
-> linking is to replace a program or subprogram instead of attaching to it.
+ include/linux/filter.h | 6 ++++--
+ kernel/bpf/core.c      | 4 ++++
+ 2 files changed, 8 insertions(+), 2 deletions(-)
 
-Reading the rest of the thread, I'm on board with type 2 of dynamic linking
-(load time linking?) However, type 1 (run time linking) I'm not so sure about.
-Specifically, the callee holding onto the caller instead of vice versa.
-
-Picking up your rootlet and fw1 example: fw1 holds the refcount on rootlet.
-This means user space needs to hold the refcount on fw1 to make sure
-the override is kept. This in turn means either: hold on to the file descriptor
-or pin the program into a bpffs. The former implies a persistent process,
-which doesn't work for tc. The latter makes  lifetime management of fw1 hard:
-there is no way to have the kernel automatically deallocate it when it no longer
-needed, aka when the rootlet refcount reaches zero. It also overloads close()
-to automatically detach the replaced / overridden BPF, which is contrary to how
-other BPF hook points work.
-
-I'd much prefer if the API didn't require attach_prog_fd and id at
-load time, and
-rather have an explicit replace_sub_prog(prog_fd, btf_id, sub_prog_fd).
-
-> [...] This rootlet.o
-> can be automatically generated by libxdp.so. If in the future we figure out how
-> to do two load-balancers libxdp.so will be able to accommodate that new policy.
-> This firewall1.o can be developed and tested independently of other xdp
-> programs. The key gotcha here is that the verifier needs to allow more than 512
-> stack usage for the rootlet.o. I think that's acceptable.
-
-How would the verifier know which programs are allowed to have larger stacks?
-
-Lorenz
-
+diff --git a/include/linux/filter.h b/include/linux/filter.h
+index 7a6f8f6f1da4..ad80e9c6111c 100644
+--- a/include/linux/filter.h
++++ b/include/linux/filter.h
+@@ -515,10 +515,12 @@ struct sock_fprog_kern {
+ 	struct sock_filter	*filter;
+ };
+ 
++/* Some arches need doubleword alignment for their instructions and/or data */
++#define BPF_IMAGE_ALIGNMENT 8
++
+ struct bpf_binary_header {
+ 	u32 pages;
+-	/* Some arches need word alignment for their instructions */
+-	u8 image[] __aligned(4);
++	u8 image[] __aligned(BPF_IMAGE_ALIGNMENT);
+ };
+ 
+ struct bpf_prog {
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index c1fde0303280..99693f3c4e99 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -31,6 +31,7 @@
+ #include <linux/rcupdate.h>
+ #include <linux/perf_event.h>
+ #include <linux/extable.h>
++#include <linux/log2.h>
+ #include <asm/unaligned.h>
+ 
+ /* Registers */
+@@ -815,6 +816,9 @@ bpf_jit_binary_alloc(unsigned int proglen, u8 **image_ptr,
+ 	struct bpf_binary_header *hdr;
+ 	u32 size, hole, start, pages;
+ 
++	WARN_ON_ONCE(!is_power_of_2(alignment) ||
++		     alignment > BPF_IMAGE_ALIGNMENT);
++
+ 	/* Most of BPF filters are really small, but if some of them
+ 	 * fill a page, allow at least 128 extra bytes to insert a
+ 	 * random section of illegal instructions.
 -- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+2.23.0
 
-www.cloudflare.com
