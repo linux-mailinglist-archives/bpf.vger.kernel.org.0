@@ -2,459 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CDFFAFD38F
-	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2019 05:03:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23634FD3A7
+	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2019 05:29:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727081AbfKOEDK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Nov 2019 23:03:10 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:8396 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727077AbfKOEDJ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 14 Nov 2019 23:03:09 -0500
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xAF435Mk024065
-        for <bpf@vger.kernel.org>; Thu, 14 Nov 2019 20:03:07 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=facebook; bh=sVaT+OfRUIT8nvCiT7mvqQsEr02Sb6mu9pDM1VXI5gE=;
- b=hlHcKC2T8OwCEkxJEeRqM4JSqg4EPs6h8vPrGJKqK5P1wLGhFl6VtqaSEt9+30t6ZQKV
- JfqR5HmK4f7aVlWzYYocQMqVTfRizjpzyxBtXcpxW3oZZuXWVSZ+WzQCIY4P1xb53ZY0
- FkGeeEOv7W3madmoVt2DqTczOLLNfMD4XSk= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2w8qj9mda7-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 14 Nov 2019 20:03:07 -0800
-Received: from 2401:db00:2050:5102:face:0:3b:0 (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 14 Nov 2019 20:02:58 -0800
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 0E3052EC1AEC; Thu, 14 Nov 2019 20:02:58 -0800 (PST)
-Smtp-Origin-Hostprefix: devbig
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH v4 bpf-next 4/4] selftests/bpf: add BPF_TYPE_MAP_ARRAY mmap() tests
-Date:   Thu, 14 Nov 2019 20:02:25 -0800
-Message-ID: <20191115040225.2147245-5-andriin@fb.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20191115040225.2147245-1-andriin@fb.com>
-References: <20191115040225.2147245-1-andriin@fb.com>
-X-FB-Internal: Safe
+        id S1726786AbfKOE3q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Nov 2019 23:29:46 -0500
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:44302 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726549AbfKOE3q (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Nov 2019 23:29:46 -0500
+Received: by mail-pg1-f195.google.com with SMTP id f19so5166385pgk.11;
+        Thu, 14 Nov 2019 20:29:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=yWWTL27YpOR9rROnC4ueooFH4+fm9f8C4aV1mOV1Cso=;
+        b=gOA89t2ACr6O7LIqqlZld6zX81E/PWI2W30YaxOdLU7z3nOkhRpyb+q/NTFznT/GvW
+         1Sk0VignDLDXQkfRUNeEWIZn2zI0U3Cyd3bbfTI54nkSKoXRx3tnTkMH5mfJrq9zlSYj
+         O5T2xF6wtdPPL6ufVKbXLeTxiwKu3EyV5HsSe44C2ekd37uJPD2GpOtHFfrtXzQUgEiZ
+         C4me/Kfbn4Os4BRBUby9cRMx7ek3J/+bfSlLW358Hk2m749tD90HoaUto/riZtXH8ryA
+         e/D5eXgdLOCP6F5qTT4YEEEdTlj5Yhlxu5ZLQv/ZvEw547dQTFEI23W1GXOGIoU/v1vr
+         Gt+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=yWWTL27YpOR9rROnC4ueooFH4+fm9f8C4aV1mOV1Cso=;
+        b=bQBX8KWAdC0w7xNT0+JJ5y8NfZyzaudCj1o/FPvuZPirNG+R5YctHU7+nAMWKo6zqN
+         D79ezNsZH8/Gmhp1ox6OHpWb0zZiZdQe9VS7j/b8SAEXipWV64GT19J/b3e+ZdmIF84j
+         /VjTAUUXziumEL5KcyPP1FrWh5yMfzTYfZLm0By6bKAZxqRdzoBvor+iOl0zoP81+uNi
+         mXLToXAFrs47aOIbgtB3a04PiHTNBaK5yKFupOITOOoriu66uYZWTIFb8zipoOP+gEb8
+         SvApVUnItbxzg+MNjEp7OxErf16SUppBYHUjcMyzf/eEeGoSmOZkOznp2gdq0BJy8XVi
+         Dy6w==
+X-Gm-Message-State: APjAAAV4BjyX0DeMg7eZhsav8m3dvhT/uwUn2k03YEF/ggGRUkZHaNAb
+        xfByx+ChKebuZ7MTE6M50LRNcuv8
+X-Google-Smtp-Source: APXvYqxeedN8VNsXvEJGzcmNCtvQLD00o8dv+9JAX5EhrSkNpWb4Kha0zRaDdiKsxfi4Pz1UMf46Gg==
+X-Received: by 2002:a17:90a:989:: with SMTP id 9mr17278212pjo.35.1573792184064;
+        Thu, 14 Nov 2019 20:29:44 -0800 (PST)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:180::a328])
+        by smtp.gmail.com with ESMTPSA id y6sm6519612pfm.12.2019.11.14.20.29.42
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 14 Nov 2019 20:29:43 -0800 (PST)
+Date:   Thu, 14 Nov 2019 20:29:41 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     ast@kernel.org, john.fastabend@gmail.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH rfc bpf-next 8/8] bpf: constant map key tracking for prog
+ array pokes
+Message-ID: <20191115042939.ckt4fqvtfdi344y2@ast-mbp.dhcp.thefacebook.com>
+References: <cover.1573779287.git.daniel@iogearbox.net>
+ <fa3c2f6e2f4fbe45200d54a3c6d4c65c4f84f790.1573779287.git.daniel@iogearbox.net>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
- definitions=2019-11-14_07:2019-11-14,2019-11-14 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 malwarescore=0
- bulkscore=0 spamscore=0 lowpriorityscore=0 priorityscore=1501
- clxscore=1015 mlxlogscore=807 suspectscore=67 adultscore=0 phishscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1910280000 definitions=main-1911150035
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fa3c2f6e2f4fbe45200d54a3c6d4c65c4f84f790.1573779287.git.daniel@iogearbox.net>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add selftests validating mmap()-ing BPF array maps: both single-element and
-multi-element ones. Check that plain bpf_map_update_elem() and
-bpf_map_lookup_elem() work correctly with memory-mapped array. Also convert
-CO-RE relocation tests to use memory-mapped views of global data.
+On Fri, Nov 15, 2019 at 02:04:02AM +0100, Daniel Borkmann wrote:
+> Add tracking of constant keys into tail call maps. The signature of
+> bpf_tail_call_proto is that arg1 is ctx, arg2 map pointer and arg3
+> is a index key. The direct call approach for tail calls can be enabled
+> if the verifier asserted that for all branches leading to the tail call
+> helper invocation, the map pointer and index key were both constant
+> and the same. Tracking of map pointers we already do from prior work
+> via c93552c443eb ("bpf: properly enforce index mask to prevent out-of-bounds
+> speculation") and 09772d92cd5a ("bpf: avoid retpoline for lookup/update/
+> delete calls on maps"). Given the tail call map index key is not on
+> stack but directly in the register, we can add similar tracking approach
+> and later in fixup_bpf_calls() add a poke descriptor to the progs poke_tab
+> with the relevant information for the JITing phase. We internally reuse
+> insn->imm for the rewritten BPF_JMP | BPF_TAIL_CALL instruction in order
+> to point into the prog's poke_tab and keep insn->imm == 0 as indicator
+> that current indirect tail call emission must be used.
+> 
+> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+> ---
+>  include/linux/bpf_verifier.h |  1 +
+>  kernel/bpf/verifier.c        | 98 ++++++++++++++++++++++++++++++++++++
+>  2 files changed, 99 insertions(+)
+> 
+> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+> index cdd08bf0ec06..f494f0c9ac13 100644
+> --- a/include/linux/bpf_verifier.h
+> +++ b/include/linux/bpf_verifier.h
+> @@ -301,6 +301,7 @@ struct bpf_insn_aux_data {
+>  			u32 map_off;		/* offset from value base address */
+>  		};
+>  	};
+> +	u64 key_state; /* constant key tracking for maps */
 
-Acked-by: Song Liu <songliubraving@fb.com>
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- .../selftests/bpf/prog_tests/core_reloc.c     |  45 ++--
- tools/testing/selftests/bpf/prog_tests/mmap.c | 220 ++++++++++++++++++
- tools/testing/selftests/bpf/progs/test_mmap.c |  45 ++++
- 3 files changed, 292 insertions(+), 18 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/mmap.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_mmap.c
+may be map_key_state ?
+key_state is a bit ambiguous in the bpf_insn_aux_data.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/core_reloc.c b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-index f94bd071536b..ec9e2fdd6b89 100644
---- a/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-+++ b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
- #include <test_progs.h>
- #include "progs/core_reloc_types.h"
-+#include <sys/mman.h>
- 
- #define STRUCT_TO_CHAR_PTR(struct_name) (const char *)&(struct struct_name)
- 
-@@ -453,8 +454,15 @@ struct data {
- 	char out[256];
- };
- 
-+static size_t roundup_page(size_t sz)
-+{
-+	long page_size = sysconf(_SC_PAGE_SIZE);
-+	return (sz + page_size - 1) / page_size * page_size;
-+}
-+
- void test_core_reloc(void)
- {
-+	const size_t mmap_sz = roundup_page(sizeof(struct data));
- 	struct bpf_object_load_attr load_attr = {};
- 	struct core_reloc_test_case *test_case;
- 	const char *tp_name, *probe_name;
-@@ -463,8 +471,8 @@ void test_core_reloc(void)
- 	struct bpf_map *data_map;
- 	struct bpf_program *prog;
- 	struct bpf_object *obj;
--	const int zero = 0;
--	struct data data;
-+	struct data *data;
-+	void *mmap_data = NULL;
- 
- 	for (i = 0; i < ARRAY_SIZE(test_cases); i++) {
- 		test_case = &test_cases[i];
-@@ -476,8 +484,7 @@ void test_core_reloc(void)
- 		);
- 
- 		obj = bpf_object__open_file(test_case->bpf_obj_file, &opts);
--		if (CHECK(IS_ERR_OR_NULL(obj), "obj_open",
--			  "failed to open '%s': %ld\n",
-+		if (CHECK(IS_ERR(obj), "obj_open", "failed to open '%s': %ld\n",
- 			  test_case->bpf_obj_file, PTR_ERR(obj)))
- 			continue;
- 
-@@ -519,24 +526,22 @@ void test_core_reloc(void)
- 		if (CHECK(!data_map, "find_data_map", "data map not found\n"))
- 			goto cleanup;
- 
--		memset(&data, 0, sizeof(data));
--		memcpy(data.in, test_case->input, test_case->input_len);
--
--		err = bpf_map_update_elem(bpf_map__fd(data_map),
--					  &zero, &data, 0);
--		if (CHECK(err, "update_data_map",
--			  "failed to update .data map: %d\n", err))
-+		mmap_data = mmap(NULL, mmap_sz, PROT_READ | PROT_WRITE,
-+				 MAP_SHARED, bpf_map__fd(data_map), 0);
-+		if (CHECK(mmap_data == MAP_FAILED, "mmap",
-+			  ".bss mmap failed: %d", errno)) {
-+			mmap_data = NULL;
- 			goto cleanup;
-+		}
-+		data = mmap_data;
-+
-+		memset(mmap_data, 0, sizeof(*data));
-+		memcpy(data->in, test_case->input, test_case->input_len);
- 
- 		/* trigger test run */
- 		usleep(1);
- 
--		err = bpf_map_lookup_elem(bpf_map__fd(data_map), &zero, &data);
--		if (CHECK(err, "get_result",
--			  "failed to get output data: %d\n", err))
--			goto cleanup;
--
--		equal = memcmp(data.out, test_case->output,
-+		equal = memcmp(data->out, test_case->output,
- 			       test_case->output_len) == 0;
- 		if (CHECK(!equal, "check_result",
- 			  "input/output data don't match\n")) {
-@@ -548,12 +553,16 @@ void test_core_reloc(void)
- 			}
- 			for (j = 0; j < test_case->output_len; j++) {
- 				printf("output byte #%d: EXP 0x%02hhx GOT 0x%02hhx\n",
--				       j, test_case->output[j], data.out[j]);
-+				       j, test_case->output[j], data->out[j]);
- 			}
- 			goto cleanup;
- 		}
- 
- cleanup:
-+		if (mmap_data) {
-+			CHECK_FAIL(munmap(mmap_data, mmap_sz));
-+			mmap_data = NULL;
-+		}
- 		if (!IS_ERR_OR_NULL(link)) {
- 			bpf_link__destroy(link);
- 			link = NULL;
-diff --git a/tools/testing/selftests/bpf/prog_tests/mmap.c b/tools/testing/selftests/bpf/prog_tests/mmap.c
-new file mode 100644
-index 000000000000..051a6d48762c
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/mmap.c
-@@ -0,0 +1,220 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <test_progs.h>
-+#include <sys/mman.h>
-+
-+struct map_data {
-+	__u64 val[512 * 4];
-+};
-+
-+struct bss_data {
-+	__u64 in_val;
-+	__u64 out_val;
-+};
-+
-+static size_t roundup_page(size_t sz)
-+{
-+	long page_size = sysconf(_SC_PAGE_SIZE);
-+	return (sz + page_size - 1) / page_size * page_size;
-+}
-+
-+void test_mmap(void)
-+{
-+	const char *file = "test_mmap.o";
-+	const char *probe_name = "raw_tracepoint/sys_enter";
-+	const char *tp_name = "sys_enter";
-+	const size_t bss_sz = roundup_page(sizeof(struct bss_data));
-+	const size_t map_sz = roundup_page(sizeof(struct map_data));
-+	const int zero = 0, one = 1, two = 2, far = 1500;
-+	const long page_size = sysconf(_SC_PAGE_SIZE);
-+	int err, duration = 0, i, data_map_fd;
-+	struct bpf_program *prog;
-+	struct bpf_object *obj;
-+	struct bpf_link *link = NULL;
-+	struct bpf_map *data_map, *bss_map;
-+	void *bss_mmaped = NULL, *map_mmaped = NULL, *tmp1, *tmp2;
-+	volatile struct bss_data *bss_data;
-+	volatile struct map_data *map_data;
-+	__u64 val = 0;
-+
-+	obj = bpf_object__open_file("test_mmap.o", NULL);
-+	if (CHECK(IS_ERR(obj), "obj_open", "failed to open '%s': %ld\n",
-+		  file, PTR_ERR(obj)))
-+		return;
-+	prog = bpf_object__find_program_by_title(obj, probe_name);
-+	if (CHECK(!prog, "find_probe", "prog '%s' not found\n", probe_name))
-+		goto cleanup;
-+	err = bpf_object__load(obj);
-+	if (CHECK(err, "obj_load", "failed to load prog '%s': %d\n",
-+		  probe_name, err))
-+		goto cleanup;
-+
-+	bss_map = bpf_object__find_map_by_name(obj, "test_mma.bss");
-+	if (CHECK(!bss_map, "find_bss_map", ".bss map not found\n"))
-+		goto cleanup;
-+	data_map = bpf_object__find_map_by_name(obj, "data_map");
-+	if (CHECK(!data_map, "find_data_map", "data_map map not found\n"))
-+		goto cleanup;
-+	data_map_fd = bpf_map__fd(data_map);
-+
-+	bss_mmaped = mmap(NULL, bss_sz, PROT_READ | PROT_WRITE, MAP_SHARED,
-+			  bpf_map__fd(bss_map), 0);
-+	if (CHECK(bss_mmaped == MAP_FAILED, "bss_mmap",
-+		  ".bss mmap failed: %d\n", errno)) {
-+		bss_mmaped = NULL;
-+		goto cleanup;
-+	}
-+	/* map as R/W first */
-+	map_mmaped = mmap(NULL, map_sz, PROT_READ | PROT_WRITE, MAP_SHARED,
-+			  data_map_fd, 0);
-+	if (CHECK(map_mmaped == MAP_FAILED, "data_mmap",
-+		  "data_map mmap failed: %d\n", errno)) {
-+		map_mmaped = NULL;
-+		goto cleanup;
-+	}
-+
-+	bss_data = bss_mmaped;
-+	map_data = map_mmaped;
-+
-+	CHECK_FAIL(bss_data->in_val);
-+	CHECK_FAIL(bss_data->out_val);
-+	CHECK_FAIL(map_data->val[0]);
-+	CHECK_FAIL(map_data->val[1]);
-+	CHECK_FAIL(map_data->val[2]);
-+	CHECK_FAIL(map_data->val[far]);
-+
-+	link = bpf_program__attach_raw_tracepoint(prog, tp_name);
-+	if (CHECK(IS_ERR(link), "attach_raw_tp", "err %ld\n", PTR_ERR(link)))
-+		goto cleanup;
-+
-+	bss_data->in_val = 123;
-+	val = 111;
-+	CHECK_FAIL(bpf_map_update_elem(data_map_fd, &zero, &val, 0));
-+
-+	usleep(1);
-+
-+	CHECK_FAIL(bss_data->in_val != 123);
-+	CHECK_FAIL(bss_data->out_val != 123);
-+	CHECK_FAIL(map_data->val[0] != 111);
-+	CHECK_FAIL(map_data->val[1] != 222);
-+	CHECK_FAIL(map_data->val[2] != 123);
-+	CHECK_FAIL(map_data->val[far] != 3 * 123);
-+
-+	CHECK_FAIL(bpf_map_lookup_elem(data_map_fd, &zero, &val));
-+	CHECK_FAIL(val != 111);
-+	CHECK_FAIL(bpf_map_lookup_elem(data_map_fd, &one, &val));
-+	CHECK_FAIL(val != 222);
-+	CHECK_FAIL(bpf_map_lookup_elem(data_map_fd, &two, &val));
-+	CHECK_FAIL(val != 123);
-+	CHECK_FAIL(bpf_map_lookup_elem(data_map_fd, &far, &val));
-+	CHECK_FAIL(val != 3 * 123);
-+
-+	/* data_map freeze should fail due to R/W mmap() */
-+	err = bpf_map_freeze(data_map_fd);
-+	if (CHECK(!err || errno != EBUSY, "no_freeze",
-+		  "data_map freeze succeeded: err=%d, errno=%d\n", err, errno))
-+		goto cleanup;
-+
-+	/* unmap R/W mapping */
-+	err = munmap(map_mmaped, map_sz);
-+	map_mmaped = NULL;
-+	if (CHECK(err, "data_map_munmap", "data_map munmap failed: %d\n", errno))
-+		goto cleanup;
-+
-+	/* re-map as R/O now */
-+	map_mmaped = mmap(NULL, map_sz, PROT_READ, MAP_SHARED, data_map_fd, 0);
-+	if (CHECK(map_mmaped == MAP_FAILED, "data_mmap",
-+		  "data_map R/O mmap failed: %d\n", errno)) {
-+		map_mmaped = NULL;
-+		goto cleanup;
-+	}
-+	map_data = map_mmaped;
-+
-+	/* map/unmap in a loop to test ref counting */
-+	for (i = 0; i < 10; i++) {
-+		int flags = i % 2 ? PROT_READ : PROT_WRITE;
-+		void *p;
-+
-+		p = mmap(NULL, map_sz, flags, MAP_SHARED, data_map_fd, 0);
-+		if (CHECK_FAIL(p == MAP_FAILED))
-+			goto cleanup;
-+		err = munmap(p, map_sz);
-+		if (CHECK_FAIL(err))
-+			goto cleanup;
-+	}
-+
-+	/* data_map freeze should now succeed due to no R/W mapping */
-+	err = bpf_map_freeze(data_map_fd);
-+	if (CHECK(err, "freeze", "data_map freeze failed: err=%d, errno=%d\n",
-+		  err, errno))
-+		goto cleanup;
-+
-+	/* mapping as R/W now should fail */
-+	tmp1 = mmap(NULL, map_sz, PROT_READ | PROT_WRITE, MAP_SHARED,
-+		    data_map_fd, 0);
-+	if (CHECK(tmp1 != MAP_FAILED, "data_mmap", "mmap succeeded\n")) {
-+		munmap(tmp1, map_sz);
-+		goto cleanup;
-+	}
-+
-+	bss_data->in_val = 321;
-+	usleep(1);
-+	CHECK_FAIL(bss_data->in_val != 321);
-+	CHECK_FAIL(bss_data->out_val != 321);
-+	CHECK_FAIL(map_data->val[0] != 111);
-+	CHECK_FAIL(map_data->val[1] != 222);
-+	CHECK_FAIL(map_data->val[2] != 321);
-+	CHECK_FAIL(map_data->val[far] != 3 * 321);
-+
-+	/* check some more advanced mmap() manipulations */
-+
-+	/* map all but last page: pages 1-3 mapped */
-+	tmp1 = mmap(NULL, 3 * page_size, PROT_READ, MAP_SHARED,
-+			  data_map_fd, 0);
-+	if (CHECK(tmp1 == MAP_FAILED, "adv_mmap1", "errno %d\n", errno))
-+		goto cleanup;
-+
-+	/* unmap second page: pages 1, 3 mapped */
-+	err = munmap(tmp1 + page_size, page_size);
-+	if (CHECK(err, "adv_mmap2", "errno %d\n", errno)) {
-+		munmap(tmp1, map_sz);
-+		goto cleanup;
-+	}
-+
-+	/* map page 2 back */
-+	tmp2 = mmap(tmp1 + page_size, page_size, PROT_READ,
-+		    MAP_SHARED | MAP_FIXED, data_map_fd, 0);
-+	if (CHECK(tmp2 == MAP_FAILED, "adv_mmap3", "errno %d\n", errno)) {
-+		munmap(tmp1, page_size);
-+		munmap(tmp1 + 2*page_size, page_size);
-+		goto cleanup;
-+	}
-+	CHECK(tmp1 + page_size != tmp2, "adv_mmap4",
-+	      "tmp1: %p, tmp2: %p\n", tmp1, tmp2);
-+
-+	/* re-map all 4 pages */
-+	tmp2 = mmap(tmp1, 4 * page_size, PROT_READ, MAP_SHARED | MAP_FIXED,
-+		    data_map_fd, 0);
-+	if (CHECK(tmp2 == MAP_FAILED, "adv_mmap5", "errno %d\n", errno)) {
-+		munmap(tmp1, 3 * page_size); /* unmap page 1 */
-+		goto cleanup;
-+	}
-+	CHECK(tmp1 != tmp2, "adv_mmap6", "tmp1: %p, tmp2: %p\n", tmp1, tmp2);
-+
-+	map_data = tmp2;
-+	CHECK_FAIL(bss_data->in_val != 321);
-+	CHECK_FAIL(bss_data->out_val != 321);
-+	CHECK_FAIL(map_data->val[0] != 111);
-+	CHECK_FAIL(map_data->val[1] != 222);
-+	CHECK_FAIL(map_data->val[2] != 321);
-+	CHECK_FAIL(map_data->val[far] != 3 * 321);
-+
-+	munmap(tmp2, 4 * page_size);
-+cleanup:
-+	if (bss_mmaped)
-+		CHECK_FAIL(munmap(bss_mmaped, bss_sz));
-+	if (map_mmaped)
-+		CHECK_FAIL(munmap(map_mmaped, map_sz));
-+	if (!IS_ERR_OR_NULL(link))
-+		bpf_link__destroy(link);
-+	bpf_object__close(obj);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_mmap.c b/tools/testing/selftests/bpf/progs/test_mmap.c
-new file mode 100644
-index 000000000000..0d2ec9fbcf61
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_mmap.c
-@@ -0,0 +1,45 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2019 Facebook
-+
-+#include <linux/bpf.h>
-+#include <stdint.h>
-+#include "bpf_helpers.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, 512 * 4); /* at least 4 pages of data */
-+	__uint(map_flags, BPF_F_MMAPABLE);
-+	__type(key, __u32);
-+	__type(value, __u64);
-+} data_map SEC(".maps");
-+
-+static volatile __u64 in_val;
-+static volatile __u64 out_val;
-+
-+SEC("raw_tracepoint/sys_enter")
-+int test_mmap(void *ctx)
-+{
-+	int zero = 0, one = 1, two = 2, far = 1500;
-+	__u64 val, *p;
-+
-+	out_val = in_val;
-+
-+	/* data_map[2] = in_val; */
-+	bpf_map_update_elem(&data_map, &two, (const void *)&in_val, 0);
-+
-+	/* data_map[1] = data_map[0] * 2; */
-+	p = bpf_map_lookup_elem(&data_map, &zero);
-+	if (p) {
-+		val = (*p) * 2;
-+		bpf_map_update_elem(&data_map, &one, &val, 0);
-+	}
-+
-+	/* data_map[far] = in_val * 3; */
-+	val = in_val * 3;
-+	bpf_map_update_elem(&data_map, &far, &val, 0);
-+
-+	return 0;
-+}
-+
--- 
-2.17.1
+> +static int
+> +record_func_key(struct bpf_verifier_env *env, struct bpf_call_arg_meta *meta,
+> +		int func_id, int insn_idx)
+> +{
+> +	struct bpf_insn_aux_data *aux = &env->insn_aux_data[insn_idx];
+> +	struct bpf_reg_state *regs = cur_regs(env), *reg;
+> +	struct tnum range = tnum_range(0, U32_MAX);
+> +	struct bpf_map *map = meta->map_ptr;
+> +	u64 val;
+> +
+> +	if (func_id != BPF_FUNC_tail_call)
+> +		return 0;
+> +	if (!map || map->map_type != BPF_MAP_TYPE_PROG_ARRAY) {
+> +		verbose(env, "kernel subsystem misconfigured verifier\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	reg = &regs[BPF_REG_3];
+> +	if (!register_is_const(reg) || !tnum_in(range, reg->var_off)) {
+> +		bpf_map_key_store(aux, BPF_MAP_KEY_POISON);
+> +		return 0;
+> +	}
+> +
+> +	val = reg->var_off.value;
+> +	if (bpf_map_key_unseen(aux))
+> +		bpf_map_key_store(aux, val);
+> +	else if (bpf_map_key_immediate(aux) != val)
+> +		bpf_map_key_store(aux, BPF_MAP_KEY_POISON);
+> +	return 0;
+> +}
+
+I think this analysis is very useful in other cases as well. Could you
+generalize it for array map lookups ? The key used in bpf_map_lookup_elem() for
+arrays is often constant. In such cases we can optimize array_map_gen_lookup()
+into absolute pointer. It will be possible to do
+if (idx < max_entries) ptr += idx * elem_size;
+during verification instead of runtime and the whole
+bpf_map_lookup_elem(map, &key); will become single instruction that
+assigns &array[idx] into R0.
 
