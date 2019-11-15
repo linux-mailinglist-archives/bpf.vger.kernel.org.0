@@ -2,186 +2,212 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 506CBFE337
-	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2019 17:49:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC19CFE374
+	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2019 17:56:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727723AbfKOQty (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 Nov 2019 11:49:54 -0500
-Received: from www62.your-server.de ([213.133.104.62]:51790 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727548AbfKOQtx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 15 Nov 2019 11:49:53 -0500
-Received: from sslproxy01.your-server.de ([88.198.220.130])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iVen8-0000Tw-Fe; Fri, 15 Nov 2019 17:49:50 +0100
-Received: from [178.197.248.45] (helo=pc-9.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iVen8-00032g-3Y; Fri, 15 Nov 2019 17:49:50 +0100
-Subject: Re: [PATCH rfc bpf-next 8/8] bpf: constant map key tracking for prog
- array pokes
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     ast@kernel.org, john.fastabend@gmail.com, netdev@vger.kernel.org,
+        id S1727632AbfKOQ4a (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 Nov 2019 11:56:30 -0500
+Received: from mail-pj1-f68.google.com ([209.85.216.68]:36368 "EHLO
+        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727548AbfKOQ4a (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 15 Nov 2019 11:56:30 -0500
+Received: by mail-pj1-f68.google.com with SMTP id cq11so103650pjb.3;
+        Fri, 15 Nov 2019 08:56:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=NbbetL8CbWzPFwnyvMgyLu5m3+9biqmJdmqKjyKfIR0=;
+        b=hVAd2W1PrV07Z5BzI6AIvG8xtLS8Yk63JVDezoAPE+P9UbCTix1mD/pn14vkopZmVl
+         TDAtlsOeFZVT5j80ZwKSxdtohrvv8rY0+Wtl58uZY5zm/P5b/BQNyjYOZO6QWTG4pJaO
+         shMrJoqSHG605yWcLMBjQDnwclWAFdb0bhBm2gjKMDILWx3LQwR/v+7SL+vK3gJ9pWko
+         0uECxXH11PLS+MNwB0GJh1MJ1DLAPlMiJDJXVo6ST7+TQyMnzdgaox5ta9NuSFlto1LE
+         O7hvV2yibLKwYaRpveXydvJ7ojkYGpR5Ep6f7+jElqKs/0L7twLhXjfUibTDCi1uksMX
+         +QJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=NbbetL8CbWzPFwnyvMgyLu5m3+9biqmJdmqKjyKfIR0=;
+        b=YOTukat0eMVq5MCY6v/ZR2xuX99Yb0fiQjXE0m63sUmQVQ2gEMIz3nksMPowzJ2jZF
+         82o6I4PTm0h0dt8Rl2HZ8xoOopyAXyI6XO4JNYP/hXc1ut98jIOnkf0wHfdqYHdlyjAt
+         64WGQgvqNOWJtvumZEBpTz5JNU59QmK1egTznbnewG2cUdPLS3XgOY6gMfv8ChAvMrrE
+         VfncJJITBbdti5WPToikuF9OwaCFw9I3rcbKAEcVB30j9yud4pAayKhHs0FIh7FOA3Wk
+         piaOpqrqD60TYXHW4TsYiXsAj9T8cEE6znSjBDufIEFGuc3NVGIAttWzMOb/Zga3D3tX
+         Tcfw==
+X-Gm-Message-State: APjAAAWSheRi6JwbadLkgRN2KJl8uIRcMh2CrVhpvy3RgrK/b/8Sl63W
+        bBX68gYv9yyeR2jdlAjqmUA=
+X-Google-Smtp-Source: APXvYqw9ejOejfQ1GCpRH1iPDmook8ubHCdYl1HQYL6C3lvf7FgMMM0/+T+sjRzB97HA4YqR3iVCIg==
+X-Received: by 2002:a17:90a:bd0c:: with SMTP id y12mr21179873pjr.108.1573836989284;
+        Fri, 15 Nov 2019 08:56:29 -0800 (PST)
+Received: from localhost (198-0-60-179-static.hfc.comcastbusiness.net. [198.0.60.179])
+        by smtp.gmail.com with ESMTPSA id a6sm12136151pja.30.2019.11.15.08.56.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Nov 2019 08:56:28 -0800 (PST)
+Date:   Fri, 15 Nov 2019 08:56:27 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Edward Cree <ecree@solarflare.com>
+Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Marek Majkowski <marek@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-References: <cover.1573779287.git.daniel@iogearbox.net>
- <fa3c2f6e2f4fbe45200d54a3c6d4c65c4f84f790.1573779287.git.daniel@iogearbox.net>
- <20191115042939.ckt4fqvtfdi344y2@ast-mbp.dhcp.thefacebook.com>
- <20191115071358.GA3957@pc-9.home>
- <20191115163351.nm4hpofdcthkgmmp@ast-mbp.dhcp.thefacebook.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <7d781806-a7b3-921d-aef3-4cc113646609@iogearbox.net>
-Date:   Fri, 15 Nov 2019 17:49:49 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
-MIME-Version: 1.0
-In-Reply-To: <20191115163351.nm4hpofdcthkgmmp@ast-mbp.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.101.4/25634/Fri Nov 15 10:44:37 2019)
+Message-ID: <5dced8bbe72ed_5f462b1f489665bc31@john-XPS-13-9370.notmuch>
+In-Reply-To: <20191115021318.sj5zfokruljugcno@ast-mbp.dhcp.thefacebook.com>
+References: <70142501-e2dd-1aed-992e-55acd5c30cfd@solarflare.com>
+ <874l07fu61.fsf@toke.dk>
+ <aeae7b94-090a-a850-4740-0274ab8178d5@solarflare.com>
+ <87eez4odqp.fsf@toke.dk>
+ <20191112025112.bhzmrrh2pr76ssnh@ast-mbp.dhcp.thefacebook.com>
+ <87h839oymg.fsf@toke.dk>
+ <20191112195223.cp5kcmkko54dsfbg@ast-mbp.dhcp.thefacebook.com>
+ <8c251f3d-67bd-9bc2-8037-a15d93b48674@solarflare.com>
+ <20191112231822.o3gir44yskmntgnq@ast-mbp.dhcp.thefacebook.com>
+ <0c90adc4-5992-8648-88bf-4993252e8992@solarflare.com>
+ <20191115021318.sj5zfokruljugcno@ast-mbp.dhcp.thefacebook.com>
+Subject: Re: static and dynamic linking. Was: [PATCH bpf-next v3 1/5] bpf:
+ Support chain calling multiple BPF
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/15/19 5:33 PM, Alexei Starovoitov wrote:
-> On Fri, Nov 15, 2019 at 08:13:58AM +0100, Daniel Borkmann wrote:
->> On Thu, Nov 14, 2019 at 08:29:41PM -0800, Alexei Starovoitov wrote:
->>> On Fri, Nov 15, 2019 at 02:04:02AM +0100, Daniel Borkmann wrote:
->>>> Add tracking of constant keys into tail call maps. The signature of
->>>> bpf_tail_call_proto is that arg1 is ctx, arg2 map pointer and arg3
->>>> is a index key. The direct call approach for tail calls can be enabled
->>>> if the verifier asserted that for all branches leading to the tail call
->>>> helper invocation, the map pointer and index key were both constant
->>>> and the same. Tracking of map pointers we already do from prior work
->>>> via c93552c443eb ("bpf: properly enforce index mask to prevent out-of-bounds
->>>> speculation") and 09772d92cd5a ("bpf: avoid retpoline for lookup/update/
->>>> delete calls on maps"). Given the tail call map index key is not on
->>>> stack but directly in the register, we can add similar tracking approach
->>>> and later in fixup_bpf_calls() add a poke descriptor to the progs poke_tab
->>>> with the relevant information for the JITing phase. We internally reuse
->>>> insn->imm for the rewritten BPF_JMP | BPF_TAIL_CALL instruction in order
->>>> to point into the prog's poke_tab and keep insn->imm == 0 as indicator
->>>> that current indirect tail call emission must be used.
->>>>
->>>> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
->>>> ---
->>>>   include/linux/bpf_verifier.h |  1 +
->>>>   kernel/bpf/verifier.c        | 98 ++++++++++++++++++++++++++++++++++++
->>>>   2 files changed, 99 insertions(+)
->>>>
->>>> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
->>>> index cdd08bf0ec06..f494f0c9ac13 100644
->>>> --- a/include/linux/bpf_verifier.h
->>>> +++ b/include/linux/bpf_verifier.h
->>>> @@ -301,6 +301,7 @@ struct bpf_insn_aux_data {
->>>>   			u32 map_off;		/* offset from value base address */
->>>>   		};
->>>>   	};
->>>> +	u64 key_state; /* constant key tracking for maps */
->>>
->>> may be map_key_state ?
->>> key_state is a bit ambiguous in the bpf_insn_aux_data.
->>
->> Could be, alternatively could also be idx_state or map_idx_state since
->> it's really just for u32 type key indices.
->>
->>>> +static int
->>>> +record_func_key(struct bpf_verifier_env *env, struct bpf_call_arg_meta *meta,
->>>> +		int func_id, int insn_idx)
->>>> +{
->>>> +	struct bpf_insn_aux_data *aux = &env->insn_aux_data[insn_idx];
->>>> +	struct bpf_reg_state *regs = cur_regs(env), *reg;
->>>> +	struct tnum range = tnum_range(0, U32_MAX);
->>>> +	struct bpf_map *map = meta->map_ptr;
->>>> +	u64 val;
->>>> +
->>>> +	if (func_id != BPF_FUNC_tail_call)
->>>> +		return 0;
->>>> +	if (!map || map->map_type != BPF_MAP_TYPE_PROG_ARRAY) {
->>>> +		verbose(env, "kernel subsystem misconfigured verifier\n");
->>>> +		return -EINVAL;
->>>> +	}
->>>> +
->>>> +	reg = &regs[BPF_REG_3];
->>>> +	if (!register_is_const(reg) || !tnum_in(range, reg->var_off)) {
->>>> +		bpf_map_key_store(aux, BPF_MAP_KEY_POISON);
->>>> +		return 0;
->>>> +	}
->>>> +
->>>> +	val = reg->var_off.value;
->>>> +	if (bpf_map_key_unseen(aux))
->>>> +		bpf_map_key_store(aux, val);
->>>> +	else if (bpf_map_key_immediate(aux) != val)
->>>> +		bpf_map_key_store(aux, BPF_MAP_KEY_POISON);
->>>> +	return 0;
->>>> +}
->>>
->>> I think this analysis is very useful in other cases as well. Could you
->>> generalize it for array map lookups ? The key used in bpf_map_lookup_elem() for
->>> arrays is often constant. In such cases we can optimize array_map_gen_lookup()
->>> into absolute pointer. It will be possible to do
->>> if (idx < max_entries) ptr += idx * elem_size;
->>> during verification instead of runtime and the whole
->>> bpf_map_lookup_elem(map, &key); will become single instruction that
->>> assigns &array[idx] into R0.
->>
->> Was thinking exactly the same. ;-) I started coding this yesterday night [0],
->> but then had the (in hinsight obvious) realization that as-is the key_state
->> holds the address but not the index for plain array map lookup. Hence I'd need
->> to go a step further there to look at the const stack content. Will proceed on
->> this as a separate set on top.
->>
->>    [0] https://git.kernel.org/pub/scm/linux/kernel/git/dborkman/bpf.git/commit/?h=pr/bpf-tail-call-rebased2&id=b86b7eae4646d8233e3e9058e68fef27536bf0c4
-> 
-> yeah. good point. For map_lookup it's obvious that the verifier needs to
-> compare both map ptr and *key, but that is the case for bpf_tail_call too, no?
+Alexei Starovoitov wrote:
+> On Wed, Nov 13, 2019 at 06:30:04PM +0000, Edward Cree wrote:
+> > > There is also
+> > > no way to place extern into a section. Currently SEC("..") is a sta=
+ndard way to
+> > > annotate bpf programs.
+> > While the symbol itself doesn't have a section, each _use_ of the sym=
+bol has a
+> > =C2=A0reloc, and the SHT_REL[A] in which that reloc resides has a sh_=
+info specifying
+> > =C2=A0"the section header index of the section to which the relocatio=
+n applies."=C2=A0 So
+> > =C2=A0can't that be used if symbol visibility needs to depend on sect=
+ion?=C2=A0 Tbh I
+> > =C2=A0can't exactly see why externs need placing in a section in the =
+first place.
+> =
 
-It's covered in this patch, more below.
+> I think section for extern can give a scope of search and make libbpf d=
+ecisions
+> more predictable? May be we can live without it for now, but we need BT=
+F of
+> extern symbols. See my example in reply to John.
+> =
 
-> It seems tracking 'key_state' only is not enough. Consider:
-> if (..)
->    map = mapA;
-> else
->    map = mapB;
-> bpf_tail_call(ctx, map, 1);
-> 
-> May be to generalize the logic the verifier should remember bpf_reg_state
-> instead of specific part of it like u32 ? The verifier keeps
-> insn_aux_data[insn_idx].ptr_type; to prevent incorrect ctx access. That can
-> also be generalized? Probably later, but conceptually it's the same category of
-> tracking that the verifier needs to do.
+> > > I think we need to be able to specify something like section to
+> > > extern variables and functions.
+> > It seems unnecessary to have the user code specify this.=C2=A0 Anothe=
+r a bad
+> > =C2=A0analogy: in userland C code you don't have to annotate the func=
+tion protos in
+> > =C2=A0your header files to say whether they come from another .o file=
+, a random
+> > =C2=A0library or the libc.=C2=A0 You just declare "a function called =
+this exists somewhere
+> > =C2=A0and we'll find it at link time".
+> =
 
-In fixup_bpf_calls(), it checks for !bpf_map_key_poisoned(aux) &&
-!bpf_map_ptr_poisoned(aux), so coming from different paths, this can
-only be enabled if mapA == mapB in your above example.
+> yeah. good analogy.
+> =
 
-For bpf_map_lookup and bpf_tail_call
-> callsite it can remember bpf_reg_state of r1,r2,r3. The bpf_reg_state should be
-> saved in insn_aux_data the first time the verifier goes through the callsite than
-> everytime the verifier goes through the callsite again additional per-helper
-> logic is invoked. Like for bpf_tail_call it will check:
-> if (tnum_is_const(insn_aux_data[callsite]->r3_reg_state->var_off))
->    // good. may be can optimize later.
-> and will use insn_aux_data[callsite]->r2_reg_state->map_ptr plus
-> insn_aux_data[callsite]->r3_reg_state->var_off to compute bpf_prog's jited address
-> inside that prog_array.
+> > > I was imagining that the verifier will do per-function verification=
 
-Yeah, that's what I'm doing for the tail call case.
+> > > of program with sub-programs instead of analyzing from root.
+> > Ah I see.=C2=A0 Yes, that's a very attractive design.
+> > =
 
-> Similarly for bpf_map_lookup... r1_reg_state->map_ptr is the same map
-> for saved insn_aux_data->r1_reg_state and for current->r1.
-> The r2_reg_state should be PTR_TO_STACK and that stack value should be u32 const.
-> Should be a bit more generic and extensible... instead of specific 'key_state' ?
+> > If we make it from a sufficiently generic idea of pre/postconditions,=
+ then it
+> > =C2=A0could also be useful for e.g. loop bodies (user-supplied annota=
+tions that allow
+> > =C2=A0us to walk the body only once instead of N times); then a funct=
+ion call just
+> > =C2=A0gets standard pre/postconditions generated from its argument ty=
+pes if the user
+> > =C2=A0didn't specify something else.
+> =
 
-Remembering all of the reg state could be an option to make it more generic
-for the case of covering also plain array map lookup, though it might come with
-more memory overhead than necessary. I'll experiment a bit with the various
-options for improving that patch [0] from above.
+> regarding pre/post conditions.
+> I think we have them already. These conditions are the function prototy=
+pes.
+> Instead of making the verifier figuring the conditions it's simpler to =
+use
+> function prototypes instead. If program author is saying that argument =
+to the
+> function is 'struct xpd_md *' the verifier will check that the function=
+ is safe
+> when such pointer is passed into it. Then to verify the callsite the ve=
+rifier
+> only need to check that what is passed into such function matches the t=
+ype. I
+> think it's easy to see when such type is context. Like 'struct __sk_buf=
+f *'.
+> But the idea applies to pointer to int too. I believe you were arguing =
+that
+> instead of tnum_unknown there could be cases with tnum_range(0-2) as
+> pre-condition is useful. May be. I think it will simplify the verifier =
+logic
+> quite a bit if we avoid going fine grain.
 
-Thanks,
-Daniel
+I was thinking we may want tnum_range(0-2) conditions and also min/max le=
+ngths
+of arrays, buffers etc. otherwise it might be tricky to convince the veri=
+fier
+its safe to write into an array. I at least am already hitting some limit=
+s here
+with helper calls that I would like to resolve at some point. We had to u=
+se
+some inline 'asm goto' logic to convince clang to generate code that the
+verifier would accept. Perhaps some of this can be resolved on LLVM backe=
+nd
+side to insert checks as needed. Also adding compiler barriers and if/els=
+e
+bounds everywhere is a bit natural.  I expect post conditions will
+be important for same reason, returning a pointer into a buffer without
+bounds is going to make it difficult to use in the caller program. =
+
+
+But(!) lets walk first implementing BTF based conditions and linking is
+a huge step and doesn't preclude doing more advance things next.
+
+> Say we have a function:
+> int foo(struct __sk_buff *skb, int arg)
+> {
+>    if (arg > 2)
+>       return 0;
+>    // do safe stuff with skb depending whether arg is 0, 1, or 2.
+> }
+> That first 'if' is enough to turn pre-conditions into 'any skb' and 'an=
+y arg'.
+> That is exactly what BTF says about this function.
+> =
+
+
+But this would probably break,
+
+ char *foo(struct __Sk_buff *skb, char *buffer)
+ {
+      int i;
+
+      for i =3D 0; i < BUFFER_LENGTH; i++) {
+             buffer[i] =3D blah
+      }
+      return buffer[i]
+ }
+
+Lets deal with that later though.=
