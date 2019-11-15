@@ -2,133 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 582D5FD19D
-	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2019 00:39:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EF8AFD1FA
+	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2019 01:30:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726852AbfKNXjr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Nov 2019 18:39:47 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:10268 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726767AbfKNXjr (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 14 Nov 2019 18:39:47 -0500
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id xAENdUvB029521;
-        Thu, 14 Nov 2019 15:39:32 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=G9BBACc9W/YM5yq3zWhQnOz9DTZ4LGa6Ta4Wy9a6Mts=;
- b=FVIdQTtZDgKxL5pciSZj+hg+DIo7ZpVwKaPlG6SWDjyO5ExaUc3TooJnKloqB2uw/56C
- buz/bIL+Xi2s3/xCXr2NvsHbHGz6C7VobKbzjC0yyYk+mQAh8OV+yIDc8u4NB8/nUjUw
- cn69nNTOFfjMn4CMLX9HznihLP4gYm89HH4= 
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by m0089730.ppops.net with ESMTP id 2w9c1avkbk-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Thu, 14 Nov 2019 15:39:32 -0800
-Received: from prn-mbx07.TheFacebook.com (2620:10d:c081:6::21) by
- prn-hub04.TheFacebook.com (2620:10d:c081:35::128) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Thu, 14 Nov 2019 15:39:13 -0800
-Received: from prn-hub04.TheFacebook.com (2620:10d:c081:35::128) by
- prn-mbx07.TheFacebook.com (2620:10d:c081:6::21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Thu, 14 Nov 2019 15:39:13 -0800
-Received: from NAM05-CO1-obe.outbound.protection.outlook.com (192.168.54.28)
- by o365-in.thefacebook.com (192.168.16.28) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
- via Frontend Transport; Thu, 14 Nov 2019 15:39:13 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jzEGgyl5OXXe8GB1nABFo6PyMpdGNYpRWRvfKcW/3BDzuQvurlKxnXemWAWy5bk9WeBfJdS9EW6MhPR6LH1aALpZ1VyurjSVuDsxtgUcP+84sIeFl1W3TTAfqUcujLLjRuY3V4uv50lbSb5mBoSMbXeCKb8krvKmljsvSCgQbTcu5a3Yz+NxVjaLKMz+F+eYHHoe39IDQfzMqCF2k5FZsComJFd6VGexSN1DStShwzNSHOpXVa6oARwVlpIqpRMYhSITW25zSwXOrnH1Vi3SEs8U5ZJ+o6QOMqcL9u99TpD6yoxVfnzTMJihqluNTuJKLcwllJ905CfvhvhyYV7Auw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G9BBACc9W/YM5yq3zWhQnOz9DTZ4LGa6Ta4Wy9a6Mts=;
- b=brovpoV7szpfGOyR/8pkGkwHEZKcItXqlbuHwXAsPOasOzJnK1j1+VT967PgCy4+yaqkFi9JjIR6BuVYVI+O4wtPkPPr9o+IjWBiRzD8jwlLn+bt7ysgdfMUcKLE5zvHS5t+O8iKuHq3O2ecHDvadEGvYwv/wEbsINMPrksAeilGosZDko0zmqVqgZD3bI9I2TPsyOE+rtbXaWVmTD/nehTmfs0k5gX1pAGTii7djGQLn2SiNYMtiG4D4mh/Yx2n3RheABmw7VVNR3wOhjqUKmhYLmDXQLYI3eV6DrlzeqVmujii4bw+pFNalqfdqFF9voArROZLxH92/MPVwTeL9g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G9BBACc9W/YM5yq3zWhQnOz9DTZ4LGa6Ta4Wy9a6Mts=;
- b=Z7m5SPv6u1z/wX18MfvJDtytLeq8fuYRXbipA3cXlsSUMkuWq/TBAkXiyKA3fJVjGwnMZ4b7lhHY39v9DJaQ/oD6piuT7J44+YXn+djgwXsjK2Q7dTVOpTNQDWsqXmmdO2Qxo96jPTMZFCcBdwkIE5vOaKEQaqT5TvOkhCQeLpQ=
-Received: from MWHPR15MB1165.namprd15.prod.outlook.com (10.175.3.22) by
- MWHPR15MB1902.namprd15.prod.outlook.com (10.174.255.21) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2451.23; Thu, 14 Nov 2019 23:39:13 +0000
-Received: from MWHPR15MB1165.namprd15.prod.outlook.com
- ([fe80::f831:d112:6187:90d9]) by MWHPR15MB1165.namprd15.prod.outlook.com
- ([fe80::f831:d112:6187:90d9%4]) with mapi id 15.20.2451.027; Thu, 14 Nov 2019
- 23:39:13 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Alexei Starovoitov <ast@kernel.org>
-CC:     "davem@davemloft.net" <davem@davemloft.net>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH v4 bpf-next 18/20] libbpf: Add support for attaching BPF
- programs to other BPF programs
-Thread-Topic: [PATCH v4 bpf-next 18/20] libbpf: Add support for attaching BPF
- programs to other BPF programs
-Thread-Index: AQHVmx2TVpNlU2N9bE6ZZ6hLUi2bBaeLUzQA
-Date:   Thu, 14 Nov 2019 23:39:12 +0000
-Message-ID: <DB8B7F4F-BDB4-4821-99DB-E814A3EBE966@fb.com>
-References: <20191114185720.1641606-1-ast@kernel.org>
- <20191114185720.1641606-19-ast@kernel.org>
-In-Reply-To: <20191114185720.1641606-19-ast@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3601.0.10)
-x-originating-ip: [2620:10d:c090:200::3:e9ac]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 9d962db7-5e6a-45e2-7668-08d7695bdad7
-x-ms-traffictypediagnostic: MWHPR15MB1902:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MWHPR15MB1902E58B287961A0F7124304B3710@MWHPR15MB1902.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:321;
-x-forefront-prvs: 02213C82F8
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(136003)(376002)(396003)(346002)(39860400002)(366004)(199004)(189003)(66556008)(66446008)(64756008)(6486002)(186003)(558084003)(5024004)(256004)(6436002)(50226002)(25786009)(316002)(478600001)(46003)(54906003)(229853002)(99286004)(6246003)(5660300002)(86362001)(81156014)(4326008)(71200400001)(71190400001)(8676002)(81166006)(6512007)(66946007)(66476007)(6506007)(2616005)(8936002)(476003)(53546011)(33656002)(6116002)(486006)(2906002)(11346002)(102836004)(76116006)(36756003)(14454004)(6916009)(446003)(305945005)(76176011)(7736002);DIR:OUT;SFP:1102;SCL:1;SRVR:MWHPR15MB1902;H:MWHPR15MB1165.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: arF3zJFysosBkhGrsMTf0ToW7XDR1XpBKiTGlBUbj/RnM4pbqLRyDOY7qJ5DJ5ZsSDzEcgi7jeMdP2wMZ/7oskQzrC1iBu3vm138YheCWgis2i48J+SzVYTZ6YRq/BH+E+z/J9vTzZRQVjnkpW4NOYQol1RHdSUCmyydQRVvfA7JC97RvQjDeu+OlbxgNJr2AN6Mj5sQ5hqj5yxFDUdmfyftJEyh+O94iHMzVbMj2vOt/8RUzliqU9yJWPyCAbYIn1veqEKo5wGTUmZ/DKiq1fkeEia478ExHa8EOnPteZnJGf/o0AXIsySIaB/XLVDqUD+yWJGDLUhEhkmdA2qvUp2i58rHjhlpFd0HTEfKUaoe2NexCztXK1kEcBDEvENN5PZdGQyPtAGqaFkTPYTBvzHsKENHM5KnHwCGi1IbsjhktPwk2w7KxqtMpRICUiaT
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <0FDF3701AC6C084F9076B303C1E5EC69@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1727348AbfKOAa3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Nov 2019 19:30:29 -0500
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:44939 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727020AbfKOAa3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Nov 2019 19:30:29 -0500
+Received: by mail-pg1-f193.google.com with SMTP id f19so4835039pgk.11;
+        Thu, 14 Nov 2019 16:30:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=sDha34YrgBlsdela6AIpAyFg7qDyyE5Z+PMSeNCg550=;
+        b=ENaYMt1xyJYD8sEN4QHRtuVPBih7FvFEBdCzHAoHVd/OW43fzHADkPyRFjF28ZYYHJ
+         cfhdBKb0/ug7Y0yypvyzhHbNKXlY/PnedS1e3QOxu7CXljpr6cCHGkKXNNQ42lcVlyd+
+         lMvTzpzLg/gUNiew+BtCK9wi180kLbHeRy/EBNzyPrDPjmDDJWpxlP4GjKzrAgMWjfgm
+         kcNyL7LTiySdq2qL8f+3Ux0ITFuvvP1I1vMuA8E6Fiv4GKdgNauytWJ/36aLrL9CLR5c
+         LmkWSRFWcU6oe8vA0aPcMzaLJMhg74HWR9gbMWG+792YbG0e28yO0oNjGkztNlCKiBxB
+         JCqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=sDha34YrgBlsdela6AIpAyFg7qDyyE5Z+PMSeNCg550=;
+        b=WuW7kiI8b+vat8/S6sFbkKbQby7kLnLsJMNJFj2Y/NtlVmOiNfc11jSa0dVTo+TnyD
+         6xUptSzExzC47o2a/xiwZFWD+qTjHclP6FpSJ1jIE/P086CM83O05JOh2cPgZTuTWuYV
+         Qbfnem0cFWMDOrBYGFc7EWZgPccPySu9S3w4AbFm4a2vG8wA33o2Jh6bD8nyB1umOgbJ
+         XTt8C7fsaTR9eH3aanTc3+acAN2G+wwoxn4O0KoVW9S0vRjAit5FlrRfxawc8k25unJM
+         /wJJANIFeMi7kRqjqx3ygPBBiM3zktBGw6elgMecELHXJ/eqYWL/Yqlh4YY85mVSuHjd
+         9LEg==
+X-Gm-Message-State: APjAAAXVPkANXlZDCZSrNplgEP+kDNBvPI/L283hv4U0P39Xl0Zpn8++
+        Xp+/De/ql93ESLYvv+YtItU=
+X-Google-Smtp-Source: APXvYqy+7Yx+mkOdiVw0TriGYZtRnY+QAieX3NEClr3w2Y4MpKv58mXheafj8+03OdZjR9NjsZ+K4A==
+X-Received: by 2002:a63:ec03:: with SMTP id j3mr2993349pgh.212.1573777828476;
+        Thu, 14 Nov 2019 16:30:28 -0800 (PST)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:200::6ab4])
+        by smtp.gmail.com with ESMTPSA id w5sm8717133pfd.31.2019.11.14.16.30.27
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 14 Nov 2019 16:30:27 -0800 (PST)
+Date:   Thu, 14 Nov 2019 16:30:26 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Cc:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        bpf@vger.kernel.org, magnus.karlsson@gmail.com,
+        magnus.karlsson@intel.com, jonathan.lemon@gmail.com
+Subject: Re: [RFC PATCH bpf-next 2/4] bpf: introduce BPF dispatcher
+Message-ID: <20191115003024.h7eg2kbve23jmzqn@ast-mbp.dhcp.thefacebook.com>
+References: <20191113204737.31623-1-bjorn.topel@gmail.com>
+ <20191113204737.31623-3-bjorn.topel@gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9d962db7-5e6a-45e2-7668-08d7695bdad7
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Nov 2019 23:39:12.8909
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: NHgww86Zavp/POgjZeqUOgVASsgAnvGdwjInhV/R9X1eKacu/mimtfFi4mdT4UZrvPHptbLlWD5mxN7p/Rqlrw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1902
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
- definitions=2019-11-14_05:2019-11-14,2019-11-14 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- mlxlogscore=778 adultscore=0 impostorscore=0 bulkscore=0 phishscore=0
- spamscore=0 mlxscore=0 suspectscore=0 clxscore=1015 malwarescore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1910280000 definitions=main-1911140194
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20191113204737.31623-3-bjorn.topel@gmail.com>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Wed, Nov 13, 2019 at 09:47:35PM +0100, Björn Töpel wrote:
+> From: Björn Töpel <bjorn.topel@intel.com>
+> 
+> The BPF dispatcher builds on top of the BPF trampoline ideas;
+> Introduce bpf_arch_text_poke() and (re-)use the BPF JIT generate
+> code. The dispatcher builds a dispatch table for XDP programs, for
+> retpoline avoidance. The table is a simple binary search model, so
+> lookup is O(log n). Here, the dispatch table is limited to four
+> entries (for laziness reason -- only 1B relative jumps :-P). If the
+> dispatch table is full, it will fallback to the retpoline path.
+> 
+> An example: A module/driver allocates a dispatcher. The dispatcher is
+> shared for all netdevs. Each netdev allocate a slot in the dispatcher
+> and a BPF program. The netdev then uses the dispatcher to call the
+> correct program with a direct call (actually a tail-call).
+> 
+> Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
+> ---
+>  arch/x86/net/bpf_jit_comp.c |  96 ++++++++++++++++++
+>  kernel/bpf/Makefile         |   1 +
+>  kernel/bpf/dispatcher.c     | 197 ++++++++++++++++++++++++++++++++++++
+>  3 files changed, 294 insertions(+)
+>  create mode 100644 kernel/bpf/dispatcher.c
+> 
+> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+> index 28782a1c386e..d75aebf508b8 100644
+> --- a/arch/x86/net/bpf_jit_comp.c
+> +++ b/arch/x86/net/bpf_jit_comp.c
+> @@ -10,10 +10,12 @@
+>  #include <linux/if_vlan.h>
+>  #include <linux/bpf.h>
+>  #include <linux/memory.h>
+> +#include <linux/sort.h>
+>  #include <asm/extable.h>
+>  #include <asm/set_memory.h>
+>  #include <asm/nospec-branch.h>
+>  #include <asm/text-patching.h>
+> +#include <asm/asm-prototypes.h>
+>  
+>  static u8 *emit_code(u8 *ptr, u32 bytes, unsigned int len)
+>  {
+> @@ -1471,6 +1473,100 @@ int arch_prepare_bpf_trampoline(void *image, struct btf_func_model *m, u32 flags
+>  	return 0;
+>  }
+>  
+> +#if defined(CONFIG_BPF_JIT) && defined(CONFIG_RETPOLINE)
+> +
+> +/* Emits the dispatcher. Id lookup is limited to BPF_DISPATCHER_MAX,
+> + * so it'll fit into PAGE_SIZE/2. The lookup is binary search: O(log
+> + * n).
+> + */
+> +static int emit_bpf_dispatcher(u8 **pprog, int a, int b, u64 *progs,
+> +			       u8 *fb)
+> +{
+> +	u8 *prog = *pprog, *jg_reloc;
+> +	int pivot, err, cnt = 0;
+> +	s64 jmp_offset;
+> +
+> +	if (a == b) {
+> +		emit_mov_imm64(&prog, BPF_REG_0,	/* movabs func,%rax */
+> +			       progs[a] >> 32,
+> +			       (progs[a] << 32) >> 32);
 
+Could you try optimizing emit_mov_imm64() to recognize s32 ?
+iirc there was a single x86 insns that could move and sign extend.
+That should cut down on bytecode size and probably make things a bit faster?
+Another alternative is compare lower 32-bit only, since on x86-64 upper 32
+should be ~0 anyway for bpf prog pointers.
+Looking at bookkeeping code, I think I should be able to generalize bpf
+trampoline a bit and share the code for bpf dispatch.
+Could you also try aligning jmp target a bit by inserting nops?
+Some x86 cpus are sensitive to jmp target alignment. Even without considering
+JCC bug it could be helpful. Especially since we're talking about XDP/AF_XDP
+here that will be pushing millions of calls through bpf dispatch.
 
-> On Nov 14, 2019, at 10:57 AM, Alexei Starovoitov <ast@kernel.org> wrote:
->=20
-> Extend libbpf api to pass attach_prog_fd into bpf_object__open.
->=20
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-
-Acked-by: Song Liu <songliubraving@fb.com>
