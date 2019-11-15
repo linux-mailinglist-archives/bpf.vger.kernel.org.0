@@ -2,107 +2,314 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A6815FDF70
-	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2019 14:57:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 531F8FDF90
+	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2019 14:59:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727421AbfKON5H (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 Nov 2019 08:57:07 -0500
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:46558 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727380AbfKON5G (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 15 Nov 2019 08:57:06 -0500
-Received: by mail-pl1-f195.google.com with SMTP id l4so4705730plt.13
-        for <bpf@vger.kernel.org>; Fri, 15 Nov 2019 05:57:06 -0800 (PST)
+        id S1727461AbfKON7x (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 Nov 2019 08:59:53 -0500
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:36913 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727438AbfKON7x (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 15 Nov 2019 08:59:53 -0500
+Received: by mail-pf1-f194.google.com with SMTP id p24so6729226pfn.4;
+        Fri, 15 Nov 2019 05:59:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=5fRrTg/vhAwT1fmQQ8btG004QGt2nYF+M9QxTu9sTWA=;
-        b=RcEy7KwUZydagXfYUZ2++g2nSi9WV8Ma+cw4lqwUnkyV+/lmAGo3r0YLod1CewxhkS
-         g8Eo1y2PZgBJ8VgJm0yv839WGxkfFKNvCqLzrRW8zcQtUZawz1GYU3h/zXP/CAHpoXz4
-         Wyoza7KbgtGjuoJxpJ17i0SeJrZD/xGG8zdy5Z1olhTmbVfpku4PtRN5FRkeTkC5Rv7l
-         k+FXtjwKnox3KQCv4xQwDduZETiKFcovvIc7SPZ9VkHWt/Ou/B0FsV2i4jHy68Z+2NTg
-         T0KFiyLac//Y80tw2etZ9rrvDXaxtJUmxQDQZ8CuoWrtoBiG4CVzD7K1hhSC2+oUgV4Y
-         iiCg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=3A2MX6HtZFZ1kTf8WxpdKJiidP05Sgi2ukVRpZmmeTU=;
+        b=q3lmtRvxYG8uKTV/4nYfWs+WKVi8INMqXtt7m5UV65jupDu7E+JLTSgMoUdHskDybl
+         7O8CawhzNR3B7uVxC8CDYIxJFBbF7of/3PhfWm19h8J4JPqRlIaGp+EIWNlfX9Lt0YYj
+         g0AyK5lS15cBKnbJ4DzxE8A/omo//fpQXrVaPNMXw3VWHWXZ+9fkt6cdPbBI6DbSYp2D
+         IBQs72qsXGisCEZwuuCEY/SeM74/hw4wGyyQOh8dhEzRFBsjDJD/N08Sm5R8+CiYhUOc
+         CmjSYitM6j1Q8yof2lTkrZu5LCj27capZ6qpp5L0WTzj2IB4KVivqFienULrU4AenpV2
+         +UgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=5fRrTg/vhAwT1fmQQ8btG004QGt2nYF+M9QxTu9sTWA=;
-        b=DpkoLmP2SAEk7/7wZKXFBr8rddvqTciMD1Glp3+Tdmj17atZFo71agvE3qjcxFVQds
-         f8n5Zt9BF9HPOOcKCOteA8s3dcGPMMOoXYaW4Srj83URD+FkxgshnaXRG6QE+abQyCOK
-         cOXYJMe2hh+b/DRKqDdNgtA6BPpuHqRuj2CbYzT80lFXESS+0uYOtOLoIvrdbcxZLgiw
-         bFAbRuqJe/ANrPLsTE9Ue+sxgFwmS1g6lX6D9i+Q7FXLv2Nql4lFvqWH5p2Gw9/15V7a
-         4E6WXiszvhynfI+JBgeChvO3Wg38romnphWTbo6HyG4I/zjp7JUoQNyqrvevd+PayBBO
-         Z9cQ==
-X-Gm-Message-State: APjAAAXc+3bjeLfapya8UNsRjg8iuStqr2njuU09zBgLM78Uyzb7nFXG
-        328NVvRZSPzCyjOcZg++3e/MP1j/8yTYvw==
-X-Google-Smtp-Source: APXvYqxMZJAbje2U8MlpKS6E4KT497xnMsIsmDC2+Ryy/8kslK0/GaAXloCNb0nXTxcqofJSjEKBBg==
-X-Received: by 2002:a17:90a:7bcc:: with SMTP id d12mr19825661pjl.63.1573826225906;
-        Fri, 15 Nov 2019 05:57:05 -0800 (PST)
-Received: from localhost ([2620:10d:c090:180::a9db])
-        by smtp.gmail.com with ESMTPSA id p3sm12009787pfb.163.2019.11.15.05.57.04
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=3A2MX6HtZFZ1kTf8WxpdKJiidP05Sgi2ukVRpZmmeTU=;
+        b=bj+Mg+yStZYfWJfm1FB+oQhEYJ9zOQUcZNMOFGPgcrd42GvbMzq0lvqWcKcDsUNwR4
+         TJZxby6d86C0AEB02stCEHeYufKQOqn48G5vNGi9za/lacF+eIjst+2xip8zNMelWrN2
+         /Kf0ltQv8XT8oca3LZFP3pvk/C3afCb6V24i6RkAmNw7Nhytaizdqr8yEXWt5/ggvHGn
+         becGLUj7HYHyxq2zAolQ2Yp88WAZuFYrTU1ub+Su7EipDTwVsuuiuC+9z3bOFApULHUt
+         yIU+ppMlTrqUSswwpy+phKgTvOUo52mQinrEPngSik2Yv/CcWxQ7EWFjupx4yTtqHDZq
+         bG4Q==
+X-Gm-Message-State: APjAAAUk//cIhp4NTuvqalTDJ0m/TP6ix5l0Sq+eTH1hF27TMa4QsVyz
+        2Mdoiv+6zn8oM5VhznwVzy9La/SXgBg=
+X-Google-Smtp-Source: APXvYqyx8yEFbA1Cxu9RO8t54/rAS25Y6XwAxilVNFSf3IrnE4T55/KHrdA6z7Av5U3DhnQa/mIowA==
+X-Received: by 2002:a63:c0a:: with SMTP id b10mr13472041pgl.168.1573826391383;
+        Fri, 15 Nov 2019 05:59:51 -0800 (PST)
+Received: from ubuntu-18.04-x8664 ([128.1.49.85])
+        by smtp.gmail.com with ESMTPSA id u3sm9500299pjn.0.2019.11.15.05.59.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Nov 2019 05:57:05 -0800 (PST)
-Date:   Fri, 15 Nov 2019 08:57:03 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
-        daniel@iogearbox.net, andrii.nakryiko@gmail.com,
-        kernel-team@fb.com, Rik van Riel <riel@surriel.com>
-Subject: Re: [PATCH v4 bpf-next 2/4] bpf: add mmap() support for
- BPF_MAP_TYPE_ARRAY
-Message-ID: <20191115135703.GA309457@cmpxchg.org>
-References: <20191115040225.2147245-1-andriin@fb.com>
- <20191115040225.2147245-3-andriin@fb.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191115040225.2147245-3-andriin@fb.com>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+        Fri, 15 Nov 2019 05:59:51 -0800 (PST)
+From:   Wenbo Zhang <ethercflow@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     alexei.starovoitov@gmail.com, daniel@iogearbox.net, yhs@fb.com,
+        andrii.nakryiko@gmail.com, netdev@vger.kernel.org,
+        Wenbo Zhang <ethercflow@gmail.com>
+Subject: [PATCH bpf-next v4] selftests/bpf: test for bpf_get_file_path() from raw tracepoint
+Date:   Fri, 15 Nov 2019 08:59:01 -0500
+Message-Id: <20191115135901.8114-1-ethercflow@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 14, 2019 at 08:02:23PM -0800, Andrii Nakryiko wrote:
-> Add ability to memory-map contents of BPF array map. This is extremely useful
-> for working with BPF global data from userspace programs. It allows to avoid
-> typical bpf_map_{lookup,update}_elem operations, improving both performance
-> and usability.
-> 
-> There had to be special considerations for map freezing, to avoid having
-> writable memory view into a frozen map. To solve this issue, map freezing and
-> mmap-ing is happening under mutex now:
->   - if map is already frozen, no writable mapping is allowed;
->   - if map has writable memory mappings active (accounted in map->writecnt),
->     map freezing will keep failing with -EBUSY;
->   - once number of writable memory mappings drops to zero, map freezing can be
->     performed again.
-> 
-> Only non-per-CPU plain arrays are supported right now. Maps with spinlocks
-> can't be memory mapped either.
-> 
-> For BPF_F_MMAPABLE array, memory allocation has to be done through vmalloc()
-> to be mmap()'able. We also need to make sure that array data memory is
-> page-sized and page-aligned, so we over-allocate memory in such a way that
-> struct bpf_array is at the end of a single page of memory with array->value
-> being aligned with the start of the second page. On deallocation we need to
-> accomodate this memory arrangement to free vmalloc()'ed memory correctly.
-> 
-> One important consideration regarding how memory-mapping subsystem functions.
-> Memory-mapping subsystem provides few optional callbacks, among them open()
-> and close().  close() is called for each memory region that is unmapped, so
-> that users can decrease their reference counters and free up resources, if
-> necessary. open() is *almost* symmetrical: it's called for each memory region
-> that is being mapped, **except** the very first one. So bpf_map_mmap does
-> initial refcnt bump, while open() will do any extra ones after that. Thus
-> number of close() calls is equal to number of open() calls plus one more.
-> 
-> Cc: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: Rik van Riel <riel@surriel.com>
-> Acked-by: Song Liu <songliubraving@fb.com>
-> Acked-by: John Fastabend <john.fastabend@gmail.com>
-> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+trace fstat events by raw tracepoint sys_enter:newfstat, and handle events
+only produced by test_file_get_path, which call fstat on several different
+types of files to test bpf_get_file_path's feature.
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+v3->v4: addressed Andrii's feedback
+- use a set of fd instead of fds array
+- use global variables instead of maps (in v3, I mistakenly thought that
+the bpf maps are global variables.)
+- remove uncessary global variable path_info_index
+- remove fd compare as the fstat's order is fixed
+
+v2->v3: addressed Andrii's feedback
+- use global data instead of perf_buffer to simplified code
+
+v1->v2: addressed Daniel's feedback
+- rename bpf_fd2path to bpf_get_file_path to be consistent with other
+helper's names
+
+Signed-off-by: Wenbo Zhang <ethercflow@gmail.com>
+---
+ .../selftests/bpf/prog_tests/get_file_path.c  | 173 ++++++++++++++++++
+ .../selftests/bpf/progs/test_get_file_path.c  |  43 +++++
+ 2 files changed, 216 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/get_file_path.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_get_file_path.c
+
+diff --git a/tools/testing/selftests/bpf/prog_tests/get_file_path.c b/tools/testing/selftests/bpf/prog_tests/get_file_path.c
+new file mode 100644
+index 000000000000..446ee4dd20e2
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/get_file_path.c
+@@ -0,0 +1,173 @@
++// SPDX-License-Identifier: GPL-2.0
++#define _GNU_SOURCE
++#include <test_progs.h>
++#include <sys/stat.h>
++#include <linux/sched.h>
++#include <sys/syscall.h>
++
++#define MAX_PATH_LEN		128
++#define MAX_FDS			7
++#define MAX_EVENT_NUM		16
++
++static struct file_path_test_data {
++	pid_t pid;
++	__u32 cnt;
++	__u32 fds[MAX_EVENT_NUM];
++	char paths[MAX_EVENT_NUM][MAX_PATH_LEN];
++} src, dst;
++
++static inline int set_pathname(int fd)
++{
++	char buf[MAX_PATH_LEN];
++
++	snprintf(buf, MAX_PATH_LEN, "/proc/%d/fd/%d", src.pid, fd);
++	src.fds[src.cnt] = fd;
++	return readlink(buf, src.paths[src.cnt++], MAX_PATH_LEN);
++}
++
++static int trigger_fstat_events(pid_t pid)
++{
++	int pipefd[2] = { -1, -1 };
++	int sockfd = -1, procfd = -1, devfd = -1;
++	int localfd = -1, indicatorfd = -1;
++	struct stat fileStat;
++	int ret = -1;
++
++	/* unmountable pseudo-filesystems */
++	if (CHECK_FAIL(pipe(pipefd) < 0))
++		return ret;
++	/* unmountable pseudo-filesystems */
++	sockfd = socket(AF_INET, SOCK_STREAM, 0);
++	if (CHECK_FAIL(sockfd < 0))
++		goto out_close;
++	/* mountable pseudo-filesystems */
++	procfd = open("/proc/self/comm", O_RDONLY);
++	if (CHECK_FAIL(procfd < 0))
++		goto out_close;
++	devfd = open("/dev/urandom", O_RDONLY);
++	if (CHECK_FAIL(devfd < 0))
++		goto out_close;
++	localfd = open("/tmp/fd2path_loadgen.txt", O_CREAT|O_RDONLY);
++	if (CHECK_FAIL(localfd < 0))
++		goto out_close;
++	/* bpf_get_file_path will return path with (deleted) */
++	remove("/tmp/fd2path_loadgen.txt");
++	indicatorfd = open("/tmp/", O_PATH);
++	if (CHECK_FAIL(indicatorfd < 0))
++		goto out_close;
++
++	src.pid = pid;
++
++	ret = set_pathname(pipefd[0]);
++	if (CHECK_FAIL(ret < 0))
++		goto out_close;
++	ret = set_pathname(pipefd[1]);
++	if (CHECK_FAIL(ret < 0))
++		goto out_close;
++	ret = set_pathname(sockfd);
++	if (CHECK_FAIL(ret < 0))
++		goto out_close;
++	ret = set_pathname(procfd);
++	if (CHECK_FAIL(ret < 0))
++		goto out_close;
++	ret = set_pathname(devfd);
++	if (CHECK_FAIL(ret < 0))
++		goto out_close;
++	ret = set_pathname(localfd);
++	if (CHECK_FAIL(ret < 0))
++		goto out_close;
++	ret = set_pathname(indicatorfd);
++	if (CHECK_FAIL(ret < 0))
++		goto out_close;
++
++	fstat(pipefd[0], &fileStat);
++	fstat(pipefd[1], &fileStat);
++	fstat(sockfd, &fileStat);
++	fstat(procfd, &fileStat);
++	fstat(devfd, &fileStat);
++	fstat(localfd, &fileStat);
++	fstat(indicatorfd, &fileStat);
++
++out_close:
++	close(indicatorfd);
++	close(localfd);
++	close(devfd);
++	close(procfd);
++	close(sockfd);
++	close(pipefd[1]);
++	close(pipefd[0]);
++
++	return ret;
++}
++
++void test_get_file_path(void)
++{
++	const char *prog_name = "tracepoint/syscalls/sys_enter_newfstat";
++	const char *obj_file = "./test_get_file_path.o";
++	DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts, );
++	int err, results_map_fd, duration = 0;
++	struct bpf_program *tp_prog = NULL;
++	struct bpf_link *tp_link = NULL;
++	struct bpf_object *obj = NULL;
++	const int zero = 0;
++
++	obj = bpf_object__open_file(obj_file, &opts);
++	if (CHECK(IS_ERR(obj), "obj_open_file", "err %ld\n", PTR_ERR(obj)))
++		return;
++
++	tp_prog = bpf_object__find_program_by_title(obj, prog_name);
++	if (CHECK(!tp_prog, "find_tp",
++		  "prog '%s' not found\n", prog_name))
++		goto cleanup;
++
++	err = bpf_object__load(obj);
++	if (CHECK(err, "obj_load", "err %d\n", err))
++		goto cleanup;
++
++	results_map_fd = bpf_find_map(__func__, obj, "test_get.bss");
++	if (CHECK(results_map_fd < 0, "find_bss_map",
++		  "err %d\n", results_map_fd))
++		goto cleanup;
++
++	tp_link = bpf_program__attach_tracepoint(tp_prog, "syscalls",
++						 "sys_enter_newfstat");
++	if (CHECK(IS_ERR(tp_link), "attach_tp",
++		  "err %ld\n", PTR_ERR(tp_link))) {
++		tp_link = NULL;
++		goto cleanup;
++	}
++
++	dst.pid = syscall(SYS_gettid);
++	err = bpf_map_update_elem(results_map_fd, &zero, &dst, 0);
++	if (CHECK(err, "update_elem",
++		  "failed to set pid filter: %d\n", err))
++		goto cleanup;
++
++	err = trigger_fstat_events(dst.pid);
++	if (CHECK_FAIL(err < 0))
++		goto cleanup;
++
++	err = bpf_map_lookup_elem(results_map_fd, &zero, &dst);
++	if (CHECK(err, "get_results",
++		  "failed to get results: %d\n", err))
++		goto cleanup;
++
++	for (int i = 0; i < MAX_FDS; i++) {
++		if (i < 3) {
++			CHECK((dst.paths[i][0] != '\0'), "get_file_path",
++			       "failed to filter fs [%d]: %u(%s) vs %u(%s)\n",
++			       i, src.fds[i], src.paths[i], dst.fds[i],
++			       dst.paths[i]);
++		} else {
++			err = strncmp(src.paths[i], dst.paths[i], MAX_PATH_LEN);
++			CHECK(err != 0, "get_file_path",
++			       "failed to get path[%d]: %u(%s) vs %u(%s)\n",
++			       i, src.fds[i], src.paths[i], dst.fds[i],
++			       dst.paths[i]);
++		}
++	}
++
++cleanup:
++	bpf_link__destroy(tp_link);
++	bpf_object__close(obj);
++}
+diff --git a/tools/testing/selftests/bpf/progs/test_get_file_path.c b/tools/testing/selftests/bpf/progs/test_get_file_path.c
+new file mode 100644
+index 000000000000..c006fa05e32b
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_get_file_path.c
+@@ -0,0 +1,43 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <linux/bpf.h>
++#include <linux/ptrace.h>
++#include <string.h>
++#include <unistd.h>
++#include "bpf_helpers.h"
++#include "bpf_tracing.h"
++
++#define MAX_PATH_LEN		128
++#define MAX_EVENT_NUM		16
++
++static struct file_path_test_data {
++	pid_t pid;
++	__u32 cnt;
++	__u32 fds[MAX_EVENT_NUM];
++	char paths[MAX_EVENT_NUM][MAX_PATH_LEN];
++} data;
++
++struct sys_enter_newfstat_args {
++	unsigned long long pad1;
++	unsigned long long pad2;
++	unsigned int fd;
++};
++
++SEC("tracepoint/syscalls/sys_enter_newfstat")
++int bpf_prog(struct sys_enter_newfstat_args *args)
++{
++	pid_t pid = bpf_get_current_pid_tgid();
++
++	if (pid != data.pid)
++		return 0;
++	if (data.cnt >= MAX_EVENT_NUM)
++		return 0;
++
++	data.fds[data.cnt] = args->fd;
++	bpf_get_file_path(data.paths[data.cnt], MAX_PATH_LEN, args->fd);
++	data.cnt++;
++
++	return 0;
++}
++
++char _license[] SEC("license") = "GPL";
+-- 
+2.17.1
+
