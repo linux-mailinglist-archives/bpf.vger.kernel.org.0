@@ -2,141 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 23634FD3A7
-	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2019 05:29:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98385FD3C8
+	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2019 05:45:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726786AbfKOE3q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Nov 2019 23:29:46 -0500
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:44302 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726549AbfKOE3q (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Nov 2019 23:29:46 -0500
-Received: by mail-pg1-f195.google.com with SMTP id f19so5166385pgk.11;
-        Thu, 14 Nov 2019 20:29:44 -0800 (PST)
+        id S1727032AbfKOEpZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Nov 2019 23:45:25 -0500
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:43984 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726549AbfKOEpZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Nov 2019 23:45:25 -0500
+Received: by mail-pl1-f193.google.com with SMTP id a18so3774889plm.10;
+        Thu, 14 Nov 2019 20:45:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=yWWTL27YpOR9rROnC4ueooFH4+fm9f8C4aV1mOV1Cso=;
-        b=gOA89t2ACr6O7LIqqlZld6zX81E/PWI2W30YaxOdLU7z3nOkhRpyb+q/NTFznT/GvW
-         1Sk0VignDLDXQkfRUNeEWIZn2zI0U3Cyd3bbfTI54nkSKoXRx3tnTkMH5mfJrq9zlSYj
-         O5T2xF6wtdPPL6ufVKbXLeTxiwKu3EyV5HsSe44C2ekd37uJPD2GpOtHFfrtXzQUgEiZ
-         C4me/Kfbn4Os4BRBUby9cRMx7ek3J/+bfSlLW358Hk2m749tD90HoaUto/riZtXH8ryA
-         e/D5eXgdLOCP6F5qTT4YEEEdTlj5Yhlxu5ZLQv/ZvEw547dQTFEI23W1GXOGIoU/v1vr
-         Gt+w==
+        bh=zp0EkuTAfCyU3TOfat2tURAscamqJyiKCYFYh95KC9Y=;
+        b=Uvvx12ulSsuclHGxLxRKcbnX1hvkC6X1UJh37k7o2EvM6pnQD4eGuh9h+yu6rQwwAw
+         6H3Ut7ImmPx6yZeuc9tKV1W8BuFADKpW9Wv43cqlqSUTnj5KrIa1af6RUx62us68aSpO
+         QsdikKljQbjsOHYWg4WJKepz4cekERzdRhN3QAwR/gcdUkA0hzvdbBbQVvQgVwko5Z5G
+         rH4TXAeWX1xfitVZetm7oruJWoyjazVBxTGa2lHLCvFKbrE2C7mCzio0ckRmgI165wDD
+         f01BgU2ZH79St/CEGT3SZ9nzXGvSKRXvm7uIixhmRzhAbtkpLsLsxOKbpcANH6v6uxQ3
+         hiPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=yWWTL27YpOR9rROnC4ueooFH4+fm9f8C4aV1mOV1Cso=;
-        b=bQBX8KWAdC0w7xNT0+JJ5y8NfZyzaudCj1o/FPvuZPirNG+R5YctHU7+nAMWKo6zqN
-         D79ezNsZH8/Gmhp1ox6OHpWb0zZiZdQe9VS7j/b8SAEXipWV64GT19J/b3e+ZdmIF84j
-         /VjTAUUXziumEL5KcyPP1FrWh5yMfzTYfZLm0By6bKAZxqRdzoBvor+iOl0zoP81+uNi
-         mXLToXAFrs47aOIbgtB3a04PiHTNBaK5yKFupOITOOoriu66uYZWTIFb8zipoOP+gEb8
-         SvApVUnItbxzg+MNjEp7OxErf16SUppBYHUjcMyzf/eEeGoSmOZkOznp2gdq0BJy8XVi
-         Dy6w==
-X-Gm-Message-State: APjAAAV4BjyX0DeMg7eZhsav8m3dvhT/uwUn2k03YEF/ggGRUkZHaNAb
-        xfByx+ChKebuZ7MTE6M50LRNcuv8
-X-Google-Smtp-Source: APXvYqxeedN8VNsXvEJGzcmNCtvQLD00o8dv+9JAX5EhrSkNpWb4Kha0zRaDdiKsxfi4Pz1UMf46Gg==
-X-Received: by 2002:a17:90a:989:: with SMTP id 9mr17278212pjo.35.1573792184064;
-        Thu, 14 Nov 2019 20:29:44 -0800 (PST)
+        bh=zp0EkuTAfCyU3TOfat2tURAscamqJyiKCYFYh95KC9Y=;
+        b=sOXBBfLXdQ6gYanWkHPtDJFwc6280UT2ETi3p4Nc3CB7gVudy2C0RJ7/d3yho3RZy3
+         Okgf4EEdV1IU6SxErjZ+b8ltJGmef+i1rvlaZc0aIWiqf5AJyS8gcZSuhdy2d1w7piT/
+         kb1ptRN+0t+xLZv7mgkV167hCAoyoZ2B0GxQQpxfSdm8kw/cGYYvZofDy4KNLLo5V8D5
+         6/Q5O2U9YqTJWlCB4pmGpEMw9m2+SoI2CfIhDJ4975/GbPunjhMu/tgCEMvatPLQK15P
+         7cVSBFx79Vla91UH+Plxp815xATEUBbaHQ0ISKMc2BrC+SOVcWC+BpNAciuiahCY+dIX
+         xZFw==
+X-Gm-Message-State: APjAAAWr0FJNbj2JwBPQi/+dxKgcrfo7QqXG7Rhe/njxmjnJfL+UIO9G
+        9hPViY1xv6Qk+Lt2yzZL23FlG7Cd
+X-Google-Smtp-Source: APXvYqyl3v1j86ODq4j7anq/8l4nn+UMXP3KQxfoQSp2iuxylztQpzNW2oQeQMLjFl5iXPHrOk3tAw==
+X-Received: by 2002:a17:90a:f496:: with SMTP id bx22mr17357298pjb.101.1573793122887;
+        Thu, 14 Nov 2019 20:45:22 -0800 (PST)
 Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:180::a328])
-        by smtp.gmail.com with ESMTPSA id y6sm6519612pfm.12.2019.11.14.20.29.42
+        by smtp.gmail.com with ESMTPSA id z18sm8395241pgv.90.2019.11.14.20.45.21
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 14 Nov 2019 20:29:43 -0800 (PST)
-Date:   Thu, 14 Nov 2019 20:29:41 -0800
+        Thu, 14 Nov 2019 20:45:22 -0800 (PST)
+Date:   Thu, 14 Nov 2019 20:45:19 -0800
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     ast@kernel.org, john.fastabend@gmail.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH rfc bpf-next 8/8] bpf: constant map key tracking for prog
- array pokes
-Message-ID: <20191115042939.ckt4fqvtfdi344y2@ast-mbp.dhcp.thefacebook.com>
-References: <cover.1573779287.git.daniel@iogearbox.net>
- <fa3c2f6e2f4fbe45200d54a3c6d4c65c4f84f790.1573779287.git.daniel@iogearbox.net>
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
+        daniel@iogearbox.net, andrii.nakryiko@gmail.com,
+        kernel-team@fb.com, Johannes Weiner <hannes@cmpxchg.org>,
+        Rik van Riel <riel@surriel.com>
+Subject: Re: [PATCH v4 bpf-next 2/4] bpf: add mmap() support for
+ BPF_MAP_TYPE_ARRAY
+Message-ID: <20191115044518.sqh3y3bwtjfp5zex@ast-mbp.dhcp.thefacebook.com>
+References: <20191115040225.2147245-1-andriin@fb.com>
+ <20191115040225.2147245-3-andriin@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <fa3c2f6e2f4fbe45200d54a3c6d4c65c4f84f790.1573779287.git.daniel@iogearbox.net>
+In-Reply-To: <20191115040225.2147245-3-andriin@fb.com>
 User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 15, 2019 at 02:04:02AM +0100, Daniel Borkmann wrote:
-> Add tracking of constant keys into tail call maps. The signature of
-> bpf_tail_call_proto is that arg1 is ctx, arg2 map pointer and arg3
-> is a index key. The direct call approach for tail calls can be enabled
-> if the verifier asserted that for all branches leading to the tail call
-> helper invocation, the map pointer and index key were both constant
-> and the same. Tracking of map pointers we already do from prior work
-> via c93552c443eb ("bpf: properly enforce index mask to prevent out-of-bounds
-> speculation") and 09772d92cd5a ("bpf: avoid retpoline for lookup/update/
-> delete calls on maps"). Given the tail call map index key is not on
-> stack but directly in the register, we can add similar tracking approach
-> and later in fixup_bpf_calls() add a poke descriptor to the progs poke_tab
-> with the relevant information for the JITing phase. We internally reuse
-> insn->imm for the rewritten BPF_JMP | BPF_TAIL_CALL instruction in order
-> to point into the prog's poke_tab and keep insn->imm == 0 as indicator
-> that current indirect tail call emission must be used.
+On Thu, Nov 14, 2019 at 08:02:23PM -0800, Andrii Nakryiko wrote:
+> Add ability to memory-map contents of BPF array map. This is extremely useful
+> for working with BPF global data from userspace programs. It allows to avoid
+> typical bpf_map_{lookup,update}_elem operations, improving both performance
+> and usability.
 > 
-> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+> There had to be special considerations for map freezing, to avoid having
+> writable memory view into a frozen map. To solve this issue, map freezing and
+> mmap-ing is happening under mutex now:
+>   - if map is already frozen, no writable mapping is allowed;
+>   - if map has writable memory mappings active (accounted in map->writecnt),
+>     map freezing will keep failing with -EBUSY;
+>   - once number of writable memory mappings drops to zero, map freezing can be
+>     performed again.
+> 
+> Only non-per-CPU plain arrays are supported right now. Maps with spinlocks
+> can't be memory mapped either.
+> 
+> For BPF_F_MMAPABLE array, memory allocation has to be done through vmalloc()
+> to be mmap()'able. We also need to make sure that array data memory is
+> page-sized and page-aligned, so we over-allocate memory in such a way that
+> struct bpf_array is at the end of a single page of memory with array->value
+> being aligned with the start of the second page. On deallocation we need to
+> accomodate this memory arrangement to free vmalloc()'ed memory correctly.
+> 
+> One important consideration regarding how memory-mapping subsystem functions.
+> Memory-mapping subsystem provides few optional callbacks, among them open()
+> and close().  close() is called for each memory region that is unmapped, so
+> that users can decrease their reference counters and free up resources, if
+> necessary. open() is *almost* symmetrical: it's called for each memory region
+> that is being mapped, **except** the very first one. So bpf_map_mmap does
+> initial refcnt bump, while open() will do any extra ones after that. Thus
+> number of close() calls is equal to number of open() calls plus one more.
+> 
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: Rik van Riel <riel@surriel.com>
+> Acked-by: Song Liu <songliubraving@fb.com>
+> Acked-by: John Fastabend <john.fastabend@gmail.com>
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 > ---
->  include/linux/bpf_verifier.h |  1 +
->  kernel/bpf/verifier.c        | 98 ++++++++++++++++++++++++++++++++++++
->  2 files changed, 99 insertions(+)
+>  include/linux/bpf.h            | 11 ++--
+>  include/linux/vmalloc.h        |  1 +
+>  include/uapi/linux/bpf.h       |  3 ++
+>  kernel/bpf/arraymap.c          | 59 +++++++++++++++++---
+>  kernel/bpf/syscall.c           | 99 ++++++++++++++++++++++++++++++++--
+>  mm/vmalloc.c                   | 20 +++++++
+>  tools/include/uapi/linux/bpf.h |  3 ++
+>  7 files changed, 184 insertions(+), 12 deletions(-)
 > 
-> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-> index cdd08bf0ec06..f494f0c9ac13 100644
-> --- a/include/linux/bpf_verifier.h
-> +++ b/include/linux/bpf_verifier.h
-> @@ -301,6 +301,7 @@ struct bpf_insn_aux_data {
->  			u32 map_off;		/* offset from value base address */
->  		};
->  	};
-> +	u64 key_state; /* constant key tracking for maps */
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 6fbe599fb977..8021fce98868 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -12,6 +12,7 @@
+>  #include <linux/err.h>
+>  #include <linux/rbtree_latch.h>
+>  #include <linux/numa.h>
+> +#include <linux/mm_types.h>
+>  #include <linux/wait.h>
+>  #include <linux/u64_stats_sync.h>
+>  
+> @@ -66,6 +67,7 @@ struct bpf_map_ops {
+>  				     u64 *imm, u32 off);
+>  	int (*map_direct_value_meta)(const struct bpf_map *map,
+>  				     u64 imm, u32 *off);
+> +	int (*map_mmap)(struct bpf_map *map, struct vm_area_struct *vma);
+>  };
+>  
+>  struct bpf_map_memory {
+> @@ -94,9 +96,10 @@ struct bpf_map {
+>  	u32 btf_value_type_id;
+>  	struct btf *btf;
+>  	struct bpf_map_memory memory;
+> +	char name[BPF_OBJ_NAME_LEN];
+>  	bool unpriv_array;
+> -	bool frozen; /* write-once */
+> -	/* 48 bytes hole */
+> +	bool frozen; /* write-once; write-protected by freeze_mutex */
+> +	/* 22 bytes hole */
+>  
+>  	/* The 3rd and 4th cacheline with misc members to avoid false sharing
+>  	 * particularly with refcounting.
+> @@ -104,7 +107,8 @@ struct bpf_map {
+>  	atomic64_t refcnt ____cacheline_aligned;
+>  	atomic64_t usercnt;
+>  	struct work_struct work;
+> -	char name[BPF_OBJ_NAME_LEN];
+> +	struct mutex freeze_mutex;
+> +	u64 writecnt; /* writable mmap cnt; protected by freeze_mutex */
+>  };
 
-may be map_key_state ?
-key_state is a bit ambiguous in the bpf_insn_aux_data.
-
-> +static int
-> +record_func_key(struct bpf_verifier_env *env, struct bpf_call_arg_meta *meta,
-> +		int func_id, int insn_idx)
-> +{
-> +	struct bpf_insn_aux_data *aux = &env->insn_aux_data[insn_idx];
-> +	struct bpf_reg_state *regs = cur_regs(env), *reg;
-> +	struct tnum range = tnum_range(0, U32_MAX);
-> +	struct bpf_map *map = meta->map_ptr;
-> +	u64 val;
-> +
-> +	if (func_id != BPF_FUNC_tail_call)
-> +		return 0;
-> +	if (!map || map->map_type != BPF_MAP_TYPE_PROG_ARRAY) {
-> +		verbose(env, "kernel subsystem misconfigured verifier\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	reg = &regs[BPF_REG_3];
-> +	if (!register_is_const(reg) || !tnum_in(range, reg->var_off)) {
-> +		bpf_map_key_store(aux, BPF_MAP_KEY_POISON);
-> +		return 0;
-> +	}
-> +
-> +	val = reg->var_off.value;
-> +	if (bpf_map_key_unseen(aux))
-> +		bpf_map_key_store(aux, val);
-> +	else if (bpf_map_key_immediate(aux) != val)
-> +		bpf_map_key_store(aux, BPF_MAP_KEY_POISON);
-> +	return 0;
-> +}
-
-I think this analysis is very useful in other cases as well. Could you
-generalize it for array map lookups ? The key used in bpf_map_lookup_elem() for
-arrays is often constant. In such cases we can optimize array_map_gen_lookup()
-into absolute pointer. It will be possible to do
-if (idx < max_entries) ptr += idx * elem_size;
-during verification instead of runtime and the whole
-bpf_map_lookup_elem(map, &key); will become single instruction that
-assigns &array[idx] into R0.
+Can the mutex be moved into bpf_array instead of being in bpf_map that is
+shared across all map types?
+If so then can you reuse the mutex that Daniel is adding in his patch 6/8
+of tail_call series? Not sure what would the right name for such mutex.
+It will be used for your map_freeze logic and for Daniel's text_poke.
 
