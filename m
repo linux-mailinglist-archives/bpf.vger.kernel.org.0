@@ -2,212 +2,217 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AC19CFE374
-	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2019 17:56:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77013FE48B
+	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2019 19:06:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727632AbfKOQ4a (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 Nov 2019 11:56:30 -0500
-Received: from mail-pj1-f68.google.com ([209.85.216.68]:36368 "EHLO
-        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727548AbfKOQ4a (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 15 Nov 2019 11:56:30 -0500
-Received: by mail-pj1-f68.google.com with SMTP id cq11so103650pjb.3;
-        Fri, 15 Nov 2019 08:56:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=NbbetL8CbWzPFwnyvMgyLu5m3+9biqmJdmqKjyKfIR0=;
-        b=hVAd2W1PrV07Z5BzI6AIvG8xtLS8Yk63JVDezoAPE+P9UbCTix1mD/pn14vkopZmVl
-         TDAtlsOeFZVT5j80ZwKSxdtohrvv8rY0+Wtl58uZY5zm/P5b/BQNyjYOZO6QWTG4pJaO
-         shMrJoqSHG605yWcLMBjQDnwclWAFdb0bhBm2gjKMDILWx3LQwR/v+7SL+vK3gJ9pWko
-         0uECxXH11PLS+MNwB0GJh1MJ1DLAPlMiJDJXVo6ST7+TQyMnzdgaox5ta9NuSFlto1LE
-         O7hvV2yibLKwYaRpveXydvJ7ojkYGpR5Ep6f7+jElqKs/0L7twLhXjfUibTDCi1uksMX
-         +QJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=NbbetL8CbWzPFwnyvMgyLu5m3+9biqmJdmqKjyKfIR0=;
-        b=YOTukat0eMVq5MCY6v/ZR2xuX99Yb0fiQjXE0m63sUmQVQ2gEMIz3nksMPowzJ2jZF
-         82o6I4PTm0h0dt8Rl2HZ8xoOopyAXyI6XO4JNYP/hXc1ut98jIOnkf0wHfdqYHdlyjAt
-         64WGQgvqNOWJtvumZEBpTz5JNU59QmK1egTznbnewG2cUdPLS3XgOY6gMfv8ChAvMrrE
-         VfncJJITBbdti5WPToikuF9OwaCFw9I3rcbKAEcVB30j9yud4pAayKhHs0FIh7FOA3Wk
-         piaOpqrqD60TYXHW4TsYiXsAj9T8cEE6znSjBDufIEFGuc3NVGIAttWzMOb/Zga3D3tX
-         Tcfw==
-X-Gm-Message-State: APjAAAWSheRi6JwbadLkgRN2KJl8uIRcMh2CrVhpvy3RgrK/b/8Sl63W
-        bBX68gYv9yyeR2jdlAjqmUA=
-X-Google-Smtp-Source: APXvYqw9ejOejfQ1GCpRH1iPDmook8ubHCdYl1HQYL6C3lvf7FgMMM0/+T+sjRzB97HA4YqR3iVCIg==
-X-Received: by 2002:a17:90a:bd0c:: with SMTP id y12mr21179873pjr.108.1573836989284;
-        Fri, 15 Nov 2019 08:56:29 -0800 (PST)
-Received: from localhost (198-0-60-179-static.hfc.comcastbusiness.net. [198.0.60.179])
-        by smtp.gmail.com with ESMTPSA id a6sm12136151pja.30.2019.11.15.08.56.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Nov 2019 08:56:28 -0800 (PST)
-Date:   Fri, 15 Nov 2019 08:56:27 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Edward Cree <ecree@solarflare.com>
-Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Marek Majkowski <marek@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Message-ID: <5dced8bbe72ed_5f462b1f489665bc31@john-XPS-13-9370.notmuch>
-In-Reply-To: <20191115021318.sj5zfokruljugcno@ast-mbp.dhcp.thefacebook.com>
-References: <70142501-e2dd-1aed-992e-55acd5c30cfd@solarflare.com>
- <874l07fu61.fsf@toke.dk>
- <aeae7b94-090a-a850-4740-0274ab8178d5@solarflare.com>
- <87eez4odqp.fsf@toke.dk>
- <20191112025112.bhzmrrh2pr76ssnh@ast-mbp.dhcp.thefacebook.com>
- <87h839oymg.fsf@toke.dk>
- <20191112195223.cp5kcmkko54dsfbg@ast-mbp.dhcp.thefacebook.com>
- <8c251f3d-67bd-9bc2-8037-a15d93b48674@solarflare.com>
- <20191112231822.o3gir44yskmntgnq@ast-mbp.dhcp.thefacebook.com>
- <0c90adc4-5992-8648-88bf-4993252e8992@solarflare.com>
- <20191115021318.sj5zfokruljugcno@ast-mbp.dhcp.thefacebook.com>
-Subject: Re: static and dynamic linking. Was: [PATCH bpf-next v3 1/5] bpf:
- Support chain calling multiple BPF
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        id S1726365AbfKOSGe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 Nov 2019 13:06:34 -0500
+Received: from mga05.intel.com ([192.55.52.43]:12098 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726131AbfKOSGe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 15 Nov 2019 13:06:34 -0500
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 15 Nov 2019 10:06:33 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.68,309,1569308400"; 
+   d="scan'208";a="203454343"
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
+  by fmsmga008.fm.intel.com with ESMTP; 15 Nov 2019 10:06:32 -0800
+Date:   Fri, 15 Nov 2019 10:06:32 -0800
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, bpf@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, kvm@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
+        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 09/24] vfio, mm: fix get_user_pages_remote() and
+ FOLL_LONGTERM
+Message-ID: <20191115180631.GA23832@iweiny-DESK2.sc.intel.com>
+References: <20191115055340.1825745-1-jhubbard@nvidia.com>
+ <20191115055340.1825745-10-jhubbard@nvidia.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191115055340.1825745-10-jhubbard@nvidia.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov wrote:
-> On Wed, Nov 13, 2019 at 06:30:04PM +0000, Edward Cree wrote:
-> > > There is also
-> > > no way to place extern into a section. Currently SEC("..") is a sta=
-ndard way to
-> > > annotate bpf programs.
-> > While the symbol itself doesn't have a section, each _use_ of the sym=
-bol has a
-> > =C2=A0reloc, and the SHT_REL[A] in which that reloc resides has a sh_=
-info specifying
-> > =C2=A0"the section header index of the section to which the relocatio=
-n applies."=C2=A0 So
-> > =C2=A0can't that be used if symbol visibility needs to depend on sect=
-ion?=C2=A0 Tbh I
-> > =C2=A0can't exactly see why externs need placing in a section in the =
-first place.
-> =
+On Thu, Nov 14, 2019 at 09:53:25PM -0800, John Hubbard wrote:
+> As it says in the updated comment in gup.c: current FOLL_LONGTERM
+> behavior is incompatible with FAULT_FLAG_ALLOW_RETRY because of the
+> FS DAX check requirement on vmas.
+> 
+> However, the corresponding restriction in get_user_pages_remote() was
+> slightly stricter than is actually required: it forbade all
+> FOLL_LONGTERM callers, but we can actually allow FOLL_LONGTERM callers
+> that do not set the "locked" arg.
+> 
+> Update the code and comments accordingly, and update the VFIO caller
+> to take advantage of this, fixing a bug as a result: the VFIO caller
+> is logically a FOLL_LONGTERM user.
+> 
+> Also, remove an unnessary pair of calls that were releasing and
+> reacquiring the mmap_sem. There is no need to avoid holding mmap_sem
+> just in order to call page_to_pfn().
+> 
+> Also, move the DAX check ("if a VMA is DAX, don't allow long term
+> pinning") from the VFIO call site, all the way into the internals
+> of get_user_pages_remote() and __gup_longterm_locked(). That is:
+> get_user_pages_remote() calls __gup_longterm_locked(), which in turn
+> calls check_dax_vmas(). It's lightly explained in the comments as well.
+> 
+> Thanks to Jason Gunthorpe for pointing out a clean way to fix this,
+> and to Dan Williams for helping clarify the DAX refactoring.
+> 
+> Suggested-by: Jason Gunthorpe <jgg@ziepe.ca>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Jerome Glisse <jglisse@redhat.com>
+> Cc: Ira Weiny <ira.weiny@intel.com>
 
-> I think section for extern can give a scope of search and make libbpf d=
-ecisions
-> more predictable? May be we can live without it for now, but we need BT=
-F of
-> extern symbols. See my example in reply to John.
-> =
+Reviewed-by: Ira Weiny <ira.weiny@intel.com>
 
-> > > I think we need to be able to specify something like section to
-> > > extern variables and functions.
-> > It seems unnecessary to have the user code specify this.=C2=A0 Anothe=
-r a bad
-> > =C2=A0analogy: in userland C code you don't have to annotate the func=
-tion protos in
-> > =C2=A0your header files to say whether they come from another .o file=
-, a random
-> > =C2=A0library or the libc.=C2=A0 You just declare "a function called =
-this exists somewhere
-> > =C2=A0and we'll find it at link time".
-> =
-
-> yeah. good analogy.
-> =
-
-> > > I was imagining that the verifier will do per-function verification=
-
-> > > of program with sub-programs instead of analyzing from root.
-> > Ah I see.=C2=A0 Yes, that's a very attractive design.
-> > =
-
-> > If we make it from a sufficiently generic idea of pre/postconditions,=
- then it
-> > =C2=A0could also be useful for e.g. loop bodies (user-supplied annota=
-tions that allow
-> > =C2=A0us to walk the body only once instead of N times); then a funct=
-ion call just
-> > =C2=A0gets standard pre/postconditions generated from its argument ty=
-pes if the user
-> > =C2=A0didn't specify something else.
-> =
-
-> regarding pre/post conditions.
-> I think we have them already. These conditions are the function prototy=
-pes.
-> Instead of making the verifier figuring the conditions it's simpler to =
-use
-> function prototypes instead. If program author is saying that argument =
-to the
-> function is 'struct xpd_md *' the verifier will check that the function=
- is safe
-> when such pointer is passed into it. Then to verify the callsite the ve=
-rifier
-> only need to check that what is passed into such function matches the t=
-ype. I
-> think it's easy to see when such type is context. Like 'struct __sk_buf=
-f *'.
-> But the idea applies to pointer to int too. I believe you were arguing =
-that
-> instead of tnum_unknown there could be cases with tnum_range(0-2) as
-> pre-condition is useful. May be. I think it will simplify the verifier =
-logic
-> quite a bit if we avoid going fine grain.
-
-I was thinking we may want tnum_range(0-2) conditions and also min/max le=
-ngths
-of arrays, buffers etc. otherwise it might be tricky to convince the veri=
-fier
-its safe to write into an array. I at least am already hitting some limit=
-s here
-with helper calls that I would like to resolve at some point. We had to u=
-se
-some inline 'asm goto' logic to convince clang to generate code that the
-verifier would accept. Perhaps some of this can be resolved on LLVM backe=
-nd
-side to insert checks as needed. Also adding compiler barriers and if/els=
-e
-bounds everywhere is a bit natural.  I expect post conditions will
-be important for same reason, returning a pointer into a buffer without
-bounds is going to make it difficult to use in the caller program. =
-
-
-But(!) lets walk first implementing BTF based conditions and linking is
-a huge step and doesn't preclude doing more advance things next.
-
-> Say we have a function:
-> int foo(struct __sk_buff *skb, int arg)
-> {
->    if (arg > 2)
->       return 0;
->    // do safe stuff with skb depending whether arg is 0, 1, or 2.
-> }
-> That first 'if' is enough to turn pre-conditions into 'any skb' and 'an=
-y arg'.
-> That is exactly what BTF says about this function.
-> =
-
-
-But this would probably break,
-
- char *foo(struct __Sk_buff *skb, char *buffer)
- {
-      int i;
-
-      for i =3D 0; i < BUFFER_LENGTH; i++) {
-             buffer[i] =3D blah
-      }
-      return buffer[i]
- }
-
-Lets deal with that later though.=
+> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+> ---
+>  drivers/vfio/vfio_iommu_type1.c | 30 +++++-------------------------
+>  mm/gup.c                        | 27 ++++++++++++++++++++++-----
+>  2 files changed, 27 insertions(+), 30 deletions(-)
+> 
+> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+> index d864277ea16f..c7a111ad9975 100644
+> --- a/drivers/vfio/vfio_iommu_type1.c
+> +++ b/drivers/vfio/vfio_iommu_type1.c
+> @@ -340,7 +340,6 @@ static int vaddr_get_pfn(struct mm_struct *mm, unsigned long vaddr,
+>  {
+>  	struct page *page[1];
+>  	struct vm_area_struct *vma;
+> -	struct vm_area_struct *vmas[1];
+>  	unsigned int flags = 0;
+>  	int ret;
+>  
+> @@ -348,33 +347,14 @@ static int vaddr_get_pfn(struct mm_struct *mm, unsigned long vaddr,
+>  		flags |= FOLL_WRITE;
+>  
+>  	down_read(&mm->mmap_sem);
+> -	if (mm == current->mm) {
+> -		ret = get_user_pages(vaddr, 1, flags | FOLL_LONGTERM, page,
+> -				     vmas);
+> -	} else {
+> -		ret = get_user_pages_remote(NULL, mm, vaddr, 1, flags, page,
+> -					    vmas, NULL);
+> -		/*
+> -		 * The lifetime of a vaddr_get_pfn() page pin is
+> -		 * userspace-controlled. In the fs-dax case this could
+> -		 * lead to indefinite stalls in filesystem operations.
+> -		 * Disallow attempts to pin fs-dax pages via this
+> -		 * interface.
+> -		 */
+> -		if (ret > 0 && vma_is_fsdax(vmas[0])) {
+> -			ret = -EOPNOTSUPP;
+> -			put_page(page[0]);
+> -		}
+> -	}
+> -	up_read(&mm->mmap_sem);
+> -
+> +	ret = get_user_pages_remote(NULL, mm, vaddr, 1, flags | FOLL_LONGTERM,
+> +				    page, NULL, NULL);
+>  	if (ret == 1) {
+>  		*pfn = page_to_pfn(page[0]);
+> -		return 0;
+> +		ret = 0;
+> +		goto done;
+>  	}
+>  
+> -	down_read(&mm->mmap_sem);
+> -
+>  	vaddr = untagged_addr(vaddr);
+>  
+>  	vma = find_vma_intersection(mm, vaddr, vaddr + 1);
+> @@ -384,7 +364,7 @@ static int vaddr_get_pfn(struct mm_struct *mm, unsigned long vaddr,
+>  		if (is_invalid_reserved_pfn(*pfn))
+>  			ret = 0;
+>  	}
+> -
+> +done:
+>  	up_read(&mm->mmap_sem);
+>  	return ret;
+>  }
+> diff --git a/mm/gup.c b/mm/gup.c
+> index b859bd4da4d7..6cf613bfe7dc 100644
+> --- a/mm/gup.c
+> +++ b/mm/gup.c
+> @@ -29,6 +29,13 @@ struct follow_page_context {
+>  	unsigned int page_mask;
+>  };
+>  
+> +static __always_inline long __gup_longterm_locked(struct task_struct *tsk,
+> +						  struct mm_struct *mm,
+> +						  unsigned long start,
+> +						  unsigned long nr_pages,
+> +						  struct page **pages,
+> +						  struct vm_area_struct **vmas,
+> +						  unsigned int flags);
+>  /*
+>   * Return the compound head page with ref appropriately incremented,
+>   * or NULL if that failed.
+> @@ -1167,13 +1174,23 @@ long get_user_pages_remote(struct task_struct *tsk, struct mm_struct *mm,
+>  		struct vm_area_struct **vmas, int *locked)
+>  {
+>  	/*
+> -	 * FIXME: Current FOLL_LONGTERM behavior is incompatible with
+> +	 * Parts of FOLL_LONGTERM behavior are incompatible with
+>  	 * FAULT_FLAG_ALLOW_RETRY because of the FS DAX check requirement on
+> -	 * vmas.  As there are no users of this flag in this call we simply
+> -	 * disallow this option for now.
+> +	 * vmas. However, this only comes up if locked is set, and there are
+> +	 * callers that do request FOLL_LONGTERM, but do not set locked. So,
+> +	 * allow what we can.
+>  	 */
+> -	if (WARN_ON_ONCE(gup_flags & FOLL_LONGTERM))
+> -		return -EINVAL;
+> +	if (gup_flags & FOLL_LONGTERM) {
+> +		if (WARN_ON_ONCE(locked))
+> +			return -EINVAL;
+> +		/*
+> +		 * This will check the vmas (even if our vmas arg is NULL)
+> +		 * and return -ENOTSUPP if DAX isn't allowed in this case:
+> +		 */
+> +		return __gup_longterm_locked(tsk, mm, start, nr_pages, pages,
+> +					     vmas, gup_flags | FOLL_TOUCH |
+> +					     FOLL_REMOTE);
+> +	}
+>  
+>  	return __get_user_pages_locked(tsk, mm, start, nr_pages, pages, vmas,
+>  				       locked,
+> -- 
+> 2.24.0
+> 
