@@ -2,124 +2,184 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D2C1FDFBE
-	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2019 15:09:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2964EFE2DE
+	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2019 17:33:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727678AbfKOOJa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 Nov 2019 09:09:30 -0500
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:35952 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727536AbfKOOJ3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 15 Nov 2019 09:09:29 -0500
-Received: by mail-qk1-f196.google.com with SMTP id d13so8172827qko.3
-        for <bpf@vger.kernel.org>; Fri, 15 Nov 2019 06:09:29 -0800 (PST)
+        id S1727579AbfKOQd4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 Nov 2019 11:33:56 -0500
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:38036 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727540AbfKOQd4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 15 Nov 2019 11:33:56 -0500
+Received: by mail-pl1-f193.google.com with SMTP id q18so1303720pls.5;
+        Fri, 15 Nov 2019 08:33:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=01834Iuy8wrTkyETdgSEfcddUW82cA+Rc6Zt+MvTCwg=;
-        b=BFBIgmkk8QkntrHNjJLsvCL1a0ZURlA5X/gmLb4n3VPRP5m3aB6scRcD2DMxTLAV9P
-         UaMtjJH/lJaxRT3MaYZLNwy8cw9D1M5/6iAxnqhClJH46gGawBEotmmVwz9bc8u3IFV9
-         a3v4lMSNKHekmvWmxSCO3xS9GuPfrTZZ9gfrHLPlSSz+de3k9e1mbvTuAMlgMSg1inD0
-         htevxD4Ti62AfDMDE+osEpAwbIBY+1VPeWYkc7W/CwzYOFcM3WvoA9tt0pcZZGXm+LdO
-         O8XKMS5WarP50UJ1uTIL/tvlJnyEoGG2Ukx7eqBCtFPfW9ti43J0cbZRwFC28FPxF58w
-         Wt7Q==
+        bh=PX2qVREAhHbZq/IjrX600hVEOeGs6JZyVyVItE1rm9U=;
+        b=IAPKvUYk9zHnocd+O8N7i8yksGAOJm9YpTsTyAA+bT3rzE0Q3q5JB7FAcRerDN8oMa
+         cMUDIgZwFklbPWb1x3U8Atx4QM9mGtZi/bUWf+NWrroN9jS/43KGUZx+k1oPfbqKvbF4
+         MtkyMFqFIRlA8GzWHEnkHvcNz1L5/rO262qoxHoM0hLwrqgLqpUgyAOso2gd2Ka/HS9v
+         hCsT5c88ZDDVeHRKKpYZBgemGBdrvKHIZjl5z/TxSva/sKd814jxL/en/0V2TBUyUKtO
+         ZC1uoqP9rPD+9+7rNdr3DvSXX4iys37IsSa+/V+zE99esp4FkPAe94YgSwTeg3uYD4E/
+         go0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=01834Iuy8wrTkyETdgSEfcddUW82cA+Rc6Zt+MvTCwg=;
-        b=bDSEpHxYEq8RyoODHpm0Tz2+TqukJIWmumTkfF521IGKd4VMLRN62R9XDkAJOkNvj+
-         DhKWFrXJEP6Xt3NM9tkKgSJT9W5qHDsQSTQf0Act5/4Qp5bqdusJxddDR3L2HIVq9j9q
-         WAYS6JMLiEguO1MoilVDW2jefAoxhqN8y1vqxUJc9EIjeaqhPJFKhcA/PzB03fqSxZlH
-         ZcqLxTnK7W+Nmf/xpAX0qy6EwLi5W/nbNhWe1FYnl9lz+fPBOzwToXmpLIHPriLGeFTF
-         3aP2EYVCkAWBertyMw9fhlJ+EUC7uQnCkNw/ejVyLKuJ5/P4qxSVzvjgbd/P6N4dWMr5
-         E+Mw==
-X-Gm-Message-State: APjAAAUXjH3bz33FgaIvJ+yY6LYZRoq4+fdU+U8X/WJTOg+0jrR0YMAV
-        GWddT08eYmwgnVlC0oQFtW/JJg==
-X-Google-Smtp-Source: APXvYqySuuQ0WzAKMm3kXEkiDMguUlgyvE6K/2D67jOtzEpRUEwGr7GFZW94ehFUiDC6Dq2Nm3hHug==
-X-Received: by 2002:a37:76c6:: with SMTP id r189mr11712734qkc.303.1573826968699;
-        Fri, 15 Nov 2019 06:09:28 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
-        by smtp.gmail.com with ESMTPSA id m65sm4836053qte.54.2019.11.15.06.09.28
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 15 Nov 2019 06:09:28 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1iVcHv-0002xw-Lj; Fri, 15 Nov 2019 10:09:27 -0400
-Date:   Fri, 15 Nov 2019 10:09:27 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jens Axboe <axboe@kernel.dk>, Jonathan Corbet <corbet@lwn.net>,
-        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, bpf@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, kvm@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
-        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 12/24] IB/{core,hw,umem}: set FOLL_PIN via
- pin_user_pages*(), fix up ODP
-Message-ID: <20191115140927.GB4055@ziepe.ca>
-References: <20191115055340.1825745-1-jhubbard@nvidia.com>
- <20191115055340.1825745-13-jhubbard@nvidia.com>
+        bh=PX2qVREAhHbZq/IjrX600hVEOeGs6JZyVyVItE1rm9U=;
+        b=FgROFbM0M06X8nFgjuxkackpKXSzJra+iUYlZmRYVld4J+0S9l1lxIVKKQ/hTn2Hjn
+         078Xv+sxeUgQhCany6BoZUd7IZufJFX7T5I43Qc0e9/eCOVXlbhVMHyl6zHvA9gMrrWh
+         5q/sjrk8hT75A1uyCOgMMfMtKQKlmU3OEeF5nBql04tV3XDvIpXNOItqwoPIbGCq1O+K
+         sTpKQIYC897VK+Zo8cIkSHN8kF7f3zlek2IoWwEMymGY2unfGxiMvjpNsdXw82YF7BZs
+         4WgT0NaT8yW3ak12wMa31AQDH1EcRdWuW9O1Iwl6gZjl4KxzAul6XnFNhgcLBYbETg49
+         SHfw==
+X-Gm-Message-State: APjAAAU+pU5xLPfnTaX8Ha2Z5Q1Kj5mGC5E4tQh+4SaSYAsYamD91Qis
+        pa74e2lxH0JTS/KdnC+jX/4=
+X-Google-Smtp-Source: APXvYqwWWiBCqhV/t8OT/FL7ZmSm1LHAw8MZNIfM/Avn0PnBglLdVOKwE7M00grXoTnWIdOK/pUHbg==
+X-Received: by 2002:a17:90a:8a11:: with SMTP id w17mr20616502pjn.136.1573835634978;
+        Fri, 15 Nov 2019 08:33:54 -0800 (PST)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:200::8ac1])
+        by smtp.gmail.com with ESMTPSA id o15sm9943127pjs.24.2019.11.15.08.33.53
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 15 Nov 2019 08:33:54 -0800 (PST)
+Date:   Fri, 15 Nov 2019 08:33:52 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     ast@kernel.org, john.fastabend@gmail.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH rfc bpf-next 8/8] bpf: constant map key tracking for prog
+ array pokes
+Message-ID: <20191115163351.nm4hpofdcthkgmmp@ast-mbp.dhcp.thefacebook.com>
+References: <cover.1573779287.git.daniel@iogearbox.net>
+ <fa3c2f6e2f4fbe45200d54a3c6d4c65c4f84f790.1573779287.git.daniel@iogearbox.net>
+ <20191115042939.ckt4fqvtfdi344y2@ast-mbp.dhcp.thefacebook.com>
+ <20191115071358.GA3957@pc-9.home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191115055340.1825745-13-jhubbard@nvidia.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20191115071358.GA3957@pc-9.home>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 14, 2019 at 09:53:28PM -0800, John Hubbard wrote:
-> Convert infiniband to use the new pin_user_pages*() calls.
+On Fri, Nov 15, 2019 at 08:13:58AM +0100, Daniel Borkmann wrote:
+> On Thu, Nov 14, 2019 at 08:29:41PM -0800, Alexei Starovoitov wrote:
+> > On Fri, Nov 15, 2019 at 02:04:02AM +0100, Daniel Borkmann wrote:
+> > > Add tracking of constant keys into tail call maps. The signature of
+> > > bpf_tail_call_proto is that arg1 is ctx, arg2 map pointer and arg3
+> > > is a index key. The direct call approach for tail calls can be enabled
+> > > if the verifier asserted that for all branches leading to the tail call
+> > > helper invocation, the map pointer and index key were both constant
+> > > and the same. Tracking of map pointers we already do from prior work
+> > > via c93552c443eb ("bpf: properly enforce index mask to prevent out-of-bounds
+> > > speculation") and 09772d92cd5a ("bpf: avoid retpoline for lookup/update/
+> > > delete calls on maps"). Given the tail call map index key is not on
+> > > stack but directly in the register, we can add similar tracking approach
+> > > and later in fixup_bpf_calls() add a poke descriptor to the progs poke_tab
+> > > with the relevant information for the JITing phase. We internally reuse
+> > > insn->imm for the rewritten BPF_JMP | BPF_TAIL_CALL instruction in order
+> > > to point into the prog's poke_tab and keep insn->imm == 0 as indicator
+> > > that current indirect tail call emission must be used.
+> > > 
+> > > Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+> > > ---
+> > >  include/linux/bpf_verifier.h |  1 +
+> > >  kernel/bpf/verifier.c        | 98 ++++++++++++++++++++++++++++++++++++
+> > >  2 files changed, 99 insertions(+)
+> > > 
+> > > diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+> > > index cdd08bf0ec06..f494f0c9ac13 100644
+> > > --- a/include/linux/bpf_verifier.h
+> > > +++ b/include/linux/bpf_verifier.h
+> > > @@ -301,6 +301,7 @@ struct bpf_insn_aux_data {
+> > >  			u32 map_off;		/* offset from value base address */
+> > >  		};
+> > >  	};
+> > > +	u64 key_state; /* constant key tracking for maps */
+> > 
+> > may be map_key_state ?
+> > key_state is a bit ambiguous in the bpf_insn_aux_data.
 > 
-> Also, revert earlier changes to Infiniband ODP that had it using
-> put_user_page(). ODP is "Case 3" in
-> Documentation/core-api/pin_user_pages.rst, which is to say, normal
-> get_user_pages() and put_page() is the API to use there.
+> Could be, alternatively could also be idx_state or map_idx_state since
+> it's really just for u32 type key indices.
 > 
-> The new pin_user_pages*() calls replace corresponding get_user_pages*()
-> calls, and set the FOLL_PIN flag. The FOLL_PIN flag requires that the
-> caller must return the pages via put_user_page*() calls, but infiniband
-> was already doing that as part of an earlier commit.
+> > > +static int
+> > > +record_func_key(struct bpf_verifier_env *env, struct bpf_call_arg_meta *meta,
+> > > +		int func_id, int insn_idx)
+> > > +{
+> > > +	struct bpf_insn_aux_data *aux = &env->insn_aux_data[insn_idx];
+> > > +	struct bpf_reg_state *regs = cur_regs(env), *reg;
+> > > +	struct tnum range = tnum_range(0, U32_MAX);
+> > > +	struct bpf_map *map = meta->map_ptr;
+> > > +	u64 val;
+> > > +
+> > > +	if (func_id != BPF_FUNC_tail_call)
+> > > +		return 0;
+> > > +	if (!map || map->map_type != BPF_MAP_TYPE_PROG_ARRAY) {
+> > > +		verbose(env, "kernel subsystem misconfigured verifier\n");
+> > > +		return -EINVAL;
+> > > +	}
+> > > +
+> > > +	reg = &regs[BPF_REG_3];
+> > > +	if (!register_is_const(reg) || !tnum_in(range, reg->var_off)) {
+> > > +		bpf_map_key_store(aux, BPF_MAP_KEY_POISON);
+> > > +		return 0;
+> > > +	}
+> > > +
+> > > +	val = reg->var_off.value;
+> > > +	if (bpf_map_key_unseen(aux))
+> > > +		bpf_map_key_store(aux, val);
+> > > +	else if (bpf_map_key_immediate(aux) != val)
+> > > +		bpf_map_key_store(aux, BPF_MAP_KEY_POISON);
+> > > +	return 0;
+> > > +}
+> > 
+> > I think this analysis is very useful in other cases as well. Could you
+> > generalize it for array map lookups ? The key used in bpf_map_lookup_elem() for
+> > arrays is often constant. In such cases we can optimize array_map_gen_lookup()
+> > into absolute pointer. It will be possible to do
+> > if (idx < max_entries) ptr += idx * elem_size;
+> > during verification instead of runtime and the whole
+> > bpf_map_lookup_elem(map, &key); will become single instruction that
+> > assigns &array[idx] into R0.
 > 
-> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
-> ---
->  drivers/infiniband/core/umem.c              |  2 +-
->  drivers/infiniband/core/umem_odp.c          | 13 ++++++-------
->  drivers/infiniband/hw/hfi1/user_pages.c     |  2 +-
->  drivers/infiniband/hw/mthca/mthca_memfree.c |  2 +-
->  drivers/infiniband/hw/qib/qib_user_pages.c  |  2 +-
->  drivers/infiniband/hw/qib/qib_user_sdma.c   |  2 +-
->  drivers/infiniband/hw/usnic/usnic_uiom.c    |  2 +-
->  drivers/infiniband/sw/siw/siw_mem.c         |  2 +-
->  8 files changed, 13 insertions(+), 14 deletions(-)
+> Was thinking exactly the same. ;-) I started coding this yesterday night [0],
+> but then had the (in hinsight obvious) realization that as-is the key_state
+> holds the address but not the index for plain array map lookup. Hence I'd need
+> to go a step further there to look at the const stack content. Will proceed on
+> this as a separate set on top.
+> 
+>   [0] https://git.kernel.org/pub/scm/linux/kernel/git/dborkman/bpf.git/commit/?h=pr/bpf-tail-call-rebased2&id=b86b7eae4646d8233e3e9058e68fef27536bf0c4
 
-Ok
+yeah. good point. For map_lookup it's obvious that the verifier needs to
+compare both map ptr and *key, but that is the case for bpf_tail_call too, no?
+It seems tracking 'key_state' only is not enough. Consider:
+if (..)
+  map = mapA;
+else
+  map = mapB;
+bpf_tail_call(ctx, map, 1);
 
-Reviewed-by: Jason Gunthorpe <jgg@mellanox.com>
+May be to generalize the logic the verifier should remember bpf_reg_state
+instead of specific part of it like u32 ? The verifier keeps
+insn_aux_data[insn_idx].ptr_type; to prevent incorrect ctx access. That can
+also be generalized? Probably later, but conceptually it's the same category of
+tracking that the verifier needs to do. For bpf_map_lookup and bpf_tail_call
+callsite it can remember bpf_reg_state of r1,r2,r3. The bpf_reg_state should be
+saved in insn_aux_data the first time the verifier goes through the callsite than 
+everytime the verifier goes through the callsite again additional per-helper
+logic is invoked. Like for bpf_tail_call it will check:
+if (tnum_is_const(insn_aux_data[callsite]->r3_reg_state->var_off))
+  // good. may be can optimize later.
+and will use insn_aux_data[callsite]->r2_reg_state->map_ptr plus
+insn_aux_data[callsite]->r3_reg_state->var_off to compute bpf_prog's jited address
+inside that prog_array.
+Similarly for bpf_map_lookup... r1_reg_state->map_ptr is the same map
+for saved insn_aux_data->r1_reg_state and for current->r1.
+The r2_reg_state should be PTR_TO_STACK and that stack value should be u32 const.
+Should be a bit more generic and extensible... instead of specific 'key_state' ?
 
-Jason
