@@ -2,288 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B94C8FDBC9
-	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2019 11:55:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8490FDC85
+	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2019 12:48:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726986AbfKOKzn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 Nov 2019 05:55:43 -0500
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:36676 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726521AbfKOKzm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 15 Nov 2019 05:55:42 -0500
-Received: by mail-pg1-f194.google.com with SMTP id k13so5831642pgh.3;
-        Fri, 15 Nov 2019 02:55:40 -0800 (PST)
+        id S1726983AbfKOLs4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 Nov 2019 06:48:56 -0500
+Received: from mail-oi1-f174.google.com ([209.85.167.174]:40874 "EHLO
+        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727135AbfKOLsz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 15 Nov 2019 06:48:55 -0500
+Received: by mail-oi1-f174.google.com with SMTP id d22so1422121oic.7
+        for <bpf@vger.kernel.org>; Fri, 15 Nov 2019 03:48:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=20Cgp80vhwwKTOz8AyAi1Y+u0+xnbO+WaqEg864mgH0=;
-        b=fNtnmERGHmVNsnVwGDAuoXikGXWQ1cFhY90zZm8SrboL14kl1ecDEYJje/R+QoU9aB
-         UDauDYwKORRfQBW0ANOejleEWWicWzKRfAJj/FqaPsf93OHUW8WiCKPBr8e24xgAnwwC
-         e4aydMoEfdAh5rn70th4ov2pYzuZBovciWmM0/qQnwNDPD0gvdrmwtDJ8GkjMrYWF64z
-         7BZHuGzGeJ36RZmXzBri55FaeY0aiZOx6KjSGB2+DvmOMzFAob+733bBbCtXsW0W4Yrp
-         f/hc2nGhxyVEh6kaPV1S1PKRBGb+6uZnNBbCtcjUg8ykAAKGgjLifUjopf/gAsnEfU7H
-         lP6A==
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9GPmR1RHoM5XEidlvhXl8DpCMhSSpVMr2s8LhTaetUo=;
+        b=caDlsscO5M4zQIh58q+dXUMxvXiuxQRJuU2wP18uYJ8cxeIS9f1jxwaI4xV8lQoPy4
+         xr1nk59+5ZbsSPfLBDb94VzuIXfQ/Udb5UPBWs3SntlUCHhqRHP3vylj2n1J2hgOLZHK
+         bSexU1qchwK6fgNCpnQ8dXzOTuQiIPgkMRAas=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=20Cgp80vhwwKTOz8AyAi1Y+u0+xnbO+WaqEg864mgH0=;
-        b=MJrLbap4jK/JwScBqEMWtY1oR+kWfcJTtP/+XOzMM26ScM9KtXIG9TIcX5N/veiNF2
-         pZCD8a+HM4+RMv3PZOdRjyVCX08vHiksOGVuwHpbgI4ZhzE8qqx5RZkmE1AKYTSFMg90
-         ehCkiXJ18VF1OdYHHefy5YVo8TBhc+fiiwNU2JCG7hhZSSC9LyTePgd9bE78oj+UsFFE
-         ITlztfC/QVHzX6wwZMs89U6Grz7NZp36LxfqzjIsraWL+XSNtMv5Ky4Z2Bhzy7BGtg6N
-         olPn8wrEWkXq2cVaGTqmt6vwEct2TYEbBz3rmvQoGDKbluuE2JOszVyvD8NKKa21wFTW
-         Heyg==
-X-Gm-Message-State: APjAAAXgVL1pzzcthKjDEEr7BgIOVIPwVUrBiuvKe/BlxqPo5CB7yAGl
-        i6dd37WE9+3YE9vj9GQTWvULDMHFDl4=
-X-Google-Smtp-Source: APXvYqwxdq39mRRW2kE2hFSZsdh3QQwm7q1yRv7PqO0S8tHltxiw987Kcp6UveF7hNZpA832kFLPng==
-X-Received: by 2002:a65:6245:: with SMTP id q5mr8133304pgv.347.1573815339875;
-        Fri, 15 Nov 2019 02:55:39 -0800 (PST)
-Received: from ubuntu-18.04-x8664 ([128.1.49.85])
-        by smtp.gmail.com with ESMTPSA id c9sm12515428pfb.114.2019.11.15.02.55.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Nov 2019 02:55:39 -0800 (PST)
-From:   Wenbo Zhang <ethercflow@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     alexei.starovoitov@gmail.com, daniel@iogearbox.net, yhs@fb.com,
-        andrii.nakryiko@gmail.com, netdev@vger.kernel.org,
-        Wenbo Zhang <ethercflow@gmail.com>
-Subject: [PATCH bpf-next v8] bpf: add new helper get_file_path for mapping a file descriptor to a pathname
-Date:   Fri, 15 Nov 2019 05:55:27 -0500
-Message-Id: <20191115105527.28226-1-ethercflow@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9GPmR1RHoM5XEidlvhXl8DpCMhSSpVMr2s8LhTaetUo=;
+        b=ba94sWViBn+DlANezibpCc2o5NtHTSLlkmqPoiyKcbxFBuL1CEBVwbxvRf3XlwMSP6
+         eNcsT0tXvZ1NC4TkmHgwSY2yKPo+Uf8uksXPhOXUYh8XFjwk62tVZB88Z7rMrGb+4Myj
+         N24dwiPSMexkhEgMCOlrTK8QKohADkV0V05ySxsmTPhGcMOquqcFWT2cXbmtNs4DNHr1
+         qBFymyE5d9MKi+vGvMoACvPxv1La2JB1r5rcqPKhHQWowVgmsd3PHp4SgQkQOTXrnlUI
+         EhfFhTaezMOhvRWDw/aP03Hme9X91ifYO+kLdNxxPq2KiyM0BFTXYZNOd7By9R4WvaH1
+         J6MQ==
+X-Gm-Message-State: APjAAAWo84l4YpleLFMxD8g8h3D2hJd+jdWAbza+Y+ZqVDLMKop/7vUZ
+        5JuQTzD/tA1XnzFPIWV49gtytiFxIlhUpPb1xLFALg==
+X-Google-Smtp-Source: APXvYqwHA7DX4s2fSU4j+a929BjylFpQuxPWMmBxeY+lV5DSTZLISTZYnV77TJnwW4DVSxPIfreJuOgk17CI3BrxZjc=
+X-Received: by 2002:aca:d803:: with SMTP id p3mr7623323oig.13.1573818533550;
+ Fri, 15 Nov 2019 03:48:53 -0800 (PST)
+MIME-Version: 1.0
+References: <20191010044156.2hno4sszysu3c35g@ast-mbp.dhcp.thefacebook.com>
+ <87v9srijxa.fsf@toke.dk> <5da4ab712043c_25f42addb7c085b83b@john-XPS-13-9370.notmuch>
+ <87eezfi2og.fsf@toke.dk> <f9d5f717-51fe-7d03-6348-dbaf0b9db434@solarflare.com>
+ <87r23egdua.fsf@toke.dk> <70142501-e2dd-1aed-992e-55acd5c30cfd@solarflare.com>
+ <874l07fu61.fsf@toke.dk> <aeae7b94-090a-a850-4740-0274ab8178d5@solarflare.com>
+ <87eez4odqp.fsf@toke.dk> <20191112025112.bhzmrrh2pr76ssnh@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20191112025112.bhzmrrh2pr76ssnh@ast-mbp.dhcp.thefacebook.com>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Fri, 15 Nov 2019 11:48:42 +0000
+Message-ID: <CACAyw98dcpu1b2nUf7ize2SJGJGd=mhqRK+PYQTx96gSBtbkNQ@mail.gmail.com>
+Subject: Re: static and dynamic linking. Was: [PATCH bpf-next v3 1/5] bpf:
+ Support chain calling multiple BPF
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Edward Cree <ecree@solarflare.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Marek Majkowski <marek@cloudflare.com>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When people want to identify which file system files are being opened,
-read, and written to, they can use this helper with file descriptor as
-input to achieve this goal. Other pseudo filesystems are also supported.
+On Tue, 12 Nov 2019 at 02:51, Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> This is static linking. The existing kernel infrastructure already supports
+> such model and I think it's enough for a lot of use cases. In particular fb's
+> firewall+katran XDP style will fit right in. But bpf_tail_calls are
+> incompatible with bpf2bpf calls that static linking will use and I think
+> cloudlfare folks expressed the interest to use them for some reason even within
+> single firewall ? so we need to improve the model a bit.
 
-This requirement is mainly discussed here:
+We several components that we'd like to keep (logically) separate. At a high
+level, our rootlet would look like this:
 
-  https://github.com/iovisor/bcc/issues/237
+  sample_packets(ctx);
+  if (ddos_mitigate(ctx) != XDP_PASS) {
+     return XDP_DROP;
+  }
+  return l4lb(ctx);
 
-v7->v8: addressed Alexei's feedback
-- use fget_raw instead of fdget_raw, as fdget_raw is only used inside fs/
-- ensure we're in user context which is safe fot the help to run
-- filter unmountable pseudo filesystem, because they don't have real path
-- supplement the description of this helper function
+I think we could statically link ddos_mitigate() together from
+multiple separate .o.
+It depends on how complicated our rules become. Maybe we'd use dynamic linking,
+to reduce the overhead of re-verification.
 
-v6->v7:
-- fix missing signed-off-by line
+The rootlet would use dynamic linking, to be able to debug / inspect
+sampling, ddos
+mitigation and the l4lb separately. Combined with the ability to hook
+arbitrary BPF
+programs at entry / exit we could probably get rid of our tail_call
+use. I don't think
+you have to change the model for us to fit into it.
 
-v5->v6: addressed Andrii's feedback
-- avoid unnecessary goto end by having two explicit returns
+> We can introduce dynamic linking. The second part of 'BPF trampoline' patches
+> allows tracing programs to attach to other BPF programs. The idea of dynamic
+> linking is to replace a program or subprogram instead of attaching to it.
 
-v4->v5: addressed Andrii and Daniel's feedback
-- rename bpf_fd2path to bpf_get_file_path to be consistent with other
-helper's names
-- when fdget_raw fails, set ret to -EBADF instead of -EINVAL
-- remove fdput from fdget_raw's error path
-- use IS_ERR instead of IS_ERR_OR_NULL as d_path ether returns a pointer
-into the buffer or an error code if the path was too long
-- modify the normal path's return value to return copied string length
-including NUL
-- update this helper description's Return bits.
+Reading the rest of the thread, I'm on board with type 2 of dynamic linking
+(load time linking?) However, type 1 (run time linking) I'm not so sure about.
+Specifically, the callee holding onto the caller instead of vice versa.
 
-v3->v4: addressed Daniel's feedback
-- fix missing fdput()
-- move fd2path from kernel/bpf/trace.c to kernel/trace/bpf_trace.c
-- move fd2path's test code to another patch
-- add comment to explain why use fdget_raw instead of fdget
+Picking up your rootlet and fw1 example: fw1 holds the refcount on rootlet.
+This means user space needs to hold the refcount on fw1 to make sure
+the override is kept. This in turn means either: hold on to the file descriptor
+or pin the program into a bpffs. The former implies a persistent process,
+which doesn't work for tc. The latter makes  lifetime management of fw1 hard:
+there is no way to have the kernel automatically deallocate it when it no longer
+needed, aka when the rootlet refcount reaches zero. It also overloads close()
+to automatically detach the replaced / overridden BPF, which is contrary to how
+other BPF hook points work.
 
-v2->v3: addressed Yonghong's feedback
-- remove unnecessary LOCKDOWN_BPF_READ
-- refactor error handling section for enhanced readability
-- provide a test case in tools/testing/selftests/bpf
+I'd much prefer if the API didn't require attach_prog_fd and id at
+load time, and
+rather have an explicit replace_sub_prog(prog_fd, btf_id, sub_prog_fd).
 
-v1->v2: addressed Daniel's feedback
-- fix backward compatibility
-- add this helper description
-- fix signed-off name
+> [...] This rootlet.o
+> can be automatically generated by libxdp.so. If in the future we figure out how
+> to do two load-balancers libxdp.so will be able to accommodate that new policy.
+> This firewall1.o can be developed and tested independently of other xdp
+> programs. The key gotcha here is that the verifier needs to allow more than 512
+> stack usage for the rootlet.o. I think that's acceptable.
 
-Signed-off-by: Wenbo Zhang <ethercflow@gmail.com>
----
- include/uapi/linux/bpf.h       | 29 +++++++++++++++-
- kernel/trace/bpf_trace.c       | 63 ++++++++++++++++++++++++++++++++++
- tools/include/uapi/linux/bpf.h | 28 ++++++++++++++-
- 3 files changed, 118 insertions(+), 2 deletions(-)
+How would the verifier know which programs are allowed to have larger stacks?
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index df6809a76404..8ca63815fd9c 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -2815,6 +2815,32 @@ union bpf_attr {
-  * 	Return
-  * 		On success, the strictly positive length of the string,	including
-  * 		the trailing NUL character. On error, a negative value.
-+ *
-+ * int bpf_get_file_path(char *path, u32 size, int fd)
-+ *	Description
-+ *		Get **file** atrribute from the current task by *fd*, then call
-+ *		**d_path** to get it's absolute path and copy it as string into
-+ *		*path* of *size*. Notice the **path** don't support unmountable
-+ *		pseudo filesystems as they don't have path (eg: SOCKFS, PIPEFS).
-+ *      The *size* must be strictly positive. On success, the helper
-+ *      makes sure that the *path* is NUL-terminated, and the buffer
-+ *      could be:
-+ *          - a regular full path (include mountable fs eg: /proc, /sys)
-+ *          - a regular full path with "(deleted)" at the end.
-+ *      On failure, it is filled with zeroes.
-+ *	Return
-+ *		On success, returns the length of the copied string INCLUDING
-+ *		the trailing NUL.
-+ *
-+ *		On failure, the returned value is one of the following:
-+ *
-+ *      **-EPERM** if no permission to get the path (eg: in irq ctx).
-+ *
-+ *      **-EBADF** if *fd* is invalid.
-+ *
-+ *		**-EINVAL** if *fd* corresponds to a unmountable pseudo fs
-+ *
-+ *	    **-ENAMETOOLONG** if full path is longer than *size*
-  */
- #define __BPF_FUNC_MAPPER(FN)		\
- 	FN(unspec),			\
-@@ -2932,7 +2958,8 @@ union bpf_attr {
- 	FN(probe_read_user),		\
- 	FN(probe_read_kernel),		\
- 	FN(probe_read_user_str),	\
--	FN(probe_read_kernel_str),
-+	FN(probe_read_kernel_str),	\
-+	FN(get_file_path),
- 
- /* integer value in 'imm' field of BPF_CALL instruction selects which helper
-  * function eBPF program intends to call
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index ffc91d4935ac..274ecb67ea4a 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -762,6 +762,67 @@ static const struct bpf_func_proto bpf_send_signal_proto = {
- 	.arg1_type	= ARG_ANYTHING,
- };
- 
-+BPF_CALL_3(bpf_get_file_path, char *, dst, u32, size, int, fd)
-+{
-+	struct file *f;
-+	char *p;
-+	int ret = -EBADF;
-+
-+	/* Ensure we're in user context which is safe for the helper to
-+	 * run. This helper has no business in a kthread.
-+	 */
-+	if (unlikely(in_interrupt() ||
-+		     current->flags & (PF_KTHREAD | PF_EXITING)))
-+		return -EPERM;
-+
-+	/* Use fget_raw instead of fget to support O_PATH, and it doesn't
-+	 * have any sleepable code, so it's ok to be here.
-+	 */
-+	f = fget_raw(fd);
-+	if (!f)
-+		goto error;
-+
-+	/* For unmountable pseudo filesystem, it seems to have no meaning
-+	 * to get their fake paths as they don't have path, and to be no
-+	 * way to validate this function pointer can be always safe to call
-+	 * in the current context.
-+	 */
-+	if (f->f_path.dentry->d_op && f->f_path.dentry->d_op->d_dname)
-+		return -EINVAL;
-+
-+	/* After filter unmountable pseudo filesytem, d_path won't call
-+	 * dentry->d_op->d_name(), the noramlly path doesn't have any
-+	 * sleepable code, and despite it uses the current macro to get
-+	 * fs_struct (current->fs), we've already ensured we're in user
-+	 * context, so it's ok to be here.
-+	 */
-+	p = d_path(&f->f_path, dst, size);
-+	if (IS_ERR(p)) {
-+		ret = PTR_ERR(p);
-+		fput(f);
-+		goto error;
-+	}
-+
-+	ret = strlen(p);
-+	memmove(dst, p, ret);
-+	dst[ret++] = '\0';
-+	fput(f);
-+	return ret;
-+
-+error:
-+	memset(dst, '0', size);
-+	return ret;
-+}
-+
-+static const struct bpf_func_proto bpf_get_file_path_proto = {
-+	.func       = bpf_get_file_path,
-+	.gpl_only   = true,
-+	.ret_type   = RET_INTEGER,
-+	.arg1_type  = ARG_PTR_TO_UNINIT_MEM,
-+	.arg2_type  = ARG_CONST_SIZE,
-+	.arg3_type  = ARG_ANYTHING,
-+};
-+
- static const struct bpf_func_proto *
- tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- {
-@@ -822,6 +883,8 @@ tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- #endif
- 	case BPF_FUNC_send_signal:
- 		return &bpf_send_signal_proto;
-+	case BPF_FUNC_get_file_path:
-+		return &bpf_get_file_path_proto;
- 	default:
- 		return NULL;
- 	}
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index df6809a76404..4147f628feea 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -2815,6 +2815,31 @@ union bpf_attr {
-  * 	Return
-  * 		On success, the strictly positive length of the string,	including
-  * 		the trailing NUL character. On error, a negative value.
-+ * int bpf_get_file_path(char *path, u32 size, int fd)
-+ *	Description
-+ *		Get **file** atrribute from the current task by *fd*, then call
-+ *		**d_path** to get it's absolute path and copy it as string into
-+ *		*path* of *size*. Notice the **path** don't support unmountable
-+ *		pseudo filesystems as they don't have path (eg: SOCKFS, PIPEFS).
-+ *      The *size* must be strictly positive. On success, the helper
-+ *      makes sure that the *path* is NUL-terminated, and the buffer
-+ *      could be:
-+ *          - a regular full path (include mountable fs eg: /proc, /sys)
-+ *          - a regular full path with "(deleted)" at the end.
-+ *      On failure, it is filled with zeroes.
-+ *	Return
-+ *		On success, returns the length of the copied string INCLUDING
-+ *		the trailing NUL.
-+ *
-+ *		On failure, the returned value is one of the following:
-+ *
-+ *      **-EPERM** if no permission to get the path (eg: in irq ctx).
-+ *
-+ *      **-EBADF** if *fd* is invalid.
-+ *
-+ *		**-EINVAL** if *fd* corresponds to a unmountable pseudo fs
-+ *
-+ *	    **-ENAMETOOLONG** if full path is longer than *size*
-  */
- #define __BPF_FUNC_MAPPER(FN)		\
- 	FN(unspec),			\
-@@ -2932,7 +2957,8 @@ union bpf_attr {
- 	FN(probe_read_user),		\
- 	FN(probe_read_kernel),		\
- 	FN(probe_read_user_str),	\
--	FN(probe_read_kernel_str),
-+	FN(probe_read_kernel_str),	\
-+	FN(get_file_path),
- 
- /* integer value in 'imm' field of BPF_CALL instruction selects which helper
-  * function eBPF program intends to call
+Lorenz
+
 -- 
-2.17.1
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
 
+www.cloudflare.com
