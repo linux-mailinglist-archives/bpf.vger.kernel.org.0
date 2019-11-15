@@ -2,101 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A10AFDF96
-	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2019 15:03:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E50C0FDFA9
+	for <lists+bpf@lfdr.de>; Fri, 15 Nov 2019 15:07:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727420AbfKOODg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 Nov 2019 09:03:36 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:40478 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727406AbfKOODf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 15 Nov 2019 09:03:35 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAFDnBER013529;
-        Fri, 15 Nov 2019 14:03:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : in-reply-to : message-id : references : mime-version :
- content-type; s=corp-2019-08-05;
- bh=bnPX2OgeK3ijYnTq5eg/WnUbrlpyXkw4Zi8V/8h7jco=;
- b=nY8ASD/ZdpTDoGPIDQKOc7IzYn37aPd3yzAv/CFc3AUJucnwiw9DellRCXeg3WuA+fE8
- Bkq+b+lbCBwt8cocHIx/OgCzov6F8kt3XN7wBe1MqWYKb9c94sCDvadrAdgIz0FgsAMo
- ZDQgszXJaBsNLv6jXM+mgJaakmhpj14bMqhM5uD/9bi2MPC/Bh2XpT8gNRXL2HitQ/M6
- iLR6DeFvuAzFzRL08q3BCcTEx1vKCE3clsyZoSr0xJsFRSyaxHMF1oVmqKzLDCekdvoC
- Lg8cURGqV6wYgLrn62w+rDtOKjpIQuPDIn/sjdpl2RVH50AojzDyt7nRf0v2HEAQ1yHx BQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 2w9gxpkdsa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 15 Nov 2019 14:03:31 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAFDnBm4193052;
-        Fri, 15 Nov 2019 14:03:30 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 2w9h182hnn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 15 Nov 2019 14:03:30 +0000
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id xAFE3S9d022052;
-        Fri, 15 Nov 2019 14:03:28 GMT
-Received: from dhcp-10-175-203-21.vpn.oracle.com (/10.175.203.21)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 15 Nov 2019 06:03:28 -0800
-Date:   Fri, 15 Nov 2019 14:03:23 +0000 (GMT)
-From:   Alan Maguire <alan.maguire@oracle.com>
-X-X-Sender: alan@dhcp-10-175-203-21.vpn.oracle.com
-To:     =?ISO-8859-15?Q?Toke_H=F8iland-J=F8rgensen?= <toke@redhat.com>
-cc:     Jiri Benc <jbenc@redhat.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, Alan Maguire <alan.maguire@oracle.com>
-Subject: Re: [PATCH bpf] selftests: bpf: xdping is not meant to be run
- standalone
-In-Reply-To: <87a78xmgmu.fsf@toke.dk>
-Message-ID: <alpine.LRH.2.20.1911151402580.15722@dhcp-10-175-203-21.vpn.oracle.com>
-References: <4365c81198f62521344c2215909634407184387e.1573821726.git.jbenc@redhat.com> <87a78xmgmu.fsf@toke.dk>
-User-Agent: Alpine 2.20 (LRH 67 2015-01-07)
+        id S1727608AbfKOOHt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 Nov 2019 09:07:49 -0500
+Received: from mail-yb1-f196.google.com ([209.85.219.196]:45487 "EHLO
+        mail-yb1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727380AbfKOOHs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 15 Nov 2019 09:07:48 -0500
+Received: by mail-yb1-f196.google.com with SMTP id i7so4017563ybk.12
+        for <bpf@vger.kernel.org>; Fri, 15 Nov 2019 06:07:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=42z/vN/ddc98lKOq1CrQyhubCI2S5NP9LWnyNiKPWxk=;
+        b=nLefbRNHj5/Shr2PtahgWUegdQ/rJ1Elkczuy2ggEoMon0rguyVvdv5zG2g4GbWS22
+         OKoqoHLjnz2BBXw6mw9LorWYAqDBialbZAo3pdWjuQiezMeqdXnL9zVWJcKnUh/jeXaz
+         12pSlMxWFZf54uaw08IoqD2MkSSkl2J2YxZZsIKDWg7K5uBfXF1Eh2XOsUgGCenfvHLx
+         RA5UxmckvhCoiP6L8YLtHOlFfJS6mYxlRpVs6BJrV4EiTapyfb2j4TFMuJhpf3FVvwj8
+         sZpCikRN/qh1orYy9uyGebYzrxBDub8AAT2dgKwuc/7VqAMTNngS/YwVNZCTjGd9CSL7
+         T2AA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=42z/vN/ddc98lKOq1CrQyhubCI2S5NP9LWnyNiKPWxk=;
+        b=PsGxM2VlBn/X+t6iLM7QBAQYNetEAsIuvQa/+hm+Yy9bJSXW+Pv/gZgfqRzMztKcXs
+         REGmPJn4dTHpmi9MACRmemzg4imJ6z5TX63tqp7hJGDQjkgc+DjPJILC2ZyO4ppGt1Cl
+         2xNlYJ25PgzeF5p15MxS4b/f9cMSAzO5zoyLsd5JAZKG/Q6YtPWGxvAJoMMaCDUFx7Pl
+         6cJ3g1GS46jWny75nmfs8Qtie1/eviw2S7No9eBvTtSZutNKMGBfNYY6xEZAcRM3bVvr
+         Ygm/4msPPNBVpfSZlMzmun4RXh7dQBRGFlDChDZsCkUizeYVAmT9iFgKHt3QXc41Zg+1
+         zu1A==
+X-Gm-Message-State: APjAAAX3eQoj3T11aOkjZ4L6lZUpjiyA3P65X0RckHjmraHThtTKorTY
+        37y1zEHK+yUDpVt8FdjjP1C7uj94
+X-Google-Smtp-Source: APXvYqz5FOQMnPquVS207dozRP86suAQ+kVigxRMObC93cZbghb4lzZnxbVFvdcGLJep0eQ3zlr2iw==
+X-Received: by 2002:a25:3753:: with SMTP id e80mr11106043yba.361.1573826867251;
+        Fri, 15 Nov 2019 06:07:47 -0800 (PST)
+Received: from mail-yw1-f54.google.com (mail-yw1-f54.google.com. [209.85.161.54])
+        by smtp.gmail.com with ESMTPSA id 64sm3732722ywg.103.2019.11.15.06.07.45
+        for <bpf@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Nov 2019 06:07:46 -0800 (PST)
+Received: by mail-yw1-f54.google.com with SMTP id g77so3098912ywb.10
+        for <bpf@vger.kernel.org>; Fri, 15 Nov 2019 06:07:45 -0800 (PST)
+X-Received: by 2002:a0d:e808:: with SMTP id r8mr9316664ywe.275.1573826865311;
+ Fri, 15 Nov 2019 06:07:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="-1358293557-283249934-1573826608=:15722"
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9441 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=4 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=627
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1911140001 definitions=main-1911150126
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9441 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=4 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=690 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
- definitions=main-1911150126
+References: <60919291657a9ee89c708d8aababc28ebe1420be.1573821780.git.jbenc@redhat.com>
+In-Reply-To: <60919291657a9ee89c708d8aababc28ebe1420be.1573821780.git.jbenc@redhat.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Fri, 15 Nov 2019 09:07:09 -0500
+X-Gmail-Original-Message-ID: <CA+FuTSeWU7Tfg1SKotM4+r1NH+CH=Xei3Ho209xYm+DvuAneHw@mail.gmail.com>
+Message-ID: <CA+FuTSeWU7Tfg1SKotM4+r1NH+CH=Xei3Ho209xYm+DvuAneHw@mail.gmail.com>
+Subject: Re: [PATCH bpf] selftests: bpf: fix test_tc_tunnel hanging
+To:     Jiri Benc <jbenc@redhat.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Fri, Nov 15, 2019 at 7:43 AM Jiri Benc <jbenc@redhat.com> wrote:
+>
+> When run_kselftests.sh is run, it hangs after test_tc_tunnel.sh. The reason
+> is test_tc_tunnel.sh ensures the server ('nc -l') is run all the time,
+> starting it again every time it is expected to terminate. The exception is
+> the final client_connect: the server is not started anymore, which ensures
+> no process is kept running after the test is finished.
+>
+> For a sit test, though, the script is terminated prematurely without the
+> final client_connect and the 'nc' process keeps running. This in turn causes
+> the run_one function in kselftest/runner.sh to hang forever, waiting for the
+> runaway process to finish.
+>
+> Ensure a remaining server is terminated on cleanup.
+>
+> Fixes: f6ad6accaa9d ("selftests/bpf: expand test_tc_tunnel with SIT encap")
+> Cc: Willem de Bruijn <willemb@google.com>
+> Signed-off-by: Jiri Benc <jbenc@redhat.com>
 
----1358293557-283249934-1573826608=:15722
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Acked-by: Willem de Bruijn <willemb@google.com>
 
-On Fri, 15 Nov 2019, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+Yes, I had missed that the server gets restarted even though the SIT
+test has to bail instead of run the last, BPF decap, test.
 
-> Jiri Benc <jbenc@redhat.com> writes:
->=20
-> > The actual test to run is test_xdping.sh, which is already in TEST_PROG=
-S.
-> > The xdping program alone is not runnable with 'make run_tests', it
-> > immediatelly fails due to missing arguments.
-> >
-> > Move xdping to TEST_GEN_PROGS_EXTENDED in order to be built but not run=
-=2E
-> >
-> > Fixes: cd5385029f1d ("selftests/bpf: measure RTT from xdp using xdping"=
-)
-> > Cc: Alan Maguire <alan.maguire@oracle.com>
-> > Signed-off-by: Jiri Benc <jbenc@redhat.com>
->=20
-> Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->=20
->=20
-
-Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
----1358293557-283249934-1573826608=:15722--
+Thanks Jiri.
