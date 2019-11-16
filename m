@@ -2,38 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B408FED68
-	for <lists+bpf@lfdr.de>; Sat, 16 Nov 2019 16:45:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D32EAFEE21
+	for <lists+bpf@lfdr.de>; Sat, 16 Nov 2019 16:49:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728878AbfKPPnw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 16 Nov 2019 10:43:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48182 "EHLO mail.kernel.org"
+        id S1729037AbfKPPs6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 16 Nov 2019 10:48:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56350 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727857AbfKPPnw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 16 Nov 2019 10:43:52 -0500
+        id S1730236AbfKPPs6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 16 Nov 2019 10:48:58 -0500
 Received: from sasha-vm.mshome.net (unknown [50.234.116.4])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B506620815;
-        Sat, 16 Nov 2019 15:43:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1E7022086A;
+        Sat, 16 Nov 2019 15:48:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1573919031;
+        s=default; t=1573919337;
         bh=HsPWwmDEIMEtsZTabfg0H5Vjz9voDV9fpRM5MsHpzpw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SJsNLAOK8oEzNN8ww8BGKl/RiEUr3Np96FZFyR/TEnBg1lvIaUyZPEe5+qZmMYi4N
-         3SSdBioC2M6mnficfExdfzUEv7A5L7Nr8MCzyHZe1K0qzv3wNngldT5/FL7n9gby3n
-         UyTDYbiRmJrFfXtAXVKcgmAyUInagOM/C1KbAhj0=
+        b=qPkZ0RWBlRmZUlrCMs1PzBx6T3OLoSPeotxvUx3fcuBCzhr5gSQ+xGqyziWvON3OV
+         E14ZCzt04i2IcCuP5LX6eeVFNasEZfM6TycsKHMAH6s5LQPrpX1sGQbsmlyxuOhFIj
+         6p7MIzPfvFr3V6C60tMTNsTG1/aGPc3YvzVlEyGw=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>, sparclinux@vger.kernel.org,
         netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 127/237] sparc64: Rework xchg() definition to avoid warnings.
-Date:   Sat, 16 Nov 2019 10:39:22 -0500
-Message-Id: <20191116154113.7417-127-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 077/150] sparc64: Rework xchg() definition to avoid warnings.
+Date:   Sat, 16 Nov 2019 10:46:15 -0500
+Message-Id: <20191116154729.9573-77-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191116154113.7417-1-sashal@kernel.org>
-References: <20191116154113.7417-1-sashal@kernel.org>
+In-Reply-To: <20191116154729.9573-1-sashal@kernel.org>
+References: <20191116154729.9573-1-sashal@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 X-stable: review
