@@ -2,101 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EC8B3FF806
-	for <lists+bpf@lfdr.de>; Sun, 17 Nov 2019 06:57:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70076FF81B
+	for <lists+bpf@lfdr.de>; Sun, 17 Nov 2019 07:50:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725867AbfKQF57 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 17 Nov 2019 00:57:59 -0500
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:38943 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725822AbfKQF56 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 17 Nov 2019 00:57:58 -0500
-Received: by mail-qt1-f193.google.com with SMTP id t8so16179602qtc.6;
-        Sat, 16 Nov 2019 21:57:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Pm5y2zcDTCYoHgmwyHgBv33gyStPy1J5HfZ50jCparM=;
-        b=KFRwYTMEfpdaDFxVVRCLGDF+9rgwW46LYz8u2HKVQa1xrBBdvYijCI7fA9Ox+8kX0T
-         o0MFmzcbKLneLKXpI0mijaMUGKQPnALP/um3MxdYPvVz3NwPVYAnoX1D6OSv9BWnPpJb
-         54+XZpWvgiDJJgdmxKng5Nwc8QDbx/sYgOffFAlz1mFKSRJSAIC3TeAeKDbLzAvDgvAn
-         mfKz/CKt6DBscBaAbQKRgBkbFy86ebw4MtYXDrvwcZ3KYniweRxAWUH5RAeSCXbC0Acx
-         deYUVdwio9ezWoweTN4+H81aVQT1slOeQXMaxzQIu0s48vQ/JevhxU7BwJ+xTm05mnEI
-         W5Yw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Pm5y2zcDTCYoHgmwyHgBv33gyStPy1J5HfZ50jCparM=;
-        b=ZvOHGzarhbaAcFT2SjDCiH25y4lge1zhCI4iPeV8xPfMK2SvYKovfXq7TKDbnvo7Vt
-         lHS+aG4POJ0c3P6iqBAvjdUTq62nGsM76V8g2eN21IIewdAV8rIaKMfNWd16IhX7MXuC
-         Hk1gkh7XB1KxOdmPJgBhOl1n8NMKUh2P4jQHQDIAbSjWK0oPpm7awAFqjbqbHBhY+EJT
-         g6BWOH32J5YDIuY4P7e/MTvccRc3bfBEzgmPXKRmyvbp4bwGVsxRKdXLb7A2Vu4oVwji
-         RSmVJ3Xp/fIlHEbvfJQIhx6HJVIsDIIqkkN/ex1ae5/9+FDOVB4CJXKcDLly2V1QWyM/
-         NmMA==
-X-Gm-Message-State: APjAAAWDTJnT10aJ/NyvfJHICGwf53SuQFg1IEYZs7jfu2n5+XJnm2za
-        pjXjOAOl6XIfNjvtdzbpn2WrQ4Fr38k3pq87XBnB9A==
-X-Google-Smtp-Source: APXvYqxrItoYxd62tM2WEeb1lCk2cEOO3fVDnSsWiGjstJBPM4vYBdPyBNzdb/nK3Fj1b4ctQsXp+iNTO72y2g29sTY=
-X-Received: by 2002:ac8:6613:: with SMTP id c19mr22135935qtp.117.1573970276291;
- Sat, 16 Nov 2019 21:57:56 -0800 (PST)
+        id S1725909AbfKQGun (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 17 Nov 2019 01:50:43 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:17252 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725867AbfKQGun (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 17 Nov 2019 01:50:43 -0500
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xAH6nQGA002542
+        for <bpf@vger.kernel.org>; Sat, 16 Nov 2019 22:50:41 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=fLPXVV2EpH0Eeu/FIYVlUbJUIyBjjIUXowoVncceP8I=;
+ b=qT2B8a9l6O6Dd9pdpKZUTdYyPAoOpHXEEfG9lvaSqCnw3Rq71mkmMMbj+97Nu1iJrOxh
+ GntRv41WdSznu1wFOFL6GgYh0RXs2Zfp4jmiaX3NTrWefvVG+wCJjS9Kcw52AHEvHU5h
+ TMmJaOtjfxDMFvfiq8D9vsfphZAX14DVvk0= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by mx0a-00082601.pphosted.com with ESMTP id 2waftjsek4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Sat, 16 Nov 2019 22:50:41 -0800
+Received: from 2401:db00:2050:5076:face:0:7:0 (2620:10d:c081:10::13) by
+ mail.thefacebook.com (2620:10d:c081:35::127) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
+ Sat, 16 Nov 2019 22:50:40 -0800
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 660EF2EC18AA; Sat, 16 Nov 2019 22:50:38 -0800 (PST)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH v5 bpf-next 0/5] Add support for memory-mapping BPF array maps
+Date:   Sat, 16 Nov 2019 22:50:30 -0800
+Message-ID: <20191117065035.202462-1-andriin@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-References: <20191115040225.2147245-1-andriin@fb.com> <20191115040225.2147245-3-andriin@fb.com>
- <888858f7-97fb-4434-4440-a5c0ec5cbac8@iogearbox.net> <293bb2fe-7599-3825-1bfe-d52224e5c357@fb.com>
- <3287b984-6335-cacb-da28-3d374afb7f77@iogearbox.net> <fe46c471-e345-b7e4-ab91-8ef044fd58ae@fb.com>
- <c79ca69f-84fd-bfc2-71fd-439bc3b94c81@iogearbox.net> <3eca5e22-f3ec-f05f-0776-4635b14c2a4e@fb.com>
-In-Reply-To: <3eca5e22-f3ec-f05f-0776-4635b14c2a4e@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Sat, 16 Nov 2019 21:57:45 -0800
-Message-ID: <CAEf4BzZHT=Gwor_VA38Yoy6Lo7zeeiVeQK+KQpZUHRpnV6=fuA@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 2/4] bpf: add mmap() support for BPF_MAP_TYPE_ARRAY
-To:     Alexei Starovoitov <ast@fb.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Rik van Riel <riel@surriel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
+ definitions=2019-11-17_01:2019-11-15,2019-11-16 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ malwarescore=0 adultscore=0 phishscore=0 bulkscore=0 priorityscore=1501
+ mlxlogscore=521 clxscore=1015 mlxscore=0 spamscore=0 impostorscore=0
+ suspectscore=8 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-1911170063
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 15, 2019 at 5:18 PM Alexei Starovoitov <ast@fb.com> wrote:
->
-> On 11/15/19 4:13 PM, Daniel Borkmann wrote:
-> >>> Yeah, only for fd array currently. Question is, if we ever reuse that
-> >>> map_release_uref
-> >>> callback in future for something else, will we remember that we earlier
-> >>> missed to add
-> >>> it here? :/
-> >>
-> >> What do you mean 'missed to add' ?
-> >
-> > Was saying missed to add the inc/put for the uref counter.
-> >
-> >> This is mmap path. Anything that needs releasing (like FDs for
-> >> prog_array or progs for sockmap) cannot be mmap-able.
-> >
-> > Right, I meant if in future we ever have another use case outside of it
-> > for some reason (unrelated to those maps you mention above). Can we
-> > guarantee this is never going to happen? Seemed less fragile at least to
-> > maintain proper count here.
+This patch set adds ability to memory-map BPF array maps (single- and
+multi-element). The primary use case is memory-mapping BPF array maps, created
+to back global data variables, created by libbpf implicitly. This allows for
+much better usability, along with avoiding syscalls to read or update data
+completely.
 
-I don't think we'll ever going to allow mmaping anything that contains
-not just pure data. E.g., we disallow mmaping array that contains spin
-lock for that reason. So I think it's safe to assume that this is not
-going to happen even for future maps. At least not without some
-serious considerations before that. So I'm going to keep it as just
-plain bpf_map_inc for now.
+Due to memory-mapping requirements, BPF array map that is supposed to be
+memory-mapped, has to be created with special BPF_F_MMAPABLE attribute, which
+triggers slightly different memory allocation strategy internally. See
+patch 1 for details.
 
-I'm going to convert bpf_prog_add/bpf_prog_inc, though, and will do it
-as a separate patch, on top of bpf_map_inc refactor. It touches quite
-a lot drivers, so would benefit from having being separate.
+Libbpf is extended to detect kernel support for this flag, and if supported,
+will specify it for all global data maps automatically.
 
->
-> I'm struggling to understand the concern.
-> map-in-map, xskmap, socket local storage are doing bpf_map_inc(, false)
-> when they need to hold the map. Why this case is any different?
+Patch #1 refactors bpf_map_inc() and converts bpf_map's refcnt to atomic64_t
+to make refcounting never fail. Patch #2 does similar refactoring for
+bpf_prog_add()/bpf_prog_inc().
+
+v4->v5:
+- change bpf_prog's refcnt to atomic64_t (Daniel);
+
+v3->v4:
+- add mmap's open() callback to fix refcounting (Johannes);
+- switch to remap_vmalloc_pages() instead of custom fault handler (Johannes);
+- converted bpf_map's refcnt/usercnt into atomic64_t;
+- provide default bpf_map_default_vmops handling open/close properly;
+
+v2->v3:
+- change allocation strategy to avoid extra pointer dereference (Jakub);
+
+v1->v2:
+- fix map lookup code generation for BPF_F_MMAPABLE case;
+- prevent BPF_F_MMAPABLE flag for all but plain array map type;
+- centralize ref-counting in generic bpf_map_mmap();
+- don't use uref counting (Alexei);
+- use vfree() directly;
+- print flags with %x (Song);
+- extend tests to verify bpf_map_{lookup,update}_elem() logic as well.
+
+Andrii Nakryiko (5):
+  bpf: switch bpf_map ref counter to atomic64_t so bpf_map_inc() never
+    fails
+  bpf: convert bpf_prog refcnt to atomic64_t
+  bpf: add mmap() support for BPF_MAP_TYPE_ARRAY
+  libbpf: make global data internal arrays mmap()-able, if possible
+  selftests/bpf: add BPF_TYPE_MAP_ARRAY mmap() tests
+
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c     |   9 +-
+ .../net/ethernet/cavium/thunder/nicvf_main.c  |   9 +-
+ .../net/ethernet/freescale/dpaa2/dpaa2-eth.c  |   7 +-
+ .../net/ethernet/mellanox/mlx4/en_netdev.c    |  24 +-
+ .../net/ethernet/mellanox/mlx5/core/en_main.c |  18 +-
+ .../net/ethernet/netronome/nfp/bpf/offload.c  |   4 +-
+ drivers/net/ethernet/qlogic/qede/qede_main.c  |   8 +-
+ drivers/net/virtio_net.c                      |   7 +-
+ include/linux/bpf.h                           |  34 +--
+ include/linux/vmalloc.h                       |   1 +
+ include/uapi/linux/bpf.h                      |   3 +
+ kernel/bpf/arraymap.c                         |  58 ++++-
+ kernel/bpf/inode.c                            |   7 +-
+ kernel/bpf/map_in_map.c                       |   2 +-
+ kernel/bpf/syscall.c                          | 174 ++++++++++----
+ kernel/bpf/verifier.c                         |   6 +-
+ kernel/bpf/xskmap.c                           |   6 +-
+ kernel/events/core.c                          |   7 +-
+ mm/vmalloc.c                                  |  20 ++
+ net/core/bpf_sk_storage.c                     |   2 +-
+ tools/include/uapi/linux/bpf.h                |   3 +
+ tools/lib/bpf/libbpf.c                        |  32 ++-
+ .../selftests/bpf/prog_tests/core_reloc.c     |  45 ++--
+ tools/testing/selftests/bpf/prog_tests/mmap.c | 220 ++++++++++++++++++
+ tools/testing/selftests/bpf/progs/test_mmap.c |  45 ++++
+ 25 files changed, 576 insertions(+), 175 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/mmap.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_mmap.c
+
+-- 
+2.17.1
+
