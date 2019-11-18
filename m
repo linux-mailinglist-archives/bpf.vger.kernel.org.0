@@ -2,125 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 38BAF100678
-	for <lists+bpf@lfdr.de>; Mon, 18 Nov 2019 14:29:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CC371006C8
+	for <lists+bpf@lfdr.de>; Mon, 18 Nov 2019 14:50:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726562AbfKRN3O (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Nov 2019 08:29:14 -0500
-Received: from mail-oi1-f169.google.com ([209.85.167.169]:35527 "EHLO
-        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726898AbfKRN3O (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Nov 2019 08:29:14 -0500
-Received: by mail-oi1-f169.google.com with SMTP id n16so15295867oig.2
-        for <bpf@vger.kernel.org>; Mon, 18 Nov 2019 05:29:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0ovAJYovZYjZU4hcUSshEHbT9BJVE8bJhx2pPheEKXE=;
-        b=sahE+/4JT7F6S0O6k0q0350Nur3ydfr1m5Gy360HQV6DMzYdIyTq2c/pGcPcXovGpI
-         f9xyp7gNzaCDm2paR8UwXoOk0XEsoJpdxYLo0OuWFGaHvPleE1UlTRsa0wml2pxCEXrz
-         5gu0hqpZpdXkbrcgmypCTTKDjtKip+lL1P5xg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0ovAJYovZYjZU4hcUSshEHbT9BJVE8bJhx2pPheEKXE=;
-        b=DPAnGz+Q54MPfYu+MBWP7pPARmBK8rTmsPtI1zANeCBQkdm8B1JCP8YgvcoXQlrVZw
-         zS5Hiem9ntFdOQOAiYkL/wEUmSXtqw64xxQ9JPBFhOIitVXmU8O9xSCGbua/CmLtaFvY
-         2MoRlWs/xw4kLco6hbrsp3dT2X4RvGpT9YFhQUZ/+TLfDI2hFWU4HnuKIvzwSNHA7t2O
-         cTHmjoNYluV+Gg+wijQToqB2JEqeCNZis05cpzWrqBeE3XVTEvgrxIorTvjOE79GGBl4
-         /T8BYqr9P+dBS+KljFOmXCFe650IiGUMNJRtsyR62pzlPHL9j9YTnIGRTCaq0UHgr5Tt
-         J3NA==
-X-Gm-Message-State: APjAAAVWwq/QQGe7N1dhcjWjjzjPLbrtp6MgCpmvnVu6K4BoMk8UGOZM
-        0cNqjk1HdtpuhnPZ0uEsOSyrTnUqBWknIW6K2y7x5g==
-X-Google-Smtp-Source: APXvYqxBhuyrgZ7wDd4guY83J86yV6FBSBc8FRv9Gv9CN9Oob7CAlKWX6IUhgKPQN3Ik5tVBl8iK/GLaMY+19vHQ7m4=
-X-Received: by 2002:aca:f50c:: with SMTP id t12mr19191728oih.78.1574083752567;
- Mon, 18 Nov 2019 05:29:12 -0800 (PST)
+        id S1726627AbfKRNuX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Nov 2019 08:50:23 -0500
+Received: from www62.your-server.de ([213.133.104.62]:34948 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726909AbfKRNuX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Nov 2019 08:50:23 -0500
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1iWhQ3-00021M-4I; Mon, 18 Nov 2019 14:50:19 +0100
+Received: from [2a02:1205:507e:bf80:bef8:7f66:49c8:72e5] (helo=pc-11.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1iWhQ2-000OGJ-G8; Mon, 18 Nov 2019 14:50:18 +0100
+Subject: Re: [PATCH v4 bpf-next 2/4] bpf: add mmap() support for
+ BPF_MAP_TYPE_ARRAY
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@fb.com>, Andrii Nakryiko <andriin@fb.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Rik van Riel <riel@surriel.com>
+References: <20191115040225.2147245-1-andriin@fb.com>
+ <20191115040225.2147245-3-andriin@fb.com>
+ <888858f7-97fb-4434-4440-a5c0ec5cbac8@iogearbox.net>
+ <293bb2fe-7599-3825-1bfe-d52224e5c357@fb.com>
+ <3287b984-6335-cacb-da28-3d374afb7f77@iogearbox.net>
+ <fe46c471-e345-b7e4-ab91-8ef044fd58ae@fb.com>
+ <c79ca69f-84fd-bfc2-71fd-439bc3b94c81@iogearbox.net>
+ <3eca5e22-f3ec-f05f-0776-4635b14c2a4e@fb.com>
+ <CAEf4BzZHT=Gwor_VA38Yoy6Lo7zeeiVeQK+KQpZUHRpnV6=fuA@mail.gmail.com>
+ <3a99d3af-97e7-3d6d-0a9c-46fb8104a211@iogearbox.net>
+ <CAEf4BzbyHn5JOf6=S6g=Qr15evEbwmMO3F4QCC9hkU0hpJcA4g@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <6cb3f3f4-cc08-8280-8d72-f2fdc58ad034@iogearbox.net>
+Date:   Mon, 18 Nov 2019 14:50:17 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <5da4ab712043c_25f42addb7c085b83b@john-XPS-13-9370.notmuch>
- <87eezfi2og.fsf@toke.dk> <f9d5f717-51fe-7d03-6348-dbaf0b9db434@solarflare.com>
- <87r23egdua.fsf@toke.dk> <70142501-e2dd-1aed-992e-55acd5c30cfd@solarflare.com>
- <874l07fu61.fsf@toke.dk> <aeae7b94-090a-a850-4740-0274ab8178d5@solarflare.com>
- <87eez4odqp.fsf@toke.dk> <20191112025112.bhzmrrh2pr76ssnh@ast-mbp.dhcp.thefacebook.com>
- <CACAyw98dcpu1b2nUf7ize2SJGJGd=mhqRK+PYQTx96gSBtbkNQ@mail.gmail.com> <20191115230229.qd6plwnvrmcm4pfo@ast-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20191115230229.qd6plwnvrmcm4pfo@ast-mbp.dhcp.thefacebook.com>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Mon, 18 Nov 2019 13:29:00 +0000
-Message-ID: <CACAyw9-Sx8jBY2HiO0idLk_HE5R5R229w5qEqVkaQ92YUKM0kg@mail.gmail.com>
-Subject: Re: static and dynamic linking. Was: [PATCH bpf-next v3 1/5] bpf:
- Support chain calling multiple BPF
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Edward Cree <ecree@solarflare.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Marek Majkowski <marek@cloudflare.com>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAEf4BzbyHn5JOf6=S6g=Qr15evEbwmMO3F4QCC9hkU0hpJcA4g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.101.4/25637/Mon Nov 18 10:53:23 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 15 Nov 2019 at 23:02, Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> imo all bpf attach api-s that are not FD-based are fragile and error prone
-> operationally. We've seen people adding a ton of TC ingress progs because of
-> bugs. Then there were issues with roolet being removed due to bugs. The issues
-> with overriding wrong entries in prog_array. When multiple teams working on
-> common infra having globally visible and unprotected state is dangerous. imo
-> XDP and TC have to move to FD based api. When application holds the 'link fd'
-> that attached program will not be detached by anything else accidentally.
-> The operation 'attach rootlet XDP prog to netdev eth0' should return FD.
-> While that FD is held by application (or pinned in bpffs) nothing should be
-> able to override XDP prog on that eth0. We don't have such api yet, but I think
-> it's necessary.
+On 11/17/19 6:17 PM, Andrii Nakryiko wrote:
+> On Sun, Nov 17, 2019 at 4:07 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>> On 11/17/19 6:57 AM, Andrii Nakryiko wrote:
+>>> On Fri, Nov 15, 2019 at 5:18 PM Alexei Starovoitov <ast@fb.com> wrote:
+>>>> On 11/15/19 4:13 PM, Daniel Borkmann wrote:
+>>>>>>> Yeah, only for fd array currently. Question is, if we ever reuse that
+>>>>>>> map_release_uref
+>>>>>>> callback in future for something else, will we remember that we earlier
+>>>>>>> missed to add
+>>>>>>> it here? :/
+>>>>>>
+>>>>>> What do you mean 'missed to add' ?
+>>>>>
+>>>>> Was saying missed to add the inc/put for the uref counter.
+>>>>>
+>>>>>> This is mmap path. Anything that needs releasing (like FDs for
+>>>>>> prog_array or progs for sockmap) cannot be mmap-able.
+>>>>>
+>>>>> Right, I meant if in future we ever have another use case outside of it
+>>>>> for some reason (unrelated to those maps you mention above). Can we
+>>>>> guarantee this is never going to happen? Seemed less fragile at least to
+>>>>> maintain proper count here.
+>>>
+>>> I don't think we'll ever going to allow mmaping anything that contains
+>>> not just pure data. E.g., we disallow mmaping array that contains spin
+>>> lock for that reason. So I think it's safe to assume that this is not
+>>> going to happen even for future maps. At least not without some
+>>> serious considerations before that. So I'm going to keep it as just
+>>> plain bpf_map_inc for now.
+>>
+>> Fair enough, then keep it as it is. The purpose of the uref counter is to
+>> track whatever map holds a reference either in form of fd or inode in bpf
+>> fs which are the only two things till now where user space can refer to the
+>> map, and once it hits 0, we perform the map's map_release_uref() callback.
+> 
+> To be honest, I don't exactly understand why we need both refcnt and
+> usercnt. Does it have anything to do with some circular dependencies
+> for those maps containing other FDs? And once userspace doesn't have
+> any more referenced, we release FDs, which might decrement refcnt,
+> thus breaking circular refcnt between map FD and special FDs inside a
+> map? Or that's not the case and there is a different reason?
 
-Ok, I wasn't aware you're planning this. Having a separate fd for the
-link resolves
-my concerns, since now the lifetime of the program and the link are independent.
+Yes, back then we added it to break up circular dependencies in relation to
+tail calls which is why these are pinned before the loader process finishes
+(e.g. as in Cilium's case).
 
-Re: the rootlet example, the API would be load (with attach_prog_fd) followed by
-override / attach (without arguments?) which then returns a "link fd"?
+> Either way, I looked at map creation and bpf_map_release()
+> implementation again. map_create() does set usercnt to 1, and
+> bpf_map_release(), which I assume is called when map FD is closed,
+> does decrement usercnt, so yeah, we do with_uref() manipulations for
+> cases when userspace maintains some sort of handle to map. In that
+> regard, mmap() does fall into the same category, so I'm going to
+> convert everything mmap-related back to
+> bpf_map_inc_with_uref()/bpf_map_put_with_uref(), to stay consistent.
 
-> Same thing with replacing rootlet's placeholder subprogram with
-> fw1. When fw1's application links fw1 prog into rootlet nothing should be able
-> to break that attachment. But if fw1 application crashes that fw1 prog will be
-> auto-detached from rootlet. The admin can ssh into the box and kill fw1. The
-> packets will flow into rootlet and will flow into dummy placeholder. No
-> cleanups to worry about.
+Ok, fair enough, either way would have been fine.
 
-Nice!
-
-> > I'd much prefer if the API didn't require attach_prog_fd and id at
-> > load time, and
-> > rather have an explicit replace_sub_prog(prog_fd, btf_id, sub_prog_fd).
->
-> The verifier has to see the target prog and its full BTF at load time. The
-> fentry prog needs target prog's BTF. XDP replacement prog needs target prog's
-> BTF too. So prog_fd+btf_id has to be passed at load time. I think
-> tgt_prog->refcnt++ should be done at load time too. The ugly alternative would
-> be to do tgt_prog->refcnt++ before verification. Then after verification
-> duplicate tgt_prog BTF, store it somewhere, and do tgr_prog->refcnt--. Then
-> later during attach/replace compare saved BTF with tgt_prog's BTF. That's imo a
-> ton of unncessary work for the kernel.
-
-I've not looked at the fentry patch set, so I don't understand the
-technical reasons why
-having prog_fd at load time is necessary, I'm just not a fan of the
-implied UAPI.
-I'll take a look, hopefully I'll understand the trade off better afterwards.
-
--- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
-
-www.cloudflare.com
+Thanks a lot,
+Daniel
