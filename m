@@ -2,138 +2,282 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A4956100BB8
-	for <lists+bpf@lfdr.de>; Mon, 18 Nov 2019 19:46:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93A09100C3D
+	for <lists+bpf@lfdr.de>; Mon, 18 Nov 2019 20:36:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726435AbfKRSqa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Nov 2019 13:46:30 -0500
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:37577 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726423AbfKRSqa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Nov 2019 13:46:30 -0500
-Received: by mail-qt1-f193.google.com with SMTP id g50so21397566qtb.4;
-        Mon, 18 Nov 2019 10:46:29 -0800 (PST)
+        id S1726536AbfKRTgZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Nov 2019 14:36:25 -0500
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:37207 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726435AbfKRTgZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Nov 2019 14:36:25 -0500
+Received: by mail-qt1-f194.google.com with SMTP id g50so21584366qtb.4;
+        Mon, 18 Nov 2019 11:36:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AhpmY6hAm1VkzY6LRm4tRnmqIjnVC/MkB4dNNrm8cs8=;
-        b=YVdU2vJxLlixEajh6Qy6a+syuI5j4ArQMN68JrrdC+MnAzARpTXO3xUekeAvQRec+S
-         mseLhn7UEjpRhlm0W0PFLdPwjN4v3j0cn+3Zc1dVsJn6rmbBBXqcr+p+VV73Jor61+cN
-         pTGzYd1lGHyaFLys8MJAecaihTVaJC4/8ueN9O7RWoqKQb4A6Ld4fb+e+oeKLZxKLwMN
-         El1ob1WOF0/0jf9YmmOzX0pUNlZktiG4LO2IR/zqHOgyeXqMcC/hGI++RBM9Ktux6pKN
-         x4nj3SfmryF4OZNG8Z2sfAGAJwLVL2sxankHwK//LCviZsDxeiT0T2e5InUNxk9OGS0D
-         64eQ==
+         :cc:content-transfer-encoding;
+        bh=FqGvQDVHM92kLrVRtf+25CcxGMEqrrwjSRL5oGlFW/o=;
+        b=pENOY4BBO7dft1hfwavdDJ3BPhbCGxkn5LeTREUKrR+AHi7nEXebqmZDJoMsuTtigA
+         2nbHRVfspMSbL+VnQnBj2BtusZc70qINs7YgTCLuSMTw0cKOzHvmCQs/M6mRkM3ZU1o/
+         HGghFFM/wW0myv9yI52yp4gPHvw5FtFfNxz8OQIGPJRELSPeQzllZetOSw0jJZFwVOO2
+         DVWbvQnhUp+FFaSPFJ6iuEtW2JLYh5zZ4oEYCsB6l0Z7rSEV/DkgNoBwNzhE72EObYO7
+         V3hgc/pQO0jbu14WaTIeeTCGGWs6aANKSYCfkS0pTcxTZJQXoGPuCHBWO+fdGWs4dem8
+         s6Fw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AhpmY6hAm1VkzY6LRm4tRnmqIjnVC/MkB4dNNrm8cs8=;
-        b=HEsNZKZwJ42/ZFRflgOZ5qnHpAWkJjLeiZQHBDtP9PltYJKGT9h74GWg5nE9ahtkgY
-         zjCUtMfXey9PbxzfBD2Kk+IvQubouGhHyh3dWoCS0fAF656Zs4D7L4LcPXjUhX622eIZ
-         GY4WP7lxl408uWI1h3eh0k1glY3egB1ggmRwRoU6AemPWuVU66f0t1pMiXyznaAfg5or
-         k31LfHtg6MUtbRiILDtRkF6TLwE3y39rseUfLShKG0q6dAjloIagPEXd731jwxsvjNVO
-         gOgNZWEX1hQ9arlsi8AxxjiGfB1HMq7xhQleRxA4PpiYY8OGXEz7sC4WNpu9JOemf4iZ
-         xzHg==
-X-Gm-Message-State: APjAAAUJVzuT1VecEqK3PZeShrDJNhirlFrC6MzAd3kVXezBVme4A5zy
-        1zcs7qR+40AbJwsjGkmWeEsNpFfhA/Pj4KJn4o0=
-X-Google-Smtp-Source: APXvYqxn9FfoukgEqyVyDUItvd+pM6Kf8lIeyPnvnqZNWaOS87puH6pcdZ8xNZbXq/PILwVQObL218Lxm6fnZfIVRd4=
-X-Received: by 2002:ac8:6613:: with SMTP id c19mr28904733qtp.117.1574102788950;
- Mon, 18 Nov 2019 10:46:28 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=FqGvQDVHM92kLrVRtf+25CcxGMEqrrwjSRL5oGlFW/o=;
+        b=Ju0TCHNOi7P3ODtRmlcr+9Y/oPv0rfXhDZmZeQpNFrpG5/lo0VUJ88HXqbzdcYfsGM
+         rRsp1gPu3Cyh8lw6P0MBw+T7aU/Pjzpu5iePSoj/l/8bgK91gOwIg37lmdHk7xDOC159
+         X6CXA3oPF8DuGD+iSFt4edgOvT/w3pqUKk42Nqqx3ewWRpZMiLCsMa0mKLEPFU2zsuke
+         Gm4zgn5NoVS68rkS4yxGubnmgXfSnMkA3fppw3md6WzzTSbcFjwr1S5w8X5BVJsDwic7
+         fsx1iuXwiqYjoiyTvfLKXQrQwLA7gs+4/09pYheX86OknmiY4C7PW9c0u0XIPJJQiFvV
+         8uPQ==
+X-Gm-Message-State: APjAAAV2OuEQJBW+Tf1+0xDSBOUha8Idee31OFbXF1zQxv0uQeYrMYjk
+        /EuPsfykCKilH4YOhHQHTQ6VSUNeF0SeV+milHk=
+X-Google-Smtp-Source: APXvYqwSZ/NQr8SVsuncytOJJdI06Sv9HYHzjUet0/d+FMqqmZVBHBW5hWN33f1lqFC3B7bt9BS0BOVmdZPXeoYBzmU=
+X-Received: by 2002:ac8:3fed:: with SMTP id v42mr28468327qtk.171.1574105783237;
+ Mon, 18 Nov 2019 11:36:23 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1573779287.git.daniel@iogearbox.net> <ff9a3829fb46802262a20dbad1123cd66c118b8b.1573779287.git.daniel@iogearbox.net>
- <CAEf4BzaxyULFPYd8OGfoc5FLSDt2ecppLFakjRJ2TyK5F-fJOw@mail.gmail.com> <4ae5ae7b-d7bb-4a59-0f5f-0f7f41bd6f6d@iogearbox.net>
-In-Reply-To: <4ae5ae7b-d7bb-4a59-0f5f-0f7f41bd6f6d@iogearbox.net>
+References: <20191113204737.31623-1-bjorn.topel@gmail.com> <20191113204737.31623-3-bjorn.topel@gmail.com>
+In-Reply-To: <20191113204737.31623-3-bjorn.topel@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 18 Nov 2019 10:46:17 -0800
-Message-ID: <CAEf4BzZ9SaQ_idpP8P8mG26KC72GG+xY57A76nsBCvOPSxOJEA@mail.gmail.com>
-Subject: Re: [PATCH rfc bpf-next 6/8] bpf: add poke dependency tracking for
- prog array maps
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        john fastabend <john.fastabend@gmail.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Date:   Mon, 18 Nov 2019 11:36:12 -0800
+Message-ID: <CAEf4BzZw+jX13JuiVueKhpufQ9qHEBc0xYtqKdhhUV00afx0Gw@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 2/4] bpf: introduce BPF dispatcher
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Cc:     Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        bpf <bpf@vger.kernel.org>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 18, 2019 at 10:39 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+On Wed, Nov 13, 2019 at 12:48 PM Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.c=
+om> wrote:
 >
-> On 11/18/19 6:39 PM, Andrii Nakryiko wrote:
-> > On Thu, Nov 14, 2019 at 5:04 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
-> >>
-> >> This work adds program tracking to prog array maps. This is needed such
-> >> that upon prog array updates/deletions we can fix up all programs which
-> >> make use of this tail call map. We add ops->map_poke_{un,}track() helpers
-> >> to maps to maintain the list of programs and ops->map_poke_run() for
-> >> triggering the actual update. bpf_array_aux is extended to contain the
-> >> list head and poke_mutex in order to serialize program patching during
-> >> updates/deletions. bpf_free_used_maps() will untrack the program shortly
-> >> before dropping the reference to the map.
-> >>
-> >> The prog_array_map_poke_run() is triggered during updates/deletions and
-> >> walks the maintained prog list. It checks in their poke_tabs whether the
-> >> map and key is matching and runs the actual bpf_arch_text_poke() for
-> >> patching in the nop or new jmp location. Depending on the type of update,
-> >> we use one of BPF_MOD_{NOP_TO_JUMP,JUMP_TO_NOP,JUMP_TO_JUMP}.
-> >>
-> >> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-> >> ---
-> >>   include/linux/bpf.h   |  36 +++++++++++++
-> >>   kernel/bpf/arraymap.c | 120 +++++++++++++++++++++++++++++++++++++++++-
-> >>   kernel/bpf/core.c     |   9 +++-
-> >>   3 files changed, 162 insertions(+), 3 deletions(-)
-> >>
-> >> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> >> index 0ff06a0d0058..62a369fb8d98 100644
-> >> --- a/include/linux/bpf.h
-> >> +++ b/include/linux/bpf.h
-> >> @@ -21,6 +21,7 @@ struct bpf_verifier_env;
-> >>   struct bpf_verifier_log;
-> >>   struct perf_event;
-> >>   struct bpf_prog;
-> >> +struct bpf_prog_aux;
-> >>   struct bpf_map;
-> >>   struct sock;
-> >>   struct seq_file;
-> >> @@ -63,6 +64,12 @@ struct bpf_map_ops {
-> >>                               const struct btf_type *key_type,
-> >>                               const struct btf_type *value_type);
-> >>
-> >> +       /* Prog poke tracking helpers. */
-> >> +       int (*map_poke_track)(struct bpf_map *map, struct bpf_prog_aux *aux);
-> >> +       void (*map_poke_untrack)(struct bpf_map *map, struct bpf_prog_aux *aux);
-> >> +       void (*map_poke_run)(struct bpf_map *map, u32 key, struct bpf_prog *old,
-> >> +                            struct bpf_prog *new);
-> >
-> > You are passing bpf_prog_aux for track/untrack, but bpf_prog itself
-> > for run. Maybe stick to just bpf_prog everywhere?
+> From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
 >
-> This needs to be bpf_prog_aux as prog itself is not stable yet and can still
-> change, but aux itself is stable.
+> The BPF dispatcher builds on top of the BPF trampoline ideas;
+> Introduce bpf_arch_text_poke() and (re-)use the BPF JIT generate
+> code. The dispatcher builds a dispatch table for XDP programs, for
+> retpoline avoidance. The table is a simple binary search model, so
+> lookup is O(log n). Here, the dispatch table is limited to four
+> entries (for laziness reason -- only 1B relative jumps :-P). If the
+> dispatch table is full, it will fallback to the retpoline path.
+>
+> An example: A module/driver allocates a dispatcher. The dispatcher is
+> shared for all netdevs. Each netdev allocate a slot in the dispatcher
+> and a BPF program. The netdev then uses the dispatcher to call the
+> correct program with a direct call (actually a tail-call).
+>
+> Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+> ---
+>  arch/x86/net/bpf_jit_comp.c |  96 ++++++++++++++++++
+>  kernel/bpf/Makefile         |   1 +
+>  kernel/bpf/dispatcher.c     | 197 ++++++++++++++++++++++++++++++++++++
+>  3 files changed, 294 insertions(+)
+>  create mode 100644 kernel/bpf/dispatcher.c
+>
+> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+> index 28782a1c386e..d75aebf508b8 100644
+> --- a/arch/x86/net/bpf_jit_comp.c
+> +++ b/arch/x86/net/bpf_jit_comp.c
+> @@ -10,10 +10,12 @@
+>  #include <linux/if_vlan.h>
+>  #include <linux/bpf.h>
+>  #include <linux/memory.h>
+> +#include <linux/sort.h>
+>  #include <asm/extable.h>
+>  #include <asm/set_memory.h>
+>  #include <asm/nospec-branch.h>
+>  #include <asm/text-patching.h>
+> +#include <asm/asm-prototypes.h>
+>
 
-no one will prevent doing container_of() and get bpf_prog itself, so
-it's just an implicit knowledge that bpf_prog might be incomplete yet,
-that has to be remembered (btw, might be good to add a brief comment
-stating that). But I don't feel strongly either way.
+[...]
 
->
-> >> +
-> >>          /* Direct value access helpers. */
-> >>          int (*map_direct_value_addr)(const struct bpf_map *map,
-> >>                                       u64 *imm, u32 off);
-> >> @@ -584,6 +591,9 @@ struct bpf_array_aux {
-> >>           */
-> >>          enum bpf_prog_type type;
-> >>          bool jited;
-> >> +       /* Programs with direct jumps into programs part of this array. */
-> >> +       struct list_head poke_progs;
-> >> +       struct mutex poke_mutex;
-> >>   };
-> >>
-> >
-> > [...]
-> >
+> +
+> +int arch_prepare_bpf_dispatcher(void *image, struct bpf_prog **progs,
+> +                               int num_progs)
+> +{
+> +       u64 ips[BPF_DISPATCHER_MAX] =3D {};
+> +       u8 *fallback, *prog =3D image;
+> +       int i, err, cnt =3D 0;
+> +
+> +       if (!num_progs || num_progs > BPF_DISPATCHER_MAX)
+> +               return -EINVAL;
+> +
+> +       for (i =3D 0; i < num_progs; i++)
+> +               ips[i] =3D (u64)progs[i]->bpf_func;
+> +
+> +       EMIT2(0xEB, 5); /* jmp rip+5 (skip retpoline) */
+> +       fallback =3D prog;
+> +       err =3D emit_jmp(&prog,   /* jmp retpoline */
+> +                      __x86_indirect_thunk_rdx, prog);
+> +       if (err)
+> +               return err;
+> +
+> +       sort(&ips[0], num_progs, sizeof(ips[i]), cmp_ips, NULL);
+
+nit: sizeof(ips[i]) looks weird...
+
+> +       return emit_bpf_dispatcher(&prog, 0, num_progs - 1, &ips[0], fall=
+back);
+> +}
+> +
+>  struct x64_jit_data {
+>         struct bpf_binary_header *header;
+>         int *addrs;
+
+[...]
+
+> +
+> +static int bpf_dispatcher_add_prog(struct bpf_dispatcher *d,
+> +                                  struct bpf_prog *prog)
+> +{
+> +       struct bpf_prog **entry =3D NULL;
+> +       int i, err =3D 0;
+> +
+> +       if (d->num_progs =3D=3D BPF_DISPATCHER_MAX)
+> +               return err;
+
+err =3D=3D 0, not what you want, probably
+
+> +
+> +       for (i =3D 0; i < BPF_DISPATCHER_MAX; i++) {
+> +               if (!entry && !d->progs[i])
+> +                       entry =3D &d->progs[i];
+> +               if (d->progs[i] =3D=3D prog)
+> +                       return err;
+> +       }
+> +
+> +       prog =3D bpf_prog_inc(prog);
+> +       if (IS_ERR(prog))
+> +               return err;
+> +
+> +       *entry =3D prog;
+> +       d->num_progs++;
+> +       return err;
+> +}
+> +
+> +static void bpf_dispatcher_remove_prog(struct bpf_dispatcher *d,
+> +                                      struct bpf_prog *prog)
+> +{
+> +       int i;
+> +
+> +       for (i =3D 0; i < BPF_DISPATCHER_MAX; i++) {
+> +               if (d->progs[i] =3D=3D prog) {
+> +                       bpf_prog_put(prog);
+> +                       d->progs[i] =3D NULL;
+> +                       d->num_progs--;
+
+instead of allowing holes, why not swap removed prog with the last on
+in d->progs?
+
+> +                       break;
+> +               }
+> +       }
+> +}
+> +
+> +int __weak arch_prepare_bpf_dispatcher(void *image, struct bpf_prog **pr=
+ogs,
+> +                                      int num_ids)
+> +{
+> +       return -ENOTSUPP;
+> +}
+> +
+> +/* NB! bpf_dispatcher_update() might free the dispatcher! */
+> +static int bpf_dispatcher_update(struct bpf_dispatcher *d)
+> +{
+> +       void *old_image =3D d->image + ((d->selector + 1) & 1) * PAGE_SIZ=
+E / 2;
+> +       void *new_image =3D d->image + (d->selector & 1) * PAGE_SIZE / 2;
+> +       int err;
+> +
+> +       if (d->num_progs =3D=3D 0) {
+> +               err =3D bpf_arch_text_poke(d->func, BPF_MOD_JMP_TO_NOP,
+> +                                        old_image, NULL);
+> +               bpf_dispatcher_free(d);
+> +               goto out;
+> +       }
+> +
+> +       err =3D arch_prepare_bpf_dispatcher(new_image, &d->progs[0],
+> +                                         d->num_progs);
+> +       if (err)
+> +               goto out;
+> +
+> +       if (d->selector)
+> +               /* progs already running at this address */
+> +               err =3D bpf_arch_text_poke(d->func, BPF_MOD_JMP_TO_JMP,
+> +                                        old_image, new_image);
+> +       else
+> +               /* first time registering */
+> +               err =3D bpf_arch_text_poke(d->func, BPF_MOD_NOP_TO_JMP,
+> +                                        NULL, new_image);
+> +
+> +       if (err)
+> +               goto out;
+> +       d->selector++;
+> +
+> +out:
+> +       return err;
+> +}
+> +
+> +void bpf_dispatcher_change_prog(void *func, struct bpf_prog *from,
+> +                               struct bpf_prog *to)
+> +{
+> +       struct bpf_dispatcher *d;
+> +
+> +       if (!from && !to)
+> +               return;
+> +
+> +       mutex_lock(&dispatcher_mutex);
+> +       d =3D bpf_dispatcher_lookup(func);
+> +       if (!d)
+> +               goto out;
+> +
+> +       if (from)
+> +               bpf_dispatcher_remove_prog(d, from);
+> +
+> +       if (to)
+> +               bpf_dispatcher_add_prog(d, to);
+
+this can fail
+
+> +
+> +       WARN_ON(bpf_dispatcher_update(d));
+
+shouldn't dispatcher be removed from the list before freed? It seems
+like handling dispatches freeing is better done here explicitly (and
+you won't need to leave a NB remark)
+
+> +
+> +out:
+> +       mutex_unlock(&dispatcher_mutex);
+> +}
+> +
+> +static int __init init_dispatchers(void)
+> +{
+> +       int i;
+> +
+> +       for (i =3D 0; i < DISPATCHER_TABLE_SIZE; i++)
+> +               INIT_HLIST_HEAD(&dispatcher_table[i]);
+> +       return 0;
+> +}
+> +late_initcall(init_dispatchers);
+> +
+> +#endif
+> --
+> 2.20.1
 >
