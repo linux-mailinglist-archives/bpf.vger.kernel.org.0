@@ -2,66 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EDA9100039
-	for <lists+bpf@lfdr.de>; Mon, 18 Nov 2019 09:18:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96D05100183
+	for <lists+bpf@lfdr.de>; Mon, 18 Nov 2019 10:39:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726403AbfKRISb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Nov 2019 03:18:31 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:34125 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726371AbfKRISb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Nov 2019 03:18:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1574065110;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3MvS3Pykn8mQZTc6+4LMgBcmRIMAtBNaV6FFky/nJNg=;
-        b=G/VcAJftYbDn0PfKPblB4CwOzlZP/qHPZ3ogxY63vT3Yr7hhMfs8VKRSMBVh9pthTRyxWP
-        xWAVvd9vMtcvLvc+Qs8RGwzNYZL2/ZvlTtW4J0woyubfaFGxKvVIchiKU1SrDQSxOdvEx6
-        0LKj9zl7+sx+AsP6AagvAlCl/pJPN9A=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-382-3TMTSlgDM9aNXxUXH_Ks5Q-1; Mon, 18 Nov 2019 03:18:25 -0500
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E9A50801FA1;
-        Mon, 18 Nov 2019 08:18:23 +0000 (UTC)
-Received: from localhost (ovpn-204-195.brq.redhat.com [10.40.204.195])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id DE68060856;
-        Mon, 18 Nov 2019 08:18:22 +0000 (UTC)
-Date:   Mon, 18 Nov 2019 09:18:21 +0100
-From:   Jiri Benc <jbenc@redhat.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Alan Maguire <alan.maguire@oracle.com>
+        id S1726579AbfKRJjg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Nov 2019 04:39:36 -0500
+Received: from www62.your-server.de ([213.133.104.62]:37698 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726488AbfKRJjg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Nov 2019 04:39:36 -0500
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1iWdVO-0007Dx-UJ; Mon, 18 Nov 2019 10:39:34 +0100
+Received: from [2a02:1205:507e:bf80:bef8:7f66:49c8:72e5] (helo=pc-11.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1iWdVO-00072o-KV; Mon, 18 Nov 2019 10:39:34 +0100
 Subject: Re: [PATCH bpf] selftests: bpf: xdping is not meant to be run
  standalone
-Message-ID: <20191118091821.4a1b3faf@redhat.com>
-In-Reply-To: <427e0b06-679e-5621-f828-be545e6ca3b1@iogearbox.net>
+To:     Jiri Benc <jbenc@redhat.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Alan Maguire <alan.maguire@oracle.com>
 References: <4365c81198f62521344c2215909634407184387e.1573821726.git.jbenc@redhat.com>
-        <427e0b06-679e-5621-f828-be545e6ca3b1@iogearbox.net>
+ <427e0b06-679e-5621-f828-be545e6ca3b1@iogearbox.net>
+ <20191118091821.4a1b3faf@redhat.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <dcd526b1-a198-3e37-d94a-e845fdb0267d@iogearbox.net>
+Date:   Mon, 18 Nov 2019 10:39:33 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
-X-MC-Unique: 3TMTSlgDM9aNXxUXH_Ks5Q-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=WINDOWS-1252
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20191118091821.4a1b3faf@redhat.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.101.4/25636/Sun Nov 17 10:57:06 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 15 Nov 2019 23:06:13 +0100, Daniel Borkmann wrote:
-> Any objections if I take this to bpf-next as otherwise this will create a=
-n ugly
-> merge conflict between bpf and bpf-next given selftests have been heavily=
- reworked
-> in there.
+On 11/18/19 9:18 AM, Jiri Benc wrote:
+> On Fri, 15 Nov 2019 23:06:13 +0100, Daniel Borkmann wrote:
+>> Any objections if I take this to bpf-next as otherwise this will create an ugly
+>> merge conflict between bpf and bpf-next given selftests have been heavily reworked
+>> in there.
+> 
+> Should I resend against bpf-next?
 
-Should I resend against bpf-next?
+I can take care of it today, no need.
 
- Jiri
-
+Thanks,
+Daniel
