@@ -2,137 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DB4E100CF7
-	for <lists+bpf@lfdr.de>; Mon, 18 Nov 2019 21:11:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22BAE100DCD
+	for <lists+bpf@lfdr.de>; Mon, 18 Nov 2019 22:36:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726475AbfKRULo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Nov 2019 15:11:44 -0500
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:35402 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726435AbfKRULo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Nov 2019 15:11:44 -0500
-Received: by mail-qt1-f193.google.com with SMTP id n4so21763902qte.2;
-        Mon, 18 Nov 2019 12:11:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=OwNqsptRcRe3hbNv2GLcmIi41EqiqihjL4TXY6PCZs4=;
-        b=H/6bQJBBWTpAdWbGf9Jl//DTijcIdU2Fq5FkizaFzWh7YtxiDbNk+uDh5fxQWR3vED
-         KLZf8CFKBYJ6TZF5PPOQXATSUfaQo9FSL7+SaJ06rRBayK4keeKiEnlkc0RiUzdsC8/H
-         q1o5TumQkeICa/x+k4Nje8b39+nm5eC6LRz7Igfdb3ldxEov4G1M1pxjwhVRzEDxy5YQ
-         qNPYoehHFrVniBa0rditVkK90cdUMWpsh3KKOiiU4H9gKPKrVNRozThp6taXoIXoHWnA
-         ABzcVJVJ33BYvWnlIXFlanFsDB594UNYjwa9Y33qd6+eFCUcdBkcTIpKEwb5Ntc8wCW9
-         v2GA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=OwNqsptRcRe3hbNv2GLcmIi41EqiqihjL4TXY6PCZs4=;
-        b=Tvz8QW/Y3AE9yj9I1WXzsdyyzo24WnypxCjJAucuDC4ovzNcxW6RqL39aT9gky17V4
-         xq7hYAyduHVCZFU1vye3ixW0xCNO2nXGK2fbCoqbr6/oxEdnO2bgnP09i88soyw6hgzN
-         8jr7dko7qMFIVsW/6qimy1EM+kPiQJxGolm5n0xqNzSIRiJQBOANLgT4iPfR5xqvej0V
-         /MkRIkp0mr4/2R+i5Mdh+Pv56e16JlnLZRfStMCIpBCZVClr4JrbPugSlZ3OAZ95Y38h
-         mBSuR9ShMwjyEXnDbqufLO5HRir5o1EXDZOOVTIERK8fQh0Halvv5SEIGELper1ISc1e
-         Y6RA==
-X-Gm-Message-State: APjAAAV3XJuFlMYryVRhVHMuuphNhR6y4TXrvcgEGy8ZThKDmIOJqEvD
-        crOVk28nSqVBDIxUusDFe70N/cQWOto5539oj/s=
-X-Google-Smtp-Source: APXvYqyKHHDQ/JhbcS60pSoKKwb2H/+N25DeZ6Mo2Uu4MhfvwuFS43N3KFZSo3CjYMRaEE9AjsHNFymXKE5VMyC37tU=
-X-Received: by 2002:ac8:3968:: with SMTP id t37mr28916940qtb.37.1574107903380;
- Mon, 18 Nov 2019 12:11:43 -0800 (PST)
-MIME-Version: 1.0
-References: <20191113204737.31623-1-bjorn.topel@gmail.com> <20191113204737.31623-3-bjorn.topel@gmail.com>
- <CAEf4BzZw+jX13JuiVueKhpufQ9qHEBc0xYtqKdhhUV00afx0Gw@mail.gmail.com>
-In-Reply-To: <CAEf4BzZw+jX13JuiVueKhpufQ9qHEBc0xYtqKdhhUV00afx0Gw@mail.gmail.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Mon, 18 Nov 2019 21:11:32 +0100
-Message-ID: <CAJ+HfNjQkno=iOWherDMuxAVyA=Ku925o25dAYbqQQTrJN_n5g@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 2/4] bpf: introduce BPF dispatcher
+        id S1726760AbfKRVgC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Nov 2019 16:36:02 -0500
+Received: from www62.your-server.de ([213.133.104.62]:54312 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726272AbfKRVgC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Nov 2019 16:36:02 -0500
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1iWogh-00009f-Mj; Mon, 18 Nov 2019 22:35:59 +0100
+Received: from [178.197.248.45] (helo=pc-9.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1iWogh-0001gt-Bk; Mon, 18 Nov 2019 22:35:59 +0100
+Subject: Re: [PATCH rfc bpf-next 6/8] bpf: add poke dependency tracking for
+ prog array maps
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        bpf <bpf@vger.kernel.org>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        john fastabend <john.fastabend@gmail.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+References: <cover.1573779287.git.daniel@iogearbox.net>
+ <ff9a3829fb46802262a20dbad1123cd66c118b8b.1573779287.git.daniel@iogearbox.net>
+ <CAEf4BzaxyULFPYd8OGfoc5FLSDt2ecppLFakjRJ2TyK5F-fJOw@mail.gmail.com>
+ <4ae5ae7b-d7bb-4a59-0f5f-0f7f41bd6f6d@iogearbox.net>
+ <CAEf4BzZ9SaQ_idpP8P8mG26KC72GG+xY57A76nsBCvOPSxOJEA@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <c21cff3f-c504-15ee-1d27-e9e45d1d9bc6@iogearbox.net>
+Date:   Mon, 18 Nov 2019 22:35:58 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <CAEf4BzZ9SaQ_idpP8P8mG26KC72GG+xY57A76nsBCvOPSxOJEA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.101.4/25637/Mon Nov 18 10:53:23 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 18 Nov 2019 at 20:36, Andrii Nakryiko <andrii.nakryiko@gmail.com> w=
-rote:
->
-[...]
-> > +       sort(&ips[0], num_progs, sizeof(ips[i]), cmp_ips, NULL);
->
-> nit: sizeof(ips[i]) looks weird...
->
+On 11/18/19 7:46 PM, Andrii Nakryiko wrote:
+> On Mon, Nov 18, 2019 at 10:39 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>> On 11/18/19 6:39 PM, Andrii Nakryiko wrote:
+>>> On Thu, Nov 14, 2019 at 5:04 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>>>>
+>>>> This work adds program tracking to prog array maps. This is needed such
+>>>> that upon prog array updates/deletions we can fix up all programs which
+>>>> make use of this tail call map. We add ops->map_poke_{un,}track() helpers
+>>>> to maps to maintain the list of programs and ops->map_poke_run() for
+>>>> triggering the actual update. bpf_array_aux is extended to contain the
+>>>> list head and poke_mutex in order to serialize program patching during
+>>>> updates/deletions. bpf_free_used_maps() will untrack the program shortly
+>>>> before dropping the reference to the map.
+>>>>
+>>>> The prog_array_map_poke_run() is triggered during updates/deletions and
+>>>> walks the maintained prog list. It checks in their poke_tabs whether the
+>>>> map and key is matching and runs the actual bpf_arch_text_poke() for
+>>>> patching in the nop or new jmp location. Depending on the type of update,
+>>>> we use one of BPF_MOD_{NOP_TO_JUMP,JUMP_TO_NOP,JUMP_TO_JUMP}.
+>>>>
+>>>> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+>>>> ---
+>>>>    include/linux/bpf.h   |  36 +++++++++++++
+>>>>    kernel/bpf/arraymap.c | 120 +++++++++++++++++++++++++++++++++++++++++-
+>>>>    kernel/bpf/core.c     |   9 +++-
+>>>>    3 files changed, 162 insertions(+), 3 deletions(-)
+>>>>
+>>>> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+>>>> index 0ff06a0d0058..62a369fb8d98 100644
+>>>> --- a/include/linux/bpf.h
+>>>> +++ b/include/linux/bpf.h
+>>>> @@ -21,6 +21,7 @@ struct bpf_verifier_env;
+>>>>    struct bpf_verifier_log;
+>>>>    struct perf_event;
+>>>>    struct bpf_prog;
+>>>> +struct bpf_prog_aux;
+>>>>    struct bpf_map;
+>>>>    struct sock;
+>>>>    struct seq_file;
+>>>> @@ -63,6 +64,12 @@ struct bpf_map_ops {
+>>>>                                const struct btf_type *key_type,
+>>>>                                const struct btf_type *value_type);
+>>>>
+>>>> +       /* Prog poke tracking helpers. */
+>>>> +       int (*map_poke_track)(struct bpf_map *map, struct bpf_prog_aux *aux);
+>>>> +       void (*map_poke_untrack)(struct bpf_map *map, struct bpf_prog_aux *aux);
+>>>> +       void (*map_poke_run)(struct bpf_map *map, u32 key, struct bpf_prog *old,
+>>>> +                            struct bpf_prog *new);
+>>>
+>>> You are passing bpf_prog_aux for track/untrack, but bpf_prog itself
+>>> for run. Maybe stick to just bpf_prog everywhere?
+>>
+>> This needs to be bpf_prog_aux as prog itself is not stable yet and can still
+>> change, but aux itself is stable.
+> 
+> no one will prevent doing container_of() and get bpf_prog itself, so
+> it's just an implicit knowledge that bpf_prog might be incomplete yet,
+> that has to be remembered (btw, might be good to add a brief comment
+> stating that). But I don't feel strongly either way.
 
-Ick! Thanks for spotting.
+Makes sense, expanded the comment to state this.
 
-> > +       return emit_bpf_dispatcher(&prog, 0, num_progs - 1, &ips[0], fa=
-llback);
-> > +}
-> > +
-> >  struct x64_jit_data {
-> >         struct bpf_binary_header *header;
-> >         int *addrs;
->
-> [...]
->
-> > +
-> > +static int bpf_dispatcher_add_prog(struct bpf_dispatcher *d,
-> > +                                  struct bpf_prog *prog)
-> > +{
-> > +       struct bpf_prog **entry =3D NULL;
-> > +       int i, err =3D 0;
-> > +
-> > +       if (d->num_progs =3D=3D BPF_DISPATCHER_MAX)
-> > +               return err;
->
-> err =3D=3D 0, not what you want, probably
->
-
-No, the error handling in this RFC is bad. I'll fix that in the patch prope=
-r!
-
-[...]
-> > +static void bpf_dispatcher_remove_prog(struct bpf_dispatcher *d,
-> > +                                      struct bpf_prog *prog)
-> > +{
-> > +       int i;
-> > +
-> > +       for (i =3D 0; i < BPF_DISPATCHER_MAX; i++) {
-> > +               if (d->progs[i] =3D=3D prog) {
-> > +                       bpf_prog_put(prog);
-> > +                       d->progs[i] =3D NULL;
-> > +                       d->num_progs--;
->
-> instead of allowing holes, why not swap removed prog with the last on
-> in d->progs?
->
-
-Yeah, holes is a no go. I'll redo that.
-
-[...]
-
-> > +
-> > +       WARN_ON(bpf_dispatcher_update(d));
->
-> shouldn't dispatcher be removed from the list before freed? It seems
-> like handling dispatches freeing is better done here explicitly (and
-> you won't need to leave a NB remark)
->
-
-I agree. Let's make that explicit. I'll send out a patch proper in a day or=
- two.
-
-Thanks for looking at the code, Andrii!
-
-
-Bj=C3=B6rn
+Thanks,
+Daniel
