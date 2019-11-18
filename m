@@ -2,91 +2,167 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BDE54100200
-	for <lists+bpf@lfdr.de>; Mon, 18 Nov 2019 11:04:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5C67100244
+	for <lists+bpf@lfdr.de>; Mon, 18 Nov 2019 11:21:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726705AbfKRKEG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Nov 2019 05:04:06 -0500
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:36887 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726631AbfKRKEG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Nov 2019 05:04:06 -0500
-Received: by mail-qk1-f194.google.com with SMTP id e187so13858800qkf.4;
-        Mon, 18 Nov 2019 02:04:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NtQxqImxwG5Gkl+gjb24/9kDbX1IEiB4sD+MZB0qlbE=;
-        b=A6oNDUKAaZvb7J2KaX5xkUzbp8hi+5ElRFsjcJcbpIPei8N2XDDstF1hlxOlEKIop7
-         MVXfBa6wBhVlEdojLdFLEecNfgeVReA0LUFAYd9OCKTkwHjOVjOkzamI6djwnNO67EnW
-         xMS4LGASwj3ufpjtssoJSfv9DWmV3b8kKjjE91MRGOloo8/hFMRoRdnd81WpGTcODA83
-         y3NWugqBxmLA0U4CnYXelWloDci0o0v83l4IrgXHyHlqq1qX0iEf3op5ZmtQ/FW0kqMN
-         IzGbLtvY7VFfb+ujAQq4VVhCBgSc1RI+snrq03QpZWNxpmum9Cvs6/Q5OYbLOMpD9nsG
-         udWg==
+        id S1726511AbfKRKVA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Nov 2019 05:21:00 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:52779 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726461AbfKRKU7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Nov 2019 05:20:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1574072458;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9gTRk8TWmGYv4SNEhxACmG3LEXdYr79Wjpf/AE1pfBU=;
+        b=XmAgcwIgiNMj3DS8vO3ftUUcucyfDqsL/COUYvh4GIyg4+c9MNgtj915sr2eCdWrtQvnUS
+        QxxMdkZxJCJUX+8yUeIHey4gxb3IaolOjSnfEMlPklGy6DMlPaqn5x5TpPTKbKFfUYqP5J
+        7neTBZvq7BTuQ1cOTyDOgYzx4umwNo0=
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
+ [209.85.208.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-1-ARE5X8jvM9mSkOCaF4WIdg-1; Mon, 18 Nov 2019 05:20:57 -0500
+Received: by mail-lj1-f199.google.com with SMTP id o20so3148654ljg.0
+        for <bpf@vger.kernel.org>; Mon, 18 Nov 2019 02:20:57 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NtQxqImxwG5Gkl+gjb24/9kDbX1IEiB4sD+MZB0qlbE=;
-        b=YhXZSjI8R121nQ58mWvxcmIzrIgF4gjiZkAlhfuo3m4OJQHO2Nns2Z5fm8VRPOYvPL
-         SDBHQPOLLoSxP8HXx9Phoiucaus+FFk5Y17kj1JgFhifTfZFJREhsPvzoUnD0qcxI9Wj
-         NIrxJQItVqR4e8N0EB36wGy6ZzEapDsFp+yTFreuh72lynsjpPRVqzibIaR4f/cRmTOP
-         7cEtuxAdbSRe/TrP7DxXktvFRN0dzFZgT1jq1/0UxQ4HORRphifxCfpqVUDhSqQgnpmc
-         DcQLekdHO1Mt3GGnNOaX4U807zYr0l4NnQLFB89Csosj0EvfZDaSbKVKplm5yKI0RIKs
-         gp8A==
-X-Gm-Message-State: APjAAAXC1naAEzrzS66PXB/N5tA602fo8oqj+ogQ7a99PGyTYAw4lT1a
-        we9dwBQypBp0yeKCqS+J/tXa07sFHQbp1hRC55U=
-X-Google-Smtp-Source: APXvYqyCRqNj9Wg2A7hGA2r+8YzHH97iI4ICE5MVxqlFb0NQjBUMcZsIsIVKxFwPAeszu6yUWctrv0UEPvM7hYyZOcY=
-X-Received: by 2002:a37:c44c:: with SMTP id h12mr23379421qkm.218.1574071444584;
- Mon, 18 Nov 2019 02:04:04 -0800 (PST)
-MIME-Version: 1.0
-References: <20191113204737.31623-1-bjorn.topel@gmail.com> <20191113204737.31623-3-bjorn.topel@gmail.com>
- <20191115003024.h7eg2kbve23jmzqn@ast-mbp.dhcp.thefacebook.com>
- <CAJ+HfNhKWND35Jnwe=99=8rWt81fhy9pRpXCVRYTu=C=aj13KQ@mail.gmail.com> <20191115215832.6d3npfegpp5vhq6u@ast-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20191115215832.6d3npfegpp5vhq6u@ast-mbp.dhcp.thefacebook.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Mon, 18 Nov 2019 11:03:53 +0100
-Message-ID: <CAJ+HfNhFFkZ+uC+UPdJELgbGoQDbf-t1mqwgqSLOZw_Duk=8Vg@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 2/4] bpf: introduce BPF dispatcher
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Netdev <netdev@vger.kernel.org>,
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=ERz/I9CI1l3sQIq0X1Un/+c7T/b2sOzFUsHy8nRUyCI=;
+        b=KbrE58ih6reUgPUaDf4y0oVOJhGL66ERvZUpQXQVgzRqpHBmM+ubGqIHcOjphutfaX
+         lzOo8ooyt9G/5iJg1rcf2/6cW490hhG8x+NUdgpGujLUeoJ1LdFFZstOmgUkBbXFgNCm
+         1qYZf5Os5p3vI0VsE7ZMUpUmic8gH2RsKtmGILb0liwnVvZCpiTxPX3+AKmbgnU6yhre
+         2Xp2dWyIPGcGfI6sTNDON3o2D3kthrNeiK6QnhjjV98g2mxkwlQBV1EWSuZ8lymDzor9
+         QSmb6Ul2pei5fLtKOJPOfBk09gQLzih+N/qjTK2myrmldMD9O2wv0X3G93oV7tVPcF0e
+         WQxw==
+X-Gm-Message-State: APjAAAX0TSj2j1JDzbrBcD4Xf7cnJmNNf+I3TM7BFNEzfrK/QLhFbEJ5
+        R38UxmY4LFxEXutD7YYnd/p8vYmUEYCXaDPW4Sp3t01Lt16r84enl6WKXPlikqox3ykqwvAwNYm
+        Br+X8yPxZ7DeX
+X-Received: by 2002:a2e:9a0c:: with SMTP id o12mr21237738lji.141.1574072455822;
+        Mon, 18 Nov 2019 02:20:55 -0800 (PST)
+X-Google-Smtp-Source: APXvYqyejSEUc1JO4u0HBWUCkc5lFW0yYK8QIvwr2O87i6R1uLztAmYIqP3FuIb1pi08NyFJFq+f1Q==
+X-Received: by 2002:a2e:9a0c:: with SMTP id o12mr21237718lji.141.1574072455603;
+        Mon, 18 Nov 2019 02:20:55 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a00:7660:6da:443::2])
+        by smtp.gmail.com with ESMTPSA id e11sm211987lfc.27.2019.11.18.02.20.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Nov 2019 02:20:54 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 7A13818190D; Mon, 18 Nov 2019 11:20:53 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Toshiaki Makita <toshiaki.makita1@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        bpf <bpf@vger.kernel.org>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Edward Cree <ecree@solarflare.com>
-Content-Type: text/plain; charset="UTF-8"
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        Pravin B Shelar <pshelar@ovn.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        William Tu <u9012063@gmail.com>,
+        Stanislav Fomichev <sdf@fomichev.me>
+Subject: Re: [RFC PATCH v2 bpf-next 00/15] xdp_flow: Flow offload to XDP
+In-Reply-To: <6e08f714-6284-6d0d-9cbe-711c64bf97aa@gmail.com>
+References: <20191018040748.30593-1-toshiaki.makita1@gmail.com> <5da9d8c125fd4_31cf2adc704105c456@john-XPS-13-9370.notmuch> <22e6652c-e635-4349-c863-255d6c1c548b@gmail.com> <5daf34614a4af_30ac2b1cb5d205bce4@john-XPS-13-9370.notmuch> <87h840oese.fsf@toke.dk> <5db128153c75_549d2affde7825b85e@john-XPS-13-9370.notmuch> <87sgniladm.fsf@toke.dk> <a7f3d86b-c83c-7b0d-c426-684b8dfe4344@gmail.com> <87zhhmrz7w.fsf@toke.dk> <b2ecf3e6-a8f1-cfd9-0dd3-e5f4d5360c0b@gmail.com> <87zhhhnmg8.fsf@toke.dk> <640418c3-54ba-cd62-304f-fd9f73f25a42@gmail.com> <87blthox30.fsf@toke.dk> <c1b7ff64-6574-74c7-cd6b-5aa353ec80ce@gmail.com> <87lfsiocj5.fsf@toke.dk> <6e08f714-6284-6d0d-9cbe-711c64bf97aa@gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Mon, 18 Nov 2019 11:20:53 +0100
+Message-ID: <87k17xcwoq.fsf@toke.dk>
+MIME-Version: 1.0
+X-MC-Unique: ARE5X8jvM9mSkOCaF4WIdg-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 15 Nov 2019 at 22:58, Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-[...]
-> > Another thought; I'm using the fentry nop as patch point, so it wont
-> > play nice with other users of fentry atm -- but the plan is to move to
-> > Steve's *_ftrace_direct work at some point, correct?
->
-> Yes. I'll start playing with reg/mod/unreg_ftrace_direct on Monday.
-> Steven has a bunch more in his tree for merging, so I cannot just pull
-> all of ftrace api features into bpf-next. So "be nice to other fentry users"
-> would have to be done during merge window or shortly after in bpf-next tree
-> after window closes. I think it's fine.
+Toshiaki Makita <toshiaki.makita1@gmail.com> writes:
 
-Yup, I agree.
+[... trimming the context a bit ...]
 
-> In bpf dispatch case it's really
-> one dummy function we're talking about. If it was marked 'notrace'
-> from get go no one would blink. It's a dummy function not interesting
-> for ftrac-ing and not interesting from live patching pov.
+>>>> Take your example of TC rules: You were proposing a flow like this:
+>>>>
+>>>> Userspace TC rule -> kernel rule table -> eBPF map -> generated XDP
+>>>> program
+>>>>
+>>>> Whereas what I mean is that we could do this instead:
+>>>>
+>>>> Userspace TC rule -> kernel rule table
+>>>>
+>>>> and separately
+>>>>
+>>>> XDP program -> bpf helper -> lookup in kernel rule table
+>>>
+>>> Thanks, now I see what you mean.
+>>> You expect an XDP program like this, right?
+>>>
+>>> int xdp_tc(struct xdp_md *ctx)
+>>> {
+>>> =09int act =3D bpf_xdp_tc_filter(ctx);
+>>> =09return act;
+>>> }
+>>=20
+>> Yes, basically, except that the XDP program would need to parse the
+>> packet first, and bpf_xdp_tc_filter() would take a parameter struct with
+>> the parsed values. See the usage of bpf_fib_lookup() in
+>> bpf/samples/xdp_fwd_kern.c
+>>=20
+>>> But doesn't this way lose a chance to reduce/minimize the program to
+>>> only use necessary features for this device?
+>>=20
+>> Not necessarily. Since the BPF program does the packet parsing and fills
+>> in the TC filter lookup data structure, it can limit what features are
+>> used that way (e.g., if I only want to do IPv6, I just parse the v6
+>> header, ignore TCP/UDP, and drop everything that's not IPv6). The lookup
+>> helper could also have a flag argument to disable some of the lookup
+>> features.
 >
+> It's unclear to me how to configure that.
+> Use options when attaching the program? Something like
+> $ xdp_tc attach eth0 --only-with ipv6
+> But can users always determine their necessary features in advance?
 
-...but marking it with 'notrace' would remove the __fentry__ nop.
-Anyways, the "be nice" approach is OK.
+That's what I'm doing with xdp-filter now. But the answer to your second
+question is likely to be 'probably not', so it would be good to not have
+to do this :)
+
+> Frequent manual reconfiguration when TC rules frequently changes does
+> not sound nice. Or, add hook to kernel to listen any TC filter event
+> on some daemon and automatically reload the attached program?
+
+Doesn't have to be a kernel hook; we could enhance the userspace tooling
+to do it. Say we integrate it into 'tc':
+
+- Add a new command 'tc xdp_accel enable <iface> --features [ipv6,etc]'
+- When adding new rules, add the following logic:
+  - Check if XDP acceleration is enabled
+  - If it is, check whether the rule being added fits into the current
+    'feature set' loaded on that interface.
+    - If the rule needs more features, reload the XDP program to one
+      with the needed additional features.
+    - Or, alternatively, just warn the user and let them manually
+      replace it?
+
+> Another concern is key size. If we use the TC core then TC will use
+> its hash table with fixed key size. So we cannot decrease the size of
+> hash table key in this way?
+
+Here I must admit that I'm not too familiar with the tc internals.
+Wouldn't it be possible to refactor the code to either dynamically size
+the hash tables, or to split them up into parts based on whatever
+'feature set' is required? That might even speed up rule evaluation
+without XDP acceleration?
+
+-Toke
+
