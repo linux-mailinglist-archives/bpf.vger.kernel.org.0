@@ -2,74 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 870BD1001C2
-	for <lists+bpf@lfdr.de>; Mon, 18 Nov 2019 10:51:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDE54100200
+	for <lists+bpf@lfdr.de>; Mon, 18 Nov 2019 11:04:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726905AbfKRJvy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Nov 2019 04:51:54 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:55356 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726562AbfKRJvx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Nov 2019 04:51:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1574070712;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RnkPtrtkzLDiLhVBi6u0mh9f/xmCiH2CgLmKPX7+Qck=;
-        b=XMp6PJLCy1mSrUH4p9zEuUUREwme/OjBAZkta4K8wFj0lmgmeubOJC4n+NmZcy5Qb7Sf8/
-        OwTPASCIBUZir/BkEBL9N8/3FBDyhqEARIOFXCsct1vr1fKF/EXHEpskhWap+PtvNkRBXz
-        dn5Q6vsBNgK1FEmFffWCNhs9ZFO5K/c=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-136-tlNJaAxFMeuMcg0GwrRpbQ-1; Mon, 18 Nov 2019 04:51:49 -0500
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E5120107ACCC;
-        Mon, 18 Nov 2019 09:51:47 +0000 (UTC)
-Received: from localhost (ovpn-204-195.brq.redhat.com [10.40.204.195])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id A7BEC2934D;
-        Mon, 18 Nov 2019 09:51:46 +0000 (UTC)
-Date:   Mon, 18 Nov 2019 10:51:45 +0100
-From:   Jiri Benc <jbenc@redhat.com>
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Willem de Bruijn <willemb@google.com>
-Subject: Re: [PATCH bpf] selftests: bpf: fix test_tc_tunnel hanging
-Message-ID: <20191118105145.3e576745@redhat.com>
-In-Reply-To: <CAF=yD-K53UaChX7S6YzNaCTArYf3RVWGPdskeEd5bEaBfuaonQ@mail.gmail.com>
-References: <60919291657a9ee89c708d8aababc28ebe1420be.1573821780.git.jbenc@redhat.com>
-        <dc889f46-bc26-df21-bf24-906a6ccf7a12@iogearbox.net>
-        <CAF=yD-K53UaChX7S6YzNaCTArYf3RVWGPdskeEd5bEaBfuaonQ@mail.gmail.com>
+        id S1726705AbfKRKEG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Nov 2019 05:04:06 -0500
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:36887 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726631AbfKRKEG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Nov 2019 05:04:06 -0500
+Received: by mail-qk1-f194.google.com with SMTP id e187so13858800qkf.4;
+        Mon, 18 Nov 2019 02:04:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NtQxqImxwG5Gkl+gjb24/9kDbX1IEiB4sD+MZB0qlbE=;
+        b=A6oNDUKAaZvb7J2KaX5xkUzbp8hi+5ElRFsjcJcbpIPei8N2XDDstF1hlxOlEKIop7
+         MVXfBa6wBhVlEdojLdFLEecNfgeVReA0LUFAYd9OCKTkwHjOVjOkzamI6djwnNO67EnW
+         xMS4LGASwj3ufpjtssoJSfv9DWmV3b8kKjjE91MRGOloo8/hFMRoRdnd81WpGTcODA83
+         y3NWugqBxmLA0U4CnYXelWloDci0o0v83l4IrgXHyHlqq1qX0iEf3op5ZmtQ/FW0kqMN
+         IzGbLtvY7VFfb+ujAQq4VVhCBgSc1RI+snrq03QpZWNxpmum9Cvs6/Q5OYbLOMpD9nsG
+         udWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NtQxqImxwG5Gkl+gjb24/9kDbX1IEiB4sD+MZB0qlbE=;
+        b=YhXZSjI8R121nQ58mWvxcmIzrIgF4gjiZkAlhfuo3m4OJQHO2Nns2Z5fm8VRPOYvPL
+         SDBHQPOLLoSxP8HXx9Phoiucaus+FFk5Y17kj1JgFhifTfZFJREhsPvzoUnD0qcxI9Wj
+         NIrxJQItVqR4e8N0EB36wGy6ZzEapDsFp+yTFreuh72lynsjpPRVqzibIaR4f/cRmTOP
+         7cEtuxAdbSRe/TrP7DxXktvFRN0dzFZgT1jq1/0UxQ4HORRphifxCfpqVUDhSqQgnpmc
+         DcQLekdHO1Mt3GGnNOaX4U807zYr0l4NnQLFB89Csosj0EvfZDaSbKVKplm5yKI0RIKs
+         gp8A==
+X-Gm-Message-State: APjAAAXC1naAEzrzS66PXB/N5tA602fo8oqj+ogQ7a99PGyTYAw4lT1a
+        we9dwBQypBp0yeKCqS+J/tXa07sFHQbp1hRC55U=
+X-Google-Smtp-Source: APXvYqyCRqNj9Wg2A7hGA2r+8YzHH97iI4ICE5MVxqlFb0NQjBUMcZsIsIVKxFwPAeszu6yUWctrv0UEPvM7hYyZOcY=
+X-Received: by 2002:a37:c44c:: with SMTP id h12mr23379421qkm.218.1574071444584;
+ Mon, 18 Nov 2019 02:04:04 -0800 (PST)
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-X-MC-Unique: tlNJaAxFMeuMcg0GwrRpbQ-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=WINDOWS-1252
-Content-Transfer-Encoding: quoted-printable
+References: <20191113204737.31623-1-bjorn.topel@gmail.com> <20191113204737.31623-3-bjorn.topel@gmail.com>
+ <20191115003024.h7eg2kbve23jmzqn@ast-mbp.dhcp.thefacebook.com>
+ <CAJ+HfNhKWND35Jnwe=99=8rWt81fhy9pRpXCVRYTu=C=aj13KQ@mail.gmail.com> <20191115215832.6d3npfegpp5vhq6u@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20191115215832.6d3npfegpp5vhq6u@ast-mbp.dhcp.thefacebook.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Mon, 18 Nov 2019 11:03:53 +0100
+Message-ID: <CAJ+HfNhFFkZ+uC+UPdJELgbGoQDbf-t1mqwgqSLOZw_Duk=8Vg@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 2/4] bpf: introduce BPF dispatcher
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Netdev <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        bpf <bpf@vger.kernel.org>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Edward Cree <ecree@solarflare.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 15 Nov 2019 17:05:42 -0500, Willem de Bruijn wrote:
-> Ah, a typo. This is the SHA1 in my tree, note the aa9d --> aa99d
->=20
-> $ git fetch davem-net-next
-> $ git log -1 --oneline -- tools/testing/selftests/bpf/test_tc_tunnel.sh
-> f6ad6accaa99d selftests/bpf: expand test_tc_tunnel with SIT encap
+On Fri, 15 Nov 2019 at 22:58, Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+[...]
+> > Another thought; I'm using the fentry nop as patch point, so it wont
+> > play nice with other users of fentry atm -- but the plan is to move to
+> > Steve's *_ftrace_direct work at some point, correct?
+>
+> Yes. I'll start playing with reg/mod/unreg_ftrace_direct on Monday.
+> Steven has a bunch more in his tree for merging, so I cannot just pull
+> all of ftrace api features into bpf-next. So "be nice to other fentry users"
+> would have to be done during merge window or shortly after in bpf-next tree
+> after window closes. I think it's fine.
 
-Indeed, it should have been:
+Yup, I agree.
 
-Fixes: f6ad6accaa99 ("selftests/bpf: expand test_tc_tunnel with SIT encap")
+> In bpf dispatch case it's really
+> one dummy function we're talking about. If it was marked 'notrace'
+> from get go no one would blink. It's a dummy function not interesting
+> for ftrac-ing and not interesting from live patching pov.
+>
 
-Not sure how that happened, I'm sorry for that. Thanks for catching it.
-Should I resend with the fixed commit message?
-
-Sorry again,
-
- Jiri
-
+...but marking it with 'notrace' would remove the __fentry__ nop.
+Anyways, the "be nice" approach is OK.
