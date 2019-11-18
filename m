@@ -2,129 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CEEA5100897
-	for <lists+bpf@lfdr.de>; Mon, 18 Nov 2019 16:45:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1234100A1F
+	for <lists+bpf@lfdr.de>; Mon, 18 Nov 2019 18:21:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726216AbfKRPpv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Nov 2019 10:45:51 -0500
-Received: from mail-yb1-f170.google.com ([209.85.219.170]:41348 "EHLO
-        mail-yb1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727480AbfKRPpt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Nov 2019 10:45:49 -0500
-Received: by mail-yb1-f170.google.com with SMTP id d95so7325370ybi.8
-        for <bpf@vger.kernel.org>; Mon, 18 Nov 2019 07:45:49 -0800 (PST)
+        id S1726314AbfKRRV3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Nov 2019 12:21:29 -0500
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:33093 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726068AbfKRRV3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Nov 2019 12:21:29 -0500
+Received: by mail-qk1-f193.google.com with SMTP id 71so15140302qkl.0
+        for <bpf@vger.kernel.org>; Mon, 18 Nov 2019 09:21:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=t2zuEyn8I7p1mNj98yy6MxDVu3fLzdXpcwhzheurb4I=;
-        b=Dit3Pz8vYwzKzERW12kbVo9IUBPUMKwLRxGt9cWijvQMJLPKvqO8Z58GxRgZcjw7d3
-         sOwN55eGV1NHAe+wQe/cgrZM0tsGdrwdfuPwzCcyH3HTK03ihqsY0rRxnKY+eW+hrMeU
-         OyRwVbWFxTcXhyUorkue920WuAzWFOjrAiSIMTXBBzS0KwuQB1nZ4ENIjQxKGbrn7LpY
-         mAUPCEjaReQMQ3VNmghSWyAsa3wZTkMTiMA2EYdpPLC0eq9RJrcD6b5kt0335PErcagA
-         afqL/E/MnvunUi+myVfuJKpgcc7QF8SAHVOGpOCXDODR7jmBsEpI7NQfYHwF8o10cw9r
-         gc/A==
+        bh=WbEULxdApcvu0cgmvWVP+6riuZHIB2Jc8ugcvc0vURw=;
+        b=htwV4QCFaqQ78FQJSS8XUVDDP9D2TJtJDZszLMqCIvuPePYiLIz2iYbVO3+7zuM7HY
+         T3oSnHxfIEhXISgZCsZ612xWt7ngb447DxMopDNRyjRmekJjSi7z1GfVamWtXDZ+ZmQe
+         qFwk74GGZGu2TKcvUU0eAtns0C/UaL7IOff3ytOFGIHaJCc4/FdtRtcu+iR5DQkpO9UG
+         MEBC79F62SCKxMIsV7BNjkEFOj1kYm0i0VSeYdDk3F9r59wM+O6wbG5TNT4T6nXi5gZs
+         m4qxtXGkWZXCgF2CHWQKdFqig5MmsAwUU5G/480TRMUr+V1EIvkMLTd/JFP7RNISrVES
+         FG4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=t2zuEyn8I7p1mNj98yy6MxDVu3fLzdXpcwhzheurb4I=;
-        b=byaKLyR1GRDLFcOffCVy/L4bVB3z2ecIBNRegsU4PCfLQM22Hm8z3L1ZXiz7iIaup1
-         WHBpgZ8zoQGsM2raP4AZcUiLCgF43g4veODLAcHBJGZTpoyKBmbMS9Y8XB8HazXSNVRW
-         uY/i4OytqwDl7InurQ3RaVnhIH7+fwZ12Mjyge/Hd7wZHRAU5e6vcjUeuI/fTcjfTbQj
-         GABbUqcbDf486B4vvVl9BQu+wngMe7GrJuGm5BZ2EDbzdfKkMB/HtAvg2p/Qd5PoVkdB
-         Dh/NDoS2Sv1AFcR7/oFzHKcnrt5XMAvOH6vMbns7LA1alRgk3zOkNHzsxGyCE205zpp4
-         b4ig==
-X-Gm-Message-State: APjAAAUiixiOUEUCGT2R+JzvwjdaH1oZKg0OIfXu3ExJgvyOc5SjcTe7
-        XXY07q5+CGAcyW2GhgIB8EaFTOhD
-X-Google-Smtp-Source: APXvYqw6wuwSuwGx71brZG3OPmwRFUUlj6vVJEyrmnA/vOZ3ArFPmRLOFc3yiYDuYp9Ykti4S8fz+A==
-X-Received: by 2002:a5b:cd2:: with SMTP id e18mr23275341ybr.314.1574091948034;
-        Mon, 18 Nov 2019 07:45:48 -0800 (PST)
-Received: from mail-yw1-f41.google.com (mail-yw1-f41.google.com. [209.85.161.41])
-        by smtp.gmail.com with ESMTPSA id x201sm10095132ywx.34.2019.11.18.07.45.46
-        for <bpf@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Nov 2019 07:45:46 -0800 (PST)
-Received: by mail-yw1-f41.google.com with SMTP id y18so6025489ywk.1
-        for <bpf@vger.kernel.org>; Mon, 18 Nov 2019 07:45:46 -0800 (PST)
-X-Received: by 2002:a0d:e808:: with SMTP id r8mr19763651ywe.275.1574091946088;
- Mon, 18 Nov 2019 07:45:46 -0800 (PST)
+        bh=WbEULxdApcvu0cgmvWVP+6riuZHIB2Jc8ugcvc0vURw=;
+        b=a0P2ua6tH+q/HPqyTkQC2eTDxevD5Bgv+ARR7m9YpPNvGmacDqpx/01XPLKEQ5uOjG
+         6qnpGhwFLzO4H2QYd7tE838JUq4wEY3slBt4tZDCL21w4KpZC+8S/iMdk2p/zFXwhqD0
+         qnM6vZSkywYZtcZmCG7k1N/doda0A/Uh7VoRRpyn37oEdUU3S0+dUtNWFV33549MNZAj
+         9Z1BynWdDWaVSPz3esLXyAUF4to43X2GQw3wJpV33584oVYSHWhdEj2JB8cRPFUMURBO
+         REMB8KgcO4mqpIu32oNZCUdCABbp29+aRkWecPZ3JOzw2epTLGCtMi//MJeU8N3vUC6d
+         qKpQ==
+X-Gm-Message-State: APjAAAX4nHia38wimKHePlPkyxlBO7ITy80hd4exwAC6nPgy44ujizn5
+        K/+4sF9/dVF/Qx4WzQQoC4b9PEDJCENuPqOCU3lpTQ==
+X-Google-Smtp-Source: APXvYqxty3cG5M0StCWzF1cUh0HI2rYRaFL6Bci3IiMcUCZnqN865/k7PNT+2QlmEemL7QpZeeqUyHvFPM7h7WzB9lA=
+X-Received: by 2002:a05:620a:1011:: with SMTP id z17mr25415371qkj.39.1574097688178;
+ Mon, 18 Nov 2019 09:21:28 -0800 (PST)
 MIME-Version: 1.0
-References: <CA+FuTSfTMuKv8s0zdS6YzLC14bNdPQxi2mu7ak6e_sS+qyyrFg@mail.gmail.com>
- <5dcf24ddc492e_66d2acadef865b4b2@john-XPS-13-9370.notmuch>
- <CA+FuTSdaAawmZ2N8nfDDKu3XLpXBbMtcCT0q4FntDD2gn8ASUw@mail.gmail.com> <5dd222f214374_63b82b118b2685b42d@john-XPS-13-9370.notmuch>
-In-Reply-To: <5dd222f214374_63b82b118b2685b42d@john-XPS-13-9370.notmuch>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Mon, 18 Nov 2019 10:45:09 -0500
-X-Gmail-Original-Message-ID: <CA+FuTSfdx-T5teraitmFuT-D+8O_LM03MEj6tXgTmr+EB0Zi+A@mail.gmail.com>
-Message-ID: <CA+FuTSfdx-T5teraitmFuT-D+8O_LM03MEj6tXgTmr+EB0Zi+A@mail.gmail.com>
-Subject: Re: combining sockmap + ktls
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Daniel Borkmann <daniel@iogearbox.net>
+References: <20191117214036.1309510-1-yhs@fb.com>
+In-Reply-To: <20191117214036.1309510-1-yhs@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 18 Nov 2019 09:21:17 -0800
+Message-ID: <CAEf4BzaTPjD94rU3xrjT0zQnFfwduJtREg04VEPPyWb+g8=UXg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] [tools/bpf] workaround an alu32 sub-register
+ spilling issue
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> > > >         @@ -859,6 +861,7 @@ static int __init tls_register(void)
-> > > >
-> > > >                 tls_sw_proto_ops = inet_stream_ops;
-> > > >                 tls_sw_proto_ops.splice_read = tls_sw_splice_read;
-> > > >         +       tls_sw_proto_ops.sendpage_locked   = tls_sw_sendpage_locked,
-> > > >
-> > > > and additionally allowing MSG_NO_SHARED_FRAGS:
-> > > >
-> > > >          int tls_sw_sendpage_locked(struct sock *sk, struct page *page,
-> > > >                                     int offset, size_t size, int flags)
-> > > >          {
-> > > >                if (flags & ~(MSG_MORE | MSG_DONTWAIT | MSG_NOSIGNAL |
-> > > >         -                     MSG_SENDPAGE_NOTLAST | MSG_SENDPAGE_NOPOLICY))
-> > > >         +                     MSG_SENDPAGE_NOTLAST |
-> > > > MSG_SENDPAGE_NOPOLICY | MSG_NO_SHARED_FRAGS))
-> > > >                          return -ENOTSUPP;
-> > > >
-> > >
-> > > If you had added MSG_NO_SHARED_FRAGS to the existing tls_sw_sendpage
-> > > would that have been sufficient?
-> >
-> > No, the stack trace I observed is
-> >
-> >   tcp_bpf_sendmsg_redir
-> >     tcp_bpf_push_locked
-> >       tcp_bpf_push
-> >         kernel_sendpage_locked
-> >           sock->ops->sendpage_locked
-> >
-> > which never tries tls_sw_sendpage. Perhaps the relevant part is the
-> > following in tcp_bpf_push?
-> >
-> >                 if (has_tx_ulp) {
-> >                         flags |= MSG_SENDPAGE_NOPOLICY;
-> >                         ret = kernel_sendpage_locked(sk,
-> >                                                      page, off, size, flags);
-> >                 } else {
-> >                         ret = do_tcp_sendpages(sk, page, off, size, flags);
-> >                 }
-> >
+On Sun, Nov 17, 2019 at 1:41 PM Yonghong Song <yhs@fb.com> wrote:
 >
-> Got it, want to submit a fix? Or I can this is a bug.
+> Currently, with latest llvm trunk, selftest test_progs failed
+> obj file test_seg6_loop.o with the following error
+> in verifier:
+>   infinite loop detected at insn 76
+> The byte code sequence looks like below, and noted
+> that alu32 has been turned off by default for better
+> generated codes in general:
+>       48:       w3 = 100
+>       49:       *(u32 *)(r10 - 68) = r3
+>       ...
+>   ;             if (tlv.type == SR6_TLV_PADDING) {
+>       76:       if w3 == 5 goto -18 <LBB0_19>
+>       ...
+>       85:       r1 = *(u32 *)(r10 - 68)
+>   ;     for (int i = 0; i < 100; i++) {
+>       86:       w1 += -1
+>       87:       if w1 == 0 goto +5 <LBB0_20>
+>       88:       *(u32 *)(r10 - 68) = r1
 >
-> > Do let me know if there's anything I can help out with. Thanks for
-> > your quick answer!
+> The main reason for verification failure is due to
+> partial spills at r10 - 68 for induction variable "i".
 >
-> Can you send out a fix for above sendpage_locked case?
+> Current verifier only handles spills with 8-byte values.
+> The above 4-byte value spill to stack is treated to
+> STACK_MISC and its content is not saved. For the above example,
+>     w3 = 100
+>       R3_w=inv100 fp-64_w=inv1086626730498
+>     *(u32 *)(r10 - 68) = r3
+>       R3_w=inv100 fp-64_w=inv1086626730498
+>     ...
+>     r1 = *(u32 *)(r10 - 68)
+>       R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff))
+>       fp-64=inv1086626730498
+>
+> To resolve this issue, verifier needs to be extended to
+> track sub-registers in spilling, or llvm needs to enhanced
+> to prevent sub-register spilling in register allocation
+> phase. The former will increase verifier complexity and
+> the latter will need some llvm "hacking".
+>
+> Let us workaround this issue by declaring the induction
+> variable as "long" type so spilling will happen at non
+> sub-register level. We can revisit this later if sub-register
+> spilling causes similar or other verification issues.
+>
+> Signed-off-by: Yonghong Song <yhs@fb.com>
+> ---
 
-Done:
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 
- net/tls: enable sk_msg redirect to tls socket egress
- http://patchwork.ozlabs.org/patch/1196825/
+>  tools/testing/selftests/bpf/progs/test_seg6_loop.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/tools/testing/selftests/bpf/progs/test_seg6_loop.c b/tools/testing/selftests/bpf/progs/test_seg6_loop.c
+> index c4d104428643..69880c1e7700 100644
+> --- a/tools/testing/selftests/bpf/progs/test_seg6_loop.c
+> +++ b/tools/testing/selftests/bpf/progs/test_seg6_loop.c
+> @@ -132,8 +132,10 @@ static __always_inline int is_valid_tlv_boundary(struct __sk_buff *skb,
+>         *pad_off = 0;
+>
+>         // we can only go as far as ~10 TLVs due to the BPF max stack size
+> +       // workaround: define induction variable "i" as "long" instead
+> +       // of "int" to prevent alu32 sub-register spilling.
+>         #pragma clang loop unroll(disable)
+> -       for (int i = 0; i < 100; i++) {
+> +       for (long i = 0; i < 100; i++) {
 
-It addresses both issues at the same time. This seemed preferable than
-two separate patches. MSG_NO_SHARED_FRAGS precedes commit 0608c69c9a80
-("bpf: sk_msg, sock{map|hash} redirect through ULP"), so no additional
-Fixes tag for that.
+hmm, seems like our compiler settings for selftests are more lax: long
+i should be defined outside the loop
+
+>                 struct sr6_tlv_t tlv;
+>
+>                 if (cur_off == *tlv_off)
+> --
+> 2.17.1
+>
