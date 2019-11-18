@@ -2,107 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E5C22100501
-	for <lists+bpf@lfdr.de>; Mon, 18 Nov 2019 13:01:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D500810055C
+	for <lists+bpf@lfdr.de>; Mon, 18 Nov 2019 13:09:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727168AbfKRMB2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Nov 2019 07:01:28 -0500
-Received: from mx2.suse.de ([195.135.220.15]:37606 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727073AbfKRMB1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Nov 2019 07:01:27 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id E73AFB071;
-        Mon, 18 Nov 2019 12:01:20 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 8AEB01E4B0D; Mon, 18 Nov 2019 11:34:09 +0100 (CET)
-Date:   Mon, 18 Nov 2019 11:34:09 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, bpf@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, kvm@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
-        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 15/24] fs/io_uring: set FOLL_PIN via pin_user_pages()
-Message-ID: <20191118103409.GI17319@quack2.suse.cz>
-References: <20191115055340.1825745-1-jhubbard@nvidia.com>
- <20191115055340.1825745-16-jhubbard@nvidia.com>
+        id S1726536AbfKRMJw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Nov 2019 07:09:52 -0500
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:37279 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726490AbfKRMJw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Nov 2019 07:09:52 -0500
+Received: by mail-ot1-f68.google.com with SMTP id d5so14273877otp.4
+        for <bpf@vger.kernel.org>; Mon, 18 Nov 2019 04:09:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=TvVgGe/PGxPyfnSPNozojAN6XwCyVNGJ2KQ2PKR5G0E=;
+        b=AJbB+nWBwGVHsWeilGr15s1AzzQGzUH95JIlAznei3g65QaTNsLGqBlXdTzQQ/Qnu3
+         aufUl9VlD1xpMRnmh9cEerNY6msQwa3Yy6ZDepLdj7ZnJEfrUs4uFp9ahgkWzVjDy2fB
+         GYTtxGGhrq90xXoJTrIbzAk6zt00oEEer+0tgSKvgYOm8yBUztXYbbaeWMNW9Uy73pAf
+         c7/5/iJZfZTNVyiBeGNJllhu7vhU5IrZcG8r/2CDe6husWY731oZk98S72JtujYKHuY8
+         nHaoaUbcSmudllPgETiRVyKml1g7cg50otevC7g8IGcIjajMoD5LX2hTg9tKTy5/GYlV
+         cGDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=TvVgGe/PGxPyfnSPNozojAN6XwCyVNGJ2KQ2PKR5G0E=;
+        b=kGUXsFZ+nozgABYVJcL0chVtCsA/c8Y7AxVz12rjOHuUHYWt374OGOMX0T3dqHuSBc
+         FkU7B6o46aSrF7aUmrJQI2pZO2GXdWw+QY4Sdjypeb4WuwKE0db3HZaG2pOK99NvRV0N
+         rCTc7T1sNyuZE2O9D7PmRjYUigNuoSKSl8G1pshcZ8KEn476lm0Op7YTjQnk9i1qWN3v
+         Ei5qcXN4/9cqUki6ziYq3adKTU+/COEhlArG7Lgt7MHYxU/IhJhtzfEkneOECLwn4zbd
+         2FQFoXqc8m8fXqDi6dkSa3S/rye2aGUDkio/ia4Xpmk9eBjPN5BttTkU0gB90EnlBM+Y
+         404w==
+X-Gm-Message-State: APjAAAVpUoUyP20D7qxqaXZz7xPXZxoMLgxYusD3IF7tuO/1WGWecZXT
+        Z7IlefUSHi71GHOfgGC80OfU0+kKB9Fjunnb7HY=
+X-Google-Smtp-Source: APXvYqy4BP+8JAhp1fx65e8DmDwBHVK/dF15wXZIzsj3LAetGRusbQ6alYrLY4tIIw7Q6wHUNhdpK7bgsZgOVEiEKn0=
+X-Received: by 2002:a05:6830:1e62:: with SMTP id m2mr10435396otr.116.1574078990213;
+ Mon, 18 Nov 2019 04:09:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191115055340.1825745-16-jhubbard@nvidia.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Received: by 2002:ac9:7217:0:0:0:0:0 with HTTP; Mon, 18 Nov 2019 04:09:49
+ -0800 (PST)
+Reply-To: lawfirm61@aol.com
+From:   david ottih <davidottih0@gmail.com>
+Date:   Mon, 18 Nov 2019 04:09:49 -0800
+Message-ID: <CAHvD5oZM0ws_WmrTfehwMUbu-WrpXVd07bzE5EtabT=xhhuLNA@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu 14-11-19 21:53:31, John Hubbard wrote:
-> Convert fs/io_uring to use the new pin_user_pages() call, which sets
-> FOLL_PIN. Setting FOLL_PIN is now required for code that requires
-> tracking of pinned pages, and therefore for any code that calls
-> put_user_page().
-> 
-> In partial anticipation of this work, the io_uring code was already
-> calling put_user_page() instead of put_page(). Therefore, in order to
-> convert from the get_user_pages()/put_page() model, to the
-> pin_user_pages()/put_user_page() model, the only change required
-> here is to change get_user_pages() to pin_user_pages().
-> 
-> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
-
-Looks good to me. You can add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-> ---
->  fs/io_uring.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/io_uring.c b/fs/io_uring.c
-> index f9a38998f2fc..cff64bd00db9 100644
-> --- a/fs/io_uring.c
-> +++ b/fs/io_uring.c
-> @@ -3433,7 +3433,7 @@ static int io_sqe_buffer_register(struct io_ring_ctx *ctx, void __user *arg,
->  
->  		ret = 0;
->  		down_read(&current->mm->mmap_sem);
-> -		pret = get_user_pages(ubuf, nr_pages,
-> +		pret = pin_user_pages(ubuf, nr_pages,
->  				      FOLL_WRITE | FOLL_LONGTERM,
->  				      pages, vmas);
->  		if (pret == nr_pages) {
-> -- 
-> 2.24.0
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Sn=C3=A4lla ditt br=C3=A5dskande svar beh=C3=B6vs
