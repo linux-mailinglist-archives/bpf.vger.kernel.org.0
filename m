@@ -2,109 +2,192 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 783D1100B17
-	for <lists+bpf@lfdr.de>; Mon, 18 Nov 2019 19:04:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EA69100B2B
+	for <lists+bpf@lfdr.de>; Mon, 18 Nov 2019 19:12:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726475AbfKRSEa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Nov 2019 13:04:30 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:13228 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726317AbfKRSEa (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 18 Nov 2019 13:04:30 -0500
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xAII2boX080671
-        for <bpf@vger.kernel.org>; Mon, 18 Nov 2019 13:04:28 -0500
-Received: from e06smtp01.uk.ibm.com (e06smtp01.uk.ibm.com [195.75.94.97])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2way6a28f6-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 18 Nov 2019 13:04:28 -0500
-Received: from localhost
-        by e06smtp01.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <bpf@vger.kernel.org> from <iii@linux.ibm.com>;
-        Mon, 18 Nov 2019 18:04:26 -0000
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (9.149.109.196)
-        by e06smtp01.uk.ibm.com (192.168.101.131) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Mon, 18 Nov 2019 18:04:23 -0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id xAII4Ljg40304868
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 18 Nov 2019 18:04:22 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DA398AE056;
-        Mon, 18 Nov 2019 18:04:21 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 761CDAE051;
-        Mon, 18 Nov 2019 18:04:21 +0000 (GMT)
-Received: from white.boeblingen.de.ibm.com (unknown [9.152.97.207])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 18 Nov 2019 18:04:21 +0000 (GMT)
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>
-Cc:     bpf@vger.kernel.org, Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH bpf-next 6/6] s390/bpf: remove JITed image size limitations
-Date:   Mon, 18 Nov 2019 19:03:40 +0100
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20191118180340.68373-1-iii@linux.ibm.com>
-References: <20191118180340.68373-1-iii@linux.ibm.com>
+        id S1726664AbfKRSMK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Nov 2019 13:12:10 -0500
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:42802 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726216AbfKRSMK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Nov 2019 13:12:10 -0500
+Received: by mail-qk1-f196.google.com with SMTP id i3so3305240qkk.9;
+        Mon, 18 Nov 2019 10:12:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=n4Z7zKL/nC/2oGOlNfG7F22vrSZqQW3UGXLGm4v76ak=;
+        b=UCblokOk3YGKqce/F/LZE9tOY7H1bLCBYT/9E0nGKKuGBZvoxWK5JURY6wl0OKlPVD
+         OXnEFvMS3SEMBgaWfqyJcGsIIYejb/ZtyRmlTshJhhighNSB2sPEQ6bMTr/gR2B/zok8
+         vIu45L+B2eF6F47d5hIAO4FfKbD6XOUpV+aR6YDqCfSrWI1Yg6ZnVJlTKEINpFl0TBhN
+         +wZ2AnhMsk/kMAr/IY7dxMEob9N/6rssg+jzs7ml6jngZ2jr727euocKip5zoA+8TUcv
+         u6m6migM+H/ZbGxpgeZpC/Ge7Ub3xgmBUKyTiKeV3xzc0jCuO4S5yNdT26BSYRqUY+rB
+         it5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=n4Z7zKL/nC/2oGOlNfG7F22vrSZqQW3UGXLGm4v76ak=;
+        b=AwwL07dJtp3So4OrH0OxmkKKxXN7jCrK+qBCr7d1W0mNvttgRaU189tCZjkGYEd2eL
+         2q0aQ87HlJiSJGYSPBkaNbQ8wpKwNq+mhB5hNPLoFufUwVW7VAdp2uTLfpAuJGb4FrKi
+         jn/N59L7bEm8fA0n1GeVG6vBAM+8a6dpTK9B/kyZlM0YqhPCbqKDv0HN0dcQaLeNz/Yn
+         i8tNk0/kchjiI3im2/fkz5tiVJO+CnBNrsPJln0dmCKHut868YvMpchRHaBPx8YuSr+B
+         /bFViFfeYmWT9/QGKsUHYi2jVJv2CV4vb4zHhyGV/BthaKkR/YI8/Pp3wlyrCuVAAk3r
+         qv2w==
+X-Gm-Message-State: APjAAAUIc/hXR+UpGdMxq+MjUnOkHbLN9JRVMgdlIit16n0WCTgv0i0+
+        Bkpx2XDlnXb7/VZure22anHMnqliWpVv0/19Hco=
+X-Google-Smtp-Source: APXvYqxsrqYkMiwkE3iPguvNnMVibo2ivQJwDRHahowenownLByatstaFlTWOneHnJtbKU0VXb2evU3pfa7jqE1dJIU=
+X-Received: by 2002:a37:9a8a:: with SMTP id c132mr12777464qke.92.1574100728885;
+ Mon, 18 Nov 2019 10:12:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-x-cbid: 19111818-4275-0000-0000-0000038125FE
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19111818-4276-0000-0000-000038949710
-Message-Id: <20191118180340.68373-7-iii@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
- definitions=2019-11-18_05:2019-11-15,2019-11-18 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
- impostorscore=0 priorityscore=1501 clxscore=1015 spamscore=0 adultscore=0
- lowpriorityscore=0 suspectscore=2 mlxlogscore=999 mlxscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-1910280000
- definitions=main-1911180154
+References: <cover.1573779287.git.daniel@iogearbox.net> <fa3c2f6e2f4fbe45200d54a3c6d4c65c4f84f790.1573779287.git.daniel@iogearbox.net>
+In-Reply-To: <fa3c2f6e2f4fbe45200d54a3c6d4c65c4f84f790.1573779287.git.daniel@iogearbox.net>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 18 Nov 2019 10:11:57 -0800
+Message-ID: <CAEf4BzZJEgVKVZsBvHZuhQWBTN6G7zY9mQH8o5xoyrDEUNG2DA@mail.gmail.com>
+Subject: Re: [PATCH rfc bpf-next 8/8] bpf: constant map key tracking for prog
+ array pokes
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        john fastabend <john.fastabend@gmail.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Now that jump and long displacement ranges are no longer a problem,
-remove the limit on JITed image size. In practice it's still limited by
-2G, but with verifier allowing "only" 1M instructions, it's not an
-issue.
+On Thu, Nov 14, 2019 at 5:04 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>
+> Add tracking of constant keys into tail call maps. The signature of
+> bpf_tail_call_proto is that arg1 is ctx, arg2 map pointer and arg3
+> is a index key. The direct call approach for tail calls can be enabled
+> if the verifier asserted that for all branches leading to the tail call
+> helper invocation, the map pointer and index key were both constant
+> and the same. Tracking of map pointers we already do from prior work
+> via c93552c443eb ("bpf: properly enforce index mask to prevent out-of-bounds
+> speculation") and 09772d92cd5a ("bpf: avoid retpoline for lookup/update/
+> delete calls on maps"). Given the tail call map index key is not on
+> stack but directly in the register, we can add similar tracking approach
+> and later in fixup_bpf_calls() add a poke descriptor to the progs poke_tab
+> with the relevant information for the JITing phase. We internally reuse
+> insn->imm for the rewritten BPF_JMP | BPF_TAIL_CALL instruction in order
+> to point into the prog's poke_tab and keep insn->imm == 0 as indicator
+> that current indirect tail call emission must be used.
+>
+> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+> ---
+>  include/linux/bpf_verifier.h |  1 +
+>  kernel/bpf/verifier.c        | 98 ++++++++++++++++++++++++++++++++++++
+>  2 files changed, 99 insertions(+)
+>
+> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+> index cdd08bf0ec06..f494f0c9ac13 100644
+> --- a/include/linux/bpf_verifier.h
+> +++ b/include/linux/bpf_verifier.h
+> @@ -301,6 +301,7 @@ struct bpf_insn_aux_data {
+>                         u32 map_off;            /* offset from value base address */
+>                 };
+>         };
+> +       u64 key_state; /* constant key tracking for maps */
+>         int ctx_field_size; /* the ctx field size for load insn, maybe 0 */
+>         int sanitize_stack_off; /* stack slot to be cleared */
+>         bool seen; /* this insn was processed by the verifier */
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index e9dc95a18d44..48d5c9030d60 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -171,6 +171,9 @@ struct bpf_verifier_stack_elem {
+>  #define BPF_COMPLEXITY_LIMIT_JMP_SEQ   8192
+>  #define BPF_COMPLEXITY_LIMIT_STATES    64
+>
+> +#define BPF_MAP_KEY_POISON     (1ULL << 63)
+> +#define BPF_MAP_KEY_SEEN       (1ULL << 62)
+> +
+>  #define BPF_MAP_PTR_UNPRIV     1UL
+>  #define BPF_MAP_PTR_POISON     ((void *)((0xeB9FUL << 1) +     \
+>                                           POISON_POINTER_DELTA))
+> @@ -195,6 +198,29 @@ static void bpf_map_ptr_store(struct bpf_insn_aux_data *aux,
+>                          (unpriv ? BPF_MAP_PTR_UNPRIV : 0UL);
+>  }
+>
+> +static bool bpf_map_key_poisoned(const struct bpf_insn_aux_data *aux)
+> +{
+> +       return aux->key_state & BPF_MAP_KEY_POISON;
+> +}
+> +
+> +static bool bpf_map_key_unseen(const struct bpf_insn_aux_data *aux)
+> +{
+> +       return !(aux->key_state & BPF_MAP_KEY_SEEN);
+> +}
+> +
+> +static u64 bpf_map_key_immediate(const struct bpf_insn_aux_data *aux)
+> +{
+> +       return aux->key_state & ~BPF_MAP_KEY_SEEN;
+> +}
 
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
----
- arch/s390/net/bpf_jit_comp.c | 7 -------
- 1 file changed, 7 deletions(-)
+This works out for current logic you've implemented, but it's a bit
+misleading that bpf_map_key_immediate is also going to return POISON
+bit, was this intentional?
 
-diff --git a/arch/s390/net/bpf_jit_comp.c b/arch/s390/net/bpf_jit_comp.c
-index 3398cd939496..8d2134136290 100644
---- a/arch/s390/net/bpf_jit_comp.c
-+++ b/arch/s390/net/bpf_jit_comp.c
-@@ -52,8 +52,6 @@ struct bpf_jit {
- 	int labels[1];		/* Labels for local jumps */
- };
- 
--#define BPF_SIZE_MAX	0xffff	/* Max size for program (16 bit branches) */
--
- #define SEEN_MEM	BIT(0)		/* use mem[] for temporary storage */
- #define SEEN_LITERAL	BIT(1)		/* code uses literals */
- #define SEEN_FUNC	BIT(2)		/* calls C functions */
-@@ -1631,11 +1629,6 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
- 	/*
- 	 * Final pass: Allocate and generate program
- 	 */
--	if (jit.size >= BPF_SIZE_MAX) {
--		fp = orig_fp;
--		goto free_addrs;
--	}
--
- 	header = bpf_jit_binary_alloc(jit.size, &jit.prg_buf, 8, jit_fill_hole);
- 	if (!header) {
- 		fp = orig_fp;
--- 
-2.23.0
+> +
+> +static void bpf_map_key_store(struct bpf_insn_aux_data *aux, u64 state)
+> +{
+> +       bool poisoned = bpf_map_key_poisoned(aux);
+> +
+> +       aux->key_state = state | BPF_MAP_KEY_SEEN |
+> +                        (poisoned ? BPF_MAP_KEY_POISON : 0ULL);
+> +}
+> +
+>  struct bpf_call_arg_meta {
+>         struct bpf_map *map_ptr;
+>         bool raw_mode;
+> @@ -4088,6 +4114,37 @@ record_func_map(struct bpf_verifier_env *env, struct bpf_call_arg_meta *meta,
+>         return 0;
+>  }
+>
+> +static int
+> +record_func_key(struct bpf_verifier_env *env, struct bpf_call_arg_meta *meta,
+> +               int func_id, int insn_idx)
+> +{
+> +       struct bpf_insn_aux_data *aux = &env->insn_aux_data[insn_idx];
+> +       struct bpf_reg_state *regs = cur_regs(env), *reg;
+> +       struct tnum range = tnum_range(0, U32_MAX);
 
+why U32_MAX, instead of actual size of a map?
+
+> +       struct bpf_map *map = meta->map_ptr;
+> +       u64 val;
+> +
+> +       if (func_id != BPF_FUNC_tail_call)
+> +               return 0;
+> +       if (!map || map->map_type != BPF_MAP_TYPE_PROG_ARRAY) {
+> +               verbose(env, "kernel subsystem misconfigured verifier\n");
+> +               return -EINVAL;
+> +       }
+> +
+> +       reg = &regs[BPF_REG_3];
+> +       if (!register_is_const(reg) || !tnum_in(range, reg->var_off)) {
+> +               bpf_map_key_store(aux, BPF_MAP_KEY_POISON);
+> +               return 0;
+> +       }
+> +
+> +       val = reg->var_off.value;
+> +       if (bpf_map_key_unseen(aux))
+> +               bpf_map_key_store(aux, val);
+> +       else if (bpf_map_key_immediate(aux) != val)
+> +               bpf_map_key_store(aux, BPF_MAP_KEY_POISON);
+
+imo, checking for poison first would make this logic a bit more
+straightforward (and will avoid unnecessary key_store calls, but
+that's minor)
+
+> +       return 0;
+> +}
+> +
+>  static int check_reference_leak(struct bpf_verifier_env *env)
+>  {
+>         struct bpf_func_state *state = cur_func(env);
+
+[...]
