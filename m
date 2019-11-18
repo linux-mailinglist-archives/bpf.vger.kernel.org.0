@@ -2,98 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C94981006C9
-	for <lists+bpf@lfdr.de>; Mon, 18 Nov 2019 14:50:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2E1510086F
+	for <lists+bpf@lfdr.de>; Mon, 18 Nov 2019 16:40:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726909AbfKRNup (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Nov 2019 08:50:45 -0500
-Received: from www62.your-server.de ([213.133.104.62]:35012 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726596AbfKRNup (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Nov 2019 08:50:45 -0500
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iWhQR-00022r-8J; Mon, 18 Nov 2019 14:50:43 +0100
-Received: from [2a02:1205:507e:bf80:bef8:7f66:49c8:72e5] (helo=pc-11.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iWhQQ-000Udz-VQ; Mon, 18 Nov 2019 14:50:42 +0100
-Subject: Re: [PATCH v6 bpf-next 0/5] Add support for memory-mapping BPF array
- maps
-To:     Andrii Nakryiko <andriin@fb.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, ast@fb.com
-Cc:     andrii.nakryiko@gmail.com, kernel-team@fb.com
-References: <20191117172806.2195367-1-andriin@fb.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <04403b43-3a08-e63e-729e-5f9e66ca0dc2@iogearbox.net>
-Date:   Mon, 18 Nov 2019 14:50:42 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1727437AbfKRPk4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Nov 2019 10:40:56 -0500
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:43400 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726739AbfKRPkz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Nov 2019 10:40:55 -0500
+Received: by mail-qk1-f194.google.com with SMTP id z23so14756271qkj.10;
+        Mon, 18 Nov 2019 07:40:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Lb9xUffK0S+tRFsoPZYkXfbzmhBqUpKJNWxQK/Zlb48=;
+        b=L3U3EwUQ54CTe62U/pP/8QCbpUTA1+vci2M1SeZx838VIvVHc8DCZohQL9eXoblQpF
+         cba0kcKICrfZn3k0d+f9QSlVQm0qqC39B7GHA0y+owieMWqEF9G7W0Pls/6fm1i8N+k7
+         DDZ4miZZ1BLmkDd3CJQBHE0SDbLtzU5ZnVmKgW6qNJ54N6fHiZYINvBqypAIJqWlaanb
+         9K4CVsXbmuGSzL/vRR78OBCd4BM9HQlgQftunPT8cpjcsibUdFprMWXk9kiQFMeMHAxc
+         ylG0divhSS9Hc8hAkumm5DqOjH9ILvx0JjODJl54vi4WY1HL+Yx7V6Lm7FBn2Da5ELfO
+         9bjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Lb9xUffK0S+tRFsoPZYkXfbzmhBqUpKJNWxQK/Zlb48=;
+        b=iqwWbPwrq9bBPlP6EPQYFp1BXINMWOhwAGVjpxyTz7AoasuthcGReVmvvmf/898dZq
+         49JtPcAb6krMosdNG2GcnVYIpsjcz7WfsB84Ouw9ZPsdiKFrz7ycsqs7/EweWmY1rMq8
+         ttb0D0sVlV5McJ90gk0NY4ri2KMwbq9e9gW0QgKQm/zqKzQj4YFHlSIJu70/94F39PKA
+         rbM2qMM3itH1qHJw1uwA2ZOU17szW/w1KSJ1utgoVx/IFO7X668IfNQ3Ju/3tEwwVozT
+         2kya65iDPHHKUlLueuwOa7zmqLkS+R/20+JBQLxkIxArbqQx4lhyLO9IKYqOe1babnAl
+         JNrA==
+X-Gm-Message-State: APjAAAVSZiiBaW9VEEa1r8f2qnT1Jzyryw+8re8B4D8eZ3y8Hvau/Ze4
+        3JSWlH+/wexDYNVWTBB3Uxm+3/SH
+X-Google-Smtp-Source: APXvYqzN/yFsihE08uPK1O6QVhGsFZdWXgq1rls4Idul8M2B/cKIU5vrjtRuFDOeT/UwCiAE6se6rg==
+X-Received: by 2002:a05:620a:14b9:: with SMTP id x25mr25407653qkj.8.1574091654523;
+        Mon, 18 Nov 2019 07:40:54 -0800 (PST)
+Received: from willemb.nyc.corp.google.com ([2620:0:1003:312:89db:8f93:8219:1619])
+        by smtp.gmail.com with ESMTPSA id q70sm6664025qka.44.2019.11.18.07.40.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Nov 2019 07:40:53 -0800 (PST)
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     bpf@vger.kernel.org, john.fastabend@gmail.com,
+        jakub.kicinski@netronome.com, daniel@iogearbox.net,
+        Willem de Bruijn <willemb@google.com>
+Subject: [PATCH] net/tls: enable sk_msg redirect to tls socket egress
+Date:   Mon, 18 Nov 2019 10:40:51 -0500
+Message-Id: <20191118154051.242699-1-willemdebruijn.kernel@gmail.com>
+X-Mailer: git-send-email 2.24.0.432.g9d3f5f5b63-goog
 MIME-Version: 1.0
-In-Reply-To: <20191117172806.2195367-1-andriin@fb.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.101.4/25637/Mon Nov 18 10:53:23 2019)
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/17/19 6:28 PM, Andrii Nakryiko wrote:
-> This patch set adds ability to memory-map BPF array maps (single- and
-> multi-element). The primary use case is memory-mapping BPF array maps, created
-> to back global data variables, created by libbpf implicitly. This allows for
-> much better usability, along with avoiding syscalls to read or update data
-> completely.
-> 
-> Due to memory-mapping requirements, BPF array map that is supposed to be
-> memory-mapped, has to be created with special BPF_F_MMAPABLE attribute, which
-> triggers slightly different memory allocation strategy internally. See
-> patch 1 for details.
-> 
-> Libbpf is extended to detect kernel support for this flag, and if supported,
-> will specify it for all global data maps automatically.
-> 
-> Patch #1 refactors bpf_map_inc() and converts bpf_map's refcnt to atomic64_t
-> to make refcounting never fail. Patch #2 does similar refactoring for
-> bpf_prog_add()/bpf_prog_inc().
-> 
-> v5->v6:
-> - add back uref counting (Daniel);
-> 
-> v4->v5:
-> - change bpf_prog's refcnt to atomic64_t (Daniel);
-> 
-> v3->v4:
-> - add mmap's open() callback to fix refcounting (Johannes);
-> - switch to remap_vmalloc_pages() instead of custom fault handler (Johannes);
-> - converted bpf_map's refcnt/usercnt into atomic64_t;
-> - provide default bpf_map_default_vmops handling open/close properly;
-> 
-> v2->v3:
-> - change allocation strategy to avoid extra pointer dereference (Jakub);
-> 
-> v1->v2:
-> - fix map lookup code generation for BPF_F_MMAPABLE case;
-> - prevent BPF_F_MMAPABLE flag for all but plain array map type;
-> - centralize ref-counting in generic bpf_map_mmap();
-> - don't use uref counting (Alexei);
-> - use vfree() directly;
-> - print flags with %x (Song);
-> - extend tests to verify bpf_map_{lookup,update}_elem() logic as well.
-> 
-> Andrii Nakryiko (5):
->    bpf: switch bpf_map ref counter to atomic64_t so bpf_map_inc() never
->      fails
->    bpf: convert bpf_prog refcnt to atomic64_t
->    bpf: add mmap() support for BPF_MAP_TYPE_ARRAY
->    libbpf: make global data internal arrays mmap()-able, if possible
->    selftests/bpf: add BPF_TYPE_MAP_ARRAY mmap() tests
-> 
+From: Willem de Bruijn <willemb@google.com>
 
-Applied, thanks!
+Bring back tls_sw_sendpage_locked. sk_msg redirection into a socket
+with TLS_TX takes the following path:
+
+  tcp_bpf_sendmsg_redir
+    tcp_bpf_push_locked
+      tcp_bpf_push
+        kernel_sendpage_locked
+          sock->ops->sendpage_locked
+
+Also update the flags test in tls_sw_sendpage_locked to allow flag
+MSG_NO_SHARED_FRAGS. bpf_tcp_sendmsg sets this.
+
+Link: https://lore.kernel.org/netdev/CA+FuTSdaAawmZ2N8nfDDKu3XLpXBbMtcCT0q4FntDD2gn8ASUw@mail.gmail.com/T/#t
+Link: https://github.com/wdebruij/kerneltools/commits/icept.2
+Fixes: 0608c69c9a80 ("bpf: sk_msg, sock{map|hash} redirect through ULP")
+Fixes: f3de19af0f5b ("Revert \"net/tls: remove unused function tls_sw_sendpage_locked\"")
+Signed-off-by: Willem de Bruijn <willemb@google.com>
+---
+ include/net/tls.h  |  2 ++
+ net/tls/tls_main.c |  1 +
+ net/tls/tls_sw.c   | 11 +++++++++++
+ 3 files changed, 14 insertions(+)
+
+diff --git a/include/net/tls.h b/include/net/tls.h
+index 794e297483eab..f4ad831eaa02b 100644
+--- a/include/net/tls.h
++++ b/include/net/tls.h
+@@ -356,6 +356,8 @@ int tls_set_sw_offload(struct sock *sk, struct tls_context *ctx, int tx);
+ void tls_sw_strparser_arm(struct sock *sk, struct tls_context *ctx);
+ void tls_sw_strparser_done(struct tls_context *tls_ctx);
+ int tls_sw_sendmsg(struct sock *sk, struct msghdr *msg, size_t size);
++int tls_sw_sendpage_locked(struct sock *sk, struct page *page,
++			   int offset, size_t size, int flags);
+ int tls_sw_sendpage(struct sock *sk, struct page *page,
+ 		    int offset, size_t size, int flags);
+ void tls_sw_cancel_work_tx(struct tls_context *tls_ctx);
+diff --git a/net/tls/tls_main.c b/net/tls/tls_main.c
+index 0775ae40fcfb4..f874cc0da45df 100644
+--- a/net/tls/tls_main.c
++++ b/net/tls/tls_main.c
+@@ -908,6 +908,7 @@ static int __init tls_register(void)
+ {
+ 	tls_sw_proto_ops = inet_stream_ops;
+ 	tls_sw_proto_ops.splice_read = tls_sw_splice_read;
++	tls_sw_proto_ops.sendpage_locked   = tls_sw_sendpage_locked,
+ 
+ 	tls_device_init();
+ 	tcp_register_ulp(&tcp_tls_ulp_ops);
+diff --git a/net/tls/tls_sw.c b/net/tls/tls_sw.c
+index 446f23c1f3ce4..319735d5c084f 100644
+--- a/net/tls/tls_sw.c
++++ b/net/tls/tls_sw.c
+@@ -1204,6 +1204,17 @@ static int tls_sw_do_sendpage(struct sock *sk, struct page *page,
+ 	return copied ? copied : ret;
+ }
+ 
++int tls_sw_sendpage_locked(struct sock *sk, struct page *page,
++			   int offset, size_t size, int flags)
++{
++	if (flags & ~(MSG_MORE | MSG_DONTWAIT | MSG_NOSIGNAL |
++		      MSG_SENDPAGE_NOTLAST | MSG_SENDPAGE_NOPOLICY |
++		      MSG_NO_SHARED_FRAGS))
++		return -ENOTSUPP;
++
++	return tls_sw_do_sendpage(sk, page, offset, size, flags);
++}
++
+ int tls_sw_sendpage(struct sock *sk, struct page *page,
+ 		    int offset, size_t size, int flags)
+ {
+-- 
+2.24.0.432.g9d3f5f5b63-goog
+
