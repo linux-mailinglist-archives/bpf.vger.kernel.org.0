@@ -2,191 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 286D3100E2F
-	for <lists+bpf@lfdr.de>; Mon, 18 Nov 2019 22:46:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7364C100EFD
+	for <lists+bpf@lfdr.de>; Mon, 18 Nov 2019 23:55:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726909AbfKRVpb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Nov 2019 16:45:31 -0500
-Received: from www62.your-server.de ([213.133.104.62]:55416 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726716AbfKRVpb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Nov 2019 16:45:31 -0500
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iWops-0000jK-6A; Mon, 18 Nov 2019 22:45:28 +0100
-Received: from [178.197.248.45] (helo=pc-9.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iWopr-000CvC-Sz; Mon, 18 Nov 2019 22:45:27 +0100
-Subject: Re: [PATCH rfc bpf-next 8/8] bpf: constant map key tracking for prog
- array pokes
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        john fastabend <john.fastabend@gmail.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-References: <cover.1573779287.git.daniel@iogearbox.net>
- <fa3c2f6e2f4fbe45200d54a3c6d4c65c4f84f790.1573779287.git.daniel@iogearbox.net>
- <CAEf4BzZJEgVKVZsBvHZuhQWBTN6G7zY9mQH8o5xoyrDEUNG2DA@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <ebe7fe42-d2e4-bb47-e9a0-09a914d25473@iogearbox.net>
-Date:   Mon, 18 Nov 2019 22:45:26 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
-MIME-Version: 1.0
-In-Reply-To: <CAEf4BzZJEgVKVZsBvHZuhQWBTN6G7zY9mQH8o5xoyrDEUNG2DA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.101.4/25637/Mon Nov 18 10:53:23 2019)
+        id S1726809AbfKRWze (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Nov 2019 17:55:34 -0500
+Received: from mail-qk1-f202.google.com ([209.85.222.202]:42300 "EHLO
+        mail-qk1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726705AbfKRWzd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Nov 2019 17:55:33 -0500
+Received: by mail-qk1-f202.google.com with SMTP id p68so12460476qkf.9
+        for <bpf@vger.kernel.org>; Mon, 18 Nov 2019 14:55:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=T32Rb6g2SHamfdiMAguvghJ70n8sNGBtor6Z7vA/pVE=;
+        b=Xd/9mGAk975A7EnlmwTCTWXg1Ew73ijveVbvpIPTfZdKVWbTJrEGLXfcLQwx4Wn3jU
+         Sets0gqPv0zrJv9/WnzaoJY+rSrqbhlVEUN5WGxujBtxABTjSEva2smGUBJFptyLCKb3
+         fVGJ0xTWnhB4C2zCvcJQuLJ3pb+/1H5c5HXcZkPT2XbiaElzOEyOgGraKEFZfSiCgM8W
+         T1OnLDfA1nMoOf5B9tMcbno9BKmOSarO8rH6sz547/u7rMCAf8INJnXB/QgDQvbUqlCM
+         k589p5niyRXGkyXIzTqDvgRY2bZc47AvSWF7ihzGwlBmLunIZFF2AOMowwBoVb4Kq8sj
+         lFkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=T32Rb6g2SHamfdiMAguvghJ70n8sNGBtor6Z7vA/pVE=;
+        b=hmosKFpx+fo0nPe6Bu07W85p4LtsR9fnnX5XqGOgRotL/6Bj/UMa+oEowN6g0aaeoV
+         mvU0Knr3eHj3MwFh3tWt9GBvndS/riHyr4yMunMKI5KGas9ALtWPCYinCs/FSozv9qKO
+         XXTWU9TP6KD+gVdJMacA4MuUOcZKa5M/BKSuKepszFX2OdDhOl1KQjB1szclRzcK5CAY
+         pXqiuDI0ayeF3SHqAdjbQF5m4kzi7kfhk+hPhsB7uzorLPQR65irUL6qux3i1el5ING1
+         Is2ifeIii+doKm9FEOzeqyh3yVYLD3j0XzES1olIzEiypdr1aOIAxtbBJBVzdEjIZTd4
+         F5SA==
+X-Gm-Message-State: APjAAAWirB2VRY5SDtm4K9L7O79MuBS/WynOhzDAi4ppL5TBFWde0tLW
+        SgtceZ2zUkfwAmO2jFS39ZxH5BqnfbM=
+X-Google-Smtp-Source: APXvYqzjGajv3e44C7N5V7bO1h7NEzSi6kSFeUIiJ6Lev7MjXXPlxmqfsZUQNSArrHpqBEMPgMfezJDQ33Q=
+X-Received: by 2002:a0c:94fb:: with SMTP id k56mr28781169qvk.127.1574117732372;
+ Mon, 18 Nov 2019 14:55:32 -0800 (PST)
+Date:   Mon, 18 Nov 2019 14:55:23 -0800
+Message-Id: <20191118225523.41697-1-lrizzo@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.24.0.432.g9d3f5f5b63-goog
+Subject: [PATCH] net-af_xdp: use correct number of channels from ethtool
+From:   Luigi Rizzo <lrizzo@google.com>
+To:     magnus.karlsson@intel.com, bjorn.topel@intel.com,
+        jonathan.lemon@gmail.com, netdev@vger.kernel.org
+Cc:     bpf@vger.kernel.org, rizzo@iet.unipi.it,
+        Luigi Rizzo <lrizzo@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/18/19 7:11 PM, Andrii Nakryiko wrote:
-> On Thu, Nov 14, 2019 at 5:04 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->>
->> Add tracking of constant keys into tail call maps. The signature of
->> bpf_tail_call_proto is that arg1 is ctx, arg2 map pointer and arg3
->> is a index key. The direct call approach for tail calls can be enabled
->> if the verifier asserted that for all branches leading to the tail call
->> helper invocation, the map pointer and index key were both constant
->> and the same. Tracking of map pointers we already do from prior work
->> via c93552c443eb ("bpf: properly enforce index mask to prevent out-of-bounds
->> speculation") and 09772d92cd5a ("bpf: avoid retpoline for lookup/update/
->> delete calls on maps"). Given the tail call map index key is not on
->> stack but directly in the register, we can add similar tracking approach
->> and later in fixup_bpf_calls() add a poke descriptor to the progs poke_tab
->> with the relevant information for the JITing phase. We internally reuse
->> insn->imm for the rewritten BPF_JMP | BPF_TAIL_CALL instruction in order
->> to point into the prog's poke_tab and keep insn->imm == 0 as indicator
->> that current indirect tail call emission must be used.
->>
->> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
->> ---
->>   include/linux/bpf_verifier.h |  1 +
->>   kernel/bpf/verifier.c        | 98 ++++++++++++++++++++++++++++++++++++
->>   2 files changed, 99 insertions(+)
->>
->> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
->> index cdd08bf0ec06..f494f0c9ac13 100644
->> --- a/include/linux/bpf_verifier.h
->> +++ b/include/linux/bpf_verifier.h
->> @@ -301,6 +301,7 @@ struct bpf_insn_aux_data {
->>                          u32 map_off;            /* offset from value base address */
->>                  };
->>          };
->> +       u64 key_state; /* constant key tracking for maps */
->>          int ctx_field_size; /* the ctx field size for load insn, maybe 0 */
->>          int sanitize_stack_off; /* stack slot to be cleared */
->>          bool seen; /* this insn was processed by the verifier */
->> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->> index e9dc95a18d44..48d5c9030d60 100644
->> --- a/kernel/bpf/verifier.c
->> +++ b/kernel/bpf/verifier.c
->> @@ -171,6 +171,9 @@ struct bpf_verifier_stack_elem {
->>   #define BPF_COMPLEXITY_LIMIT_JMP_SEQ   8192
->>   #define BPF_COMPLEXITY_LIMIT_STATES    64
->>
->> +#define BPF_MAP_KEY_POISON     (1ULL << 63)
->> +#define BPF_MAP_KEY_SEEN       (1ULL << 62)
->> +
->>   #define BPF_MAP_PTR_UNPRIV     1UL
->>   #define BPF_MAP_PTR_POISON     ((void *)((0xeB9FUL << 1) +     \
->>                                            POISON_POINTER_DELTA))
->> @@ -195,6 +198,29 @@ static void bpf_map_ptr_store(struct bpf_insn_aux_data *aux,
->>                           (unpriv ? BPF_MAP_PTR_UNPRIV : 0UL);
->>   }
->>
->> +static bool bpf_map_key_poisoned(const struct bpf_insn_aux_data *aux)
->> +{
->> +       return aux->key_state & BPF_MAP_KEY_POISON;
->> +}
->> +
->> +static bool bpf_map_key_unseen(const struct bpf_insn_aux_data *aux)
->> +{
->> +       return !(aux->key_state & BPF_MAP_KEY_SEEN);
->> +}
->> +
->> +static u64 bpf_map_key_immediate(const struct bpf_insn_aux_data *aux)
->> +{
->> +       return aux->key_state & ~BPF_MAP_KEY_SEEN;
->> +}
-> 
-> This works out for current logic you've implemented, but it's a bit
-> misleading that bpf_map_key_immediate is also going to return POISON
-> bit, was this intentional?
+Drivers use different fields to report the number of channels, so take
+the maximum of all fields (rx, tx, other, combined) when determining the
+size of the xsk map. The current code used only 'combined' which was set
+to 0 in some drivers e.g. mlx4.
 
-Had it intentional, but fair enough, I'll mask it out to make it more clear.
+Tested: compiled and run xdpsock -q 3 -r -S on mlx4
+Signed-off-by: Luigi Rizzo <lrizzo@google.com>
+---
+ tools/lib/bpf/xsk.c | 16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
 
->> +static void bpf_map_key_store(struct bpf_insn_aux_data *aux, u64 state)
->> +{
->> +       bool poisoned = bpf_map_key_poisoned(aux);
->> +
->> +       aux->key_state = state | BPF_MAP_KEY_SEEN |
->> +                        (poisoned ? BPF_MAP_KEY_POISON : 0ULL);
->> +}
->> +
->>   struct bpf_call_arg_meta {
->>          struct bpf_map *map_ptr;
->>          bool raw_mode;
->> @@ -4088,6 +4114,37 @@ record_func_map(struct bpf_verifier_env *env, struct bpf_call_arg_meta *meta,
->>          return 0;
->>   }
->>
->> +static int
->> +record_func_key(struct bpf_verifier_env *env, struct bpf_call_arg_meta *meta,
->> +               int func_id, int insn_idx)
->> +{
->> +       struct bpf_insn_aux_data *aux = &env->insn_aux_data[insn_idx];
->> +       struct bpf_reg_state *regs = cur_regs(env), *reg;
->> +       struct tnum range = tnum_range(0, U32_MAX);
-> 
-> why U32_MAX, instead of actual size of a map?
+diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
+index 74d84f36a5b24..8e12269428d08 100644
+--- a/tools/lib/bpf/xsk.c
++++ b/tools/lib/bpf/xsk.c
+@@ -412,6 +412,11 @@ static int xsk_load_xdp_prog(struct xsk_socket *xsk)
+ 	return 0;
+ }
+ 
++static inline int max_i(int a, int b)
++{
++	return a > b ? a : b;
++}
++
+ static int xsk_get_max_queues(struct xsk_socket *xsk)
+ {
+ 	struct ethtool_channels channels = { .cmd = ETHTOOL_GCHANNELS };
+@@ -431,13 +436,18 @@ static int xsk_get_max_queues(struct xsk_socket *xsk)
+ 		goto out;
+ 	}
+ 
+-	if (err || channels.max_combined == 0)
++	if (err) {
+ 		/* If the device says it has no channels, then all traffic
+ 		 * is sent to a single stream, so max queues = 1.
+ 		 */
+ 		ret = 1;
+-	else
+-		ret = channels.max_combined;
++	} else {
++		/* Take the max of rx, tx, other, combined. Drivers return
++		 * the number of channels in different ways.
++		 */
++		ret = max_i(max_i(channels.max_rx, channels.max_tx),
++			      max_i(channels.max_other, channels.max_combined));
++	}
+ 
+ out:
+ 	close(fd);
+-- 
+2.24.0.432.g9d3f5f5b63-goog
 
-Hm, good point. That works given we poison that value and then skip later when
-add add the poke entry.
-
->> +       struct bpf_map *map = meta->map_ptr;
->> +       u64 val;
->> +
->> +       if (func_id != BPF_FUNC_tail_call)
->> +               return 0;
->> +       if (!map || map->map_type != BPF_MAP_TYPE_PROG_ARRAY) {
->> +               verbose(env, "kernel subsystem misconfigured verifier\n");
->> +               return -EINVAL;
->> +       }
->> +
->> +       reg = &regs[BPF_REG_3];
->> +       if (!register_is_const(reg) || !tnum_in(range, reg->var_off)) {
->> +               bpf_map_key_store(aux, BPF_MAP_KEY_POISON);
->> +               return 0;
->> +       }
->> +
->> +       val = reg->var_off.value;
->> +       if (bpf_map_key_unseen(aux))
->> +               bpf_map_key_store(aux, val);
->> +       else if (bpf_map_key_immediate(aux) != val)
->> +               bpf_map_key_store(aux, BPF_MAP_KEY_POISON);
-> 
-> imo, checking for poison first would make this logic a bit more
-> straightforward (and will avoid unnecessary key_store calls, but
-> that's minor)
-
-Makes sense.
-
->> +       return 0;
->> +}
->> +
->>   static int check_reference_leak(struct bpf_verifier_env *env)
->>   {
->>          struct bpf_func_state *state = cur_func(env);
-> 
-> [...]
-
-Thanks,
-Daniel
