@@ -2,76 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BAF58102EC6
-	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2019 23:03:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 627F0102ED7
+	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2019 23:07:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727431AbfKSWDU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Nov 2019 17:03:20 -0500
-Received: from mail-lj1-f172.google.com ([209.85.208.172]:41655 "EHLO
-        mail-lj1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727348AbfKSWDT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Nov 2019 17:03:19 -0500
-Received: by mail-lj1-f172.google.com with SMTP id m4so20203041ljj.8
-        for <bpf@vger.kernel.org>; Tue, 19 Nov 2019 14:03:18 -0800 (PST)
+        id S1727333AbfKSWHo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Nov 2019 17:07:44 -0500
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:37071 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727140AbfKSWHo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Nov 2019 17:07:44 -0500
+Received: by mail-lj1-f193.google.com with SMTP id d5so25150505ljl.4;
+        Tue, 19 Nov 2019 14:07:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :organization:mime-version:content-transfer-encoding;
-        bh=hkXsADjEOdlZ3YiKrCkRrx58YtFi1M6caFsielcQFFg=;
-        b=q7RQyIw/akRBQYATHpyvF6sPlZP0+lRSZFkKhlbOJBfKQYyCldLCrHUlBUW3HTEODQ
-         lgnyW2VdcXZdHP/TxSv/lxQ9Qw3/UJQK7kckSMyTrHS3HX105JEd+0chhg04zw4H64cS
-         ENAZPHxec/j/9CmqijHU44dFqUR9J5oyKICGWW/ZDSgBstvdlmGJ99cE7urJyOTQ6tuq
-         hbBIy+LY2mkgR4DlRLJGW7imD0D6Vmnyl1KceTJjeiZT9siqxk1pCbYZr2aZFJvnfluZ
-         Yd+xtEyvKeubFn5yFYvECZFAx50FyscC+PbZgUCKkkNG33ixkGB7Vr0Qy8Pj8R9nZmgw
-         oF0Q==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/NIY0wwmd8kAAZ+E6bHh2DYRDKjCV9YXkhsBIS0hJcs=;
+        b=TmoEW5GcPBJMZqxK1rUqJR+pE+JkTQcZyhd9lOiEtnWQEuFPNrgX5RYkHLUP9k2dzB
+         F4v4WkOhxv2utmOmoTqSNP5+evY5Tmy6uMdT9Q34YFY0Cx6LLn9ru8FaoWrd0IJm7HNi
+         IwWzM59zcT00oGu7h+67Osw+f47swWpY3WSsj5LoLK0A36rTSGInVPFWkWvMOc7TduUe
+         Rkw/epEcJCLQd8Ry59u/bRUDt6kN+1ycbwiMu8u+/wZTn+ISKto9UYEniYR8N7r9I3fr
+         iW3sKN+rAi2seboekh8qieg6ZU+am7W8u4iHTQMH85GfLVc0xFKEZ3ZPj19FwgK+9PPQ
+         Hi8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=hkXsADjEOdlZ3YiKrCkRrx58YtFi1M6caFsielcQFFg=;
-        b=cWi96tVC/Fi7OtiTgxkh8PdS9hP1ImdRopuhzmCUcdYbSvPYsjB/s6JBbAiZl1fqsz
-         1pZSpsNmwN9OigcYa5GlPABhQLRYHDOwPFjITII7eNFaWAVWCOsISngUhs8UZV2xgiwy
-         xAdIhaqMwgIIR1WorOeyP7LhQH8DiVpGUrrYwfG7fbMxX9noeHEppcXi0pypdkGQ02dh
-         VTD8+33vktNesQI7On+L+u7tuFK2RjXLvwyvKHmRu/0bGA+MgGbuGNak1nqhKiXAG1AL
-         noNA6EEH4ADiI5uKpi6+ByKYUYENovHMbXv5P/NtOJgTwVhSyU+zFa7jb/annOxfUqgr
-         qGmw==
-X-Gm-Message-State: APjAAAVIJuVGMb/pQT2QBU+VGWhH4hwDHhoaCww1VNJ+t02D5doSpYq9
-        RSs7fCpRmDgFGnC1VfYVWjq9vA==
-X-Google-Smtp-Source: APXvYqwaEGTNQ6pH3nMfuHI18X2jWcofC92bUt5mO8xtMpIu9pyAp5ByFh4AqZ1cix2cCPEzxx9A8w==
-X-Received: by 2002:a2e:98c6:: with SMTP id s6mr5237392ljj.235.1574200997652;
-        Tue, 19 Nov 2019 14:03:17 -0800 (PST)
-Received: from cakuba.netronome.com ([66.60.152.14])
-        by smtp.gmail.com with ESMTPSA id a11sm10429535ljm.60.2019.11.19.14.03.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Nov 2019 14:03:17 -0800 (PST)
-Date:   Tue, 19 Nov 2019 14:03:01 -0800
-From:   Jakub Kicinski <jakub.kicinski@netronome.com>
-To:     Luigi Rizzo <lrizzo@google.com>
-Cc:     magnus.karlsson@intel.com, bjorn.topel@intel.com,
-        jonathan.lemon@gmail.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, rizzo@iet.unipi.it
-Subject: Re: [PATCH v2] net-af_xdp: use correct number of channels from
- ethtool
-Message-ID: <20191119140301.6ff669e1@cakuba.netronome.com>
-In-Reply-To: <20191119001951.92930-1-lrizzo@google.com>
-References: <20191119001951.92930-1-lrizzo@google.com>
-Organization: Netronome Systems, Ltd.
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/NIY0wwmd8kAAZ+E6bHh2DYRDKjCV9YXkhsBIS0hJcs=;
+        b=V3zfMBzN6JQTjeHDh/YwbkerSHx2rGL1Gsb0TN9dlaUHYURifgNfNxcbM1X7Q53V5s
+         sfh4/8ee7bcRuuwXqVgoXVUY/yFrfsrgzglA+xOl+77LpDqq9NoWgYJi8ODMA+IZZUIt
+         X+Ywe01LMEL7cd5WCyOp4w9dMczlcbdy8pRYA8KLg6WCq2DBGh5+dt62aIn43EZiFDaN
+         vJENq9K+1uo8OzYw6aPVW77IG9TR+3ECGUplLviidWGOV8U8ZMP1xwAD0p0MY//l1iyL
+         Nd2tVZE0appwjMR6Vc+WgXshof2VI2e2HCt9bcKRx+ZH0ROgs0zUhbh6HxZ3MPH3lkYC
+         9kZw==
+X-Gm-Message-State: APjAAAUWCAZak4yDXvR2KRzwus74fZYgvJAlj2h2wOozS2qL2quqHLDg
+        3oPp/gm3jdBmiui0nirZ7pCF0IlyUXOFO+1/wWM=
+X-Google-Smtp-Source: APXvYqyoQLekI+Vh3I0S26z+Ix5Ed7Z6kLQCJi/wzt6okOYA5unIq30BI/YrCgYtnyaqmaVRPh68qgdfUOqklLCj8As=
+X-Received: by 2002:a2e:b5b8:: with SMTP id f24mr5665605ljn.188.1574201260547;
+ Tue, 19 Nov 2019 14:07:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20191119001951.92930-1-lrizzo@google.com> <20191119140301.6ff669e1@cakuba.netronome.com>
+In-Reply-To: <20191119140301.6ff669e1@cakuba.netronome.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 19 Nov 2019 14:07:28 -0800
+Message-ID: <CAADnVQJADNUsJEGvstJco3cQ9YVyU9To5vVLH+SyXZ7zgi4pYw@mail.gmail.com>
+Subject: Re: [PATCH v2] net-af_xdp: use correct number of channels from ethtool
+To:     Jakub Kicinski <jakub.kicinski@netronome.com>
+Cc:     Luigi Rizzo <lrizzo@google.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, rizzo@iet.unipi.it
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 18 Nov 2019 16:19:51 -0800, Luigi Rizzo wrote:
-> Drivers use different fields to report the number of channels, so take
-> the maximum of all data channels (rx, tx, combined) when determining the
-> size of the xsk map. The current code used only 'combined' which was set
-> to 0 in some drivers e.g. mlx4.
-> 
-> Tested: compiled and run xdpsock -q 3 -r -S on mlx4
-> Signed-off-by: Luigi Rizzo <lrizzo@google.com>
+On Tue, Nov 19, 2019 at 2:04 PM Jakub Kicinski
+<jakub.kicinski@netronome.com> wrote:
+>
+> On Mon, 18 Nov 2019 16:19:51 -0800, Luigi Rizzo wrote:
+> > Drivers use different fields to report the number of channels, so take
+> > the maximum of all data channels (rx, tx, combined) when determining the
+> > size of the xsk map. The current code used only 'combined' which was set
+> > to 0 in some drivers e.g. mlx4.
+> >
+> > Tested: compiled and run xdpsock -q 3 -r -S on mlx4
+> > Signed-off-by: Luigi Rizzo <lrizzo@google.com>
+>
+> Reviewed-by: Jakub Kicinski <jakub.kicinski@netronome.com>
 
-Reviewed-by: Jakub Kicinski <jakub.kicinski@netronome.com>
-
+Applied. Thanks
