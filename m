@@ -2,96 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D2DF1022C9
-	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2019 12:17:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1035B10234F
+	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2019 12:38:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726000AbfKSLRO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Nov 2019 06:17:14 -0500
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:37258 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725904AbfKSLRN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Nov 2019 06:17:13 -0500
-Received: by mail-wr1-f67.google.com with SMTP id t1so23335666wrv.4
-        for <bpf@vger.kernel.org>; Tue, 19 Nov 2019 03:17:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id;
-        bh=cBujejvLbogHyKUgSVV47tgGhkIi0WjoqREpr5RAh/o=;
-        b=UhmBiZ2gPYI1zjRB8+eZCnXyYaJb0jiPrJJ58XuyuqnSWH6LktQ+dmaBSqQxBLCR/i
-         FQ0Hsk1sq2An2ZP8pZQElvLXZ4AJKy366NJuL9WVqufJYqLdaQmmJJHr3h7QsLxX0dYj
-         iB1IgY9YOxIF0EJRpUCR+fiDG/yXXnFpbc0Lz+JXgNPrKiaxkgayZIY/Vp2EnMS+vIlR
-         eFrnjWcWXA7cVfWP05apEXT0E/HKumZ++Fm2sIQ1kp2ClYSw8VVBfOtfqayeDMYuSDuz
-         i9zk677wnNUeGs/1Eog7BgYcbKjuXWdUv4Gyeq3sMymfKcHXdCqCHLfVWQgbFWWQSs2J
-         9/1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=cBujejvLbogHyKUgSVV47tgGhkIi0WjoqREpr5RAh/o=;
-        b=AS46sFReicVdLT63ZHdxLc+G9WkLUgb8/vFLUrA9+N6F5+Q/+uv+NmtrWE7YWEDoZY
-         raO/mLwfFYkorHiOS1t46tvMX4xRbA3wDmZdRavOIGd6TqRGc7rSlvIvjbX+Xsmyoe6v
-         R1LWgPXJCvE9JenDs7hYn39CT30rjDHC2eMdI4Trc8YUJzLv+aZzt+xmKuUhv5Q7yR+V
-         pFxlSiqnlhtMxmOmmPBxFONhH/1I3RDQ8Jbr8ISE22PPj5z7h5KaSFJ0nXDg6AB/nL32
-         hutPudnMDyk/OIpkBJrhMG+pPeewgsE5AlfkYtLbgfqbtw6PD/LHb0AvXVjD3b1Sf1u2
-         yXNA==
-X-Gm-Message-State: APjAAAWInnU4qVgN/r+PgCWP0QBgE9ekXlGZtgkheJhJ4a1/pvljFMEF
-        RGRaA66ZR4aJqrtFx5FDy1g3gg==
-X-Google-Smtp-Source: APXvYqy3plPyqq8sO9voVlbt6Q+u3Nm6NsMF9x0bcim7+HFG/9WZyHDdSVJYPTemHZfwMa5JdbcjCg==
-X-Received: by 2002:adf:fe89:: with SMTP id l9mr15003280wrr.368.1574162231769;
-        Tue, 19 Nov 2019 03:17:11 -0800 (PST)
-Received: from cbtest32.netronome.com ([217.38.71.146])
-        by smtp.gmail.com with ESMTPSA id b3sm2602611wmj.44.2019.11.19.03.17.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Nov 2019 03:17:11 -0800 (PST)
-From:   Quentin Monnet <quentin.monnet@netronome.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        oss-drivers@netronome.com,
-        Quentin Monnet <quentin.monnet@netronome.com>,
-        Jiri Olsa <jolsa@kernel.org>
-Subject: [PATCH bpf-next] tools: bpftool: fix warning on ignored return value for 'read'
-Date:   Tue, 19 Nov 2019 11:17:06 +0000
-Message-Id: <20191119111706.22440-1-quentin.monnet@netronome.com>
-X-Mailer: git-send-email 2.17.1
+        id S1727976AbfKSLh5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Nov 2019 06:37:57 -0500
+Received: from mx2.suse.de ([195.135.220.15]:35362 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727557AbfKSLh5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Nov 2019 06:37:57 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 8BC3DBCC5;
+        Tue, 19 Nov 2019 11:37:52 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 1D7961E47E5; Tue, 19 Nov 2019 12:37:46 +0100 (CET)
+Date:   Tue, 19 Nov 2019 12:37:46 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, bpf@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, kvm@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
+        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 17/24] mm/gup: track FOLL_PIN pages
+Message-ID: <20191119113746.GD25605@quack2.suse.cz>
+References: <20191119081643.1866232-1-jhubbard@nvidia.com>
+ <20191119081643.1866232-18-jhubbard@nvidia.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191119081643.1866232-18-jhubbard@nvidia.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When building bpftool, a warning was introduced by commit a94364603610
-("bpftool: Allow to read btf as raw data"), because the return value
-from a call to 'read()' is ignored. Let's address it.
+On Tue 19-11-19 00:16:36, John Hubbard wrote:
+> @@ -2025,6 +2149,20 @@ static int __record_subpages(struct page *page, unsigned long addr,
+>  	return nr;
+>  }
+>  
+> +static bool __pin_compound_head(struct page *head, int refs, unsigned int flags)
+> +{
 
-Cc: Jiri Olsa <jolsa@kernel.org>
-Signed-off-by: Quentin Monnet <quentin.monnet@netronome.com>
-Reviewed-by: Jakub Kicinski <jakub.kicinski@netronome.com>
----
- tools/bpf/bpftool/btf.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+I don't quite like the proliferation of names starting with __. I don't
+think there's a good reason for that, particularly in this case. Also 'pin'
+here is somewhat misleading as we already use term "pin" for the particular
+way of pinning the page. We could have grab_compound_head() or maybe
+nail_compound_head() :), but you're native speaker so you may come up with
+better word.
 
-diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
-index a7b8bf233cf5..e5bc97b71ceb 100644
---- a/tools/bpf/bpftool/btf.c
-+++ b/tools/bpf/bpftool/btf.c
-@@ -428,15 +428,15 @@ static struct btf *btf__parse_raw(const char *file)
- static bool is_btf_raw(const char *file)
- {
- 	__u16 magic = 0;
--	int fd;
-+	int fd, nb_read;
- 
- 	fd = open(file, O_RDONLY);
- 	if (fd < 0)
- 		return false;
- 
--	read(fd, &magic, sizeof(magic));
-+	nb_read = read(fd, &magic, sizeof(magic));
- 	close(fd);
--	return magic == BTF_MAGIC;
-+	return nb_read == sizeof(magic) && magic == BTF_MAGIC;
- }
- 
- static int do_dump(int argc, char **argv)
+> +	if (flags & FOLL_PIN) {
+> +		if (unlikely(!try_pin_compound_head(head, refs)))
+> +			return false;
+> +	} else {
+> +		head = try_get_compound_head(head, refs);
+> +		if (!head)
+> +			return false;
+> +	}
+> +
+> +	return true;
+> +}
+> +
+>  static void put_compound_head(struct page *page, int refs)
+>  {
+>  	/* Do a get_page() first, in case refs == page->_refcount */
+
+put_compound_head() needs similar treatment as undo_dev_pagemap(), doesn't
+it?
+
+> @@ -968,7 +973,18 @@ struct page *follow_devmap_pmd(struct vm_area_struct *vma, unsigned long addr,
+>  	if (!*pgmap)
+>  		return ERR_PTR(-EFAULT);
+>  	page = pfn_to_page(pfn);
+> -	get_page(page);
+> +
+> +	if (flags & FOLL_GET)
+> +		get_page(page);
+> +	else if (flags & FOLL_PIN) {
+> +		/*
+> +		 * try_pin_page() is not actually expected to fail here because
+> +		 * we hold the pmd lock so no one can unmap the pmd and free the
+> +		 * page that it points to.
+> +		 */
+> +		if (unlikely(!try_pin_page(page)))
+> +			page = ERR_PTR(-EFAULT);
+> +	}
+
+This pattern is rather common. So maybe I'd add a helper grab_page(page,
+flags) doing
+
+	if (flags & FOLL_GET)
+		get_page(page);
+	else if (flags & FOLL_PIN)
+		return try_pin_page(page);
+	return true;
+
+Otherwise the patch looks good to me now.
+
+								Honza
 -- 
-2.17.1
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
