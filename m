@@ -2,208 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B192B1010F2
-	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2019 02:44:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 843A8101223
+	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2019 04:21:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727417AbfKSBoj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Nov 2019 20:44:39 -0500
-Received: from mail-pf1-f202.google.com ([209.85.210.202]:42670 "EHLO
-        mail-pf1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727460AbfKSBoj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Nov 2019 20:44:39 -0500
-Received: by mail-pf1-f202.google.com with SMTP id i11so15603531pfk.9
-        for <bpf@vger.kernel.org>; Mon, 18 Nov 2019 17:44:37 -0800 (PST)
+        id S1727176AbfKSDVd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Nov 2019 22:21:33 -0500
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:45278 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727018AbfKSDVd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Nov 2019 22:21:33 -0500
+Received: by mail-pl1-f193.google.com with SMTP id w7so10937875plz.12;
+        Mon, 18 Nov 2019 19:21:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=vOGdWKkLZw+fnwsKztc5Xhx6sgiytcIM3uQq3wSpoPY=;
-        b=ae7SAUyRl+afwJjPYWHUh238QkT8TPlv+uLlQdmyNQJZlTCOIWGSZlOKTEetLzBhCy
-         Coeco7M+ofuKsaMhZTUwJih265NFLB0rweLZkM+o9afBA5bmO9Squatev3m2zgfxzecb
-         sZI/bTHikAvdCvLfQkCbI6aUhs5z6mRO50dq/9rUpMrz4teQKs1I6f2hymSIv58HUvfU
-         aasXDfIesdHIwA+aZzk11ZUiumZGY8hk5egqYlMrEWzctBBBvQX5y64LKMQwB4vcMmpf
-         lRKRp9LJlDwUxYTclvvh4N5AxQgOpNr/Mm36deZfIgTS31+scAIIKhpRwKCZnMO9O/P1
-         fsQA==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=AJSVdvbi212zCUDsjBqGjD7qtdajE6+qPwR1HzaIyho=;
+        b=XAsjp0UfvBJaaNSKz53ndim8SsS53XqDhf+5/udM2dsqWIeqGVOC3axEMLay6pskwu
+         iLXBwOZdteWt8F4DYXpabbg12dy0hfASmooqVzcKUeAiZbewE3dP647mfEg5hdmo+Grc
+         774RVyR7XWxR951pd+rZ9SUuFBpJa7QyxxUhp8WnnuQb39N8PNWKHN82jiZZjBNa8p+F
+         jGH8JCjERXrBK32Qn3sIn/mDEgRup5ShLbW0MLuwvBunlOuM4tyZz2wO5kjxCXqw5YVy
+         9oYfpOekOIp+ccFs/mleVqlE7w6XzaEIYut5wDh67JU7eCmLdusctls8elqWxD9tcCel
+         d1SA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=vOGdWKkLZw+fnwsKztc5Xhx6sgiytcIM3uQq3wSpoPY=;
-        b=HA/USeY6DpfAlcyyzO/vPIKpWb1ICyLu03Nnu9d6RcsA7s6ysJZdO+7aV9OiX7hHlT
-         MxZzasJUiLguyG17Ibk8hwKDhdYyIjtuhSxn3WIk1Bo0IU9nIEUp6sX7bQXaZRGzC4PV
-         AjDKWyJ0GE0zuWWrmXmUmLOvpCjsaogaIz/EBI9UKs53AASwGjzVCB+kkZpQTkzn72Lf
-         /nr9UOGKnJyTgict7w9gXhRTlTsyTpYK3ZoFCxRJTV5L0hE97qGk+ltpnhUVn/DFJ3nJ
-         Lim7G2MJImJpHYXS8s/rtncNnN6ZgZ17086KyVVuULlcb0wgosigVyGIxHg12Z3+TShQ
-         8Obg==
-X-Gm-Message-State: APjAAAUmS5nATlQyRcHW8cQ2R27aodSeRWInAy2zFG4f7jFga0F69T+W
-        sWksWXlDAZmrmLAguHps7ppbDa/oshnU
-X-Google-Smtp-Source: APXvYqyysPK7uFHLsTejqiiFUyzQuAwLBfeWk+ZOfNeGUvoHECBR2YcqktgomekVGfvRDQv9o+fSoZRotwhf
-X-Received: by 2002:a63:a05c:: with SMTP id u28mr2703600pgn.333.1574127876542;
- Mon, 18 Nov 2019 17:44:36 -0800 (PST)
-Date:   Mon, 18 Nov 2019 17:43:57 -0800
-In-Reply-To: <20191119014357.98465-1-brianvv@google.com>
-Message-Id: <20191119014357.98465-10-brianvv@google.com>
-Mime-Version: 1.0
-References: <20191119014357.98465-1-brianvv@google.com>
-X-Mailer: git-send-email 2.24.0.432.g9d3f5f5b63-goog
-Subject: [PATCH bpf-next 9/9] selftests/bpf: add batch ops testing to array
- bpf map
-From:   Brian Vazquez <brianvv@google.com>
-To:     Brian Vazquez <brianvv.kernel@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S . Miller" <davem@davemloft.net>
-Cc:     Yonghong Song <yhs@fb.com>, Stanislav Fomichev <sdf@google.com>,
-        Petar Penkov <ppenkov@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Brian Vazquez <brianvv@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=AJSVdvbi212zCUDsjBqGjD7qtdajE6+qPwR1HzaIyho=;
+        b=Cwe1pkJ3WLErwBDezvI75+RBIBpQ/GqviCX9J21wwycrDT2IoOsUPtiod2coBnOQGJ
+         mEQw6OcWR0BVtD53KJ0oa1g0B56+/vrl4F4XfjavVkIkA+dNG6+iNvz585TBDGFkZSaK
+         JyQUnpmmFgZGuS4G1otomIsloUVKpm32CYWUlDMN0mpnEae+NZyqd29uVQclXkR5IvV+
+         uF5wzkrH8KG9+UTI24MiUH/p2hVCJp7POenuWQ2rlxuZG9jJQvC7aZRorAj17IA4HQUj
+         6vL8aBCiz0irXy5fw6UCusngFRu3iJBld/Fzxzp1xAh1zOWGyAqT43W1H5TTIpU0EGqp
+         RxsA==
+X-Gm-Message-State: APjAAAXSu9ZWvLju6sRHe/4k1i/baNKpLlr/VBiu3qOw5mHsfafCQli8
+        JZ6pSUUrtZk/XgsA3ABGJuc=
+X-Google-Smtp-Source: APXvYqwHySuggv2EYKl7B2OgoSD6B53sTlzBDOVVTaqfvIwzxELqlOUIP0zisQ0Rc4OBeJhOdMMX1w==
+X-Received: by 2002:a17:90a:195e:: with SMTP id 30mr3318897pjh.60.1574133692723;
+        Mon, 18 Nov 2019 19:21:32 -0800 (PST)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:180::db2d])
+        by smtp.gmail.com with ESMTPSA id 81sm25657044pfx.142.2019.11.18.19.21.30
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 18 Nov 2019 19:21:31 -0800 (PST)
+Date:   Mon, 18 Nov 2019 19:21:29 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
+        daniel@iogearbox.net, andrii.nakryiko@gmail.com, kernel-team@fb.com
+Subject: Re: [PATCH bpf-next 5/6] libbpf: support libbpf-provided extern
+ variables
+Message-ID: <20191119032127.hixvyhvjjhx6mmzk@ast-mbp.dhcp.thefacebook.com>
+References: <20191117070807.251360-1-andriin@fb.com>
+ <20191117070807.251360-6-andriin@fb.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191117070807.251360-6-andriin@fb.com>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Tested bpf_map_lookup_batch() and bpf_map_update_batch()
-functionality.
+On Sat, Nov 16, 2019 at 11:08:06PM -0800, Andrii Nakryiko wrote:
+> Add support for extern variables, provided to BPF program by libbpf. Currently
+> the following extern variables are supported:
+>   - LINUX_KERNEL_VERSION; version of a kernel in which BPF program is
+>     executing, follows KERNEL_VERSION() macro convention;
+>   - CONFIG_xxx values; a set of values of actual kernel config. Tristate,
+>     boolean, and integer values are supported. Strings are not supported at
+>     the moment.
+> 
+> All values are represented as 64-bit integers, with the follow value encoding:
+>   - for boolean values, y is 1, n or missing value is 0;
+>   - for tristate values, y is 1, m is 2, n or missing value is 0;
+>   - for integers, the values is 64-bit integer, sign-extended, if negative; if
+>     config value is missing, it's represented as 0, which makes explicit 0 and
+>     missing config value indistinguishable. If this will turn out to be
+>     a problem in practice, we'll need to deal with it somehow.
 
-  $ ./test_maps
-      ...
-        test_map_lookup_and_delete_batch_array:PASS
-      ...
+I read that statement as there is no extensibility for such api.
 
-Signed-off-by: Brian Vazquez <brianvv@google.com>
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- .../map_lookup_and_delete_batch_array.c       | 119 ++++++++++++++++++
- 1 file changed, 119 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/map_tests/map_lookup_and_delete_batch_array.c
+> Generally speaking, libbpf is not aware of which CONFIG_XXX values is of which
+> expected type (bool, tristate, int), so it doesn't enforce any specific set of
+> values and just parses n/y/m as 0/1/2, respectively. CONFIG_XXX values not
+> found in config file are set to 0.
 
-diff --git a/tools/testing/selftests/bpf/map_tests/map_lookup_and_delete_batch_array.c b/tools/testing/selftests/bpf/map_tests/map_lookup_and_delete_batch_array.c
-new file mode 100644
-index 0000000000000..cbec72ad38609
---- /dev/null
-+++ b/tools/testing/selftests/bpf/map_tests/map_lookup_and_delete_batch_array.c
-@@ -0,0 +1,119 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <stdio.h>
-+#include <errno.h>
-+#include <string.h>
-+
-+#include <bpf/bpf.h>
-+#include <bpf/libbpf.h>
-+
-+#include <test_maps.h>
-+
-+static void map_batch_update(int map_fd, __u32 max_entries, int *keys,
-+			     int *values)
-+{
-+	int i, err;
-+
-+	for (i = 0; i < max_entries; i++) {
-+		keys[i] = i;
-+		values[i] = i + 1;
-+	}
-+
-+	err = bpf_map_update_batch(map_fd, keys, values, &max_entries, 0, 0);
-+	CHECK(err, "bpf_map_update_batch()", "error:%s\n", strerror(errno));
-+}
-+
-+static void map_batch_verify(int *visited, __u32 max_entries,
-+			     int *keys, int *values)
-+{
-+	int i;
-+
-+	memset(visited, 0, max_entries * sizeof(*visited));
-+	for (i = 0; i < max_entries; i++) {
-+		CHECK(keys[i] + 1 != values[i], "key/value checking",
-+		      "error: i %d key %d value %d\n", i, keys[i], values[i]);
-+		visited[i] = 1;
-+	}
-+	for (i = 0; i < max_entries; i++) {
-+		CHECK(visited[i] != 1, "visited checking",
-+		      "error: keys array at index %d missing\n", i);
-+	}
-+}
-+
-+void test_map_lookup_and_delete_batch_array(void)
-+{
-+	struct bpf_create_map_attr xattr = {
-+		.name = "array_map",
-+		.map_type = BPF_MAP_TYPE_ARRAY,
-+		.key_size = sizeof(int),
-+		.value_size = sizeof(int),
-+	};
-+	int map_fd, *keys, *values, *visited;
-+	__u32 count, total, total_success;
-+	const __u32 max_entries = 10;
-+	int err, i, step;
-+	bool nospace_err;
-+	__u64 batch = 0;
-+
-+	xattr.max_entries = max_entries;
-+	map_fd = bpf_create_map_xattr(&xattr);
-+	CHECK(map_fd == -1,
-+	      "bpf_create_map_xattr()", "error:%s\n", strerror(errno));
-+
-+	keys = malloc(max_entries * sizeof(int));
-+	values = malloc(max_entries * sizeof(int));
-+	visited = malloc(max_entries * sizeof(int));
-+	CHECK(!keys || !values || !visited, "malloc()", "error:%s\n",
-+	      strerror(errno));
-+
-+	/* populate elements to the map */
-+	map_batch_update(map_fd, max_entries, keys, values);
-+
-+	/* test 1: lookup in a loop with various steps. */
-+	total_success = 0;
-+	for (step = 1; step < max_entries; step++) {
-+		map_batch_update(map_fd, max_entries, keys, values);
-+		memset(keys, 0, max_entries * sizeof(*keys));
-+		memset(values, 0, max_entries * sizeof(*values));
-+		batch = 0;
-+		total = 0;
-+		i = 0;
-+		/* iteratively lookup/delete elements with 'step'
-+		 * elements each.
-+		 */
-+		count = step;
-+		nospace_err = false;
-+		while (true) {
-+			err = bpf_map_lookup_batch(map_fd,
-+						total ? &batch : NULL, &batch,
-+						keys + total,
-+						values + total,
-+						&count, 0, 0);
-+
-+			CHECK((err && errno != ENOENT), "lookup with steps",
-+			      "error: %s\n", strerror(errno));
-+
-+			total += count;
-+
-+			if (err)
-+				break;
-+
-+			i++;
-+		}
-+
-+		if (nospace_err == true)
-+			continue;
-+
-+		CHECK(total != max_entries, "lookup with steps",
-+		      "total = %u, max_entries = %u\n", total, max_entries);
-+
-+		map_batch_verify(visited, max_entries, keys, values);
-+
-+		total_success++;
-+	}
-+
-+	CHECK(total_success == 0, "check total_success",
-+	      "unexpected failure\n");
-+
-+	printf("%s:PASS\n", __func__);
-+}
--- 
-2.24.0.432.g9d3f5f5b63-goog
+This is not pretty either.
+
+> +
+> +		switch (*value) {
+> +		case 'n':
+> +			*ext_val = 0;
+> +			break;
+> +		case 'y':
+> +			*ext_val = 1;
+> +			break;
+> +		case 'm':
+> +			*ext_val = 2;
+> +			break;
+> +		case '"':
+> +			pr_warn("extern '%s': strings are not supported\n",
+> +				ext->name);
+> +			err = -EINVAL;
+> +			goto out;
+> +		default:
+> +			errno = 0;
+> +			*ext_val = strtoull(value, &value_end, 10);
+> +			if (errno) {
+> +				err = -errno;
+> +				pr_warn("extern '%s': failed to parse value: %d\n",
+> +					ext->name, err);
+> +				goto out;
+> +			}
+
+BPF has bpf_strtol() helper. I think it would be cleaner to pass whatever
+.config has as bytes to the program and let program parse n/y/m, strings and
+integers.
+
+LINUX_KERNEL_VERSION is a special case and can stay as u64.
 
