@@ -2,115 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8757E1028F5
-	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2019 17:11:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CAEA102C11
+	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2019 19:53:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728433AbfKSQLC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Nov 2019 11:11:02 -0500
-Received: from mail-io1-f67.google.com ([209.85.166.67]:47040 "EHLO
-        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728226AbfKSQLA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Nov 2019 11:11:00 -0500
-Received: by mail-io1-f67.google.com with SMTP id i11so203491iol.13
-        for <bpf@vger.kernel.org>; Tue, 19 Nov 2019 08:10:58 -0800 (PST)
+        id S1727486AbfKSSw4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Nov 2019 13:52:56 -0500
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:32962 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726792AbfKSSwz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Nov 2019 13:52:55 -0500
+Received: by mail-qk1-f193.google.com with SMTP id 71so18836008qkl.0;
+        Tue, 19 Nov 2019 10:52:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=yxTg9Jz6CUPbj7hb+zClDPA6shnTNr7Uh8vLjm12KTA=;
-        b=oGIJW8HfkgkobB0o2Qa1NbNfnl9mEqSGpPEO2LkogyZvOuMJQ7TF55da86qlugqMCd
-         338Wge2YPFXsoEIf9RGDawq7jpCCeV3jwC0W058T6wHLBemhZJS3koszJqUTfQULDiaX
-         2B6RyRY6HS9AE+8hVENsQBKSpUdhkmyAKNXz0Nm/Cxj0QFJRN/CWS+DE/OAhOnYHg0xk
-         tK1FlPGkzCpUU1kARsuIumFoSGAGKhbP5ourqDXhrP7e5xrJzr7bWyrrGYocI1tJI7bI
-         UgAaDI7OLq1bomHv0lR8zAsfor6M3fEsHwxDtlUp7bVspKwb2e69Lw3GuCnkI9VLqTxF
-         /QFQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EPnRZnPz0SVNZy49cNCXUGzrr5PJ4Bk/OZcFQYiIX58=;
+        b=ALQNf6ElapHnlZ8CAOBpqvAONNqxktpr2nppUCOqrqgo1FsNYe87poisUEk3GtczQb
+         zEpHO7/iDaC7UB07vmrk8w5S5ytRMTEJ1ltgYXmqO5a7LQOANMDZJg7ZqZvqXvB2L5FS
+         56qcEaXJdxKMh0XzQMRpqhBvsA/wCu0mXwqR7VBasMgNV7f5AFwA3cuJlJCakQFXdiqn
+         bY7rNKcOZTEJuFM0jtOlrar0IRtUzlkUT3sC5ff9orb5bKkCihF5HUY7mmC4sbbJgeqT
+         CXAYF3f+3HrEgmDZHS2AWtkxDMuSbKc1GdZTrUOAjTfvXSTEaT+8f1tcUHyH5qkaF+wU
+         f1cQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=yxTg9Jz6CUPbj7hb+zClDPA6shnTNr7Uh8vLjm12KTA=;
-        b=Cnx7L4K/MXhVL+qBLsjxvbMrhuMb9ZksPYB5AR5FIlkSJXjoRVoW8BtjboYAWC57sv
-         tl+6iHlhY9juSp6ljCbCO88lH8JgEzYKXZOsytP6DcBLpDPta4v5xXVqymJhPlK4KoZm
-         pdmA7Yh44cnr6BPq4w72Er/7U/b19mxL59E9F+PYHhuFAL8r2k2fo38drvri8zcfTuW5
-         eMVy0Dv6V5Cs/9Fm9SseWxKVSUV1g54hLO50p7hxIlXgOqsdyo1CFgI8V1IdA83X2GUl
-         743/W20eiLCdUfuZ2e20WNxbB9pr27pDAJavNvJVFT2pH4adjy2bY0ZQzChWIWWuH8Op
-         b9hw==
-X-Gm-Message-State: APjAAAX+JpUP5HQnr+MNsQk4lqx03kOtB9Y3fLEQgeyR/stmjFMIkF5h
-        BTByBf2JfL61P5Urhelgp4RhZg==
-X-Google-Smtp-Source: APXvYqw/6l4rejQYc8a+bdmv6/89DOI3Ir5+fK0WCl1y9yQpIdn8Kiz4M9g4FLh+4h0UiHB53RA+ow==
-X-Received: by 2002:a02:140a:: with SMTP id 10mr18915165jag.72.1574179857938;
-        Tue, 19 Nov 2019 08:10:57 -0800 (PST)
-Received: from [192.168.1.159] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id u6sm5616560ilm.22.2019.11.19.08.10.55
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 19 Nov 2019 08:10:56 -0800 (PST)
-Subject: Re: [PATCH v6 15/24] fs/io_uring: set FOLL_PIN via pin_user_pages()
-To:     John Hubbard <jhubbard@nvidia.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, bpf@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, kvm@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
-        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>
-References: <20191119081643.1866232-1-jhubbard@nvidia.com>
- <20191119081643.1866232-16-jhubbard@nvidia.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <2ae65d1b-a3eb-74ed-afce-c493de5bbfd3@kernel.dk>
-Date:   Tue, 19 Nov 2019 09:10:54 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EPnRZnPz0SVNZy49cNCXUGzrr5PJ4Bk/OZcFQYiIX58=;
+        b=VNPkAfEIvRvL9HtbkydMCc3S99E3GR66RyJhOqoPPnKx7+vPGHwQLeZwM0sHpmM/4c
+         47Xy/NKsGWH/Xt/k+x2SKyh1LBFe3+Hk5hefGb7g6N7AIV5Dn7YF9JtJfIBfAOTJ6eqF
+         pCCw0bpkaNv4eHKTaWI9xW8HPHFNaS6ezvQdVGqLTcyQ1LDmSHsQE354Rez+jYV411xh
+         pQNXb/9WqiqVxq1IY9STy6xR1pYy1TKlteZftaH7xM13PxYe0C6I+SRbr36RHC0gCV1m
+         VJ6b5IPFD6r/OCPx5Oy49OjScdYrxcXOLLBA4ootfYtEB5sx5NY48jry5P7O0lWYUjEi
+         nDtA==
+X-Gm-Message-State: APjAAAUz2HKm0Vwv7qkAuVzWuKtomeTHeo9U8u1YZ+YLheowD7TINpZr
+        pdF0LpxUvA5yxdEDOjp4oJNQNjbb38lesCycJQM=
+X-Google-Smtp-Source: APXvYqxE7s91L2D3A9hFwBx009jfeBn54/nQS+1eUtpeLD2LKmepWf3dtAG+2mgkqF5yLS1/7ueh7bz2GLqz8z/I51c=
+X-Received: by 2002:a37:aa8b:: with SMTP id t133mr18650892qke.449.1574189573030;
+ Tue, 19 Nov 2019 10:52:53 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20191119081643.1866232-16-jhubbard@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20191119142113.15388-1-yuehaibing@huawei.com>
+In-Reply-To: <20191119142113.15388-1-yuehaibing@huawei.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 19 Nov 2019 10:52:42 -0800
+Message-ID: <CAEf4BzbVj2VLEOEMbiqnDGBYUX=E-edcx6gXgj1S9RqrDpj0-w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: Make array_map_mmap static
+To:     YueHaibing <yuehaibing@huawei.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/19/19 1:16 AM, John Hubbard wrote:
-> Convert fs/io_uring to use the new pin_user_pages() call, which sets
-> FOLL_PIN. Setting FOLL_PIN is now required for code that requires
-> tracking of pinned pages, and therefore for any code that calls
-> put_user_page().
-> 
-> In partial anticipation of this work, the io_uring code was already
-> calling put_user_page() instead of put_page(). Therefore, in order to
-> convert from the get_user_pages()/put_page() model, to the
-> pin_user_pages()/put_user_page() model, the only change required
-> here is to change get_user_pages() to pin_user_pages().
-> 
-> Reviewed-by: Jan Kara <jack@suse.cz>
-> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+On Tue, Nov 19, 2019 at 6:22 AM YueHaibing <yuehaibing@huawei.com> wrote:
+>
+> Fix sparse warning:
+>
+> kernel/bpf/arraymap.c:481:5: warning:
+>  symbol 'array_map_mmap' was not declared. Should it be static?
+>
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> ---
 
-You dropped my reviewed-by now... Given the file, you'd probably want
-to keep that.
+Yes it should, thanks!
 
--- 
-Jens Axboe
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 
+[...]
