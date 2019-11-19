@@ -2,131 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BCB91013FE
-	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2019 06:29:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCA9310189D
+	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2019 07:11:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728962AbfKSF3P (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Nov 2019 00:29:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47770 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728944AbfKSF3P (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Nov 2019 00:29:15 -0500
-Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5EA8421823;
-        Tue, 19 Nov 2019 05:29:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1574141354;
-        bh=8JMcbCa2WKKz+0rsNJcoxlfJyTxFxkW6Mt8zV/xTAdU=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=qabvm+IvlkJYQun3fh27xE5jpHp5kNB4XaC5w+hBEUkzXWqYOJ9RD7p4ruZVj2C+a
-         Q0g2vTvCkC2rV+GHtwbgcE92wdyNLRaiwlUeX9rV/6oQV49PegVHILWShVFQjwlt9v
-         sC35xaQOKfKinpwSGZYPN/n64Iuf4AKMwwhgB3Ww=
-Date:   Mon, 18 Nov 2019 21:29:12 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     bpf <bpf@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        syzbot <syzbot+83979935eb6304f8cd46@syzkaller.appspotmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Subject: Re: kernel panic: stack is corrupted in __lock_acquire (4)
-Message-ID: <20191119052912.GM163020@sol.localdomain>
-References: <0000000000009b3b80058af452ae@google.com>
- <0000000000000ec274059185a63e@google.com>
- <CACT4Y+aT5z65OZE6_TQieU5zUYWDvDtAogC45f6ifLkshBK2iw@mail.gmail.com>
- <20191017162505.GB726@sol.localdomain>
- <20191017163007.GC726@sol.localdomain>
+        id S1727969AbfKSF0a (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Nov 2019 00:26:30 -0500
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:39731 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728571AbfKSF0a (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Nov 2019 00:26:30 -0500
+Received: by mail-qk1-f195.google.com with SMTP id 15so16741674qkh.6
+        for <bpf@vger.kernel.org>; Mon, 18 Nov 2019 21:26:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=podFF2nwPATgk6Vyaa+JKA//o6jLZZVDQvx/NXLG1qw=;
+        b=KyWCOhP8jnpTna7LokuJ3F0YPjpGUTp7v8hiLdPCgezIrdQViDb5ELCsIgqA+PbW7V
+         3hfj6V5icMIBejEYWnkhZfwtBaL9nKmrwhkhajivZ5Yy8fDRwTR7nNSViN48nzdzR4RL
+         z0UjUmwB1jqafeMb0lIDHDKFQAyNgYrmApymj8vZ2y5GfYY8Ag7Fqahe3sB9XLqxmTcA
+         bdjaL5FGV9B20YEyeHawFdceEettYdOYR8a1LJDxavzTYLJV+3OPThmSgCSxaKp45FfS
+         oWtmlStL+Ct/bbTpMr6kEjr71Nse3C8LetBocRbMpqYjHPgmtAFxSdcNI8k8ju5qZUa2
+         m35Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=podFF2nwPATgk6Vyaa+JKA//o6jLZZVDQvx/NXLG1qw=;
+        b=iva1Gr8YBsrdHw0zEnOX37trRKKM8PASJVn9KHmwDx7JUKIvDazQcpuq4XUYPTCLhC
+         g1colfB6d2UJhAslXG//4+T6w5kIh7+WARsQfdWzPQbXrTZTVAj7OVLhSrCqR0lUMvhK
+         dTU4ya4FXRtQFTFdCYO5iMAwmFDy4OukaUYmLXJfnXb70UPHJ0+mGOXCa3JCwqPUWbtS
+         WKKWd2CBAQuNFsAvpFkEVLSFtYe3hPl488m6LIPYOk1ftYL46N637RsK2huLVTNo+9e4
+         ZGxIaM1e7rqSXQ1tVoeP8739VlMm6/G58huSKHb4tbwe50dKCDa+syUR3BlVJuzfQCgM
+         11/g==
+X-Gm-Message-State: APjAAAWzNfkwYcdvPq/j+Yij/y6dqzitYwAmZWqpFpOvlvjnGnS0Mdne
+        6cnyUw6NoDC6OlgODRMz0z+/o9J8UbUz/Y+sNDJwng==
+X-Google-Smtp-Source: APXvYqwflmyefFY6nZjcYclr6qXpeKQ0p3jimSeMmqtsPPXbdgiEFdjyKSl93F3ZmOOWiM3pqjYuyMaUYB8dyh2z1vs=
+X-Received: by 2002:a37:94e:: with SMTP id 75mr27389233qkj.49.1574141188100;
+ Mon, 18 Nov 2019 21:26:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191017163007.GC726@sol.localdomain>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+References: <20191119014357.98465-1-brianvv@google.com> <20191119014357.98465-6-brianvv@google.com>
+ <20191119042012.3wpj5porwkntpfm4@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20191119042012.3wpj5porwkntpfm4@ast-mbp.dhcp.thefacebook.com>
+From:   Brian Vazquez <brianvv@google.com>
+Date:   Mon, 18 Nov 2019 21:26:17 -0800
+Message-ID: <CAMzD94Rv2ysZuMOwMFtZqPVjnhYdx-t2N=ekZzgVNeRapd86Ow@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 5/9] bpf: add batch ops to all htab bpf map
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Brian Vazquez <brianvv.kernel@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S . Miller" <davem@davemloft.net>,
+        Yonghong Song <yhs@fb.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Petar Penkov <ppenkov@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Oct 17, 2019 at 09:30:07AM -0700, Eric Biggers wrote:
-> On Thu, Oct 17, 2019 at 09:25:05AM -0700, Eric Biggers wrote:
-> > On Sun, Sep 01, 2019 at 08:23:42PM -0700, 'Dmitry Vyukov' via syzkaller-bugs wrote:
-> > > On Sun, Sep 1, 2019 at 3:48 PM syzbot
-> > > <syzbot+83979935eb6304f8cd46@syzkaller.appspotmail.com> wrote:
-> > > >
-> > > > syzbot has found a reproducer for the following crash on:
-> > > >
-> > > > HEAD commit:    38320f69 Merge branch 'Minor-cleanup-in-devlink'
-> > > > git tree:       net-next
-> > > > console output: https://syzkaller.appspot.com/x/log.txt?x=13d74356600000
-> > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=1bbf70b6300045af
-> > > > dashboard link: https://syzkaller.appspot.com/bug?extid=83979935eb6304f8cd46
-> > > > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-> > > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1008b232600000
-> > > 
-> > > Stack corruption + bpf maps in repro triggers some bells. +bpf mailing list.
-> > > 
-> > > > IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> > > > Reported-by: syzbot+83979935eb6304f8cd46@syzkaller.appspotmail.com
-> > > >
-> > > > Kernel panic - not syncing: stack-protector: Kernel stack is corrupted in:
-> > > > __lock_acquire+0x36fa/0x4c30 kernel/locking/lockdep.c:3907
-> > > > CPU: 0 PID: 8662 Comm: syz-executor.4 Not tainted 5.3.0-rc6+ #153
-> > > > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS
-> > > > Google 01/01/2011
-> > > > Call Trace:
-> > > > Kernel Offset: disabled
-> > > > Rebooting in 86400 seconds..
-> > > >
-> > 
-> > This is still reproducible on latest net tree, but using a different kconfig I
-> > was able to get a more informative crash output.  Apparently tcp_bpf_unhash() is
-> > being called recursively.  Anyone know why this might happen?
-> > 
-> > This is using the syzkaller language reproducer linked above -- I ran it with:
-> > 
-> > 	syz-execprog -threaded=1 -collide=1 -cover=0 -repeat=0 -procs=8 -sandbox=none -enable=net_dev,net_reset,tun syz_bpf.txt
-> > 
-> > Crash report on net/master:
-> > 
-> > PANIC: double fault, error_code: 0x0
-> > CPU: 3 PID: 8328 Comm: syz-executor Not tainted 5.4.0-rc1-00118-ge497c20e2036 #31
-> > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20191013_105130-anatol 04/01/2014
-> > RIP: 0010:mark_lock+0x4/0x640 kernel/locking/lockdep.c:3631
-> > Code: a2 7f 27 01 85 c0 0f 84 f3 42 00 00 48 8d 65 d8 5b 41 5c 41 5d 41 5e 41 5f 5d c3 66 66 2e 0f 1f 84 00 00 00 00 00 55 48 89 e5 <41> 57 41 56 41 55 41 54 53 48 83 ec 18 83 fa 08 76 21 44 8b 25 ab
-> > RSP: 0018:ffffc9000010d000 EFLAGS: 00010046
-> > RAX: 0000000000000000 RBX: 0000000000000005 RCX: 0000000000000000
-> > RDX: 0000000000000008 RSI: ffff888071f92dd8 RDI: ffff888071f92600
-> > RBP: ffffc9000010d000 R08: 0000000000000000 R09: 0000000000022023
-> > R10: 00000000000000c8 R11: 0000000000000000 R12: ffff888071f92600
-> > R13: ffff888071f92dd8 R14: 0000000000000023 R15: 0000000000000000
-> > FS:  00007ff9f7765700(0000) GS:ffff88807fd80000(0000) knlGS:0000000000000000
-> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > CR2: ffffc9000010cff8 CR3: 000000000221d000 CR4: 00000000003406e0
-> > Call Trace:
-> >  <IRQ>
-> >  mark_usage kernel/locking/lockdep.c:3592 [inline]
-> >  __lock_acquire+0x22f/0xf80 kernel/locking/lockdep.c:3909
-> >  lock_acquire+0x99/0x170 kernel/locking/lockdep.c:4487
-> >  rcu_lock_acquire include/linux/rcupdate.h:208 [inline]
-> >  rcu_read_lock include/linux/rcupdate.h:599 [inline]
-> >  tcp_bpf_unhash+0x33/0x1d0 net/ipv4/tcp_bpf.c:549
-> >  tcp_bpf_unhash+0x19b/0x1d0 net/ipv4/tcp_bpf.c:554
-> >  tcp_bpf_unhash+0x19b/0x1d0 net/ipv4/tcp_bpf.c:554
-> >  tcp_bpf_unhash+0x19b/0x1d0 net/ipv4/tcp_bpf.c:554
-> >  tcp_bpf_unhash+0x19b/0x1d0 net/ipv4/tcp_bpf.c:554
-> [...]
-> 
-> Recursive tcp_bpf_unhash() also showed up in
-> "BUG: unable to handle kernel paging request in tls_prots"
-> (https://lkml.kernel.org/lkml/000000000000d7bcbb058c3758a1@google.com/T/)
-> which was claimed to be fixed by
-> "bpf: sockmap/tls, close can race with map free".
-> But that fix was months ago; this crash is on latest net tree.
-> 
+On Mon, Nov 18, 2019 at 8:35 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Mon, Nov 18, 2019 at 05:43:53PM -0800, Brian Vazquez wrote:
+> > From: Yonghong Song <yhs@fb.com>
+> >
+> > htab can't use generic batch support due some problematic behaviours
+> > inherent to the datastructre, i.e. while iterating the bpf map  a
+> > concurrent program might delete the next entry that batch was about to
+> > use, in this case there's no easy solution to retrieve the next entry
+> > and the issua has been discussed multiple times (see [1] and [2]).
+> > The only way hmap can be traversed without the problem previously
+> > exposed is by making sure that the map is traversing entire buckets.
+> > This commit implements those strict requirements for hmap, the
+> > implementation follows the same interaction that generic support with
+> > some exceptions:
+> >
+> >  - If keys/values buffer are not big enough to traverse a bucket,
+> >    ENOSPC will be returned.
+> >  - out_batch contains the value of the next bucket in the iteration, not
+> >  the next key, but this is transparent for the user since the user
+> >  should never use out_batch for other than bpf batch syscalls.
+> >
+> > Note that only lookup and lookup_and_delete batch ops require the hmap
+> > specific implementation and update/delete batch ops can be the generic
+> > ones.
+> >
+> > [1] https://lore.kernel.org/bpf/20190724165803.87470-1-brianvv@google.com/
+> > [2] https://lore.kernel.org/bpf/20190906225434.3635421-1-yhs@fb.com/
+> >
+> > Co-authored-by: Brian Vazquez <brianvv@google.com>
+> > Signed-off-by: Brian Vazquez <brianvv@google.com>
+> > Signed-off-by: Yonghong Song <yhs@fb.com>
+>
+> SOB order is not quite correct.
+> If the patch was mainly developed by Yonghong it should have his 'From:'
+> then his SOB and then your SOB.
+> You can drop Co-authored-by field.
+>
+Thanks for clarifying, will fix in v2.
 
-Is anyone planning to look into this?  This is still occurring on net-next
-(4 days ago).
+> Patch 2 was also mainly done by Yonghong or not ?
+> If so it should have his 'From:' field.6504484251
 
-- Eric
+Generic support was done by me, but will double check the rest of the
+patches and fix them if needed.
