@@ -2,274 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DD3FB1021E8
-	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2019 11:19:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2687B10223F
+	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2019 11:50:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727640AbfKSKTS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Nov 2019 05:19:18 -0500
-Received: from mx2.suse.de ([195.135.220.15]:49868 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726555AbfKSKTS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Nov 2019 05:19:18 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 737CFAE87;
-        Tue, 19 Nov 2019 10:19:13 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id D586A1E47E5; Tue, 19 Nov 2019 11:19:10 +0100 (CET)
-Date:   Tue, 19 Nov 2019 11:19:10 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, bpf@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, kvm@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
-        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>
-Subject: Re: [PATCH v6 02/24] mm/gup: factor out duplicate code from four
- routines
-Message-ID: <20191119101910.GC25605@quack2.suse.cz>
-References: <20191119081643.1866232-1-jhubbard@nvidia.com>
- <20191119081643.1866232-3-jhubbard@nvidia.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20191119081643.1866232-3-jhubbard@nvidia.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1727001AbfKSKuS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Nov 2019 05:50:18 -0500
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:41011 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726783AbfKSKuS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Nov 2019 05:50:18 -0500
+Received: by mail-wr1-f66.google.com with SMTP id b18so21791942wrj.8
+        for <bpf@vger.kernel.org>; Tue, 19 Nov 2019 02:50:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=v3SR/Wv2ZKizQBTT/BCaE/dXsNbERQRJO9ye1A6QXTc=;
+        b=iIqi5xs9y/GWsQD3CdgwmpBo8DbLB9/cDLLtKYIdzOrZB9ZidsCOQACBiDjAuCL0eG
+         grwC9hNskZie0VqQJg0XSUwQjVc2WFOwhLhsf05f7WY0YEyVUDo4xQhCIS3iaGyRyXXj
+         pkXhxnx2VGc9WnDZxhOU0hxeP+s0GFgH+cd2xUb6zSjoOnRiX+tj7kKPLQsmVq3V6j7t
+         mWo/iZd3R3/kBMhb9v7WK85KyrLF+IOluu5fJKlsHlOaNq6ETPpBEm0glhNlgwsVqIdn
+         6hPejd5w2ZBn2ysNdhqWMWxd69dggG4GerIV2ncGWR9WEHRO70d/Ag7/jWoKUt7kqc2d
+         bPYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=v3SR/Wv2ZKizQBTT/BCaE/dXsNbERQRJO9ye1A6QXTc=;
+        b=sYx69LQXDoDooXMtACLpQpb7iXD2GTAgFwXM4aNRA3/jEbz0ORgk7YRfqMzNEWTRLZ
+         6I6INFbIiioWfqcAEASxf5D8iPR05XXCPl49zCPzEbcWTfLWDZZ4FbKZ3F3NUdCnMaJv
+         24sGqvbdbBOa+mTVivIk/qfVNSdYgZ73HKBY9dXFD4c6IHjUBRLFU2OOx30dpbNbr18L
+         9bUV/+Qw+UU28OMAfUK+5Y0FVsJx0px5+Qgvklgp5ud+w1kiONY6MibCEeDcoiOWIQYZ
+         U9a1hPXyjEn30TG/cILBYM44fjnjtXn57rrPUMrVHI2pW4cI2mOGPXvRBqiUAlkgs74C
+         xWaw==
+X-Gm-Message-State: APjAAAX9YCi+7fYXoQNAKO7pAI5LuLBPIrZfiTTAp1tfd0V4L7JAKJN6
+        X86B0W6CjMffnNhet+Xx6Vjyow==
+X-Google-Smtp-Source: APXvYqwNaA49+RpaL1QNuDPtanP9i7V62tlt1DJYekp69Dex9AsqnAX9zFR0Z9qcRvyjc96tO40nvQ==
+X-Received: by 2002:adf:f18e:: with SMTP id h14mr18468274wro.348.1574160616374;
+        Tue, 19 Nov 2019 02:50:16 -0800 (PST)
+Received: from cbtest32.netronome.com ([217.38.71.146])
+        by smtp.gmail.com with ESMTPSA id g5sm2646708wma.43.2019.11.19.02.50.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Nov 2019 02:50:15 -0800 (PST)
+From:   Quentin Monnet <quentin.monnet@netronome.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        oss-drivers@netronome.com,
+        Quentin Monnet <quentin.monnet@netronome.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>
+Subject: [PATCH bpf-next 0/2] selftests: bpftool: skip build tests if not in tree
+Date:   Tue, 19 Nov 2019 10:50:08 +0000
+Message-Id: <20191119105010.19189-1-quentin.monnet@netronome.com>
+X-Mailer: git-send-email 2.17.1
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue 19-11-19 00:16:21, John Hubbard wrote:
-> There are four locations in gup.c that have a fair amount of code
-> duplication. This means that changing one requires making the same
-> changes in four places, not to mention reading the same code four
-> times, and wondering if there are subtle differences.
-> 
-> Factor out the common code into static functions, thus reducing the
-> overall line count and the code's complexity.
-> 
-> Also, take the opportunity to slightly improve the efficiency of the
-> error cases, by doing a mass subtraction of the refcount, surrounded
-> by get_page()/put_page().
-> 
-> Also, further simplify (slightly), by waiting until the the successful
-> end of each routine, to increment *nr.
-> 
-> Reviewed-by: Jérôme Glisse <jglisse@redhat.com>
-> Cc: Jan Kara <jack@suse.cz>
-> Cc: Ira Weiny <ira.weiny@intel.com>
-> Cc: Christoph Hellwig <hch@lst.de>
-> Cc: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
-> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+The build test script for bpftool attempts to detect the toplevel path of
+the kernel repository and attempts to build bpftool from there.
 
-Looks good to me now! You can add:
+If it fails to find the correct directory, or if bpftool files are missing
+for another reason (e.g. kselftests built on a first machine and copied
+onto another, without bpftool sources), then it is preferable to skip the
+tests entirely rather than dumping useless error messages.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+The first patch moves the EXIT trap in the script lower down in the code,
+to avoid tampering with return value on early exits at the beginning of the
+script; then the second patch makes sure that we skip the build tests if
+bpftool's Makefile is not found at its expected location.
 
-								Honza
+Jakub Kicinski (1):
+  selftests: bpftool: skip the build test if not in tree
 
-> ---
->  mm/gup.c | 91 ++++++++++++++++++++++----------------------------------
->  1 file changed, 36 insertions(+), 55 deletions(-)
-> 
-> diff --git a/mm/gup.c b/mm/gup.c
-> index 85caf76b3012..f3c7d6625817 100644
-> --- a/mm/gup.c
-> +++ b/mm/gup.c
-> @@ -1969,6 +1969,25 @@ static int __gup_device_huge_pud(pud_t pud, pud_t *pudp, unsigned long addr,
->  }
->  #endif
->  
-> +static int __record_subpages(struct page *page, unsigned long addr,
-> +			     unsigned long end, struct page **pages)
-> +{
-> +	int nr;
-> +
-> +	for (nr = 0; addr != end; addr += PAGE_SIZE)
-> +		pages[nr++] = page++;
-> +
-> +	return nr;
-> +}
-> +
-> +static void put_compound_head(struct page *page, int refs)
-> +{
-> +	/* Do a get_page() first, in case refs == page->_refcount */
-> +	get_page(page);
-> +	page_ref_sub(page, refs);
-> +	put_page(page);
-> +}
-> +
->  #ifdef CONFIG_ARCH_HAS_HUGEPD
->  static unsigned long hugepte_addr_end(unsigned long addr, unsigned long end,
->  				      unsigned long sz)
-> @@ -1998,32 +2017,20 @@ static int gup_hugepte(pte_t *ptep, unsigned long sz, unsigned long addr,
->  	/* hugepages are never "special" */
->  	VM_BUG_ON(!pfn_valid(pte_pfn(pte)));
->  
-> -	refs = 0;
->  	head = pte_page(pte);
-> -
->  	page = head + ((addr & (sz-1)) >> PAGE_SHIFT);
-> -	do {
-> -		VM_BUG_ON(compound_head(page) != head);
-> -		pages[*nr] = page;
-> -		(*nr)++;
-> -		page++;
-> -		refs++;
-> -	} while (addr += PAGE_SIZE, addr != end);
-> +	refs = __record_subpages(page, addr, end, pages + *nr);
->  
->  	head = try_get_compound_head(head, refs);
-> -	if (!head) {
-> -		*nr -= refs;
-> +	if (!head)
->  		return 0;
-> -	}
->  
->  	if (unlikely(pte_val(pte) != pte_val(*ptep))) {
-> -		/* Could be optimized better */
-> -		*nr -= refs;
-> -		while (refs--)
-> -			put_page(head);
-> +		put_compound_head(head, refs);
->  		return 0;
->  	}
->  
-> +	*nr += refs;
->  	SetPageReferenced(head);
->  	return 1;
->  }
-> @@ -2071,28 +2078,19 @@ static int gup_huge_pmd(pmd_t orig, pmd_t *pmdp, unsigned long addr,
->  					     pages, nr);
->  	}
->  
-> -	refs = 0;
->  	page = pmd_page(orig) + ((addr & ~PMD_MASK) >> PAGE_SHIFT);
-> -	do {
-> -		pages[*nr] = page;
-> -		(*nr)++;
-> -		page++;
-> -		refs++;
-> -	} while (addr += PAGE_SIZE, addr != end);
-> +	refs = __record_subpages(page, addr, end, pages + *nr);
->  
->  	head = try_get_compound_head(pmd_page(orig), refs);
-> -	if (!head) {
-> -		*nr -= refs;
-> +	if (!head)
->  		return 0;
-> -	}
->  
->  	if (unlikely(pmd_val(orig) != pmd_val(*pmdp))) {
-> -		*nr -= refs;
-> -		while (refs--)
-> -			put_page(head);
-> +		put_compound_head(head, refs);
->  		return 0;
->  	}
->  
-> +	*nr += refs;
->  	SetPageReferenced(head);
->  	return 1;
->  }
-> @@ -2114,28 +2112,19 @@ static int gup_huge_pud(pud_t orig, pud_t *pudp, unsigned long addr,
->  					     pages, nr);
->  	}
->  
-> -	refs = 0;
->  	page = pud_page(orig) + ((addr & ~PUD_MASK) >> PAGE_SHIFT);
-> -	do {
-> -		pages[*nr] = page;
-> -		(*nr)++;
-> -		page++;
-> -		refs++;
-> -	} while (addr += PAGE_SIZE, addr != end);
-> +	refs = __record_subpages(page, addr, end, pages + *nr);
->  
->  	head = try_get_compound_head(pud_page(orig), refs);
-> -	if (!head) {
-> -		*nr -= refs;
-> +	if (!head)
->  		return 0;
-> -	}
->  
->  	if (unlikely(pud_val(orig) != pud_val(*pudp))) {
-> -		*nr -= refs;
-> -		while (refs--)
-> -			put_page(head);
-> +		put_compound_head(head, refs);
->  		return 0;
->  	}
->  
-> +	*nr += refs;
->  	SetPageReferenced(head);
->  	return 1;
->  }
-> @@ -2151,28 +2140,20 @@ static int gup_huge_pgd(pgd_t orig, pgd_t *pgdp, unsigned long addr,
->  		return 0;
->  
->  	BUILD_BUG_ON(pgd_devmap(orig));
-> -	refs = 0;
-> +
->  	page = pgd_page(orig) + ((addr & ~PGDIR_MASK) >> PAGE_SHIFT);
-> -	do {
-> -		pages[*nr] = page;
-> -		(*nr)++;
-> -		page++;
-> -		refs++;
-> -	} while (addr += PAGE_SIZE, addr != end);
-> +	refs = __record_subpages(page, addr, end, pages + *nr);
->  
->  	head = try_get_compound_head(pgd_page(orig), refs);
-> -	if (!head) {
-> -		*nr -= refs;
-> +	if (!head)
->  		return 0;
-> -	}
->  
->  	if (unlikely(pgd_val(orig) != pgd_val(*pgdp))) {
-> -		*nr -= refs;
-> -		while (refs--)
-> -			put_page(head);
-> +		put_compound_head(head, refs);
->  		return 0;
->  	}
->  
-> +	*nr += refs;
->  	SetPageReferenced(head);
->  	return 1;
->  }
-> -- 
-> 2.24.0
-> 
+Quentin Monnet (1):
+  selftests: bpftool: set EXIT trap after usage function
+
+ .../selftests/bpf/test_bpftool_build.sh       | 30 +++++++++++--------
+ 1 file changed, 17 insertions(+), 13 deletions(-)
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.17.1
+
