@@ -2,81 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FC11102616
-	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2019 15:13:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5281E10267D
+	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2019 15:21:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726409AbfKSONG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Nov 2019 09:13:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47812 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726202AbfKSONG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Nov 2019 09:13:06 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B9FBD2084D;
-        Tue, 19 Nov 2019 14:13:05 +0000 (UTC)
-Date:   Tue, 19 Nov 2019 09:13:04 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: Re: [RFC][PATCH 1/2] ftrace: Add modify_ftrace_direct()
-Message-ID: <20191119091304.2c775b35@gandalf.local.home>
-In-Reply-To: <CAADnVQ+OzTikM9EhrfsC7NFsVYhATW1SVHxK64w3xn9qpk81pg@mail.gmail.com>
-References: <20191114194636.811109457@goodmis.org>
-        <20191114194738.938540273@goodmis.org>
-        <20191115215125.mbqv7taqnx376yed@ast-mbp.dhcp.thefacebook.com>
-        <20191117171835.35af6c0e@gandalf.local.home>
-        <CAADnVQ+OzTikM9EhrfsC7NFsVYhATW1SVHxK64w3xn9qpk81pg@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726202AbfKSOVs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Nov 2019 09:21:48 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:49818 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725280AbfKSOVs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Nov 2019 09:21:48 -0500
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 1B77656ADDA5E797D26F;
+        Tue, 19 Nov 2019 22:21:42 +0800 (CST)
+Received: from localhost (10.133.213.239) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.439.0; Tue, 19 Nov 2019
+ 22:21:34 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <ast@kernel.org>, <daniel@iogearbox.net>, <kafai@fb.com>,
+        <songliubraving@fb.com>, <yhs@fb.com>, <andriin@fb.com>
+CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH bpf-next] bpf: Make array_map_mmap static
+Date:   Tue, 19 Nov 2019 22:21:13 +0800
+Message-ID: <20191119142113.15388-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.133.213.239]
+X-CFilter-Loop: Reflected
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 18 Nov 2019 22:04:28 -0800
-Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+Fix sparse warning:
 
-> I took your for-next without the extra patch and used it from bpf trampoline.
-> It's looking good so far. Passed basic testing. Will add more stress tests.
-> 
-> Do you mind doing:
-> diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-> index 73eb2e93593f..6ddb203ca550 100644
-> --- a/include/linux/ftrace.h
-> +++ b/include/linux/ftrace.h
-> @@ -256,16 +256,16 @@ struct ftrace_direct_func
-> *ftrace_find_direct_func(unsigned long addr);
->  # define ftrace_direct_func_count 0
->  static inline int register_ftrace_direct(unsigned long ip, unsigned long addr)
->  {
-> -       return -ENODEV;
-> +       return -ENOTSUPP;
->  }
->  static inline int unregister_ftrace_direct(unsigned long ip, unsigned
-> long addr)
->  {
-> -       return -ENODEV;
-> +       return -ENOTSUPP;
->  }
->  static inline int modify_ftrace_direct(unsigned long ip,
->                                        unsigned long old_addr,
-> unsigned long new_addr)
->  {
-> -       return -ENODEV;
-> +       return -ENOTSUPP;
->  }
-> 
-> otherwise ENODEV is a valid error when ip is incorrect which is
-> indistinguishable from ftrace not compiled in.
+kernel/bpf/arraymap.c:481:5: warning:
+ symbol 'array_map_mmap' was not declared. Should it be static?
 
-Sure I can add this. Want to add a Signed-off-by to it, and I'll just
-pull it in directly? I can write up the change log.
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ kernel/bpf/arraymap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
--- Steve
+diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
+index a42097c..633c8c7 100644
+--- a/kernel/bpf/arraymap.c
++++ b/kernel/bpf/arraymap.c
+@@ -478,7 +478,7 @@ static int array_map_check_btf(const struct bpf_map *map,
+ 	return 0;
+ }
+ 
+-int array_map_mmap(struct bpf_map *map, struct vm_area_struct *vma)
++static int array_map_mmap(struct bpf_map *map, struct vm_area_struct *vma)
+ {
+ 	struct bpf_array *array = container_of(map, struct bpf_array, map);
+ 	pgoff_t pgoff = PAGE_ALIGN(sizeof(*array)) >> PAGE_SHIFT;
+-- 
+2.7.4
+
+
