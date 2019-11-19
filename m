@@ -2,207 +2,272 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 83B3C10284E
-	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2019 16:42:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05E221028BE
+	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2019 16:59:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728319AbfKSPm2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Nov 2019 10:42:28 -0500
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:37132 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728317AbfKSPm2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Nov 2019 10:42:28 -0500
-Received: by mail-qk1-f195.google.com with SMTP id e187so18197486qkf.4;
-        Tue, 19 Nov 2019 07:42:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ea1PY3zi3yhW+un5jc5wnX0c6cow7q1w+DAbG2fjNsE=;
-        b=sBcpfsbvbLtOBxLatIklj+Dq6B9RuFEsM1Y+vWsHFyeMpmofembKWGwenuh/L0YVas
-         a0+cux27aPI4jB3TtNqX0oGQbZbcAxaHgCuvBFKkNMymcs9pxekizvF86n03zv91Ep7X
-         SIRbDiOIRlQAbXq+U7f7/jV+KJiQno6CjIPLnk/8UAgSwZ739z23U4qEdHPqhP3Y5CRT
-         vJDjs38+jS36v/QHSLLmkdq3SRyzGZ7GZmeD4DSyCaqmYvS+y7jNIHbCasSCRhDg/Y4R
-         av/7G8FEtpCqNViz2Hd7m7OxKBCmPeb+PjRHVmyE86hG3W4r0JSYAWtNRovwrT2AOvRP
-         grEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ea1PY3zi3yhW+un5jc5wnX0c6cow7q1w+DAbG2fjNsE=;
-        b=AnfOQsSvOFDgMJdlrQVzrkTjNmL4AZEao4yRKEYd64JC8kNSYsgFulhxj/MajpglZE
-         Ss5UUNCCKngcQmKMW42o2x7uu2DaRof8p+89d9LY4LxVn0I35hhTcXYn0t98XcCksYxU
-         ahK14+hQ7Zlg1RCr8XsekZTcm8xXrE5s0b3I2PoUKqx670golhuLAvCj830i3Lj8wCR5
-         773ENgzY/rTaHTtQdoELe2P++oljbXJ4oxYHstlQM0pYNxjSn6C0fCjV8XxMr+tpMRX0
-         j1tosxvbrXPBU9Tf0TQwt/WQo0XD/iPyvw+NbqQ7x467qOqzs++QnZ2IiwMxjN+gCuwp
-         16Fg==
-X-Gm-Message-State: APjAAAUsmTa8VoScujOsmz5ANTU3UZ1Az+bx6tpbpY2OOiCPRzkEZK8w
-        db4H+vruqN77lTP2TYAvJTTchQ+S+52lDrIac30=
-X-Google-Smtp-Source: APXvYqxs6QTKJZ+5PSoubU3tePMtDUxO18FWBkxojJJTUBOdCgbJtCQA2OdYvMeP9QFsw2k+PVKVkac5s5df+k37ifA=
-X-Received: by 2002:a05:620a:12b2:: with SMTP id x18mr30226135qki.437.1574178147031;
- Tue, 19 Nov 2019 07:42:27 -0800 (PST)
-MIME-Version: 1.0
-References: <20191117070807.251360-1-andriin@fb.com> <20191117070807.251360-6-andriin@fb.com>
- <20191119032127.hixvyhvjjhx6mmzk@ast-mbp.dhcp.thefacebook.com> <CAEf4BzaNEU_vpa98QF1Ko_AFVX=3ncykEtWy0kiTNW9agsO+xg@mail.gmail.com>
-In-Reply-To: <CAEf4BzaNEU_vpa98QF1Ko_AFVX=3ncykEtWy0kiTNW9agsO+xg@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 19 Nov 2019 07:42:16 -0800
-Message-ID: <CAEf4Bza1T6h+MWadVjuCrPCY7pkyK9kw-fPdaRx2v3yzSsmcbg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 5/6] libbpf: support libbpf-provided extern variables
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        id S1727591AbfKSP7F (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Nov 2019 10:59:05 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:35978 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727509AbfKSP7E (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 19 Nov 2019 10:59:04 -0500
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id xAJFvFJu006573;
+        Tue, 19 Nov 2019 07:58:51 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=4qmdpZI1MVKLO96gqopYpNwCkCQ5vNwFFyyf2XvGK0I=;
+ b=QEYwLZ/GsKvNetwL9LfmwJs45O389w41ve5EIO7+Q2ZT9xCRCfeddfK5KLLnhMTXos5E
+ 1R2c46NCWFE1ogTbxx4s/l2m2BzQG1lLYo3wO2/89jXYkRHf+l2UKf1Jf0QnT2o56R70
+ dvRnWwuXNdX+npQte/udvokjCOhUJnevTXk= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by m0001303.ppops.net with ESMTP id 2wchf70kpw-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Tue, 19 Nov 2019 07:58:51 -0800
+Received: from prn-mbx07.TheFacebook.com (2620:10d:c081:6::21) by
+ prn-hub04.TheFacebook.com (2620:10d:c081:35::128) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Tue, 19 Nov 2019 07:58:46 -0800
+Received: from prn-hub01.TheFacebook.com (2620:10d:c081:35::125) by
+ prn-mbx07.TheFacebook.com (2620:10d:c081:6::21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Tue, 19 Nov 2019 07:58:45 -0800
+Received: from NAM04-CO1-obe.outbound.protection.outlook.com (192.168.54.28)
+ by o365-in.thefacebook.com (192.168.16.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
+ via Frontend Transport; Tue, 19 Nov 2019 07:58:45 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=L9iCZl03f0HSfNQMtCAHAX73s/FDbE2leW803cxy/t4RUHDhSvsnV964e8yPm9Jf+o6slQIsjsXZzrSLDIdo0oJBEakSvIufIoJEW4k1oSgyC9AI6PN8lguToHhsa2UWm8C9DQARveRSuNCm52M764qK+FL7vH0h6a/LNnrDUxraRVvK9pwlzUm7kUtB0kseH1wcThhWk+fH+E9ekV1rrXBSoGc2liSvPiWL54WE7bjbE7vbz1j861U2iDIzJwj1YKyZ7VS1cs1keEzISiL1fmqAlixWw2PY0e5ExiP21Vcyyk+YkfEFjNxM/89+3mbcIVdwOJxCrdWdaKBuizFl4A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4qmdpZI1MVKLO96gqopYpNwCkCQ5vNwFFyyf2XvGK0I=;
+ b=NMdRRFukShRw3UKkhT+nb/TpcL2ja7+526eKqj4uSTJrUHv9wlJJbfS2LOeLimyQP3a48iI9yfaAIKzBRDl5vKiGcvPpcQARV5puh62envJ9ak0+ZNetJT4yZCL2yBeaRPjeeoKLXGGJqw6+L7lR2awcahrUXbdjiuqUMQ/CuFFvJPsAYJTzoPKR9vN9QGei6RSBVvSTI9bYhkam2WVCUKSCbSXPDkREoU0cJDarWPwXoI1BI7W4sr8lx3sTjGCZ0oJ0GUpebmtCJpweK/rIs4Arvq6oPz/3TIdPDCLt6F2Gj8DRg+cP3ibeJDgqR8teJNsjB6pOjyLhlKPTe7eovQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4qmdpZI1MVKLO96gqopYpNwCkCQ5vNwFFyyf2XvGK0I=;
+ b=HtJeG4ibiPiUoxXdNbG1vgREdV3bIeU0SBY8obK8h0fpLpwrSpCwjdY97GQiO2g+XQMaxL/bQlRJc/c9cTtiXyPKJtaPjYm3emzUN4XQThP4NF0vEZgj429/kgEuhwzf9HIOd0plUav6NI7tIjtBflyqHwZ7y0hUIY0mO5CVGV8=
+Received: from BYAPR15MB2501.namprd15.prod.outlook.com (52.135.196.11) by
+ BYAPR15MB2551.namprd15.prod.outlook.com (20.179.155.20) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2474.16; Tue, 19 Nov 2019 15:58:44 +0000
+Received: from BYAPR15MB2501.namprd15.prod.outlook.com
+ ([fe80::e864:c934:8b54:4a40]) by BYAPR15MB2501.namprd15.prod.outlook.com
+ ([fe80::e864:c934:8b54:4a40%5]) with mapi id 15.20.2451.029; Tue, 19 Nov 2019
+ 15:58:44 +0000
+From:   Alexei Starovoitov <ast@fb.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+CC:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
         Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        Kernel Team <Kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next 5/6] libbpf: support libbpf-provided extern
+ variables
+Thread-Topic: [PATCH bpf-next 5/6] libbpf: support libbpf-provided extern
+ variables
+Thread-Index: AQHVnRXP1WCUmtit50O/zE+NHNTys6eR1rKAgAA8PYCAAJK8AIAABJUA
+Date:   Tue, 19 Nov 2019 15:58:44 +0000
+Message-ID: <7012feeb-c1e8-1228-c8ce-464ea252799c@fb.com>
+References: <20191117070807.251360-1-andriin@fb.com>
+ <20191117070807.251360-6-andriin@fb.com>
+ <20191119032127.hixvyhvjjhx6mmzk@ast-mbp.dhcp.thefacebook.com>
+ <CAEf4BzaNEU_vpa98QF1Ko_AFVX=3ncykEtWy0kiTNW9agsO+xg@mail.gmail.com>
+ <CAEf4Bza1T6h+MWadVjuCrPCY7pkyK9kw-fPdaRx2v3yzSsmcbg@mail.gmail.com>
+In-Reply-To: <CAEf4Bza1T6h+MWadVjuCrPCY7pkyK9kw-fPdaRx2v3yzSsmcbg@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MWHPR06CA0022.namprd06.prod.outlook.com
+ (2603:10b6:301:39::35) To BYAPR15MB2501.namprd15.prod.outlook.com
+ (2603:10b6:a02:88::11)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c090:200::2:5ae8]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: e0997dda-677b-4a7a-bfd7-08d76d095ab0
+x-ms-traffictypediagnostic: BYAPR15MB2551:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR15MB25519CFA9DD8EF4CD7D88A4AD74C0@BYAPR15MB2551.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3173;
+x-forefront-prvs: 022649CC2C
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(39860400002)(366004)(346002)(396003)(136003)(376002)(199004)(189003)(43544003)(7736002)(561944003)(71190400001)(305945005)(71200400001)(6116002)(31686004)(6436002)(2906002)(256004)(14444005)(64756008)(66556008)(66476007)(25786009)(66446008)(66946007)(6486002)(6512007)(6246003)(229853002)(86362001)(4326008)(8936002)(8676002)(36756003)(81166006)(81156014)(186003)(54906003)(14454004)(76176011)(316002)(110136005)(52116002)(53546011)(6506007)(386003)(11346002)(446003)(478600001)(31696002)(486006)(5660300002)(476003)(2616005)(46003)(102836004)(99286004)(21314003);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB2551;H:BYAPR15MB2501.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: kl4v7+my0zhukVRt3f10yaL4AaBkpo+pjSvokz0FYJr6RoOw7HU4F3hGXb1JKRXtmwnzNr0t15u+OzNl3ka8/BOk7qOyolMj7oKDZpD9vCGymJROSlS5JQ8m5LwZ6cXaxJYeePPZ92zQNPnbdFULXuBpKvZREnEe3Yx3saAFK80hg9HwxLrocKIxgyNuHOSkOUbMTJEfa/NoZWxZH4anEKN0Z7rlMTM34sbgC2JRIRVu3W3Ww4RdEKi3NU0pK7EeupZ1R0ZqbS6niI0F3RM164Q2A3OVtIdTD2rhLxvvt8tLLndI8S5/ijzJ7ZCl80d39DZ4MwSqujFDFdcxXjx3X6Y3DyMjamrL6obZAPhdkHf8wu8DP1SrKqEUerNGRgzDqqqHgBOB6hHD1Lg8D/BtqQZldcO+2Zm3LJXfSDoY1/UdcAP4K4YyfjyB00dXiY1p
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <D82FE7598C50CE47B5296D7DE0CBF5F5@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: e0997dda-677b-4a7a-bfd7-08d76d095ab0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Nov 2019 15:58:44.2838
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: naibnSKGCqVOvD8NwDbwvKAOdYuMD7yPHvohMNPlmAZCitCW3kWgMni4fIOdBJJX
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2551
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
+ definitions=2019-11-19_05:2019-11-15,2019-11-19 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
+ suspectscore=0 lowpriorityscore=0 spamscore=0 mlxscore=0 bulkscore=0
+ adultscore=0 malwarescore=0 clxscore=1015 mlxlogscore=999 phishscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-1911190143
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 18, 2019 at 10:57 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Mon, Nov 18, 2019 at 7:21 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Sat, Nov 16, 2019 at 11:08:06PM -0800, Andrii Nakryiko wrote:
-> > > Add support for extern variables, provided to BPF program by libbpf. Currently
-> > > the following extern variables are supported:
-> > >   - LINUX_KERNEL_VERSION; version of a kernel in which BPF program is
-> > >     executing, follows KERNEL_VERSION() macro convention;
-> > >   - CONFIG_xxx values; a set of values of actual kernel config. Tristate,
-> > >     boolean, and integer values are supported. Strings are not supported at
-> > >     the moment.
-> > >
-> > > All values are represented as 64-bit integers, with the follow value encoding:
-> > >   - for boolean values, y is 1, n or missing value is 0;
-> > >   - for tristate values, y is 1, m is 2, n or missing value is 0;
-> > >   - for integers, the values is 64-bit integer, sign-extended, if negative; if
-> > >     config value is missing, it's represented as 0, which makes explicit 0 and
-> > >     missing config value indistinguishable. If this will turn out to be
-> > >     a problem in practice, we'll need to deal with it somehow.
-> >
-> > I read that statement as there is no extensibility for such api.
->
-> What do you mean exactly?
->
-> Are you worried about 0 vs undefined case? I don't think it's going to
-> be a problem in practice. Looking at my .config, I see that integer
-> config values set to their default values are still explicitly
-> specified with those values. E.g.,
->
-> CONFIG_HZ_1000=y
-> CONFIG_HZ=1000
->
-> CONFIG_HZ default is 1000, if CONFIG_HZ_1000==y, but still I see it
-> set. So while I won't claim that it's the case for any possible
-> integer config, it seems to be pretty consistent in practice.
->
-> Also, I see a lot of values set to explicit 0, like:
->
-> CONFIG_BASE_SMALL=0
->
-> So it seems like integers are typically spelled out explicitly in real
-> configs and I think this 0 default is pretty sane.
->
-> Next, speaking about extensibility. Once we have BTF type info for
-> externs, our possibilities are much better. It will be possible to
-> support bool, int, in64 for the same bool value. Libbpf will be able
-> to validate the range and fail program load if declared extern type
-> doesn't match actual value type and value range. So I think
-> extensibility is there, but right now we are enforcing (logically)
-> everything to be uin64_t. Unfortunately, with the way externs are done
-> in ELF, I don't know neither type nor size, so can't be more strict
-> than that.
->
-> If we really need to know whether some config value is defined or not,
-> regardless of its value, we can have it by convention. E.g.,
-> CONFIG_DEFINED_XXX will be either 0 or 1, depending if corresponding
-> CONFIG_XXX is defined explicitly or not. But I don't want to add that
-> until we really have a use case where it matters.
->
-> >
-> > > Generally speaking, libbpf is not aware of which CONFIG_XXX values is of which
-> > > expected type (bool, tristate, int), so it doesn't enforce any specific set of
-> > > values and just parses n/y/m as 0/1/2, respectively. CONFIG_XXX values not
-> > > found in config file are set to 0.
-> >
-> > This is not pretty either.
->
-> What exactly: defaulting to zero or not knowing config value's type?
-> Given all the options, defaulting to zero seems like the best way to
-> go.
->
-> >
-> > > +
-> > > +             switch (*value) {
-> > > +             case 'n':
-> > > +                     *ext_val = 0;
-> > > +                     break;
-> > > +             case 'y':
-> > > +                     *ext_val = 1;
-> > > +                     break;
-> > > +             case 'm':
-> > > +                     *ext_val = 2;
-> > > +                     break;
->
-> reading some more code from scripts/kconfig/symbol.c, I'll need to
-> handle N/Y/M and 0x hexadecimals, will add in v2 after collecting some
-> more feedback on this version.
->
-> > > +             case '"':
-> > > +                     pr_warn("extern '%s': strings are not supported\n",
-> > > +                             ext->name);
-> > > +                     err = -EINVAL;
-> > > +                     goto out;
-> > > +             default:
-> > > +                     errno = 0;
-> > > +                     *ext_val = strtoull(value, &value_end, 10);
-> > > +                     if (errno) {
-> > > +                             err = -errno;
-> > > +                             pr_warn("extern '%s': failed to parse value: %d\n",
-> > > +                                     ext->name, err);
-> > > +                             goto out;
-> > > +                     }
-> >
-> > BPF has bpf_strtol() helper. I think it would be cleaner to pass whatever
-> > .config has as bytes to the program and let program parse n/y/m, strings and
-> > integers.
->
-> Config value is not changing. This is an incredible waste of CPU
-> resources to re-parse same value over and over again. And it's
-> incredibly much worse usability as well. Again, once we have BTF for
-> externs, we can just declare values as const char[] and then user will
-> be able to do its own parsing. Until then, I think pre-parsing values
-> into convenient u64 types are much better and handles all the typical
-> cases.
-
-
-One more thing I didn't realize I didn't state explicitly, because
-I've been thinking and talking about that for so long now, that it
-kind of internalized completely.
-
-These externs, including CONFIG_XXX ones, are meant to interoperate
-nicely with field relocations within BPF CO-RE concept. They are,
-among other things, are meant to disable parts of BPF program logic
-through verifier's dead code elimination by doing something like:
-
-
-if (CONFIG_SOME_FEATURES_ENABLED) {
-    BPF_CORE_READ(t, some_extra_field);
-    /* or */
-    bpf_helper_that_only_present_when_feature_is_enabled();
-} else {
-    /* fallback logic */
-}
-
-With CONFIG_SOME_FEATURES_ENABLED not being a read-only integer
-constant when BPF program is loaded, this is impossible. So it
-absolutely must be some sort of easy to use integer constant. With BTF
-for externs we can have more flexibility in the future, of course.
-
->
-> >
-> > LINUX_KERNEL_VERSION is a special case and can stay as u64.
-> >
+T24gMTEvMTkvMTkgNzo0MiBBTSwgQW5kcmlpIE5ha3J5aWtvIHdyb3RlOg0KPiBPbiBNb24sIE5v
+diAxOCwgMjAxOSBhdCAxMDo1NyBQTSBBbmRyaWkgTmFrcnlpa28NCj4gPGFuZHJpaS5uYWtyeWlr
+b0BnbWFpbC5jb20+IHdyb3RlOg0KPj4NCj4+IE9uIE1vbiwgTm92IDE4LCAyMDE5IGF0IDc6MjEg
+UE0gQWxleGVpIFN0YXJvdm9pdG92DQo+PiA8YWxleGVpLnN0YXJvdm9pdG92QGdtYWlsLmNvbT4g
+d3JvdGU6DQo+Pj4NCj4+PiBPbiBTYXQsIE5vdiAxNiwgMjAxOSBhdCAxMTowODowNlBNIC0wODAw
+LCBBbmRyaWkgTmFrcnlpa28gd3JvdGU6DQo+Pj4+IEFkZCBzdXBwb3J0IGZvciBleHRlcm4gdmFy
+aWFibGVzLCBwcm92aWRlZCB0byBCUEYgcHJvZ3JhbSBieSBsaWJicGYuIEN1cnJlbnRseQ0KPj4+
+PiB0aGUgZm9sbG93aW5nIGV4dGVybiB2YXJpYWJsZXMgYXJlIHN1cHBvcnRlZDoNCj4+Pj4gICAg
+LSBMSU5VWF9LRVJORUxfVkVSU0lPTjsgdmVyc2lvbiBvZiBhIGtlcm5lbCBpbiB3aGljaCBCUEYg
+cHJvZ3JhbSBpcw0KPj4+PiAgICAgIGV4ZWN1dGluZywgZm9sbG93cyBLRVJORUxfVkVSU0lPTigp
+IG1hY3JvIGNvbnZlbnRpb247DQo+Pj4+ICAgIC0gQ09ORklHX3h4eCB2YWx1ZXM7IGEgc2V0IG9m
+IHZhbHVlcyBvZiBhY3R1YWwga2VybmVsIGNvbmZpZy4gVHJpc3RhdGUsDQo+Pj4+ICAgICAgYm9v
+bGVhbiwgYW5kIGludGVnZXIgdmFsdWVzIGFyZSBzdXBwb3J0ZWQuIFN0cmluZ3MgYXJlIG5vdCBz
+dXBwb3J0ZWQgYXQNCj4+Pj4gICAgICB0aGUgbW9tZW50Lg0KPj4+Pg0KPj4+PiBBbGwgdmFsdWVz
+IGFyZSByZXByZXNlbnRlZCBhcyA2NC1iaXQgaW50ZWdlcnMsIHdpdGggdGhlIGZvbGxvdyB2YWx1
+ZSBlbmNvZGluZzoNCj4+Pj4gICAgLSBmb3IgYm9vbGVhbiB2YWx1ZXMsIHkgaXMgMSwgbiBvciBt
+aXNzaW5nIHZhbHVlIGlzIDA7DQo+Pj4+ICAgIC0gZm9yIHRyaXN0YXRlIHZhbHVlcywgeSBpcyAx
+LCBtIGlzIDIsIG4gb3IgbWlzc2luZyB2YWx1ZSBpcyAwOw0KPj4+PiAgICAtIGZvciBpbnRlZ2Vy
+cywgdGhlIHZhbHVlcyBpcyA2NC1iaXQgaW50ZWdlciwgc2lnbi1leHRlbmRlZCwgaWYgbmVnYXRp
+dmU7IGlmDQo+Pj4+ICAgICAgY29uZmlnIHZhbHVlIGlzIG1pc3NpbmcsIGl0J3MgcmVwcmVzZW50
+ZWQgYXMgMCwgd2hpY2ggbWFrZXMgZXhwbGljaXQgMCBhbmQNCj4+Pj4gICAgICBtaXNzaW5nIGNv
+bmZpZyB2YWx1ZSBpbmRpc3Rpbmd1aXNoYWJsZS4gSWYgdGhpcyB3aWxsIHR1cm4gb3V0IHRvIGJl
+DQo+Pj4+ICAgICAgYSBwcm9ibGVtIGluIHByYWN0aWNlLCB3ZSdsbCBuZWVkIHRvIGRlYWwgd2l0
+aCBpdCBzb21laG93Lg0KPj4+DQo+Pj4gSSByZWFkIHRoYXQgc3RhdGVtZW50IGFzIHRoZXJlIGlz
+IG5vIGV4dGVuc2liaWxpdHkgZm9yIHN1Y2ggYXBpLg0KPj4NCj4+IFdoYXQgZG8geW91IG1lYW4g
+ZXhhY3RseT8NCj4+DQo+PiBBcmUgeW91IHdvcnJpZWQgYWJvdXQgMCB2cyB1bmRlZmluZWQgY2Fz
+ZT8gSSBkb24ndCB0aGluayBpdCdzIGdvaW5nIHRvDQo+PiBiZSBhIHByb2JsZW0gaW4gcHJhY3Rp
+Y2UuIExvb2tpbmcgYXQgbXkgLmNvbmZpZywgSSBzZWUgdGhhdCBpbnRlZ2VyDQo+PiBjb25maWcg
+dmFsdWVzIHNldCB0byB0aGVpciBkZWZhdWx0IHZhbHVlcyBhcmUgc3RpbGwgZXhwbGljaXRseQ0K
+Pj4gc3BlY2lmaWVkIHdpdGggdGhvc2UgdmFsdWVzLiBFLmcuLA0KPj4NCj4+IENPTkZJR19IWl8x
+MDAwPXkNCj4+IENPTkZJR19IWj0xMDAwDQo+Pg0KPj4gQ09ORklHX0haIGRlZmF1bHQgaXMgMTAw
+MCwgaWYgQ09ORklHX0haXzEwMDA9PXksIGJ1dCBzdGlsbCBJIHNlZSBpdA0KPj4gc2V0LiBTbyB3
+aGlsZSBJIHdvbid0IGNsYWltIHRoYXQgaXQncyB0aGUgY2FzZSBmb3IgYW55IHBvc3NpYmxlDQo+
+PiBpbnRlZ2VyIGNvbmZpZywgaXQgc2VlbXMgdG8gYmUgcHJldHR5IGNvbnNpc3RlbnQgaW4gcHJh
+Y3RpY2UuDQo+Pg0KPj4gQWxzbywgSSBzZWUgYSBsb3Qgb2YgdmFsdWVzIHNldCB0byBleHBsaWNp
+dCAwLCBsaWtlOg0KPj4NCj4+IENPTkZJR19CQVNFX1NNQUxMPTANCj4+DQo+PiBTbyBpdCBzZWVt
+cyBsaWtlIGludGVnZXJzIGFyZSB0eXBpY2FsbHkgc3BlbGxlZCBvdXQgZXhwbGljaXRseSBpbiBy
+ZWFsDQo+PiBjb25maWdzIGFuZCBJIHRoaW5rIHRoaXMgMCBkZWZhdWx0IGlzIHByZXR0eSBzYW5l
+Lg0KPj4NCj4+IE5leHQsIHNwZWFraW5nIGFib3V0IGV4dGVuc2liaWxpdHkuIE9uY2Ugd2UgaGF2
+ZSBCVEYgdHlwZSBpbmZvIGZvcg0KPj4gZXh0ZXJucywgb3VyIHBvc3NpYmlsaXRpZXMgYXJlIG11
+Y2ggYmV0dGVyLiBJdCB3aWxsIGJlIHBvc3NpYmxlIHRvDQo+PiBzdXBwb3J0IGJvb2wsIGludCwg
+aW42NCBmb3IgdGhlIHNhbWUgYm9vbCB2YWx1ZS4gTGliYnBmIHdpbGwgYmUgYWJsZQ0KPj4gdG8g
+dmFsaWRhdGUgdGhlIHJhbmdlIGFuZCBmYWlsIHByb2dyYW0gbG9hZCBpZiBkZWNsYXJlZCBleHRl
+cm4gdHlwZQ0KPj4gZG9lc24ndCBtYXRjaCBhY3R1YWwgdmFsdWUgdHlwZSBhbmQgdmFsdWUgcmFu
+Z2UuIFNvIEkgdGhpbmsNCj4+IGV4dGVuc2liaWxpdHkgaXMgdGhlcmUsIGJ1dCByaWdodCBub3cg
+d2UgYXJlIGVuZm9yY2luZyAobG9naWNhbGx5KQ0KPj4gZXZlcnl0aGluZyB0byBiZSB1aW42NF90
+LiBVbmZvcnR1bmF0ZWx5LCB3aXRoIHRoZSB3YXkgZXh0ZXJucyBhcmUgZG9uZQ0KPj4gaW4gRUxG
+LCBJIGRvbid0IGtub3cgbmVpdGhlciB0eXBlIG5vciBzaXplLCBzbyBjYW4ndCBiZSBtb3JlIHN0
+cmljdA0KPj4gdGhhbiB0aGF0Lg0KPj4NCj4+IElmIHdlIHJlYWxseSBuZWVkIHRvIGtub3cgd2hl
+dGhlciBzb21lIGNvbmZpZyB2YWx1ZSBpcyBkZWZpbmVkIG9yIG5vdCwNCj4+IHJlZ2FyZGxlc3Mg
+b2YgaXRzIHZhbHVlLCB3ZSBjYW4gaGF2ZSBpdCBieSBjb252ZW50aW9uLiBFLmcuLA0KPj4gQ09O
+RklHX0RFRklORURfWFhYIHdpbGwgYmUgZWl0aGVyIDAgb3IgMSwgZGVwZW5kaW5nIGlmIGNvcnJl
+c3BvbmRpbmcNCj4+IENPTkZJR19YWFggaXMgZGVmaW5lZCBleHBsaWNpdGx5IG9yIG5vdC4gQnV0
+IEkgZG9uJ3Qgd2FudCB0byBhZGQgdGhhdA0KPj4gdW50aWwgd2UgcmVhbGx5IGhhdmUgYSB1c2Ug
+Y2FzZSB3aGVyZSBpdCBtYXR0ZXJzLg0KPj4NCj4+Pg0KPj4+PiBHZW5lcmFsbHkgc3BlYWtpbmcs
+IGxpYmJwZiBpcyBub3QgYXdhcmUgb2Ygd2hpY2ggQ09ORklHX1hYWCB2YWx1ZXMgaXMgb2Ygd2hp
+Y2gNCj4+Pj4gZXhwZWN0ZWQgdHlwZSAoYm9vbCwgdHJpc3RhdGUsIGludCksIHNvIGl0IGRvZXNu
+J3QgZW5mb3JjZSBhbnkgc3BlY2lmaWMgc2V0IG9mDQo+Pj4+IHZhbHVlcyBhbmQganVzdCBwYXJz
+ZXMgbi95L20gYXMgMC8xLzIsIHJlc3BlY3RpdmVseS4gQ09ORklHX1hYWCB2YWx1ZXMgbm90DQo+
+Pj4+IGZvdW5kIGluIGNvbmZpZyBmaWxlIGFyZSBzZXQgdG8gMC4NCj4+Pg0KPj4+IFRoaXMgaXMg
+bm90IHByZXR0eSBlaXRoZXIuDQo+Pg0KPj4gV2hhdCBleGFjdGx5OiBkZWZhdWx0aW5nIHRvIHpl
+cm8gb3Igbm90IGtub3dpbmcgY29uZmlnIHZhbHVlJ3MgdHlwZT8NCj4+IEdpdmVuIGFsbCB0aGUg
+b3B0aW9ucywgZGVmYXVsdGluZyB0byB6ZXJvIHNlZW1zIGxpa2UgdGhlIGJlc3Qgd2F5IHRvDQo+
+PiBnby4NCj4+DQo+Pj4NCj4+Pj4gKw0KPj4+PiArICAgICAgICAgICAgIHN3aXRjaCAoKnZhbHVl
+KSB7DQo+Pj4+ICsgICAgICAgICAgICAgY2FzZSAnbic6DQo+Pj4+ICsgICAgICAgICAgICAgICAg
+ICAgICAqZXh0X3ZhbCA9IDA7DQo+Pj4+ICsgICAgICAgICAgICAgICAgICAgICBicmVhazsNCj4+
+Pj4gKyAgICAgICAgICAgICBjYXNlICd5JzoNCj4+Pj4gKyAgICAgICAgICAgICAgICAgICAgICpl
+eHRfdmFsID0gMTsNCj4+Pj4gKyAgICAgICAgICAgICAgICAgICAgIGJyZWFrOw0KPj4+PiArICAg
+ICAgICAgICAgIGNhc2UgJ20nOg0KPj4+PiArICAgICAgICAgICAgICAgICAgICAgKmV4dF92YWwg
+PSAyOw0KPj4+PiArICAgICAgICAgICAgICAgICAgICAgYnJlYWs7DQo+Pg0KPj4gcmVhZGluZyBz
+b21lIG1vcmUgY29kZSBmcm9tIHNjcmlwdHMva2NvbmZpZy9zeW1ib2wuYywgSSdsbCBuZWVkIHRv
+DQo+PiBoYW5kbGUgTi9ZL00gYW5kIDB4IGhleGFkZWNpbWFscywgd2lsbCBhZGQgaW4gdjIgYWZ0
+ZXIgY29sbGVjdGluZyBzb21lDQo+PiBtb3JlIGZlZWRiYWNrIG9uIHRoaXMgdmVyc2lvbi4NCj4+
+DQo+Pj4+ICsgICAgICAgICAgICAgY2FzZSAnIic6DQo+Pj4+ICsgICAgICAgICAgICAgICAgICAg
+ICBwcl93YXJuKCJleHRlcm4gJyVzJzogc3RyaW5ncyBhcmUgbm90IHN1cHBvcnRlZFxuIiwNCj4+
+Pj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZXh0LT5uYW1lKTsNCj4+Pj4gKyAgICAg
+ICAgICAgICAgICAgICAgIGVyciA9IC1FSU5WQUw7DQo+Pj4+ICsgICAgICAgICAgICAgICAgICAg
+ICBnb3RvIG91dDsNCj4+Pj4gKyAgICAgICAgICAgICBkZWZhdWx0Og0KPj4+PiArICAgICAgICAg
+ICAgICAgICAgICAgZXJybm8gPSAwOw0KPj4+PiArICAgICAgICAgICAgICAgICAgICAgKmV4dF92
+YWwgPSBzdHJ0b3VsbCh2YWx1ZSwgJnZhbHVlX2VuZCwgMTApOw0KPj4+PiArICAgICAgICAgICAg
+ICAgICAgICAgaWYgKGVycm5vKSB7DQo+Pj4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IGVyciA9IC1lcnJubzsNCj4+Pj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcHJfd2Fy
+bigiZXh0ZXJuICclcyc6IGZhaWxlZCB0byBwYXJzZSB2YWx1ZTogJWRcbiIsDQo+Pj4+ICsgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZXh0LT5uYW1lLCBlcnIpOw0KPj4+PiAr
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBnb3RvIG91dDsNCj4+Pj4gKyAgICAgICAgICAg
+ICAgICAgICAgIH0NCj4+Pg0KPj4+IEJQRiBoYXMgYnBmX3N0cnRvbCgpIGhlbHBlci4gSSB0aGlu
+ayBpdCB3b3VsZCBiZSBjbGVhbmVyIHRvIHBhc3Mgd2hhdGV2ZXINCj4+PiAuY29uZmlnIGhhcyBh
+cyBieXRlcyB0byB0aGUgcHJvZ3JhbSBhbmQgbGV0IHByb2dyYW0gcGFyc2Ugbi95L20sIHN0cmlu
+Z3MgYW5kDQo+Pj4gaW50ZWdlcnMuDQo+Pg0KPj4gQ29uZmlnIHZhbHVlIGlzIG5vdCBjaGFuZ2lu
+Zy4gVGhpcyBpcyBhbiBpbmNyZWRpYmxlIHdhc3RlIG9mIENQVQ0KPj4gcmVzb3VyY2VzIHRvIHJl
+LXBhcnNlIHNhbWUgdmFsdWUgb3ZlciBhbmQgb3ZlciBhZ2Fpbi4gQW5kIGl0J3MNCj4+IGluY3Jl
+ZGlibHkgbXVjaCB3b3JzZSB1c2FiaWxpdHkgYXMgd2VsbC4gQWdhaW4sIG9uY2Ugd2UgaGF2ZSBC
+VEYgZm9yDQo+PiBleHRlcm5zLCB3ZSBjYW4ganVzdCBkZWNsYXJlIHZhbHVlcyBhcyBjb25zdCBj
+aGFyW10gYW5kIHRoZW4gdXNlciB3aWxsDQo+PiBiZSBhYmxlIHRvIGRvIGl0cyBvd24gcGFyc2lu
+Zy4gVW50aWwgdGhlbiwgSSB0aGluayBwcmUtcGFyc2luZyB2YWx1ZXMNCj4+IGludG8gY29udmVu
+aWVudCB1NjQgdHlwZXMgYXJlIG11Y2ggYmV0dGVyIGFuZCBoYW5kbGVzIGFsbCB0aGUgdHlwaWNh
+bA0KPj4gY2FzZXMuDQo+IA0KPiANCj4gT25lIG1vcmUgdGhpbmcgSSBkaWRuJ3QgcmVhbGl6ZSBJ
+IGRpZG4ndCBzdGF0ZSBleHBsaWNpdGx5LCBiZWNhdXNlDQo+IEkndmUgYmVlbiB0aGlua2luZyBh
+bmQgdGFsa2luZyBhYm91dCB0aGF0IGZvciBzbyBsb25nIG5vdywgdGhhdCBpdA0KPiBraW5kIG9m
+IGludGVybmFsaXplZCBjb21wbGV0ZWx5Lg0KPiANCj4gVGhlc2UgZXh0ZXJucywgaW5jbHVkaW5n
+IENPTkZJR19YWFggb25lcywgYXJlIG1lYW50IHRvIGludGVyb3BlcmF0ZQ0KPiBuaWNlbHkgd2l0
+aCBmaWVsZCByZWxvY2F0aW9ucyB3aXRoaW4gQlBGIENPLVJFIGNvbmNlcHQuIFRoZXkgYXJlLA0K
+PiBhbW9uZyBvdGhlciB0aGluZ3MsIGFyZSBtZWFudCB0byBkaXNhYmxlIHBhcnRzIG9mIEJQRiBw
+cm9ncmFtIGxvZ2ljDQo+IHRocm91Z2ggdmVyaWZpZXIncyBkZWFkIGNvZGUgZWxpbWluYXRpb24g
+YnkgZG9pbmcgc29tZXRoaW5nIGxpa2U6DQo+IA0KPiANCj4gaWYgKENPTkZJR19TT01FX0ZFQVRV
+UkVTX0VOQUJMRUQpIHsNCj4gICAgICBCUEZfQ09SRV9SRUFEKHQsIHNvbWVfZXh0cmFfZmllbGQp
+Ow0KPiAgICAgIC8qIG9yICovDQo+ICAgICAgYnBmX2hlbHBlcl90aGF0X29ubHlfcHJlc2VudF93
+aGVuX2ZlYXR1cmVfaXNfZW5hYmxlZCgpOw0KPiB9IGVsc2Ugew0KPiAgICAgIC8qIGZhbGxiYWNr
+IGxvZ2ljICovDQo+IH0NCj4gDQo+IFdpdGggQ09ORklHX1NPTUVfRkVBVFVSRVNfRU5BQkxFRCBu
+b3QgYmVpbmcgYSByZWFkLW9ubHkgaW50ZWdlcg0KPiBjb25zdGFudCB3aGVuIEJQRiBwcm9ncmFt
+IGlzIGxvYWRlZCwgdGhpcyBpcyBpbXBvc3NpYmxlLiBTbyBpdA0KPiBhYnNvbHV0ZWx5IG11c3Qg
+YmUgc29tZSBzb3J0IG9mIGVhc3kgdG8gdXNlIGludGVnZXIgY29uc3RhbnQuIA0KDQpIbW0uIHdo
+YXQgZGlmZmVyZW5jZSBkbyB5b3Ugc2VlIGJldHdlZW4gdTY0IGFuZCBjaGFyW10gPw0KVGhlIGNv
+bnN0IHByb3BhZ2F0aW9uIGxvZ2ljIGluIHRoZSB2ZXJpZmllciBzaG91bGQgd29yayB0aGUgc2Ft
+ZSB3YXkuDQpJZiBpdCBkb2Vzbid0IGl0J3MgYSBidWcgaW4gdGhlIHZlcmlmaWVyIGFuZCBpdCdz
+IG5vdCBvayB0byBoYWNrDQpleHRlcm4gYXBpIHRvIHdvcmthcm91bmQgdGhlIGJ1Zy4NCg0KV2hh
+dCB5b3UncmUgYWR2b2NhdGluZyB3aXRoIGxpYmJwZi1zaWRlIG9mIGNvbnZlcnNpb24gdG8gaW50
+ZWdlcnMNCnJlbWluZHMgbWUgb2Ygb3VyIGVhcmxpZXIgYXR0ZW1wdHMgd2l0aCBjZ3JvdXBfc3lz
+Y3RsIGhvb2tzIHdoZXJlDQp3ZSBzdGFydGVkIHdpdGggaW50cyBvbmx5IHRvIHJlYWxpemUgdGhh
+dCBpbiBwcmFjdGljZSBpdCdzIHRvbw0KbGltaXRlZC4gVGhlbiBicGZfc3RydG9sIHdhcyBpbnRy
+b2R1Y2VkIGFuZCBhcGkgZ290IG11Y2ggY2xlYW5lci4NClNhbWUgdGhpbmcgaGVyZS4gQ29udmVy
+dGluZyBjaGFyW10gaW50byBpbnRzIG9yIHdoYXRldmVyIGVsc2UNCmlzIHRoZSBqb2Igb2YgdGhl
+IHByb2dyYW0uIE5vdCBvZiBsaWJicGYuIFRoZSB2ZXJpZmllciBjYW4gYmUgdGF1Z2h0DQp0byBv
+cHRpbWl6ZSBicGZfc3RydG9sKCkgaW50byBjb25zdCB3aGVuIGNvbnN0IGNoYXJbXSBpcyBwYXNz
+ZWQgaW4uDQoNCkFzIGZhciBhcyBpc19lbmFibGVkKCkgY2hlY2sgZG9pbmcgaXQgYXMgMC8xIHRo
+ZSB3YXkgeW91J3JlIHByb3Bvc2luZw0KaGFzIGluLWJhbmQgc2lnbmFsaW5nIGlzc3VlcyB0aGF0
+IHlvdSBhZG1pdHRlZCBpbiB0aGUgY29tbWl0IGxvZy4NCkZvciBpc19lbmFibGVkKCkgbWF5IGJl
+IG5ldyBidWlsdGluKCkgb24gbGx2bSBzaWRlIHdvdWxkIGJlIGJldHRlcj8NClNvbWV0aGluZyBs
+aWtlIF9fYnVpbHRpbl9wcmVzZXJ2ZV9maWVsZF9pbmZvKGZpZWxkLCBCUEZfRklFTERfRVhJU1RT
+KQ0KYnV0IGNhbiBiZSB1c2VkIG9uIF9hbnlfIGV4dGVybiBmdW5jdGlvbiBvciB2YXJpYWJsZS4N
+Ckxpa2UgX19idWlsdGluX2lzX2V4dGVybl9yZXNvbHZlZChleHRlcm5fbmFtZSk7DQpUaGVuIG9u
+IGxpYmJwZiBzaWRlIENPTkZJR18qIHRoYXQgYXJlIG5vdCBpbiBjb25maWcuZ3ogd29uJ3QgYmUg
+c2Vlbg0KYnkgdGhlIHByb2dyYW0gKGluc3RlYWQgb2Ygc2VlbiBhcyAwIGluIHlvdXIgcHJvcG9z
+YWwpIGFuZCB0aGUgY29kZQ0Kd2lsbCBsb29rIGxpa2U6DQppZiAoX19idWlsdGluX2lzX2V4dGVy
+bl9yZXNvbHZlZChDT05GSUdfTkVUTlMpKSB7DQogICAuLmRvIHRoaW5nczsNCn0gZWxzZSB7DQp9
+DQpUaGUgdmVyaWZpZXIgZGVhZCBjb2RlIGVsaW1pbmF0aW9uIHdpbGwgdGFrZSBjYXJlIG9mIGJy
+YW5jaGVzLg0KVGhlIEJQRiBwcm9ncmFtIGl0c2VsZiBkb2Vzbid0IG5lZWQgdG8gcmVhZCB0aGUg
+dmFsdWUgb2YgQ09ORklHXw0KaXQgb25seSBuZWVkcyB0byBrbm93IHdoZXRoZXIgaXQgd2FzIGRl
+ZmluZWQuDQpTdWNoIGJ1aWx0aW4gd291bGQgbWF0Y2ggc2VtYW50aWNzIGJldHRlci4NCklmIENP
+TkZJR18gaXMgdHJpLXN0YXRlIGRvaW5nDQppZiAoKih1OCopQ09ORklHX0ZPTyA9PSAneScgfHwg
+Kih1OCopQ09ORklHX0ZPTyA9PSAnbScpDQppcyBjbGVhbmVyIHRoYW4gKih1NjQqKUNPTkZJR19G
+T08gPT0gMSB8fCAyLg0KYW5kIGNvbnN0YW50IHByb3BhZ2F0aW9uIGluIHRoZSB2ZXJpZmllciBz
+aG91bGQgd29yayB0aGUgc2FtZSB3YXkuDQo=
