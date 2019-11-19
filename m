@@ -2,171 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EBE21028E8
-	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2019 17:08:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8757E1028F5
+	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2019 17:11:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728414AbfKSQI3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Nov 2019 11:08:29 -0500
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:42353 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727509AbfKSQI2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Nov 2019 11:08:28 -0500
-Received: by mail-pg1-f195.google.com with SMTP id q17so11555719pgt.9;
-        Tue, 19 Nov 2019 08:08:28 -0800 (PST)
+        id S1728433AbfKSQLC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Nov 2019 11:11:02 -0500
+Received: from mail-io1-f67.google.com ([209.85.166.67]:47040 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728226AbfKSQLA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Nov 2019 11:11:00 -0500
+Received: by mail-io1-f67.google.com with SMTP id i11so203491iol.13
+        for <bpf@vger.kernel.org>; Tue, 19 Nov 2019 08:10:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=+hHPk4MDXZMe1Dt2BSBD6rDj4LAJJcjXpcIlnBfgPIE=;
-        b=Wgt1YPeae8eLuvi1LEIiW2eqtV6TQRRM2ChIYhhhvcVVCBR62YLbBT5aTeE5ngpuSf
-         fNVa3JAQz4LPQcvYKgbskTBQnpNBJshktwzRSAIr/45Eb+sJqMQ6NBiOihi2HYzRwg8s
-         dyMPS3d657BP4b6bRpKLBLS2r7SRYsGILxQ+JxUCeJGh6Drf74sZo+Rnm/cLXcpnKQe3
-         MqDCB4OqV3G9wHZzCYTZX5kb0YCzNvVRielP3JMvL2ykB+WaqtccYEXPgAQnxmqI+KUq
-         qJUdsCHaYnkLiNPwReHQTnqZgWTclrzmB7+B5k75D+r4OzbobuEIFDi/96Egx1hTJn8C
-         c8Ww==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=yxTg9Jz6CUPbj7hb+zClDPA6shnTNr7Uh8vLjm12KTA=;
+        b=oGIJW8HfkgkobB0o2Qa1NbNfnl9mEqSGpPEO2LkogyZvOuMJQ7TF55da86qlugqMCd
+         338Wge2YPFXsoEIf9RGDawq7jpCCeV3jwC0W058T6wHLBemhZJS3koszJqUTfQULDiaX
+         2B6RyRY6HS9AE+8hVENsQBKSpUdhkmyAKNXz0Nm/Cxj0QFJRN/CWS+DE/OAhOnYHg0xk
+         tK1FlPGkzCpUU1kARsuIumFoSGAGKhbP5ourqDXhrP7e5xrJzr7bWyrrGYocI1tJI7bI
+         UgAaDI7OLq1bomHv0lR8zAsfor6M3fEsHwxDtlUp7bVspKwb2e69Lw3GuCnkI9VLqTxF
+         /QFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=+hHPk4MDXZMe1Dt2BSBD6rDj4LAJJcjXpcIlnBfgPIE=;
-        b=XAQy4TcEll4Ip6bJJ2jX0lHazo2o6SaWenWrYffOvyrDxxC/msUJ8VNYwfu1uGB8AI
-         exLYybG6IqzTmE0dusRCjsjYjqhdXsrgj7bPrMfmocOaf0joNhMysC6h+NZye2moijfE
-         18aS0gMO9LVNzmgvIG7wiaVBZSCh3gYgSj/EMlF+hB9gTSDGUZp085LxLpPmRDTNLi0+
-         e04vW/eYzUeuFopLX5rZ4sPJgdnYqEg4py58VO6VrbqEgZoSr7SuoAR/G88zQXU6i49y
-         G6hbCiAHpT0c0drWTV0+NlQOpxgbcSvYZSeqQ/34xTwVsp8xDZt/l2bZF9++4/hfqRWk
-         G47w==
-X-Gm-Message-State: APjAAAX0/9gZ91Vsue2oaYGN4PDqV6Ly8QMlZArQA1uT8aOq/REJnsA2
-        Ij04RjNyxfMq5qdlzj1MKDzFJkR4S7yTkA==
-X-Google-Smtp-Source: APXvYqygOWptp54R9WSYNG8WufP/qVSs84JKhK0pkzVLnNb2j5AfQ4/5iSY4L+ejdn9jFYLvH2IE9Q==
-X-Received: by 2002:aa7:9348:: with SMTP id 8mr6632106pfn.135.1574179707595;
-        Tue, 19 Nov 2019 08:08:27 -0800 (PST)
-Received: from btopel-mobl.ger.intel.com (fmdmzpr04-ext.fm.intel.com. [192.55.55.39])
-        by smtp.gmail.com with ESMTPSA id v10sm25196949pfg.11.2019.11.19.08.08.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Nov 2019 08:08:27 -0800 (PST)
-From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
-To:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
-        bpf@vger.kernel.org, magnus.karlsson@gmail.com,
-        magnus.karlsson@intel.com, jonathan.lemon@gmail.com,
-        ecree@solarflare.com, thoiland@redhat.com,
-        andrii.nakryiko@gmail.com
-Subject: [PATCH bpf-next 3/3] i40e: start using xdp_call.h
-Date:   Tue, 19 Nov 2019 17:07:57 +0100
-Message-Id: <20191119160757.27714-4-bjorn.topel@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191119160757.27714-1-bjorn.topel@gmail.com>
-References: <20191119160757.27714-1-bjorn.topel@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=yxTg9Jz6CUPbj7hb+zClDPA6shnTNr7Uh8vLjm12KTA=;
+        b=Cnx7L4K/MXhVL+qBLsjxvbMrhuMb9ZksPYB5AR5FIlkSJXjoRVoW8BtjboYAWC57sv
+         tl+6iHlhY9juSp6ljCbCO88lH8JgEzYKXZOsytP6DcBLpDPta4v5xXVqymJhPlK4KoZm
+         pdmA7Yh44cnr6BPq4w72Er/7U/b19mxL59E9F+PYHhuFAL8r2k2fo38drvri8zcfTuW5
+         eMVy0Dv6V5Cs/9Fm9SseWxKVSUV1g54hLO50p7hxIlXgOqsdyo1CFgI8V1IdA83X2GUl
+         743/W20eiLCdUfuZ2e20WNxbB9pr27pDAJavNvJVFT2pH4adjy2bY0ZQzChWIWWuH8Op
+         b9hw==
+X-Gm-Message-State: APjAAAX+JpUP5HQnr+MNsQk4lqx03kOtB9Y3fLEQgeyR/stmjFMIkF5h
+        BTByBf2JfL61P5Urhelgp4RhZg==
+X-Google-Smtp-Source: APXvYqw/6l4rejQYc8a+bdmv6/89DOI3Ir5+fK0WCl1y9yQpIdn8Kiz4M9g4FLh+4h0UiHB53RA+ow==
+X-Received: by 2002:a02:140a:: with SMTP id 10mr18915165jag.72.1574179857938;
+        Tue, 19 Nov 2019 08:10:57 -0800 (PST)
+Received: from [192.168.1.159] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id u6sm5616560ilm.22.2019.11.19.08.10.55
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 19 Nov 2019 08:10:56 -0800 (PST)
+Subject: Re: [PATCH v6 15/24] fs/io_uring: set FOLL_PIN via pin_user_pages()
+To:     John Hubbard <jhubbard@nvidia.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, bpf@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, kvm@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
+        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>
+References: <20191119081643.1866232-1-jhubbard@nvidia.com>
+ <20191119081643.1866232-16-jhubbard@nvidia.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <2ae65d1b-a3eb-74ed-afce-c493de5bbfd3@kernel.dk>
+Date:   Tue, 19 Nov 2019 09:10:54 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20191119081643.1866232-16-jhubbard@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Björn Töpel <bjorn.topel@intel.com>
+On 11/19/19 1:16 AM, John Hubbard wrote:
+> Convert fs/io_uring to use the new pin_user_pages() call, which sets
+> FOLL_PIN. Setting FOLL_PIN is now required for code that requires
+> tracking of pinned pages, and therefore for any code that calls
+> put_user_page().
+> 
+> In partial anticipation of this work, the io_uring code was already
+> calling put_user_page() instead of put_page(). Therefore, in order to
+> convert from the get_user_pages()/put_page() model, to the
+> pin_user_pages()/put_user_page() model, the only change required
+> here is to change get_user_pages() to pin_user_pages().
+> 
+> Reviewed-by: Jan Kara <jack@suse.cz>
+> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
 
-This commit starts using xdp_call.h and the BPF dispatcher to avoid
-the retpoline overhead.
+You dropped my reviewed-by now... Given the file, you'd probably want
+to keep that.
 
-Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
----
- drivers/net/ethernet/intel/i40e/i40e_main.c | 5 +++++
- drivers/net/ethernet/intel/i40e/i40e_txrx.c | 5 ++++-
- drivers/net/ethernet/intel/i40e/i40e_xsk.c  | 5 ++++-
- 3 files changed, 13 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-index b3d7edbb1389..59b530e4198f 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_main.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-@@ -5,6 +5,7 @@
- #include <linux/of_net.h>
- #include <linux/pci.h>
- #include <linux/bpf.h>
-+#include <linux/xdp_call.h>
- 
- /* Local includes */
- #include "i40e.h"
-@@ -12517,6 +12518,8 @@ static netdev_features_t i40e_features_check(struct sk_buff *skb,
- 	return features & ~(NETIF_F_CSUM_MASK | NETIF_F_GSO_MASK);
- }
- 
-+DEFINE_XDP_CALL(i40e_xdp_call);
-+
- /**
-  * i40e_xdp_setup - add/remove an XDP program
-  * @vsi: VSI to changed
-@@ -12552,6 +12555,8 @@ static int i40e_xdp_setup(struct i40e_vsi *vsi,
- 	for (i = 0; i < vsi->num_queue_pairs; i++)
- 		WRITE_ONCE(vsi->rx_rings[i]->xdp_prog, vsi->xdp_prog);
- 
-+	xdp_call_update(i40e_xdp_call, old_prog, prog);
-+
- 	if (old_prog)
- 		bpf_prog_put(old_prog);
- 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_txrx.c b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-index b8496037ef7f..34d7b15897a1 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-@@ -3,6 +3,7 @@
- 
- #include <linux/prefetch.h>
- #include <linux/bpf_trace.h>
-+#include <linux/xdp_call.h>
- #include <net/xdp.h>
- #include "i40e.h"
- #include "i40e_trace.h"
-@@ -2188,6 +2189,8 @@ int i40e_xmit_xdp_tx_ring(struct xdp_buff *xdp, struct i40e_ring *xdp_ring)
- 	return i40e_xmit_xdp_ring(xdpf, xdp_ring);
- }
- 
-+DECLARE_XDP_CALL(i40e_xdp_call);
-+
- /**
-  * i40e_run_xdp - run an XDP program
-  * @rx_ring: Rx ring being processed
-@@ -2209,7 +2212,7 @@ static struct sk_buff *i40e_run_xdp(struct i40e_ring *rx_ring,
- 
- 	prefetchw(xdp->data_hard_start); /* xdp_frame write */
- 
--	act = bpf_prog_run_xdp(xdp_prog, xdp);
-+	act = xdp_call_run(i40e_xdp_call, xdp_prog, xdp);
- 	switch (act) {
- 	case XDP_PASS:
- 		break;
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_xsk.c b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-index a05dfecdd9b4..c623eeaeb625 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-@@ -2,6 +2,7 @@
- /* Copyright(c) 2018 Intel Corporation. */
- 
- #include <linux/bpf_trace.h>
-+#include <linux/xdp_call.h>
- #include <net/xdp_sock.h>
- #include <net/xdp.h>
- 
-@@ -179,6 +180,8 @@ int i40e_xsk_umem_setup(struct i40e_vsi *vsi, struct xdp_umem *umem,
- 		i40e_xsk_umem_disable(vsi, qid);
- }
- 
-+DECLARE_XDP_CALL(i40e_xdp_call);
-+
- /**
-  * i40e_run_xdp_zc - Executes an XDP program on an xdp_buff
-  * @rx_ring: Rx ring
-@@ -202,7 +205,7 @@ static int i40e_run_xdp_zc(struct i40e_ring *rx_ring, struct xdp_buff *xdp)
- 	 * this path is enabled by setting an XDP program.
- 	 */
- 	xdp_prog = READ_ONCE(rx_ring->xdp_prog);
--	act = bpf_prog_run_xdp(xdp_prog, xdp);
-+	act = xdp_call_run(i40e_xdp_call, xdp_prog, xdp);
- 	offset = xdp->data - xdp->data_hard_start;
- 
- 	xdp->handle = xsk_umem_adjust_offset(umem, xdp->handle, offset);
 -- 
-2.20.1
+Jens Axboe
 
