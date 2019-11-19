@@ -2,93 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C1B1100F5A
-	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2019 00:14:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F30DF100FCF
+	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2019 01:19:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726887AbfKRXOS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Nov 2019 18:14:18 -0500
-Received: from www62.your-server.de ([213.133.104.62]:38060 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726787AbfKRXOS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Nov 2019 18:14:18 -0500
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iWqDo-000772-7A; Tue, 19 Nov 2019 00:14:16 +0100
-Received: from [178.197.248.45] (helo=pc-9.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iWqDn-0004vY-Up; Tue, 19 Nov 2019 00:14:16 +0100
-Subject: Re: [PATCH bpf-next] [tools/bpf] workaround an alu32 sub-register
- spilling issue
-To:     Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@fb.com>, kernel-team@fb.com
-References: <20191117214036.1309510-1-yhs@fb.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <729f2eb8-3019-b8e6-a135-53c6d565c88f@iogearbox.net>
-Date:   Tue, 19 Nov 2019 00:14:15 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
-MIME-Version: 1.0
-In-Reply-To: <20191117214036.1309510-1-yhs@fb.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.101.4/25637/Mon Nov 18 10:53:23 2019)
+        id S1726911AbfKSAT7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Nov 2019 19:19:59 -0500
+Received: from mail-pj1-f74.google.com ([209.85.216.74]:56374 "EHLO
+        mail-pj1-f74.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726809AbfKSAT7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Nov 2019 19:19:59 -0500
+Received: by mail-pj1-f74.google.com with SMTP id 6so846694pja.23
+        for <bpf@vger.kernel.org>; Mon, 18 Nov 2019 16:19:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=VvQgGDe+hmOgI9C/B8EM+92sDwQj4yhDGdjV423Q5zg=;
+        b=aYz6/cd5U1jOehyCj/fikIRi6p8WiCTQL+oh3HLi3qqDa2r/hLN9twQdlXIxCAxAd9
+         JdmNp5tL5IT1ghbfN5HsiHrlr6Xu1w+3AUXlf/dYTl1xXgELVdJXA0GooWc+C5T5at0m
+         lZlIxmnim6FS+r+M1wF4Z4cvHmMkx4fu1ZwNz+f/GoBJg4JoCi9PcdIA2QRM/NygS/DI
+         ecddcZ0ZmFSrpwoLCl4x7YQd4PRlOLVxIOIta0iOdLUO6K0ILKTpH/ty+NuM1ZPHgBSp
+         5sn6WNdfrXwAQZFTYI6Wys7C+emme/vdIGdLIxEqYTjGCyiGH8GPMmsI9Qhw95D7PgrN
+         Evbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=VvQgGDe+hmOgI9C/B8EM+92sDwQj4yhDGdjV423Q5zg=;
+        b=bL02g/fguDQCgnJbx1E4pG316yunS5RUbTw9SK2kg/TpsNqM2tPnKrds4bf82wToL9
+         FW8B35oYY+4lYA40E80X0XGz7ucmM+6eSB2rib4CDcI7ZQBOdJHMg7aKgpj+5RBHKRJi
+         EoMKwJvPFFBpAaa4WheKNnAlIW6fNNDQd+PtI8zcufX0vmm+LaqNU9g3CmIQ12/Z+e47
+         P81tZ0Dvpvpj1V4TCtNWcHKzVoh/YiZqFm53KBvD/BFTS38k8yNNLdPnOxZ9Gm64GILt
+         heZvLnT7iWoxCvbW0KpdzW+9FdpzHKYc747pAVLosg/kaRQd3GEjwshto8g5RrmytKm1
+         USGw==
+X-Gm-Message-State: APjAAAXVE4+NHVi0Uy+mAEZr7/p8ngndmxlrrIZyAA29NGtw/bHxbUKA
+        6wWuBmgA953ZzNuAWIRo6ZIYdF5zngo=
+X-Google-Smtp-Source: APXvYqyhqWBjwyTEBEnIiu55yVgbyYn9icIGoCmfZtWwtVHC4gvJnfqcHVnVV+EIVPy2EXEMMWo/onBCKd4=
+X-Received: by 2002:a63:b047:: with SMTP id z7mr2251683pgo.224.1574122798219;
+ Mon, 18 Nov 2019 16:19:58 -0800 (PST)
+Date:   Mon, 18 Nov 2019 16:19:51 -0800
+Message-Id: <20191119001951.92930-1-lrizzo@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.24.0.432.g9d3f5f5b63-goog
+Subject: [PATCH v2] net-af_xdp: use correct number of channels from ethtool
+From:   Luigi Rizzo <lrizzo@google.com>
+To:     magnus.karlsson@intel.com, bjorn.topel@intel.com,
+        jonathan.lemon@gmail.com, netdev@vger.kernel.org
+Cc:     bpf@vger.kernel.org, rizzo@iet.unipi.it,
+        Luigi Rizzo <lrizzo@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/17/19 10:40 PM, Yonghong Song wrote:
-> Currently, with latest llvm trunk, selftest test_progs failed
-> obj file test_seg6_loop.o with the following error
-> in verifier:
->    infinite loop detected at insn 76
-> The byte code sequence looks like below, and noted
-> that alu32 has been turned off by default for better
-> generated codes in general:
->        48:       w3 = 100
->        49:       *(u32 *)(r10 - 68) = r3
->        ...
->    ;             if (tlv.type == SR6_TLV_PADDING) {
->        76:       if w3 == 5 goto -18 <LBB0_19>
->        ...
->        85:       r1 = *(u32 *)(r10 - 68)
->    ;     for (int i = 0; i < 100; i++) {
->        86:       w1 += -1
->        87:       if w1 == 0 goto +5 <LBB0_20>
->        88:       *(u32 *)(r10 - 68) = r1
-> 
-> The main reason for verification failure is due to
-> partial spills at r10 - 68 for induction variable "i".
-> 
-> Current verifier only handles spills with 8-byte values.
-> The above 4-byte value spill to stack is treated to
-> STACK_MISC and its content is not saved. For the above example,
->      w3 = 100
->        R3_w=inv100 fp-64_w=inv1086626730498
->      *(u32 *)(r10 - 68) = r3
->        R3_w=inv100 fp-64_w=inv1086626730498
->      ...
->      r1 = *(u32 *)(r10 - 68)
->        R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff))
->        fp-64=inv1086626730498
-> 
-> To resolve this issue, verifier needs to be extended to
-> track sub-registers in spilling, or llvm needs to enhanced
-> to prevent sub-register spilling in register allocation
-> phase. The former will increase verifier complexity and
-> the latter will need some llvm "hacking".
-> 
-> Let us workaround this issue by declaring the induction
-> variable as "long" type so spilling will happen at non
-> sub-register level. We can revisit this later if sub-register
-> spilling causes similar or other verification issues.
-> 
-> Signed-off-by: Yonghong Song <yhs@fb.com>
+Drivers use different fields to report the number of channels, so take
+the maximum of all data channels (rx, tx, combined) when determining the
+size of the xsk map. The current code used only 'combined' which was set
+to 0 in some drivers e.g. mlx4.
 
-Applied, thanks!
+Tested: compiled and run xdpsock -q 3 -r -S on mlx4
+Signed-off-by: Luigi Rizzo <lrizzo@google.com>
+---
+ tools/lib/bpf/xsk.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
+index 74d84f36a5b24..37921375f4d45 100644
+--- a/tools/lib/bpf/xsk.c
++++ b/tools/lib/bpf/xsk.c
+@@ -431,13 +431,18 @@ static int xsk_get_max_queues(struct xsk_socket *xsk)
+ 		goto out;
+ 	}
+ 
+-	if (err || channels.max_combined == 0)
++	if (err) {
+ 		/* If the device says it has no channels, then all traffic
+ 		 * is sent to a single stream, so max queues = 1.
+ 		 */
+ 		ret = 1;
+-	else
+-		ret = channels.max_combined;
++	} else {
++		/* Take the max of rx, tx, combined. Drivers return
++		 * the number of channels in different ways.
++		 */
++		ret = max(channels.max_rx, channels.max_tx);
++		ret = max(ret, (int)channels.max_combined);
++	}
+ 
+ out:
+ 	close(fd);
+-- 
+2.24.0.432.g9d3f5f5b63-goog
+
