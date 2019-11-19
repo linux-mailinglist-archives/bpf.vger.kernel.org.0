@@ -2,67 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3963F1027CA
-	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2019 16:13:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C62E5102832
+	for <lists+bpf@lfdr.de>; Tue, 19 Nov 2019 16:37:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728172AbfKSPNO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Nov 2019 10:13:14 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:60410 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726637AbfKSPNO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Nov 2019 10:13:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=5qNH0rNiKvfJDdxRh+5cWf5BX5eczgkRcY4ZPO+/TwE=; b=AeSgyU6o4dXFLLWUZleLPkNoT
-        eAzZI8/6uO1O9y77MQOs+XCcjHmi0zxAB9CrGV37e4tfw0e770USNb5cN+4i9hm+Fh3zQRkDV5lIX
-        aranSHGIniwfHvdiburKsDj209T9LGjp7NOJWeOGcBRViKjJiwBZzHi4H1f9jYpXVdTkVQjoVFANa
-        7farnFptcQCJwW4/gcij9/ORkWhAFYyof2raVQ/3R2B9E7BqeDx0GOlQLy+hlvFuNiUnnGS5jOtjL
-        VLYI0VkXeAtT/AmBgHieLmigNhEoNWWvzSa4cus8tFr/NfLFVTvy/K+Y2SSlGwYFfjQOEy3xBu4Qf
-        O6lqi5n6Q==;
-Received: from [2601:1c0:6280:3f0::5a22]
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1iX5Bp-0003Nl-Mu; Tue, 19 Nov 2019 15:13:13 +0000
-Subject: Re: linux-next: Tree for Nov 19 (bpf)
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bpf@vger.kernel.org,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-References: <20191119194658.39af50d0@canb.auug.org.au>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <ac0b86e4-611b-81d1-ba09-e819218efe3f@infradead.org>
-Date:   Tue, 19 Nov 2019 07:13:12 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
+        id S1727805AbfKSPhi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Nov 2019 10:37:38 -0500
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:39934 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727682AbfKSPhi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Nov 2019 10:37:38 -0500
+Received: by mail-lj1-f195.google.com with SMTP id p18so23856299ljc.6;
+        Tue, 19 Nov 2019 07:37:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xAyUdfmJiJi4RpgjaU0REjjASDaV/bWU7/WG+YER0uc=;
+        b=fS5ID8C8Ou3hctvXS249gt3CgzjMHu6QOznB0d4VTxqRkdLzJoQc4Juz7F0SjgYoDM
+         /rhuxUNH7ktJpyqkCV0DVsvKMeh9GTQZrD4JyHWuxdewlgEgvBlguPaE7RK9rvO5XRfH
+         sdk3uRQBula1q2w5uvVf2fXq2AdbNDg8s41w7CN3LLW2r1pAGNyDkQElIX7/b6uZrekV
+         /z8c73jF5ZfMT5LncrJBsGihL99X3+tjCMa4cgWhiz+0IOe4CibvLD4yzXC2OYkM3crB
+         jk3EoJOETFTzJMzi9pseRuqH2jeo/stYJugWSweN9pDMetK2Y8oyYs72BGOqUV2CEOLr
+         DQIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xAyUdfmJiJi4RpgjaU0REjjASDaV/bWU7/WG+YER0uc=;
+        b=J1fIAKzpwWIc4P2Cvf+SnBOlV1YRYNqjGnPGhMahpAGG9XwnMKOhFiVJd9h57dTegt
+         B2tdx22faIk2vy+oYttQu5EeC/fmusq9zcJs4RU93RdPnCV88c4kNBkT8VrbC0DEyTD3
+         2cU5NVNLrqrrzvQYXLf0VnuFO+w6VKeZebX3YzaBKQe51HiGUfenDgDqVL7+uNHnthLP
+         PVQqeXSxmAgowCqLD+0tQGqPBHNpnuE3S8IZuo4FJL3jJs5VRjIRRH+N5C/ZspPFOoYb
+         Qol49O71MXCf1k+UUucFHr4lJX/XIpyn32z9b7iRN6vPplXiG+AIffgbQRVMTz9BNRKZ
+         Qodg==
+X-Gm-Message-State: APjAAAX9TuFYj07OK3xMhbAaAR3fJugFCAesbM2Y+JnPjTTckSV53jzM
+        +73rDmO+wb6TpsILXgNtHCcBiiygUIC937Nk/0o=
+X-Google-Smtp-Source: APXvYqwM5CuCM0cMaXsnBmFFYQh73bBkZRAdGfG3BteYMFXCaRaY935y4lBJiyme/ufuVZgdkox3YAKYAYngH5QeuYI=
+X-Received: by 2002:a2e:970a:: with SMTP id r10mr4614470lji.142.1574177855313;
+ Tue, 19 Nov 2019 07:37:35 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20191119194658.39af50d0@canb.auug.org.au>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20191114194636.811109457@goodmis.org> <20191114194738.938540273@goodmis.org>
+ <20191115215125.mbqv7taqnx376yed@ast-mbp.dhcp.thefacebook.com>
+ <20191117171835.35af6c0e@gandalf.local.home> <CAADnVQ+OzTikM9EhrfsC7NFsVYhATW1SVHxK64w3xn9qpk81pg@mail.gmail.com>
+ <20191119091304.2c775b35@gandalf.local.home>
+In-Reply-To: <20191119091304.2c775b35@gandalf.local.home>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 19 Nov 2019 07:37:23 -0800
+Message-ID: <CAADnVQJ7ymcPRCw4iWBuec-tYLXSH-62r96WNAVNwQTLA+DGsg@mail.gmail.com>
+Subject: Re: [RFC][PATCH 1/2] ftrace: Add modify_ftrace_direct()
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/19/19 12:46 AM, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Changes since 20191118:
-> 
+On Tue, Nov 19, 2019 at 6:13 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> On Mon, 18 Nov 2019 22:04:28 -0800
+> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+>
+> > I took your for-next without the extra patch and used it from bpf trampoline.
+> > It's looking good so far. Passed basic testing. Will add more stress tests.
+> >
+> > Do you mind doing:
+> > diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
+> > index 73eb2e93593f..6ddb203ca550 100644
+> > --- a/include/linux/ftrace.h
+> > +++ b/include/linux/ftrace.h
+> > @@ -256,16 +256,16 @@ struct ftrace_direct_func
+> > *ftrace_find_direct_func(unsigned long addr);
+> >  # define ftrace_direct_func_count 0
+> >  static inline int register_ftrace_direct(unsigned long ip, unsigned long addr)
+> >  {
+> > -       return -ENODEV;
+> > +       return -ENOTSUPP;
+> >  }
+> >  static inline int unregister_ftrace_direct(unsigned long ip, unsigned
+> > long addr)
+> >  {
+> > -       return -ENODEV;
+> > +       return -ENOTSUPP;
+> >  }
+> >  static inline int modify_ftrace_direct(unsigned long ip,
+> >                                        unsigned long old_addr,
+> > unsigned long new_addr)
+> >  {
+> > -       return -ENODEV;
+> > +       return -ENOTSUPP;
+> >  }
+> >
+> > otherwise ENODEV is a valid error when ip is incorrect which is
+> > indistinguishable from ftrace not compiled in.
+>
+> Sure I can add this. Want to add a Signed-off-by to it, and I'll just
+> pull it in directly? I can write up the change log.
 
-on i386 or x86_64:
+Whichever way is easier for you.
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Thanks!
 
-../kernel/bpf/btf.c:3466:1: error: empty enum is invalid
- };
- ^
-
-when CONFIG_NET is not set/enabled.
-
-
--- 
-~Randy
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> -- Steve
