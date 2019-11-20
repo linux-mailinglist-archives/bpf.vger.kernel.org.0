@@ -2,215 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EAFA8103D66
-	for <lists+bpf@lfdr.de>; Wed, 20 Nov 2019 15:38:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AA4C10430C
+	for <lists+bpf@lfdr.de>; Wed, 20 Nov 2019 19:11:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729932AbfKTOiW convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Wed, 20 Nov 2019 09:38:22 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:37840 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728407AbfKTOiV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Nov 2019 09:38:21 -0500
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-53-SuPrge5gOEqvLSko4RT76g-1; Wed, 20 Nov 2019 09:38:16 -0500
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5C64D18C35A0;
-        Wed, 20 Nov 2019 14:38:14 +0000 (UTC)
-Received: from krava.redhat.com (unknown [10.40.205.57])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6345B3841;
-        Wed, 20 Nov 2019 14:38:11 +0000 (UTC)
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Steve Grubb <sgrubb@redhat.com>,
-        David Miller <davem@redhat.com>,
-        Paul Moore <paul@paul-moore.com>,
-        Eric Paris <eparis@redhat.com>, Jiri Benc <jbenc@redhat.com>
-Subject: [RFC] bpf: emit audit messages upon successful prog load and unload
-Date:   Wed, 20 Nov 2019 15:38:10 +0100
-Message-Id: <20191120143810.8852-1-jolsa@kernel.org>
+        id S1728014AbfKTSLn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Nov 2019 13:11:43 -0500
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:42104 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726999AbfKTSLn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Nov 2019 13:11:43 -0500
+Received: by mail-qk1-f196.google.com with SMTP id i3so608664qkk.9;
+        Wed, 20 Nov 2019 10:11:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=f+XvTVMTSQY9b5j6Id3kKL6RqroXeFfK7ontB53SIHM=;
+        b=g3B6oHNGClhKyYqK+Cn88lzRRm+W0IFS9uQlxcQ2qHeI2JJClhIBWTwtxxUYWTCPor
+         xxG+0o8ERn/MM/pvGkPcnzCxg7ic9NwIKJYaloEdmAyyMWD5m82Gyyw7xgDNvNhhgiaZ
+         NO2r3aXYW4g7VC7XpEohqf58xEu3/Ih0IfYYoZRS0rTy5GASV3x+QFgh7aNz0JrndJ8q
+         KGKrJ9bF11AMjNNRguc9mXtXrEkv9L8l8W46Kwh7C6HFuxD/gEKTpseZY2DVvZUitStz
+         jud49/Ky1npU1K9Xli9x+J2M7j0Yk7VF1iLZwNqkFhkEkyg3eb8ozGznqpaG2M8ElihZ
+         9+eQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=f+XvTVMTSQY9b5j6Id3kKL6RqroXeFfK7ontB53SIHM=;
+        b=Z1VU+wnXmIVsgxvziahQKLSFSPb8JQ9+TsFNL9SpLK0AC+5lxGFHbFLNa244GwUmmP
+         bFXc+rssPy4XJDF1evxx3Ulx5eWTsAe3o5BPMiXevGq2mtn3Duq8yXoJEEBWw22N0V0A
+         0xrgZy3d7BBgMB6xxN7XuvS0WYU2QmGWZzr6LsrcmeILzlFLUX+l+KrWdVVX2tcW1VkP
+         utf5d0aWgxN4BJc3ATix9mWrKKkl1F/iuXOFTDwRJXJKvc03lMWq3blinL6FZxzD+VTy
+         eUwxPkhAwgslYyZ0Ln9dGVzQo3yfZdr6b3slYRbycy39xkbBmcNm8W7nZSXmEl+5xWxe
+         pZfw==
+X-Gm-Message-State: APjAAAVnmfZ0bAJ/UzesjEmfNR2QFpjxl+li7BH8AlgDd0QeSEaMago1
+        0hMQ+xaWIF+V1u700fNMUo3No3L5werV7pWMFhU=
+X-Google-Smtp-Source: APXvYqwrSkg8KfjdnHIMtCbhC1lwVZfn6VhS1L45ne3GokTs8sal6L7sXzOki6WJAmwwLvAoqA7K/zIjBaPvase+2mo=
+X-Received: by 2002:a05:620a:1011:: with SMTP id z17mr3662310qkj.39.1574273500583;
+ Wed, 20 Nov 2019 10:11:40 -0800 (PST)
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
-X-MC-Unique: SuPrge5gOEqvLSko4RT76g-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=WINDOWS-1252
-Content-Transfer-Encoding: 8BIT
+References: <cover.1574126683.git.daniel@iogearbox.net> <ad08df844b3b111e371d30191b2789facfd120ed.1574126683.git.daniel@iogearbox.net>
+In-Reply-To: <ad08df844b3b111e371d30191b2789facfd120ed.1574126683.git.daniel@iogearbox.net>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 20 Nov 2019 10:11:29 -0800
+Message-ID: <CAEf4BzZPhtXnbpPU2-fKmanfNQxOas33EkrjNgcaVnmZFvaZqA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/8] bpf, x86: generalize and extend
+ bpf_arch_text_poke for direct jumps
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        john fastabend <john.fastabend@gmail.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
-resending out the original audit support patch posted by Daniel
-(rebased on current bpf-next/master code) for discussion. It was
-declined in favor of perf based notification:
-  https://marc.info/?l=linux-netdev&m=153866106418036&w=2
+On Mon, Nov 18, 2019 at 5:38 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>
+> Add BPF_MOD_{NOP_TO_JUMP,JUMP_TO_JUMP,JUMP_TO_NOP} patching for x86
+> JIT in order to be able to patch direct jumps or nop them out. We need
+> this facility in order to patch tail call jumps and in later work also
+> BPF static keys.
+>
+> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+> ---
 
-We tried to add perf based notification support to auditd,
-but it did not fit and was nack-ed by audit guys:
-  https://www.redhat.com/archives/linux-audit/2019-August/msg00004.html
+LGTM.
 
-Hopefully we could move forward with the initial change.
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-thanks/thoughts?
-jirka
+>  arch/x86/net/bpf_jit_comp.c | 64 ++++++++++++++++++++++++++-----------
+>  include/linux/bpf.h         |  6 ++++
+>  2 files changed, 52 insertions(+), 18 deletions(-)
+>
 
-
----
-Allow for audit messages to be emitted upon BPF program load and
-unload for having a timeline of events. The load itself is in
-syscall context, so additional info about the process initiating
-the BPF prog creation can be logged and later directly correlated
-to the unload event.
-
-The only info really needed from BPF side is the globally unique
-prog ID where then audit user space tooling can query / dump all
-info needed about the specific BPF program right upon load event
-and enrich the record, thus these changes needed here can be kept
-small and non-intrusive to the core.
-
-Raw example output:
-
-  # auditctl -D
-  # auditctl -a always,exit -F arch=x86_64 -S bpf
-  # ausearch --start recent -m 1334
-  [...]
-  ----
-  time->Wed Nov 20 12:45:51 2019
-  type=PROCTITLE msg=audit(1574271951.590:8974): proctitle="./test_verifier"
-  type=SYSCALL msg=audit(1574271951.590:8974): arch=c000003e syscall=321 success=yes exit=14 a0=5 a1=7ffe2d923e80 a2=78 a3=0 items=0 ppid=742 pid=949 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts0 ses=2 comm="test_verifier" exe="/root/bpf-next/tools/testing/selftests/bpf/test_verifier" subj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 key=(null)
-  type=UNKNOWN[1334] msg=audit(1574271951.590:8974): auid=0 uid=0 gid=0 ses=2 subj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 pid=949 comm="test_verifier" exe="/root/bpf-next/tools/testing/selftests/bpf/test_verifier" prog-id=3260 event=LOAD
-  ----
-  time->Wed Nov 20 12:45:51 2019
-type=UNKNOWN[1334] msg=audit(1574271951.590:8975): prog-id=3260 event=UNLOAD
-  ----
-  [...]
-
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- include/linux/audit.h      |  3 +++
- include/uapi/linux/audit.h |  1 +
- kernel/auditsc.c           |  2 +-
- kernel/bpf/syscall.c       | 31 +++++++++++++++++++++++++++++++
- 4 files changed, 36 insertions(+), 1 deletion(-)
-
-diff --git a/include/linux/audit.h b/include/linux/audit.h
-index aee3dc9eb378..edd006f4597d 100644
---- a/include/linux/audit.h
-+++ b/include/linux/audit.h
-@@ -159,6 +159,7 @@ extern void		    audit_log_key(struct audit_buffer *ab,
- extern void		    audit_log_link_denied(const char *operation);
- extern void		    audit_log_lost(const char *message);
- 
-+extern void audit_log_task(struct audit_buffer *ab);
- extern int audit_log_task_context(struct audit_buffer *ab);
- extern void audit_log_task_info(struct audit_buffer *ab);
- 
-@@ -219,6 +220,8 @@ static inline void audit_log_key(struct audit_buffer *ab, char *key)
- { }
- static inline void audit_log_link_denied(const char *string)
- { }
-+static inline void audit_log_task(struct audit_buffer *ab)
-+{ }
- static inline int audit_log_task_context(struct audit_buffer *ab)
- {
- 	return 0;
-diff --git a/include/uapi/linux/audit.h b/include/uapi/linux/audit.h
-index c89c6495983d..32a5db900f47 100644
---- a/include/uapi/linux/audit.h
-+++ b/include/uapi/linux/audit.h
-@@ -116,6 +116,7 @@
- #define AUDIT_FANOTIFY		1331	/* Fanotify access decision */
- #define AUDIT_TIME_INJOFFSET	1332	/* Timekeeping offset injected */
- #define AUDIT_TIME_ADJNTPVAL	1333	/* NTP value adjustment */
-+#define AUDIT_BPF		1334	/* BPF subsystem */
- 
- #define AUDIT_AVC		1400	/* SE Linux avc denial or grant */
- #define AUDIT_SELINUX_ERR	1401	/* Internal SE Linux Errors */
-diff --git a/kernel/auditsc.c b/kernel/auditsc.c
-index 4effe01ebbe2..9bf1045fedfa 100644
---- a/kernel/auditsc.c
-+++ b/kernel/auditsc.c
-@@ -2545,7 +2545,7 @@ void __audit_ntp_log(const struct audit_ntp_data *ad)
- 	audit_log_ntp_val(ad, "adjust",	AUDIT_NTP_ADJUST);
- }
- 
--static void audit_log_task(struct audit_buffer *ab)
-+void audit_log_task(struct audit_buffer *ab)
- {
- 	kuid_t auid, uid;
- 	kgid_t gid;
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index bac3becf9f90..17f4254495f2 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -23,6 +23,7 @@
- #include <linux/timekeeping.h>
- #include <linux/ctype.h>
- #include <linux/nospec.h>
-+#include <linux/audit.h>
- #include <uapi/linux/btf.h>
- 
- #define IS_FD_ARRAY(map) ((map)->map_type == BPF_MAP_TYPE_PROG_ARRAY || \
-@@ -1318,6 +1319,34 @@ static void free_used_maps(struct bpf_prog_aux *aux)
- 	kfree(aux->used_maps);
- }
- 
-+enum bpf_event {
-+	BPF_EVENT_LOAD,
-+	BPF_EVENT_UNLOAD,
-+};
-+
-+static const char * const bpf_event_audit_str[] = {
-+	[BPF_EVENT_LOAD]   = "LOAD",
-+	[BPF_EVENT_UNLOAD] = "UNLOAD",
-+};
-+
-+static void bpf_audit_prog(const struct bpf_prog *prog, enum bpf_event event)
-+{
-+	bool has_task_context = event == BPF_EVENT_LOAD;
-+	struct audit_buffer *ab;
-+
-+	if (audit_enabled == AUDIT_OFF)
-+		return;
-+	ab = audit_log_start(audit_context(), GFP_ATOMIC, AUDIT_BPF);
-+	if (unlikely(!ab))
-+		return;
-+	if (has_task_context)
-+		audit_log_task(ab);
-+	audit_log_format(ab, "%sprog-id=%u event=%s",
-+			 has_task_context ? " " : "",
-+			 prog->aux->id, bpf_event_audit_str[event]);
-+	audit_log_end(ab);
-+}
-+
- int __bpf_prog_charge(struct user_struct *user, u32 pages)
- {
- 	unsigned long memlock_limit = rlimit(RLIMIT_MEMLOCK) >> PAGE_SHIFT;
-@@ -1434,6 +1463,7 @@ static void __bpf_prog_put(struct bpf_prog *prog, bool do_idr_lock)
- {
- 	if (atomic64_dec_and_test(&prog->aux->refcnt)) {
- 		perf_event_bpf_event(prog, PERF_BPF_EVENT_PROG_UNLOAD, 0);
-+		bpf_audit_prog(prog, BPF_EVENT_UNLOAD);
- 		/* bpf_prog_free_id() must be called first */
- 		bpf_prog_free_id(prog, do_idr_lock);
- 		__bpf_prog_put_noref(prog, true);
-@@ -1843,6 +1873,7 @@ static int bpf_prog_load(union bpf_attr *attr, union bpf_attr __user *uattr)
- 	 */
- 	bpf_prog_kallsyms_add(prog);
- 	perf_event_bpf_event(prog, PERF_BPF_EVENT_PROG_LOAD, 0);
-+	bpf_audit_prog(prog, BPF_EVENT_LOAD);
- 
- 	err = bpf_prog_new_fd(prog);
- 	if (err < 0)
--- 
-2.21.0
-
+[...]
