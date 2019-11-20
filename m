@@ -2,177 +2,217 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A17A10350A
-	for <lists+bpf@lfdr.de>; Wed, 20 Nov 2019 08:17:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 556A9103973
+	for <lists+bpf@lfdr.de>; Wed, 20 Nov 2019 13:03:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727929AbfKTHRe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Nov 2019 02:17:34 -0500
-Received: from hqemgate16.nvidia.com ([216.228.121.65]:19872 "EHLO
-        hqemgate16.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727888AbfKTHRX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Nov 2019 02:17:23 -0500
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate16.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5dd4e87e0000>; Tue, 19 Nov 2019 23:17:18 -0800
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Tue, 19 Nov 2019 23:17:17 -0800
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Tue, 19 Nov 2019 23:17:17 -0800
-Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 20 Nov
- 2019 07:17:16 +0000
-Subject: Re: [PATCH v6 17/24] mm/gup: track FOLL_PIN pages
-To:     Jan Kara <jack@suse.cz>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, <bpf@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <kvm@vger.kernel.org>,
-        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-media@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>, <netdev@vger.kernel.org>,
-        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>
-References: <20191119081643.1866232-1-jhubbard@nvidia.com>
- <20191119081643.1866232-18-jhubbard@nvidia.com>
- <20191119113746.GD25605@quack2.suse.cz>
-X-Nvconfidentiality: public
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <92d0385a-90be-e900-e5ec-1eeafd24ff81@nvidia.com>
-Date:   Tue, 19 Nov 2019 23:17:16 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        id S1729024AbfKTMDV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Nov 2019 07:03:21 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:48953 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729005AbfKTMDU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Nov 2019 07:03:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1574251398;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cPLrgLaGuZaJcH9r1bYOExIf6a7HxnQs/VX4R6E/rqg=;
+        b=X0AKAJLhhUPUzNRw17qZyHdXx+nBkpvhpavZvp1GJgErD9+w9ZIXPG1lS6qo8RgBA6nuMh
+        BM4im81B2qPtC2WOT18/Etm4vL4iMGD7HSpj/jJfcxRqs93RBI+6aPCwVYzKUVH11MwAkq
+        Xv6TrmzLjMNk+p/CcCqhum2Pt6jdPPE=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-402-986fiVE0PRCX6mZAUnQf1w-1; Wed, 20 Nov 2019 07:03:17 -0500
+Received: by mail-wm1-f70.google.com with SMTP id l184so4992497wmf.6
+        for <bpf@vger.kernel.org>; Wed, 20 Nov 2019 04:03:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FOyJ5t3F1d+Ww8VG/GvZOln/dLXZzdutGh+ZvZUhBto=;
+        b=hF2uUhYSXFutYtPmA94TiNULiIEhDWb/xS0/DGdQOZwv8wWbRcWXingdWzLbaTonuz
+         HUZfLExSsYY+2FydGUvlIRhD/xGlCOknDea79vY55XLVwtgXX2soQJmf4YakHsuytQrw
+         or4moYWdzcwB4ieRMTHzPbK8TLsckKJQkJAt0kiIFZPzQH5O67C/EhVj24OIzSOltJ8I
+         U6m98zLYhsUfej/j1noN63RsgZ7Svq508kbXpk5d3snjRoFrWBPwSgeSRKNNjMEjXEVe
+         54yX5xKl2f5rVoHc/Fc63Sof4XnWy4ce99J1oztd2e0zyjlclkhdsyiECap6FyfIHOga
+         e46g==
+X-Gm-Message-State: APjAAAV0x3iwnMIKdo+A8uRRSajYD3ZeS47ocW4ZqW8BwKpJxvduRxCx
+        gjSRyV4WypmNjI4306ggWacc7vqdER7ZyVBy2Z6o9ygK8sI4azqPz61dSag9tgDrDSsC7q3k55v
+        v+BnyLxfOEntk
+X-Received: by 2002:a5d:570a:: with SMTP id a10mr2756209wrv.107.1574251394215;
+        Wed, 20 Nov 2019 04:03:14 -0800 (PST)
+X-Google-Smtp-Source: APXvYqz33Aj8kvQESisy7rMEIOYNw9KoxhpUBoSDqC6m1YCd6Hc66GXIFyZ9wQ8otMuTjyRfxiTwIg==
+X-Received: by 2002:a5d:570a:: with SMTP id a10mr2756131wrv.107.1574251393545;
+        Wed, 20 Nov 2019 04:03:13 -0800 (PST)
+Received: from steredhat (a-nu5-32.tin.it. [212.216.181.31])
+        by smtp.gmail.com with ESMTPSA id 65sm35828136wrs.9.2019.11.20.04.03.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Nov 2019 04:03:12 -0800 (PST)
+Date:   Wed, 20 Nov 2019 13:03:10 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     syzbot <syzbot+e2e5c07bf353b2f79daa@syzkaller.appspotmail.com>
+Cc:     ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
+        "David S. Miller" <davem@davemloft.net>, idosch@mellanox.com,
+        jakub.kicinski@netronome.com, jiri@mellanox.com, kafai@fb.com,
+        kvm <kvm@vger.kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        syzkaller-bugs@googlegroups.com, vadimp@mellanox.com,
+        virtualization@lists.linux-foundation.org, yhs@fb.com
+Subject: Re: general protection fault in virtio_transport_release
+Message-ID: <CAGxU2F7qYQAFJ957bLxKGQrHApxomGQXbaFMDVc7r0bWv_M2Zw@mail.gmail.com>
+References: <0000000000004ce83f0597b24bba@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20191119113746.GD25605@quack2.suse.cz>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1574234238; bh=XS1elsnwWY0rNKRca94CapnxJDsibdDqnD818d/G+io=;
-        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=cgfFkxVckFKph83JpaLozX1BPV67pcDvc4zYdLq9ggt/6dUFhjSjEUfkPlJ6YS85y
-         Tzbfkd2Ssh+1cnbHZVu22ZxAYWyCv1b8X10VXVS5hS2byaCvY0Vg9ipA7x3Fo3odW9
-         mJ8QOlZhdrlbORb/tooq8lEuT6AxTt5cVxDPZE9pOLHClbe3whACaJnf15veA5FbxQ
-         N7Z3c9PH3VSrAZwjy0whi7ko1Q5RU1C8PJUljAOR0JzSWQ7k8UX3NdOtoVh+QLcZ15
-         DmGFCQcpIJbV8FkJKisaDhzEEJcucwABlIhBeXVZln5jK7XEYXo5n/Z8Yardu3zdea
-         jFCxWfbFbwpdA==
+In-Reply-To: <0000000000004ce83f0597b24bba@google.com>
+X-MC-Unique: 986fiVE0PRCX6mZAUnQf1w-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/19/19 3:37 AM, Jan Kara wrote:
-> On Tue 19-11-19 00:16:36, John Hubbard wrote:
->> @@ -2025,6 +2149,20 @@ static int __record_subpages(struct page *page, unsigned long addr,
->>  	return nr;
->>  }
->>  
->> +static bool __pin_compound_head(struct page *head, int refs, unsigned int flags)
->> +{
-> 
-> I don't quite like the proliferation of names starting with __. I don't
-> think there's a good reason for that, particularly in this case. Also 'pin'
-> here is somewhat misleading as we already use term "pin" for the particular
-> way of pinning the page. We could have grab_compound_head() or maybe
-> nail_compound_head() :), but you're native speaker so you may come up with
-> better word.
+On Tue, Nov 19, 2019 at 1:35 PM syzbot <syzbot+e2e5c07bf353b2f79daa@syzkall=
+er.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following crash on:
+>
+> HEAD commit:    1e8795b1 mscc.c: fix semicolon.cocci warnings
+> git tree:       net-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=3D15d77406e0000=
+0
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3De855e9c92c947=
+4fe
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3De2e5c07bf353b2f=
+79daa
+> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D1537f46ae00=
+000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D11359c6ae0000=
+0
+>
+> The bug was bisected to:
+>
+> commit f366cd2a2e510b155e18b21a2d149332aa08eb61
+> Author: Vadim Pasternak <vadimp@mellanox.com>
+> Date:   Mon Oct 21 10:30:30 2019 +0000
+>
+>      mlxsw: reg: Add macro for getting QSFP module EEPROM page number
+>
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D148945aae0=
+0000
+> final crash:    https://syzkaller.appspot.com/x/report.txt?x=3D168945aae0=
+0000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=3D128945aae0000=
+0
+>
+> IMPORTANT: if you fix the bug, please add the following tag to the commit=
+:
+> Reported-by: syzbot+e2e5c07bf353b2f79daa@syzkaller.appspotmail.com
+> Fixes: f366cd2a2e51 ("mlxsw: reg: Add macro for getting QSFP module EEPRO=
+M
+> page number")
 
+I'm working on this issue.
 
-Yes, it is ugly naming, I'll change these as follows:
+I think the problem is related to
+ac03046ece2b "vsock/virtio: free packets during the socket release"
 
-    __pin_compound_head() --> grab_compound_head()    
-    __record_subpages()   --> record_subpages()
+I'll send a patch ASAP.
 
-I loved the "nail_compound_head()" suggestion, it just seems very vivid, but
-in the end, I figured I'd better keep it relatively drab and colorless. :)
+Thanks,
+Stefano
 
-> 
->> +	if (flags & FOLL_PIN) {
->> +		if (unlikely(!try_pin_compound_head(head, refs)))
->> +			return false;
->> +	} else {
->> +		head = try_get_compound_head(head, refs);
->> +		if (!head)
->> +			return false;
->> +	}
->> +
->> +	return true;
->> +}
->> +
->>  static void put_compound_head(struct page *page, int refs)
->>  {
->>  	/* Do a get_page() first, in case refs == page->_refcount */
-> 
-> put_compound_head() needs similar treatment as undo_dev_pagemap(), doesn't
-> it?
-> 
+>
+> RDX: 0000000000000010 RSI: 00000000200000c0 RDI: 0000000000000004
+> RBP: 0000000000000005 R08: 0000000000000001 R09: 00007ffd5b250031
+> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000401e00
+> R13: 0000000000401e90 R14: 0000000000000000 R15: 0000000000000000
+> kasan: CONFIG_KASAN_INLINE enabled
+> kasan: GPF could be caused by NULL-ptr deref or user memory access
+> general protection fault: 0000 [#1] PREEMPT SMP KASAN
+> CPU: 0 PID: 8862 Comm: syz-executor079 Not tainted 5.4.0-rc6+ #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS
+> Google 01/01/2011
+> RIP: 0010:virtio_transport_release+0x13b/0xcb0
+> net/vmw_vsock/virtio_transport_common.c:826
+> Code: e8 aa e6 2b fa 66 41 83 fd 01 0f 84 34 02 00 00 e8 3a e5 2b fa 48 8=
+b
+> 95 30 ff ff ff 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <80> 3c 02 00 0f
+> 85 22 0a 00 00 48 8b bb 98 00 00 00 48 b8 00 00 00
+> RSP: 0018:ffff888092dbfaf0 EFLAGS: 00010202
+> RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffffff87474aa0
+> RDX: 0000000000000013 RSI: ffffffff874747d6 RDI: 0000000000000001
+> RBP: ffff888092dbfc00 R08: ffff88809245a380 R09: fffffbfff1555fe1
+> R10: fffffbfff1555fe0 R11: 0000000000000003 R12: ffff888092dbfbd8
+> R13: 0000000000000007 R14: 0000000000000007 R15: 0000000000000000
+> FS:  0000000000000000(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000=
+000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00000000200000c4 CR3: 0000000008e6d000 CR4: 00000000001406f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>   __vsock_release+0x80/0x2d0 net/vmw_vsock/af_vsock.c:733
+>   vsock_release+0x35/0xa0 net/vmw_vsock/af_vsock.c:806
+>   __sock_release+0xce/0x280 net/socket.c:590
+>   sock_close+0x1e/0x30 net/socket.c:1268
+>   __fput+0x2ff/0x890 fs/file_table.c:280
+>   ____fput+0x16/0x20 fs/file_table.c:313
+>   task_work_run+0x145/0x1c0 kernel/task_work.c:113
+>   exit_task_work include/linux/task_work.h:22 [inline]
+>   do_exit+0x904/0x2e60 kernel/exit.c:817
+>   do_group_exit+0x135/0x360 kernel/exit.c:921
+>   __do_sys_exit_group kernel/exit.c:932 [inline]
+>   __se_sys_exit_group kernel/exit.c:930 [inline]
+>   __x64_sys_exit_group+0x44/0x50 kernel/exit.c:930
+>   do_syscall_64+0xfa/0x760 arch/x86/entry/common.c:290
+>   entry_SYSCALL_64_after_hwframe+0x49/0xbe
+> RIP: 0033:0x43f1d8
+> Code: Bad RIP value.
+> RSP: 002b:00007ffd5b25f838 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+> RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 000000000043f1d8
+> RDX: 0000000000000000 RSI: 000000000000003c RDI: 0000000000000000
+> RBP: 00000000004befa8 R08: 00000000000000e7 R09: ffffffffffffffd0
+> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+> R13: 00000000006d1180 R14: 0000000000000000 R15: 0000000000000000
+> Modules linked in:
+> ---[ end trace 4b9b883ea3ab661f ]---
+> RIP: 0010:virtio_transport_release+0x13b/0xcb0
+> net/vmw_vsock/virtio_transport_common.c:826
+> Code: e8 aa e6 2b fa 66 41 83 fd 01 0f 84 34 02 00 00 e8 3a e5 2b fa 48 8=
+b
+> 95 30 ff ff ff 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <80> 3c 02 00 0f
+> 85 22 0a 00 00 48 8b bb 98 00 00 00 48 b8 00 00 00
+> RSP: 0018:ffff888092dbfaf0 EFLAGS: 00010202
+> RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffffff87474aa0
+> RDX: 0000000000000013 RSI: ffffffff874747d6 RDI: 0000000000000001
+> RBP: ffff888092dbfc00 R08: ffff88809245a380 R09: fffffbfff1555fe1
+> R10: fffffbfff1555fe0 R11: 0000000000000003 R12: ffff888092dbfbd8
+> R13: 0000000000000007 R14: 0000000000000007 R15: 0000000000000000
+> FS:  00000000009db880(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000=
+000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 000000000043f1ae CR3: 0000000008e6d000 CR4: 00000000001406f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>
+>
+> ---
+> This bug is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this bug report. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisect=
+ion
+> syzbot can test patches for this bug, for details see:
+> https://goo.gl/tpsmEJ#testing-patches
+>
 
-Yes, will fix that up.
-
-
->> @@ -968,7 +973,18 @@ struct page *follow_devmap_pmd(struct vm_area_struct *vma, unsigned long addr,
->>  	if (!*pgmap)
->>  		return ERR_PTR(-EFAULT);
->>  	page = pfn_to_page(pfn);
->> -	get_page(page);
->> +
->> +	if (flags & FOLL_GET)
->> +		get_page(page);
->> +	else if (flags & FOLL_PIN) {
->> +		/*
->> +		 * try_pin_page() is not actually expected to fail here because
->> +		 * we hold the pmd lock so no one can unmap the pmd and free the
->> +		 * page that it points to.
->> +		 */
->> +		if (unlikely(!try_pin_page(page)))
->> +			page = ERR_PTR(-EFAULT);
->> +	}
-> 
-> This pattern is rather common. So maybe I'd add a helper grab_page(page,
-> flags) doing
-> 
-> 	if (flags & FOLL_GET)
-> 		get_page(page);
-> 	else if (flags & FOLL_PIN)
-> 		return try_pin_page(page);
-> 	return true;
-> 
-
-OK.
-
-> Otherwise the patch looks good to me now.
-> 
-> 								Honza
-
-Great! I thought I'd have a v7 out today, but fate decided to have me repair
-my test machine instead. So, soon. ha. :)
-
-thanks,
--- 
-John Hubbard
-NVIDIA
