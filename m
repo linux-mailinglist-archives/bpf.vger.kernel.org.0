@@ -2,355 +2,509 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 413D2103218
-	for <lists+bpf@lfdr.de>; Wed, 20 Nov 2019 04:44:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB2A71032C8
+	for <lists+bpf@lfdr.de>; Wed, 20 Nov 2019 06:08:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727264AbfKTDol (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Nov 2019 22:44:41 -0500
-Received: from mail-qv1-f65.google.com ([209.85.219.65]:37172 "EHLO
-        mail-qv1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727343AbfKTDol (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Nov 2019 22:44:41 -0500
-Received: by mail-qv1-f65.google.com with SMTP id s18so9177379qvr.4;
-        Tue, 19 Nov 2019 19:44:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YFYmk1c4LFW+dPg+5TCuCt2gylH4jJwQm4WOE1MX9E8=;
-        b=YhBqxolSGUB8H5f5EdqOoTqDK7MDxsEHlBw+3+a7dHMS7cms9/bHhX1+FUnKSd6hJs
-         5O7EzOhOLR+2Z+2Idkz8FpUgJrtCWGJUYLquD1CNWStUZRG+dlyRYuVwlF7iZM7Aobww
-         czYt7Z0r/DC6DV4mCiF66dOUh5fHOod7cLaHRZ07Y8/xdfPfYwPJje1jwE+GJctVmEjs
-         3+KxkeiMP0WLsDNAR3fP2j/uXVJdjRAAxH0xddYcWnePpbzzJcQvsv3ZjLYUdQZsnEEr
-         tZ3lR0X3a672JMFl5KfW+W/+RIq+gqi4FwgBUE3VlRtIdLnR8fzjLzJJ3hCNNTJs956w
-         aQSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YFYmk1c4LFW+dPg+5TCuCt2gylH4jJwQm4WOE1MX9E8=;
-        b=QJBFMNzQIM97htUzglxyv518fi6tjC83ZaT46r/La5dtBdwxn3btXYrLcKCPBop6NI
-         JFRHpAIWQ7cenM5M6zJIRMODWjIklL7sXDViSn1mI6iJc4HMokSbU9wQc0BfiL85HgBv
-         /GwgEESGwPV6zOPL/9PLAKrnQUwOXTFdtayICAqvXSWZmZkT47Qvq1OzKlOxngdzsN1N
-         V/o2q/p9lXWUKYzvpPXUq2lmFFGJHZoOLTy+acdon4NX3AzR9rxEkXOkssQ6tLwFQGW5
-         d1o5wFdHWDZFyN5BzKPzZcEg3mR5tbntO4Ab6AbFzgIu8qL0Wk5ff51ADlnWwr2HqSdj
-         PEfg==
-X-Gm-Message-State: APjAAAU7JiRk3iitijhvlBlkAnz+kWNfvXzYjyAHsYPcQBz0ZuM1WlMr
-        UexcR+7Z6jF5IYAEG1yMOp8jBusdLLnTg6OrfGc=
-X-Google-Smtp-Source: APXvYqxnw/v+WcoNTVHMy/XAEQDtFkTGa55g6ky92RVrmy50ZpV5CkE3xG/Ke3iomA/je39+NNfkzOnWxb3nnl4FW40=
-X-Received: by 2002:a05:6214:90f:: with SMTP id dj15mr695293qvb.224.1574221479531;
- Tue, 19 Nov 2019 19:44:39 -0800 (PST)
-MIME-Version: 1.0
-References: <20191117070807.251360-1-andriin@fb.com> <20191117070807.251360-6-andriin@fb.com>
- <20191119032127.hixvyhvjjhx6mmzk@ast-mbp.dhcp.thefacebook.com>
- <CAEf4BzaNEU_vpa98QF1Ko_AFVX=3ncykEtWy0kiTNW9agsO+xg@mail.gmail.com>
- <CAEf4Bza1T6h+MWadVjuCrPCY7pkyK9kw-fPdaRx2v3yzSsmcbg@mail.gmail.com> <7012feeb-c1e8-1228-c8ce-464ea252799c@fb.com>
-In-Reply-To: <7012feeb-c1e8-1228-c8ce-464ea252799c@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 19 Nov 2019 19:44:28 -0800
-Message-ID: <CAEf4BzaW4-XTxZTt2ZLvzuc2UsmmPa3Bkoej7B0pUJWcM--eVQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 5/6] libbpf: support libbpf-provided extern variables
-To:     Alexei Starovoitov <ast@fb.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
+        id S1726329AbfKTFIJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Nov 2019 00:08:09 -0500
+Received: from mout-p-201.mailbox.org ([80.241.56.171]:42230 "EHLO
+        mout-p-201.mailbox.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726220AbfKTFIJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Nov 2019 00:08:09 -0500
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [80.241.60.241])
+        (using TLSv1.2 with cipher ECDHE-RSA-CHACHA20-POLY1305 (256/256 bits))
+        (No client certificate requested)
+        by mout-p-201.mailbox.org (Postfix) with ESMTPS id 47HrL91l9qzQlBB;
+        Wed, 20 Nov 2019 06:08:01 +0100 (CET)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Received: from smtp2.mailbox.org ([80.241.60.241])
+        by spamfilter06.heinlein-hosting.de (spamfilter06.heinlein-hosting.de [80.241.56.125]) (amavisd-new, port 10030)
+        with ESMTP id hkfQcG-poP8O; Wed, 20 Nov 2019 06:07:51 +0100 (CET)
+From:   Aleksa Sarai <cyphar@cyphar.com>
+To:     Al Viro <viro@zeniv.linux.org.uk>,
+        Jeff Layton <jlayton@kernel.org>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        David Howells <dhowells@redhat.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     Aleksa Sarai <cyphar@cyphar.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Jann Horn <jannh@google.com>, Tycho Andersen <tycho@tycho.ws>,
+        David Drysdale <drysdale@google.com>,
+        Chanho Min <chanho.min@lge.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Aleksa Sarai <asarai@suse.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        dev@opencontainers.org, containers@lists.linux-foundation.org,
+        bpf@vger.kernel.org, netdev@vger.kernel.org,
+        linux-alpha@vger.kernel.org, linux-api@vger.kernel.org,
+        libc-alpha@sourceware.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org, sparclinux@vger.kernel.org
+Subject: [PATCH RESEND v17 00/13] open: introduce openat2(2) syscall
+Date:   Wed, 20 Nov 2019 16:06:18 +1100
+Message-Id: <20191120050631.12816-1-cyphar@cyphar.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 19, 2019 at 7:58 AM Alexei Starovoitov <ast@fb.com> wrote:
->
-> On 11/19/19 7:42 AM, Andrii Nakryiko wrote:
-> > On Mon, Nov 18, 2019 at 10:57 PM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> >>
-> >> On Mon, Nov 18, 2019 at 7:21 PM Alexei Starovoitov
-> >> <alexei.starovoitov@gmail.com> wrote:
-> >>>
-> >>> On Sat, Nov 16, 2019 at 11:08:06PM -0800, Andrii Nakryiko wrote:
-> >>>> Add support for extern variables, provided to BPF program by libbpf. Currently
-> >>>> the following extern variables are supported:
-> >>>>    - LINUX_KERNEL_VERSION; version of a kernel in which BPF program is
-> >>>>      executing, follows KERNEL_VERSION() macro convention;
-> >>>>    - CONFIG_xxx values; a set of values of actual kernel config. Tristate,
-> >>>>      boolean, and integer values are supported. Strings are not supported at
-> >>>>      the moment.
-> >>>>
-> >>>> All values are represented as 64-bit integers, with the follow value encoding:
-> >>>>    - for boolean values, y is 1, n or missing value is 0;
-> >>>>    - for tristate values, y is 1, m is 2, n or missing value is 0;
-> >>>>    - for integers, the values is 64-bit integer, sign-extended, if negative; if
-> >>>>      config value is missing, it's represented as 0, which makes explicit 0 and
-> >>>>      missing config value indistinguishable. If this will turn out to be
-> >>>>      a problem in practice, we'll need to deal with it somehow.
-> >>>
-> >>> I read that statement as there is no extensibility for such api.
-> >>
-> >> What do you mean exactly?
-> >>
-> >> Are you worried about 0 vs undefined case? I don't think it's going to
-> >> be a problem in practice. Looking at my .config, I see that integer
-> >> config values set to their default values are still explicitly
-> >> specified with those values. E.g.,
-> >>
-> >> CONFIG_HZ_1000=y
-> >> CONFIG_HZ=1000
-> >>
-> >> CONFIG_HZ default is 1000, if CONFIG_HZ_1000==y, but still I see it
-> >> set. So while I won't claim that it's the case for any possible
-> >> integer config, it seems to be pretty consistent in practice.
-> >>
-> >> Also, I see a lot of values set to explicit 0, like:
-> >>
-> >> CONFIG_BASE_SMALL=0
-> >>
-> >> So it seems like integers are typically spelled out explicitly in real
-> >> configs and I think this 0 default is pretty sane.
-> >>
-> >> Next, speaking about extensibility. Once we have BTF type info for
-> >> externs, our possibilities are much better. It will be possible to
-> >> support bool, int, in64 for the same bool value. Libbpf will be able
-> >> to validate the range and fail program load if declared extern type
-> >> doesn't match actual value type and value range. So I think
-> >> extensibility is there, but right now we are enforcing (logically)
-> >> everything to be uin64_t. Unfortunately, with the way externs are done
-> >> in ELF, I don't know neither type nor size, so can't be more strict
-> >> than that.
-> >>
-> >> If we really need to know whether some config value is defined or not,
-> >> regardless of its value, we can have it by convention. E.g.,
-> >> CONFIG_DEFINED_XXX will be either 0 or 1, depending if corresponding
-> >> CONFIG_XXX is defined explicitly or not. But I don't want to add that
-> >> until we really have a use case where it matters.
-> >>
-> >>>
-> >>>> Generally speaking, libbpf is not aware of which CONFIG_XXX values is of which
-> >>>> expected type (bool, tristate, int), so it doesn't enforce any specific set of
-> >>>> values and just parses n/y/m as 0/1/2, respectively. CONFIG_XXX values not
-> >>>> found in config file are set to 0.
-> >>>
-> >>> This is not pretty either.
-> >>
-> >> What exactly: defaulting to zero or not knowing config value's type?
-> >> Given all the options, defaulting to zero seems like the best way to
-> >> go.
-> >>
-> >>>
-> >>>> +
-> >>>> +             switch (*value) {
-> >>>> +             case 'n':
-> >>>> +                     *ext_val = 0;
-> >>>> +                     break;
-> >>>> +             case 'y':
-> >>>> +                     *ext_val = 1;
-> >>>> +                     break;
-> >>>> +             case 'm':
-> >>>> +                     *ext_val = 2;
-> >>>> +                     break;
-> >>
-> >> reading some more code from scripts/kconfig/symbol.c, I'll need to
-> >> handle N/Y/M and 0x hexadecimals, will add in v2 after collecting some
-> >> more feedback on this version.
-> >>
-> >>>> +             case '"':
-> >>>> +                     pr_warn("extern '%s': strings are not supported\n",
-> >>>> +                             ext->name);
-> >>>> +                     err = -EINVAL;
-> >>>> +                     goto out;
-> >>>> +             default:
-> >>>> +                     errno = 0;
-> >>>> +                     *ext_val = strtoull(value, &value_end, 10);
-> >>>> +                     if (errno) {
-> >>>> +                             err = -errno;
-> >>>> +                             pr_warn("extern '%s': failed to parse value: %d\n",
-> >>>> +                                     ext->name, err);
-> >>>> +                             goto out;
-> >>>> +                     }
-> >>>
-> >>> BPF has bpf_strtol() helper. I think it would be cleaner to pass whatever
-> >>> .config has as bytes to the program and let program parse n/y/m, strings and
-> >>> integers.
-> >>
-> >> Config value is not changing. This is an incredible waste of CPU
-> >> resources to re-parse same value over and over again. And it's
-> >> incredibly much worse usability as well. Again, once we have BTF for
-> >> externs, we can just declare values as const char[] and then user will
-> >> be able to do its own parsing. Until then, I think pre-parsing values
-> >> into convenient u64 types are much better and handles all the typical
-> >> cases.
-> >
-> >
-> > One more thing I didn't realize I didn't state explicitly, because
-> > I've been thinking and talking about that for so long now, that it
-> > kind of internalized completely.
-> >
-> > These externs, including CONFIG_XXX ones, are meant to interoperate
-> > nicely with field relocations within BPF CO-RE concept. They are,
-> > among other things, are meant to disable parts of BPF program logic
-> > through verifier's dead code elimination by doing something like:
-> >
-> >
-> > if (CONFIG_SOME_FEATURES_ENABLED) {
-> >      BPF_CORE_READ(t, some_extra_field);
-> >      /* or */
-> >      bpf_helper_that_only_present_when_feature_is_enabled();
-> > } else {
-> >      /* fallback logic */
-> > }
-> >
-> > With CONFIG_SOME_FEATURES_ENABLED not being a read-only integer
-> > constant when BPF program is loaded, this is impossible. So it
-> > absolutely must be some sort of easy to use integer constant.
->
-> Hmm. what difference do you see between u64 and char[] ?
-> The const propagation logic in the verifier should work the same way.
-> If it doesn't it's a bug in the verifier and it's not ok to hack
-> extern api to workaround the bug.
+This patchset is being developed here:
+  <https://github.com/cyphar/linux/tree/openat2/master>
 
-For some specific subset of cases (mostly bool and tristate), yes,
-verifier should be able to track raw byte value, because there is no
-transformation applied to those values. With integers it's certainly
-not the case.
+This is a re-send of
+  <https://lore.kernel.org/lkml/20191117011713.13032-1-cyphar@cyphar.com/>
+but rebased on top of 5.4-rc8 (also my mails got duplicated the first
+time I sent v17 -- hopefully that doesn't happen this time).
 
-Imagine something like:
+Patch changelog:
+ v17:
+  * Add a path_is_under() check for LOOKUP_IS_SCOPED in complete_walk(), as a
+    last line of defence to ensure that namei bugs will not break the contract
+    of LOOKUP_BENEATH or LOOKUP_IN_ROOT.
+  * Update based on feedback by Al Viro:
+    * Make nd_jump_link() free the passed path on error, so that callers don't
+      need to worry about it in the error path.
+    * Remove needless m_retry and r_retry variables in handle_dots().
+    * Always return -ECHILD from follow_dotdot_rcu().
+ v16: <https://lore.kernel.org/lkml/20191116002802.6663-1-cyphar@cyphar.com/>
+ v15: <https://lore.kernel.org/lkml/20191105090553.6350-1-cyphar@cyphar.com/>
+ v14: <https://lore.kernel.org/lkml/20191010054140.8483-1-cyphar@cyphar.com/>
+      <https://lore.kernel.org/lkml/20191026185700.10708-1-cyphar@cyphar.com>
+ v13: <https://lore.kernel.org/lkml/20190930183316.10190-1-cyphar@cyphar.com/>
+ v12: <https://lore.kernel.org/lkml/20190904201933.10736-1-cyphar@cyphar.com/>
+ v11: <https://lore.kernel.org/lkml/20190820033406.29796-1-cyphar@cyphar.com/>
+      <https://lore.kernel.org/lkml/20190728010207.9781-1-cyphar@cyphar.com/>
+ v10: <https://lore.kernel.org/lkml/20190719164225.27083-1-cyphar@cyphar.com/>
+ v09: <https://lore.kernel.org/lkml/20190706145737.5299-1-cyphar@cyphar.com/>
+ v08: <https://lore.kernel.org/lkml/20190520133305.11925-1-cyphar@cyphar.com/>
+ v07: <https://lore.kernel.org/lkml/20190507164317.13562-1-cyphar@cyphar.com/>
+ v06: <https://lore.kernel.org/lkml/20190506165439.9155-1-cyphar@cyphar.com/>
+ v05: <https://lore.kernel.org/lkml/20190320143717.2523-1-cyphar@cyphar.com/>
+ v04: <https://lore.kernel.org/lkml/20181112142654.341-1-cyphar@cyphar.com/>
+ v03: <https://lore.kernel.org/lkml/20181009070230.12884-1-cyphar@cyphar.com/>
+ v02: <https://lore.kernel.org/lkml/20181009065300.11053-1-cyphar@cyphar.com/>
+ v01: <https://lore.kernel.org/lkml/20180929103453.12025-1-cyphar@cyphar.com/>
 
-if (CONFIG_HZ > 1000) {
-  ... do something ...
-else if (CONFIG_HZ > 100) {
-  ... something else ...
-} else {
-  ... yet another fallback ...
-}
+For a very long time, extending openat(2) with new features has been
+incredibly frustrating. This stems from the fact that openat(2) is
+possibly the most famous counter-example to the mantra "don't silently
+accept garbage from userspace" -- it doesn't check whether unknown flags
+are present[1].
 
-With CONFIG_HZ being integer, entire if/else if/else will be
-eliminated by verifier. If you do bpf_strtoul(), it's not possible,
-unless we do those more further optimizations (implementing const
-versions of helpers). The latter would be a good addition, if possible
-to implement generically, of course, but I'm not sure we need to block
-on that.
+This means that (generally) the addition of new flags to openat(2) has
+been fraught with backwards-compatibility issues (O_TMPFILE has to be
+defined as __O_TMPFILE|O_DIRECTORY|[O_RDWR or O_WRONLY] to ensure old
+kernels gave errors, since it's insecure to silently ignore the
+flag[2]). All new security-related flags therefore have a tough road to
+being added to openat(2).
 
->
-> What you're advocating with libbpf-side of conversion to integers
-> reminds me of our earlier attempts with cgroup_sysctl hooks where
-> we started with ints only to realize that in practice it's too
-> limited. Then bpf_strtol was introduced and api got much cleaner.
-> Same thing here. Converting char[] into ints or whatever else
-> is the job of the program. Not of libbpf. The verifier can be taught
-> to optimize bpf_strtol() into const when const char[] is passed in.
+Furthermore, the need for some sort of control over VFS's path resolution (to
+avoid malicious paths resulting in inadvertent breakouts) has been a very
+long-standing desire of many userspace applications. This patchset is a revival
+of Al Viro's old AT_NO_JUMPS[3] patchset (which was a variant of David
+Drysdale's O_BENEATH patchset[4] which was a spin-off of the Capsicum
+project[5]) with a few additions and changes made based on the previous
+discussion within [6] as well as others I felt were useful.
 
-Given config values are constant and won't change throughout lifetime
-of kernel, it's much more practical and easier to parse any
-complicated value in userspace and pass necessary well-structured and
-easy to use (and thus - performant) data to BPF side through global
-data. But if BPF developer knows that CONFIG_HZ has to be integer
-(because it's defined in Kconfig as having a type int), then it's
-going to be integer, there is no doubt about that.
+In line with the conclusions of the original discussion of AT_NO_JUMPS, the
+flag has been split up into separate flags. However, instead of being an
+openat(2) flag it is provided through a new syscall openat2(2) which provides
+several other improvements to the openat(2) interface (see the patch
+description for more details). The following new LOOKUP_* flags are added:
 
-So while I can imagine some extreme cases where we might need parsing
-string, I think most such cases can be painlessly solved in userspace.
+  * LOOKUP_NO_XDEV blocks all mountpoint crossings (upwards, downwards,
+    or through absolute links). Absolute pathnames alone in openat(2) do not
+    trigger this. Magic-link traversal which implies a vfsmount jump is also
+    blocked (though magic-link jumps on the same vfsmount are permitted).
 
-Having said that, I don't oppose having an option to expose strings
-and allow to work with them, either from userspace or BPF side. It is
-extension of what I implemented and can be easily added.
+  * LOOKUP_NO_MAGICLINKS blocks resolution through /proc/$pid/fd-style
+    links. This is done by blocking the usage of nd_jump_link() during
+    resolution in a filesystem. The term "magic-links" is used to match
+    with the only reference to these links in Documentation/, but I'm
+    happy to change the name.
 
->
-> As far as is_enabled() check doing it as 0/1 the way you're proposing
-> has in-band signaling issues that you admitted in the commit log.
-> For is_enabled() may be new builtin() on llvm side would be better?
-> Something like __builtin_preserve_field_info(field, BPF_FIELD_EXISTS)
-> but can be used on _any_ extern function or variable.
-> Like __builtin_is_extern_resolved(extern_name);
-> Then on libbpf side CONFIG_* that are not in config.gz won't be seen
-> by the program (instead of seen as 0 in your proposal) and the code
-> will look like:
-> if (__builtin_is_extern_resolved(CONFIG_NETNS)) {
->    ..do things;
-> } else {
-> }
-> The verifier dead code elimination will take care of branches.
-> The BPF program itself doesn't need to read the value of CONFIG_
-> it only needs to know whether it was defined.
-> Such builtin would match semantics better.
+    It should be noted that this is different to the scope of
+    ~LOOKUP_FOLLOW in that it applies to all path components. However,
+    you can do openat2(NO_FOLLOW|NO_MAGICLINKS) on a magic-link and it
+    will *not* fail (assuming that no parent component was a
+    magic-link), and you will have an fd for the magic-link.
 
-I agree such __builtin is useful and we should add it. But also I
-believe that a lot of common cases would be much simpler and nicer if
-we have this not defined = 0 logic. But I think we can satisfy both
-sides without sacrificing anything. If you define extern as weak:
+    In order to correctly detect magic-links, the introduction of a new
+    LOOKUP_MAGICLINK_JUMPED state flag was required.
 
-extern __attribute__((weak)) uint64_t CONFIG_MISSING;
+  * LOOKUP_BENEATH disallows escapes to outside the starting dirfd's
+    tree, using techniques such as ".." or absolute links. Absolute
+    paths in openat(2) are also disallowed. Conceptually this flag is to
+    ensure you "stay below" a certain point in the filesystem tree --
+    but this requires some additional to protect against various races
+    that would allow escape using "..".
 
-Libbpf will set it to zero, if it's not recognized/found. So check
-like below will nicely work:
+    Currently LOOKUP_BENEATH implies LOOKUP_NO_MAGICLINKS, because it
+    can trivially beam you around the filesystem (breaking the
+    protection). In future, there might be similar safety checks done as
+    in LOOKUP_IN_ROOT, but that requires more discussion.
 
-if (CONFIG_MISSING) {
-  .. do something ...
-}
+In addition, two new flags are added that expand on the above ideas:
 
-If the extern is strong, then the above check will fail, and will have
-to be written with using __builtin:
+  * LOOKUP_NO_SYMLINKS does what it says on the tin. No symlink
+    resolution is allowed at all, including magic-links. Just as with
+    LOOKUP_NO_MAGICLINKS this can still be used with NOFOLLOW to open an
+    fd for the symlink as long as no parent path had a symlink
+    component.
 
-if (__builtin_extern_resolved(CONFIG_MISSING)) {
-  .. do something ..
-}
+  * LOOKUP_IN_ROOT is an extension of LOOKUP_BENEATH that, rather than
+    blocking attempts to move past the root, forces all such movements
+    to be scoped to the starting point. This provides chroot(2)-like
+    protection but without the cost of a chroot(2) for each filesystem
+    operation, as well as being safe against race attacks that chroot(2)
+    is not.
 
-This puts control over semantics into users hands. WDYT?
+    If a race is detected (as with LOOKUP_BENEATH) then an error is
+    generated, and similar to LOOKUP_BENEATH it is not permitted to cross
+    magic-links with LOOKUP_IN_ROOT.
+
+    The primary need for this is from container runtimes, which
+    currently need to do symlink scoping in userspace[7] when opening
+    paths in a potentially malicious container. There is a long list of
+    CVEs that could have bene mitigated by having RESOLVE_THIS_ROOT
+    (such as CVE-2017-1002101, CVE-2017-1002102, CVE-2018-15664, and
+    CVE-2019-5736, just to name a few).
+
+In order to make all of the above more usable, I'm working on
+libpathrs[8] which is a C-friendly library for safe path resolution. It
+features a userspace-emulated backend if the kernel doesn't support
+openat2(2). Hopefully we can get userspace to switch to using it, and
+thus get openat2(2) support for free once it's ready.
+
+Future work would include implementing things like RESOLVE_NO_AUTOMOUNT and
+possibly a RESOLVE_NO_REMOTE (to allow programs to be sure they don't hit DoSes
+though stale NFS handles).
+
+[1]: https://lwn.net/Articles/588444/
+[2]: https://lore.kernel.org/lkml/CA+55aFyyxJL1LyXZeBsf2ypriraj5ut1XkNDsunRBqgVjZU_6Q@mail.gmail.com
+[3]: https://lore.kernel.org/lkml/20170429220414.GT29622@ZenIV.linux.org.uk
+[4]: https://lore.kernel.org/lkml/1415094884-18349-1-git-send-email-drysdale@google.com
+[5]: https://lore.kernel.org/lkml/1404124096-21445-1-git-send-email-drysdale@google.com
+[6]: https://lwn.net/Articles/723057/
+[7]: https://github.com/cyphar/filepath-securejoin
+[8]: https://github.com/openSUSE/libpathrs
+
+The current draft of the openat2(2) man-page is included below.
+
+--8<---------------------------------------------------------------------------
+OPENAT2(2)                          Linux Programmer's Manual                          OPENAT2(2)
+
+NAME
+       openat2 - open and possibly create a file (extended)
+
+SYNOPSIS
+       #include <sys/types.h>
+       #include <sys/stat.h>
+       #include <fcntl.h>
+
+       int openat2(int dirfd, const char *pathname, struct open_how *how, size_t size);
+
+       Note: There is no glibc wrapper for this system call; see NOTES.
+
+DESCRIPTION
+       The  openat2()  system  call  opens the file specified by pathname.  If the specified file
+       does not exist, it may optionally (if O_CREAT is specified in  how.flags)  be  created  by
+       openat2().
+
+       As  with openat(2), if pathname is relative, then it is interpreted relative to the direc-
+       tory referred to by the file descriptor dirfd (or the current  working  directory  of  the
+       calling  process,  if dirfd is the special value AT_FDCWD.)  If pathname is absolute, then
+       dirfd is ignored (unless how.resolve contains RESOLVE_IN_ROOT, in which case  pathname  is
+       resolved relative to dirfd.)
+
+       The  openat2()  system  call  is  an extension of openat(2) and provides a superset of its
+       functionality.  Rather than taking a single flag argument, an extensible  structure  (how)
+       is  passed  instead  to  allow  for  future extensions.  size must be set to sizeof(struct
+       open_how), to facilitate future extensions (see the "Extensibility" section of  the  NOTES
+       for more detail on how extensions are handled.)
+
+   The open_how structure
+       The following structure indicates how pathname should be opened, and acts as a superset of
+       the flag and mode arguments to openat(2).
+
+           struct open_how {
+               __aligned_u64 flags;         /* O_* flags. */
+               __u16         mode;          /* Mode for O_{CREAT,TMPFILE}. */
+               __u16         __padding[3];  /* Must be zeroed. */
+               __aligned_u64 resolve;       /* RESOLVE_* flags. */
+           };
+
+       Any future extensions to openat2() will be implemented as new fields appended to the above
+       structure (or through reuse of pre-existing padding space), with the zero value of the new
+       fields acting as though the extension were not present.
+
+       The meaning of each field is as follows:
+
+              flags
+                     The file creation and status flags to use for this operation.   All  of  the
+                     O_* flags defined for openat(2) are valid openat2() flag values.
+
+                     Unlike openat(2), it is an error to provide openat2() unknown or conflicting
+                     flags in flags.
+
+              mode
+                     File mode for the new file, with identical semantics to the mode argument to
+                     openat(2).   However,  unlike openat(2), it is an error to provide openat2()
+                     with a mode which contains bits other than 0777.
+
+                     It is an error to provide openat2() a non-zero mode if flags does  not  con-
+                     tain O_CREAT or O_TMPFILE.
+
+              resolve
+                     Change  how  the  components  of pathname will be resolved (see path_resolu-
+                     tion(7) for background information.)  The primary use case for  these  flags
+                     is  to  allow trusted programs to restrict how untrusted paths (or paths in-
+                     side untrusted directories) are resolved.  The full list of resolve flags is
+                     given below.
+
+                     RESOLVE_NO_XDEV
+                            Disallow  traversal of mount points during path resolution (including
+                            all bind mounts).
+
+                            Users of this flag are encouraged to make its use  configurable  (un-
+                            less  it is used for a specific security purpose), as bind mounts are
+                            very widely used by end-users.  Setting this flag indiscrimnately for
+                            all  uses  of  openat2() may result in spurious errors on previously-
+                            functional systems.
+
+                     RESOLVE_NO_SYMLINKS
+                            Disallow resolution of symbolic links during path  resolution.   This
+                            option implies RESOLVE_NO_MAGICLINKS.
+
+                            If the trailing component is a symbolic link, and flags contains both
+                            O_PATH and O_NOFOLLOW, then an O_PATH file descriptor referencing the
+                            symbolic link will be returned.
+
+                            Users  of  this flag are encouraged to make its use configurable (un-
+                            less it is used for a specific security purpose), as  symbolic  links
+                            are very widely used by end-users.  Setting this flag indiscrimnately
+                            for all uses of openat2() may result in  spurious  errors  on  previ-
+                            ously-functional systems.
+
+                     RESOLVE_NO_MAGICLINKS
+                            Disallow all magic link resolution during path resolution.
+
+                            If  the  trailing  component is a magic link, and flags contains both
+                            O_PATH and O_NOFOLLOW, then an O_PATH file descriptor referencing the
+                            magic link will be returned.
+
+                            Magic-links  are  symbolic  link-like  objects  that are most notably
+                            found   in   proc(5)   (examples    include    /proc/[pid]/exe    and
+                            /proc/[pid]/fd/*.)   Due to the potential danger of unknowingly open-
+                            ing these magic links, it may be  preferable  for  users  to  disable
+                            their resolution entirely (see symboliclink(7) for more details.)
+
+                     RESOLVE_BENEATH
+                            Do  not permit the path resolution to succeed if any component of the
+                            resolution is not a descendant of the directory indicated  by  dirfd.
+                            This results in absolute symbolic links (and absolute values of path-
+                            name) to be rejected.
+
+                            Currently, this flag also disables magic link  resolution.   However,
+                            this  may change in the future.  The caller should explicitly specify
+                            RESOLVE_NO_MAGICLINKS to ensure that magic links are not resolved.
+
+                     RESOLVE_IN_ROOT
+                            Treat dirfd as the root directory while resolving pathname (as though
+                            the user called chroot(2) with dirfd as the argument.)  Absolute sym-
+                            bolic links and ".." path components will be  scoped  to  dirfd.   If
+                            pathname is an absolute path, it is also treated relative to dirfd.
+
+                            However,  unlike  chroot(2) (which changes the filesystem root perma-
+                            nently for a process), RESOLVE_IN_ROOT  allows  a  program  to  effi-
+                            ciently  restrict  path  resolution  for only certain operations.  It
+                            also has several hardening features (such detecting  escape  attempts
+                            during ..  resolution) which chroot(2) does not.
+
+                            Currently,  this  flag also disables magic link resolution.  However,
+                            this may change in the future.  The caller should explicitly  specify
+                            RESOLVE_NO_MAGICLINKS to ensure that magic links are not resolved.
+
+                     It is an error to provide openat2() unknown flags in resolve.
+
+RETURN VALUE
+       On success, a new file descriptor is returned.  On error, -1 is returned, and errno is set
+       appropriately.
+
+ERRORS
+       The set of errors returned by openat2() includes all of the errors returned by  openat(2),
+       as well as the following additional errors:
+
+       EINVAL An unknown flag or invalid value was specified in how.
+
+       EINVAL mode is non-zero, but flags does not contain O_CREAT or O_TMPFILE.
+
+       EINVAL size was smaller than any known version of struct open_how.
+
+       E2BIG  An  extension  was specified in how, which the current kernel does not support (see
+              the "Extensibility" section of the NOTES for more detail on how extensions are han-
+              dled.)
+
+       EAGAIN resolve  contains  either  RESOLVE_IN_ROOT or RESOLVE_BENEATH, and the kernel could
+              not ensure that a ".." component didn't escape (due to a race condition  or  poten-
+              tial attack.)  Callers may choose to retry the openat2() call.
+
+       EXDEV  resolve  contains either RESOLVE_IN_ROOT or RESOLVE_BENEATH, and an escape from the
+              root during path resolution was detected.
+
+       EXDEV  resolve contains RESOLVE_NO_XDEV, and a path component attempted to cross  a  mount
+              point.
+
+       ELOOP  resolve contains RESOLVE_NO_SYMLINKS, and one of the path components was a symbolic
+              link (or magic link).
+
+       ELOOP  resolve contains RESOLVE_NO_MAGICLINKS, and one of the path components was a  magic
+              link.
+
+VERSIONS
+       openat2() was added to Linux in kernel 5.FOO.
+
+CONFORMING TO
+       This system call is Linux-specific.
+
+       The semantics of RESOLVE_BENEATH were modelled after FreeBSD's O_BENEATH.
+
+NOTES
+       Glibc does not provide a wrapper for this system call; call it using systemcall(2).
+
+   Extensibility
+       In order to allow for struct open_how to be extended in future kernel revisions, openat2()
+       requires userspace to specify the size of struct open_how structure they are passing.   By
+       providing  this  information,  it  is possible for openat2() to provide both forwards- and
+       backwards-compatibility — with size acting as an implicit version number (because new  ex-
+       tension  fields will always be appended, the size will always increase.)  This extensibil-
+       ity  design  is  very  similar  to   other   system   calls   such   as   perf_setattr(2),
+       perf_event_open(2), and clone(3).
+
+       If  we let usize be the size of the structure according to userspace and ksize be the size
+       of the structure which the kernel supports, then there are only three cases to consider:
+
+              *  If ksize equals usize, then there is no version mismatch and  how  can  be  used
+                 verbatim.
+
+              *  If  ksize  is  larger than usize, then there are some extensions the kernel sup-
+                 ports which the userspace program is unaware of.  Because  all  extensions  must
+                 have their zero values be a no-op, the kernel treats all of the extension fields
+                 not set by userspace to have zero values.  This  provides  backwards-compatibil-
+                 ity.
+
+              *  If  ksize  is  smaller  than  usize,  then  there  are some extensions which the
+                 userspace program is aware of but the kernel does not support.  Because all  ex-
+                 tensions  must  have  their zero values be a no-op, the kernel can safely ignore
+                 the unsupported extension fields if they are all-zero.  If any  unsupported  ex-
+                 tension  fields  are  non-zero,  then  -1 is returned and errno is set to E2BIG.
+                 This provides forwards-compatibility.
+
+       Therefore, most userspace programs will not need to have any special  handling  of  exten-
+       sions.   However,  if  a userspace program wishes to determine what extensions the running
+       kernel supports, they may conduct a binary search on size (to find the largest value which
+       doesn't produce an error of E2BIG.)
+
+SEE ALSO
+       openat(2), path_resolution(7), symlink(7)
+
+Linux                                       2019-11-05                                 OPENAT2(2)
+--8<---------------------------------------------------------------------------
+
+Aleksa Sarai (13):
+  namei: only return -ECHILD from follow_dotdot_rcu()
+  nsfs: clean-up ns_get_path() signature to return int
+  namei: allow nd_jump_link() to produce errors
+  namei: allow set_root() to produce errors
+  namei: LOOKUP_NO_SYMLINKS: block symlink resolution
+  namei: LOOKUP_NO_MAGICLINKS: block magic-link resolution
+  namei: LOOKUP_NO_XDEV: block mountpoint crossing
+  namei: LOOKUP_BENEATH: O_BENEATH-like scoped resolution
+  namei: LOOKUP_IN_ROOT: chroot-like scoped resolution
+  namei: LOOKUP_{IN_ROOT,BENEATH}: permit limited ".." resolution
+  open: introduce openat2(2) syscall
+  selftests: add openat2(2) selftests
+  Documentation: path-lookup: include new LOOKUP flags
+
+ CREDITS                                       |   4 +-
+ Documentation/filesystems/path-lookup.rst     |  68 ++-
+ arch/alpha/kernel/syscalls/syscall.tbl        |   1 +
+ arch/arm/tools/syscall.tbl                    |   1 +
+ arch/arm64/include/asm/unistd.h               |   2 +-
+ arch/arm64/include/asm/unistd32.h             |   2 +
+ arch/ia64/kernel/syscalls/syscall.tbl         |   1 +
+ arch/m68k/kernel/syscalls/syscall.tbl         |   1 +
+ arch/microblaze/kernel/syscalls/syscall.tbl   |   1 +
+ arch/mips/kernel/syscalls/syscall_n32.tbl     |   1 +
+ arch/mips/kernel/syscalls/syscall_n64.tbl     |   1 +
+ arch/mips/kernel/syscalls/syscall_o32.tbl     |   1 +
+ arch/parisc/kernel/syscalls/syscall.tbl       |   1 +
+ arch/powerpc/kernel/syscalls/syscall.tbl      |   1 +
+ arch/s390/kernel/syscalls/syscall.tbl         |   1 +
+ arch/sh/kernel/syscalls/syscall.tbl           |   1 +
+ arch/sparc/kernel/syscalls/syscall.tbl        |   1 +
+ arch/x86/entry/syscalls/syscall_32.tbl        |   1 +
+ arch/x86/entry/syscalls/syscall_64.tbl        |   1 +
+ arch/xtensa/kernel/syscalls/syscall.tbl       |   1 +
+ fs/namei.c                                    | 185 +++++--
+ fs/nsfs.c                                     |  29 +-
+ fs/open.c                                     | 149 +++--
+ fs/proc/base.c                                |   3 +-
+ fs/proc/namespaces.c                          |  20 +-
+ include/linux/fcntl.h                         |  12 +-
+ include/linux/namei.h                         |  12 +-
+ include/linux/proc_ns.h                       |   4 +-
+ include/linux/syscalls.h                      |   3 +
+ include/uapi/asm-generic/unistd.h             |   5 +-
+ include/uapi/linux/fcntl.h                    |  40 ++
+ kernel/bpf/offload.c                          |  12 +-
+ kernel/events/core.c                          |   2 +-
+ security/apparmor/apparmorfs.c                |   6 +-
+ tools/testing/selftests/Makefile              |   1 +
+ tools/testing/selftests/openat2/.gitignore    |   1 +
+ tools/testing/selftests/openat2/Makefile      |   8 +
+ tools/testing/selftests/openat2/helpers.c     | 109 ++++
+ tools/testing/selftests/openat2/helpers.h     | 107 ++++
+ .../testing/selftests/openat2/openat2_test.c  | 316 +++++++++++
+ .../selftests/openat2/rename_attack_test.c    | 160 ++++++
+ .../testing/selftests/openat2/resolve_test.c  | 523 ++++++++++++++++++
+ 42 files changed, 1686 insertions(+), 113 deletions(-)
+ create mode 100644 tools/testing/selftests/openat2/.gitignore
+ create mode 100644 tools/testing/selftests/openat2/Makefile
+ create mode 100644 tools/testing/selftests/openat2/helpers.c
+ create mode 100644 tools/testing/selftests/openat2/helpers.h
+ create mode 100644 tools/testing/selftests/openat2/openat2_test.c
+ create mode 100644 tools/testing/selftests/openat2/rename_attack_test.c
+ create mode 100644 tools/testing/selftests/openat2/resolve_test.c
 
 
-> If CONFIG_ is tri-state doing
-> if (*(u8*)CONFIG_FOO == 'y' || *(u8*)CONFIG_FOO == 'm')
-> is cleaner than *(u64*)CONFIG_FOO == 1 || 2.
-> and constant propagation in the verifier should work the same way.
+base-commit: af42d3466bdc8f39806b26f593604fdc54140bcb
+-- 
+2.24.0
 
-Once we get BTF info for externs, you'll be able to do just that very cleanly:
-
-extern bool CONFIG_FOO; - true, if =y, false if =n, false, if extern
-is weak and undefined in config
-extern char CONFIG_FOO; will get 'y'/'n'/'m' values
-extern enum tristate CONFIG_FOO - YES/NO/MODULE (or whatever we define
-in enum tristate)
-extern char CONFIG_FOO[]; - will get raw zero-terminated "y\0", "n\0", or "m\0"
-
-Until we have BTF, though, we can dictate that all those should be
-defined uniformly as uin64_t and be handled as in my current patch.
-Then, with introduction of BTF, libbpf will do necessary extra
-transformations and enforcement of type (e.g., if defined as `extern
-bool CONFIG_FOO`, but actual value is m (module) - that will be an
-error and enforced by libbpf).
-
-Only if currently users will still use something like bool or int,
-instead of uint64_t, that might break later because with BTF for
-externs libbpf will suddenly start enforcing more restrictions. But I
-think it's just going to be a misuse of current API and shouldn't be
-considered a breaking change.
-
-So, to summarize, we proceed with uint64_t for everything, with added
-bits of weak vs strong handling. Then in parallel we'll work on adding
-BTF for externs and __builtin_extern_resolved (and corresponding new
-kind of BTF relocation) and will keep making this whole API even
-better, while already having something useful and extensible.
-
-As for strings, I'd prefer to add them in a follow up patch, but if
-you guys insist, I can add them anyways. One reservation about strings
-I do still have is how better to represent strings:
-
-extern const char *CONFIG_SOME_STRING;   /* pointer to a string
-literal, stored in soem other place */
-/* or */
-extern const char CONFIG_SOME_STRING[];  /* inlined string contents */
-
-The latter can be implemented and used (to some degree) today. But the
-former would more seamlessly blend with exposing string-based
-variables from kernel. Also,
-
-extern __attribute__((weak)) const char *CONFIG_SOME_STRING;
-
-would more naturally resolve to NULL, if not explicitly defined in
-kernel config.
-
-But I'm feeling less strongly about strings overall.
-
-Thoughts?
