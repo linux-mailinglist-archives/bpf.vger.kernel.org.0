@@ -2,132 +2,233 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E9221030C3
-	for <lists+bpf@lfdr.de>; Wed, 20 Nov 2019 01:32:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEF471030CB
+	for <lists+bpf@lfdr.de>; Wed, 20 Nov 2019 01:36:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727374AbfKTAcf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Nov 2019 19:32:35 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:15082 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727226AbfKTAcf (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 19 Nov 2019 19:32:35 -0500
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xAK0UfWo001806;
-        Tue, 19 Nov 2019 16:32:19 -0800
+        id S1727436AbfKTAgI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Nov 2019 19:36:08 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:64400 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727357AbfKTAgI (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 19 Nov 2019 19:36:08 -0500
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xAK0YRIV020191
+        for <bpf@vger.kernel.org>; Tue, 19 Nov 2019 16:36:06 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=2MUhxlYe29kIITKiROIr5Or0Qafel8hR6Rp4P7dvU/8=;
- b=jwjYBYzgTq7TepFnRi+00RPTPsiPMkOQ7SuTmypejnvCefhF0Tdy0dBAfjLoQopXas6/
- WHNJizwwzX5Rnh3xda5yEatrzoPmtWQ/lXZNW10imt3trRy0XDQ3sIxqo4ulvsLmK0fw
- DMDLSUp5hsbtzzabv9FOcOeUDje6cE8n8zM= 
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by mx0a-00082601.pphosted.com with ESMTP id 2wcnrv1mvk-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 19 Nov 2019 16:32:19 -0800
-Received: from prn-hub04.TheFacebook.com (2620:10d:c081:35::128) by
- prn-hub05.TheFacebook.com (2620:10d:c081:35::129) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Tue, 19 Nov 2019 16:32:18 -0800
-Received: from NAM04-CO1-obe.outbound.protection.outlook.com (192.168.54.28)
- by o365-in.thefacebook.com (192.168.16.28) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
- via Frontend Transport; Tue, 19 Nov 2019 16:32:18 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aMpZoRzwztfQdIsdBn/qZ7WgaqSHUGchNQ5QL3O2kkp8+NBXI/Yyd8sId/7eSM90W4Ay6zPjql07Vbh2tKNoaM+g9I64pqYoFSwDOriZAP4VYEYeICNviwiXhsqhJQzINkBiQ7J/3eZgCaEPzsXXP8NPRSE2kFj5/uAxLy5ZkTg9KlI5ggRE32EZl0ECHPymqoKGDKr6qVykshVg1TLf5LcKgS5tQhv0x7CBY3iGCTVuyA+yeSdxfTwpri+EYeY1dCieE1WsjnkTHRBYwlfseyeUCvE3G6D5ohnMXt2gcOj1w3HO1gk/ybRCzF4KCap+9or/YD9VuAnzbtSw+wbYIg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2MUhxlYe29kIITKiROIr5Or0Qafel8hR6Rp4P7dvU/8=;
- b=jbuk3i3oQjmpxmoyYkaQWUFc+q0VML4jXuHg16dvYPDWvy8MZlVs905Qzk1YQqXXwMYWtqF3KyC5NbuhDkzRWAV8mFa+gfOFRLqK/xNeqoFBW1NyYtIM21JlFryuCEybx+1TDNXorzjMlGzpq/hKF3eEvmpP6nJqUYuca5bu3OjF5cSkBH/CGYVZA2XONQ59mSW7JM7aWXCp8NwAJYvIwOowmXfwB6T3jOcWyhegGdOgEV42VDBdFaNATnKCbjvhon6pI8+9Aqp7HkK3oyHKCiAVsucF/Gj0I0l3Fis17gUGz1+a5AcQhddF8+qIwXdkd6ClIKvN2tHVeJ26J1fB8w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2MUhxlYe29kIITKiROIr5Or0Qafel8hR6Rp4P7dvU/8=;
- b=MVaTmcXiy0thmIsV0kKgsxAfzslHjc5U83I8Lt2/syXwvvfo9bCP6rAZkuOa44KPBs5HlM7IrTaoDlLhDKXloh684GymHpAzpo447h+YZO23TSXsSKjDsJhlhus/lEiOEV143zuKlwAzRAa0e5ylunR/gm62V0oTfTpiCBBnoCI=
-Received: from BYAPR15MB3384.namprd15.prod.outlook.com (20.179.60.27) by
- BYAPR15MB2551.namprd15.prod.outlook.com (20.179.155.20) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2474.16; Wed, 20 Nov 2019 00:32:17 +0000
-Received: from BYAPR15MB3384.namprd15.prod.outlook.com
- ([fe80::a9f8:a9c0:854c:d680]) by BYAPR15MB3384.namprd15.prod.outlook.com
- ([fe80::a9f8:a9c0:854c:d680%4]) with mapi id 15.20.2474.015; Wed, 20 Nov 2019
- 00:32:17 +0000
-From:   Yonghong Song <yhs@fb.com>
-To:     Andrii Nakryiko <andriin@fb.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>
-CC:     "andrii.nakryiko@gmail.com" <andrii.nakryiko@gmail.com>,
-        Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: enforce no-ALU32 for
- test_progs-no_alu32
-Thread-Topic: [PATCH bpf-next] selftests/bpf: enforce no-ALU32 for
- test_progs-no_alu32
-Thread-Index: AQHVnzkGTrRJWbdUC02GiMlVWPII1qeTNXYA
-Date:   Wed, 20 Nov 2019 00:32:17 +0000
-Message-ID: <7317c35c-d8f2-25d4-d40d-6d27b99a1c6e@fb.com>
-References: <20191120002510.4130605-1-andriin@fb.com>
-In-Reply-To: <20191120002510.4130605-1-andriin@fb.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MWHPR21CA0028.namprd21.prod.outlook.com
- (2603:10b6:300:129::14) To BYAPR15MB3384.namprd15.prod.outlook.com
- (2603:10b6:a03:112::27)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:200::3:f173]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 47042013-d760-4873-61a9-08d76d5118c6
-x-ms-traffictypediagnostic: BYAPR15MB2551:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR15MB2551485ED2D9FD5E1166F841D34F0@BYAPR15MB2551.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5516;
-x-forefront-prvs: 02272225C5
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(39860400002)(396003)(346002)(366004)(136003)(376002)(189003)(199004)(66476007)(66556008)(64756008)(52116002)(110136005)(386003)(6506007)(53546011)(2501003)(14454004)(81156014)(81166006)(8676002)(316002)(76176011)(54906003)(186003)(478600001)(8936002)(36756003)(46003)(446003)(11346002)(5660300002)(2616005)(476003)(486006)(31696002)(305945005)(71190400001)(6116002)(71200400001)(6436002)(31686004)(99286004)(102836004)(4744005)(7736002)(6246003)(6486002)(6512007)(86362001)(4326008)(229853002)(256004)(2201001)(25786009)(2906002)(66446008)(66946007);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB2551;H:BYAPR15MB3384.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Sy5mk8alKOkaBoJBjRs0EMWkC3lp/pw5177S+HesMlWKaeqrGcmX/hlvdVnV0wILeBAexO2tg0S1MgfleS9wSdiNFqs8JgsF5alyFc2wSBb0vlCzsXTaY0EPHmI7+4DwVBfmKlb2vJ+527h0p1X8+Z0uB+NDsWzQEHcs1hrvA96CXo9BTzYQW+i1m129PPgNwxJ3AYdJdLIW/iuGMIZYQTQHVBk7O69nuDtfMt8R4TkFK6iAka5zB8tW1fJNqgcyVHWgflkVa+awRaMD4LJFH0omLimAMHBb4r6HgDuSdK8KuvBm6VLXTWFn9cq7rUf2TyGjuN6maxSJzPYow5HrSQJeoPtV+AoFpaL8QfdVT96z6jnJ993qPSQOz6Y4dh1O4EGBJBL08wHYodHDG6HrrLwvTd3MCUkqq1yAZ2E62r5Kk8N6gYFUvUDXUM1r7Ch5
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <4CB4B88E0D47F141A8D61FF26137D713@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=3kUpRZHj702Y/yob3JDZBCRSHqUTPZrzsJVFLNJXR9Q=;
+ b=VJF1L/hsJ8vkk3EoMMx5hrZOZpSBEExKvVE8OSzM82/gij8WNtClqk6RFyGZGfAmBYtU
+ qbbYJfXZWqkWZuuRrmB3OHYyQEwKfXTYui+0nRjcdWgVvNWPJNU5lpWt3XN/hkniVdkH
+ p+6Op7uEaJIYIS8SOsC4H5MhsxFf498XI0A= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2wchewk296-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 19 Nov 2019 16:36:06 -0800
+Received: from 2401:db00:2120:81ca:face:0:31:0 (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 19 Nov 2019 16:35:58 -0800
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 43A072EC1A59; Tue, 19 Nov 2019 16:35:57 -0800 (PST)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next] selftests/bpf: integrate verbose verifier log into test_progs
+Date:   Tue, 19 Nov 2019 16:35:48 -0800
+Message-ID: <20191120003548.4159797-1-andriin@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 47042013-d760-4873-61a9-08d76d5118c6
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Nov 2019 00:32:17.5575
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 6bhHp0osCuvOYCfamodkgMMfI1wk7RMev+YUdhDBmBIHrnqonlPW0iU86k5yMhb3
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2551
-X-OriginatorOrg: fb.com
+Content-Type: text/plain
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
  definitions=2019-11-19_08:2019-11-15,2019-11-19 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 spamscore=0
- mlxlogscore=861 impostorscore=0 lowpriorityscore=0 priorityscore=1501
- clxscore=1015 phishscore=0 malwarescore=0 suspectscore=0 adultscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1910280000 definitions=main-1911200003
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0 mlxscore=0
+ phishscore=0 impostorscore=0 spamscore=0 priorityscore=1501
+ mlxlogscore=999 clxscore=1015 malwarescore=0 adultscore=0 suspectscore=8
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-1911200004
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-DQoNCk9uIDExLzE5LzE5IDQ6MjUgUE0sIEFuZHJpaSBOYWtyeWlrbyB3cm90ZToNCj4gV2l0aCB0
-aGUgbW9zdCByZWNlbnQgQ2xhbmcsIGFsdTMyIGlzIGVuYWJsZWQgYnkgZGVmYXVsdCBpZiAtbWNw
-dT1wcm9iZSBvcg0KPiAtbWNwdT12MyBpcyBzcGVjaWZpZWQuIFVzZSBhIHNlcGFyYXRlIGJ1aWxk
-IHJ1bGUgd2l0aCAtbWNwdT12MiB0byBlbmZvcmNlIG5vDQoNCkEgbGl0dGxlIGJpdCBjbGFyaWZp
-Y2F0aW9uIC1tY3B1PXByb2JlIG1heSBub3QgZW5hYmxlIGFsdTMyIGZvciBvbGQgDQprZXJuZWxz
-LiBhbHUzMiBlbmFibGVkIHdpdGggLW1jcHU9cHJvYmUgb25seSBpZiBrZXJuZWwgc3VwcG9ydHMg
-am1wMzIsIA0Kd2hpY2ggaXMgbWVyZ2VkIGluIEphbnVhcnkgdGhpcyB5ZWFyLg0KDQo+IEFMVTMy
-IG1vZGUuDQo+IA0KPiBTdWdnZXN0ZWQtYnk6IFlvbmdob25nIFNvbmcgPHloc0BmYi5jb20+DQo+
-IFNpZ25lZC1vZmYtYnk6IEFuZHJpaSBOYWtyeWlrbyA8YW5kcmlpbkBmYi5jb20+DQoNCldpdGgg
-dGhlIGFib3ZlIG5pdCwNCkFja2VkLWJ5OiBZb25naG9uZyBTb25nIDx5aHNAZmIuY29tPg0K
+Add exra level of verboseness, activated by -vvv argument. When -vv is
+specified, verbose libbpf and verifier log (level 1) is output, even for
+successful tests. With -vvv, verifier log goes to level 2.
+
+This is extremely useful to debug verifier failures, as well as just see the
+state and flow of verification. Before this, you'd have to go and modify
+load_program()'s source code inside libbpf to specify extra log_level flags,
+which is suboptimal to say the least.
+
+Currently -vv and -vvv triggering verifier output is integrated into
+test_stub's bpf_prog_load as well as bpf_verif_scale.c tests.
+
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+---
+ .../selftests/bpf/prog_tests/bpf_verif_scale.c |  4 +++-
+ tools/testing/selftests/bpf/test_progs.c       | 18 ++++++++++++------
+ tools/testing/selftests/bpf/test_progs.h       | 10 ++++++++--
+ tools/testing/selftests/bpf/test_stub.c        |  4 ++++
+ 4 files changed, 27 insertions(+), 9 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_verif_scale.c b/tools/testing/selftests/bpf/prog_tests/bpf_verif_scale.c
+index 1c01ee2600a9..9486c13af6b2 100644
+--- a/tools/testing/selftests/bpf/prog_tests/bpf_verif_scale.c
++++ b/tools/testing/selftests/bpf/prog_tests/bpf_verif_scale.c
+@@ -15,6 +15,8 @@ static int libbpf_debug_print(enum libbpf_print_level level,
+ 	return 0;
+ }
+ 
++extern int extra_prog_load_log_flags;
++
+ static int check_load(const char *file, enum bpf_prog_type type)
+ {
+ 	struct bpf_prog_load_attr attr;
+@@ -24,7 +26,7 @@ static int check_load(const char *file, enum bpf_prog_type type)
+ 	memset(&attr, 0, sizeof(struct bpf_prog_load_attr));
+ 	attr.file = file;
+ 	attr.prog_type = type;
+-	attr.log_level = 4;
++	attr.log_level = 4 | extra_prog_load_log_flags;
+ 	attr.prog_flags = BPF_F_TEST_RND_HI32;
+ 	err = bpf_prog_load_xattr(&attr, &obj, &prog_fd);
+ 	bpf_object__close(obj);
+diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
+index a05a807840c0..7fa7d08a8104 100644
+--- a/tools/testing/selftests/bpf/test_progs.c
++++ b/tools/testing/selftests/bpf/test_progs.c
+@@ -45,7 +45,7 @@ static void dump_test_log(const struct prog_test_def *test, bool failed)
+ 
+ 	fflush(stdout); /* exports env.log_buf & env.log_cnt */
+ 
+-	if (env.verbose || test->force_log || failed) {
++	if (env.verbosity > VERBOSE_NONE || test->force_log || failed) {
+ 		if (env.log_cnt) {
+ 			env.log_buf[env.log_cnt] = '\0';
+ 			fprintf(env.stdout, "%s", env.log_buf);
+@@ -346,14 +346,14 @@ static const struct argp_option opts[] = {
+ 	{ "verifier-stats", ARG_VERIFIER_STATS, NULL, 0,
+ 	  "Output verifier statistics", },
+ 	{ "verbose", ARG_VERBOSE, "LEVEL", OPTION_ARG_OPTIONAL,
+-	  "Verbose output (use -vv for extra verbose output)" },
++	  "Verbose output (use -vv or -vvv for progressively verbose output)" },
+ 	{},
+ };
+ 
+ static int libbpf_print_fn(enum libbpf_print_level level,
+ 			   const char *format, va_list args)
+ {
+-	if (!env.very_verbose && level == LIBBPF_DEBUG)
++	if (env.verbosity < VERBOSE_VERY && level == LIBBPF_DEBUG)
+ 		return 0;
+ 	vprintf(format, args);
+ 	return 0;
+@@ -419,6 +419,8 @@ int parse_num_list(const char *s, struct test_selector *sel)
+ 	return 0;
+ }
+ 
++extern int extra_prog_load_log_flags;
++
+ static error_t parse_arg(int key, char *arg, struct argp_state *state)
+ {
+ 	struct test_env *env = state->input;
+@@ -460,9 +462,14 @@ static error_t parse_arg(int key, char *arg, struct argp_state *state)
+ 		env->verifier_stats = true;
+ 		break;
+ 	case ARG_VERBOSE:
++		env->verbosity = VERBOSE_NORMAL;
+ 		if (arg) {
+ 			if (strcmp(arg, "v") == 0) {
+-				env->very_verbose = true;
++				env->verbosity = VERBOSE_VERY;
++				extra_prog_load_log_flags = 1;
++			} else if (strcmp(arg, "vv") == 0) {
++				env->verbosity = VERBOSE_SUPER;
++				extra_prog_load_log_flags = 2;
+ 			} else {
+ 				fprintf(stderr,
+ 					"Unrecognized verbosity setting ('%s'), only -v and -vv are supported\n",
+@@ -470,7 +477,6 @@ static error_t parse_arg(int key, char *arg, struct argp_state *state)
+ 				return -EINVAL;
+ 			}
+ 		}
+-		env->verbose = true;
+ 		break;
+ 	case ARGP_KEY_ARG:
+ 		argp_usage(state);
+@@ -489,7 +495,7 @@ static void stdio_hijack(void)
+ 	env.stdout = stdout;
+ 	env.stderr = stderr;
+ 
+-	if (env.verbose) {
++	if (env.verbosity > VERBOSE_NONE) {
+ 		/* nothing to do, output to stdout by default */
+ 		return;
+ 	}
+diff --git a/tools/testing/selftests/bpf/test_progs.h b/tools/testing/selftests/bpf/test_progs.h
+index 0c48f64f732b..8477df835979 100644
+--- a/tools/testing/selftests/bpf/test_progs.h
++++ b/tools/testing/selftests/bpf/test_progs.h
+@@ -39,6 +39,13 @@ typedef __u16 __sum16;
+ #include "trace_helpers.h"
+ #include "flow_dissector_load.h"
+ 
++enum verbosity {
++	VERBOSE_NONE,
++	VERBOSE_NORMAL,
++	VERBOSE_VERY,
++	VERBOSE_SUPER,
++};
++
+ struct test_selector {
+ 	const char *name;
+ 	bool *num_set;
+@@ -49,8 +56,7 @@ struct test_env {
+ 	struct test_selector test_selector;
+ 	struct test_selector subtest_selector;
+ 	bool verifier_stats;
+-	bool verbose;
+-	bool very_verbose;
++	enum verbosity verbosity;
+ 
+ 	bool jit_enabled;
+ 
+diff --git a/tools/testing/selftests/bpf/test_stub.c b/tools/testing/selftests/bpf/test_stub.c
+index 84e81a89e2f9..47e132726203 100644
+--- a/tools/testing/selftests/bpf/test_stub.c
++++ b/tools/testing/selftests/bpf/test_stub.c
+@@ -5,6 +5,8 @@
+ #include <bpf/libbpf.h>
+ #include <string.h>
+ 
++int extra_prog_load_log_flags = 0;
++
+ int bpf_prog_test_load(const char *file, enum bpf_prog_type type,
+ 		       struct bpf_object **pobj, int *prog_fd)
+ {
+@@ -15,6 +17,7 @@ int bpf_prog_test_load(const char *file, enum bpf_prog_type type,
+ 	attr.prog_type = type;
+ 	attr.expected_attach_type = 0;
+ 	attr.prog_flags = BPF_F_TEST_RND_HI32;
++	attr.log_level = extra_prog_load_log_flags;
+ 
+ 	return bpf_prog_load_xattr(&attr, pobj, prog_fd);
+ }
+@@ -35,6 +38,7 @@ int bpf_test_load_program(enum bpf_prog_type type, const struct bpf_insn *insns,
+ 	load_attr.license = license;
+ 	load_attr.kern_version = kern_version;
+ 	load_attr.prog_flags = BPF_F_TEST_RND_HI32;
++	load_attr.log_level = extra_prog_load_log_flags;
+ 
+ 	return bpf_load_program_xattr(&load_attr, log_buf, log_buf_sz);
+ }
+-- 
+2.17.1
+
