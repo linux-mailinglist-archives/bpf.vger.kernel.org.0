@@ -2,130 +2,152 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CDB4105B44
-	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2019 21:40:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2451F105B48
+	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2019 21:43:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726676AbfKUUku (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Nov 2019 15:40:50 -0500
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:57421 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726541AbfKUUku (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 21 Nov 2019 15:40:50 -0500
-X-IronPort-AV: E=Sophos;i="5.69,227,1571695200"; 
-   d="scan'208";a="412935183"
-Received: from abo-228-123-68.mrs.modulonet.fr (HELO hadrien) ([85.68.123.228])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 21 Nov 2019 21:40:46 +0100
-Date:   Thu, 21 Nov 2019 21:40:45 +0100 (CET)
-From:   Julia Lawall <julia.lawall@lip6.fr>
-X-X-Sender: jll@hadrien
-To:     Michal Kubecek <mkubecek@suse.cz>
-cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        jakub.kicinski@netronome.com, ast@kernel.org,
-        natechancellor@gmail.com, jiang.xuexin@zte.com.cn,
-        cocci <cocci@systeme.lip6.fr>, f.fainelli@gmail.com,
-        daniel@iogearbox.net, john.fastabend@gmail.com,
-        lirongqing@baidu.com, maxime.chevallier@bootlin.com,
-        vivien.didelot@gmail.com, pablo@netfilter.org,
-        wang.yi59@zte.com.cn, hawk@kernel.org, arnd@arndb.de,
-        jiri@mellanox.com, xue.zhihong@zte.com.cn,
-        zhanglin <zhang.lin16@zte.com.cn>,
-        Thomas Gleixner <tglx@linutronix.de>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linyunsheng@huawei.com, Joe Perches <joe@perches.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        davem@davemloft.net
-Subject: Re: [Cocci] [PATCH] net: Zeroing the structure ethtool_wolinfo in
- ethtool_get_wol()
-In-Reply-To: <20191121133817.GF29650@unicorn.suse.cz>
-Message-ID: <alpine.DEB.2.21.1911212139130.2902@hadrien>
-References: <1572076456-12463-1-git-send-email-zhang.lin16@zte.com.cn> <c790578751dd69fb1080b355f5847c9ea5fb0e15.camel@perches.com> <bc150c6a-6d3e-ff01-e40e-840e8a385bda@metux.net> <20191121111917.GE29650@unicorn.suse.cz> <20191121120733.GF5604@kadam>
- <20191121133817.GF29650@unicorn.suse.cz>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        id S1726541AbfKUUnD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Nov 2019 15:43:03 -0500
+Received: from www62.your-server.de ([213.133.104.62]:56904 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726293AbfKUUnD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Nov 2019 15:43:03 -0500
+Received: from sslproxy01.your-server.de ([88.198.220.130])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1iXtI1-0007A4-3f; Thu, 21 Nov 2019 21:42:57 +0100
+Received: from [178.197.248.30] (helo=pc-9.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1iXtI0-0000SJ-KO; Thu, 21 Nov 2019 21:42:56 +0100
+Subject: Re: Fw: [Bug 205469] New: x86_32: bpf: multiple test_bpf failures
+ using eBPF JIT
+To:     Greg KH <greg@kroah.com>
+Cc:     Wang YanQing <udknight@gmail.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        bpf@vger.kernel.org
+References: <20191108075711.115a5f94@hermes.lan>
+ <08b98fbd-f295-3a94-8b3e-70790179290c@iogearbox.net>
+ <20191109183602.GA1033@udknight>
+ <69c1fa5e-7385-fe8d-ac17-42d22db84cf4@iogearbox.net>
+ <20191121203706.GD813260@kroah.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <b5f589e6-d105-fa98-efce-0b088ff4da6a@iogearbox.net>
+Date:   Thu, 21 Nov 2019 21:42:54 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20191121203706.GD813260@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.101.4/25640/Thu Nov 21 11:08:44 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On 11/21/19 9:37 PM, Greg KH wrote:
+> On Mon, Nov 11, 2019 at 01:56:31PM +0100, Daniel Borkmann wrote:
+>> On 11/9/19 7:36 PM, Wang YanQing wrote:
+>>> On Sat, Nov 09, 2019 at 12:37:49AM +0100, Daniel Borkmann wrote:
+>>>> [ Cc Wang (x86_32 BPF JIT maintainer) ]
+>>>>
+>>>> On 11/8/19 4:57 PM, Stephen Hemminger wrote:
+>>>>>
+>>>>> Begin forwarded message:
+>>>>>
+>>>>> Date: Fri, 08 Nov 2019 07:35:59 +0000
+>>>>> From: bugzilla-daemon@bugzilla.kernel.org
+>>>>> To: stephen@networkplumber.org
+>>>>> Subject: [Bug 205469] New: x86_32: bpf: multiple test_bpf failures using eBPF JIT
+>>>>>
+>>>>>
+>>>>> https://bugzilla.kernel.org/show_bug.cgi?id=205469
+>>>>>
+>>>>>                Bug ID: 205469
+>>>>>               Summary: x86_32: bpf: multiple test_bpf failures using eBPF JIT
+>>>>>               Product: Networking
+>>>>>               Version: 2.5
+>>>>>        Kernel Version: 4.19.81 LTS
+>>>>>              Hardware: i386
+>>>>>                    OS: Linux
+>>>>>                  Tree: Mainline
+>>>>>                Status: NEW
+>>>>>              Severity: normal
+>>>>>              Priority: P1
+>>>>>             Component: Other
+>>>>>              Assignee: stephen@networkplumber.org
+>>>>>              Reporter: itugrok@yahoo.com
+>>>>>                    CC: itugrok@yahoo.com
+>>>>>            Regression: No
+>>>>>
+>>>>> Created attachment 285829
+>>>>>      --> https://bugzilla.kernel.org/attachment.cgi?id=285829&action=edit
+>>>>> test_bpf failures: kernel 4.19.81/x86_32 (OpenWrt)
+>>>>>
+>>>>> Summary:
+>>>>> ========
+>>>>>
+>>>>> Running the 4.19.81 LTS kernel on QEMU/x86_32, the standard test_bpf.ko
+>>>>> testsuite generates multiple errors with the eBPF JIT enabled:
+>>>>>
+>>>>>      ...
+>>>>>      test_bpf: #32 JSET jited:1 40 ret 0 != 20 46 FAIL
+>>>>>      test_bpf: #321 LD_IND word positive offset jited:1 ret 0 != -291897430 FAIL
+>>>>>      test_bpf: #322 LD_IND word negative offset jited:1 ret 0 != -1437222042 FAIL
+>>>>>      test_bpf: #323 LD_IND word unaligned (addr & 3 == 2) jited:1 ret 0 !=
+>>>>> -1150890889 FAIL
+>>>>>      test_bpf: #326 LD_IND word positive offset, all ff jited:1 ret 0 != -1 FAIL
+>>>>>      ...
+>>>>>      test_bpf: Summary: 373 PASSED, 5 FAILED, [344/366 JIT'ed]
+>>>>>
+>>>>> However, with eBPF JIT disabled (net.core.bpf_jit_enable=0) all tests pass.
+>>>>>
+>>>>>
+>>>>> Steps to Reproduce:
+>>>>> ===================
+>>>>>
+>>>>>      # sysctl net.core.bpf_jit_enable=1
+>>>>>      # modprobe test_bpf
+>>>>>      <Kernel log with failures and test summary>
+>>>>>
+>>>>>
+>>>>> Affected Systems Tested:
+>>>>> ========================
+>>>>>
+>>>>>      OpenWrt master on QEMU/pc-q35(x86_32) [LTS kernel 4.19.81]
+>>>>>
+>>>>>
+>>>>> Kernel Logs:
+>>>>> ============
+>>>>>
+>>>>> Boot log with test results is attached.
+>>>>>
+>>>
+>>> Hi Daniel Borkmann!
+>>>
+>>> I have tested and verified that the report bug has been fixed by commit
+>>> 711aef1bbf88 ("bpf, x32: Fix bug for BPF_JMP | {BPF_JSGT, BPF_JSLE, BPF_JSLT, BPF_JSGE}")
+>>>
+>>> But that fix hasn't been backport to stable trees, so maybe we should do it:)
+>>
+>> Yes, given you have access to a x32 setup and are also able to runtime test the backported
+>> JIT changes, please submit it to stable with us in Cc. Thanks Wang!
+> 
+> Backporting this would be nice if someone could do it :)
 
+It landed on the stable list today:
 
-On Thu, 21 Nov 2019, Michal Kubecek wrote:
+https://lore.kernel.org/stable/20191121074336.GA15326@udknight/
+https://lore.kernel.org/stable/20191121074725.GA15476@udknight/
+https://lore.kernel.org/stable/20191121074511.GC15326@udknight/
+https://lore.kernel.org/stable/20191121074452.GB15326@udknight/
 
-> On Thu, Nov 21, 2019 at 03:07:33PM +0300, Dan Carpenter wrote:
-> > On Thu, Nov 21, 2019 at 12:19:17PM +0100, Michal Kubecek wrote:
-> > > On Thu, Nov 21, 2019 at 11:23:34AM +0100, Enrico Weigelt, metux IT consult wrote:
-> > > > On 26.10.19 21:40, Joe Perches wrote:
-> > > > > On Sat, 2019-10-26 at 15:54 +0800, zhanglin wrote:
-> > > > >> memset() the structure ethtool_wolinfo that has padded bytes
-> > > > >> but the padded bytes have not been zeroed out.
-> > > > > []
-> > > > >> diff --git a/net/core/ethtool.c b/net/core/ethtool.c
-> > > > > []
-> > > > >> @@ -1471,11 +1471,13 @@ static int ethtool_reset(struct net_device *dev, char __user *useraddr)
-> > > > >>
-> > > > >>  static int ethtool_get_wol(struct net_device *dev, char __user *useraddr)
-> > > > >>  {
-> > > > >> -	struct ethtool_wolinfo wol = { .cmd = ETHTOOL_GWOL };
-> > > > >> +	struct ethtool_wolinfo wol;
-> > > > >>
-> > > > >>  	if (!dev->ethtool_ops->get_wol)
-> > > > >>  		return -EOPNOTSUPP;
-> > > > >>
-> > > > >> +	memset(&wol, 0, sizeof(struct ethtool_wolinfo));
-> > > > >> +	wol.cmd = ETHTOOL_GWOL;
-> > > > >>  	dev->ethtool_ops->get_wol(dev, &wol);
-> > > > >>
-> > > > >>  	if (copy_to_user(useraddr, &wol, sizeof(wol)))
-> > > > >
-> > > > > It seems likely there are more of these.
-> > > > >
-> > > > > Is there any way for coccinelle to find them?
-> > > >
-> > > > Just curios: is static struct initialization (on stack) something that
-> > > > should be avoided ? I've been under the impression that static
-> > > > initialization allows thinner code and gives the compiler better chance
-> > > > for optimizations.
-> > >
-> > > Not in general. The (potential) problem here is that the structure has
-> > > padding and it is as a whole (i.e. including the padding) copied to
-> > > userspace. While I'm not aware of a compiler that wouldn't actually
-> > > initialize the whole data block including the padding in this case, the
-> > > C standard provides no guarantee about that so that to be sure we cannot
-> > > leak leftover kernel data to userspace, we need to explicitly initialize
-> > > the whole block.
-> >
-> > GCC will not always initialize the struct holes.  This patch fixes a
-> > real bug that GCC on my system (v7.4)
->
-> Just checked (again) to be sure. No matter if the function is inlined or
-> not, gcc 7.4.1 initializes the structure by one movl (of 0x5) and two
-> movq (of 0x0), i.e. initializes all sizeof(struct ethtool_wolinfo) = 20
-> bytes including the padding.
->
-> One could certainly construct examples where a real life compiler would
-> only initialize the fields. That's why I said "in this case".
-
-Looking again at the case that I mentioned, I see:
-
-# drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c:691:          struct drm_amdgpu_info_device dev_info = {};
-        call    __sanitizer_cov_trace_pc        #
-        leaq    840(%rsp), %rdi #, tmp1126
-        xorl    %eax, %eax      # tmp1127
-        movl    $46, %ecx       #, tmp1128
-        rep stosq
-
-So I guess the rep stosq is doing the memset.
-
-julia
-
->
-> Michal Kubecek
->
->
-> _______________________________________________
-> Cocci mailing list
-> Cocci@systeme.lip6.fr
-> https://systeme.lip6.fr/mailman/listinfo/cocci
->
+Thanks,
+Daniel
