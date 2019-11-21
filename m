@@ -2,105 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 94A7D104807
-	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2019 02:25:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5992104823
+	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2019 02:40:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726406AbfKUBZJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Nov 2019 20:25:09 -0500
-Received: from mail-il1-f200.google.com ([209.85.166.200]:34988 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726351AbfKUBZJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Nov 2019 20:25:09 -0500
-Received: by mail-il1-f200.google.com with SMTP id w69so1453168ilk.2
-        for <bpf@vger.kernel.org>; Wed, 20 Nov 2019 17:25:09 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=HGyv/05KW+XaAobLS4i93zd1a8c80e9dkbLyOS+7nTE=;
-        b=i132E24RekBGwT37j5lhvlNmFg/6XQgXTQhPfQfDAK/kxdi3VBBxwyM0dYD1KRrzcy
-         c7Wg6PgXFFDw3BnQhddV9mNOJr+qwndglr5aePLkRV+QwYvIb9poZbvxrPFtwTdgVbz7
-         Hc5e4y4TSeuN2yrkPP1GkYhtiQ9vI4NcfZDKteMbrT7K+J2AGj16SWZXo+gHb6URxWKV
-         nEVBnL+CdIAkRp8xXregpg6pwV+eKebttkrYhjJzZV/wYjIWKSmBk/tES6xG21dB/WEY
-         OdUkr4vy0/biIwxkFsIIz9VbeMo9EFjO15POeExTVdf3QtQllAykD3Uw0YmAh38TOlsc
-         7yng==
-X-Gm-Message-State: APjAAAUYp0xDWP8Pwuz736B1VmOEGUpd9FpfLoIpKJltTXZErn0EmPO7
-        8IslLO0rS3WVjpxgKwaN1ioZ+22fKELOWO02PA3Yzb1hUegg
-X-Google-Smtp-Source: APXvYqyNlnQAK4ZFQ8xtVKsrfLGKh0YwPC6jcC3BdISmDpdRiUc7tjqlJun3ACKExzZGjgvD0VKvfs71YGybjkC0G0adfy4GDNSA
+        id S1725842AbfKUBk2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Nov 2019 20:40:28 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:7312 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725819AbfKUBk2 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 20 Nov 2019 20:40:28 -0500
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xAL1csRw030828
+        for <bpf@vger.kernel.org>; Wed, 20 Nov 2019 17:40:27 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=vJBPodXGMlqbzLbO8ru+kxIqoEaqLhd+HFnm755xyKA=;
+ b=qWJASvEZggSku8eGrQrAXFuEiXyMSaC196f4hudgN4fcQtNJEcMcD41W1tEOCmjAtcrl
+ Mujeqs/Osmb93ueQiXQXSONMzIMHz7EOGJw94Gab8eWYBqJU7us9j8eucojnfVKedNJR
+ MsDqaY3i2m7YbtNDDYrtCpIGSmD2qmRIZ3o= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by mx0a-00082601.pphosted.com with ESMTP id 2wda3vad25-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 20 Nov 2019 17:40:26 -0800
+Received: from 2401:db00:12:909f:face:0:3:0 (2620:10d:c081:10::13) by
+ mail.thefacebook.com (2620:10d:c081:35::129) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
+ Wed, 20 Nov 2019 17:40:25 -0800
+Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
+        id 849773703208; Wed, 20 Nov 2019 17:40:24 -0800 (PST)
+Smtp-Origin-Hostprefix: devbig
+From:   Yonghong Song <yhs@fb.com>
+Smtp-Origin-Hostname: devbig003.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next 0/2] bpf: provide better register bounds after jmp32 instructions
+Date:   Wed, 20 Nov 2019 17:40:24 -0800
+Message-ID: <20191121014024.1700638-1-yhs@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-X-Received: by 2002:a02:1ac5:: with SMTP id 188mr6129457jai.77.1574299508737;
- Wed, 20 Nov 2019 17:25:08 -0800 (PST)
-Date:   Wed, 20 Nov 2019 17:25:08 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000fd119d0597d12a56@google.com>
-Subject: kernel panic: stack is corrupted in vhost_net_ioctl
-From:   syzbot <syzbot+f2a62d07a5198c819c7b@syzkaller.appspotmail.com>
-To:     ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
-        davem@davemloft.net, hawk@kernel.org, jakub.kicinski@netronome.com,
-        jasowang@redhat.com, john.fastabend@gmail.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mst@redhat.com,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        virtualization@lists.linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
+ definitions=2019-11-20_08:2019-11-20,2019-11-20 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0 adultscore=0
+ mlxlogscore=438 lowpriorityscore=0 priorityscore=1501 impostorscore=0
+ suspectscore=13 bulkscore=0 clxscore=1015 mlxscore=0 spamscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-1911210012
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+With latest llvm, bpf selftest test_progs, which has +alu32 enabled, failed for
+strobemeta.o and a few other subtests. The reason is due to that
+verifier did not provide better var_off.mask after jmp32 instructions.
+This patch set addressed this issue and after the fix, test_progs passed
+with alu32.
 
-syzbot found the following crash on:
+Patch #1 provided detailed explanation of the problem and the fix.
+Patch #2 added three tests in test_verifier.
 
-HEAD commit:    6c9594bd Merge branch 'for-linus' of git://git.kernel.org/..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=17059c6ae00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7654f9089a2e8c85
-dashboard link: https://syzkaller.appspot.com/bug?extid=f2a62d07a5198c819c7b
-compiler:       clang version 9.0.0 (/home/glider/llvm/clang  
-80fee25776c2fb61e74c1ecb1a523375c2500b69)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17bacb3ae00000
+Yonghong Song (2):
+  bpf: provide better register bounds after jmp32 instructions
+  tools/bpf: add verifier tests for better jmp32 register bounds
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+f2a62d07a5198c819c7b@syzkaller.appspotmail.com
+ kernel/bpf/verifier.c                        | 32 +++++++-
+ tools/testing/selftests/bpf/verifier/jmp32.c | 83 ++++++++++++++++++++
+ 2 files changed, 111 insertions(+), 4 deletions(-)
 
-Kernel panic - not syncing: stack-protector: Kernel stack is corrupted in:  
-vhost_net_ioctl+0x1d8c/0x1dc0 drivers/vhost/net.c:366
-CPU: 1 PID: 7993 Comm: syz-executor.0 Not tainted 5.4.0-rc7+ #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-Google 01/01/2011
-Call Trace:
-  __dump_stack lib/dump_stack.c:77 [inline]
-  dump_stack+0x1fb/0x318 lib/dump_stack.c:118
-  panic+0x264/0x7a9 kernel/panic.c:221
-  __stack_chk_fail+0x1f/0x20 kernel/panic.c:667
-  vhost_net_ioctl+0x1d8c/0x1dc0 drivers/vhost/net.c:366
-  do_vfs_ioctl+0x744/0x1730 fs/ioctl.c:46
-  ksys_ioctl fs/ioctl.c:713 [inline]
-  __do_sys_ioctl fs/ioctl.c:720 [inline]
-  __se_sys_ioctl fs/ioctl.c:718 [inline]
-  __x64_sys_ioctl+0xe3/0x120 fs/ioctl.c:718
-  do_syscall_64+0xf7/0x1c0 arch/x86/entry/common.c:290
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-RIP: 0033:0x45a639
-Code: ad b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7  
-48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
-ff 0f 83 7b b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f473d635c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 000000000045a639
-RDX: 0000000020d7c000 RSI: 000000004008af30 RDI: 0000000000000003
-RBP: 000000000075c070 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f473d6366d4
-R13: 00000000004c5b18 R14: 00000000004dab78 R15: 00000000ffffffff
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
+-- 
+2.17.1
 
-
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
