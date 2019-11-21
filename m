@@ -2,112 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 93A63105345
-	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2019 14:38:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2B83105495
+	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2019 15:36:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726358AbfKUNiW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Nov 2019 08:38:22 -0500
-Received: from mx2.suse.de ([195.135.220.15]:45360 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726532AbfKUNiW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Nov 2019 08:38:22 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id DB831B19F;
-        Thu, 21 Nov 2019 13:38:18 +0000 (UTC)
-Received: by unicorn.suse.cz (Postfix, from userid 1000)
-        id 22A6EE03A4; Thu, 21 Nov 2019 14:38:17 +0100 (CET)
-Date:   Thu, 21 Nov 2019 14:38:17 +0100
-From:   Michal Kubecek <mkubecek@suse.cz>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        Joe Perches <joe@perches.com>,
-        zhanglin <zhang.lin16@zte.com.cn>, davem@davemloft.net,
-        cocci <cocci@systeme.lip6.fr>,
+        id S1726992AbfKUOgr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Nov 2019 09:36:47 -0500
+Received: from mail-qv1-f66.google.com ([209.85.219.66]:39112 "EHLO
+        mail-qv1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726573AbfKUOgq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Nov 2019 09:36:46 -0500
+Received: by mail-qv1-f66.google.com with SMTP id v16so1480955qvq.6
+        for <bpf@vger.kernel.org>; Thu, 21 Nov 2019 06:36:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=rv5c3PJEtM2ffNdfZuVl2p9Xs+FPDxJaOjEmQ2G8DAo=;
+        b=XkP12c/ibS/aRyryTCd4qjn/PXxyYCusK1THaNAzNjypEGkjhmCt9LtT+qYEnSe3fB
+         R0spZ8YqysCDI95uGLLvFVswmZUjEqJ9cNCyHcavEFwClRwZ6y4PKDy88MyzZlAfM967
+         hisIg3vRQPZ469GZRWnqA3CNAZUY/hKDr+kXV7+2R0BibPU9CM1KGy5uODfMlNXxTJJo
+         tHEs5mFWOzUwzAdEjcr2fH3dCNIBIBIgehoNt8ki1/1o3yu01BkPAihfF+3/v5R6c6NG
+         mm7J2IKwvLhTCpGsMr85umCSjimcUeH9XgLjTylXIMq1THOPpUYiNcR9NxoGX25nyfzV
+         YKKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=rv5c3PJEtM2ffNdfZuVl2p9Xs+FPDxJaOjEmQ2G8DAo=;
+        b=DjSm0V5CzgvcWQFwkktqQxpJdOkG0f01HSaOPs18Wc2+nTv1DqTnr2UIeJbeK3L/dt
+         yTXPXyubCitEVEDaAJDFFzhLu0UxWH+U+2rE+AqYrAVBZ/w93jv/e9xZGvJMFJ69J9dI
+         pz3bZag0FZMuTApYuP3p+Wu5xYvPApgefmrkxiX8yCDg385rZ0IznB4Y6vTZ1mFJ6no/
+         nUixmNXrI0KxRK7Z6igTSxQV4jKfpQJwuXG/N2n7V8a5w7yAzAwRVQzRLcZI0/02U9oa
+         65mLG4qF7wrrSFAmUHETq2Ly9DNQmvm31EjROwwlBH5YCyQHMMIu+vbpk5mBFbwNtjwd
+         5vwQ==
+X-Gm-Message-State: APjAAAUdgvg5QxTRbicgM1GXzXfl7Au19LJzLNFOab+AvNjhtyrJ5Cd6
+        iVW+zGN5XZivlAUvUkaMPYx2pg==
+X-Google-Smtp-Source: APXvYqxiPTD6uqfSlGreW7CNwXwCXJOA4tNSbO40QzzV7IhKLzuaPAx4PWY7OQoHdNILaiGopmJlAA==
+X-Received: by 2002:a0c:e74a:: with SMTP id g10mr8540002qvn.29.1574347005412;
+        Thu, 21 Nov 2019 06:36:45 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
+        by smtp.gmail.com with ESMTPSA id 40sm1584912qtc.95.2019.11.21.06.36.44
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 21 Nov 2019 06:36:44 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1iXnZb-0004bF-SZ; Thu, 21 Nov 2019 10:36:43 -0400
+Date:   Thu, 21 Nov 2019 10:36:43 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     John Hubbard <jhubbard@nvidia.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        jakub.kicinski@netronome.com, ast@kernel.org,
-        jiang.xuexin@zte.com.cn, f.fainelli@gmail.com,
-        daniel@iogearbox.net, john.fastabend@gmail.com,
-        lirongqing@baidu.com, maxime.chevallier@bootlin.com,
-        vivien.didelot@gmail.com, wang.yi59@zte.com.cn, hawk@kernel.org,
-        arnd@arndb.de, jiri@mellanox.com, xue.zhihong@zte.com.cn,
-        natechancellor@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linyunsheng@huawei.com,
-        pablo@netfilter.org, bpf@vger.kernel.org
-Subject: Re: [Cocci] [PATCH] net: Zeroing the structure ethtool_wolinfo in
- ethtool_get_wol()
-Message-ID: <20191121133817.GF29650@unicorn.suse.cz>
-References: <1572076456-12463-1-git-send-email-zhang.lin16@zte.com.cn>
- <c790578751dd69fb1080b355f5847c9ea5fb0e15.camel@perches.com>
- <bc150c6a-6d3e-ff01-e40e-840e8a385bda@metux.net>
- <20191121111917.GE29650@unicorn.suse.cz>
- <20191121120733.GF5604@kadam>
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jens Axboe <axboe@kernel.dk>, Jonathan Corbet <corbet@lwn.net>,
+        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, bpf@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, kvm@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
+        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v7 07/24] IB/umem: use get_user_pages_fast() to pin DMA
+ pages
+Message-ID: <20191121143643.GC7448@ziepe.ca>
+References: <20191121071354.456618-1-jhubbard@nvidia.com>
+ <20191121071354.456618-8-jhubbard@nvidia.com>
+ <20191121080746.GC30991@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191121120733.GF5604@kadam>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20191121080746.GC30991@infradead.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 21, 2019 at 03:07:33PM +0300, Dan Carpenter wrote:
-> On Thu, Nov 21, 2019 at 12:19:17PM +0100, Michal Kubecek wrote:
-> > On Thu, Nov 21, 2019 at 11:23:34AM +0100, Enrico Weigelt, metux IT consult wrote:
-> > > On 26.10.19 21:40, Joe Perches wrote:
-> > > > On Sat, 2019-10-26 at 15:54 +0800, zhanglin wrote:
-> > > >> memset() the structure ethtool_wolinfo that has padded bytes
-> > > >> but the padded bytes have not been zeroed out.
-> > > > []
-> > > >> diff --git a/net/core/ethtool.c b/net/core/ethtool.c
-> > > > []
-> > > >> @@ -1471,11 +1471,13 @@ static int ethtool_reset(struct net_device *dev, char __user *useraddr)
-> > > >>  
-> > > >>  static int ethtool_get_wol(struct net_device *dev, char __user *useraddr)
-> > > >>  {
-> > > >> -	struct ethtool_wolinfo wol = { .cmd = ETHTOOL_GWOL };
-> > > >> +	struct ethtool_wolinfo wol;
-> > > >>  
-> > > >>  	if (!dev->ethtool_ops->get_wol)
-> > > >>  		return -EOPNOTSUPP;
-> > > >>  
-> > > >> +	memset(&wol, 0, sizeof(struct ethtool_wolinfo));
-> > > >> +	wol.cmd = ETHTOOL_GWOL;
-> > > >>  	dev->ethtool_ops->get_wol(dev, &wol);
-> > > >>  
-> > > >>  	if (copy_to_user(useraddr, &wol, sizeof(wol)))
-> > > > 
-> > > > It seems likely there are more of these.
-> > > > 
-> > > > Is there any way for coccinelle to find them?
-> > > 
-> > > Just curios: is static struct initialization (on stack) something that
-> > > should be avoided ? I've been under the impression that static
-> > > initialization allows thinner code and gives the compiler better chance
-> > > for optimizations.
+On Thu, Nov 21, 2019 at 12:07:46AM -0800, Christoph Hellwig wrote:
+> On Wed, Nov 20, 2019 at 11:13:37PM -0800, John Hubbard wrote:
+> > And get rid of the mmap_sem calls, as part of that. Note
+> > that get_user_pages_fast() will, if necessary, fall back to
+> > __gup_longterm_unlocked(), which takes the mmap_sem as needed.
 > > 
-> > Not in general. The (potential) problem here is that the structure has
-> > padding and it is as a whole (i.e. including the padding) copied to
-> > userspace. While I'm not aware of a compiler that wouldn't actually
-> > initialize the whole data block including the padding in this case, the
-> > C standard provides no guarantee about that so that to be sure we cannot
-> > leak leftover kernel data to userspace, we need to explicitly initialize
-> > the whole block.
+> > Reviewed-by: Jan Kara <jack@suse.cz>
+> > Reviewed-by: Jason Gunthorpe <jgg@mellanox.com>
+> > Reviewed-by: Ira Weiny <ira.weiny@intel.com>
+> > Signed-off-by: John Hubbard <jhubbard@nvidia.com>
 > 
-> GCC will not always initialize the struct holes.  This patch fixes a
-> real bug that GCC on my system (v7.4)
+> Looks fine,
+> 
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> 
+> Jason, can you queue this up for 5.5 to reduce this patch stack a bit?
 
-Just checked (again) to be sure. No matter if the function is inlined or
-not, gcc 7.4.1 initializes the structure by one movl (of 0x5) and two
-movq (of 0x0), i.e. initializes all sizeof(struct ethtool_wolinfo) = 20
-bytes including the padding.
+Yes, I said I'd do this in an earlier revision. Now that it is clear this
+won't go through Andrew's tree, applied to rdma for-next
 
-One could certainly construct examples where a real life compiler would
-only initialize the fields. That's why I said "in this case".
-
-Michal Kubecek
-
-
+Thanks,
+Jason
