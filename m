@@ -2,193 +2,407 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B00B104702
-	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2019 00:35:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0A6C10473E
+	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2019 01:05:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725936AbfKTXfg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Nov 2019 18:35:36 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:39600 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725878AbfKTXfg (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 20 Nov 2019 18:35:36 -0500
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xAKNX5OZ007948;
-        Wed, 20 Nov 2019 15:35:20 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=qKPeoW4ef/5LSL7S9Yd7Y1X9cV4AkL/GU9PaKgyrnv4=;
- b=GkGdJpHc7qI2B0L1A9Kc2TOZbTSvM3HAu0L0/Rl5V2XQoV06h4pweQI/Oq5WYoL2u4d5
- Bzz/0vWIdBaPQcR/GD4PnoanWLTu+/FmcQ3SYrmV70KwW+61BMHaACuGsJmQDy3Cw20P
- BptTxgTYtmf1J1DV/SQ/qw1WruhUkXfdWPA= 
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by mx0a-00082601.pphosted.com with ESMTP id 2wc6abbx8s-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 20 Nov 2019 15:35:15 -0800
-Received: from prn-mbx02.TheFacebook.com (2620:10d:c081:6::16) by
- prn-hub04.TheFacebook.com (2620:10d:c081:35::128) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Wed, 20 Nov 2019 15:35:06 -0800
-Received: from prn-hub03.TheFacebook.com (2620:10d:c081:35::127) by
- prn-mbx02.TheFacebook.com (2620:10d:c081:6::16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Wed, 20 Nov 2019 15:35:06 -0800
-Received: from NAM04-CO1-obe.outbound.protection.outlook.com (192.168.54.28)
- by o365-in.thefacebook.com (192.168.16.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
- via Frontend Transport; Wed, 20 Nov 2019 15:35:06 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QoyqPx2n/Z4TjefNOoU4YZnWAHTjThfmgHDAMZLmzpl1eR4NMBIF/NrFO3B4XQ3nevYAUvBZjFofxBZxhk+1JS54srT9lw8v7r7jbQq8lyumSQgKkBmXXOE8XwaNUt10/YXx+78Xzz9Hjiiku/i2n8JcjOVjQB7pS9EYN2F2sBkskBNy9vTidv5Y7EbQHVQutcfadry/Cc0guKTE/d1S98Ft9Iw51wtkNCkZwzVNcHZt85HHqALVrRW+cKyTZ1G1wuS+tcfHROGSE1qsoK4AAu3HgNUqvuMWNlTYK+3N1YQ3Rg2GC/XSx0OU+iO3yGaS51EHVj80yC3xH2tbHggENA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qKPeoW4ef/5LSL7S9Yd7Y1X9cV4AkL/GU9PaKgyrnv4=;
- b=WLd+EGzCBs4a1NiHTi4PPBwG0zt0kKBE9xSDdTrZgXxdm9mIWi5EOv6AfsyrmjYhtXRUnYObTKNvGcl3lexeBwEus1gBEUjdpx5dq2gM7ex0gYly8UGS2HvQ67Ij2W4UK2f6b2BDuRZUkhUTko8SvX8wfRSAinaJ3pwM1pAFp/d/w7WX1WgHzM+jVe9Kv8ZbIuYtxpR9NtUhE1IwdJ33NDKvYH8Jdd3EtUBaUmSMw9NBxSEIWLAMU3ZDn2gm5DQwrsvpiUGGQalekOZP1KwgopQUm4eR7/K/Zrq6HPAHhfNcCxy6cyhPsRv2hqds0nYwT3qfzQwyipn2BnSJjRnjrw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qKPeoW4ef/5LSL7S9Yd7Y1X9cV4AkL/GU9PaKgyrnv4=;
- b=bVpIbdaYyd0exef3mYQpHw1uwqQkjZaVEFtNVVXHddOzCS5q3S+3lw5Jjs5DMO2ShrLIpWEuaqmFxW6TNxoqo73wlGYlh94AAvq5tVXi5VIK4MN72kp5TbdOZ9M3erPl0c6bZDJ+KrcdGjtagVuL5KU/T1gBFgqZD4xrSoFaQ/I=
-Received: from BYAPR15MB3384.namprd15.prod.outlook.com (20.179.60.27) by
- BYAPR15MB2838.namprd15.prod.outlook.com (20.178.206.157) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2474.17; Wed, 20 Nov 2019 23:35:05 +0000
-Received: from BYAPR15MB3384.namprd15.prod.outlook.com
- ([fe80::a9f8:a9c0:854c:d680]) by BYAPR15MB3384.namprd15.prod.outlook.com
- ([fe80::a9f8:a9c0:854c:d680%4]) with mapi id 15.20.2474.018; Wed, 20 Nov 2019
- 23:35:05 +0000
-From:   Yonghong Song <yhs@fb.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH bpf-next v2 2/3] bpf: allow s32/u32 return types in
- verifier for bpf helpers
-Thread-Topic: [PATCH bpf-next v2 2/3] bpf: allow s32/u32 return types in
- verifier for bpf helpers
-Thread-Index: AQHVnxOR7mAOdKrcXUWqlis6kEFbSaeTC2gAgAAChYCAAaouAA==
-Date:   Wed, 20 Nov 2019 23:35:05 +0000
-Message-ID: <0e7d5b81-5554-dba0-0a72-83323506340b@fb.com>
-References: <20191119195711.3691681-1-yhs@fb.com>
- <20191119195712.3692027-1-yhs@fb.com>
- <20191119220038.6q2y7lwum5liie4e@ast-mbp.dhcp.thefacebook.com>
- <b595c11d-384b-414b-f90b-328714c3a2cd@fb.com>
-In-Reply-To: <b595c11d-384b-414b-f90b-328714c3a2cd@fb.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MWHPR10CA0016.namprd10.prod.outlook.com (2603:10b6:301::26)
- To BYAPR15MB3384.namprd15.prod.outlook.com (2603:10b6:a03:112::27)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:200::f768]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: d16c1f6a-7de2-40ce-d119-08d76e124575
-x-ms-traffictypediagnostic: BYAPR15MB2838:
-x-ms-exchange-purlcount: 1
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR15MB283831E456D2609B3F458918D34F0@BYAPR15MB2838.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-forefront-prvs: 02272225C5
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(396003)(366004)(376002)(346002)(136003)(39860400002)(189003)(199004)(6486002)(8676002)(6436002)(81156014)(7736002)(305945005)(81166006)(478600001)(66446008)(64756008)(66946007)(2906002)(71190400001)(6512007)(66556008)(66476007)(71200400001)(5660300002)(6306002)(186003)(25786009)(31696002)(14454004)(46003)(316002)(76176011)(256004)(6116002)(229853002)(6916009)(14444005)(966005)(4326008)(52116002)(11346002)(53546011)(446003)(102836004)(2616005)(31686004)(476003)(36756003)(86362001)(8936002)(6506007)(386003)(99286004)(54906003)(6246003)(486006);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB2838;H:BYAPR15MB3384.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: bknf/pBQW4KM8xAYfbonq/BaBPulrLpm1eYjbjJxK+Sqp9WZ5XpBf5ShkRXMZFl9vg0rVvt43nqcEkc1oHGhmlXPEyau0qHP+qUf1el6SZrF4pS61awHD0iSKxfPsEV8SyM2LZtpoCgMdzEyMFM6jjilFEGydEmxZfpbGbYla2Hp93CnkIqf+JuDV/Us43J9k2Ry6L0nQhmu4PVfyHJ51k+RkHnzOmRW1gasWpMvIq2V8UeAcDCkzMzrBW1wK6cJ4QJ77f4a1UWhJDD4RiCvQdvYiggPzB90zi/Hef6UFmYBml/01DaU4GbK9BuhFSL9fWgFNCeqh4TE14esdj+KFPQrcaQ6i4M+PniPHK9QoDCHMp+7cdm9xsBXf5ZewWZJWEGX8158mz/5EkyUe66+ypIxAYWgcCTGTgMeI+rhhErOuVcyKV2DVYot5YVSF3+LAC3QFYxNGHAAGb9mTLkchC8jJFvlRBslIVG7O7gZmiE=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <1A199EBA5E60E045AA20DECBACCDFE77@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1726346AbfKUAFY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Nov 2019 19:05:24 -0500
+Received: from www62.your-server.de ([213.133.104.62]:44912 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726293AbfKUAFX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Nov 2019 19:05:23 -0500
+Received: from 30.248.197.178.dynamic.dsl-lte-bonding.zhbmb00p-msn.res.cust.swisscom.ch ([178.197.248.30] helo=localhost)
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1iXZyB-0006eh-DA; Thu, 21 Nov 2019 01:05:11 +0100
+From:   Daniel Borkmann <daniel@iogearbox.net>
+To:     davem@davemloft.net
+Cc:     jakub.kicinski@netronome.com, daniel@iogearbox.net, ast@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: pull-request: bpf-next 2019-11-20
+Date:   Thu, 21 Nov 2019 01:05:10 +0100
+Message-Id: <20191121000510.18946-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: d16c1f6a-7de2-40ce-d119-08d76e124575
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Nov 2019 23:35:05.2109
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ahadqGuGXoe0B9gCmJ53owyh8lOpxnteCpxhIttOVVTAwCE5ffHIZaSbi3MAp9bm
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2838
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
- definitions=2019-11-20_08:2019-11-20,2019-11-20 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- malwarescore=0 mlxlogscore=834 suspectscore=0 impostorscore=0
- clxscore=1015 adultscore=0 bulkscore=0 mlxscore=0 spamscore=0 phishscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1910280000 definitions=main-1911200197
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.101.4/25639/Wed Nov 20 11:02:53 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-DQoNCk9uIDExLzE5LzE5IDI6MDkgUE0sIFlvbmdob25nIFNvbmcgd3JvdGU6DQo+IA0KPiANCj4g
-T24gMTEvMTkvMTkgMjowMCBQTSwgQWxleGVpIFN0YXJvdm9pdG92IHdyb3RlOg0KPj4gT24gVHVl
-LCBOb3YgMTksIDIwMTkgYXQgMTE6NTc6MTJBTSAtMDgwMCwgWW9uZ2hvbmcgU29uZyB3cm90ZToN
-Cj4+PiAgICAjZGVmaW5lIFROVU0oX3YsIF9tKQkoc3RydWN0IHRudW0pey52YWx1ZSA9IF92LCAu
-bWFzayA9IF9tfQ0KPj4+IC0vKiBBIGNvbXBsZXRlbHkgdW5rbm93biB2YWx1ZSAqLw0KPj4+ICsv
-KiBjb21wbGV0ZWx5IHVua25vd24gMzItYml0IGFuZCA2NC1iaXQgdmFsdWVzICovDQo+Pj4gK2Nv
-bnN0IHN0cnVjdCB0bnVtIHRudW1fdW5rbm93bjMyID0geyAudmFsdWUgPSAwLCAubWFzayA9IDB4
-ZmZmZmZmZmZVTEwgfTsNCj4+PiAgICBjb25zdCBzdHJ1Y3QgdG51bSB0bnVtX3Vua25vd24gPSB7
-IC52YWx1ZSA9IDAsIC5tYXNrID0gLTEgfTsNCj4+PiAgICANCj4+PiAgICBzdHJ1Y3QgdG51bSB0
-bnVtX2NvbnN0KHU2NCB2YWx1ZSkNCj4+PiBkaWZmIC0tZ2l0IGEva2VybmVsL2JwZi92ZXJpZmll
-ci5jIGIva2VybmVsL2JwZi92ZXJpZmllci5jDQo+Pj4gaW5kZXggYTM0NGIwOGFlZjc3Li45NDU4
-MjczNTE3NTggMTAwNjQ0DQo+Pj4gLS0tIGEva2VybmVsL2JwZi92ZXJpZmllci5jDQo+Pj4gKysr
-IGIva2VybmVsL2JwZi92ZXJpZmllci5jDQo+Pj4gQEAgLTEwMjQsNiArMTAyNCwxNSBAQCBzdGF0
-aWMgdm9pZCBfX21hcmtfcmVnX3VuYm91bmRlZChzdHJ1Y3QgYnBmX3JlZ19zdGF0ZSAqcmVnKQ0K
-Pj4+ICAgIAlyZWctPnVtYXhfdmFsdWUgPSBVNjRfTUFYOw0KPj4+ICAgIH0NCj4+PiAgICANCj4+
-PiArLyogUmVzZXQgdGhlIG1pbi9tYXggYm91bmRzIG9mIGEgc3ViIHJlZ2lzdGVyICovDQo+Pj4g
-K3N0YXRpYyB2b2lkIF9fbWFya19zdWJyZWdfdW5ib3VuZGVkKHN0cnVjdCBicGZfcmVnX3N0YXRl
-ICpzdWJyZWcpDQo+Pj4gK3sNCj4+PiArCXN1YnJlZy0+c21pbl92YWx1ZSA9IFMzMl9NSU47DQo+
-Pj4gKwlzdWJyZWctPnNtYXhfdmFsdWUgPSBTMzJfTUFYOw0KPj4+ICsJc3VicmVnLT51bWluX3Zh
-bHVlID0gMDsNCj4+PiArCXN1YnJlZy0+dW1heF92YWx1ZSA9IFUzMl9NQVg7DQo+Pj4gK30NCj4+
-DQo+PiB3aGVuIGludDMyIGlzIHJldHVybmVkIHRoZSBhYm92ZSBmZWVscyBjb3JyZWN0LCBidXQg
-SSB0aGluayBpdCBjb25mbGljdHMgd2l0aA0KPj4gZGVmaW5pdGlvbiBvZiB0bnVtX3Vua25vd24z
-Miwgc2luY2UgaXQgc2F5cyB0aGF0IHVwcGVyIDMyLWJpdCBzaG91bGQgYmUgemVyby4NCj4+IFRo
-ZSB0eXBpY2FsIHZlcmlmaWVyIGFjdGlvbiBhZnRlciBwcm9jZXNzaW5nIGFsdTMyIGluc246DQo+
-PiAgICAgICAgICAgaWYgKEJQRl9DTEFTUyhpbnNuLT5jb2RlKSAhPSBCUEZfQUxVNjQpIHsNCj4+
-ICAgICAgICAgICAgICAgICAgIC8qIDMyLWJpdCBBTFUgb3BzIGFyZSAoMzIsMzIpLT4zMiAqLw0K
-Pj4gICAgICAgICAgICAgICAgICAgY29lcmNlX3JlZ190b19zaXplKGRzdF9yZWcsIDQpOw0KPj4g
-ICAgICAgICAgIH0NCj4+DQo+PiAgICAgICAgICAgX19yZWdfZGVkdWNlX2JvdW5kcyhkc3RfcmVn
-KTsNCj4+ICAgICAgICAgICBfX3JlZ19ib3VuZF9vZmZzZXQoZHN0X3JlZyk7DQo+Pg0KPj4gQW5k
-IHRoYXQgaXMgY29ycmVjdCBiZWhhdmlvciBmb3IgYWx1MzIsIGJ1dCBoZXJlIHRoZSBoZWxwZXIg
-aXMgcmV0dXJuaW5nDQo+PiAnaW50Jywgc28gaWYgdGhlIHZlcmlmaWVyIHNheXMgc3VicmVnLT5z
-bWluX3ZhbHVlID0gUzMyX01JTjsNCj4+IGl0IG1lYW5zIHRoYXQgdXBwZXIgYml0cyB3aWxsIGJl
-IG5vbi16ZXJvLg0KPj4gVGhlIGhlbHBlciBjYW4gcmV0dXJuICh1NjQpLTEgd2l0aCBhbGwgNjQt
-Yml0cyBiZWluZyBzZXQgdG8gMS4NCj4+IElmIG5leHQgaW5zbiBhZnRlciB3MCA9IGNhbGwgaGVs
-cGVyOyBpcyB3MCArPSBpbW07DQo+PiB0aGUgdmVyaWZpZXIgd2lsbCBkbyBhYm92ZSBjb2VyY2Ur
-ZGVkdWNlIGxvZ2ljIGFuZCBjbGVhciB1cHBlciBiaXRzLg0KPj4gVGhhdCdzIGNvcnJlY3QsIGJ1
-dCB3aXRob3V0IGV4dHJhIGFsdTMyIG9wZXJhdGlvbiBvbiB3MCB0aGUgc3RhdGUNCj4+IG9mIHIw
-IGlzIHRlY2huaWNhbGx5IGNvcnJlY3QsIGJ1dCBkb2Vzbid0IG1hdGNoIHIwLT52YXJfcmVnDQo+
-PiB3aGljaCBpcyB0bnVtX3Vua25vd24zMi4NCj4+IEkgd29uZGVyIHdoZXRoZXIgaXQgc2hvdWxk
-IGJlIHRudW1fdW5rbm93biBpbnN0ZWFkIHdpdGggYWJvdmUNCj4+IF9fbWFya19zdWJyZWdfdW5i
-b3VuZGVkKCkgPw0KPiANCj4gdG51bV91bmtub3duIHNob3VsZCB3b3JrIHNpbmNlIHN1YnJlZyB7
-c21pbixzbWF4LHVtaW4sdW1heH1fdmFsdWUNCj4gYWxsIGluIDMyLWJpdCByYW5nZS4gVGhlIG1h
-c2sgKC0xKSBzaG91bGQgd29yayBhcyB1cHBlciAzMi1iaXQgdW5zaWduZWQNCj4gdmFsdWUgaXMg
-YWx3YXlzIDAuDQo+IA0KPiBXaWxsIG1ha2UgdGhlIGNoYW5nZSBhbmQgc2VuZCBhbm90aGVyIHJl
-dmlzaW9uLg0KDQpBbiB1cGRhdGUgZm9yIHRoaXMgYnVnLg0KSW52ZXN0aWdhdGVkIGZ1cnRoZXIg
-d2l0aCBBbGV4ZWkgYW5kIGZvdW5kIGFjdHVhbGx5IHdlIGhhdmUNCmEgTExWTSBidWcgd2hlcmUg
-c29tZSBMU2hpZnQgYW5kIFJzaGlmdCBpcyByZW1vdmVkIGluY29ycmVjdGx5DQphdCArYWx1MzIg
-bW9kZS4gVGhlIGZvbGxvd2luZyBMTFZNIHBhdGNoDQogICAgaHR0cHM6Ly9yZXZpZXdzLmxsdm0u
-b3JnL0Q3MDUxMS9uZXcvDQpoYXMgYmVlbiBtZXJnZWQgd2hpY2ggZml4ZWQgTExWTSBpc3N1ZS4N
-Cg0KVGhlcmUgYXJlIHNvbWUga2VybmVsIGNoYW5nZXMgbmVlZGVkIHRvIG1ha2UgdGVzdF9wcm9n
-cyBwYXNzaW5nLCB3aGljaA0KSSB3aWxsIHNlbmQgb3V0IHNob3J0bHkuDQoNClRoaXMgcGF0Y2gg
-c2V0IGNhbiBiZSBhYmFuZG9uZWQuDQoNCj4gDQo+Pg0KPj4+ICsNCj4+PiAgICAvKiBNYXJrIGEg
-cmVnaXN0ZXIgYXMgaGF2aW5nIGEgY29tcGxldGVseSB1bmtub3duIChzY2FsYXIpIHZhbHVlLiAq
-Lw0KPj4+ICAgIHN0YXRpYyB2b2lkIF9fbWFya19yZWdfdW5rbm93bihzdHJ1Y3QgYnBmX3JlZ19z
-dGF0ZSAqcmVnKQ0KPj4+ICAgIHsNCj4+PiBAQCAtMTAzOCw2ICsxMDQ3LDIwIEBAIHN0YXRpYyB2
-b2lkIF9fbWFya19yZWdfdW5rbm93bihzdHJ1Y3QgYnBmX3JlZ19zdGF0ZSAqcmVnKQ0KPj4+ICAg
-IAlfX21hcmtfcmVnX3VuYm91bmRlZChyZWcpOw0KPj4+ICAgIH0NCj4+PiAgICANCj4+PiArLyog
-TWFyayBhIHN1YiByZWdpc3RlciBhcyBoYXZpbmcgYSBjb21wbGV0ZWx5IHVua25vd24gKHNjYWxh
-cikgdmFsdWUuICovDQo+Pj4gK3N0YXRpYyB2b2lkIF9fbWFya19zdWJyZWdfdW5rbm93bihzdHJ1
-Y3QgYnBmX3JlZ19zdGF0ZSAqc3VicmVnKQ0KPj4+ICt7DQo+Pj4gKwkvKg0KPj4+ICsJICogQ2xl
-YXIgdHlwZSwgaWQsIG9mZiwgYW5kIHVuaW9uKG1hcF9wdHIsIHJhbmdlKSBhbmQNCj4+PiArCSAq
-IHBhZGRpbmcgYmV0d2VlbiAndHlwZScgYW5kIHVuaW9uDQo+Pj4gKwkgKi8NCj4+PiArCW1lbXNl
-dChzdWJyZWcsIDAsIG9mZnNldG9mKHN0cnVjdCBicGZfcmVnX3N0YXRlLCB2YXJfb2ZmKSk7DQo+
-Pj4gKwlzdWJyZWctPnR5cGUgPSBTQ0FMQVJfVkFMVUU7DQo+Pj4gKwlzdWJyZWctPnZhcl9vZmYg
-PSB0bnVtX3Vua25vd24zMjsNCj4+PiArCXN1YnJlZy0+ZnJhbWVubyA9IDA7DQo+Pj4gKwlfX21h
-cmtfc3VicmVnX3VuYm91bmRlZChzdWJyZWcpOw0KPj4+ICt9DQo+Pg0K
+Hi David,
+
+The following pull-request contains BPF updates for your *net-next* tree.
+
+We've added 81 non-merge commits during the last 17 day(s) which contain
+a total of 120 files changed, 4958 insertions(+), 1081 deletions(-).
+
+There are 3 trivial conflicts, resolve it by always taking the chunk from
+196e8ca74886c433:
+
+<<<<<<< HEAD
+=======
+void *bpf_map_area_mmapable_alloc(u64 size, int numa_node);
+>>>>>>> 196e8ca74886c433dcfc64a809707074b936aaf5
+
+<<<<<<< HEAD
+void *bpf_map_area_alloc(u64 size, int numa_node)
+=======
+static void *__bpf_map_area_alloc(u64 size, int numa_node, bool mmapable)
+>>>>>>> 196e8ca74886c433dcfc64a809707074b936aaf5
+
+<<<<<<< HEAD
+        if (size <= (PAGE_SIZE << PAGE_ALLOC_COSTLY_ORDER)) {
+=======
+        /* kmalloc()'ed memory can't be mmap()'ed */
+        if (!mmapable && size <= (PAGE_SIZE << PAGE_ALLOC_COSTLY_ORDER)) {
+>>>>>>> 196e8ca74886c433dcfc64a809707074b936aaf5
+
+The main changes are:
+
+1) Addition of BPF trampoline which works as a bridge between kernel functions,
+   BPF programs and other BPF programs along with two new use cases: i) fentry/fexit
+   BPF programs for tracing with practically zero overhead to call into BPF (as
+   opposed to k[ret]probes) and ii) attachment of the former to networking related
+   programs to see input/output of networking programs (covering xdpdump use case),
+   from Alexei Starovoitov.
+
+2) BPF array map mmap support and use in libbpf for global data maps; also a big
+   batch of libbpf improvements, among others, support for reading bitfields in a
+   relocatable manner (via libbpf's CO-RE helper API), from Andrii Nakryiko.
+
+3) Extend s390x JIT with usage of relative long jumps and loads in order to lift
+   the current 64/512k size limits on JITed BPF programs there, from Ilya Leoshkevich.
+
+4) Add BPF audit support and emit messages upon successful prog load and unload in
+   order to have a timeline of events, from Daniel Borkmann and Jiri Olsa.
+
+5) Extension to libbpf and xdpsock sample programs to demo the shared umem mode
+   (XDP_SHARED_UMEM) as well as RX-only and TX-only sockets, from Magnus Karlsson.
+
+6) Several follow-up bug fixes for libbpf's auto-pinning code and a new API
+   call named bpf_get_link_xdp_info() for retrieving the full set of prog
+   IDs attached to XDP, from Toke Høiland-Jørgensen.
+
+7) Add BTF support for array of int, array of struct and multidimensional arrays
+   and enable it for skb->cb[] access in kfree_skb test, from Martin KaFai Lau.
+
+8) Fix AF_XDP by using the correct number of channels from ethtool, from Luigi Rizzo.
+
+9) Two fixes for BPF selftest to get rid of a hang in test_tc_tunnel and to avoid
+   xdping to be run as standalone, from Jiri Benc.
+
+10) Various BPF selftest fixes when run with latest LLVM trunk, from Yonghong Song.
+
+11) Fix a memory leak in BPF fentry test run data, from Colin Ian King.
+
+12) Various smaller misc cleanups and improvements mostly all over BPF selftests and
+    samples, from Daniel T. Lee, Andre Guedes, Anders Roxell, Mao Wenan, Yue Haibing.
+
+Please consider pulling these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+
+Thanks a lot!
+
+Also thanks to reporters, reviewers and testers of commits in this pull-request:
+
+Alan Maguire, Alexei Starovoitov, Andrii Nakryiko, Daniel Bristot de 
+Oliveira, David S. Miller, Hulk Robot, Jakub Kicinski, Johannes Weiner, 
+John Fastabend, Jonathan Lemon, Magnus Karlsson, Masami Hiramatsu, Song 
+Liu, Stephen Rothwell, Steven Rostedt (VMware), Toke Høiland-Jørgensen, 
+Willem de Bruijn, William Tu, Yonghong Song
+
+----------------------------------------------------------------
+
+The following changes since commit 1574cf83c7a069f5f29295170ed8a568ccebcb7b:
+
+  Merge tag 'mlx5-updates-2019-11-01' of git://git.kernel.org/pub/scm/linux/kernel/git/saeed/linux (2019-11-03 19:23:49 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git 
+
+for you to fetch changes up to 196e8ca74886c433dcfc64a809707074b936aaf5:
+
+  bpf: Switch bpf_map_{area_alloc,area_mmapable_alloc}() to u64 size (2019-11-20 23:18:58 +0100)
+
+----------------------------------------------------------------
+Alexei Starovoitov (22):
+      Merge branch 'map-pinning'
+      Merge branch 'share-umem'
+      bpf: Refactor x86 JIT into helpers
+      bpf: Add bpf_arch_text_poke() helper
+      bpf: Introduce BPF trampoline
+      libbpf: Introduce btf__find_by_name_kind()
+      libbpf: Add support to attach to fentry/fexit tracing progs
+      selftest/bpf: Simple test for fentry/fexit
+      bpf: Add kernel test functions for fentry testing
+      selftests/bpf: Add test for BPF trampoline
+      selftests/bpf: Add fexit tests for BPF trampoline
+      selftests/bpf: Add combined fentry/fexit test
+      selftests/bpf: Add stress test for maximum number of progs
+      bpf: Reserve space for BPF trampoline in BPF programs
+      bpf: Fix race in btf_resolve_helper_id()
+      bpf: Annotate context types
+      bpf: Compare BTF types of functions arguments with actual types
+      bpf: Support attaching tracing BPF program to other BPF programs
+      libbpf: Add support for attaching BPF programs to other BPF programs
+      selftests/bpf: Extend test_pkt_access test
+      selftests/bpf: Add a test for attaching BPF prog to another BPF prog and subprog
+      Merge branch 'remove-jited-size-limits'
+
+Anders Roxell (1):
+      bpf, testing: Add missing object file to TEST_FILES
+
+Andre Guedes (2):
+      samples/bpf: Remove duplicate option from xdpsock
+      samples/bpf: Add missing option to xdpsock usage
+
+Andrii Nakryiko (20):
+      selftests/bpf: Remove too strict field offset relo test cases
+      libbpf: Add support for relocatable bitfields
+      libbpf: Add support for field size relocations
+      selftest/bpf: Add relocatable bitfield reading tests
+      selftests/bpf: Add field size relocation tests
+      selftests/bps: Clean up removed ints relocations negative tests
+      libbpf: Simplify BPF_CORE_READ_BITFIELD_PROBED usage
+      libbpf: Fix negative FD close() in xsk_setup_xdp_prog()
+      libbpf: Fix memory leak/double free issue
+      libbpf: Fix potential overflow issue
+      libbpf: Fix another potential overflow issue in bpf_prog_linfo
+      libbpf: Make btf__resolve_size logic always check size error condition
+      libbpf: Improve handling of corrupted ELF during map initialization
+      bpf: Switch bpf_map ref counter to atomic64_t so bpf_map_inc() never fails
+      bpf: Convert bpf_prog refcnt to atomic64_t
+      bpf: Add mmap() support for BPF_MAP_TYPE_ARRAY
+      libbpf: Make global data internal arrays mmap()-able, if possible
+      selftests/bpf: Add BPF_TYPE_MAP_ARRAY mmap() tests
+      libbpf: Fix call relocation offset calculation bug
+      selftests/bpf: Enforce no-ALU32 for test_progs-no_alu32
+
+Colin Ian King (1):
+      bpf: Fix memory leak on object 'data'
+
+Daniel Borkmann (6):
+      Merge branch 'bpf-libbpf-bitfield-size-relo'
+      Merge branch 'bpf-libbpf-fixes'
+      Merge branch 'bpf-trampoline'
+      Merge branch 'bpf-array-mmap'
+      bpf: Emit audit messages upon successful prog load and unload
+      bpf: Switch bpf_map_{area_alloc,area_mmapable_alloc}() to u64 size
+
+Daniel T. Lee (2):
+      samples: bpf: Update outdated error message
+      samples: bpf: update map definition to new syntax BTF-defined map
+
+Ilya Leoshkevich (12):
+      tools, bpf_asm: Warn when jumps are out of range
+      s390/bpf: Use kvcalloc for addrs array
+      s390/bpf: Wrap JIT macro parameter usages in parentheses
+      s390/bpf: Remove unused SEEN_RET0, SEEN_REG_AX and ret0_ip
+      bpf: Support doubleword alignment in bpf_jit_binary_alloc
+      s390/bpf: Make sure JIT passes do not increase code size
+      s390/bpf: Use relative long branches
+      s390/bpf: Align literal pool entries
+      s390/bpf: Load literal pool register using larl
+      s390/bpf: Use lgrl instead of lg where possible
+      s390/bpf: Use lg(f)rl when long displacement cannot be used
+      s390/bpf: Remove JITed image size limitations
+
+Jiri Benc (2):
+      selftests, bpf: xdping is not meant to be run standalone
+      selftests, bpf: Fix test_tc_tunnel hanging
+
+Luigi Rizzo (1):
+      net-af_xdp: Use correct number of channels from ethtool
+
+Magnus Karlsson (5):
+      libbpf: Support XDP_SHARED_UMEM with external XDP program
+      samples/bpf: Add XDP_SHARED_UMEM support to xdpsock
+      libbpf: Allow for creating Rx or Tx only AF_XDP sockets
+      samples/bpf: Use Rx-only and Tx-only sockets in xdpsock
+      xsk: Extend documentation for Rx|Tx-only sockets and shared umems
+
+Mao Wenan (1):
+      bpf, doc: Change right arguments for JIT example code
+
+Martin KaFai Lau (3):
+      bpf: Account for insn->off when doing bpf_probe_read_kernel
+      bpf: Add array support to btf_struct_access
+      bpf: Add cb access in kfree_skb test
+
+Peter Zijlstra (1):
+      x86/alternatives: Teach text_poke_bp() to emulate instructions
+
+Toke Høiland-Jørgensen (6):
+      libbpf: Unpin auto-pinned maps if loading fails
+      selftests/bpf: Add tests for automatic map unpinning on load failure
+      libbpf: Propagate EPERM to caller on program load
+      libbpf: Use pr_warn() when printing netlink errors
+      libbpf: Add bpf_get_link_xdp_info() function to get more XDP information
+      libbpf: Add getter for program size
+
+Yonghong Song (2):
+      bpf, testing: Workaround a verifier failure for test_progs
+      selftests, bpf: Workaround an alu32 sub-register spilling issue
+
+YueHaibing (1):
+      bpf: Make array_map_mmap static
+
+ Documentation/networking/af_xdp.rst                |  28 +-
+ Documentation/networking/filter.txt                |   8 +-
+ arch/s390/net/bpf_jit_comp.c                       | 502 +++++++++++++-----
+ arch/x86/include/asm/text-patching.h               |  24 +-
+ arch/x86/kernel/alternative.c                      | 132 +++--
+ arch/x86/kernel/jump_label.c                       |   9 +-
+ arch/x86/kernel/kprobes/opt.c                      |  11 +-
+ arch/x86/net/bpf_jit_comp.c                        | 424 +++++++++++++---
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c          |   9 +-
+ drivers/net/ethernet/cavium/thunder/nicvf_main.c   |   9 +-
+ drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c   |   7 +-
+ drivers/net/ethernet/mellanox/mlx4/en_netdev.c     |  24 +-
+ drivers/net/ethernet/mellanox/mlx5/core/en_main.c  |  18 +-
+ drivers/net/ethernet/netronome/nfp/bpf/offload.c   |   4 +-
+ drivers/net/ethernet/qlogic/qede/qede_main.c       |   8 +-
+ drivers/net/virtio_net.c                           |   7 +-
+ include/linux/audit.h                              |   3 +
+ include/linux/bpf.h                                | 176 ++++++-
+ include/linux/bpf_types.h                          |  78 ++-
+ include/linux/bpf_verifier.h                       |   1 +
+ include/linux/btf.h                                |   1 +
+ include/linux/filter.h                             |   6 +-
+ include/linux/vmalloc.h                            |   1 +
+ include/uapi/linux/audit.h                         |   1 +
+ include/uapi/linux/bpf.h                           |   6 +
+ kernel/auditsc.c                                   |   2 +-
+ kernel/bpf/Makefile                                |   1 +
+ kernel/bpf/arraymap.c                              |  58 ++-
+ kernel/bpf/btf.c                                   | 558 +++++++++++++++++++--
+ kernel/bpf/core.c                                  |  15 +-
+ kernel/bpf/inode.c                                 |   7 +-
+ kernel/bpf/map_in_map.c                            |   2 +-
+ kernel/bpf/syscall.c                               | 287 ++++++++---
+ kernel/bpf/trampoline.c                            | 253 ++++++++++
+ kernel/bpf/verifier.c                              | 137 ++++-
+ kernel/bpf/xskmap.c                                |   6 +-
+ kernel/events/core.c                               |   7 +-
+ mm/vmalloc.c                                       |  20 +
+ net/bpf/test_run.c                                 |  43 ++
+ net/core/bpf_sk_storage.c                          |   2 +-
+ net/core/filter.c                                  |  12 +-
+ samples/bpf/Makefile                               |   1 +
+ samples/bpf/hbm.c                                  |   2 +-
+ samples/bpf/sockex1_kern.c                         |  12 +-
+ samples/bpf/sockex2_kern.c                         |  12 +-
+ samples/bpf/xdp1_kern.c                            |  12 +-
+ samples/bpf/xdp1_user.c                            |   2 +-
+ samples/bpf/xdp2_kern.c                            |  12 +-
+ samples/bpf/xdp_adjust_tail_kern.c                 |  12 +-
+ samples/bpf/xdp_fwd_kern.c                         |  13 +-
+ samples/bpf/xdp_redirect_cpu_kern.c                | 108 ++--
+ samples/bpf/xdp_redirect_kern.c                    |  24 +-
+ samples/bpf/xdp_redirect_map_kern.c                |  24 +-
+ samples/bpf/xdp_router_ipv4_kern.c                 |  64 +--
+ samples/bpf/xdp_rxq_info_kern.c                    |  37 +-
+ samples/bpf/xdp_rxq_info_user.c                    |   6 +-
+ samples/bpf/xdp_sample_pkts_user.c                 |   2 +-
+ samples/bpf/xdp_tx_iptunnel_kern.c                 |  26 +-
+ samples/bpf/xdp_tx_iptunnel_user.c                 |   2 +-
+ samples/bpf/xdpsock.h                              |  11 +
+ samples/bpf/xdpsock_kern.c                         |  24 +
+ samples/bpf/xdpsock_user.c                         | 161 ++++--
+ tools/bpf/bpf_exp.y                                |  14 +-
+ tools/include/uapi/linux/bpf.h                     |   6 +
+ tools/lib/bpf/bpf.c                                |  10 +-
+ tools/lib/bpf/bpf.h                                |   5 +-
+ tools/lib/bpf/bpf_core_read.h                      |  74 +++
+ tools/lib/bpf/bpf_helpers.h                        |  13 +
+ tools/lib/bpf/bpf_prog_linfo.c                     |  14 +-
+ tools/lib/bpf/btf.c                                |  25 +-
+ tools/lib/bpf/btf.h                                |   2 +
+ tools/lib/bpf/libbpf.c                             | 484 +++++++++++++-----
+ tools/lib/bpf/libbpf.h                             |  20 +-
+ tools/lib/bpf/libbpf.map                           |   5 +
+ tools/lib/bpf/libbpf_internal.h                    |   4 +
+ tools/lib/bpf/netlink.c                            |  87 ++--
+ tools/lib/bpf/nlattr.c                             |  10 +-
+ tools/lib/bpf/xsk.c                                |  45 +-
+ tools/testing/selftests/bpf/Makefile               |  14 +-
+ .../testing/selftests/bpf/prog_tests/core_reloc.c  | 174 +++++--
+ .../selftests/bpf/prog_tests/fentry_fexit.c        |  90 ++++
+ .../testing/selftests/bpf/prog_tests/fentry_test.c |  64 +++
+ .../selftests/bpf/prog_tests/fexit_bpf2bpf.c       |  76 +++
+ .../selftests/bpf/prog_tests/fexit_stress.c        |  76 +++
+ .../testing/selftests/bpf/prog_tests/fexit_test.c  |  64 +++
+ tools/testing/selftests/bpf/prog_tests/kfree_skb.c |  93 +++-
+ tools/testing/selftests/bpf/prog_tests/mmap.c      | 220 ++++++++
+ tools/testing/selftests/bpf/prog_tests/pinning.c   |  20 +-
+ .../btf__core_reloc_arrays___err_wrong_val_type.c  |   3 +
+ .../btf__core_reloc_arrays___err_wrong_val_type1.c |   3 -
+ .../btf__core_reloc_arrays___err_wrong_val_type2.c |   3 -
+ .../bpf/progs/btf__core_reloc_bitfields.c          |   3 +
+ .../btf__core_reloc_bitfields___bit_sz_change.c    |   3 +
+ .../btf__core_reloc_bitfields___bitfield_vs_int.c  |   3 +
+ ...__core_reloc_bitfields___err_too_big_bitfield.c |   3 +
+ .../btf__core_reloc_bitfields___just_big_enough.c  |   3 +
+ .../progs/btf__core_reloc_ints___err_bitfield.c    |   3 -
+ .../progs/btf__core_reloc_ints___err_wrong_sz_16.c |   3 -
+ .../progs/btf__core_reloc_ints___err_wrong_sz_32.c |   3 -
+ .../progs/btf__core_reloc_ints___err_wrong_sz_64.c |   3 -
+ .../progs/btf__core_reloc_ints___err_wrong_sz_8.c  |   3 -
+ .../selftests/bpf/progs/btf__core_reloc_size.c     |   3 +
+ .../bpf/progs/btf__core_reloc_size___diff_sz.c     |   3 +
+ .../testing/selftests/bpf/progs/core_reloc_types.h | 173 ++++---
+ tools/testing/selftests/bpf/progs/fentry_test.c    |  90 ++++
+ tools/testing/selftests/bpf/progs/fexit_bpf2bpf.c  |  91 ++++
+ tools/testing/selftests/bpf/progs/fexit_test.c     |  98 ++++
+ tools/testing/selftests/bpf/progs/kfree_skb.c      |  77 ++-
+ tools/testing/selftests/bpf/progs/test_btf_haskv.c |   4 +-
+ tools/testing/selftests/bpf/progs/test_btf_newkv.c |   4 +-
+ tools/testing/selftests/bpf/progs/test_btf_nokv.c  |   4 +-
+ .../bpf/progs/test_core_reloc_bitfields_direct.c   |  63 +++
+ .../bpf/progs/test_core_reloc_bitfields_probed.c   |  57 +++
+ .../selftests/bpf/progs/test_core_reloc_size.c     |  51 ++
+ tools/testing/selftests/bpf/progs/test_mmap.c      |  45 ++
+ tools/testing/selftests/bpf/progs/test_pinning.c   |   2 +-
+ .../testing/selftests/bpf/progs/test_pkt_access.c  |  38 +-
+ tools/testing/selftests/bpf/progs/test_seg6_loop.c |   4 +-
+ .../selftests/bpf/progs/test_sysctl_loop1.c        |   5 +-
+ tools/testing/selftests/bpf/test_tc_tunnel.sh      |   5 +
+ 120 files changed, 4958 insertions(+), 1081 deletions(-)
+ create mode 100644 kernel/bpf/trampoline.c
+ create mode 100644 samples/bpf/xdpsock.h
+ create mode 100644 samples/bpf/xdpsock_kern.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/fentry_fexit.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/fentry_test.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/fexit_stress.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/fexit_test.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/mmap.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_arrays___err_wrong_val_type.c
+ delete mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_arrays___err_wrong_val_type1.c
+ delete mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_arrays___err_wrong_val_type2.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_bitfields.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_bitfields___bit_sz_change.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_bitfields___bitfield_vs_int.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_bitfields___err_too_big_bitfield.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_bitfields___just_big_enough.c
+ delete mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_ints___err_bitfield.c
+ delete mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_ints___err_wrong_sz_16.c
+ delete mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_ints___err_wrong_sz_32.c
+ delete mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_ints___err_wrong_sz_64.c
+ delete mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_ints___err_wrong_sz_8.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_size.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_size___diff_sz.c
+ create mode 100644 tools/testing/selftests/bpf/progs/fentry_test.c
+ create mode 100644 tools/testing/selftests/bpf/progs/fexit_bpf2bpf.c
+ create mode 100644 tools/testing/selftests/bpf/progs/fexit_test.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_core_reloc_bitfields_direct.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_core_reloc_bitfields_probed.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_core_reloc_size.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_mmap.c
