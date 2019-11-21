@@ -2,63 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DFDA1104CC7
-	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2019 08:45:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25353104CE3
+	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2019 08:47:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726362AbfKUHpd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Nov 2019 02:45:33 -0500
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:35500 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726265AbfKUHpd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Nov 2019 02:45:33 -0500
-Received: by mail-pl1-f194.google.com with SMTP id s10so1196890plp.2;
-        Wed, 20 Nov 2019 23:45:33 -0800 (PST)
+        id S1726739AbfKUHrb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Nov 2019 02:47:31 -0500
+Received: from mail-pj1-f67.google.com ([209.85.216.67]:37161 "EHLO
+        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726437AbfKUHrb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Nov 2019 02:47:31 -0500
+Received: by mail-pj1-f67.google.com with SMTP id f3so1094748pjg.4;
+        Wed, 20 Nov 2019 23:47:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:mime-version:content-disposition
          :user-agent;
-        bh=K8z5lw0Y2x3HGxEqtUInasyPdyDDs0+pwtz6ApkXCy8=;
-        b=FPgIpz88rq8puOuZAvR8yLx8Jhlk0WColC3s9M1CON3KQ/IiL5ssaY42gaI67Rw5mo
-         VzSD22PRonUabSdzZPBVLADsknAvAzIp9kMocEMs9RIoYKKxhPV0is3x1L001Fs9rA2W
-         1j9ip0vmJ9vZ4dP9WbkV7hTGTlCN+mNIt5Hw9CgG5+7ypM7mO0lfCXuuIJAACS6+O9ZP
-         7OT6tp15PS9VIDBTow2cm+0u6N/dKKo+IqEg8Llwn5s2xlSy6tzpq6O0T32wb+LZVdaw
-         pDjLSEH0BNXHU3GjfLpQ0h7n/gAFY6uP63XmReFOJV61xNZco20C2WyOhxMUJlnS6oMi
-         c9Zw==
+        bh=bPzli0UbnIkOuw3Obh9ByfekwddOHEm4S9pnT6dhJAw=;
+        b=fiYcxH6U0LxbtGZxga3o8u5x20JnP+ppgJdVTAfnkK9kn2X/XzwWAHbyq5JzJ1nGxv
+         KFAJSnZKm8uZyYQDe81yPlfKl2UkeJEGl1AA4mDvxT5raq1J+zU8gwKT0rdCiiacRaGa
+         pASYPbuFQ320DGsYaviIK5Jr771oSniNrEbkgOvG7YOZXm4jwGpilriveKcngGJK8mon
+         i95fzCdgJU1blqz0LuQ9Vk8HNlutNWCiKegu6B3xeNQviYrCTEiKVo3O/eQeo6xA1HRt
+         PEONxO8+ktmhqr0eZrZHOd2bhlnKaBZegGUAukUm1saGnF2YMOhA430KIfLBhW+NXHBj
+         EyOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
          :content-disposition:user-agent;
-        bh=K8z5lw0Y2x3HGxEqtUInasyPdyDDs0+pwtz6ApkXCy8=;
-        b=AFPtlgixYtNPIF3L5l8kFuyOy7pwk9jjTlvc7Kr62KsotvXG+KBADByYih7cN8fU8A
-         jO4FHl8AeHo32jxwWJZDIP7Se4J+Ms4bOobrnpTgs6lKH0CvZ/4RbZtVVERglw0KMy3O
-         gGF0PAOOmDO1R6erVECCPgRCU+MjdrQ7YuBJf7tJaXUkjP4mkcoHTnhqIFJzT1CaYqCV
-         Pcipf1xhaHS3V2NbR1Ti/kNajqJ+4y+2zpQOU3LPW/D7YoDXHWRM3bOyI51X6y3gzYjR
-         XeosiCqPb+UUI/jO6iSxo3PS3Pqb8/CsRrv5QcX5dL6loio5smi8lIBU8/RmO/q9ize/
-         kLtQ==
-X-Gm-Message-State: APjAAAVSPqDmxH+A4MZac9XuYH/RSpugLPjfPlpL3k/Ld4p9GVqffFsK
-        nAz3bZ27MEUkRkxOE+vQ3feqrsNI
-X-Google-Smtp-Source: APXvYqz5WzIjxwY2qsMQLbCCU45Lo3pW7fLt28/eagPPe5zbTCyXAnLFMVVYCpcWz7Kwg0kl3etbYw==
-X-Received: by 2002:a17:90a:a63:: with SMTP id o90mr9550397pjo.81.1574322332577;
-        Wed, 20 Nov 2019 23:45:32 -0800 (PST)
+        bh=bPzli0UbnIkOuw3Obh9ByfekwddOHEm4S9pnT6dhJAw=;
+        b=aofMssRGhuXG2sgZ84/Ff3gB/3HDWRtCPNd6d1O9RBokTaXNncAk0VhykpMFXIl+hd
+         YKATozw+QaxBa8H2hKuTDljr4tgNLKfEfw44TX+hlbcYRdbWC3lvfqWjfUS03H6fmgVq
+         +LPBrTtFvgNVTBcST28hKZCkhf3SPqjSgLTDc1NrSDjCOcSRsW6UbWNT70iDjayjnDbX
+         lry2k8QYoil2PlsQTAcbYRNzn5Kxh7c/ItdGuXk2o/QEsgcOWCkXeO9RXHxFho2VpY+N
+         CRHzLaeKkOlU7shsRpBukzaNpwNf1RD7er6WTeiV0BpH/MKThowfZOiFvN6xOLYCW+RL
+         6obw==
+X-Gm-Message-State: APjAAAWcQ5v2PlXdhaeS8NkO8Tt6wJbqe54Xkr86RKHhHE+074mBkbZt
+        6+ZFJ6odXs/2qK00CJLFj0RM0BNV
+X-Google-Smtp-Source: APXvYqzA4wKcUaP3fSi0u49yfp0Cu1bVQg+vavVdmm0K5SRY2Yu7k3JEDUOmxc17MPSHJGg3pGlvhA==
+X-Received: by 2002:a17:902:76cb:: with SMTP id j11mr7070605plt.50.1574322450729;
+        Wed, 20 Nov 2019 23:47:30 -0800 (PST)
 Received: from udknight.localhost ([183.250.89.86])
-        by smtp.gmail.com with ESMTPSA id em16sm1660501pjb.21.2019.11.20.23.45.30
+        by smtp.gmail.com with ESMTPSA id t27sm2118278pfq.169.2019.11.20.23.47.29
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 20 Nov 2019 23:45:32 -0800 (PST)
+        Wed, 20 Nov 2019 23:47:30 -0800 (PST)
 Received: from udknight.localhost (localhost [127.0.0.1])
-        by udknight.localhost (8.14.9/8.14.4) with ESMTP id xAL7jBPU015447;
-        Thu, 21 Nov 2019 15:45:11 +0800
+        by udknight.localhost (8.14.9/8.14.4) with ESMTP id xAL7lQeW015510;
+        Thu, 21 Nov 2019 15:47:26 +0800
 Received: (from root@localhost)
-        by udknight.localhost (8.14.9/8.14.9/Submit) id xAL7jBaB015446;
-        Thu, 21 Nov 2019 15:45:11 +0800
-Date:   Thu, 21 Nov 2019 15:45:11 +0800
+        by udknight.localhost (8.14.9/8.14.9/Submit) id xAL7lP2k015509;
+        Thu, 21 Nov 2019 15:47:25 +0800
+Date:   Thu, 21 Nov 2019 15:47:25 +0800
 From:   Wang YanQing <udknight@gmail.com>
 To:     stable@vger.kernel.org
 Cc:     stephen@networkplumber.org, ast@kernel.org, songliubraving@fb.com,
         yhs@fb.com, daniel@iogearbox.net, itugrok@yahoo.com,
         bpf@vger.kernel.org
-Subject: [PATCH] bpf, x32: Fix bug with ALU64 {LSH, RSH, ARSH} BPF_X shift by
+Subject: [PATCH] bpf, x32: Fix bug with ALU64 {LSH, RSH, ARSH} BPF_K shift by
  0
-Message-ID: <20191121074511.GC15326@udknight>
+Message-ID: <20191121074725.GA15476@udknight>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -68,7 +68,7 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-commit 68a8357ec15bdce55266e9fba8b8b3b8143fa7d2 upstream.
+commit 6fa632e719eec4d1b1ebf3ddc0b2d667997b057b upstream.
 
 The fix only affects x32 bpf jit, and it is critical to use x32 bpf jit on a
 unpatched system, so I think we should backport it to the only affected stable
