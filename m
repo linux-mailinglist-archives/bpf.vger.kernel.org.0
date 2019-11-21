@@ -2,80 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 25353104CE3
-	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2019 08:47:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40F2A104D1F
+	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2019 09:04:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726739AbfKUHrb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Nov 2019 02:47:31 -0500
-Received: from mail-pj1-f67.google.com ([209.85.216.67]:37161 "EHLO
-        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726437AbfKUHrb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Nov 2019 02:47:31 -0500
-Received: by mail-pj1-f67.google.com with SMTP id f3so1094748pjg.4;
-        Wed, 20 Nov 2019 23:47:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=bPzli0UbnIkOuw3Obh9ByfekwddOHEm4S9pnT6dhJAw=;
-        b=fiYcxH6U0LxbtGZxga3o8u5x20JnP+ppgJdVTAfnkK9kn2X/XzwWAHbyq5JzJ1nGxv
-         KFAJSnZKm8uZyYQDe81yPlfKl2UkeJEGl1AA4mDvxT5raq1J+zU8gwKT0rdCiiacRaGa
-         pASYPbuFQ320DGsYaviIK5Jr771oSniNrEbkgOvG7YOZXm4jwGpilriveKcngGJK8mon
-         i95fzCdgJU1blqz0LuQ9Vk8HNlutNWCiKegu6B3xeNQviYrCTEiKVo3O/eQeo6xA1HRt
-         PEONxO8+ktmhqr0eZrZHOd2bhlnKaBZegGUAukUm1saGnF2YMOhA430KIfLBhW+NXHBj
-         EyOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=bPzli0UbnIkOuw3Obh9ByfekwddOHEm4S9pnT6dhJAw=;
-        b=aofMssRGhuXG2sgZ84/Ff3gB/3HDWRtCPNd6d1O9RBokTaXNncAk0VhykpMFXIl+hd
-         YKATozw+QaxBa8H2hKuTDljr4tgNLKfEfw44TX+hlbcYRdbWC3lvfqWjfUS03H6fmgVq
-         +LPBrTtFvgNVTBcST28hKZCkhf3SPqjSgLTDc1NrSDjCOcSRsW6UbWNT70iDjayjnDbX
-         lry2k8QYoil2PlsQTAcbYRNzn5Kxh7c/ItdGuXk2o/QEsgcOWCkXeO9RXHxFho2VpY+N
-         CRHzLaeKkOlU7shsRpBukzaNpwNf1RD7er6WTeiV0BpH/MKThowfZOiFvN6xOLYCW+RL
-         6obw==
-X-Gm-Message-State: APjAAAWcQ5v2PlXdhaeS8NkO8Tt6wJbqe54Xkr86RKHhHE+074mBkbZt
-        6+ZFJ6odXs/2qK00CJLFj0RM0BNV
-X-Google-Smtp-Source: APXvYqzA4wKcUaP3fSi0u49yfp0Cu1bVQg+vavVdmm0K5SRY2Yu7k3JEDUOmxc17MPSHJGg3pGlvhA==
-X-Received: by 2002:a17:902:76cb:: with SMTP id j11mr7070605plt.50.1574322450729;
-        Wed, 20 Nov 2019 23:47:30 -0800 (PST)
-Received: from udknight.localhost ([183.250.89.86])
-        by smtp.gmail.com with ESMTPSA id t27sm2118278pfq.169.2019.11.20.23.47.29
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 20 Nov 2019 23:47:30 -0800 (PST)
-Received: from udknight.localhost (localhost [127.0.0.1])
-        by udknight.localhost (8.14.9/8.14.4) with ESMTP id xAL7lQeW015510;
-        Thu, 21 Nov 2019 15:47:26 +0800
-Received: (from root@localhost)
-        by udknight.localhost (8.14.9/8.14.9/Submit) id xAL7lP2k015509;
-        Thu, 21 Nov 2019 15:47:25 +0800
-Date:   Thu, 21 Nov 2019 15:47:25 +0800
-From:   Wang YanQing <udknight@gmail.com>
-To:     stable@vger.kernel.org
-Cc:     stephen@networkplumber.org, ast@kernel.org, songliubraving@fb.com,
-        yhs@fb.com, daniel@iogearbox.net, itugrok@yahoo.com,
-        bpf@vger.kernel.org
-Subject: [PATCH] bpf, x32: Fix bug with ALU64 {LSH, RSH, ARSH} BPF_K shift by
- 0
-Message-ID: <20191121074725.GA15476@udknight>
+        id S1726270AbfKUIEE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Nov 2019 03:04:04 -0500
+Received: from verein.lst.de ([213.95.11.211]:44639 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725842AbfKUIEE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Nov 2019 03:04:04 -0500
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id C80DF68BFE; Thu, 21 Nov 2019 09:03:56 +0100 (CET)
+Date:   Thu, 21 Nov 2019 09:03:56 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, bpf@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, kvm@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
+        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>
+Subject: Re: [PATCH v7 02/24] mm/gup: factor out duplicate code from four
+ routines
+Message-ID: <20191121080356.GA24784@lst.de>
+References: <20191121071354.456618-1-jhubbard@nvidia.com> <20191121071354.456618-3-jhubbard@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.7.1 (2016-10-04)
+In-Reply-To: <20191121071354.456618-3-jhubbard@nvidia.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-commit 6fa632e719eec4d1b1ebf3ddc0b2d667997b057b upstream.
+On Wed, Nov 20, 2019 at 11:13:32PM -0800, John Hubbard wrote:
+> There are four locations in gup.c that have a fair amount of code
+> duplication. This means that changing one requires making the same
+> changes in four places, not to mention reading the same code four
+> times, and wondering if there are subtle differences.
+> 
+> Factor out the common code into static functions, thus reducing the
+> overall line count and the code's complexity.
+> 
+> Also, take the opportunity to slightly improve the efficiency of the
+> error cases, by doing a mass subtraction of the refcount, surrounded
+> by get_page()/put_page().
+> 
+> Also, further simplify (slightly), by waiting until the the successful
+> end of each routine, to increment *nr.
 
-The fix only affects x32 bpf jit, and it is critical to use x32 bpf jit on a
-unpatched system, so I think we should backport it to the only affected stable
-kernel version: v4.19
+Any reason for the spurious underscore in the function name?
 
-Thanks.
+Otherwise this looks fine and might be a worthwhile cleanup to feed
+Andrew for 5.5 independent of the gut of the changes.
 
-Cc: <stable@vger.kernel.org> #4.19
-
-Signed-off-by: Wang YanQing <udknight@gmail.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
