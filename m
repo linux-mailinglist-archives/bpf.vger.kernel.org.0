@@ -2,38 +2,34 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D32E104E51
-	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2019 09:49:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 341AC104E70
+	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2019 09:52:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726532AbfKUItk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Nov 2019 03:49:40 -0500
-Received: from www62.your-server.de ([213.133.104.62]:34272 "EHLO
+        id S1726500AbfKUIwe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Nov 2019 03:52:34 -0500
+Received: from www62.your-server.de ([213.133.104.62]:35144 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726132AbfKUItk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Nov 2019 03:49:40 -0500
+        with ESMTP id S1726343AbfKUIwe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Nov 2019 03:52:34 -0500
 Received: from [2a02:1205:507e:bf80:bef8:7f66:49c8:72e5] (helo=localhost)
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1iXi9f-0002It-P2; Thu, 21 Nov 2019 09:49:35 +0100
-Date:   Thu, 21 Nov 2019 09:49:35 +0100
+        id 1iXiCX-0002Uf-1I; Thu, 21 Nov 2019 09:52:33 +0100
+Date:   Thu, 21 Nov 2019 09:52:32 +0100
 From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>
-Cc:     Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH] xsk: fix xsk_poll()'s return type
-Message-ID: <20191121084935.GB31576@pc-11.home>
-References: <20191120001042.30830-1-luc.vanoostenryck@gmail.com>
- <103f550e-4a78-e540-4a57-bdecc2f066cf@intel.com>
+To:     Quentin Monnet <quentin.monnet@netronome.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, oss-drivers@netronome.com,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: Re: [PATCH bpf-next] tools: bpf: fix build for 'make -s tools/bpf
+ O=<dir>'
+Message-ID: <20191121085232.GC31576@pc-11.home>
+References: <20191119105626.21453-1-quentin.monnet@netronome.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <103f550e-4a78-e540-4a57-bdecc2f066cf@intel.com>
+In-Reply-To: <20191119105626.21453-1-quentin.monnet@netronome.com>
 User-Agent: Mutt/1.12.1 (2019-06-15)
 X-Authenticated-Sender: daniel@iogearbox.net
 X-Virus-Scanned: Clear (ClamAV 0.101.4/25639/Wed Nov 20 11:02:53 2019)
@@ -42,18 +38,25 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 20, 2019 at 07:15:42AM +0100, Björn Töpel wrote:
-> On 2019-11-20 01:10, Luc Van Oostenryck wrote:
-> > xsk_poll() is defined as returning 'unsigned int' but the
-> > .poll method is declared as returning '__poll_t', a bitwise type.
-> > 
-> > Fix this by using the proper return type and using the EPOLL
-> > constants instead of the POLL ones, as required for __poll_t.
+On Tue, Nov 19, 2019 at 10:56:26AM +0000, Quentin Monnet wrote:
+> Building selftests with 'make TARGETS=bpf kselftest' was fixed in commit
+> 55d554f5d140 ("tools: bpf: Use !building_out_of_srctree to determine
+> srctree"). However, by updating $(srctree) in tools/bpf/Makefile for
+> in-tree builds only, we leave out the case where we pass an output
+> directory to build BPF tools, but $(srctree) is not set. This
+> typically happens for:
 > 
-> Thanks for the cleanup!
+>     $ make -s tools/bpf O=/tmp/foo
+>     Makefile:40: /tools/build/Makefile.feature: No such file or directory
 > 
-> Acked-by: Björn Töpel <bjorn.topel@intel.com>
+> Fix it by updating $(srctree) in the Makefile not only for out-of-tree
+> builds, but also if $(srctree) is empty.
 > 
-> Daniel/Alexei: This should go through bpf-next.
+> Detected with test_bpftool_build.sh.
+> 
+> Fixes: 55d554f5d140 ("tools: bpf: Use !building_out_of_srctree to determine srctree")
+> Cc: Shuah Khan <skhan@linuxfoundation.org>
+> Signed-off-by: Quentin Monnet <quentin.monnet@netronome.com>
+> Acked-by: Jakub Kicinski <jakub.kicinski@netronome.com>
 
-Done, applied, thanks!
+Applied, thanks!
