@@ -2,175 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 27FF4105C2A
-	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2019 22:42:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E7DB105C3F
+	for <lists+bpf@lfdr.de>; Thu, 21 Nov 2019 22:50:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726721AbfKUVm3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Nov 2019 16:42:29 -0500
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:35020 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726293AbfKUVm2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Nov 2019 16:42:28 -0500
-Received: by mail-pl1-f193.google.com with SMTP id s10so2196409plp.2
-        for <bpf@vger.kernel.org>; Thu, 21 Nov 2019 13:42:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=t6UbFd+jsoBUib7qTx+BJ7svX081NKhXcR40/0W3LxE=;
-        b=NzfzBTFLLQbShuKd0+1iHPSbgolHJ4OtPiIo3cDBAbu/SkruCzBCsN/endbdxELPdg
-         a2BGy0s6vp2YcKj3PofvztX4RQFiTivhdir/N//IVWWRGQ2a6JfQvwJKUa/sAuQPkwBl
-         vBzjsu5iH77F4iDXo+o57Y1A0xCR1HoBzEOIXdj4vx1A4uyAlcehU83323iGR7g2J/+T
-         uLncB6IFuO9PUxXESW8i/3VrqJSUb5vUYh9h4fhk7GTlwcBXKjqFLvEuw58816PaT84Z
-         740FYIO0PN1Pk84xVg5afM3Ai1eLS0aNwBlJYsNwBCTkO/bbIj6cSHCWddN53w5Qr6VY
-         QAsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=t6UbFd+jsoBUib7qTx+BJ7svX081NKhXcR40/0W3LxE=;
-        b=B0Y+hV8y/L6+IDekNpTI4O+s/KMfBzTkOcOrHi/3hGXM/o31EOONVXJuMNu+6eidnQ
-         OR5ynYkivpUlbB/smg//psEbfTmH+FDKcKqES8FBkgUSBTSeNX9mifeA9d6dtzuIeRg4
-         TMxja3U37EmQOMvVW11j2vz7UHFfCHBql65QZTbQkhFgDjqUBhxpGOBEdC13lELdJLz6
-         KyO/OgLcDfWZmhDxGkst7e19yzQEmxjxpWsomn8jg/WB81bxh6tlVLpQnFifAaFjV7VI
-         MvqhKCXtRrPjC15IKGcbD6rGXO0yh1hxtr7LJMGYrdvpq1CxQAJ4XepHpTRCejdnW+WY
-         qyeQ==
-X-Gm-Message-State: APjAAAUglwY59nzgxmCXYpMlLorAN0D15+xSHXBg4CXEhCs69zyg0y+r
-        7dxPmFv020rrDKYL17K0mLLOPg==
-X-Google-Smtp-Source: APXvYqzbwEqp+od0wOuk1Bhy360HecFCd8C8kLSld7Mxdz+8NHByzGE6CLBQgIGfRr178ZNtj+Y9wA==
-X-Received: by 2002:a17:902:854c:: with SMTP id d12mr6529877plo.264.1574372547563;
-        Thu, 21 Nov 2019 13:42:27 -0800 (PST)
-Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
-        by smtp.gmail.com with ESMTPSA id 6sm4768899pfy.43.2019.11.21.13.42.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Nov 2019 13:42:25 -0800 (PST)
-Date:   Thu, 21 Nov 2019 13:42:25 -0800
-From:   Stanislav Fomichev <sdf@fomichev.me>
-To:     Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
-Cc:     ast@kernel.org, daniel@iogearbox.net, yhs@fb.com,
-        davem@davemloft.net, jakub.kicinski@netronome.com, hawk@kernel.org,
-        john.fastabend@gmail.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        clang-built-linux@googlegroups.com, ilias.apalodimas@linaro.org,
-        sergei.shtylyov@cogentembedded.com, andriin@fb.com
-Subject: Re: [PATCH v5 bpf-next 11/15] libbpf: don't use cxx to test_libpf
- target
-Message-ID: <20191121214225.GA3145429@mini-arch.hsd1.ca.comcast.net>
-References: <20191011002808.28206-1-ivan.khoronzhuk@linaro.org>
- <20191011002808.28206-12-ivan.khoronzhuk@linaro.org>
+        id S1726765AbfKUVuh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Nov 2019 16:50:37 -0500
+Received: from hqemgate15.nvidia.com ([216.228.121.64]:8904 "EHLO
+        hqemgate15.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726329AbfKUVuh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Nov 2019 16:50:37 -0500
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate15.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5dd706a70001>; Thu, 21 Nov 2019 13:50:32 -0800
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Thu, 21 Nov 2019 13:50:35 -0800
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Thu, 21 Nov 2019 13:50:35 -0800
+Received: from [10.2.168.213] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 21 Nov
+ 2019 21:50:35 +0000
+Subject: Re: [PATCH v7 02/24] mm/gup: factor out duplicate code from four
+ routines
+To:     Jan Kara <jack@suse.cz>
+CC:     Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, <bpf@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <kvm@vger.kernel.org>,
+        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <linux-media@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <netdev@vger.kernel.org>,
+        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>
+References: <20191121071354.456618-1-jhubbard@nvidia.com>
+ <20191121071354.456618-3-jhubbard@nvidia.com> <20191121080356.GA24784@lst.de>
+ <852f6c27-8b65-547b-89e0-e8f32a4d17b9@nvidia.com>
+ <20191121094908.GB18190@quack2.suse.cz>
+X-Nvconfidentiality: public
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <ecd0a178-3890-5fad-2313-11b3df907f9f@nvidia.com>
+Date:   Thu, 21 Nov 2019 13:47:47 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191011002808.28206-12-ivan.khoronzhuk@linaro.org>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+In-Reply-To: <20191121094908.GB18190@quack2.suse.cz>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1574373032; bh=kU5UGk7rYta5qBqyhgDE8hfKXijiGAD2NIzjPl1Hld4=;
+        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=DnacKCm2GFnxzRow8XHHjnv9A3uMI6LI6SiIGhg9bKcp76MqPQ8kF1M27y/KaRAbw
+         xxowc8Q3DyiD2kAcAm0nQ17JpX8GvIrqJ8uSjriDnOLoj/h1UR33AwThcGRh+kdiFs
+         sIZ9xwXRicfai3imhi7lfxcAqYrkI8TWeVUm4/7D0SDPmiW6FMWhSFSQx92VV4EoOz
+         XFN+VtOdWxZk+dXcyMd50CRCI5bozfozwO/LAtNo36xbQ2gRR/BBiAeTLEx8hKdZSK
+         Fx3jsqI8EasMtw1tkRf01vJb8NeCgZkxRIPz/M0TVfxHrLLklLoxP+jEnZwmUVejAC
+         k2q6xFFz7w7hA==
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 10/11, Ivan Khoronzhuk wrote:
-> No need to use C++ for test_libbpf target when libbpf is on C and it
-> can be tested with C, after this change the CXXFLAGS in makefiles can
-> be avoided, at least in bpf samples, when sysroot is used, passing
-> same C/LDFLAGS as for lib.
+On 11/21/19 1:49 AM, Jan Kara wrote:
+> On Thu 21-11-19 00:29:59, John Hubbard wrote:
+>> On 11/21/19 12:03 AM, Christoph Hellwig wrote:
+>>> Otherwise this looks fine and might be a worthwhile cleanup to feed
+>>> Andrew for 5.5 independent of the gut of the changes.
+>>>
+>>> Reviewed-by: Christoph Hellwig <hch@lst.de>
+>>>
+>>
+>> Thanks for the reviews! Say, it sounds like your view here is that this
+>> series should be targeted at 5.6 (not 5.5), is that what you have in mind?
+>> And get the preparatory patches (1-9, and maybe even 10-16) into 5.5?
 > 
-> Add "return 0" in test_libbpf to avoid warn, but also remove spaces at
-> start of the lines to keep same style and avoid warns while apply.
-Hey, just spotted this patch, not sure how it slipped through.
-The c++ test was there to make sure libbpf can be included and
-linked against c++ code (i.e. libbpf headers don't have some c++
-keywords/etc).
+> Yeah, actually I feel the same. The merge window is going to open on Sunday
+> and the series isn't still fully baked and happily sitting in linux-next
+> (and larger changes should really sit in linux-next for at least a week,
+> preferably two, before the merge window opens to get some reasonable test
+> coverage).  So I'd take out the independent easy patches that are already
+> reviewed, get them merged into Andrew's (or whatever other appropriate
+> tree) now so that they get at least a week of testing in linux-next before
+> going upstream.  And the more involved bits will have to wait for 5.6 -
+> which means let's just continue working on them as we do now because
+> ideally in 4 weeks we should have them ready with all the reviews so that
+> they can be picked up and integrated into linux-next.
+> 
+> 								Honza
 
-Any particular reason you were not happy with it? Can we revert it
-back to c++ and fix your use-case instead? Alternatively, we can just
-remove this test if we don't really care about c++.
+OK, thanks for spelling it out. I'll shift over to getting the easy patches
+prepared for 5.5, for now.
 
-> Acked-by: Andrii Nakryiko <andriin@fb.com>
-> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
-> ---
->  tools/lib/bpf/Makefile                         | 18 +++++-------------
->  .../lib/bpf/{test_libbpf.cpp => test_libbpf.c} | 14 ++++++++------
->  2 files changed, 13 insertions(+), 19 deletions(-)
->  rename tools/lib/bpf/{test_libbpf.cpp => test_libbpf.c} (61%)
-> 
-> diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
-> index 1270955e4845..46280b5ad48d 100644
-> --- a/tools/lib/bpf/Makefile
-> +++ b/tools/lib/bpf/Makefile
-> @@ -52,7 +52,7 @@ ifndef VERBOSE
->  endif
->  
->  FEATURE_USER = .libbpf
-> -FEATURE_TESTS = libelf libelf-mmap bpf reallocarray cxx
-> +FEATURE_TESTS = libelf libelf-mmap bpf reallocarray
->  FEATURE_DISPLAY = libelf bpf
->  
->  INCLUDES = -I. -I$(srctree)/tools/include -I$(srctree)/tools/arch/$(ARCH)/include/uapi -I$(srctree)/tools/include/uapi
-> @@ -142,15 +142,7 @@ GLOBAL_SYM_COUNT = $(shell readelf -s --wide $(BPF_IN) | \
->  VERSIONED_SYM_COUNT = $(shell readelf -s --wide $(OUTPUT)libbpf.so | \
->  			      grep -Eo '[^ ]+@LIBBPF_' | cut -d@ -f1 | sort -u | wc -l)
->  
-> -CMD_TARGETS = $(LIB_TARGET) $(PC_FILE)
-> -
-> -CXX_TEST_TARGET = $(OUTPUT)test_libbpf
-> -
-> -ifeq ($(feature-cxx), 1)
-> -	CMD_TARGETS += $(CXX_TEST_TARGET)
-> -endif
-> -
-> -TARGETS = $(CMD_TARGETS)
-> +CMD_TARGETS = $(LIB_TARGET) $(PC_FILE) $(OUTPUT)test_libbpf
->  
->  all: fixdep
->  	$(Q)$(MAKE) all_cmd
-> @@ -190,8 +182,8 @@ $(OUTPUT)libbpf.so.$(LIBBPF_VERSION): $(BPF_IN)
->  $(OUTPUT)libbpf.a: $(BPF_IN)
->  	$(QUIET_LINK)$(RM) $@; $(AR) rcs $@ $^
->  
-> -$(OUTPUT)test_libbpf: test_libbpf.cpp $(OUTPUT)libbpf.a
-> -	$(QUIET_LINK)$(CXX) $(INCLUDES) $^ -lelf -o $@
-> +$(OUTPUT)test_libbpf: test_libbpf.c $(OUTPUT)libbpf.a
-> +	$(QUIET_LINK)$(CC) $(INCLUDES) $^ -lelf -o $@
->  
->  $(OUTPUT)libbpf.pc:
->  	$(QUIET_GEN)sed -e "s|@PREFIX@|$(prefix)|" \
-> @@ -266,7 +258,7 @@ config-clean:
->  	$(Q)$(MAKE) -C $(srctree)/tools/build/feature/ clean >/dev/null
->  
->  clean:
-> -	$(call QUIET_CLEAN, libbpf) $(RM) $(TARGETS) $(CXX_TEST_TARGET) \
-> +	$(call QUIET_CLEAN, libbpf) $(RM) $(CMD_TARGETS) \
->  		*.o *~ *.a *.so *.so.$(LIBBPF_MAJOR_VERSION) .*.d .*.cmd \
->  		*.pc LIBBPF-CFLAGS bpf_helper_defs.h
->  	$(call QUIET_CLEAN, core-gen) $(RM) $(OUTPUT)FEATURE-DUMP.libbpf
-> diff --git a/tools/lib/bpf/test_libbpf.cpp b/tools/lib/bpf/test_libbpf.c
-> similarity index 61%
-> rename from tools/lib/bpf/test_libbpf.cpp
-> rename to tools/lib/bpf/test_libbpf.c
-> index fc134873bb6d..f0eb2727b766 100644
-> --- a/tools/lib/bpf/test_libbpf.cpp
-> +++ b/tools/lib/bpf/test_libbpf.c
-> @@ -7,12 +7,14 @@
->  
->  int main(int argc, char *argv[])
->  {
-> -    /* libbpf.h */
-> -    libbpf_set_print(NULL);
-> +	/* libbpf.h */
-> +	libbpf_set_print(NULL);
->  
-> -    /* bpf.h */
-> -    bpf_prog_get_fd_by_id(0);
-> +	/* bpf.h */
-> +	bpf_prog_get_fd_by_id(0);
->  
-> -    /* btf.h */
-> -    btf__new(NULL, 0);
-> +	/* btf.h */
-> +	btf__new(NULL, 0);
-> +
-> +	return 0;
->  }
-> -- 
-> 2.17.1
-> 
+thanks,
+-- 
+John Hubbard
+NVIDIA
