@@ -2,108 +2,343 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 14055107B24
-	for <lists+bpf@lfdr.de>; Sat, 23 Nov 2019 00:14:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07D84107B47
+	for <lists+bpf@lfdr.de>; Sat, 23 Nov 2019 00:25:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726655AbfKVXO1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 Nov 2019 18:14:27 -0500
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:46049 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726568AbfKVXO1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 Nov 2019 18:14:27 -0500
-Received: by mail-qt1-f194.google.com with SMTP id 30so9721989qtz.12;
-        Fri, 22 Nov 2019 15:14:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GRo/0YAgCktRuPB0HbBbarcytQ/1jci52QRWNjVG66s=;
-        b=ZDOjyphkMHbZVGmf9gWj9FfH7PPBvzq6wS9c7rjsi2O2BMXPijqS70syHBj+fPuCgH
-         38RastxoUTueOg1eesMwkRj+nhBgLAwHhYDZNZtu4Rv2/48raTQbQBOAp9rjjXnshBcN
-         gmL41+BBXmooKogGPm9mU2BqdrWx0zWP9AgX5usjPmx4Q9IhDM0vjCF95m112D9gXJsa
-         9SVN32T4H9F/95IpoggGEG8wIE3lN68gDCukdC1QNet4ixC7hUvF+pzeO727xqnuDvX5
-         0DG8O7jDMGervAWRImXoCx+Mcee/cFpcRlCxgaS9tyKmPKgVitlI08RQzuCGM+Dzgcx2
-         fvTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GRo/0YAgCktRuPB0HbBbarcytQ/1jci52QRWNjVG66s=;
-        b=RqSWJzZWqBO0vpva/dlag0fjpTBmFuxw1sY25e8rn4DR56n5WsYD7xxmcBtj3yCXXy
-         5Hl9YC19hX76c6mjyIUGRUMDWlqpr2un9wOGkprsN7BXBPrXCdofFavd/sRgwGKxBJ0/
-         a5/JxnWqhJsVY6uMXWWbz3r2ViRLFrOS+/HLxABWlxpb5WP3h9feRT+MWvMbhhDm7Frb
-         h7G/9utlwGDLv43gRSCpzGAkJKpbAaG2PwdG055m2yTl115505OBUhl9Tvr/xB4aQckc
-         Z2vu9SuJSKsAKWWkswXT7g99n4tojsdSyopeIpKRGuPZtR+DTgCLYuIqhKQTUgVA9Cyu
-         nX6Q==
-X-Gm-Message-State: APjAAAWRSLqmv4G/BCFmFP/UGNB8KVdsWT7qW6/Skxd+fnFaPWPNHtAF
-        Hr/3R8BW3ZZgvmOoFHf3bgVcm5kIBa+xIqJG44M1QA==
-X-Google-Smtp-Source: APXvYqxsgaf/LCwkp1pZBHsDpB4grVjma7bGgbAabUrDS1VG/a9taO+nvcFW2g86jcSG4GZFLZm+mB1oU/IG/FwmV9c=
-X-Received: by 2002:ac8:4050:: with SMTP id j16mr665308qtl.171.1574464466133;
- Fri, 22 Nov 2019 15:14:26 -0800 (PST)
-MIME-Version: 1.0
-References: <cover.1574452833.git.daniel@iogearbox.net> <3d6cbecbeb171117dccfe153306e479798fb608d.1574452833.git.daniel@iogearbox.net>
-In-Reply-To: <3d6cbecbeb171117dccfe153306e479798fb608d.1574452833.git.daniel@iogearbox.net>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 22 Nov 2019 15:14:15 -0800
-Message-ID: <CAEf4BzbLeKYC7WJtqDkZQh6sVm4dw-aFgtUsO2Phb8DDxzaDEw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 8/8] bpf, testing: add various tail call test cases
-To:     Daniel Borkmann <daniel@iogearbox.net>
+        id S1726546AbfKVXZn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Nov 2019 18:25:43 -0500
+Received: from www62.your-server.de ([213.133.104.62]:46902 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726089AbfKVXZn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 Nov 2019 18:25:43 -0500
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1iYIJ0-0003O2-Ah; Sat, 23 Nov 2019 00:25:38 +0100
+Received: from [178.197.248.30] (helo=pc-9.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1iYIJ0-000D0V-1G; Sat, 23 Nov 2019 00:25:38 +0100
+Subject: Re: [PATCH bpf-next v2 7/8] bpf, x86: emit patchable direct jump as
+ tail call
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         john fastabend <john.fastabend@gmail.com>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+References: <cover.1574452833.git.daniel@iogearbox.net>
+ <6ada4c1c9d35eeb5f4ecfab94593dafa6b5c4b09.1574452833.git.daniel@iogearbox.net>
+ <CAEf4BzaWhYJAdjs+8-nHHjuKfs6yBB7yx5NH-qNv2tcjiVCVhw@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <ba52688c-49bf-7897-4ba2-f62f30d501a9@iogearbox.net>
+Date:   Sat, 23 Nov 2019 00:25:37 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <CAEf4BzaWhYJAdjs+8-nHHjuKfs6yBB7yx5NH-qNv2tcjiVCVhw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.101.4/25641/Fri Nov 22 11:06:48 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 22, 2019 at 12:08 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> Add several BPF kselftest cases for tail calls which test the various
-> patch directions, and that multiple locations are patched in same and
-> different programs.
->
->   # ./test_progs -n 45
->    #45/1 tailcall_1:OK
->    #45/2 tailcall_2:OK
->    #45/3 tailcall_3:OK
->    #45/4 tailcall_4:OK
->    #45/5 tailcall_5:OK
->    #45 tailcalls:OK
->   Summary: 1/5 PASSED, 0 SKIPPED, 0 FAILED
->
-> I've also verified the JITed dump after each of the rewrite cases that
-> it matches expectations.
->
-> Also regular test_verifier suite passes fine which contains further tail
-> call tests:
->
->   # ./test_verifier
->   [...]
->   Summary: 1563 PASSED, 0 SKIPPED, 0 FAILED
->
-> Checked under JIT, interpreter and JIT + hardening.
->
-> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-> ---
+On 11/23/19 12:09 AM, Andrii Nakryiko wrote:
+> On Fri, Nov 22, 2019 at 12:08 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>>
+>> Add initial code emission for *direct* jumps for tail call maps in
+>> order to avoid the retpoline overhead from a493a87f38cf ("bpf, x64:
+>> implement retpoline for tail call") for situations that allow for
+>> it, meaning, for known constant keys at verification time which are
+>> used as index into the tail call map. In case of Cilium which makes
+>> heavy use of tail calls, constant keys are used in the vast majority,
+>> only for a single occurrence we use a dynamic key.
+>>
+>> High level outline is that if the target prog is NULL in the map, we
+>> emit a 5-byte nop for the fall-through case and if not, we emit a
+>> 5-byte direct relative jmp to the target bpf_func + skipped prologue
+>> offset. Later during runtime, we patch these 5-byte nop/jmps upon
+>> tail call map update or deletions dynamically. Note that on x86-64
+>> the direct jmp works as we reuse the same stack frame and skip
+>> prologue (as opposed to some other JIT implementations).
+>>
+>> One of the issues is that the tail call map slots can change at any
+>> given time even during JITing. Therefore, we have two passes: i) emit
+>> nops for all patchable locations during main JITing phase until we
+>> declare prog->jited = 1 eventually. At this point the image is stable,
+>> not public yet and with all jmps disabled. While JITing, we collect
+>> additional info like poke->ip in order to remember the patch location
+>> for later modifications. In ii) bpf_tail_call_direct_fixup() walks
+>> over the progs poke_tab, locks the tail call maps poke_mutex to
+>> prevent from parallel updates and patches in the right locations via
+>> __bpf_arch_text_poke(). Note, the main bpf_arch_text_poke() cannot
+>> be used at this point since we're not yet exposed to kallsyms. For
+>> the update we use plain memcpy() since the image is not public and
+>> still in read-write mode. After patching, we activate that poke entry
+>> through poke->ip_stable. Meaning, at this point any tail call map
+>> updates/deletions are not going to ignore that poke entry anymore.
+>> Then, bpf_arch_text_poke() might still occur on the read-write image
+>> until we finally locked it as read-only. Both modifications on the
+>> given image are under text_mutex to avoid interference with each
+>> other when update requests come in in parallel for different tail
+>> call maps (current one we have locked in JIT and different one where
+>> poke->ip_stable was already set).
+>>
+>> Example prog:
+>>
+>>    # ./bpftool p d x i 1655
+>>     0: (b7) r3 = 0
+>>     1: (18) r2 = map[id:526]
+>>     3: (85) call bpf_tail_call#12
+>>     4: (b7) r0 = 1
+>>     5: (95) exit
+>>
+>> Before:
+>>
+>>    # ./bpftool p d j i 1655
+>>    0xffffffffc076e55c:
+>>     0:   nopl   0x0(%rax,%rax,1)
+>>     5:   push   %rbp
+>>     6:   mov    %rsp,%rbp
+>>     9:   sub    $0x200,%rsp
+>>    10:   push   %rbx
+>>    11:   push   %r13
+>>    13:   push   %r14
+>>    15:   push   %r15
+>>    17:   pushq  $0x0                      _
+>>    19:   xor    %edx,%edx                |_ index (arg 3)
+>>    1b:   movabs $0xffff88d95cc82600,%rsi |_ map (arg 2)
+>>    25:   mov    %edx,%edx                |  index >= array->map.max_entries
+>>    27:   cmp    %edx,0x24(%rsi)          |
+>>    2a:   jbe    0x0000000000000066       |_
+>>    2c:   mov    -0x224(%rbp),%eax        |  tail call limit check
+>>    32:   cmp    $0x20,%eax               |
+>>    35:   ja     0x0000000000000066       |
+>>    37:   add    $0x1,%eax                |
+>>    3a:   mov    %eax,-0x224(%rbp)        |_
+>>    40:   mov    0xd0(%rsi,%rdx,8),%rax   |_ prog = array->ptrs[index]
+>>    48:   test   %rax,%rax                |  prog == NULL check
+>>    4b:   je     0x0000000000000066       |_
+>>    4d:   mov    0x30(%rax),%rax          |  goto *(prog->bpf_func + prologue_size)
+>>    51:   add    $0x19,%rax               |
+>>    55:   callq  0x0000000000000061       |  retpoline for indirect jump
+>>    5a:   pause                           |
+>>    5c:   lfence                          |
+>>    5f:   jmp    0x000000000000005a       |
+>>    61:   mov    %rax,(%rsp)              |
+>>    65:   retq                            |_
+>>    66:   mov    $0x1,%eax
+>>    6b:   pop    %rbx
+>>    6c:   pop    %r15
+>>    6e:   pop    %r14
+>>    70:   pop    %r13
+>>    72:   pop    %rbx
+>>    73:   leaveq
+>>    74:   retq
+>>
+>> After; state after JIT:
+>>
+>>    # ./bpftool p d j i 1655
+>>    0xffffffffc08e8930:
+>>     0:   nopl   0x0(%rax,%rax,1)
+>>     5:   push   %rbp
+>>     6:   mov    %rsp,%rbp
+>>     9:   sub    $0x200,%rsp
+>>    10:   push   %rbx
+>>    11:   push   %r13
+>>    13:   push   %r14
+>>    15:   push   %r15
+>>    17:   pushq  $0x0                      _
+>>    19:   xor    %edx,%edx                |_ index (arg 3)
+>>    1b:   movabs $0xffff9d8afd74c000,%rsi |_ map (arg 2)
+>>    25:   mov    -0x224(%rbp),%eax        |  tail call limit check
+>>    2b:   cmp    $0x20,%eax               |
+>>    2e:   ja     0x000000000000003e       |
+>>    30:   add    $0x1,%eax                |
+>>    33:   mov    %eax,-0x224(%rbp)        |_
+>>    39:   jmpq   0xfffffffffffd1785       |_ [direct] goto *(prog->bpf_func + prologue_size)
+>>    3e:   mov    $0x1,%eax
+>>    43:   pop    %rbx
+>>    44:   pop    %r15
+>>    46:   pop    %r14
+>>    48:   pop    %r13
+>>    4a:   pop    %rbx
+>>    4b:   leaveq
+>>    4c:   retq
+>>
+>> After; state after map update (target prog):
+>>
+>>    # ./bpftool p d j i 1655
+>>    0xffffffffc08e8930:
+>>     0:   nopl   0x0(%rax,%rax,1)
+>>     5:   push   %rbp
+>>     6:   mov    %rsp,%rbp
+>>     9:   sub    $0x200,%rsp
+>>    10:   push   %rbx
+>>    11:   push   %r13
+>>    13:   push   %r14
+>>    15:   push   %r15
+>>    17:   pushq  $0x0
+>>    19:   xor    %edx,%edx
+>>    1b:   movabs $0xffff9d8afd74c000,%rsi
+>>    25:   mov    -0x224(%rbp),%eax
+>>    2b:   cmp    $0x20,%eax               .
+>>    2e:   ja     0x000000000000003e       .
+>>    30:   add    $0x1,%eax                .
+>>    33:   mov    %eax,-0x224(%rbp)        |_
+>>    39:   jmpq   0xffffffffffb09f55       |_ goto *(prog->bpf_func + prologue_size)
+>>    3e:   mov    $0x1,%eax
+>>    43:   pop    %rbx
+>>    44:   pop    %r15
+>>    46:   pop    %r14
+>>    48:   pop    %r13
+>>    4a:   pop    %rbx
+>>    4b:   leaveq
+>>    4c:   retq
+>>
+>> After; state after map update (no prog):
+>>
+>>    # ./bpftool p d j i 1655
+>>    0xffffffffc08e8930:
+>>     0:   nopl   0x0(%rax,%rax,1)
+>>     5:   push   %rbp
+>>     6:   mov    %rsp,%rbp
+>>     9:   sub    $0x200,%rsp
+>>    10:   push   %rbx
+>>    11:   push   %r13
+>>    13:   push   %r14
+>>    15:   push   %r15
+>>    17:   pushq  $0x0
+>>    19:   xor    %edx,%edx
+>>    1b:   movabs $0xffff9d8afd74c000,%rsi
+>>    25:   mov    -0x224(%rbp),%eax
+>>    2b:   cmp    $0x20,%eax               .
+>>    2e:   ja     0x000000000000003e       .
+>>    30:   add    $0x1,%eax                .
+>>    33:   mov    %eax,-0x224(%rbp)        |_
+>>    39:   nopl   0x0(%rax,%rax,1)         |_ fall-through nop
+>>    3e:   mov    $0x1,%eax
+>>    43:   pop    %rbx
+>>    44:   pop    %r15
+>>    46:   pop    %r14
+>>    48:   pop    %r13
+>>    4a:   pop    %rbx
+>>    4b:   leaveq
+>>    4c:   retq
+>>
+>> Nice bonus is that this also shrinks the code emission quite a bit
+>> for every tail call invocation.
+>>
+>> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+>> ---
+>>   arch/x86/net/bpf_jit_comp.c | 282 ++++++++++++++++++++++++------------
+>>   1 file changed, 187 insertions(+), 95 deletions(-)
+>>
+> 
+> [...]
+> 
+>> +static int __bpf_arch_text_poke(void *ip, enum bpf_text_poke_type t,
+>> +                               void *old_addr, void *new_addr,
+>> +                               const bool text_live)
+>> +{
+>> +       int (*emit_patch_fn)(u8 **pprog, void *func, void *ip);
+>> +       const u8 *nop_insn = ideal_nops[NOP_ATOMIC5];
+>> +       u8 old_insn[X86_PATCH_SIZE] = {};
+>> +       u8 new_insn[X86_PATCH_SIZE] = {};
+>> +       u8 *prog;
+>> +       int ret;
+>> +
+>> +       switch (t) {
+>> +       case BPF_MOD_NOP_TO_CALL ... BPF_MOD_CALL_TO_NOP:
+>> +               emit_patch_fn = emit_call;
+>> +               break;
+>> +       case BPF_MOD_NOP_TO_JUMP ... BPF_MOD_JUMP_TO_NOP:
+>> +               emit_patch_fn = emit_jump;
+>> +               break;
+>> +       default:
+>> +               return -ENOTSUPP;
+>> +       }
+>> +
+>> +       switch (t) {
+>> +       case BPF_MOD_NOP_TO_CALL:
+>> +       case BPF_MOD_NOP_TO_JUMP:
+>> +               if (!old_addr && new_addr) {
+>> +                       memcpy(old_insn, nop_insn, X86_PATCH_SIZE);
+>> +
+>> +                       prog = new_insn;
+>> +                       ret = emit_patch_fn(&prog, new_addr, ip);
+>> +                       if (ret)
+>> +                               return ret;
+>> +                       break;
+>> +               }
+>> +               return -ENXIO;
+>> +       case BPF_MOD_CALL_TO_CALL:
+>> +       case BPF_MOD_JUMP_TO_JUMP:
+>> +               if (old_addr && new_addr) {
+>> +                       prog = old_insn;
+>> +                       ret = emit_patch_fn(&prog, old_addr, ip);
+>> +                       if (ret)
+>> +                               return ret;
+>> +
+>> +                       prog = new_insn;
+>> +                       ret = emit_patch_fn(&prog, new_addr, ip);
+>> +                       if (ret)
+>> +                               return ret;
+>> +                       break;
+>> +               }
+>> +               return -ENXIO;
+>> +       case BPF_MOD_CALL_TO_NOP:
+>> +       case BPF_MOD_JUMP_TO_NOP:
+>> +               if (old_addr && !new_addr) {
+>> +                       memcpy(new_insn, nop_insn, X86_PATCH_SIZE);
+>> +
+>> +                       prog = old_insn;
+>> +                       ret = emit_patch_fn(&prog, old_addr, ip);
+>> +                       if (ret)
+>> +                               return ret;
+>> +                       break;
+>> +               }
+>> +               return -ENXIO;
+>> +       default:
+> 
+> There is this redundancy between BPF_MOD_xxx enums and
+> old_addr+new_addr (both encode what kind of transition it is), which
+> leads to this cumbersome logic. Would it be simpler to have
+> old_addr/new_addr determine whether it's X-to-NOP, NOP-to-Y, or X-to-Y
+> transition, while separate bool or simple BPF_MOD_CALL/BPF_MOD_JUMP
+> enum determining whether it's a call or a jump that we want to update.
+> Seems like that should be a simpler interface overall and cleaner
+> implementation?
 
-LGTM. Thanks for adding more tests!
+Right we can probably simplify it further, I kept preserving the original
+switch from Alexei's code where my assumption was that having the transition
+explicitly spelled out was preferred in here and then based on that doing
+the sanity checks to make sure we don't get bad input from any call-site
+since we're modifying kernel text, e.g. in the bpf_trampoline_update() as
+one example the BPF_MOD_* is a fixed constant input there.
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+>> +               return -ENOTSUPP;
+>> +       }
+>> +
+>> +       ret = -EBUSY;
+>> +       mutex_lock(&text_mutex);
+>> +       if (memcmp(ip, old_insn, X86_PATCH_SIZE))
+>> +               goto out;
+>> +       if (text_live)
+>> +               text_poke_bp(ip, new_insn, X86_PATCH_SIZE, NULL);
+>> +       else
+>> +               memcpy(ip, new_insn, X86_PATCH_SIZE);
+>> +       ret = 0;
+>> +out:
+>> +       mutex_unlock(&text_mutex);
+>> +       return ret;
+>> +}
+>> +
+> 
+> [...]
+> 
 
->  .../selftests/bpf/prog_tests/tailcalls.c      | 487 ++++++++++++++++++
->  tools/testing/selftests/bpf/progs/tailcall1.c |  48 ++
->  tools/testing/selftests/bpf/progs/tailcall2.c |  59 +++
->  tools/testing/selftests/bpf/progs/tailcall3.c |  31 ++
->  tools/testing/selftests/bpf/progs/tailcall4.c |  33 ++
->  tools/testing/selftests/bpf/progs/tailcall5.c |  40 ++
->  6 files changed, 698 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/tailcalls.c
->  create mode 100644 tools/testing/selftests/bpf/progs/tailcall1.c
->  create mode 100644 tools/testing/selftests/bpf/progs/tailcall2.c
->  create mode 100644 tools/testing/selftests/bpf/progs/tailcall3.c
->  create mode 100644 tools/testing/selftests/bpf/progs/tailcall4.c
->  create mode 100644 tools/testing/selftests/bpf/progs/tailcall5.c
->
-
-[...]
