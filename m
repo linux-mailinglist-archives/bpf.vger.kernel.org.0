@@ -2,146 +2,169 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 36106105DA4
-	for <lists+bpf@lfdr.de>; Fri, 22 Nov 2019 01:25:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21E8D105DBA
+	for <lists+bpf@lfdr.de>; Fri, 22 Nov 2019 01:34:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726329AbfKVAZg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Nov 2019 19:25:36 -0500
-Received: from www62.your-server.de ([213.133.104.62]:34764 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726038AbfKVAZg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Nov 2019 19:25:36 -0500
-Received: from sslproxy01.your-server.de ([88.198.220.130])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iXwlN-0007NS-8Q; Fri, 22 Nov 2019 01:25:29 +0100
-Received: from [178.197.248.30] (helo=pc-9.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iXwlM-0002Tj-LF; Fri, 22 Nov 2019 01:25:28 +0100
-Subject: Re: [PATCH] bpf: emit audit messages upon successful prog load and
- unload
-To:     Paul Moore <paul@paul-moore.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        linux-audit@redhat.com, Jiri Olsa <jolsa@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andriin@fb.com>,
-        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Steve Grubb <sgrubb@redhat.com>,
-        David Miller <davem@redhat.com>,
-        Eric Paris <eparis@redhat.com>, Jiri Benc <jbenc@redhat.com>
-References: <20191120213816.8186-1-jolsa@kernel.org>
- <8c928ec4-9e43-3e2a-7005-21f40fcca061@iogearbox.net>
- <CAADnVQKu-ZgFTaSMH=Q-jMOYYvE32TF2b2hq1=dmDV8wAf18pg@mail.gmail.com>
- <CAHC9VhQbQoXacbTCNJPGNzFOv30PwLeiWu4ROQFU46=saTeTNQ@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <b8a79ac0-a7d3-8d7b-1e31-33f477b30503@iogearbox.net>
-Date:   Fri, 22 Nov 2019 01:25:27 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
-MIME-Version: 1.0
-In-Reply-To: <CAHC9VhQbQoXacbTCNJPGNzFOv30PwLeiWu4ROQFU46=saTeTNQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S1726500AbfKVAeh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Nov 2019 19:34:37 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:61316 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726265AbfKVAeh (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 21 Nov 2019 19:34:37 -0500
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xAM0TOkX016556;
+        Thu, 21 Nov 2019 16:34:18 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=bRY5V8A+3pwHDmINYlTTY7j8M9vHzzXNl+pk+x21kAs=;
+ b=MA0+/kVVJdnxUwpU74lg7RZq+qV9Ogw4/sG67REpniqtLUKys1MekksQwdqwXgs3iqh2
+ z/gZJEBF6bEySZRzKZwUAaAoeOkxZFIxmtf6TcTVpzk22uOhjARDTg4Hfxe1SuGBPEK1
+ 9sbfYmQ4OHkH9wrHMTGpX2NOSUH/3Buzz6I= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by mx0a-00082601.pphosted.com with ESMTP id 2wda3vm7yj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Thu, 21 Nov 2019 16:34:18 -0800
+Received: from prn-hub02.TheFacebook.com (2620:10d:c081:35::126) by
+ prn-hub03.TheFacebook.com (2620:10d:c081:35::127) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Thu, 21 Nov 2019 16:34:17 -0800
+Received: from NAM05-DM3-obe.outbound.protection.outlook.com (192.168.54.28)
+ by o365-in.thefacebook.com (192.168.16.26) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
+ via Frontend Transport; Thu, 21 Nov 2019 16:34:17 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CIumxcKYg/NbNWIYbOiWnf+3iPt3KTDLLi2Ddxr2s6ycB0zN4x/YCEeajRXGNJST4/b0oRLSEyEttHq4+lLI14mDL1AxGAKar7CEUJri6vipUcTSsHT3z47k2gtKu9Agp6UfeW/2YfkH8wK8zu1e/OpUq3AHbsLO0NZP0MpzwTx3VrpQxjTViSPdHoLdUodClSZ++kb3fxttGJ9zbxhFBfMrH5j+KF1QOdBIwOWKIO9Qx8ywII++wPD+t8KE7qywc2tn7USRqSCcc6z34DcUGJJXuvBrkB/e6mziJC8gTHw+mm+DcJunV/qZYEaGEao52j9NhLIkB1jFM8YUSPRB4w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bRY5V8A+3pwHDmINYlTTY7j8M9vHzzXNl+pk+x21kAs=;
+ b=Jf/h7vytKDAPKzYGSlRGrOIzNQRXv61BeesIDAl2Y1sboPL24w4Daz4p+XBrWPLxIaXS4o0jcnSqKzZGbpdPERZzwkh6zTyUrmhHCukJAMKi2c6+2YvB+tjGoH0bQaOtO23IaQgeLL1yLncaaV5wBrrsMbGMJJcHkc4awE/6lK+oeNOEw4YNEgSP7TPJIaW0ahduLM7k66f5vIAYyM2UKhCi4I1DN5dtbeymQvHAM6Jf7YEYxy+hQLJUpxNZvPkV1pATtAfHUAB0y85P+b0AOxXIbB9kbqubi5/pBopMuqkakYwlyqc2okmxWvf9yFoXwoYV+mbfXWW4ibYV92OKzg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bRY5V8A+3pwHDmINYlTTY7j8M9vHzzXNl+pk+x21kAs=;
+ b=BeP1W9ZSYFFI6JjFjxpvkuPw50ztO8iZ7QglhHoc4dtJK9tJ/ilOrbq4l728cMMManKVrLUrzI4tWZTdJnMj0PtjY1Tp1sUXTcdOQR/FE1eLSwec49mWbw/xnkDu/2gcTSF930EkhJ4Mh58m+hd6RqxGb1PcTf75EPb7M1qVpgQ=
+Received: from BYAPR15MB3384.namprd15.prod.outlook.com (20.179.60.27) by
+ BYAPR15MB3192.namprd15.prod.outlook.com (20.179.59.84) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2451.30; Fri, 22 Nov 2019 00:34:15 +0000
+Received: from BYAPR15MB3384.namprd15.prod.outlook.com
+ ([fe80::a9f8:a9c0:854c:d680]) by BYAPR15MB3384.namprd15.prod.outlook.com
+ ([fe80::a9f8:a9c0:854c:d680%4]) with mapi id 15.20.2474.019; Fri, 22 Nov 2019
+ 00:34:15 +0000
+From:   Yonghong Song <yhs@fb.com>
+To:     Brian Vazquez <brianvv@google.com>
+CC:     Brian Vazquez <brianvv.kernel@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S . Miller" <davem@davemloft.net>,
+        Stanislav Fomichev <sdf@google.com>,
+        Petar Penkov <ppenkov@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: Re: [PATCH v2 bpf-next 2/9] bpf: add generic support for lookup and
+ lookup_and_delete batch ops
+Thread-Topic: [PATCH v2 bpf-next 2/9] bpf: add generic support for lookup and
+ lookup_and_delete batch ops
+Thread-Index: AQHVnw/qHa5aYibJs0i7hlxvNzQNFKeV5i4AgABDLoCAADGjAA==
+Date:   Fri, 22 Nov 2019 00:34:15 +0000
+Message-ID: <e9cb66e4-16fd-8850-4755-3034f75788c5@fb.com>
+References: <20191119193036.92831-1-brianvv@google.com>
+ <20191119193036.92831-3-brianvv@google.com>
+ <de05c3f2-5b70-b9af-445c-9cf43b55737c@fb.com>
+ <CAMzD94TfpQaFN=7cQR9kmHun0gZNF2oMwEJu7aZMYhsYhvgRDg@mail.gmail.com>
+In-Reply-To: <CAMzD94TfpQaFN=7cQR9kmHun0gZNF2oMwEJu7aZMYhsYhvgRDg@mail.gmail.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.101.4/25640/Thu Nov 21 11:08:44 2019)
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MWHPR12CA0032.namprd12.prod.outlook.com
+ (2603:10b6:301:2::18) To BYAPR15MB3384.namprd15.prod.outlook.com
+ (2603:10b6:a03:112::27)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c090:200::3:ffef]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 91128186-1bd5-42fd-5926-08d76ee3b3fc
+x-ms-traffictypediagnostic: BYAPR15MB3192:
+x-microsoft-antispam-prvs: <BYAPR15MB319294E916F5A8BF48406DCDD3490@BYAPR15MB3192.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1850;
+x-forefront-prvs: 02296943FF
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(136003)(396003)(366004)(346002)(376002)(39860400002)(199004)(189003)(6512007)(4326008)(14454004)(6486002)(66556008)(66446008)(7736002)(305945005)(31686004)(36756003)(229853002)(66476007)(64756008)(54906003)(316002)(6246003)(478600001)(66946007)(99286004)(6436002)(86362001)(76176011)(52116002)(81166006)(81156014)(102836004)(71190400001)(8676002)(46003)(2906002)(186003)(446003)(31696002)(256004)(14444005)(386003)(6506007)(11346002)(2616005)(71200400001)(6916009)(5660300002)(53546011)(7416002)(25786009)(6116002)(8936002)(41533002);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB3192;H:BYAPR15MB3384.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: MSj5/jyV45vROmea4XtHiwqnFw1hvI8KP74XEB3S1X8gifEpI2TaoSJVUA4bvv+kW/QFIJ0DMUksfuiesYwm7bPkcAYcaMBfyXvylMk0Zvr3LAJZDp/l5OFV2hR6IMh5L8JC1LCSwE6bWqnV1nIwJOXbjKH/zniDSyhx8dLKc850+/fhFZ37+iUWrMXNH3Yax59yCtohDDIVXfHLiBMJoYDU6DYPgYzix88A73tLGsdAH0o4D6DGFBnulm/B95Wd6bNaVF3lkSAp4DZXjafbEsXbX5wGp9rqms3ziCp1ZsTUwtYR8PLBjX7jNBqRvqyevQoQDqA3RucbRSoEOj0TgSjZurSWZDlY+NGKgWQKIp4UaCqWkAinZk/JQKOT5ToC2ChsTAoM1UNB0nEONkAcsqkMbmp7Pt2i4cuMn5Ueawm812+RGF3RC3jCSAI+kCWV
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <64FAF966C0F0E342BDD6BE12F231A934@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: 91128186-1bd5-42fd-5926-08d76ee3b3fc
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Nov 2019 00:34:15.4224
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: vldueZd8n4hK2fCfb54o49K+nWUh1QmSJunMYOfwWOyU43TVuNBSre+BgB7hKVQN
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3192
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
+ definitions=2019-11-21_07:2019-11-21,2019-11-21 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0 adultscore=0
+ mlxlogscore=999 lowpriorityscore=0 priorityscore=1501 impostorscore=0
+ suspectscore=0 bulkscore=0 clxscore=1015 mlxscore=0 spamscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-1911220001
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/22/19 12:41 AM, Paul Moore wrote:
-> On Wed, Nov 20, 2019 at 4:49 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
->> On Wed, Nov 20, 2019 at 1:46 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->>> On 11/20/19 10:38 PM, Jiri Olsa wrote:
->>>> From: Daniel Borkmann <daniel@iogearbox.net>
->>>>
->>>> Allow for audit messages to be emitted upon BPF program load and
->>>> unload for having a timeline of events. The load itself is in
->>>> syscall context, so additional info about the process initiating
->>>> the BPF prog creation can be logged and later directly correlated
->>>> to the unload event.
->>>>
->>>> The only info really needed from BPF side is the globally unique
->>>> prog ID where then audit user space tooling can query / dump all
->>>> info needed about the specific BPF program right upon load event
->>>> and enrich the record, thus these changes needed here can be kept
->>>> small and non-intrusive to the core.
->>>>
->>>> Raw example output:
->>>>
->>>>     # auditctl -D
->>>>     # auditctl -a always,exit -F arch=x86_64 -S bpf
->>>>     # ausearch --start recent -m 1334
->>>>     [...]
->>>>     ----
->>>>     time->Wed Nov 20 12:45:51 2019
->>>>     type=PROCTITLE msg=audit(1574271951.590:8974): proctitle="./test_verifier"
->>>>     type=SYSCALL msg=audit(1574271951.590:8974): arch=c000003e syscall=321 success=yes exit=14 a0=5 a1=7ffe2d923e80 a2=78 a3=0 items=0 ppid=742 pid=949 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts0 ses=2 comm="test_verifier" exe="/root/bpf-next/tools/testing/selftests/bpf/test_verifier" subj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 key=(null)
->>>>     type=UNKNOWN[1334] msg=audit(1574271951.590:8974): auid=0 uid=0 gid=0 ses=2 subj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 pid=949 comm="test_verifier" exe="/root/bpf-next/tools/testing/selftests/bpf/test_verifier" prog-id=3260 event=LOAD
->>>>     ----
->>>>     time->Wed Nov 20 12:45:51 2019
->>>> type=UNKNOWN[1334] msg=audit(1574271951.590:8975): prog-id=3260 event=UNLOAD
->>>>     ----
->>>>     [...]
->>>>
->>>> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
->>>> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
->>>
->>> LGTM, thanks for the rebase!
->>
->> Applied to bpf-next. Thanks!
-> 
-> [NOTE: added linux-audit to the To/CC line]
-> 
-> Wait a minute, why was the linux-audit list not CC'd on this?  Why are
-> you merging a patch into -next that adds to the uapi definition *and*
-> creates a new audit record while we are at -rc8?
-> 
-> Aside from that I'm concerned that you are relying on audit userspace
-> changes that might not be okay; I see the PR below, but I don't see
-> any comment on it from Steve (it is his audit userspace).  I also
-> don't see a corresponding test added to the audit-testsuite, which is
-> a common requirement for new audit functionality (link below).  I'm
-> also fairly certain we don't want this new BPF record to look like how
-> you've coded it up in bpf_audit_prog(); duplicating the fields with
-> audit_log_task() is wrong, you've either already got them via an
-> associated record (which you get from passing non-NULL as the first
-> parameter to audit_log_start()), or you don't because there is no
-> associated syscall/task (which you get from passing NULL as the first
-> parameter).  Please revert, un-merge, etc. this patch from bpf-next;
-> it should not go into Linus' tree as written.
-
-Fair enough, up to you guys. My impression was that this is mainly coming
-from RHEL use case [0] and given that the original patch was back in Oct
-2018 [1] that you've sorted it out by now RH internally and agreed to proceed
-with this patch for BPF given the rebase + resend ... seems not then. :(
-
-The audit-userspace PR below is sitting there since August this year but
-its for the perf event based approach and my understanding from Plumbers
-conf was that the internal discussion was that a native integration was
-needed hence the proposed resend now.
-
-Given the change is mostly trivial, are there any major objections for Jiri
-to follow-up? Otherwise worst case probably easier to revert in net-next.
-
-> Audit userspace PR:
-> * https://github.com/linux-audit/audit-userspace/pull/104
-> 
-> Audit test suite:
-> * https://github.com/linux-audit/audit-testsuite
-> 
-> Audit folks, here is a link to the thread in the archives:
-> * https://lore.kernel.org/bpf/20191120213816.8186-1-jolsa@kernel.org/T/#u
-
-Thanks,
-Daniel
-
-   [0] slide 11, https://linuxplumbersconf.org/event/4/contributions/460/attachments/244/426/xdp-distro-view.pdf
-   [1] https://lore.kernel.org/netdev/20181004135038.2876-1-daniel@iogearbox.net/
+DQoNCk9uIDExLzIxLzE5IDE6MzYgUE0sIEJyaWFuIFZhenF1ZXogd3JvdGU6DQo+IEhpIFlvbmdo
+b25nLA0KPiB0aGFua3MgZm9yIHJldmlld2luZyB0aGUgcGF0Y2gsIEkgd2lsbCBmaXggYWxsIHRo
+ZSBkaXJlY3QgcmV0dXJucyBhbmQNCj4gc21hbGwgZml4ZXMgaW4gbmV4dCB2ZXJzaW9uLg0KPiAN
+Cj4gT24gVGh1LCBOb3YgMjEsIDIwMTkgYXQgOTozNiBBTSBZb25naG9uZyBTb25nIDx5aHNAZmIu
+Y29tPiB3cm90ZToNCj4+DQo+Pg0KPj4NCj4+IE9uIDExLzE5LzE5IDExOjMwIEFNLCBCcmlhbiBW
+YXpxdWV6IHdyb3RlOg0KPj4+IFRoaXMgY29tbWl0IGludHJvZHVjZXMgZ2VuZXJpYyBzdXBwb3J0
+IGZvciB0aGUgYnBmX21hcF9sb29rdXBfYmF0Y2ggYW5kDQo+Pj4gYnBmX21hcF9sb29rdXBfYW5k
+X2RlbGV0ZV9iYXRjaCBvcHMuIFRoaXMgaW1wbGVtZW50YXRpb24gY2FuIGJlIHVzZWQgYnkNCj4+
+PiBhbG1vc3QgYWxsIHRoZSBicGYgbWFwcyBzaW5jZSBpdHMgY29yZSBpbXBsZW1lbnRhdGlvbiBp
+cyByZWx5aW5nIG9uIHRoZQ0KPj4+IGV4aXN0aW5nIG1hcF9nZXRfbmV4dF9rZXksIG1hcF9sb29r
+dXBfZWxlbSBhbmQgbWFwX2RlbGV0ZV9lbGVtDQo+Pj4gZnVuY3Rpb25zLiBUaGUgYnBmIHN5c2Nh
+bGwgc3ViY29tbWFuZHMgaW50cm9kdWNlZCBhcmU6DQo+Pj4NClsuLi5dDQo+Pj4gKyAgICAgZm9y
+IChjcCA9IDA7IGNwIDwgbWF4X2NvdW50OyBjcCsrKSB7DQo+Pj4gKyAgICAgICAgICAgICBpZiAo
+Y3AgfHwgZmlyc3Rfa2V5KSB7DQo+Pj4gKyAgICAgICAgICAgICAgICAgICAgIHJjdV9yZWFkX2xv
+Y2soKTsNCj4+PiArICAgICAgICAgICAgICAgICAgICAgZXJyID0gbWFwLT5vcHMtPm1hcF9nZXRf
+bmV4dF9rZXkobWFwLCBwcmV2X2tleSwga2V5KTsNCj4+PiArICAgICAgICAgICAgICAgICAgICAg
+cmN1X3JlYWRfdW5sb2NrKCk7DQo+Pj4gKyAgICAgICAgICAgICAgICAgICAgIGlmIChlcnIpDQo+
+Pj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYnJlYWs7DQo+Pj4gKyAgICAgICAgICAg
+ICB9DQo+Pj4gKyAgICAgICAgICAgICBlcnIgPSBicGZfbWFwX2NvcHlfdmFsdWUobWFwLCBrZXks
+IHZhbHVlLA0KPj4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGF0dHIt
+PmJhdGNoLmVsZW1fZmxhZ3MsIGRvX2RlbGV0ZSk7DQo+Pj4gKw0KPj4+ICsgICAgICAgICAgICAg
+aWYgKGVyciA9PSAtRU5PRU5UKSB7DQo+Pj4gKyAgICAgICAgICAgICAgICAgICAgIGlmIChyZXRy
+eSkgew0KPj4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJldHJ5LS07DQo+Pg0KPj4g
+V2hhdCBpcyB0aGUgJ3JldHJ5JyBzZW1hbnRpY3MgaGVyZT8gQWZ0ZXIgJ2NvbnRpbnVlJywgY3Ar
+KyBpcyBleGVjdXRlZC4NCj4gDQo+IEdvb2QgY2F0Y2gsIEknbGwgbW92ZSBjcCsrIHRvIGEgcHJv
+cGVyIHBsYWNlLiByZXRyeSBpcyB1c2VkIHRvIHByZXZlbnQNCj4gdGhlIGNhc2VzIHdoZXJlIHRo
+ZSBtYXAgaXMgZG9pbmcgbWFueSBjb25jdXJyZW50IGFkZGl0aW9ucyBhbmQNCj4gZGVsZXRpb25z
+LCB0aGlzIGNvdWxkIHJlc3VsdCBpbiBtYXBfZ2V0X25leHRfa2V5IHN1Y2NlZWRpbmcgYnV0DQo+
+IGJwZl9tYXBfY29weV92YWx1ZSBmYWlsaW5nLCBpbiB3aGljaCBjYXNlIEkgdGhpbmsgaXQnZCBi
+ZSBiZXR0ZXIgdG8NCj4gdHJ5IGFuZCBmaW5kIGEgbmV4dCBlbGVtLCBidXQgd2UgZG9uJ3Qgd2Fu
+dCB0byBkbyB0aGlzIGZvciBtb3JlIHRoYW4gMw0KPiB0aW1lcy4NCj4gDQo+Pg0KPj4+ICsgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIGNvbnRpbnVlOw0KPj4+ICsgICAgICAgICAgICAgICAg
+ICAgICB9DQo+Pj4gKyAgICAgICAgICAgICAgICAgICAgIGVyciA9IC1FSU5UUjsNCj4+DQo+PiBX
+aHkgcmV0dXJuaW5nIC1FSU5UUj8NCj4gDQo+IEkgdGhvdWdodCB0aGF0IHRoaXMgaXMgdGhlIGVy
+ciBtb3JlIGFwcHJvcHJpYXRlIGZvciB0aGUgYmVoYXZpb3VyIEkNCj4gZGVzY3JpYmUgYWJvdmUu
+IFNob3VsZCBJIGhhbmRsZSB0aGF0IGNhc2U/IFdEWVQ/DQoNCkkgc2VlLiBXZSBkbyBub3Qgd2Fu
+dCB0byB1c2UgLUVOT0VOVCBzaW5jZSBnZXRfbmV4dF9rZXkgbWF5IHJldHVybiANCi1FTk9FTlQu
+IEkgdGhpbmsgLUVJTlRSIGlzIG9rYXkgaGVyZSB0byBpbmRpY2F0ZSB3ZSBoYXZlIGtleSwgYnV0
+IA0Ka2V5L3ZhbHVlIGVudHJ5IGlzIGdvbmUgcmlnaHQgYmVmb3JlIHRoZSBhdHRlbXB0ZWQgYWNj
+ZXNzLg0K
