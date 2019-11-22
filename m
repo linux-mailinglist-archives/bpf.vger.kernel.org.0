@@ -2,174 +2,293 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FC95105DC9
-	for <lists+bpf@lfdr.de>; Fri, 22 Nov 2019 01:42:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 988FC105E15
+	for <lists+bpf@lfdr.de>; Fri, 22 Nov 2019 02:15:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726270AbfKVAmc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Nov 2019 19:42:32 -0500
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:45517 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726038AbfKVAmc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Nov 2019 19:42:32 -0500
-Received: by mail-lj1-f195.google.com with SMTP id n21so5272904ljg.12
-        for <bpf@vger.kernel.org>; Thu, 21 Nov 2019 16:42:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=YzYTuPfhNF+6hAQ8DRw50vXORP/WZWzxXXw+iGKNMpw=;
-        b=Ek1ZOoMsHvCHSH/GLQWhU47W8IhazdULoSW9K4cQTjFSbZjnS8Cl6Sy7D8qQ0ZQy5G
-         WHpqtk9u63+dG9f5EdRHJA6muPZT/JiVAkkQmsYxfKHWZm5GHt+OHWRfAn40pCUGNplq
-         mpqiSDMQFc4znojygS6YXnVVf+mX6LBpupzaH1Ig8s0xbFxyVtUzxINylWAdXaXFHovz
-         xIqvHTwxmSGuY/5nCGyyBjHJqzFHsZ4kPs/iGjZwaClg8+qqxKOFTgbOv5sq9NherYeU
-         OgKJX3RpekIekRM+C0GpWFtEkYBwaQrjNJsvXSxeKRp61mW8560D8r2Tr5vKv12HBHOC
-         fAVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=YzYTuPfhNF+6hAQ8DRw50vXORP/WZWzxXXw+iGKNMpw=;
-        b=sDx7p7UCWI76BOljrjLunrbsnOg0xC7sxKEvqettx+4o6/7BGOTwLcoHTA/nAbHWFu
-         OgUNaRKUCjwHNWKYByFZRfOB/3syedkHoF0RcUjw/SZvjp7H6h0JjSPvwJKw6O2SR3nG
-         Pk2SzZo3+VgB2gnA9lnBGppSy7pUnD9qyzVpLIinsi7/wiR/KJZNK0OUvHHPFJMxh0os
-         2lpZViTFpv/aGZ/gYRCSKrc8qqQgTyMBlwyu9iBCiKEoijvUjrPEq7XAhmc7Bza61Iz/
-         3q6aLjEbvHVfYGN6D4MbJIrSyplb7chHl+I3LazE3gofxA/onkK8nJHvC3WFe2eIk8NI
-         gfOA==
-X-Gm-Message-State: APjAAAXACliwjsuCnKrObPvvZZaLKHhrO1Gw3kf27LOjYT4lAFzl8WUZ
-        Vw7oZd43PTLwg+kGT8U2e4DNOMUQ+u/uzTEHy1sl
-X-Google-Smtp-Source: APXvYqxHINm8pj5hHObN5FfogVwDQsXbF6iabxRdRu8W/YON+dxEFj3FPP1741tdwyk7vPn0EjxORYxieY+pfttr9EM=
-X-Received: by 2002:a2e:970e:: with SMTP id r14mr9681041lji.57.1574383349234;
- Thu, 21 Nov 2019 16:42:29 -0800 (PST)
+        id S1726335AbfKVBPT convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Thu, 21 Nov 2019 20:15:19 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:15244 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726265AbfKVBPT (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 21 Nov 2019 20:15:19 -0500
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xAM1EGSR008690
+        for <bpf@vger.kernel.org>; Thu, 21 Nov 2019 17:15:18 -0800
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2wda3vmcgg-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 21 Nov 2019 17:15:17 -0800
+Received: from 2401:db00:30:6007:face:0:1:0 (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 21 Nov 2019 17:15:16 -0800
+Received: by devbig007.ftw2.facebook.com (Postfix, from userid 572438)
+        id 4D8BD760B98; Thu, 21 Nov 2019 17:15:15 -0800 (PST)
+Smtp-Origin-Hostprefix: devbig
+From:   Alexei Starovoitov <ast@kernel.org>
+Smtp-Origin-Hostname: devbig007.ftw2.facebook.com
+To:     <davem@davemloft.net>
+CC:     <daniel@iogearbox.net>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <kernel-team@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next] selftests/bpf: Add BPF trampoline performance test
+Date:   Thu, 21 Nov 2019 17:15:15 -0800
+Message-ID: <20191122011515.255371-1-ast@kernel.org>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-References: <20191120213816.8186-1-jolsa@kernel.org> <8c928ec4-9e43-3e2a-7005-21f40fcca061@iogearbox.net>
- <CAADnVQKu-ZgFTaSMH=Q-jMOYYvE32TF2b2hq1=dmDV8wAf18pg@mail.gmail.com>
- <CAHC9VhQbQoXacbTCNJPGNzFOv30PwLeiWu4ROQFU46=saTeTNQ@mail.gmail.com> <b8a79ac0-a7d3-8d7b-1e31-33f477b30503@iogearbox.net>
-In-Reply-To: <b8a79ac0-a7d3-8d7b-1e31-33f477b30503@iogearbox.net>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Thu, 21 Nov 2019 19:42:18 -0500
-Message-ID: <CAHC9VhR7_n9MpoNx8A8QWzNMOZwMG6H6xegdYt5qxAf-xbwXCA@mail.gmail.com>
-Subject: Re: [PATCH] bpf: emit audit messages upon successful prog load and unload
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        linux-audit@redhat.com, Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andriin@fb.com>,
-        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Steve Grubb <sgrubb@redhat.com>,
-        David Miller <davem@redhat.com>,
-        Eric Paris <eparis@redhat.com>, Jiri Benc <jbenc@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
+ definitions=2019-11-21_07:2019-11-21,2019-11-21 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0 adultscore=0
+ mlxlogscore=976 lowpriorityscore=0 priorityscore=1501 impostorscore=0
+ suspectscore=1 bulkscore=0 clxscore=1015 mlxscore=0 spamscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-1911220008
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 21, 2019 at 7:25 PM Daniel Borkmann <daniel@iogearbox.net> wrot=
-e:
-> On 11/22/19 12:41 AM, Paul Moore wrote:
-> > On Wed, Nov 20, 2019 at 4:49 PM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> >> On Wed, Nov 20, 2019 at 1:46 PM Daniel Borkmann <daniel@iogearbox.net>=
- wrote:
-> >>> On 11/20/19 10:38 PM, Jiri Olsa wrote:
-> >>>> From: Daniel Borkmann <daniel@iogearbox.net>
-> >>>>
-> >>>> Allow for audit messages to be emitted upon BPF program load and
-> >>>> unload for having a timeline of events. The load itself is in
-> >>>> syscall context, so additional info about the process initiating
-> >>>> the BPF prog creation can be logged and later directly correlated
-> >>>> to the unload event.
-> >>>>
-> >>>> The only info really needed from BPF side is the globally unique
-> >>>> prog ID where then audit user space tooling can query / dump all
-> >>>> info needed about the specific BPF program right upon load event
-> >>>> and enrich the record, thus these changes needed here can be kept
-> >>>> small and non-intrusive to the core.
-> >>>>
-> >>>> Raw example output:
-> >>>>
-> >>>>     # auditctl -D
-> >>>>     # auditctl -a always,exit -F arch=3Dx86_64 -S bpf
-> >>>>     # ausearch --start recent -m 1334
-> >>>>     [...]
-> >>>>     ----
-> >>>>     time->Wed Nov 20 12:45:51 2019
-> >>>>     type=3DPROCTITLE msg=3Daudit(1574271951.590:8974): proctitle=3D"=
-./test_verifier"
-> >>>>     type=3DSYSCALL msg=3Daudit(1574271951.590:8974): arch=3Dc000003e=
- syscall=3D321 success=3Dyes exit=3D14 a0=3D5 a1=3D7ffe2d923e80 a2=3D78 a3=
-=3D0 items=3D0 ppid=3D742 pid=3D949 auid=3D0 uid=3D0 gid=3D0 euid=3D0 suid=
-=3D0 fsuid=3D0 egid=3D0 sgid=3D0 fsgid=3D0 tty=3Dpts0 ses=3D2 comm=3D"test_=
-verifier" exe=3D"/root/bpf-next/tools/testing/selftests/bpf/test_verifier" =
-subj=3Dunconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 key=3D(null)
-> >>>>     type=3DUNKNOWN[1334] msg=3Daudit(1574271951.590:8974): auid=3D0 =
-uid=3D0 gid=3D0 ses=3D2 subj=3Dunconfined_u:unconfined_r:unconfined_t:s0-s0=
-:c0.c1023 pid=3D949 comm=3D"test_verifier" exe=3D"/root/bpf-next/tools/test=
-ing/selftests/bpf/test_verifier" prog-id=3D3260 event=3DLOAD
-> >>>>     ----
-> >>>>     time->Wed Nov 20 12:45:51 2019
-> >>>> type=3DUNKNOWN[1334] msg=3Daudit(1574271951.590:8975): prog-id=3D326=
-0 event=3DUNLOAD
-> >>>>     ----
-> >>>>     [...]
-> >>>>
-> >>>> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-> >>>> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> >>>
-> >>> LGTM, thanks for the rebase!
-> >>
-> >> Applied to bpf-next. Thanks!
-> >
-> > [NOTE: added linux-audit to the To/CC line]
-> >
-> > Wait a minute, why was the linux-audit list not CC'd on this?  Why are
-> > you merging a patch into -next that adds to the uapi definition *and*
-> > creates a new audit record while we are at -rc8?
-> >
-> > Aside from that I'm concerned that you are relying on audit userspace
-> > changes that might not be okay; I see the PR below, but I don't see
-> > any comment on it from Steve (it is his audit userspace).  I also
-> > don't see a corresponding test added to the audit-testsuite, which is
-> > a common requirement for new audit functionality (link below).  I'm
-> > also fairly certain we don't want this new BPF record to look like how
-> > you've coded it up in bpf_audit_prog(); duplicating the fields with
-> > audit_log_task() is wrong, you've either already got them via an
-> > associated record (which you get from passing non-NULL as the first
-> > parameter to audit_log_start()), or you don't because there is no
-> > associated syscall/task (which you get from passing NULL as the first
-> > parameter).  Please revert, un-merge, etc. this patch from bpf-next;
-> > it should not go into Linus' tree as written.
->
-> Fair enough, up to you guys. My impression was that this is mainly coming
-> from RHEL use case [0] and given that the original patch was back in Oct
-> 2018 [1] that you've sorted it out by now RH internally and agreed to pro=
-ceed
-> with this patch for BPF given the rebase + resend ... seems not then. :(
+Add a test that benchmarks different ways of attaching BPF program to a kernel function.
+Here are the results for 2.4Ghz x86 cpu on a kernel without mitigations:
+$ ./test_progs -n 49 -v|grep events
+task_rename base	2743K events per sec
+task_rename kprobe	2419K events per sec
+task_rename kretprobe	1876K events per sec
+task_rename raw_tp	2578K events per sec
+task_rename fentry	2710K events per sec
+task_rename fexit	2685K events per sec
 
-For the record, I am not currently employed by RH and thus not part of
-any RH internal discussions.  Although, even when I was, I would still
-bristle at the idea of audit patches going in without CC'ing the audit
-list and getting an ACK from the audit folks.  Internal discussions
-within a company are fine, but the final discussion and debate should
-happen on the public list.
+On a kernel with retpoline:
+$ ./test_progs -n 49 -v|grep events
+task_rename base	2401K events per sec
+task_rename kprobe	1930K events per sec
+task_rename kretprobe	1485K events per sec
+task_rename raw_tp	2053K events per sec
+task_rename fentry	2351K events per sec
+task_rename fexit	2185K events per sec
 
-> Given the change is mostly trivial, are there any major objections for Ji=
-ri
-> to follow-up? Otherwise worst case probably easier to revert in net-next.
+All 5 approaches:
+- kprobe/kretprobe in __set_task_comm()
+- raw tracepoint in trace_task_rename()
+- fentry/fexit in __set_task_comm()
+are roughly equivalent.
 
-See my previous response for more info.  However, for starters the use
-of audit_log_task() looks like the wrong thing to do here.  I also
-want to see a test for our test suite so we can catch when someone
-invariably breaks this in future and fix it.
+__set_task_comm() by itself is quite fast, so any extra instructions add up.
+Until BPF trampoline was introduced the fastest mechanism was raw tracepoint.
+kprobe via ftrace was second best. kretprobe is slow due to trap. New
+fentry/fexit methods via BPF trampoline are clearly the fastest and the
+difference is more pronounced with retpoline on, since BPF trampoline doesn't
+use indirect jumps.
 
->    [0] slide 11, https://linuxplumbersconf.org/event/4/contributions/460/=
-attachments/244/426/xdp-distro-view.pdf
->    [1] https://lore.kernel.org/netdev/20181004135038.2876-1-daniel@iogear=
-box.net/
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+---
+ .../selftests/bpf/prog_tests/test_overhead.c  | 142 ++++++++++++++++++
+ .../selftests/bpf/progs/test_overhead.c       |  43 ++++++
+ 2 files changed, 185 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_overhead.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_overhead.c
 
---=20
-paul moore
-www.paul-moore.com
+diff --git a/tools/testing/selftests/bpf/prog_tests/test_overhead.c b/tools/testing/selftests/bpf/prog_tests/test_overhead.c
+new file mode 100644
+index 000000000000..c32aa28bd93f
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/test_overhead.c
+@@ -0,0 +1,142 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/* Copyright (c) 2019 Facebook */
++#define _GNU_SOURCE
++#include <sched.h>
++#include <test_progs.h>
++
++#define MAX_CNT 100000
++
++static __u64 time_get_ns(void)
++{
++	struct timespec ts;
++
++	clock_gettime(CLOCK_MONOTONIC, &ts);
++	return ts.tv_sec * 1000000000ull + ts.tv_nsec;
++}
++
++static int test_task_rename(const char *prog)
++{
++	int i, fd, duration = 0, err;
++	char buf[] = "test\n";
++	__u64 start_time;
++
++	fd = open("/proc/self/comm", O_WRONLY|O_TRUNC);
++	if (CHECK(fd < 0, "open /proc", "err %d", errno))
++		return -1;
++	start_time = time_get_ns();
++	for (i = 0; i < MAX_CNT; i++) {
++		err = write(fd, buf, sizeof(buf));
++		if (err < 0) {
++			CHECK(err < 0, "task rename", "err %d", errno);
++			close(fd);
++			return -1;
++		}
++	}
++	printf("task_rename %s\t%lluK events per sec\n", prog,
++	       MAX_CNT * 1000000ll / (time_get_ns() - start_time));
++	close(fd);
++	return 0;
++}
++
++static void test_run(const char *prog)
++{
++	test_task_rename(prog);
++}
++
++static void setaffinity(void)
++{
++	cpu_set_t cpuset;
++	int cpu = 0;
++
++	CPU_ZERO(&cpuset);
++	CPU_SET(cpu, &cpuset);
++	sched_setaffinity(0, sizeof(cpuset), &cpuset);
++}
++
++void test_test_overhead(void)
++{
++	const char *kprobe_name = "kprobe/__set_task_comm";
++	const char *kretprobe_name = "kretprobe/__set_task_comm";
++	const char *raw_tp_name = "raw_tp/task_rename";
++	const char *fentry_name = "fentry/__set_task_comm";
++	const char *fexit_name = "fexit/__set_task_comm";
++	const char *kprobe_func = "__set_task_comm";
++	struct bpf_program *kprobe_prog, *kretprobe_prog, *raw_tp_prog;
++	struct bpf_program *fentry_prog, *fexit_prog;
++	struct bpf_object *obj;
++	struct bpf_link *link;
++	int err, duration = 0;
++
++	obj = bpf_object__open_file("./test_overhead.o", NULL);
++	if (CHECK(IS_ERR(obj), "obj_open_file", "err %ld\n", PTR_ERR(obj)))
++		return;
++
++	kprobe_prog = bpf_object__find_program_by_title(obj, kprobe_name);
++	if (CHECK(!kprobe_prog, "find_probe",
++		  "prog '%s' not found\n", kprobe_name))
++		goto cleanup;
++	kretprobe_prog = bpf_object__find_program_by_title(obj, kretprobe_name);
++	if (CHECK(!kretprobe_prog, "find_probe",
++		  "prog '%s' not found\n", kretprobe_name))
++		goto cleanup;
++	raw_tp_prog = bpf_object__find_program_by_title(obj, raw_tp_name);
++	if (CHECK(!raw_tp_prog, "find_probe",
++		  "prog '%s' not found\n", raw_tp_name))
++		goto cleanup;
++	fentry_prog = bpf_object__find_program_by_title(obj, fentry_name);
++	if (CHECK(!fentry_prog, "find_probe",
++		  "prog '%s' not found\n", fentry_name))
++		goto cleanup;
++	fexit_prog = bpf_object__find_program_by_title(obj, fexit_name);
++	if (CHECK(!fexit_prog, "find_probe",
++		  "prog '%s' not found\n", fexit_name))
++		goto cleanup;
++
++	err = bpf_object__load(obj);
++	if (CHECK(err, "obj_load", "err %d\n", err))
++		goto cleanup;
++
++	setaffinity();
++
++	/* base line run */
++	test_run("base");
++
++	/* attach kprobe */
++	link = bpf_program__attach_kprobe(kprobe_prog, false /* retprobe */,
++					  kprobe_func);
++	if (CHECK(IS_ERR(link), "attach_kprobe", "err %ld\n", PTR_ERR(link)))
++		goto cleanup;
++	test_run("kprobe");
++	bpf_link__destroy(link);
++
++	/* attach kretprobe */
++	link = bpf_program__attach_kprobe(kretprobe_prog, true /* retprobe */,
++					  kprobe_func);
++	if (CHECK(IS_ERR(link), "attach kretprobe", "err %ld\n", PTR_ERR(link)))
++		goto cleanup;
++	test_run("kretprobe");
++	bpf_link__destroy(link);
++
++	/* attach raw_tp */
++	link = bpf_program__attach_raw_tracepoint(raw_tp_prog, "task_rename");
++	if (CHECK(IS_ERR(link), "attach fentry", "err %ld\n", PTR_ERR(link)))
++		goto cleanup;
++	test_run("raw_tp");
++	bpf_link__destroy(link);
++
++	/* attach fentry */
++	link = bpf_program__attach_trace(fentry_prog);
++	if (CHECK(IS_ERR(link), "attach fentry", "err %ld\n", PTR_ERR(link)))
++		goto cleanup;
++	test_run("fentry");
++	bpf_link__destroy(link);
++
++	/* attach fexit */
++	link = bpf_program__attach_trace(fexit_prog);
++	if (CHECK(IS_ERR(link), "attach fexit", "err %ld\n", PTR_ERR(link)))
++		goto cleanup;
++	test_run("fexit");
++	bpf_link__destroy(link);
++cleanup:
++	bpf_object__close(obj);
++}
+diff --git a/tools/testing/selftests/bpf/progs/test_overhead.c b/tools/testing/selftests/bpf/progs/test_overhead.c
+new file mode 100644
+index 000000000000..ef06b2693f96
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_overhead.c
+@@ -0,0 +1,43 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2019 Facebook */
++#include <linux/bpf.h>
++#include "bpf_helpers.h"
++#include "bpf_tracing.h"
++
++SEC("kprobe/__set_task_comm")
++int prog1(struct pt_regs *ctx)
++{
++	return 0;
++}
++
++SEC("kretprobe/__set_task_comm")
++int prog2(struct pt_regs *ctx)
++{
++	return 0;
++}
++
++SEC("raw_tp/task_rename")
++int prog3(struct bpf_raw_tracepoint_args *ctx)
++{
++	return 0;
++}
++
++struct __set_task_comm_args {
++	struct task_struct *tsk;
++	const char *buf;
++	ku8 exec;
++};
++
++SEC("fentry/__set_task_comm")
++int prog4(struct __set_task_comm_args *ctx)
++{
++	return 0;
++}
++
++SEC("fexit/__set_task_comm")
++int prog5(struct __set_task_comm_args *ctx)
++{
++	return 0;
++}
++
++char _license[] SEC("license") = "GPL";
+-- 
+2.23.0
+
