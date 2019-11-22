@@ -2,158 +2,251 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 72190107660
-	for <lists+bpf@lfdr.de>; Fri, 22 Nov 2019 18:25:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8249107666
+	for <lists+bpf@lfdr.de>; Fri, 22 Nov 2019 18:25:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726880AbfKVRZH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 Nov 2019 12:25:07 -0500
-Received: from mail-qk1-f180.google.com ([209.85.222.180]:36915 "EHLO
-        mail-qk1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726634AbfKVRZG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 Nov 2019 12:25:06 -0500
-Received: by mail-qk1-f180.google.com with SMTP id e187so6971606qkf.4
-        for <bpf@vger.kernel.org>; Fri, 22 Nov 2019 09:25:06 -0800 (PST)
+        id S1726722AbfKVRZf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Nov 2019 12:25:35 -0500
+Received: from mail-pj1-f66.google.com ([209.85.216.66]:35251 "EHLO
+        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726620AbfKVRZf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 Nov 2019 12:25:35 -0500
+Received: by mail-pj1-f66.google.com with SMTP id s8so3312484pji.2;
+        Fri, 22 Nov 2019 09:25:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :content-transfer-encoding;
-        bh=x/t7YYwiNsScpRNZxre9kXNgeO6TrTQHVlcYwrBCrmw=;
-        b=hgmkiI/tZFKNu2W5QdfvM49rKbFOs7bBlKXRcGQuWUpeB9HVnV7xPQvLfZFsHGrcgp
-         /sLYsLft4o106guDCcDSTYez9sFUVFecJ71E7kyba4rIArbBT4iKkopzLMS36Go22kP5
-         fcYXTTSuTWOZBRPy0ELYTiskw5s57Y8gPtMYmwYqvUaFcPBnJpKzQsAjtsjxB8lKr69s
-         a7iq6JE3aUqT+o/Dr7lNJNSA3I+y4Q3ksVfYa9E2EhF3v6H47xgaTcNlzlbAVZ0fV5J/
-         blbgb4ln/ZEjoNzLcybGwttpT9/wr0pflt3fK3tkzMWxqvn7oSZSzJ6LTXSKxNYU+Gha
-         iGOQ==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=UaL62kWewKJMZ0i1SVqxDkLUi869qgCOxt0DnZYcMGg=;
+        b=EjVD0toRMvRNtvFyeoK8dxq0ijoA3W52VPDr9yvCLjryYQmqdCdpvWZv4yu+c5alPo
+         taH/G7simG5Ck9s4DUh5QI4uIyllt7SWfMgRqkUTgBzDP8UgDObfkjACaJzEahzCsrnE
+         HH5lwxUo05Df8hm+eZDiVDV9DPmQ+MIw57lGU2mbJ/8wO4U/2mUdQQuXpNYmsCuWrrQO
+         o8F4yRFu1M99HPaOpK1JJ+Fh5w6/tuXRkewn+SEphUKrqPT8CCnLua0p6Fz9k8WTi6WO
+         VaKk4YQtTWCAFysam+7d9QN5xdKfvoM6jVScPVqgKuEssfkI/9viVhQkqNXjOjRpJpAe
+         3L5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:content-transfer-encoding;
-        bh=x/t7YYwiNsScpRNZxre9kXNgeO6TrTQHVlcYwrBCrmw=;
-        b=IKwBSD2Zi1eUIeLsq+CtR6uIcBr4xK3mWcHgoQKMSzYgUdhGoP+qWTSWGyZTsN9sMA
-         8VZnfFcxSQvLNWmd/bMzWj4iQGYHR0/MiZ/guE2EpmbCZvqmAZ+mchRY6bdo0NOPj77Y
-         0I2IN9KoWzxlYvRORELQv9GHNZhz2bvXbwcmxuV6oDgLjdWvAvp9svOpX0re0oL0p3qF
-         b5zly6Wd4r1mRExBP19nY5q90nR212bQA/na0kq/UZT558y+uUOhSzsMjhX7in1/Gxsj
-         1ZjMueuPqqognnktf7vgQScFQIACGVB0ReXltXNEclKCT43+eRJvvobM1ByZpiTaAFaO
-         V57Q==
-X-Gm-Message-State: APjAAAVcgcGTpVafS05T3G7Iqf0zJzE7TbFQTZPgTY9B/+IIsLJkSzoE
-        q4PDyggxxCVkn0Cw7KJwo7io+A==
-X-Google-Smtp-Source: APXvYqx99CvvuJPnYd+Rq7afdv0vTgv7dWSgTIm3gn4xoBOvZhWu0Jdh2wyfyVQMdyNPJWGIaahWcw==
-X-Received: by 2002:a05:620a:13d1:: with SMTP id g17mr14227390qkl.313.1574443505421;
-        Fri, 22 Nov 2019 09:25:05 -0800 (PST)
-Received: from localhost ([2620:10d:c091:480::64e2])
-        by smtp.gmail.com with ESMTPSA id v189sm3302167qkc.37.2019.11.22.09.25.03
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 22 Nov 2019 09:25:04 -0800 (PST)
-Date:   Fri, 22 Nov 2019 12:25:02 -0500
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     lsf-pc@lists.linuxfoundation.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-nvme@lists.infradead.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: LSF/MM/BPF: 2020: Call for Proposals
-Message-ID: <20191122172502.vffyfxlqejthjib6@macbook-pro-91.dhcp.thefacebook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=UaL62kWewKJMZ0i1SVqxDkLUi869qgCOxt0DnZYcMGg=;
+        b=fcwJXYIAY2V4ujjadRkigJ+CTknoODOd/8CpK5VJZ8DfSZzgnsEJgQEOfs9LxbTwAi
+         5DrfNCPIXWsaNIKfNeV1hcCn5KBXY02HG9s7tLXIdoNDJDhBuwC1tsBZIFe71/OicMuN
+         wgJ6HykYvRJcaWREPT1zeOzOe757IowZ8DixZ2IFy82630a3MEfSqtzciKtZeHi9jyvk
+         /q5OxsrEQI7gUg9ouQSRP0jl6cv4GvpXw1vR3EAV/K+ebxfgGS5lSILbzEQwQn8NMc8L
+         VYIeewPHl1+YO0T33zOKKXSHzgV1k1Qh1O/Sc977X8mheATGmFDkC7K0mVtMEsaciuyZ
+         hx0w==
+X-Gm-Message-State: APjAAAWlaKMueFm9D3Skuzh92vvsYmng+fb5EZtaUQt2lBkVHqLU9Z3t
+        WLcjxrLNj2Gnt4d7Fyu4Mls=
+X-Google-Smtp-Source: APXvYqzpZ8cfQ+HrlvcOp5Gu3CXqChZ4cPowljvEGtxYcNfVJsco2Nj5syob5DmURTrA3rqXiea+9w==
+X-Received: by 2002:a17:90a:a63:: with SMTP id o90mr20175839pjo.81.1574443533903;
+        Fri, 22 Nov 2019 09:25:33 -0800 (PST)
+Received: from localhost (198-0-60-179-static.hfc.comcastbusiness.net. [198.0.60.179])
+        by smtp.gmail.com with ESMTPSA id x190sm8140281pfc.89.2019.11.22.09.25.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Nov 2019 09:25:33 -0800 (PST)
+Date:   Fri, 22 Nov 2019 09:25:32 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Brian Vazquez <brianvv@google.com>,
+        Brian Vazquez <brianvv.kernel@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S . Miller" <davem@davemloft.net>
+Cc:     Yonghong Song <yhs@fb.com>, Stanislav Fomichev <sdf@google.com>,
+        Petar Penkov <ppenkov@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Brian Vazquez <brianvv@google.com>
+Message-ID: <5dd81a0ca016a_690a2ae784a225c459@john-XPS-13-9370.notmuch>
+In-Reply-To: <20191119193036.92831-3-brianvv@google.com>
+References: <20191119193036.92831-1-brianvv@google.com>
+ <20191119193036.92831-3-brianvv@google.com>
+Subject: RE: [PATCH v2 bpf-next 2/9] bpf: add generic support for lookup and
+ lookup_and_delete batch ops
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The annual Linux Storage, Filesystem, Memory Management, and BPF
-(LSF/MM/BPF) Summit for 2020 will be held from April 27 - April 29 at
-The Riviera Palm Springs, A Tribute Portfolio Resort in Palm Springs,
-California. LSF/MM/BPF is an invitation-only technical workshop to map
-out improvements to the Linux storage, filesystem, BPF, and memory
-management subsystems that will make their way into the mainline kernel
-within the coming years.
+Brian Vazquez wrote:
+> This commit introduces generic support for the bpf_map_lookup_batch and
+> bpf_map_lookup_and_delete_batch ops. This implementation can be used by
+> almost all the bpf maps since its core implementation is relying on the
+> existing map_get_next_key, map_lookup_elem and map_delete_elem
+> functions. The bpf syscall subcommands introduced are:
+> 
+>   BPF_MAP_LOOKUP_BATCH
+>   BPF_MAP_LOOKUP_AND_DELETE_BATCH
+> 
+> The UAPI attribute is:
+> 
+>   struct { /* struct used by BPF_MAP_*_BATCH commands */
+>          __aligned_u64   in_batch;       /* start batch,
+>                                           * NULL to start from beginning
+>                                           */
+>          __aligned_u64   out_batch;      /* output: next start batch */
+>          __aligned_u64   keys;
+>          __aligned_u64   values;
+>          __u32           count;          /* input/output:
+>                                           * input: # of key/value
+>                                           * elements
+>                                           * output: # of filled elements
+>                                           */
+>          __u32           map_fd;
+>          __u64           elem_flags;
+>          __u64           flags;
+>   } batch;
+> 
+> in_batch/out_batch are opaque values use to communicate between
+> user/kernel space, in_batch/out_batch must be of key_size length.
+> 
+> To start iterating from the beginning in_batch must be null,
+> count is the # of key/value elements to retrieve. Note that the 'keys'
+> buffer must be a buffer of key_size * count size and the 'values' buffer
+> must be value_size * count, where value_size must be aligned to 8 bytes
+> by userspace if it's dealing with percpu maps. 'count' will contain the
+> number of keys/values successfully retrieved. Note that 'count' is an
+> input/output variable and it can contain a lower value after a call.
+> 
+> If there's no more entries to retrieve, ENOENT will be returned. If error
+> is ENOENT, count might be > 0 in case it copied some values but there were
+> no more entries to retrieve.
+> 
+> Note that if the return code is an error and not -EFAULT,
+> count indicates the number of elements successfully processed.
+> 
+> Suggested-by: Stanislav Fomichev <sdf@google.com>
+> Signed-off-by: Brian Vazquez <brianvv@google.com>
+> Signed-off-by: Yonghong Song <yhs@fb.com>
+> ---
+>  include/linux/bpf.h      |  11 +++
+>  include/uapi/linux/bpf.h |  19 +++++
+>  kernel/bpf/syscall.c     | 176 +++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 206 insertions(+)
+> 
 
-LSF/MM/BPF 2020 will be a three day, stand-alone conference with four
-subsystem-specific tracks, cross-track discussions, as well as BoF and
-hacking sessions.
+Couple additional comments if we are getting a new rev anyways 
 
-On behalf of the committee I am issuing a call for agenda proposals
-that are suitable for cross-track discussion as well as technical
-subjects for the breakout sessions.
+[...]
 
-If advance notice is required for visa applications then please point
-that out in your proposal or request to attend, and submit the topic
-as soon as possible.
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index cc714c9d5b4cc..d0d3d0e0eaca4 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -1127,6 +1127,124 @@ static int map_get_next_key(union bpf_attr *attr)
+>  	return err;
+>  }
+>  
+> +static int __generic_map_lookup_batch(struct bpf_map *map,
+> +				      const union bpf_attr *attr,
+> +				      union bpf_attr __user *uattr,
+> +				      bool do_delete)
+> +{
+> +	void __user *ubatch = u64_to_user_ptr(attr->batch.in_batch);
+> +	void __user *uobatch = u64_to_user_ptr(attr->batch.out_batch);
+> +	void __user *values = u64_to_user_ptr(attr->batch.values);
+> +	void __user *keys = u64_to_user_ptr(attr->batch.keys);
+> +	void *buf, *prev_key, *key, *value;
+> +	u32 value_size, cp, max_count;
+> +	bool first_key = false;
+> +	int err, retry = 3;
+                 ^^^^^^^^^^
+define magic value maybe MAP_LOOKUP_RETRIES
+> +
+> +	if (attr->batch.elem_flags & ~BPF_F_LOCK)
+> +		return -EINVAL;
+> +	}
 
-This year will be a little different for requesting attendance.  Please
-do the following by February 15th, 2020.
+[...]
 
-1) Fill out the following Google form to request attendance and
-suggest any topics
+> +
+> +	value_size = bpf_map_value_size(map);
+> +
+> +	max_count = attr->batch.count;
+> +	if (!max_count)
+> +		return 0;
+> +
+> +	err = -ENOMEM;
+> +	buf = kmalloc(map->key_size + value_size, GFP_USER | __GFP_NOWARN);
 
-	https://forms.gle/voWi1j9kDs13Lyqf9
+Should we also set __GFP_NORETRY or __GFP_RETRY_MAYFAIL perhaps?
 
-In previous years we have accidentally missed people's attendance
-requests because they either didn't cc lsf-pc@ or we simply missed them
-in the flurry of emails we get.  Our community is large and our
-volunteers are busy, filling this out will help us make sure we don't
-miss anybody.
+> +	if (!buf)
+> +		goto err_put;
+> +
+> +	err = -EFAULT;
+> +	first_key = false;
+> +	if (ubatch && copy_from_user(buf, ubatch, map->key_size))
+> +		goto free_buf;
+> +	key = buf;
+> +	value = key + map->key_size;
+> +	if (!ubatch) {
+> +		prev_key = NULL;
+> +		first_key = true;
+> +	}
+> +
+> +
 
-2) Proposals for agenda topics should still be sent to the following
-lists to allow for discussion among your peers.  This will help us
-figure out which topics are important for the agenda.
+nit: extra newline not needed
 
-        lsf-pc@lists.linux-foundation.org
+> +	for (cp = 0; cp < max_count; cp++) {
+> +		if (cp || first_key) {
+> +			rcu_read_lock();
+> +			err = map->ops->map_get_next_key(map, prev_key, key);
+> +			rcu_read_unlock();
+> +			if (err)
+> +				break;
+> +		}
+> +		err = bpf_map_copy_value(map, key, value,
+> +					 attr->batch.elem_flags, do_delete);
+> +
+> +		if (err == -ENOENT) {
+> +			if (retry) {
+> +				retry--;
+> +				continue;
+> +			}
+> +			err = -EINTR;
+> +			break;
+> +		}
+> +
+> +		if (err)
+> +			goto free_buf;
+> +
+> +		if (copy_to_user(keys + cp * map->key_size, key,
+> +				 map->key_size)) {
+> +			err = -EFAULT;
+> +			goto free_buf;
+> +		}
+> +		if (copy_to_user(values + cp * value_size, value, value_size)) {
+> +			err = -EFAULT;
+> +			goto free_buf;
 
-and CC the mailing lists that are relevant for the topic in question:
+You could do the same here as in the retry==0 above case, break and report
+back up to user cp values?
 
-        FS:     linux-fsdevel@vger.kernel.org
-        MM:     linux-mm@kvack.org
-        Block:  linux-block@vger.kernel.org
-        ATA:    linux-ide@vger.kernel.org
-        SCSI:   linux-scsi@vger.kernel.org
-        NVMe:   linux-nvme@lists.infradead.org
-        BPF:    bpf@vger.kernel.org
+> +		}
+> +
+> +		prev_key = key;
+> +		retry = 3;
+                ^^^^^^^^^
+same nit as above, use define so we can tune this if needed.
 
-Please tag your proposal with [LSF/MM/BPF TOPIC] to make it easier to
-track. In addition, please make sure to start a new thread for each
-topic rather than following up to an existing one. Agenda topics and
-attendees will be selected by the program committee, but the final
-agenda will be formed by consensus of the attendees on the day.
-
-We will try to cap attendance at around 25-30 per track to facilitate
-discussions although the final numbers will depend on the room sizes
-at the venue.
-
-For discussion leaders, slides and visualizations are encouraged to
-outline the subject matter and focus the discussions. Please refrain
-from lengthy presentations and talks; the sessions are supposed to be
-interactive, inclusive discussions.
-
-There will be no recording or audio bridge. However, we expect that
-written minutes will be published as we did in previous years:
-
-2019: https://lwn.net/Articles/lsfmm2019/
-
-2018: https://lwn.net/Articles/lsfmm2018/
-
-2017: https://lwn.net/Articles/lsfmm2017/
-
-2016: https://lwn.net/Articles/lsfmm2016/
-
-2015: https://lwn.net/Articles/lsfmm2015/
-
-2014: http://lwn.net/Articles/LSFMM2014/
-
-3) If you have feedback on last year's meeting that we can use to
-improve this year's, please also send that to:
-
-        lsf-pc@lists.linux-foundation.org
-
-Thank you on behalf of the program committee:
-
-	Josef Bacik (Filesystems)
-	Amir Goldstein (Filesystems)
-	Martin K. Petersen (Storage)
-	Omar Sandoval (Storage)
-	Michal Hocko (MM)
-	Dan Williams (MM)
-	Alexei Starovoitov (BPF)
-	Daniel Borkmann (BPF)
+> +	}
+> +	if (!err) {
+> +		rcu_read_lock();
+> +		err = map->ops->map_get_next_key(map, prev_key, key);
+> +		rcu_read_unlock();
+> +	}
+> +
+> +	if ((copy_to_user(&uattr->batch.count, &cp, sizeof(cp)) ||
+> +		    (copy_to_user(uobatch, key, map->key_size))))
+> +		err = -EFAULT;
+> +
+> +free_buf:
+> +	kfree(buf);
+> +err_put:
+> +	return err;
+> +}
