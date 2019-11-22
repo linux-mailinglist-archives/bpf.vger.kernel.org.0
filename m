@@ -2,149 +2,173 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9351010670A
-	for <lists+bpf@lfdr.de>; Fri, 22 Nov 2019 08:27:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF81F1068DF
+	for <lists+bpf@lfdr.de>; Fri, 22 Nov 2019 10:32:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726248AbfKVH1N (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 Nov 2019 02:27:13 -0500
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:38649 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726018AbfKVH1N (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 Nov 2019 02:27:13 -0500
-Received: by mail-lj1-f196.google.com with SMTP id v8so6168197ljh.5;
-        Thu, 21 Nov 2019 23:27:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JXodrqg0Ns9fDSfl3NpT9xgzI8A0tSboj9r6ouzs1nQ=;
-        b=f9a9jG7Yga7eCX/RCPBoI4sJjsG/OXDrxi4R1+XYPf03uDc1Pi83E6ZVRBCAUfknxA
-         UJkjRvMzjJ9iCDwX1zFBas9f+qAXCfDbIdxXvOlrrrkHZrlsRCqq/iafKohLQoDuYvZj
-         OZKGna5sMB6QI4KdO4oSb9NLFeiaB2ed//zsscR17sLeAyLgTkbe8Jbdyoh/wNoA+BEw
-         4nF1e7nbcQjyl5/2LXc54GaquYPr1ST4qKYklnn3yfSlavH3Y1tFXLTOYSPu9bVui5U6
-         6EWNnaRSCOCwlPKZJXXkc9zlisE8luR6jDxTcX8nbglCD/v/EXFaBAIHXWcRY2N1nBOB
-         4ukA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JXodrqg0Ns9fDSfl3NpT9xgzI8A0tSboj9r6ouzs1nQ=;
-        b=E+0sM2voBHWaAaJwqbRy4zcBEMj+YjH+lwaI4wYql4Emrhhts+y/f6oryEmgWbWA9u
-         l/E8paM9yD3jjmkILaHQWjou2r6Sq+fUOMdOZhf3Uw4/FA8G/vq9wGm/o53iiqPMx3K1
-         17GrNgk096JutszI9OfB3pg7TnvcCXM9S+EPXzq8BTvek9ft0w1iLRIEeI/2IeoBSAwK
-         uQkcEK35OK9LYK6iZeSHpup145b/zXlGcsiyTn87xJ4FQTh0tc697oGZvC4jnw4D2qHQ
-         DbTxRhDmqXvWgv7BEn3mFoGYTcg1/mTbkV2izUxmMj7t5IchJzRg/WAbQJ4i3XeBd3ks
-         2egQ==
-X-Gm-Message-State: APjAAAX/vnUb9JwE8KcZPYpudG4AcIUqs4nUxOOF7W5XYBX50BR4TioV
-        0m9sAE+v2QVBHCNHbBPLHFGhbyHGgNpX/Io8C8Y=
-X-Google-Smtp-Source: APXvYqxYs63Myf6KumzAMSV2SQQHoHtIOOwunSkfmhax/GjzRFVbYMQ2hws1G/UkzCLv7i2CGpQ9a+rsCoQ85pt7+7s=
-X-Received: by 2002:a2e:b5b8:: with SMTP id f24mr10676623ljn.188.1574407630969;
- Thu, 21 Nov 2019 23:27:10 -0800 (PST)
-MIME-Version: 1.0
-References: <20191121175900.3486133-1-andriin@fb.com>
-In-Reply-To: <20191121175900.3486133-1-andriin@fb.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 21 Nov 2019 23:26:59 -0800
-Message-ID: <CAADnVQ+=NVQg_=eUudG3Q9knGHbwBzx8bKH+1oWemtpn23HfwA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: ensure core_reloc_kernel is
- reading test_progs's data only
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+        id S1726563AbfKVJcv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Nov 2019 04:32:51 -0500
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:31430 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726554AbfKVJcv (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 22 Nov 2019 04:32:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1574415170;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PPd+0jB/VVGj82ozqHkibWi1v8zVrpaIn3AGRbv1T3o=;
+        b=gmwvKTITD9VgwTLM1wodK9zD/Zbz09utZqOoKRBTEyTCkmC//g0feuU31qv0vrnyu/8cL7
+        aQ1Q3lQwNnClGYG05wv/jgNpaFKbQAXccOTHEeNjuSLk34M03GH6tYAsQ0GtiDX/iIO8Si
+        P7us+OPmQA5S6fCkPmVD0StVWJPtOHk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-415-piUpw2f0PT-n0X7zg3rCFA-1; Fri, 22 Nov 2019 04:32:42 -0500
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AA58918B5FAA;
+        Fri, 22 Nov 2019 09:32:39 +0000 (UTC)
+Received: from krava (unknown [10.43.17.48])
+        by smtp.corp.redhat.com (Postfix) with SMTP id A617B63772;
+        Fri, 22 Nov 2019 09:32:33 +0000 (UTC)
+Date:   Fri, 22 Nov 2019 10:32:32 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        linux-audit@redhat.com, Jiri Olsa <jolsa@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        Alexei Starovoitov <ast@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andriin@fb.com>,
+        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Steve Grubb <sgrubb@redhat.com>,
+        David Miller <davem@redhat.com>,
+        Eric Paris <eparis@redhat.com>, Jiri Benc <jbenc@redhat.com>
+Subject: Re: [PATCH] bpf: emit audit messages upon successful prog load and
+ unload
+Message-ID: <20191122093232.GB8287@krava>
+References: <20191120213816.8186-1-jolsa@kernel.org>
+ <8c928ec4-9e43-3e2a-7005-21f40fcca061@iogearbox.net>
+ <CAADnVQKu-ZgFTaSMH=Q-jMOYYvE32TF2b2hq1=dmDV8wAf18pg@mail.gmail.com>
+ <CAHC9VhQbQoXacbTCNJPGNzFOv30PwLeiWu4ROQFU46=saTeTNQ@mail.gmail.com>
+MIME-Version: 1.0
+In-Reply-To: <CAHC9VhQbQoXacbTCNJPGNzFOv30PwLeiWu4ROQFU46=saTeTNQ@mail.gmail.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+X-MC-Unique: piUpw2f0PT-n0X7zg3rCFA-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 21, 2019 at 9:59 AM Andrii Nakryiko <andriin@fb.com> wrote:
->
-> test_core_reloc_kernel.c selftest is the only CO-RE test that reads and
-> returns for validation calling thread's information (pid, tgid, comm). Thus it
-> has to make sure that only test_prog's invocations are honored.
->
-> Fixes: df36e621418b ("selftests/bpf: add CO-RE relocs testing setup")
-> Reported-by: Alexei Starovoitov <ast@kernel.org>
-> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> ---
->  .../selftests/bpf/prog_tests/core_reloc.c        | 16 +++++++++++-----
->  .../selftests/bpf/progs/test_core_reloc_kernel.c |  4 ++++
->  2 files changed, 15 insertions(+), 5 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/core_reloc.c b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-> index ec9e2fdd6b89..05fe85281ff7 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-> @@ -2,6 +2,7 @@
->  #include <test_progs.h>
->  #include "progs/core_reloc_types.h"
->  #include <sys/mman.h>
-> +#include <sys/syscall.h>
->
->  #define STRUCT_TO_CHAR_PTR(struct_name) (const char *)&(struct struct_name)
->
-> @@ -452,6 +453,7 @@ static struct core_reloc_test_case test_cases[] = {
->  struct data {
->         char in[256];
->         char out[256];
-> +       uint64_t my_pid_tgid;
->  };
->
->  static size_t roundup_page(size_t sz)
-> @@ -471,9 +473,12 @@ void test_core_reloc(void)
->         struct bpf_map *data_map;
->         struct bpf_program *prog;
->         struct bpf_object *obj;
-> +       uint64_t my_pid_tgid;
->         struct data *data;
->         void *mmap_data = NULL;
->
-> +       my_pid_tgid = getpid() | ((uint64_t)syscall(SYS_gettid) << 32);
-> +
->         for (i = 0; i < ARRAY_SIZE(test_cases); i++) {
->                 test_case = &test_cases[i];
->                 if (!test__start_subtest(test_case->case_name))
-> @@ -517,11 +522,6 @@ void test_core_reloc(void)
->                                 goto cleanup;
->                 }
->
-> -               link = bpf_program__attach_raw_tracepoint(prog, tp_name);
-> -               if (CHECK(IS_ERR(link), "attach_raw_tp", "err %ld\n",
-> -                         PTR_ERR(link)))
-> -                       goto cleanup;
-> -
->                 data_map = bpf_object__find_map_by_name(obj, "test_cor.bss");
->                 if (CHECK(!data_map, "find_data_map", "data map not found\n"))
->                         goto cleanup;
-> @@ -537,6 +537,12 @@ void test_core_reloc(void)
->
->                 memset(mmap_data, 0, sizeof(*data));
->                 memcpy(data->in, test_case->input, test_case->input_len);
-> +               data->my_pid_tgid = my_pid_tgid;
-> +
-> +               link = bpf_program__attach_raw_tracepoint(prog, tp_name);
-> +               if (CHECK(IS_ERR(link), "attach_raw_tp", "err %ld\n",
-> +                         PTR_ERR(link)))
-> +                       goto cleanup;
->
->                 /* trigger test run */
->                 usleep(1);
-> diff --git a/tools/testing/selftests/bpf/progs/test_core_reloc_kernel.c b/tools/testing/selftests/bpf/progs/test_core_reloc_kernel.c
-> index a4b5e0562ed5..d2fe8f337846 100644
-> --- a/tools/testing/selftests/bpf/progs/test_core_reloc_kernel.c
-> +++ b/tools/testing/selftests/bpf/progs/test_core_reloc_kernel.c
-> @@ -11,6 +11,7 @@ char _license[] SEC("license") = "GPL";
->  static volatile struct data {
->         char in[256];
->         char out[256];
-> +       uint64_t my_pid_tgid;
->  } data;
+On Thu, Nov 21, 2019 at 06:41:31PM -0500, Paul Moore wrote:
+> On Wed, Nov 20, 2019 at 4:49 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> > On Wed, Nov 20, 2019 at 1:46 PM Daniel Borkmann <daniel@iogearbox.net> =
+wrote:
+> > > On 11/20/19 10:38 PM, Jiri Olsa wrote:
+> > > > From: Daniel Borkmann <daniel@iogearbox.net>
+> > > >
+> > > > Allow for audit messages to be emitted upon BPF program load and
+> > > > unload for having a timeline of events. The load itself is in
+> > > > syscall context, so additional info about the process initiating
+> > > > the BPF prog creation can be logged and later directly correlated
+> > > > to the unload event.
+> > > >
+> > > > The only info really needed from BPF side is the globally unique
+> > > > prog ID where then audit user space tooling can query / dump all
+> > > > info needed about the specific BPF program right upon load event
+> > > > and enrich the record, thus these changes needed here can be kept
+> > > > small and non-intrusive to the core.
+> > > >
+> > > > Raw example output:
+> > > >
+> > > >    # auditctl -D
+> > > >    # auditctl -a always,exit -F arch=3Dx86_64 -S bpf
+> > > >    # ausearch --start recent -m 1334
+> > > >    [...]
+> > > >    ----
+> > > >    time->Wed Nov 20 12:45:51 2019
+> > > >    type=3DPROCTITLE msg=3Daudit(1574271951.590:8974): proctitle=3D"=
+./test_verifier"
+> > > >    type=3DSYSCALL msg=3Daudit(1574271951.590:8974): arch=3Dc000003e=
+ syscall=3D321 success=3Dyes exit=3D14 a0=3D5 a1=3D7ffe2d923e80 a2=3D78 a3=
+=3D0 items=3D0 ppid=3D742 pid=3D949 auid=3D0 uid=3D0 gid=3D0 euid=3D0 suid=
+=3D0 fsuid=3D0 egid=3D0 sgid=3D0 fsgid=3D0 tty=3Dpts0 ses=3D2 comm=3D"test_=
+verifier" exe=3D"/root/bpf-next/tools/testing/selftests/bpf/test_verifier" =
+subj=3Dunconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 key=3D(null)
+> > > >    type=3DUNKNOWN[1334] msg=3Daudit(1574271951.590:8974): auid=3D0 =
+uid=3D0 gid=3D0 ses=3D2 subj=3Dunconfined_u:unconfined_r:unconfined_t:s0-s0=
+:c0.c1023 pid=3D949 comm=3D"test_verifier" exe=3D"/root/bpf-next/tools/test=
+ing/selftests/bpf/test_verifier" prog-id=3D3260 event=3DLOAD
+> > > >    ----
+> > > >    time->Wed Nov 20 12:45:51 2019
+> > > > type=3DUNKNOWN[1334] msg=3Daudit(1574271951.590:8975): prog-id=3D32=
+60 event=3DUNLOAD
+> > > >    ----
+> > > >    [...]
+> > > >
+> > > > Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+> > > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > >
+> > > LGTM, thanks for the rebase!
+> >
+> > Applied to bpf-next. Thanks!
+>=20
+> [NOTE: added linux-audit to the To/CC line]
+>=20
+> Wait a minute, why was the linux-audit list not CC'd on this?  Why are
+> you merging a patch into -next that adds to the uapi definition *and*
+> creates a new audit record while we are at -rc8?
 
-There was a conflict here, since global data support patchset was
-already applied.
-I resolved it and applied to bpf-next.
-Thanks
+my bad sorry, I included only maintainers
+there was previous RFC post:
+  https://lore.kernel.org/netdev/20191120143810.8852-1-jolsa@kernel.org/
+
+but I guess the patch followed up too fast
+
+> Aside from that I'm concerned that you are relying on audit userspace
+> changes that might not be okay; I see the PR below, but I don't see
+> any comment on it from Steve (it is his audit userspace).  I also
+> don't see a corresponding test added to the audit-testsuite, which is
+> a common requirement for new audit functionality (link below).  I'm
+> also fairly certain we don't want this new BPF record to look like how
+> you've coded it up in bpf_audit_prog(); duplicating the fields with
+> audit_log_task() is wrong, you've either already got them via an
+> associated record (which you get from passing non-NULL as the first
+> parameter to audit_log_start()), or you don't because there is no
+> associated syscall/task (which you get from passing NULL as the first
+> parameter).  Please revert, un-merge, etc. this patch from bpf-next;
+> it should not go into Linus' tree as written.
+
+the original audit approach for BPF notification was declined
+in favor of perf-based approach:
+  https://marc.info/?l=3Dlinux-netdev&m=3D153866106418036&w=3D2
+
+We tried to add perf based notification support to auditd,
+but it did not fit and was nack-ed by audit guys:
+  https://www.redhat.com/archives/linux-audit/2019-August/msg00004.html
+
+so we returned to the original approach
+
+>=20
+> Audit userspace PR:
+> * https://github.com/linux-audit/audit-userspace/pull/104
+
+this is the perf-based notification approach, that got nacked
+
+>=20
+> Audit test suite:
+> * https://github.com/linux-audit/audit-testsuite
+
+I'll check on these
+
+thanks,
+jirka
+
