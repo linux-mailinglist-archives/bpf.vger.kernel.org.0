@@ -2,293 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 988FC105E15
-	for <lists+bpf@lfdr.de>; Fri, 22 Nov 2019 02:15:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A3D9105ECB
+	for <lists+bpf@lfdr.de>; Fri, 22 Nov 2019 03:57:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726335AbfKVBPT convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 21 Nov 2019 20:15:19 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:15244 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726265AbfKVBPT (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 21 Nov 2019 20:15:19 -0500
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xAM1EGSR008690
-        for <bpf@vger.kernel.org>; Thu, 21 Nov 2019 17:15:18 -0800
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2wda3vmcgg-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 21 Nov 2019 17:15:17 -0800
-Received: from 2401:db00:30:6007:face:0:1:0 (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 21 Nov 2019 17:15:16 -0800
-Received: by devbig007.ftw2.facebook.com (Postfix, from userid 572438)
-        id 4D8BD760B98; Thu, 21 Nov 2019 17:15:15 -0800 (PST)
-Smtp-Origin-Hostprefix: devbig
-From:   Alexei Starovoitov <ast@kernel.org>
-Smtp-Origin-Hostname: devbig007.ftw2.facebook.com
-To:     <davem@davemloft.net>
-CC:     <daniel@iogearbox.net>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <kernel-team@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next] selftests/bpf: Add BPF trampoline performance test
-Date:   Thu, 21 Nov 2019 17:15:15 -0800
-Message-ID: <20191122011515.255371-1-ast@kernel.org>
-X-Mailer: git-send-email 2.23.0
+        id S1726539AbfKVC5A (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Nov 2019 21:57:00 -0500
+Received: from hqemgate16.nvidia.com ([216.228.121.65]:4158 "EHLO
+        hqemgate16.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726343AbfKVC47 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Nov 2019 21:56:59 -0500
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate16.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5dd74e740000>; Thu, 21 Nov 2019 18:56:52 -0800
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Thu, 21 Nov 2019 18:56:51 -0800
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Thu, 21 Nov 2019 18:56:51 -0800
+Received: from [10.2.168.213] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 22 Nov
+ 2019 02:56:50 +0000
+Subject: Re: [PATCH v7 02/24] mm/gup: factor out duplicate code from four
+ routines
+To:     Jan Kara <jack@suse.cz>
+CC:     Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, <bpf@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <kvm@vger.kernel.org>,
+        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <linux-media@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <netdev@vger.kernel.org>,
+        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>
+References: <20191121071354.456618-1-jhubbard@nvidia.com>
+ <20191121071354.456618-3-jhubbard@nvidia.com> <20191121080356.GA24784@lst.de>
+ <852f6c27-8b65-547b-89e0-e8f32a4d17b9@nvidia.com>
+ <20191121095411.GC18190@quack2.suse.cz>
+From:   John Hubbard <jhubbard@nvidia.com>
+X-Nvconfidentiality: public
+Message-ID: <9d0846af-2c4f-7cda-dfcb-1f642943afea@nvidia.com>
+Date:   Thu, 21 Nov 2019 18:54:02 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
- definitions=2019-11-21_07:2019-11-21,2019-11-21 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0 adultscore=0
- mlxlogscore=976 lowpriorityscore=0 priorityscore=1501 impostorscore=0
- suspectscore=1 bulkscore=0 clxscore=1015 mlxscore=0 spamscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1910280000 definitions=main-1911220008
-X-FB-Internal: deliver
+In-Reply-To: <20191121095411.GC18190@quack2.suse.cz>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1574391412; bh=qs/HIaIDAchvyMkQnxvFfFcxB81lObthoFNUVM9HFsU=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=ea5W7/2c5vGNy7OLObdGvq5o0IpGBD08qzI9LgcD4V8BzKvR7hLDcVgsFBzIPWltE
+         d8PXmpt/WgSDLuhJB1bSFzEA5jjhwY4dlcU7E+jQRx3TB5rkLOwlZyYegEL3tsBCr8
+         8qN6mxRQSSTP+FNbJyR7Zo1HLIMkYFYKo0hlXeg0mt5hFKo6iVEhrdf4E8SgIeOW2y
+         us/ORlXUDHvqcnaCH9l42SZAxDz+ZaaZrH8tpmFx0pDTmT79WYa//P0TZxa1PMT2Ec
+         60tYwrFVvqZaHos2D7eAOKA1eeY7xDL9USjPj3cYeVVtnic4Fxyow9kLNCXK7YejUg
+         or0Rt6li4HM5w==
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add a test that benchmarks different ways of attaching BPF program to a kernel function.
-Here are the results for 2.4Ghz x86 cpu on a kernel without mitigations:
-$ ./test_progs -n 49 -v|grep events
-task_rename base	2743K events per sec
-task_rename kprobe	2419K events per sec
-task_rename kretprobe	1876K events per sec
-task_rename raw_tp	2578K events per sec
-task_rename fentry	2710K events per sec
-task_rename fexit	2685K events per sec
+On 11/21/19 1:54 AM, Jan Kara wrote:
+> On Thu 21-11-19 00:29:59, John Hubbard wrote:
+>>>
+>>> Otherwise this looks fine and might be a worthwhile cleanup to feed
+>>> Andrew for 5.5 independent of the gut of the changes.
+>>>
+>>> Reviewed-by: Christoph Hellwig <hch@lst.de>
+>>>
+>>
+>> Thanks for the reviews! Say, it sounds like your view here is that this
+>> series should be targeted at 5.6 (not 5.5), is that what you have in mind?
+>> And get the preparatory patches (1-9, and maybe even 10-16) into 5.5?
+> 
+> One more note :) If you are going to push pin_user_pages() interfaces
+> (which I'm fine with), it would probably make sense to push also the
+> put_user_pages() -> unpin_user_pages() renaming so that that inconsistency
+> in naming does not exist in the released upstream kernel.
+> 
+> 								Honza
 
-On a kernel with retpoline:
-$ ./test_progs -n 49 -v|grep events
-task_rename base	2401K events per sec
-task_rename kprobe	1930K events per sec
-task_rename kretprobe	1485K events per sec
-task_rename raw_tp	2053K events per sec
-task_rename fentry	2351K events per sec
-task_rename fexit	2185K events per sec
+Yes, that's what this patch series does. But I'm not sure if "push" here
+means, "push out: defer to 5.6", "push (now) into 5.5", or "advocate for"?
 
-All 5 approaches:
-- kprobe/kretprobe in __set_task_comm()
-- raw tracepoint in trace_task_rename()
-- fentry/fexit in __set_task_comm()
-are roughly equivalent.
+I will note that it's not going to be easy to rename in one step, now
+that this is being split up. Because various put_user_pages()-based items
+are going into 5.5 via different maintainer trees now. Probably I'd need
+to introduce unpin_user_page() alongside put_user_page()...thoughts?
 
-__set_task_comm() by itself is quite fast, so any extra instructions add up.
-Until BPF trampoline was introduced the fastest mechanism was raw tracepoint.
-kprobe via ftrace was second best. kretprobe is slow due to trap. New
-fentry/fexit methods via BPF trampoline are clearly the fastest and the
-difference is more pronounced with retpoline on, since BPF trampoline doesn't
-use indirect jumps.
-
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
----
- .../selftests/bpf/prog_tests/test_overhead.c  | 142 ++++++++++++++++++
- .../selftests/bpf/progs/test_overhead.c       |  43 ++++++
- 2 files changed, 185 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/test_overhead.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_overhead.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_overhead.c b/tools/testing/selftests/bpf/prog_tests/test_overhead.c
-new file mode 100644
-index 000000000000..c32aa28bd93f
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/test_overhead.c
-@@ -0,0 +1,142 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/* Copyright (c) 2019 Facebook */
-+#define _GNU_SOURCE
-+#include <sched.h>
-+#include <test_progs.h>
-+
-+#define MAX_CNT 100000
-+
-+static __u64 time_get_ns(void)
-+{
-+	struct timespec ts;
-+
-+	clock_gettime(CLOCK_MONOTONIC, &ts);
-+	return ts.tv_sec * 1000000000ull + ts.tv_nsec;
-+}
-+
-+static int test_task_rename(const char *prog)
-+{
-+	int i, fd, duration = 0, err;
-+	char buf[] = "test\n";
-+	__u64 start_time;
-+
-+	fd = open("/proc/self/comm", O_WRONLY|O_TRUNC);
-+	if (CHECK(fd < 0, "open /proc", "err %d", errno))
-+		return -1;
-+	start_time = time_get_ns();
-+	for (i = 0; i < MAX_CNT; i++) {
-+		err = write(fd, buf, sizeof(buf));
-+		if (err < 0) {
-+			CHECK(err < 0, "task rename", "err %d", errno);
-+			close(fd);
-+			return -1;
-+		}
-+	}
-+	printf("task_rename %s\t%lluK events per sec\n", prog,
-+	       MAX_CNT * 1000000ll / (time_get_ns() - start_time));
-+	close(fd);
-+	return 0;
-+}
-+
-+static void test_run(const char *prog)
-+{
-+	test_task_rename(prog);
-+}
-+
-+static void setaffinity(void)
-+{
-+	cpu_set_t cpuset;
-+	int cpu = 0;
-+
-+	CPU_ZERO(&cpuset);
-+	CPU_SET(cpu, &cpuset);
-+	sched_setaffinity(0, sizeof(cpuset), &cpuset);
-+}
-+
-+void test_test_overhead(void)
-+{
-+	const char *kprobe_name = "kprobe/__set_task_comm";
-+	const char *kretprobe_name = "kretprobe/__set_task_comm";
-+	const char *raw_tp_name = "raw_tp/task_rename";
-+	const char *fentry_name = "fentry/__set_task_comm";
-+	const char *fexit_name = "fexit/__set_task_comm";
-+	const char *kprobe_func = "__set_task_comm";
-+	struct bpf_program *kprobe_prog, *kretprobe_prog, *raw_tp_prog;
-+	struct bpf_program *fentry_prog, *fexit_prog;
-+	struct bpf_object *obj;
-+	struct bpf_link *link;
-+	int err, duration = 0;
-+
-+	obj = bpf_object__open_file("./test_overhead.o", NULL);
-+	if (CHECK(IS_ERR(obj), "obj_open_file", "err %ld\n", PTR_ERR(obj)))
-+		return;
-+
-+	kprobe_prog = bpf_object__find_program_by_title(obj, kprobe_name);
-+	if (CHECK(!kprobe_prog, "find_probe",
-+		  "prog '%s' not found\n", kprobe_name))
-+		goto cleanup;
-+	kretprobe_prog = bpf_object__find_program_by_title(obj, kretprobe_name);
-+	if (CHECK(!kretprobe_prog, "find_probe",
-+		  "prog '%s' not found\n", kretprobe_name))
-+		goto cleanup;
-+	raw_tp_prog = bpf_object__find_program_by_title(obj, raw_tp_name);
-+	if (CHECK(!raw_tp_prog, "find_probe",
-+		  "prog '%s' not found\n", raw_tp_name))
-+		goto cleanup;
-+	fentry_prog = bpf_object__find_program_by_title(obj, fentry_name);
-+	if (CHECK(!fentry_prog, "find_probe",
-+		  "prog '%s' not found\n", fentry_name))
-+		goto cleanup;
-+	fexit_prog = bpf_object__find_program_by_title(obj, fexit_name);
-+	if (CHECK(!fexit_prog, "find_probe",
-+		  "prog '%s' not found\n", fexit_name))
-+		goto cleanup;
-+
-+	err = bpf_object__load(obj);
-+	if (CHECK(err, "obj_load", "err %d\n", err))
-+		goto cleanup;
-+
-+	setaffinity();
-+
-+	/* base line run */
-+	test_run("base");
-+
-+	/* attach kprobe */
-+	link = bpf_program__attach_kprobe(kprobe_prog, false /* retprobe */,
-+					  kprobe_func);
-+	if (CHECK(IS_ERR(link), "attach_kprobe", "err %ld\n", PTR_ERR(link)))
-+		goto cleanup;
-+	test_run("kprobe");
-+	bpf_link__destroy(link);
-+
-+	/* attach kretprobe */
-+	link = bpf_program__attach_kprobe(kretprobe_prog, true /* retprobe */,
-+					  kprobe_func);
-+	if (CHECK(IS_ERR(link), "attach kretprobe", "err %ld\n", PTR_ERR(link)))
-+		goto cleanup;
-+	test_run("kretprobe");
-+	bpf_link__destroy(link);
-+
-+	/* attach raw_tp */
-+	link = bpf_program__attach_raw_tracepoint(raw_tp_prog, "task_rename");
-+	if (CHECK(IS_ERR(link), "attach fentry", "err %ld\n", PTR_ERR(link)))
-+		goto cleanup;
-+	test_run("raw_tp");
-+	bpf_link__destroy(link);
-+
-+	/* attach fentry */
-+	link = bpf_program__attach_trace(fentry_prog);
-+	if (CHECK(IS_ERR(link), "attach fentry", "err %ld\n", PTR_ERR(link)))
-+		goto cleanup;
-+	test_run("fentry");
-+	bpf_link__destroy(link);
-+
-+	/* attach fexit */
-+	link = bpf_program__attach_trace(fexit_prog);
-+	if (CHECK(IS_ERR(link), "attach fexit", "err %ld\n", PTR_ERR(link)))
-+		goto cleanup;
-+	test_run("fexit");
-+	bpf_link__destroy(link);
-+cleanup:
-+	bpf_object__close(obj);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_overhead.c b/tools/testing/selftests/bpf/progs/test_overhead.c
-new file mode 100644
-index 000000000000..ef06b2693f96
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_overhead.c
-@@ -0,0 +1,43 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2019 Facebook */
-+#include <linux/bpf.h>
-+#include "bpf_helpers.h"
-+#include "bpf_tracing.h"
-+
-+SEC("kprobe/__set_task_comm")
-+int prog1(struct pt_regs *ctx)
-+{
-+	return 0;
-+}
-+
-+SEC("kretprobe/__set_task_comm")
-+int prog2(struct pt_regs *ctx)
-+{
-+	return 0;
-+}
-+
-+SEC("raw_tp/task_rename")
-+int prog3(struct bpf_raw_tracepoint_args *ctx)
-+{
-+	return 0;
-+}
-+
-+struct __set_task_comm_args {
-+	struct task_struct *tsk;
-+	const char *buf;
-+	ku8 exec;
-+};
-+
-+SEC("fentry/__set_task_comm")
-+int prog4(struct __set_task_comm_args *ctx)
-+{
-+	return 0;
-+}
-+
-+SEC("fexit/__set_task_comm")
-+int prog5(struct __set_task_comm_args *ctx)
-+{
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
+thanks,
 -- 
-2.23.0
-
+John Hubbard
+NVIDIA
+  
