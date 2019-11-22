@@ -2,102 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A8FD1068EB
-	for <lists+bpf@lfdr.de>; Fri, 22 Nov 2019 10:36:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D37AD106F68
+	for <lists+bpf@lfdr.de>; Fri, 22 Nov 2019 12:15:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726563AbfKVJgJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 Nov 2019 04:36:09 -0500
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:53286 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726500AbfKVJgJ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 22 Nov 2019 04:36:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1574415368;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aU1zVBlNkCLJysnB+cZtbLnWGPv5IyTK8c2mO5gdd2M=;
-        b=d0FNyR7aZkBvUHsm4PQcurLkNyDN8C0rKR8qpHAqYg2e5yuEms5GH5KMy2NA/n7n4I5H28
-        DS1s8RSVb74l+Lc2FWqofOPMGvdgOjSSAqqCLZXeUvYkxPfmJXW6ha4FoWz1Qhu4U87dDa
-        //2H4gfx0Ct/pIFdcJVOdi8NNM+vz1A=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-25-6rWHyCpnOiizGqJSIl9-oQ-1; Fri, 22 Nov 2019 04:36:04 -0500
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 40928DBE7;
-        Fri, 22 Nov 2019 09:36:02 +0000 (UTC)
-Received: from krava (unknown [10.43.17.48])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 866E41036C8A;
-        Fri, 22 Nov 2019 09:35:56 +0000 (UTC)
-Date:   Fri, 22 Nov 2019 10:35:55 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        linux-audit@redhat.com, Jiri Olsa <jolsa@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andriin@fb.com>,
-        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Steve Grubb <sgrubb@redhat.com>,
-        David Miller <davem@redhat.com>,
-        Eric Paris <eparis@redhat.com>, Jiri Benc <jbenc@redhat.com>
-Subject: Re: [PATCH] bpf: emit audit messages upon successful prog load and
- unload
-Message-ID: <20191122093555.GC8287@krava>
-References: <20191120213816.8186-1-jolsa@kernel.org>
- <8c928ec4-9e43-3e2a-7005-21f40fcca061@iogearbox.net>
- <CAADnVQKu-ZgFTaSMH=Q-jMOYYvE32TF2b2hq1=dmDV8wAf18pg@mail.gmail.com>
- <CAHC9VhQbQoXacbTCNJPGNzFOv30PwLeiWu4ROQFU46=saTeTNQ@mail.gmail.com>
+        id S1727544AbfKVLPJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Nov 2019 06:15:09 -0500
+Received: from mx2.suse.de ([195.135.220.15]:34110 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729023AbfKVLPI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 Nov 2019 06:15:08 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 21586B2F6;
+        Fri, 22 Nov 2019 11:15:04 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 4FA541E484C; Fri, 22 Nov 2019 12:15:02 +0100 (CET)
+Date:   Fri, 22 Nov 2019 12:15:02 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, bpf@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, kvm@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
+        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>
+Subject: Re: [PATCH v7 02/24] mm/gup: factor out duplicate code from four
+ routines
+Message-ID: <20191122111502.GC26721@quack2.suse.cz>
+References: <20191121071354.456618-1-jhubbard@nvidia.com>
+ <20191121071354.456618-3-jhubbard@nvidia.com>
+ <20191121080356.GA24784@lst.de>
+ <852f6c27-8b65-547b-89e0-e8f32a4d17b9@nvidia.com>
+ <20191121095411.GC18190@quack2.suse.cz>
+ <9d0846af-2c4f-7cda-dfcb-1f642943afea@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHC9VhQbQoXacbTCNJPGNzFOv30PwLeiWu4ROQFU46=saTeTNQ@mail.gmail.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
-X-MC-Unique: 6rWHyCpnOiizGqJSIl9-oQ-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=WINDOWS-1252
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <9d0846af-2c4f-7cda-dfcb-1f642943afea@nvidia.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 21, 2019 at 06:41:31PM -0500, Paul Moore wrote:
+On Thu 21-11-19 18:54:02, John Hubbard wrote:
+> On 11/21/19 1:54 AM, Jan Kara wrote:
+> > On Thu 21-11-19 00:29:59, John Hubbard wrote:
+> > > > 
+> > > > Otherwise this looks fine and might be a worthwhile cleanup to feed
+> > > > Andrew for 5.5 independent of the gut of the changes.
+> > > > 
+> > > > Reviewed-by: Christoph Hellwig <hch@lst.de>
+> > > > 
+> > > 
+> > > Thanks for the reviews! Say, it sounds like your view here is that this
+> > > series should be targeted at 5.6 (not 5.5), is that what you have in mind?
+> > > And get the preparatory patches (1-9, and maybe even 10-16) into 5.5?
+> > 
+> > One more note :) If you are going to push pin_user_pages() interfaces
+> > (which I'm fine with), it would probably make sense to push also the
+> > put_user_pages() -> unpin_user_pages() renaming so that that inconsistency
+> > in naming does not exist in the released upstream kernel.
+> > 
+> > 								Honza
+> 
+> Yes, that's what this patch series does. But I'm not sure if "push" here
+> means, "push out: defer to 5.6", "push (now) into 5.5", or "advocate for"?
 
-SNIP
+I meant to include the patch in the "for 5.5" batch.
 
-> a common requirement for new audit functionality (link below).  I'm
-> also fairly certain we don't want this new BPF record to look like how
-> you've coded it up in bpf_audit_prog(); duplicating the fields with
-> audit_log_task() is wrong, you've either already got them via an
-> associated record (which you get from passing non-NULL as the first
-> parameter to audit_log_start()), or you don't because there is no
-> associated syscall/task (which you get from passing NULL as the first
+> I will note that it's not going to be easy to rename in one step, now
+> that this is being split up. Because various put_user_pages()-based items
+> are going into 5.5 via different maintainer trees now. Probably I'd need
+> to introduce unpin_user_page() alongside put_user_page()...thoughts?
 
-ok, I'll send change that reflects this.. together with the test
+Yes, I understand that moving that patch from the end of the series would
+cause fair amount of conflicts. I was hoping that you could generate the
+patch with sed/Coccinelle and then rebasing what remains for 5.6 on top of
+that patch should not be that painful so overall it should not be that much
+work. But I may be wrong so if it proves to be too tedious, let's just
+postpone the renaming to 5.6. I don't find having both unpin_user_page()
+and put_user_page() a better alternative to current state. Thanks!
 
-thanks,
-jirka
-
-> parameter).  Please revert, un-merge, etc. this patch from bpf-next;
-> it should not go into Linus' tree as written.
->=20
-> Audit userspace PR:
-> * https://github.com/linux-audit/audit-userspace/pull/104
->=20
-> Audit test suite:
-> * https://github.com/linux-audit/audit-testsuite
->=20
-> Audit folks, here is a link to the thread in the archives:
-> * https://lore.kernel.org/bpf/20191120213816.8186-1-jolsa@kernel.org/T/#u
->=20
-> --=20
-> paul moore
-> www.paul-moore.com
->=20
-
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
