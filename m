@@ -2,124 +2,168 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A3D9105ECB
-	for <lists+bpf@lfdr.de>; Fri, 22 Nov 2019 03:57:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 571EE106058
+	for <lists+bpf@lfdr.de>; Fri, 22 Nov 2019 06:42:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726539AbfKVC5A (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Nov 2019 21:57:00 -0500
-Received: from hqemgate16.nvidia.com ([216.228.121.65]:4158 "EHLO
-        hqemgate16.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726343AbfKVC47 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Nov 2019 21:56:59 -0500
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate16.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5dd74e740000>; Thu, 21 Nov 2019 18:56:52 -0800
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Thu, 21 Nov 2019 18:56:51 -0800
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Thu, 21 Nov 2019 18:56:51 -0800
-Received: from [10.2.168.213] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 22 Nov
- 2019 02:56:50 +0000
-Subject: Re: [PATCH v7 02/24] mm/gup: factor out duplicate code from four
- routines
-To:     Jan Kara <jack@suse.cz>
-CC:     Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, <bpf@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <kvm@vger.kernel.org>,
-        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-media@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>, <netdev@vger.kernel.org>,
-        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>
-References: <20191121071354.456618-1-jhubbard@nvidia.com>
- <20191121071354.456618-3-jhubbard@nvidia.com> <20191121080356.GA24784@lst.de>
- <852f6c27-8b65-547b-89e0-e8f32a4d17b9@nvidia.com>
- <20191121095411.GC18190@quack2.suse.cz>
-From:   John Hubbard <jhubbard@nvidia.com>
-X-Nvconfidentiality: public
-Message-ID: <9d0846af-2c4f-7cda-dfcb-1f642943afea@nvidia.com>
-Date:   Thu, 21 Nov 2019 18:54:02 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        id S1726364AbfKVFm0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Nov 2019 00:42:26 -0500
+Received: from mail-pj1-f65.google.com ([209.85.216.65]:45424 "EHLO
+        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726100AbfKVFm0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 Nov 2019 00:42:26 -0500
+Received: by mail-pj1-f65.google.com with SMTP id m71so2554610pjb.12;
+        Thu, 21 Nov 2019 21:42:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=N/xq13vGXiWvpwA7o5ubr/SQv5Qk0ryWNspqTCcKzVM=;
+        b=mk7ReanpUIZYts/l/C999xuOMmVLfqqzs0MpoR1zuoQN4LC7IuYHBNOcQffZo+nuMQ
+         fRs/cK/UpvkfmuoHbuGFfAnNKWuiT+iuA6g7M50zlj0RGROMEm5LYaGI7UrWsfeIX+zz
+         YQ9WC9D724dm4b6uLIGELStgYrnN+0l/SFokEmWU9OrWdVFGfCA9zXm9MDdEbdbBll/X
+         7+Hfo6naCHP0RniKY+2ayyh5FwQFI0xZpO/xSAv4J7JhKa3PE8qcjL3DdWmdpBX5zRXh
+         HFV/Tv8vj6OlvGMU0scc67F/g3qnIMOtk15cT7x2PvYdL58bCt+VZEPiUi6mqWXBDwnM
+         D+qQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=N/xq13vGXiWvpwA7o5ubr/SQv5Qk0ryWNspqTCcKzVM=;
+        b=UzpWvSC8a8GfTkJlxcuaa27DmVuY2KEDMAD4cKB90qzOlGcWfUb+YR234l8yC4B6uK
+         SAGr4jiREUZhcuMDPNIPCx2EoiIkZ5ecgm/lM9zWeY6d9nYUe57zteyXEL1xbYRnv2mc
+         O+REBCyGb36XBHmX2/rK/FCSURckKhMsRunNBop9HU/NP1yKlt5bAEL9kwC0bkGQOX7g
+         qSqc7tMDjEOt2CECSM5kg5f3eyRL/sKImJkg9Cnr0O0KQ28oYqmjfQmBv7v4KOh8aljq
+         RB5Yh1qrRGZey/Yc8VbPoNpbkzaZ2vynj2Iu6/2eLsG/f9OGKW1Em9mP0ZJUq/SzKqXO
+         U2lw==
+X-Gm-Message-State: APjAAAWvuPtUny7QFUg86fMOgSvvSJnK0ltZzw5yv9xTKk6sn7kVRfi4
+        U/nKYyN9ntgh6jLhyPyljQ4=
+X-Google-Smtp-Source: APXvYqzstknxYzuGGKrXO06rsnCSJWi/aaRPTCAyTjuLKgzAc1ojp7WXFsQTvtnVoYwtnpeRtGrRRQ==
+X-Received: by 2002:a17:90b:300c:: with SMTP id hg12mr16713316pjb.75.1574401345200;
+        Thu, 21 Nov 2019 21:42:25 -0800 (PST)
+Received: from [172.20.20.103] ([222.151.198.97])
+        by smtp.gmail.com with ESMTPSA id h9sm5010634pgk.84.2019.11.21.21.42.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Nov 2019 21:42:24 -0800 (PST)
+Subject: Re: [RFC PATCH v2 bpf-next 00/15] xdp_flow: Flow offload to XDP
+To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        Pravin B Shelar <pshelar@ovn.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        William Tu <u9012063@gmail.com>,
+        Stanislav Fomichev <sdf@fomichev.me>
+References: <20191018040748.30593-1-toshiaki.makita1@gmail.com>
+ <5da9d8c125fd4_31cf2adc704105c456@john-XPS-13-9370.notmuch>
+ <22e6652c-e635-4349-c863-255d6c1c548b@gmail.com>
+ <5daf34614a4af_30ac2b1cb5d205bce4@john-XPS-13-9370.notmuch>
+ <87h840oese.fsf@toke.dk>
+ <5db128153c75_549d2affde7825b85e@john-XPS-13-9370.notmuch>
+ <87sgniladm.fsf@toke.dk> <a7f3d86b-c83c-7b0d-c426-684b8dfe4344@gmail.com>
+ <87zhhmrz7w.fsf@toke.dk> <b2ecf3e6-a8f1-cfd9-0dd3-e5f4d5360c0b@gmail.com>
+ <87zhhhnmg8.fsf@toke.dk> <640418c3-54ba-cd62-304f-fd9f73f25a42@gmail.com>
+ <87blthox30.fsf@toke.dk> <c1b7ff64-6574-74c7-cd6b-5aa353ec80ce@gmail.com>
+ <87lfsiocj5.fsf@toke.dk> <6e08f714-6284-6d0d-9cbe-711c64bf97aa@gmail.com>
+ <87k17xcwoq.fsf@toke.dk>
+From:   Toshiaki Makita <toshiaki.makita1@gmail.com>
+Message-ID: <db38dee6-1db9-85f3-7a0c-0bcee13b12ea@gmail.com>
+Date:   Fri, 22 Nov 2019 14:42:18 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-In-Reply-To: <20191121095411.GC18190@quack2.suse.cz>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <87k17xcwoq.fsf@toke.dk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1574391412; bh=qs/HIaIDAchvyMkQnxvFfFcxB81lObthoFNUVM9HFsU=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=ea5W7/2c5vGNy7OLObdGvq5o0IpGBD08qzI9LgcD4V8BzKvR7hLDcVgsFBzIPWltE
-         d8PXmpt/WgSDLuhJB1bSFzEA5jjhwY4dlcU7E+jQRx3TB5rkLOwlZyYegEL3tsBCr8
-         8qN6mxRQSSTP+FNbJyR7Zo1HLIMkYFYKo0hlXeg0mt5hFKo6iVEhrdf4E8SgIeOW2y
-         us/ORlXUDHvqcnaCH9l42SZAxDz+ZaaZrH8tpmFx0pDTmT79WYa//P0TZxa1PMT2Ec
-         60tYwrFVvqZaHos2D7eAOKA1eeY7xDL9USjPj3cYeVVtnic4Fxyow9kLNCXK7YejUg
-         or0Rt6li4HM5w==
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/21/19 1:54 AM, Jan Kara wrote:
-> On Thu 21-11-19 00:29:59, John Hubbard wrote:
+On 2019/11/18 19:20, Toke Høiland-Jørgensen wrote:
+> Toshiaki Makita <toshiaki.makita1@gmail.com> writes:
+> 
+> [... trimming the context a bit ...]
+> 
+>>>>> Take your example of TC rules: You were proposing a flow like this:
+>>>>>
+>>>>> Userspace TC rule -> kernel rule table -> eBPF map -> generated XDP
+>>>>> program
+>>>>>
+>>>>> Whereas what I mean is that we could do this instead:
+>>>>>
+>>>>> Userspace TC rule -> kernel rule table
+>>>>>
+>>>>> and separately
+>>>>>
+>>>>> XDP program -> bpf helper -> lookup in kernel rule table
+>>>>
+>>>> Thanks, now I see what you mean.
+>>>> You expect an XDP program like this, right?
+>>>>
+>>>> int xdp_tc(struct xdp_md *ctx)
+>>>> {
+>>>> 	int act = bpf_xdp_tc_filter(ctx);
+>>>> 	return act;
+>>>> }
 >>>
->>> Otherwise this looks fine and might be a worthwhile cleanup to feed
->>> Andrew for 5.5 independent of the gut of the changes.
+>>> Yes, basically, except that the XDP program would need to parse the
+>>> packet first, and bpf_xdp_tc_filter() would take a parameter struct with
+>>> the parsed values. See the usage of bpf_fib_lookup() in
+>>> bpf/samples/xdp_fwd_kern.c
 >>>
->>> Reviewed-by: Christoph Hellwig <hch@lst.de>
+>>>> But doesn't this way lose a chance to reduce/minimize the program to
+>>>> only use necessary features for this device?
 >>>
+>>> Not necessarily. Since the BPF program does the packet parsing and fills
+>>> in the TC filter lookup data structure, it can limit what features are
+>>> used that way (e.g., if I only want to do IPv6, I just parse the v6
+>>> header, ignore TCP/UDP, and drop everything that's not IPv6). The lookup
+>>> helper could also have a flag argument to disable some of the lookup
+>>> features.
 >>
->> Thanks for the reviews! Say, it sounds like your view here is that this
->> series should be targeted at 5.6 (not 5.5), is that what you have in mind?
->> And get the preparatory patches (1-9, and maybe even 10-16) into 5.5?
+>> It's unclear to me how to configure that.
+>> Use options when attaching the program? Something like
+>> $ xdp_tc attach eth0 --only-with ipv6
+>> But can users always determine their necessary features in advance?
 > 
-> One more note :) If you are going to push pin_user_pages() interfaces
-> (which I'm fine with), it would probably make sense to push also the
-> put_user_pages() -> unpin_user_pages() renaming so that that inconsistency
-> in naming does not exist in the released upstream kernel.
+> That's what I'm doing with xdp-filter now. But the answer to your second
+> question is likely to be 'probably not', so it would be good to not have
+> to do this :)
 > 
-> 								Honza
+>> Frequent manual reconfiguration when TC rules frequently changes does
+>> not sound nice. Or, add hook to kernel to listen any TC filter event
+>> on some daemon and automatically reload the attached program?
+> 
+> Doesn't have to be a kernel hook; we could enhance the userspace tooling
+> to do it. Say we integrate it into 'tc':
+> 
+> - Add a new command 'tc xdp_accel enable <iface> --features [ipv6,etc]'
+> - When adding new rules, add the following logic:
+>    - Check if XDP acceleration is enabled
+>    - If it is, check whether the rule being added fits into the current
+>      'feature set' loaded on that interface.
+>      - If the rule needs more features, reload the XDP program to one
+>        with the needed additional features.
+>      - Or, alternatively, just warn the user and let them manually
+>        replace it?
 
-Yes, that's what this patch series does. But I'm not sure if "push" here
-means, "push out: defer to 5.6", "push (now) into 5.5", or "advocate for"?
+Ok, but there are other userspace tools to configure tc in wild.
+python and golang have their own netlink library project.
+OVS embeds TC netlink handling code in itself. There may be more tools like this.
+I think at least we should have rtnl notification about TC and monitor it
+from daemon, if we want to reload the program from userspace tools.
 
-I will note that it's not going to be easy to rename in one step, now
-that this is being split up. Because various put_user_pages()-based items
-are going into 5.5 via different maintainer trees now. Probably I'd need
-to introduce unpin_user_page() alongside put_user_page()...thoughts?
-
-thanks,
--- 
-John Hubbard
-NVIDIA
-  
+Toshiaki Makita
