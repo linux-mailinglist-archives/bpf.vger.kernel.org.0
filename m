@@ -2,89 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 92DE61080B0
-	for <lists+bpf@lfdr.de>; Sat, 23 Nov 2019 22:04:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB1271080BF
+	for <lists+bpf@lfdr.de>; Sat, 23 Nov 2019 22:13:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726690AbfKWVEk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 23 Nov 2019 16:04:40 -0500
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:35064 "EHLO
+        id S1726676AbfKWVNZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 23 Nov 2019 16:13:25 -0500
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:32913 "EHLO
         mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726638AbfKWVEk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 23 Nov 2019 16:04:40 -0500
-Received: by mail-lj1-f195.google.com with SMTP id j6so2284405lja.2;
-        Sat, 23 Nov 2019 13:04:38 -0800 (PST)
+        with ESMTP id S1726638AbfKWVNY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 23 Nov 2019 16:13:24 -0500
+Received: by mail-lj1-f195.google.com with SMTP id t5so11335468ljk.0;
+        Sat, 23 Nov 2019 13:13:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=n+bqr098826ITu9D+AvY5CnxPGDTup0kvus7bNbcpsY=;
-        b=S6X8Nd9NwDbGHm1vBUzQjDeM6++hy+lALX/aAkMZPQIhwOlZW47InHIG+Yrd+9SarW
-         7l3P4vzCSIDTlLdqGtBj/bTezmxm2PabVQ7JghsSwJHfcSfM5qiYDxRfALElnSnQandO
-         l5lSFGQdGb3yHnY1QmVAnO/EDQrVLPJlwovpqQ3qBx3kx3JLnI3Ok135DHyeW2rS5wtr
-         x2cR7+1Ner6wMcDmAOm9kECT16ZLfswBis9WGw2EhBMA5zw2QLw3SZiYr+Eb4PkyxoDo
-         pi3sofVaOl9bi1H+PGKLJ60asbn6UugIbtnOC+jqnNVVi91B3KQBgUXnc114FCUGknDs
-         5XLA==
+         :cc;
+        bh=ny60vTjb8B7F74H+UvyL8nJBzvp0lTLR06ghkLsh3K0=;
+        b=u14wDT/38xCQld69d3CiNpwOHSf9yUsgK3snETGyMs7PxiUMDDCIRwPvtPqNtF3E1G
+         CspBuwkc3ZX2cikLS8bA9sqLE6i4ajofUrac1Z6sPLASnYhwJDOAJGa/LRGwGMcQR+bE
+         S5Z7sy1xNWEc5FtRGciT3soOS8I2Ga3ZNMvAQadj8TyrkmB0G8P2UQrw1TsjTAN6aCfN
+         ZScAo+pa2c8XhkkNZsfH43shbTjTzZLeLmzNwBYxbch+xCULyCk/wj6skf+qNcWtxDhX
+         H4bGMgrddu1rI3swaUNbJ1Z0p4nzWLoEa7Z7+FzcL3N8fLFrr2f7yhbwL7olV2dFwXf6
+         QNHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=n+bqr098826ITu9D+AvY5CnxPGDTup0kvus7bNbcpsY=;
-        b=PCC/cGafJJu93ARMjxaMJg104Gkweh8V+XgVy7lIyKhGtkUPgp2MgSINsXjFuSeW6i
-         Snwkat7umhfYQTdNfz6m+KJSFahC+EQu4/EN5lV4zZHHEXDOXjAfc+Q6cLUqurW5l3LZ
-         9HU1PRDTRF2bqCIefJY6/WpZjDp8S5pW2a1t4azpblqFhjpOr9lYd7GCI0ez4lL2XFY8
-         N5Zs4yzFrT76lRBzc0lQscxzMv6rJAHllXHsrkKuCfYBWOXibR5EHKxDX+ga1kK6CABQ
-         0PPT7PL0/6d4rda2u3W+TGV5wKDEGSQauHMep3/P3riJbAkMFTZiSaPhpGbX02bfB/qm
-         JK7Q==
-X-Gm-Message-State: APjAAAUafRfQkWXvtsz1xS8Sc2Sb3gsMXcrnztta7k2Uht8cGgzwgXZp
-        SpD89IUxog/IcmPsj1ErgdqMnUsaZoshbUmKilY=
-X-Google-Smtp-Source: APXvYqy0r9yf0N41MXogyG4QJYPW4J4tdMBNV1ER68BJ3+sLAkPWMjifiD0dG9Zvk1rGqrBKWgSvPJqrB4JIqAZD2A4=
-X-Received: by 2002:a2e:970a:: with SMTP id r10mr17167212lji.142.1574543077686;
- Sat, 23 Nov 2019 13:04:37 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=ny60vTjb8B7F74H+UvyL8nJBzvp0lTLR06ghkLsh3K0=;
+        b=CJW95msmWhV4lYjaUY4NsE0ApiJf3xaxSozj+EvIECs/jTygNDdV6Yhu0wlro4wTnR
+         gEuTgd/I3jJk78zaKxQt1t/X6S4zWlAfwnqXD0dW1LOS/jmZqNwM1Qm7MXnV8h+a8/n5
+         M/uXfrHhOVgRprkkZ4Y5ZvmwNQLOJT6m54TuGjH96FMYDj6NnbJDdwus7jlftsN3wc2v
+         bAMftM8WCu3/dEqwY+RwOmi0gmBQfaLRgo9i3DHsVOaG+238mceL9BK2BvBn7p9D8bDw
+         Crhkle9TAKc5Bt28FnVzYrctYv3mLc5DNOrolUGajnybPywDVFchKqHmvPmWAoFzqWsS
+         48fg==
+X-Gm-Message-State: APjAAAXfea2jL2FEqOX+jiTVFp6gRPUm9m7u9ARz1oYu0YHbMVUfAwEw
+        6337VPbAu7fhn+wZwQhIJFYluuvGDWLB2P3gRxI=
+X-Google-Smtp-Source: APXvYqx151eBqF7mIyrydIosrdIQqCIdcQX5cCt6TIofHkt+xt4SDVKwByBLPfl+JWwMCb0raW2OXa9Q7htgiUCHDT8=
+X-Received: by 2002:a2e:574d:: with SMTP id r13mr16638205ljd.10.1574543602154;
+ Sat, 23 Nov 2019 13:13:22 -0800 (PST)
 MIME-Version: 1.0
-References: <40baf8f3507cac4851a310578edfb98ce73b5605.1574541375.git.daniel@iogearbox.net>
-In-Reply-To: <40baf8f3507cac4851a310578edfb98ce73b5605.1574541375.git.daniel@iogearbox.net>
+References: <20191123202504.1502696-1-kafai@fb.com>
+In-Reply-To: <20191123202504.1502696-1-kafai@fb.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Sat, 23 Nov 2019 13:04:26 -0800
-Message-ID: <CAADnVQLkMH6NY8phOemtQSF3Y-D4s6k-f34wz6Edq2NjdY+bWg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: add bpf_jit_blinding_enabled for !CONFIG_BPF_JIT
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andriin@fb.com>
+Date:   Sat, 23 Nov 2019 13:13:11 -0800
+Message-ID: <CAADnVQJVLdfMYZx4xJz3PLHusASxLMb9YVS+Nyqzu_Q2MRX0GA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: Introduce BPF_TRACE_x helper for the
+ tracing tests
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>,
+        Kernel Team <kernel-team@fb.com>,
+        Network Development <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Nov 23, 2019 at 12:37 PM Daniel Borkmann <daniel@iogearbox.net> wro=
-te:
+On Sat, Nov 23, 2019 at 12:25 PM Martin KaFai Lau <kafai@fb.com> wrote:
 >
-> Add a definition of bpf_jit_blinding_enabled() when CONFIG_BPF_JIT is not=
- set
-> in order to fix a recent build regression:
+> For BPF_PROG_TYPE_TRACING, the bpf_prog's ctx is an array of u64.
+> This patch borrows the idea from BPF_CALL_x in filter.h to
+> convert a u64 to the arg type of the traced function.
 >
->   [...]
->   CC      kernel/bpf/verifier.o
->   CC      kernel/bpf/inode.o
-> kernel/bpf/verifier.c: In function =E2=80=98fixup_bpf_calls=E2=80=99:
-> kernel/bpf/verifier.c:9132:25: error: implicit declaration of function =
-=E2=80=98bpf_jit_blinding_enabled=E2=80=99; did you mean =E2=80=98bpf_jit_k=
-allsyms_enabled=E2=80=99? [-Werror=3Dimplicit-function-declaration]
->  9132 |  bool expect_blinding =3D bpf_jit_blinding_enabled(prog);
->       |                         ^~~~~~~~~~~~~~~~~~~~~~~~
->       |                         bpf_jit_kallsyms_enabled
->   CC      kernel/bpf/helpers.o
->   CC      kernel/bpf/hashtab.o
->   [...]
+> The new BPF_TRACE_x has an arg to specify the return type of a bpf_prog.
+> It will be used in the future TCP-ops bpf_prog that may return "void".
 >
-> Fixes: bad63c9ea554 ("bpf: Constant map key tracking for prog array pokes=
-")
-> Reported-by: Jakub Sitnicki <jakub@cloudflare.com>
-> Reported-by: Andrii Nakryiko <andriin@fb.com>
-> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+> The new macros are defined in the new header file "bpf_trace_helpers.h".
+> It is under selftests/bpf/ for now.  It could be moved to libbpf later
+> after seeing more upcoming non-tracing use cases.
+>
+> The tests are changed to use these new macros also.  Hence,
+> the k[s]u8/16/32/64 are no longer needed and they are removed
+> from the bpf_helpers.h.
+>
+> Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+> ---
+>  tools/lib/bpf/bpf_helpers.h                   | 13 ---
+>  .../testing/selftests/bpf/bpf_trace_helpers.h | 58 +++++++++++++
+>  .../testing/selftests/bpf/progs/fentry_test.c | 72 ++++------------
+>  .../selftests/bpf/progs/fexit_bpf2bpf.c       | 27 ++----
+>  .../testing/selftests/bpf/progs/fexit_test.c  | 83 +++++--------------
+>  tools/testing/selftests/bpf/progs/kfree_skb.c | 43 +++-------
+>  .../selftests/bpf/progs/test_overhead.c       | 16 ++--
+>  7 files changed, 125 insertions(+), 187 deletions(-)
 
-Applied. Thanks
+Very nice cleanup!
+Applied. Thanks!
