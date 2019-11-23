@@ -2,96 +2,185 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 92137107C6E
-	for <lists+bpf@lfdr.de>; Sat, 23 Nov 2019 03:28:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A3FB107CA0
+	for <lists+bpf@lfdr.de>; Sat, 23 Nov 2019 04:18:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726089AbfKWC25 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 Nov 2019 21:28:57 -0500
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:41486 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725962AbfKWC25 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 Nov 2019 21:28:57 -0500
-Received: by mail-lj1-f195.google.com with SMTP id m4so9474667ljj.8;
-        Fri, 22 Nov 2019 18:28:54 -0800 (PST)
+        id S1726304AbfKWDSc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Nov 2019 22:18:32 -0500
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:43278 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726085AbfKWDSc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 Nov 2019 22:18:32 -0500
+Received: by mail-pg1-f195.google.com with SMTP id b1so4293705pgq.10;
+        Fri, 22 Nov 2019 19:18:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=M7KHy6c0WaArjzD5NzA8oaCyhccUeeP7nTZcJLmdY6w=;
-        b=ja8GNQ6nIwOTJa8bS2XiddtmfK4TSHrWDcuClzCC3uQqaUYxfvzanFnXLrIOT44r1N
-         qyG3f0m0Z1lD8055VxQtjdkPnW35fYl756Grh+sss7Q8vM5Lz2SPI17GbMl1vkD5B2TO
-         yx9UCPrBM6Y3bZwMqN57YERoKlCuIh5zM9m5uWufqiro76H0QJCG/hRuejjGdc4BkUi5
-         6MhkqOG5bxlbtp3dAbHKXR4N32xf3fTs9tei5K7TgEw9E29pWaZJFinyNncJwULA4ZY5
-         0XD3W5KKhT150V+va+SexU7vZGGR+O8fnpEE/iIt7JDYZnKuMdAVPrppLEs38NIZyDRP
-         +hMg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=EIlvVjEEu8LyfLcUtSvicFXJ3kCPpSv78bK99idq52o=;
+        b=M4cRgRKF/sS6goR26Zy1xfAtNIVa6Tsf3Bc/yj12Rmd48/hZmjHno1e/pm9a2iNd0i
+         /0tMxYms/hW4OFNi7mEbEQTRCxjtfMh03W62VQyQAC5Ng6UzQcwS5IQkb2SYrFytuMlP
+         my4VylxrWYvbNayEpQeBmID9J+KAkKcRfAqD08xDu/d5Xx6G0/HUGg07vgtRdUo9RC68
+         q4alNuLZKcaYDxdE7dXaqA/ujFwlMzjN9aYzIR1WURA9TxgnF6ywvXI5Nd6+az9VARBq
+         qr/OMfWBoA/WXC5k3a1lm+p9zZ35WAq6GP6h7tOOpEq5O9Ju4cIe4tt4fq4hjFSYrZbf
+         I8Ow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=M7KHy6c0WaArjzD5NzA8oaCyhccUeeP7nTZcJLmdY6w=;
-        b=X00KiMrpRMm+RPRply/S0DbHCd/FVi9ClPD6CXsfKwf48eDO18fHNskePUd85B9Mih
-         eobQS7YMYfsQTS/HbuotNgLZe/0kBhSUFMqbc/3y244uQAIYivVw/Uyj7YTSRsmISon3
-         aPIIiRnNJSyKm83eH/NhCPqsPBFsgBF7ZWAVo3+5S/w/4bK2/xi8Y5kQLEqdTnw7Dkys
-         rwjYzvVsqTqf4gsFix4tTZcU9cyG+26dTyDQsZf8R5nbw6Xb+D4ZL7EEO8eH7AHO9EME
-         nQQO8IY/u+v2q1dn5lzqr16YKMCoNxGQqyT36npB5+vxrNyMGdWH/eakFtSwhuKk8lx/
-         xg0A==
-X-Gm-Message-State: APjAAAWMEhNxkZrrqrZkf04n8qmRgeDl0RUo1Ct/hsTaV5JNbkideOCe
-        bJa2Skjac09Q7sjo6CHDhRE0vUrmJu5PvVw58FCyarQt
-X-Google-Smtp-Source: APXvYqwQn+4tDpZVgBHk7Mq8pLwfOEf6cIgoD52we74YvAZyfxJGja68z1WKi7vnYLMOwWBUmmStgmsPr63V9SQJLE8=
-X-Received: by 2002:a2e:574d:: with SMTP id r13mr14088822ljd.10.1574476133495;
- Fri, 22 Nov 2019 18:28:53 -0800 (PST)
-MIME-Version: 1.0
-References: <cover.1574452833.git.daniel@iogearbox.net> <6ada4c1c9d35eeb5f4ecfab94593dafa6b5c4b09.1574452833.git.daniel@iogearbox.net>
- <CAEf4BzaWhYJAdjs+8-nHHjuKfs6yBB7yx5NH-qNv2tcjiVCVhw@mail.gmail.com> <ba52688c-49bf-7897-4ba2-f62f30d501a9@iogearbox.net>
-In-Reply-To: <ba52688c-49bf-7897-4ba2-f62f30d501a9@iogearbox.net>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=EIlvVjEEu8LyfLcUtSvicFXJ3kCPpSv78bK99idq52o=;
+        b=Ahjel0gNXsdMo5fRXZNS61pkcu1V1sE7aSXdOZsV2PEElcqngEn2IGA1+Kyf2soUv1
+         72OenHDk9gMn2rBkm75H4g1vxhthh2GHU/BtYcW40NZFDM58OA7FRb49Hp3i4QI2MDSX
+         PgbEtBKGPTmTExwMK6tlx9iSk8/hTvIn/S8TphTynJ+/IMkbNj3LfPOGGB8tKPvW4sRo
+         ynzqasdMxONWjXJ9IMFrgNqJhkNuJDbJzTFha5fiNfaDXoLfEvP6s89J0x8l4YZMK/WN
+         LUca7sTybGx0m0zf6KdLDJDClgducYtZpAdDJZ38hMM2t6gAsK7L0gqsOW+4gc9ct+Bv
+         tK8A==
+X-Gm-Message-State: APjAAAW+N0Qydm47jtMUODNiK1n6m9O0dRiTmZRArY8IbEBZdktEfXlO
+        XR9K/lXUk5B8tLmPox4uKSiW6KZt
+X-Google-Smtp-Source: APXvYqw2i5MPz0Ij7+TXjPWZPxx6iUp0U9DLzi4PVI/ASJwnHAbiI73c91w4RHtyK5eI09iFXim1Vw==
+X-Received: by 2002:aa7:868c:: with SMTP id d12mr21749297pfo.189.1574479111298;
+        Fri, 22 Nov 2019 19:18:31 -0800 (PST)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:180::2490])
+        by smtp.gmail.com with ESMTPSA id u9sm8840090pfm.102.2019.11.22.19.18.29
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 22 Nov 2019 19:18:30 -0800 (PST)
+Date:   Fri, 22 Nov 2019 19:18:28 -0800
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 22 Nov 2019 18:28:42 -0800
-Message-ID: <CAADnVQJqYE5TAdJ=o8nHSF1mXoXpsVNXcJtWSPQJDn7wUvxR=Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 7/8] bpf, x86: emit patchable direct jump as
- tail call
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        john fastabend <john.fastabend@gmail.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+To:     Wenbo Zhang <ethercflow@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org.com, daniel@iogearbox.net,
+        yhs@fb.com, andrii.nakryiko@gmail.com, netdev@vger.kernel.org,
+        viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH bpf-next v10 1/2] bpf: add new helper get_file_path for
+ mapping a file descriptor to a pathname
+Message-ID: <20191123031826.j2dj7mzto57ml6pr@ast-mbp.dhcp.thefacebook.com>
+References: <cover.1574162990.git.ethercflow@gmail.com>
+ <e8b1281b7405eb4b6c1f094169e6efd2c8cc95da.1574162990.git.ethercflow@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e8b1281b7405eb4b6c1f094169e6efd2c8cc95da.1574162990.git.ethercflow@gmail.com>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 22, 2019 at 3:25 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
-> >> +       case BPF_MOD_CALL_TO_NOP:
-> >> +       case BPF_MOD_JUMP_TO_NOP:
-> >> +               if (old_addr && !new_addr) {
-> >> +                       memcpy(new_insn, nop_insn, X86_PATCH_SIZE);
-> >> +
-> >> +                       prog = old_insn;
-> >> +                       ret = emit_patch_fn(&prog, old_addr, ip);
-> >> +                       if (ret)
-> >> +                               return ret;
-> >> +                       break;
-> >> +               }
-> >> +               return -ENXIO;
-> >> +       default:
-> >
-> > There is this redundancy between BPF_MOD_xxx enums and
-> > old_addr+new_addr (both encode what kind of transition it is), which
-> > leads to this cumbersome logic. Would it be simpler to have
-> > old_addr/new_addr determine whether it's X-to-NOP, NOP-to-Y, or X-to-Y
-> > transition, while separate bool or simple BPF_MOD_CALL/BPF_MOD_JUMP
-> > enum determining whether it's a call or a jump that we want to update.
-> > Seems like that should be a simpler interface overall and cleaner
-> > implementation?
->
-> Right we can probably simplify it further, I kept preserving the original
-> switch from Alexei's code where my assumption was that having the transition
-> explicitly spelled out was preferred in here and then based on that doing
-> the sanity checks to make sure we don't get bad input from any call-site
-> since we're modifying kernel text, e.g. in the bpf_trampoline_update() as
-> one example the BPF_MOD_* is a fixed constant input there.
+On Tue, Nov 19, 2019 at 08:27:37AM -0500, Wenbo Zhang wrote:
+> When people want to identify which file system files are being opened,
+> read, and written to, they can use this helper with file descriptor as
+> input to achieve this goal. Other pseudo filesystems are also supported.
+> 
+> This requirement is mainly discussed here:
+> 
+>   https://github.com/iovisor/bcc/issues/237
+> 
+> v9->v10: addressed Andrii's feedback
+> - send this patch together with the patch selftests as one patch series
+> 
+> v8->v9:
+> - format helper description
+> 
+> v7->v8: addressed Alexei's feedback
+> - use fget_raw instead of fdget_raw, as fdget_raw is only used inside fs/
+> - ensure we're in user context which is safe fot the help to run
+> - filter unmountable pseudo filesystem, because they don't have real path
+> - supplement the description of this helper function
+> 
+> v6->v7:
+> - fix missing signed-off-by line
+> 
+> v5->v6: addressed Andrii's feedback
+> - avoid unnecessary goto end by having two explicit returns
+> 
+> v4->v5: addressed Andrii and Daniel's feedback
+> - rename bpf_fd2path to bpf_get_file_path to be consistent with other
+> helper's names
+> - when fdget_raw fails, set ret to -EBADF instead of -EINVAL
+> - remove fdput from fdget_raw's error path
+> - use IS_ERR instead of IS_ERR_OR_NULL as d_path ether returns a pointer
+> into the buffer or an error code if the path was too long
+> - modify the normal path's return value to return copied string length
+> including NUL
+> - update this helper description's Return bits.
+> 
+> v3->v4: addressed Daniel's feedback
+> - fix missing fdput()
+> - move fd2path from kernel/bpf/trace.c to kernel/trace/bpf_trace.c
+> - move fd2path's test code to another patch
+> - add comment to explain why use fdget_raw instead of fdget
+> 
+> v2->v3: addressed Yonghong's feedback
+> - remove unnecessary LOCKDOWN_BPF_READ
+> - refactor error handling section for enhanced readability
+> - provide a test case in tools/testing/selftests/bpf
+> 
+> v1->v2: addressed Daniel's feedback
+> - fix backward compatibility
+> - add this helper description
+> - fix signed-off name
+> 
+> Signed-off-by: Wenbo Zhang <ethercflow@gmail.com>
+...
+> +BPF_CALL_3(bpf_get_file_path, char *, dst, u32, size, int, fd)
+> +{
+> +	struct file *f;
+> +	char *p;
+> +	int ret = -EBADF;
+> +
+> +	/* Ensure we're in user context which is safe for the helper to
+> +	 * run. This helper has no business in a kthread.
+> +	 */
+> +	if (unlikely(in_interrupt() ||
+> +		     current->flags & (PF_KTHREAD | PF_EXITING)))
+> +		return -EPERM;
+> +
+> +	/* Use fget_raw instead of fget to support O_PATH, and it doesn't
+> +	 * have any sleepable code, so it's ok to be here.
+> +	 */
+> +	f = fget_raw(fd);
+> +	if (!f)
+> +		goto error;
+> +
+> +	/* For unmountable pseudo filesystem, it seems to have no meaning
+> +	 * to get their fake paths as they don't have path, and to be no
+> +	 * way to validate this function pointer can be always safe to call
+> +	 * in the current context.
+> +	 */
+> +	if (f->f_path.dentry->d_op && f->f_path.dentry->d_op->d_dname)
+> +		return -EINVAL;
+> +
+> +	/* After filter unmountable pseudo filesytem, d_path won't call
+> +	 * dentry->d_op->d_name(), the normally path doesn't have any
+> +	 * sleepable code, and despite it uses the current macro to get
+> +	 * fs_struct (current->fs), we've already ensured we're in user
+> +	 * context, so it's ok to be here.
+> +	 */
+> +	p = d_path(&f->f_path, dst, size);
+> +	if (IS_ERR(p)) {
+> +		ret = PTR_ERR(p);
+> +		fput(f);
+> +		goto error;
+> +	}
+> +
+> +	ret = strlen(p);
+> +	memmove(dst, p, ret);
+> +	dst[ret++] = '\0';
+> +	fput(f);
+> +	return ret;
+> +
+> +error:
+> +	memset(dst, '0', size);
+> +	return ret;
+> +}
 
-I guess we can try adding one more argument
-bpf_arch_text_poke(ip, BPF_MOD_NOP, old_addr, BPF_MOD_INTO_CALL, new_addr);
-Not sure whether it's gonna be any cleaner.
-Intuitively doesn't feel so.
+Al,
+
+could you please review about code whether it's doing enough checks to be
+called safely from preempt_disabled region?
+
+It's been under review for many weeks and looks good from bpf pov. Essentially
+tracing folks need easy way to convert FD to full path name. This feature
+request first came in 2015.
+
+Thanks!
+
