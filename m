@@ -2,61 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 46453107D2E
-	for <lists+bpf@lfdr.de>; Sat, 23 Nov 2019 06:35:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CEA27107D34
+	for <lists+bpf@lfdr.de>; Sat, 23 Nov 2019 06:52:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725973AbfKWFfR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 23 Nov 2019 00:35:17 -0500
-Received: from zeniv.linux.org.uk ([195.92.253.2]:55538 "EHLO
-        ZenIV.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725800AbfKWFfR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 23 Nov 2019 00:35:17 -0500
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1iYO4g-0000Iw-CC; Sat, 23 Nov 2019 05:35:14 +0000
-Date:   Sat, 23 Nov 2019 05:35:14 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Wenbo Zhang <ethercflow@gmail.com>, bpf@vger.kernel.org,
-        ast@kernel.org.com, daniel@iogearbox.net, yhs@fb.com,
-        andrii.nakryiko@gmail.com, netdev@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v10 1/2] bpf: add new helper get_file_path for
- mapping a file descriptor to a pathname
-Message-ID: <20191123053514.GJ26530@ZenIV.linux.org.uk>
-References: <cover.1574162990.git.ethercflow@gmail.com>
- <e8b1281b7405eb4b6c1f094169e6efd2c8cc95da.1574162990.git.ethercflow@gmail.com>
- <20191123031826.j2dj7mzto57ml6pr@ast-mbp.dhcp.thefacebook.com>
- <20191123045151.GH26530@ZenIV.linux.org.uk>
- <20191123051919.dsw7v6jyad4j4ilc@ast-mbp.dhcp.thefacebook.com>
+        id S1726304AbfKWFwB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 23 Nov 2019 00:52:01 -0500
+Received: from mail-pg1-f170.google.com ([209.85.215.170]:44462 "EHLO
+        mail-pg1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725973AbfKWFwA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 23 Nov 2019 00:52:00 -0500
+Received: by mail-pg1-f170.google.com with SMTP id e6so4450721pgi.11;
+        Fri, 22 Nov 2019 21:51:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zQ92mgVm1rR2M+K2diP3O/4E8CY55ARRKTkfWyR8vrI=;
+        b=QrKD8w2mOZdURS7pS0D+C/Xhcfg7c/Ko3nX8quIuijWzwhHbpPH0QnN4wX7uyTxT8C
+         oLxFfwVV6LOcWjhuuFtNOVkbL2WIR1Lh1SEtpFz5dTSajlrObEp/qH9B4PU6U1R4qHPj
+         ha5/D57P3K1pXEesqk2062pTYFWdxmjkEEXYNq5OwHBgUO1uR1jgAcDaT+mnaED6PTD2
+         Hx51insCJrKHwaqO3bqBZiX+O1OQDAEHlswI2pxbxQUtUS46OM105VGQwgdxDeM1DQ+f
+         vyRWv0VMx/m/spESa+6a0k70MvzlrBxmjY1G5eH00q0hCJlhh0RgCQccEwNkw1ThxyXL
+         4Log==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zQ92mgVm1rR2M+K2diP3O/4E8CY55ARRKTkfWyR8vrI=;
+        b=JsfrOR6lNFHH2hznGc0OO2f7B6EZ+IntRJLoVohBFuz2WvUY4e0p1RNrC1ZGJ5lsnn
+         W91G6NBze4V3fnl75Qqxw7MnulafGmxMRvZiX+eBcJPh9PRG5enL+pgyBzINJSV/cofa
+         20NHkR7zPnGLLaxLIVAfJ1WdCUxevDeo7IGc1ptyBEo0UH2qI8kSRhRy8jkD9+5zSTGr
+         dms3d3AIjGK/y3Iiqx0fExCpoCF3LmWzK3CGhIAYMUsl6547bSZXFxkdQX9dn+Pgj7Ei
+         m1kAe2EATxxTDe8BRasvZoPnKXfPYjofdhAZ7xY9rk5768O61FsiBqap25JQ+uaeSGUU
+         GaQg==
+X-Gm-Message-State: APjAAAUoTYgfqrvmbBMcQljBVDLrBAFHspnt8Dq9h5bBvugfhOvp93GU
+        23+i1bbxasQfs0JQZlnGiw==
+X-Google-Smtp-Source: APXvYqzkMPk0vfE207LlYDSPcq8crGI33mkH1kcUkDBr0U0qD/QIqMfXR1IDdhlzbFDUy9m7KAsTdw==
+X-Received: by 2002:a63:ec03:: with SMTP id j3mr20470249pgh.212.1574488318574;
+        Fri, 22 Nov 2019 21:51:58 -0800 (PST)
+Received: from localhost.localdomain ([211.196.191.92])
+        by smtp.gmail.com with ESMTPSA id s22sm738350pjr.5.2019.11.22.21.51.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Nov 2019 21:51:58 -0800 (PST)
+From:   "Daniel T. Lee" <danieltimlee@gmail.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH,bpf-next 0/2] Fix broken samples due to symbol mismatch
+Date:   Sat, 23 Nov 2019 14:51:49 +0900
+Message-Id: <20191123055151.9990-1-danieltimlee@gmail.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191123051919.dsw7v6jyad4j4ilc@ast-mbp.dhcp.thefacebook.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 22, 2019 at 09:19:21PM -0800, Alexei Starovoitov wrote:
+Currently, there are broken samples due to symbol mismatch (missing or
+unused symbols). For example, the function open() calls the syscall 
+'sys_openat' instead of 'sys_open'. And there are no exact symbols such
+as 'sys_read' or 'sys_write' under kallsyms, instead the symbols have
+prefixes. And these error leads to broke of samples.
 
-> hard to tell. It will be run out of bpf prog that attaches to kprobe or
-> tracepoint. What is the concern about locking?
-> d_path() doesn't take any locks and doesn't depend on any locks. Above 'if'
-> checks that plain d_path() is used and not some specilized callback with
-> unknown logic.
+This Patchset fixes the problem by changing the symbol match.
 
-It sure as hell does.  It might end up taking rename_lock and/or mount_lock
-spinlock components.  It'll try not to, but if the first pass ends up with
-seqlock mismatch, it will just grab the spinlock the second time around.
+Daniel T. Lee (2):
+  samples: bpf: replace symbol compare of trace_event
+  samples: bpf: fix syscall_tp due to unused syscall
 
-> > with this number; quite possibly never before that function had been called
-> > _and_ not once after it has returned.
-> 
-> Right. TOCTOU is not a concern here. It's tracing. It's ok for full path to be
-> 'one time deal'.
+ samples/bpf/syscall_tp_kern.c  | 14 ++++++++++++++
+ samples/bpf/trace_event_user.c |  4 ++--
+ 2 files changed, 16 insertions(+), 2 deletions(-)
 
-It might very well be a full path of something completely unrelated to what
-the syscall ends up operating upon.  It's not that the file might've been
-moved; it might be a different file.  IOW, results of that tracing might be
-misleading.
+-- 
+2.24.0
+
