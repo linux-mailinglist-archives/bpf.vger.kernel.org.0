@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DD59D107E24
-	for <lists+bpf@lfdr.de>; Sat, 23 Nov 2019 12:08:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56553107E25
+	for <lists+bpf@lfdr.de>; Sat, 23 Nov 2019 12:08:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726774AbfKWLIE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S1726813AbfKWLIF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 23 Nov 2019 06:08:05 -0500
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:39985 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726690AbfKWLIE (ORCPT <rfc822;bpf@vger.kernel.org>);
         Sat, 23 Nov 2019 06:08:04 -0500
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:33612 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726752AbfKWLIE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 23 Nov 2019 06:08:04 -0500
-Received: by mail-lj1-f196.google.com with SMTP id t5so10302718ljk.0
-        for <bpf@vger.kernel.org>; Sat, 23 Nov 2019 03:08:01 -0800 (PST)
+Received: by mail-lj1-f195.google.com with SMTP id q2so10290206ljg.7
+        for <bpf@vger.kernel.org>; Sat, 23 Nov 2019 03:08:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=RxMAa2iOTtRkT8FRp26jq90HvEuBpMxInXLJsam4QfI=;
-        b=zEvKCwp4MD5fVn/qVLnuhj3XM5qQtwKvZlW8/6NuIcqkU4Aelr0fbGjNAinNAuc8ci
-         5S9sxy7RZOEl3Qa23CjJczLIHvgyE7+srDhH28RqZkFzsIcrmOySleu9z926qlqlQBKg
-         Mo8KaC1ODKyECgoqg7NROA0Ae6x3Tll/xJ7JA=
+        bh=j6t6QQii5Lt+imc/dGt67Dp8yIdpuF6S8gD1Zrt2s8M=;
+        b=DZZ6/XpKHUPc4F+SNMPNBCeHcjLRVsPHFE1E57XbBE2C6kX2T1Erf+37Mcfbaawwfr
+         tBeQx9X+L1yHGjPAsFoNOAaaL5nmKfveBodBZzEBxtZ9X4BGSErgE3smX0J0WQwX6bxm
+         46NO0DsfX9L7xJVjpUVdt+plvluWr7+IYcpQw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=RxMAa2iOTtRkT8FRp26jq90HvEuBpMxInXLJsam4QfI=;
-        b=sTiv1al7W8j3+N3dKBBckVDr2hI4ZqMaXPrFBMs3FB3/TCQbspM/Nvfot6PUtRNpwx
-         UuO3nK11JngnTgUZ/ECAhsVoaV/f1iTYvwYc2Bv50FKy3D0lP1/03i0KJyUOkWJwZZPQ
-         Rx+FII06NPsgd5ewkcv4K3ZFUpJCfm1kY0W8BtgF5GyGlhUdbvCkS2cIaXoSxPEgXRl3
-         3lPKB2rmnRaKP+KJvrqp/TJ/X8F2QydBjAd8SwyopmIuh8kt8NAXXCkWIPqWuiYFi1wa
-         qAJmV1G/b1o37WHb6hSRb9Sww7bdYyBynHkQt651p2yxPt8zlA0fUMy83mUoEKleL3lL
-         CGEw==
-X-Gm-Message-State: APjAAAVJSr+BpUxVCsUVzKN6YrM6R9jWqLTUI+6f5HozcHA455a5wWue
-        4QgP+lx7p0QgBj/NGXqPaaGral+0ReMAnw==
-X-Google-Smtp-Source: APXvYqwlG8CLf+7V2QhjICvLInHx3UsWhjvsNoA2rW7NZbxfikD1k7W99cq2EGnGQEo6rak+gpC7yg==
-X-Received: by 2002:a05:651c:87:: with SMTP id 7mr15911788ljq.20.1574507280699;
-        Sat, 23 Nov 2019 03:08:00 -0800 (PST)
+        bh=j6t6QQii5Lt+imc/dGt67Dp8yIdpuF6S8gD1Zrt2s8M=;
+        b=N8ola9mVetP5fe+NafSb8LZb1FziTiG2tvks/yYd1kcZvCF2UmPJrz2aQ/F4Rsp5vk
+         RG6LBHJaEcEXzIKDkE/spsHN/lkMJfZXlELoOO1TbYkfn3ZY0T3LxlM3Ig1jrkWVN2J4
+         nHPE3fbrO8GJdnYluzzQQGutRvCK1IASmIdKNZ9NPcwenpyJvVh3ScyTw4Yj7VLx8VyQ
+         EivAQVuncddR+wbYm0LGU29GmpszDuNRBkrFpXf9nB62uO9D/u/JqdkXdS74lTdAtC3j
+         +EO1PgOSMA6eLfbqfmgIjuVHbUWHsihfav/2rMWFfn9iXmwTyAV4lE8/eUl5sj2KID7s
+         T/7w==
+X-Gm-Message-State: APjAAAWDdpqs2jNS15RD3y4Yhfn0Tll4zIw+iG9vHbLneb3huE5F5cnO
+        2BPdw42exMku4W0bpBQJzhAsfMMc3EGx5w==
+X-Google-Smtp-Source: APXvYqwSQqfuJxAt2lF/S7uDhi6HJo4oFGDvs6Bkr10rUyjqivcpiCoDjGiLFAyOL40I2Dw5ers92Q==
+X-Received: by 2002:a2e:a404:: with SMTP id p4mr1630777ljn.234.1574507282318;
+        Sat, 23 Nov 2019 03:08:02 -0800 (PST)
 Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id q124sm596852ljq.93.2019.11.23.03.07.59
+        by smtp.gmail.com with ESMTPSA id h24sm597666ljc.89.2019.11.23.03.08.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 23 Nov 2019 03:08:00 -0800 (PST)
+        Sat, 23 Nov 2019 03:08:01 -0800 (PST)
 From:   Jakub Sitnicki <jakub@cloudflare.com>
 To:     bpf@vger.kernel.org
 Cc:     netdev@vger.kernel.org, kernel-team@cloudflare.com,
         John Fastabend <john.fastabend@gmail.com>,
         Martin KaFai Lau <kafai@fb.com>
-Subject: [PATCH bpf-next 5/8] bpf: Allow selecting reuseport socket from a SOCKMAP
-Date:   Sat, 23 Nov 2019 12:07:48 +0100
-Message-Id: <20191123110751.6729-6-jakub@cloudflare.com>
+Subject: [PATCH bpf-next 6/8] libbpf: Recognize SK_REUSEPORT programs from section name
+Date:   Sat, 23 Nov 2019 12:07:49 +0100
+Message-Id: <20191123110751.6729-7-jakub@cloudflare.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191123110751.6729-1-jakub@cloudflare.com>
 References: <20191123110751.6729-1-jakub@cloudflare.com>
@@ -59,61 +59,29 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-SOCKMAP now supports storing references to listening sockets. Nothing keeps
-us from using it as an array of sockets to select from in SK_REUSEPORT
-programs.
+Allow loading BPF object files that contain SK_REUSEPORT programs without
+having to manually set the program type before load if the the section name
+is set to "sk_reuseport".
 
-Whitelist the map type with the BPF helper for selecting socket. However,
-impose a restriction that the selected socket needs to be a listening TCP
-socket or a bound UDP socket (connected or not).
-
-The only other map type that works with the BPF reuseport helper,
-REUSEPORT_SOCKARRAY, has a corresponding check in its update operation
-handler.
+Makes user-space code needed to load SK_REUSEPORT BPF program more concise.
 
 Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
 ---
- kernel/bpf/verifier.c | 6 ++++--
- net/core/filter.c     | 2 ++
- 2 files changed, 6 insertions(+), 2 deletions(-)
+ tools/lib/bpf/libbpf.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index a0482e1c4a77..111a1eb543ab 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -3685,7 +3685,8 @@ static int check_map_func_compatibility(struct bpf_verifier_env *env,
- 		if (func_id != BPF_FUNC_sk_redirect_map &&
- 		    func_id != BPF_FUNC_sock_map_update &&
- 		    func_id != BPF_FUNC_map_delete_elem &&
--		    func_id != BPF_FUNC_msg_redirect_map)
-+		    func_id != BPF_FUNC_msg_redirect_map &&
-+		    func_id != BPF_FUNC_sk_select_reuseport)
- 			goto error;
- 		break;
- 	case BPF_MAP_TYPE_SOCKHASH:
-@@ -3766,7 +3767,8 @@ static int check_map_func_compatibility(struct bpf_verifier_env *env,
- 			goto error;
- 		break;
- 	case BPF_FUNC_sk_select_reuseport:
--		if (map->map_type != BPF_MAP_TYPE_REUSEPORT_SOCKARRAY)
-+		if (map->map_type != BPF_MAP_TYPE_REUSEPORT_SOCKARRAY &&
-+		    map->map_type != BPF_MAP_TYPE_SOCKMAP)
- 			goto error;
- 		break;
- 	case BPF_FUNC_map_peek_elem:
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 49ded4a7588a..e3fb77353248 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -8723,6 +8723,8 @@ BPF_CALL_4(sk_select_reuseport, struct sk_reuseport_kern *, reuse_kern,
- 	selected_sk = map->ops->map_lookup_elem(map, key);
- 	if (!selected_sk)
- 		return -ENOENT;
-+	if (!sock_flag(selected_sk, SOCK_RCU_FREE))
-+		return -EINVAL;
- 
- 	reuse = rcu_dereference(selected_sk->sk_reuseport_cb);
- 	if (!reuse)
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index e1698461c6b3..dbb77283b0c6 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -4987,6 +4987,7 @@ static const struct {
+ 	enum bpf_attach_type attach_type;
+ } section_names[] = {
+ 	BPF_PROG_SEC("socket",			BPF_PROG_TYPE_SOCKET_FILTER),
++	BPF_PROG_SEC("sk_reuseport",		BPF_PROG_TYPE_SK_REUSEPORT),
+ 	BPF_PROG_SEC("kprobe/",			BPF_PROG_TYPE_KPROBE),
+ 	BPF_PROG_SEC("uprobe/",			BPF_PROG_TYPE_KPROBE),
+ 	BPF_PROG_SEC("kretprobe/",		BPF_PROG_TYPE_KPROBE),
 -- 
 2.20.1
 
