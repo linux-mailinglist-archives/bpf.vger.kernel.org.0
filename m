@@ -2,111 +2,266 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AD391080E0
-	for <lists+bpf@lfdr.de>; Sat, 23 Nov 2019 23:08:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DB64108143
+	for <lists+bpf@lfdr.de>; Sun, 24 Nov 2019 01:39:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726760AbfKWWIo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 23 Nov 2019 17:08:44 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:16366 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726759AbfKWWIo (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 23 Nov 2019 17:08:44 -0500
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xANM5irJ008815
-        for <bpf@vger.kernel.org>; Sat, 23 Nov 2019 14:08:43 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=facebook;
- bh=Q4HyTg+AVHFsiXHRjg/IF7gdOFQ7BelGBoC4nPOTKMY=;
- b=jQHDBzc/VuOQL2IaxYAHvQQjxN8c7hKDKz0f4gGRbdmFjka6JeUQ8tAZ/mPs7ic/1WRy
- mNHVLXL0c9swgL3Hk1Cdj2s0N+by6svDCZcTcglTMZnE6lkmxObsl23mDqj+I4q2Oo3D
- 4uEFDuG13SWqajQuclmI+G/94KSkXXgZjSo= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2wf0ymt8dn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Sat, 23 Nov 2019 14:08:43 -0800
-Received: from 2401:db00:30:600c:face:0:39:0 (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Sat, 23 Nov 2019 14:08:41 -0800
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 65E562EC18F0; Sat, 23 Nov 2019 14:08:40 -0800 (PST)
-Smtp-Origin-Hostprefix: devbig
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next] mm: implement no-MMU variant of vmalloc_user_node_flags
-Date:   Sat, 23 Nov 2019 14:08:35 -0800
-Message-ID: <20191123220835.1237773-1-andriin@fb.com>
-X-Mailer: git-send-email 2.17.1
-X-FB-Internal: Safe
+        id S1726846AbfKXAjz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 23 Nov 2019 19:39:55 -0500
+Received: from www62.your-server.de ([213.133.104.62]:43814 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726784AbfKXAjz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 23 Nov 2019 19:39:55 -0500
+Received: from 11.248.197.178.dynamic.dsl-lte-bonding.zhbmb00p-msn.res.cust.swisscom.ch ([178.197.248.11] helo=localhost)
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1iYfwN-00041I-2g; Sun, 24 Nov 2019 01:39:51 +0100
+From:   Daniel Borkmann <daniel@iogearbox.net>
+To:     ast@kernel.org
+Cc:     andrii.nakryiko@gmail.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>
+Subject: [PATCH bpf-next] bpf: simplify __bpf_arch_text_poke poke type handling
+Date:   Sun, 24 Nov 2019 01:39:42 +0100
+Message-Id: <fcb00a2b0b288d6c73de4ef58116a821c8fe8f2f.1574555798.git.daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
- definitions=2019-11-23_05:2019-11-21,2019-11-23 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
- mlxlogscore=789 bulkscore=0 adultscore=0 lowpriorityscore=0 phishscore=0
- priorityscore=1501 impostorscore=0 suspectscore=8 spamscore=0
- clxscore=1015 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-1910280000 definitions=main-1911230188
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.101.4/25642/Sat Nov 23 10:55:42 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-To fix build with !CONFIG_MMU, implement it for no-MMU configurations as well.
+Given that we have BPF_MOD_NOP_TO_{CALL,JUMP}, BPF_MOD_{CALL,JUMP}_TO_NOP
+and BPF_MOD_{CALL,JUMP}_TO_{CALL,JUMP} poke types and that we also pass in
+old_addr as well as new_addr, it's a bit redundant and unnecessarily
+complicates __bpf_arch_text_poke() itself since we can derive the same from
+the *_addr that were passed in. Hence simplify and use BPF_MOD_{CALL,JUMP}
+as types which also allows to clean up call-sites.
 
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Fixes: fc9702273e2e ("bpf: Add mmap() support for BPF_MAP_TYPE_ARRAY")
-Reported-by: kbuild test robot <lkp@intel.com>
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+In addition to that, __bpf_arch_text_poke() currently verifies that text
+matches expected old_insn before we invoke text_poke_bp(). Also add a check
+on new_insn and skip rewrite if it already matches. Reason why this is rather
+useful is that it avoids making any special casing in prog_array_map_poke_run()
+when old and new prog were NULL and has the benefit that also for this case
+we perform a check on text whether it really matches our expectations.
+
+Suggested-by: Andrii Nakryiko <andriin@fb.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
 ---
- mm/nommu.c | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
+ arch/x86/net/bpf_jit_comp.c | 85 +++++++++++--------------------------
+ include/linux/bpf.h         | 10 +----
+ kernel/bpf/arraymap.c       | 12 +-----
+ kernel/bpf/trampoline.c     |  8 ++--
+ 4 files changed, 32 insertions(+), 83 deletions(-)
 
-diff --git a/mm/nommu.c b/mm/nommu.c
-index 99b7ec318824..7de592058ab4 100644
---- a/mm/nommu.c
-+++ b/mm/nommu.c
-@@ -155,11 +155,11 @@ void *__vmalloc_node_flags(unsigned long size, int node, gfp_t flags)
- 	return __vmalloc(size, flags, PAGE_KERNEL);
- }
- 
--void *vmalloc_user(unsigned long size)
-+static void *__vmalloc_user_flags(unsigned long size, gfp_t flags)
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index 15615c94804f..b8be18427277 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -269,76 +269,42 @@ static int __bpf_arch_text_poke(void *ip, enum bpf_text_poke_type t,
+ 				void *old_addr, void *new_addr,
+ 				const bool text_live)
  {
- 	void *ret;
+-	int (*emit_patch_fn)(u8 **pprog, void *func, void *ip);
+ 	const u8 *nop_insn = ideal_nops[NOP_ATOMIC5];
+-	u8 old_insn[X86_PATCH_SIZE] = {};
+-	u8 new_insn[X86_PATCH_SIZE] = {};
++	u8 old_insn[X86_PATCH_SIZE];
++	u8 new_insn[X86_PATCH_SIZE];
+ 	u8 *prog;
+ 	int ret;
  
--	ret = __vmalloc(size, GFP_KERNEL | __GFP_ZERO, PAGE_KERNEL);
-+	ret = __vmalloc(size, flags, PAGE_KERNEL);
- 	if (ret) {
- 		struct vm_area_struct *vma;
+-	switch (t) {
+-	case BPF_MOD_NOP_TO_CALL ... BPF_MOD_CALL_TO_NOP:
+-		emit_patch_fn = emit_call;
+-		break;
+-	case BPF_MOD_NOP_TO_JUMP ... BPF_MOD_JUMP_TO_NOP:
+-		emit_patch_fn = emit_jump;
+-		break;
+-	default:
+-		return -ENOTSUPP;
++	memcpy(old_insn, nop_insn, X86_PATCH_SIZE);
++	if (old_addr) {
++		prog = old_insn;
++		ret = t == BPF_MOD_CALL ?
++		      emit_call(&prog, old_addr, ip) :
++		      emit_jump(&prog, old_addr, ip);
++		if (ret)
++			return ret;
+ 	}
  
-@@ -172,8 +172,19 @@ void *vmalloc_user(unsigned long size)
+-	switch (t) {
+-	case BPF_MOD_NOP_TO_CALL:
+-	case BPF_MOD_NOP_TO_JUMP:
+-		if (!old_addr && new_addr) {
+-			memcpy(old_insn, nop_insn, X86_PATCH_SIZE);
+-
+-			prog = new_insn;
+-			ret = emit_patch_fn(&prog, new_addr, ip);
+-			if (ret)
+-				return ret;
+-			break;
+-		}
+-		return -ENXIO;
+-	case BPF_MOD_CALL_TO_CALL:
+-	case BPF_MOD_JUMP_TO_JUMP:
+-		if (old_addr && new_addr) {
+-			prog = old_insn;
+-			ret = emit_patch_fn(&prog, old_addr, ip);
+-			if (ret)
+-				return ret;
+-
+-			prog = new_insn;
+-			ret = emit_patch_fn(&prog, new_addr, ip);
+-			if (ret)
+-				return ret;
+-			break;
+-		}
+-		return -ENXIO;
+-	case BPF_MOD_CALL_TO_NOP:
+-	case BPF_MOD_JUMP_TO_NOP:
+-		if (old_addr && !new_addr) {
+-			memcpy(new_insn, nop_insn, X86_PATCH_SIZE);
+-
+-			prog = old_insn;
+-			ret = emit_patch_fn(&prog, old_addr, ip);
+-			if (ret)
+-				return ret;
+-			break;
+-		}
+-		return -ENXIO;
+-	default:
+-		return -ENOTSUPP;
++	memcpy(new_insn, nop_insn, X86_PATCH_SIZE);
++	if (new_addr) {
++		prog = new_insn;
++		ret = t == BPF_MOD_CALL ?
++		      emit_call(&prog, new_addr, ip) :
++		      emit_jump(&prog, new_addr, ip);
++		if (ret)
++			return ret;
+ 	}
  
- 	return ret;
- }
-+
-+void *vmalloc_user(unsigned long size)
-+{
-+	return __vmalloc_user_flags(size, GFP_KERNEL | __GFP_ZERO);
-+}
- EXPORT_SYMBOL(vmalloc_user);
+ 	ret = -EBUSY;
+ 	mutex_lock(&text_mutex);
+ 	if (memcmp(ip, old_insn, X86_PATCH_SIZE))
+ 		goto out;
+-	if (text_live)
+-		text_poke_bp(ip, new_insn, X86_PATCH_SIZE, NULL);
+-	else
+-		memcpy(ip, new_insn, X86_PATCH_SIZE);
++	if (memcmp(ip, new_insn, X86_PATCH_SIZE)) {
++		if (text_live)
++			text_poke_bp(ip, new_insn, X86_PATCH_SIZE, NULL);
++		else
++			memcpy(ip, new_insn, X86_PATCH_SIZE);
++	}
+ 	ret = 0;
+ out:
+ 	mutex_unlock(&text_mutex);
+@@ -465,7 +431,6 @@ static void emit_bpf_tail_call_direct(struct bpf_jit_poke_descriptor *poke,
  
-+void *vmalloc_user_node_flags(unsigned long size, int node, gfp_t flags)
-+{
-+	return __vmalloc_user_flags(size, flags | __GFP_ZERO);
-+}
-+EXPORT_SYMBOL(vmalloc_user_node_flags);
-+
- struct page *vmalloc_to_page(const void *addr)
+ static void bpf_tail_call_direct_fixup(struct bpf_prog *prog)
  {
- 	return virt_to_page(addr);
+-	static const enum bpf_text_poke_type type = BPF_MOD_NOP_TO_JUMP;
+ 	struct bpf_jit_poke_descriptor *poke;
+ 	struct bpf_array *array;
+ 	struct bpf_prog *target;
+@@ -490,7 +455,7 @@ static void bpf_tail_call_direct_fixup(struct bpf_prog *prog)
+ 			 * read-only. Both modifications on the given image
+ 			 * are under text_mutex to avoid interference.
+ 			 */
+-			ret = __bpf_arch_text_poke(poke->ip, type, NULL,
++			ret = __bpf_arch_text_poke(poke->ip, BPF_MOD_JUMP, NULL,
+ 						   (u8 *)target->bpf_func +
+ 						   poke->adj_off, false);
+ 			BUG_ON(ret < 0);
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index c2f07fd410c1..35903f148be5 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1324,14 +1324,8 @@ static inline u32 bpf_xdp_sock_convert_ctx_access(enum bpf_access_type type,
+ #endif /* CONFIG_INET */
+ 
+ enum bpf_text_poke_type {
+-	/* All call-related pokes. */
+-	BPF_MOD_NOP_TO_CALL,
+-	BPF_MOD_CALL_TO_CALL,
+-	BPF_MOD_CALL_TO_NOP,
+-	/* All jump-related pokes. */
+-	BPF_MOD_NOP_TO_JUMP,
+-	BPF_MOD_JUMP_TO_JUMP,
+-	BPF_MOD_JUMP_TO_NOP,
++	BPF_MOD_CALL,
++	BPF_MOD_JUMP,
+ };
+ 
+ int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type t,
+diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
+index 58bdf5fd24cc..f0d19bbb9211 100644
+--- a/kernel/bpf/arraymap.c
++++ b/kernel/bpf/arraymap.c
+@@ -746,19 +746,9 @@ static void prog_array_map_poke_run(struct bpf_map *map, u32 key,
+ 				    struct bpf_prog *old,
+ 				    struct bpf_prog *new)
+ {
+-	enum bpf_text_poke_type type;
+ 	struct prog_poke_elem *elem;
+ 	struct bpf_array_aux *aux;
+ 
+-	if (!old && new)
+-		type = BPF_MOD_NOP_TO_JUMP;
+-	else if (old && !new)
+-		type = BPF_MOD_JUMP_TO_NOP;
+-	else if (old && new)
+-		type = BPF_MOD_JUMP_TO_JUMP;
+-	else
+-		return;
+-
+ 	aux = container_of(map, struct bpf_array, map)->aux;
+ 	WARN_ON_ONCE(!mutex_is_locked(&aux->poke_mutex));
+ 
+@@ -806,7 +796,7 @@ static void prog_array_map_poke_run(struct bpf_map *map, u32 key,
+ 			    poke->tail_call.key != key)
+ 				continue;
+ 
+-			ret = bpf_arch_text_poke(poke->ip, type,
++			ret = bpf_arch_text_poke(poke->ip, BPF_MOD_JUMP,
+ 						 old ? (u8 *)old->bpf_func +
+ 						 poke->adj_off : NULL,
+ 						 new ? (u8 *)new->bpf_func +
+diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+index 10ae59d65f13..7e89f1f49d77 100644
+--- a/kernel/bpf/trampoline.c
++++ b/kernel/bpf/trampoline.c
+@@ -77,7 +77,7 @@ static int bpf_trampoline_update(struct bpf_trampoline *tr)
+ 	int err;
+ 
+ 	if (fentry_cnt + fexit_cnt == 0) {
+-		err = bpf_arch_text_poke(tr->func.addr, BPF_MOD_CALL_TO_NOP,
++		err = bpf_arch_text_poke(tr->func.addr, BPF_MOD_CALL,
+ 					 old_image, NULL);
+ 		tr->selector = 0;
+ 		goto out;
+@@ -105,12 +105,12 @@ static int bpf_trampoline_update(struct bpf_trampoline *tr)
+ 
+ 	if (tr->selector)
+ 		/* progs already running at this address */
+-		err = bpf_arch_text_poke(tr->func.addr, BPF_MOD_CALL_TO_CALL,
++		err = bpf_arch_text_poke(tr->func.addr, BPF_MOD_CALL,
+ 					 old_image, new_image);
+ 	else
+ 		/* first time registering */
+-		err = bpf_arch_text_poke(tr->func.addr, BPF_MOD_NOP_TO_CALL,
+-					 NULL, new_image);
++		err = bpf_arch_text_poke(tr->func.addr, BPF_MOD_CALL, NULL,
++					 new_image);
+ 	if (err)
+ 		goto out;
+ 	tr->selector++;
 -- 
-2.17.1
+2.21.0
 
