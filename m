@@ -2,116 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 11370108449
-	for <lists+bpf@lfdr.de>; Sun, 24 Nov 2019 18:16:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B3A5108553
+	for <lists+bpf@lfdr.de>; Sun, 24 Nov 2019 23:38:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726775AbfKXRQd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 24 Nov 2019 12:16:33 -0500
-Received: from mail-qv1-f68.google.com ([209.85.219.68]:39046 "EHLO
-        mail-qv1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726774AbfKXRQd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 24 Nov 2019 12:16:33 -0500
-Received: by mail-qv1-f68.google.com with SMTP id v16so4785721qvq.6;
-        Sun, 24 Nov 2019 09:16:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=BP3QlOAS6TC4ZpqvyGCUa6UmnZm7bb5wni9SFB36WMo=;
-        b=KTrocz6o9oo9xIzOZUWQWeLdRpOuqJdgoFLr9CB//ol1L2BHvA0mXLI9S/6CJ0nM7M
-         LfPHvzxqTb0XWz+FDnHepZyIsI01OQD42wIZxhRrBaN5AvLTk5UJCcI2kNcmIHGw1mGu
-         W9WoOdlEv0Jv853okCgUNKfayKyffZVwQhXPa4kzdb24psWBVwaROMbmcnvAmnNC4Czw
-         vOlUWpgwRyGO+WdDi9ar/EPu4AcOfeetbTVYfTHO5WX5Sa3XxIh5R7TZ2pGzRDqPVxFr
-         RlbEeSAgipPK+iUwkW48PKWTDeORDs4LUXXXAAhlcyk6hnWlPZKLhwGbecCSu6C+401N
-         PMmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=BP3QlOAS6TC4ZpqvyGCUa6UmnZm7bb5wni9SFB36WMo=;
-        b=loPAnaw7HteeHEMs1Da1Wu0An6AZ54nuYH8MBAQzMxHzlpXkTcwEEeFAyFRACz1A9d
-         iRHt24wEJA4sTknu61WE7kC9+UcbANvCW3hDp5XQiyD3R9HSMIwn+E//yDcQ8i3hPlqv
-         dD/0Vrhxm5AA3Fe9zm3ub4+oO4xYvMAdbNQ4YLRmSm3lYO5OFIWJUF+CPRA8zsr85nTy
-         ZUr0tAk6u1nW+kmcHlyil9NBxcfxIfvYw/apXYJsGg59urhVZr0+X0yQHb+FLqAOkuTg
-         AkJ53B6A5cGsgdmAFc8Qigze3TimRKjWHgCRLzoUwMvPUDJLxXdjXPS6aRMj1PJvDwBt
-         Hnsg==
-X-Gm-Message-State: APjAAAWx7Gg6MbToUQM0TUneWh2aavyIKBBM+ryEpZKWMcVGlt/C7BCC
-        sZnBLZIWkQ4sIL6OhdJgYeJ+R1IfIXCV6NeNBT0=
-X-Google-Smtp-Source: APXvYqxLbCN9mwmTuh/4qLEFGR57XAzaZFFlu+uzhGAK6oLZ6tw8rzkVmxNTg3rDPY8gP++5q4ps0Eqyw899Z1s/rSQ=
-X-Received: by 2002:a0c:fe11:: with SMTP id x17mr14791831qvr.162.1574615791752;
- Sun, 24 Nov 2019 09:16:31 -0800 (PST)
-MIME-Version: 1.0
-References: <20191123071226.6501-1-bjorn.topel@gmail.com> <20191123071226.6501-2-bjorn.topel@gmail.com>
- <20191124015504.yypqw4gx52e5e6og@ast-mbp.dhcp.thefacebook.com>
- <CAJ+HfNhtgvRyvnNT7_iSs9RD3rV_y8++pLddWy+i+Eya5_BJVw@mail.gmail.com> <20191124170841.x4ohh7sy6kbjnbno@ast-mbp>
-In-Reply-To: <20191124170841.x4ohh7sy6kbjnbno@ast-mbp>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Sun, 24 Nov 2019 18:16:07 +0100
-Message-ID: <CAJ+HfNgLmC3O2YVFW8gzW6Jsf9=MKWo_gw-FXog3YeuGs=bwAA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/6] bpf: introduce BPF dispatcher
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Netdev <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S1726945AbfKXWin (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 24 Nov 2019 17:38:43 -0500
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:35835 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726942AbfKXWin (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 24 Nov 2019 17:38:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1574635122;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/G9Wi4bZIYtsLMYWyzhkBqJDx6M9Zopv+NNCrBqV6+0=;
+        b=FdK68jZGiLe/estV9mizwJbCFqvWXu6XOHLXR7D5hgnEupQA/WYlZveev4FKr8rX5Y1FJ/
+        wNzpnkJDNDvImPzGvi3on6My41ErzhceEcUHp64fIP3HryHwJvbCMieMNY7BiFtXwAiNkn
+        8v3Z7GoRaH67TZsAiU5F1R/FsfnFQLI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-50-kUO5aoyyOeCAi-UKsva4bQ-1; Sun, 24 Nov 2019 17:38:36 -0500
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CCF9A1007269;
+        Sun, 24 Nov 2019 22:38:34 +0000 (UTC)
+Received: from krava (ovpn-204-42.brq.redhat.com [10.40.204.42])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 542E25C1D4;
+        Sun, 24 Nov 2019 22:38:28 +0000 (UTC)
+Date:   Sun, 24 Nov 2019 23:38:27 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Jakub Kicinski <jakub.kicinski@netronome.com>
+Cc:     Paul Moore <paul@paul-moore.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        linux-audit@redhat.com, Jiri Olsa <jolsa@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        bpf <bpf@vger.kernel.org>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Edward Cree <ecree@solarflare.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <thoiland@redhat.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Tariq Toukan <tariqt@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        Maxim Mikityanskiy <maximmi@mellanox.com>
-Content-Type: text/plain; charset="UTF-8"
+        Alexei Starovoitov <ast@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andriin@fb.com>,
+        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
+        Steve Grubb <sgrubb@redhat.com>,
+        David Miller <davem@redhat.com>,
+        Eric Paris <eparis@redhat.com>, Jiri Benc <jbenc@redhat.com>
+Subject: Re: [PATCH] bpf: emit audit messages upon successful prog load and
+ unload
+Message-ID: <20191124223742.GA20575@krava>
+References: <20191120213816.8186-1-jolsa@kernel.org>
+ <8c928ec4-9e43-3e2a-7005-21f40fcca061@iogearbox.net>
+ <CAADnVQKu-ZgFTaSMH=Q-jMOYYvE32TF2b2hq1=dmDV8wAf18pg@mail.gmail.com>
+ <CAHC9VhQbQoXacbTCNJPGNzFOv30PwLeiWu4ROQFU46=saTeTNQ@mail.gmail.com>
+ <20191122002257.4hgui6pylpkmpwac@ast-mbp.dhcp.thefacebook.com>
+ <CAHC9VhRihMi_d-p+ieXyuVBcGMs80SkypVxF4gLE_s45GKP0dg@mail.gmail.com>
+ <20191122192353.GA2157@krava>
+ <CAHC9VhRi0JtKgHyAOdAJ=_--vL1VbK7BDq1FnRQ_GwW9P4J_zA@mail.gmail.com>
+ <20191123085719.GA1673@krava>
+ <20191123100340.771bfd25@cakuba.netronome.com>
+MIME-Version: 1.0
+In-Reply-To: <20191123100340.771bfd25@cakuba.netronome.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+X-MC-Unique: kUO5aoyyOeCAi-UKsva4bQ-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, 24 Nov 2019 at 18:08, Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Sun, Nov 24, 2019 at 07:55:07AM +0100, Bj=C3=B6rn T=C3=B6pel wrote:
-> > >
-> > > I think I got it why it works.
-> > > Every time the prog cnt goes to zero you free the trampoline right aw=
-ay
-> > > and next time it will be allocated again and kzalloc() will zero sele=
-ctor.
-> > > That's hard to spot.
-> > > Also if user space does for(;;) attach/detach;
-> > > it will keep stressing bpf_jit_alloc_exec.
-> > > In case of bpf trampoline attach/detach won't be stressing it.
-> > > Only load/unload which are much slower due to verification.
-> > > I guess such difference is ok.
-> > >
-> >
-> > Alexei, thanks for all feedback (on the weekend)! I agree with all of
-> > above, and especially missing selftests and too much code duplication.
-> >
-> > I'll do a respin, but that'll be in the next window, given that Linus
-> > will (probably) tag the release today.
->
-> I want it to land just as much as you do :) Two weeks is not a big deal. =
-We
-> backport all of bpf and xdp as soon as it lands in bpf-next/net-next. We =
-don't
-> wait for patches to reach Linus's tree. So this dispatch logic will be ru=
-nning
-> on our servers way sooner than you'd expect. I guess that explains my obs=
-ession
-> with quality. Same goes for libbpf.
->
+On Sat, Nov 23, 2019 at 10:03:40AM -0800, Jakub Kicinski wrote:
+> On Sat, 23 Nov 2019 09:57:19 +0100, Jiri Olsa wrote:
+> > Alexei already asked Dave to revert this in previous email,
+> > so that should happen
+>=20
+> Reverted in net-next now.
+>=20
+> But this is not really how this should work. You should post a proper
+> revert patch to netdev for review, with an explanation in the commit
+> message etc.
 
-No reason to rush it in! It's just a week back and forth, and your
-comments were spot on.
+I had no idea I need to post the revert, sorry
+will do next time
 
+thanks,
+jirka
 
-Cheers,
-Bj=C3=B6rn
-
-
->
