@@ -2,124 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 552FD109439
-	for <lists+bpf@lfdr.de>; Mon, 25 Nov 2019 20:28:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97AF110948A
+	for <lists+bpf@lfdr.de>; Mon, 25 Nov 2019 21:13:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727096AbfKYT2J (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 Nov 2019 14:28:09 -0500
-Received: from mail-il1-f199.google.com ([209.85.166.199]:37998 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727088AbfKYT2J (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 25 Nov 2019 14:28:09 -0500
-Received: by mail-il1-f199.google.com with SMTP id o18so10181307ilb.5
-        for <bpf@vger.kernel.org>; Mon, 25 Nov 2019 11:28:08 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=vepHw2FCtDai2doID+pQcicHSRg4AAVaV69lUY8SeNc=;
-        b=lNxR02b9AicJ/G4lLqYkhak/3may68vPgF//8gzTbKdMzBCtPzi+u674eVGOTWDfHS
-         Dc9i5+cm3P6UpfEl3eBRIFD07Yn3wcUuFtJu+GDXVa4oBbe+aDhdQnrI1k4BoDm10W6/
-         hq7huuqUR5U+NYfQcLVtnYtqZTQx6KIOGjzcTNL1r/tvCbizr0OdyEPyDr20EDj6Ou4l
-         yi2a/QQ7wmBugoIk6xaUYku2JTMUWT35MD8F4p4rS+sxDuLX4l/s5NvWl+QqixGPK7SY
-         +Fa0rxKJacVWeXQfteTd0KlwqY6RZF/SColYIpVAaLxQUG0coEHV3mVlRfJvyGaXzPST
-         cQWQ==
-X-Gm-Message-State: APjAAAWLKRDbBa98hJxgIpuhm2+ovvxV3WdgmW2n/VX7D+Vuc3izlRTt
-        knRYA5SrBPjOTmL3aSZprIzWgnVnQ+HifMGKw1RvC+DBaHwt
-X-Google-Smtp-Source: APXvYqy9j/n9HPTJPkHiUlSCPsZh3oe7S2pyT8r5kW0yvcYxtwD0vMn4rZli+fUaFR17ZHhevavNreq77VK2Vn/4uWHbujIQHC/t
+        id S1725940AbfKYUN5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 Nov 2019 15:13:57 -0500
+Received: from hqemgate14.nvidia.com ([216.228.121.143]:10773 "EHLO
+        hqemgate14.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725882AbfKYUN5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 25 Nov 2019 15:13:57 -0500
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate14.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5ddc36070000>; Mon, 25 Nov 2019 12:14:00 -0800
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Mon, 25 Nov 2019 12:13:56 -0800
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Mon, 25 Nov 2019 12:13:56 -0800
+Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 25 Nov
+ 2019 20:13:55 +0000
+Subject: Re: [PATCH 07/19] mm/gup: introduce pin_user_pages*() and FOLL_PIN
+To:     kbuild test robot <lkp@intel.com>
+CC:     <kbuild-all@lists.01.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>, Jan Kara <jack@suse.cz>,
+        <kvm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Dave Chinner <david@fromorbit.com>,
+        <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        Paul Mackerras <paulus@samba.org>,
+        <linux-kselftest@vger.kernel.org>, Ira Weiny <ira.weiny@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>, <linux-rdma@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        <linux-media@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
+        <linux-block@vger.kernel.org>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jens Axboe <axboe@kernel.dk>, <netdev@vger.kernel.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        <linux-fsdevel@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>
+References: <20191125042011.3002372-8-jhubbard@nvidia.com>
+ <201911251639.UWS3hE3Y%lkp@intel.com>
+From:   John Hubbard <jhubbard@nvidia.com>
+X-Nvconfidentiality: public
+Message-ID: <3989f406-c333-59f8-027a-e3506af59028@nvidia.com>
+Date:   Mon, 25 Nov 2019 12:13:55 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-X-Received: by 2002:a92:9e0e:: with SMTP id q14mr20742629ili.151.1574710088077;
- Mon, 25 Nov 2019 11:28:08 -0800 (PST)
-Date:   Mon, 25 Nov 2019 11:28:08 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006c9f4e059830c33c@google.com>
-Subject: general protection fault in selinux_socket_sendmsg (2)
-From:   syzbot <syzbot+314db21f0d5c1f53856c@syzkaller.appspotmail.com>
-To:     andriin@fb.com, anton@enomsg.org, ast@kernel.org,
-        bpf@vger.kernel.org, ccross@android.com, daniel@iogearbox.net,
-        eparis@parisplace.org, kafai@fb.com, keescook@chromium.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        paul@paul-moore.com, sds@tycho.nsa.gov, selinux@vger.kernel.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
-        tony.luck@intel.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+In-Reply-To: <201911251639.UWS3hE3Y%lkp@intel.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="windows-1252"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1574712840; bh=xIrvhzi9FQlGBM90SU8S2M4hsd9JLL89vrPzYePQebc=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=nLQ5e77gFGxdvd47gRiRGHQbc1wVG8bwNbuGbyST1Q+jBowT4WflUsZ9otzD54lLB
+         J2wcW1AWxZ1vtAVadAvnnzHYEB9/RMQVx2Q02xRhkx6jKeVYJqp1Vzd24M3MZT/KvC
+         2r/IXfhmoHhQNFs1s+Ijlm3sbCcfcCTqQLXfh/u6EJodBjYv13WjZ+5uA/qpRqF5KJ
+         cgfhkSAYwIIVs+guU8WDjo4g7p8fk0VqKWKusesTvojs5xnlpb4TJcK/V2onbK8LWW
+         ksqnqfXGTA8sAX8XklRUC+OhMkFBYvdHQY7BxmxtkVVkFbYIpBRqVJEp1i5QjV+FwU
+         IkbF7UmcnHQ6g==
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
-
-syzbot found the following crash on:
-
-HEAD commit:    6b8a7946 Merge tag 'for_linus' of git://git.kernel.org/pub..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1680ab8ce00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4737c15fc47048f2
-dashboard link: https://syzkaller.appspot.com/bug?extid=314db21f0d5c1f53856c
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-
-Unfortunately, I don't have any reproducer for this crash yet.
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+314db21f0d5c1f53856c@syzkaller.appspotmail.com
-
-kasan: CONFIG_KASAN_INLINE enabled
-kasan: GPF could be caused by NULL-ptr deref or user memory access
-general protection fault: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 4616 Comm: kworker/1:0 Not tainted 5.4.0-rc8-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-Google 01/01/2011
-Workqueue: krxrpcd rxrpc_peer_keepalive_worker
-RIP: 0010:selinux_socket_sendmsg+0x22/0x40 security/selinux/hooks.c:4828
-Code: c3 e8 c2 40 ac fe eb e8 55 48 89 e5 53 48 89 fb e8 43 d5 70 fe 48 8d  
-7b 18 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 75  
-11 48 8b 7b 18 be 04 00 00 00 e8 fa fb ff ff 5b 5d
-RSP: 0000:ffff888089fd79f0 EFLAGS: 00010206
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffffff83427eb5
-RDX: 0000000000000003 RSI: ffffffff830281dd RDI: 0000000000000018
-RBP: ffff888089fd79f8 R08: ffff888098698400 R09: fffffbfff14f0154
-R10: fffffbfff14f0153 R11: ffffffff8a780a9f R12: dffffc0000000000
-R13: ffff888089fd7b20 R14: ffff888089fd7b20 R15: 000000000000001d
-FS:  0000000000000000(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000c000064008 CR3: 00000000a87b8000 CR4: 00000000001406e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
-  security_socket_sendmsg+0x77/0xc0 security/security.c:2013
-  sock_sendmsg+0x45/0x130 net/socket.c:654
-  kernel_sendmsg+0x44/0x50 net/socket.c:677
-  rxrpc_send_keepalive+0x1ff/0x940 net/rxrpc/output.c:655
-  rxrpc_peer_keepalive_dispatch net/rxrpc/peer_event.c:376 [inline]
-  rxrpc_peer_keepalive_worker+0x7be/0xd02 net/rxrpc/peer_event.c:437
-  process_one_work+0x9af/0x1740 kernel/workqueue.c:2269
-  worker_thread+0x98/0xe40 kernel/workqueue.c:2415
-  kthread+0x361/0x430 kernel/kthread.c:255
-  ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
-Modules linked in:
----[ end trace f42fd501ecc72d8d ]---
-RIP: 0010:selinux_socket_sendmsg+0x22/0x40 security/selinux/hooks.c:4828
-Code: c3 e8 c2 40 ac fe eb e8 55 48 89 e5 53 48 89 fb e8 43 d5 70 fe 48 8d  
-7b 18 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 75  
-11 48 8b 7b 18 be 04 00 00 00 e8 fa fb ff ff 5b 5d
-RSP: 0000:ffff888089fd79f0 EFLAGS: 00010206
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffffff83427eb5
-RDX: 0000000000000003 RSI: ffffffff830281dd RDI: 0000000000000018
-RBP: ffff888089fd79f8 R08: ffff888098698400 R09: fffffbfff14f0154
-R10: fffffbfff14f0153 R11: ffffffff8a780a9f R12: dffffc0000000000
-R13: ffff888089fd7b20 R14: ffff888089fd7b20 R15: 000000000000001d
-FS:  0000000000000000(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f9c00057120 CR3: 00000000a3e31000 CR4: 00000000001406e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+On 11/25/19 12:44 AM, kbuild test robot wrote:
+> Hi John,
+> 
+> Thank you for the patch! Yet something to improve:
+> 
+> [auto build test ERROR on rdma/for-next]
+> [cannot apply to v5.4 next-20191122]
+> [if your patch is applied to the wrong git tree, please drop us a note to help
+> improve the system. BTW, we also suggest to use '--base' option to specify the
+> base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
+> 
+> url:    https://github.com/0day-ci/linux/commits/John-Hubbard/pin_user_pages-reduced-risk-series-for-Linux-5-5/20191125-125637
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
+> config: arm-randconfig-a001-20191125 (attached as .config)
+> compiler: arm-linux-gnueabi-gcc (GCC) 7.4.0
+> reproduce:
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # save the attached .config to linux build tree
+>         GCC_VERSION=7.4.0 make.cross ARCH=arm 
+> 
+> If you fix the issue, kindly add following tag
+> Reported-by: kbuild test robot <lkp@intel.com>
+> 
+> All errors (new ones prefixed by >>):
+> 
+>    mm/gup.o: In function `pin_user_pages_remote':
+>>> mm/gup.c:2528: undefined reference to `get_user_pages_remote'
+> 
+> vim +2528 mm/gup.c
 
 
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+This, and the other (sh) report, is due to !CONFIG_MMU lacking a get_user_pages_remote(), 
+but pin_user_pages_remote() needs it for a (temporary) implementation. I'll post the fix, 
+in v2.
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
