@@ -2,107 +2,183 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EF5DC108ABA
-	for <lists+bpf@lfdr.de>; Mon, 25 Nov 2019 10:23:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCD5E108B7F
+	for <lists+bpf@lfdr.de>; Mon, 25 Nov 2019 11:18:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727028AbfKYJXB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 Nov 2019 04:23:01 -0500
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:33682 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727026AbfKYJXA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 25 Nov 2019 04:23:00 -0500
-Received: by mail-lj1-f194.google.com with SMTP id t5so14954942ljk.0
-        for <bpf@vger.kernel.org>; Mon, 25 Nov 2019 01:22:57 -0800 (PST)
+        id S1727316AbfKYKSc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 Nov 2019 05:18:32 -0500
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:45853 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725828AbfKYKSc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 25 Nov 2019 05:18:32 -0500
+Received: by mail-pg1-f195.google.com with SMTP id k1so6939869pgg.12;
+        Mon, 25 Nov 2019 02:18:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=faK4WL392GqdckW0uyVwjIQdx7tJEVyd6BibPewC/yc=;
-        b=uvnNoSEXIuP18d6+Y3p+e0tTXitJun+UB9p4/VP7uWVwZEOY00tGAHl1xNkcofvNVr
-         LONkwGkcCZ5Z7eINwotWRNm7VTEJih3MS/a+Dyn9OzUkISr5tsjw5SGlIuJNYSB5g/Br
-         Dq4oJARqWusN5j1OVILos2xpth3Z3nFWDamSk=
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=nRIosOG12bGzXNueMgN5wIJLE/V6v/BzKDFM9Qy6aPw=;
+        b=LNe4F3+QQjXmh05TCrl2M3VVXxbYZUoANnjgRKDpAFCfFsI+wUwvSEYU/JGGPHTPUp
+         o7A8jkPey9J2h7tk7moM3iXWlFxMARk3je5FOxcbrHjxOY6nQaL/VIcrqA4Z+gCV1X4h
+         x6tvorkxEOXOWZJWKIBE3drPXispJJO6FZChSWIm7aHM4O9KHJmshkGoZm6Im5BtfbKV
+         2kzMUoneQjtgwVGtzPX42hKhtMl46GcomdlV8Q8eTqrAuLej/ZD2QfdyIwUY0oxykLtK
+         cvd3zLd+mph1AiDVWPR+6c6ebHuU9pJYAVsOrRQJghdm+oM8//S0evT8acsOGr4SXpZM
+         ctRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=faK4WL392GqdckW0uyVwjIQdx7tJEVyd6BibPewC/yc=;
-        b=HIJ6hCGiEdM0QuNJM4REhBrLDwDdnfktScM9UBKKrls9mFLpTQfnT20PwQHauGzBDW
-         XpSNGK0rB7gjlrQnrNV9chYS2xYjjPh5LibfznfHkDtygDU3370s3j6Og76A8rj84Ol7
-         QmPvTfcPb6X8zwtP5InyTOrnw3/OwJbREOb0R3TVUMIYvSnzdYdo5V5hnu2WI4NQgbZ/
-         XjRmarBlnigwx0zXqsCv+XE+q4ibiPBrWG/LmRGx2L9Lm/4qJfFDBS4maUvjLAROtBOw
-         soN66oYYV70dNZyf7u5/DDtl5E+g8oggxHy1E5HI7CHY6SsjktHOAGe7GtrLknXN4kAW
-         e4WA==
-X-Gm-Message-State: APjAAAUTM7J9ghE8fCC81zWGoNnIFIcWs0b1QFY8LnzUJ/6A6dFgv5TI
-        wNTNpigOvvhKgCBNMyl0l5fSkg==
-X-Google-Smtp-Source: APXvYqwBGzTQDFC0/5QhmSGtRSkaqEzOBQru0EJmfLBRysmMv2dIUwZgqZcuvUGtr6u58HT7OS8FyA==
-X-Received: by 2002:a05:651c:209:: with SMTP id y9mr20871356ljn.65.1574673776940;
-        Mon, 25 Nov 2019 01:22:56 -0800 (PST)
-Received: from cloudflare.com ([176.221.114.230])
-        by smtp.gmail.com with ESMTPSA id x29sm3710096lfg.45.2019.11.25.01.22.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Nov 2019 01:22:56 -0800 (PST)
-References: <20191123110751.6729-1-jakub@cloudflare.com> <5dda1ed3e7f5d_62c72ad877f985c42f@john-XPS-13-9370.notmuch>
-User-agent: mu4e 1.1.0; emacs 26.1
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        kernel-team@cloudflare.com, Martin KaFai Lau <kafai@fb.com>
-Subject: Re: [PATCH bpf-next 0/8] Extend SOCKMAP to store listening sockets
-In-reply-to: <5dda1ed3e7f5d_62c72ad877f985c42f@john-XPS-13-9370.notmuch>
-Date:   Mon, 25 Nov 2019 10:22:55 +0100
-Message-ID: <87pnhgnwcw.fsf@cloudflare.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=nRIosOG12bGzXNueMgN5wIJLE/V6v/BzKDFM9Qy6aPw=;
+        b=FGDlBVMxOGc5TTEaIq8VfETypBAShAGD86+D2iYYpVgs7Hiy7bBHVF8Ujqkt7yibJS
+         6/IhIZZ+8UNhGNm+xX8EgZ5++YmF5emuoL3YbNs6r8XGTTIukE0IWz/w4VuGmpgPb1/v
+         IY8UFFchc8GroINQiON2rIX5cqHxKz1f4/1ihn3zIL7aq9FuO06ONYb/ACN0BfiWrvhn
+         W6F0E0BrPPyzx8t3YtVnSbRXCV3um1dQxESMpo0UgfvlOwkPfN+esrrvO05wkuQFhaUq
+         o7/JqZ8CGeGAVOE3w5ImVnEyAJ1vitiHRs063sIwLMvKxQGfOmjafhHWzB0fbizqwyjy
+         8ioA==
+X-Gm-Message-State: APjAAAVnYVpBikRoooVPqOLf7AZ7yTFYcb7kk3sNKZvMp4+5H499p0Cr
+        wHfHjEVjBOsvQfB0S8h0meY=
+X-Google-Smtp-Source: APXvYqwhSoFQYZMcUZEHgP8BAs0QWnrEMJYXHNAMUmFxFa29ZlJgZaNoov2ZNC/d33QEuwV2a3liQw==
+X-Received: by 2002:a63:ca05:: with SMTP id n5mr30978722pgi.187.1574677111140;
+        Mon, 25 Nov 2019 02:18:31 -0800 (PST)
+Received: from [172.20.20.103] ([222.151.198.97])
+        by smtp.gmail.com with ESMTPSA id 82sm7718012pfa.115.2019.11.25.02.18.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Nov 2019 02:18:29 -0800 (PST)
+Subject: Re: [RFC PATCH v2 bpf-next 00/15] xdp_flow: Flow offload to XDP
+To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        Pravin B Shelar <pshelar@ovn.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        William Tu <u9012063@gmail.com>,
+        Stanislav Fomichev <sdf@fomichev.me>
+References: <20191018040748.30593-1-toshiaki.makita1@gmail.com>
+ <5da9d8c125fd4_31cf2adc704105c456@john-XPS-13-9370.notmuch>
+ <22e6652c-e635-4349-c863-255d6c1c548b@gmail.com>
+ <5daf34614a4af_30ac2b1cb5d205bce4@john-XPS-13-9370.notmuch>
+ <87h840oese.fsf@toke.dk>
+ <5db128153c75_549d2affde7825b85e@john-XPS-13-9370.notmuch>
+ <87sgniladm.fsf@toke.dk> <a7f3d86b-c83c-7b0d-c426-684b8dfe4344@gmail.com>
+ <87zhhmrz7w.fsf@toke.dk> <b2ecf3e6-a8f1-cfd9-0dd3-e5f4d5360c0b@gmail.com>
+ <87zhhhnmg8.fsf@toke.dk> <640418c3-54ba-cd62-304f-fd9f73f25a42@gmail.com>
+ <87blthox30.fsf@toke.dk> <c1b7ff64-6574-74c7-cd6b-5aa353ec80ce@gmail.com>
+ <87lfsiocj5.fsf@toke.dk> <6e08f714-6284-6d0d-9cbe-711c64bf97aa@gmail.com>
+ <87k17xcwoq.fsf@toke.dk> <db38dee6-1db9-85f3-7a0c-0bcee13b12ea@gmail.com>
+ <8736eg5do2.fsf@toke.dk>
+From:   Toshiaki Makita <toshiaki.makita1@gmail.com>
+Message-ID: <c96d99ce-5fdd-dfa5-f013-ce11c6c8cfda@gmail.com>
+Date:   Mon, 25 Nov 2019 19:18:23 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <8736eg5do2.fsf@toke.dk>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Nov 24, 2019 at 07:10 AM CET, John Fastabend wrote:
-> Jakub Sitnicki wrote:
->> This patch set makes SOCKMAP more flexible by allowing it to hold TCP
->> sockets that are either in established or listening state. With it SOCKMAP
->> can act as a drop-in replacement for REUSEPORT_SOCKARRAY which reuseport
->> BPF programs use. Granted, it is limited to only TCP sockets.
+On 2019/11/22 20:54, Toke Høiland-Jørgensen wrote:
+> Toshiaki Makita <toshiaki.makita1@gmail.com> writes:
+> 
+>> On 2019/11/18 19:20, Toke Høiland-Jørgensen wrote:
+>>> Toshiaki Makita <toshiaki.makita1@gmail.com> writes:
+>>>
+>>> [... trimming the context a bit ...]
+>>>
+>>>>>>> Take your example of TC rules: You were proposing a flow like this:
+>>>>>>>
+>>>>>>> Userspace TC rule -> kernel rule table -> eBPF map -> generated XDP
+>>>>>>> program
+>>>>>>>
+>>>>>>> Whereas what I mean is that we could do this instead:
+>>>>>>>
+>>>>>>> Userspace TC rule -> kernel rule table
+>>>>>>>
+>>>>>>> and separately
+>>>>>>>
+>>>>>>> XDP program -> bpf helper -> lookup in kernel rule table
+>>>>>>
+>>>>>> Thanks, now I see what you mean.
+>>>>>> You expect an XDP program like this, right?
+>>>>>>
+>>>>>> int xdp_tc(struct xdp_md *ctx)
+>>>>>> {
+>>>>>> 	int act = bpf_xdp_tc_filter(ctx);
+>>>>>> 	return act;
+>>>>>> }
+>>>>>
+>>>>> Yes, basically, except that the XDP program would need to parse the
+>>>>> packet first, and bpf_xdp_tc_filter() would take a parameter struct with
+>>>>> the parsed values. See the usage of bpf_fib_lookup() in
+>>>>> bpf/samples/xdp_fwd_kern.c
+>>>>>
+>>>>>> But doesn't this way lose a chance to reduce/minimize the program to
+>>>>>> only use necessary features for this device?
+>>>>>
+>>>>> Not necessarily. Since the BPF program does the packet parsing and fills
+>>>>> in the TC filter lookup data structure, it can limit what features are
+>>>>> used that way (e.g., if I only want to do IPv6, I just parse the v6
+>>>>> header, ignore TCP/UDP, and drop everything that's not IPv6). The lookup
+>>>>> helper could also have a flag argument to disable some of the lookup
+>>>>> features.
+>>>>
+>>>> It's unclear to me how to configure that.
+>>>> Use options when attaching the program? Something like
+>>>> $ xdp_tc attach eth0 --only-with ipv6
+>>>> But can users always determine their necessary features in advance?
+>>>
+>>> That's what I'm doing with xdp-filter now. But the answer to your second
+>>> question is likely to be 'probably not', so it would be good to not have
+>>> to do this :)
+>>>
+>>>> Frequent manual reconfiguration when TC rules frequently changes does
+>>>> not sound nice. Or, add hook to kernel to listen any TC filter event
+>>>> on some daemon and automatically reload the attached program?
+>>>
+>>> Doesn't have to be a kernel hook; we could enhance the userspace tooling
+>>> to do it. Say we integrate it into 'tc':
+>>>
+>>> - Add a new command 'tc xdp_accel enable <iface> --features [ipv6,etc]'
+>>> - When adding new rules, add the following logic:
+>>>     - Check if XDP acceleration is enabled
+>>>     - If it is, check whether the rule being added fits into the current
+>>>       'feature set' loaded on that interface.
+>>>       - If the rule needs more features, reload the XDP program to one
+>>>         with the needed additional features.
+>>>       - Or, alternatively, just warn the user and let them manually
+>>>         replace it?
 >>
->> The idea started out at LPC '19 as feedback from John Fastabend to our
->> troubles with repurposing REUSEPORT_SOCKARRAY as a collection of listening
->> sockets accessed by a BPF program ran on socket lookup [1]. Without going
->> into details, REUSEPORT_SOCKARRAY proved to be tightly coupled with
->> reuseport logic. Talk from LPC (see slides [2] or video [3]) highlights
->> what problems we ran into when trying to make REUSEPORT_SOCKARRAY work for
->> our use-case.
->>
->> Patches have evolved quite a bit since the RFC series from a month ago
->> [4]. To recap the RFC feedback, John pointed out that BPF redirect helpers
->> for SOCKMAP need sane semantics when used with listening sockets [5], and
->> that SOCKMAP lookup from BPF would be useful [6]. While Martin asked for
->> UDP support [7].
->
-> Curious if you've started looking into UDP support. I had hoped to do
-> it but haven't got there yet.
+>> Ok, but there are other userspace tools to configure tc in wild.
+>> python and golang have their own netlink library project.
+>> OVS embeds TC netlink handling code in itself. There may be more tools like this.
+>> I think at least we should have rtnl notification about TC and monitor it
+>> from daemon, if we want to reload the program from userspace tools.
+> 
+> A daemon would be one way to do this in cases where it needs to be
+> completely dynamic. My guess is that there are lots of environments
+> where that is not required, and where a user/administrator could
+> realistically specify ahead of time which feature set they want to
+> enable XDP acceleration for. So in my mind the way to go about this is
+> to implement the latter first, then add dynamic reconfiguration of it on
+> top when (or if) it turns out to be necessary...
 
-No, not yet. I only made sure the newly added tests were easy to modify
-to cover UDP by not hard-coding the socket type.
+Hmm, but I think there is big difference between a daemon and a cli tool.
+Shouldn't we determine the design considering future usage?
 
-I expect to break ground with UDP work soon, though. Right after I push
-out another iteration of programmable socket lookup [1] patches adapted for
-SOCKMAP, which we've been testing internally.
-
->> As it happens, patches needed more work to get SOCKMAP to actually behave
->> correctly with listening sockets. It turns out flexibility has its
->> price. Change log below outlines them all.
->>
->
-> But looks pretty clean to me, only major change here is to add an extra
-> hook to remove psock from the child socket. And that looks fine to me and
-> cleaner than any other solution I had in mind.
->
-> Changes +/- looks good as well most the updates are in selftests to update
-> tests and add some new ones. +1
-
-Thanks for taking a look at the patches so quickly. I appreciate it.
-
--Jakub
-
-[1] https://lore.kernel.org/bpf/20190828072250.29828-1-jakub@cloudflare.com/
+Toshiaki Makita
