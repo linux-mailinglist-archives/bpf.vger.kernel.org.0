@@ -2,71 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DDD1C108CC9
-	for <lists+bpf@lfdr.de>; Mon, 25 Nov 2019 12:18:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A6FB108E62
+	for <lists+bpf@lfdr.de>; Mon, 25 Nov 2019 14:03:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727741AbfKYLS2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 Nov 2019 06:18:28 -0500
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:36868 "EHLO
+        id S1727298AbfKYNDV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 Nov 2019 08:03:21 -0500
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:28451 "EHLO
         us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727680AbfKYLS1 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 25 Nov 2019 06:18:27 -0500
+        by vger.kernel.org with ESMTP id S1727299AbfKYNDV (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 25 Nov 2019 08:03:21 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1574680706;
+        s=mimecast20190719; t=1574686999;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=9+QkeoDi6C/s/Wai3VV/W5MpT3HON3m8Sc3jHubbJpA=;
-        b=YalESrBtnGRmISZ57aMXjZHg/ZHsp62uQ07o2PqDPUI1lMdQL1t/XfZQlP2z+l5DxUiZau
-        N9Ff/eeUnmGHNQDxhSCbrN5S1+WNXwYEp40HdguOH20+AebOQof//0Q8TG0NhXmud0Mcpp
-        kgwkA9kmjK87mKWOWh4AzXIguYdHqJQ=
+        bh=EKh0kRl1xUZgQvrIbrNg+jQHWEueimCxZj+p1K9U7N0=;
+        b=QANKq4rI8UhFptiRrQ6naGGnjAe/w0z79viDOOfPD9y7H/jB9Jo7nJAqq4baLGZoPTSQ+g
+        92b0RFE2eYs0TU9Q2eTCJh/DreNL0tZNvJL6+4GHnRIWDhCDXIsSuOxJ7rBsN5mjQnNYnl
+        /UFTEDEgB2/pfzWFLJokP8osl+yUdK4=
 Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
  [209.85.208.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-69-4-cBbpUcOyqmY7Rk2cHzAQ-1; Mon, 25 Nov 2019 06:18:23 -0500
-Received: by mail-lj1-f198.google.com with SMTP id r5so2845560ljj.7
-        for <bpf@vger.kernel.org>; Mon, 25 Nov 2019 03:18:22 -0800 (PST)
+ us-mta-431-wNA8ftbOP9q5SG-mRWU5bQ-1; Mon, 25 Nov 2019 08:03:18 -0500
+Received: by mail-lj1-f198.google.com with SMTP id x24so2928873ljj.4
+        for <bpf@vger.kernel.org>; Mon, 25 Nov 2019 05:03:17 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
          :message-id:mime-version:content-transfer-encoding;
-        bh=9+QkeoDi6C/s/Wai3VV/W5MpT3HON3m8Sc3jHubbJpA=;
-        b=KJCCcHjSkpFXzH8uhkvBBN9bGzr/lTrI1D59g1FG3bIWFMJJIU6x/ckzXWfdrzb3lx
-         Z56gnEHIUipr6Z94OKRUEMDCsehvyaSrqjnqD/qEXmmpr8a3bR9Ej87TTP1ePN+IkTHj
-         CJlW5EWAB3Bz4/4hzgXQS+oQLchmh6adLGHIK+gm/LmdWRsTnEyQjPcnoJj/punYLquH
-         8wd/OLY4yt5k+ghi2yAHYNlLPZc5dfKM13qV2kccDDhEbXID7MY4G3Q5ZdV/e98ZdQyv
-         sjwqgkTYbd2s83u6vNjty52Vq0yAcqqaiQLHiP3oK48r9hhJLNi+WZzMimHdDVeF+18l
-         FASg==
-X-Gm-Message-State: APjAAAU5kB/YTJ8xjJ1Td11OTsDZwxHRUq3s1AtYER2fOe2rt2GODyCu
-        7qaR0J3zErCxyhdJefuC9MxO0i1MO3ee5MYmyBlWH+3X1eSa5U9LbwwEAyFeTlRSA/AMH6zdp6A
-        rQme02mmKu03w
-X-Received: by 2002:a05:651c:1109:: with SMTP id d9mr21442560ljo.192.1574680701857;
-        Mon, 25 Nov 2019 03:18:21 -0800 (PST)
-X-Google-Smtp-Source: APXvYqzPy6wOmF2LQfj4FWc7dYOJYb1RomfucBYVY3QWXT0HGuhI9i+7oRdd07Y61ojInXNFry/Bxw==
-X-Received: by 2002:a05:651c:1109:: with SMTP id d9mr21442543ljo.192.1574680701665;
-        Mon, 25 Nov 2019 03:18:21 -0800 (PST)
+        bh=20gNfbLGU6iaInGTNeDvk9czbFUxUSG9YN7fSeSG9N8=;
+        b=iAsNL7PCNOV+9kVKaoMU1hIgtxBGp2lCxycVgRXGvcmQp7W+neiZYINKLSnjTQaFwx
+         n3s6lFwEUSsd1v/FKNgUpKeUhtlSCQEhSDZb/X2uJ+UOmI/IHYJfv8vdM+WpJ4rzKlgt
+         IgFNWLP5yzNLkVVBZlQGgO91CKv55tw/wkAMWMZMtfrCWKOX68wje+lurJSpzZaWHMOf
+         CnabECh+drruQQvZrPAIdTz+hKFvCfl/brdi2WUILbzuh1Q6z2rTlPeOVSCDUMbBiErG
+         QdoDLrmQoTGkWywGshufxnWuRyaB3I1H8RzjnedZyy0wcF86SR4JJW7bj+qx2BDyqD7r
+         1q4g==
+X-Gm-Message-State: APjAAAWOO5qIz7jh2e+28LPTo6Kct+onlQ37Y21q6X1ypNqd8L5k8OUC
+        ixysHy3BThivnVw7p4lYNIMwEKnt7RLPzMkwrAAU5PH04nCq4+CBluYcT27K8+yVb2dBwJN5ao1
+        il5NmtzMFZ5ZM
+X-Received: by 2002:a05:651c:1025:: with SMTP id w5mr22503814ljm.68.1574686996701;
+        Mon, 25 Nov 2019 05:03:16 -0800 (PST)
+X-Google-Smtp-Source: APXvYqzIZ3glIOH8nbgqJTaeY2EQ3/a80pf7N5WOJxQ/cBsRzT23Y2i53Epi3ktj6g8NqK/WtKGZtg==
+X-Received: by 2002:a05:651c:1025:: with SMTP id w5mr22503789ljm.68.1574686996442;
+        Mon, 25 Nov 2019 05:03:16 -0800 (PST)
 Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id z19sm3730033ljk.66.2019.11.25.03.18.20
+        by smtp.gmail.com with ESMTPSA id g5sm3595027lfc.11.2019.11.25.05.03.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Nov 2019 03:18:20 -0800 (PST)
+        Mon, 25 Nov 2019 05:03:15 -0800 (PST)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 2DB371818BF; Mon, 25 Nov 2019 12:18:19 +0100 (CET)
+        id AEAD21818BF; Mon, 25 Nov 2019 14:03:14 +0100 (CET)
 From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net
-Cc:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        bpf@vger.kernel.org, magnus.karlsson@gmail.com,
-        magnus.karlsson@intel.com, jonathan.lemon@gmail.com,
-        ecree@solarflare.com, andrii.nakryiko@gmail.com,
-        tariqt@mellanox.com, saeedm@mellanox.com, maximmi@mellanox.com
-Subject: Re: [PATCH bpf-next v2 2/6] xdp: introduce xdp_call
-In-Reply-To: <20191123071226.6501-3-bjorn.topel@gmail.com>
-References: <20191123071226.6501-1-bjorn.topel@gmail.com> <20191123071226.6501-3-bjorn.topel@gmail.com>
+To:     Toshiaki Makita <toshiaki.makita1@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        Pravin B Shelar <pshelar@ovn.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        William Tu <u9012063@gmail.com>,
+        Stanislav Fomichev <sdf@fomichev.me>
+Subject: Re: [RFC PATCH v2 bpf-next 00/15] xdp_flow: Flow offload to XDP
+In-Reply-To: <c96d99ce-5fdd-dfa5-f013-ce11c6c8cfda@gmail.com>
+References: <20191018040748.30593-1-toshiaki.makita1@gmail.com> <5da9d8c125fd4_31cf2adc704105c456@john-XPS-13-9370.notmuch> <22e6652c-e635-4349-c863-255d6c1c548b@gmail.com> <5daf34614a4af_30ac2b1cb5d205bce4@john-XPS-13-9370.notmuch> <87h840oese.fsf@toke.dk> <5db128153c75_549d2affde7825b85e@john-XPS-13-9370.notmuch> <87sgniladm.fsf@toke.dk> <a7f3d86b-c83c-7b0d-c426-684b8dfe4344@gmail.com> <87zhhmrz7w.fsf@toke.dk> <b2ecf3e6-a8f1-cfd9-0dd3-e5f4d5360c0b@gmail.com> <87zhhhnmg8.fsf@toke.dk> <640418c3-54ba-cd62-304f-fd9f73f25a42@gmail.com> <87blthox30.fsf@toke.dk> <c1b7ff64-6574-74c7-cd6b-5aa353ec80ce@gmail.com> <87lfsiocj5.fsf@toke.dk> <6e08f714-6284-6d0d-9cbe-711c64bf97aa@gmail.com> <87k17xcwoq.fsf@toke.dk> <db38dee6-1db9-85f3-7a0c-0bcee13b12ea@gmail.com> <8736eg5do2.fsf@toke.dk> <c96d99ce-5fdd-dfa5-f013-ce11c6c8cfda@gmail.com>
 X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Mon, 25 Nov 2019 12:18:19 +0100
-Message-ID: <875zj82ohw.fsf@toke.dk>
+Date:   Mon, 25 Nov 2019 14:03:14 +0100
+Message-ID: <87zhgk152l.fsf@toke.dk>
 MIME-Version: 1.0
-X-MC-Unique: 4-cBbpUcOyqmY7Rk2cHzAQ-1
+X-MC-Unique: wNA8ftbOP9q5SG-mRWU5bQ-1
 X-Mimecast-Spam-Score: 0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -75,26 +87,114 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> writes:
+Toshiaki Makita <toshiaki.makita1@gmail.com> writes:
 
-> From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+> On 2019/11/22 20:54, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>> Toshiaki Makita <toshiaki.makita1@gmail.com> writes:
+>>=20
+>>> On 2019/11/18 19:20, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>>>> Toshiaki Makita <toshiaki.makita1@gmail.com> writes:
+>>>>
+>>>> [... trimming the context a bit ...]
+>>>>
+>>>>>>>> Take your example of TC rules: You were proposing a flow like this=
+:
+>>>>>>>>
+>>>>>>>> Userspace TC rule -> kernel rule table -> eBPF map -> generated XD=
+P
+>>>>>>>> program
+>>>>>>>>
+>>>>>>>> Whereas what I mean is that we could do this instead:
+>>>>>>>>
+>>>>>>>> Userspace TC rule -> kernel rule table
+>>>>>>>>
+>>>>>>>> and separately
+>>>>>>>>
+>>>>>>>> XDP program -> bpf helper -> lookup in kernel rule table
+>>>>>>>
+>>>>>>> Thanks, now I see what you mean.
+>>>>>>> You expect an XDP program like this, right?
+>>>>>>>
+>>>>>>> int xdp_tc(struct xdp_md *ctx)
+>>>>>>> {
+>>>>>>> =09int act =3D bpf_xdp_tc_filter(ctx);
+>>>>>>> =09return act;
+>>>>>>> }
+>>>>>>
+>>>>>> Yes, basically, except that the XDP program would need to parse the
+>>>>>> packet first, and bpf_xdp_tc_filter() would take a parameter struct =
+with
+>>>>>> the parsed values. See the usage of bpf_fib_lookup() in
+>>>>>> bpf/samples/xdp_fwd_kern.c
+>>>>>>
+>>>>>>> But doesn't this way lose a chance to reduce/minimize the program t=
+o
+>>>>>>> only use necessary features for this device?
+>>>>>>
+>>>>>> Not necessarily. Since the BPF program does the packet parsing and f=
+ills
+>>>>>> in the TC filter lookup data structure, it can limit what features a=
+re
+>>>>>> used that way (e.g., if I only want to do IPv6, I just parse the v6
+>>>>>> header, ignore TCP/UDP, and drop everything that's not IPv6). The lo=
+okup
+>>>>>> helper could also have a flag argument to disable some of the lookup
+>>>>>> features.
+>>>>>
+>>>>> It's unclear to me how to configure that.
+>>>>> Use options when attaching the program? Something like
+>>>>> $ xdp_tc attach eth0 --only-with ipv6
+>>>>> But can users always determine their necessary features in advance?
+>>>>
+>>>> That's what I'm doing with xdp-filter now. But the answer to your seco=
+nd
+>>>> question is likely to be 'probably not', so it would be good to not ha=
+ve
+>>>> to do this :)
+>>>>
+>>>>> Frequent manual reconfiguration when TC rules frequently changes does
+>>>>> not sound nice. Or, add hook to kernel to listen any TC filter event
+>>>>> on some daemon and automatically reload the attached program?
+>>>>
+>>>> Doesn't have to be a kernel hook; we could enhance the userspace tooli=
+ng
+>>>> to do it. Say we integrate it into 'tc':
+>>>>
+>>>> - Add a new command 'tc xdp_accel enable <iface> --features [ipv6,etc]=
+'
+>>>> - When adding new rules, add the following logic:
+>>>>     - Check if XDP acceleration is enabled
+>>>>     - If it is, check whether the rule being added fits into the curre=
+nt
+>>>>       'feature set' loaded on that interface.
+>>>>       - If the rule needs more features, reload the XDP program to one
+>>>>         with the needed additional features.
+>>>>       - Or, alternatively, just warn the user and let them manually
+>>>>         replace it?
+>>>
+>>> Ok, but there are other userspace tools to configure tc in wild.
+>>> python and golang have their own netlink library project.
+>>> OVS embeds TC netlink handling code in itself. There may be more tools =
+like this.
+>>> I think at least we should have rtnl notification about TC and monitor =
+it
+>>> from daemon, if we want to reload the program from userspace tools.
+>>=20
+>> A daemon would be one way to do this in cases where it needs to be
+>> completely dynamic. My guess is that there are lots of environments
+>> where that is not required, and where a user/administrator could
+>> realistically specify ahead of time which feature set they want to
+>> enable XDP acceleration for. So in my mind the way to go about this is
+>> to implement the latter first, then add dynamic reconfiguration of it on
+>> top when (or if) it turns out to be necessary...
 >
-> The xdp_call.h header wraps a more user-friendly API around the BPF
-> dispatcher. A user adds a trampoline/XDP caller using the
-> DEFINE_XDP_CALL macro, and updates the BPF dispatcher via
-> xdp_call_update(). The actual dispatch is done via xdp_call().
->
-> Note that xdp_call() is only supported for builtin drivers. Module
-> builds will fallback to bpf_prog_run_xdp().
+> Hmm, but I think there is big difference between a daemon and a cli tool.
+> Shouldn't we determine the design considering future usage?
 
-I don't like this restriction. Distro kernels are not likely to start
-shipping all the network drivers builtin, so they won't benefit from the
-performance benefits from this dispatcher.
-
-What is the reason these dispatcher blocks have to reside in the driver?
-Couldn't we just allocate one system-wide, and then simply change
-bpf_prog_run_xdp() to make use of it transparently (from the driver
-PoV)? That would also remove the need to modify every driver...
+Sure, we should make sure the design doesn't exclude either option. But
+we also shouldn't end up in a "the perfect is the enemy of the good"
+type of situation. And the kernel-side changes are likely to be somewhat
+independent of what the userspace management ends up looking like...
 
 -Toke
 
