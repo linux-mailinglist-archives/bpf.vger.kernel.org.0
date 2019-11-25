@@ -2,199 +2,166 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A6FB108E62
-	for <lists+bpf@lfdr.de>; Mon, 25 Nov 2019 14:03:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CD99108F81
+	for <lists+bpf@lfdr.de>; Mon, 25 Nov 2019 15:03:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727298AbfKYNDV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 Nov 2019 08:03:21 -0500
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:28451 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727299AbfKYNDV (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 25 Nov 2019 08:03:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1574686999;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EKh0kRl1xUZgQvrIbrNg+jQHWEueimCxZj+p1K9U7N0=;
-        b=QANKq4rI8UhFptiRrQ6naGGnjAe/w0z79viDOOfPD9y7H/jB9Jo7nJAqq4baLGZoPTSQ+g
-        92b0RFE2eYs0TU9Q2eTCJh/DreNL0tZNvJL6+4GHnRIWDhCDXIsSuOxJ7rBsN5mjQnNYnl
-        /UFTEDEgB2/pfzWFLJokP8osl+yUdK4=
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
- [209.85.208.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-431-wNA8ftbOP9q5SG-mRWU5bQ-1; Mon, 25 Nov 2019 08:03:18 -0500
-Received: by mail-lj1-f198.google.com with SMTP id x24so2928873ljj.4
-        for <bpf@vger.kernel.org>; Mon, 25 Nov 2019 05:03:17 -0800 (PST)
+        id S1727695AbfKYOD0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 Nov 2019 09:03:26 -0500
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:45570 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727462AbfKYOD0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 25 Nov 2019 09:03:26 -0500
+Received: by mail-qt1-f196.google.com with SMTP id 30so17226751qtz.12;
+        Mon, 25 Nov 2019 06:03:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=GONIPq20SONBcCz1EJD54XUzwNyuIJzlWKjnUmIBcuo=;
+        b=alFWDlz/8xCzoErURZTKNWooRqtCw0xcT4RjIf42RQb9tgKvg42jHPX5FzRgGtBksq
+         47IuqLKWzU5Vo3SbxB7RoHI99Q5sKHRQ3Gsro0jD35gnxJLd6vLXuSzz5NGb8QG6nOJN
+         kCIjEw/Lx5t+LErEoaAv4xcJwKc9A0QhxLUanTcxzWdbNW4WaJ9SQZJYDcPVHQ89d+v/
+         eWtNl4vgTC3vbSxekh1Vz+5oD7PWo7/gdC/21ppKBMYT6yHRP2E24oTlimVqkongANpy
+         4pMX119P49kGgB3g8/fgmWJhyhAHSZDSIBdL5L+seEbQHX8SsVsIMr/YJp2dc7asppds
+         bY7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=20gNfbLGU6iaInGTNeDvk9czbFUxUSG9YN7fSeSG9N8=;
-        b=iAsNL7PCNOV+9kVKaoMU1hIgtxBGp2lCxycVgRXGvcmQp7W+neiZYINKLSnjTQaFwx
-         n3s6lFwEUSsd1v/FKNgUpKeUhtlSCQEhSDZb/X2uJ+UOmI/IHYJfv8vdM+WpJ4rzKlgt
-         IgFNWLP5yzNLkVVBZlQGgO91CKv55tw/wkAMWMZMtfrCWKOX68wje+lurJSpzZaWHMOf
-         CnabECh+drruQQvZrPAIdTz+hKFvCfl/brdi2WUILbzuh1Q6z2rTlPeOVSCDUMbBiErG
-         QdoDLrmQoTGkWywGshufxnWuRyaB3I1H8RzjnedZyy0wcF86SR4JJW7bj+qx2BDyqD7r
-         1q4g==
-X-Gm-Message-State: APjAAAWOO5qIz7jh2e+28LPTo6Kct+onlQ37Y21q6X1ypNqd8L5k8OUC
-        ixysHy3BThivnVw7p4lYNIMwEKnt7RLPzMkwrAAU5PH04nCq4+CBluYcT27K8+yVb2dBwJN5ao1
-        il5NmtzMFZ5ZM
-X-Received: by 2002:a05:651c:1025:: with SMTP id w5mr22503814ljm.68.1574686996701;
-        Mon, 25 Nov 2019 05:03:16 -0800 (PST)
-X-Google-Smtp-Source: APXvYqzIZ3glIOH8nbgqJTaeY2EQ3/a80pf7N5WOJxQ/cBsRzT23Y2i53Epi3ktj6g8NqK/WtKGZtg==
-X-Received: by 2002:a05:651c:1025:: with SMTP id w5mr22503789ljm.68.1574686996442;
-        Mon, 25 Nov 2019 05:03:16 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id g5sm3595027lfc.11.2019.11.25.05.03.15
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=GONIPq20SONBcCz1EJD54XUzwNyuIJzlWKjnUmIBcuo=;
+        b=tx9O+34/886g6bZMIEI+I7tWnBa9LOOE31upw+CRA6QNpg+6gWLfA5onivcXt13SfK
+         SBbxIWRaPgW+yupLeBJ2+Tpa5Lqv7mmqqAbx8YioYJd6smJlQYD8q8Zpg9VAAuxdFBX6
+         CyEwOu+ikI+yWMXOP4J/ucEkGkxVF6p5PgR25gX0phM/g+jAw2nYgXiTLHiLdWcKl9C/
+         Mm+kH5Wrgw2etrqZ+Hopfjh5DT2gk5hTbVL2bF7WfkKgTyZRfM44kKOcSnErnbGgy5zr
+         NM+sMADtrj3ngaahn0psf+8KBZEXbuyL2svneQJ5OKNhatteJO/l9bAXKsz0tdQAEY0W
+         5dbw==
+X-Gm-Message-State: APjAAAWecXqQgOGCiXM0igetr1DiTP2j0EM4kRS7FaBwRo+Nzw2AJQV5
+        3ALi4iFQX7zUE+9GUvjeWfU=
+X-Google-Smtp-Source: APXvYqyDMNVvP3MHchpIb1lqvuFnzj7OBxals/8lBxo/QuQi9MX6O5sOblWIgHOkWoTl9Vwq5Wi93g==
+X-Received: by 2002:aed:2041:: with SMTP id 59mr28371684qta.79.1574690604687;
+        Mon, 25 Nov 2019 06:03:24 -0800 (PST)
+Received: from frodo.byteswizards.com (pc-184-104-160-190.cm.vtr.net. [190.160.104.184])
+        by smtp.gmail.com with ESMTPSA id x12sm3393806qkf.84.2019.11.25.06.03.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Nov 2019 05:03:15 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id AEAD21818BF; Mon, 25 Nov 2019 14:03:14 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Toshiaki Makita <toshiaki.makita1@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        Pravin B Shelar <pshelar@ovn.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        William Tu <u9012063@gmail.com>,
-        Stanislav Fomichev <sdf@fomichev.me>
-Subject: Re: [RFC PATCH v2 bpf-next 00/15] xdp_flow: Flow offload to XDP
-In-Reply-To: <c96d99ce-5fdd-dfa5-f013-ce11c6c8cfda@gmail.com>
-References: <20191018040748.30593-1-toshiaki.makita1@gmail.com> <5da9d8c125fd4_31cf2adc704105c456@john-XPS-13-9370.notmuch> <22e6652c-e635-4349-c863-255d6c1c548b@gmail.com> <5daf34614a4af_30ac2b1cb5d205bce4@john-XPS-13-9370.notmuch> <87h840oese.fsf@toke.dk> <5db128153c75_549d2affde7825b85e@john-XPS-13-9370.notmuch> <87sgniladm.fsf@toke.dk> <a7f3d86b-c83c-7b0d-c426-684b8dfe4344@gmail.com> <87zhhmrz7w.fsf@toke.dk> <b2ecf3e6-a8f1-cfd9-0dd3-e5f4d5360c0b@gmail.com> <87zhhhnmg8.fsf@toke.dk> <640418c3-54ba-cd62-304f-fd9f73f25a42@gmail.com> <87blthox30.fsf@toke.dk> <c1b7ff64-6574-74c7-cd6b-5aa353ec80ce@gmail.com> <87lfsiocj5.fsf@toke.dk> <6e08f714-6284-6d0d-9cbe-711c64bf97aa@gmail.com> <87k17xcwoq.fsf@toke.dk> <db38dee6-1db9-85f3-7a0c-0bcee13b12ea@gmail.com> <8736eg5do2.fsf@toke.dk> <c96d99ce-5fdd-dfa5-f013-ce11c6c8cfda@gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Mon, 25 Nov 2019 14:03:14 +0100
-Message-ID: <87zhgk152l.fsf@toke.dk>
+        Mon, 25 Nov 2019 06:03:23 -0800 (PST)
+Date:   Mon, 25 Nov 2019 11:03:19 -0300
+From:   Carlos Antonio Neira Bustos <cneirabustos@gmail.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     "ebiederm@xmission.com" <ebiederm@xmission.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "brouer@redhat.com" <brouer@redhat.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: Re: [Review Request] Re: [PATCH v15 1/5] fs/nsfs.c: added ns_match
+Message-ID: <20191125140319.GA14154@frodo.byteswizards.com>
+References: <20191022191751.3780-1-cneirabustos@gmail.com>
+ <20191022191751.3780-2-cneirabustos@gmail.com>
+ <7b7ba580-14f8-d5aa-65d5-0d6042e7a566@fb.com>
+ <63882673-849d-cae3-1432-1d9411c10348@fb.com>
+ <01acf191-f1aa-bf01-0945-56e4f37af69b@fb.com>
+ <4b323ffc-0b04-a00e-0e39-734dee0e2578@fb.com>
 MIME-Version: 1.0
-X-MC-Unique: wNA8ftbOP9q5SG-mRWU5bQ-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4b323ffc-0b04-a00e-0e39-734dee0e2578@fb.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Toshiaki Makita <toshiaki.makita1@gmail.com> writes:
+Yonghong,
 
-> On 2019/11/22 20:54, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->> Toshiaki Makita <toshiaki.makita1@gmail.com> writes:
->>=20
->>> On 2019/11/18 19:20, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->>>> Toshiaki Makita <toshiaki.makita1@gmail.com> writes:
->>>>
->>>> [... trimming the context a bit ...]
->>>>
->>>>>>>> Take your example of TC rules: You were proposing a flow like this=
-:
->>>>>>>>
->>>>>>>> Userspace TC rule -> kernel rule table -> eBPF map -> generated XD=
-P
->>>>>>>> program
->>>>>>>>
->>>>>>>> Whereas what I mean is that we could do this instead:
->>>>>>>>
->>>>>>>> Userspace TC rule -> kernel rule table
->>>>>>>>
->>>>>>>> and separately
->>>>>>>>
->>>>>>>> XDP program -> bpf helper -> lookup in kernel rule table
->>>>>>>
->>>>>>> Thanks, now I see what you mean.
->>>>>>> You expect an XDP program like this, right?
->>>>>>>
->>>>>>> int xdp_tc(struct xdp_md *ctx)
->>>>>>> {
->>>>>>> =09int act =3D bpf_xdp_tc_filter(ctx);
->>>>>>> =09return act;
->>>>>>> }
->>>>>>
->>>>>> Yes, basically, except that the XDP program would need to parse the
->>>>>> packet first, and bpf_xdp_tc_filter() would take a parameter struct =
-with
->>>>>> the parsed values. See the usage of bpf_fib_lookup() in
->>>>>> bpf/samples/xdp_fwd_kern.c
->>>>>>
->>>>>>> But doesn't this way lose a chance to reduce/minimize the program t=
-o
->>>>>>> only use necessary features for this device?
->>>>>>
->>>>>> Not necessarily. Since the BPF program does the packet parsing and f=
-ills
->>>>>> in the TC filter lookup data structure, it can limit what features a=
-re
->>>>>> used that way (e.g., if I only want to do IPv6, I just parse the v6
->>>>>> header, ignore TCP/UDP, and drop everything that's not IPv6). The lo=
-okup
->>>>>> helper could also have a flag argument to disable some of the lookup
->>>>>> features.
->>>>>
->>>>> It's unclear to me how to configure that.
->>>>> Use options when attaching the program? Something like
->>>>> $ xdp_tc attach eth0 --only-with ipv6
->>>>> But can users always determine their necessary features in advance?
->>>>
->>>> That's what I'm doing with xdp-filter now. But the answer to your seco=
-nd
->>>> question is likely to be 'probably not', so it would be good to not ha=
-ve
->>>> to do this :)
->>>>
->>>>> Frequent manual reconfiguration when TC rules frequently changes does
->>>>> not sound nice. Or, add hook to kernel to listen any TC filter event
->>>>> on some daemon and automatically reload the attached program?
->>>>
->>>> Doesn't have to be a kernel hook; we could enhance the userspace tooli=
-ng
->>>> to do it. Say we integrate it into 'tc':
->>>>
->>>> - Add a new command 'tc xdp_accel enable <iface> --features [ipv6,etc]=
-'
->>>> - When adding new rules, add the following logic:
->>>>     - Check if XDP acceleration is enabled
->>>>     - If it is, check whether the rule being added fits into the curre=
-nt
->>>>       'feature set' loaded on that interface.
->>>>       - If the rule needs more features, reload the XDP program to one
->>>>         with the needed additional features.
->>>>       - Or, alternatively, just warn the user and let them manually
->>>>         replace it?
->>>
->>> Ok, but there are other userspace tools to configure tc in wild.
->>> python and golang have their own netlink library project.
->>> OVS embeds TC netlink handling code in itself. There may be more tools =
-like this.
->>> I think at least we should have rtnl notification about TC and monitor =
-it
->>> from daemon, if we want to reload the program from userspace tools.
->>=20
->> A daemon would be one way to do this in cases where it needs to be
->> completely dynamic. My guess is that there are lots of environments
->> where that is not required, and where a user/administrator could
->> realistically specify ahead of time which feature set they want to
->> enable XDP acceleration for. So in my mind the way to go about this is
->> to implement the latter first, then add dynamic reconfiguration of it on
->> top when (or if) it turns out to be necessary...
->
-> Hmm, but I think there is big difference between a daemon and a cli tool.
-> Shouldn't we determine the design considering future usage?
+I think the merge window has closed, should I resubmit these patches, or 
+wait for Eric's feedback ?
 
-Sure, we should make sure the design doesn't exclude either option. But
-we also shouldn't end up in a "the perfect is the enemy of the good"
-type of situation. And the kernel-side changes are likely to be somewhat
-independent of what the userspace management ends up looking like...
+Bests
 
--Toke
-
+On Tue, Nov 12, 2019 at 03:18:20PM +0000, Yonghong Song wrote:
+> Eric,
+> 
+> ping again. Any comment on this patch?
+> 
+> On 10/31/19 3:31 PM, Yonghong Song wrote:
+> > 
+> > Eric,
+> > 
+> > In case that you missed the email, I added "[Review Request]"
+> > and pinged again. It would be good if you can take a look
+> > and ack if it looks good to you.
+> > 
+> > Thanks!
+> > 
+> > 
+> > On 10/28/19 8:34 AM, Yonghong Song wrote:
+> >> Ping again.
+> >>
+> >> Eric, could you take a look at this patch and ack it if it is okay?
+> >>
+> >> Thanks!
+> >>
+> >>
+> >> On 10/22/19 8:05 PM, Yonghong Song wrote:
+> >>>
+> >>> Hi, Eric,
+> >>>
+> >>> Could you take a look at this patch the series as well?
+> >>> If it looks good, could you ack the patch #1?
+> >>>
+> >>> Thanks!
+> >>>
+> >>> On 10/22/19 12:17 PM, Carlos Neira wrote:
+> >>>> ns_match returns true if the namespace inode and dev_t matches the ones
+> >>>> provided by the caller.
+> >>>>
+> >>>> Signed-off-by: Carlos Neira <cneirabustos@gmail.com>
+> >>>> ---
+> >>>>     fs/nsfs.c               | 14 ++++++++++++++
+> >>>>     include/linux/proc_ns.h |  2 ++
+> >>>>     2 files changed, 16 insertions(+)
+> >>>>
+> >>>> diff --git a/fs/nsfs.c b/fs/nsfs.c
+> >>>> index a0431642c6b5..ef59cf347285 100644
+> >>>> --- a/fs/nsfs.c
+> >>>> +++ b/fs/nsfs.c
+> >>>> @@ -245,6 +245,20 @@ struct file *proc_ns_fget(int fd)
+> >>>>         return ERR_PTR(-EINVAL);
+> >>>>     }
+> >>>> +/**
+> >>>> + * ns_match() - Returns true if current namespace matches dev/ino 
+> >>>> provided.
+> >>>> + * @ns_common: current ns
+> >>>> + * @dev: dev_t from nsfs that will be matched against current nsfs
+> >>>> + * @ino: ino_t from nsfs that will be matched against current nsfs
+> >>>> + *
+> >>>> + * Return: true if dev and ino matches the current nsfs.
+> >>>> + */
+> >>>> +bool ns_match(const struct ns_common *ns, dev_t dev, ino_t ino)
+> >>>> +{
+> >>>> +    return (ns->inum == ino) && (nsfs_mnt->mnt_sb->s_dev == dev);
+> >>>> +}
+> >>>> +
+> >>>> +
+> >>>>     static int nsfs_show_path(struct seq_file *seq, struct dentry 
+> >>>> *dentry)
+> >>>>     {
+> >>>>         struct inode *inode = d_inode(dentry);
+> >>>> diff --git a/include/linux/proc_ns.h b/include/linux/proc_ns.h
+> >>>> index d31cb6215905..1da9f33489f3 100644
+> >>>> --- a/include/linux/proc_ns.h
+> >>>> +++ b/include/linux/proc_ns.h
+> >>>> @@ -82,6 +82,8 @@ typedef struct ns_common 
+> >>>> *ns_get_path_helper_t(void *);
+> >>>>     extern void *ns_get_path_cb(struct path *path, 
+> >>>> ns_get_path_helper_t ns_get_cb,
+> >>>>                     void *private_data);
+> >>>> +extern bool ns_match(const struct ns_common *ns, dev_t dev, ino_t 
+> >>>> ino);
+> >>>> +
+> >>>>     extern int ns_get_name(char *buf, size_t size, struct 
+> >>>> task_struct *task,
+> >>>>                 const struct proc_ns_operations *ns_ops);
+> >>>>     extern void nsfs_init(void);
+> >>>>
