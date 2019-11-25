@@ -2,232 +2,298 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BAD4109582
-	for <lists+bpf@lfdr.de>; Mon, 25 Nov 2019 23:30:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18A1710958A
+	for <lists+bpf@lfdr.de>; Mon, 25 Nov 2019 23:38:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726866AbfKYWaN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 Nov 2019 17:30:13 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:34448 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725912AbfKYWaN (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 25 Nov 2019 17:30:13 -0500
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xAPM5Usg031256;
-        Mon, 25 Nov 2019 14:30:07 -0800
+        id S1727008AbfKYWiz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 Nov 2019 17:38:55 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:36350 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725912AbfKYWiz (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 25 Nov 2019 17:38:55 -0500
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xAPMbjc0000822;
+        Mon, 25 Nov 2019 14:38:52 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : references : in-reply-to : content-type : content-id
  : content-transfer-encoding : mime-version; s=facebook;
- bh=i5iB3asyddE72/xdXVpQxbDywzQUDG9FCHgJ9csAO2U=;
- b=f8a1GiZpc05kfeOFwHT+pJMBcJ6kML7lp64NLcIKI8teE9cpKq8ksyi8jQbUc5QTLK3m
- M1zORwpZ3Ci7uewYrLA9c4w0HSZPSGYOa6PSQgxf5wKIivXguqFTxKCSDvxqz59T/EAL
- P34q3vtKbpYzdYrOqkG6L3u7m42Cw+zcsPE= 
+ bh=EwR9kULbYe9yTSXO2gvOneMBimYAfBo/RpRjxGqd29c=;
+ b=jT6VGvd5rmU0bfA0tQuo9m1yr9Lcsd+g1FurvbmKBO++XFfxFRwtBhMDqwKO/GfGwOuD
+ N774O/TnYwPZgJjgaWAVdtk0oi43GtyFa1K5sGx0ryDams6vpV8nb0ORMRUlFB7M2AJ5
+ +j+wHjrUmeT7xkqgRCfvSYNJkBCyxkO4qjA= 
 Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by mx0a-00082601.pphosted.com with ESMTP id 2wf3crbp3y-11
+        by mx0a-00082601.pphosted.com with ESMTP id 2wfnbg0hjn-3
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Mon, 25 Nov 2019 14:30:07 -0800
-Received: from prn-mbx01.TheFacebook.com (2620:10d:c081:6::15) by
- prn-hub01.TheFacebook.com (2620:10d:c081:35::125) with Microsoft SMTP Server
+        Mon, 25 Nov 2019 14:38:52 -0800
+Received: from prn-mbx02.TheFacebook.com (2620:10d:c081:6::16) by
+ prn-hub02.TheFacebook.com (2620:10d:c081:35::126) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Mon, 25 Nov 2019 14:30:03 -0800
-Received: from prn-hub05.TheFacebook.com (2620:10d:c081:35::129) by
- prn-mbx01.TheFacebook.com (2620:10d:c081:6::15) with Microsoft SMTP Server
+ 15.1.1713.5; Mon, 25 Nov 2019 14:38:50 -0800
+Received: from prn-hub01.TheFacebook.com (2620:10d:c081:35::125) by
+ prn-mbx02.TheFacebook.com (2620:10d:c081:6::16) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Mon, 25 Nov 2019 14:30:02 -0800
-Received: from NAM01-BN3-obe.outbound.protection.outlook.com (192.168.54.28)
- by o365-in.thefacebook.com (192.168.16.29) with Microsoft SMTP Server
+ 15.1.1713.5; Mon, 25 Nov 2019 14:38:50 -0800
+Received: from NAM05-CO1-obe.outbound.protection.outlook.com (192.168.54.28)
+ by o365-in.thefacebook.com (192.168.16.25) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
- via Frontend Transport; Mon, 25 Nov 2019 14:30:02 -0800
+ via Frontend Transport; Mon, 25 Nov 2019 14:38:50 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ImBnSK+JMZT9WxLvy2x4F4CBheRWDRV9fEiW8O/3ZpIIKozrI0micxI3whnuAGAkRgf0itpLZ/PHzEaOmlbtFVG00IHwZTJYxcPgKxzSVN2oMW327melS28nbq7gebcLD/I6CFi3su5i9nbRvtFUOSd7oE1wagieM7fRx6ekNPi39zByj6/49dWykbcd5GPG45XTbpkX5RqknvxfJVjk8HUJp9kwiWWhMFAaS/Bn+15o9TbCy5/28u+/+VKMXhEyTevPURaIgKTbjPPTTTRYiBJlYM12O5Dg8Et2A+qeqjrhFAHlck2OCt0bL+KhYf+alEymZfuKmirhC4ZaKbGJgg==
+ b=cUgPI/JkPKJ87+XXVbAbHZRgZVcaT2eeJ7yqts36SzaHoyDPdjSIZepNwtOwPHL6EqzSRBR07mRW+4sO1BHjwp63NMdD5DUTs+cpUBIw+gX+PTZc/tC+v/eCx0bedwakvc1+rBkjAZud+E+tcdc8pC71OoLHN7Htz4cXJk+iYdZHrbudVDoT5NR5qzzeAYJPnwGQYnq5sYKYqGYctWKCt2ipF+ECI4yzrpoeDRn0loQVYREdKaz7Q9RkQYvL7IkfLq2NeZ5SB7Wlb8TnirzvI95krNKLmsz/0e1Wnc7Wsx3gySu5dMfI0JANIg1qiS5n7C8UbxlTnxtESEKCC5rTCA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=i5iB3asyddE72/xdXVpQxbDywzQUDG9FCHgJ9csAO2U=;
- b=JtRR6cTI8Bzs+t2OrPt/K0p3kSZbspr/uAmArb5ah2O+guqCv6z+HB680TnaQofYMPOW7cCuE+Nd6v5wuWmBrlwr3FhkXzofvKRh/imERPnAXaAnAFWDHRrLbp1ZqUzq6ZI5Bu/oubtJSxTk75O6zT8VFbYwjzpga7B/FP0Sk65snRexubfWu+JC8qzc1AywKjA4IwaHtlrBkGr1jAe6SQRr447rAML6awlraD9t5QGeEEv0OYL4ksQCZnSDDE8S0OE2k99K4YQnGBBF3a5W+Q57w9/e2huOMbrG3da4NymBi6Ekzlw1z2Fjsuo1XE5WCha1ranCEiS889GwSEaUmA==
+ bh=EwR9kULbYe9yTSXO2gvOneMBimYAfBo/RpRjxGqd29c=;
+ b=CXNbmCR/ThgYGmOvojiZv5RiuIV9c8i2N7LbDGRiNlkKQobSPG2/6RswtbWvyYLE7iZS2JcgklB/U6USLO/p7pI7x0TreNPgmsqaIuBuqlodd565OMFgcA+aZYDveoPG2cUA4ksWte9GnNO+q+9Am41m/GmJH+QH8Mbwu48X53/bSW5h2UMmIygJL4JPjtE9BalC53mA7i2fiPEVoPWMI3Q5f5/2BWdm4E+5v8hNbM5NRnu/qzqev8V/YyF1m+EEuuf4VyP4UpDkYmh5NWgM60jw1eajM/GzigIppMPjJBa6cRXp7U3U3/U77pjz/XX13R+Gg9HuTwnQXT0QcHxkfg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
  s=selector2-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=i5iB3asyddE72/xdXVpQxbDywzQUDG9FCHgJ9csAO2U=;
- b=TsXlVQ8v/ahFwW4aJtMAb70+h7Ity7MIRolEl11oU+zODzCQYL6ziXpX10q0fJJ/QOf9mFXtQa7sH05rh9LeQg7wdrPaMu9F7zdkOtwnCLWflLoou8umo2hP4y3LRFnXEI13adQUcz9iK8+rpkUfz219FVkeHtFQ/xeB8xlNsBY=
+ bh=EwR9kULbYe9yTSXO2gvOneMBimYAfBo/RpRjxGqd29c=;
+ b=MemP+4NRqK6LRHdeKO9fZMpoyCW/0dn9IHHZXlEfnGu7lFsnWHttGKh4RqZVHO/W6o1jTOfBz1/Ye9b15o0vow5gFi3cKgZIer8tO1EoLhGXwigLiNPm8i2oB7087DKqNkTgPhH1P6/bN3/5W54DEHE0H5V169R6ayf/b1q/RTg=
 Received: from MN2PR15MB3213.namprd15.prod.outlook.com (20.179.21.76) by
- MN2PR15MB3072.namprd15.prod.outlook.com (20.178.254.91) with Microsoft SMTP
+ MN2PR15MB3103.namprd15.prod.outlook.com (20.178.254.74) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2474.21; Mon, 25 Nov 2019 22:30:01 +0000
+ 15.20.2474.17; Mon, 25 Nov 2019 22:38:49 +0000
 Received: from MN2PR15MB3213.namprd15.prod.outlook.com
  ([fe80::ec0d:4e55:4da9:904c]) by MN2PR15MB3213.namprd15.prod.outlook.com
  ([fe80::ec0d:4e55:4da9:904c%7]) with mapi id 15.20.2474.023; Mon, 25 Nov 2019
- 22:30:01 +0000
+ 22:38:49 +0000
 From:   Martin Lau <kafai@fb.com>
 To:     Jakub Sitnicki <jakub@cloudflare.com>
 CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
         "kernel-team@cloudflare.com" <kernel-team@cloudflare.com>,
         John Fastabend <john.fastabend@gmail.com>
-Subject: Re: [PATCH bpf-next 7/8] selftests/bpf: Extend SK_REUSEPORT tests to
- cover SOCKMAP
-Thread-Topic: [PATCH bpf-next 7/8] selftests/bpf: Extend SK_REUSEPORT tests to
- cover SOCKMAP
-Thread-Index: AQHVoe5MlmxtGrxbYUi0aPcV+GncKqece+AA
-Date:   Mon, 25 Nov 2019 22:30:01 +0000
-Message-ID: <20191125222958.aaplyw7ebtqs6yyl@kafai-mbp>
+Subject: Re: [PATCH bpf-next 4/8] bpf, sockmap: Don't let child socket inherit
+ psock or its ops on copy
+Thread-Topic: [PATCH bpf-next 4/8] bpf, sockmap: Don't let child socket
+ inherit psock or its ops on copy
+Thread-Index: AQHVoe5KSzr7pEIvm0S4q82BeKmlVKecflSA
+Date:   Mon, 25 Nov 2019 22:38:49 +0000
+Message-ID: <20191125223845.6t6xoqcwcqxuqbdf@kafai-mbp>
 References: <20191123110751.6729-1-jakub@cloudflare.com>
- <20191123110751.6729-8-jakub@cloudflare.com>
-In-Reply-To: <20191123110751.6729-8-jakub@cloudflare.com>
+ <20191123110751.6729-5-jakub@cloudflare.com>
+In-Reply-To: <20191123110751.6729-5-jakub@cloudflare.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-clientproxiedby: MWHPR1401CA0016.namprd14.prod.outlook.com
- (2603:10b6:301:4b::26) To MN2PR15MB3213.namprd15.prod.outlook.com
- (2603:10b6:208:3d::12)
+x-clientproxiedby: CO2PR07CA0079.namprd07.prod.outlook.com (2603:10b6:100::47)
+ To MN2PR15MB3213.namprd15.prod.outlook.com (2603:10b6:208:3d::12)
 x-ms-exchange-messagesentrepresentingtype: 1
 x-originating-ip: [2620:10d:c090:200::1:c9b2]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 5895780a-0990-44c8-e3f3-08d771f702ef
-x-ms-traffictypediagnostic: MN2PR15MB3072:
-x-microsoft-antispam-prvs: <MN2PR15MB3072E14369DF2FC38AAD1BB1D54A0@MN2PR15MB3072.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-ms-office365-filtering-correlation-id: 1c3d616c-aa08-4d3a-9eff-08d771f83d3a
+x-ms-traffictypediagnostic: MN2PR15MB3103:
+x-microsoft-antispam-prvs: <MN2PR15MB3103EA1CF26DAB830816F57BD54A0@MN2PR15MB3103.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:989;
 x-forefront-prvs: 0232B30BBC
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(7916004)(346002)(39860400002)(136003)(366004)(376002)(396003)(199004)(189003)(305945005)(25786009)(316002)(7736002)(14454004)(54906003)(6916009)(446003)(478600001)(186003)(8936002)(8676002)(81166006)(2906002)(6116002)(81156014)(66476007)(66556008)(64756008)(66446008)(46003)(33716001)(76176011)(6436002)(11346002)(99286004)(52116002)(6512007)(6486002)(9686003)(71200400001)(71190400001)(6246003)(102836004)(386003)(6506007)(5660300002)(229853002)(4326008)(66946007)(86362001)(1076003)(256004);DIR:OUT;SFP:1102;SCL:1;SRVR:MN2PR15MB3072;H:MN2PR15MB3213.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(7916004)(39860400002)(346002)(376002)(396003)(366004)(136003)(189003)(199004)(386003)(2906002)(66476007)(66556008)(76176011)(6916009)(316002)(8936002)(81166006)(4326008)(81156014)(5660300002)(25786009)(305945005)(6436002)(64756008)(52116002)(229853002)(66946007)(86362001)(8676002)(14454004)(6116002)(102836004)(14444005)(6512007)(9686003)(33716001)(11346002)(6506007)(478600001)(46003)(71190400001)(54906003)(1076003)(186003)(6246003)(99286004)(256004)(6486002)(446003)(7736002)(71200400001)(66446008);DIR:OUT;SFP:1102;SCL:1;SRVR:MN2PR15MB3103;H:MN2PR15MB3213.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
 received-spf: None (protection.outlook.com: fb.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 40iCQrrOSB+AaGJcjReswurYLjWJYWZBlGkMJxVpAPPzKuZlQLolBG4XMrq59s3hUrEudiDx4SbGPEw+wYviVSI1RouOiHHZiVhAo1NTCenr6ezIfYZGYxVXKOmV+YArcSEsWgoDG5Hx2LCIQL0eiyKO/KkjrT1m93BMiiEYIqF6gdwjhusMtyNZBrU0kM99Q5nqNP85qRvgf4bszomTptp/XJqtMFQp0+90z62TiBYKeF2XCQKvc9abjQW2oPD+9+9mY8uL0Wgujniwjp1MYRMfS0xbfWRHL4uVDdMJmdN0XjEL5vXIB1WU+fRGBF9QgG8pPFOFu4L3L2RF74unXTvAYPUWkMb31lCEduTSAaPRRWthidaeYWio39X6nldI4Xtt93mgGjnan3cvTLp4XdUZmCsQA7d33/s1C1RwO4h5jl/1qRTE7021BPSdy4PL
+x-microsoft-antispam-message-info: =?us-ascii?Q?yMbXvxeDyQgtEmhlT3Y76qBFF+Ep0ly3D/ZypelAsHz3Vbj002F2wMqhdplf?=
+ =?us-ascii?Q?8yxSKx4Hp8DVGWL0+7d3q5E5t0VEaC00TtKBb9YCho2dyFEwZT0pqX6+ihak?=
+ =?us-ascii?Q?fKLbixf8Hm9CulzvDO+ZlupCrxC+ZlDbOo7eOGT4AtQU2lADD+wl0cyMnAkA?=
+ =?us-ascii?Q?jKpUrv41DreXqUH2WYe2G/FOv2vjsIagsIHWxn4jp54R/T8lkY2+Im49nnZH?=
+ =?us-ascii?Q?diTJnBzT6C6qvAsiiUoeoG1xHBpkRKgT3nIhf0aRq0M+Bngc+Wdbg6Oe2vJq?=
+ =?us-ascii?Q?JRlX32QEdr+HZaF5TnCNkAJFIoC3toSGzV6+x1CAq/bac9gjXDBqt5KoRF8Q?=
+ =?us-ascii?Q?DqIZae/i57i8vFE2ptuxTZkVozf1JH2DCgzNtbLQP4Qq4V9DaePAYVpNAwqj?=
+ =?us-ascii?Q?jpdFkPPp5+TnCKJkHckinJkPDawG4Vt3U2LbSzsaam39WbFKwF3vM7Yiyw5E?=
+ =?us-ascii?Q?bKX8jGaU5Io/c3aRQhlh9LQxXyUpJmUQ7NhG/GWL4CAqDdfEdXe1QioDnf6W?=
+ =?us-ascii?Q?B0RKBeblL/9uiszsSMuW4pZyNATWU0ei2R/pZPbtKguPksMskcyarkoNBDtm?=
+ =?us-ascii?Q?AMyFgFr3o/0oJwPutZvJYcPC5qwgcJB36X9XjfbBWULwpyBIsH6e1JpLRsxN?=
+ =?us-ascii?Q?LLkEgE5DsYHiF4OdSlX0zhgrPLTZEV2l+szBYZyGCrI10liWhItXg0w6tvYc?=
+ =?us-ascii?Q?RQbQVQFkMDBH5QJdVbYVbYWvnmDlBr0XI1ausd85vmCVKpPjzwD6cKE11XnI?=
+ =?us-ascii?Q?9py7o3UR8HqoA7Z+uuXvAbMSjtUbxxgrOJTsm+o0QG2XIx9XKRsfpr5gaqT0?=
+ =?us-ascii?Q?LFxPl72uTHkKQmdkhLYT9+NkDYPov+6edjc/kgV0TOo8WPOKxSHPy4PuvcHr?=
+ =?us-ascii?Q?btwomDw03PAiytfgvT7F1TVu8A58bWVgzIcqVTl/Tq4Ls23H5p//BO0YmUh6?=
+ =?us-ascii?Q?58NXCqird9ltXwY6kyMT+86gVMxGbSu48RJBM3CW3gSuSLUX/fr5xXofwKl3?=
+ =?us-ascii?Q?0C9quTWVbZKLauNVb/kMqsWIcCUR++aTjhDR8h15qrgm35/QUHZUA+U2yktR?=
+ =?us-ascii?Q?DM2HM7v3vg6zkVMZdVeQSJF9aMShT+3/5Y1SjUP42Y8pWWhOCiq2Ee6rQPZw?=
+ =?us-ascii?Q?HLHYkbqsu9k2w1O5HAijr2KWJ/9HyIuB4DNUp9Kmq2kE7a18hvTepD7Jb/Ku?=
+ =?us-ascii?Q?FeZivFsEAmb1Mg8FHdMB+sVxXu2K4odnbyDh+WrhRsxQlsMZTO6FB+vTgamh?=
+ =?us-ascii?Q?BidSLhy+lWZVWr7pWiWvNPwg/+HFUzCp/vtJeAIoLg38A7/3kIUO+qhZO6Er?=
+ =?us-ascii?Q?aSTOt1lCBzjwF7qhM8k45dfYfylGlTlXUQFi1RU11U+EJ557B1HgDv73DeUu?=
+ =?us-ascii?Q?fVUbbatocRSm61M9QU9nHZ5vYARUt2nGhGIwZ3y1QHdibD7a8A4Y5US6sGce?=
+ =?us-ascii?Q?d3Hg/dYiEUbH9C5yemnQ7kRqemdrCByddGTavaz7TnCyiOrtV/CfL/objkUp?=
+ =?us-ascii?Q?IASZ7WPZKFUYdLkWKSeWwINiCXPE1xW+1RToP5e0M3+xysurRZ3z1GeqUYDA?=
+ =?us-ascii?Q?fMWawuK1ug1qR9h62lg7CkfxjMY7r7LxvoVvY0myl5d+u4vph3Mm5NBz8L/V?=
+ =?us-ascii?Q?rDlFl2vUh+OajSUgKBvn7QjPa8XjPpxsig9KvHUDjv9CIkAJJF8u51c9A4q6?=
+ =?us-ascii?Q?LqcQJA=3D=3D?=
 x-ms-exchange-transport-forked: True
 Content-Type: text/plain; charset="us-ascii"
-Content-ID: <FC017FE0F60005429205217101C3E9CA@namprd15.prod.outlook.com>
+Content-ID: <B44D8C4CB1B04A46928859D80F388773@namprd15.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5895780a-0990-44c8-e3f3-08d771f702ef
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Nov 2019 22:30:01.8480
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1c3d616c-aa08-4d3a-9eff-08d771f83d3a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Nov 2019 22:38:49.1753
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: jeYhVNiaQlHjY2TlX4qPniUTRggsc8HoNLPLDqzepkVdjtdn3zcy4wkMn21Jrm9E
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB3072
+X-MS-Exchange-CrossTenant-userprincipalname: 0DTry+c1H9GGSiM14xguSYKJ7Yqs1A5degVKo76sggMptgoxvoQjmBt3nOfQCwQG
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB3103
 X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
  definitions=2019-11-25_06:2019-11-21,2019-11-25 signatures=0
 X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- suspectscore=0 impostorscore=0 mlxscore=0 bulkscore=0 spamscore=0
- priorityscore=1501 adultscore=0 phishscore=0 mlxlogscore=932
- malwarescore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-1910280000 definitions=main-1911250176
+ malwarescore=0 clxscore=1015 priorityscore=1501 spamscore=0 adultscore=0
+ suspectscore=0 bulkscore=0 phishscore=0 impostorscore=0 mlxlogscore=508
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-1911250177
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Nov 23, 2019 at 12:07:50PM +0100, Jakub Sitnicki wrote:
-> Parametrize the SK_REUSEPORT tests so that the map type for storing socke=
-ts
-> can be selected at run-time. Also allow choosing which L4 protocols get
-> tested.
-If new cmdline args are added to select different subtests,
-I would prefer to move it to the test_progs framework and reuse the subtest=
-s
-support in test_progs commit 3a516a0a3a7b ("selftests/bpf: add sub-tests su=
-pport for test_progs").
-Its default is to run all instead of having a separate bash script to
-do that.
-
->=20
-> Run the extended reuseport program test two times, once for
-> REUSEPORT_ARRAY, and once for SOCKMAP but just with TCP to cover the newl=
-y
-> enabled map type.
->=20
-> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
-
+On Sat, Nov 23, 2019 at 12:07:47PM +0100, Jakub Sitnicki wrote:
 [ ... ]
-> +static const char *family_to_str(int family)
-> +{
-> +	switch (family) {
-> +	case AF_INET:
-> +		return "IPv4";
-> +	case AF_INET6:
-> +		return "IPv6";
-> +	default:
-> +		return "unknown";
-> +	}
-> +}
-> +
-> +static const char *type_to_str(int type)
-> +{
-> +	switch (type) {
-> +	case SOCK_STREAM:
-> +		return "TCP";
-> +	case SOCK_DGRAM:
-> +		return "UDP";
-> +	default:
-> +		return "unknown";
-> +	}
-> +}
-+1
 
-[ ... ]
-> +static void parse_opts(int argc, char **argv)
-> +{
-> +	unsigned int sock_types =3D 0;
-> +	int c;
-> +
-> +	while ((c =3D getopt(argc, argv, "hm:tu")) !=3D -1) {
-> +		switch (c) {
-> +		case 'h':
-> +			usage();
-> +			break;
-> +		case 'm':
-> +			cfg_map_type =3D parse_map_type(optarg);
-> +			break;
-> +		case 't':
-> +			sock_types |=3D 1 << SOCK_STREAM;
-> +			break;
-> +		case 'u':
-> +			sock_types |=3D 1 << SOCK_DGRAM;
-> +			break;
->  		}
+> @@ -370,6 +378,11 @@ static inline void sk_psock_restore_proto(struct soc=
+k *sk,
+>  			sk->sk_prot =3D psock->sk_proto;
+>  		psock->sk_proto =3D NULL;
 >  	}
 > +
-> +	if (cfg_map_type =3D=3D BPF_MAP_TYPE_UNSPEC)
-> +		usage();
-> +	if (sock_types !=3D 0)
-> +		cfg_sock_types =3D sock_types;
+> +	if (psock->icsk_af_ops) {
+> +		icsk->icsk_af_ops =3D psock->icsk_af_ops;
+> +		psock->icsk_af_ops =3D NULL;
+> +	}
+>  }
+
+[ ... ]
+
+> +static struct sock *tcp_bpf_syn_recv_sock(const struct sock *sk,
+> +					  struct sk_buff *skb,
+> +					  struct request_sock *req,
+> +					  struct dst_entry *dst,
+> +					  struct request_sock *req_unhash,
+> +					  bool *own_req)
+> +{
+> +	const struct inet_connection_sock_af_ops *ops;
+> +	void (*write_space)(struct sock *sk);
+> +	struct sk_psock *psock;
+> +	struct proto *proto;
+> +	struct sock *child;
+> +
+> +	rcu_read_lock();
+> +	psock =3D sk_psock(sk);
+> +	if (likely(psock)) {
+> +		proto =3D psock->sk_proto;
+> +		write_space =3D psock->saved_write_space;
+> +		ops =3D psock->icsk_af_ops;
+It is not immediately clear to me what ensure
+ops is not NULL here.
+
+It is likely I missed something.  A short comment would
+be very useful here.
+
+> +	} else {
+> +		ops =3D inet_csk(sk)->icsk_af_ops;
+> +	}
+> +	rcu_read_unlock();
+> +
+> +	child =3D ops->syn_recv_sock(sk, skb, req, dst, req_unhash, own_req);
+> +
+> +	/* Child must not inherit psock or its ops. */
+> +	if (child && psock) {
+> +		rcu_assign_sk_user_data(child, NULL);
+> +		child->sk_prot =3D proto;
+> +		child->sk_write_space =3D write_space;
+> +
+> +		/* v4-mapped sockets don't inherit parent ops. Don't restore. */
+> +		if (inet_csk(child)->icsk_af_ops =3D=3D inet_csk(sk)->icsk_af_ops)
+> +			inet_csk(child)->icsk_af_ops =3D ops;
+> +	}
+> +	return child;
+> +}
+> +
+>  enum {
+>  	TCP_BPF_IPV4,
+>  	TCP_BPF_IPV6,
+> @@ -597,6 +642,7 @@ enum {
+>  static struct proto *tcpv6_prot_saved __read_mostly;
+>  static DEFINE_SPINLOCK(tcpv6_prot_lock);
+>  static struct proto tcp_bpf_prots[TCP_BPF_NUM_PROTS][TCP_BPF_NUM_CFGS];
+> +static struct inet_connection_sock_af_ops tcp_bpf_af_ops[TCP_BPF_NUM_PRO=
+TS];
+> =20
+>  static void tcp_bpf_rebuild_protos(struct proto prot[TCP_BPF_NUM_CFGS],
+>  				   struct proto *base)
+> @@ -612,13 +658,23 @@ static void tcp_bpf_rebuild_protos(struct proto pro=
+t[TCP_BPF_NUM_CFGS],
+>  	prot[TCP_BPF_TX].sendpage		=3D tcp_bpf_sendpage;
 >  }
 > =20
-> -int main(int argc, const char **argv)
-> +int main(int argc, char **argv)
+> -static void tcp_bpf_check_v6_needs_rebuild(struct sock *sk, struct proto=
+ *ops)
+> +static void tcp_bpf_rebuild_af_ops(struct inet_connection_sock_af_ops *o=
+ps,
+> +				   const struct inet_connection_sock_af_ops *base)
+> +{
+> +	*ops =3D *base;
+> +	ops->syn_recv_sock =3D tcp_bpf_syn_recv_sock;
+> +}
+> +
+> +static void tcp_bpf_check_v6_needs_rebuild(struct sock *sk, struct proto=
+ *ops,
+> +					   const struct inet_connection_sock_af_ops *af_ops)
 >  {
-> +	parse_opts(argc, argv);
->  	create_maps();
->  	prepare_bpf_obj();
->  	saved_tcp_fo =3D read_int_sysctl(TCP_FO_SYSCTL);
-> diff --git a/tools/testing/selftests/bpf/test_select_reuseport.sh b/tools=
-/testing/selftests/bpf/test_select_reuseport.sh
-> new file mode 100755
-> index 000000000000..1951b4886021
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/test_select_reuseport.sh
-> @@ -0,0 +1,14 @@
-> +#!/bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
+>  	if (sk->sk_family =3D=3D AF_INET6 &&
+>  	    unlikely(ops !=3D smp_load_acquire(&tcpv6_prot_saved))) {
+>  		spin_lock_bh(&tcpv6_prot_lock);
+>  		if (likely(ops !=3D tcpv6_prot_saved)) {
+>  			tcp_bpf_rebuild_protos(tcp_bpf_prots[TCP_BPF_IPV6], ops);
+> +			tcp_bpf_rebuild_af_ops(&tcp_bpf_af_ops[TCP_BPF_IPV6],
+> +					       af_ops);
+>  			smp_store_release(&tcpv6_prot_saved, ops);
+>  		}
+>  		spin_unlock_bh(&tcpv6_prot_lock);
+> @@ -628,6 +684,8 @@ static void tcp_bpf_check_v6_needs_rebuild(struct soc=
+k *sk, struct proto *ops)
+>  static int __init tcp_bpf_v4_build_proto(void)
+>  {
+>  	tcp_bpf_rebuild_protos(tcp_bpf_prots[TCP_BPF_IPV4], &tcp_prot);
+> +	tcp_bpf_rebuild_af_ops(&tcp_bpf_af_ops[TCP_BPF_IPV4], &ipv4_specific);
 > +
-> +set -eu
-> +
-> +DIR=3D$(dirname $0)
-> +
-> +echo "Testing reuseport with REUSEPORT_SOCKARRAY..."
-> +$DIR/test_select_reuseport -m reuseport_sockarray
-> +
-> +echo "Testing reuseport with SOCKMAP (TCP only)..."
-> +$DIR/test_select_reuseport -m sockmap -t
-> +
-> +exit 0
+>  	return 0;
+>  }
+>  core_initcall(tcp_bpf_v4_build_proto);
+> @@ -637,7 +695,8 @@ static void tcp_bpf_update_sk_prot(struct sock *sk, s=
+truct sk_psock *psock)
+>  	int family =3D sk->sk_family =3D=3D AF_INET6 ? TCP_BPF_IPV6 : TCP_BPF_I=
+PV4;
+>  	int config =3D psock->progs.msg_parser   ? TCP_BPF_TX   : TCP_BPF_BASE;
+> =20
+> -	sk_psock_update_proto(sk, psock, &tcp_bpf_prots[family][config]);
+> +	sk_psock_update_proto(sk, psock, &tcp_bpf_prots[family][config],
+> +			      &tcp_bpf_af_ops[family]);
+>  }
+> =20
+>  static void tcp_bpf_reinit_sk_prot(struct sock *sk, struct sk_psock *pso=
+ck)
+> @@ -677,6 +736,7 @@ void tcp_bpf_reinit(struct sock *sk)
+> =20
+>  int tcp_bpf_init(struct sock *sk)
+>  {
+> +	struct inet_connection_sock *icsk =3D inet_csk(sk);
+>  	struct proto *ops =3D READ_ONCE(sk->sk_prot);
+>  	struct sk_psock *psock;
+> =20
+> @@ -689,7 +749,7 @@ int tcp_bpf_init(struct sock *sk)
+>  		rcu_read_unlock();
+>  		return -EINVAL;
+>  	}
+> -	tcp_bpf_check_v6_needs_rebuild(sk, ops);
+> +	tcp_bpf_check_v6_needs_rebuild(sk, ops, icsk->icsk_af_ops);
+>  	tcp_bpf_update_sk_prot(sk, psock);
+>  	rcu_read_unlock();
+>  	return 0;
 > --=20
 > 2.20.1
 >=20
