@@ -2,191 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 50A32108621
-	for <lists+bpf@lfdr.de>; Mon, 25 Nov 2019 01:54:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BC6D108649
+	for <lists+bpf@lfdr.de>; Mon, 25 Nov 2019 02:24:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727029AbfKYAxs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 24 Nov 2019 19:53:48 -0500
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:45100 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727072AbfKYAxs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 24 Nov 2019 19:53:48 -0500
-Received: by mail-qt1-f193.google.com with SMTP id 30so15288281qtz.12
-        for <bpf@vger.kernel.org>; Sun, 24 Nov 2019 16:53:47 -0800 (PST)
+        id S1727149AbfKYBYp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 24 Nov 2019 20:24:45 -0500
+Received: from mail-pl1-f196.google.com ([209.85.214.196]:39452 "EHLO
+        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727106AbfKYBYp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 24 Nov 2019 20:24:45 -0500
+Received: by mail-pl1-f196.google.com with SMTP id o9so5735731plk.6;
+        Sun, 24 Nov 2019 17:24:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=W5KvmIUsZXoQMVbzDoxYnt7yT+pQC9oHjmWUHowLIDE=;
-        b=bf4wQj5hUYAUJ6J+IG0+hDMiHwo0y37jHBHT8UdhIIsQlzBQ4CxdtIHJrRj51DxlRK
-         CKLiYZNarSFFj4FEgRzMNxy+kI0kMWkp2JP+w0At3xJ5awQQfKCflGDMEbLjgI1axJbX
-         hAKULgjdId2ND6JafSG19IZ76B47iyKuc//kc4PjYIOLOtUHlwtDFurR95sHJjXvaqXY
-         fGrur8LfkpaaQNAoNniODg3+dsAf2S2GrC+6cEhUlICPkA/CU1JiTx+UkO0BkI15CMLp
-         7s5O7Rwk6bHEYMLHf8Cgu9Ix5CmyXm+g4xBp1CqvpB7TPmrxsr5ItFDOP1iwxt6Ai6Gn
-         z9sA==
+        bh=/hR6eIss2IDB1moLZhw+z4nUfFpq/z6nkZpZv3gD0BI=;
+        b=bXtDw5MftbTx3shyWLLx6l40rF79G51eiFtaOF+Vr3Sl5x1K2lbcfvmRkacisNjFCv
+         7SzHyX58G5g5ngl/YE2x2pgrZnQG0TsHOzljFqx0Joj/oUn5tysNt6iO+tD/LvuijyPN
+         dRvsjDaJxVloFbDCbXWuc8KgJYPY2mROJBu0zPBGY9VoDWneGxOnZxZiIrPQokyIyDEG
+         g77aw2XJeMDy9JyR5ABDtoZ4VjAZ4Mj2u3fYOv0lehpHXGjRlshiOuL1+Q6nP6bNoKBg
+         70biqk/oV7xRXOtBfMpx9RM0+MX60HkYx/uvZEHJfs4uMN5hhx9pS4BFFoexmjkgw7+i
+         Kp3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=W5KvmIUsZXoQMVbzDoxYnt7yT+pQC9oHjmWUHowLIDE=;
-        b=MtxoDbmtFLhwkDOdY3parb6F6XFU46Sm4orf1+oBypDJbJAWSima9Yw0a5EUtS6Yit
-         +cg/WQRXzH9oJTPDAb23RKfwYwooYFs9AJXagTxagH1yh2UZ23PS3WRSYMymy3v1O8nN
-         es8IChh9mP+SLUCKi5W6VoFRTRAaqM5v0ZEWiQOQTyzOj1P6uFuBv+hu4RhDMfhdTVP4
-         t7DTGbPflWBHzGz8nScVkDsPZdvOOZcg9KmEEkpGj9fjtRqD8uflh6ucDcaxQjxbMuTT
-         AhTrtjFI+vssx9CQt6N9WiggYB7uMvGT4wNPnoKH0MqTyrdHbP9Qj5VvIfr45idFgBYK
-         ullg==
-X-Gm-Message-State: APjAAAXEcN/C8zkpvS3sLphbTGrTQu/9pGitK1G2Pq+mejJQOwE/aRsx
-        VvLjH6FSVqPewQsL4+8k5wBMig==
-X-Google-Smtp-Source: APXvYqyaLXo5MUyD+I9dO6HiLJFn2uWdH+8xt8jSkZ8bt7a48VQTUuqWsbmWyw/EGV6UxA2EsKJ0Ug==
-X-Received: by 2002:ac8:2209:: with SMTP id o9mr27065091qto.246.1574643226463;
-        Sun, 24 Nov 2019 16:53:46 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-180.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.180])
-        by smtp.gmail.com with ESMTPSA id o124sm2535273qkf.66.2019.11.24.16.53.45
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 24 Nov 2019 16:53:45 -0800 (PST)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1iZ2dH-00020J-3s; Sun, 24 Nov 2019 20:53:39 -0400
-Date:   Sun, 24 Nov 2019 20:53:39 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jens Axboe <axboe@kernel.dk>, Jonathan Corbet <corbet@lwn.net>,
-        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, bpf@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, kvm@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
-        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v7 07/24] IB/umem: use get_user_pages_fast() to pin DMA
- pages
-Message-ID: <20191125005339.GC5634@ziepe.ca>
-References: <20191121071354.456618-1-jhubbard@nvidia.com>
- <20191121071354.456618-8-jhubbard@nvidia.com>
- <20191121080746.GC30991@infradead.org>
- <20191121143643.GC7448@ziepe.ca>
- <20191124100724.GH136476@unreal>
- <e8319590-a3f0-5ba4-af4c-65213358a742@nvidia.com>
+        bh=/hR6eIss2IDB1moLZhw+z4nUfFpq/z6nkZpZv3gD0BI=;
+        b=IIcErcaq/WN0jgWfnVt7TqAbmK7lrT02TUfK3O9S3kLiqu4Gu4zGQFjt0RpW4tum58
+         pYtC4n0AsL1OoM8UcucZ6KgaWv+HHif/bGN0u+rVPYjYmfeMlLSKw4FNpbPhO05y+F2y
+         3naX07JUuM3O81CkLlpIGWsAn8V/RPyW+0BHWvdR1+YMz+74H+YTsuCNJTw1cCKG4bMO
+         Dj4dimyAY5eHNNToFuo+LrKrt9d3nw+wkULUjZOoZIqiruBUvSDVV8PAE36bGuqKJZmo
+         1EIHBdRD9viDh2VmHBoIXjfKiDLxqy6G1NbaI3DihkeRCPGeQXPC33ois8vIZ5aUjWVl
+         JBcg==
+X-Gm-Message-State: APjAAAWzpOq5G+trHCy8LPuBGuHbXgCuumDRXMN/MkfuSDvTFOuk2Us2
+        QOmys84c91jy3eVzmiG6KX8=
+X-Google-Smtp-Source: APXvYqxsUeWTaK6lDvuXN/ARoyOnX/4ZmOKeBJo3q96Gjr3Q632CjBC6ZLl7fwczKAbbKxK9lLgGIg==
+X-Received: by 2002:a17:90a:25ea:: with SMTP id k97mr34238006pje.110.1574645084079;
+        Sun, 24 Nov 2019 17:24:44 -0800 (PST)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:180::6b6f])
+        by smtp.gmail.com with ESMTPSA id x2sm5738495pgc.67.2019.11.24.17.24.42
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 24 Nov 2019 17:24:43 -0800 (PST)
+Date:   Sun, 24 Nov 2019 17:24:41 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Jakub Sitnicki <jakub@cloudflare.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        kernel-team@cloudflare.com,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>
+Subject: Re: [PATCH bpf-next 5/8] bpf: Allow selecting reuseport socket from
+ a SOCKMAP
+Message-ID: <20191125012440.crbufwpokttx67du@ast-mbp.dhcp.thefacebook.com>
+References: <20191123110751.6729-1-jakub@cloudflare.com>
+ <20191123110751.6729-6-jakub@cloudflare.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e8319590-a3f0-5ba4-af4c-65213358a742@nvidia.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20191123110751.6729-6-jakub@cloudflare.com>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Nov 24, 2019 at 04:05:16PM -0800, John Hubbard wrote:
- 
-> I looked into this, and I believe that the problem is in gup.c. There appears to
-> have been an oversight, in commit 817be129e6f2 ("mm: validate get_user_pages_fast
-> flags"), in filtering out FOLL_FORCE. There is nothing in the _fast() implementation
-> that requires that we avoid writing to the pages.
+On Sat, Nov 23, 2019 at 12:07:48PM +0100, Jakub Sitnicki wrote:
+> SOCKMAP now supports storing references to listening sockets. Nothing keeps
+> us from using it as an array of sockets to select from in SK_REUSEPORT
+> programs.
+> 
+> Whitelist the map type with the BPF helper for selecting socket. However,
+> impose a restriction that the selected socket needs to be a listening TCP
+> socket or a bound UDP socket (connected or not).
+> 
+> The only other map type that works with the BPF reuseport helper,
+> REUSEPORT_SOCKARRAY, has a corresponding check in its update operation
+> handler.
+> 
+> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+> ---
+>  kernel/bpf/verifier.c | 6 ++++--
+>  net/core/filter.c     | 2 ++
+>  2 files changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index a0482e1c4a77..111a1eb543ab 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -3685,7 +3685,8 @@ static int check_map_func_compatibility(struct bpf_verifier_env *env,
+>  		if (func_id != BPF_FUNC_sk_redirect_map &&
+>  		    func_id != BPF_FUNC_sock_map_update &&
+>  		    func_id != BPF_FUNC_map_delete_elem &&
+> -		    func_id != BPF_FUNC_msg_redirect_map)
+> +		    func_id != BPF_FUNC_msg_redirect_map &&
+> +		    func_id != BPF_FUNC_sk_select_reuseport)
+>  			goto error;
+>  		break;
+>  	case BPF_MAP_TYPE_SOCKHASH:
+> @@ -3766,7 +3767,8 @@ static int check_map_func_compatibility(struct bpf_verifier_env *env,
+>  			goto error;
+>  		break;
+>  	case BPF_FUNC_sk_select_reuseport:
+> -		if (map->map_type != BPF_MAP_TYPE_REUSEPORT_SOCKARRAY)
+> +		if (map->map_type != BPF_MAP_TYPE_REUSEPORT_SOCKARRAY &&
+> +		    map->map_type != BPF_MAP_TYPE_SOCKMAP)
+>  			goto error;
+>  		break;
+>  	case BPF_FUNC_map_peek_elem:
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 49ded4a7588a..e3fb77353248 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -8723,6 +8723,8 @@ BPF_CALL_4(sk_select_reuseport, struct sk_reuseport_kern *, reuse_kern,
+>  	selected_sk = map->ops->map_lookup_elem(map, key);
+>  	if (!selected_sk)
+>  		return -ENOENT;
+> +	if (!sock_flag(selected_sk, SOCK_RCU_FREE))
+> +		return -EINVAL;
 
-I think it is too late to be doing these kinds of changes, I will
-revert the patch and this will miss this merge window.
-
-Jason
-
-From ec6cb45292d21d1af9b9d95997b8cf204bbe854c Mon Sep 17 00:00:00 2001
-From: Jason Gunthorpe <jgg@mellanox.com>
-Date: Sun, 24 Nov 2019 20:47:59 -0400
-Subject: [PATCH] Revert "IB/umem: use get_user_pages_fast() to pin DMA pages"
-
-This reverts commit c9a7a2ed837c563f9f89743a6db732591cb4035b.
-
-This was merged before enough testing was done, and it triggers a WARN_ON()
-in get_user_pages_fast():
-
-  WARNING: CPU: 1 PID: 2557 at mm/gup.c:2404 get_user_pages_fast+0x115/0x180
-  Call Trace:
-   ib_umem_get+0x298/0x550 [ib_uverbs]
-   mlx5_ib_db_map_user+0xad/0x130 [mlx5_ib]
-   mlx5_ib_create_cq+0x1e8/0xaa0 [mlx5_ib]
-   create_cq+0x1c8/0x2d0 [ib_uverbs]
-   ib_uverbs_create_cq+0x70/0xa0 [ib_uverbs]
-   ib_uverbs_handler_UVERBS_METHOD_INVOKE_WRITE+0xc2/0xf0 [ib_uverbs]
-   ib_uverbs_cmd_verbs.isra.6+0x5be/0xbe0 [ib_uverbs]
-   ? uverbs_disassociate_api+0xd0/0xd0 [ib_uverbs]
-   ? kvm_clock_get_cycles+0xd/0x10
-   ? kmem_cache_alloc+0x176/0x1c0
-   ? filemap_map_pages+0x18c/0x350
-   ib_uverbs_ioctl+0xc0/0x120 [ib_uverbs]
-   do_vfs_ioctl+0xa1/0x610
-   ksys_ioctl+0x70/0x80
-   __x64_sys_ioctl+0x16/0x20
-   do_syscall_64+0x42/0x110
-   entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-2404         if (WARN_ON_ONCE(gup_flags & ~(FOLL_WRITE | FOLL_LONGTERM)))
-2405                 return -EINVAL;
-
-While we think this WARN_ON is probably bogus, resolving this will have to
-wait.
-
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
----
- drivers/infiniband/core/umem.c | 17 +++++++++++------
- 1 file changed, 11 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
-index 214e87aa609d6e..7a3b99597eada1 100644
---- a/drivers/infiniband/core/umem.c
-+++ b/drivers/infiniband/core/umem.c
-@@ -266,13 +266,16 @@ struct ib_umem *ib_umem_get(struct ib_udata *udata, unsigned long addr,
- 	sg = umem->sg_head.sgl;
- 
- 	while (npages) {
--		ret = get_user_pages_fast(cur_base,
--					  min_t(unsigned long, npages,
--						PAGE_SIZE /
--						sizeof(struct page *)),
--					  gup_flags | FOLL_LONGTERM, page_list);
--		if (ret < 0)
-+		down_read(&mm->mmap_sem);
-+		ret = get_user_pages(cur_base,
-+				     min_t(unsigned long, npages,
-+					   PAGE_SIZE / sizeof (struct page *)),
-+				     gup_flags | FOLL_LONGTERM,
-+				     page_list, NULL);
-+		if (ret < 0) {
-+			up_read(&mm->mmap_sem);
- 			goto umem_release;
-+		}
- 
- 		cur_base += ret * PAGE_SIZE;
- 		npages   -= ret;
-@@ -280,6 +283,8 @@ struct ib_umem *ib_umem_get(struct ib_udata *udata, unsigned long addr,
- 		sg = ib_umem_add_sg_table(sg, page_list, ret,
- 			dma_get_max_seg_size(context->device->dma_device),
- 			&umem->sg_nents);
-+
-+		up_read(&mm->mmap_sem);
- 	}
- 
- 	sg_mark_end(sg);
--- 
-2.24.0
+hmm. I wonder whether this breaks existing users...
+Martin,
+what do you think?
+Could you also take a look at other patches too?
+In particular patch 7?
 
