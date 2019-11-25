@@ -2,84 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 93266109524
-	for <lists+bpf@lfdr.de>; Mon, 25 Nov 2019 22:29:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31639109545
+	for <lists+bpf@lfdr.de>; Mon, 25 Nov 2019 22:53:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725992AbfKYV3x (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 Nov 2019 16:29:53 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:42028 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725882AbfKYV3x (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 25 Nov 2019 16:29:53 -0500
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xAPLS3XY016242
-        for <bpf@vger.kernel.org>; Mon, 25 Nov 2019 13:29:52 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=facebook;
- bh=yushD8z+ebHuwYYdAk8+lPwfKALS1XVbLw9s3XZz/Gc=;
- b=buObwRLneU4oRgCaNp6YFAXY02cePSayZ14xMsXDxf3HSY/DwgxfmOY2MvbYcnbBxsW/
- j6Mvmft7qV/gHs9XpvW0smbW6H4Q7Pt5fe8SJ/nfpct20XixxVZNZ34lU4rLkrFf60ls
- wd9st3o9Ym1TN8yIYtPnecIPe6+5LR+xPsg= 
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by mx0a-00082601.pphosted.com with ESMTP id 2wfny683fq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 25 Nov 2019 13:29:52 -0800
-Received: from 2401:db00:12:9028:face:0:29:0 (2620:10d:c081:10::13) by
- mail.thefacebook.com (2620:10d:c081:35::127) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
- Mon, 25 Nov 2019 13:29:51 -0800
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 9AB332EC1958; Mon, 25 Nov 2019 13:29:50 -0800 (PST)
-Smtp-Origin-Hostprefix: devbig
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next] libbpf: fix usage of u32 in userspace code
-Date:   Mon, 25 Nov 2019 13:29:48 -0800
-Message-ID: <20191125212948.1163343-1-andriin@fb.com>
-X-Mailer: git-send-email 2.17.1
-X-FB-Internal: Safe
+        id S1725924AbfKYVxI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 Nov 2019 16:53:08 -0500
+Received: from mail-lf1-f67.google.com ([209.85.167.67]:45556 "EHLO
+        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725912AbfKYVxI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 25 Nov 2019 16:53:08 -0500
+Received: by mail-lf1-f67.google.com with SMTP id 203so12253024lfa.12;
+        Mon, 25 Nov 2019 13:53:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XkRgDrEt7xzx/syrzYXXT4cApNXjq2/kEFLNeHp9+qg=;
+        b=ERlzkI8Zekt2L5iGgIbMhY5/BsfR4+K2EbCpyJDVKHVBLBCvB3x5169UQJ4TLgHwB6
+         rHmktjxeZhGtat6lMimIMkLgX0KaJWsltQQKXuPVM+jQZYRC5pNu8GzCvbnO3b65bo31
+         aw8CaSP6TNP1szyb3iqsxvepNADwWywAeWjEJDmZuSAQZvi/7BG8cfkKhVVTvEKSxZmF
+         VwdZyYs2t8etGdoZ874SJ8g6TrcbN/+a9GUJAeEgKHHy/8sIwrH16ouZto/v1flU39nI
+         PMpNl1q/RkbL+nhvL05k6uWIZYwnQ2WoEztniiYPtdBxrz6q5mDijOKUNOXk43Mq+Q7Y
+         pv+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XkRgDrEt7xzx/syrzYXXT4cApNXjq2/kEFLNeHp9+qg=;
+        b=L/Os6Yq86fvWkiZxY2bwId1URpzt/RYkhKmg7rOOb6qQbIoNEBI+T+hsK2XPxCRTRh
+         Xurz8mJjnc3gBDyIdNMq3Z86RZoW9LMm12FNGQcl3p2sNPTxqWVfPljGKUuqMW44oKjB
+         Cm6essaylJkOEKRrvTn6A1sK4bz+88kyI2z0T7MXqWiAIkRTQFBTvmW4fyT69Zdw9210
+         bWtd8OfkIbyjbssFPwrR+KcbZCQA62RuLzpkQwoD1hHWog1UB6DIUs0tUxK8Cr6eh6Ym
+         HuDVPPPRWesXKIq3a5YQIhbdYcyxtlfBAjTfmwe7AfN+s9tV+h77DMtcUduzHKi6PhNL
+         tKXQ==
+X-Gm-Message-State: APjAAAW0tkWaeLndVU7C37Elf2Fii9XufPnmjugx+CUA6V1jwJbvMVEx
+        A40aipTCf0UX1Qpu/V/5Zz2IvIk3S6F4yRfniIU=
+X-Google-Smtp-Source: APXvYqzVMDpVPS/0yse9kP0C7QQ3+VjbW0gDDpHDoWlX4vV5llfTQVR2wXkWuYJLH+7WuJNeMengUvGbuZwOpeLHBNc=
+X-Received: by 2002:ac2:47ec:: with SMTP id b12mr16855821lfp.162.1574718785832;
+ Mon, 25 Nov 2019 13:53:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
- definitions=2019-11-25_05:2019-11-21,2019-11-25 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=608
- suspectscore=8 priorityscore=1501 phishscore=0 bulkscore=0
- lowpriorityscore=0 clxscore=1015 mlxscore=0 adultscore=0 impostorscore=0
- spamscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1910280000 definitions=main-1911250172
-X-FB-Internal: deliver
+References: <20191123220835.1237773-1-andriin@fb.com> <5ddc3b355840f_2b082aba75a825b46@john-XPS-13-9370.notmuch>
+ <CAEf4Bzbii9W=Frc3aPLrLsCWq1fFJXADhhQ4w7_d15ucqBuWHg@mail.gmail.com> <5ddc3eada4ad1_78092ad33cdb65c0b0@john-XPS-13-9370.notmuch>
+In-Reply-To: <5ddc3eada4ad1_78092ad33cdb65c0b0@john-XPS-13-9370.notmuch>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Mon, 25 Nov 2019 13:52:54 -0800
+Message-ID: <CAADnVQKa-ThGGnO5vYEAPfNZUYd76AD1MqqAExNyf+PQMpSqOw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] mm: implement no-MMU variant of vmalloc_user_node_flags
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-u32 is not defined for libbpf when compiled outside of kernel sources (e.g.,
-in Github projection). Use __u32 instead.
+On Mon, Nov 25, 2019 at 12:51 PM John Fastabend
+<john.fastabend@gmail.com> wrote:
+>
+> Andrii Nakryiko wrote:
+> > On Mon, Nov 25, 2019 at 12:36 PM John Fastabend
+> > <john.fastabend@gmail.com> wrote:
+> > >
+> > > Andrii Nakryiko wrote:
+> > > > To fix build with !CONFIG_MMU, implement it for no-MMU configurations as well.
+> > > >
+> > > > Cc: Johannes Weiner <hannes@cmpxchg.org>
+> > > > Fixes: fc9702273e2e ("bpf: Add mmap() support for BPF_MAP_TYPE_ARRAY")
+> > > > Reported-by: kbuild test robot <lkp@intel.com>
+> > > > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 
-Fixes: b8c54ea455dc ("libbpf: Add support to attach to fentry/fexit tracing progs")
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- tools/lib/bpf/libbpf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index e1698461c6b3..b20f82e58989 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -5128,7 +5128,7 @@ int libbpf_find_vmlinux_btf_id(const char *name,
- 	char *dst = raw_tp_btf + sizeof(BTF_PREFIX) - 1;
- 	const char *btf_name;
- 	int err = -EINVAL;
--	u32 kind;
-+	__u32 kind;
- 
- 	if (IS_ERR(btf)) {
- 		pr_warn("vmlinux BTF is not found\n");
--- 
-2.17.1
-
+Applied. Thanks
