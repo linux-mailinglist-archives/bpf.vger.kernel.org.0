@@ -2,243 +2,231 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CFA19108569
-	for <lists+bpf@lfdr.de>; Sun, 24 Nov 2019 23:55:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A99E71085B4
+	for <lists+bpf@lfdr.de>; Mon, 25 Nov 2019 01:05:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726990AbfKXWzS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 24 Nov 2019 17:55:18 -0500
-Received: from mga11.intel.com ([192.55.52.93]:17313 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726942AbfKXWzS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 24 Nov 2019 17:55:18 -0500
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 24 Nov 2019 14:55:13 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,239,1571727600"; 
-   d="gz'50?scan'50,208,50";a="291193679"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by orsmga001.jf.intel.com with ESMTP; 24 Nov 2019 14:55:11 -0800
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
-        (envelope-from <lkp@intel.com>)
-        id 1iZ0mc-000IyP-W3; Mon, 25 Nov 2019 06:55:10 +0800
-Date:   Mon, 25 Nov 2019 06:54:49 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     kbuild-all@lists.01.org, ast@kernel.org, jakub@cloudflare.com,
-        andrii.nakryiko@gmail.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>
-Subject: Re: [PATCH bpf-next] bpf: add bpf_jit_blinding_enabled for
- !CONFIG_BPF_JIT
-Message-ID: <201911250641.xKeDIKoX%lkp@intel.com>
-References: <40baf8f3507cac4851a310578edfb98ce73b5605.1574541375.git.daniel@iogearbox.net>
+        id S1726895AbfKYAFU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 24 Nov 2019 19:05:20 -0500
+Received: from hqemgate14.nvidia.com ([216.228.121.143]:10959 "EHLO
+        hqemgate14.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726803AbfKYAFU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 24 Nov 2019 19:05:20 -0500
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqemgate14.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5ddb1ac10000>; Sun, 24 Nov 2019 16:05:21 -0800
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Sun, 24 Nov 2019 16:05:18 -0800
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Sun, 24 Nov 2019 16:05:18 -0800
+Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 25 Nov
+ 2019 00:05:17 +0000
+Subject: Re: [PATCH v7 07/24] IB/umem: use get_user_pages_fast() to pin DMA
+ pages
+To:     Leon Romanovsky <leon@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>
+CC:     Christoph Hellwig <hch@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jens Axboe <axboe@kernel.dk>, Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, <bpf@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <kvm@vger.kernel.org>,
+        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <linux-media@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <netdev@vger.kernel.org>,
+        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>
+References: <20191121071354.456618-1-jhubbard@nvidia.com>
+ <20191121071354.456618-8-jhubbard@nvidia.com>
+ <20191121080746.GC30991@infradead.org> <20191121143643.GC7448@ziepe.ca>
+ <20191124100724.GH136476@unreal>
+From:   John Hubbard <jhubbard@nvidia.com>
+X-Nvconfidentiality: public
+Message-ID: <e8319590-a3f0-5ba4-af4c-65213358a742@nvidia.com>
+Date:   Sun, 24 Nov 2019 16:05:16 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="xavryp6y6jk4v3ep"
-Content-Disposition: inline
-In-Reply-To: <40baf8f3507cac4851a310578edfb98ce73b5605.1574541375.git.daniel@iogearbox.net>
-X-Patchwork-Hint: ignore
-User-Agent: NeoMutt/20170113 (1.7.2)
+In-Reply-To: <20191124100724.GH136476@unreal>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1574640321; bh=LD2/8CChGaLRqwmCQwChsDcrQNaYP+P0SNIyxfam1DE=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=m1Cur0PIy3/gI1zO5nV/8By6N43vWGtuN3DH4UA+V5btajIgmajkoqysSp76dAM7w
+         IjD++zms/7U0GGOl8H1gvnNrWhHWhVeKks5+FnTeGfmeFzSgL9stvUxQHdGHcRSpYo
+         R3DhHzHen8GFnhgTTJui8NWTHWe8ATpW8fDVP5C1LALRj6SKkngA39wPoPH2DIIK+J
+         +UKod6U+vX3PK6ephcVmHTxq0zUWIVkMBfEaq7/xc7P3ltk2DNSjaGhY5cT49gyP2u
+         jH1s4PE7IC41UINf5rjHYQtI6U45lVsEN7ZT+BkTbP2xn4k8PFfNWniDCzwNggU9zg
+         iu5V3RFGAA2WA==
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On 11/24/19 2:07 AM, Leon Romanovsky wrote:
+> On Thu, Nov 21, 2019 at 10:36:43AM -0400, Jason Gunthorpe wrote:
+>> On Thu, Nov 21, 2019 at 12:07:46AM -0800, Christoph Hellwig wrote:
+>>> On Wed, Nov 20, 2019 at 11:13:37PM -0800, John Hubbard wrote:
+>>>> And get rid of the mmap_sem calls, as part of that. Note
+>>>> that get_user_pages_fast() will, if necessary, fall back to
+>>>> __gup_longterm_unlocked(), which takes the mmap_sem as needed.
+>>>>
+>>>> Reviewed-by: Jan Kara <jack@suse.cz>
+>>>> Reviewed-by: Jason Gunthorpe <jgg@mellanox.com>
+>>>> Reviewed-by: Ira Weiny <ira.weiny@intel.com>
+>>>> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+>>>
+>>> Looks fine,
+>>>
+>>> Reviewed-by: Christoph Hellwig <hch@lst.de>
+>>>
+>>> Jason, can you queue this up for 5.5 to reduce this patch stack a bit?
+>>
+>> Yes, I said I'd do this in an earlier revision. Now that it is clear this
+>> won't go through Andrew's tree, applied to rdma for-next
+> 
+> Jason,
+> 
+> This patch broke RDMA completely.
+> Change from get_user_pages() to get_user_pages_fast() causes to endless
+> amount of splats due to combination of the following code:
+> 
+> 189 struct ib_umem *ib_umem_get(struct ib_udata *udata, unsigned long addr,
+> 190                             size_t size, int access)
+> ...
+> 263         if (!umem->writable)
+> 264                 gup_flags |= FOLL_FORCE;
+> 265
+> 
+> and
+> 
+> 2398 int get_user_pages_fast(unsigned long start, int nr_pages,
+> 2399                         unsigned int gup_flags, struct page **pages)
+> 2400 {
+> 2401         unsigned long addr, len, end;
+> 2402         int nr = 0, ret = 0;
+> 2403
+> 2404         if (WARN_ON_ONCE(gup_flags & ~(FOLL_WRITE | FOLL_LONGTERM)))
+> 2405                 return -EINVAL;
+> 
 
---xavryp6y6jk4v3ep
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Hi Leon,
 
-Hi Daniel,
+I looked into this, and I believe that the problem is in gup.c. There appears to
+have been an oversight, in commit 817be129e6f2 ("mm: validate get_user_pages_fast
+flags"), in filtering out FOLL_FORCE. There is nothing in the _fast() implementation
+that requires that we avoid writing to the pages.
 
-I love your patch! Yet something to improve:
+So I intend, to post a two-patch series that includes this fix, first, but maybe this
+means that it should go in via -mm. I'm not sure what's the best tree.
 
-[auto build test ERROR on bpf-next/master]
-[cannot apply to v5.4-rc8 next-20191122]
-[if your patch is applied to the wrong git tree, please drop us a note to help
-improve the system. BTW, we also suggest to use '--base' option to specify the
-base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
+diff --git a/mm/gup.c b/mm/gup.c
+index 8f236a335ae9..745b4036cdfd 100644
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -2401,7 +2401,8 @@ int get_user_pages_fast(unsigned long start, int nr_pages,
+ 	unsigned long addr, len, end;
+ 	int nr = 0, ret = 0;
+ 
+-	if (WARN_ON_ONCE(gup_flags & ~(FOLL_WRITE | FOLL_LONGTERM)))
++	if (WARN_ON_ONCE(gup_flags & ~(FOLL_WRITE | FOLL_LONGTERM |
++				       FOLL_FORCE)))
+ 		return -EINVAL;
+ 
+ 	start = untagged_addr(start) & PAGE_MASK;
 
-url:    https://github.com/0day-ci/linux/commits/Daniel-Borkmann/bpf-add-bpf_jit_blinding_enabled-for-CONFIG_BPF_JIT/20191125-042008
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-config: i386-tinyconfig (attached as .config)
-compiler: gcc-7 (Debian 7.4.0-14) 7.4.0
-reproduce:
-        # save the attached .config to linux build tree
-        make ARCH=i386 
 
-If you fix the issue, kindly add following tag
-Reported-by: kbuild test robot <lkp@intel.com>
+thanks,
+-- 
+John Hubbard
+NVIDIA
 
-All errors (new ones prefixed by >>):
 
-   In file included from include/net/sock.h:59:0,
-                    from include/linux/tcp.h:19,
-                    from include/linux/ipv6.h:87,
-                    from include/net/ipv6.h:12,
-                    from include/linux/sunrpc/clnt.h:28,
-                    from include/linux/nfs_fs.h:32,
-                    from init/do_mounts.c:23:
->> include/linux/filter.h:1061:20: error: redefinition of 'bpf_jit_blinding_enabled'
-    static inline bool bpf_jit_blinding_enabled(struct bpf_prog *prog)
-                       ^~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/filter.h:1056:20: note: previous definition of 'bpf_jit_blinding_enabled' was here
-    static inline bool bpf_jit_blinding_enabled(struct bpf_prog *prog)
-                       ^~~~~~~~~~~~~~~~~~~~~~~~
-
-vim +/bpf_jit_blinding_enabled +1061 include/linux/filter.h
-
-  1060	
-> 1061	static inline bool bpf_jit_blinding_enabled(struct bpf_prog *prog)
-  1062	{
-  1063		return false;
-  1064	}
-  1065	
-
----
-0-DAY kernel test infrastructure                 Open Source Technology Center
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org Intel Corporation
-
---xavryp6y6jk4v3ep
-Content-Type: application/gzip
-Content-Disposition: attachment; filename=".config.gz"
-Content-Transfer-Encoding: base64
-
-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
-
---xavryp6y6jk4v3ep--
+> 
+> [   72.623266] ------------[ cut here ]------------
+> [   72.624143] WARNING: CPU: 1 PID: 2557 at mm/gup.c:2404 get_user_pages_fast+0x115/0x180
+> [   72.625426] Modules linked in: xt_MASQUERADE iptable_nat nf_nat
+>    br_netfilter overlay ib_srp scsi_transport_srp rpcrdma rdma_ucm
+>    ib_iser libiscsi scsi_transport_iscsi rdma_cm ib_umad iw_cm ib_ipoib
+>    ib_cm mlx5_ib ib_uverbs ib_core mlx5_core mlxfw ptp pps_core
+> [   72.629024] CPU: 1 PID: 2557 Comm: python3 Not tainted 5.4.0-rc5-J6120-Geeb831ec5b80 #1
+> [   72.630435] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.10.2-1ubuntu1 04/01/2014
+> [   72.631973] RIP: 0010:get_user_pages_fast+0x115/0x180
+> [   72.632873] Code: 8d 0c 10 85 c0 89 d0 0f 49 c1 eb 97 fa 4c 8d
+>        44 24 0c 4c 89 e9 44 89 e2 48 89 df e8 25 dd ff ff fb 8b 44 24 0c
+>        e9 75 ff ff ff <0f> 0b b8 ea ff ff ff e9 6d ff ff ff 65 4c 8b 2c
+>        25 00 5d 01 00 49
+> [   72.635967] RSP: 0018:ffffc90000edf930 EFLAGS: 00010202
+> [   72.636896] RAX: 0000000000000000 RBX: 00007f931c392000 RCX: ffff8883f4909000
+> [   72.638117] RDX: 0000000000010011 RSI: 0000000000000001 RDI: 00007f931c392000
+> [   72.639353] RBP: 00007f931c392000 R08: 0000000000000020 R09: ffff8883f4909000
+> [   72.640602] R10: 0000000000000000 R11: ffff8884068d6760 R12: ffff888409e45ba0
+> [   72.641858] R13: ffff8884068d6760 R14: 0000160000000000 R15: ffff8883f4909000
+> [   72.643115] FS:  00007f9323754700(0000) GS:ffff88842fa80000(0000) knlGS:0000000000000000
+> [   72.644586] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [   72.645628] CR2: 00007f931c3ca000 CR3: 00000003f83d6006 CR4: 00000000007606a0
+> [   72.646875] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [   72.648120] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> [   72.649374] PKRU: 55555554
+> [   72.649935] Call Trace:
+> [   72.650477]  ib_umem_get+0x298/0x550 [ib_uverbs]
+> [   72.651347]  mlx5_ib_db_map_user+0xad/0x130 [mlx5_ib]
+> [   72.652279]  mlx5_ib_create_cq+0x1e8/0xaa0 [mlx5_ib]
+> [   72.653207]  create_cq+0x1c8/0x2d0 [ib_uverbs]
+> [   72.654050]  ib_uverbs_create_cq+0x70/0xa0 [ib_uverbs]
+> [   72.654988]  ib_uverbs_handler_UVERBS_METHOD_INVOKE_WRITE+0xc2/0xf0 [ib_uverbs]
+> [   72.656331]  ib_uverbs_cmd_verbs.isra.6+0x5be/0xbe0 [ib_uverbs]
+> [   72.657398]  ? uverbs_disassociate_api+0xd0/0xd0 [ib_uverbs]
+> [   72.658423]  ? kvm_clock_get_cycles+0xd/0x10
+> [   72.659229]  ? kmem_cache_alloc+0x176/0x1c0
+> [   72.660025]  ? filemap_map_pages+0x18c/0x350
+> [   72.660838]  ib_uverbs_ioctl+0xc0/0x120 [ib_uverbs]
+> [   72.661756]  do_vfs_ioctl+0xa1/0x610
+> [   72.662458]  ksys_ioctl+0x70/0x80
+> [   72.663119]	__x64_sys_ioctl+0x16/0x20
+> [   72.663850]  do_syscall_64+0x42/0x110
+> [   72.664562]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> [   72.665492] RIP: 0033:0x7f9332958267
+> [   72.666185] Code: b3 66 90 48
+> 	8b 05 19 3c 2c 00 64 c7 00 26 00
+> 	00 00 48 c7 c0 ff ff ff ff c3 66
+> 	2e 0f 1f 84 00 00 00 00 00 b8 10
+> 	00 00 00 0f 05 <48> 3d 01 f0 ff
+> 	ff 73 01 c3 48 8b 0d e9 3b 2c 00
+> 	f7 d8 64 89 01 48
+> [   72.669347] RSP: 002b:00007f9323751928 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+> [   72.670706] RAX: ffffffffffffffda RBX: 00007f93237519b8 RCX:	00007f9332958267
+> [   72.671937] RDX: 00007f93237519a0 RSI: 00000000c0181b01 RDI: 0000000000000008
+> [   72.673176] RBP: 00007f9323751980 R08: 0000000000000005 R09: 00007f931c3ffef0
+> [   72.674415] R10: 0000000000001000 R11: 0000000000000246 R12: 00007f931c400030
+> [   72.675653] R13: 00007f9323751980 R14: 00007f9323751ea8 R15: 00000000000000ff
+> [   72.676885] ---[ end trace 033465440517865c ]---
+> 
+>>
+>> Thanks,
+>> Jason
+>>
