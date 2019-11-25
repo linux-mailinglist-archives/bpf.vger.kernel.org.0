@@ -2,60 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A53B4108650
-	for <lists+bpf@lfdr.de>; Mon, 25 Nov 2019 02:29:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63BB41086F5
+	for <lists+bpf@lfdr.de>; Mon, 25 Nov 2019 05:17:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727142AbfKYB3f (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 24 Nov 2019 20:29:35 -0500
-Received: from mail-lj1-f170.google.com ([209.85.208.170]:37933 "EHLO
-        mail-lj1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727072AbfKYB3f (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 24 Nov 2019 20:29:35 -0500
-Received: by mail-lj1-f170.google.com with SMTP id k8so3255602ljh.5;
-        Sun, 24 Nov 2019 17:29:33 -0800 (PST)
+        id S1726980AbfKYERW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 24 Nov 2019 23:17:22 -0500
+Received: from mail-io1-f65.google.com ([209.85.166.65]:35373 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726977AbfKYERW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 24 Nov 2019 23:17:22 -0500
+Received: by mail-io1-f65.google.com with SMTP id x21so14669917ior.2;
+        Sun, 24 Nov 2019 20:17:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=EnpVr9gg7gkumYCQnOKkv4m/WBcUuib8Eyj+epJNIWk=;
-        b=guqFZ7AwBudO+N1SZbsvh/8zWVlenHmUFGppmhoM7s533Vo8nxdFh7qfnXxeQ1UqpL
-         SvullyxUAU/wtmtrQj0Snpe3i8jPPUZHSqqI6P6jHJuY+nwr8f9g0cEp/cWEoNQNxiGg
-         QS1N6ZD4Op73RWEVEVBcvS0JM80xlTmcK4f/P6sBU6XuCVXb6c3EO7joqEUrvDi6gF6N
-         sNw7HbkoyOL4A+RzDiXdCTAc3UxOfg+CgESkTuiDQefOh0YHhJG3tN4XrHpO3kYvN54B
-         Z2AekSw1Ha2Y/I5z1xqvywBOqM4GjZipKU8WCGyq1BotSvOs5Nw7C4oQ7+b0UHA8VHRW
-         zaPA==
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=N6bJp5PonV9AvhYp3A8huV47kv/I3nYsue0SrrRDAS0=;
+        b=AaK3pZ9Dwof9YezzXNYHj2BlwZaXd1olbKV8COPqVYU8jTBydsjObZWlxx+qAI5XDP
+         P0C0MEBvGJrp32YlP6WZgclGPV1fhzTFN0xWe1RqydjgvqhAQbedt+HyQp7bc2haVPB9
+         b7RLtXJYYRS1UmLJl1IjVNaZziJ4tVc507uzUe9ilAMiWimJB9K1FkZAOQqK4yD5JErP
+         BaJ20kQkiRw6pbBGZL8OXN2W4GRLwr6M7v33wqtU0B501v9TGa5f3rpHvd7q+RFa2G02
+         TP4us9weO3rrgEWhFfLfTzTBdNJDUFGXR4DNFrQTcFNsuzKNdRZcvttN+fb/Hh5b7ozX
+         WNAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=EnpVr9gg7gkumYCQnOKkv4m/WBcUuib8Eyj+epJNIWk=;
-        b=cpshynZ36KzgDiXuf2tbu1KzSTu5Bn81I7ze4NHjaKgtV4qS1HbtPn4EAZE6hAq6wF
-         SEYwUAtfWa757r0a+KvZvtDvfYURuQoIg63ocwGkY/3DQ7t1C8UIqyikjEaOrmoHSKWP
-         ym/XCXEKXUOTBxARxdiI9AgrtvhMr8HHCeZgZwvWhDc6TdbPeoJKvj0T9RTntvrCEZFG
-         j/yfF84Mbij332lQTxv7VkO62bh443Nq8dFQTaqsoqBro0brDtuogUhJz+WaT/HUZdKf
-         nNLhKElA1iPOJmwT6qDcPDXub1z8y08FEbz5PD4/6l4F5/CZpFOhdhSxRJcKPJjq5Avv
-         T+4g==
-X-Gm-Message-State: APjAAAXoardc/JQRTolS23hhdoBLTun3LPgYWXoxT7WdKLTv3lf5BZ+1
-        6PhQyIUg+tj+Jtzxj2N/C2cx12/duQeyHV8XeV0Jeg==
-X-Google-Smtp-Source: APXvYqyFtc3IssHJW8DUkrujTV9CR8MoJf1IockvaPaP5fQIvGnrbrjG/uxzcKNEOyZNZ6oJtR4eWICZZ5HE6Fvwo/c=
-X-Received: by 2002:a2e:8508:: with SMTP id j8mr19937200lji.136.1574645373016;
- Sun, 24 Nov 2019 17:29:33 -0800 (PST)
-MIME-Version: 1.0
-References: <7e44b633-4a3a-e4f0-3437-f2d8e5452cf9@iogearbox.net>
-In-Reply-To: <7e44b633-4a3a-e4f0-3437-f2d8e5452cf9@iogearbox.net>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Sun, 24 Nov 2019 17:29:21 -0800
-Message-ID: <CAADnVQJM2+tRs5h7Z=sLXZeuw6y+aUNG78BnMo_winuBpip5Sg@mail.gmail.com>
-Subject: bpf-next is CLOSED
-To:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Network Development <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=N6bJp5PonV9AvhYp3A8huV47kv/I3nYsue0SrrRDAS0=;
+        b=Uju60rP2/wjsIydUgN3Z2ogpoGMgk41ATvEg79CdD60SP4izUJ6d5fC2xu3wa7CNEa
+         2d4t5eGL/xN8gTPPav9XWx2AyArAvsCK1wysDbEwxz3IJciqwXIC2Tf8hvWnG9qmEYwE
+         g5nMSoZErOzf+n7xdSv1eeYtfmeV+CAL/xZs8Gjqzw87kVox2DRV9ZGHbLNO2PjVPR08
+         0A/ShaPNDldUb32BqQw25ViWucCBcQtxs+QpDl5MBreo3lmR44zSjLsnx1WbIyV6jMQ6
+         X5zk8BNsO5p0YRM2ugqne3Qfpfyzw8ADLIDjnea7u1yT6N4p29TUDDWbl+NWLpATNrOU
+         1gig==
+X-Gm-Message-State: APjAAAWCfZ6Hefea2AuLnCSpIAMU3OUZp+7GwRKSHAgWMhpc9Zf19GfH
+        MOJ5g3WVz23UwFA9Hx5Am8MWPFAR
+X-Google-Smtp-Source: APXvYqxdQ9Zv4nrgP83NeEPkNn+UXx7tvG5aeFsxsS/ogduHBkNSMW/GZH92Qi+XR6Rflk65Z836zQ==
+X-Received: by 2002:a6b:f401:: with SMTP id i1mr16688383iog.241.1574655441435;
+        Sun, 24 Nov 2019 20:17:21 -0800 (PST)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id p8sm1832873ilk.11.2019.11.24.20.17.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 24 Nov 2019 20:17:20 -0800 (PST)
+Date:   Sun, 24 Nov 2019 20:17:12 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        kernel-team@cloudflare.com,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>
+Message-ID: <5ddb55c87d06c_79e12b0ab99325bc69@john-XPS-13-9370.notmuch>
+In-Reply-To: <20191125012440.crbufwpokttx67du@ast-mbp.dhcp.thefacebook.com>
+References: <20191123110751.6729-1-jakub@cloudflare.com>
+ <20191123110751.6729-6-jakub@cloudflare.com>
+ <20191125012440.crbufwpokttx67du@ast-mbp.dhcp.thefacebook.com>
+Subject: Re: [PATCH bpf-next 5/8] bpf: Allow selecting reuseport socket from a
+ SOCKMAP
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The merge window is open. Please send bug fixes only.
-bpf tree is completely frozen for the next 2 weeks.
-Please target your fixes to bpf-next tree.
-Thanks!
+Alexei Starovoitov wrote:
+> On Sat, Nov 23, 2019 at 12:07:48PM +0100, Jakub Sitnicki wrote:
+> > SOCKMAP now supports storing references to listening sockets. Nothing keeps
+> > us from using it as an array of sockets to select from in SK_REUSEPORT
+> > programs.
+> > 
+> > Whitelist the map type with the BPF helper for selecting socket. However,
+> > impose a restriction that the selected socket needs to be a listening TCP
+> > socket or a bound UDP socket (connected or not).
+> > 
+> > The only other map type that works with the BPF reuseport helper,
+> > REUSEPORT_SOCKARRAY, has a corresponding check in its update operation
+> > handler.
+> > 
+> > Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+> > ---
+
+[...]
+
+> > diff --git a/net/core/filter.c b/net/core/filter.c
+> > index 49ded4a7588a..e3fb77353248 100644
+> > --- a/net/core/filter.c
+> > +++ b/net/core/filter.c
+> > @@ -8723,6 +8723,8 @@ BPF_CALL_4(sk_select_reuseport, struct sk_reuseport_kern *, reuse_kern,
+> >  	selected_sk = map->ops->map_lookup_elem(map, key);
+> >  	if (!selected_sk)
+> >  		return -ENOENT;
+> > +	if (!sock_flag(selected_sk, SOCK_RCU_FREE))
+> > +		return -EINVAL;
+> 
+> hmm. I wonder whether this breaks existing users...
+
+There is already this check in reuseport_array_update_check()
+
+	/*
+	 * sk must be hashed (i.e. listening in the TCP case or binded
+	 * in the UDP case) and
+	 * it must also be a SO_REUSEPORT sk (i.e. reuse cannot be NULL).
+	 *
+	 * Also, sk will be used in bpf helper that is protected by
+	 * rcu_read_lock().
+	 */
+	if (!sock_flag(nsk, SOCK_RCU_FREE) || !sk_hashed(nsk) || !nsk_reuse)
+		return -EINVAL;
+
+So I believe it should not cause any problems with existing users. Perhaps
+we could consolidate the checks a bit or move it into the update paths if we
+wanted. I assume Jakub was just ensuring we don't get here with SOCK_RCU_FREE
+set from any of the new paths now. I'll let him answer though.
+
+> Martin,
+> what do you think?
+
+More eyes the better.
+
+> Could you also take a look at other patches too?
+> In particular patch 7?
+> 
+
+Agreed would be good to give 7/8 a look I'm not too familiar with the
+selftests there.
