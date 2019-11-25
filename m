@@ -2,82 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 208D61096E2
-	for <lists+bpf@lfdr.de>; Tue, 26 Nov 2019 00:24:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74FA21096F8
+	for <lists+bpf@lfdr.de>; Tue, 26 Nov 2019 00:41:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725945AbfKYXY0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 Nov 2019 18:24:26 -0500
-Received: from www62.your-server.de ([213.133.104.62]:42048 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725912AbfKYXY0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 25 Nov 2019 18:24:26 -0500
-Received: from 11.248.197.178.dynamic.dsl-lte-bonding.zhbmb00p-msn.res.cust.swisscom.ch ([178.197.248.11] helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iZNiL-0000Z2-7M; Tue, 26 Nov 2019 00:24:17 +0100
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     davem@davemloft.net
-Cc:     jakub.kicinski@netronome.com, daniel@iogearbox.net, ast@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: pull-request: bpf-next 2019-11-26
-Date:   Tue, 26 Nov 2019 00:24:16 +0100
-Message-Id: <20191125232416.4287-1-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
+        id S1726118AbfKYXlI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 Nov 2019 18:41:08 -0500
+Received: from hqemgate16.nvidia.com ([216.228.121.65]:12903 "EHLO
+        hqemgate16.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725912AbfKYXlI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 25 Nov 2019 18:41:08 -0500
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqemgate16.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5ddc66950000>; Mon, 25 Nov 2019 15:41:09 -0800
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Mon, 25 Nov 2019 15:41:07 -0800
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Mon, 25 Nov 2019 15:41:07 -0800
+Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 25 Nov
+ 2019 23:41:07 +0000
+Received: from rnnvemgw01.nvidia.com (10.128.109.123) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Mon, 25 Nov 2019 23:41:06 +0000
+Received: from blueforge.nvidia.com (Not Verified[10.110.48.28]) by rnnvemgw01.nvidia.com with Trustwave SEG (v7,5,8,10121)
+        id <B5ddc66920000>; Mon, 25 Nov 2019 15:41:06 -0800
+From:   John Hubbard <jhubbard@nvidia.com>
+To:     Andrii Nakryiko <andriin@fb.com>
+CC:     Daniel Borkmann <daniel@iogearbox.net>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>
+Subject: [PATCH 0/1] bpf: fix a no-mmu build failure by providing a stub allocator
+Date:   Mon, 25 Nov 2019 15:41:02 -0800
+Message-ID: <20191125234103.1699950-1-jhubbard@nvidia.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.101.4/25644/Mon Nov 25 10:54:22 2019)
+X-NVConfidentiality: public
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1574725269; bh=+UikYwGL8PF/KNnxAPIPj9xjsgDE5Jat9ThGUVvv3jE=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+         MIME-Version:X-NVConfidentiality:Content-Transfer-Encoding:
+         Content-Type;
+        b=ayClCS5XxvUorhhDTYQ4QhBFhXsd7dXYeRTt2bTcsLG6cI8TYwG6vHL2QHNDcFXg5
+         CQvT2tWLejsMmf5QWEhBiP203s4Cv1kx+7yUhBIPz3wYUu/Bfgzlf6bi0OTek6lHJl
+         89HXGoftD8P88UnN8HrjILy9Fe8aLqmcpDcWYRob42uYBRtqlNjSiIPzzDxw88rNrX
+         XVaeY5eTNDZiJv0hpck5BgVJlUOHWezEs9iKH96x97uvn6KxidFAxJ5kDpNupoDG1t
+         f8rqgGDwfIUZuqEBBG1vVPGZ21OKhw+TLNfdZyneoXgaRC3tVGJh4fvvkL01p3EPQj
+         QnWUBfewNoKVg==
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi David,
+Hi,
 
-The following pull-request contains BPF updates for your *net-next* tree.
+I ran into this on today's linux-next: commit c165016bac27 ("Add
+linux-next specific files for 20191125"). The kbuild robot reported a
+build failure on my larger (unrelated) patchset, but there were actually
+two build failures, and this patch here fixes the second failure.
 
-We've added 2 non-merge commits during the last 1 day(s) which contain
-a total of 2 files changed, 14 insertions(+), 3 deletions(-).
+John Hubbard (1):
+  bpf: fix a no-mmu build failure by providing a stub allocator
 
-The main changes, 2 small fixes are:
+ kernel/bpf/syscall.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-1) Fix libbpf out of tree compilation which complained about unknown u32
-   type used in libbpf_find_vmlinux_btf_id() which needs to be __u32 instead,
-   from Andrii Nakryiko.
+--=20
+2.24.0
 
-2) Follow-up fix for the prior BPF mmap series where kbuild bot complained
-   about missing vmalloc_user_node_flags() for no-MMU, also from Andrii Nakryiko.
-
-Please consider pulling these changes from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
-
-Thanks a lot!
-
-Also thanks to reporters, reviewers and testers of commits in this pull-request:
-
-Johannes Weiner, John Fastabend, kbuild test robot
-
-----------------------------------------------------------------
-
-The following changes since commit c431047c4efe7903fb1c5a23e0f3f8eb1efc89f9:
-
-  enetc: add support Credit Based Shaper(CBS) for hardware offload (2019-11-25 10:53:15 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git 
-
-for you to fetch changes up to b615e5a1e067dcb327482d1af7463268b89b1629:
-
-  libbpf: Fix usage of u32 in userspace code (2019-11-25 13:52:01 -0800)
-
-----------------------------------------------------------------
-Andrii Nakryiko (2):
-      mm: Implement no-MMU variant of vmalloc_user_node_flags
-      libbpf: Fix usage of u32 in userspace code
-
- mm/nommu.c             | 15 +++++++++++++--
- tools/lib/bpf/libbpf.c |  2 +-
- 2 files changed, 14 insertions(+), 3 deletions(-)
