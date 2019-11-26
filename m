@@ -2,193 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ED7B9109D9F
-	for <lists+bpf@lfdr.de>; Tue, 26 Nov 2019 13:13:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EBB0109DC6
+	for <lists+bpf@lfdr.de>; Tue, 26 Nov 2019 13:20:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728263AbfKZMNL convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 26 Nov 2019 07:13:11 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:54196 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727653AbfKZMNL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Nov 2019 07:13:11 -0500
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-272-Lf3LCucJOjqU-xrFJNGEEw-1; Tue, 26 Nov 2019 07:13:06 -0500
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8BE1080058F;
-        Tue, 26 Nov 2019 12:13:04 +0000 (UTC)
-Received: from krava.redhat.com (unknown [10.43.17.48])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8D0D160BEC;
-        Tue, 26 Nov 2019 12:12:54 +0000 (UTC)
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Michael Petlan <mpetlan@redhat.com>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Subject: [PATCH] perf tools: Allow to link with libbpf dynamicaly
-Date:   Tue, 26 Nov 2019 13:12:53 +0100
-Message-Id: <20191126121253.28253-1-jolsa@kernel.org>
+        id S1727883AbfKZMUJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Nov 2019 07:20:09 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:48134 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727615AbfKZMUJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Nov 2019 07:20:09 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAQCK6C2105629;
+        Tue, 26 Nov 2019 12:20:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2019-08-05;
+ bh=+gyQe7HUxkbsL59FzaYQ2JeYf6Xz0dTrb40Fk4tfD64=;
+ b=g+MgcLObSJe+SiKUkjEsPgypSb4muLeoUxIP/b2avFWV9YPCBz9YHDsGP2ywjfjAVqV4
+ 22NpeoHuZ72ZOmnq8SE9OMvRqqENP08ygjuYWU03zlusTGgivXn1a27RVvI2xdTJgXMv
+ yNQ+aS82iLhWvP6c7MmG3vKOkv7vTbNjGJtNRSY6pdsrx9AIlWIv0JkWyUNV3jwm2snj
+ geHfWRHP+MRAr0p0Nazk1w63TSmZHXO1FsMCGl7rHdLroU7HJ4OBFDCIfNZzKqTTr475
+ 2mmhJUK9ssjixymYaoieAy7I8qQsg5Jh/zjkj+nsBJwllpgOr9u/heI6MzvUvo1ccN0o 5w== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 2wewdr6b6t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 26 Nov 2019 12:20:06 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAQC8VIn017098;
+        Tue, 26 Nov 2019 12:20:05 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 2wh0rbe77n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 26 Nov 2019 12:20:05 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id xAQCK4t2021338;
+        Tue, 26 Nov 2019 12:20:04 GMT
+Received: from kili.mountain (/129.205.23.165)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 26 Nov 2019 04:20:03 -0800
+Date:   Tue, 26 Nov 2019 15:19:57 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     ast@kernel.org
+Cc:     bpf@vger.kernel.org
+Subject: [bug report] bpf: Introduce BPF trampoline
+Message-ID: <20191126121957.6gda4xqy3pacuny3@kili.mountain>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
-X-MC-Unique: Lf3LCucJOjqU-xrFJNGEEw-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=WINDOWS-1252
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9452 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=460
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1911140001 definitions=main-1911260110
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9452 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=1 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=522 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
+ definitions=main-1911260110
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Currently we support only static linking with kernel's
-libbpf (tools/lib/bpf). This patch adds libbpf package
-detection and support to link perf with it dynamically.
+Hello Alexei Starovoitov,
 
-The libbpf package status is displayed with:
+The patch fec56f5890d9: "bpf: Introduce BPF trampoline" from Nov 14,
+2019, leads to the following static checker warning:
 
-  $ make VF=1
-  Auto-detecting system features:
-  ...
-  ...                        libbpf: [ on  ]
+	kernel/bpf/btf.c:4023 btf_distill_func_proto()
+	error: potentially dereferencing uninitialized 't'.
 
-It's not checked by default, because it's quite new.
-Once it's on most distros we can switch it on.
+kernel/bpf/btf.c
+  4012          nargs = btf_type_vlen(func);
+  4013          if (nargs >= MAX_BPF_FUNC_ARGS) {
+  4014                  bpf_log(log,
+  4015                          "The function %s has %d arguments. Too many.\n",
+  4016                          tname, nargs);
+  4017                  return -EINVAL;
+  4018          }
+  4019          ret = __get_type_size(btf, func->type, &t);
+                                                       ^^
+t isn't initialized for the first -EINVAL return
 
-For the same reason it's not added to the test-all check.
+  4020          if (ret < 0) {
+  4021                  bpf_log(log,
+  4022                          "The function %s return type %s is unsupported.\n",
+  4023                          tname, btf_kind_str[BTF_INFO_KIND(t->info)]);
+                                                                  ^^^^^^^
+  4024                  return -EINVAL;
+  4025          }
+  4026          m->ret_size = ret;
 
-Perf does not need advanced version of libbpf, so we can
-check just for the base bpf_object__open function.
+See also:
+kernel/bpf/btf.c:4033 btf_distill_func_proto() error: potentially dereferencing uninitialized 't'.
 
-Adding new compile variable to detect libbpf package and
-link bpf dynamically:
-
-  $ make LIBBPF_DYNAMIC=1
-    ...
-    LINK     perf
-  $ ldd perf | grep bpf
-    libbpf.so.0 => /lib64/libbpf.so.0 (0x00007f46818bc000)
-
-If libbpf is not installed, build stops with:
-
-  Makefile.config:486: *** Error: No libbpf devel library found,\
-  please install libbpf-devel.  Stop.
-
-Link: http://lkml.kernel.org/n/tip-kjdr6k37nuoiwbl0yltla1nh@git.kernel.org
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- tools/build/Makefile.feature      |  3 ++-
- tools/build/feature/Makefile      |  4 ++++
- tools/build/feature/test-libbpf.c |  7 +++++++
- tools/perf/Makefile.config        | 10 ++++++++++
- tools/perf/Makefile.perf          |  6 +++++-
- 5 files changed, 28 insertions(+), 2 deletions(-)
- create mode 100644 tools/build/feature/test-libbpf.c
-
-diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
-index 8a19753cc26a..574c2e0b9d20 100644
---- a/tools/build/Makefile.feature
-+++ b/tools/build/Makefile.feature
-@@ -96,7 +96,8 @@ FEATURE_TESTS_EXTRA :=                  \
-          cxx                            \
-          llvm                           \
-          llvm-version                   \
--         clang
-+         clang                          \
-+         libbpf
- 
- FEATURE_TESTS ?= $(FEATURE_TESTS_BASIC)
- 
-diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
-index 8499385365c0..f30a89046aa3 100644
---- a/tools/build/feature/Makefile
-+++ b/tools/build/feature/Makefile
-@@ -53,6 +53,7 @@ FILES=                                          \
-          test-zlib.bin                          \
-          test-lzma.bin                          \
-          test-bpf.bin                           \
-+         test-libbpf.bin                        \
-          test-get_cpuid.bin                     \
-          test-sdt.bin                           \
-          test-cxx.bin                           \
-@@ -270,6 +271,9 @@ $(OUTPUT)test-get_cpuid.bin:
- $(OUTPUT)test-bpf.bin:
- 	$(BUILD)
- 
-+$(OUTPUT)test-libbpf.bin:
-+	$(BUILD) -lbpf
-+
- $(OUTPUT)test-sdt.bin:
- 	$(BUILD)
- 
-diff --git a/tools/build/feature/test-libbpf.c b/tools/build/feature/test-libbpf.c
-new file mode 100644
-index 000000000000..a508756cf4cc
---- /dev/null
-+++ b/tools/build/feature/test-libbpf.c
-@@ -0,0 +1,7 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <bpf/libbpf.h>
-+
-+int main(void)
-+{
-+	return bpf_object__open("test") ? 0 : -1;
-+}
-diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-index 1783427da9b0..c90f4146e5a2 100644
---- a/tools/perf/Makefile.config
-+++ b/tools/perf/Makefile.config
-@@ -483,6 +483,16 @@ ifndef NO_LIBELF
-     ifeq ($(feature-bpf), 1)
-       CFLAGS += -DHAVE_LIBBPF_SUPPORT
-       $(call detected,CONFIG_LIBBPF)
-+
-+      # detecting libbpf without LIBBPF_DYNAMIC, so make VF=1 shows libbpf detection status
-+      $(call feature_check,libbpf)
-+      ifdef LIBBPF_DYNAMIC
-+        ifeq ($(feature-libbpf), 1)
-+          EXTLIBS += -lbpf
-+        else
-+          dummy := $(error Error: No libbpf devel library found, please install libbpf-devel);
-+        endif
-+      endif
-     endif
- 
-     ifndef NO_DWARF
-diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-index 1cd294468a1f..eae5d5e95952 100644
---- a/tools/perf/Makefile.perf
-+++ b/tools/perf/Makefile.perf
-@@ -116,6 +116,8 @@ include ../scripts/utilities.mak
- #
- # Define TCMALLOC to enable tcmalloc heap profiling.
- #
-+# Define LIBBPF_DYNAMIC to enable libbpf dynamic linking.
-+#
- 
- # As per kernel Makefile, avoid funny character set dependencies
- unexport LC_ALL
-@@ -360,7 +362,9 @@ export PERL_PATH
- 
- PERFLIBS = $(LIBAPI) $(LIBTRACEEVENT) $(LIBSUBCMD) $(LIBPERF)
- ifndef NO_LIBBPF
--  PERFLIBS += $(LIBBPF)
-+  ifndef LIBBPF_DYNAMIC
-+    PERFLIBS += $(LIBBPF)
-+  endif
- endif
- 
- # We choose to avoid "if .. else if .. else .. endif endif"
--- 
-2.21.0
-
+regards,
+dan carpenter
