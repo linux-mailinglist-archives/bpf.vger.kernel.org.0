@@ -2,171 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 260B010A190
-	for <lists+bpf@lfdr.de>; Tue, 26 Nov 2019 16:54:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0126A10A203
+	for <lists+bpf@lfdr.de>; Tue, 26 Nov 2019 17:25:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728091AbfKZPyh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Nov 2019 10:54:37 -0500
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:34643 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727191AbfKZPyh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Nov 2019 10:54:37 -0500
-Received: by mail-lj1-f194.google.com with SMTP id m6so13447668ljc.1
-        for <bpf@vger.kernel.org>; Tue, 26 Nov 2019 07:54:36 -0800 (PST)
+        id S1727645AbfKZQZd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Nov 2019 11:25:33 -0500
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:35292 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726983AbfKZQZd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Nov 2019 11:25:33 -0500
+Received: by mail-pl1-f193.google.com with SMTP id s10so8381571plp.2
+        for <bpf@vger.kernel.org>; Tue, 26 Nov 2019 08:25:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=mFwfXWuGO5JOurpx5SkPd+KNxxhTjX3Z1Z8V3BB+pts=;
-        b=HeXPzxSoFR2LsBmJtbhmxuXXJyaincCrhAliBzNAEN4+y3gntDWnoPNPS72VVOo+OI
-         wn5mSOleLOF/enxkyrJdQxpEVOxuaMa9iBQn0SAM12pLG2FpeUHvXBTwuo5Fhx37W7F5
-         VzoJ8xc0Z7+riX+ToctBScyFdTFS1UruwGejk=
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=1hOraEYfhl1CfHNUuJ9PdJuLSAhfXrel88lp028GyuE=;
+        b=ofXBE/7VkptXvyZUZ8nCpnF8LnSUO7HEYT1LoAa9Am/hhjFzn63h+s86Xpuxq0Imbq
+         jUQVSTWIj7em0wn8lhMOpFYO0/YgE+PlYLu1zC6sZNJlmQnhCSb5Cm639iotn9wnQsOH
+         94e3PBGT1YD16gYa0ACD2djV5jMozSNFZRB8s=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=mFwfXWuGO5JOurpx5SkPd+KNxxhTjX3Z1Z8V3BB+pts=;
-        b=tTfDQxz9am86mAunwhXZU6ReMMWnXukL8yD5I6gWDYpMWoO3Y45Tb8vI0RBFndL36J
-         BbcnuPk2SFQYyYSKr8of94SPAEPiA8xY5PTbqecREsD2HLuibCvlwLpa60ZzhmZv+muH
-         9SHITyOXUNpI4fTHlXxkpAIlUFmnsC0sTxLwrmGhLPuhiTi7b0FWuLn9L4fnZeg1SFHs
-         eHIvLBHfqJwc4lwJG9nUIgUhSDZbD7U8VyoIBXn3ONg3FyjwfEUAouA2AiqJ8PlB6bqd
-         jR/5qJ8f4uwBhi8Vbl8TUkqTKHpLUPY8wbU14AziB0HDAleBpFusUauVEqAUzebPswQZ
-         s8Ng==
-X-Gm-Message-State: APjAAAVNItTQBJNr5wiYY7Is8nJnlrlv2RjzHCtG1e1wyLtqQqqsnzJB
-        yDQdX2Mld52Jb59iMbNsLDfcqg==
-X-Google-Smtp-Source: APXvYqxJvnCDrbxdgGKMynD+7yJmRV236MQG1514vjQ1bHWW5awLQj2bNOd3+y5E2f/+IVCeFSkSTw==
-X-Received: by 2002:a2e:9606:: with SMTP id v6mr15757955ljh.223.1574783675315;
-        Tue, 26 Nov 2019 07:54:35 -0800 (PST)
-Received: from cloudflare.com ([176.221.114.230])
-        by smtp.gmail.com with ESMTPSA id 30sm5841826ljw.29.2019.11.26.07.54.34
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=1hOraEYfhl1CfHNUuJ9PdJuLSAhfXrel88lp028GyuE=;
+        b=DDz6wFRHukFIr/KbTZ/gI3MSR/w1TjtxlwwtS6tDSuS02/fHTshRuxm6gNJ0h/+LcV
+         gzT4jEqS48gnD3xp20hkVJy43uoc52em6qmdEM+nBE8C5mDDoMarkBxUNNPOKzjY7nQj
+         pW27Xr1skiX2wQC/HTB9sE4JhWzVC9iv11wV1P7+AK/Ax16cVMkpRuiXwLhatLc6qeU1
+         oBsA2/bVtQ7WMWp6BVPq/RkSSUPJySavt8ZkYQpzaH6aeFvB71MxRfXLh63xeVpWniIF
+         lAvIZCd1piOwNTsFoSMt2ic2HjWujYYtqcdmgfVRVyAj/xAEJR0b53chRjzYJrXruWKm
+         hCmw==
+X-Gm-Message-State: APjAAAWsCwprs5RYty0BbGTaQCe1O9S3NWrHM01rbpxOvMLKtXhe2WC2
+        MafMDbzL+qPW/tTo1GMLyF2c6A==
+X-Google-Smtp-Source: APXvYqxdb3m8lvitpYcVMwL44atFGySYuA7LVySZPpCySFXgRV4Lv/KUVp10g+KjQW8s8fRGDFE4FQ==
+X-Received: by 2002:a17:902:ab82:: with SMTP id f2mr32593783plr.276.1574785530825;
+        Tue, 26 Nov 2019 08:25:30 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id j4sm3993110pjf.25.2019.11.26.08.25.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Nov 2019 07:54:34 -0800 (PST)
-References: <20191123110751.6729-1-jakub@cloudflare.com> <20191123110751.6729-5-jakub@cloudflare.com> <20191125223845.6t6xoqcwcqxuqbdf@kafai-mbp>
-User-agent: mu4e 1.1.0; emacs 26.1
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Martin Lau <kafai@fb.com>
-Cc:     "bpf\@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev\@vger.kernel.org" <netdev@vger.kernel.org>,
-        "kernel-team\@cloudflare.com" <kernel-team@cloudflare.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Subject: Re: [PATCH bpf-next 4/8] bpf, sockmap: Don't let child socket inherit psock or its ops on copy
-In-reply-to: <20191125223845.6t6xoqcwcqxuqbdf@kafai-mbp>
-Date:   Tue, 26 Nov 2019 16:54:33 +0100
-Message-ID: <87ftiaocp2.fsf@cloudflare.com>
+        Tue, 26 Nov 2019 08:25:29 -0800 (PST)
+Date:   Tue, 26 Nov 2019 08:25:28 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        David Abdurachmanov <david.abdurachmanov@sifive.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@suse.de>, bpf@vger.kernel.org,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        kernel test robot <rong.a.chen@intel.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-kselftest@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-um@lists.infradead.org,
+        Martin KaFai Lau <kafai@fb.com>, netdev@vger.kernel.org,
+        Oleg Nesterov <oleg@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>,
+        Tyler Hicks <tyhicks@canonical.com>,
+        Will Drewry <wad@chromium.org>, x86@kernel.org,
+        Yonghong Song <yhs@fb.com>
+Subject: [GIT PULL] seccomp updates for v5.5-rc1
+Message-ID: <201911260818.9C5DC1E@keescook>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 25, 2019 at 11:38 PM CET, Martin Lau wrote:
-> On Sat, Nov 23, 2019 at 12:07:47PM +0100, Jakub Sitnicki wrote:
-> [ ... ]
->
->> @@ -370,6 +378,11 @@ static inline void sk_psock_restore_proto(struct sock *sk,
->>  			sk->sk_prot = psock->sk_proto;
->>  		psock->sk_proto = NULL;
->>  	}
->> +
->> +	if (psock->icsk_af_ops) {
->> +		icsk->icsk_af_ops = psock->icsk_af_ops;
->> +		psock->icsk_af_ops = NULL;
->> +	}
->>  }
->
-> [ ... ]
->
->> +static struct sock *tcp_bpf_syn_recv_sock(const struct sock *sk,
->> +					  struct sk_buff *skb,
->> +					  struct request_sock *req,
->> +					  struct dst_entry *dst,
->> +					  struct request_sock *req_unhash,
->> +					  bool *own_req)
->> +{
->> +	const struct inet_connection_sock_af_ops *ops;
->> +	void (*write_space)(struct sock *sk);
->> +	struct sk_psock *psock;
->> +	struct proto *proto;
->> +	struct sock *child;
->> +
->> +	rcu_read_lock();
->> +	psock = sk_psock(sk);
->> +	if (likely(psock)) {
->> +		proto = psock->sk_proto;
->> +		write_space = psock->saved_write_space;
->> +		ops = psock->icsk_af_ops;
-> It is not immediately clear to me what ensure
-> ops is not NULL here.
->
-> It is likely I missed something.  A short comment would
-> be very useful here.
+Hi Linus,
 
-I can see the readability problem. Looking at it now, perhaps it should
-be rewritten, to the same effect, as:
+Please pull these seccomp updates for v5.5-rc1. Mostly this is
+implementing the new flag SECCOMP_USER_NOTIF_FLAG_CONTINUE, but there
+are cleanups as well. Most notably, the secure_computing() prototype
+has changed (to remove an unused argument), but this has happened at the
+same time as riscv adding seccomp support, so the cleanest merge order
+would be to merge riscv first, then seccomp with the following patch for
+riscv to handle the change from "seccomp: simplify secure_computing()":
 
-static struct sock *tcp_bpf_syn_recv_sock(...)
-{
-	const struct inet_connection_sock_af_ops *ops = NULL;
-        ...
+diff --git a/arch/riscv/kernel/ptrace.c b/arch/riscv/kernel/ptrace.c
+index 0f84628b9385..407464201b91 100644
+--- a/arch/riscv/kernel/ptrace.c
++++ b/arch/riscv/kernel/ptrace.c
+@@ -159,7 +159,7 @@ __visible void do_syscall_trace_enter(struct pt_regs *regs)
+ 	 * If this fails we might have return value in a0 from seccomp
+ 	 * (via SECCOMP_RET_ERRNO/TRACE).
+ 	 */
+-	if (secure_computing(NULL) == -1) {
++	if (secure_computing() == -1) {
+ 		syscall_set_nr(current, regs, -1);
+ 		return;
+ 	}
 
-        rcu_read_lock();
-	psock = sk_psock(sk);
-	if (likely(psock)) {
-		proto = psock->sk_proto;
-		write_space = psock->saved_write_space;
-		ops = psock->icsk_af_ops;
-	}
-	rcu_read_unlock();
+Thanks!
 
-        if (!ops)
-		ops = inet_csk(sk)->icsk_af_ops;
-        child = ops->syn_recv_sock(sk, skb, req, dst, req_unhash, own_req);
+-Kees
 
-If psock->icsk_af_ops were NULL, it would mean we haven't initialized it
-properly. To double check what happens here:
+The following changes since commit da0c9ea146cbe92b832f1b0f694840ea8eb33cce:
 
-In sock_map_link we do a setup dance where we first create the psock and
-later initialize the socket callbacks (tcp_bpf_init).
+  Linux 5.4-rc2 (2019-10-06 14:27:30 -0700)
 
-static int sock_map_link(struct bpf_map *map, struct sk_psock_progs *progs,
-			 struct sock *sk)
-{
-        ...
-	if (psock) {
-                ...
-	} else {
-		psock = sk_psock_init(sk, map->numa_node);
-		if (!psock) {
-			ret = -ENOMEM;
-			goto out_progs;
-		}
-		sk_psock_is_new = true;
-	}
-        ...
-        if (sk_psock_is_new) {
-		ret = tcp_bpf_init(sk);
-		if (ret < 0)
-			goto out_drop;
-	} else {
-		tcp_bpf_reinit(sk);
-	}
+are available in the Git repository at:
 
-The "if (sk_psock_new)" branch triggers the call chain that leads to
-saving & overriding socket callbacks.
+  https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/seccomp-v5.5-rc1
 
-tcp_bpf_init -> tcp_bpf_update_sk_prot -> sk_psock_update_proto
+for you to fetch changes up to 23b2c96fad21886c53f5e1a4ffedd45ddd2e85ba:
 
-Among them, icsk_af_ops.
+  seccomp: rework define for SECCOMP_USER_NOTIF_FLAG_CONTINUE (2019-10-28 12:29:46 -0700)
 
-static inline void sk_psock_update_proto(...)
-{
-        ...
-	psock->icsk_af_ops = icsk->icsk_af_ops;
-	icsk->icsk_af_ops = af_ops;
-}
+----------------------------------------------------------------
+seccomp updates for v5.5
 
-Goes without saying that a comment is needed.
+- implement SECCOMP_USER_NOTIF_FLAG_CONTINUE (Christian Brauner)
+- fixes to selftests (Christian Brauner)
+- remove secure_computing() argument (Christian Brauner)
 
-Thanks for the feedback,
-Jakub
+----------------------------------------------------------------
+Christian Brauner (6):
+      seccomp: avoid overflow in implicit constant conversion
+      seccomp: add SECCOMP_USER_NOTIF_FLAG_CONTINUE
+      seccomp: test SECCOMP_USER_NOTIF_FLAG_CONTINUE
+      seccomp: simplify secure_computing()
+      seccomp: fix SECCOMP_USER_NOTIF_FLAG_CONTINUE test
+      seccomp: rework define for SECCOMP_USER_NOTIF_FLAG_CONTINUE
+
+ arch/arm/kernel/ptrace.c                      |   2 +-
+ arch/arm64/kernel/ptrace.c                    |   2 +-
+ arch/parisc/kernel/ptrace.c                   |   2 +-
+ arch/s390/kernel/ptrace.c                     |   2 +-
+ arch/um/kernel/skas/syscall.c                 |   2 +-
+ arch/x86/entry/vsyscall/vsyscall_64.c         |   2 +-
+ include/linux/seccomp.h                       |   6 +-
+ include/uapi/linux/seccomp.h                  |  29 +++++++
+ kernel/seccomp.c                              |  28 +++++--
+ tools/testing/selftests/seccomp/seccomp_bpf.c | 110 +++++++++++++++++++++++++-
+ 10 files changed, 169 insertions(+), 16 deletions(-)
+
+-- 
+Kees Cook
