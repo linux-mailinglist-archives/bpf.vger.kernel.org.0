@@ -2,148 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C9E01098FD
-	for <lists+bpf@lfdr.de>; Tue, 26 Nov 2019 06:56:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CF9D1099A8
+	for <lists+bpf@lfdr.de>; Tue, 26 Nov 2019 08:43:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727318AbfKZF4N (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Nov 2019 00:56:13 -0500
-Received: from mga05.intel.com ([192.55.52.43]:7609 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727207AbfKZF4N (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Nov 2019 00:56:13 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 25 Nov 2019 21:56:12 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,244,1571727600"; 
-   d="scan'208";a="409868879"
-Received: from shao2-debian.sh.intel.com (HELO [10.239.13.6]) ([10.239.13.6])
-  by fmsmga006.fm.intel.com with ESMTP; 25 Nov 2019 21:56:10 -0800
-Subject: Re: [kbuild-all] Re: [PATCH bpf-next] bpf: add
- bpf_jit_blinding_enabled for !CONFIG_BPF_JIT
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        kbuild test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, ast@kernel.org, jakub@cloudflare.com,
-        andrii.nakryiko@gmail.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Andrii Nakryiko <andriin@fb.com>,
-        fengguang.wu@intel.com
-References: <40baf8f3507cac4851a310578edfb98ce73b5605.1574541375.git.daniel@iogearbox.net>
- <201911250641.xKeDIKoX%lkp@intel.com>
- <4447a335-6311-3470-7546-dff06672a200@iogearbox.net>
-From:   Rong Chen <rong.a.chen@intel.com>
-Message-ID: <9247bdf6-ced1-aed7-c6b6-8f554bd796fc@intel.com>
-Date:   Tue, 26 Nov 2019 13:55:47 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        id S1726926AbfKZHnn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Nov 2019 02:43:43 -0500
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:35258 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725972AbfKZHnn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Nov 2019 02:43:43 -0500
+Received: by mail-qt1-f195.google.com with SMTP id n4so20434702qte.2;
+        Mon, 25 Nov 2019 23:43:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=UHfKop594uevxqQ70kj1Se7dd51KQ27qul6vNyc+H8E=;
+        b=CxmbG0zJ+WHtXeODvOJPuY01bOlEZCOkw+emQeJLJAdBiReutpEAkSiU9EHDWBr9vQ
+         ptcsMmnuvz5oosD4Hn0v8QcuKUSX5be+0Xc/wCHdTbPfLnQCFK2FtOiFRaF+DTp0OS6M
+         oiGZyRSRxqoJ0Cr13aK+i2x0ZLiEX9d8Q1tu+28/9tcgD38fBSUEXEddKiO89oZaZUMK
+         AT0rLlHO1NlkNLyOOniGLtVWQN/jO8iCjv2hXOIWFNVYceMv+SPPnsvvR3bmhDdmbvyh
+         LTTQGniZI7KyW8KGTXYVtyj5gbeGrKDK4UJtPRtl5OJE+ydmX2w9VwPEPj41paM3nLtq
+         /fLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=UHfKop594uevxqQ70kj1Se7dd51KQ27qul6vNyc+H8E=;
+        b=pckRbcUh1Gck6LFg4AGffBPK1FANaKqDnbgPGDzGbMtGO0Cp+XMIJdYt+brTutmoAd
+         yUL8wJzkq5fXuMoGWRfWx/D2E1VoMLm8fj25VZ/V7h95q+boq86mLLQBFprT1CU05S0K
+         /rErZHVai06X6RqpdRU5bShEu7SQIvKF0dUtEL89qirmMtpqxI1FAQ1QjKcI4PAxlprJ
+         vzfO+lH4k6Ag9vGUvmMyJY9qKwLLCxBoR0TrhgGChoyA0i+zAmF13L4O69sn8DELJyMK
+         2uObrFLfTgAiAAy3Pum3+qXZIXtZW6ZWv/645Ciu/9vFRFXdpIhMQCnOb6g8+iCMMeHb
+         /xSg==
+X-Gm-Message-State: APjAAAVoSfhoVtbUvw5Ml44kZafWn3WB+cNnX0uyEeskiukqSmpjCuiX
+        FgO1C+vz2RfWsdOn6BbCFa42EhAXcrLljmkfn2w=
+X-Google-Smtp-Source: APXvYqyWItExhZaEXo74oRYlONO4SnlAkHRuCXsuDv2sj+K5KFfwdVU1WmoWv1fJxIlpLLRFxs9b+5fTwF5VX7Wbs1c=
+X-Received: by 2002:ac8:6f57:: with SMTP id n23mr32760938qtv.46.1574754222222;
+ Mon, 25 Nov 2019 23:43:42 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <4447a335-6311-3470-7546-dff06672a200@iogearbox.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20191123071226.6501-1-bjorn.topel@gmail.com> <20191123071226.6501-3-bjorn.topel@gmail.com>
+ <875zj82ohw.fsf@toke.dk> <CAJ+HfNhFERV+xE7EUup-tu_nBTTqG=7L8bWm+W8h_Lzth4zuKQ@mail.gmail.com>
+ <87d0dg0x17.fsf@toke.dk>
+In-Reply-To: <87d0dg0x17.fsf@toke.dk>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Tue, 26 Nov 2019 08:43:31 +0100
+Message-ID: <CAJ+HfNhSba7B=SFK0-zjYqFMfwjiq-AVY2Ar7E0P5Pw6gNqTJA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/6] xdp: introduce xdp_call
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Netdev <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        bpf <bpf@vger.kernel.org>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Edward Cree <ecree@solarflare.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Tariq Toukan <tariqt@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        Maxim Mikityanskiy <maximmi@mellanox.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Daniel,
-
-Sorry for the inconvenience, It's our fault. the patch("bpf: Add 
-bpf_jit_blinding_enabled for !CONFIG_BPF_JIT") has been applied into 
-bpf-next/master,
-but kbuild bot catched the patch("bpf: add bpf_jit_blinding_enabled for 
-!CONFIG_BPF_JIT") and applied it again.
-
-$ git log --oneline 
-linux-review/Daniel-Borkmann/bpf-add-bpf_jit_blinding_enabled-for-CONFIG_BPF_JIT/20191125-042008 
--n5
-139a0e0d24031 bpf: add bpf_jit_blinding_enabled for !CONFIG_BPF_JIT
-b633b4ea8a963 bpf: Simplify __bpf_arch_text_poke poke type handling
-11d450039666e bpf: Introduce BPF_TRACE_x helper for the tracing tests
-691ed80326693 bpf: Add bpf_jit_blinding_enabled for !CONFIG_BPF_JIT
-eb41045096419 Merge branch 'optimize-bpf_tail_call'
-
-Best Regards,
-Rong Chen
-
-On 11/25/19 3:27 PM, Daniel Borkmann wrote:
-> [ +Philip, +Fengguang ]
+On Mon, 25 Nov 2019 at 16:56, Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat=
+.com> wrote:
 >
-> On 11/24/19 11:54 PM, kbuild test robot wrote:
->> Hi Daniel,
->>
->> I love your patch! Yet something to improve:
->>
->> [auto build test ERROR on bpf-next/master]
->> [cannot apply to v5.4-rc8 next-20191122]
->> [if your patch is applied to the wrong git tree, please drop us a 
->> note to help
->> improve the system. BTW, we also suggest to use '--base' option to 
->> specify the
->> base tree in git format-patch, please see 
->> https://stackoverflow.com/a/37406982]
->>
->> url: 
->> https://github.com/0day-ci/linux/commits/Daniel-Borkmann/bpf-add-bpf_jit_blinding_enabled-for-CONFIG_BPF_JIT/20191125-042008
->> base: 
->> https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
->> config: i386-tinyconfig (attached as .config)
->> compiler: gcc-7 (Debian 7.4.0-14) 7.4.0
->> reproduce:
->>          # save the attached .config to linux build tree
->>          make ARCH=i386
->>
->> If you fix the issue, kindly add following tag
->> Reported-by: kbuild test robot <lkp@intel.com>
->>
->> All errors (new ones prefixed by >>):
->>
->>     In file included from include/net/sock.h:59:0,
->>                      from include/linux/tcp.h:19,
->>                      from include/linux/ipv6.h:87,
->>                      from include/net/ipv6.h:12,
->>                      from include/linux/sunrpc/clnt.h:28,
->>                      from include/linux/nfs_fs.h:32,
->>                      from init/do_mounts.c:23:
->>>> include/linux/filter.h:1061:20: error: redefinition of 
->>>> 'bpf_jit_blinding_enabled'
->>      static inline bool bpf_jit_blinding_enabled(struct bpf_prog *prog)
->>                         ^~~~~~~~~~~~~~~~~~~~~~~~
->>     include/linux/filter.h:1056:20: note: previous definition of 
->> 'bpf_jit_blinding_enabled' was here
->>      static inline bool bpf_jit_blinding_enabled(struct bpf_prog *prog)
->>                         ^~~~~~~~~~~~~~~~~~~~~~~~
+> Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> writes:
 >
-> Hmm, can't reproduce with above .config for `make ARCH=i386`. The 
-> .config doesn't have
-> CONFIG_BPF_JIT, and given there's only exactly *one* definition of 
-> bpf_jit_blinding_enabled()
-> for CONFIG_BPF_JIT and *one* for !CONFIG_BPF_JIT this build bot 
-> warning feels invalid to me
-> (unless I'm completely blind and missing something obvious, but the 
-> succeeded kernel build
-> seems to agree with me).
+> > On Mon, 25 Nov 2019 at 12:18, Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
+dhat.com> wrote:
+> >>
+> >> Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> writes:
+> >>
+> >> > From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+> >> >
+> >> > The xdp_call.h header wraps a more user-friendly API around the BPF
+> >> > dispatcher. A user adds a trampoline/XDP caller using the
+> >> > DEFINE_XDP_CALL macro, and updates the BPF dispatcher via
+> >> > xdp_call_update(). The actual dispatch is done via xdp_call().
+> >> >
+> >> > Note that xdp_call() is only supported for builtin drivers. Module
+> >> > builds will fallback to bpf_prog_run_xdp().
+> >>
+> >> I don't like this restriction. Distro kernels are not likely to start
+> >> shipping all the network drivers builtin, so they won't benefit from t=
+he
+> >> performance benefits from this dispatcher.
+> >>
+> >> What is the reason these dispatcher blocks have to reside in the drive=
+r?
+> >> Couldn't we just allocate one system-wide, and then simply change
+> >> bpf_prog_run_xdp() to make use of it transparently (from the driver
+> >> PoV)? That would also remove the need to modify every driver...
+> >>
+> >
+> > Good idea! I'll try that out. Thanks for the suggestion!
 >
-> Thanks,
-> Daniel
+> Awesome! I guess the table may need to be a bit bigger if it's
+> system-wide? But since you've already gone to all that trouble with the
+> binary search, I guess that shouldn't have too much of a performance
+> impact? Maybe the size could even be a config option so users/distros
+> can make their own size tradeoff?
 >
->> vim +/bpf_jit_blinding_enabled +1061 include/linux/filter.h
->>
->>    1060
->>> 1061    static inline bool bpf_jit_blinding_enabled(struct bpf_prog 
->>> *prog)
->>    1062    {
->>    1063        return false;
->>    1064    }
->>    1065
->>
->> ---
->> 0-DAY kernel test infrastructure                 Open Source 
->> Technology Center
->> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org Intel 
->> Corporation
->>
-> _______________________________________________
-> kbuild-all mailing list -- kbuild-all@lists.01.org
-> To unsubscribe send an email to kbuild-all-leave@lists.01.org
 
+My bigger concern is not the dispatcher size, but that any XDP update
+will be a system wide text-poke. OTOH, this is still the case even if
+there are multiple dispatchers. No more "quickly swap XDP program in
+one packet latency".
+
+Still, definitely worth a try. And configurable dispatcher size might
+be a good idea as well! Thanks!
+
+
+Cheers,
+Bj=C3=B6rn
+
+> -Toke
+>
