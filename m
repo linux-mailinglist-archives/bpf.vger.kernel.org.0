@@ -2,142 +2,193 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 52B80109A4A
-	for <lists+bpf@lfdr.de>; Tue, 26 Nov 2019 09:37:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED7B9109D9F
+	for <lists+bpf@lfdr.de>; Tue, 26 Nov 2019 13:13:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726072AbfKZIhM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Nov 2019 03:37:12 -0500
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:50842 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725990AbfKZIhM (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 26 Nov 2019 03:37:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1574757430;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CiThcm+OInD3gyIGSpze6EFepWoQ5Vi4p+3RZ0sOOSQ=;
-        b=ePPTpdYd0s9FcsgIzhQgxx+AnBq7wFCIgSU6mmnH6BpkzmaatZHgaUo61exUkFIXNfNA5U
-        CJzerOkMAUEIhne+ZY5zmAPstt7T4c3mkLu3UQ6uuQGFFWk216cdSLSnlceuskabPy7Do3
-        kBYMTAJZ/VDjng4+xcX60Pg3yYkYu1Q=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-387-8Q4INx00NmSRzvkhytnc4Q-1; Tue, 26 Nov 2019 03:37:07 -0500
-Received: by mail-lf1-f70.google.com with SMTP id r30so3714037lfn.12
-        for <bpf@vger.kernel.org>; Tue, 26 Nov 2019 00:37:07 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=CiThcm+OInD3gyIGSpze6EFepWoQ5Vi4p+3RZ0sOOSQ=;
-        b=L/GIC+2rAmrVz9wRlFvvJClhISDcovRpqZNDlof1B+ft8n71M2xVITSYPhkfCxhZ8O
-         7HUl57gwzP6qmoUzWWZ8bCfQi7BU72WJvSl+xAtbvsPylOac8V+akNVhjh6Y8Gi1K05n
-         J1x7PIF0nm5i2s2c/CqkWOWX9gfibPfR7/lryFxSbjXOBkxy34pe1dB46aGHH+wuZh/c
-         TqdcVgLCPPzMpMDvVDN/yD7oCV8y+GZThrxpkaQtALaKKlfgw4EXBn0XVS4foG3XBho9
-         PLAF6LpOWtjP4xaMkwkGltwN+gZKPKi01zfF12FS43ctsMGRBP51WZd4w6t2xtjxa6Gk
-         woQA==
-X-Gm-Message-State: APjAAAV/D+BG902jFClh/yowmChmQ/bBUbbMMOBBAl2hd7dO0EJYtAts
-        HUIYxXJNyFqMRaWou6/ndromttHzJNGnCNMYILqWnc1TUi4cZm2P0+fj4iZWck59GQqD2EAJ4n6
-        T5WCFTvmkyubI
-X-Received: by 2002:a2e:3c08:: with SMTP id j8mr25147626lja.28.1574757426228;
-        Tue, 26 Nov 2019 00:37:06 -0800 (PST)
-X-Google-Smtp-Source: APXvYqwaiaQ1OIfy0q38rI5PM7IFy5ExCSJqnKE1HS++di5Xihmi+hAb45fkzM7FT30t3Xwxq++qvw==
-X-Received: by 2002:a2e:3c08:: with SMTP id j8mr25147595lja.28.1574757425975;
-        Tue, 26 Nov 2019 00:37:05 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id m124sm4933576lfd.44.2019.11.26.00.37.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Nov 2019 00:37:05 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 7D1761818BF; Tue, 26 Nov 2019 09:37:03 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Cc:     Netdev <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S1728263AbfKZMNL convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Tue, 26 Nov 2019 07:13:11 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:54196 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727653AbfKZMNL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Nov 2019 07:13:11 -0500
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-272-Lf3LCucJOjqU-xrFJNGEEw-1; Tue, 26 Nov 2019 07:13:06 -0500
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8BE1080058F;
+        Tue, 26 Nov 2019 12:13:04 +0000 (UTC)
+Received: from krava.redhat.com (unknown [10.43.17.48])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8D0D160BEC;
+        Tue, 26 Nov 2019 12:12:54 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Michael Petlan <mpetlan@redhat.com>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        bpf <bpf@vger.kernel.org>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        "Karlsson\, Magnus" <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Edward Cree <ecree@solarflare.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Tariq Toukan <tariqt@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        Maxim Mikityanskiy <maximmi@mellanox.com>
-Subject: Re: [PATCH bpf-next v2 2/6] xdp: introduce xdp_call
-In-Reply-To: <CAJ+HfNhSba7B=SFK0-zjYqFMfwjiq-AVY2Ar7E0P5Pw6gNqTJA@mail.gmail.com>
-References: <20191123071226.6501-1-bjorn.topel@gmail.com> <20191123071226.6501-3-bjorn.topel@gmail.com> <875zj82ohw.fsf@toke.dk> <CAJ+HfNhFERV+xE7EUup-tu_nBTTqG=7L8bWm+W8h_Lzth4zuKQ@mail.gmail.com> <87d0dg0x17.fsf@toke.dk> <CAJ+HfNhSba7B=SFK0-zjYqFMfwjiq-AVY2Ar7E0P5Pw6gNqTJA@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 26 Nov 2019 09:37:03 +0100
-Message-ID: <87o8wzyqxc.fsf@toke.dk>
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Subject: [PATCH] perf tools: Allow to link with libbpf dynamicaly
+Date:   Tue, 26 Nov 2019 13:12:53 +0100
+Message-Id: <20191126121253.28253-1-jolsa@kernel.org>
 MIME-Version: 1.0
-X-MC-Unique: 8Q4INx00NmSRzvkhytnc4Q-1
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-MC-Unique: Lf3LCucJOjqU-xrFJNGEEw-1
 X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: 8BIT
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> writes:
+Currently we support only static linking with kernel's
+libbpf (tools/lib/bpf). This patch adds libbpf package
+detection and support to link perf with it dynamically.
 
-> On Mon, 25 Nov 2019 at 16:56, Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
-at.com> wrote:
->>
->> Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> writes:
->>
->> > On Mon, 25 Nov 2019 at 12:18, Toke H=C3=B8iland-J=C3=B8rgensen <toke@r=
-edhat.com> wrote:
->> >>
->> >> Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> writes:
->> >>
->> >> > From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
->> >> >
->> >> > The xdp_call.h header wraps a more user-friendly API around the BPF
->> >> > dispatcher. A user adds a trampoline/XDP caller using the
->> >> > DEFINE_XDP_CALL macro, and updates the BPF dispatcher via
->> >> > xdp_call_update(). The actual dispatch is done via xdp_call().
->> >> >
->> >> > Note that xdp_call() is only supported for builtin drivers. Module
->> >> > builds will fallback to bpf_prog_run_xdp().
->> >>
->> >> I don't like this restriction. Distro kernels are not likely to start
->> >> shipping all the network drivers builtin, so they won't benefit from =
-the
->> >> performance benefits from this dispatcher.
->> >>
->> >> What is the reason these dispatcher blocks have to reside in the driv=
-er?
->> >> Couldn't we just allocate one system-wide, and then simply change
->> >> bpf_prog_run_xdp() to make use of it transparently (from the driver
->> >> PoV)? That would also remove the need to modify every driver...
->> >>
->> >
->> > Good idea! I'll try that out. Thanks for the suggestion!
->>
->> Awesome! I guess the table may need to be a bit bigger if it's
->> system-wide? But since you've already gone to all that trouble with the
->> binary search, I guess that shouldn't have too much of a performance
->> impact? Maybe the size could even be a config option so users/distros
->> can make their own size tradeoff?
->>
->
-> My bigger concern is not the dispatcher size, but that any XDP update
-> will be a system wide text-poke. OTOH, this is still the case even if
-> there are multiple dispatchers. No more "quickly swap XDP program in
-> one packet latency".
+The libbpf package status is displayed with:
 
-Ah, right. I don't actually know the details of how all this kernel text
-rewriting happens. I just assumed it was magic faerie dust that just
-made everything faster; but now you're telling me there are tradeoffs?! ;)
+  $ make VF=1
+  Auto-detecting system features:
+  ...
+  ...                        libbpf: [ on  ]
 
-When you say "no more quickly swap XDP programs" you mean that the
-attach operation itself will take longer, right? I.e., it's not that it
-will disrupt packet flow to the old program while it's happening? Also,
-how much longer?
+It's not checked by default, because it's quite new.
+Once it's on most distros we can switch it on.
 
--Toke
+For the same reason it's not added to the test-all check.
+
+Perf does not need advanced version of libbpf, so we can
+check just for the base bpf_object__open function.
+
+Adding new compile variable to detect libbpf package and
+link bpf dynamically:
+
+  $ make LIBBPF_DYNAMIC=1
+    ...
+    LINK     perf
+  $ ldd perf | grep bpf
+    libbpf.so.0 => /lib64/libbpf.so.0 (0x00007f46818bc000)
+
+If libbpf is not installed, build stops with:
+
+  Makefile.config:486: *** Error: No libbpf devel library found,\
+  please install libbpf-devel.  Stop.
+
+Link: http://lkml.kernel.org/n/tip-kjdr6k37nuoiwbl0yltla1nh@git.kernel.org
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+---
+ tools/build/Makefile.feature      |  3 ++-
+ tools/build/feature/Makefile      |  4 ++++
+ tools/build/feature/test-libbpf.c |  7 +++++++
+ tools/perf/Makefile.config        | 10 ++++++++++
+ tools/perf/Makefile.perf          |  6 +++++-
+ 5 files changed, 28 insertions(+), 2 deletions(-)
+ create mode 100644 tools/build/feature/test-libbpf.c
+
+diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
+index 8a19753cc26a..574c2e0b9d20 100644
+--- a/tools/build/Makefile.feature
++++ b/tools/build/Makefile.feature
+@@ -96,7 +96,8 @@ FEATURE_TESTS_EXTRA :=                  \
+          cxx                            \
+          llvm                           \
+          llvm-version                   \
+-         clang
++         clang                          \
++         libbpf
+ 
+ FEATURE_TESTS ?= $(FEATURE_TESTS_BASIC)
+ 
+diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
+index 8499385365c0..f30a89046aa3 100644
+--- a/tools/build/feature/Makefile
++++ b/tools/build/feature/Makefile
+@@ -53,6 +53,7 @@ FILES=                                          \
+          test-zlib.bin                          \
+          test-lzma.bin                          \
+          test-bpf.bin                           \
++         test-libbpf.bin                        \
+          test-get_cpuid.bin                     \
+          test-sdt.bin                           \
+          test-cxx.bin                           \
+@@ -270,6 +271,9 @@ $(OUTPUT)test-get_cpuid.bin:
+ $(OUTPUT)test-bpf.bin:
+ 	$(BUILD)
+ 
++$(OUTPUT)test-libbpf.bin:
++	$(BUILD) -lbpf
++
+ $(OUTPUT)test-sdt.bin:
+ 	$(BUILD)
+ 
+diff --git a/tools/build/feature/test-libbpf.c b/tools/build/feature/test-libbpf.c
+new file mode 100644
+index 000000000000..a508756cf4cc
+--- /dev/null
++++ b/tools/build/feature/test-libbpf.c
+@@ -0,0 +1,7 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <bpf/libbpf.h>
++
++int main(void)
++{
++	return bpf_object__open("test") ? 0 : -1;
++}
+diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
+index 1783427da9b0..c90f4146e5a2 100644
+--- a/tools/perf/Makefile.config
++++ b/tools/perf/Makefile.config
+@@ -483,6 +483,16 @@ ifndef NO_LIBELF
+     ifeq ($(feature-bpf), 1)
+       CFLAGS += -DHAVE_LIBBPF_SUPPORT
+       $(call detected,CONFIG_LIBBPF)
++
++      # detecting libbpf without LIBBPF_DYNAMIC, so make VF=1 shows libbpf detection status
++      $(call feature_check,libbpf)
++      ifdef LIBBPF_DYNAMIC
++        ifeq ($(feature-libbpf), 1)
++          EXTLIBS += -lbpf
++        else
++          dummy := $(error Error: No libbpf devel library found, please install libbpf-devel);
++        endif
++      endif
+     endif
+ 
+     ifndef NO_DWARF
+diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+index 1cd294468a1f..eae5d5e95952 100644
+--- a/tools/perf/Makefile.perf
++++ b/tools/perf/Makefile.perf
+@@ -116,6 +116,8 @@ include ../scripts/utilities.mak
+ #
+ # Define TCMALLOC to enable tcmalloc heap profiling.
+ #
++# Define LIBBPF_DYNAMIC to enable libbpf dynamic linking.
++#
+ 
+ # As per kernel Makefile, avoid funny character set dependencies
+ unexport LC_ALL
+@@ -360,7 +362,9 @@ export PERL_PATH
+ 
+ PERFLIBS = $(LIBAPI) $(LIBTRACEEVENT) $(LIBSUBCMD) $(LIBPERF)
+ ifndef NO_LIBBPF
+-  PERFLIBS += $(LIBBPF)
++  ifndef LIBBPF_DYNAMIC
++    PERFLIBS += $(LIBBPF)
++  endif
+ endif
+ 
+ # We choose to avoid "if .. else if .. else .. endif endif"
+-- 
+2.21.0
 
