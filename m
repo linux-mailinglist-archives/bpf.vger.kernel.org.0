@@ -2,207 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EAED10A6EA
-	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2019 00:10:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E58710A71A
+	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2019 00:28:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726437AbfKZXKe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Nov 2019 18:10:34 -0500
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:42049 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726231AbfKZXKd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Nov 2019 18:10:33 -0500
-Received: by mail-pf1-f194.google.com with SMTP id s5so9940125pfh.9
-        for <bpf@vger.kernel.org>; Tue, 26 Nov 2019 15:10:32 -0800 (PST)
+        id S1726445AbfKZX2W (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Nov 2019 18:28:22 -0500
+Received: from mail-pl1-f201.google.com ([209.85.214.201]:37816 "EHLO
+        mail-pl1-f201.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726231AbfKZX2W (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Nov 2019 18:28:22 -0500
+Received: by mail-pl1-f201.google.com with SMTP id w17so8628816plp.4
+        for <bpf@vger.kernel.org>; Tue, 26 Nov 2019 15:28:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=KBpvCHEa5sLELqT+roIOkYleYG/FrG+DhoT0SoH7wto=;
-        b=QcqygajnmtxaddE8/+AVs9ixIiq/T+dAFkPCspbbuZ7uTZB05Nwtu5lcic9Sg8WP4R
-         Xo+tgNd9z2hVN4Tp1KW/2rr7Kavy4k/VAzPhkgzC6bcYQepqYVBhj//ESPxcNPKBEFe+
-         kOHAoPJY+D49wBam22nG743QpapWP8hQmkY3OGJU6cMdmZYEWDvBUcH9Ni6Ymd5lUAeT
-         BBwfxcLulCDgZda5ti3fY9z4uFQVbB4DPtgRNvoOD2nzBl5p1Iz4xR4OVya5qAy7k7nQ
-         G2mf0521nk7tnXeuWYhRYMvWDjk0j3oC1+9AxnM6w55AsKBFqosPI3nGSp5yn2haHK1z
-         WFjQ==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=VDZqM1iojgFZUCYrHNzPRvpM2lTnxWFPVSbwolce2xQ=;
+        b=D08ZOJIZtFfBsctfgxLgpWHDfInaQEqGQykJ8Uo8f9Fj3MY4yyPmFfbisQhlHtZNSW
+         hsApKcsQ1fRYKV3RL0DiHFvFrv7wpwnL+gG6Ibu8DQpQzbUQbHXCR/LQdSEfYEgohxrC
+         mS9g976WGt0Fy5RXHKwFAXwox3q5syPBta84MgzjXdRYALKPxRonqFG3lls9B4KdkATE
+         4YZ2YVa5b+nT7CoN8k1PLPwIM72Ace39u6WH04ZEFHEqNVeUPIzulOC7oS7SbipgkOh/
+         Wrf3amdEIC2JpshDWRpYGEtTu4oLbwmPqA0vzyNTT/DDvgBlbO08usr//RlsOHOzOVpn
+         I0Dw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=KBpvCHEa5sLELqT+roIOkYleYG/FrG+DhoT0SoH7wto=;
-        b=ZenvL5M1xWN8DbPEQtR/m95krNciO1IKKx6qv2FbFaCqClHRFwViWUuDtqC4EQMB7V
-         kU83iwhUIz62WfzvcRj/JgdZAI9HTApP9xF6rCaWQBM4fj1ccp3FBR8q4dq2+Tx0TSq4
-         KMUPmy43UThxAMS4rb/8EvRRnNu0PsqUbi4hOlB7TliXo6EtmW9JAHCfgeA0NQMiZiE+
-         he0MhoaUkK5BfO0tkGRTVU/NyUJ13vitwFPQBaZmu26I5UJu937XBqSXqeK2FRRVKO/r
-         /HtamXoCKwkF1eUzJXVhSoBkcxtXl0ItH72HHbF3gcIxpLdmJtLf4USvwxp92ryiYOX6
-         rVNA==
-X-Gm-Message-State: APjAAAUglTzO1Q8UcfVE8fYSVFyaG2NAesTxeDgrI7z4aKQVRmB6fqri
-        tSvxg4Cl/2lTjM2e6O1lfQkywg==
-X-Google-Smtp-Source: APXvYqzBYAFQIZHabnmN7XFlslj/eCfFqTCFvh934/aSie59lir3EYOcytq0kCJwg6n6vjGE1hVHeg==
-X-Received: by 2002:a63:190a:: with SMTP id z10mr1111375pgl.153.1574809832264;
-        Tue, 26 Nov 2019 15:10:32 -0800 (PST)
-Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
-        by smtp.gmail.com with ESMTPSA id 206sm15686831pfu.45.2019.11.26.15.10.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Nov 2019 15:10:31 -0800 (PST)
-Date:   Tue, 26 Nov 2019 15:10:30 -0800
-From:   Stanislav Fomichev <sdf@fomichev.me>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=VDZqM1iojgFZUCYrHNzPRvpM2lTnxWFPVSbwolce2xQ=;
+        b=LAQgecrEWB7HT32OB0tsDnccNwC3osB3mi4W2vjUM0GHtcP8ggQGAWOmW7p+PPDDx7
+         9K3EWrulaR9oY7BAyL/ET1okqe1zrcfvLC1NO/gH92pFgrnRecyvGAaT8XwV03RBtzdO
+         gH8PS3rOGb1MgC3Nn29XubrY8kRICqaGGv52Scjz2Fa0Y+coXsFQ2badvLU61Hcr9Fb3
+         YeWMR8c6UyA+6tXpGKGnDoDwAtYFywE4YdS3UvHKSHpFYTblcweNvVFmS++8Tdf5hF7V
+         kPqoLl03Tzky5d7u5GUBB7pafk/Cy/vmIn15zenuUtvHOypxX8OpLul277v3SUqMu1K2
+         3gjQ==
+X-Gm-Message-State: APjAAAUxxW6ehfrKxcpZOK/Ff1517aqfisqAISYMSyvgokUDcJEV1K/N
+        VtvRwCOIYw5CIvEuEXX6oNSqRtw=
+X-Google-Smtp-Source: APXvYqys17Q47p4LoALIoE05qH+lx+rls48bt8VihVQH0ktok1EKTIGLiiRn/o73BrloNEDrRUH5Nh0=
+X-Received: by 2002:a63:ec4f:: with SMTP id r15mr1228739pgj.17.1574810901241;
+ Tue, 26 Nov 2019 15:28:21 -0800 (PST)
+Date:   Tue, 26 Nov 2019 15:28:18 -0800
+Message-Id: <20191126232818.226454-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.24.0.432.g9d3f5f5b63-goog
+Subject: [PATCH bpf v2] bpf: support pre-2.25-binutils objcopy for vmlinux BTF
+From:   Stanislav Fomichev <sdf@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        Stanislav Fomichev <sdf@google.com>,
         Andrii Nakryiko <andriin@fb.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jiri Olsa <jolsa@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
-        Namhyung Kim <namhyung@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Quentin Monnet <quentin.monnet@netronome.com>
-Subject: Re: [PATCH] libbpf: Fix up generation of bpf_helper_defs.h
-Message-ID: <20191126231030.GE3145429@mini-arch.hsd1.ca.comcast.net>
-References: <20191126151045.GB19483@kernel.org>
- <20191126154836.GC19483@kernel.org>
- <87imn6y4n9.fsf@toke.dk>
- <20191126183451.GC29071@kernel.org>
- <87d0dexyij.fsf@toke.dk>
- <20191126190450.GD29071@kernel.org>
- <CAEf4Bzbq3J9g7cP=KMqR=bMFcs=qPiNZwnkvCKz3-SAp_m0GzA@mail.gmail.com>
- <20191126221018.GA22719@kernel.org>
- <20191126221733.GB22719@kernel.org>
- <CAEf4BzbZLiJnUb+BdUMEwcgcKCjJBWx1895p8qS8rK2r5TYu3w@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzbZLiJnUb+BdUMEwcgcKCjJBWx1895p8qS8rK2r5TYu3w@mail.gmail.com>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+        John Fastabend <john.fastabend@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/26, Andrii Nakryiko wrote:
-> On Tue, Nov 26, 2019 at 2:17 PM Arnaldo Carvalho de Melo
-> <arnaldo.melo@gmail.com> wrote:
-> >
-> > Em Tue, Nov 26, 2019 at 07:10:18PM -0300, Arnaldo Carvalho de Melo escreveu:
-> > > Em Tue, Nov 26, 2019 at 02:05:41PM -0800, Andrii Nakryiko escreveu:
-> > > > On Tue, Nov 26, 2019 at 11:12 AM Arnaldo Carvalho de Melo
-> > > > <arnaldo.melo@gmail.com> wrote:
-> > > > >
-> > > > > Em Tue, Nov 26, 2019 at 07:50:44PM +0100, Toke Høiland-Jørgensen escreveu:
-> > > > > > Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com> writes:
-> > > > > >
-> > > > > > > Em Tue, Nov 26, 2019 at 05:38:18PM +0100, Toke Høiland-Jørgensen escreveu:
-> > > > > > >> Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com> writes:
-> > > > > > >>
-> > > > > > >> > Em Tue, Nov 26, 2019 at 12:10:45PM -0300, Arnaldo Carvalho de Melo escreveu:
-> > > > > > >> >> Hi guys,
-> > > > > > >> >>
-> > > > > > >> >>    While merging perf/core with mainline I found the problem below for
-> > > > > > >> >> which I'm adding this patch to my perf/core branch, that soon will go
-> > > > > > >> >> Ingo's way, etc. Please let me know if you think this should be handled
-> > > > > > >> >> some other way,
-> > > > > > >> >
-> > > > > > >> > This is still not enough, fails building in a container where all we
-> > > > > > >> > have is the tarball contents, will try to fix later.
-> > > > > > >>
-> > > > > > >> Wouldn't the right thing to do not be to just run the script, and then
-> > > > > > >> put the generated bpf_helper_defs.h into the tarball?
-> > > > >
-> > > > > > > I would rather continue just running tar and have the build process
-> > > > > > > in-tree or outside be the same.
-> > > > > >
-> > > > > > Hmm, right. Well that Python script basically just parses
-> > > > > > include/uapi/linux/bpf.h; and it can be given the path of that file with
-> > > > > > the --filename argument. So as long as that file is present, it should
-> > > > > > be possible to make it work, I guess?
-> > > > >
-> > > > > > However, isn't the point of the tarball to make a "stand-alone" source
-> > > > > > distribution?
-> > > > >
-> > > > > Yes, it is, and as far as possible without any prep, just include the
-> > > > > in-source tree files needed to build it.
-> > > > >
-> > > > > > I'd argue that it makes more sense to just include the
-> > > > > > generated header, then: The point of the Python script is specifically
-> > > > > > to extract the latest version of the helper definitions from the kernel
-> > > > > > source tree. And if you're "freezing" a version into a tarball, doesn't
-> > > > > > it make more sense to also freeze the list of BPF helpers?
-> > > > >
-> > > > > Your suggestion may well even be the only solution, as older systems
-> > > > > don't have python3, and that script requires it :-\
-> > > > >
-> > > > > Some containers were showing this:
-> > > > >
-> > > > > /bin/sh: 1: /git/linux/scripts/bpf_helpers_doc.py: not found
-> > > > > Makefile:184: recipe for target 'bpf_helper_defs.h' failed
-> > > > > make[3]: *** [bpf_helper_defs.h] Error 127
-> > > > > make[3]: *** Deleting file 'bpf_helper_defs.h'
-> > > > > Makefile.perf:778: recipe for target '/tmp/build/perf/libbpf.a' failed
-> > > > >
-> > > > > That "not found" doesn't mean what it looks from staring at the above,
-> > > > > its just that:
-> > > > >
-> > > > > nobody@1fb841e33ba3:/tmp/perf-5.4.0$ head -1 /tmp/perf-5.4.0/scripts/bpf_helpers_doc.py
-> > > > > #!/usr/bin/python3
-> > > > > nobody@1fb841e33ba3:/tmp/perf-5.4.0$ ls -la /usr/bin/python3
-> > > > > ls: cannot access /usr/bin/python3: No such file or directory
-> > > > > nobody@1fb841e33ba3:/tmp/perf-5.4.0$
-> > > > >
-> > > > > So, for now, I'll keep my fix and start modifying the containers where
-> > > > > this fails and disable testing libbpf/perf integration with BPF on those
-> > > > > containers :-\
-> > > >
-> > > > I don't think there is anything Python3-specific in that script. I
-> > > > changed first line to
-> > > >
-> > > > #!/usr/bin/env python
-> > > >
-> > > > and it worked just fine. Do you mind adding this fix and make those
-> > > > older containers happy(-ier?).
-> > >
-> > > I'll try it, was trying the other way around, i.e. adding python3 to
-> > > those containers and they got happier, but fatter, so I'll remove that
-> > > and try your way, thanks!
-> > >
-> > > I didn't try it that way due to what comes right after the interpreter
-> > > line:
-> > >
-> > > #!/usr/bin/python3
-> > > # SPDX-License-Identifier: GPL-2.0-only
-> > > #
-> > > # Copyright (C) 2018-2019 Netronome Systems, Inc.
-> > >
-> > > # In case user attempts to run with Python 2.
-> > > from __future__ import print_function
-> >
-> > And that is why I think you got it working, that script uses things
-> > like:
-> >
-> >         print('Parsed description of %d helper function(s)' % len(self.helpers),
-> >               file=sys.stderr)
-> >
-> > That python2 thinks its science fiction, what tuple is that? Can't
-> > understand, print isn't a function back then.
-> 
-> Not a Python expert (or even regular user), but quick googling showed
-> that this import is the way to go to use Python3 semantics of print
-> within Python2, so seems like that's fine. But maybe Quentin has
-> anything to say about this.
-We are using this script with python2.7, works just fine :-)
-So maybe doing s/python3/python/ is the way to go, whatever
-default python is installed, it should work with that.
+If vmlinux BTF generation fails, but CONFIG_DEBUG_INFO_BTF is set,
+.BTF section of vmlinux is empty and kernel will prohibit
+BPF loading and return "in-kernel BTF is malformed".
 
-> > https://sebastianraschka.com/Articles/2014_python_2_3_key_diff.html#the-print-function
-> >
-> > I've been adding python3  to where it is available and not yet in the
-> > container images, most are working after that, some don't need because
-> > they need other packages for BPF to work and those are not available, so
-> > nevermind, lets have just the fix I provided, I'll add python3 and life
-> > goes on.
-> >
-> > - Arnaldo
+--dump-section argument to binutils' objcopy was added in version 2.25.
+When using pre-2.25 binutils, BTF generation silently fails. Convert
+to --only-section which is present on pre-2.25 binutils.
+
+Documentation/process/changes.rst states that binutils 2.21+
+is supported, not sure those standards apply to BPF subsystem.
+
+v2:
+* exit and print an error if gen_btf fails (John Fastabend)
+
+Cc: Andrii Nakryiko <andriin@fb.com>
+Cc: John Fastabend <john.fastabend@gmail.com>
+Fixes: 341dfcf8d78ea ("btf: expose BTF info through sysfs")
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+---
+ scripts/link-vmlinux.sh | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+index 06495379fcd8..2998ddb323e3 100755
+--- a/scripts/link-vmlinux.sh
++++ b/scripts/link-vmlinux.sh
+@@ -127,7 +127,8 @@ gen_btf()
+ 		cut -d, -f1 | cut -d' ' -f2)
+ 	bin_format=$(LANG=C ${OBJDUMP} -f ${1} | grep 'file format' | \
+ 		awk '{print $4}')
+-	${OBJCOPY} --dump-section .BTF=.btf.vmlinux.bin ${1} 2>/dev/null
++	${OBJCOPY} --set-section-flags .BTF=alloc -O binary \
++		--only-section=.BTF ${1} .btf.vmlinux.bin 2>/dev/null
+ 	${OBJCOPY} -I binary -O ${bin_format} -B ${bin_arch} \
+ 		--rename-section .data=.BTF .btf.vmlinux.bin ${2}
+ }
+@@ -253,6 +254,10 @@ btf_vmlinux_bin_o=""
+ if [ -n "${CONFIG_DEBUG_INFO_BTF}" ]; then
+ 	if gen_btf .tmp_vmlinux.btf .btf.vmlinux.bin.o ; then
+ 		btf_vmlinux_bin_o=.btf.vmlinux.bin.o
++	else
++		echo >&2 "Failed to generate BTF for vmlinux"
++		echo >&2 "Try to disable CONFIG_DEBUG_INFO_BTF"
++		exit 1
+ 	fi
+ fi
+ 
+-- 
+2.24.0.432.g9d3f5f5b63-goog
+
