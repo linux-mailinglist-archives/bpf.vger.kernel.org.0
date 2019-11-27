@@ -2,246 +2,252 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EE8E810AD20
-	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2019 11:02:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF05310B067
+	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2019 14:39:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726920AbfK0KCJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Nov 2019 05:02:09 -0500
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:33741 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726540AbfK0KCI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 Nov 2019 05:02:08 -0500
-Received: by mail-lf1-f65.google.com with SMTP id d6so16667659lfc.0
-        for <bpf@vger.kernel.org>; Wed, 27 Nov 2019 02:02:06 -0800 (PST)
+        id S1726858AbfK0NjB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Nov 2019 08:39:01 -0500
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:44965 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726603AbfK0NjA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 Nov 2019 08:39:00 -0500
+Received: by mail-wr1-f66.google.com with SMTP id i12so26673796wrn.11
+        for <bpf@vger.kernel.org>; Wed, 27 Nov 2019 05:38:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=to:cc:references:from:openpgp:autocrypt:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=EY4H80pYKzfm6qV5UPHRTU6m7PSm9enhWlVJXB84wb0=;
-        b=vc9glajPpy6mgZ0yHifMD7DYC8Kd/LxZnjhzsKohQMPXjC8JLB2poLT+4eojc65qo6
-         zFcP8luSrvIiJBhkVoPq1CfCGXH2qiaCD0gljPUWa7s0a61pz3TNzDpJvCEf3h9WIYok
-         mPa+y3DvBIq2HQM2phgpWclDId8qxiBnUl4uqN7RqwXiyeSfdxlTTVNFvxhIBqtIn75v
-         w0DoYWF0CnX+LZWnf7H1plq583MEIVqEIDEQoQ7gGJvYWrFr3W0zxOSReVumlLIh3k8C
-         +Vbs51zZ1R9Bf43yxrXatmcudquBQoV7mIvjliF9Nv+g/Hr50Ndgm49yn4SVYSh6ddFE
-         0BPg==
+        bh=eU4VlI4ArP56nCay48Vt2NhXZMRD3ggL2hIZnoXhceQ=;
+        b=uExpzpnhHZCBAFD3IcqrWJygCDHGgN5YWhG2Trp7uD2RnNs6F4LCOEOW9qsmZrbv/4
+         sfRRoqkGSLnwAdV9oII/3bot1TZshIrhasnvpBLybobh7GqHUB6JnAb4SAxzjOVi1tZR
+         JTd1i3oRhWTtX7fuTPRw7n7GK2h+yhK60eHj+lkdhBCpZWSmARvPwZL8Ef5BlkiNAqQ/
+         Cfnan/ODgHMKSSSgfc1AJtf4+Z4qQ2kMwDNFqEVZNUPx2nnEdWC40Vm8CuFWMYHuTT9N
+         ZUGPLpYWHGvUvEvQU7DX3vE2GfBJBaBMcxQd5CQIqKLwIxtd19Sd9uzcvetTFsdluW6I
+         OIXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=EY4H80pYKzfm6qV5UPHRTU6m7PSm9enhWlVJXB84wb0=;
-        b=JFCMOQsfX1PnV2kJv8JzwGy8PRWjrI2wIb88RrviHB7YpL7yPUxq1MwP1aNKmXBmke
-         dcKXGjpSQnVqt7PcfHBD97CmiwaLSgnxOByqOWvDLlDp61W5++3ncZTWSiLw/wf+ElbR
-         UOzy/xa33DViA+Zy3DNZ4z0JqJtA/cKOLjC4QR5bGTENQf6uiS2TNv3uimrn91dGVnYk
-         QNZrN/2/QJmleCmQ9Ha5Dgp+W+oi9ha68jbmmHP4rPBJxY86hbWyOkmvWqipzWZBucVu
-         n8+9WOHk71SjQP5bWRaMbhCFrPJhBqmPFEJDZaw5T3cqc5IVir+OD1mVDAKwzGPaVIwj
-         MvgQ==
-X-Gm-Message-State: APjAAAUwcNdfA0PpMw0D6Jh141SNYYljky3Xgq+r8f5FoB8Mm36h8Bro
-        1pHzsXMJbGEs2i9Kszzc9e3NyErxdim7X0TlTeTwCQ==
-X-Google-Smtp-Source: APXvYqzllpI/nj+sdxunC5MqF9gCtlPe+vBQi4t9tGvv3YdmTcnl19BUY36EzMozzs8Hu4upWJFyVzfuGyngH0fH600=
-X-Received: by 2002:a19:f811:: with SMTP id a17mr27529288lff.132.1574848925236;
- Wed, 27 Nov 2019 02:02:05 -0800 (PST)
-MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 27 Nov 2019 15:31:53 +0530
-Message-ID: <CA+G9fYvom-=jCpGTNck+hSQm8xZgOt6EegWrJifvrbrx=rpGvg@mail.gmail.com>
-Subject: mainline-5.4.0: regressions detected in project mainline
-To:     Netdev <netdev@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, bpf@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>
-Cc:     Shuah Khan <shuah@kernel.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kafai@fb.com,
+        h=x-gm-message-state:to:cc:references:from:openpgp:autocrypt:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=eU4VlI4ArP56nCay48Vt2NhXZMRD3ggL2hIZnoXhceQ=;
+        b=K+5cH1GIIA2HiLtlgG8U/ZmC82QQdFqeZOEzXMd3xtQT1wsemOFZO33zX2Bn8Z9Rlo
+         6mhuNTe+WxoUEOzPwiaZYU+wvUG0SAIoqBmTSlcTViI7jomWS7Y+DHws1JoX8/SoW76a
+         29PZLM/kIqSL0OhJyPgDhMQPyMPhXTLBz6AsJoaeHdL42CJN979pt6lQbC34aBNnK9LD
+         E43EvSU8VP39GuzgvjRouzvqEZDdzb7BofEWh16tjmpfGGDkDrETm0UG5GFnnUnA5jY/
+         OsYJUPKTEYTXF0Qrx4hB0eb2wZ/ApVOF+/u29eh/XM8N1VNR+lBJ48gq2URjlAlAJdPG
+         /IqA==
+X-Gm-Message-State: APjAAAUfhOrCuJGSRfMConYOCtAmg8sgndlM1HfNP2e24nkBR5l5MWJn
+        74X4pKG/ZfCqJJU1/HcYDw0KRg==
+X-Google-Smtp-Source: APXvYqxDnsF+COHQgRZP9CCHmIMcuL6Ca4nzr7dMlubewqhDVfPTLc7AHyQE/m7fwJdSl2zbtQKWKw==
+X-Received: by 2002:adf:f5c2:: with SMTP id k2mr42144936wrp.118.1574861937643;
+        Wed, 27 Nov 2019 05:38:57 -0800 (PST)
+Received: from [172.20.1.104] ([217.38.71.146])
+        by smtp.gmail.com with ESMTPSA id k20sm6430968wmj.10.2019.11.27.05.38.56
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 27 Nov 2019 05:38:56 -0800 (PST)
+To:     Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Michael Petlan <mpetlan@redhat.com>,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        andriin@fb.com, lkft-triage@lists.linaro.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Andrii Nakryiko <andriin@fb.com>
+References: <20191127094837.4045-1-jolsa@kernel.org>
+ <20191127094837.4045-4-jolsa@kernel.org>
+From:   Quentin Monnet <quentin.monnet@netronome.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=quentin.monnet@netronome.com; prefer-encrypt=mutual; keydata=
+ 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
+ RHhSHGnKaQ6MfrTge5Q0h5A=
+Subject: Re: [PATCH 3/3] bpftool: Allow to link libbpf dynamically
+Message-ID: <fd22660f-2f70-4ffa-b45f-bb417d006d0a@netronome.com>
+Date:   Wed, 27 Nov 2019 13:38:55 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.1
+MIME-Version: 1.0
+In-Reply-To: <20191127094837.4045-4-jolsa@kernel.org>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Results from Linaro=E2=80=99s test farm.
-Regressions on arm64, arm, x86_64, and i386.
-The listed bpf tests failed. please find complete details below.
+2019-11-27 10:48 UTC+0100 ~ Jiri Olsa <jolsa@kernel.org>
+> Currently we support only static linking with kernel's libbpf
+> (tools/lib/bpf). This patch adds LIBBPF_DYNAMIC compile variable
+> that triggers libbpf detection and bpf dynamic linking:
+> 
+>   $ make -C tools/bpf/bpftool make LIBBPF_DYNAMIC=1
+> 
+> If libbpf is not installed, build (with LIBBPF_DYNAMIC=1) stops with:
+> 
+>   $ make -C tools/bpf/bpftool LIBBPF_DYNAMIC=1
+>     Auto-detecting system features:
+>     ...                        libbfd: [ on  ]
+>     ...        disassembler-four-args: [ on  ]
+>     ...                          zlib: [ on  ]
+>     ...                        libbpf: [ OFF ]
+> 
+>   Makefile:102: *** Error: libbpf-devel is missing, please install it.  Stop.
+> 
+> Adding specific bpftool's libbpf check for libbpf_netlink_open (LIBBPF_0.0.6)
+> which is the latest we need for bpftool at the moment.
+> 
+> Adding LIBBPF_DIR compile variable to allow linking with
+> libbpf installed into specific directory:
+> 
+>   $ make -C tools/lib/bpf/ prefix=/tmp/libbpf/ install_lib install_headers
+>   $ make -C tools/bpf/bpftool/ LIBBPF_DYNAMIC=1 LIBBPF_DIR=/tmp/libbpf/
+> 
+> It might be needed to clean build tree first because features
+> framework does not detect the change properly:
+> 
+>   $ make -C tools/build/feature clean
+>   $ make -C tools/bpf/bpftool/ clean
+> 
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  tools/bpf/bpftool/Makefile        | 40 ++++++++++++++++++++++++++++++-
+>  tools/build/feature/test-libbpf.c |  9 +++++++
+>  2 files changed, 48 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+> index 39bc6f0f4f0b..2b6ed08cb31e 100644
+> --- a/tools/bpf/bpftool/Makefile
+> +++ b/tools/bpf/bpftool/Makefile
 
-Summary
-------------------------------------------------------------------------
+> @@ -55,7 +64,7 @@ ifneq ($(EXTRA_LDFLAGS),)
+>  LDFLAGS += $(EXTRA_LDFLAGS)
+>  endif
+>  
+> -LIBS = $(LIBBPF) -lelf -lz
+> +LIBS = -lelf -lz
 
-kernel: 5.4.0
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.gi=
-t
-git branch: master
-git commit: 386403a115f95997c2715691226e11a7b5cffcfd
-git describe: v5.4-3419-g386403a115f9
-Test details: https://qa-reports.linaro.org/lkft/linux-mainline-oe/build/v5=
-.4-3419-g386403a115f9
-config: http://snapshots.linaro.org/openembedded/lkft/lkft/sumo/intel-corei=
-7-64/lkft/linux-mainline/2270/config
+Hi Jiri,
 
-Regressions (compared to build v5.4)
-------------------------------------------------------------------------
-  kselftest:
-    * bpf_test_dev_cgroup
-    * bpf_test_skb_cgroup_id.sh
-    * bpf_test_sysctl
-    * bpf_test_xdp_meta.sh
-    * bpf_test_xdp_redirect.sh
-    * bpf_test_xdp_vlan_mode_generic.sh
-    * bpf_test_xdp_vlan_mode_native.sh
+This change seems to be breaking the build with the static library for
+me. I know you add back $(LIBBPF) later in the Makefile, see at the end
+of this email...
 
-Test output log:
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-# selftests bpf test_dev_cgroup
-bpf: test_dev_cgroup_ #
-# libbpf failed to open ./dev_cgroup.o No such file or directory
-failed: to_open #
-# Failed to load DEV_CGROUP program
-to: load_DEV_CGROUP #
-[   75.524368] IPv6: ADDRCONF(NETDEV_CHANGE): test_sock_addr1: link
-becomes ready
-[FAIL] 9 selftests bpf test_dev_cgroup # exit=3D1
-selftests: bpf_test_dev_cgroup [FAIL]
+>  
+>  INSTALL ?= install
+>  RM ?= rm -f
+> @@ -64,6 +73,23 @@ FEATURE_USER = .bpftool
+>  FEATURE_TESTS = libbfd disassembler-four-args reallocarray zlib
+>  FEATURE_DISPLAY = libbfd disassembler-four-args zlib
+>  
+> +ifdef LIBBPF_DYNAMIC
+> +  # Add libbpf check with the flags to ensure bpftool
+> +  # specific version is detected.
 
-=3D=3D=3D
-# selftests bpf test_skb_cgroup_id.sh
-bpf: test_skb_cgroup_id.sh_ #
-# Wait for testing link-local IP to become available ... OK
-for: testing_link-local #
-# Error opening object ./test_skb_cgroup_id_kern.o No such file or director=
-y
-opening: object_./test_skb_cgroup_id_kern.o #
-# Cannot initialize ELF context!
-initialize: ELF_context! #
-# Unable to load program
-to: load_program #
-[FAIL] 33 selftests bpf test_skb_cgroup_id.sh # exit=3D1
-selftests: bpf_test_skb_cgroup_id.sh [FAIL]
+Nit: We do not check for a specific bpftool version, we check for a
+recent enough libbpf version?
 
-=3D=3D=3D
-# selftests bpf test_sysctl
-bpf: test_sysctl_ #
-# libbpf failed to open ./test_sysctl_prog.o No such file or directory
-failed: to_open #
-# (test_sysctl.c1490 errno No such file or directory) >>> Loading
-program (./test_sysctl_prog.o) error.
-errno: No_suc[   78.078283] ip (1336) used greatest stack depth: 11144
-bytes left
-h #
-#
-: _ #
-# libbpf failed to open ./test_sysctl_prog.o No such file or directory
-failed: to_open #
-# (test_sysctl.c1490 errno No such file or directory) >>> Loading
-program (./test_sysctl_prog.o) error.
-errno: No_such #
-#
-: _ #
-# libbpf failed to open ./test_sysctl_prog.o No such file or directory
-failed: to_open #
-# (test_sysctl.c1490 errno No such file or directory) >>> Loading
-program (./test_sysctl_prog.o) error.
-errno: No_such #
+> +  FEATURE_CHECK_CFLAGS-libbpf := -DBPFTOOL
+> +  FEATURE_TESTS   += libbpf
+> +  FEATURE_DISPLAY += libbpf
+> +
+> +  # for linking with debug library run:
+> +  # make LIBBPF_DYNAMIC=1 LIBBPF_DIR=/opt/libbpf
+> +  ifdef LIBBPF_DIR
+> +    LIBBPF_CFLAGS  := -I$(LIBBPF_DIR)/include
+> +    LIBBPF_LDFLAGS := -L$(LIBBPF_DIR)/$(libdir_relative)
+> +    FEATURE_CHECK_CFLAGS-libbpf  := $(LIBBPF_CFLAGS)
+> +    FEATURE_CHECK_LDFLAGS-libbpf := $(LIBBPF_LDFLAGS)
+> +  endif
+> +endif
+> +
+>  check_feat := 1
+>  NON_CHECK_FEAT_TARGETS := clean uninstall doc doc-clean doc-install doc-uninstall
+>  ifdef MAKECMDGOALS
+> @@ -88,6 +114,18 @@ ifeq ($(feature-reallocarray), 0)
+>  CFLAGS += -DCOMPAT_NEED_REALLOCARRAY
+>  endif
+>  
+> +ifdef LIBBPF_DYNAMIC
+> +  ifeq ($(feature-libbpf), 1)
+> +    LIBS    += -lbpf
+> +    CFLAGS  += $(LIBBPF_CFLAGS)
+> +    LDFLAGS += $(LIBBPF_LDFLAGS)
+> +  else
+> +    dummy := $(error Error: No libbpf devel library found, please install libbpf-devel)
 
-...
-37: PASSED,_3 #
-[FAIL] 20 selftests bpf test_sysctl # exit=3D255
-selftests: bpf_test_sysctl [FAIL]
+libbpf-devel sounds like a RH/Fedora package name, but other
+distributions might have different names (Debian/Ubuntu would go by
+libbpf-dev I suppose, although I don't believe such package exists at
+the moment). Maybe use a more generic message?
 
-=3D=3D=3D
-# selftests bpf test_xdp_meta.sh
-bpf: test_xdp_meta.sh_ #
-# Error opening object test_xdp_meta.o No such file or directory
-opening: object_test_xdp_meta.o #
-# Cannot initialize ELF context!
-initialize: ELF_context! #
-# Unable to load program
-to: load_program #
-# selftests test_xdp_meta [FAILED]
-test_xdp_meta: [FAILED]_ #
-[FAIL] 26 selftests bpf test_xdp_meta.sh # exit=3D1
-selftests: bpf_test_xdp_meta.sh [FAIL]
+> +  endif
+> +else
+> +  LIBS += $(LIBBPF)
 
-=3D=3D=3D
-# selftests bpf test_xdp_redirect.sh
-bpf: test_xdp_redirect.sh_ #
-# Error opening object test_xdp_redirect.o No such file or directory
-opening: object_test_xdp_redirect.o #
-# Cannot initialize ELF context!
-initialize: ELF_context! #
-# selftests test_xdp_redirect [FAILED]
-test_xdp_redirect: [FAILED]_ #
-[FAIL] 25 selftests bpf test_xdp_redirect.sh # exit=3D255
-selftests: bpf_test_xdp_redirect.sh [FAIL]
+... I believe the order of the libraries is relevant, and it seems the
+static libbpf should be passed before the dynamic libs. Here I could fix
+the build with the static library on my setup by prepending the library
+path instead, like this:
 
-=3D=3D=3D
-# selftests bpf test_xdp_vlan_mode_generic.sh
-bpf: test_xdp_vlan_mode_generic.sh_ #
-# PING 100.64.41.1 (100.64.41.1) 56(84) bytes of data.
-100.64.41.1: (100.64.41.1)_56(84) #
-#
-: _ #
-# --- 100.64.41.1 ping statistics ---
-100.64.41.1: ping_statistics #
-# 1 packets transmitted, 0 received, 100% packet loss, time 0ms
-packets: transmitted,_0 #
-#
-: _ #
-# Success First ping must fail
-First: ping_must #
-# Error opening object test_xdp_vlan.o No such file or directory
-opening: object_test_xdp_vlan.o #
-# Cannot initialize ELF context!
-initialize: ELF_context! #
-# selftests xdp_vlan_mode_generic [FAILED]
-xdp_vlan_mode_generic: [FAILED]_ #
-[FAIL] 35 selftests bpf test_xdp_vlan_mode_generic.sh # exit=3D255
-selftests: bpf_test_xdp_vlan_mode_generic.sh [FAIL]
+	LIBS := $(LIBBPF) $(LIBS)
 
-=3D=3D=3D
-# selftests bpf test_xdp_vlan_mode_native.sh
-bpf: test_xdp_vlan_mode_native.sh_ #
-# PING 100.64.41.1 (100.64.41.1) 56(84) bytes of data.
-100.64.41.1: (100.64.41.1)_56(84) #
-#
-: _ #
-# --- 100.64.41.1 ping statistics ---
-100.64.41.1: ping_statistics #
-# 1 packets transmitted, 0 received, 100% packet loss, time 0ms
-packets: transmitted,_0 #
-#
-: _ #
-# Success First ping must fail
-First: ping_must #
-# Error opening object test_xdp_vlan.o No such file or directory
-opening: object_test_xdp_vlan.o #
-# Cannot initialize ELF context!
-initialize: ELF_context! #
-# selftests xdp_vlan_mode_native [FAILED]
-xdp_vlan_mode_native: [FAILED]_ #
-[FAIL] 36 selftests bpf test_xdp_vlan_mode_native.sh # exit=3D255
-selftests: bpf_test_xdp_vlan_mode_native.sh [FAIL]
+On the plus side, all build attempts from
+tools/testing/selftests/bpf/test_bpftool_build.sh pass successfully on
+my setup with dynamic linking from your branch.
 
-Ref links:
-https://lkft.validation.linaro.org/scheduler/job/1024055
+> +endif
+> +
+>  include $(wildcard $(OUTPUT)*.d)
+>  
+>  all: $(OUTPUT)bpftool
 
-Dashboard link,
-https://qa-reports.linaro.org/lkft/linux-mainline-oe/tests/kselftest/bpf_te=
-st_dev_cgroup
-https://qa-reports.linaro.org/lkft/linux-mainline-oe/tests/kselftest/bpf_te=
-st_skb_cgroup_id.sh
-https://qa-reports.linaro.org/lkft/linux-mainline-oe/tests/kselftest/bpf_te=
-st_sysctl
-https://qa-reports.linaro.org/lkft/linux-mainline-oe/tests/kselftest/bpf_te=
-st_xdp_meta.sh
-https://qa-reports.linaro.org/lkft/linux-mainline-oe/tests/kselftest/bpf_te=
-st_xdp_redirect.sh
-https://qa-reports.linaro.org/lkft/linux-mainline-oe/tests/kselftest/bpf_te=
-st_xdp_vlan_mode_generic.sh
-https://qa-reports.linaro.org/lkft/linux-mainline-oe/tests/kselftest/bpf_te=
-st_xdp_vlan_mode_native.sh
-
---
-Linaro LKFT
-https://lkft.linaro.org
+Thanks,
+Quentin
