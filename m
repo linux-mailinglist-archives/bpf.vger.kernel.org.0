@@ -2,138 +2,228 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0793D10B089
-	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2019 14:46:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2685D10B0EB
+	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2019 15:15:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726591AbfK0Np6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Nov 2019 08:45:58 -0500
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:45315 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726320AbfK0Np5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 Nov 2019 08:45:57 -0500
-Received: by mail-qt1-f195.google.com with SMTP id 30so25342660qtz.12;
-        Wed, 27 Nov 2019 05:45:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=tim0z48P/Ho4XX4rxvSqCrBEA1TS21VHvg9AxGU9cUo=;
-        b=loxi/+dyFPwW34NQEBvyXRBAXz7R51jVt1JzJNfdmksHqZYiuGv678bpygS7AyTcyG
-         px+L3G+F1bImhNWDkGnnts4PZBFKzn29ElHqENqeJv1jppPnXdKDAmjzBQQ6sVRfg1xr
-         6Xfzx7m2O343J2pCvuzBOP4K5kf/9uPJ/oE+wqljaY9Ng7Bu1p1RFWJoM6v+MbwS9sYM
-         pDH3hHrynI7szJWf2fIkuEKXn/ODjn9YzmNKfc21I/3WWe20Xm003fsEk4AA3xVIUytY
-         NlVAaF6dWfgsLRkRWEenDkwjZ5yvHsIBi1f1CHuL9tm84B/RkoY0FpUXgT3EMDwHhcNy
-         FCag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=tim0z48P/Ho4XX4rxvSqCrBEA1TS21VHvg9AxGU9cUo=;
-        b=MSZpqcY3Tp2Tve+W7eLd4vYi7zS/9UeHKMr194FkFg5cJZOhQ9DNNYOaNpbvXHIIbG
-         QTS7WE2BDsLECgGoqIyMeGJlP05pqy3q5B+VluCnvwllTqnkYYWzIkresS6/UU8Veaum
-         8NOq5lBpadNh6x+lMtM+pWhD/IMU6ddOid9Jop3kat0LCEURxRRS7MtkEDy/t7eIgPuR
-         63Hejp/i4SQQZX0hYIUa0s0idsaH8zzdwvIUzX3P2dDcb4OEh/uDdgOHfRp5/WuvoUtZ
-         SfiyzboguzWwBb0b+f7kwzykeSIWLebw+ls/HMC06uOt9Cjd5E7QCOtO3nzC/CsWXPkq
-         aBrQ==
-X-Gm-Message-State: APjAAAVbXRP5XZU+JuB/wnRTdLOQVD+Uj9ck95HF08lI4XpuHJ9dbpSq
-        w6NbjTAc+tXU9GsyHuiMBASoiHZjIE4=
-X-Google-Smtp-Source: APXvYqwAPqmAF3/Vr+h2lq/WTBPNZOERbfyeIOC6lgge2oHvISvxGhaZJm/IbCgWQsceKUt1cm3bEA==
-X-Received: by 2002:ac8:198b:: with SMTP id u11mr26214987qtj.133.1574862356632;
-        Wed, 27 Nov 2019 05:45:56 -0800 (PST)
-Received: from quaco.ghostprotocols.net ([179.97.35.50])
-        by smtp.gmail.com with ESMTPSA id y200sm6435632qkb.1.2019.11.27.05.45.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Nov 2019 05:45:56 -0800 (PST)
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id A79E740D3E; Wed, 27 Nov 2019 10:45:53 -0300 (-03)
-Date:   Wed, 27 Nov 2019 10:45:53 -0300
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Stanislav Fomichev <sdf@fomichev.me>,
+        id S1726320AbfK0OPn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Nov 2019 09:15:43 -0500
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:55650 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726603AbfK0OPm (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 27 Nov 2019 09:15:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1574864140;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=53cOmksCYXpfOMFyUAKABXaw+6aT23kyKZNlnHGL0ko=;
+        b=W1Z5aeZBZPzeD2KBxUAbxKyNC165MN3DM6O4jT2wlF9EA/b2q06jHbnfQjGWPowYwVUEfz
+        u3saTiIiA7gs4+5PFkzS7T5SRd5x/cQFtIGUWF0jEeAlyPF7W86zm2JuS/Xfu1NDF4UNPp
+        pT01M12kiVzy8JyqYavYdaLACgp83gA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-234-nuwJXhXVOJSWpsuYi26DAw-1; Wed, 27 Nov 2019 09:15:35 -0500
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 95E14108C310;
+        Wed, 27 Nov 2019 14:15:33 +0000 (UTC)
+Received: from krava (unknown [10.43.17.48])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 4A2E5619DB;
+        Wed, 27 Nov 2019 14:15:21 +0000 (UTC)
+Date:   Wed, 27 Nov 2019 15:15:20 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Quentin Monnet <quentin.monnet@netronome.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Michael Petlan <mpetlan@redhat.com>,
         Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jiri Olsa <jolsa@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
-        Namhyung Kim <namhyung@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Quentin Monnet <quentin.monnet@netronome.com>
-Subject: [PATCH] libbpf: Use PRIu64 for sym->st_value to fix build on 32-bit
- arches
-Message-ID: <20191127134553.GC22719@kernel.org>
-References: <20191126183451.GC29071@kernel.org>
- <87d0dexyij.fsf@toke.dk>
- <20191126190450.GD29071@kernel.org>
- <CAEf4Bzbq3J9g7cP=KMqR=bMFcs=qPiNZwnkvCKz3-SAp_m0GzA@mail.gmail.com>
- <20191126221018.GA22719@kernel.org>
- <20191126221733.GB22719@kernel.org>
- <CAEf4BzbZLiJnUb+BdUMEwcgcKCjJBWx1895p8qS8rK2r5TYu3w@mail.gmail.com>
- <20191126231030.GE3145429@mini-arch.hsd1.ca.comcast.net>
- <20191126155228.0e6ed54c@cakuba.netronome.com>
- <20191127013901.GE29071@kernel.org>
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Subject: Re: [PATCH 3/3] bpftool: Allow to link libbpf dynamically
+Message-ID: <20191127141520.GJ32367@krava>
+References: <20191127094837.4045-1-jolsa@kernel.org>
+ <20191127094837.4045-4-jolsa@kernel.org>
+ <fd22660f-2f70-4ffa-b45f-bb417d006d0a@netronome.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191127013901.GE29071@kernel.org>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <fd22660f-2f70-4ffa-b45f-bb417d006d0a@netronome.com>
 User-Agent: Mutt/1.12.1 (2019-06-15)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-MC-Unique: nuwJXhXVOJSWpsuYi26DAw-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Another fix I'm carrying in my perf/core branch,
+On Wed, Nov 27, 2019 at 01:38:55PM +0000, Quentin Monnet wrote:
+> 2019-11-27 10:48 UTC+0100 ~ Jiri Olsa <jolsa@kernel.org>
+> > Currently we support only static linking with kernel's libbpf
+> > (tools/lib/bpf). This patch adds LIBBPF_DYNAMIC compile variable
+> > that triggers libbpf detection and bpf dynamic linking:
+> >=20
+> >   $ make -C tools/bpf/bpftool make LIBBPF_DYNAMIC=3D1
+> >=20
+> > If libbpf is not installed, build (with LIBBPF_DYNAMIC=3D1) stops with:
+> >=20
+> >   $ make -C tools/bpf/bpftool LIBBPF_DYNAMIC=3D1
+> >     Auto-detecting system features:
+> >     ...                        libbfd: [ on  ]
+> >     ...        disassembler-four-args: [ on  ]
+> >     ...                          zlib: [ on  ]
+> >     ...                        libbpf: [ OFF ]
+> >=20
+> >   Makefile:102: *** Error: libbpf-devel is missing, please install it. =
+ Stop.
+> >=20
+> > Adding specific bpftool's libbpf check for libbpf_netlink_open (LIBBPF_=
+0.0.6)
+> > which is the latest we need for bpftool at the moment.
+> >=20
+> > Adding LIBBPF_DIR compile variable to allow linking with
+> > libbpf installed into specific directory:
+> >=20
+> >   $ make -C tools/lib/bpf/ prefix=3D/tmp/libbpf/ install_lib install_he=
+aders
+> >   $ make -C tools/bpf/bpftool/ LIBBPF_DYNAMIC=3D1 LIBBPF_DIR=3D/tmp/lib=
+bpf/
+> >=20
+> > It might be needed to clean build tree first because features
+> > framework does not detect the change properly:
+> >=20
+> >   $ make -C tools/build/feature clean
+> >   $ make -C tools/bpf/bpftool/ clean
+> >=20
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  tools/bpf/bpftool/Makefile        | 40 ++++++++++++++++++++++++++++++-
+> >  tools/build/feature/test-libbpf.c |  9 +++++++
+> >  2 files changed, 48 insertions(+), 1 deletion(-)
+> >=20
+> > diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+> > index 39bc6f0f4f0b..2b6ed08cb31e 100644
+> > --- a/tools/bpf/bpftool/Makefile
+> > +++ b/tools/bpf/bpftool/Makefile
+>=20
+> > @@ -55,7 +64,7 @@ ifneq ($(EXTRA_LDFLAGS),)
+> >  LDFLAGS +=3D $(EXTRA_LDFLAGS)
+> >  endif
+> > =20
+> > -LIBS =3D $(LIBBPF) -lelf -lz
+> > +LIBS =3D -lelf -lz
+>=20
+> Hi Jiri,
+>=20
+> This change seems to be breaking the build with the static library for
+> me. I know you add back $(LIBBPF) later in the Makefile, see at the end
+> of this email...
+>=20
+> > =20
+> >  INSTALL ?=3D install
+> >  RM ?=3D rm -f
+> > @@ -64,6 +73,23 @@ FEATURE_USER =3D .bpftool
+> >  FEATURE_TESTS =3D libbfd disassembler-four-args reallocarray zlib
+> >  FEATURE_DISPLAY =3D libbfd disassembler-four-args zlib
+> > =20
+> > +ifdef LIBBPF_DYNAMIC
+> > +  # Add libbpf check with the flags to ensure bpftool
+> > +  # specific version is detected.
+>=20
+> Nit: We do not check for a specific bpftool version, we check for a
+> recent enough libbpf version?
 
-Regards,
+hi,
+we check for a version that has the latest exported function
+that bpftool needs, which is currently libbpf_netlink_open
 
-- Arnaldo
+please check the '#ifdef BPFTOOL' in feature/test-libbpf.c
 
-commit 98bb09f90a0ae33125fabc8f41529345382f1498
-Author: Arnaldo Carvalho de Melo <acme@redhat.com>
-Date:   Wed Nov 27 09:26:54 2019 -0300
+it's like that because there's currently no support to check
+for particular library version in the build/features framework
 
-    libbpf: Use PRIu64 for sym->st_value to fix build on 32-bit arches
-    
-    The st_value field is a 64-bit value, so use PRIu64 to fix this error on
-    32-bit arches:
-    
-      In file included from libbpf.c:52:
-      libbpf.c: In function 'bpf_program__record_reloc':
-      libbpf_internal.h:59:22: error: format '%lu' expects argument of type 'long unsigned int', but argument 3 has type 'Elf64_Addr' {aka 'const long long unsigned int'} [-Werror=format=]
-        libbpf_print(level, "libbpf: " fmt, ##__VA_ARGS__); \
-                            ^~~~~~~~~~
-      libbpf_internal.h:62:27: note: in expansion of macro '__pr'
-       #define pr_warn(fmt, ...) __pr(LIBBPF_WARN, fmt, ##__VA_ARGS__)
-                                 ^~~~
-      libbpf.c:1822:4: note: in expansion of macro 'pr_warn'
-          pr_warn("bad call relo offset: %lu\n", sym->st_value);
-          ^~~~~~~
-      libbpf.c:1822:37: note: format string is defined here
-          pr_warn("bad call relo offset: %lu\n", sym->st_value);
-                                         ~~^
-                                         %llu
-    
-    Fixes: 1f8e2bcb2cd5 ("libbpf: Refactor relocation handling")
-    Cc: Alexei Starovoitov <ast@kernel.org>
-    Cc: Andrii Nakryiko <andriin@fb.com>
-    Link: https://lkml.kernel.org/n/tip-iabs1wq19c357bkk84p7blif@git.kernel.org
-    Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+I'll make that comment more clear
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index b20f82e58989..6b0eae5c8a94 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -1819,7 +1819,7 @@ static int bpf_program__record_reloc(struct bpf_program *prog,
- 			return -LIBBPF_ERRNO__RELOC;
- 		}
- 		if (sym->st_value % 8) {
--			pr_warn("bad call relo offset: %lu\n", sym->st_value);
-+			pr_warn("bad call relo offset: %" PRIu64 "\n", sym->st_value);
- 			return -LIBBPF_ERRNO__RELOC;
- 		}
- 		reloc_desc->type = RELO_CALL;
+>=20
+> > +  FEATURE_CHECK_CFLAGS-libbpf :=3D -DBPFTOOL
+> > +  FEATURE_TESTS   +=3D libbpf
+> > +  FEATURE_DISPLAY +=3D libbpf
+> > +
+> > +  # for linking with debug library run:
+> > +  # make LIBBPF_DYNAMIC=3D1 LIBBPF_DIR=3D/opt/libbpf
+> > +  ifdef LIBBPF_DIR
+> > +    LIBBPF_CFLAGS  :=3D -I$(LIBBPF_DIR)/include
+> > +    LIBBPF_LDFLAGS :=3D -L$(LIBBPF_DIR)/$(libdir_relative)
+> > +    FEATURE_CHECK_CFLAGS-libbpf  :=3D $(LIBBPF_CFLAGS)
+> > +    FEATURE_CHECK_LDFLAGS-libbpf :=3D $(LIBBPF_LDFLAGS)
+> > +  endif
+> > +endif
+> > +
+> >  check_feat :=3D 1
+> >  NON_CHECK_FEAT_TARGETS :=3D clean uninstall doc doc-clean doc-install =
+doc-uninstall
+> >  ifdef MAKECMDGOALS
+> > @@ -88,6 +114,18 @@ ifeq ($(feature-reallocarray), 0)
+> >  CFLAGS +=3D -DCOMPAT_NEED_REALLOCARRAY
+> >  endif
+> > =20
+> > +ifdef LIBBPF_DYNAMIC
+> > +  ifeq ($(feature-libbpf), 1)
+> > +    LIBS    +=3D -lbpf
+> > +    CFLAGS  +=3D $(LIBBPF_CFLAGS)
+> > +    LDFLAGS +=3D $(LIBBPF_LDFLAGS)
+> > +  else
+> > +    dummy :=3D $(error Error: No libbpf devel library found, please in=
+stall libbpf-devel)
+>=20
+> libbpf-devel sounds like a RH/Fedora package name, but other
+> distributions might have different names (Debian/Ubuntu would go by
+> libbpf-dev I suppose, although I don't believe such package exists at
+> the moment). Maybe use a more generic message?
+
+sure, actually in perf we use both package names like:
+
+  Error: No libbpf devel library found, please install libbpf-devel or libb=
+pf-dev.
+
+or we can go with generic message:
+
+  Error: No libbpf devel library found, please install.
+
+>=20
+> > +  endif
+> > +else
+> > +  LIBS +=3D $(LIBBPF)
+>=20
+> ... I believe the order of the libraries is relevant, and it seems the
+> static libbpf should be passed before the dynamic libs. Here I could fix
+> the build with the static library on my setup by prepending the library
+> path instead, like this:
+>=20
+> =09LIBS :=3D $(LIBBPF) $(LIBS)
+
+could you please paste the build error? I don't see any on Fedora,
+anyway I can make the change you're proposing
+
+>=20
+> On the plus side, all build attempts from
+> tools/testing/selftests/bpf/test_bpftool_build.sh pass successfully on
+> my setup with dynamic linking from your branch.
+
+cool, had no idea there was such test ;-)
+
+thanks,
+jirka
+
