@@ -2,129 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 18E8B10B749
-	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2019 21:16:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D748610B761
+	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2019 21:24:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727207AbfK0UQT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Nov 2019 15:16:19 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:57106 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727404AbfK0UQT (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 27 Nov 2019 15:16:19 -0500
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id xARKCniZ029676;
-        Wed, 27 Nov 2019 12:16:06 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=GEqdWQAaenJxixUr1xs/S0mfrj+qKl9z+qqi1rr3kX8=;
- b=B2R67O2R10gPsMf8lx6imb6C42QTf6/r6dwxBtLocSGD6LZKVxggzM1//ufR1cLCVUH7
- FKBbUreYKZTn0yd2ysLNMpnroSfDhRtIletp0GwtHQQKSSHlayj69orymwH315ge7h3J
- LscRlxPEiqkdeZ6vRbTG8LxRdGweiqSiXtc= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net with ESMTP id 2whcxppf5b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 27 Nov 2019 12:16:06 -0800
-Received: from ash-exhub102.TheFacebook.com (2620:10d:c0a8:82::f) by
- ash-exhub101.TheFacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 27 Nov 2019 12:16:06 -0800
-Received: from NAM04-BN3-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.172) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Wed, 27 Nov 2019 12:16:05 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kemxVZsawdmrQA0ecC4qKs18Qdr9h2IHuKRw7TtM0Nm6gZs3nUuI2EX2z3lZEaNgcS4PBBBbG3KKq1P+3tFn0ILWCUpDtuealwFFb7gAsWNCKYmhPpSngPTL/ViBcgRAR6jhyo7EUOg6e1lMmegrqih51f280imbRHQe0JPamcayQ+uREiNzqCZfJobSeaSrgItEjJRBMHwRpJGMGFm6iwR5fEvNNuDC3HqndycXumAXOJkbEDDvJAfRoKkpuMJcbT6jZWjy84iG0icFmLkf7uJzi6IXxbiLIpw/6+mPaEjWmjIrN1o4iC51G98fiMJJpBSYv8YUc+zs1YprtzmGpQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GEqdWQAaenJxixUr1xs/S0mfrj+qKl9z+qqi1rr3kX8=;
- b=ZeIsGE1v2Bo6DtehAPhsfA0X1Ru4faGh5+vvpftBsrKctNHXPl8vMOOU4R4vBtdF+l5ClfWKevSRsEaX50nhcdrxE39avquRFN989axsfL4DQcruuauTNAgRSpmMSdZYK4QwyoOcPokuBWumin6ZaVtBk3BrnLaDO5uKPeE4FI9+gvABOHGw22Gu0+CYpv0FPN58uKHPv6sK1VUBjPYs3qkfHRhePlw5QvyBI3F5myDT6IOI69hNdx1FP4B7sSt3NFN3I9p/ic3VdHaJ84PApczqvMYND9xlu6rR/4cI9StGnnpcleh77t4X38v1m31sHZyldTvj4D8ZaMDLX0cQEQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GEqdWQAaenJxixUr1xs/S0mfrj+qKl9z+qqi1rr3kX8=;
- b=gpwx/D5Q6S21cEMkNv1u42CbSRXHZvvt99fIc/4L+bNDBeYzEymnb4/3kREmQ9Ua8RdfIG0W/ovqhxVgxrRO8xUJ8BRsmekRB05PTyBoyvXi1ECog5huG5iTwU/80t3AtCUYImgzLzNm9g2erYwsgLYQzvGkg2YXxaiF0xtBlt0=
-Received: from BYAPR15MB3384.namprd15.prod.outlook.com (20.179.60.27) by
- BYAPR15MB3173.namprd15.prod.outlook.com (20.179.56.27) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2495.18; Wed, 27 Nov 2019 20:16:05 +0000
-Received: from BYAPR15MB3384.namprd15.prod.outlook.com
- ([fe80::a9f8:a9c0:854c:d680]) by BYAPR15MB3384.namprd15.prod.outlook.com
- ([fe80::a9f8:a9c0:854c:d680%4]) with mapi id 15.20.2474.023; Wed, 27 Nov 2019
- 20:16:04 +0000
-From:   Yonghong Song <yhs@fb.com>
-To:     Andrii Nakryiko <andriin@fb.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>
-CC:     "andrii.nakryiko@gmail.com" <andrii.nakryiko@gmail.com>,
-        Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH bpf] libbpf: fix Makefile' libbpf symbol mismatch
- diagnostic
-Thread-Topic: [PATCH bpf] libbpf: fix Makefile' libbpf symbol mismatch
- diagnostic
-Thread-Index: AQHVpV1+hsRdLpqL30e0jDMG+OwkG6efdD6A
-Date:   Wed, 27 Nov 2019 20:16:04 +0000
-Message-ID: <5f51a36d-5689-0cd1-6955-8c43c44cef0a@fb.com>
-References: <20191127200134.1360660-1-andriin@fb.com>
-In-Reply-To: <20191127200134.1360660-1-andriin@fb.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: CO2PR04CA0113.namprd04.prod.outlook.com
- (2603:10b6:104:7::15) To BYAPR15MB3384.namprd15.prod.outlook.com
- (2603:10b6:a03:112::27)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:200::3:dd8d]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 60a3702e-f5e2-40e5-14f4-08d77376a130
-x-ms-traffictypediagnostic: BYAPR15MB3173:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR15MB317344EDD9BF2C6FC96871B7D3440@BYAPR15MB3173.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4303;
-x-forefront-prvs: 023495660C
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(366004)(396003)(346002)(39860400002)(136003)(376002)(51914003)(199004)(189003)(4326008)(256004)(46003)(186003)(11346002)(2616005)(478600001)(446003)(71200400001)(71190400001)(36756003)(31686004)(2906002)(25786009)(64756008)(66946007)(66556008)(8676002)(66446008)(81156014)(7736002)(66476007)(5660300002)(305945005)(8936002)(229853002)(86362001)(558084003)(316002)(81166006)(6512007)(53546011)(6506007)(386003)(6246003)(31696002)(102836004)(6436002)(14454004)(54906003)(52116002)(6116002)(2501003)(6486002)(76176011)(2201001)(99286004)(110136005);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB3173;H:BYAPR15MB3384.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: se90JyenazoznwZ3yNMEdCacmLtqtEKE4Tdty8V55hIU/KNLJeGG4xSuL3S121Bog5HSN2ujqs5EJ+AWmFftE8MeBvPD5UkpgQkMyLuhkLs6cVNy1Pyap98rVcNWAhS+7UQ2wWL8dz88BleOKUQiBCDkmCrSe439/PTbhhWRxvUVnL/KBgUYBQRkDnneFM9mVYdVNmxPOy9excUzmxSGva26ZW5kFCL110hbP5DJuGl/Uf+cxaqMhShTab1uaKXYEafVKTsTT/pCYQepwjbg8CBeM2zMa/s1BlC03N6+vceFLy36OtJC+fqA9PdX7danyohqJcN4H+Vm+S9hZHSY1/wnfcSd4+I5hLHK14PsziYxT+AK+3E9dHAvO7zyp2j7QvKKutXlc5Sz3rM4V7B+jj6Xcu5jFIReVTCUwnH+4dYIBaQ6S8Wkpl0mtZEDxHiu
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <3DCBFAA53FAAF241A4C64DC403CB05CC@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1727120AbfK0UYb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Nov 2019 15:24:31 -0500
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:33253 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726703AbfK0UYb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 Nov 2019 15:24:31 -0500
+Received: by mail-qk1-f193.google.com with SMTP id c124so16321692qkg.0;
+        Wed, 27 Nov 2019 12:24:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SgUjfcTX/7GXiJyA43XWcDT1cnpp+UReYglDGXWdON0=;
+        b=ry4rBZW57I0rDcZPHlpUxh07oaqemIldRXSpEpydrz1a8HsqWcYY3RDBzAfxHIE0li
+         tcjDwokDv7Hkc+QS8z/+oFDxLi+xJOySIZCDAKNnvJUtwg4jO5TM7+Ryv02mpVtdcU9m
+         cI4h+TQ7kZrSClQ+sFeMZ4iLyPDnoddczRTeWVKHAUNOIirnVO65605Fc9g91jLqrdgZ
+         ewlII6VuCVDJbelP/tmPSC8Cn5L7Y/u+JiA6+9h1g9KYsZ8j1NoW2xxG9309BNMgVQjp
+         YK9wWhGms9yLP0FOEVVlkGikR2tzyf+u94ZQEYmx6W26aaPpZEWgYfvwFL8EzfC5k5JV
+         oV6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SgUjfcTX/7GXiJyA43XWcDT1cnpp+UReYglDGXWdON0=;
+        b=ISna9d7ygYhX69i1+DK5WMRNV5h9iTYfIUjaeaVSnxF+/3woYnPpICenk4cFIv5TBS
+         1fq+Lb43W1WEQJ/p+W0l6S7syivtYNVoD1tekRaK47whP6wSG2eN7HtnCym7n/zj1Gh6
+         mFDqKfBUsDuZg4A4b1iW/fz/ThjiXvc+bvTd7hfOG3/bMxkk2Xh1XLrno+L3x1JzKSfL
+         HqjDGcwGZphJ7IXj3Et31QpBxgqXVQkGcXLii6Zx+NVItewLnbFoUF1Xo3rvjF5Yiipe
+         zp+h4cqFhdrC0b3aVoLIiNILvx5jgZ2N00VXVg6Y40mcTRfB0joeyQIfmHYrgJGMZ6N+
+         6k+g==
+X-Gm-Message-State: APjAAAURE0wcGeyDN7eG0oszG8ifuTZ0ehUzCRdsCDkqDiVcsqpNkHgA
+        Dxjw+G0oz4XudYQse4ZGNQ7E/foKtpqPUXEoGZA=
+X-Google-Smtp-Source: APXvYqzQ3j5bso0l8WXxfmVDikzFct/L8BmxkhKEItQRWdWLvVEkAIp77SzQbhi7jl/QGFbYaLlAkssUVwfkaIlONCc=
+X-Received: by 2002:a05:620a:12b2:: with SMTP id x18mr6519127qki.437.1574886270399;
+ Wed, 27 Nov 2019 12:24:30 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 60a3702e-f5e2-40e5-14f4-08d77376a130
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Nov 2019 20:16:04.6700
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 4AwvGwMXfifYvR99KIuWjUNgddeMFijT8wddI1axThmPhQOoJR9TAn0yPMuSa8c2
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3173
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
- definitions=2019-11-27_04:2019-11-27,2019-11-27 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- phishscore=0 spamscore=0 bulkscore=0 adultscore=0 lowpriorityscore=0
- mlxlogscore=795 impostorscore=0 priorityscore=1501 clxscore=1015
- mlxscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1910280000 definitions=main-1911270162
-X-FB-Internal: deliver
+References: <20191127094837.4045-1-jolsa@kernel.org> <CAADnVQLp2VTi9JhtfkLOR9Y1ipNFObOGH9DQe5zbKxz77juhqA@mail.gmail.com>
+In-Reply-To: <CAADnVQLp2VTi9JhtfkLOR9Y1ipNFObOGH9DQe5zbKxz77juhqA@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 27 Nov 2019 12:24:19 -0800
+Message-ID: <CAEf4BzaDxnF0Ppfo5r5ma3ht033bWjQ78oiBzB=F40_Np=AKhw@mail.gmail.com>
+Subject: Re: [PATCH 0/3] perf/bpftool: Allow to link libbpf dynamically
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Michael Petlan <mpetlan@redhat.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-DQoNCk9uIDExLzI3LzE5IDEyOjAxIFBNLCBBbmRyaWkgTmFrcnlpa28gd3JvdGU6DQo+IEZpeCBN
-YWtlZmlsZSdzIGRpYWdub3N0aWMgZGlmZiBvdXRwdXQgd2hlbiB0aGVyZSBpcyBMSUJCUEZfQVBJ
-LXZlcnNpb25lZA0KPiBzeW1ib2xzIG1pc21hdGNoLg0KPiANCj4gRml4ZXM6IDFiZDYzNTI0NTkz
-YiAoImxpYmJwZjogaGFuZGxlIHN5bWJvbCB2ZXJzaW9uaW5nIHByb3Blcmx5IGZvciBsaWJicGYu
-YSIpDQo+IFNpZ25lZC1vZmYtYnk6IEFuZHJpaSBOYWtyeWlrbyA8YW5kcmlpbkBmYi5jb20+DQoN
-ClRoYW5rcyBmb3IgdGhlIGZpeCENCkFja2VkLWJ5OiBZb25naG9uZyBTb25nIDx5aHNAZmIuY29t
-Pg0K
+On Wed, Nov 27, 2019 at 8:38 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Wed, Nov 27, 2019 at 1:48 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> >
+> > hi,
+> > adding support to link bpftool with libbpf dynamically,
+> > and config change for perf.
+> >
+> > It's now possible to use:
+> >   $ make -C tools/bpf/bpftool/ LIBBPF_DYNAMIC=1
+> >
+> > which will detect libbpf devel package with needed version,
+> > and if found, link it with bpftool.
+> >
+> > It's possible to use arbitrary installed libbpf:
+> >   $ make -C tools/bpf/bpftool/ LIBBPF_DYNAMIC=1 LIBBPF_DIR=/tmp/libbpf/
+> >
+> > I based this change on top of Arnaldo's perf/core, because
+> > it contains libbpf feature detection code as dependency.
+> > It's now also synced with latest bpf-next, so Toke's change
+> > applies correctly.
+>
+> I don't like it.
+> Especially Toke's patch to expose netlink as public and stable libbpf api.
+> bpftools needs to stay tightly coupled with libbpf (and statically
+> linked for that reason).
+> Otherwise libbpf will grow a ton of public api that would have to be stable
+> and will quickly become a burden.
+
+I second that. I'm currently working on adding few more APIs that I'd
+like to keep unstable for a while, until we have enough real-world
+usage (and feedback) accumulated, before we stabilize them. With
+LIBBPF_API and a promise of stable API, we are going to over-stress
+and over-design APIs, potentially making them either too generic and
+bloated, or too limited (and thus become deprecated almost at
+inception time). I'd like to take that pressure off for a super-new
+and in flux APIs and not hamper the progress.
+
+I'm thinking of splitting off those non-stable, sort-of-internal APIs
+into separate libbpf-experimental.h (or whatever name makes sense),
+and let those be used only by tools like bpftool, which are only ever
+statically link against libbpf and are ok with occasional changes to
+those APIs (which we'll obviously fix in bpftool as well). Pahole
+seems like another candidate that fits this bill and we might expose
+some stuff early on to it, if it provides tangible benefits (e.g., BTF
+dedup speeds ups, etc).
+
+Then as APIs mature, we might decide to move them into libbpf.h with
+LIBBPF_API slapped onto them. Any objections?
