@@ -2,58 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BCAC110BE26
-	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2019 22:34:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E58E10C01E
+	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2019 23:18:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727217AbfK0VeQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Nov 2019 16:34:16 -0500
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:36744 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730255AbfK0VeQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 Nov 2019 16:34:16 -0500
-Received: by mail-lf1-f65.google.com with SMTP id f16so18373208lfm.3
-        for <bpf@vger.kernel.org>; Wed, 27 Nov 2019 13:34:14 -0800 (PST)
+        id S1727259AbfK0WSs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Nov 2019 17:18:48 -0500
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:40305 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727158AbfK0WSs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 Nov 2019 17:18:48 -0500
+Received: by mail-lj1-f193.google.com with SMTP id s22so7172959ljs.7
+        for <bpf@vger.kernel.org>; Wed, 27 Nov 2019 14:18:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
         h=references:user-agent:from:to:cc:subject:in-reply-to:date
          :message-id:mime-version;
-        bh=a2lCQIrL6y65H2mjNmVoy68p4ew2rDjgqL/n+hCYEX4=;
-        b=E/x35jKj0rQiv/WVf+kyP4FvpGxrR/8rpXB51P2LiTkU5j5462kR96HyeCIEqB0a0P
-         TyUGtxg9CoIZBwPIOqGqcvyqg90xKVn/YOscTf9ymG3xTYzQTFyq1QeV8dOX0uNj7i/J
-         nC5OQ2vGDgsM7WcUkSQVhW7PEOPabSjcMHxto=
+        bh=N9i7/kwHmsdrnsrzzGmT/NdLJq4ITCoOrsN4artmsBY=;
+        b=Bt/1HKc6XEWiIz7FBmNJDCcEnGwSXYEJ9am4LLxnV2p7SK/x/wSvJ/aqBY++jpyWf3
+         Oy0HtUYpY7L8yfS5MDmw6bRueTp5yT6Li9mUj0V/ezfOsaQsA5DqeVCyWaPKjhC2rvbp
+         rHuXthQWuBrEiRzUALXkEBHhDje5lOtdt49X4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:references:user-agent:from:to:cc:subject
          :in-reply-to:date:message-id:mime-version;
-        bh=a2lCQIrL6y65H2mjNmVoy68p4ew2rDjgqL/n+hCYEX4=;
-        b=iZmrjZpImyhVafeaauPxh2ANhBbHzmQhB5812FZ+7UVc6e4Yvf/SjLvq/SnzE8PT3b
-         sxNiWR7zEKnFyM+MSjuWjtTT1GyMHwiPdh4jpKkFP7VqKD7qGylVO3itznsW7L4wXooa
-         4MvPcLcdT4hGGj4M+PPIlzqDsgl94MvxOl4ngEaC3HGRHIryzzzaHQZg9K7bWvdHZkKe
-         zR8x0P0ztDPvERrGuDm7u8KLbAjbPH7b0Z70JuDPcbf6JF75eLITE06F5gzONvXCyMhA
-         QIFd1YtjKeZ7JjwrZzWvL3/aEVCzHt8inTDSSnRMunUNOmQ/EvGZqKDXJoOkHjpHjRpO
-         S+Jg==
-X-Gm-Message-State: APjAAAVz52T6ZVRcM5h+GtGCkG4vG0pU29E0dC/gjx7eA/DCl3lXSSsd
-        jpCtScVJYu44v+X/fWmWo7w2FA==
-X-Google-Smtp-Source: APXvYqxmpVKNv2C5AaLbEx8E3parZMDzUXqEpEumL/y7JDqdYh/bA60RPQYO7WBLMytvqZh/tH5Sgg==
-X-Received: by 2002:ac2:5616:: with SMTP id v22mr20006108lfd.84.1574890453569;
-        Wed, 27 Nov 2019 13:34:13 -0800 (PST)
+        bh=N9i7/kwHmsdrnsrzzGmT/NdLJq4ITCoOrsN4artmsBY=;
+        b=Bw814oQfYykmFVUSgZ3NfKhBYoVlNSh17d+GePzcPLNefra9/5coFbLIV9fGlI1YyF
+         V5wQjkEuRe95oNzzqT0SoowEymPe9EUd+AkfDTCpFr+Mn5MhnottjEx6fgfxWG++qDY5
+         Ez71L+kuvJ3ZJgzNdxF8+pI2bGeZxLU1mV5/x9zC3+Dj7Az5tG/CMKDhmQHajmmxcYzb
+         J0rmgKL+tPxISLhvCmybxtsNCyKeOVxubsayBhorjmAINk2bH/mH++T68D3f3Uue+qSj
+         fRoef7BI5SjNo1ehekh8HqYRJWlugT2poInzl+QR9rSC8Z2pD2wp1rQ7LimAwbdrtN9L
+         95Pw==
+X-Gm-Message-State: APjAAAUGIIiuMi43jk0qU+rSmwUCoLR47jKnhhyoe004GLsKrLN1ZYRm
+        1BmaYXR2xPJHam6k1YBQLHS6pQ==
+X-Google-Smtp-Source: APXvYqyW4l1cfzSiRkZcX/xmBe/xfLz6fj346OmuRkwEaBF7jXnfLOe99jcJQkGiGtv777yDnhD9iw==
+X-Received: by 2002:a2e:8518:: with SMTP id j24mr29755410lji.13.1574893125662;
+        Wed, 27 Nov 2019 14:18:45 -0800 (PST)
 Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id a18sm7647269ljp.33.2019.11.27.13.34.12
+        by smtp.gmail.com with ESMTPSA id d4sm7455587lfi.32.2019.11.27.14.18.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Nov 2019 13:34:12 -0800 (PST)
-References: <20191123110751.6729-1-jakub@cloudflare.com> <20191123110751.6729-6-jakub@cloudflare.com> <20191125012440.crbufwpokttx67du@ast-mbp.dhcp.thefacebook.com> <5ddb55c87d06c_79e12b0ab99325bc69@john-XPS-13-9370.notmuch> <87o8x0nsra.fsf@cloudflare.com> <20191125220709.jqywizwbr3xwsazi@kafai-mbp> <87imn6ogke.fsf@cloudflare.com> <20191126190301.quwvjihpdzfjhdbe@kafai-mbp.dhcp.thefacebook.com>
+        Wed, 27 Nov 2019 14:18:45 -0800 (PST)
+References: <20191123110751.6729-1-jakub@cloudflare.com> <20191123110751.6729-5-jakub@cloudflare.com> <20191125223845.6t6xoqcwcqxuqbdf@kafai-mbp> <87ftiaocp2.fsf@cloudflare.com> <20191126171607.pzrg5qhbavh7enwh@kafai-mbp.dhcp.thefacebook.com> <5ddd7266c36aa_671a2b0b882605c04a@john-XPS-13-9370.notmuch>
 User-agent: mu4e 1.1.0; emacs 26.1
 From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Martin Lau <kafai@fb.com>
-Cc:     John Fastabend <john.fastabend@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Martin Lau <kafai@fb.com>,
         "bpf\@vger.kernel.org" <bpf@vger.kernel.org>,
         "netdev\@vger.kernel.org" <netdev@vger.kernel.org>,
         "kernel-team\@cloudflare.com" <kernel-team@cloudflare.com>
-Subject: Re: [PATCH bpf-next 5/8] bpf: Allow selecting reuseport socket from a SOCKMAP
-In-reply-to: <20191126190301.quwvjihpdzfjhdbe@kafai-mbp.dhcp.thefacebook.com>
-Date:   Wed, 27 Nov 2019 22:34:10 +0100
-Message-ID: <87blsxngvh.fsf@cloudflare.com>
+Subject: Re: [PATCH bpf-next 4/8] bpf, sockmap: Don't let child socket inherit psock or its ops on copy
+In-reply-to: <5ddd7266c36aa_671a2b0b882605c04a@john-XPS-13-9370.notmuch>
+Date:   Wed, 27 Nov 2019 23:18:44 +0100
+Message-ID: <87a78hnet7.fsf@cloudflare.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
@@ -61,52 +60,169 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 26, 2019 at 08:03 PM CET, Martin Lau wrote:
-> On Tue, Nov 26, 2019 at 03:30:57PM +0100, Jakub Sitnicki wrote:
->> On Mon, Nov 25, 2019 at 11:07 PM CET, Martin Lau wrote:
->> > On Mon, Nov 25, 2019 at 11:40:41AM +0100, Jakub Sitnicki wrote:
-
-[...]
-
->> I agree, it's not obvious. When I first saw this check in
->> reuseport_array_update_check it got me puzzled too. I should have added
->> an explanatory comment there.
+On Tue, Nov 26, 2019 at 07:43 PM CET, John Fastabend wrote:
+> Martin Lau wrote:
+>> On Tue, Nov 26, 2019 at 04:54:33PM +0100, Jakub Sitnicki wrote:
+>> > On Mon, Nov 25, 2019 at 11:38 PM CET, Martin Lau wrote:
+>> > > On Sat, Nov 23, 2019 at 12:07:47PM +0100, Jakub Sitnicki wrote:
+>> > > [ ... ]
+>> > >
+>> > >> @@ -370,6 +378,11 @@ static inline void sk_psock_restore_proto(struct sock *sk,
+>> > >>  			sk->sk_prot = psock->sk_proto;
+>> > >>  		psock->sk_proto = NULL;
+>> > >>  	}
+>> > >> +
+>> > >> +	if (psock->icsk_af_ops) {
+>> > >> +		icsk->icsk_af_ops = psock->icsk_af_ops;
+>> > >> +		psock->icsk_af_ops = NULL;
+>> > >> +	}
+>> > >>  }
+>> > >
+>> > > [ ... ]
+>> > >
+>> > >> +static struct sock *tcp_bpf_syn_recv_sock(const struct sock *sk,
+>> > >> +					  struct sk_buff *skb,
+>> > >> +					  struct request_sock *req,
+>> > >> +					  struct dst_entry *dst,
+>> > >> +					  struct request_sock *req_unhash,
+>> > >> +					  bool *own_req)
+>> > >> +{
+>> > >> +	const struct inet_connection_sock_af_ops *ops;
+>> > >> +	void (*write_space)(struct sock *sk);
+>> > >> +	struct sk_psock *psock;
+>> > >> +	struct proto *proto;
+>> > >> +	struct sock *child;
+>> > >> +
+>> > >> +	rcu_read_lock();
+>> > >> +	psock = sk_psock(sk);
+>> > >> +	if (likely(psock)) {
+>> > >> +		proto = psock->sk_proto;
+>> > >> +		write_space = psock->saved_write_space;
+>> > >> +		ops = psock->icsk_af_ops;
+>> > > It is not immediately clear to me what ensure
+>> > > ops is not NULL here.
+>> > >
+>> > > It is likely I missed something.  A short comment would
+>> > > be very useful here.
+>> >
+>> > I can see the readability problem. Looking at it now, perhaps it should
+>> > be rewritten, to the same effect, as:
+>> >
+>> > static struct sock *tcp_bpf_syn_recv_sock(...)
+>> > {
+>> > 	const struct inet_connection_sock_af_ops *ops = NULL;
+>> >         ...
+>> >
+>> >     rcu_read_lock();
+>> > 	psock = sk_psock(sk);
+>> > 	if (likely(psock)) {
+>> > 		proto = psock->sk_proto;
+>> > 		write_space = psock->saved_write_space;
+>> > 		ops = psock->icsk_af_ops;
+>> > 	}
+>> > 	rcu_read_unlock();
+>> >
+>> >         if (!ops)
+>> > 		ops = inet_csk(sk)->icsk_af_ops;
+>> >         child = ops->syn_recv_sock(sk, skb, req, dst, req_unhash, own_req);
+>> >
+>> > If psock->icsk_af_ops were NULL, it would mean we haven't initialized it
+>> > properly. To double check what happens here:
+>> I did not mean the init path.  The init path is fine since it init
+>> eveything on psock before publishing the sk to the sock_map.
 >>
->> Thing is we're not matching on just TCP_LISTEN. REUSEPORT_SOCKARRAY
->> allows selecting a connected UDP socket as a target as well. It takes
->> some effort to set up but it's possible even if obscure.
-> How about this instead:
-> if (!reuse)
->  	/* reuseport_array only has sk that has non NULL sk_reuseport_cb.
-> 	 * The only (!reuse) case here is, the sk has already been removed from
-> 	 * reuseport_array, so treat it as -ENOENT.
-> 	 *
-> 	 * Other maps (e.g. sock_map) do not provide this guarantee and the sk may
-> 	 * never be in the reuseport to begin with.
-> 	 */
-> 	return map->map_type == BPF_MAP_TYPE_REUSEPORT_SOCKARRAY ? -ENOENT : -EINVAL;
-
-Right, apart from established TCP sockets we must not select a listening
-socket that's not in a reuseport group either. This covers both
-cases. Clever. Thanks for the suggestion.
-
+>> I was thinking the delete path (e.g. sock_map_delete_elem).  It is not clear
+>> to me what prevent the earlier pasted sk_psock_restore_proto() which sets
+>> psock->icsk_af_ops to NULL from running in parallel with
+>> tcp_bpf_syn_recv_sock()?  An explanation would be useful.
+>>
 >
->>
->> > Note that the SOCK_RCU_FREE check at the 'slow-path'
->> > reuseport_array_update_check() is because reuseport_array does depend on
->> > call_rcu(&sk->sk_rcu,...) to work, e.g. the reuseport_array
->> > does not hold the sk_refcnt.
->>
->> Oh, so it's not only about socket state like I thought.
->>
->> This raises the question - does REUSEPORT_SOCKARRAY allow storing
->> connected UDP sockets by design or is it a happy accident? It doesn't
->> seem particularly useful.
-> Not by design/accident on the REUSEPORT_SOCKARRAY side ;)
+> I'll answer. Updates are protected via sk_callback_lock so we don't have
+> parrallel updates in-flight causing write_space and sk_proto to be out
+> of sync. However access should be OK because its a pointer write we
+> never update the pointer in place, e.g.
 >
-> The intention of REUSEPORT_SOCKARRAY is to allow sk that can be added to
-> reuse->socks[].
+> static inline void sk_psock_restore_proto(struct sock *sk,
+> 					  struct sk_psock *psock)
+> {
+> +       struct inet_connection_sock *icsk = inet_csk(sk);
+> +
+> 	sk->sk_write_space = psock->saved_write_space;
+>
+> 	if (psock->sk_proto) {
+> 		struct inet_connection_sock *icsk = inet_csk(sk);
+> 		bool has_ulp = !!icsk->icsk_ulp_data;
+>
+> 		if (has_ulp)
+> 			tcp_update_ulp(sk, psock->sk_proto);
+> 		else
+> 			sk->sk_prot = psock->sk_proto;
+> 		psock->sk_proto = NULL;
+> 	}
+>
+> +
+> +       if (psock->icsk_af_ops) {
+> +               icsk->icsk_af_ops = psock->icsk_af_ops;
+> +               psock->icsk_af_ops = NULL;
+> +       }
+> }
+>
+> In restore case either psock->icsk_af_ops is null or not. If its
+> null below code catches it. If its not null (from init path) then
+> we have a valid pointer.
+>
+>         rcu_read_lock();
+> 	psock = sk_psock(sk);
+>  	if (likely(psock)) {
+>  		proto = psock->sk_proto;
+>  		write_space = psock->saved_write_space;
+>  		ops = psock->icsk_af_ops;
+>  	}
+>  	rcu_read_unlock();
+>
+>         if (!ops)
+> 		ops = inet_csk(sk)->icsk_af_ops;
+>         child = ops->syn_recv_sock(sk, skb, req, dst, req_unhash, own_req);
+>
+>
+> We should do this with proper READ_ONCE/WRITE_ONCE to make it clear
+> what is going on and to stop compiler from breaking these assumptions. I
+> was going to generate that patch after this series but can do it before
+> as well. I didn't mention it here because it seems a bit out of scope
+> for this series because its mostly a fix to older code.
 
-Ah, makes sense. REUSEPORT_SOCKARRAY had to mimic reuseport groups.
++1, looking forward to your patch. Also, as I've recently learned, that
+should enable KTSAN to reason about the psock code [0].
 
--Jakub
+> Also I started to think that write_space might be out of sync with ops but
+> it seems we never actually remove psock_write_space until after
+> rcu grace period so that should be OK as well and always point to the
+> previous write_space.
+>
+> Finally I wondered if we could remove the ops and then add it back
+> quickly which seems at least in theory possible, but that would get
+> hit with a grace period because we can't have conflicting psock
+> definitions on the same sock. So expanding the rcu block to include
+> the ops = inet_csk(sk)->icsk_af_ops would fix that case.
+
+I see, ops = inet_csk(sk)->icsk_af_ops might read out a re-overwritten
+ops after sock_map_unlink, followed by sock_map_link. Ouch.
+
+> So in summary I think we should expand the rcu lock here to include the
+> ops = inet_csk(sk)->icsk_af_ops to ensure we dont race with tear
+> down and create. I'll push the necessary update with WRITE_ONCE and
+> READ_ONCE to fix that up. Seeing we have to wait until the merge
+> window opens most likely anyways I'll send those out sooner rather
+> then later and this series can add the proper annotations as well.
+
+Or I could leave psock->icsk_af_ops set in restore_proto, like we do for
+write_space as you noted. Restoring it twice doesn't seem harmful, it
+has no side-effects. Less state changes to think about?
+
+I'll still have to apply what you suggest for saving psock->sk_proto,
+though.
+
+Thanks,
+Jakub
+
+[0] https://github.com/google/ktsan/wiki/READ_ONCE-and-WRITE_ONCE
