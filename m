@@ -2,119 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D64EF10B2DA
-	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2019 16:59:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82EE110B306
+	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2019 17:14:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727017AbfK0P7k (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Nov 2019 10:59:40 -0500
-Received: from mail-qt1-f178.google.com ([209.85.160.178]:35721 "EHLO
-        mail-qt1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726514AbfK0P7k (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 Nov 2019 10:59:40 -0500
-Received: by mail-qt1-f178.google.com with SMTP id n4so25858657qte.2;
-        Wed, 27 Nov 2019 07:59:39 -0800 (PST)
+        id S1727072AbfK0QON (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Nov 2019 11:14:13 -0500
+Received: from mail-pg1-f202.google.com ([209.85.215.202]:39751 "EHLO
+        mail-pg1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726514AbfK0QON (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 Nov 2019 11:14:13 -0500
+Received: by mail-pg1-f202.google.com with SMTP id h18so12995262pgj.6
+        for <bpf@vger.kernel.org>; Wed, 27 Nov 2019 08:14:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=UP/A/8ZyD4j1YZR182zTc2bHEQDWRudBnSjV/1JGrFA=;
-        b=Ti3BTgK5d2HEDPSqrLdjysff5a2gLfcqTfMXe658LeJ6coCSw4ae3Nxb2aBHjLoNoS
-         sAoZq/egbd21qkGXjcG9Yjzh8LQbBQIcuYU1ep39iOXf/KUndbuOg4cWMkt8/2T70GX5
-         m40KSGqgDJyWjmt2nj8honGUBTX+YY7d0PBNvJfgHt4576HaHBFHUk+Vm+71IJS4x4Ra
-         fU8b+q0gH7ZwgVwLU016Bi8N/kNKXzXUo9KjnLJm/XDSaoaIEKe9Zvlc3kk99Oz+j6xE
-         L9ItnqvOr0GVM5wVUE7qJB6RytJq135V44rd49/Va81VNv+2AOhtyRqj2q62Ce/MV0IG
-         yczA==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=umdggYl7nSb+s7tapAIsZ3nsMjbadAOU71y7PSMRIfo=;
+        b=lZ35bKmVwM8leqtmBzT52xV7P3VO0VSwnJLi35tRYZT6cQ+zoBb/Xy6350yqTNNilW
+         dqj+wfI3nDCDNK24QreQeg/yAD5IT9LanJXEwxh6hDlE+V4IIuyZlpHsSUjBSNOT8n2f
+         jXC+fa8omtX1ohCggeY4ZHZqY5KP6tMRvAt4Zx6/RM6Wqzz1ZXO3N04qzhPuLGKmVTD2
+         30x9W4ZSvDuQvumjW/GRvZQ5aCy5WDz5qupGUqXTwpzLupDuyUP247hd/+vhxvizkvsR
+         K2Br7fF7PlJNg/2jqfVnqFgHflHxn8rTmSYeL5zrPPgq53U0pTrY9x4qwxUeIFKylbkU
+         9qsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=UP/A/8ZyD4j1YZR182zTc2bHEQDWRudBnSjV/1JGrFA=;
-        b=YshUeHjzAH4NEPYHhyXvAucYXcnPrLotgSQNJEDtZL+T/TIaZbdGa6YYFnQJs2Ll/E
-         xq5DfJL4WHL4BVtPEkDsM/iZSgXFzwymH7Ywi0AmnZ71h50hDaBY5quebZT9YizkjxWJ
-         bv7m/Se6K4NUqxMyF0Kpl8nktNof4u8MbPBetwbBKJ64eRWlCLKiU//eMHBWnFxrBBIj
-         HnS/1d0Fmtjamh52a85KLQggUFQa6JZG67KoJv2MGpMwIk8SfEtquliCgu8h9ghTed3q
-         lFoTrGyTHWyvwLdgCPThA9s+IxfvmGoTborvVFA+OjSl/AqTyoR6cPTuqxJxGpeg8je0
-         cxVQ==
-X-Gm-Message-State: APjAAAXq5iQcn/xeAj/fnmN+MXq7YotOcx3Btahe6EiGIurLueoUQ7Uk
-        /kqba1DgmF6XSf2hUgWpESM=
-X-Google-Smtp-Source: APXvYqyRSLfj0P2QBGvATZSgjsonhKDW4HXos0PDYoN5r18l/hkhwGaq+b8rfkd3OUjePYRr/zboyg==
-X-Received: by 2002:ac8:104:: with SMTP id e4mr26478494qtg.37.1574870379268;
-        Wed, 27 Nov 2019 07:59:39 -0800 (PST)
-Received: from quaco.ghostprotocols.net ([179.97.35.50])
-        by smtp.gmail.com with ESMTPSA id m29sm8124177qtf.1.2019.11.27.07.59.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Nov 2019 07:59:38 -0800 (PST)
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 1BB2440D3E; Wed, 27 Nov 2019 12:59:36 -0300 (-03)
-Date:   Wed, 27 Nov 2019 12:59:36 -0300
-To:     Quentin Monnet <quentin.monnet@netronome.com>
-Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Jiri Olsa <jolsa@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Subject: Re: [PATCH 3/3] bpftool: Allow to link libbpf dynamically
-Message-ID: <20191127155936.GL22719@kernel.org>
-References: <20191127094837.4045-1-jolsa@kernel.org>
- <20191127094837.4045-4-jolsa@kernel.org>
- <fd22660f-2f70-4ffa-b45f-bb417d006d0a@netronome.com>
- <20191127141520.GJ32367@krava>
- <20191127142449.GD22719@kernel.org>
- <d9bc04a6-0f72-9408-7c2e-2fb30e6a8f74@netronome.com>
- <20191127154849.GK22719@kernel.org>
- <d78a306f-a736-63d1-4d14-695ba33d3d9c@netronome.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d78a306f-a736-63d1-4d14-695ba33d3d9c@netronome.com>
-X-Url:  http://acmel.wordpress.com
-User-Agent: Mutt/1.12.1 (2019-06-15)
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=umdggYl7nSb+s7tapAIsZ3nsMjbadAOU71y7PSMRIfo=;
+        b=DD9ChthHNT40pCozNly5d0oNPL3KpXSEBRmm6e8G/2A3S0Yo0sD1PhWzFmvwcqkZvh
+         zdYtHFz1VcYgMwf+9pzmuxiwzUoWGLmIjhSJDG0HhdlZZkUIv0jSfoFFokWUNT47zTGF
+         Ps1YcqFFJrmYibdRBKH2LqLPHNNcawwGvL29Yj5aF0JRUs28rBMnejEXSJcBEAz6UzO3
+         abNylzq9WaX7iUFp/Kq0e7uYSHw/8k3s1CtJlyJqSraII74udIUpGngk9YGd9nnp6PYV
+         keyW+KnAMUJ2nsgwQfHOHX5Y6GDNZmd0rXheyPfx3hQ/uhZVCVccrRz2I5kfTktOsLSP
+         K+pw==
+X-Gm-Message-State: APjAAAV2jUI1j1ifPB6hWrtEDbtOOPMXHNUT7patwG6dhQsOtPOZ0jiB
+        mkg2FqXr2tHWQK6lTkek+tak92M=
+X-Google-Smtp-Source: APXvYqyZKiAbGmboqXakOu/syfSt8e7hqJt4rMZegSNpW/VLgi+01QEORoqBdF47ET/yFl18+h3DNDY=
+X-Received: by 2002:a63:4562:: with SMTP id u34mr5665255pgk.399.1574871252365;
+ Wed, 27 Nov 2019 08:14:12 -0800 (PST)
+Date:   Wed, 27 Nov 2019 08:14:10 -0800
+Message-Id: <20191127161410.57327-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.24.0.432.g9d3f5f5b63-goog
+Subject: [PATCH bpf v3] bpf: support pre-2.25-binutils objcopy for vmlinux BTF
+From:   Stanislav Fomichev <sdf@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        Stanislav Fomichev <sdf@google.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Wed, Nov 27, 2019 at 03:52:06PM +0000, Quentin Monnet escreveu:
-> 2019-11-27 12:48 UTC-0300 ~ Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-> > Em Wed, Nov 27, 2019 at 02:31:31PM +0000, Quentin Monnet escreveu:
-> >> 2019-11-27 11:24 UTC-0300 ~ Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-> >>> Em Wed, Nov 27, 2019 at 03:15:20PM +0100, Jiri Olsa escreveu:
-> >>>> On Wed, Nov 27, 2019 at 01:38:55PM +0000, Quentin Monnet wrote:
-> >>>>> 2019-11-27 10:48 UTC+0100 ~ Jiri Olsa <jolsa@kernel.org>
-> >>>>> On the plus side, all build attempts from
-> >>>>> tools/testing/selftests/bpf/test_bpftool_build.sh pass successfully on
-> >>>>> my setup with dynamic linking from your branch.
+If vmlinux BTF generation fails, but CONFIG_DEBUG_INFO_BTF is set,
+.BTF section of vmlinux is empty and kernel will prohibit
+BPF loading and return "in-kernel BTF is malformed".
 
-> >>>> cool, had no idea there was such test ;-)
+--dump-section argument to binutils' objcopy was added in version 2.25.
+When using pre-2.25 binutils, BTF generation silently fails. Convert
+to --only-section which is present on pre-2.25 binutils.
 
-> >>> Should be the the equivalent to 'make -C tools/perf build-test' :-)
+Documentation/process/changes.rst states that binutils 2.21+
+is supported, not sure those standards apply to BPF subsystem.
 
-> >>> Perhaps we should make tools/testing/selftests/perf/ link to that?
+v2:
+* exit and print an error if gen_btf fails (John Fastabend)
 
-> >> It is already run as part of the bpf selftests, so probably no need.
+v3:
+* resend with Andrii's Acked-by/Tested-by tags
 
-> > You mean 'make -C tools/perf build-test' is run from the bpf selftests?
+Cc: Andrii Nakryiko <andriin@fb.com>
+Cc: John Fastabend <john.fastabend@gmail.com>
+Fixes: 341dfcf8d78ea ("btf: expose BTF info through sysfs")
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+Tested-by: Andrii Nakryiko <andriin@fb.com>
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+---
+ scripts/link-vmlinux.sh | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-> Ah, no, sorry for the confusion. I meant that test_bpftool_build.sh is
-> run from the bpf selftests.
+diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+index 06495379fcd8..2998ddb323e3 100755
+--- a/scripts/link-vmlinux.sh
++++ b/scripts/link-vmlinux.sh
+@@ -127,7 +127,8 @@ gen_btf()
+ 		cut -d, -f1 | cut -d' ' -f2)
+ 	bin_format=$(LANG=C ${OBJDUMP} -f ${1} | grep 'file format' | \
+ 		awk '{print $4}')
+-	${OBJCOPY} --dump-section .BTF=.btf.vmlinux.bin ${1} 2>/dev/null
++	${OBJCOPY} --set-section-flags .BTF=alloc -O binary \
++		--only-section=.BTF ${1} .btf.vmlinux.bin 2>/dev/null
+ 	${OBJCOPY} -I binary -O ${bin_format} -B ${bin_arch} \
+ 		--rename-section .data=.BTF .btf.vmlinux.bin ${2}
+ }
+@@ -253,6 +254,10 @@ btf_vmlinux_bin_o=""
+ if [ -n "${CONFIG_DEBUG_INFO_BTF}" ]; then
+ 	if gen_btf .tmp_vmlinux.btf .btf.vmlinux.bin.o ; then
+ 		btf_vmlinux_bin_o=.btf.vmlinux.bin.o
++	else
++		echo >&2 "Failed to generate BTF for vmlinux"
++		echo >&2 "Try to disable CONFIG_DEBUG_INFO_BTF"
++		exit 1
+ 	fi
+ fi
+ 
+-- 
+2.24.0.432.g9d3f5f5b63-goog
 
-> I am not familiar with perf build-test, but maybe that's something worth
-> adding to perf selftests indeed.
-
-Yeah, I think is worth considering plugging perf's build-test to
-selftests, if only to expose it to the people that are used with
-selftests and may start testing perf builds more regularly.
-
-- Arnaldo
