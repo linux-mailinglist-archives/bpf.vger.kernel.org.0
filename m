@@ -2,93 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8749510A740
-	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2019 00:52:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A68E110A752
+	for <lists+bpf@lfdr.de>; Wed, 27 Nov 2019 01:04:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726876AbfKZXwr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Nov 2019 18:52:47 -0500
-Received: from mail-lj1-f178.google.com ([209.85.208.178]:40406 "EHLO
-        mail-lj1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726593AbfKZXwr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Nov 2019 18:52:47 -0500
-Received: by mail-lj1-f178.google.com with SMTP id s22so3270365ljs.7
-        for <bpf@vger.kernel.org>; Tue, 26 Nov 2019 15:52:46 -0800 (PST)
+        id S1726984AbfK0AEY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Nov 2019 19:04:24 -0500
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:45797 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726593AbfK0AEY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Nov 2019 19:04:24 -0500
+Received: by mail-pg1-f196.google.com with SMTP id k1so9819587pgg.12
+        for <bpf@vger.kernel.org>; Tue, 26 Nov 2019 16:04:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :organization:mime-version:content-transfer-encoding;
-        bh=KCDKvwlIGU7uB8p3D+dFVtLq5oKYjA5PnAgt3uQ6mbE=;
-        b=THOUjfrN6LzT765GBQ5xIh14+wyrTtJUiYvZMkyix/jt7Esnm2tzZIiMa2ChCrGN4p
-         vr+8MAYPcKKt2JuuOOzr7w1hTQnkTw25droMskEHfczzu+2Zz9HHWuPGynDtN5/ZANgp
-         FXgvx1vgyXlnjspL/8mCN3x3J62gmTCSU+Oe0Ui/mX62E1iBo08OspNZ2QUTRV0e+ZUs
-         SrxJ6+f1vhbK1MqP3+/vmNHXSM7J+A62NloGcaQWtFCNQGGEZ5rMimKCU7O3P7pU+ovm
-         XB8r3pNa6oA5czRKVEWLxRzBUemF3aVvAVrE18kNYSyq94nWbdi7Q1xm/1B8GweqSoSr
-         khyQ==
+        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=2u1niDBuA2mwnKES4Z6zoRj9jCaAUwZCD4ei61VlG7w=;
+        b=Q5lK5df6RQSWPuSj35u3yqgjI+awEGam2sKU9+YoBWDoQ+zYTUsXdJwxxg9hbWBbn9
+         EUJB7nPadGtf6wh6edZrAAvZczE7bsFyeLSW6p4bvgTkbad/S+GK5tdfarxTAEg8d4AZ
+         UO+vrZNF12JWxMNa3VGOALQu1OEgapgNhrfW6QX6PXlP9PnXGS56bmHC7TOJ0QSDxuGI
+         aH9UmTQjGa/xIW732TpsZbel/2Pj3QTZkCHl383z6Jfc4XQ5sWugjn2sPHB31dkOOE75
+         OGVdFANy2/emRaEU19bUZfTmtLZNxwqKHDZO/CxP+kSop9EoCW/5JN7yBCOVEMnNDsWV
+         xhRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=KCDKvwlIGU7uB8p3D+dFVtLq5oKYjA5PnAgt3uQ6mbE=;
-        b=hggu/ALFpLcmOR3mV0Mq8PRnzNa2B9EVfdbdIq5TbQF/xPxUUOzEIL7f6XSnLwdmlO
-         WsAYPTozpdg7+SrmTl0NPRbbrxTLq/z/iCICuB0nL2QA2eO+q4NEY7a/tycuDIPW2KKe
-         vCCXWoZ0Wo9K2oR9AKPf6f/qjFML3LprXUmyk49vdniSAU4Ds+2y+NyDFe/uZDrvauYI
-         mQ1+vXRBYNjB7aDrr/fzVbTvRmolRIGc+YIRLJ+KhLnhXy8A+OJgtj1yDnnRfZWzOCLD
-         mB6SV66sKewQ7iaWdHWzNU3ZfOgV/S0NNUIqLzlBOb9/XRlpDBqd+YTofws1KBDU0fS3
-         qDcQ==
-X-Gm-Message-State: APjAAAUAMqsUGBbc3CGvVhvxJrIPsbzj3k2DjmlwTrZDXzQBcDblmAho
-        CT0VIX4vZJeJRpLPIkXOYeAfeA==
-X-Google-Smtp-Source: APXvYqwHWT5lOYRckrAzkgXVDZ5mCpeq9r+Y9BSVNvlu7iS/3DwURAaIoUaBcaA84E1utY0e4FCZ7A==
-X-Received: by 2002:a2e:c42:: with SMTP id o2mr14747157ljd.222.1574812365483;
-        Tue, 26 Nov 2019 15:52:45 -0800 (PST)
-Received: from cakuba.netronome.com ([66.60.152.14])
-        by smtp.gmail.com with ESMTPSA id r1sm6211872ljk.83.2019.11.26.15.52.41
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=2u1niDBuA2mwnKES4Z6zoRj9jCaAUwZCD4ei61VlG7w=;
+        b=In2q03SzH1I9ZxEKeGkmN1q4TSnW/waitLpCjK1kXhjBqsMR+P3t9MDCHHAUWigFmx
+         MWbXbd9tI9NqgV4hMX373u/zZtUJdZ+41QzTbqd+HKzPQjN2FwBq1Ly+guxz6QkmRyY0
+         RAz2rTOp61M3YHsOkIiO5jCI9J4X+zNCtRnOFd5whOd2LnLMBur4xYaovMYjZ9VxYlGg
+         9PICQDYJoIrm0PIGeGnSSjZBfnK3s/BUqWwZXGU1hEKraaA1AwnIOmOHnCkXihpzAHul
+         u/xoIBq18JieGZSJGuFvzNv8uE3YnTcxPfPVMjVyfsQSQn+ZDKQbsYR5K0VSnr3AGM7b
+         lXiw==
+X-Gm-Message-State: APjAAAVfYYpRLIKsi6tfEeiOZupMMVgInhk41UwnbwrSRb63ogysw3jy
+        gglATx/hMIpHgwfxcYbONx+WYw==
+X-Google-Smtp-Source: APXvYqyQx7zDFZ0XAqW+phA9jFvADaB8ZaYQZLxZaOWh+6abeFUQvq6FS/jeEApI3KWt0Qm1uGDLHQ==
+X-Received: by 2002:a62:7982:: with SMTP id u124mr43329219pfc.98.1574813061626;
+        Tue, 26 Nov 2019 16:04:21 -0800 (PST)
+Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
+        by smtp.gmail.com with ESMTPSA id o188sm13934034pfb.124.2019.11.26.16.04.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Nov 2019 15:52:45 -0800 (PST)
-Date:   Tue, 26 Nov 2019 15:52:28 -0800
-From:   Jakub Kicinski <jakub.kicinski@netronome.com>
-To:     Stanislav Fomichev <sdf@fomichev.me>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jiri Olsa <jolsa@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
-        Namhyung Kim <namhyung@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Quentin Monnet <quentin.monnet@netronome.com>
-Subject: Re: [PATCH] libbpf: Fix up generation of bpf_helper_defs.h
-Message-ID: <20191126155228.0e6ed54c@cakuba.netronome.com>
-In-Reply-To: <20191126231030.GE3145429@mini-arch.hsd1.ca.comcast.net>
-References: <20191126151045.GB19483@kernel.org>
-        <20191126154836.GC19483@kernel.org>
-        <87imn6y4n9.fsf@toke.dk>
-        <20191126183451.GC29071@kernel.org>
-        <87d0dexyij.fsf@toke.dk>
-        <20191126190450.GD29071@kernel.org>
-        <CAEf4Bzbq3J9g7cP=KMqR=bMFcs=qPiNZwnkvCKz3-SAp_m0GzA@mail.gmail.com>
-        <20191126221018.GA22719@kernel.org>
-        <20191126221733.GB22719@kernel.org>
-        <CAEf4BzbZLiJnUb+BdUMEwcgcKCjJBWx1895p8qS8rK2r5TYu3w@mail.gmail.com>
-        <20191126231030.GE3145429@mini-arch.hsd1.ca.comcast.net>
-Organization: Netronome Systems, Ltd.
+        Tue, 26 Nov 2019 16:04:20 -0800 (PST)
+Date:   Tue, 26 Nov 2019 16:04:20 -0800
+From:   Stanislav Fomichev <sdf@fomichev.me>
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     John Fastabend <john.fastabend@gmail.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>
+Subject: Re: [PATCH bpf v2] bpf: support pre-2.25-binutils objcopy for
+ vmlinux BTF
+Message-ID: <20191127000420.GG3145429@mini-arch.hsd1.ca.comcast.net>
+References: <20191126232818.226454-1-sdf@google.com>
+ <5dddb7059b13e_13b82abee0d625bc2d@john-XPS-13-9370.notmuch>
+ <20191126234523.GF3145429@mini-arch.hsd1.ca.comcast.net>
+ <02a27e2f-d269-0b04-a4ef-ebb347e3c918@fb.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <02a27e2f-d269-0b04-a4ef-ebb347e3c918@fb.com>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 26 Nov 2019 15:10:30 -0800, Stanislav Fomichev wrote:
-> We are using this script with python2.7, works just fine :-)
-> So maybe doing s/python3/python/ is the way to go, whatever
-> default python is installed, it should work with that.
+On 11/26, Andrii Nakryiko wrote:
+> On 11/26/19 3:45 PM, Stanislav Fomichev wrote:
+> > On 11/26, John Fastabend wrote:
+> >> Stanislav Fomichev wrote:
+> >>> If vmlinux BTF generation fails, but CONFIG_DEBUG_INFO_BTF is set,
+> >>> .BTF section of vmlinux is empty and kernel will prohibit
+> >>> BPF loading and return "in-kernel BTF is malformed".
+> >>>
+> >>> --dump-section argument to binutils' objcopy was added in version 2.25.
+> >>> When using pre-2.25 binutils, BTF generation silently fails. Convert
+> >>> to --only-section which is present on pre-2.25 binutils.
+> >>>
+> >>> Documentation/process/changes.rst states that binutils 2.21+
+> >>> is supported, not sure those standards apply to BPF subsystem.
+> >>>
+> >>> v2:
+> >>> * exit and print an error if gen_btf fails (John Fastabend)
+> >>>
+> >>> Cc: Andrii Nakryiko <andriin@fb.com>
+> >>> Cc: John Fastabend <john.fastabend@gmail.com>
+> >>> Fixes: 341dfcf8d78ea ("btf: expose BTF info through sysfs")
+> >>> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> >>> ---
+> >>>   scripts/link-vmlinux.sh | 7 ++++++-
+> >>>   1 file changed, 6 insertions(+), 1 deletion(-)
+> >>>
+> >>> diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+> >>> index 06495379fcd8..2998ddb323e3 100755
+> >>> --- a/scripts/link-vmlinux.sh
+> >>> +++ b/scripts/link-vmlinux.sh
+> >>> @@ -127,7 +127,8 @@ gen_btf()
+> >>>   		cut -d, -f1 | cut -d' ' -f2)
+> >>>   	bin_format=$(LANG=C ${OBJDUMP} -f ${1} | grep 'file format' | \
+> >>>   		awk '{print $4}')
+> >>> -	${OBJCOPY} --dump-section .BTF=.btf.vmlinux.bin ${1} 2>/dev/null
+> >>> +	${OBJCOPY} --set-section-flags .BTF=alloc -O binary \
+> >>> +		--only-section=.BTF ${1} .btf.vmlinux.bin 2>/dev/null
+> >>>   	${OBJCOPY} -I binary -O ${bin_format} -B ${bin_arch} \
+> >>>   		--rename-section .data=.BTF .btf.vmlinux.bin ${2}
+> >>>   }
+> >>> @@ -253,6 +254,10 @@ btf_vmlinux_bin_o=""
+> >>>   if [ -n "${CONFIG_DEBUG_INFO_BTF}" ]; then
+> >>>   	if gen_btf .tmp_vmlinux.btf .btf.vmlinux.bin.o ; then
+> >>>   		btf_vmlinux_bin_o=.btf.vmlinux.bin.o
+> >>> +	else
+> >>> +		echo >&2 "Failed to generate BTF for vmlinux"
+> >>> +		echo >&2 "Try to disable CONFIG_DEBUG_INFO_BTF"
+> >>
+> >> I think we should encourage upgrading binutils first? Maybe
+> >>
+> >> "binutils 2.25+ required for BTF please upgrade or disable CONFIG_DEBUG_INFO_BTF"
+> >>
+> >> otherwise I guess its going to be a bit mystical why it works in
+> >> cases and not others to folks unfamiliar with the details.
+> > With the conversion from --dump-section to --only-section that I
+> > did in this patch, binutils 2.25+ is no longer a requirement.
+> > 2.21 (minimal version from Documentation/process/changes.rst) should work
+> > just fine.
+> 
+> Yeah, instead it's better to mention that pahole v1.13+ is required.
+We already have most of the messages about missing pahole or wrong version:
+https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/scripts/link-vmlinux.sh#n111
+https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/scripts/link-vmlinux.sh#n117
 
-That increases the risk someone will make a python2-only change 
-and break Python 3.
-
-Python 2 is dead, I'm honestly surprised this needs to be said :)
+They are 'info' though, but it seems logical to drop -s from make arguments
+if someone wants to debug further.
