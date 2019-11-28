@@ -2,139 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 056A010CE09
-	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2019 18:44:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93BD410CE73
+	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2019 19:18:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726622AbfK1Roi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 Nov 2019 12:44:38 -0500
-Received: from ivanoab7.miniserver.com ([37.128.132.42]:51574 "EHLO
-        www.kot-begemot.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726609AbfK1Roi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 28 Nov 2019 12:44:38 -0500
-Received: from tun252.jain.kot-begemot.co.uk ([192.168.18.6] helo=jain.kot-begemot.co.uk)
-        by www.kot-begemot.co.uk with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <anton.ivanov@cambridgegreys.com>)
-        id 1iaNq0-0007Yx-TF; Thu, 28 Nov 2019 17:44:21 +0000
-Received: from jain.kot-begemot.co.uk ([192.168.3.3])
-        by jain.kot-begemot.co.uk with esmtp (Exim 4.92)
-        (envelope-from <anton.ivanov@cambridgegreys.com>)
-        id 1iaNpx-000189-2a; Thu, 28 Nov 2019 17:44:18 +0000
-From:   anton.ivanov@cambridgegreys.com
-To:     linux-um@lists.infradead.org
-Cc:     richard@nod.at, dan.carpenter@oracle.com, weiyongjun1@huawei.com,
-        kernel-janitors@vger.kernel.org, songliubraving@fb.com,
-        daniel@iogearbox.net, ast@kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, kafai@fb.com,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Subject: [PATCH] um: vector: fix BPF loading in vector drivers
-Date:   Thu, 28 Nov 2019 17:44:05 +0000
-Message-Id: <20191128174405.4244-1-anton.ivanov@cambridgegreys.com>
-X-Mailer: git-send-email 2.20.1
+        id S1726657AbfK1SSc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 Nov 2019 13:18:32 -0500
+Received: from mail-lj1-f178.google.com ([209.85.208.178]:42256 "EHLO
+        mail-lj1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726510AbfK1SSc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 28 Nov 2019 13:18:32 -0500
+Received: by mail-lj1-f178.google.com with SMTP id e28so5202334ljo.9;
+        Thu, 28 Nov 2019 10:18:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=yxZR1L4NZ/aArEqSK85BQqYEUzhWZlAUOz9pbiLL6/I=;
+        b=i8qBduAwboGsFn0tMTtnOOKyTFGa1bRQbO9auvQP2tX4H+15ELpPR8++6fwlM+lO+l
+         mlN7q49+QAJ7GcdlSNYrI2RPjI0LTcbYulj97fBj91Ghl3C136VrekbXWZQZJDScA1GM
+         w5jSW+F3D/c3k4G/1cqd5MQd4Ct6AJzELqcfnS6jnvYEhyplPisPn0YlGZG0F0xcfWHc
+         Zz+x25bZiO/G5Lnjq2O4B/fMvA7pMjUbWv3S/Eu2YNZ/HqDUaSX5ConVCw42QNaZPuCb
+         XT0WX5w5PYW69vfhbSDKDdmc6l9ND+IRyeSI1z3aP98DXxE8d7MNzGorLKmfz99HmTwy
+         FA/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=yxZR1L4NZ/aArEqSK85BQqYEUzhWZlAUOz9pbiLL6/I=;
+        b=gzjf4k2ABnY0381xG4Wg4F/trJruXbg/wys/0OIl/wQIxUlJFGAtsuoApzSMdW2VHB
+         UXdsbLAnbfGWW978dL0bi1NCWNf/tIyZ39I4jmpGPuA6XzucRvSnO0aOXilNhIuKIb5Q
+         9L0S5TZzv+cdceYH1T8lG3mwPymrQWhdxwAQEudYktsWLaV1qw0MzckyKcS10928fnzl
+         ROPrF0Usu5HFMhLx9TDVmK6b4LBJEU5TSDOR9Rt7hVt1NjWN+4tiXFyy8DWATIzpsY9q
+         PCgbiN+P+qUL4sVfjmZivUo79P4rz8VPz0ag7/52wiGZNuFPuX9Wz3BjOHJ9cZ5vO7UQ
+         ogfw==
+X-Gm-Message-State: APjAAAWi0k+2JVMdMtYg1NE6BGsuWoomjoLfKLXwJb24GGhIxKzlgwAW
+        ECJ49Mj4uMmNOqpmE19we7D1aUEyQoX+5HYWvJA=
+X-Google-Smtp-Source: APXvYqwcahbzWSdr11XQZYNk/1GpCGVvfxUV2OjosKyruu4kAnJ5YMmWthsv+YIVO6ACnLR59cI4d26Jgy3QQXK0WzE=
+X-Received: by 2002:a2e:b5b8:: with SMTP id f24mr34446268ljn.188.1574965110321;
+ Thu, 28 Nov 2019 10:18:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Score: -1.0
-X-Spam-Score: -1.0
-X-Clacks-Overhead: GNU Terry Pratchett
+References: <E53E0693-1C3A-4B47-B205-DC8E5DAF3619@redhat.com>
+In-Reply-To: <E53E0693-1C3A-4B47-B205-DC8E5DAF3619@redhat.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 28 Nov 2019 10:18:18 -0800
+Message-ID: <CAADnVQKkLtG-QCZwxx-Bpz8-goh-_mSTtUSzpb_oTv9a-qLizg@mail.gmail.com>
+Subject: Re: Trying the bpf trace a bpf xdp program
+To:     Eelco Chaudron <echaudro@redhat.com>
+Cc:     Xdp <xdp-newbies@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+On Thu, Nov 28, 2019 at 9:20 AM Eelco Chaudron <echaudro@redhat.com> wrote:
+>
+> Trying out the BPF trace to trace a BPF program, but I=E2=80=99m already
+> getting stuck loading the object with the fexit  :(
 
-This fixes a possible hang in bpf firmware loading in the
-UML vector io drivers due to use of GFP_KERNEL while holding
-a spinlock.
+I can take a look after holidays.
 
-Based on a prposed fix by weiyongjun1@huawei.com and suggestions for
-improving it by dan.carpenter@oracle.com
+> libbpf: load bpf program failed: Argument list too long
+> libbpf: failed to load program 'fexit/xdp_prog_simple'
+> libbpf: failed to load object './xdp_sample_fentry_fexit_kern.o'
+> ERROR: Failed to load object file: Operation not permitted
 
-Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
----
- arch/um/drivers/vector_kern.c | 38 ++++++++++++++++++-----------------
- 1 file changed, 20 insertions(+), 18 deletions(-)
-
-diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
-index 92617e16829e..dbbc6e850fdd 100644
---- a/arch/um/drivers/vector_kern.c
-+++ b/arch/um/drivers/vector_kern.c
-@@ -1387,6 +1387,7 @@ static int vector_net_load_bpf_flash(struct net_device *dev,
- 	struct vector_private *vp = netdev_priv(dev);
- 	struct vector_device *vdevice;
- 	const struct firmware *fw;
-+	void *new_filter;
- 	int result = 0;
- 
- 	if (!(vp->options & VECTOR_BPF_FLASH)) {
-@@ -1394,6 +1395,15 @@ static int vector_net_load_bpf_flash(struct net_device *dev,
- 		return -1;
- 	}
- 
-+	vdevice = find_device(vp->unit);
-+
-+	if (request_firmware(&fw, efl->data, &vdevice->pdev.dev))
-+		return -1;
-+
-+	new_filter = kmemdup(fw->data, fw->size, GFP_KERNEL);
-+	if (!new_filter)
-+		goto free_buffer;
-+
- 	spin_lock(&vp->lock);
- 
- 	if (vp->bpf != NULL) {
-@@ -1402,41 +1412,33 @@ static int vector_net_load_bpf_flash(struct net_device *dev,
- 		kfree(vp->bpf->filter);
- 		vp->bpf->filter = NULL;
- 	} else {
--		vp->bpf = kmalloc(sizeof(struct sock_fprog), GFP_KERNEL);
-+		vp->bpf = kmalloc(sizeof(struct sock_fprog), GFP_ATOMIC);
- 		if (vp->bpf == NULL) {
- 			netdev_err(dev, "failed to allocate memory for firmware\n");
--			goto flash_fail;
-+			goto apply_flash_fail;
- 		}
- 	}
- 
--	vdevice = find_device(vp->unit);
--
--	if (request_firmware(&fw, efl->data, &vdevice->pdev.dev))
--		goto flash_fail;
--
--	vp->bpf->filter = kmemdup(fw->data, fw->size, GFP_KERNEL);
--	if (!vp->bpf->filter)
--		goto free_buffer;
--
-+	vp->bpf->filter = new_filter;
- 	vp->bpf->len = fw->size / sizeof(struct sock_filter);
--	release_firmware(fw);
- 
- 	if (vp->opened)
- 		result = uml_vector_attach_bpf(vp->fds->rx_fd, vp->bpf);
- 
- 	spin_unlock(&vp->lock);
- 
--	return result;
--
--free_buffer:
- 	release_firmware(fw);
- 
--flash_fail:
-+	return result;
-+
-+apply_flash_fail:
- 	spin_unlock(&vp->lock);
--	if (vp->bpf != NULL)
-+	if (vp->bpf)
- 		kfree(vp->bpf->filter);
- 	kfree(vp->bpf);
--	vp->bpf = NULL;
-+
-+free_buffer:
-+	release_firmware(fw);
- 	return -1;
- }
- 
--- 
-2.20.1
-
+please add -vvv and share full output.
