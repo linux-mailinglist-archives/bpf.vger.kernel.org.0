@@ -2,57 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ABD8F10CAB3
-	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2019 15:53:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56AE010CBBF
+	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2019 16:32:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726934AbfK1Oxd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 Nov 2019 09:53:33 -0500
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:46831 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726609AbfK1Oxc (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 28 Nov 2019 09:53:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1574952810;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rSRdu36kdw7cp4aj5uiQyY93zJOiHwsJ9kURwhoRP88=;
-        b=OqrDtNi/w4ql95WxW9pAzMfWN2FB4wzJHck8v9lqrjTxFwwDM+RFJfKYdri4YkS5F2PBd2
-        +MfdGd3i9yBmjEr88uTAFyH9sieB6Mx9to2GEtrbf77Qu0/GV9qrx4+xWCm1cF014QgeNt
-        4FenBwfDlO+oSSvne8SeqPHpUC55ZsY=
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
- [209.85.208.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-436-YKOmXDXfOkWtDvI6B9Z4tA-1; Thu, 28 Nov 2019 09:53:29 -0500
-Received: by mail-lj1-f199.google.com with SMTP id b1so252176ljp.13
-        for <bpf@vger.kernel.org>; Thu, 28 Nov 2019 06:53:28 -0800 (PST)
+        id S1727033AbfK1PcR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 Nov 2019 10:32:17 -0500
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:52527 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726436AbfK1PcK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 28 Nov 2019 10:32:10 -0500
+Received: by mail-wm1-f65.google.com with SMTP id l1so11394912wme.2
+        for <bpf@vger.kernel.org>; Thu, 28 Nov 2019 07:32:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=to:cc:references:from:openpgp:autocrypt:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=sj9mN9ZsJ6qIK1eZ9BSfajQYDocDuB1NNcBuyqoxXHw=;
+        b=j5eEvv9FjEE0wybqoNbFHlnR7Gr1JdZpOkW1jz/puBbCvXCSkJkhNNjJDgxwFFDEGF
+         9DP2xImVNYENrdA2Wu+jOCD7Bv4HUoVpDQ232/+Q/8hyW9PxTIvyHsrX68FzVhLOnGDy
+         CVhN2MM1o9cmPA+i2nkIuNGTAhd37bhoNUHZyiEkqqk5doJLuzCcO5okGCB/gLYzLNTk
+         l7g91K3OG7yLECQgHRwiLR+NUwGTjWALQeV9pPcqfNAaIKuEl6FKHdU1IuI5qPOq8GIO
+         lRzMkjP+6OQjCX1ma0ym0NFrjjJQATEg21GB2gYgY/HUvuobaX8WdXJSx0NHmCVIAeKA
+         Ap3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=DFfjqzHfd87DTRbEbayt6s48Ee8N6vIkSod5kqZnQ5Y=;
-        b=jcY1bV9EhgSYUlSkT+SzwTmPRR+oFGshLqKsLh7wZGJrju8KBbu2xwgcvhKBRiVqxG
-         libEs8KGr9ss388T6vHkY4fLsVFaKpWCtbnSbhdkTpfMknCXqgdc8nKu2isXK5u0z/gC
-         IPJpqDNybfs95q1876CUN192vTWMn3NyRtbKlmRZSv62AxlNTaADejFyO5mljA+cKYbI
-         aH5pbagEsAXSrLxo4DlhCyzEvTfXTF0h5/uHYdrlgb0XMU9PNZqCtSsoQ18W6ZNKe7iE
-         M5WOIsI4M5FvvvLVzHfrmiFeLnuthf5vFk5kCrEQ2rXjcNwWUQShgHswG7qfGnJb6O7A
-         EZjg==
-X-Gm-Message-State: APjAAAVUIXRBVmL52szLiZOkEzKjjTuk6klYPwsseFmTSJqQsBP55bjd
-        DIW9S7htdc5iplnH25nXVcf5jzRrN98ZmfUhcVhLplzq9qcCSuRW/d41e2c9tXVzApJhEdaPDAB
-        CiSc4uczYySnM
-X-Received: by 2002:a2e:b007:: with SMTP id y7mr34551262ljk.69.1574952807551;
-        Thu, 28 Nov 2019 06:53:27 -0800 (PST)
-X-Google-Smtp-Source: APXvYqyX6WbETt4gMUWpV0wZ/2Py0Q2dWzIgwkCGxTImfwQqW1dKylmOb5oxrAJ6cM1GAIE8WjpyYQ==
-X-Received: by 2002:a2e:b007:: with SMTP id y7mr34551238ljk.69.1574952807282;
-        Thu, 28 Nov 2019 06:53:27 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id k10sm8611145lfo.76.2019.11.28.06.53.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Nov 2019 06:53:26 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 62FC9180339; Thu, 28 Nov 2019 15:53:24 +0100 (CET)
-From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
+        h=x-gm-message-state:to:cc:references:from:openpgp:autocrypt:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=sj9mN9ZsJ6qIK1eZ9BSfajQYDocDuB1NNcBuyqoxXHw=;
+        b=tt9p1+QBT3t95DCVa1MfM4TPUIKG/FVII5kV7PLy2yQS2nL4ybAjD/N7OkMCKY3kDf
+         kd9PvhC7GesrqyWh4Dw+3vDQvTg5qRl3ORIo5LdENT8ruZF6yavjCrJWpG6hh4LFeQPj
+         gcXlVYR30cM8Dh0AFLdRR79xF35BoBMailfLqj/pPNLmEaRLNQsSx6jUnQRb4XuAiz6L
+         CGa4kSskNrKNzLYyOOdU2atupHWgdylAUU1GAu9NMcIbr4yroGGbcfQtJpX730K04Unu
+         kLl6il0pNiyiaVwF4ophlAvC08xrQYfjHHXp12QsrZpXIZNA+xrDv29N+7ccF6iwjCj6
+         xSyA==
+X-Gm-Message-State: APjAAAVnkYMgUajiEMspqu5ZFFHQkxEjUljY7M0o7lG7tK4n2YbP+99h
+        WjxNy3YC8bn64CFV2596SaEHyA==
+X-Google-Smtp-Source: APXvYqz+sSgwc/rvUouPPi7gz034nzHWDGhW5QBTeoMWZruGXNtCf8tmqqBpmRnS9wWrGajXIujERQ==
+X-Received: by 2002:a7b:c7cc:: with SMTP id z12mr3417400wmk.115.1574955127774;
+        Thu, 28 Nov 2019 07:32:07 -0800 (PST)
+Received: from [192.168.1.9] ([194.53.187.153])
+        by smtp.gmail.com with ESMTPSA id f1sm5364335wrp.93.2019.11.28.07.32.06
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 28 Nov 2019 07:32:06 -0800 (PST)
+To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     Jiri Olsa <jolsa@kernel.org>, lkml <linux-kernel@vger.kernel.org>,
         netdev@vger.kernel.org, bpf@vger.kernel.org,
@@ -61,149 +56,205 @@ Cc:     Jiri Olsa <jolsa@kernel.org>, lkml <linux-kernel@vger.kernel.org>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Peter Zijlstra <a.p.zijlstra@chello.nl>,
         Michael Petlan <mpetlan@redhat.com>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         Andrii Nakryiko <andriin@fb.com>,
         Arnaldo Carvalho de Melo <acme@kernel.org>
-Subject: [PATCH bpf v2] bpftool: Allow to link libbpf dynamically
-Date:   Thu, 28 Nov 2019 15:53:16 +0100
-Message-Id: <20191128145316.1044912-1-toke@redhat.com>
-X-Mailer: git-send-email 2.24.0
-In-Reply-To: <20191127094837.4045-1-jolsa@kernel.org>
-References: 
+References: <20191128145316.1044912-1-toke@redhat.com>
+From:   Quentin Monnet <quentin.monnet@netronome.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=quentin.monnet@netronome.com; prefer-encrypt=mutual; keydata=
+ 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
+ RHhSHGnKaQ6MfrTge5Q0h5A=
+Subject: Re: [PATCH bpf v2] bpftool: Allow to link libbpf dynamically
+Message-ID: <497b4151-9aad-f3a9-3aff-78d665e5f750@netronome.com>
+Date:   Thu, 28 Nov 2019 15:32:05 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.1
 MIME-Version: 1.0
-X-MC-Unique: YKOmXDXfOkWtDvI6B9Z4tA-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20191128145316.1044912-1-toke@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Jiri Olsa <jolsa@kernel.org>
+2019-11-28 15:53 UTC+0100 ~ Toke Høiland-Jørgensen <toke@redhat.com>
+> From: Jiri Olsa <jolsa@kernel.org>
+> 
+> Currently we support only static linking with kernel's libbpf
+> (tools/lib/bpf). This patch adds LIBBPF_DYNAMIC compile variable
+> that triggers libbpf detection and bpf dynamic linking:
+> 
+>   $ make -C tools/bpf/bpftool make LIBBPF_DYNAMIC=1
+> 
+> If libbpf is not installed, build (with LIBBPF_DYNAMIC=1) stops with:
+> 
+>   $ make -C tools/bpf/bpftool LIBBPF_DYNAMIC=1
+>     Auto-detecting system features:
+>     ...                        libbfd: [ on  ]
+>     ...        disassembler-four-args: [ on  ]
+>     ...                          zlib: [ on  ]
+>     ...                        libbpf: [ OFF ]
+> 
+>   Makefile:102: *** Error: No libbpf devel library found, please install-devel or libbpf-dev.
+> 
+> Adding LIBBPF_DIR compile variable to allow linking with
+> libbpf installed into specific directory:
+> 
+>   $ make -C tools/lib/bpf/ prefix=/tmp/libbpf/ install_lib install_headers
+>   $ make -C tools/bpf/bpftool/ LIBBPF_DYNAMIC=1 LIBBPF_DIR=/tmp/libbpf/
+> 
+> It might be needed to clean build tree first because features
+> framework does not detect the change properly:
+> 
+>   $ make -C tools/build/feature clean
+>   $ make -C tools/bpf/bpftool/ clean
+> 
+> Since bpftool uses bits of libbpf that are not exported as public API in
+> the .so version, we also pass in libbpf.a to the linker, which allows it to
+> pick up the private functions from the static library without having to
+> expose them as ABI.
+> 
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+> ---
+> v2:
+>   - Pass .a file to linker when dynamically linking, so bpftool can use
+>     private functions from libbpf without exposing them as API.
+>     
+>  tools/bpf/bpftool/Makefile | 38 +++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 37 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+> index 39bc6f0f4f0b..397051ed9e41 100644
+> --- a/tools/bpf/bpftool/Makefile
+> +++ b/tools/bpf/bpftool/Makefile
+> @@ -1,6 +1,15 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+> +# LIBBPF_DYNAMIC to enable libbpf dynamic linking.
+> +
+>  include ../../scripts/Makefile.include
+>  include ../../scripts/utilities.mak
+> +include ../../scripts/Makefile.arch
+> +
+> +ifeq ($(LP64), 1)
+> +  libdir_relative = lib64
+> +else
+> +  libdir_relative = lib
+> +endif
+>  
+>  ifeq ($(srctree),)
+>  srctree := $(patsubst %/,%,$(dir $(CURDIR)))
+> @@ -55,7 +64,7 @@ ifneq ($(EXTRA_LDFLAGS),)
+>  LDFLAGS += $(EXTRA_LDFLAGS)
+>  endif
+>  
+> -LIBS = $(LIBBPF) -lelf -lz
+> +LIBS = -lelf -lz
 
-Currently we support only static linking with kernel's libbpf
-(tools/lib/bpf). This patch adds LIBBPF_DYNAMIC compile variable
-that triggers libbpf detection and bpf dynamic linking:
+Hi Toke,
 
-  $ make -C tools/bpf/bpftool make LIBBPF_DYNAMIC=3D1
+You don't need to remove $(LIBBPF) here, because you add it in both
+cases below (whether $(LIBBPF_DYNAMIC) is defined or not).
 
-If libbpf is not installed, build (with LIBBPF_DYNAMIC=3D1) stops with:
+>  
+>  INSTALL ?= install
+>  RM ?= rm -f
+> @@ -63,6 +72,19 @@ RM ?= rm -f
+>  FEATURE_USER = .bpftool
+>  FEATURE_TESTS = libbfd disassembler-four-args reallocarray zlib
+>  FEATURE_DISPLAY = libbfd disassembler-four-args zlib
+> +ifdef LIBBPF_DYNAMIC
+> +  FEATURE_TESTS   += libbpf
+> +  FEATURE_DISPLAY += libbpf
+> +
+> +  # for linking with debug library run:
+> +  # make LIBBPF_DYNAMIC=1 LIBBPF_DIR=/opt/libbpf
+> +  ifdef LIBBPF_DIR
+> +    LIBBPF_CFLAGS  := -I$(LIBBPF_DIR)/include
+> +    LIBBPF_LDFLAGS := -L$(LIBBPF_DIR)/$(libdir_relative)
+> +    FEATURE_CHECK_CFLAGS-libbpf  := $(LIBBPF_CFLAGS)
+> +    FEATURE_CHECK_LDFLAGS-libbpf := $(LIBBPF_LDFLAGS)
+> +  endif
+> +endif
+>  
+>  check_feat := 1
+>  NON_CHECK_FEAT_TARGETS := clean uninstall doc doc-clean doc-install doc-uninstall
+> @@ -88,6 +110,20 @@ ifeq ($(feature-reallocarray), 0)
+>  CFLAGS += -DCOMPAT_NEED_REALLOCARRAY
+>  endif
+>  
+> +ifdef LIBBPF_DYNAMIC
+> +  ifeq ($(feature-libbpf), 1)
+> +    # bpftool uses non-exported functions from libbpf, so pass both dynamic and
+> +    # static versions and let the linker figure it out
+> +    LIBS    := -lbpf $(LIBBPF) $(LIBS)
 
-  $ make -C tools/bpf/bpftool LIBBPF_DYNAMIC=3D1
-    Auto-detecting system features:
-    ...                        libbfd: [ on  ]
-    ...        disassembler-four-args: [ on  ]
-    ...                          zlib: [ on  ]
-    ...                        libbpf: [ OFF ]
+[$(LIBBPF) added to $(LIBS) here...]
 
-  Makefile:102: *** Error: No libbpf devel library found, please install-de=
-vel or libbpf-dev.
+> +    CFLAGS  += $(LIBBPF_CFLAGS)
+> +    LDFLAGS += $(LIBBPF_LDFLAGS)
+> +  else
+> +    dummy := $(error Error: No libbpf devel library found, please install-devel or libbpf-dev.)
 
-Adding LIBBPF_DIR compile variable to allow linking with
-libbpf installed into specific directory:
+“install-devel” :)
 
-  $ make -C tools/lib/bpf/ prefix=3D/tmp/libbpf/ install_lib install_header=
-s
-  $ make -C tools/bpf/bpftool/ LIBBPF_DYNAMIC=3D1 LIBBPF_DIR=3D/tmp/libbpf/
+> +  endif
+> +else
+> +  LIBS := $(LIBBPF) $(LIBS)
 
-It might be needed to clean build tree first because features
-framework does not detect the change properly:
+[... and here]
 
-  $ make -C tools/build/feature clean
-  $ make -C tools/bpf/bpftool/ clean
+> +endif
+> +
+>  include $(wildcard $(OUTPUT)*.d)
+>  
+>  all: $(OUTPUT)bpftool
+> 
 
-Since bpftool uses bits of libbpf that are not exported as public API in
-the .so version, we also pass in libbpf.a to the linker, which allows it to
-pick up the private functions from the static library without having to
-expose them as ABI.
-
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
----
-v2:
-  - Pass .a file to linker when dynamically linking, so bpftool can use
-    private functions from libbpf without exposing them as API.
-   =20
- tools/bpf/bpftool/Makefile | 38 +++++++++++++++++++++++++++++++++++++-
- 1 file changed, 37 insertions(+), 1 deletion(-)
-
-diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-index 39bc6f0f4f0b..397051ed9e41 100644
---- a/tools/bpf/bpftool/Makefile
-+++ b/tools/bpf/bpftool/Makefile
-@@ -1,6 +1,15 @@
- # SPDX-License-Identifier: GPL-2.0-only
-+# LIBBPF_DYNAMIC to enable libbpf dynamic linking.
-+
- include ../../scripts/Makefile.include
- include ../../scripts/utilities.mak
-+include ../../scripts/Makefile.arch
-+
-+ifeq ($(LP64), 1)
-+  libdir_relative =3D lib64
-+else
-+  libdir_relative =3D lib
-+endif
-=20
- ifeq ($(srctree),)
- srctree :=3D $(patsubst %/,%,$(dir $(CURDIR)))
-@@ -55,7 +64,7 @@ ifneq ($(EXTRA_LDFLAGS),)
- LDFLAGS +=3D $(EXTRA_LDFLAGS)
- endif
-=20
--LIBS =3D $(LIBBPF) -lelf -lz
-+LIBS =3D -lelf -lz
-=20
- INSTALL ?=3D install
- RM ?=3D rm -f
-@@ -63,6 +72,19 @@ RM ?=3D rm -f
- FEATURE_USER =3D .bpftool
- FEATURE_TESTS =3D libbfd disassembler-four-args reallocarray zlib
- FEATURE_DISPLAY =3D libbfd disassembler-four-args zlib
-+ifdef LIBBPF_DYNAMIC
-+  FEATURE_TESTS   +=3D libbpf
-+  FEATURE_DISPLAY +=3D libbpf
-+
-+  # for linking with debug library run:
-+  # make LIBBPF_DYNAMIC=3D1 LIBBPF_DIR=3D/opt/libbpf
-+  ifdef LIBBPF_DIR
-+    LIBBPF_CFLAGS  :=3D -I$(LIBBPF_DIR)/include
-+    LIBBPF_LDFLAGS :=3D -L$(LIBBPF_DIR)/$(libdir_relative)
-+    FEATURE_CHECK_CFLAGS-libbpf  :=3D $(LIBBPF_CFLAGS)
-+    FEATURE_CHECK_LDFLAGS-libbpf :=3D $(LIBBPF_LDFLAGS)
-+  endif
-+endif
-=20
- check_feat :=3D 1
- NON_CHECK_FEAT_TARGETS :=3D clean uninstall doc doc-clean doc-install doc-=
-uninstall
-@@ -88,6 +110,20 @@ ifeq ($(feature-reallocarray), 0)
- CFLAGS +=3D -DCOMPAT_NEED_REALLOCARRAY
- endif
-=20
-+ifdef LIBBPF_DYNAMIC
-+  ifeq ($(feature-libbpf), 1)
-+    # bpftool uses non-exported functions from libbpf, so pass both dynami=
-c and
-+    # static versions and let the linker figure it out
-+    LIBS    :=3D -lbpf $(LIBBPF) $(LIBS)
-+    CFLAGS  +=3D $(LIBBPF_CFLAGS)
-+    LDFLAGS +=3D $(LIBBPF_LDFLAGS)
-+  else
-+    dummy :=3D $(error Error: No libbpf devel library found, please instal=
-l-devel or libbpf-dev.)
-+  endif
-+else
-+  LIBS :=3D $(LIBBPF) $(LIBS)
-+endif
-+
- include $(wildcard $(OUTPUT)*.d)
-=20
- all: $(OUTPUT)bpftool
---=20
-2.24.0
-
+Thanks,
+Quentin
