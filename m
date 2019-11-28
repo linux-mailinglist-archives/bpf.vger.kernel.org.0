@@ -2,95 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C81210C33F
-	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2019 05:37:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4350710C349
+	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2019 05:56:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727580AbfK1EhQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Nov 2019 23:37:16 -0500
-Received: from mail-io1-f68.google.com ([209.85.166.68]:41953 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726401AbfK1EhQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 Nov 2019 23:37:16 -0500
-Received: by mail-io1-f68.google.com with SMTP id z26so23946432iot.8;
-        Wed, 27 Nov 2019 20:37:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=MhBD8FldgWDB7ubM1+bg4CA0wEesKVjK+ARC6kecBbM=;
-        b=uePEqEdxv92L3sIfzubpAqH7fYlICZEKjnG6tZwRSrldFfjiGBQcEP/ri/HIj8H2fD
-         B50DaQfhflLV0weORepX0LHHtXBMeMSPBQrfmXhJwKex5Ki6vQ6upj3vcCFxAY0gGDe0
-         Sm3tnj0umtnVfSSccqACwedQJmC0rA+AJhVkmMTv740V2WP+LhPmAjyVHlkGrazMwqJ2
-         JCEfvVftCivGHsZwDYJk3P11ARg22fMfa0K1oBsUaWia6+5HCC4HQtWaxHY9eCaHRwiv
-         4cRX9J9HN68cPwVRXC71M0drLVEgYH6IM8F7+oZNWq4iDbYW5SyGauEvHCEPts/b2kQq
-         NjQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=MhBD8FldgWDB7ubM1+bg4CA0wEesKVjK+ARC6kecBbM=;
-        b=S7cX6jfGQv1aM7vRiPefcKzZDANPeBWgjGso4mTMWG2QxkmQJ5GGn56Ti+yz4+erc3
-         4gl2JgBJaLFT1yB1kQEsgTP5bkBmxaVP+zk744F/Nes+SijpkoDgwXrvG71u3Cm0hlN5
-         BM+jYF/a+9AWK9GO51ntbbbM861kVoOdFpO2hFkmZhZ4RVbpIdXQ5J/KMb8m6lcs58N/
-         sI1eJMdurdRGFYXbfQqfob/iXOMyZYfN++XbTOw4iEWGCfEcGNK2XJ8BFd3yFIKNBc8F
-         U9ybvELLPyWSEj7lp3BVYnoDTYGSXP6G5a7c6cjQgASxSCj1HR9f9kltVmccH+hj6Fki
-         ImKQ==
-X-Gm-Message-State: APjAAAVa1kYaEwhrkuv/EG+HVT0oBui/nFOc7ZibFdhnDwPvXEXlCRrB
-        tb9Cl959MAglWQXFqoF58WPwz1u4
-X-Google-Smtp-Source: APXvYqw6noxU06VeRXfTZCraNQ+koeXy+v6wrLYFU1b+DMhT3fEUFgPoBbCxtrD59jAWiiI2ylpLtw==
-X-Received: by 2002:a6b:d119:: with SMTP id l25mr38250926iob.44.1574915835625;
-        Wed, 27 Nov 2019 20:37:15 -0800 (PST)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id l9sm4266093iob.37.2019.11.27.20.37.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Nov 2019 20:37:15 -0800 (PST)
-Date:   Wed, 27 Nov 2019 20:37:07 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Stanislav Fomichev <sdf@google.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
-        Stanislav Fomichev <sdf@google.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Message-ID: <5ddf4ef366a69_3c082aca725cc5bcbb@john-XPS-13-9370.notmuch>
-In-Reply-To: <20191127225759.39923-1-sdf@google.com>
-References: <20191127225759.39923-1-sdf@google.com>
-Subject: RE: [PATCH bpf] bpf: force .BTF section start to zero when dumping
- from vmlinux
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+        id S1727154AbfK1E4m (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Nov 2019 23:56:42 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:58376 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726401AbfK1E4m (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 Nov 2019 23:56:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=CT/8odWIbACPFsKf6XX/RegMTNWLBmmF9UXx2vlp7QM=; b=Ay9Pv77iPLbsgsTnRZJCenSSn
+        QsVROvIaJBvi+tic+gsujlcF2kpi6eMbe0D6qwOneUzG2ncuul+maE80Ub4/Gt0csSWswoOc597TZ
+        Wq2HDCoo2Um/BMc+q7u/xhkK3K6iHD8jdblyHT5++RSvEjGjRvphQv4nY6jDKjXjAYzkc19VwRzFY
+        tJUzl9Mv68erhy7dR7wH96W+1WZH1tRRuZuff5rDU2VlofyXftffwbmUGxMASh0fZvTo1etQt61GZ
+        ENpTRk9ShYuZIFv4M2cgVp5tpxJ29gyhRMpMhe5LuH/oQTJtM5vfkCR8RSTap3GogItS/DKauRhTL
+        C6wxuLlng==;
+Received: from [2601:1c0:6280:3f0::5a22]
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1iaBr7-0001AE-3D; Thu, 28 Nov 2019 04:56:41 +0000
+Subject: Re: [PATCH bpf] bpf: Fix build in minimal configurations
+To:     Alexei Starovoitov <ast@kernel.org>, davem@davemloft.net
+Cc:     daniel@iogearbox.net, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@fb.com
+References: <20191128043508.2346723-1-ast@kernel.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <b803cae0-4514-4239-4004-4c3090ca67c4@infradead.org>
+Date:   Wed, 27 Nov 2019 20:56:39 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.1
+MIME-Version: 1.0
+In-Reply-To: <20191128043508.2346723-1-ast@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Stanislav Fomichev wrote:
-> While trying to figure out why fentry_fexit selftest doesn't pass for me
-> (old pahole, broken BTF), I found out that my latest patch can break vmlinux
-> .BTF generation. objcopy preserves section start when doing --only-section,
-> so there is a chance (depending on where pahole inserts .BTF section) to
-> have leading empty zeroes. Let's explicitly force section offset to zero.
+On 11/27/19 8:35 PM, Alexei Starovoitov wrote:
+> Some kconfigs can have BPF enabled without a single valid program type.
+> In such configurations the build will fail with:
+> ./kernel/bpf/btf.c:3466:1: error: empty enum is invalid
 > 
-> Before:
-> $ objcopy --set-section-flags .BTF=alloc -O binary \
-> 	--only-section=.BTF vmlinux .btf.vmlinux.bin
-> $ xxd .btf.vmlinux.bin | head -n1
-> 00000000: 0000 0000 0000 0000 0000 0000 0000 0000  ................
+> Fix it by adding unused value to the enum.
 > 
-> After:
-> $ objcopy --change-section-address .BTF=0 \
-> 	--set-section-flags .BTF=alloc -O binary \
-> 	--only-section=.BTF vmlinux .btf.vmlinux.bin
-> $ xxd .btf.vmlinux.bin | head -n1
-> 00000000: 9feb 0100 1800 0000 0000 0000 80e1 1c00  ................
->           ^BTF magic
-> 
-> As part of this change, I'm also dropping '2>/dev/null' from objcopy
-> invocation to be able to catch possible other issues (objcopy doesn't
-> produce any warnings for me anymore, it did before with --dump-section).
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 
-Agree dropping /dev/null seems like a good choice. Otherwise seems reasonable
-to me.
+Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
 
-Acked-by: John Fastabend <john.fastabend@gmail.com>
+Thanks.
+
+> ---
+>  kernel/bpf/btf.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index bd5e11881ba3..7d40da240891 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -3463,6 +3463,7 @@ enum {
+>  	__ctx_convert##_id,
+>  #include <linux/bpf_types.h>
+>  #undef BPF_PROG_TYPE
+> +	__ctx_convert_unused, /* to avoid empty enum in extreme .config */
+>  };
+>  static u8 bpf_ctx_convert_map[] = {
+>  #define BPF_PROG_TYPE(_id, _name, prog_ctx_type, kern_ctx_type) \
+> 
+
+
+-- 
+~Randy
+
