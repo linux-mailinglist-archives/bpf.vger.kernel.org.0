@@ -2,54 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7566010C9AC
-	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2019 14:42:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABD8F10CAB3
+	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2019 15:53:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727282AbfK1Nl0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 Nov 2019 08:41:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37940 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727263AbfK1NlZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 28 Nov 2019 08:41:25 -0500
-Received: from quaco.ghostprotocols.net (unknown [179.97.35.50])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C12FC217AB;
-        Thu, 28 Nov 2019 13:41:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1574948484;
-        bh=FbyHzCkqqt4La7dQuHyRt78ivueB/7qDZTxHfAcFAhU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zZWzOWsIIeGHSaPE9zHssZ7pah2E1rH62tj5EgbTbySvIgsY1gtqgcV0mEmd9Nk4T
-         pyXp4yVp87BKAAUr+jjGmsrUA1N2xnH3bJsAt2Ku8G/T8ixtGK6pblUQTlFpoigC+c
-         +i5JY/tv4ccB3MfDjFrVrTW+izup0VBCR7goVjLU=
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-        Clark Williams <williams@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        id S1726934AbfK1Oxd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 Nov 2019 09:53:33 -0500
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:46831 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726609AbfK1Oxc (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 28 Nov 2019 09:53:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1574952810;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rSRdu36kdw7cp4aj5uiQyY93zJOiHwsJ9kURwhoRP88=;
+        b=OqrDtNi/w4ql95WxW9pAzMfWN2FB4wzJHck8v9lqrjTxFwwDM+RFJfKYdri4YkS5F2PBd2
+        +MfdGd3i9yBmjEr88uTAFyH9sieB6Mx9to2GEtrbf77Qu0/GV9qrx4+xWCm1cF014QgeNt
+        4FenBwfDlO+oSSvne8SeqPHpUC55ZsY=
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
+ [209.85.208.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-436-YKOmXDXfOkWtDvI6B9Z4tA-1; Thu, 28 Nov 2019 09:53:29 -0500
+Received: by mail-lj1-f199.google.com with SMTP id b1so252176ljp.13
+        for <bpf@vger.kernel.org>; Thu, 28 Nov 2019 06:53:28 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=DFfjqzHfd87DTRbEbayt6s48Ee8N6vIkSod5kqZnQ5Y=;
+        b=jcY1bV9EhgSYUlSkT+SzwTmPRR+oFGshLqKsLh7wZGJrju8KBbu2xwgcvhKBRiVqxG
+         libEs8KGr9ss388T6vHkY4fLsVFaKpWCtbnSbhdkTpfMknCXqgdc8nKu2isXK5u0z/gC
+         IPJpqDNybfs95q1876CUN192vTWMn3NyRtbKlmRZSv62AxlNTaADejFyO5mljA+cKYbI
+         aH5pbagEsAXSrLxo4DlhCyzEvTfXTF0h5/uHYdrlgb0XMU9PNZqCtSsoQ18W6ZNKe7iE
+         M5WOIsI4M5FvvvLVzHfrmiFeLnuthf5vFk5kCrEQ2rXjcNwWUQShgHswG7qfGnJb6O7A
+         EZjg==
+X-Gm-Message-State: APjAAAVUIXRBVmL52szLiZOkEzKjjTuk6klYPwsseFmTSJqQsBP55bjd
+        DIW9S7htdc5iplnH25nXVcf5jzRrN98ZmfUhcVhLplzq9qcCSuRW/d41e2c9tXVzApJhEdaPDAB
+        CiSc4uczYySnM
+X-Received: by 2002:a2e:b007:: with SMTP id y7mr34551262ljk.69.1574952807551;
+        Thu, 28 Nov 2019 06:53:27 -0800 (PST)
+X-Google-Smtp-Source: APXvYqyX6WbETt4gMUWpV0wZ/2Py0Q2dWzIgwkCGxTImfwQqW1dKylmOb5oxrAJ6cM1GAIE8WjpyYQ==
+X-Received: by 2002:a2e:b007:: with SMTP id y7mr34551238ljk.69.1574952807282;
+        Thu, 28 Nov 2019 06:53:27 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id k10sm8611145lfo.76.2019.11.28.06.53.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Nov 2019 06:53:26 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 62FC9180339; Thu, 28 Nov 2019 15:53:24 +0100 (CET)
+From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, lkml <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Michael Petlan <mpetlan@redhat.com>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
         Martin KaFai Lau <kafai@fb.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        bpf@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH 15/22] perf tools: Allow to link with libbpf dynamicaly
-Date:   Thu, 28 Nov 2019 10:40:20 -0300
-Message-Id: <20191128134027.23726-16-acme@kernel.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20191128134027.23726-1-acme@kernel.org>
-References: <20191128134027.23726-1-acme@kernel.org>
+        Andrii Nakryiko <andriin@fb.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Subject: [PATCH bpf v2] bpftool: Allow to link libbpf dynamically
+Date:   Thu, 28 Nov 2019 15:53:16 +0100
+Message-Id: <20191128145316.1044912-1-toke@redhat.com>
+X-Mailer: git-send-email 2.24.0
+In-Reply-To: <20191127094837.4045-1-jolsa@kernel.org>
+References: 
 MIME-Version: 1.0
+X-MC-Unique: YKOmXDXfOkWtDvI6B9Z4tA-1
+X-Mimecast-Spam-Score: 0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
@@ -58,170 +86,124 @@ X-Mailing-List: bpf@vger.kernel.org
 From: Jiri Olsa <jolsa@kernel.org>
 
 Currently we support only static linking with kernel's libbpf
-(tools/lib/bpf). This patch adds libbpf package detection and support to
-link perf with it dynamically.
+(tools/lib/bpf). This patch adds LIBBPF_DYNAMIC compile variable
+that triggers libbpf detection and bpf dynamic linking:
 
-The libbpf package status is displayed with:
+  $ make -C tools/bpf/bpftool make LIBBPF_DYNAMIC=3D1
 
-  $ make VF=1
-  Auto-detecting system features:
-  ...
-  ...                        libbpf: [ on  ]
+If libbpf is not installed, build (with LIBBPF_DYNAMIC=3D1) stops with:
 
-It's not checked by default, because it's quite new.  Once it's on most
-distros we can switch it on.
+  $ make -C tools/bpf/bpftool LIBBPF_DYNAMIC=3D1
+    Auto-detecting system features:
+    ...                        libbfd: [ on  ]
+    ...        disassembler-four-args: [ on  ]
+    ...                          zlib: [ on  ]
+    ...                        libbpf: [ OFF ]
 
-For the same reason it's not added to the test-all check.
+  Makefile:102: *** Error: No libbpf devel library found, please install-de=
+vel or libbpf-dev.
 
-Perf does not need advanced version of libbpf, so we can check just for
-the base bpf_object__open function.
+Adding LIBBPF_DIR compile variable to allow linking with
+libbpf installed into specific directory:
 
-Adding new compile variable to detect libbpf package and link bpf
-dynamically:
+  $ make -C tools/lib/bpf/ prefix=3D/tmp/libbpf/ install_lib install_header=
+s
+  $ make -C tools/bpf/bpftool/ LIBBPF_DYNAMIC=3D1 LIBBPF_DIR=3D/tmp/libbpf/
 
-  $ make LIBBPF_DYNAMIC=1
-    ...
-    LINK     perf
-  $ ldd perf | grep bpf
-    libbpf.so.0 => /lib64/libbpf.so.0 (0x00007f46818bc000)
+It might be needed to clean build tree first because features
+framework does not detect the change properly:
 
-If libbpf is not installed, build stops with:
+  $ make -C tools/build/feature clean
+  $ make -C tools/bpf/bpftool/ clean
 
-  Makefile.config:486: *** Error: No libbpf devel library found,\
-  please install libbpf-devel.  Stop.
-
-Committer testing:
-
-  $ make LIBBPF_DYNAMIC=1 -C tools/perf O=/tmp/build/perf
-  make: Entering directory '/home/acme/git/perf/tools/perf'
-    BUILD:   Doing 'make -j8' parallel build
-  Makefile.config:493: *** Error: No libbpf devel library found, please install libbpf-devel.  Stop.
-  make[1]: *** [Makefile.perf:225: sub-make] Error 2
-  make: *** [Makefile:70: all] Error 2
-  make: Leaving directory '/home/acme/git/perf/tools/perf'
-  $
+Since bpftool uses bits of libbpf that are not exported as public API in
+the .so version, we also pass in libbpf.a to the linker, which allows it to
+pick up the private functions from the static library without having to
+expose them as ABI.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc: Toke Høiland-Jørgensen <toke@redhat.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Andrii Nakryiko <andriin@fb.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Jesper Dangaard Brouer <brouer@redhat.com>
-Cc: Martin KaFai Lau <kafai@fb.com>
-Cc: Michael Petlan <mpetlan@redhat.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Song Liu <songliubraving@fb.com>
-Cc: Yonghong Song <yhs@fb.com>
-Cc: bpf@vger.kernel.org
-Cc: netdev@vger.kernel.org
-Link: http://lore.kernel.org/lkml/20191126121253.28253-1-jolsa@kernel.org
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 ---
- tools/build/Makefile.feature      |  3 ++-
- tools/build/feature/Makefile      |  4 ++++
- tools/build/feature/test-libbpf.c |  7 +++++++
- tools/perf/Makefile.config        | 10 ++++++++++
- tools/perf/Makefile.perf          |  6 +++++-
- 5 files changed, 28 insertions(+), 2 deletions(-)
- create mode 100644 tools/build/feature/test-libbpf.c
+v2:
+  - Pass .a file to linker when dynamically linking, so bpftool can use
+    private functions from libbpf without exposing them as API.
+   =20
+ tools/bpf/bpftool/Makefile | 38 +++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 37 insertions(+), 1 deletion(-)
 
-diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
-index 8a19753cc26a..574c2e0b9d20 100644
---- a/tools/build/Makefile.feature
-+++ b/tools/build/Makefile.feature
-@@ -96,7 +96,8 @@ FEATURE_TESTS_EXTRA :=                  \
-          cxx                            \
-          llvm                           \
-          llvm-version                   \
--         clang
-+         clang                          \
-+         libbpf
- 
- FEATURE_TESTS ?= $(FEATURE_TESTS_BASIC)
- 
-diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
-index 8499385365c0..f30a89046aa3 100644
---- a/tools/build/feature/Makefile
-+++ b/tools/build/feature/Makefile
-@@ -53,6 +53,7 @@ FILES=                                          \
-          test-zlib.bin                          \
-          test-lzma.bin                          \
-          test-bpf.bin                           \
-+         test-libbpf.bin                        \
-          test-get_cpuid.bin                     \
-          test-sdt.bin                           \
-          test-cxx.bin                           \
-@@ -270,6 +271,9 @@ $(OUTPUT)test-get_cpuid.bin:
- $(OUTPUT)test-bpf.bin:
- 	$(BUILD)
- 
-+$(OUTPUT)test-libbpf.bin:
-+	$(BUILD) -lbpf
+diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+index 39bc6f0f4f0b..397051ed9e41 100644
+--- a/tools/bpf/bpftool/Makefile
++++ b/tools/bpf/bpftool/Makefile
+@@ -1,6 +1,15 @@
+ # SPDX-License-Identifier: GPL-2.0-only
++# LIBBPF_DYNAMIC to enable libbpf dynamic linking.
 +
- $(OUTPUT)test-sdt.bin:
- 	$(BUILD)
- 
-diff --git a/tools/build/feature/test-libbpf.c b/tools/build/feature/test-libbpf.c
-new file mode 100644
-index 000000000000..a508756cf4cc
---- /dev/null
-+++ b/tools/build/feature/test-libbpf.c
-@@ -0,0 +1,7 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <bpf/libbpf.h>
+ include ../../scripts/Makefile.include
+ include ../../scripts/utilities.mak
++include ../../scripts/Makefile.arch
 +
-+int main(void)
-+{
-+	return bpf_object__open("test") ? 0 : -1;
-+}
-diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-index 1783427da9b0..c90f4146e5a2 100644
---- a/tools/perf/Makefile.config
-+++ b/tools/perf/Makefile.config
-@@ -483,6 +483,16 @@ ifndef NO_LIBELF
-     ifeq ($(feature-bpf), 1)
-       CFLAGS += -DHAVE_LIBBPF_SUPPORT
-       $(call detected,CONFIG_LIBBPF)
-+
-+      # detecting libbpf without LIBBPF_DYNAMIC, so make VF=1 shows libbpf detection status
-+      $(call feature_check,libbpf)
-+      ifdef LIBBPF_DYNAMIC
-+        ifeq ($(feature-libbpf), 1)
-+          EXTLIBS += -lbpf
-+        else
-+          dummy := $(error Error: No libbpf devel library found, please install libbpf-devel);
-+        endif
-+      endif
-     endif
- 
-     ifndef NO_DWARF
-diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-index 1cd294468a1f..eae5d5e95952 100644
---- a/tools/perf/Makefile.perf
-+++ b/tools/perf/Makefile.perf
-@@ -116,6 +116,8 @@ include ../scripts/utilities.mak
- #
- # Define TCMALLOC to enable tcmalloc heap profiling.
- #
-+# Define LIBBPF_DYNAMIC to enable libbpf dynamic linking.
-+#
- 
- # As per kernel Makefile, avoid funny character set dependencies
- unexport LC_ALL
-@@ -360,7 +362,9 @@ export PERL_PATH
- 
- PERFLIBS = $(LIBAPI) $(LIBTRACEEVENT) $(LIBSUBCMD) $(LIBPERF)
- ifndef NO_LIBBPF
--  PERFLIBS += $(LIBBPF)
-+  ifndef LIBBPF_DYNAMIC
-+    PERFLIBS += $(LIBBPF)
-+  endif
++ifeq ($(LP64), 1)
++  libdir_relative =3D lib64
++else
++  libdir_relative =3D lib
++endif
+=20
+ ifeq ($(srctree),)
+ srctree :=3D $(patsubst %/,%,$(dir $(CURDIR)))
+@@ -55,7 +64,7 @@ ifneq ($(EXTRA_LDFLAGS),)
+ LDFLAGS +=3D $(EXTRA_LDFLAGS)
  endif
- 
- # We choose to avoid "if .. else if .. else .. endif endif"
--- 
-2.21.0
+=20
+-LIBS =3D $(LIBBPF) -lelf -lz
++LIBS =3D -lelf -lz
+=20
+ INSTALL ?=3D install
+ RM ?=3D rm -f
+@@ -63,6 +72,19 @@ RM ?=3D rm -f
+ FEATURE_USER =3D .bpftool
+ FEATURE_TESTS =3D libbfd disassembler-four-args reallocarray zlib
+ FEATURE_DISPLAY =3D libbfd disassembler-four-args zlib
++ifdef LIBBPF_DYNAMIC
++  FEATURE_TESTS   +=3D libbpf
++  FEATURE_DISPLAY +=3D libbpf
++
++  # for linking with debug library run:
++  # make LIBBPF_DYNAMIC=3D1 LIBBPF_DIR=3D/opt/libbpf
++  ifdef LIBBPF_DIR
++    LIBBPF_CFLAGS  :=3D -I$(LIBBPF_DIR)/include
++    LIBBPF_LDFLAGS :=3D -L$(LIBBPF_DIR)/$(libdir_relative)
++    FEATURE_CHECK_CFLAGS-libbpf  :=3D $(LIBBPF_CFLAGS)
++    FEATURE_CHECK_LDFLAGS-libbpf :=3D $(LIBBPF_LDFLAGS)
++  endif
++endif
+=20
+ check_feat :=3D 1
+ NON_CHECK_FEAT_TARGETS :=3D clean uninstall doc doc-clean doc-install doc-=
+uninstall
+@@ -88,6 +110,20 @@ ifeq ($(feature-reallocarray), 0)
+ CFLAGS +=3D -DCOMPAT_NEED_REALLOCARRAY
+ endif
+=20
++ifdef LIBBPF_DYNAMIC
++  ifeq ($(feature-libbpf), 1)
++    # bpftool uses non-exported functions from libbpf, so pass both dynami=
+c and
++    # static versions and let the linker figure it out
++    LIBS    :=3D -lbpf $(LIBBPF) $(LIBS)
++    CFLAGS  +=3D $(LIBBPF_CFLAGS)
++    LDFLAGS +=3D $(LIBBPF_LDFLAGS)
++  else
++    dummy :=3D $(error Error: No libbpf devel library found, please instal=
+l-devel or libbpf-dev.)
++  endif
++else
++  LIBS :=3D $(LIBBPF) $(LIBS)
++endif
++
+ include $(wildcard $(OUTPUT)*.d)
+=20
+ all: $(OUTPUT)bpftool
+--=20
+2.24.0
 
