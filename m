@@ -2,129 +2,226 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A0A010C5EC
-	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2019 10:24:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7566010C9AC
+	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2019 14:42:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726252AbfK1JYW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 Nov 2019 04:24:22 -0500
-Received: from ivanoab7.miniserver.com ([37.128.132.42]:50718 "EHLO
-        www.kot-begemot.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726181AbfK1JYW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 28 Nov 2019 04:24:22 -0500
-Received: from tun252.jain.kot-begemot.co.uk ([192.168.18.6] helo=jain.kot-begemot.co.uk)
-        by www.kot-begemot.co.uk with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <anton.ivanov@cambridgegreys.com>)
-        id 1iaG23-0006JS-1o; Thu, 28 Nov 2019 09:24:16 +0000
-Received: from jain.kot-begemot.co.uk ([192.168.3.3])
-        by jain.kot-begemot.co.uk with esmtp (Exim 4.92)
-        (envelope-from <anton.ivanov@cambridgegreys.com>)
-        id 1iaG20-0006G8-LX; Thu, 28 Nov 2019 09:24:14 +0000
-Subject: Re: [PATCH -next] um: vector: use GFP_ATOMIC under spin lock
-To:     Richard Weinberger <richard@nod.at>
-Cc:     Song Liu <songliubraving@fb.com>,
+        id S1727282AbfK1Nl0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 Nov 2019 08:41:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37940 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727263AbfK1NlZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 28 Nov 2019 08:41:25 -0500
+Received: from quaco.ghostprotocols.net (unknown [179.97.35.50])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C12FC217AB;
+        Thu, 28 Nov 2019 13:41:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1574948484;
+        bh=FbyHzCkqqt4La7dQuHyRt78ivueB/7qDZTxHfAcFAhU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=zZWzOWsIIeGHSaPE9zHssZ7pah2E1rH62tj5EgbTbySvIgsY1gtqgcV0mEmd9Nk4T
+         pyXp4yVp87BKAAUr+jjGmsrUA1N2xnH3bJsAt2Ku8G/T8ixtGK6pblUQTlFpoigC+c
+         +i5JY/tv4ccB3MfDjFrVrTW+izup0VBCR7goVjLU=
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+        Clark Williams <williams@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Andrii Nakryiko <andriin@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        linux-um <linux-um@lists.infradead.org>,
-        Jeff Dike <jdike@addtoit.com>,
-        kernel-janitors <kernel-janitors@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Wei Yongjun <weiyongjun1@huawei.com>,
-        netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
         Martin KaFai Lau <kafai@fb.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-References: <20191128020147.191893-1-weiyongjun1@huawei.com>
- <20191128080641.GD1781@kadam>
- <5892ee7c-ff24-fb3c-6911-44e0b1d5895f@cambridgegreys.com>
- <1784077834.99875.1574930472125.JavaMail.zimbra@nod.at>
-From:   Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Message-ID: <ceedf42c-2dc0-df2e-cf3f-323c675dec78@cambridgegreys.com>
-Date:   Thu, 28 Nov 2019 09:24:12 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        Michael Petlan <mpetlan@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        bpf@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH 15/22] perf tools: Allow to link with libbpf dynamicaly
+Date:   Thu, 28 Nov 2019 10:40:20 -0300
+Message-Id: <20191128134027.23726-16-acme@kernel.org>
+X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20191128134027.23726-1-acme@kernel.org>
+References: <20191128134027.23726-1-acme@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <1784077834.99875.1574930472125.JavaMail.zimbra@nod.at>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Score: -1.0
-X-Spam-Score: -1.0
-X-Clacks-Overhead: GNU Terry Pratchett
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+From: Jiri Olsa <jolsa@kernel.org>
 
+Currently we support only static linking with kernel's libbpf
+(tools/lib/bpf). This patch adds libbpf package detection and support to
+link perf with it dynamically.
 
-On 28/11/2019 08:41, Richard Weinberger wrote:
-> ----- Ursprüngliche Mail -----
->> Von: "anton ivanov" <anton.ivanov@cambridgegreys.com>
->> An: "Dan Carpenter" <dan.carpenter@oracle.com>, "Wei Yongjun" <weiyongjun1@huawei.com>
->> CC: "Song Liu" <songliubraving@fb.com>, "Daniel Borkmann" <daniel@iogearbox.net>, "kernel-janitors"
->> <kernel-janitors@vger.kernel.org>, "richard" <richard@nod.at>, "Jeff Dike" <jdike@addtoit.com>, "linux-um"
->> <linux-um@lists.infradead.org>, "Alexei Starovoitov" <ast@kernel.org>, "netdev" <netdev@vger.kernel.org>,
->> bpf@vger.kernel.org, "Martin KaFai Lau" <kafai@fb.com>
->> Gesendet: Donnerstag, 28. November 2019 09:18:30
->> Betreff: Re: [PATCH -next] um: vector: use GFP_ATOMIC under spin lock
-> 
->> On 28/11/2019 08:06, Dan Carpenter wrote:
->>> On Thu, Nov 28, 2019 at 02:01:47AM +0000, Wei Yongjun wrote:
->>>> A spin lock is taken here so we should use GFP_ATOMIC.
->>>>
->>>> Fixes: 9807019a62dc ("um: Loadable BPF "Firmware" for vector drivers")
->>>> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
->>>> ---
->>>>    arch/um/drivers/vector_kern.c | 4 ++--
->>>>    1 file changed, 2 insertions(+), 2 deletions(-)
->>>>
->>>> diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
->>>> index 92617e16829e..6ff0065a271d 100644
->>>> --- a/arch/um/drivers/vector_kern.c
->>>> +++ b/arch/um/drivers/vector_kern.c
->>>> @@ -1402,7 +1402,7 @@ static int vector_net_load_bpf_flash(struct net_device
->>>> *dev,
->>>>    		kfree(vp->bpf->filter);
->>>>    		vp->bpf->filter = NULL;
->>>>    	} else {
->>>> -		vp->bpf = kmalloc(sizeof(struct sock_fprog), GFP_KERNEL);
->>>> +		vp->bpf = kmalloc(sizeof(struct sock_fprog), GFP_ATOMIC);
->>>>    		if (vp->bpf == NULL) {
->>>>    			netdev_err(dev, "failed to allocate memory for firmware\n");
->>>>    			goto flash_fail;
->>>> @@ -1414,7 +1414,7 @@ static int vector_net_load_bpf_flash(struct net_device
->>>> *dev,
->>>>    	if (request_firmware(&fw, efl->data, &vdevice->pdev.dev))
->>>               ^^^^^^^^^^^^^^^^
->>>
->>> Is it really possible to call request_firmware() while holding a
->>> spin_lock?  I was so sure that read from the disk.
->>
->> Works, I tested the patch quite a few times.
-> 
-> It works because of the nature of UML ->no  SMP or PREEMPT.
-> But better request the firmware before taking the spinlock.
-> request_firmware() can block.
-> Same for the kmalloc(), just allocate the buffer before and then assign
-> the pointer under the lock. That way you don't need GFP_ATOMIC.
+The libbpf package status is displayed with:
 
-Ack.
+  $ make VF=1
+  Auto-detecting system features:
+  ...
+  ...                        libbpf: [ on  ]
 
-I will make an incremental on top of the existing patch (as that is 
-already in -next
+It's not checked by default, because it's quite new.  Once it's on most
+distros we can switch it on.
 
-Brgds,
+For the same reason it's not added to the test-all check.
 
-> 
-> Thanks,
-> //richard
-> 
-> _______________________________________________
-> linux-um mailing list
-> linux-um@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-um
-> 
+Perf does not need advanced version of libbpf, so we can check just for
+the base bpf_object__open function.
 
+Adding new compile variable to detect libbpf package and link bpf
+dynamically:
+
+  $ make LIBBPF_DYNAMIC=1
+    ...
+    LINK     perf
+  $ ldd perf | grep bpf
+    libbpf.so.0 => /lib64/libbpf.so.0 (0x00007f46818bc000)
+
+If libbpf is not installed, build stops with:
+
+  Makefile.config:486: *** Error: No libbpf devel library found,\
+  please install libbpf-devel.  Stop.
+
+Committer testing:
+
+  $ make LIBBPF_DYNAMIC=1 -C tools/perf O=/tmp/build/perf
+  make: Entering directory '/home/acme/git/perf/tools/perf'
+    BUILD:   Doing 'make -j8' parallel build
+  Makefile.config:493: *** Error: No libbpf devel library found, please install libbpf-devel.  Stop.
+  make[1]: *** [Makefile.perf:225: sub-make] Error 2
+  make: *** [Makefile:70: all] Error 2
+  make: Leaving directory '/home/acme/git/perf/tools/perf'
+  $
+
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Cc: Toke Høiland-Jørgensen <toke@redhat.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Andrii Nakryiko <andriin@fb.com>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Jesper Dangaard Brouer <brouer@redhat.com>
+Cc: Martin KaFai Lau <kafai@fb.com>
+Cc: Michael Petlan <mpetlan@redhat.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Song Liu <songliubraving@fb.com>
+Cc: Yonghong Song <yhs@fb.com>
+Cc: bpf@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Link: http://lore.kernel.org/lkml/20191126121253.28253-1-jolsa@kernel.org
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+---
+ tools/build/Makefile.feature      |  3 ++-
+ tools/build/feature/Makefile      |  4 ++++
+ tools/build/feature/test-libbpf.c |  7 +++++++
+ tools/perf/Makefile.config        | 10 ++++++++++
+ tools/perf/Makefile.perf          |  6 +++++-
+ 5 files changed, 28 insertions(+), 2 deletions(-)
+ create mode 100644 tools/build/feature/test-libbpf.c
+
+diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
+index 8a19753cc26a..574c2e0b9d20 100644
+--- a/tools/build/Makefile.feature
++++ b/tools/build/Makefile.feature
+@@ -96,7 +96,8 @@ FEATURE_TESTS_EXTRA :=                  \
+          cxx                            \
+          llvm                           \
+          llvm-version                   \
+-         clang
++         clang                          \
++         libbpf
+ 
+ FEATURE_TESTS ?= $(FEATURE_TESTS_BASIC)
+ 
+diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
+index 8499385365c0..f30a89046aa3 100644
+--- a/tools/build/feature/Makefile
++++ b/tools/build/feature/Makefile
+@@ -53,6 +53,7 @@ FILES=                                          \
+          test-zlib.bin                          \
+          test-lzma.bin                          \
+          test-bpf.bin                           \
++         test-libbpf.bin                        \
+          test-get_cpuid.bin                     \
+          test-sdt.bin                           \
+          test-cxx.bin                           \
+@@ -270,6 +271,9 @@ $(OUTPUT)test-get_cpuid.bin:
+ $(OUTPUT)test-bpf.bin:
+ 	$(BUILD)
+ 
++$(OUTPUT)test-libbpf.bin:
++	$(BUILD) -lbpf
++
+ $(OUTPUT)test-sdt.bin:
+ 	$(BUILD)
+ 
+diff --git a/tools/build/feature/test-libbpf.c b/tools/build/feature/test-libbpf.c
+new file mode 100644
+index 000000000000..a508756cf4cc
+--- /dev/null
++++ b/tools/build/feature/test-libbpf.c
+@@ -0,0 +1,7 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <bpf/libbpf.h>
++
++int main(void)
++{
++	return bpf_object__open("test") ? 0 : -1;
++}
+diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
+index 1783427da9b0..c90f4146e5a2 100644
+--- a/tools/perf/Makefile.config
++++ b/tools/perf/Makefile.config
+@@ -483,6 +483,16 @@ ifndef NO_LIBELF
+     ifeq ($(feature-bpf), 1)
+       CFLAGS += -DHAVE_LIBBPF_SUPPORT
+       $(call detected,CONFIG_LIBBPF)
++
++      # detecting libbpf without LIBBPF_DYNAMIC, so make VF=1 shows libbpf detection status
++      $(call feature_check,libbpf)
++      ifdef LIBBPF_DYNAMIC
++        ifeq ($(feature-libbpf), 1)
++          EXTLIBS += -lbpf
++        else
++          dummy := $(error Error: No libbpf devel library found, please install libbpf-devel);
++        endif
++      endif
+     endif
+ 
+     ifndef NO_DWARF
+diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+index 1cd294468a1f..eae5d5e95952 100644
+--- a/tools/perf/Makefile.perf
++++ b/tools/perf/Makefile.perf
+@@ -116,6 +116,8 @@ include ../scripts/utilities.mak
+ #
+ # Define TCMALLOC to enable tcmalloc heap profiling.
+ #
++# Define LIBBPF_DYNAMIC to enable libbpf dynamic linking.
++#
+ 
+ # As per kernel Makefile, avoid funny character set dependencies
+ unexport LC_ALL
+@@ -360,7 +362,9 @@ export PERL_PATH
+ 
+ PERFLIBS = $(LIBAPI) $(LIBTRACEEVENT) $(LIBSUBCMD) $(LIBPERF)
+ ifndef NO_LIBBPF
+-  PERFLIBS += $(LIBBPF)
++  ifndef LIBBPF_DYNAMIC
++    PERFLIBS += $(LIBBPF)
++  endif
+ endif
+ 
+ # We choose to avoid "if .. else if .. else .. endif endif"
 -- 
-Anton R. Ivanov
-Cambridgegreys Limited. Registered in England. Company Number 10273661
-https://www.cambridgegreys.com/
+2.21.0
+
