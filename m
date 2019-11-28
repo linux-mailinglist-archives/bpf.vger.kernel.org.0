@@ -2,74 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A41FF10C21D
-	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2019 03:03:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B49A10C33E
+	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2019 05:35:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728860AbfK1CDw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Nov 2019 21:03:52 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:6725 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728855AbfK1CDw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 Nov 2019 21:03:52 -0500
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 266E1405FE787B313E56;
-        Thu, 28 Nov 2019 10:03:50 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.439.0; Thu, 28 Nov 2019 10:03:42 +0800
-From:   Wei Yongjun <weiyongjun1@huawei.com>
-To:     Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>,
-        "Anton Ivanov" <anton.ivanov@cambridgegreys.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>
-CC:     Wei Yongjun <weiyongjun1@huawei.com>,
-        <linux-um@lists.infradead.org>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <kernel-janitors@vger.kernel.org>
-Subject: [PATCH -next] um: vector: use GFP_ATOMIC under spin lock
-Date:   Thu, 28 Nov 2019 02:01:47 +0000
-Message-ID: <20191128020147.191893-1-weiyongjun1@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        id S1727576AbfK1EfX convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Wed, 27 Nov 2019 23:35:23 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:20498 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726401AbfK1EfX (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 27 Nov 2019 23:35:23 -0500
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xAS4ZKFb007244
+        for <bpf@vger.kernel.org>; Wed, 27 Nov 2019 20:35:22 -0800
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by mx0a-00082601.pphosted.com with ESMTP id 2whcy2rdwf-6
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 27 Nov 2019 20:35:22 -0800
+Received: from 2401:db00:12:909f:face:0:3:0 (2620:10d:c081:10::13) by
+ mail.thefacebook.com (2620:10d:c081:35::130) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
+ Wed, 27 Nov 2019 20:35:08 -0800
+Received: by devbig007.ftw2.facebook.com (Postfix, from userid 572438)
+        id 285EF760F05; Wed, 27 Nov 2019 20:35:08 -0800 (PST)
+Smtp-Origin-Hostprefix: devbig
+From:   Alexei Starovoitov <ast@kernel.org>
+Smtp-Origin-Hostname: devbig007.ftw2.facebook.com
+To:     <davem@davemloft.net>
+CC:     <daniel@iogearbox.net>, <rdunlap@infradead.org>,
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <kernel-team@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf] bpf: Fix build in minimal configurations
+Date:   Wed, 27 Nov 2019 20:35:08 -0800
+Message-ID: <20191128043508.2346723-1-ast@kernel.org>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Content-Type:   text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
+ definitions=2019-11-27_07:2019-11-27,2019-11-27 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=526
+ phishscore=0 priorityscore=1501 lowpriorityscore=0 bulkscore=0
+ malwarescore=0 spamscore=0 adultscore=0 suspectscore=1 impostorscore=0
+ mlxscore=0 clxscore=1034 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-1911280038
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-A spin lock is taken here so we should use GFP_ATOMIC.
+Some kconfigs can have BPF enabled without a single valid program type.
+In such configurations the build will fail with:
+./kernel/bpf/btf.c:3466:1: error: empty enum is invalid
 
-Fixes: 9807019a62dc ("um: Loadable BPF "Firmware" for vector drivers")
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+Fix it by adding unused value to the enum.
+
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 ---
- arch/um/drivers/vector_kern.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ kernel/bpf/btf.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
-index 92617e16829e..6ff0065a271d 100644
---- a/arch/um/drivers/vector_kern.c
-+++ b/arch/um/drivers/vector_kern.c
-@@ -1402,7 +1402,7 @@ static int vector_net_load_bpf_flash(struct net_device *dev,
- 		kfree(vp->bpf->filter);
- 		vp->bpf->filter = NULL;
- 	} else {
--		vp->bpf = kmalloc(sizeof(struct sock_fprog), GFP_KERNEL);
-+		vp->bpf = kmalloc(sizeof(struct sock_fprog), GFP_ATOMIC);
- 		if (vp->bpf == NULL) {
- 			netdev_err(dev, "failed to allocate memory for firmware\n");
- 			goto flash_fail;
-@@ -1414,7 +1414,7 @@ static int vector_net_load_bpf_flash(struct net_device *dev,
- 	if (request_firmware(&fw, efl->data, &vdevice->pdev.dev))
- 		goto flash_fail;
- 
--	vp->bpf->filter = kmemdup(fw->data, fw->size, GFP_KERNEL);
-+	vp->bpf->filter = kmemdup(fw->data, fw->size, GFP_ATOMIC);
- 	if (!vp->bpf->filter)
- 		goto free_buffer;
-
-
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index bd5e11881ba3..7d40da240891 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -3463,6 +3463,7 @@ enum {
+ 	__ctx_convert##_id,
+ #include <linux/bpf_types.h>
+ #undef BPF_PROG_TYPE
++	__ctx_convert_unused, /* to avoid empty enum in extreme .config */
+ };
+ static u8 bpf_ctx_convert_map[] = {
+ #define BPF_PROG_TYPE(_id, _name, prog_ctx_type, kern_ctx_type) \
+-- 
+2.23.0
 
