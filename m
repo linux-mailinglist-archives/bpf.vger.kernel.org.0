@@ -2,72 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CBD310C0C6
-	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2019 00:45:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A953A10C100
+	for <lists+bpf@lfdr.de>; Thu, 28 Nov 2019 01:32:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727207AbfK0Xpb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Nov 2019 18:45:31 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:49910 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727126AbfK0Xpb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 Nov 2019 18:45:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:
-        Subject:Sender:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=6Ae0SH75w1m9aU+nYBuK6tJIXgbYW1zryuD5lKGbbEg=; b=Qsj7fvhIVgbdW2la4fC0lhgvY
-        Wo/EmrP1yYHewA72zmi/WVzozZvWb8lBeLvyml2xaT9VBDnOxnAGHjtQOGxdzIlOC5qV2ZrqnS+NM
-        XAUoLDYXcXJgriGImAKwHgBDiYZzXyac48+ufX83dxkhAlzZxijJteCqXkLhGN32LNCOsKAnFutZW
-        J6JDmuuZKrNUvGvKITm+V6dJTbkooW0ztS1A42D/+26BEzcL9QXK0lYrleCHS+aLYRzwi2BIt8XEN
-        TWKWq16+LWH7khXTfkKIY5EjuREmJ6NUW9bRgnSySIuUNyUiP4inGBQf9tYZGqKGbxGKhq0jltmVN
-        kr5sgfsBQ==;
-Received: from [2601:1c0:6280:3f0::5a22]
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1ia6zy-0003tM-SR; Wed, 27 Nov 2019 23:45:30 +0000
-Subject: Re: linux-next: Tree for Nov 19 (bpf/btf)
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bpf@vger.kernel.org,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-References: <20191119194658.39af50d0@canb.auug.org.au>
- <ac0b86e4-611b-81d1-ba09-e819218efe3f@infradead.org>
-Message-ID: <8fa2ace8-c3a5-7d7d-b867-9f1c70981541@infradead.org>
-Date:   Wed, 27 Nov 2019 15:45:30 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.1
+        id S1727126AbfK1Ab4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Nov 2019 19:31:56 -0500
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:39192 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727031AbfK1Ab4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 Nov 2019 19:31:56 -0500
+Received: by mail-lj1-f194.google.com with SMTP id e10so17291166ljj.6;
+        Wed, 27 Nov 2019 16:31:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=brQGdUxSSCA2qoufKtwecSuCiVuN/4tEwRhfBe6lmOo=;
+        b=E6pj5RYGJzxqrgP8rezjlVU5GiydmUWCItzBfy3b7wB/D79TsyKS+0pavZ1yLhuYeA
+         hbUEgAekrVAE+NfU8dnO/4GthJClqM8kgUCJOnwGuuDbtEE2BTbfPTzbNRFOX0X2q1ci
+         9TpYYk5jZB4f+G/jgrUNgVH9wZrBNicCD5HD2KMG+QwskQkhrezLEvHCjkwRZtCEMsFj
+         bnGBBsvb7nfXqV+p/Z3s5+R/VFfcxTy2tSMQWCgl50nzFADzOMZVS3yVBmsd9bAuzVXf
+         zWtxTO54GEW/tVOfPfzB22ugL4PS6+maFL6rl0dESNSLKJmWRF9ExoEtUKfid7DiN/aw
+         hF9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=brQGdUxSSCA2qoufKtwecSuCiVuN/4tEwRhfBe6lmOo=;
+        b=Waf1U27IRt7dv/RumKtCTVIt2JR2ixbsAiyo+O6EZNZW/FRYdU3/6T7UKSKl3mQIWD
+         QQ1l6bwZjJc1/9xOfgdEB+8o9deE+Qevuy1nPsXMsJ2MbLKVE1dt8GRjcrzKLqJeK57m
+         MlU3GaZWEU969j6CmoOonLbSTNBEggc71NjdrXZfncvbxTrkbqKcM3V0bXXLS7X5JmQh
+         4DYckWRJ3aJqLuLT/B00bEUr16cnXem/D9Nh8Gt7LnB1rzE89Zot66RyMpF4vU6endak
+         GQpdXW9E44hqzB0llZLD0epJwEfuvOqCDOLobKAd5taZ3jhDM8+zfKm23keRUk4yW9a/
+         ibQg==
+X-Gm-Message-State: APjAAAU4cBBEeb5VAapHs6AC0UeY9ppV9dqhNpla4HHwiixsmTydn98x
+        FWOduWyqqwuRXx4APuNOd1N8wjSc7qora/zs6dM=
+X-Google-Smtp-Source: APXvYqx5pjwO5jJzjfHPldQzZUKqIMyttQRfIJgn4Efx8cM5CC+kH93tbguHf8bU5sNE6wsUZe29GWiy9WguTVnf8jQ=
+X-Received: by 2002:a2e:b5b8:: with SMTP id f24mr31738677ljn.188.1574901113946;
+ Wed, 27 Nov 2019 16:31:53 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <ac0b86e4-611b-81d1-ba09-e819218efe3f@infradead.org>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <87imn6y4n9.fsf@toke.dk> <20191126183451.GC29071@kernel.org>
+ <87d0dexyij.fsf@toke.dk> <20191126190450.GD29071@kernel.org>
+ <CAEf4Bzbq3J9g7cP=KMqR=bMFcs=qPiNZwnkvCKz3-SAp_m0GzA@mail.gmail.com>
+ <20191126221018.GA22719@kernel.org> <20191126221733.GB22719@kernel.org>
+ <CAEf4BzbZLiJnUb+BdUMEwcgcKCjJBWx1895p8qS8rK2r5TYu3w@mail.gmail.com>
+ <20191126231030.GE3145429@mini-arch.hsd1.ca.comcast.net> <20191126155228.0e6ed54c@cakuba.netronome.com>
+ <20191127013901.GE29071@kernel.org>
+In-Reply-To: <20191127013901.GE29071@kernel.org>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 27 Nov 2019 16:31:41 -0800
+Message-ID: <CAADnVQJCMpke49NNzy33EKdwpW+SY1orTm+0f0b-JuW8+uA7Yw@mail.gmail.com>
+Subject: Re: [PATCH] libbpf: Fix up generation of bpf_helper_defs.h
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Stanislav Fomichev <sdf@fomichev.me>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jiri Olsa <jolsa@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
+        Namhyung Kim <namhyung@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Quentin Monnet <quentin.monnet@netronome.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/19/19 7:13 AM, Randy Dunlap wrote:
-> On 11/19/19 12:46 AM, Stephen Rothwell wrote:
->> Hi all,
->>
->> Changes since 20191118:
->>
-> 
-> on i386 or x86_64:
-> 
-> ../kernel/bpf/btf.c:3466:1: error: empty enum is invalid
->  };
->  ^
-> 
-> when CONFIG_NET is not set/enabled.
-> 
-> 
+On Tue, Nov 26, 2019 at 5:39 PM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
+>
+> Em Tue, Nov 26, 2019 at 03:52:28PM -0800, Jakub Kicinski escreveu:
+> > On Tue, 26 Nov 2019 15:10:30 -0800, Stanislav Fomichev wrote:
+> > > We are using this script with python2.7, works just fine :-)
+> > > So maybe doing s/python3/python/ is the way to go, whatever
+> > > default python is installed, it should work with that.
+>
+> > That increases the risk someone will make a python2-only change
+> > and break Python 3.
+>
+> > Python 2 is dead, I'm honestly surprised this needs to be said :)
+>
+> It shouldn't have to be said, and probably it is old school to try and
+> keep things portable when there is no need to use new stuff for simple
+> tasks like this.
+>
+> Anyway, it seems its just a matter of adding the python3 package to the
+> old container images and then most of them will work with what is in
+> that script, what doesn't work is really old and then NO_LIBBPF=1 is the
+> way to go.
+>
+> In the end, kinda nothing to see here, go back to adding cool new stuff,
+> lets not hold eBPF from progressing ;-P
 
-Still seeing this on linux-next of 20191127.
+Absolutely. I think if some distro is still using 32-bit userland it's likely
+so much behind anything modern that its kernel is equally old too
+and appeal of new features (bpf or anything else) is probably low.
+So if I were you I would keep 32-bit builds of perf supported, but with
+minimal effort.
 
--- 
-~Randy
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Re: patch itself.
+I can take it as-is into bpf tree and it will be in Linus's tree in few days.
+Or I can take only tools/lib/bpf/Makefile hunk and you can take
+tools/perf/MANIFEST via perf tree?
+Whichever way is fine.
