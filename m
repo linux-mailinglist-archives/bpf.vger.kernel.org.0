@@ -2,139 +2,229 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D4EF010D4B0
-	for <lists+bpf@lfdr.de>; Fri, 29 Nov 2019 12:23:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9B6B10D53E
+	for <lists+bpf@lfdr.de>; Fri, 29 Nov 2019 12:54:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726785AbfK2LXW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 29 Nov 2019 06:23:22 -0500
-Received: from mx2.suse.de ([195.135.220.15]:35050 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725892AbfK2LXW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 29 Nov 2019 06:23:22 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id EA9F5AC82;
-        Fri, 29 Nov 2019 11:23:17 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 4E8A01E0B6A; Fri, 29 Nov 2019 12:23:15 +0100 (CET)
-Date:   Fri, 29 Nov 2019 12:23:15 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, bpf@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, kvm@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
-        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 17/19] powerpc: book3s64: convert to pin_user_pages()
- and put_user_page()
-Message-ID: <20191129112315.GB1121@quack2.suse.cz>
-References: <20191125231035.1539120-1-jhubbard@nvidia.com>
- <20191125231035.1539120-18-jhubbard@nvidia.com>
+        id S1726877AbfK2Lyu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 29 Nov 2019 06:54:50 -0500
+Received: from ivanoab7.miniserver.com ([37.128.132.42]:53692 "EHLO
+        www.kot-begemot.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725892AbfK2Lyu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 29 Nov 2019 06:54:50 -0500
+Received: from tun252.jain.kot-begemot.co.uk ([192.168.18.6] helo=jain.kot-begemot.co.uk)
+        by www.kot-begemot.co.uk with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <anton.ivanov@cambridgegreys.com>)
+        id 1iaerD-0001y9-9y; Fri, 29 Nov 2019 11:54:43 +0000
+Received: from jain.kot-begemot.co.uk ([192.168.3.3])
+        by jain.kot-begemot.co.uk with esmtp (Exim 4.92)
+        (envelope-from <anton.ivanov@cambridgegreys.com>)
+        id 1iaerA-0005Yv-SH; Fri, 29 Nov 2019 11:54:43 +0000
+Subject: Re: [PATCH] um: vector: fix BPF loading in vector drivers
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        linux-um@lists.infradead.org
+Cc:     richard@nod.at, dan.carpenter@oracle.com, weiyongjun1@huawei.com,
+        kernel-janitors@vger.kernel.org, songliubraving@fb.com,
+        ast@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        kafai@fb.com
+References: <20191128174405.4244-1-anton.ivanov@cambridgegreys.com>
+ <1416753c-e966-e259-a84d-2a5f0a166660@iogearbox.net>
+From:   Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <cccc22d6-ee0a-c219-2bf0-2b89ae07ac2b@cambridgegreys.com>
+Date:   Fri, 29 Nov 2019 11:54:40 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191125231035.1539120-18-jhubbard@nvidia.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1416753c-e966-e259-a84d-2a5f0a166660@iogearbox.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Spam-Score: -1.0
+X-Spam-Score: -1.0
+X-Clacks-Overhead: GNU Terry Pratchett
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon 25-11-19 15:10:33, John Hubbard wrote:
-> 1. Convert from get_user_pages() to pin_user_pages().
-> 
-> 2. As required by pin_user_pages(), release these pages via
-> put_user_page(). In this case, do so via put_user_pages_dirty_lock().
-> 
-> That has the side effect of calling set_page_dirty_lock(), instead
-> of set_page_dirty(). This is probably more accurate.
 
-Maybe more accurate but it doesn't work for mm_iommu_unpin(). As I'm
-checking mm_iommu_unpin() gets called from RCU callback which is executed
-interrupt context and you cannot lock pages from such context. So you need
-to queue work from the RCU callback and then do the real work from the
-workqueue...
 
-								Honza
+On 29/11/2019 09:15, Daniel Borkmann wrote:
+> On 11/28/19 6:44 PM, anton.ivanov@cambridgegreys.com wrote:
+>> From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+>>
+>> This fixes a possible hang in bpf firmware loading in the
+>> UML vector io drivers due to use of GFP_KERNEL while holding
+>> a spinlock.
+>>
+>> Based on a prposed fix by weiyongjun1@huawei.com and suggestions for
+>> improving it by dan.carpenter@oracle.com
+>>
+>> Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+> 
+> Any reason why this BPF firmware loading mechanism in UML vector driver 
+> that was
+> recently added [0] is plain old classic BPF? Quoting your commit log [0]:
+
+It will allow whatever is allowed by sockfilter. Looking at the 
+sockfilter implementation in the kernel it takes eBPF, however even the 
+kernel docs still state BPF.
 
 > 
-> As Christoph Hellwig put it, "set_page_dirty() is only safe if we are
-> dealing with a file backed page where we have reference on the inode it
-> hangs off." [1]
+>    All vector drivers now allow a BPF program to be loaded and
+>    associated with the RX socket in the host kernel.
 > 
-> [1] https://lore.kernel.org/r/20190723153640.GB720@lst.de
+>    1. The program can be loaded as an extra kernel command line
+>    option to any of the vector drivers.
 > 
-> Cc: Jan Kara <jack@suse.cz>
-> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
-> ---
->  arch/powerpc/mm/book3s64/iommu_api.c | 12 +++++-------
->  1 file changed, 5 insertions(+), 7 deletions(-)
+>    2. The program can also be loaded as "firmware", using the
+>    ethtool flash option. It is possible to turn this facility
+>    on or off using a command line option.
 > 
-> diff --git a/arch/powerpc/mm/book3s64/iommu_api.c b/arch/powerpc/mm/book3s64/iommu_api.c
-> index 56cc84520577..fc1670a6fc3c 100644
-> --- a/arch/powerpc/mm/book3s64/iommu_api.c
-> +++ b/arch/powerpc/mm/book3s64/iommu_api.c
-> @@ -103,7 +103,7 @@ static long mm_iommu_do_alloc(struct mm_struct *mm, unsigned long ua,
->  	for (entry = 0; entry < entries; entry += chunk) {
->  		unsigned long n = min(entries - entry, chunk);
->  
-> -		ret = get_user_pages(ua + (entry << PAGE_SHIFT), n,
-> +		ret = pin_user_pages(ua + (entry << PAGE_SHIFT), n,
->  				FOLL_WRITE | FOLL_LONGTERM,
->  				mem->hpages + entry, NULL);
->  		if (ret == n) {
-> @@ -167,9 +167,8 @@ static long mm_iommu_do_alloc(struct mm_struct *mm, unsigned long ua,
->  	return 0;
->  
->  free_exit:
-> -	/* free the reference taken */
-> -	for (i = 0; i < pinned; i++)
-> -		put_page(mem->hpages[i]);
-> +	/* free the references taken */
-> +	put_user_pages(mem->hpages, pinned);
->  
->  	vfree(mem->hpas);
->  	kfree(mem);
-> @@ -212,10 +211,9 @@ static void mm_iommu_unpin(struct mm_iommu_table_group_mem_t *mem)
->  		if (!page)
->  			continue;
->  
-> -		if (mem->hpas[i] & MM_IOMMU_TABLE_GROUP_PAGE_DIRTY)
-> -			SetPageDirty(page);
-> +		put_user_pages_dirty_lock(&page, 1,
-> +				mem->hpas[i] & MM_IOMMU_TABLE_GROUP_PAGE_DIRTY);
->  
-> -		put_page(page);
->  		mem->hpas[i] = 0;
->  	}
->  }
-> -- 
-> 2.24.0
+>    A simplistic wrapper for generating the BPF firmware for the raw
+>    socket driver out of a tcpdump/libpcap filter expression can be
+>    found at: https://github.com/kot-begemot-uk/uml_vector_utilities/
 > 
+> ... it tells what it does but /nothing/ about the original rationale / 
+> use case
+> why it is needed. So what is the use case? And why is this only classic 
+> BPF? Is
+> there any discussion to read up that lead you to this decision of only 
+> implementing
+> handling for classic BPF?
+
+Moving processing out of the GUEST onto the HOST using a safe language. 
+The firmware load is on the GUEST and your BPF is your virtual NIC 
+"firmware" which runs on the HOST (in the host kernel in fact).
+
+It is identical as an idea to what Netronome cards do in hardware.
+
+> 
+> I'm asking because classic BPF is /legacy/ stuff that is on feature 
+> freeze and
+> only very limited in terms of functionality compared to native (e)BPF 
+> which is
+> why you need this weird 'firmware' loader [1] which wraps around tcpdump to
+> parse the -ddd output into BPF insns ...
+
+Because there is no other mechanism of retrieving it after it is 
+compiled by libpcap in any of the common scripting languages.
+
+The pcap Perl, Python, Go (or whatever else) wrappers do not give you 
+access to the compiled code after the filter has been compiled.
+
+Why is that ingenious design - you have to take it with their maintainers.
+
+So if you want to start with pcap/tcpdump syntax and you do not want to 
+rewrite that part of tcpdump as a dumper in C you have no other choice.
+
+The starting point is chosen because the idea is at some point to 
+replace the existing and very aged pcap network transport in UML. That 
+takes pcap syntax on the kernel command line.
+
+I admit it is a kludge, I will probably do the "do not want" bit and 
+rewrite that in C.
+
+In any case - the "loader" is only an example, you can compile BPF using 
+LLVM or whatever else you like.
+
+A.
+
+> 
+> Thanks,
+> Daniel
+> 
+>    [0] 
+> https://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git/commit/?h=linux-next&id=9807019a62dc670c73ce8e59e09b41ae458c34b3 
+> 
+>    [1] 
+> https://github.com/kot-begemot-uk/uml_vector_utilities/blob/master/build_bpf_firmware.py 
+> 
+> 
+>>   arch/um/drivers/vector_kern.c | 38 ++++++++++++++++++-----------------
+>>   1 file changed, 20 insertions(+), 18 deletions(-)
+>>
+>> diff --git a/arch/um/drivers/vector_kern.c 
+>> b/arch/um/drivers/vector_kern.c
+>> index 92617e16829e..dbbc6e850fdd 100644
+>> --- a/arch/um/drivers/vector_kern.c
+>> +++ b/arch/um/drivers/vector_kern.c
+>> @@ -1387,6 +1387,7 @@ static int vector_net_load_bpf_flash(struct 
+>> net_device *dev,
+>>       struct vector_private *vp = netdev_priv(dev);
+>>       struct vector_device *vdevice;
+>>       const struct firmware *fw;
+>> +    void *new_filter;
+>>       int result = 0;
+>>       if (!(vp->options & VECTOR_BPF_FLASH)) {
+>> @@ -1394,6 +1395,15 @@ static int vector_net_load_bpf_flash(struct 
+>> net_device *dev,
+>>           return -1;
+>>       }
+>> +    vdevice = find_device(vp->unit);
+>> +
+>> +    if (request_firmware(&fw, efl->data, &vdevice->pdev.dev))
+>> +        return -1;
+>> +
+>> +    new_filter = kmemdup(fw->data, fw->size, GFP_KERNEL);
+>> +    if (!new_filter)
+>> +        goto free_buffer;
+>> +
+>>       spin_lock(&vp->lock);
+>>       if (vp->bpf != NULL) {
+>> @@ -1402,41 +1412,33 @@ static int vector_net_load_bpf_flash(struct 
+>> net_device *dev,
+>>           kfree(vp->bpf->filter);
+>>           vp->bpf->filter = NULL;
+>>       } else {
+>> -        vp->bpf = kmalloc(sizeof(struct sock_fprog), GFP_KERNEL);
+>> +        vp->bpf = kmalloc(sizeof(struct sock_fprog), GFP_ATOMIC);
+>>           if (vp->bpf == NULL) {
+>>               netdev_err(dev, "failed to allocate memory for 
+>> firmware\n");
+>> -            goto flash_fail;
+>> +            goto apply_flash_fail;
+>>           }
+>>       }
+>> -    vdevice = find_device(vp->unit);
+>> -
+>> -    if (request_firmware(&fw, efl->data, &vdevice->pdev.dev))
+>> -        goto flash_fail;
+>> -
+>> -    vp->bpf->filter = kmemdup(fw->data, fw->size, GFP_KERNEL);
+>> -    if (!vp->bpf->filter)
+>> -        goto free_buffer;
+>> -
+>> +    vp->bpf->filter = new_filter;
+>>       vp->bpf->len = fw->size / sizeof(struct sock_filter);
+>> -    release_firmware(fw);
+>>       if (vp->opened)
+>>           result = uml_vector_attach_bpf(vp->fds->rx_fd, vp->bpf);
+>>       spin_unlock(&vp->lock);
+>> -    return result;
+>> -
+>> -free_buffer:
+>>       release_firmware(fw);
+>> -flash_fail:
+>> +    return result;
+>> +
+>> +apply_flash_fail:
+>>       spin_unlock(&vp->lock);
+>> -    if (vp->bpf != NULL)
+>> +    if (vp->bpf)
+>>           kfree(vp->bpf->filter);
+>>       kfree(vp->bpf);
+>> -    vp->bpf = NULL;
+>> +
+>> +free_buffer:
+>> +    release_firmware(fw);
+>>       return -1;
+>>   }
+>>
+> 
+> 
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
