@@ -2,188 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D55910D46A
-	for <lists+bpf@lfdr.de>; Fri, 29 Nov 2019 11:53:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4EF010D4B0
+	for <lists+bpf@lfdr.de>; Fri, 29 Nov 2019 12:23:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726604AbfK2Kxh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 29 Nov 2019 05:53:37 -0500
-Received: from www62.your-server.de ([213.133.104.62]:48334 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725892AbfK2Kxh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 29 Nov 2019 05:53:37 -0500
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iadRm-0002FW-5H; Fri, 29 Nov 2019 11:24:22 +0100
-Received: from [2a02:1205:507e:bf80:bef8:7f66:49c8:72e5] (helo=pc-11.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iadRl-0003mh-Cc; Fri, 29 Nov 2019 11:24:21 +0100
-Subject: Re: [PATCH bpf v3] bpftool: Allow to link libbpf dynamically
-To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, lkml <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>, kubakici@wp.pl
-References: <20191128160712.1048793-1-toke@redhat.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <f6e8f6d2-6155-3b20-9975-81e29e460915@iogearbox.net>
-Date:   Fri, 29 Nov 2019 11:24:20 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1726785AbfK2LXW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 29 Nov 2019 06:23:22 -0500
+Received: from mx2.suse.de ([195.135.220.15]:35050 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725892AbfK2LXW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 29 Nov 2019 06:23:22 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id EA9F5AC82;
+        Fri, 29 Nov 2019 11:23:17 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 4E8A01E0B6A; Fri, 29 Nov 2019 12:23:15 +0100 (CET)
+Date:   Fri, 29 Nov 2019 12:23:15 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, bpf@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, kvm@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
+        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 17/19] powerpc: book3s64: convert to pin_user_pages()
+ and put_user_page()
+Message-ID: <20191129112315.GB1121@quack2.suse.cz>
+References: <20191125231035.1539120-1-jhubbard@nvidia.com>
+ <20191125231035.1539120-18-jhubbard@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <20191128160712.1048793-1-toke@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.101.4/25647/Thu Nov 28 10:49:14 2019)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191125231035.1539120-18-jhubbard@nvidia.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/28/19 5:07 PM, Toke Høiland-Jørgensen wrote:
-> From: Jiri Olsa <jolsa@kernel.org>
+On Mon 25-11-19 15:10:33, John Hubbard wrote:
+> 1. Convert from get_user_pages() to pin_user_pages().
 > 
-> Currently we support only static linking with kernel's libbpf
-> (tools/lib/bpf). This patch adds LIBBPF_DYNAMIC compile variable
-> that triggers libbpf detection and bpf dynamic linking:
+> 2. As required by pin_user_pages(), release these pages via
+> put_user_page(). In this case, do so via put_user_pages_dirty_lock().
 > 
->    $ make -C tools/bpf/bpftool make LIBBPF_DYNAMIC=1
+> That has the side effect of calling set_page_dirty_lock(), instead
+> of set_page_dirty(). This is probably more accurate.
+
+Maybe more accurate but it doesn't work for mm_iommu_unpin(). As I'm
+checking mm_iommu_unpin() gets called from RCU callback which is executed
+interrupt context and you cannot lock pages from such context. So you need
+to queue work from the RCU callback and then do the real work from the
+workqueue...
+
+								Honza
+
 > 
-> If libbpf is not installed, build (with LIBBPF_DYNAMIC=1) stops with:
+> As Christoph Hellwig put it, "set_page_dirty() is only safe if we are
+> dealing with a file backed page where we have reference on the inode it
+> hangs off." [1]
 > 
->    $ make -C tools/bpf/bpftool LIBBPF_DYNAMIC=1
->      Auto-detecting system features:
->      ...                        libbfd: [ on  ]
->      ...        disassembler-four-args: [ on  ]
->      ...                          zlib: [ on  ]
->      ...                        libbpf: [ OFF ]
+> [1] https://lore.kernel.org/r/20190723153640.GB720@lst.de
 > 
->    Makefile:102: *** Error: No libbpf devel library found, please install libbpf-devel or libbpf-dev.
-> 
-> Adding LIBBPF_DIR compile variable to allow linking with
-> libbpf installed into specific directory:
-> 
->    $ make -C tools/lib/bpf/ prefix=/tmp/libbpf/ install_lib install_headers
->    $ make -C tools/bpf/bpftool/ LIBBPF_DYNAMIC=1 LIBBPF_DIR=/tmp/libbpf/
-> 
-> It might be needed to clean build tree first because features
-> framework does not detect the change properly:
-> 
->    $ make -C tools/build/feature clean
->    $ make -C tools/bpf/bpftool/ clean
-> 
-> Since bpftool uses bits of libbpf that are not exported as public API in
-> the .so version, we also pass in libbpf.a to the linker, which allows it to
-> pick up the private functions from the static library without having to
-> expose them as ABI.
-> 
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+> Cc: Jan Kara <jack@suse.cz>
+> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
 > ---
-> v3:
->    - Keep $(LIBBPF) in $LIBS, and just add -lbpf on top
->    - Fix typo in error message
-> v2:
->    - Pass .a file to linker when dynamically linking, so bpftool can use
->      private functions from libbpf without exposing them as API.
+>  arch/powerpc/mm/book3s64/iommu_api.c | 12 +++++-------
+>  1 file changed, 5 insertions(+), 7 deletions(-)
 > 
->   tools/bpf/bpftool/Makefile | 34 ++++++++++++++++++++++++++++++++++
->   1 file changed, 34 insertions(+)
+> diff --git a/arch/powerpc/mm/book3s64/iommu_api.c b/arch/powerpc/mm/book3s64/iommu_api.c
+> index 56cc84520577..fc1670a6fc3c 100644
+> --- a/arch/powerpc/mm/book3s64/iommu_api.c
+> +++ b/arch/powerpc/mm/book3s64/iommu_api.c
+> @@ -103,7 +103,7 @@ static long mm_iommu_do_alloc(struct mm_struct *mm, unsigned long ua,
+>  	for (entry = 0; entry < entries; entry += chunk) {
+>  		unsigned long n = min(entries - entry, chunk);
+>  
+> -		ret = get_user_pages(ua + (entry << PAGE_SHIFT), n,
+> +		ret = pin_user_pages(ua + (entry << PAGE_SHIFT), n,
+>  				FOLL_WRITE | FOLL_LONGTERM,
+>  				mem->hpages + entry, NULL);
+>  		if (ret == n) {
+> @@ -167,9 +167,8 @@ static long mm_iommu_do_alloc(struct mm_struct *mm, unsigned long ua,
+>  	return 0;
+>  
+>  free_exit:
+> -	/* free the reference taken */
+> -	for (i = 0; i < pinned; i++)
+> -		put_page(mem->hpages[i]);
+> +	/* free the references taken */
+> +	put_user_pages(mem->hpages, pinned);
+>  
+>  	vfree(mem->hpas);
+>  	kfree(mem);
+> @@ -212,10 +211,9 @@ static void mm_iommu_unpin(struct mm_iommu_table_group_mem_t *mem)
+>  		if (!page)
+>  			continue;
+>  
+> -		if (mem->hpas[i] & MM_IOMMU_TABLE_GROUP_PAGE_DIRTY)
+> -			SetPageDirty(page);
+> +		put_user_pages_dirty_lock(&page, 1,
+> +				mem->hpas[i] & MM_IOMMU_TABLE_GROUP_PAGE_DIRTY);
+>  
+> -		put_page(page);
+>  		mem->hpas[i] = 0;
+>  	}
+>  }
+> -- 
+> 2.24.0
 > 
-> diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-> index 39bc6f0f4f0b..15052dcaa39b 100644
-> --- a/tools/bpf/bpftool/Makefile
-> +++ b/tools/bpf/bpftool/Makefile
-> @@ -1,6 +1,15 @@
->   # SPDX-License-Identifier: GPL-2.0-only
-> +# LIBBPF_DYNAMIC to enable libbpf dynamic linking.
-> +
->   include ../../scripts/Makefile.include
->   include ../../scripts/utilities.mak
-> +include ../../scripts/Makefile.arch
-> +
-> +ifeq ($(LP64), 1)
-> +  libdir_relative = lib64
-> +else
-> +  libdir_relative = lib
-> +endif
->   
->   ifeq ($(srctree),)
->   srctree := $(patsubst %/,%,$(dir $(CURDIR)))
-> @@ -63,6 +72,19 @@ RM ?= rm -f
->   FEATURE_USER = .bpftool
->   FEATURE_TESTS = libbfd disassembler-four-args reallocarray zlib
->   FEATURE_DISPLAY = libbfd disassembler-four-args zlib
-> +ifdef LIBBPF_DYNAMIC
-> +  FEATURE_TESTS   += libbpf
-> +  FEATURE_DISPLAY += libbpf
-> +
-> +  # for linking with debug library run:
-> +  # make LIBBPF_DYNAMIC=1 LIBBPF_DIR=/opt/libbpf
-
-The Makefile already has BPF_DIR which points right now to '$(srctree)/tools/lib/bpf/'
-and LIBBPF_PATH for the final one and where $(LIBBPF_PATH)libbpf.a is expected to reside.
-Can't we improve the Makefile to reuse and work with these instead of adding yet another
-LIBBPF_DIR var which makes future changes in this area more confusing? The libbpf build
-spills out libbpf.{a,so*} by default anyway.
-
-Was wondering whether we could drop LIBBPF_DYNAMIC altogether and have some sort of auto
-detection, but given for perf the `make LIBBPF_DYNAMIC=1` option was just applied to perf
-tree it's probably better to stay consistent plus static linking would stay as-is for
-preferred method for bpftool, so that part seems fine.
-
-> +  ifdef LIBBPF_DIR
-> +    LIBBPF_CFLAGS  := -I$(LIBBPF_DIR)/include
-> +    LIBBPF_LDFLAGS := -L$(LIBBPF_DIR)/$(libdir_relative)
-> +    FEATURE_CHECK_CFLAGS-libbpf  := $(LIBBPF_CFLAGS)
-> +    FEATURE_CHECK_LDFLAGS-libbpf := $(LIBBPF_LDFLAGS)
-> +  endif
-> +endif
->   
->   check_feat := 1
->   NON_CHECK_FEAT_TARGETS := clean uninstall doc doc-clean doc-install doc-uninstall
-> @@ -88,6 +110,18 @@ ifeq ($(feature-reallocarray), 0)
->   CFLAGS += -DCOMPAT_NEED_REALLOCARRAY
->   endif
->   
-> +ifdef LIBBPF_DYNAMIC
-> +  ifeq ($(feature-libbpf), 1)
-> +    # bpftool uses non-exported functions from libbpf, so just add the dynamic
-> +    # version of libbpf and let the linker figure it out
-> +    LIBS    := -lbpf $(LIBS)
-
-Seems okay as a workaround for bpftool and avoids getting into the realm of declaring
-libbpf as another half-baked netlink library if we'd have exposed these. Ideally the
-netlink symbols shouldn't be needed at all from libbpf, but I presume the rationale
-back then was that given it's used internally in libbpf for some of the APIs and was
-needed in bpftool's net subcommand as well later on, it avoided duplicating the code
-given statically linked and both are in-tree anyway.
-
-> +    CFLAGS  += $(LIBBPF_CFLAGS)
-> +    LDFLAGS += $(LIBBPF_LDFLAGS)
-> +  else
-> +    dummy := $(error Error: No libbpf devel library found, please install libbpf-devel or libbpf-dev.)
-> +  endif
-> +endif
-> +
->   include $(wildcard $(OUTPUT)*.d)
->   
->   all: $(OUTPUT)bpftool
-> 
-
-Thanks,
-Daniel
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
