@@ -2,135 +2,176 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6099810D264
-	for <lists+bpf@lfdr.de>; Fri, 29 Nov 2019 09:25:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13C2410D317
+	for <lists+bpf@lfdr.de>; Fri, 29 Nov 2019 10:15:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726780AbfK2IZC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 29 Nov 2019 03:25:02 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:52682 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726143AbfK2IZB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 29 Nov 2019 03:25:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1575015900;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dvXfLX+3YfaDzm1HU0+ZJqo+B1rhtfnbOz00s1KXV1o=;
-        b=Pz11IWA8XkyEwfQp6GtCcNBW4SQ+4RR8f4zNhyyuew7nHLOzp9iBzuz+USPTv8AmHePCrf
-        RAXMGnTAYBXDmWxlL9x0qRn9yrWOayf0Z/OTjtGdv0pdHI9aAfXStNmSGm/wjXE3qspr//
-        jdJRC2B33WjQzKBzJDkf8aKqMVrWT1I=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-42-Ok4MFk_-NbaKhIuLu1XbsQ-1; Fri, 29 Nov 2019 03:24:57 -0500
-Received: by mail-lf1-f70.google.com with SMTP id 9so1468249lft.17
-        for <bpf@vger.kernel.org>; Fri, 29 Nov 2019 00:24:57 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=NwdD649wYa06LDGBuYg0DJ+wk3uRgAP3a4OQ+w3b49w=;
-        b=S2q/JrR1XOBT3mkFS+6ta4f0jtjP2sERqJvuY2lb+GRbur/7fjeZAgKkedzZrbu5jC
-         zuoCjU1gRPUxnlb9fZIfhMILJt7HrV30JduSTq7z29BImSWsOaQJs/pI76hcKLzRr+RA
-         HTzuLi2VZWnt/qTiJLb2ED1ifbJcNb14GLB2Dt5fhsgcg3M7cacZdTKKtvIPZS0oSKco
-         s3Vj6cR1XAcuWpao76s7gqk2nhQBYh5sllCMXhAxnJFx8hCqKrTTGfb9HRV7z5qnd9Di
-         avqzWE20h5GfVOmxOJTbeDk939TZilpV4UOoAVno5+mMnCFhD0O79UUxmLSuUCkKpdr0
-         4USQ==
-X-Gm-Message-State: APjAAAXZn7J/nlbrljN5+asaptrRC6LGCr/1MFRqy17kd2HItGRClvTa
-        fOt1B4IIRUIxbDUZcFrkF+EA+bggkLzcl0cn9ALt5w38MMDAJxSc5t+Qlab7G+Vid0GWE0WnLA9
-        XW4yTCUGPTr0b
-X-Received: by 2002:a05:651c:1066:: with SMTP id y6mr37587981ljm.96.1575015896259;
-        Fri, 29 Nov 2019 00:24:56 -0800 (PST)
-X-Google-Smtp-Source: APXvYqzwma2V8Jj7dmJeTFQjNtfe9nb4lzAVxmqseq3Dk5KXkNphde5I1fVA0wzjp/tU6YVbsQkmsA==
-X-Received: by 2002:a05:651c:1066:: with SMTP id y6mr37587957ljm.96.1575015895795;
-        Fri, 29 Nov 2019 00:24:55 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id k22sm9701193lfm.48.2019.11.29.00.24.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Nov 2019 00:24:54 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 2A94E1818BD; Fri, 29 Nov 2019 09:24:53 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Subject: Re: [PATCH bpf v3] bpftool: Allow to link libbpf dynamically
-In-Reply-To: <20191129081251.GA14169@krava>
-References: <20191128145316.1044912-1-toke@redhat.com> <20191128160712.1048793-1-toke@redhat.com> <20191129081251.GA14169@krava>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 29 Nov 2019 09:24:53 +0100
-Message-ID: <87v9r3um22.fsf@toke.dk>
+        id S1726791AbfK2JPt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 29 Nov 2019 04:15:49 -0500
+Received: from www62.your-server.de ([213.133.104.62]:55780 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726143AbfK2JPt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 29 Nov 2019 04:15:49 -0500
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1iacN8-0004Ma-KY; Fri, 29 Nov 2019 10:15:30 +0100
+Received: from [2a02:1205:507e:bf80:bef8:7f66:49c8:72e5] (helo=pc-11.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1iacN8-000C4L-8d; Fri, 29 Nov 2019 10:15:30 +0100
+Subject: Re: [PATCH] um: vector: fix BPF loading in vector drivers
+To:     anton.ivanov@cambridgegreys.com, linux-um@lists.infradead.org
+Cc:     richard@nod.at, dan.carpenter@oracle.com, weiyongjun1@huawei.com,
+        kernel-janitors@vger.kernel.org, songliubraving@fb.com,
+        ast@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        kafai@fb.com
+References: <20191128174405.4244-1-anton.ivanov@cambridgegreys.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <1416753c-e966-e259-a84d-2a5f0a166660@iogearbox.net>
+Date:   Fri, 29 Nov 2019 10:15:29 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-X-MC-Unique: Ok4MFk_-NbaKhIuLu1XbsQ-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20191128174405.4244-1-anton.ivanov@cambridgegreys.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.101.4/25647/Thu Nov 28 10:49:14 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Jiri Olsa <jolsa@redhat.com> writes:
+On 11/28/19 6:44 PM, anton.ivanov@cambridgegreys.com wrote:
+> From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+> 
+> This fixes a possible hang in bpf firmware loading in the
+> UML vector io drivers due to use of GFP_KERNEL while holding
+> a spinlock.
+> 
+> Based on a prposed fix by weiyongjun1@huawei.com and suggestions for
+> improving it by dan.carpenter@oracle.com
+> 
+> Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-> On Thu, Nov 28, 2019 at 05:07:12PM +0100, Toke H=C3=B8iland-J=C3=B8rgense=
-n wrote:
->
-> SNIP
->
->>  ifeq ($(srctree),)
->>  srctree :=3D $(patsubst %/,%,$(dir $(CURDIR)))
->> @@ -63,6 +72,19 @@ RM ?=3D rm -f
->>  FEATURE_USER =3D .bpftool
->>  FEATURE_TESTS =3D libbfd disassembler-four-args reallocarray zlib
->>  FEATURE_DISPLAY =3D libbfd disassembler-four-args zlib
->> +ifdef LIBBPF_DYNAMIC
->> +  FEATURE_TESTS   +=3D libbpf
->> +  FEATURE_DISPLAY +=3D libbpf
->> +
->> +  # for linking with debug library run:
->> +  # make LIBBPF_DYNAMIC=3D1 LIBBPF_DIR=3D/opt/libbpf
->> +  ifdef LIBBPF_DIR
->> +    LIBBPF_CFLAGS  :=3D -I$(LIBBPF_DIR)/include
->> +    LIBBPF_LDFLAGS :=3D -L$(LIBBPF_DIR)/$(libdir_relative)
->> +    FEATURE_CHECK_CFLAGS-libbpf  :=3D $(LIBBPF_CFLAGS)
->> +    FEATURE_CHECK_LDFLAGS-libbpf :=3D $(LIBBPF_LDFLAGS)
->> +  endif
->> +endif
->> =20
->>  check_feat :=3D 1
->>  NON_CHECK_FEAT_TARGETS :=3D clean uninstall doc doc-clean doc-install d=
-oc-uninstall
->> @@ -88,6 +110,18 @@ ifeq ($(feature-reallocarray), 0)
->>  CFLAGS +=3D -DCOMPAT_NEED_REALLOCARRAY
->>  endif
->> =20
->> +ifdef LIBBPF_DYNAMIC
->> +  ifeq ($(feature-libbpf), 1)
->> +    # bpftool uses non-exported functions from libbpf, so just add the =
-dynamic
->> +    # version of libbpf and let the linker figure it out
->> +    LIBS    :=3D -lbpf $(LIBS)
->
-> nice, so linker will pick up the missing symbols and we
-> don't need to check on particular libbpf version then
+Any reason why this BPF firmware loading mechanism in UML vector driver that was
+recently added [0] is plain old classic BPF? Quoting your commit log [0]:
 
-Yup, exactly. I verified with objdump that the end result is a
-dynamically linked bpftool with LIBBPF_DYNAMIC is set, and a statically
-linked one if it isn't; so the linker seems to be smart enough to just
-figure out how to do the right thing :)
+   All vector drivers now allow a BPF program to be loaded and
+   associated with the RX socket in the host kernel.
 
--Toke
+   1. The program can be loaded as an extra kernel command line
+   option to any of the vector drivers.
+
+   2. The program can also be loaded as "firmware", using the
+   ethtool flash option. It is possible to turn this facility
+   on or off using a command line option.
+
+   A simplistic wrapper for generating the BPF firmware for the raw
+   socket driver out of a tcpdump/libpcap filter expression can be
+   found at: https://github.com/kot-begemot-uk/uml_vector_utilities/
+
+... it tells what it does but /nothing/ about the original rationale / use case
+why it is needed. So what is the use case? And why is this only classic BPF? Is
+there any discussion to read up that lead you to this decision of only implementing
+handling for classic BPF?
+
+I'm asking because classic BPF is /legacy/ stuff that is on feature freeze and
+only very limited in terms of functionality compared to native (e)BPF which is
+why you need this weird 'firmware' loader [1] which wraps around tcpdump to
+parse the -ddd output into BPF insns ...
+
+Thanks,
+Daniel
+
+   [0] https://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git/commit/?h=linux-next&id=9807019a62dc670c73ce8e59e09b41ae458c34b3
+   [1] https://github.com/kot-begemot-uk/uml_vector_utilities/blob/master/build_bpf_firmware.py
+
+>   arch/um/drivers/vector_kern.c | 38 ++++++++++++++++++-----------------
+>   1 file changed, 20 insertions(+), 18 deletions(-)
+> 
+> diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
+> index 92617e16829e..dbbc6e850fdd 100644
+> --- a/arch/um/drivers/vector_kern.c
+> +++ b/arch/um/drivers/vector_kern.c
+> @@ -1387,6 +1387,7 @@ static int vector_net_load_bpf_flash(struct net_device *dev,
+>   	struct vector_private *vp = netdev_priv(dev);
+>   	struct vector_device *vdevice;
+>   	const struct firmware *fw;
+> +	void *new_filter;
+>   	int result = 0;
+>   
+>   	if (!(vp->options & VECTOR_BPF_FLASH)) {
+> @@ -1394,6 +1395,15 @@ static int vector_net_load_bpf_flash(struct net_device *dev,
+>   		return -1;
+>   	}
+>   
+> +	vdevice = find_device(vp->unit);
+> +
+> +	if (request_firmware(&fw, efl->data, &vdevice->pdev.dev))
+> +		return -1;
+> +
+> +	new_filter = kmemdup(fw->data, fw->size, GFP_KERNEL);
+> +	if (!new_filter)
+> +		goto free_buffer;
+> +
+>   	spin_lock(&vp->lock);
+>   
+>   	if (vp->bpf != NULL) {
+> @@ -1402,41 +1412,33 @@ static int vector_net_load_bpf_flash(struct net_device *dev,
+>   		kfree(vp->bpf->filter);
+>   		vp->bpf->filter = NULL;
+>   	} else {
+> -		vp->bpf = kmalloc(sizeof(struct sock_fprog), GFP_KERNEL);
+> +		vp->bpf = kmalloc(sizeof(struct sock_fprog), GFP_ATOMIC);
+>   		if (vp->bpf == NULL) {
+>   			netdev_err(dev, "failed to allocate memory for firmware\n");
+> -			goto flash_fail;
+> +			goto apply_flash_fail;
+>   		}
+>   	}
+>   
+> -	vdevice = find_device(vp->unit);
+> -
+> -	if (request_firmware(&fw, efl->data, &vdevice->pdev.dev))
+> -		goto flash_fail;
+> -
+> -	vp->bpf->filter = kmemdup(fw->data, fw->size, GFP_KERNEL);
+> -	if (!vp->bpf->filter)
+> -		goto free_buffer;
+> -
+> +	vp->bpf->filter = new_filter;
+>   	vp->bpf->len = fw->size / sizeof(struct sock_filter);
+> -	release_firmware(fw);
+>   
+>   	if (vp->opened)
+>   		result = uml_vector_attach_bpf(vp->fds->rx_fd, vp->bpf);
+>   
+>   	spin_unlock(&vp->lock);
+>   
+> -	return result;
+> -
+> -free_buffer:
+>   	release_firmware(fw);
+>   
+> -flash_fail:
+> +	return result;
+> +
+> +apply_flash_fail:
+>   	spin_unlock(&vp->lock);
+> -	if (vp->bpf != NULL)
+> +	if (vp->bpf)
+>   		kfree(vp->bpf->filter);
+>   	kfree(vp->bpf);
+> -	vp->bpf = NULL;
+> +
+> +free_buffer:
+> +	release_firmware(fw);
+>   	return -1;
+>   }
+>   
+> 
 
