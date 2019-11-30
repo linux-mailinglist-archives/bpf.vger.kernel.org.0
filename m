@@ -2,85 +2,189 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 420F410DC06
-	for <lists+bpf@lfdr.de>; Sat, 30 Nov 2019 02:38:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 978CE10DCEF
+	for <lists+bpf@lfdr.de>; Sat, 30 Nov 2019 08:29:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727171AbfK3BiA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 29 Nov 2019 20:38:00 -0500
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:32773 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727142AbfK3BiA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 29 Nov 2019 20:38:00 -0500
-Received: by mail-pf1-f196.google.com with SMTP id y206so6838695pfb.0;
-        Fri, 29 Nov 2019 17:37:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=t45gUtK+uM9mXjiLOJb5swNVbq1vD3irWLp7sG1Ctu8=;
-        b=Ue3Vs3fZvHJEWZYZulg2C54l8z5eEMBS/Uxt7hAM+L3CNGsm5us7TVdTsydqyEQfPv
-         1SVJu/Q5UfM/AUsh2gJRB2mNUg3TRXOSUy0nB+ex/DXZxtp7JEF6Y5VSoPTD1IAlE1pq
-         vTIROm7MCp/SqCYhPxPMndDxd4G4ck6qrPsoF4WlwrFbbMQg9W+qS3r98KfB5sY8DhJY
-         XjfS5GU8rpG1qHmpisPxsh96wfQnKcQYLBDutbCct4dc4u9/ehs/p5IGJzVl0OUlVoto
-         74S2PdRgTLF01i5uSEKu5n8qD6S4IpIQ1Xvtn+Cfj4URGWH2hiJqDCgg4dxCw2nwONKQ
-         2WvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=t45gUtK+uM9mXjiLOJb5swNVbq1vD3irWLp7sG1Ctu8=;
-        b=r9Xtvlp2wPLq+xnbIXjrOTPKmiaaK0DCYvMOldTIv7Wx55NsI4ENfSOZpMwxjCQkKN
-         tOAuP/eL74+cwnkVQls9Z+S7OYB5QNs8ZGVMwwKJ8coHkBvGyGxw/ycPynFnlpOPRRza
-         tFj+33WAWw9Lm25wpGgU3T3CXBaAqlWJtTdgdIzBLH5N0kAfLTmX/EuwABs+7vmsWomv
-         pho8nTjyOv01S4Mq/OEF83ZJkwGyNRdI3KUNla29cmcO95W/vbPzPO602D4gDBx3S6MN
-         lW6GnvQ9ottBKjVOCQp7gE+cZtUmAplG6tEDdod2BTWpm4ioQw4c4FmMjmDOJUx8VE6H
-         +28g==
-X-Gm-Message-State: APjAAAX8wMSciH4sQ9B5RCyijPPwNaZJ1TdHmv+1xfGfkkmvcO3BABf8
-        lV+ULNT48U4v0PiA5HxQoSY=
-X-Google-Smtp-Source: APXvYqxRVDvofp4K48J2STEhlQkL2kouyRxmAijrBD2y+RICCWu6L6dDxIrKH0X/A3OSqfifOpTYpA==
-X-Received: by 2002:a63:551a:: with SMTP id j26mr19600497pgb.370.1575077879570;
-        Fri, 29 Nov 2019 17:37:59 -0800 (PST)
-Received: from [192.168.86.235] (c-73-241-150-58.hsd1.ca.comcast.net. [73.241.150.58])
-        by smtp.gmail.com with ESMTPSA id c17sm25614319pfo.42.2019.11.29.17.37.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Nov 2019 17:37:58 -0800 (PST)
-Subject: Re: [PATCH bpf] bpf: avoid setting bpf insns pages read-only when
- prog is jited
+        id S1725835AbfK3H3p (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 30 Nov 2019 02:29:45 -0500
+Received: from ivanoab7.miniserver.com ([37.128.132.42]:55520 "EHLO
+        www.kot-begemot.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725298AbfK3H3p (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 30 Nov 2019 02:29:45 -0500
+Received: from tun252.jain.kot-begemot.co.uk ([192.168.18.6] helo=jain.kot-begemot.co.uk)
+        by www.kot-begemot.co.uk with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <anton.ivanov@cambridgegreys.com>)
+        id 1iaxC5-00052H-CP; Sat, 30 Nov 2019 07:29:30 +0000
+Received: from sleer.kot-begemot.co.uk ([192.168.3.72])
+        by jain.kot-begemot.co.uk with esmtps (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <anton.ivanov@cambridgegreys.com>)
+        id 1iaxC2-0001Vf-SY; Sat, 30 Nov 2019 07:29:29 +0000
+From:   Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Subject: Re: [PATCH] um: vector: fix BPF loading in vector drivers
 To:     Daniel Borkmann <daniel@iogearbox.net>,
-        alexei.starovoitov@gmail.com
-Cc:     peterz@infradead.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>
-References: <20191129222911.3710-1-daniel@iogearbox.net>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <ec8264ad-8806-208a-1375-51e7cad1866e@gmail.com>
-Date:   Fri, 29 Nov 2019 17:37:57 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        linux-um@lists.infradead.org
+Cc:     songliubraving@fb.com, jakub.kicinski@netronome.com,
+        richard@nod.at, kernel-janitors@vger.kernel.org, ast@kernel.org,
+        weiyongjun1@huawei.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, kafai@fb.com, dan.carpenter@oracle.com
+References: <20191128174405.4244-1-anton.ivanov@cambridgegreys.com>
+ <1416753c-e966-e259-a84d-2a5f0a166660@iogearbox.net>
+ <cccc22d6-ee0a-c219-2bf0-2b89ae07ac2b@cambridgegreys.com>
+ <c54efbb0-8ac4-2788-5957-ff99ab357584@iogearbox.net>
+Organization: Cambridge Greys
+Message-ID: <fe8a15ff-7e95-548e-d41d-fa3ce1113202@cambridgegreys.com>
+Date:   Sat, 30 Nov 2019 07:29:26 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-In-Reply-To: <20191129222911.3710-1-daniel@iogearbox.net>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <c54efbb0-8ac4-2788-5957-ff99ab357584@iogearbox.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Spam-Score: -1.0
+X-Spam-Score: -1.0
+X-Clacks-Overhead: GNU Terry Pratchett
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On 29/11/2019 23:12, Daniel Borkmann wrote:
+> On 11/29/19 12:54 PM, Anton Ivanov wrote:
+>> On 29/11/2019 09:15, Daniel Borkmann wrote:
+>>> On 11/28/19 6:44 PM, anton.ivanov@cambridgegreys.com wrote:
+>>>> From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+>>>>
+>>>> This fixes a possible hang in bpf firmware loading in the
+>>>> UML vector io drivers due to use of GFP_KERNEL while holding
+>>>> a spinlock.
+>>>>
+>>>> Based on a prposed fix by weiyongjun1@huawei.com and suggestions for
+>>>> improving it by dan.carpenter@oracle.com
+>>>>
+>>>> Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+>>>
+>>> Any reason why this BPF firmware loading mechanism in UML vector 
+>>> driver that was
+>>> recently added [0] is plain old classic BPF? Quoting your commit log 
+>>> [0]:
+>>
+>> It will allow whatever is allowed by sockfilter. Looking at the 
+>> sockfilter implementation in the kernel it takes eBPF, however even 
+>> the kernel docs still state BPF.
+> 
+> You are using SO_ATTACH_FILTER in uml_vector_attach_bpf() which is the 
+> old classic
+> BPF (and not eBPF). The kernel internally moves that over to eBPF insns, 
+> but you'll
+> be constrained forever with the abilities of cBPF. The later added 
+> SO_ATTACH_BPF is
+> the one for eBPF where you pass the prog fd from bpf().
+
+I will switch to that in the next version.
+
+> 
+>>>    All vector drivers now allow a BPF program to be loaded and
+>>>    associated with the RX socket in the host kernel.
+>>>
+>>>    1. The program can be loaded as an extra kernel command line
+>>>    option to any of the vector drivers.
+>>>
+>>>    2. The program can also be loaded as "firmware", using the
+>>>    ethtool flash option. It is possible to turn this facility
+>>>    on or off using a command line option.
+>>>
+>>>    A simplistic wrapper for generating the BPF firmware for the raw
+>>>    socket driver out of a tcpdump/libpcap filter expression can be
+>>>    found at: https://github.com/kot-begemot-uk/uml_vector_utilities/
+>>>
+>>> ... it tells what it does but /nothing/ about the original rationale 
+>>> / use case
+>>> why it is needed. So what is the use case? And why is this only 
+>>> classic BPF? Is
+>>> there any discussion to read up that lead you to this decision of 
+>>> only implementing
+>>> handling for classic BPF?
+>>
+>> Moving processing out of the GUEST onto the HOST using a safe 
+>> language. The firmware load is on the GUEST and your BPF is your 
+>> virtual NIC "firmware" which runs on the HOST (in the host kernel in 
+>> fact).
+>>
+>> It is identical as an idea to what Netronome cards do in hardware.
+>>
+>>> I'm asking because classic BPF is /legacy/ stuff that is on feature 
+>>> freeze and
+>>> only very limited in terms of functionality compared to native (e)BPF 
+>>> which is
+>>> why you need this weird 'firmware' loader [1] which wraps around 
+>>> tcpdump to
+>>> parse the -ddd output into BPF insns ...
+>>
+>> Because there is no other mechanism of retrieving it after it is 
+>> compiled by libpcap in any of the common scripting languages.
+>>
+>> The pcap Perl, Python, Go (or whatever else) wrappers do not give you 
+>> access to the compiled code after the filter has been compiled.
+>>
+>> Why is that ingenious design - you have to take it with their 
+>> maintainers.
+>>
+>> So if you want to start with pcap/tcpdump syntax and you do not want 
+>> to rewrite that part of tcpdump as a dumper in C you have no other 
+>> choice.
+>>
+>> The starting point is chosen because the idea is at some point to 
+>> replace the existing and very aged pcap network transport in UML. That 
+>> takes pcap syntax on the kernel command line.
+>>
+>> I admit it is a kludge, I will probably do the "do not want" bit and 
+>> rewrite that in C.
+> 
+> Yeah, it would probably be about the same # of LOC in C.
+> 
+>> In any case - the "loader" is only an example, you can compile BPF 
+>> using LLVM or whatever else you like.
+> 
+> But did you try that with the code you have? Seems not, which is perhaps 
+> why there are some
+> wrong assumptions.
+
+All of my tests were done using bpf generated by tcpdump out of a pcap 
+expression. So the answer is no - I did not try LLVM because I did not 
+need to for what I was aiming to achieve.
+
+The pcap route matches 1:1 existing functionality in the uml pcap driver 
+as well as existing functionality in the vector drivers for the cases 
+where they need to avoid seeing their own xmits and cannot use features 
+like QDISC_BYPASS.
+
+> 
+> You can't use LLVM's BPF backend here since you only allow to pass in 
+> cBPF, and LLVM emits
+> an object file with native eBPF insns (you could use libbpf (in-tree 
+> under tools/lib/bpf/)
+> for loading that).
+
+My initial aim was the same feature sets as pcap and achieve it using a 
+virtual analogue of what cards like Netronome do - via the firmware route.
+
+Switching to SO_ATTACH_BPF will come in the next revision.
+
+A.
+
+> 
+>> A.
+> 
+> _______________________________________________
+> linux-um mailing list
+> linux-um@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-um
 
 
-On 11/29/19 2:29 PM, Daniel Borkmann wrote:
-> For the case where the interpreter is compiled out or when the prog is jited
-> it is completely unnecessary to set the BPF insn pages as read-only. In fact,
-> on frequent churn of BPF programs, it could lead to performance degradation of
-> the system over time since it would break the direct map down to 4k pages when
-> calling set_memory_ro() for the insn buffer on x86-64 / arm64 and there is no
-> reverse operation. Thus, avoid breaking up large pages for data maps, and only
-> limit this to the module range used by the JIT where it is necessary to set
-> the image read-only and executable.
-
-Interesting... But why the non JIT case would need RO protection ?
-
-Do you have any performance measures to share ?
-
-Thanks.
+-- 
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
