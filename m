@@ -2,90 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C69210E2CA
-	for <lists+bpf@lfdr.de>; Sun,  1 Dec 2019 18:54:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CABB10E374
+	for <lists+bpf@lfdr.de>; Sun,  1 Dec 2019 21:28:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727167AbfLARyR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 1 Dec 2019 12:54:17 -0500
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:39964 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726965AbfLARyQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 1 Dec 2019 12:54:16 -0500
-Received: by mail-lj1-f196.google.com with SMTP id s22so18249164ljs.7;
-        Sun, 01 Dec 2019 09:54:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9H9SCSoxkgNiJzR8uzVPTTAqyRK3SZr0ck3SspsH/y4=;
-        b=nNyD2jejk40SFGzFW4oZ45U5NcmczzOs0GpGLVTyu6RrJuVjqcwBSduqgEXAmfwM07
-         +VTCQjHDzQIjpb2Yo2xofhHX+JpaSGkcjLIiibVRw1mv8GgoxvgxtG+CNWPc3TLHxMsW
-         r99p/iY9aJr79LcUPaK5Lfo5p+DavAVeC9wpY4KbLgAt3n/d08zyrcVwcqrY3BIZ0u0H
-         tiuOOmnk791Wgxp/joAgNX5AOM6H1g1GqJ3ajTqqf0u90BUjuhjndpHyPEy5EiTqvAoj
-         qH+GgxERE6C3rAqkxV9aybIlqUEk/JU6cjAT0PPyemFV9JqVzGc1k1jUgafZGiQK43+9
-         Pq4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9H9SCSoxkgNiJzR8uzVPTTAqyRK3SZr0ck3SspsH/y4=;
-        b=ZBEbKyXxBoaeLSE13w8v+cwSEII7nKXxVLqFHCrsmOe9u1sKjLNRP9M4ztAsweg7wM
-         v+tSd4pRSwUxN13DQEOiA1SPbyH+PskfN1y6cgL8B6vxIsA/fUKRri6vUDAtkvtHJ5rb
-         NDlphRQ6vsflay/q5hg5RK9zX/jq4O/JGjulROCGaRCdIDNJPakBRQO8SI35iPpMs9+Q
-         jJVO+AYWicjtWyUoUuhTMlFazYj3CXLhrObfmT0rMGuAZMKQ7dVpvI2S6rLGFtMAcbMT
-         UFUyp25FN+WXCYIp+M3+QJzmf3Bea/xctUnyJ8EGokQsZjHI+qWRvyUTFMDv/xn8DugN
-         Izmw==
-X-Gm-Message-State: APjAAAVISwtk3iMAxcpvwYCRxPMZuIJ8ks6RNlvm134oU+OgC/bMu4JB
-        uLjTE73+PUSE+GeQHnLhSdQfZzgjzS4f8/ZvcB0=
-X-Google-Smtp-Source: APXvYqxoGaJMoLkaU0a3hunkmL+q4Au/MmUaEB2YHReelPt9T3RlRfOi4plWeH/1jGdOXm7NCc3VKDWHAKt7oX9SYsw=
-X-Received: by 2002:a2e:5850:: with SMTP id x16mr5087825ljd.228.1575222853104;
- Sun, 01 Dec 2019 09:54:13 -0800 (PST)
+        id S1726519AbfLAU2F (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 1 Dec 2019 15:28:05 -0500
+Received: from hall.aurel32.net ([195.154.113.88]:55868 "EHLO hall.aurel32.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726173AbfLAU2F (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 1 Dec 2019 15:28:05 -0500
+X-Greylist: delayed 1806 seconds by postgrey-1.27 at vger.kernel.org; Sun, 01 Dec 2019 15:28:04 EST
+Received: from [2a01:e35:2fdd:a4e1:fe91:fc89:bc43:b814] (helo=ohm.rr44.fr)
+        by hall.aurel32.net with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <aurelien@aurel32.net>)
+        id 1ibVLh-0005Nk-30; Sun, 01 Dec 2019 20:57:41 +0100
+Received: from aurel32 by ohm.rr44.fr with local (Exim 4.92.3)
+        (envelope-from <aurelien@aurel32.net>)
+        id 1ibVLg-00HScO-Hs; Sun, 01 Dec 2019 20:57:40 +0100
+From:   Aurelien Jarno <aurelien@aurel32.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     linuxppc-dev@lists.ozlabs.org, debian-kernel@lists.debian.org,
+        Aurelien Jarno <aurelien@aurel32.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        netdev@vger.kernel.org (open list:BPF (Safe dynamic programs and tools)),
+        bpf@vger.kernel.org (open list:BPF (Safe dynamic programs and tools))
+Subject: [PATCH] libbpf: fix readelf output parsing on powerpc with recent binutils
+Date:   Sun,  1 Dec 2019 20:57:28 +0100
+Message-Id: <20191201195728.4161537-1-aurelien@aurel32.net>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-References: <20191129222911.3710-1-daniel@iogearbox.net> <ec8264ad-8806-208a-1375-51e7cad1866e@gmail.com>
- <10d4c87c-3d53-2dbf-d8c0-8b36863fec60@iogearbox.net>
-In-Reply-To: <10d4c87c-3d53-2dbf-d8c0-8b36863fec60@iogearbox.net>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Sun, 1 Dec 2019 09:54:01 -0800
-Message-ID: <CAADnVQ+8nOiTXJYKV+36Yg8+bkxAJVW5LdcjqLVeEiLRyNLCDA@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: avoid setting bpf insns pages read-only when
- prog is jited
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, "H. Peter Anvin" <hpa@zytor.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Nov 30, 2019 at 1:52 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On 11/30/19 2:37 AM, Eric Dumazet wrote:
-> > On 11/29/19 2:29 PM, Daniel Borkmann wrote:
-> >> For the case where the interpreter is compiled out or when the prog is jited
-> >> it is completely unnecessary to set the BPF insn pages as read-only. In fact,
-> >> on frequent churn of BPF programs, it could lead to performance degradation of
-> >> the system over time since it would break the direct map down to 4k pages when
-> >> calling set_memory_ro() for the insn buffer on x86-64 / arm64 and there is no
-> >> reverse operation. Thus, avoid breaking up large pages for data maps, and only
-> >> limit this to the module range used by the JIT where it is necessary to set
-> >> the image read-only and executable.
-> >
-> > Interesting... But why the non JIT case would need RO protection ?
->
-> It was done for interpreter around 5 years ago mainly due to concerns from security
-> folks that the BPF insn image could get corrupted (through some other bug in the
-> kernel) in post-verifier stage by an attacker and then there's nothing really that
-> would provide any sort of protection guarantees; pretty much the same reasons why
-> e.g. modules are set to read-only in the kernel.
->
-> > Do you have any performance measures to share ?
->
-> No numbers, and I'm also not aware of any reports from users, but it was recently
-> brought to our attention from mm folks during discussion of a different set:
->
-> https://lore.kernel.org/lkml/1572171452-7958-2-git-send-email-rppt@kernel.org/T/
+On powerpc with recent versions of binutils, readelf outputs an extra
+field when dumping the symbols of an object file. For example:
 
-Applied. Thanks
+    35: 0000000000000838    96 FUNC    LOCAL  DEFAULT [<localentry>: 8]     1 btf_is_struct
+
+The extra "[<localentry>: 8]" prevents the GLOBAL_SYM_COUNT variable to
+be computed correctly and causes the checkabi target to fail.
+
+Fix that by looking for the symbol name in the last field instead of the
+8th one. This way it should also cope with future extra fields.
+
+Signed-off-by: Aurelien Jarno <aurelien@aurel32.net>
+---
+ tools/lib/bpf/Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
+index 99425d0be6ff..333900cf3f4f 100644
+--- a/tools/lib/bpf/Makefile
++++ b/tools/lib/bpf/Makefile
+@@ -147,7 +147,7 @@ TAGS_PROG := $(if $(shell which etags 2>/dev/null),etags,ctags)
+ 
+ GLOBAL_SYM_COUNT = $(shell readelf -s --wide $(BPF_IN_SHARED) | \
+ 			   cut -d "@" -f1 | sed 's/_v[0-9]_[0-9]_[0-9].*//' | \
+-			   awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$8}' | \
++			   awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$NF}' | \
+ 			   sort -u | wc -l)
+ VERSIONED_SYM_COUNT = $(shell readelf -s --wide $(OUTPUT)libbpf.so | \
+ 			      grep -Eo '[^ ]+@LIBBPF_' | cut -d@ -f1 | sort -u | wc -l)
+@@ -216,7 +216,7 @@ check_abi: $(OUTPUT)libbpf.so
+ 		     "versioned in $(VERSION_SCRIPT)." >&2;		 \
+ 		readelf -s --wide $(OUTPUT)libbpf-in.o |		 \
+ 		    cut -d "@" -f1 | sed 's/_v[0-9]_[0-9]_[0-9].*//' |	 \
+-		    awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$8}'|   \
++		    awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$NF}'|  \
+ 		    sort -u > $(OUTPUT)libbpf_global_syms.tmp;		 \
+ 		readelf -s --wide $(OUTPUT)libbpf.so |			 \
+ 		    grep -Eo '[^ ]+@LIBBPF_' | cut -d@ -f1 |		 \
+-- 
+2.24.0
+
