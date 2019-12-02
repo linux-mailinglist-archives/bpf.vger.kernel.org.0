@@ -2,44 +2,30 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 586BC10E7BC
-	for <lists+bpf@lfdr.de>; Mon,  2 Dec 2019 10:37:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E370010E843
+	for <lists+bpf@lfdr.de>; Mon,  2 Dec 2019 11:12:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726251AbfLBJh4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 2 Dec 2019 04:37:56 -0500
-Received: from www62.your-server.de ([213.133.104.62]:33064 "EHLO
+        id S1727049AbfLBKM2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 2 Dec 2019 05:12:28 -0500
+Received: from www62.your-server.de ([213.133.104.62]:43450 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726210AbfLBJh4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 2 Dec 2019 04:37:56 -0500
+        with ESMTP id S1726276AbfLBKM2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 2 Dec 2019 05:12:28 -0500
 Received: from [194.230.159.159] (helo=localhost)
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1ibi9Q-0004d3-Nt; Mon, 02 Dec 2019 10:37:52 +0100
-Date:   Mon, 2 Dec 2019 10:37:52 +0100
+        id 1ibigj-0006vI-2Z; Mon, 02 Dec 2019 11:12:17 +0100
 From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Aurelien Jarno <aurelien@aurel32.net>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        debian-kernel@lists.debian.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <netdev@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <bpf@vger.kernel.org>
-Subject: Re: [PATCH] libbpf: fix readelf output parsing on powerpc with
- recent binutils
-Message-ID: <20191202093752.GA1535@localhost.localdomain>
-References: <20191201195728.4161537-1-aurelien@aurel32.net>
- <87zhgbe0ix.fsf@mpe.ellerman.id.au>
+To:     davem@davemloft.net
+Cc:     jakub.kicinski@netronome.com, daniel@iogearbox.net, ast@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: pull-request: bpf 2019-12-02
+Date:   Mon,  2 Dec 2019 11:12:16 +0100
+Message-Id: <20191202101216.9511-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87zhgbe0ix.fsf@mpe.ellerman.id.au>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+Content-Transfer-Encoding: 8bit
 X-Authenticated-Sender: daniel@iogearbox.net
 X-Virus-Scanned: Clear (ClamAV 0.101.4/25650/Sun Dec  1 11:04:04 2019)
 Sender: bpf-owner@vger.kernel.org
@@ -47,27 +33,87 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Dec 02, 2019 at 04:53:26PM +1100, Michael Ellerman wrote:
-> Aurelien Jarno <aurelien@aurel32.net> writes:
-> > On powerpc with recent versions of binutils, readelf outputs an extra
-> > field when dumping the symbols of an object file. For example:
-> >
-> >     35: 0000000000000838    96 FUNC    LOCAL  DEFAULT [<localentry>: 8]     1 btf_is_struct
-> >
-> > The extra "[<localentry>: 8]" prevents the GLOBAL_SYM_COUNT variable to
-> > be computed correctly and causes the checkabi target to fail.
-> >
-> > Fix that by looking for the symbol name in the last field instead of the
-> > 8th one. This way it should also cope with future extra fields.
-> >
-> > Signed-off-by: Aurelien Jarno <aurelien@aurel32.net>
-> > ---
-> >  tools/lib/bpf/Makefile | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> Thanks for fixing that, it's been on my very long list of test failures
-> for a while.
-> 
-> Tested-by: Michael Ellerman <mpe@ellerman.id.au>
+Hi David,
 
-Looks good & also continues to work on x86. Applied, thanks!
+The following pull-request contains BPF updates for your *net* tree.
+
+We've added 10 non-merge commits during the last 6 day(s) which contain
+a total of 10 files changed, 60 insertions(+), 51 deletions(-).
+
+The main changes are:
+
+1) Fix vmlinux BTF generation for binutils pre v2.25, from Stanislav Fomichev.
+
+2) Fix libbpf global variable relocation to take symbol's st_value offset
+   into account, from Andrii Nakryiko.
+
+3) Fix libbpf build on powerpc where check_abi target fails due to different
+   readelf output format, from Aurelien Jarno.
+
+4) Don't set BPF insns RO for the case when they are JITed in order to avoid
+   fragmenting the direct map, from Daniel Borkmann.
+
+5) Fix static checker warning in btf_distill_func_proto() as well as a build
+   error due to empty enum when BPF is compiled out, from Alexei Starovoitov.
+
+6) Fix up generation of bpf_helper_defs.h for perf, from Arnaldo Carvalho de Melo.
+
+Please consider pulling these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+
+Thanks a lot!
+
+Also thanks to reporters, reviewers and testers of commits in this pull-request:
+
+Andrii Nakryiko, Arnaldo Carvalho de Melo, Dan Carpenter, John 
+Fastabend, Michael Ellerman, Randy Dunlap, Yonghong Song
+
+----------------------------------------------------------------
+
+The following changes since commit a95069ecb7092d03b2ea1c39ee04514fe9627540:
+
+  gve: Fix the queue page list allocated pages count (2019-11-26 15:52:34 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git 
+
+for you to fetch changes up to 3464afdf11f9a1e031e7858a05351ceca1792fea:
+
+  libbpf: Fix readelf output parsing on powerpc with recent binutils (2019-12-02 10:31:54 +0100)
+
+----------------------------------------------------------------
+Alexei Starovoitov (3):
+      bpf: Fix static checker warning
+      libbpf: Fix sym->st_value print on 32-bit arches
+      bpf: Fix build in minimal configurations
+
+Andrii Nakryiko (2):
+      libbpf: Fix Makefile' libbpf symbol mismatch diagnostic
+      libbpf: Fix global variable relocation
+
+Arnaldo Carvalho de Melo (1):
+      libbpf: Fix up generation of bpf_helper_defs.h
+
+Aurelien Jarno (1):
+      libbpf: Fix readelf output parsing on powerpc with recent binutils
+
+Daniel Borkmann (1):
+      bpf: Avoid setting bpf insns pages read-only when prog is jited
+
+Stanislav Fomichev (2):
+      bpf: Support pre-2.25-binutils objcopy for vmlinux BTF
+      bpf: Force .BTF section start to zero when dumping from vmlinux
+
+ include/linux/filter.h                            |  8 +++-
+ kernel/bpf/btf.c                                  |  5 ++-
+ scripts/link-vmlinux.sh                           |  8 +++-
+ tools/lib/bpf/Makefile                            | 10 ++---
+ tools/lib/bpf/libbpf.c                            | 45 ++++++++++-------------
+ tools/perf/MANIFEST                               |  1 +
+ tools/testing/selftests/bpf/progs/fentry_test.c   | 12 +++---
+ tools/testing/selftests/bpf/progs/fexit_bpf2bpf.c |  6 +--
+ tools/testing/selftests/bpf/progs/fexit_test.c    | 12 +++---
+ tools/testing/selftests/bpf/progs/test_mmap.c     |  4 +-
+ 10 files changed, 60 insertions(+), 51 deletions(-)
