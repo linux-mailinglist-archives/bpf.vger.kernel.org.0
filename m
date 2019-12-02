@@ -2,101 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A78410E599
-	for <lists+bpf@lfdr.de>; Mon,  2 Dec 2019 06:53:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E581D10E6EC
+	for <lists+bpf@lfdr.de>; Mon,  2 Dec 2019 09:30:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726251AbfLBFxa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 2 Dec 2019 00:53:30 -0500
-Received: from ozlabs.org ([203.11.71.1]:56981 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725807AbfLBFxa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 2 Dec 2019 00:53:30 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 47RDn32QZ8z9sPL;
-        Mon,  2 Dec 2019 16:53:26 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1575266008;
-        bh=EH+luGXjEilyQ8e+4eAH4LRNqk79yUFe6oQvFYlUr4k=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=noH5xNFoZXpnOmGLtGuWcghVmhFwCLZEThi4IM+78KPiDy/A0K25QrTucZRFgHP4w
-         p2UM2USUd7MJu6d/A3e/ccqQDysB0pqm//W3VLWOjSJkms+GcIcpkZBglp3shAkzHi
-         RZjxs5MUi7Nr6wZG0CZoxOL4RIqdc2dVDsEY/IGWMv0fCVY89W6dj1rFiZxl2I2Ypr
-         f1S3RlnKxSPmoNNdJ0AicXhAYf/uqa2zcQMFULONaZNMVJthAQMinzzwXbfXBu51PT
-         Dlux5u8JToEHyTEfhuOlQpqbXMouCkWZi+nWI+na3hSy6B9D1f6/pFDHTJb5DjlUoB
-         k0lXg7QDgxh0A==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Aurelien Jarno <aurelien@aurel32.net>, linux-kernel@vger.kernel.org
-Cc:     linuxppc-dev@lists.ozlabs.org, debian-kernel@lists.debian.org,
-        Aurelien Jarno <aurelien@aurel32.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        "open list\:BPF \(Safe dynamic programs and tools\)" 
-        <netdev@vger.kernel.org>,
-        "open list\:BPF \(Safe dynamic programs and tools\)" 
-        <bpf@vger.kernel.org>
-Subject: Re: [PATCH] libbpf: fix readelf output parsing on powerpc with recent binutils
-In-Reply-To: <20191201195728.4161537-1-aurelien@aurel32.net>
-References: <20191201195728.4161537-1-aurelien@aurel32.net>
-Date:   Mon, 02 Dec 2019 16:53:26 +1100
-Message-ID: <87zhgbe0ix.fsf@mpe.ellerman.id.au>
+        id S1726060AbfLBIaM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 2 Dec 2019 03:30:12 -0500
+Received: from merlin.infradead.org ([205.233.59.134]:42946 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726057AbfLBIaM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 2 Dec 2019 03:30:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=mNAwy5HbY+uo4286pa1sGzTyvw+MXZwiioxbIWu2EDI=; b=YicuJCQDPgGBqcZjUTNxushfe
+        bDXviQWiLfqJCExe6Jwn9hVfkHFuu+Hg7CumTzoqqFV6+VVQb5PBJEdWf+s3JMBGoMY701zKI23/e
+        CmfLRplFr3lV9MDttiYr5HI+97ijVYb8R22ikb63ehwudfrwF+3oamGxNLJqO0b3+DV41xIUQmr+G
+        AxqnBUFg7WqGkhz+qWfThRUEjyorEy6ePceVYGMnawQCndMDNVhWTedrwVpPW8N6ZLI7ryZuc/PtO
+        HThv6L7MsReyxomPO/gPqQamu5svb+OTQy33HR4pCKSWaS1eZ+KaHJ7tr5yJFLOkk9PK1+qcG2iAs
+        icKTyFD0A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1ibh5r-0004wU-QD; Mon, 02 Dec 2019 08:30:07 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 50BD330018B;
+        Mon,  2 Dec 2019 09:28:50 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 160ED20A6A67F; Mon,  2 Dec 2019 09:30:06 +0100 (CET)
+Date:   Mon, 2 Dec 2019 09:30:06 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Eric Dumazet <eric.dumazet@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        alexei.starovoitov@gmail.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH bpf] bpf: avoid setting bpf insns pages read-only when
+ prog is jited
+Message-ID: <20191202083006.GJ2844@hirez.programming.kicks-ass.net>
+References: <20191129222911.3710-1-daniel@iogearbox.net>
+ <ec8264ad-8806-208a-1375-51e7cad1866e@gmail.com>
+ <10d4c87c-3d53-2dbf-d8c0-8b36863fec60@iogearbox.net>
+ <adc89dbf-361a-838f-a0a5-8ef7ea619848@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <adc89dbf-361a-838f-a0a5-8ef7ea619848@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Aurelien Jarno <aurelien@aurel32.net> writes:
-> On powerpc with recent versions of binutils, readelf outputs an extra
-> field when dumping the symbols of an object file. For example:
->
->     35: 0000000000000838    96 FUNC    LOCAL  DEFAULT [<localentry>: 8]     1 btf_is_struct
->
-> The extra "[<localentry>: 8]" prevents the GLOBAL_SYM_COUNT variable to
-> be computed correctly and causes the checkabi target to fail.
->
-> Fix that by looking for the symbol name in the last field instead of the
-> 8th one. This way it should also cope with future extra fields.
->
-> Signed-off-by: Aurelien Jarno <aurelien@aurel32.net>
-> ---
->  tools/lib/bpf/Makefile | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+On Sun, Dec 01, 2019 at 06:49:32PM -0800, Eric Dumazet wrote:
 
-Thanks for fixing that, it's been on my very long list of test failures
-for a while.
+> Thanks for the link !
+> 
+> Having RO protection as a debug feature would be useful.
+> 
+> I believe we have CONFIG_STRICT_MODULE_RWX (and CONFIG_STRICT_KERNEL_RWX) for that already.
+> 
+> Or are we saying we also want to get rid of them ?
 
-Tested-by: Michael Ellerman <mpe@ellerman.id.au>
+No, in fact I'm working on making that stronger. We currently still have
+a few cases that violate the W^X rule.
 
-cheers
+The thing is, when the BPF stuff is JIT'ed, the actual BPF instruction
+page is not actually executed at all, so making it RO serves no purpose,
+other than to fragment the direct map.
 
-> diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
-> index 99425d0be6ff..333900cf3f4f 100644
-> --- a/tools/lib/bpf/Makefile
-> +++ b/tools/lib/bpf/Makefile
-> @@ -147,7 +147,7 @@ TAGS_PROG := $(if $(shell which etags 2>/dev/null),etags,ctags)
->  
->  GLOBAL_SYM_COUNT = $(shell readelf -s --wide $(BPF_IN_SHARED) | \
->  			   cut -d "@" -f1 | sed 's/_v[0-9]_[0-9]_[0-9].*//' | \
-> -			   awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$8}' | \
-> +			   awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$NF}' | \
->  			   sort -u | wc -l)
->  VERSIONED_SYM_COUNT = $(shell readelf -s --wide $(OUTPUT)libbpf.so | \
->  			      grep -Eo '[^ ]+@LIBBPF_' | cut -d@ -f1 | sort -u | wc -l)
-> @@ -216,7 +216,7 @@ check_abi: $(OUTPUT)libbpf.so
->  		     "versioned in $(VERSION_SCRIPT)." >&2;		 \
->  		readelf -s --wide $(OUTPUT)libbpf-in.o |		 \
->  		    cut -d "@" -f1 | sed 's/_v[0-9]_[0-9]_[0-9].*//' |	 \
-> -		    awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$8}'|   \
-> +		    awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$NF}'|  \
->  		    sort -u > $(OUTPUT)libbpf_global_syms.tmp;		 \
->  		readelf -s --wide $(OUTPUT)libbpf.so |			 \
->  		    grep -Eo '[^ ]+@LIBBPF_' | cut -d@ -f1 |		 \
-> -- 
-> 2.24.0
+All actual code lives in the 2G range that x86_64 can directly branch
+to, but this BPF instruction stuff lives in the general data heap and
+can thus cause much more fragmentation of the direct map.
