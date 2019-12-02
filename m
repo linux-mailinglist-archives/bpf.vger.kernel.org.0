@@ -2,116 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8900F10EE6C
-	for <lists+bpf@lfdr.de>; Mon,  2 Dec 2019 18:35:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C254E10EEEA
+	for <lists+bpf@lfdr.de>; Mon,  2 Dec 2019 19:09:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727752AbfLBRf4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 2 Dec 2019 12:35:56 -0500
-Received: from mail-qv1-f66.google.com ([209.85.219.66]:34050 "EHLO
-        mail-qv1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727747AbfLBRf4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 2 Dec 2019 12:35:56 -0500
-Received: by mail-qv1-f66.google.com with SMTP id o18so167713qvf.1;
-        Mon, 02 Dec 2019 09:35:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aXLHysx7ObLZy3lrIBxHgYNwKa/KwOmxigB8Ez1BJBE=;
-        b=WqNDXMtQpn/vAjAK/ibNmIcW9m61Sk5AI+r0+COqtDdzaM4BGRC9Y2IJfahOio9w4z
-         vehwZzgCk+FTxioWr659Pz8UBWw4BX2YMGPx32gcTbk4uL3sih0Q/w/XiZM1q5CT/PLP
-         KX/sj3sOEjYB9Xjeb/h4KX5NQ2Q5Uap3UwMx+kfggGVaMmaqOMOxivWbPIiehYGtbIde
-         tmRApwgmtFnS6EcuTQEQVUxyTD7X5qMzjwCChvrbbjy4jWgP9gMPRFADuofyaFdluzl6
-         i8YKtOFTpTisquk3mglA2GOfPOJnJxEYYNqc108u/6VpcoaKs1vduOvThMP1xqTwG9L2
-         IyUg==
+        id S1727671AbfLBSJC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 2 Dec 2019 13:09:02 -0500
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:40612 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727420AbfLBSJB (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 2 Dec 2019 13:09:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1575310141;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=P4ecEttM3yApxyxrsr44NMQb+oeialaWZ1R4NWHga6Y=;
+        b=WZhxTDuDjU0wiZug6+8AoXZKGF5uYFMkTOeBHxYfqKTp+utizSJzN9MTVRKIilfeTyR0BN
+        8FVkgqdgRSkh+UEocQII3nu6K52HJ3t5qVLKCZxYzL32zc+8VRHh2FgTvUF340N/JoMB/l
+        fTu2YeRuVK6uwZQwRLOZqNTEIf1CpmE=
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
+ [209.85.208.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-29-XXmrEeeEMnKNhHKRBDCiHg-1; Mon, 02 Dec 2019 13:08:57 -0500
+Received: by mail-lj1-f197.google.com with SMTP id h10so54223ljl.18
+        for <bpf@vger.kernel.org>; Mon, 02 Dec 2019 10:08:56 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aXLHysx7ObLZy3lrIBxHgYNwKa/KwOmxigB8Ez1BJBE=;
-        b=fK+422VDWfvL48w/7Gs1tdHxAzk6pjZ//kGfWSRxzT8CW2O4CV7BB1sIZx17k9PWqh
-         xjHduQMwSuOggY8U6Pd0aRmRm6IMaOLy4cXMfETo/70L6iJjbEAFsSaufQAohwjui57t
-         BVkFmI+3fK8w5BEkbn9M5eQg/85Cd9GfgTWuLoszNvNwEpwJ43jzqES+FcoBlb9g3+Dp
-         j47dL05U6cSHN5/i7ZfVwYf1xHt7XSMUPSkjQfjK10L+X8RFxkDUdxS75NdpyYbl08so
-         i1m6Y9ADY/uSDmDQa7RJt+QIFODu+596JA8iKaiOMDRVJkGzmhFhtNVRcjSQ5PO8NuQA
-         sy+w==
-X-Gm-Message-State: APjAAAURhiFx7r945RsASzJbySFtJ5/JAaY7wEV16EMmHqDkRgsn3uQn
-        QKrczMMdXtRPy2pkuYMKNEumREFRd9t52mpTqJU=
-X-Google-Smtp-Source: APXvYqyTLP/78mH1aRDHrJILi7yw4ItOOK9BTvHcoBY1C4vyJ+oGj8C8yH8EQKeZR7MmxVk/X/EdqyHtF9347d4OfUs=
-X-Received: by 2002:ad4:4e34:: with SMTP id dm20mr48373qvb.163.1575308155262;
- Mon, 02 Dec 2019 09:35:55 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=R3A1rQuYRQ18AFn43+yCBqk/Ud+1TsgtYotLFNawFuU=;
+        b=iFzo7wx7oO00I9YHH8vrDKOW5bHaQKkWrp4NTOnrgvT7l/k9MVQLqzOCLQ0IKrXh8k
+         GomwIhyH4lyH6GuKD1t5b2Eo7xUkoNufw2xcPHFYE6WU8okpKEWQk3ShD2gf1T3hE6Kv
+         O0VusubwqVO9+FzVRNZ1HkCWzy7AX7fqBlHOQs1nLLxY03CloTJNRPensFIxqh/Wplvd
+         d6phBxlNtWrrT3Yg/z3IJ0eP7pGCSOV2baSy054xZJOaynFkR7WCMoRvT0/vvOt/YbmN
+         HBbWPXQY4s7LE5SFKMrVUuJoxxCrDxrI4UdXT2pLbIZrMpuV937d2adJYQnS2lxBgLfE
+         42mg==
+X-Gm-Message-State: APjAAAW4XKnMjUZNOkKzaOf2bjYLlxWBfht20li0Z5hhWv2Kr3oGozH5
+        dzpa3fWSdIi8e3TO0J4Nsk6CNaabgnNUfPYUk9pZpkzhezA1kbSLRlA5NgSDwHGNrG9HJgsgXRW
+        OcFu2DJPRH7qg
+X-Received: by 2002:ac2:5931:: with SMTP id v17mr202405lfi.166.1575310135583;
+        Mon, 02 Dec 2019 10:08:55 -0800 (PST)
+X-Google-Smtp-Source: APXvYqw+ErVGcirRgq/taxG0hc0PK3IZELxdIQ1H+CTFmxm/d8vQkPE9sNJgKnUenWoxN34oySG/8A==
+X-Received: by 2002:ac2:5931:: with SMTP id v17mr202380lfi.166.1575310135338;
+        Mon, 02 Dec 2019 10:08:55 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id v2sm148047ljv.70.2019.12.02.10.08.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Dec 2019 10:08:54 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id AE3941804D1; Mon,  2 Dec 2019 19:08:52 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Jiri Olsa <jolsa@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Subject: Re: [PATCH 0/3] perf/bpftool: Allow to link libbpf dynamically
+In-Reply-To: <CAEf4BzbUK98tsYH1mSNoTjuVB4dstRsL5rpkA+9nRCcqrdn6-Q@mail.gmail.com>
+References: <20191127094837.4045-1-jolsa@kernel.org> <CAEf4BzbUK98tsYH1mSNoTjuVB4dstRsL5rpkA+9nRCcqrdn6-Q@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Mon, 02 Dec 2019 19:08:52 +0100
+Message-ID: <87zhgappl7.fsf@toke.dk>
 MIME-Version: 1.0
-References: <157529025128.29832.5953245340679936909.stgit@firesoul>
-In-Reply-To: <157529025128.29832.5953245340679936909.stgit@firesoul>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 2 Dec 2019 09:35:44 -0800
-Message-ID: <CAEf4BzZ_-wMfYxfSi-XBzKDp8bww7_YUDpA0j144HJJYeo+EFQ@mail.gmail.com>
-Subject: Re: [bpf PATCH] samples/bpf: fix broken xdp_rxq_info due to map order assumptions
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Networking <netdev@vger.kernel.org>,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        "Daniel T. Lee" <danieltimlee@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MC-Unique: XXmrEeeEMnKNhHKRBDCiHg-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Dec 2, 2019 at 4:37 AM Jesper Dangaard Brouer <brouer@redhat.com> wrote:
->
-> In the days of using bpf_load.c the order in which the 'maps' sections
-> were defines in BPF side (*_kern.c) file, were used by userspace side
-> to identify the map via using the map order as an index. In effect the
-> order-index is created based on the order the maps sections are stored
-> in the ELF-object file, by the LLVM compiler.
->
-> This have also carried over in libbpf via API bpf_map__next(NULL, obj)
-> to extract maps in the order libbpf parsed the ELF-object file.
->
-> When BTF based maps were introduced a new section type ".maps" were
-> created. I found that the LLVM compiler doesn't create the ".maps"
-> sections in the order they are defined in the C-file. The order in the
-> ELF file is based on the order the map pointer is referenced in the code.
->
-> This combination of changes lead to xdp_rxq_info mixing up the map
-> file-descriptors in userspace, resulting in very broken behaviour, but
-> without warning the user.
->
-> This patch fix issue by instead using bpf_object__find_map_by_name()
-> to find maps via their names. (Note, this is the ELF name, which can
-> be longer than the name the kernel retains).
->
-> Fixes: be5bca44aa6b ("samples: bpf: convert some XDP samples from bpf_load to libbpf")
-> Fixes: 451d1dc886b5 ("samples: bpf: update map definition to new syntax BTF-defined map")
-> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> ---
->  samples/bpf/xdp_rxq_info_user.c |    6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/samples/bpf/xdp_rxq_info_user.c b/samples/bpf/xdp_rxq_info_user.c
-> index 51e0d810e070..8fc3ad01de72 100644
-> --- a/samples/bpf/xdp_rxq_info_user.c
-> +++ b/samples/bpf/xdp_rxq_info_user.c
-> @@ -489,9 +489,9 @@ int main(int argc, char **argv)
->         if (bpf_prog_load_xattr(&prog_load_attr, &obj, &prog_fd))
->                 return EXIT_FAIL;
->
-> -       map = bpf_map__next(NULL, obj);
-> -       stats_global_map = bpf_map__next(map, obj);
-> -       rx_queue_index_map = bpf_map__next(stats_global_map, obj);
-> +       map =  bpf_object__find_map_by_name(obj, "config_map");
-> +       stats_global_map = bpf_object__find_map_by_name(obj, "stats_global_map");
-> +       rx_queue_index_map = bpf_object__find_map_by_name(obj, "rx_queue_index_map");
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-Yeah, relying on relative order of maps as instantiated by libbpf
-internally is extremely fragile. Thanks for fixing this.
-
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-
->         if (!map || !stats_global_map || !rx_queue_index_map) {
->                 printf("finding a map in obj file failed\n");
->                 return EXIT_FAIL;
+> On Wed, Nov 27, 2019 at 1:49 AM Jiri Olsa <jolsa@kernel.org> wrote:
+>>
+>> hi,
+>> adding support to link bpftool with libbpf dynamically,
+>> and config change for perf.
+>>
+>> It's now possible to use:
+>>   $ make -C tools/bpf/bpftool/ LIBBPF_DYNAMIC=3D1
 >
+> I wonder what's the motivation behind these changes, though? Why is
+> linking bpftool dynamically with libbpf is necessary and important?
+> They are both developed tightly within kernel repo, so I fail to see
+> what are the huge advantages one can get from linking them
+> dynamically.
+
+Well, all the regular reasons for using dynamic linking (memory usage,
+binary size, etc). But in particular, the ability to update the libbpf
+package if there's a serious bug, and have that be picked up by all
+utilities making use of it. No reason why bpftool should be special in
+that respect.
+
+-Toke
+
