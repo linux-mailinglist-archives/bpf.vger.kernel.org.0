@@ -2,105 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 10B0410EA27
-	for <lists+bpf@lfdr.de>; Mon,  2 Dec 2019 13:37:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 867B310EA4D
+	for <lists+bpf@lfdr.de>; Mon,  2 Dec 2019 14:02:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727391AbfLBMhl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 2 Dec 2019 07:37:41 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:34092 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727386AbfLBMhl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 2 Dec 2019 07:37:41 -0500
+        id S1727401AbfLBNCd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 2 Dec 2019 08:02:33 -0500
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:23363 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727382AbfLBNCc (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 2 Dec 2019 08:02:32 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1575290259;
+        s=mimecast20190719; t=1575291751;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=yKdovxrcS0kfPyHRtLPGUT9M9ZoTTuzziE5WyqUZ19Q=;
-        b=ZfOrxrbuKjCI7dIyE4FYXo4NK9WrZ49ct3CU9T1O2t3ToKcsn0kpQd/TAJZsRA/7I2dTCo
-        DOkdI/tDFZujrJkn2SotdgM1+BG8FBkeBF1JrcXVJPWF4u1pgZHQcAdjFLonNMwvN/1ubu
-        cxRyIPFMY5V5xCPIexreBTgms2YvgGI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-300-UFqDkaEXMeytyetN9qZbxA-1; Mon, 02 Dec 2019 07:37:36 -0500
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 86C5FDB20;
-        Mon,  2 Dec 2019 12:37:35 +0000 (UTC)
-Received: from firesoul.localdomain (ovpn-200-58.brq.redhat.com [10.40.200.58])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2F2F75C290;
-        Mon,  2 Dec 2019 12:37:32 +0000 (UTC)
-Received: from [10.1.1.1] (localhost [IPv6:::1])
-        by firesoul.localdomain (Postfix) with ESMTP id 566DD319D2A0B;
-        Mon,  2 Dec 2019 13:37:31 +0100 (CET)
-Subject: [bpf PATCH] samples/bpf: fix broken xdp_rxq_info due to map order
- assumptions
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     bpf@vger.kernel.org
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wnZYQHNyF93TOuzpHzsjI/rl9jczeNd2hf1BHCa51L8=;
+        b=aECf72bY9nlpzG9aK5TVQLpF58WFaj83NvMRnmSxMEbWIcP2WlEk3bB8oABbXdH2eS890Q
+        nJ/5fUdS2SyLpv0RFiyfUCt/3mmzPZafsw33N6jeYvYXoHzIT1Tr+uMsqeEH3bo5Xi3mab
+        bzx22eh6Zd4b6HEaAVjHA1N4AFUzJhs=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-49-pI8cMc_pPF29OnANM_CiRg-1; Mon, 02 Dec 2019 08:02:30 -0500
+Received: by mail-lf1-f70.google.com with SMTP id r187so3825924lff.21
+        for <bpf@vger.kernel.org>; Mon, 02 Dec 2019 05:02:30 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=wnZYQHNyF93TOuzpHzsjI/rl9jczeNd2hf1BHCa51L8=;
+        b=KwrHtdPysHMdMr4FJWu4mHeY08HiWw0m0eGrKM7/e6I3+n5O6prZEySoxgRCvdh1xC
+         z5eVCp07I22O18E7jNv1p3IBs7B8Gvz5/SlPYeJ0hlg057l0Tyg11lQMqDOdrbYVIbTA
+         dkpifjgCEQFLgfN/pJYJVHRI7x4d75ivfyiKnOvUUxpJRcoqRs8r9M4KWr6hQ4CPchFn
+         8j1s2TdUJD+yJEiLV9UHMcgobdqZSLAnfrkV19PJfJAhk3+sq8Q7aECR98nmriiALft3
+         zM4rml8ZpLw3ZSJdyV6IRQeZYFEKiSKOfuPD4LpgcYtrDBl+UQXzmIgU/mKrlrTp90k3
+         SJwA==
+X-Gm-Message-State: APjAAAUVRjVRvqBjL3iUdWvq2/yQeyoAw52eE21CHKcHoQzI6R/5Jezr
+        T9873JrjpWUxZtrULs1TYNihlzRT1J9NTceJTo2jLLZcOZ+8KsYHfeHCcIwVeSv+psEErmwdEt8
+        o4KQgX62275La
+X-Received: by 2002:a05:651c:1066:: with SMTP id y6mr47130219ljm.96.1575291749495;
+        Mon, 02 Dec 2019 05:02:29 -0800 (PST)
+X-Google-Smtp-Source: APXvYqz9rDXleedQx7EL3lXGtVOObHOfwWLrWorFA2PCi83Q4ChTqbLiZbDzrUkNFFwJzJoFQlZsvA==
+X-Received: by 2002:a05:651c:1066:: with SMTP id y6mr47130185ljm.96.1575291749249;
+        Mon, 02 Dec 2019 05:02:29 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id u3sm9692949lfm.37.2019.12.02.05.02.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Dec 2019 05:02:28 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id E1875181942; Mon,  2 Dec 2019 14:02:27 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>, bpf@vger.kernel.org
 Cc:     jakub.kicinski@netronome.com, netdev@vger.kernel.org,
         Jesper Dangaard Brouer <brouer@redhat.com>,
         Daniel Borkmann <borkmann@iogearbox.net>,
         danieltimlee@gmail.com,
         Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 02 Dec 2019 13:37:31 +0100
-Message-ID: <157529025128.29832.5953245340679936909.stgit@firesoul>
-User-Agent: StGit/0.17.1-dirty
+Subject: Re: [bpf PATCH] samples/bpf: fix broken xdp_rxq_info due to map order assumptions
+In-Reply-To: <157529025128.29832.5953245340679936909.stgit@firesoul>
+References: <157529025128.29832.5953245340679936909.stgit@firesoul>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Mon, 02 Dec 2019 14:02:27 +0100
+Message-ID: <87k17ericc.fsf@toke.dk>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
-X-MC-Unique: UFqDkaEXMeytyetN9qZbxA-1
+X-MC-Unique: pI8cMc_pPF29OnANM_CiRg-1
 X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In the days of using bpf_load.c the order in which the 'maps' sections
-were defines in BPF side (*_kern.c) file, were used by userspace side
-to identify the map via using the map order as an index. In effect the
-order-index is created based on the order the maps sections are stored
-in the ELF-object file, by the LLVM compiler.
+Jesper Dangaard Brouer <brouer@redhat.com> writes:
 
-This have also carried over in libbpf via API bpf_map__next(NULL, obj)
-to extract maps in the order libbpf parsed the ELF-object file.
+> In the days of using bpf_load.c the order in which the 'maps' sections
+> were defines in BPF side (*_kern.c) file, were used by userspace side
+> to identify the map via using the map order as an index. In effect the
+> order-index is created based on the order the maps sections are stored
+> in the ELF-object file, by the LLVM compiler.
+>
+> This have also carried over in libbpf via API bpf_map__next(NULL, obj)
+> to extract maps in the order libbpf parsed the ELF-object file.
+>
+> When BTF based maps were introduced a new section type ".maps" were
+> created. I found that the LLVM compiler doesn't create the ".maps"
+> sections in the order they are defined in the C-file. The order in the
+> ELF file is based on the order the map pointer is referenced in the code.
+>
+> This combination of changes lead to xdp_rxq_info mixing up the map
+> file-descriptors in userspace, resulting in very broken behaviour, but
+> without warning the user.
+>
+> This patch fix issue by instead using bpf_object__find_map_by_name()
+> to find maps via their names. (Note, this is the ELF name, which can
+> be longer than the name the kernel retains).
+>
+> Fixes: be5bca44aa6b ("samples: bpf: convert some XDP samples from bpf_loa=
+d to libbpf")
+> Fixes: 451d1dc886b5 ("samples: bpf: update map definition to new syntax B=
+TF-defined map")
+> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
 
-When BTF based maps were introduced a new section type ".maps" were
-created. I found that the LLVM compiler doesn't create the ".maps"
-sections in the order they are defined in the C-file. The order in the
-ELF file is based on the order the map pointer is referenced in the code.
-
-This combination of changes lead to xdp_rxq_info mixing up the map
-file-descriptors in userspace, resulting in very broken behaviour, but
-without warning the user.
-
-This patch fix issue by instead using bpf_object__find_map_by_name()
-to find maps via their names. (Note, this is the ELF name, which can
-be longer than the name the kernel retains).
-
-Fixes: be5bca44aa6b ("samples: bpf: convert some XDP samples from bpf_load to libbpf")
-Fixes: 451d1dc886b5 ("samples: bpf: update map definition to new syntax BTF-defined map")
-Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
----
- samples/bpf/xdp_rxq_info_user.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/samples/bpf/xdp_rxq_info_user.c b/samples/bpf/xdp_rxq_info_user.c
-index 51e0d810e070..8fc3ad01de72 100644
---- a/samples/bpf/xdp_rxq_info_user.c
-+++ b/samples/bpf/xdp_rxq_info_user.c
-@@ -489,9 +489,9 @@ int main(int argc, char **argv)
- 	if (bpf_prog_load_xattr(&prog_load_attr, &obj, &prog_fd))
- 		return EXIT_FAIL;
- 
--	map = bpf_map__next(NULL, obj);
--	stats_global_map = bpf_map__next(map, obj);
--	rx_queue_index_map = bpf_map__next(stats_global_map, obj);
-+	map =  bpf_object__find_map_by_name(obj, "config_map");
-+	stats_global_map = bpf_object__find_map_by_name(obj, "stats_global_map");
-+	rx_queue_index_map = bpf_object__find_map_by_name(obj, "rx_queue_index_map");
- 	if (!map || !stats_global_map || !rx_queue_index_map) {
- 		printf("finding a map in obj file failed\n");
- 		return EXIT_FAIL;
+Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 
