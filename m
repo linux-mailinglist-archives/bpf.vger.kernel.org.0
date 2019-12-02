@@ -2,145 +2,217 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E58410E7AA
-	for <lists+bpf@lfdr.de>; Mon,  2 Dec 2019 10:30:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61BEF10E7B4
+	for <lists+bpf@lfdr.de>; Mon,  2 Dec 2019 10:33:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726251AbfLBJam (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 2 Dec 2019 04:30:42 -0500
-Received: from mail-eopbgr80081.outbound.protection.outlook.com ([40.107.8.81]:62436
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726190AbfLBJam (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 2 Dec 2019 04:30:42 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=l+xLpQGC2tRbNOEwDCH4jAmN3lE2vhUV4hxK4d4FyAYCdPJzDwOssGGaaPeubfwh00sjpf7R2cCuFwlDYUTJb3s1G2g6GrsttREFdIpvWdazC7vwpeVwDsLe7sBJwXsHEoTL7yCd43hYYI5z6lTbc7vkzSX3/PJAG+25EBCqPHYu/MhJYbafxlsZmmYixTPtAekgxTLmhQi2I5Q+3OTXGAMus+uP208SeuSG4JXzNYbyPQD8SEtf4nA7rOPmJfALX+WMHCAaK2UuNTSmVboP4bnfTpbh3o82WCycpA6YBspAKslbfMwFKed1c8QKDz8/QQFy5eS/RBtZ5foqqOdEDw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8i4fcA5WdnpL53pDcD2coFMi9oKUJfYk7gVOO90YW+w=;
- b=kICHvbQn8+CPL1b8sGx81ipG20DVZ8eT/SK8FqBqVST5J0s97zDBiO8+c59uzcuDij8I/luky01VEElSpu/lTInhODYOWSuNK8aA3QP0KlYvvYcS92AO1LwMmZh7TM7YF7alq7uIjwRiiN0WG/WQ3n/119xN/5QFNHMsyP3kK8Fr82Y62WGuGr4rFNftODzKBtHzP4/MnnxIWllEv67hwPXwFUHbAZRzI1XnvRSzdlvwQt7rG7Z/t+NbAA/QJ+N7yavcQjAOpYVoychkx1reUDImV9DQq8EoGpUVbNweGiny0/5JZr6GTYlPzC0xRoZl0VVIQvzhcLrH0Ko3oIyMxw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8i4fcA5WdnpL53pDcD2coFMi9oKUJfYk7gVOO90YW+w=;
- b=KFhLMWWT2OWBRSA22OObpeph8pdYq6vsAHVkM1RFluSYTEdUxNTwooFFPnRDUnK9h4YaRPjYfwRFvZdz8DUS2bW08h28Rm2WLbYg/vJ5qzlzjDHgbBo/a7tuOOeRQE6EaXm5iEiCs5gbHHhLhVF29wj5nwQcWtJw8DvFWcCEJAM=
-Received: from AM0PR05MB5875.eurprd05.prod.outlook.com (20.178.119.159) by
- AM0PR05MB4563.eurprd05.prod.outlook.com (52.133.60.144) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2495.18; Mon, 2 Dec 2019 09:30:36 +0000
-Received: from AM0PR05MB5875.eurprd05.prod.outlook.com
- ([fe80::dca5:7e63:8242:685e]) by AM0PR05MB5875.eurprd05.prod.outlook.com
- ([fe80::dca5:7e63:8242:685e%7]) with mapi id 15.20.2495.014; Mon, 2 Dec 2019
- 09:30:36 +0000
-From:   Maxim Mikityanskiy <maximmi@mellanox.com>
-To:     Magnus Karlsson <magnus.karlsson@intel.com>
-CC:     "bjorn.topel@intel.com" <bjorn.topel@intel.com>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "jonathan.lemon@gmail.com" <jonathan.lemon@gmail.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf] xsk: add missing memory barrier in xskq_has_addrs()
-Thread-Topic: [PATCH bpf] xsk: add missing memory barrier in xskq_has_addrs()
-Thread-Index: AQHVppqPi+AsYvY1aEii0ZfX9z5g9KemmRWA
-Date:   Mon, 2 Dec 2019 09:30:36 +0000
-Message-ID: <c15a81e1-252f-936c-26f0-f21e8165c622@mellanox.com>
-References: <1575021070-28873-1-git-send-email-magnus.karlsson@intel.com>
-In-Reply-To: <1575021070-28873-1-git-send-email-magnus.karlsson@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: AM6PR10CA0005.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:209:89::18) To AM0PR05MB5875.eurprd05.prod.outlook.com
- (2603:10a6:208:12d::31)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=maximmi@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [77.75.144.194]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: dc1f6e1e-4b30-49b5-e6ab-08d7770a496f
-x-ms-traffictypediagnostic: AM0PR05MB4563:
-x-microsoft-antispam-prvs: <AM0PR05MB456305E116DB36782DE3006ED1430@AM0PR05MB4563.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-forefront-prvs: 0239D46DB6
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(136003)(366004)(346002)(396003)(376002)(39860400002)(199004)(189003)(66066001)(316002)(14444005)(305945005)(229853002)(6486002)(6512007)(86362001)(31686004)(6436002)(31696002)(36756003)(99286004)(54906003)(66946007)(66556008)(71200400001)(66476007)(2906002)(4326008)(2616005)(446003)(52116002)(81156014)(76176011)(4001150100001)(256004)(8936002)(25786009)(14454004)(6246003)(386003)(6116002)(6506007)(81166006)(102836004)(7736002)(8676002)(64756008)(6916009)(26005)(478600001)(186003)(11346002)(5660300002)(3846002)(53546011)(71190400001)(66446008);DIR:OUT;SFP:1101;SCL:1;SRVR:AM0PR05MB4563;H:AM0PR05MB5875.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: VavRqngb/IkW7NIJPnlYLJD/Txj90sjqVoETrGWMsZ0vPCEgwNgQ0Kedpgtedkfhq8cMPVUqQF7/sbLWXRHY8Ii/gqTYbpMwlI8PJDe7MSrIj6gnZFkdMiyNDQV0by3okmR6zoY/rJMBtUpO7V+lQa9NbPfKdbAieFMZVAOY72BUw8PQU08XVqnQ1KAEm2ytKHLGDY+P0/JVDdF87NFza9tqTCc0rZXEfjsTtC5i31CgaXjBwF4PqZACxWDZqdlLm+y/G/ubxKLgNjVICot3L4rAADq4/orFVbpBbOoNVcv+hNR/7+TwH9CTPluadvatVjrw8f6VJmiHfxQamy3tXbf+W8o45BkchCxO3Qq/eOXHgp3zLLDZIN6GieKh378tMXB2bOSpeYdqpAEWrmleMgBgC+Z042pSG1/1ZWwQOLnsKL51nLlNOpYIcO2/uvP9
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <A4FD6383804C894BA08EA8C927850561@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1726251AbfLBJdo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 2 Dec 2019 04:33:44 -0500
+Received: from ivanoab7.miniserver.com ([37.128.132.42]:60132 "EHLO
+        www.kot-begemot.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726190AbfLBJdo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 2 Dec 2019 04:33:44 -0500
+Received: from tun252.jain.kot-begemot.co.uk ([192.168.18.6] helo=jain.kot-begemot.co.uk)
+        by www.kot-begemot.co.uk with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <anton.ivanov@cambridgegreys.com>)
+        id 1ibi5E-0004Xs-Gt; Mon, 02 Dec 2019 09:33:32 +0000
+Received: from jain.kot-begemot.co.uk ([192.168.3.3])
+        by jain.kot-begemot.co.uk with esmtp (Exim 4.92)
+        (envelope-from <anton.ivanov@cambridgegreys.com>)
+        id 1ibi5C-0006As-2n; Mon, 02 Dec 2019 09:33:32 +0000
+Subject: Re: [PATCH] um: vector: fix BPF loading in vector drivers
+From:   Anton Ivanov <anton.ivanov@cambridgegreys.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        linux-um@lists.infradead.org
+Cc:     songliubraving@fb.com, jakub.kicinski@netronome.com,
+        richard@nod.at, kernel-janitors@vger.kernel.org, ast@kernel.org,
+        weiyongjun1@huawei.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, kafai@fb.com, dan.carpenter@oracle.com
+References: <20191128174405.4244-1-anton.ivanov@cambridgegreys.com>
+ <1416753c-e966-e259-a84d-2a5f0a166660@iogearbox.net>
+ <cccc22d6-ee0a-c219-2bf0-2b89ae07ac2b@cambridgegreys.com>
+ <c54efbb0-8ac4-2788-5957-ff99ab357584@iogearbox.net>
+ <fe8a15ff-7e95-548e-d41d-fa3ce1113202@cambridgegreys.com>
+Message-ID: <643996ce-7b19-16b6-e02f-61859de04968@cambridgegreys.com>
+Date:   Mon, 2 Dec 2019 09:33:29 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dc1f6e1e-4b30-49b5-e6ab-08d7770a496f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Dec 2019 09:30:36.4081
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: g8IBdCZvxw9NMtlNK3fZ46cw35TuVz7VLecQM80Wq1ZXtlbCjWhyFbYvdJeQS6Bb2hwd1OMtPUC4YWLKclzqnA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR05MB4563
+In-Reply-To: <fe8a15ff-7e95-548e-d41d-fa3ce1113202@cambridgegreys.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Spam-Score: -1.0
+X-Spam-Score: -1.0
+X-Clacks-Overhead: GNU Terry Pratchett
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-T24gMjAxOS0xMS0yOSAxMTo1MSwgTWFnbnVzIEthcmxzc29uIHdyb3RlOg0KPiBUaGUgcmluZ3Mg
-aW4gQUZfWERQIGJldHdlZW4gdXNlciBzcGFjZSBhbmQga2VybmVsIHNwYWNlIGhhdmUgdGhlDQo+
-IGZvbGxvd2luZyBzZW1hbnRpY3M6DQo+IA0KPiBwcm9kdWNlciAgICAgICAgICAgICAgICAgICAg
-ICAgICBjb25zdW1lcg0KPiANCj4gaWYgKExPQUQgLT5jb25zdW1lcikgeyAgICAgICAgICAgTE9B
-RCAtPnByb2R1Y2VyDQo+ICAgICAgICAgICAgICAgICAgICAgKEEpICAgICAgICAgICBzbXBfcm1i
-KCkgICAgICAgKEMpDQo+ICAgICBTVE9SRSAkZGF0YSAgICAgICAgICAgICAgICAgICBMT0FEICRk
-YXRhDQo+ICAgICBzbXBfd21iKCkgICAgICAgKEIpICAgICAgICAgICBzbXBfbWIoKSAgICAgICAg
-KEQpDQo+ICAgICBTVE9SRSAtPnByb2R1Y2VyICAgICAgICAgICAgICBTVE9SRSAtPmNvbnN1bWVy
-DQo+IH0NCj4gDQo+IFRoZSBjb25zdW1lciBmdW5jdGlvbiB4c2txX2hhc19hZGRycygpIGJlbG93
-IGxvYWRzIHRoZSBwcm9kdWNlcg0KPiBwb2ludGVyIGFuZCB1cGRhdGVzIHRoZSBsb2NhbGx5IGNh
-Y2hlZCBjb3B5IG9mIGl0LiBIb3dldmVyLCBpdCBkb2VzDQo+IG5vdCBpc3N1ZSB0aGUgc21wX3Jt
-YigpIG9wZXJhdGlvbiByZXF1aXJlZCBieSB0aGUgbG9ja2xlc3MgcmluZy4gVGhpcw0KPiB3b3Vs
-ZCBoYXZlIGJlZW4gb2sgaGFkIHRoZSBmdW5jdGlvbiBub3QgdXBkYXRlZCB0aGUgbG9jYWxseSBj
-YWNoZWQNCj4gY29weSwgYXMgdGhhdCBjb3VsZCBub3QgaGF2ZSByZXN1bHRlZCBpbiBuZXcgZGF0
-YSBiZWluZyByZWFkIGZyb20gdGhlDQo+IHJpbmcuIEJ1dCBhcyBpdCB1cGRhdGVzIHRoZSBsb2Nh
-bCBwcm9kdWNlciBwb2ludGVyLCBhIHN1YnNlcXVlbnQgcGVlaw0KPiBvcGVyYXRpb24sIHN1Y2gg
-YXMgeHNrcV9wZWVrX2FkZHIoKSwgbWlnaHQgbG9hZCBkYXRhIGZyb20gdGhlIHJpbmcNCj4gd2l0
-aG91dCBpc3N1aW5nIHRoZSByZXF1aXJlZCBzbXBfcm1iKCkgbWVtb3J5IGJhcnJpZXIuDQoNClRo
-YW5rcyBmb3IgcGF5aW5nIGF0dGVudGlvbiB0byBpdCwgYnV0IEkgZG9uJ3QgdGhpbmsgaXQgY2Fu
-IHJlYWxseSANCmhhcHBlbi4geHNrcV9oYXNfYWRkcnMgb25seSB1cGRhdGVzIHByb2RfdGFpbCwg
-YnV0IHhza3FfcGVla19hZGRyIA0KZG9lc24ndCB1c2UgcHJvZF90YWlsLCBpdCByZWFkcyBmcm9t
-IGNvbnNfdGFpbCB0byBjb25zX2hlYWQsIGFuZCBldmVyeSANCmNvbnNfaGVhZCB1cGRhdGUgaGFz
-IHRoZSBuZWNlc3Nhcnkgc21wX3JtYi4NCg0KQWN0dWFsbHksIHRoZSBzYW1lIHRoaW5nIGhhcHBl
-bnMgd2l0aCB4c2txX25iX2F2YWlsLiBJbiB4c2txX2Z1bGxfZGVzYywgDQp3ZSBkb24ndCBoYXZl
-IGFueSBiYXJyaWVyIGFmdGVyIHhza3FfbmJfYXZhaWwsIGFuZCB4c2txX3BlZWtfZGVzYyBjYW4g
-YmUgDQpjYWxsZWQgYWZ0ZXIgeHNrcV9mdWxsX2Rlc2MsIGJ1dCBpdCdzIGFic29sdXRlbHkgZmlu
-ZSwgYmVjYXVzZSANCnhza3FfbmJfYXZhaWwgZG9lc24ndCB0b3VjaCBjb25zX2hlYWQuIFRoZSBz
-YW1lIGhhcHBlbnMgd2l0aCANCnhza3FfaGFzX2FkZHJzIGFuZCB4c2txX3BlZWtfYWRkci4NCg0K
-U28sIEkgZG9uJ3QgdGhpbmsgdGhpcyBjaGFuZ2UgaXMgcmVxdWlyZWQuIFBsZWFzZSBjb3JyZWN0
-IG1lIGlmIEknbSB3cm9uZy4NCg0KPiBzdGF0aWMgaW5saW5lIGJvb2wgeHNrcV9oYXNfYWRkcnMo
-c3RydWN0IHhza19xdWV1ZSAqcSwgdTMyIGNudCkNCj4gew0KPiAgICAgICAgICB1MzIgZW50cmll
-cyA9IHEtPnByb2RfdGFpbCAtIHEtPmNvbnNfdGFpbDsNCj4gDQo+ICAgICAgICAgIGlmIChlbnRy
-aWVzID49IGNudCkNCj4gICAgICAgICAgICAgICAgICByZXR1cm4gdHJ1ZTsNCj4gDQo+ICAgICAg
-ICAgIC8qIFJlZnJlc2ggdGhlIGxvY2FsIHBvaW50ZXIuICovDQo+ICAgICAgICAgIHEtPnByb2Rf
-dGFpbCA9IFJFQURfT05DRShxLT5yaW5nLT5wcm9kdWNlcik7DQo+IAkqKiogTUlTU0lORyBNRU1P
-UlkgQkFSUklFUiAqKioNCj4gICAgICAgICAgZW50cmllcyA9IHEtPnByb2RfdGFpbCAtIHEtPmNv
-bnNfdGFpbDsNCj4gDQo+ICAgICAgICAgIHJldHVybiBlbnRyaWVzID49IGNudDsNCj4gfQ0KPiAN
-Cj4gRml4IHRoaXMgYnkgYWRkaW5nIHRoZSBtaXNzaW5nIG1lbW9yeSBiYXJyaWVyIGF0IHRoZSBp
-bmRpY2F0ZWQgcG9pbnQNCj4gYWJvdmUuDQo+IA0KPiBGaXhlczogZDU3ZDc2NDI4YWU5ICgiQWRk
-IEFQSSB0byBjaGVjayBmb3IgYXZhaWxhYmxlIGVudHJpZXMgaW4gRlEiKQ0KPiBTaWduZWQtb2Zm
-LWJ5OiBNYWdudXMgS2FybHNzb24gPG1hZ251cy5rYXJsc3NvbkBpbnRlbC5jb20+DQo+IC0tLQ0K
-PiAgIG5ldC94ZHAveHNrX3F1ZXVlLmggfCAxICsNCj4gICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNl
-cnRpb24oKykNCj4gDQo+IGRpZmYgLS1naXQgYS9uZXQveGRwL3hza19xdWV1ZS5oIGIvbmV0L3hk
-cC94c2tfcXVldWUuaA0KPiBpbmRleCBlZGRhZTQ2Li5iNTQ5MmMzIDEwMDY0NA0KPiAtLS0gYS9u
-ZXQveGRwL3hza19xdWV1ZS5oDQo+ICsrKyBiL25ldC94ZHAveHNrX3F1ZXVlLmgNCj4gQEAgLTEy
-Nyw2ICsxMjcsNyBAQCBzdGF0aWMgaW5saW5lIGJvb2wgeHNrcV9oYXNfYWRkcnMoc3RydWN0IHhz
-a19xdWV1ZSAqcSwgdTMyIGNudCkNCj4gICANCj4gICAJLyogUmVmcmVzaCB0aGUgbG9jYWwgcG9p
-bnRlci4gKi8NCj4gICAJcS0+cHJvZF90YWlsID0gUkVBRF9PTkNFKHEtPnJpbmctPnByb2R1Y2Vy
-KTsNCj4gKwlzbXBfcm1iKCk7IC8qIEMsIG1hdGNoZXMgQiAqLw0KPiAgIAllbnRyaWVzID0gcS0+
-cHJvZF90YWlsIC0gcS0+Y29uc190YWlsOw0KPiAgIA0KPiAgIAlyZXR1cm4gZW50cmllcyA+PSBj
-bnQ7DQo+IA0KDQo=
+
+
+On 30/11/2019 07:29, Anton Ivanov wrote:
+> On 29/11/2019 23:12, Daniel Borkmann wrote:
+>> On 11/29/19 12:54 PM, Anton Ivanov wrote:
+>>> On 29/11/2019 09:15, Daniel Borkmann wrote:
+>>>> On 11/28/19 6:44 PM, anton.ivanov@cambridgegreys.com wrote:
+>>>>> From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+>>>>>
+>>>>> This fixes a possible hang in bpf firmware loading in the
+>>>>> UML vector io drivers due to use of GFP_KERNEL while holding
+>>>>> a spinlock.
+>>>>>
+>>>>> Based on a prposed fix by weiyongjun1@huawei.com and suggestions for
+>>>>> improving it by dan.carpenter@oracle.com
+>>>>>
+>>>>> Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+>>>>
+>>>> Any reason why this BPF firmware loading mechanism in UML vector 
+>>>> driver that was
+>>>> recently added [0] is plain old classic BPF? Quoting your commit log 
+>>>> [0]:
+>>>
+>>> It will allow whatever is allowed by sockfilter. Looking at the 
+>>> sockfilter implementation in the kernel it takes eBPF, however even 
+>>> the kernel docs still state BPF.
+>>
+>> You are using SO_ATTACH_FILTER in uml_vector_attach_bpf() which is the 
+>> old classic
+>> BPF (and not eBPF). The kernel internally moves that over to eBPF 
+>> insns, but you'll
+>> be constrained forever with the abilities of cBPF. The later added 
+>> SO_ATTACH_BPF is
+>> the one for eBPF where you pass the prog fd from bpf().
+> 
+> I will switch to that in the next version.
+> 
+>>
+>>>>    All vector drivers now allow a BPF program to be loaded and
+>>>>    associated with the RX socket in the host kernel.
+>>>>
+>>>>    1. The program can be loaded as an extra kernel command line
+>>>>    option to any of the vector drivers.
+>>>>
+>>>>    2. The program can also be loaded as "firmware", using the
+>>>>    ethtool flash option. It is possible to turn this facility
+>>>>    on or off using a command line option.
+>>>>
+>>>>    A simplistic wrapper for generating the BPF firmware for the raw
+>>>>    socket driver out of a tcpdump/libpcap filter expression can be
+>>>>    found at: https://github.com/kot-begemot-uk/uml_vector_utilities/
+>>>>
+>>>> ... it tells what it does but /nothing/ about the original rationale 
+>>>> / use case
+>>>> why it is needed. So what is the use case? And why is this only 
+>>>> classic BPF? Is
+>>>> there any discussion to read up that lead you to this decision of 
+>>>> only implementing
+>>>> handling for classic BPF?
+>>>
+>>> Moving processing out of the GUEST onto the HOST using a safe 
+>>> language. The firmware load is on the GUEST and your BPF is your 
+>>> virtual NIC "firmware" which runs on the HOST (in the host kernel in 
+>>> fact).
+>>>
+>>> It is identical as an idea to what Netronome cards do in hardware.
+>>>
+>>>> I'm asking because classic BPF is /legacy/ stuff that is on feature 
+>>>> freeze and
+>>>> only very limited in terms of functionality compared to native 
+>>>> (e)BPF which is
+>>>> why you need this weird 'firmware' loader [1] which wraps around 
+>>>> tcpdump to
+>>>> parse the -ddd output into BPF insns ...
+>>>
+>>> Because there is no other mechanism of retrieving it after it is 
+>>> compiled by libpcap in any of the common scripting languages.
+>>>
+>>> The pcap Perl, Python, Go (or whatever else) wrappers do not give you 
+>>> access to the compiled code after the filter has been compiled.
+>>>
+>>> Why is that ingenious design - you have to take it with their 
+>>> maintainers.
+>>>
+>>> So if you want to start with pcap/tcpdump syntax and you do not want 
+>>> to rewrite that part of tcpdump as a dumper in C you have no other 
+>>> choice.
+>>>
+>>> The starting point is chosen because the idea is at some point to 
+>>> replace the existing and very aged pcap network transport in UML. 
+>>> That takes pcap syntax on the kernel command line.
+>>>
+>>> I admit it is a kludge, I will probably do the "do not want" bit and 
+>>> rewrite that in C.
+>>
+>> Yeah, it would probably be about the same # of LOC in C.
+>>
+>>> In any case - the "loader" is only an example, you can compile BPF 
+>>> using LLVM or whatever else you like.
+>>
+>> But did you try that with the code you have? Seems not, which is 
+>> perhaps why there are some
+>> wrong assumptions.
+> 
+> All of my tests were done using bpf generated by tcpdump out of a pcap 
+> expression. So the answer is no - I did not try LLVM because I did not 
+> need to for what I was aiming to achieve.
+> 
+> The pcap route matches 1:1 existing functionality in the uml pcap driver 
+> as well as existing functionality in the vector drivers for the cases 
+> where they need to avoid seeing their own xmits and cannot use features 
+> like QDISC_BYPASS.
+> 
+>>
+>> You can't use LLVM's BPF backend here since you only allow to pass in 
+>> cBPF, and LLVM emits
+>> an object file with native eBPF insns (you could use libbpf (in-tree 
+>> under tools/lib/bpf/)
+>> for loading that).
+> 
+> My initial aim was the same feature sets as pcap and achieve it using a 
+> virtual analogue of what cards like Netronome do - via the firmware route.
+> 
+> Switching to SO_ATTACH_BPF will come in the next revision.
+> 
+> A.
+> 
+>>
+>>> A.
+>>
+>> _______________________________________________
+>> linux-um mailing list
+>> linux-um@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/linux-um
+> 
+> 
+After reviewing what is needed for switching from SOCK_FILTER to 
+SOCK_BPF, IMHO it will have to wait for a while.
+
+1. I am not sticking yet another direct host syscall invocation into the 
+userspace portion of the uml kernel and we cannot add extra userspace 
+libraries like libbpf at present because it is not supported by kbuild.
+
+I have a patch in the queue for that, but it will need to be approved by 
+the kernel build people and merged before this can be done.
+
+2. On top of that, in order to make use of eBPF for vNIC firmware 
+properly, I will need to figure out the correct abstractions. The 
+"program" part is quite clear - an  eBPF program fits exactly into the 
+role of virtual nic firmware - it is identical to classic BPF and the 
+way it is used at present.
+
+The maps, however, and how do they go along with the "program firmware" 
+is something which will need to be figured out. It may require a more 
+complex load mechanisms and a proper (not 5 liner wrapper around pcap or 
+tcpdump) firmware packer/unpacker.
+
+Once I have figured it out and it can fit into the kbuild, I will send 
+the next revision. I suspect that it will happen at about the same time 
+I will finish the AF_XDP UML vNIC transport (it has the same 
+requirements, needs the same calls and uses the same libraries).
+
+-- 
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
