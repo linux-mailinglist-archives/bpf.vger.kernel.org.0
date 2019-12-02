@@ -2,110 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9725910E4E9
-	for <lists+bpf@lfdr.de>; Mon,  2 Dec 2019 04:45:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A78410E599
+	for <lists+bpf@lfdr.de>; Mon,  2 Dec 2019 06:53:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727327AbfLBDpQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 1 Dec 2019 22:45:16 -0500
-Received: from terminus.zytor.com ([198.137.202.136]:52761 "EHLO
-        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727285AbfLBDpQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 1 Dec 2019 22:45:16 -0500
-Received: from [IPv6:2601:646:8600:3281:ad1f:fd74:80df:7eb5] ([IPv6:2601:646:8600:3281:ad1f:fd74:80df:7eb5])
-        (authenticated bits=0)
-        by mail.zytor.com (8.15.2/8.15.2) with ESMTPSA id xB23ild5941514
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO);
-        Sun, 1 Dec 2019 19:44:49 -0800
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com xB23ild5941514
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2019111901; t=1575258290;
-        bh=r9ToDsFCnt2xkGs1bQs22MxbKA0z6g+7BcFNxXPoCXY=;
-        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
-        b=QRulXa+W4B6nxkSpwbUBJdz83aLLQtyefosnqfjtvVHQOiTR+3arV4rYQNmbkRt7m
-         wYYCTUGiVvVvoIUTqxmusfJJm98uE3RYL3PKx28o6iZkG8Nww9bJpEU2JHeycTgmF/
-         bwZsLIG9eMoehdNJvaxvkZie8g2maYv8QcN1xNdHeKwCBJkTwt/XsEJbdRSy/ty6NU
-         RR9XPzdKuQVEPjf4Y2gZ7+3KDNAfClDsmMaxkHjCSjotStZzMaOz+0DAIyZXtJZSMR
-         NicNlCBDGwKpAVkH57u+en51uGnVwiVaLrrV5gPQdYHnVNAsTthYeqMThyOYfP4hG0
-         iJyMH1uf7g70Q==
-Date:   Sun, 01 Dec 2019 19:44:39 -0800
-User-Agent: K-9 Mail for Android
-In-Reply-To: <adc89dbf-361a-838f-a0a5-8ef7ea619848@gmail.com>
-References: <20191129222911.3710-1-daniel@iogearbox.net> <ec8264ad-8806-208a-1375-51e7cad1866e@gmail.com> <10d4c87c-3d53-2dbf-d8c0-8b36863fec60@iogearbox.net> <adc89dbf-361a-838f-a0a5-8ef7ea619848@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH bpf] bpf: avoid setting bpf insns pages read-only when prog is jited
-To:     Eric Dumazet <eric.dumazet@gmail.com>,
+        id S1726251AbfLBFxa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 2 Dec 2019 00:53:30 -0500
+Received: from ozlabs.org ([203.11.71.1]:56981 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725807AbfLBFxa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 2 Dec 2019 00:53:30 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 47RDn32QZ8z9sPL;
+        Mon,  2 Dec 2019 16:53:26 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1575266008;
+        bh=EH+luGXjEilyQ8e+4eAH4LRNqk79yUFe6oQvFYlUr4k=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=noH5xNFoZXpnOmGLtGuWcghVmhFwCLZEThi4IM+78KPiDy/A0K25QrTucZRFgHP4w
+         p2UM2USUd7MJu6d/A3e/ccqQDysB0pqm//W3VLWOjSJkms+GcIcpkZBglp3shAkzHi
+         RZjxs5MUi7Nr6wZG0CZoxOL4RIqdc2dVDsEY/IGWMv0fCVY89W6dj1rFiZxl2I2Ypr
+         f1S3RlnKxSPmoNNdJ0AicXhAYf/uqa2zcQMFULONaZNMVJthAQMinzzwXbfXBu51PT
+         Dlux5u8JToEHyTEfhuOlQpqbXMouCkWZi+nWI+na3hSy6B9D1f6/pFDHTJb5DjlUoB
+         k0lXg7QDgxh0A==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Aurelien Jarno <aurelien@aurel32.net>, linux-kernel@vger.kernel.org
+Cc:     linuxppc-dev@lists.ozlabs.org, debian-kernel@lists.debian.org,
+        Aurelien Jarno <aurelien@aurel32.net>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        alexei.starovoitov@gmail.com
-CC:     peterz@infradead.org, netdev@vger.kernel.org, bpf@vger.kernel.org
-From:   hpa@zytor.com
-Message-ID: <E02AAB2B-987E-497C-B241-6E86472CC529@zytor.com>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "open list\:BPF \(Safe dynamic programs and tools\)" 
+        <netdev@vger.kernel.org>,
+        "open list\:BPF \(Safe dynamic programs and tools\)" 
+        <bpf@vger.kernel.org>
+Subject: Re: [PATCH] libbpf: fix readelf output parsing on powerpc with recent binutils
+In-Reply-To: <20191201195728.4161537-1-aurelien@aurel32.net>
+References: <20191201195728.4161537-1-aurelien@aurel32.net>
+Date:   Mon, 02 Dec 2019 16:53:26 +1100
+Message-ID: <87zhgbe0ix.fsf@mpe.ellerman.id.au>
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On December 1, 2019 6:49:32 PM PST, Eric Dumazet <eric=2Edumazet@gmail=2Eco=
-m> wrote:
+Aurelien Jarno <aurelien@aurel32.net> writes:
+> On powerpc with recent versions of binutils, readelf outputs an extra
+> field when dumping the symbols of an object file. For example:
 >
+>     35: 0000000000000838    96 FUNC    LOCAL  DEFAULT [<localentry>: 8]     1 btf_is_struct
 >
->On 11/30/19 1:52 AM, Daniel Borkmann wrote:
->> On 11/30/19 2:37 AM, Eric Dumazet wrote:
->>> On 11/29/19 2:29 PM, Daniel Borkmann wrote:
->>>> For the case where the interpreter is compiled out or when the prog
->is jited
->>>> it is completely unnecessary to set the BPF insn pages as
->read-only=2E In fact,
->>>> on frequent churn of BPF programs, it could lead to performance
->degradation of
->>>> the system over time since it would break the direct map down to 4k
->pages when
->>>> calling set_memory_ro() for the insn buffer on x86-64 / arm64 and
->there is no
->>>> reverse operation=2E Thus, avoid breaking up large pages for data
->maps, and only
->>>> limit this to the module range used by the JIT where it is
->necessary to set
->>>> the image read-only and executable=2E
->>>
->>> Interesting=2E=2E=2E But why the non JIT case would need RO protection=
- ?
->>=20
->> It was done for interpreter around 5 years ago mainly due to concerns
->from security
->> folks that the BPF insn image could get corrupted (through some other
->bug in the
->> kernel) in post-verifier stage by an attacker and then there's
->nothing really that
->> would provide any sort of protection guarantees; pretty much the same
->reasons why
->> e=2Eg=2E modules are set to read-only in the kernel=2E
->>=20
->>> Do you have any performance measures to share ?
->>=20
->> No numbers, and I'm also not aware of any reports from users, but it
->was recently
->> brought to our attention from mm folks during discussion of a
->different set:
->>=20
->>
->https://lore=2Ekernel=2Eorg/lkml/1572171452-7958-2-git-send-email-rppt@ke=
-rnel=2Eorg/T/
->>=20
+> The extra "[<localentry>: 8]" prevents the GLOBAL_SYM_COUNT variable to
+> be computed correctly and causes the checkabi target to fail.
 >
->Thanks for the link !
+> Fix that by looking for the symbol name in the last field instead of the
+> 8th one. This way it should also cope with future extra fields.
 >
->Having RO protection as a debug feature would be useful=2E
->
->I believe we have CONFIG_STRICT_MODULE_RWX (and
->CONFIG_STRICT_KERNEL_RWX) for that already=2E
->
->Or are we saying we also want to get rid of them ?
+> Signed-off-by: Aurelien Jarno <aurelien@aurel32.net>
+> ---
+>  tools/lib/bpf/Makefile | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
-The notion is that for security there should never been a page which is bo=
-th writable and executable at the same time=2E This makes it harder to inje=
-ct code=2E
---=20
-Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
+Thanks for fixing that, it's been on my very long list of test failures
+for a while.
+
+Tested-by: Michael Ellerman <mpe@ellerman.id.au>
+
+cheers
+
+> diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
+> index 99425d0be6ff..333900cf3f4f 100644
+> --- a/tools/lib/bpf/Makefile
+> +++ b/tools/lib/bpf/Makefile
+> @@ -147,7 +147,7 @@ TAGS_PROG := $(if $(shell which etags 2>/dev/null),etags,ctags)
+>  
+>  GLOBAL_SYM_COUNT = $(shell readelf -s --wide $(BPF_IN_SHARED) | \
+>  			   cut -d "@" -f1 | sed 's/_v[0-9]_[0-9]_[0-9].*//' | \
+> -			   awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$8}' | \
+> +			   awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$NF}' | \
+>  			   sort -u | wc -l)
+>  VERSIONED_SYM_COUNT = $(shell readelf -s --wide $(OUTPUT)libbpf.so | \
+>  			      grep -Eo '[^ ]+@LIBBPF_' | cut -d@ -f1 | sort -u | wc -l)
+> @@ -216,7 +216,7 @@ check_abi: $(OUTPUT)libbpf.so
+>  		     "versioned in $(VERSION_SCRIPT)." >&2;		 \
+>  		readelf -s --wide $(OUTPUT)libbpf-in.o |		 \
+>  		    cut -d "@" -f1 | sed 's/_v[0-9]_[0-9]_[0-9].*//' |	 \
+> -		    awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$8}'|   \
+> +		    awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$NF}'|  \
+>  		    sort -u > $(OUTPUT)libbpf_global_syms.tmp;		 \
+>  		readelf -s --wide $(OUTPUT)libbpf.so |			 \
+>  		    grep -Eo '[^ ]+@LIBBPF_' | cut -d@ -f1 |		 \
+> -- 
+> 2.24.0
