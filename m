@@ -2,85 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CE4210F123
-	for <lists+bpf@lfdr.de>; Mon,  2 Dec 2019 20:55:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F10B10F13F
+	for <lists+bpf@lfdr.de>; Mon,  2 Dec 2019 21:01:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728230AbfLBTzM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 2 Dec 2019 14:55:12 -0500
-Received: from mail-io1-f69.google.com ([209.85.166.69]:51173 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728229AbfLBTzL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 2 Dec 2019 14:55:11 -0500
-Received: by mail-io1-f69.google.com with SMTP id t193so426833iof.17
-        for <bpf@vger.kernel.org>; Mon, 02 Dec 2019 11:55:10 -0800 (PST)
+        id S1728097AbfLBUBq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 2 Dec 2019 15:01:46 -0500
+Received: from mail-pj1-f74.google.com ([209.85.216.74]:33951 "EHLO
+        mail-pj1-f74.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727586AbfLBUBq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 2 Dec 2019 15:01:46 -0500
+Received: by mail-pj1-f74.google.com with SMTP id n4so564602pjb.1
+        for <bpf@vger.kernel.org>; Mon, 02 Dec 2019 12:01:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=GT/6yNTmwD2DOGMzJN+K06ArW/qq3ZcQJhVAAjmKf88=;
+        b=YmV4wMb/n7Fb319BdP58R2AvCRoVBxqIEdzFmSwkDfZLIpzTQRSv+bV3NFXAYO4KOY
+         gV/+OiYdkz/yH8UqOTOj9Pz7hFuRSnsn2RcfR37M1+4Mybpvila7IpC6tOpYYPTyC5Hg
+         hCMh4dC9NKGeLPviPR8zsUv9QLlQTY9rTWSXzePLiF9h+t+05BSL9YFZET47fIf5h+Ik
+         u8njatgJI0kBWzWmrY3RSu52MIs/EgmM7AzOAuODgz19Y/0JAKs29u+GKdPMywUfx1BT
+         wDrk6IyFxjAgkfAveXPTiqxZ/Ho8PcMObAkSg8tWkBCHu8BmvKmvcqE32jmZDRj6GLwp
+         RnyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=veCUUZlFB0NiOs09rx07Rdq8OaEllTTQeYc68mzDoxA=;
-        b=SHI7SpFm/K+7RMeanacSFYB31wQstbB7hUXmIyzgNM+0AXcgXfX6Y/vGEsaQyHKoz6
-         C4oZzT3lb3OOgaAKgt9+66+4FkbdMtHJJdsHWixYSWfu7za0XL768m8Dte3ztmgd27RN
-         CJs3WDF3/6WJ0bBHlplZqNlLjwb5HW0guuCqi5iDsYMDZkjxurYDakkxPpTHG+6De06P
-         zzOpaTiw0j4u+aJH8mKa/dr+huHp1pUqLFfw5tpZXcu5jnxVldlB4cmsu/HYj8uzWWsx
-         I33st7WVELck4916TuUGXikGOrsxZU5cwW5bc8vUAvDIh7shWNo4isYKAc69bFbFRsZw
-         CCuw==
-X-Gm-Message-State: APjAAAWHy2S1BrheNKdCQ+9dsxvJoVi6L9Vd5BicjoKJtk3B0YRLtmT1
-        OOQFJJcBtPSMT36K9wjAyaj3MtxYgnYB8emTnwhiwx3pJNXF
-X-Google-Smtp-Source: APXvYqxkToWG8SBpIUiPD3SZB7zc9UpBocGZYL6i1TL7Y/1XHMYAC8iw0X8f2xGijHFowycYEd4MZ/bNQ4pVC2OZTwPGpkWe0nrd
-MIME-Version: 1.0
-X-Received: by 2002:a05:6638:38f:: with SMTP id y15mr1488730jap.17.1575316509840;
- Mon, 02 Dec 2019 11:55:09 -0800 (PST)
-Date:   Mon, 02 Dec 2019 11:55:09 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000fa5c3d0598bdf44e@google.com>
-Subject: WARNING in corrupted (2)
-From:   syzbot <syzbot+c792a994cd965b2ac623@syzkaller.appspotmail.com>
-To:     andriin@fb.com, ast@kernel.org, axboe@kernel.dk,
-        bpf@vger.kernel.org, daniel@iogearbox.net, kafai@fb.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=GT/6yNTmwD2DOGMzJN+K06ArW/qq3ZcQJhVAAjmKf88=;
+        b=PX03f04ObgypEQ7OJTxJyGcHFTCCAm5k3m+HxzFtN9cwIPXksS5aLEdFs5Y51kJstL
+         jPBVq0Y+6Ea6uUAowBwEsmXhqmUt3pRzNqgBRUni5m6CQC1j1olYr0Lh0DbqgVi2FAkK
+         5S+yBn9unlbccZbIEk9N9uRgzVfltK91WNx4xz+OS9t/c1spD8LOFclZ+nCuwfeFuoFY
+         24pY6pNGWXCJPCzPdfknSq7OgyosKantDE0nSjyL6wfezW3RbnwSEVssTI/vFQAtTxyd
+         Y15D6h1Lk/G6TqRWOfEP0qA4K75T2IbIcR06MsMcHFncEvN2Ds2zf39COwlRSnb+c3JA
+         a4pQ==
+X-Gm-Message-State: APjAAAU9yidoRhIrP/YcujR9lwAHdBfvbb83x+cFRB660qpzsxMFpJBL
+        jeZuYgtt3t6cnABeIDkcZnW8XYA=
+X-Google-Smtp-Source: APXvYqyfL3WMPuMU62jzHHia9uleekwukeoPmqPsS0qyG/NclIpzWze0qehbhz2/MAkbqSYILQnlVWg=
+X-Received: by 2002:a65:4242:: with SMTP id d2mr927290pgq.166.1575316905445;
+ Mon, 02 Dec 2019 12:01:45 -0800 (PST)
+Date:   Mon,  2 Dec 2019 12:01:43 -0800
+Message-Id: <20191202200143.250793-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.24.0.393.g34dc348eaf-goog
+Subject: [PATCH bpf] selftests/bpf: don't hard-code root cgroup id
+From:   Stanislav Fomichev <sdf@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        Stanislav Fomichev <sdf@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+Commit 40430452fd5d ("kernfs: use 64bit inos if ino_t is 64bit") changed
+the way cgroup ids are exposed to the userspace. Instead of assuming
+fixed root id, let's query it.
 
-syzbot found the following crash on:
-
-HEAD commit:    a6ed68d6 Merge tag 'drm-next-2019-11-27' of git://anongit...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=173ab832e00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6349516b24252b37
-dashboard link: https://syzkaller.appspot.com/bug?extid=c792a994cd965b2ac623
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-userspace arch: i386
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=106bdb86e00000
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+c792a994cd965b2ac623@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-generic_make_request: Trying to write to read-only block-device loop0  
-(partno 0)
-WARNING: CPU: 1 PID: 8854 at block/blk-core.c:800 bio_check_ro  
-block/blk-core.c:800 [inline]
-WARNING: CPU: 1 PID: 8854 at block/blk-core.c:800  
-generic_make_request_checks+0x1c78/0x2190 block/blk-core.c:901
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 1 PID: 8854 Comm: blkid Not tainted 5.4.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-Google 01/01/2011
-
-
+Fixes: 40430452fd5d ("kernfs: use 64bit inos if ino_t is 64bit")
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
 ---
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ tools/testing/selftests/bpf/test_skb_cgroup_id_user.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+diff --git a/tools/testing/selftests/bpf/test_skb_cgroup_id_user.c b/tools/testing/selftests/bpf/test_skb_cgroup_id_user.c
+index 9220747c069d..356351c0ac28 100644
+--- a/tools/testing/selftests/bpf/test_skb_cgroup_id_user.c
++++ b/tools/testing/selftests/bpf/test_skb_cgroup_id_user.c
+@@ -120,7 +120,7 @@ int check_ancestor_cgroup_ids(int prog_id)
+ 	int err = 0;
+ 	int map_fd;
+ 
+-	expected_ids[0] = 0x100000001;	/* root cgroup */
++	expected_ids[0] = get_cgroup_id("/..");	/* root cgroup */
+ 	expected_ids[1] = get_cgroup_id("");
+ 	expected_ids[2] = get_cgroup_id(CGROUP_PATH);
+ 	expected_ids[3] = 0; /* non-existent cgroup */
+-- 
+2.24.0.393.g34dc348eaf-goog
+
