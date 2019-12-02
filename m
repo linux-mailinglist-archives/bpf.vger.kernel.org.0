@@ -2,170 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E290310EC40
-	for <lists+bpf@lfdr.de>; Mon,  2 Dec 2019 16:25:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ECA710EC63
+	for <lists+bpf@lfdr.de>; Mon,  2 Dec 2019 16:37:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727418AbfLBPZK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 2 Dec 2019 10:25:10 -0500
-Received: from mail-io1-f72.google.com ([209.85.166.72]:32918 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727362AbfLBPZK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 2 Dec 2019 10:25:10 -0500
-Received: by mail-io1-f72.google.com with SMTP id i8so4141215ioi.0
-        for <bpf@vger.kernel.org>; Mon, 02 Dec 2019 07:25:09 -0800 (PST)
+        id S1727535AbfLBPhI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 2 Dec 2019 10:37:08 -0500
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:36052 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727432AbfLBPhI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 2 Dec 2019 10:37:08 -0500
+Received: by mail-lj1-f195.google.com with SMTP id r19so6899139ljg.3;
+        Mon, 02 Dec 2019 07:37:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ymp5dH/tOyhbFrKcFGc6DHB4DSRD4uUTLeaKmTaGYlk=;
+        b=q2oPyHZL/3TTBFpgCRtqjuBrofVA+pJljiayFPlHIVQyibDp/pGPUhQ4TPN0BTMBq1
+         PwgrcrM1HNMU4z1Bbeu4P7uml7uMCVVI1vmC7wPBe5JLgqJO2lztslMGkn0kPFleNGll
+         sPO/e8Mv2lbuNUgTpAdsAwV7iHWeBThvzKsO97R7GNeIrnGKnE7gK6DRNj/Ed9K7OPkv
+         33/8mDP+LfoNfzjPGmgSxL5dclhWkjDhkp/yoHMzZK7hxYg4/asGxsH2KPoqaGQS5hec
+         Lt3rD5rOFmwlSHTx24/50CdWjJNq8gMIxG9TicislTLdUzTtZYVBX0UfncfZEZUGSNgO
+         jj3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=HuDfrZ1OF+dWnnebJjn3ik7xCXcbbjobtTApG9H/SS4=;
-        b=YZivNp+plTN39tEFSWGkqiXHCYXvTUbQedTRk81ikNd/roCUx8/bINp/Pwqk73VJe/
-         9pcpEZMs2ABXdQHoJyyayJwo4QWB2U4/ZA6Zyd1I2Hk6vpyL4MyNKNIab2EJ/j0xZb1/
-         eVU0gwjAXmGqzWJZK/u1/ra4wvgp1cMA7RWRHNWC5phjsJ3v1+xAeNaxjNjyXz3S96nq
-         3ChyVtNhAwRENL4eWsO9QDaJ/I9+q07J/gVwmlWNs1ILHeFFI3aP4o7y+318UZUwW4Xj
-         QZQQ6DqvD9Td+t9rGA8+85wF0wpn5Z/0hsOY/DwLs8ApB+m3gO0pQunjcCrxumY6jBVa
-         sxgA==
-X-Gm-Message-State: APjAAAWfmZd12SAObKBSw0XxO96BdVQWcSSIkC3mES2DeKTi+IPQFn+y
-        MB7qjGOg2awpI29YbtFgwklamrs0VA67xhOaDa5/6zUC/i93
-X-Google-Smtp-Source: APXvYqzriBKJ3tzLGjQMUUrMkC55k/YsKi/GH0zcp3Xaak4Ph6RO7qqhFv/wCX7c9X2JXe/NQKC2rmT7RhrdCHYXILlhFAe08Ei8
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ymp5dH/tOyhbFrKcFGc6DHB4DSRD4uUTLeaKmTaGYlk=;
+        b=Q3wrA/4N4yUmo/0c1UPqd19WeooLoSI4QMDh6S9vRNSZOoF5z3pcF4piJmogmaXFQ8
+         PyD52nGOUXuXP9x+OhIT6GLMbpa1AyXtcRAOo03XnpsR+07HvkXDi+zPrRp/jpJmC0Wj
+         wrFaFk3XH1SbXNCpmrQnconT3Z3L5+YtyVcdhCezD1LVoB8/olW+PJ2BAOhtCR38RPmU
+         MbtAZ76p6J+ilwLp+rSAxeWSoKW50RqN1Dn/2d/sErWaQ+iHa7PaiQMu9NtlUzolXXJ3
+         5dyvb8Ark683NOfqZEaB+MGeQlHXnl+luzRnOOp5Owi3zNvx8p6Ym6S/HtvKPWeAvL3I
+         fP9A==
+X-Gm-Message-State: APjAAAVdg4Lsbuzp3rEB9Xlbn16uwSmTeaRyhU0phAoM4bDFau3Ezo4w
+        /08xxkA1e61QeqjSSsVbnZmuoT1zTshDiON0M48=
+X-Google-Smtp-Source: APXvYqwluwHJ6hkTF0NdET0BqZsz1RG5BnqEKPDWQm71gKK2/C2dOu3aO1fOjtjyUbv3pS8tU7kPR1sxYHn5T2ry3ek=
+X-Received: by 2002:a2e:9610:: with SMTP id v16mr32464966ljh.88.1575301025532;
+ Mon, 02 Dec 2019 07:37:05 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a5e:8b03:: with SMTP id g3mr22807234iok.279.1575300309112;
- Mon, 02 Dec 2019 07:25:09 -0800 (PST)
-Date:   Mon, 02 Dec 2019 07:25:09 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000056e0330598ba2fe5@google.com>
-Subject: WARNING in generic_make_request_checks (2)
-From:   syzbot <syzbot+452bda868799d5a80da8@syzkaller.appspotmail.com>
-To:     andriin@fb.com, ast@kernel.org, axboe@kernel.dk,
-        bpf@vger.kernel.org, daniel@iogearbox.net, idryomov@gmail.com,
-        kafai@fb.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        sagi@grimberg.me, snitzer@redhat.com, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, torvalds@linux-foundation.org,
-        wgh@torlan.ru, yhs@fb.com, zkabelac@redhat.com
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+References: <CAD56B7dwKDKnrCjpGmrnxz2P0QpNWU3CGBvOtqg3RBx3ejPh9g@mail.gmail.com>
+ <20191129164842.qimcmjlz5xq7uupw@linutronix.de>
+In-Reply-To: <20191129164842.qimcmjlz5xq7uupw@linutronix.de>
+From:   Paul Thomas <pthomas8589@gmail.com>
+Date:   Mon, 2 Dec 2019 10:36:54 -0500
+Message-ID: <CAD56B7dtR4GtPUUmmPVcuc0L+7BixW9+S=CR1g4ub3_6ZgRobg@mail.gmail.com>
+Subject: Re: xdpsock poll with 5.2.21rt kernel
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        netdev@vger.kernel.org, xdp-newbies@vger.kernel.org,
+        bpf@vger.kernel.org,
+        linux-rt-users <linux-rt-users@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+On Fri, Nov 29, 2019 at 11:48 AM Sebastian Andrzej Siewior
+<bigeasy@linutronix.de> wrote:
+>
+> On 2019-11-12 17:42:42 [-0500], Paul Thomas wrote:
+> > Any thoughts would be appreciated.
+>
+> Could please enable CONFIG_DEBUG_ATOMIC_SLEEP and check if the kernel
+> complains?
 
-syzbot found the following crash on:
+Hi Sebastian,
 
-HEAD commit:    a6ed68d6 Merge tag 'drm-next-2019-11-27' of git://anongit...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=128c4432e00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6349516b24252b37
-dashboard link: https://syzkaller.appspot.com/bug?extid=452bda868799d5a80da8
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=144180a6e00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15b9afcee00000
+Well, it does complain (report below), but I'm not sure it's related.
+The other thing I tried was the AF_XDP example here:
+https://github.com/xdp-project/xdp-tutorial/tree/master/advanced03-AF_XDP
 
-The bug was bisected to:
+With this example poll() always seems to block correctly, so I think
+maybe there is something wrong with the xdpsock_user.c example or how
+I'm using it.
 
-commit a32e236eb93e62a0f692e79b7c3c9636689559b9
-Author: Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri Aug 3 19:22:09 2018 +0000
+[  259.591480] BUG: assuming atomic context at net/core/ptp_classifier.c:106
+[  259.591488] in_atomic(): 0, irqs_disabled(): 0, pid: 953, name: irq/22-eth%d
+[  259.591494] CPU: 0 PID: 953 Comm: irq/22-eth%d Tainted: G        WC
+       5.
 
-     Partially revert "block: fail op_is_write() requests to read-only  
-partitions"
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1634767ee00000
-final crash:    https://syzkaller.appspot.com/x/report.txt?x=1534767ee00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1134767ee00000
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+452bda868799d5a80da8@syzkaller.appspotmail.com
-Fixes: a32e236eb93e ("Partially revert "block: fail op_is_write() requests  
-to read-only partitions"")
-
-------------[ cut here ]------------
-generic_make_request: Trying to write to read-only block-device loop0  
-(partno 0)
-WARNING: CPU: 0 PID: 9114 at block/blk-core.c:800 bio_check_ro  
-block/blk-core.c:800 [inline]
-WARNING: CPU: 0 PID: 9114 at block/blk-core.c:800  
-generic_make_request_checks+0x1c78/0x2190 block/blk-core.c:901
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 0 PID: 9114 Comm: syz-executor056 Not tainted 5.4.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-Google 01/01/2011
-Call Trace:
-  __dump_stack lib/dump_stack.c:77 [inline]
-  dump_stack+0x197/0x210 lib/dump_stack.c:118
-  panic+0x2e3/0x75c kernel/panic.c:221
-  __warn.cold+0x2f/0x3e kernel/panic.c:582
-  report_bug+0x289/0x300 lib/bug.c:195
-  fixup_bug arch/x86/kernel/traps.c:174 [inline]
-  fixup_bug arch/x86/kernel/traps.c:169 [inline]
-  do_error_trap+0x11b/0x200 arch/x86/kernel/traps.c:267
-  do_invalid_op+0x37/0x50 arch/x86/kernel/traps.c:286
-  invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1027
-RIP: 0010:bio_check_ro block/blk-core.c:800 [inline]
-RIP: 0010:generic_make_request_checks+0x1c78/0x2190 block/blk-core.c:901
-Code: 00 00 44 8b ab 5c 05 00 00 48 8d b5 78 ff ff ff 4c 89 ff e8 5a 94 05  
-00 48 c7 c7 c0 47 05 88 48 89 c6 44 89 ea e8 a7 e4 0e fe <0f> 0b 48 b8 00  
-00 00 00 00 fc ff df 4c 89 e2 48 c1 ea 03 80 3c 02
-RSP: 0018:ffff8880957071c0 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: ffff8880a3af2000 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffffffff815dc196 RDI: ffffed1012ae0e2a
-RBP: ffff8880957072c0 R08: ffff888093ace600 R09: ffffed1015d06621
-R10: ffffed1015d06620 R11: ffff8880ae833107 R12: ffff8880a8dbc008
-R13: 0000000000000000 R14: 0000000000000001 R15: ffff8880a8dbc000
-  generic_make_request+0x8f/0xb50 block/blk-core.c:1020
-  submit_bio+0x113/0x600 block/blk-core.c:1192
-  submit_bh_wbc+0x6b6/0x900 fs/buffer.c:3095
-  __block_write_full_page+0x7fe/0x11b0 fs/buffer.c:1767
-  block_write_full_page+0x21f/0x270 fs/buffer.c:2953
-  blkdev_writepage+0x25/0x30 fs/block_dev.c:609
-  __writepage+0x66/0x110 mm/page-writeback.c:2303
-  write_cache_pages+0x80c/0x13f0 mm/page-writeback.c:2238
-  generic_writepages mm/page-writeback.c:2329 [inline]
-  generic_writepages+0xed/0x160 mm/page-writeback.c:2318
-  blkdev_writepages+0x1e/0x30 fs/block_dev.c:2060
-  do_writepages+0xfa/0x2a0 mm/page-writeback.c:2344
-  __filemap_fdatawrite_range+0x2bc/0x3b0 mm/filemap.c:421
-  __filemap_fdatawrite mm/filemap.c:429 [inline]
-  filemap_fdatawrite mm/filemap.c:434 [inline]
-  filemap_write_and_wait mm/filemap.c:640 [inline]
-  filemap_write_and_wait+0xf8/0x1e0 mm/filemap.c:635
-  __sync_blockdev fs/block_dev.c:491 [inline]
-  sync_blockdev fs/block_dev.c:500 [inline]
-  __blkdev_put+0x204/0x810 fs/block_dev.c:1889
-  blkdev_put+0x98/0x560 fs/block_dev.c:1958
-  blkdev_close+0x8b/0xb0 fs/block_dev.c:1965
-  __fput+0x2ff/0x890 fs/file_table.c:280
-  ____fput+0x16/0x20 fs/file_table.c:313
-  task_work_run+0x145/0x1c0 kernel/task_work.c:113
-  exit_task_work include/linux/task_work.h:22 [inline]
-  do_exit+0x8e7/0x2e00 kernel/exit.c:797
-  do_group_exit+0x135/0x360 kernel/exit.c:895
-  __do_sys_exit_group kernel/exit.c:906 [inline]
-  __se_sys_exit_group kernel/exit.c:904 [inline]
-  __x64_sys_exit_group+0x44/0x50 kernel/exit.c:904
-  do_syscall_64+0xfa/0x790 arch/x86/entry/common.c:294
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-RIP: 0033:0x442c38
-Code: 00 00 ea dc 40 00 00 00 00 00 c8 de 40 00 00 00 00 00 ea dc 40 00 00  
-00 00 00 ea dc 40 00 00 00 00 00 ea dc 40 00 00 00 00 00 <ea> dc 40 00 00  
-00 00 00 ea dc 40 00 00 00 00 00 ea dc 40 00 00 00
-RSP: 002b:00007fffc31b9748 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 0000000000442c38
-RDX: 0000000000000000 RSI: 000000000000003c RDI: 0000000000000000
-RBP: 00000000004c2548 R08: 00000000000000e7 R09: ffffffffffffffd0
-R10: 00000000004002e0 R11: 0000000000000246 R12: 0000000000000001
-R13: 00000000006d41a0 R14: 0000000000000000 R15: 0000000000000000
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
-
-
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+                        2.21-rt13-00016-g93898e751d0e #90
+[  259.591499] Hardware name: Enclustra XU5 SOM (DT)
+[  259.591501] Call trace:
+[  259.591503] dump_backtrace (/arch/arm64/kernel/traps.c:94)
+[  259.591514] show_stack (/arch/arm64/kernel/traps.c:151)
+[  259.591520] dump_stack (/lib/dump_stack.c:115)
+[  259.591526] __cant_sleep (/kernel/sched/core.c:6386)
+[  259.591531] ptp_classify_raw (/./include/linux/compiler.h:194
+/./include/asm-generic/atomic-instrumented.h:27
+/./include/linux/jump_label.h:251 /net/core/ptp_classifier.c:106)
+[  259.591537] skb_defer_rx_timestamp (/./include/linux/skbuff.h:2236
+/net/core/timestamping.c:60)
+[  259.591541] netif_receive_skb_internal (/net/core/dev.c:5217)
+[  259.591547] netif_receive_skb (/net/core/dev.c:5296)
+[  259.591550] gem_rx (/drivers/net/ethernet/cadence/macb_main.c:993)
+[  259.591556] macb_poll (/drivers/net/ethernet/cadence/macb_main.c:1265)
+[  259.591561] net_rx_action (/net/core/dev.c:6387 /net/core/dev.c:6461)
+[  259.591565] __do_softirq (/./include/linux/compiler.h:194
+/./arch/arm64/include/asm/preempt.h:12 /kernel/softirq.c:400)
+[  259.591569] __local_bh_enable_ip (/kernel/softirq.c:182)
+[  259.591574] irq_forced_thread_fn (/kernel/irq/manage.c:1008)
+[  259.591579] irq_thread (/kernel/irq/manage.c:1101)
+[  259.591584] kthread (/kernel/kthread.c:255)
+[  259.591589] ret_from_fork (/arch/arm64/kernel/entry.S:1176)
