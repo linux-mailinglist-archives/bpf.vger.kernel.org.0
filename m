@@ -2,156 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 53E4010F1F8
-	for <lists+bpf@lfdr.de>; Mon,  2 Dec 2019 22:15:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6336410F22D
+	for <lists+bpf@lfdr.de>; Mon,  2 Dec 2019 22:30:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726086AbfLBVPp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 2 Dec 2019 16:15:45 -0500
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:44060 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725919AbfLBVPp (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 2 Dec 2019 16:15:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1575321343;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dqtlBsiEAqeGMc0cL3Eo0rcvGHxRZBHUuo8q1j2NE4s=;
-        b=ILAzbY0PU2kloVq4uycxYtge/33vndV+/uxMcJYoB28XYuNleM4IlVsLUbMsG0Z0L33Kcf
-        Z0iih1v8/HsPXfCZYlfF8JnONHWmPZ2yK87gynw/xrgkmQDweU5tqZshc6WsYSgkBM9SJ5
-        6UVqo7HOlu0nxsXnwNWGEL3HbCpDXzE=
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
- [209.85.208.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-60-5KqgPmOeOOy2GT7JPz9hQw-1; Mon, 02 Dec 2019 16:15:39 -0500
-Received: by mail-lj1-f198.google.com with SMTP id c17so138317ljn.3
-        for <bpf@vger.kernel.org>; Mon, 02 Dec 2019 13:15:39 -0800 (PST)
+        id S1725853AbfLBVai (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 2 Dec 2019 16:30:38 -0500
+Received: from mail-qv1-f66.google.com ([209.85.219.66]:35063 "EHLO
+        mail-qv1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725801AbfLBVai (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 2 Dec 2019 16:30:38 -0500
+Received: by mail-qv1-f66.google.com with SMTP id d17so558006qvs.2;
+        Mon, 02 Dec 2019 13:30:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4zi5mDjG7GvuPI/H2ovSKyzODiKJhmZrfb3z2/tiX+o=;
+        b=ht6DXfgqJyVY+0ZSWtSXYjOjoPv9CbCN6Hq4g+TplNaU2DfkOhDt9BQAuEqiNYFMsg
+         hj2tGbWs/YBWh1gSZeN5HTZBQYM1R1m6Per/hLxj4qPOdE6UxTEFmK+lMjdTJZYXex6R
+         Tol1EY2pRS6SqsmxDQvlEkmMDwusQlQYmpJqL64FAs0pp1qhqJ4Y9kj4ipc9eVsIRU1I
+         4Sko7ALCn8phcphk3D1sWfZpZrZjS4ht/SfvH4v2sJSbIYS9YnrcmPIbdmYrt+v1g53/
+         DGTDTKZhShaXKoCFiBl60EsFp18v2QBw3GGX8UKHLwAViqTkApD7z9sR9lZajioNDK4b
+         UDVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=/ouSM1lVnL67PQdTS392czOikDoAX/1OhtnSM6w3ioA=;
-        b=HyFNk85BsCwKuwhjMoa82ZLBNU+5pQAEUTsTfTv6amS7pK6bvRycQf7fmXvCrf/sd5
-         nI9fc54EiRk2f4/GHRSxZreOJ18wsdPAB984+EaP8L5Mql0MqhEPkntlFHx79e34VMB2
-         kQjQWoEtaYC7650kMW5MU7/PtANijVBkk2eHnx687Q9uYmIvj1WxUFDzGBvd8jtv2YKz
-         0NnRk5yeP8+DbWJOLM56FSwqRdrWfgjAcTwyOj6I/4QAmlbvRtWuEm+JV+rVEK3ShCuE
-         BLtJO4/p7wpN0ri9khNPfpW//dwHxoBYXcWVbg9GOI4p3M1pZZ3sS8jBkEDivwhTfbRH
-         HSKw==
-X-Gm-Message-State: APjAAAWUTbcfd+VP1PPxgO76gSBfgtJ1Y56IZoDx49Nvsb+72z+8b4GC
-        vrvmos9xiJSnTJoT2GQq4sVB6ZT1lqRjfqe5L291J7McdQgIdTMe1o0V6c0OPCY5R5UsZBUQYpw
-        kW+/GgERyhLpV
-X-Received: by 2002:a19:7513:: with SMTP id y19mr705309lfe.78.1575321338272;
-        Mon, 02 Dec 2019 13:15:38 -0800 (PST)
-X-Google-Smtp-Source: APXvYqziTKggxyGWF5SicqNPqS1v54yq5kpVC6lMuqwhb8Et+uHGtiCio39/jHThcVA8JC6aYFLaUw==
-X-Received: by 2002:a19:7513:: with SMTP id y19mr705299lfe.78.1575321338031;
-        Mon, 02 Dec 2019 13:15:38 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id m15sm340543ljg.4.2019.12.02.13.15.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Dec 2019 13:15:37 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 002971804D1; Mon,  2 Dec 2019 22:15:35 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Quentin Monnet <quentin.monnet@netronome.com>
-Subject: Re: [PATCHv4 0/6] perf/bpftool: Allow to link libbpf dynamically
-In-Reply-To: <CAEf4BzY_D9JHjuU6K=ciS70NSy2UvSm_uf1NfN_tmFz1445Jiw@mail.gmail.com>
-References: <20191202131847.30837-1-jolsa@kernel.org> <CAEf4BzY_D9JHjuU6K=ciS70NSy2UvSm_uf1NfN_tmFz1445Jiw@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Mon, 02 Dec 2019 22:15:35 +0100
-Message-ID: <87wobepgy0.fsf@toke.dk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4zi5mDjG7GvuPI/H2ovSKyzODiKJhmZrfb3z2/tiX+o=;
+        b=CaoLVghqaPI8depM5sCot6OMz9+CyeogFiXOuwslF3FFYyE+ODyhN7fM/AJaw9PwWC
+         8mk5vl6IGfMF/8T2oKIfsdQVaaI6ZSXEyx+F9CtLljG2Fhk2G400HPbg/f23b+SvPHcR
+         y3DW6upW5GoF10+RRYST4GWdIFh7FD4mEhQ7kBA5a7hhUTeypkJzi1C+MVwT6MfBB7MF
+         aBweI8A1Ca7vj28ZosadN99dN1ZxMopY8ywjGOEogz9k5dNyjQdUr4W8oNp6cn4NwJgq
+         AGYinbAioKkLjKM7ulRl9U4XuO9ZYiZBHZkCk65K0qkISGcJKwEcZG2OYGRJnlUE9Cc9
+         IS1g==
+X-Gm-Message-State: APjAAAUgAlGhxIZ9MK6UFGQotNQHp0DQYA8xMqy6Flk9nX9m213YDJ7p
+        XaHkHePiVcCSdPPpYV+tbqSQyHsjLrHMqj3hVsO/MekC
+X-Google-Smtp-Source: APXvYqw11ld9qTVeKypVE7HqkXxx41KhtL8KBb47z5uxgrapXr4RC7a6VyDpOdMd6M4yo29BtuMooD+FFusjqUTmuKg=
+X-Received: by 2002:ad4:4e34:: with SMTP id dm20mr1401994qvb.163.1575322236949;
+ Mon, 02 Dec 2019 13:30:36 -0800 (PST)
 MIME-Version: 1.0
-X-MC-Unique: 5KqgPmOeOOy2GT7JPz9hQw-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+References: <20191202202112.167120-1-sdf@google.com>
+In-Reply-To: <20191202202112.167120-1-sdf@google.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 2 Dec 2019 13:30:25 -0800
+Message-ID: <CAEf4BzZGOSAFU-75hymmv2pThs_WJd+o25zFO0q4XQ=mWpYgZA@mail.gmail.com>
+Subject: Re: [PATCH bpf] selftests/bpf: bring back c++ include/link test
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
-
-> On Mon, Dec 2, 2019 at 5:19 AM Jiri Olsa <jolsa@kernel.org> wrote:
->>
->> hi,
->> adding support to link bpftool with libbpf dynamically,
->> and config change for perf.
->>
->> It's now possible to use:
->>   $ make -C tools/bpf/bpftool/ LIBBPF_DYNAMIC=3D1
->>
->> which will detect libbpf devel package and if found, link it with bpftoo=
-l.
->>
->> It's possible to use arbitrary installed libbpf:
->>   $ make -C tools/bpf/bpftool/ LIBBPF_DYNAMIC=3D1 LIBBPF_DIR=3D/tmp/libb=
-pf/
->>
->> I based this change on top of Arnaldo's perf/core, because
->> it contains libbpf feature detection code as dependency.
->>
->> Also available in:
->>   git://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
->>   libbpf/dyn
->>
->> v4 changes:
->>   - based on Toke's v3 post, there's no need for additional API exports:
->>
->>     Since bpftool uses bits of libbpf that are not exported as public AP=
-I in
->>     the .so version, we also pass in libbpf.a to the linker, which allow=
-s it to
->>     pick up the private functions from the static library without having=
- to
->>     expose them as ABI.
+On Mon, Dec 2, 2019 at 12:28 PM Stanislav Fomichev <sdf@google.com> wrote:
 >
-> Whoever understands how this is supposed to work, can you please
-> explain? From reading this, I think what we **want** is:
+> Commit 5c26f9a78358 ("libbpf: Don't use cxx to test_libpf target")
+> converted existing c++ test to c. We still want to include and
+> link against libbpf from c++ code, so reinstate this test back,
+> this time in a form of a selftest with a clear comment about
+> its purpose.
 >
-> - all LIBBPF_API-exposed APIs should be dynamically linked against libbpf=
-.so;
-> - everything else used from libbpf (e.g., netlink APIs), should come
-> from libbpf.a.
+> Fixes: 5c26f9a78358 ("libbpf: Don't use cxx to test_libpf target")
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> ---
+
+thanks for clean up! Looks good except for explicit -lelf below.
+
+>  tools/lib/bpf/.gitignore                                    | 1 -
+>  tools/lib/bpf/Makefile                                      | 5 +----
+>  tools/testing/selftests/bpf/.gitignore                      | 1 +
+>  tools/testing/selftests/bpf/Makefile                        | 6 +++++-
+>  .../test_libbpf.c => testing/selftests/bpf/test_cpp.cpp}    | 0
+>  5 files changed, 7 insertions(+), 6 deletions(-)
+>  rename tools/{lib/bpf/test_libbpf.c => testing/selftests/bpf/test_cpp.cpp} (100%)
 >
-> Am I getting the idea right?
+
+[...]
+
 >
-> If yes, are we sure it actually works like that in practice? I've
-> compiled with LIBBPF_DYNAMIC=3D1, and what I see is that libelf, libc,
-> zlib, etc functions do have relocations against them in ".rela.plt"
-> section. None of libbpf exposed APIs, though, have any of such
-> relocations. Which to me suggests that they are just statically linked
-> against libbpf.a and libbpf.so is just recorded in ELF as a dynamic
-> library dependency because of this extra -lbpf flag. Which kind of
-> defeats the purpose of this whole endeavor, no?
+> @@ -317,6 +317,10 @@ verifier/tests.h: verifier/*.c
+>  $(OUTPUT)/test_verifier: test_verifier.c verifier/tests.h $(BPFOBJ) | $(OUTPUT)
+>         $(CC) $(CFLAGS) $(filter %.a %.o %.c,$^) $(LDLIBS) -o $@
 >
-> I'm no linker expert, though, so I apologize if I got it completely
-> wrong, would really appreciate someone to detail this a bit more.
-> Thanks!
+> +# Make sure we are able to include and link libbpf against c++.
+> +$(OUTPUT)/test_cpp: test_cpp.cpp $(BPFOBJ)
+> +       $(CXX) $(CFLAGS) $^ -lelf -o $@
 
-Ah, that is my mistake: I was getting dynamic libbpf symbols with this
-approach, but that was because I had the version of libbpf.so in my
-$LIBDIR that had the patch to expose the netlink APIs as versioned
-symbols; so it was just pulling in everything from the shared library.
+let's use $(LDLIBS) instead here
 
-So what I was going for was exactly what you described above; but it
-seems that doesn't actually work. Too bad, and sorry for wasting your
-time on this :/
-
--Toke
-
+> +
+>  EXTRA_CLEAN := $(TEST_CUSTOM_PROGS)                                    \
+>         prog_tests/tests.h map_tests/tests.h verifier/tests.h           \
+>         feature $(OUTPUT)/*.o $(OUTPUT)/no_alu32 $(OUTPUT)/bpf_gcc
+> diff --git a/tools/lib/bpf/test_libbpf.c b/tools/testing/selftests/bpf/test_cpp.cpp
+> similarity index 100%
+> rename from tools/lib/bpf/test_libbpf.c
+> rename to tools/testing/selftests/bpf/test_cpp.cpp
+> --
+> 2.24.0.393.g34dc348eaf-goog
+>
