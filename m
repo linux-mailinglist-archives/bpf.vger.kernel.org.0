@@ -2,227 +2,187 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 40C6610FADF
-	for <lists+bpf@lfdr.de>; Tue,  3 Dec 2019 10:38:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7127310FBB8
+	for <lists+bpf@lfdr.de>; Tue,  3 Dec 2019 11:28:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725939AbfLCJit (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Dec 2019 04:38:49 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:32560 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725829AbfLCJit (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Dec 2019 04:38:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1575365928;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6BkH/Hha6NENFb+yLeWkcNK71QocV96kHQcX3xYoLr4=;
-        b=N2PIohbTTfGtZzuin7TNfV+6MaDzowhY/FPyVCfdZhj4RLhdKejRHdunS7WIA9kK/Zb78j
-        jlDvA9Lnpe1odvle7OpUT7OndKcp/nTq6TsCcltcWL5bseJVHqg1cXGNeguTO/KPpwi/B3
-        XTsGNkS50STkSHtYgrvzHe8wb+3MHJ8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-49-c8T0I2u_NxyAjS-fCU-NNg-1; Tue, 03 Dec 2019 04:38:45 -0500
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2714E18B5F69;
-        Tue,  3 Dec 2019 09:38:43 +0000 (UTC)
-Received: from krava (unknown [10.43.17.48])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 06D0060C05;
-        Tue,  3 Dec 2019 09:38:37 +0000 (UTC)
-Date:   Tue, 3 Dec 2019 10:38:37 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-audit@redhat.com,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
+        id S1725907AbfLCK27 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Dec 2019 05:28:59 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:56908 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725848AbfLCK26 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Dec 2019 05:28:58 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id xB3ASdQU125781;
+        Tue, 3 Dec 2019 04:28:39 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1575368919;
+        bh=jo8iHnrEm+gjBKUyjYXLNWcDF2FN0eHXQrGt/UkiHa4=;
+        h=To:From:Subject:Date;
+        b=EMOJSUz93bWqRHEL3lGPAA3VzTzTaTXmpsJ4Tf69gv1p0286b7O/CdEguK0J/nFCi
+         ahMIH0SNmhVU49e5WAShIW9r6e/xuaRoGf4T6rxqz/NxJW/fVMasF630ki4Zrf+XF0
+         piNEBS2YQ3F859uVwSFdGul6bD7ZL45VUJTQFYEs=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id xB3ASdDX033407
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 3 Dec 2019 04:28:39 -0600
+Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Tue, 3 Dec
+ 2019 04:28:39 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
+ Frontend Transport; Tue, 3 Dec 2019 04:28:39 -0600
+Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id xB3ASZsP092888;
+        Tue, 3 Dec 2019 04:28:36 -0600
+To:     netdev <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Steve Grubb <sgrubb@redhat.com>,
-        David Miller <davem@redhat.com>,
-        Eric Paris <eparis@redhat.com>, Jiri Benc <jbenc@redhat.com>
-Subject: Re: [RFC] bpf: Emit audit messages upon successful prog load and
- unload
-Message-ID: <20191203093837.GC17468@krava>
-References: <20191128091633.29275-1-jolsa@kernel.org>
- <CAHC9VhQ7zkXdz1V5hQ8PN68-NnCn56TjKA0wCL6ZjHy9Up8fuQ@mail.gmail.com>
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
+        <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+Subject: linux-master: WARNING: suspicious RCU usage in
+ mem_allocator_disconnect
+Message-ID: <09e42c75-228a-f390-abd5-43e8f6ae70f2@ti.com>
+Date:   Tue, 3 Dec 2019 12:28:29 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <CAHC9VhQ7zkXdz1V5hQ8PN68-NnCn56TjKA0wCL6ZjHy9Up8fuQ@mail.gmail.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
-X-MC-Unique: c8T0I2u_NxyAjS-fCU-NNg-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Dec 02, 2019 at 06:00:14PM -0500, Paul Moore wrote:
-> On Thu, Nov 28, 2019 at 4:16 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> > From: Daniel Borkmann <daniel@iogearbox.net>
-> >
-> > Allow for audit messages to be emitted upon BPF program load and
-> > unload for having a timeline of events. The load itself is in
-> > syscall context, so additional info about the process initiating
-> > the BPF prog creation can be logged and later directly correlated
-> > to the unload event.
-> >
-> > The only info really needed from BPF side is the globally unique
-> > prog ID where then audit user space tooling can query / dump all
-> > info needed about the specific BPF program right upon load event
-> > and enrich the record, thus these changes needed here can be kept
-> > small and non-intrusive to the core.
-> >
-> > Raw example output:
-> >
-> >   # auditctl -D
-> >   # auditctl -a always,exit -F arch=3Dx86_64 -S bpf
-> >   # ausearch --start recent -m 1334
-> >   ...
-> >   ----
-> >   time->Wed Nov 27 16:04:13 2019
-> >   type=3DPROCTITLE msg=3Daudit(1574867053.120:84664): proctitle=3D"./bp=
-f"
-> >   type=3DSYSCALL msg=3Daudit(1574867053.120:84664): arch=3Dc000003e sys=
-call=3D321   \
-> >     success=3Dyes exit=3D3 a0=3D5 a1=3D7ffea484fbe0 a2=3D70 a3=3D0 item=
-s=3D0 ppid=3D7477    \
-> >     pid=3D12698 auid=3D1001 uid=3D1001 gid=3D1001 euid=3D1001 suid=3D10=
-01 fsuid=3D1001    \
-> >     egid=3D1001 sgid=3D1001 fsgid=3D1001 tty=3Dpts2 ses=3D4 comm=3D"bpf=
-"                \
-> >     exe=3D"/home/jolsa/auditd/audit-testsuite/tests/bpf/bpf"           =
-       \
-> >     subj=3Dunconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 key=3D=
-(null)
-> >   type=3DUNKNOWN[1334] msg=3Daudit(1574867053.120:84664): prog-id=3D76 =
-op=3DLOAD
-> >   ----
-> >   time->Wed Nov 27 16:04:13 2019
-> >   type=3DUNKNOWN[1334] msg=3Daudit(1574867053.120:84665): prog-id=3D76 =
-op=3DUNLOAD
-> >   ...
-> >
-> > Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-> > Co-developed-by: Jiri Olsa <jolsa@kernel.org>
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  include/uapi/linux/audit.h |  1 +
-> >  kernel/bpf/syscall.c       | 27 +++++++++++++++++++++++++++
-> >  2 files changed, 28 insertions(+)
->=20
-> Hi all, sorry for the delay; the merge window in combination with the
-> holiday in the US bumped this back a bit.  Small comments inline below
+Hi All,
 
-np, thanks for review
-
-> ...
->=20
-> > --- a/kernel/bpf/syscall.c
-> > +++ b/kernel/bpf/syscall.c
-> > @@ -23,6 +23,7 @@
-> >  #include <linux/timekeeping.h>
-> >  #include <linux/ctype.h>
-> >  #include <linux/nospec.h>
-> > +#include <linux/audit.h>
-> >  #include <uapi/linux/btf.h>
-> >
-> >  #define IS_FD_ARRAY(map) ((map)->map_type =3D=3D BPF_MAP_TYPE_PERF_EVE=
-NT_ARRAY || \
-> > @@ -1306,6 +1307,30 @@ static int find_prog_type(enum bpf_prog_type typ=
-e, struct bpf_prog *prog)
-> >         return 0;
-> >  }
-> >
-> > +enum bpf_audit {
-> > +       BPF_AUDIT_LOAD,
-> > +       BPF_AUDIT_UNLOAD,
-> > +};
-> > +
-> > +static const char * const bpf_audit_str[] =3D {
-> > +       [BPF_AUDIT_LOAD]   =3D "LOAD",
-> > +       [BPF_AUDIT_UNLOAD] =3D "UNLOAD",
-> > +};
-> > +
-> > +static void bpf_audit_prog(const struct bpf_prog *prog, enum bpf_audit=
- op)
-> > +{
-> > +       struct audit_buffer *ab;
-> > +
-> > +       if (audit_enabled =3D=3D AUDIT_OFF)
-> > +               return;
->=20
-> I think you would probably also want to check the results of
-> audit_dummy_context() here as well, see all the various audit_XXX()
-> functions in include/linux/audit.h as an example.  You'll see a
-> pattern similar to the following:
->=20
-> static inline void audit_foo(...)
-> {
->   if (unlikely(!audit_dummy_context()))
->     __audit_foo(...)
-> }
-
-bpf_audit_prog might be called outside of syscall context for UNLOAD event,
-so that would prevent it from being stored
-
-I can see audit_log_start checks on value of audit_context() that we pass i=
-n,
-should we check for audit_dummy_context just for load event? like:
+While placing intf down I'm getting below splat with debug options enabled.
+Not sure how to fix it, so will be appreciated for any help.
 
 
-static void bpf_audit_prog(const struct bpf_prog *prog, enum bpf_audit op)
-{
-        struct audit_buffer *ab;
 
-        if (audit_enabled =3D=3D AUDIT_OFF)
-                return;
-        if (op =3D=3D BPF_AUDIT_LOAD && audit_dummy_context())
-                return;
-        ab =3D audit_log_start(audit_context(), GFP_ATOMIC, AUDIT_BPF);
-        if (unlikely(!ab))
-                return;
-=09...
-}
+=========================================================
+[  333.933896]
+[  333.935511] =============================
+[  333.939552] WARNING: suspicious RCU usage
+[  333.943724] 5.4.0-08849-ga6eb3c7b339b-dirty #40 Not tainted
+[  333.949335] -----------------------------
+[  333.953445] ./include/linux/rcupdate.h:273 Illegal context switch in RCU read-side critical section!
+[  333.962698]
+[  333.962698] other info that might help us debug this:
+[  333.962698]
+[  333.970752]
+[  333.970752] rcu_scheduler_active = 2, debug_locks = 1
+[  333.977391] 2 locks held by ifconfig/1007:
+[  333.981520]  #0: c10b18ec (rtnl_mutex){+.+.}, at: devinet_ioctl+0xc4/0x850
+[  333.988534]  #1: c103e838 (rcu_read_lock){....}, at: rhashtable_walk_start_check+0x0/0x3dc
+[  333.996939]
+[  333.996939] stack backtrace:
+[  334.001334] CPU: 0 PID: 1007 Comm: ifconfig Not tainted 5.4.0-08849-ga6eb3c7b339b-dirty #40
+[  334.009733] Hardware name: Generic DRA72X (Flattened Device Tree)
+[  334.015878] [<c0113330>] (unwind_backtrace) from [<c010d23c>] (show_stack+0x10/0x14)
+[  334.023675] [<c010d23c>] (show_stack) from [<c09f9e08>] (dump_stack+0xe4/0x11c)
+[  334.031038] [<c09f9e08>] (dump_stack) from [<c016e4a4>] (___might_sleep+0x1e8/0x2bc)
+[  334.038834] [<c016e4a4>] (___might_sleep) from [<c0a17bd0>] (__mutex_lock+0x38/0xa18)
+[  334.046716] [<c0a17bd0>] (__mutex_lock) from [<c0a185cc>] (mutex_lock_nested+0x1c/0x24)
+[  334.054774] [<c0a185cc>] (mutex_lock_nested) from [<c0858208>] (mem_allocator_disconnect+0xf8/0x288)
+[  334.063966] [<c0858208>] (mem_allocator_disconnect) from [<c085df50>] (page_pool_release+0x230/0x3b4)
+[  334.073242] [<c085df50>] (page_pool_release) from [<c085e12c>] (page_pool_destroy+0x58/0x11c)
+[  334.081822] [<c085e12c>] (page_pool_destroy) from [<c0771554>] (cpsw_destroy_xdp_rxqs+0x88/0xa0)
+[  334.090663] [<c0771554>] (cpsw_destroy_xdp_rxqs) from [<c0774638>] (cpsw_ndo_stop+0x100/0x10c)
+[  334.099331] [<c0774638>] (cpsw_ndo_stop) from [<c0814fdc>] (__dev_close_many+0xac/0x130)
+[  334.107475] [<c0814fdc>] (__dev_close_many) from [<c0824068>] (__dev_change_flags+0xc8/0x1f0)
+[  334.116053] [<c0824068>] (__dev_change_flags) from [<c08241a8>] (dev_change_flags+0x18/0x48)
+[  334.124545] [<c08241a8>] (dev_change_flags) from [<c08efc3c>] (devinet_ioctl+0x6c0/0x850)
+[  334.132775] [<c08efc3c>] (devinet_ioctl) from [<c08f2d98>] (inet_ioctl+0x1f8/0x3b4)
+[  334.140483] [<c08f2d98>] (inet_ioctl) from [<c07f4594>] (sock_ioctl+0x398/0x5f4)
+[  334.147929] [<c07f4594>] (sock_ioctl) from [<c03279b4>] (do_vfs_ioctl+0x9c/0xa08)
+[  334.155461] [<c03279b4>] (do_vfs_ioctl) from [<c0328384>] (ksys_ioctl+0x64/0x74)
+[  334.162905] [<c0328384>] (ksys_ioctl) from [<c01011ac>] (__sys_trace_return+0x0/0x14)
+[  334.170781] Exception stack(0xed517fa8 to 0xed517ff0)
+[  334.175870] 7fa0:                   0007b4ec bee79d84 00000003 00008914 bee79a80 0007b4ec
+[  334.184099] 7fc0: 0007b4ec bee79d84 bee79d84 00000036 bee79c4c bee79c4c bee79a80 00000003
+[  334.192325] 7fe0: 0009d1ec bee79a14 0003214b b6e94f7c
+[  334.197604] BUG: sleeping function called from invalid context at kernel/locking/mutex.c:938
+[  334.206157] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 1007, name: ifconfig
+[  334.214274] 2 locks held by ifconfig/1007:
+[  334.218401]  #0: c10b18ec (rtnl_mutex){+.+.}, at: devinet_ioctl+0xc4/0x850
+[  334.225407]  #1: c103e838 (rcu_read_lock){....}, at: rhashtable_walk_start_check+0x0/0x3dc
+[  334.233813] CPU: 0 PID: 1007 Comm: ifconfig Not tainted 5.4.0-08849-ga6eb3c7b339b-dirty #40
+[  334.242212] Hardware name: Generic DRA72X (Flattened Device Tree)
+[  334.248351] [<c0113330>] (unwind_backtrace) from [<c010d23c>] (show_stack+0x10/0x14)
+[  334.256147] [<c010d23c>] (show_stack) from [<c09f9e08>] (dump_stack+0xe4/0x11c)
+[  334.263506] [<c09f9e08>] (dump_stack) from [<c016e464>] (___might_sleep+0x1a8/0x2bc)
+[  334.271300] [<c016e464>] (___might_sleep) from [<c0a17bd0>] (__mutex_lock+0x38/0xa18)
+[  334.279181] [<c0a17bd0>] (__mutex_lock) from [<c0a185cc>] (mutex_lock_nested+0x1c/0x24)
+[  334.287238] [<c0a185cc>] (mutex_lock_nested) from [<c0858208>] (mem_allocator_disconnect+0xf8/0x288)
+[  334.296427] [<c0858208>] (mem_allocator_disconnect) from [<c085df50>] (page_pool_release+0x230/0x3b4)
+[  334.305703] [<c085df50>] (page_pool_release) from [<c085e12c>] (page_pool_destroy+0x58/0x11c)
+[  334.314281] [<c085e12c>] (page_pool_destroy) from [<c0771554>] (cpsw_destroy_xdp_rxqs+0x88/0xa0)
+[  334.323122] [<c0771554>] (cpsw_destroy_xdp_rxqs) from [<c0774638>] (cpsw_ndo_stop+0x100/0x10c)
+[  334.331788] [<c0774638>] (cpsw_ndo_stop) from [<c0814fdc>] (__dev_close_many+0xac/0x130)
+[  334.339931] [<c0814fdc>] (__dev_close_many) from [<c0824068>] (__dev_change_flags+0xc8/0x1f0)
+[  334.348510] [<c0824068>] (__dev_change_flags) from [<c08241a8>] (dev_change_flags+0x18/0x48)
+[  334.357000] [<c08241a8>] (dev_change_flags) from [<c08efc3c>] (devinet_ioctl+0x6c0/0x850)
+[  334.365228] [<c08efc3c>] (devinet_ioctl) from [<c08f2d98>] (inet_ioctl+0x1f8/0x3b4)
+[  334.372935] [<c08f2d98>] (inet_ioctl) from [<c07f4594>] (sock_ioctl+0x398/0x5f4)
+[  334.380380] [<c07f4594>] (sock_ioctl) from [<c03279b4>] (do_vfs_ioctl+0x9c/0xa08)
+[  334.387911] [<c03279b4>] (do_vfs_ioctl) from [<c0328384>] (ksys_ioctl+0x64/0x74)
+[  334.395355] [<c0328384>] (ksys_ioctl) from [<c01011ac>] (__sys_trace_return+0x0/0x14)
+[  334.403231] Exception stack(0xed517fa8 to 0xed517ff0)
+[  334.408319] 7fa0:                   0007b4ec bee79d84 00000003 00008914 bee79a80 0007b4ec
+[  334.416548] 7fc0: 0007b4ec bee79d84 bee79d84 00000036 bee79c4c bee79c4c bee79a80 00000003
+[  334.424774] 7fe0: 0009d1ec bee79a14 0003214b b6e94f7c
 
 
->=20
-> > +       ab =3D audit_log_start(audit_context(), GFP_ATOMIC, AUDIT_BPF);
-> > +       if (unlikely(!ab))
-> > +               return;
-> > +       audit_log_format(ab, "prog-id=3D%u op=3D%s",
-> > +                        prog->aux->id, bpf_audit_str[op]);
->=20
-> Is it worth putting some checks in here to make sure that you don't
-> blow past the end of the bpf_audit_str array?
->=20
-> > +       audit_log_end(ab);
-> > +}
->=20
-> The audit record format looks much better now, thank you.  Although I
-> do wonder if you want bpf_audit_prog() to live in kernel/bpf/syscall.c
-> or in kernel/auditsc.c?  There is plenty of precedence for moving it
-> into auditsc.c and defining a no-op version for when
-> CONFIG_AUDITSYSCALL is not enabled, but I personally don't feel that
-> strongly about either option.  I just wanted to mention this in case
-> you weren't already aware.
->=20
-> If you do keep it in syscall.c, I don't think there is a need to
-> implement a no-op version dependent on CONFIG_AUDITSYSCALL; that will
-> just clutter the code.
->=20
-> If you do move it to auditsc.c please change the name to
-> audit_bpf()/__audit_bpf() so it matches the other functions; if you
-> keep it in syscall.c you can name it whatever you like :)
+Enabled debug options:
+=================================================
++CONFIG_LOCKUP_DETECTOR=y
++CONFIG_BOOTPARAM_SOFTLOCKUP_PANIC=y
++CONFIG_BOOTPARAM_SOFTLOCKUP_PANIC_VALUE=1
++CONFIG_DETECT_HUNG_TASK=y
++CONFIG_DEFAULT_HUNG_TASK_TIMEOUT=300
++CONFIG_BOOTPARAM_HUNG_TASK_PANIC=y
++CONFIG_BOOTPARAM_HUNG_TASK_PANIC_VALUE=1
++CONFIG_PANIC_ON_OOPS=y
++CONFIG_PANIC_ON_OOPS_VALUE=1
++
++CONFIG_DEBUG_RT_MUTEXES=y
++CONFIG_DEBUG_PI_LIST=y
++CONFIG_DEBUG_SPINLOCK=y
++CONFIG_DEBUG_MUTEXES=y
++CONFIG_DEBUG_WW_MUTEX_SLOWPATH=y
++CONFIG_DEBUG_LOCK_ALLOC=y
++CONFIG_PROVE_LOCKING=y
++CONFIG_LOCKDEP=y
++CONFIG_DEBUG_LOCKDEP=y
++CONFIG_DEBUG_ATOMIC_SLEEP=y
++CONFIG_DEBUG_LOCKING_API_SELFTESTS=n
++CONFIG_STACKTRACE=y
++CONFIG_DEBUG_BUGVERBOSE=y
++CONFIG_DEBUG_LIST=y
++CONFIG_DEBUG_SG=y
++CONFIG_DEBUG_NOTIFIERS=y
++
++CONFIG_SPARSE_RCU_POINTER=y
++CONFIG_RCU_CPU_STALL_TIMEOUT=60
++CONFIG_RCU_CPU_STALL_INFO=y
++CONFIG_RCU_TRACE=y
++CONFIG_PROVE_RCU=y
++CONFIG_PROVE_RCU_REPEATEDLY=y
++
++CONFIG_DMA_API_DEBUG=y
 
-ok, so far I think we'll keep it kernel/bpf/syscall.c
 
-thanks,
-jirka
-
+-- 
+Best regards,
+grygorii
