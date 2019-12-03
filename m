@@ -2,27 +2,27 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BDC7E111C1F
-	for <lists+bpf@lfdr.de>; Tue,  3 Dec 2019 23:41:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FC56111F37
+	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2019 00:10:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728419AbfLCWkh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Dec 2019 17:40:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53680 "EHLO mail.kernel.org"
+        id S1729098AbfLCWps (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Dec 2019 17:45:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34582 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728410AbfLCWke (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Dec 2019 17:40:34 -0500
+        id S1728492AbfLCWpr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Dec 2019 17:45:47 -0500
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4F4F120865;
-        Tue,  3 Dec 2019 22:40:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0B9B220803;
+        Tue,  3 Dec 2019 22:45:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1575412833;
-        bh=aCuHffhspeFM8lqvonn/tz1sHFj1a5E3DwArfrnGxko=;
+        s=default; t=1575413146;
+        bh=gLRE7oHBtNQW2SoCK6VfPIZbi0YK/e97Ex2u9wJeTTg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SOzlUg4V93dsW5Aub/vzm1jvZkuXBrafkRQdtBzq1cmFvqS0ia746V5lrwqs8CEV5
-         px0S6FJtzaYVq6yabfexyHxGQ8K/xh1z8fZ3BmwGUlXmUxImItNC+zfMhy7yuuzZCf
-         Mfq0HhWH9HSlEKukyKg7IiVa3e+CqPqDtPd8jywI=
+        b=vSb/5uZuTIx5STbe9ghhZDSRDSpzxOfcB0QDTznnwd47r8qaVbcac45gRtW/mQRBI
+         KQbYDYWsVAOmQ7F/4sKaIfkvHx3LgoPyqxuly4LK3Rb4rXMrlDHbZYGE7gwB8+34B1
+         kJGjzeZ+nNjBbdT3mVpRL6vzxXtAj2eyjp7IfPlA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -37,12 +37,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         netdev@vger.kernel.org, Arnaldo Carvalho de Melo <acme@redhat.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.3 033/135] samples/bpf: fix build by setting HAVE_ATTR_TEST to zero
-Date:   Tue,  3 Dec 2019 23:34:33 +0100
-Message-Id: <20191203213012.721079232@linuxfoundation.org>
+Subject: [PATCH 4.19 017/321] samples/bpf: fix build by setting HAVE_ATTR_TEST to zero
+Date:   Tue,  3 Dec 2019 23:31:23 +0100
+Message-Id: <20191203223428.016403897@linuxfoundation.org>
 X-Mailer: git-send-email 2.24.0
-In-Reply-To: <20191203213005.828543156@linuxfoundation.org>
-References: <20191203213005.828543156@linuxfoundation.org>
+In-Reply-To: <20191203223427.103571230@linuxfoundation.org>
+References: <20191203223427.103571230@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -77,17 +77,17 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+)
 
 diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-index 1d9be26b4edd7..42b571cde1778 100644
+index 36f9f41d094b2..75d4b48601aaa 100644
 --- a/samples/bpf/Makefile
 +++ b/samples/bpf/Makefile
-@@ -176,6 +176,7 @@ KBUILD_HOSTCFLAGS += -I$(srctree)/tools/lib/bpf/
+@@ -172,6 +172,7 @@ KBUILD_HOSTCFLAGS += -I$(srctree)/tools/lib/
  KBUILD_HOSTCFLAGS += -I$(srctree)/tools/testing/selftests/bpf/
  KBUILD_HOSTCFLAGS += -I$(srctree)/tools/lib/ -I$(srctree)/tools/include
  KBUILD_HOSTCFLAGS += -I$(srctree)/tools/perf
 +KBUILD_HOSTCFLAGS += -DHAVE_ATTR_TEST=0
  
  HOSTCFLAGS_bpf_load.o += -I$(objtree)/usr/include -Wno-unused-variable
- 
+ HOSTCFLAGS_trace_helpers.o += -I$(srctree)/tools/lib/bpf/
 -- 
 2.20.1
 
