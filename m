@@ -2,241 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 96FFD113011
-	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2019 17:32:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DDC41130BE
+	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2019 18:25:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728625AbfLDQcL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Dec 2019 11:32:11 -0500
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:35822 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728204AbfLDQcJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Dec 2019 11:32:09 -0500
-Received: by mail-qt1-f194.google.com with SMTP id s8so370595qte.2;
-        Wed, 04 Dec 2019 08:32:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=l8o+dR1NNNvQI7cQHuCUyPp6laQfu3VVpJsss/qycYY=;
-        b=esBcd9QJecmPovlmuAGOyd7mmwBwsTzTmdns3G96sNyglvm+RWS1vkptFy3cJT+e6v
-         wr6i6CNY6ZfqOoGhNXxBzC4ScBlNg5pW+dAmX7mcgG/zA0YXWHT08MRqPGGJvDu9BLHB
-         z9VG8xT/pK6xNcN3zrRlHKqIqDXOChiKvA+IU8LBMf4MVAF/B+6KufnVBYW9JjN4BM8k
-         cNA9MIhL12khkkK1v9NceTz8EeFo0RkWtIEiJ8nq1hmLUklkNfezmV0ZC/J2NiS84gy4
-         q8mLJe7Gr27p6ocmXK/ks0uymMjk0YSzRs8TQGhN8MH5JVSGciVK0fTw+qtsXN7S/zZ9
-         2PzQ==
+        id S1728053AbfLDRZB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Dec 2019 12:25:01 -0500
+Received: from mail-il1-f198.google.com ([209.85.166.198]:56207 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727911AbfLDRZB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Dec 2019 12:25:01 -0500
+Received: by mail-il1-f198.google.com with SMTP id d14so226120ild.22
+        for <bpf@vger.kernel.org>; Wed, 04 Dec 2019 09:25:01 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=l8o+dR1NNNvQI7cQHuCUyPp6laQfu3VVpJsss/qycYY=;
-        b=tn0lolEHji8uMoh2K4PWHesS7DN2RbIjgIfG9mfCcgAy/+gvfZ3XCnKKXHohh1bX+b
-         ekD+95upHkMTo8tEBvNmhg0UwFGbyhlxuyOEhdbGWHA1KxjJhl2JK5aPVPFy4O6sokYv
-         T4dbqMGPTgX871d5aJHtZiT//iPMlDIjeND+rimZo5NMfCjus0r7I2txSUE8wN/rfJ5/
-         z6+APkEMN9I7QvNgvCnHo3EivM+n+BG2cz0s0IwiKh0RtxUTZHhxy7uLalXJXEDbvINF
-         K9ot4CBlsX7kVZDIJh54qCLxfzlYK49/u6s0yDJpG+yX+iqxKDrNsVQiAd9oiwEhbpjq
-         wFQw==
-X-Gm-Message-State: APjAAAVH+8XPxbH1dP6yRt6e2ylmDAapVTSvFwldq5r/8cABuI0zjkD1
-        GefhbBKQ3wkkD8rTdVDRJ3i1iWCcrrm4dEmyGOQ=
-X-Google-Smtp-Source: APXvYqwL5gPRzCIDlnXSnGX7CXxoNbxdrDaV8qlux0uLe2Uv/X3vRE4S4nsUciWtlmD8uM3nN0oPE4xcPLeyrALa1/c=
-X-Received: by 2002:ac8:5457:: with SMTP id d23mr3343421qtq.93.1575477128359;
- Wed, 04 Dec 2019 08:32:08 -0800 (PST)
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=7EBHqRzY74ZGF4tFe8/2rCfanQYl+zaLWG2jjw2sqJU=;
+        b=q7DVjOadHm7prt5UOXephUBHJUY1yeT4WPaOFVz4k3MnJINvrnRRrrCtFQ3mQCPXak
+         GuJCDiVIcKybdgR+VRTjXBsafVtFCrIluXsKk27K2dnEIj11TmFsmMbiMY52C3bWu7/I
+         JvVgL3xEC6qirz2fTeeENn9d+1b46NDyzaaofeHRBsgUwVFlAGtp/FTYz8eVbTn5eKez
+         +ch6r/h+xpFE4p+JjhQQg2bropajMOelz9dIUBYg6FYCTdED3NXK9rchxL3BUPXTfrUL
+         TveCHL2r8Nz8xrldzEgtWHE3rX/jP8hAKvatn/zTBO/MNFD9L3nu01gtFmRhL6PqzA3N
+         xuiw==
+X-Gm-Message-State: APjAAAVBzIrS9pRP1ttrHWV1Wd+jo5WlAWigdW1q70hceWPOoKuG+yjF
+        +2PpEccgwI1lx0WgKq22XACkrgpbrlA+XW1ihz05CwUb/fSH
+X-Google-Smtp-Source: APXvYqwbE8j0A1R4STA165xAE2o2CZhzCyPUxcpg0HmtPL7kxTLcb8QkM0tXoiQbRnp/I+pW3xAbBYhdXQBcSkEqCJmXhPMwQnNb
 MIME-Version: 1.0
-References: <E53E0693-1C3A-4B47-B205-DC8E5DAF3619@redhat.com>
- <CAADnVQKkLtG-QCZwxx-Bpz8-goh-_mSTtUSzpb_oTv9a-qLizg@mail.gmail.com>
- <3AC9D2B7-9D2F-4286-80A2-1721B51B62CF@redhat.com> <CAADnVQJKSnoMVpQ3F86zBhFyo8WQ0vi65Z4QDtopLRrpK4yB8Q@mail.gmail.com>
- <4BBF99E4-9554-44F7-8505-D4B8416554C4@redhat.com> <d588c894-a4e0-8b99-72a9-4429b27091df@fb.com>
- <056E9F5E-4FDD-4636-A43A-EC98A06E84D3@redhat.com> <aa59532b-34a9-7887-f550-ef2859f0c9f1@fb.com>
- <B7E0062E-37ED-46E6-AE64-EE3E2A0294EA@redhat.com>
-In-Reply-To: <B7E0062E-37ED-46E6-AE64-EE3E2A0294EA@redhat.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 4 Dec 2019 08:31:54 -0800
-Message-ID: <CAEf4BzaTRc8dPxZnWhVZe7xpyMwpL1NEgGQyBjeXnsaN_D5CWA@mail.gmail.com>
-Subject: Re: Trying the bpf trace a bpf xdp program
-To:     Eelco Chaudron <echaudro@redhat.com>
-Cc:     Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Xdp <xdp-newbies@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Received: by 2002:a05:6602:187:: with SMTP id m7mr3058050ioo.16.1575480300753;
+ Wed, 04 Dec 2019 09:25:00 -0800 (PST)
+Date:   Wed, 04 Dec 2019 09:25:00 -0800
+In-Reply-To: <000000000000314c120598dc69bd@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ad595a0598e417a6@google.com>
+Subject: Re: BUG: unable to handle kernel paging request in pcpu_alloc
+From:   syzbot <syzbot+82e323920b78d54aaed5@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, andriin@fb.com, aryabinin@virtuozzo.com,
+        ast@kernel.org, bpf@vger.kernel.org, christophe.leroy@c-s.fr,
+        daniel@iogearbox.net, dja@axtens.net, dvyukov@google.com,
+        glider@google.com, gor@linux.ibm.com, kafai@fb.com,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        mark.rutland@arm.com, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
+        torvalds@linux-foundation.org, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 4, 2019 at 5:20 AM Eelco Chaudron <echaudro@redhat.com> wrote:
->
->
->
-> On 2 Dec 2019, at 17:48, Yonghong Song wrote:
->
-> > On 12/2/19 8:34 AM, Eelco Chaudron wrote:
-> >> On 29 Nov 2019, at 17:52, Yonghong Song wrote:
->
-> <SNIP>
-> >
-> > You need to build the kernel with
-> >    CONFIG_DEBUG_INFO_BTF=3Dy
-> > Make sure on the build machine you have recent pahole version >=3D 1.13=
-.
->
-> With the latest LLVM and CONFIG_DEBUG_INFO_BTF=3Dy the self-test for
-> bpf2bpf is passing!
->
->
-> However I still have problems with my code, which is getting to the next
-> step, but no my program is killed when trying to load the eBPG fexit
-> code. If I replace my generated eBPF programs for the once generated by
-> the self-test (test_pkt_access.o/fexit_bpf2bpf.o) it works fine.
->
->
-> I decided to build my objects just like the example programs (so have a
-> hacked build.sh file) but I get the same results. I.e. being killed by
-> the kernel:
->
-> bpf(BPF_BTF_LOAD,
-> {btf=3D"\237\353\1\0\30\0\0\0\0\0\0\0\330\0\0\0\330\0\0\0\244\0\0\0\0\0\0=
-\0\0\0\0\2"...,
-> btf_log_buf=3DNULL, btf_size=3D404, btf_log_size=3D0, btf_log_level=3D0},=
- 120) =3D
-> 6
-> bpf(BPF_OBJ_GET_INFO_BY_FD, {info=3D{bpf_fd=3D3, info_len=3D208,
-> info=3D0x7ffdfbdac3b0}}, 120) =3D 0
-> bpf(BPF_OBJ_GET_INFO_BY_FD, {info=3D{bpf_fd=3D3, info_len=3D208,
-> info=3D0xafb600}}, 120) =3D 0
-> bpf(BPF_BTF_GET_FD_BY_ID, {btf_id=3D90}, 120) =3D 5
-> bpf(BPF_OBJ_GET_INFO_BY_FD, {info=3D{bpf_fd=3D5, info_len=3D16,
-> info=3D0x7ffdfbdac4b0}}, 120) =3D 0
-> - Opened object file: 0xafb440
-> bpf(BPF_PROG_LOAD, {prog_type=3D0x1a /* BPF_PROG_TYPE_??? */, insn_cnt=3D=
-2,
-> insns=3D0xafbaa0, license=3D"GPL", log_level=3D7, log_size=3D16777215,
-> log_buf=3D"\237\353\1", kern_version=3DKERNEL_VERSION(0, 0, 0),
-> prog_flags=3D0, prog_name=3D"test_main", prog_ifindex=3D0,
-> expected_attach_type=3D0x19 /* BPF_??? */, prog_btf_fd=3D6,
-> func_info_rec_size=3D8, func_info=3D0xafb9f0, func_info_cnt=3D1,
-> line_info_rec_size=3D16, line_info=3D0xafba10, line_info_cnt=3D1, ...}, 1=
-20
-> ) =3D ?
-> +++ killed by SIGKILL +++
-> Killed
->
->
-> [79162.619208] BUG: kernel NULL pointer dereference, address:
-> 0000000000000000
-> [79162.619906] #PF: supervisor read access in kernel mode
-> [79162.620582] #PF: error_code(0x0000) - not-present page
-> [79162.621255] PGD 80000001e2409067 P4D 80000001e2409067 PUD 22eba9067
-> PMD 0
-> [79162.621933] Oops: 0000 [#12] SMP PTI
-> [79162.622599] CPU: 5 PID: 3191 Comm: xdp_sample_fent Tainted: G      D
->           5.4.0+ #3
-> [79162.623274] Hardware name: Red Hat KVM, BIOS
-> 1.11.1-3.module+el8+2529+a9686a4d 04/01/2014
-> [79162.623962] RIP: 0010:bpf_check+0x1648/0x250b
-> [79162.624650] Code: 41 89 c5 0f 88 d1 0a 00 00 41 f6 47 02 01 0f 84 17
-> 0b 00 00 41 83 7f 04 1a 0f 84 0c 0c 00 00 49 8b 47 20 48 63 db 48 8b 40
-> 68 <48> 8b 04 d8 48 8b 40 30 49 89 42 50 49 8b 46 20 4c 89 cf 4c 89 95
-> [79162.626088] RSP: 0018:ffffb5f6c07c3c88 EFLAGS: 00010293
-> [79162.626822] RAX: 0000000000000000 RBX: 0000000000000000 RCX:
-> ffffb5f6c07c3c40
-> [79162.627560] RDX: ffffa0a1e6e01818 RSI: 00000000fffffffa RDI:
-> 0000000000000000
-> [79162.628304] RBP: ffffb5f6c07c3d70 R08: 000000000000000e R09:
-> ffffa0a1f5c9dc90
-> [79162.629053] R10: ffffa0a1f5c9dc80 R11: ffffa0a1e6e0199a R12:
-> ffffa0a1eac48000
-> [79162.629806] R13: 0000000000000000 R14: ffffb5f6c043e000 R15:
-> ffffb5f6c033f000
-> [79162.630562] FS:  00007f560c2e3740(0000) GS:ffffa0a1f7940000(0000)
-> knlGS:0000000000000000
-> [79162.631324] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [79162.632072] CR2: 0000000000000000 CR3: 00000001e242a005 CR4:
-> 0000000000360ee0
-> [79162.632813] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
-> 0000000000000000
-> [79162.633539] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
-> 0000000000000400
-> [79162.634255] Call Trace:
-> [79162.634974]  ? _cond_resched+0x15/0x30
-> [79162.635686]  ? kmem_cache_alloc_trace+0x162/0x220
-> [79162.636398]  ? selinux_bpf_prog_alloc+0x1f/0x60
-> [79162.637111]  bpf_prog_load+0x3de/0x690
-> [79162.637809]  __do_sys_bpf+0x105/0x1740
-> [79162.638488]  do_syscall_64+0x5b/0x180
-> [79162.639147]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> [79162.639792] RIP: 0033:0x7f560c3fe1ad
-> [79162.640415] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa
-> 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f
-> 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d ab 5c 0c 00 f7 d8 64 89 01 48
-> [79162.641703] RSP: 002b:00007ffdfbdac318 EFLAGS: 00000202 ORIG_RAX:
-> 0000000000000141
-> [79162.642363] RAX: ffffffffffffffda RBX: 0000000000afb440 RCX:
-> 00007f560c3fe1ad
-> [79162.643026] RDX: 0000000000000078 RSI: 00007ffdfbdac390 RDI:
-> 0000000000000005
-> [79162.643676] RBP: 00007ffdfbdac330 R08: 0000000000afba70 R09:
-> 00007ffdfbdac390
-> [79162.644310] R10: 0000000000afcf10 R11: 0000000000000202 R12:
-> 0000000000402690
-> [79162.644935] R13: 00007ffdfbdac790 R14: 0000000000000000 R15:
-> 0000000000000000
-> [79162.645559] Modules linked in: ip6t_REJECT nf_reject_ipv6
-> ip6t_rpfilter ipt_REJECT nf_reject_ipv4 xt_conntrack ebtable_nat
-> ebtable_broute ip6table_nat ip6table_mangle ip6table_raw
-> ip6table_security iptable_nat nf_nat iptable_mangle iptable_raw
-> iptable_security nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 ip_set
-> nfnetlink ebtable_filter ebtables ip6table_filter ip6_tables
-> iptable_filter intel_rapl_msr intel_rapl_common kvm_intel kvm irqbypass
-> crct10dif_pclmul crc32_pclmul ghash_clmulni_intel cirrus drm_kms_helper
-> virtio_net net_failover joydev drm failover i2c_piix4 virtio_balloon
-> pcspkr ip_tables xfs libcrc32c crc32c_intel ata_generic floppy
-> virtio_scsi serio_raw pata_acpi qemu_fw_cfg
-> [79162.649591] CR2: 0000000000000000
-> [79162.650272] ---[ end trace 5119c5364c1e9c83 ]---
-> [79162.650957] RIP: 0010:bpf_check+0x1648/0x250b
-> [79162.651646] Code: 41 89 c5 0f 88 d1 0a 00 00 41 f6 47 02 01 0f 84 17
-> 0b 00 00 41 83 7f 04 1a 0f 84 0c 0c 00 00 49 8b 47 20 48 63 db 48 8b 40
-> 68 <48> 8b 04 d8 48 8b 40 30 49 89 42 50 49 8b 46 20 4c 89 cf 4c 89 95
-> [79162.653081] RSP: 0018:ffffb5f6c072bc88 EFLAGS: 00010293
-> [79162.653807] RAX: 0000000000000000 RBX: 0000000000000000 RCX:
-> ffffb5f6c072bc40
-> [79162.654536] RDX: ffffa0a1e76b1418 RSI: 00000000fffffffa RDI:
-> 0000000000000000
-> [79162.655270] RBP: ffffb5f6c072bd70 R08: 000000000000000e R09:
-> ffffa0a1e4d3fa90
-> [79162.655996] R10: ffffa0a1e4d3fa80 R11: ffffa0a1e76b159a R12:
-> ffffa0a1eac7c000
-> [79162.656715] R13: 0000000000000000 R14: ffffb5f6c01e3000 R15:
-> ffffb5f6c015f000
-> [79162.657429] FS:  00007f560c2e3740(0000) GS:ffffa0a1f7940000(0000)
-> knlGS:0000000000000000
-> [79162.658137] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [79162.658826] CR2: 0000000000000000 CR3: 00000001e242a005 CR4:
-> 0000000000360ee0
-> [79162.659515] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
-> 0000000000000000
-> [79162.660196] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
-> 0000000000000400
->
->
-> I=E2=80=99ve put my code on GitHub, maybe it=E2=80=99s just something stu=
-pid=E2=80=A6
->
-> https://github.com/chaudron/bpf2bpf-tracing
->
->
-> Cheers,
->
-> Eelco
->
->
-> PS: If I run the latest pahole (v1.15) on the .o files, I get the
-> following libbpf error: =E2=80=9Clibbpf: Cannot find bpf_func_info for ma=
-in
-> program sec fexit/xdp_prog_simple. Ignore all bpf_func_info.=E2=80=9D
->
+syzbot has bisected this bug to:
 
-pahole is not supposed to be run on BPF object file. It's needed only
-to do DWARF to BTF conversion for kernel itself. So never mind this
-one. The NULL dereference, though, seems like a bug, I agree with
-Yonghong.
+commit 0609ae011deb41c9629b7f5fd626dfa1ac9d16b0
+Author: Daniel Axtens <dja@axtens.net>
+Date:   Sun Dec 1 01:55:00 2019 +0000
+
+     x86/kasan: support KASAN_VMALLOC
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=166cf97ee00000
+start commit:   1ab75b2e Add linux-next specific files for 20191203
+git tree:       linux-next
+final crash:    https://syzkaller.appspot.com/x/report.txt?x=156cf97ee00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=116cf97ee00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=de1505c727f0ec20
+dashboard link: https://syzkaller.appspot.com/bug?extid=82e323920b78d54aaed5
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=156ef061e00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11641edae00000
+
+Reported-by: syzbot+82e323920b78d54aaed5@syzkaller.appspotmail.com
+Fixes: 0609ae011deb ("x86/kasan: support KASAN_VMALLOC")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
