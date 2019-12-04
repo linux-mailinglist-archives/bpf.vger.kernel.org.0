@@ -2,220 +2,161 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ADD511214C
-	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2019 03:12:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E64711219B
+	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2019 03:53:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726179AbfLDCMW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 3 Dec 2019 21:12:22 -0500
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:46306 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726162AbfLDCMW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 3 Dec 2019 21:12:22 -0500
-Received: by mail-pl1-f194.google.com with SMTP id k20so2456207pll.13
-        for <bpf@vger.kernel.org>; Tue, 03 Dec 2019 18:12:22 -0800 (PST)
+        id S1726766AbfLDCxa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 3 Dec 2019 21:53:30 -0500
+Received: from mail-lf1-f54.google.com ([209.85.167.54]:43280 "EHLO
+        mail-lf1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726521AbfLDCxa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 3 Dec 2019 21:53:30 -0500
+Received: by mail-lf1-f54.google.com with SMTP id 9so3331446lfq.10
+        for <bpf@vger.kernel.org>; Tue, 03 Dec 2019 18:53:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=d8JP/FWT9gtWd9H2H4O5LfJoPl2j9Vqp3m7uUhjqRAA=;
-        b=ivwo6uEosK2WXJMYf1kF9+C5YJaEKZNsDQnUA21bt2H0JUQNlBbdyzdOsoz2RrRFf1
-         AxJAe6b6IMUGUA361FZF1U1X/UckH9wq/pD8eMaZlR+0RCJItWtjfaMpkqhjfx+gh5KE
-         9ppxMwor9PjO4P2W1VRZFHxxFyLU3vLb5UWNP9qN+hiis0ofhSO5N9xcVP6gv4Y0JjMQ
-         0CM/tMNOkQvaoFWKB6Tt913MN1K4MDsAQ8CuIm/QsvY2Yxflm5FTwQmINYL91Mg00cWQ
-         CvzFQhMXW4qDjgH3CTLmgIK/IGZeSZJ93NsgXget0tGWVYYYVv2VIUNQpjGTZ0iD/P8+
-         NhYQ==
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uR+pT65soPzjqJ67S48glzTfhGJEKMDDLWprJm5r4mY=;
+        b=aI4SDOI62/pPrhGCaEj1/ngReuOGp6v0q67iB7ucEval3f3gGBEC8Dwizix4mEsV65
+         N+tG1o/mmvoQZf+pi2hrlpgY0lPat20YwANxIleHDULtynaUMm1rZjbVYDgr0dy14c7T
+         6AblvCluhJtUHCGaa/qoKfbUiNTmwF1dTPx/ovhs2d0knIpyEK7Rhwuuyqh4HKzno9e8
+         tLWrxYiPt4rX06K9qnvHHcXkf2qk4LpK2fIIEycQOrDRPsyLzKkSwdti5RkkJns/bNjn
+         5iBjr8wbkrUGIeaqsCg0Vr7D03tyB6rOOgjJEA2dH8vRR8pZrriFZRP2nA6gMe5XOP6j
+         /nzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=d8JP/FWT9gtWd9H2H4O5LfJoPl2j9Vqp3m7uUhjqRAA=;
-        b=Td4LpQ77vxzpWZvSW7ZXUtZarD3EeFCwSyNvj2xvrojbE3orMwJYUubLMX5xYWI9mQ
-         FFtuJdcl+473MAanaNOOjMbpx+trf5952nAd+57dPY42vvEeVuwCWNwKmj8s9bNpbjGp
-         srl6zi9pRNaKt91kp4qiNDOgB8YVgb2uIeAVji7yyfshaZ/z2gD1tqiTFxuJj/dn3zCL
-         OPhrOeGoOBg0w39vl6d/0C+kAUExMRzRyapzpDAlRnvW6qkzqCE4jt+DTy6t0n7uLA8y
-         eYYnfE8mjp9zIZBoItgxYEq9ApFlYrHF+8w5ElmZJTI7RGvO0jPLvOioP6t93sBdo+fj
-         7xBw==
-X-Gm-Message-State: APjAAAXcP2GtdOJko6XZqJjKgWa93aLv9YqAZ+bKAdIB6A/wyERBGIo9
-        JJ1DfmHu7eztnWvJgkwMB7Td4w==
-X-Google-Smtp-Source: APXvYqxPLtrgtC/2nK5gZd4mh1BWVrXX69PjY5JKYquNAi6t83mpCsQom1yzD7QBmPrPxaduwk3hPQ==
-X-Received: by 2002:a17:902:8342:: with SMTP id z2mr1067626pln.181.1575425541534;
-        Tue, 03 Dec 2019 18:12:21 -0800 (PST)
-Received: from Iliass-MacBook-Pro.local ([50.225.178.238])
-        by smtp.gmail.com with ESMTPSA id k5sm4323340pju.14.2019.12.03.18.12.20
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 03 Dec 2019 18:12:20 -0800 (PST)
-Date:   Tue, 3 Dec 2019 18:12:15 -0800
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Grygorii Strashko <grygorii.strashko@ti.com>
-Cc:     netdev <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org,
-        "David S . Miller" <davem@davemloft.net>,
-        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
-        linux-kernel@vger.kernel.org,
-        Jonathan Lemon <jonathan.lemon@gmail.com>
-Subject: Re: linux-master: WARNING: suspicious RCU usage in
- mem_allocator_disconnect
-Message-ID: <20191204021215.GA16019@Iliass-MacBook-Pro.local>
-References: <09e42c75-228a-f390-abd5-43e8f6ae70f2@ti.com>
- <c2de8927-7bca-612f-cdfd-e9112fee412a@ti.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uR+pT65soPzjqJ67S48glzTfhGJEKMDDLWprJm5r4mY=;
+        b=WizJKA8i+82PrLa6XXBqYvhU+CVXXO/Tvt86Wn4vSP1OZjgCY6KsqFqK1SkC049R97
+         fjqVteh0L/Ugmu+twPqxfqddcQIEOUjZQbMIJTlFBgmdL8Q0NPHGHO+2lmIb2ABiqBUl
+         dPGKEbWswUw4UHsYKamYmOErBqFgSTWT5Me+UB/kW+EPe4uAsTHJZESZ8MM5/K96Oz5j
+         JY2LgPSktzPXs4gkePsWRunKnaSq+QX7gvC8HDe4ljpOjQ4dYArux+pN2gHe8N+5uuND
+         3H3VadnGFRbKwEshZlDZIChn+pDPTm4UcTYP4FHfccSDPGbFCMsjwd+n+rG2Mn7ePJKS
+         OPgA==
+X-Gm-Message-State: APjAAAVdnTh1jEOfaMw30RsX4ddwIaRiodm8T4f07qEjtymCzBz8zj4W
+        2jSfvPOFPfHmxnY/Tqs+6b5uoUy3SBsNrz+PLlnY
+X-Google-Smtp-Source: APXvYqxC2jCV69k21E2WvCNty27MXD7mqixisctmZLTFJfdlz1LwQeP4SH3ptOANsNEsWPDaO4sPYI3Qqt1vdi3PFGA=
+X-Received: by 2002:ac2:424d:: with SMTP id m13mr619905lfl.13.1575428007737;
+ Tue, 03 Dec 2019 18:53:27 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c2de8927-7bca-612f-cdfd-e9112fee412a@ti.com>
-User-Agent: Mutt/1.9.5 (2018-04-13)
+References: <20191128091633.29275-1-jolsa@kernel.org> <CAHC9VhQ7zkXdz1V5hQ8PN68-NnCn56TjKA0wCL6ZjHy9Up8fuQ@mail.gmail.com>
+ <20191203093837.GC17468@krava>
+In-Reply-To: <20191203093837.GC17468@krava>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Tue, 3 Dec 2019 21:53:16 -0500
+Message-ID: <CAHC9VhRhMhsRPj1D2TY3O=Nc6Rx9=o1-Z5ZMjrCepfFY6VtdbQ@mail.gmail.com>
+Subject: Re: [RFC] bpf: Emit audit messages upon successful prog load and unload
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-audit@redhat.com,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Steve Grubb <sgrubb@redhat.com>,
+        David Miller <davem@redhat.com>,
+        Eric Paris <eparis@redhat.com>, Jiri Benc <jbenc@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Grygorii, 
+On Tue, Dec 3, 2019 at 4:38 AM Jiri Olsa <jolsa@redhat.com> wrote:
+> On Mon, Dec 02, 2019 at 06:00:14PM -0500, Paul Moore wrote:
+> > On Thu, Nov 28, 2019 at 4:16 AM Jiri Olsa <jolsa@kernel.org> wrote:
 
+...
 
-On Tue, Dec 03, 2019 at 01:28:37PM +0200, Grygorii Strashko wrote:
-> 
-> 
-> On 03/12/2019 12:28, Grygorii Strashko wrote:
-> > Hi All,
-> > 
-> > While placing intf down I'm getting below splat with debug options enabled.
-> > Not sure how to fix it, so will be appreciated for any help.\
-> 
-> And it seems introduced by commit:
-> 
-Sorry for the late response, i am on a trip. I'll try to replciate it once i am
-back home next week
+> > > --- a/kernel/bpf/syscall.c
+> > > +++ b/kernel/bpf/syscall.c
+> > > @@ -23,6 +23,7 @@
+> > >  #include <linux/timekeeping.h>
+> > >  #include <linux/ctype.h>
+> > >  #include <linux/nospec.h>
+> > > +#include <linux/audit.h>
+> > >  #include <uapi/linux/btf.h>
+> > >
+> > >  #define IS_FD_ARRAY(map) ((map)->map_type == BPF_MAP_TYPE_PERF_EVENT_ARRAY || \
+> > > @@ -1306,6 +1307,30 @@ static int find_prog_type(enum bpf_prog_type type, struct bpf_prog *prog)
+> > >         return 0;
+> > >  }
+> > >
+> > > +enum bpf_audit {
+> > > +       BPF_AUDIT_LOAD,
+> > > +       BPF_AUDIT_UNLOAD,
+> > > +};
+> > > +
+> > > +static const char * const bpf_audit_str[] = {
+> > > +       [BPF_AUDIT_LOAD]   = "LOAD",
+> > > +       [BPF_AUDIT_UNLOAD] = "UNLOAD",
+> > > +};
+> > > +
+> > > +static void bpf_audit_prog(const struct bpf_prog *prog, enum bpf_audit op)
+> > > +{
+> > > +       struct audit_buffer *ab;
+> > > +
+> > > +       if (audit_enabled == AUDIT_OFF)
+> > > +               return;
+> >
+> > I think you would probably also want to check the results of
+> > audit_dummy_context() here as well, see all the various audit_XXX()
+> > functions in include/linux/audit.h as an example.  You'll see a
+> > pattern similar to the following:
+> >
+> > static inline void audit_foo(...)
+> > {
+> >   if (unlikely(!audit_dummy_context()))
+> >     __audit_foo(...)
+> > }
+>
+> bpf_audit_prog might be called outside of syscall context for UNLOAD event,
+> so that would prevent it from being stored
 
-> commit c3f812cea0d7006469d1cf33a4a9f0a12bb4b3a3
-> Author: Jonathan Lemon <jonathan.lemon@gmail.com>
-> Date:   Thu Nov 14 14:13:00 2019 -0800
-> 
->     page_pool: do not release pool until inflight == 0.
-> 
-> 
-> > 
-> > 
-> > 
-> > =========================================================
-> > [  333.933896]
-> > [  333.935511] =============================
-> > [  333.939552] WARNING: suspicious RCU usage
-> > [  333.943724] 5.4.0-08849-ga6eb3c7b339b-dirty #40 Not tainted
-> > [  333.949335] -----------------------------
-> > [  333.953445] ./include/linux/rcupdate.h:273 Illegal context switch in RCU read-side critical section!
-> > [  333.962698]
-> > [  333.962698] other info that might help us debug this:
-> > [  333.962698]
-> > [  333.970752]
-> > [  333.970752] rcu_scheduler_active = 2, debug_locks = 1
-> > [  333.977391] 2 locks held by ifconfig/1007:
-> > [  333.981520]  #0: c10b18ec (rtnl_mutex){+.+.}, at: devinet_ioctl+0xc4/0x850
-> > [  333.988534]  #1: c103e838 (rcu_read_lock){....}, at: rhashtable_walk_start_check+0x0/0x3dc
-> > [  333.996939]
-> > [  333.996939] stack backtrace:
-> > [  334.001334] CPU: 0 PID: 1007 Comm: ifconfig Not tainted 5.4.0-08849-ga6eb3c7b339b-dirty #40
-> > [  334.009733] Hardware name: Generic DRA72X (Flattened Device Tree)
-> > [  334.015878] [<c0113330>] (unwind_backtrace) from [<c010d23c>] (show_stack+0x10/0x14)
-> > [  334.023675] [<c010d23c>] (show_stack) from [<c09f9e08>] (dump_stack+0xe4/0x11c)
-> > [  334.031038] [<c09f9e08>] (dump_stack) from [<c016e4a4>] (___might_sleep+0x1e8/0x2bc)
-> > [  334.038834] [<c016e4a4>] (___might_sleep) from [<c0a17bd0>] (__mutex_lock+0x38/0xa18)
-> > [  334.046716] [<c0a17bd0>] (__mutex_lock) from [<c0a185cc>] (mutex_lock_nested+0x1c/0x24)
-> > [  334.054774] [<c0a185cc>] (mutex_lock_nested) from [<c0858208>] (mem_allocator_disconnect+0xf8/0x288)
-> > [  334.063966] [<c0858208>] (mem_allocator_disconnect) from [<c085df50>] (page_pool_release+0x230/0x3b4)
-> > [  334.073242] [<c085df50>] (page_pool_release) from [<c085e12c>] (page_pool_destroy+0x58/0x11c)
-> > [  334.081822] [<c085e12c>] (page_pool_destroy) from [<c0771554>] (cpsw_destroy_xdp_rxqs+0x88/0xa0)
-> > [  334.090663] [<c0771554>] (cpsw_destroy_xdp_rxqs) from [<c0774638>] (cpsw_ndo_stop+0x100/0x10c)
-> > [  334.099331] [<c0774638>] (cpsw_ndo_stop) from [<c0814fdc>] (__dev_close_many+0xac/0x130)
-> > [  334.107475] [<c0814fdc>] (__dev_close_many) from [<c0824068>] (__dev_change_flags+0xc8/0x1f0)
-> > [  334.116053] [<c0824068>] (__dev_change_flags) from [<c08241a8>] (dev_change_flags+0x18/0x48)
-> > [  334.124545] [<c08241a8>] (dev_change_flags) from [<c08efc3c>] (devinet_ioctl+0x6c0/0x850)
-> > [  334.132775] [<c08efc3c>] (devinet_ioctl) from [<c08f2d98>] (inet_ioctl+0x1f8/0x3b4)
-> > [  334.140483] [<c08f2d98>] (inet_ioctl) from [<c07f4594>] (sock_ioctl+0x398/0x5f4)
-> > [  334.147929] [<c07f4594>] (sock_ioctl) from [<c03279b4>] (do_vfs_ioctl+0x9c/0xa08)
-> > [  334.155461] [<c03279b4>] (do_vfs_ioctl) from [<c0328384>] (ksys_ioctl+0x64/0x74)
-> > [  334.162905] [<c0328384>] (ksys_ioctl) from [<c01011ac>] (__sys_trace_return+0x0/0x14)
-> > [  334.170781] Exception stack(0xed517fa8 to 0xed517ff0)
-> > [  334.175870] 7fa0:                   0007b4ec bee79d84 00000003 00008914 bee79a80 0007b4ec
-> > [  334.184099] 7fc0: 0007b4ec bee79d84 bee79d84 00000036 bee79c4c bee79c4c bee79a80 00000003
-> > [  334.192325] 7fe0: 0009d1ec bee79a14 0003214b b6e94f7c
-> > [  334.197604] BUG: sleeping function called from invalid context at kernel/locking/mutex.c:938
-> > [  334.206157] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 1007, name: ifconfig
-> > [  334.214274] 2 locks held by ifconfig/1007:
-> > [  334.218401]  #0: c10b18ec (rtnl_mutex){+.+.}, at: devinet_ioctl+0xc4/0x850
-> > [  334.225407]  #1: c103e838 (rcu_read_lock){....}, at: rhashtable_walk_start_check+0x0/0x3dc
-> > [  334.233813] CPU: 0 PID: 1007 Comm: ifconfig Not tainted 5.4.0-08849-ga6eb3c7b339b-dirty #40
-> > [  334.242212] Hardware name: Generic DRA72X (Flattened Device Tree)
-> > [  334.248351] [<c0113330>] (unwind_backtrace) from [<c010d23c>] (show_stack+0x10/0x14)
-> > [  334.256147] [<c010d23c>] (show_stack) from [<c09f9e08>] (dump_stack+0xe4/0x11c)
-> > [  334.263506] [<c09f9e08>] (dump_stack) from [<c016e464>] (___might_sleep+0x1a8/0x2bc)
-> > [  334.271300] [<c016e464>] (___might_sleep) from [<c0a17bd0>] (__mutex_lock+0x38/0xa18)
-> > [  334.279181] [<c0a17bd0>] (__mutex_lock) from [<c0a185cc>] (mutex_lock_nested+0x1c/0x24)
-> > [  334.287238] [<c0a185cc>] (mutex_lock_nested) from [<c0858208>] (mem_allocator_disconnect+0xf8/0x288)
-> > [  334.296427] [<c0858208>] (mem_allocator_disconnect) from [<c085df50>] (page_pool_release+0x230/0x3b4)
-> > [  334.305703] [<c085df50>] (page_pool_release) from [<c085e12c>] (page_pool_destroy+0x58/0x11c)
-> > [  334.314281] [<c085e12c>] (page_pool_destroy) from [<c0771554>] (cpsw_destroy_xdp_rxqs+0x88/0xa0)
-> > [  334.323122] [<c0771554>] (cpsw_destroy_xdp_rxqs) from [<c0774638>] (cpsw_ndo_stop+0x100/0x10c)
-> > [  334.331788] [<c0774638>] (cpsw_ndo_stop) from [<c0814fdc>] (__dev_close_many+0xac/0x130)
-> > [  334.339931] [<c0814fdc>] (__dev_close_many) from [<c0824068>] (__dev_change_flags+0xc8/0x1f0)
-> > [  334.348510] [<c0824068>] (__dev_change_flags) from [<c08241a8>] (dev_change_flags+0x18/0x48)
-> > [  334.357000] [<c08241a8>] (dev_change_flags) from [<c08efc3c>] (devinet_ioctl+0x6c0/0x850)
-> > [  334.365228] [<c08efc3c>] (devinet_ioctl) from [<c08f2d98>] (inet_ioctl+0x1f8/0x3b4)
-> > [  334.372935] [<c08f2d98>] (inet_ioctl) from [<c07f4594>] (sock_ioctl+0x398/0x5f4)
-> > [  334.380380] [<c07f4594>] (sock_ioctl) from [<c03279b4>] (do_vfs_ioctl+0x9c/0xa08)
-> > [  334.387911] [<c03279b4>] (do_vfs_ioctl) from [<c0328384>] (ksys_ioctl+0x64/0x74)
-> > [  334.395355] [<c0328384>] (ksys_ioctl) from [<c01011ac>] (__sys_trace_return+0x0/0x14)
-> > [  334.403231] Exception stack(0xed517fa8 to 0xed517ff0)
-> > [  334.408319] 7fa0:                   0007b4ec bee79d84 00000003 00008914 bee79a80 0007b4ec
-> > [  334.416548] 7fc0: 0007b4ec bee79d84 bee79d84 00000036 bee79c4c bee79c4c bee79a80 00000003
-> > [  334.424774] 7fe0: 0009d1ec bee79a14 0003214b b6e94f7c
-> > 
-> > 
-> > Enabled debug options:
-> > =================================================
-> > +CONFIG_LOCKUP_DETECTOR=y
-> > +CONFIG_BOOTPARAM_SOFTLOCKUP_PANIC=y
-> > +CONFIG_BOOTPARAM_SOFTLOCKUP_PANIC_VALUE=1
-> > +CONFIG_DETECT_HUNG_TASK=y
-> > +CONFIG_DEFAULT_HUNG_TASK_TIMEOUT=300
-> > +CONFIG_BOOTPARAM_HUNG_TASK_PANIC=y
-> > +CONFIG_BOOTPARAM_HUNG_TASK_PANIC_VALUE=1
-> > +CONFIG_PANIC_ON_OOPS=y
-> > +CONFIG_PANIC_ON_OOPS_VALUE=1
-> > +
-> > +CONFIG_DEBUG_RT_MUTEXES=y
-> > +CONFIG_DEBUG_PI_LIST=y
-> > +CONFIG_DEBUG_SPINLOCK=y
-> > +CONFIG_DEBUG_MUTEXES=y
-> > +CONFIG_DEBUG_WW_MUTEX_SLOWPATH=y
-> > +CONFIG_DEBUG_LOCK_ALLOC=y
-> > +CONFIG_PROVE_LOCKING=y
-> > +CONFIG_LOCKDEP=y
-> > +CONFIG_DEBUG_LOCKDEP=y
-> > +CONFIG_DEBUG_ATOMIC_SLEEP=y
-> > +CONFIG_DEBUG_LOCKING_API_SELFTESTS=n
-> > +CONFIG_STACKTRACE=y
-> > +CONFIG_DEBUG_BUGVERBOSE=y
-> > +CONFIG_DEBUG_LIST=y
-> > +CONFIG_DEBUG_SG=y
-> > +CONFIG_DEBUG_NOTIFIERS=y
-> > +
-> > +CONFIG_SPARSE_RCU_POINTER=y
-> > +CONFIG_RCU_CPU_STALL_TIMEOUT=60
-> > +CONFIG_RCU_CPU_STALL_INFO=y
-> > +CONFIG_RCU_TRACE=y
-> > +CONFIG_PROVE_RCU=y
-> > +CONFIG_PROVE_RCU_REPEATEDLY=y
-> > +
-> > +CONFIG_DMA_API_DEBUG=y
-> > 
-> > 
-> 
-> -- 
-> Best regards,
-> grygorii
+Okay, right.  More on this below ...
+
+> I can see audit_log_start checks on value of audit_context() that we pass in,
+
+The check in audit_log_start() is for a different reason; it checks
+the passed context to see if it should associate the record with
+others in the same event, e.g. PATH records associated with the
+matching SYSCALL record.  This way all the associated records show up
+as part of the same event (as defined by the audit timestamp).
+
+> should we check for audit_dummy_context just for load event? like:
+>
+>
+> static void bpf_audit_prog(const struct bpf_prog *prog, enum bpf_audit op)
+> {
+>         struct audit_buffer *ab;
+>
+>         if (audit_enabled == AUDIT_OFF)
+>                 return;
+>         if (op == BPF_AUDIT_LOAD && audit_dummy_context())
+>                 return;
+>         ab = audit_log_start(audit_context(), GFP_ATOMIC, AUDIT_BPF);
+>         if (unlikely(!ab))
+>                 return;
+>         ...
+> }
+
+Ignoring the dummy context for a minute, there is likely a larger
+issue here with using audit_context() when bpf_audit_prog() is called
+outside of a syscall, e.g. BPF_AUDIT_UNLOAD.  In this case we likely
+shouldn't be taking the audit context from the current task, we
+shouldn't be taking it from anywhere, it should be NULL.
+
+As far as the dummy context is concerned, you might want to skip the
+dummy context check since you can only do that on the LOAD side, which
+means that depending on the system's configuration you could end up
+with a number of unbalanced LOAD/UNLOAD events.  The downside is that
+you are always going to get the BPF audit records on systemd based
+systems, since they ignore the admin's audit configuration and always
+enable audit (yes, we've tried to get systemd to change, they don't
+seem to care).
+
+-- 
+paul moore
+www.paul-moore.com
