@@ -2,115 +2,192 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6890B113532
-	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2019 19:52:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 343E9113578
+	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2019 20:09:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728339AbfLDSw0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Dec 2019 13:52:26 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:33985 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728154AbfLDSw0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Dec 2019 13:52:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1575485544;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=peb0ht/ZBvZYAPrLQwA8OcTuHG3fm58ggHVLgcRexWk=;
-        b=BuQ/wgQm1DvbPIjbLMbW6e7QW2hweIuGch0U4HZRtDk1uHUEr2Zhw2EM/ZOLsfIew7gvHm
-        th/DPmVdIUnurJgVNBm1KeXX/w/5Jd6KvOzzjEhJ1JTxQUw4B7V04GxBwvd/kitBb+3q9G
-        0EQ3QmoVj5hcfQB7vKWo1kinhP73u1s=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-159-7vCNvlsXP_KTHPVdSj1m9Q-1; Wed, 04 Dec 2019 13:52:21 -0500
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E872D10050ED;
-        Wed,  4 Dec 2019 18:52:19 +0000 (UTC)
-Received: from [10.36.118.152] (unknown [10.36.118.152])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 270355D9C5;
-        Wed,  4 Dec 2019 18:52:18 +0000 (UTC)
-From:   "Eelco Chaudron" <echaudro@redhat.com>
-To:     "Yonghong Song" <yhs@fb.com>
-Cc:     "Alexei Starovoitov" <alexei.starovoitov@gmail.com>,
-        Xdp <xdp-newbies@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: Trying the bpf trace a bpf xdp program
-Date:   Wed, 04 Dec 2019 19:52:17 +0100
-Message-ID: <E08A0006-E254-492C-92AB-408B58E456C0@redhat.com>
-In-Reply-To: <b8d80047-3bc1-5393-76a1-7517cb2b7280@fb.com>
-References: <E53E0693-1C3A-4B47-B205-DC8E5DAF3619@redhat.com>
- <CAADnVQKkLtG-QCZwxx-Bpz8-goh-_mSTtUSzpb_oTv9a-qLizg@mail.gmail.com>
- <3AC9D2B7-9D2F-4286-80A2-1721B51B62CF@redhat.com>
- <CAADnVQJKSnoMVpQ3F86zBhFyo8WQ0vi65Z4QDtopLRrpK4yB8Q@mail.gmail.com>
- <4BBF99E4-9554-44F7-8505-D4B8416554C4@redhat.com>
- <d588c894-a4e0-8b99-72a9-4429b27091df@fb.com>
- <056E9F5E-4FDD-4636-A43A-EC98A06E84D3@redhat.com>
- <aa59532b-34a9-7887-f550-ef2859f0c9f1@fb.com>
- <B7E0062E-37ED-46E6-AE64-EE3E2A0294EA@redhat.com>
- <7062345a-1060-89f6-0c02-eef2fe0d835a@fb.com>
- <b8d80047-3bc1-5393-76a1-7517cb2b7280@fb.com>
-MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
-X-MC-Unique: 7vCNvlsXP_KTHPVdSj1m9Q-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
+        id S1728627AbfLDTJ6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Dec 2019 14:09:58 -0500
+Received: from mail-pj1-f74.google.com ([209.85.216.74]:55349 "EHLO
+        mail-pj1-f74.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728497AbfLDTJ6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Dec 2019 14:09:58 -0500
+Received: by mail-pj1-f74.google.com with SMTP id e7so378980pjt.22
+        for <bpf@vger.kernel.org>; Wed, 04 Dec 2019 11:09:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=7/u5MtE8GGNIkQpF6GaFbkK4Dp87PRCQ92z7Xcrt0r4=;
+        b=od3x94Imhn9QFPESnWqo3LZpm72cU0JXU8qOH3aVeJtVMRS+9HPtIaetT3aIzyfpuP
+         YCxVQI8wvyJCZ/qY810YxmgpO6bNAjoboyfxfB+Y4GeenjvXOM+BJhJ+wZlRjQsa16sp
+         aB2Y46ExUYl94wgj7e/RJhkiyMo68tAhoEIR1hYdLMiqaJ6SERuWHUrkOtE/fLYYMfMK
+         0r64psNmU9qn37TA/xA/oT3cVgvYaaJInvUII9XN49w6vD4ohs7ATWynBP7BaJQZL5Wu
+         heri2Z8n6vSOj10t7wm0HVUnEQk1zD6d7ednoy9KBqLY7SOsrpC1qBS3giHGgJHELVph
+         d8bA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=7/u5MtE8GGNIkQpF6GaFbkK4Dp87PRCQ92z7Xcrt0r4=;
+        b=gVt5vFbf5sJTUbESWrrvrcnfz5K6R3dM5kLWEeITLEla7fH4wMbCTwLvOK5NtR6V4j
+         7cSFyd8pJ4ga3u3l2H3XgfNbnG9Elv4boL28XoaqyeeIriU+1qHfbsUcSAx5gt/azy3H
+         oIuqbKLgLOc4vrzkGJiSZbSxjxT8GO9WIR1llxbGtzjXYdEqbv4a+n3zRkVUujxcHXhb
+         Jpc4mfXxpnGq9R34NEYtJnhu/G9ymopD1901HbmQl3aHPibMmuovMBqKasNkE2PrXrhm
+         6GJeM18+NqLq9UMCSrQYi/LbUfSx2ik9xCczKSY2/QfS7tfqiHsLYQaGRVOp/aw2CF6o
+         srcQ==
+X-Gm-Message-State: APjAAAVI7XMGsQYWxV5toHaWJB1jgSnKATEgCDMtx2SOUI83Wefjn2QC
+        oFZwqdKXZaSH1wTIOJmQbGayZyE=
+X-Google-Smtp-Source: APXvYqyM4s5RLWgvanS19DTCJlKXLvyiNbMBZkTY1/otUJXKxR104SfiOlCx8wrBqhUbDH/8LKjnyc0=
+X-Received: by 2002:a63:5104:: with SMTP id f4mr5134286pgb.192.1575486597837;
+ Wed, 04 Dec 2019 11:09:57 -0800 (PST)
+Date:   Wed,  4 Dec 2019 11:09:55 -0800
+Message-Id: <20191204190955.170934-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.24.0.393.g34dc348eaf-goog
+Subject: [PATCH bpf] selftests/bpf: de-flake test_tcpbpf
+From:   Stanislav Fomichev <sdf@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        Stanislav Fomichev <sdf@google.com>,
+        Lawrence Brakmo <brakmo@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+It looks like BPF program that handles BPF_SOCK_OPS_STATE_CB state
+can race with the bpf_map_lookup_elem("global_map"); I sometimes
+see the failures in this test and re-running helps.
 
+Since we know that we expect the callback to be called 3 times (one
+time for listener socket, two times for both ends of the connection),
+let's export this number and add simple retry logic around that.
 
-On 4 Dec 2019, at 19:01, Yonghong Song wrote:
+Also, let's make EXPECT_EQ() not return on failure, but continue
+evaluating all conditions; that should make potential debugging
+easier.
 
-<SNIP>
+With this fix in place I don't observe the flakiness anymore.
 
->>> I=E2=80=99ve put my code on GitHub, maybe it=E2=80=99s just something s=
-tupid=E2=80=A6
->
-> Thanks for the test case. This indeed a kernel bug.
-> The following change fixed the issue:
->
->
-> -bash-4.4$ git diff
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index a0482e1c4a77..034ef81f935b 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -9636,7 +9636,10 @@ static int check_attach_btf_id(struct
-> bpf_verifier_env *env)
->                                  ret =3D -EINVAL;
->                                  goto out;
->                          }
-> -                       addr =3D (long)
-> tgt_prog->aux->func[subprog]->bpf_func;
-> +                       if (subprog =3D=3D 0)
-> +                               addr =3D (long) tgt_prog->bpf_func;
-> +                       else
-> +                               addr =3D (long)
-> tgt_prog->aux->func[subprog]->bpf_func;
->                  } else {
->                          addr =3D kallsyms_lookup_name(tname);
->                          if (!addr) {
-> -bash-4.4$
->
-> The reason is for a bpf program without any additional subprogram
-> (callees), tgt_prog->aux->func is not populated and is a NULL pointer,
-> so the access tgt_prog->aux->func[0]->bpf_func will segfault.
->
-> With the above change, your test works properly.
+Cc: Lawrence Brakmo <brakmo@fb.com>
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+---
+ .../selftests/bpf/progs/test_tcpbpf_kern.c    |  1 +
+ tools/testing/selftests/bpf/test_tcpbpf.h     |  1 +
+ .../testing/selftests/bpf/test_tcpbpf_user.c  | 25 +++++++++++++------
+ 3 files changed, 20 insertions(+), 7 deletions(-)
 
-Thanks for the quick response, and as you mention the test passes with=20
-the patch above.
-
-I will continue my experiments later this week, and let you know if I=20
-run into any other problems.
-
-Cheers,
-
-Eelco
-
+diff --git a/tools/testing/selftests/bpf/progs/test_tcpbpf_kern.c b/tools/testing/selftests/bpf/progs/test_tcpbpf_kern.c
+index 2e233613d1fc..7fa4595d2b66 100644
+--- a/tools/testing/selftests/bpf/progs/test_tcpbpf_kern.c
++++ b/tools/testing/selftests/bpf/progs/test_tcpbpf_kern.c
+@@ -131,6 +131,7 @@ int bpf_testcb(struct bpf_sock_ops *skops)
+ 				g.bytes_received = skops->bytes_received;
+ 				g.bytes_acked = skops->bytes_acked;
+ 			}
++			g.num_close_events++;
+ 			bpf_map_update_elem(&global_map, &key, &g,
+ 					    BPF_ANY);
+ 		}
+diff --git a/tools/testing/selftests/bpf/test_tcpbpf.h b/tools/testing/selftests/bpf/test_tcpbpf.h
+index 7bcfa6207005..6220b95cbd02 100644
+--- a/tools/testing/selftests/bpf/test_tcpbpf.h
++++ b/tools/testing/selftests/bpf/test_tcpbpf.h
+@@ -13,5 +13,6 @@ struct tcpbpf_globals {
+ 	__u64 bytes_received;
+ 	__u64 bytes_acked;
+ 	__u32 num_listen;
++	__u32 num_close_events;
+ };
+ #endif
+diff --git a/tools/testing/selftests/bpf/test_tcpbpf_user.c b/tools/testing/selftests/bpf/test_tcpbpf_user.c
+index 716b4e3be581..3ae127620463 100644
+--- a/tools/testing/selftests/bpf/test_tcpbpf_user.c
++++ b/tools/testing/selftests/bpf/test_tcpbpf_user.c
+@@ -16,6 +16,9 @@
+ 
+ #include "test_tcpbpf.h"
+ 
++/* 3 comes from one listening socket + both ends of the connection */
++#define EXPECTED_CLOSE_EVENTS		3
++
+ #define EXPECT_EQ(expected, actual, fmt)			\
+ 	do {							\
+ 		if ((expected) != (actual)) {			\
+@@ -23,13 +26,14 @@
+ 			       "    Actual: %" fmt "\n"		\
+ 			       "  Expected: %" fmt "\n",	\
+ 			       (actual), (expected));		\
+-			goto err;				\
++			ret--;					\
+ 		}						\
+ 	} while (0)
+ 
+ int verify_result(const struct tcpbpf_globals *result)
+ {
+ 	__u32 expected_events;
++	int ret = 0;
+ 
+ 	expected_events = ((1 << BPF_SOCK_OPS_TIMEOUT_INIT) |
+ 			   (1 << BPF_SOCK_OPS_RWND_INIT) |
+@@ -48,15 +52,15 @@ int verify_result(const struct tcpbpf_globals *result)
+ 	EXPECT_EQ(0x80, result->bad_cb_test_rv, PRIu32);
+ 	EXPECT_EQ(0, result->good_cb_test_rv, PRIu32);
+ 	EXPECT_EQ(1, result->num_listen, PRIu32);
++	EXPECT_EQ(EXPECTED_CLOSE_EVENTS, result->num_close_events, PRIu32);
+ 
+-	return 0;
+-err:
+-	return -1;
++	return ret;
+ }
+ 
+ int verify_sockopt_result(int sock_map_fd)
+ {
+ 	__u32 key = 0;
++	int ret = 0;
+ 	int res;
+ 	int rv;
+ 
+@@ -69,9 +73,7 @@ int verify_sockopt_result(int sock_map_fd)
+ 	rv = bpf_map_lookup_elem(sock_map_fd, &key, &res);
+ 	EXPECT_EQ(0, rv, "d");
+ 	EXPECT_EQ(1, res, "d");
+-	return 0;
+-err:
+-	return -1;
++	return ret;
+ }
+ 
+ static int bpf_find_map(const char *test, struct bpf_object *obj,
+@@ -96,6 +98,7 @@ int main(int argc, char **argv)
+ 	int error = EXIT_FAILURE;
+ 	struct bpf_object *obj;
+ 	int cg_fd = -1;
++	int retry = 10;
+ 	__u32 key = 0;
+ 	int rv;
+ 
+@@ -134,12 +137,20 @@ int main(int argc, char **argv)
+ 	if (sock_map_fd < 0)
+ 		goto err;
+ 
++retry_lookup:
+ 	rv = bpf_map_lookup_elem(map_fd, &key, &g);
+ 	if (rv != 0) {
+ 		printf("FAILED: bpf_map_lookup_elem returns %d\n", rv);
+ 		goto err;
+ 	}
+ 
++	if (g.num_close_events != EXPECTED_CLOSE_EVENTS && retry--) {
++		printf("Unexpected number of close events (%d), retrying!\n",
++		       g.num_close_events);
++		usleep(100);
++		goto retry_lookup;
++	}
++
+ 	if (verify_result(&g)) {
+ 		printf("FAILED: Wrong stats\n");
+ 		goto err;
+-- 
+2.24.0.393.g34dc348eaf-goog
 
