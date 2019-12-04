@@ -2,228 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E3B9112C75
-	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2019 14:20:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3E67112D2A
+	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2019 15:03:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727445AbfLDNUH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Dec 2019 08:20:07 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:30460 "EHLO
+        id S1727828AbfLDODG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Dec 2019 09:03:06 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:29378 "EHLO
         us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727714AbfLDNUH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Dec 2019 08:20:07 -0500
+        with ESMTP id S1727878AbfLDODF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Dec 2019 09:03:05 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1575465605;
+        s=mimecast20190719; t=1575468184;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=SbdpxXWhTQCNP2+MkeZ0xHiQ8dpggKqakmvl3gLRDHc=;
-        b=Jq6WRSaXXJ2TVa7wLQyUktW4Lv2qjpl6s5NrQgEkfhbzpwjeXoSvesmCwNOwN9APkqeb+h
-        4eTN76U5to/dErvWy1MZUUBNVMF7Hsyu3vAyVM2BrfN7PWTIwmAdV/DGlbz12RH3l49uOP
-        loD0Lndt/S2bZvDwr70B8GKkiWt3tMU=
+        bh=zWkdTbQVvximuCMjqLKANJFAHsmDcIS35xetl86u4So=;
+        b=gKSzy92ZbxEGXF9h0Svwg8T0eUNgO+KAsx85VLE+E2IHnE91r8nYrwaR2HU/N0BItCcXSD
+        3OIJBbSfg5cR4fcsdanrevLrsdWjqRYSznZVeFyuIGAh8pNkgy+tVRrAgil+6DxUS0X9IE
+        QkdrwBtAlaUeBWo9bm45EqbiCvV5xxY=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-342-297X3sNVNpuRMe0MXdoIoQ-1; Wed, 04 Dec 2019 08:20:02 -0500
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+ us-mta-383-gpEjSK9zMFq7Gh8dlbbk9A-1; Wed, 04 Dec 2019 09:03:01 -0500
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 738E81083E87;
-        Wed,  4 Dec 2019 13:20:01 +0000 (UTC)
-Received: from [10.36.118.152] (unknown [10.36.118.152])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 79FEC5C28F;
-        Wed,  4 Dec 2019 13:20:00 +0000 (UTC)
-From:   "Eelco Chaudron" <echaudro@redhat.com>
-To:     "Yonghong Song" <yhs@fb.com>,
-        "Alexei Starovoitov" <alexei.starovoitov@gmail.com>
-Cc:     Xdp <xdp-newbies@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: Trying the bpf trace a bpf xdp program
-Date:   Wed, 04 Dec 2019 14:19:58 +0100
-Message-ID: <B7E0062E-37ED-46E6-AE64-EE3E2A0294EA@redhat.com>
-In-Reply-To: <aa59532b-34a9-7887-f550-ef2859f0c9f1@fb.com>
-References: <E53E0693-1C3A-4B47-B205-DC8E5DAF3619@redhat.com>
- <CAADnVQKkLtG-QCZwxx-Bpz8-goh-_mSTtUSzpb_oTv9a-qLizg@mail.gmail.com>
- <3AC9D2B7-9D2F-4286-80A2-1721B51B62CF@redhat.com>
- <CAADnVQJKSnoMVpQ3F86zBhFyo8WQ0vi65Z4QDtopLRrpK4yB8Q@mail.gmail.com>
- <4BBF99E4-9554-44F7-8505-D4B8416554C4@redhat.com>
- <d588c894-a4e0-8b99-72a9-4429b27091df@fb.com>
- <056E9F5E-4FDD-4636-A43A-EC98A06E84D3@redhat.com>
- <aa59532b-34a9-7887-f550-ef2859f0c9f1@fb.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 05C111005516;
+        Wed,  4 Dec 2019 14:02:59 +0000 (UTC)
+Received: from krava (unknown [10.43.17.48])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9FAE4600CC;
+        Wed,  4 Dec 2019 14:02:53 +0000 (UTC)
+Date:   Wed, 4 Dec 2019 15:02:51 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-audit@redhat.com,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Steve Grubb <sgrubb@redhat.com>,
+        David Miller <davem@redhat.com>,
+        Eric Paris <eparis@redhat.com>, Jiri Benc <jbenc@redhat.com>
+Subject: Re: [RFC] bpf: Emit audit messages upon successful prog load and
+ unload
+Message-ID: <20191204140251.GA11548@krava>
+References: <20191128091633.29275-1-jolsa@kernel.org>
+ <CAHC9VhQ7zkXdz1V5hQ8PN68-NnCn56TjKA0wCL6ZjHy9Up8fuQ@mail.gmail.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
-X-MC-Unique: 297X3sNVNpuRMe0MXdoIoQ-1
+In-Reply-To: <CAHC9VhQ7zkXdz1V5hQ8PN68-NnCn56TjKA0wCL6ZjHy9Up8fuQ@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-MC-Unique: gpEjSK9zMFq7Gh8dlbbk9A-1
 X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Mon, Dec 02, 2019 at 06:00:14PM -0500, Paul Moore wrote:
 
+SNIP
 
-On 2 Dec 2019, at 17:48, Yonghong Song wrote:
+> > +
+> > +static void bpf_audit_prog(const struct bpf_prog *prog, enum bpf_audit=
+ op)
+> > +{
+> > +       struct audit_buffer *ab;
+> > +
+> > +       if (audit_enabled =3D=3D AUDIT_OFF)
+> > +               return;
+>=20
+> I think you would probably also want to check the results of
+> audit_dummy_context() here as well, see all the various audit_XXX()
+> functions in include/linux/audit.h as an example.  You'll see a
+> pattern similar to the following:
+>=20
+> static inline void audit_foo(...)
+> {
+>   if (unlikely(!audit_dummy_context()))
+>     __audit_foo(...)
+> }
+>=20
+> > +       ab =3D audit_log_start(audit_context(), GFP_ATOMIC, AUDIT_BPF);
+> > +       if (unlikely(!ab))
+> > +               return;
+> > +       audit_log_format(ab, "prog-id=3D%u op=3D%s",
+> > +                        prog->aux->id, bpf_audit_str[op]);
+>=20
+> Is it worth putting some checks in here to make sure that you don't
+> blow past the end of the bpf_audit_str array?
 
-> On 12/2/19 8:34 AM, Eelco Chaudron wrote:
->> On 29 Nov 2019, at 17:52, Yonghong Song wrote:
+forgot answer this one..  there are only 2 callers:
 
-<SNIP>
->
-> You need to build the kernel with
->    CONFIG_DEBUG_INFO_BTF=3Dy
-> Make sure on the build machine you have recent pahole version >=3D 1.13.
+  bpf_audit_prog(prog, BPF_AUDIT_UNLOAD);
+  bpf_audit_prog(prog, BPF_AUDIT_LOAD);
 
-With the latest LLVM and CONFIG_DEBUG_INFO_BTF=3Dy the self-test for=20
-bpf2bpf is passing!
+that's not going to change any time soon,
+so I dont think we don't need such check
 
-
-However I still have problems with my code, which is getting to the next=20
-step, but no my program is killed when trying to load the eBPG fexit=20
-code. If I replace my generated eBPF programs for the once generated by=20
-the self-test (test_pkt_access.o/fexit_bpf2bpf.o) it works fine.
-
-
-I decided to build my objects just like the example programs (so have a=20
-hacked build.sh file) but I get the same results. I.e. being killed by=20
-the kernel:
-
-bpf(BPF_BTF_LOAD,=20
-{btf=3D"\237\353\1\0\30\0\0\0\0\0\0\0\330\0\0\0\330\0\0\0\244\0\0\0\0\0\0\0=
-\0\0\0\2"...,=20
-btf_log_buf=3DNULL, btf_size=3D404, btf_log_size=3D0, btf_log_level=3D0}, 1=
-20) =3D=20
-6
-bpf(BPF_OBJ_GET_INFO_BY_FD, {info=3D{bpf_fd=3D3, info_len=3D208,=20
-info=3D0x7ffdfbdac3b0}}, 120) =3D 0
-bpf(BPF_OBJ_GET_INFO_BY_FD, {info=3D{bpf_fd=3D3, info_len=3D208,=20
-info=3D0xafb600}}, 120) =3D 0
-bpf(BPF_BTF_GET_FD_BY_ID, {btf_id=3D90}, 120) =3D 5
-bpf(BPF_OBJ_GET_INFO_BY_FD, {info=3D{bpf_fd=3D5, info_len=3D16,=20
-info=3D0x7ffdfbdac4b0}}, 120) =3D 0
-- Opened object file: 0xafb440
-bpf(BPF_PROG_LOAD, {prog_type=3D0x1a /* BPF_PROG_TYPE_??? */, insn_cnt=3D2,=
-=20
-insns=3D0xafbaa0, license=3D"GPL", log_level=3D7, log_size=3D16777215,=20
-log_buf=3D"\237\353\1", kern_version=3DKERNEL_VERSION(0, 0, 0),=20
-prog_flags=3D0, prog_name=3D"test_main", prog_ifindex=3D0,=20
-expected_attach_type=3D0x19 /* BPF_??? */, prog_btf_fd=3D6,=20
-func_info_rec_size=3D8, func_info=3D0xafb9f0, func_info_cnt=3D1,=20
-line_info_rec_size=3D16, line_info=3D0xafba10, line_info_cnt=3D1, ...}, 120
-) =3D ?
-+++ killed by SIGKILL +++
-Killed
-
-
-[79162.619208] BUG: kernel NULL pointer dereference, address:=20
-0000000000000000
-[79162.619906] #PF: supervisor read access in kernel mode
-[79162.620582] #PF: error_code(0x0000) - not-present page
-[79162.621255] PGD 80000001e2409067 P4D 80000001e2409067 PUD 22eba9067=20
-PMD 0
-[79162.621933] Oops: 0000 [#12] SMP PTI
-[79162.622599] CPU: 5 PID: 3191 Comm: xdp_sample_fent Tainted: G      D =20
-          5.4.0+ #3
-[79162.623274] Hardware name: Red Hat KVM, BIOS=20
-1.11.1-3.module+el8+2529+a9686a4d 04/01/2014
-[79162.623962] RIP: 0010:bpf_check+0x1648/0x250b
-[79162.624650] Code: 41 89 c5 0f 88 d1 0a 00 00 41 f6 47 02 01 0f 84 17=20
-0b 00 00 41 83 7f 04 1a 0f 84 0c 0c 00 00 49 8b 47 20 48 63 db 48 8b 40=20
-68 <48> 8b 04 d8 48 8b 40 30 49 89 42 50 49 8b 46 20 4c 89 cf 4c 89 95
-[79162.626088] RSP: 0018:ffffb5f6c07c3c88 EFLAGS: 00010293
-[79162.626822] RAX: 0000000000000000 RBX: 0000000000000000 RCX:=20
-ffffb5f6c07c3c40
-[79162.627560] RDX: ffffa0a1e6e01818 RSI: 00000000fffffffa RDI:=20
-0000000000000000
-[79162.628304] RBP: ffffb5f6c07c3d70 R08: 000000000000000e R09:=20
-ffffa0a1f5c9dc90
-[79162.629053] R10: ffffa0a1f5c9dc80 R11: ffffa0a1e6e0199a R12:=20
-ffffa0a1eac48000
-[79162.629806] R13: 0000000000000000 R14: ffffb5f6c043e000 R15:=20
-ffffb5f6c033f000
-[79162.630562] FS:  00007f560c2e3740(0000) GS:ffffa0a1f7940000(0000)=20
-knlGS:0000000000000000
-[79162.631324] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[79162.632072] CR2: 0000000000000000 CR3: 00000001e242a005 CR4:=20
-0000000000360ee0
-[79162.632813] DR0: 0000000000000000 DR1: 0000000000000000 DR2:=20
-0000000000000000
-[79162.633539] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:=20
-0000000000000400
-[79162.634255] Call Trace:
-[79162.634974]  ? _cond_resched+0x15/0x30
-[79162.635686]  ? kmem_cache_alloc_trace+0x162/0x220
-[79162.636398]  ? selinux_bpf_prog_alloc+0x1f/0x60
-[79162.637111]  bpf_prog_load+0x3de/0x690
-[79162.637809]  __do_sys_bpf+0x105/0x1740
-[79162.638488]  do_syscall_64+0x5b/0x180
-[79162.639147]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[79162.639792] RIP: 0033:0x7f560c3fe1ad
-[79162.640415] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa=20
-48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f=20
-05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d ab 5c 0c 00 f7 d8 64 89 01 48
-[79162.641703] RSP: 002b:00007ffdfbdac318 EFLAGS: 00000202 ORIG_RAX:=20
-0000000000000141
-[79162.642363] RAX: ffffffffffffffda RBX: 0000000000afb440 RCX:=20
-00007f560c3fe1ad
-[79162.643026] RDX: 0000000000000078 RSI: 00007ffdfbdac390 RDI:=20
-0000000000000005
-[79162.643676] RBP: 00007ffdfbdac330 R08: 0000000000afba70 R09:=20
-00007ffdfbdac390
-[79162.644310] R10: 0000000000afcf10 R11: 0000000000000202 R12:=20
-0000000000402690
-[79162.644935] R13: 00007ffdfbdac790 R14: 0000000000000000 R15:=20
-0000000000000000
-[79162.645559] Modules linked in: ip6t_REJECT nf_reject_ipv6=20
-ip6t_rpfilter ipt_REJECT nf_reject_ipv4 xt_conntrack ebtable_nat=20
-ebtable_broute ip6table_nat ip6table_mangle ip6table_raw=20
-ip6table_security iptable_nat nf_nat iptable_mangle iptable_raw=20
-iptable_security nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 ip_set=20
-nfnetlink ebtable_filter ebtables ip6table_filter ip6_tables=20
-iptable_filter intel_rapl_msr intel_rapl_common kvm_intel kvm irqbypass=20
-crct10dif_pclmul crc32_pclmul ghash_clmulni_intel cirrus drm_kms_helper=20
-virtio_net net_failover joydev drm failover i2c_piix4 virtio_balloon=20
-pcspkr ip_tables xfs libcrc32c crc32c_intel ata_generic floppy=20
-virtio_scsi serio_raw pata_acpi qemu_fw_cfg
-[79162.649591] CR2: 0000000000000000
-[79162.650272] ---[ end trace 5119c5364c1e9c83 ]---
-[79162.650957] RIP: 0010:bpf_check+0x1648/0x250b
-[79162.651646] Code: 41 89 c5 0f 88 d1 0a 00 00 41 f6 47 02 01 0f 84 17=20
-0b 00 00 41 83 7f 04 1a 0f 84 0c 0c 00 00 49 8b 47 20 48 63 db 48 8b 40=20
-68 <48> 8b 04 d8 48 8b 40 30 49 89 42 50 49 8b 46 20 4c 89 cf 4c 89 95
-[79162.653081] RSP: 0018:ffffb5f6c072bc88 EFLAGS: 00010293
-[79162.653807] RAX: 0000000000000000 RBX: 0000000000000000 RCX:=20
-ffffb5f6c072bc40
-[79162.654536] RDX: ffffa0a1e76b1418 RSI: 00000000fffffffa RDI:=20
-0000000000000000
-[79162.655270] RBP: ffffb5f6c072bd70 R08: 000000000000000e R09:=20
-ffffa0a1e4d3fa90
-[79162.655996] R10: ffffa0a1e4d3fa80 R11: ffffa0a1e76b159a R12:=20
-ffffa0a1eac7c000
-[79162.656715] R13: 0000000000000000 R14: ffffb5f6c01e3000 R15:=20
-ffffb5f6c015f000
-[79162.657429] FS:  00007f560c2e3740(0000) GS:ffffa0a1f7940000(0000)=20
-knlGS:0000000000000000
-[79162.658137] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[79162.658826] CR2: 0000000000000000 CR3: 00000001e242a005 CR4:=20
-0000000000360ee0
-[79162.659515] DR0: 0000000000000000 DR1: 0000000000000000 DR2:=20
-0000000000000000
-[79162.660196] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:=20
-0000000000000400
-
-
-I=E2=80=99ve put my code on GitHub, maybe it=E2=80=99s just something stupi=
-d=E2=80=A6
-
-https://github.com/chaudron/bpf2bpf-tracing
-
-
-Cheers,
-
-Eelco
-
-
-PS: If I run the latest pahole (v1.15) on the .o files, I get the=20
-following libbpf error: =E2=80=9Clibbpf: Cannot find bpf_func_info for main=
-=20
-program sec fexit/xdp_prog_simple. Ignore all bpf_func_info.=E2=80=9D
+jirka
 
