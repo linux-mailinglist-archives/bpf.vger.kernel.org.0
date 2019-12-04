@@ -2,135 +2,228 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D44DB1129AB
-	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2019 11:58:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E3B9112C75
+	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2019 14:20:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727268AbfLDK6E (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Dec 2019 05:58:04 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:35695 "EHLO
+        id S1727445AbfLDNUH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Dec 2019 08:20:07 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:30460 "EHLO
         us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727473AbfLDK6E (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Dec 2019 05:58:04 -0500
+        with ESMTP id S1727714AbfLDNUH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Dec 2019 08:20:07 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1575457084;
+        s=mimecast20190719; t=1575465605;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=3gDaTecph8Rh/JPKwYat9tHBvAWnUrZz+amifETT1mc=;
-        b=cJw+y6XU5cKBMInkbvKiZAJpqJaPo7lfkSivxbjm+oe6JleUXO0FIYBQ2YngADgQbwXlDj
-        /kfcUKlJzP4nHVDXV31DO41cAKcR5qMBT4SNwAK4ZfqX/D1oIVo+vlos7pTiJop2meL60S
-        jZs9A+vPVwS1nJ5cOwCmKr85J7ykFPU=
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
- [209.85.208.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-171-RPuCmJPaNJSniQ6JHPKAYw-1; Wed, 04 Dec 2019 05:58:02 -0500
-Received: by mail-lj1-f198.google.com with SMTP id l2so770763lja.18
-        for <bpf@vger.kernel.org>; Wed, 04 Dec 2019 02:58:02 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=KcON+ZnXbOaneQXDnO49ePrfIssRevwFNRCOp04UDIY=;
-        b=tqXNtCKlVcOKc3EeduOL6KT87dCkkPGkBxusrR4KNFaiaqOR73/88smZXkCPd0hSzH
-         4Bl56c74VJx3dNBhcpjd/YdbhFST09eqOcS0EINZiTe6Kn1ty6yZ241tvmgLs6bHn1E+
-         I9v4G6jVUVvaHAGnV+tNsDGg+ORedJX+Lkl/aUtIA1DBav5Gulb0MGSFcfTm4R0dCZy5
-         jRv8d9s1w1fbYLkmP5YvfztQ2Qh39pSQLdflz6bg69V03on3FBYOpbQVqh2QOsO+SDSm
-         TzDS9nRSVkrKQ/rf5KH6Z7xfvKC/+ovnBpt2iDcUBv25Mf9RhztJXLopgDZm6DeiRwPr
-         tcBQ==
-X-Gm-Message-State: APjAAAXXgvAEIyx76h33g+2THIZuqWDxLmuC/uBNC6mCGdR0fOZXyXbc
-        ZpRLTYOEbELGI78QSk89ZvS2GrL5iKFL46Hh3mckF9DTJs+wVyP3kDg4EIuZL5iYzp8NA3YJTWw
-        +J5LJYsIsJNIf
-X-Received: by 2002:a19:3f16:: with SMTP id m22mr1657987lfa.116.1575457081271;
-        Wed, 04 Dec 2019 02:58:01 -0800 (PST)
-X-Google-Smtp-Source: APXvYqyHZ8fnHzSVuQR8PFFMiyJUuqZkRB6SDCXCj2xWgrNiCr7mlTw0t1+qB55Wz0CH2MG5OdhDnQ==
-X-Received: by 2002:a19:3f16:: with SMTP id m22mr1657976lfa.116.1575457081085;
-        Wed, 04 Dec 2019 02:58:01 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id c12sm2938420ljk.77.2019.12.04.02.58.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Dec 2019 02:58:00 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 5BD7118193A; Wed,  4 Dec 2019 11:57:58 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Quentin Monnet <quentin.monnet@netronome.com>
-Subject: Re: [PATCHv4 0/6] perf/bpftool: Allow to link libbpf dynamically
-In-Reply-To: <CAADnVQK-arrrNrgtu48_f--WCwR5ki2KGaX=mN2qmW_AcRyb=w@mail.gmail.com>
-References: <20191202131847.30837-1-jolsa@kernel.org> <CAEf4BzY_D9JHjuU6K=ciS70NSy2UvSm_uf1NfN_tmFz1445Jiw@mail.gmail.com> <87wobepgy0.fsf@toke.dk> <CAADnVQK-arrrNrgtu48_f--WCwR5ki2KGaX=mN2qmW_AcRyb=w@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 04 Dec 2019 11:57:58 +0100
-Message-ID: <877e3cpdc9.fsf@toke.dk>
+        bh=SbdpxXWhTQCNP2+MkeZ0xHiQ8dpggKqakmvl3gLRDHc=;
+        b=Jq6WRSaXXJ2TVa7wLQyUktW4Lv2qjpl6s5NrQgEkfhbzpwjeXoSvesmCwNOwN9APkqeb+h
+        4eTN76U5to/dErvWy1MZUUBNVMF7Hsyu3vAyVM2BrfN7PWTIwmAdV/DGlbz12RH3l49uOP
+        loD0Lndt/S2bZvDwr70B8GKkiWt3tMU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-342-297X3sNVNpuRMe0MXdoIoQ-1; Wed, 04 Dec 2019 08:20:02 -0500
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 738E81083E87;
+        Wed,  4 Dec 2019 13:20:01 +0000 (UTC)
+Received: from [10.36.118.152] (unknown [10.36.118.152])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 79FEC5C28F;
+        Wed,  4 Dec 2019 13:20:00 +0000 (UTC)
+From:   "Eelco Chaudron" <echaudro@redhat.com>
+To:     "Yonghong Song" <yhs@fb.com>,
+        "Alexei Starovoitov" <alexei.starovoitov@gmail.com>
+Cc:     Xdp <xdp-newbies@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: Trying the bpf trace a bpf xdp program
+Date:   Wed, 04 Dec 2019 14:19:58 +0100
+Message-ID: <B7E0062E-37ED-46E6-AE64-EE3E2A0294EA@redhat.com>
+In-Reply-To: <aa59532b-34a9-7887-f550-ef2859f0c9f1@fb.com>
+References: <E53E0693-1C3A-4B47-B205-DC8E5DAF3619@redhat.com>
+ <CAADnVQKkLtG-QCZwxx-Bpz8-goh-_mSTtUSzpb_oTv9a-qLizg@mail.gmail.com>
+ <3AC9D2B7-9D2F-4286-80A2-1721B51B62CF@redhat.com>
+ <CAADnVQJKSnoMVpQ3F86zBhFyo8WQ0vi65Z4QDtopLRrpK4yB8Q@mail.gmail.com>
+ <4BBF99E4-9554-44F7-8505-D4B8416554C4@redhat.com>
+ <d588c894-a4e0-8b99-72a9-4429b27091df@fb.com>
+ <056E9F5E-4FDD-4636-A43A-EC98A06E84D3@redhat.com>
+ <aa59532b-34a9-7887-f550-ef2859f0c9f1@fb.com>
 MIME-Version: 1.0
-X-MC-Unique: RPuCmJPaNJSniQ6JHPKAYw-1
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+X-MC-Unique: 297X3sNVNpuRMe0MXdoIoQ-1
 X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
 
-> On Mon, Dec 2, 2019 at 1:15 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@red=
-hat.com> wrote:
->>
->> Ah, that is my mistake: I was getting dynamic libbpf symbols with this
->> approach, but that was because I had the version of libbpf.so in my
->> $LIBDIR that had the patch to expose the netlink APIs as versioned
->> symbols; so it was just pulling in everything from the shared library.
->>
->> So what I was going for was exactly what you described above; but it
->> seems that doesn't actually work. Too bad, and sorry for wasting your
->> time on this :/
+
+On 2 Dec 2019, at 17:48, Yonghong Song wrote:
+
+> On 12/2/19 8:34 AM, Eelco Chaudron wrote:
+>> On 29 Nov 2019, at 17:52, Yonghong Song wrote:
+
+<SNIP>
 >
-> bpftool is currently tightly coupled with libbpf and very likely
-> in the future the dependency will be even tighter.
-> In that sense bpftool is an extension of libbpf and libbpf is an extensio=
-n
-> of bpftool.
-> Andrii is working on set of patches to generate user space .c code
-> from bpf program.
-> bpftool will be generating the code that is specific for the version
-> bpftool and for
-> the version of libbpf. There will be compatibility layers as usual.
-> But in general the situation where a bug in libbpf is so criticial
-> that bpftool needs to repackaged is imo less likely than a bug in
-> bpftool that will require re-packaging of libbpf.
-> bpftool is quite special. It's not a typical user of libbpf.
-> The other way around is more correct. libbpf is a user of the code
-> that bpftool generates and both depend on each other.
-> perf on the other side is what typical user space app that uses
-> libbpf will look like.
-> I think keeping bpftool in the kernel while packaging libbpf
-> out of github was an oversight.
-> I think we need to mirror bpftool into github/libbpf as well
-> and make sure they stay together. The version of libbpf =3D=3D version of=
- bpftool.
-> Both should come from the same package and so on.
-> May be they can be two different packages but
-> upgrading one should trigger upgrade of another and vice versa.
-> I think one package would be easier though.
-> Thoughts?
+> You need to build the kernel with
+>    CONFIG_DEBUG_INFO_BTF=3Dy
+> Make sure on the build machine you have recent pahole version >=3D 1.13.
 
-Yup, making bpftool explicitly the "libbpf command line interface" makes
-sense and would help clarify the relationship between the two. As Jiri
-said, we are already moving in that direction packaging-wise...
+With the latest LLVM and CONFIG_DEBUG_INFO_BTF=3Dy the self-test for=20
+bpf2bpf is passing!
 
--Toke
+
+However I still have problems with my code, which is getting to the next=20
+step, but no my program is killed when trying to load the eBPG fexit=20
+code. If I replace my generated eBPF programs for the once generated by=20
+the self-test (test_pkt_access.o/fexit_bpf2bpf.o) it works fine.
+
+
+I decided to build my objects just like the example programs (so have a=20
+hacked build.sh file) but I get the same results. I.e. being killed by=20
+the kernel:
+
+bpf(BPF_BTF_LOAD,=20
+{btf=3D"\237\353\1\0\30\0\0\0\0\0\0\0\330\0\0\0\330\0\0\0\244\0\0\0\0\0\0\0=
+\0\0\0\2"...,=20
+btf_log_buf=3DNULL, btf_size=3D404, btf_log_size=3D0, btf_log_level=3D0}, 1=
+20) =3D=20
+6
+bpf(BPF_OBJ_GET_INFO_BY_FD, {info=3D{bpf_fd=3D3, info_len=3D208,=20
+info=3D0x7ffdfbdac3b0}}, 120) =3D 0
+bpf(BPF_OBJ_GET_INFO_BY_FD, {info=3D{bpf_fd=3D3, info_len=3D208,=20
+info=3D0xafb600}}, 120) =3D 0
+bpf(BPF_BTF_GET_FD_BY_ID, {btf_id=3D90}, 120) =3D 5
+bpf(BPF_OBJ_GET_INFO_BY_FD, {info=3D{bpf_fd=3D5, info_len=3D16,=20
+info=3D0x7ffdfbdac4b0}}, 120) =3D 0
+- Opened object file: 0xafb440
+bpf(BPF_PROG_LOAD, {prog_type=3D0x1a /* BPF_PROG_TYPE_??? */, insn_cnt=3D2,=
+=20
+insns=3D0xafbaa0, license=3D"GPL", log_level=3D7, log_size=3D16777215,=20
+log_buf=3D"\237\353\1", kern_version=3DKERNEL_VERSION(0, 0, 0),=20
+prog_flags=3D0, prog_name=3D"test_main", prog_ifindex=3D0,=20
+expected_attach_type=3D0x19 /* BPF_??? */, prog_btf_fd=3D6,=20
+func_info_rec_size=3D8, func_info=3D0xafb9f0, func_info_cnt=3D1,=20
+line_info_rec_size=3D16, line_info=3D0xafba10, line_info_cnt=3D1, ...}, 120
+) =3D ?
++++ killed by SIGKILL +++
+Killed
+
+
+[79162.619208] BUG: kernel NULL pointer dereference, address:=20
+0000000000000000
+[79162.619906] #PF: supervisor read access in kernel mode
+[79162.620582] #PF: error_code(0x0000) - not-present page
+[79162.621255] PGD 80000001e2409067 P4D 80000001e2409067 PUD 22eba9067=20
+PMD 0
+[79162.621933] Oops: 0000 [#12] SMP PTI
+[79162.622599] CPU: 5 PID: 3191 Comm: xdp_sample_fent Tainted: G      D =20
+          5.4.0+ #3
+[79162.623274] Hardware name: Red Hat KVM, BIOS=20
+1.11.1-3.module+el8+2529+a9686a4d 04/01/2014
+[79162.623962] RIP: 0010:bpf_check+0x1648/0x250b
+[79162.624650] Code: 41 89 c5 0f 88 d1 0a 00 00 41 f6 47 02 01 0f 84 17=20
+0b 00 00 41 83 7f 04 1a 0f 84 0c 0c 00 00 49 8b 47 20 48 63 db 48 8b 40=20
+68 <48> 8b 04 d8 48 8b 40 30 49 89 42 50 49 8b 46 20 4c 89 cf 4c 89 95
+[79162.626088] RSP: 0018:ffffb5f6c07c3c88 EFLAGS: 00010293
+[79162.626822] RAX: 0000000000000000 RBX: 0000000000000000 RCX:=20
+ffffb5f6c07c3c40
+[79162.627560] RDX: ffffa0a1e6e01818 RSI: 00000000fffffffa RDI:=20
+0000000000000000
+[79162.628304] RBP: ffffb5f6c07c3d70 R08: 000000000000000e R09:=20
+ffffa0a1f5c9dc90
+[79162.629053] R10: ffffa0a1f5c9dc80 R11: ffffa0a1e6e0199a R12:=20
+ffffa0a1eac48000
+[79162.629806] R13: 0000000000000000 R14: ffffb5f6c043e000 R15:=20
+ffffb5f6c033f000
+[79162.630562] FS:  00007f560c2e3740(0000) GS:ffffa0a1f7940000(0000)=20
+knlGS:0000000000000000
+[79162.631324] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[79162.632072] CR2: 0000000000000000 CR3: 00000001e242a005 CR4:=20
+0000000000360ee0
+[79162.632813] DR0: 0000000000000000 DR1: 0000000000000000 DR2:=20
+0000000000000000
+[79162.633539] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:=20
+0000000000000400
+[79162.634255] Call Trace:
+[79162.634974]  ? _cond_resched+0x15/0x30
+[79162.635686]  ? kmem_cache_alloc_trace+0x162/0x220
+[79162.636398]  ? selinux_bpf_prog_alloc+0x1f/0x60
+[79162.637111]  bpf_prog_load+0x3de/0x690
+[79162.637809]  __do_sys_bpf+0x105/0x1740
+[79162.638488]  do_syscall_64+0x5b/0x180
+[79162.639147]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[79162.639792] RIP: 0033:0x7f560c3fe1ad
+[79162.640415] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa=20
+48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f=20
+05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d ab 5c 0c 00 f7 d8 64 89 01 48
+[79162.641703] RSP: 002b:00007ffdfbdac318 EFLAGS: 00000202 ORIG_RAX:=20
+0000000000000141
+[79162.642363] RAX: ffffffffffffffda RBX: 0000000000afb440 RCX:=20
+00007f560c3fe1ad
+[79162.643026] RDX: 0000000000000078 RSI: 00007ffdfbdac390 RDI:=20
+0000000000000005
+[79162.643676] RBP: 00007ffdfbdac330 R08: 0000000000afba70 R09:=20
+00007ffdfbdac390
+[79162.644310] R10: 0000000000afcf10 R11: 0000000000000202 R12:=20
+0000000000402690
+[79162.644935] R13: 00007ffdfbdac790 R14: 0000000000000000 R15:=20
+0000000000000000
+[79162.645559] Modules linked in: ip6t_REJECT nf_reject_ipv6=20
+ip6t_rpfilter ipt_REJECT nf_reject_ipv4 xt_conntrack ebtable_nat=20
+ebtable_broute ip6table_nat ip6table_mangle ip6table_raw=20
+ip6table_security iptable_nat nf_nat iptable_mangle iptable_raw=20
+iptable_security nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 ip_set=20
+nfnetlink ebtable_filter ebtables ip6table_filter ip6_tables=20
+iptable_filter intel_rapl_msr intel_rapl_common kvm_intel kvm irqbypass=20
+crct10dif_pclmul crc32_pclmul ghash_clmulni_intel cirrus drm_kms_helper=20
+virtio_net net_failover joydev drm failover i2c_piix4 virtio_balloon=20
+pcspkr ip_tables xfs libcrc32c crc32c_intel ata_generic floppy=20
+virtio_scsi serio_raw pata_acpi qemu_fw_cfg
+[79162.649591] CR2: 0000000000000000
+[79162.650272] ---[ end trace 5119c5364c1e9c83 ]---
+[79162.650957] RIP: 0010:bpf_check+0x1648/0x250b
+[79162.651646] Code: 41 89 c5 0f 88 d1 0a 00 00 41 f6 47 02 01 0f 84 17=20
+0b 00 00 41 83 7f 04 1a 0f 84 0c 0c 00 00 49 8b 47 20 48 63 db 48 8b 40=20
+68 <48> 8b 04 d8 48 8b 40 30 49 89 42 50 49 8b 46 20 4c 89 cf 4c 89 95
+[79162.653081] RSP: 0018:ffffb5f6c072bc88 EFLAGS: 00010293
+[79162.653807] RAX: 0000000000000000 RBX: 0000000000000000 RCX:=20
+ffffb5f6c072bc40
+[79162.654536] RDX: ffffa0a1e76b1418 RSI: 00000000fffffffa RDI:=20
+0000000000000000
+[79162.655270] RBP: ffffb5f6c072bd70 R08: 000000000000000e R09:=20
+ffffa0a1e4d3fa90
+[79162.655996] R10: ffffa0a1e4d3fa80 R11: ffffa0a1e76b159a R12:=20
+ffffa0a1eac7c000
+[79162.656715] R13: 0000000000000000 R14: ffffb5f6c01e3000 R15:=20
+ffffb5f6c015f000
+[79162.657429] FS:  00007f560c2e3740(0000) GS:ffffa0a1f7940000(0000)=20
+knlGS:0000000000000000
+[79162.658137] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[79162.658826] CR2: 0000000000000000 CR3: 00000001e242a005 CR4:=20
+0000000000360ee0
+[79162.659515] DR0: 0000000000000000 DR1: 0000000000000000 DR2:=20
+0000000000000000
+[79162.660196] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:=20
+0000000000000400
+
+
+I=E2=80=99ve put my code on GitHub, maybe it=E2=80=99s just something stupi=
+d=E2=80=A6
+
+https://github.com/chaudron/bpf2bpf-tracing
+
+
+Cheers,
+
+Eelco
+
+
+PS: If I run the latest pahole (v1.15) on the .o files, I get the=20
+following libbpf error: =E2=80=9Clibbpf: Cannot find bpf_func_info for main=
+=20
+program sec fexit/xdp_prog_simple. Ignore all bpf_func_info.=E2=80=9D
 
