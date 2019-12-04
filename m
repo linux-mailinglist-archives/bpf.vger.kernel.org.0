@@ -2,41 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D37FE112642
-	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2019 10:01:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D44DB1129AB
+	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2019 11:58:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727158AbfLDJBp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Dec 2019 04:01:45 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:56229 "EHLO
+        id S1727268AbfLDK6E (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Dec 2019 05:58:04 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:35695 "EHLO
         us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726166AbfLDJBo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Dec 2019 04:01:44 -0500
+        with ESMTP id S1727473AbfLDK6E (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Dec 2019 05:58:04 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1575450104;
+        s=mimecast20190719; t=1575457084;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=RN/l+ytAzaNhoJcK3/jpshrBdeMaQLMrqTK8LFIbtHY=;
-        b=eXjNzFA5swYkW2iXOK74t3sAObY5Ht6t9VToNEw/gs+zq0PHwa/bhkUUf3ZCgxNdOP8pK6
-        1lCs7dY9oHOceXbBt27NDQSKbwphf8E0pet8Zs1DzdzVDH/xMl4BxeW292juTcIVWoO8SA
-        6/XuGOFCRtI3RvOe5VCbTH5T/DDqqWQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-187-T7xi4hn_Nv2nC2A-iPYaew-1; Wed, 04 Dec 2019 04:01:43 -0500
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A4774107ACC7;
-        Wed,  4 Dec 2019 09:01:39 +0000 (UTC)
-Received: from krava (unknown [10.43.17.48])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id A81031D1;
-        Wed,  4 Dec 2019 09:01:30 +0000 (UTC)
-Date:   Wed, 4 Dec 2019 10:01:28 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
+        bh=3gDaTecph8Rh/JPKwYat9tHBvAWnUrZz+amifETT1mc=;
+        b=cJw+y6XU5cKBMInkbvKiZAJpqJaPo7lfkSivxbjm+oe6JleUXO0FIYBQ2YngADgQbwXlDj
+        /kfcUKlJzP4nHVDXV31DO41cAKcR5qMBT4SNwAK4ZfqX/D1oIVo+vlos7pTiJop2meL60S
+        jZs9A+vPVwS1nJ5cOwCmKr85J7ykFPU=
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
+ [209.85.208.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-171-RPuCmJPaNJSniQ6JHPKAYw-1; Wed, 04 Dec 2019 05:58:02 -0500
+Received: by mail-lj1-f198.google.com with SMTP id l2so770763lja.18
+        for <bpf@vger.kernel.org>; Wed, 04 Dec 2019 02:58:02 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=KcON+ZnXbOaneQXDnO49ePrfIssRevwFNRCOp04UDIY=;
+        b=tqXNtCKlVcOKc3EeduOL6KT87dCkkPGkBxusrR4KNFaiaqOR73/88smZXkCPd0hSzH
+         4Bl56c74VJx3dNBhcpjd/YdbhFST09eqOcS0EINZiTe6Kn1ty6yZ241tvmgLs6bHn1E+
+         I9v4G6jVUVvaHAGnV+tNsDGg+ORedJX+Lkl/aUtIA1DBav5Gulb0MGSFcfTm4R0dCZy5
+         jRv8d9s1w1fbYLkmP5YvfztQ2Qh39pSQLdflz6bg69V03on3FBYOpbQVqh2QOsO+SDSm
+         TzDS9nRSVkrKQ/rf5KH6Z7xfvKC/+ovnBpt2iDcUBv25Mf9RhztJXLopgDZm6DeiRwPr
+         tcBQ==
+X-Gm-Message-State: APjAAAXXgvAEIyx76h33g+2THIZuqWDxLmuC/uBNC6mCGdR0fOZXyXbc
+        ZpRLTYOEbELGI78QSk89ZvS2GrL5iKFL46Hh3mckF9DTJs+wVyP3kDg4EIuZL5iYzp8NA3YJTWw
+        +J5LJYsIsJNIf
+X-Received: by 2002:a19:3f16:: with SMTP id m22mr1657987lfa.116.1575457081271;
+        Wed, 04 Dec 2019 02:58:01 -0800 (PST)
+X-Google-Smtp-Source: APXvYqyHZ8fnHzSVuQR8PFFMiyJUuqZkRB6SDCXCj2xWgrNiCr7mlTw0t1+qB55Wz0CH2MG5OdhDnQ==
+X-Received: by 2002:a19:3f16:: with SMTP id m22mr1657976lfa.116.1575457081085;
+        Wed, 04 Dec 2019 02:58:01 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id c12sm2938420ljk.77.2019.12.04.02.58.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Dec 2019 02:58:00 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 5BD7118193A; Wed,  4 Dec 2019 11:57:58 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         Jiri Olsa <jolsa@kernel.org>,
         Arnaldo Carvalho de Melo <acme@kernel.org>,
         lkml <linux-kernel@vger.kernel.org>,
@@ -53,37 +70,35 @@ Cc:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
         Andrii Nakryiko <andriin@fb.com>,
         Quentin Monnet <quentin.monnet@netronome.com>
 Subject: Re: [PATCHv4 0/6] perf/bpftool: Allow to link libbpf dynamically
-Message-ID: <20191204090128.GA20746@krava>
-References: <20191202131847.30837-1-jolsa@kernel.org>
- <CAEf4BzY_D9JHjuU6K=ciS70NSy2UvSm_uf1NfN_tmFz1445Jiw@mail.gmail.com>
- <87wobepgy0.fsf@toke.dk>
- <CAADnVQK-arrrNrgtu48_f--WCwR5ki2KGaX=mN2qmW_AcRyb=w@mail.gmail.com>
-MIME-Version: 1.0
 In-Reply-To: <CAADnVQK-arrrNrgtu48_f--WCwR5ki2KGaX=mN2qmW_AcRyb=w@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
-X-MC-Unique: T7xi4hn_Nv2nC2A-iPYaew-1
+References: <20191202131847.30837-1-jolsa@kernel.org> <CAEf4BzY_D9JHjuU6K=ciS70NSy2UvSm_uf1NfN_tmFz1445Jiw@mail.gmail.com> <87wobepgy0.fsf@toke.dk> <CAADnVQK-arrrNrgtu48_f--WCwR5ki2KGaX=mN2qmW_AcRyb=w@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 04 Dec 2019 11:57:58 +0100
+Message-ID: <877e3cpdc9.fsf@toke.dk>
+MIME-Version: 1.0
+X-MC-Unique: RPuCmJPaNJSniQ6JHPKAYw-1
 X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 03, 2019 at 09:52:11PM -0800, Alexei Starovoitov wrote:
-> On Mon, Dec 2, 2019 at 1:15 PM Toke H=F8iland-J=F8rgensen <toke@redhat.co=
-m> wrote:
-> >
-> > Ah, that is my mistake: I was getting dynamic libbpf symbols with this
-> > approach, but that was because I had the version of libbpf.so in my
-> > $LIBDIR that had the patch to expose the netlink APIs as versioned
-> > symbols; so it was just pulling in everything from the shared library.
-> >
-> > So what I was going for was exactly what you described above; but it
-> > seems that doesn't actually work. Too bad, and sorry for wasting your
-> > time on this :/
->=20
+Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+
+> On Mon, Dec 2, 2019 at 1:15 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@red=
+hat.com> wrote:
+>>
+>> Ah, that is my mistake: I was getting dynamic libbpf symbols with this
+>> approach, but that was because I had the version of libbpf.so in my
+>> $LIBDIR that had the patch to expose the netlink APIs as versioned
+>> symbols; so it was just pulling in everything from the shared library.
+>>
+>> So what I was going for was exactly what you described above; but it
+>> seems that doesn't actually work. Too bad, and sorry for wasting your
+>> time on this :/
+>
 > bpftool is currently tightly coupled with libbpf and very likely
 > in the future the dependency will be even tighter.
 > In that sense bpftool is an extension of libbpf and libbpf is an extensio=
@@ -113,10 +128,9 @@ n
 > I think one package would be easier though.
 > Thoughts?
 
-great, makes sense.. Toke already mentioned we might need to move
-bpftool to libbpf package to solve our issues, now when you guys
-have already plans for that, it works for us ;-)
+Yup, making bpftool explicitly the "libbpf command line interface" makes
+sense and would help clarify the relationship between the two. As Jiri
+said, we are already moving in that direction packaging-wise...
 
-thanks for sharing the plan,
-jirka
+-Toke
 
