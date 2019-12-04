@@ -2,112 +2,159 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6559B1122A3
-	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2019 06:52:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A255112318
+	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2019 08:00:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726287AbfLDFwZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Dec 2019 00:52:25 -0500
-Received: from mail-lf1-f67.google.com ([209.85.167.67]:38466 "EHLO
-        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725776AbfLDFwZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Dec 2019 00:52:25 -0500
-Received: by mail-lf1-f67.google.com with SMTP id r14so5074232lfm.5;
-        Tue, 03 Dec 2019 21:52:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=nzbDYaqYcFJ64Z60Mv6NcLPPMn+RWAQ/vTfwfbpf8UM=;
-        b=RanmOx1fbrh/niQDf8eEp6XpWFsE8t6H2dRZhxA+ByP/6AKoTCz+pAgeswWb14vmW9
-         XUBinc2AdNVUAN5h0YnDkUv1UFWndLC99RYa1ZKCRbSwaDsIQIti1KbV61ZLi1OsTHEb
-         AgmMXG//SUcCqzw6fBbSk7ovUPY7M8TQu5HJb7+KlFRV1W+Xrw+P02UeqB4SUwFhwA2x
-         XsB4TKlaXJGZ5PmRe5t5FkSVRKHGOE4w6YXe8FINPFJB4q6J8PNSa5px1uYIduZdcthX
-         0QkABRoz6wl/cnKJ1OTClpQrMKkYYmpB5GTvitBR5gtgc2JMV4Hq1up4ZhXj2qd1ERbh
-         +d8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=nzbDYaqYcFJ64Z60Mv6NcLPPMn+RWAQ/vTfwfbpf8UM=;
-        b=iEKN+ThH/WGnbtz2zxR0ZtnnAafQowU7dnDEaEz/H2grkvIWOTqaAjhJzAUgbuPm8T
-         U4sGFYZeXAbVTIVtq5+w2iS45QsEOeKpSB7uBHnM08uP3+TBS2LKyKdcAfVpS4yqw6cN
-         ZtrRDDHUi05ScL8KQcG6G5+v6AQS4hfYFamCNFWmbB+mqOjsC9iuf/Q2yQRo0Ez9fxuz
-         xOxS0hRp29vpFJ16zH5RCZQq4hBqYmw2FUKInUAtjlkfGFiVhFoRWYKozZCY71pmpi1N
-         SAPNpOy29dsFHfE1U21TPGFqQzAZ113SzP9Rq5Wch3RnPHXlQbGpYLv/iYDVwBp3hVum
-         GVkg==
-X-Gm-Message-State: APjAAAX85Jva4ROo2ygkYPtWQEPkPVBk2PAcpVBjAYrs7W99KHHoTHIf
-        HZBNluHstUXk/pQ6noHtQPzbQgwUMVov0HiGzy0=
-X-Google-Smtp-Source: APXvYqxUV1VzjISq9pBDyL917A+0YWgy6WfDZ55v0BKyRopOIgWIDEKFAyvUryo082rae4zUOK78S7pACe4CB1qsQ9k=
-X-Received: by 2002:ac2:47ec:: with SMTP id b12mr913547lfp.162.1575438742853;
- Tue, 03 Dec 2019 21:52:22 -0800 (PST)
+        id S1726508AbfLDHAV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Dec 2019 02:00:21 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:10704 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725958AbfLDHAV (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 4 Dec 2019 02:00:21 -0500
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id xB46xQkl031454
+        for <bpf@vger.kernel.org>; Tue, 3 Dec 2019 23:00:19 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=d+6s1IYBvtZskDjVq/W946pQyMYRnrEmtQ1DNdqdcOY=;
+ b=TeMGMsFdZil9w+9zTK4BUF0MLbt/Dn2NeXRpKTL9sDkt4Yjmjok1IomLKRTPCp/MZhsC
+ 774iyqN3AzVOy1BTkgahrIF8LQgcmOwg5/goE749eWOjw7iU+8oBGANCT7uzHCYaodsx
+ avGX+cW1slK919zP8xQBnQ2tbLkRZE4kMN0= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0089730.ppops.net with ESMTP id 2wp7q4g2m0-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 03 Dec 2019 23:00:19 -0800
+Received: from 2401:db00:2050:5102:face:0:3b:0 (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 3 Dec 2019 23:00:18 -0800
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id F3A732EC1853; Tue,  3 Dec 2019 23:00:17 -0800 (PST)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [RFC PATCH bpf-next 00/16] Add code-generated BPF object skeleton support
+Date:   Tue, 3 Dec 2019 22:59:59 -0800
+Message-ID: <20191204070015.3523523-1-andriin@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-References: <20191202131847.30837-1-jolsa@kernel.org> <CAEf4BzY_D9JHjuU6K=ciS70NSy2UvSm_uf1NfN_tmFz1445Jiw@mail.gmail.com>
- <87wobepgy0.fsf@toke.dk>
-In-Reply-To: <87wobepgy0.fsf@toke.dk>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 3 Dec 2019 21:52:11 -0800
-Message-ID: <CAADnVQK-arrrNrgtu48_f--WCwR5ki2KGaX=mN2qmW_AcRyb=w@mail.gmail.com>
-Subject: Re: [PATCHv4 0/6] perf/bpftool: Allow to link libbpf dynamically
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Quentin Monnet <quentin.monnet@netronome.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
+ definitions=2019-12-04_01:2019-12-04,2019-12-03 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=8
+ impostorscore=0 lowpriorityscore=0 malwarescore=0 mlxlogscore=999
+ bulkscore=0 mlxscore=0 adultscore=0 phishscore=0 clxscore=1015 spamscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-1912040051
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Dec 2, 2019 at 1:15 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redha=
-t.com> wrote:
->
-> Ah, that is my mistake: I was getting dynamic libbpf symbols with this
-> approach, but that was because I had the version of libbpf.so in my
-> $LIBDIR that had the patch to expose the netlink APIs as versioned
-> symbols; so it was just pulling in everything from the shared library.
->
-> So what I was going for was exactly what you described above; but it
-> seems that doesn't actually work. Too bad, and sorry for wasting your
-> time on this :/
+This patch set introduces an alternative and complimentary to existing libbpf
+API interface for working with BPF objects, maps, programs, and global data
+from userspace side. This approach is relying on code generation. bpftool
+produces a struct (a.k.a. skeleton) tailored and specific to provided BPF
+object file. It includes hard-coded fields and data structures for every map,
+program, link, and global data present.
 
-bpftool is currently tightly coupled with libbpf and very likely
-in the future the dependency will be even tighter.
-In that sense bpftool is an extension of libbpf and libbpf is an extension
-of bpftool.
-Andrii is working on set of patches to generate user space .c code
-from bpf program.
-bpftool will be generating the code that is specific for the version
-bpftool and for
-the version of libbpf. There will be compatibility layers as usual.
-But in general the situation where a bug in libbpf is so criticial
-that bpftool needs to repackaged is imo less likely than a bug in
-bpftool that will require re-packaging of libbpf.
-bpftool is quite special. It's not a typical user of libbpf.
-The other way around is more correct. libbpf is a user of the code
-that bpftool generates and both depend on each other.
-perf on the other side is what typical user space app that uses
-libbpf will look like.
-I think keeping bpftool in the kernel while packaging libbpf
-out of github was an oversight.
-I think we need to mirror bpftool into github/libbpf as well
-and make sure they stay together. The version of libbpf =3D=3D version of b=
-pftool.
-Both should come from the same package and so on.
-May be they can be two different packages but
-upgrading one should trigger upgrade of another and vice versa.
-I think one package would be easier though.
-Thoughts?
+Altogether this approach significantly reduces amount of userspace boilerplate
+code required to open, load, attach, and work with BPF objects. It improves
+attach/detach story, by providing pre-allocated space for bpf_links, and
+ensuring they are properly detached on shutdown. It allows to do away with by
+name/title lookups of maps and programs, because libbpf's skeleton API, in
+conjunction with generated code from bpftool, is filling in hard-coded fields
+with actual pointers to corresponding struct bpf_map/bpf_program/bpf_link.
+
+Also, thanks to BPF array mmap() support, working with global data (variables)
+from userspace is now as natural as it is from BPF side: each variable is just
+a struct field inside skeleton struct. Furthermore, this allows to have
+a natural way for userspace to pre-initialize global data (including
+previously impossible to initialize .rodata) by just assigning values to the
+same per-variable fields. Libbpf will carefully take into account this
+initialization image, will use it to pre-populate BPF maps at creation time,
+and will re-mmap() BPF map's contents at exactly the same userspace memory
+address such that it can continue working with all the same pointers without
+any interruptions. If kernel doesn't support mmap(), global data will still be
+successfully initialized, but after map creation global data structures inside
+skeleton will be NULL-ed out. This allows userspace application to gracefully
+handle lack of mmap() support, if necessary.
+
+As a demonstration of BPF CO-RE, libbpf tracing APIs, and skeleton approach
+working together, runqslower tool (originally BCC-based and distributed along
+with BCC) is added under samples directory. It's a complete tool with 100%
+feature parity with its BCC-based counterpart. But it doesn't require neither
+Python, nor Clang/LLVM runtime. It's pre-compiled and can be distributed to
+target machine in a compact binary form.
+
+A bunch of selftests are also converted to using skeletons, demonstrating
+significant simplification of userspace part of test and reduction in amount
+of code necessary.
+
+Andrii Nakryiko (16):
+  libbpf: don't require root for bpf_object__open()
+  libbpf: add generic bpf_program__attach()
+  libbpf: move non-public APIs from libbpf.h to libbpf_internal.h
+  libbpf: add BPF_EMBED_OBJ macro for embedding BPF .o files
+  libbpf: expose field/var declaration emitting API internally
+  libbpf: expose BPF program's function name
+  libbpf: refactor global data map initialization
+  libbpf: postpone BTF ID finding for TRACING programs to load phase
+  libbpf: reduce log level of supported section names dump
+  libbpf: add experimental BPF object skeleton support
+  bpftool: add skeleton codegen command
+  libbpf/samples: add runqslower sample to libbpf samples
+  selftests/bpf: add BPF skeletons selftests and convert attach_probe.c
+  selftests/bpf: convert few more selftest to skeletons
+  selftests/bpf: add test validating data section to struct convertion
+    layout
+  bpftool: add `gen skeleton` BASH completions
+
+ tools/bpf/bpftool/bash-completion/bpftool     |  11 +
+ tools/bpf/bpftool/gen.c                       | 482 +++++++++++++++
+ tools/bpf/bpftool/main.c                      |   3 +-
+ tools/bpf/bpftool/main.h                      |   1 +
+ tools/bpf/bpftool/net.c                       |   1 +
+ tools/lib/bpf/btf_dump.c                      |  61 +-
+ tools/lib/bpf/libbpf.c                        | 583 ++++++++++++++----
+ tools/lib/bpf/libbpf.h                        |  63 +-
+ tools/lib/bpf/libbpf.map                      |   7 +
+ tools/lib/bpf/libbpf_internal.h               |  63 ++
+ tools/lib/bpf/samples/runqslower/.gitignore   |   2 +
+ tools/lib/bpf/samples/runqslower/Makefile     |  50 ++
+ .../bpf/samples/runqslower/runqslower.bpf.c   | 105 ++++
+ tools/lib/bpf/samples/runqslower/runqslower.c | 189 ++++++
+ tools/lib/bpf/samples/runqslower/runqslower.h |  13 +
+ tools/testing/selftests/bpf/.gitignore        |   2 +
+ tools/testing/selftests/bpf/Makefile          |  36 +-
+ .../selftests/bpf/prog_tests/attach_probe.c   | 154 +----
+ .../selftests/bpf/prog_tests/fentry_fexit.c   | 105 ++--
+ .../selftests/bpf/prog_tests/fentry_test.c    |  72 +--
+ tools/testing/selftests/bpf/prog_tests/mmap.c |  58 +-
+ .../selftests/bpf/prog_tests/probe_user.c     |   6 +-
+ .../selftests/bpf/prog_tests/rdonly_maps.c    |  11 +-
+ .../selftests/bpf/prog_tests/skeleton.c       |  47 ++
+ .../bpf/prog_tests/stacktrace_build_id.c      |  79 +--
+ .../bpf/prog_tests/stacktrace_build_id_nmi.c  |  84 +--
+ .../selftests/bpf/progs/test_attach_probe.c   |  34 +-
+ .../selftests/bpf/progs/test_skeleton.c       |  36 ++
+ 28 files changed, 1759 insertions(+), 599 deletions(-)
+ create mode 100644 tools/bpf/bpftool/gen.c
+ create mode 100644 tools/lib/bpf/samples/runqslower/.gitignore
+ create mode 100644 tools/lib/bpf/samples/runqslower/Makefile
+ create mode 100644 tools/lib/bpf/samples/runqslower/runqslower.bpf.c
+ create mode 100644 tools/lib/bpf/samples/runqslower/runqslower.c
+ create mode 100644 tools/lib/bpf/samples/runqslower/runqslower.h
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/skeleton.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_skeleton.c
+
+-- 
+2.17.1
+
