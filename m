@@ -2,192 +2,161 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 343E9113578
-	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2019 20:09:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31B3311365B
+	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2019 21:23:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728627AbfLDTJ6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Dec 2019 14:09:58 -0500
-Received: from mail-pj1-f74.google.com ([209.85.216.74]:55349 "EHLO
-        mail-pj1-f74.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728497AbfLDTJ6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Dec 2019 14:09:58 -0500
-Received: by mail-pj1-f74.google.com with SMTP id e7so378980pjt.22
-        for <bpf@vger.kernel.org>; Wed, 04 Dec 2019 11:09:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=7/u5MtE8GGNIkQpF6GaFbkK4Dp87PRCQ92z7Xcrt0r4=;
-        b=od3x94Imhn9QFPESnWqo3LZpm72cU0JXU8qOH3aVeJtVMRS+9HPtIaetT3aIzyfpuP
-         YCxVQI8wvyJCZ/qY810YxmgpO6bNAjoboyfxfB+Y4GeenjvXOM+BJhJ+wZlRjQsa16sp
-         aB2Y46ExUYl94wgj7e/RJhkiyMo68tAhoEIR1hYdLMiqaJ6SERuWHUrkOtE/fLYYMfMK
-         0r64psNmU9qn37TA/xA/oT3cVgvYaaJInvUII9XN49w6vD4ohs7ATWynBP7BaJQZL5Wu
-         heri2Z8n6vSOj10t7wm0HVUnEQk1zD6d7ednoy9KBqLY7SOsrpC1qBS3giHGgJHELVph
-         d8bA==
+        id S1727889AbfLDUXD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Dec 2019 15:23:03 -0500
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:45866 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727887AbfLDUXA (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 4 Dec 2019 15:23:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1575490978;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=B6501AeuCH09kqXayTpJahOroJlNswm8cYGVnammuGQ=;
+        b=cmEl7UJPtZNkOCFgzByuvji/lxGXZTLTxng4mY4MiVrRJBR2Fe2yjIhGXDEr7u3gmW6NaC
+        8PzCCpwJzMGwFcFj8sxEKsWoahfPGhsc+9C1zd5OxyvHrlX4RzVDHw5TQEAtKKAIqCZdFC
+        wT7YRqj4PZBpBamwxI4X0PKw7c1LYXo=
+Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
+ [209.85.167.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-430-BbfKBQ9_P9ms1YD_cqu6cg-1; Wed, 04 Dec 2019 15:22:57 -0500
+Received: by mail-lf1-f72.google.com with SMTP id q13so103041lfc.10
+        for <bpf@vger.kernel.org>; Wed, 04 Dec 2019 12:22:56 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=7/u5MtE8GGNIkQpF6GaFbkK4Dp87PRCQ92z7Xcrt0r4=;
-        b=gVt5vFbf5sJTUbESWrrvrcnfz5K6R3dM5kLWEeITLEla7fH4wMbCTwLvOK5NtR6V4j
-         7cSFyd8pJ4ga3u3l2H3XgfNbnG9Elv4boL28XoaqyeeIriU+1qHfbsUcSAx5gt/azy3H
-         oIuqbKLgLOc4vrzkGJiSZbSxjxT8GO9WIR1llxbGtzjXYdEqbv4a+n3zRkVUujxcHXhb
-         Jpc4mfXxpnGq9R34NEYtJnhu/G9ymopD1901HbmQl3aHPibMmuovMBqKasNkE2PrXrhm
-         6GJeM18+NqLq9UMCSrQYi/LbUfSx2ik9xCczKSY2/QfS7tfqiHsLYQaGRVOp/aw2CF6o
-         srcQ==
-X-Gm-Message-State: APjAAAVI7XMGsQYWxV5toHaWJB1jgSnKATEgCDMtx2SOUI83Wefjn2QC
-        oFZwqdKXZaSH1wTIOJmQbGayZyE=
-X-Google-Smtp-Source: APXvYqyM4s5RLWgvanS19DTCJlKXLvyiNbMBZkTY1/otUJXKxR104SfiOlCx8wrBqhUbDH/8LKjnyc0=
-X-Received: by 2002:a63:5104:: with SMTP id f4mr5134286pgb.192.1575486597837;
- Wed, 04 Dec 2019 11:09:57 -0800 (PST)
-Date:   Wed,  4 Dec 2019 11:09:55 -0800
-Message-Id: <20191204190955.170934-1-sdf@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.24.0.393.g34dc348eaf-goog
-Subject: [PATCH bpf] selftests/bpf: de-flake test_tcpbpf
-From:   Stanislav Fomichev <sdf@google.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
-        Stanislav Fomichev <sdf@google.com>,
-        Lawrence Brakmo <brakmo@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=bWGBRGftecl1TELE+NPWJSQpPs1ATjeROtIx8QlzOM4=;
+        b=KkP0iB4YvreqdTbf05uUCn+RVNyRPGqUhcLDM56aoU4X9wy5eJCNL3p/LiB/iagdVv
+         J/S7nocMbVbJnH9hSh+ZJg9AyUuCKI8fQ5NCNJ0nz1DATk/efFtLW3uNwy9dsZSVtcbN
+         xg0vDq7yKiHUrPdq6HUvcgK7Aqd6pT4EB7y2M7U850cW7Uv9THb6nr282XVZl4wi+3Wu
+         Q5XtlrcKunMsJUXsq3cnJPRLbwT6NtqtTB5AdCUDImFQgu7sKdfFeKASC3fUQQ0B8mMZ
+         2GPrqnVUd/GEdpXM5iiyBUd02pe/ta8eF7Qw36fhHolP7bX2gU3njKV/WVInsqynhsWq
+         PMIw==
+X-Gm-Message-State: APjAAAXjxcGrkJXm8F2npGGenp39POYnD8QspE07vevrTTxZ5v/lvatw
+        /4xwTV8WTNtbawaCpJdXAIZACyoY4ULgsNIQaPp1+3Aaq7QQGlEwKLBZqlwdyAgQIFqqkb7vsv+
+        TaICmtweXQHVJ
+X-Received: by 2002:ac2:4553:: with SMTP id j19mr3393450lfm.142.1575490975602;
+        Wed, 04 Dec 2019 12:22:55 -0800 (PST)
+X-Google-Smtp-Source: APXvYqy2XgLJTxeJZ2xtK1286GgeuYjhYemj4/KIs3cLvmOYe+qrHgZQ6tFFdNaXHi7b1nLifRHVpA==
+X-Received: by 2002:ac2:4553:: with SMTP id j19mr3393421lfm.142.1575490975321;
+        Wed, 04 Dec 2019 12:22:55 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id o19sm4417121lji.54.2019.12.04.12.22.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Dec 2019 12:22:54 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id C9CAC18193A; Wed,  4 Dec 2019 21:22:53 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Quentin Monnet <quentin.monnet@netronome.com>
+Subject: Re: [PATCHv4 0/6] perf/bpftool: Allow to link libbpf dynamically
+In-Reply-To: <20191204182727.GA29780@localhost.localdomain>
+References: <20191202131847.30837-1-jolsa@kernel.org> <CAEf4BzY_D9JHjuU6K=ciS70NSy2UvSm_uf1NfN_tmFz1445Jiw@mail.gmail.com> <87wobepgy0.fsf@toke.dk> <CAADnVQK-arrrNrgtu48_f--WCwR5ki2KGaX=mN2qmW_AcRyb=w@mail.gmail.com> <877e3cpdc9.fsf@toke.dk> <CAADnVQJeC9FQDXhv34KTiFSRq-=x4cBaspj-bTXdQ1=7prphcA@mail.gmail.com> <20191204182727.GA29780@localhost.localdomain>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 04 Dec 2019 21:22:53 +0100
+Message-ID: <874kyfon6q.fsf@toke.dk>
+MIME-Version: 1.0
+X-MC-Unique: BbfKBQ9_P9ms1YD_cqu6cg-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-It looks like BPF program that handles BPF_SOCK_OPS_STATE_CB state
-can race with the bpf_map_lookup_elem("global_map"); I sometimes
-see the failures in this test and re-running helps.
+Daniel Borkmann <daniel@iogearbox.net> writes:
 
-Since we know that we expect the callback to be called 3 times (one
-time for listener socket, two times for both ends of the connection),
-let's export this number and add simple retry logic around that.
+> On Wed, Dec 04, 2019 at 09:39:59AM -0800, Alexei Starovoitov wrote:
+>> On Wed, Dec 4, 2019 at 2:58 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
+dhat.com> wrote:
+>> > Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+>> > > On Mon, Dec 2, 2019 at 1:15 PM Toke H=C3=B8iland-J=C3=B8rgensen <tok=
+e@redhat.com> wrote:
+>> > >>
+>> > >> Ah, that is my mistake: I was getting dynamic libbpf symbols with t=
+his
+>> > >> approach, but that was because I had the version of libbpf.so in my
+>> > >> $LIBDIR that had the patch to expose the netlink APIs as versioned
+>> > >> symbols; so it was just pulling in everything from the shared libra=
+ry.
+>> > >>
+>> > >> So what I was going for was exactly what you described above; but i=
+t
+>> > >> seems that doesn't actually work. Too bad, and sorry for wasting yo=
+ur
+>> > >> time on this :/
+>> > >
+>> > > bpftool is currently tightly coupled with libbpf and very likely
+>> > > in the future the dependency will be even tighter.
+>> > > In that sense bpftool is an extension of libbpf and libbpf is an ext=
+ension
+>> > > of bpftool.
+>> > > Andrii is working on set of patches to generate user space .c code
+>> > > from bpf program.
+>> > > bpftool will be generating the code that is specific for the version
+>> > > bpftool and for
+>> > > the version of libbpf. There will be compatibility layers as usual.
+>> > > But in general the situation where a bug in libbpf is so criticial
+>> > > that bpftool needs to repackaged is imo less likely than a bug in
+>> > > bpftool that will require re-packaging of libbpf.
+>> > > bpftool is quite special. It's not a typical user of libbpf.
+>> > > The other way around is more correct. libbpf is a user of the code
+>> > > that bpftool generates and both depend on each other.
+>> > > perf on the other side is what typical user space app that uses
+>> > > libbpf will look like.
+>> > > I think keeping bpftool in the kernel while packaging libbpf
+>> > > out of github was an oversight.
+>> > > I think we need to mirror bpftool into github/libbpf as well
+>> > > and make sure they stay together. The version of libbpf =3D=3D versi=
+on of bpftool.
+>> > > Both should come from the same package and so on.
+>> > > May be they can be two different packages but
+>> > > upgrading one should trigger upgrade of another and vice versa.
+>> > > I think one package would be easier though.
+>> > > Thoughts?
+>> >
+>> > Yup, making bpftool explicitly the "libbpf command line interface" mak=
+es
+>> > sense and would help clarify the relationship between the two. As Jiri
+>> > said, we are already moving in that direction packaging-wise...
+>>=20
+>> Awesome. Let's figure out the logistics.
+>> Should we do:
+>> git mv tools/bpf/bpftool/ tools/lib/bpf/
+>> and appropriate adjustment to Makefiles ?
+>> or keep it where it is and only add to
+>> https://github.com/libbpf/libbpf/blob/master/scripts/sync-kernel.sh ?
+>
+> I'd be in preference of the latter aka keeping where it is.
 
-Also, let's make EXPECT_EQ() not return on failure, but continue
-evaluating all conditions; that should make potential debugging
-easier.
+I don't have any strong preference either way. It would make sense to
+move it to make clear the interdependency (and that bpftool is really
+the "libbpf cli interface"); but it could also just be kept separate and
+just document this in the existing bpftool dir.
 
-With this fix in place I don't observe the flakiness anymore.
+The github repository may need some surgery, though. So maybe let the
+changes in the kernel tree depend on what's easiest for that? IDK?
 
-Cc: Lawrence Brakmo <brakmo@fb.com>
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- .../selftests/bpf/progs/test_tcpbpf_kern.c    |  1 +
- tools/testing/selftests/bpf/test_tcpbpf.h     |  1 +
- .../testing/selftests/bpf/test_tcpbpf_user.c  | 25 +++++++++++++------
- 3 files changed, 20 insertions(+), 7 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/progs/test_tcpbpf_kern.c b/tools/testing/selftests/bpf/progs/test_tcpbpf_kern.c
-index 2e233613d1fc..7fa4595d2b66 100644
---- a/tools/testing/selftests/bpf/progs/test_tcpbpf_kern.c
-+++ b/tools/testing/selftests/bpf/progs/test_tcpbpf_kern.c
-@@ -131,6 +131,7 @@ int bpf_testcb(struct bpf_sock_ops *skops)
- 				g.bytes_received = skops->bytes_received;
- 				g.bytes_acked = skops->bytes_acked;
- 			}
-+			g.num_close_events++;
- 			bpf_map_update_elem(&global_map, &key, &g,
- 					    BPF_ANY);
- 		}
-diff --git a/tools/testing/selftests/bpf/test_tcpbpf.h b/tools/testing/selftests/bpf/test_tcpbpf.h
-index 7bcfa6207005..6220b95cbd02 100644
---- a/tools/testing/selftests/bpf/test_tcpbpf.h
-+++ b/tools/testing/selftests/bpf/test_tcpbpf.h
-@@ -13,5 +13,6 @@ struct tcpbpf_globals {
- 	__u64 bytes_received;
- 	__u64 bytes_acked;
- 	__u32 num_listen;
-+	__u32 num_close_events;
- };
- #endif
-diff --git a/tools/testing/selftests/bpf/test_tcpbpf_user.c b/tools/testing/selftests/bpf/test_tcpbpf_user.c
-index 716b4e3be581..3ae127620463 100644
---- a/tools/testing/selftests/bpf/test_tcpbpf_user.c
-+++ b/tools/testing/selftests/bpf/test_tcpbpf_user.c
-@@ -16,6 +16,9 @@
- 
- #include "test_tcpbpf.h"
- 
-+/* 3 comes from one listening socket + both ends of the connection */
-+#define EXPECTED_CLOSE_EVENTS		3
-+
- #define EXPECT_EQ(expected, actual, fmt)			\
- 	do {							\
- 		if ((expected) != (actual)) {			\
-@@ -23,13 +26,14 @@
- 			       "    Actual: %" fmt "\n"		\
- 			       "  Expected: %" fmt "\n",	\
- 			       (actual), (expected));		\
--			goto err;				\
-+			ret--;					\
- 		}						\
- 	} while (0)
- 
- int verify_result(const struct tcpbpf_globals *result)
- {
- 	__u32 expected_events;
-+	int ret = 0;
- 
- 	expected_events = ((1 << BPF_SOCK_OPS_TIMEOUT_INIT) |
- 			   (1 << BPF_SOCK_OPS_RWND_INIT) |
-@@ -48,15 +52,15 @@ int verify_result(const struct tcpbpf_globals *result)
- 	EXPECT_EQ(0x80, result->bad_cb_test_rv, PRIu32);
- 	EXPECT_EQ(0, result->good_cb_test_rv, PRIu32);
- 	EXPECT_EQ(1, result->num_listen, PRIu32);
-+	EXPECT_EQ(EXPECTED_CLOSE_EVENTS, result->num_close_events, PRIu32);
- 
--	return 0;
--err:
--	return -1;
-+	return ret;
- }
- 
- int verify_sockopt_result(int sock_map_fd)
- {
- 	__u32 key = 0;
-+	int ret = 0;
- 	int res;
- 	int rv;
- 
-@@ -69,9 +73,7 @@ int verify_sockopt_result(int sock_map_fd)
- 	rv = bpf_map_lookup_elem(sock_map_fd, &key, &res);
- 	EXPECT_EQ(0, rv, "d");
- 	EXPECT_EQ(1, res, "d");
--	return 0;
--err:
--	return -1;
-+	return ret;
- }
- 
- static int bpf_find_map(const char *test, struct bpf_object *obj,
-@@ -96,6 +98,7 @@ int main(int argc, char **argv)
- 	int error = EXIT_FAILURE;
- 	struct bpf_object *obj;
- 	int cg_fd = -1;
-+	int retry = 10;
- 	__u32 key = 0;
- 	int rv;
- 
-@@ -134,12 +137,20 @@ int main(int argc, char **argv)
- 	if (sock_map_fd < 0)
- 		goto err;
- 
-+retry_lookup:
- 	rv = bpf_map_lookup_elem(map_fd, &key, &g);
- 	if (rv != 0) {
- 		printf("FAILED: bpf_map_lookup_elem returns %d\n", rv);
- 		goto err;
- 	}
- 
-+	if (g.num_close_events != EXPECTED_CLOSE_EVENTS && retry--) {
-+		printf("Unexpected number of close events (%d), retrying!\n",
-+		       g.num_close_events);
-+		usleep(100);
-+		goto retry_lookup;
-+	}
-+
- 	if (verify_result(&g)) {
- 		printf("FAILED: Wrong stats\n");
- 		goto err;
--- 
-2.24.0.393.g34dc348eaf-goog
+-Toke
 
