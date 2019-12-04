@@ -2,95 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C0A8C1136F9
-	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2019 22:19:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64CF9113744
+	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2019 22:54:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727989AbfLDVTe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Dec 2019 16:19:34 -0500
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:37829 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727961AbfLDVTd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Dec 2019 16:19:33 -0500
-Received: by mail-qt1-f194.google.com with SMTP id w47so1289669qtk.4;
-        Wed, 04 Dec 2019 13:19:33 -0800 (PST)
+        id S1728042AbfLDVya (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Dec 2019 16:54:30 -0500
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:33791 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727989AbfLDVya (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Dec 2019 16:54:30 -0500
+Received: by mail-lf1-f68.google.com with SMTP id n25so814290lfl.0
+        for <bpf@vger.kernel.org>; Wed, 04 Dec 2019 13:54:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=TXDlPbz4DYKOgW5gi+ZPB5eSq/GCChHHgm1cEar4NCI=;
-        b=ksBR3DY65GSzp1nsjFPtjvY1Ic1xERRqlfk+UA1eC61LjlpN/sxOngoJeOEkqff5S6
-         zXCctHj3brrUEPqedYjS8AQuKGrG1cZEIPSZXLtjWmMAEImSWwXTlfE1OD0THfRDvaXq
-         /+SLUe7ozwX7VH5QJYVwEvKhrWTa/cLbOsw7mNqlFRoeK0BKC7Ua6qpT1d3p0PyT21qC
-         xFuz9WfrxSz7GOikls2woeJ3hSJ6tcA2/buJJnL6fsK76ZfJXJ7iFcmNUXlUI0KAuior
-         O9bSkrExSug6MTIJXwY+UCjzG+LeCRWjcc0vXOiZ4OEACGQnFc8iOSMeH29tADW8lvl8
-         e1Aw==
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :organization:mime-version:content-transfer-encoding;
+        bh=VnhsCb+n6LgjC+6907Tb3B2Vl6EZOomyJ8tnp+TG/qc=;
+        b=sNHngkNWV9ev/PowIGAz1Y8jFs9+YDnaFQVf/lco03gsiAcIQu1SbZnuJ3nQdVH7NO
+         dqB3KDHH54WY/F8yOmZq7+XwbP3We2KsJhXSussbQI7WEkf2pJK9Dfv4VskpP8DP0xi9
+         RzokWdmqDSdtmSDaKdUMDRrvVxUrRdXp0gDizkbeHWwtxewzYwtw6aE5w/5hDpcO20SB
+         74FHt6IyhRWsBnQU/vFF7rWwOcznpjo77kfAOnzsGWoZ37J6sd+cfmNms7yTG4rlocFD
+         N1REEnbp/vd+gBJEzbLLWJqAMdZTJZ+uw1Sg2M976u4gSv6gz4dbBj3zq1DgrdBZ4xt+
+         T2eA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=TXDlPbz4DYKOgW5gi+ZPB5eSq/GCChHHgm1cEar4NCI=;
-        b=E9HNZN6zP7lFexbD1jIxW92+lVgESGPcgVYKq7NPS43dMLZhzrysRxbskbs2UtG+9v
-         GnoIpIXKKZvg0AFIFcPyAgFSOShuT5ih93FxuXNje7cOMLTf2u2QOvps17TdzXUjfsWR
-         8YZho6Jd9cuooivbpioUjjsD5IBbgWkMcKmYXOg39XLARhzlDvJSA9SrmpbA+WAg1VNA
-         2uCIjHQKXHrIv5g5LHU6Su/cFkoOdrmyfIFb4KjU4E8TbOs6t+ZJXNcgZoYJB75wpVwd
-         UGahHU48IbmzbIq5S4iFGjEowvklldu8HuguZ0+4LAOWuqFGzPYYruh5pKGeM3Sezgve
-         +mSg==
-X-Gm-Message-State: APjAAAU0JTosp/9PuUjkV9aJnFr366eWzYLgnoH1RMli8jO4QjDvCGGJ
-        W2LvEWen1n398UmwAT2hWQIQE26vyjBEbZJatkE=
-X-Google-Smtp-Source: APXvYqyYvznJh6VnPxFVWBdf2UL8cd4ZIhH2B9CT9OkJ1fXppxrnN7lNde/DnAreFWNqMRipL6T5DjYD2kgaz7Lo7sI=
-X-Received: by 2002:ac8:7b29:: with SMTP id l9mr4727594qtu.141.1575494372691;
- Wed, 04 Dec 2019 13:19:32 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=VnhsCb+n6LgjC+6907Tb3B2Vl6EZOomyJ8tnp+TG/qc=;
+        b=OUuBL7PQDevSoVdifRCiJN/D/PgI4O13FpuiRP7ungcCx6Jza//ISk9T2eJ2YohuFG
+         HZSDYq4hpA4JQgKQGDZIWnU+Oot2pLuq8DwATSNGqCYU5vpFh9GeGeLzh3bs0lFRnF6y
+         nu7hJ3EYQ5SZUBvLsGA7SQKfwneP4XCFw1wrwOLij8iQOJIbjWYAJ+LbunyHtlgCpyNy
+         2y1piLbQJcqv9rXLAfACNPoA5ttyMv0cMpLR7pJn3ESykBs2gqo1Jqt+C9xIwYtJxhEx
+         hw7OC0mdQuMSO8ZvD8H8G4gFPKIffisS0yQq9l2WnU+IfgNZ50tw9rA/l7msMmaWEXOb
+         yXiA==
+X-Gm-Message-State: APjAAAXlVUQ5Q14HDfbsg6L0N7MqqnXSjW1lFOzJpGtjKFeQS1I/4wk0
+        Hsb9hmYnkTJNrwVS2z4ErtXSsA==
+X-Google-Smtp-Source: APXvYqzPvrDymPjXRh9qruHs8tBDH3UgArE45+g66WgCMyK1u3JpllpAjDPD+rE9wYXI6GOY+loWbw==
+X-Received: by 2002:a19:c382:: with SMTP id t124mr3210526lff.124.1575496468486;
+        Wed, 04 Dec 2019 13:54:28 -0800 (PST)
+Received: from cakuba.netronome.com ([66.60.152.14])
+        by smtp.gmail.com with ESMTPSA id e20sm3841379ljk.44.2019.12.04.13.54.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Dec 2019 13:54:28 -0800 (PST)
+Date:   Wed, 4 Dec 2019 13:54:05 -0800
+From:   Jakub Kicinski <jakub.kicinski@netronome.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Toke =?UTF-8?B?SMO4?= =?UTF-8?B?aWxhbmQtSsO4cmdlbnNlbg==?= 
+        <toke@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Quentin Monnet <quentin.monnet@netronome.com>
+Subject: Re: [PATCHv4 0/6] perf/bpftool: Allow to link libbpf dynamically
+Message-ID: <20191204135405.3ffb9ad6@cakuba.netronome.com>
+In-Reply-To: <CAEf4BzZ+0XpH_zJ0P78vjzmFAH3kGZ21w3-LcSEG=B=+ZQWJ=w@mail.gmail.com>
+References: <20191202131847.30837-1-jolsa@kernel.org>
+        <CAEf4BzY_D9JHjuU6K=ciS70NSy2UvSm_uf1NfN_tmFz1445Jiw@mail.gmail.com>
+        <87wobepgy0.fsf@toke.dk>
+        <CAADnVQK-arrrNrgtu48_f--WCwR5ki2KGaX=mN2qmW_AcRyb=w@mail.gmail.com>
+        <CAEf4BzZ+0XpH_zJ0P78vjzmFAH3kGZ21w3-LcSEG=B=+ZQWJ=w@mail.gmail.com>
+Organization: Netronome Systems, Ltd.
 MIME-Version: 1.0
-References: <E53E0693-1C3A-4B47-B205-DC8E5DAF3619@redhat.com>
- <CAADnVQKkLtG-QCZwxx-Bpz8-goh-_mSTtUSzpb_oTv9a-qLizg@mail.gmail.com>
- <3AC9D2B7-9D2F-4286-80A2-1721B51B62CF@redhat.com> <CAADnVQJKSnoMVpQ3F86zBhFyo8WQ0vi65Z4QDtopLRrpK4yB8Q@mail.gmail.com>
- <4BBF99E4-9554-44F7-8505-D4B8416554C4@redhat.com> <d588c894-a4e0-8b99-72a9-4429b27091df@fb.com>
- <056E9F5E-4FDD-4636-A43A-EC98A06E84D3@redhat.com> <aa59532b-34a9-7887-f550-ef2859f0c9f1@fb.com>
- <B7E0062E-37ED-46E6-AE64-EE3E2A0294EA@redhat.com> <CAEf4BzaTRc8dPxZnWhVZe7xpyMwpL1NEgGQyBjeXnsaN_D5CWA@mail.gmail.com>
- <5de7f5057f957_96d2b0feaf1e5bc19@john-XPS-13-9370.notmuch>
-In-Reply-To: <5de7f5057f957_96d2b0feaf1e5bc19@john-XPS-13-9370.notmuch>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 4 Dec 2019 13:19:21 -0800
-Message-ID: <CAEf4BzaorvXOcunEg7CPYmeFhWzAg14dOaj10kVxzc9pnoXiLw@mail.gmail.com>
-Subject: Re: Trying the bpf trace a bpf xdp program
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Eelco Chaudron <echaudro@redhat.com>, Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Xdp <xdp-newbies@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 4, 2019 at 10:03 AM John Fastabend <john.fastabend@gmail.com> w=
-rote:
->
-> Andrii Nakryiko wrote:
-> > On Wed, Dec 4, 2019 at 5:20 AM Eelco Chaudron <echaudro@redhat.com> wro=
-te:
-> > >
->
-> [...]
->
-> > >
-> > > PS: If I run the latest pahole (v1.15) on the .o files, I get the
-> > > following libbpf error: =E2=80=9Clibbpf: Cannot find bpf_func_info fo=
-r main
-> > > program sec fexit/xdp_prog_simple. Ignore all bpf_func_info.=E2=80=9D
-> > >
-> >
-> > pahole is not supposed to be run on BPF object file. It's needed only
-> > to do DWARF to BTF conversion for kernel itself. So never mind this
-> > one. The NULL dereference, though, seems like a bug, I agree with
-> > Yonghong.
->
-> Really? I've been using pahole on BPF object files regularly mostly
-> to test structures match up with kernel pahole output but its always
-> worked on my side. Even pahole -j seems to work fine here.
+On Wed, 4 Dec 2019 13:16:13 -0800, Andrii Nakryiko wrote:
+> I wonder what big advantage having bpftool in libbpf's Github repo
+> brings, actually? The reason we need libbpf on github is to allow
+> other projects like pahole to be able to use libbpf from submodule.
+> There is no such need for bpftool.
+> 
+> I agree about preference to release them in sync, but that could be
+> easily done by releasing based on corresponding commits in github's
+> libbpf repo and kernel repo. bpftool doesn't have to physically live
+> next to libbpf on Github, does it?
 
-Well, it still works for simpler stuff, but it certainly won't emit
-global variables type info, CO-RE relocations, etc. BTF for BPF object
-files should get produced by Clang,  which is perfectly capable of
-doing this (provided you have recent enough version of it, of course).
++1
+
+> Calling github repo a "mirror" is incorrect. It's not a 1:1 copy of
+> files. We have a completely separate Makefile for libbpf, and we have
+> a bunch of stuff we had to re-implement to detach libbpf code from
+> kernel's non-UAPI headers. Doing this for bpftool as well seems like
+> just more maintenance. Keeping github's Makefile in sync with kernel's
+> Makefile (for libbpf) is PITA, I'd rather avoid similar pains for
+> bpftool without a really good reason.
+
+Agreed. Having libbpf on GH is definitely useful today, but one can hope
+a day will come when distroes will get up to speed on packaging libbpf,
+and perhaps we can retire it? Maybe 2, 3 years from now? Putting
+bpftool in the same boat is just more baggage.
