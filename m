@@ -2,39 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B94D6112D3F
-	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2019 15:08:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C115112D8F
+	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2019 15:38:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727990AbfLDOIl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Dec 2019 09:08:41 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:28888 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727911AbfLDOIl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Dec 2019 09:08:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1575468520;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KlU8G1NVqsI7cVMGLZrHpzxB9UZVHsr2EbX8kLpf83Y=;
-        b=NIGeZ1/LrGNtkCj0W3nW7CYs0HP3NfTvItH+vJtqqKRiYsU3rOklCUo9Y/Cp0WatDvuEIy
-        OEwNd7AWsGiX10dFgeTwYbQK+v0TLcOdrRFghqSIqEK3/FsMkoM5VVrOjK9gUPk+rwgxDo
-        rxAbB3TSzM4nzcf6mF5Z/yv7hsM4GSk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-175-H7PLXD9xMBG6GBFyxQFPJA-1; Wed, 04 Dec 2019 09:08:37 -0500
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1221D100EC2E;
-        Wed,  4 Dec 2019 14:08:35 +0000 (UTC)
-Received: from krava (unknown [10.43.17.48])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 10EEF19C68;
-        Wed,  4 Dec 2019 14:08:29 +0000 (UTC)
-Date:   Wed, 4 Dec 2019 15:08:27 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Paul Moore <paul@paul-moore.com>
+        id S1727887AbfLDOiY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Dec 2019 09:38:24 -0500
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:38761 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727828AbfLDOiY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Dec 2019 09:38:24 -0500
+Received: by mail-lf1-f65.google.com with SMTP id r14so6331169lfm.5
+        for <bpf@vger.kernel.org>; Wed, 04 Dec 2019 06:38:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PaJ3UPjj7Nz7m7Ne5I2c6eF0XwrYN5YcMxlYR5F12d0=;
+        b=CkYEclAERJluqNRiWk/6SQLBRh08HruSEI11CNizs6wKIjdUEU3WfhdM33mH9iKiYi
+         bD5yMl5BKrWPtNVtZTR+AuraXLQbmREHhnjVmEUORk0YBwaLb/3edS1Y4kLLe3cmN6bb
+         rchDPAfHzqbv9xRUQ7YQ6bbtq7zibN2fo248c4NBbRjO3S/xwm5337Jr9ZJ4we3f0zmO
+         M8sMUvVTxZ8DEwBHsy7Of99ZP6jXt2Re1A+oTfHluc8REuQo+LQYbnGkpMPdtDx6JzPu
+         3a52DYvDB2m3vE0dMivlFC3CZP5opBHTtaxxHqmCk9WRuVn4Tq5lxU28LQeTD+emJO6R
+         E66Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PaJ3UPjj7Nz7m7Ne5I2c6eF0XwrYN5YcMxlYR5F12d0=;
+        b=m84lCPR0nZt0qdr0IYEyekmowmaOmBI16U2tN9MuhsXUdn3GD03fZTY7A7DyOoZqtL
+         enl9sRE7K4M6yOdPNMNKM35GQBlCrJnJcDuWP2LQPs6Tj71qeiJaCeCWxv86K0G85hgU
+         eV2+a/7Im9j0FCDUL+oW+gOF0kgZPBNr6j+M4uMq3yZH9NK8TKZ5kYKn4xW8RMGmnwl0
+         BhbHQCECtX6HSwVM2Gmyv4sy/0Ma7XKDcDxuhcVcVDmgMuSkvO13w6kJprekG6g35gmw
+         DIK8gNB5tgR8O1Sa4lYd8snKPLn3zz49BW3mJMMklc3o/TQ8b0gh5DdQHVmMsjd2w+77
+         jN4w==
+X-Gm-Message-State: APjAAAXE3MruMStpjowsQEwm2y2+0ZkwZnDtQJBYs+EKB4pLbTJlFjII
+        GWMwCvW73vq7fyYuQbcJTHHu6KreA3Sz+I9hGuUN
+X-Google-Smtp-Source: APXvYqw1BPiBASWC3NkdSGy61VyInQU9ytLgtR07luIoLsu3uzuX/jup0unpcNDRA+o4gAWrHaP+XNIyt6Ph544HwD0=
+X-Received: by 2002:ac2:424d:: with SMTP id m13mr2261508lfl.13.1575470301379;
+ Wed, 04 Dec 2019 06:38:21 -0800 (PST)
+MIME-Version: 1.0
+References: <20191128091633.29275-1-jolsa@kernel.org> <CAHC9VhQ7zkXdz1V5hQ8PN68-NnCn56TjKA0wCL6ZjHy9Up8fuQ@mail.gmail.com>
+ <20191203093837.GC17468@krava> <CAHC9VhRhMhsRPj1D2TY3O=Nc6Rx9=o1-Z5ZMjrCepfFY6VtdbQ@mail.gmail.com>
+ <20191204140827.GB12431@krava>
+In-Reply-To: <20191204140827.GB12431@krava>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Wed, 4 Dec 2019 09:38:10 -0500
+Message-ID: <CAHC9VhTrUQYp8Ubhu_B_fv-HSdwmgYRy+r1p9uKz7WcRfDQBKA@mail.gmail.com>
+Subject: Re: [RFC] bpf: Emit audit messages upon successful prog load and unload
+To:     Jiri Olsa <jolsa@redhat.com>
 Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
         bpf@vger.kernel.org, linux-audit@redhat.com,
@@ -44,174 +59,94 @@ Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Steve Grubb <sgrubb@redhat.com>,
         David Miller <davem@redhat.com>,
         Eric Paris <eparis@redhat.com>, Jiri Benc <jbenc@redhat.com>
-Subject: Re: [RFC] bpf: Emit audit messages upon successful prog load and
- unload
-Message-ID: <20191204140827.GB12431@krava>
-References: <20191128091633.29275-1-jolsa@kernel.org>
- <CAHC9VhQ7zkXdz1V5hQ8PN68-NnCn56TjKA0wCL6ZjHy9Up8fuQ@mail.gmail.com>
- <20191203093837.GC17468@krava>
- <CAHC9VhRhMhsRPj1D2TY3O=Nc6Rx9=o1-Z5ZMjrCepfFY6VtdbQ@mail.gmail.com>
-MIME-Version: 1.0
-In-Reply-To: <CAHC9VhRhMhsRPj1D2TY3O=Nc6Rx9=o1-Z5ZMjrCepfFY6VtdbQ@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-X-MC-Unique: H7PLXD9xMBG6GBFyxQFPJA-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 03, 2019 at 09:53:16PM -0500, Paul Moore wrote:
+On Wed, Dec 4, 2019 at 9:08 AM Jiri Olsa <jolsa@redhat.com> wrote:
+> diff --git a/include/uapi/linux/audit.h b/include/uapi/linux/audit.h
+> index c89c6495983d..32a5db900f47 100644
+> --- a/include/uapi/linux/audit.h
+> +++ b/include/uapi/linux/audit.h
+> @@ -116,6 +116,7 @@
+>  #define AUDIT_FANOTIFY         1331    /* Fanotify access decision */
+>  #define AUDIT_TIME_INJOFFSET   1332    /* Timekeeping offset injected */
+>  #define AUDIT_TIME_ADJNTPVAL   1333    /* NTP value adjustment */
+> +#define AUDIT_BPF              1334    /* BPF subsystem */
+>
+>  #define AUDIT_AVC              1400    /* SE Linux avc denial or grant */
+>  #define AUDIT_SELINUX_ERR      1401    /* Internal SE Linux Errors */
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index e3461ec59570..81f1a6308aa8 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -23,6 +23,7 @@
+>  #include <linux/timekeeping.h>
+>  #include <linux/ctype.h>
+>  #include <linux/nospec.h>
+> +#include <linux/audit.h>
+>  #include <uapi/linux/btf.h>
+>
+>  #define IS_FD_ARRAY(map) ((map)->map_type == BPF_MAP_TYPE_PERF_EVENT_ARRAY || \
+> @@ -1306,6 +1307,33 @@ static int find_prog_type(enum bpf_prog_type type, struct bpf_prog *prog)
+>         return 0;
+>  }
+>
+> +enum bpf_audit {
+> +       BPF_AUDIT_LOAD,
+> +       BPF_AUDIT_UNLOAD,
+> +};
+> +
+> +static const char * const bpf_audit_str[] = {
+> +       [BPF_AUDIT_LOAD]   = "LOAD",
+> +       [BPF_AUDIT_UNLOAD] = "UNLOAD",
+> +};
+> +
+> +static void bpf_audit_prog(const struct bpf_prog *prog, enum bpf_audit op)
+> +{
+> +       struct audit_context *ctx = NULL;
+> +       struct audit_buffer *ab;
+> +
+> +       if (audit_enabled == AUDIT_OFF)
+> +               return;
+> +       if (op == BPF_AUDIT_LOAD)
+> +               ctx = audit_context();
+> +       ab = audit_log_start(ctx, GFP_ATOMIC, AUDIT_BPF);
+> +       if (unlikely(!ab))
+> +               return;
+> +       audit_log_format(ab, "prog-id=%u op=%s",
+> +                        prog->aux->id, bpf_audit_str[op]);
+> +       audit_log_end(ab);
+> +}
 
-SNIP
+As mentioned previously, I still think it might be a good idea to
+ensure "op" is within the bounds of bpf_audit_str, but the audit bits
+look reasonable to me.
 
-> > >
-> > > static inline void audit_foo(...)
-> > > {
-> > >   if (unlikely(!audit_dummy_context()))
-> > >     __audit_foo(...)
-> > > }
-> >
-> > bpf_audit_prog might be called outside of syscall context for UNLOAD ev=
-ent,
-> > so that would prevent it from being stored
->=20
-> Okay, right.  More on this below ...
->=20
-> > I can see audit_log_start checks on value of audit_context() that we pa=
-ss in,
->=20
-> The check in audit_log_start() is for a different reason; it checks
-> the passed context to see if it should associate the record with
-> others in the same event, e.g. PATH records associated with the
-> matching SYSCALL record.  This way all the associated records show up
-> as part of the same event (as defined by the audit timestamp).
->=20
-> > should we check for audit_dummy_context just for load event? like:
-> >
-> >
-> > static void bpf_audit_prog(const struct bpf_prog *prog, enum bpf_audit =
-op)
-> > {
-> >         struct audit_buffer *ab;
-> >
-> >         if (audit_enabled =3D=3D AUDIT_OFF)
-> >                 return;
-> >         if (op =3D=3D BPF_AUDIT_LOAD && audit_dummy_context())
-> >                 return;
-> >         ab =3D audit_log_start(audit_context(), GFP_ATOMIC, AUDIT_BPF);
-> >         if (unlikely(!ab))
-> >                 return;
-> >         ...
-> > }
->=20
-> Ignoring the dummy context for a minute, there is likely a larger
-> issue here with using audit_context() when bpf_audit_prog() is called
-> outside of a syscall, e.g. BPF_AUDIT_UNLOAD.  In this case we likely
-> shouldn't be taking the audit context from the current task, we
-> shouldn't be taking it from anywhere, it should be NULL.
->=20
-> As far as the dummy context is concerned, you might want to skip the
-> dummy context check since you can only do that on the LOAD side, which
-> means that depending on the system's configuration you could end up
-> with a number of unbalanced LOAD/UNLOAD events.  The downside is that
-> you are always going to get the BPF audit records on systemd based
-> systems, since they ignore the admin's audit configuration and always
-> enable audit (yes, we've tried to get systemd to change, they don't
-> seem to care).
+>  int __bpf_prog_charge(struct user_struct *user, u32 pages)
+>  {
+>         unsigned long memlock_limit = rlimit(RLIMIT_MEMLOCK) >> PAGE_SHIFT;
+> @@ -1421,6 +1449,7 @@ static void __bpf_prog_put(struct bpf_prog *prog, bool do_idr_lock)
+>  {
+>         if (atomic64_dec_and_test(&prog->aux->refcnt)) {
+>                 perf_event_bpf_event(prog, PERF_BPF_EVENT_PROG_UNLOAD, 0);
+> +               bpf_audit_prog(prog, BPF_AUDIT_UNLOAD);
+>                 /* bpf_prog_free_id() must be called first */
+>                 bpf_prog_free_id(prog, do_idr_lock);
+>                 __bpf_prog_put_noref(prog, true);
+> @@ -1830,6 +1859,7 @@ static int bpf_prog_load(union bpf_attr *attr, union bpf_attr __user *uattr)
+>          */
+>         bpf_prog_kallsyms_add(prog);
+>         perf_event_bpf_event(prog, PERF_BPF_EVENT_PROG_LOAD, 0);
+> +       bpf_audit_prog(prog, BPF_AUDIT_LOAD);
+>
+>         err = bpf_prog_new_fd(prog);
+>         if (err < 0)
+> --
+> 2.23.0
 
-ok, so something like below?
-
-thanks,
-jirka
-
-
----
- include/uapi/linux/audit.h |  1 +
- kernel/bpf/syscall.c       | 30 ++++++++++++++++++++++++++++++
- 2 files changed, 31 insertions(+)
-
-diff --git a/include/uapi/linux/audit.h b/include/uapi/linux/audit.h
-index c89c6495983d..32a5db900f47 100644
---- a/include/uapi/linux/audit.h
-+++ b/include/uapi/linux/audit.h
-@@ -116,6 +116,7 @@
- #define AUDIT_FANOTIFY=09=091331=09/* Fanotify access decision */
- #define AUDIT_TIME_INJOFFSET=091332=09/* Timekeeping offset injected */
- #define AUDIT_TIME_ADJNTPVAL=091333=09/* NTP value adjustment */
-+#define AUDIT_BPF=09=091334=09/* BPF subsystem */
-=20
- #define AUDIT_AVC=09=091400=09/* SE Linux avc denial or grant */
- #define AUDIT_SELINUX_ERR=091401=09/* Internal SE Linux Errors */
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index e3461ec59570..81f1a6308aa8 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -23,6 +23,7 @@
- #include <linux/timekeeping.h>
- #include <linux/ctype.h>
- #include <linux/nospec.h>
-+#include <linux/audit.h>
- #include <uapi/linux/btf.h>
-=20
- #define IS_FD_ARRAY(map) ((map)->map_type =3D=3D BPF_MAP_TYPE_PERF_EVENT_A=
-RRAY || \
-@@ -1306,6 +1307,33 @@ static int find_prog_type(enum bpf_prog_type type, s=
-truct bpf_prog *prog)
- =09return 0;
- }
-=20
-+enum bpf_audit {
-+=09BPF_AUDIT_LOAD,
-+=09BPF_AUDIT_UNLOAD,
-+};
-+
-+static const char * const bpf_audit_str[] =3D {
-+=09[BPF_AUDIT_LOAD]   =3D "LOAD",
-+=09[BPF_AUDIT_UNLOAD] =3D "UNLOAD",
-+};
-+
-+static void bpf_audit_prog(const struct bpf_prog *prog, enum bpf_audit op)
-+{
-+=09struct audit_context *ctx =3D NULL;
-+=09struct audit_buffer *ab;
-+
-+=09if (audit_enabled =3D=3D AUDIT_OFF)
-+=09=09return;
-+=09if (op =3D=3D BPF_AUDIT_LOAD)
-+=09=09ctx =3D audit_context();
-+=09ab =3D audit_log_start(ctx, GFP_ATOMIC, AUDIT_BPF);
-+=09if (unlikely(!ab))
-+=09=09return;
-+=09audit_log_format(ab, "prog-id=3D%u op=3D%s",
-+=09=09=09 prog->aux->id, bpf_audit_str[op]);
-+=09audit_log_end(ab);
-+}
-+
- int __bpf_prog_charge(struct user_struct *user, u32 pages)
- {
- =09unsigned long memlock_limit =3D rlimit(RLIMIT_MEMLOCK) >> PAGE_SHIFT;
-@@ -1421,6 +1449,7 @@ static void __bpf_prog_put(struct bpf_prog *prog, boo=
-l do_idr_lock)
- {
- =09if (atomic64_dec_and_test(&prog->aux->refcnt)) {
- =09=09perf_event_bpf_event(prog, PERF_BPF_EVENT_PROG_UNLOAD, 0);
-+=09=09bpf_audit_prog(prog, BPF_AUDIT_UNLOAD);
- =09=09/* bpf_prog_free_id() must be called first */
- =09=09bpf_prog_free_id(prog, do_idr_lock);
- =09=09__bpf_prog_put_noref(prog, true);
-@@ -1830,6 +1859,7 @@ static int bpf_prog_load(union bpf_attr *attr, union =
-bpf_attr __user *uattr)
- =09 */
- =09bpf_prog_kallsyms_add(prog);
- =09perf_event_bpf_event(prog, PERF_BPF_EVENT_PROG_LOAD, 0);
-+=09bpf_audit_prog(prog, BPF_AUDIT_LOAD);
-=20
- =09err =3D bpf_prog_new_fd(prog);
- =09if (err < 0)
---=20
-2.23.0
-
+-- 
+paul moore
+www.paul-moore.com
