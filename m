@@ -2,113 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C6DA1134F1
-	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2019 19:28:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6890B113532
+	for <lists+bpf@lfdr.de>; Wed,  4 Dec 2019 19:52:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729223AbfLDS1k (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Dec 2019 13:27:40 -0500
-Received: from www62.your-server.de ([213.133.104.62]:40604 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729345AbfLDS1k (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Dec 2019 13:27:40 -0500
-Received: from [194.230.159.159] (helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1icZN2-0004rF-GG; Wed, 04 Dec 2019 19:27:28 +0100
-Date:   Wed, 4 Dec 2019 19:27:27 +0100
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Quentin Monnet <quentin.monnet@netronome.com>
-Subject: Re: [PATCHv4 0/6] perf/bpftool: Allow to link libbpf dynamically
-Message-ID: <20191204182727.GA29780@localhost.localdomain>
-References: <20191202131847.30837-1-jolsa@kernel.org>
- <CAEf4BzY_D9JHjuU6K=ciS70NSy2UvSm_uf1NfN_tmFz1445Jiw@mail.gmail.com>
- <87wobepgy0.fsf@toke.dk>
- <CAADnVQK-arrrNrgtu48_f--WCwR5ki2KGaX=mN2qmW_AcRyb=w@mail.gmail.com>
- <877e3cpdc9.fsf@toke.dk>
- <CAADnVQJeC9FQDXhv34KTiFSRq-=x4cBaspj-bTXdQ1=7prphcA@mail.gmail.com>
+        id S1728339AbfLDSw0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Dec 2019 13:52:26 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:33985 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728154AbfLDSw0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Dec 2019 13:52:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1575485544;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=peb0ht/ZBvZYAPrLQwA8OcTuHG3fm58ggHVLgcRexWk=;
+        b=BuQ/wgQm1DvbPIjbLMbW6e7QW2hweIuGch0U4HZRtDk1uHUEr2Zhw2EM/ZOLsfIew7gvHm
+        th/DPmVdIUnurJgVNBm1KeXX/w/5Jd6KvOzzjEhJ1JTxQUw4B7V04GxBwvd/kitBb+3q9G
+        0EQ3QmoVj5hcfQB7vKWo1kinhP73u1s=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-159-7vCNvlsXP_KTHPVdSj1m9Q-1; Wed, 04 Dec 2019 13:52:21 -0500
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E872D10050ED;
+        Wed,  4 Dec 2019 18:52:19 +0000 (UTC)
+Received: from [10.36.118.152] (unknown [10.36.118.152])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 270355D9C5;
+        Wed,  4 Dec 2019 18:52:18 +0000 (UTC)
+From:   "Eelco Chaudron" <echaudro@redhat.com>
+To:     "Yonghong Song" <yhs@fb.com>
+Cc:     "Alexei Starovoitov" <alexei.starovoitov@gmail.com>,
+        Xdp <xdp-newbies@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: Trying the bpf trace a bpf xdp program
+Date:   Wed, 04 Dec 2019 19:52:17 +0100
+Message-ID: <E08A0006-E254-492C-92AB-408B58E456C0@redhat.com>
+In-Reply-To: <b8d80047-3bc1-5393-76a1-7517cb2b7280@fb.com>
+References: <E53E0693-1C3A-4B47-B205-DC8E5DAF3619@redhat.com>
+ <CAADnVQKkLtG-QCZwxx-Bpz8-goh-_mSTtUSzpb_oTv9a-qLizg@mail.gmail.com>
+ <3AC9D2B7-9D2F-4286-80A2-1721B51B62CF@redhat.com>
+ <CAADnVQJKSnoMVpQ3F86zBhFyo8WQ0vi65Z4QDtopLRrpK4yB8Q@mail.gmail.com>
+ <4BBF99E4-9554-44F7-8505-D4B8416554C4@redhat.com>
+ <d588c894-a4e0-8b99-72a9-4429b27091df@fb.com>
+ <056E9F5E-4FDD-4636-A43A-EC98A06E84D3@redhat.com>
+ <aa59532b-34a9-7887-f550-ef2859f0c9f1@fb.com>
+ <B7E0062E-37ED-46E6-AE64-EE3E2A0294EA@redhat.com>
+ <7062345a-1060-89f6-0c02-eef2fe0d835a@fb.com>
+ <b8d80047-3bc1-5393-76a1-7517cb2b7280@fb.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQJeC9FQDXhv34KTiFSRq-=x4cBaspj-bTXdQ1=7prphcA@mail.gmail.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.101.4/25653/Wed Dec  4 10:46:42 2019)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-MC-Unique: 7vCNvlsXP_KTHPVdSj1m9Q-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 04, 2019 at 09:39:59AM -0800, Alexei Starovoitov wrote:
-> On Wed, Dec 4, 2019 at 2:58 AM Toke Høiland-Jørgensen <toke@redhat.com> wrote:
-> > Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
-> > > On Mon, Dec 2, 2019 at 1:15 PM Toke Høiland-Jørgensen <toke@redhat.com> wrote:
-> > >>
-> > >> Ah, that is my mistake: I was getting dynamic libbpf symbols with this
-> > >> approach, but that was because I had the version of libbpf.so in my
-> > >> $LIBDIR that had the patch to expose the netlink APIs as versioned
-> > >> symbols; so it was just pulling in everything from the shared library.
-> > >>
-> > >> So what I was going for was exactly what you described above; but it
-> > >> seems that doesn't actually work. Too bad, and sorry for wasting your
-> > >> time on this :/
-> > >
-> > > bpftool is currently tightly coupled with libbpf and very likely
-> > > in the future the dependency will be even tighter.
-> > > In that sense bpftool is an extension of libbpf and libbpf is an extension
-> > > of bpftool.
-> > > Andrii is working on set of patches to generate user space .c code
-> > > from bpf program.
-> > > bpftool will be generating the code that is specific for the version
-> > > bpftool and for
-> > > the version of libbpf. There will be compatibility layers as usual.
-> > > But in general the situation where a bug in libbpf is so criticial
-> > > that bpftool needs to repackaged is imo less likely than a bug in
-> > > bpftool that will require re-packaging of libbpf.
-> > > bpftool is quite special. It's not a typical user of libbpf.
-> > > The other way around is more correct. libbpf is a user of the code
-> > > that bpftool generates and both depend on each other.
-> > > perf on the other side is what typical user space app that uses
-> > > libbpf will look like.
-> > > I think keeping bpftool in the kernel while packaging libbpf
-> > > out of github was an oversight.
-> > > I think we need to mirror bpftool into github/libbpf as well
-> > > and make sure they stay together. The version of libbpf == version of bpftool.
-> > > Both should come from the same package and so on.
-> > > May be they can be two different packages but
-> > > upgrading one should trigger upgrade of another and vice versa.
-> > > I think one package would be easier though.
-> > > Thoughts?
-> >
-> > Yup, making bpftool explicitly the "libbpf command line interface" makes
-> > sense and would help clarify the relationship between the two. As Jiri
-> > said, we are already moving in that direction packaging-wise...
-> 
-> Awesome. Let's figure out the logistics.
-> Should we do:
-> git mv tools/bpf/bpftool/ tools/lib/bpf/
-> and appropriate adjustment to Makefiles ?
-> or keep it where it is and only add to
-> https://github.com/libbpf/libbpf/blob/master/scripts/sync-kernel.sh ?
 
-I'd be in preference of the latter aka keeping where it is.
 
-Thanks,
-Daniel
+On 4 Dec 2019, at 19:01, Yonghong Song wrote:
+
+<SNIP>
+
+>>> I=E2=80=99ve put my code on GitHub, maybe it=E2=80=99s just something s=
+tupid=E2=80=A6
+>
+> Thanks for the test case. This indeed a kernel bug.
+> The following change fixed the issue:
+>
+>
+> -bash-4.4$ git diff
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index a0482e1c4a77..034ef81f935b 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -9636,7 +9636,10 @@ static int check_attach_btf_id(struct
+> bpf_verifier_env *env)
+>                                  ret =3D -EINVAL;
+>                                  goto out;
+>                          }
+> -                       addr =3D (long)
+> tgt_prog->aux->func[subprog]->bpf_func;
+> +                       if (subprog =3D=3D 0)
+> +                               addr =3D (long) tgt_prog->bpf_func;
+> +                       else
+> +                               addr =3D (long)
+> tgt_prog->aux->func[subprog]->bpf_func;
+>                  } else {
+>                          addr =3D kallsyms_lookup_name(tname);
+>                          if (!addr) {
+> -bash-4.4$
+>
+> The reason is for a bpf program without any additional subprogram
+> (callees), tgt_prog->aux->func is not populated and is a NULL pointer,
+> so the access tgt_prog->aux->func[0]->bpf_func will segfault.
+>
+> With the above change, your test works properly.
+
+Thanks for the quick response, and as you mention the test passes with=20
+the patch above.
+
+I will continue my experiments later this week, and let you know if I=20
+run into any other problems.
+
+Cheers,
+
+Eelco
+
+
