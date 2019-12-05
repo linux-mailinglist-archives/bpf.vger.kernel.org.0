@@ -2,98 +2,214 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C7C12114089
-	for <lists+bpf@lfdr.de>; Thu,  5 Dec 2019 13:09:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 061D61140ED
+	for <lists+bpf@lfdr.de>; Thu,  5 Dec 2019 13:40:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729099AbfLEMJN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Dec 2019 07:09:13 -0500
-Received: from mx2.suse.de ([195.135.220.15]:58704 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729096AbfLEMJM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Dec 2019 07:09:12 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id A6C63AB87;
-        Thu,  5 Dec 2019 12:09:10 +0000 (UTC)
-Date:   Thu, 5 Dec 2019 12:09:05 +0000
-From:   Michal Rostecki <mrostecki@opensuse.org>
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Quentin Monnet <quentin.monnet@netronome.com>,
-        Laura Abbott <labbott@redhat.com>
-Subject: Re: [PATCHv4 0/6] perf/bpftool: Allow to link libbpf dynamically
-Message-ID: <20191205120905.GA5127@wotan.suse.de>
-References: <20191202131847.30837-1-jolsa@kernel.org>
- <CAEf4BzY_D9JHjuU6K=ciS70NSy2UvSm_uf1NfN_tmFz1445Jiw@mail.gmail.com>
- <87wobepgy0.fsf@toke.dk>
- <CAADnVQK-arrrNrgtu48_f--WCwR5ki2KGaX=mN2qmW_AcRyb=w@mail.gmail.com>
- <CAEf4BzZ+0XpH_zJ0P78vjzmFAH3kGZ21w3-LcSEG=B=+ZQWJ=w@mail.gmail.com>
- <20191204135405.3ffb9ad6@cakuba.netronome.com>
- <20191204233948.opvlopjkxe5o66lr@ast-mbp.dhcp.thefacebook.com>
- <20191205093548.6eee1449@carbon>
+        id S1729426AbfLEMkf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Dec 2019 07:40:35 -0500
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:46905 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729099AbfLEMkf (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 5 Dec 2019 07:40:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1575549633;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XpLxceFJg2U3J6ZX5pMfEYnwzKDy9xwAZ+uNSz/L0AA=;
+        b=BtOI/XZjWcBfb0PYOZf7MpXEDGqPhRPlMpdKC/SEdjna33T1NRHI19QALeWLO7xm59o+qJ
+        rEdKjH+Xjyl0lCBYR1iQmlahRdQyDJX1CmJ/jODehmxofgZmDRzzd+eTYjvbilvhAY+7qH
+        BMgE+6PYXOIRTkOz1+aCBHiLa7TvyVk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-146-mRgeQYcSNMWRme6nk2-qxw-1; Thu, 05 Dec 2019 07:40:28 -0500
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0EEA518557C2;
+        Thu,  5 Dec 2019 12:40:27 +0000 (UTC)
+Received: from [10.36.116.191] (ovpn-116-191.ams2.redhat.com [10.36.116.191])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1D31B1D1;
+        Thu,  5 Dec 2019 12:40:25 +0000 (UTC)
+From:   "Eelco Chaudron" <echaudro@redhat.com>
+To:     "Yonghong Song" <yhs@fb.com>
+Cc:     "Alexei Starovoitov" <alexei.starovoitov@gmail.com>,
+        Xdp <xdp-newbies@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: Trying the bpf trace a bpf xdp program
+Date:   Thu, 05 Dec 2019 13:40:24 +0100
+Message-ID: <F8CFD537-7907-4259-9C91-4649F799216B@redhat.com>
+In-Reply-To: <E08A0006-E254-492C-92AB-408B58E456C0@redhat.com>
+References: <E53E0693-1C3A-4B47-B205-DC8E5DAF3619@redhat.com>
+ <CAADnVQKkLtG-QCZwxx-Bpz8-goh-_mSTtUSzpb_oTv9a-qLizg@mail.gmail.com>
+ <3AC9D2B7-9D2F-4286-80A2-1721B51B62CF@redhat.com>
+ <CAADnVQJKSnoMVpQ3F86zBhFyo8WQ0vi65Z4QDtopLRrpK4yB8Q@mail.gmail.com>
+ <4BBF99E4-9554-44F7-8505-D4B8416554C4@redhat.com>
+ <d588c894-a4e0-8b99-72a9-4429b27091df@fb.com>
+ <056E9F5E-4FDD-4636-A43A-EC98A06E84D3@redhat.com>
+ <aa59532b-34a9-7887-f550-ef2859f0c9f1@fb.com>
+ <B7E0062E-37ED-46E6-AE64-EE3E2A0294EA@redhat.com>
+ <7062345a-1060-89f6-0c02-eef2fe0d835a@fb.com>
+ <b8d80047-3bc1-5393-76a1-7517cb2b7280@fb.com>
+ <E08A0006-E254-492C-92AB-408B58E456C0@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191205093548.6eee1449@carbon>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-MC-Unique: mRgeQYcSNMWRme6nk2-qxw-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 05, 2019 at 09:35:48AM +0100, Jesper Dangaard Brouer wrote:
-> I don't think that is a good idea.  You are creating double work and
-> wasting distro developers time.  Let me explain: 
-> 
-> 1. First of all, GitHub libbpf does not have a stable branches (which
-> makes sense, given this is a read-only clone of kernel tree). Thus,
-> distro developers have to maintain that themselves, in their internal
-> package tree (that is based on GitHub libbpf).
-> 
-> 2. Kernel BPF changes usually require updates to libbpf, as selftests
-> uses libbpf.  Thus, the distro kernel backporter is already required to
-> backport libbpf parts.
-> 
-> This is double work, the code changes to libbpf are now maintained in
-> two places for the distro.
 
-I totally agree with Jesper here.
 
-I don't know how the situatiom with packaging libbpf and bpftool looks
-like in Fedora/Centos/RHEL now, but in openSUSE we would like to build
-both of them from the kernel source - use kernel-source package as a
-requirement and use the kernel tree from /usr/src/linux to build those.
-We do that for bpftool and perf currently.
+On 4 Dec 2019, at 19:52, Eelco Chaudron wrote:
 
-So far we are building bpftool and perf without libbpf being dynamically
-linked, so there is no dependency between those packages, although we
-would like to change it as soon as we find a consensus on this series of
-patches.
+> On 4 Dec 2019, at 19:01, Yonghong Song wrote:
+>
+> <SNIP>
+>
+>>>> I=E2=80=99ve put my code on GitHub, maybe it=E2=80=99s just something =
+stupid=E2=80=A6
+>>
+>> Thanks for the test case. This indeed a kernel bug.
+>> The following change fixed the issue:
+>>
+>>
+>> -bash-4.4$ git diff
+>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>> index a0482e1c4a77..034ef81f935b 100644
+>> --- a/kernel/bpf/verifier.c
+>> +++ b/kernel/bpf/verifier.c
+>> @@ -9636,7 +9636,10 @@ static int check_attach_btf_id(struct
+>> bpf_verifier_env *env)
+>>                                  ret =3D -EINVAL;
+>>                                  goto out;
+>>                          }
+>> -                       addr =3D (long)
+>> tgt_prog->aux->func[subprog]->bpf_func;
+>> +                       if (subprog =3D=3D 0)
+>> +                               addr =3D (long) tgt_prog->bpf_func;
+>> +                       else
+>> +                               addr =3D (long)
+>> tgt_prog->aux->func[subprog]->bpf_func;
+>>                  } else {
+>>                          addr =3D kallsyms_lookup_name(tname);
+>>                          if (!addr) {
+>> -bash-4.4$
+>>
+>> The reason is for a bpf program without any additional subprogram
+>> (callees), tgt_prog->aux->func is not populated and is a NULL=20
+>> pointer,
+>> so the access tgt_prog->aux->func[0]->bpf_func will segfault.
+>>
+>> With the above change, your test works properly.
+>
+> Thanks for the quick response, and as you mention the test passes with=20
+> the patch above.
+>
+> I will continue my experiments later this week, and let you know if I=20
+> run into any other problems.
+>
 
-> The disadvantage for distros to package libbpf (+ bpftool and perf) off
-> their distro kernel tree is that a fix to libbpf, requires rolling a
-> new kernel minor release.  The solution to that is simply that distro
-> package for libbpf have a separate (RPM) spec file, with own
-> versioning, which sources points to distro kernel tree.
+With the following program I get some access errors:
 
-That's a great idea. So far, we are using the same version for kernel,
-bfptool and perf, but all of these have separate RPM specs, so we can do
-that.
+#define bpf_debug(fmt, ...)                         \
+{                                                   \
+   char __fmt[] =3D fmt;                               \
+   bpf_trace_printk(__fmt, sizeof(__fmt),            \
+                    ##__VA_ARGS__);                  \
+}
 
-Michal
+BPF_TRACE_2("fexit/xdp_prog_simple", trace_on_exit,
+             struct xdp_md *, xdp, int, ret)
+{
+   __u32 rx_queue;
+
+   __builtin_preserve_access_index(({
+         rx_queue =3D xdp->rx_queue_index;
+       }));
+
+   bpf_debug("fexit: queue =3D %u, ret =3D %d\n", rx_queue, ret);
+
+   return 0;
+}
+
+I assume the XDP context has not been vetted?
+
+libbpf: -- BEGIN DUMP LOG ---
+libbpf:
+func#0 @0
+BPF program ctx type is not a struct
+Type info disagrees with actual arguments due to compiler optimizations
+0: R1=3Dctx(id=3D0,off=3D0,imm=3D0) R10=3Dfp0
+; BPF_TRACE_2("fexit/xdp_prog_simple", trace_on_exit,
+0: (b7) r2 =3D 16
+1: R1=3Dctx(id=3D0,off=3D0,imm=3D0) R2_w=3Dinv16 R10=3Dfp0
+; BPF_TRACE_2("fexit/xdp_prog_simple", trace_on_exit,
+1: (79) r3 =3D *(u64 *)(r1 +0)
+2: R1=3Dctx(id=3D0,off=3D0,imm=3D0) R2_w=3Dinv16=20
+R3_w=3Dptr_xdp_buff(id=3D0,off=3D0,imm=3D0) R10=3Dfp0
+2: (0f) r3 +=3D r2
+last_idx 2 first_idx 0
+regs=3D4 stack=3D0 before 1: (79) r3 =3D *(u64 *)(r1 +0)
+regs=3D4 stack=3D0 before 0: (b7) r2 =3D 16
+3: R1=3Dctx(id=3D0,off=3D0,imm=3D0) R2_w=3DinvP16=20
+R3_w=3Dptr_xdp_buff(id=3D0,off=3D16,imm=3D0) R10=3Dfp0
+; rx_queue =3D xdp->rx_queue_index;
+3: (61) r3 =3D *(u32 *)(r3 +0)
+cannot access ptr member data_meta with moff 16 in struct xdp_buff with=20
+off 16 size 4
+verification time 102 usec
+stack depth 0
+processed 4 insns (limit 1000000) max_states_per_insn 0 total_states 0=20
+peak_states 0 mark_read 0
+libbpf: -- END LOG --
+
+
+Trying to use the helpers, passes verification, however, it=E2=80=99s dumpi=
+ng=20
+invalid content:
+
+BPF_TRACE_2("fexit/xdp_prog_simple", trace_on_exit,
+             struct xdp_md *, xdp, int, ret)
+{
+   __u32 rx_queue;
+
+   bpf_probe_read_kernel(&rx_queue, sizeof(rx_queue),
+                         __builtin_preserve_access_index(&xdp->rx_queue_ind=
+ex));
+
+   bpf_debug("fexit: queue =3D %u, ret =3D %d\n", rx_queue, ret);
+   return 0;
+}
+
+Debug output:
+
+    ping6-2752  [004] ..s1 60763.917790: 0: SIMPLE: [ifindex =3D 4, queue=
+=20
+=3D  0]
+    ping6-2752  [004] ..s1 60763.917800: 0: fexit: queue =3D 2969379072,=20
+ret =3D 2
+    ping6-2752  [004] ..s1 60764.941817: 0: SIMPLE: [ifindex =3D 4, queue=
+=20
+=3D  0]
+    ping6-2752  [004] ..s1 60764.941828: 0: fexit: queue =3D 2969379072,=20
+ret =3D 2
+    ping6-2752  [004] ..s1 60765.965835: 0: SIMPLE: [ifindex =3D 4, queue=
+=20
+=3D  0]
+
+
+Tried the same with fentry for this function, but the same results as=20
+fexit.
+
+Any hints?
+
+Thanks,
+
+
+Eelco
+
