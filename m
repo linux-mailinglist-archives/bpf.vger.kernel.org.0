@@ -2,171 +2,254 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B2DB4114415
-	for <lists+bpf@lfdr.de>; Thu,  5 Dec 2019 16:51:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA3D811460B
+	for <lists+bpf@lfdr.de>; Thu,  5 Dec 2019 18:36:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729806AbfLEPvW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Dec 2019 10:51:22 -0500
-Received: from mail-eopbgr40074.outbound.protection.outlook.com ([40.107.4.74]:63710
-        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726257AbfLEPvV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Dec 2019 10:51:21 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nvVklZa1g7L9pN14mKagDlrRdp/Oz7kNZOETHlj4udBp5bcShyFu0FMJufcCc4AKi+41f4QI4n8ar0TXFv03mEMUSD2BVn6/nQu+5lMuslEIG/PGMPFNx5lbr55pjmMAaBrKBZhFi8qVI2lbjwX7lTAX5LrLhtXJAAOLkng9K2YoZrXDCllsOTyQIP7Ml5IU1TsCyCCz6JxOQc328F0ydiDzJlBlxqB18qLtl6rbbkpQWKh6pQ1gEf4pdjjwTR/uck2zxjGC1ugrnKAr0wbouKqNVGhM9j5l9/dNXs+Mmx2xH1M97WESfjx0wWEjQbfF31OWvQ8Aa85y987fcaEH5A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4err6LsxWP36fJt+zmA22ZiyXPzySRemu9AS355mQhM=;
- b=RwE7aOMX/p1pu5KSB/cF0ce/DRdAiBaUA9hcLXrQcM6wonVfE6/rHjFLDagutiPJDETSt27CtWIxku6oGg9/w8RJ54kFM4fc6o9KhApO0g+U1vlgQiG6xjudxQz+IPu4cgyE/sT0h+zjFgO462ru/QYHxl0Gdebi+rc739mPd3xsUnFOHaIH2908/zocpRYlZ27TJgLDSurrIs4lYE4jmTQ17RiVh8n+6PFp+btWUvnFDiK5zQpY1MdccMhA/Xe+XUuz0cZ36pk3MTaHmxTL8CUZuD1uENPKgryTueFMPpQULmnyR4J8mWmBczrwt7yl5yIJkDtHsdFuubNIZNM0JQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4err6LsxWP36fJt+zmA22ZiyXPzySRemu9AS355mQhM=;
- b=mTF777Td27pZ3GG6sn3lthsmaefH/uEZ1Xfg3o8g0Q3HiLK0a59CAY2zq15hlfwT0kDWAHHFsAAd3vyjHuj3O9ePzpmNASl1YW9CUSy8FOHR1YJ4/mC1gqwf1E8zJWNz3v3NQUf7T3PG9BQn4N4tCuA5th92ARP3H4BBxvd5cYc=
-Received: from AM0PR05MB5875.eurprd05.prod.outlook.com (20.178.119.159) by
- AM0PR05MB4851.eurprd05.prod.outlook.com (20.176.214.222) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2495.22; Thu, 5 Dec 2019 15:51:17 +0000
-Received: from AM0PR05MB5875.eurprd05.prod.outlook.com
- ([fe80::dca5:7e63:8242:685e]) by AM0PR05MB5875.eurprd05.prod.outlook.com
- ([fe80::dca5:7e63:8242:685e%7]) with mapi id 15.20.2516.013; Thu, 5 Dec 2019
- 15:51:17 +0000
-From:   Maxim Mikityanskiy <maximmi@mellanox.com>
-To:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Maxim Mikityanskiy <maximmi@mellanox.com>
-Subject: [PATCH bpf 4/4] net/ixgbe: Fix concurrency issues between config flow
- and XSK
-Thread-Topic: [PATCH bpf 4/4] net/ixgbe: Fix concurrency issues between config
- flow and XSK
-Thread-Index: AQHVq4PUgLCY15zljUmnkB2blsgKSg==
-Date:   Thu, 5 Dec 2019 15:51:17 +0000
-Message-ID: <20191205155028.28854-5-maximmi@mellanox.com>
-References: <20191205155028.28854-1-maximmi@mellanox.com>
-In-Reply-To: <20191205155028.28854-1-maximmi@mellanox.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: AM0PR06CA0044.eurprd06.prod.outlook.com
- (2603:10a6:208:aa::21) To AM0PR05MB5875.eurprd05.prod.outlook.com
- (2603:10a6:208:12d::31)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=maximmi@mellanox.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-mailer: git-send-email 2.20.1
-x-originating-ip: [94.188.199.18]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 66ca26ff-ae0d-410b-60a2-08d7799af712
-x-ms-traffictypediagnostic: AM0PR05MB4851:|AM0PR05MB4851:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AM0PR05MB4851FC25248A857171507730D15C0@AM0PR05MB4851.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3173;
-x-forefront-prvs: 02426D11FE
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(376002)(39860400002)(396003)(136003)(346002)(366004)(189003)(199004)(6506007)(50226002)(6512007)(316002)(2906002)(81156014)(8936002)(102836004)(99286004)(8676002)(4326008)(76176011)(86362001)(305945005)(25786009)(64756008)(11346002)(2616005)(186003)(7416002)(54906003)(71190400001)(36756003)(478600001)(52116002)(14454004)(81166006)(5660300002)(14444005)(66476007)(71200400001)(66946007)(6486002)(66556008)(107886003)(1076003)(110136005)(66446008)(26005);DIR:OUT;SFP:1101;SCL:1;SRVR:AM0PR05MB4851;H:AM0PR05MB5875.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: suYGecS2gr8nRkyMD8eps9vQHACANuyA1whfwQrxb3xpFqfG1rZ1/JN3PQLgXyy7B2r4QjjzYx8S4BmwzJLIO/DJLjW2c4BvKpQj2fdmHr5sqGE9E57YvXsh4elEGMXInkEvxVsjkVz8MUyHU8fILQv7nEXwljG+FtavtM1VYuJkhO5zsH+AF7l+6Al6crMouCiN78RotNFkTshZeiwPDLLvo3ezXgv2th0p5NmhDRso8mgNhNtaaK7sFc3MZ+w0AbDuZLFNPWlZegT/6gUFwHVCCb0ZAZCPCDWMyLmToEMQQQecz69Fcw9hmvbyjhPRAWb+RpmZPLMBvgQ7zWl2HDLUgi2TKKchi7GaUDXf/5lTpdBFR7JB0Ds29pPx0bzU0YaVWOUOPPxAuPHNdHh71s1tiKG6gsESL22wnqrJbAsA+1b5+R71TyqOMY2aTYmW
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        id S1729994AbfLERgT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Dec 2019 12:36:19 -0500
+Received: from mail-il1-f193.google.com ([209.85.166.193]:42469 "EHLO
+        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729598AbfLERgT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 5 Dec 2019 12:36:19 -0500
+Received: by mail-il1-f193.google.com with SMTP id f6so3701641ilh.9;
+        Thu, 05 Dec 2019 09:36:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=9r8Ip7gLNufbdlkcj1bRufSEaZRtnnkOiqEWEK5Wkj8=;
+        b=QCdwHy252jTHlEOoGAiFgRwtHBjRVwQisq6kUBJyTvPk5QVcjMFshT46Ntm8v6YBpI
+         ncm1/d8cHPT30UCzddCCwbs5YayBYJ6f4tql81V2ClPYPt/axUGjfrnhFkONrgAMVED7
+         DgtR6n5rKmipPHEvsmwdpRiF3/HtcV27nmxpi6KcjudUU/RNMsPf4bIdLMSAYeO4ZMsc
+         /YS6dsNXVPHE3tNIP3VtzY4e8jiSjXpTjFqRejAhN+wEq5BvyV+63NkFMjs0ccf1egfS
+         UN+mfLPzTuNqfUYMMFaye/gN/c0xRkVjJuSrN5dF9NbVSEWwRaBXBz7ngmBjeRvkKg/Q
+         sv/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=9r8Ip7gLNufbdlkcj1bRufSEaZRtnnkOiqEWEK5Wkj8=;
+        b=D+jgcMpc60NFMBe62W8fhi5d6ADPuaQ+Upt2xFrCQEmzaTph1bwONzdf8bmtU08Gbk
+         l8UPbyeGpgW0wUuA8Ya0xvEZuOTAmi8jsaJzQCLFgyDjQFOrnjZTBVqgTGnb3HvPgWSs
+         QzAzOVIcVpMEOc9y6QC+TsnC6OdX3pkKfKQBXMtSFo+gChQuHgVwwfF7ptQpZ5OdCSXQ
+         2Z32DrWUqZsb77b+tUyWHTXqfHJDwJGM4CV7r0VfDowcla0LOr92csZehKdVr5i9C4d9
+         Pq3MGE+0hjcoa0TLkQ+teC23VDvyj0p8xbyYzAekI2jZM+QCoT+OLrBSq433vkJasl6G
+         LJpQ==
+X-Gm-Message-State: APjAAAWRZKBiEeUJmvrXxFEwY/ysqQF27oxcqXxVwHQSb/Kt3Lms8VXR
+        pDTxirnTyt2+V+fdaaTJVmMkr/fHqymIGVUnXHI=
+X-Google-Smtp-Source: APXvYqwuoxBs+Kc9r4//DIZcI+raCTJ/awkEH6bJTBDCd17n+wQ4rm9hVFwKGCJAhpCes22VivYOUXm0UBgh0VOOHUU=
+X-Received: by 2002:a92:4504:: with SMTP id s4mr9459210ila.116.1575567378097;
+ Thu, 05 Dec 2019 09:36:18 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 66ca26ff-ae0d-410b-60a2-08d7799af712
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Dec 2019 15:51:17.6863
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 85HloPmJnow3WavmoZzt087p7UA+7pcsAx5zGTLjvkdXj4S8N/aF/j6brdYAUoyXDKNybYSGqNygnlWlHeT9TQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR05MB4851
+References: <E53E0693-1C3A-4B47-B205-DC8E5DAF3619@redhat.com>
+ <CAADnVQKkLtG-QCZwxx-Bpz8-goh-_mSTtUSzpb_oTv9a-qLizg@mail.gmail.com>
+ <3AC9D2B7-9D2F-4286-80A2-1721B51B62CF@redhat.com> <CAADnVQJKSnoMVpQ3F86zBhFyo8WQ0vi65Z4QDtopLRrpK4yB8Q@mail.gmail.com>
+ <4BBF99E4-9554-44F7-8505-D4B8416554C4@redhat.com> <d588c894-a4e0-8b99-72a9-4429b27091df@fb.com>
+ <056E9F5E-4FDD-4636-A43A-EC98A06E84D3@redhat.com> <aa59532b-34a9-7887-f550-ef2859f0c9f1@fb.com>
+ <B7E0062E-37ED-46E6-AE64-EE3E2A0294EA@redhat.com> <7062345a-1060-89f6-0c02-eef2fe0d835a@fb.com>
+ <b8d80047-3bc1-5393-76a1-7517cb2b7280@fb.com> <E08A0006-E254-492C-92AB-408B58E456C0@redhat.com>
+ <F8CFD537-7907-4259-9C91-4649F799216B@redhat.com>
+In-Reply-To: <F8CFD537-7907-4259-9C91-4649F799216B@redhat.com>
+From:   Y Song <ys114321@gmail.com>
+Date:   Thu, 5 Dec 2019 09:35:42 -0800
+Message-ID: <CAH3MdRXr+3mUfrd8MPH-mDdNwD1szXRhz07s2C4dVQ0EkzDaAg@mail.gmail.com>
+Subject: Re: Trying the bpf trace a bpf xdp program
+To:     Eelco Chaudron <echaudro@redhat.com>
+Cc:     Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Xdp <xdp-newbies@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Use synchronize_rcu to wait until the XSK wakeup function finishes
-before destroying the resources it uses:
+On Thu, Dec 5, 2019 at 4:41 AM Eelco Chaudron <echaudro@redhat.com> wrote:
+>
+>
+>
+> On 4 Dec 2019, at 19:52, Eelco Chaudron wrote:
+>
+> > On 4 Dec 2019, at 19:01, Yonghong Song wrote:
+> >
+> > <SNIP>
+> >
+> >>>> I=E2=80=99ve put my code on GitHub, maybe it=E2=80=99s just somethin=
+g stupid=E2=80=A6
+> >>
+> >> Thanks for the test case. This indeed a kernel bug.
+> >> The following change fixed the issue:
+> >>
+> >>
+> >> -bash-4.4$ git diff
+> >> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> >> index a0482e1c4a77..034ef81f935b 100644
+> >> --- a/kernel/bpf/verifier.c
+> >> +++ b/kernel/bpf/verifier.c
+> >> @@ -9636,7 +9636,10 @@ static int check_attach_btf_id(struct
+> >> bpf_verifier_env *env)
+> >>                                  ret =3D -EINVAL;
+> >>                                  goto out;
+> >>                          }
+> >> -                       addr =3D (long)
+> >> tgt_prog->aux->func[subprog]->bpf_func;
+> >> +                       if (subprog =3D=3D 0)
+> >> +                               addr =3D (long) tgt_prog->bpf_func;
+> >> +                       else
+> >> +                               addr =3D (long)
+> >> tgt_prog->aux->func[subprog]->bpf_func;
+> >>                  } else {
+> >>                          addr =3D kallsyms_lookup_name(tname);
+> >>                          if (!addr) {
+> >> -bash-4.4$
+> >>
+> >> The reason is for a bpf program without any additional subprogram
+> >> (callees), tgt_prog->aux->func is not populated and is a NULL
+> >> pointer,
+> >> so the access tgt_prog->aux->func[0]->bpf_func will segfault.
+> >>
+> >> With the above change, your test works properly.
+> >
+> > Thanks for the quick response, and as you mention the test passes with
+> > the patch above.
+> >
+> > I will continue my experiments later this week, and let you know if I
+> > run into any other problems.
+> >
+>
+> With the following program I get some access errors:
+>
+> #define bpf_debug(fmt, ...)                         \
+> {                                                   \
+>    char __fmt[] =3D fmt;                               \
+>    bpf_trace_printk(__fmt, sizeof(__fmt),            \
+>                     ##__VA_ARGS__);                  \
+> }
+>
+> BPF_TRACE_2("fexit/xdp_prog_simple", trace_on_exit,
+>              struct xdp_md *, xdp, int, ret)
+> {
+>    __u32 rx_queue;
+>
+>    __builtin_preserve_access_index(({
+>          rx_queue =3D xdp->rx_queue_index;
+>        }));
+>
+>    bpf_debug("fexit: queue =3D %u, ret =3D %d\n", rx_queue, ret);
+>
+>    return 0;
+> }
+>
+> I assume the XDP context has not been vetted?
+>
+> libbpf: -- BEGIN DUMP LOG ---
+> libbpf:
+> func#0 @0
+> BPF program ctx type is not a struct
+> Type info disagrees with actual arguments due to compiler optimizations
+> 0: R1=3Dctx(id=3D0,off=3D0,imm=3D0) R10=3Dfp0
+> ; BPF_TRACE_2("fexit/xdp_prog_simple", trace_on_exit,
+> 0: (b7) r2 =3D 16
+> 1: R1=3Dctx(id=3D0,off=3D0,imm=3D0) R2_w=3Dinv16 R10=3Dfp0
+> ; BPF_TRACE_2("fexit/xdp_prog_simple", trace_on_exit,
+> 1: (79) r3 =3D *(u64 *)(r1 +0)
+> 2: R1=3Dctx(id=3D0,off=3D0,imm=3D0) R2_w=3Dinv16
+> R3_w=3Dptr_xdp_buff(id=3D0,off=3D0,imm=3D0) R10=3Dfp0
+> 2: (0f) r3 +=3D r2
+> last_idx 2 first_idx 0
+> regs=3D4 stack=3D0 before 1: (79) r3 =3D *(u64 *)(r1 +0)
+> regs=3D4 stack=3D0 before 0: (b7) r2 =3D 16
+> 3: R1=3Dctx(id=3D0,off=3D0,imm=3D0) R2_w=3DinvP16
+> R3_w=3Dptr_xdp_buff(id=3D0,off=3D16,imm=3D0) R10=3Dfp0
+> ; rx_queue =3D xdp->rx_queue_index;
+> 3: (61) r3 =3D *(u32 *)(r3 +0)
+> cannot access ptr member data_meta with moff 16 in struct xdp_buff with
+> off 16 size 4
+> verification time 102 usec
+> stack depth 0
+> processed 4 insns (limit 1000000) max_states_per_insn 0 total_states 0
+> peak_states 0 mark_read 0
+> libbpf: -- END LOG --
+>
 
-1. ixgbe_down already calls synchronize_rcu after setting __IXGBE_DOWN.
+It is a little tricky. The below change can make verifier happy. I did
+not test it so not sure whether produces correct result or not.
 
-2. After switching the XDP program, call synchronize_rcu to let
-ixgbe_xsk_async_xmit exit before the XDP program is freed.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+struct xdp_rxq_info {
+        __u32 queue_index;
+} __attribute__((preserve_access_index));
 
-3. Changing the number of channels brings the interface down.
+struct xdp_buff {
+        struct xdp_rxq_info *rxq;
+} __attribute__((preserve_access_index));
 
-4. Disabling UMEM sets __IXGBE_TX_DISABLED before closing hardware
-resources and resetting xsk_umem. Check that bit in ixgbe_xsk_async_xmit
-to avoid using the XDP ring when it's already destroyed. synchronize_rcu
-is called from ixgbe_txrx_ring_disable.
+BPF_TRACE_2("fexit/xdp_prog_simple", trace_on_exit,
+            struct xdp_buff *, ctx, int, ret)
+{
+   __u32 rx_queue;
 
-Signed-off-by: Maxim Mikityanskiy <maximmi@mellanox.com>
----
- drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 6 +++++-
- drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c  | 8 ++++++--
- 2 files changed, 11 insertions(+), 3 deletions(-)
+   rx_queue =3D ctx->rxq->queue_index;
+   bpf_debug("fexit: queue =3D %u, ret =3D %d\n", rx_queue, ret);
 
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/et=
-hernet/intel/ixgbe/ixgbe_main.c
-index 25c097cd8100..60503318c7e5 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-@@ -10273,8 +10273,12 @@ static int ixgbe_xdp_setup(struct net_device *dev,=
- struct bpf_prog *prog)
- 			    adapter->xdp_prog);
- 	}
-=20
--	if (old_prog)
-+	if (old_prog) {
-+		/* Wait until ndo_xsk_async_xmit completes. */
-+		synchronize_rcu();
-+
- 		bpf_prog_put(old_prog);
-+	}
-=20
- 	/* Kick start the NAPI context if there is an AF_XDP socket open
- 	 * on that queue id. This so that receiving will start.
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c b/drivers/net/eth=
-ernet/intel/ixgbe/ixgbe_xsk.c
-index d6feaacfbf89..b43be9f14105 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
-@@ -709,10 +709,14 @@ int ixgbe_xsk_wakeup(struct net_device *dev, u32 qid,=
- u32 flags)
- 	if (qid >=3D adapter->num_xdp_queues)
- 		return -ENXIO;
-=20
--	if (!adapter->xdp_ring[qid]->xsk_umem)
-+	ring =3D adapter->xdp_ring[qid];
-+
-+	if (test_bit(__IXGBE_TX_DISABLED, &ring->state))
-+		return -ENETDOWN;
-+
-+	if (!ring->xsk_umem)
- 		return -ENXIO;
-=20
--	ring =3D adapter->xdp_ring[qid];
- 	if (!napi_if_scheduled_mark_missed(&ring->q_vector->napi)) {
- 		u64 eics =3D BIT_ULL(ring->q_vector->v_idx);
-=20
---=20
-2.20.1
+   return 0;
+}
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
+In the above, I am using newly added clang attribute "__preserve_access_ind=
+ex"
+(in llvm-project trunk since Nov. 13) to make code
+a little bit cleaner. The old way as in selftests fexit_bpf2bpf.c
+should work too.
+
+Basically, the argument for fexit function should be types actually
+passing to the jited function.
+For user visible 'xdp_md`. the jited function will receive `xdp_buff`.
+The access for each field
+sometimes is not one-to-one mapping. You need to check kernel code to
+find the correct
+way. We probably should make this part better to improve user experience.
+
+>
+> Trying to use the helpers, passes verification, however, it=E2=80=99s dum=
+ping
+> invalid content:
+>
+> BPF_TRACE_2("fexit/xdp_prog_simple", trace_on_exit,
+>              struct xdp_md *, xdp, int, ret)
+> {
+>    __u32 rx_queue;
+>
+>    bpf_probe_read_kernel(&rx_queue, sizeof(rx_queue),
+>                          __builtin_preserve_access_index(&xdp->rx_queue_i=
+ndex));
+>
+>    bpf_debug("fexit: queue =3D %u, ret =3D %d\n", rx_queue, ret);
+>    return 0;
+> }
+>
+> Debug output:
+>
+>     ping6-2752  [004] ..s1 60763.917790: 0: SIMPLE: [ifindex =3D 4, queue
+> =3D  0]
+>     ping6-2752  [004] ..s1 60763.917800: 0: fexit: queue =3D 2969379072,
+> ret =3D 2
+>     ping6-2752  [004] ..s1 60764.941817: 0: SIMPLE: [ifindex =3D 4, queue
+> =3D  0]
+>     ping6-2752  [004] ..s1 60764.941828: 0: fexit: queue =3D 2969379072,
+> ret =3D 2
+>     ping6-2752  [004] ..s1 60765.965835: 0: SIMPLE: [ifindex =3D 4, queue
+> =3D  0]
+>
+>
+> Tried the same with fentry for this function, but the same results as
+> fexit.
+>
+> Any hints?
+>
+> Thanks,
+>
+>
+> Eelco
+>
