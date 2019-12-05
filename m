@@ -2,81 +2,242 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EE22D11397A
-	for <lists+bpf@lfdr.de>; Thu,  5 Dec 2019 03:02:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FD07113993
+	for <lists+bpf@lfdr.de>; Thu,  5 Dec 2019 03:10:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728393AbfLECCH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Dec 2019 21:02:07 -0500
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:33674 "EHLO
+        id S1728321AbfLECK5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Dec 2019 21:10:57 -0500
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:33443 "EHLO
         mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728132AbfLECCH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Dec 2019 21:02:07 -0500
-Received: by mail-lj1-f196.google.com with SMTP id 21so1651022ljr.0;
-        Wed, 04 Dec 2019 18:02:05 -0800 (PST)
+        with ESMTP id S1728132AbfLECKz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Dec 2019 21:10:55 -0500
+Received: by mail-lj1-f196.google.com with SMTP id 21so1668940ljr.0
+        for <bpf@vger.kernel.org>; Wed, 04 Dec 2019 18:10:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vy4UrIm2jbRYKhBVybPxalNzM1Qcx1GEJhVkQOqA7Lk=;
-        b=YbeIjIJAG4/1dqJq1HBXEgM+DuGuWN84YjlLNDWvHv6RDBe2oEYSNsZGk/FZ+15qEq
-         TbkzU9xZcOy9kGJbOpKVzZMCivDH0tC2glfecWpHyuEfRUyQU1HxgltRcITUXwHGKKzP
-         cWW8I0JeGm6kkoEaSiHZndMqTwAmjhndPdP26uC5zX7Hlr/tbebkFPx+zkDaVwloCVp4
-         glnxFgD7cymIQRmILDMMLIbe/dChXXRviEu66jULnk7M6zvmHP8xYqfuQY8F+1KT1fOb
-         ZhalLsmEhQVPOGvE9eT8Dy2eAJweUbYTXshCI7S4NMmO8R9o+3HQEJQWTBtcplOku4qG
-         pZwQ==
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :organization:mime-version:content-transfer-encoding;
+        bh=egQHAC9LGSWziTm0H/woVfatmjKm3wVavrNlPWEdRMI=;
+        b=XofSFKkOSllLUoMBe9eaClL6WevokUSySklcr6UDDFNdFPn5jonNcDdLZ6vtZsiaPW
+         MMacI5WDEx180F9oz82z74SLb+ibSjgzPgcPoO+t0LQf+cKocps4TrygC5xCyGSiu7rB
+         UkCUSqdgFVRKxMxRZesJMr8PpWQM2Rk/5Qm0Ngf80t9kPZDdOOto+eqR9tXIe1/kSiTa
+         xOUCGBXNIHubCddzRBRMFSPNptOzMFYRzZnmsJVsuGQCUSr9HsuEUVQcVF1D1BzWzSyc
+         AGQO3wCriSIFvIIFginuO1P4K8c4ArcwQXc+pFUutBSlc0Kb0Gg/gBgwUVog5GkzLCw6
+         JmOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vy4UrIm2jbRYKhBVybPxalNzM1Qcx1GEJhVkQOqA7Lk=;
-        b=PbHGId8P4GTY+mjmW0fiZ2H0seXOyTAiIve4iK44zt+9FikWLu5C7oTz9hxXiqJ8ke
-         BQ+xcfhu8DV+VvZLblGJM9u21tdlGPwm3XMNl5Sov2j0BNwwT3W9GS9+eYDu3oBt+CMx
-         QCTYSdOXuHsk9HeVOVt6nDf7MBpveeVl+nmeMyoeu5pYUhpPadOK1YAQpR7B2Z1vkRPS
-         xlx7QOzR7GTfxAZZIB0xNodh/y5Hv/ehkgNwXDE31NXtpY+D4bclX+/iGakrfQLvrGyT
-         VIZsVJIKkCZkAh/ee6LGmy1nndaQmeh5zu92RBwakevEpoePwvgVf/CMLwI+h9NKMWRJ
-         KH8A==
-X-Gm-Message-State: APjAAAXBilUthMsVnz/Js0cMNjZ//MEC8D4S5EHB+RpnlV16Mdy0j6tz
-        ecGV/X7cBpjLTzk+0aBvW3r+slbzBgwDPI7p08oBCA==
-X-Google-Smtp-Source: APXvYqyggXNzsI94Lxc397HaN2n3ZkgbEF1fEG44wCPqbNffF+4/8JNMj/OoiJNPtWUyX+4u57f9aE/n9vYWu69gHI4=
-X-Received: by 2002:a2e:5850:: with SMTP id x16mr3874211ljd.228.1575511324788;
- Wed, 04 Dec 2019 18:02:04 -0800 (PST)
-MIME-Version: 1.0
-References: <20191204190955.170934-1-sdf@google.com>
-In-Reply-To: <20191204190955.170934-1-sdf@google.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 4 Dec 2019 18:01:53 -0800
-Message-ID: <CAADnVQKjVFxWK1VgQTkZp2+Swr=LD1Ar2ABMY3_=78nkjssoJA@mail.gmail.com>
-Subject: Re: [PATCH bpf] selftests/bpf: de-flake test_tcpbpf
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=egQHAC9LGSWziTm0H/woVfatmjKm3wVavrNlPWEdRMI=;
+        b=OdQizL5gvzI+TcHbCglJf5zyIRyP/s23Rg6OVgLKVqep6LckPe9sazHOOHyLPW1sD+
+         jDiVT/KIzI6oaFcRCYa+kaV8M6WfYytlnl8XdCIMnX3DS7AiRDsYYCloZ352H6zudkwK
+         afDg+2jOK/IUZIZ4GtUA39mNfewgER7IeoOjyo9J6dgnj7gTBuRRzw310v0oq1UQ+hKQ
+         s2/HROgq0Qq2xIVHGvZvZlNS33cJarVc6oh7jtM41NfhrCiWsNjy04glyfHT7HUpBzTT
+         wcR9yynJInW84H77laMuIFwIN08H22OXtopcFGnu9Ljd7RNss4HnAq7tEN9lM08pxJHT
+         dq5w==
+X-Gm-Message-State: APjAAAU8uRxPKcAgqfv5l8cR0yHHlN+8OZA67ZSlXACaccn7hH0HgJ57
+        iYNIZJJlz6aJyP+BJF09axTFmg==
+X-Google-Smtp-Source: APXvYqyFCNMBBWVhRhZw0mX9EhZAvAdYRSxxfnI4A/fHOTGj5ylYBNF4aLTfLSS67O71pHuFym0W6Q==
+X-Received: by 2002:a2e:91cb:: with SMTP id u11mr1341708ljg.82.1575511852393;
+        Wed, 04 Dec 2019 18:10:52 -0800 (PST)
+Received: from cakuba.netronome.com ([66.60.152.14])
+        by smtp.gmail.com with ESMTPSA id g5sm4145202lfc.11.2019.12.04.18.10.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Dec 2019 18:10:52 -0800 (PST)
+Date:   Wed, 4 Dec 2019 18:10:28 -0800
+From:   Jakub Kicinski <jakub.kicinski@netronome.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Toke =?UTF-8?B?SMO4aWxh?= =?UTF-8?B?bmQtSsO4cmdlbnNlbg==?= 
+        <toke@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Lawrence Brakmo <brakmo@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Quentin Monnet <quentin.monnet@netronome.com>
+Subject: Re: [PATCHv4 0/6] perf/bpftool: Allow to link libbpf dynamically
+Message-ID: <20191204181028.6cdb40d4@cakuba.netronome.com>
+In-Reply-To: <20191205010930.izft6kv5xlnejgog@ast-mbp.dhcp.thefacebook.com>
+References: <20191202131847.30837-1-jolsa@kernel.org>
+        <CAEf4BzY_D9JHjuU6K=ciS70NSy2UvSm_uf1NfN_tmFz1445Jiw@mail.gmail.com>
+        <87wobepgy0.fsf@toke.dk>
+        <CAADnVQK-arrrNrgtu48_f--WCwR5ki2KGaX=mN2qmW_AcRyb=w@mail.gmail.com>
+        <CAEf4BzZ+0XpH_zJ0P78vjzmFAH3kGZ21w3-LcSEG=B=+ZQWJ=w@mail.gmail.com>
+        <20191204135405.3ffb9ad6@cakuba.netronome.com>
+        <20191204233948.opvlopjkxe5o66lr@ast-mbp.dhcp.thefacebook.com>
+        <20191204162348.49be5f1b@cakuba.netronome.com>
+        <20191205010930.izft6kv5xlnejgog@ast-mbp.dhcp.thefacebook.com>
+Organization: Netronome Systems, Ltd.
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 4, 2019 at 11:09 AM Stanislav Fomichev <sdf@google.com> wrote:
->
-> It looks like BPF program that handles BPF_SOCK_OPS_STATE_CB state
-> can race with the bpf_map_lookup_elem("global_map"); I sometimes
-> see the failures in this test and re-running helps.
->
-> Since we know that we expect the callback to be called 3 times (one
-> time for listener socket, two times for both ends of the connection),
-> let's export this number and add simple retry logic around that.
->
-> Also, let's make EXPECT_EQ() not return on failure, but continue
-> evaluating all conditions; that should make potential debugging
-> easier.
->
-> With this fix in place I don't observe the flakiness anymore.
->
-> Cc: Lawrence Brakmo <brakmo@fb.com>
-> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+On Wed, 4 Dec 2019 17:09:32 -0800, Alexei Starovoitov wrote:
+> On Wed, Dec 04, 2019 at 04:23:48PM -0800, Jakub Kicinski wrote:
+> > On Wed, 4 Dec 2019 15:39:49 -0800, Alexei Starovoitov wrote:  
+> > > > Agreed. Having libbpf on GH is definitely useful today, but one can hope
+> > > > a day will come when distroes will get up to speed on packaging libbpf,
+> > > > and perhaps we can retire it? Maybe 2, 3 years from now? Putting
+> > > > bpftool in the same boat is just more baggage.    
+> > > 
+> > > Distros should be packaging libbpf and bpftool from single repo on github.
+> > > Kernel tree is for packaging kernel.  
+> > 
+> > Okay, single repo on GitHub:
+> > 
+> > https://github.com/torvalds/linux  
+> 
+> and how will you git submodule only libbpf part of kernel github into bcc
+> and other projects?
 
-Applied. Thanks
+Why does bcc have to submodule libbpf? Is it in a "special
+relationship" with libbpf as well? 
+
+dnf/apt install libbpf
+
+Or rather:
+
+dnf/apt install bcc
+
+since BCC's user doesn't care about dependencies. The day distroes
+started packaging libbpf and bpftool the game has changed.
+
+> > You also said a few times you don't want to merge fixes into bpf/net.
+> > That divergence from kernel development process is worrying.  
+> 
+> worrying - why? what exactly the concern you see?
+
+First it's still in the tree so it just feels wrong to have the process
+fundamentally different for sections of the tree. 
+
+Secondly it's best to stick to the tried and tested processes unless
+there's a good and stated reason to diverge.
+
+Now we're neither doing standard user library process nor kernel
+process. Both of which must account for stable fixes (Dave explained
+the enterprise distro needs in his reply).
+
+> Tying user space release into kernel release and user space process into
+> kernel process makes little sense to me.
+
+I'm not saying we can't do user space, but we should pick one.
+
+I have slight preference for kernel process, because it's familiar and
+it automatically takes of policy questions, which otherwise consume
+developer's time.
+
+Please accept iproute2 as an example of a user space toolset closely
+related to the kernel. If kernel release model and process made no
+sense in user space, why do iproute2s developers continue to follow it
+for years? 
+
+Let's learn from experience :/
+
+> Packaging is different.
+
+There are mostly disadvantages, but the process should be well known.
+perf has been packaged for years.
+
+iproute2 sometimes lags behind the upstream, more than perf in my
+experience. Also there's rarely a need to update tools closely related
+to the kernel without the kernel..
+
+> Compatibility requirements are different.
+
+True.
+
+> CI is different.
+
+Well, hard to argue about things which don't exist :/
+
+> Integration with other projects is different.
+
+IMHO the submodule use case is fading. dnf/apt install, it's just a
+normal C library, we've done this for decades.
+
+And there is no submodule need for bpftool, which we are discussing.
+
+> libbpf source code is in the kernel tree only because kernel changes plus
+> libbpf changes plus selftests changes come as single patchset. That is really
+> the only reason. Packaging scripts, CI scripts, etc should be kept out of
+> kernel tree. All that stuff belongs at github/libbpf.
+> 
+> > None of this makes very much sense to me. We're diverging from well
+> > established development practices without as much as a justification.  
+> 
+> The kernel development process was never used for libbpf.
+
+What do you mean? I've sure as hell sent patches to net with Fixes tags,
+S-o-B and all that jazz for libbpf and bpftool.
+
+> Even coding style is different.
+
+Is it? You mean the damn underscores people are making fun of? :/
+
+> I'm puzzled why you think user space
+> should be tied to kernel. Everything is so vastly different.
+
+Not what I'm saying, I'm saying either run it as user space project in
+separate repos or kernel project.
+
+You're proposing we do both with some syncs and no clear process.
+
+> Some people say that 8 weeks to bump libbpf version is too long.
+> Other people say that it's too often.
+
+Those are two conflicting requirements, Alexei, how is breaking apart
+from the kernel going to make any difference?
+
+At least kernel gives us this somewhat reasonable 8 week cadence and 
+we don't have to ponder whether it should be shorter or longer until
+someone presents us with a compelling reason.
+
+> libbpf version numbers != kernel version numbers.
+
+Well, libbpf's numbers are arbitrary, and meaningless. They could as
+well be kernel numbers, like they are for bpftool. Or dates.
+
+libbpf doesn't have a roadmap either, it's not really a full-on project
+on its own. What's 0.1.0 gonna be? 
+
+Besides stuff lands in libbpf before it hits a major kernel release.
+So how are you gonna make libbpf releases independently from kernel
+ones? What if a feature gets a last minute revert in the kernel and it's
+in libbpf's ABI?
+
+Eh, you're just convincing me it should just stay in the kernel now.
+
+> There is no definition of LTS for libbpf. One day it will be
+> and the version of libbpf picked for LTS will likely have
+> nothing to do with kernel LTS choices.
+
+Again, libbpf inherits the kernel process so there is LTS process, the
+kernel one, and it's taken care of for us by all the existing stable
+automation.
+
+By merging everything into -next you're loosing that, with all but a
+vague mirage of how there may one day be multiple stable branches..
+
+> libbpf has to run on all kernels. Newer and older. How do you support
+> that if libbpf is tied with the kernel?
+
+Say I have built N kernels UM or for a VM, and we have some test
+suite: I pull libbpf, build it, run its tests. The only difference
+between in tree and out of tree is that "pull libbpf" means pulling
+smaller or larger repo. Doesn't matter that match, it's a low --depth
+local clone.
+
+Sorry for the long response.
