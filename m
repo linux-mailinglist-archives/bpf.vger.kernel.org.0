@@ -2,171 +2,177 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 62CB4113E7F
-	for <lists+bpf@lfdr.de>; Thu,  5 Dec 2019 10:47:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50B24113F54
+	for <lists+bpf@lfdr.de>; Thu,  5 Dec 2019 11:26:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728707AbfLEJru (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Dec 2019 04:47:50 -0500
-Received: from mail-vk1-f194.google.com ([209.85.221.194]:37978 "EHLO
-        mail-vk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728604AbfLEJru (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Dec 2019 04:47:50 -0500
-Received: by mail-vk1-f194.google.com with SMTP id m128so898865vkb.5;
-        Thu, 05 Dec 2019 01:47:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=lrwnfiVVF6lFAzyrr0Hoi20YAxWZoj4rPySupLreSEI=;
-        b=lvjagJDB3LySDjqV11cZQCfd54L0h4d/oqLUfhq8wLKZzkFeYoGF/weGw8jpbDCjiQ
-         vq9TGxBv0rVf6e5C6F4x/6a7ybt4bRxGWRJPSqHCbCVwoNAhx+yNd/dXznuELltFEuyh
-         1VcYKTbuUY2XE/GeGETLaLqa/8Ow4nzZ1bdpY3J3l/LvIA7KTwmrit85CZRJfSrDD8Oe
-         qjG+XzSATTlh8IxOJURRiyJLFR8rj4rWzf0ZelfL+X4HtEKOrRb2CbqaPejXLCBWQ56t
-         oCiTj8xdzP/03sYXaNyt4nl6Q34ZiPH4ffhYvpHR62a7VO1lzXdEZAEDi226luAkQwng
-         +oLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=lrwnfiVVF6lFAzyrr0Hoi20YAxWZoj4rPySupLreSEI=;
-        b=JOU3id1Oqvegm0SLZHSJFlauvmbkO3GYYM7oFU69ZQ7HeWDeUKWXQfq5tfcnNkondR
-         rjkoXtyGqpgLEz+9wX/uhAHZFsbG5sJTVlOuNl6W62csPzVXaEK/vAg+J7CF4FLWqS+6
-         J3znW1XbKaRl8dEkv0qjExEiX0hZXK7S0C2/FrQXGvISgR6CJBim9R/6Zx8pEY5PiNzf
-         64Ysf+pt5QkxNxXXJ7GAnpvxX646qZmtE3T1nnIinCoc7fqDcOj1WPK6+vRO8oxacsdd
-         Wqy+SOju0glW5fshuLiSlw9ShrlnbaGub6Ovk7FasJu1ykhitfWayH6PkBmAjYn4WYaA
-         t5Iw==
-X-Gm-Message-State: APjAAAVH23NnQhB3lYrLdOg+FK68Bq6Ymhqngl6Lb43TqnU5iEoAuK3M
-        fAfmNwPoEVvHcVHeXQuLwZ3eF6JYe3VEK8hf3dc=
-X-Google-Smtp-Source: APXvYqyz3F7oUWnHlWhlZ7hFtfuJ8CDIrmB3FlT0xyrs5Gb/Lb5kILGymolkpHCo9IWDLJnMqMcDsbn5kMw69mPCZIo=
-X-Received: by 2002:a1f:3dd0:: with SMTP id k199mr5779884vka.75.1575539268514;
- Thu, 05 Dec 2019 01:47:48 -0800 (PST)
+        id S1726384AbfLEK0P convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Thu, 5 Dec 2019 05:26:15 -0500
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:31125 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728735AbfLEK0P (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 5 Dec 2019 05:26:15 -0500
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-410-gp8WhHfMOXKKwJJezFbHvw-1; Thu, 05 Dec 2019 05:26:10 -0500
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7198F183B725;
+        Thu,  5 Dec 2019 10:26:08 +0000 (UTC)
+Received: from krava.redhat.com (ovpn-205-4.brq.redhat.com [10.40.205.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A428B5D9C9;
+        Thu,  5 Dec 2019 10:25:57 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-audit@redhat.com, Andrii Nakryiko <andriin@fb.com>,
+        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Steve Grubb <sgrubb@redhat.com>,
+        David Miller <davem@redhat.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@redhat.com>, Jiri Benc <jbenc@redhat.com>
+Subject: [PATCHv2] bpf: Emit audit messages upon successful prog load and unload
+Date:   Thu,  5 Dec 2019 11:25:52 +0100
+Message-Id: <20191205102552.19407-1-jolsa@kernel.org>
 MIME-Version: 1.0
-References: <cover.1575517685.git.ethercflow@gmail.com> <afe4deb020b781c76e9df8403a744f88a8725cd2.1575517685.git.ethercflow@gmail.com>
- <20191205071858.entnj2c27n44kwit@ast-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20191205071858.entnj2c27n44kwit@ast-mbp.dhcp.thefacebook.com>
-From:   Wenbo Zhang <ethercflow@gmail.com>
-Date:   Thu, 5 Dec 2019 17:47:36 +0800
-Message-ID: <CABtjQmaWQNvmzH-rerm_gevtzKS-1jbD6HxjNU4xg3H5Wq3Q8g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v11 1/2] bpf: add new helper get_file_path for
- mapping a file descriptor to a pathname
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, ast@kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Networking <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-MC-Unique: gp8WhHfMOXKKwJJezFbHvw-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8BIT
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> On Sat, Nov 23, 2019 at 05:35:14AM +0000, Al Viro wrote:
-> > On Fri, Nov 22, 2019 at 09:19:21PM -0800, Alexei Starovoitov wrote:
-> >
-> > > hard to tell. It will be run out of bpf prog that attaches to kprobe =
-or
-> > > tracepoint. What is the concern about locking?
-> > > d_path() doesn't take any locks and doesn't depend on any locks. Abov=
-e 'if'
-> > > checks that plain d_path() is used and not some specilized callback w=
-ith
-> > > unknown logic.
-> >
-> > It sure as hell does.  It might end up taking rename_lock and/or mount_=
-lock
-> > spinlock components.  It'll try not to, but if the first pass ends up w=
-ith
-> > seqlock mismatch, it will just grab the spinlock the second time around=
-.
+From: Daniel Borkmann <daniel@iogearbox.net>
 
-> ohh. got it. I missed _or_lock() part in there.
-> The need_seqretry() logic is tricky. afaics there is no way for the check=
-s
-> outside of prepend_path() to prevent spin_lock to happen. And adding a fl=
-ag to
-> prepend_path() to return early if retry is needed is too ugly. So this he=
-lper
-> won't be safe to be run out of kprobe. But if we allow it for tracepoints=
- only
-> it should be ok. I think. There are no tracepoints in inner guts of vfs a=
-nd I
-> don't think they will ever be. So running in tracepoint->bpf_prog->d_path=
- we
-> will be sure that rename_lock+mount_lock can be safely spinlocked. Am I m=
-issing
-> something?
+Allow for audit messages to be emitted upon BPF program load and
+unload for having a timeline of events. The load itself is in
+syscall context, so additional info about the process initiating
+the BPF prog creation can be logged and later directly correlated
+to the unload event.
 
-Hi Alexei,
+The only info really needed from BPF side is the globally unique
+prog ID where then audit user space tooling can query / dump all
+info needed about the specific BPF program right upon load event
+and enrich the record, thus these changes needed here can be kept
+small and non-intrusive to the core.
 
-Would you please give me an example of a deadlock condition under kprobe+bp=
-f?
-I'm not familiar with this detail and want to learn more.
+Raw example output:
 
-> Above 'if's are not enough to make sure that it won't dead lock.
-> Allowing it in tracing_func_proto() means that it's available to kprobe t=
-oo.
-> Hence deadlock is possible. Please see previous email thread.
-> This helper is safe in tracepoint+bpf only.
+  # auditctl -D
+  # auditctl -a always,exit -F arch=x86_64 -S bpf
+  # ausearch --start recent -m 1334
+  ...
+  ----
+  time->Wed Nov 27 16:04:13 2019
+  type=PROCTITLE msg=audit(1574867053.120:84664): proctitle="./bpf"
+  type=SYSCALL msg=audit(1574867053.120:84664): arch=c000003e syscall=321   \
+    success=yes exit=3 a0=5 a1=7ffea484fbe0 a2=70 a3=0 items=0 ppid=7477    \
+    pid=12698 auid=1001 uid=1001 gid=1001 euid=1001 suid=1001 fsuid=1001    \
+    egid=1001 sgid=1001 fsgid=1001 tty=pts2 ses=4 comm="bpf"                \
+    exe="/home/jolsa/auditd/audit-testsuite/tests/bpf/bpf"                  \
+    subj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 key=(null)
+  type=UNKNOWN[1334] msg=audit(1574867053.120:84664): prog-id=76 op=LOAD
+  ----
+  time->Wed Nov 27 16:04:13 2019
+  type=UNKNOWN[1334] msg=audit(1574867053.120:84665): prog-id=76 op=UNLOAD
+  ...
 
-So I should move it to `tp_prog_prog_func_proto` and `raw_tp_prog_func_prog=
-`
-right? Is raw tracepoint+bpf safe?
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Co-developed-by: Jiri Olsa <jolsa@kernel.org>
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+---
+ include/uapi/linux/audit.h |  1 +
+ kernel/bpf/syscall.c       | 33 +++++++++++++++++++++++++++++++++
+ 2 files changed, 34 insertions(+)
 
-Thank you.
+v2 changes:
+  addressed Paul's comments from audit side:
+    - change 'event' field to 'op' 
+    - change audit context passing
+    - check on 'op' value is within the limit
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> =E4=BA=8E2019=E5=B9=B412=
-=E6=9C=885=E6=97=A5=E5=91=A8=E5=9B=9B =E4=B8=8B=E5=8D=883:19=E5=86=99=E9=81=
-=93=EF=BC=9A
->
-> On Wed, Dec 04, 2019 at 11:20:35PM -0500, Wenbo Zhang wrote:
-> >
-> > +BPF_CALL_3(bpf_get_file_path, char *, dst, u32, size, int, fd)
-> > +{
-> > +     struct file *f;
-> > +     char *p;
-> > +     int ret =3D -EBADF;
-> > +
-> > +     /* Ensure we're in user context which is safe for the helper to
-> > +      * run. This helper has no business in a kthread.
-> > +      */
-> > +     if (unlikely(in_interrupt() ||
-> > +                  current->flags & (PF_KTHREAD | PF_EXITING))) {
-> > +             ret =3D -EPERM;
-> > +             goto error;
-> > +     }
-> > +
-> > +     /* Use fget_raw instead of fget to support O_PATH, and it doesn't
-> > +      * have any sleepable code, so it's ok to be here.
-> > +      */
-> > +     f =3D fget_raw(fd);
-> > +     if (!f)
-> > +             goto error;
-> > +
-> > +     /* For unmountable pseudo filesystem, it seems to have no meaning
-> > +      * to get their fake paths as they don't have path, and to be no
-> > +      * way to validate this function pointer can be always safe to ca=
-ll
-> > +      * in the current context.
-> > +      */
-> > +     if (f->f_path.dentry->d_op && f->f_path.dentry->d_op->d_dname) {
-> > +             ret =3D -EINVAL;
-> > +             fput(f);
-> > +             goto error;
-> > +     }
-> > +
-> > +     /* After filter unmountable pseudo filesytem, d_path won't call
-> > +      * dentry->d_op->d_name(), the normally path doesn't have any
-> > +      * sleepable code, and despite it uses the current macro to get
-> > +      * fs_struct (current->fs), we've already ensured we're in user
-> > +      * context, so it's ok to be here.
-> > +      */
-> > +     p =3D d_path(&f->f_path, dst, size);
->
-> Above 'if's are not enough to make sure that it won't dead lock.
-> Allowing it in tracing_func_proto() means that it's available to kprobe t=
-oo.
-> Hence deadlock is possible. Please see previous email thread.
-> This helper is safe in tracepoint+bpf only.
->
+diff --git a/include/uapi/linux/audit.h b/include/uapi/linux/audit.h
+index c89c6495983d..32a5db900f47 100644
+--- a/include/uapi/linux/audit.h
++++ b/include/uapi/linux/audit.h
+@@ -116,6 +116,7 @@
+ #define AUDIT_FANOTIFY		1331	/* Fanotify access decision */
+ #define AUDIT_TIME_INJOFFSET	1332	/* Timekeeping offset injected */
+ #define AUDIT_TIME_ADJNTPVAL	1333	/* NTP value adjustment */
++#define AUDIT_BPF		1334	/* BPF subsystem */
+ 
+ #define AUDIT_AVC		1400	/* SE Linux avc denial or grant */
+ #define AUDIT_SELINUX_ERR	1401	/* Internal SE Linux Errors */
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index e3461ec59570..6536665f562c 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -23,6 +23,7 @@
+ #include <linux/timekeeping.h>
+ #include <linux/ctype.h>
+ #include <linux/nospec.h>
++#include <linux/audit.h>
+ #include <uapi/linux/btf.h>
+ 
+ #define IS_FD_ARRAY(map) ((map)->map_type == BPF_MAP_TYPE_PERF_EVENT_ARRAY || \
+@@ -1306,6 +1307,36 @@ static int find_prog_type(enum bpf_prog_type type, struct bpf_prog *prog)
+ 	return 0;
+ }
+ 
++enum bpf_audit {
++	BPF_AUDIT_LOAD,
++	BPF_AUDIT_UNLOAD,
++	BPF_AUDIT_MAX,
++};
++
++static const char * const bpf_audit_str[BPF_AUDIT_MAX] = {
++	[BPF_AUDIT_LOAD]   = "LOAD",
++	[BPF_AUDIT_UNLOAD] = "UNLOAD",
++};
++
++static void bpf_audit_prog(const struct bpf_prog *prog, unsigned int op)
++{
++	struct audit_context *ctx = NULL;
++	struct audit_buffer *ab;
++
++	if (audit_enabled == AUDIT_OFF)
++		return;
++	if (WARN_ON_ONCE(op >= BPF_AUDIT_MAX))
++		return;
++	if (op == BPF_AUDIT_LOAD)
++		ctx = audit_context();
++	ab = audit_log_start(ctx, GFP_ATOMIC, AUDIT_BPF);
++	if (unlikely(!ab))
++		return;
++	audit_log_format(ab, "prog-id=%u op=%s",
++			 prog->aux->id, bpf_audit_str[op]);
++	audit_log_end(ab);
++}
++
+ int __bpf_prog_charge(struct user_struct *user, u32 pages)
+ {
+ 	unsigned long memlock_limit = rlimit(RLIMIT_MEMLOCK) >> PAGE_SHIFT;
+@@ -1421,6 +1452,7 @@ static void __bpf_prog_put(struct bpf_prog *prog, bool do_idr_lock)
+ {
+ 	if (atomic64_dec_and_test(&prog->aux->refcnt)) {
+ 		perf_event_bpf_event(prog, PERF_BPF_EVENT_PROG_UNLOAD, 0);
++		bpf_audit_prog(prog, BPF_AUDIT_UNLOAD);
+ 		/* bpf_prog_free_id() must be called first */
+ 		bpf_prog_free_id(prog, do_idr_lock);
+ 		__bpf_prog_put_noref(prog, true);
+@@ -1830,6 +1862,7 @@ static int bpf_prog_load(union bpf_attr *attr, union bpf_attr __user *uattr)
+ 	 */
+ 	bpf_prog_kallsyms_add(prog);
+ 	perf_event_bpf_event(prog, PERF_BPF_EVENT_PROG_LOAD, 0);
++	bpf_audit_prog(prog, BPF_AUDIT_LOAD);
+ 
+ 	err = bpf_prog_new_fd(prog);
+ 	if (err < 0)
+-- 
+2.21.0
+
