@@ -2,75 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BEF68113976
-	for <lists+bpf@lfdr.de>; Thu,  5 Dec 2019 02:59:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE22D11397A
+	for <lists+bpf@lfdr.de>; Thu,  5 Dec 2019 03:02:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728449AbfLEB7b (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Dec 2019 20:59:31 -0500
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:43802 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728132AbfLEB7b (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Dec 2019 20:59:31 -0500
-Received: by mail-lj1-f193.google.com with SMTP id a13so1575060ljm.10;
-        Wed, 04 Dec 2019 17:59:29 -0800 (PST)
+        id S1728393AbfLECCH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Dec 2019 21:02:07 -0500
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:33674 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728132AbfLECCH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Dec 2019 21:02:07 -0500
+Received: by mail-lj1-f196.google.com with SMTP id 21so1651022ljr.0;
+        Wed, 04 Dec 2019 18:02:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=oWkFNr4QlzStNffmGQUvt/xh0lAmaw/Gu1WQ6Zzy3Q8=;
-        b=PH5IvmNPvyK5JL4kIAAyXiwS3sHEk2AcY9mZMzlKd0bp4mNgOOJt8Vc8dPpHq3tNT/
-         iUiQ5nIPcJBPv9bQ00sHXJHz11TKVfkM0Ntq3d4lEPya71oS+D40qvNuSLN5Ea09hd2e
-         Q7okCQUF0xJ1ldcENmtUy3i3mcz5oQu0QZNulsVmHx8kS51Z8BKL7E+OJ6NOas/z7Jpp
-         aIINBSt5/ZHvrrGtf/jxnyE08OLh1HVBCUhV8Dg0gMMd7T/vlfAqE2UainiMPsTnuV2a
-         dzVRGP7WKuIiu1PSWv45JrP7GtktVLr02IlkU3UV7GTzMRimqbMvGjbIi3QHxy6A7xnw
-         ew5Q==
+        bh=vy4UrIm2jbRYKhBVybPxalNzM1Qcx1GEJhVkQOqA7Lk=;
+        b=YbeIjIJAG4/1dqJq1HBXEgM+DuGuWN84YjlLNDWvHv6RDBe2oEYSNsZGk/FZ+15qEq
+         TbkzU9xZcOy9kGJbOpKVzZMCivDH0tC2glfecWpHyuEfRUyQU1HxgltRcITUXwHGKKzP
+         cWW8I0JeGm6kkoEaSiHZndMqTwAmjhndPdP26uC5zX7Hlr/tbebkFPx+zkDaVwloCVp4
+         glnxFgD7cymIQRmILDMMLIbe/dChXXRviEu66jULnk7M6zvmHP8xYqfuQY8F+1KT1fOb
+         ZhalLsmEhQVPOGvE9eT8Dy2eAJweUbYTXshCI7S4NMmO8R9o+3HQEJQWTBtcplOku4qG
+         pZwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=oWkFNr4QlzStNffmGQUvt/xh0lAmaw/Gu1WQ6Zzy3Q8=;
-        b=DqqX4W3eO2IgYMC0YKt6z9j9L1jQMocaTTLzSOUXaP6Z8ydznJgLjOS/e2JhY+UDYq
-         SHZz5UQ5JgUiSxifNWr0aoKIPIgO9aNedhZpyZCn/w907+IjPV+XjW1pVANQXi7Q2umz
-         Y9EzWdiOaawuCHXeXS1+I34lsOm4nygb00fbEKMZu2ntsTPI/IoPRMrRhMXcq2kcP8TH
-         u+tAgz6Tu7WRObv7YFYMr0821RBj0NyEAl9izv6CyVNfUnFEfEbiTfwowbv+LH9LsKDa
-         /ND43kBSWhsCekgmH7po36E13Y6GoJvMBqZ23l50m43AR7Laq15aDZB4gzDbxDKWCdId
-         FZkQ==
-X-Gm-Message-State: APjAAAUpAWQI7utc36SX4q7+G6fnhW+iH5Nk6vndvJP8JS5S8gJxbXqI
-        b49JYgOeVBJonCkHEkOTQyW3U7MWhgECvGL0m6E=
-X-Google-Smtp-Source: APXvYqxJXZogFBPqDe217DfUqObeOYrjvUFgdG8aYQ/KRrdaUCaHT4B9wzlaC3MctFZXQUAopOXqjPMGLlD6TEGsPUM=
-X-Received: by 2002:a2e:8508:: with SMTP id j8mr3815196lji.136.1575511169140;
- Wed, 04 Dec 2019 17:59:29 -0800 (PST)
+        bh=vy4UrIm2jbRYKhBVybPxalNzM1Qcx1GEJhVkQOqA7Lk=;
+        b=PbHGId8P4GTY+mjmW0fiZ2H0seXOyTAiIve4iK44zt+9FikWLu5C7oTz9hxXiqJ8ke
+         BQ+xcfhu8DV+VvZLblGJM9u21tdlGPwm3XMNl5Sov2j0BNwwT3W9GS9+eYDu3oBt+CMx
+         QCTYSdOXuHsk9HeVOVt6nDf7MBpveeVl+nmeMyoeu5pYUhpPadOK1YAQpR7B2Z1vkRPS
+         xlx7QOzR7GTfxAZZIB0xNodh/y5Hv/ehkgNwXDE31NXtpY+D4bclX+/iGakrfQLvrGyT
+         VIZsVJIKkCZkAh/ee6LGmy1nndaQmeh5zu92RBwakevEpoePwvgVf/CMLwI+h9NKMWRJ
+         KH8A==
+X-Gm-Message-State: APjAAAXBilUthMsVnz/Js0cMNjZ//MEC8D4S5EHB+RpnlV16Mdy0j6tz
+        ecGV/X7cBpjLTzk+0aBvW3r+slbzBgwDPI7p08oBCA==
+X-Google-Smtp-Source: APXvYqyggXNzsI94Lxc397HaN2n3ZkgbEF1fEG44wCPqbNffF+4/8JNMj/OoiJNPtWUyX+4u57f9aE/n9vYWu69gHI4=
+X-Received: by 2002:a2e:5850:: with SMTP id x16mr3874211ljd.228.1575511324788;
+ Wed, 04 Dec 2019 18:02:04 -0800 (PST)
 MIME-Version: 1.0
-References: <20191202215931.248178-1-sdf@google.com>
-In-Reply-To: <20191202215931.248178-1-sdf@google.com>
+References: <20191204190955.170934-1-sdf@google.com>
+In-Reply-To: <20191204190955.170934-1-sdf@google.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 4 Dec 2019 17:59:17 -0800
-Message-ID: <CAADnVQ+=vqK9hbNbaRPtJSVGqN4EP=tDpPam7+1b7g0A1SGo_Q@mail.gmail.com>
-Subject: Re: [PATCH bpf v2] selftests/bpf: bring back c++ include/link test
+Date:   Wed, 4 Dec 2019 18:01:53 -0800
+Message-ID: <CAADnVQKjVFxWK1VgQTkZp2+Swr=LD1Ar2ABMY3_=78nkjssoJA@mail.gmail.com>
+Subject: Re: [PATCH bpf] selftests/bpf: de-flake test_tcpbpf
 To:     Stanislav Fomichev <sdf@google.com>
 Cc:     Network Development <netdev@vger.kernel.org>,
         bpf <bpf@vger.kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Lawrence Brakmo <brakmo@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Dec 2, 2019 at 1:59 PM Stanislav Fomichev <sdf@google.com> wrote:
+On Wed, Dec 4, 2019 at 11:09 AM Stanislav Fomichev <sdf@google.com> wrote:
 >
-> Commit 5c26f9a78358 ("libbpf: Don't use cxx to test_libpf target")
-> converted existing c++ test to c. We still want to include and
-> link against libbpf from c++ code, so reinstate this test back,
-> this time in a form of a selftest with a clear comment about
-> its purpose.
+> It looks like BPF program that handles BPF_SOCK_OPS_STATE_CB state
+> can race with the bpf_map_lookup_elem("global_map"); I sometimes
+> see the failures in this test and re-running helps.
 >
-> v2:
-> * -lelf -> $(LDLIBS) (Andrii Nakryiko)
+> Since we know that we expect the callback to be called 3 times (one
+> time for listener socket, two times for both ends of the connection),
+> let's export this number and add simple retry logic around that.
 >
-> Fixes: 5c26f9a78358 ("libbpf: Don't use cxx to test_libpf target")
+> Also, let's make EXPECT_EQ() not return on failure, but continue
+> evaluating all conditions; that should make potential debugging
+> easier.
+>
+> With this fix in place I don't observe the flakiness anymore.
+>
+> Cc: Lawrence Brakmo <brakmo@fb.com>
 > Signed-off-by: Stanislav Fomichev <sdf@google.com>
 
 Applied. Thanks
