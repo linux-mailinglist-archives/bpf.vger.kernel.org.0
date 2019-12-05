@@ -2,113 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D47CB113C30
-	for <lists+bpf@lfdr.de>; Thu,  5 Dec 2019 08:19:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB07C113CB3
+	for <lists+bpf@lfdr.de>; Thu,  5 Dec 2019 09:01:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725974AbfLEHTE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 5 Dec 2019 02:19:04 -0500
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:40870 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725963AbfLEHTE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 5 Dec 2019 02:19:04 -0500
-Received: by mail-pf1-f196.google.com with SMTP id q8so1165824pfh.7;
-        Wed, 04 Dec 2019 23:19:03 -0800 (PST)
+        id S1726032AbfLEIBX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 5 Dec 2019 03:01:23 -0500
+Received: from mail-pj1-f42.google.com ([209.85.216.42]:39722 "EHLO
+        mail-pj1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726007AbfLEIBX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 5 Dec 2019 03:01:23 -0500
+Received: by mail-pj1-f42.google.com with SMTP id v93so968229pjb.6;
+        Thu, 05 Dec 2019 00:01:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=2BLGKExrpBAycq4rS/IUkDgYPAZI8XigtD5QZVnS6MU=;
-        b=BuT9I5w8et4kk7zZsItsXJEYL5hNnNoy4Qqo5jiIRAGRD8IwbzKjHT6dpJMGLDOPjJ
-         bRVSKUp1ZVQF4hzvViD8uT6+by4YprtO5+KkY3XGSSfOH5Xgzs7VDERKsEh9Q6N3pJ8g
-         qwmPwbZEugt6Z9AgDBwYNpRdKNwPbIJ+fnQovbJUh+6jp/xGXlzw9YtV5wwnjd2hDGns
-         NipB7xRJScWwnahiTRgzKYLbjq4Ix1H0wO1reesaRYeIcFqLvgdx7YTMYFegSpu7ofzf
-         +JpI5fYP+4MNNIOSk2h5qzsP/f6LNnkPNgGCNRMJ9CH++aeo0CV8W496/UgewD0EHpH0
-         DoxA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DOUoKHbS1u9GIqS8UItvwKhjwVm+XnN17eY9A2NQhRA=;
+        b=EPwfJcRxvnV6Jk2eHz9MkNyxDHyFvZdET8hSzE0CBd9KvYnA0EvNl8NZ3WE9+cKLje
+         XoI+ppqogTLoCSPWUcsGmPoqJRS6wNjEoKbtOKn94DjNGALjArXfBsHO9Zsp3IejZD3u
+         pVOAL95ZNpEBfElSwzmvKmBNyleLETL0v0A0CEf+mWDCbtWJSe3UqWtggqqGTgfqXHFl
+         6Xo/UMzikZbWjKkFryKXwfjIz0l7ZUv3IRWaxKVqBWbEiRRyy37TnudUMgpPjDc0DCWk
+         AL+UsAwa+JaAMOH2Neu1e9NcXvgLvE5e4BbHhKGOmGXE1ADKiS9iEYfBEoOXzHhX7hMf
+         xwmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=2BLGKExrpBAycq4rS/IUkDgYPAZI8XigtD5QZVnS6MU=;
-        b=PRHQnz5iAt24aXUSA3gLGcES0v6dYVqrW5yR2Syp5HKbvy7Z2SEu4fimFsImlIEiry
-         aKfjlMF8jE2+ZAbKBq1ZP6gXwnlHTG4qIATY3aBI63ZbGn2LrQybaoavVSenqzFYG5b4
-         HoiequY3mqUDye5qItRmZb9TfbTGcPBEe8UegPHs52JJv4g1nlwHWte3DOgFa3mZjmgS
-         jeSfulMsZljnklLS12W3l5WBsPiGGjXEdvwTgI1lblWbZy8f0Z+JK8++1UYw4VGYj1zH
-         XVqV3yMzoX4H8Z25TKpY9fXnLo0Zs25Xmr78mRAhEYwIW0VQW6cVeq4C0aq42tcHURaj
-         S0hg==
-X-Gm-Message-State: APjAAAVhnIHe20/7Ta6xLhlKxp3v9p7bS6lLQeV/ygyMZWkIlcnKWO5p
-        nxdFbwpiqy39xbPse/sRxck=
-X-Google-Smtp-Source: APXvYqxCrmLp5RDt4yCyICdWYQMr045uNotlZBAVxH3qA9CoJkB9oAjth/2+6ZcBPEqTgTPHGAYm1Q==
-X-Received: by 2002:a63:4d12:: with SMTP id a18mr7673450pgb.451.1575530343250;
-        Wed, 04 Dec 2019 23:19:03 -0800 (PST)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:180::f3d1])
-        by smtp.gmail.com with ESMTPSA id m5sm8908484pjl.30.2019.12.04.23.19.01
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 04 Dec 2019 23:19:02 -0800 (PST)
-Date:   Wed, 4 Dec 2019 23:19:00 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Wenbo Zhang <ethercflow@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        yhs@fb.com, andrii.nakryiko@gmail.com, netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next v11 1/2] bpf: add new helper get_file_path for
- mapping a file descriptor to a pathname
-Message-ID: <20191205071858.entnj2c27n44kwit@ast-mbp.dhcp.thefacebook.com>
-References: <cover.1575517685.git.ethercflow@gmail.com>
- <afe4deb020b781c76e9df8403a744f88a8725cd2.1575517685.git.ethercflow@gmail.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DOUoKHbS1u9GIqS8UItvwKhjwVm+XnN17eY9A2NQhRA=;
+        b=TWFoS+Zsa22dYg3cOZQb3NtSqtBeEfsdwI8iuK/6evUPwmI0JcuVi8ye71/LS77Bgk
+         CvrSSgMdJjxOqe1mRFqB6XLoRwkhhFR1WJnWk5U3WUThgdBmc6sI5BynjyvHuWKi5Z5F
+         gQoIf/LIxcF+2YpXbjeDUFFkaumYbksmgT5PGFjBBYKDEnNwr/TuqmaA5DrO2pEWPvaX
+         upjei2kTmpfqRxlZxK6z+UORJdHxKIY51qPiSUfhIJCQMi1U0QwzQw/mYkV7fmjFAHBV
+         L0KSRXUxGzVM23oQfHhFOx/9fT0N1O1xAlrGG0e/VE1bAJCTCDR1Age0K2d0PROXTG6I
+         JG8g==
+X-Gm-Message-State: APjAAAUxVoaAICZoVIyPh6ELRXl/s2W2dzxyPSiApUIuSRQrH8UfzOPC
+        v5CPdn+zRjEgLlbhO3KlUw==
+X-Google-Smtp-Source: APXvYqw9IvPGpaEuBszneItFaPtRHTBiFnea3oOQcfUlfxJ6no8XOOJkO8NrqPCiuJYN1Ih7H9K9jQ==
+X-Received: by 2002:a17:902:6b0c:: with SMTP id o12mr7726970plk.284.1575532882216;
+        Thu, 05 Dec 2019 00:01:22 -0800 (PST)
+Received: from localhost.localdomain ([114.71.48.24])
+        by smtp.gmail.com with ESMTPSA id 129sm11510739pfw.71.2019.12.05.00.01.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Dec 2019 00:01:21 -0800 (PST)
+From:   "Daniel T. Lee" <danieltimlee@gmail.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH,bpf-next v2 0/2] Fix broken samples due to symbol mismatch
+Date:   Thu,  5 Dec 2019 17:01:12 +0900
+Message-Id: <20191205080114.19766-1-danieltimlee@gmail.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <afe4deb020b781c76e9df8403a744f88a8725cd2.1575517685.git.ethercflow@gmail.com>
-User-Agent: NeoMutt/20180223
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 04, 2019 at 11:20:35PM -0500, Wenbo Zhang wrote:
->  
-> +BPF_CALL_3(bpf_get_file_path, char *, dst, u32, size, int, fd)
-> +{
-> +	struct file *f;
-> +	char *p;
-> +	int ret = -EBADF;
-> +
-> +	/* Ensure we're in user context which is safe for the helper to
-> +	 * run. This helper has no business in a kthread.
-> +	 */
-> +	if (unlikely(in_interrupt() ||
-> +		     current->flags & (PF_KTHREAD | PF_EXITING))) {
-> +		ret = -EPERM;
-> +		goto error;
-> +	}
-> +
-> +	/* Use fget_raw instead of fget to support O_PATH, and it doesn't
-> +	 * have any sleepable code, so it's ok to be here.
-> +	 */
-> +	f = fget_raw(fd);
-> +	if (!f)
-> +		goto error;
-> +
-> +	/* For unmountable pseudo filesystem, it seems to have no meaning
-> +	 * to get their fake paths as they don't have path, and to be no
-> +	 * way to validate this function pointer can be always safe to call
-> +	 * in the current context.
-> +	 */
-> +	if (f->f_path.dentry->d_op && f->f_path.dentry->d_op->d_dname) {
-> +		ret = -EINVAL;
-> +		fput(f);
-> +		goto error;
-> +	}
-> +
-> +	/* After filter unmountable pseudo filesytem, d_path won't call
-> +	 * dentry->d_op->d_name(), the normally path doesn't have any
-> +	 * sleepable code, and despite it uses the current macro to get
-> +	 * fs_struct (current->fs), we've already ensured we're in user
-> +	 * context, so it's ok to be here.
-> +	 */
-> +	p = d_path(&f->f_path, dst, size);
+Currently, there are broken samples due to symbol mismatch (missing or
+unused symbols). For example, the function open() calls the syscall 
+'sys_openat' instead of 'sys_open'. And there are no exact symbols such
+as 'sys_read' or 'sys_write' under kallsyms, instead the symbols have
+prefixes. And these error leads to broke of samples.
 
-Above 'if's are not enough to make sure that it won't dead lock.
-Allowing it in tracing_func_proto() means that it's available to kprobe too.
-Hence deadlock is possible. Please see previous email thread.
-This helper is safe in tracepoint+bpf only.
+This Patchset fixes the problem by changing the symbol match.
+
+Changes in v2:
+ - remove redundant casting 
+
+Daniel T. Lee (2):
+  samples: bpf: replace symbol compare of trace_event
+  samples: bpf: fix syscall_tp due to unused syscall
+
+ samples/bpf/syscall_tp_kern.c  | 18 ++++++++++++++++--
+ samples/bpf/trace_event_user.c |  4 ++--
+ 2 files changed, 18 insertions(+), 4 deletions(-)
+
+-- 
+2.24.0
 
