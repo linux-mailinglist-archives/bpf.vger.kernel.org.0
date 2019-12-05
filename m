@@ -2,200 +2,167 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C3CD6113A49
-	for <lists+bpf@lfdr.de>; Thu,  5 Dec 2019 04:17:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E461C113ABB
+	for <lists+bpf@lfdr.de>; Thu,  5 Dec 2019 05:20:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728539AbfLEDRZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 4 Dec 2019 22:17:25 -0500
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:42082 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728374AbfLEDRZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 4 Dec 2019 22:17:25 -0500
-Received: by mail-pl1-f194.google.com with SMTP id x13so604941plr.9;
-        Wed, 04 Dec 2019 19:17:24 -0800 (PST)
+        id S1728449AbfLEEUq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 4 Dec 2019 23:20:46 -0500
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:46783 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728321AbfLEEUq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 4 Dec 2019 23:20:46 -0500
+Received: by mail-pg1-f194.google.com with SMTP id z124so933369pgb.13;
+        Wed, 04 Dec 2019 20:20:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=zLpHyfDlF7oQvCvT4lYlP0xSLBE9XB3er9Iyz3kTfxs=;
-        b=fWnVCCFOkDeBoEPZ4BsVcKyU4UgXHt+5LD09GawCHJ+CpHS2M8OqoXDHqH48slnSMQ
-         AcXyOuR/f2qRCdXcVoDDQJjChjZ6kn187QJXKpUb47nkGO9UwfvmGHG4efEOf8dZpwZV
-         Vu719TqWqWvPZiVyB/pHimURNPG5EZFgxg9InXNchwcNFTrc6DpW+1Aw/lorprKli7yo
-         32sS8P/hy4Bln43s2hBTlpIAGWntvzZX9b6+UpYzEVsiDhyvZUKaF20FITVlNV0BRDLQ
-         XVtSlx/+bbwgucaTj0Xvr9/2FSlpgpRr654jdcXwWOsl1ZBjbRxiRH/c7ZRegdMyAdwM
-         KDjw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=SpgP0Yzf0I5ADZzkonZdC2K+bC/OvsRIZPIGAvUm8ig=;
+        b=dBIFksDKVzmYd2Xt0J5ccHeN7ObFGdBn4bpuuueT7RIC5ZucTxibQ0Hw6NwwvzAruH
+         icQjYr+RDX1VZ+3dkqYodKZI9B/MCaHLC18/xuIQTWxtBSDRgGOMgDIoPq2ww8x4a1xe
+         aFapttVShPXxRLncIYEbwFNjLwQVcFMT/iqCP/boKpN8rotjzdj0bXzUZSEDRqv9z13W
+         8c1EllKPZgha/nMGxDlqIOyqqa9fgglALhQpsmk6yT7A+Fzd/KzPyPS9fPRfAnV1mqYO
+         J7Oj+3EkPMQ5Eag15FQ+A36TyUWu8t1sE+rGSwMiaPsEgFrpsQdzWcroYb2hE9lPJ4ET
+         RCcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=zLpHyfDlF7oQvCvT4lYlP0xSLBE9XB3er9Iyz3kTfxs=;
-        b=Ehkw65bxj8NJTSlIF7chzJ0CAwitE4LAhvjPyHdfG4FQnrZP80QmbewsN4F9ju+tCw
-         7klyfvUEmZMkoPea3bx48qVOJv9Bcx4L+TITdPmwr1Sk/lnCOoSv0s02DVR0h1HMqmtK
-         5duTOHZTGGNp6ud/UTIY4JEU1rTu6hnh6Rqb+EIPeaP1+O5REfgk8SdynvjLcM5OhKSK
-         tWBJ0ikyRWu25K2xhFAz3SRk3JuzbrS0mL2vDIBDVNeN3J28qdIqg+Yr7NFGuL8dLtYM
-         FLnSzz7PBwxew09HQ0ZA4nBTzRAayUNd00F7wX/02BkNDwefv22FDSnr08uBl6chnXac
-         hgeg==
-X-Gm-Message-State: APjAAAUU0Cui/+vztDpvsK/jaJ+pI7xp/8GqGmy9pxMyA76M9cGlAyyu
-        fy+Tj9uywwgJM74FAjHuFOw=
-X-Google-Smtp-Source: APXvYqzmJ9DBP5chyXAdhaajV8T/LkxZLnhB5DjwpqMtcFnQ/T53yodnmDxLbLnHHjcTU1sHLLEyqg==
-X-Received: by 2002:a17:902:b70e:: with SMTP id d14mr6402427pls.51.1575515843852;
-        Wed, 04 Dec 2019 19:17:23 -0800 (PST)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:180::f9fe])
-        by smtp.gmail.com with ESMTPSA id b16sm9209616pfo.64.2019.12.04.19.17.21
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 04 Dec 2019 19:17:23 -0800 (PST)
-Date:   Wed, 4 Dec 2019 19:17:20 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Jakub Kicinski <jakub.kicinski@netronome.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Quentin Monnet <quentin.monnet@netronome.com>
-Subject: Re: [PATCHv4 0/6] perf/bpftool: Allow to link libbpf dynamically
-Message-ID: <20191205031718.ax46kfv55zauuopt@ast-mbp.dhcp.thefacebook.com>
-References: <20191202131847.30837-1-jolsa@kernel.org>
- <CAEf4BzY_D9JHjuU6K=ciS70NSy2UvSm_uf1NfN_tmFz1445Jiw@mail.gmail.com>
- <87wobepgy0.fsf@toke.dk>
- <CAADnVQK-arrrNrgtu48_f--WCwR5ki2KGaX=mN2qmW_AcRyb=w@mail.gmail.com>
- <CAEf4BzZ+0XpH_zJ0P78vjzmFAH3kGZ21w3-LcSEG=B=+ZQWJ=w@mail.gmail.com>
- <20191204135405.3ffb9ad6@cakuba.netronome.com>
- <20191204233948.opvlopjkxe5o66lr@ast-mbp.dhcp.thefacebook.com>
- <20191204162348.49be5f1b@cakuba.netronome.com>
- <20191205010930.izft6kv5xlnejgog@ast-mbp.dhcp.thefacebook.com>
- <20191204181028.6cdb40d4@cakuba.netronome.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191204181028.6cdb40d4@cakuba.netronome.com>
-User-Agent: NeoMutt/20180223
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=SpgP0Yzf0I5ADZzkonZdC2K+bC/OvsRIZPIGAvUm8ig=;
+        b=bUy0mn7i3RgXhl7HrPDOqleHUucPXz9NG02W+V8KlE/bGOsxGGiK/NPE0hIrVvfVGS
+         5o4HNZLk8mxbBTvbCmd3utN4heyM5nxjpkRO3FcVACDbBhR4Sx3h7LaORQ2oVQkD9932
+         noDT5lkOMh44UbfE/WK5gX0u2rNf1vOYSpcZ11f9vWpaDEgzcDYU98pH0NS4D8zSz4Xq
+         EMBjwl3lAxniyxEIStnjfRsFKY8O4haJYURPb+dwZ8gUOCLBA4J7i6LpWKQC7JJfLuU7
+         kN0gmOzyFE6iGNXvavMQd+Hdo/UYsEFXWS1HvH1su2fQ/2IRF/npFCvNbtoAb5uvl/dv
+         2ndQ==
+X-Gm-Message-State: APjAAAXQLd3ljGEIWPW7c+tYJS4eEqwx1OxH0LADx76x1+LvmC6sJ1kA
+        x4459jQH1M1czURUyt81jLWBYrc43favuA==
+X-Google-Smtp-Source: APXvYqyzfaD3A+PNQuttEzJlx/kMP72WniZ6RNQzhkSXGQO9rqf+d6XdMudHNI17bu0Cm1gTZ7rd2Q==
+X-Received: by 2002:a63:4e22:: with SMTP id c34mr2021212pgb.214.1575519645103;
+        Wed, 04 Dec 2019 20:20:45 -0800 (PST)
+Received: from ubuntu-18.04-x8664 ([128.1.49.85])
+        by smtp.gmail.com with ESMTPSA id n26sm9303964pgd.46.2019.12.04.20.20.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Dec 2019 20:20:44 -0800 (PST)
+From:   Wenbo Zhang <ethercflow@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, yhs@fb.com,
+        andrii.nakryiko@gmail.com, netdev@vger.kernel.org
+Subject: [PATCH bpf-next v11 0/2] bpf: adding get_file_path helper
+Date:   Wed,  4 Dec 2019 23:20:34 -0500
+Message-Id: <cover.1575517685.git.ethercflow@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <e8b1281b7405eb4b6c1f094169e6efd2c8cc95da.1574162990.git.ethercflow@gmail.com>
+References: <e8b1281b7405eb4b6c1f094169e6efd2c8cc95da.1574162990.git.ethercflow@gmail.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 04, 2019 at 06:10:28PM -0800, Jakub Kicinski wrote:
-> On Wed, 4 Dec 2019 17:09:32 -0800, Alexei Starovoitov wrote:
-> > On Wed, Dec 04, 2019 at 04:23:48PM -0800, Jakub Kicinski wrote:
-> > > On Wed, 4 Dec 2019 15:39:49 -0800, Alexei Starovoitov wrote:  
-> > > > > Agreed. Having libbpf on GH is definitely useful today, but one can hope
-> > > > > a day will come when distroes will get up to speed on packaging libbpf,
-> > > > > and perhaps we can retire it? Maybe 2, 3 years from now? Putting
-> > > > > bpftool in the same boat is just more baggage.    
-> > > > 
-> > > > Distros should be packaging libbpf and bpftool from single repo on github.
-> > > > Kernel tree is for packaging kernel.  
-> > > 
-> > > Okay, single repo on GitHub:
-> > > 
-> > > https://github.com/torvalds/linux  
-> > 
-> > and how will you git submodule only libbpf part of kernel github into bcc
-> > and other projects?
-> 
-> Why does bcc have to submodule libbpf? Is it in a "special
-> relationship" with libbpf as well? 
-> 
-> dnf/apt install libbpf
-> 
-> Or rather:
-> 
-> dnf/apt install bcc
-> 
-> since BCC's user doesn't care about dependencies. The day distroes
-> started packaging libbpf and bpftool the game has changed.
+This patch series introduce a bpf helper that can be used to map a file
+descriptor to a pathname.
 
-have you ever built bcc ? or bpftrace?
-I'm not sure how to answer such 'suggestion'.
+This requirement is mainly discussed here:
 
-> Please accept iproute2 as an example of a user space toolset closely
-> related to the kernel. If kernel release model and process made no
-> sense in user space, why do iproute2s developers continue to follow it
-> for years? 
+  https://github.com/iovisor/bcc/issues/237
 
-imo iproute2 is an example how things should not be run.
-But that's a very different topic.
+This implementation supports both local and mountable pseudo file systems,
+and ensure we're in user context which is safe for this helper to run.
 
-> > Packaging is different.
-> 
-> There are mostly disadvantages, but the process should be well known.
-> perf has been packaged for years.
+Changes since v10:
 
-perf was initially seen as something that should match kernel one to one.
-yet it diverged over years. I think it's a counter example.
+* fix missing fput
 
-> What do you mean? I've sure as hell sent patches to net with Fixes tags
 
-which was complete waste of time for people who were sending these
-patches, for maintainers who applied them and for all stables folks
-who carried them into kernel stable releases.
-Not a single libbpf build was made out of those sources.
+Changes since v9:
 
-> S-o-B and all that jazz for libbpf and bpftool.
+* Associate help patch with its selftests patch to this series
 
-Many open source projects use SOB. It's not kernel specific.
+* Refactor selftests code for further simplification  
 
-> 
-> > Even coding style is different.
-> 
-> Is it? You mean the damn underscores people are making fun of? :/
 
-Are you trolling? Do you understand why __ is there?
+Changes since v8:
 
-> libbpf doesn't have a roadmap either, 
+* format helper description 
+ 
 
-I think you're contrasting that with kernel and saying
-that kernel has a roadmap ? What is kernel roadmap?
+Changes since v7:
 
-> it's not really a full-on project
-> on its own. What's 0.1.0 gonna be?
+* Use fget_raw instead of fdget_raw, as fdget_raw is only used inside fs/
 
-whenever this bpf community decides to call it 0.1.0.
+* Ensure we're in user context which is safe fot the help to run
 
-> Besides stuff lands in libbpf before it hits a major kernel release.
-> So how are you gonna make libbpf releases independently from kernel
-> ones? What if a feature gets a last minute revert in the kernel and it's
-> in libbpf's ABI?
+* Filter unmountable pseudo filesystem, because they don't have real path
 
-You mean when kernel gets new feature, then libbpf gets new feature, then
-libbpf is released, but then kernel feature is reverted? Obviously we should
-avoid making a libbpf release that relies on kernel features that didn't reach
-the mainline. Yet there could be plenty of reasons why making libbpf release in
-the middle of kernel development cycle makes perfect sense.
+* Supplement the description of this helper function
 
-Also reaching Linus's tree in rc1 is also not a guarantee of non-revert. Yet we
-release libbpf around rc1 because everyone expects bug-fixes after rc1. So it's
-an exception that solidifies the rule.
 
-> > libbpf has to run on all kernels. Newer and older. How do you support
-> > that if libbpf is tied with the kernel?
-> 
-> Say I have built N kernels UM or for a VM, and we have some test
-> suite: I pull libbpf, build it, run its tests. The only difference
-> between in tree and out of tree is that "pull libbpf" means pulling
-> smaller or larger repo. Doesn't matter that match, it's a low --depth
-> local clone.
+Changes since v6:
 
-The expected CI is:
-1. pull-req proposed.
-2. CI picks it up, builds, run tests.
-3. humans see results and land or reject pull-req.
-Now try to think through how CI on top of full kernel tree will
-be able to pick just the right commits to start build/test cycle.
-Is it going to cherry-pick from patchworks? That would be awesome.
-Yet intel 0bot results show that it's easier said than done.
-I'm not saying it's not possible. Just complex.
-If you have cycles to integrate *-next into kernelci.org, please go ahead.
+* Fix missing signed-off-by line
+
+
+Changes since v5:
+
+* Refactor helper avoid unnecessary goto end by having two explicit returns
+
+
+Changes since v4:
+
+* Rename bpf_fd2path to bpf_get_file_path to be consistent with other
+helper's names
+
+* When fdget_raw fails, set ret to -EBADF instead of -EINVAL
+
+* Remove fdput from fdget_raw's error path
+
+* Use IS_ERR instead of IS_ERR_OR_NULL as d_path ether returns a pointer
+into the buffer or an error code if the path was too long
+
+* Modify the normal path's return value to return copied string length
+including NUL
+
+* Update helper description's Return bits.
+
+* Refactor selftests code for further simplification  
+
+
+Changes since v3:
+
+* Remove unnecessary LOCKDOWN_BPF_READ
+
+* Refactor error handling section for enhanced readability
+
+* Provide a test case in tools/testing/selftests/bpf
+
+* Refactor sefltests code to use real global variables instead of maps
+
+
+Changes since v2:
+
+* Fix backward compatibility
+
+* Add helper description
+
+* Refactor selftests use global data instead of perf_buffer to simplified
+code
+
+* Fix signed-off name
+
+
+Wenbo Zhang (2):
+  bpf: add new helper get_file_path for mapping a file descriptor to a
+    pathname
+  selftests/bpf: test for bpf_get_file_path() from tracepoint
+
+ include/uapi/linux/bpf.h                      |  29 ++-
+ kernel/trace/bpf_trace.c                      |  68 +++++++
+ tools/include/uapi/linux/bpf.h                |  29 ++-
+ .../selftests/bpf/prog_tests/get_file_path.c  | 171 ++++++++++++++++++
+ .../selftests/bpf/progs/test_get_file_path.c  |  43 +++++
+ 5 files changed, 338 insertions(+), 2 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/get_file_path.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_get_file_path.c
+
+-- 
+2.17.1
 
