@@ -2,139 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E5A4114C97
-	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2019 08:21:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8527B114D1E
+	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2019 09:04:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726214AbfLFHU6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 Dec 2019 02:20:58 -0500
-Received: from mail.dlink.ru ([178.170.168.18]:39462 "EHLO fd.dlink.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725858AbfLFHU6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 Dec 2019 02:20:58 -0500
-Received: by fd.dlink.ru (Postfix, from userid 5000)
-        id 6F7E41B21545; Fri,  6 Dec 2019 10:20:53 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 fd.dlink.ru 6F7E41B21545
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dlink.ru; s=mail;
-        t=1575616853; bh=YBcb2XIhpGvQl1++v0zJOJ1RxMw2N0RI5FMDXHCH0qA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References;
-        b=p5R61v4RR88Ijn3tXZdHEevK2Wg/cSQTyAZgPSNpcQ9ZAvQmfxseTgq5xYQXBhl40
-         TWLwSh4S8Y88vlPq2CK2Qi++JDSCaWwH6hp1WBL7rC6JP3CZ5KuyLLouRt/QBD2meU
-         GNSDYdNkkDLsOHOAAP7MeEF/Rp2uODW7Q4XXdYK0=
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dlink.ru
-X-Spam-Level: 
-X-Spam-Status: No, score=-99.2 required=7.5 tests=BAYES_50,USER_IN_WHITELIST
-        autolearn=disabled version=3.4.2
-Received: from mail.rzn.dlink.ru (mail.rzn.dlink.ru [178.170.168.13])
-        by fd.dlink.ru (Postfix) with ESMTP id 54F6E1B21308;
-        Fri,  6 Dec 2019 10:20:41 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 fd.dlink.ru 54F6E1B21308
-Received: from mail.rzn.dlink.ru (localhost [127.0.0.1])
-        by mail.rzn.dlink.ru (Postfix) with ESMTP id 0DBDB1B226AC;
-        Fri,  6 Dec 2019 10:20:41 +0300 (MSK)
-Received: from mail.rzn.dlink.ru (localhost [127.0.0.1])
-        by mail.rzn.dlink.ru (Postfix) with ESMTPA;
-        Fri,  6 Dec 2019 10:20:41 +0300 (MSK)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Fri, 06 Dec 2019 10:20:40 +0300
-From:   Alexander Lobakin <alobakin@dlink.ru>
-To:     Paul Burton <paulburton@kernel.org>
-Cc:     Paul Burton <paul.burton@mips.com>,
-        Hassan Naveed <hnaveed@wavecomp.com>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        James Hogan <jhogan@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: MIPS eBPF JIT support on pre-32R2
-In-Reply-To: <20191205184450.lbrkenmursz4zpdm@lantea.localdomain>
-References: <09d713a59665d745e21d021deeaebe0a@dlink.ru>
- <20191205184450.lbrkenmursz4zpdm@lantea.localdomain>
-User-Agent: Roundcube Webmail/1.4.0
-Message-ID: <647fa62c7111a27a2cc217cf06cbe355@dlink.ru>
-X-Sender: alobakin@dlink.ru
+        id S1726809AbfLFIEh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 Dec 2019 03:04:37 -0500
+Received: from shards.monkeyblade.net ([23.128.96.9]:52648 "EHLO
+        shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726302AbfLFIEh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 6 Dec 2019 03:04:37 -0500
+Received: from localhost (unknown [IPv6:2601:601:9f00:1c3::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 3258514BA38AE;
+        Fri,  6 Dec 2019 00:04:36 -0800 (PST)
+Date:   Fri, 06 Dec 2019 00:04:31 -0800 (PST)
+Message-Id: <20191206.000431.1823406760870683874.davem@davemloft.net>
+To:     ast@kernel.org
+Cc:     daniel@iogearbox.net, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: pull-request: bpf 2019-12-05
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20191206061857.3660737-1-ast@kernel.org>
+References: <20191206061857.3660737-1-ast@kernel.org>
+X-Mailer: Mew version 6.8 on Emacs 26.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Fri, 06 Dec 2019 00:04:36 -0800 (PST)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Paul Burton wrote 05.12.2019 21:44:
-> Hi Alexander,
+From: Alexei Starovoitov <ast@kernel.org>
+Date: Thu, 5 Dec 2019 22:18:57 -0800
 
-Hi Paul!
+> The following pull-request contains BPF updates for your *net* tree.
+> 
+> We've added 6 non-merge commits during the last 1 day(s) which contain
+> a total of 14 files changed, 116 insertions(+), 37 deletions(-).
+> 
+> The main changes are:
+> 
+> 1) three selftests fixes, from Stanislav.
+> 
+> 2) one samples fix, from Jesper.
+> 
+> 3) one verifier fix, from Yonghong.
+> 
+> Please consider pulling these changes from:
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
 
-> On Thu, Dec 05, 2019 at 03:45:27PM +0300, Alexander Lobakin wrote:
->> Hey all,
->> 
->> I'm writing about lines arch/mips/net/ebpf_jit.c:1806-1807:
->> 
->> 	if (!prog->jit_requested || MIPS_ISA_REV < 2)
->> 		return prog;
->> 
->> Do pre-32R2 architectures (32R1, maybe even R3000-like) actually 
->> support
->> this eBPF JIT code?
-> 
-> No, they don't; the eBPF JIT makes unconditional use of at least the
-> (d)ins & (d)ext instructions which were added in MIPSr2, so it would
-> result in reserved instruction exceptions & panics if enabled on
-> pre-MIPSr2 CPUs.
-> 
->> If they do, then the condition 'MIPS_ISA_REV < 2'
->> should be removed as it is always true for them and tells CC to remove
->> JIT completely.
->> 
->> If they don't support instructions from this JIT, then the line
->> arch/mips/Kconfig:50:
->> 
->> 	select HAVE_EBPF_JIT if (!CPU_MICROMIPS)
->> 
->> should be changed to something like:
->> 
->> 	select HAVE_EBPF_JIT if !CPU_MICROMIPS && TARGET_ISA_REV >= 2
->> 
->> (and then the mentioned 'if' condition would become redundant)
-> 
-> Good spot; I agree entirely, this dependency should be reflected in
-> Kconfig.
-> 
->> At the moment it is possible to build a kernel without both JIT and
->> interpreter, but with CONFIG_BPF_SYSCALL=y (what should not be allowed
->> I suppose?) within the following configuration:
->> 
->> - select any pre-32R2 CPU (e.g. CONFIG_CPU_MIPS32_R1);
->> - enable CONFIG_BPF_JIT (CONFIG_MIPS_EBPF_JIT will be autoselected);
->> - enable CONFIG_BPF_JIT_ALWAYS_ON (this removes BPF interpreter from
->>   the system).
->> 
->> I may prepare a proper patch by myself if needed (after 
->> clarification).
-> 
-> That would be great, thanks!
-
-Great, I'll send it in about ~2-3 hours.
-
-> One thing to note is that I hope we'll restore the cBPF JIT with this
-> patch:
-> 
-> https://lore.kernel.org/linux-mips/20191205182318.2761605-1-paulburton@kernel.org/T/#u
-> 
-> The cBPF JIT looks like it should work on older pre-MIPSr2 CPUs, so the
-> only way this is relevant is that your patch might have a minor
-> conflict. But I thought I'd mention it anyway :)
-
-Yes, I thought about this too. If pre-32R2 CPUs don't support our eBPF
-JIT, we'd better restore cBPF for them, so they could speed-up at least
-"classic" instructions. Glad you've decided to do that.
-
-> Thanks,
->     Paul
-
-Regards,
-ᚷ ᛖ ᚢ ᚦ ᚠ ᚱ
+Pulled, thanks Alexei.
