@@ -2,64 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C4B9114C64
-	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2019 07:39:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17BAD114C77
+	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2019 07:55:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726169AbfLFGjs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 6 Dec 2019 01:39:48 -0500
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:45078 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726104AbfLFGjs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 6 Dec 2019 01:39:48 -0500
-Received: by mail-pl1-f194.google.com with SMTP id w7so2285162plz.12;
-        Thu, 05 Dec 2019 22:39:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=PnshtQ+DzSYB1m1s28YhSp8Zch6aeX4Qzf6E+sbGNmo=;
-        b=V0CATjTs5ss1fAXSo5bWATeALS7lPYJIkaR9pZK7xjv+dw92RFc5wl4BIfvRvJKzTp
-         nUwC8e0mWh2IHlvV677ssfj8jHS1T0LvIG42N41uPRsiiKkowuPhGanjXnwzXeUK/iMT
-         fKvNFyUaU4s+tmKbWIEWCM63VzHMPaOuB3UU94F2TiqBtxHpaO2GZkFChsqt8Do86aJC
-         TiYi+gMoQYh8XJ5SfeA7GIVeqbMizBF1Jh19ZCjDqP7g706aeWeLvDrgCSFxb4/poJwe
-         WMQcZYLKn4UoZGErZaB6ZvYtsu1uCQUVQOjyVjAYtfxeK2y4/wdMG17jem5QALz8SdOG
-         MFxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=PnshtQ+DzSYB1m1s28YhSp8Zch6aeX4Qzf6E+sbGNmo=;
-        b=NcIy6Da+9ZgY77H7k42caUhLEY77GWmfLIKr2lAvMYKkviCgWLs8F5lMByQma12WKq
-         80cjcaSrtgo/pRJWxK4zSnbeLU0La4M+Pr7oHbVdVNKq/rfEtUV60Cd+ua08wUf45Fna
-         XUB2Rb228mtGpPvywE+9IkJAgXMh3NXJEQDduYFW34VwZ8lnxpIr2XOeg8MiS9PoTjom
-         PLyrQ0l/oafAt/lL/oisaONb/AICplTlfC/cEb+DislqfDzTAmKr26a9T2IIYk0PY1jj
-         cnGhmVYzbwdOmLHpQf8YkYG+0AEW0rcLRC42Fh1L0tHeUDzefiBef9AX/a8mVeXSO1kp
-         PCoQ==
-X-Gm-Message-State: APjAAAW/zFJ5tqNOgM1PbBQOyDabsQY3mod2hApg2vR36KUEYnWKhJ08
-        AEkZ+UM6eG5jWmLv/a8jBystQYHV
-X-Google-Smtp-Source: APXvYqxIDjbtlEDF9USGivZjgPtRtUc5jVe6auF3YFJtnwos7C2FzEiVwPRfq3vgfXYVNHaDrIzbkQ==
-X-Received: by 2002:a17:90a:9f85:: with SMTP id o5mr2442419pjp.0.1575614387092;
-        Thu, 05 Dec 2019 22:39:47 -0800 (PST)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:180::3f95])
-        by smtp.gmail.com with ESMTPSA id v29sm13336847pgl.88.2019.12.05.22.39.45
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 05 Dec 2019 22:39:46 -0800 (PST)
-Date:   Thu, 5 Dec 2019 22:39:44 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+        id S1726268AbfLFGzj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 Dec 2019 01:55:39 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:63828 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726216AbfLFGzj (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 6 Dec 2019 01:55:39 -0500
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xB66tAb0017743;
+        Thu, 5 Dec 2019 22:55:12 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=Y55UDsezzaZvKIAgdJFkTgMIrP9jqbtTUZmRemsyT6A=;
+ b=K0dKJ3ifY6/rd/MEgd/HMEmU6VYPM0IFiWxAFG6Bt5NXE2At9HxZTE4S62hmy/hVvHKC
+ 1jt/I5JWJgmCDrRp/DhUMCIecl4vMmXmyQODtYVEDFUM3HtaU2sIeaIxnsN4ZHBisSOs
+ cDDxfRYKN40efv/I4Rkpc2M5TQQdNKHDFU0= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by mx0a-00082601.pphosted.com with ESMTP id 2wq3vyv0sa-5
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Thu, 05 Dec 2019 22:55:12 -0800
+Received: from prn-hub06.TheFacebook.com (2620:10d:c081:35::130) by
+ prn-hub06.TheFacebook.com (2620:10d:c081:35::130) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Thu, 5 Dec 2019 22:55:07 -0800
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (192.168.54.28)
+ by o365-in.thefacebook.com (192.168.16.30) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
+ via Frontend Transport; Thu, 5 Dec 2019 22:55:06 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=G0ZNIk3GYEcCRbc979wt89YLgSOGIsNwkypNMuTkAkUwBSMkO5zl1sv3MdAz6O5QxqrROFpSztk5PNattYGLdISQC/2v7TB/bWW9Oxpio9awWPCrS8ETEHEkO+E0vlyxESZUlhFiD9b5pSjJq3wxjboXqMIqRo7cmk2IcQTrKRFqyyWhsPxEsU8NupDocDS1cd0ArTXh53fKqdBNUZhW4Y0Bb8CN2G+392ac9aG1Z6/2/6bAqWE/2lcoG9oMnF0M+R+K3chqTjnFM7X7FWNwEyWBfCMfeE9G3oKsht5Pwo+n+aq7SGAZiWoEEvW6SBtwwjmxQIveFV+Ly24up57rjg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Y55UDsezzaZvKIAgdJFkTgMIrP9jqbtTUZmRemsyT6A=;
+ b=Jye6q2GJ/82ooNFD58qi+6NpchQA6VjpKz8VVpDYcEULwVrxu4m5LU5bbZxzo06Vv6I9Al3lLgdDPv39OQ9+Tx8X9UWNmBsTN2pKgZcZhKC14UhFg34qbonchxAERDXo/Ke5CH4pIILkhmJM3q6QpSIKNXUioiqRRbWONpTcdg1sAPdoxPpUX2UkZr664BO388yHTCmnAGkM4DL6/5/2cgJrJyLCZujdcXqetb+WT+OXiArsauV8UxP8H+QtRXWDHshZMGm2YfpKzz1+iZoQYETRb5kondbe5XK769b2oQEBgIv1CQBj0LK3xAeUpnys0hZvuKLD+GDuyPKFdvdvNA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Y55UDsezzaZvKIAgdJFkTgMIrP9jqbtTUZmRemsyT6A=;
+ b=gzyNrOHVQYGR+mf3RcB15AlyfVlCFshBi28KvzZBuOj5+Nyti9TdY/Bj/JMIe9rjgON6HO9W6SebSEVdWt5JuKYIUF6/rfa7m/isYWzxBTrsCpHShIwUWPNwcodFokkDwUchOdD3VeVOlapKIx96xqLzYSxpkAqjwmDaI0uoXqE=
+Received: from MN2PR15MB3213.namprd15.prod.outlook.com (20.179.21.76) by
+ MN2PR15MB2605.namprd15.prod.outlook.com (20.179.145.138) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2516.14; Fri, 6 Dec 2019 06:55:05 +0000
+Received: from MN2PR15MB3213.namprd15.prod.outlook.com
+ ([fe80::ec0d:4e55:4da9:904c]) by MN2PR15MB3213.namprd15.prod.outlook.com
+ ([fe80::ec0d:4e55:4da9:904c%7]) with mapi id 15.20.2495.026; Fri, 6 Dec 2019
+ 06:55:05 +0000
+From:   Martin Lau <kafai@fb.com>
 To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     ast@kernel.org, daniel@iogearbox.net, yhs@fb.com, kafai@fb.com,
-        songliubraving@fb.com, andriin@fb.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, peterz@infradead.org, mingo@redhat.com,
-        acme@kernel.org, linux-kernel@vger.kernel.org, kernel-team@fb.com
+CC:     "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        Yonghong Song <yhs@fb.com>, Song Liu <songliubraving@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "acme@kernel.org" <acme@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>
 Subject: Re: [PATCH bpf] bpf: Add LBR data to BPF_PROG_TYPE_PERF_EVENT prog
  context
-Message-ID: <20191206063942.5qd6opj6dfgqyxyx@ast-mbp.dhcp.thefacebook.com>
+Thread-Topic: [PATCH bpf] bpf: Add LBR data to BPF_PROG_TYPE_PERF_EVENT prog
+ context
+Thread-Index: AQHVq8n1PpTs4XsEb0SDfCAf1CVgp6esrI4A
+Date:   Fri, 6 Dec 2019 06:55:05 +0000
+Message-ID: <20191206065456.6pqjxdvldxiab6t5@kafai-mbp>
 References: <20191206001226.67825-1-dxu@dxuuu.xyz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 In-Reply-To: <20191206001226.67825-1-dxu@dxuuu.xyz>
-User-Agent: NeoMutt/20180223
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: CO2PR07CA0065.namprd07.prod.outlook.com (2603:10b6:100::33)
+ To MN2PR15MB3213.namprd15.prod.outlook.com (2603:10b6:208:3d::12)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c090:180::1dcf]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: b260ee35-5329-45a0-e5e1-08d77a193921
+x-ms-traffictypediagnostic: MN2PR15MB2605:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MN2PR15MB2605855620ABBDFE2371E0FFD55F0@MN2PR15MB2605.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-forefront-prvs: 0243E5FD68
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(7916004)(396003)(39860400002)(376002)(346002)(366004)(136003)(189003)(199004)(86362001)(11346002)(25786009)(6916009)(305945005)(66556008)(6506007)(9686003)(6512007)(186003)(102836004)(1076003)(66446008)(66476007)(5660300002)(14444005)(66946007)(8936002)(478600001)(81166006)(81156014)(6486002)(8676002)(64756008)(71190400001)(33716001)(2906002)(71200400001)(4326008)(316002)(229853002)(76176011)(14454004)(99286004)(52116002)(54906003);DIR:OUT;SFP:1102;SCL:1;SRVR:MN2PR15MB2605;H:MN2PR15MB3213.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: bI89zEhBhw5WZAxR1Cq85F9Di7TjsVjpOs5Mg9PRLEB7G/5Ri8DnrTHziPco5Kwg0UY5aVNPiYn/AQ9MAeQYXbOhl5Iida0xEo/ENd3gfhIAZkNDZUGgfvGzR1GMPyhqsZq5Vnn4nG3Jx3Nf7pFrheVtzVdNAW2JFe/5jMWktH5YHGhccQhKJmjWTUT14c9iyJPRxglK/y3mB5Mv9aVYBPd3EY+8oabD7KKsCWKAhzZn6iM6kp6Qhi6zshutqukT5H41+tSNylAdaY4c14pZ55of6bW+Hobx5izQnnGRHdb1h1BECHpKmZ86pIxzrWGgEgFzjCtkosIElGErpXuH4vWTnZYjAtNS014Nb0+AfPmQvtSUHEzPUKI2mpeU8BFCdhcuTzn5oZKX60c7sj7JPuzsAXm+Txbs6+iHvMaCE6zod6nXNH4r+NFER33/D6+E
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <DCB73F34274B38479D385E9FF4C6B1DF@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: b260ee35-5329-45a0-e5e1-08d77a193921
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Dec 2019 06:55:05.1016
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: tLEnHYq4Wf9DoND6x6Hh7yyPv5Uk8RS6razaX0EDReNSQn+WKyrTDmUNt8cA6cx+
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB2605
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
+ definitions=2019-12-06_01:2019-12-04,2019-12-06 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
+ mlxlogscore=900 spamscore=0 mlxscore=0 phishscore=0 clxscore=1011
+ bulkscore=0 impostorscore=0 priorityscore=1501 suspectscore=0
+ lowpriorityscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-1910280000 definitions=main-1912060059
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
@@ -71,7 +131,7 @@ On Thu, Dec 05, 2019 at 04:12:26PM -0800, Daniel Xu wrote:
 > is particularly interesting for profile guided optimizations. perf has
 > had LBR support for a while but the data collection can be a bit coarse
 > grained.
-> 
+>=20
 > We (Facebook) have recently run a lot of experiments with feeding
 > filtered LBR data to various PGO pipelines. We've seen really good
 > results (+2.5% throughput with lower cpu util and lower latency) by
@@ -80,92 +140,10 @@ On Thu, Dec 05, 2019 at 04:12:26PM -0800, Daniel Xu wrote:
 > ID (which is how we associate branches with latency) from a fixed
 > userspace address. Reading from the fixed address is why bpf support is
 > useful.
-> 
+>=20
 > Aside from this particular use case, having LBR data available to bpf
 > progs can be useful to get stack traces out of userspace applications
 > that omit frame pointers.
-> 
+>=20
 > This patch adds support for LBR data to bpf perf progs.
-> 
-> Some notes:
-> * We use `__u64 entries[BPF_MAX_LBR_ENTRIES * 3]` instead of
->   `struct perf_branch_entry[BPF_MAX_LBR_ENTRIES]` because checkpatch.pl
->   warns about including a uapi header from another uapi header
-> 
-> * We define BPF_MAX_LBR_ENTRIES as 32 (instead of using the value from
->   arch/x86/events/perf_events.h) because including arch specific headers
->   seems wrong and could introduce circular header includes.
-> 
-> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> ---
->  include/uapi/linux/bpf_perf_event.h |  5 ++++
->  kernel/trace/bpf_trace.c            | 39 +++++++++++++++++++++++++++++
->  2 files changed, 44 insertions(+)
-> 
-> diff --git a/include/uapi/linux/bpf_perf_event.h b/include/uapi/linux/bpf_perf_event.h
-> index eb1b9d21250c..dc87e3d50390 100644
-> --- a/include/uapi/linux/bpf_perf_event.h
-> +++ b/include/uapi/linux/bpf_perf_event.h
-> @@ -10,10 +10,15 @@
->  
->  #include <asm/bpf_perf_event.h>
->  
-> +#define BPF_MAX_LBR_ENTRIES 32
-> +
->  struct bpf_perf_event_data {
->  	bpf_user_pt_regs_t regs;
->  	__u64 sample_period;
->  	__u64 addr;
-> +	__u64 nr_lbr;
-> +	/* Cast to struct perf_branch_entry* before using */
-> +	__u64 entries[BPF_MAX_LBR_ENTRIES * 3];
->  };
->  
->  #endif /* _UAPI__LINUX_BPF_PERF_EVENT_H__ */
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index ffc91d4935ac..96ba7995b3d7 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -1259,6 +1259,14 @@ static bool pe_prog_is_valid_access(int off, int size, enum bpf_access_type type
->  		if (!bpf_ctx_narrow_access_ok(off, size, size_u64))
->  			return false;
->  		break;
-> +	case bpf_ctx_range(struct bpf_perf_event_data, nr_lbr):
-> +		bpf_ctx_record_field_size(info, size_u64);
-> +		if (!bpf_ctx_narrow_access_ok(off, size, size_u64))
-> +			return false;
-> +		break;
-> +	case bpf_ctx_range(struct bpf_perf_event_data, entries):
-> +		/* No narrow loads */
-> +		break;
->  	default:
->  		if (size != sizeof(long))
->  			return false;
-> @@ -1273,6 +1281,7 @@ static u32 pe_prog_convert_ctx_access(enum bpf_access_type type,
->  				      struct bpf_prog *prog, u32 *target_size)
->  {
->  	struct bpf_insn *insn = insn_buf;
-> +	int off;
->  
->  	switch (si->off) {
->  	case offsetof(struct bpf_perf_event_data, sample_period):
-> @@ -1291,6 +1300,36 @@ static u32 pe_prog_convert_ctx_access(enum bpf_access_type type,
->  				      bpf_target_off(struct perf_sample_data, addr, 8,
->  						     target_size));
->  		break;
-> +	case offsetof(struct bpf_perf_event_data, nr_lbr):
-> +		/* Load struct perf_sample_data* */
-> +		*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(struct bpf_perf_event_data_kern,
-> +						       data), si->dst_reg, si->src_reg,
-> +				      offsetof(struct bpf_perf_event_data_kern, data));
-> +		/* Load struct perf_branch_stack* */
-> +		*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(struct perf_sample_data, br_stack),
-> +				      si->dst_reg, si->dst_reg,
-> +				      offsetof(struct perf_sample_data, br_stack));
-
-br_stack can be NULL.
-if != NULL check has to be emitted too.
-
-Otherwise looks good.
-Please add a selftest and resubmit when bpf-next reopens next week.
-
+Please re-submit when bpf-next opens.
