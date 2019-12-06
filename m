@@ -2,122 +2,170 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 06A70114C52
-	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2019 07:19:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C4B9114C64
+	for <lists+bpf@lfdr.de>; Fri,  6 Dec 2019 07:39:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726076AbfLFGTC convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 6 Dec 2019 01:19:02 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:46180 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726091AbfLFGTB (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 6 Dec 2019 01:19:01 -0500
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id xB66EqN5016367
-        for <bpf@vger.kernel.org>; Thu, 5 Dec 2019 22:19:00 -0800
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by m0089730.ppops.net with ESMTP id 2wpywy4w82-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 05 Dec 2019 22:19:00 -0800
-Received: from intmgw005.05.ash5.facebook.com (2620:10d:c081:10::13) by
- mail.thefacebook.com (2620:10d:c081:35::128) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
- Thu, 5 Dec 2019 22:18:58 -0800
-Received: by devbig007.ftw2.facebook.com (Postfix, from userid 572438)
-        id 6286F760AFF; Thu,  5 Dec 2019 22:18:57 -0800 (PST)
-Smtp-Origin-Hostprefix: devbig
-From:   Alexei Starovoitov <ast@kernel.org>
-Smtp-Origin-Hostname: devbig007.ftw2.facebook.com
-To:     <davem@davemloft.net>
-CC:     <daniel@iogearbox.net>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <kernel-team@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: pull-request: bpf 2019-12-05
-Date:   Thu, 5 Dec 2019 22:18:57 -0800
-Message-ID: <20191206061857.3660737-1-ast@kernel.org>
-X-Mailer: git-send-email 2.23.0
+        id S1726169AbfLFGjs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 6 Dec 2019 01:39:48 -0500
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:45078 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726104AbfLFGjs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 6 Dec 2019 01:39:48 -0500
+Received: by mail-pl1-f194.google.com with SMTP id w7so2285162plz.12;
+        Thu, 05 Dec 2019 22:39:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=PnshtQ+DzSYB1m1s28YhSp8Zch6aeX4Qzf6E+sbGNmo=;
+        b=V0CATjTs5ss1fAXSo5bWATeALS7lPYJIkaR9pZK7xjv+dw92RFc5wl4BIfvRvJKzTp
+         nUwC8e0mWh2IHlvV677ssfj8jHS1T0LvIG42N41uPRsiiKkowuPhGanjXnwzXeUK/iMT
+         fKvNFyUaU4s+tmKbWIEWCM63VzHMPaOuB3UU94F2TiqBtxHpaO2GZkFChsqt8Do86aJC
+         TiYi+gMoQYh8XJ5SfeA7GIVeqbMizBF1Jh19ZCjDqP7g706aeWeLvDrgCSFxb4/poJwe
+         WMQcZYLKn4UoZGErZaB6ZvYtsu1uCQUVQOjyVjAYtfxeK2y4/wdMG17jem5QALz8SdOG
+         MFxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=PnshtQ+DzSYB1m1s28YhSp8Zch6aeX4Qzf6E+sbGNmo=;
+        b=NcIy6Da+9ZgY77H7k42caUhLEY77GWmfLIKr2lAvMYKkviCgWLs8F5lMByQma12WKq
+         80cjcaSrtgo/pRJWxK4zSnbeLU0La4M+Pr7oHbVdVNKq/rfEtUV60Cd+ua08wUf45Fna
+         XUB2Rb228mtGpPvywE+9IkJAgXMh3NXJEQDduYFW34VwZ8lnxpIr2XOeg8MiS9PoTjom
+         PLyrQ0l/oafAt/lL/oisaONb/AICplTlfC/cEb+DislqfDzTAmKr26a9T2IIYk0PY1jj
+         cnGhmVYzbwdOmLHpQf8YkYG+0AEW0rcLRC42Fh1L0tHeUDzefiBef9AX/a8mVeXSO1kp
+         PCoQ==
+X-Gm-Message-State: APjAAAW/zFJ5tqNOgM1PbBQOyDabsQY3mod2hApg2vR36KUEYnWKhJ08
+        AEkZ+UM6eG5jWmLv/a8jBystQYHV
+X-Google-Smtp-Source: APXvYqxIDjbtlEDF9USGivZjgPtRtUc5jVe6auF3YFJtnwos7C2FzEiVwPRfq3vgfXYVNHaDrIzbkQ==
+X-Received: by 2002:a17:90a:9f85:: with SMTP id o5mr2442419pjp.0.1575614387092;
+        Thu, 05 Dec 2019 22:39:47 -0800 (PST)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:180::3f95])
+        by smtp.gmail.com with ESMTPSA id v29sm13336847pgl.88.2019.12.05.22.39.45
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 05 Dec 2019 22:39:46 -0800 (PST)
+Date:   Thu, 5 Dec 2019 22:39:44 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Daniel Xu <dxu@dxuuu.xyz>
+Cc:     ast@kernel.org, daniel@iogearbox.net, yhs@fb.com, kafai@fb.com,
+        songliubraving@fb.com, andriin@fb.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, peterz@infradead.org, mingo@redhat.com,
+        acme@kernel.org, linux-kernel@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH bpf] bpf: Add LBR data to BPF_PROG_TYPE_PERF_EVENT prog
+ context
+Message-ID: <20191206063942.5qd6opj6dfgqyxyx@ast-mbp.dhcp.thefacebook.com>
+References: <20191206001226.67825-1-dxu@dxuuu.xyz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
- definitions=2019-12-06_01:2019-12-04,2019-12-06 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0 mlxscore=0
- suspectscore=1 priorityscore=1501 clxscore=1015 mlxlogscore=999
- phishscore=0 malwarescore=0 bulkscore=0 impostorscore=0 adultscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1910280000 definitions=main-1912060054
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191206001226.67825-1-dxu@dxuuu.xyz>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi David,
+On Thu, Dec 05, 2019 at 04:12:26PM -0800, Daniel Xu wrote:
+> Last-branch-record is an intel CPU feature that can be configured to
+> record certain branches that are taken during code execution. This data
+> is particularly interesting for profile guided optimizations. perf has
+> had LBR support for a while but the data collection can be a bit coarse
+> grained.
+> 
+> We (Facebook) have recently run a lot of experiments with feeding
+> filtered LBR data to various PGO pipelines. We've seen really good
+> results (+2.5% throughput with lower cpu util and lower latency) by
+> feeding high request latency LBR branches to the compiler on a
+> request-oriented service. We used bpf to read a special request context
+> ID (which is how we associate branches with latency) from a fixed
+> userspace address. Reading from the fixed address is why bpf support is
+> useful.
+> 
+> Aside from this particular use case, having LBR data available to bpf
+> progs can be useful to get stack traces out of userspace applications
+> that omit frame pointers.
+> 
+> This patch adds support for LBR data to bpf perf progs.
+> 
+> Some notes:
+> * We use `__u64 entries[BPF_MAX_LBR_ENTRIES * 3]` instead of
+>   `struct perf_branch_entry[BPF_MAX_LBR_ENTRIES]` because checkpatch.pl
+>   warns about including a uapi header from another uapi header
+> 
+> * We define BPF_MAX_LBR_ENTRIES as 32 (instead of using the value from
+>   arch/x86/events/perf_events.h) because including arch specific headers
+>   seems wrong and could introduce circular header includes.
+> 
+> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> ---
+>  include/uapi/linux/bpf_perf_event.h |  5 ++++
+>  kernel/trace/bpf_trace.c            | 39 +++++++++++++++++++++++++++++
+>  2 files changed, 44 insertions(+)
+> 
+> diff --git a/include/uapi/linux/bpf_perf_event.h b/include/uapi/linux/bpf_perf_event.h
+> index eb1b9d21250c..dc87e3d50390 100644
+> --- a/include/uapi/linux/bpf_perf_event.h
+> +++ b/include/uapi/linux/bpf_perf_event.h
+> @@ -10,10 +10,15 @@
+>  
+>  #include <asm/bpf_perf_event.h>
+>  
+> +#define BPF_MAX_LBR_ENTRIES 32
+> +
+>  struct bpf_perf_event_data {
+>  	bpf_user_pt_regs_t regs;
+>  	__u64 sample_period;
+>  	__u64 addr;
+> +	__u64 nr_lbr;
+> +	/* Cast to struct perf_branch_entry* before using */
+> +	__u64 entries[BPF_MAX_LBR_ENTRIES * 3];
+>  };
+>  
+>  #endif /* _UAPI__LINUX_BPF_PERF_EVENT_H__ */
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index ffc91d4935ac..96ba7995b3d7 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -1259,6 +1259,14 @@ static bool pe_prog_is_valid_access(int off, int size, enum bpf_access_type type
+>  		if (!bpf_ctx_narrow_access_ok(off, size, size_u64))
+>  			return false;
+>  		break;
+> +	case bpf_ctx_range(struct bpf_perf_event_data, nr_lbr):
+> +		bpf_ctx_record_field_size(info, size_u64);
+> +		if (!bpf_ctx_narrow_access_ok(off, size, size_u64))
+> +			return false;
+> +		break;
+> +	case bpf_ctx_range(struct bpf_perf_event_data, entries):
+> +		/* No narrow loads */
+> +		break;
+>  	default:
+>  		if (size != sizeof(long))
+>  			return false;
+> @@ -1273,6 +1281,7 @@ static u32 pe_prog_convert_ctx_access(enum bpf_access_type type,
+>  				      struct bpf_prog *prog, u32 *target_size)
+>  {
+>  	struct bpf_insn *insn = insn_buf;
+> +	int off;
+>  
+>  	switch (si->off) {
+>  	case offsetof(struct bpf_perf_event_data, sample_period):
+> @@ -1291,6 +1300,36 @@ static u32 pe_prog_convert_ctx_access(enum bpf_access_type type,
+>  				      bpf_target_off(struct perf_sample_data, addr, 8,
+>  						     target_size));
+>  		break;
+> +	case offsetof(struct bpf_perf_event_data, nr_lbr):
+> +		/* Load struct perf_sample_data* */
+> +		*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(struct bpf_perf_event_data_kern,
+> +						       data), si->dst_reg, si->src_reg,
+> +				      offsetof(struct bpf_perf_event_data_kern, data));
+> +		/* Load struct perf_branch_stack* */
+> +		*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(struct perf_sample_data, br_stack),
+> +				      si->dst_reg, si->dst_reg,
+> +				      offsetof(struct perf_sample_data, br_stack));
 
-The following pull-request contains BPF updates for your *net* tree.
+br_stack can be NULL.
+if != NULL check has to be emitted too.
 
-We've added 6 non-merge commits during the last 1 day(s) which contain
-a total of 14 files changed, 116 insertions(+), 37 deletions(-).
+Otherwise looks good.
+Please add a selftest and resubmit when bpf-next reopens next week.
 
-The main changes are:
-
-1) three selftests fixes, from Stanislav.
-
-2) one samples fix, from Jesper.
-
-3) one verifier fix, from Yonghong.
-
-Please consider pulling these changes from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
-
-Thanks a lot!
-
-Also thanks to reporters, reviewers and testers of commits in this pull-request:
-
-Andrii Nakryiko, Eelco Chaudron, Toke Høiland-Jørgensen
-
-----------------------------------------------------------------
-
-The following changes since commit 099ffd7eddfe03b9b5b43e1f4ffece99121dd7ba:
-
-  NFC: NCI: use new `delay` structure for SPI transfer delays (2019-12-04 17:00:58 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git 
-
-for you to fetch changes up to 8f9081c92523328aa569d09051add79a6c0ae9ff:
-
-  selftests/bpf: Add a fexit/bpf2bpf test with target bpf prog no callees (2019-12-04 21:34:42 -0800)
-
-----------------------------------------------------------------
-Jesper Dangaard Brouer (1):
-      samples/bpf: Fix broken xdp_rxq_info due to map order assumptions
-
-Stanislav Fomichev (3):
-      selftests/bpf: Don't hard-code root cgroup id
-      selftests/bpf: Bring back c++ include/link test
-      selftests/bpf: De-flake test_tcpbpf
-
-Yonghong Song (2):
-      bpf: Fix a bug when getting subprog 0 jited image in check_attach_btf_id
-      selftests/bpf: Add a fexit/bpf2bpf test with target bpf prog no callees
-
- kernel/bpf/verifier.c                              |  5 +-
- samples/bpf/xdp_rxq_info_user.c                    |  6 +-
- tools/lib/bpf/.gitignore                           |  1 -
- tools/lib/bpf/Makefile                             |  5 +-
- tools/testing/selftests/bpf/.gitignore             |  1 +
- tools/testing/selftests/bpf/Makefile               |  6 +-
- .../selftests/bpf/prog_tests/fexit_bpf2bpf.c       | 70 ++++++++++++++++------
- .../selftests/bpf/progs/fexit_bpf2bpf_simple.c     | 26 ++++++++
- .../selftests/bpf/progs/test_pkt_md_access.c       |  4 +-
- .../testing/selftests/bpf/progs/test_tcpbpf_kern.c |  1 +
- .../selftests/bpf/test_cpp.cpp}                    |  0
- .../selftests/bpf/test_skb_cgroup_id_user.c        |  2 +-
- tools/testing/selftests/bpf/test_tcpbpf.h          |  1 +
- tools/testing/selftests/bpf/test_tcpbpf_user.c     | 25 +++++---
- 14 files changed, 116 insertions(+), 37 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/fexit_bpf2bpf_simple.c
- rename tools/{lib/bpf/test_libbpf.c => testing/selftests/bpf/test_cpp.cpp} (100%)
