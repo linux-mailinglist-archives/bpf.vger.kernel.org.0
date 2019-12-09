@@ -2,147 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 25D62117A40
-	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2019 23:55:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 916B1117B5E
+	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2019 00:19:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727294AbfLIWzD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Dec 2019 17:55:03 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:19976 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727543AbfLIWyO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 Dec 2019 17:54:14 -0500
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5deed08f0000>; Mon, 09 Dec 2019 14:54:07 -0800
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Mon, 09 Dec 2019 14:54:13 -0800
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Mon, 09 Dec 2019 14:54:13 -0800
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 9 Dec
- 2019 22:54:12 +0000
-Received: from rnnvemgw01.nvidia.com (10.128.109.123) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Mon, 9 Dec 2019 22:54:11 +0000
-Received: from blueforge.nvidia.com (Not Verified[10.110.48.28]) by rnnvemgw01.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5deed0920003>; Mon, 09 Dec 2019 14:54:11 -0800
-From:   John Hubbard <jhubbard@nvidia.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, <bpf@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <kvm@vger.kernel.org>,
-        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-media@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>, <netdev@vger.kernel.org>,
-        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: [PATCH v8 26/26] selftests/vm: run_vmtests: invoke gup_benchmark with basic FOLL_PIN coverage
-Date:   Mon, 9 Dec 2019 14:53:44 -0800
-Message-ID: <20191209225344.99740-27-jhubbard@nvidia.com>
-X-Mailer: git-send-email 2.24.0
-In-Reply-To: <20191209225344.99740-1-jhubbard@nvidia.com>
-References: <20191209225344.99740-1-jhubbard@nvidia.com>
+        id S1727059AbfLIXT5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Dec 2019 18:19:57 -0500
+Received: from www62.your-server.de ([213.133.104.62]:47252 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726592AbfLIXT5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Dec 2019 18:19:57 -0500
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1ieSJl-0007I5-PL; Tue, 10 Dec 2019 00:19:53 +0100
+Received: from [178.197.249.52] (helo=pc-9.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1ieSJl-000NZ5-8y; Tue, 10 Dec 2019 00:19:53 +0100
+Subject: Re: [PATCHv3] bpf: Emit audit messages upon successful prog load and
+ unload
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-audit@redhat.com, Andrii Nakryiko <andriin@fb.com>,
+        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Steve Grubb <sgrubb@redhat.com>,
+        David Miller <davem@redhat.com>,
+        Eric Paris <eparis@redhat.com>, Jiri Benc <jbenc@redhat.com>
+References: <20191206214934.11319-1-jolsa@kernel.org>
+ <20191209121537.GA14170@linux.fritz.box>
+ <CAHC9VhQdOGTj1HT1cwvAdE1sRpzk5mC+oHQLHgJFa3vXEij+og@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <d387184e-9c5f-d5b2-0acb-57b794235cbd@iogearbox.net>
+Date:   Tue, 10 Dec 2019 00:19:51 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1575932047; bh=efjW/rF0EGuRthlOGEU05IQnyHi57jZRzyopoxtDk8c=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
-         In-Reply-To:References:MIME-Version:X-NVConfidentiality:
-         Content-Transfer-Encoding:Content-Type;
-        b=qV3uJB7VZRPn8h/t1hIu8YevHEQMbA6ytY7EXlbIwT+Y5aVa6SSMTKDXGhoau+Np9
-         SXj+sUF5Zt1nGzc+gDnMftMZ783jkTGZpbgnOkcctnZX3s3d6WXHEohuIVF7yzZeGR
-         ygw/gKI58lE2sUc35Cy0UmpJw+FO/2bcReyZzeD70yLGqvf4tS0EdeF8RZfC0ASFL8
-         7kuLYQ1Ps+1sWrXxax9z07GSCOo44qcTHbB3lxAH77qnnhMi2B1hjBCUkNOq6E9/ek
-         Op/wTYdOnk2+V0dbVmV+gE5zCnUDp7xm+aIrH1mszn1QnNw72uwtRJfg/zkFxFZtTv
-         8OVY/MKZ8u6pw==
+In-Reply-To: <CAHC9VhQdOGTj1HT1cwvAdE1sRpzk5mC+oHQLHgJFa3vXEij+og@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.101.4/25658/Mon Dec  9 10:47:26 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-It's good to have basic unit test coverage of the new FOLL_PIN
-behavior. Fortunately, the gup_benchmark unit test is extremely
-fast (a few milliseconds), so adding it the the run_vmtests suite
-is going to cause no noticeable change in running time.
+On 12/9/19 3:56 PM, Paul Moore wrote:
+> On Mon, Dec 9, 2019 at 7:15 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>> On Fri, Dec 06, 2019 at 10:49:34PM +0100, Jiri Olsa wrote:
+>>> From: Daniel Borkmann <daniel@iogearbox.net>
+>>>
+>>> Allow for audit messages to be emitted upon BPF program load and
+>>> unload for having a timeline of events. The load itself is in
+>>> syscall context, so additional info about the process initiating
+>>> the BPF prog creation can be logged and later directly correlated
+>>> to the unload event.
+>>>
+>>> The only info really needed from BPF side is the globally unique
+>>> prog ID where then audit user space tooling can query / dump all
+>>> info needed about the specific BPF program right upon load event
+>>> and enrich the record, thus these changes needed here can be kept
+>>> small and non-intrusive to the core.
+>>>
+>>> Raw example output:
+>>>
+>>>    # auditctl -D
+>>>    # auditctl -a always,exit -F arch=x86_64 -S bpf
+>>>    # ausearch --start recent -m 1334
+>>>    ...
+>>>    ----
+>>>    time->Wed Nov 27 16:04:13 2019
+>>>    type=PROCTITLE msg=audit(1574867053.120:84664): proctitle="./bpf"
+>>>    type=SYSCALL msg=audit(1574867053.120:84664): arch=c000003e syscall=321   \
+>>>      success=yes exit=3 a0=5 a1=7ffea484fbe0 a2=70 a3=0 items=0 ppid=7477    \
+>>>      pid=12698 auid=1001 uid=1001 gid=1001 euid=1001 suid=1001 fsuid=1001    \
+>>>      egid=1001 sgid=1001 fsgid=1001 tty=pts2 ses=4 comm="bpf"                \
+>>>      exe="/home/jolsa/auditd/audit-testsuite/tests/bpf/bpf"                  \
+>>>      subj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 key=(null)
+>>>    type=UNKNOWN[1334] msg=audit(1574867053.120:84664): prog-id=76 op=LOAD
+>>>    ----
+>>>    time->Wed Nov 27 16:04:13 2019
+>>>    type=UNKNOWN[1334] msg=audit(1574867053.120:84665): prog-id=76 op=UNLOAD
+>>>    ...
+>>>
+>>> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+>>> Co-developed-by: Jiri Olsa <jolsa@kernel.org>
+>>> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+>>
+>> Paul, Steve, given the merge window is closed by now, does this version look
+>> okay to you for proceeding to merge into bpf-next?
+> 
+> Given the change to audit UAPI I was hoping to merge this via the
+> audit/next tree, is that okay with you?
 
-So, add two new invocations to run_vmtests:
+Hm, my main concern is that given all the main changes are in BPF core and
+usually the BPF subsystem has plenty of changes per release coming in that we'd
+end up generating unnecessary merge conflicts. Given the include/uapi/linux/audit.h
+UAPI diff is a one-line change, my preference would be to merge via bpf-next with
+your ACK or SOB added. Does that work for you as well as?
 
-1) Run gup_benchmark with normal get_user_pages().
-
-2) Run gup_benchmark with pin_user_pages(). This is much like
-the first call, except that it sets FOLL_PIN.
-
-Running these two in quick succession also provide a visual
-comparison of the running times, which is convenient.
-
-The new invocations are fairly early in the run_vmtests script,
-because with test suites, it's usually preferable to put the
-shorter, faster tests first, all other things being equal.
-
-Reviewed-by: Ira Weiny <ira.weiny@intel.com>
-Signed-off-by: John Hubbard <jhubbard@nvidia.com>
----
- tools/testing/selftests/vm/run_vmtests | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
-
-diff --git a/tools/testing/selftests/vm/run_vmtests b/tools/testing/selftes=
-ts/vm/run_vmtests
-index a692ea828317..df6a6bf3f238 100755
---- a/tools/testing/selftests/vm/run_vmtests
-+++ b/tools/testing/selftests/vm/run_vmtests
-@@ -112,6 +112,28 @@ echo "NOTE: The above hugetlb tests provide minimal co=
-verage.  Use"
- echo "      https://github.com/libhugetlbfs/libhugetlbfs.git for"
- echo "      hugetlb regression testing."
-=20
-+echo "--------------------------------------------"
-+echo "running 'gup_benchmark -U' (normal/slow gup)"
-+echo "--------------------------------------------"
-+./gup_benchmark -U
-+if [ $? -ne 0 ]; then
-+	echo "[FAIL]"
-+	exitcode=3D1
-+else
-+	echo "[PASS]"
-+fi
-+
-+echo "------------------------------------------"
-+echo "running gup_benchmark -b (pin_user_pages)"
-+echo "------------------------------------------"
-+./gup_benchmark -b
-+if [ $? -ne 0 ]; then
-+	echo "[FAIL]"
-+	exitcode=3D1
-+else
-+	echo "[PASS]"
-+fi
-+
- echo "-------------------"
- echo "running userfaultfd"
- echo "-------------------"
---=20
-2.24.0
-
+Thanks,
+Daniel
