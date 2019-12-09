@@ -2,103 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C498E116C4A
-	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2019 12:29:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97CAB116CE3
+	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2019 13:15:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727200AbfLIL3h (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Dec 2019 06:29:37 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:36334 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726377AbfLIL3g (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 Dec 2019 06:29:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1575890975;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=brrElCnD0fFj0dsAyA7yIHhw8QM+zUQL/kI/lCBWGAI=;
-        b=L+RdniZzYNMDYNB0Sh14AxRffbCRbaH1EB7ephcZF3VuypPmPzzV1VDl5JD61kBMdZUlXM
-        3eyIa8AxdB6DhQSs3sHvTgmVI9wI3KOI1OQ7pBJa+nWQIBUgUeQ4UUfcrgDGZWho/fx/2t
-        hEBeP2LywaLvDJQIhBi3BFB9wd9CMps=
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
- [209.85.208.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-282-S2LY_TSENmaJcTQBSmUAfA-1; Mon, 09 Dec 2019 06:29:32 -0500
-Received: by mail-lj1-f200.google.com with SMTP id s8so3238524ljo.10
-        for <bpf@vger.kernel.org>; Mon, 09 Dec 2019 03:29:31 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version;
-        bh=brrElCnD0fFj0dsAyA7yIHhw8QM+zUQL/kI/lCBWGAI=;
-        b=FOWPI+jUxfvR2lg0bWkV0/NcXl7r3SRtroYtNTocl9+2wrFmp8nZOUaAhbuo9A7Qtc
-         YMzY3rCJZYsKbbhoocb3Ct1uxh7ZkD5SiMVoWlzfPA3qNj26olQcS/1gEHr0RzxITro5
-         GsaxlZkRZKEKaN2joGh7RSrIyTXvIdIyQE1kCdRhG8D5XacawDdas0ghgd51KNlLGUyh
-         rcGvw7i70VqM0qHnHLYGUBWNo1hmlWUzjiNpPfG8kNPy0rMYX1Zq4tWq3Z3qvO7hj7OI
-         sERycx+dr7Da/u223loamd/e7978jpU+xftFQwLyTdi3tWvdQcDNqelRCeqaySUCLxit
-         /+/w==
-X-Gm-Message-State: APjAAAWrSiMWR5cwx6sXfTqp6TGFF/SRe8Ba9r0bRsc7UUgBkfbOAigV
-        K+UVV+Nzit/wSBKjoOnNWDRtWlc0crUclCwNGkJe9j3Y2I9hwr9yutxFkcrlmDW4AOZ8rvdh+Vq
-        sWKBLRLHUOiy0
-X-Received: by 2002:a2e:58c:: with SMTP id 134mr16936220ljf.12.1575890970399;
-        Mon, 09 Dec 2019 03:29:30 -0800 (PST)
-X-Google-Smtp-Source: APXvYqyZVoS/uXs3T1eVf/XlZ02xWycVbJgGakJDNg1/h00N069k47ar4L2ftjtRU4lo//VGRQkrFg==
-X-Received: by 2002:a2e:58c:: with SMTP id 134mr16936213ljf.12.1575890970253;
-        Mon, 09 Dec 2019 03:29:30 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id i4sm12554298lji.0.2019.12.09.03.29.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Dec 2019 03:29:29 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 835E718257B; Mon,  9 Dec 2019 12:29:27 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     bpf@vger.kernel.org
-Cc:     Jiri Olsa <jolsa@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: Establishing /usr/lib/bpf as a convention for eBPF bytecode files?
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Mon, 09 Dec 2019 12:29:27 +0100
-Message-ID: <87fthtlotk.fsf@toke.dk>
+        id S1727352AbfLIMPr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Dec 2019 07:15:47 -0500
+Received: from www62.your-server.de ([213.133.104.62]:54890 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727074AbfLIMPr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Dec 2019 07:15:47 -0500
+Received: from [2001:1620:665:0:5795:5b0a:e5d5:5944] (helo=localhost)
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1ieHww-0005Ut-0M; Mon, 09 Dec 2019 13:15:38 +0100
+Date:   Mon, 9 Dec 2019 13:15:37 +0100
+From:   Daniel Borkmann <daniel@iogearbox.net>
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-audit@redhat.com,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Steve Grubb <sgrubb@redhat.com>,
+        David Miller <davem@redhat.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@redhat.com>, Jiri Benc <jbenc@redhat.com>
+Subject: Re: [PATCHv3] bpf: Emit audit messages upon successful prog load and
+ unload
+Message-ID: <20191209121537.GA14170@linux.fritz.box>
+References: <20191206214934.11319-1-jolsa@kernel.org>
 MIME-Version: 1.0
-X-MC-Unique: S2LY_TSENmaJcTQBSmUAfA-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191206214934.11319-1-jolsa@kernel.org>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.101.4/25658/Mon Dec  9 10:47:26 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi everyone
+On Fri, Dec 06, 2019 at 10:49:34PM +0100, Jiri Olsa wrote:
+> From: Daniel Borkmann <daniel@iogearbox.net>
+> 
+> Allow for audit messages to be emitted upon BPF program load and
+> unload for having a timeline of events. The load itself is in
+> syscall context, so additional info about the process initiating
+> the BPF prog creation can be logged and later directly correlated
+> to the unload event.
+> 
+> The only info really needed from BPF side is the globally unique
+> prog ID where then audit user space tooling can query / dump all
+> info needed about the specific BPF program right upon load event
+> and enrich the record, thus these changes needed here can be kept
+> small and non-intrusive to the core.
+> 
+> Raw example output:
+> 
+>   # auditctl -D
+>   # auditctl -a always,exit -F arch=x86_64 -S bpf
+>   # ausearch --start recent -m 1334
+>   ...
+>   ----
+>   time->Wed Nov 27 16:04:13 2019
+>   type=PROCTITLE msg=audit(1574867053.120:84664): proctitle="./bpf"
+>   type=SYSCALL msg=audit(1574867053.120:84664): arch=c000003e syscall=321   \
+>     success=yes exit=3 a0=5 a1=7ffea484fbe0 a2=70 a3=0 items=0 ppid=7477    \
+>     pid=12698 auid=1001 uid=1001 gid=1001 euid=1001 suid=1001 fsuid=1001    \
+>     egid=1001 sgid=1001 fsgid=1001 tty=pts2 ses=4 comm="bpf"                \
+>     exe="/home/jolsa/auditd/audit-testsuite/tests/bpf/bpf"                  \
+>     subj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 key=(null)
+>   type=UNKNOWN[1334] msg=audit(1574867053.120:84664): prog-id=76 op=LOAD
+>   ----
+>   time->Wed Nov 27 16:04:13 2019
+>   type=UNKNOWN[1334] msg=audit(1574867053.120:84665): prog-id=76 op=UNLOAD
+>   ...
+> 
+> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+> Co-developed-by: Jiri Olsa <jolsa@kernel.org>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 
-As you have no doubt noticed, we have started thinking about how to
-package eBPF-related applications in distributions. As a part of this,
-I've been thinking about what to recommend for applications that ship
-pre-compiled BPF byte-code files.
+Paul, Steve, given the merge window is closed by now, does this version look
+okay to you for proceeding to merge into bpf-next?
 
-The obvious place to place those would be somewhere in the system
-$LIBDIR (i.e., /usr/lib or /usr/lib64, depending on the distro). But
-since BPF byte code is its own binary format, different from regular
-executables, I think having a separate path to put those under makes
-sense. So I'm proposing to establish a convention that pre-compiled BPF
-programs be installed into /usr/lib{,64}/bpf.
-
-This would let users discover which BPF programs are shipped on their
-system, and it could be used to discover which package loaded a
-particular BPF program, by walking the directory to find the file a
-loaded program came from. It would not work for dynamically-generated
-bytecode, of course, but I think at least some applications will end up
-shipping pre-compiled bytecode files (we're doing that for xdp-tools,
-for instance).
-
-As I said, this would be a convention. We're already using it for
-xdp-tools[0], so my plan is to use that as the "first mover", try to get
-distributions to establish the path as a part of their filesystem
-layout, and then just try to encourage packages to use it. Hopefully it
-will catch on.
-
-Does anyone have any objections to this? Do you think it is a complete
-waste of time, or is it worth giving it a shot? :)
-
--Toke
-
-[0] https://github.com/xdp-project/xdp-tools/blob/master/lib/defines.mk#L12
-
+Thanks,
+Daniel
