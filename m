@@ -2,138 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 46386116FE7
-	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2019 16:08:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC240117251
+	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2019 18:00:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726293AbfLIPI0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Dec 2019 10:08:26 -0500
-Received: from www62.your-server.de ([213.133.104.62]:42242 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725956AbfLIPI0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 Dec 2019 10:08:26 -0500
-Received: from [2001:1620:665:0:5795:5b0a:e5d5:5944] (helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ieKe8-00041i-Ch; Mon, 09 Dec 2019 16:08:24 +0100
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     ast@kernel.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, will@kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: [PATCH bpf-next v2] bpf, x86, arm64: enable jit by default when not built as always-on
-Date:   Mon,  9 Dec 2019 16:08:03 +0100
-Message-Id: <f78ad24795c2966efcc2ee19025fa3459f622185.1575903816.git.daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
+        id S1726335AbfLIRAX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Dec 2019 12:00:23 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:51354 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726720AbfLIRAX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Dec 2019 12:00:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1575910821;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EJHLoeY90NAlolHvN1HWnn+e8ua3YFn8GakUKjiul2c=;
+        b=O5Wkm/dDKHq+bGTWLbTnxEaC7bdjp8roV06WAtdGLxCj7hSHjpO/nCn9pwTrj1yLpaFfA+
+        h928mcPOzLv2fTcziFyUFl8nXry3pl307bP5Us7cvjgADUUztfWaVaGMTKCVelneGaMX2j
+        xx8flbGCJYnC4yMJyXvtiuSzSjqq2vU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-395-_q4LzPVZPza6N7zIgRqMnQ-1; Mon, 09 Dec 2019 12:00:20 -0500
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 392C7107ACC5;
+        Mon,  9 Dec 2019 17:00:18 +0000 (UTC)
+Received: from carbon (ovpn-200-56.brq.redhat.com [10.40.200.56])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 821FD1001B09;
+        Mon,  9 Dec 2019 17:00:09 +0000 (UTC)
+Date:   Mon, 9 Dec 2019 18:00:08 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Cc:     brouer@redhat.com, netdev@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, bpf@vger.kernel.org,
+        magnus.karlsson@gmail.com, magnus.karlsson@intel.com,
+        jonathan.lemon@gmail.com, ecree@solarflare.com,
+        thoiland@redhat.com, andrii.nakryiko@gmail.com
+Subject: Re: [PATCH bpf-next v3 0/6] Introduce the BPF dispatcher
+Message-ID: <20191209180008.72c98c53@carbon>
+In-Reply-To: <20191209135522.16576-1-bjorn.topel@gmail.com>
+References: <20191209135522.16576-1-bjorn.topel@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.101.4/25658/Mon Dec  9 10:47:26 2019)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+X-MC-Unique: _q4LzPVZPza6N7zIgRqMnQ-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-After Spectre 2 fix via 290af86629b2 ("bpf: introduce BPF_JIT_ALWAYS_ON
-config") most major distros use BPF_JIT_ALWAYS_ON configuration these days
-which compiles out the BPF interpreter entirely and always enables the
-JIT. Also given recent fix in e1608f3fa857 ("bpf: Avoid setting bpf insns
-pages read-only when prog is jited"), we additionally avoid fragmenting
-the direct map for the BPF insns pages sitting in the general data heap
-since they are not used during execution. Latter is only needed when run
-through the interpreter.
+On Mon,  9 Dec 2019 14:55:16 +0100
+Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> wrote:
 
-Since both x86 and arm64 JITs have seen a lot of exposure over the years,
-are generally most up to date and maintained, there is more downside in
-!BPF_JIT_ALWAYS_ON configurations to have the interpreter enabled by default
-rather than the JIT. Add a ARCH_WANT_DEFAULT_BPF_JIT config which archs can
-use to set the bpf_jit_{enable,kallsyms} to 1. Back in the days the
-bpf_jit_kallsyms knob was set to 0 by default since major distros still
-had /proc/kallsyms addresses exposed to unprivileged user space which is
-not the case anymore. Hence both knobs are set via BPF_JIT_DEFAULT_ON which
-is set to 'y' in case of BPF_JIT_ALWAYS_ON or ARCH_WANT_DEFAULT_BPF_JIT.
+> Performance
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>=20
+> The tests were performed using the xdp_rxq_info sample program with
+> the following command-line:
+>=20
+> 1. XDP_DRV:
+>   # xdp_rxq_info --dev eth0 --action XDP_DROP
+> 2. XDP_SKB:
+>   # xdp_rxq_info --dev eth0 -S --action XDP_DROP
+> 3. xdp-perf, from selftests/bpf:
+>   # test_progs -v -t xdp_perf
+>=20
+>=20
+> Run with mitigations=3Dauto
+> -------------------------
+>=20
+> Baseline:
+> 1. 22.0 Mpps
+> 2. 3.8 Mpps
+> 3. 15 ns
+>=20
+> Dispatcher:
+> 1. 29.4 Mpps (+34%)
+> 2. 4.0 Mpps  (+5%)
+> 3. 5 ns      (+66%)
 
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Acked-by: Will Deacon <will@kernel.org>
----
- [ Follow-up from https://lore.kernel.org/bpf/20191202200947.GA14353@pc-9.home/,
-   applies to both bpf and bpf-next, but I think going via bpf-next is more
-   appropriate. 
+Thanks for providing these extra measurement points.  This is good
+work.  I just want to remind people that when working at these high
+speeds, it is easy to get amazed by a +34% improvement, but we have to
+be careful to understand that this is saving approx 10 ns time or
+cycles.
 
-   v1 -> v2:
-    - add depends on HAVE_EBPF_JIT && BPF_JIT to BPF_JIT_DEFAULT_ON (Will)
- ]
+In reality cycles or time saved in #2 (3.8 Mpps -> 4.0 Mpps) is larger
+(1/3.8-1/4)*1000 =3D 13.15 ns.  Than #1 (22.0 Mpps -> 29.4 Mpps)
+(1/22-1/29.4)*1000 =3D 11.44 ns. Test #3 keeps us honest 15 ns -> 5 ns =3D
+10 ns.  The 10 ns improvement is a big deal in XDP context, and also
+correspond to my own experience with retpoline (approx 12 ns overhead).
 
- arch/arm64/Kconfig | 1 +
- arch/x86/Kconfig   | 1 +
- init/Kconfig       | 7 +++++++
- kernel/bpf/core.c  | 4 ++--
- 4 files changed, 11 insertions(+), 2 deletions(-)
+To Bj=C3=B8rn, I would appreciate more digits on your Mpps numbers, so I ge=
+t
+more accuracy on my checks-and-balances I described above.  I suspect
+the 3.8 Mpps -> 4.0 Mpps will be closer to the other numbers when we
+get more accuracy.
 
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index b1b4476ddb83..29d03459de20 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -69,6 +69,7 @@ config ARM64
- 	select ARCH_SUPPORTS_INT128 if CC_HAS_INT128 && (GCC_VERSION >= 50000 || CC_IS_CLANG)
- 	select ARCH_SUPPORTS_NUMA_BALANCING
- 	select ARCH_WANT_COMPAT_IPC_PARSE_VERSION if COMPAT
-+	select ARCH_WANT_DEFAULT_BPF_JIT
- 	select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT
- 	select ARCH_WANT_FRAME_POINTERS
- 	select ARCH_WANT_HUGE_PMD_SHARE if ARM64_4K_PAGES || (ARM64_16K_PAGES && !ARM64_VA_BITS_36)
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 5e8949953660..1f6a0388a65f 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -93,6 +93,7 @@ config X86
- 	select ARCH_USE_QUEUED_RWLOCKS
- 	select ARCH_USE_QUEUED_SPINLOCKS
- 	select ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH
-+	select ARCH_WANT_DEFAULT_BPF_JIT	if X86_64
- 	select ARCH_WANTS_DYNAMIC_TASK_STRUCT
- 	select ARCH_WANT_HUGE_PMD_SHARE
- 	select ARCH_WANTS_THP_SWAP		if X86_64
-diff --git a/init/Kconfig b/init/Kconfig
-index a34064a031a5..890aaa62efde 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -1604,6 +1604,9 @@ config BPF_SYSCALL
- 	  Enable the bpf() system call that allows to manipulate eBPF
- 	  programs and maps via file descriptors.
- 
-+config ARCH_WANT_DEFAULT_BPF_JIT
-+	bool
-+
- config BPF_JIT_ALWAYS_ON
- 	bool "Permanently enable BPF JIT and remove BPF interpreter"
- 	depends on BPF_SYSCALL && HAVE_EBPF_JIT && BPF_JIT
-@@ -1611,6 +1614,10 @@ config BPF_JIT_ALWAYS_ON
- 	  Enables BPF JIT and removes BPF interpreter to avoid
- 	  speculative execution of BPF instructions by the interpreter
- 
-+config BPF_JIT_DEFAULT_ON
-+	def_bool ARCH_WANT_DEFAULT_BPF_JIT || BPF_JIT_ALWAYS_ON
-+	depends on HAVE_EBPF_JIT && BPF_JIT
-+
- config USERFAULTFD
- 	bool "Enable userfaultfd() system call"
- 	depends on MMU
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 49e32acad7d8..2ff01a716128 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -520,9 +520,9 @@ void bpf_prog_kallsyms_del_all(struct bpf_prog *fp)
- 
- #ifdef CONFIG_BPF_JIT
- /* All BPF JIT sysctl knobs here. */
--int bpf_jit_enable   __read_mostly = IS_BUILTIN(CONFIG_BPF_JIT_ALWAYS_ON);
-+int bpf_jit_enable   __read_mostly = IS_BUILTIN(CONFIG_BPF_JIT_DEFAULT_ON);
-+int bpf_jit_kallsyms __read_mostly = IS_BUILTIN(CONFIG_BPF_JIT_DEFAULT_ON);
- int bpf_jit_harden   __read_mostly;
--int bpf_jit_kallsyms __read_mostly;
- long bpf_jit_limit   __read_mostly;
- 
- static __always_inline void
--- 
-2.21.0
+=20
+> Dispatcher (full; walk all entries, and fallback):
+> 1. 20.4 Mpps (-7%)
+> 2. 3.8 Mpps =20
+> 3. 18 ns     (-20%)
+>=20
+> Run with mitigations=3Doff
+> ------------------------
+>=20
+> Baseline:
+> 1. 29.6 Mpps
+> 2. 4.1 Mpps
+> 3. 5 ns
+>=20
+> Dispatcher:
+> 1. 30.7 Mpps (+4%)
+> 2. 4.1 Mpps
+> 3. 5 ns
+
+While +4% sounds good, but could be measurement noise ;-)
+
+ (1/29.6-1/30.7)*1000 =3D 1.21 ns
+
+As both #3 says 5 ns.
+
+--=20
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
