@@ -2,156 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DF18116E46
-	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2019 14:55:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 463C8116E83
+	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2019 15:05:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727777AbfLINz5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Dec 2019 08:55:57 -0500
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:42625 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726687AbfLINz5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 Dec 2019 08:55:57 -0500
-Received: by mail-pf1-f193.google.com with SMTP id 4so7268921pfz.9;
-        Mon, 09 Dec 2019 05:55:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=FPFa3OuM/TlaH8+z5XwoxIKhfhKN+wkPNx4ZwfD8Dao=;
-        b=ZF1MprhLjHeSmlxAFL+Pda/kxcumTRAJNpXEfBNbjYkd/LDvrGhajfyUJ1jMwPlpHQ
-         29tgbiCKHAOOBwf5klyh2qkHc2TS9Ur1op90nGBLdsZuYnAqYebDkBfpvhGOP65Cw07P
-         PVZVdf9UiN76VQWA1BxlWHvvaI4vKbdTWI2e27X47gdwo4tamaqyBIrKgoHCr9z2evpk
-         mbnRrQ5XDF3bmw61t3wS/95CHE4C+zwyFU/dOcy46cTZUGnya5NCNHwwPNMZucwggRIk
-         G2KKUulC7TBKPKw7x4S4DuABoDyWV/j6acPPZi1AXBLeN5RuD5y+vl21UTHPhNNIb/4G
-         aBVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=FPFa3OuM/TlaH8+z5XwoxIKhfhKN+wkPNx4ZwfD8Dao=;
-        b=dtW+QI7cAjaIfX/+bXLq6yBSQKH5ne5/7wX/cno8mOoN0+Km+sVGew90CVyMchRpG7
-         VLN713yAsNOFN7lqEXyo9u9K46cLszDCneKiKIQN43PFYciHUR6z43vAr0HPAJZ08FG1
-         v6RkNVocPSe0uqCl0wqe0IlHELrpiX8U5wZ4mUxWuPBJj1NFVFk06yAtbljxhQBHwKZw
-         vs1otUwA85V58yMkrNQsD3mr0G+uHqkWwe7Hpu2FeiLtHX+kRhfS7wWrQB/440Fooft7
-         /mLXfyOEGK1H+hEJX82yIr21Q6PRNva8yhC+/xnZJ5dFvDCX/FGeLj4FxFfU3RXMSSfQ
-         HRnw==
-X-Gm-Message-State: APjAAAXDJLwq3H0jthLZvA0J7MEFLwsT2giRfsNshhx2TROAGoIvJhwl
-        LlnKYUmuugAJopnxQh8Lc09omzbpBM98fA==
-X-Google-Smtp-Source: APXvYqwFBF4FmtSNZFm9KTRcgXvOjZUPHMtl5qFN60bCpMuN8ZbwNOnuUD/4xKvqAkzhNaqFCwLhvA==
-X-Received: by 2002:a63:e0f:: with SMTP id d15mr18651742pgl.255.1575899756140;
-        Mon, 09 Dec 2019 05:55:56 -0800 (PST)
-Received: from btopel-mobl.ger.intel.com (fmdmzpr03-ext.fm.intel.com. [192.55.54.38])
-        by smtp.gmail.com with ESMTPSA id h26sm19543403pfr.9.2019.12.09.05.55.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Dec 2019 05:55:55 -0800 (PST)
-From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
-To:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
-        bpf@vger.kernel.org, magnus.karlsson@gmail.com,
-        magnus.karlsson@intel.com, jonathan.lemon@gmail.com,
-        ecree@solarflare.com, thoiland@redhat.com,
-        andrii.nakryiko@gmail.com
-Subject: [PATCH bpf-next v3 6/6] bpf, x86: align dispatcher branch targets to 16B
-Date:   Mon,  9 Dec 2019 14:55:22 +0100
-Message-Id: <20191209135522.16576-7-bjorn.topel@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191209135522.16576-1-bjorn.topel@gmail.com>
-References: <20191209135522.16576-1-bjorn.topel@gmail.com>
+        id S1727455AbfLIOFD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Dec 2019 09:05:03 -0500
+Received: from www62.your-server.de ([213.133.104.62]:54858 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727268AbfLIOFD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Dec 2019 09:05:03 -0500
+Received: from [2001:1620:665:0:5795:5b0a:e5d5:5944] (helo=localhost)
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1ieJem-0006rq-UW; Mon, 09 Dec 2019 15:05:01 +0100
+From:   Daniel Borkmann <daniel@iogearbox.net>
+To:     ast@kernel.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, will@kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: [PATCH bpf-next] bpf, x86, arm64: enable jit by default when not built as always-on
+Date:   Mon,  9 Dec 2019 15:04:42 +0100
+Message-Id: <b869ada979120dbb3463bdb363f6ab463aa38086.1575899698.git.daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.101.4/25658/Mon Dec  9 10:47:26 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Björn Töpel <bjorn.topel@intel.com>
+After Spectre 2 fix via 290af86629b2 ("bpf: introduce BPF_JIT_ALWAYS_ON
+config") most major distros use BPF_JIT_ALWAYS_ON configuration these days
+which compiles out the BPF interpreter entirely and always enables the
+JIT. Also given recent fix in e1608f3fa857 ("bpf: Avoid setting bpf insns
+pages read-only when prog is jited"), we additionally avoid fragmenting
+the direct map for the BPF insns pages sitting in the general data heap
+since they are not used during execution. Latter is only needed when run
+through the interpreter.
 
-From Intel 64 and IA-32 Architectures Optimization Reference Manual,
-3.4.1.4 Code Alignment, Assembly/Compiler Coding Rule 11: All branch
-targets should be 16-byte aligned.
+Since both x86 and arm64 JITs have seen a lot of exposure over the years,
+are generally most up to date and maintained, there is more downside in
+!BPF_JIT_ALWAYS_ON configurations to have the interpreter enabled by default
+rather than the JIT. Add a ARCH_WANT_DEFAULT_BPF_JIT config which archs can
+use to set the bpf_jit_{enable,kallsyms} to 1. Back in the days the
+bpf_jit_kallsyms knob was set to 0 by default since major distros still
+had /proc/kallsyms addresses exposed to unprivileged user space which is
+not the case anymore. Hence both knobs are set via BPF_JIT_DEFAULT_ON which
+is set to 'y' in case of BPF_JIT_ALWAYS_ON or ARCH_WANT_DEFAULT_BPF_JIT.
 
-This commits aligns branch targets according to the Intel manual.
-
-The nops used to align branch targets make the dispatcher larger, and
-therefore the number of supported dispatch points/programs are
-descreased from 64 to 48.
-
-Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
 ---
- arch/x86/net/bpf_jit_comp.c | 30 +++++++++++++++++++++++++++++-
- kernel/bpf/dispatcher.c     |  2 +-
- 2 files changed, 30 insertions(+), 2 deletions(-)
+ [ Follow-up from https://lore.kernel.org/bpf/20191202200947.GA14353@pc-9.home/,
+   applies to both bpf and bpf-next, but I think going via bpf-next is more
+   appropriate. ]
 
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index 3ce7ad41bd6f..4c8a2d1f8470 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -1548,6 +1548,26 @@ static int emit_cond_near_jump(u8 **pprog, void *func, void *ip, u8 jmp_cond)
- 	return 0;
- }
+ arch/arm64/Kconfig | 1 +
+ arch/x86/Kconfig   | 1 +
+ init/Kconfig       | 6 ++++++
+ kernel/bpf/core.c  | 4 ++--
+ 4 files changed, 10 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index b1b4476ddb83..29d03459de20 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -69,6 +69,7 @@ config ARM64
+ 	select ARCH_SUPPORTS_INT128 if CC_HAS_INT128 && (GCC_VERSION >= 50000 || CC_IS_CLANG)
+ 	select ARCH_SUPPORTS_NUMA_BALANCING
+ 	select ARCH_WANT_COMPAT_IPC_PARSE_VERSION if COMPAT
++	select ARCH_WANT_DEFAULT_BPF_JIT
+ 	select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT
+ 	select ARCH_WANT_FRAME_POINTERS
+ 	select ARCH_WANT_HUGE_PMD_SHARE if ARM64_4K_PAGES || (ARM64_16K_PAGES && !ARM64_VA_BITS_36)
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 5e8949953660..1f6a0388a65f 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -93,6 +93,7 @@ config X86
+ 	select ARCH_USE_QUEUED_RWLOCKS
+ 	select ARCH_USE_QUEUED_SPINLOCKS
+ 	select ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH
++	select ARCH_WANT_DEFAULT_BPF_JIT	if X86_64
+ 	select ARCH_WANTS_DYNAMIC_TASK_STRUCT
+ 	select ARCH_WANT_HUGE_PMD_SHARE
+ 	select ARCH_WANTS_THP_SWAP		if X86_64
+diff --git a/init/Kconfig b/init/Kconfig
+index a34064a031a5..957a5e758e6d 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -1604,6 +1604,9 @@ config BPF_SYSCALL
+ 	  Enable the bpf() system call that allows to manipulate eBPF
+ 	  programs and maps via file descriptors.
  
-+static void emit_nops(u8 **pprog, unsigned int len)
-+{
-+	unsigned int i, noplen;
-+	u8 *prog = *pprog;
-+	int cnt = 0;
++config ARCH_WANT_DEFAULT_BPF_JIT
++	bool
 +
-+	while (len > 0) {
-+		noplen = len;
+ config BPF_JIT_ALWAYS_ON
+ 	bool "Permanently enable BPF JIT and remove BPF interpreter"
+ 	depends on BPF_SYSCALL && HAVE_EBPF_JIT && BPF_JIT
+@@ -1611,6 +1614,9 @@ config BPF_JIT_ALWAYS_ON
+ 	  Enables BPF JIT and removes BPF interpreter to avoid
+ 	  speculative execution of BPF instructions by the interpreter
+ 
++config BPF_JIT_DEFAULT_ON
++	def_bool ARCH_WANT_DEFAULT_BPF_JIT || BPF_JIT_ALWAYS_ON
 +
-+		if (noplen > ASM_NOP_MAX)
-+			noplen = ASM_NOP_MAX;
-+
-+		for (i = 0; i < noplen; i++)
-+			EMIT1(ideal_nops[noplen][i]);
-+		len -= noplen;
-+	}
-+
-+	*pprog = prog;
-+}
-+
- static int emit_fallback_jump(u8 **pprog)
- {
- 	u8 *prog = *pprog;
-@@ -1570,8 +1590,8 @@ static int emit_fallback_jump(u8 **pprog)
+ config USERFAULTFD
+ 	bool "Enable userfaultfd() system call"
+ 	depends on MMU
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 49e32acad7d8..2ff01a716128 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -520,9 +520,9 @@ void bpf_prog_kallsyms_del_all(struct bpf_prog *fp)
  
- static int emit_bpf_dispatcher(u8 **pprog, int a, int b, s64 *progs)
- {
-+	u8 *jg_reloc, *jg_target, *prog = *pprog;
- 	int pivot, err, jg_bytes = 1, cnt = 0;
--	u8 *jg_reloc, *prog = *pprog;
- 	s64 jg_offset;
+ #ifdef CONFIG_BPF_JIT
+ /* All BPF JIT sysctl knobs here. */
+-int bpf_jit_enable   __read_mostly = IS_BUILTIN(CONFIG_BPF_JIT_ALWAYS_ON);
++int bpf_jit_enable   __read_mostly = IS_BUILTIN(CONFIG_BPF_JIT_DEFAULT_ON);
++int bpf_jit_kallsyms __read_mostly = IS_BUILTIN(CONFIG_BPF_JIT_DEFAULT_ON);
+ int bpf_jit_harden   __read_mostly;
+-int bpf_jit_kallsyms __read_mostly;
+ long bpf_jit_limit   __read_mostly;
  
- 	if (a == b) {
-@@ -1620,6 +1640,14 @@ static int emit_bpf_dispatcher(u8 **pprog, int a, int b, s64 *progs)
- 	if (err)
- 		return err;
- 
-+	/* From Intel 64 and IA-32 Architectures Optimization
-+	 * Reference Manual, 3.4.1.4 Code Alignment, Assembly/Compiler
-+	 * Coding Rule 11: All branch targets should be 16-byte
-+	 * aligned.
-+	 */
-+	jg_target = PTR_ALIGN(prog, 16);
-+	if (jg_target != prog)
-+		emit_nops(&prog, jg_target - prog);
- 	jg_offset = prog - jg_reloc;
- 	emit_code(jg_reloc - jg_bytes, jg_offset, jg_bytes);
- 
-diff --git a/kernel/bpf/dispatcher.c b/kernel/bpf/dispatcher.c
-index de6b1f20b920..5f8ce701bcad 100644
---- a/kernel/bpf/dispatcher.c
-+++ b/kernel/bpf/dispatcher.c
-@@ -25,7 +25,7 @@
-  * allocated on first use, and never freed.
-  */
- 
--#define BPF_DISPATCHER_MAX 64 /* Fits in 2048B */
-+#define BPF_DISPATCHER_MAX 48 /* Fits in 2048B */
- 
- struct bpf_disp_prog {
- 	struct bpf_prog *prog;
+ static __always_inline void
 -- 
-2.20.1
+2.21.0
 
