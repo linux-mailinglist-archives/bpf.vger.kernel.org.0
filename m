@@ -2,119 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 205D5116FCB
-	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2019 16:00:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46386116FE7
+	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2019 16:08:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725904AbfLIPAo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Dec 2019 10:00:44 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:29375 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725956AbfLIPAo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 Dec 2019 10:00:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1575903642;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0HCUKtQJAbUpJ+ekNPUKFso0jYZjlSODRayx14khF18=;
-        b=LqTXEIbDE2KfEWYZxmYjxgzXP5wrP+zo+VAV4zvVYhd6b/Q8pKfPSWum9qLGu4tVcfUq5F
-        VMLpNkO1lU+Gwq885MwPjqZSVxxRdsG4h3Okbhha4X1ngCheieKbgoX3kmsG9TNoT63xGa
-        k09ylOirQuo/oRRPO2PdMYX1GJrZA/k=
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
- [209.85.208.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-28-1ZJ9nafrNamHsk1lrKkOVg-1; Mon, 09 Dec 2019 10:00:40 -0500
-Received: by mail-lj1-f199.google.com with SMTP id p90so3391839ljp.23
-        for <bpf@vger.kernel.org>; Mon, 09 Dec 2019 07:00:39 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=0HCUKtQJAbUpJ+ekNPUKFso0jYZjlSODRayx14khF18=;
-        b=rz8mBpT2Tr1O7/vBMF6sUK4daYMPU50E62jTOZwbSFGidDjcUQbn2R1qI8K2cPD8Eh
-         tIC/J5Ishd/NZDqV6+X5f4XZsOnlvOXIel+FlJE7Hs2DsWFovdCZQ0EbLGbaAvfHgC+y
-         Qc/D/Ug9pTy4f/zgtFKLk7ZUhWpG+xKaBsfyZSuwnn5yyjFB3QaQvf3ygvJo+ZYn6jME
-         FQc2390IdE3/OxJE/N/Q8WqmCjtWZL7zmw3SIIicBGDOR/DDziEk1aIa9sJztnE/RvLm
-         0SoQbM4j+CBltwYdlVLGKNHXFZLFIxXgzkZvcApI7hHTfGAS8XRkENdIzleKJeTl0EWb
-         8iiA==
-X-Gm-Message-State: APjAAAUpx0cWJeyc21RWBSOdeVzE9l5G+lI/2jxNFcnAt+zlLoqD5v6E
-        1LN0dBAlbOmlEG+iY/w1wCj+/y3CoU+WuwX38DOgiHyQV5BG4rmTAQX0RBxoioKMBF+KA4vlhgg
-        VrmpKRlPoMZ0D
-X-Received: by 2002:a2e:a163:: with SMTP id u3mr9515193ljl.13.1575903638013;
-        Mon, 09 Dec 2019 07:00:38 -0800 (PST)
-X-Google-Smtp-Source: APXvYqyFMlkNfAKPZmU0Br64uI/bfbLokfnE+LYIPMMT/kYtH+6ONW5Xf7JzgcnAaQ3f6ABdH8Dsig==
-X-Received: by 2002:a2e:a163:: with SMTP id u3mr9515162ljl.13.1575903637772;
-        Mon, 09 Dec 2019 07:00:37 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id 22sm73304ljw.9.2019.12.09.07.00.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Dec 2019 07:00:36 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 41BC5181938; Mon,  9 Dec 2019 16:00:36 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net
-Cc:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        bpf@vger.kernel.org, magnus.karlsson@gmail.com,
-        magnus.karlsson@intel.com, jonathan.lemon@gmail.com,
-        ecree@solarflare.com, thoiland@redhat.com,
-        andrii.nakryiko@gmail.com
-Subject: Re: [PATCH bpf-next v3 0/6] Introduce the BPF dispatcher
-In-Reply-To: <20191209135522.16576-1-bjorn.topel@gmail.com>
-References: <20191209135522.16576-1-bjorn.topel@gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Mon, 09 Dec 2019 16:00:36 +0100
-Message-ID: <87h829ilwr.fsf@toke.dk>
+        id S1726293AbfLIPI0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Dec 2019 10:08:26 -0500
+Received: from www62.your-server.de ([213.133.104.62]:42242 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725956AbfLIPI0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Dec 2019 10:08:26 -0500
+Received: from [2001:1620:665:0:5795:5b0a:e5d5:5944] (helo=localhost)
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1ieKe8-00041i-Ch; Mon, 09 Dec 2019 16:08:24 +0100
+From:   Daniel Borkmann <daniel@iogearbox.net>
+To:     ast@kernel.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, will@kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: [PATCH bpf-next v2] bpf, x86, arm64: enable jit by default when not built as always-on
+Date:   Mon,  9 Dec 2019 16:08:03 +0100
+Message-Id: <f78ad24795c2966efcc2ee19025fa3459f622185.1575903816.git.daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-X-MC-Unique: 1ZJ9nafrNamHsk1lrKkOVg-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.101.4/25658/Mon Dec  9 10:47:26 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> writes:
+After Spectre 2 fix via 290af86629b2 ("bpf: introduce BPF_JIT_ALWAYS_ON
+config") most major distros use BPF_JIT_ALWAYS_ON configuration these days
+which compiles out the BPF interpreter entirely and always enables the
+JIT. Also given recent fix in e1608f3fa857 ("bpf: Avoid setting bpf insns
+pages read-only when prog is jited"), we additionally avoid fragmenting
+the direct map for the BPF insns pages sitting in the general data heap
+since they are not used during execution. Latter is only needed when run
+through the interpreter.
 
-> Overview
-> =3D=3D=3D=3D=3D=3D=3D=3D
->
-> This is the 4th iteration of the series that introduces the BPF
-> dispatcher, which is a mechanism to avoid indirect calls.
->
-> The BPF dispatcher is a multi-way branch code generator, targeted for
-> BPF programs. E.g. when an XDP program is executed via the
-> bpf_prog_run_xdp(), it is invoked via an indirect call. With
-> retpolines enabled, the indirect call has a substantial performance
-> impact. The dispatcher is a mechanism that transform indirect calls to
-> direct calls, and therefore avoids the retpoline. The dispatcher is
-> generated using the BPF JIT, and relies on text poking provided by
-> bpf_arch_text_poke().
->
-> The dispatcher hijacks a trampoline function it via the __fentry__ nop
-> of the trampoline. One dispatcher instance currently supports up to 48
-> dispatch points. This can be extended in the future.
->
-> In this series, only one dispatcher instance is supported, and the
-> only user is XDP. The dispatcher is updated when an XDP program is
-> attached/detached to/from a netdev. An alternative to this could have
-> been to update the dispatcher at program load point, but as there are
-> usually more XDP programs loaded than attached, so the latter was
-> picked.
+Since both x86 and arm64 JITs have seen a lot of exposure over the years,
+are generally most up to date and maintained, there is more downside in
+!BPF_JIT_ALWAYS_ON configurations to have the interpreter enabled by default
+rather than the JIT. Add a ARCH_WANT_DEFAULT_BPF_JIT config which archs can
+use to set the bpf_jit_{enable,kallsyms} to 1. Back in the days the
+bpf_jit_kallsyms knob was set to 0 by default since major distros still
+had /proc/kallsyms addresses exposed to unprivileged user space which is
+not the case anymore. Hence both knobs are set via BPF_JIT_DEFAULT_ON which
+is set to 'y' in case of BPF_JIT_ALWAYS_ON or ARCH_WANT_DEFAULT_BPF_JIT.
 
-I like the new version where it's integrated into bpf_prog_run_xdp();
-nice! :)
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Will Deacon <will@kernel.org>
+---
+ [ Follow-up from https://lore.kernel.org/bpf/20191202200947.GA14353@pc-9.home/,
+   applies to both bpf and bpf-next, but I think going via bpf-next is more
+   appropriate. 
 
-> The XDP dispatcher is always enabled, if available, because it helps
-> even when retpolines are disabled. Please refer to the "Performance"
-> section below.
+   v1 -> v2:
+    - add depends on HAVE_EBPF_JIT && BPF_JIT to BPF_JIT_DEFAULT_ON (Will)
+ ]
 
-Looking at those numbers, I think I would moderate "helps" to "doesn't
-hurt" - a difference of less than 1ns is basically in the noise.
+ arch/arm64/Kconfig | 1 +
+ arch/x86/Kconfig   | 1 +
+ init/Kconfig       | 7 +++++++
+ kernel/bpf/core.c  | 4 ++--
+ 4 files changed, 11 insertions(+), 2 deletions(-)
 
-You mentioned in the earlier version that this would impact the time it
-takes to attach an XDP program. Got any numbers for this?
-
--Toke
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index b1b4476ddb83..29d03459de20 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -69,6 +69,7 @@ config ARM64
+ 	select ARCH_SUPPORTS_INT128 if CC_HAS_INT128 && (GCC_VERSION >= 50000 || CC_IS_CLANG)
+ 	select ARCH_SUPPORTS_NUMA_BALANCING
+ 	select ARCH_WANT_COMPAT_IPC_PARSE_VERSION if COMPAT
++	select ARCH_WANT_DEFAULT_BPF_JIT
+ 	select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT
+ 	select ARCH_WANT_FRAME_POINTERS
+ 	select ARCH_WANT_HUGE_PMD_SHARE if ARM64_4K_PAGES || (ARM64_16K_PAGES && !ARM64_VA_BITS_36)
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 5e8949953660..1f6a0388a65f 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -93,6 +93,7 @@ config X86
+ 	select ARCH_USE_QUEUED_RWLOCKS
+ 	select ARCH_USE_QUEUED_SPINLOCKS
+ 	select ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH
++	select ARCH_WANT_DEFAULT_BPF_JIT	if X86_64
+ 	select ARCH_WANTS_DYNAMIC_TASK_STRUCT
+ 	select ARCH_WANT_HUGE_PMD_SHARE
+ 	select ARCH_WANTS_THP_SWAP		if X86_64
+diff --git a/init/Kconfig b/init/Kconfig
+index a34064a031a5..890aaa62efde 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -1604,6 +1604,9 @@ config BPF_SYSCALL
+ 	  Enable the bpf() system call that allows to manipulate eBPF
+ 	  programs and maps via file descriptors.
+ 
++config ARCH_WANT_DEFAULT_BPF_JIT
++	bool
++
+ config BPF_JIT_ALWAYS_ON
+ 	bool "Permanently enable BPF JIT and remove BPF interpreter"
+ 	depends on BPF_SYSCALL && HAVE_EBPF_JIT && BPF_JIT
+@@ -1611,6 +1614,10 @@ config BPF_JIT_ALWAYS_ON
+ 	  Enables BPF JIT and removes BPF interpreter to avoid
+ 	  speculative execution of BPF instructions by the interpreter
+ 
++config BPF_JIT_DEFAULT_ON
++	def_bool ARCH_WANT_DEFAULT_BPF_JIT || BPF_JIT_ALWAYS_ON
++	depends on HAVE_EBPF_JIT && BPF_JIT
++
+ config USERFAULTFD
+ 	bool "Enable userfaultfd() system call"
+ 	depends on MMU
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 49e32acad7d8..2ff01a716128 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -520,9 +520,9 @@ void bpf_prog_kallsyms_del_all(struct bpf_prog *fp)
+ 
+ #ifdef CONFIG_BPF_JIT
+ /* All BPF JIT sysctl knobs here. */
+-int bpf_jit_enable   __read_mostly = IS_BUILTIN(CONFIG_BPF_JIT_ALWAYS_ON);
++int bpf_jit_enable   __read_mostly = IS_BUILTIN(CONFIG_BPF_JIT_DEFAULT_ON);
++int bpf_jit_kallsyms __read_mostly = IS_BUILTIN(CONFIG_BPF_JIT_DEFAULT_ON);
+ int bpf_jit_harden   __read_mostly;
+-int bpf_jit_kallsyms __read_mostly;
+ long bpf_jit_limit   __read_mostly;
+ 
+ static __always_inline void
+-- 
+2.21.0
 
