@@ -2,129 +2,266 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B4F551179A2
-	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2019 23:46:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECF1A1179E5
+	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2019 23:54:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726957AbfLIWqH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Dec 2019 17:46:07 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:8302 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726925AbfLIWqH (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 9 Dec 2019 17:46:07 -0500
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xB9MjoZP021179;
-        Mon, 9 Dec 2019 14:45:54 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=cqf56TMBRmeeQ7BtOTMrWyuglaxDDtUQct1vSkwaAzg=;
- b=GTPiNmGIjwjL0sM7vKaLGSW/ZMIKutotwDbqozBJLVOGP7rtAQVA/mVx0bRMpKihVXcG
- galT4J04teoinn6CP83RX3WGMII6Z4VnAQPBHUp7w4AcBIkC49mBOUHsuncAhX4vwC9D
- p/GUyRBq32munYenLV7YbcOyPmMsFdsQVE0= 
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by mx0a-00082601.pphosted.com with ESMTP id 2wsu71989q-4
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Mon, 09 Dec 2019 14:45:54 -0800
-Received: from prn-mbx03.TheFacebook.com (2620:10d:c081:6::17) by
- prn-hub04.TheFacebook.com (2620:10d:c081:35::128) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Mon, 9 Dec 2019 14:45:16 -0800
-Received: from prn-hub04.TheFacebook.com (2620:10d:c081:35::128) by
- prn-mbx03.TheFacebook.com (2620:10d:c081:6::17) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Mon, 9 Dec 2019 14:45:16 -0800
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (192.168.54.28)
- by o365-in.thefacebook.com (192.168.16.28) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
- via Frontend Transport; Mon, 9 Dec 2019 14:45:15 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jM2wGN5nyV4GYTTj5fjYiRPdvMrm8b8KEYUeVmGnbbnIrdkmF0osC8iEfSs90D1zrmHT2BRKl1H7DRfPt/40EEXcl3uzoffQxSFZGUiRKLkig0Vu8RJilH1CpHmE+xrvFeqPZ5nY37j6A10gpZ9ZFKgAccIoab4cGz7TKMxtD1DduQxUmd/awfqOQDxaOf4foHZUCNb6VqDa644dx7tHxmLCSM5IYJF9Q48oypXrP2qjkNKLk+VmFwU5hoi2KtUeyprADXDtA9oHeOMWFyZg1JTldXUwABHYz7b0JyFkNXSkRA2tWzyCfPTSZrQ0v9Qs9KWq20+ZzTnVrf1i9A6u8A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cqf56TMBRmeeQ7BtOTMrWyuglaxDDtUQct1vSkwaAzg=;
- b=H8SnLMjYhyn3UfGcd/CnkxvxhjYHwjMl3dMj3Y2844d/r7mbnb6j/vB9YELAEoCrlmOmfyxbxPQ4bUkEtC14/yqgyelX2C01e25W4uezcT9o/oGwXt8M2NTN6RGqZORoYKLkMbRUOb+el/WCtBs1mBe9fhNbj/bpfl9z5Fvk9ENcmi6UF7d3q6WWdow6Qc/UGP+6LUxtbqUiuxVMexfitAK4ugodk8YAn+nNatjNH2SvXEiRuk/RaRXANggZy7BtDj/ss6QoF4L6edmo4QxvMcoDtskjXPO/Svt1yFC+ZFZG6qbCeX29VfAIfUXlMHjlsIwoXeh6GJ317jsEDCy89A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cqf56TMBRmeeQ7BtOTMrWyuglaxDDtUQct1vSkwaAzg=;
- b=kpfgRx0SFNOJI5g2NrloiBY+QCrq7E8Snjui9n+ZVoOviDdg+fLRPcZXt+imReQftw0Xd9hFiaK9k8SvOJcZoB3Lfll7BlP1S9OifmCzwWlnA3zkElhf8SAT61e9LniAAAApVczOmV4XjI+EU0XwQvzHvEq3GDSTeXstDUfPl1I=
-Received: from MN2PR15MB3213.namprd15.prod.outlook.com (20.179.21.76) by
- MN2PR15MB3582.namprd15.prod.outlook.com (52.132.172.23) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2516.12; Mon, 9 Dec 2019 22:45:14 +0000
-Received: from MN2PR15MB3213.namprd15.prod.outlook.com
- ([fe80::6d1e:f2f7:d36:a42f]) by MN2PR15MB3213.namprd15.prod.outlook.com
- ([fe80::6d1e:f2f7:d36:a42f%4]) with mapi id 15.20.2516.018; Mon, 9 Dec 2019
- 22:45:14 +0000
-From:   Martin Lau <kafai@fb.com>
-To:     Andrii Nakryiko <andriin@fb.com>
-CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "andrii.nakryiko@gmail.com" <andrii.nakryiko@gmail.com>,
-        Kernel Team <Kernel-team@fb.com>
-Subject: Re: [Potential Spoof] [PATCH bpf] libbpf: Bump libpf current version
- to v0.0.7
-Thread-Topic: [Potential Spoof] [PATCH bpf] libbpf: Bump libpf current version
- to v0.0.7
-Thread-Index: AQHVruG2F0yBBAb5TUCd37CPIGDdFaeyZtsA
-Date:   Mon, 9 Dec 2019 22:45:14 +0000
-Message-ID: <20191209224510.ca4glg42tvy2ivrx@kafai-mbp>
-References: <20191209224022.3544519-1-andriin@fb.com>
-In-Reply-To: <20191209224022.3544519-1-andriin@fb.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MWHPR22CA0061.namprd22.prod.outlook.com
- (2603:10b6:300:12a::23) To MN2PR15MB3213.namprd15.prod.outlook.com
- (2603:10b6:208:3d::12)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:200::2:ba63]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 481df342-abf5-47d2-0de3-08d77cf97481
-x-ms-traffictypediagnostic: MN2PR15MB3582:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MN2PR15MB35828D9DEFEB7D084F8CEDF6D5580@MN2PR15MB3582.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3513;
-x-forefront-prvs: 02462830BE
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(7916004)(39860400002)(366004)(346002)(136003)(396003)(376002)(199004)(189003)(6862004)(6512007)(54906003)(52116002)(2906002)(71200400001)(71190400001)(9686003)(316002)(33716001)(6486002)(66476007)(4326008)(66946007)(66556008)(66446008)(64756008)(229853002)(6636002)(305945005)(8936002)(478600001)(5660300002)(86362001)(6506007)(81166006)(81156014)(1076003)(558084003)(186003)(8676002);DIR:OUT;SFP:1102;SCL:1;SRVR:MN2PR15MB3582;H:MN2PR15MB3213.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: s9z6ZuJLR8leuDywhe/+c0jUF4sviLhiTbKd0hdSBRIeBhQychzYEndagys+y/U8s5eie5zjlbC6fGcectdF3bsejDe9cL2HlEz+nqUzElJtXsMbSRpyCMw79YBTbfx6wj7u9HTqnNeTeVqSvJcTvqJoENg11NGb3W6ePEQYyIRm9P2km0BjPHFZS6nE4lpegxG+KfCvFUQ7dZfDAqqTWUVISthx3J+IlXni1JSSkdkEVjUDOIou0WE3HvBJ7Zo0r2HYLSw/Ks5a7c6gQC6+IQejYdZuVEZwrgID7zpUdQfTJEvhsSlTyMHKgLj/Q16P8KMUaSYqp2L6VnvD6JoMRyINsYFJvcjVskpje5pfcKZiLeP/Qi/e+fxd5vIMe4XjUIR20PDaORn1rTpDq5+WqCKigyubnuGF8rGVULUlsGiBxs6/tFCkYEbZu1HOjPte
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <95404BEB0CDCE94CB2630A1C629D4A3A@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1726988AbfLIWxy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Dec 2019 17:53:54 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:10131 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726362AbfLIWxy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Dec 2019 17:53:54 -0500
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5deed0780003>; Mon, 09 Dec 2019 14:53:45 -0800
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Mon, 09 Dec 2019 14:53:51 -0800
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Mon, 09 Dec 2019 14:53:51 -0800
+Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 9 Dec
+ 2019 22:53:50 +0000
+Received: from rnnvemgw01.nvidia.com (10.128.109.123) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
+ Transport; Mon, 9 Dec 2019 22:53:50 +0000
+Received: from blueforge.nvidia.com (Not Verified[10.110.48.28]) by rnnvemgw01.nvidia.com with Trustwave SEG (v7,5,8,10121)
+        id <B5deed07d0000>; Mon, 09 Dec 2019 14:53:50 -0800
+From:   John Hubbard <jhubbard@nvidia.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     Al Viro <viro@zeniv.linux.org.uk>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, <bpf@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <kvm@vger.kernel.org>,
+        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <linux-media@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <netdev@vger.kernel.org>,
+        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>
+Subject: [PATCH v8 00/26] mm/gup: track dma-pinned pages: FOLL_PIN
+Date:   Mon, 9 Dec 2019 14:53:18 -0800
+Message-ID: <20191209225344.99740-1-jhubbard@nvidia.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 481df342-abf5-47d2-0de3-08d77cf97481
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Dec 2019 22:45:14.0719
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: H/8P/iLcZStmO1bXyMZKDkfwv31yRBApCOF4snfktKJJk1eMBkH9KU8SxerwZw+K
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB3582
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
- definitions=2019-12-09_05:2019-12-09,2019-12-09 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0 mlxscore=0
- clxscore=1015 phishscore=0 suspectscore=0 priorityscore=1501
- impostorscore=0 mlxlogscore=622 spamscore=0 bulkscore=0 malwarescore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1910280000 definitions=main-1912090178
-X-FB-Internal: deliver
+X-NVConfidentiality: public
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1575932025; bh=wxsTm/nUQAgyXOXiekXNWJzX7DswluWndSLLkdWyNsU=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
+         MIME-Version:X-NVConfidentiality:Content-Type:
+         Content-Transfer-Encoding;
+        b=LKkHOX01qLpN5I/n8Lng/OWQGwEhr76195x23RkvMppTWIJJbS3i9pwYiPoY5/bc5
+         e5lZ2j6HDv1RxnFlDmf+27mvJqvICyI/9swSG0NVHC7BwY7bXQWssErtwvybFU+CPO
+         u+kFPOfd8BvFfqgkKvp99lbQIa4c8BLOMS5cIDbAEudwg6i2UIf/2UaPnt13+Iyjzn
+         0sbdp/2T7n7O7UyZ8N4n4miN8mogBm7OLnJzyzBlGrnY7d1eAMUlVAD7K5+Ep8IXKR
+         QYsDxSG9vHnZW79dgiLsJtnrvvr42XAJPkYuzOsfQ7GjYxUczB56WLiKZW6qxNViGb
+         CnldVfIf5duTw==
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Dec 09, 2019 at 02:40:22PM -0800, Andrii Nakryiko wrote:
-> New development cycles starts, bump to v0.0.7 proactively.
-Acked-by: Martin KaFai Lau <kafai@fb.com>
+Hi,
+
+This implements an API naming change (put_user_page*() -->
+unpin_user_page*()), and also implements tracking of FOLL_PIN pages. It
+extends that tracking to a few select subsystems. More subsystems will
+be added in follow up work.
+
+Christoph Hellwig, a couple of points of interest:
+
+a) I've moved the bulk of the code out of the inline functions, as
+   requested, for the devmap changes (patch 4: "mm: devmap: refactor
+   1-based refcounting for ZONE_DEVICE pages").
+
+b) Contrary to my earlier response to your review, I have not actually
+   merged patch 23 ("mm/gup: pass flags arg to __gup_device_*
+   functions") into patch 24 ("mm/gup: track FOLL_PIN pages"). This is
+   because I suspect that it's better to avoid making patch 24 any larger
+   and worse to review than it already is. But if you feel strongly
+   about it, I'll combine them anyway.
+
+Changes since v7:
+
+* Rebased onto Linux 5.5-rc1
+
+* Reworked the grab_page() and try_grab_compound_head(), for API
+  consistency and less diffs (thanks to Jan Kara's reviews).
+
+* Added Leon Romanovsky's reviewed-by tags for two of the IB-related
+  patches.
+
+* patch 4 refactoring changes, as mentioned above.
+
+There is a git repo and branch, for convenience:
+
+    git@github.com:johnhubbard/linux.git pin_user_pages_tracking_v8
+
+For the remaining list of "changes since version N", those are all in
+v7, which is here:
+
+  https://lore.kernel.org/r/20191121071354.456618-1-jhubbard@nvidia.com
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Overview:
+
+This is a prerequisite to solving the problem of proper interactions
+between file-backed pages, and [R]DMA activities, as discussed in [1],
+[2], [3], and in a remarkable number of email threads since about
+2017. :)
+
+A new internal gup flag, FOLL_PIN is introduced, and thoroughly
+documented in the last patch's Documentation/vm/pin_user_pages.rst.
+
+I believe that this will provide a good starting point for doing the
+layout lease work that Ira Weiny has been working on. That's because
+these new wrapper functions provide a clean, constrained, systematically
+named set of functionality that, again, is required in order to even
+know if a page is "dma-pinned".
+
+In contrast to earlier approaches, the page tracking can be
+incrementally applied to the kernel call sites that, until now, have
+been simply calling get_user_pages() ("gup"). In other words, opt-in by
+changing from this:
+
+    get_user_pages() (sets FOLL_GET)
+    put_page()
+
+to this:
+    pin_user_pages() (sets FOLL_PIN)
+    unpin_user_page()
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Testing:
+
+* I've done some overall kernel testing (LTP, and a few other goodies),
+  and some directed testing to exercise some of the changes. And as you
+  can see, gup_benchmark is enhanced to exercise this. Basically, I've
+  been able to runtime test the core get_user_pages() and
+  pin_user_pages() and related routines, but not so much on several of
+  the call sites--but those are generally just a couple of lines
+  changed, each.
+
+  Not much of the kernel is actually using this, which on one hand
+  reduces risk quite a lot. But on the other hand, testing coverage
+  is low. So I'd love it if, in particular, the Infiniband and PowerPC
+  folks could do a smoke test of this series for me.
+
+  Runtime testing for the call sites so far is pretty light:
+
+    * io_uring: Some directed tests from liburing exercise this, and
+                they pass.
+    * process_vm_access.c: A small directed test passes.
+    * gup_benchmark: the enhanced version hits the new gup.c code, and
+                     passes.
+    * infiniband: ran "ib_write_bw", which exercises the umem.c changes,
+                  but not the other changes.
+    * VFIO: compiles (I'm vowing to set up a run time test soon, but it's
+                      not ready just yet)
+    * powerpc: it compiles...
+    * drm/via: compiles...
+    * goldfish: compiles...
+    * net/xdp: compiles...
+    * media/v4l2: compiles...
+
+[1] Some slow progress on get_user_pages() (Apr 2, 2019): https://lwn.net/A=
+rticles/784574/
+[2] DMA and get_user_pages() (LPC: Dec 12, 2018): https://lwn.net/Articles/=
+774411/
+[3] The trouble with get_user_pages() (Apr 30, 2018): https://lwn.net/Artic=
+les/753027/
+
+Dan Williams (1):
+  mm: Cleanup __put_devmap_managed_page() vs ->page_free()
+
+John Hubbard (25):
+  mm/gup: factor out duplicate code from four routines
+  mm/gup: move try_get_compound_head() to top, fix minor issues
+  mm: devmap: refactor 1-based refcounting for ZONE_DEVICE pages
+  goldish_pipe: rename local pin_user_pages() routine
+  mm: fix get_user_pages_remote()'s handling of FOLL_LONGTERM
+  vfio: fix FOLL_LONGTERM use, simplify get_user_pages_remote() call
+  mm/gup: allow FOLL_FORCE for get_user_pages_fast()
+  IB/umem: use get_user_pages_fast() to pin DMA pages
+  mm/gup: introduce pin_user_pages*() and FOLL_PIN
+  goldish_pipe: convert to pin_user_pages() and put_user_page()
+  IB/{core,hw,umem}: set FOLL_PIN via pin_user_pages*(), fix up ODP
+  mm/process_vm_access: set FOLL_PIN via pin_user_pages_remote()
+  drm/via: set FOLL_PIN via pin_user_pages_fast()
+  fs/io_uring: set FOLL_PIN via pin_user_pages()
+  net/xdp: set FOLL_PIN via pin_user_pages()
+  media/v4l2-core: set pages dirty upon releasing DMA buffers
+  media/v4l2-core: pin_user_pages (FOLL_PIN) and put_user_page()
+    conversion
+  vfio, mm: pin_user_pages (FOLL_PIN) and put_user_page() conversion
+  powerpc: book3s64: convert to pin_user_pages() and put_user_page()
+  mm/gup_benchmark: use proper FOLL_WRITE flags instead of hard-coding
+    "1"
+  mm, tree-wide: rename put_user_page*() to unpin_user_page*()
+  mm/gup: pass flags arg to __gup_device_* functions
+  mm/gup: track FOLL_PIN pages
+  mm/gup_benchmark: support pin_user_pages() and related calls
+  selftests/vm: run_vmtests: invoke gup_benchmark with basic FOLL_PIN
+    coverage
+
+ Documentation/core-api/index.rst            |   1 +
+ Documentation/core-api/pin_user_pages.rst   | 233 ++++++++
+ arch/powerpc/mm/book3s64/iommu_api.c        |  12 +-
+ drivers/gpu/drm/via/via_dmablit.c           |   6 +-
+ drivers/infiniband/core/umem.c              |  19 +-
+ drivers/infiniband/core/umem_odp.c          |  13 +-
+ drivers/infiniband/hw/hfi1/user_pages.c     |   4 +-
+ drivers/infiniband/hw/mthca/mthca_memfree.c |   8 +-
+ drivers/infiniband/hw/qib/qib_user_pages.c  |   4 +-
+ drivers/infiniband/hw/qib/qib_user_sdma.c   |   8 +-
+ drivers/infiniband/hw/usnic/usnic_uiom.c    |   4 +-
+ drivers/infiniband/sw/siw/siw_mem.c         |   4 +-
+ drivers/media/v4l2-core/videobuf-dma-sg.c   |   8 +-
+ drivers/nvdimm/pmem.c                       |   6 -
+ drivers/platform/goldfish/goldfish_pipe.c   |  35 +-
+ drivers/vfio/vfio_iommu_type1.c             |  35 +-
+ fs/io_uring.c                               |   6 +-
+ include/linux/mm.h                          | 145 ++++-
+ include/linux/mmzone.h                      |   2 +
+ include/linux/page_ref.h                    |  10 +
+ mm/gup.c                                    | 595 +++++++++++++++-----
+ mm/gup_benchmark.c                          |  74 ++-
+ mm/huge_memory.c                            |  23 +-
+ mm/hugetlb.c                                |  15 +-
+ mm/memremap.c                               |  76 ++-
+ mm/process_vm_access.c                      |  28 +-
+ mm/swap.c                                   |  24 +
+ mm/vmstat.c                                 |   2 +
+ net/xdp/xdp_umem.c                          |   4 +-
+ tools/testing/selftests/vm/gup_benchmark.c  |  21 +-
+ tools/testing/selftests/vm/run_vmtests      |  22 +
+ 31 files changed, 1093 insertions(+), 354 deletions(-)
+ create mode 100644 Documentation/core-api/pin_user_pages.rst
+
+--=20
+2.24.0
+
