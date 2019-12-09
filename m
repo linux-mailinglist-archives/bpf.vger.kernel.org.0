@@ -2,62 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 349A211766F
-	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2019 20:57:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF2B51177FB
+	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2019 22:08:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726365AbfLIT5j (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Dec 2019 14:57:39 -0500
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:41487 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726230AbfLIT5j (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 Dec 2019 14:57:39 -0500
-Received: by mail-qk1-f195.google.com with SMTP id l124so2293101qkf.8;
-        Mon, 09 Dec 2019 11:57:38 -0800 (PST)
+        id S1726495AbfLIVI5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Dec 2019 16:08:57 -0500
+Received: from mail-il1-f196.google.com ([209.85.166.196]:35122 "EHLO
+        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726366AbfLIVI5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Dec 2019 16:08:57 -0500
+Received: by mail-il1-f196.google.com with SMTP id g12so14092300ild.2
+        for <bpf@vger.kernel.org>; Mon, 09 Dec 2019 13:08:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=cs.washington.edu; s=goo201206;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=NcB44n0iXRJVyFpixK4empk1pnmKscPpRBnS5swbmcI=;
-        b=b7Fn5KWLzyCLQ5HJCVpwQc6UYQrZJaUDJRuoy8MN5DipxjybCfdNYpizUQxWkHPXwR
-         m/LlDVfRnUorgrJnSS1Kg5XrYGdOg0WLLloWBnqDIXA8XkZ5Ea7Bwsa1VUGv7NH2KPKL
-         yemnVVjPiD5c9VW0j96royNb4sN9fqrZ222Lo4Tk4sELcTCfiPV2d7S8q57bA0Zdb6rS
-         yre3yMJrZDStkg8c1dRL+Iz/sF+xM8yRBpkPKncCnaa8uu9UDUUJsOMVybN3CdJLKgOA
-         ysn+jxXaAvolex6sn6S7IiAiL8tCp5PCOm6Th0OAazOG6lKdV1EvAyRg2hAeiA7JL/JH
-         KTHg==
+        bh=AQw42i4zrOEiE7l1gfYBQQxkZjKK0Mv7al/wpBYPpL4=;
+        b=GgghZlxE2UW0nZzjkBKGxpSYQGQqwLAtELejS5BlXB6fEFYQg+GEozmoauAoFPHA/3
+         cR5ciYpYnPiDfffi5ofOYvxHIDkLLUNT86+jiqb74REnNP3riayaCXpF30VuZo9z18Wf
+         iCH43boNR9Kglx6KaZE6Bz8bnb91nvZ4kRIZw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=NcB44n0iXRJVyFpixK4empk1pnmKscPpRBnS5swbmcI=;
-        b=mNkA5pyQdR3zkJ+gLUhUaLaWPbSHsY3ny+GmnqWVBG6ELENwqpn3Le3ueTpeQUleny
-         21mJM//kXxcRz+s8QQsfBcgLDlzLvFbcO5NKwkoCJRYtRC7IINxpuROF9+IkeGNR/68e
-         kCckkyZw80jDeHz+0E/7UuLe/1+YIi9j3c6aUIqCt3zQ67U6R6bWHMeRBE7ad1z86fgz
-         OFiO/VVSNcQYqRYPPQbJrwBOaa4UaokKPs+gN5bYX2+Pj0OobLWqIWJaMuBHCbamnW4S
-         AIcX1iJlu/ZFXwKq8i9RALjLCMMaupPsf7/BoDuNPXNnsy09oIRqXRVHskuZdT+WsLOH
-         xUcg==
-X-Gm-Message-State: APjAAAXr6avMvACmouNX///nS3Ns5i05PfTYExwbl/JFnvXEVq0XS7rj
-        LHyW8ICzvSEcZV1erEie+42Jk9hPPSJ0WF8GzbQ=
-X-Google-Smtp-Source: APXvYqwAlJqjuD/MqL1qjgVFkbXmT4iYKjEEkPJy9RQD9uKvk9LAmDD51ilqG6Q8iLAGCGYrPSkmTDbNo15EjqDtrk4=
-X-Received: by 2002:a37:9c0f:: with SMTP id f15mr29427659qke.297.1575921458257;
- Mon, 09 Dec 2019 11:57:38 -0800 (PST)
+        bh=AQw42i4zrOEiE7l1gfYBQQxkZjKK0Mv7al/wpBYPpL4=;
+        b=Q5YBq313HLmx6x1xrcDz4TSLQHeP+NsyCXV3v1yS7CtRN8NTMOOWoBbYQXEVbn9zlL
+         vGQ0VKOOiLu0VFIRbOrIa5NQ1Q/c8lzUCDezXPddhn1GJT0VAerry5k2CaR1etRGEJAO
+         JUT9SqgNaYLuFSX4wsnje4B6CIMT+fK1Dxs7P588CVVyxMKBrYqrAXaUTDCqtSNVSvG8
+         2gtPx4F48koO2dQtqABnC3EjZDHZC1gJ9gBy7oVpTU67u0p6Hchyfpi3oNqH8W+7KNrp
+         iTyyRAyTwU7OYgatOccP9ZHIu7RPN4+skME3UVLeR0sqgY7GfNw5JQ7HIj0mGvWxzUFS
+         3RMA==
+X-Gm-Message-State: APjAAAUINXdjvM3jf25znolGKEpsvxip8gHlqnCkxVLzzwiK4N2P8+Cn
+        yl0Vr/69z6DcsJUMXzxddK4PYf/Kntr8Xq4t7LHrhg==
+X-Google-Smtp-Source: APXvYqzild6VW6epyzUHodkZ6hBxH6+Vozoi6KWDPVVvdVY34P7P9ox4LxSF+V93EAmpDQA5MLv18ES3t6MGaxB5vQ4=
+X-Received: by 2002:a92:86c5:: with SMTP id l66mr29155216ilh.280.1575925736421;
+ Mon, 09 Dec 2019 13:08:56 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1575916815.git.paul.chaignon@gmail.com> <966fe384383bf23a0ee1efe8d7291c78a3fb832b.1575916815.git.paul.chaignon@gmail.com>
-In-Reply-To: <966fe384383bf23a0ee1efe8d7291c78a3fb832b.1575916815.git.paul.chaignon@gmail.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Mon, 9 Dec 2019 20:57:27 +0100
-Message-ID: <CAJ+HfNgFo8viKn3KzNfbmniPNUpjOv_QM4ua_V0RFLBpWCOBYw@mail.gmail.com>
-Subject: Re: [PATCH bpf 1/2] bpf, riscv: limit to 33 tail calls
-To:     Paul Chaignon <paul.chaignon@orange.com>
-Cc:     Paul Burton <paulburton@kernel.org>,
-        Mahshid Khezri <khezri.mahshid@gmail.com>,
-        paul.chaignon@gmail.com, bpf <bpf@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
+References: <20191209173136.29615-1-bjorn.topel@gmail.com> <20191209173136.29615-3-bjorn.topel@gmail.com>
+In-Reply-To: <20191209173136.29615-3-bjorn.topel@gmail.com>
+From:   Luke Nelson <lukenels@cs.washington.edu>
+Date:   Mon, 9 Dec 2019 13:08:34 -0800
+Message-ID: <CADasFoDOyJA0nDVCyA6EY78dHSSxxV+EXS=xUyLDW4_VhJvBkQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/8] riscv, bpf: add support for far branching
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        linux-riscv@lists.infradead.org
+        Netdev <netdev@vger.kernel.org>, linux-riscv@lists.infradead.org,
+        bpf <bpf@vger.kernel.org>, Xi Wang <xi.wang@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
@@ -65,52 +56,41 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 9 Dec 2019 at 19:52, Paul Chaignon <paul.chaignon@orange.com> wrote=
-:
+On Mon, Dec 9, 2019 at 9:32 AM Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com=
+> wrote:
 >
-> All BPF JIT compilers except RISC-V's and MIPS' enforce a 33-tail calls
-> limit at runtime.  In addition, a test was recently added, in tailcalls2,
-> to check this limit.
+> This commit adds branch relaxation to the BPF JIT, and with that
+> support for far (offset greater than 12b) branching.
 >
-> This patch updates the tail call limit in RISC-V's JIT compiler to allow
-> 33 tail calls.  I tested it using the above selftest on an emulated
-> RISCV64.
+> The branch relaxation requires more than two passes to converge. For
+> most programs it is three passes, but for larger programs it can be
+> more.
 >
+> Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com>
 
-33! ICK! ;-) Thanks for finding this!
+We have been developing a formal verification tool for BPF JIT
+compilers, which we have used in the past to find bugs in the RV64
+and x32 BPF JITs:
 
-Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com>
+https://unsat.cs.washington.edu/projects/serval/
 
-> Fixes: 2353ecc6f91f ("bpf, riscv: add BPF JIT for RV64G")
-> Reported-by: Mahshid Khezri <khezri.mahshid@gmail.com>
-> Signed-off-by: Paul Chaignon <paul.chaignon@orange.com>
-> ---
->  arch/riscv/net/bpf_jit_comp.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/riscv/net/bpf_jit_comp.c b/arch/riscv/net/bpf_jit_comp.=
-c
-> index 5451ef3845f2..7fbf56aab661 100644
-> --- a/arch/riscv/net/bpf_jit_comp.c
-> +++ b/arch/riscv/net/bpf_jit_comp.c
-> @@ -631,14 +631,14 @@ static int emit_bpf_tail_call(int insn, struct rv_j=
-it_context *ctx)
->                 return -1;
->         emit(rv_bgeu(RV_REG_A2, RV_REG_T1, off >> 1), ctx);
->
-> -       /* if (--TCC < 0)
-> +       /* if (TCC-- < 0)
->          *     goto out;
->          */
->         emit(rv_addi(RV_REG_T1, tcc, -1), ctx);
->         off =3D (tc_ninsn - (ctx->ninsns - start_insn)) << 2;
->         if (is_13b_check(off, insn))
->                 return -1;
-> -       emit(rv_blt(RV_REG_T1, RV_REG_ZERO, off >> 1), ctx);
-> +       emit(rv_blt(tcc, RV_REG_ZERO, off >> 1), ctx);
->
->         /* prog =3D array->ptrs[index];
->          * if (!prog)
-> --
-> 2.17.1
->
+Recently I added support for verifying the JIT for branch and jump
+instructions, and thought it a good opportunity to verify these
+patches that add support for far jumps and branching.
+
+I ported these patches to our tool and ran verification, which
+didn't find any bugs according to our specification of BPF and
+RISC-V.
+
+The tool and code are publicly available, and you can read a more
+detailed writeup of the results here:
+
+https://github.com/uw-unsat/bpf-jit-verif/tree/far-jump-review
+
+Currently the tool works on a manually translated version of the
+JIT from C to Rosette, but we are experimenting with ways of making
+this process more automated.
+
+
+Reviewed-by: Luke Nelson <lukenels@cs.washington.edu>
+Cc: Xi Wang <xi.wang@gmail.com>
