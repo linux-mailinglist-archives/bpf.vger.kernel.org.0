@@ -2,87 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D94C1172D6
-	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2019 18:32:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C62BE1172FE
+	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2019 18:42:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726647AbfLIRcL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Dec 2019 12:32:11 -0500
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:45491 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726230AbfLIRcK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 Dec 2019 12:32:10 -0500
-Received: by mail-pl1-f195.google.com with SMTP id w7so6073105plz.12;
-        Mon, 09 Dec 2019 09:32:10 -0800 (PST)
+        id S1726589AbfLIRmf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Dec 2019 12:42:35 -0500
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:38192 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725904AbfLIRmf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Dec 2019 12:42:35 -0500
+Received: by mail-qk1-f194.google.com with SMTP id k6so13827501qki.5;
+        Mon, 09 Dec 2019 09:42:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=JJx1gb7dyIux/wvtlAjUM4Ul67VDqBxG4kjHz1T/apg=;
-        b=uS7kguZbewotiewe3eNEHiAYQ1NBG4BmutBfowVjnF3VSkL7gmTKFZI1qF19mjsr7U
-         5Ymr+omBiK4cAUBfSnV7+LszdqA+5WKxmsJQPsh1nWll88ySD6QpGmUEVspEOECCoazn
-         ksCs2t465xw2OIIjFykCvuSH2f/l6AHW15B/bMSIXzYmku7qq5PQJxVBwFHHqEEEIJf2
-         lcBEpY62ERPEUolysJgD7ieIuyWWFH6st04PLD881a9iHhTgiq1ezMCQy+k7i9Kccdxs
-         Xy0jnm0HdR+Ci0bYEumQQ43R2A8zgVWjnPvVyqCmlkjf9AE0SgiTdy2UDK2cx9hPyCgq
-         qhnQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=DlAlEZc0H305aiJasyWlE8NinnS6GUDEys3Ccy9M+LM=;
+        b=fWcAr3pPEW/3oxGvUT095JEisSFGMdW1LQD29GFpCt1+P6vUItuK8jw/R3dWd5pY7p
+         JkzP3ihVlHwpTQGR2+zJdA3camyuootBTJNlawefR6HQ771GRYqc/huJs1XpF501z7rN
+         jvQ5vcA6eraem4EVeL9CV3fRuTh0lwVn/bUerTJ7QtN0Mxq7owtjywFSXAkpkaPod135
+         TrAMhITXBpRTzSO8nTYjF3uNVFLA2Qwrr/B5R2jvAAFoAhOlVwn+8ZCbzMU2PaYX2k+9
+         feLNx29mbC0hOOZQY7U0FCvcAeu/Qsbni6i10vZS/scASGVfy46Boc2xpT6X/K/dgJwN
+         CK5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=JJx1gb7dyIux/wvtlAjUM4Ul67VDqBxG4kjHz1T/apg=;
-        b=QIzHPO6OHeD62QtqlKM2m+G+UseHJuXNaG1UZpNsr6nly2A4PeNeDdVsTT3eV+x8g5
-         9atTKXl/YRb++2FLVuVvhkTM5zt9yxXCc3MCH/3C7d/1LLnsrepHqAHQhDBkyAl+4Gic
-         se+M9vDoK7DflAXO818DajMlsuoXk6OlTkzR/TmvKJQToTz1GeIMChydmxCv2i4Fi6/6
-         Mkc9cSd3Js5uawvgZtN8g76MXBDXnJUEV1MjtxoxpG5Otw/WdsIGWd5JRGkMCIYMmrE4
-         AyovIMDw8exPHL0hiEryCZdIOajEcUGw47RiMe+hY40nCNAuQVyNRKbjoGDY4Q2DUBOR
-         9a9g==
-X-Gm-Message-State: APjAAAX3r360Ok5Jo+VrnzptN86A71MHK4xqBp1zC6P9VYEB1PETU7kS
-        qA4z94KXy+8RRdFFciCtI3I=
-X-Google-Smtp-Source: APXvYqy8i85CXpsfyv8dckCdsUg7eLteOhLSNdZVYk516MDZYXdwuPo9V61Bsf6Mk2ZN6V00qpmncQ==
-X-Received: by 2002:a17:90a:ac0e:: with SMTP id o14mr156393pjq.11.1575912729718;
-        Mon, 09 Dec 2019 09:32:09 -0800 (PST)
-Received: from btopel-mobl.ger.intel.com ([192.55.55.41])
-        by smtp.gmail.com with ESMTPSA id d23sm54943pfo.176.2019.12.09.09.32.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Dec 2019 09:32:09 -0800 (PST)
-From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
-To:     daniel@iogearbox.net, ast@kernel.org, netdev@vger.kernel.org
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>,
-        linux-riscv@lists.infradead.org, bpf@vger.kernel.org
-Subject: [PATCH bpf-next 8/8] riscv, perf: add arch specific perf_arch_bpf_user_pt_regs
-Date:   Mon,  9 Dec 2019 18:31:36 +0100
-Message-Id: <20191209173136.29615-9-bjorn.topel@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191209173136.29615-1-bjorn.topel@gmail.com>
-References: <20191209173136.29615-1-bjorn.topel@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=DlAlEZc0H305aiJasyWlE8NinnS6GUDEys3Ccy9M+LM=;
+        b=n7MweM3Vc3+kQFbjjVqSP+KIqlyFH7jck5Hozy0NkKzRMmhcOfDzWyY8WInbZwLQsB
+         H/+MeYz5VfPIQgfCmoyXrOggdgbeuS5lHNcUxdNLo8QwFJLSnFOu8b05LME44jgK+dPa
+         orpWhqzmDFJ5l7Bzi47GS3NcJ54RAWPmTDDu1YKN8A4/MuTDm3+XDay1Qk35RKRku1oq
+         HQWlxWFzqaBniRBY0q1X9nBbgxK0VKp/tfz/sLg4GyU9bcThO0JnP3L/rtLbRvMkZ+68
+         6epFZhZHqQAok4GIhwVliyCAxSYzVKNqM1D+xCYne9xfzXVQucttRXdnZqx8QUW9MCR0
+         vvTg==
+X-Gm-Message-State: APjAAAWjfYLupvr2K3sr17lrzC3HWnQqeTDCFWIBxmDbubJwUVrXH7QQ
+        /nHhGVQmiUEys2PBz0+ZbgCm3SrEwqSVm5IGTfg=
+X-Google-Smtp-Source: APXvYqwYwiTtpVKXund9GsVQS6rtyIblmhcL5g15p9UVk9itaQ7tmMGaz4BhvUiDEV/xWjYh/b6oSM9HjrBSKq/lY6I=
+X-Received: by 2002:a37:9c0f:: with SMTP id f15mr28796296qke.297.1575913353977;
+ Mon, 09 Dec 2019 09:42:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20191209135522.16576-1-bjorn.topel@gmail.com> <87h829ilwr.fsf@toke.dk>
+In-Reply-To: <87h829ilwr.fsf@toke.dk>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Mon, 9 Dec 2019 18:42:22 +0100
+Message-ID: <CAJ+HfNjZnxrgYtTzbqj2VOP+5A81UW-7OKoReT0dMVBT0fQ1pg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 0/6] Introduce the BPF dispatcher
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Netdev <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Edward Cree <ecree@solarflare.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <thoiland@redhat.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-RISC-V was missing a proper perf_arch_bpf_user_pt_regs macro for
-CONFIG_PERF_EVENT builds.
+On Mon, 9 Dec 2019 at 16:00, Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.=
+com> wrote:
+>
+> Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> writes:
+>
+[...]
+>
+> I like the new version where it's integrated into bpf_prog_run_xdp();
+> nice! :)
+>
 
-Signed-off-by: Björn Töpel <bjorn.topel@gmail.com>
----
- arch/riscv/include/asm/perf_event.h | 4 ++++
- 1 file changed, 4 insertions(+)
+Yes, me too! Nice suggestion!
 
-diff --git a/arch/riscv/include/asm/perf_event.h b/arch/riscv/include/asm/perf_event.h
-index aefbfaa6a781..0234048b12bc 100644
---- a/arch/riscv/include/asm/perf_event.h
-+++ b/arch/riscv/include/asm/perf_event.h
-@@ -82,4 +82,8 @@ struct riscv_pmu {
- 	int		irq;
- };
- 
-+#ifdef CONFIG_PERF_EVENTS
-+#define perf_arch_bpf_user_pt_regs(regs) (struct user_regs_struct *)regs
-+#endif
-+
- #endif /* _ASM_RISCV_PERF_EVENT_H */
--- 
-2.20.1
+> > The XDP dispatcher is always enabled, if available, because it helps
+> > even when retpolines are disabled. Please refer to the "Performance"
+> > section below.
+>
+> Looking at those numbers, I think I would moderate "helps" to "doesn't
+> hurt" - a difference of less than 1ns is basically in the noise.
+>
+> You mentioned in the earlier version that this would impact the time it
+> takes to attach an XDP program. Got any numbers for this?
+>
 
+Ah, no, I forgot to measure that. I'll get back with that. So, when a
+new program is entered or removed from dispatcher, it needs to be
+re-jited, but more importantly -- a text poke is needed. I don't know
+if this is a concern or not, but let's measure it.
+
+
+Bj=C3=B6rn
+
+> -Toke
+>
