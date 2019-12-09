@@ -2,67 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B2D181166FC
-	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2019 07:36:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15C801167B9
+	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2019 08:56:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727069AbfLIGgR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Dec 2019 01:36:17 -0500
-Received: from mail-lf1-f68.google.com ([209.85.167.68]:42521 "EHLO
-        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726834AbfLIGgR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 Dec 2019 01:36:17 -0500
-Received: by mail-lf1-f68.google.com with SMTP id y19so9709659lfl.9;
-        Sun, 08 Dec 2019 22:36:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TZRtHTcfvXtQotqGqzJU20iEzWK2qj/gYB6W0njgUJQ=;
-        b=uPtOY71VCNniq6MLIYJKVEP9rxMeQHgeUIVBj0nXv+PjCFhVfqebbFGvI44+/2rf1c
-         YXoHbKu7p7UIcm212yLkQLXJiqN81PdlTTxfSk0yssZpoCxXE/my0v0SmZdx0CEz0eJc
-         K/ozhxyvIHfv4rphvQ/ECaLWbnpMf1rShZlk4coE4eq0Yzjwblyibr8uiaX0BWxDs52e
-         5ZfBbPokDWNoC8BaA51rqkjqBbP0lEG98M52Op/h0QCFedmXJmMamVsUF/Lsb4br6vV7
-         3O9pT6S1JIiboItYawx5ywGb8ii2q3GHuuhGIrfnE4xJgaH238zU2SVDJETvfChmvlZe
-         I46A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TZRtHTcfvXtQotqGqzJU20iEzWK2qj/gYB6W0njgUJQ=;
-        b=J1mxy6bNSElZ8S47PcQFKNPYyQ7TXtj8x/M+euu6Hu47sLQGYWhWjiZpYQaXAKTTGG
-         j14RM0mRxog4wucwCN4MXsu94F47rqg6hdl+qrH7+ZpBOJnNSAYrEC8ob9wCLRoeXRcJ
-         s5qgnZPKTzgzZtXKQ7TtHbGp7lriwREoZM3JVZ/5yF8NV4Tsdj4SxMCiwu3hmqcA33ng
-         c840gktct8AkF8OrINIuy/LJK7k63l77wh1Rr6DZbCXaTNepUM4FhEb1NOAlbdFXGj8O
-         939kFREBYfvQZEPaZgH8ECgo1aCbZ0Op1kkl8Ak6r7Uy6x7unOJAh8b+5TolVnVYHPU/
-         UpiQ==
-X-Gm-Message-State: APjAAAUFdyiyq+05KDVqpnwJ1l7fsxAEc2vonKfq44HmIRK7Vn5jRPN1
-        QKVB+shiPNwO7maOLUZtGsDr5f0rUzrwz2QgFj0NAQ==
-X-Google-Smtp-Source: APXvYqz7upI7svuNrmizPPmClkYLooqcv0Zdhr+nM9hER9V9adllEGJM9nIQZad9wLy90NCMysFKDPzKXd1M+xmNTt4=
-X-Received: by 2002:a19:be93:: with SMTP id o141mr10947350lff.181.1575873375292;
- Sun, 08 Dec 2019 22:36:15 -0800 (PST)
-MIME-Version: 1.0
-References: <20191208.151711.2227834913032509828.davem@davemloft.net>
-In-Reply-To: <20191208.151711.2227834913032509828.davem@davemloft.net>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Sun, 8 Dec 2019 22:36:04 -0800
-Message-ID: <CAADnVQKS1ide6NO+SBgzQ+83mpyTX4ph=P_dEWb=C7wabZKYYA@mail.gmail.com>
-Subject: so is bpf-next... Re: net-next is OPEN...
-To:     David Miller <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1727123AbfLIH4p (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Dec 2019 02:56:45 -0500
+Received: from mga05.intel.com ([192.55.52.43]:35290 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727122AbfLIH4p (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Dec 2019 02:56:45 -0500
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 08 Dec 2019 23:56:44 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.69,294,1571727600"; 
+   d="scan'208";a="362846859"
+Received: from mkarlsso-mobl.ger.corp.intel.com (HELO localhost.localdomain) ([10.249.32.126])
+  by orsmga004.jf.intel.com with ESMTP; 08 Dec 2019 23:56:41 -0800
+From:   Magnus Karlsson <magnus.karlsson@intel.com>
+To:     magnus.karlsson@intel.com, bjorn.topel@intel.com, ast@kernel.org,
+        daniel@iogearbox.net, netdev@vger.kernel.org,
+        jonathan.lemon@gmail.com
+Cc:     bpf@vger.kernel.org, saeedm@mellanox.com,
+        jeffrey.t.kirsher@intel.com, maciej.fijalkowski@intel.com,
+        maciejromanfijalkowski@gmail.com
+Subject: [PATCH bpf-next 00/12] xsk: clean up ring access functions
+Date:   Mon,  9 Dec 2019 08:56:17 +0100
+Message-Id: <1575878189-31860-1-git-send-email-magnus.karlsson@intel.com>
+X-Mailer: git-send-email 2.7.4
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Dec 8, 2019 at 3:17 PM David Miller <davem@davemloft.net> wrote:
->
->
-> We're back online:
->
->         http://vger.kernel.org/~davem/net-next.html
+This patch set cleans up the ring access functions of AF_XDP in hope
+that it will now be easier to understand and maintain. I used to get a
+headache every time I looked at this code in order to really understand it,
+but now I do think it is a lot less painful.
 
-bpf-next is open.
-Maintainers are on standby to review and accept new features :)
+The code has been simplified a lot and as a bonus we get better
+performance. On my 2.0 GHz Broadwell machine with a standard default
+config plus AF_XDP support and CONFIG_PREEMPT on I get the following
+results in percent performance increases with this patch set compared
+to without it:
+
+Zero-copy (-N):
+          rxdrop        txpush        l2fwd
+1 core:     4%            5%            4%
+2 cores:    1%            0%            2%
+
+Zero-copy with poll() (-N -p):
+          rxdrop        txpush        l2fwd
+1 core:     1%            3%            3%
+2 cores:   22%            0%            5%
+
+Skb mode (-S):
+Shows a 0% to 1% performance improvement over the same benchmarks as
+above.
+
+Here 1 core means that we are running the driver processing and the
+application on the same core, while 2 cores means that they execute on
+separate cores. The applications are from the xdpsock sample app.
+
+When a results says 22% better, as in the case of poll mode with 2
+cores and rxdrop, my first reaction is that it must be a
+bug. Everything else shows between 0% and 5% performance
+improvement. What is giving rise to 22%? A quick bisect indicates that
+it is patches 2, 3, 4, 5, and 6 that are giving rise to most of this
+improvement. So not one patch in particular, but something around 4%
+improvement from each one of them. Note that exactly this benchmark
+has previously had an extraordinary slow down compared to when running
+without poll syscalls. For all the other poll tests above, the
+slowdown has always been around 4% for using poll syscalls. But with
+the bad performing test in question, it was above 25%. Interestingly,
+after this clean up, the slow down is 4%, just like all the other poll
+tests. Please take an extra peek at this so I have not messed up
+something.
+
+The 0% for txpush with two cores is due to the test bottlenecking on
+a non-CPU HW resource. If I eliminated that bottleneck on my system,
+I would expect to see an increase there too.
+
+This patch has been applied against commit e7096c131e51 ("net: WireGuard secure network tunnel")
+
+Structure of the patch set:
+
+Patch 1: Eliminate the lazy update threshold used when preallocating
+         entries in the completion ring
+Patch 2: Consolidate the two local producer pointers into one
+Patch 3: Standardize the naming of the producer ring access functions
+Patch 4: Simplify the detection of empty and full rings
+Patch 5: Eliminate the Rx batch size used for the fill ring
+Patch 6: Simplify the functions xskq_nb_avail and xskq_nb_free
+Patch 7: Simplify and standardize the naming of the consumer ring
+         access functions
+Patch 8: Change the names of the validation functions to improve
+         readability and also the return value of these functions
+Patch 9: Change the name of xsk_umem_discard_addr() to
+         xsk_umem_release_addr() to better reflect the new
+         names. Requires a name change in the drivers that support AF_XDP
+         zero-copy.
+Patch 10: Remove unnecessary READ_ONCE of data in the ring
+Patch 11: Add overall function naming comment and reorder the functions
+          for easier reference
+Patch 12: Use the struct_size helper function when allocating rings
+
+Thanks: Magnus
+
+Magnus Karlsson (12):
+  xsk: eliminate the lazy update threshold
+  xsk: consolidate to one single cached producer pointer
+  xsk: standardize naming of producer ring access functions
+  xsk: simplify detection of empty and full rings
+  xsk: eliminate the RX batch size
+  xsk: simplify xskq_nb_avail and xskq_nb_free
+  xsk: simplify the consumer ring access functions
+  xsk: change names of validation functions
+  xsk: ixgbe: i40e: ice: mlx5: xsk_umem_discard_addr to
+    xsk_umem_release_addr
+  xsk: remove unnecessary READ_ONCE of data
+  xsk: add function naming comments and reorder functions
+  xsk: use struct_size() helper
+
+ drivers/net/ethernet/intel/i40e/i40e_xsk.c         |   4 +-
+ drivers/net/ethernet/intel/ice/ice_xsk.c           |   4 +-
+ drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c       |   4 +-
+ .../net/ethernet/mellanox/mlx5/core/en/xsk/rx.c    |   2 +-
+ include/net/xdp_sock.h                             |  14 +-
+ net/xdp/xsk.c                                      |  62 ++--
+ net/xdp/xsk_queue.c                                |  15 +-
+ net/xdp/xsk_queue.h                                | 370 +++++++++++----------
+ 8 files changed, 245 insertions(+), 230 deletions(-)
+
+--
+2.7.4
