@@ -2,125 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 76BFF117BC2
-	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2019 00:46:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47CAC117BD6
+	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2019 00:53:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727220AbfLIXqh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Dec 2019 18:46:37 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:3964 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726592AbfLIXqg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 Dec 2019 18:46:36 -0500
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5deedcd50000>; Mon, 09 Dec 2019 15:46:29 -0800
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Mon, 09 Dec 2019 15:46:35 -0800
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Mon, 09 Dec 2019 15:46:35 -0800
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 9 Dec
- 2019 23:46:34 +0000
-Received: from [10.110.48.28] (10.124.1.5) by DRHQMAIL107.nvidia.com
- (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 9 Dec 2019
- 23:46:34 +0000
-Subject: Re: [PATCH v8 20/26] powerpc: book3s64: convert to pin_user_pages()
- and put_user_page()
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        "Mauro Carvalho Chehab" <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        "Paul Mackerras" <paulus@samba.org>, Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, <bpf@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <kvm@vger.kernel.org>,
-        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-media@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>, <netdev@vger.kernel.org>,
-        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>
-References: <20191209225344.99740-1-jhubbard@nvidia.com>
- <20191209225344.99740-21-jhubbard@nvidia.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-X-Nvconfidentiality: public
-Message-ID: <08f5d716-8b31-b016-4994-19fbe829dc28@nvidia.com>
-Date:   Mon, 9 Dec 2019 15:46:33 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+        id S1726743AbfLIXxh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Dec 2019 18:53:37 -0500
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:46373 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727109AbfLIXxh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Dec 2019 18:53:37 -0500
+Received: by mail-lj1-f195.google.com with SMTP id z17so17655206ljk.13
+        for <bpf@vger.kernel.org>; Mon, 09 Dec 2019 15:53:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8PYO3gKOvpQJUKoPD4Ucl8MVrwdN3gMad52iHtR/vZs=;
+        b=uNIvwKuUJUxV53loQOeaM/o9OzquvKgMQxAKv1tzc1Hl0aojhv/hJfrHlMebF56Ed1
+         wBUZJH4bUGx/OPdnE0tB56rphcIyScW02U1GuxlJAXr3D1dWj05IjfiZhEpES96gX21+
+         cVLRpYDN+8Yqdt6/JLICWCKQrgxGRIxeGJXKz4UuDjp+FHlYc0mnLxAu60In87Ml8Ico
+         n8AM+kuo6M8gLio4E71FslY0sR7A8HekUsePuvTGpITXka9+h2sbyJ/dn8pov+U2Yv+F
+         SnSg8Z33ik5+gk5D4hfCqKs+IH6L4Zvvx8IVE+Uhm46a1VSFGA+LRbz7W6JdpCmZNqqb
+         0FVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8PYO3gKOvpQJUKoPD4Ucl8MVrwdN3gMad52iHtR/vZs=;
+        b=o11CWCcJAceMOg99lsw4QbJ97/uQsOaqXWIQVgqI8m1K7KhB7VnuDgyrZ9HMjaubC/
+         EJxoJQbP1tNnsMUxiiwKEnxjHQrqzvymfm55ZdDvIeXlXubcCPeN7+89RjKZ/FO3IwzE
+         ZeIQGoIA2owq35fre8PBMCuPD82pQmz1RdUrQ9MZBKwlA8tsrIETywBlmd3C7v9NpS3q
+         oKUhsX04SDr325ZkJoTcXWuMolyYdMRhPIl79sS+bPs8y4jc7wStcHC4UpRnm92fMqy6
+         ZDrcWsCyUQ2W8nogJeGYhnvOnca3MRcfgTjQsRTHjz4g02k7DCfxzi61PUY37ZTK8khj
+         tovw==
+X-Gm-Message-State: APjAAAV5/ceEwYEdH0nV2AK7yJyK6kMz3Vh2lxPg8Y4zuRT5tnpjdzjQ
+        iTnetwSthH8ftDccVQoukbcNZC58560HwHufUrJa
+X-Google-Smtp-Source: APXvYqxm5P6p8PMa6Ve7YcMvKPOBDHSKqfXxUTTrADm7WlA8FeZonMrFtrUaZwY0Q7lPO92mGz404lWFoQ6nO9KpZis=
+X-Received: by 2002:a2e:99cd:: with SMTP id l13mr4379179ljj.243.1575935614551;
+ Mon, 09 Dec 2019 15:53:34 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20191209225344.99740-21-jhubbard@nvidia.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1575935189; bh=F+Jj+I6m5b/J9KOGS4UgD+CyKLIIOUmRatgjOS3uz0Y=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=Ihr9PvOrf4hppHWZcETbUAQh9t9Aev3oHDGCoIypSp3n/NX/AuC/Td0gE6AmeDIUE
-         2+DT2NTLT9eP7U1PFgWavm5zzTvPlCDL5cWWUpkrpD60HT7XF7/5PaBcDrqebNpuex
-         CI+QS4g3QKJbV4WzqLe9+cTj1E1lVYuR0ZJtmRhZpYLLoZW9GXVF72aUROzLtSMDuT
-         v0HaolI7qQoROQScZaDiu3CN2mz+32WCjaJtRJLPhJNY7eBr0NjQYl2fNOij0hv+9K
-         AR+SKxG6MA/CqvylD8YhPmC/JAQ+Ecqay7f94R+oer9y3owEi11v6+bX3P3xFoNI7R
-         rN6yFpWqkjcOQ==
+References: <20191206214934.11319-1-jolsa@kernel.org> <20191209121537.GA14170@linux.fritz.box>
+ <CAHC9VhQdOGTj1HT1cwvAdE1sRpzk5mC+oHQLHgJFa3vXEij+og@mail.gmail.com> <d387184e-9c5f-d5b2-0acb-57b794235cbd@iogearbox.net>
+In-Reply-To: <d387184e-9c5f-d5b2-0acb-57b794235cbd@iogearbox.net>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Mon, 9 Dec 2019 18:53:23 -0500
+Message-ID: <CAHC9VhRDsEDGripZRrVNcjEBEEULPk+0dRp-uJ3nmmBK7B=sYQ@mail.gmail.com>
+Subject: Re: [PATCHv3] bpf: Emit audit messages upon successful prog load and unload
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-audit@redhat.com, Andrii Nakryiko <andriin@fb.com>,
+        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Steve Grubb <sgrubb@redhat.com>,
+        David Miller <davem@redhat.com>,
+        Eric Paris <eparis@redhat.com>, Jiri Benc <jbenc@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 12/9/19 2:53 PM, John Hubbard wrote:
-...
-> @@ -212,10 +211,9 @@ static void mm_iommu_unpin(struct mm_iommu_table_group_mem_t *mem)
->  		if (!page)
->  			continue;
->  
-> -		if (mem->hpas[i] & MM_IOMMU_TABLE_GROUP_PAGE_DIRTY)
-> -			SetPageDirty(page);
-> +		put_user_pages_dirty_lock(&page, 1,
-> +				mem->hpas[i] & MM_IOMMU_TABLE_GROUP_PAGE_DIRTY);
->  
-> -		put_page(page);
+On Mon, Dec 9, 2019 at 6:19 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+> On 12/9/19 3:56 PM, Paul Moore wrote:
+> > On Mon, Dec 9, 2019 at 7:15 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+> >> On Fri, Dec 06, 2019 at 10:49:34PM +0100, Jiri Olsa wrote:
+> >>> From: Daniel Borkmann <daniel@iogearbox.net>
+> >>>
+> >>> Allow for audit messages to be emitted upon BPF program load and
+> >>> unload for having a timeline of events. The load itself is in
+> >>> syscall context, so additional info about the process initiating
+> >>> the BPF prog creation can be logged and later directly correlated
+> >>> to the unload event.
+> >>>
+> >>> The only info really needed from BPF side is the globally unique
+> >>> prog ID where then audit user space tooling can query / dump all
+> >>> info needed about the specific BPF program right upon load event
+> >>> and enrich the record, thus these changes needed here can be kept
+> >>> small and non-intrusive to the core.
+> >>>
+> >>> Raw example output:
+> >>>
+> >>>    # auditctl -D
+> >>>    # auditctl -a always,exit -F arch=x86_64 -S bpf
+> >>>    # ausearch --start recent -m 1334
+> >>>    ...
+> >>>    ----
+> >>>    time->Wed Nov 27 16:04:13 2019
+> >>>    type=PROCTITLE msg=audit(1574867053.120:84664): proctitle="./bpf"
+> >>>    type=SYSCALL msg=audit(1574867053.120:84664): arch=c000003e syscall=321   \
+> >>>      success=yes exit=3 a0=5 a1=7ffea484fbe0 a2=70 a3=0 items=0 ppid=7477    \
+> >>>      pid=12698 auid=1001 uid=1001 gid=1001 euid=1001 suid=1001 fsuid=1001    \
+> >>>      egid=1001 sgid=1001 fsgid=1001 tty=pts2 ses=4 comm="bpf"                \
+> >>>      exe="/home/jolsa/auditd/audit-testsuite/tests/bpf/bpf"                  \
+> >>>      subj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 key=(null)
+> >>>    type=UNKNOWN[1334] msg=audit(1574867053.120:84664): prog-id=76 op=LOAD
+> >>>    ----
+> >>>    time->Wed Nov 27 16:04:13 2019
+> >>>    type=UNKNOWN[1334] msg=audit(1574867053.120:84665): prog-id=76 op=UNLOAD
+> >>>    ...
+> >>>
+> >>> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+> >>> Co-developed-by: Jiri Olsa <jolsa@kernel.org>
+> >>> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> >>
+> >> Paul, Steve, given the merge window is closed by now, does this version look
+> >> okay to you for proceeding to merge into bpf-next?
+> >
+> > Given the change to audit UAPI I was hoping to merge this via the
+> > audit/next tree, is that okay with you?
+>
+> Hm, my main concern is that given all the main changes are in BPF core and
+> usually the BPF subsystem has plenty of changes per release coming in that we'd
+> end up generating unnecessary merge conflicts. Given the include/uapi/linux/audit.h
+> UAPI diff is a one-line change, my preference would be to merge via bpf-next with
+> your ACK or SOB added. Does that work for you as well as?
 
+I regularly (a few times a week) run the audit and SELinux tests
+against Linus+audit/next+selinux/next to make sure things are working
+as expected and that some other subsystem has introduced a change
+which has broken something.  If you are willing to ensure the tests
+get run, including your new BPF audit tests I would be okay with that;
+is that acceptable?
 
-Correction: this is somehow missing the fixes that resulted from Jan Kara's review (he
-noted that we can't take a page lock in this context). I must have picked up the 
-wrong version of it, when I rebased for -rc1.
-
-Will fix in the next version (including the commit description). Here's what the
-corrected hunk will look like:
-
-@@ -215,7 +214,8 @@ static void mm_iommu_unpin(struct mm_iommu_table_group_mem_t *mem)
-                if (mem->hpas[i] & MM_IOMMU_TABLE_GROUP_PAGE_DIRTY)
-                        SetPageDirty(page);
- 
--               put_page(page);
-+               put_user_page(page);
-+
-                mem->hpas[i] = 0;
-        }
- }
-
-
-thanks,
 -- 
-John Hubbard
-NVIDIA
+paul moore
+www.paul-moore.com
