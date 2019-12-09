@@ -2,114 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AB62116443
-	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2019 01:01:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2D181166FC
+	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2019 07:36:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726988AbfLIAB2 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Sun, 8 Dec 2019 19:01:28 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:21934 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726956AbfLIAB2 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 8 Dec 2019 19:01:28 -0500
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xB8Nwvvx005261
-        for <bpf@vger.kernel.org>; Sun, 8 Dec 2019 16:01:27 -0800
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2wrvye2dqm-4
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Sun, 08 Dec 2019 16:01:27 -0800
-Received: from intmgw004.05.ash5.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Sun, 8 Dec 2019 16:01:21 -0800
-Received: by devbig007.ftw2.facebook.com (Postfix, from userid 572438)
-        id 9F59B760CCB; Sun,  8 Dec 2019 16:01:20 -0800 (PST)
-Smtp-Origin-Hostprefix: devbig
-From:   Alexei Starovoitov <ast@kernel.org>
-Smtp-Origin-Hostname: devbig007.ftw2.facebook.com
-To:     <davem@davemloft.net>
-CC:     <daniel@iogearbox.net>, <rostedt@goodmis.org>, <x86@kernel.org>,
-        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <kernel-team@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf 3/3] selftests/bpf: test function_graph tracer and bpf trampoline together
-Date:   Sun, 8 Dec 2019 16:01:14 -0800
-Message-ID: <20191209000114.1876138-4-ast@kernel.org>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20191209000114.1876138-1-ast@kernel.org>
-References: <20191209000114.1876138-1-ast@kernel.org>
+        id S1727069AbfLIGgR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Dec 2019 01:36:17 -0500
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:42521 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726834AbfLIGgR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Dec 2019 01:36:17 -0500
+Received: by mail-lf1-f68.google.com with SMTP id y19so9709659lfl.9;
+        Sun, 08 Dec 2019 22:36:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TZRtHTcfvXtQotqGqzJU20iEzWK2qj/gYB6W0njgUJQ=;
+        b=uPtOY71VCNniq6MLIYJKVEP9rxMeQHgeUIVBj0nXv+PjCFhVfqebbFGvI44+/2rf1c
+         YXoHbKu7p7UIcm212yLkQLXJiqN81PdlTTxfSk0yssZpoCxXE/my0v0SmZdx0CEz0eJc
+         K/ozhxyvIHfv4rphvQ/ECaLWbnpMf1rShZlk4coE4eq0Yzjwblyibr8uiaX0BWxDs52e
+         5ZfBbPokDWNoC8BaA51rqkjqBbP0lEG98M52Op/h0QCFedmXJmMamVsUF/Lsb4br6vV7
+         3O9pT6S1JIiboItYawx5ywGb8ii2q3GHuuhGIrfnE4xJgaH238zU2SVDJETvfChmvlZe
+         I46A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TZRtHTcfvXtQotqGqzJU20iEzWK2qj/gYB6W0njgUJQ=;
+        b=J1mxy6bNSElZ8S47PcQFKNPYyQ7TXtj8x/M+euu6Hu47sLQGYWhWjiZpYQaXAKTTGG
+         j14RM0mRxog4wucwCN4MXsu94F47rqg6hdl+qrH7+ZpBOJnNSAYrEC8ob9wCLRoeXRcJ
+         s5qgnZPKTzgzZtXKQ7TtHbGp7lriwREoZM3JVZ/5yF8NV4Tsdj4SxMCiwu3hmqcA33ng
+         c840gktct8AkF8OrINIuy/LJK7k63l77wh1Rr6DZbCXaTNepUM4FhEb1NOAlbdFXGj8O
+         939kFREBYfvQZEPaZgH8ECgo1aCbZ0Op1kkl8Ak6r7Uy6x7unOJAh8b+5TolVnVYHPU/
+         UpiQ==
+X-Gm-Message-State: APjAAAUFdyiyq+05KDVqpnwJ1l7fsxAEc2vonKfq44HmIRK7Vn5jRPN1
+        QKVB+shiPNwO7maOLUZtGsDr5f0rUzrwz2QgFj0NAQ==
+X-Google-Smtp-Source: APXvYqz7upI7svuNrmizPPmClkYLooqcv0Zdhr+nM9hER9V9adllEGJM9nIQZad9wLy90NCMysFKDPzKXd1M+xmNTt4=
+X-Received: by 2002:a19:be93:: with SMTP id o141mr10947350lff.181.1575873375292;
+ Sun, 08 Dec 2019 22:36:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
- definitions=2019-12-08_07:2019-12-05,2019-12-08 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
- malwarescore=0 clxscore=1034 adultscore=0 impostorscore=0
- lowpriorityscore=0 mlxlogscore=401 suspectscore=1 spamscore=0
- priorityscore=1501 bulkscore=0 mlxscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-1910280000
- definitions=main-1912080207
-X-FB-Internal: deliver
+References: <20191208.151711.2227834913032509828.davem@davemloft.net>
+In-Reply-To: <20191208.151711.2227834913032509828.davem@davemloft.net>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Sun, 8 Dec 2019 22:36:04 -0800
+Message-ID: <CAADnVQKS1ide6NO+SBgzQ+83mpyTX4ph=P_dEWb=C7wabZKYYA@mail.gmail.com>
+Subject: so is bpf-next... Re: net-next is OPEN...
+To:     David Miller <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add simple test script to execute funciton graph tracer while BPF trampoline
-attaches and detaches from the functions being graph traced.
+On Sun, Dec 8, 2019 at 3:17 PM David Miller <davem@davemloft.net> wrote:
+>
+>
+> We're back online:
+>
+>         http://vger.kernel.org/~davem/net-next.html
 
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
----
- tools/testing/selftests/bpf/test_ftrace.sh | 39 ++++++++++++++++++++++
- 1 file changed, 39 insertions(+)
- create mode 100755 tools/testing/selftests/bpf/test_ftrace.sh
-
-diff --git a/tools/testing/selftests/bpf/test_ftrace.sh b/tools/testing/selftests/bpf/test_ftrace.sh
-new file mode 100755
-index 000000000000..20de7bb873bc
---- /dev/null
-+++ b/tools/testing/selftests/bpf/test_ftrace.sh
-@@ -0,0 +1,39 @@
-+#!/bin/bash
-+
-+TR=/sys/kernel/debug/tracing/
-+clear_trace() { # reset trace output
-+    echo > $TR/trace
-+}
-+
-+disable_tracing() { # stop trace recording
-+    echo 0 > $TR/tracing_on
-+}
-+
-+enable_tracing() { # start trace recording
-+    echo 1 > $TR/tracing_on
-+}
-+
-+reset_tracer() { # reset the current tracer
-+    echo nop > $TR/current_tracer
-+}
-+
-+disable_tracing
-+clear_trace
-+
-+echo "" > $TR/set_ftrace_filter
-+echo '*printk* *console* *wake* *serial* *lock*' > $TR/set_ftrace_notrace
-+
-+echo "bpf_prog_test*" > $TR/set_graph_function
-+echo "" > $TR/set_graph_notrace
-+
-+echo function_graph > $TR/current_tracer
-+
-+enable_tracing
-+./test_progs -t fentry
-+./test_progs -t fexit
-+disable_tracing
-+clear_trace
-+
-+reset_tracer
-+
-+exit 0
--- 
-2.23.0
-
+bpf-next is open.
+Maintainers are on standby to review and accept new features :)
