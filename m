@@ -2,173 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EEDED116C2D
-	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2019 12:17:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C498E116C4A
+	for <lists+bpf@lfdr.de>; Mon,  9 Dec 2019 12:29:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727074AbfLILRw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 9 Dec 2019 06:17:52 -0500
-Received: from pandora.armlinux.org.uk ([78.32.30.218]:60368 "EHLO
-        pandora.armlinux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727208AbfLILRw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 9 Dec 2019 06:17:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Date:Sender:Message-Id:Content-Type:
-        Content-Transfer-Encoding:MIME-Version:Subject:Cc:To:From:Reply-To:Content-ID
-        :Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:
-        Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=XjkK675LJFtaYhlzPVMRnNNjW81WA4APzKu+SB9Uw0M=; b=Imq/0MAl+4ic9wupAscxqljrs5
-        QR1m4SntqP1yoy4jMwiWkUD2uIPFBtm+S8XUUiBn3dqH4khEqlC1ATYMe6Rxr3Ux0aPNziSgahxBp
-        hP3MDmZp3FX5/hT4hLlnITR8TsImBOrxIeFERrQssdKmLXGNFTCgCzbeGW8eIZxYJrFnBltzxH9kW
-        6FDCXb6iBkQpCXxfiNcCAN1bpIU/IciG/k3lqQk2QuDAUgQcXy323gJLnoX1mr/F8soBreh4PSUbT
-        AuEquqXEUzpAwU5uTO5meQpP7fRRaNIsdBlOxn97uOguoB0lXr/FAGLwO5aRrKaNFHTmRGCWBTFhP
-        0kjUO8sg==;
-Received: from e0022681537dd.dyn.armlinux.org.uk ([2002:4e20:1eda:1:222:68ff:fe15:37dd]:49900 helo=rmk-PC.armlinux.org.uk)
-        by pandora.armlinux.org.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.90_1)
-        (envelope-from <rmk@armlinux.org.uk>)
-        id 1ieH2m-0002aj-Uk; Mon, 09 Dec 2019 11:17:37 +0000
-Received: from rmk by rmk-PC.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <rmk@armlinux.org.uk>)
-        id 1ieH2l-0004io-VM; Mon, 09 Dec 2019 11:17:36 +0000
-From:   Russell King <rmk+kernel@armlinux.org.uk>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Shubham Bansal <illusionist.neo@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH] ARM: net: bpf: improve endian conversion
+        id S1727200AbfLIL3h (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 9 Dec 2019 06:29:37 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:36334 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726377AbfLIL3g (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 9 Dec 2019 06:29:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1575890975;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=brrElCnD0fFj0dsAyA7yIHhw8QM+zUQL/kI/lCBWGAI=;
+        b=L+RdniZzYNMDYNB0Sh14AxRffbCRbaH1EB7ephcZF3VuypPmPzzV1VDl5JD61kBMdZUlXM
+        3eyIa8AxdB6DhQSs3sHvTgmVI9wI3KOI1OQ7pBJa+nWQIBUgUeQ4UUfcrgDGZWho/fx/2t
+        hEBeP2LywaLvDJQIhBi3BFB9wd9CMps=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-282-S2LY_TSENmaJcTQBSmUAfA-1; Mon, 09 Dec 2019 06:29:32 -0500
+Received: by mail-lj1-f200.google.com with SMTP id s8so3238524ljo.10
+        for <bpf@vger.kernel.org>; Mon, 09 Dec 2019 03:29:31 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version;
+        bh=brrElCnD0fFj0dsAyA7yIHhw8QM+zUQL/kI/lCBWGAI=;
+        b=FOWPI+jUxfvR2lg0bWkV0/NcXl7r3SRtroYtNTocl9+2wrFmp8nZOUaAhbuo9A7Qtc
+         YMzY3rCJZYsKbbhoocb3Ct1uxh7ZkD5SiMVoWlzfPA3qNj26olQcS/1gEHr0RzxITro5
+         GsaxlZkRZKEKaN2joGh7RSrIyTXvIdIyQE1kCdRhG8D5XacawDdas0ghgd51KNlLGUyh
+         rcGvw7i70VqM0qHnHLYGUBWNo1hmlWUzjiNpPfG8kNPy0rMYX1Zq4tWq3Z3qvO7hj7OI
+         sERycx+dr7Da/u223loamd/e7978jpU+xftFQwLyTdi3tWvdQcDNqelRCeqaySUCLxit
+         /+/w==
+X-Gm-Message-State: APjAAAWrSiMWR5cwx6sXfTqp6TGFF/SRe8Ba9r0bRsc7UUgBkfbOAigV
+        K+UVV+Nzit/wSBKjoOnNWDRtWlc0crUclCwNGkJe9j3Y2I9hwr9yutxFkcrlmDW4AOZ8rvdh+Vq
+        sWKBLRLHUOiy0
+X-Received: by 2002:a2e:58c:: with SMTP id 134mr16936220ljf.12.1575890970399;
+        Mon, 09 Dec 2019 03:29:30 -0800 (PST)
+X-Google-Smtp-Source: APXvYqyZVoS/uXs3T1eVf/XlZ02xWycVbJgGakJDNg1/h00N069k47ar4L2ftjtRU4lo//VGRQkrFg==
+X-Received: by 2002:a2e:58c:: with SMTP id 134mr16936213ljf.12.1575890970253;
+        Mon, 09 Dec 2019 03:29:30 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id i4sm12554298lji.0.2019.12.09.03.29.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Dec 2019 03:29:29 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 835E718257B; Mon,  9 Dec 2019 12:29:27 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     bpf@vger.kernel.org
+Cc:     Jiri Olsa <jolsa@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>
+Subject: Establishing /usr/lib/bpf as a convention for eBPF bytecode files?
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Mon, 09 Dec 2019 12:29:27 +0100
+Message-ID: <87fthtlotk.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset="utf-8"
-Message-Id: <E1ieH2l-0004io-VM@rmk-PC.armlinux.org.uk>
-Date:   Mon, 09 Dec 2019 11:17:35 +0000
+X-MC-Unique: S2LY_TSENmaJcTQBSmUAfA-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Make the endian conversion function easier to read by moving it out
-of the big switch, and avoid doing anything if we're requested to
-convert from a 64-bit LE value (we're LE anyway here.)
+Hi everyone
 
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
----
- arch/arm/net/bpf_jit_32.c | 91 +++++++++++++++++++++------------------
- 1 file changed, 50 insertions(+), 41 deletions(-)
+As you have no doubt noticed, we have started thinking about how to
+package eBPF-related applications in distributions. As a part of this,
+I've been thinking about what to recommend for applications that ship
+pre-compiled BPF byte-code files.
 
-diff --git a/arch/arm/net/bpf_jit_32.c b/arch/arm/net/bpf_jit_32.c
-index cc29869d12a3..646ab5785ca4 100644
---- a/arch/arm/net/bpf_jit_32.c
-+++ b/arch/arm/net/bpf_jit_32.c
-@@ -1245,6 +1245,55 @@ static inline void emit_rev32(const u8 rd, const u8 rn, struct jit_ctx *ctx)
- #endif
- }
- 
-+static void emit_a32_endian(const s8 dst[], u8 code, s32 bits,
-+			    struct jit_ctx *ctx)
-+{
-+	const s8 *tmp = bpf2a32[TMP_REG_1];
-+	const s8 *tmp2 = bpf2a32[TMP_REG_2];
-+	const s8 *rd;
-+
-+	/* Converting from LE and 64-bit value is a no-op. */
-+	if (code == BPF_FROM_LE && bits == 64)
-+		return;
-+
-+	rd = arm_bpf_get_reg64(dst, tmp, ctx);
-+
-+	if (code != BPF_FROM_LE) {
-+		/* endian swap */
-+		switch (imm) {
-+		case 16:
-+			emit_rev16(rd[1], rd[1], ctx);
-+			break;
-+		case 32:
-+			emit_rev32(rd[1], rd[1], ctx);
-+			break;
-+		case 64:
-+			emit_rev32(ARM_LR, rd[1], ctx);
-+			emit_rev32(rd[1], rd[0], ctx);
-+			emit(ARM_MOV_R(rd[0], ARM_LR), ctx);
-+			break;
-+		}
-+	}
-+
-+	/* zero-extend size to 64-bit */
-+	switch (imm) {
-+	case 16:
-+#if __LINUX_ARM_ARCH__ < 6
-+		emit_a32_mov_i(tmp2[1], 0xffff, ctx);
-+		emit(ARM_AND_R(rd[1], rd[1], tmp2[1]), ctx);
-+#else /* ARMv6+ */
-+		emit(ARM_UXTH(rd[1], rd[1]), ctx);
-+#endif
-+		/* FALLTHROUGH */
-+	case 32:
-+		if (!ctx->prog->aux->verifier_zext)
-+			emit(ARM_MOV_I(rd[0], 0), ctx);
-+		break;
-+	}
-+
-+	arm_bpf_put_reg64(dst, rd, ctx);
-+}
-+
- // push the scratch stack register on top of the stack
- static inline void emit_push_r64(const s8 src[], struct jit_ctx *ctx)
- {
-@@ -1523,47 +1572,7 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx)
- 	/* dst = htobe(dst) */
- 	case BPF_ALU | BPF_END | BPF_FROM_LE:
- 	case BPF_ALU | BPF_END | BPF_FROM_BE:
--		rd = arm_bpf_get_reg64(dst, tmp, ctx);
--		if (BPF_SRC(code) == BPF_FROM_LE)
--			goto emit_bswap_uxt;
--		switch (imm) {
--		case 16:
--			emit_rev16(rd[1], rd[1], ctx);
--			goto emit_bswap_uxt;
--		case 32:
--			emit_rev32(rd[1], rd[1], ctx);
--			goto emit_bswap_uxt;
--		case 64:
--			emit_rev32(ARM_LR, rd[1], ctx);
--			emit_rev32(rd[1], rd[0], ctx);
--			emit(ARM_MOV_R(rd[0], ARM_LR), ctx);
--			break;
--		}
--		goto exit;
--emit_bswap_uxt:
--		switch (imm) {
--		case 16:
--			/* zero-extend 16 bits into 64 bits */
--#if __LINUX_ARM_ARCH__ < 6
--			emit_a32_mov_i(tmp2[1], 0xffff, ctx);
--			emit(ARM_AND_R(rd[1], rd[1], tmp2[1]), ctx);
--#else /* ARMv6+ */
--			emit(ARM_UXTH(rd[1], rd[1]), ctx);
--#endif
--			if (!ctx->prog->aux->verifier_zext)
--				emit(ARM_EOR_R(rd[0], rd[0], rd[0]), ctx);
--			break;
--		case 32:
--			/* zero-extend 32 bits into 64 bits */
--			if (!ctx->prog->aux->verifier_zext)
--				emit(ARM_EOR_R(rd[0], rd[0], rd[0]), ctx);
--			break;
--		case 64:
--			/* nop */
--			break;
--		}
--exit:
--		arm_bpf_put_reg64(dst, rd, ctx);
-+		emit_a32_endian(dst, BPF_SRC(code), imm, ctx);
- 		break;
- 	/* dst = imm64 */
- 	case BPF_LD | BPF_IMM | BPF_DW:
--- 
-2.20.1
+The obvious place to place those would be somewhere in the system
+$LIBDIR (i.e., /usr/lib or /usr/lib64, depending on the distro). But
+since BPF byte code is its own binary format, different from regular
+executables, I think having a separate path to put those under makes
+sense. So I'm proposing to establish a convention that pre-compiled BPF
+programs be installed into /usr/lib{,64}/bpf.
+
+This would let users discover which BPF programs are shipped on their
+system, and it could be used to discover which package loaded a
+particular BPF program, by walking the directory to find the file a
+loaded program came from. It would not work for dynamically-generated
+bytecode, of course, but I think at least some applications will end up
+shipping pre-compiled bytecode files (we're doing that for xdp-tools,
+for instance).
+
+As I said, this would be a convention. We're already using it for
+xdp-tools[0], so my plan is to use that as the "first mover", try to get
+distributions to establish the path as a part of their filesystem
+layout, and then just try to encourage packages to use it. Hopefully it
+will catch on.
+
+Does anyone have any objections to this? Do you think it is a complete
+waste of time, or is it worth giving it a shot? :)
+
+-Toke
+
+[0] https://github.com/xdp-project/xdp-tools/blob/master/lib/defines.mk#L12
 
