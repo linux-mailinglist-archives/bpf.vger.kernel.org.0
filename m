@@ -2,119 +2,156 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B0E85119F4A
-	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2019 00:22:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25C11119F71
+	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2019 00:35:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726988AbfLJXWU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Dec 2019 18:22:20 -0500
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:46854 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725999AbfLJXWU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Dec 2019 18:22:20 -0500
-Received: by mail-pl1-f194.google.com with SMTP id k20so516894pll.13;
-        Tue, 10 Dec 2019 15:22:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=KjIM6hB/c2j0i3WJaMzqN6qFiaP2KRG0tXM3pdq5P/U=;
-        b=V/FBigx6erG32Z5dX1sGADv6IGTrhaRBR+zaoFjU5e9bvjpbQ+qVplqzUa8rO2PLmd
-         ZM8ba1myg+KSdb9wfgR9uVRPAPoVSf5ugklFGj8U2brtFIa3Pj2toWaD1u5S+2JbHhmi
-         GFz6W4U1N1Hi8jyqcjk3Iw3/MpXxgowBAVPIxl16jGU+K8o4H6W/5Y7ZkRrj9VuxzS0f
-         aHuqVdj3TjCGrqtbvM8/8obq2ALBvSGkB7o6d4ggk90WqG6HpQC0aHOqKKN8Pxp3DpF9
-         TbkAy42CYbfqEdAqVfXoutfZNa4tBXlGrZubyFAgyoiZJbt4eRqNgc38MUNSKEMdTgcP
-         wxrA==
-X-Gm-Message-State: APjAAAUX+cKPLwxvklxwsN69HCduVUF/CecLJGkYtHYpDMDO7pJyvBBj
-        JT4aX1vwfk8QVxmihEbiSl0=
-X-Google-Smtp-Source: APXvYqwMOarl7R1fafx3MMgYscUfTP2XbVTZo+8UCKQkA4Zgu4TKK07ECYdRD5htD6FzRikQ5ohJCg==
-X-Received: by 2002:a17:90a:1c5:: with SMTP id 5mr35636pjd.88.1576020139440;
-        Tue, 10 Dec 2019 15:22:19 -0800 (PST)
-Received: from localhost ([2601:646:8a00:9810:5af3:56d9:f882:39d4])
-        by smtp.gmail.com with ESMTPSA id 129sm120844pfw.71.2019.12.10.15.22.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Dec 2019 15:22:18 -0800 (PST)
-Date:   Tue, 10 Dec 2019 15:23:16 -0800
-From:   Paul Burton <paulburton@kernel.org>
-To:     Paul Chaignon <paul.chaignon@orange.com>
-Cc:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        Mahshid Khezri <khezri.mahshid@gmail.com>,
-        paul.chaignon@gmail.com, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        id S1726691AbfLJXfF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Dec 2019 18:35:05 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:14270 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726683AbfLJXfE (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 10 Dec 2019 18:35:04 -0500
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xBANYaFC025418;
+        Tue, 10 Dec 2019 15:34:39 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=EhCDKHC4gUCM3jUceATSEfV87aYQrW7uNQzeE7yd1nU=;
+ b=K6/ejvNqr+uwCM7HPk4EGM2Y2CSiyrjq+Q435LLE/Jv6tDIIOUDIqEWG4k5WMCg6sJG/
+ VSKJir9uF6CdVr0YlW60Cp6JtNTSOSjCiHKJ2uWFiSHZbe++K6iy2GJWMIhn44t5ab/g
+ lCmWxznW520AAIaq1af5vEScd3UlmD5ApNQ= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by mx0a-00082601.pphosted.com with ESMTP id 2wtddktx9g-7
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Tue, 10 Dec 2019 15:34:39 -0800
+Received: from prn-hub03.TheFacebook.com (2620:10d:c081:35::127) by
+ prn-hub06.TheFacebook.com (2620:10d:c081:35::130) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Tue, 10 Dec 2019 15:34:26 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (192.168.54.28)
+ by o365-in.thefacebook.com (192.168.16.27) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
+ via Frontend Transport; Tue, 10 Dec 2019 15:34:26 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VW67uXw+3CL2Gb7hJ6SLwcfz3aLJsGczie93NTZ0roEGcw3J2E4dnuBxIaVe5JPNvqgBHkldk6/zG79l/qAG0/yIvLglhksILYXE0esJL+imZf0900PhGgPPgeqfghJPqdChtiY6Q/VX49x7nxXM9yuwVsk1GFLu97g1recgybg2NHwK68iWcYe9XrbIGlA9d0/Z+S1je+lA+QrCz9Ukd+hGwK+6ORzi/TJQt2VHPCYIfRSZ/elnCMYDc/6UZH8g65mFEcm1HWppIMD4eu3xvuJPLOq9R/zmxe23efxeFIBA2Jyyist0gIaVHzMOeRaGl3BzujQFFzv8TvFAL0e1Ig==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EhCDKHC4gUCM3jUceATSEfV87aYQrW7uNQzeE7yd1nU=;
+ b=VLAzolLcy0en038iK/TYksAjLFNpGdzifLGDmsjVnxez5kcDR7RywjKS6I2yz80KssMAfp9SRAFIfYvzDO289UIrqnqSbTB4w6l0W9zIRgl9mYua5zP+ELTV0OhYex4jsLOIgVfUo4ytF9oOK3A4pAVJuMOF97mTNf88xMIdlLE5EENtdsAUdYRuT/s3r07Xx0hd/8/WGm87gBDJ1EZkLrB9xij8cxwth4lwfr5ksrd7NZag9jhZR9TMMCf7Z37b9f4Ewdai44yPyQwmbi2p0T76FEpbq2qI+l6on7QojN1gRAOdr0Kaf7GEX1JN38PDCzpxKnyi36S1JUSaTit4+g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EhCDKHC4gUCM3jUceATSEfV87aYQrW7uNQzeE7yd1nU=;
+ b=dMHQCBp/5MaILHU9QfsR/D3EKiwJjI1Iftav4tSqBbixbBB8Pt0aAad7tHujrJQUBqINHXuH7ZlSlnmru5kdR1kyqhKoIGUQYr5udR/Zeh39ovM35aMKJ98ZQ94E1FJMoXVU2dxsCwU7q2pilRKfVq9MaKiszfveZtWYd/tIKBM=
+Received: from MN2PR15MB3213.namprd15.prod.outlook.com (20.179.21.76) by
+ MN2PR15MB2671.namprd15.prod.outlook.com (20.179.146.142) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2516.14; Tue, 10 Dec 2019 23:34:25 +0000
+Received: from MN2PR15MB3213.namprd15.prod.outlook.com
+ ([fe80::6d1e:f2f7:d36:a42f]) by MN2PR15MB3213.namprd15.prod.outlook.com
+ ([fe80::6d1e:f2f7:d36:a42f%4]) with mapi id 15.20.2516.018; Tue, 10 Dec 2019
+ 23:34:25 +0000
+From:   Martin Lau <kafai@fb.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+CC:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Subject: Re: [PATCH bpf 2/2] bpf, mips: limit to 33 tail calls
-Message-ID: <20191210232316.aastpgbirqp4yaoi@lantea.localdomain>
-References: <cover.1575916815.git.paul.chaignon@gmail.com>
- <b8eb2caac1c25453c539248e56ca22f74b5316af.1575916815.git.paul.chaignon@gmail.com>
+        Andrii Nakryiko <andriin@fb.com>,
+        Quentin Monnet <quentin.monnet@netronome.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] bpf: Fix build in minimal configurations, again
+Thread-Topic: [PATCH] bpf: Fix build in minimal configurations, again
+Thread-Index: AQHVr5luvUr1OsnMX0ud4dyRR00tDqe0BX+A
+Date:   Tue, 10 Dec 2019 23:34:24 +0000
+Message-ID: <20191210233421.vnybkzc6noskmsjt@kafai-mbp>
+References: <20191210203553.2941035-1-arnd@arndb.de>
+In-Reply-To: <20191210203553.2941035-1-arnd@arndb.de>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: CO2PR04CA0165.namprd04.prod.outlook.com
+ (2603:10b6:104:4::19) To MN2PR15MB3213.namprd15.prod.outlook.com
+ (2603:10b6:208:3d::12)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c090:200::1:4349]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ff918764-f22a-41b4-5192-08d77dc97db4
+x-ms-traffictypediagnostic: MN2PR15MB2671:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MN2PR15MB2671B33B27C6936873981E63D55B0@MN2PR15MB2671.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-forefront-prvs: 02475B2A01
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(7916004)(366004)(199004)(189003)(8936002)(66946007)(5660300002)(2906002)(6512007)(4326008)(9686003)(86362001)(64756008)(66446008)(8676002)(71200400001)(186003)(81156014)(81166006)(66556008)(1076003)(498600001)(6916009)(33716001)(6486002)(54906003)(6506007)(52116002)(66476007);DIR:OUT;SFP:1102;SCL:1;SRVR:MN2PR15MB2671;H:MN2PR15MB3213.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: nsyTa9/nsnm9a/tt0ofDQomnmdyzNxHFaHuUDoOx58/i3V/WgQw3As9cI8va2goGt2+wATTAiId8JkPtFAiGnDC+WdK+CWzqTEtcF9vu9sdsDtchBr0k2t2RlvZt48KQQAn941O2chpgQZKJL2fhoa25DENP8mB/RcOze2mrCLMtSZu3dJgQbL5nGzy+MjIbuzaaLA6NgxhXBivamnZ9SeQp2G1PxZDAqWojqeXlud4uLDLsRGhxnM//qtY2emOQTkxyDFAwsi+sNzh+5mHEGiZnQesoORg121ZoDoh+LuGOnUgCBtLTHN05+EzFZsIGi200IMq8IiCA3qmvvS00vUcrYAsIu6vhh7iM2zGUDOBaV4ku8d983+jY4yrylc9GFGgGUDYCeyVYvwVFPHsFdz018O3TQu1IpzwH3N6ByWnM+fQcycGo196Kc5nT4zW1
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <B0045B965EC74644BA81F88070FB9A2B@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <b8eb2caac1c25453c539248e56ca22f74b5316af.1575916815.git.paul.chaignon@gmail.com>
-User-Agent: NeoMutt/20180716
+X-MS-Exchange-CrossTenant-Network-Message-Id: ff918764-f22a-41b4-5192-08d77dc97db4
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Dec 2019 23:34:24.9620
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: pZko3wOSBAcUta7IV2OH/HgOYboc9YmSfrFWOoGvmuaRnI5HsH6OYJRLGX0SGlbG
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB2671
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
+ definitions=2019-12-10_07:2019-12-10,2019-12-10 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
+ lowpriorityscore=0 bulkscore=0 clxscore=1011 malwarescore=0 phishscore=0
+ spamscore=0 priorityscore=1501 adultscore=0 impostorscore=0
+ mlxlogscore=865 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-1910280000 definitions=main-1912100193
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Paul,
-
-On Mon, Dec 09, 2019 at 07:52:52PM +0100, Paul Chaignon wrote:
-> All BPF JIT compilers except RISC-V's and MIPS' enforce a 33-tail calls
-> limit at runtime.  In addition, a test was recently added, in tailcalls2,
-> to check this limit.
-> 
-> This patch updates the tail call limit in MIPS' JIT compiler to allow
-> 33 tail calls.
-> 
-> Fixes: b6bd53f9c4e8 ("MIPS: Add missing file for eBPF JIT.")
-> Reported-by: Mahshid Khezri <khezri.mahshid@gmail.com>
-> Signed-off-by: Paul Chaignon <paul.chaignon@orange.com>
-
-I'd be happy to take this through mips-fixes, but equally happy for it
-to go through the BPF/net trees in which case:
-
-  Acked-by: Paul Burton <paulburton@kernel.org>
-
-Thanks,
-    Paul
-
+On Tue, Dec 10, 2019 at 09:35:46PM +0100, Arnd Bergmann wrote:
+> Building with -Werror showed another failure:
+>=20
+> kernel/bpf/btf.c: In function 'btf_get_prog_ctx_type.isra.31':
+> kernel/bpf/btf.c:3508:63: error: array subscript 0 is above array bounds =
+of 'u8[0]' {aka 'unsigned char[0]'} [-Werror=3Darray-bounds]
+>   ctx_type =3D btf_type_member(conv_struct) + bpf_ctx_convert_map[prog_ty=
+pe] * 2;
+>=20
+> I don't actually understand why the array is empty, but a similar
+> fix has addressed a related problem, so I suppose we can do the
+> same thing here.
+>=20
+> Fixes: ce27709b8162 ("bpf: Fix build in minimal configurations")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
->  arch/mips/net/ebpf_jit.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/mips/net/ebpf_jit.c b/arch/mips/net/ebpf_jit.c
-> index 46b76751f3a5..3ec69d9cbe88 100644
-> --- a/arch/mips/net/ebpf_jit.c
-> +++ b/arch/mips/net/ebpf_jit.c
-> @@ -604,6 +604,7 @@ static void emit_const_to_reg(struct jit_ctx *ctx, int dst, u64 value)
->  static int emit_bpf_tail_call(struct jit_ctx *ctx, int this_idx)
->  {
->  	int off, b_off;
-> +	int tcc_reg;
->  
->  	ctx->flags |= EBPF_SEEN_TC;
->  	/*
-> @@ -616,14 +617,14 @@ static int emit_bpf_tail_call(struct jit_ctx *ctx, int this_idx)
->  	b_off = b_imm(this_idx + 1, ctx);
->  	emit_instr(ctx, bne, MIPS_R_AT, MIPS_R_ZERO, b_off);
->  	/*
-> -	 * if (--TCC < 0)
-> +	 * if (TCC-- < 0)
->  	 *     goto out;
->  	 */
->  	/* Delay slot */
-> -	emit_instr(ctx, daddiu, MIPS_R_T5,
-> -		   (ctx->flags & EBPF_TCC_IN_V1) ? MIPS_R_V1 : MIPS_R_S4, -1);
-> +	tcc_reg = (ctx->flags & EBPF_TCC_IN_V1) ? MIPS_R_V1 : MIPS_R_S4;
-> +	emit_instr(ctx, daddiu, MIPS_R_T5, tcc_reg, -1);
->  	b_off = b_imm(this_idx + 1, ctx);
-> -	emit_instr(ctx, bltz, MIPS_R_T5, b_off);
-> +	emit_instr(ctx, bltz, tcc_reg, b_off);
->  	/*
->  	 * prog = array->ptrs[index];
->  	 * if (prog == NULL)
-> -- 
-> 2.17.1
-> 
+>  kernel/bpf/btf.c | 1 +
+>  1 file changed, 1 insertion(+)
+>=20
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index 7d40da240891..ed2075884724 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -3470,6 +3470,7 @@ static u8 bpf_ctx_convert_map[] =3D {
+>  	[_id] =3D __ctx_convert##_id,
+>  #include <linux/bpf_types.h>
+>  #undef BPF_PROG_TYPE
+> +	0, /* avoid empty array */
+If bpf_types.h is empty, the prog should have already failed
+earlier in find_prog_type() in syscall.c, so 0 here should
+be fine.
+
+Acked-by: Martin KaFai Lau <kafai@fb.com>
