@@ -2,143 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 091D5119933
-	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2019 22:46:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77E80119A5A
+	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2019 22:53:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728152AbfLJVoK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Dec 2019 16:44:10 -0500
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:42269 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728282AbfLJVoJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Dec 2019 16:44:09 -0500
-Received: by mail-pf1-f195.google.com with SMTP id 4so478229pfz.9
-        for <bpf@vger.kernel.org>; Tue, 10 Dec 2019 13:44:09 -0800 (PST)
+        id S1729864AbfLJVwL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Dec 2019 16:52:11 -0500
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:43054 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727549AbfLJVwK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Dec 2019 16:52:10 -0500
+Received: by mail-pg1-f193.google.com with SMTP id b1so9509666pgq.10
+        for <bpf@vger.kernel.org>; Tue, 10 Dec 2019 13:52:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=rbDSY7BhbJlGS6xc6VP5L8tKfoVk8+COFSDA6dXVjXU=;
-        b=Opz6Maozl5h7QbetuxnDAJFYxvAdJLiYDedHjKHToRukFk/7EvtjEfzg7QPPlJOYrZ
-         MJUbx2xz2D/RAp5XlyqcTD2ZSWAW7H/qg/5L3B3tTvJHIWER9e/6ND8Szlxqk2xHJhzi
-         5o5Jl/4oQugEo6HZ/8FxbUR7h//v2UGEm0l+BEG+roaUApZiOOTtdVoDRpJjhdnyGUKT
-         /7z8OXhudAgyNoLlFZ+VVWxFiumpQALAlStmZ/sYhgygl/kp7kYmejfV0/7fKvWvCFfc
-         yXtWaVd3u+FscEs2zprTWQuN4XWNGe7QtIBmZJ+aBVhzud87lVTWdAsmxmGEkDlCVHlU
-         vrgw==
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :organization:mime-version:content-transfer-encoding;
+        bh=x1llI4VQgR/NNv9VK0TWAuEng4/7tgvnedskGQElizQ=;
+        b=TN/QOr87yPqhW/2lzNiPS+Jz3xhAwg45MFbe+8DISDcdLzuEBd561ejk5h0oCDb20M
+         cyLB2KMxESf4Ub5nYgtAAseJcF8JrG2TpoOOK8qfqxLY6L6KKBaLA7FApvFfMTJYJ/nD
+         rzvsG3Hy5V1bVEoDwP+bo3VLKfoUq4aXJ0+Xo3Cp173dvNPBZF+DAqX8e0nbD2CZKk9O
+         p8kMwBsQHh50nLmmwHguAwJKH8eve5hwTsj2EHRkq2Yn4/MIPkhixNEv6PV5mPIdAWdX
+         BfndNieAlydYIPORzdzVGct5J8O1VK1nNaPidFt04JpeZqNZDd0NoNb9YkalSivZSsmd
+         CHKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=rbDSY7BhbJlGS6xc6VP5L8tKfoVk8+COFSDA6dXVjXU=;
-        b=Nt0cIOFZEDb5tCcjWBvLs992tF/SIgRoL+rXKWHA2J1H7YgsuCabjRWIKlIlcOzLS5
-         pIdCF+dNis+St2Td6rWmVHS/3PplviPsUIlAP9bkAP/JmvWilL4kKRIV8YJZRkAt+dEd
-         uRoUwon9APA18pyqm9Wi2fFFqtzVwCrlhGA5EGxG3dUuQHDQWmVV8MIRm6y0T3d9XxPA
-         JEjSaT56Cw8/KvqYV6+/9MCgT3Q8TfBK6/WRwYH+ND5kGCGUV4Uda2GwS8JW3GjWKEXA
-         4P0FLI1b9jya5aBxlLcrJqOm8ZfHjA/3XXOjKiNAgVyg9yDdWQ4jRbfhJEd6phaywnA2
-         thGA==
-X-Gm-Message-State: APjAAAUM9RfGyhGAdXQc2yGDDk4gMuJxamSqJaAcJiR61aOGOE7jkn1g
-        Mwt0XvP2Zcxs6QwOZfEkXQL3DA==
-X-Google-Smtp-Source: APXvYqzFb8FwEWyCqj/CK3r9T7XNwfUPPcS3Ncv1VkU4Br0WAOSshQ59ny7UTrZIkpCSpfrnXnY7aw==
-X-Received: by 2002:a63:696:: with SMTP id 144mr294509pgg.260.1576014249158;
-        Tue, 10 Dec 2019 13:44:09 -0800 (PST)
-Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
-        by smtp.gmail.com with ESMTPSA id q13sm3900429pjc.4.2019.12.10.13.44.08
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=x1llI4VQgR/NNv9VK0TWAuEng4/7tgvnedskGQElizQ=;
+        b=k8MjY/eB1kior1rwfv5uwMyO7m5ViLrbaRrxNPm7yayued0EOooWLsu+tCl0qnZusj
+         66YSBlzaTe4g6UE8CaNCl7KW01foH5dBYhpfN+IAnoKgGUyIg+skhFYnJBoDQ0yTbki+
+         hdKujy61nk6OZueSsXejVx3F7cjXtttB9uyibUpFMbCcCks4QOWTT27XXo7ptlQLDHVO
+         6f8ST3rApBTUzCBoaLfXcc/BQKDoe2gluFZi27mpifBTIqXxa7tAYKX1p42Z7bkxhzMk
+         fWxJWEiC5jmN8Nq3kHuAjwaBnU9k3tf9rXrFV5+ssljBm8LWZmIBJdpnzHCYR9a6iyAc
+         98Jg==
+X-Gm-Message-State: APjAAAWvWNtjgzqYq5jUFEcvLM/M5VsO9nC9pHAlyLPGm30N65saBLjC
+        axBqaCqwcT2fldeG0DN7VBsTWDNTeZ0=
+X-Google-Smtp-Source: APXvYqxXcor3tR+WOkruu/D28GkGpulVaBRaudEGLcLcwEBe3xdOjEwVkq8bKvNdtbH3cY30xIG6Mg==
+X-Received: by 2002:a63:213:: with SMTP id 19mr329909pgc.160.1576014729720;
+        Tue, 10 Dec 2019 13:52:09 -0800 (PST)
+Received: from cakuba.netronome.com ([66.60.152.14])
+        by smtp.gmail.com with ESMTPSA id z13sm3865986pjz.15.2019.12.10.13.52.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Dec 2019 13:44:08 -0800 (PST)
-Date:   Tue, 10 Dec 2019 13:44:07 -0800
-From:   Stanislav Fomichev <sdf@fomichev.me>
-To:     Jakub Kicinski <jakub.kicinski@netronome.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+        Tue, 10 Dec 2019 13:52:09 -0800 (PST)
+Date:   Tue, 10 Dec 2019 13:52:05 -0800
+From:   Jakub Kicinski <jakub.kicinski@netronome.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH bpf-next 11/15] bpftool: add skeleton codegen command
-Message-ID: <20191210214407.GA3105713@mini-arch>
-References: <20191210011438.4182911-1-andriin@fb.com>
- <20191210011438.4182911-12-andriin@fb.com>
- <20191209175745.2d96a1f0@cakuba.netronome.com>
- <CAEf4Bzaow7w+TGyiF67pXn42TumxFZb7Q4BOQPPGfRJdyeY-ig@mail.gmail.com>
- <20191210100536.7a57d5e1@cakuba.netronome.com>
+        lkml <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Martin Lau <kafai@fb.com>
+Subject: Re: [PATCH bpf v2] bpftool: Don't crash on missing jited insns or
+ ksyms
+Message-ID: <20191210135205.529044a4@cakuba.netronome.com>
+In-Reply-To: <20191210213148.kqd6xdvqjkh3zxst@ast-mbp.dhcp.thefacebook.com>
+References: <20191210181412.151226-1-toke@redhat.com>
+        <20191210125457.13f7821a@cakuba.netronome.com>
+        <87eexbhopo.fsf@toke.dk>
+        <20191210132428.4470a7b0@cakuba.netronome.com>
+        <20191210213148.kqd6xdvqjkh3zxst@ast-mbp.dhcp.thefacebook.com>
+Organization: Netronome Systems, Ltd.
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191210100536.7a57d5e1@cakuba.netronome.com>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 12/10, Jakub Kicinski wrote:
-> On Tue, 10 Dec 2019 09:11:31 -0800, Andrii Nakryiko wrote:
-> > On Mon, Dec 9, 2019 at 5:57 PM Jakub Kicinski wrote:
-> > > On Mon, 9 Dec 2019 17:14:34 -0800, Andrii Nakryiko wrote:  
-> > > > struct <object-name> {
-> > > >       /* used by libbpf's skeleton API */
-> > > >       struct bpf_object_skeleton *skeleton;
-> > > >       /* bpf_object for libbpf APIs */
-> > > >       struct bpf_object *obj;
-> > > >       struct {
-> > > >               /* for every defined map in BPF object: */
-> > > >               struct bpf_map *<map-name>;
-> > > >       } maps;
-> > > >       struct {
-> > > >               /* for every program in BPF object: */
-> > > >               struct bpf_program *<program-name>;
-> > > >       } progs;
-> > > >       struct {
-> > > >               /* for every program in BPF object: */
-> > > >               struct bpf_link *<program-name>;
-> > > >       } links;
-> > > >       /* for every present global data section: */
-> > > >       struct <object-name>__<one of bss, data, or rodata> {
-> > > >               /* memory layout of corresponding data section,
-> > > >                * with every defined variable represented as a struct field
-> > > >                * with exactly the same type, but without const/volatile
-> > > >                * modifiers, e.g.:
-> > > >                */
-> > > >                int *my_var_1;
-> > > >                ...
-> > > >       } *<one of bss, data, or rodata>;
-> > > > };  
-> > >
-> > > I think I understand how this is useful, but perhaps the problem here
-> > > is that we're using C for everything, and simple programs for which
-> > > loading the ELF is majority of the code would be better of being
-> > > written in a dynamic language like python?  Would it perhaps be a
-> > > better idea to work on some high-level language bindings than spend
-> > > time writing code gens and working around limitations of C?  
-> > 
-> > None of this work prevents Python bindings and other improvements, is
-> > it? Patches, as always, are greatly appreciated ;)
-> 
-> This "do it yourself" shit is not really funny :/
-> 
-> I'll stop providing feedback on BPF patches if you guy keep saying 
-> that :/ Maybe that's what you want.
-> 
-> > This skeleton stuff is not just to save code, but in general to
-> > simplify and streamline working with BPF program from userspace side.
-> > Fortunately or not, but there are a lot of real-world applications
-> > written in C and C++ that could benefit from this, so this is still
-> > immensely useful. selftests/bpf themselves benefit a lot from this
-> > work, see few of the last patches in this series.
-> 
-> Maybe those applications are written in C and C++ _because_ there 
-> are no bindings for high level languages. I just wish BPF programming
-> was less weird and adding some funky codegen is not getting us closer
-> to that goal.
-> 
-> In my experience code gen is nothing more than a hack to work around
-> bad APIs, but experiences differ so that's not a solid argument.
-*nod*
+On Tue, 10 Dec 2019 13:31:50 -0800, Alexei Starovoitov wrote:
+> On Tue, Dec 10, 2019 at 01:24:28PM -0800, Jakub Kicinski wrote:
+> > On Tue, 10 Dec 2019 22:09:55 +0100, Toke H=C3=B8iland-J=C3=B8rgensen wr=
+ote: =20
+> > > Jakub Kicinski <jakub.kicinski@netronome.com> writes: =20
+> > > > On Tue, 10 Dec 2019 19:14:12 +0100, Toke H=C3=B8iland-J=C3=B8rgense=
+n wrote:   =20
+> > > >> When the kptr_restrict sysctl is set, the kernel can fail to return
+> > > >> jited_ksyms or jited_prog_insns, but still have positive values in
+> > > >> nr_jited_ksyms and jited_prog_len. This causes bpftool to crash wh=
+en trying
+> > > >> to dump the program because it only checks the len fields not the =
+actual
+> > > >> pointers to the instructions and ksyms.
+> > > >>=20
+> > > >> Fix this by adding the missing checks.
+> > > >>=20
+> > > >> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com> =
+  =20
+> > > >
+> > > > Fixes: 71bb428fe2c1 ("tools: bpf: add bpftool")
+> > > >
+> > > > and
+> > > >
+> > > > Fixes: f84192ee00b7 ("tools: bpftool: resolve calls without using i=
+mm field")
+> > > >
+> > > > ?   =20
+> > >=20
+> > > Yeah, guess so? Although I must admit it's not quite clear to me whet=
+her
+> > > bpftool gets stable backports, or if it follows the "only moving
+> > > forward" credo of libbpf? =20
+> >=20
+> > bpftool does not have a GH repo, and seeing strength of Alexei's
+> > arguments in the recent discussion - I don't think it will. So no
+> > reason for bpftool to be "special" =20
+>=20
+> bpftool always was and will be a special user of libbpf.
 
-We have a nice set of C++ wrappers around libbpf internally, so we can do
-something like BpfMap<key type, value type> and get a much better interface
-with type checking. Maybe we should focus on higher level languages instead?
-We are open to open-sourcing our C++ bits if you want to collaborate.
+There we go again. Making proclamations without any justification or
+explanation.
 
-(I assume most of the stuff you have at fb is also non-c and one of
-c++/python/php/rust/go/whatver).
+Maybe there is a language barrier between us, but I wrote the initial
+bpftool code, so I don't see how you (who authored one patch) can say
+what it was or is. Do you mean to say what you intend to make it?
+
+bpftool was intended to be a CLI to BPF _kernel_ interface. libbpf was
+just the library that we all agreed to use moving forward for ELF
+loading.
+
+I'm not going to argue with you again. You kept bad mouthing iproute2
+and then your only argument was the reviews sometimes take longer than
+24 hours. Which I'm sure you have a lot of experience with:
+
+  iproute2$ git log --author=3DStarov --oneline=20
+4bfe68253670 iptnl: add support for collect_md flag in IPv4 and IPv6 tunnels
+
+  iproute2$ git log --author=3Dfb.com --oneline=20
+3da6d055d93f bpf: add btf func and func_proto kind support
+7a04dd84a7f9 bpf: check map symbol type properly with newer llvm compiler
+73451259daaa tc: fix ipv6 filter selector attribute for some prefix lengths
+0b4ea60b5a48 bpf: Add support for IFLA_XDP_PROG_ID
+4bfe68253670 iptnl: add support for collect_md flag in IPv4 and IPv6 tunnels
+414aeec90f82 ss: Add tcp_info fields data_segs_in/out
+409998c5a4eb iproute: ip-gue/ip-fou manpages
+
+Upstreaming bpftool was a big mistake, but we live and we learn.
