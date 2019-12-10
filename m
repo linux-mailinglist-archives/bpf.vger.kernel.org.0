@@ -2,117 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 96E79119877
-	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2019 22:39:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8599A119741
+	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2019 22:32:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730117AbfLJVew (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Dec 2019 16:34:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40274 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730113AbfLJVev (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Dec 2019 16:34:51 -0500
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5A404208C3;
-        Tue, 10 Dec 2019 21:34:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1576013690;
-        bh=mNujljQF3TDr/q+/amUM42IXLflGmLGEtLD+VlACM/0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pKWnilAVP1SINOjjzzE+kmOMNOCGi9oLdJUCkmI+qCwKbLxbOuf+a+KFOOsERW8WB
-         QA/q+pKNkMhFYVtpzlGn89JleJ7LkAphDtP1g/MAZD0OpG00D2PyrvyyE7BvWZ1cex
-         3pkhT7FMpelmnzSO1gpOfqYyPg2dpR2ZaOLPFW+E=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
+        id S1728074AbfLJVb4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Dec 2019 16:31:56 -0500
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:39079 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727166AbfLJVbw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Dec 2019 16:31:52 -0500
+Received: by mail-pl1-f193.google.com with SMTP id o9so376161plk.6;
+        Tue, 10 Dec 2019 13:31:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=WtDhoZ5ivvcVrikLoCcOpbuCN5K2xI6ePb8PHhBX/qY=;
+        b=bNBHfHD03h3hmMV1w1mftAhHlsANzeRmCm5ntICoRhmQwAgj90TCYu0exwqE/pdhgE
+         GdNZfSlxmS9+MnUMV7dWFoxBeYeAAQf7p2crlgBjwXDwXG1sXMJ6b1MjtryjbQIVfa8o
+         1SX/XqQOGXbyT71gHQYIa2IRm8lwQVeIcfLSC6L0EJSb4weQ0dZWQ4IVIG1HfR5u32U9
+         aDDBA5mO5vSpt3tWu9JReI7ZfKo8J0rhq/a1azkAzqGLiHXA4pg5d+2U8UoGB8QCy25N
+         AU5WmUYt1keRgOs0PN80AM32Fz5sEXch3w0CfnU5IBM5wCHJ0QTur7PEqplqQGIDlFXt
+         Nzbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=WtDhoZ5ivvcVrikLoCcOpbuCN5K2xI6ePb8PHhBX/qY=;
+        b=PthU7trMwPI5ZXqCmeKtyLsdZcrh3Vdx/4PWVmPDTk7pykpqLeJ5f6edfbu68Pgu//
+         mvHgnVpqNyt7vc5pFeIVCFqV00U0W4yyQNZC/RiqTcY+fOvhUN7rK8PwU1B/yuG9wA3w
+         rV7LU7w/C7tG9oJE/++LjXGJ1c5hhUWl/M3uraws3F6+XaTeXA4toUyKohpEQlxW0dfo
+         5NAHc+qnOSBc7Gj7w+9EA9/qCt+TF+RGhK2wiOBTwzqHkZrs92X0Nv/7nhVQ/g1WMr+L
+         mykBDZafrk6q1+OkV+Tm4HZWQ6rUEWUJUZGs/ss7CHBHatziXGQbm0IPSzO8cMJeOVdH
+         +N2g==
+X-Gm-Message-State: APjAAAVM48o/V+aK1nBZihPzmCeW8GgP+hTYVksQKsUtqqvIEYXNJfjr
+        WdiAOY3Ro7Gfmpgp1PzWeE4=
+X-Google-Smtp-Source: APXvYqwfHN9VmCdq6yL7ojouBK+46iwUO9cnHFSBSdaffvPSJZPzqJgNYzlxRmyGh/W0xuYKtbYMlw==
+X-Received: by 2002:a17:90a:8986:: with SMTP id v6mr7783380pjn.63.1576013511889;
+        Tue, 10 Dec 2019 13:31:51 -0800 (PST)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:200::3:a25c])
+        by smtp.gmail.com with ESMTPSA id o3sm3613026pju.13.2019.12.10.13.31.50
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 10 Dec 2019 13:31:51 -0800 (PST)
+Date:   Tue, 10 Dec 2019 13:31:50 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Jakub Kicinski <jakub.kicinski@netronome.com>
+Cc:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Song Liu <songliubraving@fb.com>,
-        Stephane Eranian <eranian@google.com>,
-        Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
-        clang-built-linux@googlegroups.com, netdev@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.19 121/177] perf parse: If pmu configuration fails free terms
-Date:   Tue, 10 Dec 2019 16:31:25 -0500
-Message-Id: <20191210213221.11921-121-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191210213221.11921-1-sashal@kernel.org>
-References: <20191210213221.11921-1-sashal@kernel.org>
+        lkml <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Martin Lau <kafai@fb.com>
+Subject: Re: [PATCH bpf v2] bpftool: Don't crash on missing jited insns or
+ ksyms
+Message-ID: <20191210213148.kqd6xdvqjkh3zxst@ast-mbp.dhcp.thefacebook.com>
+References: <20191210181412.151226-1-toke@redhat.com>
+ <20191210125457.13f7821a@cakuba.netronome.com>
+ <87eexbhopo.fsf@toke.dk>
+ <20191210132428.4470a7b0@cakuba.netronome.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20191210132428.4470a7b0@cakuba.netronome.com>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Ian Rogers <irogers@google.com>
+On Tue, Dec 10, 2019 at 01:24:28PM -0800, Jakub Kicinski wrote:
+> On Tue, 10 Dec 2019 22:09:55 +0100, Toke Høiland-Jørgensen wrote:
+> > Jakub Kicinski <jakub.kicinski@netronome.com> writes:
+> > > On Tue, 10 Dec 2019 19:14:12 +0100, Toke Høiland-Jørgensen wrote:  
+> > >> When the kptr_restrict sysctl is set, the kernel can fail to return
+> > >> jited_ksyms or jited_prog_insns, but still have positive values in
+> > >> nr_jited_ksyms and jited_prog_len. This causes bpftool to crash when trying
+> > >> to dump the program because it only checks the len fields not the actual
+> > >> pointers to the instructions and ksyms.
+> > >> 
+> > >> Fix this by adding the missing checks.
+> > >> 
+> > >> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>  
+> > >
+> > > Fixes: 71bb428fe2c1 ("tools: bpf: add bpftool")
+> > >
+> > > and
+> > >
+> > > Fixes: f84192ee00b7 ("tools: bpftool: resolve calls without using imm field")
+> > >
+> > > ?  
+> > 
+> > Yeah, guess so? Although I must admit it's not quite clear to me whether
+> > bpftool gets stable backports, or if it follows the "only moving
+> > forward" credo of libbpf?
+> 
+> bpftool does not have a GH repo, and seeing strength of Alexei's
+> arguments in the recent discussion - I don't think it will. So no
+> reason for bpftool to be "special"
 
-[ Upstream commit 38f2c4226e6bc3e8c41c318242821ba5dc825aba ]
-
-Avoid a memory leak when the configuration fails.
-
-Signed-off-by: Ian Rogers <irogers@google.com>
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Andi Kleen <ak@linux.intel.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Jin Yao <yao.jin@linux.intel.com>
-Cc: John Garry <john.garry@huawei.com>
-Cc: Kan Liang <kan.liang@linux.intel.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Martin KaFai Lau <kafai@fb.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Song Liu <songliubraving@fb.com>
-Cc: Stephane Eranian <eranian@google.com>
-Cc: Yonghong Song <yhs@fb.com>
-Cc: bpf@vger.kernel.org
-Cc: clang-built-linux@googlegroups.com
-Cc: netdev@vger.kernel.org
-Link: http://lore.kernel.org/lkml/20191030223448.12930-9-irogers@google.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- tools/perf/util/parse-events.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
-
-diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-index 7ea1a230e89d0..95043cae57740 100644
---- a/tools/perf/util/parse-events.c
-+++ b/tools/perf/util/parse-events.c
-@@ -1282,8 +1282,15 @@ int parse_events_add_pmu(struct parse_events_state *parse_state,
- 	if (get_config_terms(head_config, &config_terms))
- 		return -ENOMEM;
- 
--	if (perf_pmu__config(pmu, &attr, head_config, parse_state->error))
-+	if (perf_pmu__config(pmu, &attr, head_config, parse_state->error)) {
-+		struct perf_evsel_config_term *pos, *tmp;
-+
-+		list_for_each_entry_safe(pos, tmp, &config_terms, list) {
-+			list_del_init(&pos->list);
-+			free(pos);
-+		}
- 		return -EINVAL;
-+	}
- 
- 	evsel = __add_event(list, &parse_state->idx, &attr,
- 			    get_config_name(head_config), pmu,
--- 
-2.20.1
+bpftool always was and will be a special user of libbpf.
 
