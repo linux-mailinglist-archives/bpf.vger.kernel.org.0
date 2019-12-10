@@ -2,116 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 78A71119172
-	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2019 21:04:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E34F011922B
+	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2019 21:36:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726062AbfLJUET (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Dec 2019 15:04:19 -0500
-Received: from mail-qv1-f68.google.com ([209.85.219.68]:35622 "EHLO
-        mail-qv1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726045AbfLJUET (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Dec 2019 15:04:19 -0500
-Received: by mail-qv1-f68.google.com with SMTP id d17so4729411qvs.2;
-        Tue, 10 Dec 2019 12:04:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=DUrLVjxdm4Lpth1BVppJIgm06ZEFu/gHIQjjv1fTq6U=;
-        b=RizqzxbtSWdVCijPI6xH1qD/FbjpnkAv2hlwG9t8Qv3FeMpHpSd5F+aRi+Jl4kCYIu
-         2U347NzRoHmbqB+Dy+pVjlbfgAYvGV6O16mhnXewymf/du2An8tqtM0WV/pRswjAfzbH
-         w6BoO5Jh90iQFMgvcyXmznNbZhEU9y7xbTmRFMyczTEXMXUrVh9Rd0XrJ9Zs/ejLx/wz
-         vwx8lBvQO+qibCMAgVwt0Ms5d4UkFkNL3l6cd0GW1XhqaB4GXa4Oetei+BMPysTZUoGj
-         AGPGAN2+bXX1WBw0VNVWXKcpK7+Q7z5MeclUNy/QwVCp/LH/Mcce5AErKysF6T+zWelX
-         eu2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=DUrLVjxdm4Lpth1BVppJIgm06ZEFu/gHIQjjv1fTq6U=;
-        b=Lv2F7VJYR7S7i+1Te7yQTs3xcCboypkTmsmMrjoZ2v//Hx3WJF+0Nq1Nwc7+D0oehC
-         4VhfBEvFpCjymNiadc6ASPr5+gu/j70NW2IwoFYJqAYy/AiunyuXMIg9AjaqDjthYD3c
-         Tr0ZswcDhJG9KCBUgsT1UnwuDkqWoy3aUGv52hD4HNXqsLlP67PAfiHfKFp/z4U+PEZM
-         eMsZcf0ywQt8P6Bdp434KY4w+R6SwFFewW/vmLo1KPVOHpWVfXuLZ3cJs1EsuoWdmpCv
-         c18ekivgSbenVr8lQ4flPqp91dTvdlfj8oHr5OJ9/IbjGSyiOkgCx8L7dIR/mnp9gB2i
-         HXGQ==
-X-Gm-Message-State: APjAAAW/CJLp2Tb28wq0v8/Lf81CuwgrgRk6tC6g+oL+UdEhAml+47y4
-        hmh8hnRSuUZJsx1gGNq+UkKCeDW++zQh5hPjCu8=
-X-Google-Smtp-Source: APXvYqwXn73WXUOpzstsgd2C49NE1hvr3MPlQCGS1Hm0PNizJIcHWrmAPihJdyZSSShKaIKC1o7kMY0acceBPG/8MSc=
-X-Received: by 2002:a05:6214:448:: with SMTP id cc8mr2118377qvb.10.1576008258356;
- Tue, 10 Dec 2019 12:04:18 -0800 (PST)
-MIME-Version: 1.0
-References: <20191209135522.16576-1-bjorn.topel@gmail.com> <0b45793e-6172-9c07-5bdb-2dc99e58e375@intel.com>
-In-Reply-To: <0b45793e-6172-9c07-5bdb-2dc99e58e375@intel.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Tue, 10 Dec 2019 21:04:06 +0100
-Message-ID: <CAJ+HfNgG+zkyTnXUG_zQ+jVr0FcqavAAwV=MX7x=RhXGHXokow@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 0/6] Introduce the BPF dispatcher
-To:     "Samudrala, Sridhar" <sridhar.samudrala@intel.com>
-Cc:     Netdev <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S1726364AbfLJUgR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Dec 2019 15:36:17 -0500
+Received: from mout.kundenserver.de ([212.227.126.135]:47765 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725999AbfLJUgQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Dec 2019 15:36:16 -0500
+Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
+ (mreue011 [212.227.15.129]) with ESMTPA (Nemesis) id
+ 1M2ep5-1iiuph1YVD-004DY0; Tue, 10 Dec 2019 21:35:54 +0100
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Edward Cree <ecree@solarflare.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <thoiland@redhat.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Randy Dunlap <rdunlap@infradead.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Quentin Monnet <quentin.monnet@netronome.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] bpf: Fix build in minimal configurations, again
+Date:   Tue, 10 Dec 2019 21:35:46 +0100
+Message-Id: <20191210203553.2941035-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.20.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:/TPNkN7ip+x2EGFaeArJV7t8UOMDz3Xt3D+KTG86o+YtHi7AQpl
+ EA0traGRcVUYNiVhb1WcqtyedHFK/G7uo0ODPsfSwvljgdSlfpiB9jNCLcGrp8AhFzBC3Rd
+ 4nUPKrnESghS/cdlCX+dbI/zA0oHna+X0b/mFXnE8c9EQLoI9fPJU9FDHyh3lXC7+LwYcnO
+ MgvBxcOH6E8fFfruQkYlA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:bT0fWJOkfpk=:6CchuXFwP8SMBieEroZBrH
+ AEk/STZiwVmNZ6TG+ImhFDC8ApYwPA7+2PF1wJ1oF4yezz4fciDC2lAIcsYU8l9tOdKyaAspc
+ 0SV4G8rpDiBjXWCLZFHS7Z0Te6aJKDsHTnwW5S830ljYf1BSx2ot7TrIb+leoxWvV/rJpv7G6
+ s93O3GFciGFrMcGQvg/4y5kuZTog+nYzBYsYTkoMhg94yai9Lt1IRXZ+Hfqgwboq+fyK9dxlB
+ l9BeW0HRcPSCTz/Ffv3pRWOc8grqW1Ch9/qcx8X/MvZc6NZI5Q0pkb9C1F3Luz2JswPZotGUe
+ 3b2aLkC6+GHufoBizFdA/b0KJSMyKqrgfbX/X/ZsxY1LNOZggZZ7D4Azve0M5vAtt9elY0gA9
+ 1O8BK9hMoUxBG7rBjdE86VP0HDrKI3nYXD6GFOXW1asqP8X0sPceT2JqFJ0WORXaDcISz8cMK
+ Ql2klZPu/IBSMdURuGUq/MX7eul0lx+jgH4enSmzY7dZ0A1LiJ9vyGUrwdLbj9qrwmyqRc+kg
+ TH7oDzkvFT7pPOAuqi3JXAyT2MEIRPqIp7Lg3RW6MlfCM+IO1BmLFprg6nq4n9FiNKMEZN+Jc
+ fwQldPMpfVPv/oy+cOmzm3pR+g+W/VRoQvQtsNui5r/0YTD6VxIC3t5mfw9z41bzv60Cdm+Ur
+ KrxfaMaRqcW23Ic55KNRGxmoqmwoIfzyZnL0e85ry9EBbcgd/hCYNDkuvB74++T31XmWyNWdZ
+ MsT72djQzrEtDUsHBD7Tznyn0vpyOO9cMJpdu1OWpNwJfp/kDX9ISul2HBStsFU+t+lf3z5xB
+ 8qrhMqfuRGHL0wlzT9vDVAF2ZruLF9m1EUVzvrSuay9XrZLsyZR0d53z/apMy4yDL2M51VGDd
+ 0BQYnKMJ8IWxWvoy3Jfg==
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 10 Dec 2019 at 20:28, Samudrala, Sridhar
-<sridhar.samudrala@intel.com> wrote:
->
-[...]
-> > The tests were performed using the xdp_rxq_info sample program with
-> > the following command-line:
-> >
-> > 1. XDP_DRV:
-> >    # xdp_rxq_info --dev eth0 --action XDP_DROP
-> > 2. XDP_SKB:
-> >    # xdp_rxq_info --dev eth0 -S --action XDP_DROP
-> > 3. xdp-perf, from selftests/bpf:
-> >    # test_progs -v -t xdp_perf
->
-> What is this test_progs? I don't see such ann app under selftests/bpf
->
+Building with -Werror showed another failure:
 
-The "test_progs" program resides in tools/testing/selftests/bpf. The
-xdp_perf is part of the series!
+kernel/bpf/btf.c: In function 'btf_get_prog_ctx_type.isra.31':
+kernel/bpf/btf.c:3508:63: error: array subscript 0 is above array bounds of 'u8[0]' {aka 'unsigned char[0]'} [-Werror=array-bounds]
+  ctx_type = btf_type_member(conv_struct) + bpf_ctx_convert_map[prog_type] * 2;
 
->
-> > Run with mitigations=3Dauto
-> > -------------------------
-> >
-> > Baseline:
-> > 1. 22.0 Mpps
-> > 2. 3.8 Mpps
-> > 3. 15 ns
-> >
-> > Dispatcher:
-> > 1. 29.4 Mpps (+34%)
-> > 2. 4.0 Mpps  (+5%)
-> > 3. 5 ns      (+66%)
-> >
-> > Dispatcher (full; walk all entries, and fallback):
-> > 1. 20.4 Mpps (-7%)
-> > 2. 3.8 Mpps
-> > 3. 18 ns     (-20%)
->
-> Are these packets received on a single queue? Or multiple queues?
-> Do you see similar improvements even with xdpsock?
->
+I don't actually understand why the array is empty, but a similar
+fix has addressed a related problem, so I suppose we can do the
+same thing here.
 
-Yes, just a single queue, regular XDP. I left out xdpsock for now, and
-only focus on the micro benchmark and XDP. I'll get back with xdpsock
-benchmarks.
+Fixes: ce27709b8162 ("bpf: Fix build in minimal configurations")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ kernel/bpf/btf.c | 1 +
+ 1 file changed, 1 insertion(+)
 
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 7d40da240891..ed2075884724 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -3470,6 +3470,7 @@ static u8 bpf_ctx_convert_map[] = {
+ 	[_id] = __ctx_convert##_id,
+ #include <linux/bpf_types.h>
+ #undef BPF_PROG_TYPE
++	0, /* avoid empty array */
+ };
+ #undef BPF_MAP_TYPE
+ 
+-- 
+2.20.0
 
-Cheers,
-Bj=C3=B6rn
