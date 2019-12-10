@@ -2,206 +2,174 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CEA8B118F03
-	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2019 18:29:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B76D3118F66
+	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2019 18:59:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727652AbfLJR3y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Dec 2019 12:29:54 -0500
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:33567 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727647AbfLJR3y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Dec 2019 12:29:54 -0500
-Received: by mail-wr1-f68.google.com with SMTP id b6so21079035wrq.0
-        for <bpf@vger.kernel.org>; Tue, 10 Dec 2019 09:29:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=to:cc:references:from:openpgp:autocrypt:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=aDmC92jBqiL+/WoMc+0FY9tr4/vQFb7jJJbUuvUOxgk=;
-        b=GNnaibblkhsIakHJW7Pcm0KSdPkdDEu/YacNWKldOTxAtoBmpNF1qRUTT58RICahb3
-         myNMq41VY2pHmYgZPbYDYGE7ZfzKN+ZzWVBDTy/FuZZVKpXMBlcoybwe2ZVSvr0DqcCq
-         8Dv+pDqw6hr3x4H8mbhnLY5T50Q1N7q2GnT4OhHL0K3uuptI1zMihaPCHD7Wj0n/84HF
-         rz1GbxjdUKAbKGL4USg2rVYAb4G3hkzXTXKXC9JL2endyRGOiQXcv6bMcJIDO5pWbc8v
-         Ss1K696T7dweWmGRZYw0AknAA1/7eDQGmWVPVAbxvFHCy8/ryn/7ILV58csSzUyFyMRo
-         824A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:openpgp:autocrypt:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=aDmC92jBqiL+/WoMc+0FY9tr4/vQFb7jJJbUuvUOxgk=;
-        b=tObQXYkSYM/0tKE8GO8BFiiFS8+I3yXhMVuPRE4bmV77pf6xAAY093QckA1yqrYkJn
-         BBHbHemGfa0SnW+6Vh5hWCiQZhqp6neq56i19a3QTEg6szHiq5zcOjY5IYt9agtMtOWE
-         Fw8Tw4sKR66OgYZ1Bsy4pkbMJpmy5Vhr8SCpvsNL3Gp6aYwJAOJ53ftzw3VcdDaZt2oX
-         yL4DEqwe4Amf/AVov4af5pQEy7QPTfzC9b3w8UR8kqcIXSWIGOoUQN1GQLUSA4L//aRb
-         xf5yclVIUs0NM599ka/TcCnxatcYkzR8iXO/v8x79W0Qs0qYadpDOHOe8iGtaFB4inrC
-         gn3A==
-X-Gm-Message-State: APjAAAWhy3WMl1pdRAEY72uzFP47E/Qy7kHknbP+N6oBBXHQRajmCXil
-        8heO3+pInLeOa5Zcfby2Ho3ptg==
-X-Google-Smtp-Source: APXvYqzZ32OZ43XiDmnL0tZ+0N4vglz77WKkPK0994O0BNNY3gZaGRbpeBkXnQ1BWAJeSTojSEDqVw==
-X-Received: by 2002:adf:df8e:: with SMTP id z14mr4536101wrl.190.1575998991273;
-        Tue, 10 Dec 2019 09:29:51 -0800 (PST)
-Received: from [172.20.1.104] ([217.38.71.146])
-        by smtp.gmail.com with ESMTPSA id z11sm3684519wrt.82.2019.12.10.09.29.50
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 10 Dec 2019 09:29:50 -0800 (PST)
-To:     Paul Chaignon <paul.chaignon@orange.com>, bpf@vger.kernel.org
-Cc:     paul.chaignon@gmail.com, netdev@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-References: <cover.1575991886.git.paul.chaignon@orange.com>
- <06aad9217a37b0582407cab11469125e645f5084.1575991886.git.paul.chaignon@orange.com>
-From:   Quentin Monnet <quentin.monnet@netronome.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=quentin.monnet@netronome.com; prefer-encrypt=mutual; keydata=
- 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
- RHhSHGnKaQ6MfrTge5Q0h5A=
-Subject: Re: [PATCH bpf-next 3/3] bpftool: match maps by name
-Message-ID: <61747303-6cd5-e2e7-749f-13068085ed9c@netronome.com>
-Date:   Tue, 10 Dec 2019 17:29:50 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.1
+        id S1727629AbfLJR7g (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Dec 2019 12:59:36 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:8458 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727621AbfLJR7g (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 10 Dec 2019 12:59:36 -0500
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id xBAHwX0a002439;
+        Tue, 10 Dec 2019 09:59:20 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=zorBJGWG668atPyeKqXErh0ofzt2AkMhpWlOsGLOfuk=;
+ b=ORhPR4U9lav33wzr39WJqT8Pio4YjvaL3SEUB1mDNy2cXc7+ITaTSsc/oOmqbYZ/kpxs
+ k46F2dnJNzpv0lesw+cYSPo4SrI/6hbJ/Nr9+3e2IhS+4+HlAUOkiNzUyeNtZVv/DV+8
+ 7c8dKqbxd5fkKdZlyXptXBXpy1UOsXfj6cs= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by m0001303.ppops.net with ESMTP id 2wrbemq8ts-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Tue, 10 Dec 2019 09:59:20 -0800
+Received: from prn-mbx05.TheFacebook.com (2620:10d:c081:6::19) by
+ prn-hub01.TheFacebook.com (2620:10d:c081:35::125) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Tue, 10 Dec 2019 09:59:19 -0800
+Received: from prn-hub01.TheFacebook.com (2620:10d:c081:35::125) by
+ prn-mbx05.TheFacebook.com (2620:10d:c081:6::19) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Tue, 10 Dec 2019 09:59:19 -0800
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (192.168.54.28)
+ by o365-in.thefacebook.com (192.168.16.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
+ via Frontend Transport; Tue, 10 Dec 2019 09:59:19 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EZLutvl8OyJGrdjafzXdU77XeMfRfnWykAx3Jt9efXMJfdBmB6sAr+SH9Yrj1bZyXZS8nxpxls5Na+C5C7QZEs6DKMoTEANipii4bczlqoKCDtEVgpj36D5rdVdxq2vP/zvphT/BriUCTQA1An16vO67ADra4v5PPtwu0TRcJljgKO/twcFrBufWsqgZ7+ptL6tuKiWPOMOTHMrSCsV/Z9589cLJI1dj7lX8sYtbG7iM5pby375wVDFsSZfnDqCnElafHPekMMuE9SO9FEnB6ATsVWrZHGu/kJr2Pi21f0OqTqQy0n7TJiZDlOPrcy5Qp5M7SjAEeUF2D0RuJ9VQNA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zorBJGWG668atPyeKqXErh0ofzt2AkMhpWlOsGLOfuk=;
+ b=IxzKcUGTc7vKvqy4mvE+hwIYbVpVuuOHXp/FCe0C6jWn4OZH4Xa02cdZoC4P8z+Gunxo3aKFz1OEkpWi1yKzw3OsgfKja0MOwQCuLjdOB0sYI0TknZZmc+MW228BWBENu0kRI/u47rdRVh9z1NLjnPXdbtVvJgsBFjKv54arTwX2rp4mc7CXe2gexonlL7fhaVv0Hz6NKB70NzZRT0/oZZneHmtKc68vtMhszxxYTCM3q4t0cuDL3WXya40/62AhnupVTLV/T+0QG7YjWRBIa5bwG9DRVmvX0kSZEXtj1yBXjbdxWDHi4ay1K/jdQ4oF1athgS7205zITMU6tp6cXw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zorBJGWG668atPyeKqXErh0ofzt2AkMhpWlOsGLOfuk=;
+ b=L0t+u37EhWaMj99noKh7atMsXKk4+fP82i2q3MIsobgMdg6P8tRmLpAlou5snJObDhgYm1aejiPUVe6vp6g4S7UjjbXLcx1EqXyvwvfKKI3os8iiv5xBU1KSB1omfDuhBeyGLYuBbJLkSQeie3KFKHA7vvMY3jxVv9EB0NSJ2fs=
+Received: from MN2PR15MB3213.namprd15.prod.outlook.com (20.179.21.76) by
+ MN2PR15MB2863.namprd15.prod.outlook.com (20.178.251.225) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2495.18; Tue, 10 Dec 2019 17:59:18 +0000
+Received: from MN2PR15MB3213.namprd15.prod.outlook.com
+ ([fe80::6d1e:f2f7:d36:a42f]) by MN2PR15MB3213.namprd15.prod.outlook.com
+ ([fe80::6d1e:f2f7:d36:a42f%4]) with mapi id 15.20.2516.018; Tue, 10 Dec 2019
+ 17:59:18 +0000
+From:   Martin Lau <kafai@fb.com>
+To:     =?iso-8859-1?Q?Toke_H=F8iland-J=F8rgensen?= <toke@redhat.com>
+CC:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: Re: [PATCH bpf] bpftool: Don't crash on missing jited insns or ksyms
+Thread-Topic: [PATCH bpf] bpftool: Don't crash on missing jited insns or ksyms
+Thread-Index: AQHVr2Z8gkLcxSYflkOO1ZvZLvptRaezqESA
+Date:   Tue, 10 Dec 2019 17:59:18 +0000
+Message-ID: <20191210175915.wh7njnvt2xk64ski@kafai-mbp>
+References: <20191210143047.142347-1-toke@redhat.com>
+In-Reply-To: <20191210143047.142347-1-toke@redhat.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MWHPR17CA0083.namprd17.prod.outlook.com
+ (2603:10b6:300:c2::21) To MN2PR15MB3213.namprd15.prod.outlook.com
+ (2603:10b6:208:3d::12)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c090:200::1:85a]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f92e4b45-02f3-4870-fb42-08d77d9aad0b
+x-ms-traffictypediagnostic: MN2PR15MB2863:
+x-microsoft-antispam-prvs: <MN2PR15MB286314CF5AB1B85EDED6C2DBD55B0@MN2PR15MB2863.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-forefront-prvs: 02475B2A01
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(7916004)(366004)(199004)(189003)(81166006)(81156014)(4326008)(8676002)(6486002)(66476007)(6512007)(66946007)(54906003)(5660300002)(9686003)(66556008)(64756008)(6916009)(71200400001)(66446008)(33716001)(8936002)(86362001)(2906002)(6506007)(52116002)(498600001)(1076003)(186003);DIR:OUT;SFP:1102;SCL:1;SRVR:MN2PR15MB2863;H:MN2PR15MB3213.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: PDt47IKQtn0z3pr/4bPQOAxn5rFkZy8h+06XEacUMcVE7Y30XHSymaV/m4WTyc08hSpvhBlmfVg0Zkzxj5j4op2lAKlfjeF+iA+hctZ+t0a5aqyaNjf7s2tCnqTbkW1I1ylMQHiBph8XWvLYjmRj5ZJYLJNp/DzvDPBM+eLDyR9YWir3KyGGq38W1SoxfFOrwAhB1+QUdT7cf6pjy9MzGmYGO/x84f1YI2I1rFVlRFH9e61+y2jxAbSKgYQibeMVInSwKdBgenX8r2ABAyOktqB2ahS1EuEwQR7NH+7HA+p86TqXleTIcuZmb0HOAbum2VhnDp8kd2ymnObpsaJhkrV4u/oX8dLAXkNxuLqesmR834Quqe75wpmgrpPUfTP1eoGBfeaABNZIb+MqTXpt5tPH/eBne+ypsfW63wLMnU1Yw6eubnG62RFpst/VMLks
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="iso-8859-1"
+Content-ID: <E0D461AFA89D374F931568939DF0D7FE@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <06aad9217a37b0582407cab11469125e645f5084.1575991886.git.paul.chaignon@orange.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-CrossTenant-Network-Message-Id: f92e4b45-02f3-4870-fb42-08d77d9aad0b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Dec 2019 17:59:18.1311
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 8O2V6lsUFhs5QCztFe9uFHoQDxBrcn4P6XJwd98VmPZSWY3uxnmks24Ez0ArrgpN
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB2863
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
+ definitions=2019-12-10_05:2019-12-10,2019-12-10 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ suspectscore=0 mlxlogscore=846 priorityscore=1501 clxscore=1015
+ phishscore=0 malwarescore=0 bulkscore=0 spamscore=0 adultscore=0
+ impostorscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-1912100152
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2019-12-10 17:06 UTC+0100 ~ Paul Chaignon <paul.chaignon@orange.com>
-> This patch implements lookup by name for maps and changes the behavior of
-> lookups by tag to be consistent with prog subcommands.  Similarly to
-> program subcommands, the show and dump commands will return all maps with
-> the given name (or tag), whereas other commands will error out if several
-> maps have the same name (resp. tag).
-> 
-> When a map has BTF info, it is dumped in JSON with available BTF info.
-> This patch requires that all matched maps have BTF info before switching
-> the output format to JSON.
-> 
-> Signed-off-by: Paul Chaignon <paul.chaignon@orange.com>
+On Tue, Dec 10, 2019 at 03:30:47PM +0100, Toke H=F8iland-J=F8rgensen wrote:
+> When JIT hardening is turned on, the kernel can fail to return jited_ksym=
+s
+JIT hardening means net.core.bpf_jit_harden?
+From the code, it happens on the bpf_dump_raw_ok() check which is
+actually "kernel.kptr_restrict" instead?
+
+> or jited_prog_insns, but still have positive values in nr_jited_ksyms and
+> jited_prog_len. This causes bpftool to crash when trying to dump the
+> program because it only checks the len fields not the actual pointers to
+> the instructions and ksyms.
+>=20
+> Fix this by adding the missing checks.
+Changes look good.
+
+>=20
+> Signed-off-by: Toke H=F8iland-J=F8rgensen <toke@redhat.com>
 > ---
->  .../bpf/bpftool/Documentation/bpftool-map.rst |  10 +-
->  tools/bpf/bpftool/bash-completion/bpftool     | 131 ++++++-
->  tools/bpf/bpftool/main.h                      |   2 +-
->  tools/bpf/bpftool/map.c                       | 366 +++++++++++++++---
->  4 files changed, 432 insertions(+), 77 deletions(-)
-> 
-
-> diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
-> index 05b5be4a6ef9..21c676a1eeb1 100644
-> --- a/tools/bpf/bpftool/bash-completion/bpftool
-> +++ b/tools/bpf/bpftool/bash-completion/bpftool
-
-Nice work on the completion, thanks!
-
-> diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
-> index de61d73b9030..f0e0be08ba21 100644
-> --- a/tools/bpf/bpftool/map.c
-> +++ b/tools/bpf/bpftool/map.c
-
-[...]
-
-> @@ -654,14 +771,42 @@ static int do_show(int argc, char **argv)
->  		build_pinned_obj_table(&map_table, BPF_OBJ_MAP);
->  
->  	if (argc == 2) {
-> -		fd = map_parse_fd_and_info(&argc, &argv, &info, &len);
-> -		if (fd < 0)
-> +		fds = malloc(sizeof(int));
-> +		if (!fds) {
-> +			p_err("mem alloc failed");
->  			return -1;
-> +		}
-> +		nb_fds = map_parse_fds(&argc, &argv, fds);
-> +		if (nb_fds < 1)
-> +			goto err_free;
-> +
-> +		if (json_output && nb_fds > 1)
-> +			jsonw_start_array(json_wtr);	/* root array */
-> +		for (i = 0; i < nb_fds; i++) {
-> +			err = bpf_obj_get_info_by_fd(fds[i], &info, &len);
-> +			if (err) {
-> +				p_err("can't get map info: %s",
-> +				      strerror(errno));
-> +				for (; i < nb_fds; i++)
-> +					close(fds[i]);
-> +				goto err_free;
-
-Same remarks as on patch 1, we may want to keep listing the maps even if
-we get a failure for one of them?
-
-> +			}
->  
-> -		if (json_output)
-> -			return show_map_close_json(fd, &info);
-> -		else
-> -			return show_map_close_plain(fd, &info);
-> +			if (json_output)
-> +				show_map_close_json(fds[i], &info);
-> +			else
-> +				show_map_close_plain(fds[i], &info);
-> +
-> +			close(fds[i]);
-> +		}
-> +		if (json_output && nb_fds > 1)
-> +			jsonw_end_array(json_wtr);	/* root array */
-> +
-> +		return 0;
-> +
-> +err_free:
-> +		free(fds);
-> +		return -1;
->  	}
->  
->  	if (argc)
-
-The rest of the code looks good to me, thanks a lot for working on this!
-Quentin
+>  tools/bpf/bpftool/prog.c          | 2 +-
+>  tools/bpf/bpftool/xlated_dumper.c | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+> index 4535c863d2cd..2ce9c5ba1934 100644
+> --- a/tools/bpf/bpftool/prog.c
+> +++ b/tools/bpf/bpftool/prog.c
+> @@ -493,7 +493,7 @@ static int do_dump(int argc, char **argv)
+> =20
+>  	info =3D &info_linear->info;
+>  	if (mode =3D=3D DUMP_JITED) {
+> -		if (info->jited_prog_len =3D=3D 0) {
+> +		if (info->jited_prog_len =3D=3D 0 || !info->jited_prog_insns) {
+>  			p_info("no instructions returned");
+>  			goto err_free;
+>  		}
+> diff --git a/tools/bpf/bpftool/xlated_dumper.c b/tools/bpf/bpftool/xlated=
+_dumper.c
+> index 494d7ae3614d..5b91ee65a080 100644
+> --- a/tools/bpf/bpftool/xlated_dumper.c
+> +++ b/tools/bpf/bpftool/xlated_dumper.c
+> @@ -174,7 +174,7 @@ static const char *print_call(void *private_data,
+>  	struct kernel_sym *sym;
+> =20
+>  	if (insn->src_reg =3D=3D BPF_PSEUDO_CALL &&
+> -	    (__u32) insn->imm < dd->nr_jited_ksyms)
+> +	    (__u32) insn->imm < dd->nr_jited_ksyms && dd->jited_ksyms)
+>  		address =3D dd->jited_ksyms[insn->imm];
+> =20
+>  	sym =3D kernel_syms_search(dd, address);
+> --=20
+> 2.24.0
+>=20
