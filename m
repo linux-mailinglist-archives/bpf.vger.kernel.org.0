@@ -2,138 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 77E80119A5A
-	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2019 22:53:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B4AD119C05
+	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2019 23:13:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729864AbfLJVwL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Dec 2019 16:52:11 -0500
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:43054 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727549AbfLJVwK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Dec 2019 16:52:10 -0500
-Received: by mail-pg1-f193.google.com with SMTP id b1so9509666pgq.10
-        for <bpf@vger.kernel.org>; Tue, 10 Dec 2019 13:52:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :organization:mime-version:content-transfer-encoding;
-        bh=x1llI4VQgR/NNv9VK0TWAuEng4/7tgvnedskGQElizQ=;
-        b=TN/QOr87yPqhW/2lzNiPS+Jz3xhAwg45MFbe+8DISDcdLzuEBd561ejk5h0oCDb20M
-         cyLB2KMxESf4Ub5nYgtAAseJcF8JrG2TpoOOK8qfqxLY6L6KKBaLA7FApvFfMTJYJ/nD
-         rzvsG3Hy5V1bVEoDwP+bo3VLKfoUq4aXJ0+Xo3Cp173dvNPBZF+DAqX8e0nbD2CZKk9O
-         p8kMwBsQHh50nLmmwHguAwJKH8eve5hwTsj2EHRkq2Yn4/MIPkhixNEv6PV5mPIdAWdX
-         BfndNieAlydYIPORzdzVGct5J8O1VK1nNaPidFt04JpeZqNZDd0NoNb9YkalSivZSsmd
-         CHKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=x1llI4VQgR/NNv9VK0TWAuEng4/7tgvnedskGQElizQ=;
-        b=k8MjY/eB1kior1rwfv5uwMyO7m5ViLrbaRrxNPm7yayued0EOooWLsu+tCl0qnZusj
-         66YSBlzaTe4g6UE8CaNCl7KW01foH5dBYhpfN+IAnoKgGUyIg+skhFYnJBoDQ0yTbki+
-         hdKujy61nk6OZueSsXejVx3F7cjXtttB9uyibUpFMbCcCks4QOWTT27XXo7ptlQLDHVO
-         6f8ST3rApBTUzCBoaLfXcc/BQKDoe2gluFZi27mpifBTIqXxa7tAYKX1p42Z7bkxhzMk
-         fWxJWEiC5jmN8Nq3kHuAjwaBnU9k3tf9rXrFV5+ssljBm8LWZmIBJdpnzHCYR9a6iyAc
-         98Jg==
-X-Gm-Message-State: APjAAAWvWNtjgzqYq5jUFEcvLM/M5VsO9nC9pHAlyLPGm30N65saBLjC
-        axBqaCqwcT2fldeG0DN7VBsTWDNTeZ0=
-X-Google-Smtp-Source: APXvYqxXcor3tR+WOkruu/D28GkGpulVaBRaudEGLcLcwEBe3xdOjEwVkq8bKvNdtbH3cY30xIG6Mg==
-X-Received: by 2002:a63:213:: with SMTP id 19mr329909pgc.160.1576014729720;
-        Tue, 10 Dec 2019 13:52:09 -0800 (PST)
-Received: from cakuba.netronome.com ([66.60.152.14])
-        by smtp.gmail.com with ESMTPSA id z13sm3865986pjz.15.2019.12.10.13.52.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Dec 2019 13:52:09 -0800 (PST)
-Date:   Tue, 10 Dec 2019 13:52:05 -0800
-From:   Jakub Kicinski <jakub.kicinski@netronome.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
+        id S1728770AbfLJWM7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Dec 2019 17:12:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33606 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727778AbfLJWD3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Dec 2019 17:03:29 -0500
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 78725214D8;
+        Tue, 10 Dec 2019 22:03:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1576015408;
+        bh=/5fAVxxUjSZJE4xH7IhLJ3O8MJfUsscc+boLpoxHZKY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=yC/0tsArmwax6tMLh0MiNGvn2zcihBFd+kRecOUH7RDW1KxQWAzZYOg+sQ5gB34Hn
+         dHNfsahBQYo2iygtn55eHzeVeYKkj25F+YRmRyEmc/z24mmINW2rlBktjI0ZIQveUT
+         htUH4N9AfEdgAqLDvShVBVImsbZ2CTu77TVt7eJc=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        lkml <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Martin Lau <kafai@fb.com>
-Subject: Re: [PATCH bpf v2] bpftool: Don't crash on missing jited insns or
- ksyms
-Message-ID: <20191210135205.529044a4@cakuba.netronome.com>
-In-Reply-To: <20191210213148.kqd6xdvqjkh3zxst@ast-mbp.dhcp.thefacebook.com>
-References: <20191210181412.151226-1-toke@redhat.com>
-        <20191210125457.13f7821a@cakuba.netronome.com>
-        <87eexbhopo.fsf@toke.dk>
-        <20191210132428.4470a7b0@cakuba.netronome.com>
-        <20191210213148.kqd6xdvqjkh3zxst@ast-mbp.dhcp.thefacebook.com>
-Organization: Netronome Systems, Ltd.
+        Song Liu <songliubraving@fb.com>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 022/130] selftests/bpf: Correct path to include msg + path
+Date:   Tue, 10 Dec 2019 17:01:13 -0500
+Message-Id: <20191210220301.13262-22-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20191210220301.13262-1-sashal@kernel.org>
+References: <20191210220301.13262-1-sashal@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 10 Dec 2019 13:31:50 -0800, Alexei Starovoitov wrote:
-> On Tue, Dec 10, 2019 at 01:24:28PM -0800, Jakub Kicinski wrote:
-> > On Tue, 10 Dec 2019 22:09:55 +0100, Toke H=C3=B8iland-J=C3=B8rgensen wr=
-ote: =20
-> > > Jakub Kicinski <jakub.kicinski@netronome.com> writes: =20
-> > > > On Tue, 10 Dec 2019 19:14:12 +0100, Toke H=C3=B8iland-J=C3=B8rgense=
-n wrote:   =20
-> > > >> When the kptr_restrict sysctl is set, the kernel can fail to return
-> > > >> jited_ksyms or jited_prog_insns, but still have positive values in
-> > > >> nr_jited_ksyms and jited_prog_len. This causes bpftool to crash wh=
-en trying
-> > > >> to dump the program because it only checks the len fields not the =
-actual
-> > > >> pointers to the instructions and ksyms.
-> > > >>=20
-> > > >> Fix this by adding the missing checks.
-> > > >>=20
-> > > >> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com> =
-  =20
-> > > >
-> > > > Fixes: 71bb428fe2c1 ("tools: bpf: add bpftool")
-> > > >
-> > > > and
-> > > >
-> > > > Fixes: f84192ee00b7 ("tools: bpftool: resolve calls without using i=
-mm field")
-> > > >
-> > > > ?   =20
-> > >=20
-> > > Yeah, guess so? Although I must admit it's not quite clear to me whet=
-her
-> > > bpftool gets stable backports, or if it follows the "only moving
-> > > forward" credo of libbpf? =20
-> >=20
-> > bpftool does not have a GH repo, and seeing strength of Alexei's
-> > arguments in the recent discussion - I don't think it will. So no
-> > reason for bpftool to be "special" =20
->=20
-> bpftool always was and will be a special user of libbpf.
+From: Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
 
-There we go again. Making proclamations without any justification or
-explanation.
+[ Upstream commit c588146378962786ddeec817f7736a53298a7b01 ]
 
-Maybe there is a language barrier between us, but I wrote the initial
-bpftool code, so I don't see how you (who authored one patch) can say
-what it was or is. Do you mean to say what you intend to make it?
+The "path" buf is supposed to contain path + printf msg up to 24 bytes.
+It will be cut anyway, but compiler generates truncation warns like:
 
-bpftool was intended to be a CLI to BPF _kernel_ interface. libbpf was
-just the library that we all agreed to use moving forward for ELF
-loading.
+"
+samples/bpf/../../tools/testing/selftests/bpf/cgroup_helpers.c: In
+function ‘setup_cgroup_environment’:
+samples/bpf/../../tools/testing/selftests/bpf/cgroup_helpers.c:52:34:
+warning: ‘/cgroup.controllers’ directive output may be truncated
+writing 19 bytes into a region of size between 1 and 4097
+[-Wformat-truncation=]
+snprintf(path, sizeof(path), "%s/cgroup.controllers", cgroup_path);
+				  ^~~~~~~~~~~~~~~~~~~
+samples/bpf/../../tools/testing/selftests/bpf/cgroup_helpers.c:52:2:
+note: ‘snprintf’ output between 20 and 4116 bytes into a destination
+of size 4097
+snprintf(path, sizeof(path), "%s/cgroup.controllers", cgroup_path);
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+samples/bpf/../../tools/testing/selftests/bpf/cgroup_helpers.c:72:34:
+warning: ‘/cgroup.subtree_control’ directive output may be truncated
+writing 23 bytes into a region of size between 1 and 4097
+[-Wformat-truncation=]
+snprintf(path, sizeof(path), "%s/cgroup.subtree_control",
+				  ^~~~~~~~~~~~~~~~~~~~~~~
+cgroup_path);
+samples/bpf/../../tools/testing/selftests/bpf/cgroup_helpers.c:72:2:
+note: ‘snprintf’ output between 24 and 4120 bytes into a destination
+of size 4097
+snprintf(path, sizeof(path), "%s/cgroup.subtree_control",
+cgroup_path);
+"
 
-I'm not going to argue with you again. You kept bad mouthing iproute2
-and then your only argument was the reviews sometimes take longer than
-24 hours. Which I'm sure you have a lot of experience with:
+In order to avoid warns, lets decrease buf size for cgroup workdir on
+24 bytes with assumption to include also "/cgroup.subtree_control" to
+the address. The cut will never happen anyway.
 
-  iproute2$ git log --author=3DStarov --oneline=20
-4bfe68253670 iptnl: add support for collect_md flag in IPv4 and IPv6 tunnels
+Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Song Liu <songliubraving@fb.com>
+Link: https://lore.kernel.org/bpf/20191002120404.26962-3-ivan.khoronzhuk@linaro.org
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ samples/bpf/cgroup_helpers.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-  iproute2$ git log --author=3Dfb.com --oneline=20
-3da6d055d93f bpf: add btf func and func_proto kind support
-7a04dd84a7f9 bpf: check map symbol type properly with newer llvm compiler
-73451259daaa tc: fix ipv6 filter selector attribute for some prefix lengths
-0b4ea60b5a48 bpf: Add support for IFLA_XDP_PROG_ID
-4bfe68253670 iptnl: add support for collect_md flag in IPv4 and IPv6 tunnels
-414aeec90f82 ss: Add tcp_info fields data_segs_in/out
-409998c5a4eb iproute: ip-gue/ip-fou manpages
+diff --git a/samples/bpf/cgroup_helpers.c b/samples/bpf/cgroup_helpers.c
+index 09afaddfc9ba9..b5c09cd6c7bd7 100644
+--- a/samples/bpf/cgroup_helpers.c
++++ b/samples/bpf/cgroup_helpers.c
+@@ -43,7 +43,7 @@
+  */
+ int setup_cgroup_environment(void)
+ {
+-	char cgroup_workdir[PATH_MAX + 1];
++	char cgroup_workdir[PATH_MAX - 24];
+ 
+ 	format_cgroup_path(cgroup_workdir, "");
+ 
+-- 
+2.20.1
 
-Upstreaming bpftool was a big mistake, but we live and we learn.
