@@ -2,71 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B0F8B118D65
-	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2019 17:19:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 753C5118D9B
+	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2019 17:30:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727211AbfLJQTz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Dec 2019 11:19:55 -0500
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:36189 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727178AbfLJQTz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Dec 2019 11:19:55 -0500
-Received: by mail-lj1-f193.google.com with SMTP id r19so20615436ljg.3;
-        Tue, 10 Dec 2019 08:19:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2UJwpPxTmgJirV0HhLgIu9KxcelTqVACRWkbnPRqdXw=;
-        b=SHyfEii4cHYSpUUUf8yHgzMwTkoUmpA+2DbH0p2WIsE8et/f+zzQrzHfz7/kIImePS
-         muYCDokc00ROSePRJEg69xJ/WJpyYeSNnj4kwt2BHfTJu/rkYeHRYcpIcb1RoFjr1Tps
-         I2hVlc9ILas3UF3kW6kwcAyo58I8pp5fkSMMax04kmi34WuSgA8kMMRLJsnzkEUx3k5i
-         8HWj2VLOr/Jmouxd1J8fLv/ADypej0rMSBLksbfUDXB6tKzMzGL7H0mA5/N589L5e6/0
-         4DxaOeRNi3W1PhgPUOIBNGx3KohJEbX7b3F6i216X59xTexGp0EmGeYVQByljOHOW+zb
-         rA7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2UJwpPxTmgJirV0HhLgIu9KxcelTqVACRWkbnPRqdXw=;
-        b=MNi++PUZvhi3FKd8Z2amx/msgDAEZdceaLH/Sp63sO/BUKaXSKsN3anPabMQc8dLUb
-         00kTyXVX6/lYZb831o0yU33vbcW/Sq+yN3/pKr0xnT/IL0dLItdkX4u8VClt5xDTcbzD
-         1uYsQbnW859VYZNCWLb972b0/7NGJn9fzOHGv7gfhORChs0i9tHW/DtW8NLOOQK7TKC6
-         95BxhduyK+DSJZaV+mNg631oEHvMP8FstyFg/YuYn0igRCySP/MB9VpDIPl4yBhw7Tmd
-         P07frWKiMWgKl6R8xVo4WXiIblXY+Z9ibJsZ9/CTn5WQJyLSG2X+nmfBLYlnD5S/dr17
-         /eGQ==
-X-Gm-Message-State: APjAAAXEfmBTS29k8nSzhjrGOTXJdjzuEwB7sCzZuVZbQJZz684Acfoq
-        nWr9Zrah00pZWdrbHr86//Xmqlh3O2lUA32AeMk=
-X-Google-Smtp-Source: APXvYqyDojG+mrwcWES+IUhtdDFtMIf9/7ssfii7yxG/bQF2QYcR98TRnHnYAGTQMn8ahHCSYSxsxa0KnE6wNcfoLWg=
-X-Received: by 2002:a2e:99cd:: with SMTP id l13mr6947971ljj.243.1575994793358;
- Tue, 10 Dec 2019 08:19:53 -0800 (PST)
-MIME-Version: 1.0
-References: <20191209000114.1876138-1-ast@kernel.org> <20191209000114.1876138-2-ast@kernel.org>
-In-Reply-To: <20191209000114.1876138-2-ast@kernel.org>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 10 Dec 2019 08:19:42 -0800
-Message-ID: <CAADnVQJVabzj-aytRnZrFCwRJAf+g_wZ-zWiO7D0bUm7UVpDQw@mail.gmail.com>
-Subject: Re: [PATCH bpf 1/3] ftrace: Fix function_graph tracer interaction
- with BPF trampoline
-To:     Alexei Starovoitov <ast@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
+        id S1727448AbfLJQaV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Dec 2019 11:30:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50322 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727177AbfLJQaU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Dec 2019 11:30:20 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6AD332073B;
+        Tue, 10 Dec 2019 16:30:19 +0000 (UTC)
+Date:   Tue, 10 Dec 2019 11:30:17 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Steven Rostedt <rostedt@goodmis.org>, X86 ML <x86@kernel.org>,
+        X86 ML <x86@kernel.org>,
         Network Development <netdev@vger.kernel.org>,
         bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH bpf 1/3] ftrace: Fix function_graph tracer interaction
+ with BPF trampoline
+Message-ID: <20191210113017.2fc14de7@gandalf.local.home>
+In-Reply-To: <CAADnVQJVabzj-aytRnZrFCwRJAf+g_wZ-zWiO7D0bUm7UVpDQw@mail.gmail.com>
+References: <20191209000114.1876138-1-ast@kernel.org>
+        <20191209000114.1876138-2-ast@kernel.org>
+        <CAADnVQJVabzj-aytRnZrFCwRJAf+g_wZ-zWiO7D0bUm7UVpDQw@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Dec 8, 2019 at 4:03 PM Alexei Starovoitov <ast@kernel.org> wrote:
->
-> Depending on type of BPF programs served by BPF trampoline it can call original
-> function. In such case the trampoline will skip one stack frame while
-> returning. That will confuse function_graph tracer and will cause crashes with
-> bad RIP. Teach graph tracer to skip functions that have BPF trampoline attached.
->
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+On Tue, 10 Dec 2019 08:19:42 -0800
+Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
 
-Steven, please take a look.
+> On Sun, Dec 8, 2019 at 4:03 PM Alexei Starovoitov <ast@kernel.org> wrote:
+> >
+> > Depending on type of BPF programs served by BPF trampoline it can call original
+> > function. In such case the trampoline will skip one stack frame while
+> > returning. That will confuse function_graph tracer and will cause crashes with
+> > bad RIP. Teach graph tracer to skip functions that have BPF trampoline attached.
+> >
+> > Signed-off-by: Alexei Starovoitov <ast@kernel.org>  
+> 
+> Steven, please take a look.
+
+I'll try to get to it today or tomorrow. I have some other work to get
+done that my job requires I do ;-)
+
+-- Steve
