@@ -2,98 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A598119090
-	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2019 20:28:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B3711190C2
+	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2019 20:35:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726045AbfLJT2C (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Dec 2019 14:28:02 -0500
-Received: from mga09.intel.com ([134.134.136.24]:52548 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726018AbfLJT2B (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Dec 2019 14:28:01 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 10 Dec 2019 11:28:01 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,300,1571727600"; 
-   d="scan'208";a="363364429"
-Received: from unknown (HELO [10.241.228.156]) ([10.241.228.156])
-  by orsmga004.jf.intel.com with ESMTP; 10 Dec 2019 11:28:01 -0800
-Subject: Re: [PATCH bpf-next v3 0/6] Introduce the BPF dispatcher
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net
-Cc:     bpf@vger.kernel.org, magnus.karlsson@gmail.com,
-        magnus.karlsson@intel.com, jonathan.lemon@gmail.com,
-        ecree@solarflare.com, thoiland@redhat.com,
-        andrii.nakryiko@gmail.com
-References: <20191209135522.16576-1-bjorn.topel@gmail.com>
-From:   "Samudrala, Sridhar" <sridhar.samudrala@intel.com>
-Message-ID: <0b45793e-6172-9c07-5bdb-2dc99e58e375@intel.com>
-Date:   Tue, 10 Dec 2019 11:28:00 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1727177AbfLJTfD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Dec 2019 14:35:03 -0500
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:37062 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726417AbfLJTfC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Dec 2019 14:35:02 -0500
+Received: by mail-qt1-f194.google.com with SMTP id w47so3897922qtk.4;
+        Tue, 10 Dec 2019 11:35:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yxnv/IfMAcklao71nTVes2doWULgYPnxmPQ+kvOKuow=;
+        b=jEb5aySLwc+L4cu0C5RkevqiJcUVvNqYuWf6EHmu7d1vqAPnf3uBZrIcUcB4CkZ3Wr
+         IobkB7Ca94cfLdZKttCUAT970gLwhMFc98znPhnMycdGTpnCBQ56KcefP/qfW0lEKyeT
+         n8B9nD3c4gbnNqV9JGnbMt+uDP2XpxW/Ozp0yhgey8xOm+/5+qT52NvP+304wT+O5tRM
+         pB0TnO4SdCor8yjC9jwwnP4YzAejMAK0CWnj82ICE9ycjVc2rusWFwldW53WOwGaKoVE
+         rcIXxYIYxr+YM3vkSvvxf6/h/vQLYpuXo8BX8CfFULcUJGP+QYueJfgXNZ0eXakgGV4b
+         yOVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yxnv/IfMAcklao71nTVes2doWULgYPnxmPQ+kvOKuow=;
+        b=SO4YnsdwXWGg147g2uAX3h2rs0wzWvCRz0iG+Rv6isYNxJNn3i8eJ4q0LCnXaKLjJF
+         T8yd74zhIEjygizf4KM6lE1Ipureiz1sx5y5RzHGGKLrBHbfCUfe1EtvAoBIWmURG4k7
+         VLggKCBubuJ3Zuf94NfxM99v+g2AKNgziKlHLFbLKq9mW8h77SRyH6oTkh17dz0qKCCr
+         0hJBNpVqBLoAWvG4LMZMce5OB4lPZj+CR8UCLrbgnSR+JFq2uxAWvMpmrcSWAzVaqTSL
+         aadqRThVDV4XwfgxchDyME5G7mbLXCybHJeYsOes5rERLcwEdXSxKZ22qcTIbK/zfMa9
+         n+IA==
+X-Gm-Message-State: APjAAAU45KjyvVq1C/38z2tnBrTCD3hXr7YRzI0Vzu1KLJAtBmYXrLwd
+        UA5Ak+RADE/9+z3NprL9h7jMRrZxw0leZ/qDgYs=
+X-Google-Smtp-Source: APXvYqxHVWSJFJBDRCUH7/rsvTLEyM0EA0tpyrhp/A43V9aONBglTs2KCKNaNHHmdEkjLagDoUhCtHIhjDlO6OMp3Wc=
+X-Received: by 2002:ac8:5457:: with SMTP id d23mr30026197qtq.93.1576006501800;
+ Tue, 10 Dec 2019 11:35:01 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20191209135522.16576-1-bjorn.topel@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20191210191933.105321-1-sdf@google.com>
+In-Reply-To: <20191210191933.105321-1-sdf@google.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 10 Dec 2019 11:34:50 -0800
+Message-ID: <CAEf4Bzbc9Y7vzETzahvV99tJ6_CcWs+CQ39gJJCqN4JxXXAy2g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: switch to offsetofend in BPF_PROG_TEST_RUN
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Tue, Dec 10, 2019 at 11:20 AM Stanislav Fomichev <sdf@google.com> wrote:
+>
+> Switch existing pattern of "offsetof(..., member) + FIELD_SIZEOF(...,
+> member)' to "offsetofend(..., member)" which does exactly what
+> we need without all the copy-paste.
+>
+> Suggested-by: Andrii Nakryiko <andriin@fb.com>
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> ---
 
+Awesome!
 
-On 12/9/2019 5:55 AM, Björn Töpel wrote:
-> Overview
-> ========
-> 
-> This is the 4th iteration of the series that introduces the BPF
-> dispatcher, which is a mechanism to avoid indirect calls.
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 
-Good to see the progress with getting a mechansism to avoid indirect calls
-upstream.
+>  net/bpf/test_run.c | 12 ++++--------
+>  1 file changed, 4 insertions(+), 8 deletions(-)
+>
 
 [...]
-
-
-> Performance
-> ===========
-> 
-> The tests were performed using the xdp_rxq_info sample program with
-> the following command-line:
-> 
-> 1. XDP_DRV:
->    # xdp_rxq_info --dev eth0 --action XDP_DROP
-> 2. XDP_SKB:
->    # xdp_rxq_info --dev eth0 -S --action XDP_DROP
-> 3. xdp-perf, from selftests/bpf:
->    # test_progs -v -t xdp_perf
-
-What is this test_progs? I don't see such ann app under selftests/bpf
-
-
-> Run with mitigations=auto
-> -------------------------
-> 
-> Baseline:
-> 1. 22.0 Mpps
-> 2. 3.8 Mpps
-> 3. 15 ns
-> 
-> Dispatcher:
-> 1. 29.4 Mpps (+34%)
-> 2. 4.0 Mpps  (+5%)
-> 3. 5 ns      (+66%)
-> 
-> Dispatcher (full; walk all entries, and fallback):
-> 1. 20.4 Mpps (-7%)
-> 2. 3.8 Mpps
-> 3. 18 ns     (-20%)
-
-Are these packets received on a single queue? Or multiple queues?
-Do you see similar improvements even with xdpsock?
-
-Thanks
-Sridhar
