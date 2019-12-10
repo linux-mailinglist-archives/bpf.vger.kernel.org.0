@@ -2,142 +2,161 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E26591185CD
-	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2019 12:05:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B2CD118770
+	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2019 12:56:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727259AbfLJLF0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Dec 2019 06:05:26 -0500
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:59764 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727018AbfLJLF0 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 10 Dec 2019 06:05:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1575975924;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Khwyb+GgQklbY0sQzo2bnVinuaUK0YwpqCimn/St+jI=;
-        b=Z5/qvlYIvr3ENznfZBW5nnlaPolLqfKfWaxXW8gg6LoiENy1rYLdUfPq//cQztvEDnThUv
-        sQz2qpZcTeKmXJBWw2IEnw1lyo6yk5sKJAwX7NBkfnr6dQgKE0r6nouwgJk7CMaV33ok7I
-        7KMvdy5E69Zb94/MVfbRMqMSFYGtCwM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-308-UrLwHmnNOBOcidDg0GHOAg-1; Tue, 10 Dec 2019 06:05:21 -0500
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 94F831007273;
-        Tue, 10 Dec 2019 11:05:19 +0000 (UTC)
-Received: from carbon (ovpn-200-56.brq.redhat.com [10.40.200.56])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 137C960BE0;
-        Tue, 10 Dec 2019 11:05:11 +0000 (UTC)
-Date:   Tue, 10 Dec 2019 12:05:09 +0100
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Cc:     brouer@redhat.com, netdev@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        bpf@vger.kernel.org, magnus.karlsson@gmail.com,
-        magnus.karlsson@intel.com, jonathan.lemon@gmail.com,
-        ecree@solarflare.com, thoiland@redhat.com,
-        andrii.nakryiko@gmail.com
-Subject: Re: [PATCH bpf-next v3 5/6] selftests: bpf: add xdp_perf test
-Message-ID: <20191210120450.3375fc4a@carbon>
-In-Reply-To: <20191209135522.16576-6-bjorn.topel@gmail.com>
-References: <20191209135522.16576-1-bjorn.topel@gmail.com>
-        <20191209135522.16576-6-bjorn.topel@gmail.com>
+        id S1727149AbfLJL4f (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Dec 2019 06:56:35 -0500
+Received: from mail-qv1-f65.google.com ([209.85.219.65]:35204 "EHLO
+        mail-qv1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726956AbfLJL4f (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Dec 2019 06:56:35 -0500
+Received: by mail-qv1-f65.google.com with SMTP id d17so4058426qvs.2;
+        Tue, 10 Dec 2019 03:56:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=icyiV0RkwZGTgKtaUg4qH+GVpCIVxWbtRgaACTjmezU=;
+        b=PwbV3w12Itgjb8l/FkXrdXwPVcyz1mHD8YgsJSwZGWHEGvg3wENYq8qQPOKaMM0Jz8
+         1KY/bhhBvsCSwKyczPyTmFLr/sMF47gkbY3lf5B8MDGrMavVZ0ST6+XPM3vQGJrSk/uO
+         nX9JoMId28nclnbNTMn9YqK71lh0fEQ8pYYD1bmT/KRJjNG8ON6l33hVi69kqTt0UCJY
+         7l3JrVIV+zXa2BiOMAq5Gc5eJiCfV/tk5IDA3VHLRrrliJEUB+LSdEQ1YkDln53l84VQ
+         IO1N1qSAW6wbyRiPioRkkaxGcnXMAfssOVarilVDV5jl7lSHfxegk3+PV+Kf043At71Z
+         nNFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=icyiV0RkwZGTgKtaUg4qH+GVpCIVxWbtRgaACTjmezU=;
+        b=F07w/6NkixrUAspfRzpbpNf+iBAloggrby3Nj98zGW1mUWQRmfXJBRDx/cbYGrGsYc
+         Bsk9gaeM8OBnylNGWh5jWLKu9claLlnH0j4KEY0grFmGe+cmxqp1KBVrmtVPHE3megxO
+         tiDPYIytmyrtU1OaaalbGgifkYrtoUZVbFIPfbXgC1YKiJCJLKV/HbVbjz33EkjpRcqO
+         dpnWy9wkuDQ18xyi4NDSksVx6F3e8L3mAcsaHgBI14hL0qa1LvORC+Bt9BxJ/yiFaVeq
+         d5gY26MKcwsizmRvxrK9RziXW5l2YLYdAGHUAUpE6+H8vjsxJmHlkCWaqn0xIJlEEeEh
+         o/2w==
+X-Gm-Message-State: APjAAAUOtBUM8ijksupFjnWiUngtYsTx0uIUnjwFpfbh/6aE1tzIVy2i
+        Q9jme5geT9X+Br7yBUTfwup9gLX847TQ/p/mMCo=
+X-Google-Smtp-Source: APXvYqy8ZVKNN5jBH+qkGQGREjYSjZlQJXpQc5Mfr3X61qU0LpvAWV97ZK4d4wFUVvoJQ0XnNIxE2HY99aFODE15gHU=
+X-Received: by 2002:a05:6214:6f2:: with SMTP id bk18mr28126320qvb.10.1575978994582;
+ Tue, 10 Dec 2019 03:56:34 -0800 (PST)
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
-X-MC-Unique: UrLwHmnNOBOcidDg0GHOAg-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=UTF-8
+References: <20191209135522.16576-1-bjorn.topel@gmail.com> <20191209135522.16576-6-bjorn.topel@gmail.com>
+ <20191210120450.3375fc4a@carbon>
+In-Reply-To: <20191210120450.3375fc4a@carbon>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Tue, 10 Dec 2019 12:56:23 +0100
+Message-ID: <CAJ+HfNjMyT3Ye=gyKDUkqsYJxngGp-tpV_m+C93uHbbyxbYoyQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 5/6] selftests: bpf: add xdp_perf test
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     Netdev <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        bpf <bpf@vger.kernel.org>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Edward Cree <ecree@solarflare.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <thoiland@redhat.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon,  9 Dec 2019 14:55:21 +0100
-Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> wrote:
+On Tue, 10 Dec 2019 at 12:05, Jesper Dangaard Brouer <brouer@redhat.com> wr=
+ote:
+>
+> On Mon,  9 Dec 2019 14:55:21 +0100
+> Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> wrote:
+>
+> > From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+> >
+> > The xdp_perf is a dummy XDP test, only used to measure the the cost of
+> > jumping into a XDP program.
+>
+> I really like this idea of performance measuring XDP-core in isolation.
+> This is the ultimate zoom-in micro-benchmarking.  I see a use-case for
+> this, where I will measure the XDP-core first, and then run same XDP
+> prog (e.g. XDP_DROP) on a NIC driver, then I can deduct/isolate the
+> driver-code and hardware overhead.  We/I can also use it to optimize
+> e.g. REDIRECT code-core (although redir might not actually work).
+>
+> IMHO it would be valuable to have bpf_prog_load() also measure the
+> perf-HW counters for 'cycles' and 'instructions', as in your case the
+> performance optimization was to improve the instructions-per-cycle
+> (which you showed via perf stat in cover letter).
+>
+>
+> If you send a V4 please describe how to use this prog to measure the
+> cost, as you describe in cover letter.
+>
+> from selftests/bpf run:
+>  # test_progs -v -t xdp_perf
+>
+> (This is a nitpick, so only do this if something request a V4)
+>
 
-> From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
->=20
-> The xdp_perf is a dummy XDP test, only used to measure the the cost of
-> jumping into a XDP program.
+I'll definitely do a v4! Thanks for the input/comments! I'll address
+them in the next rev!
 
-I really like this idea of performance measuring XDP-core in isolation.
-This is the ultimate zoom-in micro-benchmarking.  I see a use-case for
-this, where I will measure the XDP-core first, and then run same XDP
-prog (e.g. XDP_DROP) on a NIC driver, then I can deduct/isolate the
-driver-code and hardware overhead.  We/I can also use it to optimize
-e.g. REDIRECT code-core (although redir might not actually work).
+Cheers,
+Bj=C3=B6rn
 
-IMHO it would be valuable to have bpf_prog_load() also measure the
-perf-HW counters for 'cycles' and 'instructions', as in your case the
-performance optimization was to improve the instructions-per-cycle
-(which you showed via perf stat in cover letter).
-
-
-If you send a V4 please describe how to use this prog to measure the
-cost, as you describe in cover letter.
-
-from selftests/bpf run:
- # test_progs -v -t xdp_perf
-
-(This is a nitpick, so only do this if something request a V4)
-
-
-> Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
-> ---
->  .../selftests/bpf/prog_tests/xdp_perf.c       | 25 +++++++++++++++++++
->  1 file changed, 25 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_perf.c
->=20
-> diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_perf.c b/tools/te=
-sting/selftests/bpf/prog_tests/xdp_perf.c
-> new file mode 100644
-> index 000000000000..7185bee16fe4
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/xdp_perf.c
-> @@ -0,0 +1,25 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <test_progs.h>
-> +
-> +void test_xdp_perf(void)
-> +{
-> +=09const char *file =3D "./xdp_dummy.o";
-> +=09__u32 duration, retval, size;
-> +=09struct bpf_object *obj;
-> +=09char in[128], out[128];
-> +=09int err, prog_fd;
-> +
-> +=09err =3D bpf_prog_load(file, BPF_PROG_TYPE_XDP, &obj, &prog_fd);
-> +=09if (CHECK_FAIL(err))
-> +=09=09return;
-> +
-> +=09err =3D bpf_prog_test_run(prog_fd, 1000000, &in[0], 128,
-> +=09=09=09=09out, &size, &retval, &duration);
-> +
-> +=09CHECK(err || retval !=3D XDP_PASS || size !=3D 128,
-> +=09      "xdp-perf",
-> +=09      "err %d errno %d retval %d size %d\n",
-> +=09      err, errno, retval, size);
-> +
-> +=09bpf_object__close(obj);
-> +}
-
-
-
---=20
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
-
---=20
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
-
+>
+> > Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+> > ---
+> >  .../selftests/bpf/prog_tests/xdp_perf.c       | 25 +++++++++++++++++++
+> >  1 file changed, 25 insertions(+)
+> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_perf.c
+> >
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_perf.c b/tools/=
+testing/selftests/bpf/prog_tests/xdp_perf.c
+> > new file mode 100644
+> > index 000000000000..7185bee16fe4
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/prog_tests/xdp_perf.c
+> > @@ -0,0 +1,25 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +#include <test_progs.h>
+> > +
+> > +void test_xdp_perf(void)
+> > +{
+> > +     const char *file =3D "./xdp_dummy.o";
+> > +     __u32 duration, retval, size;
+> > +     struct bpf_object *obj;
+> > +     char in[128], out[128];
+> > +     int err, prog_fd;
+> > +
+> > +     err =3D bpf_prog_load(file, BPF_PROG_TYPE_XDP, &obj, &prog_fd);
+> > +     if (CHECK_FAIL(err))
+> > +             return;
+> > +
+> > +     err =3D bpf_prog_test_run(prog_fd, 1000000, &in[0], 128,
+> > +                             out, &size, &retval, &duration);
+> > +
+> > +     CHECK(err || retval !=3D XDP_PASS || size !=3D 128,
+> > +           "xdp-perf",
+> > +           "err %d errno %d retval %d size %d\n",
+> > +           err, errno, retval, size);
+> > +
+> > +     bpf_object__close(obj);
+> > +}
+>
+>
+>
+> --
+> Best regards,
+>   Jesper Dangaard Brouer
+>   MSc.CS, Principal Kernel Engineer at Red Hat
+>   LinkedIn: http://www.linkedin.com/in/brouer
+>
+> --
+> Best regards,
+>   Jesper Dangaard Brouer
+>   MSc.CS, Principal Kernel Engineer at Red Hat
+>   LinkedIn: http://www.linkedin.com/in/brouer
+>
