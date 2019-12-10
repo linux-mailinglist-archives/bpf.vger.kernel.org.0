@@ -2,50 +2,50 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A9C0118F00
-	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2019 18:29:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CEA8B118F03
+	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2019 18:29:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727527AbfLJR3g (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Dec 2019 12:29:36 -0500
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:43866 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727425AbfLJR3g (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Dec 2019 12:29:36 -0500
-Received: by mail-wr1-f66.google.com with SMTP id d16so21014017wre.10
-        for <bpf@vger.kernel.org>; Tue, 10 Dec 2019 09:29:34 -0800 (PST)
+        id S1727652AbfLJR3y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Dec 2019 12:29:54 -0500
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:33567 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727647AbfLJR3y (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Dec 2019 12:29:54 -0500
+Received: by mail-wr1-f68.google.com with SMTP id b6so21079035wrq.0
+        for <bpf@vger.kernel.org>; Tue, 10 Dec 2019 09:29:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=netronome-com.20150623.gappssmtp.com; s=20150623;
         h=to:cc:references:from:openpgp:autocrypt:subject:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=dfqL4lTwR6vF4OgmjVYmmQ0BJocxUPtWFk6FLv0rmCA=;
-        b=LkrB+TljTffU1WXzKx9nmBM3P8FLlWbEMLgZlNlfSR7LPyQflKIj3MifLLbUO1/vpE
-         o9J0pj+wPRRGYWRiEYNXtGTMrGsmHCaqRDZ4/rdZAkgfBd02SplFeijQLWwPxed/wAra
-         QRN7um3b7S9x/vKiU6mFs2/e3D89WR1wYsINhYjY0C60X5/XaHCTIIcw2nkBobGQTEGW
-         7SgSwB9RRBCCDuLrbrBTX9Qjyk+uLWGfO3UdXHaeDrwJU+hIdv1u7gOdL+sBLNPbENa1
-         kuPPXJ6aARLZIq4El16rTzcYl/Um5utII937nuTyNPfujmfgHBhGBLynSYe66fPFrEd/
-         06sA==
+        bh=aDmC92jBqiL+/WoMc+0FY9tr4/vQFb7jJJbUuvUOxgk=;
+        b=GNnaibblkhsIakHJW7Pcm0KSdPkdDEu/YacNWKldOTxAtoBmpNF1qRUTT58RICahb3
+         myNMq41VY2pHmYgZPbYDYGE7ZfzKN+ZzWVBDTy/FuZZVKpXMBlcoybwe2ZVSvr0DqcCq
+         8Dv+pDqw6hr3x4H8mbhnLY5T50Q1N7q2GnT4OhHL0K3uuptI1zMihaPCHD7Wj0n/84HF
+         rz1GbxjdUKAbKGL4USg2rVYAb4G3hkzXTXKXC9JL2endyRGOiQXcv6bMcJIDO5pWbc8v
+         Ss1K696T7dweWmGRZYw0AknAA1/7eDQGmWVPVAbxvFHCy8/ryn/7ILV58csSzUyFyMRo
+         824A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:to:cc:references:from:openpgp:autocrypt:subject
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=dfqL4lTwR6vF4OgmjVYmmQ0BJocxUPtWFk6FLv0rmCA=;
-        b=DZRCCXXnKuOq+JeqZUa1i6CsFERf9xwRXWlwQomdLspacf9V4HtY+NnCztZkj8o6fS
-         xBiIt1inivX+p40Mu7XEVa/Yc8MzjxoeeHzUvAuQnlLMj5ux+R6BpwyD8gvwj++RrujO
-         wQMWRGu1edpk7qG3x1fws1D1fj8EXFvVwtkKNUFAmNa80xDAoVDmLS2VnlMFPYFRv1eO
-         gcvggHpfSuS/09PQ7w+y1NhL2PPb83hMah/AzS2oSpSx0oyXSe60n0quIBK/uGngjrvm
-         D2Ly4+uAjoen3b9MjY3A0svpUQCfOnhCU/PtbiQ0A99+FkAEZboLqVBg/cueyP3rhCy0
-         A+ew==
-X-Gm-Message-State: APjAAAXXDcnOjBFf1r4PrMFiLXfG6LF06UFTSeGgj6rZ9sp66pZupcLf
-        RG7YmTKcSeIDsHKeFuYvF5D49A==
-X-Google-Smtp-Source: APXvYqyoW01YTwj1I5d01YonnqvFycJwQtu8A2W6d6kY3yx5tQoh9KFcs160px5DcS7zoSNotFMgzA==
-X-Received: by 2002:a5d:6652:: with SMTP id f18mr3109683wrw.246.1575998974147;
-        Tue, 10 Dec 2019 09:29:34 -0800 (PST)
+        bh=aDmC92jBqiL+/WoMc+0FY9tr4/vQFb7jJJbUuvUOxgk=;
+        b=tObQXYkSYM/0tKE8GO8BFiiFS8+I3yXhMVuPRE4bmV77pf6xAAY093QckA1yqrYkJn
+         BBHbHemGfa0SnW+6Vh5hWCiQZhqp6neq56i19a3QTEg6szHiq5zcOjY5IYt9agtMtOWE
+         Fw8Tw4sKR66OgYZ1Bsy4pkbMJpmy5Vhr8SCpvsNL3Gp6aYwJAOJ53ftzw3VcdDaZt2oX
+         yL4DEqwe4Amf/AVov4af5pQEy7QPTfzC9b3w8UR8kqcIXSWIGOoUQN1GQLUSA4L//aRb
+         xf5yclVIUs0NM599ka/TcCnxatcYkzR8iXO/v8x79W0Qs0qYadpDOHOe8iGtaFB4inrC
+         gn3A==
+X-Gm-Message-State: APjAAAWhy3WMl1pdRAEY72uzFP47E/Qy7kHknbP+N6oBBXHQRajmCXil
+        8heO3+pInLeOa5Zcfby2Ho3ptg==
+X-Google-Smtp-Source: APXvYqzZ32OZ43XiDmnL0tZ+0N4vglz77WKkPK0994O0BNNY3gZaGRbpeBkXnQ1BWAJeSTojSEDqVw==
+X-Received: by 2002:adf:df8e:: with SMTP id z14mr4536101wrl.190.1575998991273;
+        Tue, 10 Dec 2019 09:29:51 -0800 (PST)
 Received: from [172.20.1.104] ([217.38.71.146])
-        by smtp.gmail.com with ESMTPSA id k8sm4059419wrl.3.2019.12.10.09.29.33
+        by smtp.gmail.com with ESMTPSA id z11sm3684519wrt.82.2019.12.10.09.29.50
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 10 Dec 2019 09:29:33 -0800 (PST)
+        Tue, 10 Dec 2019 09:29:50 -0800 (PST)
 To:     Paul Chaignon <paul.chaignon@orange.com>, bpf@vger.kernel.org
 Cc:     paul.chaignon@gmail.com, netdev@vger.kernel.org,
         Alexei Starovoitov <ast@kernel.org>,
@@ -54,7 +54,7 @@ Cc:     paul.chaignon@gmail.com, netdev@vger.kernel.org,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         Andrii Nakryiko <andriin@fb.com>
 References: <cover.1575991886.git.paul.chaignon@orange.com>
- <1e3ede4f901a36af342e71bc4fdd2b27fbf9a418.1575991886.git.paul.chaignon@orange.com>
+ <06aad9217a37b0582407cab11469125e645f5084.1575991886.git.paul.chaignon@orange.com>
 From:   Quentin Monnet <quentin.monnet@netronome.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=quentin.monnet@netronome.com; prefer-encrypt=mutual; keydata=
@@ -100,13 +100,13 @@ Autocrypt: addr=quentin.monnet@netronome.com; prefer-encrypt=mutual; keydata=
  oHhplrRgXwPBSOkMMlLKu+FJsmYVFeLAJ81sfmFuTTliRb3Fl2Q27cEr7kNKlsz/t6vLSEN2
  j8x+tWD8x53SEOSn94g2AyJA9Txh2xBhWGuZ9CpBuXjtPrnRSd8xdrw36AL53goTt/NiLHUd
  RHhSHGnKaQ6MfrTge5Q0h5A=
-Subject: Re: [PATCH bpf-next 2/3] bpftool: match programs by name
-Message-ID: <44b6c087-6ce3-2e3d-e33e-4b844632cc50@netronome.com>
-Date:   Tue, 10 Dec 2019 17:29:33 +0000
+Subject: Re: [PATCH bpf-next 3/3] bpftool: match maps by name
+Message-ID: <61747303-6cd5-e2e7-749f-13068085ed9c@netronome.com>
+Date:   Tue, 10 Dec 2019 17:29:50 +0000
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.9.1
 MIME-Version: 1.0
-In-Reply-To: <1e3ede4f901a36af342e71bc4fdd2b27fbf9a418.1575991886.git.paul.chaignon@orange.com>
+In-Reply-To: <06aad9217a37b0582407cab11469125e645f5084.1575991886.git.paul.chaignon@orange.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
@@ -116,17 +116,92 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 2019-12-10 17:06 UTC+0100 ~ Paul Chaignon <paul.chaignon@orange.com>
-> When working with frequently modified BPF programs, both the ID and the
-> tag may change.  bpftool currently doesn't provide a "stable" way to match
-> such programs.
+> This patch implements lookup by name for maps and changes the behavior of
+> lookups by tag to be consistent with prog subcommands.  Similarly to
+> program subcommands, the show and dump commands will return all maps with
+> the given name (or tag), whereas other commands will error out if several
+> maps have the same name (resp. tag).
 > 
-> This patch implements lookup by name for programs.  The show and dump
-> commands will return all programs with the given name, whereas other
-> commands will error out if several programs have the same name.
+> When a map has BTF info, it is dumped in JSON with available BTF info.
+> This patch requires that all matched maps have BTF info before switching
+> the output format to JSON.
 > 
 > Signed-off-by: Paul Chaignon <paul.chaignon@orange.com>
+> ---
+>  .../bpf/bpftool/Documentation/bpftool-map.rst |  10 +-
+>  tools/bpf/bpftool/bash-completion/bpftool     | 131 ++++++-
+>  tools/bpf/bpftool/main.h                      |   2 +-
+>  tools/bpf/bpftool/map.c                       | 366 +++++++++++++++---
+>  4 files changed, 432 insertions(+), 77 deletions(-)
+> 
 
-Reviewed-by: Quentin Monnet <quentin.monnet@netronome.com>
+> diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
+> index 05b5be4a6ef9..21c676a1eeb1 100644
+> --- a/tools/bpf/bpftool/bash-completion/bpftool
+> +++ b/tools/bpf/bpftool/bash-completion/bpftool
 
-Thanks!
+Nice work on the completion, thanks!
+
+> diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
+> index de61d73b9030..f0e0be08ba21 100644
+> --- a/tools/bpf/bpftool/map.c
+> +++ b/tools/bpf/bpftool/map.c
+
+[...]
+
+> @@ -654,14 +771,42 @@ static int do_show(int argc, char **argv)
+>  		build_pinned_obj_table(&map_table, BPF_OBJ_MAP);
+>  
+>  	if (argc == 2) {
+> -		fd = map_parse_fd_and_info(&argc, &argv, &info, &len);
+> -		if (fd < 0)
+> +		fds = malloc(sizeof(int));
+> +		if (!fds) {
+> +			p_err("mem alloc failed");
+>  			return -1;
+> +		}
+> +		nb_fds = map_parse_fds(&argc, &argv, fds);
+> +		if (nb_fds < 1)
+> +			goto err_free;
+> +
+> +		if (json_output && nb_fds > 1)
+> +			jsonw_start_array(json_wtr);	/* root array */
+> +		for (i = 0; i < nb_fds; i++) {
+> +			err = bpf_obj_get_info_by_fd(fds[i], &info, &len);
+> +			if (err) {
+> +				p_err("can't get map info: %s",
+> +				      strerror(errno));
+> +				for (; i < nb_fds; i++)
+> +					close(fds[i]);
+> +				goto err_free;
+
+Same remarks as on patch 1, we may want to keep listing the maps even if
+we get a failure for one of them?
+
+> +			}
+>  
+> -		if (json_output)
+> -			return show_map_close_json(fd, &info);
+> -		else
+> -			return show_map_close_plain(fd, &info);
+> +			if (json_output)
+> +				show_map_close_json(fds[i], &info);
+> +			else
+> +				show_map_close_plain(fds[i], &info);
+> +
+> +			close(fds[i]);
+> +		}
+> +		if (json_output && nb_fds > 1)
+> +			jsonw_end_array(json_wtr);	/* root array */
+> +
+> +		return 0;
+> +
+> +err_free:
+> +		free(fds);
+> +		return -1;
+>  	}
+>  
+>  	if (argc)
+
+The rest of the code looks good to me, thanks a lot for working on this!
 Quentin
