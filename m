@@ -2,168 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DAA57119D72
-	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2019 23:38:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DBE0119E83
+	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2019 23:46:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729092AbfLJWiD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Dec 2019 17:38:03 -0500
-Received: from mail-qv1-f66.google.com ([209.85.219.66]:44759 "EHLO
-        mail-qv1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730018AbfLJWdw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Dec 2019 17:33:52 -0500
-Received: by mail-qv1-f66.google.com with SMTP id n8so4890765qvg.11;
-        Tue, 10 Dec 2019 14:33:51 -0800 (PST)
+        id S1727041AbfLJWqO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Dec 2019 17:46:14 -0500
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:35812 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726968AbfLJWqO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Dec 2019 17:46:14 -0500
+Received: by mail-lj1-f196.google.com with SMTP id j6so21779826lja.2
+        for <bpf@vger.kernel.org>; Tue, 10 Dec 2019 14:46:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=2qVtlYAOtRcz+6F4XJkyiWApaYdPcES7nZQ2donezV0=;
-        b=EHa/DmXt++387JQCZzAsAwfAYUEmAL11dzKPQCqQCESvSPxDAp9WeaxtLh+M31rPi7
-         +upY71bq8lulevUKjgA6jD7B98vHdo96nfbz27BF1g6vYlBe7uQC+tC6A3/alg+/UZpu
-         m5MOJadMJZ+iidQa4Iuvr7I9ngdppnGas9vc4YlJXWqn4rAVM3YG8RGKsYP5fUq6/p46
-         o5McgujVuymvluZyoySMIhBOHZMOvwCQlqzd8k69B3hHDYKNRI2ls2ePzzvP3RMksaoc
-         M2ZonpR+NP5eAuDzh8vMW11hj3+5T62UnOFoeimk5mjr62yeO0zgCAKv/RVSpZFggohR
-         OUHg==
+        bh=iqidpsRetevR7KQf2spiLZEXt1H+oFvx8yu6gvT2PyY=;
+        b=z/kxokg0605hqzDYiyrxq2x9Kyh+BMYxxmWS8jrbxqlOFo8Xo/aAb1sJtqw1Pn9PdN
+         deUpk3LibVV0+9VeRj+wDPcCDd+tz+NI5Eyje4m9db2BI6uGgmE9NQO2eLJ6LMN9yBX2
+         IMsIeTCd+Jr9bXHYMTsKzudH7CU89kX/SYRyldUeAXeKL+Ys01awCUBj4zig71+d+oOu
+         nNHQYWTlo4WI9gB37T8tf0qBDt8WpbBZ822KurKsTHDl1JUSZeHBT+PiQmeIe1vjz3S6
+         lCaKSEDNwF/q04epKMXNXXfAwyV0XyPWwVEc9EF/kIyisDMLm0+fa9gmRH2AxqNTT0iX
+         9aAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=2qVtlYAOtRcz+6F4XJkyiWApaYdPcES7nZQ2donezV0=;
-        b=Kc69b3ZBf0WQmNyGi8GD+qGTEwnNobcW6+CcODjsuJKWcxM1PizyIpzjxeXWEnjpcG
-         t2F0XmToXszj3xxw7PvCZl8Hxg++OBrPDJnltaFputAkLH0Dz8rBuDBR2rZwWyNycm+3
-         eHbW9xZCSr328mCaJaCWk4kYM5J2TKSLc9yTsYujfAlf+2zaUbkluAuU7/tAPwvFxc0/
-         Ljq64HxJrBGPmWxmFjLUcLiJz9RAYQkLK8poxjDjMtXkYqX8777++piQxdZThxUXcsWk
-         7QGEedFl8DNogY681ZvddWfoSrh5I9Ff1z5PHTsvzkKXGCasrrQIxnO3jDoRJ+q1gqib
-         0xAA==
-X-Gm-Message-State: APjAAAVayoKRZW28YhSj2wvxfZaFkML5RfjPb1XSjuaHmgpoHuLwSkP4
-        5ZeEflpGsCTaIL4SuvfyP8HKghmYoxoPG+/vmCs95A==
-X-Google-Smtp-Source: APXvYqzLdU215RBR+lRJDFtX7NSmzsBYhixAzaNonjFfJXAAbiD83HVZkQwNdg4MVVrQyCITIQ0hr3XoBh8Oe4aRaBE=
-X-Received: by 2002:ad4:4e34:: with SMTP id dm20mr204409qvb.163.1576017230745;
- Tue, 10 Dec 2019 14:33:50 -0800 (PST)
+        bh=iqidpsRetevR7KQf2spiLZEXt1H+oFvx8yu6gvT2PyY=;
+        b=A7UkDLpI22Vo3ORhCYU3nbQ7bjcOeOYIwRcrE3ed++BkSET91uYV/vxli7P+LW7FRm
+         kupXsUAXJu0ip1zu8fyn7DUQ9OvznLtKryLhn4tSuMqmyQFFionjpH/Zm/63DGqH9tDJ
+         cpFAHnqvIj2XXoNH/ZiWxo9sWu+9vhoPLiBDzcd6lYDkSSiZt6SbGTz0B+TfyPKg++jO
+         5pznQaN+sYR3/V5N/pBAdd9Nbifue380/gUMg/Ij1aYelR1n/Nx4WCvZcW+weBbCjVpA
+         NnjOPiJLi82MQjZ/XJr+jET+m4H5JOvcnExsBbIgI572WqdeKIF2xK8Zcmb5hrLQxSBj
+         Hu+w==
+X-Gm-Message-State: APjAAAVn1uBXBIGyJMNKMERTCppcEIxvPWL7CmlzWkukXQQ16Iewo2Pl
+        Xn0HgaOZx2LWPmRFY9GLgjzf0i8bEUted5zhLCTh
+X-Google-Smtp-Source: APXvYqwwFpweBwuruZL/D9PCPIdAr4GxZUnVllKgDndZSSzILeWdfLDomxs8nWamvvW8Y3aYKfYQw+55pd3HU/tS5yg=
+X-Received: by 2002:a2e:800b:: with SMTP id j11mr20040516ljg.126.1576017970966;
+ Tue, 10 Dec 2019 14:46:10 -0800 (PST)
 MIME-Version: 1.0
-References: <20191210011438.4182911-1-andriin@fb.com> <20191210011438.4182911-12-andriin@fb.com>
- <20191209175745.2d96a1f0@cakuba.netronome.com> <CAEf4Bzaow7w+TGyiF67pXn42TumxFZb7Q4BOQPPGfRJdyeY-ig@mail.gmail.com>
- <20191210100536.7a57d5e1@cakuba.netronome.com> <20191210214407.GA3105713@mini-arch>
-In-Reply-To: <20191210214407.GA3105713@mini-arch>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 10 Dec 2019 14:33:39 -0800
-Message-ID: <CAEf4BzbSwoeKVnyJU7EoP86exNj3Eku5_+8MbEieZKt2MqrhbQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 11/15] bpftool: add skeleton codegen command
-To:     Stanislav Fomichev <sdf@fomichev.me>
-Cc:     Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
+References: <20191206214934.11319-1-jolsa@kernel.org> <20191209121537.GA14170@linux.fritz.box>
+ <CAHC9VhQdOGTj1HT1cwvAdE1sRpzk5mC+oHQLHgJFa3vXEij+og@mail.gmail.com>
+ <d387184e-9c5f-d5b2-0acb-57b794235cbd@iogearbox.net> <CAHC9VhRDsEDGripZRrVNcjEBEEULPk+0dRp-uJ3nmmBK7B=sYQ@mail.gmail.com>
+ <20191210153652.GA14123@krava>
+In-Reply-To: <20191210153652.GA14123@krava>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Tue, 10 Dec 2019 17:45:59 -0500
+Message-ID: <CAHC9VhSa_B-VJOa_r8OcNrm0Yd_t1j3otWhKHgganSDx5Ni=Tg@mail.gmail.com>
+Subject: Re: [PATCHv3] bpf: Emit audit messages upon successful prog load and unload
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-audit@redhat.com,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Steve Grubb <sgrubb@redhat.com>,
+        David Miller <davem@redhat.com>,
+        Eric Paris <eparis@redhat.com>, Jiri Benc <jbenc@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 10, 2019 at 1:44 PM Stanislav Fomichev <sdf@fomichev.me> wrote:
->
-> On 12/10, Jakub Kicinski wrote:
-> > On Tue, 10 Dec 2019 09:11:31 -0800, Andrii Nakryiko wrote:
-> > > On Mon, Dec 9, 2019 at 5:57 PM Jakub Kicinski wrote:
-> > > > On Mon, 9 Dec 2019 17:14:34 -0800, Andrii Nakryiko wrote:
-> > > > > struct <object-name> {
-> > > > >       /* used by libbpf's skeleton API */
-> > > > >       struct bpf_object_skeleton *skeleton;
-> > > > >       /* bpf_object for libbpf APIs */
-> > > > >       struct bpf_object *obj;
-> > > > >       struct {
-> > > > >               /* for every defined map in BPF object: */
-> > > > >               struct bpf_map *<map-name>;
-> > > > >       } maps;
-> > > > >       struct {
-> > > > >               /* for every program in BPF object: */
-> > > > >               struct bpf_program *<program-name>;
-> > > > >       } progs;
-> > > > >       struct {
-> > > > >               /* for every program in BPF object: */
-> > > > >               struct bpf_link *<program-name>;
-> > > > >       } links;
-> > > > >       /* for every present global data section: */
-> > > > >       struct <object-name>__<one of bss, data, or rodata> {
-> > > > >               /* memory layout of corresponding data section,
-> > > > >                * with every defined variable represented as a struct field
-> > > > >                * with exactly the same type, but without const/volatile
-> > > > >                * modifiers, e.g.:
-> > > > >                */
-> > > > >                int *my_var_1;
-> > > > >                ...
-> > > > >       } *<one of bss, data, or rodata>;
-> > > > > };
+On Tue, Dec 10, 2019 at 10:37 AM Jiri Olsa <jolsa@redhat.com> wrote:
+> On Mon, Dec 09, 2019 at 06:53:23PM -0500, Paul Moore wrote:
+> > On Mon, Dec 9, 2019 at 6:19 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+> > > On 12/9/19 3:56 PM, Paul Moore wrote:
+> > > > On Mon, Dec 9, 2019 at 7:15 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+> > > >> On Fri, Dec 06, 2019 at 10:49:34PM +0100, Jiri Olsa wrote:
+> > > >>> From: Daniel Borkmann <daniel@iogearbox.net>
+> > > >>>
+> > > >>> Allow for audit messages to be emitted upon BPF program load and
+> > > >>> unload for having a timeline of events. The load itself is in
+> > > >>> syscall context, so additional info about the process initiating
+> > > >>> the BPF prog creation can be logged and later directly correlated
+> > > >>> to the unload event.
+> > > >>>
+> > > >>> The only info really needed from BPF side is the globally unique
+> > > >>> prog ID where then audit user space tooling can query / dump all
+> > > >>> info needed about the specific BPF program right upon load event
+> > > >>> and enrich the record, thus these changes needed here can be kept
+> > > >>> small and non-intrusive to the core.
+> > > >>>
+> > > >>> Raw example output:
+> > > >>>
+> > > >>>    # auditctl -D
+> > > >>>    # auditctl -a always,exit -F arch=x86_64 -S bpf
+> > > >>>    # ausearch --start recent -m 1334
+> > > >>>    ...
+> > > >>>    ----
+> > > >>>    time->Wed Nov 27 16:04:13 2019
+> > > >>>    type=PROCTITLE msg=audit(1574867053.120:84664): proctitle="./bpf"
+> > > >>>    type=SYSCALL msg=audit(1574867053.120:84664): arch=c000003e syscall=321   \
+> > > >>>      success=yes exit=3 a0=5 a1=7ffea484fbe0 a2=70 a3=0 items=0 ppid=7477    \
+> > > >>>      pid=12698 auid=1001 uid=1001 gid=1001 euid=1001 suid=1001 fsuid=1001    \
+> > > >>>      egid=1001 sgid=1001 fsgid=1001 tty=pts2 ses=4 comm="bpf"                \
+> > > >>>      exe="/home/jolsa/auditd/audit-testsuite/tests/bpf/bpf"                  \
+> > > >>>      subj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 key=(null)
+> > > >>>    type=UNKNOWN[1334] msg=audit(1574867053.120:84664): prog-id=76 op=LOAD
+> > > >>>    ----
+> > > >>>    time->Wed Nov 27 16:04:13 2019
+> > > >>>    type=UNKNOWN[1334] msg=audit(1574867053.120:84665): prog-id=76 op=UNLOAD
+> > > >>>    ...
+> > > >>>
+> > > >>> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+> > > >>> Co-developed-by: Jiri Olsa <jolsa@kernel.org>
+> > > >>> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > > >>
+> > > >> Paul, Steve, given the merge window is closed by now, does this version look
+> > > >> okay to you for proceeding to merge into bpf-next?
 > > > >
-> > > > I think I understand how this is useful, but perhaps the problem here
-> > > > is that we're using C for everything, and simple programs for which
-> > > > loading the ELF is majority of the code would be better of being
-> > > > written in a dynamic language like python?  Would it perhaps be a
-> > > > better idea to work on some high-level language bindings than spend
-> > > > time writing code gens and working around limitations of C?
+> > > > Given the change to audit UAPI I was hoping to merge this via the
+> > > > audit/next tree, is that okay with you?
 > > >
-> > > None of this work prevents Python bindings and other improvements, is
-> > > it? Patches, as always, are greatly appreciated ;)
+> > > Hm, my main concern is that given all the main changes are in BPF core and
+> > > usually the BPF subsystem has plenty of changes per release coming in that we'd
+> > > end up generating unnecessary merge conflicts. Given the include/uapi/linux/audit.h
+> > > UAPI diff is a one-line change, my preference would be to merge via bpf-next with
+> > > your ACK or SOB added. Does that work for you as well as?
 > >
-> > This "do it yourself" shit is not really funny :/
-> >
-> > I'll stop providing feedback on BPF patches if you guy keep saying
-> > that :/ Maybe that's what you want.
-> >
-> > > This skeleton stuff is not just to save code, but in general to
-> > > simplify and streamline working with BPF program from userspace side.
-> > > Fortunately or not, but there are a lot of real-world applications
-> > > written in C and C++ that could benefit from this, so this is still
-> > > immensely useful. selftests/bpf themselves benefit a lot from this
-> > > work, see few of the last patches in this series.
-> >
-> > Maybe those applications are written in C and C++ _because_ there
-> > are no bindings for high level languages. I just wish BPF programming
-> > was less weird and adding some funky codegen is not getting us closer
-> > to that goal.
-> >
-> > In my experience code gen is nothing more than a hack to work around
-> > bad APIs, but experiences differ so that's not a solid argument.
-> *nod*
+> > I regularly (a few times a week) run the audit and SELinux tests
+> > against Linus+audit/next+selinux/next to make sure things are working
+> > as expected and that some other subsystem has introduced a change
+> > which has broken something.  If you are willing to ensure the tests
+> > get run, including your new BPF audit tests I would be okay with that;
+> > is that acceptable?
 >
-> We have a nice set of C++ wrappers around libbpf internally, so we can do
-> something like BpfMap<key type, value type> and get a much better interface
-> with type checking. Maybe we should focus on higher level languages instead?
-> We are open to open-sourcing our C++ bits if you want to collaborate.
+> hi,
+> would you please let me know which tree this landed at the end?
 
-Python/C++ bindings and API wrappers are an orthogonal concerns here.
-I personally think it would be great to have both Python and C++
-specific API that uses libbpf under the cover. The only debatable
-thing is the logistics: where the source code lives, how it's kept in
-sync with libbpf, how we avoid crippling libbpf itself because
-something is hard or inconvenient to adapt w/ Python, etc.
+I think that's what we are trying to figure out - Daniel?
 
-The problem I'm trying to solve here is not really C-specific. I don't
-think you can solve it without code generation for C++. How do you
-"generate" BPF program-specific layout of .data, .bss, .rodata, etc
-data sections in such a way, where it's type safe (to the degree that
-language allows that, of course) and is not "stringly-based" API? This
-skeleton stuff provides a natural, convenient and type-safe way to
-work with global data from userspace pretty much at the same level of
-performance and convenience, as from BPF side. How can you achieve
-that w/ C++ without code generation? As for Python, sure you can do
-dynamic lookups based on just the name of property/method, but amount
-of overheads is not acceptable for all applications (and Python itself
-is not acceptable for those applications). In addition to that, C is
-the best way for other less popular languages (e.g., Rust) to leverage
-libbpf without investing lots of effort in re-implementing libbpf in
-Rust.
-
-So while having nice high-level language-specific APIs is good, it's not enough.
-
->
-> (I assume most of the stuff you have at fb is also non-c and one of
-> c++/python/php/rust/go/whatver).
-
-Yes, C++ using libbpf directly or through very thin wrappers. For
-BCC-based stuff, obviously, we rely on C++ parts of BCC. This struct
-I'm generating is extremely useful for C++ as well, as it gives very
-natural way to access *and initialize* global variables.
+-- 
+paul moore
+www.paul-moore.com
