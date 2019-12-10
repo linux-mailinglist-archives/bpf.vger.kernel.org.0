@@ -2,166 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 628F111831E
-	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2019 10:10:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E6821183B1
+	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2019 10:36:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726890AbfLJJKe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Dec 2019 04:10:34 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:59524 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726911AbfLJJKd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Dec 2019 04:10:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1575969031;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hz5q2f2cSA6flYmyws+ZR3sP2R2kkyVQYZHtyGJaGmw=;
-        b=OE+TZaUBzeCK8wZOOjTCrLMp7ARBKihEmoG8ucXPJ2Vp/P3rYU0bwq5J5zrT6zWYOBw4xu
-        a9jbR/VAcMbqaKgVVXadpRkBxfuUH9XkkIMtfOhMJs+8n8x0eEBag5pzEPUs3u2jfCDk5z
-        DZTMGaDs2k4A6+Z5gfP1u6Uu8Ucg0HE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-327-DbgC6R9-OP22xcA2heEXJw-1; Tue, 10 Dec 2019 04:10:30 -0500
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 411EADBE7;
-        Tue, 10 Dec 2019 09:10:29 +0000 (UTC)
-Received: from carbon (ovpn-200-56.brq.redhat.com [10.40.200.56])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3D70E1001925;
-        Tue, 10 Dec 2019 09:10:21 +0000 (UTC)
-Date:   Tue, 10 Dec 2019 10:10:20 +0100
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
-        bpf@vger.kernel.org, Jiri Olsa <jolsa@redhat.com>,
-        daniel@iogearbox.net, netdev@vger.kernel.org, brouer@redhat.com
-Subject: Re: Establishing /usr/lib/bpf as a convention for eBPF bytecode
- files?
-Message-ID: <20191210101020.767622b7@carbon>
-In-Reply-To: <20191210014018.ltmjgsaafve54o6w@ast-mbp.dhcp.thefacebook.com>
-References: <87fthtlotk.fsf@toke.dk>
-        <20191210014018.ltmjgsaafve54o6w@ast-mbp.dhcp.thefacebook.com>
+        id S1727268AbfLJJgJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Dec 2019 04:36:09 -0500
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:45500 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726574AbfLJJgJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Dec 2019 04:36:09 -0500
+Received: by mail-wr1-f65.google.com with SMTP id j42so19148753wrj.12;
+        Tue, 10 Dec 2019 01:36:08 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=mgAZ5+aB/GvC0mnzXTVn3f/oGiktcBasZAmAbLkZ9JE=;
+        b=nx93M4IT9DSr/mpaNHid9wLdFHgRPoZGI4R09KrAJWMRYtmyogl3X9OhOhRI82k5ES
+         yb3+up9pKS9FWpjfM+PKnnNjEX0s+JOuRvKR1csDiDCYjOIq94koN9qYZeSmXoA52day
+         PqxtkHuFiI5sMppqvoZBhJQsBnaX/UGw6W8jH/vNSNrE2Z9RX8So/TlAELVo0XDdk94R
+         pV62R+OJ+xddJMfrTREmP9VMluqVCgq3WR4Boska1Z6OY36fHPtC3Lkbe07T1PiMU/C+
+         XK7TEj/qfDRy5AAjKjpXYNkr521uonm22zpfMt8NVYpa1jAN8SVsZUti6IedKwy5u+Pq
+         RBrQ==
+X-Gm-Message-State: APjAAAVJ8daZjsF2iKjUlnbZnKCEUlpA8UyG6VzqeyiVq6Pw47Kk80jn
+        6L5nlz3cyRbJM628a3AKr7o=
+X-Google-Smtp-Source: APXvYqw6FVjHfOx8q4A7LdcghN9XlvKV2lcjY8QJoImoDiAVgnjuYhzenEbMcT7oIrBlD+tcehYX5g==
+X-Received: by 2002:a5d:6349:: with SMTP id b9mr2137418wrw.346.1575970567440;
+        Tue, 10 Dec 2019 01:36:07 -0800 (PST)
+Received: from Nover ([161.105.209.130])
+        by smtp.gmail.com with ESMTPSA id m10sm2609149wrx.19.2019.12.10.01.36.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Dec 2019 01:36:06 -0800 (PST)
+Date:   Tue, 10 Dec 2019 10:36:06 +0100
+From:   Paul Chaignon <paul.chaignon@orange.com>
+To:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>
+Cc:     Paul Burton <paulburton@kernel.org>,
+        Mahshid Khezri <khezri.mahshid@gmail.com>,
+        paul.chaignon@gmail.com, bpf <bpf@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH bpf 1/2] bpf, riscv: limit to 33 tail calls
+Message-ID: <20191210093605.GA31145@Nover>
+References: <cover.1575916815.git.paul.chaignon@gmail.com>
+ <966fe384383bf23a0ee1efe8d7291c78a3fb832b.1575916815.git.paul.chaignon@gmail.com>
+ <CAJ+HfNgFo8viKn3KzNfbmniPNUpjOv_QM4ua_V0RFLBpWCOBYw@mail.gmail.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
-X-MC-Unique: DbgC6R9-OP22xcA2heEXJw-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJ+HfNgFo8viKn3KzNfbmniPNUpjOv_QM4ua_V0RFLBpWCOBYw@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 9 Dec 2019 17:40:19 -0800
-Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+On Mon, Dec 09, 2019 at 08:57:27PM +0100, Björn Töpel wrote:
+> On Mon, 9 Dec 2019 at 19:52, Paul Chaignon <paul.chaignon@orange.com> wrote:
+> >
+> > All BPF JIT compilers except RISC-V's and MIPS' enforce a 33-tail calls
+> > limit at runtime.  In addition, a test was recently added, in tailcalls2,
+> > to check this limit.
+> >
+> > This patch updates the tail call limit in RISC-V's JIT compiler to allow
+> > 33 tail calls.  I tested it using the above selftest on an emulated
+> > RISCV64.
+> >
+> 
+> 33! ICK! ;-) Thanks for finding this!
 
-> On Mon, Dec 09, 2019 at 12:29:27PM +0100, Toke H=C3=B8iland-J=C3=B8rgense=
-n wrote:
-> > Hi everyone
-> >=20
-> > As you have no doubt noticed, we have started thinking about how to
-> > package eBPF-related applications in distributions. As a part of this,
-> > I've been thinking about what to recommend for applications that ship
-> > pre-compiled BPF byte-code files.
-> >=20
-> > The obvious place to place those would be somewhere in the system
-> > $LIBDIR (i.e., /usr/lib or /usr/lib64, depending on the distro). But
-> > since BPF byte code is its own binary format, different from regular
-> > executables, I think having a separate path to put those under makes
-> > sense. So I'm proposing to establish a convention that pre-compiled BPF
-> > programs be installed into /usr/lib{,64}/bpf.
-> >=20
-> > This would let users discover which BPF programs are shipped on their
-> > system, and it could be used to discover which package loaded a
-> > particular BPF program, by walking the directory to find the file a
-> > loaded program came from. It would not work for dynamically-generated
-> > bytecode, of course, but I think at least some applications will end up
-> > shipping pre-compiled bytecode files (we're doing that for xdp-tools,
-> > for instance).
-> >=20
-> > As I said, this would be a convention. We're already using it for
-> > xdp-tools[0], so my plan is to use that as the "first mover", try to ge=
-t
-> > distributions to establish the path as a part of their filesystem
-> > layout, and then just try to encourage packages to use it. Hopefully it
-> > will catch on.
-> >=20
-> > Does anyone have any objections to this? Do you think it is a complete
-> > waste of time, or is it worth giving it a shot? :) =20
->=20
-> What will be the name of file/directory ?
-> What is going to be the mechanism to clean it up?
-> What will be stored in there? Just .o files ?
->=20
-> libbcc stores original C and rewritten C in /var/tmp/bcc/bpf_prog_TAG/
-> It was useful for debugging. Since TAG is used as directory name
-> reloading the same bcc script creates the same dir and /var/tmp
-> periodically gets cleaned by reboot.
->=20
-> Installing bpf .o into common location feels useful. Not sure though
-> how you can convince folks to follow such convention.
+Actually, Mahshid found it during her internship because she wanted to
+check that the number of tail calls was limited.  And now I feel so
+naive for trusting the doc...
 
-I imagine the files under /usr/lib{,64}/bpf/ will be pre-compiled
-binaries (fairly static file).  These will be delivered together with
-the distro RPM file. The distro will detect/enforce that two packages
-cannot use the same name for bpf .o files.
-
-I see these files as part of the RPM software package binary files. In
-my opinion, this means/imply that the BPF application should not update
-these files runtime, because different consistency checksum tools
-should be able to verify that this files comes from the original RPM
-file.
-
-More below on dynamic files.
-
-> That was the main problem with libbcc. Not everything is using that lib.
-> So teaching folks who debug bpf in production to look into /var/tmp/bcc
-> wasn't enough. 'bpftool p s' is still the main mechanism.
-> Some C++ services embed bpf .o as part of x86 binary and that binary
-> is installed. They wouldn't want to split bpf .o into separate file
-> since it will complicate dependency management, risk conflicts, etc.
-> Just food for thought.
-
-I see three different types of BPF-object files, which belong in
-different places (suggestion in parentheses):
-
- 1. Pre-compiled binaries via RPM. (/usr/lib? [1])
- 2. Application "startup" compiled "cached" BPF-object (/var/cache? [2]).
- 3. Runtime dynamic compiled BPF-objects short lived (/run? [3])
-
-You can follow the links below, to see if match descriptions in
-the Filesystem Hierarchy Standard[4].
-
-I think that filetype 1 + 2 makes sense to store in files. For
-filetype 3 (the highly dynamic runtime re-compiled files) I'm not
-sure it makes sense to store those in any central place.  Applications
-could use /run/application-name/, but it will be a pain to deal with
-filename-clashes. As Alexei brings up cleanup; /run/ is cleared at the
-beginning of the boot process[3].
-
-For fileytpe 2, I suggest /var/cache/bpf/, but with an additional
-application name as a subdir, this is to avoid name clashes (which then
-becomes the applications responsibility with in its own dir).
-
-
-Links:
-
-[1] /usr/lib: "Libraries for programming and packages" https://refspecs.lin=
-uxfoundation.org/FHS_3.0/fhs/ch04s06.html
-
-[2] /var/cache: "Application cache data" https://refspecs.linuxfoundation.o=
-rg/FHS_3.0/fhs/ch05s05.html
-
-[3] /run: "Run-time variable data" https://refspecs.linuxfoundation.org/FHS=
-_3.0/fhs/ch03s15.html
-
-[4] https://refspecs.linuxfoundation.org/FHS_3.0/fhs/index.html
---=20
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
-
+> 
+> Acked-by: Björn Töpel <bjorn.topel@gmail.com>
+> 
+> > Fixes: 2353ecc6f91f ("bpf, riscv: add BPF JIT for RV64G")
+> > Reported-by: Mahshid Khezri <khezri.mahshid@gmail.com>
+> > Signed-off-by: Paul Chaignon <paul.chaignon@orange.com>
+> > ---
+> >  arch/riscv/net/bpf_jit_comp.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/arch/riscv/net/bpf_jit_comp.c b/arch/riscv/net/bpf_jit_comp.c
+> > index 5451ef3845f2..7fbf56aab661 100644
+> > --- a/arch/riscv/net/bpf_jit_comp.c
+> > +++ b/arch/riscv/net/bpf_jit_comp.c
+> > @@ -631,14 +631,14 @@ static int emit_bpf_tail_call(int insn, struct rv_jit_context *ctx)
+> >                 return -1;
+> >         emit(rv_bgeu(RV_REG_A2, RV_REG_T1, off >> 1), ctx);
+> >
+> > -       /* if (--TCC < 0)
+> > +       /* if (TCC-- < 0)
+> >          *     goto out;
+> >          */
+> >         emit(rv_addi(RV_REG_T1, tcc, -1), ctx);
+> >         off = (tc_ninsn - (ctx->ninsns - start_insn)) << 2;
+> >         if (is_13b_check(off, insn))
+> >                 return -1;
+> > -       emit(rv_blt(RV_REG_T1, RV_REG_ZERO, off >> 1), ctx);
+> > +       emit(rv_blt(tcc, RV_REG_ZERO, off >> 1), ctx);
+> >
+> >         /* prog = array->ptrs[index];
+> >          * if (!prog)
+> > --
+> > 2.17.1
+> >
