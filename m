@@ -2,175 +2,236 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C4EC118EA7
-	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2019 18:12:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A69C9118EFE
+	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2019 18:29:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727619AbfLJRLn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Dec 2019 12:11:43 -0500
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:44584 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726780AbfLJRLn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Dec 2019 12:11:43 -0500
-Received: by mail-qt1-f193.google.com with SMTP id g17so3410590qtp.11;
-        Tue, 10 Dec 2019 09:11:42 -0800 (PST)
+        id S1727542AbfLJR3X (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Dec 2019 12:29:23 -0500
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:39728 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727211AbfLJR3X (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Dec 2019 12:29:23 -0500
+Received: by mail-wm1-f68.google.com with SMTP id d5so2591999wmb.4
+        for <bpf@vger.kernel.org>; Tue, 10 Dec 2019 09:29:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7RagCXx4PLk5Qp49HJqKwcJPIWIyspcsm+oNaqdbslM=;
-        b=DoyQL4KcMkvz7vmH3s3eQU8CtblHmOfXtg+ZpUXRAFLGVApTwLQ2X4LxuezG4hPs3o
-         UKninZ55uaTToohw31YCmCgZZlHWGGXsb6JmJ/SodnaPv9Wc/18KczLZWzqO8YbBodrm
-         r8bQr/Rx9Pr5GxFncLGbvR0Y5vRMxfl30/apLikbjSRcHJWYrSJFeuxQ7BmlBCl4xsfv
-         YZu+4Ojivyp+JpHhIKmeuIlNKsP699nBFDzXn4u9aBdwOfIosV/TpukkRIEb3g0kUOEg
-         570HmX9VOtMunjx6aMrD2R92K+rZJIBoNTBihxii1+T5ac+bLA4c8qoR6neDxOOnPoPS
-         F2Lg==
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=to:cc:references:from:openpgp:autocrypt:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=IHgpwLrNeuOuBJWJ9xSmyd82zmrlT84LiK7U7bQGaIk=;
+        b=vQegrrz1v7ISzbZoNbwq/XjGpzrc8KRF/ol4dkPLohqzkKKjhpOZPB8MPw4yOQ9oX4
+         I4b8VGiBqgf1FokSJk+gBL0PGbZy26uXU/Hzx3u0vcxnzZWyFo8WMvB1G4AQlc28YV4r
+         0qhDD2sECm5L052o3sCkCQFvUSeCLTWsqvX8kbxCRLVFK0sfFIhC5mlUp8nde5dVuRMI
+         mD/0VLtbbiHC9g48bDYiQDgW9MM8slqeMXb1BLfMUrZHEIORUkMXr2QtkYCkbP9WG3m7
+         4eB7uHXS2GRs8dN9DXT53YXumf88jo9aJdOpL4Yw3hbBkAKPP2YNYdIGROA/achQetWG
+         9OuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7RagCXx4PLk5Qp49HJqKwcJPIWIyspcsm+oNaqdbslM=;
-        b=C/9UHY8xi4NxIAurarXCrYF15oHUq+OQ81orCLtOTw21ImlzZHtLazkO+CO2Fseqpl
-         VKeXqpZZ0AdYTmBZtDC7YNjlUn/EkiQFIfuvGvpumeHRNELOxro8De6GW6GBuy4upXhP
-         PYzdgAvOHb3XgCfDEebaXH1EvoNBc/jElsUxEPpXNuh4fX6f4qdepx9UgxefdmiFcgU2
-         zmAjxrdBxYPWtFGiZzJSssh7OlXJzO8a274I7LXf5YJ/BKmiJSutnzaHI/rlcl85iowG
-         HXO32FGubX+1RkZ5B9lNI+76NcY1fDciany0GF+49tNx1lZP2tc9/Y2xXDR12Q3je0u1
-         B5Pw==
-X-Gm-Message-State: APjAAAUZwVAK6Px+D7x6xFpvDqR8wlo2VRLYzIeX4+t/YswHiokxoIvt
-        hDIVVFjyqL0sviOGA6o16ep5TjQfbicBykYCxTs=
-X-Google-Smtp-Source: APXvYqzLPd7xnUCFZQkxfqfcRqMNP+6gooOhxuET6H41wpZU3iX8JkGS1BpXXwXN5CihWts8640sLFUibHQugmhtios=
-X-Received: by 2002:ac8:5457:: with SMTP id d23mr29404307qtq.93.1575997901883;
- Tue, 10 Dec 2019 09:11:41 -0800 (PST)
-MIME-Version: 1.0
-References: <20191210011438.4182911-1-andriin@fb.com> <20191210011438.4182911-12-andriin@fb.com>
- <20191209175745.2d96a1f0@cakuba.netronome.com>
-In-Reply-To: <20191209175745.2d96a1f0@cakuba.netronome.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 10 Dec 2019 09:11:31 -0800
-Message-ID: <CAEf4Bzaow7w+TGyiF67pXn42TumxFZb7Q4BOQPPGfRJdyeY-ig@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 11/15] bpftool: add skeleton codegen command
-To:     Jakub Kicinski <jakub.kicinski@netronome.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+        h=x-gm-message-state:to:cc:references:from:openpgp:autocrypt:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=IHgpwLrNeuOuBJWJ9xSmyd82zmrlT84LiK7U7bQGaIk=;
+        b=qqgLvakdfhA6ejjyS9Z+P8xAkD/ZQH9ksFzUi0hERjpROp0Xle+otX5ZxLqPxjlO+N
+         F3D1eadqlxCWnoNzUv5ZjHpTMkFhE8Y9jwLL5fBf+7pxINBjngG2c2PJMbYg/BJdFe7D
+         8GTyhufq/SeqvrL72fMQk8k7weqGshLRjlGQYMjXtol2owVzzdL/4Mz/xHMu8wNTK7qv
+         mJ2/1OIQOzLKsdfDwTHwU0e7cJa64H88ZfoiCyC+7A5hLIztSGi2DafjP9HmcCZxzUqX
+         qhVmNgJPDylSpXaSyrV8wcAcdf9A2KK+uWrRFptB9HKGgMBuHD0ZG9yfJv/rx0IlC3tB
+         zJ+w==
+X-Gm-Message-State: APjAAAWidwBgHHJjNGP5bHoSWiMk0YIx59WS7SJXo83PeuRmu0YKpw5S
+        hZuAG/PmavtXTQfWLaKlSBzsfQ==
+X-Google-Smtp-Source: APXvYqwCJJFAZR6mB/jlnbIjmfv00hJEWtpBH4RF4JL5RApevSNapWQT49128Cz5FieaOsekKd10xQ==
+X-Received: by 2002:a05:600c:2144:: with SMTP id v4mr6218069wml.141.1575998960524;
+        Tue, 10 Dec 2019 09:29:20 -0800 (PST)
+Received: from [172.20.1.104] ([217.38.71.146])
+        by smtp.gmail.com with ESMTPSA id r6sm3865728wrq.92.2019.12.10.09.29.19
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 10 Dec 2019 09:29:19 -0800 (PST)
+To:     Paul Chaignon <paul.chaignon@orange.com>, bpf@vger.kernel.org
+Cc:     paul.chaignon@gmail.com, netdev@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+References: <cover.1575991886.git.paul.chaignon@orange.com>
+ <4db34d127179faafd6eca408792222c922969904.1575991886.git.paul.chaignon@orange.com>
+From:   Quentin Monnet <quentin.monnet@netronome.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=quentin.monnet@netronome.com; prefer-encrypt=mutual; keydata=
+ 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
+ RHhSHGnKaQ6MfrTge5Q0h5A=
+Subject: Re: [PATCH bpf-next 1/3] bpftool: match several programs with same
+ tag
+Message-ID: <99f35770-9a3f-2135-a9a6-34d931b1ae1e@netronome.com>
+Date:   Tue, 10 Dec 2019 17:29:18 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.1
+MIME-Version: 1.0
+In-Reply-To: <4db34d127179faafd6eca408792222c922969904.1575991886.git.paul.chaignon@orange.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Dec 9, 2019 at 5:57 PM Jakub Kicinski
-<jakub.kicinski@netronome.com> wrote:
->
-> On Mon, 9 Dec 2019 17:14:34 -0800, Andrii Nakryiko wrote:
-> > struct <object-name> {
-> >       /* used by libbpf's skeleton API */
-> >       struct bpf_object_skeleton *skeleton;
-> >       /* bpf_object for libbpf APIs */
-> >       struct bpf_object *obj;
-> >       struct {
-> >               /* for every defined map in BPF object: */
-> >               struct bpf_map *<map-name>;
-> >       } maps;
-> >       struct {
-> >               /* for every program in BPF object: */
-> >               struct bpf_program *<program-name>;
-> >       } progs;
-> >       struct {
-> >               /* for every program in BPF object: */
-> >               struct bpf_link *<program-name>;
-> >       } links;
-> >       /* for every present global data section: */
-> >       struct <object-name>__<one of bss, data, or rodata> {
-> >               /* memory layout of corresponding data section,
-> >                * with every defined variable represented as a struct field
-> >                * with exactly the same type, but without const/volatile
-> >                * modifiers, e.g.:
-> >                */
-> >                int *my_var_1;
-> >                ...
-> >       } *<one of bss, data, or rodata>;
-> > };
->
-> I think I understand how this is useful, but perhaps the problem here
-> is that we're using C for everything, and simple programs for which
-> loading the ELF is majority of the code would be better of being
-> written in a dynamic language like python?  Would it perhaps be a
-> better idea to work on some high-level language bindings than spend
-> time writing code gens and working around limitations of C?
+Hi Paul,
 
-None of this work prevents Python bindings and other improvements, is
-it? Patches, as always, are greatly appreciated ;)
+2019-12-10 17:06 UTC+0100 ~ Paul Chaignon <paul.chaignon@orange.com>
+> When several BPF programs have the same tag, bpftool matches only the
+> first (in ID order).  This patch changes that behavior such that dump and
+> show commands return all matched programs.  Commands that require a single
+> program (e.g., pin and attach) will error out if given a tag that matches
+> several.  bpftool prog dump will also error out if file or visual are
+> given and several programs have the given tag.
+> 
+> In the case of the dump command, a program header is added before each
+> dump only if the tag matches several programs; this patch doesn't change
+> the output if a single program matches.
+> 
+> Signed-off-by: Paul Chaignon <paul.chaignon@orange.com>
+> ---
+>  .../bpftool/Documentation/bpftool-prog.rst    |  16 +-
+>  tools/bpf/bpftool/prog.c                      | 371 ++++++++++++------
+>  2 files changed, 272 insertions(+), 115 deletions(-)
+> 
 
-This skeleton stuff is not just to save code, but in general to
-simplify and streamline working with BPF program from userspace side.
-Fortunately or not, but there are a lot of real-world applications
-written in C and C++ that could benefit from this, so this is still
-immensely useful. selftests/bpf themselves benefit a lot from this
-work, see few of the last patches in this series.
+> diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+> index 4535c863d2cd..ca4278269e73 100644
+> --- a/tools/bpf/bpftool/prog.c
+> +++ b/tools/bpf/bpftool/prog.c
+> @@ -25,6 +25,11 @@
+>  #include "main.h"
+>  #include "xlated_dumper.h"
+>  
+> +enum dump_mode {
+> +	DUMP_JITED,
+> +	DUMP_XLATED,
+> +};
+> +
+>  static const char * const attach_type_strings[] = {
+>  	[BPF_SK_SKB_STREAM_PARSER] = "stream_parser",
+>  	[BPF_SK_SKB_STREAM_VERDICT] = "stream_verdict",
+> @@ -77,11 +82,13 @@ static void print_boot_time(__u64 nsecs, char *buf, unsigned int size)
+>  		strftime(buf, size, "%FT%T%z", &load_tm);
+>  }
+>  
+> -static int prog_fd_by_tag(unsigned char *tag)
+> +static int
+> +prog_fd_by_tag(unsigned char *tag, int *fds)
 
->
-> > This provides great usability improvements:
-> > - no need to look up maps and programs by name, instead just
-> >   my_obj->maps.my_map or my_obj->progs.my_prog would give necessary
-> >   bpf_map/bpf_program pointers, which user can pass to existing libbpf APIs;
-> > - pre-defined places for bpf_links, which will be automatically populated for
-> >   program types that libbpf knows how to attach automatically (currently
-> >   tracepoints, kprobe/kretprobe, raw tracepoint and tracing programs). On
-> >   tearing down skeleton, all active bpf_links will be destroyed (meaning BPF
-> >   programs will be detached, if they are attached). For cases in which libbpf
-> >   doesn't know how to auto-attach BPF program, user can manually create link
-> >   after loading skeleton and they will be auto-detached on skeleton
-> >   destruction:
-> >
-> >       my_obj->links.my_fancy_prog = bpf_program__attach_cgroup_whatever(
-> >               my_obj->progs.my_fancy_prog, <whatever extra param);
-> >
-> > - it's extremely easy and convenient to work with global data from userspace
-> >   now. Both for read-only and read/write variables, it's possible to
-> >   pre-initialize them before skeleton is loaded:
-> >
-> >       skel = my_obj__open(raw_embed_data);
-> >       my_obj->rodata->my_var = 123;
-> >       my_obj__load(skel); /* 123 will be initialization value for my_var */
-> >
-> >   After load, if kernel supports mmap() for BPF arrays, user can still read
-> >   (and write for .bss and .data) variables values, but at that point it will
-> >   be directly mmap()-ed to BPF array, backing global variables. This allows to
-> >   seamlessly exchange data with BPF side. From userspace program's POV, all
-> >   the pointers and memory contents stay the same, but mapped kernel memory
-> >   changes to point to created map.
-> >   If kernel doesn't yet support mmap() for BPF arrays, it's still possible to
-> >   use those data section structs to pre-initialize .bss, .data, and .rodata,
-> >   but after load their pointers will be reset to NULL, allowing user code to
-> >   gracefully handle this condition, if necessary.
-> >
-> > Given a big surface area, skeleton is kept as an experimental non-public
-> > API for now, until more feedback and real-world experience is collected.
->
-> That makes no sense to me. bpftool has the same backward compat
-> requirements as libbpf. You're just pushing the requirements from
-> one component to the other. Feedback and real-world use cases have
-> to be exercised before code is merged to any project with backward
-> compatibility requirements :(
+Nit: No line break necessary if it fits on one line.
+(Sorry for misleading you on that in an earlier discussion :/)
 
-To get this feedback we need to have this functionality adopted. To
-have it adopted, we need it available in tool users already know,
-have, and use. If you feel that "experimental" disclaimer is not
-enough, I guess we can add extra flag to bpftool itself to enable
-experimental functionality, something like:
+>  {
+>  	unsigned int id = 0;
+> +	int fd, nb_fds = 0;
+> +	void *tmp;
+>  	int err;
+> -	int fd;
+>  
+>  	while (true) {
+>  		struct bpf_prog_info info = {};
 
-bpftool --experimental gen skeleton <bla>
+[...]
 
->
-> Also please run checkpatch on your patches, and fix reverse xmas tree.
-> This is bpftool, not libbpf. Creating a separate tool for this codegen
-> stuff is also an option IMHO.
+> @@ -351,21 +421,43 @@ static int show_prog(int fd)
+>  
+>  static int do_show(int argc, char **argv)
+>  {
+> +	int fd, nb_fds, i;
+> +	int *fds = NULL;
+>  	__u32 id = 0;
+>  	int err;
+> -	int fd;
+>  
+>  	if (show_pinned)
+>  		build_pinned_obj_table(&prog_table, BPF_OBJ_PROG);
+>  
+>  	if (argc == 2) {
+> -		fd = prog_parse_fd(&argc, &argv);
+> -		if (fd < 0)
+> +		fds = malloc(sizeof(int));
+> +		if (!fds) {
+> +			p_err("mem alloc failed");
+>  			return -1;
+> +		}
+> +		nb_fds = prog_parse_fds(&argc, &argv, fds);
+> +		if (nb_fds < 1)
+> +			goto err_free;
+>  
+> -		err = show_prog(fd);
+> -		close(fd);
+> -		return err;
+> +		if (json_output && nb_fds > 1)
+> +			jsonw_start_array(json_wtr);	/* root array */
+> +		for (i = 0; i < nb_fds; i++) {
+> +			err = show_prog(fds[i]);
+> +			close(fds[i]);
+> +			if (err) {
+> +				for (i++; i < nb_fds; i++)
+> +					close(fds[i]);
+> +				goto err_free;
 
-Sure, will fix few small things checkpatch detected. Will reverse
-christmas-ize all the variables, of course :)
+Alternatively, we could keep trying to list the remaining programs. For
+example, if the system has a long list of BPF programs running and one
+of them is removed while printing the list, we would still have the rest
+of the list.
 
-As for separate tool just for this, you are not serious, right? If
-bpftool is not right tool for this, I don't know which one is.
+If we went this way, maybe just set err to non-zero if no program at all
+could be printed?
+
+> +			}
+> +		}
+> +		if (json_output && nb_fds > 1)
+> +			jsonw_end_array(json_wtr);	/* root array */
+> +
+> +		return 0;
+> +
+> +err_free:
+> +		free(fds);
+> +		return -1;
+>  	}
+>  
+>  	if (argc)
