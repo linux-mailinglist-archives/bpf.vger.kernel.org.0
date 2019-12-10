@@ -2,36 +2,37 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 289A711958C
-	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2019 22:21:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22AF5119543
+	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2019 22:20:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728543AbfLJVVV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Dec 2019 16:21:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34976 "EHLO mail.kernel.org"
+        id S1728886AbfLJVMS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Dec 2019 16:12:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728840AbfLJVLs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Dec 2019 16:11:48 -0500
+        id S1728745AbfLJVMQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Dec 2019 16:12:16 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A20CA24697;
-        Tue, 10 Dec 2019 21:11:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E0EAE24697;
+        Tue, 10 Dec 2019 21:12:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1576012307;
-        bh=ZgnB4lFM8X3vrrBvyCDddzp2I40k+9vWfvOWfY48zDg=;
+        s=default; t=1576012335;
+        bh=Jqioyw8RE0uZ1wbjjFkGDn2AqzNGFoGlgpOFosiAVI0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aIx0yhS2vzMelBtWSrSnYlS4Y5BkGNWh1HmNUJEsYtQXWdHs5fDn+LVeuQMpKfbjg
-         cg0TE1ltgzk75StLY+3fD/DfV66WvM5tnOMkJAHXi0FjNtM6t64T23WrvC/YFvssPY
-         e4hiYqNFewrwRsMGoafgTHnEBFSOzkGLPpgBbqB8=
+        b=FkWtwiQOBgJTH2iKwRqp7FlT3oP7Dalb1/7yGCr4K3IWcnHG1J0ePIrgIMv17egTU
+         NwGLNbidTruYBv1DMIEO7Dhe867CK0/A8X6ZrPSw0eSgPFNq+wjjyS3Bx8UQgpagdJ
+         TxgTFvj9Y9NUlG1hGuNwthlwO2MV7ksYLkoAMeQo=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ilya Leoshkevich <iii@linux.ibm.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-s390@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 243/350] s390/bpf: Use kvcalloc for addrs array
-Date:   Tue, 10 Dec 2019 16:05:48 -0500
-Message-Id: <20191210210735.9077-204-sashal@kernel.org>
+Cc:     Yonghong Song <yhs@fb.com>, Daniel Borkmann <daniel@iogearbox.net>,
+        Song Liu <songliubraving@fb.com>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: [PATCH AUTOSEL 5.4 267/350] bpf, testing: Workaround a verifier failure for test_progs
+Date:   Tue, 10 Dec 2019 16:06:12 -0500
+Message-Id: <20191210210735.9077-228-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191210210735.9077-1-sashal@kernel.org>
 References: <20191210210735.9077-1-sashal@kernel.org>
@@ -44,58 +45,116 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Ilya Leoshkevich <iii@linux.ibm.com>
+From: Yonghong Song <yhs@fb.com>
 
-[ Upstream commit 166f11d11f6f70439830d09bfa5552ec1b368494 ]
+[ Upstream commit b7a0d65d80a0c5034b366392624397a0915b7556 ]
 
-A BPF program may consist of 1m instructions, which means JIT
-instruction-address mapping can be as large as 4m. s390 has
-FORCE_MAX_ZONEORDER=9 (for memory hotplug reasons), which means maximum
-kmalloc size is 1m. This makes it impossible to JIT programs with more
-than 256k instructions.
+With latest llvm compiler, running test_progs will have the following
+verifier failure for test_sysctl_loop1.o:
 
-Fix by using kvcalloc, which falls back to vmalloc for larger
-allocations. An alternative would be to use a radix tree, but that is
-not supported by bpf_prog_fill_jited_linfo.
+  libbpf: load bpf program failed: Permission denied
+  libbpf: -- BEGIN DUMP LOG ---
+  libbpf:
+  invalid indirect read from stack var_off (0x0; 0xff)+196 size 7
+  ...
+  libbpf: -- END LOG --
+  libbpf: failed to load program 'cgroup/sysctl'
+  libbpf: failed to load object 'test_sysctl_loop1.o'
 
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+The related bytecode looks as below:
+
+  0000000000000308 LBB0_8:
+      97:       r4 = r10
+      98:       r4 += -288
+      99:       r4 += r7
+     100:       w8 &= 255
+     101:       r1 = r10
+     102:       r1 += -488
+     103:       r1 += r8
+     104:       r2 = 7
+     105:       r3 = 0
+     106:       call 106
+     107:       w1 = w0
+     108:       w1 += -1
+     109:       if w1 > 6 goto -24 <LBB0_5>
+     110:       w0 += w8
+     111:       r7 += 8
+     112:       w8 = w0
+     113:       if r7 != 224 goto -17 <LBB0_8>
+
+And source code:
+
+     for (i = 0; i < ARRAY_SIZE(tcp_mem); ++i) {
+             ret = bpf_strtoul(value + off, MAX_ULONG_STR_LEN, 0,
+                               tcp_mem + i);
+             if (ret <= 0 || ret > MAX_ULONG_STR_LEN)
+                     return 0;
+             off += ret & MAX_ULONG_STR_LEN;
+     }
+
+Current verifier is not able to conclude that register w0 before '+'
+at insn 110 has a range of 1 to 7 and thinks it is from 0 - 255. This
+leads to more conservative range for w8 at insn 112, and later verifier
+complaint.
+
+Let us workaround this issue until we found a compiler and/or verifier
+solution. The workaround in this patch is to make variable 'ret' volatile,
+which will force a reload and then '&' operation to ensure better value
+range. With this patch, I got the below byte code for the loop:
+
+  0000000000000328 LBB0_9:
+     101:       r4 = r10
+     102:       r4 += -288
+     103:       r4 += r7
+     104:       w8 &= 255
+     105:       r1 = r10
+     106:       r1 += -488
+     107:       r1 += r8
+     108:       r2 = 7
+     109:       r3 = 0
+     110:       call 106
+     111:       *(u32 *)(r10 - 64) = r0
+     112:       r1 = *(u32 *)(r10 - 64)
+     113:       if w1 s< 1 goto -28 <LBB0_5>
+     114:       r1 = *(u32 *)(r10 - 64)
+     115:       if w1 s> 7 goto -30 <LBB0_5>
+     116:       r1 = *(u32 *)(r10 - 64)
+     117:       w1 &= 7
+     118:       w1 += w8
+     119:       r7 += 8
+     120:       w8 = w1
+     121:       if r7 != 224 goto -21 <LBB0_9>
+
+Insn 117 did the '&' operation and we got more precise value range
+for 'w8' at insn 120. The test is happy then:
+
+  #3/17 test_sysctl_loop1.o:OK
+
+Signed-off-by: Yonghong Song <yhs@fb.com>
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Link: https://lore.kernel.org/bpf/20191107141838.92202-1-iii@linux.ibm.com
+Acked-by: Song Liu <songliubraving@fb.com>
+Link: https://lore.kernel.org/bpf/20191107170045.2503480-1-yhs@fb.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/net/bpf_jit_comp.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ tools/testing/selftests/bpf/progs/test_sysctl_loop1.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/arch/s390/net/bpf_jit_comp.c b/arch/s390/net/bpf_jit_comp.c
-index ce88211b9c6cd..c8c16b5eed6be 100644
---- a/arch/s390/net/bpf_jit_comp.c
-+++ b/arch/s390/net/bpf_jit_comp.c
-@@ -23,6 +23,7 @@
- #include <linux/filter.h>
- #include <linux/init.h>
- #include <linux/bpf.h>
-+#include <linux/mm.h>
- #include <asm/cacheflush.h>
- #include <asm/dis.h>
- #include <asm/facility.h>
-@@ -1369,7 +1370,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
- 	}
+diff --git a/tools/testing/selftests/bpf/progs/test_sysctl_loop1.c b/tools/testing/selftests/bpf/progs/test_sysctl_loop1.c
+index 608a06871572d..d22e438198cf7 100644
+--- a/tools/testing/selftests/bpf/progs/test_sysctl_loop1.c
++++ b/tools/testing/selftests/bpf/progs/test_sysctl_loop1.c
+@@ -44,7 +44,10 @@ int sysctl_tcp_mem(struct bpf_sysctl *ctx)
+ 	unsigned long tcp_mem[TCP_MEM_LOOPS] = {};
+ 	char value[MAX_VALUE_STR_LEN];
+ 	unsigned char i, off = 0;
+-	int ret;
++	/* a workaround to prevent compiler from generating
++	 * codes verifier cannot handle yet.
++	 */
++	volatile int ret;
  
- 	memset(&jit, 0, sizeof(jit));
--	jit.addrs = kcalloc(fp->len + 1, sizeof(*jit.addrs), GFP_KERNEL);
-+	jit.addrs = kvcalloc(fp->len + 1, sizeof(*jit.addrs), GFP_KERNEL);
- 	if (jit.addrs == NULL) {
- 		fp = orig_fp;
- 		goto out;
-@@ -1422,7 +1423,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
- 	if (!fp->is_func || extra_pass) {
- 		bpf_prog_fill_jited_linfo(fp, jit.addrs + 1);
- free_addrs:
--		kfree(jit.addrs);
-+		kvfree(jit.addrs);
- 		kfree(jit_data);
- 		fp->aux->jit_data = NULL;
- 	}
+ 	if (ctx->write)
+ 		return 0;
 -- 
 2.20.1
 
