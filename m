@@ -2,214 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CB0E3118F79
-	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2019 19:06:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30499118F85
+	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2019 19:11:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727667AbfLJSFm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Dec 2019 13:05:42 -0500
-Received: from mail-pj1-f68.google.com ([209.85.216.68]:40083 "EHLO
-        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727659AbfLJSFm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Dec 2019 13:05:42 -0500
-Received: by mail-pj1-f68.google.com with SMTP id s35so7694850pjb.7
-        for <bpf@vger.kernel.org>; Tue, 10 Dec 2019 10:05:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :organization:mime-version:content-transfer-encoding;
-        bh=p250SP6LYYK/01N51GqevSzgn/NOjQ88ERfazogiGtc=;
-        b=pAvWc+I5V+HG3QHjPEZN9FO75Z7VXMrY61CNOcY4yRGVAZrItKsNiFDBQ4rOLirN3q
-         diGwW+ozhY2J6C4UNCFMhdy9bJTdOjP1NWkVtOiH7KdFQXiFGfyTIfVqloPAp9DPjOeV
-         XJ4KbfTgHP0bv3QuIAFaNbkEzof9GzzB/EGrFNc7efRsoX3jVLwSREs5MIN3huRiUdkU
-         Hdtnoj36J5m0V5Yi1wWcDRCu8RKqXJ5/R5AEOkVD0YR8/LPDJs5vkbvRyHy3frzmfSe7
-         dBl0HaKsG4ltLGxNdojP3Ag+pt6MWd4lPPWFLPwhgHsWUW19XRreetlB/lqEzGkjOh/i
-         1gEg==
+        id S1727707AbfLJSL2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Dec 2019 13:11:28 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:21059 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727349AbfLJSL0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Dec 2019 13:11:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1576001485;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Z5XSliwwrq9s/hk+XiIILzS+SOwRs74eCD9HtmMu754=;
+        b=RuEA2k0xA+0nbeE/atc8FnZsLB7XWGPwHFWNzUJ4PhJVsc5fIV4o3IjgV8DAiUGLSudyO+
+        WC3CbNEaVIX+okdv8cPmNIoCN1i0FL20eY6XB4AQw9se9BGn0lFaIeSr1kP3pjq6zpaXEw
+        GUc/52+WP8Eoz1BwYuMCHBnPLSTq7Ks=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-160-_PS3aU81PCqn6VayVSLfyg-1; Tue, 10 Dec 2019 13:11:22 -0500
+Received: by mail-lf1-f71.google.com with SMTP id y4so4185651lfg.1
+        for <bpf@vger.kernel.org>; Tue, 10 Dec 2019 10:11:22 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=p250SP6LYYK/01N51GqevSzgn/NOjQ88ERfazogiGtc=;
-        b=tRPHqOoe0jTsMtp7cf/X0ucJBQjKtziWxpdFFjY9vKcfHAL/unBQ267spgJ+/rHRBg
-         1U/q8W8DFBDSi2ItbRP+JlByo+Cka68Ol3TeGQsQxKBB3Oosx0Fi9H3dD6Cb1WxFFNwj
-         SxcCAdoItG1bZ1ZEeFGbNCW92BWQyse88jbSeffG/HpNc2P+e9v9JbOcGnkJ5Vwl0Ke8
-         BSld5LqV9EO6kmcQQMgku0UXAUpmBLRAlPtp8Ygz+De/bCIJD3vKJTFkyxmMUJLHUG2G
-         MSXz1g7hJ7QDkCN5Xxwk1NkLkcl1cmndsWTu2Xj/wHRzIG5DF/n+MsE5n9McqM6Ieajv
-         TtYw==
-X-Gm-Message-State: APjAAAXD+e5B/O+LSb7tZdjsuGDtAbqU9h5ga5CSP93/pro6guyjV7xt
-        5vFZznhQBjligHHdqbOLzN9jag==
-X-Google-Smtp-Source: APXvYqyZRXka/z8RR1tKDIEA0XaCqYLuoBjycoYsD7UW/Xfi6vYmVk1cUnYXmJB0mIbHHraF934jZA==
-X-Received: by 2002:a17:902:d696:: with SMTP id v22mr36021185ply.66.1576001141079;
-        Tue, 10 Dec 2019 10:05:41 -0800 (PST)
-Received: from cakuba.netronome.com ([2601:646:8e00:e18::3])
-        by smtp.gmail.com with ESMTPSA id o184sm3982442pgo.62.2019.12.10.10.05.40
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=Z5XSliwwrq9s/hk+XiIILzS+SOwRs74eCD9HtmMu754=;
+        b=qhSAzgFtPhgaSgnbSPtc5UE5zDjD6IExa6X5Owl+VAF1ac3lmSBJNHGsvUnKWlKVXA
+         rukKfbALPqU3ItMQkWBxpxDNVwyjzrDnjgNV2sh+M4BdFgpRqNV2G8hEfYM6M69eSjwI
+         T8lr65OrzkcmsMeRLu7MswnZOO6eOqYscN7ZUyfJBgAqy3vfTM20Hra9h2/EKeuK9fXK
+         rZNqNr6cvb0avLRtyanGW2KFEPZRvSEaIzM0g5Cctypcz5/OHyBQuE1y7nfocWGGg4VL
+         zl+09vk/SWp6+HLDqycV0yH/8YdAw1FCS92X6xzmawogSM4Hm0PWsnXlS3Yp/Yw+97wl
+         nqAA==
+X-Gm-Message-State: APjAAAUuB3uE0M66jCrVwwVkkvecW9qt2aR1nuswyV+Sfo7iQ6+uFjm3
+        EocDMCsi71YqaGhzTfXmwLBo5vSXlZJYljAsLH/aHgVmeBi5J9VCrtuwnJAp6rqorn3PL92RTMH
+        WNGjkk9hDqDaz
+X-Received: by 2002:a19:7701:: with SMTP id s1mr18277017lfc.180.1576001481325;
+        Tue, 10 Dec 2019 10:11:21 -0800 (PST)
+X-Google-Smtp-Source: APXvYqzlXgyj+NriSETPpZEMOad//9EBC6p8cMANluHa2HW2EzUm0HW2EBh2pLrV6RDm/kCCI3VsiA==
+X-Received: by 2002:a19:7701:: with SMTP id s1mr18276999lfc.180.1576001481132;
+        Tue, 10 Dec 2019 10:11:21 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id z26sm2004779lfq.69.2019.12.10.10.11.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Dec 2019 10:05:40 -0800 (PST)
-Date:   Tue, 10 Dec 2019 10:05:36 -0800
-From:   Jakub Kicinski <jakub.kicinski@netronome.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH bpf-next 11/15] bpftool: add skeleton codegen command
-Message-ID: <20191210100536.7a57d5e1@cakuba.netronome.com>
-In-Reply-To: <CAEf4Bzaow7w+TGyiF67pXn42TumxFZb7Q4BOQPPGfRJdyeY-ig@mail.gmail.com>
-References: <20191210011438.4182911-1-andriin@fb.com>
-        <20191210011438.4182911-12-andriin@fb.com>
-        <20191209175745.2d96a1f0@cakuba.netronome.com>
-        <CAEf4Bzaow7w+TGyiF67pXn42TumxFZb7Q4BOQPPGfRJdyeY-ig@mail.gmail.com>
-Organization: Netronome Systems, Ltd.
+        Tue, 10 Dec 2019 10:11:20 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 42A66181AC8; Tue, 10 Dec 2019 19:11:18 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Martin Lau <kafai@fb.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        "netdev\@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf\@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: Re: [PATCH bpf] bpftool: Don't crash on missing jited insns or ksyms
+In-Reply-To: <20191210175915.wh7njnvt2xk64ski@kafai-mbp>
+References: <20191210143047.142347-1-toke@redhat.com> <20191210175915.wh7njnvt2xk64ski@kafai-mbp>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 10 Dec 2019 19:11:18 +0100
+Message-ID: <87h828giex.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-MC-Unique: _PS3aU81PCqn6VayVSLfyg-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 10 Dec 2019 09:11:31 -0800, Andrii Nakryiko wrote:
-> On Mon, Dec 9, 2019 at 5:57 PM Jakub Kicinski wrote:
-> > On Mon, 9 Dec 2019 17:14:34 -0800, Andrii Nakryiko wrote:  
-> > > struct <object-name> {
-> > >       /* used by libbpf's skeleton API */
-> > >       struct bpf_object_skeleton *skeleton;
-> > >       /* bpf_object for libbpf APIs */
-> > >       struct bpf_object *obj;
-> > >       struct {
-> > >               /* for every defined map in BPF object: */
-> > >               struct bpf_map *<map-name>;
-> > >       } maps;
-> > >       struct {
-> > >               /* for every program in BPF object: */
-> > >               struct bpf_program *<program-name>;
-> > >       } progs;
-> > >       struct {
-> > >               /* for every program in BPF object: */
-> > >               struct bpf_link *<program-name>;
-> > >       } links;
-> > >       /* for every present global data section: */
-> > >       struct <object-name>__<one of bss, data, or rodata> {
-> > >               /* memory layout of corresponding data section,
-> > >                * with every defined variable represented as a struct field
-> > >                * with exactly the same type, but without const/volatile
-> > >                * modifiers, e.g.:
-> > >                */
-> > >                int *my_var_1;
-> > >                ...
-> > >       } *<one of bss, data, or rodata>;
-> > > };  
-> >
-> > I think I understand how this is useful, but perhaps the problem here
-> > is that we're using C for everything, and simple programs for which
-> > loading the ELF is majority of the code would be better of being
-> > written in a dynamic language like python?  Would it perhaps be a
-> > better idea to work on some high-level language bindings than spend
-> > time writing code gens and working around limitations of C?  
-> 
-> None of this work prevents Python bindings and other improvements, is
-> it? Patches, as always, are greatly appreciated ;)
+Martin Lau <kafai@fb.com> writes:
 
-This "do it yourself" shit is not really funny :/
+> On Tue, Dec 10, 2019 at 03:30:47PM +0100, Toke H=C3=B8iland-J=C3=B8rgense=
+n wrote:
+>> When JIT hardening is turned on, the kernel can fail to return jited_ksy=
+ms
+> JIT hardening means net.core.bpf_jit_harden?
+> From the code, it happens on the bpf_dump_raw_ok() check which is
+> actually "kernel.kptr_restrict" instead?
 
-I'll stop providing feedback on BPF patches if you guy keep saying 
-that :/ Maybe that's what you want.
+Ah, yeah, you're right. I was looking through the hardening patchset and
+the bpf_jit_harden setting was the first thing I hit upon; must admit I
+didn't check this too closely :)
 
-> This skeleton stuff is not just to save code, but in general to
-> simplify and streamline working with BPF program from userspace side.
-> Fortunately or not, but there are a lot of real-world applications
-> written in C and C++ that could benefit from this, so this is still
-> immensely useful. selftests/bpf themselves benefit a lot from this
-> work, see few of the last patches in this series.
+I'll send a v2 with an updated commit message...
 
-Maybe those applications are written in C and C++ _because_ there 
-are no bindings for high level languages. I just wish BPF programming
-was less weird and adding some funky codegen is not getting us closer
-to that goal.
+-Toke
 
-In my experience code gen is nothing more than a hack to work around
-bad APIs, but experiences differ so that's not a solid argument.
-
-> > > This provides great usability improvements:
-> > > - no need to look up maps and programs by name, instead just
-> > >   my_obj->maps.my_map or my_obj->progs.my_prog would give necessary
-> > >   bpf_map/bpf_program pointers, which user can pass to existing libbpf APIs;
-> > > - pre-defined places for bpf_links, which will be automatically populated for
-> > >   program types that libbpf knows how to attach automatically (currently
-> > >   tracepoints, kprobe/kretprobe, raw tracepoint and tracing programs). On
-> > >   tearing down skeleton, all active bpf_links will be destroyed (meaning BPF
-> > >   programs will be detached, if they are attached). For cases in which libbpf
-> > >   doesn't know how to auto-attach BPF program, user can manually create link
-> > >   after loading skeleton and they will be auto-detached on skeleton
-> > >   destruction:
-> > >
-> > >       my_obj->links.my_fancy_prog = bpf_program__attach_cgroup_whatever(
-> > >               my_obj->progs.my_fancy_prog, <whatever extra param);
-> > >
-> > > - it's extremely easy and convenient to work with global data from userspace
-> > >   now. Both for read-only and read/write variables, it's possible to
-> > >   pre-initialize them before skeleton is loaded:
-> > >
-> > >       skel = my_obj__open(raw_embed_data);
-> > >       my_obj->rodata->my_var = 123;
-> > >       my_obj__load(skel); /* 123 will be initialization value for my_var */
-> > >
-> > >   After load, if kernel supports mmap() for BPF arrays, user can still read
-> > >   (and write for .bss and .data) variables values, but at that point it will
-> > >   be directly mmap()-ed to BPF array, backing global variables. This allows to
-> > >   seamlessly exchange data with BPF side. From userspace program's POV, all
-> > >   the pointers and memory contents stay the same, but mapped kernel memory
-> > >   changes to point to created map.
-> > >   If kernel doesn't yet support mmap() for BPF arrays, it's still possible to
-> > >   use those data section structs to pre-initialize .bss, .data, and .rodata,
-> > >   but after load their pointers will be reset to NULL, allowing user code to
-> > >   gracefully handle this condition, if necessary.
-> > >
-> > > Given a big surface area, skeleton is kept as an experimental non-public
-> > > API for now, until more feedback and real-world experience is collected.  
-> >
-> > That makes no sense to me. bpftool has the same backward compat
-> > requirements as libbpf. You're just pushing the requirements from
-> > one component to the other. Feedback and real-world use cases have
-> > to be exercised before code is merged to any project with backward
-> > compatibility requirements :(  
-> 
-> To get this feedback we need to have this functionality adopted. To
-> have it adopted, we need it available in tool users already know,
-> have, and use. 
-
-Well you claim you have users for it, just talk to them now. I don't
-understand how this is not obvious. It's like saying "we can't test
-this unless it's in the tree"..!?
-
-> If you feel that "experimental" disclaimer is not enough, I guess we
-> can add extra flag to bpftool itself to enable experimental
-> functionality, something like:
-> 
-> bpftool --experimental gen skeleton <bla>
-
-Yeah, world doesn't really work like that. Users start depending on 
-a feature, it will break people's scripts/Makefiles if it disappears.
-This codegen thing is made to be hard coded in Makefiles.. how do you
-expect people not to immediately become dependent on it.
-
-> > Also please run checkpatch on your patches, and fix reverse xmas tree.
-> > This is bpftool, not libbpf. Creating a separate tool for this codegen
-> > stuff is also an option IMHO.  
-> 
-> Sure, will fix few small things checkpatch detected.
-
-Running checkpatch should be part of your upstreaming routine, you're
-wasting people's time. So stop with the amused tone.
-
-> Will reverse christmas-ize all the variables, of course :)
-> 
-> As for separate tool just for this, you are not serious, right? If
-> bpftool is not right tool for this, I don't know which one is.
-
-I am serious. There absolutely nothing this tool needs from BPF, no
-JSON needed, no bpffs etc. It can be a separate tool like
-libbpf-skel-gen or libbpf-c-skel or something, distributed with libbpf.
-That way you can actually soften the backward compat. In case people
-become dependent on it they can carry that little tool on their own.
