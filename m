@@ -2,81 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E0094118103
-	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2019 08:03:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E8761182FD
+	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2019 10:05:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727154AbfLJHDX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Dec 2019 02:03:23 -0500
-Received: from mail-il1-f195.google.com ([209.85.166.195]:39977 "EHLO
-        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726819AbfLJHDW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Dec 2019 02:03:22 -0500
-Received: by mail-il1-f195.google.com with SMTP id b15so15175599ila.7
-        for <bpf@vger.kernel.org>; Mon, 09 Dec 2019 23:03:22 -0800 (PST)
+        id S1726890AbfLJJFK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Dec 2019 04:05:10 -0500
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:41059 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726883AbfLJJFJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Dec 2019 04:05:09 -0500
+Received: by mail-ot1-f65.google.com with SMTP id r27so14837513otc.8;
+        Tue, 10 Dec 2019 01:05:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cs.washington.edu; s=goo201206;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=XOLR366ue9UbdwpGi75PQA5BDSgsShKRMR6syBVaCSI=;
-        b=NkuGcga7SVDZTUMMo51w4HRsBnbf0R/URj6PpPGlU3pLyxh/0ttxIog576y1yzdvLn
-         eoJ8kf6kXgiGbSaaWDuUGmWTjtsTjZKVSCJ8Q1SnoKKiwiN/5ZXbedZXayDFlSyae+Yy
-         nAhd9fD3buTsungj4t2ef9PnPd818UbU+6cdU=
+        bh=tPekY5KE1OlmnrXzeQ7lGwG+ABY09TaAXjZgxNUA778=;
+        b=WBSa2LJ3EdEs6rGos7ldZWofOEoOSC1OSIZSVnChUt70PVnO8gDYieB0yxZdMakA4s
+         bMHzLay3jD9rIWGYj9ippXd9Yb7itl99wfNQKHEthmf2L4M2jtJqj6ng9zGIB/eEZWHo
+         jNwJgNhzTO82JaXJkTHEyOHFTaXxdIc/zHbBjX6gV3OG/OyTVOti7U/CSrVCS9GQv0I6
+         AvP69lLh7P4B1XQ0eIMcD2tT2tPi3QcEugcn6vJHE0s75X374oK3TxUxY964DuwCHzsE
+         kgw1YEs2jrYRxC+WuMRMaT4/QOWGfnhJYO7CAP0ttTljc3pOS8CCFRZXxcTTV/vIhS0l
+         RKcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=XOLR366ue9UbdwpGi75PQA5BDSgsShKRMR6syBVaCSI=;
-        b=lLuvDZGalwKPjrx1CmDNX67JRzLKOMQ446E1YvgpP1/8XWez62pEEmmF9JwQ72sPOM
-         BnJTQqXrcVo1iq6XfzJiWI7qkhGxoYUbKHK6Ij0fD455eGuCYpHf9k7qOvxxErWRhOL/
-         hpGjB0RsR5E2b4/zL6UbUuTJ+E9lb9MiWBw738vtMZ7K7NsTBJOFu5I3iI5eQbv0MEiG
-         FqB+UskOHROswJoLHxx97i45kw5Jdryx64iA7tRt8KgLIk01rD/sJVQXOGV1scRbP8iG
-         pnTDCPzbwkSSJwYr0Pn/1YEqs3Oa9xEMgtnZ60tVgnuN5cehOJraV5BejyFmUxGD3Wol
-         HLqA==
-X-Gm-Message-State: APjAAAXJlQdRUNmF8meNXtJROZOAIIoKBOREhUOfXovuZMsbalhNFrrH
-        X1/hCdlY3D6OM8oKyk+0H895q/xbFg370beKmNLCtQ==
-X-Google-Smtp-Source: APXvYqzgHM+DLDGODvA/sjBCZyZhAfvnRErBW0IceCs2/IQqhRh8rJvuSRMhu9qEW/u/DVJiNXoqYx8gBP7F7uuyY6I=
-X-Received: by 2002:a92:86c5:: with SMTP id l66mr31157017ilh.280.1575961401998;
- Mon, 09 Dec 2019 23:03:21 -0800 (PST)
+        bh=tPekY5KE1OlmnrXzeQ7lGwG+ABY09TaAXjZgxNUA778=;
+        b=CIt4zGBuWril8oec3Al/+YcuGtkkKWIsxYHoLMuywMK2KDlQ+tpqRDBInXwgRLML3+
+         8vUMA8pfnb5ElPyWTnWx6DAIZJQTJyadpwT0/N0/JxH1orONSXdsxK9Uxz9EGJmUvxRW
+         hLjJ+kcroC3BeyJFaEwTwVTLWCWhrgG4lcYbCN3K+mLhzXiPqo5ir06nQxgzdMvHXdQM
+         EbAvuiNaNMF9eR0ZjJK8husoqzan5xxxzER5jCWyOtX3KW4yWvRBtPWUGfCQKNIqCXt9
+         +GAc6csp5PFHrMzxLYzXWpUo91UDmS/qMtXBre0RZF8YRtxR8jft4kQ0+RFstKTcSxlq
+         ifww==
+X-Gm-Message-State: APjAAAWr22+/1Ntqzln6KGMjgVXYER9hIhbsoTAwDxeC7aFVUoXpsqKZ
+        lG5wI+RS3VZhy0dkAVibLHyR8T03Z9cIbLzDEorHTAF5rmI=
+X-Google-Smtp-Source: APXvYqy77a+errJwKDFsdbu0D8dhM21aesmoOUWSNreISh6WeugexkF+feJYESrc+OBLI8ffMt4S/2fGDrrCcVyrcMU=
+X-Received: by 2002:a9d:5c1:: with SMTP id 59mr25043961otd.192.1575968708856;
+ Tue, 10 Dec 2019 01:05:08 -0800 (PST)
 MIME-Version: 1.0
-References: <20191209173136.29615-1-bjorn.topel@gmail.com> <20191209173136.29615-3-bjorn.topel@gmail.com>
- <CADasFoDOyJA0nDVCyA6EY78dHSSxxV+EXS=xUyLDW4_VhJvBkQ@mail.gmail.com> <2d5d1f2d-d4ab-2449-37c6-e5b319a778d6@iogearbox.net>
-In-Reply-To: <2d5d1f2d-d4ab-2449-37c6-e5b319a778d6@iogearbox.net>
-From:   Luke Nelson <lukenels@cs.washington.edu>
-Date:   Mon, 9 Dec 2019 23:02:53 -0800
-Message-ID: <CADasFoCZc7Lt=puc82x7PBSvuOG_dBwVgasYGJ4M3RFDG=qR3A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/8] riscv, bpf: add support for far branching
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Netdev <netdev@vger.kernel.org>, linux-riscv@lists.infradead.org,
-        bpf <bpf@vger.kernel.org>, Xi Wang <xi.wang@gmail.com>
+References: <1575878189-31860-1-git-send-email-magnus.karlsson@intel.com>
+ <1575878189-31860-3-git-send-email-magnus.karlsson@intel.com> <20191210004254.m5cicj3tkc2bhlrd@kafai-mbp>
+In-Reply-To: <20191210004254.m5cicj3tkc2bhlrd@kafai-mbp>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Tue, 10 Dec 2019 10:04:58 +0100
+Message-ID: <CAJ8uoz3o23wbezwLpONts=qTdC1Fr9JK1hD=fkwF4snS2Jdqbg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 02/12] xsk: consolidate to one single cached
+ producer pointer
+To:     Martin Lau <kafai@fb.com>
+Cc:     Magnus Karlsson <magnus.karlsson@intel.com>,
+        "bjorn.topel@intel.com" <bjorn.topel@intel.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "jonathan.lemon@gmail.com" <jonathan.lemon@gmail.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "saeedm@mellanox.com" <saeedm@mellanox.com>,
+        "jeffrey.t.kirsher@intel.com" <jeffrey.t.kirsher@intel.com>,
+        "maciej.fijalkowski@intel.com" <maciej.fijalkowski@intel.com>,
+        "maciejromanfijalkowski@gmail.com" <maciejromanfijalkowski@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Dec 9, 2019 at 1:27 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+On Tue, Dec 10, 2019 at 1:43 AM Martin Lau <kafai@fb.com> wrote:
 >
-> This is awesome work! Did you also check for other architectures aside
-> from riscv and x86-32, e.g. x86-64 or arm64?
+> On Mon, Dec 09, 2019 at 08:56:19AM +0100, Magnus Karlsson wrote:
+> > Currently, the xsk ring code has two cached producer pointers:
+> > prod_head and prod_tail. This patch consolidates these two into a
+> > single one called cached_prod to make the code simpler and easier to
+> > maintain. This will be in line with the user space part of the the
+> > code found in libbpf, that only uses a single cached pointer.
+> >
+> > The Rx path only uses the two top level functions
+> > xskq_produce_batch_desc and xskq_produce_flush_desc and they both use
+> > prod_head and never prod_tail. So just move them over to
+> > cached_prod.
+> >
+> > The Tx XDP_DRV path uses xskq_produce_addr_lazy and
+> > xskq_produce_flush_addr_n and unnecessarily operates on both prod_tail
+> > and prod_cons, so move them over to just use cached_prod by skipping
+> prod_cons or prod_head?
 
-We haven't tried on x86-64 or arm64 yet, but we plan to in the
-future and are looking at ways to minimize the effort required to
-port verification to new architectures.
+Thanks. It should read prod_head. Will fix in a v2.
 
-> It would be great if we could add such verification tool under tools/bpf/
-> which would then take the in-tree JIT-code as-is for its analysis and
-> potentially even trigger a run out of BPF selftests. Any thoughts whether
-> such path would be feasible wrt serval?
+/Magnus
 
-Right now the verification requires manual translation of the JIT
-implementation in C to Rosette for verification, which makes it
-difficult to integrate into existing tests. Were currently working
-on automating this process to be able to verify the C implementation
-directly. If this works out, it'd be awesome to integrate into the
-selftests in some way. Will keep you posted.
-
-Thanks,
-
-Luke
+> > the intermediate step of updating prod_tail.
+> >
+> > The Tx path in XDP_SKB mode uses xskq_reserve_addr and
+> > xskq_produce_addr. They currently use both cached pointers, but we can
+> > operate on the global producer pointer in xskq_produce_addr since it
+> > has to be updated anyway, thus eliminating the use of both cached
+> > pointers. We can also remove the xskq_nb_free in xskq_produce_addr
+> > since it is already called in xskq_reserve_addr. No need to do it
+> > twice.
+> >
+> > When there is only one cached producer pointer, we can also simplify
+> > xskq_nb_free by removing one argument.
