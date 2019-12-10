@@ -2,115 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A774F118508
-	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2019 11:28:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E26591185CD
+	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2019 12:05:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727222AbfLJK2Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Dec 2019 05:28:24 -0500
-Received: from mx2.suse.de ([195.135.220.15]:58544 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726574AbfLJK2Y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Dec 2019 05:28:24 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 769B2B280;
-        Tue, 10 Dec 2019 10:28:20 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id E89EB1E0B23; Tue, 10 Dec 2019 11:28:18 +0100 (CET)
-Date:   Tue, 10 Dec 2019 11:28:18 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, bpf@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, kvm@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
-        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Leon Romanovsky <leonro@mellanox.com>
-Subject: Re: [PATCH v8 08/26] mm/gup: allow FOLL_FORCE for
- get_user_pages_fast()
-Message-ID: <20191210102818.GF1551@quack2.suse.cz>
-References: <20191209225344.99740-1-jhubbard@nvidia.com>
- <20191209225344.99740-9-jhubbard@nvidia.com>
+        id S1727259AbfLJLF0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Dec 2019 06:05:26 -0500
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:59764 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727018AbfLJLF0 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 10 Dec 2019 06:05:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1575975924;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Khwyb+GgQklbY0sQzo2bnVinuaUK0YwpqCimn/St+jI=;
+        b=Z5/qvlYIvr3ENznfZBW5nnlaPolLqfKfWaxXW8gg6LoiENy1rYLdUfPq//cQztvEDnThUv
+        sQz2qpZcTeKmXJBWw2IEnw1lyo6yk5sKJAwX7NBkfnr6dQgKE0r6nouwgJk7CMaV33ok7I
+        7KMvdy5E69Zb94/MVfbRMqMSFYGtCwM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-308-UrLwHmnNOBOcidDg0GHOAg-1; Tue, 10 Dec 2019 06:05:21 -0500
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 94F831007273;
+        Tue, 10 Dec 2019 11:05:19 +0000 (UTC)
+Received: from carbon (ovpn-200-56.brq.redhat.com [10.40.200.56])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 137C960BE0;
+        Tue, 10 Dec 2019 11:05:11 +0000 (UTC)
+Date:   Tue, 10 Dec 2019 12:05:09 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Cc:     brouer@redhat.com, netdev@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        bpf@vger.kernel.org, magnus.karlsson@gmail.com,
+        magnus.karlsson@intel.com, jonathan.lemon@gmail.com,
+        ecree@solarflare.com, thoiland@redhat.com,
+        andrii.nakryiko@gmail.com
+Subject: Re: [PATCH bpf-next v3 5/6] selftests: bpf: add xdp_perf test
+Message-ID: <20191210120450.3375fc4a@carbon>
+In-Reply-To: <20191209135522.16576-6-bjorn.topel@gmail.com>
+References: <20191209135522.16576-1-bjorn.topel@gmail.com>
+        <20191209135522.16576-6-bjorn.topel@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191209225344.99740-9-jhubbard@nvidia.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-MC-Unique: UrLwHmnNOBOcidDg0GHOAg-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon 09-12-19 14:53:26, John Hubbard wrote:
-> Commit 817be129e6f2 ("mm: validate get_user_pages_fast flags") allowed
-> only FOLL_WRITE and FOLL_LONGTERM to be passed to get_user_pages_fast().
-> This, combined with the fact that get_user_pages_fast() falls back to
-> "slow gup", which *does* accept FOLL_FORCE, leads to an odd situation:
-> if you need FOLL_FORCE, you cannot call get_user_pages_fast().
-> 
-> There does not appear to be any reason for filtering out FOLL_FORCE.
-> There is nothing in the _fast() implementation that requires that we
-> avoid writing to the pages. So it appears to have been an oversight.
-> 
-> Fix by allowing FOLL_FORCE to be set for get_user_pages_fast().
-> 
-> Fixes: 817be129e6f2 ("mm: validate get_user_pages_fast flags")
-> Cc: Christoph Hellwig <hch@lst.de>
-> Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
-> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+On Mon,  9 Dec 2019 14:55:21 +0100
+Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> wrote:
 
-Looks good to me. You can add:
+> From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+>=20
+> The xdp_perf is a dummy XDP test, only used to measure the the cost of
+> jumping into a XDP program.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+I really like this idea of performance measuring XDP-core in isolation.
+This is the ultimate zoom-in micro-benchmarking.  I see a use-case for
+this, where I will measure the XDP-core first, and then run same XDP
+prog (e.g. XDP_DROP) on a NIC driver, then I can deduct/isolate the
+driver-code and hardware overhead.  We/I can also use it to optimize
+e.g. REDIRECT code-core (although redir might not actually work).
 
-								Honza
+IMHO it would be valuable to have bpf_prog_load() also measure the
+perf-HW counters for 'cycles' and 'instructions', as in your case the
+performance optimization was to improve the instructions-per-cycle
+(which you showed via perf stat in cover letter).
 
+
+If you send a V4 please describe how to use this prog to measure the
+cost, as you describe in cover letter.
+
+from selftests/bpf run:
+ # test_progs -v -t xdp_perf
+
+(This is a nitpick, so only do this if something request a V4)
+
+
+> Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
 > ---
->  mm/gup.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/mm/gup.c b/mm/gup.c
-> index c0c56888e7cc..958ab0757389 100644
-> --- a/mm/gup.c
-> +++ b/mm/gup.c
-> @@ -2414,7 +2414,8 @@ int get_user_pages_fast(unsigned long start, int nr_pages,
->  	unsigned long addr, len, end;
->  	int nr = 0, ret = 0;
->  
-> -	if (WARN_ON_ONCE(gup_flags & ~(FOLL_WRITE | FOLL_LONGTERM)))
-> +	if (WARN_ON_ONCE(gup_flags & ~(FOLL_WRITE | FOLL_LONGTERM |
-> +				       FOLL_FORCE)))
->  		return -EINVAL;
->  
->  	start = untagged_addr(start) & PAGE_MASK;
-> -- 
-> 2.24.0
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+>  .../selftests/bpf/prog_tests/xdp_perf.c       | 25 +++++++++++++++++++
+>  1 file changed, 25 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_perf.c
+>=20
+> diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_perf.c b/tools/te=
+sting/selftests/bpf/prog_tests/xdp_perf.c
+> new file mode 100644
+> index 000000000000..7185bee16fe4
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/xdp_perf.c
+> @@ -0,0 +1,25 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include <test_progs.h>
+> +
+> +void test_xdp_perf(void)
+> +{
+> +=09const char *file =3D "./xdp_dummy.o";
+> +=09__u32 duration, retval, size;
+> +=09struct bpf_object *obj;
+> +=09char in[128], out[128];
+> +=09int err, prog_fd;
+> +
+> +=09err =3D bpf_prog_load(file, BPF_PROG_TYPE_XDP, &obj, &prog_fd);
+> +=09if (CHECK_FAIL(err))
+> +=09=09return;
+> +
+> +=09err =3D bpf_prog_test_run(prog_fd, 1000000, &in[0], 128,
+> +=09=09=09=09out, &size, &retval, &duration);
+> +
+> +=09CHECK(err || retval !=3D XDP_PASS || size !=3D 128,
+> +=09      "xdp-perf",
+> +=09      "err %d errno %d retval %d size %d\n",
+> +=09      err, errno, retval, size);
+> +
+> +=09bpf_object__close(obj);
+> +}
+
+
+
+--=20
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
+--=20
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
