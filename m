@@ -2,117 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 90E99119AFF
-	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2019 23:11:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD927119C4C
+	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2019 23:26:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729174AbfLJWEw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Dec 2019 17:04:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35850 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729163AbfLJWEv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Dec 2019 17:04:51 -0500
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D73472073B;
-        Tue, 10 Dec 2019 22:04:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1576015490;
-        bh=xaXdTT0WC7zzL+pYCxgzGvN3CFviciHZJBOc7SedoPg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=okf9ZbQgi8r6a3/YNJ/V9cbP874fInhv7tWvPSPGM9Gv2XUW0D8JLKAKxxqrWtyQq
-         mbqS+lansU+AmkE0MNBB4/2Tf5bOElGbyu/GyNiWl67qdGQgIp0qGTjo+HpRhbw5it
-         DLOYc7Byxp+JuIW1jrZSb9Yqg+vvkH8GufdrWR6M=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
+        id S1726631AbfLJW0I (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Dec 2019 17:26:08 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:45695 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726614AbfLJW0I (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Dec 2019 17:26:08 -0500
+Received: from 1.general.cascardo.us.vpn ([10.172.70.58] helo=calabresa)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <cascardo@canonical.com>)
+        id 1ienx8-0002Vk-Vd; Tue, 10 Dec 2019 22:25:59 +0000
+Date:   Tue, 10 Dec 2019 19:25:53 -0300
+From:   Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+To:     Justin Forbes <jmforbes@linuxtx.org>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         Song Liu <songliubraving@fb.com>,
-        Stephane Eranian <eranian@google.com>,
-        Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
-        clang-built-linux@googlegroups.com, netdev@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.14 091/130] perf parse: If pmu configuration fails free terms
-Date:   Tue, 10 Dec 2019 17:02:22 -0500
-Message-Id: <20191210220301.13262-91-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191210220301.13262-1-sashal@kernel.org>
-References: <20191210220301.13262-1-sashal@kernel.org>
+        Andrii Nakryiko <andriin@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <netdev@vger.kernel.org>, Yonghong Song <yhs@fb.com>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <bpf@vger.kernel.org>, linuxppc-dev@lists.ozlabs.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Aurelien Jarno <aurelien@aurel32.net>,
+        debian-kernel@lists.debian.org
+Subject: Re: [PATCH] libbpf: fix readelf output parsing on powerpc with
+ recent binutils
+Message-ID: <20191210222553.GA4580@calabresa>
+References: <20191201195728.4161537-1-aurelien@aurel32.net>
+ <87zhgbe0ix.fsf@mpe.ellerman.id.au>
+ <20191202093752.GA1535@localhost.localdomain>
+ <CAFxkdAqg6RaGbRrNN3e_nHfHFR-xxzZgjhi5AnppTxxwdg0VyQ@mail.gmail.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFxkdAqg6RaGbRrNN3e_nHfHFR-xxzZgjhi5AnppTxxwdg0VyQ@mail.gmail.com>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Ian Rogers <irogers@google.com>
+On Tue, Dec 10, 2019 at 12:58:33PM -0600, Justin Forbes wrote:
+> On Mon, Dec 2, 2019 at 3:37 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+> >
+> > On Mon, Dec 02, 2019 at 04:53:26PM +1100, Michael Ellerman wrote:
+> > > Aurelien Jarno <aurelien@aurel32.net> writes:
+> > > > On powerpc with recent versions of binutils, readelf outputs an extra
+> > > > field when dumping the symbols of an object file. For example:
+> > > >
+> > > >     35: 0000000000000838    96 FUNC    LOCAL  DEFAULT [<localentry>: 8]     1 btf_is_struct
+> > > >
+> > > > The extra "[<localentry>: 8]" prevents the GLOBAL_SYM_COUNT variable to
+> > > > be computed correctly and causes the checkabi target to fail.
+> > > >
+> > > > Fix that by looking for the symbol name in the last field instead of the
+> > > > 8th one. This way it should also cope with future extra fields.
+> > > >
+> > > > Signed-off-by: Aurelien Jarno <aurelien@aurel32.net>
+> > > > ---
+> > > >  tools/lib/bpf/Makefile | 4 ++--
+> > > >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > >
+> > > Thanks for fixing that, it's been on my very long list of test failures
+> > > for a while.
+> > >
+> > > Tested-by: Michael Ellerman <mpe@ellerman.id.au>
+> >
+> > Looks good & also continues to work on x86. Applied, thanks!
+> 
+> This actually seems to break horribly on PPC64le with binutils 2.33.1
+> resulting in:
+> Warning: Num of global symbols in sharedobjs/libbpf-in.o (32) does NOT
+> match with num of versioned symbols in libbpf.so (184). Please make
+> sure all LIBBPF_API symbols are versioned in libbpf.map.
+> 
+> This is the only arch that fails, with x86/arm/aarch64/s390 all
+> building fine.  Reverting this patch allows successful build across
+> all arches.
+> 
+> Justin
 
-[ Upstream commit 38f2c4226e6bc3e8c41c318242821ba5dc825aba ]
+Well, I ended up debugging this same issue and had the same fix as Jarno's when
+I noticed his fix was already applied.
 
-Avoid a memory leak when the configuration fails.
+I just installed a system with the latest binutils, 2.33.1, and it still breaks
+without such fix. Can you tell what is the output of the following command on
+your system?
 
-Signed-off-by: Ian Rogers <irogers@google.com>
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Andi Kleen <ak@linux.intel.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Jin Yao <yao.jin@linux.intel.com>
-Cc: John Garry <john.garry@huawei.com>
-Cc: Kan Liang <kan.liang@linux.intel.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Martin KaFai Lau <kafai@fb.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Song Liu <songliubraving@fb.com>
-Cc: Stephane Eranian <eranian@google.com>
-Cc: Yonghong Song <yhs@fb.com>
-Cc: bpf@vger.kernel.org
-Cc: clang-built-linux@googlegroups.com
-Cc: netdev@vger.kernel.org
-Link: http://lore.kernel.org/lkml/20191030223448.12930-9-irogers@google.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- tools/perf/util/parse-events.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+readelf -s --wide tools/lib/bpf/sharedobjs/libbpf-in.o | cut -d "@" -f1 | sed 's/_v[0-9]_[0-9]_[0-9].*//' | awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $0}' 
 
-diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-index 29e2bb304168c..096c52f296d77 100644
---- a/tools/perf/util/parse-events.c
-+++ b/tools/perf/util/parse-events.c
-@@ -1253,8 +1253,15 @@ static int __parse_events_add_pmu(struct parse_events_state *parse_state,
- 	if (get_config_terms(head_config, &config_terms))
- 		return -ENOMEM;
- 
--	if (perf_pmu__config(pmu, &attr, head_config, parse_state->error))
-+	if (perf_pmu__config(pmu, &attr, head_config, parse_state->error)) {
-+		struct perf_evsel_config_term *pos, *tmp;
-+
-+		list_for_each_entry_safe(pos, tmp, &config_terms, list) {
-+			list_del_init(&pos->list);
-+			free(pos);
-+		}
- 		return -EINVAL;
-+	}
- 
- 	evsel = __add_event(list, &parse_state->idx, &attr,
- 			    get_config_name(head_config), pmu,
--- 
-2.20.1
-
+Cascardo.
