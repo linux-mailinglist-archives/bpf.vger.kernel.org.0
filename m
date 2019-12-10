@@ -2,173 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EFB4B11943D
-	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2019 22:15:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A46491196E9
+	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2019 22:30:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728930AbfLJVO0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Dec 2019 16:14:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40804 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729474AbfLJVNy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Dec 2019 16:13:54 -0500
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D4E6E214D8;
-        Tue, 10 Dec 2019 21:13:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1576012433;
-        bh=XM9dQd3kPg6XfL3Juj+uxV70f9dwsDukZaIS4aX6BTE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=npsbdZeJnQ88ujnJEtNv+tC56hxEpZ8B5vE7/FCuTKDcOmItVYLQflxqs480DN+VN
-         u4ZAachV481OCt3/o/KDY7cpnvgg7rkirgR4gCyZ7YeBBAByBzh6geQha9SRIB3Uei
-         RL4DbOcTwU7c9Ma45K8zv9Pno5OC5DKoy4YnWx9k=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: [PATCH AUTOSEL 5.4 346/350] bpf: Provide better register bounds after jmp32 instructions
-Date:   Tue, 10 Dec 2019 16:07:31 -0500
-Message-Id: <20191210210735.9077-307-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191210210735.9077-1-sashal@kernel.org>
-References: <20191210210735.9077-1-sashal@kernel.org>
+        id S1727160AbfLJV34 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Dec 2019 16:29:56 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:60809 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727230AbfLJVKB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Dec 2019 16:10:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1576012200;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6Dn0X1y8qWY4L6jupdvIYtGjXctpKGwYZyUlMuuX+gk=;
+        b=QoR6Yr/J4bbjg/p1mvjp7aha9lOWnKDi9ZOSF9vhAgamPAx0hMo1FaX41vIJkJE+j2Lh2K
+        ISZwzpZ2cts5uzgcrjzSZoPLxVlaazc7O+KU167PfBAEoT4Re2QMxxZODBx+13nljlG4+s
+        XZwH0VLWZ0q7q7gg9ZpkjHENCtlY+f4=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-341-3ZmF-bNKPJ6yMjV4_KvasA-1; Tue, 10 Dec 2019 16:09:59 -0500
+Received: by mail-lf1-f71.google.com with SMTP id a11so4336779lff.12
+        for <bpf@vger.kernel.org>; Tue, 10 Dec 2019 13:09:58 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=6Dn0X1y8qWY4L6jupdvIYtGjXctpKGwYZyUlMuuX+gk=;
+        b=k54/Ww4n5Yw4sgC11FqsE/hPQwiGjvhdt9S+Pa+bqAN+ck2qM+Y5YRt3WxV1AbSRrX
+         fZQny42et39EV2b1FIBsZXUAIhO2WSIFuf7aC9gpTiZU4f/JnlvaNXgCousr4sVy1it9
+         xKOkRKqZKCZwSsZY6zt+NKEdNyfSHM/0W55jNZiPtGb/7JPA9xeLbn5HkusMuZPut4HH
+         FkY9cKoVSPo8rpT6lc2E59y5d9hwQHuAQtUdsPFIgn9iXWKCeSzWC09pv13dLAj6YTBm
+         QJVhJEc2o9Ow8vBrDzD416g2buvtuQY1V/+3PCbiA361bQOYGjvqsGsN0ZkrpSnILUEB
+         KEKQ==
+X-Gm-Message-State: APjAAAVKQ/+udGV8fqrf/+ytxUfJHWFRtpzxamlG2SBFLS2kUG2tOtZ4
+        Wn4v8A+IxQk88k+CFZIooNewOvFywBsDf6DPpVO37UDJi8MwcWx///ph8D0vpAe/05K+GZJ9djN
+        Up/iejki0Pezy
+X-Received: by 2002:a2e:a408:: with SMTP id p8mr3996812ljn.145.1576012197596;
+        Tue, 10 Dec 2019 13:09:57 -0800 (PST)
+X-Google-Smtp-Source: APXvYqxvMCPn/czOu2GRrVuQOc/gN/GQSbTQE0kUF3zFgRZi0rgmbc3zka5Cy/ldLQX+t9WQBZ45iA==
+X-Received: by 2002:a2e:a408:: with SMTP id p8mr3996800ljn.145.1576012197452;
+        Tue, 10 Dec 2019 13:09:57 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id f8sm2469467ljj.1.2019.12.10.13.09.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Dec 2019 13:09:56 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id E6C981803C1; Tue, 10 Dec 2019 22:09:55 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Jakub Kicinski <jakub.kicinski@netronome.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        lkml <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Martin Lau <kafai@fb.com>
+Subject: Re: [PATCH bpf v2] bpftool: Don't crash on missing jited insns or ksyms
+In-Reply-To: <20191210125457.13f7821a@cakuba.netronome.com>
+References: <20191210181412.151226-1-toke@redhat.com> <20191210125457.13f7821a@cakuba.netronome.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 10 Dec 2019 22:09:55 +0100
+Message-ID: <87eexbhopo.fsf@toke.dk>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+X-MC-Unique: 3ZmF-bNKPJ6yMjV4_KvasA-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Yonghong Song <yhs@fb.com>
+Jakub Kicinski <jakub.kicinski@netronome.com> writes:
 
-[ Upstream commit 581738a681b6faae5725c2555439189ca81c0f1f ]
+> On Tue, 10 Dec 2019 19:14:12 +0100, Toke H=C3=B8iland-J=C3=B8rgensen wrot=
+e:
+>> When the kptr_restrict sysctl is set, the kernel can fail to return
+>> jited_ksyms or jited_prog_insns, but still have positive values in
+>> nr_jited_ksyms and jited_prog_len. This causes bpftool to crash when try=
+ing
+>> to dump the program because it only checks the len fields not the actual
+>> pointers to the instructions and ksyms.
+>>=20
+>> Fix this by adding the missing checks.
+>>=20
+>> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+>
+> Fixes: 71bb428fe2c1 ("tools: bpf: add bpftool")
+>
+> and
+>
+> Fixes: f84192ee00b7 ("tools: bpftool: resolve calls without using imm fie=
+ld")
+>
+> ?
 
-With latest llvm (trunk https://github.com/llvm/llvm-project),
-test_progs, which has +alu32 enabled, failed for strobemeta.o.
-The verifier output looks like below with edit to replace large
-decimal numbers with hex ones.
- 193: (85) call bpf_probe_read_user_str#114
-   R0=inv(id=0)
- 194: (26) if w0 > 0x1 goto pc+4
-   R0_w=inv(id=0,umax_value=0xffffffff00000001)
- 195: (6b) *(u16 *)(r7 +80) = r0
- 196: (bc) w6 = w0
-   R6_w=inv(id=0,umax_value=0xffffffff,var_off=(0x0; 0xffffffff))
- 197: (67) r6 <<= 32
-   R6_w=inv(id=0,smax_value=0x7fffffff00000000,umax_value=0xffffffff00000000,
-            var_off=(0x0; 0xffffffff00000000))
- 198: (77) r6 >>= 32
-   R6=inv(id=0,umax_value=0xffffffff,var_off=(0x0; 0xffffffff))
- ...
- 201: (79) r8 = *(u64 *)(r10 -416)
-   R8_w=map_value(id=0,off=40,ks=4,vs=13872,imm=0)
- 202: (0f) r8 += r6
-   R8_w=map_value(id=0,off=40,ks=4,vs=13872,umax_value=0xffffffff,var_off=(0x0; 0xffffffff))
- 203: (07) r8 += 9696
-   R8_w=map_value(id=0,off=9736,ks=4,vs=13872,umax_value=0xffffffff,var_off=(0x0; 0xffffffff))
- ...
- 255: (bf) r1 = r8
-   R1_w=map_value(id=0,off=9736,ks=4,vs=13872,umax_value=0xffffffff,var_off=(0x0; 0xffffffff))
- ...
- 257: (85) call bpf_probe_read_user_str#114
- R1 unbounded memory access, make sure to bounds check any array access into a map
+Yeah, guess so? Although I must admit it's not quite clear to me whether
+bpftool gets stable backports, or if it follows the "only moving
+forward" credo of libbpf?
 
-The value range for register r6 at insn 198 should be really just 0/1.
-The umax_value=0xffffffff caused later verification failure.
+Anyhow, I don't suppose it'll hurt to have the Fixes: tag(s) in there;
+does Patchwork pick these up (or can you guys do that when you apply
+this?), or should I resend?
 
-After jmp instructions, the current verifier already tried to use just
-obtained information to get better register range. The current mechanism is
-for 64bit register only. This patch implemented to tighten the range
-for 32bit sub-registers after jmp32 instructions.
-With the patch, we have the below range ranges for the
-above code sequence:
- 193: (85) call bpf_probe_read_user_str#114
-   R0=inv(id=0)
- 194: (26) if w0 > 0x1 goto pc+4
-   R0_w=inv(id=0,smax_value=0x7fffffff00000001,umax_value=0xffffffff00000001,
-            var_off=(0x0; 0xffffffff00000001))
- 195: (6b) *(u16 *)(r7 +80) = r0
- 196: (bc) w6 = w0
-   R6_w=inv(id=0,umax_value=0xffffffff,var_off=(0x0; 0x1))
- 197: (67) r6 <<= 32
-   R6_w=inv(id=0,umax_value=0x100000000,var_off=(0x0; 0x100000000))
- 198: (77) r6 >>= 32
-   R6=inv(id=0,umax_value=1,var_off=(0x0; 0x1))
- ...
- 201: (79) r8 = *(u64 *)(r10 -416)
-   R8_w=map_value(id=0,off=40,ks=4,vs=13872,imm=0)
- 202: (0f) r8 += r6
-   R8_w=map_value(id=0,off=40,ks=4,vs=13872,umax_value=1,var_off=(0x0; 0x1))
- 203: (07) r8 += 9696
-   R8_w=map_value(id=0,off=9736,ks=4,vs=13872,umax_value=1,var_off=(0x0; 0x1))
- ...
- 255: (bf) r1 = r8
-   R1_w=map_value(id=0,off=9736,ks=4,vs=13872,umax_value=1,var_off=(0x0; 0x1))
- ...
- 257: (85) call bpf_probe_read_user_str#114
- ...
-
-At insn 194, the register R0 has better var_off.mask and smax_value.
-Especially, the var_off.mask ensures later lshift and rshift
-maintains proper value range.
-
-Suggested-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Yonghong Song <yhs@fb.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Link: https://lore.kernel.org/bpf/20191121170650.449030-1-yhs@fb.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- kernel/bpf/verifier.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 87181cd5bafd7..df033c5877cbe 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -978,6 +978,17 @@ static void __reg_bound_offset(struct bpf_reg_state *reg)
- 						 reg->umax_value));
- }
- 
-+static void __reg_bound_offset32(struct bpf_reg_state *reg)
-+{
-+	u64 mask = 0xffffFFFF;
-+	struct tnum range = tnum_range(reg->umin_value & mask,
-+				       reg->umax_value & mask);
-+	struct tnum lo32 = tnum_cast(reg->var_off, 4);
-+	struct tnum hi32 = tnum_lshift(tnum_rshift(reg->var_off, 32), 32);
-+
-+	reg->var_off = tnum_or(hi32, tnum_intersect(lo32, range));
-+}
-+
- /* Reset the min/max bounds of a register */
- static void __mark_reg_unbounded(struct bpf_reg_state *reg)
- {
-@@ -5433,6 +5444,10 @@ static void reg_set_min_max(struct bpf_reg_state *true_reg,
- 	/* We might have learned some bits from the bounds. */
- 	__reg_bound_offset(false_reg);
- 	__reg_bound_offset(true_reg);
-+	if (is_jmp32) {
-+		__reg_bound_offset32(false_reg);
-+		__reg_bound_offset32(true_reg);
-+	}
- 	/* Intersecting with the old var_off might have improved our bounds
- 	 * slightly.  e.g. if umax was 0x7f...f and var_off was (0; 0xf...fc),
- 	 * then new var_off is (0; 0x7f...fc) which improves our umax.
-@@ -5542,6 +5557,10 @@ static void reg_set_min_max_inv(struct bpf_reg_state *true_reg,
- 	/* We might have learned some bits from the bounds. */
- 	__reg_bound_offset(false_reg);
- 	__reg_bound_offset(true_reg);
-+	if (is_jmp32) {
-+		__reg_bound_offset32(false_reg);
-+		__reg_bound_offset32(true_reg);
-+	}
- 	/* Intersecting with the old var_off might have improved our bounds
- 	 * slightly.  e.g. if umax was 0x7f...f and var_off was (0; 0xf...fc),
- 	 * then new var_off is (0; 0x7f...fc) which improves our umax.
--- 
-2.20.1
+-Toke
 
