@@ -2,161 +2,193 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B2CD118770
-	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2019 12:56:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C5341188DA
+	for <lists+bpf@lfdr.de>; Tue, 10 Dec 2019 13:50:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727149AbfLJL4f (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Dec 2019 06:56:35 -0500
-Received: from mail-qv1-f65.google.com ([209.85.219.65]:35204 "EHLO
-        mail-qv1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726956AbfLJL4f (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Dec 2019 06:56:35 -0500
-Received: by mail-qv1-f65.google.com with SMTP id d17so4058426qvs.2;
-        Tue, 10 Dec 2019 03:56:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=icyiV0RkwZGTgKtaUg4qH+GVpCIVxWbtRgaACTjmezU=;
-        b=PwbV3w12Itgjb8l/FkXrdXwPVcyz1mHD8YgsJSwZGWHEGvg3wENYq8qQPOKaMM0Jz8
-         1KY/bhhBvsCSwKyczPyTmFLr/sMF47gkbY3lf5B8MDGrMavVZ0ST6+XPM3vQGJrSk/uO
-         nX9JoMId28nclnbNTMn9YqK71lh0fEQ8pYYD1bmT/KRJjNG8ON6l33hVi69kqTt0UCJY
-         7l3JrVIV+zXa2BiOMAq5Gc5eJiCfV/tk5IDA3VHLRrrliJEUB+LSdEQ1YkDln53l84VQ
-         IO1N1qSAW6wbyRiPioRkkaxGcnXMAfssOVarilVDV5jl7lSHfxegk3+PV+Kf043At71Z
-         nNFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=icyiV0RkwZGTgKtaUg4qH+GVpCIVxWbtRgaACTjmezU=;
-        b=F07w/6NkixrUAspfRzpbpNf+iBAloggrby3Nj98zGW1mUWQRmfXJBRDx/cbYGrGsYc
-         Bsk9gaeM8OBnylNGWh5jWLKu9claLlnH0j4KEY0grFmGe+cmxqp1KBVrmtVPHE3megxO
-         tiDPYIytmyrtU1OaaalbGgifkYrtoUZVbFIPfbXgC1YKiJCJLKV/HbVbjz33EkjpRcqO
-         dpnWy9wkuDQ18xyi4NDSksVx6F3e8L3mAcsaHgBI14hL0qa1LvORC+Bt9BxJ/yiFaVeq
-         d5gY26MKcwsizmRvxrK9RziXW5l2YLYdAGHUAUpE6+H8vjsxJmHlkCWaqn0xIJlEEeEh
-         o/2w==
-X-Gm-Message-State: APjAAAUOtBUM8ijksupFjnWiUngtYsTx0uIUnjwFpfbh/6aE1tzIVy2i
-        Q9jme5geT9X+Br7yBUTfwup9gLX847TQ/p/mMCo=
-X-Google-Smtp-Source: APXvYqy8ZVKNN5jBH+qkGQGREjYSjZlQJXpQc5Mfr3X61qU0LpvAWV97ZK4d4wFUVvoJQ0XnNIxE2HY99aFODE15gHU=
-X-Received: by 2002:a05:6214:6f2:: with SMTP id bk18mr28126320qvb.10.1575978994582;
- Tue, 10 Dec 2019 03:56:34 -0800 (PST)
+        id S1727295AbfLJMuE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Dec 2019 07:50:04 -0500
+Received: from mx2.suse.de ([195.135.220.15]:37718 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727131AbfLJMuE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Dec 2019 07:50:04 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id E26C9AF76;
+        Tue, 10 Dec 2019 12:49:59 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 84F101E0B23; Tue, 10 Dec 2019 13:49:57 +0100 (CET)
+Date:   Tue, 10 Dec 2019 13:49:57 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, bpf@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, kvm@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
+        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [PATCH v8 23/26] mm/gup: pass flags arg to __gup_device_*
+ functions
+Message-ID: <20191210124957.GG1551@quack2.suse.cz>
+References: <20191209225344.99740-1-jhubbard@nvidia.com>
+ <20191209225344.99740-24-jhubbard@nvidia.com>
 MIME-Version: 1.0
-References: <20191209135522.16576-1-bjorn.topel@gmail.com> <20191209135522.16576-6-bjorn.topel@gmail.com>
- <20191210120450.3375fc4a@carbon>
-In-Reply-To: <20191210120450.3375fc4a@carbon>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Tue, 10 Dec 2019 12:56:23 +0100
-Message-ID: <CAJ+HfNjMyT3Ye=gyKDUkqsYJxngGp-tpV_m+C93uHbbyxbYoyQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 5/6] selftests: bpf: add xdp_perf test
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     Netdev <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        bpf <bpf@vger.kernel.org>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Edward Cree <ecree@solarflare.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <thoiland@redhat.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20191209225344.99740-24-jhubbard@nvidia.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 10 Dec 2019 at 12:05, Jesper Dangaard Brouer <brouer@redhat.com> wr=
-ote:
->
-> On Mon,  9 Dec 2019 14:55:21 +0100
-> Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> wrote:
->
-> > From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
-> >
-> > The xdp_perf is a dummy XDP test, only used to measure the the cost of
-> > jumping into a XDP program.
->
-> I really like this idea of performance measuring XDP-core in isolation.
-> This is the ultimate zoom-in micro-benchmarking.  I see a use-case for
-> this, where I will measure the XDP-core first, and then run same XDP
-> prog (e.g. XDP_DROP) on a NIC driver, then I can deduct/isolate the
-> driver-code and hardware overhead.  We/I can also use it to optimize
-> e.g. REDIRECT code-core (although redir might not actually work).
->
-> IMHO it would be valuable to have bpf_prog_load() also measure the
-> perf-HW counters for 'cycles' and 'instructions', as in your case the
-> performance optimization was to improve the instructions-per-cycle
-> (which you showed via perf stat in cover letter).
->
->
-> If you send a V4 please describe how to use this prog to measure the
-> cost, as you describe in cover letter.
->
-> from selftests/bpf run:
->  # test_progs -v -t xdp_perf
->
-> (This is a nitpick, so only do this if something request a V4)
->
+On Mon 09-12-19 14:53:41, John Hubbard wrote:
+> A subsequent patch requires access to gup flags, so pass the flags
+> argument through to the __gup_device_* functions.
+> 
+> Also placate checkpatch.pl by shortening a nearby line.
+> 
+> TODO: Christoph Hellwig requested folding this into the patch the uses
+> the gup flags arguments.
 
-I'll definitely do a v4! Thanks for the input/comments! I'll address
-them in the next rev!
+You should probably implement this TODO? :)
 
-Cheers,
-Bj=C3=B6rn
+								Honza
 
->
-> > Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
-> > ---
-> >  .../selftests/bpf/prog_tests/xdp_perf.c       | 25 +++++++++++++++++++
-> >  1 file changed, 25 insertions(+)
-> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_perf.c
-> >
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_perf.c b/tools/=
-testing/selftests/bpf/prog_tests/xdp_perf.c
-> > new file mode 100644
-> > index 000000000000..7185bee16fe4
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/prog_tests/xdp_perf.c
-> > @@ -0,0 +1,25 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +#include <test_progs.h>
-> > +
-> > +void test_xdp_perf(void)
-> > +{
-> > +     const char *file =3D "./xdp_dummy.o";
-> > +     __u32 duration, retval, size;
-> > +     struct bpf_object *obj;
-> > +     char in[128], out[128];
-> > +     int err, prog_fd;
-> > +
-> > +     err =3D bpf_prog_load(file, BPF_PROG_TYPE_XDP, &obj, &prog_fd);
-> > +     if (CHECK_FAIL(err))
-> > +             return;
-> > +
-> > +     err =3D bpf_prog_test_run(prog_fd, 1000000, &in[0], 128,
-> > +                             out, &size, &retval, &duration);
-> > +
-> > +     CHECK(err || retval !=3D XDP_PASS || size !=3D 128,
-> > +           "xdp-perf",
-> > +           "err %d errno %d retval %d size %d\n",
-> > +           err, errno, retval, size);
-> > +
-> > +     bpf_object__close(obj);
-> > +}
->
->
->
-> --
-> Best regards,
->   Jesper Dangaard Brouer
->   MSc.CS, Principal Kernel Engineer at Red Hat
->   LinkedIn: http://www.linkedin.com/in/brouer
->
-> --
-> Best regards,
->   Jesper Dangaard Brouer
->   MSc.CS, Principal Kernel Engineer at Red Hat
->   LinkedIn: http://www.linkedin.com/in/brouer
->
+> 
+> Reviewed-by: Jan Kara <jack@suse.cz>
+> Reviewed-by: Jérôme Glisse <jglisse@redhat.com>
+> Reviewed-by: Ira Weiny <ira.weiny@intel.com>
+> Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+> ---
+>  mm/gup.c | 28 ++++++++++++++++++----------
+>  1 file changed, 18 insertions(+), 10 deletions(-)
+> 
+> diff --git a/mm/gup.c b/mm/gup.c
+> index 73aedcefa4bd..687d48506f04 100644
+> --- a/mm/gup.c
+> +++ b/mm/gup.c
+> @@ -1957,7 +1957,8 @@ static int gup_pte_range(pmd_t pmd, unsigned long addr, unsigned long end,
+>  
+>  #if defined(CONFIG_ARCH_HAS_PTE_DEVMAP) && defined(CONFIG_TRANSPARENT_HUGEPAGE)
+>  static int __gup_device_huge(unsigned long pfn, unsigned long addr,
+> -		unsigned long end, struct page **pages, int *nr)
+> +			     unsigned long end, unsigned int flags,
+> +			     struct page **pages, int *nr)
+>  {
+>  	int nr_start = *nr;
+>  	struct dev_pagemap *pgmap = NULL;
+> @@ -1983,13 +1984,14 @@ static int __gup_device_huge(unsigned long pfn, unsigned long addr,
+>  }
+>  
+>  static int __gup_device_huge_pmd(pmd_t orig, pmd_t *pmdp, unsigned long addr,
+> -		unsigned long end, struct page **pages, int *nr)
+> +				 unsigned long end, unsigned int flags,
+> +				 struct page **pages, int *nr)
+>  {
+>  	unsigned long fault_pfn;
+>  	int nr_start = *nr;
+>  
+>  	fault_pfn = pmd_pfn(orig) + ((addr & ~PMD_MASK) >> PAGE_SHIFT);
+> -	if (!__gup_device_huge(fault_pfn, addr, end, pages, nr))
+> +	if (!__gup_device_huge(fault_pfn, addr, end, flags, pages, nr))
+>  		return 0;
+>  
+>  	if (unlikely(pmd_val(orig) != pmd_val(*pmdp))) {
+> @@ -2000,13 +2002,14 @@ static int __gup_device_huge_pmd(pmd_t orig, pmd_t *pmdp, unsigned long addr,
+>  }
+>  
+>  static int __gup_device_huge_pud(pud_t orig, pud_t *pudp, unsigned long addr,
+> -		unsigned long end, struct page **pages, int *nr)
+> +				 unsigned long end, unsigned int flags,
+> +				 struct page **pages, int *nr)
+>  {
+>  	unsigned long fault_pfn;
+>  	int nr_start = *nr;
+>  
+>  	fault_pfn = pud_pfn(orig) + ((addr & ~PUD_MASK) >> PAGE_SHIFT);
+> -	if (!__gup_device_huge(fault_pfn, addr, end, pages, nr))
+> +	if (!__gup_device_huge(fault_pfn, addr, end, flags, pages, nr))
+>  		return 0;
+>  
+>  	if (unlikely(pud_val(orig) != pud_val(*pudp))) {
+> @@ -2017,14 +2020,16 @@ static int __gup_device_huge_pud(pud_t orig, pud_t *pudp, unsigned long addr,
+>  }
+>  #else
+>  static int __gup_device_huge_pmd(pmd_t orig, pmd_t *pmdp, unsigned long addr,
+> -		unsigned long end, struct page **pages, int *nr)
+> +				 unsigned long end, unsigned int flags,
+> +				 struct page **pages, int *nr)
+>  {
+>  	BUILD_BUG();
+>  	return 0;
+>  }
+>  
+>  static int __gup_device_huge_pud(pud_t pud, pud_t *pudp, unsigned long addr,
+> -		unsigned long end, struct page **pages, int *nr)
+> +				 unsigned long end, unsigned int flags,
+> +				 struct page **pages, int *nr)
+>  {
+>  	BUILD_BUG();
+>  	return 0;
+> @@ -2136,7 +2141,8 @@ static int gup_huge_pmd(pmd_t orig, pmd_t *pmdp, unsigned long addr,
+>  	if (pmd_devmap(orig)) {
+>  		if (unlikely(flags & FOLL_LONGTERM))
+>  			return 0;
+> -		return __gup_device_huge_pmd(orig, pmdp, addr, end, pages, nr);
+> +		return __gup_device_huge_pmd(orig, pmdp, addr, end, flags,
+> +					     pages, nr);
+>  	}
+>  
+>  	page = pmd_page(orig) + ((addr & ~PMD_MASK) >> PAGE_SHIFT);
+> @@ -2157,7 +2163,8 @@ static int gup_huge_pmd(pmd_t orig, pmd_t *pmdp, unsigned long addr,
+>  }
+>  
+>  static int gup_huge_pud(pud_t orig, pud_t *pudp, unsigned long addr,
+> -		unsigned long end, unsigned int flags, struct page **pages, int *nr)
+> +			unsigned long end, unsigned int flags,
+> +			struct page **pages, int *nr)
+>  {
+>  	struct page *head, *page;
+>  	int refs;
+> @@ -2168,7 +2175,8 @@ static int gup_huge_pud(pud_t orig, pud_t *pudp, unsigned long addr,
+>  	if (pud_devmap(orig)) {
+>  		if (unlikely(flags & FOLL_LONGTERM))
+>  			return 0;
+> -		return __gup_device_huge_pud(orig, pudp, addr, end, pages, nr);
+> +		return __gup_device_huge_pud(orig, pudp, addr, end, flags,
+> +					     pages, nr);
+>  	}
+>  
+>  	page = pud_page(orig) + ((addr & ~PUD_MASK) >> PAGE_SHIFT);
+> -- 
+> 2.24.0
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
