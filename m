@@ -2,115 +2,191 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 31953119FA2
-	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2019 00:49:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6573B119FE7
+	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2019 01:27:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726062AbfLJXtg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Dec 2019 18:49:36 -0500
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:38947 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725999AbfLJXtg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Dec 2019 18:49:36 -0500
-Received: by mail-pl1-f193.google.com with SMTP id o9so575825plk.6;
-        Tue, 10 Dec 2019 15:49:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=vICYye3tdePYTTGDAiNlHrcNRiN/+ceEAJjsRWgsiY8=;
-        b=Lg4ewDcAN9eaJgPzGiZpmflTlK6seE44y/ECS63krQTQByFUABg0V6ApzjB3bk3MMB
-         GwLbHlQmk8QXxUg6xzwkz+EbgB0L84rvygHi7Mg/qQZMkYqsSnSpAEQEAm7qTtF+KOCr
-         5L7eCjG53INQgppthCJIK9zEXpRQW7rgEz5zFyrUDEuPCvHabky76yCRS/lP9NNENWcM
-         B5FdD6X+0+/inTFYqthlTAi+9GJk+UjH3yB+G/xvDWX1xE7AOHz9Vsn1laoGSmTCdxIt
-         nK2NJNguFa8ZsXADDGiFXhJa4q/HHdACVf0WUIA5uWlCnq+V8H1FB1DTQzkYKk1JAr2c
-         JFag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=vICYye3tdePYTTGDAiNlHrcNRiN/+ceEAJjsRWgsiY8=;
-        b=LHZxlyrXMLiS4sjg6eovFmArP+ROb4WvT7cK1fIQ0ehaNQ+HT2VOt2tix8r9rTk05L
-         FCPkNyI2p7TR2cNSaAUH+Ffd5Of0qgSf8wFJgoGuiJb4PRzKm0QeRV/hNhO1IER4Z6o3
-         9IH1WScmkRZX/3rjOaFekyaNoScyxrz0ZrnygUgaDOL6c4mKxDcQrOuO6pHwbqpGCgvK
-         KRfw0/XrSRNLCNJIXSEq3sQCy54FB3S/kFt2nebVsyfddbkPsFINHjCsHiO3NAQo4aQO
-         cPiRNu2q8Itxcil5YfR5RW5RtbT52a+DLycvrOsa3Znrj3clx7XeyW9fokiDteNQbz9K
-         DacA==
-X-Gm-Message-State: APjAAAXjwpOlxuz5+cRF87nVabN/3kl8+Kmiyv3dMw0CKEjd3ijcRTQf
-        1Ryb6KTPk1ihxrXxEm4Sxwg5+Vxv
-X-Google-Smtp-Source: APXvYqytWoyXWAD8mfoF/ucHzIgL3t2WMN+Cjbh3sdabKRznsCSvOlxKHN0I3j4nCVBK3CGV8Vnskw==
-X-Received: by 2002:a17:90a:778a:: with SMTP id v10mr154105pjk.26.1576021775034;
-        Tue, 10 Dec 2019 15:49:35 -0800 (PST)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:200::3:a25c])
-        by smtp.gmail.com with ESMTPSA id t65sm139064pfd.178.2019.12.10.15.49.33
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 10 Dec 2019 15:49:34 -0800 (PST)
-Date:   Tue, 10 Dec 2019 15:49:33 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>, davem@davemloft.net,
-        daniel@iogearbox.net, x86@kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH bpf 1/3] ftrace: Fix function_graph tracer interaction
- with BPF trampoline
-Message-ID: <20191210234931.mfaklfs7s4i4fsxo@ast-mbp.dhcp.thefacebook.com>
-References: <20191209000114.1876138-1-ast@kernel.org>
- <20191209000114.1876138-2-ast@kernel.org>
- <20191210183519.41772e0f@gandalf.local.home>
+        id S1727010AbfLKA1F (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Dec 2019 19:27:05 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:13888 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725999AbfLKA1F (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Dec 2019 19:27:05 -0500
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5df037d10000>; Tue, 10 Dec 2019 16:26:57 -0800
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Tue, 10 Dec 2019 16:27:03 -0800
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Tue, 10 Dec 2019 16:27:03 -0800
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 11 Dec
+ 2019 00:27:03 +0000
+Received: from [10.110.48.28] (10.124.1.5) by DRHQMAIL107.nvidia.com
+ (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 11 Dec
+ 2019 00:27:02 +0000
+Subject: Re: [PATCH v8 24/26] mm/gup: track FOLL_PIN pages
+To:     Jan Kara <jack@suse.cz>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        "Mike Kravetz" <mike.kravetz@oracle.com>,
+        Paul Mackerras <paulus@samba.org>,
+        "Shuah Khan" <shuah@kernel.org>, Vlastimil Babka <vbabka@suse.cz>,
+        <bpf@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <kvm@vger.kernel.org>, <linux-block@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <linux-rdma@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
+        <netdev@vger.kernel.org>, <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20191209225344.99740-1-jhubbard@nvidia.com>
+ <20191209225344.99740-25-jhubbard@nvidia.com>
+ <20191210133932.GH1551@quack2.suse.cz>
+From:   John Hubbard <jhubbard@nvidia.com>
+X-Nvconfidentiality: public
+Message-ID: <918e9f4b-d1bc-95b4-3768-f6a28d625d58@nvidia.com>
+Date:   Tue, 10 Dec 2019 16:27:02 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191210183519.41772e0f@gandalf.local.home>
-User-Agent: NeoMutt/20180223
+In-Reply-To: <20191210133932.GH1551@quack2.suse.cz>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1576024017; bh=qZMhuX1AH+ipTqKh5IOl5OAO53v7INQFJxlKSWfldSI=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=mtQrj5I0dTbE0p+0Duy/yLLURBp189gBz9/n7w24993utz/qyGtSs7PPQAv+iIImb
+         JZ8mcjPAxzh+nh7PkxaNbrLb3BrJ2IB5TLP1oCbepwYNd9zP8BSYgamyM4DvGzILi8
+         XQkGoEiIlVo58hcTQukHAefGfROo8agytuwS+0sfjZ1Jg7ij7PU3d1I4gxsqVd70Fa
+         GkNwTpmVy0rbDSvIttlOcb1nzarUHfrPPIMHBT+ByVSSyhRxc5/lScetmOjddYAdyE
+         GT/eTQw2K0oKAfFgOT8KfXo08uqKjO85NJPryhNn/fDyZhmI4MaNcIcj91kNrcZeuR
+         Z4qb08ZWAeRjQ==
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 10, 2019 at 06:35:19PM -0500, Steven Rostedt wrote:
-> On Sun, 8 Dec 2019 16:01:12 -0800
-> Alexei Starovoitov <ast@kernel.org> wrote:
+On 12/10/19 5:39 AM, Jan Kara wrote:
+...
+>> +void grab_page(struct page *page, unsigned int flags)
+>> +{
+>> +	if (flags & FOLL_GET)
+>> +		get_page(page);
+>> +	else if (flags & FOLL_PIN) {
+>> +		get_page(page);
+>> +		WARN_ON_ONCE(flags & FOLL_GET);
+>> +		/*
+>> +		 * Use get_page(), above, to do the refcount error
+>> +		 * checking. Then just add in the remaining references:
+>> +		 */
+>> +		page_ref_add(page, GUP_PIN_COUNTING_BIAS - 1);
 > 
-> >  #ifndef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
-> > diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
-> > index 67e0c462b059..a2659735db73 100644
-> > --- a/kernel/trace/fgraph.c
-> > +++ b/kernel/trace/fgraph.c
-> > @@ -101,6 +101,15 @@ int function_graph_enter(unsigned long ret, unsigned long func,
-> >  {
-> >  	struct ftrace_graph_ent trace;
-> >  
-> > +	/*
-> > +	 * Skip graph tracing if the return location is served by direct trampoline,
-> > +	 * since call sequence and return addresses is unpredicatable anymore.
-> > +	 * Ex: BPF trampoline may call original function and may skip frame
-> > +	 * depending on type of BPF programs attached.
-> > +	 */
-> > +	if (ftrace_direct_func_count &&
-> > +	    ftrace_find_rec_direct(ret - MCOUNT_INSN_SIZE))
+> This is wrong for two reasons:
 > 
-> My only worry is that this may not work for all archs that implement
-> it. But I figure we can cross that bridge when we get to it.
+> 1) You miss compound_head() indirection from get_page() for this
+> page_ref_add().
 
-Right. Since bpf trampoline is going to be the only user in short term
-it's not an issue, since trampoline is x86-64 only so far.
+whoops, yes that is missing.
 
-> > +		return -EBUSY;
-> >  	trace.func = func;
-> >  	trace.depth = ++current->curr_ret_depth;
-> >  
 > 
-> I added this patch to my queue and it's about 70% done going through my
-> test suite (takes around 10 - 13 hours).
+> 2) page_ref_add() could overflow the counter without noticing.
 > 
-> As I'm about to send a pull request to Linus tomorrow, I could include
-> this patch (as it will be fully tested), and then you could apply the
-> other two when it hits Linus's tree.
+> Especially with GUP_PIN_COUNTING_BIAS being non-trivial, it is realistic
+> that an attacker might try to overflow the page refcount and we have to
+> protect the kernel against that. So I think that all the places that would
+> use grab_page() actually need to use try_grab_page() and then gracefully
+> deal with the failure.
 > 
-> Would that work for you?
 
-Awesome. Much appreciate additional testing. I can certainly wait another day.
-I was hoping to get patch 2 all the way to Linus's tree before rc2 to make sure
-register_ftrace_direct() API is used for real in this kernel cycle. When
-everything will land I'll backport to our production kernel and then the actual
-stress testing begins :)
+OK, I've replaced grab_page() everywhere with try_grab_page(), with the
+above issues fixed. The v7 patchset had error handling for grab_page() failures,
+that had been reviewed, so relevants parts of that have reappeared.
+
+I had initially hesitated to do this, but now I've gone ahead and added:
+
+#define page_ref_zero_or_close_to_bias_overflow(page) \
+	((unsigned int) page_ref_count(page) + \
+		GUP_PIN_COUNTING_BIAS <= GUP_PIN_COUNTING_BIAS)
+
+...which is used in the new try_grab_page() for protection.
+
+
+>> @@ -278,11 +425,23 @@ static struct page *follow_page_pte(struct vm_area_struct *vma,
+>>  		goto retry;
+>>  	}
+>>  
+>> -	if (flags & FOLL_GET) {
+>> +	if (flags & (FOLL_PIN | FOLL_GET)) {
+>> +		/*
+>> +		 * Allow try_get_page() to take care of error handling, for
+>> +		 * both cases: FOLL_GET or FOLL_PIN:
+>> +		 */
+>>  		if (unlikely(!try_get_page(page))) {
+>>  			page = ERR_PTR(-ENOMEM);
+>>  			goto out;
+>>  		}
+>> +
+>> +		if (flags & FOLL_PIN) {
+>> +			WARN_ON_ONCE(flags & FOLL_GET);
+>> +
+>> +			/* We got a +1 refcount from try_get_page(), above. */
+>> +			page_ref_add(page, GUP_PIN_COUNTING_BIAS - 1);
+>> +			__update_proc_vmstat(page, NR_FOLL_PIN_REQUESTED, 1);
+>> +		}
+>>  	}
+> 
+> The same problem here as above, plus this place should use the same
+> try_grab..() helper, shouldn't it?
+
+
+Yes, now that the new try_grab_page() has behavior that matches what
+this call site needs. Done.
+
+
+> 
+>> @@ -544,8 +703,8 @@ static struct page *follow_page_mask(struct vm_area_struct *vma,
+>>  	/* make this handle hugepd */
+>>  	page = follow_huge_addr(mm, address, flags & FOLL_WRITE);
+>>  	if (!IS_ERR(page)) {
+>> -		BUG_ON(flags & FOLL_GET);
+>> -		return page;
+>> +		WARN_ON_ONCE(flags & (FOLL_GET | FOLL_PIN));
+>> +		return NULL;
+> 
+> I agree with the change to WARN_ON_ONCE but why is correct the change of
+> the return value? Note that this is actually a "success branch".
+> 
+
+Good catch, thanks! I worked through the logic...correctly at first, but then I must 
+have become temporarily dazed by the raw destructive power of the pre-existing 
+BUG_ON() statement, and screwed it up after all. :)
+
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
 
