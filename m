@@ -2,147 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DFA1911A1ED
-	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2019 03:54:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B200211A4B2
+	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2019 07:50:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727894AbfLKCyI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Dec 2019 21:54:08 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:17227 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728039AbfLKCxk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Dec 2019 21:53:40 -0500
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5df05a1d0001>; Tue, 10 Dec 2019 18:53:17 -0800
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Tue, 10 Dec 2019 18:53:38 -0800
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Tue, 10 Dec 2019 18:53:38 -0800
-Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 11 Dec
- 2019 02:53:38 +0000
-Received: from rnnvemgw01.nvidia.com (10.128.109.123) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Wed, 11 Dec 2019 02:53:37 +0000
-Received: from blueforge.nvidia.com (Not Verified[10.110.48.28]) by rnnvemgw01.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5df05a300002>; Tue, 10 Dec 2019 18:53:37 -0800
-From:   John Hubbard <jhubbard@nvidia.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, <bpf@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <kvm@vger.kernel.org>,
-        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-media@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>, <netdev@vger.kernel.org>,
-        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: [PATCH v9 25/25] selftests/vm: run_vmtests: invoke gup_benchmark with basic FOLL_PIN coverage
-Date:   Tue, 10 Dec 2019 18:53:18 -0800
-Message-ID: <20191211025318.457113-26-jhubbard@nvidia.com>
-X-Mailer: git-send-email 2.24.0
-In-Reply-To: <20191211025318.457113-1-jhubbard@nvidia.com>
-References: <20191211025318.457113-1-jhubbard@nvidia.com>
+        id S1726988AbfLKGuL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Dec 2019 01:50:11 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:48770 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725800AbfLKGuK (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 11 Dec 2019 01:50:10 -0500
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xBB6n6oI003604
+        for <bpf@vger.kernel.org>; Tue, 10 Dec 2019 22:50:09 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=facebook;
+ bh=VFRtLBc7W10U+5ioQoLMMywjohLBuv1Bl8DUvZCi9ec=;
+ b=rKsee+fVp1TwVbknz2SRVRuDdqWQNjsgIP53FbX56Qb9iusGsttAjgX5BxtjFS5PbRgY
+ /F2PVhGstQQw7qiuyKaBzNzJnVfcLm9EA7ReFZRScw4rLZXVEVlxhMQznjYjmI3aizhU
+ vVAgWR8ejeK6WnaauTG/9tTDWtLgeZXfeks= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by mx0a-00082601.pphosted.com with ESMTP id 2wteugbr98-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 10 Dec 2019 22:50:09 -0800
+Received: from intmgw002.05.ash5.facebook.com (2620:10d:c081:10::13) by
+ mail.thefacebook.com (2620:10d:c081:35::128) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
+ Tue, 10 Dec 2019 22:50:08 -0800
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id D26E12EC194D; Tue, 10 Dec 2019 22:50:05 -0800 (PST)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH v2 bpf-next 0/3] Add libbpf-provided extern variables support
+Date:   Tue, 10 Dec 2019 22:49:59 -0800
+Message-ID: <20191211065002.2074074-1-andriin@fb.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-X-NVConfidentiality: public
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1576032797; bh=efjW/rF0EGuRthlOGEU05IQnyHi57jZRzyopoxtDk8c=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
-         In-Reply-To:References:MIME-Version:X-NVConfidentiality:
-         Content-Transfer-Encoding:Content-Type;
-        b=jHA0ByLj6QYFV7n2rBCzqPPa0Q5IP+7x/G8P6mLvVFTEJzqowAWdJqPwWnruswBro
-         lpqfRzvKktTAc+zH4nLabgjThi49XGxeN4DzH53ip1UebXi644j4LuLdlW9mBohUa6
-         SqdUZeet0abo7Kiy7j2yqxOvyhcj3tYFHqQG/LZggQlkcI6EZw4H9s49zoYBV6eHmG
-         8C2IAQPjpWKhfziN+V9Kfo//HwuPhn/a7K84mDN+lqXArlPK/gOgmyBFj7ACDpGNEx
-         eiEUFhIGc89HsbF2aNRnPaRmMHQo4tuBuTQNPTmDKBJn39TpGjnTZWk4Eqa+uj+5g4
-         0zJ9szbQSw+FA==
+X-FB-Internal: Safe
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
+ definitions=2019-12-11_01:2019-12-10,2019-12-11 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ mlxlogscore=999 suspectscore=0 priorityscore=1501 mlxscore=0 spamscore=0
+ phishscore=0 impostorscore=0 adultscore=0 malwarescore=0 clxscore=1015
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-1912110058
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-It's good to have basic unit test coverage of the new FOLL_PIN
-behavior. Fortunately, the gup_benchmark unit test is extremely
-fast (a few milliseconds), so adding it the the run_vmtests suite
-is going to cause no noticeable change in running time.
+It's often important for BPF program to know kernel version or some speci=
+fic
+config values (e.g., CONFIG_HZ to convert jiffies to seconds) and change =
+or
+adjust program logic based on their values. As of today, any such need ha=
+s to
+be resolved by recompiling BPF program for specific kernel and kernel
+configuration. In practice this is usually achieved by using BCC and its
+embedded LLVM/Clang. With such set up #ifdef CONFIG_XXX and similar
+compile-time constructs allow to deal with kernel varieties.
 
-So, add two new invocations to run_vmtests:
+With CO-RE (Compile Once =E2=80=93 Run Everywhere) approach, this is not =
+an option,
+unfortunately. All such logic variations have to be done as a normal
+C language constructs (i.e., if/else, variables, etc), not a preprocessor
+directives. This patch series add support for such advanced scenarios thr=
+ough
+C extern variables. These extern variables will be recognized by libbpf a=
+nd
+supplied through extra .extern internal map, similarly to global data. Th=
+is
+.extern map is read-only, which allows BPF verifier to track its content
+precisely as constants. That gives an opportunity to have pre-compiled BP=
+F
+program, which can potentially use BPF functionality (e.g., BPF helpers) =
+or
+kernel features (types, fields, etc), that are available only on a subset=
+ of
+targeted kernels, while effectively eleminating (through verifier's dead =
+code
+detection) such unsupported functionality for other kernels (typically, o=
+lder
+versions). Patch #3 explicitly tests a scenario of using unsupported BPF
+helper, to validate the approach.
 
-1) Run gup_benchmark with normal get_user_pages().
+This patch set heavily relies on BTF type information emitted by compiler=
+ for
+each extern variable declaration. Based on specific types, libbpf does st=
+rict
+checks of config data values correctness. See patch #1 for details.
 
-2) Run gup_benchmark with pin_user_pages(). This is much like
-the first call, except that it sets FOLL_PIN.
+Outline of the patch set:
+- patch #1 adds all of the libbpf internal machinery for externs support,
+  including setting up BTF information for .extern data section;
+- patch #2 adds support for .extern into BPF skeleton;
+- patch #3 adds externs selftests, as well as enhances test_skeleton.c te=
+st to
+  validate mmap()-ed .extern datasection functionality.
 
-Running these two in quick succession also provide a visual
-comparison of the running times, which is convenient.
+This patch set is based off BPF skeleton patch set ([0]).
 
-The new invocations are fairly early in the run_vmtests script,
-because with test suites, it's usually preferable to put the
-shorter, faster tests first, all other things being equal.
+  [0] https://patchwork.ozlabs.org/project/netdev/list/?series=3D147459&s=
+tate=3D*
 
-Reviewed-by: Ira Weiny <ira.weiny@intel.com>
-Signed-off-by: John Hubbard <jhubbard@nvidia.com>
----
- tools/testing/selftests/vm/run_vmtests | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+v1->v2:
+- use BTF type information for externs (Alexei);
+- add strings support;
+- add BPF skeleton support for .extern.
 
-diff --git a/tools/testing/selftests/vm/run_vmtests b/tools/testing/selftes=
-ts/vm/run_vmtests
-index a692ea828317..df6a6bf3f238 100755
---- a/tools/testing/selftests/vm/run_vmtests
-+++ b/tools/testing/selftests/vm/run_vmtests
-@@ -112,6 +112,28 @@ echo "NOTE: The above hugetlb tests provide minimal co=
-verage.  Use"
- echo "      https://github.com/libhugetlbfs/libhugetlbfs.git for"
- echo "      hugetlb regression testing."
-=20
-+echo "--------------------------------------------"
-+echo "running 'gup_benchmark -U' (normal/slow gup)"
-+echo "--------------------------------------------"
-+./gup_benchmark -U
-+if [ $? -ne 0 ]; then
-+	echo "[FAIL]"
-+	exitcode=3D1
-+else
-+	echo "[PASS]"
-+fi
-+
-+echo "------------------------------------------"
-+echo "running gup_benchmark -b (pin_user_pages)"
-+echo "------------------------------------------"
-+./gup_benchmark -b
-+if [ $? -ne 0 ]; then
-+	echo "[FAIL]"
-+	exitcode=3D1
-+else
-+	echo "[PASS]"
-+fi
-+
- echo "-------------------"
- echo "running userfaultfd"
- echo "-------------------"
+Andrii Nakryiko (3):
+  libbpf: support libbpf-provided extern variables
+  bpftool: generate externs datasec in BPF skeleton
+  selftests/bpf: add tests for libbpf-provided externs
+
+ include/uapi/linux/btf.h                      |   3 +-
+ tools/bpf/bpftool/gen.c                       |   4 +
+ tools/include/uapi/linux/btf.h                |   7 +-
+ tools/lib/bpf/Makefile                        |  15 +-
+ tools/lib/bpf/bpf_helpers.h                   |   9 +
+ tools/lib/bpf/btf.c                           |   9 +-
+ tools/lib/bpf/libbpf.c                        | 769 ++++++++++++++++--
+ tools/lib/bpf/libbpf.h                        |   6 +-
+ tools/lib/bpf/libbpf_internal.h               |   6 +
+ tools/testing/selftests/bpf/Makefile          |   2 +-
+ .../selftests/bpf/prog_tests/core_extern.c    | 192 +++++
+ .../selftests/bpf/prog_tests/skeleton.c       |  18 +-
+ .../selftests/bpf/progs/test_core_extern.c    |  62 ++
+ .../selftests/bpf/progs/test_skeleton.c       |   9 +
+ 14 files changed, 1024 insertions(+), 87 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/core_extern.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_core_extern.c
+
 --=20
-2.24.0
+2.17.1
 
