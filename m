@@ -2,324 +2,210 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AA8111BFEC
-	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2019 23:35:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAAF611C023
+	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2019 23:51:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727226AbfLKWe7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Dec 2019 17:34:59 -0500
-Received: from mail-pl1-f201.google.com ([209.85.214.201]:49620 "EHLO
-        mail-pl1-f201.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727221AbfLKWe4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 Dec 2019 17:34:56 -0500
-Received: by mail-pl1-f201.google.com with SMTP id y8so188801plk.16
-        for <bpf@vger.kernel.org>; Wed, 11 Dec 2019 14:34:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=8o/gH5+XtBu0HLbIWnLVKRhI0lP1MZucRfi5Tmg/xRY=;
-        b=Eyd6oFgU0FP4KZyu8nqFCWnRZchPcb0LpmERtUx8e1gv/ydKT7FXBUchFFk5qH/fDd
-         TUT8iNU4a5QqDEtbaZEellLni1I9USQJ6xlATerYxYrzSYIptvHfZNhdF2Ecz9l+Z4tU
-         5Kp4DwPpwv2SqPfTeKp20p1EM9TajUbTZdzjiHQLUfNFWNHoOrmZD7PrkigIK1JyWgyF
-         90a2VBoKQTotfyBC5IMlcpGcAtGCyJpFeqRMRrxHGTkirubWd0VJzxUB+sNrpRgQHlV/
-         Xrf981ANJGJO/S+gxji7MUi+7DPadyY8vsFjrmkPj3Ppz4SOL52BIg2v3CpEFwji4uER
-         16zQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=8o/gH5+XtBu0HLbIWnLVKRhI0lP1MZucRfi5Tmg/xRY=;
-        b=A60cRdGmhuqzvPkVPgMHqHcgAJxwXHZE7RJQ4T1JUU5ILl+LRBL2JJLSGSmQlcQujI
-         vHreiBYMODrl/16+CqTx7snfm4KdCq6+HD9xWcc3ls2H/wFkfLJd+VanwkM5lMCgtAPe
-         UEfU/f4bFpScQDp3HHPoD38lMvLTKEBraqM3T6obvxkM9e1Q6AlyLEwjQr9mR++eLtjy
-         gViplZCHSRbY7eauba3KuIv3LqL97geMmo4EDa2NZOFgltpUZyLPCgL0Qkr2MpQAU9w3
-         oixgaASj9Yam+uOf57gGglRguUXABBAK4m5lQ2+EunXiDrAgQ3C05H93HN0C9ZISDRMf
-         TPbw==
-X-Gm-Message-State: APjAAAXTQO04fmurt/BEBpcw2fGJUdlamugeGcn9zjuGauXOv+1win0E
-        Q8Ub0es7HMG/1liHeusyWvA1xFuSq2Kt
-X-Google-Smtp-Source: APXvYqxObxrz8PVMK/qpJIMpBiWoG4fHVWKf1Xe97COULRdaIlJkya4XQdXiB7u3TErXYh4FybcBGTvSThHh
-X-Received: by 2002:a63:647:: with SMTP id 68mr6841026pgg.202.1576103695389;
- Wed, 11 Dec 2019 14:34:55 -0800 (PST)
-Date:   Wed, 11 Dec 2019 14:33:44 -0800
-In-Reply-To: <20191211223344.165549-1-brianvv@google.com>
-Message-Id: <20191211223344.165549-12-brianvv@google.com>
-Mime-Version: 1.0
-References: <20191211223344.165549-1-brianvv@google.com>
-X-Mailer: git-send-email 2.24.1.735.g03f4e72817-goog
-Subject: [PATCH v3 bpf-next 11/11] selftests/bpf: add batch ops testing to
- lpm_trie bpf map
-From:   Brian Vazquez <brianvv@google.com>
-To:     Brian Vazquez <brianvv.kernel@gmail.com>,
-        Brian Vazquez <brianvv@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S . Miller" <davem@davemloft.net>
-Cc:     Yonghong Song <yhs@fb.com>, Stanislav Fomichev <sdf@google.com>,
-        Petar Penkov <ppenkov@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S1726404AbfLKWvQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Dec 2019 17:51:16 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:29754 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726345AbfLKWvP (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 11 Dec 2019 17:51:15 -0500
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xBBMm1Zj021407;
+        Wed, 11 Dec 2019 14:51:00 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=T3TIIz93Tk9QjEtiAOKVC3YiuRjJr2rqRvJ1KxV9Rkg=;
+ b=nvEu6/dstDC2HMyawNe/d+JbmQ3R/bn52ymNDcXFhXkFxEjF5iAreQclpxm7cGUHTDnS
+ LeJD4oEr/2dMEhV1N3BMMOQ73ijpeJC38Q/NnrXLltuw69YYKc61mfGcX/45qkDp60Uh
+ /EeRaX3uB/RXClxggIyajp7+UMEdmt7wHw8= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by mx0a-00082601.pphosted.com with ESMTP id 2wu87qgbtg-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 11 Dec 2019 14:51:00 -0800
+Received: from prn-mbx06.TheFacebook.com (2620:10d:c081:6::20) by
+ prn-hub04.TheFacebook.com (2620:10d:c081:35::128) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Wed, 11 Dec 2019 14:50:59 -0800
+Received: from prn-hub05.TheFacebook.com (2620:10d:c081:35::129) by
+ prn-mbx06.TheFacebook.com (2620:10d:c081:6::20) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Wed, 11 Dec 2019 14:50:59 -0800
+Received: from NAM02-CY1-obe.outbound.protection.outlook.com (192.168.54.28)
+ by o365-in.thefacebook.com (192.168.16.29) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
+ via Frontend Transport; Wed, 11 Dec 2019 14:50:59 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BhwKN6eXO8X4rM5IGH2yH9MKKkYxtY1zzWE5LWTb0z2HHSh/8dYm0B2323hSIGcsq9AHf2n2vtzoXsMYZTQl5BicLZB5rtzBDiuaGrf2NfTXWIdvDr+lXXc3uqQa7D6rlZfaN66FTudbqJx6/QgFDWYsaLZ+fkr+d6aXUIpns0g6dyaqYKOV+wHxNGiP5B7iwOUNG+WQh9FjAaaqAmSY7tfB0Qfd1OrEDik4yUkrYVh69TUsD5ZP4nsBva85PJBAJOdxQKaQRLjLjR8TTge4cEFEeRIWztDVE/vPdsTmKtiRlNQaO8CIFJWvKvrxWhJcpqdIg/SbTVgpPiGi7FR88g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=T3TIIz93Tk9QjEtiAOKVC3YiuRjJr2rqRvJ1KxV9Rkg=;
+ b=jJYl3CaXiV6wAh19tcJFtCcBBhp4+cGwZ8INZvso70++4/zhX8lfAPvbI+gOL+PRsLIvzJURAM4yFkoLeCjjK06jmc5KvEEemkoBRt1SKqys8AwspsVCiGSYCVjkgTH9lfUC88BaUId7Ydl1vBIDQ4kq8jy/7Konu6QWTNQD5q4VYiVgy7DxF4A56M/3j08GA8oFEJYOhltnBWAqPMSU6OrvEIlBZNsPW6YoyOPv0zJ+GA+k9nr584rn1sZcW+9iCotlUy5KG0mWUv/KHrWpwhJaUfccCDI+2bd06aCnPyyFfChyHwHQnlvQi4xmh/X89dctu5lLKsQJVFbYQoWUaQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=T3TIIz93Tk9QjEtiAOKVC3YiuRjJr2rqRvJ1KxV9Rkg=;
+ b=eqqSJfjXNv8m0raLEg3CedYusghYMqD0SMs9eAQbG5UEDrihuyLsIH2PTKWxMZVq9BNT96erD8+1YMWPPtFf5yx593x8GVZp9irDhw+FCahZZb52yPcawyxKL8I7TC3+PeG8FBmJjnyql4MKsOhWJX268SB+XVDDcp2yDNRtbZU=
+Received: from MN2PR15MB3213.namprd15.prod.outlook.com (20.179.21.76) by
+ MN2PR15MB2543.namprd15.prod.outlook.com (20.179.145.94) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2538.15; Wed, 11 Dec 2019 22:50:57 +0000
+Received: from MN2PR15MB3213.namprd15.prod.outlook.com
+ ([fe80::6d1e:f2f7:d36:a42f]) by MN2PR15MB3213.namprd15.prod.outlook.com
+ ([fe80::6d1e:f2f7:d36:a42f%4]) with mapi id 15.20.2516.018; Wed, 11 Dec 2019
+ 22:50:56 +0000
+From:   Martin Lau <kafai@fb.com>
+To:     Andrii Nakryiko <andriin@fb.com>
+CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "andrii.nakryiko@gmail.com" <andrii.nakryiko@gmail.com>,
+        Kernel Team <Kernel-team@fb.com>
+Subject: Re: [Potential Spoof] [PATCH bpf-next 11/15] bpftool: add skeleton
+ codegen command
+Thread-Topic: [Potential Spoof] [PATCH bpf-next 11/15] bpftool: add skeleton
+ codegen command
+Thread-Index: AQHVrvdWTxFntEtem0yg2Bw2btWW56e1jPIA
+Date:   Wed, 11 Dec 2019 22:50:56 +0000
+Message-ID: <20191211225052.se2yyk4j5fpt2fdp@kafai-mbp>
+References: <20191210011438.4182911-1-andriin@fb.com>
+ <20191210011438.4182911-12-andriin@fb.com>
+In-Reply-To: <20191210011438.4182911-12-andriin@fb.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MWHPR04CA0047.namprd04.prod.outlook.com
+ (2603:10b6:300:ee::33) To MN2PR15MB3213.namprd15.prod.outlook.com
+ (2603:10b6:208:3d::12)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c090:200::1:ee78]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: a6603b85-731d-4609-6b07-08d77e8c952c
+x-ms-traffictypediagnostic: MN2PR15MB2543:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MN2PR15MB2543059CF216D5FA7D87E9EDD55A0@MN2PR15MB2543.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-forefront-prvs: 024847EE92
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(7916004)(366004)(189003)(199004)(52116002)(2906002)(6506007)(186003)(71200400001)(8676002)(1076003)(8936002)(81156014)(86362001)(66446008)(66476007)(9686003)(6636002)(6512007)(4326008)(66556008)(6486002)(5660300002)(6862004)(498600001)(81166006)(64756008)(66946007)(54906003)(33716001);DIR:OUT;SFP:1102;SCL:1;SRVR:MN2PR15MB2543;H:MN2PR15MB3213.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 6DiSfMZdOlsdSKXyTO23y9L+FBlq2X3bbRwI7vI8+hrRkn/udzXq65kpW+GtM40CLSb6a9WWfLaztia4B/AJSvcflBl/hONpAoUp99zOG8DPqtZhf1z3XiDQNG64WOZJUV5oxd9dsZ1RyuNbj0f1dyrGKfgRzPsQO8raWTSvOAyv0e8oG0Zsnye+EwVRwO//SB90F/g8nLYSXuqC0D++p4SMgk+vY67Cb0Oo6PjvF/azlxaTRT1Nx80zwAoZtKSQzz2KQdP7EZSAop+8cGRo/SpbxQQp4Xjsob0TCVcEI3E9yfvz1EDspPk2i5ehxgshHYGhxrw+aw3ILKwdlCaxk/g426LROwYuErxwrjP8HowBo4bRYJS1ux8O1iSQYldgSfZqj6lCjkiwPb+WlFodVDporOnAxuJpfV4QwO24tpgmyamCoYfalnumnkXRUUtC
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <91682D9EE4230A49B4EAE26E33436353@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: a6603b85-731d-4609-6b07-08d77e8c952c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Dec 2019 22:50:56.4209
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: iKEcOupmQqVWCG4J9QUriBIHn9Bhk/NyF1ZvsdyIa9NQzPAmOBc/EtrLOQGeA3bB
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB2543
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
+ definitions=2019-12-11_07:2019-12-11,2019-12-11 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
+ priorityscore=1501 clxscore=1015 impostorscore=0 malwarescore=0
+ spamscore=0 mlxscore=0 suspectscore=0 phishscore=0 lowpriorityscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-1910280000 definitions=main-1912110179
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Tested bpf_map_batch_ops functionality.
+On Mon, Dec 09, 2019 at 05:14:34PM -0800, Andrii Nakryiko wrote:
+> Add `bpftool gen skeleton` command, which takes in compiled BPF .o object=
+ file
+> and dumps a BPF skeleton struct and related code to work with that skelet=
+on.
+> Skeleton itself is tailored to a specific structure of provided BPF objec=
+t
+> file, containing accessors (just plain struct fields) for every map and
+> program, as well as dedicated space for bpf_links. If BPF program is usin=
+g
+> global variables, corresponding structure definitions of compatible memor=
+y
+> layout are emitted as well, making it possible to initialize and subseque=
+ntly
+> read/update global variables values using simple and clear C syntax for
+> accessing fields. This skeleton majorly improves usability of
+> opening/loading/attaching of BPF object, as well as interacting with it
+> throughout the lifetime of loaded BPF object.
+>=20
+> Generated skeleton struct has the following structure:
+>=20
+> struct <object-name> {
+> 	/* used by libbpf's skeleton API */
+> 	struct bpf_object_skeleton *skeleton;
+> 	/* bpf_object for libbpf APIs */
+> 	struct bpf_object *obj;
+> 	struct {
+> 		/* for every defined map in BPF object: */
+> 		struct bpf_map *<map-name>;
+> 	} maps;
+> 	struct {
+> 		/* for every program in BPF object: */
+> 		struct bpf_program *<program-name>;
+> 	} progs;
+> 	struct {
+> 		/* for every program in BPF object: */
+> 		struct bpf_link *<program-name>;
+> 	} links;
+> 	/* for every present global data section: */
+> 	struct <object-name>__<one of bss, data, or rodata> {
+> 		/* memory layout of corresponding data section,
+> 		 * with every defined variable represented as a struct field
+> 		 * with exactly the same type, but without const/volatile
+> 		 * modifiers, e.g.:
+> 		 */
+> 		 int *my_var_1;
+> 		 ...
+> 	} *<one of bss, data, or rodata>;
+> };
+>=20
+> This provides great usability improvements:
+> - no need to look up maps and programs by name, instead just
+>   my_obj->maps.my_map or my_obj->progs.my_prog would give necessary
+>   bpf_map/bpf_program pointers, which user can pass to existing libbpf AP=
+Is;
+> - pre-defined places for bpf_links, which will be automatically populated=
+ for
+>   program types that libbpf knows how to attach automatically (currently
+>   tracepoints, kprobe/kretprobe, raw tracepoint and tracing programs). On
+>   tearing down skeleton, all active bpf_links will be destroyed (meaning =
+BPF
+>   programs will be detached, if they are attached). For cases in which li=
+bbpf
+>   doesn't know how to auto-attach BPF program, user can manually create l=
+ink
+>   after loading skeleton and they will be auto-detached on skeleton
+>   destruction:
+>=20
+> 	my_obj->links.my_fancy_prog =3D bpf_program__attach_cgroup_whatever(
+> 		my_obj->progs.my_fancy_prog, <whatever extra param);
+>=20
+> - it's extremely easy and convenient to work with global data from usersp=
+ace
+>   now. Both for read-only and read/write variables, it's possible to
+>   pre-initialize them before skeleton is loaded:
+>=20
+> 	skel =3D my_obj__open(raw_embed_data);
+> 	my_obj->rodata->my_var =3D 123;
+This will be very useful.  I can think of one immediate use on this
+for my current TCP work.
 
-  $ ./test_maps
-  ...
-  test_trie_map_batch_ops:PASS
-  ...
-
-Signed-off-by: Brian Vazquez <brianvv@google.com>
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- .../bpf/map_tests/trie_map_batch_ops.c        | 235 ++++++++++++++++++
- 1 file changed, 235 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/map_tests/trie_map_batch_ops.c
-
-diff --git a/tools/testing/selftests/bpf/map_tests/trie_map_batch_ops.c b/tools/testing/selftests/bpf/map_tests/trie_map_batch_ops.c
-new file mode 100644
-index 0000000000000..927e898bea2d0
---- /dev/null
-+++ b/tools/testing/selftests/bpf/map_tests/trie_map_batch_ops.c
-@@ -0,0 +1,235 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <stdio.h>
-+#include <errno.h>
-+#include <string.h>
-+#include <arpa/inet.h>
-+
-+#include <bpf/bpf.h>
-+#include <bpf/libbpf.h>
-+
-+#include <bpf_util.h>
-+#include <test_maps.h>
-+
-+static void map_batch_update(int map_fd, __u32 max_entries)
-+{
-+	int i, err;
-+	struct bpf_lpm_trie_key *key_helper;
-+	void *key, *values;
-+	size_t key_size;
-+
-+	key_size = sizeof(*key_helper) + sizeof(__u32);
-+	key = alloca(max_entries * key_size);
-+	values = alloca(max_entries * sizeof(int));
-+
-+	for (i = 0; i < max_entries; i++) {
-+		key_helper = (struct bpf_lpm_trie_key *)(key + i * key_size);
-+		inet_pton(AF_INET, "192.168.0.0", key_helper->data);
-+		key_helper->data[3] = i;
-+		key_helper->prefixlen = 16 + i;
-+		((int *)values)[i] = i + 1;
-+	}
-+
-+	err = bpf_map_update_batch(map_fd, key, values, &max_entries, 0, 0);
-+	CHECK(err, "bpf_map_update_batch()", "error:%s\n", strerror(errno));
-+}
-+
-+static void map_batch_verify(int *visited, __u32 max_entries,
-+			     void *keys, void *values)
-+{
-+	struct bpf_lpm_trie_key *key;
-+	size_t key_size;
-+	int i;
-+
-+	memset(visited, 0, max_entries * sizeof(*visited));
-+	key_size = sizeof(*key) + sizeof(__u32);
-+
-+	for (i = 0; i < max_entries; i++) {
-+		key = keys + i * key_size;
-+		CHECK(key->data[3] + 1 != ((int *)values)[i],
-+		      "key/value checking",
-+		      "error: i %d key %d.%d.%d.%d value %d\n", i, key->data[0],
-+		      key->data[1], key->data[2], key->data[3],
-+		      ((int *)values)[i]);
-+
-+		visited[i] = 1;
-+
-+	}
-+	for (i = 0; i < max_entries; i++) {
-+		CHECK(visited[i] != 1, "visited checking",
-+		      "error: keys array at index %d missing\n", i);
-+	}
-+}
-+
-+void __test_trie_map_lookup_and_delete_batch(void)
-+{
-+	struct bpf_lpm_trie_key *batch, *key_p;
-+	size_t key_size = sizeof(*key_p) + sizeof(__u32);
-+	struct bpf_create_map_attr xattr = {
-+		.name = "lpm_trie_map",
-+		.map_type = BPF_MAP_TYPE_LPM_TRIE,
-+		.key_size = key_size,
-+		.value_size = sizeof(int),
-+	};
-+	__u32 count, total, total_success;
-+	const __u32 max_entries = 10;
-+	int map_fd, *visited, key;
-+	int err, i, step;
-+	int *values;
-+	void *keys;
-+
-+	xattr.max_entries = max_entries;
-+	xattr.map_flags = BPF_F_NO_PREALLOC;
-+	map_fd = bpf_create_map_xattr(&xattr);
-+	CHECK(map_fd == -1,
-+	      "bpf_create_map_xattr()", "error:%s\n", strerror(errno));
-+
-+	keys = malloc(max_entries * key_size);
-+	batch = malloc(key_size);
-+	values = malloc(max_entries * sizeof(int));
-+	visited = malloc(max_entries * sizeof(int));
-+	CHECK(!keys || !values || !visited, "malloc()",
-+	      "error:%s\n", strerror(errno));
-+
-+	/* test 1: lookup/delete an empty hash table, -ENOENT */
-+	count = max_entries;
-+	err = bpf_map_lookup_and_delete_batch(map_fd, NULL, batch, keys,
-+					      values, &count, 0, 0);
-+	CHECK((err && errno != ENOENT), "empty map",
-+	      "error: %s\n", strerror(errno));
-+
-+	/* populate elements to the map */
-+	map_batch_update(map_fd, max_entries);
-+
-+	/* test 2: lookup/delete with count = 0, success */
-+	count = 0;
-+	err = bpf_map_lookup_and_delete_batch(map_fd, NULL, batch, keys,
-+					      values, &count, 0, 0);
-+	CHECK(err, "count = 0", "error: %s\n", strerror(errno));
-+
-+	/* test 3: lookup/delete with count = max_entries, success */
-+	memset(keys, 0, max_entries * key_size);
-+	memset(values, 0, max_entries * sizeof(int));
-+	count = max_entries;
-+	err = bpf_map_lookup_and_delete_batch(map_fd, NULL, batch, keys,
-+					      values, &count, 0, 0);
-+	CHECK((err && errno != ENOENT), "count = max_entries",
-+	       "error: %s\n", strerror(errno));
-+	CHECK(count != max_entries, "count = max_entries",
-+	      "count = %u, max_entries = %u\n", count, max_entries);
-+	map_batch_verify(visited, max_entries, keys, values);
-+
-+	/* bpf_map_get_next_key() should return -ENOENT for an empty map. */
-+	err = bpf_map_get_next_key(map_fd, NULL, &key);
-+	CHECK(!err, "bpf_map_get_next_key()", "error: %s\n", strerror(errno));
-+
-+	/* test 4: lookup/delete in a loop with various steps. */
-+	total_success = 0;
-+	for (step = 4; step < max_entries; step++) {
-+		map_batch_update(map_fd, max_entries);
-+		memset(keys, 0, max_entries * key_size);
-+		memset(values, 0, max_entries * sizeof(int));
-+		total = 0;
-+		/* iteratively lookup elements with 'step'
-+		 * elements each
-+		 */
-+		count = step;
-+		while (true) {
-+			err = bpf_map_lookup_batch(map_fd,
-+						   total ? batch : NULL,
-+						   batch,
-+						   keys + total * key_size,
-+						   values + total,
-+						   &count, 0, 0);
-+			/* It is possible that we are failing due to buffer size
-+			 * not big enough. In such cases, let us just exit and
-+			 * go with large steps. Not that a buffer size with
-+			 * max_entries should always work.
-+			 */
-+			CHECK((err && errno != ENOENT), "lookup with steps",
-+			      "error: %s\n", strerror(errno));
-+
-+			total += count;
-+			if (err)
-+				break;
-+		}
-+
-+		CHECK(total != max_entries, "lookup with steps",
-+		      "total = %u, max_entries = %u\n", total, max_entries);
-+		map_batch_verify(visited, max_entries, keys, values);
-+
-+		total = 0;
-+		while (true) {
-+			err = bpf_map_delete_batch(map_fd,
-+						   keys + total * key_size,
-+						   &count, 0, 0);
-+			/* It is possible that we are failing due to buffer size
-+			 * not big enough. In such cases, let us just exit and
-+			 * go with large steps. Not that a buffer size with
-+			 * max_entries should always work.
-+			 */
-+			CHECK((err && errno != ENOENT), "lookup with steps",
-+			      "error: %s\n", strerror(errno));
-+			total += count;
-+			if (err)
-+				break;
-+		}
-+
-+		CHECK(total != max_entries, "delete with steps",
-+		      "total = %u, max_entries = %u\n", total, max_entries);
-+
-+		/* check map is empty, errno == -ENOENT */
-+		err = bpf_map_get_next_key(map_fd, NULL, keys);
-+		CHECK(!err || errno != ENOENT, "bpf_map_get_next_key()",
-+		      "error: %s\n", strerror(errno));
-+
-+		map_batch_update(map_fd, max_entries);
-+		memset(keys, 0, max_entries * key_size);
-+		memset(values, 0, max_entries * sizeof(int));
-+		total = 0;
-+		i = 0;
-+		/* iteratively lookup/delete elements with 'step'
-+		 * elements each
-+		 */
-+		count = step;
-+		while (true) {
-+			err = bpf_map_lookup_and_delete_batch(map_fd,
-+							total ? batch : NULL,
-+							batch,
-+							keys + total * key_size,
-+							values + total,
-+							&count, 0, 0);
-+
-+			CHECK((err && errno != ENOENT), "lookup with steps",
-+			      "error: %s\n", strerror(errno));
-+
-+			total += count;
-+			if (err)
-+				break;
-+			i++;
-+		}
-+
-+		CHECK(total != max_entries, "lookup/delete with steps",
-+		      "total = %u, max_entries = %u\n", total, max_entries);
-+
-+		map_batch_verify(visited, max_entries, keys, values);
-+		err = bpf_map_get_next_key(map_fd, NULL, &key);
-+		CHECK(!err, "bpf_map_get_next_key()", "error: %s\n",
-+		      strerror(errno));
-+
-+		total_success++;
-+	}
-+
-+	CHECK(total_success == 0, "check total_success",
-+	      "unexpected failure\n");
-+}
-+
-+void trie_map_batch_ops(void)
-+{
-+	__test_trie_map_lookup_and_delete_batch();
-+	printf("test_%s:PASS\n", __func__);
-+}
-+
-+void test_trie_map_batch_ops(void)
-+{
-+	trie_map_batch_ops();
-+}
--- 
-2.24.1.735.g03f4e72817-goog
-
+> 	my_obj__load(skel); /* 123 will be initialization value for my_var */
+>=20
