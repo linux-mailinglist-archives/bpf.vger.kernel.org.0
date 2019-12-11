@@ -2,154 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B25311B94A
-	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2019 17:56:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92C6411B9BA
+	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2019 18:11:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727118AbfLKQ4Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Dec 2019 11:56:16 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:54517 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726313AbfLKQ4P (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 Dec 2019 11:56:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1576083374;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KPNvaGpq3HBFsvPBMbtFzNSf8jY+m1mkWfo8bwQYb1M=;
-        b=fa8iH4fx/eBTIxK1t50omahAapkCGbKWouGEIXIPA4SCTYXPCMvV5Oqx7c7a0u6pfTC/jk
-        cff6++Q1TEU1u6nZ8+gmHyg1jRsKnLU1uvsIM3NI1Me/YIZqZalbiDvv4uVDf191tXxXG+
-        sKahBhb1RAqnAPJ16rT4zkFhTHBN3Mc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-124-BWJS7TFYMbKlq0NdBdIvLw-1; Wed, 11 Dec 2019 11:56:10 -0500
-X-MC-Unique: BWJS7TFYMbKlq0NdBdIvLw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F353F911EF;
-        Wed, 11 Dec 2019 16:56:08 +0000 (UTC)
-Received: from krava (unknown [10.43.17.106])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 68AEC66074;
-        Wed, 11 Dec 2019 16:56:03 +0000 (UTC)
-Date:   Wed, 11 Dec 2019 17:56:00 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-audit@redhat.com,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Steve Grubb <sgrubb@redhat.com>,
-        David Miller <davem@redhat.com>,
-        Eric Paris <eparis@redhat.com>, Jiri Benc <jbenc@redhat.com>
-Subject: Re: [PATCHv3] bpf: Emit audit messages upon successful prog load and
- unload
-Message-ID: <20191211165600.GG25474@krava>
-References: <20191206214934.11319-1-jolsa@kernel.org>
- <20191209121537.GA14170@linux.fritz.box>
- <CAHC9VhQdOGTj1HT1cwvAdE1sRpzk5mC+oHQLHgJFa3vXEij+og@mail.gmail.com>
- <d387184e-9c5f-d5b2-0acb-57b794235cbd@iogearbox.net>
- <CAHC9VhRDsEDGripZRrVNcjEBEEULPk+0dRp-uJ3nmmBK7B=sYQ@mail.gmail.com>
- <20191210153652.GA14123@krava>
- <CAHC9VhSa_B-VJOa_r8OcNrm0Yd_t1j3otWhKHgganSDx5Ni=Tg@mail.gmail.com>
- <20191211131955.GC23383@linux.fritz.box>
- <CAHC9VhQqiD7BBGwLYuQVySG84iwR9MJh8GZuTU3xCBm7GLn8hw@mail.gmail.com>
+        id S1730424AbfLKRLm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Dec 2019 12:11:42 -0500
+Received: from delivery.mailspamprotection.com ([184.154.109.22]:52919 "EHLO
+        delivery.mailspamprotection.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730318AbfLKRLm (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 11 Dec 2019 12:11:42 -0500
+X-Greylist: delayed 9340 seconds by postgrey-1.27 at vger.kernel.org; Wed, 11 Dec 2019 12:11:41 EST
+Received: from ns1.uk76.siteground.eu ([77.104.134.150] helo=uk76.siteground.eu)
+        by se9.mailspamprotection.com with esmtps (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89)
+        (envelope-from <info@coveredwebservices.com>)
+        id 1if2Tu-000587-Jr
+        for bpf@vger.kernel.org; Wed, 11 Dec 2019 07:56:48 -0600
+Received: from [127.0.0.1] (port=43188 helo=secureuk76.sgcpanel.com)
+        by uk76.siteground.eu with esmtpa (Exim 4.90devstart-1178-b07e68e5-XX)
+        (envelope-from <info@coveredwebservices.com>)
+        id 1if2T9-0005aQ-7I; Wed, 11 Dec 2019 13:55:59 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHC9VhQqiD7BBGwLYuQVySG84iwR9MJh8GZuTU3xCBm7GLn8hw@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 11 Dec 2019 13:55:59 +0000
+From:   "Dr. L J Thompson" <info@coveredwebservices.com>
+To:     undisclosed-recipients:;
+Subject: 20/20 Conference Invitation
+Reply-To: loranthompson@psphms.com
+Mail-Reply-To: loranthompson@psphms.com
+Message-ID: <5c0fbea46e23a5cdca0051268116032d@coveredwebservices.com>
+X-Sender: info@coveredwebservices.com
+User-Agent: Roundcube Webmail/1.2.4
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - uk76.siteground.eu
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - coveredwebservices.com
+X-Get-Message-Sender-Via: uk76.siteground.eu: none
+X-Originating-IP: 77.104.134.150
+X-SpamExperts-Domain: uk76.siteground.eu
+X-SpamExperts-Username: 77.104.134.150
+Authentication-Results: mailspamprotection.com; auth=pass smtp.auth=77.104.134.150@uk76.siteground.eu
+X-SpamExperts-Outgoing-Class: unsure
+X-SpamExperts-Outgoing-Evidence: Combined (0.67)
+X-Recommended-Action: accept
+X-Filter-ID: Mvzo4OR0dZXEDF/gcnlw0fi3oD8HEy9ysrsB6Ile+oipSDasLI4SayDByyq9LIhVg7VPiGG88aQq
+ BXIcQX8lCETNWdUk1Ol2OGx3IfrIJKywOmJyM1qr8uRnWBrbSAGDFuVJbh7JJ6TItPKqimZKJE7K
+ tnbp43ibBfPYwDSMY4AIlWJZaw5mvT4cz9o7PkxueJpLxjaPHE1A/OyZ+V+dxNF/Yq4F5Tj9qJYZ
+ V4FL/tSxtbylEmfFG8JNnnunvzni6wxaE+IEyU7yfYarmwGfdMT5qM7ZRP1VQIU229Gx9CWefE06
+ HDKI2yYKgo3B+aWiyXWITXGCwqVPIC+nMSe20PqLo+upsEXhHqL6sCWqGN14DqxxlnCnOQKjhagE
+ KuLSpFcLxHSMmVCkv47x59CmBKKn/7DOO4e2N2hty+uTuyzz7IssKbNSm6Aylrz7vRRedYGRJ5j/
+ qgI5gfjNk3Q1FcO1wjmeb9RCa+YI49T4kOt2TGJdrG5Chh5NrJYVeegBlGrNAgtAQi7/jtvAisx5
+ 7Rrj/Yif5qwV6M5nCCQHtI0bDOdTMnvHqOmP4VxBW3PTCJuKmef1JCbmfgcv6zoJwBffhflGPor8
+ nyt8fkFK8rVs01KruaxB6s0aI7mWLxFqK0HT/gpPZ2fzxW5S1M10z/jBGDKNDQ3sl1Tt7TUoFYHJ
+ Dp89JrMFV2ZKRVXuWYBgNDC46oC99+wG2tIs2jSvpG6ieU+cqCfhjRTSAU3oNBEcl7rsAuVcs5yC
+ xDrdmp6YOJBnyCqwXo4AUxa8y33vs7IgaOMad6sa1I4/VbRU9thYEuqtMX3/+tzH/wie7U6+Rtbf
+ rHbsVsS1pCTtww+cFigtIJ2CZM6elVvhtsQOmLGhjyAFeBR7Szxo2J/DqfmzBJ50dHqHr73CGA3x
+ 125+yRAuFCnj00VGOg/wQX6Xj9R5h1Oyj9ge8Qyv+jU/VS2gVKFwDpe+9rZABUSOmrMA1pmd+GCv
+ SpIU9t6qfE1n2rmbOKJYlpdTvwjnBUYxJQRZbQC5erRPXvCgmjdq8p4AMnoar9ETJvFCOvJvBQ37
+ HETzsGYF2J+S+xsDH88wF7YC6UO+l+VZgWGUB05RbWk1/ozIacMilJyGVyjpEgOg2D8V4c33O1R/
+ KGaKK9RjaKoDjLgBsoJ+s1A44wQpqb2j2emwL+Q9I2AJiAfYOp9dtRE=
+X-Report-Abuse-To: spam@quarantine1.mailspamprotection.com
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 11, 2019 at 11:21:33AM -0500, Paul Moore wrote:
-> On Wed, Dec 11, 2019 at 8:20 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
-> > On Tue, Dec 10, 2019 at 05:45:59PM -0500, Paul Moore wrote:
-> > > On Tue, Dec 10, 2019 at 10:37 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> > > > On Mon, Dec 09, 2019 at 06:53:23PM -0500, Paul Moore wrote:
-> > > > > On Mon, Dec 9, 2019 at 6:19 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
-> > > > > > On 12/9/19 3:56 PM, Paul Moore wrote:
-> > > > > > > On Mon, Dec 9, 2019 at 7:15 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
-> > > > > > >> On Fri, Dec 06, 2019 at 10:49:34PM +0100, Jiri Olsa wrote:
-> > > > > > >>> From: Daniel Borkmann <daniel@iogearbox.net>
-> > > > > > >>>
-> > > > > > >>> Allow for audit messages to be emitted upon BPF program load and
-> > > > > > >>> unload for having a timeline of events. The load itself is in
-> > > > > > >>> syscall context, so additional info about the process initiating
-> > > > > > >>> the BPF prog creation can be logged and later directly correlated
-> > > > > > >>> to the unload event.
-> > > > > > >>>
-> > > > > > >>> The only info really needed from BPF side is the globally unique
-> > > > > > >>> prog ID where then audit user space tooling can query / dump all
-> > > > > > >>> info needed about the specific BPF program right upon load event
-> > > > > > >>> and enrich the record, thus these changes needed here can be kept
-> > > > > > >>> small and non-intrusive to the core.
-> > > > > > >>>
-> > > > > > >>> Raw example output:
-> > > > > > >>>
-> > > > > > >>>    # auditctl -D
-> > > > > > >>>    # auditctl -a always,exit -F arch=x86_64 -S bpf
-> > > > > > >>>    # ausearch --start recent -m 1334
-> > > > > > >>>    ...
-> > > > > > >>>    ----
-> > > > > > >>>    time->Wed Nov 27 16:04:13 2019
-> > > > > > >>>    type=PROCTITLE msg=audit(1574867053.120:84664): proctitle="./bpf"
-> > > > > > >>>    type=SYSCALL msg=audit(1574867053.120:84664): arch=c000003e syscall=321   \
-> > > > > > >>>      success=yes exit=3 a0=5 a1=7ffea484fbe0 a2=70 a3=0 items=0 ppid=7477    \
-> > > > > > >>>      pid=12698 auid=1001 uid=1001 gid=1001 euid=1001 suid=1001 fsuid=1001    \
-> > > > > > >>>      egid=1001 sgid=1001 fsgid=1001 tty=pts2 ses=4 comm="bpf"                \
-> > > > > > >>>      exe="/home/jolsa/auditd/audit-testsuite/tests/bpf/bpf"                  \
-> > > > > > >>>      subj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 key=(null)
-> > > > > > >>>    type=UNKNOWN[1334] msg=audit(1574867053.120:84664): prog-id=76 op=LOAD
-> > > > > > >>>    ----
-> > > > > > >>>    time->Wed Nov 27 16:04:13 2019
-> > > > > > >>>    type=UNKNOWN[1334] msg=audit(1574867053.120:84665): prog-id=76 op=UNLOAD
-> > > > > > >>>    ...
-> > > > > > >>>
-> > > > > > >>> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-> > > > > > >>> Co-developed-by: Jiri Olsa <jolsa@kernel.org>
-> > > > > > >>> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > > > > >>
-> > > > > > >> Paul, Steve, given the merge window is closed by now, does this version look
-> > > > > > >> okay to you for proceeding to merge into bpf-next?
-> > > > > > >
-> > > > > > > Given the change to audit UAPI I was hoping to merge this via the
-> > > > > > > audit/next tree, is that okay with you?
-> > > > > >
-> > > > > > Hm, my main concern is that given all the main changes are in BPF core and
-> > > > > > usually the BPF subsystem has plenty of changes per release coming in that we'd
-> > > > > > end up generating unnecessary merge conflicts. Given the include/uapi/linux/audit.h
-> > > > > > UAPI diff is a one-line change, my preference would be to merge via bpf-next with
-> > > > > > your ACK or SOB added. Does that work for you as well as?
-> > > > >
-> > > > > I regularly (a few times a week) run the audit and SELinux tests
-> > > > > against Linus+audit/next+selinux/next to make sure things are working
-> > > > > as expected and that some other subsystem has introduced a change
-> > > > > which has broken something.  If you are willing to ensure the tests
-> > > > > get run, including your new BPF audit tests I would be okay with that;
-> > > > > is that acceptable?
-> > > >
-> > > > would you please let me know which tree this landed at the end?
-> > >
-> > > I think that's what we are trying to figure out - Daniel?
-> >
-> > Yeah, sounds reasonable wrt running tests to make sure nothing breaks. In that
-> > case I'd wait for your ACK or SOB to proceed with merging into bpf-next. Thanks
-> > Paul!
-> 
-> As long as you're going to keep testing this, here ya go :)
-> 
-> Acked-by: Paul Moore <paul@paul-moore.com>
-> 
-> (also, go ahead and submit that PR for audit-testsuite - thanks!)
+Attention: Sir/Madam
 
-https://github.com/linux-audit/audit-testsuite/pull/90
+You are cordially invited to this year Primary Healthcare and Medicare 
+Summit in Washington D.C United States.
 
-thanks,
-jirka
+For more details about the Summit, Kindly reply and announce your 
+interest.
 
+Sincerely,
+
+Dr. L. J. Thompson
