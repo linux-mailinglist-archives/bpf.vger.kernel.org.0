@@ -2,84 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A03B911A02F
-	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2019 01:49:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03C3311A079
+	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2019 02:28:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726062AbfLKAtc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 10 Dec 2019 19:49:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34076 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725999AbfLKAtc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 10 Dec 2019 19:49:32 -0500
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2ACEC206D5;
-        Wed, 11 Dec 2019 00:49:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1576025371;
-        bh=mS7zyk9RzK8MLQp+5nvdMy6P3ysyYQCDC3Bah6kmlfs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=UvC0RIny6iqVEumpqrPw6rq1+xZGMHezDVxIFrfIHyEiEEKaKQc5hGaYaeoZSLVqv
-         OiKjZB9JvOrs5D8lM5PO+WX7OQOLW/u0awaO48QIwAJPLeFa0zJF2HELO5AISWbm2x
-         nMOoibFNiErcex5Kfzt1sOkhZk08/M0uQclzXbn4=
-Date:   Tue, 10 Dec 2019 16:49:29 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?ISO-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?ISO-8859-1?Q?J=E9r?= =?ISO-8859-1?Q?=F4me?= Glisse 
-        <jglisse@redhat.com>, Magnus Karlsson <magnus.karlsson@intel.com>,
-        "Mauro Carvalho Chehab" <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        "Paul Mackerras" <paulus@samba.org>, Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, <bpf@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <kvm@vger.kernel.org>,
-        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-media@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>, <netdev@vger.kernel.org>,
-        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v8 20/26] powerpc: book3s64: convert to pin_user_pages()
- and put_user_page()
-Message-Id: <20191210164929.b3f54fe95c3fc4b6c756e65e@linux-foundation.org>
-In-Reply-To: <61e0c3a5-992e-4571-e22d-d63286ce10ec@nvidia.com>
-References: <20191209225344.99740-1-jhubbard@nvidia.com>
-        <20191209225344.99740-21-jhubbard@nvidia.com>
-        <08f5d716-8b31-b016-4994-19fbe829dc28@nvidia.com>
-        <61e0c3a5-992e-4571-e22d-d63286ce10ec@nvidia.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+        id S1727261AbfLKB2X (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 10 Dec 2019 20:28:23 -0500
+Received: from shards.monkeyblade.net ([23.128.96.9]:51066 "EHLO
+        shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726362AbfLKB2X (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 10 Dec 2019 20:28:23 -0500
+Received: from localhost (unknown [IPv6:2601:601:9f00:1c3::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 5780415037A02;
+        Tue, 10 Dec 2019 17:28:22 -0800 (PST)
+Date:   Tue, 10 Dec 2019 17:28:21 -0800 (PST)
+Message-Id: <20191210.172821.1406974012095303846.davem@davemloft.net>
+To:     bpf@vger.kernel.org, netdev@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, tglx@linutronix.de
+Subject: Re: [RFC v1 PATCH 0/7] bpf: Make RT friendly.
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20191207.160357.828344895192682546.davem@davemloft.net>
+References: <20191207.160357.828344895192682546.davem@davemloft.net>
+X-Mailer: Mew version 6.8 on Emacs 26.1
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Tue, 10 Dec 2019 17:28:22 -0800 (PST)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 9 Dec 2019 21:53:00 -0800 John Hubbard <jhubbard@nvidia.com> wrote:
+From: David Miller <davem@davemloft.net>
+Date: Sat, 07 Dec 2019 16:03:57 -0800 (PST)
 
-> > Correction: this is somehow missing the fixes that resulted from Jan Kara's review (he
-> > noted that we can't take a page lock in this context). I must have picked up the
-> > wrong version of it, when I rebased for -rc1.
-> > 
 > 
-> Andrew, given that the series is now in -mm, what's the preferred way for me to fix this?
-> Send a v9 version of the whole series? Or something else?
+> The goal of this patch set is to make the BPF code friendly in RT
+> configurations.
+> 
+> The first step is eliminating preemption disable/enable and replacing
+> it with local lock usage when full RT is enabled.
+> 
+> Likewise we also need to elide usage of up_read_non_owner() in the
+> stackmap code when full RT is turned on.
+> 
+> Signed-off-by: David S. Miller <davem@davemloft.net>
 
-I think a full resend is warranted at this time - it's only been in
-there a day and there seem to be quite a number of changes to be made.
+Thomas can you please take a look at this patch series?
 
+It eliminates all of the RT problems we were made aware of, and these
+patches have been through the bpf test suite as well as gotten 0-day
+testing.
+
+The only major thing we needs ACK'd is the locallock stubs.
+
+Thank you.
