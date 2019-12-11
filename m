@@ -2,427 +2,192 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 87C9E11A4B3
-	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2019 07:50:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C33211A4D1
+	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2019 08:08:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727187AbfLKGuU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Dec 2019 01:50:20 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:14710 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725800AbfLKGuU (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 11 Dec 2019 01:50:20 -0500
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id xBB6gfHm029733
-        for <bpf@vger.kernel.org>; Tue, 10 Dec 2019 22:50:16 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=facebook; bh=4Nl9U/Mfzy+aBp3hWu3I0REtA7dk0wVUEVh44OiJ4bM=;
- b=VTZjCmR1yyVqSZ64Ofs7x81zxqfDLwGIt4hf8K5vOwquylOXw1do49J1JRfqpbjirmXB
- 6FouaZ7l9+oXyLO/7s/PvAkMQZBXw92hcaw8o+X2YdNyaJ9GU+7c56bcXAVaSfQ1hfLf
- HCnBUtMOVZKPuyBLR7ucjhBUdgLU7zt/q1o= 
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by m0001303.ppops.net with ESMTP id 2wtkb9hvay-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 10 Dec 2019 22:50:16 -0800
-Received: from intmgw001.08.frc2.facebook.com (2620:10d:c081:10::13) by
- mail.thefacebook.com (2620:10d:c081:35::128) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
- Tue, 10 Dec 2019 22:50:15 -0800
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id A0F0B2EC194D; Tue, 10 Dec 2019 22:50:12 -0800 (PST)
-Smtp-Origin-Hostprefix: devbig
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH v2 bpf-next 3/3] selftests/bpf: add tests for libbpf-provided externs
-Date:   Tue, 10 Dec 2019 22:50:02 -0800
-Message-ID: <20191211065002.2074074-4-andriin@fb.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20191211065002.2074074-1-andriin@fb.com>
-References: <20191211065002.2074074-1-andriin@fb.com>
-X-FB-Internal: Safe
+        id S1726082AbfLKHID (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Dec 2019 02:08:03 -0500
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:44644 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727891AbfLKHIC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 Dec 2019 02:08:02 -0500
+Received: by mail-qk1-f194.google.com with SMTP id w127so6991315qkb.11;
+        Tue, 10 Dec 2019 23:08:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gdF9GzxX6MAV3V6PGDaLpgL1VAup8AtoWjDThUxpU4g=;
+        b=dDPvUk3bDwGhVEnfvduLd3ZWxnzvUzr9+p31H8KrIDp9gssMwpEUCteFnJCrVCrxes
+         xZmTHmgqoJOKaqdcpF2eJoOQAXdwBLTVL31PBwEHQ5pxucJY6FFziou3BRg1HIHb/a4n
+         xRK1KSt+qPnS3OR6sDAkV67sdMmT2/KKZkLzM9UHhlphpBw1F1oXrv0LppZ/1DHbBwTw
+         ajgV2RLKSmgWFgAFzykNYPhrnGHJls7zEbx8mo7fpnWiexOL+ApQWMY15uv9AQ4iATWR
+         yvH7ymQ6RpHcjrECwM15eSlayvcTPihX0pMnwRhJ5juyaVIiqUjiz1NTl1vF7DpCoQ5A
+         UiJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gdF9GzxX6MAV3V6PGDaLpgL1VAup8AtoWjDThUxpU4g=;
+        b=rnr5F/bbQsOmj4SMddI1cP3BW9QRhESXqYU2qq1eeXzZ7baLF5u8HSuyXIQvXGJOL/
+         SG97BsL08LC+xrvMOHSR/Jf4MudLPh7Q+iPOtBzT4u5a/Ars1zutvVHshHoN76YJFMNd
+         A/DqmZveWLtkNhPU1pkoGwS4zw51xehTUtH2gvsXzcYKtwAWQ9Kh2u1jIeD1kH98AULG
+         hYT1mugSmhlt8N7EPNIHf5f4fTjUP+v+VFghC2JGHVPMXAOR2lNABJtY/CoDhgjQk/k3
+         yp9K7tH9GUYa+8YFv27OXnXdfqoOvKIBq8V+3xdxDNgMq7jo/W8nGLH8jVIuhsaQBkBH
+         xf6w==
+X-Gm-Message-State: APjAAAUdz6krt5+EFR2UgTGggSiB1YaANmjpThLL5GZFKdYSBOWgaD8v
+        iSwIml+WjKrseWnkxibMsj4JygqY5gCR8BpvzKE=
+X-Google-Smtp-Source: APXvYqzkJ4+uwBNGRcujADuV0dcG66F156I3KOHRP9+c7mKsDNyFHDVWkKk4Ql1Wo73yItPq9HD3ynJvzszZbGCXSFw=
+X-Received: by 2002:a05:620a:5ae:: with SMTP id q14mr1534130qkq.437.1576048081327;
+ Tue, 10 Dec 2019 23:08:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
- definitions=2019-12-11_01:2019-12-10,2019-12-11 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=999
- impostorscore=0 bulkscore=0 lowpriorityscore=0 adultscore=0 suspectscore=8
- spamscore=0 clxscore=1015 mlxscore=0 malwarescore=0 priorityscore=1501
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1910280000 definitions=main-1912110057
-X-FB-Internal: deliver
+References: <20191210011438.4182911-1-andriin@fb.com> <20191210011438.4182911-12-andriin@fb.com>
+ <20191209175745.2d96a1f0@cakuba.netronome.com> <CAEf4Bzaow7w+TGyiF67pXn42TumxFZb7Q4BOQPPGfRJdyeY-ig@mail.gmail.com>
+ <20191210100536.7a57d5e1@cakuba.netronome.com> <20191210214407.GA3105713@mini-arch>
+ <CAEf4BzbSwoeKVnyJU7EoP86exNj3Eku5_+8MbEieZKt2MqrhbQ@mail.gmail.com> <20191210225900.GB3105713@mini-arch>
+In-Reply-To: <20191210225900.GB3105713@mini-arch>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 10 Dec 2019 23:07:50 -0800
+Message-ID: <CAEf4BzYtqywKn4yGQ+vq2sKod4XE03HYWWBfUiNvg=BXhgFdWg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 11/15] bpftool: add skeleton codegen command
+To:     Stanislav Fomichev <sdf@fomichev.me>
+Cc:     Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add a set of tests validating libbpf-provided extern variables. One crucial
-feature that's tested is dead code elimination together with using invalid BPF
-helper. CONFIG_MISSING is not supposed to exist and should always be specified
-by libbpf as zero, which allows BPF verifier to correctly do branch pruning
-and not fail validation, when invalid BPF helper is called from dead if branch.
+On Tue, Dec 10, 2019 at 2:59 PM Stanislav Fomichev <sdf@fomichev.me> wrote:
+>
+> On 12/10, Andrii Nakryiko wrote:
+> > On Tue, Dec 10, 2019 at 1:44 PM Stanislav Fomichev <sdf@fomichev.me> wrote:
+> > >
+> > > On 12/10, Jakub Kicinski wrote:
+> > > > On Tue, 10 Dec 2019 09:11:31 -0800, Andrii Nakryiko wrote:
+> > > > > On Mon, Dec 9, 2019 at 5:57 PM Jakub Kicinski wrote:
+> > > > > > On Mon, 9 Dec 2019 17:14:34 -0800, Andrii Nakryiko wrote:
+> > > > > > > struct <object-name> {
+> > > > > > >       /* used by libbpf's skeleton API */
+> > > > > > >       struct bpf_object_skeleton *skeleton;
+> > > > > > >       /* bpf_object for libbpf APIs */
+> > > > > > >       struct bpf_object *obj;
+> > > > > > >       struct {
+> > > > > > >               /* for every defined map in BPF object: */
+> > > > > > >               struct bpf_map *<map-name>;
+> > > > > > >       } maps;
+> > > > > > >       struct {
+> > > > > > >               /* for every program in BPF object: */
+> > > > > > >               struct bpf_program *<program-name>;
+> > > > > > >       } progs;
+> > > > > > >       struct {
+> > > > > > >               /* for every program in BPF object: */
+> > > > > > >               struct bpf_link *<program-name>;
+> > > > > > >       } links;
+> > > > > > >       /* for every present global data section: */
+> > > > > > >       struct <object-name>__<one of bss, data, or rodata> {
+> > > > > > >               /* memory layout of corresponding data section,
+> > > > > > >                * with every defined variable represented as a struct field
+> > > > > > >                * with exactly the same type, but without const/volatile
+> > > > > > >                * modifiers, e.g.:
+> > > > > > >                */
+> > > > > > >                int *my_var_1;
+> > > > > > >                ...
+> > > > > > >       } *<one of bss, data, or rodata>;
+> > > > > > > };
+> > > > > >
+> > > > > > I think I understand how this is useful, but perhaps the problem here
+> > > > > > is that we're using C for everything, and simple programs for which
+> > > > > > loading the ELF is majority of the code would be better of being
+> > > > > > written in a dynamic language like python?  Would it perhaps be a
+> > > > > > better idea to work on some high-level language bindings than spend
+> > > > > > time writing code gens and working around limitations of C?
+> > > > >
+> > > > > None of this work prevents Python bindings and other improvements, is
+> > > > > it? Patches, as always, are greatly appreciated ;)
+> > > >
+> > > > This "do it yourself" shit is not really funny :/
+> > > >
+> > > > I'll stop providing feedback on BPF patches if you guy keep saying
+> > > > that :/ Maybe that's what you want.
+> > > >
+> > > > > This skeleton stuff is not just to save code, but in general to
+> > > > > simplify and streamline working with BPF program from userspace side.
+> > > > > Fortunately or not, but there are a lot of real-world applications
+> > > > > written in C and C++ that could benefit from this, so this is still
+> > > > > immensely useful. selftests/bpf themselves benefit a lot from this
+> > > > > work, see few of the last patches in this series.
+> > > >
+> > > > Maybe those applications are written in C and C++ _because_ there
+> > > > are no bindings for high level languages. I just wish BPF programming
+> > > > was less weird and adding some funky codegen is not getting us closer
+> > > > to that goal.
+> > > >
+> > > > In my experience code gen is nothing more than a hack to work around
+> > > > bad APIs, but experiences differ so that's not a solid argument.
+> > > *nod*
+> > >
+> > > We have a nice set of C++ wrappers around libbpf internally, so we can do
+> > > something like BpfMap<key type, value type> and get a much better interface
+> > > with type checking. Maybe we should focus on higher level languages instead?
+> > > We are open to open-sourcing our C++ bits if you want to collaborate.
+> >
+> > Python/C++ bindings and API wrappers are an orthogonal concerns here.
+> > I personally think it would be great to have both Python and C++
+> > specific API that uses libbpf under the cover. The only debatable
+> > thing is the logistics: where the source code lives, how it's kept in
+> > sync with libbpf, how we avoid crippling libbpf itself because
+> > something is hard or inconvenient to adapt w/ Python, etc.
+>
+> [..]
+> > The problem I'm trying to solve here is not really C-specific. I don't
+> > think you can solve it without code generation for C++. How do you
+> > "generate" BPF program-specific layout of .data, .bss, .rodata, etc
+> > data sections in such a way, where it's type safe (to the degree that
+> > language allows that, of course) and is not "stringly-based" API? This
+> > skeleton stuff provides a natural, convenient and type-safe way to
+> > work with global data from userspace pretty much at the same level of
+> > performance and convenience, as from BPF side. How can you achieve
+> > that w/ C++ without code generation? As for Python, sure you can do
+> > dynamic lookups based on just the name of property/method, but amount
+> > of overheads is not acceptable for all applications (and Python itself
+> > is not acceptable for those applications). In addition to that, C is
+> > the best way for other less popular languages (e.g., Rust) to leverage
+> > libbpf without investing lots of effort in re-implementing libbpf in
+> > Rust.
+> I'd say that a libbpf API similar to dlopen/dlsym is a more
+> straightforward thing to do. Have a way to "open" a section and
+> a way to find a symbol in it. Yes, it's a string-based API,
+> but there is nothing wrong with it. IMO, this is easier to
+> use/understand and I suppose Python/C++ wrappers are trivial.
 
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- .../selftests/bpf/prog_tests/core_extern.c    | 192 ++++++++++++++++++
- .../selftests/bpf/prog_tests/skeleton.c       |  18 +-
- .../selftests/bpf/progs/test_core_extern.c    |  62 ++++++
- .../selftests/bpf/progs/test_skeleton.c       |   9 +
- 4 files changed, 280 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/core_extern.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_core_extern.c
+Without digging through libbpf source code (or actually, look at code,
+but don't run any test program), what's the name of the map
+corresponding to .bss section, if object file is
+some_bpf_object_file.o? If you got it right (congrats, btw, it took me
+multiple attempts to memorize the pattern), how much time did you
+spend looking it up? Now compare it to `skel->maps.bss`. Further, if
+you use anonymous structs for your global vars, good luck maintaining
+two copies of that: one for BPF side and one for userspace.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/core_extern.c b/tools/testing/selftests/bpf/prog_tests/core_extern.c
-new file mode 100644
-index 000000000000..e48f94cb4511
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/core_extern.c
-@@ -0,0 +1,192 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <test_progs.h>
-+#include <sys/mman.h>
-+#include <sys/utsname.h>
-+#include <linux/version.h>
-+#include "test_core_extern.skel.h"
-+
-+static uint32_t get_kernel_version(void)
-+{
-+	uint32_t major, minor, patch;
-+	struct utsname info;
-+
-+	uname(&info);
-+	if (sscanf(info.release, "%u.%u.%u", &major, &minor, &patch) != 3)
-+		return 0;
-+	return KERNEL_VERSION(major, minor, patch);
-+}
-+
-+#define CFG "CONFIG_BPF_SYSCALL=n\n"
-+
-+static struct test_case {
-+	const char *name;
-+	const char *cfg;
-+	const char *cfg_path;
-+	bool fails;
-+	struct test_core_extern__data data;
-+} test_cases[] = {
-+	{ .name = "default search path", .cfg_path = NULL,
-+	  .data = { .bpf_syscall = true } },
-+	{ .name = "/proc/config.gz", .cfg_path = "/proc/config.gz",
-+	  .data = { .bpf_syscall = true } },
-+	{ .name = "missing config", .fails = true,
-+	  .cfg_path = "/proc/invalid-config.gz" },
-+	{
-+		.name = "custom values",
-+		.cfg = "CONFIG_BPF_SYSCALL=y\n"
-+		       "CONFIG_TRISTATE=m\n"
-+		       "CONFIG_BOOL=y\n"
-+		       "CONFIG_CHAR=100\n"
-+		       "CONFIG_USHORT=30000\n"
-+		       "CONFIG_INT=123456\n"
-+		       "CONFIG_ULONG=0xDEADBEEFC0DE\n"
-+		       "CONFIG_STR=\"abracad\"\n"
-+		       "CONFIG_MISSING=0",
-+		.data = {
-+			.bpf_syscall = true,
-+			.tristate_val = TRI_MODULE,
-+			.bool_val = true,
-+			.char_val = 100,
-+			.ushort_val = 30000,
-+			.int_val = 123456,
-+			.ulong_val = 0xDEADBEEFC0DE,
-+			.str_val = "abracad",
-+		},
-+	},
-+	/* TRISTATE */
-+	{ .name = "tristate (y)", .cfg = CFG"CONFIG_TRISTATE=y\n",
-+	  .data = { .tristate_val = TRI_YES } },
-+	{ .name = "tristate (n)", .cfg = CFG"CONFIG_TRISTATE=n\n",
-+	  .data = { .tristate_val = TRI_NO } },
-+	{ .name = "tristate (m)", .cfg = CFG"CONFIG_TRISTATE=m\n",
-+	  .data = { .tristate_val = TRI_MODULE } },
-+	{ .name = "tristate (int)", .fails = 1, .cfg = CFG"CONFIG_TRISTATE=1" },
-+	{ .name = "tristate (bad)", .fails = 1, .cfg = CFG"CONFIG_TRISTATE=M" },
-+	/* BOOL */
-+	{ .name = "bool (y)", .cfg = CFG"CONFIG_BOOL=y\n",
-+	  .data = { .bool_val = true } },
-+	{ .name = "bool (n)", .cfg = CFG"CONFIG_BOOL=n\n",
-+	  .data = { .bool_val = false } },
-+	{ .name = "bool (tristate)", .fails = 1, .cfg = CFG"CONFIG_BOOL=m" },
-+	{ .name = "bool (int)", .fails = 1, .cfg = CFG"CONFIG_BOOL=1" },
-+	/* CHAR */
-+	{ .name = "char (tristate)", .cfg = CFG"CONFIG_CHAR=m\n",
-+	  .data = { .char_val = 'm' } },
-+	{ .name = "char (bad)", .fails = 1, .cfg = CFG"CONFIG_CHAR=q\n" },
-+	{ .name = "char (empty)", .fails = 1, .cfg = CFG"CONFIG_CHAR=\n" },
-+	{ .name = "char (str)", .fails = 1, .cfg = CFG"CONFIG_CHAR=\"y\"\n" },
-+	/* STRING */
-+	{ .name = "str (empty)", .cfg = CFG"CONFIG_STR=\"\"\n",
-+	  .data = { .str_val = "\0\0\0\0\0\0\0" } },
-+	{ .name = "str (padded)", .cfg = CFG"CONFIG_STR=\"abra\"\n",
-+	  .data = { .str_val = "abra\0\0\0" } },
-+	{ .name = "str (no value)", .fails = 1, .cfg = CFG"CONFIG_STR=\n" },
-+	{ .name = "str (bad value)", .fails = 1, .cfg = CFG"CONFIG_STR=bla\n" },
-+	{ .name = "str (too long)", .fails = 1, .cfg = CFG"CONFIG_STR=\"abracada\"\n" },
-+	/* INTEGERS */
-+	{
-+		.name = "integer forms",
-+		.cfg = CFG
-+		       "CONFIG_CHAR=0xA\n"
-+		       "CONFIG_USHORT=0462\n"
-+		       "CONFIG_INT=-100\n"
-+		       "CONFIG_ULONG=+1000000000000",
-+		.data = {
-+			.char_val = 0xA,
-+			.ushort_val = 0462,
-+			.int_val = -100,
-+			.ulong_val = 1000000000000,
-+		},
-+	},
-+	{ .name = "int (bad)", .fails = 1, .cfg = CFG"CONFIG_INT=abc" },
-+	{ .name = "int (str)", .fails = 1, .cfg = CFG"CONFIG_INT=\"abc\"" },
-+	{ .name = "int (empty)", .fails = 1, .cfg = CFG"CONFIG_INT=" },
-+	{ .name = "int (mixed)", .fails = 1, .cfg = CFG"CONFIG_INT=123abc" },
-+	{ .name = "int (max)", .cfg = CFG"CONFIG_INT=2147483647",
-+	  .data = { .int_val = 2147483647 } },
-+	{ .name = "int (min)", .cfg = CFG"CONFIG_INT=-2147483648",
-+	  .data = { .int_val = -2147483648 } },
-+	{ .name = "int (max+1)", .fails = 1, .cfg = CFG"CONFIG_INT=2147483648" },
-+	{ .name = "int (min-1)", .fails = 1, .cfg = CFG"CONFIG_INT=-2147483649" },
-+	{ .name = "ushort (max)", .cfg = CFG"CONFIG_USHORT=65535",
-+	  .data = { .ushort_val = 65535 } },
-+	{ .name = "ushort (min)", .cfg = CFG"CONFIG_USHORT=0",
-+	  .data = { .ushort_val = 0 } },
-+	{ .name = "ushort (max+1)", .fails = 1, .cfg = CFG"CONFIG_USHORT=65536" },
-+	{ .name = "ushort (min-1)", .fails = 1, .cfg = CFG"CONFIG_USHORT=-1" },
-+	{ .name = "u64 (max)", .cfg = CFG"CONFIG_ULONG=0xffffffffffffffff",
-+	  .data = { .ulong_val = 0xffffffffffffffff } },
-+	{ .name = "u64 (min)", .cfg = CFG"CONFIG_ULONG=0",
-+	  .data = { .ulong_val = 0 } },
-+	{ .name = "u64 (max+1)", .fails = 1, .cfg = CFG"CONFIG_ULONG=0x10000000000000000" },
-+};
-+
-+BPF_EMBED_OBJ(core_extern, "test_core_extern.o");
-+
-+void test_core_extern(void)
-+{
-+	const uint32_t kern_ver = get_kernel_version();
-+	int err, duration = 0, i, j;
-+	struct test_core_extern *skel = NULL;
-+	uint64_t *got, *exp;
-+	int n = sizeof(*skel->data) / sizeof(uint64_t);
-+
-+	for (i = 0; i < ARRAY_SIZE(test_cases); i++) {
-+		char tmp_cfg_path[] = "/tmp/test_core_extern_cfg.XXXXXX";
-+		struct test_case *t = &test_cases[i];
-+		DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts,
-+			.kconfig_path = t->cfg_path,
-+		);
-+
-+		if (!test__start_subtest(t->name))
-+			continue;
-+
-+		if (t->cfg) {
-+			size_t n = strlen(t->cfg) + 1;
-+			int fd = mkstemp(tmp_cfg_path);
-+			int written;
-+
-+			if (CHECK(fd < 0, "mkstemp", "errno: %d\n", errno))
-+				continue;
-+			printf("using '%s' as config file\n", tmp_cfg_path);
-+			written = write(fd, t->cfg, n);
-+			close(fd);
-+			if (CHECK_FAIL(written != n))
-+				goto cleanup;
-+			opts.kconfig_path = tmp_cfg_path;
-+		}
-+
-+		skel = test_core_extern__open_opts(&core_extern_embed, &opts);
-+		if (CHECK(!skel, "skel_open", "skeleton open failed\n"))
-+			goto cleanup;
-+		err = test_core_extern__load(skel);
-+		if (t->fails) {
-+			CHECK(!err, "skel_load",
-+			      "shouldn't succeed open/load of skeleton\n");
-+			goto cleanup;
-+		} else if (CHECK(err, "skel_load",
-+				 "failed to open/load skeleton\n")) {
-+			goto cleanup;
-+		}
-+		err = test_core_extern__attach(skel);
-+		if (CHECK(err, "attach_raw_tp", "failed attach: %d\n", err))
-+			goto cleanup;
-+
-+		usleep(1);
-+
-+		t->data.kern_ver = kern_ver;
-+		t->data.missing_val = 0xDEADC0DE;
-+		got = (uint64_t *)skel->data;
-+		exp = (uint64_t *)&t->data;
-+		for (j = 0; j < n; j++) {
-+			CHECK(got[j] != exp[j], "check_res",
-+			      "result #%d: expected %lx, but got %lx\n",
-+			       j, exp[j], got[j]);
-+		}
-+cleanup:
-+		if (t->cfg)
-+			unlink(tmp_cfg_path);
-+		test_core_extern__destroy(skel);
-+		skel = NULL;
-+	}
-+}
-diff --git a/tools/testing/selftests/bpf/prog_tests/skeleton.c b/tools/testing/selftests/bpf/prog_tests/skeleton.c
-index 94e0300f437a..3cd3b721764c 100644
---- a/tools/testing/selftests/bpf/prog_tests/skeleton.c
-+++ b/tools/testing/selftests/bpf/prog_tests/skeleton.c
-@@ -15,11 +15,21 @@ void test_skeleton(void)
- 	int duration = 0, err;
- 	struct test_skeleton* skel;
- 	struct test_skeleton__bss *bss;
-+	struct test_skeleton__externs *exts;
- 
--	skel = test_skeleton__open_and_load(&skeleton_embed);
-+	skel = test_skeleton__open(&skeleton_embed);
- 	if (CHECK(!skel, "skel_open", "failed to open skeleton\n"))
- 		return;
- 
-+	printf("EXTERNS BEFORE: %p\n", skel->externs);
-+	if (CHECK(skel->externs, "skel_externs", "externs are mmaped()!\n"))
-+		goto cleanup;
-+
-+	err = test_skeleton__load(skel);
-+	if (CHECK(err, "skel_load", "failed to load skeleton: %d\n", err))
-+		goto cleanup;
-+	printf("EXTERNS AFTER: %p\n", skel->externs);
-+
- 	bss = skel->bss;
- 	bss->in1 = 1;
- 	bss->in2 = 2;
-@@ -27,6 +37,7 @@ void test_skeleton(void)
- 	bss->in4 = 4;
- 	bss->in5.a = 5;
- 	bss->in5.b = 6;
-+	exts = skel->externs;
- 
- 	err = test_skeleton__attach(skel);
- 	if (CHECK(err, "skel_attach", "skeleton attach failed: %d\n", err))
-@@ -44,6 +55,11 @@ void test_skeleton(void)
- 	CHECK(bss->handler_out5.b != 6, "res6", "got %lld != exp %d\n",
- 	      bss->handler_out5.b, 6);
- 
-+	CHECK(bss->bpf_syscall != exts->CONFIG_BPF_SYSCALL, "ext1",
-+	      "got %d != exp %d\n", bss->bpf_syscall, exts->CONFIG_BPF_SYSCALL);
-+	CHECK(bss->kern_ver != exts->LINUX_KERNEL_VERSION, "ext2",
-+	      "got %d != exp %d\n", bss->kern_ver, exts->LINUX_KERNEL_VERSION);
-+
- cleanup:
- 	test_skeleton__destroy(skel);
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_core_extern.c b/tools/testing/selftests/bpf/progs/test_core_extern.c
-new file mode 100644
-index 000000000000..5cf7b57202ec
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_core_extern.c
-@@ -0,0 +1,62 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2017 Facebook
-+
-+#include <stdint.h>
-+#include <stdbool.h>
-+#include <linux/ptrace.h>
-+#include <linux/bpf.h>
-+#include "bpf_helpers.h"
-+
-+/* non-existing BPF helper, to test dead code elimination */
-+static int (*bpf_missing_helper)(const void *arg1, int arg2) = (void *) 999;
-+
-+extern int LINUX_KERNEL_VERSION;
-+extern bool CONFIG_BPF_SYSCALL; /* strong */
-+extern enum libbpf_tristate CONFIG_TRISTATE __weak;
-+extern bool CONFIG_BOOL __weak;
-+extern char CONFIG_CHAR __weak;
-+extern uint16_t CONFIG_USHORT __weak;
-+extern int CONFIG_INT __weak;
-+extern uint64_t CONFIG_ULONG __weak;
-+extern const char CONFIG_STR[8] __weak;
-+extern uint64_t CONFIG_MISSING __weak;
-+
-+uint64_t kern_ver = -1;
-+uint64_t bpf_syscall = -1;
-+uint64_t tristate_val = -1;
-+uint64_t bool_val = -1;
-+uint64_t char_val = -1;
-+uint64_t ushort_val = -1;
-+uint64_t int_val = -1;
-+uint64_t ulong_val = -1;
-+char str_val[8] = {-1, -1, -1, -1, -1, -1, -1, -1};
-+uint64_t missing_val = -1;
-+
-+SEC("raw_tp/sys_enter")
-+int handle_sys_enter(struct pt_regs *ctx)
-+{
-+	int i;
-+
-+	kern_ver = LINUX_KERNEL_VERSION;
-+	bpf_syscall = CONFIG_BPF_SYSCALL;
-+	tristate_val = CONFIG_TRISTATE;
-+	bool_val = CONFIG_BOOL;
-+	char_val = CONFIG_CHAR;
-+	ushort_val = CONFIG_USHORT;
-+	int_val = CONFIG_INT;
-+	ulong_val = CONFIG_ULONG;
-+
-+	for (i = 0; i < sizeof(CONFIG_STR); i++) {
-+		str_val[i] = CONFIG_STR[i];
-+	}
-+
-+	if (CONFIG_MISSING)
-+		/* invalid, but dead code - never executed */
-+		missing_val = bpf_missing_helper(ctx, 123);
-+	else
-+		missing_val = 0xDEADC0DE;
-+
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/progs/test_skeleton.c b/tools/testing/selftests/bpf/progs/test_skeleton.c
-index db4fd88f3ecb..8d53341be013 100644
---- a/tools/testing/selftests/bpf/progs/test_skeleton.c
-+++ b/tools/testing/selftests/bpf/progs/test_skeleton.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
- // Copyright (c) 2017 Facebook
- 
-+#include <stdbool.h>
- #include <linux/bpf.h>
- #include "bpf_helpers.h"
- 
-@@ -20,6 +21,10 @@ char out3 = 0;
- long long out4 = 0;
- int out1 = 0;
- 
-+extern bool CONFIG_BPF_SYSCALL;
-+extern int LINUX_KERNEL_VERSION;
-+bool bpf_syscall = 0;
-+int kern_ver = 0;
- 
- SEC("raw_tp/sys_enter")
- int handler(const void *ctx)
-@@ -31,6 +36,10 @@ int handler(const void *ctx)
- 	out3 = in3;
- 	out4 = in4;
- 	out5 = in5;
-+
-+	bpf_syscall = CONFIG_BPF_SYSCALL;
-+	kern_ver = LINUX_KERNEL_VERSION;
-+
- 	return 0;
- }
- 
--- 
-2.17.1
+I never said there is anything wrong with current straightforward
+libbpf API, but I also never said it's the easiest and most
+user-friendly way to work with BPF either. So we'll have both
+code-generated interface and existing API. Furthermore, they are
+interoperable (you can pass skel->maps.whatever to any of the existing
+libbpf APIs, same for progs, links, obj itself). But there isn't much
+that can beat performance and usability of code-generated .data, .bss,
+.rodata (and now .extern) layout.
 
+>
+> As for type-safety: it's C, forget about it :-)
+
+C is weakly, but still typed language. There are types and they are
+helpful. Yes, you can disregard them and re-interpret values as
+anything, but that's beside the point.
