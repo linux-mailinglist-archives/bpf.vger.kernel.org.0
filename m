@@ -2,356 +2,285 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D8CC611BD21
-	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2019 20:38:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4C0311BD32
+	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2019 20:41:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726312AbfLKTig (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Dec 2019 14:38:36 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:49108 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726242AbfLKTif (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 11 Dec 2019 14:38:35 -0500
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xBBJYSOV019121;
-        Wed, 11 Dec 2019 11:38:22 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=aCLAKSjScmzpDh1ttzei3EpS9VOdq8M1dqgoTfO/E5Y=;
- b=V+mzbPqxiNcqrvEtoxc5IaS9N2xHFtJNUHMXJxYfqG1YD/JzNtQRYSpuEJziN5jhfvhi
- X7jJbuO4YhMcwod+jA0WLipRQMlRbmaqldqml2/J7adF+0UIRhUAhNpq4LSQDz2e94ax
- 9sUZpN25jJ4MwIua8gU8Ii+bvlV+AC3pHxg= 
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by mx0a-00082601.pphosted.com with ESMTP id 2wu2gf1cra-12
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 11 Dec 2019 11:38:22 -0800
-Received: from prn-mbx07.TheFacebook.com (2620:10d:c081:6::21) by
- prn-hub03.TheFacebook.com (2620:10d:c081:35::127) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Wed, 11 Dec 2019 11:38:14 -0800
-Received: from prn-hub06.TheFacebook.com (2620:10d:c081:35::130) by
- prn-mbx07.TheFacebook.com (2620:10d:c081:6::21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Wed, 11 Dec 2019 11:38:14 -0800
-Received: from NAM04-SN1-obe.outbound.protection.outlook.com (192.168.54.28)
- by o365-in.thefacebook.com (192.168.16.30) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
- via Frontend Transport; Wed, 11 Dec 2019 11:38:14 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fdJPGHcLfu90lcOWY0z0eL2ExPOW0pwG1/cVAmM+adSZrmfltWi7DA/kNpVVSd3qm3PY/naB146kk1sDZ5ppP0L4v/YwR0CN9aibgG1iTZGvQ1PRKRc4gaGcVa/6HkiWIgLg1t9cL+QOYFsUE4JmzMSkbQPjRmABLVttwGPprVPfeZpDuYgIi7e5ZjYACnlyqVJl1DsAalrs7exCL9ZaAzDjEbDfOFE9z12Cig4w9yPSpMRdfZqyzPu6dfW3i6eI3Pd230Mlh2kYqPdLgHz6Cn8FbeS5RPxNxG98oyf0dcnhf/7oW9FDiQ+Wbw7Ew2sCiSmrqpIvNFNy3vOU6ILK5g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aCLAKSjScmzpDh1ttzei3EpS9VOdq8M1dqgoTfO/E5Y=;
- b=n9epAj/qWQZvlzinyD/QEcmlS2IRHdiDjdWbPw2jwUIf3X2OY+P+Su4EF0wkUaQEghGj/FmkduY9ATdQxYM+uihXUrwKkUEWmXMepdWpcF5qGET25hlLNt7Y77B6Av+SuaUot/PzltZRUjEMzf+Obfw+SYBfUrHnINr9yrgFg05rwb5aDRjth5IUz1T1J5cllSL3vfU/vnrj9pEij9BM5X2n/Rtzf62qirv4TqSOEYfV2PUyxK1CORbqdGWDQWUkA2MqxAy8Qr4E1DAJM4CtCGqZyHTO3mMjoaDXkCB6ThImHsUeIXNngsi7c7nIZFtnzYWRuMH3h4482lLHq6rFDQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aCLAKSjScmzpDh1ttzei3EpS9VOdq8M1dqgoTfO/E5Y=;
- b=Bw8bthNccukiuQqbWf/8fktmcT4XIDrHsvY2r23VFVadnSL3qs9sSf17eLXTZ14bEsPumFPYAQq+MhOEplCW7y1+zJM3i2Yki6iE/e8+EE0WgsZpR/zw4BzgPXngMeBeEhMfCvFqwg9F/8V4S8+SFXyU5qI65z09SYbuNu8swBg=
-Received: from MN2PR15MB3213.namprd15.prod.outlook.com (20.179.21.76) by
- MN2PR15MB3038.namprd15.prod.outlook.com (20.178.254.16) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2516.12; Wed, 11 Dec 2019 19:38:11 +0000
-Received: from MN2PR15MB3213.namprd15.prod.outlook.com
- ([fe80::6d1e:f2f7:d36:a42f]) by MN2PR15MB3213.namprd15.prod.outlook.com
- ([fe80::6d1e:f2f7:d36:a42f%4]) with mapi id 15.20.2516.018; Wed, 11 Dec 2019
- 19:38:11 +0000
-From:   Martin Lau <kafai@fb.com>
-To:     Andrii Nakryiko <andriin@fb.com>
-CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "andrii.nakryiko@gmail.com" <andrii.nakryiko@gmail.com>,
-        Kernel Team <Kernel-team@fb.com>
-Subject: Re: [Potential Spoof] [PATCH bpf-next 06/15] libbpf: expose BPF
- program's function name
-Thread-Topic: [Potential Spoof] [PATCH bpf-next 06/15] libbpf: expose BPF
- program's function name
-Thread-Index: AQHVrvdZyZ4inVs3WEChnRyXP7K9U6e1VxeA
-Date:   Wed, 11 Dec 2019 19:38:11 +0000
-Message-ID: <20191211193807.raz42oiqmrm763tr@kafai-mbp>
-References: <20191210011438.4182911-1-andriin@fb.com>
- <20191210011438.4182911-7-andriin@fb.com>
-In-Reply-To: <20191210011438.4182911-7-andriin@fb.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MWHPR02CA0017.namprd02.prod.outlook.com
- (2603:10b6:300:4b::27) To MN2PR15MB3213.namprd15.prod.outlook.com
- (2603:10b6:208:3d::12)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:200::1:ee78]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 858ff44b-3256-47fe-e2d4-08d77e71a826
-x-ms-traffictypediagnostic: MN2PR15MB3038:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MN2PR15MB3038B5FA38C76A9A1EF8D95ED55A0@MN2PR15MB3038.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:586;
-x-forefront-prvs: 024847EE92
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(7916004)(396003)(366004)(39860400002)(136003)(376002)(346002)(189003)(199004)(86362001)(66556008)(66476007)(2906002)(6636002)(33716001)(66446008)(478600001)(1076003)(6486002)(316002)(64756008)(54906003)(81156014)(81166006)(6512007)(5660300002)(8676002)(6862004)(52116002)(186003)(4326008)(8936002)(6506007)(66946007)(71200400001)(9686003);DIR:OUT;SFP:1102;SCL:1;SRVR:MN2PR15MB3038;H:MN2PR15MB3213.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: jW/Qlpkr2CD8IbROld6oqzH2hkU+lvF8KlsQwX37hw29wHsCwQKMKzbiHl/QFbJWTxROsKKS7QonN5+/QykIXoqmNQmjaEYweRErZHTHpfh+vWKE+mKda1BZecVzD1qAE6st0+WnXpTGL926unv3QJ2drdmG2zaLmhdPZpzSpeEruJrAu840FF/zIaNP7BO0SSalwc/NGtBu3TJn66aNAJ9zWdmt3skxNwfq9fY6KOtW1Sn8boEQLu+YX/Ldt132eohZnjrNzV/BAnGIy2RRwj5+95WrRZDBP3Kn/40k0sjEsCm3TUP6Pq90w2WTzVLNdDlseiRYTjooLBm2gZbbtXPuSFdgBKgdkR5SPyfq0jrukJI2ZsdgCIuWOPMDziUoAaR5C99DEQZm3paTql+lEAvieqghaWXpjxvCV24nwdRYkdpSMW+tVus2uaDaH/lh
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <E5BF7EAD3FF60A479738628BA602F1CA@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1726368AbfLKTlp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Dec 2019 14:41:45 -0500
+Received: from mail-io1-f65.google.com ([209.85.166.65]:37456 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726242AbfLKTlp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 Dec 2019 14:41:45 -0500
+Received: by mail-io1-f65.google.com with SMTP id k24so71548ioc.4;
+        Wed, 11 Dec 2019 11:41:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YSOmSeyZRswJnRTZTUXZ49BA2aKWjaNOfeEnwv7iyC4=;
+        b=lBF8//BcM+SkNiA602moxhaqmbyiS5SSKFmfdS8539k11SUaCpMyaV2vbdAN7p0kyq
+         y0BlRioGCcJ7LIstZOC6jjdpW0zATq72NWX5wPfO47btRytzD5d8DjGrOGBZdaM2ytVF
+         t8Uw3/o46SW5IuWuI3nL1RwgaNrNscCPCu9AMHxliHJjhQE/AxfR7nRL9SeN+Yyvstnw
+         quNnp7uMQlIRtUipD3FSKMG9a/+IKBo5nnVx6hjhPlpDzHvTMWBqnGSAMuXYWArbaLkJ
+         osnr7VZCVJlV0DIrKUUNXQL9KwRttOYbPE/ewj/rP3pSFEFpWM3/lElPdCh6Wf9OeC8J
+         cNBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YSOmSeyZRswJnRTZTUXZ49BA2aKWjaNOfeEnwv7iyC4=;
+        b=a1Py/v+Mmlf+2r5foogx/XmfRTzYk5RmfLMmN+UR1mP5RcBxkHPf3IfZanjT0qn344
+         IOIk3wKcnIRJ2bO6IdGbLe/2tXZ15QuxzSNXL4/yux0njIZtqXYntnTrq/8vzNu+JLGJ
+         MHXb1/4Ov70kQRKTBBr0mEu7Y6k8yJ/BWcHMIyfZwSNlNclYvI27ADmE5nUEunwMrEaS
+         YjrL0rTtJDFyVdT7uuw4d8v5PtsCZwO2NIL2mqcVP0U+hU/6LZ7JD1oXgSjwr+47Q/Ri
+         5OV1WDWT4RMJa5VEvZkM8R1g6Z3ccbf9gYxHtTMMKk/lr7Ckw5QmVDEx6TqR3BPssOCS
+         Kz5w==
+X-Gm-Message-State: APjAAAUQzvnsOLPIVZ/PtaSMew1byVIrcQ3b1tgVIi3Pi7LF0aqmSvO+
+        Pc8YgyJpPAHKLBrmqwW8MApqA7FdtXmTXg3uDFs=
+X-Google-Smtp-Source: APXvYqxZ4zZwYwOTZKmRe7ALKbOlTqB0gYwI+cvepnFjlbMKgyT5B9WbbCO2wLz9Wh/pqIysTUQRWEpnxd8v6hnA4WI=
+X-Received: by 2002:a05:6602:2489:: with SMTP id g9mr4029931ioe.104.1576093304257;
+ Wed, 11 Dec 2019 11:41:44 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 858ff44b-3256-47fe-e2d4-08d77e71a826
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Dec 2019 19:38:11.7357
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 7vbAsa0iiBlF/1ALwWK+v1p8xjwa8/yQHSMNUCX56A3fh8a5GWFCcIdCNWBOPEkK
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB3038
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
- definitions=2019-12-11_06:2019-12-11,2019-12-11 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 adultscore=0
- bulkscore=0 suspectscore=0 priorityscore=1501 impostorscore=0
- malwarescore=0 lowpriorityscore=0 spamscore=0 clxscore=1015
- mlxlogscore=999 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-1910280000 definitions=main-1912110162
-X-FB-Internal: deliver
+References: <20191210011438.4182911-12-andriin@fb.com> <20191209175745.2d96a1f0@cakuba.netronome.com>
+ <CAEf4Bzaow7w+TGyiF67pXn42TumxFZb7Q4BOQPPGfRJdyeY-ig@mail.gmail.com>
+ <20191210100536.7a57d5e1@cakuba.netronome.com> <20191210214407.GA3105713@mini-arch>
+ <CAEf4BzbSwoeKVnyJU7EoP86exNj3Eku5_+8MbEieZKt2MqrhbQ@mail.gmail.com>
+ <20191210225900.GB3105713@mini-arch> <CAEf4BzYtqywKn4yGQ+vq2sKod4XE03HYWWBfUiNvg=BXhgFdWg@mail.gmail.com>
+ <20191211172432.GC3105713@mini-arch> <CAEf4Bzb+3b-ypP8YJVA=ogQgp1KXx2xPConOswA0EiGXsmfJow@mail.gmail.com>
+ <20191211191518.GD3105713@mini-arch>
+In-Reply-To: <20191211191518.GD3105713@mini-arch>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 11 Dec 2019 11:41:32 -0800
+Message-ID: <CAEf4BzYofFFjSAO3O-G37qyeVHE6FACex=yermt8bF8mXksh8g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 11/15] bpftool: add skeleton codegen command
+To:     Stanislav Fomichev <sdf@fomichev.me>
+Cc:     Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Dec 09, 2019 at 05:14:29PM -0800, Andrii Nakryiko wrote:
-> Add APIs to get BPF program function name, as opposed to bpf_program__tit=
-le(),
-> which returns BPF program function's section name. Function name has a be=
-nefit
-> of being a valid C identifier and uniquely identifies a specific BPF prog=
-ram,
-> while section name can be duplicated across multiple independent BPF prog=
-rams.
->=20
-> Add also bpf_object__find_program_by_name(), similar to
-> bpf_object__find_program_by_title(), to facilitate looking up BPF program=
-s by
-> their C function names.
->=20
-> Convert one of selftests to new API for look up.
->=20
-> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> ---
->  tools/lib/bpf/libbpf.c                        | 28 +++++++++++++++----
->  tools/lib/bpf/libbpf.h                        |  9 ++++--
->  tools/lib/bpf/libbpf.map                      |  2 ++
->  .../selftests/bpf/prog_tests/rdonly_maps.c    | 11 +++-----
->  4 files changed, 36 insertions(+), 14 deletions(-)
->=20
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index edfe1cf1e940..f13752c4d271 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -209,8 +209,8 @@ static const char * const libbpf_type_to_btf_name[] =
-=3D {
->  };
-> =20
->  struct bpf_map {
-> -	int fd;
->  	char *name;
-> +	int fd;
-This change, and
+On Wed, Dec 11, 2019 at 11:15 AM Stanislav Fomichev <sdf@fomichev.me> wrote:
+>
+> On 12/11, Andrii Nakryiko wrote:
+> > On Wed, Dec 11, 2019 at 9:24 AM Stanislav Fomichev <sdf@fomichev.me> wrote:
+> > >
+> > > On 12/10, Andrii Nakryiko wrote:
+> > > > On Tue, Dec 10, 2019 at 2:59 PM Stanislav Fomichev <sdf@fomichev.me> wrote:
+> > > > >
+> > > > > On 12/10, Andrii Nakryiko wrote:
+> > > > > > On Tue, Dec 10, 2019 at 1:44 PM Stanislav Fomichev <sdf@fomichev.me> wrote:
+> > > > > > >
+> > > > > > > On 12/10, Jakub Kicinski wrote:
+> > > > > > > > On Tue, 10 Dec 2019 09:11:31 -0800, Andrii Nakryiko wrote:
+> > > > > > > > > On Mon, Dec 9, 2019 at 5:57 PM Jakub Kicinski wrote:
+> > > > > > > > > > On Mon, 9 Dec 2019 17:14:34 -0800, Andrii Nakryiko wrote:
+> > > > > > > > > > > struct <object-name> {
+> > > > > > > > > > >       /* used by libbpf's skeleton API */
+> > > > > > > > > > >       struct bpf_object_skeleton *skeleton;
+> > > > > > > > > > >       /* bpf_object for libbpf APIs */
+> > > > > > > > > > >       struct bpf_object *obj;
+> > > > > > > > > > >       struct {
+> > > > > > > > > > >               /* for every defined map in BPF object: */
+> > > > > > > > > > >               struct bpf_map *<map-name>;
+> > > > > > > > > > >       } maps;
+> > > > > > > > > > >       struct {
+> > > > > > > > > > >               /* for every program in BPF object: */
+> > > > > > > > > > >               struct bpf_program *<program-name>;
+> > > > > > > > > > >       } progs;
+> > > > > > > > > > >       struct {
+> > > > > > > > > > >               /* for every program in BPF object: */
+> > > > > > > > > > >               struct bpf_link *<program-name>;
+> > > > > > > > > > >       } links;
+> > > > > > > > > > >       /* for every present global data section: */
+> > > > > > > > > > >       struct <object-name>__<one of bss, data, or rodata> {
+> > > > > > > > > > >               /* memory layout of corresponding data section,
+> > > > > > > > > > >                * with every defined variable represented as a struct field
+> > > > > > > > > > >                * with exactly the same type, but without const/volatile
+> > > > > > > > > > >                * modifiers, e.g.:
+> > > > > > > > > > >                */
+> > > > > > > > > > >                int *my_var_1;
+> > > > > > > > > > >                ...
+> > > > > > > > > > >       } *<one of bss, data, or rodata>;
+> > > > > > > > > > > };
+> > > > > > > > > >
+> > > > > > > > > > I think I understand how this is useful, but perhaps the problem here
+> > > > > > > > > > is that we're using C for everything, and simple programs for which
+> > > > > > > > > > loading the ELF is majority of the code would be better of being
+> > > > > > > > > > written in a dynamic language like python?  Would it perhaps be a
+> > > > > > > > > > better idea to work on some high-level language bindings than spend
+> > > > > > > > > > time writing code gens and working around limitations of C?
+> > > > > > > > >
+> > > > > > > > > None of this work prevents Python bindings and other improvements, is
+> > > > > > > > > it? Patches, as always, are greatly appreciated ;)
+> > > > > > > >
+> > > > > > > > This "do it yourself" shit is not really funny :/
+> > > > > > > >
+> > > > > > > > I'll stop providing feedback on BPF patches if you guy keep saying
+> > > > > > > > that :/ Maybe that's what you want.
+> > > > > > > >
+> > > > > > > > > This skeleton stuff is not just to save code, but in general to
+> > > > > > > > > simplify and streamline working with BPF program from userspace side.
+> > > > > > > > > Fortunately or not, but there are a lot of real-world applications
+> > > > > > > > > written in C and C++ that could benefit from this, so this is still
+> > > > > > > > > immensely useful. selftests/bpf themselves benefit a lot from this
+> > > > > > > > > work, see few of the last patches in this series.
+> > > > > > > >
+> > > > > > > > Maybe those applications are written in C and C++ _because_ there
+> > > > > > > > are no bindings for high level languages. I just wish BPF programming
+> > > > > > > > was less weird and adding some funky codegen is not getting us closer
+> > > > > > > > to that goal.
+> > > > > > > >
+> > > > > > > > In my experience code gen is nothing more than a hack to work around
+> > > > > > > > bad APIs, but experiences differ so that's not a solid argument.
+> > > > > > > *nod*
+> > > > > > >
+> > > > > > > We have a nice set of C++ wrappers around libbpf internally, so we can do
+> > > > > > > something like BpfMap<key type, value type> and get a much better interface
+> > > > > > > with type checking. Maybe we should focus on higher level languages instead?
+> > > > > > > We are open to open-sourcing our C++ bits if you want to collaborate.
+> > > > > >
+> > > > > > Python/C++ bindings and API wrappers are an orthogonal concerns here.
+> > > > > > I personally think it would be great to have both Python and C++
+> > > > > > specific API that uses libbpf under the cover. The only debatable
+> > > > > > thing is the logistics: where the source code lives, how it's kept in
+> > > > > > sync with libbpf, how we avoid crippling libbpf itself because
+> > > > > > something is hard or inconvenient to adapt w/ Python, etc.
+> > > > >
+> > > > > [..]
+> > > > > > The problem I'm trying to solve here is not really C-specific. I don't
+> > > > > > think you can solve it without code generation for C++. How do you
+> > > > > > "generate" BPF program-specific layout of .data, .bss, .rodata, etc
+> > > > > > data sections in such a way, where it's type safe (to the degree that
+> > > > > > language allows that, of course) and is not "stringly-based" API? This
+> > > > > > skeleton stuff provides a natural, convenient and type-safe way to
+> > > > > > work with global data from userspace pretty much at the same level of
+> > > > > > performance and convenience, as from BPF side. How can you achieve
+> > > > > > that w/ C++ without code generation? As for Python, sure you can do
+> > > > > > dynamic lookups based on just the name of property/method, but amount
+> > > > > > of overheads is not acceptable for all applications (and Python itself
+> > > > > > is not acceptable for those applications). In addition to that, C is
+> > > > > > the best way for other less popular languages (e.g., Rust) to leverage
+> > > > > > libbpf without investing lots of effort in re-implementing libbpf in
+> > > > > > Rust.
+> > > > > I'd say that a libbpf API similar to dlopen/dlsym is a more
+> > > > > straightforward thing to do. Have a way to "open" a section and
+> > > > > a way to find a symbol in it. Yes, it's a string-based API,
+> > > > > but there is nothing wrong with it. IMO, this is easier to
+> > > > > use/understand and I suppose Python/C++ wrappers are trivial.
+> > > >
+> > > > Without digging through libbpf source code (or actually, look at code,
+> > > > but don't run any test program), what's the name of the map
+> > > > corresponding to .bss section, if object file is
+> > > > some_bpf_object_file.o? If you got it right (congrats, btw, it took me
+> > > > multiple attempts to memorize the pattern), how much time did you
+> > > > spend looking it up? Now compare it to `skel->maps.bss`. Further, if
+> > > > you use anonymous structs for your global vars, good luck maintaining
+> > > > two copies of that: one for BPF side and one for userspace.
+> > > As your average author of BPF programs I don't really care
+> > > which section my symbol ends up into. Just give me an api
+> > > to mmap all "global" sections (or a call per section which does all the
+> > > naming magic inside) and lookup symbol by name; I can cast it to a proper
+> > > type and set it.
+> >
+> > I'd like to not have to know about bss/rodata/data as well, but that's
+> > how things are done for global variables. In skeleton we can try to
+> > make an illusion like they are part of one big datasection/struct, but
+> > that seems like a bit too much magic at this point. But then again,
+> > one of the reasons I want this as an experimental feature, so that we
+> > can actually judge from real experience how inconvenient some things
+> > are, and not just based on "I think it would be ...".
+> >
+> > re: "Just give me ...". Following the spirit of "C is hard" from your
+> > previous arguments, you already have that API: mmap() syscall. C
+> > programmers have to be able to figure out the rest ;) But on the
+> > serious note, this auto-generated code in skeleton actually addresses
+> > all concerns (and more) that you mentioned: mmaping, knowing offsets,
+> > knowing names and types, etc. And it doesn't preclude adding more
+> > "conventional" additional APIs to do everything more dynamically,
+> > based on string names.
+> We have different understanding of what's difficult :-)
 
->  	int sec_idx;
->  	size_t sec_offset;
->  	int map_ifindex;
-> @@ -1384,7 +1384,7 @@ static int bpf_object__init_user_btf_maps(struct bp=
-f_object *obj, bool strict,
->  }
-> =20
->  static int bpf_object__init_maps(struct bpf_object *obj,
-> -				 struct bpf_object_open_opts *opts)
-> +				 const struct bpf_object_open_opts *opts)
-here, and a few other const changes,
+Well, clearly... See below.
 
-are all good changes.  If they are not in a separate patch, it will be usef=
-ul
-to the reviewer if there is commit messages mentioning there are some
-unrelated cleanup changes.  I have been looking at where it may cause
-compiler warning because of this change, or I missed something?
+>
+> To me, doing transparent data/rodata/bss mmap in bpf_object__load and then
+> adding a single libbpf api call to lookup symbol by string name is simple
+> (both from user perspective and from libbpf code complexity). Because in
+> order to use the codegen I need to teach our build system to spit it
+> out (which means I need to add bpftool to it and keep it
+> updated/etc/etc). You can use it as an example of "real experience how
+> inconvenient some things are".
 
->  {
->  	const char *pin_root_path =3D OPTS_GET(opts, pin_root_path, NULL);
->  	bool strict =3D !OPTS_GET(opts, relaxed_maps, false);
-> @@ -1748,6 +1748,19 @@ bpf_object__find_program_by_title(const struct bpf=
-_object *obj,
->  	return NULL;
->  }
-> =20
-> +struct bpf_program *
-> +bpf_object__find_program_by_name(const struct bpf_object *obj,
-> +				 const char *name)
-> +{
-> +	struct bpf_program *prog;
-> +
-> +	bpf_object__for_each_program(prog, obj) {
-> +		if (!strcmp(prog->name, name))
-> +			return prog;
-> +	}
-> +	return NULL;
-> +}
-> +
->  static bool bpf_object__shndx_is_data(const struct bpf_object *obj,
->  				      int shndx)
->  {
-> @@ -3893,7 +3906,7 @@ static int libbpf_find_attach_btf_id(const char *na=
-me,
->  				     __u32 attach_prog_fd);
->  static struct bpf_object *
->  __bpf_object__open(const char *path, const void *obj_buf, size_t obj_buf=
-_sz,
-> -		   struct bpf_object_open_opts *opts)
-> +		   const struct bpf_object_open_opts *opts)
->  {
->  	struct bpf_program *prog;
->  	struct bpf_object *obj;
-> @@ -4002,7 +4015,7 @@ struct bpf_object *bpf_object__open(const char *pat=
-h)
->  }
-> =20
->  struct bpf_object *
-> -bpf_object__open_file(const char *path, struct bpf_object_open_opts *opt=
-s)
-> +bpf_object__open_file(const char *path, const struct bpf_object_open_opt=
-s *opts)
->  {
->  	if (!path)
->  		return ERR_PTR(-EINVAL);
-> @@ -4014,7 +4027,7 @@ bpf_object__open_file(const char *path, struct bpf_=
-object_open_opts *opts)
-> =20
->  struct bpf_object *
->  bpf_object__open_mem(const void *obj_buf, size_t obj_buf_sz,
-> -		     struct bpf_object_open_opts *opts)
-> +		     const struct bpf_object_open_opts *opts)
->  {
->  	if (!obj_buf || obj_buf_sz =3D=3D 0)
->  		return ERR_PTR(-EINVAL);
-> @@ -4819,6 +4832,11 @@ void bpf_program__set_ifindex(struct bpf_program *=
-prog, __u32 ifindex)
->  	prog->prog_ifindex =3D ifindex;
->  }
-> =20
-> +const char *bpf_program__name(const struct bpf_program *prog)
-> +{
-> +	return prog->name;
-> +}
-> +
->  const char *bpf_program__title(const struct bpf_program *prog, bool need=
-s_copy)
->  {
->  	const char *title;
-> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> index fa803dde1f46..7fa583ebe56f 100644
-> --- a/tools/lib/bpf/libbpf.h
-> +++ b/tools/lib/bpf/libbpf.h
-> @@ -114,10 +114,10 @@ struct bpf_object_open_opts {
-> =20
->  LIBBPF_API struct bpf_object *bpf_object__open(const char *path);
->  LIBBPF_API struct bpf_object *
-> -bpf_object__open_file(const char *path, struct bpf_object_open_opts *opt=
-s);
-> +bpf_object__open_file(const char *path, const struct bpf_object_open_opt=
-s *opts);
->  LIBBPF_API struct bpf_object *
->  bpf_object__open_mem(const void *obj_buf, size_t obj_buf_sz,
-> -		     struct bpf_object_open_opts *opts);
-> +		     const struct bpf_object_open_opts *opts);
-> =20
->  /* deprecated bpf_object__open variants */
->  LIBBPF_API struct bpf_object *
-> @@ -156,6 +156,7 @@ struct bpf_object_load_attr {
->  LIBBPF_API int bpf_object__load(struct bpf_object *obj);
->  LIBBPF_API int bpf_object__load_xattr(struct bpf_object_load_attr *attr)=
-;
->  LIBBPF_API int bpf_object__unload(struct bpf_object *obj);
-> +
->  LIBBPF_API const char *bpf_object__name(const struct bpf_object *obj);
->  LIBBPF_API unsigned int bpf_object__kversion(const struct bpf_object *ob=
-j);
-> =20
-> @@ -166,6 +167,9 @@ LIBBPF_API int bpf_object__btf_fd(const struct bpf_ob=
-ject *obj);
->  LIBBPF_API struct bpf_program *
->  bpf_object__find_program_by_title(const struct bpf_object *obj,
->  				  const char *title);
-> +LIBBPF_API struct bpf_program *
-> +bpf_object__find_program_by_name(const struct bpf_object *obj,
-> +				 const char *name);
-> =20
->  LIBBPF_API struct bpf_object *bpf_object__next(struct bpf_object *prev);
->  #define bpf_object__for_each_safe(pos, tmp)			\
-> @@ -209,6 +213,7 @@ LIBBPF_API void *bpf_program__priv(const struct bpf_p=
-rogram *prog);
->  LIBBPF_API void bpf_program__set_ifindex(struct bpf_program *prog,
->  					 __u32 ifindex);
-> =20
-> +LIBBPF_API const char *bpf_program__name(const struct bpf_program *prog)=
-;
->  LIBBPF_API const char *bpf_program__title(const struct bpf_program *prog=
-,
->  					  bool needs_copy);
-> =20
-> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-> index 757a88f64b5a..f2b2fa0f5c2a 100644
-> --- a/tools/lib/bpf/libbpf.map
-> +++ b/tools/lib/bpf/libbpf.map
-> @@ -211,5 +211,7 @@ LIBBPF_0.0.6 {
-> =20
->  LIBBPF_0.0.7 {
->  	global:
-> +		bpf_object__find_program_by_name;
->  		bpf_program__attach;
-> +		bpf_program__name;
->  } LIBBPF_0.0.6;
-> diff --git a/tools/testing/selftests/bpf/prog_tests/rdonly_maps.c b/tools=
-/testing/selftests/bpf/prog_tests/rdonly_maps.c
-> index d90acc13d1ec..563e12120e77 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/rdonly_maps.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/rdonly_maps.c
-> @@ -16,14 +16,11 @@ struct rdonly_map_subtest {
-> =20
->  void test_rdonly_maps(void)
->  {
-> -	const char *prog_name_skip_loop =3D "raw_tracepoint/sys_enter:skip_loop=
-";
-> -	const char *prog_name_part_loop =3D "raw_tracepoint/sys_enter:part_loop=
-";
-> -	const char *prog_name_full_loop =3D "raw_tracepoint/sys_enter:full_loop=
-";
->  	const char *file =3D "test_rdonly_maps.o";
->  	struct rdonly_map_subtest subtests[] =3D {
-> -		{ "skip loop", prog_name_skip_loop, 0, 0 },
-> -		{ "part loop", prog_name_part_loop, 3, 2 + 3 + 4 },
-> -		{ "full loop", prog_name_full_loop, 4, 2 + 3 + 4 + 5 },
-> +		{ "skip loop", "skip_loop", 0, 0 },
-> +		{ "part loop", "part_loop", 3, 2 + 3 + 4 },
-> +		{ "full loop", "full_loop", 4, 2 + 3 + 4 + 5 },
->  	};
->  	int i, err, zero =3D 0, duration =3D 0;
->  	struct bpf_link *link =3D NULL;
-> @@ -50,7 +47,7 @@ void test_rdonly_maps(void)
->  		if (!test__start_subtest(t->subtest_name))
->  			continue;
-> =20
-> -		prog =3D bpf_object__find_program_by_title(obj, t->prog_name);
-> +		prog =3D bpf_object__find_program_by_name(obj, t->prog_name);
->  		if (CHECK(!prog, "find_prog", "prog '%s' not found\n",
->  			  t->prog_name))
->  			goto cleanup;
-> --=20
-> 2.17.1
->=20
+Yes, you need to integrate bpftool in your build process. Which is
+exactly what I'm doing internally for Facebook as well. But it's a
+mostly one-time cost, which benefits lots of users who have much
+better time with these changes, as opposed to make things simpler for
+us, libbpf developers, at the expense of more convoluted user
+experience for end users. I certainly prefer more complicated
+libbpf/bpftool code, if the resulting user experience is simpler for
+BPF application developers, no doubt about it.
+
+>
+> > > RE anonymous structs: maybe don't use them if you want to share the data
+> > > between bpf and userspace?
+> >
+> > Alright.
+> >
+> > >
+> > > > I never said there is anything wrong with current straightforward
+> > > > libbpf API, but I also never said it's the easiest and most
+> > > > user-friendly way to work with BPF either. So we'll have both
+> > > > code-generated interface and existing API. Furthermore, they are
+> > > > interoperable (you can pass skel->maps.whatever to any of the existing
+> > > > libbpf APIs, same for progs, links, obj itself). But there isn't much
+> > > > that can beat performance and usability of code-generated .data, .bss,
+> > > > .rodata (and now .extern) layout.
+> > > I haven't looked closely enough, but is there a libbpf api to get
+> > > an offset of a variable? Suppose I have the following in bpf.c:
+> > >
+> > >         int a;
+> > >         int b;
+> > >
+> > > Can I get an offset of 'b' in the .bss without manually parsing BTF?
+> >
+> > No there isn't right now. There isn't even an API to know that there
+> > is such a variable called "b". Except for this skeleton, of course.
+> >
+> > >
+> > > TBH, I don't buy the performance argument for these global maps.
+> > > When you did the mmap patchset for the array, you said it yourself
+> > > that it's about convenience and not performance.
+> >
+> > Yes, it's first and foremost about convenience, addressing exactly the
+> > problems you mentioned above. But performance is critical for some use
+> > cases, and nothing can beat memory-mapped view of BPF map for those.
+> > Think about the case of frequently polling (or even atomically
+> > exchanging) some stats from userspace, as one possible example. E.g.,
+> > like some map statistics (number of filled elements, p50 of whatever
+> > of those elements, etc). I'm not sure what's there to buy: doing
+> > syscall to get **entire** global data map contents vs just fetching
+> > single integer from memory-mapped region, guess which one is cheaper?
+> My understanding was that when you were talking about performance, you
+> were talking about doing symbol offset lookup at runtime vs having a
+> generated struct with fixed offsets; not about mmap vs old api with copy
+> (this debate is settled since your patches are accepted).
+
+Oh, I see. No, I didn't intend to claim that performance of looking up
+variable by name in BTF is a big performance concern. Settled then :)
+
+>
+> But to your original reply: you do understand that if you have multiple
+> threads that write to this global data you have a bigger problem, right?
+
+Not necessarily. BPF has atomic increment instruction, doesn't it? And
+can't we still do atomic swap from user-space (it's just a memory,
+after all), right? I haven't tried, tbh, but don't see why it wouldn't
+work.
