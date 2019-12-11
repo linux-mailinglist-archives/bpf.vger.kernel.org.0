@@ -2,155 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1175111B694
-	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2019 17:02:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0937F11B880
+	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2019 17:22:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388348AbfLKQBu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Dec 2019 11:01:50 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:45809 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731411AbfLKQBt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 Dec 2019 11:01:49 -0500
-Received: from 1.general.cascardo.us.vpn ([10.172.70.58] helo=calabresa)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <cascardo@canonical.com>)
-        id 1if4Ql-00025a-M4; Wed, 11 Dec 2019 16:01:40 +0000
-Date:   Wed, 11 Dec 2019 13:01:33 -0300
-From:   Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-To:     Justin Forbes <jmforbes@linuxtx.org>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Song Liu <songliubraving@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <netdev@vger.kernel.org>, Yonghong Song <yhs@fb.com>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <bpf@vger.kernel.org>, linuxppc-dev@lists.ozlabs.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Aurelien Jarno <aurelien@aurel32.net>,
-        debian-kernel@lists.debian.org
-Subject: Re: [PATCH] libbpf: fix readelf output parsing on powerpc with
- recent binutils
-Message-ID: <20191211160133.GB4580@calabresa>
-References: <20191201195728.4161537-1-aurelien@aurel32.net>
- <87zhgbe0ix.fsf@mpe.ellerman.id.au>
- <20191202093752.GA1535@localhost.localdomain>
- <CAFxkdAqg6RaGbRrNN3e_nHfHFR-xxzZgjhi5AnppTxxwdg0VyQ@mail.gmail.com>
- <20191210222553.GA4580@calabresa>
- <CAFxkdAp6Up0qSyp0sH0O1yD+5W3LvY-+-iniBrorcz2pMV+y-g@mail.gmail.com>
+        id S1730336AbfLKQVr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Dec 2019 11:21:47 -0500
+Received: from mail-lf1-f66.google.com ([209.85.167.66]:36263 "EHLO
+        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729994AbfLKQVr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 Dec 2019 11:21:47 -0500
+Received: by mail-lf1-f66.google.com with SMTP id n12so17180428lfe.3
+        for <bpf@vger.kernel.org>; Wed, 11 Dec 2019 08:21:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9+dtV+M9iZYRqhoG+AqRAuO5pcKMIzqtz8v8DdzhGqY=;
+        b=SbjqM2ODKehYk9SmsKSmcVA1wbAp8f9RxIfGF3yszl7Rpd/WVpD/GYeGTTFEKIyIuX
+         XHU1FmMrrd3zQwg7Y6e1BelHzoGwjvCUximULUHlJvFwlDFsJnmO1S8vkuFt0Bt/8BRm
+         mbynfnki93Ivwshksj3SJ2nqec7srZhjMWCPGMprCwlCsKCNynHsY5/TqjOR0TSk9Fw4
+         TfSJdKnebnmvUdb0QoQQld9fp5Dj7cF04DRZxNFQiQbz0PCmF7sFahu/PzSxBonNwmY4
+         wY//83O94DtLMQAlI9u7wQA6dxBXEEzsEb7VVm3IQsjfFVXrOf/BVbgc5Li79f4d8uB1
+         +WjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9+dtV+M9iZYRqhoG+AqRAuO5pcKMIzqtz8v8DdzhGqY=;
+        b=ccBnQR1YEYvF66nujzLyGXIPQtwli3jU1AVdWjEvggE+xnAdcbBQhnEUhGYMU3YT0u
+         n0iwh0WJzTYk43D5qiuYcM0eIoZgfBIXk2roA57ob/297pXSE9UPjNzKORoQR45k+K1x
+         EfgGHGrZGC1Eu3Yj4aIeRWt+tZUUK2QNbg3ie74PZTm6oUvz2vR6uwQY2a+kemVDWCrh
+         P9IXe+/YwykielEKfp8s2ilUvldjPdqa/Gk6+GvqwCmCpyX6bkXDEUH/IaH4k81NH8PP
+         xJxCeRYlX1U1ae0yaRWFcaJ+RNgbCed8aDMUBa7LjuZG6TUcLFxBuOCvzpZVOxpG5u5d
+         T+Ww==
+X-Gm-Message-State: APjAAAXLf8upfDLp0WzRX5VLV3sc35gJDmLKQiYwbqUfD9TroWh3uT7P
+        cLNd0D86bOZFxbtlgWyxRUlQONMzgWlQx5EgQv5x
+X-Google-Smtp-Source: APXvYqyZ1ajHPuym4W3z4v6wVy6MZfzVlviDS1BRcZl71BwQ1OyRyhfTdoHXnxGNhdjdZaW+vFw8k+1L00KxXE56tGQ=
+X-Received: by 2002:a19:86d7:: with SMTP id i206mr2675499lfd.119.1576081304311;
+ Wed, 11 Dec 2019 08:21:44 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFxkdAp6Up0qSyp0sH0O1yD+5W3LvY-+-iniBrorcz2pMV+y-g@mail.gmail.com>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+References: <20191206214934.11319-1-jolsa@kernel.org> <20191209121537.GA14170@linux.fritz.box>
+ <CAHC9VhQdOGTj1HT1cwvAdE1sRpzk5mC+oHQLHgJFa3vXEij+og@mail.gmail.com>
+ <d387184e-9c5f-d5b2-0acb-57b794235cbd@iogearbox.net> <CAHC9VhRDsEDGripZRrVNcjEBEEULPk+0dRp-uJ3nmmBK7B=sYQ@mail.gmail.com>
+ <20191210153652.GA14123@krava> <CAHC9VhSa_B-VJOa_r8OcNrm0Yd_t1j3otWhKHgganSDx5Ni=Tg@mail.gmail.com>
+ <20191211131955.GC23383@linux.fritz.box>
+In-Reply-To: <20191211131955.GC23383@linux.fritz.box>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Wed, 11 Dec 2019 11:21:33 -0500
+Message-ID: <CAHC9VhQqiD7BBGwLYuQVySG84iwR9MJh8GZuTU3xCBm7GLn8hw@mail.gmail.com>
+Subject: Re: [PATCHv3] bpf: Emit audit messages upon successful prog load and unload
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-audit@redhat.com,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Steve Grubb <sgrubb@redhat.com>,
+        David Miller <davem@redhat.com>,
+        Eric Paris <eparis@redhat.com>, Jiri Benc <jbenc@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 11, 2019 at 09:33:53AM -0600, Justin Forbes wrote:
-> On Tue, Dec 10, 2019 at 4:26 PM Thadeu Lima de Souza Cascardo
-> <cascardo@canonical.com> wrote:
-> >
-> > On Tue, Dec 10, 2019 at 12:58:33PM -0600, Justin Forbes wrote:
-> > > On Mon, Dec 2, 2019 at 3:37 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
-> > > >
-> > > > On Mon, Dec 02, 2019 at 04:53:26PM +1100, Michael Ellerman wrote:
-> > > > > Aurelien Jarno <aurelien@aurel32.net> writes:
-> > > > > > On powerpc with recent versions of binutils, readelf outputs an extra
-> > > > > > field when dumping the symbols of an object file. For example:
+On Wed, Dec 11, 2019 at 8:20 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+> On Tue, Dec 10, 2019 at 05:45:59PM -0500, Paul Moore wrote:
+> > On Tue, Dec 10, 2019 at 10:37 AM Jiri Olsa <jolsa@redhat.com> wrote:
+> > > On Mon, Dec 09, 2019 at 06:53:23PM -0500, Paul Moore wrote:
+> > > > On Mon, Dec 9, 2019 at 6:19 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+> > > > > On 12/9/19 3:56 PM, Paul Moore wrote:
+> > > > > > On Mon, Dec 9, 2019 at 7:15 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+> > > > > >> On Fri, Dec 06, 2019 at 10:49:34PM +0100, Jiri Olsa wrote:
+> > > > > >>> From: Daniel Borkmann <daniel@iogearbox.net>
+> > > > > >>>
+> > > > > >>> Allow for audit messages to be emitted upon BPF program load and
+> > > > > >>> unload for having a timeline of events. The load itself is in
+> > > > > >>> syscall context, so additional info about the process initiating
+> > > > > >>> the BPF prog creation can be logged and later directly correlated
+> > > > > >>> to the unload event.
+> > > > > >>>
+> > > > > >>> The only info really needed from BPF side is the globally unique
+> > > > > >>> prog ID where then audit user space tooling can query / dump all
+> > > > > >>> info needed about the specific BPF program right upon load event
+> > > > > >>> and enrich the record, thus these changes needed here can be kept
+> > > > > >>> small and non-intrusive to the core.
+> > > > > >>>
+> > > > > >>> Raw example output:
+> > > > > >>>
+> > > > > >>>    # auditctl -D
+> > > > > >>>    # auditctl -a always,exit -F arch=x86_64 -S bpf
+> > > > > >>>    # ausearch --start recent -m 1334
+> > > > > >>>    ...
+> > > > > >>>    ----
+> > > > > >>>    time->Wed Nov 27 16:04:13 2019
+> > > > > >>>    type=PROCTITLE msg=audit(1574867053.120:84664): proctitle="./bpf"
+> > > > > >>>    type=SYSCALL msg=audit(1574867053.120:84664): arch=c000003e syscall=321   \
+> > > > > >>>      success=yes exit=3 a0=5 a1=7ffea484fbe0 a2=70 a3=0 items=0 ppid=7477    \
+> > > > > >>>      pid=12698 auid=1001 uid=1001 gid=1001 euid=1001 suid=1001 fsuid=1001    \
+> > > > > >>>      egid=1001 sgid=1001 fsgid=1001 tty=pts2 ses=4 comm="bpf"                \
+> > > > > >>>      exe="/home/jolsa/auditd/audit-testsuite/tests/bpf/bpf"                  \
+> > > > > >>>      subj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 key=(null)
+> > > > > >>>    type=UNKNOWN[1334] msg=audit(1574867053.120:84664): prog-id=76 op=LOAD
+> > > > > >>>    ----
+> > > > > >>>    time->Wed Nov 27 16:04:13 2019
+> > > > > >>>    type=UNKNOWN[1334] msg=audit(1574867053.120:84665): prog-id=76 op=UNLOAD
+> > > > > >>>    ...
+> > > > > >>>
+> > > > > >>> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+> > > > > >>> Co-developed-by: Jiri Olsa <jolsa@kernel.org>
+> > > > > >>> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > > > > >>
+> > > > > >> Paul, Steve, given the merge window is closed by now, does this version look
+> > > > > >> okay to you for proceeding to merge into bpf-next?
 > > > > > >
-> > > > > >     35: 0000000000000838    96 FUNC    LOCAL  DEFAULT [<localentry>: 8]     1 btf_is_struct
-> > > > > >
-> > > > > > The extra "[<localentry>: 8]" prevents the GLOBAL_SYM_COUNT variable to
-> > > > > > be computed correctly and causes the checkabi target to fail.
-> > > > > >
-> > > > > > Fix that by looking for the symbol name in the last field instead of the
-> > > > > > 8th one. This way it should also cope with future extra fields.
-> > > > > >
-> > > > > > Signed-off-by: Aurelien Jarno <aurelien@aurel32.net>
-> > > > > > ---
-> > > > > >  tools/lib/bpf/Makefile | 4 ++--
-> > > > > >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > > > > > Given the change to audit UAPI I was hoping to merge this via the
+> > > > > > audit/next tree, is that okay with you?
 > > > > >
-> > > > > Thanks for fixing that, it's been on my very long list of test failures
-> > > > > for a while.
-> > > > >
-> > > > > Tested-by: Michael Ellerman <mpe@ellerman.id.au>
+> > > > > Hm, my main concern is that given all the main changes are in BPF core and
+> > > > > usually the BPF subsystem has plenty of changes per release coming in that we'd
+> > > > > end up generating unnecessary merge conflicts. Given the include/uapi/linux/audit.h
+> > > > > UAPI diff is a one-line change, my preference would be to merge via bpf-next with
+> > > > > your ACK or SOB added. Does that work for you as well as?
 > > > >
-> > > > Looks good & also continues to work on x86. Applied, thanks!
+> > > > I regularly (a few times a week) run the audit and SELinux tests
+> > > > against Linus+audit/next+selinux/next to make sure things are working
+> > > > as expected and that some other subsystem has introduced a change
+> > > > which has broken something.  If you are willing to ensure the tests
+> > > > get run, including your new BPF audit tests I would be okay with that;
+> > > > is that acceptable?
 > > >
-> > > This actually seems to break horribly on PPC64le with binutils 2.33.1
-> > > resulting in:
-> > > Warning: Num of global symbols in sharedobjs/libbpf-in.o (32) does NOT
-> > > match with num of versioned symbols in libbpf.so (184). Please make
-> > > sure all LIBBPF_API symbols are versioned in libbpf.map.
-> > >
-> > > This is the only arch that fails, with x86/arm/aarch64/s390 all
-> > > building fine.  Reverting this patch allows successful build across
-> > > all arches.
-> > >
-> > > Justin
+> > > would you please let me know which tree this landed at the end?
 > >
-> > Well, I ended up debugging this same issue and had the same fix as Jarno's when
-> > I noticed his fix was already applied.
-> >
-> > I just installed a system with the latest binutils, 2.33.1, and it still breaks
-> > without such fix. Can you tell what is the output of the following command on
-> > your system?
-> >
-> > readelf -s --wide tools/lib/bpf/sharedobjs/libbpf-in.o | cut -d "@" -f1 | sed 's/_v[0-9]_[0-9]_[0-9].*//' | awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $0}'
-> >
-> 
-> readelf -s --wide tools/lib/bpf/sharedobjs/libbpf-in.o | cut -d "@"
-> -f1 | sed 's/_v[0-9]_[0-9]_[0-9].*//' | awk '/GLOBAL/ && /DEFAULT/ &&
-> !/UND/ {print $0}'
->    373: 00000000000141bc  1376 FUNC    GLOBAL DEFAULT    1
-> libbpf_num_possible_cpus [<localentry>: 8]
->    375: 000000000001869c   176 FUNC    GLOBAL DEFAULT    1 btf__free
-> [<localentry>: 8]
-[...]
+> > I think that's what we are trying to figure out - Daniel?
+>
+> Yeah, sounds reasonable wrt running tests to make sure nothing breaks. In that
+> case I'd wait for your ACK or SOB to proceed with merging into bpf-next. Thanks
+> Paul!
 
-This is a patch on binutils carried by Fedora:
+As long as you're going to keep testing this, here ya go :)
 
-https://src.fedoraproject.org/rpms/binutils/c/b8265c46f7ddae23a792ee8306fbaaeacba83bf8
+Acked-by: Paul Moore <paul@paul-moore.com>
 
-" b8265c Have readelf display extra symbol information at the end of the line. "
+(also, go ahead and submit that PR for audit-testsuite - thanks!)
 
-It has the following comment:
-
-# FIXME:    The proper fix would be to update the scripts that are expecting
-#           a fixed output from readelf.  But it seems that some of them are
-#           no longer being maintained.
-
-This commit is from 2017, had it been on binutils upstream, maybe the situation
-right now would be different.
-
-Honestly, it seems the best way out is to filter the other information in the
-libbpf Makefile.
-
-Does the following patch work for you?
-
-
-diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
-index 56ce6292071b..e6f99484d7d5 100644
---- a/tools/lib/bpf/Makefile
-+++ b/tools/lib/bpf/Makefile
-@@ -145,6 +145,7 @@ PC_FILE		:= $(addprefix $(OUTPUT),$(PC_FILE))
- 
- GLOBAL_SYM_COUNT = $(shell readelf -s --wide $(BPF_IN_SHARED) | \
- 			   cut -d "@" -f1 | sed 's/_v[0-9]_[0-9]_[0-9].*//' | \
-+			   sed 's/\[.*\]//' | \
- 			   awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$8}' | \
- 			   sort -u | wc -l)
- VERSIONED_SYM_COUNT = $(shell readelf -s --wide $(OUTPUT)libbpf.so | \
-@@ -217,6 +218,7 @@ check_abi: $(OUTPUT)libbpf.so
- 		     "versioned in $(VERSION_SCRIPT)." >&2;		 \
- 		readelf -s --wide $(OUTPUT)libbpf-in.o |		 \
- 		    cut -d "@" -f1 | sed 's/_v[0-9]_[0-9]_[0-9].*//' |	 \
-+		    sed 's/\[.*\]//' |					 \
- 		    awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$8}'|   \
- 		    sort -u > $(OUTPUT)libbpf_global_syms.tmp;		 \
- 		readelf -s --wide $(OUTPUT)libbpf.so |			 \
+-- 
+paul moore
+www.paul-moore.com
