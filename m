@@ -2,123 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 377F911ABE7
-	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2019 14:20:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18C8011ABEB
+	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2019 14:20:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729526AbfLKNUC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Dec 2019 08:20:02 -0500
-Received: from www62.your-server.de ([213.133.104.62]:59174 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729428AbfLKNUC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 Dec 2019 08:20:02 -0500
-Received: from [2001:1620:665:0:5795:5b0a:e5d5:5944] (helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1if1uG-0004ra-BR; Wed, 11 Dec 2019 14:19:56 +0100
-Date:   Wed, 11 Dec 2019 14:19:55 +0100
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-audit@redhat.com,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Steve Grubb <sgrubb@redhat.com>,
-        David Miller <davem@redhat.com>,
-        Eric Paris <eparis@redhat.com>, Jiri Benc <jbenc@redhat.com>
-Subject: Re: [PATCHv3] bpf: Emit audit messages upon successful prog load and
- unload
-Message-ID: <20191211131955.GC23383@linux.fritz.box>
-References: <20191206214934.11319-1-jolsa@kernel.org>
- <20191209121537.GA14170@linux.fritz.box>
- <CAHC9VhQdOGTj1HT1cwvAdE1sRpzk5mC+oHQLHgJFa3vXEij+og@mail.gmail.com>
- <d387184e-9c5f-d5b2-0acb-57b794235cbd@iogearbox.net>
- <CAHC9VhRDsEDGripZRrVNcjEBEEULPk+0dRp-uJ3nmmBK7B=sYQ@mail.gmail.com>
- <20191210153652.GA14123@krava>
- <CAHC9VhSa_B-VJOa_r8OcNrm0Yd_t1j3otWhKHgganSDx5Ni=Tg@mail.gmail.com>
+        id S1729133AbfLKNUU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Dec 2019 08:20:20 -0500
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:42736 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727477AbfLKNUT (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 11 Dec 2019 08:20:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1576070419;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=o/u/4ZEqQP0e+uS2+lCszxa5LZBpaQoPz1LVNN7voyg=;
+        b=dE92+E8Keo6YqSkUKbQr++CMuiQIjplKbMtXwxLR0fWUD8bB7y+amC3EK6XdBZG3b2yX/K
+        lp0cS0lQKTzj4978xYr3d/J15PIhdqDY8iDFyGL5vD2ZYDQDEFAgKHOIPeHZCagY9KIbYS
+        SX6HWPIMMFf0vzb0yKQw2XPkUbdr/UM=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-273-034krEu5Niubrm2mscgNhA-1; Wed, 11 Dec 2019 08:20:15 -0500
+Received: by mail-lf1-f70.google.com with SMTP id x23so5029387lfc.5
+        for <bpf@vger.kernel.org>; Wed, 11 Dec 2019 05:20:15 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=o/u/4ZEqQP0e+uS2+lCszxa5LZBpaQoPz1LVNN7voyg=;
+        b=I7tkE5Il/Jc/lAMM0fwmoK3OVanDbYSMmsq0rbhrWCRHOi5F0gfAxgw3CHWDz7Euls
+         9oAF8dKdUJ9P6MLVOlp4Jpror71S2wwfihGYg7U4KqSEmyRTWyryNxVIr6IjSsdP/yxw
+         sr+zi2r/UAAiYFENicjOvuwfHIrClAN9fVL4DRwy8F70tlF1AaRCYSqfdWhHGxXjYaLY
+         TsyPIYjTQu4xnIaBUMUTuAqgkKXFnulMoZ3lEc84lmbNNpiTsv9/t8JowkCA4yDbTx3B
+         UHmk+P0A0n20szJLf0oWJQoJ6EyDr5hymHHyRjkrG7ejF3pIuD9VJJCDdvVuHGHQKw66
+         sfEg==
+X-Gm-Message-State: APjAAAVT5+MmOJgfvqq6Rovj8xu7WnGGVch8eUkZbq66Q8eaRip7n4g3
+        R3jlCVkHGhjKhGewPiXx+kKCfDis9R9VbK4SsATEMCW/uVSk/ve74Rd5ZGq+zChg53OeKa15csT
+        47im+vM5fCits
+X-Received: by 2002:a2e:9b95:: with SMTP id z21mr1806011lji.112.1576070414502;
+        Wed, 11 Dec 2019 05:20:14 -0800 (PST)
+X-Google-Smtp-Source: APXvYqxiBoj4+UzNM6MVzGlRn15zbpyF65rItNLpqEE+jZ6WQC2/2JVmPf9if2K7dMUlgg9zx4M+KA==
+X-Received: by 2002:a2e:9b95:: with SMTP id z21mr1805990lji.112.1576070414253;
+        Wed, 11 Dec 2019 05:20:14 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id c12sm1157656lfp.58.2019.12.11.05.20.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Dec 2019 05:20:13 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 64AA318033F; Wed, 11 Dec 2019 14:20:11 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        lkml <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Martin Lau <kafai@fb.com>
+Subject: Re: [PATCH bpf v2] bpftool: Don't crash on missing jited insns or ksyms
+In-Reply-To: <20191211130857.GB23383@linux.fritz.box>
+References: <20191210181412.151226-1-toke@redhat.com> <20191210125457.13f7821a@cakuba.netronome.com> <87eexbhopo.fsf@toke.dk> <20191211130857.GB23383@linux.fritz.box>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 11 Dec 2019 14:20:11 +0100
+Message-ID: <87zhfzf184.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHC9VhSa_B-VJOa_r8OcNrm0Yd_t1j3otWhKHgganSDx5Ni=Tg@mail.gmail.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.101.4/25660/Wed Dec 11 10:47:07 2019)
+X-MC-Unique: 034krEu5Niubrm2mscgNhA-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 10, 2019 at 05:45:59PM -0500, Paul Moore wrote:
-> On Tue, Dec 10, 2019 at 10:37 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> > On Mon, Dec 09, 2019 at 06:53:23PM -0500, Paul Moore wrote:
-> > > On Mon, Dec 9, 2019 at 6:19 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
-> > > > On 12/9/19 3:56 PM, Paul Moore wrote:
-> > > > > On Mon, Dec 9, 2019 at 7:15 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
-> > > > >> On Fri, Dec 06, 2019 at 10:49:34PM +0100, Jiri Olsa wrote:
-> > > > >>> From: Daniel Borkmann <daniel@iogearbox.net>
-> > > > >>>
-> > > > >>> Allow for audit messages to be emitted upon BPF program load and
-> > > > >>> unload for having a timeline of events. The load itself is in
-> > > > >>> syscall context, so additional info about the process initiating
-> > > > >>> the BPF prog creation can be logged and later directly correlated
-> > > > >>> to the unload event.
-> > > > >>>
-> > > > >>> The only info really needed from BPF side is the globally unique
-> > > > >>> prog ID where then audit user space tooling can query / dump all
-> > > > >>> info needed about the specific BPF program right upon load event
-> > > > >>> and enrich the record, thus these changes needed here can be kept
-> > > > >>> small and non-intrusive to the core.
-> > > > >>>
-> > > > >>> Raw example output:
-> > > > >>>
-> > > > >>>    # auditctl -D
-> > > > >>>    # auditctl -a always,exit -F arch=x86_64 -S bpf
-> > > > >>>    # ausearch --start recent -m 1334
-> > > > >>>    ...
-> > > > >>>    ----
-> > > > >>>    time->Wed Nov 27 16:04:13 2019
-> > > > >>>    type=PROCTITLE msg=audit(1574867053.120:84664): proctitle="./bpf"
-> > > > >>>    type=SYSCALL msg=audit(1574867053.120:84664): arch=c000003e syscall=321   \
-> > > > >>>      success=yes exit=3 a0=5 a1=7ffea484fbe0 a2=70 a3=0 items=0 ppid=7477    \
-> > > > >>>      pid=12698 auid=1001 uid=1001 gid=1001 euid=1001 suid=1001 fsuid=1001    \
-> > > > >>>      egid=1001 sgid=1001 fsgid=1001 tty=pts2 ses=4 comm="bpf"                \
-> > > > >>>      exe="/home/jolsa/auditd/audit-testsuite/tests/bpf/bpf"                  \
-> > > > >>>      subj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 key=(null)
-> > > > >>>    type=UNKNOWN[1334] msg=audit(1574867053.120:84664): prog-id=76 op=LOAD
-> > > > >>>    ----
-> > > > >>>    time->Wed Nov 27 16:04:13 2019
-> > > > >>>    type=UNKNOWN[1334] msg=audit(1574867053.120:84665): prog-id=76 op=UNLOAD
-> > > > >>>    ...
-> > > > >>>
-> > > > >>> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-> > > > >>> Co-developed-by: Jiri Olsa <jolsa@kernel.org>
-> > > > >>> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > > >>
-> > > > >> Paul, Steve, given the merge window is closed by now, does this version look
-> > > > >> okay to you for proceeding to merge into bpf-next?
-> > > > >
-> > > > > Given the change to audit UAPI I was hoping to merge this via the
-> > > > > audit/next tree, is that okay with you?
-> > > >
-> > > > Hm, my main concern is that given all the main changes are in BPF core and
-> > > > usually the BPF subsystem has plenty of changes per release coming in that we'd
-> > > > end up generating unnecessary merge conflicts. Given the include/uapi/linux/audit.h
-> > > > UAPI diff is a one-line change, my preference would be to merge via bpf-next with
-> > > > your ACK or SOB added. Does that work for you as well as?
-> > >
-> > > I regularly (a few times a week) run the audit and SELinux tests
-> > > against Linus+audit/next+selinux/next to make sure things are working
-> > > as expected and that some other subsystem has introduced a change
-> > > which has broken something.  If you are willing to ensure the tests
-> > > get run, including your new BPF audit tests I would be okay with that;
-> > > is that acceptable?
-> >
-> > would you please let me know which tree this landed at the end?
-> 
-> I think that's what we are trying to figure out - Daniel?
+Daniel Borkmann <daniel@iogearbox.net> writes:
 
-Yeah, sounds reasonable wrt running tests to make sure nothing breaks. In that
-case I'd wait for your ACK or SOB to proceed with merging into bpf-next. Thanks
-Paul!
+> On Tue, Dec 10, 2019 at 10:09:55PM +0100, Toke H=C3=B8iland-J=C3=B8rgense=
+n wrote:
+> [...]
+>> Anyhow, I don't suppose it'll hurt to have the Fixes: tag(s) in there;
+>> does Patchwork pick these up (or can you guys do that when you apply
+>> this?), or should I resend?
+>
+> Fixes tags should /always/ be present if possible, since they help to pro=
+vide
+> more context even if the buggy commit was in bpf-next, for example.
+
+ACK, will do. Thank you for picking them up for this patch (did you do
+that manually, or is this part of your scripts?)
+
+-Toke
+
