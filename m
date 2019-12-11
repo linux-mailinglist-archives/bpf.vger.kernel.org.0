@@ -2,69 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 315C111BA59
-	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2019 18:32:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05A8711BAAF
+	for <lists+bpf@lfdr.de>; Wed, 11 Dec 2019 18:53:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730287AbfLKRcY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 11 Dec 2019 12:32:24 -0500
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:37032 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730284AbfLKRcY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 11 Dec 2019 12:32:24 -0500
-Received: by mail-qk1-f195.google.com with SMTP id m188so20369738qkc.4;
-        Wed, 11 Dec 2019 09:32:23 -0800 (PST)
+        id S1730431AbfLKRxw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 11 Dec 2019 12:53:52 -0500
+Received: from mail-pf1-f202.google.com ([209.85.210.202]:55875 "EHLO
+        mail-pf1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730174AbfLKRxw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 11 Dec 2019 12:53:52 -0500
+Received: by mail-pf1-f202.google.com with SMTP id o71so2518287pfg.22
+        for <bpf@vger.kernel.org>; Wed, 11 Dec 2019 09:53:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=y74W7ds/oFSqwevvK+SoBp1jmUpvfeeCvpHuniIjFnI=;
-        b=ga2dZfSN+dgMxCb7+mr0MXMi4VZEM4Kbl2ZHFI55U7CSELZlckhDsuxYeaAyUcLllD
-         0pMTWWi9heBvi+CDF2TuO2cjXEszibIByTzP1pX6UqrvQc4yhBVGPdarnCr7Pn1j0jjR
-         +WWPbzCRC3yQs5uSknCMFKjAz8906bulU0calnoiZCJwhnb+Wn2BVBC9ewN+s+wyQicm
-         KBZA7chwUtzR+DEMpUum576m7n1Tozm82FmJ2KJm2q7ZTdhwK5PbOyX82yRRf3aYyJLU
-         2P1QJWPg//B9rFaoi6LhmpEP2WbB3QNzDJsHvoNUA3jqBathx9ygFm+lIrtrsSdZ6Le/
-         WkRQ==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=ZJ1oDyTzeXeW7N9+MWcw6Erx6CiN4LkWGkKMDboif64=;
+        b=UEJDUel8+0mbaKzZkv5PN5vaSzLDpVZyCmC9O4Kr9JA44Q1Vf0cVw1Ksa/qoerfutZ
+         oYFMs1CY+K8GlNR8+MaQJ6ew63QpIr61vK3GPfZEZHpwevAyDBb2URMbL4Z51Znd5NQu
+         XC9DgrsZlmqYfLbt6ceiMjj0iolNVbAp2/0WW8ml38ehYA/0K9zQK2ikqxTvwAYGLD4A
+         V2G1Ek1GxZPJOA3ZN1ZtBdyUw2FRV0qPeSI6qjmx/gYuLRGcag/AdEvM/w7kI4SdBh+Z
+         5/Srm1oGpjXhKnjcQzYpk/Ze1rs2zDhOv+/tbRMRF4OLMDXtZOHvXYgNCZpQ6bmii0AN
+         jCFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=y74W7ds/oFSqwevvK+SoBp1jmUpvfeeCvpHuniIjFnI=;
-        b=QuZaTnjIEcJgKRO8h4ottdeSehHUofip46GDXxrDRZ/ckVtFpuaD7++UR9lt6whCoV
-         kx6weU7OR7ww+SSQxBs/tlD1M+a0syN2y1CsPfrm5V8LhrC7CZXBxOkeV1e+vvTXXxKa
-         M0xNjO2xf0JoHVDYwQPWomIiLk6ws2P1mrRNvBwNYSzxy+9nRP5pkXTpNg8Yr9HkKupv
-         0f1/+MN/0vMpSL5zoVg19uclWfmWx394XtqJlwOXYfMcABPy3C8GrdNAQqerTYVC/yn4
-         DLUHvKtsWmM0QJhRGJAWnZzmTY97zU+qw8WAEBmf/a6v/OFcK5tvOuaOeFIdtJqy9zoz
-         XlBA==
-X-Gm-Message-State: APjAAAVyt4yggMj2SVUH1omPJZS/zYUVYU1MYYm8IU3FRcwxvPs5H5wb
-        CgTak+g2nwen6vsIZIp7RKW7Upj5jyP2RJW+gUU=
-X-Google-Smtp-Source: APXvYqzeKrfttwoz7uCUCmS3pptZ2DRwu3fNc1/S/9GLlDtRYDRGVejZaLAuSslD9Gvd1luGOeT1OpV0LeGyZbWXyBc=
-X-Received: by 2002:a05:620a:5ae:: with SMTP id q14mr4123300qkq.437.1576085543078;
- Wed, 11 Dec 2019 09:32:23 -0800 (PST)
-MIME-Version: 1.0
-References: <20191209224022.3544519-1-andriin@fb.com> <20191211135703.GB25011@linux.fritz.box>
-In-Reply-To: <20191211135703.GB25011@linux.fritz.box>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 11 Dec 2019 09:32:12 -0800
-Message-ID: <CAEf4BzZjAiWkYdCwDyE-vy4zdO6j461m1Wj5qKffRrzfFj1G_A@mail.gmail.com>
-Subject: Re: [PATCH bpf] libbpf: Bump libpf current version to v0.0.7
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Kernel Team <kernel-team@fb.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=ZJ1oDyTzeXeW7N9+MWcw6Erx6CiN4LkWGkKMDboif64=;
+        b=s9D5neP1byxuJtznUAZqO8x+LfQnLi31PNUcTmKcTRRXqCVEt/kYivkSPyRpDVmIA7
+         RBheoDN5udgrnwhrY3m32pZ1Ckfg0lbvyK0K6GxgQCIfoK+BlD9ZL3Dhsz2R4U6BmpRf
+         7ucO6d+KV5Tk1L5EENOIHRxcgZcC5AILSTbhdIY1cIErLyLBEJDkfSLmEVlljfEmdDFi
+         n/LByUnMfPyw771Dq9GD2yTMRhPf8I2SjIN3kEMT1RBapDcn4p4T3p8Qy3zFO/1u4JRA
+         z49SGl60C5yaI3D2DTuxmqyITKpfAOOafDPBTV79VMOlxNd+bTT5eO07ffHKYfdi+8qz
+         c48g==
+X-Gm-Message-State: APjAAAVwbFgJa/Uswt4cxya6Zj4C4TfjULJ6Uc79F9y+zgEjIQonD5+W
+        ivGRkgg9z0HFZ5NLFv/NJfBKy48=
+X-Google-Smtp-Source: APXvYqyK6BjDE2BnAYzWgZj9ST91PypaNH+s76eIB4XplW47dYQSCT8BstG2UT0rErnRTFHE4rShTZc=
+X-Received: by 2002:a63:d543:: with SMTP id v3mr5389333pgi.285.1576086831333;
+ Wed, 11 Dec 2019 09:53:51 -0800 (PST)
+Date:   Wed, 11 Dec 2019 09:53:48 -0800
+Message-Id: <20191211175349.245622-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.24.0.525.g8f36a354ae-goog
+Subject: [PATCH bpf-next 1/2] bpf: expose __sk_buff wire_len/gso_segs to BPF_PROG_TEST_RUN
+From:   Stanislav Fomichev <sdf@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
+        Stanislav Fomichev <sdf@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 11, 2019 at 5:57 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On Mon, Dec 09, 2019 at 02:40:22PM -0800, Andrii Nakryiko wrote:
-> > New development cycles starts, bump to v0.0.7 proactively.
-> >
-> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
->
-> Subject says 'bpf', but I applied this to bpf-next, thanks!
+wire_len should not be less than real len and is capped by GSO_MAX_SIZE.
+gso_segs is capped by GSO_MAX_SEGS.
 
-Oh, my bad, was intending against bpf-next, of course. Thanks for fixing up!
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+---
+ net/bpf/test_run.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
+
+diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+index 85c8cbbada92..06cadba2e3b9 100644
+--- a/net/bpf/test_run.c
++++ b/net/bpf/test_run.c
+@@ -263,8 +263,10 @@ static int convert___skb_to_skb(struct sk_buff *skb, struct __sk_buff *__skb)
+ 		return -EINVAL;
+ 
+ 	/* tstamp is allowed */
++	/* wire_len is allowed */
++	/* gso_segs is allowed */
+ 
+-	if (!range_is_zero(__skb, offsetofend(struct __sk_buff, tstamp),
++	if (!range_is_zero(__skb, offsetofend(struct __sk_buff, gso_segs),
+ 			   sizeof(struct __sk_buff)))
+ 		return -EINVAL;
+ 
+@@ -272,6 +274,14 @@ static int convert___skb_to_skb(struct sk_buff *skb, struct __sk_buff *__skb)
+ 	skb->tstamp = __skb->tstamp;
+ 	memcpy(&cb->data, __skb->cb, QDISC_CB_PRIV_LEN);
+ 
++	if (__skb->wire_len < skb->len || __skb->wire_len > GSO_MAX_SIZE)
++		return -EINVAL;
++	cb->pkt_len = __skb->wire_len;
++
++	if (__skb->gso_segs > GSO_MAX_SEGS)
++		return -EINVAL;
++	skb_shinfo(skb)->gso_segs = __skb->gso_segs;
++
+ 	return 0;
+ }
+ 
+@@ -285,6 +295,8 @@ static void convert_skb_to___skb(struct sk_buff *skb, struct __sk_buff *__skb)
+ 	__skb->priority = skb->priority;
+ 	__skb->tstamp = skb->tstamp;
+ 	memcpy(__skb->cb, &cb->data, QDISC_CB_PRIV_LEN);
++	__skb->wire_len = cb->pkt_len;
++	__skb->gso_segs = skb_shinfo(skb)->gso_segs;
+ }
+ 
+ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
+-- 
+2.24.0.525.g8f36a354ae-goog
+
