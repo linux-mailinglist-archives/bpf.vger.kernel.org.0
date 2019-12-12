@@ -2,130 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C27F211D597
-	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2019 19:31:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3211111D60F
+	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2019 19:43:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730164AbfLLSbH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Dec 2019 13:31:07 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:36494 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730034AbfLLSbG (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 12 Dec 2019 13:31:06 -0500
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xBCISJMK018738;
-        Thu, 12 Dec 2019 10:30:53 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=GS0789pbAF6LtEIu3B3dWMJgFEREkUq6vACdWQRl7B0=;
- b=UYh3cdu5/Gg6PsPhdgpBvRMK1meYKXZ92xNfZxjpZIPJx9+37p3RaC8098MBqo7tPahd
- 8HFo6U2QsX2arhjkxvKOEqMm0H4d2OSv7nhi18ffRNP79BlRMxlOLJS6eaZqlm2pyjAr
- HK2uePd8+7zCcqSKo9ugaYr2CBwBZ8+QbwI= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2wub46bvt7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 12 Dec 2019 10:30:53 -0800
-Received: from ash-exhub202.TheFacebook.com (2620:10d:c0a8:83::6) by
- ash-exhub202.TheFacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 12 Dec 2019 10:30:51 -0800
-Received: from NAM04-CO1-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Thu, 12 Dec 2019 10:30:51 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mMdy1O7vXeaoY+0P8x4AtwUEkchE0dHa3c1oEECGv9xVxDKB+n5JBj9T9I58fBDtol3+3Is13U2NoCB0+tvCMCukFpZoHxJdAZaoNW+jqJ7bf3xNGb0lD8j51Ja8BEyD4Pm9k3ygPiuG3hCAA+gOCp2YFjrhEu4rCX8dGFhjS4okzrlONPiuWGorSW5lUOqgFoPMORWfRMElFE54Wz/fUvAIkIbzr0LKx8SPjBDkiWX0DA7nsauC/lPnCkkF7w+Gg3w/Wdcumat2c66omB8auAt2NO0CShp+cM64H2TZDfZo+/5Kaxe4WIyJl9btq87UzGclX0g+z6JYHOKk9F1ZOQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GS0789pbAF6LtEIu3B3dWMJgFEREkUq6vACdWQRl7B0=;
- b=FRsC0JQsJTg/Yl1sZt0aWBvEXYMMDF5y43EDBau8wKFOtGKrEFenYXdEIWRHYAhdJgIAo/qJKkkR+ImkNQZcbmCvoEQ/wqutVjthJjjavoVz/fS5RFEkPIk+CMtRrSmSxyY9NGDJuViyXDRreLW28vz3XM48TxtNe4SJJKpMoczJW+Pm19JYhTEE76a3uRKFLSnWBtsJx1SJ+mkSvvp/rfTomrGSrnNsD0hYS/ZeG8Tsc9UEF0w4f7G2upoX/cHb1gP6JCIO7R5lVerlqepXrTWZ/G/tu4nkDlxpIv3QlRGqB5NV4TwETg/1qy3X2mA2rsdTPzEs4jGT1UUeg/UNaw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GS0789pbAF6LtEIu3B3dWMJgFEREkUq6vACdWQRl7B0=;
- b=h4/lUHX2QAKyMqalNLbgQClXdkns5sS+Il0Ph/gTE5FrmoxgeYbopYigiIlB9ngc79BH5UY6NFMIa9tGlQX+76FrwZgAXpdRG9TtX9VEx27Py+znTqMy8qBZ2OFfQhmc5j5glysQLY7AeLBsJ47crrHcaTNjAY2wsp74KOwPFdg=
-Received: from MN2PR15MB3213.namprd15.prod.outlook.com (20.179.21.76) by
- MN2PR15MB3597.namprd15.prod.outlook.com (52.132.172.85) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2538.15; Thu, 12 Dec 2019 18:30:50 +0000
-Received: from MN2PR15MB3213.namprd15.prod.outlook.com
- ([fe80::6d1e:f2f7:d36:a42f]) by MN2PR15MB3213.namprd15.prod.outlook.com
- ([fe80::6d1e:f2f7:d36:a42f%4]) with mapi id 15.20.2538.017; Thu, 12 Dec 2019
- 18:30:50 +0000
-From:   Martin Lau <kafai@fb.com>
-To:     Andrii Nakryiko <andriin@fb.com>
-CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        id S1730467AbfLLSni (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Dec 2019 13:43:38 -0500
+Received: from mail-pf1-f175.google.com ([209.85.210.175]:36328 "EHLO
+        mail-pf1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730406AbfLLSni (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 Dec 2019 13:43:38 -0500
+Received: by mail-pf1-f175.google.com with SMTP id x184so1243741pfb.3
+        for <bpf@vger.kernel.org>; Thu, 12 Dec 2019 10:43:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :organization:mime-version:content-transfer-encoding;
+        bh=fEIPg/nQz4H3SkrhOeevoDfxx5kg6oJ1sVD3wkmZeI0=;
+        b=ABRb/h4SFCN15IlJ59pRxlKmFUVBRkKSP6xEkKHRgMqwZqw8UpadE/n46IhjBKm0xI
+         Hw1BTt6v5y/rIocXnccHBkGIZVICyVqoz7xSWV3uvQoQCugmlWIqMOnOZYzBrg5cUpmG
+         0+5vBkHOKMxEjtmzhGa3uzOdCsXMc7nOlFLXDOzzplMSDchmHph+zrBYze+a5cBo+LX2
+         ymnHRs8Jc2JLBOi7lFmdClxmXEtdYs8rvZ5Bap2HczqawwPjhm47w2r/96Lb/IiRn55+
+         Vc8URDEpeNvnjiUsCGI37gERHaXpJDwJbNcy+GHI8WYirzeS+z/DZdl/KAJQzyYcmXDj
+         q2vw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=fEIPg/nQz4H3SkrhOeevoDfxx5kg6oJ1sVD3wkmZeI0=;
+        b=frNn/HqwX8+lkQbkcjZI69z0O0tEHD7uE+8kZvVrKjf8u53pHtMKyII1OOAM+wOkQQ
+         UZ8goYWGow6TodYUPZxx4/YEKWVQVzdsDzRrohf3r3IhDZQ5t4iWWy1lAyJHZKPDGQoR
+         W1U4MaeSb5eCaMmM2cndSMw1xXZQK8h9WtV1vww6sLRnj9WWStHgVdoQhgjw/R6UE6QR
+         bDYj5Pa0vR1ltUcL8ZSOOq7rUafh663xFKFE02hbsVDoAib18c5nrmzu0XznNOFzOUll
+         Y8Q3zOeP+1RbpUms8naM3pjNBUwALC3N0zGXBQtNNQaEYH6xiGVqOjvZkvLUWesYkRLf
+         AvNA==
+X-Gm-Message-State: APjAAAXHE12u7fIzS56OZ0UPddd7a1ZOOVWHLMTouqOu6SMtsXFbtpUZ
+        7azaMcvQMo9XYJYLaoGTTSkyOA==
+X-Google-Smtp-Source: APXvYqyVlBeifCyE3IO6vVv8sLrUbg/iyOye4wEh0A4o2JqPV+oWytkfEMTm0IaR5HFgRNwZljzrVg==
+X-Received: by 2002:a62:1742:: with SMTP id 63mr11114346pfx.231.1576176217889;
+        Thu, 12 Dec 2019 10:43:37 -0800 (PST)
+Received: from cakuba.netronome.com ([66.60.152.14])
+        by smtp.gmail.com with ESMTPSA id j14sm7532044pgs.57.2019.12.12.10.43.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Dec 2019 10:43:37 -0800 (PST)
+Date:   Thu, 12 Dec 2019 10:43:34 -0800
+From:   Jakub Kicinski <jakub.kicinski@netronome.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Stanislav Fomichev <sdf@fomichev.me>,
+        Andrii Nakryiko <andriin@fb.com>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@fb.com>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "andrii.nakryiko@gmail.com" <andrii.nakryiko@gmail.com>,
-        Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH v2 bpf-next] libbpf: fix printf compilation warnings on
- ppc64le arch
-Thread-Topic: [PATCH v2 bpf-next] libbpf: fix printf compilation warnings on
- ppc64le arch
-Thread-Index: AQHVsRBQNM/jsU+ZtU6WmSyUu/Ydt6e20mkA
-Date:   Thu, 12 Dec 2019 18:30:50 +0000
-Message-ID: <20191212183046.7h4kcuvmayafzztg@kafai-mbp>
-References: <20191212171918.638010-1-andriin@fb.com>
-In-Reply-To: <20191212171918.638010-1-andriin@fb.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: CO2PR05CA0085.namprd05.prod.outlook.com
- (2603:10b6:104:1::11) To MN2PR15MB3213.namprd15.prod.outlook.com
- (2603:10b6:208:3d::12)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:180::97ef]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 54b674c2-06d7-4602-178e-08d77f3169de
-x-ms-traffictypediagnostic: MN2PR15MB3597:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MN2PR15MB35970C89DC2C98BDFEF6C3B1D5550@MN2PR15MB3597.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1247;
-x-forefront-prvs: 0249EFCB0B
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(7916004)(136003)(366004)(39860400002)(376002)(346002)(396003)(189003)(199004)(81156014)(54906003)(81166006)(66556008)(6506007)(64756008)(4326008)(66946007)(66446008)(316002)(66476007)(6636002)(478600001)(8676002)(71200400001)(186003)(6862004)(1076003)(4744005)(6486002)(6512007)(9686003)(86362001)(5660300002)(2906002)(8936002)(52116002)(33716001);DIR:OUT;SFP:1102;SCL:1;SRVR:MN2PR15MB3597;H:MN2PR15MB3213.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: sm7N40idxhdWnkiWtN89rWQVavCpq7znYkr4Cmxsbdi7bcyjs47vlG8BQXiZytad6tjgxKe+2Jx0193tS+5gI9UwTJEezUXtN0jpaHo828jMF2WfsXW45m83egDp4PAGsi6+xQ+ZTUjxOABppZgbOvUXE+ogEUsbe4K+QAxWv/xXBohd9iFH5DAXuuCpA4gUqH0ykyQqNWsOqJ5hxOy0HAeV7oAQwz4D3ffcekSnWjUwyikNQRoTc58PzyZ1NqNcK5QwbW4Myc5TFOCdowqBhw6a3TgeCxPF7gEw7p/3M1fOeszJyuAE4qeRZ+1rCrxkG3+ns+9K0hlQDpDCq364nCAbik/4TOW7CBcHHfFh8Tn2pc8R9M9vTFkAzAZYTlrdjC7N8S0J283ug4jJWfFmYsOXuIdz9gBXIICBmtpvRNKs16BOUcBtwsAe6jg0eAxo
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <B09A384F47A7E143B576B653314A73F3@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next 11/15] bpftool: add skeleton codegen command
+Message-ID: <20191212104334.222552a1@cakuba.netronome.com>
+In-Reply-To: <CAEf4BzYJHvuFbBM-xvCCsEa+Pg-bG1tprGMbCDtsbGHdv7KspA@mail.gmail.com>
+References: <20191210225900.GB3105713@mini-arch>
+        <CAEf4BzYtqywKn4yGQ+vq2sKod4XE03HYWWBfUiNvg=BXhgFdWg@mail.gmail.com>
+        <20191211172432.GC3105713@mini-arch>
+        <CAEf4Bzb+3b-ypP8YJVA=ogQgp1KXx2xPConOswA0EiGXsmfJow@mail.gmail.com>
+        <20191211191518.GD3105713@mini-arch>
+        <CAEf4BzYofFFjSAO3O-G37qyeVHE6FACex=yermt8bF8mXksh8g@mail.gmail.com>
+        <20191211200924.GE3105713@mini-arch>
+        <CAEf4BzaE0Q7LnPOa90p1RX9qSbOA_8hkT=6=7peP9C88ErRumQ@mail.gmail.com>
+        <20191212025735.GK3105713@mini-arch>
+        <CAEf4BzY2KHK4h5e40QgGt4GzJ6c+rm-vtbyEdM41vUSqcs=txA@mail.gmail.com>
+        <20191212162953.GM3105713@mini-arch>
+        <CAEf4BzYJHvuFbBM-xvCCsEa+Pg-bG1tprGMbCDtsbGHdv7KspA@mail.gmail.com>
+Organization: Netronome Systems, Ltd.
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 54b674c2-06d7-4602-178e-08d77f3169de
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Dec 2019 18:30:50.4191
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 8+ScWyl3sUTMGW8hI/w+2Sz49/bX1owadyA+AKLSWO2FHC2rnAFthZUjFeO6BuA6
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB3597
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
- definitions=2019-12-12_06:2019-12-12,2019-12-12 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
- bulkscore=0 phishscore=0 adultscore=0 priorityscore=1501 mlxlogscore=508
- lowpriorityscore=0 suspectscore=0 spamscore=0 mlxscore=0 clxscore=1015
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1910280000 definitions=main-1912120141
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 12, 2019 at 09:19:18AM -0800, Andrii Nakryiko wrote:
-> On ppc64le __u64 and __s64 are defined as long int and unsigned long int,
-> respectively. This causes compiler to emit warning when %lld/%llu are use=
-d to
-> printf 64-bit numbers. Fix this by casting to size_t/ssize_t with %zu and=
- %zd
-> format specifiers, respectively.
-Acked-by: Martin KaFai Lau <kafai@fb.com>
+On Thu, 12 Dec 2019 08:53:22 -0800, Andrii Nakryiko wrote:
+> > > > Btw, how hard it would be to do this generation with a new python
+> > > > script instead of bpftool? Something along the lines of
+> > > > scripts/bpf_helpers_doc.py that parses BTF and spits out this C header
+> > > > (shouldn't be that hard to write custom BTF parser in python, right)?
+> > > >  
+> > >
+> > > Not impossible, but harder than I'd care to deal with. I certainly
+> > > don't want to re-implement a good chunk of ELF and BTF parsing (maps,
+> > > progs, in addition to datasec stuff). But "it's hard to use bpftool in
+> > > our build system" doesn't seem like good enough reason to do all that.  
+> > You can replace "our build system" with some other project you care about,
+> > like systemd. They'd have the same problem with vendoring in recent enough
+> > bpftool or waiting for every distro to do it. And all this work is
+> > because you think that doing:
+> >
+> >         my_obj->rodata->my_var = 123;
+> >
+> > Is easier / more type safe than doing:
+> >         int *my_var = bpf_object__rodata_lookup(obj, "my_var");
+> >         *my_var = 123;  
+> 
+> Your arguments are confusing me. Did I say that we shouldn't add this
+> type of "dynamic" interface to variables? Or did I say that every
+> single BPF application has to adopt skeleton and bpftool? I made no
+> such claims and it seems like discussion is just based around where I
+> have to apply my time and efforts... You think it's not useful - don't
+> integrate bpftool into your build system, simple as that. Skeleton is
+> used for selftests, but it's up to maintainers to decide whether to
+> keep this, similar to all the BTF decisions.
+
+Since we have two people suggesting this functionality to be a separate
+tool could you please reconsider my arguments from two days ago?
+
+  There absolutely nothing this tool needs from [bpftool], no
+  JSON needed, no bpffs etc. It can be a separate tool like
+  libbpf-skel-gen or libbpf-c-skel or something, distributed with libbpf.
+  That way you can actually soften the backward compat. In case people
+  become dependent on it they can carry that little tool on their own.
+
+I'd honestly leave the distro packaging problem for people who actually
+work on that to complain about.
