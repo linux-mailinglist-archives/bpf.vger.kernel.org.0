@@ -2,57 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FC7511CC5A
-	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2019 12:37:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D53C111D215
+	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2019 17:19:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728998AbfLLLg6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Dec 2019 06:36:58 -0500
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:46351 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728860AbfLLLg5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 Dec 2019 06:36:57 -0500
-Received: by mail-qt1-f193.google.com with SMTP id 38so1952231qtb.13
-        for <bpf@vger.kernel.org>; Thu, 12 Dec 2019 03:36:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=2UStARTjZxf1MQo7SR8qAHSWTdIelxWKcXFIVcIgtxc=;
-        b=fDBY08mjyv+0fQb1NhP8zZlol+0tznzY1c+4RuZhveBDe4pmHUJe0y4puleggjv4Sh
-         QJH4MR7u2Ov1y9qF7z/jPRqjaxw7PQFMSMSUpVFnLFjOlFzmBrtG06jCNC245jcQvvwf
-         3+DB99t53Wf63U5FaST2Pyj3CMoYLoeWy8ez0+SRtUCo/W20/6YSFAui+JD988K3/XCK
-         HveCrSrsLV28hDr2CGjmf5TunGINIKNHYX+rmy47RwUqbyg9njw4/QN6DfjE6QgepC+1
-         YdFNvbkIH3Lq+0W0tsi7ZJ+6IQ4mZl/MllRmZTIzXfcYUKzUzeXkJzBWMeXOX8mTMCFU
-         PybA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=2UStARTjZxf1MQo7SR8qAHSWTdIelxWKcXFIVcIgtxc=;
-        b=bEGr+tJjbTKJRFEHg/GOXnqnhvAoyLklWIavluvhMEHvVrhnMWWUSG4/HF2ZAFPPIp
-         s8r2L+0jUy6zM2NONt/cQZE/2jMP5n/PS/A+vEIz0khlzkyC1mzHCHNFfo23MHPYmWwK
-         8Ofy7t1WBPHFKo7MxjB6DisxIcuWHUW4+JiMrrBmVtrXZg2P1txbXNBL5uD6CE70aRNQ
-         fngHJ7yzmyzp5Ns3ltBoPqXFgAhMwpbbVR9JfNavl/FT9aja0yC/MpbTsWZvD/wnydaQ
-         Xla22FDtHsIh3GJFT+A+O2nLz9AtY+/OY/AvRknP+Z1cX6SwdStpnaRwqkTQ/TwCz+4I
-         o7Iw==
-X-Gm-Message-State: APjAAAVmHP7YtwjRAxJsbJmnRJzV0iwzMxgiALaHkJd36k2tOId2a53/
-        KuS0yzquBfnGPD6P18JEQz3arZzG/ff11VMFYo8=
-X-Google-Smtp-Source: APXvYqw09BDDR+jxuNS0qmmt8VeBNtYTywb7gkV3dgZ4vXIsRL8UNPbS9QXSRk6ajlVvJL7Z26EE13AZvz3UiM86Qdk=
-X-Received: by 2002:ac8:36ab:: with SMTP id a40mr1909580qtc.181.1576150616969;
- Thu, 12 Dec 2019 03:36:56 -0800 (PST)
+        id S1729771AbfLLQTa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Dec 2019 11:19:30 -0500
+Received: from www62.your-server.de ([213.133.104.62]:57736 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729591AbfLLQTa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 Dec 2019 11:19:30 -0500
+Received: from [194.230.159.122] (helo=localhost)
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1ifRBS-0007Ab-RJ; Thu, 12 Dec 2019 17:19:23 +0100
+Date:   Thu, 12 Dec 2019 17:19:22 +0100
+From:   Daniel Borkmann <daniel@iogearbox.net>
+To:     Paul Burton <paulburton@kernel.org>
+Cc:     Paul Chaignon <paul.chaignon@orange.com>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>,
+        Mahshid Khezri <khezri.mahshid@gmail.com>,
+        paul.chaignon@gmail.com, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Subject: Re: [PATCH bpf 2/2] bpf, mips: limit to 33 tail calls
+Message-ID: <20191212161922.GA1264@localhost.localdomain>
+References: <cover.1575916815.git.paul.chaignon@gmail.com>
+ <b8eb2caac1c25453c539248e56ca22f74b5316af.1575916815.git.paul.chaignon@gmail.com>
+ <20191210232316.aastpgbirqp4yaoi@lantea.localdomain>
 MIME-Version: 1.0
-Received: by 2002:ac8:760c:0:0:0:0:0 with HTTP; Thu, 12 Dec 2019 03:36:56
- -0800 (PST)
-Reply-To: mrdavidkekeli01@gmail.com
-From:   "Mr.David Keller" <chiogb003@gmail.com>
-Date:   Thu, 12 Dec 2019 11:36:56 +0000
-Message-ID: <CABa6Gn=qdzoV_XSW9Z=wc7gofBz4fd9YkkLWEen+rQ=jQEwQAw@mail.gmail.com>
-Subject: i wait to hear from you
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191210232316.aastpgbirqp4yaoi@lantea.localdomain>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.101.4/25661/Thu Dec 12 10:47:42 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-My Greeting, Did you receive the letter i sent to you. Please answer
-me.Kind Regards,Mr.David Keller.
+On Tue, Dec 10, 2019 at 03:23:16PM -0800, Paul Burton wrote:
+> On Mon, Dec 09, 2019 at 07:52:52PM +0100, Paul Chaignon wrote:
+> > All BPF JIT compilers except RISC-V's and MIPS' enforce a 33-tail calls
+> > limit at runtime.  In addition, a test was recently added, in tailcalls2,
+> > to check this limit.
+> > 
+> > This patch updates the tail call limit in MIPS' JIT compiler to allow
+> > 33 tail calls.
+> > 
+> > Fixes: b6bd53f9c4e8 ("MIPS: Add missing file for eBPF JIT.")
+> > Reported-by: Mahshid Khezri <khezri.mahshid@gmail.com>
+> > Signed-off-by: Paul Chaignon <paul.chaignon@orange.com>
+> 
+> I'd be happy to take this through mips-fixes, but equally happy for it
+> to go through the BPF/net trees in which case:
+
+We took the series via bpf, thanks!
