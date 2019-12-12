@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FAA711CA8A
-	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2019 11:23:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C84611CA8B
+	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2019 11:23:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728435AbfLLKXG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Dec 2019 05:23:06 -0500
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:45697 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728523AbfLLKXG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 Dec 2019 05:23:06 -0500
-Received: by mail-lj1-f193.google.com with SMTP id d20so1623345ljc.12
-        for <bpf@vger.kernel.org>; Thu, 12 Dec 2019 02:23:05 -0800 (PST)
+        id S1728613AbfLLKXI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Dec 2019 05:23:08 -0500
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:42260 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728612AbfLLKXI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 Dec 2019 05:23:08 -0500
+Received: by mail-lj1-f194.google.com with SMTP id e28so1637029ljo.9
+        for <bpf@vger.kernel.org>; Thu, 12 Dec 2019 02:23:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=rzhSUH5AUy0iYhyYu73V2FHHItPCQequR4yd+QQrh3E=;
-        b=NFicFjVnJNLS6sDAaQfuxkBxdzPfSi14jDUQqt/qiVVwo0juZosJY2r6oZKtjviCgN
-         QRAJKXKFL7ASkqrGWUYSvs1ehPBGKwkmCok2yKlYdPTYrOk2ljeHV8LamR1u+tq+Q0se
-         PM3u8ivKNqbZjnH3BC2ohU//0OxmG4cMygs74=
+        bh=2p9l/NhEyywONqWaOqv6gQFlxKFxX2B65VKx+bZRGLg=;
+        b=bh+5njxSHzKC3/Md1BbrADp8F8kRAPjIZCRHnQl8TUAhdszbKQepHxpYQLlAxufdt3
+         zAW8PiPstUAkEII6Yh3xq0EE0bSQGFG+ytV3Wqt81rxcm7XfJ3fbtaXFItlCJjOt2wez
+         chMFz8IfEE+5qRhyw29/XUT6UzPf9ryoOYLKM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=rzhSUH5AUy0iYhyYu73V2FHHItPCQequR4yd+QQrh3E=;
-        b=GFlAkQwDCnAJrii2hJO3LONCYoJ6AIE3hbmIZeYREMgbfMnfNd30AwIPaHfEPVHFRA
-         j0AaTBHldxOdM8l5jm1McpoA3k/TRlQA8JM/MPei5WoSqtfjv7DwnCcsztE7eO1JEWxa
-         QXiuice5No1qTqX9oucj/EzhuI26i9vytIeez9U8cJZabFCBxN/zzePshWlbAuNidEUR
-         +aAPaQKLHdyA/fGTtjVkBq8CBYf18+88QF3/7cCE7hw+h2iXs0Y6pNJVyv694PgsoFXV
-         26cAggIsjvlUVDiSAVYrc0xMpUhPcps/O/HIcSAbb2hGE4RhvrPWmEQ/whonbJzdWV+e
-         vHKg==
-X-Gm-Message-State: APjAAAXkNcDu1lSgtlTwj/f7J//DJOxkWB5UZ/W7Ewbx56ZwtC9pf9U5
-        m7QI931u0lKOkg18HQrBRuCpEn0WvHDtzw==
-X-Google-Smtp-Source: APXvYqyLa5PIzI6j/6b+WqsQOqjFFXIq/Ps0uv/so8b/vqbRKjK6uJ5rfIlhTths40yjnM4D/aRmGw==
-X-Received: by 2002:a2e:294e:: with SMTP id u75mr5363360lje.173.1576146184571;
-        Thu, 12 Dec 2019 02:23:04 -0800 (PST)
+        bh=2p9l/NhEyywONqWaOqv6gQFlxKFxX2B65VKx+bZRGLg=;
+        b=Eyq/ZaK4Dn1soknjzSvMmjqLV08MqBqGVjUe0wBCb2e+pGyv7Rfjqeq0iQi5noDP/H
+         kIs/vSThXpetj2NXUHmWULENurKTCQNLRDYCtcEF2uSjQu5w0dB5lgO+Ea52/fI6ng38
+         uk5TKJVO8iPIVpAB50MQB18vdgECGRWV6MpasdbpHBmSAJKfzuh63b6cJyvAexzyHnfT
+         VLaeQuBrP6VrOa8BmLZuDeUF/OoJVXq2iqQ2h1JZY5mrhYQYyYRLf3g7VGYklB57oQSA
+         MAPjcAB7ZdiG2H9OWfX6szcMp3P+DSkefyY9UbsV8NyjHJ4afdSi1FzxwDtiEpMowbUG
+         4LCg==
+X-Gm-Message-State: APjAAAXwxxq7AB0xpstkU7rMT/nuyWly5PSzhmnRt9Oddb6Yg7TaKuJI
+        jFUhhy8ZvfTWOadpyo1P7jkdP0Hpj7mj5g==
+X-Google-Smtp-Source: APXvYqxKbvJFpm539WL25Y3CNhctmGGfUN4y/VGK8ZqpYOUGytJaZxTx1P+H2kVVgPQqS4IF4wCSYw==
+X-Received: by 2002:a2e:9890:: with SMTP id b16mr5416439ljj.190.1576146185766;
+        Thu, 12 Dec 2019 02:23:05 -0800 (PST)
 Received: from cloudflare.com ([176.221.114.230])
-        by smtp.gmail.com with ESMTPSA id n14sm2651052lfe.5.2019.12.12.02.23.03
+        by smtp.gmail.com with ESMTPSA id h19sm2721080ljl.57.2019.12.12.02.23.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Dec 2019 02:23:04 -0800 (PST)
+        Thu, 12 Dec 2019 02:23:05 -0800 (PST)
 From:   Jakub Sitnicki <jakub@cloudflare.com>
 To:     bpf@vger.kernel.org
 Cc:     Martin Lau <kafai@fb.com>, kernel-team@cloudflare.com
-Subject: [PATCH bpf-next 03/10] selftests/bpf: Use sa_family_t everywhere in reuseport tests
-Date:   Thu, 12 Dec 2019 11:22:52 +0100
-Message-Id: <20191212102259.418536-4-jakub@cloudflare.com>
+Subject: [PATCH bpf-next 04/10] selftests/bpf: Add helpers for getting socket family & type name
+Date:   Thu, 12 Dec 2019 11:22:53 +0100
+Message-Id: <20191212102259.418536-5-jakub@cloudflare.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191212102259.418536-1-jakub@cloudflare.com>
 References: <20191212102259.418536-1-jakub@cloudflare.com>
@@ -57,41 +57,65 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Update the only function that is not using sa_family_t in this source file.
+Having string arrays to map socket family & type to a name prevents us from
+unrolling the test runner loop in the subsequent patch. Introduce helpers
+that do the same thing.
 
 Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
 ---
- tools/testing/selftests/bpf/test_select_reuseport.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ .../selftests/bpf/test_select_reuseport.c     | 28 +++++++++++++++++--
+ 1 file changed, 25 insertions(+), 3 deletions(-)
 
 diff --git a/tools/testing/selftests/bpf/test_select_reuseport.c b/tools/testing/selftests/bpf/test_select_reuseport.c
-index 1e3cfe1cb28a..a295a087a026 100644
+index a295a087a026..ef98a7de6704 100644
 --- a/tools/testing/selftests/bpf/test_select_reuseport.c
 +++ b/tools/testing/selftests/bpf/test_select_reuseport.c
-@@ -643,7 +643,7 @@ static void prepare_sk_fds(int type, sa_family_t family, bool inany)
- 	}
+@@ -674,12 +674,34 @@ static void cleanup(void)
+ 	bpf_object__close(obj);
  }
  
--static void setup_per_test(int type, unsigned short family, bool inany)
-+static void setup_per_test(int type, sa_family_t family, bool inany)
++static const char *family_str(sa_family_t family)
++{
++	switch (family) {
++	case AF_INET:
++		return "IPv4";
++	case AF_INET6:
++		return "IPv6";
++	default:
++		return "unknown";
++	}
++}
++
++static const char *sotype_str(int sotype)
++{
++	switch (sotype) {
++	case SOCK_STREAM:
++		return "TCP";
++	case SOCK_DGRAM:
++		return "UDP";
++	default:
++		return "unknown";
++	}
++}
++
+ static void test_all(void)
  {
- 	int ovr = -1, err;
- 
-@@ -680,12 +680,12 @@ static void test_all(void)
+ 	/* Extra SOCK_STREAM to test bind_inany==true */
  	const int types[] = { SOCK_STREAM, SOCK_DGRAM, SOCK_STREAM };
- 	const char * const type_strings[] = { "TCP", "UDP", "TCP" };
- 	const char * const family_strings[] = { "IPv6", "IPv4" };
--	const unsigned short families[] = { AF_INET6, AF_INET };
-+	const sa_family_t families[] = { AF_INET6, AF_INET };
+-	const char * const type_strings[] = { "TCP", "UDP", "TCP" };
+-	const char * const family_strings[] = { "IPv6", "IPv4" };
+ 	const sa_family_t families[] = { AF_INET6, AF_INET };
  	const bool bind_inany[] = { false, false, true };
  	int t, f, err;
+@@ -692,7 +714,7 @@ static void test_all(void)
+ 			int type = types[t];
  
- 	for (f = 0; f < ARRAY_SIZE(families); f++) {
--		unsigned short family = families[f];
-+		sa_family_t family = families[f];
+ 			printf("######## %s/%s %s ########\n",
+-			       family_strings[f], type_strings[t],
++			       family_str(family), sotype_str(type),
+ 				inany ? " INANY  " : "LOOPBACK");
  
- 		for (t = 0; t < ARRAY_SIZE(types); t++) {
- 			bool inany = bind_inany[t];
+ 			setup_per_test(type, family, inany);
 -- 
 2.23.0
 
