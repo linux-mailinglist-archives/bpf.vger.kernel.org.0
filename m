@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D1B1211D884
-	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2019 22:28:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94AC111D8BD
+	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2019 22:46:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731050AbfLLV2F (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Dec 2019 16:28:05 -0500
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:35184 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731040AbfLLV2F (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 Dec 2019 16:28:05 -0500
-Received: by mail-pg1-f196.google.com with SMTP id l24so228454pgk.2;
-        Thu, 12 Dec 2019 13:28:04 -0800 (PST)
+        id S1730713AbfLLVqA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Dec 2019 16:46:00 -0500
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:42037 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730866AbfLLVqA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 Dec 2019 16:46:00 -0500
+Received: by mail-pf1-f196.google.com with SMTP id 4so65292pfz.9
+        for <bpf@vger.kernel.org>; Thu, 12 Dec 2019 13:46:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=D/gv7eytCwvP7hIyDmJBH2pwd4vDwIqS68/F/jtBrbU=;
-        b=eFknJIJNiil5F7PUR+gHKjhDpm10AC+X7Qnb0xCyWsoJRpWKmQsQpFMmP9xgr7Ce9J
-         A61tfE2oPwHitKCYXIHXbPfcUYOMZslJ8+hGb+SCYnsLu96xPawRQeHMAdG0jE+qycBj
-         dpNjyYSftQYwEFFCPhR9dGo9tnkQOA9QhgDkyrKyqkRbAkkTmq/kKKon2FKbgL0Zgntl
-         qAZlGWEozUHMlu6jFdIeD0uAGzfXg6saraQuhaHiu+EtCXsfx0GQ6+x4WE5F06i9FxvJ
-         c0zu/Vbb8QrW5Zh017NXJTT0elYiaH2BmKI0i5icQkPJr8ewpL4oHBtgGziHuTEv6a4G
-         MnWw==
+        bh=zup1ZFvjpLsBitLXM/f/KZndih/WwXlNRrCfPRNh1DE=;
+        b=OnAUAo+5L7IrdfKAwza3RWTSyDtcRlQ+A/pI9OAMffvnebc2TXmw5+G2d+wBv7HBnS
+         AIkZoQ46KvORpYceLzrmoyXIwXtRVDkDUAiqD1RG5pJw6872gXyJfTdujXwIzer6Veib
+         AV3i3pL4J5jCS+d2aGpgA+jqD4qUZYxgoWp97etSOPknjf4v9L44hafc4z97sLoaZ0YJ
+         +hBZT5h0yhyl6zjIbU7eP8AebanKB0Zecd24v3qYgKeDcW1gufhR0Ii+T1eSBKtRPr/n
+         xsrV4I0FeHL6hVWyz8+Wx8aF1WHvyM+UCRWPeZtYUSAh0nPlaJHWfn6xLUN4QqrwmYNl
+         oIbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=D/gv7eytCwvP7hIyDmJBH2pwd4vDwIqS68/F/jtBrbU=;
-        b=oBG9TNdRrexC/BXRqgtIJ0uc0d8U34bNYVERLU2/eE4yU/p+352iczRMRsMys3kYxy
-         NIEz70hi3DEXRYhFbVtErH68DLk66WQDi9vqAOXcMjzaQKiPzz3gocf2Rim6kDGJ3J83
-         Sokel4Wal4EmMlLLKFsFOgCRZ1o3O0ooz8I5RNWZkCvvUFM7qHPxyR8CJCFJjy2ul8FP
-         3j3Q19mWWQ+PsyYcXYbD9hwAqx7Ku5VqvRwJGBxgVmDtCc/twqT5KM2Mk2Si7OeUvppr
-         r/Lwj0yT1QNbnGo3VO5PYHoppg37m8TwRKOVQbBbHHGsbq8atVYlN4tNYWYXomfbwlPt
-         FiPA==
-X-Gm-Message-State: APjAAAWWISps4hfeZrkwgszda7U0HxTDhbvqCPvIiAm567JZjUAhMxt3
-        A2aZtuN9XTdGtzlSmQFfGjY=
-X-Google-Smtp-Source: APXvYqwiF1zBZxfO3KLzlfcFvL6W+z5uHLsDMIHhT3FRbyLkJ+LG0Gd0hZgzNESr4nwKGacBAkKpgw==
-X-Received: by 2002:a62:e519:: with SMTP id n25mr12079467pff.220.1576186084062;
-        Thu, 12 Dec 2019 13:28:04 -0800 (PST)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:200::b509])
-        by smtp.gmail.com with ESMTPSA id 20sm7844486pgw.71.2019.12.12.13.28.02
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 12 Dec 2019 13:28:03 -0800 (PST)
-Date:   Thu, 12 Dec 2019 13:28:00 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Jakub Kicinski <jakub.kicinski@netronome.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Stanislav Fomichev <sdf@fomichev.me>,
+        bh=zup1ZFvjpLsBitLXM/f/KZndih/WwXlNRrCfPRNh1DE=;
+        b=Yx3+b27KEmWpumGblR2dm8csdGWC0SLoJH0ixVVeCXLK82uBhUxGCRcuuozAjWX89P
+         CADsw/PayoVamiKvu5j/jgkX4X57+4SO8pn/VWzP4RS5som0A7tg4JZoe1zJAgXuCZ9s
+         Z//95Hg3+RQjLzk+49ZQzLBXJPPBT2pMTtoNV88aBIT8q1JkoBwyM/t3b2R3EV1k7qFq
+         ZHJHd9Tf6cejvS0sfaAwmRyua0yTiS47hxwTvJTd5zbO58l137KHD2NNQqxMdNoIqOPr
+         11WbG557N/kKZvV1MUSknCZyZ8TuBbtaZpt1VUBgSn0Kp0aIfYe1NFHzikrcWuynbc8x
+         3Bkw==
+X-Gm-Message-State: APjAAAUKkZ5FTYKEDDYGN/CP+r7x4DvfJ1W4R30qjvGpXPSBaHprYxPB
+        Rb4AG4VpAZ2YqglMJ0r99x2cTA==
+X-Google-Smtp-Source: APXvYqzpVuPBBOl0fFYwopZqMbhecvaa2TBve0aCKEkOibigelJLHLP3OA806jFISBb3XOBTK2h5yg==
+X-Received: by 2002:a63:a508:: with SMTP id n8mr12684811pgf.278.1576187159678;
+        Thu, 12 Dec 2019 13:45:59 -0800 (PST)
+Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
+        by smtp.gmail.com with ESMTPSA id g6sm6903979pjl.25.2019.12.12.13.45.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Dec 2019 13:45:58 -0800 (PST)
+Date:   Thu, 12 Dec 2019 13:45:57 -0800
+From:   Stanislav Fomichev <sdf@fomichev.me>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         Andrii Nakryiko <andriin@fb.com>,
         LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Networking <netdev@vger.kernel.org>,
@@ -56,8 +56,9 @@ Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Kernel Team <kernel-team@fb.com>
 Subject: Re: [PATCH bpf-next 11/15] bpftool: add skeleton codegen command
-Message-ID: <20191212212759.mhzrlqj5brcyfwgb@ast-mbp.dhcp.thefacebook.com>
-References: <CAEf4BzYofFFjSAO3O-G37qyeVHE6FACex=yermt8bF8mXksh8g@mail.gmail.com>
+Message-ID: <20191212214557.GO3105713@mini-arch>
+References: <20191211191518.GD3105713@mini-arch>
+ <CAEf4BzYofFFjSAO3O-G37qyeVHE6FACex=yermt8bF8mXksh8g@mail.gmail.com>
  <20191211200924.GE3105713@mini-arch>
  <CAEf4BzaE0Q7LnPOa90p1RX9qSbOA_8hkT=6=7peP9C88ErRumQ@mail.gmail.com>
  <20191212025735.GK3105713@mini-arch>
@@ -66,116 +67,63 @@ References: <CAEf4BzYofFFjSAO3O-G37qyeVHE6FACex=yermt8bF8mXksh8g@mail.gmail.com>
  <CAEf4BzYJHvuFbBM-xvCCsEa+Pg-bG1tprGMbCDtsbGHdv7KspA@mail.gmail.com>
  <20191212104334.222552a1@cakuba.netronome.com>
  <20191212195415.ubnuypco536rp6mu@ast-mbp.dhcp.thefacebook.com>
- <20191212122115.612bb13b@cakuba.netronome.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191212122115.612bb13b@cakuba.netronome.com>
-User-Agent: NeoMutt/20180223
+In-Reply-To: <20191212195415.ubnuypco536rp6mu@ast-mbp.dhcp.thefacebook.com>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 12, 2019 at 12:21:15PM -0800, Jakub Kicinski wrote:
-> > > 
-> > >   There absolutely nothing this tool needs from [bpftool], no
-> > >   JSON needed, no bpffs etc.   
-> > 
-> > To generate vmlinux.h bpftool doesn't need json and doesn't need bpffs.
+On 12/12, Alexei Starovoitov wrote:
+> On Thu, Dec 12, 2019 at 10:43:34AM -0800, Jakub Kicinski wrote:
+> One more point from Stan's email:
 > 
-> At least for header generation it pertains to the running system.
-> And bpftool was (and still is AFAICT) about interacting with the BPF
-> state on the running system.
-
-No. Reality is different. vmlinux.h generation doesn't need to touch
-kernel on the running system. Part of its job is to generate multiple
-vmlinux.h from a set of vmlinux elf files. Different .h for different kernels.
-It can generate vmlinux.h from running kernel too, but its less relevant
-to make use of CO-RE.
-In the future bpftool will be used to merge such multiple .h-s.
-Likely it will first merge BTFs from vmlinuxes and then will produce
-merged vmlinux_4_x_and_5_x.h
-
-> > > It can be a separate tool like
-> > >   libbpf-skel-gen or libbpf-c-skel or something, distributed with libbpf.
-> > >   That way you can actually soften the backward compat. In case people
-> > >   become dependent on it they can carry that little tool on their own.  
-> > 
-> > Jakub,
-> > 
-> > Could you please consider Andrii's reply to your comment from two days ago:
-> > https://lore.kernel.org/bpf/CAEf4BzbeZbmCTOOo2uQXjm0GL0WDu7aLN6fdUk18Nv2g0kfwVg@mail.gmail.com/
-> > "we are trying to make users lives easier by having major distributions
-> > distribute bpftool and libbpf properly. Adding extra binaries to
-> > distribute around doesn't seem to be easing any of users pains."
+> > You can replace "our build system" with some other project you care about,
+> > like systemd. They'd have the same problem with vendoring in recent enough
 > 
-> Last time we argued I heard how GH makes libbpf packaging easier.
-> Only to have that dis-proven once the people in Europe who do distro
-> packaging woke up:
+> we've been working with systemd folks for ~8 month to integrate libbpf into
+> their build that is using meson build system and their CI that is github based.
+> So we're well aware about systemd requirements for libbpf and friends.
+Just curious (searching on systemd github for bpftool/libbpf doesn't
+show up any code/issues): are you saying that there will be another ~8 months
+to bring in bpftool or that it's already being worked on as part of
+libbpf integration?
+
+> > bpftool or waiting for every distro to do it. And all this work is
+> > because you think that doing:
+> >
+> >        my_obj->rodata->my_var = 123;
+> >
+> > Is easier / more type safe than doing:
+> >        int *my_var = bpf_object__rodata_lookup(obj, "my_var");
+> >        *my_var = 123;
 > 
-> https://lkml.org/lkml/2019/12/5/101
-> https://lkml.org/lkml/2019/12/5/312
+> Stan, you conveniently skipped error checking. It should have been:
+>     int *my_var = bpf_object__rodata_lookup(obj, "my_var");
+>     if (IS_ERROR_NULL(my_var))
+>         goto out_cleanup;
+>      *my_var = 123;
+Yeah, but you have a choice, right? You can choose to check the error
+and support old programs that don't export some global var and a new
+program that has it. Or you can skip the error checks and rely on null
+deref crash which is sometimes an option.
 
-I think you missed the point of these two comments. It was about packaging
-bpftool and libbpf together. Regardless how bpftool is packaged. I still
-strongly suggest to use github/libbpf to package libbpf. It's something that is
-actually tested whereas libbpf in the kernel tree has unit test coverage only.
+(might be not relevant with the introduction of EMBED_FILE which you
+seem to be using more and more; ideally, we still would like to be able to
+distribute bpf.o and userspace binary separately).
 
-> 
-> > My opinion is the following.
-> > bpftool is necessary to write bpf programs already. It's necessary to produce
-> > vmlinux.h for bpf programs to include it. It's part of build process. I can
-> > relate to Stan's complains that he needs to update clang and pahole. He missed
-> > the fact that he needs to update bpftool too if he wants to use all features of
-> > CO-RE. Same thing for skeleton generation. If people need to run the latest
-> > selftest/bpf on the latest kernel they need to upgrade to the latest clang,
-> > pahole, libbpf, bpftool. Nothing new here.
-> 
-> They have to update libbpf, so why can't the code gen tool be part of
-> libbpf? 
+> Take a look at Andrii's patch 13/15:
+> 5 files changed, 149 insertions(+), 249 deletions(-)
+> Those are simple selftests, yet code removal is huge. Bigger project benefits
+> even more.
+Excluding fentry/fexit tests (where new find_program_by_title+attach
+helper and mmap might help), it looks like the majority of those gains come
+from the fact that the patch in question doesn't do any error checking.
+You can drop all the CHECK() stuff for existing
+find_map_by_name/find_prog_by_name instead and get the same gains.
 
-I'm not sure why two answers were not enough.
-No idea how to answer this question differently for the third time.
-
-> > Backwards compat is the same concern for skeleton generation and for vmlinux.h
-> > generation. Obviously no one wants to introduce something that will keep
-> > changing. Is vmlinux.h generation stable? I like to believe so. Same with
-> > skeleton. I wouldn't want to see it changing, but in both cases such chance
-> > exists. 
-> 
-> vmlinux.h is pretty stable, there isn't much wiggle room there.
-
-Do you have experience working with vmlinux.h? I bet the answer is no.
-While we have and identified few things that needs improvement.
-They require vmlinux.h to be generated differently.
-
-> It's more of a conversion tool, if you will.
-> 
-> Skeleton OTOH is supposed to make people's lives easier, so it's a
-> completely different beast. It should be malleable so that users can
-> improve and hack on it. Baking it into as system tool is counter
-> productive. Users should be able to grab the skel tool single-file
-> source and adjust for their project's needs. Distributing your own copy
-> of bpftool because you want to adjust skel is a heavy lift.
-
-Adjust generator for their custom needs? essentially fork it for
-private use? I'd rather prevent such possibility.
-When people start using it I'd prefer they come back to this mailing
-list with patches than do 'easy fork'.
-
-> > Now consider if vmlinux.h and skeleton generation is split out of bpftool into
-> > new tool. Effectively it would mean a fork of bpftool. Two binaries doing bpf
-> > elf file processing without clear distinction between them is going to be very
-> > confusing.
-> 
-> To be clear I'm suggesting skel gen is a separate tool, vmlinux and
-> Quentin's header gen work on the running system, they are not pure
-> build env tools.
-
-You meant to say Andrii's header generator that is based on Quentin's man page
-generator. Its output bpf_helper_defs.h makes sense as a part of libbpf
-package. The generator script itself doesn't need to be included with any package.
-bpftool vmlinux gen consumes vmlinux elf files and is a part of the build.
-bpftool skeleton gen consumes bpf elf files and is a part of the same build.
-
+[as usual, feel free to ignore me, I don't want to keep flaming about
+it, but it's hard not to reply]
