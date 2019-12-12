@@ -2,128 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 94AC111D8BD
-	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2019 22:46:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6859111D8C6
+	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2019 22:49:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730713AbfLLVqA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Dec 2019 16:46:00 -0500
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:42037 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730866AbfLLVqA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 Dec 2019 16:46:00 -0500
-Received: by mail-pf1-f196.google.com with SMTP id 4so65292pfz.9
-        for <bpf@vger.kernel.org>; Thu, 12 Dec 2019 13:46:00 -0800 (PST)
+        id S1730871AbfLLVss (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Dec 2019 16:48:48 -0500
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:42800 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730831AbfLLVsr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 Dec 2019 16:48:47 -0500
+Received: by mail-lj1-f193.google.com with SMTP id e28so312578ljo.9;
+        Thu, 12 Dec 2019 13:48:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fomichev-me.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=zup1ZFvjpLsBitLXM/f/KZndih/WwXlNRrCfPRNh1DE=;
-        b=OnAUAo+5L7IrdfKAwza3RWTSyDtcRlQ+A/pI9OAMffvnebc2TXmw5+G2d+wBv7HBnS
-         AIkZoQ46KvORpYceLzrmoyXIwXtRVDkDUAiqD1RG5pJw6872gXyJfTdujXwIzer6Veib
-         AV3i3pL4J5jCS+d2aGpgA+jqD4qUZYxgoWp97etSOPknjf4v9L44hafc4z97sLoaZ0YJ
-         +hBZT5h0yhyl6zjIbU7eP8AebanKB0Zecd24v3qYgKeDcW1gufhR0Ii+T1eSBKtRPr/n
-         xsrV4I0FeHL6hVWyz8+Wx8aF1WHvyM+UCRWPeZtYUSAh0nPlaJHWfn6xLUN4QqrwmYNl
-         oIbQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=251vXsWuEJ2xi9HpdeyVMWO66+kda9V2oIuPFR8DACc=;
+        b=J/0ey5vBuE4xIZz39LnvoyOG/fAB6pu9gHIRMpxn3FSo9MZDCqhdn1dfxk10IvMKeB
+         pC+Xc8mkKXhOujl6hgqYGP+EDyowenPt6283Ee2Vjw8beLyL3+BuchSUzHZknjIaVCxT
+         da8JgISZntIHtFqHRb6JtT9YHW8Pz5aGyqlq2XEPQuViKwuIY5+XuGkdPzQ5qi7gbXOQ
+         uSG5GJDThnuDVd5jzcW0R3jOazDHemWuPj2bqQmuvaa62L0qNmS6BMoaXEreMi2MwN2N
+         vPRKEr8649pXde/FYIlbhhBf9EluRRUnTc89x0I8U9neCXPeXqwqFN/TiDIyp4y4j8/F
+         Klqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=zup1ZFvjpLsBitLXM/f/KZndih/WwXlNRrCfPRNh1DE=;
-        b=Yx3+b27KEmWpumGblR2dm8csdGWC0SLoJH0ixVVeCXLK82uBhUxGCRcuuozAjWX89P
-         CADsw/PayoVamiKvu5j/jgkX4X57+4SO8pn/VWzP4RS5som0A7tg4JZoe1zJAgXuCZ9s
-         Z//95Hg3+RQjLzk+49ZQzLBXJPPBT2pMTtoNV88aBIT8q1JkoBwyM/t3b2R3EV1k7qFq
-         ZHJHd9Tf6cejvS0sfaAwmRyua0yTiS47hxwTvJTd5zbO58l137KHD2NNQqxMdNoIqOPr
-         11WbG557N/kKZvV1MUSknCZyZ8TuBbtaZpt1VUBgSn0Kp0aIfYe1NFHzikrcWuynbc8x
-         3Bkw==
-X-Gm-Message-State: APjAAAUKkZ5FTYKEDDYGN/CP+r7x4DvfJ1W4R30qjvGpXPSBaHprYxPB
-        Rb4AG4VpAZ2YqglMJ0r99x2cTA==
-X-Google-Smtp-Source: APXvYqzpVuPBBOl0fFYwopZqMbhecvaa2TBve0aCKEkOibigelJLHLP3OA806jFISBb3XOBTK2h5yg==
-X-Received: by 2002:a63:a508:: with SMTP id n8mr12684811pgf.278.1576187159678;
-        Thu, 12 Dec 2019 13:45:59 -0800 (PST)
-Received: from localhost ([2601:646:8f00:18d9:d0fa:7a4b:764f:de48])
-        by smtp.gmail.com with ESMTPSA id g6sm6903979pjl.25.2019.12.12.13.45.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Dec 2019 13:45:58 -0800 (PST)
-Date:   Thu, 12 Dec 2019 13:45:57 -0800
-From:   Stanislav Fomichev <sdf@fomichev.me>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH bpf-next 11/15] bpftool: add skeleton codegen command
-Message-ID: <20191212214557.GO3105713@mini-arch>
-References: <20191211191518.GD3105713@mini-arch>
- <CAEf4BzYofFFjSAO3O-G37qyeVHE6FACex=yermt8bF8mXksh8g@mail.gmail.com>
- <20191211200924.GE3105713@mini-arch>
- <CAEf4BzaE0Q7LnPOa90p1RX9qSbOA_8hkT=6=7peP9C88ErRumQ@mail.gmail.com>
- <20191212025735.GK3105713@mini-arch>
- <CAEf4BzY2KHK4h5e40QgGt4GzJ6c+rm-vtbyEdM41vUSqcs=txA@mail.gmail.com>
- <20191212162953.GM3105713@mini-arch>
- <CAEf4BzYJHvuFbBM-xvCCsEa+Pg-bG1tprGMbCDtsbGHdv7KspA@mail.gmail.com>
- <20191212104334.222552a1@cakuba.netronome.com>
- <20191212195415.ubnuypco536rp6mu@ast-mbp.dhcp.thefacebook.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=251vXsWuEJ2xi9HpdeyVMWO66+kda9V2oIuPFR8DACc=;
+        b=UnJTu41UgGoi6CWC4SakYad0jZL+ishLvLY6CwmyhdKgMYJy6gQLkFNOfkwxd+3HoF
+         a6kKzE0eZ5JCHfPpYm/QmmMdrkJjV7HaqUXLXZG2QNCs42O3b2JDxwwcg5xOT9wxixBQ
+         ywMVdBE7vnC1cPOVINpB4TFusgGxQBrahau+EoHl3jTvCsHU3M15T/D1t8jYaVaUef79
+         dtDrRBf8lDZKjRX4vkkfpK84/ThXALsRU9Qbblis+tEEuGoDpgisHOVfjG1UNi4uKvsz
+         kIQW7eV3DNukPeP8RczXCj8WmcRyU991AADfahcp93sNLI5eQ8MvAqPodIu3zBxTXulr
+         xwTg==
+X-Gm-Message-State: APjAAAU6r/0oP9H6x4izN4NgFyc0h5g3/Cdn6ZNna3axXX1u3V5oh647
+        hjoUFbZMCbU1Z4407D6B1jgSsVtVG6AI3aPCXtc=
+X-Google-Smtp-Source: APXvYqzeBVphnRzs3/2/OERF5E5/HbE2ldGW+e9UXgfRWZWnzWK3+/UsUpkNCc7gdU81aliSlcSil8mHtQdh5Tv/F5c=
+X-Received: by 2002:a2e:3609:: with SMTP id d9mr7282781lja.188.1576187325385;
+ Thu, 12 Dec 2019 13:48:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191212195415.ubnuypco536rp6mu@ast-mbp.dhcp.thefacebook.com>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+References: <20191212171918.638010-1-andriin@fb.com> <20191212183046.7h4kcuvmayafzztg@kafai-mbp>
+In-Reply-To: <20191212183046.7h4kcuvmayafzztg@kafai-mbp>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 12 Dec 2019 13:48:34 -0800
+Message-ID: <CAADnVQJ2T72Jos4g348ZYO-Up1-hYFYVxmHNA3RsLJL1xRWKog@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next] libbpf: fix printf compilation warnings on
+ ppc64le arch
+To:     Martin Lau <kafai@fb.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "andrii.nakryiko@gmail.com" <andrii.nakryiko@gmail.com>,
+        Kernel Team <Kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 12/12, Alexei Starovoitov wrote:
-> On Thu, Dec 12, 2019 at 10:43:34AM -0800, Jakub Kicinski wrote:
-> One more point from Stan's email:
-> 
-> > You can replace "our build system" with some other project you care about,
-> > like systemd. They'd have the same problem with vendoring in recent enough
-> 
-> we've been working with systemd folks for ~8 month to integrate libbpf into
-> their build that is using meson build system and their CI that is github based.
-> So we're well aware about systemd requirements for libbpf and friends.
-Just curious (searching on systemd github for bpftool/libbpf doesn't
-show up any code/issues): are you saying that there will be another ~8 months
-to bring in bpftool or that it's already being worked on as part of
-libbpf integration?
+On Thu, Dec 12, 2019 at 10:31 AM Martin Lau <kafai@fb.com> wrote:
+>
+> On Thu, Dec 12, 2019 at 09:19:18AM -0800, Andrii Nakryiko wrote:
+> > On ppc64le __u64 and __s64 are defined as long int and unsigned long int,
+> > respectively. This causes compiler to emit warning when %lld/%llu are used to
+> > printf 64-bit numbers. Fix this by casting to size_t/ssize_t with %zu and %zd
+> > format specifiers, respectively.
+> Acked-by: Martin KaFai Lau <kafai@fb.com>
 
-> > bpftool or waiting for every distro to do it. And all this work is
-> > because you think that doing:
-> >
-> >        my_obj->rodata->my_var = 123;
-> >
-> > Is easier / more type safe than doing:
-> >        int *my_var = bpf_object__rodata_lookup(obj, "my_var");
-> >        *my_var = 123;
-> 
-> Stan, you conveniently skipped error checking. It should have been:
->     int *my_var = bpf_object__rodata_lookup(obj, "my_var");
->     if (IS_ERROR_NULL(my_var))
->         goto out_cleanup;
->      *my_var = 123;
-Yeah, but you have a choice, right? You can choose to check the error
-and support old programs that don't export some global var and a new
-program that has it. Or you can skip the error checks and rely on null
-deref crash which is sometimes an option.
-
-(might be not relevant with the introduction of EMBED_FILE which you
-seem to be using more and more; ideally, we still would like to be able to
-distribute bpf.o and userspace binary separately).
-
-> Take a look at Andrii's patch 13/15:
-> 5 files changed, 149 insertions(+), 249 deletions(-)
-> Those are simple selftests, yet code removal is huge. Bigger project benefits
-> even more.
-Excluding fentry/fexit tests (where new find_program_by_title+attach
-helper and mmap might help), it looks like the majority of those gains come
-from the fact that the patch in question doesn't do any error checking.
-You can drop all the CHECK() stuff for existing
-find_map_by_name/find_prog_by_name instead and get the same gains.
-
-[as usual, feel free to ignore me, I don't want to keep flaming about
-it, but it's hard not to reply]
+Applied. Thanks
