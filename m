@@ -2,40 +2,37 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D53C111D215
-	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2019 17:19:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA79411D22F
+	for <lists+bpf@lfdr.de>; Thu, 12 Dec 2019 17:25:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729771AbfLLQTa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Dec 2019 11:19:30 -0500
-Received: from www62.your-server.de ([213.133.104.62]:57736 "EHLO
+        id S1729847AbfLLQZQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 12 Dec 2019 11:25:16 -0500
+Received: from www62.your-server.de ([213.133.104.62]:58954 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729591AbfLLQTa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 12 Dec 2019 11:19:30 -0500
+        with ESMTP id S1729762AbfLLQZQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 12 Dec 2019 11:25:16 -0500
 Received: from [194.230.159.122] (helo=localhost)
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1ifRBS-0007Ab-RJ; Thu, 12 Dec 2019 17:19:23 +0100
-Date:   Thu, 12 Dec 2019 17:19:22 +0100
+        id 1ifRH7-0007Wx-UN; Thu, 12 Dec 2019 17:25:14 +0100
+Date:   Thu, 12 Dec 2019 17:25:13 +0100
 From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     Paul Burton <paulburton@kernel.org>
-Cc:     Paul Chaignon <paul.chaignon@orange.com>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>,
-        Mahshid Khezri <khezri.mahshid@gmail.com>,
-        paul.chaignon@gmail.com, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Subject: Re: [PATCH bpf 2/2] bpf, mips: limit to 33 tail calls
-Message-ID: <20191212161922.GA1264@localhost.localdomain>
-References: <cover.1575916815.git.paul.chaignon@gmail.com>
- <b8eb2caac1c25453c539248e56ca22f74b5316af.1575916815.git.paul.chaignon@gmail.com>
- <20191210232316.aastpgbirqp4yaoi@lantea.localdomain>
+To:     Jakub Kicinski <jakub.kicinski@netronome.com>
+Cc:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Andrii Nakryiko <andriin@fb.com>,
+        Song Liu <songliubraving@fb.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, oss-drivers@netronome.com
+Subject: Re: [oss-drivers] [PATCH AUTOSEL 5.4 326/350] bpf: Switch bpf_map
+ ref counter to atomic64_t so bpf_map_inc() never fails
+Message-ID: <20191212162513.GB1264@localhost.localdomain>
+References: <20191210210735.9077-1-sashal@kernel.org>
+ <20191210210735.9077-287-sashal@kernel.org>
+ <20191210132834.157d5fc5@cakuba.netronome.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191210232316.aastpgbirqp4yaoi@lantea.localdomain>
+In-Reply-To: <20191210132834.157d5fc5@cakuba.netronome.com>
 User-Agent: Mutt/1.12.1 (2019-06-15)
 X-Authenticated-Sender: daniel@iogearbox.net
 X-Virus-Scanned: Clear (ClamAV 0.101.4/25661/Thu Dec 12 10:47:42 2019)
@@ -44,20 +41,28 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 10, 2019 at 03:23:16PM -0800, Paul Burton wrote:
-> On Mon, Dec 09, 2019 at 07:52:52PM +0100, Paul Chaignon wrote:
-> > All BPF JIT compilers except RISC-V's and MIPS' enforce a 33-tail calls
-> > limit at runtime.  In addition, a test was recently added, in tailcalls2,
-> > to check this limit.
+On Tue, Dec 10, 2019 at 01:28:34PM -0800, Jakub Kicinski wrote:
+> On Tue, 10 Dec 2019 16:07:11 -0500, Sasha Levin wrote:
+> > From: Andrii Nakryiko <andriin@fb.com>
 > > 
-> > This patch updates the tail call limit in MIPS' JIT compiler to allow
-> > 33 tail calls.
+> > [ Upstream commit 1e0bd5a091e5d9e0f1d5b0e6329b87bb1792f784 ]
 > > 
-> > Fixes: b6bd53f9c4e8 ("MIPS: Add missing file for eBPF JIT.")
-> > Reported-by: Mahshid Khezri <khezri.mahshid@gmail.com>
-> > Signed-off-by: Paul Chaignon <paul.chaignon@orange.com>
+> > 92117d8443bc ("bpf: fix refcnt overflow") turned refcounting of bpf_map into
+> > potentially failing operation, when refcount reaches BPF_MAX_REFCNT limit
+> > (32k). Due to using 32-bit counter, it's possible in practice to overflow
+> > refcounter and make it wrap around to 0, causing erroneous map free, while
+> > there are still references to it, causing use-after-free problems.
 > 
-> I'd be happy to take this through mips-fixes, but equally happy for it
-> to go through the BPF/net trees in which case:
+> I don't think this is a bug fix, the second sentence here is written
+> in a quite confusing way, but there is no bug.
+> 
+> Could you drop? I don't think it's worth the backporting pain since it
+> changes bpf_map_inc().
 
-We took the series via bpf, thanks!
+Agree, this is not a bug fix and should not go to stable. (Also agree that
+the changelog is super confusing here and should have been done differently
+to avoid exactly where we are here. I think I pointed that out in the
+original patch, but seems this slipped through the cracks :/)
+
+Thanks,
+Daniel
