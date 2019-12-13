@@ -2,54 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AAD511E717
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2019 16:52:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B37C11E73A
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2019 16:59:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728005AbfLMPwH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Dec 2019 10:52:07 -0500
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:37052 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727927AbfLMPwH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Dec 2019 10:52:07 -0500
-Received: by mail-lj1-f196.google.com with SMTP id u17so3179215lja.4;
-        Fri, 13 Dec 2019 07:52:05 -0800 (PST)
+        id S1728070AbfLMP7e (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Dec 2019 10:59:34 -0500
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:38360 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728032AbfLMP7e (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 Dec 2019 10:59:34 -0500
+Received: by mail-qk1-f193.google.com with SMTP id k6so2075048qki.5;
+        Fri, 13 Dec 2019 07:59:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=i7YTkA1cQTp5eGp2y0iD7RE/V0troD05dR2FE4I3UBU=;
-        b=bSQKFvuTsitiapoo0Dbtw2hAScrQu1lyS0OpUdvvoFusz+5LQhCM1nYn9SBW6VkrYk
-         9TP+TVxEmJibaV24eE375vbI6X+IRpdIyyMjuVgA5HbpCNZGU3iK+PKKGk3XVjP0jLh0
-         0UYiKnJlrvM7C+zljKWQ17cWi+jiLmPfvAVi+XdgCxtESLtYy69qb/RrVgGGGLaQHAKc
-         C/mqpPHh42/sAVPLY7ysk282FJ3jdKk2JplhDNUnjRhlyXqy4duxP8GT7WkdytLVVKWK
-         VLi7KXvRcwa6tDWecmqjZMDoOLeTvfxohbHckhLKs97nGU+adrMHuiXXl5qyYEh6Ezzl
-         pypQ==
+        bh=YaGS+weH47I/SZaacTDzVpVmLaiT/qa5rn7n2VFVb9Y=;
+        b=aVE4wl6KSCalmJ7U1VEKm/rkYNfZhVpLRikwTrTACbC/1yJAYXPa5AaPbLvcT1eNsK
+         HGpFbEZ3QyF15TD8kk+TGNzI3sVrN4Bl0cEwuOZe+GyDExFisB488gT7LxYI2bi1m6ux
+         PXVBJKb4K3EnZiXh33eN5FO9z3CzB1t/wJiHEywCzq/j+lW+ukIMAjAgvw47tkGJPCFh
+         cnuPaqkE2CWyTdEUNIOGWxv41W2Ekh1swttVoTc8HbrQMSuO+waLhLZnKgJQsKk6KhqI
+         Oib6IP+co+cghh1wbOv2UI/cOjmfZFca4S8WipvBE7/7u7VcuZ/boCauUEgZQu4N30Az
+         5XsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=i7YTkA1cQTp5eGp2y0iD7RE/V0troD05dR2FE4I3UBU=;
-        b=Fs1jX/JMQ7/mYBNTWE75JjT1ml8GT0sRKN6vtXt1ENmHhmGv+T6UlUvjbDYUmmBKXo
-         0n+ulde4Pn8FxGuJ48nvTWk4Q4fN6weJzmsIs96wnPcgTSZyVzoTwn5pKD/mfSnzMYoi
-         JiQi1n8Im7WpwFunndEs6xypkSsjcP1JIIJR3D9DyYtZm3b02kiC/DXxURyCjZ6+glmV
-         h83pI4OdCGCjJKC00PshzDhs8+R4h19cIBqbWDQDeYt8kVSMcmG8RfLP+wwwyX2m4JO5
-         p73BeOCYuFxKXtVzWEVvHiEl5O7zipTTluPfraKm2bDpKn8zmChziYGZ8cbe7FtJTT2H
-         dbqA==
-X-Gm-Message-State: APjAAAWuqKVXrBii0IHqW328af8+jjAT0iE/p2thuC1NmSBZgSTO5Aas
-        K+WuMmNxAsTwWSXvDdnpIKAkD/TqJ+ouQib9Pio=
-X-Google-Smtp-Source: APXvYqwQfwjWXPwDgT6mU0Fj8lyQ0OXOEkBNdxZ9KK8TWwNcY1tCuFnPxaYGSj52T5X92XXMrBpcS4ZmG7wklTxJ7Qs=
-X-Received: by 2002:a2e:999a:: with SMTP id w26mr10346440lji.142.1576252324642;
- Fri, 13 Dec 2019 07:52:04 -0800 (PST)
+        bh=YaGS+weH47I/SZaacTDzVpVmLaiT/qa5rn7n2VFVb9Y=;
+        b=q5U0q/buCrJM5Sc9bzqovzuoBfHwRzZXff9+SAD75TknCAV8XJCk5S1q3SvKbTHQqD
+         ONWkpUCtAzG8zlwZ/z5ncGUFCsni17/nX6IM9NR7V0bZocnAlONWlsl43qWGOEnriYdY
+         vDKKYrCL7tM4jk3h84+Rlhl2imrrN6p6BVqVv8lpYOYM55zIdpjxPtimolUUgyvH/0zk
+         GtnKtO+GcW2B8CxqvUioV2/ySjidA2urWtzTQ99YdwHak7sDE6BDb4Tx+GLMjeHVwXOI
+         6Z8GSr4cN1Ag7l4nmmccvIuKnxAWgi7d//FCCoVSuAD8bd8YWls/sj/z35Bk1u1ikS5m
+         QgqQ==
+X-Gm-Message-State: APjAAAVIrGvM7ywQgGXbxghbseFVbtq9FUpcz2nhCMnw98lxkR2pmlWj
+        hJLUygImPuFYW4YEHyf8eb2jgJc0SO5iLBm3R6DbLO2O0XU=
+X-Google-Smtp-Source: APXvYqxFLKs7iTBXOlOj5N91fPNNkFBC18S6wstPhZYLuIZEYqS1lasfVVzxdf1cztoxwctq2NsAW2N52+jrH0Pt7GQ=
+X-Received: by 2002:a37:9c0f:: with SMTP id f15mr14210887qke.297.1576252773164;
+ Fri, 13 Dec 2019 07:59:33 -0800 (PST)
 MIME-Version: 1.0
 References: <20191211123017.13212-1-bjorn.topel@gmail.com> <20191211123017.13212-3-bjorn.topel@gmail.com>
  <20191213053054.l3o6xlziqzwqxq22@ast-mbp> <CAJ+HfNiYHM1v8SXs54rkT86MrNxuB5V_KyHjwYupcjUsMf1nSQ@mail.gmail.com>
- <20191213150407.laqt2n2ue2ahsu2b@ast-mbp.dhcp.thefacebook.com> <CAJ+HfNgjvT2O=ux=AqdDdO=QSwBkALvXSBjZhib6zGu=AeARwA@mail.gmail.com>
-In-Reply-To: <CAJ+HfNgjvT2O=ux=AqdDdO=QSwBkALvXSBjZhib6zGu=AeARwA@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 13 Dec 2019 07:51:53 -0800
-Message-ID: <CAADnVQLPJPDGY8aJwrTjOxVaDkZ3KM1_aBVc5jGwxxtNB+dBrg@mail.gmail.com>
+ <20191213150407.laqt2n2ue2ahsu2b@ast-mbp.dhcp.thefacebook.com>
+ <CAJ+HfNgjvT2O=ux=AqdDdO=QSwBkALvXSBjZhib6zGu=AeARwA@mail.gmail.com> <CAADnVQLPJPDGY8aJwrTjOxVaDkZ3KM1_aBVc5jGwxxtNB+dBrg@mail.gmail.com>
+In-Reply-To: <CAADnVQLPJPDGY8aJwrTjOxVaDkZ3KM1_aBVc5jGwxxtNB+dBrg@mail.gmail.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Fri, 13 Dec 2019 16:59:22 +0100
+Message-ID: <CAJ+HfNg4uAA+++LvhPG8cvkz7X_wjJkB8vYGNeZROaDV6eDXmA@mail.gmail.com>
 Subject: Re: [PATCH bpf-next v4 2/6] bpf: introduce BPF dispatcher
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     Netdev <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -69,29 +70,38 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Dec 13, 2019 at 7:49 AM Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.co=
-m> wrote:
+On Fri, 13 Dec 2019 at 16:52, Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> On Fri, 13 Dec 2019 at 16:04, Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
+> On Fri, Dec 13, 2019 at 7:49 AM Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.=
+com> wrote:
 > >
-> > On Fri, Dec 13, 2019 at 08:51:47AM +0100, Bj=C3=B6rn T=C3=B6pel wrote:
+> > On Fri, 13 Dec 2019 at 16:04, Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
 > > >
-> > > > I hope my guess that compiler didn't inline it is correct. Then ext=
-ra noinline
-> > > > will not hurt and that's the only thing needed to avoid the issue.
+> > > On Fri, Dec 13, 2019 at 08:51:47AM +0100, Bj=C3=B6rn T=C3=B6pel wrote=
+:
 > > > >
+> > > > > I hope my guess that compiler didn't inline it is correct. Then e=
+xtra noinline
+> > > > > will not hurt and that's the only thing needed to avoid the issue=
+.
+> > > > >
+> > > >
+> > > > I'd say it's broken not marking it as noinline, and I was lucky. It
+> > > > would break if other BPF entrypoints that are being called from
+> > > > filter.o would appear. I'll wait for more comments, and respin a v5
+> > > > after the weekend.
 > > >
-> > > I'd say it's broken not marking it as noinline, and I was lucky. It
-> > > would break if other BPF entrypoints that are being called from
-> > > filter.o would appear. I'll wait for more comments, and respin a v5
-> > > after the weekend.
+> > > Also noticed that EXPORT_SYMBOL for dispatch function is not necessar=
+y atm.
+> > > Please drop it. It can be added later when need arises.
+> > >
 > >
-> > Also noticed that EXPORT_SYMBOL for dispatch function is not necessary =
-atm.
-> > Please drop it. It can be added later when need arises.
-> >
+> > It's needed for module builds, so I cannot drop it!
 >
-> It's needed for module builds, so I cannot drop it!
+> Not following. Which module it's used out of?
 
-Not following. Which module it's used out of?
+The trampoline is referenced from bpf_prog_run_xdp(), which is
+inlined. Without EXPORT, the symbol is not visible for the module. So,
+if, say i40e, is built as a module, you'll get a linker error.
