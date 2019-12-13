@@ -2,59 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CC9A211DE31
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2019 07:23:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEAC911DE50
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2019 07:48:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727474AbfLMGXV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Dec 2019 01:23:21 -0500
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:37674 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725535AbfLMGXV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Dec 2019 01:23:21 -0500
-Received: by mail-qt1-f195.google.com with SMTP id w47so1415115qtk.4;
-        Thu, 12 Dec 2019 22:23:20 -0800 (PST)
+        id S1725818AbfLMGsY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Dec 2019 01:48:24 -0500
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:34204 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725535AbfLMGsX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 Dec 2019 01:48:23 -0500
+Received: by mail-qk1-f196.google.com with SMTP id d202so1289297qkb.1;
+        Thu, 12 Dec 2019 22:48:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=fqaOUzgKRCQS6i8M72Lp+GqkFLfAFdGSpItK/jP+Zjc=;
-        b=rM73wQzIGk4vzF0CQQGRsdTJxT+OuVYzRWwGF9WjrrBaidBUUeWHOFYrgLOXG2vrMU
-         nTYtmjeAw4YweeNlh5OkTFT6QB7cCDhL1lGo+83wmInuHgRduE9m/SHO0KifzKrPKpA/
-         lHo4KwVGmjk2nFJ6WVbVancHVEjU8SHTZq1oT2ZvAuBLycmWviZSfNRiTAWcFDIg7ANu
-         pWTdziPYY//X67azzaXbzQeTFhUfEcIVWquFMm1J69u3VRj4WeuPfOgshySPUXcvuK02
-         TJGT7UNKW4kZoD9Qw38IF+7rnF2BIsFOikCK+neBortNo9XLWRjKS1qo5WNEWKa5m25P
-         +52A==
+        bh=bjP8jFWb2EV8x3iinz6Te7KLIihZhn048SfrYs4j+EA=;
+        b=QsMq3OspKC5jzloNEl9GNKVNO5gyBjsp/p6fMc80+D/Cv2nAI9mKywOG0N9yHI1Nfh
+         DRAvPyEGMxruKwaTmqLSYzvYv7NhyABMWZ98QMAcJP26kUUp5Mi4QQa1jFOsR1UulBpe
+         N8esfOr9EnPFvPPf0pjV5e5CN6O0fnKn+nHCLEndEgk8ydZsWR3LdI0l61JxaurxrTSV
+         YGFZ8BQ/8U3LpNu2kI/wie6Y/xh5mL0Fyf6Tk9hvEY0J+WNgb1/lGnrH81iGmCfO+wTO
+         ebPkLj625Vf2OHktBwVgLafhQn16MzEwoNzlldszz8T/RGl7pr4FjHFFeFlZRQUquRm9
+         EoLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=fqaOUzgKRCQS6i8M72Lp+GqkFLfAFdGSpItK/jP+Zjc=;
-        b=I5801gVkI+tj2ctra6WWN5ruxgcA8S8Mtq/SXRyoPSKl+R/bx/1By+Gr04EfofKtXw
-         RJk0j02vOogH5J3Oe//k5FLgoM5Dfz2HKF06xDFCsJQuJZgkJ21bADBYszXpsX+VoBrg
-         68KabSb2CmB64m0sxGPHDP6nmkY1I1w0ou9WaxU0Me8nixI8mhHwfx99O5xXoIiyRZ3g
-         +mCAuaT+0kLZAWp0tfWGPdMaCK+mZ+J/ZFnzipxED+ou8YgKYDvxGBNmQrQ5ySj6v1ti
-         Ffn7tYid4k29CNlKhZWONIZc+lToUGCtlz/68iEqpJRShra1bb+81DAfDHtwJ5nN7MVC
-         N+yg==
-X-Gm-Message-State: APjAAAVUYcyW75xn343xKzCu8BfTzl5lnHY5pnS/uD223OYsfFnYhwbm
-        K6Ca5cBWRAUzHoLd3vliwHbO1/6XoN9Ke/KMiYM=
-X-Google-Smtp-Source: APXvYqyyWbpl6DwJ5gcq27sRwPe2NgMD72gqKki3YCWdrlUQvVvveYK8V0qaCBn3p86DTWUkRKw6Kpw7U8tKZQIHZd0=
-X-Received: by 2002:ac8:4050:: with SMTP id j16mr10963192qtl.171.1576218199688;
- Thu, 12 Dec 2019 22:23:19 -0800 (PST)
+        bh=bjP8jFWb2EV8x3iinz6Te7KLIihZhn048SfrYs4j+EA=;
+        b=URfj+Gf52BDVh2fyCvjomTw2RKKgXUNnAxDBILZgdqyq3GmKeDBjd8+NmMH1TjQAVj
+         UmLJEM6vGLg56hZvBRU/QJMo5aWUk1XOYMGhjcWi7KSLrDjkKVewEiGg3wy2yF50qjxW
+         jZ0dYRRrWIM2Qq9sqpaEkE4FbBtG0wyUQsA1IKlv8mb7MdZ9tZpffyXH7Ogk2PqKg5Mi
+         stsBzJvDVuo0hswgy6jn9pd4swTPgBv17jw6tSdobdsDwaGF3YJsMmXJ+ApUgc68iCRm
+         2xE+ZIZzU9ra2Dy+/8ZsXkdKsOjFT+SySqbKsqwSw6SDDVawMUN42YdUdKoxdCQuGt91
+         bXaw==
+X-Gm-Message-State: APjAAAW1hEfnc7g6p72suwhtTJaGajyZjuAu7fBJAhlv2vMeZ+CMXltC
+        k7t7XNNvnAcA6YH4dDFDjEQl0fe89QFqep9/wEE=
+X-Google-Smtp-Source: APXvYqx/SHtno2Lw4KMEL8ORxi8wjOO2kqv+TD2GpVnxbnTlYeWxHBSSFprNvoF5REe7AhvlGZ/jAd1f9G7DUBUgoYI=
+X-Received: by 2002:a05:620a:14a2:: with SMTP id x2mr12304829qkj.36.1576219702042;
+ Thu, 12 Dec 2019 22:48:22 -0800 (PST)
 MIME-Version: 1.0
-References: <20191211191518.GD3105713@mini-arch> <CAEf4BzYofFFjSAO3O-G37qyeVHE6FACex=yermt8bF8mXksh8g@mail.gmail.com>
+References: <CAEf4Bzb+3b-ypP8YJVA=ogQgp1KXx2xPConOswA0EiGXsmfJow@mail.gmail.com>
+ <20191211191518.GD3105713@mini-arch> <CAEf4BzYofFFjSAO3O-G37qyeVHE6FACex=yermt8bF8mXksh8g@mail.gmail.com>
  <20191211200924.GE3105713@mini-arch> <CAEf4BzaE0Q7LnPOa90p1RX9qSbOA_8hkT=6=7peP9C88ErRumQ@mail.gmail.com>
  <20191212025735.GK3105713@mini-arch> <CAEf4BzY2KHK4h5e40QgGt4GzJ6c+rm-vtbyEdM41vUSqcs=txA@mail.gmail.com>
  <20191212162953.GM3105713@mini-arch> <CAEf4BzYJHvuFbBM-xvCCsEa+Pg-bG1tprGMbCDtsbGHdv7KspA@mail.gmail.com>
  <20191212104334.222552a1@cakuba.netronome.com> <20191212195415.ubnuypco536rp6mu@ast-mbp.dhcp.thefacebook.com>
- <20191212214557.GO3105713@mini-arch>
-In-Reply-To: <20191212214557.GO3105713@mini-arch>
+ <20191212122115.612bb13b@cakuba.netronome.com>
+In-Reply-To: <20191212122115.612bb13b@cakuba.netronome.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 12 Dec 2019 22:23:08 -0800
-Message-ID: <CAEf4Bzav-hhbM35n7B+xx0Ybhq50k5ZMhgpeO0YOi4QN0dq5pQ@mail.gmail.com>
+Date:   Thu, 12 Dec 2019 22:48:10 -0800
+Message-ID: <CAEf4BzaG95dxgSBSm7m8c3gJ-XeL97=N4srS5fR7JRfcjaMwTw@mail.gmail.com>
 Subject: Re: [PATCH bpf-next 11/15] bpftool: add skeleton codegen command
-To:     Stanislav Fomichev <sdf@fomichev.me>
+To:     Jakub Kicinski <jakub.kicinski@netronome.com>
 Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Stanislav Fomichev <sdf@fomichev.me>,
         Andrii Nakryiko <andriin@fb.com>,
         LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Networking <netdev@vger.kernel.org>,
@@ -67,111 +68,167 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 12, 2019 at 1:46 PM Stanislav Fomichev <sdf@fomichev.me> wrote:
+On Thu, Dec 12, 2019 at 12:21 PM Jakub Kicinski
+<jakub.kicinski@netronome.com> wrote:
 >
-> On 12/12, Alexei Starovoitov wrote:
+> On Thu, 12 Dec 2019 11:54:16 -0800, Alexei Starovoitov wrote:
 > > On Thu, Dec 12, 2019 at 10:43:34AM -0800, Jakub Kicinski wrote:
-> > One more point from Stan's email:
-> >
-> > > You can replace "our build system" with some other project you care about,
-> > > like systemd. They'd have the same problem with vendoring in recent enough
-> >
-> > we've been working with systemd folks for ~8 month to integrate libbpf into
-> > their build that is using meson build system and their CI that is github based.
-> > So we're well aware about systemd requirements for libbpf and friends.
-> Just curious (searching on systemd github for bpftool/libbpf doesn't
-> show up any code/issues): are you saying that there will be another ~8 months
-> to bring in bpftool or that it's already being worked on as part of
-> libbpf integration?
->
-> > > bpftool or waiting for every distro to do it. And all this work is
-> > > because you think that doing:
+> > > On Thu, 12 Dec 2019 08:53:22 -0800, Andrii Nakryiko wrote:
+> > > > > > > Btw, how hard it would be to do this generation with a new python
+> > > > > > > script instead of bpftool? Something along the lines of
+> > > > > > > scripts/bpf_helpers_doc.py that parses BTF and spits out this C header
+> > > > > > > (shouldn't be that hard to write custom BTF parser in python, right)?
+> > > > > > >
+> > > > > >
+> > > > > > Not impossible, but harder than I'd care to deal with. I certainly
+> > > > > > don't want to re-implement a good chunk of ELF and BTF parsing (maps,
+> > > > > > progs, in addition to datasec stuff). But "it's hard to use bpftool in
+> > > > > > our build system" doesn't seem like good enough reason to do all that.
+> > > > > You can replace "our build system" with some other project you care about,
+> > > > > like systemd. They'd have the same problem with vendoring in recent enough
+> > > > > bpftool or waiting for every distro to do it. And all this work is
+> > > > > because you think that doing:
+> > > > >
+> > > > >         my_obj->rodata->my_var = 123;
+> > > > >
+> > > > > Is easier / more type safe than doing:
+> > > > >         int *my_var = bpf_object__rodata_lookup(obj, "my_var");
+> > > > >         *my_var = 123;
+> > > >
+> > > > Your arguments are confusing me. Did I say that we shouldn't add this
+> > > > type of "dynamic" interface to variables? Or did I say that every
+> > > > single BPF application has to adopt skeleton and bpftool? I made no
+> > > > such claims and it seems like discussion is just based around where I
+> > > > have to apply my time and efforts... You think it's not useful - don't
+> > > > integrate bpftool into your build system, simple as that. Skeleton is
+> > > > used for selftests, but it's up to maintainers to decide whether to
+> > > > keep this, similar to all the BTF decisions.
 > > >
-> > >        my_obj->rodata->my_var = 123;
+> > > Since we have two people suggesting this functionality to be a separate
+> > > tool could you please reconsider my arguments from two days ago?
 > > >
-> > > Is easier / more type safe than doing:
-> > >        int *my_var = bpf_object__rodata_lookup(obj, "my_var");
-> > >        *my_var = 123;
+> > >   There absolutely nothing this tool needs from [bpftool], no
+> > >   JSON needed, no bpffs etc.
 > >
-> > Stan, you conveniently skipped error checking. It should have been:
-> >     int *my_var = bpf_object__rodata_lookup(obj, "my_var");
-> >     if (IS_ERROR_NULL(my_var))
-> >         goto out_cleanup;
-> >      *my_var = 123;
-> Yeah, but you have a choice, right? You can choose to check the error
-> and support old programs that don't export some global var and a new
-> program that has it. Or you can skip the error checks and rely on null
-> deref crash which is sometimes an option.
+> > To generate vmlinux.h bpftool doesn't need json and doesn't need bpffs.
+>
+> At least for header generation it pertains to the running system.
+> And bpftool was (and still is AFAICT) about interacting with the BPF
+> state on the running system.
 
-So your point is that between
-
-A. Skeleton way:
-
-my_obj->rodata->my_var = 123;
-
-and
-
-B. look up way:
-
-int *my_var = bpf_object__rodata_lookup(obj, "my_var");
-*my_var = 123;
-
-B is **better**, because **if you drop error checking** (which
-apparently is a choice within "Google distro") then it comes really
-close to succinctness of skeleton, is that right?
-
-Let's follow this through to the end with two pretty typical situations.
-
-1. Someone renames my_var into my_var1.
-  A. Skeleton: compilation error.
-  B. Lookup: NULL deref, core dump. If there is helpful in-program
-infra, it will dump stack trace and it should be pretty easy to
-pinpoint which variable look up failed (provided binary is built with
-debug info). If not - gdb is your friend, you'll figure this out
-pretty quickly.
-
-2. Someone changes the type of my_var from u64 to u32.
-  A. Skeleton: compiler will warn on too large constant assignment,
-but otherwise it's C, baby. But at least we are only going to write
-(potentially truncated) 4 bytes.
-  B. Lookup: we are happily overwriting 4 bytes of some other variable
-(best case -- just padding), without anyone realizing this. Good if we
-have exhaustive correctness testing for program logic.
-
-I do think there is a clear winner, it just seems like we disagree which one.
+As Alexei already mentioned, `bpftool btf dump file
+<elf-file-with-BTF-section>` has as much to do with running system,
+as, say, `readelf -x .BTF <elf-file-with-BTF-section>`. So if
+bpftool's only goal is to interact with BPF state of running system,
+as opposed to be, you know, the "all things BPF" multitool, then that
+ship has sailed when we added `bpftool btf` subcommand, which I don't
+remember hearing too much objections about at that time (which
+happened quite a while ago, btw).
 
 >
-> (might be not relevant with the introduction of EMBED_FILE which you
-> seem to be using more and more; ideally, we still would like to be able to
-> distribute bpf.o and userspace binary separately).
+> > > It can be a separate tool like
+> > >   libbpf-skel-gen or libbpf-c-skel or something, distributed with libbpf.
+> > >   That way you can actually soften the backward compat. In case people
+> > >   become dependent on it they can carry that little tool on their own.
+> >
+> > Jakub,
+> >
+> > Could you please consider Andrii's reply to your comment from two days ago:
+> > https://lore.kernel.org/bpf/CAEf4BzbeZbmCTOOo2uQXjm0GL0WDu7aLN6fdUk18Nv2g0kfwVg@mail.gmail.com/
+> > "we are trying to make users lives easier by having major distributions
+> > distribute bpftool and libbpf properly. Adding extra binaries to
+> > distribute around doesn't seem to be easing any of users pains."
+>
+> Last time we argued I heard how GH makes libbpf packaging easier.
+> Only to have that dis-proven once the people in Europe who do distro
+> packaging woke up:
+>
+> https://lkml.org/lkml/2019/12/5/101
+> https://lkml.org/lkml/2019/12/5/312
+>
+> I feel I'm justified not to take your opinion on this as fact.
+>
+> > My opinion is the following.
+> > bpftool is necessary to write bpf programs already. It's necessary to produce
+> > vmlinux.h for bpf programs to include it. It's part of build process. I can
+> > relate to Stan's complains that he needs to update clang and pahole. He missed
+> > the fact that he needs to update bpftool too if he wants to use all features of
+> > CO-RE. Same thing for skeleton generation. If people need to run the latest
+> > selftest/bpf on the latest kernel they need to upgrade to the latest clang,
+> > pahole, libbpf, bpftool. Nothing new here.
+>
+> They have to update libbpf, so why can't the code gen tool be part of
+> libbpf? We don't need to build all BPF user space into one binary.
+>
+> > Backwards compat is the same concern for skeleton generation and for vmlinux.h
+> > generation. Obviously no one wants to introduce something that will keep
+> > changing. Is vmlinux.h generation stable? I like to believe so. Same with
+> > skeleton. I wouldn't want to see it changing, but in both cases such chance
+> > exists.
+>
+> vmlinux.h is pretty stable, there isn't much wiggle room there.
+> It's more of a conversion tool, if you will.
+>
+> Skeleton OTOH is supposed to make people's lives easier, so it's a
+> completely different beast. It should be malleable so that users can
 
-I don't even know what BPF_EMBED_OBJ has to do with skeleton, tbh.
-BPF_EMBED_OBJ is just one of the ways to get contents of BPF object
-file. You can just as well instantiate skeleton from separate .o file,
-if you read its content in memory and create struct bpf_embed_data
-with pointer to it (or just mmap() it, which would be even easier). If
-this is typical case, we can generate an extra function to instantiate
-skeleton from file, of course.
+Skeleton is also a conversion tool. From compiled BPF object file to
+it's "C representation". Just like BTF-to-C converter takes BTF and
+creates its C representation. Both make people's lives easier. They
+are in the same boat: productivity-enhancing tools, not a system
+introspection tools.
+
+> improve and hack on it. Baking it into as system tool is counter
+> productive. Users should be able to grab the skel tool single-file
+> source and adjust for their project's needs. Distributing your own copy
+> of bpftool because you want to adjust skel is a heavy lift.
+
+Skeleton is auto-generated code, it's not supposed to be tweaked or
+"adjusted" by hand. Because next time you do tiny change to your BPF
+source code (just swap order of two global variables), skeleton
+changes. If someone is not satisfied with the way skeleton generation
+looks like, they should propose changes and contribute to common
+algorithm. Or, of course, they can just go and re-implement it on
+their own, if struct bpf_object_skeleton suits them still (which is
+what libbpf works with). Then they can do it in Python, Go, Scala,
+Java, Perl, whatnot. But somehow I doubt anyone would want to do that.
 
 >
-> > Take a look at Andrii's patch 13/15:
-> > 5 files changed, 149 insertions(+), 249 deletions(-)
-> > Those are simple selftests, yet code removal is huge. Bigger project benefits
-> > even more.
-> Excluding fentry/fexit tests (where new find_program_by_title+attach
-> helper and mmap might help), it looks like the majority of those gains come
-> from the fact that the patch in question doesn't do any error checking.
-> You can drop all the CHECK() stuff for existing
-> find_map_by_name/find_prog_by_name instead and get the same gains.
+> And maybe one day we do have Python/Go/whatever bindings, and we can
+> convert the skel tool to a higher level language with modern templating.
 
-See above. The fact we are not doing error checking with skeleton is
-because it can't fail. If programmer screwed up name of variable,
-program, or variable -- that's compilation error! That's the reason we
-don't check errors, not because it's a cowboy-style "You can choose to
-check the error" approach.
+Because high-level implementation is going to be so much simpler and
+shorter, really? Is it that complicated in C right now? What's the
+real benefit of waiting to be able to do it in "higher level" language
+beyond being the contrarian? Apart from \n\ (which is mostly hidden
+from view), I don't think high-level templates are going to be much
+more clean.
 
 >
-> [as usual, feel free to ignore me, I don't want to keep flaming about
-> it, but it's hard not to reply]
+> > We cannot and should not adopt kernel-like ABI guarantees to user space
+> > code. It will paralyze the development.
+>
+> Discussion for another time :)
 
-likewise
+If this "experimental" disclaimer is a real blocker for all of this, I
+don't mind making it a public API right now. bpf_object_skeleton is
+already designed to be backward/forward compatible with size of struct
+itself and all the sub-structs recorded during initialization. I
+didn't mean to create impression like this whole approach is so raw
+and untried that it will most certainly break and we are still unsure
+about it. It's not and it certainly improves set up code for
+real-world applications. We might need to add some extra option here
+and there, but the stuff that's there already will stay as is.
+
+Would moving all the skeleton-related stuff into libbpf.h and
+"stabilizing" it make all this more tolerable for you?
+
+>
+> > Now consider if vmlinux.h and skeleton generation is split out of bpftool into
+> > new tool. Effectively it would mean a fork of bpftool. Two binaries doing bpf
+> > elf file processing without clear distinction between them is going to be very
+> > confusing.
+>
+> To be clear I'm suggesting skel gen is a separate tool, vmlinux and
+> Quentin's header gen work on the running system, they are not pure
+> build env tools.
