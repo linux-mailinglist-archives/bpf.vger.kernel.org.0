@@ -2,204 +2,172 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 03EE511DA08
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2019 00:32:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC40311DD73
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2019 06:11:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731158AbfLLXcN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 12 Dec 2019 18:32:13 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:29990 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730934AbfLLXcN (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 12 Dec 2019 18:32:13 -0500
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xBCNW6YG014899
-        for <bpf@vger.kernel.org>; Thu, 12 Dec 2019 15:32:12 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=facebook; bh=OcW1omHt06g7weuVljtwWO3YOx5fc0PEP7yb6YDWVAk=;
- b=OAxdsuc/1A7waqEzR+kvXtKfuQVDuMNASUqIwAJm8llSxiw8dnZY+vwUrt2+wBnVW/u+
- f9gf/j/vm26zo7nmmvUaU2XIdPrZPniOSc7/hTT8cz4IdwHttAQS3yqutBxWes1SBWAg
- 0pqbzMDt45dY1mThOobd0MKY4Re2hGDBzWQ= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2wub46dape-10
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 12 Dec 2019 15:32:11 -0800
-Received: from intmgw002.41.prn1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 12 Dec 2019 15:31:26 -0800
-Received: by dev082.prn2.facebook.com (Postfix, from userid 572249)
-        id 619D43712A1F; Thu, 12 Dec 2019 15:31:25 -0800 (PST)
-Smtp-Origin-Hostprefix: dev
-From:   Andrey Ignatov <rdna@fb.com>
-Smtp-Origin-Hostname: dev082.prn2.facebook.com
-To:     <bpf@vger.kernel.org>
-CC:     Andrey Ignatov <rdna@fb.com>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <kafai@fb.com>, <andriin@fb.com>,
-        <kernel-team@fb.com>
-Smtp-Origin-Cluster: prn2c23
-Subject: [PATCH v2 bpf-next 6/6] selftests/bpf: Cover BPF_F_REPLACE in test_cgroup_attach
-Date:   Thu, 12 Dec 2019 15:30:53 -0800
-Message-ID: <bc55a274ea572d237bd091819f38502fa837abb5.1576193131.git.rdna@fb.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <cover.1576193131.git.rdna@fb.com>
-References: <cover.1576193131.git.rdna@fb.com>
-X-FB-Internal: Safe
+        id S1725882AbfLMFLI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Dec 2019 00:11:08 -0500
+Received: from mail-pj1-f67.google.com ([209.85.216.67]:33448 "EHLO
+        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725385AbfLMFLH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 Dec 2019 00:11:07 -0500
+Received: by mail-pj1-f67.google.com with SMTP id r67so697363pjb.0;
+        Thu, 12 Dec 2019 21:11:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=F2fqREv70Teeeov0KGudyLpVFva1MaF/r6WkUf6nkAU=;
+        b=WY6XvDL4uWPKw/PYq+LpsJ5B7IdmT67QNT0RPgA0BVFmBuNpph8ZDI1eE2as6ztYYg
+         s+gOX/yKO2EfskiwJTuNUksU+5AEKTWVv2RUHOVUOUF2m9kBZ6w8WOt+uVMpRE1OA1mb
+         jWvlM6m503lzXOsfzVks7xAloDPbz+s11uqYwcqa4LLr9Xu9wAjBGarHeRf1w4iz63N5
+         rVg6ZHuWsU3qz2vmMXNPMHmghUigOaOMyYnCKIohywWJVC+QuAWrULbXTiZlqnGr0Efe
+         o1XfOQ36fY+1Yd3bJP677ElyPLAzW8a6f+imH8WtfBP6e0TIQ3WvsKg0PJoMbQdRIxJO
+         SRHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=F2fqREv70Teeeov0KGudyLpVFva1MaF/r6WkUf6nkAU=;
+        b=It6TEOjSfU+OrJnR23pg32UCSo2u4+0b5xi+/ox1122ylymg4DOj0h2g59Kn4Pl59O
+         L590x4Xshd6fwsGMsu4Wh7Bq1Phpo2z/7txfc4YrMvvj/orvGeMEEicJLbl/9e0MiKVx
+         8sig6h/uuXar4Ih/L6ro8sDVdd+/Dswwn2RvG04VXKahleIH68pXJnSCCdsPR3C2hI64
+         jVIOSqKh2PVURY7oDOIukjy8T0Z1zsBv0gqMFcIpGqI5L2tE68KqVeH6hQOC8Nmar1yT
+         RSHBtD6YeALi5gbQ7mfotobvrJc92gV4hlyAgGUtUQZb6xPtXHd+zz+5ZTlTchj9U+hZ
+         41Mw==
+X-Gm-Message-State: APjAAAWnW/lB5BdiTzeAzD5S6q11K8Lyh09lTehv7rCGdm4LmwveZ1qR
+        VHXdvFQBkah6ocMCd5VM4kQ=
+X-Google-Smtp-Source: APXvYqxDCzodASPgOl/9TFLXh2xEO5YRDfc86b0gI2lx2ZGcR/nhEAum/vmp7y4CTYqWKcNba+5oew==
+X-Received: by 2002:a17:902:6bc3:: with SMTP id m3mr13499091plt.185.1576213866958;
+        Thu, 12 Dec 2019 21:11:06 -0800 (PST)
+Received: from ast-mbp ([2620:10d:c090:180::c195])
+        by smtp.gmail.com with ESMTPSA id d4sm7738459pjz.12.2019.12.12.21.11.05
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 12 Dec 2019 21:11:05 -0800 (PST)
+Date:   Thu, 12 Dec 2019 21:11:04 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
+        daniel@iogearbox.net, andrii.nakryiko@gmail.com, kernel-team@fb.com
+Subject: Re: [PATCH v2 bpf-next 1/3] libbpf: support libbpf-provided extern
+ variables
+Message-ID: <20191213050739.xt4wnofdwf66gcrw@ast-mbp>
+References: <20191211065002.2074074-1-andriin@fb.com>
+ <20191211065002.2074074-2-andriin@fb.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
- definitions=2019-12-12_08:2019-12-12,2019-12-12 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
- bulkscore=0 phishscore=0 adultscore=0 priorityscore=1501 mlxlogscore=390
- lowpriorityscore=0 suspectscore=13 spamscore=0 mlxscore=0 clxscore=1015
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1910280000 definitions=main-1912120181
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191211065002.2074074-2-andriin@fb.com>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Test replacement of a cgroup-bpf program attached with BPF_F_ALLOW_MULTI
-and possible failure modes: invalid combination of flags, invalid
-replace_bpf_fd, replacing a non-attachd to specified cgroup program.
+On Tue, Dec 10, 2019 at 10:50:00PM -0800, Andrii Nakryiko wrote:
+> +static int set_ext_value_tri(struct extern_desc *ext, void *ext_val,
+> +			     char value)
+> +{
+> +	switch (ext->type) {
+> +	case EXT_BOOL:
+> +		if (value == 'm') {
+> +			pr_warn("extern %s=%c should be tristate or char\n",
+> +				ext->name, value);
+> +			return -EINVAL;
+> +		}
+> +		*(bool *)ext_val = value == 'y' ? true : false;
 
-Example of program replacing:
+may be check for strict y/n ?
 
-  # gdb -q ./test_cgroup_attach
-  Reading symbols from /data/users/rdna/bin/test_cgroup_attach...done.
-  ...
-  Breakpoint 1, test_multiprog () at test_cgroup_attach.c:443
-  443     test_cgroup_attach.c: No such file or directory.
-  (gdb)
-  [2]+  Stopped                 gdb -q ./test_cgroup_attach
-  # bpftool c s /mnt/cgroup2/cgroup-test-work-dir/cg1
-  ID       AttachType      AttachFlags     Name
-  35       egress          multi
-  36       egress          multi
-  # fg gdb -q ./test_cgroup_attach
-  c
-  Continuing.
-  Detaching after fork from child process 361.
+> +		break;
+> +	case EXT_TRISTATE:
+> +		if (value == 'y')
+> +			*(enum libbpf_tristate *)ext_val = TRI_YES;
+> +		else if (value == 'm')
+> +			*(enum libbpf_tristate *)ext_val = TRI_MODULE;
+> +		else /* value == 'n' */
+> +			*(enum libbpf_tristate *)ext_val = TRI_NO;
 
-  Breakpoint 2, test_multiprog () at test_cgroup_attach.c:454
-  454     in test_cgroup_attach.c
-  (gdb)
-  [2]+  Stopped                 gdb -q ./test_cgroup_attach
-  # bpftool c s /mnt/cgroup2/cgroup-test-work-dir/cg1
-  ID       AttachType      AttachFlags     Name
-  41       egress          multi
-  36       egress          multi
+same here ?
 
-Signed-off-by: Andrey Ignatov <rdna@fb.com>
----
- .../selftests/bpf/test_cgroup_attach.c        | 62 +++++++++++++++++--
- 1 file changed, 57 insertions(+), 5 deletions(-)
+> +		break;
+> +	case EXT_CHAR:
+> +		*(char *)ext_val = value;
+> +		break;
+> +	case EXT_UNKNOWN:
+> +	case EXT_INT:
+> +	case EXT_CHAR_ARR:
 
-diff --git a/tools/testing/selftests/bpf/test_cgroup_attach.c b/tools/testing/selftests/bpf/test_cgroup_attach.c
-index 7671909ee1cb..6c7971ffe683 100644
---- a/tools/testing/selftests/bpf/test_cgroup_attach.c
-+++ b/tools/testing/selftests/bpf/test_cgroup_attach.c
-@@ -250,7 +250,7 @@ static int prog_load_cnt(int verdict, int val)
- 		BPF_LD_MAP_FD(BPF_REG_1, map_fd),
- 		BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_lookup_elem),
- 		BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 2),
--		BPF_MOV64_IMM(BPF_REG_1, val), /* r1 = 1 */
-+		BPF_MOV64_IMM(BPF_REG_1, val), /* r1 = val */
- 		BPF_RAW_INSN(BPF_STX | BPF_XADD | BPF_DW, BPF_REG_0, BPF_REG_1, 0, 0), /* xadd r0 += r1 */
- 
- 		BPF_LD_MAP_FD(BPF_REG_1, cgroup_storage_fd),
-@@ -290,11 +290,11 @@ static int test_multiprog(void)
- {
- 	__u32 prog_ids[4], prog_cnt = 0, attach_flags, saved_prog_id;
- 	int cg1 = 0, cg2 = 0, cg3 = 0, cg4 = 0, cg5 = 0, key = 0;
--	int drop_prog, allow_prog[6] = {}, rc = 0;
-+	int drop_prog, allow_prog[7] = {}, rc = 0;
- 	unsigned long long value;
- 	int i = 0;
- 
--	for (i = 0; i < 6; i++) {
-+	for (i = 0; i < ARRAY_SIZE(allow_prog); i++) {
- 		allow_prog[i] = prog_load_cnt(1, 1 << i);
- 		if (!allow_prog[i])
- 			goto err;
-@@ -400,6 +400,58 @@ static int test_multiprog(void)
- 	assert(bpf_map_lookup_elem(map_fd, &key, &value) == 0);
- 	assert(value == 1 + 2 + 8 + 16);
- 
-+	/* invalid input */
-+
-+	DECLARE_LIBBPF_OPTS(bpf_prog_attach_opts, attach_opts,
-+		.target_fd		= cg1,
-+		.prog_fd		= allow_prog[6],
-+		.replace_prog_fd	= allow_prog[0],
-+		.type			= BPF_CGROUP_INET_EGRESS,
-+		.flags			= BPF_F_ALLOW_MULTI | BPF_F_REPLACE,
-+	);
-+
-+	attach_opts.flags = BPF_F_ALLOW_OVERRIDE | BPF_F_REPLACE;
-+	if (!bpf_prog_attach_xattr(&attach_opts)) {
-+		log_err("Unexpected success with OVERRIDE | REPLACE");
-+		goto err;
-+	}
-+	assert(errno == EINVAL);
-+
-+	attach_opts.flags = BPF_F_REPLACE;
-+	if (!bpf_prog_attach_xattr(&attach_opts)) {
-+		log_err("Unexpected success with REPLACE alone");
-+		goto err;
-+	}
-+	assert(errno == EINVAL);
-+	attach_opts.flags = BPF_F_ALLOW_MULTI | BPF_F_REPLACE;
-+
-+	attach_opts.replace_prog_fd = -1;
-+	if (!bpf_prog_attach_xattr(&attach_opts)) {
-+		log_err("Unexpected success with bad replace fd");
-+		goto err;
-+	}
-+	assert(errno == EBADF);
-+
-+	/* replacing a program that is not attached to cgroup should fail  */
-+	attach_opts.replace_prog_fd = allow_prog[3];
-+	if (!bpf_prog_attach_xattr(&attach_opts)) {
-+		log_err("Unexpected success: replace not-attached prog on cg1");
-+		goto err;
-+	}
-+	assert(errno == ENOENT);
-+	attach_opts.replace_prog_fd = allow_prog[0];
-+
-+	/* replace 1st from the top program */
-+	if (bpf_prog_attach_xattr(&attach_opts)) {
-+		log_err("Replace prog1 with prog7 on cg1");
-+		goto err;
-+	}
-+	value = 0;
-+	assert(bpf_map_update_elem(map_fd, &key, &value, 0) == 0);
-+	assert(system(PING_CMD) == 0);
-+	assert(bpf_map_lookup_elem(map_fd, &key, &value) == 0);
-+	assert(value == 64 + 2 + 8 + 16);
-+
- 	/* detach 3rd from bottom program and ping again */
- 	errno = 0;
- 	if (!bpf_prog_detach2(0, cg3, BPF_CGROUP_INET_EGRESS)) {
-@@ -414,7 +466,7 @@ static int test_multiprog(void)
- 	assert(bpf_map_update_elem(map_fd, &key, &value, 0) == 0);
- 	assert(system(PING_CMD) == 0);
- 	assert(bpf_map_lookup_elem(map_fd, &key, &value) == 0);
--	assert(value == 1 + 2 + 16);
-+	assert(value == 64 + 2 + 16);
- 
- 	/* detach 2nd from bottom program and ping again */
- 	if (bpf_prog_detach2(-1, cg4, BPF_CGROUP_INET_EGRESS)) {
-@@ -425,7 +477,7 @@ static int test_multiprog(void)
- 	assert(bpf_map_update_elem(map_fd, &key, &value, 0) == 0);
- 	assert(system(PING_CMD) == 0);
- 	assert(bpf_map_lookup_elem(map_fd, &key, &value) == 0);
--	assert(value == 1 + 2 + 4);
-+	assert(value == 64 + 2 + 4);
- 
- 	prog_cnt = 4;
- 	assert(bpf_prog_query(cg5, BPF_CGROUP_INET_EGRESS, BPF_F_QUERY_EFFECTIVE,
--- 
-2.17.1
+why enumerate them when there is a default ?
+
+> +static int set_ext_value_str(struct extern_desc *ext, void *ext_val,
+> +			     const char *value)
+> +{
+> +	size_t len;
+> +
+> +	if (ext->type != EXT_CHAR_ARR) {
+> +		pr_warn("extern %s=%s should char array\n", ext->name, value);
+> +		return -EINVAL;
+> +	}
+> +
+> +	len = strlen(value);
+> +	if (value[len - 1] != '"') {
+> +		pr_warn("extern '%s': invalid string config '%s'\n",
+> +			ext->name, value);
+> +		return -EINVAL;
+> +	}
+> +
+> +	/* strip quotes */
+> +	len -= 2;
+> +	if (len + 1 > ext->sz) {
+> +		pr_warn("extern '%s': too long string config %s (%zu bytes), up to %d expected\n",
+> +			ext->name, value, len + 1, ext->sz);
+> +		return -EINVAL;
+
+may be print warning and truncate instead of hard error?
+
+> +static bool is_ext_value_in_range(const struct extern_desc *ext, __u64 v)
+> +{
+> +	int bit_sz = ext->sz * 8;
+> +
+> +	if (ext->sz == 8)
+> +		return true;
+> +
+> +	if (ext->is_signed)
+> +		return v + (1ULL << (bit_sz - 1)) < (1ULL << bit_sz);
+> +	else
+> +		return (v >> bit_sz) == 0;
+
+a comment would be helpful.
+
+> +		ext_val = data + ext->data_off;
+> +		value = sep + 1;
+> +
+> +		switch (*value) {
+> +		case 'y': case 'n': case 'm':
+
+I don't think config.gz has 'n', but it's good to have it here.
+
+> -			} else if (strcmp(name, ".data") == 0) {
+> +			} else if (strcmp(name, DATA_SEC) == 0) {
+>  				obj->efile.data = data;
+>  				obj->efile.data_shndx = idx;
+> -			} else if (strcmp(name, ".rodata") == 0) {
+> +			} else if (strcmp(name, RODATA_SEC) == 0) {
+
+such cleanup changes should be in separate patch.
+
+> +		if (strcmp(ext->name, "LINUX_KERNEL_VERSION") == 0) {
+> +			void *ext_val = data + ext->data_off;
+> +			__u32 kver = get_kernel_version();
+> +
+> +			if (!kver) {
+> +				pr_warn("failed to get kernel version\n");
+> +				return -EINVAL;
+> +			}
+> +			err = set_ext_value_num(ext, ext_val, kver);
+
+I think it should work when kern_ver is not 'int'.
+Could you add a test for u64 ?
+Or it will fail on big endian?
 
