@@ -2,102 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A614E11DF61
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2019 09:23:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7CAF11E1B7
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2019 11:11:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726638AbfLMIXT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Dec 2019 03:23:19 -0500
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:41032 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725468AbfLMIXT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Dec 2019 03:23:19 -0500
-Received: by mail-qk1-f196.google.com with SMTP id l124so1061899qkf.8;
-        Fri, 13 Dec 2019 00:23:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Vdv7yq4/4gppqbQW+Pz5XTJCN0SOeSsSHlkojBBgHEc=;
-        b=U2T/liBmif3CpF4oH7BlJzAA8xYiYVr/Jk37Xp+c7Mi29LAGoE9hbceiqRv2BxRz2Q
-         6kF81/g6lFjLzwJCVWCDhxY+WuBfo/w6VC8sMtRwCj2Vgu8/tfXMFxNJ+7EqMRlRfxSZ
-         sDb4EgULNGg3uz4VKUuumEugOlky6bHVVYWLMAD8PxHz0/yx3pPtZRqtnW79Z3in1tTJ
-         hvlQAG07zAJLAax+00nYng9ZF3TjLpVYvBB79PebwXCeLTwjxppTg4DLvrKgkaV//1NJ
-         nvB74pUfsM03ljyaqdxrMrhrjkx77g6CoSUHEeSQLrvnoa24akGSDml5vv8sWiFYZont
-         L9Gg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Vdv7yq4/4gppqbQW+Pz5XTJCN0SOeSsSHlkojBBgHEc=;
-        b=e8PxVTkLYhinkK4WIE/LjToq6wH864iXdHpsE0QvGo1A/BRfVTIj6XwotBH+6jhw45
-         b/MfAQ5+Mb8uM2JN1bd2hoSA2DEZy7knUfpAOX+nacXg0vKE6pLAEYx7YycXz6WSEYsE
-         w6KsLyfytH3ZqFBG6JhFZPx7LLl64EOS1A/s5vImOtzIbTY17CULXNistNXqtv6VzVxy
-         d+ZZskr7QBHlM0BdqQPhAT7ZpOC/Vs6X5/FX1AbDCxdkBQI/f3apd/c8lQOGrbJncsOB
-         DooBVjrbRtksIsQu2/oqJoQWHS7XTFwcvGDOoPk9GqTfUEtwB4bba7VF7ggrPqRs560P
-         Q3tA==
-X-Gm-Message-State: APjAAAVbA8rxrLJ1vQAAVjGAprvZ3QLT6f8pokHQKwmclu9I2dSh54g4
-        736B2nswOcwXcT7/AO57NJCI7oanKP2Zm/vg9mA=
-X-Google-Smtp-Source: APXvYqwsd/+uCs2VNSn316jr74JkB8IcOcfWDGLmdlZvAG7/8q8R+vXnxn04wGvyujhZRGSVxEdT31w/Z9gC4Phi0xc=
-X-Received: by 2002:ae9:ee11:: with SMTP id i17mr12319728qkg.333.1576225397800;
- Fri, 13 Dec 2019 00:23:17 -0800 (PST)
-MIME-Version: 1.0
-References: <20191211123017.13212-1-bjorn.topel@gmail.com> <20191211123017.13212-3-bjorn.topel@gmail.com>
- <87wob3f0xd.fsf@toke.dk>
-In-Reply-To: <87wob3f0xd.fsf@toke.dk>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Fri, 13 Dec 2019 09:23:06 +0100
-Message-ID: <CAJ+HfNjZL9CAEOqoUX5E1Os_gNw7DcGg=TXou93d3aVovEffcA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 2/6] bpf: introduce BPF dispatcher
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Netdev <netdev@vger.kernel.org>,
+        id S1725946AbfLMKLe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Dec 2019 05:11:34 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:53834 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725818AbfLMKLd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 Dec 2019 05:11:33 -0500
+Received: from 1.general.cascardo.us.vpn ([10.172.70.58] helo=calabresa)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <cascardo@canonical.com>)
+        id 1ifhuv-00075h-Mp; Fri, 13 Dec 2019 10:11:26 +0000
+Date:   Fri, 13 Dec 2019 07:11:14 -0300
+From:   Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+To:     Justin Forbes <jmforbes@linuxtx.org>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Song Liu <songliubraving@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        bpf <bpf@vger.kernel.org>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Edward Cree <ecree@solarflare.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <thoiland@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <netdev@vger.kernel.org>, Yonghong Song <yhs@fb.com>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <bpf@vger.kernel.org>, linuxppc-dev@lists.ozlabs.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Aurelien Jarno <aurelien@aurel32.net>,
+        debian-kernel@lists.debian.org
+Subject: [PATCH] libbpf: Fix readelf output parsing for Fedora
+Message-ID: <20191213101114.GA3986@calabresa>
+References: <20191201195728.4161537-1-aurelien@aurel32.net>
+ <87zhgbe0ix.fsf@mpe.ellerman.id.au>
+ <20191202093752.GA1535@localhost.localdomain>
+ <CAFxkdAqg6RaGbRrNN3e_nHfHFR-xxzZgjhi5AnppTxxwdg0VyQ@mail.gmail.com>
+ <20191210222553.GA4580@calabresa>
+ <CAFxkdAp6Up0qSyp0sH0O1yD+5W3LvY-+-iniBrorcz2pMV+y-g@mail.gmail.com>
+ <20191211160133.GB4580@calabresa>
+ <CAFxkdAp9OGjJS1Sdny+TiG2+zU4n0Nj+ZVrZt5J6iVsS_zqqcw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFxkdAp9OGjJS1Sdny+TiG2+zU4n0Nj+ZVrZt5J6iVsS_zqqcw@mail.gmail.com>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 11 Dec 2019 at 14:26, Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat=
-.com> wrote:
->
-> [...]
-> > +/* The BPF dispatcher is a multiway branch code generator. The
-> > + * dispatcher is a mechanism to avoid the performance penalty of an
-> > + * indirect call, which is expensive when retpolines are enabled. A
-> > + * dispatch client registers a BPF program into the dispatcher, and if
-> > + * there is available room in the dispatcher a direct call to the BPF
-> > + * program will be generated. All calls to the BPF programs called via
-> > + * the dispatcher will then be a direct call, instead of an
-> > + * indirect. The dispatcher hijacks a trampoline function it via the
-> > + * __fentry__ of the trampoline. The trampoline function has the
-> > + * following signature:
-> > + *
-> > + * unsigned int trampoline(const void *xdp_ctx,
-> > + *                         const struct bpf_insn *insnsi,
-> > + *                         unsigned int (*bpf_func)(const void *,
-> > + *                                                  const struct bpf_i=
-nsn *));
-> > + */
->
-> Nit: s/xdp_ctx/ctx/
->
+Fedora binutils has been patched to show "other info" for a symbol at the
+end of the line. This was done in order to support unmaintained scripts
+that would break with the extra info. [1]
 
-Thanks! Same type-o in the DEFINE/DECLARE macros. Will fix in v5.
+[1] https://src.fedoraproject.org/rpms/binutils/c/b8265c46f7ddae23a792ee8306fbaaeacba83bf8
 
+This in turn has been done to fix the build of ruby, because of checksec.
+[2] Thanks Michael Ellerman for the pointer.
 
-Bj=C3=B6rn
+[2] https://bugzilla.redhat.com/show_bug.cgi?id=1479302
 
+As libbpf Makefile is not unmaintained, we can simply deal with either
+output format, by just removing the "other info" field, as it always comes
+inside brackets.
 
-> -Toke
->
+Cc: Aurelien Jarno <aurelien@aurel32.net>
+Fixes: 3464afdf11f9 (libbpf: Fix readelf output parsing on powerpc with recent binutils)
+Reported-by: Justin Forbes <jmforbes@linuxtx.org>
+Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+---
+ tools/lib/bpf/Makefile | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
+index defae23a0169..23ae06c43d08 100644
+--- a/tools/lib/bpf/Makefile
++++ b/tools/lib/bpf/Makefile
+@@ -147,6 +147,7 @@ TAGS_PROG := $(if $(shell which etags 2>/dev/null),etags,ctags)
+ 
+ GLOBAL_SYM_COUNT = $(shell readelf -s --wide $(BPF_IN_SHARED) | \
+ 			   cut -d "@" -f1 | sed 's/_v[0-9]_[0-9]_[0-9].*//' | \
++			   sed 's/\[.*\]//' | \
+ 			   awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$NF}' | \
+ 			   sort -u | wc -l)
+ VERSIONED_SYM_COUNT = $(shell readelf -s --wide $(OUTPUT)libbpf.so | \
+@@ -213,6 +214,7 @@ check_abi: $(OUTPUT)libbpf.so
+ 		     "versioned in $(VERSION_SCRIPT)." >&2;		 \
+ 		readelf -s --wide $(BPF_IN_SHARED) |			 \
+ 		    cut -d "@" -f1 | sed 's/_v[0-9]_[0-9]_[0-9].*//' |	 \
++		    sed 's/\[.*\]//' |					 \
+ 		    awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$NF}'|  \
+ 		    sort -u > $(OUTPUT)libbpf_global_syms.tmp;		 \
+ 		readelf -s --wide $(OUTPUT)libbpf.so |			 \
+-- 
+2.24.0
+
