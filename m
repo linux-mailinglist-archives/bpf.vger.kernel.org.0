@@ -2,148 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E1CA11E85C
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2019 17:31:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7C4011E8C8
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2019 17:55:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728116AbfLMQbL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Dec 2019 11:31:11 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:2370 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728057AbfLMQbL (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 13 Dec 2019 11:31:11 -0500
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xBDGPoCQ007860;
-        Fri, 13 Dec 2019 08:31:09 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=Yv6VjnLkQPt1liNPma1omNc+SU5rmy//XuipGnejGRo=;
- b=I2i/NqQxlW/YFZml2J+ZnEp3gEVNXmTls672zGn6sb/Ax24SQ1qNYSddDV6zR/Kl4m2+
- FiWolUmPOCJwU8T9j+y7APHANl1YIijVsQI3x8cs2lb6woWRwXNPSYshGIkpkIrT2bn7
- z8sMgbM6kn1O3p3dYYNbw0osAPNI9lw/YUs= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2wvd4v8a7m-20
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 13 Dec 2019 08:31:08 -0800
-Received: from ash-exhub102.TheFacebook.com (2620:10d:c0a8:82::f) by
- ash-exhub203.TheFacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Fri, 13 Dec 2019 08:30:40 -0800
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.172) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Fri, 13 Dec 2019 08:30:40 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=e5DlJUu6BoM25qz+VFkvhQFQi9u/52LxiKpJOz2K7e+ckFZj4PfAOoqzn0FOSp5pvtA4nPWBoNo1EqLMh3Uf4eJFoXo+B3iGYFUFiQeB1yB3bT0mysk9TlZoNh4/sz7wuqmssI98pZ88KeNxvgdSSvlHh2wiA1QlrMvfUkLHVt1bZYprDy6+9ePK9KYTrelx8/bF4XCayzLBnB4o5sQCCObLxdxxcvhMtWx9uozsQhmDl4AXqE/W5StbNNn9gGdtSnY95x4Yu2w4T0Cuf3s5Nm33Wc6ggs9Virk6UManRf2KUcl98G/PiQ084+2LvOkED4hZKi462f6N8GgjGE0XQw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Yv6VjnLkQPt1liNPma1omNc+SU5rmy//XuipGnejGRo=;
- b=e8LMixoBt+bKaagisE7HjkZhhEmL7bv4otJRMEa0WdwHizSRUDy9N/oPiOX1F9v4TYO+gVpni6Vi52IXzcDhnfnbtCjF+Ojnt2TS32KnSTkFKFYemKhWCOAgQ5kxI6ckxz7Vh1WObDtwO/+OVIAZrqERDZRjj8gSmd3Vj9EbStCPKjlxcqpD/P+3QK606ZLZUXn4ln163E9SY50Ot8XlBLejg4OgK8WAPg9yKdFoRKk6PpeOx2t05lhcnVGLNYOvpur8NdgWK6Hrn1UcvR38Ta8//NwF6eu6jP5wsU1sA2ri/g6G6q/hpjPZW+aWmC4gdz6CWNUC2P3ehsmlIf+rrg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Yv6VjnLkQPt1liNPma1omNc+SU5rmy//XuipGnejGRo=;
- b=Jl66MuNtjUraRI40XyZohmBD3ZPGWzbCQ9eu6Hf/eca2JboX7BgOb1Tv9d5nx++5uLtD4AoDkJkdt6u9GcBnlkjxhxmQnDkqcvkEAheXcL/adXYyCVYrDMbB42lkuIS9zVFAnKlKE2g3Ma1xcwrvNa8nCbcOtppuo4UTEbTsyu0=
-Received: from MN2PR15MB3213.namprd15.prod.outlook.com (20.179.21.76) by
- MN2PR15MB2688.namprd15.prod.outlook.com (20.179.146.147) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2516.14; Fri, 13 Dec 2019 16:30:39 +0000
-Received: from MN2PR15MB3213.namprd15.prod.outlook.com
- ([fe80::6d1e:f2f7:d36:a42f]) by MN2PR15MB3213.namprd15.prod.outlook.com
- ([fe80::6d1e:f2f7:d36:a42f%4]) with mapi id 15.20.2538.017; Fri, 13 Dec 2019
- 16:30:39 +0000
-From:   Martin Lau <kafai@fb.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-CC:     Jakub Sitnicki <jakub@cloudflare.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "kernel-team@cloudflare.com" <kernel-team@cloudflare.com>
-Subject: Re: [PATCH bpf-next 00/10] Switch reuseport tests for test_progs
- framework
-Thread-Topic: [PATCH bpf-next 00/10] Switch reuseport tests for test_progs
- framework
-Thread-Index: AQHVsNYkeI4UmWlGhkW+qwn2TbAJNKe3jOUAgAC2uYA=
-Date:   Fri, 13 Dec 2019 16:30:38 +0000
-Message-ID: <20191213163035.res63motipcpkbqz@kafai-mbp>
-References: <20191212102259.418536-1-jakub@cloudflare.com>
- <20191213053635.4k42db43u6jbivi5@ast-mbp>
-In-Reply-To: <20191213053635.4k42db43u6jbivi5@ast-mbp>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MWHPR18CA0046.namprd18.prod.outlook.com
- (2603:10b6:320:31::32) To MN2PR15MB3213.namprd15.prod.outlook.com
- (2603:10b6:208:3d::12)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:200::2:e580]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: f8281836-3021-4ebb-ed6a-08d77fe9c9cf
-x-ms-traffictypediagnostic: MN2PR15MB2688:
-x-microsoft-antispam-prvs: <MN2PR15MB2688E312078FB1F892E1F7C3D5540@MN2PR15MB2688.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-forefront-prvs: 0250B840C1
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(7916004)(396003)(346002)(39860400002)(366004)(376002)(136003)(189003)(199004)(66476007)(5660300002)(71200400001)(86362001)(81156014)(81166006)(66446008)(4744005)(66946007)(6916009)(64756008)(66556008)(6506007)(8676002)(54906003)(8936002)(316002)(52116002)(478600001)(186003)(4326008)(6512007)(9686003)(6486002)(1076003)(2906002)(33716001);DIR:OUT;SFP:1102;SCL:1;SRVR:MN2PR15MB2688;H:MN2PR15MB3213.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: uk13vIbZbj9G/k6hqOYKGQnTziJWmQ4Xn61yRQxhPGN9yTjojk16oS5FnJ+rTbiYb5Lu3VHFrYfq0k2/8d8Dc36XmNvEEU3sr740jQ3/7RvdqT2JlK5Hr9I+0o73kg60rEViyhSZsNfwy2rvF70arhWQ1NmATyd10B3FXYth5hdcqUe9dB5lH8osjaZsv7gVdXsUWavStnTvKcm4tiPq4nTQ2Fd/IYTIKHjXwNO5z+ZrEa5LvwUXGFFBHU5A9NvO2QdTWMdTerHITemrWZmpMCTQUe6fuqczQ4fBPuT9o/E9ZWHZ+hpfWsYVPKh0x8B5vEVujQfI2ZH/mPbELLWPq2fySd3zy+gdnm70xk9bG0JU8+JwsDWeMEWTn3k78UjtKdnkGpMvH9NvZq+QIUVLndkoqkJ7rNXyH2vmm/TZFrwta3xgpZjpgml4Y8gn5yVh
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <FF680E67BF047946B99686D626750D6C@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1728396AbfLMQwB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Dec 2019 11:52:01 -0500
+Received: from mail-pj1-f66.google.com ([209.85.216.66]:34418 "EHLO
+        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727480AbfLMQwA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 Dec 2019 11:52:00 -0500
+Received: by mail-pj1-f66.google.com with SMTP id j11so1446186pjs.1;
+        Fri, 13 Dec 2019 08:52:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Qa1TSlB/YkLKGBzwqwvAAOSrVtrFdm5VNkLtw6aCthM=;
+        b=VmHh92t253uE8/jq/rUvxTevFPhYGFqrehEu5mrF+UuGZWF1bJNmdhtB3bzrsAdqcA
+         C5re+1+nqHXEfKTo7ZEttA4EjztT02D1cgMnniUnk0GZtOsazei96utNGioF0abC8qIA
+         sI6ozLVzlSrjyx9lHT6nXBlI+5p2vehNvtybyTDVwip716zCH08ALtsymJ9gcAfZJiu+
+         qe4eYb+GYPPXOh1kGOBiPIMnYFyTcoxUg9QXrkObPh2Yx83ZhTqegX09vaAKGfoqPqpC
+         gGG2IhRZjLibNxHcU6tB+0hJgrEaZqdXZS09Eh0dBUsmEzVJjcTX0T5e3zHKEFY4O6I+
+         MtZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Qa1TSlB/YkLKGBzwqwvAAOSrVtrFdm5VNkLtw6aCthM=;
+        b=Wkxj9JUZlBbuFdEyOpHu/hwkGKb3v4ezAA6Azd/ecH4WXWybSjF0/Q9meddedH/R8H
+         caLbLmp1wnIYpO12oyPeY8RrSnFwjRTSSWTiWqEgFiRcXl5koozdkg9tmZHXjuMSqSfx
+         JKHmx7ZTg4hQddMttDlQZNogtoIAz2uCV8TU062BbPcvZyofxWyoosYzEM+/j3WSXWge
+         POqCCEcINJrC/xC26NiVbxOa38pcjQxOU68ZG3SALYsvfRdpciuJ7lubv6500bGq86wz
+         rc1FMZ0AhtoJqYu5XK3b4qTba2WUGtBSKfGP/IM04HfhLRoX3mxDd3GtDQyl0JjKXExP
+         9DFg==
+X-Gm-Message-State: APjAAAXPTCl/q8Gbr1h3CUJIdePno8rRZL+lp1VKmOGs5jEk8DInCA7F
+        1a0lCouvHxD4+EaoL/9uhJA=
+X-Google-Smtp-Source: APXvYqzY1Mjm7H6x1eBBxvX0UDJNwm0Lxe4yTUlBGBpwM2Qy6zcWxbWponVPWrG8iXzUTO3AzGlpIg==
+X-Received: by 2002:a17:90a:e98d:: with SMTP id v13mr288784pjy.107.1576255919702;
+        Fri, 13 Dec 2019 08:51:59 -0800 (PST)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:200::de66])
+        by smtp.gmail.com with ESMTPSA id m45sm10052854pje.32.2019.12.13.08.51.57
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 13 Dec 2019 08:51:58 -0800 (PST)
+Date:   Fri, 13 Dec 2019 08:51:57 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Quentin Monnet <quentin.monnet@netronome.com>
+Subject: Re: [RFC] btf: Some structs are doubled because of struct ring_buffer
+Message-ID: <20191213165155.vimm27wo7brkh3yu@ast-mbp.dhcp.thefacebook.com>
+References: <20191213153553.GE20583@krava>
+ <20191213112438.773dff35@gandalf.local.home>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: f8281836-3021-4ebb-ed6a-08d77fe9c9cf
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Dec 2019 16:30:38.7948
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: mnpswqIKdiAhFlsDbcwEcscWc5r+3YJ6YDjJEh8xUAJ1zaUWCb1BmE3QVGdyANby
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB2688
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
- definitions=2019-12-13_05:2019-12-13,2019-12-13 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- adultscore=0 priorityscore=1501 mlxscore=0 bulkscore=0 clxscore=1015
- impostorscore=0 lowpriorityscore=0 phishscore=0 mlxlogscore=824
- suspectscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1910280000 definitions=main-1912130134
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191213112438.773dff35@gandalf.local.home>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 12, 2019 at 09:36:36PM -0800, Alexei Starovoitov wrote:
-> On Thu, Dec 12, 2019 at 11:22:49AM +0100, Jakub Sitnicki wrote:
-> > This change has been suggested by Martin Lau [0] during a review of a
-> > related patch set that extends reuseport tests [1].
-> >=20
-> > Patches 1 & 2 address a warning due to unrecognized section name from
-> > libbpf when running reuseport tests. We don't want to carry this warnin=
-g
-> > into test_progs.
-> >=20
-> > Patches 3-8 massage the reuseport tests to ease the switch to test_prog=
-s
-> > framework. The intention here is to show the work. Happy to squash thes=
-e,
-> > if needed.
-> >=20
-> > Patches 9-10 do the actual move and conversion to test_progs.
-> >=20
-> > Output from a test_progs run after changes pasted below.
->=20
-> Thank you for doing this conversion.
-> Looks great to me.
->=20
-> Martin,
-> could you please review ?
-Looks awesome.  Appreciate for moving this to test_progs!
+On Fri, Dec 13, 2019 at 11:25:00AM -0500, Steven Rostedt wrote:
+> On Fri, 13 Dec 2019 16:35:53 +0100
+> Jiri Olsa <jolsa@redhat.com> wrote:
+> 
+> > I don't think dedup algorithm can handle this and I'm not sure if there's
+> > some way in pahole to detect/prevent this.
+> > 
+> > I only found that if I rename the ring_buffer objects to have distinct
+> > names, it will help:
+> > 
+> >   $ bpftool btf dump file /sys/kernel/btf/vmlinux | grep task_struct
+> >   [150] STRUCT 'task_struct' size=11008 vlen=205
+> > 
+> >   $ bpftool btf dump file /sys/kernel/btf/vmlinux | grep "STRUCT 'perf_event'"
+> >   [1665] STRUCT 'perf_event' size=1160 vlen=70
+> > 
+> > also the BTF data get smaller ;-) before:
+> > 
+> >   $ ll /sys/kernel/btf/vmlinux
+> >   -r--r--r--. 1 root root 2067432 Dec 13 22:56 /sys/kernel/btf/vmlinux
+> > 
+> > after:
+> >   $ ll /sys/kernel/btf/vmlinux
+> >   -r--r--r--. 1 root root 1984345 Dec 13 23:02 /sys/kernel/btf/vmlinux
+> > 
+> > 
+> > Peter, Steven,
+> > if above is correct and there's no other better solution, would it be possible
+> > to straighten up the namespace and user some distinct names for perf and ftrace
+> > ring buffers?
+> 
+> Now, the ring buffer that ftrace uses is not specific for ftrace or
+> even tracing for that matter. It is a stand alone ring buffer (oprofile
+> uses it), and can be used by anyone else.
+> 
+> As the perf ring buffer is very coupled with perf (or perf events), and
+> unless something changed, I was never able to pull the perf ring
+> buffer out as a stand alone ring buffer.
+> 
+> As the ring buffer in the tracing directory is more generic, and not to
+> mention around longer, if one is to change the name, I would suggest it
+> be the perf ring buffer.
 
-Acked-by: Martin KaFai Lau <kafai@fb.com>
+Thanks Jiri to bring it up.
+Technically the kernel is written in valid C, but it's imo the case where C
+standard isn't doing that great.
+
+To rephrase what Jiri said...
+If include/linux/perf_event.h instead of saying 'struct ring_buffer;'
+would have done #include <kernel/events/internal.h>
+the kernel/trace/ring_buffer.c would have had build error.
+Even now sizeof(*perf_event->rb) would return different values depending
+whether it's used in kernel/trace/ring_buffer.c or anywhere in kernel/events/.
+dwarf/btf and gcc cannot deal with it nicely. It's a valid C.
+
+'gdb vmlinux' for sizeof(struct ring_buffer) will pick perf ring buffer.
+It had two choices. Both valid. I don't know why gdb picked this one.
+So yeah I think renaming 'ring_buffer' either in ftrace or in perf would be
+good. I think renaming ftrace one would be better, since gdb picked perf one
+for whatever reason.
+
