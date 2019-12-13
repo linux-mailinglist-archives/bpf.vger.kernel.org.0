@@ -2,100 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A64F11DDC0
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2019 06:31:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFE1911DDCD
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2019 06:37:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726998AbfLMFa7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Dec 2019 00:30:59 -0500
-Received: from mail-pj1-f66.google.com ([209.85.216.66]:47034 "EHLO
-        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725945AbfLMFa7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Dec 2019 00:30:59 -0500
-Received: by mail-pj1-f66.google.com with SMTP id z21so691877pjq.13;
-        Thu, 12 Dec 2019 21:30:59 -0800 (PST)
+        id S1732071AbfLMFgj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Dec 2019 00:36:39 -0500
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:35410 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732056AbfLMFgj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 Dec 2019 00:36:39 -0500
+Received: by mail-pg1-f195.google.com with SMTP id l24so996582pgk.2
+        for <bpf@vger.kernel.org>; Thu, 12 Dec 2019 21:36:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=OKFBK2gNnko329ZjaMQO2iIA5rqF5fZBNGyDOWHkP1c=;
-        b=aSNeJR7P3e9Zhq8c4REfNlFQEeVnGUSQ3oH+G10BsXXcQn7Q8JUB+P2fLU6tSdNHG3
-         2Cb/0NoRzHJhCGBwJebnuwJ3XQ0lySrGLJGRWXTVl61SgdrlDnuqJA7beYzOANNAqZ3F
-         +8eSu89IMYVX9tvDU8L8KgNrUzqnxyHPPpnIK1RTNDt3aRQ29QRD/QnvymEKzcv3P4EH
-         Fl43ZdjElsCyHEAxq55JS4+BeBr+RCQAIF+dSYRqOCTDcS5x51YcSTnPkkj2tw8PqVjv
-         DLz49U0xoXRh5bcBYCjUW6CguhRrrOVkhVNTsPXq5e3i92Xad0ahBV1KREylfidM7J3o
-         WOzg==
+         :content-disposition:in-reply-to:user-agent;
+        bh=2h2UzjnHJYD9OywlVKlGrMyJ+h8TPcIfVfK0NBQxhKk=;
+        b=eL8nD3INSlYoGP6XOy9vjvfu/iNP580EhzSIAfigvJqKqqIfdyblYY0QpjG1TZodFk
+         kyH3vPj4EzHa154tppJHTVelVVUshBTOWgal4MtQIe4GgNZPv50puiqQC2q0U9XCyl3M
+         Nh3Y0LR8Icn5C1tZ3Ye2/tkdv71vjNkgd0HZa26L3KSjUunF6faqsPDLRNoRR8a5uBYB
+         JCOu2GZ6h6kzxhiolfVzcErnldkvRz7vm7Dt43eMWeql9ZxMAKovHtK+7xr4aneP8yA4
+         SnP399WVDcESK1WBacvM6o07It0OUsWxkCrXfTEQ955dzmHp9mvU7VTdKtpYMLJCqdF5
+         WxZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=OKFBK2gNnko329ZjaMQO2iIA5rqF5fZBNGyDOWHkP1c=;
-        b=pwzljhm/u029shB4sEPZ+WTXGq+OL4TLVOGWedd06QY6qK/3MTA6I28WhBP54RAZR6
-         Zw4+kj38PrQnc6xvKXinr+x/DycZmoc3X0nCNZKpgKEOa3DbPAvDQlPTn4OCw9hyAs9T
-         HfdXvegIuZcgYEkQRM9AH2BZkTtoZ28jQn05opCcf5zZzdqgu5ohGOKPRBnXdpGRtrJ/
-         VaQPME8M2MqkAgNuUw4gBurdOb6me/PRGHa/CYF86zjVDZqPcA7miga8i1Zpdnkt1IOZ
-         IxQ0GZrpnnwWOcLiQBRhPRyKWLQWImxsbBgMuDF2EWi9WqEiH8Rk/xVPt4tNS5lkseo9
-         jTyg==
-X-Gm-Message-State: APjAAAUCPPLnHWhscNl9Dt6Xh+aeWfK+XPQoNMB5oLS9IqHStR7RM/PU
-        1/OZ9Qd/iyjmSP27utq9Q6U=
-X-Google-Smtp-Source: APXvYqyZiWcOGaj/mAMQKc+gZoyY+2W+UPiIcxjhO6bEPEMfTNmgsaa31cK6VB2UkK6GbEw4puY9YQ==
-X-Received: by 2002:a17:90a:c790:: with SMTP id gn16mr14674570pjb.76.1576215058772;
-        Thu, 12 Dec 2019 21:30:58 -0800 (PST)
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=2h2UzjnHJYD9OywlVKlGrMyJ+h8TPcIfVfK0NBQxhKk=;
+        b=HYfAnhNufvmRBBvPupmxdPEgRIuYgLXB+HcKO3+dTX/CV68mGnB5rzUCYPHFBPtbYT
+         VYPm9Tnzl00tRYKdK70/EIXFUtcMs56G5TEKjS/4/I8bZB7RPWFOxy61fsdZ9Hx4VGW/
+         Fr1xNlmky0yin69l5jvdVjxpN5a0TsyQN4KYtY3qdzbIlEQ6Doh4xSU7e0X/VgePDtUN
+         dquukgLxqaHi9P8L9L9Z1QKHumSPRS5bzEbLn2SjXGKIzEYiz6jhe9ywbBunmDlwfAVZ
+         sWpRFRMdSubM4TxBWc5PunVp+X8A+vP3pgGGsqfdKFhehMJq6TVx2VrlZDiKD8f4Gs30
+         AdFg==
+X-Gm-Message-State: APjAAAXxuTAEroeuEixQmnTukFAlDpx++OGV9ImEu1Wrfg59PD8K7/zv
+        rfaM29CjaaY3vmrsjToWA0rnROui
+X-Google-Smtp-Source: APXvYqyLyFxLpqlTkpxv0UjLwXgp6NB+Bgrhm7zmR8GsQJLiKwWtiRDjX2yHwPnLi9FyQOd0MdLEYA==
+X-Received: by 2002:a62:3784:: with SMTP id e126mr14220364pfa.228.1576215398961;
+        Thu, 12 Dec 2019 21:36:38 -0800 (PST)
 Received: from ast-mbp ([2620:10d:c090:180::c195])
-        by smtp.gmail.com with ESMTPSA id r28sm3416057pgk.39.2019.12.12.21.30.56
+        by smtp.gmail.com with ESMTPSA id k21sm8913066pgt.22.2019.12.12.21.36.37
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 12 Dec 2019 21:30:57 -0800 (PST)
-Date:   Thu, 12 Dec 2019 21:30:55 -0800
+        Thu, 12 Dec 2019 21:36:38 -0800 (PST)
+Date:   Thu, 12 Dec 2019 21:36:36 -0800
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Cc:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        bpf@vger.kernel.org, magnus.karlsson@gmail.com,
-        magnus.karlsson@intel.com, jonathan.lemon@gmail.com,
-        ecree@solarflare.com, thoiland@redhat.com, brouer@redhat.com,
-        andrii.nakryiko@gmail.com
-Subject: Re: [PATCH bpf-next v4 2/6] bpf: introduce BPF dispatcher
-Message-ID: <20191213053054.l3o6xlziqzwqxq22@ast-mbp>
-References: <20191211123017.13212-1-bjorn.topel@gmail.com>
- <20191211123017.13212-3-bjorn.topel@gmail.com>
+To:     Jakub Sitnicki <jakub@cloudflare.com>
+Cc:     bpf@vger.kernel.org, Martin Lau <kafai@fb.com>,
+        kernel-team@cloudflare.com
+Subject: Re: [PATCH bpf-next 00/10] Switch reuseport tests for test_progs
+ framework
+Message-ID: <20191213053635.4k42db43u6jbivi5@ast-mbp>
+References: <20191212102259.418536-1-jakub@cloudflare.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20191211123017.13212-3-bjorn.topel@gmail.com>
+In-Reply-To: <20191212102259.418536-1-jakub@cloudflare.com>
 User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 11, 2019 at 01:30:13PM +0100, Björn Töpel wrote:
-> +
-> +#define DEFINE_BPF_DISPATCHER(name)					\
-> +	unsigned int name##func(					\
-> +		const void *xdp_ctx,					\
-> +		const struct bpf_insn *insnsi,				\
-> +		unsigned int (*bpf_func)(const void *,			\
-> +					 const struct bpf_insn *))	\
-> +	{								\
-> +		return bpf_func(xdp_ctx, insnsi);			\
-> +	}								\
-> +	EXPORT_SYMBOL(name##func);			\
-> +	struct bpf_dispatcher name = BPF_DISPATCHER_INIT(name);
+On Thu, Dec 12, 2019 at 11:22:49AM +0100, Jakub Sitnicki wrote:
+> This change has been suggested by Martin Lau [0] during a review of a
+> related patch set that extends reuseport tests [1].
+> 
+> Patches 1 & 2 address a warning due to unrecognized section name from
+> libbpf when running reuseport tests. We don't want to carry this warning
+> into test_progs.
+> 
+> Patches 3-8 massage the reuseport tests to ease the switch to test_progs
+> framework. The intention here is to show the work. Happy to squash these,
+> if needed.
+> 
+> Patches 9-10 do the actual move and conversion to test_progs.
+> 
+> Output from a test_progs run after changes pasted below.
 
-The dispatcher function is a normal function. EXPORT_SYMBOL doesn't make it
-'noinline'. struct bpf_dispatcher takes a pointer to it and that address is
-used for text_poke.
+Thank you for doing this conversion.
+Looks great to me.
 
-In patch 3 __BPF_PROG_RUN calls dfunc() from two places.
-What stops compiler from inlining it? Or partially inlining it in one
-or the other place?
-
-I guess it works, because your compiler didn't inline it?
-Could you share how asm looks for bpf_prog_run_xdp()
-(where __BPF_PROG_RUN is called) and asm for name##func() ?
-
-I hope my guess that compiler didn't inline it is correct. Then extra noinline
-will not hurt and that's the only thing needed to avoid the issue.
+Martin,
+could you please review ?
 
