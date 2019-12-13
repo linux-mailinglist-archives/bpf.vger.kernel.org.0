@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DC1611DEEA
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2019 08:52:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A614E11DF61
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2019 09:23:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725770AbfLMHwA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Dec 2019 02:52:00 -0500
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:45468 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725468AbfLMHwA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Dec 2019 02:52:00 -0500
-Received: by mail-qk1-f194.google.com with SMTP id x1so980403qkl.12;
-        Thu, 12 Dec 2019 23:51:59 -0800 (PST)
+        id S1726638AbfLMIXT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Dec 2019 03:23:19 -0500
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:41032 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725468AbfLMIXT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 Dec 2019 03:23:19 -0500
+Received: by mail-qk1-f196.google.com with SMTP id l124so1061899qkf.8;
+        Fri, 13 Dec 2019 00:23:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=eOhZfdsH4ZhnMM3thVTXjE27rl7mYEWauYsiEfwcDD0=;
-        b=obp+yA92U2syhauhwW6v2bdT3q9+Q5EL5LmbuXRmvLg2xvGT+ACMcOJ1YIgVmo4PKq
-         MWphTyLc04ATrsGNik520qobH3NVr4VI6Ar1nGBQuK22J9ds8RuY82Bb8gqPiWFg+JVP
-         NI/iWJBJZQS1PdrZh34MI5Ujrw+GZtcC76Do7k4nMzwwfcxN6IRI/wVSjs4020yZs7nA
-         XO69MaOMnAkKo3MI1BQ+8grYKd9c1P9tlSxAtITZJoBotlclPndj9ssC/L5aNPfhk1Nv
-         L1/ETgq5NaCy4FSQ9WqjFrZwmVryyZax0hKVrDJWDB2NfNttohXjQnLbykJhiMYznijY
-         3aBQ==
+        bh=Vdv7yq4/4gppqbQW+Pz5XTJCN0SOeSsSHlkojBBgHEc=;
+        b=U2T/liBmif3CpF4oH7BlJzAA8xYiYVr/Jk37Xp+c7Mi29LAGoE9hbceiqRv2BxRz2Q
+         6kF81/g6lFjLzwJCVWCDhxY+WuBfo/w6VC8sMtRwCj2Vgu8/tfXMFxNJ+7EqMRlRfxSZ
+         sDb4EgULNGg3uz4VKUuumEugOlky6bHVVYWLMAD8PxHz0/yx3pPtZRqtnW79Z3in1tTJ
+         hvlQAG07zAJLAax+00nYng9ZF3TjLpVYvBB79PebwXCeLTwjxppTg4DLvrKgkaV//1NJ
+         nvB74pUfsM03ljyaqdxrMrhrjkx77g6CoSUHEeSQLrvnoa24akGSDml5vv8sWiFYZont
+         L9Gg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=eOhZfdsH4ZhnMM3thVTXjE27rl7mYEWauYsiEfwcDD0=;
-        b=aIWReTcpFvtE60y8CoWKZfP9WvJcNfofi2bZTyX7X/86fjylu/QAwLdZZdZ+fQ3ZDQ
-         yKb8GEBkgQVCKUMCIp4pNokxlMFXlFcSc7ygopDUamdpdHZkgowjg+7iSSuQcEtdv+eK
-         EzNhPEAvlON4+nWEypQV1TGUUpYA+2EO6XUKsRsUHlj+ge25hfqf7WSYL1+9yyFjyrM5
-         alJHdGZKR+LvnHlaf0Tc8e0hPMRHyChmZxpg1zM2TSmZ1hI63N9A3CSV57ucSXEbdXVg
-         NIXjMZrgcmuyhzuefaEOssl22N+TTkiGzFKhT5t2owOxKopI04s8W9fLhfg1YfoHl8pF
-         D1Eg==
-X-Gm-Message-State: APjAAAX/3cuz94Lo9jN6XlL10YT6zeM+Ttc2Q4/jrSm3x12gVdgMoWH6
-        Dt+cxQzmGvG9E3116KC7sUQT4WD6UE8ky1qOdTA=
-X-Google-Smtp-Source: APXvYqwX9F0EfpmPBESc2noLsOrfss42HsBRxiULHkc0HzCWWXs8hq3weanQIQ8OMT3JkQIPUo5AYPWAxDRqOcqQD8o=
-X-Received: by 2002:a37:9c0f:: with SMTP id f15mr12326770qke.297.1576223518916;
- Thu, 12 Dec 2019 23:51:58 -0800 (PST)
+        bh=Vdv7yq4/4gppqbQW+Pz5XTJCN0SOeSsSHlkojBBgHEc=;
+        b=e8PxVTkLYhinkK4WIE/LjToq6wH864iXdHpsE0QvGo1A/BRfVTIj6XwotBH+6jhw45
+         b/MfAQ5+Mb8uM2JN1bd2hoSA2DEZy7knUfpAOX+nacXg0vKE6pLAEYx7YycXz6WSEYsE
+         w6KsLyfytH3ZqFBG6JhFZPx7LLl64EOS1A/s5vImOtzIbTY17CULXNistNXqtv6VzVxy
+         d+ZZskr7QBHlM0BdqQPhAT7ZpOC/Vs6X5/FX1AbDCxdkBQI/f3apd/c8lQOGrbJncsOB
+         DooBVjrbRtksIsQu2/oqJoQWHS7XTFwcvGDOoPk9GqTfUEtwB4bba7VF7ggrPqRs560P
+         Q3tA==
+X-Gm-Message-State: APjAAAVbA8rxrLJ1vQAAVjGAprvZ3QLT6f8pokHQKwmclu9I2dSh54g4
+        736B2nswOcwXcT7/AO57NJCI7oanKP2Zm/vg9mA=
+X-Google-Smtp-Source: APXvYqwsd/+uCs2VNSn316jr74JkB8IcOcfWDGLmdlZvAG7/8q8R+vXnxn04wGvyujhZRGSVxEdT31w/Z9gC4Phi0xc=
+X-Received: by 2002:ae9:ee11:: with SMTP id i17mr12319728qkg.333.1576225397800;
+ Fri, 13 Dec 2019 00:23:17 -0800 (PST)
 MIME-Version: 1.0
 References: <20191211123017.13212-1-bjorn.topel@gmail.com> <20191211123017.13212-3-bjorn.topel@gmail.com>
- <20191213053054.l3o6xlziqzwqxq22@ast-mbp>
-In-Reply-To: <20191213053054.l3o6xlziqzwqxq22@ast-mbp>
+ <87wob3f0xd.fsf@toke.dk>
+In-Reply-To: <87wob3f0xd.fsf@toke.dk>
 From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Fri, 13 Dec 2019 08:51:47 +0100
-Message-ID: <CAJ+HfNiYHM1v8SXs54rkT86MrNxuB5V_KyHjwYupcjUsMf1nSQ@mail.gmail.com>
+Date:   Fri, 13 Dec 2019 09:23:06 +0100
+Message-ID: <CAJ+HfNjZL9CAEOqoUX5E1Os_gNw7DcGg=TXou93d3aVovEffcA@mail.gmail.com>
 Subject: Re: [PATCH bpf-next v4 2/6] bpf: introduce BPF dispatcher
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
 Cc:     Netdev <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -68,106 +68,36 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 13 Dec 2019 at 06:30, Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Wed, 11 Dec 2019 at 14:26, Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat=
+.com> wrote:
 >
-> On Wed, Dec 11, 2019 at 01:30:13PM +0100, Bj=C3=B6rn T=C3=B6pel wrote:
-> > +
-> > +#define DEFINE_BPF_DISPATCHER(name)                                  \
-> > +     unsigned int name##func(                                        \
-> > +             const void *xdp_ctx,                                    \
-> > +             const struct bpf_insn *insnsi,                          \
-> > +             unsigned int (*bpf_func)(const void *,                  \
-> > +                                      const struct bpf_insn *))      \
-> > +     {                                                               \
-> > +             return bpf_func(xdp_ctx, insnsi);                       \
-> > +     }                                                               \
-> > +     EXPORT_SYMBOL(name##func);                      \
-> > +     struct bpf_dispatcher name =3D BPF_DISPATCHER_INIT(name);
+> [...]
+> > +/* The BPF dispatcher is a multiway branch code generator. The
+> > + * dispatcher is a mechanism to avoid the performance penalty of an
+> > + * indirect call, which is expensive when retpolines are enabled. A
+> > + * dispatch client registers a BPF program into the dispatcher, and if
+> > + * there is available room in the dispatcher a direct call to the BPF
+> > + * program will be generated. All calls to the BPF programs called via
+> > + * the dispatcher will then be a direct call, instead of an
+> > + * indirect. The dispatcher hijacks a trampoline function it via the
+> > + * __fentry__ of the trampoline. The trampoline function has the
+> > + * following signature:
+> > + *
+> > + * unsigned int trampoline(const void *xdp_ctx,
+> > + *                         const struct bpf_insn *insnsi,
+> > + *                         unsigned int (*bpf_func)(const void *,
+> > + *                                                  const struct bpf_i=
+nsn *));
+> > + */
 >
-> The dispatcher function is a normal function. EXPORT_SYMBOL doesn't make =
-it
-> 'noinline'. struct bpf_dispatcher takes a pointer to it and that address =
-is
-> used for text_poke.
->
-> In patch 3 __BPF_PROG_RUN calls dfunc() from two places.
-> What stops compiler from inlining it? Or partially inlining it in one
-> or the other place?
+> Nit: s/xdp_ctx/ctx/
 >
 
-Good catch. No inlining for the XDP dispatcher is possible, since the
-trampoline function is in a different compilation unit (filter.o),
-than the users of bpf_prog_run_xdp(). Turning on LTO, this would no
-longer be true. So, *not* having it marked as noinline is a bug.
-
-> I guess it works, because your compiler didn't inline it?
-> Could you share how asm looks for bpf_prog_run_xdp()
-> (where __BPF_PROG_RUN is called) and asm for name##func() ?
->
-
-Sure! bpf_prog_run_xdp() is always inlined, so let's look at:
-net/bpf/test_run.c:bpf_test_run:
-
-        if (xdp)
-            *retval =3D bpf_prog_run_xdp(prog, ctx);
-        else
-            *retval =3D BPF_PROG_RUN(prog, ctx);
-
-translates to:
-
-   0xffffffff8199f522 <+162>:   nopl   0x0(%rax,%rax,1)
-./include/linux/filter.h:
-716             return __BPF_PROG_RUN(prog, xdp,
-   0xffffffff8199f527 <+167>:   mov    0x30(%rbp),%rdx
-   0xffffffff8199f52b <+171>:   mov    %r14,%rsi
-   0xffffffff8199f52e <+174>:   mov    %r13,%rdi
-   0xffffffff8199f531 <+177>:   callq  0xffffffff819586d0
-<bpf_dispatcher_xdpfunc>
-   0xffffffff8199f536 <+182>:   mov    %eax,%ecx
-
-net/bpf/test_run.c:
-48                              *retval =3D BPF_PROG_RUN(prog, ctx);
-   0xffffffff8199f538 <+184>:   mov    (%rsp),%rax
-   0xffffffff8199f53c <+188>:   mov    %ecx,(%rax)
-...
-net/bpf/test_run.c:
-45                      if (xdp)
-   0xffffffff8199f582 <+258>:   test   %r15b,%r15b
-   0xffffffff8199f585 <+261>:   jne    0xffffffff8199f522 <bpf_test_run+162=
->
-   0xffffffff8199f587 <+263>:   nopl   0x0(%rax,%rax,1)
-
-./include/linux/bpf.h:
-497             return bpf_func(ctx, insnsi);
-   0xffffffff8199f58c <+268>:   mov    0x30(%rbp),%rax
-   0xffffffff8199f590 <+272>:   mov    %r14,%rsi
-   0xffffffff8199f593 <+275>:   mov    %r13,%rdi
-   0xffffffff8199f596 <+278>:   callq  0xffffffff81e00eb0
-<__x86_indirect_thunk_rax>
-   0xffffffff8199f59b <+283>:   mov    %eax,%ecx
-   0xffffffff8199f59d <+285>:   jmp    0xffffffff8199f538 <bpf_test_run+184=
->
-
-The "dfunc":
-
-net/core/filter.c:
-8944    DEFINE_BPF_DISPATCHER(bpf_dispatcher_xdp)
-   0xffffffff819586d0 <+0>:     callq  0xffffffff81c01680 <__fentry__>
-   0xffffffff819586d5 <+5>:     jmpq   0xffffffff81e00f10
-<__x86_indirect_thunk_rdx>
+Thanks! Same type-o in the DEFINE/DECLARE macros. Will fix in v5.
 
 
-> I hope my guess that compiler didn't inline it is correct. Then extra noi=
-nline
-> will not hurt and that's the only thing needed to avoid the issue.
->
-
-I'd say it's broken not marking it as noinline, and I was lucky. It
-would break if other BPF entrypoints that are being called from
-filter.o would appear. I'll wait for more comments, and respin a v5
-after the weekend.
-
-
-Thanks,
 Bj=C3=B6rn
+
+
+> -Toke
+>
