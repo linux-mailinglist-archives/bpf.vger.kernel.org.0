@@ -2,98 +2,152 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9487611E618
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2019 16:07:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5991311E6B3
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2019 16:37:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727329AbfLMPEO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Dec 2019 10:04:14 -0500
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:46363 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726528AbfLMPEO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Dec 2019 10:04:14 -0500
-Received: by mail-pg1-f195.google.com with SMTP id z124so1690077pgb.13;
-        Fri, 13 Dec 2019 07:04:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=57vMBlnpciL/juUhZmhXykw/E2smdFCzEpCa1v5KKHs=;
-        b=fhH1d+8EovXL8gJtcHHnZLRLckuWRxEcfJQEeZ2PV0j44r6FVxxa3jZMlyeTu/GmOF
-         X54VXv6FZwzh87RugImVHB8DZK/pHqeJ9jThLb3vsLlAg7gFjUMQURPSCI/aoISI0hDp
-         W03Z+c6SMuB9FN+t4Xu9u8W5kta1Azl0XTXCuFimNSqijnmh4TLI1FpwUrKq38yu48ol
-         eE0dMC0wyhk0NogKufKz72HJ49xK44DhieWhdwWQA/S88b8U0XmsqgEDBaG6ap4guZqy
-         g687i+QAx/QIbgbxBABNCrz6/wYASfzbq5OgrIUt/iyopk7fcyJyrlHCRyMIpJORKUh2
-         gpgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=57vMBlnpciL/juUhZmhXykw/E2smdFCzEpCa1v5KKHs=;
-        b=KfjGXFQXngIyeB9k7vo/lH8p944pHyn3TTXIfM9I3zU6oy3anuIu67tNboXBSAPNuZ
-         x4FQ+NBWrumVVF8ailXUIONOFFI4Pm6A7iuB81UCVv9CRp0cy1MhBKTB1WiEj9SpRBof
-         FvGhUecHYXifriaHmLx2kV2BwJvt/1Q13uHzcAzPYYVEW9tGVBPcAmiNJhSndM6bMKC+
-         dEC37ufIg5XfkwyUf5LULp8F+Y1g0VTXJIrXfyOzo9mTS0RIb1uVyM7+y/HXxvcLdr90
-         920lBxXLhIhFUv8ssGAheLyTejJnm0sBnhYacozxA5Gh60ErUJJ5ys3/gcP9b3iTGJC+
-         YhpQ==
-X-Gm-Message-State: APjAAAXIsfxM/ONUNP75WeZ+8s9Kj+xSkWGiPrajQY0FPd0UWz12XoQS
-        7AVSr0cB+ZGolcdwma87RXM=
-X-Google-Smtp-Source: APXvYqyyw4vy9CkJAbKOoeQMxtp42hxEN29HXtnd6y4ks1cvb69JSf9oCtPXbbe8T5/BZsBN73ICVw==
-X-Received: by 2002:a62:5202:: with SMTP id g2mr16319864pfb.43.1576249453273;
-        Fri, 13 Dec 2019 07:04:13 -0800 (PST)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:180::4b46])
-        by smtp.gmail.com with ESMTPSA id e188sm12209505pfe.113.2019.12.13.07.04.10
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 13 Dec 2019 07:04:12 -0800 (PST)
-Date:   Fri, 13 Dec 2019 07:04:09 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Cc:     Netdev <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S1727952AbfLMPg2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Dec 2019 10:36:28 -0500
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:27970 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727831AbfLMPgM (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 13 Dec 2019 10:36:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1576251371;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=XdvQKU8LiqO/th1XH/f5TTkHcNsE/YPklKDD6xZt6qQ=;
+        b=Db27FA3+Q1kolvE9edN0LO/0RSX8ErXy0AXWemMr3jEbp2sKgIfCuY92NDItgl+efEwj4A
+        XShBBAD1jHkRUKKbYHzvPbwxKTGo0fBy+RigcPZCLK/oA4kl9QMW8/NjXmFTRbnIuqN8cI
+        E4HVdP8vJ0MfQU9aULmpF8oHf1oNxvo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-370-hbfm8CEePw28D6MRnwYrFA-1; Fri, 13 Dec 2019 10:36:07 -0500
+X-MC-Unique: hbfm8CEePw28D6MRnwYrFA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 68935800582;
+        Fri, 13 Dec 2019 15:36:05 +0000 (UTC)
+Received: from krava (ovpn-205-9.brq.redhat.com [10.40.205.9])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 23A2C5C219;
+        Fri, 13 Dec 2019 15:35:55 +0000 (UTC)
+Date:   Fri, 13 Dec 2019 16:35:53 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>
+Cc:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        bpf <bpf@vger.kernel.org>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Edward Cree <ecree@solarflare.com>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= 
-        <thoiland@redhat.com>, Jesper Dangaard Brouer <brouer@redhat.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: Re: [PATCH bpf-next v4 2/6] bpf: introduce BPF dispatcher
-Message-ID: <20191213150407.laqt2n2ue2ahsu2b@ast-mbp.dhcp.thefacebook.com>
-References: <20191211123017.13212-1-bjorn.topel@gmail.com>
- <20191211123017.13212-3-bjorn.topel@gmail.com>
- <20191213053054.l3o6xlziqzwqxq22@ast-mbp>
- <CAJ+HfNiYHM1v8SXs54rkT86MrNxuB5V_KyHjwYupcjUsMf1nSQ@mail.gmail.com>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Quentin Monnet <quentin.monnet@netronome.com>
+Subject: [RFC] btf: Some structs are doubled because of struct ring_buffer
+Message-ID: <20191213153553.GE20583@krava>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJ+HfNiYHM1v8SXs54rkT86MrNxuB5V_KyHjwYupcjUsMf1nSQ@mail.gmail.com>
-User-Agent: NeoMutt/20180223
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Dec 13, 2019 at 08:51:47AM +0100, Björn Töpel wrote:
-> 
-> > I hope my guess that compiler didn't inline it is correct. Then extra noinline
-> > will not hurt and that's the only thing needed to avoid the issue.
-> >
-> 
-> I'd say it's broken not marking it as noinline, and I was lucky. It
-> would break if other BPF entrypoints that are being called from
-> filter.o would appear. I'll wait for more comments, and respin a v5
-> after the weekend.
+hi,
+the current BTF vmlinux file have some of the structs doubled:
 
-Also noticed that EXPORT_SYMBOL for dispatch function is not necessary atm.
-Please drop it. It can be added later when need arises.
+  $ bpftool btf dump file /sys/kernel/btf/vmlinux | grep task_struct
+  [150] STRUCT 'task_struct' size=11008 vlen=205
+  [12262] STRUCT 'task_struct' size=11008 vlen=205
 
-With that please respin right away. No need to wait till Monday.
-My general approach on accepting patches is "perfect is the enemy of the good".
-It's better to land patches sooner if architecture and api looks good.
-Details and minor bugs can be worked out step by step.
+  $ bpftool btf dump file /sys/kernel/btf/vmlinux | grep "STRUCT 'perf_event'"
+  [1666] STRUCT 'perf_event' size=1160 vlen=70
+  [12301] STRUCT 'perf_event' size=1160 vlen=70
+
+The reason seems to be that we have two distinct 'struct ring_buffer'
+objects used in kernel: one in perf subsystem and one in kernel trace
+subsystem.
+
+When we compile kernel/trace/ring_buffer.c we have 'struct task_struct',
+which references 'struct ring_buffer', which is at that compile time
+defined in kernel/trace/ring_buffer.c.
+
+While when we compile kernel/events/core.c we have 'struct task_struct',
+which references ring buffer, which is at that compile time defined
+in kernel/events/internal.h.
+
+So we end up with 2 different 'struct task_struct' objects, and few
+other objects which are on the way to the 'struct ring_buffer' field,
+like:
+
+	[1666] STRUCT 'perf_event' size=1160 vlen=70
+		...
+		'rb' type_id=2289 bits_offset=5632
+		...
+
+		[2289] PTR '(anon)' type_id=10872
+
+			-> trace ring buffer
+
+			[10872] STRUCT 'ring_buffer' size=184 vlen=12
+				'flags' type_id=10 bits_offset=0
+				'cpus' type_id=22 bits_offset=32
+				'record_disabled' type_id=81 bits_offset=64
+				...
+
+	[12301] STRUCT 'perf_event' size=1160 vlen=70
+		...
+		'rb' type_id=13148 bits_offset=5632
+		...
+
+		[13148] PTR '(anon)' type_id=13147
+
+			-> perf ring buffer
+
+			[13147] STRUCT 'ring_buffer' size=240 vlen=33
+				'refcount' type_id=795 bits_offset=0
+				'callback_head' type_id=90 bits_offset=64
+				'nr_pages' type_id=22 bits_offset=192
+				'overwrite' type_id=22 bits_offset=224
+				'paused' type_id=22 bits_offset=256
+				...
+
+I don't think dedup algorithm can handle this and I'm not sure if there's
+some way in pahole to detect/prevent this.
+
+I only found that if I rename the ring_buffer objects to have distinct
+names, it will help:
+
+  $ bpftool btf dump file /sys/kernel/btf/vmlinux | grep task_struct
+  [150] STRUCT 'task_struct' size=11008 vlen=205
+
+  $ bpftool btf dump file /sys/kernel/btf/vmlinux | grep "STRUCT 'perf_event'"
+  [1665] STRUCT 'perf_event' size=1160 vlen=70
+
+also the BTF data get smaller ;-) before:
+
+  $ ll /sys/kernel/btf/vmlinux
+  -r--r--r--. 1 root root 2067432 Dec 13 22:56 /sys/kernel/btf/vmlinux
+
+after:
+  $ ll /sys/kernel/btf/vmlinux
+  -r--r--r--. 1 root root 1984345 Dec 13 23:02 /sys/kernel/btf/vmlinux
+
+
+Peter, Steven,
+if above is correct and there's no other better solution, would it be possible
+to straighten up the namespace and user some distinct names for perf and ftrace
+ring buffers?
+
+thoughts?
+jirka
 
