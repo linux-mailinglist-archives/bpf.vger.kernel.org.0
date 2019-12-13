@@ -2,104 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E3DB11ECA3
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2019 22:09:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90FC011ECCF
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2019 22:26:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725989AbfLMVJP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Dec 2019 16:09:15 -0500
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:32782 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725747AbfLMVJP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Dec 2019 16:09:15 -0500
-Received: by mail-pf1-f196.google.com with SMTP id y206so2126993pfb.0;
-        Fri, 13 Dec 2019 13:09:14 -0800 (PST)
+        id S1726718AbfLMVXf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Dec 2019 16:23:35 -0500
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:37721 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725747AbfLMVXf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 Dec 2019 16:23:35 -0500
+Received: by mail-lj1-f193.google.com with SMTP id u17so210137lja.4;
+        Fri, 13 Dec 2019 13:23:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=+TUXztuga5A213JEcA90cIY8cUeQjO98uwNxtYgKoO8=;
-        b=mLJp+lxyIcMsmoIvnTbdtwhTuQvxnR8TdvxTGzjjbmUrccq6DJRh5SWY1xpS5EM5di
-         AkCfdblv+SiB/aFMCNQezSHMhRxtEqt/TbQcqaAn8m9jqTLVhsDZd9ZqE62oTpIZS7wu
-         slOalUrRlRgSuiFAI8eQBeMKZ13Zt2AqK4X5PqNtudyo6tXyvHLRjkI4QdLBbddsKQUu
-         HrXjhDOIIdWTgyiDNfH8ZS8wg4RMp5R8BREPmnObGj21VHK1wtJ7+IFYbLknQIzkBjJ0
-         sBp6cy3QB04fpx1i0QusXBNGRBaI49AvyMYjsG6ri5dYmcXOJ3+Q7EB+gG3+RL9wjE1u
-         EOSg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=f1slN2mkK8xs6G/MhtkTdmdutrXNzVbfJBL5Ni+GwHg=;
+        b=VkQAsnbNVe11m7w6bTAK/efI+DUDQWBY68O3xL7vPuMaj+c2W66G7eiSudXWkGNpMd
+         FJkJWesF2DwFGUTd5AfdmcWutVjW4hQZoS3rhll7EUcnGrPc8RlQJY4dZ0EAIKM/13Cr
+         cEXtu5BJ9kVPGmI1YGjjUI7qFuEMjakpjtuPbyErUh7wgURKjUqn6ApkIuC7F1qSVC4S
+         gl0Or1iGrCapsgwcX3Ac8lmCGS3fvczi/JKmZNDgeqd02y0MkDBifa0wBTXqWGvlzKPA
+         9c6Jv+REQ+kG4/14ljUuKlKjEJhXj1FdbLtjG/FT3YkbExXKHFQHikSfna5ljJCyEUub
+         sWCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+TUXztuga5A213JEcA90cIY8cUeQjO98uwNxtYgKoO8=;
-        b=F7LWKFlxUf4Jgy6NulzCNRh60apZWSTGDt/3KYpRKfW0eZoX7OgyjKsAi/r2ouWlpr
-         l5Mg4EhqiPmPHdfRQr/9jiv6jn6//pVLLFU9SKsXU7T9DID7r14TAJbGhOLRKDnF/bMC
-         MJVAiD6tLpDKu3bBzYnJDdaEofrM6kNoL67oA98/eMK1AzIImCQEygrnp0YiPX0Y0BD+
-         W9xy2MHGwBt4O219ABbMmy26zvnxxkCsUn+5RPLsNP4XZ3/hnfwo04SoCP30leMZWAmZ
-         40Kd+G7H2MYoGaHQu0lKrw7QSaWbfbPwW/QPxKBQO5K2HEAs0t/X3aogBaQtSJX7AHD7
-         45Hw==
-X-Gm-Message-State: APjAAAWwWQgSLpl7LUiawjiBjIHyxjc7XLQJ9ePByZ99e8reV12ic9lU
-        igbdZWC6jDhnp97EfH+Szkw=
-X-Google-Smtp-Source: APXvYqwFhi12CyNeIQATqxuF18VfgmCL0rKmVR00cSNIPV42aOKU0GavMtROxRmKjJVamRecUlmk1g==
-X-Received: by 2002:a62:486:: with SMTP id 128mr1674843pfe.236.1576271354411;
-        Fri, 13 Dec 2019 13:09:14 -0800 (PST)
-Received: from ?IPv6:2620:15c:2c1:200:55c7:81e6:c7d8:94b? ([2620:15c:2c1:200:55c7:81e6:c7d8:94b])
-        by smtp.gmail.com with ESMTPSA id t11sm10884949pjf.30.2019.12.13.13.09.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Dec 2019 13:09:13 -0800 (PST)
-Subject: Re: [PATCH bpf v2] bpf: clear skb->tstamp in bpf_redirect when
- necessary
-To:     Lorenz Bauer <lmb@cloudflare.com>, ast@kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net,
-        Eric Dumazet <edumazet@google.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     kernel-team@cloudflare.com
-References: <20191213154634.27338-1-lmb@cloudflare.com>
- <20191213180817.2510-1-lmb@cloudflare.com>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <5e7ccc2c-cb6b-0154-15bf-fa93d374266e@gmail.com>
-Date:   Fri, 13 Dec 2019 13:09:12 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=f1slN2mkK8xs6G/MhtkTdmdutrXNzVbfJBL5Ni+GwHg=;
+        b=ImH9oyOK9mqgoTRkz00q6XAKkk1J7su5yRTsgdfzDIJK0NnZVrIpFrTqnKNIQluLwM
+         62yOfg6JZYVqd+Usn6m+jC8MOdEoW8XDRPUYIl+9uy7yXeh0Ph6El1FMtkWfgnXGsYlx
+         RuHjGJS6ktd+4H8PnbsJcnZLDlaizxOQRbS5UrvfUmHK9iotrzzYWNQeeQA2UMvqs9vF
+         4C01mRFs916uLoCfw4Uh4x9zCbOKcRU2poz1IiQ9D6Y0430lyKZGFypg7RcfMcvZ6pNc
+         Jirrx62tzt4UcQ0/OIj/DlmlHtSRcg+TKiy+ueN9nR3PP/KHCpbOQauPYbgy+7oT4EgX
+         j/Bg==
+X-Gm-Message-State: APjAAAXdnTjBtUtRyz2X8+lEqou9jMRC2vsIRyTcN3L9QSQEVHr8D86w
+        EjWAxPbTme4GwiQ5wrpk2tTBDkG/XM04TOS6Uik=
+X-Google-Smtp-Source: APXvYqyg+KeQgRXVJZDaUPbBmnIos7uPNGPm0OC3qfoP5mjou/q3men/6JEcxuvR2Oub8sziKTuimCywBRL3Bsfrp3o=
+X-Received: by 2002:a2e:8e8d:: with SMTP id z13mr10963165ljk.10.1576272213118;
+ Fri, 13 Dec 2019 13:23:33 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20191213180817.2510-1-lmb@cloudflare.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20191213175112.30208-1-bjorn.topel@gmail.com>
+In-Reply-To: <20191213175112.30208-1-bjorn.topel@gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 13 Dec 2019 13:23:21 -0800
+Message-ID: <CAADnVQK5+z1n9xwkH0=W-8kwgqhp_LUPW=VfaMTTPAhKuNwxug@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 0/6] Introduce the BPF dispatcher
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Cc:     Network Development <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Edward Cree <ecree@solarflare.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <thoiland@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Fri, Dec 13, 2019 at 9:51 AM Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.co=
+m> wrote:
+>
+> Overview
+> =3D=3D=3D=3D=3D=3D=3D=3D
+>
+> This is the 6th iteration of the series that introduces the BPF
+> dispatcher, which is a mechanism to avoid indirect calls.
+...
+> Revisions
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+> v4->v5: [1]
 
-
-On 12/13/19 10:08 AM, Lorenz Bauer wrote:
-> Redirecting a packet from ingress to egress by using bpf_redirect
-> breaks if the egress interface has an fq qdisc installed. This is the same
-> problem as fixed in 'commit 8203e2d844d3 ("net: clear skb->tstamp in forwarding paths")
-> 
-> Clear skb->tstamp when redirecting into the egress path.
-> 
-> Fixes: 80b14dee2bea ("net: Add a new socket option for a future transmit time.")
-> Fixes: fb420d5d91c1 ("tcp/fq: move back to CLOCK_MONOTONIC")
-> Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
-> ---
->  net/core/filter.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index f1e703eed3d2..d914257763b5 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -2055,6 +2055,7 @@ static inline int __bpf_tx_skb(struct net_device *dev, struct sk_buff *skb)
->  	}
->  
->  	skb->dev = dev;
-> +	skb->tstamp = 0;
->  
->  	dev_xmit_recursion_inc();
->  	ret = dev_queue_xmit(skb);
-> 
-
-Thanks !
-
-Reviewed-by: Eric Dumazet <edumazet@google.com>
-
+Applied. Thanks for all the hard work.
