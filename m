@@ -2,89 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D33A11E6EA
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2019 16:47:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98FA911E6EE
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2019 16:49:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727991AbfLMPrr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Dec 2019 10:47:47 -0500
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:34262 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727831AbfLMPrr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Dec 2019 10:47:47 -0500
-Received: by mail-wr1-f65.google.com with SMTP id t2so7174181wrr.1
-        for <bpf@vger.kernel.org>; Fri, 13 Dec 2019 07:47:45 -0800 (PST)
+        id S1727934AbfLMPtQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Dec 2019 10:49:16 -0500
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:34731 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727908AbfLMPtQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 Dec 2019 10:49:16 -0500
+Received: by mail-qk1-f193.google.com with SMTP id d202so2418351qkb.1;
+        Fri, 13 Dec 2019 07:49:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zy/1vxmK7IESgZ5MufAb5lMH5M1hrx2tBtD49AP8IGg=;
-        b=EwfZKJpHgTZfq2oP7jePrJKUK8ZNAm4PsQGN32QF3UGr1NkO0kMWQMhpx3xpKJd4k2
-         qCENKuKt9VkU+QR6qzO73xgYJPkZkW515/0DMsa4G85AiuMp+AxljrIpsZKE+TY8ngmk
-         /8dv3fPgl/f9PgecfmougTtKhSdBMssa8PEsw=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Gsc6a8n1oq89OaeyrnkAHq66uYj42sNcEqmul1hr5nE=;
+        b=QjWAuw7ObThExIdvmqhyAt/ihAFjyqCtI3GHXQPR56Mgd4N6ukVP4Fvtll6L1fEO/O
+         E0m0514119d9Wo8P+CyBRBSGQv/3beU63PLaQMQmMXyfux52BWwMbzuSG6iIEm4C3TcC
+         IBmLox0uTeGjgWu1AFaMWYNNf9chD2ywwhjyX1kO+eQ259IblAqHGiSZEbPOA4jnMxj+
+         ci8JKdXofMYZacccbiEpI8d/wJNLu2iygJuJGBJyl0Z99bVZc+RQbcpp600j87adbd9g
+         TXzJhu4eUSXP/5Qec53NNdObeQmgpljncCXnjsBXWnU9zvyLs464wTY3I9OVQ77Uqacr
+         HBIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zy/1vxmK7IESgZ5MufAb5lMH5M1hrx2tBtD49AP8IGg=;
-        b=twwfJVlYGIxiZDqtGLRg2GW8I4lwLOHvz2wLczWUkvQWjPPwUaspPx4YTtoYhirs9m
-         uaOYXDp/aq52KUjD+TCj2txreI2DcpiKXUbobSWL4KPAsIybU5itm90Gr5Hm9W5aaaby
-         VJum30VniGd5bYe940HSrfHS5CJoR5AirRI6Gf8AMdZ0SBCyCp5+JJ8CjCRi0d9wtU49
-         FR/PMQbOS2+cd1Z+9+awcxbUGiMdFTSlqML2+J10+mfiwHGVREYpTbJHCZlSbnIyRIuL
-         CvYp+IWsLCrWK8KBaw85sTDW7v2GQJZmV6O3OGeDaSS/gp9O2d/qm078JSigaDBUJ/Co
-         ksRQ==
-X-Gm-Message-State: APjAAAX+veVwuQQvf3vgZCoB2JdrlBJG6mfyWNmI8cdEKdOpd5rT2/G9
-        6wgf/O99Dt23uF1TDW4NukAjPg==
-X-Google-Smtp-Source: APXvYqxDDCsPNF553NwXAaiIZEZtJCqKHvMMr8OTf4QdQlkxPgrUbkSbZGoxyJoE0pe94MnpErfvJQ==
-X-Received: by 2002:adf:f3d0:: with SMTP id g16mr14079175wrp.2.1576252064539;
-        Fri, 13 Dec 2019 07:47:44 -0800 (PST)
-Received: from localhost.localdomain ([2a06:98c0:1000:8250:3da5:43ec:24b:e240])
-        by smtp.gmail.com with ESMTPSA id s8sm10140295wrt.57.2019.12.13.07.47.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Dec 2019 07:47:43 -0800 (PST)
-From:   Lorenz Bauer <lmb@cloudflare.com>
-To:     ast@kernel.org, daniel@iogearbox.net,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesus Sanchez-Palencia <jesus.sanchez-palencia@intel.com>,
-        Richard Cochran <rcochran@linutronix.de>,
-        Eric Dumazet <edumazet@google.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     kernel-team@cloudflare.com, Lorenz Bauer <lmb@cloudflare.com>
-Subject: [PATCH bpf] bpf: clear skb->tstamp in bpf_redirect when necessary
-Date:   Fri, 13 Dec 2019 15:46:34 +0000
-Message-Id: <20191213154634.27338-1-lmb@cloudflare.com>
-X-Mailer: git-send-email 2.20.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Gsc6a8n1oq89OaeyrnkAHq66uYj42sNcEqmul1hr5nE=;
+        b=pRchqWAfv4GoO/8LjXN0be2uaNeoxwJ7bk6KyRHBInvU31oEKxUgj4+V8YhabQZeIR
+         w+F2ylK1KDdNvhwb0y7xQeVygI7pswREYOkXEmIUiE5FjCtdZu6nroKV015vpIv00Zrr
+         3uIf23S1AkVElcIyio7F+xcFZEF58yn64qGEA9A3idlMwxzGQoNWNr2m8kMLF7JNGLBt
+         E7PUDHSV3vCDVAz7A2mosv43tWx6Dr/FU5x7yHtmOI89w7C77sunFBTHr42xSflwqQ2l
+         MojjSXQncVC4uRdnA41lo42QrTRxwoQevUSfAeL15jH3Cck6j/CaPVDx+SUew6GXQ6JE
+         QG5A==
+X-Gm-Message-State: APjAAAUrKDKQBkEoCGPQdJ0OgKcd2ZjOA6b4PNXPonKMN8TTl5fACq7x
+        OT7NgAQpWEURhyA/28pG/24fRHqqoT7NqybRw1s=
+X-Google-Smtp-Source: APXvYqxoPs/7BEx0y3EmTpxmZwL5BCI76Bmp1H6flWSYOBBcrGpFrpjKZPIcWV3fG0jGpbxrHkdipwXSxaFANxxpFv8=
+X-Received: by 2002:a37:9c0f:: with SMTP id f15mr14169383qke.297.1576252155437;
+ Fri, 13 Dec 2019 07:49:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20191211123017.13212-1-bjorn.topel@gmail.com> <20191211123017.13212-3-bjorn.topel@gmail.com>
+ <20191213053054.l3o6xlziqzwqxq22@ast-mbp> <CAJ+HfNiYHM1v8SXs54rkT86MrNxuB5V_KyHjwYupcjUsMf1nSQ@mail.gmail.com>
+ <20191213150407.laqt2n2ue2ahsu2b@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20191213150407.laqt2n2ue2ahsu2b@ast-mbp.dhcp.thefacebook.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Fri, 13 Dec 2019 16:49:04 +0100
+Message-ID: <CAJ+HfNgjvT2O=ux=AqdDdO=QSwBkALvXSBjZhib6zGu=AeARwA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 2/6] bpf: introduce BPF dispatcher
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Netdev <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        bpf <bpf@vger.kernel.org>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Edward Cree <ecree@solarflare.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <thoiland@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Redirecting a packet from ingress to egress by using bpf_redirect
-breaks if the egress interface has an fq qdisc installed. This is the same
-problem as fixed in 8203e2d8 ("net: clear skb->tstamp in forwarding paths").
+On Fri, 13 Dec 2019 at 16:04, Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Fri, Dec 13, 2019 at 08:51:47AM +0100, Bj=C3=B6rn T=C3=B6pel wrote:
+> >
+> > > I hope my guess that compiler didn't inline it is correct. Then extra=
+ noinline
+> > > will not hurt and that's the only thing needed to avoid the issue.
+> > >
+> >
+> > I'd say it's broken not marking it as noinline, and I was lucky. It
+> > would break if other BPF entrypoints that are being called from
+> > filter.o would appear. I'll wait for more comments, and respin a v5
+> > after the weekend.
+>
+> Also noticed that EXPORT_SYMBOL for dispatch function is not necessary at=
+m.
+> Please drop it. It can be added later when need arises.
+>
 
-Clear skb->tstamp when redirecting into the egress path.
+It's needed for module builds, so I cannot drop it!
 
-Fixes: 80b14de ("net: Add a new socket option for a future transmit time.")
-Fixes: fb420d5 ("tcp/fq: move back to CLOCK_MONOTONIC")
-Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
----
- net/core/filter.c | 1 +
- 1 file changed, 1 insertion(+)
+> With that please respin right away. No need to wait till Monday.
+> My general approach on accepting patches is "perfect is the enemy of the =
+good".
+> It's better to land patches sooner if architecture and api looks good.
+> Details and minor bugs can be worked out step by step.
+>
 
-diff --git a/net/core/filter.c b/net/core/filter.c
-index f1e703eed3d2..d914257763b5 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -2055,6 +2055,7 @@ static inline int __bpf_tx_skb(struct net_device *dev, struct sk_buff *skb)
- 	}
- 
- 	skb->dev = dev;
-+	skb->tstamp = 0;
- 
- 	dev_xmit_recursion_inc();
- 	ret = dev_queue_xmit(skb);
--- 
-2.20.1
-
+Ok! Will respin right away!
