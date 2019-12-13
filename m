@@ -2,108 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3856911E3AC
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2019 13:40:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9487611E618
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2019 16:07:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727084AbfLMMkm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Dec 2019 07:40:42 -0500
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:38159 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727077AbfLMMkm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Dec 2019 07:40:42 -0500
-Received: by mail-wr1-f68.google.com with SMTP id y17so6496677wrh.5;
-        Fri, 13 Dec 2019 04:40:40 -0800 (PST)
+        id S1727329AbfLMPEO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Dec 2019 10:04:14 -0500
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:46363 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726528AbfLMPEO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 Dec 2019 10:04:14 -0500
+Received: by mail-pg1-f195.google.com with SMTP id z124so1690077pgb.13;
+        Fri, 13 Dec 2019 07:04:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=57vMBlnpciL/juUhZmhXykw/E2smdFCzEpCa1v5KKHs=;
+        b=fhH1d+8EovXL8gJtcHHnZLRLckuWRxEcfJQEeZ2PV0j44r6FVxxa3jZMlyeTu/GmOF
+         X54VXv6FZwzh87RugImVHB8DZK/pHqeJ9jThLb3vsLlAg7gFjUMQURPSCI/aoISI0hDp
+         W03Z+c6SMuB9FN+t4Xu9u8W5kta1Azl0XTXCuFimNSqijnmh4TLI1FpwUrKq38yu48ol
+         eE0dMC0wyhk0NogKufKz72HJ49xK44DhieWhdwWQA/S88b8U0XmsqgEDBaG6ap4guZqy
+         g687i+QAx/QIbgbxBABNCrz6/wYASfzbq5OgrIUt/iyopk7fcyJyrlHCRyMIpJORKUh2
+         gpgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=tnh80OpaBpAPAA0LDAF7S493hMNGvT3IEVpFXhg8d8E=;
-        b=IEkMUBm6zzrj7BIZePfssczmAoUqzg+XdF0Byvg7pW7TnBxJmijtmrjJwjCJnW3u65
-         AyUTJMJr6iR/R8Vn2HbkLZbUgmKBQJ1+w4LY7Bg7Bx9HwsR7xeUkEm/FKD9FNiTETAPK
-         4ajBgYtM957KGazR4h0n4u7A2PqGpzLYK2Yp1okHMMQI2tvJtTjpzrLbEm24cMEMeZph
-         6rKGrrMgNricSbhqDCwKc6GBRs8w5efApWZQsFomR0F1BXH9ryohDfJPoHdTj3PnWKHG
-         AA4cwJnJOD+wk0gQVTt4AQ/ZNdQOgkU0rLKuqnd4/eo9z9Q+6r8dKCLEE2aMdrBinf4m
-         Dvlw==
-X-Gm-Message-State: APjAAAUrlt4eHU9+etsaHRNUCqX4+BZg5f3BbWz6iig+SinrS7hoKF03
-        QWzBfjAiUHwbyYerd+Oguv0=
-X-Google-Smtp-Source: APXvYqxGnKqDe80rGqRSnKDtZ9/OP25Vf+wmrPyjJ8wfJyVhyLZRXelm+SlmqF6GkeeQy/E9floipQ==
-X-Received: by 2002:a5d:65c5:: with SMTP id e5mr12504298wrw.311.1576240839781;
-        Fri, 13 Dec 2019 04:40:39 -0800 (PST)
-Received: from Omicron ([185.64.192.240])
-        by smtp.gmail.com with ESMTPSA id x6sm10385584wmi.44.2019.12.13.04.40.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Dec 2019 04:40:39 -0800 (PST)
-Date:   Fri, 13 Dec 2019 13:40:38 +0100
-From:   Paul Chaignon <paul.chaignon@orange.com>
-To:     Jakub Kicinski <jakub.kicinski@netronome.com>
-Cc:     bpf@vger.kernel.org, Quentin Monnet <quentin.monnet@netronome.com>,
-        paul.chaignon@gmail.com, netdev@vger.kernel.org,
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=57vMBlnpciL/juUhZmhXykw/E2smdFCzEpCa1v5KKHs=;
+        b=KfjGXFQXngIyeB9k7vo/lH8p944pHyn3TTXIfM9I3zU6oy3anuIu67tNboXBSAPNuZ
+         x4FQ+NBWrumVVF8ailXUIONOFFI4Pm6A7iuB81UCVv9CRp0cy1MhBKTB1WiEj9SpRBof
+         FvGhUecHYXifriaHmLx2kV2BwJvt/1Q13uHzcAzPYYVEW9tGVBPcAmiNJhSndM6bMKC+
+         dEC37ufIg5XfkwyUf5LULp8F+Y1g0VTXJIrXfyOzo9mTS0RIb1uVyM7+y/HXxvcLdr90
+         920lBxXLhIhFUv8ssGAheLyTejJnm0sBnhYacozxA5Gh60ErUJJ5ys3/gcP9b3iTGJC+
+         YhpQ==
+X-Gm-Message-State: APjAAAXIsfxM/ONUNP75WeZ+8s9Kj+xSkWGiPrajQY0FPd0UWz12XoQS
+        7AVSr0cB+ZGolcdwma87RXM=
+X-Google-Smtp-Source: APXvYqyyw4vy9CkJAbKOoeQMxtp42hxEN29HXtnd6y4ks1cvb69JSf9oCtPXbbe8T5/BZsBN73ICVw==
+X-Received: by 2002:a62:5202:: with SMTP id g2mr16319864pfb.43.1576249453273;
+        Fri, 13 Dec 2019 07:04:13 -0800 (PST)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:180::4b46])
+        by smtp.gmail.com with ESMTPSA id e188sm12209505pfe.113.2019.12.13.07.04.10
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 13 Dec 2019 07:04:12 -0800 (PST)
+Date:   Fri, 13 Dec 2019 07:04:09 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Cc:     Netdev <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Subject: Re: [PATCH bpf-next 2/3] bpftool: match programs by name
-Message-ID: <20191213124038.GB6538@Omicron>
-References: <cover.1575991886.git.paul.chaignon@orange.com>
- <1e3ede4f901a36af342e71bc4fdd2b27fbf9a418.1575991886.git.paul.chaignon@orange.com>
- <20191210124101.6d5be2dd@cakuba.netronome.com>
+        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        bpf <bpf@vger.kernel.org>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Edward Cree <ecree@solarflare.com>,
+        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= 
+        <thoiland@redhat.com>, Jesper Dangaard Brouer <brouer@redhat.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: Re: [PATCH bpf-next v4 2/6] bpf: introduce BPF dispatcher
+Message-ID: <20191213150407.laqt2n2ue2ahsu2b@ast-mbp.dhcp.thefacebook.com>
+References: <20191211123017.13212-1-bjorn.topel@gmail.com>
+ <20191211123017.13212-3-bjorn.topel@gmail.com>
+ <20191213053054.l3o6xlziqzwqxq22@ast-mbp>
+ <CAJ+HfNiYHM1v8SXs54rkT86MrNxuB5V_KyHjwYupcjUsMf1nSQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20191210124101.6d5be2dd@cakuba.netronome.com>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJ+HfNiYHM1v8SXs54rkT86MrNxuB5V_KyHjwYupcjUsMf1nSQ@mail.gmail.com>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 10, 2019 at 01:04:13PM -0800, Jakub Kicinski wrote:
-> On Tue, 10 Dec 2019 17:06:42 +0100, Paul Chaignon wrote:
-> > When working with frequently modified BPF programs, both the ID and the
-> > tag may change.  bpftool currently doesn't provide a "stable" way to match
-> > such programs.
-> > 
-> > This patch implements lookup by name for programs.  The show and dump
-> > commands will return all programs with the given name, whereas other
-> > commands will error out if several programs have the same name.
-> > 
-> > Signed-off-by: Paul Chaignon <paul.chaignon@orange.com>
+On Fri, Dec 13, 2019 at 08:51:47AM +0100, Björn Töpel wrote:
 > 
-> > @@ -164,7 +165,7 @@ prog_parse_fds(int *argc, char ***argv, int *fds)
-> >  		}
-> >  		return 1;
-> >  	} else if (is_prefix(**argv, "tag")) {
-> > -		unsigned char tag[BPF_TAG_SIZE];
-> > +		char tag[BPF_TAG_SIZE];
+> > I hope my guess that compiler didn't inline it is correct. Then extra noinline
+> > will not hurt and that's the only thing needed to avoid the issue.
+> >
 > 
-> Perhaps better to change the argument to prog_fd_by_nametag() to void *?
-> 
-> >  
-> >  		NEXT_ARGP();
-> >  
-> > @@ -176,7 +177,20 @@ prog_parse_fds(int *argc, char ***argv, int *fds)
-> >  		}
-> >  		NEXT_ARGP();
-> >  
-> > -		return prog_fd_by_tag(tag, fds);
-> > +		return prog_fd_by_nametag(tag, fds, true);
-> > +	} else if (is_prefix(**argv, "name")) {
-> > +		char *name;
-> > +
-> > +		NEXT_ARGP();
-> > +
-> > +		name = **argv;
-> > +		if (strlen(name) > BPF_OBJ_NAME_LEN - 1) {
-> 
-> Is this needed? strncmp will simply never match, is it preferred to
-> hard error?
+> I'd say it's broken not marking it as noinline, and I was lucky. It
+> would break if other BPF entrypoints that are being called from
+> filter.o would appear. I'll wait for more comments, and respin a v5
+> after the weekend.
 
-I tried to follow the fail-early pattern of lookups by tag above.  I do
-like that there's a different error message for a longer than expected
-name.  Since libbpf silently truncates names, typing a longer name is
-not uncommon.
+Also noticed that EXPORT_SYMBOL for dispatch function is not necessary atm.
+Please drop it. It can be added later when need arises.
 
-[...]
+With that please respin right away. No need to wait till Monday.
+My general approach on accepting patches is "perfect is the enemy of the good".
+It's better to land patches sooner if architecture and api looks good.
+Details and minor bugs can be worked out step by step.
 
-Paul
