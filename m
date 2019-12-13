@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DC9AF11DE5A
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2019 07:58:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A46811DE5C
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2019 08:01:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725468AbfLMG6P (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Dec 2019 01:58:15 -0500
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:45746 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725385AbfLMG6P (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Dec 2019 01:58:15 -0500
-Received: by mail-qk1-f196.google.com with SMTP id x1so895511qkl.12
-        for <bpf@vger.kernel.org>; Thu, 12 Dec 2019 22:58:14 -0800 (PST)
+        id S1725535AbfLMHB1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Dec 2019 02:01:27 -0500
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:41707 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725385AbfLMHB1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 Dec 2019 02:01:27 -0500
+Received: by mail-qt1-f195.google.com with SMTP id k40so1463551qtk.8
+        for <bpf@vger.kernel.org>; Thu, 12 Dec 2019 23:01:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=t1QCDa5OHvvB0Z+OZwtYsNcKnprN7g3cyeb/F970LcE=;
-        b=kwQdbmVr5Dmp4x/5XPrbW7ExMLE4jTDoFCwNum02gGPpUkltiVfNaGCRRClnGSdfMu
-         dJkqoFYfrOSnryj0xhEC4BK3oL/F6k7MxikBx0wfTlUoB89Df/RlXd6sGkvUw7GKHMWj
-         j1K0TX5IXi+KMdsg2G8JwNb7qluy3gWxk12dzDlu6/db76TBQHZDlnJ0n3XXNKYqDN2b
-         2A0ho6m7mD4pG0xTU5N3Fs98v9/h2bmXL7kqFosDOimqGLKL+JxHX5nCaWBKDEMu3btZ
-         yQkcAK3nSvZHHTB9bWEO1ZPGBVcPkC6KVpLdVhcoOsqi9Wgkhxr33Ank10c4JRyxy2ru
-         ndEA==
+        bh=BtsAa0hfplae23hA/jTNYgr7SVgcp09aRVARDJDWBYI=;
+        b=vJTiGUaPhVqw7KXe6Vm6G5j3m7/yJira7BWznoY9gs9mX1+V6Pjoyibr8dWkwqQu6C
+         WMmc5KDiVRbX3N4daUBanabuLy8u7f3vL7gIHujhonCoAgMNE4UFSgYAiUcCwYB+HIG5
+         aX/mP52EqUp65jDS+jrG84QpdQsgyky3rzGybJf/gx6TtFndnAHDlz9vg1Odd8ucLtJ3
+         0edGnOki65xx3Q5cdYp1zx3bT7G+V0PGWkB+2hL+XbX0g2f6mMvxfyi2PCtu5e7h+v1i
+         E4jhKzK36Ufkn+K6jemH0ZZrxtQmQB0RWU5rIepmbqxX//ltZ4gTGUdnHC/UuS0fjARA
+         +juA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=t1QCDa5OHvvB0Z+OZwtYsNcKnprN7g3cyeb/F970LcE=;
-        b=YGB3ZMQgkSG63wz1nGSREjj8c0wnli5knn4s/l1r5K+BQXayKU1wB/wrHgOuDzbONc
-         rVi6JyB0sYRDJiA0ymhBENx7x8J3i5zRBxv+4/tU35KiPbDTCHELiHiDoft2a3Fg3lRo
-         2fLtCDLZfKU/78cGCgB/+2wJYXDyFcBhPildlroUY4tO6AaF9tLEnw/NBhRti8TPR8GO
-         rjMux9MFtYElez10uTXa0kDDuUb7CaiHEPSErYNiWdj7EOUplYbPPeLkF2vd56TLUsFe
-         htoND/UuK9SwYi5J+/S6BEPc2F8JgB67nAYtLltCqUtXf5AbiAhx6vp2n0XpZB3SBmui
-         fSRQ==
-X-Gm-Message-State: APjAAAV9YxjsX9eTiNC4gRmyLxDMSMTq+tjcyTYTUzHweJGTMxusZCtD
-        c/86K3BxoH9+a3hwQ0GWGgSbt5kEspQSFre9clc=
-X-Google-Smtp-Source: APXvYqwR7l2+RH5cq4sQgowdIQxOYd9Z8WhwFjWvAOkZJscAJhFM+RgqlzvAgL7j397CQhDPt3c/lUH4Ijhj2NDwfWI=
-X-Received: by 2002:a05:620a:14a2:: with SMTP id x2mr12330612qkj.36.1576220293691;
- Thu, 12 Dec 2019 22:58:13 -0800 (PST)
+        bh=BtsAa0hfplae23hA/jTNYgr7SVgcp09aRVARDJDWBYI=;
+        b=cVjuTLEJtAUDKIickJOP/j/QMa7DGBWDjXE2Wos3M1QXBa+SIEorDq0xagyeZtysSa
+         r9OVxzUKM2K24LOcMfsAc/OXIb1ld40He0unZi2IRUmkQP1daFX3MFZkyiRhJCNYNLt/
+         Z0n54k+suezNwQD2wK/ri3BWNGbFKnJrKOlUxHlXWtBhD7uy9r/8CoDHW4lGDVNuhrp3
+         ISHoc5YykJFzBqYBsbPXVZH3NDYdOu1n0ZqLY+L+eWgG99SaLsv96e23INlw6VFrqpuc
+         rARTZ7bhfBmug8dA89KOp6enQZkwl5tNMFWdadVDy2K31iDfqD3o4rdaJ2HQP2xYcsN5
+         wDCg==
+X-Gm-Message-State: APjAAAXc1iX+4ZM6TpHtUyCaZeo7F2wWEIIlUkFtn1l2wQjVtyfv2bqh
+        A2prCyiMqK7wUXYzS8WGKX9zWrFvT3IMqBYJq9xSjQ==
+X-Google-Smtp-Source: APXvYqzMkEKkCvA5Gd1UPPXAIgVeqU2/st0FEMgv1KGpJbI6VM2Nqvw9JTzGeXPjaUQyyPGjbwa+pOi8FbcNpqAAZME=
+X-Received: by 2002:ac8:5457:: with SMTP id d23mr10573783qtq.93.1576220485630;
+ Thu, 12 Dec 2019 23:01:25 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1576193131.git.rdna@fb.com> <364944f93a1d77eab769eeba79bb74122a688338.1576193131.git.rdna@fb.com>
-In-Reply-To: <364944f93a1d77eab769eeba79bb74122a688338.1576193131.git.rdna@fb.com>
+References: <cover.1576193131.git.rdna@fb.com> <bc55a274ea572d237bd091819f38502fa837abb5.1576193131.git.rdna@fb.com>
+In-Reply-To: <bc55a274ea572d237bd091819f38502fa837abb5.1576193131.git.rdna@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 12 Dec 2019 22:58:02 -0800
-Message-ID: <CAEf4BzavGP6Aug4Jeg_MsxtgKyVDMGH6omoyMK=BvaAeW1QP3Q@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 5/6] libbpf: Introduce bpf_prog_attach_xattr
+Date:   Thu, 12 Dec 2019 23:01:14 -0800
+Message-ID: <CAEf4Bza7KU1r3iRuXiwL7AiOnEbNmxx_hsEUZL8up2OVtJX3XA@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 6/6] selftests/bpf: Cover BPF_F_REPLACE in test_cgroup_attach
 To:     Andrey Ignatov <rdna@fb.com>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -60,122 +60,71 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Thu, Dec 12, 2019 at 3:34 PM Andrey Ignatov <rdna@fb.com> wrote:
 >
-> Introduce a new bpf_prog_attach_xattr function that accepts an
-> extendable struct bpf_prog_attach_opts and supports passing a new
-> attribute to BPF_PROG_ATTACH command: replace_prog_fd that is fd of
-> previously attached cgroup-bpf program to replace if recently introduced
-> BPF_F_REPLACE flag is used.
+> Test replacement of a cgroup-bpf program attached with BPF_F_ALLOW_MULTI
+> and possible failure modes: invalid combination of flags, invalid
+> replace_bpf_fd, replacing a non-attachd to specified cgroup program.
 >
-> The new function is named to be consistent with other xattr-functions
-> (bpf_prog_test_run_xattr, bpf_create_map_xattr, bpf_load_program_xattr).
+> Example of program replacing:
 >
-> The struct bpf_prog_attach_opts is supposed to be used with
-> DECLARE_LIBBPF_OPTS framework.
+>   # gdb -q ./test_cgroup_attach
+>   Reading symbols from /data/users/rdna/bin/test_cgroup_attach...done.
+>   ...
+>   Breakpoint 1, test_multiprog () at test_cgroup_attach.c:443
+>   443     test_cgroup_attach.c: No such file or directory.
+>   (gdb)
+>   [2]+  Stopped                 gdb -q ./test_cgroup_attach
+>   # bpftool c s /mnt/cgroup2/cgroup-test-work-dir/cg1
+>   ID       AttachType      AttachFlags     Name
+>   35       egress          multi
+>   36       egress          multi
+>   # fg gdb -q ./test_cgroup_attach
+>   c
+>   Continuing.
+>   Detaching after fork from child process 361.
 >
-> The opts argument is used directly in bpf_prog_attach_xattr
-> implementation since at the time of adding all fields already exist in
-> the kernel. New fields, if added, will need to be used via OPTS_* macros
-> from libbpf_internal.h.
+>   Breakpoint 2, test_multiprog () at test_cgroup_attach.c:454
+>   454     in test_cgroup_attach.c
+>   (gdb)
+>   [2]+  Stopped                 gdb -q ./test_cgroup_attach
+>   # bpftool c s /mnt/cgroup2/cgroup-test-work-dir/cg1
+>   ID       AttachType      AttachFlags     Name
+>   41       egress          multi
+>   36       egress          multi
 >
 > Signed-off-by: Andrey Ignatov <rdna@fb.com>
 > ---
->  tools/lib/bpf/bpf.c      | 21 +++++++++++++++++----
->  tools/lib/bpf/bpf.h      | 12 ++++++++++++
->  tools/lib/bpf/libbpf.map |  2 ++
->  3 files changed, 31 insertions(+), 4 deletions(-)
+>  .../selftests/bpf/test_cgroup_attach.c        | 62 +++++++++++++++++--
+>  1 file changed, 57 insertions(+), 5 deletions(-)
 >
-> diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-> index 98596e15390f..9f4e42abd185 100644
-> --- a/tools/lib/bpf/bpf.c
-> +++ b/tools/lib/bpf/bpf.c
-> @@ -466,14 +466,27 @@ int bpf_obj_get(const char *pathname)
+
+I second Alexei's sentiment. Having this as part of test_progs would
+certainly be better in terms of ensuring this doesn't accidentally
+breaks.
+
+[...]
+
 >
->  int bpf_prog_attach(int prog_fd, int target_fd, enum bpf_attach_type type,
->                     unsigned int flags)
-> +{
-> +       DECLARE_LIBBPF_OPTS(bpf_prog_attach_opts, opts,
-> +               .target_fd = target_fd,
-> +               .prog_fd = prog_fd,
-> +               .type = type,
-> +               .flags = flags,
+> +       /* invalid input */
+> +
+> +       DECLARE_LIBBPF_OPTS(bpf_prog_attach_opts, attach_opts,
+> +               .target_fd              = cg1,
+> +               .prog_fd                = allow_prog[6],
+> +               .replace_prog_fd        = allow_prog[0],
+> +               .type                   = BPF_CGROUP_INET_EGRESS,
+> +               .flags                  = BPF_F_ALLOW_MULTI | BPF_F_REPLACE,
 > +       );
+
+This might cause compiler warnings (depending on compiler settings, of
+course). DECLARE_LIBBPF_OPTS does declare variable, so this is a
+situation of mixing code and variable declarations, which under C89
+(or whatever it's named, the older standard that kernel is trying to
+stick to for the most part) is not allowed.
+
 > +
-> +       return bpf_prog_attach_xattr(&opts);
-> +}
+> +       attach_opts.flags = BPF_F_ALLOW_OVERRIDE | BPF_F_REPLACE;
+> +       if (!bpf_prog_attach_xattr(&attach_opts)) {
+> +               log_err("Unexpected success with OVERRIDE | REPLACE");
+> +               goto err;
+> +       }
+> +       assert(errno == EINVAL);
 > +
-> +int bpf_prog_attach_xattr(const struct bpf_prog_attach_opts *opts)
-
-When we discussed this whole OPTS idea, we agreed that specifying
-mandatory arguments as is makes for better usability. All the optional
-stuff then is moved into opts (and then extended indefinitely, because
-all the newly added stuff has to be optional, at least for some subset
-of arguments).
-
-So if we were to follow those unofficial "guidelines",
-bpf_prog_attach_xattr would be defined as:
-
-int bpf_prog_attach_xattr(int prog_fd, int target_fd, enum bpf_attach_type type,
-                          const struct bpf_prog_attach_opts *opts);
-
-, where opts has flags and replace_bpf_fd right now.
-
-Naming wise, it's quite departure from xattr approach, so I'd probably
-would go with bpf_prog_attach_opts, but I won't insist.
-
-WDYT?
-
->  {
->         union bpf_attr attr;
->
->         memset(&attr, 0, sizeof(attr));
-> -       attr.target_fd     = target_fd;
-> -       attr.attach_bpf_fd = prog_fd;
-> -       attr.attach_type   = type;
-> -       attr.attach_flags  = flags;
-> +       attr.target_fd     = opts->target_fd;
-> +       attr.attach_bpf_fd = opts->prog_fd;
-> +       attr.attach_type   = opts->type;
-> +       attr.attach_flags  = opts->flags;
-> +       attr.replace_bpf_fd = opts->replace_prog_fd;
->
->         return sys_bpf(BPF_PROG_ATTACH, &attr, sizeof(attr));
->  }
-> diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-> index 5cfe6e0a1aef..5b5f9b374074 100644
-> --- a/tools/lib/bpf/bpf.h
-> +++ b/tools/lib/bpf/bpf.h
-> @@ -150,8 +150,20 @@ LIBBPF_API int bpf_map_get_next_key(int fd, const void *key, void *next_key);
->  LIBBPF_API int bpf_map_freeze(int fd);
->  LIBBPF_API int bpf_obj_pin(int fd, const char *pathname);
->  LIBBPF_API int bpf_obj_get(const char *pathname);
-> +
-> +struct bpf_prog_attach_opts {
-> +       size_t sz; /* size of this struct for forward/backward compatibility */
-> +       int target_fd;
-> +       int prog_fd;
-> +       enum bpf_attach_type type;
-> +       unsigned int flags;
-> +       int replace_prog_fd;
-> +};
-> +#define bpf_prog_attach_opts__last_field replace_prog_fd
-> +
->  LIBBPF_API int bpf_prog_attach(int prog_fd, int attachable_fd,
->                                enum bpf_attach_type type, unsigned int flags);
-> +LIBBPF_API int bpf_prog_attach_xattr(const struct bpf_prog_attach_opts *opts);
->  LIBBPF_API int bpf_prog_detach(int attachable_fd, enum bpf_attach_type type);
->  LIBBPF_API int bpf_prog_detach2(int prog_fd, int attachable_fd,
->                                 enum bpf_attach_type type);
-> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-> index 495df575f87f..42b065454031 100644
-> --- a/tools/lib/bpf/libbpf.map
-> +++ b/tools/lib/bpf/libbpf.map
-> @@ -210,4 +210,6 @@ LIBBPF_0.0.6 {
->  } LIBBPF_0.0.5;
->
->  LIBBPF_0.0.7 {
-> +       global:
-> +               bpf_prog_attach_xattr;
->  } LIBBPF_0.0.6;
-> --
-> 2.17.1
->
