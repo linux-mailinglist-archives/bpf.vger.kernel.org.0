@@ -2,121 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C45111EB47
-	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2019 20:52:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 803A111EBF7
+	for <lists+bpf@lfdr.de>; Fri, 13 Dec 2019 21:41:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728972AbfLMTvu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Dec 2019 14:51:50 -0500
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:36838 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728932AbfLMTvu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Dec 2019 14:51:50 -0500
-Received: by mail-qt1-f195.google.com with SMTP id q20so42917qtp.3
-        for <bpf@vger.kernel.org>; Fri, 13 Dec 2019 11:51:49 -0800 (PST)
+        id S1725818AbfLMUlg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Dec 2019 15:41:36 -0500
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:44344 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725799AbfLMUlg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 Dec 2019 15:41:36 -0500
+Received: by mail-lj1-f196.google.com with SMTP id c19so61832lji.11
+        for <bpf@vger.kernel.org>; Fri, 13 Dec 2019 12:41:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netflix.com; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=RcocnBgthkpbK/m8uz5lL4Etu89gMRTjWvFTOte2r2c=;
-        b=itDZNQlHPhHUrHqVid9ZEL0BBIhzfoYb+mAnZJJEhu2kbVcTJwANnDhQQ2vtWotOfg
-         GuDvebWKQEIA+A5n+auB+OzFLNBHhSec5TBo4mBEwZ5Lwtyw2G4oUiVdU0dDIURlM+5J
-         hSoDs0DqyA/KAgt/Ube70t5A/PU6LV01m7bEI=
+        bh=IwtBfxljK+marrwbQ0NULSp27IRMHfScK8gXlrj596s=;
+        b=EjxLI9wq4Jh0Gh+YXKpI+qzi4PNgdcj8+hGlxDV2gxWKCApcI3odGuvMtMqixwSnTl
+         px9h1HN4F1kooFk3JO2U3WheXBA6ss9sphWc57fWX+eDV4WV98UooYwvdwBkLpXKZ9O3
+         F7An0bChQsWI77IHKq7zKs+NEsK5+yaiVgQ/6H4nAIXgAcrLQCNaD3fPhBmOspy7Zemn
+         fdpPycF9umQugckymjOeOpUUXV3h03SbL3k7ne6H7qVIn5IcLdwpDvdobx0a9a2a7oIg
+         cqGqdYDwXKLGlgcBRldpTWjRrBFYkiq+ININFurvhvikH5m6/Rkv7k6oLutmkEpK/JLl
+         UC7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=RcocnBgthkpbK/m8uz5lL4Etu89gMRTjWvFTOte2r2c=;
-        b=C0yZoNCFdQmw4vYKmd6B2pCs1qxpTaUe+aHEuOKk0rPGV/08UfhH9KthrHAeu2LVJu
-         UAHfOLTZqh9xIlk+7reoVc1dfuhSFDJADuSgeK1KkrxSuFhzKhudBR+c0m/bbnNn/fsL
-         MscmcnphPDtXRiNnBRous9doaTWLC1zNhQznRyuHIVxaPaN5Y2OxCHhmCI9oWKf3fs7H
-         7Kw4ni1rDPwtgjETtrSr13v431+x50vVifn4IsEra3NDAsXW7Dhgxc7XEI2DQu5kI4HS
-         Bfj+BhXAQqOPzEvaqGk8/uwcy9V1RiX5kMFJeg56enhykbY5RPsSQ0Q6Qqh+orhAgBjF
-         kaIQ==
-X-Gm-Message-State: APjAAAU7WF/koF5VX2wwrbEaTKrFJPEPszp8BCAtcs38aABMnf+lxebO
-        d6irE+9Q805Yr9y2UXSnBG8XOEgYpwMOAwb7siu4MClB8iM=
-X-Google-Smtp-Source: APXvYqzykKfxjJE3Fx4RtcLW6QEH5ZxzYS0hScq/NEmLrnIUP+d6AApkHTcBQbyzzoCSMUgoB+AcM5H1ZItGDJ6F/io=
-X-Received: by 2002:aed:3ee5:: with SMTP id o34mr14102843qtf.164.1576266709314;
- Fri, 13 Dec 2019 11:51:49 -0800 (PST)
+        bh=IwtBfxljK+marrwbQ0NULSp27IRMHfScK8gXlrj596s=;
+        b=TD1qmph1yNsBnGhqbga7lhtbV0dDL+/GAJsF/6GqTspP6SYBmqUmOCbSSe84kD8ged
+         0/+wo0rvk0yAIqaLH0LwQtVexeo1nAfnPh3uTwYZ1Vz4Xdwl2fOtO4DqHx2C0Hot/9Cu
+         M9QFncSYGKg+Hgp8ZGkeFAeMKAaWNvpIyGN9Sp7Xv4cFyr8YDr8iBpjbxPwSps3AUwBt
+         NAXHP5MwF9rmu3Y1+cs7b2Gq+oe4LpodA1kb72vvW9dYsuhiVCHSoypTLKHEZvzzqChy
+         fE35WQJnx2uDdS3/5tHP7Hx2Mnvgc0g7u8KQPwE7o+Pv/XxLNLgviKzgG1r+iTP3haZw
+         9I2Q==
+X-Gm-Message-State: APjAAAWwuKrX2f2KE5HbgAF0s8hpy7DHCNMV8WL0EbyVdDPNv0Ml/f7C
+        aj426fEWidyv5fOf5v+dXBKvhIvG2Coc4LtZUrU=
+X-Google-Smtp-Source: APXvYqxjiWMIkhQWR1mG02HcBiRqXZNGb9UkrHVXlaHljXvDS5qUPFXAtFvJZGrgnUhdFYzB10RUeWr2qIhgjKcVDq8=
+X-Received: by 2002:a2e:9d85:: with SMTP id c5mr7190189ljj.51.1576269694700;
+ Fri, 13 Dec 2019 12:41:34 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1574162990.git.ethercflow@gmail.com> <e8b1281b7405eb4b6c1f094169e6efd2c8cc95da.1574162990.git.ethercflow@gmail.com>
- <20191123031826.j2dj7mzto57ml6pr@ast-mbp.dhcp.thefacebook.com>
- <20191123045151.GH26530@ZenIV.linux.org.uk> <20191123051919.dsw7v6jyad4j4ilc@ast-mbp.dhcp.thefacebook.com>
- <20191123053514.GJ26530@ZenIV.linux.org.uk> <20191123060448.7crcqwkfmbq3gsze@ast-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20191123060448.7crcqwkfmbq3gsze@ast-mbp.dhcp.thefacebook.com>
-From:   Brendan Gregg <bgregg@netflix.com>
-Date:   Fri, 13 Dec 2019 11:51:23 -0800
-Message-ID: <CAJN39ogBTyXB2-3OHiJ-oQfBd75_axxvOLoABfXLopH_VsG6gw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v10 1/2] bpf: add new helper get_file_path for
- mapping a file descriptor to a pathname
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Wenbo Zhang <ethercflow@gmail.com>, bpf@vger.kernel.org,
-        ast@kernel.org.com, Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>, andrii.nakryiko@gmail.com,
-        netdev@vger.kernel.org, linux-fsdevel@vger.kernel.org
+References: <20191212102259.418536-1-jakub@cloudflare.com> <20191213053635.4k42db43u6jbivi5@ast-mbp>
+ <20191213163035.res63motipcpkbqz@kafai-mbp>
+In-Reply-To: <20191213163035.res63motipcpkbqz@kafai-mbp>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 13 Dec 2019 12:41:23 -0800
+Message-ID: <CAADnVQ+_4gCavtPnArq3RMWB4ZQNefEZeBMft8+6aSXJqwSAeA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 00/10] Switch reuseport tests for test_progs framework
+To:     Martin Lau <kafai@fb.com>
+Cc:     Jakub Sitnicki <jakub@cloudflare.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "kernel-team@cloudflare.com" <kernel-team@cloudflare.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 22, 2019 at 10:05 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Fri, Dec 13, 2019 at 8:31 AM Martin Lau <kafai@fb.com> wrote:
 >
-> On Sat, Nov 23, 2019 at 05:35:14AM +0000, Al Viro wrote:
-> > On Fri, Nov 22, 2019 at 09:19:21PM -0800, Alexei Starovoitov wrote:
-> >
-> > > hard to tell. It will be run out of bpf prog that attaches to kprobe or
-> > > tracepoint. What is the concern about locking?
-> > > d_path() doesn't take any locks and doesn't depend on any locks. Above 'if'
-> > > checks that plain d_path() is used and not some specilized callback with
-> > > unknown logic.
-> >
-> > It sure as hell does.  It might end up taking rename_lock and/or mount_lock
-> > spinlock components.  It'll try not to, but if the first pass ends up with
-> > seqlock mismatch, it will just grab the spinlock the second time around.
->
-> ohh. got it. I missed _or_lock() part in there.
-> The need_seqretry() logic is tricky. afaics there is no way for the checks
-> outside of prepend_path() to prevent spin_lock to happen. And adding a flag to
-> prepend_path() to return early if retry is needed is too ugly. So this helper
-> won't be safe to be run out of kprobe. But if we allow it for tracepoints only
-> it should be ok. I think. There are no tracepoints in inner guts of vfs and I
-> don't think they will ever be. So running in tracepoint->bpf_prog->d_path we
-> will be sure that rename_lock+mount_lock can be safely spinlocked. Am I missing
-> something?
-
-It seems rather restrictive to only allow tracepoints (especially
-without VFS tracepoints), although I'll use it to improve my syscall
-tracepoint tools, so I'd be happy to see this merged even with that
-restriction.
-
-Just a thought: if *buffer is in BPF memory, can prepend_path() check
-it's memory location and not try to grab the lock based on that? This
-would be to avoid adding a flag.
-
->
-> > > > with this number; quite possibly never before that function had been called
-> > > > _and_ not once after it has returned.
+> On Thu, Dec 12, 2019 at 09:36:36PM -0800, Alexei Starovoitov wrote:
+> > On Thu, Dec 12, 2019 at 11:22:49AM +0100, Jakub Sitnicki wrote:
+> > > This change has been suggested by Martin Lau [0] during a review of a
+> > > related patch set that extends reuseport tests [1].
 > > >
-> > > Right. TOCTOU is not a concern here. It's tracing. It's ok for full path to be
-> > > 'one time deal'.
+> > > Patches 1 & 2 address a warning due to unrecognized section name from
+> > > libbpf when running reuseport tests. We don't want to carry this warning
+> > > into test_progs.
+> > >
+> > > Patches 3-8 massage the reuseport tests to ease the switch to test_progs
+> > > framework. The intention here is to show the work. Happy to squash these,
+> > > if needed.
+> > >
+> > > Patches 9-10 do the actual move and conversion to test_progs.
+> > >
+> > > Output from a test_progs run after changes pasted below.
 > >
-> > It might very well be a full path of something completely unrelated to what
-> > the syscall ends up operating upon.  It's not that the file might've been
-> > moved; it might be a different file.  IOW, results of that tracing might be
-> > misleading.
+> > Thank you for doing this conversion.
+> > Looks great to me.
+> >
+> > Martin,
+> > could you please review ?
+> Looks awesome.  Appreciate for moving this to test_progs!
 >
-> That is correct. Tracing is fine with such limitation. Still better than probe_read.
->
+> Acked-by: Martin KaFai Lau <kafai@fb.com>
 
-+1
-
-Tracing is observability tools and we document these caveats, and this
-won't be the first time I've published tools where the printed path
-may not be the one you think (e.g., the case of hard links.)
-
-Brendan
-
--- 
-Brendan Gregg, Senior Performance Architect, Netflix
+Applied. Thanks
