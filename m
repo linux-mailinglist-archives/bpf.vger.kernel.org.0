@@ -2,88 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BD8CB11EF71
-	for <lists+bpf@lfdr.de>; Sat, 14 Dec 2019 02:07:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AB1D11EF77
+	for <lists+bpf@lfdr.de>; Sat, 14 Dec 2019 02:21:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726422AbfLNBHs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Dec 2019 20:07:48 -0500
-Received: from mail-qv1-f67.google.com ([209.85.219.67]:40240 "EHLO
-        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725818AbfLNBHr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 13 Dec 2019 20:07:47 -0500
-Received: by mail-qv1-f67.google.com with SMTP id k10so494225qve.7;
-        Fri, 13 Dec 2019 17:07:47 -0800 (PST)
+        id S1726707AbfLNBVI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Dec 2019 20:21:08 -0500
+Received: from mail-qv1-f65.google.com ([209.85.219.65]:43907 "EHLO
+        mail-qv1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726704AbfLNBVI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 13 Dec 2019 20:21:08 -0500
+Received: by mail-qv1-f65.google.com with SMTP id p2so492360qvo.10;
+        Fri, 13 Dec 2019 17:21:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=pVFcEaE8mlWpYttIp5LqudjHVeoCAVsEWOwucctE+C8=;
-        b=LBUHuSJUBVN5wrft9ESf8P6+AhzW7GHPpIRGT1w6u+9+Xra+sditT+65VR2xo6oURo
-         V2JFths4prNymZo0xot8CdZ2JB9SnniS8j42WQ+ak0wYWF7hEdIDWjkP5bHj3+vJmclF
-         k4tn2Y06iUk+ZR+uS7KVfqxmLJKvc9EFMAlM3zBVWKgUU9p4yP+RVc20HiaU3h5XCu/q
-         9pr74YR6lubzbWZubd+1VudO7Vv2CH+wJnaYlzr6TpLvdDSTQBPlFsSX3Lg7mu0hsrW1
-         +s2Wkm8ecrTTJrena4JNQigbWxNiPYn5GzScuVrqth1FKyudRYKeHh+vZpdXo/+G1+md
-         mjsw==
+        bh=E0H9301ghdZ2dylpyDzeCJfxCEGT/ww6jQxz2tHkrTc=;
+        b=nJ7HlDS+AiFo59FVlQnaK1j7I3sEsgB3OaoH93ZdOAv9T0520PlZWijxhd6x7WgxGG
+         08bR4tKajuStRNsUVyqtexQQGczSaFFAmPFoa4qaez1gjUvp4Qme81AWGv4TG75n10QP
+         LTN/QMLwDzHQD2tFEcVgrHWx2roiMsn3AYjY0JXHNlfI4kU1NhWDmra7cRBmSUF/25V+
+         PifzhHkNmBUDkQ0eUBNsK7iR8bwoDi1+SF1Gsam+ZZPKC0AwpKOWPo9iErhEkR2o4O1X
+         xLnVpxeX5YgeksvYjxxeKVKB3TClrocHhwdpNo/YsoOgg7ju7XbWflm7BUZE07ay49+N
+         8iRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=pVFcEaE8mlWpYttIp5LqudjHVeoCAVsEWOwucctE+C8=;
-        b=MhXcyWz6rhyhnn+gnePoPW1u4qZWQiIxseDksbSVh43daQo95BnJ9mUm9rbQADj7Kv
-         N+g+DDJNj5naNmEt3tZ///Pd0ktR9b1u4sGFxuuBYiB3vsbKyFuKWRArwaSkLXOazehA
-         I9x1YSDsVpjnLHgw19+O4IZW+ShwpoKUEk19KOjs4Q9xffneJy2wkxJGtHIbndRcFCtj
-         UMxVCk2WZw3C5uLqhYEFk4jLyUT1VMIc1cPfUU1kwVJFDR6RI+YJrsl4d9Efo0wAa0Vg
-         HPrTwcXwbzUYk/cB5psjZC+b02eFiZubXA3AyHOBeNOXIbwGugM5Y05ofhKjmm+fH48M
-         ZXwQ==
-X-Gm-Message-State: APjAAAWy1ks7pBeo4+o5qcExyadLo33V8CCYKjhA7YYBFOupkZGRmCr5
-        TCz5ZB7HZoBlCMr966c4QHjXL6pj8s8H22t1XJ8=
-X-Google-Smtp-Source: APXvYqyupNME+C1Xikr7a+ScKNVIWMXsnEII9lViXnHkCWA2fXSRyZPWe4ao9Rr4xew04WJKIdeoEdlDQzbY5SvEnwg=
-X-Received: by 2002:ad4:4e34:: with SMTP id dm20mr16711664qvb.163.1576285666756;
- Fri, 13 Dec 2019 17:07:46 -0800 (PST)
+        bh=E0H9301ghdZ2dylpyDzeCJfxCEGT/ww6jQxz2tHkrTc=;
+        b=iEVSwuB0M8NERhJ/MZncCZkF9GCDxtB3IJ8Yz+4Hg/0Gv6HR9o91h7UvWIe1IiMCWB
+         uTs0HzBEG1it48rxJrO6Rsr0squ6IHvftooCgLnyMspqOIzr33VJ6ijuAgF/P3X3xyvK
+         N2j5OpvSx/r6jvC67ZQ3HyH4IR8US5hWbXlDgb9yLRmnMY6g+lAijG/tBZz0oZAB0aef
+         A/Xik1+/Y3+vOL5hINdUsHw+uqHSf3HmwJcRu34XrPJlShEZEKxoExg7Wj6556tkrSEf
+         wtm27IL/dHdAD8En7Og7ezHRgCX9jQz2zSwFSEbeimweaq6VOGFyYRbLJLO343X8kGsM
+         p+eA==
+X-Gm-Message-State: APjAAAWBiCahRGZPDrq06g9ClzXN8zuUMy5+NOpUjYJdaHax+KtrYrg9
+        DQqFTyVdqyD1qSAoH3uYRMRggP7AT10hXoj3LxEUug==
+X-Google-Smtp-Source: APXvYqykp1DuThBvMHQudWFHe1i5LDutX+DSoMUZJhvgmyjw83s4vjPFLrSJvhmne+VfIJCDmQ01E4r7RzMGu2GKdoM=
+X-Received: by 2002:a05:6214:38c:: with SMTP id l12mr16328651qvy.224.1576286467044;
+ Fri, 13 Dec 2019 17:21:07 -0800 (PST)
 MIME-Version: 1.0
-References: <20191213223214.2791885-1-andriin@fb.com> <20191213223214.2791885-13-andriin@fb.com>
- <20191213235937.naddjeklvds7akz7@ast-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20191213235937.naddjeklvds7akz7@ast-mbp.dhcp.thefacebook.com>
+References: <20191213235144.3063354-1-andriin@fb.com> <20191213235144.3063354-3-andriin@fb.com>
+ <e612995b-ee80-5d22-512c-dfe700c97865@fb.com>
+In-Reply-To: <e612995b-ee80-5d22-512c-dfe700c97865@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 13 Dec 2019 17:07:35 -0800
-Message-ID: <CAEf4BzboMHcjv8Jz4A16RvJDPp-1+zs+VtdoAM6tqXChM8igQQ@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 12/17] libbpf: add BPF object skeleton support
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
+Date:   Fri, 13 Dec 2019 17:20:55 -0800
+Message-ID: <CAEf4BzZO0RH4sYcEznEH7yacB+343NNTOtcCs6Xi9GHqO4EnsA@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 2/4] libbpf: support libbpf-provided extern variables
+To:     Alexei Starovoitov <ast@fb.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        Kernel Team <Kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Dec 13, 2019 at 3:59 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Fri, Dec 13, 2019 at 4:20 PM Alexei Starovoitov <ast@fb.com> wrote:
 >
-> On Fri, Dec 13, 2019 at 02:32:09PM -0800, Andrii Nakryiko wrote:
-> > Add new set of APIs, allowing to open/load/attach BPF object through BPF
-> > object skeleton, generated by bpftool for a specific BPF object file. All the
-> > xxx_skeleton() APIs wrap up corresponding bpf_object_xxx() APIs, but
-> > additionally also automate map/program lookups by name, global data
-> > initialization and mmap()-ing, etc.  All this greatly improves and simplifies
-> > userspace usability of working with BPF programs. See follow up patches for
-> > examples.
-> >
-> > Acked-by: Martin KaFai Lau <kafai@fb.com>
-> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> ...
-> > +int bpf_object__open_skeleton(struct bpf_object_skeleton *s,
-> > +                           const struct bpf_object_open_opts *opts);
-> > +int bpf_object__load_skeleton(struct bpf_object_skeleton *s);
-> > +int bpf_object__attach_skeleton(struct bpf_object_skeleton *s);
-> > +void bpf_object__detach_skeleton(struct bpf_object_skeleton *s);
-> > +void bpf_object__destroy_skeleton(struct bpf_object_skeleton *s);
+> On 12/13/19 3:51 PM, Andrii Nakryiko wrote:
+> >   static int
+> >   bpf_object__init_internal_map(struct bpf_object *obj, enum libbpf_map_type type,
+> > -                           int sec_idx, Elf_Data *data)
+> > +                           int sec_idx, void *data, size_t data_sz)
 >
-> libbpf.map and LIBBPF_API update for them is missing ?
-> The intent was to expose them as stable libbpf api, right?
+> the previous patch set did:
+>   bpf_object__init_internal_map(struct bpf_object *obj, enum
+> libbpf_map_type type,
+> -                             int sec_idx, Elf_Data *data, void **data_buff)
+> +                             int sec_idx, Elf_Data *data)
 >
+> and now this patch set refactors it again from Elf_Data into
+> two individual arguments.
+> Could you do this right away in the previous set and avoid this churn?
 
-Yeah, my bad, forgot to add LIBBPF_API.
+no problem, will do
+
+> Not a strong opinion though.
+> Just odd to see the function being changed back to back.
+> Thankfully that's internal in .c file.
