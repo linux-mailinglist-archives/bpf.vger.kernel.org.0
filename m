@@ -2,158 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7865E11EF32
-	for <lists+bpf@lfdr.de>; Sat, 14 Dec 2019 01:23:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A3BB11EF48
+	for <lists+bpf@lfdr.de>; Sat, 14 Dec 2019 01:47:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726942AbfLNAXH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 13 Dec 2019 19:23:07 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:57016 "EHLO
+        id S1726752AbfLNArk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 13 Dec 2019 19:47:40 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:6096 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726865AbfLNAXG (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 13 Dec 2019 19:23:06 -0500
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xBE0Kd7T032208;
-        Fri, 13 Dec 2019 16:22:54 -0800
+        by vger.kernel.org with ESMTP id S1726690AbfLNArk (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 13 Dec 2019 19:47:40 -0500
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xBE0UKiJ025845
+        for <bpf@vger.kernel.org>; Fri, 13 Dec 2019 16:47:39 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=FppG/ckWH2nmj5J/nvhrkTtg46EywbK8H7nDKJek+9E=;
- b=T6bITZ+PuxHCkViljLuLhHhE2o0ya++ARYw6hgSYklPpWcQt/bD5E2O8WV3qXe/HSEch
- 9SCTVoVRoGE36SNqG3C04HnasH2GwRRG3ngptE4/+/uFDluXOA/fUcnQk8jAopkaGOVw
- NHxa98zu9mc1q9JdA/wxrQ3kD0FHYY8ix1A= 
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by mx0a-00082601.pphosted.com with ESMTP id 2wvkm20btx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Fri, 13 Dec 2019 16:22:54 -0800
-Received: from prn-mbx01.TheFacebook.com (2620:10d:c081:6::15) by
- prn-hub03.TheFacebook.com (2620:10d:c081:35::127) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Fri, 13 Dec 2019 16:22:53 -0800
-Received: from prn-hub05.TheFacebook.com (2620:10d:c081:35::129) by
- prn-mbx01.TheFacebook.com (2620:10d:c081:6::15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Fri, 13 Dec 2019 16:22:53 -0800
-Received: from NAM04-CO1-obe.outbound.protection.outlook.com (192.168.54.28)
- by o365-in.thefacebook.com (192.168.16.29) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
- via Frontend Transport; Fri, 13 Dec 2019 16:22:53 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=C4pstaPUl2LVq3HdlXBy3GA/CrV7GPBHE64lEUdLkCtGUklpmvLoRJtHBcANsIaXX0+60+Ub5wX7Oi/AJLD9ouVZvXyFE8JIe7ezKGbcX2WO2KnqweeGfIdEfvllroydBQKg6PQ0kAmurk18j6o4/e94wivyq09qOPW8QqnuCuDL0lHArteGUSCIvF1AfJ1VwfRoHiCAncFmeUXkVsQL2okeqTtd0Ogj+h+MHb0hEs+Q5GBzSpOMd0n7LbcNqPusSWgC0Ig8U5PBLVp+rIMHrzHSqxr8h+hE2350yOgqFbesXrYiKbmqwQMN7GJU3Ht0SdjtYcf/M+zqVF5k8saIsQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FppG/ckWH2nmj5J/nvhrkTtg46EywbK8H7nDKJek+9E=;
- b=ab5oOjlCr7kIZzE/XkiTxUI8rJQCqnffRp8pqp5+lMWN0/hJZwOio43LHs5m12p6SsqyKOsufk/6Ei6JKDMBdzQYsDQn7lYrPnI2AI2UWxL3UuetGM1P3SkfCTsmuKvovTbLm8jOfCmz0ju7Dw5hqskwSvTBrZQNm3kIG87aZL1AWs7cXQK+4sSSLesQGj5LkHkpvsc/j2VRgGGVELgpibofuORprj5ylyiMIEKeGrPzOPYyWKS9f4NEmu0CECIlIFdlbQm0jZez9qIjiY9nMY5boOexJ0KRF2vmvbMx1q1xZzlHfK2vsj1ctnzQJxbjcLEjgQM4wK1iad7kp8idZA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FppG/ckWH2nmj5J/nvhrkTtg46EywbK8H7nDKJek+9E=;
- b=CvKm4oXVGBxIbP3yq7lLDdLe1ordJcXu2vythZKoCE+ue/u2ofGo9ADl1kVZeDpPCRZVMJt6+8hVblDWeBIbWEKeIALTq5LutsuKxiGkCWL98HL+2hWhgz7SknxTxQ2gWbjeUok4lQd1GskyP5LyvnHEBGxpxIQkY2Nr2LTBZss=
-Received: from MWHPR15MB1678.namprd15.prod.outlook.com (10.175.137.19) by
- MWHPR15MB1407.namprd15.prod.outlook.com (10.173.235.143) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2516.13; Sat, 14 Dec 2019 00:22:52 +0000
-Received: from MWHPR15MB1678.namprd15.prod.outlook.com
- ([fe80::9496:6fad:96ac:4de8]) by MWHPR15MB1678.namprd15.prod.outlook.com
- ([fe80::9496:6fad:96ac:4de8%9]) with mapi id 15.20.2538.017; Sat, 14 Dec 2019
- 00:22:52 +0000
-From:   Alexei Starovoitov <ast@fb.com>
-To:     Andrii Nakryiko <andriin@fb.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>
-CC:     "andrii.nakryiko@gmail.com" <andrii.nakryiko@gmail.com>,
-        Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH v3 bpf-next 4/4] selftests/bpf: add tests for
- libbpf-provided externs
-Thread-Topic: [PATCH v3 bpf-next 4/4] selftests/bpf: add tests for
- libbpf-provided externs
-Thread-Index: AQHVshBQCFJlXPjNuEKnNP/6iafrXae4xRqA
-Date:   Sat, 14 Dec 2019 00:22:52 +0000
-Message-ID: <5f04c91d-2e8b-3092-ec7b-af6d59d073a9@fb.com>
-References: <20191213235144.3063354-1-andriin@fb.com>
- <20191213235144.3063354-5-andriin@fb.com>
-In-Reply-To: <20191213235144.3063354-5-andriin@fb.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: CO2PR05CA0093.namprd05.prod.outlook.com
- (2603:10b6:104:1::19) To MWHPR15MB1678.namprd15.prod.outlook.com
- (2603:10b6:300:11e::19)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:180::7ad7]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 018bc3e0-2c83-47cf-918f-08d7802bc1ea
-x-ms-traffictypediagnostic: MWHPR15MB1407:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MWHPR15MB14077E09EAE9C0BFE9E6F5E6D7570@MWHPR15MB1407.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6430;
-x-forefront-prvs: 025100C802
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(39860400002)(346002)(376002)(136003)(396003)(366004)(189003)(199004)(71200400001)(8936002)(8676002)(2906002)(6486002)(6512007)(186003)(81166006)(86362001)(52116002)(4326008)(2616005)(478600001)(6506007)(53546011)(110136005)(81156014)(5660300002)(64756008)(66446008)(66946007)(66556008)(66476007)(316002)(54906003)(31686004)(31696002)(36756003);DIR:OUT;SFP:1102;SCL:1;SRVR:MWHPR15MB1407;H:MWHPR15MB1678.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: e1d7OgFtCO9V8eLjSgab/Xl8vQjj3c+gaCeF+7Dm2jdwHe5911UUJw9Gfm8sXIUt7UEMGy+qsmfWKpiqK6zS2t43VyfQKeHvEQ6BNvo/YnBLS+JMPhEpdkw/lmlTjCUNHZrXpNn4rndhJRvmmLsKzNzgwQlGAaNdkJIaSckC0tzdh+0H+5VimZO7TvG5v16Dfgx786QeofEF1yUfQvHb2kDRgG0k5Vk1mLhIrlmeK+VsjZyNVFW4MOHhu74h0958H1RQpIylVrIIh3K7Z/GkoSr1qyF90e2OadYDTgd5jjY+qbHfKBgp5pcOBWxRYVV0HHH/GWTh4isJHKQzUSeuXgfFWybrP0g1AaU/oRBZC7i5SQhF2t2Ckcypu/KlHAyxNK+uy3nvYdVP+hgnhW2bUA7DyMbmlSOKywghWYuLj8/yVM9s4iqAhAjlrnKDLaaS
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <55D8EDE9ACB6FC4D8D901C3B077EAD5A@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=PdoHcF1sSefnzJKV/8VlDU0q8PiPGoEX50uiRJLmqSo=;
+ b=bnJLgH6syALZnbXsLau4QEkC9oMPybEEB6EiH5aQi7bslVFHlD4Fx1BSRLvV8EYlsljX
+ vLhzMYXarlcp4/yCsNKRCTuARfu8olLibvKQtJpQuvWnrureHvXSnXCGYLWtA8DF6SLB
+ 5p/PezT2wU0u6Jhq/UB1u5jKxmgM83kiyao= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2wvm79rbsd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 13 Dec 2019 16:47:39 -0800
+Received: from intmgw001.05.ash5.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Fri, 13 Dec 2019 16:47:38 -0800
+Received: by devbig005.ftw2.facebook.com (Postfix, from userid 6611)
+        id 7E5372943AB4; Fri, 13 Dec 2019 16:47:37 -0800 (PST)
+Smtp-Origin-Hostprefix: devbig
+From:   Martin KaFai Lau <kafai@fb.com>
+Smtp-Origin-Hostname: devbig005.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>, <kernel-team@fb.com>,
+        <netdev@vger.kernel.org>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next 00/13] Introduce BPF STRUCT_OPS
+Date:   Fri, 13 Dec 2019 16:47:37 -0800
+Message-ID: <20191214004737.1652076-1-kafai@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 018bc3e0-2c83-47cf-918f-08d7802bc1ea
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Dec 2019 00:22:52.3368
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: WJyBM1QxzhE1SsREhgPuNQpzz3Ir0v1R0R21FtBPKtEEaGmMuAJJx5JcIG8rmtYD
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1407
-X-OriginatorOrg: fb.com
+Content-Type: text/plain
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
  definitions=2019-12-13_09:2019-12-13,2019-12-13 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
- phishscore=0 lowpriorityscore=0 bulkscore=0 priorityscore=1501
- mlxlogscore=999 malwarescore=0 adultscore=0 spamscore=0 mlxscore=0
- clxscore=1015 suspectscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-1910280000 definitions=main-1912140000
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ suspectscore=13 bulkscore=0 priorityscore=1501 mlxscore=0 impostorscore=0
+ clxscore=1015 spamscore=0 adultscore=0 phishscore=0 mlxlogscore=306
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-1912140001
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-T24gMTIvMTMvMTkgMzo1MSBQTSwgQW5kcmlpIE5ha3J5aWtvIHdyb3RlOg0KPiBBZGQgYSBzZXQg
-b2YgdGVzdHMgdmFsaWRhdGluZyBsaWJicGYtcHJvdmlkZWQgZXh0ZXJuIHZhcmlhYmxlcy4gT25l
-IGNydWNpYWwNCj4gZmVhdHVyZSB0aGF0J3MgdGVzdGVkIGlzIGRlYWQgY29kZSBlbGltaW5hdGlv
-biB0b2dldGhlciB3aXRoIHVzaW5nIGludmFsaWQgQlBGDQo+IGhlbHBlci4gQ09ORklHX01JU1NJ
-TkcgaXMgbm90IHN1cHBvc2VkIHRvIGV4aXN0IGFuZCBzaG91bGQgYWx3YXlzIGJlIHNwZWNpZmll
-ZA0KPiBieSBsaWJicGYgYXMgemVybywgd2hpY2ggYWxsb3dzIEJQRiB2ZXJpZmllciB0byBjb3Jy
-ZWN0bHkgZG8gYnJhbmNoIHBydW5pbmcNCj4gYW5kIG5vdCBmYWlsIHZhbGlkYXRpb24sIHdoZW4g
-aW52YWxpZCBCUEYgaGVscGVyIGlzIGNhbGxlZCBmcm9tIGRlYWQgaWYgYnJhbmNoLg0KPiANCj4g
-U2lnbmVkLW9mZi1ieTogQW5kcmlpIE5ha3J5aWtvIDxhbmRyaWluQGZiLmNvbT4NCj4gLS0tDQo+
-ICAgLi4uL3NlbGZ0ZXN0cy9icGYvcHJvZ190ZXN0cy9jb3JlX2V4dGVybi5jICAgIHwgMTkzICsr
-KysrKysrKysrKysrKysrKw0KPiAgIC4uLi9zZWxmdGVzdHMvYnBmL3Byb2dfdGVzdHMvc2tlbGV0
-b24uYyAgICAgICB8ICAxOCArLQ0KPiAgIC4uLi9zZWxmdGVzdHMvYnBmL3Byb2dzL3Rlc3RfY29y
-ZV9leHRlcm4uYyAgICB8ICA2MiArKysrKysNCj4gICAuLi4vc2VsZnRlc3RzL2JwZi9wcm9ncy90
-ZXN0X3NrZWxldG9uLmMgICAgICAgfCAgIDkgKw0KPiAgIDQgZmlsZXMgY2hhbmdlZCwgMjgxIGlu
-c2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkNCj4gICBjcmVhdGUgbW9kZSAxMDA2NDQgdG9vbHMv
-dGVzdGluZy9zZWxmdGVzdHMvYnBmL3Byb2dfdGVzdHMvY29yZV9leHRlcm4uYw0KPiAgIGNyZWF0
-ZSBtb2RlIDEwMDY0NCB0b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9icGYvcHJvZ3MvdGVzdF9jb3Jl
-X2V4dGVybi5jDQo+IA0KPiBkaWZmIC0tZ2l0IGEvdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvYnBm
-L3Byb2dfdGVzdHMvY29yZV9leHRlcm4uYyBiL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2JwZi9w
-cm9nX3Rlc3RzL2NvcmVfZXh0ZXJuLmMNCj4gbmV3IGZpbGUgbW9kZSAxMDA2NDQNCj4gaW5kZXgg
-MDAwMDAwMDAwMDAwLi40ZjVmODQzOWNiMDINCj4gLS0tIC9kZXYvbnVsbA0KPiArKysgYi90b29s
-cy90ZXN0aW5nL3NlbGZ0ZXN0cy9icGYvcHJvZ190ZXN0cy9jb3JlX2V4dGVybi5jDQo+IEBAIC0w
-LDAgKzEsMTkzIEBADQo+ICsvLyBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMA0KPiAr
-I2luY2x1ZGUgPHRlc3RfcHJvZ3MuaD4NCg0KY29weXJpZ2h0IGp1c3QgZm9yIGNvbnNpc3RlbmN5
-ID8NCg0KPiArKysgYi90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9icGYvcHJvZ3MvdGVzdF9jb3Jl
-X2V4dGVybi5jDQo+IEBAIC0wLDAgKzEsNjIgQEANCj4gKy8vIFNQRFgtTGljZW5zZS1JZGVudGlm
-aWVyOiBHUEwtMi4wDQo+ICsvLyBDb3B5cmlnaHQgKGMpIDIwMTcgRmFjZWJvb2sNCj4gKw0KDQp3
-cm9uZyB5ZWFyIGFuZCBmb3JtYXQuDQpJdCBzaG91bGQgYmUgQyBzdHlsZSBjb21tZW50IC8qICov
-DQoNCj4gLS0tIGEvdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvYnBmL3Byb2dzL3Rlc3Rfc2tlbGV0
-b24uYw0KPiArKysgYi90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9icGYvcHJvZ3MvdGVzdF9za2Vs
-ZXRvbi5jDQo+IEBAIC0xLDYgKzEsNyBAQA0KPiAgIC8vIFNQRFgtTGljZW5zZS1JZGVudGlmaWVy
-OiBHUEwtMi4wDQo+ICAgLy8gQ29weXJpZ2h0IChjKSAyMDE3IEZhY2Vib29rDQoNCmRpdHRvDQo=
+This series introduces BPF STRUCT_OPS.  It is an infra to allow
+implementing some specific kernel's function pointers in BPF.
+The first use case included in this series is to implement
+TCP congestion control algorithm in BPF  (i.e. implement
+struct tcp_congestion_ops in BPF).
+
+There has been attempt to move the TCP CC to the user space
+(e.g. CCP in TCP).   The common arguments are faster turn around,
+get away from long-tail kernel versions in production...etc,
+which are legit points.
+
+BPF has been the continuous effort to join both kernel and
+userspace upsides together (e.g. XDP to gain the performance
+advantage without bypassing the kernel).  The recent BPF
+advancements (in particular BTF-aware verifier, BPF trampoline,
+BPF CO-RE...) made implementing kernel struct ops (e.g. tcp cc)
+possible in BPF.
+
+The idea is to allow implementing tcp_congestion_ops in bpf.
+It allows a faster turnaround for testing algorithm in the
+production while leveraging the existing (and continue growing) BPF
+feature/framework instead of building one specifically for
+userspace TCP CC.
+
+Please see individual patch for details.
+
+The bpftool support will be posted in follow-up patches.
+
+Martin KaFai Lau (13):
+  bpf: Save PTR_TO_BTF_ID register state when spilling to stack
+  bpf: Avoid storing modifier to info->btf_id
+  bpf: Add enum support to btf_ctx_access()
+  bpf: Support bitfield read access in btf_struct_access
+  bpf: Introduce BPF_PROG_TYPE_STRUCT_OPS
+  bpf: Introduce BPF_MAP_TYPE_STRUCT_OPS
+  bpf: tcp: Support tcp_congestion_ops in bpf
+  bpf: Add BPF_FUNC_tcp_send_ack helper
+  bpf: Add BPF_FUNC_jiffies
+  bpf: Synch uapi bpf.h to tools/
+  bpf: libbpf: Add STRUCT_OPS support
+  bpf: Add bpf_dctcp example
+  bpf: Add bpf_cubic example
+
+ arch/x86/net/bpf_jit_comp.c                   |  10 +-
+ include/linux/bpf.h                           |  80 ++-
+ include/linux/bpf_types.h                     |   7 +
+ include/linux/btf.h                           |  45 ++
+ include/linux/filter.h                        |   2 +
+ include/net/tcp.h                             |   1 +
+ include/uapi/linux/bpf.h                      |  33 +-
+ kernel/bpf/Makefile                           |   2 +-
+ kernel/bpf/bpf_struct_ops.c                   | 585 +++++++++++++++++
+ kernel/bpf/bpf_struct_ops_types.h             |   9 +
+ kernel/bpf/btf.c                              | 132 ++--
+ kernel/bpf/core.c                             |   1 +
+ kernel/bpf/helpers.c                          |  25 +
+ kernel/bpf/map_in_map.c                       |   3 +-
+ kernel/bpf/syscall.c                          |  64 +-
+ kernel/bpf/trampoline.c                       |   5 +-
+ kernel/bpf/verifier.c                         | 140 +++-
+ net/core/filter.c                             |   4 +-
+ net/ipv4/Makefile                             |   4 +
+ net/ipv4/bpf_tcp_ca.c                         | 247 ++++++++
+ net/ipv4/tcp_cong.c                           |  14 +-
+ net/ipv4/tcp_ipv4.c                           |   6 +-
+ net/ipv4/tcp_minisocks.c                      |   4 +-
+ net/ipv4/tcp_output.c                         |   4 +-
+ tools/include/uapi/linux/bpf.h                |  33 +-
+ tools/lib/bpf/bpf.c                           |  10 +-
+ tools/lib/bpf/bpf.h                           |   5 +-
+ tools/lib/bpf/libbpf.c                        | 599 +++++++++++++++++-
+ tools/lib/bpf/libbpf.h                        |   3 +-
+ tools/lib/bpf/libbpf_probes.c                 |   2 +
+ tools/testing/selftests/bpf/bpf_tcp_helpers.h | 228 +++++++
+ .../selftests/bpf/prog_tests/bpf_tcp_ca.c     | 220 +++++++
+ tools/testing/selftests/bpf/progs/bpf_cubic.c | 502 +++++++++++++++
+ tools/testing/selftests/bpf/progs/bpf_dctcp.c | 194 ++++++
+ 34 files changed, 3089 insertions(+), 134 deletions(-)
+ create mode 100644 kernel/bpf/bpf_struct_ops.c
+ create mode 100644 kernel/bpf/bpf_struct_ops_types.h
+ create mode 100644 net/ipv4/bpf_tcp_ca.c
+ create mode 100644 tools/testing/selftests/bpf/bpf_tcp_helpers.h
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_cubic.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_dctcp.c
+
+-- 
+2.17.1
+
