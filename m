@@ -2,98 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3067F120232
-	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2019 11:21:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E318120247
+	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2019 11:25:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727319AbfLPKUF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Dec 2019 05:20:05 -0500
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:47352 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727202AbfLPKUF (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 16 Dec 2019 05:20:05 -0500
+        id S1727330AbfLPKYS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Dec 2019 05:24:18 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:39356 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727070AbfLPKYR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 Dec 2019 05:24:17 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1576491603;
+        s=mimecast20190719; t=1576491856;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Pl5GAP1jRdC0CwpXN80CHmPpQecKuMfnUQwsIaRGCLg=;
-        b=a3G2pgRV9VOEGzJTpKcZNTmEqOaKD54sscxsuXprpThH5wzGSiq6Ui78XNILz4Cs/1ny7F
-        gOf0WTfjntSe3BONYA+3tUBVPIXcR+W/IUGW15Y0fFpZbK7by5RVeOQjkK9ZnPZgpybe5X
-        NA2DOQaazdtbjvGdDeUcWV53sILYWXI=
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
- [209.85.208.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-204-SiaEg76iMrOfU9VTK3eqoA-1; Mon, 16 Dec 2019 05:20:02 -0500
-X-MC-Unique: SiaEg76iMrOfU9VTK3eqoA-1
-Received: by mail-lj1-f200.google.com with SMTP id d14so1971374ljg.17
-        for <bpf@vger.kernel.org>; Mon, 16 Dec 2019 02:20:02 -0800 (PST)
+         content-transfer-encoding:content-transfer-encoding;
+        bh=RFU4tPXHiyF5aYxO9pyn8VgUnU9YEjy9VpkSc1zyn5o=;
+        b=dvIDbNL6szl1fh2toIzkg+vDuHNLUAQ4YSiZbHHq+B88X0FN5BZwgaLNZdmTgJVYJA5txk
+        +pk1XU6joIyxMMg66qt666Tlg1WHPbeT9pbkP/+/7CLq2NA5rstDh4cNIK5dL2UNb8fF1b
+        Mfl46tmhB+phk9xOJR2gDt3SYPGRyMk=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-410-ZpRitP2PPUG73S3xoy4D3g-1; Mon, 16 Dec 2019 05:24:14 -0500
+X-MC-Unique: ZpRitP2PPUG73S3xoy4D3g-1
+Received: by mail-lf1-f69.google.com with SMTP id h7so475114lfp.20
+        for <bpf@vger.kernel.org>; Mon, 16 Dec 2019 02:24:14 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=Pl5GAP1jRdC0CwpXN80CHmPpQecKuMfnUQwsIaRGCLg=;
-        b=aU/+V+6AcKZw0yKk8RPZjCwgcAtLBDdX2v6m3AxL4fUhnh77hmDJFIvaEEx59mheWN
-         cc8P7yM+HotD5tRnaIRIuOd3l4sTAApoV1jb39BnrsU+in7lO1s+fGfGyXhymdHWfbPd
-         ZVW4BRS3Rkx95O3O6ihR3xRyUiMpdCrc5G45PNsiWJqupwu0GOL/Kqg3LhUw9o/wt+JE
-         vOP/AqvZvFVmp9ROPDM6dTeMZ4KJ6V5zePdC70Y8MvFBEbNzPZ5dwIW/zeIB1pZxoSa+
-         yqapZf9MgfjWwdP6xYeCmpTS/8STN8cUzBhuoaBQV1biOjNHdOke4+frH9E7o6B3HPrZ
-         CZoQ==
-X-Gm-Message-State: APjAAAXMSOwXnLmquJH7ecQX+LgEjlm7uStAXD5AtANkTjIP6MbN2+1C
-        fXRn61YTnUJCC/IItU8xsB8WEwv68uwnRqz38JMR9oVqIf8asGhSzNwK3pwhDmB9T6shZBmWEmY
-        ZhwaFJ35ZqV9T
-X-Received: by 2002:a2e:9b55:: with SMTP id o21mr19034867ljj.147.1576491601188;
-        Mon, 16 Dec 2019 02:20:01 -0800 (PST)
-X-Google-Smtp-Source: APXvYqwJx0qXq+MZ+uifWsTqgT8cEn7YRedwq70nttDtYJ0IrjCI91lWWU020Lk/7Q1NnPxsz7LkBg==
-X-Received: by 2002:a2e:9b55:: with SMTP id o21mr19034857ljj.147.1576491601054;
-        Mon, 16 Dec 2019 02:20:01 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id 192sm8640914lfh.28.2019.12.16.02.20.00
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RFU4tPXHiyF5aYxO9pyn8VgUnU9YEjy9VpkSc1zyn5o=;
+        b=FKbuRZ0L6P/A+xJ8WIlg36i9wV/lPbLSwkyZHmu9yvJiZ4yGc6BIVUZZCK/jZ1tpBG
+         MCpPqtkotCjJX1ytPpD6J6OuT9RSuXJyxts1UqEXTwrynjjSZoxMA0X+xt+0KGRCTlws
+         eZKM+00arsP+mnClu0a7I7yO3HGJ4fPEGOK8ieNTaO8ZlLYMRYsPgGY5d1caltGTyvHq
+         XgbxIYnfRYWPkDgG1g9UkoChbv6Nql/7CzoO+9xMgIP4QnM0PbEp638+7Hzz7S3VtQvF
+         Wd6NTme8+kUh32u0IuKoX8UnG7ekPlEJBpgXPeDgnW/Js5VUYd4mYeVVhDRP9koDQNXC
+         5f0w==
+X-Gm-Message-State: APjAAAVIL3oFM2WH47hQb4TGmqlx43xWynpoSJtmrT3MeVSEhuv7ZOlY
+        I+11dUTV5iOJsiuHFsaG+kiX//iNzpcSAfqgXtoImkCDjOkITX/2XZWx8GJAj29heP3qjLEYKNF
+        iBqi1/jye5eTb
+X-Received: by 2002:a05:6512:48c:: with SMTP id v12mr16580121lfq.56.1576491853510;
+        Mon, 16 Dec 2019 02:24:13 -0800 (PST)
+X-Google-Smtp-Source: APXvYqxyA18z62Rzo+ToA3TXc0ALhkIIhVIByPHlctWEzIt7N3SZiz4XBZPpv3n9nTXEbn8ENAZEVw==
+X-Received: by 2002:a05:6512:48c:: with SMTP id v12mr16580110lfq.56.1576491853282;
+        Mon, 16 Dec 2019 02:24:13 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id u20sm10203028lju.34.2019.12.16.02.24.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Dec 2019 02:20:00 -0800 (PST)
+        Mon, 16 Dec 2019 02:24:12 -0800 (PST)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 8681B1819EB; Mon, 16 Dec 2019 11:19:59 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Prashant Bhole <prashantbhole.linux@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id D1C101819EB; Mon, 16 Dec 2019 11:24:11 +0100 (CET)
+From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Prashant Bhole <prashantbhole.linux@gmail.com>,
-        Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next] libbpf: fix build by renaming variables
-In-Reply-To: <20191216082738.28421-1-prashantbhole.linux@gmail.com>
-References: <20191216082738.28421-1-prashantbhole.linux@gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Mon, 16 Dec 2019 11:19:59 +0100
-Message-ID: <875zigbmi8.fsf@toke.dk>
+Cc:     =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH bpf-next] samples/bpf: Add missing -lz to TPROGS_LDLIBS
+Date:   Mon, 16 Dec 2019 11:24:05 +0100
+Message-Id: <20191216102405.353834-1-toke@redhat.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Prashant Bhole <prashantbhole.linux@gmail.com> writes:
+Since libbpf now links against zlib, this needs to be included in the
+linker invocation for the userspace programs in samples/bpf that link
+statically against libbpf.
 
-> In btf__align_of() variable name 't' is shadowed by inner block
-> declaration of another variable with same name. Patch renames
-> variables in order to fix it.
->
->   CC       sharedobjs/btf.o
-> btf.c: In function =E2=80=98btf__align_of=E2=80=99:
-> btf.c:303:21: error: declaration of =E2=80=98t=E2=80=99 shadows a previou=
-s local [-Werror=3Dshadow]
->   303 |   int i, align =3D 1, t;
->       |                     ^
-> btf.c:283:25: note: shadowed declaration is here
->   283 |  const struct btf_type *t =3D btf__type_by_id(btf, id);
->       |
->
-> Fixes: 3d208f4ca111 ("libbpf: Expose btf__align_of() API")
-> Signed-off-by: Prashant Bhole <prashantbhole.linux@gmail.com>
+Fixes: 166750bc1dd2 ("libbpf: Support libbpf-provided extern variables")
+Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+---
+ samples/bpf/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Seems there are quite a few build errors in bpf today; this at least
-fixes libbpf. Thank you!
-
-Tested-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
+index 1fc42ad8ff49..b00651608765 100644
+--- a/samples/bpf/Makefile
++++ b/samples/bpf/Makefile
+@@ -196,7 +196,7 @@ endif
+ 
+ TPROGCFLAGS_bpf_load.o += -Wno-unused-variable
+ 
+-TPROGS_LDLIBS			+= $(LIBBPF) -lelf
++TPROGS_LDLIBS			+= $(LIBBPF) -lelf -lz
+ TPROGLDLIBS_tracex4		+= -lrt
+ TPROGLDLIBS_trace_output	+= -lrt
+ TPROGLDLIBS_map_perf_test	+= -lrt
+-- 
+2.24.0
 
