@@ -2,228 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E6974120830
-	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2019 15:11:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E33AD12085D
+	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2019 15:16:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727916AbfLPOLV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Dec 2019 09:11:21 -0500
-Received: from UCOL19PA36.eemsg.mail.mil ([214.24.24.196]:21510 "EHLO
-        UCOL19PA36.eemsg.mail.mil" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727807AbfLPOLV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 Dec 2019 09:11:21 -0500
-X-Greylist: delayed 430 seconds by postgrey-1.27 at vger.kernel.org; Mon, 16 Dec 2019 09:11:20 EST
-X-EEMSG-check-017: 61521314|UCOL19PA36_ESA_OUT03.csd.disa.mil
-X-IronPort-AV: E=Sophos;i="5.69,321,1571702400"; 
-   d="scan'208";a="61521314"
-Received: from emsm-gh1-uea11.ncsc.mil ([214.29.60.3])
-  by UCOL19PA36.eemsg.mail.mil with ESMTP/TLS/DHE-RSA-AES256-SHA256; 16 Dec 2019 14:04:09 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tycho.nsa.gov; i=@tycho.nsa.gov; q=dns/txt;
-  s=tycho.nsa.gov; t=1576505049; x=1608041049;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=U0M0tIssvGrXXr9dmiqb0cmH1xoVvn8V0R69uhizAz0=;
-  b=Xt0JEWx0eGrG7h8Ig8HlW0+ELW+o0+CLEE6h+l91OjQyb7Vu9m1SoSlO
-   +K6GvqvsuNZAjH2fgr8LuCL+MWZXYConpHHb4LIYgZoz2e7atdw9tfghH
-   P4c5xReSFanPcO1sykqhbwXn/oqidrVbEFOjarpDvUa5ruwZ/YXqKmBtj
-   KyP+unT0zd6AzLc6Y8AAFcyDRXKpZZ0C5n4gJgUVngOkZG9EBdeI28/hj
-   3kPFl17LzjjgclXvAYTTgt77V+oX/WPTGnQujuobSPDsxhEqF81dkHVwW
-   s2NyOpGyevEHpl2LaQdWZZdgypJlFm1Y04ZFR7yKJs6AllGWSq/9oeprl
-   g==;
-X-IronPort-AV: E=Sophos;i="5.69,321,1571702400"; 
-   d="scan'208";a="36782375"
-IronPort-PHdr: =?us-ascii?q?9a23=3AKPoiuhHc+V4kn8xeMmMs4J1GYnF86YWxBRYc79?=
- =?us-ascii?q?8ds5kLTJ74pcqzbnLW6fgltlLVR4KTs6sC17ON9fq4BCddsN6oizMrSNR0TR?=
- =?us-ascii?q?gLiMEbzUQLIfWuLgnFFsPsdDEwB89YVVVorDmROElRH9viNRWJ+iXhpTEdFQ?=
- =?us-ascii?q?/iOgVrO+/7BpDdj9it1+C15pbffxhEiCCybL9vIhi6txvdutUWjIdtKqs8zg?=
- =?us-ascii?q?bCr2dVdehR2W5mP0+YkQzm5se38p5j8iBQtOwk+sVdT6j0fLk2QKJBAjg+PG?=
- =?us-ascii?q?87+MPktR/YTQuS/XQcSXkZkgBJAwfe8h73WIr6vzbguep83CmaOtD2TawxVD?=
- =?us-ascii?q?+/4apnVAPkhSEaPDMi7mrZltJ/g75aoBK5phxw3YjUYJ2ONPFjeq/RZM4WSX?=
- =?us-ascii?q?ZdUspUUSFODJm8b48SBOQfO+hWoZT2q18XoRegAQSgAeXiwSJKiHDrx603y/?=
- =?us-ascii?q?kvHx/I3AIgHNwAvnrbo9r3O6gOXu6417XIwDfZYv9KxTvw5orFfxY8qv+MR7?=
- =?us-ascii?q?Jwds/RxFEyGQPZkFqQsYzlMC2T1u8Qrmab6vBvVeari2E5qwB6vz+ixtwxhY?=
- =?us-ascii?q?nSnY8V1lDF+jl5wIYyP9G4TlV7bsS+HJtfsCGaKZJ7T8U/SG9mvyY6z6cJuZ?=
- =?us-ascii?q?+9fCUSzZQo3RjfZv6df4iP+BLjW+CcKip7inJ9YL+zmhm//Ee6xuD8S8W4yk?=
- =?us-ascii?q?hGoyVbntXWq3wA0QHY5NKdRftn5Eih3C6C1wXU6u5ZP085jbHbK5s9wr4okZ?=
- =?us-ascii?q?oTrFjDEjf2mEroiK+WcV0p+vSy5OT9Y7Xmu4ScO5V1igH4PKQunde/DvokPQ?=
- =?us-ascii?q?QUQ2ia+fiz1L3k/UHjRrVFkuY2nbXDvJDfJMQbora1Aw5T0ok99xayFyqq3d?=
- =?us-ascii?q?sXkHUdLF9JZQiLg5bmNl3QOvz0EO+zg1G2nzdqw/DGMKfhApLILnXbi7fuYK?=
- =?us-ascii?q?195lVAyAsz0d9f55VUBqsHIPLoQED9rtPYDhgnMwCs2eboFM191p8CWWKIGq?=
- =?us-ascii?q?KWKqfSvkGH5+0xI+iAfpQauCvgJPc/4f7ujng5mUEGcKmt3JsXbm24H/t8L0?=
- =?us-ascii?q?WYZ3rsnskOEWMQsgUiS+zqjUWIUSRPaHaqQ6I8+jY7BZq+DYjdWoCinqaB3S?=
- =?us-ascii?q?agE51XYGBGBEqMHm31eIqaQfgDdTieIsh7kjwLTbKhUZMu1QmytA/mzLpqNv?=
- =?us-ascii?q?Db9TEdtZ39z9V15PPclQs09TNqC8SRyWaNT3t7nmkQXT85wLh/oVBhyleEya?=
- =?us-ascii?q?V4hv1YFdpc5/NOSQo6L4DTwPF6C9/oRgLNZMuGSFGjQt++GzE+Usoxw8MSY0?=
- =?us-ascii?q?Z6A9iijArM3yyrA7MPkbyLBZ808r/Y33frPMt9z3fG1K88j1gpWMdPNGumhr?=
- =?us-ascii?q?Jh+AjXHYLGj0KZl6Oyf6QGwCHN7HuDzXaJvExAUg5wVqLFXXYFaUvNt9j54l?=
- =?us-ascii?q?nNT7+yCbQmNAtO18iCJ7BOat3oi1VGWfjiNM7fY2K3h2e/GxKIyqmQY4rtfm?=
- =?us-ascii?q?UXxD/dB1QckwAP4XaGMhAzBj2mo23DFjxuFF3vY0T2/elgqXO7UE40whqLb0?=
- =?us-ascii?q?1ny7q65BoVieaARPMU27IOoD0hpClsHFahw9LWDMKNqBB6fKVAet4940lI1X?=
- =?us-ascii?q?jftwNjOpysNadihkQRcw5vpUPhyw13CplckcgttH4qzhB9KaeG31NabT+Xxp?=
- =?us-ascii?q?fwOqHLKmn1+RCvb7DZ21HF3daW4KgP7u84pEvlvAGxDEUi6Wln099L3HuG/Z?=
- =?us-ascii?q?XKDAsSUYrrXkkr8Bh6oqnQYjMh6IPMyX1sLa60vyfZ1N03Auslyg2tf9RBP6?=
- =?us-ascii?q?OeEg/9DckaC9KyJ+wwgVepdRIEPOFU9K47Jc+mcOGG2KGzNuZ6gD2mlXhH4J?=
- =?us-ascii?q?x60k+U6yVzUPXI0IgFwvyDxQuISzf8g028ssD5nYBLeysSEnOjxif+HoJeeq?=
- =?us-ascii?q?pyfYMTA2e0P8K33sl+h4LqW3NA716sGUkG2MC3dheJb1zyxwlQ1UAXoHyhgy?=
- =?us-ascii?q?e30zt0kzQxpKqFwCPO2/jidAYAOmNTRmliiFDsIZKuj9AbR0ildA4pmwGg5U?=
- =?us-ascii?q?nkxqhXvqN/L3PcQU1QZSj5M3liUrestrqFe8NP6pQosSFMUOumel2aUKDyrA?=
- =?us-ascii?q?Ya0yz5A2tS3iw0dzavup/hhRx1lHqdLGpvrHreYcx/3xTf6cfYRf5Q2DoGWS?=
- =?us-ascii?q?Z5hSPWBli6I9mm49GUm43fveC5UmKrTodTfjXzzYOcqCu74nVnDgOln/+pnN?=
- =?us-ascii?q?3nEBI10Sng2tllUiXIqxn8Yo312KigLe1neUxoDkfm68VmAoF+jpcwhJYI1H?=
- =?us-ascii?q?gbgpWV4GEInn3oMdVbx63zd2ACRT0RzN7Q+gfl2VdvIW6Ox4L8Tn+d2NduZ8?=
- =?us-ascii?q?GmYmMK3SIw99pFCKOK471LhyR1pEe3ohzLYfRnhTcdyfou6GUag+EKuQotyD?=
- =?us-ascii?q?6QArQTHUleICztmA6E79G4rKVLemmvdaK821Z5ndCkFLuCuB1TWG7lepc+Gi?=
- =?us-ascii?q?999sN/P0jJ0H3z6oDkZd/Qbd0Iux2XjRjAle5VJ4w1lvYQgipnI239t2U/y+?=
- =?us-ascii?q?EnlRxuwY26vI+fJmVv5q25BBhYNj3uasMc/THtiqlensKI0Iy1ApphHTALVo?=
- =?us-ascii?q?PyTf20CDISqejnNwGWHT0/tHiUB6HfEhOY6EdhrHLCCIykN3GNJHkeyNViRQ?=
- =?us-ascii?q?SdJElFjAATRjU6kYYzFhq2y8z5bEd5+jcR60bkqhtDzuJpOALyUmPepAeudz?=
- =?us-ascii?q?c0VIKfLB1Q7gFD6EbZK9GR4fxrFSFC4pKhtBCNKnCcZwlQEWEJRFaEB0zgPr?=
- =?us-ascii?q?mp/9XA7vKYBvGjL/vKYLWOr/dTV/OJxZKpz4tn8CyANsSJPnl+EfI73lBPUm?=
- =?us-ascii?q?x+G8Tcgz8PUTAYlzrRb86Hoxex4il3rsG58PT2VwPj/JCPBKVOPtVy4RC2gL?=
- =?us-ascii?q?uDNu6JiCZ8LjZXy44MxXvWx7UEwl4ShD9hdyO3HbQDqyHNVqTQlbFTDxIBbC?=
- =?us-ascii?q?NzLsRI5bom3gZRIc7bls/11rlgg/4uFVhFUV3hmse0Zc0FOGy9KlzHC1iRNL?=
- =?us-ascii?q?icJj3E3dv3YaWiRr1UlulUsAewuTmDGU/5IjuDjyXpVwyoMexUiCGbPRpeuJ?=
- =?us-ascii?q?yycxp0CmjsUsjmahulP99zljA237I0iW3QNWIGMjhzbVlNrruO4iNcmPl/HH?=
- =?us-ascii?q?ZB7nV9J+mehymZ9/XYKooRsfZzBiR0luRa4Gk1yrdM9CFLWuZ1mCXLot5zuF?=
- =?us-ascii?q?GpjPOPyiF8XRpQpTZEmpiLsV9hOarH7JlAX2jL/BYX4WWXERQKqMNvCsfztK?=
- =?us-ascii?q?BI1tjPiKXzJS9D89LS4csTGczUJNuIMHovPhvkAzrUDAoeTT63LmHTnUJdkO?=
- =?us-ascii?q?uM+XKLs5c1tIPsmJkSSr9cTFw5DPQaCl5qHNYaOpd4QiskkaKHjM4P/Xextx?=
- =?us-ascii?q?bRRN9EsZDIWfKfGvPvJyiFjblKYxsIwLz5IZ4POY383kxockN6k5jSG0rMQd?=
- =?us-ascii?q?BNpTVsbhQzoEVL/3h+Smwz21/+ZQO3+nATC/+0nhg5igZlb+Qi7y3g7EswJl?=
- =?us-ascii?q?rPvCEwilU+mc35gTCNdz78NLy/XZlYCyfvqUgxPY30QxxvYQ2xg0NkLjHESK?=
- =?us-ascii?q?xVj7d6cmBrkgDcs4NVGfFAVa1EfAMQxfaPavUs0FRcrDinxEBe6evdE5Rijg?=
- =?us-ascii?q?oqcYWwoH9bxQJjY8A6JbbKKKpK0FdQnKSOsTGs1uwrxw8ePUkN+nuIeCEUoE?=
- =?us-ascii?q?wIKqUmJy2w8+xo6AyCnSZDeWcUV/oyvv1m714yNPqezy/7175DK1uxN/CEL6?=
- =?us-ascii?q?+DvGjBlMqITUkr2UMTjUVF+qJ20chwO3aTAmkrwaucBlwjKMbLLwJScYIG/X?=
- =?us-ascii?q?zebSuf9+/QzZtzPIKjPuTpS/Ke8qcSnk+gWg0uGtJIpvwMApS2mHPZL8P8MK?=
- =?us-ascii?q?QMgUE16RjmPketDfJHYhuHnT4L5calw8kzlaBHIDgZDWI1Giyt+L/TpghijP?=
- =?us-ascii?q?fLedoyZT9OV4ABO1o1Vde8liofuG5PWn3/8+QWz0Cn6Dv6rz6YWDz9adVkTO?=
- =?us-ascii?q?2ZaRNlFJe9/jBpt+C0gFjWtJPfJHz+PPxmu9nS+aUboYqKD7VfSrw5+0XbnI?=
- =?us-ascii?q?9RXDquWm7TENi4IbD0ao8xfZr1DGq3Vhq0jDdxB932MMysIa/OnwD2RK5Vtp?=
- =?us-ascii?q?WW2HYoMsr5XhgaFgd9pqk4+KtmYhMEYoY8f1a8vh8iH6+yOgGV1pOpWWn7bX?=
- =?us-ascii?q?NURvxS1qOwYKBLyC8oY/6SyHImVZw81+Ct7UgAXooKjwmYzvGmI8FUXC7zMn?=
- =?us-ascii?q?9QYQPCoWwyjWF6Nuc0zaE42hyM+XIVKD2aPNdiaGVZsdUxHxvGKnxtB3sQXF?=
- =?us-ascii?q?SchJfN5gO2mrsbuSBamoAQmfZIqnfzlp/WZDa9XuqgrpCR+wgpaNU964h2K5?=
- =?us-ascii?q?biOYPStpbZhCbeV7HWuwiIUWi9DfUMyfZKJycNe+VFgWEoP4Q9vINF7UcgHp?=
- =?us-ascii?q?MlK6dnFLgnprfsbyFtSyEV03lKBMu7wDUej7LkiPPhnRCKfcFnaUZVvQ=3D?=
- =?us-ascii?q?=3D?=
-X-IPAS-Result: =?us-ascii?q?A2CjAgCTjfdd/wHyM5BlHAEBAQEBBwEBEQEEBAEBgX6Bd?=
- =?us-ascii?q?IEYVSASKoQEiQOGdgaBEiWJapFFCQEBAQEBAQEBASsMAQGEQAKCODgTAhABA?=
- =?us-ascii?q?QEEAQEBAQEFAwEBbIU3DII7KQGCegEFDhUVLRQQCxgCAiYCAlcGAQwGAgEBg?=
- =?us-ascii?q?l8/AYJSJQ+uCYEyhA0BgUGDOIFIgQ4oiU+CY3mBB4E4DAOCXT6CZAOEcoJeB?=
- =?us-ascii?q?I92hxNGlyuCPoI/hGqOVgYCGYJDdIcCkA8tjh+BRocJlAsigVgrCAIYCCEPg?=
- =?us-ascii?q?ycJFjERFI1KiE+FCFUjAzABkCUBAQ?=
-Received: from tarius.tycho.ncsc.mil (HELO tarius.infosec.tycho.ncsc.mil) ([144.51.242.1])
-  by emsm-gh1-uea11.NCSC.MIL with ESMTP; 16 Dec 2019 14:04:07 +0000
-Received: from moss-pluto.infosec.tycho.ncsc.mil (moss-pluto [192.168.25.131])
-        by tarius.infosec.tycho.ncsc.mil (8.14.7/8.14.4) with ESMTP id xBGE37n2143708;
-        Mon, 16 Dec 2019 09:03:09 -0500
-Subject: Re: [PATCH v2 1/7] capabilities: introduce CAP_SYS_PERFMON to kernel
- and user space
-To:     Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, jani.nikula@linux.intel.com,
-        joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
-        Alexei Starovoitov <ast@kernel.org>,
-        james.bottomley@hansenpartnership.com, benh@kernel.crashing.org,
-        Casey Schaufler <casey@schaufler-ca.com>, serge@hallyn.com,
-        James Morris <jmorris@namei.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
-        Stephane Eranian <eranian@google.com>,
-        Igor Lubashev <ilubashe@akamai.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
-        intel-gfx@lists.freedesktop.org, bgregg@netflix.com,
-        Song Liu <songliubraving@fb.com>, bpf@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <26101427-c0a3-db9f-39e9-9e5f4ddd009c@linux.intel.com>
- <9066ae10-63d6-67a1-d472-1f22826c9ae8@linux.intel.com>
-From:   Stephen Smalley <sds@tycho.nsa.gov>
-Message-ID: <81603537-023c-9b6b-06ac-384de60dbb1d@tycho.nsa.gov>
-Date:   Mon, 16 Dec 2019 09:04:04 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        id S1728016AbfLPOQN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Dec 2019 09:16:13 -0500
+Received: from www62.your-server.de ([213.133.104.62]:37798 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728015AbfLPOQM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 Dec 2019 09:16:12 -0500
+Received: from [2001:1620:665:0:5795:5b0a:e5d5:5944] (helo=localhost)
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1igrAO-0006vu-Vq; Mon, 16 Dec 2019 15:16:09 +0100
+Date:   Mon, 16 Dec 2019 15:16:08 +0100
+From:   Daniel Borkmann <daniel@iogearbox.net>
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
+        andrii.nakryiko@gmail.com, kernel-team@fb.com
+Subject: Re: [PATCH bpf-next 11/15] bpftool: add skeleton codegen command
+Message-ID: <20191216141608.GE14887@linux.fritz.box>
+References: <20191210011438.4182911-1-andriin@fb.com>
+ <20191210011438.4182911-12-andriin@fb.com>
 MIME-Version: 1.0
-In-Reply-To: <9066ae10-63d6-67a1-d472-1f22826c9ae8@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191210011438.4182911-12-andriin@fb.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.101.4/25665/Mon Dec 16 10:52:23 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 12/16/19 2:14 AM, Alexey Budankov wrote:
+On Mon, Dec 09, 2019 at 05:14:34PM -0800, Andrii Nakryiko wrote:
+> Add `bpftool gen skeleton` command, which takes in compiled BPF .o object file
+> and dumps a BPF skeleton struct and related code to work with that skeleton.
+> Skeleton itself is tailored to a specific structure of provided BPF object
+> file, containing accessors (just plain struct fields) for every map and
+> program, as well as dedicated space for bpf_links. If BPF program is using
+> global variables, corresponding structure definitions of compatible memory
+> layout are emitted as well, making it possible to initialize and subsequently
+> read/update global variables values using simple and clear C syntax for
+> accessing fields. This skeleton majorly improves usability of
+> opening/loading/attaching of BPF object, as well as interacting with it
+> throughout the lifetime of loaded BPF object.
 > 
-> Introduce CAP_SYS_PERFMON capability devoted to secure system performance
-> monitoring and observability operations so that CAP_SYS_PERFMON would assist
-> CAP_SYS_ADMIN capability in its governing role for perf_events, i915_perf
-> and other performance monitoring and observability subsystems of the kernel.
+> Generated skeleton struct has the following structure:
 > 
-> CAP_SYS_PERFMON intends to harden system security and integrity during
-> system performance monitoring and observability operations by decreasing
-> attack surface that is available to CAP_SYS_ADMIN privileged processes.
+> struct <object-name> {
+> 	/* used by libbpf's skeleton API */
+> 	struct bpf_object_skeleton *skeleton;
+> 	/* bpf_object for libbpf APIs */
+> 	struct bpf_object *obj;
+> 	struct {
+> 		/* for every defined map in BPF object: */
+> 		struct bpf_map *<map-name>;
+> 	} maps;
+> 	struct {
+> 		/* for every program in BPF object: */
+> 		struct bpf_program *<program-name>;
+> 	} progs;
+> 	struct {
+> 		/* for every program in BPF object: */
+> 		struct bpf_link *<program-name>;
+> 	} links;
+> 	/* for every present global data section: */
+> 	struct <object-name>__<one of bss, data, or rodata> {
+> 		/* memory layout of corresponding data section,
+> 		 * with every defined variable represented as a struct field
+> 		 * with exactly the same type, but without const/volatile
+> 		 * modifiers, e.g.:
+> 		 */
+> 		 int *my_var_1;
+> 		 ...
+> 	} *<one of bss, data, or rodata>;
+> };
 > 
-> CAP_SYS_PERFMON intends to take over CAP_SYS_ADMIN credentials related to
-> system performance monitoring and observability operations and balance amount
-> of CAP_SYS_ADMIN credentials following with the recommendations provided
-> in the capabilities man page [1] for CAP_SYS_ADMIN: "Note: this capability
-> is overloaded; see Notes to kernel developers, below."
+> This provides great usability improvements:
+> - no need to look up maps and programs by name, instead just
+>   my_obj->maps.my_map or my_obj->progs.my_prog would give necessary
+>   bpf_map/bpf_program pointers, which user can pass to existing libbpf APIs;
+> - pre-defined places for bpf_links, which will be automatically populated for
+>   program types that libbpf knows how to attach automatically (currently
+>   tracepoints, kprobe/kretprobe, raw tracepoint and tracing programs). On
+>   tearing down skeleton, all active bpf_links will be destroyed (meaning BPF
+>   programs will be detached, if they are attached). For cases in which libbpf
+>   doesn't know how to auto-attach BPF program, user can manually create link
+>   after loading skeleton and they will be auto-detached on skeleton
+>   destruction:
 > 
-> [1] http://man7.org/linux/man-pages/man7/capabilities.7.html
+> 	my_obj->links.my_fancy_prog = bpf_program__attach_cgroup_whatever(
+> 		my_obj->progs.my_fancy_prog, <whatever extra param);
 > 
-> Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
+> - it's extremely easy and convenient to work with global data from userspace
+>   now. Both for read-only and read/write variables, it's possible to
+>   pre-initialize them before skeleton is loaded:
+> 
+> 	skel = my_obj__open(raw_embed_data);
+> 	my_obj->rodata->my_var = 123;
+> 	my_obj__load(skel); /* 123 will be initialization value for my_var */
+> 
+>   After load, if kernel supports mmap() for BPF arrays, user can still read
+>   (and write for .bss and .data) variables values, but at that point it will
+>   be directly mmap()-ed to BPF array, backing global variables. This allows to
+>   seamlessly exchange data with BPF side. From userspace program's POV, all
+>   the pointers and memory contents stay the same, but mapped kernel memory
+>   changes to point to created map.
+>   If kernel doesn't yet support mmap() for BPF arrays, it's still possible to
+>   use those data section structs to pre-initialize .bss, .data, and .rodata,
+>   but after load their pointers will be reset to NULL, allowing user code to
+>   gracefully handle this condition, if necessary.
+> 
+> Given a big surface area, skeleton is kept as an experimental non-public
+> API for now, until more feedback and real-world experience is collected.
 
-Acked-by: Stephen Smalley <sds@tycho.nsa.gov>
+Can you elaborate on the plan here? This is until v5.6 is out and hence a new
+bpftool release implicitly where this becomes frozen / non-experimental?
 
-> ---
->   include/uapi/linux/capability.h     | 8 +++++++-
->   security/selinux/include/classmap.h | 4 ++--
->   2 files changed, 9 insertions(+), 3 deletions(-)
-> 
-> diff --git a/include/uapi/linux/capability.h b/include/uapi/linux/capability.h
-> index 240fdb9a60f6..7d1f8606c3e6 100644
-> --- a/include/uapi/linux/capability.h
-> +++ b/include/uapi/linux/capability.h
-> @@ -366,8 +366,14 @@ struct vfs_ns_cap_data {
->   
->   #define CAP_AUDIT_READ		37
->   
-> +/*
-> + * Allow system performance and observability privileged operations
-> + * using perf_events, i915_perf and other kernel subsystems
-> + */
-> +
-> +#define CAP_SYS_PERFMON		38
->   
-> -#define CAP_LAST_CAP         CAP_AUDIT_READ
-> +#define CAP_LAST_CAP         CAP_SYS_PERFMON
->   
->   #define cap_valid(x) ((x) >= 0 && (x) <= CAP_LAST_CAP)
->   
-> diff --git a/security/selinux/include/classmap.h b/security/selinux/include/classmap.h
-> index 7db24855e12d..bae602c623b0 100644
-> --- a/security/selinux/include/classmap.h
-> +++ b/security/selinux/include/classmap.h
-> @@ -27,9 +27,9 @@
->   	    "audit_control", "setfcap"
->   
->   #define COMMON_CAP2_PERMS  "mac_override", "mac_admin", "syslog", \
-> -		"wake_alarm", "block_suspend", "audit_read"
-> +		"wake_alarm", "block_suspend", "audit_read", "sys_perfmon"
->   
-> -#if CAP_LAST_CAP > CAP_AUDIT_READ
-> +#if CAP_LAST_CAP > CAP_SYS_PERFMON
->   #error New capability defined, please update COMMON_CAP2_PERMS.
->   #endif
->   
-> 
+There is also tools/bpf/bpftool/Documentation/bpftool-gen.rst missing. Given
+you aim to collect more feedback (?), it would be appropriate to document
+everything in there so users have a clue how to use it for getting started.
 
+Also, I think at least some more clarification is needed in such document on
+the following topics:
+
+- libbpf and bpftool is both 'GPL-2.0-only' or 'BSD-2-Clause'. Given this
+  is a code generator, what license is the `bpftool gen skeleton` result?
+  In any case, should there also be a header comment emitted via do_skeleton()?
+
+- Clear statement that this codegen is an alternative to regular libbpf
+  API usage but that both are always kept feature-complete and hence not
+  disadvantaged in one way or another (to rule out any uncertainties for
+  users e.g. whether they now need to start rewriting their existing code
+  etc); with purpose of the former (codgen) to simplify loader interaction.
+
+Thanks,
+Daniel
