@@ -2,195 +2,224 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F6551219BD
-	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2019 20:14:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6574121A0C
+	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2019 20:37:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726641AbfLPTOY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Dec 2019 14:14:24 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:40984 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726426AbfLPTOX (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 16 Dec 2019 14:14:23 -0500
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xBGJBnte028451;
-        Mon, 16 Dec 2019 11:14:08 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=vduqSYa3zV5OGyLDUSw7reuu04V3EhcV38vC9cLHC9I=;
- b=TO+FjiTYmW44aO6xTAJ5yisuKE3bb0S1bTU2RVcPkzEj8/sOP+D91vW139kto6+Jb2aY
- bhKGDTlvq8CQyVrUV5QBQ7sxrs6Qg84ZW9IsC8K7XoU2EIxhbS5ruNaxXBEbCcxsEn3A
- qllAyn86MY35UIudkadXXv61TVJ0V77iHuQ= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2wwgsmnnas-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 16 Dec 2019 11:14:08 -0800
-Received: from ash-exopmbx101.TheFacebook.com (2620:10d:c0a8:82::b) by
- ash-exhub202.TheFacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 16 Dec 2019 11:14:05 -0800
-Received: from ash-exhub204.TheFacebook.com (2620:10d:c0a8:83::4) by
- ash-exopmbx101.TheFacebook.com (2620:10d:c0a8:82::b) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 16 Dec 2019 11:14:05 -0800
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Mon, 16 Dec 2019 11:14:05 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eH3o3tJt67Zu79YlbcXngQJf7pgxpTOZBWegprmyA5xHkzd5rMDJM84Z4HWVXHf9gtPSE/Sllh9tUx5XAPVITJ1qa9xtHEONbwGLE09vICcvkvNIgQVlEccuNlOUZ9fMp+f7ozE60GbTKs6HSAeD2D+WnbGt07JrKX8RTekI9iKoESV2Hd6PY4fGy8KGIjMvI8agOa+28DODQlLc6uunEFWCsKzSniqYXxzpIghXVfBayeqdoT/XJ/unCqAov3+kjGrasF2NEuaFoFd3VB6vKyjycWNH7r1s5vO4ooAVCQPjZsu0u8mCW5Hkl27zrwuRBncRZI7XLZHqrSKVu/GtYg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vduqSYa3zV5OGyLDUSw7reuu04V3EhcV38vC9cLHC9I=;
- b=cw21aT6BdJGFsW3OjQ6vex9efHbzNp+IJcPjNkCoduAvril06ostYza01q2PnNYPAFX7avbbzdtyEiom4uC5mmCidhzOz8kmZQkfyl7WyM+wH+9F9BIlEKuHOl0He1ryxEx8nZby/MWdOkaKANcU2fg4elD553YUgGzSZJ4vFesMsausmpQxFbExegqYOsa0YPYmbP5YmfIc60aE60UDTLMlxsd1Pg5Nmu2oxBLgiTXLM1KsI3qCe+uzluecCpeH93kTZckEMNI5Ynb9YrYsAjUzbqWyLFa7apEjSVPAFFifQ67PQyHs2i2NJ5tJLQs+dAQuJ9HxeWAPR+7mAUMgtw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vduqSYa3zV5OGyLDUSw7reuu04V3EhcV38vC9cLHC9I=;
- b=J7F6LZ2E/lOV6UYgI4oSJ9J+PDl1MyTFYke1H/QAR0XzE9ASzAMMvopKZECNOnKJuJJP24xQpXtEfKRKyFZ/2vj7pk6nauKkK/NuOYhcFtj0rUXlQ8bHFB+0q1J6Y0zX1J8tPyyYNYRK3ZQUAyR9Hmt3Sk1+gl5xerdwizO27C0=
-Received: from MN2PR15MB3213.namprd15.prod.outlook.com (20.179.21.76) by
- MN2PR15MB3006.namprd15.prod.outlook.com (20.178.252.223) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2538.17; Mon, 16 Dec 2019 19:14:04 +0000
-Received: from MN2PR15MB3213.namprd15.prod.outlook.com
- ([fe80::6d1e:f2f7:d36:a42f]) by MN2PR15MB3213.namprd15.prod.outlook.com
- ([fe80::6d1e:f2f7:d36:a42f%4]) with mapi id 15.20.2538.019; Mon, 16 Dec 2019
- 19:14:04 +0000
-From:   Martin Lau <kafai@fb.com>
-To:     Eric Dumazet <eric.dumazet@gmail.com>
-CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>,
-        Kernel Team <Kernel-team@fb.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 09/13] bpf: Add BPF_FUNC_jiffies
-Thread-Topic: [PATCH bpf-next 09/13] bpf: Add BPF_FUNC_jiffies
-Thread-Index: AQHVsiI0ihgHNw98P02gRrT2dQLnz6e9JamA
-Date:   Mon, 16 Dec 2019 19:14:04 +0000
-Message-ID: <20191216191357.ftadvchztbpggcus@kafai-mbp.dhcp.thefacebook.com>
-References: <20191214004737.1652076-1-kafai@fb.com>
- <20191214004758.1653342-1-kafai@fb.com>
- <b321412c-1b42-45a9-4dc6-cc268b55cd0d@gmail.com>
-In-Reply-To: <b321412c-1b42-45a9-4dc6-cc268b55cd0d@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MWHPR2201CA0051.namprd22.prod.outlook.com
- (2603:10b6:301:16::25) To MN2PR15MB3213.namprd15.prod.outlook.com
- (2603:10b6:208:3d::12)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:200::2:71b2]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: d9b1ea4d-fbbf-43e7-ff5e-08d7825c1d68
-x-ms-traffictypediagnostic: MN2PR15MB3006:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MN2PR15MB300630044E920AC926DC63AFD5510@MN2PR15MB3006.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-forefront-prvs: 02530BD3AA
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(39860400002)(366004)(136003)(396003)(346002)(376002)(51914003)(189003)(199004)(9686003)(64756008)(66446008)(66946007)(66556008)(6916009)(66476007)(6512007)(316002)(54906003)(71200400001)(2906002)(81166006)(52116002)(6506007)(86362001)(5660300002)(1076003)(186003)(8676002)(3716004)(53546011)(478600001)(81156014)(6486002)(8936002)(4326008);DIR:OUT;SFP:1102;SCL:1;SRVR:MN2PR15MB3006;H:MN2PR15MB3213.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: PBrBiFcy+4Ri0Godl1saxgtGeDq8X2U3MbJ5PI9myNyv88fTf5DPAJOtqbeu5wOGPyp5owKTDyK3bRrGkaTkVRMvVLvEr15NkQhKTFu49TRWYgFKHvc6VwoF1CFUFeG6VPB78Q2LrRdeoGj+hJyYWYYfY3S4XxPIoiZzZ2mmKwP/EgNRtpkG+RXbDes8MeqydwX5El2OkvQGf/8cSEeCqIOsK69omc+xeL1FEYYZCnmelVhiZXBe7GLCIsD67EKDoEtPIA+6O1Z/6x4MZxAt5HIP7F177oFE6zqPU4rKdutjk1zTnZeg9n+SLW+B4nAJFAlepLkcbYwgN0AnvFI3VadV8lEy9WV+ZbfOcZH3mhWSnDNz41B4+8RdWPR8qhsmGfTPUzM4UUFpzahr6tU7IsHK3ejY7HYMRMgEUEpdcF4+4R3Fvz6+RoxkqmoxJlXEDfdJe3N6QtMWP4mCnzQA5/mbnwa3a2lKxN0qXM4XX/x2juD/WrEZGPdPX/7A26RO
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <F74BFE39B4BD8F4285C2B6B652FF4B8A@namprd15.prod.outlook.com>
+        id S1726717AbfLPTgB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Dec 2019 14:36:01 -0500
+Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:33719 "EHLO
+        wnew1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726664AbfLPTgB (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 16 Dec 2019 14:36:01 -0500
+X-Greylist: delayed 412 seconds by postgrey-1.27 at vger.kernel.org; Mon, 16 Dec 2019 14:36:00 EST
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id BD299849;
+        Mon, 16 Dec 2019 14:29:06 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Mon, 16 Dec 2019 14:29:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
+        content-transfer-encoding:content-type:in-reply-to:date:cc
+        :subject:from:to:message-id; s=fm2; bh=/+h1XTDwJZREmBxJnMMOAIBLJ
+        zO2exzHnVCiokLdtoA=; b=t/AnX6ZkAD+bRy43PrrkjLjDc4+OMRnPwaaO1wl3X
+        ngwmEMLO/en3sMlWlB7SH3vR7HryBi/+EQhMJ7cGKAYxmwHvzkOpwKlwECunekkm
+        4joSITTwqSKKr6lYri8TOXggFljuxwT0iT5cCJms6PS/u5AolDja/ZkAUgYt4kr3
+        ZOeyWlAQOKjtoL8GzOkrsRUIF6DfR2wTBGrcoO8TkxLDpIjJqaP9p+q49QC0dNVm
+        jTPH15mdYVSGp87oBPui7NcMFEZjYto4oAKYsbp7iebkbHrwMQ0ZD0OGVumAPO1V
+        BCr0cjzHQparcJ4b5bQTkln/wax2PNY4qMK9MTBl3fvFA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=/+h1XT
+        DwJZREmBxJnMMOAIBLJzO2exzHnVCiokLdtoA=; b=g3K863FhgGFSF9ahNft0Nt
+        Yj++LGUnxZjnvqlR/kU2IJbV5sx6pAPpgco5LaWhXXz4Bn15f0s8Hpn02ebml0ZM
+        ZZihHJ9FED1V7FEStXRxUWAk7aira4s7v5iGOe0XDB+Xljv27xRJ0XnXKXzuiTsO
+        N3QvRJIJsjK+Gi6d6zRbRZBi5Kh7VVqktsDr+yNXnLo1U4qDBTm1hNUUlcUce0ZC
+        NJC52undINqXdl6OqQHuJahToN/Mz3mZs0fzSqWZfSFarKqw39V1RvshffPMJwNx
+        vHBDAQuBqbjAatvmH6PteQEpC7oCHKnxxdMRXwqpUJuKeUPX78hJOe3E6NXFvKAQ
+        ==
+X-ME-Sender: <xms:Adv3XU41YPQ6O49BrteiMX5V4ws-FsczwSbe4tAjMUhh56BqRCVAyw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedufedrvddthedguddvhecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enfghrlhcuvffnffculdejtddmnecujfgurhepgfgtjgffuffhvffksehtqhertddttdej
+    necuhfhrohhmpedfffgrnhhivghlucgiuhdfuceougiguhesugiguhhuuhdrgiihiieqne
+    cukfhppeduleelrddvtddurdeigedrudeftdenucfrrghrrghmpehmrghilhhfrhhomhep
+    ugiguhesugiguhhuuhdrgiihiienucevlhhushhtvghrufhiiigvpedt
+X-ME-Proxy: <xmx:Adv3XRZRiocV-JYX8YYX4hHT5Jlp1uPh5ulcJBVSKbUIQryo0MFTAw>
+    <xmx:Adv3XYiZKDI6ZnlQd4qO_lH3jHHdKujPQrImHeorMcPGTeYlLE1kOA>
+    <xmx:Adv3XYFbK9BzHUKShuGfBCaADV4UI1AMqPhifFVMOcCxJIomTLzUjw>
+    <xmx:Atv3XWZp-9T-c8ZvFlgM4NniklkUSHUg4P5W4NA51tyQmcFlXzt4JzwpO5g>
+Received: from localhost (unknown [199.201.64.130])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 4403D80065;
+        Mon, 16 Dec 2019 14:29:04 -0500 (EST)
 Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: d9b1ea4d-fbbf-43e7-ff5e-08d7825c1d68
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Dec 2019 19:14:04.1395
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 6TTUy5WBsTnXuIg1B+IHrrWJcgyg1XZkkibjWmfvf18RRK0yhGBqH7TF0KaY3nk5
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB3006
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
- definitions=2019-12-16_07:2019-12-16,2019-12-16 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- adultscore=0 impostorscore=0 clxscore=1015 spamscore=0 bulkscore=0
- mlxlogscore=732 malwarescore=0 lowpriorityscore=0 mlxscore=0 phishscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1910280000 definitions=main-1912160162
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=UTF-8
+Originaldate: Fri Dec 6, 2019 at 9:10 AM
+Originalfrom: "Andrii Nakryiko" <andrii.nakryiko@gmail.com>
+Original: =?utf-8?q?On_Thu,_Dec_5,_2019_at_4:13_PM_Daniel_Xu_<dxu@dxuuu.xyz>_wrote:?=
+ =?utf-8?q?=0D=0A>=0D=0A>_Last-branch-record_is_an_intel_CPU_feature_that_?=
+ =?utf-8?q?can_be_configured_to=0D=0A>_record_certain_branches_that_are_ta?=
+ =?utf-8?q?ken_during_code_execution._This_data=0D=0A>_is_particularly_int?=
+ =?utf-8?q?eresting_for_profile_guided_optimizations._perf_has=0D=0A>_had_?=
+ =?utf-8?q?LBR_support_for_a_while_but_the_data_collection_can_be_a_bit_co?=
+ =?utf-8?q?arse=0D=0A>_grained.=0D=0A>=0D=0A>_We_(Facebook)_have_recently_?=
+ =?utf-8?q?run_a_lot_of_experiments_with_feeding=0D=0A>_filtered_LBR_data_?=
+ =?utf-8?q?to_various_PGO_pipelines._We've_seen_really_good=0D=0A>_results?=
+ =?utf-8?q?_(+2.5%_throughput_with_lower_cpu_util_and_lower_latency)_by=0D?=
+ =?utf-8?q?=0A>_feeding_high_request_latency_LBR_branches_to_the_compiler_?=
+ =?utf-8?q?on_a=0D=0A>_request-oriented_service._We_used_bpf_to_read_a_spe?=
+ =?utf-8?q?cial_request_context=0D=0A>_ID_(which_is_how_we_associate_branc?=
+ =?utf-8?q?hes_with_latency)_from_a_fixed=0D=0A>_userspace_address._Readin?=
+ =?utf-8?q?g_from_the_fixed_address_is_why_bpf_support_is=0D=0A>_useful.?=
+ =?utf-8?q?=0D=0A>=0D=0A>_Aside_from_this_particular_use_case,_having_LBR_?=
+ =?utf-8?q?data_available_to_bpf=0D=0A>_progs_can_be_useful_to_get_stack_t?=
+ =?utf-8?q?races_out_of_userspace_applications=0D=0A>_that_omit_frame_poin?=
+ =?utf-8?q?ters.=0D=0A>=0D=0A>_This_patch_adds_support_for_LBR_data_to_bpf?=
+ =?utf-8?q?_perf_progs.=0D=0A>=0D=0A>_Some_notes:=0D=0A>_*_We_use_`=5F=5Fu?=
+ =?utf-8?q?64_entries[BPF=5FMAX=5FLBR=5FENTRIES_*_3]`_instead_of=0D=0A>___?=
+ =?utf-8?q?`struct_perf=5Fbranch=5Fentry[BPF=5FMAX=5FLBR=5FENTRIES]`_becau?=
+ =?utf-8?q?se_checkpatch.pl=0D=0A>___warns_about_including_a_uapi_header_f?=
+ =?utf-8?q?rom_another_uapi_header=0D=0A>=0D=0A>_*_We_define_BPF=5FMAX=5FL?=
+ =?utf-8?q?BR=5FENTRIES_as_32_(instead_of_using_the_value_from=0D=0A>___ar?=
+ =?utf-8?q?ch/x86/events/perf=5Fevents.h)_because_including_arch_specific_?=
+ =?utf-8?q?headers=0D=0A>___seems_wrong_and_could_introduce_circular_heade?=
+ =?utf-8?q?r_includes.=0D=0A>=0D=0A>_Signed-off-by:_Daniel_Xu_<dxu@dxuuu.x?=
+ =?utf-8?q?yz>=0D=0A>_---=0D=0A>__include/uapi/linux/bpf=5Fperf=5Fevent.h_?=
+ =?utf-8?q?|__5_++++=0D=0A>__kernel/trace/bpf=5Ftrace.c____________|_39_++?=
+ =?utf-8?q?+++++++++++++++++++++++++++=0D=0A>__2_files_changed,_44_inserti?=
+ =?utf-8?q?ons(+)=0D=0A>=0D=0A>_diff_--git_a/include/uapi/linux/bpf=5Fperf?=
+ =?utf-8?q?=5Fevent.h_b/include/uapi/linux/bpf=5Fperf=5Fevent.h=0D=0A>_ind?=
+ =?utf-8?q?ex_eb1b9d21250c..dc87e3d50390_100644=0D=0A>_---_a/include/uapi/?=
+ =?utf-8?q?linux/bpf=5Fperf=5Fevent.h=0D=0A>_+++_b/include/uapi/linux/bpf?=
+ =?utf-8?q?=5Fperf=5Fevent.h=0D=0A>_@@_-10,10_+10,15_@@=0D=0A>=0D=0A>__#in?=
+ =?utf-8?q?clude_<asm/bpf=5Fperf=5Fevent.h>=0D=0A>=0D=0A>_+#define_BPF=5FM?=
+ =?utf-8?q?AX=5FLBR=5FENTRIES_32=0D=0A>_+=0D=0A>__struct_bpf=5Fperf=5Feven?=
+ =?utf-8?q?t=5Fdata_{=0D=0A>_________bpf=5Fuser=5Fpt=5Fregs=5Ft_regs;=0D?=
+ =?utf-8?q?=0A>_________=5F=5Fu64_sample=5Fperiod;=0D=0A>_________=5F=5Fu6?=
+ =?utf-8?q?4_addr;=0D=0A>_+_______=5F=5Fu64_nr=5Flbr;=0D=0A>_+_______/*_Ca?=
+ =?utf-8?q?st_to_struct_perf=5Fbranch=5Fentry*_before_using_*/=0D=0A>_+___?=
+ =?utf-8?q?____=5F=5Fu64_entries[BPF=5FMAX=5FLBR=5FENTRIES_*_3];=0D=0A>__}?=
+ =?utf-8?q?;=0D=0A>=0D=0A=0D=0AI_wonder_if_instead_of_hard-coding_this_in_?=
+ =?utf-8?q?bpf=5Fperf=5Fevent=5Fdata,_could=0D=0Awe_achieve_this_and_perha?=
+ =?utf-8?q?ps_even_more_flexibility_by_letting_users=0D=0Aaccess_underlyin?=
+ =?utf-8?q?g_bpf=5Fperf=5Fevent=5Fdata=5Fkern_and_use_CO-RE_to_read=0D=0Aw?=
+ =?utf-8?q?hatever_needs_to_be_read_from_perf=5Fsample=5Fdata,_perf=5Feven?=
+ =?utf-8?q?t,_etc=3F=0D=0AWould_that_work=3F=0D=0A=0D=0A>__#endif_/*_=5FUA?=
+ =?utf-8?q?PI=5F=5FLINUX=5FBPF=5FPERF=5FEVENT=5FH=5F=5F_*/=0D=0A>_diff_--g?=
+ =?utf-8?q?it_a/kernel/trace/bpf=5Ftrace.c_b/kernel/trace/bpf=5Ftrace.c=0D?=
+ =?utf-8?q?=0A>_index_ffc91d4935ac..96ba7995b3d7_100644=0D=0A>_---_a/kerne?=
+ =?utf-8?q?l/trace/bpf=5Ftrace.c=0D=0A>_+++_b/kernel/trace/bpf=5Ftrace.c?=
+ =?utf-8?q?=0D=0A=0D=0A[...]=0D=0A?=
+In-Reply-To: <CAEf4BzY-ahRm5HPrqRWF5seOjGM+PJs+J+DTbuws3r=jd_PArg@mail.gmail.com>
+Date:   Mon, 16 Dec 2019 11:29:03 -0800
+Cc:     "Alexei Starovoitov" <ast@kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        "Yonghong Song" <yhs@fb.com>, "Martin Lau" <kafai@fb.com>,
+        "Song Liu" <songliubraving@fb.com>,
+        "Andrii Nakryiko" <andriin@fb.com>,
+        "Networking" <netdev@vger.kernel.org>, "bpf" <bpf@vger.kernel.org>,
+        "Peter Ziljstra" <peterz@infradead.org>,
+        "Ingo Molnar" <mingo@redhat.com>,
+        "Arnaldo Carvalho de Melo" <acme@kernel.org>,
+        "open list" <linux-kernel@vger.kernel.org>,
+        "Kernel Team" <kernel-team@fb.com>
+Subject: Re: [PATCH bpf] bpf: Add LBR data to BPF_PROG_TYPE_PERF_EVENT prog
+ context
+From:   "Daniel Xu" <dxu@dxuuu.xyz>
+To:     "Andrii Nakryiko" <andrii.nakryiko@gmail.com>
+Message-Id: <BZ73B4ZKTVZP.2ME64EWPJ01T8@dlxu-fedora-R90QNFJV>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Dec 13, 2019 at 05:59:54PM -0800, Eric Dumazet wrote:
->=20
->=20
-> On 12/13/19 4:47 PM, Martin KaFai Lau wrote:
-> > This patch adds a helper to handle jiffies.  Some of the
-> > tcp_sock's timing is stored in jiffies.  Although things
-> > could be deduced by CONFIG_HZ, having an easy way to get
-> > jiffies will make the later bpf-tcp-cc implementation easier.
-> >=20
->=20
-> ...
->=20
+On Fri Dec 6, 2019 at 9:10 AM, Andrii Nakryiko wrote:
+> On Thu, Dec 5, 2019 at 4:13 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
+> >
+> > Last-branch-record is an intel CPU feature that can be configured to
+> > record certain branches that are taken during code execution. This data
+> > is particularly interesting for profile guided optimizations. perf has
+> > had LBR support for a while but the data collection can be a bit coarse
+> > grained.
+> >
+> > We (Facebook) have recently run a lot of experiments with feeding
+> > filtered LBR data to various PGO pipelines. We've seen really good
+> > results (+2.5% throughput with lower cpu util and lower latency) by
+> > feeding high request latency LBR branches to the compiler on a
+> > request-oriented service. We used bpf to read a special request context
+> > ID (which is how we associate branches with latency) from a fixed
+> > userspace address. Reading from the fixed address is why bpf support is
+> > useful.
+> >
+> > Aside from this particular use case, having LBR data available to bpf
+> > progs can be useful to get stack traces out of userspace applications
+> > that omit frame pointers.
+> >
+> > This patch adds support for LBR data to bpf perf progs.
+> >
+> > Some notes:
+> > * We use `__u64 entries[BPF_MAX_LBR_ENTRIES * 3]` instead of
+> >   `struct perf_branch_entry[BPF_MAX_LBR_ENTRIES]` because checkpatch.pl
+> >   warns about including a uapi header from another uapi header
+> >
+> > * We define BPF_MAX_LBR_ENTRIES as 32 (instead of using the value from
+> >   arch/x86/events/perf_events.h) because including arch specific header=
+s
+> >   seems wrong and could introduce circular header includes.
+> >
+> > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> > ---
+> >  include/uapi/linux/bpf_perf_event.h |  5 ++++
+> >  kernel/trace/bpf_trace.c            | 39 +++++++++++++++++++++++++++++
+> >  2 files changed, 44 insertions(+)
+> >
+> > diff --git a/include/uapi/linux/bpf_perf_event.h b/include/uapi/linux/b=
+pf_perf_event.h
+> > index eb1b9d21250c..dc87e3d50390 100644
+> > --- a/include/uapi/linux/bpf_perf_event.h
+> > +++ b/include/uapi/linux/bpf_perf_event.h
+> > @@ -10,10 +10,15 @@
+> >
+> >  #include <asm/bpf_perf_event.h>
+> >
+> > +#define BPF_MAX_LBR_ENTRIES 32
 > > +
-> > +BPF_CALL_2(bpf_jiffies, u64, in, u64, flags)
-> > +{
-> > +	if (!flags)
-> > +		return get_jiffies_64();
-> > +
-> > +	if (flags & BPF_F_NS_TO_JIFFIES) {
-> > +		return nsecs_to_jiffies(in);
-> > +	} else if (flags & BPF_F_JIFFIES_TO_NS) {
-> > +		if (!in)
-> > +			in =3D get_jiffies_64();
-> > +		return jiffies_to_nsecs(in);
-> > +	}
-> > +
-> > +	return 0;
-> > +}
+> >  struct bpf_perf_event_data {
+> >         bpf_user_pt_regs_t regs;
+> >         __u64 sample_period;
+> >         __u64 addr;
+> > +       __u64 nr_lbr;
+> > +       /* Cast to struct perf_branch_entry* before using */
+> > +       __u64 entries[BPF_MAX_LBR_ENTRIES * 3];
+> >  };
+> >
+>
 >=20
-> This looks a bit convoluted :)
+> I wonder if instead of hard-coding this in bpf_perf_event_data, could
+> we achieve this and perhaps even more flexibility by letting users
+> access underlying bpf_perf_event_data_kern and use CO-RE to read
+> whatever needs to be read from perf_sample_data, perf_event, etc?
+> Would that work?
+>
 >=20
-> Note that we could possibly change net/ipv4/tcp_cubic.c to no longer use =
-jiffies at all.
+> >  #endif /* _UAPI__LINUX_BPF_PERF_EVENT_H__ */
+> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> > index ffc91d4935ac..96ba7995b3d7 100644
+> > --- a/kernel/trace/bpf_trace.c
+> > +++ b/kernel/trace/bpf_trace.c
+>
 >=20
-> We have in tp->tcp_mstamp an accurate timestamp (in usec) that can be con=
-verted to ms.
-Thanks for the feedbacks!
+> [...]
+>
 
-I have a few questions that need some helps.
+Sorry about the late response. I chatted w/ Andrii last week and spent
+some time playing with alternatives. It turns out we can read lbr data
+by casting the bpf_perf_event_data to the internal kernel datastructure
+and doing some well placed bpf_probe_read's.
 
-Does it mean tp->tcp_mstamp can be used as the "now" in cubic?
-or tcp_clock_ns() should still be called in cubic, e.g. to replace
-bictcp_clock() and tcp_jiffies32?
+Unless someone else thinks this patch would be useful, I will probably
+abandon it for now (unless we experience enough pain from doing these
+casts). If I did a v2, I would probably add a bpf helper instead of
+modifying the ctx to get around the ugly api limitations.
 
-BPF currently has a helper calling ktime_get_mono_fast_ns() which looks
-different from tcp_clock_ns().
-
-The lsndtime is in jiffies.  I think it can probably be converted to ms bef=
-ore
-using it in cubic.  There are some BICTCP_HZ logic in bictcp_update() that
-is not obvious to me how to convet them to ms base also.
-
->=20
->=20
-> Have you thought of finding a way to not duplicate the code for cubic and=
- dctcp, maybe
-> by including a template ?
->=20
-> Maintaining two copies means that future changes need more maintenance wo=
-rk.
-At least for bpf_dctcp.c, I did not expect it could be that close to tcp_dc=
-tcp.c
-when I just started converted it.  tcp_cubic/bpf_cubic still has some TBD
-on jiffies/msec.
-
-Agree that it is beneficial to have one copy.   It is likely
-I need to make some changes on the tcp_*.c side also.  Hence, I prefer
-to give it a try in a separate series, e.g. revert the kernel side
-changes will be easier.
+Daniel
