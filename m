@@ -2,102 +2,145 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F7F2121856
-	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2019 19:43:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B0A612184B
+	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2019 19:42:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728818AbfLPR7q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Dec 2019 12:59:46 -0500
-Received: from mail-qv1-f66.google.com ([209.85.219.66]:35485 "EHLO
-        mail-qv1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728806AbfLPR7p (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 Dec 2019 12:59:45 -0500
-Received: by mail-qv1-f66.google.com with SMTP id d17so3089173qvs.2;
-        Mon, 16 Dec 2019 09:59:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0mHiYS8vPmhVYdFs29lXSPMh3DwpAbBEHbcksJ+EGlc=;
-        b=t6YQC3ShlEYSh53qP/UEJ98kZ9TW1sgNdh59cXONq/YhYq8KlNIpO3APVpnkdnUVrc
-         mFf2xceZnXxQ2ysH+hr/yhvkPt1MIyW6eHhOuB8BCfikkdw5ZKPfnbc/qVHYJvuZDROv
-         n6Wcz6Jk6HZsIiGOitsVBsfiEgHfllVvsQFqNUCEDwKeLzsDJR1XlESwJMCTc2P3O0HX
-         LE2LNDe3xWz564CfBec41Bgx/QcJop5mLbYgF7TmChq1B/dcMwcLGnA/hbyf5CH2oVS/
-         +jgz2FC8eTqW7PKHvhHhnR4w8cBkPDbjHHfx4EBpo4nMpUsCLO8F61YdObPlM2cnXdl5
-         tRtg==
+        id S1728903AbfLPSAO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Dec 2019 13:00:14 -0500
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:41566 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728888AbfLPSAL (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 16 Dec 2019 13:00:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1576519209;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=P8OYKMcfujhNjK8AEmQgJ/I1VwMzTEpLP9Q81r8ttM8=;
+        b=N4lYk5stYCWiIkDDEr5AkVISy6UsLyTHWV2/ka5gLy5h7Q08hV7un1ctfLiuyO3EwxMyA/
+        UOWpVdU3JMYdM8t9CtdEZTi+W9z1lCaHBW52yAwoFulsMrX/YzSUyAaV6C4AaRFuxuTi8s
+        B1QO5fK6QHZRlCOCMBS4mwBDbz8lco4=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-249--vZqa0RuO4mcETaeR5M2uQ-1; Mon, 16 Dec 2019 13:00:08 -0500
+X-MC-Unique: -vZqa0RuO4mcETaeR5M2uQ-1
+Received: by mail-lf1-f71.google.com with SMTP id d7so674067lfk.9
+        for <bpf@vger.kernel.org>; Mon, 16 Dec 2019 10:00:07 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0mHiYS8vPmhVYdFs29lXSPMh3DwpAbBEHbcksJ+EGlc=;
-        b=Pz686NzOoyQqoYTugM4Eq0C4jc4mMTcfPWFGopCKvVSzc9hg1stvbHPE1ALUtIGMqz
-         Xn/7jlWivV5gDubDqoO1uAbhKdBbiDW7ogWes8GiolGLXbfJTOZ/Th4ZSR1cMpyZ1ybJ
-         N6ZDP+niNHGGYvX5p7wFhLhL49hJFGPsVvzCERVFXF/jh660GYImvhcGvk053ewZGenn
-         h2wmOkAxZC9lB7oEGNU25qSeiBdIyH43bI71GPDd87TaWVYvnnOpRYA8HfJ9B/7yIRkE
-         wpjdwe2P1P3Ul6tz0leRVNemdaZP1Jq3eCy/Z+JrWbAyV4QXCFSaG+BfvUPBY77zzgdX
-         RG0Q==
-X-Gm-Message-State: APjAAAUi07yymtiQa4w3+O69ok71LFljaJ3ZmyIBqLNe0wcgBSwoSFnI
-        oALGh02eyVmgSsY7nV7pPIVdCnL747RtnfNJ6fE=
-X-Google-Smtp-Source: APXvYqy+wsuiI63oSEuKZ0yaCdSZdwjPdCKDlLHX9R2NNkzPgjSrpPTCACd6Rrdim5HWkZ1mq25hdOe8zmZ7Y83NQpY=
-X-Received: by 2002:a05:6214:38c:: with SMTP id l12mr518115qvy.224.1576519183880;
- Mon, 16 Dec 2019 09:59:43 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=P8OYKMcfujhNjK8AEmQgJ/I1VwMzTEpLP9Q81r8ttM8=;
+        b=U0eP4UzR5dehJGJIxl5RUpTY0G8NiXJ2W5nxBwcuQ8G4sEuphRr4+ih5hqt0ciSftB
+         rUhHpIiNTkol8MNGlsBNh9VzoTY+akxBjAK46zSi8HLCBnf4k/tNlNtBCRXHsgYmMGCT
+         XpuH04/FRVXh/4Bp+Ud+0C8utbNSuGntelFqjCsm5yTwA/i55zblzyE+x8CtWWzFo2Az
+         axH50kLlQmcU4+CItI+lkCGpBvxC8avnn4+tStyEpmJQJfj77SH9+0F5ldtdaTteVRux
+         z+5K/inc1VoSVpHQugytbo+4v9414wMbX7yLLS6FX1aKEN1VT+wT4gz43NkhnnzRnE47
+         91yg==
+X-Gm-Message-State: APjAAAUfplMcDz8OZK8ErWgDuK7lOAVabWnRLpOwo1+8kb6qoySwGYfI
+        gOxGqLC8cuxl4rm9PYlurideAdGNBhvean2DpspVq02EeAMJICpc3QP6Sj1rsowEBHpwsMGcc09
+        E8PVbhoKGg+qC
+X-Received: by 2002:a19:6d13:: with SMTP id i19mr201115lfc.6.1576519206609;
+        Mon, 16 Dec 2019 10:00:06 -0800 (PST)
+X-Google-Smtp-Source: APXvYqxh/vvO8yzMc5Mg/c6CA5AJMtI+JugQ5TVXTp2xmIojkcAcGAWuH7MDCiVVCg8O6WMEvdSLeQ==
+X-Received: by 2002:a19:6d13:: with SMTP id i19mr201101lfc.6.1576519206365;
+        Mon, 16 Dec 2019 10:00:06 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id m8sm9423870lfp.4.2019.12.16.10.00.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Dec 2019 10:00:05 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id A5500180960; Mon, 16 Dec 2019 19:00:04 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     "netdev\@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf\@vger.kernel.org" <bpf@vger.kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>
+Subject: Re: [PATCH bpf-next] libbpf: Print hint about ulimit when getting permission denied error
+In-Reply-To: <2146814b-f70e-b401-3ed3-4d113ab47e34@fb.com>
+References: <20191216124031.371482-1-toke@redhat.com> <2146814b-f70e-b401-3ed3-4d113ab47e34@fb.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Mon, 16 Dec 2019 19:00:04 +0100
+Message-ID: <87mubs882j.fsf@toke.dk>
 MIME-Version: 1.0
-References: <20191212013521.1689228-1-andriin@fb.com> <20191216144404.GG14887@linux.fritz.box>
-In-Reply-To: <20191216144404.GG14887@linux.fritz.box>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 16 Dec 2019 09:59:33 -0800
-Message-ID: <CAEf4BzYhmFvhL_DgeXK8xxihcxcguRzox2AXpjBS1BB4n9d7rQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/4] Fix perf_buffer creation on systems with
- offline CPUs
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Dec 16, 2019 at 6:44 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+Yonghong Song <yhs@fb.com> writes:
+
+> On 12/16/19 4:40 AM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>> Probably the single most common error newcomers to XDP are stumped by is
+>> the 'permission denied' error they get when trying to load their program
+>> and 'ulimit -r' is set too low. For examples, see [0], [1].
+>>=20
+>> Since the error code is UAPI, we can't change that. Instead, this patch
+>> adds a few heuristics in libbpf and outputs an additional hint if they a=
+re
+>> met: If an EPERM is returned on map create or program load, and geteuid()
+>> shows we are root, and the current RLIMIT_MEMLOCK is not infinity, we
+>> output a hint about raising 'ulimit -r' as an additional log line.
+>>=20
+>> [0] https://marc.info/?l=3Dxdp-newbies&m=3D157043612505624&w=3D2
+>> [1] https://github.com/xdp-project/xdp-tutorial/issues/86
+>>=20
+>> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 >
-> On Wed, Dec 11, 2019 at 05:35:20PM -0800, Andrii Nakryiko wrote:
-> > This patch set fixes perf_buffer__new() behavior on systems which have some of
-> > the CPUs offline/missing (due to difference between "possible" and "online"
-> > sets). perf_buffer will create per-CPU buffer and open/attach to corresponding
-> > perf_event only on CPUs present and online at the moment of perf_buffer
-> > creation. Without this logic, perf_buffer creation has no chances of
-> > succeeding on such systems, preventing valid and correct BPF applications from
-> > starting.
+> LGTM with one minor no-essential suggestion below.
 >
-> Once CPU goes back online and processes BPF events, any attempt to push into
-> perf RB via bpf_perf_event_output() with flag BPF_F_CURRENT_CPU would silently
-
-bpf_perf_event_output() will return error code in such case, so it's
-not exactly undetectable by application.
-
-
-> get discarded. Should rather perf API be fixed instead of plain skipping as done
-> here to at least allow creation of ring buffer for BPF to avoid such case?
-
-Can you elaborate on what perf API fix you have in mind? Do you mean
-for perf to allow attaching ring buffer to offline CPU or something
-else?
-
+> Acked-by: Yonghong Song <yhs@fb.com>
 >
-> > Andrii Nakryiko (4):
-> >   libbpf: extract and generalize CPU mask parsing logic
-> >   selftests/bpf: add CPU mask parsing tests
-> >   libbpf: don't attach perf_buffer to offline/missing CPUs
-> >   selftests/bpf: fix perf_buffer test on systems w/ offline CPUs
-> >
-> >  tools/lib/bpf/libbpf.c                        | 157 ++++++++++++------
-> >  tools/lib/bpf/libbpf_internal.h               |   2 +
-> >  .../selftests/bpf/prog_tests/cpu_mask.c       |  78 +++++++++
-> >  .../selftests/bpf/prog_tests/perf_buffer.c    |  29 +++-
-> >  4 files changed, 213 insertions(+), 53 deletions(-)
-> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/cpu_mask.c
-> >
-> > --
-> > 2.17.1
-> >
+>> ---
+>>   tools/lib/bpf/libbpf.c | 21 +++++++++++++++++++++
+>>   1 file changed, 21 insertions(+)
+>>=20
+>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+>> index a2cc7313763a..aec7995674d2 100644
+>> --- a/tools/lib/bpf/libbpf.c
+>> +++ b/tools/lib/bpf/libbpf.c
+>> @@ -41,6 +41,7 @@
+>>   #include <sys/types.h>
+>>   #include <sys/vfs.h>
+>>   #include <sys/utsname.h>
+>> +#include <sys/resource.h>
+>>   #include <tools/libc_compat.h>
+>>   #include <libelf.h>
+>>   #include <gelf.h>
+>> @@ -100,6 +101,24 @@ void libbpf_print(enum libbpf_print_level level, co=
+nst char *format, ...)
+>>   	va_end(args);
+>>   }
+>>=20=20=20
+>> +static void pr_perm_msg(int err)
+>> +{
+>> +	struct rlimit limit;
+>> +
+>> +	if (err !=3D -EPERM || geteuid() !=3D 0)
+>> +		return;
+>> +
+>> +	err =3D getrlimit(RLIMIT_MEMLOCK, &limit);
+>> +	if (err)
+>> +		return;
+>> +
+>> +	if (limit.rlim_cur =3D=3D RLIM_INFINITY)
+>> +		return;
+>> +
+>> +	pr_warn("permission error while running as root; try raising 'ulimit -=
+r'? current value: %lu\n",
+>> +		limit.rlim_cur);
+>
+> Here we print out in terms of bytes. Maybe in terms of kilo bytes or=20
+> mega bytes is more user friendly, esp. we want them to set a different=20
+> value?
+
+Yeah, thought about that, but was too lazy to actually implement it :)
+
+Can send a v2 with that added...
+
+-Toke
+
