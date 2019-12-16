@@ -2,112 +2,281 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 891BE11FFAC
-	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2019 09:28:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8127D12002B
+	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2019 09:48:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726180AbfLPI2l (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Dec 2019 03:28:41 -0500
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:37968 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726077AbfLPI2l (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 Dec 2019 03:28:41 -0500
-Received: by mail-pg1-f196.google.com with SMTP id a33so3261897pgm.5;
-        Mon, 16 Dec 2019 00:28:41 -0800 (PST)
+        id S1726808AbfLPIqe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Dec 2019 03:46:34 -0500
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:42069 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726772AbfLPIqd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 Dec 2019 03:46:33 -0500
+Received: by mail-ot1-f66.google.com with SMTP id 66so8202374otd.9;
+        Mon, 16 Dec 2019 00:46:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=n+yuMf5nWYBUrNRd22g5pPieaL+STd4Dztgr45WcMBg=;
-        b=dAkDx/5s4OJ3C36pTvAa4LkNcAgnsq0iuNb07xc29PZddLGkmCXT3KsB7z9G4G8KDC
-         y7m8Ehgq+raj7DfOGDpSTNGJOZtZ8EBKUbnGuMfIYLGfRRQuT24jw2V9BhKzJCw5DDTJ
-         d9OJqZunQAsz7cd+uHEEZgHg3Sd2fM7wL8CdkGHUchaRsOqnYe0mIE2WlX6mNrhsPp5p
-         TBWs3Ulg4lcSEgEnpoKKRAG5XXziDkk68W90y+AbixxiGNNVxVQ1YdrV+4G2yr4y7y6X
-         l6kLSPTmSnUFWlv8XPm9GEWL+ZuOT2M6gN83JMkvg6wX94jNPz38EHM9iERrL3QBwXy9
-         XSOA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3SPuashIhdtlVrMosXj8V5ihTFuLDvA+g6VKVcBtbIw=;
+        b=RYVEwSFvnwu+YxW/bWXRYsGqo2ZThCwoa6UO0Tf4yoU5m3RSzMjrEjIhZQq2K6U10n
+         +lsVvi0VDkHEmUeDizCXt28EFWtNEYQ2uOJQmRZRgK2hcw0KUFV+PGAEgD6GIz95ZSbp
+         6c2DsxlVEycUMd2/mCGWT7Igr5XQ+nPG3a7oOySmJJeQ2dLsKmJQqjDypl1WTllwPPOw
+         cExjAYwPPaEF/FsO89GqvtnV2lXmA3SssloMAVwgaDDjWutZO7/e06G9Ubc36x8h2VJA
+         DfrUK0Gy+MUyVbSAw+qnyBo9sfrQMPfCUN//ZiH3xMv7Ypmw59qLzeFRh643qNitjSqJ
+         QQyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=n+yuMf5nWYBUrNRd22g5pPieaL+STd4Dztgr45WcMBg=;
-        b=IUQGMv77WLeiDUP7fJlPS7RsY9KWoRGRYwdxY5cYfjXrHa7U1CguGx7aYBpar/d0E2
-         8GlgT2TXEuTcMvibBZURmijuhQYKlJd4gF22ca0tu3CPle2c39M7x6sLqX7P/zA8lsAC
-         6SNC4nb/7pdM60T+GFv8nCPU3RqH319dcj33jLom0awE0SoxQcnoAUJAclj7sPLdwnRr
-         3bOo6/nMXtxxD696KLxWOI2q0AlbiQLLECq+YNhCMKLxggiOKp0f9L/MFO/d27s4Bh30
-         p8ccqfXn5Qggy00hACXx5p2x8VJZskGDKnNiCoMlauTZjip3xqY2BI07CMJ6+Qj/w73R
-         DV/Q==
-X-Gm-Message-State: APjAAAW8lHn20XcGDVCEMbG19J6xF1NbLYiJGft+KGbCtIintUKRSj54
-        NZ2u/w+h/UYi28W5z5nG7j0=
-X-Google-Smtp-Source: APXvYqxS7IgzFZgzl5dLgqw/49FZ6wCwNpLieGppWqUw3ssbzktmK4RQzVEfU5VSmmMOoSxwCjS1mw==
-X-Received: by 2002:a62:a515:: with SMTP id v21mr14769992pfm.128.1576484920803;
-        Mon, 16 Dec 2019 00:28:40 -0800 (PST)
-Received: from localhost.localdomain ([222.151.198.97])
-        by smtp.gmail.com with ESMTPSA id v72sm18383861pjb.25.2019.12.16.00.28.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Dec 2019 00:28:40 -0800 (PST)
-From:   Prashant Bhole <prashantbhole.linux@gmail.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Prashant Bhole <prashantbhole.linux@gmail.com>,
-        Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH bpf-next] libbpf: fix build by renaming variables
-Date:   Mon, 16 Dec 2019 17:27:38 +0900
-Message-Id: <20191216082738.28421-1-prashantbhole.linux@gmail.com>
-X-Mailer: git-send-email 2.21.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3SPuashIhdtlVrMosXj8V5ihTFuLDvA+g6VKVcBtbIw=;
+        b=Ui4B6EezXH8or7MU/EeOEixwYR6C6JO4HcbXesfiNbg15ga8ytBfJ6dpxCutfZSD3z
+         3bJsqRxnyPq8d7uINokbWFeyHRf2/4tUZWnvJADI4YiCMP2x3NjuKNZq392SNyhRanwK
+         c6aTfycckraI1X/QL1JGL1FQGUrhtwl7ndZkDq0OWnU9oYiqZUiWIrWBC27L4G+nXQ5K
+         x20+eyN32EgYcWVyIS0tygO2lO2eQ93gHFgW3E0JoP5avPbeDxaB4FGIItAPuXy1XNoM
+         6G14DIsvl9CNTy0wRfMilN9aU+hd+IUVW1QxYs0TcpwaX6b+jc93qhPPoUQQXr4QjXXF
+         lVsw==
+X-Gm-Message-State: APjAAAUAqrHH9fscV+dK3130GSSLAwWxjFLDCqxGiW07Gmajcpa0Aujs
+        4QSZkBXY3DVNtVHvH+g7+IZSTq468VnkHWca1r8=
+X-Google-Smtp-Source: APXvYqxpzI1dmrL8NJBWr4+pwXc3C6b4aeadzIciXXJVcF1lNWmekdux/g1O0yGH37mqD94jCc0LvvM8W4fgjBA8jxw=
+X-Received: by 2002:a9d:3677:: with SMTP id w110mr24757145otb.139.1576485992501;
+ Mon, 16 Dec 2019 00:46:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <1575878189-31860-1-git-send-email-magnus.karlsson@intel.com>
+ <1575878189-31860-3-git-send-email-magnus.karlsson@intel.com> <63329cd7-4d3a-9497-e5ed-6995f05cd81f@mellanox.com>
+In-Reply-To: <63329cd7-4d3a-9497-e5ed-6995f05cd81f@mellanox.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Mon, 16 Dec 2019 09:46:21 +0100
+Message-ID: <CAJ8uoz1k6PwnfVgaa47Yt3K40NciHLf=_5ixsGs0MESrnoo0RA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 02/12] xsk: consolidate to one single cached
+ producer pointer
+To:     Maxim Mikityanskiy <maximmi@mellanox.com>
+Cc:     Magnus Karlsson <magnus.karlsson@intel.com>,
+        "bjorn.topel@intel.com" <bjorn.topel@intel.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "jonathan.lemon@gmail.com" <jonathan.lemon@gmail.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        "jeffrey.t.kirsher@intel.com" <jeffrey.t.kirsher@intel.com>,
+        "maciej.fijalkowski@intel.com" <maciej.fijalkowski@intel.com>,
+        "maciejromanfijalkowski@gmail.com" <maciejromanfijalkowski@gmail.com>,
+        Maxim Mikityanskiy <maxtram95@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In btf__align_of() variable name 't' is shadowed by inner block
-declaration of another variable with same name. Patch renames
-variables in order to fix it.
+On Fri, Dec 13, 2019 at 7:04 PM Maxim Mikityanskiy <maximmi@mellanox.com> wrote:
+>
+> On 2019-12-09 09:56, Magnus Karlsson wrote:
+> > Currently, the xsk ring code has two cached producer pointers:
+> > prod_head and prod_tail. This patch consolidates these two into a
+> > single one called cached_prod to make the code simpler and easier to
+> > maintain. This will be in line with the user space part of the the
+> > code found in libbpf, that only uses a single cached pointer.
+> >
+> > The Rx path only uses the two top level functions
+> > xskq_produce_batch_desc and xskq_produce_flush_desc and they both use
+> > prod_head and never prod_tail. So just move them over to
+> > cached_prod.
+> >
+> > The Tx XDP_DRV path uses xskq_produce_addr_lazy and
+> > xskq_produce_flush_addr_n and unnecessarily operates on both prod_tail
+> > and prod_cons, so move them over to just use cached_prod by skipping
+> > the intermediate step of updating prod_tail.
+> >
+> > The Tx path in XDP_SKB mode uses xskq_reserve_addr and
+> > xskq_produce_addr. They currently use both cached pointers, but we can
+> > operate on the global producer pointer in xskq_produce_addr since it
+> > has to be updated anyway, thus eliminating the use of both cached
+> > pointers. We can also remove the xskq_nb_free in xskq_produce_addr
+> > since it is already called in xskq_reserve_addr. No need to do it
+> > twice.
+> >
+> > When there is only one cached producer pointer, we can also simplify
+> > xskq_nb_free by removing one argument.
+> >
+> > Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+> > ---
+> >   net/xdp/xsk_queue.h | 49 ++++++++++++++++++++++---------------------------
+> >   1 file changed, 22 insertions(+), 27 deletions(-)
+> >
+> > diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
+> > index a2f0ba6..d88e1a0 100644
+> > --- a/net/xdp/xsk_queue.h
+> > +++ b/net/xdp/xsk_queue.h
+> > @@ -35,8 +35,7 @@ struct xsk_queue {
+> >       u64 size;
+> >       u32 ring_mask;
+> >       u32 nentries;
+> > -     u32 prod_head;
+> > -     u32 prod_tail;
+> > +     u32 cached_prod;
+> >       u32 cons_head;
+> >       u32 cons_tail;
+> >       struct xdp_ring *ring;
+> > @@ -94,39 +93,39 @@ static inline u64 xskq_nb_invalid_descs(struct xsk_queue *q)
+> >
+> >   static inline u32 xskq_nb_avail(struct xsk_queue *q, u32 dcnt)
+> >   {
+> > -     u32 entries = q->prod_tail - q->cons_tail;
+> > +     u32 entries = q->cached_prod - q->cons_tail;
+> >
+> >       if (entries == 0) {
+> >               /* Refresh the local pointer */
+> > -             q->prod_tail = READ_ONCE(q->ring->producer);
+> > -             entries = q->prod_tail - q->cons_tail;
+> > +             q->cached_prod = READ_ONCE(q->ring->producer);
+> > +             entries = q->cached_prod - q->cons_tail;
+> >       }
+> >
+> >       return (entries > dcnt) ? dcnt : entries;
+> >   }
+> >
+> > -static inline u32 xskq_nb_free(struct xsk_queue *q, u32 producer, u32 dcnt)
+> > +static inline u32 xskq_nb_free(struct xsk_queue *q, u32 dcnt)
+> >   {
+> > -     u32 free_entries = q->nentries - (producer - q->cons_tail);
+> > +     u32 free_entries = q->nentries - (q->cached_prod - q->cons_tail);
+> >
+> >       if (free_entries >= dcnt)
+> >               return free_entries;
+> >
+> >       /* Refresh the local tail pointer */
+> >       q->cons_tail = READ_ONCE(q->ring->consumer);
+> > -     return q->nentries - (producer - q->cons_tail);
+> > +     return q->nentries - (q->cached_prod - q->cons_tail);
+> >   }
+> >
+> >   static inline bool xskq_has_addrs(struct xsk_queue *q, u32 cnt)
+> >   {
+> > -     u32 entries = q->prod_tail - q->cons_tail;
+> > +     u32 entries = q->cached_prod - q->cons_tail;
+> >
+> >       if (entries >= cnt)
+> >               return true;
+> >
+> >       /* Refresh the local pointer. */
+> > -     q->prod_tail = READ_ONCE(q->ring->producer);
+> > -     entries = q->prod_tail - q->cons_tail;
+> > +     q->cached_prod = READ_ONCE(q->ring->producer);
+> > +     entries = q->cached_prod - q->cons_tail;
+> >
+> >       return entries >= cnt;
+> >   }
+> > @@ -220,17 +219,15 @@ static inline void xskq_discard_addr(struct xsk_queue *q)
+> >   static inline int xskq_produce_addr(struct xsk_queue *q, u64 addr)
+> >   {
+> >       struct xdp_umem_ring *ring = (struct xdp_umem_ring *)q->ring;
+> > -
+> > -     if (xskq_nb_free(q, q->prod_tail, 1) == 0)
+> > -             return -ENOSPC;
+> > +     unsigned int idx = q->ring->producer;
+> >
+> >       /* A, matches D */
+> > -     ring->desc[q->prod_tail++ & q->ring_mask] = addr;
+> > +     ring->desc[idx++ & q->ring_mask] = addr;
+> >
+> >       /* Order producer and data */
+> >       smp_wmb(); /* B, matches C */
+> >
+> > -     WRITE_ONCE(q->ring->producer, q->prod_tail);
+> > +     WRITE_ONCE(q->ring->producer, idx);
+> >       return 0;
+> >   }
+> >
+> > @@ -238,11 +235,11 @@ static inline int xskq_produce_addr_lazy(struct xsk_queue *q, u64 addr)
+> >   {
+> >       struct xdp_umem_ring *ring = (struct xdp_umem_ring *)q->ring;
+> >
+> > -     if (xskq_nb_free(q, q->prod_head, 1) == 0)
+> > +     if (xskq_nb_free(q, 1) == 0)
+> >               return -ENOSPC;
+> >
+> >       /* A, matches D */
+> > -     ring->desc[q->prod_head++ & q->ring_mask] = addr;
+> > +     ring->desc[q->cached_prod++ & q->ring_mask] = addr;
+> >       return 0;
+> >   }
+> >
+> > @@ -252,17 +249,16 @@ static inline void xskq_produce_flush_addr_n(struct xsk_queue *q,
+> >       /* Order producer and data */
+> >       smp_wmb(); /* B, matches C */
+> >
+> > -     q->prod_tail += nb_entries;
+> > -     WRITE_ONCE(q->ring->producer, q->prod_tail);
+> > +     WRITE_ONCE(q->ring->producer, q->ring->producer + nb_entries);
+> >   }
+> >
+> >   static inline int xskq_reserve_addr(struct xsk_queue *q)
+> >   {
+> > -     if (xskq_nb_free(q, q->prod_head, 1) == 0)
+> > +     if (xskq_nb_free(q, 1) == 0)
+> >               return -ENOSPC;
+> >
+> >       /* A, matches D */
+> > -     q->prod_head++;
+> > +     q->cached_prod++;
+> >       return 0;
+> >   }
+> >
+> > @@ -340,11 +336,11 @@ static inline int xskq_produce_batch_desc(struct xsk_queue *q,
+> >       struct xdp_rxtx_ring *ring = (struct xdp_rxtx_ring *)q->ring;
+> >       unsigned int idx;
+> >
+> > -     if (xskq_nb_free(q, q->prod_head, 1) == 0)
+> > +     if (xskq_nb_free(q, 1) == 0)
+> >               return -ENOSPC;
+> >
+> >       /* A, matches D */
+> > -     idx = (q->prod_head++) & q->ring_mask;
+> > +     idx = q->cached_prod++ & q->ring_mask;
+> >       ring->desc[idx].addr = addr;
+> >       ring->desc[idx].len = len;
+> >
+> > @@ -356,8 +352,7 @@ static inline void xskq_produce_flush_desc(struct xsk_queue *q)
+> >       /* Order producer and data */
+> >       smp_wmb(); /* B, matches C */
+> >
+> > -     q->prod_tail = q->prod_head;
+> > -     WRITE_ONCE(q->ring->producer, q->prod_tail);
+> > +     WRITE_ONCE(q->ring->producer, q->cached_prod);
+> >   }
+> >
+> >   static inline bool xskq_full_desc(struct xsk_queue *q)
+> > @@ -367,7 +362,7 @@ static inline bool xskq_full_desc(struct xsk_queue *q)
+> >
+> >   static inline bool xskq_empty_desc(struct xsk_queue *q)
+> >   {
+> > -     return xskq_nb_free(q, q->prod_tail, q->nentries) == q->nentries;
+> > +     return xskq_nb_free(q, q->nentries) == q->nentries;
+>
+> I don't think this change is correct. The old code checked the number of
+> free items against prod_tail (== producer). The new code changes it to
+> prod_head (which is now cached_prod). xskq_nb_free is used in xsk_poll
+> to set EPOLLIN. After this change EPOLLIN will be set right after
+> xskq_produce_batch_desc, but it should only be set after
+> xskq_produce_flush_desc, just as before, otherwise the application will
+> wake up before the data is available, and it will just waste CPU cycles.
 
-  CC       sharedobjs/btf.o
-btf.c: In function ‘btf__align_of’:
-btf.c:303:21: error: declaration of ‘t’ shadows a previous local [-Werror=shadow]
-  303 |   int i, align = 1, t;
-      |                     ^
-btf.c:283:25: note: shadowed declaration is here
-  283 |  const struct btf_type *t = btf__type_by_id(btf, id);
-      |
+That is correct. It will be inefficient during patch 2 and 3 as this
+gets fixed in patch 4. I chose this as I thought the patch progression
+and simplification process would be clearer this way. So what to do
+about it? Some options:
 
-Fixes: 3d208f4ca111 ("libbpf: Expose btf__align_of() API")
-Signed-off-by: Prashant Bhole <prashantbhole.linux@gmail.com>
----
- tools/lib/bpf/btf.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+* Document this in patch 2 and keep the current order
 
-diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-index 520021939d81..5f04f56e1eb6 100644
---- a/tools/lib/bpf/btf.c
-+++ b/tools/lib/bpf/btf.c
-@@ -300,16 +300,16 @@ int btf__align_of(const struct btf *btf, __u32 id)
- 	case BTF_KIND_UNION: {
- 		const struct btf_member *m = btf_members(t);
- 		__u16 vlen = btf_vlen(t);
--		int i, align = 1, t;
-+		int i, max_align = 1, align;
- 
- 		for (i = 0; i < vlen; i++, m++) {
--			t = btf__align_of(btf, m->type);
--			if (t <= 0)
--				return t;
--			align = max(align, t);
-+			align = btf__align_of(btf, m->type);
-+			if (align <= 0)
-+				return align;
-+			max_align = max(max_align, align);
- 		}
- 
--		return align;
-+		return max_align;
- 	}
- 	default:
- 		pr_warn("unsupported BTF_KIND:%u\n", btf_kind(t));
--- 
-2.21.0
+*  Put patch 4 before patch 2 so that the code is always efficient.
+This is doable, but I have the feeling it will be somewhat less clear
+from a simplification perspective. The advantage, on the other hand,
+is that the poll code is always efficient during the whole patch set.
 
+/Magnus
+
+> >   }
+> >
+> >   void xskq_set_umem(struct xsk_queue *q, u64 size, u64 chunk_mask);
+> >
+>
