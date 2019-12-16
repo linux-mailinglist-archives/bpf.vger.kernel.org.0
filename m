@@ -2,79 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 34B6B1203DE
-	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2019 12:27:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17D61120540
+	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2019 13:16:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727138AbfLPL1g (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Dec 2019 06:27:36 -0500
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:40431 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727256AbfLPL1g (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 Dec 2019 06:27:36 -0500
-Received: by mail-wm1-f66.google.com with SMTP id t14so6269358wmi.5;
-        Mon, 16 Dec 2019 03:27:35 -0800 (PST)
+        id S1727443AbfLPMQc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Dec 2019 07:16:32 -0500
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:45475 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727480AbfLPMQc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 Dec 2019 07:16:32 -0500
+Received: by mail-qt1-f196.google.com with SMTP id l12so5553707qtq.12;
+        Mon, 16 Dec 2019 04:16:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=MJ/TMdYgQ2WgX5tItOvR+lRv2YzdL6QzVAQ99cZHZw4=;
+        b=PDEv7V0IQ8DIqC23zukl3YPC1aEukQLo6YZ9nMI6Oe/2YQAUzzyZsCO6328TgBC1mf
+         70ZYeqBK1D1Q7J0Dud07KxhhRfcwWKSDx6FvKB/nxPXp86ows9nbDp9Cq2xtrdkTtHwp
+         znvEZ+G7bHaWB8O1WAO8UVjliMHs8dJ5Td6c7UyV8OosN2+bk1R/2lAnO4ruG8KWgukn
+         jUCrpSIOkg/Gh19Nl5MpsAu2NDwge4GEd5xjwmmr5NcfDcYt3J+9Ndy133MMugz0e6un
+         O27QtKc5ZFHLDrSsfCH/nJBte+hRLYzxPWh5I2n3y5kFWCMW39U7QlfDh15URnsgQlZB
+         i6kg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=ryVCsc54wbLULwv2yhD2TV0CloGuzqu6YbJ+JZg2+Bw=;
-        b=B2wZKrqI53sfMzTn1xB9u+IAC8aAlprP6lKyoRjOFv+mAgWyzRZKUPdkllZEgZ+/W8
-         DeMsCEl/DMhiZSPkcv1VniypQlOM9UmrDyedZqf89IgUuW2hPQHGAlyOGxMlbvYlrji4
-         XXvKSSjJP7Ki8gOjCFpsJIilunbNGJ7docT2BrLClswLH/iSXu50XpBLxmBU9tEYhdca
-         lp5M+q8iSvgo+TMjAwY826pkQhTBoLXXvdfH3jXLG6xIscRX90HVzvGVCGrpkpoEAE5U
-         sNcIBDaWY/sXqexrw8PjlnSUCqysQ6CUfC1WWERdw5ZlmsYjkFZtzH2Ykuwp+zR1auUH
-         MYvg==
-X-Gm-Message-State: APjAAAX3GUeIydIzceIaETTjj4pl3zu7ShKIqin5zXTtG7KQhCVujwP+
-        QrxclS4MioGEVz4FJn8F/Lp0rG5R40v0eQ==
-X-Google-Smtp-Source: APXvYqz1BLiG5nMqNCmn72jiVmsafaibGobD6Zl88Jm7HLwR9e20MoalCryrVovJTR9RG8IWR3qSjg==
-X-Received: by 2002:a05:600c:48a:: with SMTP id d10mr13816032wme.87.1576495654385;
-        Mon, 16 Dec 2019 03:27:34 -0800 (PST)
-Received: from Omicron ([217.76.31.1])
-        by smtp.gmail.com with ESMTPSA id c17sm20883601wrr.87.2019.12.16.03.27.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Dec 2019 03:27:33 -0800 (PST)
-Date:   Mon, 16 Dec 2019 12:27:33 +0100
-From:   Paul Chaignon <paul.chaignon@orange.com>
-To:     bpf@vger.kernel.org
-Cc:     paul.chaignon@gmail.com, netdev@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Subject: [PATCH bpf-next] bpftool: Fix compilation warning on shadowed
- variable
-Message-ID: <20191216112733.GA28366@Omicron>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=MJ/TMdYgQ2WgX5tItOvR+lRv2YzdL6QzVAQ99cZHZw4=;
+        b=hnqyRbpcjR9Mp8V1AoNuM5FIk2LXiYvmGa9waQA4vGzkQWrAx4jlVPKmUSLNY8WQ05
+         DdtczPvcVjY990PVdjYaLFwHZYtkcILemxD5YtKeAukLfazQ5Q2vD+1C1izjYExvOYmD
+         uQsfgpmoCRxN2NhhI3djO3Yz7p2VEMT1mLxgo2giUDS+QOOugXkhIneEHW7nWiM59F9l
+         D+ifXOkSXguoiP4aE8adq0q4ojHW7VYNcSPhSxt82DgLNd1a9VHWgDrUivodAqCJCVVU
+         lzNNoKBWEPQB+QZS7l5BFybRS5b4o7EMtoPJ/GV0A9h6DkM3weq5BGSX8+VjULRkBGzK
+         quyQ==
+X-Gm-Message-State: APjAAAW/7KeSbd6k2/glkDsl26lWWjI5wIt/2zLJAcuhe55xBmyprl4y
+        eSZjLMXeEUR01wSLySba3CjIUUpJLSpuFNa44sY=
+X-Google-Smtp-Source: APXvYqzrwzU73WB2VCx8BuJhMO+VC39IpRT/3J8xxKdmYrWm76bEd/2yTc2efbXlRRv3nYJ+skKq74xYxJqUiDQqcho=
+X-Received: by 2002:ac8:104:: with SMTP id e4mr23589790qtg.37.1576498591261;
+ Mon, 16 Dec 2019 04:16:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20191216102405.353834-1-toke@redhat.com>
+In-Reply-To: <20191216102405.353834-1-toke@redhat.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Mon, 16 Dec 2019 13:16:20 +0100
+Message-ID: <CAJ+HfNjyx6ZLrcqW+voHsNH-PUuLKGCyvtdVXSz+kODhyxQYAA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] samples/bpf: Add missing -lz to TPROGS_LDLIBS
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The ident variable has already been declared at the top of the function
-and doesn't need to be re-declared.
+On Mon, 16 Dec 2019 at 11:24, Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat=
+.com> wrote:
+>
+> Since libbpf now links against zlib, this needs to be included in the
+> linker invocation for the userspace programs in samples/bpf that link
+> statically against libbpf.
+>
+> Fixes: 166750bc1dd2 ("libbpf: Support libbpf-provided extern variables")
+> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 
-Fixes: 985ead416df39 ("bpftool: Add skeleton codegen command")
-Signed-off-by: Paul Chaignon <paul.chaignon@orange.com>
----
- tools/bpf/bpftool/gen.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks Toke!
 
-diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-index a07c80429c7a..f70088b4c19b 100644
---- a/tools/bpf/bpftool/gen.c
-+++ b/tools/bpf/bpftool/gen.c
-@@ -388,7 +388,7 @@ static int do_skeleton(int argc, char **argv)
- 		);
- 		i = 0;
- 		bpf_object__for_each_map(map, obj) {
--			const char *ident = get_map_ident(map);
-+			ident = get_map_ident(map);
- 
- 			if (!ident)
- 				continue;
--- 
-2.24.0
+Tested-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
 
+> ---
+>  samples/bpf/Makefile | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
+> index 1fc42ad8ff49..b00651608765 100644
+> --- a/samples/bpf/Makefile
+> +++ b/samples/bpf/Makefile
+> @@ -196,7 +196,7 @@ endif
+>
+>  TPROGCFLAGS_bpf_load.o +=3D -Wno-unused-variable
+>
+> -TPROGS_LDLIBS                  +=3D $(LIBBPF) -lelf
+> +TPROGS_LDLIBS                  +=3D $(LIBBPF) -lelf -lz
+>  TPROGLDLIBS_tracex4            +=3D -lrt
+>  TPROGLDLIBS_trace_output       +=3D -lrt
+>  TPROGLDLIBS_map_perf_test      +=3D -lrt
+> --
+> 2.24.0
+>
