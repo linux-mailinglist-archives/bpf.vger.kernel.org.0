@@ -2,28 +2,28 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C814121A71
-	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2019 21:03:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27C8E121A78
+	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2019 21:04:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726704AbfLPUD5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Dec 2019 15:03:57 -0500
-Received: from mga01.intel.com ([192.55.52.88]:46222 "EHLO mga01.intel.com"
+        id S1726994AbfLPUEr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Dec 2019 15:04:47 -0500
+Received: from mga12.intel.com ([192.55.52.136]:22352 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726703AbfLPUD5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 Dec 2019 15:03:57 -0500
+        id S1726426AbfLPUEr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 Dec 2019 15:04:47 -0500
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 16 Dec 2019 12:03:56 -0800
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 16 Dec 2019 12:04:46 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.69,322,1571727600"; 
-   d="scan'208";a="212150818"
+   d="scan'208";a="205229105"
 Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga007.fm.intel.com with ESMTP; 16 Dec 2019 12:03:55 -0800
+  by orsmga007.jf.intel.com with ESMTP; 16 Dec 2019 12:04:46 -0800
 Received: from [10.251.95.214] (abudanko-mobl.ccr.corp.intel.com [10.251.95.214])
-        by linux.intel.com (Postfix) with ESMTP id 0E7855802E5;
-        Mon, 16 Dec 2019 12:03:46 -0800 (PST)
-Subject: [PATCH v3 5/7] trace/bpf_trace: open access for CAP_SYS_PERFMON
+        by linux.intel.com (Postfix) with ESMTP id 145DD5802E5;
+        Mon, 16 Dec 2019 12:04:35 -0800 (PST)
+Subject: [PATCH v3 6/7] powerpc/perf: open access for CAP_SYS_PERFMON
  privileged process
 From:   Alexey Budankov <alexey.budankov@linux.intel.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
@@ -60,8 +60,8 @@ Cc:     Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
         "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
 References: <b175f283-d256-e37e-f447-6ba4ab4f3d3a@linux.intel.com>
 Organization: Intel Corp.
-Message-ID: <d94e5d0b-aa34-ad21-349f-fa3fd6862345@linux.intel.com>
-Date:   Mon, 16 Dec 2019 23:03:45 +0300
+Message-ID: <537b8d2e-9ace-35b8-2144-a34e336198a7@linux.intel.com>
+Date:   Mon, 16 Dec 2019 23:04:34 +0300
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
  Thunderbird/60.9.1
 MIME-Version: 1.0
@@ -75,29 +75,38 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 
-Open access to bpf_trace monitoring for CAP_SYS_PERFMON privileged processes.
-For backward compatibility reasons access to bpf_trace monitoring remains open
+Open access to monitoring for CAP_SYS_PERFMON privileged processes.
+For backward compatibility reasons access to the monitoring remains open
 for CAP_SYS_ADMIN privileged processes but CAP_SYS_ADMIN usage for secure
-bpf_trace monitoring is discouraged with respect to CAP_SYS_PERFMON capability.
+monitoring is discouraged with respect to CAP_SYS_PERFMON capability.
 
 Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
 ---
- kernel/trace/bpf_trace.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/powerpc/perf/imc-pmu.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 44bd08f2443b..bafe21ac6d92 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -1272,7 +1272,7 @@ int perf_event_query_prog_array(struct perf_event *event, void __user *info)
- 	u32 *ids, prog_cnt, ids_len;
- 	int ret;
+diff --git a/arch/powerpc/perf/imc-pmu.c b/arch/powerpc/perf/imc-pmu.c
+index cb50a9e1fd2d..e837717492e4 100644
+--- a/arch/powerpc/perf/imc-pmu.c
++++ b/arch/powerpc/perf/imc-pmu.c
+@@ -898,7 +898,7 @@ static int thread_imc_event_init(struct perf_event *event)
+ 	if (event->attr.type != event->pmu->type)
+ 		return -ENOENT;
  
 -	if (!capable(CAP_SYS_ADMIN))
 +	if (!perfmon_capable())
- 		return -EPERM;
- 	if (event->attr.type != PERF_TYPE_TRACEPOINT)
- 		return -EINVAL;
+ 		return -EACCES;
+ 
+ 	/* Sampling not supported */
+@@ -1307,7 +1307,7 @@ static int trace_imc_event_init(struct perf_event *event)
+ 	if (event->attr.type != event->pmu->type)
+ 		return -ENOENT;
+ 
+-	if (!capable(CAP_SYS_ADMIN))
++	if (!perfmon_capable())
+ 		return -EACCES;
+ 
+ 	/* Return if this is a couting event */
 -- 
 2.20.1
 
