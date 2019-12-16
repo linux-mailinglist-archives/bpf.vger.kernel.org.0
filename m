@@ -2,63 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EED071202BE
-	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2019 11:38:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDFD4120350
+	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2019 12:08:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727324AbfLPKif (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Dec 2019 05:38:35 -0500
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:52909 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727099AbfLPKif (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 16 Dec 2019 05:38:35 -0500
+        id S1727453AbfLPLID (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Dec 2019 06:08:03 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:42636 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727229AbfLPLID (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 Dec 2019 06:08:03 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1576492713;
+        s=mimecast20190719; t=1576494481;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding;
-        bh=gf1efliaRWnpvAVh5vnGXcL2YmyXEHBK2in0V8Lblq4=;
-        b=R6ttrI9P91VSTxTR2W423+eTR6qdQipV+cYrBO0WFcdyQhHOT64NkKfuQxQvMR4JHlD6rF
-        lOmBaZNj6UXU3KqVtaDpty3cv8+jPaMYzZDJhcGUzyjC2mx7I1pO3l2ZlT72fZCwjUqn34
-        tZtQF4kUrXvr5WfuaoGepwl1J8BjKmI=
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
- [209.85.208.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-207-5JNHVGC0OY-NgFfs4UqiVg-1; Mon, 16 Dec 2019 05:38:32 -0500
-X-MC-Unique: 5JNHVGC0OY-NgFfs4UqiVg-1
-Received: by mail-lj1-f198.google.com with SMTP id g28so1990655lja.6
-        for <bpf@vger.kernel.org>; Mon, 16 Dec 2019 02:38:31 -0800 (PST)
+        bh=chyqtSEdAwhoRoXKSKJmi+K70iH1cRRoR0UE4h42q90=;
+        b=JiUgtNR9POqCV/DTuCXAEHzDz1KGXWRYQri8nDeXoV4yBCKzncKYLHJRH9UKLSTacrUCvn
+        rp424bInKBnJdc4HScUfP/JK+RlDrpJ4wP1D1shT++ncrSvVHGauNCIQbASIvWdtYQZJ84
+        KWIk7PdTf4Z8s1YSNzQS7Tlj9WTNEzY=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-14-dwSzYNsbMIqpCR83L8xKvQ-1; Mon, 16 Dec 2019 06:07:58 -0500
+X-MC-Unique: dwSzYNsbMIqpCR83L8xKvQ-1
+Received: by mail-lj1-f200.google.com with SMTP id r14so2006174ljc.18
+        for <bpf@vger.kernel.org>; Mon, 16 Dec 2019 03:07:57 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=gf1efliaRWnpvAVh5vnGXcL2YmyXEHBK2in0V8Lblq4=;
-        b=gCDjS4PjGbSaVRrq4n2sjpCd0Fxkk9QfO/bTFhH7LhzBryeNqYO/biI6vlXdwE+9Z/
-         OtuKD4/cHj3KtcpksJnPGTxnZBaGZOgaJBrE+fK8ihEvHfIM1m6mvnyaO4iRa719o/ND
-         sNlpwtntYlmj/rYasm8BFqW6BW8iXIneCTc5N+zxSGysN8lJN3oXYSEX3bbeRsYyo6T2
-         v/rBMBI8A4FyZhJSTmnDQaYUPeJ/1MzVIFHj3T9rJm4EC9sYJZDPDn3k0RthTbYdF+gI
-         VI/JR3Hhjd4f/AmDlH8o1y/qPUVeo6sDGn5Ivh7FF8la0yav2zEaqhGLwXkAzdU2APYW
-         JFdw==
-X-Gm-Message-State: APjAAAVV/DOm3TlBMbebVUFJHLgNQ2ZYQWuDaXos4t2BT61y3YsCQoZB
-        jdYycwvyukALlicJKgpu7rqp53Er/yKBM3IIj9RqGzhsF5M5XmI0tx3gqsEqyJW6Umf1hZAiBjr
-        Qx8r/Yn0la7d8
-X-Received: by 2002:a19:86d7:: with SMTP id i206mr15713305lfd.119.1576492710572;
-        Mon, 16 Dec 2019 02:38:30 -0800 (PST)
-X-Google-Smtp-Source: APXvYqyAC7blaaEIQuV426pWfsiM9hQDs8+KIaFApneIvLvnQjwG0S82ZHs7D2IVOlgI6seAYwiZEA==
-X-Received: by 2002:a19:86d7:: with SMTP id i206mr15713293lfd.119.1576492710403;
-        Mon, 16 Dec 2019 02:38:30 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id y29sm10246562ljd.88.2019.12.16.02.38.29
+        bh=chyqtSEdAwhoRoXKSKJmi+K70iH1cRRoR0UE4h42q90=;
+        b=CwvplapXsZxwmDm/QS7dXSMWGroi3C1OMgwILVoRlyMANPC7NDY4sYURx3jvtirL6i
+         +4L8ZDAQ00JE5015uyrIl26cUNTojgWatLBywa50J83GQx5fxH4mmtCtAkhMuJgy59wf
+         17L0RlRfKcqZSmCOiJ6oMMzkg4LC/ZcdjdM1ZyQZbAr+eIeLNLo5CNosyVE40O3yaHsZ
+         N/7OhkLi7kSUc2QiZ0St+kx84OgoidzagGISvMsnb/7Q2TV23OqXd1QHe15t0HK5q+8g
+         50gH9MZX2ZgKaLNn4MkEYBqAzERAe3gCmpAfjoZ9Bx69zFX3BzhMcRV8NaeKqftcknxW
+         yFAw==
+X-Gm-Message-State: APjAAAUaRg2bkyRl5b5TqoewUM9EYo5xxv7/UdOUzTI/lFgsVANX1txZ
+        i8CPDHnzWIkMq4rdDWkg4OYfU/Jkc0zodF+/DDPF9dGrK47VI2OxiSDXwWq28K9ZA6WniGYgs0p
+        0JLzZMwjUO0b0
+X-Received: by 2002:a05:6512:4c6:: with SMTP id w6mr16432270lfq.157.1576494476648;
+        Mon, 16 Dec 2019 03:07:56 -0800 (PST)
+X-Google-Smtp-Source: APXvYqxSpH6ez5P8fTg8lLepdw1crwbEiX/4gTwLsw9dPHwW1B8dIOVMcMq8mueK1RTYwj8eI0Q7yg==
+X-Received: by 2002:a05:6512:4c6:: with SMTP id w6mr16432254lfq.157.1576494476299;
+        Mon, 16 Dec 2019 03:07:56 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id u16sm10174323ljo.22.2019.12.16.03.07.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Dec 2019 02:38:29 -0800 (PST)
+        Mon, 16 Dec 2019 03:07:55 -0800 (PST)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id A55371819EB; Mon, 16 Dec 2019 11:38:28 +0100 (CET)
+        id 10AC51819EB; Mon, 16 Dec 2019 12:07:54 +0100 (CET)
 From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>
 Cc:     =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH bpf-next] samples/bpf: Set -fno-stack-protector when building BPF programs
-Date:   Mon, 16 Dec 2019 11:38:19 +0100
-Message-Id: <20191216103819.359535-1-toke@redhat.com>
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        David Ahern <dsahern@gmail.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>
+Subject: [PATCH bpf-next] samples/bpf: Attach XDP programs in driver mode by default
+Date:   Mon, 16 Dec 2019 12:07:42 +0100
+Message-Id: <20191216110742.364456-1-toke@redhat.com>
 X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -68,34 +70,323 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-It seems Clang can in some cases turn on stack protection by default, which
-doesn't work with BPF. This was reported once before[0], but it seems the
-flag to explicitly turn off the stack protector wasn't added to the
-Makefile, so do that now.
+When attaching XDP programs, userspace can set flags to request the attach
+mode (generic/SKB mode, driver mode or hw offloaded mode). If no such flags
+are requested, the kernel will attempt to attach in driver mode, and then
+silently fall back to SKB mode if this fails.
 
-The symptom of this is compile errors like the following:
+The silent fallback is a major source of user confusion, as users will try
+to load a program on a device without XDP support, and instead of an error
+they will get the silent fallback behaviour, not notice, and then wonder
+why performance is not what they were expecting.
 
-error: <unknown>:0:0: in function bpf_prog1 i32 (%struct.__sk_buff*): A call to built-in function '__stack_chk_fail' is not supported.
-
-[0] https://www.spinics.net/lists/netdev/msg556400.html
+In an attempt to combat this, let's switch all the samples to default to
+explicitly requesting driver-mode attach. As part of this, ensure that all
+the userspace utilities have a switch to enable SKB mode. For those that
+have a switch to request driver mode, keep it but turn it into a no-op.
 
 Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
 ---
- samples/bpf/Makefile | 1 +
- 1 file changed, 1 insertion(+)
+ samples/bpf/xdp1_user.c             |  5 ++++-
+ samples/bpf/xdp_adjust_tail_user.c  |  5 ++++-
+ samples/bpf/xdp_fwd_user.c          | 17 ++++++++++++++---
+ samples/bpf/xdp_redirect_cpu_user.c |  4 ++++
+ samples/bpf/xdp_redirect_map_user.c |  5 ++++-
+ samples/bpf/xdp_redirect_user.c     |  5 ++++-
+ samples/bpf/xdp_router_ipv4_user.c  |  3 +++
+ samples/bpf/xdp_rxq_info_user.c     |  4 ++++
+ samples/bpf/xdp_sample_pkts_user.c  | 12 +++++++++---
+ samples/bpf/xdp_tx_iptunnel_user.c  |  5 ++++-
+ samples/bpf/xdpsock_user.c          |  5 ++++-
+ 11 files changed, 58 insertions(+), 12 deletions(-)
 
-diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-index b00651608765..f51804ef12c3 100644
---- a/samples/bpf/Makefile
-+++ b/samples/bpf/Makefile
-@@ -234,6 +234,7 @@ BTF_LLVM_PROBE := $(shell echo "int main() { return 0; }" | \
- 			  readelf -S ./llvm_btf_verify.o | grep BTF; \
- 			  /bin/rm -f ./llvm_btf_verify.o)
+diff --git a/samples/bpf/xdp1_user.c b/samples/bpf/xdp1_user.c
+index 3e553eed95a7..38a8852cb57f 100644
+--- a/samples/bpf/xdp1_user.c
++++ b/samples/bpf/xdp1_user.c
+@@ -98,7 +98,7 @@ int main(int argc, char **argv)
+ 			xdp_flags |= XDP_FLAGS_SKB_MODE;
+ 			break;
+ 		case 'N':
+-			xdp_flags |= XDP_FLAGS_DRV_MODE;
++			/* default, set below */
+ 			break;
+ 		case 'F':
+ 			xdp_flags &= ~XDP_FLAGS_UPDATE_IF_NOEXIST;
+@@ -109,6 +109,9 @@ int main(int argc, char **argv)
+ 		}
+ 	}
  
-+BPF_EXTRA_CFLAGS += -fno-stack-protector
- ifneq ($(BTF_LLVM_PROBE),)
- 	BPF_EXTRA_CFLAGS += -g
- else
++	if (!(xdp_flags & XDP_FLAGS_SKB_MODE))
++		xdp_flags |= XDP_FLAGS_DRV_MODE;
++
+ 	if (optind == argc) {
+ 		usage(basename(argv[0]));
+ 		return 1;
+diff --git a/samples/bpf/xdp_adjust_tail_user.c b/samples/bpf/xdp_adjust_tail_user.c
+index d86e9ad0356b..008789eb6ada 100644
+--- a/samples/bpf/xdp_adjust_tail_user.c
++++ b/samples/bpf/xdp_adjust_tail_user.c
+@@ -120,7 +120,7 @@ int main(int argc, char **argv)
+ 			xdp_flags |= XDP_FLAGS_SKB_MODE;
+ 			break;
+ 		case 'N':
+-			xdp_flags |= XDP_FLAGS_DRV_MODE;
++			/* default, set below */
+ 			break;
+ 		case 'F':
+ 			xdp_flags &= ~XDP_FLAGS_UPDATE_IF_NOEXIST;
+@@ -132,6 +132,9 @@ int main(int argc, char **argv)
+ 		opt_flags[opt] = 0;
+ 	}
+ 
++	if (!(xdp_flags & XDP_FLAGS_SKB_MODE))
++		xdp_flags |= XDP_FLAGS_DRV_MODE;
++
+ 	for (i = 0; i < strlen(optstr); i++) {
+ 		if (opt_flags[(unsigned int)optstr[i]]) {
+ 			fprintf(stderr, "Missing argument -%c\n", optstr[i]);
+diff --git a/samples/bpf/xdp_fwd_user.c b/samples/bpf/xdp_fwd_user.c
+index 97ff1dad7669..c30f9acfdb84 100644
+--- a/samples/bpf/xdp_fwd_user.c
++++ b/samples/bpf/xdp_fwd_user.c
+@@ -27,11 +27,13 @@
+ #include "libbpf.h"
+ #include <bpf/bpf.h>
+ 
++static __u32 xdp_flags = XDP_FLAGS_UPDATE_IF_NOEXIST;
++
+ static int do_attach(int idx, int prog_fd, int map_fd, const char *name)
+ {
+ 	int err;
+ 
+-	err = bpf_set_link_xdp_fd(idx, prog_fd, 0);
++	err = bpf_set_link_xdp_fd(idx, prog_fd, xdp_flags);
+ 	if (err < 0) {
+ 		printf("ERROR: failed to attach program to %s\n", name);
+ 		return err;
+@@ -49,7 +51,7 @@ static int do_detach(int idx, const char *name)
+ {
+ 	int err;
+ 
+-	err = bpf_set_link_xdp_fd(idx, -1, 0);
++	err = bpf_set_link_xdp_fd(idx, -1, xdp_flags);
+ 	if (err < 0)
+ 		printf("ERROR: failed to detach program from %s\n", name);
+ 
+@@ -83,11 +85,17 @@ int main(int argc, char **argv)
+ 	int attach = 1;
+ 	int ret = 0;
+ 
+-	while ((opt = getopt(argc, argv, ":dD")) != -1) {
++	while ((opt = getopt(argc, argv, ":dDSF")) != -1) {
+ 		switch (opt) {
+ 		case 'd':
+ 			attach = 0;
+ 			break;
++		case 'S':
++			xdp_flags |= XDP_FLAGS_SKB_MODE;
++			break;
++		case 'F':
++			xdp_flags &= ~XDP_FLAGS_UPDATE_IF_NOEXIST;
++			break;
+ 		case 'D':
+ 			prog_name = "xdp_fwd_direct";
+ 			break;
+@@ -97,6 +105,9 @@ int main(int argc, char **argv)
+ 		}
+ 	}
+ 
++	if (!(xdp_flags & XDP_FLAGS_SKB_MODE))
++		xdp_flags |= XDP_FLAGS_DRV_MODE;
++
+ 	if (optind == argc) {
+ 		usage(basename(argv[0]));
+ 		return 1;
+diff --git a/samples/bpf/xdp_redirect_cpu_user.c b/samples/bpf/xdp_redirect_cpu_user.c
+index 0da6e9e7132e..72af628529b5 100644
+--- a/samples/bpf/xdp_redirect_cpu_user.c
++++ b/samples/bpf/xdp_redirect_cpu_user.c
+@@ -728,6 +728,10 @@ int main(int argc, char **argv)
+ 			return EXIT_FAIL_OPTION;
+ 		}
+ 	}
++
++	if (!(xdp_flags & XDP_FLAGS_SKB_MODE))
++		xdp_flags |= XDP_FLAGS_DRV_MODE;
++
+ 	/* Required option */
+ 	if (ifindex == -1) {
+ 		fprintf(stderr, "ERR: required option --dev missing\n");
+diff --git a/samples/bpf/xdp_redirect_map_user.c b/samples/bpf/xdp_redirect_map_user.c
+index f70ee33907fd..cc840661faab 100644
+--- a/samples/bpf/xdp_redirect_map_user.c
++++ b/samples/bpf/xdp_redirect_map_user.c
+@@ -116,7 +116,7 @@ int main(int argc, char **argv)
+ 			xdp_flags |= XDP_FLAGS_SKB_MODE;
+ 			break;
+ 		case 'N':
+-			xdp_flags |= XDP_FLAGS_DRV_MODE;
++			/* default, set below */
+ 			break;
+ 		case 'F':
+ 			xdp_flags &= ~XDP_FLAGS_UPDATE_IF_NOEXIST;
+@@ -127,6 +127,9 @@ int main(int argc, char **argv)
+ 		}
+ 	}
+ 
++	if (!(xdp_flags & XDP_FLAGS_SKB_MODE))
++		xdp_flags |= XDP_FLAGS_DRV_MODE;
++
+ 	if (optind == argc) {
+ 		printf("usage: %s <IFNAME|IFINDEX>_IN <IFNAME|IFINDEX>_OUT\n", argv[0]);
+ 		return 1;
+diff --git a/samples/bpf/xdp_redirect_user.c b/samples/bpf/xdp_redirect_user.c
+index 5440cd620607..71dff8e3382a 100644
+--- a/samples/bpf/xdp_redirect_user.c
++++ b/samples/bpf/xdp_redirect_user.c
+@@ -117,7 +117,7 @@ int main(int argc, char **argv)
+ 			xdp_flags |= XDP_FLAGS_SKB_MODE;
+ 			break;
+ 		case 'N':
+-			xdp_flags |= XDP_FLAGS_DRV_MODE;
++			/* default, set below */
+ 			break;
+ 		case 'F':
+ 			xdp_flags &= ~XDP_FLAGS_UPDATE_IF_NOEXIST;
+@@ -128,6 +128,9 @@ int main(int argc, char **argv)
+ 		}
+ 	}
+ 
++	if (!(xdp_flags & XDP_FLAGS_SKB_MODE))
++		xdp_flags |= XDP_FLAGS_DRV_MODE;
++
+ 	if (optind == argc) {
+ 		printf("usage: %s <IFNAME|IFINDEX>_IN <IFNAME|IFINDEX>_OUT\n", argv[0]);
+ 		return 1;
+diff --git a/samples/bpf/xdp_router_ipv4_user.c b/samples/bpf/xdp_router_ipv4_user.c
+index 1469b66ebad1..fef286c5add2 100644
+--- a/samples/bpf/xdp_router_ipv4_user.c
++++ b/samples/bpf/xdp_router_ipv4_user.c
+@@ -662,6 +662,9 @@ int main(int ac, char **argv)
+ 		}
+ 	}
+ 
++	if (!(flags & XDP_FLAGS_SKB_MODE))
++		flags |= XDP_FLAGS_DRV_MODE;
++
+ 	if (optind == ac) {
+ 		usage(basename(argv[0]));
+ 		return 1;
+diff --git a/samples/bpf/xdp_rxq_info_user.c b/samples/bpf/xdp_rxq_info_user.c
+index 8fc3ad01de72..fc4983fd6959 100644
+--- a/samples/bpf/xdp_rxq_info_user.c
++++ b/samples/bpf/xdp_rxq_info_user.c
+@@ -551,6 +551,10 @@ int main(int argc, char **argv)
+ 			return EXIT_FAIL_OPTION;
+ 		}
+ 	}
++
++	if (!(xdp_flags & XDP_FLAGS_SKB_MODE))
++		xdp_flags |= XDP_FLAGS_DRV_MODE;
++
+ 	/* Required option */
+ 	if (ifindex == -1) {
+ 		fprintf(stderr, "ERR: required option --dev missing\n");
+diff --git a/samples/bpf/xdp_sample_pkts_user.c b/samples/bpf/xdp_sample_pkts_user.c
+index a5760e8bf2c4..8c1af1b7372d 100644
+--- a/samples/bpf/xdp_sample_pkts_user.c
++++ b/samples/bpf/xdp_sample_pkts_user.c
+@@ -52,13 +52,13 @@ static int do_detach(int idx, const char *name)
+ 	__u32 curr_prog_id = 0;
+ 	int err = 0;
+ 
+-	err = bpf_get_link_xdp_id(idx, &curr_prog_id, 0);
++	err = bpf_get_link_xdp_id(idx, &curr_prog_id, xdp_flags);
+ 	if (err) {
+ 		printf("bpf_get_link_xdp_id failed\n");
+ 		return err;
+ 	}
+ 	if (prog_id == curr_prog_id) {
+-		err = bpf_set_link_xdp_fd(idx, -1, 0);
++		err = bpf_set_link_xdp_fd(idx, -1, xdp_flags);
+ 		if (err < 0)
+ 			printf("ERROR: failed to detach prog from %s\n", name);
+ 	} else if (!curr_prog_id) {
+@@ -115,7 +115,7 @@ int main(int argc, char **argv)
+ 		.prog_type	= BPF_PROG_TYPE_XDP,
+ 	};
+ 	struct perf_buffer_opts pb_opts = {};
+-	const char *optstr = "F";
++	const char *optstr = "FS";
+ 	int prog_fd, map_fd, opt;
+ 	struct bpf_object *obj;
+ 	struct bpf_map *map;
+@@ -127,12 +127,18 @@ int main(int argc, char **argv)
+ 		case 'F':
+ 			xdp_flags &= ~XDP_FLAGS_UPDATE_IF_NOEXIST;
+ 			break;
++		case 'S':
++			xdp_flags |= XDP_FLAGS_SKB_MODE;
++			break;
+ 		default:
+ 			usage(basename(argv[0]));
+ 			return 1;
+ 		}
+ 	}
+ 
++	if (!(xdp_flags & XDP_FLAGS_SKB_MODE))
++		xdp_flags |= XDP_FLAGS_DRV_MODE;
++
+ 	if (optind == argc) {
+ 		usage(basename(argv[0]));
+ 		return 1;
+diff --git a/samples/bpf/xdp_tx_iptunnel_user.c b/samples/bpf/xdp_tx_iptunnel_user.c
+index 2fe4c7f5ffe5..5f33b5530032 100644
+--- a/samples/bpf/xdp_tx_iptunnel_user.c
++++ b/samples/bpf/xdp_tx_iptunnel_user.c
+@@ -231,7 +231,7 @@ int main(int argc, char **argv)
+ 			xdp_flags |= XDP_FLAGS_SKB_MODE;
+ 			break;
+ 		case 'N':
+-			xdp_flags |= XDP_FLAGS_DRV_MODE;
++			/* default, set below */
+ 			break;
+ 		case 'F':
+ 			xdp_flags &= ~XDP_FLAGS_UPDATE_IF_NOEXIST;
+@@ -243,6 +243,9 @@ int main(int argc, char **argv)
+ 		opt_flags[opt] = 0;
+ 	}
+ 
++	if (!(xdp_flags & XDP_FLAGS_SKB_MODE))
++		xdp_flags |= XDP_FLAGS_DRV_MODE;
++
+ 	for (i = 0; i < strlen(optstr); i++) {
+ 		if (opt_flags[(unsigned int)optstr[i]]) {
+ 			fprintf(stderr, "Missing argument -%c\n", optstr[i]);
+diff --git a/samples/bpf/xdpsock_user.c b/samples/bpf/xdpsock_user.c
+index a15480010828..e7829e5baaff 100644
+--- a/samples/bpf/xdpsock_user.c
++++ b/samples/bpf/xdpsock_user.c
+@@ -440,7 +440,7 @@ static void parse_command_line(int argc, char **argv)
+ 			opt_xdp_bind_flags |= XDP_COPY;
+ 			break;
+ 		case 'N':
+-			opt_xdp_flags |= XDP_FLAGS_DRV_MODE;
++			/* default, set below */
+ 			break;
+ 		case 'n':
+ 			opt_interval = atoi(optarg);
+@@ -474,6 +474,9 @@ static void parse_command_line(int argc, char **argv)
+ 		}
+ 	}
+ 
++	if (!(opt_xdp_flags & XDP_FLAGS_SKB_MODE))
++		opt_xdp_flags |= XDP_FLAGS_DRV_MODE;
++
+ 	opt_ifindex = if_nametoindex(opt_if);
+ 	if (!opt_ifindex) {
+ 		fprintf(stderr, "ERROR: interface \"%s\" does not exist\n",
 -- 
 2.24.0
 
