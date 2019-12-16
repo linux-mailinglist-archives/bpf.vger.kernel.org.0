@@ -2,103 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E0DF121A80
-	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2019 21:05:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 038AF121AF2
+	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2019 21:33:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727183AbfLPUF0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Dec 2019 15:05:26 -0500
-Received: from mga05.intel.com ([192.55.52.43]:55303 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726426AbfLPUF0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 Dec 2019 15:05:26 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 16 Dec 2019 12:05:25 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,322,1571727600"; 
-   d="scan'208";a="389578093"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga005.jf.intel.com with ESMTP; 16 Dec 2019 12:05:24 -0800
-Received: from [10.251.95.214] (abudanko-mobl.ccr.corp.intel.com [10.251.95.214])
-        by linux.intel.com (Postfix) with ESMTP id C3D875802E5;
-        Mon, 16 Dec 2019 12:05:16 -0800 (PST)
-Subject: [PATCH v3 7/7] parisc/perf: open access for CAP_SYS_PERFMON
- privileged process
-From:   Alexey Budankov <alexey.budankov@linux.intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "jani.nikula@linux.intel.com" <jani.nikula@linux.intel.com>,
-        "joonas.lahtinen@linux.intel.com" <joonas.lahtinen@linux.intel.com>,
-        "rodrigo.vivi@intel.com" <rodrigo.vivi@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Serge Hallyn <serge@hallyn.com>,
-        James Morris <jmorris@namei.org>,
-        Casey Schaufler <casey@schaufler-ca.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
-        Stephane Eranian <eranian@google.com>,
-        Igor Lubashev <ilubashe@akamai.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Jann Horn <jannh@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "selinux@vger.kernel.org" <selinux@vger.kernel.org>,
-        linux-kernel@vger.kernel.org,
-        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
-        intel-gfx@lists.freedesktop.org,
-        Brendan Gregg <bgregg@netflix.com>, songliubraving@fb.com,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-References: <b175f283-d256-e37e-f447-6ba4ab4f3d3a@linux.intel.com>
-Organization: Intel Corp.
-Message-ID: <5d87f946-3588-7531-933b-fd1104ca0842@linux.intel.com>
-Date:   Mon, 16 Dec 2019 23:05:15 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.1
+        id S1726558AbfLPUdQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Dec 2019 15:33:16 -0500
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:44190 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726275AbfLPUdQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 Dec 2019 15:33:16 -0500
+Received: by mail-lf1-f68.google.com with SMTP id v201so5233491lfa.11;
+        Mon, 16 Dec 2019 12:33:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nbeWbzZltLyT01BiLKGWI8q+vYN8BXtrBDiE9RDrlK4=;
+        b=DqO66W5MS3ky29a5lJWviUTVycDFXVZoGD/q0I6EodjMhljtmSmK4udg70irvkQr8W
+         xiGgxqngof1fYtuwrTyjPoMW/T9uhj1D6P8t//lEsaBIIi8xiFqcnTKW6f+pd6DWr52z
+         ePdDH33vWbTvBzHqxi1lVaEvlxMNJQL0IPS9cz3yqMMGcCFFEaZVn5QGtiGLU1Cjf58n
+         2cwGze6R7mvEw+eRCKGTxj72yGiFMxVjji2t9j9OzWRQC9tN9V0oGd2YqaBw9MAPMd3j
+         jY/aXs6sE6xh5oNnJjBjqcZLnASc/EvUXjKbhq63V7cVfk2n0PkdiqMAwNR8dC+5s5wL
+         sujA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nbeWbzZltLyT01BiLKGWI8q+vYN8BXtrBDiE9RDrlK4=;
+        b=GYbZ82DdeLVr6IyxJ44MqN8WcZJQk8uC3dSOxiTDh2uXoGTCYEK2Li9vWHxLPF+aTb
+         fUiKq+4s1qBs68rkWJrHOscfaxYbYwifwnzvXT4taMwBHnqYBMO771bg5zjy/sySA5/n
+         NibvrqPke8dz2Hgi+kZ/ka4U2JQGf7HVFUPs4DwKt0041h1Npk7qqneBXA4hYnKWRT3w
+         MQhpGZsn2jeaLiNVCs0CheXMW1F/PX6SHg40hSoqzKlM1MgOiPGdDr+XBnymqnhrgYLC
+         RfSgrNWNao/NrNqgGxNpVuDRl/9dD5jM9rBsOdV3lk4lhsxwgHDEproDS3e/atmckysX
+         TzTA==
+X-Gm-Message-State: APjAAAXUfqh0GYhuK4TNY2g/zlJVpChgfJ2ll5P/gAzlBsCXE0H8qKWk
+        KDTH4zB5ZnXL0cx+v3qDYMVmT06Rs4Xbcm5cYS8goQ==
+X-Google-Smtp-Source: APXvYqwGWCbuydImBesRxOmA29+XqnohkOoga3xb34URIKYt8gfFKQ0uvGGtCKbb2j1iSQAT9hHi8tadQKinc+d2Y1Q=
+X-Received: by 2002:a19:6d13:: with SMTP id i19mr629390lfc.6.1576528394004;
+ Mon, 16 Dec 2019 12:33:14 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <b175f283-d256-e37e-f447-6ba4ab4f3d3a@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1c2909484ca524ae9f55109b06f22b6213e76376.1576514756.git.daniel@iogearbox.net>
+ <31a08a1a-a6cb-d216-c954-e06abd230000@fb.com>
+In-Reply-To: <31a08a1a-a6cb-d216-c954-e06abd230000@fb.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Mon, 16 Dec 2019 12:33:01 -0800
+Message-ID: <CAADnVQK+LmbmZAJarZkKQD+Ny3c_5aQeMPk3Yj0JbACq3K9MYw@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: fix missing prog untrack in release_maps
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Mon, Dec 16, 2019 at 10:52 AM Yonghong Song <yhs@fb.com> wrote:
+>
+>
+>
+> On 12/16/19 8:49 AM, Daniel Borkmann wrote:
+> > Commit da765a2f5993 ("bpf: Add poke dependency tracking for prog array
+> > maps") wrongly assumed that in case of prog load errors, we're cleaning
+> > up all program tracking via bpf_free_used_maps().
+> >
+> > However, it can happen that we're still at the point where we didn't copy
+> > map pointers into the prog's aux section such that env->prog->aux->used_maps
+> > is still zero, running into a UAF. In such case, the verifier has similar
+> > release_maps() helper that drops references to used maps from its env.
+> >
+> > Consolidate the release code into __bpf_free_used_maps() and call it from
+> > all sides to fix it.
+> >
+> > Fixes: da765a2f5993 ("bpf: Add poke dependency tracking for prog array maps")
+> > Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+>
+> Acked-by: Yonghong Song <yhs@fb.com>
 
-Open access to monitoring for CAP_SYS_PERFMON privileged processes.
-For backward compatibility reasons access to the monitoring remains open
-for CAP_SYS_ADMIN privileged processes but CAP_SYS_ADMIN usage for secure
-monitoring is discouraged with respect to CAP_SYS_PERFMON capability.
-
-Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
----
- arch/parisc/kernel/perf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/parisc/kernel/perf.c b/arch/parisc/kernel/perf.c
-index 676683641d00..c4208d027794 100644
---- a/arch/parisc/kernel/perf.c
-+++ b/arch/parisc/kernel/perf.c
-@@ -300,7 +300,7 @@ static ssize_t perf_write(struct file *file, const char __user *buf,
- 	else
- 		return -EFAULT;
- 
--	if (!capable(CAP_SYS_ADMIN))
-+	if (!perfmon_capable())
- 		return -EACCES;
- 
- 	if (count != sizeof(uint32_t))
--- 
-2.20.1
-
-
+Applied. Thanks
