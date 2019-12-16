@@ -2,109 +2,202 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 01ECC120949
+	by mail.lfdr.de (Postfix) with ESMTP id E2DD512094B
 	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2019 16:08:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728241AbfLPPGd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Dec 2019 10:06:33 -0500
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:34899 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728209AbfLPPGd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 Dec 2019 10:06:33 -0500
-Received: by mail-lj1-f194.google.com with SMTP id j6so7199682lja.2;
-        Mon, 16 Dec 2019 07:06:31 -0800 (PST)
+        id S1728173AbfLPPHZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Dec 2019 10:07:25 -0500
+Received: from mail-pj1-f47.google.com ([209.85.216.47]:46450 "EHLO
+        mail-pj1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728109AbfLPPHZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 Dec 2019 10:07:25 -0500
+Received: by mail-pj1-f47.google.com with SMTP id z21so3090055pjq.13;
+        Mon, 16 Dec 2019 07:07:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=sXR+XaSEkLPT9kSH7VKAdCwPpWDQkSMLm1IXHrgrdUw=;
-        b=GTdiXbgTt30q2Juxsw9eIwtN5mS+t2RYeiFJWzg8c/cG4tqz61JS4mLgVIESdeZbuw
-         FrruhKLZmY9p5erdrlJ6Caiuq0kEhSCgMCkwesJw+nSCy4FGm5d+6+jNDilBnKA9P28G
-         Q6thA3mJmmc3xG4QqX4ObbQ0vabDnGVg1JGWq1rjqkEmcIRpy9tkbhpJ2hm4HR8hzfdC
-         WeeBMMIoiQ8hRmrLMzS4IiBueyp0ExrRg7+vf2vLetSOZKJiS/S7kRm1IcvtEsVBEkgU
-         Nr8Gw5vZQmW1ANiT7qejsRXxHw1ccCzCH68hcjhbnBOEvi7R8qBBpFzkcyl3v6LWzX9y
-         bB2Q==
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=w1x7CdwPpFB9tMt33QAUdGJiRC4Yu2yWQ6k7waNcRdI=;
+        b=FeVz2eROru6DQX/nbODTLrCvI1/LYkFVgb8VIUbu7KTae83OLIUal1rn4pvEwTP25Y
+         uCX154JAX3OHR8eHE51N1x3/9REPoMXQFApqciyk8UO9H4dCpcnWzoQG5VWGpyqoSDlz
+         hMLG1OcpH41lVNiInelo9veSWUrtMlPypgtYSp2DHlsQmphEZgr/hYtus6QdfgNJUnBm
+         PnOxAbJbMmftPNP5wcGF+ivkNxcKqXPYVETiZt2tNnOgH8Zu0NAgfyiaRFfOg/hSg6JA
+         bafjaZ63W2AnEKZW+007GQwp/WhU+xrgJKimKTJreTOglA1FhIJvVPid1f4Zv5++JWhB
+         KTcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=sXR+XaSEkLPT9kSH7VKAdCwPpWDQkSMLm1IXHrgrdUw=;
-        b=cAqIKZVGqw1VjdZRrfSeMn74hK+T55rMgNGMohxMXUtBp7+OoVLGYA5Xts/xOQeT1F
-         H1fmlohGx54JhbDrpbWSXYdpkBlM20mxeoY6b2zJ/dvxQiAFGEnTIO1t2xRUCSbGu913
-         MYIyFycrWvg2Op2xZUE+FBpMjcLQg1XiRzvaVzCejQ9zD6KhdSRixIdFcfPYKLN1bQys
-         FTfDbm/o+K+h6IqtQ19Mvxp9ura1VaFlmaEkgxydT6wvMTkYiR2OlSXEUZKdC4kIlk+6
-         eZRQVngXBCMP7FZqCyRtKa2/jvTPDQwVDhPxBrcNJStqzAVLFK6qB9PK/dvbmV6aOHH4
-         vuCw==
-X-Gm-Message-State: APjAAAVQdp7EYNtSpGY4kO/yKPZWExTaVVVvwdTWcB19fLc7uma9feh3
-        jD/GCc/Ex189GZl4pcSrSQkcdfuM7gW35NtRFeM=
-X-Google-Smtp-Source: APXvYqzn2XixlkwVfQZL19vcyNzrwovTiJEzwIjVzbOs9E8SaAz89Yt6AhH35bETgvqCq84Hl1uirYxSRRStY7v9OXY=
-X-Received: by 2002:a2e:999a:: with SMTP id w26mr20227802lji.142.1576508790901;
- Mon, 16 Dec 2019 07:06:30 -0800 (PST)
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=w1x7CdwPpFB9tMt33QAUdGJiRC4Yu2yWQ6k7waNcRdI=;
+        b=ui7ARdiNtywYKqnaPB9YEloA61HKhkZg4+IU7gsc7cfHNiWe79ryufnE4F4NaDve/J
+         Gg1GTUo4uZ2Rq9h14bbuIRWYAHz5OKsS6Rkd+OJj/+3raDvnuNamVLMqAgoh9ZN7QXen
+         XqWMd7S4CoyBuzKT7pKhv0nVYa60nkUDtoPjREzZhIRYnYoArma103TC5FflwXgW65jv
+         kG/8QoLVhxgJ2zFLGav3SQMqFsU+XmsQJNlvUByRBrZHFID5/evE2s5v8DGpql9mayPl
+         Z7wNbvTXTlNP4B1Us3EQDj4hu5otRxpZZBt22O0nEGrbD0+afRWatBQkPZZhptMgBy+L
+         Bs8w==
+X-Gm-Message-State: APjAAAUPZic5DgSlJGrYuOeLRAotT2wUch554ndBvxEJcDrZ27dyKQTr
+        RxrMqFBeIwa2NI43RRtk1XE=
+X-Google-Smtp-Source: APXvYqyy7fW1pFDv6HA8QWJwGAqSosA/SFusVWFRFXnkLTe2VKpi9vY/N/A1eTLAhPAc4RUz2JaU6A==
+X-Received: by 2002:a17:902:9a49:: with SMTP id x9mr16117764plv.331.1576508844251;
+        Mon, 16 Dec 2019 07:07:24 -0800 (PST)
+Received: from quaco.ghostprotocols.net ([179.97.35.50])
+        by smtp.gmail.com with ESMTPSA id e6sm23024144pfh.32.2019.12.16.07.07.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Dec 2019 07:07:23 -0800 (PST)
+From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 661EA40352; Mon, 16 Dec 2019 12:07:20 -0300 (-03)
+Date:   Mon, 16 Dec 2019 12:07:20 -0300
+To:     dwarves@vger.kernel.org
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Domenico Andreoli <cavok@debian.org>,
+        Matthias Schwarzott <zzam@gentoo.org>,
+        David Seifert <soap@gentoo.org>,
+        Pavel Borzenkov <pavel.borzenkov@gmail.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Alexei Starovoitov <ast@fb.com>, Yonghong Song <yhs@fb.com>,
+        Gareth Lloyd <gareth.lloyd@uk.ibm.com>,
+        Martin Cermak <mcermak@redhat.com>,
+        William Cohen <wcohen@redhat.com>,
+        Clark Williams <williams@redhat.com>
+Subject: ANNOUNCE: pahole v1.16 (Fixes + BTF_KIND_FUNC)
+Message-ID: <20191216150720.GA18669@kernel.org>
+References: <20190626211613.GE3902@kernel.org>
 MIME-Version: 1.0
-References: <20191216110742.364456-1-toke@redhat.com> <71b7ba89-7780-8ce1-1b30-67ae6ebc214c@gmail.com>
-In-Reply-To: <71b7ba89-7780-8ce1-1b30-67ae6ebc214c@gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 16 Dec 2019 07:06:19 -0800
-Message-ID: <CAADnVQKhFzGpA0F_rB4uMh25rbNSXeOTMeTKK8QfokevAK9nGw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] samples/bpf: Attach XDP programs in driver mode
- by default
-To:     David Ahern <dsahern@gmail.com>
-Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190626211613.GE3902@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Dec 16, 2019 at 7:01 AM David Ahern <dsahern@gmail.com> wrote:
->
-> On 12/16/19 4:07 AM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> > When attaching XDP programs, userspace can set flags to request the att=
-ach
-> > mode (generic/SKB mode, driver mode or hw offloaded mode). If no such f=
-lags
-> > are requested, the kernel will attempt to attach in driver mode, and th=
-en
-> > silently fall back to SKB mode if this fails.
-> >
-> > The silent fallback is a major source of user confusion, as users will =
-try
-> > to load a program on a device without XDP support, and instead of an er=
-ror
-> > they will get the silent fallback behaviour, not notice, and then wonde=
-r
-> > why performance is not what they were expecting.
-> >
-> > In an attempt to combat this, let's switch all the samples to default t=
-o
-> > explicitly requesting driver-mode attach. As part of this, ensure that =
-all
-> > the userspace utilities have a switch to enable SKB mode. For those tha=
-t
-> > have a switch to request driver mode, keep it but turn it into a no-op.
-> >
-> > Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> > ---
-> >  samples/bpf/xdp1_user.c             |  5 ++++-
-> >  samples/bpf/xdp_adjust_tail_user.c  |  5 ++++-
-> >  samples/bpf/xdp_fwd_user.c          | 17 ++++++++++++++---
-> >  samples/bpf/xdp_redirect_cpu_user.c |  4 ++++
-> >  samples/bpf/xdp_redirect_map_user.c |  5 ++++-
-> >  samples/bpf/xdp_redirect_user.c     |  5 ++++-
-> >  samples/bpf/xdp_router_ipv4_user.c  |  3 +++
-> >  samples/bpf/xdp_rxq_info_user.c     |  4 ++++
-> >  samples/bpf/xdp_sample_pkts_user.c  | 12 +++++++++---
-> >  samples/bpf/xdp_tx_iptunnel_user.c  |  5 ++++-
-> >  samples/bpf/xdpsock_user.c          |  5 ++++-
-> >  11 files changed, 58 insertions(+), 12 deletions(-)
-> >
->
-> Acked-by: David Ahern <dsahern@gmail.com>
+Hi,
 
-Applied. Thanks
+	The v1.16 release of pahole and its friends is out, available at
+the usual places:
+
+Main git repo:
+
+   git://git.kernel.org/pub/scm/devel/pahole/pahole.git
+
+Mirror git repo:
+
+   https://github.com/acmel/dwarves.git
+
+tarball + gpg signature:
+
+   https://fedorapeople.org/~acme/dwarves/dwarves-1.16.tar.xz
+   https://fedorapeople.org/~acme/dwarves/dwarves-1.16.tar.bz2
+   https://fedorapeople.org/~acme/dwarves/dwarves-1.16.tar.sign
+
+Best Regards,
+
+- Arnaldo
+
+v1.16 changes:
+
+BTF encoder:
+
+  Andrii Nakryiko <andriin@fb.com>:
+
+  - Preserve and encode exported functions as BTF_KIND_FUNC.
+
+    Add encoding of DWARF's DW_TAG_subprogram_type into BTF's BTF_KIND_FUNC
+    (plus corresponding BTF_KIND_FUNC_PROTO). Only exported functions are converted
+    for now. This allows to capture all the exported kernel functions, same subset
+    that's exposed through /proc/kallsyms.
+
+BTF loader:
+
+  Arnaldo Carvalho de Melo <acme@redhat.com>
+
+  - Add support for BTF_KIND_FUNC
+
+    Some changes to the fprintf routines were needed, as BTF has as the
+    function type just a BTF_KIND_FUNC_PROTO, while DWARF has as the type for a
+    function its return value type. With a function->btf flag this was overcome and
+    all the other goodies in pfunct are present.
+
+Pretty printer:
+
+  Arnaldo Carvalho de Melo:
+
+  - Account inline type __aligned__ member types for spacing:
+
+              union {
+                      refcount_t         rcu_users;            /*  2568     4 */
+                      struct callback_head rcu __attribute__((__aligned__(8))); /*  2568    16 */
+      -       } __attribute__((__aligned__(8)));                                               /*  2568    16 */
+      +       } __attribute__((__aligned__(8)));               /*  2568    16 */
+              struct pipe_inode_info *   splice_pipe;          /*  2584     8 */
+
+  - Fix alignment of class members that are structs/enums/unions
+
+    E.g. look at that 'completion' member in this struct:
+
+       struct cpu_stop_done {
+              atomic_t                   nr_todo;              /*     0     4 */
+              int                        ret;                  /*     4     4 */
+      -       struct completion  completion;                   /*     8    32 */
+      +       struct completion          completion;           /*     8    32 */
+
+              /* size: 40, cachelines: 1, members: 3 */
+              /* last cacheline: 40 bytes */
+
+  - Fixup handling classes with no members, solving a NULL deref.
+
+  Gareth Lloyd <gareth.lloyd@uk.ibm.com>:
+
+  - Avoid infinite loop trying to determine type with static data member of its own type.
+
+RPM spec file.
+
+Jiri Olsa <jolsa@redhat.com>
+
+    Add dwarves dependency on libdwarves1.
+
+pfunct:
+
+  Arnaldo Carvalho de Melo <acme@redhat.com>
+
+  - type->type == 0 is void, fix --compile for that
+
+    We were using the fall back for that, i.e. 'return 0;' was being emitted
+    for a function returning void, noticed with using BTF as the format.
+
+pdwtags:
+
+    - Print DW_TAG_subroutine_type as well
+
+      So that we can see at least via pdwtags those tags, be it from DWARF of BTF.
+
+core:
+
+  Arnaldo Carvalho de Melo <acme@redhat.com>
+
+    Fix ptr_table__add_with_id() handling of pt->nr_entries, covering how
+    BTF variables IDs are encoded.
+
+
+pglobal:
+
+  Arnaldo Carvalho de Melo <acme@redhat.com>:
+
+  - Allow passing the format path specifier, to use with BTF
+
+    I.e. now we can, just like with pahole, use:
+
+      pglobal -F btf --variable foo.o
+
+    To get the global variables.
+
+Tree wide:
+
+  Arnaldo Carvalho de Melo <acme@redhat.com>:
+
+  - Fixup issues pointed out by various coverity reports.
