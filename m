@@ -2,87 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A5281200BC
-	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2019 10:18:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3067F120232
+	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2019 11:21:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727181AbfLPJOR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Dec 2019 04:14:17 -0500
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:45006 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727189AbfLPJOQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 Dec 2019 04:14:16 -0500
-Received: by mail-pg1-f194.google.com with SMTP id x7so3308277pgl.11;
-        Mon, 16 Dec 2019 01:14:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=JJx1gb7dyIux/wvtlAjUM4Ul67VDqBxG4kjHz1T/apg=;
-        b=AEIfRIfuKJKYD+qvWQaSBXL7IDzElcWqewDLhnppNot8arXsdKKANjssizbJgnCmKV
-         SDIbaGEkWHjZoNKopu6kC3hbpLdvJngOZY92hPXZGZTMuJhbwyr7DOFHpkYU/Bly6t0J
-         MgJeIFQ1I4RJl9criTK7V/4yXUSG7Hu01jTMp0JstURGvI+v2tpJYQ902utvaQEEZReq
-         umZ+iVILzopn2A5DzvLjf11+vEJvzZPxY3t1i6Ev1oLJzj44HXNhysK65vc3HI1SZSS/
-         FZ6dh97VkM4iHm7mY34w1mQ0eOZzNFY+RbahdFWiY5ogJJeLCpxuc16JwcM8CNzn3EAM
-         uG+A==
+        id S1727319AbfLPKUF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Dec 2019 05:20:05 -0500
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:47352 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727202AbfLPKUF (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 16 Dec 2019 05:20:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1576491603;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Pl5GAP1jRdC0CwpXN80CHmPpQecKuMfnUQwsIaRGCLg=;
+        b=a3G2pgRV9VOEGzJTpKcZNTmEqOaKD54sscxsuXprpThH5wzGSiq6Ui78XNILz4Cs/1ny7F
+        gOf0WTfjntSe3BONYA+3tUBVPIXcR+W/IUGW15Y0fFpZbK7by5RVeOQjkK9ZnPZgpybe5X
+        NA2DOQaazdtbjvGdDeUcWV53sILYWXI=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-204-SiaEg76iMrOfU9VTK3eqoA-1; Mon, 16 Dec 2019 05:20:02 -0500
+X-MC-Unique: SiaEg76iMrOfU9VTK3eqoA-1
+Received: by mail-lj1-f200.google.com with SMTP id d14so1971374ljg.17
+        for <bpf@vger.kernel.org>; Mon, 16 Dec 2019 02:20:02 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=JJx1gb7dyIux/wvtlAjUM4Ul67VDqBxG4kjHz1T/apg=;
-        b=oRb/T7Guhf9C+pNax6Ykpp4PRsHq/p1VSUQNshj9CuC+qoXR2/z+hQnYnPbDOFgjx4
-         v0HDlBDEnl/gkc5IVGjVwegwZOgwgTdugBRj7vTkoh/LZtUd/R3TymaYIGB+40UI4XgE
-         ZJrldqxVQCKDZvIC3enVmC+YuSZN16SGvAq6rl/oS7IvvPU9EOTX2lgmlTKrR9RcMGK5
-         JjIRENyyUDbk6AYkZLiNg2a8aBCEIh0DI6ONp4jf8/kqs2uatMlmXRaLxADzaQEWhABo
-         yP1pXD+gfy1OCdVALyzroP75Zv46jZtmpNhc7JLBUSqqmCTZMgHumpZDnXdAyk9d9bza
-         FezA==
-X-Gm-Message-State: APjAAAVbi3vzeCPrX4j1TaEnABU3l01aMjeIctpdM2ab9m1nGY46npQJ
-        48tFWaW6tJkHGVTnie82xesNRVzS86I=
-X-Google-Smtp-Source: APXvYqxFeC9Wz/Ld4lIscKeMf0jMlKJu/7MJXqqy6/vQF89UWfwcx6tFmnqaY4nKmOGM+XOBrCNyHw==
-X-Received: by 2002:a62:7b54:: with SMTP id w81mr14816500pfc.127.1576487655949;
-        Mon, 16 Dec 2019 01:14:15 -0800 (PST)
-Received: from btopel-mobl.ger.intel.com (fmdmzpr04-ext.fm.intel.com. [192.55.55.39])
-        by smtp.gmail.com with ESMTPSA id x21sm12505033pfn.164.2019.12.16.01.14.13
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=Pl5GAP1jRdC0CwpXN80CHmPpQecKuMfnUQwsIaRGCLg=;
+        b=aU/+V+6AcKZw0yKk8RPZjCwgcAtLBDdX2v6m3AxL4fUhnh77hmDJFIvaEEx59mheWN
+         cc8P7yM+HotD5tRnaIRIuOd3l4sTAApoV1jb39BnrsU+in7lO1s+fGfGyXhymdHWfbPd
+         ZVW4BRS3Rkx95O3O6ihR3xRyUiMpdCrc5G45PNsiWJqupwu0GOL/Kqg3LhUw9o/wt+JE
+         vOP/AqvZvFVmp9ROPDM6dTeMZ4KJ6V5zePdC70Y8MvFBEbNzPZ5dwIW/zeIB1pZxoSa+
+         yqapZf9MgfjWwdP6xYeCmpTS/8STN8cUzBhuoaBQV1biOjNHdOke4+frH9E7o6B3HPrZ
+         CZoQ==
+X-Gm-Message-State: APjAAAXMSOwXnLmquJH7ecQX+LgEjlm7uStAXD5AtANkTjIP6MbN2+1C
+        fXRn61YTnUJCC/IItU8xsB8WEwv68uwnRqz38JMR9oVqIf8asGhSzNwK3pwhDmB9T6shZBmWEmY
+        ZhwaFJ35ZqV9T
+X-Received: by 2002:a2e:9b55:: with SMTP id o21mr19034867ljj.147.1576491601188;
+        Mon, 16 Dec 2019 02:20:01 -0800 (PST)
+X-Google-Smtp-Source: APXvYqwJx0qXq+MZ+uifWsTqgT8cEn7YRedwq70nttDtYJ0IrjCI91lWWU020Lk/7Q1NnPxsz7LkBg==
+X-Received: by 2002:a2e:9b55:: with SMTP id o21mr19034857ljj.147.1576491601054;
+        Mon, 16 Dec 2019 02:20:01 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id 192sm8640914lfh.28.2019.12.16.02.20.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Dec 2019 01:14:15 -0800 (PST)
-From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
-To:     daniel@iogearbox.net, ast@kernel.org, netdev@vger.kernel.org
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>,
-        linux-riscv@lists.infradead.org, bpf@vger.kernel.org
-Subject: [PATCH bpf-next v2 9/9] riscv, perf: add arch specific perf_arch_bpf_user_pt_regs
-Date:   Mon, 16 Dec 2019 10:13:43 +0100
-Message-Id: <20191216091343.23260-10-bjorn.topel@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191216091343.23260-1-bjorn.topel@gmail.com>
-References: <20191216091343.23260-1-bjorn.topel@gmail.com>
+        Mon, 16 Dec 2019 02:20:00 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 8681B1819EB; Mon, 16 Dec 2019 11:19:59 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Prashant Bhole <prashantbhole.linux@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Prashant Bhole <prashantbhole.linux@gmail.com>,
+        Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next] libbpf: fix build by renaming variables
+In-Reply-To: <20191216082738.28421-1-prashantbhole.linux@gmail.com>
+References: <20191216082738.28421-1-prashantbhole.linux@gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Mon, 16 Dec 2019 11:19:59 +0100
+Message-ID: <875zigbmi8.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-RISC-V was missing a proper perf_arch_bpf_user_pt_regs macro for
-CONFIG_PERF_EVENT builds.
+Prashant Bhole <prashantbhole.linux@gmail.com> writes:
 
-Signed-off-by: Björn Töpel <bjorn.topel@gmail.com>
----
- arch/riscv/include/asm/perf_event.h | 4 ++++
- 1 file changed, 4 insertions(+)
+> In btf__align_of() variable name 't' is shadowed by inner block
+> declaration of another variable with same name. Patch renames
+> variables in order to fix it.
+>
+>   CC       sharedobjs/btf.o
+> btf.c: In function =E2=80=98btf__align_of=E2=80=99:
+> btf.c:303:21: error: declaration of =E2=80=98t=E2=80=99 shadows a previou=
+s local [-Werror=3Dshadow]
+>   303 |   int i, align =3D 1, t;
+>       |                     ^
+> btf.c:283:25: note: shadowed declaration is here
+>   283 |  const struct btf_type *t =3D btf__type_by_id(btf, id);
+>       |
+>
+> Fixes: 3d208f4ca111 ("libbpf: Expose btf__align_of() API")
+> Signed-off-by: Prashant Bhole <prashantbhole.linux@gmail.com>
 
-diff --git a/arch/riscv/include/asm/perf_event.h b/arch/riscv/include/asm/perf_event.h
-index aefbfaa6a781..0234048b12bc 100644
---- a/arch/riscv/include/asm/perf_event.h
-+++ b/arch/riscv/include/asm/perf_event.h
-@@ -82,4 +82,8 @@ struct riscv_pmu {
- 	int		irq;
- };
- 
-+#ifdef CONFIG_PERF_EVENTS
-+#define perf_arch_bpf_user_pt_regs(regs) (struct user_regs_struct *)regs
-+#endif
-+
- #endif /* _ASM_RISCV_PERF_EVENT_H */
--- 
-2.20.1
+Seems there are quite a few build errors in bpf today; this at least
+fixes libbpf. Thank you!
+
+Tested-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 
