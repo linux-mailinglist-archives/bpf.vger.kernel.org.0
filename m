@@ -2,188 +2,195 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 72C3B121974
-	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2019 19:54:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F6551219BD
+	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2019 20:14:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727276AbfLPSyL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Dec 2019 13:54:11 -0500
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:40866 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726715AbfLPSyL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 Dec 2019 13:54:11 -0500
-Received: by mail-qk1-f193.google.com with SMTP id c17so5303045qkg.7;
-        Mon, 16 Dec 2019 10:54:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tCKouFVACPZoqxWQGv/oZIozyfyBdYhG/AqTTByALEc=;
-        b=Sd1XXri5MqSafcYNHI0DpZBt1CHpreG1UuIMQnt7gFnjgtkZ6O8L3BoF0vIoFyWxHz
-         rloi6kN+pPmpKT6dimaiRMIqsAi+IjccX9RpEudxnFiemHON1W8IX04/ChWRqC8bmX01
-         B4onlFizTmKiWX0NiRN/18N64yL5XhJDYbl0SxFPIqYIomniCDM5G+IGRs646xGH+CFH
-         oo8kO/Cg7CjUUAp5WvSCB89vGWgHwbv38uTpX21qMuzee4AuiNmlGqSvHn1SRSbbU+hy
-         4JPlfPKuzBTW/AfEwMhmQLB9feOwwu5FERj/IIczw8cx1cU4uS/SPcZsa6mDdvf3OJK3
-         WSRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tCKouFVACPZoqxWQGv/oZIozyfyBdYhG/AqTTByALEc=;
-        b=unZvq1L7tiOLylE2OEdAbSVz7D15z4J/vWLD2FBBVomEUDnPWgwGvARspROW5MxFgd
-         a0t1EyQ3KJQMEmejbH56yVq9J8dd53r/arw2XfeatVaD1D9W23EArnSRiCWtpYnT7jYI
-         hSzppyYddF9IcABE/Db2ewP7FHDvizgur6Uv5pTIsIj8b9rYWvXHMCCrJ0dS2AMUpToD
-         4JEMOaeQSCBloGNpeG8FAWayVHc6Edj2sI5ofTOqwIxpNptNfT2xjXqGRzMo9u++q69e
-         7mDX07Po4gwb0BJqxOmoq5agfcAsBz1q9xrfRqb/Vc4uJv/knqT604rbEQYKwgWpgpcH
-         /t/A==
-X-Gm-Message-State: APjAAAVWfIKvJ69IvIo5tQy6tqf9L5f2aR8qxAuSSyG19EprnpdAmZRA
-        OlIit/7zvI9rLSndKfbbLu3gZxA+N5MiStb6/AG+nR5U
-X-Google-Smtp-Source: APXvYqxsIYRpYHldkoEGAGfciIzXWGFd48suSpkSH1ieEwzAWM9npZjTGVxZ+YyZYFlcfZLSWfUxy9c5HoqppDVsDHo=
-X-Received: by 2002:a05:620a:5ae:: with SMTP id q14mr782744qkq.437.1576522449658;
- Mon, 16 Dec 2019 10:54:09 -0800 (PST)
+        id S1726641AbfLPTOY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Dec 2019 14:14:24 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:40984 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726426AbfLPTOX (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 16 Dec 2019 14:14:23 -0500
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xBGJBnte028451;
+        Mon, 16 Dec 2019 11:14:08 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=vduqSYa3zV5OGyLDUSw7reuu04V3EhcV38vC9cLHC9I=;
+ b=TO+FjiTYmW44aO6xTAJ5yisuKE3bb0S1bTU2RVcPkzEj8/sOP+D91vW139kto6+Jb2aY
+ bhKGDTlvq8CQyVrUV5QBQ7sxrs6Qg84ZW9IsC8K7XoU2EIxhbS5ruNaxXBEbCcxsEn3A
+ qllAyn86MY35UIudkadXXv61TVJ0V77iHuQ= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2wwgsmnnas-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 16 Dec 2019 11:14:08 -0800
+Received: from ash-exopmbx101.TheFacebook.com (2620:10d:c0a8:82::b) by
+ ash-exhub202.TheFacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 16 Dec 2019 11:14:05 -0800
+Received: from ash-exhub204.TheFacebook.com (2620:10d:c0a8:83::4) by
+ ash-exopmbx101.TheFacebook.com (2620:10d:c0a8:82::b) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 16 Dec 2019 11:14:05 -0800
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Mon, 16 Dec 2019 11:14:05 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eH3o3tJt67Zu79YlbcXngQJf7pgxpTOZBWegprmyA5xHkzd5rMDJM84Z4HWVXHf9gtPSE/Sllh9tUx5XAPVITJ1qa9xtHEONbwGLE09vICcvkvNIgQVlEccuNlOUZ9fMp+f7ozE60GbTKs6HSAeD2D+WnbGt07JrKX8RTekI9iKoESV2Hd6PY4fGy8KGIjMvI8agOa+28DODQlLc6uunEFWCsKzSniqYXxzpIghXVfBayeqdoT/XJ/unCqAov3+kjGrasF2NEuaFoFd3VB6vKyjycWNH7r1s5vO4ooAVCQPjZsu0u8mCW5Hkl27zrwuRBncRZI7XLZHqrSKVu/GtYg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vduqSYa3zV5OGyLDUSw7reuu04V3EhcV38vC9cLHC9I=;
+ b=cw21aT6BdJGFsW3OjQ6vex9efHbzNp+IJcPjNkCoduAvril06ostYza01q2PnNYPAFX7avbbzdtyEiom4uC5mmCidhzOz8kmZQkfyl7WyM+wH+9F9BIlEKuHOl0He1ryxEx8nZby/MWdOkaKANcU2fg4elD553YUgGzSZJ4vFesMsausmpQxFbExegqYOsa0YPYmbP5YmfIc60aE60UDTLMlxsd1Pg5Nmu2oxBLgiTXLM1KsI3qCe+uzluecCpeH93kTZckEMNI5Ynb9YrYsAjUzbqWyLFa7apEjSVPAFFifQ67PQyHs2i2NJ5tJLQs+dAQuJ9HxeWAPR+7mAUMgtw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vduqSYa3zV5OGyLDUSw7reuu04V3EhcV38vC9cLHC9I=;
+ b=J7F6LZ2E/lOV6UYgI4oSJ9J+PDl1MyTFYke1H/QAR0XzE9ASzAMMvopKZECNOnKJuJJP24xQpXtEfKRKyFZ/2vj7pk6nauKkK/NuOYhcFtj0rUXlQ8bHFB+0q1J6Y0zX1J8tPyyYNYRK3ZQUAyR9Hmt3Sk1+gl5xerdwizO27C0=
+Received: from MN2PR15MB3213.namprd15.prod.outlook.com (20.179.21.76) by
+ MN2PR15MB3006.namprd15.prod.outlook.com (20.178.252.223) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2538.17; Mon, 16 Dec 2019 19:14:04 +0000
+Received: from MN2PR15MB3213.namprd15.prod.outlook.com
+ ([fe80::6d1e:f2f7:d36:a42f]) by MN2PR15MB3213.namprd15.prod.outlook.com
+ ([fe80::6d1e:f2f7:d36:a42f%4]) with mapi id 15.20.2538.019; Mon, 16 Dec 2019
+ 19:14:04 +0000
+From:   Martin Lau <kafai@fb.com>
+To:     Eric Dumazet <eric.dumazet@gmail.com>
+CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>,
+        Kernel Team <Kernel-team@fb.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 09/13] bpf: Add BPF_FUNC_jiffies
+Thread-Topic: [PATCH bpf-next 09/13] bpf: Add BPF_FUNC_jiffies
+Thread-Index: AQHVsiI0ihgHNw98P02gRrT2dQLnz6e9JamA
+Date:   Mon, 16 Dec 2019 19:14:04 +0000
+Message-ID: <20191216191357.ftadvchztbpggcus@kafai-mbp.dhcp.thefacebook.com>
+References: <20191214004737.1652076-1-kafai@fb.com>
+ <20191214004758.1653342-1-kafai@fb.com>
+ <b321412c-1b42-45a9-4dc6-cc268b55cd0d@gmail.com>
+In-Reply-To: <b321412c-1b42-45a9-4dc6-cc268b55cd0d@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MWHPR2201CA0051.namprd22.prod.outlook.com
+ (2603:10b6:301:16::25) To MN2PR15MB3213.namprd15.prod.outlook.com
+ (2603:10b6:208:3d::12)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c090:200::2:71b2]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d9b1ea4d-fbbf-43e7-ff5e-08d7825c1d68
+x-ms-traffictypediagnostic: MN2PR15MB3006:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MN2PR15MB300630044E920AC926DC63AFD5510@MN2PR15MB3006.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-forefront-prvs: 02530BD3AA
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(39860400002)(366004)(136003)(396003)(346002)(376002)(51914003)(189003)(199004)(9686003)(64756008)(66446008)(66946007)(66556008)(6916009)(66476007)(6512007)(316002)(54906003)(71200400001)(2906002)(81166006)(52116002)(6506007)(86362001)(5660300002)(1076003)(186003)(8676002)(3716004)(53546011)(478600001)(81156014)(6486002)(8936002)(4326008);DIR:OUT;SFP:1102;SCL:1;SRVR:MN2PR15MB3006;H:MN2PR15MB3213.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: PBrBiFcy+4Ri0Godl1saxgtGeDq8X2U3MbJ5PI9myNyv88fTf5DPAJOtqbeu5wOGPyp5owKTDyK3bRrGkaTkVRMvVLvEr15NkQhKTFu49TRWYgFKHvc6VwoF1CFUFeG6VPB78Q2LrRdeoGj+hJyYWYYfY3S4XxPIoiZzZ2mmKwP/EgNRtpkG+RXbDes8MeqydwX5El2OkvQGf/8cSEeCqIOsK69omc+xeL1FEYYZCnmelVhiZXBe7GLCIsD67EKDoEtPIA+6O1Z/6x4MZxAt5HIP7F177oFE6zqPU4rKdutjk1zTnZeg9n+SLW+B4nAJFAlepLkcbYwgN0AnvFI3VadV8lEy9WV+ZbfOcZH3mhWSnDNz41B4+8RdWPR8qhsmGfTPUzM4UUFpzahr6tU7IsHK3ejY7HYMRMgEUEpdcF4+4R3Fvz6+RoxkqmoxJlXEDfdJe3N6QtMWP4mCnzQA5/mbnwa3a2lKxN0qXM4XX/x2juD/WrEZGPdPX/7A26RO
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <F74BFE39B4BD8F4285C2B6B652FF4B8A@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20191210011438.4182911-1-andriin@fb.com> <20191210011438.4182911-12-andriin@fb.com>
- <20191216141608.GE14887@linux.fritz.box>
-In-Reply-To: <20191216141608.GE14887@linux.fritz.box>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 16 Dec 2019 10:53:58 -0800
-Message-ID: <CAEf4Bzb2=R0+D0XXrH0N1n1X+7i6aFkACS2gb0xAQFwcBHjVQA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 11/15] bpftool: add skeleton codegen command
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-CrossTenant-Network-Message-Id: d9b1ea4d-fbbf-43e7-ff5e-08d7825c1d68
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Dec 2019 19:14:04.1395
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 6TTUy5WBsTnXuIg1B+IHrrWJcgyg1XZkkibjWmfvf18RRK0yhGBqH7TF0KaY3nk5
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB3006
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
+ definitions=2019-12-16_07:2019-12-16,2019-12-16 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ adultscore=0 impostorscore=0 clxscore=1015 spamscore=0 bulkscore=0
+ mlxlogscore=732 malwarescore=0 lowpriorityscore=0 mlxscore=0 phishscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-1912160162
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Dec 16, 2019 at 6:16 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On Mon, Dec 09, 2019 at 05:14:34PM -0800, Andrii Nakryiko wrote:
-> > Add `bpftool gen skeleton` command, which takes in compiled BPF .o object file
-> > and dumps a BPF skeleton struct and related code to work with that skeleton.
-> > Skeleton itself is tailored to a specific structure of provided BPF object
-> > file, containing accessors (just plain struct fields) for every map and
-> > program, as well as dedicated space for bpf_links. If BPF program is using
-> > global variables, corresponding structure definitions of compatible memory
-> > layout are emitted as well, making it possible to initialize and subsequently
-> > read/update global variables values using simple and clear C syntax for
-> > accessing fields. This skeleton majorly improves usability of
-> > opening/loading/attaching of BPF object, as well as interacting with it
-> > throughout the lifetime of loaded BPF object.
-> >
-> > Generated skeleton struct has the following structure:
-> >
-> > struct <object-name> {
-> >       /* used by libbpf's skeleton API */
-> >       struct bpf_object_skeleton *skeleton;
-> >       /* bpf_object for libbpf APIs */
-> >       struct bpf_object *obj;
-> >       struct {
-> >               /* for every defined map in BPF object: */
-> >               struct bpf_map *<map-name>;
-> >       } maps;
-> >       struct {
-> >               /* for every program in BPF object: */
-> >               struct bpf_program *<program-name>;
-> >       } progs;
-> >       struct {
-> >               /* for every program in BPF object: */
-> >               struct bpf_link *<program-name>;
-> >       } links;
-> >       /* for every present global data section: */
-> >       struct <object-name>__<one of bss, data, or rodata> {
-> >               /* memory layout of corresponding data section,
-> >                * with every defined variable represented as a struct field
-> >                * with exactly the same type, but without const/volatile
-> >                * modifiers, e.g.:
-> >                */
-> >                int *my_var_1;
-> >                ...
-> >       } *<one of bss, data, or rodata>;
-> > };
-> >
-> > This provides great usability improvements:
-> > - no need to look up maps and programs by name, instead just
-> >   my_obj->maps.my_map or my_obj->progs.my_prog would give necessary
-> >   bpf_map/bpf_program pointers, which user can pass to existing libbpf APIs;
-> > - pre-defined places for bpf_links, which will be automatically populated for
-> >   program types that libbpf knows how to attach automatically (currently
-> >   tracepoints, kprobe/kretprobe, raw tracepoint and tracing programs). On
-> >   tearing down skeleton, all active bpf_links will be destroyed (meaning BPF
-> >   programs will be detached, if they are attached). For cases in which libbpf
-> >   doesn't know how to auto-attach BPF program, user can manually create link
-> >   after loading skeleton and they will be auto-detached on skeleton
-> >   destruction:
-> >
-> >       my_obj->links.my_fancy_prog = bpf_program__attach_cgroup_whatever(
-> >               my_obj->progs.my_fancy_prog, <whatever extra param);
-> >
-> > - it's extremely easy and convenient to work with global data from userspace
-> >   now. Both for read-only and read/write variables, it's possible to
-> >   pre-initialize them before skeleton is loaded:
-> >
-> >       skel = my_obj__open(raw_embed_data);
-> >       my_obj->rodata->my_var = 123;
-> >       my_obj__load(skel); /* 123 will be initialization value for my_var */
-> >
-> >   After load, if kernel supports mmap() for BPF arrays, user can still read
-> >   (and write for .bss and .data) variables values, but at that point it will
-> >   be directly mmap()-ed to BPF array, backing global variables. This allows to
-> >   seamlessly exchange data with BPF side. From userspace program's POV, all
-> >   the pointers and memory contents stay the same, but mapped kernel memory
-> >   changes to point to created map.
-> >   If kernel doesn't yet support mmap() for BPF arrays, it's still possible to
-> >   use those data section structs to pre-initialize .bss, .data, and .rodata,
-> >   but after load their pointers will be reset to NULL, allowing user code to
-> >   gracefully handle this condition, if necessary.
-> >
-> > Given a big surface area, skeleton is kept as an experimental non-public
-> > API for now, until more feedback and real-world experience is collected.
->
-> Can you elaborate on the plan here? This is until v5.6 is out and hence a new
-> bpftool release implicitly where this becomes frozen / non-experimental?
+On Fri, Dec 13, 2019 at 05:59:54PM -0800, Eric Dumazet wrote:
+>=20
+>=20
+> On 12/13/19 4:47 PM, Martin KaFai Lau wrote:
+> > This patch adds a helper to handle jiffies.  Some of the
+> > tcp_sock's timing is stored in jiffies.  Although things
+> > could be deduced by CONFIG_HZ, having an easy way to get
+> > jiffies will make the later bpf-tcp-cc implementation easier.
+> >=20
+>=20
+> ...
+>=20
+> > +
+> > +BPF_CALL_2(bpf_jiffies, u64, in, u64, flags)
+> > +{
+> > +	if (!flags)
+> > +		return get_jiffies_64();
+> > +
+> > +	if (flags & BPF_F_NS_TO_JIFFIES) {
+> > +		return nsecs_to_jiffies(in);
+> > +	} else if (flags & BPF_F_JIFFIES_TO_NS) {
+> > +		if (!in)
+> > +			in =3D get_jiffies_64();
+> > +		return jiffies_to_nsecs(in);
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+>=20
+> This looks a bit convoluted :)
+>=20
+> Note that we could possibly change net/ipv4/tcp_cubic.c to no longer use =
+jiffies at all.
+>=20
+> We have in tp->tcp_mstamp an accurate timestamp (in usec) that can be con=
+verted to ms.
+Thanks for the feedbacks!
 
-Yes, I've exposed all those interfaces as public, thus they are going
-to stabilize with new release of libbpf/bpftool. I've received some
-good usability feedback from Alexei after he tried it out locally, so
-I'm going to adjust auto-generated part a bit. Libbpf APIs were
-designed with extensibility built in, so we can extend them as any
-other APIs, if need be.
+I have a few questions that need some helps.
 
->
-> There is also tools/bpf/bpftool/Documentation/bpftool-gen.rst missing. Given
-> you aim to collect more feedback (?), it would be appropriate to document
-> everything in there so users have a clue how to use it for getting started.
+Does it mean tp->tcp_mstamp can be used as the "now" in cubic?
+or tcp_clock_ns() should still be called in cubic, e.g. to replace
+bictcp_clock() and tcp_jiffies32?
 
-sure, will add it
+BPF currently has a helper calling ktime_get_mono_fast_ns() which looks
+different from tcp_clock_ns().
 
->
-> Also, I think at least some more clarification is needed in such document on
-> the following topics:
->
-> - libbpf and bpftool is both 'GPL-2.0-only' or 'BSD-2-Clause'. Given this
->   is a code generator, what license is the `bpftool gen skeleton` result?
->   In any case, should there also be a header comment emitted via do_skeleton()?
+The lsndtime is in jiffies.  I think it can probably be converted to ms bef=
+ore
+using it in cubic.  There are some BICTCP_HZ logic in bictcp_update() that
+is not obvious to me how to convet them to ms base also.
 
-Not a lawyer here, I assumed auto-generated code isn't copyrighted,
-but how about I just emit SPDX header with the same license as libbpf
-itself:
+>=20
+>=20
+> Have you thought of finding a way to not duplicate the code for cubic and=
+ dctcp, maybe
+> by including a template ?
+>=20
+> Maintaining two copies means that future changes need more maintenance wo=
+rk.
+At least for bpf_dctcp.c, I did not expect it could be that close to tcp_dc=
+tcp.c
+when I just started converted it.  tcp_cubic/bpf_cubic still has some TBD
+on jiffies/msec.
 
-SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
-
-
->
-> - Clear statement that this codegen is an alternative to regular libbpf
->   API usage but that both are always kept feature-complete and hence not
->   disadvantaged in one way or another (to rule out any uncertainties for
->   users e.g. whether they now need to start rewriting their existing code
->   etc); with purpose of the former (codgen) to simplify loader interaction.
-
-ok, will add that as well
-
->
-> Thanks,
-> Daniel
+Agree that it is beneficial to have one copy.   It is likely
+I need to make some changes on the tcp_*.c side also.  Hence, I prefer
+to give it a try in a separate series, e.g. revert the kernel side
+changes will be easier.
