@@ -2,281 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8127D12002B
-	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2019 09:48:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F38B1200A5
+	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2019 10:18:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726808AbfLPIqe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Dec 2019 03:46:34 -0500
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:42069 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726772AbfLPIqd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 Dec 2019 03:46:33 -0500
-Received: by mail-ot1-f66.google.com with SMTP id 66so8202374otd.9;
-        Mon, 16 Dec 2019 00:46:33 -0800 (PST)
+        id S1727046AbfLPJNx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Dec 2019 04:13:53 -0500
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:38109 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726313AbfLPJNx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 Dec 2019 04:13:53 -0500
+Received: by mail-pg1-f195.google.com with SMTP id a33so3325332pgm.5;
+        Mon, 16 Dec 2019 01:13:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3SPuashIhdtlVrMosXj8V5ihTFuLDvA+g6VKVcBtbIw=;
-        b=RYVEwSFvnwu+YxW/bWXRYsGqo2ZThCwoa6UO0Tf4yoU5m3RSzMjrEjIhZQq2K6U10n
-         +lsVvi0VDkHEmUeDizCXt28EFWtNEYQ2uOJQmRZRgK2hcw0KUFV+PGAEgD6GIz95ZSbp
-         6c2DsxlVEycUMd2/mCGWT7Igr5XQ+nPG3a7oOySmJJeQ2dLsKmJQqjDypl1WTllwPPOw
-         cExjAYwPPaEF/FsO89GqvtnV2lXmA3SssloMAVwgaDDjWutZO7/e06G9Ubc36x8h2VJA
-         DfrUK0Gy+MUyVbSAw+qnyBo9sfrQMPfCUN//ZiH3xMv7Ypmw59qLzeFRh643qNitjSqJ
-         QQyg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vpY7MBXQP9D/muTQHYI2tuNdnNT18mzMK9mr9lmyumc=;
+        b=WXf++/PI7Qj1eL7NF3/ysask8jTXfygbq3KmxUxE4Ly3cTk1wkgW9Oh9lRRCCaRqux
+         SlKDDtj6aug//loLK7vPWhfbUKbw0Pw0jawhDC8jAVB6/2TUptn1mXUtLZEDTIQPyHCt
+         yUBIez9eXZJVQPXdOBicsnh8u5wBSTHcmooFYg8N0xFyCxaraVtG3iAxOETh+JzC70ah
+         vdVeV4rDnqq2ZLIlovXlRf7hLcU7HDnTqJy1/oowuIjgyyRPsMALcKMJcDhoD7i2pdTU
+         nYu/fmY7k28qZC3zNCm09EUnRGlMRGUij0DNVh6EIeHfVTFF5OFYhe9t4FlmgbRiAvs6
+         aNlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3SPuashIhdtlVrMosXj8V5ihTFuLDvA+g6VKVcBtbIw=;
-        b=Ui4B6EezXH8or7MU/EeOEixwYR6C6JO4HcbXesfiNbg15ga8ytBfJ6dpxCutfZSD3z
-         3bJsqRxnyPq8d7uINokbWFeyHRf2/4tUZWnvJADI4YiCMP2x3NjuKNZq392SNyhRanwK
-         c6aTfycckraI1X/QL1JGL1FQGUrhtwl7ndZkDq0OWnU9oYiqZUiWIrWBC27L4G+nXQ5K
-         x20+eyN32EgYcWVyIS0tygO2lO2eQ93gHFgW3E0JoP5avPbeDxaB4FGIItAPuXy1XNoM
-         6G14DIsvl9CNTy0wRfMilN9aU+hd+IUVW1QxYs0TcpwaX6b+jc93qhPPoUQQXr4QjXXF
-         lVsw==
-X-Gm-Message-State: APjAAAUAqrHH9fscV+dK3130GSSLAwWxjFLDCqxGiW07Gmajcpa0Aujs
-        4QSZkBXY3DVNtVHvH+g7+IZSTq468VnkHWca1r8=
-X-Google-Smtp-Source: APXvYqxpzI1dmrL8NJBWr4+pwXc3C6b4aeadzIciXXJVcF1lNWmekdux/g1O0yGH37mqD94jCc0LvvM8W4fgjBA8jxw=
-X-Received: by 2002:a9d:3677:: with SMTP id w110mr24757145otb.139.1576485992501;
- Mon, 16 Dec 2019 00:46:32 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vpY7MBXQP9D/muTQHYI2tuNdnNT18mzMK9mr9lmyumc=;
+        b=giB4Kz4OyBRcKtsTs8H6cabtiYKASf1aCiAqGGP3T6TWqvJ2rI281nySZXVmgoxjfI
+         AXAu3IeC2NnjFxuBFG0bNc97unVFsoRP5pJ4zcB9qXpDAnqkRs8Ah+4CIJaysBRGuq1n
+         dEnGlYca71G0tF5IF9qs8eOyyFQVlEq0it/b9Yvsi7nRE42uoG1wvuskvPRZCWmVgmIy
+         CTsMiGDud8cRLCNKQbRqUJLeQnEoftdydT5j8FDem4OdxsiQe+gpYINNQx2E2Pt4DErD
+         0mXHXiUj/AwJ6FTdWJgfJtEdAy1csdQLl1HRegSXFmBo6DhCkFKzOKcto+qEpxy1Zdf6
+         Qe8w==
+X-Gm-Message-State: APjAAAVMURxsCKLdS6nV1OnYFcTznhF9ilBWwuESmknLi0TpEbCW+bL/
+        Vldy5B+P23EJmZ7zSxFXulY=
+X-Google-Smtp-Source: APXvYqzaZ3jJM3dOls1Pof33GJoVy83OTL34tNJngEBHjYW5m38n1ijiIvLP4nD5pePW34rW+GPiFQ==
+X-Received: by 2002:a63:364d:: with SMTP id d74mr16898806pga.408.1576487632409;
+        Mon, 16 Dec 2019 01:13:52 -0800 (PST)
+Received: from btopel-mobl.ger.intel.com (fmdmzpr04-ext.fm.intel.com. [192.55.55.39])
+        by smtp.gmail.com with ESMTPSA id x21sm12505033pfn.164.2019.12.16.01.13.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Dec 2019 01:13:51 -0800 (PST)
+From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
+To:     daniel@iogearbox.net, ast@kernel.org, netdev@vger.kernel.org
+Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>,
+        linux-riscv@lists.infradead.org, bpf@vger.kernel.org
+Subject: [PATCH bpf-next v2 0/9] riscv: BPF JIT fix, optimizations and far jumps support
+Date:   Mon, 16 Dec 2019 10:13:34 +0100
+Message-Id: <20191216091343.23260-1-bjorn.topel@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <1575878189-31860-1-git-send-email-magnus.karlsson@intel.com>
- <1575878189-31860-3-git-send-email-magnus.karlsson@intel.com> <63329cd7-4d3a-9497-e5ed-6995f05cd81f@mellanox.com>
-In-Reply-To: <63329cd7-4d3a-9497-e5ed-6995f05cd81f@mellanox.com>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Mon, 16 Dec 2019 09:46:21 +0100
-Message-ID: <CAJ8uoz1k6PwnfVgaa47Yt3K40NciHLf=_5ixsGs0MESrnoo0RA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 02/12] xsk: consolidate to one single cached
- producer pointer
-To:     Maxim Mikityanskiy <maximmi@mellanox.com>
-Cc:     Magnus Karlsson <magnus.karlsson@intel.com>,
-        "bjorn.topel@intel.com" <bjorn.topel@intel.com>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "jonathan.lemon@gmail.com" <jonathan.lemon@gmail.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        "jeffrey.t.kirsher@intel.com" <jeffrey.t.kirsher@intel.com>,
-        "maciej.fijalkowski@intel.com" <maciej.fijalkowski@intel.com>,
-        "maciejromanfijalkowski@gmail.com" <maciejromanfijalkowski@gmail.com>,
-        Maxim Mikityanskiy <maxtram95@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Dec 13, 2019 at 7:04 PM Maxim Mikityanskiy <maximmi@mellanox.com> wrote:
->
-> On 2019-12-09 09:56, Magnus Karlsson wrote:
-> > Currently, the xsk ring code has two cached producer pointers:
-> > prod_head and prod_tail. This patch consolidates these two into a
-> > single one called cached_prod to make the code simpler and easier to
-> > maintain. This will be in line with the user space part of the the
-> > code found in libbpf, that only uses a single cached pointer.
-> >
-> > The Rx path only uses the two top level functions
-> > xskq_produce_batch_desc and xskq_produce_flush_desc and they both use
-> > prod_head and never prod_tail. So just move them over to
-> > cached_prod.
-> >
-> > The Tx XDP_DRV path uses xskq_produce_addr_lazy and
-> > xskq_produce_flush_addr_n and unnecessarily operates on both prod_tail
-> > and prod_cons, so move them over to just use cached_prod by skipping
-> > the intermediate step of updating prod_tail.
-> >
-> > The Tx path in XDP_SKB mode uses xskq_reserve_addr and
-> > xskq_produce_addr. They currently use both cached pointers, but we can
-> > operate on the global producer pointer in xskq_produce_addr since it
-> > has to be updated anyway, thus eliminating the use of both cached
-> > pointers. We can also remove the xskq_nb_free in xskq_produce_addr
-> > since it is already called in xskq_reserve_addr. No need to do it
-> > twice.
-> >
-> > When there is only one cached producer pointer, we can also simplify
-> > xskq_nb_free by removing one argument.
-> >
-> > Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-> > ---
-> >   net/xdp/xsk_queue.h | 49 ++++++++++++++++++++++---------------------------
-> >   1 file changed, 22 insertions(+), 27 deletions(-)
-> >
-> > diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
-> > index a2f0ba6..d88e1a0 100644
-> > --- a/net/xdp/xsk_queue.h
-> > +++ b/net/xdp/xsk_queue.h
-> > @@ -35,8 +35,7 @@ struct xsk_queue {
-> >       u64 size;
-> >       u32 ring_mask;
-> >       u32 nentries;
-> > -     u32 prod_head;
-> > -     u32 prod_tail;
-> > +     u32 cached_prod;
-> >       u32 cons_head;
-> >       u32 cons_tail;
-> >       struct xdp_ring *ring;
-> > @@ -94,39 +93,39 @@ static inline u64 xskq_nb_invalid_descs(struct xsk_queue *q)
-> >
-> >   static inline u32 xskq_nb_avail(struct xsk_queue *q, u32 dcnt)
-> >   {
-> > -     u32 entries = q->prod_tail - q->cons_tail;
-> > +     u32 entries = q->cached_prod - q->cons_tail;
-> >
-> >       if (entries == 0) {
-> >               /* Refresh the local pointer */
-> > -             q->prod_tail = READ_ONCE(q->ring->producer);
-> > -             entries = q->prod_tail - q->cons_tail;
-> > +             q->cached_prod = READ_ONCE(q->ring->producer);
-> > +             entries = q->cached_prod - q->cons_tail;
-> >       }
-> >
-> >       return (entries > dcnt) ? dcnt : entries;
-> >   }
-> >
-> > -static inline u32 xskq_nb_free(struct xsk_queue *q, u32 producer, u32 dcnt)
-> > +static inline u32 xskq_nb_free(struct xsk_queue *q, u32 dcnt)
-> >   {
-> > -     u32 free_entries = q->nentries - (producer - q->cons_tail);
-> > +     u32 free_entries = q->nentries - (q->cached_prod - q->cons_tail);
-> >
-> >       if (free_entries >= dcnt)
-> >               return free_entries;
-> >
-> >       /* Refresh the local tail pointer */
-> >       q->cons_tail = READ_ONCE(q->ring->consumer);
-> > -     return q->nentries - (producer - q->cons_tail);
-> > +     return q->nentries - (q->cached_prod - q->cons_tail);
-> >   }
-> >
-> >   static inline bool xskq_has_addrs(struct xsk_queue *q, u32 cnt)
-> >   {
-> > -     u32 entries = q->prod_tail - q->cons_tail;
-> > +     u32 entries = q->cached_prod - q->cons_tail;
-> >
-> >       if (entries >= cnt)
-> >               return true;
-> >
-> >       /* Refresh the local pointer. */
-> > -     q->prod_tail = READ_ONCE(q->ring->producer);
-> > -     entries = q->prod_tail - q->cons_tail;
-> > +     q->cached_prod = READ_ONCE(q->ring->producer);
-> > +     entries = q->cached_prod - q->cons_tail;
-> >
-> >       return entries >= cnt;
-> >   }
-> > @@ -220,17 +219,15 @@ static inline void xskq_discard_addr(struct xsk_queue *q)
-> >   static inline int xskq_produce_addr(struct xsk_queue *q, u64 addr)
-> >   {
-> >       struct xdp_umem_ring *ring = (struct xdp_umem_ring *)q->ring;
-> > -
-> > -     if (xskq_nb_free(q, q->prod_tail, 1) == 0)
-> > -             return -ENOSPC;
-> > +     unsigned int idx = q->ring->producer;
-> >
-> >       /* A, matches D */
-> > -     ring->desc[q->prod_tail++ & q->ring_mask] = addr;
-> > +     ring->desc[idx++ & q->ring_mask] = addr;
-> >
-> >       /* Order producer and data */
-> >       smp_wmb(); /* B, matches C */
-> >
-> > -     WRITE_ONCE(q->ring->producer, q->prod_tail);
-> > +     WRITE_ONCE(q->ring->producer, idx);
-> >       return 0;
-> >   }
-> >
-> > @@ -238,11 +235,11 @@ static inline int xskq_produce_addr_lazy(struct xsk_queue *q, u64 addr)
-> >   {
-> >       struct xdp_umem_ring *ring = (struct xdp_umem_ring *)q->ring;
-> >
-> > -     if (xskq_nb_free(q, q->prod_head, 1) == 0)
-> > +     if (xskq_nb_free(q, 1) == 0)
-> >               return -ENOSPC;
-> >
-> >       /* A, matches D */
-> > -     ring->desc[q->prod_head++ & q->ring_mask] = addr;
-> > +     ring->desc[q->cached_prod++ & q->ring_mask] = addr;
-> >       return 0;
-> >   }
-> >
-> > @@ -252,17 +249,16 @@ static inline void xskq_produce_flush_addr_n(struct xsk_queue *q,
-> >       /* Order producer and data */
-> >       smp_wmb(); /* B, matches C */
-> >
-> > -     q->prod_tail += nb_entries;
-> > -     WRITE_ONCE(q->ring->producer, q->prod_tail);
-> > +     WRITE_ONCE(q->ring->producer, q->ring->producer + nb_entries);
-> >   }
-> >
-> >   static inline int xskq_reserve_addr(struct xsk_queue *q)
-> >   {
-> > -     if (xskq_nb_free(q, q->prod_head, 1) == 0)
-> > +     if (xskq_nb_free(q, 1) == 0)
-> >               return -ENOSPC;
-> >
-> >       /* A, matches D */
-> > -     q->prod_head++;
-> > +     q->cached_prod++;
-> >       return 0;
-> >   }
-> >
-> > @@ -340,11 +336,11 @@ static inline int xskq_produce_batch_desc(struct xsk_queue *q,
-> >       struct xdp_rxtx_ring *ring = (struct xdp_rxtx_ring *)q->ring;
-> >       unsigned int idx;
-> >
-> > -     if (xskq_nb_free(q, q->prod_head, 1) == 0)
-> > +     if (xskq_nb_free(q, 1) == 0)
-> >               return -ENOSPC;
-> >
-> >       /* A, matches D */
-> > -     idx = (q->prod_head++) & q->ring_mask;
-> > +     idx = q->cached_prod++ & q->ring_mask;
-> >       ring->desc[idx].addr = addr;
-> >       ring->desc[idx].len = len;
-> >
-> > @@ -356,8 +352,7 @@ static inline void xskq_produce_flush_desc(struct xsk_queue *q)
-> >       /* Order producer and data */
-> >       smp_wmb(); /* B, matches C */
-> >
-> > -     q->prod_tail = q->prod_head;
-> > -     WRITE_ONCE(q->ring->producer, q->prod_tail);
-> > +     WRITE_ONCE(q->ring->producer, q->cached_prod);
-> >   }
-> >
-> >   static inline bool xskq_full_desc(struct xsk_queue *q)
-> > @@ -367,7 +362,7 @@ static inline bool xskq_full_desc(struct xsk_queue *q)
-> >
-> >   static inline bool xskq_empty_desc(struct xsk_queue *q)
-> >   {
-> > -     return xskq_nb_free(q, q->prod_tail, q->nentries) == q->nentries;
-> > +     return xskq_nb_free(q, q->nentries) == q->nentries;
->
-> I don't think this change is correct. The old code checked the number of
-> free items against prod_tail (== producer). The new code changes it to
-> prod_head (which is now cached_prod). xskq_nb_free is used in xsk_poll
-> to set EPOLLIN. After this change EPOLLIN will be set right after
-> xskq_produce_batch_desc, but it should only be set after
-> xskq_produce_flush_desc, just as before, otherwise the application will
-> wake up before the data is available, and it will just waste CPU cycles.
+Hi!
 
-That is correct. It will be inefficient during patch 2 and 3 as this
-gets fixed in patch 4. I chose this as I thought the patch progression
-and simplification process would be clearer this way. So what to do
-about it? Some options:
+This series contain one non-critical fix, support for far jumps. and
+some optimizations for the BPF JIT.
 
-* Document this in patch 2 and keep the current order
+Previously, the JIT only supported 12b branch targets for conditional
+branches, and 21b for unconditional branches. Starting with this
+series, 32b branching is supported.
 
-*  Put patch 4 before patch 2 so that the code is always efficient.
-This is doable, but I have the feeling it will be somewhat less clear
-from a simplification perspective. The advantage, on the other hand,
-is that the poll code is always efficient during the whole patch set.
+As part of supporting far jumps, branch relaxation was introduced. The
+idea is to start with a pessimistic jump (e.g. auipc/jalr) and for
+each pass the JIT will have an opportunity to pick a better
+instruction (e.g. jal) and shrink the image. Instead of two passes,
+the JIT requires more passes. It typically converges after 3 passes.
 
-/Magnus
+The optimizations mentioned in the subject are for calls and tail
+calls. In the tail call generation we can save one instruction by
+using the offset in jalr. Calls are optimized by doing (auipc)/jal(r)
+relative jumps instead of loading the entire absolute address and
+doing jalr. This required that the JIT image allocator was made RISC-V
+specific, so we can ensure that the JIT image and the kernel text are
+in range (32b).
 
-> >   }
-> >
-> >   void xskq_set_umem(struct xsk_queue *q, u64 size, u64 chunk_mask);
-> >
->
+The last two patches of the series is not critical to the series, but
+are two UAPI build issues for BPF events. A closer look from the
+RV-folks would be much appreciated.
+
+The test_bpf.ko module, selftests/bpf/test_verifier and
+selftests/seccomp/seccomp_bpf pass all tests.
+
+RISC-V is still missing proper kprobe and tracepoint support, so a lot
+of BPF selftests cannot be run.
+
+
+Thanks,
+Björn
+
+v1->v2: [1]
+ * Removed unused function parameter from emit_branch()
+ * Added patch to support far branch in tail call emit
+
+[1] https://lore.kernel.org/bpf/20191209173136.29615-1-bjorn.topel@gmail.com/
+
+
+Björn Töpel (9):
+  riscv, bpf: fix broken BPF tail calls
+  riscv, bpf: add support for far branching
+  riscv, bpf: add support for far branching when emitting tail call
+  riscv, bpf: add support for far jumps and exits
+  riscv, bpf: optimize BPF tail calls
+  riscv, bpf: provide RISC-V specific JIT image alloc/free
+  riscv, bpf: optimize calls
+  riscv, bpf: add missing uapi header for BPF_PROG_TYPE_PERF_EVENT
+    programs
+  riscv, perf: add arch specific perf_arch_bpf_user_pt_regs
+
+ arch/riscv/include/asm/perf_event.h          |   4 +
+ arch/riscv/include/asm/pgtable.h             |   4 +
+ arch/riscv/include/uapi/asm/bpf_perf_event.h |   9 +
+ arch/riscv/net/bpf_jit_comp.c                | 531 ++++++++++---------
+ tools/include/uapi/asm/bpf_perf_event.h      |   2 +
+ 5 files changed, 312 insertions(+), 238 deletions(-)
+ create mode 100644 arch/riscv/include/uapi/asm/bpf_perf_event.h
+
+-- 
+2.20.1
+
