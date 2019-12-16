@@ -2,29 +2,29 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 96941121A5E
-	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2019 21:00:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAADD121A6B
+	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2019 21:03:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727016AbfLPUAO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Dec 2019 15:00:14 -0500
-Received: from mga17.intel.com ([192.55.52.151]:48173 "EHLO mga17.intel.com"
+        id S1726426AbfLPUDQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Dec 2019 15:03:16 -0500
+Received: from mga03.intel.com ([134.134.136.65]:59187 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726191AbfLPUAN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 Dec 2019 15:00:13 -0500
+        id S1726907AbfLPUDQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 Dec 2019 15:03:16 -0500
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 16 Dec 2019 12:00:13 -0800
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 16 Dec 2019 12:03:09 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.69,322,1571727600"; 
-   d="scan'208";a="247165037"
+   d="scan'208";a="365130694"
 Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga002.fm.intel.com with ESMTP; 16 Dec 2019 12:00:12 -0800
+  by orsmga004.jf.intel.com with ESMTP; 16 Dec 2019 12:03:09 -0800
 Received: from [10.251.95.214] (abudanko-mobl.ccr.corp.intel.com [10.251.95.214])
-        by linux.intel.com (Postfix) with ESMTP id E63EF580342;
-        Mon, 16 Dec 2019 12:00:02 -0800 (PST)
-Subject: [PATCH v3 3/7] perf tool: extend Perf tool with CAP_SYS_PERFMON
- capability support
+        by linux.intel.com (Postfix) with ESMTP id 50EA5580342;
+        Mon, 16 Dec 2019 12:03:01 -0800 (PST)
+Subject: [PATCH v3 4/7] drm/i915/perf: open access for CAP_SYS_PERFMON
+ privileged process
 From:   Alexey Budankov <alexey.budankov@linux.intel.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -60,8 +60,8 @@ Cc:     Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
         "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
 References: <b175f283-d256-e37e-f447-6ba4ab4f3d3a@linux.intel.com>
 Organization: Intel Corp.
-Message-ID: <a11c6c05-b7fd-4d5f-01cc-7467e716fc64@linux.intel.com>
-Date:   Mon, 16 Dec 2019 23:00:01 +0300
+Message-ID: <bc5b2a0d-a185-91b6-5deb-a4b6e1dc3d3e@linux.intel.com>
+Date:   Mon, 16 Dec 2019 23:03:00 +0300
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
  Thunderbird/60.9.1
 MIME-Version: 1.0
@@ -75,82 +75,63 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 
-Extend error messages to mention CAP_SYS_PERFMON capability as an option
-to substitute CAP_SYS_ADMIN capability for secure system performance
-monitoring and observability. Make perf_event_paranoid_check() to be aware
-of CAP_SYS_PERFMON capability.
+Open access to i915_perf monitoring for CAP_SYS_PERFMON privileged processes.
+For backward compatibility reasons access to i915_perf subsystem remains open
+for CAP_SYS_ADMIN privileged processes but CAP_SYS_ADMIN usage for secure
+i915_perf monitoring is discouraged with respect to CAP_SYS_PERFMON capability.
 
 Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
 ---
- tools/perf/design.txt   |  3 ++-
- tools/perf/util/cap.h   |  4 ++++
- tools/perf/util/evsel.c | 10 +++++-----
- tools/perf/util/util.c  |  1 +
- 4 files changed, 12 insertions(+), 6 deletions(-)
+ drivers/gpu/drm/i915/i915_perf.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/tools/perf/design.txt b/tools/perf/design.txt
-index 0453ba26cdbd..71755b3e1303 100644
---- a/tools/perf/design.txt
-+++ b/tools/perf/design.txt
-@@ -258,7 +258,8 @@ gets schedule to. Per task counters can be created by any user, for
- their own tasks.
+diff --git a/drivers/gpu/drm/i915/i915_perf.c b/drivers/gpu/drm/i915/i915_perf.c
+index e42b86827d6b..e2697f8d04de 100644
+--- a/drivers/gpu/drm/i915/i915_perf.c
++++ b/drivers/gpu/drm/i915/i915_perf.c
+@@ -2748,10 +2748,10 @@ i915_perf_open_ioctl_locked(struct drm_i915_private *dev_priv,
+ 	/* Similar to perf's kernel.perf_paranoid_cpu sysctl option
+ 	 * we check a dev.i915.perf_stream_paranoid sysctl option
+ 	 * to determine if it's ok to access system wide OA counters
+-	 * without CAP_SYS_ADMIN privileges.
++	 * without CAP_SYS_PERFMON or CAP_SYS_ADMIN privileges.
+ 	 */
+ 	if (privileged_op &&
+-	    i915_perf_stream_paranoid && !capable(CAP_SYS_ADMIN)) {
++	    i915_perf_stream_paranoid && !perfmon_capable()) {
+ 		DRM_DEBUG("Insufficient privileges to open system-wide i915 perf stream\n");
+ 		ret = -EACCES;
+ 		goto err_ctx;
+@@ -2939,9 +2939,8 @@ static int read_properties_unlocked(struct drm_i915_private *dev_priv,
+ 			} else
+ 				oa_freq_hz = 0;
  
- A 'pid == -1' and 'cpu == x' counter is a per CPU counter that counts
--all events on CPU-x. Per CPU counters need CAP_SYS_ADMIN privilege.
-+all events on CPU-x. Per CPU counters need CAP_SYS_PERFMON or
-+CAP_SYS_ADMIN privilege.
+-			if (oa_freq_hz > i915_oa_max_sample_rate &&
+-			    !capable(CAP_SYS_ADMIN)) {
+-				DRM_DEBUG("OA exponent would exceed the max sampling frequency (sysctl dev.i915.oa_max_sample_rate) %uHz without root privileges\n",
++			if (oa_freq_hz > i915_oa_max_sample_rate && !perfmon_capable()) {
++				DRM_DEBUG("OA exponent would exceed the max sampling frequency (sysctl dev.i915.oa_max_sample_rate) %uHz without CAP_SYS_PERFMON or CAP_SYS_ADMIN privileges\n",
+ 					  i915_oa_max_sample_rate);
+ 				return -EACCES;
+ 			}
+@@ -3328,7 +3327,7 @@ int i915_perf_add_config_ioctl(struct drm_device *dev, void *data,
+ 		return -EINVAL;
+ 	}
  
- The 'flags' parameter is currently unused and must be zero.
+-	if (i915_perf_stream_paranoid && !capable(CAP_SYS_ADMIN)) {
++	if (i915_perf_stream_paranoid && !perfmon_capable()) {
+ 		DRM_DEBUG("Insufficient privileges to add i915 OA config\n");
+ 		return -EACCES;
+ 	}
+@@ -3474,7 +3473,7 @@ int i915_perf_remove_config_ioctl(struct drm_device *dev, void *data,
+ 		return -ENOTSUPP;
+ 	}
  
-diff --git a/tools/perf/util/cap.h b/tools/perf/util/cap.h
-index 051dc590ceee..0f79fbf6638b 100644
---- a/tools/perf/util/cap.h
-+++ b/tools/perf/util/cap.h
-@@ -29,4 +29,8 @@ static inline bool perf_cap__capable(int cap __maybe_unused)
- #define CAP_SYSLOG	34
- #endif
- 
-+#ifndef CAP_SYS_PERFMON
-+#define CAP_SYS_PERFMON 38
-+#endif
-+
- #endif /* __PERF_CAP_H */
-diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-index f4dea055b080..3a46325e3702 100644
---- a/tools/perf/util/evsel.c
-+++ b/tools/perf/util/evsel.c
-@@ -2468,14 +2468,14 @@ int perf_evsel__open_strerror(struct evsel *evsel, struct target *target,
- 		 "You may not have permission to collect %sstats.\n\n"
- 		 "Consider tweaking /proc/sys/kernel/perf_event_paranoid,\n"
- 		 "which controls use of the performance events system by\n"
--		 "unprivileged users (without CAP_SYS_ADMIN).\n\n"
-+		 "unprivileged users (without CAP_SYS_PERFMON or CAP_SYS_ADMIN).\n\n"
- 		 "The current value is %d:\n\n"
- 		 "  -1: Allow use of (almost) all events by all users\n"
- 		 "      Ignore mlock limit after perf_event_mlock_kb without CAP_IPC_LOCK\n"
--		 ">= 0: Disallow ftrace function tracepoint by users without CAP_SYS_ADMIN\n"
--		 "      Disallow raw tracepoint access by users without CAP_SYS_ADMIN\n"
--		 ">= 1: Disallow CPU event access by users without CAP_SYS_ADMIN\n"
--		 ">= 2: Disallow kernel profiling by users without CAP_SYS_ADMIN\n\n"
-+		 ">= 0: Disallow ftrace function tracepoint by users without CAP_SYS_PERFMON or CAP_SYS_ADMIN\n"
-+		 "      Disallow raw tracepoint access by users without CAP_SYS_PERFMON or CAP_SYS_ADMIN\n"
-+		 ">= 1: Disallow CPU event access by users without CAP_SYS_PERFMON or CAP_SYS_ADMIN\n"
-+		 ">= 2: Disallow kernel profiling by users without CAP_SYS_PERFMON or CAP_SYS_ADMIN\n\n"
- 		 "To make this setting permanent, edit /etc/sysctl.conf too, e.g.:\n\n"
- 		 "	kernel.perf_event_paranoid = -1\n" ,
- 				 target->system_wide ? "system-wide " : "",
-diff --git a/tools/perf/util/util.c b/tools/perf/util/util.c
-index 969ae560dad9..9981db0d8d09 100644
---- a/tools/perf/util/util.c
-+++ b/tools/perf/util/util.c
-@@ -272,6 +272,7 @@ int perf_event_paranoid(void)
- bool perf_event_paranoid_check(int max_level)
- {
- 	return perf_cap__capable(CAP_SYS_ADMIN) ||
-+			perf_cap__capable(CAP_SYS_PERFMON) ||
- 			perf_event_paranoid() <= max_level;
- }
- 
+-	if (i915_perf_stream_paranoid && !capable(CAP_SYS_ADMIN)) {
++	if (i915_perf_stream_paranoid && !perfmon_capable()) {
+ 		DRM_DEBUG("Insufficient privileges to remove i915 OA config\n");
+ 		return -EACCES;
+ 	}
 -- 
 2.20.1
 
