@@ -2,131 +2,156 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7180F120EE0
-	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2019 17:11:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61574120F09
+	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2019 17:14:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726646AbfLPQLJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Dec 2019 11:11:09 -0500
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:21221 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726180AbfLPQLG (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 16 Dec 2019 11:11:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1576512665;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Knu3sFj/QXVI2qM2aimTaESR+T6JZFYPOQbQQ+S4wnQ=;
-        b=gN41ZajfiSmSqjx2xsn2O+L9INGcgCJIXl0IYLwnQdxCA2/lbWfn03xklkYOd7AHZWJlaw
-        Cdo4KsNAORaps2Dw+LkCg0clsTVMQuAuJ68R0hgjgRjvHiUrEX8ZBFdnNpUYlHWPH6rHpz
-        S2tyaibzC01tEzzU3YGu22R3quM6KVM=
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
- [209.85.208.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-425-E9W1pSuOMQCCRBcYEdHWng-1; Mon, 16 Dec 2019 11:11:04 -0500
-X-MC-Unique: E9W1pSuOMQCCRBcYEdHWng-1
-Received: by mail-lj1-f198.google.com with SMTP id y24so2290189ljc.19
-        for <bpf@vger.kernel.org>; Mon, 16 Dec 2019 08:11:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=Knu3sFj/QXVI2qM2aimTaESR+T6JZFYPOQbQQ+S4wnQ=;
-        b=tMK1+ZHXmZ6ieFWPcDJuu7stH1cicdqO06GzcjqxpJ6juhQ81Scz9a7xoY4L46/h4r
-         bUE/XwwTNbigfvECJBWaUi0v5gVJ0XQ7e8/fOQ+ln5vGumdcS7FvYnC1AluY5WOVi6xF
-         YUzDchzHAwZiiRxBxyMQBJnudRef9TK0c8jv76l7OtG/82eOD07fwCYuIVztKXWwd3AC
-         JER9QbPQcGA6WsV9v10dd14eUgDFYpn/XlrosCq59zLvtVQCBcUu6v4kk/Kg58zflvxT
-         mpS1Zt/6QxN5aqFHkFrRAm4qDpknjk9q7zzlaDhQJZJAA49xJ1CvLtuGpFR7WGiB97dH
-         wyJw==
-X-Gm-Message-State: APjAAAWldieCGDFlNgc+MbAQwarL61aWRJySuA9K2FXqws00PLMlcWkj
-        ArJewgL+6B2j7X2zKMXJSDbb192iTZwsJxPR4s38bajPgrbwoTVitCHObAIBz/BHwfu1YEjl32O
-        3xJbRPN2OvMeZ
-X-Received: by 2002:a05:651c:1032:: with SMTP id w18mr20295362ljm.61.1576512663010;
-        Mon, 16 Dec 2019 08:11:03 -0800 (PST)
-X-Google-Smtp-Source: APXvYqz7r+jiTSvA++c/OOf2wcqR9KwcHN7ZNi3ljuGB59+fw0NALhqBCG+KtU5nouN6QB8W+jp2qQ==
-X-Received: by 2002:a05:651c:1032:: with SMTP id w18mr20295349ljm.61.1576512662813;
-        Mon, 16 Dec 2019 08:11:02 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id y7sm9330755lfe.7.2019.12.16.08.11.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Dec 2019 08:11:02 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 75B03180960; Mon, 16 Dec 2019 17:11:01 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, guro@fb.com, hannes@cmpxchg.org, tj@kernel.org
-Subject: Re: [PATCH bpf-next] libbpf: Print hint about ulimit when getting permission denied error
-In-Reply-To: <20191216160002.vytwcpremx2e7ae3@ast-mbp.dhcp.thefacebook.com>
-References: <20191216124031.371482-1-toke@redhat.com> <20191216145230.103c1f46@carbon> <20191216155336.GA28925@linux.fritz.box> <20191216160002.vytwcpremx2e7ae3@ast-mbp.dhcp.thefacebook.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Mon, 16 Dec 2019 17:11:01 +0100
-Message-ID: <87v9qg8d4a.fsf@toke.dk>
+        id S1726784AbfLPQN7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Dec 2019 11:13:59 -0500
+Received: from mx0b-00190b01.pphosted.com ([67.231.157.127]:31686 "EHLO
+        mx0b-00190b01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726571AbfLPQN6 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 16 Dec 2019 11:13:58 -0500
+Received: from pps.filterd (m0050096.ppops.net [127.0.0.1])
+        by m0050096.ppops.net-00190b01. (8.16.0.42/8.16.0.42) with SMTP id xBGG9eCE008464;
+        Mon, 16 Dec 2019 16:12:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akamai.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=jan2016.eng;
+ bh=TlJtzvSQJY2PpRhXQCFBBcMUtctaSu6LA6YjngOX+UQ=;
+ b=icziZlzR56P+iT9L8NT3+VAG4RQyiBAd/YOq5pI4YpuFW0t1+HL5RIYnzx6GmtTAd6ay
+ 2W0g2L4CYbMW4aPkTepW2fw28kdpei+5r4SIwX1d6PzJD06IB9Qdy6fJUnT2xu4uB8+1
+ A1tXCJxmb3TMWcLptpeJYYPl1/+0yBcNMB3ydQApyuTuu9lJuXBheAJMBDGdqWx/S5Nl
+ dXlhuEEeoS8fLZmF3qLYptE1Mr0fzi3i8TE4jBePnmj4Dgmc8Vqk+Nnl0LvmJuj91bEy
+ qYl0PEE6IyrHlIkNJLQ/S2SjRE5gFgRb0pP6PWjzLToJOULkz2toJBCkQd7Aw2vwnXCq hg== 
+Received: from prod-mail-ppoint6 (prod-mail-ppoint6.akamai.com [184.51.33.61] (may be forged))
+        by m0050096.ppops.net-00190b01. with ESMTP id 2wvs1d0e6c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 16 Dec 2019 16:12:52 +0000
+Received: from pps.filterd (prod-mail-ppoint6.akamai.com [127.0.0.1])
+        by prod-mail-ppoint6.akamai.com (8.16.0.27/8.16.0.27) with SMTP id xBGFp46N000594;
+        Mon, 16 Dec 2019 11:12:52 -0500
+Received: from email.msg.corp.akamai.com ([172.27.165.112])
+        by prod-mail-ppoint6.akamai.com with ESMTP id 2wvuxydunk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Mon, 16 Dec 2019 11:12:51 -0500
+Received: from ustx2ex-dag1mb6.msg.corp.akamai.com (172.27.165.124) by
+ ustx2ex-dag1mb5.msg.corp.akamai.com (172.27.165.123) with Microsoft SMTP
+ Server (TLS) id 15.0.1473.3; Mon, 16 Dec 2019 10:12:50 -0600
+Received: from ustx2ex-dag1mb6.msg.corp.akamai.com ([172.27.165.124]) by
+ ustx2ex-dag1mb6.msg.corp.akamai.com ([172.27.165.124]) with mapi id
+ 15.00.1473.005; Mon, 16 Dec 2019 08:12:50 -0800
+From:   "Lubashev, Igor" <ilubashe@akamai.com>
+To:     Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        "Ingo Molnar" <mingo@redhat.com>,
+        "jani.nikula@linux.intel.com" <jani.nikula@linux.intel.com>,
+        "joonas.lahtinen@linux.intel.com" <joonas.lahtinen@linux.intel.com>,
+        "rodrigo.vivi@intel.com" <rodrigo.vivi@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        "james.bottomley@hansenpartnership.com" 
+        <james.bottomley@hansenpartnership.com>,
+        "benh@kernel.crashing.org" <benh@kernel.crashing.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        "serge@hallyn.com" <serge@hallyn.com>,
+        James Morris <jmorris@namei.org>
+CC:     Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
+        "Stephane Eranian" <eranian@google.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Jann Horn <jannh@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "selinux@vger.kernel.org" <selinux@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
+        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
+        "bgregg@netflix.com" <bgregg@netflix.com>,
+        Song Liu <songliubraving@fb.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Subject: RE: [PATCH v2 2/7] perf/core: open access for CAP_SYS_PERFMON
+ privileged process
+Thread-Topic: [PATCH v2 2/7] perf/core: open access for CAP_SYS_PERFMON
+ privileged process
+Thread-Index: AQHVs+CfzGj9uMUtGUC4IRZHidt5Zae87MsA
+Date:   Mon, 16 Dec 2019 16:12:50 +0000
+Message-ID: <9316a1ab21f6441eb2b421acb818a2a1@ustx2ex-dag1mb6.msg.corp.akamai.com>
+References: <26101427-c0a3-db9f-39e9-9e5f4ddd009c@linux.intel.com>
+ <fd6ffb43-ed43-14cd-b286-6ab4b199155b@linux.intel.com>
+In-Reply-To: <fd6ffb43-ed43-14cd-b286-6ab4b199155b@linux.intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [172.19.113.150]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-12-16_06:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1911140001 definitions=main-1912160139
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
+ definitions=2019-12-16_06:2019-12-16,2019-12-16 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 clxscore=1011
+ adultscore=0 spamscore=0 phishscore=0 lowpriorityscore=0
+ priorityscore=1501 malwarescore=0 mlxlogscore=999 suspectscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-1912160141
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
-
-> On Mon, Dec 16, 2019 at 04:53:36PM +0100, Daniel Borkmann wrote:
->> On Mon, Dec 16, 2019 at 02:52:30PM +0100, Jesper Dangaard Brouer wrote:
->> > On Mon, 16 Dec 2019 13:40:31 +0100
->> > Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com> wrote:
->> >=20
->> > > Probably the single most common error newcomers to XDP are stumped b=
-y is
->> > > the 'permission denied' error they get when trying to load their pro=
-gram
->> > > and 'ulimit -r' is set too low. For examples, see [0], [1].
->> > >=20
->> > > Since the error code is UAPI, we can't change that. Instead, this pa=
-tch
->> > > adds a few heuristics in libbpf and outputs an additional hint if th=
-ey are
->> > > met: If an EPERM is returned on map create or program load, and gete=
-uid()
->> > > shows we are root, and the current RLIMIT_MEMLOCK is not infinity, we
->> > > output a hint about raising 'ulimit -r' as an additional log line.
->> > >=20
->> > > [0] https://marc.info/?l=3Dxdp-newbies&m=3D157043612505624&w=3D2
->> > > [1] https://github.com/xdp-project/xdp-tutorial/issues/86
->> > >=20
->> > > Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->> >=20
->> > Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
->> >=20
->> > This is the top #1 issue users hit again-and-again, too bad we cannot
->> > change the return code as it is UAPI now.  Thanks for taking care of
->> > this mitigation.
->>=20
->> It's an annoying error that comes up very often, agree, and tooling then
->> sets it to a high value / inf anyway as next step if it has the rights
->> to do so. Probably time to revisit the idea that if the user has the same
->> rights as being able to set setrlimit() anyway, we should just not accou=
-nt
->> for it ... incomplete hack:
->
-> We cannot drop it quite yet.
-> There are services that run under root that are relying on this rlimit
-> to prevent other root services from consuming too much memory.
-
-How do they do that? Set a pre-defined limit and rely on the other
-services not calling setrlimit()? There's no way to read the current
-value of how much memory is locked either (is there?), so for multiple
-daemons there's a central policy thing that does
-SUM(requirement_per_daemon)?
-
-> We need memcg based alternative first before we can remove this limit.
-> Otherwise users have no way to restrict.
-
-Yeah, something cg-based would make a lot of sense here (and also
-presumably make it possible to read out the current value, right?).
-
--Toke
-
+T24gTW9uLCBEZWMgMTYsIDIwMTkgYXQgMjoxNSBBTSwgQWxleGV5IEJ1ZGFua292IDxhbGV4ZXku
+YnVkYW5rb3ZAbGludXguaW50ZWwuY29tPiB3cm90ZToNCj4gDQo+IE9wZW4gYWNjZXNzIHRvIHBl
+cmZfZXZlbnRzIG1vbml0b3JpbmcgZm9yIENBUF9TWVNfUEVSRk1PTiBwcml2aWxlZ2VkDQo+IHBy
+b2Nlc3Nlcy4NCj4gRm9yIGJhY2t3YXJkIGNvbXBhdGliaWxpdHkgcmVhc29ucyBhY2Nlc3MgdG8g
+cGVyZl9ldmVudHMgc3Vic3lzdGVtIHJlbWFpbnMNCj4gb3BlbiBmb3IgQ0FQX1NZU19BRE1JTiBw
+cml2aWxlZ2VkIHByb2Nlc3NlcyBidXQgQ0FQX1NZU19BRE1JTiB1c2FnZQ0KPiBmb3Igc2VjdXJl
+IHBlcmZfZXZlbnRzIG1vbml0b3JpbmcgaXMgZGlzY291cmFnZWQgd2l0aCByZXNwZWN0IHRvDQo+
+IENBUF9TWVNfUEVSRk1PTiBjYXBhYmlsaXR5Lg0KPiANCj4gU2lnbmVkLW9mZi1ieTogQWxleGV5
+IEJ1ZGFua292IDxhbGV4ZXkuYnVkYW5rb3ZAbGludXguaW50ZWwuY29tPg0KPiAtLS0NCj4gIGlu
+Y2x1ZGUvbGludXgvcGVyZl9ldmVudC5oIHwgOSArKysrKystLS0NCj4gIDEgZmlsZSBjaGFuZ2Vk
+LCA2IGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvaW5j
+bHVkZS9saW51eC9wZXJmX2V2ZW50LmggYi9pbmNsdWRlL2xpbnV4L3BlcmZfZXZlbnQuaCBpbmRl
+eA0KPiAzNGM3YzY5MTAwMjYuLjUyMzEzZDJjYzM0MyAxMDA2NDQNCj4gLS0tIGEvaW5jbHVkZS9s
+aW51eC9wZXJmX2V2ZW50LmgNCj4gKysrIGIvaW5jbHVkZS9saW51eC9wZXJmX2V2ZW50LmgNCj4g
+QEAgLTEyODUsNyArMTI4NSw4IEBAIHN0YXRpYyBpbmxpbmUgaW50IHBlcmZfaXNfcGFyYW5vaWQo
+dm9pZCkNCj4gDQo+ICBzdGF0aWMgaW5saW5lIGludCBwZXJmX2FsbG93X2tlcm5lbChzdHJ1Y3Qg
+cGVyZl9ldmVudF9hdHRyICphdHRyKSAgew0KPiAtCWlmIChzeXNjdGxfcGVyZl9ldmVudF9wYXJh
+bm9pZCA+IDEgJiYgIWNhcGFibGUoQ0FQX1NZU19BRE1JTikpDQo+ICsJaWYgKHN5c2N0bF9wZXJm
+X2V2ZW50X3BhcmFub2lkID4gMSAmJg0KPiArCSAgICEoY2FwYWJsZShDQVBfU1lTX1BFUkZNT04p
+IHx8IGNhcGFibGUoQ0FQX1NZU19BRE1JTikpKQ0KPiAgCQlyZXR1cm4gLUVBQ0NFUzsNCj4gDQo+
+ICAJcmV0dXJuIHNlY3VyaXR5X3BlcmZfZXZlbnRfb3BlbihhdHRyLCBQRVJGX1NFQ1VSSVRZX0tF
+Uk5FTCk7IEBADQo+IC0xMjkzLDcgKzEyOTQsOCBAQCBzdGF0aWMgaW5saW5lIGludCBwZXJmX2Fs
+bG93X2tlcm5lbChzdHJ1Y3QNCj4gcGVyZl9ldmVudF9hdHRyICphdHRyKQ0KPiANCj4gIHN0YXRp
+YyBpbmxpbmUgaW50IHBlcmZfYWxsb3dfY3B1KHN0cnVjdCBwZXJmX2V2ZW50X2F0dHIgKmF0dHIp
+ICB7DQo+IC0JaWYgKHN5c2N0bF9wZXJmX2V2ZW50X3BhcmFub2lkID4gMCAmJiAhY2FwYWJsZShD
+QVBfU1lTX0FETUlOKSkNCj4gKwlpZiAoc3lzY3RsX3BlcmZfZXZlbnRfcGFyYW5vaWQgPiAwICYm
+DQo+ICsJICAgICEoY2FwYWJsZShDQVBfU1lTX1BFUkZNT04pIHx8IGNhcGFibGUoQ0FQX1NZU19B
+RE1JTikpKQ0KPiAgCQlyZXR1cm4gLUVBQ0NFUzsNCj4gDQo+ICAJcmV0dXJuIHNlY3VyaXR5X3Bl
+cmZfZXZlbnRfb3BlbihhdHRyLCBQRVJGX1NFQ1VSSVRZX0NQVSk7IEBAIC0NCj4gMTMwMSw3ICsx
+MzAzLDggQEAgc3RhdGljIGlubGluZSBpbnQgcGVyZl9hbGxvd19jcHUoc3RydWN0IHBlcmZfZXZl
+bnRfYXR0cg0KPiAqYXR0cikNCj4gDQo+ICBzdGF0aWMgaW5saW5lIGludCBwZXJmX2FsbG93X3Ry
+YWNlcG9pbnQoc3RydWN0IHBlcmZfZXZlbnRfYXR0ciAqYXR0cikgIHsNCj4gLQlpZiAoc3lzY3Rs
+X3BlcmZfZXZlbnRfcGFyYW5vaWQgPiAtMSAmJiAhY2FwYWJsZShDQVBfU1lTX0FETUlOKSkNCj4g
+KwlpZiAoc3lzY3RsX3BlcmZfZXZlbnRfcGFyYW5vaWQgPiAtMSAmJg0KPiArCSAgICAhKGNhcGFi
+bGUoQ0FQX1NZU19QRVJGTU9OKSB8fCBjYXBhYmxlKENBUF9TWVNfQURNSU4pKSkNCj4gIAkJcmV0
+dXJuIC1FUEVSTTsNCj4gDQo+ICAJcmV0dXJuIHNlY3VyaXR5X3BlcmZfZXZlbnRfb3BlbihhdHRy
+LCBQRVJGX1NFQ1VSSVRZX1RSQUNFUE9JTlQpOw0KPiAtLQ0KPiAyLjIwLjENCg0KVGhhbmtzLiAg
+SSBsaWtlIHRoZSBpZGVhIG9mIENBUF9TWVNfUEVSRk1PTiB0aGF0IGRvZXMgbm90IHJlcXVpcmUg
+Q0FQX1NZU19BRE1JTi4gIEl0IG1ha2VzIGdyYW50aW5nIHVzZXJzIGFiaWxpdHkgdG8gcnVuIHBl
+cmYgYSBiaXQgc2FmZXIuDQoNCkkgc2VlIGEgbG90IG9mICIoY2FwYWJsZShDQVBfU1lTX1BFUkZN
+T04pIHx8IGNhcGFibGUoQ0FQX1NZU19BRE1JTikiIGNvbnN0cnVjdHMgbm93LiAgTWF5YmUgd3Jh
+cHBpbmcgaXQgaW4gYW4gIiBpbmxpbmUgYm9vbCBwZXJmbW9uX2NhcGFibGUoKSIgZGVmaW5lZCBz
+b21ld2hlcmUgKGxpa2UgaW4gL2luY2x1ZGUvbGludXgvY2FwYWJpbGl0eS5oKT8NCg0KLSBJZ29y
+DQo=
