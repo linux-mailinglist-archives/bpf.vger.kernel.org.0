@@ -2,86 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 447B511FEE3
-	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2019 08:18:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D997E11FED5
+	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2019 08:16:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726834AbfLPHRd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Dec 2019 02:17:33 -0500
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:43279 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726565AbfLPHRc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 Dec 2019 02:17:32 -0500
-Received: by mail-pf1-f195.google.com with SMTP id h14so3193202pfe.10;
-        Sun, 15 Dec 2019 23:17:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=O679z1ZNxZm1L7wwDCHgL10vvD38qF9e8GlEICfZy6k=;
-        b=Sc/pUz/25KvSJzvdDVeJN2CMw/zO/3uatM88TdcrA0sh/cE2N5620lS2Aw6zmfl/rE
-         4qPI6iTn5faaMdrUUydZ0HGknTyQQYa0hFxjWwnDxWCeNCRHUDXUqviwlhN6nhWE878V
-         uBju3a4P5kTguMLB0EqE095N+SxXWV57DlCyrDjlLpq2vjACHBZPOgm1Ps9Hkvpb6e0S
-         Ghu/eG5hb4zr0JxQJWKeZj9sc2nZrDD+RsJ4RZi8kqNeGvta3E4ggAvSqPwEmzjmQuo/
-         Fa5KdAgKvVpWKfIkynf/5PxCqRi2e47sEgyTLkfanskXM3wAWGCXkzQNy1oA6QQ45pPW
-         l1TQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=O679z1ZNxZm1L7wwDCHgL10vvD38qF9e8GlEICfZy6k=;
-        b=m1G52PFszrhMf64sZ8NBcqJSv7c0/Gu9sC5z2cP5WXza5TNFj+CYX2xtBXc4vJVHVe
-         HikVvn6S8ErVDKZQgUx05QPqz36CAN+4BS6z9ygdGbQuom+qIPp2gJtwncK1zawyaEuF
-         HZds7XOJobLrtG38DNTmlgvZtF6NGZbbCXt1DtWnt0zwEkrtWoa5BkvtdFryTxFwUvYl
-         z4ceQ8viG4OvQXnTHn/v31vXU913Q8UPQeVYp0MrVP0IGv7lAS106XjamEP1uhwgcRF1
-         QVjjJabse0D2rQGRRxEoYmW1pmwyGi1VYd/4RejZjnAC627vfxuJOxVRDWkWu17MNa2C
-         Lsmg==
-X-Gm-Message-State: APjAAAXFCnE82Oj5+i5uFDLJyir3W7+3UJRYfiAm6Plkfif0qXInp3r4
-        +2MqKBbdWzy0WxXbHQiWu70=
-X-Google-Smtp-Source: APXvYqwTVIRmt/U52KL4OHTAMdEvkbuz1YvFg9Z4bE2uqiu5ZP/ZLlv45MEYAQJERla8zIgzu+2ibQ==
-X-Received: by 2002:aa7:9839:: with SMTP id q25mr14665848pfl.161.1576480652144;
-        Sun, 15 Dec 2019 23:17:32 -0800 (PST)
-Received: from localhost.localdomain ([222.151.198.97])
-        by smtp.gmail.com with ESMTPSA id q7sm20875486pfb.44.2019.12.15.23.17.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Dec 2019 23:17:31 -0800 (PST)
-From:   Prashant Bhole <prashantbhole.linux@gmail.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Prashant Bhole <prashantbhole.linux@gmail.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH bpf] samples/bpf: reintroduce missed build targets
-Date:   Mon, 16 Dec 2019 16:16:19 +0900
-Message-Id: <20191216071619.25479-1-prashantbhole.linux@gmail.com>
-X-Mailer: git-send-email 2.21.0
+        id S1726754AbfLPHQa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Dec 2019 02:16:30 -0500
+Received: from mga02.intel.com ([134.134.136.20]:28847 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726561AbfLPHQa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 Dec 2019 02:16:30 -0500
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga101.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 15 Dec 2019 23:16:28 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.69,320,1571727600"; 
+   d="scan'208";a="217326416"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga003.jf.intel.com with ESMTP; 15 Dec 2019 23:16:28 -0800
+Received: from [10.251.95.214] (abudanko-mobl.ccr.corp.intel.com [10.251.95.214])
+        by linux.intel.com (Postfix) with ESMTP id A3FA058044E;
+        Sun, 15 Dec 2019 23:16:20 -0800 (PST)
+Subject: [PATCH v2 3/7] perf tool: extend Perf tool with CAP_SYS_PERFMON
+ capability support
+From:   Alexey Budankov <alexey.budankov@linux.intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, jani.nikula@linux.intel.com,
+        joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
+        Alexei Starovoitov <ast@kernel.org>,
+        james.bottomley@hansenpartnership.com, benh@kernel.crashing.org,
+        Casey Schaufler <casey@schaufler-ca.com>, serge@hallyn.com,
+        James Morris <jmorris@namei.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
+        Stephane Eranian <eranian@google.com>,
+        Igor Lubashev <ilubashe@akamai.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Jann Horn <jannh@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
+        intel-gfx@lists.freedesktop.org, bgregg@netflix.com,
+        Song Liu <songliubraving@fb.com>, bpf@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <26101427-c0a3-db9f-39e9-9e5f4ddd009c@linux.intel.com>
+Organization: Intel Corp.
+Message-ID: <40b9755f-bcbd-c096-37f0-ab2f50393f06@linux.intel.com>
+Date:   Mon, 16 Dec 2019 10:16:19 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <26101427-c0a3-db9f-39e9-9e5f4ddd009c@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add xdp_redirect and per_socket_stats_example in build targets.
-They got removed from build targets in Makefile reorganization.
 
-Fixes: 1d97c6c2511f ("samples/bpf: Base target programs rules on Makefile.target")
-Signed-off-by: Prashant Bhole <prashantbhole.linux@gmail.com>
+Extend error messages to mention CAP_SYS_PERFMON capability as an option
+to substitute CAP_SYS_ADMIN capability for secure system performance
+monitoring and observability operations [1]. Make perf_event_paranoid_check()
+to be aware of CAP_SYS_PERFMON capability.
+
+[1] https://www.kernel.org/doc/html/latest/admin-guide/perf-security.html
+
+Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
 ---
- samples/bpf/Makefile | 2 ++
- 1 file changed, 2 insertions(+)
+ tools/perf/design.txt   |  3 ++-
+ tools/perf/util/cap.h   |  4 ++++
+ tools/perf/util/evsel.c | 10 +++++-----
+ tools/perf/util/util.c  |  1 +
+ 4 files changed, 12 insertions(+), 6 deletions(-)
 
-diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-index 1fc42ad8ff49..8003d2823fa8 100644
---- a/samples/bpf/Makefile
-+++ b/samples/bpf/Makefile
-@@ -38,6 +38,8 @@ tprogs-y += tc_l2_redirect
- tprogs-y += lwt_len_hist
- tprogs-y += xdp_tx_iptunnel
- tprogs-y += test_map_in_map
-+tprogs-y += per_socket_stats_example
-+tprogs-y += xdp_redirect
- tprogs-y += xdp_redirect_map
- tprogs-y += xdp_redirect_cpu
- tprogs-y += xdp_monitor
+diff --git a/tools/perf/design.txt b/tools/perf/design.txt
+index 0453ba26cdbd..71755b3e1303 100644
+--- a/tools/perf/design.txt
++++ b/tools/perf/design.txt
+@@ -258,7 +258,8 @@ gets schedule to. Per task counters can be created by any user, for
+ their own tasks.
+ 
+ A 'pid == -1' and 'cpu == x' counter is a per CPU counter that counts
+-all events on CPU-x. Per CPU counters need CAP_SYS_ADMIN privilege.
++all events on CPU-x. Per CPU counters need CAP_SYS_PERFMON or
++CAP_SYS_ADMIN privilege.
+ 
+ The 'flags' parameter is currently unused and must be zero.
+ 
+diff --git a/tools/perf/util/cap.h b/tools/perf/util/cap.h
+index 051dc590ceee..0f79fbf6638b 100644
+--- a/tools/perf/util/cap.h
++++ b/tools/perf/util/cap.h
+@@ -29,4 +29,8 @@ static inline bool perf_cap__capable(int cap __maybe_unused)
+ #define CAP_SYSLOG	34
+ #endif
+ 
++#ifndef CAP_SYS_PERFMON
++#define CAP_SYS_PERFMON 38
++#endif
++
+ #endif /* __PERF_CAP_H */
+diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+index f4dea055b080..3a46325e3702 100644
+--- a/tools/perf/util/evsel.c
++++ b/tools/perf/util/evsel.c
+@@ -2468,14 +2468,14 @@ int perf_evsel__open_strerror(struct evsel *evsel, struct target *target,
+ 		 "You may not have permission to collect %sstats.\n\n"
+ 		 "Consider tweaking /proc/sys/kernel/perf_event_paranoid,\n"
+ 		 "which controls use of the performance events system by\n"
+-		 "unprivileged users (without CAP_SYS_ADMIN).\n\n"
++		 "unprivileged users (without CAP_SYS_PERFMON or CAP_SYS_ADMIN).\n\n"
+ 		 "The current value is %d:\n\n"
+ 		 "  -1: Allow use of (almost) all events by all users\n"
+ 		 "      Ignore mlock limit after perf_event_mlock_kb without CAP_IPC_LOCK\n"
+-		 ">= 0: Disallow ftrace function tracepoint by users without CAP_SYS_ADMIN\n"
+-		 "      Disallow raw tracepoint access by users without CAP_SYS_ADMIN\n"
+-		 ">= 1: Disallow CPU event access by users without CAP_SYS_ADMIN\n"
+-		 ">= 2: Disallow kernel profiling by users without CAP_SYS_ADMIN\n\n"
++		 ">= 0: Disallow ftrace function tracepoint by users without CAP_SYS_PERFMON or CAP_SYS_ADMIN\n"
++		 "      Disallow raw tracepoint access by users without CAP_SYS_PERFMON or CAP_SYS_ADMIN\n"
++		 ">= 1: Disallow CPU event access by users without CAP_SYS_PERFMON or CAP_SYS_ADMIN\n"
++		 ">= 2: Disallow kernel profiling by users without CAP_SYS_PERFMON or CAP_SYS_ADMIN\n\n"
+ 		 "To make this setting permanent, edit /etc/sysctl.conf too, e.g.:\n\n"
+ 		 "	kernel.perf_event_paranoid = -1\n" ,
+ 				 target->system_wide ? "system-wide " : "",
+diff --git a/tools/perf/util/util.c b/tools/perf/util/util.c
+index 969ae560dad9..9981db0d8d09 100644
+--- a/tools/perf/util/util.c
++++ b/tools/perf/util/util.c
+@@ -272,6 +272,7 @@ int perf_event_paranoid(void)
+ bool perf_event_paranoid_check(int max_level)
+ {
+ 	return perf_cap__capable(CAP_SYS_ADMIN) ||
++			perf_cap__capable(CAP_SYS_PERFMON) ||
+ 			perf_event_paranoid() <= max_level;
+ }
+ 
 -- 
-2.21.0
+2.20.1
+
 
