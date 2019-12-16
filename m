@@ -2,59 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BD691121342
-	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2019 19:00:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B07A1215EA
+	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2019 19:25:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728182AbfLPSAO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Dec 2019 13:00:14 -0500
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:44117 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728898AbfLPSAN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 Dec 2019 13:00:13 -0500
-Received: by mail-ot1-f66.google.com with SMTP id x3so10134930oto.11
-        for <bpf@vger.kernel.org>; Mon, 16 Dec 2019 10:00:13 -0800 (PST)
+        id S1728154AbfLPSZU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Dec 2019 13:25:20 -0500
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:37084 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731626AbfLPSSL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 Dec 2019 13:18:11 -0500
+Received: by mail-qt1-f195.google.com with SMTP id w47so6535631qtk.4;
+        Mon, 16 Dec 2019 10:18:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:sender:in-reply-to:references:from:date:message-id
-         :subject:to;
-        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
-        b=QPZbvX6RoZFlUM3NfBPjfA35bGo5/K+2Yp/hwYW6NX6ggxWGdBymbHDLc9c0ZfSLT4
-         gIEOADtO0tAvOBo6Mkoc8d7CCz6fiOkBmmdbgmtxOY/ZQXs2y2JADm3npZEiRqTvZnzl
-         jDcmNKhuvs49EPqd8nUBzJR0peZ+PeuOzUIUumju6b89OF6hZuO5oCG3PyDx7uGlJG/F
-         AgUiqGKA/Zi/7z5A8xRndOKCvAIDZIjo7M4yGMZU2rbevBih60k4GONp8jgVmB9VZkCS
-         WPQyGOrsnRrRaUCxBw3ihK8ojdSs4gFYtiATPnnEYhCFwRwy0zkZRmipo55te4JqOj27
-         gX+w==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=aVIdbmjhSDvYURdJGBO4hrAy6vilyOLyBTa9JUkr1Bc=;
+        b=uNc57GS+pK9ryCHUL2YKrn+2eyUx9v0c7/GcpGykHEXM+J7jI4N7aKP1ir2aZsQ7aM
+         LSiq6oZuIg7lhCngpRn8W21ORm5YdRq2+0xqFkRQNcdOcbbRWwY6hmEjYVS1RkiekbsC
+         Mb/OZYvL5bQ+SIj1ne/rPXGOf9AXs+mJle60CXaXMSoNWP30OdEZ89ZuKeWEhbi0Sljq
+         3Gn6DGbSfI7YZ3Y89wFqDzpcS7724iu/jKYVs9FZeEZ+O4Sb9GwwqhztumFOCQ8MHErJ
+         lonrSxOKVC7+vFGho2O2PmrnJOliDA8RrKiY/bSe5amUGPBBWWZCRl4q1lC3GrO12XP6
+         tj0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:in-reply-to:references:from
-         :date:message-id:subject:to;
-        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
-        b=bATvFF8TgypjIujl7v77M+dn5bkNjiqTD862+kFKTmTB/JGiOeNw34qbh3K9INm2PD
-         MXF4NyqVP7deU596t8Rwpw6UT4h37rgX/h+syuKQQbc4fvSzWQIY1Q+SbTU67JqbBA9b
-         T5FiQuqL9NRGtmVLCOdWMYxe2soQFqQY5naINuELJA8njhuuB2Fbgc7xxBe+0XPupdbj
-         VinUUV5xbE8fCpazgtaC0xPmCu12TdnK0NZLPCCjILB+gEE2Tag5v2fSf0xhW9tYwTsy
-         V/kuxETG0of+w3i9UFIvG1QCYsptidKSvxde9CJx9aAz8651PAG79uBB4SJiIrexLEKh
-         3wug==
-X-Gm-Message-State: APjAAAXtEMQajRxOh6HOvjBdw+0vWEVQb9YBrB7Pe9SwN2bVIkgs1kOj
-        fTZp0css+TAmkfRg0yJsuIxgcwqOSSQiegpWGwI=
-X-Google-Smtp-Source: APXvYqzHBaBfzIWNdqRr1mp6dqwPaU3zznIStZko/YHkkv4F+lhJhK0iJPjbWbQU3LgRYj2on1mIHBECmkgNOYsIuIo=
-X-Received: by 2002:a9d:7b4a:: with SMTP id f10mr21429922oto.4.1576519213329;
- Mon, 16 Dec 2019 10:00:13 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=aVIdbmjhSDvYURdJGBO4hrAy6vilyOLyBTa9JUkr1Bc=;
+        b=PDdnGxliwX/3QU9dwVEw9mFmb0V3Ii6sY/EQ0MWYSUzQ//rq9yOKZrmMNRDE6v0o+T
+         WIxGuNFYSTu+8RWFgSSDnKf4J6rrg5IEIp5ZMCtiaztcaaQ+6Tvn3FZIjSLc9fBcX1KB
+         4M0przYAfPxtrr2FB883OUsm5YeTCTazpeb+7DdFeEbsJo28fdePr49qN/aIfjUElt6q
+         kLllPpvfSPzQCyWqCKuLXNVWsdcKMG/wxRchogQYt9CyzEeH8nCe1bekPZwP2WN4BDZH
+         hRgzBPyj6IVcvmyrCX/m0phaE8t5AR4S7QVBibK3mxs07Kzi+zgifW4w0sjd9z0LWO3C
+         pl/Q==
+X-Gm-Message-State: APjAAAXu2WBkr6v2dGrVMMvKAdBGSKTy0RyOE0LaWJZ63Y+K5HQzgaAk
+        22IG15s4zBPq3m745WepsQo/7I4rB94D0EYKidM=
+X-Google-Smtp-Source: APXvYqwNnMS/sGLMh1yvh3HaMoQe/JLQ94GhBaO27PGikqE7HgtGlM57avSLnco+xhHngt1Qye1+dTrwQFBq7nXFma4=
+X-Received: by 2002:ac8:2310:: with SMTP id a16mr621495qta.46.1576520290280;
+ Mon, 16 Dec 2019 10:18:10 -0800 (PST)
 MIME-Version: 1.0
-Received: by 2002:a4a:dc1:0:0:0:0:0 with HTTP; Mon, 16 Dec 2019 10:00:12 -0800 (PST)
-In-Reply-To: <CA+T2m2488djqZP4tL3JhqG1j4miXUXN9aJLCr8-KCd7jiqmcbA@mail.gmail.com>
-References: <CA+T2m2488djqZP4tL3JhqG1j4miXUXN9aJLCr8-KCd7jiqmcbA@mail.gmail.com>
-From:   Christy Walton <miraclegod913@gmail.com>
-Date:   Mon, 16 Dec 2019 10:00:12 -0800
-X-Google-Sender-Auth: SxUYWlxlTRpRHLD1Tr1UKxEBF0c
-Message-ID: <CA+T2m25w5XtMwyZR-ROtwsPgv_kaYhVAhVE1ypsMJSBywp1Wvg@mail.gmail.com>
-Subject: Fwd: R000I want to open Charity Foundation in your country on your
- behalf is it okay
-To:     undisclosed-recipients:;
+References: <20191216152715.711308-1-toke@redhat.com>
+In-Reply-To: <20191216152715.711308-1-toke@redhat.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Mon, 16 Dec 2019 19:17:59 +0100
+Message-ID: <CAJ+HfNhYG_hzuFzX5sAH7ReotLtZWTP_9D2jA_iVMg+jUtXXCw@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next] xdp: Add tracepoint on XDP program return
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Ido Schimmel <idosch@idosch.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Mon, 16 Dec 2019 at 16:28, Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat=
+.com> wrote:
+>
+> This adds a new tracepoint, xdp_prog_return, which is triggered at every
+> XDP program return. This was first discussed back in August[0] as a way t=
+o
+> hook XDP into the kernel drop_monitor framework, to have a one-stop place
+> to find all packet drops in the system.
+>
+> Because trace/events/xdp.h includes filter.h, some ifdef guarding is need=
+ed
+> to be able to use the tracepoint from bpf_prog_run_xdp(). If anyone has a=
+ny
+> ideas for how to improve on this, please to speak up. Sending this RFC
+> because of this issue, and to get some feedback from Ido on whether this
+> tracepoint has enough data for drop_monitor usage.
+>
 
+I get that it would be useful, but can it be solved with BPF tracing
+(i.e. tracing BPF with BPF)? It would be neat not adding another
+tracepoint in the fast-path...
