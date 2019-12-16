@@ -2,29 +2,29 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 19BA3121A54
-	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2019 21:00:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 506FE121A59
+	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2019 21:00:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727517AbfLPT6P (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Dec 2019 14:58:15 -0500
-Received: from mga18.intel.com ([134.134.136.126]:50384 "EHLO mga18.intel.com"
+        id S1727404AbfLPT7X (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Dec 2019 14:59:23 -0500
+Received: from mga03.intel.com ([134.134.136.65]:58877 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727466AbfLPT6O (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 Dec 2019 14:58:14 -0500
+        id S1727016AbfLPT7X (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 Dec 2019 14:59:23 -0500
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 16 Dec 2019 11:58:13 -0800
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 16 Dec 2019 11:59:22 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.69,322,1571727600"; 
-   d="scan'208";a="205226460"
+   d="scan'208";a="415199445"
 Received: from linux.intel.com ([10.54.29.200])
-  by orsmga007.jf.intel.com with ESMTP; 16 Dec 2019 11:58:12 -0800
+  by fmsmga005.fm.intel.com with ESMTP; 16 Dec 2019 11:59:20 -0800
 Received: from [10.251.95.214] (abudanko-mobl.ccr.corp.intel.com [10.251.95.214])
-        by linux.intel.com (Postfix) with ESMTP id 82AC0580342;
-        Mon, 16 Dec 2019 11:58:04 -0800 (PST)
-Subject: [PATCH v3 1/7] capabilities: introduce CAP_SYS_PERFMON to kernel and
- user space
+        by linux.intel.com (Postfix) with ESMTP id 777085802E5;
+        Mon, 16 Dec 2019 11:59:12 -0800 (PST)
+Subject: [PATCH v3 2/7] perf/core: open access for CAP_SYS_PERFMON privileged
+ process
 From:   Alexey Budankov <alexey.budankov@linux.intel.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -60,8 +60,8 @@ Cc:     Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
         "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
 References: <b175f283-d256-e37e-f447-6ba4ab4f3d3a@linux.intel.com>
 Organization: Intel Corp.
-Message-ID: <bd8adfde-f562-0e56-75aa-371c5354f350@linux.intel.com>
-Date:   Mon, 16 Dec 2019 22:58:02 +0300
+Message-ID: <3605ca5e-864f-84b2-b3ae-3a7d6c8d4fa9@linux.intel.com>
+Date:   Mon, 16 Dec 2019 22:59:11 +0300
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
  Thunderbird/60.9.1
 MIME-Version: 1.0
@@ -75,78 +75,47 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 
-Introduce CAP_SYS_PERFMON capability devoted to secure system performance
-monitoring and observability so that CAP_SYS_PERFMON would assist
-CAP_SYS_ADMIN capability in its governing role for perf_events, i915_perf
-and other subsystems of the kernel.
-
-CAP_SYS_PERFMON intends to harden system security and integrity during
-system performance monitoring and observability by decreasing attack surface
-that is available to CAP_SYS_ADMIN privileged processes.
-
-CAP_SYS_PERFMON intends to take over CAP_SYS_ADMIN credentials related to
-system performance monitoring and observability and balance amount of
-CAP_SYS_ADMIN credentials in accordance with the recommendations provided
-in the man page for CAP_SYS_ADMIN [1]: "Note: this capability is overloaded;
-see Notes to kernel developers, below."
-
-[1] http://man7.org/linux/man-pages/man7/capabilities.7.html
+Open access to perf_events monitoring for CAP_SYS_PERFMON privileged processes.
+For backward compatibility reasons access to perf_events subsystem remains open
+for CAP_SYS_ADMIN privileged processes but CAP_SYS_ADMIN usage for secure
+perf_events monitoring is discouraged with respect to CAP_SYS_PERFMON capability.
 
 Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
 ---
- include/linux/capability.h          | 1 +
- include/uapi/linux/capability.h     | 8 +++++++-
- security/selinux/include/classmap.h | 4 ++--
- 3 files changed, 10 insertions(+), 3 deletions(-)
+ include/linux/perf_event.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/capability.h b/include/linux/capability.h
-index ecce0f43c73a..6342502c4c2a 100644
---- a/include/linux/capability.h
-+++ b/include/linux/capability.h
-@@ -251,6 +251,7 @@ extern bool privileged_wrt_inode_uidgid(struct user_namespace *ns, const struct
- extern bool capable_wrt_inode_uidgid(const struct inode *inode, int cap);
- extern bool file_ns_capable(const struct file *file, struct user_namespace *ns, int cap);
- extern bool ptracer_capable(struct task_struct *tsk, struct user_namespace *ns);
-+#define perfmon_capable() (capable(CAP_SYS_PERFMON) || capable(CAP_SYS_ADMIN))
+diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+index 34c7c6910026..f46acd69425f 100644
+--- a/include/linux/perf_event.h
++++ b/include/linux/perf_event.h
+@@ -1285,7 +1285,7 @@ static inline int perf_is_paranoid(void)
  
- /* audit system wants to get cap info from files as well */
- extern int get_vfs_caps_from_disk(const struct dentry *dentry, struct cpu_vfs_cap_data *cpu_caps);
-diff --git a/include/uapi/linux/capability.h b/include/uapi/linux/capability.h
-index 240fdb9a60f6..98e03cc76c7c 100644
---- a/include/uapi/linux/capability.h
-+++ b/include/uapi/linux/capability.h
-@@ -366,8 +366,14 @@ struct vfs_ns_cap_data {
+ static inline int perf_allow_kernel(struct perf_event_attr *attr)
+ {
+-	if (sysctl_perf_event_paranoid > 1 && !capable(CAP_SYS_ADMIN))
++	if (sysctl_perf_event_paranoid > 1 && !perfmon_capable())
+ 		return -EACCES;
  
- #define CAP_AUDIT_READ		37
+ 	return security_perf_event_open(attr, PERF_SECURITY_KERNEL);
+@@ -1293,7 +1293,7 @@ static inline int perf_allow_kernel(struct perf_event_attr *attr)
  
-+/*
-+ * Allow system performance and observability privileged operations
-+ * using perf_events, i915_perf and other kernel subsystems
-+ */
-+
-+#define CAP_SYS_PERFMON		38
+ static inline int perf_allow_cpu(struct perf_event_attr *attr)
+ {
+-	if (sysctl_perf_event_paranoid > 0 && !capable(CAP_SYS_ADMIN))
++	if (sysctl_perf_event_paranoid > 0 && !perfmon_capable())
+ 		return -EACCES;
  
--#define CAP_LAST_CAP         CAP_AUDIT_READ
-+#define CAP_LAST_CAP         CAP_SYS_PERFMON
+ 	return security_perf_event_open(attr, PERF_SECURITY_CPU);
+@@ -1301,7 +1301,7 @@ static inline int perf_allow_cpu(struct perf_event_attr *attr)
  
- #define cap_valid(x) ((x) >= 0 && (x) <= CAP_LAST_CAP)
+ static inline int perf_allow_tracepoint(struct perf_event_attr *attr)
+ {
+-	if (sysctl_perf_event_paranoid > -1 && !capable(CAP_SYS_ADMIN))
++	if (sysctl_perf_event_paranoid > -1 && !perfmon_capable())
+ 		return -EPERM;
  
-diff --git a/security/selinux/include/classmap.h b/security/selinux/include/classmap.h
-index 7db24855e12d..bae602c623b0 100644
---- a/security/selinux/include/classmap.h
-+++ b/security/selinux/include/classmap.h
-@@ -27,9 +27,9 @@
- 	    "audit_control", "setfcap"
- 
- #define COMMON_CAP2_PERMS  "mac_override", "mac_admin", "syslog", \
--		"wake_alarm", "block_suspend", "audit_read"
-+		"wake_alarm", "block_suspend", "audit_read", "sys_perfmon"
- 
--#if CAP_LAST_CAP > CAP_AUDIT_READ
-+#if CAP_LAST_CAP > CAP_SYS_PERFMON
- #error New capability defined, please update COMMON_CAP2_PERMS.
- #endif
- 
+ 	return security_perf_event_open(attr, PERF_SECURITY_TRACEPOINT);
 -- 
 2.20.1
 
