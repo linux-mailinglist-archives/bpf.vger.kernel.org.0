@@ -2,127 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 24E72120661
-	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2019 13:55:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E93B12070D
+	for <lists+bpf@lfdr.de>; Mon, 16 Dec 2019 14:24:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727630AbfLPMx7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Dec 2019 07:53:59 -0500
-Received: from mx2.suse.de ([195.135.220.15]:39022 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727550AbfLPMx7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 Dec 2019 07:53:59 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 29D62AFAF;
-        Mon, 16 Dec 2019 12:53:55 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 69B531E0B2E; Mon, 16 Dec 2019 13:53:53 +0100 (CET)
-Date:   Mon, 16 Dec 2019 13:53:53 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, bpf@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, kvm@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
-        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [PATCH v11 23/25] mm/gup: track FOLL_PIN pages
-Message-ID: <20191216125353.GF22157@quack2.suse.cz>
-References: <20191212101741.GD10065@quack2.suse.cz>
- <20191214032617.1670759-1-jhubbard@nvidia.com>
+        id S1727841AbfLPNYp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Dec 2019 08:24:45 -0500
+Received: from www62.your-server.de ([213.133.104.62]:50920 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727601AbfLPNYp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 Dec 2019 08:24:45 -0500
+Received: from [2001:1620:665:0:5795:5b0a:e5d5:5944] (helo=localhost)
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1igqMa-0002oF-ND; Mon, 16 Dec 2019 14:24:40 +0100
+Date:   Mon, 16 Dec 2019 14:24:40 +0100
+From:   Daniel Borkmann <daniel@iogearbox.net>
+To:     Paul Chaignon <paul.chaignon@orange.com>
+Cc:     bpf@vger.kernel.org, paul.chaignon@gmail.com,
+        netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Subject: Re: [PATCH bpf-next] bpftool: Fix compilation warning on shadowed
+ variable
+Message-ID: <20191216132440.GC14887@linux.fritz.box>
+References: <20191216112733.GA28366@Omicron>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20191214032617.1670759-1-jhubbard@nvidia.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20191216112733.GA28366@Omicron>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.101.4/25665/Mon Dec 16 10:52:23 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri 13-12-19 19:26:17, John Hubbard wrote:
-> Add tracking of pages that were pinned via FOLL_PIN.
+On Mon, Dec 16, 2019 at 12:27:33PM +0100, Paul Chaignon wrote:
+> The ident variable has already been declared at the top of the function
+> and doesn't need to be re-declared.
 > 
-> As mentioned in the FOLL_PIN documentation, callers who effectively set
-> FOLL_PIN are required to ultimately free such pages via unpin_user_page().
-> The effect is similar to FOLL_GET, and may be thought of as "FOLL_GET
-> for DIO and/or RDMA use".
-> 
-> Pages that have been pinned via FOLL_PIN are identifiable via a
-> new function call:
-> 
->    bool page_dma_pinned(struct page *page);
-> 
-> What to do in response to encountering such a page, is left to later
-> patchsets. There is discussion about this in [1], [2], and [3].
-> 
-> This also changes a BUG_ON(), to a WARN_ON(), in follow_page_mask().
-> 
-> [1] Some slow progress on get_user_pages() (Apr 2, 2019):
->     https://lwn.net/Articles/784574/
-> [2] DMA and get_user_pages() (LPC: Dec 12, 2018):
->     https://lwn.net/Articles/774411/
-> [3] The trouble with get_user_pages() (Apr 30, 2018):
->     https://lwn.net/Articles/753027/
-> 
-> Suggested-by: Jan Kara <jack@suse.cz>
-> Suggested-by: J�r�me Glisse <jglisse@redhat.com>
-> Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
-> ---
-> 
-> Hi Jan,
-> 
-> This should address all of your comments for patch 23!
+> Fixes: 985ead416df39 ("bpftool: Add skeleton codegen command")
+> Signed-off-by: Paul Chaignon <paul.chaignon@orange.com>
 
-Thanks. One comment below:
+One warning and one error in today's bpf-next tree's tooling. :/ This fixes
+the former, applied, thanks!
 
-> @@ -1486,6 +1500,10 @@ struct page *follow_trans_huge_pmd(struct vm_area_struct *vma,
->  	VM_BUG_ON_PAGE(!PageHead(page) && !is_zone_device_page(page), page);
->  	if (flags & FOLL_TOUCH)
->  		touch_pmd(vma, addr, pmd, flags);
-> +
-> +	if (!try_grab_page(page, flags))
-> +		return ERR_PTR(-ENOMEM);
-> +
->  	if ((flags & FOLL_MLOCK) && (vma->vm_flags & VM_LOCKED)) {
->  		/*
->  		 * We don't mlock() pte-mapped THPs. This way we can avoid
+[root@linux bpftool]# make
 
-I'd move this still a bit higher - just after VM_BUG_ON_PAGE() and before
-if (flags & FOLL_TOUCH) test. Because touch_pmd() can update page tables
-and we don't won't that if we're going to fail the fault.
+Auto-detecting system features:
+...                        libbfd: [ on  ]
+...        disassembler-four-args: [ on  ]
+...                          zlib: [ on  ]
 
-With this fixed, the patch looks good to me so you can then add:
+  CC       map_perf_ring.o
+  CC       xlated_dumper.o
+  CC       btf.o
+  CC       tracelog.o
+  CC       perf.o
+  CC       cfg.o
+  CC       btf_dumper.o
+  CC       net.o
+  CC       netlink_dumper.o
+  CC       common.o
+  CC       cgroup.o
+  CC       gen.o
+gen.c: In function ‘do_skeleton’:
+gen.c:391:16: warning: declaration of ‘ident’ shadows a previous local [-Wshadow]
+  391 |    const char *ident = get_map_ident(map);
+      |                ^~~~~
+gen.c:266:21: note: shadowed declaration is here
+  266 |  const char *file, *ident;
+      |                     ^~~~~
+  CC       main.o
+  CC       json_writer.o
+  CC       prog.o
+  CC       map.o
+  CC       feature.o
+  CC       jit_disasm.o
+  CC       disasm.o
+make[1]: Entering directory '/home/darkstar/trees/bpf-next/tools/lib/bpf'
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+Auto-detecting system features:
+...                        libelf: [ on  ]
+...                          zlib: [ on  ]
+...                           bpf: [ on  ]
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Parsed description of 117 helper function(s)
+  MKDIR    staticobjs/
+  CC       staticobjs/libbpf.o
+  CC       staticobjs/bpf.o
+  CC       staticobjs/nlattr.o
+  CC       staticobjs/btf.o
+btf.c: In function ‘btf__align_of’:
+btf.c:303:21: error: declaration of ‘t’ shadows a previous local [-Werror=shadow]
+  303 |   int i, align = 1, t;
+      |                     ^
+btf.c:283:25: note: shadowed declaration is here
+  283 |  const struct btf_type *t = btf__type_by_id(btf, id);
+      |                         ^
+cc1: all warnings being treated as errors
+  CC       staticobjs/libbpf_errno.o
+  CC       staticobjs/str_error.o
+  CC       staticobjs/netlink.o
+  CC       staticobjs/bpf_prog_linfo.o
+  CC       staticobjs/libbpf_probes.o
+  CC       staticobjs/xsk.o
+  CC       staticobjs/hashmap.o
+  CC       staticobjs/btf_dump.o
+  LD       staticobjs/libbpf-in.o
+ld: cannot find staticobjs/btf.o: No such file or directory
+make[2]: *** [/home/darkstar/trees/bpf-next/tools/build/Makefile.build:145: staticobjs/libbpf-in.o] Error 1
+make[1]: *** [Makefile:182: staticobjs/libbpf-in.o] Error 2
+make[1]: Leaving directory '/home/darkstar/trees/bpf-next/tools/lib/bpf'
+make: *** [Makefile:32: /home/darkstar/trees/bpf-next/tools/lib/bpf/libbpf.a] Error 2
+
