@@ -2,31 +2,45 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7284D122B79
-	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2019 13:28:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61203122C6D
+	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2019 14:00:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727576AbfLQM2b (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Dec 2019 07:28:31 -0500
-Received: from www62.your-server.de ([213.133.104.62]:36510 "EHLO
+        id S1726747AbfLQNAO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Dec 2019 08:00:14 -0500
+Received: from www62.your-server.de ([213.133.104.62]:44582 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726962AbfLQM2a (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Dec 2019 07:28:30 -0500
-Received: from 31.249.197.178.dynamic.dsl-lte-bonding.lssmb00p-msn.res.cust.swisscom.ch ([178.197.249.31] helo=localhost)
+        with ESMTP id S1726920AbfLQNAO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Dec 2019 08:00:14 -0500
+Received: from sslproxy05.your-server.de ([78.46.172.2])
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1ihBxj-0006vF-Ve; Tue, 17 Dec 2019 13:28:28 +0100
+        id 1ihCSR-00016t-Ig; Tue, 17 Dec 2019 14:00:11 +0100
+Received: from [178.197.249.31] (helo=pc-9.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1ihCSR-0002ZD-82; Tue, 17 Dec 2019 14:00:11 +0100
+Subject: Re: [PATCH bpf-next 0/4] Fix perf_buffer creation on systems with
+ offline CPUs
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Kernel Team <kernel-team@fb.com>
+References: <20191212013521.1689228-1-andriin@fb.com>
+ <20191216144404.GG14887@linux.fritz.box>
+ <CAEf4BzYhmFvhL_DgeXK8xxihcxcguRzox2AXpjBS1BB4n9d7rQ@mail.gmail.com>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     ast@kernel.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Roman Gushchin <guro@fb.com>, Martin KaFai Lau <kafai@fb.com>
-Subject: [PATCH bpf] bpf: Fix cgroup local storage prog tracking
-Date:   Tue, 17 Dec 2019 13:28:16 +0100
-Message-Id: <1471c69eca3022218666f909bc927a92388fd09e.1576580332.git.daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
+Message-ID: <dfb31c60-3c8c-94a2-5302-569096428e9b@iogearbox.net>
+Date:   Tue, 17 Dec 2019 14:00:10 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzYhmFvhL_DgeXK8xxihcxcguRzox2AXpjBS1BB4n9d7rQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 X-Authenticated-Sender: daniel@iogearbox.net
 X-Virus-Scanned: Clear (ClamAV 0.101.4/25666/Tue Dec 17 10:54:52 2019)
 Sender: bpf-owner@vger.kernel.org
@@ -34,145 +48,51 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Recently noticed that we're tracking programs related to local storage maps
-through their prog pointer. This is a wrong assumption since the prog pointer
-can still change throughout the verification process, for example, whenever
-bpf_patch_insn_single() is called.
+On 12/16/19 6:59 PM, Andrii Nakryiko wrote:
+> On Mon, Dec 16, 2019 at 6:44 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>> On Wed, Dec 11, 2019 at 05:35:20PM -0800, Andrii Nakryiko wrote:
+>>> This patch set fixes perf_buffer__new() behavior on systems which have some of
+>>> the CPUs offline/missing (due to difference between "possible" and "online"
+>>> sets). perf_buffer will create per-CPU buffer and open/attach to corresponding
+>>> perf_event only on CPUs present and online at the moment of perf_buffer
+>>> creation. Without this logic, perf_buffer creation has no chances of
+>>> succeeding on such systems, preventing valid and correct BPF applications from
+>>> starting.
+>>
+>> Once CPU goes back online and processes BPF events, any attempt to push into
+>> perf RB via bpf_perf_event_output() with flag BPF_F_CURRENT_CPU would silently
+> 
+> bpf_perf_event_output() will return error code in such case, so it's
+> not exactly undetectable by application.
 
-Therefore, the prog pointer that was assigned via bpf_cgroup_storage_assign()
-is not guaranteed to be the same as we pass in bpf_cgroup_storage_release()
-and the map would therefore remain in busy state forever. Fix this by using
-the prog's aux pointer which is stable throughout verification and beyond.
+Yeah, true, given there would be no element in the perf map at that slot, the
+program would receive -ENOENT and we could account for missed events via per
+CPU map or such.
 
-Fixes: de9cbbaadba5 ("bpf: introduce cgroup storage maps")
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Roman Gushchin <guro@fb.com>
-Cc: Martin KaFai Lau <kafai@fb.com>
----
- include/linux/bpf-cgroup.h |  8 ++++----
- kernel/bpf/core.c          |  3 +--
- kernel/bpf/local_storage.c | 24 ++++++++++++------------
- kernel/bpf/verifier.c      |  2 +-
- 4 files changed, 18 insertions(+), 19 deletions(-)
+>> get discarded. Should rather perf API be fixed instead of plain skipping as done
+>> here to at least allow creation of ring buffer for BPF to avoid such case?
+> 
+> Can you elaborate on what perf API fix you have in mind? Do you mean
+> for perf to allow attaching ring buffer to offline CPU or something
+> else?
 
-diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
-index 169fd25f6bc2..9be71c195d74 100644
---- a/include/linux/bpf-cgroup.h
-+++ b/include/linux/bpf-cgroup.h
-@@ -157,8 +157,8 @@ void bpf_cgroup_storage_link(struct bpf_cgroup_storage *storage,
- 			     struct cgroup *cgroup,
- 			     enum bpf_attach_type type);
- void bpf_cgroup_storage_unlink(struct bpf_cgroup_storage *storage);
--int bpf_cgroup_storage_assign(struct bpf_prog *prog, struct bpf_map *map);
--void bpf_cgroup_storage_release(struct bpf_prog *prog, struct bpf_map *map);
-+int bpf_cgroup_storage_assign(struct bpf_prog_aux *aux, struct bpf_map *map);
-+void bpf_cgroup_storage_release(struct bpf_prog_aux *aux, struct bpf_map *map);
- 
- int bpf_percpu_cgroup_storage_copy(struct bpf_map *map, void *key, void *value);
- int bpf_percpu_cgroup_storage_update(struct bpf_map *map, void *key,
-@@ -360,9 +360,9 @@ static inline int cgroup_bpf_prog_query(const union bpf_attr *attr,
- 
- static inline void bpf_cgroup_storage_set(
- 	struct bpf_cgroup_storage *storage[MAX_BPF_CGROUP_STORAGE_TYPE]) {}
--static inline int bpf_cgroup_storage_assign(struct bpf_prog *prog,
-+static inline int bpf_cgroup_storage_assign(struct bpf_prog_aux *aux,
- 					    struct bpf_map *map) { return 0; }
--static inline void bpf_cgroup_storage_release(struct bpf_prog *prog,
-+static inline void bpf_cgroup_storage_release(struct bpf_prog_aux *aux,
- 					      struct bpf_map *map) {}
- static inline struct bpf_cgroup_storage *bpf_cgroup_storage_alloc(
- 	struct bpf_prog *prog, enum bpf_cgroup_storage_type stype) { return NULL; }
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 6231858df723..af6b738cf435 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -2043,8 +2043,7 @@ static void bpf_free_cgroup_storage(struct bpf_prog_aux *aux)
- 	for_each_cgroup_storage_type(stype) {
- 		if (!aux->cgroup_storage[stype])
- 			continue;
--		bpf_cgroup_storage_release(aux->prog,
--					   aux->cgroup_storage[stype]);
-+		bpf_cgroup_storage_release(aux, aux->cgroup_storage[stype]);
- 	}
- }
- 
-diff --git a/kernel/bpf/local_storage.c b/kernel/bpf/local_storage.c
-index 2ba750725cb2..6bf605dd4b94 100644
---- a/kernel/bpf/local_storage.c
-+++ b/kernel/bpf/local_storage.c
-@@ -20,7 +20,7 @@ struct bpf_cgroup_storage_map {
- 	struct bpf_map map;
- 
- 	spinlock_t lock;
--	struct bpf_prog *prog;
-+	struct bpf_prog_aux *aux;
- 	struct rb_root root;
- 	struct list_head list;
- };
-@@ -420,7 +420,7 @@ const struct bpf_map_ops cgroup_storage_map_ops = {
- 	.map_seq_show_elem = cgroup_storage_seq_show_elem,
- };
- 
--int bpf_cgroup_storage_assign(struct bpf_prog *prog, struct bpf_map *_map)
-+int bpf_cgroup_storage_assign(struct bpf_prog_aux *aux, struct bpf_map *_map)
- {
- 	enum bpf_cgroup_storage_type stype = cgroup_storage_type(_map);
- 	struct bpf_cgroup_storage_map *map = map_to_storage(_map);
-@@ -428,14 +428,14 @@ int bpf_cgroup_storage_assign(struct bpf_prog *prog, struct bpf_map *_map)
- 
- 	spin_lock_bh(&map->lock);
- 
--	if (map->prog && map->prog != prog)
-+	if (map->aux && map->aux != aux)
- 		goto unlock;
--	if (prog->aux->cgroup_storage[stype] &&
--	    prog->aux->cgroup_storage[stype] != _map)
-+	if (aux->cgroup_storage[stype] &&
-+	    aux->cgroup_storage[stype] != _map)
- 		goto unlock;
- 
--	map->prog = prog;
--	prog->aux->cgroup_storage[stype] = _map;
-+	map->aux = aux;
-+	aux->cgroup_storage[stype] = _map;
- 	ret = 0;
- unlock:
- 	spin_unlock_bh(&map->lock);
-@@ -443,16 +443,16 @@ int bpf_cgroup_storage_assign(struct bpf_prog *prog, struct bpf_map *_map)
- 	return ret;
- }
- 
--void bpf_cgroup_storage_release(struct bpf_prog *prog, struct bpf_map *_map)
-+void bpf_cgroup_storage_release(struct bpf_prog_aux *aux, struct bpf_map *_map)
- {
- 	enum bpf_cgroup_storage_type stype = cgroup_storage_type(_map);
- 	struct bpf_cgroup_storage_map *map = map_to_storage(_map);
- 
- 	spin_lock_bh(&map->lock);
--	if (map->prog == prog) {
--		WARN_ON(prog->aux->cgroup_storage[stype] != _map);
--		map->prog = NULL;
--		prog->aux->cgroup_storage[stype] = NULL;
-+	if (map->aux == aux) {
-+		WARN_ON(aux->cgroup_storage[stype] != _map);
-+		map->aux = NULL;
-+		aux->cgroup_storage[stype] = NULL;
- 	}
- 	spin_unlock_bh(&map->lock);
- }
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index a1acdce77070..6ef71429d997 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -8268,7 +8268,7 @@ static int replace_map_fd_with_map_ptr(struct bpf_verifier_env *env)
- 			env->used_maps[env->used_map_cnt++] = map;
- 
- 			if (bpf_map_is_cgroup_storage(map) &&
--			    bpf_cgroup_storage_assign(env->prog, map)) {
-+			    bpf_cgroup_storage_assign(env->prog->aux, map)) {
- 				verbose(env, "only one cgroup storage of each type is allowed\n");
- 				fdput(f);
- 				return -EBUSY;
--- 
-2.21.0
+Yes, was wondering about the former, meaning, possibility to attach ring buffer
+to offline CPU.
+
+>>> Andrii Nakryiko (4):
+>>>    libbpf: extract and generalize CPU mask parsing logic
+>>>    selftests/bpf: add CPU mask parsing tests
+>>>    libbpf: don't attach perf_buffer to offline/missing CPUs
+>>>    selftests/bpf: fix perf_buffer test on systems w/ offline CPUs
+>>>
+>>>   tools/lib/bpf/libbpf.c                        | 157 ++++++++++++------
+>>>   tools/lib/bpf/libbpf_internal.h               |   2 +
+>>>   .../selftests/bpf/prog_tests/cpu_mask.c       |  78 +++++++++
+>>>   .../selftests/bpf/prog_tests/perf_buffer.c    |  29 +++-
+>>>   4 files changed, 213 insertions(+), 53 deletions(-)
+>>>   create mode 100644 tools/testing/selftests/bpf/prog_tests/cpu_mask.c
+>>>
+>>> --
+>>> 2.17.1
+>>>
 
