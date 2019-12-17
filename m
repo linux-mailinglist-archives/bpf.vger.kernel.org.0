@@ -2,224 +2,416 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C05AB122489
-	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2019 07:14:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B7B51224A0
+	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2019 07:26:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727176AbfLQGO6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Dec 2019 01:14:58 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:27270 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725812AbfLQGO5 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 17 Dec 2019 01:14:57 -0500
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xBH6AU17028810
-        for <bpf@vger.kernel.org>; Mon, 16 Dec 2019 22:14:56 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=facebook;
- bh=zEAPZ00dgAfQpetaVxX1P1hxvWQMrrVSaFMstS9jsP8=;
- b=G2ICYaT2DWcPEyi0vFknPVypTi5CvxUuNAW7bQCAPuRNUy3MCLpIXBoXeB1EZk++l+Q6
- pFrRraITEDmkaVI3e6OHZ9hZ+sZoJR8x5GBMOFEDqptLdig5OE6lErT1Wz5XVmM8/mnu
- IxOkZDq2Qd4MfCto35G6RvP/qbe6D3yME4Q= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2wxhkr1twx-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 16 Dec 2019 22:14:56 -0800
-Received: from intmgw002.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 16 Dec 2019 22:14:55 -0800
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 2D2902EC1A0D; Mon, 16 Dec 2019 22:14:54 -0800 (PST)
-Smtp-Origin-Hostprefix: devbig
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next] selftests/bpf: more succinct Makefile output
-Date:   Mon, 16 Dec 2019 22:14:25 -0800
-Message-ID: <20191217061425.2346359-1-andriin@fb.com>
-X-Mailer: git-send-email 2.17.1
-X-FB-Internal: Safe
+        id S1727815AbfLQG0h (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Dec 2019 01:26:37 -0500
+Received: from mail-vs1-f67.google.com ([209.85.217.67]:34652 "EHLO
+        mail-vs1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725886AbfLQG0h (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Dec 2019 01:26:37 -0500
+Received: by mail-vs1-f67.google.com with SMTP id g15so5804702vsf.1;
+        Mon, 16 Dec 2019 22:26:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=e7lytHAlG0jnTPcHruozsZOHMZrOkRyWxkxFk3QNFHc=;
+        b=Uyw2/Hk8RZ4BC8nULcv0kXi3B2RzYvnV99mWVtnJxAYBVpV/yHrNR9PRY5H8sxucTH
+         FFe93UElCYERyrkNguvW5OBfTt+e3jvSVB8eTHtu+A05wILrNnpxzw1mlk6jISUMKHKE
+         EyCeJFCVR5A+fT4D5Qy98ho1L1ZZnt7SuCDmWCsmwoAVl0wuFTXqwAPxukPfQHvBGuZW
+         gJSSscfaUm0MC4ibSucfxVpvQdcMI84QbKske0VufXhhime1Rcq4A+kkkaRkqYAp20KV
+         RgJ/RT9E6lc0Jq5R5vV6Wko1vhT4ELJynI5LKkwouWcdMv5gn4RF1clndLXxTVgyE7t9
+         rBBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=e7lytHAlG0jnTPcHruozsZOHMZrOkRyWxkxFk3QNFHc=;
+        b=Jxs8GrbsZoYOQbyJTEDMOxoFMk2qt0kA542gk32cXbOVMNSz28IIYFbPj2Ns/v1Iw2
+         aNI7/rasXECuDBkaoMhv+4qLBtIWrgFX3hbTbMu3X9OKFWDNnsCfjmn74kgszfZab//q
+         il0htBgco1W1j04u3H4xrlpfhpzI0pYOKAPY0E4IxcppuR9EgxBztWHSQk8VDo0pS9X2
+         l1rdGGvkASANfNvtV5JWGU5zmYJHrFubsluRnnknp8TGDVQJ0AYza2DuVwgBtS1Jt+Q5
+         kyDnzJKyURVNXwFRhCFKgiNSFQrV8rD62xqELhNKQV4IaTs1aaX6790yrFUgiW/VTnMP
+         FP7w==
+X-Gm-Message-State: APjAAAUbXlyMTM02wdVviJexRI9pe+eCg2wOMEKQhR+4B7cKvynIiLnS
+        Pi1j9Y7881yqQG9bwsPGgUSDsoUOXHUVlSmjTZltN/TiICI=
+X-Google-Smtp-Source: APXvYqynqDGPNTgRRGDCVA55955r5419FLnJ/vMwMvn6krbhQyCqUzdjC40ip54Zf2/P5ZJG6TkueqEtT/3FKk3lFKI=
+X-Received: by 2002:a67:ed07:: with SMTP id l7mr1796707vsp.47.1576563995882;
+ Mon, 16 Dec 2019 22:26:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
- definitions=2019-12-17_01:2019-12-16,2019-12-16 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- lowpriorityscore=0 mlxlogscore=999 spamscore=0 impostorscore=0
- clxscore=1015 bulkscore=0 mlxscore=0 malwarescore=0 adultscore=0
- suspectscore=9 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-1910280000 definitions=main-1912170055
-X-FB-Internal: deliver
+References: <cover.1576381511.git.ethercflow@gmail.com> <0117d6e17ba8b3b1273e5a964f87a71c1b2d8741.1576381512.git.ethercflow@gmail.com>
+ <e3ff90c1-6024-ec9f-061c-195e9def9c0c@fb.com>
+In-Reply-To: <e3ff90c1-6024-ec9f-061c-195e9def9c0c@fb.com>
+From:   Wenbo Zhang <ethercflow@gmail.com>
+Date:   Tue, 17 Dec 2019 14:26:24 +0800
+Message-ID: <CABtjQmZcbhcab0a7ksuggg3ZoDwM5s3ucjeA_baPTpAJQvKQLA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v12 1/2] bpf: add new helper get_file_path for
+ mapping a file descriptor to a pathname
+To:     Yonghong Song <yhs@fb.com>
+Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "andrii.nakryiko@gmail.com" <andrii.nakryiko@gmail.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Similarly to bpftool/libbpf output, make selftests/bpf output succinct
-per-item output line. Output is roughly as follows:
+> > + *           - a regular full path (include mountable fs eg: /proc, /s=
+ys)
+> > + *           - a regular full path with "(deleted)" at the end.
 
-$ make
-...
-  CLANG-LLC [test_maps] pyperf600.o
-  CLANG-LLC [test_maps] strobemeta.o
-  CLANG-LLC [test_maps] pyperf100.o
-  EXTRA-OBJ [test_progs] cgroup_helpers.o
-  EXTRA-OBJ [test_progs] trace_helpers.o
-     BINARY test_align
-     BINARY test_verifier_log
-   GEN-SKEL [test_progs] fexit_bpf2bpf.skel.h
-   GEN-SKEL [test_progs] test_global_data.skel.h
-   GEN-SKEL [test_progs] sendmsg6_prog.skel.h
-...
+> Let us say with " (deleted)" is appended to be consistent with comments
+> in d_path() and is more clear to user what the format will looks like.
 
-To see the actual command invocation, verbose mode can be turned on with V=1
-argument:
+Thank you, I'll fix this.
 
-$ make V=1
+> > +     ret =3D strlen(p);
+> > +     memmove(dst, p, ret);
+> > +     dst[ret++] =3D '\0';
 
-... very verbose output ...
+> nit: you could do memmove(dst, p, ret + 1)?
 
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- tools/testing/selftests/bpf/Makefile | 36 ++++++++++++++++++++++++++++
- 1 file changed, 36 insertions(+)
+I did with `dst[ret++]=3D'\0';`  to return value length including
+trailing '\0'. as you mentioned below:
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index ba90621617a8..c652bd84ef0e 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -77,6 +77,24 @@ TEST_GEN_PROGS_EXTENDED = test_sock_addr test_skb_cgroup_id_user \
- 
- TEST_CUSTOM_PROGS = urandom_read
- 
-+# Emit succinct information message describing current building step
-+# $1 - generic step name (e.g., CC, LINK, etc);
-+# $2 - optional "flavor" specifier; if provided, will be emitted as [flavor];
-+# $3 - target (assumed to be file); only file name will be emitted;
-+# $4 - optional extra arg, emitted as-is, if provided.
-+ifeq ($(V),1)
-+msg =
-+else
-+msg = @$(info $(1)$(if $(2), [$(2)]) $(notdir $(3)))$(if $(4), $(4))
-+endif
+> > +     fput(f);
+> > +     return ret;
+
+> The description says the return value length including trailing '\0'.
+> The above 'ret' does not include trailing '\0'.
+
+It seems `[ret++]` not very clear to read and '\0' can be done by
+`memmove`. I think I'll refactor to
+
+```
+ret =3D strlen(p) + 1;
+memmove(dst, p, ret);
+fput(f);
+return ret;
+```
+
+Is this better?
+
+Yonghong Song <yhs@fb.com> =E4=BA=8E2019=E5=B9=B412=E6=9C=8816=E6=97=A5=E5=
+=91=A8=E4=B8=80 =E4=B8=8A=E5=8D=8812:06=E5=86=99=E9=81=93=EF=BC=9A
+>
+>
+>
+> On 12/14/19 8:01 PM, Wenbo Zhang wrote:
+> > When people want to identify which file system files are being opened,
+> > read, and written to, they can use this helper with file descriptor as
+> > input to achieve this goal. Other pseudo filesystems are also supported=
+.
+> >
+> > This requirement is mainly discussed here:
+> >
+> >    https://github.com/iovisor/bcc/issues/237
+> >
+> > v11->v12: addressed Alexei's feedback
+> > - only allow tracepoints to make sure it won't dead lock
+> >
+> > v10->v11: addressed Al and Alexei's feedback
+> > - fix missing fput()
+> >
+> > v9->v10: addressed Andrii's feedback
+> > - send this patch together with the patch selftests as one patch series
+> >
+> > v8->v9:
+> > - format helper description
+> >
+> > v7->v8: addressed Alexei's feedback
+> > - use fget_raw instead of fdget_raw, as fdget_raw is only used inside f=
+s/
+> > - ensure we're in user context which is safe fot the help to run
+> > - filter unmountable pseudo filesystem, because they don't have real pa=
+th
+> > - supplement the description of this helper function
+> >
+> > v6->v7:
+> > - fix missing signed-off-by line
+> >
+> > v5->v6: addressed Andrii's feedback
+> > - avoid unnecessary goto end by having two explicit returns
+> >
+> > v4->v5: addressed Andrii and Daniel's feedback
+> > - rename bpf_fd2path to bpf_get_file_path to be consistent with other
+> > helper's names
+> > - when fdget_raw fails, set ret to -EBADF instead of -EINVAL
+> > - remove fdput from fdget_raw's error path
+> > - use IS_ERR instead of IS_ERR_OR_NULL as d_path ether returns a pointe=
+r
+> > into the buffer or an error code if the path was too long
+> > - modify the normal path's return value to return copied string length
+> > including NUL
+> > - update this helper description's Return bits.
+> >
+> > v3->v4: addressed Daniel's feedback
+> > - fix missing fdput()
+> > - move fd2path from kernel/bpf/trace.c to kernel/trace/bpf_trace.c
+> > - move fd2path's test code to another patch
+> > - add comment to explain why use fdget_raw instead of fdget
+> >
+> > v2->v3: addressed Yonghong's feedback
+> > - remove unnecessary LOCKDOWN_BPF_READ
+> > - refactor error handling section for enhanced readability
+> > - provide a test case in tools/testing/selftests/bpf
+> >
+> > v1->v2: addressed Daniel's feedback
+> > - fix backward compatibility
+> > - add this helper description
+> > - fix signed-off name
+> >
+> > Signed-off-by: Wenbo Zhang <ethercflow@gmail.com>
+> > ---
+> >   include/uapi/linux/bpf.h       | 29 +++++++++++++-
+> >   kernel/trace/bpf_trace.c       | 70 +++++++++++++++++++++++++++++++++=
 +
-+# override lib.mk's default rules
-+OVERRIDE_TARGETS := 1
-+override define CLEAN
-+	$(call msg,    CLEAN)
-+	$(RM) -r $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED) $(TEST_GEN_FILES) $(EXTRA_CLEAN)
-+endef
-+
- include ../lib.mk
- 
- # Define simple and short `make test_progs`, `make test_sysctl`, etc targets
-@@ -89,10 +107,16 @@ $(notdir $(TEST_GEN_PROGS)						\
- 	 $(TEST_GEN_PROGS_EXTENDED)					\
- 	 $(TEST_CUSTOM_PROGS)): %: $(OUTPUT)/% ;
- 
-+$(OUTPUT)/%:%.c
-+	$(call msg,     BINARY,,$@)
-+	$(LINK.c) $^ $(LDLIBS) -o $@
-+
- $(OUTPUT)/urandom_read: urandom_read.c
-+	$(call msg,     BINARY,,$@)
- 	$(CC) -o $@ $< -Wl,--build-id
- 
- $(OUTPUT)/test_stub.o: test_stub.c
-+	$(call msg,         CC,,$@)
- 	$(CC) -c $(CFLAGS) -o $@ $<
- 
- BPFOBJ := $(OUTPUT)/libbpf.a
-@@ -167,24 +191,28 @@ $(OUTPUT)/flow_dissector_load.o: flow_dissector_load.h
- # $3 - CFLAGS
- # $4 - LDFLAGS
- define CLANG_BPF_BUILD_RULE
-+	$(call msg,  CLANG-LLC,$(TRUNNER_BINARY),$2)
- 	($(CLANG) $3 -O2 -target bpf -emit-llvm				\
- 		-c $1 -o - || echo "BPF obj compilation failed") | 	\
- 	$(LLC) -mattr=dwarfris -march=bpf -mcpu=probe $4 -filetype=obj -o $2
- endef
- # Similar to CLANG_BPF_BUILD_RULE, but with disabled alu32
- define CLANG_NOALU32_BPF_BUILD_RULE
-+	$(call msg,  CLANG-LLC,$(TRUNNER_BINARY),$2)
- 	($(CLANG) $3 -O2 -target bpf -emit-llvm				\
- 		-c $1 -o - || echo "BPF obj compilation failed") | 	\
- 	$(LLC) -march=bpf -mcpu=v2 $4 -filetype=obj -o $2
- endef
- # Similar to CLANG_BPF_BUILD_RULE, but using native Clang and bpf LLC
- define CLANG_NATIVE_BPF_BUILD_RULE
-+	$(call msg,  CLANG-BPF,$(TRUNNER_BINARY),$2)
- 	($(CLANG) $3 -O2 -emit-llvm					\
- 		-c $1 -o - || echo "BPF obj compilation failed") | 	\
- 	$(LLC) -march=bpf -mcpu=probe $4 -filetype=obj -o $2
- endef
- # Build BPF object using GCC
- define GCC_BPF_BUILD_RULE
-+	$(call msg,    GCC-BPF,$(TRUNNER_BINARY),$2)
- 	$(BPF_GCC) $3 $4 -O2 -c $1 -o $2
- endef
- 
-@@ -243,6 +271,7 @@ $(TRUNNER_BPF_OBJS): $(TRUNNER_OUTPUT)/%.o:				\
- $(TRUNNER_BPF_SKELS): $(TRUNNER_OUTPUT)/%.skel.h:			\
- 		      $(TRUNNER_OUTPUT)/%.o				\
- 		      | $(BPFTOOL) $(TRUNNER_OUTPUT)
-+	$$(call msg,   GEN-SKEL,$(TRUNNER_BINARY),$$@)
- 	$$(BPFTOOL) gen skeleton $$< > $$@
- endif
- 
-@@ -250,6 +279,7 @@ endif
- ifeq ($($(TRUNNER_TESTS_DIR)-tests-hdr),)
- $(TRUNNER_TESTS_DIR)-tests-hdr := y
- $(TRUNNER_TESTS_HDR): $(TRUNNER_TESTS_DIR)/*.c
-+	$$(call msg,   TEST-HDR,$(TRUNNER_BINARY),$$@)
- 	$$(shell ( cd $(TRUNNER_TESTS_DIR);				\
- 		  echo '/* Generated header, do not edit */';		\
- 		  ls *.c 2> /dev/null |					\
-@@ -265,6 +295,7 @@ $(TRUNNER_TEST_OBJS): $(TRUNNER_OUTPUT)/%.test.o:			\
- 		      $(TRUNNER_BPF_OBJS)				\
- 		      $(TRUNNER_BPF_SKELS)				\
- 		      $$(BPFOBJ) | $(TRUNNER_OUTPUT)
-+	$$(call msg,   TEST-OBJ,$(TRUNNER_BINARY),$$@)
- 	cd $$(@D) && $$(CC) $$(CFLAGS) -c $(CURDIR)/$$< $$(LDLIBS) -o $$(@F)
- 
- $(TRUNNER_EXTRA_OBJS): $(TRUNNER_OUTPUT)/%.o:				\
-@@ -272,17 +303,20 @@ $(TRUNNER_EXTRA_OBJS): $(TRUNNER_OUTPUT)/%.o:				\
- 		       $(TRUNNER_EXTRA_HDRS)				\
- 		       $(TRUNNER_TESTS_HDR)				\
- 		       $$(BPFOBJ) | $(TRUNNER_OUTPUT)
-+	$$(call msg,  EXTRA-OBJ,$(TRUNNER_BINARY),$$@)
- 	$$(CC) $$(CFLAGS) -c $$< $$(LDLIBS) -o $$@
- 
- # only copy extra resources if in flavored build
- $(TRUNNER_BINARY)-extras: $(TRUNNER_EXTRA_FILES) | $(TRUNNER_OUTPUT)
- ifneq ($2,)
-+	$$(call msg,  EXTRAS-CP,$(TRUNNER_BINARY),$(TRUNNER_EXTRA_FILES))
- 	cp -a $$^ $(TRUNNER_OUTPUT)/
- endif
- 
- $(OUTPUT)/$(TRUNNER_BINARY): $(TRUNNER_TEST_OBJS)			\
- 			     $(TRUNNER_EXTRA_OBJS) $$(BPFOBJ)		\
- 			     | $(TRUNNER_BINARY)-extras
-+	$$(call msg,     BINARY,,$$@)
- 	$$(CC) $$(CFLAGS) $$(filter %.a %.o,$$^) $$(LDLIBS) -o $$@
- 
- endef
-@@ -334,10 +368,12 @@ verifier/tests.h: verifier/*.c
- 		  echo '#endif' \
- 		) > verifier/tests.h)
- $(OUTPUT)/test_verifier: test_verifier.c verifier/tests.h $(BPFOBJ) | $(OUTPUT)
-+	$(call msg,     BINARY,,$@)
- 	$(CC) $(CFLAGS) $(filter %.a %.o %.c,$^) $(LDLIBS) -o $@
- 
- # Make sure we are able to include and link libbpf against c++.
- $(OUTPUT)/test_cpp: test_cpp.cpp $(BPFOBJ)
-+	$(call msg,        CXX,,$@)
- 	$(CXX) $(CFLAGS) $^ $(LDLIBS) -o $@
- 
- EXTRA_CLEAN := $(TEST_CUSTOM_PROGS)					\
--- 
-2.17.1
-
+> >   tools/include/uapi/linux/bpf.h | 29 +++++++++++++-
+> >   3 files changed, 126 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index dbbcf0b02970..71d9705df120 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -2821,6 +2821,32 @@ union bpf_attr {
+> >    *  Return
+> >    *          On success, the strictly positive length of the string, i=
+ncluding
+> >    *          the trailing NUL character. On error, a negative value.
+> > + *
+> > + * int bpf_get_file_path(char *path, u32 size, int fd)
+> > + *   Description
+> > + *           Get **file** atrribute from the current task by *fd*, the=
+n call
+> > + *           **d_path** to get it's absolute path and copy it as strin=
+g into
+> > + *           *path* of *size*. Notice the **path** don't support unmou=
+ntable
+> > + *           pseudo filesystems as they don't have path (eg: SOCKFS, P=
+IPEFS).
+> > + *           The *size* must be strictly positive. On success, the hel=
+per
+> > + *           makes sure that the *path* is NUL-terminated, and the buf=
+fer
+> > + *           could be:
+> > + *           - a regular full path (include mountable fs eg: /proc, /s=
+ys)
+> > + *           - a regular full path with "(deleted)" at the end.
+>
+> Let us say with " (deleted)" is appended to be consistent with comments
+> in d_path() and is more clear to user what the format will looks like.
+>
+> > + *           On failure, it is filled with zeroes.
+> > + *   Return
+> > + *           On success, returns the length of the copied string INCLU=
+DING
+> > + *           the trailing NUL.
+>
+> trailing '\0'.
+>
+> > + *
+> > + *           On failure, the returned value is one of the following:
+> > + *
+> > + *           **-EPERM** if no permission to get the path (eg: in irq c=
+tx).
+> > + *
+> > + *           **-EBADF** if *fd* is invalid.
+> > + *
+> > + *           **-EINVAL** if *fd* corresponds to a unmountable pseudo f=
+s
+> > + *
+> > + *           **-ENAMETOOLONG** if full path is longer than *size*
+> >    */
+> >   #define __BPF_FUNC_MAPPER(FN)               \
+> >       FN(unspec),                     \
+> > @@ -2938,7 +2964,8 @@ union bpf_attr {
+> >       FN(probe_read_user),            \
+> >       FN(probe_read_kernel),          \
+> >       FN(probe_read_user_str),        \
+> > -     FN(probe_read_kernel_str),
+> > +     FN(probe_read_kernel_str),      \
+> > +     FN(get_file_path),
+> >
+> >   /* integer value in 'imm' field of BPF_CALL instruction selects which=
+ helper
+> >    * function eBPF program intends to call
+> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> > index e5ef4ae9edb5..db9c0ec46a5d 100644
+> > --- a/kernel/trace/bpf_trace.c
+> > +++ b/kernel/trace/bpf_trace.c
+> > @@ -762,6 +762,72 @@ static const struct bpf_func_proto bpf_send_signal=
+_proto =3D {
+> >       .arg1_type      =3D ARG_ANYTHING,
+> >   };
+> >
+> > +BPF_CALL_3(bpf_get_file_path, char *, dst, u32, size, int, fd)
+> > +{
+> > +     struct file *f;
+> > +     char *p;
+> > +     int ret =3D -EBADF;
+> > +
+> > +     /* Ensure we're in user context which is safe for the helper to
+> > +      * run. This helper has no business in a kthread.
+> > +      */
+> > +     if (unlikely(in_interrupt() ||
+> > +                  current->flags & (PF_KTHREAD | PF_EXITING))) {
+> > +             ret =3D -EPERM;
+> > +             goto error;
+> > +     }
+> > +
+> > +     /* Use fget_raw instead of fget to support O_PATH, and it doesn't
+> > +      * have any sleepable code, so it's ok to be here.
+> > +      */
+> > +     f =3D fget_raw(fd);
+> > +     if (!f)
+> > +             goto error;
+> > +
+> > +     /* For unmountable pseudo filesystem, it seems to have no meaning
+> > +      * to get their fake paths as they don't have path, and to be no
+> > +      * way to validate this function pointer can be always safe to ca=
+ll
+> > +      * in the current context.
+> > +      */
+> > +     if (f->f_path.dentry->d_op && f->f_path.dentry->d_op->d_dname) {
+> > +             ret =3D -EINVAL;
+> > +             fput(f);
+> > +             goto error;
+> > +     }
+> > +
+> > +     /* After filter unmountable pseudo filesytem, d_path won't call
+> > +      * dentry->d_op->d_name(), the normally path doesn't have any
+> > +      * sleepable code, and despite it uses the current macro to get
+> > +      * fs_struct (current->fs), we've already ensured we're in user
+> > +      * context, so it's ok to be here.
+> > +      */
+> > +     p =3D d_path(&f->f_path, dst, size);
+> > +     if (IS_ERR(p)) {
+> > +             ret =3D PTR_ERR(p);
+> > +             fput(f);
+> > +             goto error;
+> > +     }
+> > +
+> > +     ret =3D strlen(p);
+> > +     memmove(dst, p, ret);
+> > +     dst[ret++] =3D '\0';
+>
+> nit: you could do memmove(dst, p, ret + 1)?
+>
+> > +     fput(f);
+> > +     return ret;
+>
+> The description says the return value length including trailing '\0'.
+> The above 'ret' does not include trailing '\0'.
+>
+> > +
+> > +error:
+> > +     memset(dst, '0', size);
+> > +     return ret;
+> > +}
+> > +
+> > +static const struct bpf_func_proto bpf_get_file_path_proto =3D {
+> > +     .func       =3D bpf_get_file_path,
+> > +     .gpl_only   =3D true,
+> > +     .ret_type   =3D RET_INTEGER,
+> > +     .arg1_type  =3D ARG_PTR_TO_UNINIT_MEM,
+> > +     .arg2_type  =3D ARG_CONST_SIZE,
+> > +     .arg3_type  =3D ARG_ANYTHING,
+> > +};
+> > +
+> >   static const struct bpf_func_proto *
+> >   tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *p=
+rog)
+> >   {
+> > @@ -953,6 +1019,8 @@ tp_prog_func_proto(enum bpf_func_id func_id, const=
+ struct bpf_prog *prog)
+> >               return &bpf_get_stackid_proto_tp;
+> >       case BPF_FUNC_get_stack:
+> >               return &bpf_get_stack_proto_tp;
+> > +     case BPF_FUNC_get_file_path:
+> > +             return &bpf_get_file_path_proto;
+> >       default:
+> >               return tracing_func_proto(func_id, prog);
+> >       }
+> > @@ -1146,6 +1214,8 @@ raw_tp_prog_func_proto(enum bpf_func_id func_id, =
+const struct bpf_prog *prog)
+> >               return &bpf_get_stackid_proto_raw_tp;
+> >       case BPF_FUNC_get_stack:
+> >               return &bpf_get_stack_proto_raw_tp;
+> > +     case BPF_FUNC_get_file_path:
+> > +             return &bpf_get_file_path_proto;
+> >       default:
+> >               return tracing_func_proto(func_id, prog);
+> >       }
+> > diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/=
+bpf.h
+> > index dbbcf0b02970..71d9705df120 100644
+> > --- a/tools/include/uapi/linux/bpf.h
+> > +++ b/tools/include/uapi/linux/bpf.h
+> > @@ -2821,6 +2821,32 @@ union bpf_attr {
+> >    *  Return
+> >    *          On success, the strictly positive length of the string, i=
+ncluding
+> >    *          the trailing NUL character. On error, a negative value.
+> > + *
+> > + * int bpf_get_file_path(char *path, u32 size, int fd)
+> > + *   Description
+> > + *           Get **file** atrribute from the current task by *fd*, the=
+n call
+> > + *           **d_path** to get it's absolute path and copy it as strin=
+g into
+> > + *           *path* of *size*. Notice the **path** don't support unmou=
+ntable
+> > + *           pseudo filesystems as they don't have path (eg: SOCKFS, P=
+IPEFS).
+> > + *           The *size* must be strictly positive. On success, the hel=
+per
+> > + *           makes sure that the *path* is NUL-terminated, and the buf=
+fer
+> > + *           could be:
+> > + *           - a regular full path (include mountable fs eg: /proc, /s=
+ys)
+> > + *           - a regular full path with "(deleted)" at the end.
+>
+> ditto
+>
+> > + *           On failure, it is filled with zeroes.
+> > + *   Return
+> > + *           On success, returns the length of the copied string INCLU=
+DING
+> > + *           the trailing NUL.
+>
+> ditto
+>
+> > + *
+> > + *           On failure, the returned value is one of the following:
+> > + *
+> > + *           **-EPERM** if no permission to get the path (eg: in irq c=
+tx).
+> > + *
+> > + *           **-EBADF** if *fd* is invalid.
+> > + *
+> > + *           **-EINVAL** if *fd* corresponds to a unmountable pseudo f=
+s
+> > + *
+> > + *           **-ENAMETOOLONG** if full path is longer than *size*
+> >    */
+> >   #define __BPF_FUNC_MAPPER(FN)               \
+> >       FN(unspec),                     \
+> > @@ -2938,7 +2964,8 @@ union bpf_attr {
+> >       FN(probe_read_user),            \
+> >       FN(probe_read_kernel),          \
+> >       FN(probe_read_user_str),        \
+> > -     FN(probe_read_kernel_str),
+> > +     FN(probe_read_kernel_str),      \
+> > +     FN(get_file_path),
+> >
+> >   /* integer value in 'imm' field of BPF_CALL instruction selects which=
+ helper
+> >    * function eBPF program intends to call
+> >
