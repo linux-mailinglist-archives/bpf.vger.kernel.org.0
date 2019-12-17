@@ -2,185 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C45A41230F2
-	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2019 16:57:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 740DA123228
+	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2019 17:20:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727241AbfLQP5r (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Dec 2019 10:57:47 -0500
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:36135 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726933AbfLQP5q (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Dec 2019 10:57:46 -0500
-Received: by mail-oi1-f196.google.com with SMTP id c16so4972618oic.3;
-        Tue, 17 Dec 2019 07:57:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xgsJlsnEOSDd3+anDElz+/MLtJOX8bL3V5H2TOhN4zU=;
-        b=ONl1GkVupx/9vxFQ/42Bu9QIieHlkn+bNwJ0gGzbXw/rgAVP7AB4cxjTMcKfWKpXCI
-         BElqfDMLtktOIHQnKG+kmP/1OvG+jVmS34f/YTqhFat86sKxgMxV2pk634IVmYx8PNG0
-         hYj0HXPwV3UehLmmF1FpUp8ISMoeOlM0vr6vqrZa7Yo+qgjAJeThVYdOhRyGPOyAYacn
-         ornVtCCSEPzU2apT8nHRCy9ubbxNKeVUJ5rof9oJrSNkMHOYyj6NLYRytzcv6iJ/RmRQ
-         SfXq3OZcsHX+R7kPHxsv3iu0ftQN6qZmf97cohFF75Y69cfdxPSPRBUTEkvtAPK+lD2B
-         9iyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xgsJlsnEOSDd3+anDElz+/MLtJOX8bL3V5H2TOhN4zU=;
-        b=HV6EmZYs5FOVmaNW6Au7rDm3tcc0Xd0ZdQDD3cN09YO/TH9Zi4SCe1JxY0AH6hQWnk
-         XIwqj3pIRc2USBd02lwwPbT2/1e3r9c1EZouRCN7xW2tIMqDJEncW5gl3tEeVzs+ZfK9
-         3Tdndx4CYc4WZNMkYUGdzUwx3ILz1kUsPJEao7PbkfaAwT2U64+0QSaPs8SpIlB7BiAS
-         9EbB/Fm9S4vJGrDdo8d89fO7LdR1qA5KenT4G3GeekkHkVRPOBNBUQHAelkgkah+x5XB
-         BdPF8p8bhIPHqK9xXxEEX779919BdIBSq0UXzIk5sODmcaUziE/zQo4A6Nr/VjDIYR1r
-         FFew==
-X-Gm-Message-State: APjAAAX24sFM1qa27iDvf3aI2Msg5SHh1Dq6DRXeyHscRLHB/u+EO8vS
-        sn+MwnxxmHKq8B8S6OhV1W7nGdk+Kv5C/canHh8=
-X-Google-Smtp-Source: APXvYqy+H4AjSCMbsIFUw3s5H9RuLkB1/H+/canhjchlOwoGIzP563muGoFOj/jvQ21OvmLFhpAB1KMBKCkr3N9gDWM=
-X-Received: by 2002:aca:54cc:: with SMTP id i195mr1825342oib.126.1576598265181;
- Tue, 17 Dec 2019 07:57:45 -0800 (PST)
-MIME-Version: 1.0
-References: <000000000000a6f2030598bbe38c@google.com> <0000000000000e32950599ac5a96@google.com>
- <20191216150017.GA27202@linux.fritz.box> <CAJ8uoz3nCxcmnPonNunYhswskidn=PnN8=4_jXW4B=Xu4k_DoQ@mail.gmail.com>
- <CAJ8uoz312gDBGpqOJiKqrXn456sy6u+Gnvcvv_+0=EimasRoUw@mail.gmail.com> <20191217154031.GI5624@arrakis.emea.arm.com>
-In-Reply-To: <20191217154031.GI5624@arrakis.emea.arm.com>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Tue, 17 Dec 2019 16:57:34 +0100
-Message-ID: <CAJ8uoz3yDK8sEE05cKA8siBi-Dc0wtbe1-zYgbz_-pd5t69j8w@mail.gmail.com>
-Subject: Re: WARNING in wp_page_copy
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        kirill.shutemov@linux.intel.com, justin.he@arm.com,
-        linux-mm@kvack.org,
-        syzbot <syzbot+9301f2f33873407d5b33@syzkaller.appspotmail.com>,
-        Andrii Nakryiko <andriin@fb.com>,
+        id S1728786AbfLQQUp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Dec 2019 11:20:45 -0500
+Received: from mail-eopbgr150048.outbound.protection.outlook.com ([40.107.15.48]:52522
+        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728527AbfLQQUo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Dec 2019 11:20:44 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=N7xrbPO5yG3kFRwTCrjbvVW30xj706RBofpbNQysCb0SGc6tBI3KZf8FjOzpEwyyDCCR0oM9aS1kSqbvvMSNtOMG2is/0msx+pKofpf+cDHxJ31C5+u6BlxPXBT8XldbpziL6F0/TEgC8/H6TgeT63i+mnjPScVX/cUOspWKhF8DEeh2ihOnOQQwrr+KywZ7LPevJPrXYRBaKY2/leFQUGF16P5VbzLm7WXC55oL4p3/yj5+jtZ6d6NeZ+TQMZ3s98KU50fdVLjk0Ykd6jpPIEHRNixMtwZ2WVjS3JgeXWP3oeim1oYnMOHDr2hFL0gyb0vOxlbtMXbHicLOibikmg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=92vLnVII87cwYWMOQh5lc1k3QeVufHT+n8V3xk8fVVI=;
+ b=Utvf//uIdZkdOEMJkrVF6NapDODfOCBNHoZX9xCAtljmbqjOkffdV3jvdc0WxvdbOOnkXoWBTXuLD18jSKYX3xLXoCQpEzEZUxdJKEXv9seM6sv1o3wHL4ePDefxDo+6iG3/AjNkcCFv8TGeT5wgzOzjnLGBW7KryQjzdpRuVzI6JU96Bin4Xpg82iwxj2ukuXStnaJ0zqHrBP5W1JVPjUnFUblr8zqOckIG5YXKkpaaaVRJiXYQkZLDhGYekwACNt6+fp4hWYkKvkHQmz9fybGDCtUmdGiDEw+PuXaFegRA9yKwlRnhNzhGOVnCRltA6mOiboPcxkie/idT2Xicyw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=92vLnVII87cwYWMOQh5lc1k3QeVufHT+n8V3xk8fVVI=;
+ b=gkA0q0SGflwrb48QhfyiL4VPtv4pMCqSqD3xnuhSUl2ro0JyNC1k7hZl73QA6MgjRldzJZ2a+LAuNVF9uKzuBkBJ42QpdMtxaMHCwgBRkjIhk3ziVSQBpfThM3GcEH3IQH7L+VGe8VMVILJ9NADlkPdwtOvBZuJGBW4B3xZ4Hwc=
+Received: from AM0PR05MB5875.eurprd05.prod.outlook.com (20.178.119.159) by
+ AM0PR05MB4259.eurprd05.prod.outlook.com (52.134.126.24) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2538.18; Tue, 17 Dec 2019 16:20:41 +0000
+Received: from AM0PR05MB5875.eurprd05.prod.outlook.com
+ ([fe80::259f:70b4:dab1:8f2]) by AM0PR05MB5875.eurprd05.prod.outlook.com
+ ([fe80::259f:70b4:dab1:8f2%5]) with mapi id 15.20.2538.019; Tue, 17 Dec 2019
+ 16:20:41 +0000
+From:   Maxim Mikityanskiy <maximmi@mellanox.com>
+To:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Saeed Mahameed <saeedm@mellanox.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        bpf <bpf@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>, hawk@kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
         Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        linux-kernel@vger.kernel.org,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        Network Development <netdev@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs@googlegroups.com, Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        Maxim Mikityanskiy <maximmi@mellanox.com>
+Subject: [PATCH bpf v2 0/4] Fix concurrency issues between XSK wakeup and
+ control path using RCU
+Thread-Topic: [PATCH bpf v2 0/4] Fix concurrency issues between XSK wakeup and
+ control path using RCU
+Thread-Index: AQHVtPXs+Va8FuX1jEyvTO2pLjnBKA==
+Date:   Tue, 17 Dec 2019 16:20:41 +0000
+Message-ID: <20191217162023.16011-1-maximmi@mellanox.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: AM0PR02CA0106.eurprd02.prod.outlook.com
+ (2603:10a6:208:154::47) To AM0PR05MB5875.eurprd05.prod.outlook.com
+ (2603:10a6:208:12d::31)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=maximmi@mellanox.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-mailer: git-send-email 2.20.1
+x-originating-ip: [94.188.199.18]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 9f8b20b6-f5b9-4ff5-6405-08d7830d0f32
+x-ms-traffictypediagnostic: AM0PR05MB4259:|AM0PR05MB4259:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <AM0PR05MB4259380A5B10DA49232DD162D1500@AM0PR05MB4259.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-forefront-prvs: 02543CD7CD
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(376002)(136003)(366004)(346002)(396003)(39860400002)(199004)(189003)(54906003)(26005)(66556008)(6506007)(110136005)(66476007)(2906002)(7416002)(64756008)(186003)(5660300002)(66446008)(36756003)(52116002)(1076003)(8676002)(81166006)(71200400001)(86362001)(81156014)(6486002)(107886003)(2616005)(478600001)(316002)(66946007)(6512007)(66574012)(8936002)(4326008);DIR:OUT;SFP:1101;SCL:1;SRVR:AM0PR05MB4259;H:AM0PR05MB5875.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: XUdh4Hjqug0sb3opZTigbmK855/O5nTDlq/V1yvgqwnZ0iulNZtYOCooOAMyOKR+JJbkc6Yh3qFk2kaPNWv+jQhJB6FzRwYaXVf0zYZLtYZnS0PsmfycAAQ+n9zex4NgsWQfjrM6akmlpU3bm86VvEqDMLlszUu5jbwWcAiPyYEVbtLjGzYL8UyE1lNpVxo2gyzUJlLhj9M7x8R3zUxrMRmZeBVAU9SjWMreu50HYuFa1Bghv6/AxOfWH5e0DApIPGnikeb+NmjUcWvBB58RZOhPwKToDQyUKwTcZjdQXq+VjHHUoaH/rq0Oa9JgU2xbGV+QoiBCMbn4ww/M6+xoK0ODKoDyDU/teRbmko6Zt750gdmxuhz8z4Ct7PcPEAN/w61Q2tZZiww2UQ2qIq6mDRibbtSsGCoGtIBQ8A4BZB7d3Ot1ywZq6pE/OYeJNMHm
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <3DCB70404F4EDD4D9E9CEEB514DCF228@eurprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9f8b20b6-f5b9-4ff5-6405-08d7830d0f32
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Dec 2019 16:20:41.1047
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 9SOpS7PmKjS6roEVkIw42pA7w9D8mkmNWnkrp7R3bfgePiTjVDnqLmjZxvpvc3RPY4WpDA3O/jKjni0mryS3mQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR05MB4259
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 17, 2019 at 4:40 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
->
-> Hi Magnus,
->
-> Thanks for investigating this. I have more questions below rather than a
-> solution.
->
-> On Tue, Dec 17, 2019 at 02:27:22PM +0100, Magnus Karlsson wrote:
-> > On Mon, Dec 16, 2019 at 4:10 PM Magnus Karlsson
-> > <magnus.karlsson@gmail.com> wrote:
-> > > On Mon, Dec 16, 2019 at 4:00 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
-> > > >
-> > > > On Sat, Dec 14, 2019 at 08:20:07AM -0800, syzbot wrote:
-> > > > > syzbot has found a reproducer for the following crash on:
-> > > > >
-> > > > > HEAD commit:    1d1997db Revert "nfp: abm: fix memory leak in nfp_abm_u32_..
-> > > > > git tree:       net-next
-> > > > > console output: https://syzkaller.appspot.com/x/log.txt?x=1029f851e00000
-> > > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=cef1fd5032faee91
-> > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=9301f2f33873407d5b33
-> > > > > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-> > > > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=119d9fb1e00000
-> > > > >
-> > > > > IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> > > > > Reported-by: syzbot+9301f2f33873407d5b33@syzkaller.appspotmail.com
-> > > >
-> > > > Bjorn / Magnus, given xsk below, PTAL, thanks!
-> > >
-> > > Thanks. I will take a look at it right away.
-> > >
-> > > /Magnus
-> >
-> > After looking through the syzcaller report, I have the following
-> > hypothesis that would dearly need some comments from MM-savy people
-> > out there. Syzcaller creates, using mmap, a memory area that is
->
-> I guess that's not an anonymous mmap() since we don't seem to have a
-> struct page for src in cow_user_page() (the WARN_ON_ONCE path). Do you
-> have more information on the mmap() call?
-
-I have this from the syzcaller logs:
-
-mmap(&(0x7f0000001000/0x2000)=nil, 0x2000, 0xfffffe, 0x12, r8, 0x0)
-getsockopt$XDP_MMAP_OFFSETS(r8, 0x11b, 0x7, &(0x7f0000001300),
-&(0x7f0000000100)=0x60)
-
-The full log can be found at:
-https://syzkaller.appspot.com/x/repro.syz?x=119d9fb1e00000
-
-Hope this helps.
-
-> > write-only and supplies this to a getsockopt call (in this case
-> > XDP_STATISTICS, but probably does not matter really) as the area where
-> > it wants the values to be stored. When the getsockopt implementation
-> > gets to copy_to_user() to write out the values to user space, it
-> > encounters a page fault when accessing this write-only page. When
-> > servicing this, it gets to the following piece of code that triggers
-> > the warning that syzcaller reports:
-> >
-> > static inline bool cow_user_page(struct page *dst, struct page *src,
-> >                                  struct vm_fault *vmf)
-> > {
-> > ....
-> > snip
-> > ....
-> >        /*
-> >          * This really shouldn't fail, because the page is there
-> >          * in the page tables. But it might just be unreadable,
-> >          * in which case we just give up and fill the result with
-> >          * zeroes.
-> >          */
-> >         if (__copy_from_user_inatomic(kaddr, uaddr, PAGE_SIZE)) {
-> >                 /*
-> >                  * Give a warn in case there can be some obscure
-> >                  * use-case
-> >                  */
-> >                 WARN_ON_ONCE(1);
-> >                 clear_page(kaddr);
-> >         }
->
-> So on x86, a PROT_WRITE-only private page is mapped as non-readable? I
-> had the impression that write-only still allows reading by looking at
-> the __P010 definition.
->
-> Anyway, if it's not an anonymous mmap(), whoever handled the mapping may
-> have changed the permissions (e.g. some device).
->
-> > So without a warning. My hypothesis is that if we create a page in the
-> > same way as syzcaller then any getsockopt that does a copy_to_user()
-> > (pretty much all of them I guess) will get this warning.
->
-> The copy_to_user() only triggers the do_wp_page() fault handling. If
-> this is a CoW page (private read-only presumably, or at least not
-> writeable), the kernel tries to copy the original page given to
-> getsockopt into a new page and restart the copy_to_user(). Since the
-> kernel doesn't have a struct page for this (e.g. PFN mapping), it uses
-> __copy_from_user_inatomic() which fails because of the read permission.
->
-> > I have not tried this, so I might be wrong. If this is true, then the
-> > question is what to do about it. One possible fix would be just to
-> > remove the warning to get the same behavior as before. But it was
-> > probably put there for a reason.
->
-> It was there for some obscure cases, as the comment says ;). If the
-> above is a valid scenario that the user can trigger, we should probably
-> remove the WARN_ON.
->
-> --
-> Catalin
->
+VGhpcyBzZXJpZXMgYWRkcmVzc2VzIHRoZSBpc3N1ZSBkZXNjcmliZWQgaW4gdGhlIGNvbW1pdCBt
+ZXNzYWdlIG9mIHRoZQ0KZmlyc3QgcGF0Y2g6IGxhY2sgb2Ygc3luY2hyb25pemF0aW9uIGJldHdl
+ZW4gWFNLIHdha2V1cCBhbmQgZGVzdHJveWluZw0KdGhlIHJlc291cmNlcyB1c2VkIGJ5IFhTSyB3
+YWtldXAuIFRoZSBpZGVhIGlzIHNpbWlsYXIgdG8NCm5hcGlfc3luY2hyb25pemUuIFRoZSBzZXJp
+ZXMgY29udGFpbnMgZml4ZXMgZm9yIHRoZSBkcml2ZXJzIHRoYXQNCmltcGxlbWVudCBYU0suIEkg
+aGF2ZW4ndCB0ZXN0ZWQgdGhlIGNoYW5nZXMgdG8gSW50ZWwncyBkcml2ZXJzLCBzbywNCkludGVs
+IGd1eXMsIHBsZWFzZSByZXZpZXcgdGhlbS4NCg0KdjIgY2hhbmdlczoNCg0KSW5jb3Jwb3JhdGVk
+IGNoYW5nZXMgc3VnZ2VzdGVkIGJ5IEJqw7ZybjoNCg0KMS4gQ2FsbCBzeW5jaHJvbml6ZV9yY3Ug
+aW4gSW50ZWwgZHJpdmVycyBvbmx5IGlmIHRoZSBYRFAgcHJvZ3JhbSBpcw0KYmVpbmcgdW5sb2Fk
+ZWQuDQoNCjIuIERvbid0IGZvcmdldCByY3VfcmVhZF9sb2NrIHdoZW4gd2FrZXVwIGlzIGNhbGxl
+ZCBmcm9tIHhza19wb2xsLg0KDQozLiBVc2UgeHMtPnpjIGFzIHRoZSBjb25kaXRpb24gdG8gY2Fs
+bCBuZG9feHNrX3dha2V1cC4NCg0KTWF4aW0gTWlraXR5YW5za2l5ICg0KToNCiAgeHNrOiBBZGQg
+cmN1X3JlYWRfbG9jayBhcm91bmQgdGhlIFhTSyB3YWtldXANCiAgbmV0L21seDVlOiBGaXggY29u
+Y3VycmVuY3kgaXNzdWVzIGJldHdlZW4gY29uZmlnIGZsb3cgYW5kIFhTSw0KICBuZXQvaTQwZTog
+Rml4IGNvbmN1cnJlbmN5IGlzc3VlcyBiZXR3ZWVuIGNvbmZpZyBmbG93IGFuZCBYU0sNCiAgbmV0
+L2l4Z2JlOiBGaXggY29uY3VycmVuY3kgaXNzdWVzIGJldHdlZW4gY29uZmlnIGZsb3cgYW5kIFhT
+Sw0KDQogZHJpdmVycy9uZXQvZXRoZXJuZXQvaW50ZWwvaTQwZS9pNDBlLmggICAgICAgIHwgIDIg
+Ky0NCiBkcml2ZXJzL25ldC9ldGhlcm5ldC9pbnRlbC9pNDBlL2k0MGVfbWFpbi5jICAgfCAxMCAr
+KysrKystLS0NCiBkcml2ZXJzL25ldC9ldGhlcm5ldC9pbnRlbC9pNDBlL2k0MGVfeHNrLmMgICAg
+fCAgNCArKysrDQogZHJpdmVycy9uZXQvZXRoZXJuZXQvaW50ZWwvaXhnYmUvaXhnYmVfbWFpbi5j
+IHwgIDcgKysrKystDQogZHJpdmVycy9uZXQvZXRoZXJuZXQvaW50ZWwvaXhnYmUvaXhnYmVfeHNr
+LmMgIHwgIDggKysrKystLQ0KIGRyaXZlcnMvbmV0L2V0aGVybmV0L21lbGxhbm94L21seDUvY29y
+ZS9lbi5oICB8ICAyICstDQogLi4uL25ldC9ldGhlcm5ldC9tZWxsYW5veC9tbHg1L2NvcmUvZW4v
+eGRwLmggIHwgMjIgKysrKysrKystLS0tLS0tLS0tLQ0KIC4uLi9tZWxsYW5veC9tbHg1L2NvcmUv
+ZW4veHNrL3NldHVwLmMgICAgICAgICB8ICAxICsNCiAuLi4vZXRoZXJuZXQvbWVsbGFub3gvbWx4
+NS9jb3JlL2VuL3hzay90eC5jICAgfCAgMiArLQ0KIC4uLi9uZXQvZXRoZXJuZXQvbWVsbGFub3gv
+bWx4NS9jb3JlL2VuX21haW4uYyB8IDE5ICstLS0tLS0tLS0tLS0tLS0NCiBuZXQveGRwL3hzay5j
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAyMiArKysrKysrKysrKystLS0tLS0t
+DQogMTEgZmlsZXMgY2hhbmdlZCwgNTEgaW5zZXJ0aW9ucygrKSwgNDggZGVsZXRpb25zKC0pDQoN
+Ci0tIA0KMi4yMC4xDQoNCg==
