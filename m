@@ -2,91 +2,180 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 36C131227DD
-	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2019 10:45:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E12E51227E1
+	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2019 10:47:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726813AbfLQJp2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Dec 2019 04:45:28 -0500
-Received: from mga04.intel.com ([192.55.52.120]:31364 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725870AbfLQJp2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Dec 2019 04:45:28 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 17 Dec 2019 01:45:27 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,325,1571727600"; 
-   d="scan'208";a="217719255"
-Received: from gorris-mobl2.ger.corp.intel.com (HELO [10.249.34.224]) ([10.249.34.224])
-  by orsmga003.jf.intel.com with ESMTP; 17 Dec 2019 01:45:20 -0800
-Subject: Re: [Intel-gfx] [PATCH v3 4/7] drm/i915/perf: open access for
- CAP_SYS_PERFMON privileged process
-To:     Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "jani.nikula@linux.intel.com" <jani.nikula@linux.intel.com>,
-        "joonas.lahtinen@linux.intel.com" <joonas.lahtinen@linux.intel.com>,
-        "rodrigo.vivi@intel.com" <rodrigo.vivi@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Serge Hallyn <serge@hallyn.com>,
-        James Morris <jmorris@namei.org>,
-        Casey Schaufler <casey@schaufler-ca.com>
-Cc:     songliubraving@fb.com, Andi Kleen <ak@linux.intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        Jann Horn <jannh@google.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        intel-gfx@lists.freedesktop.org,
-        Igor Lubashev <ilubashe@akamai.com>,
-        linux-kernel@vger.kernel.org,
-        Stephane Eranian <eranian@google.com>,
-        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
-        "selinux@vger.kernel.org" <selinux@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Brendan Gregg <bgregg@netflix.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-References: <b175f283-d256-e37e-f447-6ba4ab4f3d3a@linux.intel.com>
- <bc5b2a0d-a185-91b6-5deb-a4b6e1dc3d3e@linux.intel.com>
-From:   Lionel Landwerlin <lionel.g.landwerlin@intel.com>
-Organization: Intel Corporation (UK) Ltd. - Co. Reg. #1134945 - Pipers Way,
- Swindon SN3 1RJ
-Message-ID: <503ad40c-d94e-df1d-1541-730c002ad3b7@intel.com>
-Date:   Tue, 17 Dec 2019 11:45:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
-MIME-Version: 1.0
-In-Reply-To: <bc5b2a0d-a185-91b6-5deb-a4b6e1dc3d3e@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+        id S1726700AbfLQJr3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Dec 2019 04:47:29 -0500
+Received: from mail-pj1-f66.google.com ([209.85.216.66]:34465 "EHLO
+        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725870AbfLQJr3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Dec 2019 04:47:29 -0500
+Received: by mail-pj1-f66.google.com with SMTP id j11so4347496pjs.1;
+        Tue, 17 Dec 2019 01:47:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=jGcLkmjhRjvareg7w21LXjb/4h49SxcikHdUgQxGOHI=;
+        b=R1QSvR0sP1P0BRRixAxzoH9J+XQKtNeQRXDWfabhnIqVKuNrLGWfgFxO2ZI8BwYtJZ
+         FhOFo3+nBSaPyQdSqSTX9gC6QAOjL0uxasAfBXfgmGOPGMqkBdc/WCMVj3IGqWpPJmP8
+         345Q47pEUtiT5Jexz9uHJdcC9pS8opJTV2++UUd62PL7WsmcO1DRjOivd+5aqS0aIjud
+         nLjAC9iE6Zb8h9eZX26YKvf+mFhg3pQ3UV/J+ljsvJ/3sOHrJYZX/XSGIbf5+B+XNKSG
+         XJyd/D1tCEqhjl+IXQOQOd6EcQ5TKPfhbkRQHaXN/bGHpg4l3vBLxYK0dB4aOMCkZ3rg
+         IAhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=jGcLkmjhRjvareg7w21LXjb/4h49SxcikHdUgQxGOHI=;
+        b=Ouy8Uz4Ii6M52ahv0LzcWLuap19ALmKTKbu1lseW/domeHuP8fQYNtwxHhxf8C1Z66
+         5PJOml1BB1VBk4rAZy5J5bDYY0ufiRlEcCzve1pKeZp795/QMycDv7mPsM5+h3IHS9x+
+         iaGex9LuJP9y6zioqnhdrtlh1iKVCr4m1DeKE/5pwoKxfb3L0ghZnszsoleWvSYOGd49
+         sws+3hU04+LA0dkh9IkP8wR6H8QkQB2gyZ4/k8GJI6lPwV5UcClrtTwWFKo9h3wmOEHP
+         62ov/BEcnCIQpoiQBY3ESjvTGVDwSS12nuKTYx+AfzSSiUZglogMAIhm1K5145XXxaRC
+         3jgQ==
+X-Gm-Message-State: APjAAAUFr9H8sA/v7iIzupRL2w/9eQJ/4YbKdr+V4JSfTlDOAMOU/5Z7
+        StHq7IggxMPksyQU1tDP1LfXZ8h8u+Gfgg==
+X-Google-Smtp-Source: APXvYqy1XB5SctobybbeNPKtZ49fdzlgFbsnzWjH3al+GNLAapdQT/aY/hQqY1q6fThsKmeExXFsaQ==
+X-Received: by 2002:a17:902:9302:: with SMTP id bc2mr21891913plb.148.1576576048379;
+        Tue, 17 Dec 2019 01:47:28 -0800 (PST)
+Received: from ubuntu-18.04-x8664 ([128.1.49.85])
+        by smtp.gmail.com with ESMTPSA id o8sm2595978pjo.7.2019.12.17.01.47.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Dec 2019 01:47:27 -0800 (PST)
+From:   Wenbo Zhang <ethercflow@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, yhs@fb.com,
+        bgregg@netflix.com, andrii.nakryiko@gmail.com,
+        netdev@vger.kernel.org
+Subject: [PATCH bpf-next v13 0/2] bpf: adding get_fd_path helper
+Date:   Tue, 17 Dec 2019 04:47:15 -0500
+Message-Id: <cover.1576575253.git.ethercflow@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <0117d6e17ba8b3b1273e5a964f87a71c1b2d8741.1576381512.git.ethercflow@gmail.com>
+References: <0117d6e17ba8b3b1273e5a964f87a71c1b2d8741.1576381512.git.ethercflow@gmail.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 16/12/2019 22:03, Alexey Budankov wrote:
-> Open access to i915_perf monitoring for CAP_SYS_PERFMON privileged processes.
-> For backward compatibility reasons access to i915_perf subsystem remains open
-> for CAP_SYS_ADMIN privileged processes but CAP_SYS_ADMIN usage for secure
-> i915_perf monitoring is discouraged with respect to CAP_SYS_PERFMON capability.
->
-> Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
+This patch series introduce a bpf helper that can be used to map a file
+descriptor to a pathname.
+
+This requirement is mainly discussed here:
+
+  https://github.com/iovisor/bcc/issues/237
+
+This implementation supports both local and mountable pseudo file systems,
+and ensure we're in user context which is safe for this helper to run.
+
+Changes since v12:
+
+* Rename to get_fd_patch
+
+* Fix test issue on big-endian machines
 
 
-Assuming people are fine with this new cap, I like this idea of a 
-lighter privilege for i915-perf.
+Changes since v11:
+
+* Only allow tracepoints to make sure it won't dead lock
 
 
--Lionel
+Changes since v10:
 
+* Fix missing fput
+
+
+Changes since v9:
+
+* Associate help patch with its selftests patch to this series
+
+* Refactor selftests code for further simplification  
+
+
+Changes since v8:
+
+* Format helper description 
+ 
+
+Changes since v7:
+
+* Use fget_raw instead of fdget_raw, as fdget_raw is only used inside fs/
+
+* Ensure we're in user context which is safe fot the help to run
+
+* Filter unmountable pseudo filesystem, because they don't have real path
+
+* Supplement the description of this helper function
+
+
+Changes since v6:
+
+* Fix missing signed-off-by line
+
+
+Changes since v5:
+
+* Refactor helper avoid unnecessary goto end by having two explicit returns
+
+
+Changes since v4:
+
+* Rename bpf_fd2path to bpf_get_file_path to be consistent with other
+helper's names
+
+* When fdget_raw fails, set ret to -EBADF instead of -EINVAL
+
+* Remove fdput from fdget_raw's error path
+
+* Use IS_ERR instead of IS_ERR_OR_NULL as d_path ether returns a pointer
+into the buffer or an error code if the path was too long
+
+* Modify the normal path's return value to return copied string length
+including NUL
+
+* Update helper description's Return bits.
+
+* Refactor selftests code for further simplification  
+
+
+Changes since v3:
+
+* Remove unnecessary LOCKDOWN_BPF_READ
+
+* Refactor error handling section for enhanced readability
+
+* Provide a test case in tools/testing/selftests/bpf
+
+* Refactor sefltests code to use real global variables instead of maps
+
+
+Changes since v2:
+
+* Fix backward compatibility
+
+* Add helper description
+
+* Refactor selftests use global data instead of perf_buffer to simplified
+code
+
+* Fix signed-off name
+
+
+Wenbo Zhang (2):
+  bpf: add new helper get_fd_path for mapping a file descriptor to a
+    pathname
+  selftests/bpf: test for bpf_get_fd_path() from tracepoint
+
+ include/uapi/linux/bpf.h                      |  29 ++-
+ kernel/trace/bpf_trace.c                      |  69 +++++++
+ tools/include/uapi/linux/bpf.h                |  29 ++-
+ .../selftests/bpf/prog_tests/get_fd_path.c    | 171 ++++++++++++++++++
+ .../selftests/bpf/progs/test_get_fd_path.c    |  43 +++++
+ 5 files changed, 339 insertions(+), 2 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/get_fd_path.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_get_fd_path.c
+
+-- 
+2.17.1
 
