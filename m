@@ -2,111 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CF2EB1228BD
-	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2019 11:31:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F5921229F4
+	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2019 12:28:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726943AbfLQKb6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Dec 2019 05:31:58 -0500
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:38269 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725940AbfLQKb5 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 17 Dec 2019 05:31:57 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id CBD7B6C1D;
-        Tue, 17 Dec 2019 05:31:55 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Tue, 17 Dec 2019 05:31:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=WVOKI5Xa8ynfxOHUH8uTfezXeuU
-        ofMPbouYAeeiBwfo=; b=bmijsgR9pBP2Ebh5XRA1uJIvaotKaT0uunVjVlY8l1C
-        aoxODXf2Z/oIfgaiOn3GfxvN12hOlmxSVrt/DaUn2ui5y4YWSoDc09CpwSTSPvtv
-        EpCAVbR4ENthlY2tusERvGdA4V9WukWKml4U8LbisXwsFqGk1MgOy+dKLHjxHdSZ
-        tyhvxw41ZOLsopmAjnd9nL0d0uAsWaB51tldwy0lqX74f4dbGKrZ/mRVPrNLxV+M
-        svbfpDgHzf/aKOcs6RlMmOlKIh1N8lDoWOt+0RBjBAS6nPLpU/KfKRRvelNIHB04
-        GM/lHpfosT7/ny01Wzi9gelg9d+2McwmJLd6HiJHazw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=WVOKI5
-        Xa8ynfxOHUH8uTfezXeuUofMPbouYAeeiBwfo=; b=JQpNJtE7YDoUUklw9zvFjP
-        wZ9Ih3qPBkDVD9rCoT5gWFxZZMwAusismfQXbuYWFxuPirAhMF5u+liubo54g2f9
-        VSPkmDIF7Z97Skk7gKtoH/EFJbwhbIq5myFJfZ1wZMfnXUVwYdTnTdbRYh7eeVJZ
-        gJr09v+76QbaX2xWEI3SPIzQs13zYK+p0ljuNvrE/AQuYI3MW6dLZmiD5Z7rxO48
-        XkEdENERvqJHzLTz0PGGUNfi9qhPrrHD1byP+9dNJtTDnPd2NMWkBFlCPwUsYFit
-        JZjF92wtLbfZEF63mps1svac1aKgx7nquB1ubhn+c8c1T9KtwpDHE9SUMhQ+u0pA
-        ==
-X-ME-Sender: <xms:mq74XbTn4Mg9VZkNfMUDm5tvQnvEyJ2uURgkgoUYXKa8WCLK8XbTTw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedufedrvddtjedgudehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkfhggtggujgesthdtre
-    dttddtvdenucfhrhhomhepifhrvghgucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheq
-    necukfhppeekfedrkeeirdekledruddtjeenucfrrghrrghmpehmrghilhhfrhhomhepgh
-    hrvghgsehkrhhorghhrdgtohhmnecuvehluhhsthgvrhfuihiivgeptd
-X-ME-Proxy: <xmx:mq74XU4x3XQ7_I5tSP0AKITnKCi65jdaYkOmpNjBtanvDdZYLiOoiQ>
-    <xmx:mq74XQUg-13Hasut9Vfn0iVM61swGMfn27ddmuXCObXilt8-pdnw2g>
-    <xmx:mq74Xa-et88YfpMZI-Zc-HV_sTQU6ySLnoywFpS3bcb4zJHuXMgkdg>
-    <xmx:m674Xe8EJYjeh9FVPEltY81zCiKvaT4ZKJ8GAjBTR6L8hMaNwuJDaQ>
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 4E5FF8005C;
-        Tue, 17 Dec 2019 05:31:54 -0500 (EST)
-Date:   Tue, 17 Dec 2019 11:31:52 +0100
-From:   Greg KH <greg@kroah.com>
-To:     "Enrico Weigelt, metux IT consult" <info@metux.net>
-Cc:     linux-kernel@vger.kernel.org, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, dmitry.torokhov@gmail.com,
-        jacek.anaszewski@gmail.com, pavel@ucw.cz, dmurphy@ti.com,
-        arnd@arndb.de, masahiroy@kernel.org, michal.lkml@markovi.net,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
-        linux-gpio@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-leds@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH] RFC: platform driver registering via initcall tables
-Message-ID: <20191217103152.GB2914497@kroah.com>
-References: <20191217102219.29223-1-info@metux.net>
+        id S1727466AbfLQL2X (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Dec 2019 06:28:23 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:35214 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726623AbfLQL2X (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Dec 2019 06:28:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1576582101;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Q61b8NZiNglATLygY8DSz74dZVTZ21KejyMo2z3MExs=;
+        b=YCcPaSmbwTS4Rwvg+EMqgbRV15UENcXT24PD0H9WyjCYwb/FgyUqJp5UlQnJ1VmtsWz0kh
+        Dj3rvdjHD2txq96CZIkIiYdwtwuCKr1vZ/ftCrFmxUA5mmQdqU/pEef3RfgEYhXu6dKkqU
+        8yG65d9ZI2gvFCsCXUJzKGbm9fi+H/U=
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
+ [209.85.208.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-377-OjzvsmhXP7aawy9juLbxXw-1; Tue, 17 Dec 2019 06:28:20 -0500
+X-MC-Unique: OjzvsmhXP7aawy9juLbxXw-1
+Received: by mail-lj1-f197.google.com with SMTP id b12so3136357ljo.11
+        for <bpf@vger.kernel.org>; Tue, 17 Dec 2019 03:28:20 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Q61b8NZiNglATLygY8DSz74dZVTZ21KejyMo2z3MExs=;
+        b=gNQjwaJFEBaTayv/VhO2XJ36c/d7MgyG1ev3lBOroU143572b4/bdLN63T02Z0DT/O
+         7aDvgABhuBAzOo3Izb5PH0nknejXaUAk1fr4b7ddUbwsC7ihuHoJOmKvtROtN4sfaj43
+         c+pED6W13AkT4DU66VnoLaZ/3shmPhbs8K8UPKpra9GR284XeskNZl1uA6TVMWSStVVm
+         149YjqPrDxIivkKAWXk3UK9F18AbYhSZgF4CPLJlMG7J/zwRvSzp8AC0c90jDTF8RxPz
+         AAJGVLaV8NWMInB5rVyX285foK64b3Skthc/vWK2P6/sg1qA+SlZGCOWi5QaW35aJzab
+         mn1g==
+X-Gm-Message-State: APjAAAUfkWDsIDHZy8zamVYA0aj74UuoO46FwmvbHC8RgRd1CAL9rAS/
+        AYuA3Kp8Z92X9wSeFe5IV1GQUvtgSbe9gPpWFxlirQcOkaZXZx4QvZNAtHMXtRBtXRTLkqWKBt4
+        kin/fI5AZNbpb
+X-Received: by 2002:a2e:b010:: with SMTP id y16mr2836006ljk.238.1576582099147;
+        Tue, 17 Dec 2019 03:28:19 -0800 (PST)
+X-Google-Smtp-Source: APXvYqyIH5Q5OdQH6gcERzOp/eAcntIeffs5mFBn4uuIFZewUEQ+Uus+enM8p4BfdhFU/HZqLE/fQw==
+X-Received: by 2002:a2e:b010:: with SMTP id y16mr2835998ljk.238.1576582098973;
+        Tue, 17 Dec 2019 03:28:18 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id b6sm7289731lfq.11.2019.12.17.03.28.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Dec 2019 03:28:18 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 943471800B3; Tue, 17 Dec 2019 12:28:16 +0100 (CET)
+From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH bpf-next] libbpf: Fix libbpf_common.h when installing libbpf through 'make install'
+Date:   Tue, 17 Dec 2019 12:28:10 +0100
+Message-Id: <20191217112810.768078-1-toke@redhat.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191217102219.29223-1-info@metux.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 17, 2019 at 11:22:19AM +0100, Enrico Weigelt, metux IT consult wrote:
-> A large portion of platform drivers doesn't need their own init/exit
-> functions. At source level, the boilerplate is already replaced by
-> module_platform_driver() macro call, which creates this code under
-> the hood. But in the binary, the code is still there.
-> 
-> This patch is an attempt to remove them it, by the same approach
-> already used for the init functions: collect pointers to the driver
-> structs in special sections, which are then processed by the init
-> code which already calls the init function vectors. For each level,
-> the structs are processed right after the init funcs, so we guarantee
-> the existing order, and explicit inits always come before the automatic
-> registering.
+This fixes two issues with the newly introduced libbpf_common.h file:
 
-No, what is so "special" about platform drivers that they require this?
+- The header failed to include <string.h> for the definition of memset()
+- The new file was not included in the install_headers rule in the Makefile
 
-If anything, we should be moving _AWAY_ from platform drivers and use
-real bus drivers instead.
+Both of these issues cause breakage when installing libbpf with 'make
+install' and trying to use it in applications.
 
-> Downside of apprach: cluttering init code w/ a little bit knowledge
-> about driver related stuff (calls to platform_driver_register(), etc).
+Fixes: 544402d4b493 ("libbpf: Extract common user-facing helpers")
+Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+---
+ tools/lib/bpf/Makefile        | 1 +
+ tools/lib/bpf/libbpf_common.h | 2 ++
+ 2 files changed, 3 insertions(+)
 
-Exactly, don't.
+diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
+index a3718cb275f2..d4790121adf4 100644
+--- a/tools/lib/bpf/Makefile
++++ b/tools/lib/bpf/Makefile
+@@ -251,6 +251,7 @@ install_headers: bpf_helper_defs.h
+ 		$(call do_install,libbpf.h,$(prefix)/include/bpf,644); \
+ 		$(call do_install,btf.h,$(prefix)/include/bpf,644); \
+ 		$(call do_install,libbpf_util.h,$(prefix)/include/bpf,644); \
++		$(call do_install,libbpf_common.h,$(prefix)/include/bpf,644); \
+ 		$(call do_install,xsk.h,$(prefix)/include/bpf,644); \
+ 		$(call do_install,bpf_helpers.h,$(prefix)/include/bpf,644); \
+ 		$(call do_install,bpf_helper_defs.h,$(prefix)/include/bpf,644); \
+diff --git a/tools/lib/bpf/libbpf_common.h b/tools/lib/bpf/libbpf_common.h
+index 4fb833840961..a23ae1ac27eb 100644
+--- a/tools/lib/bpf/libbpf_common.h
++++ b/tools/lib/bpf/libbpf_common.h
+@@ -9,6 +9,8 @@
+ #ifndef __LIBBPF_LIBBPF_COMMON_H
+ #define __LIBBPF_LIBBPF_COMMON_H
+ 
++#include <string.h>
++
+ #ifndef LIBBPF_API
+ #define LIBBPF_API __attribute__((visibility("default")))
+ #endif
+-- 
+2.24.1
 
-> For now, only implemented for the built-in case (modules still go the
-> old route). The module case is a little bit trickier: either we have to
-> extend the module header (and modpost tool) or do some dynamic symbol
-> lookup.
-> 
-> This patch is just a PoC for further discussions, not ready for mainline.
-> It also changes a few drivers, just for illustration. In case the general
-> approach is accepted, it will be cleaned up and splitted.
-
-Please no, I don't see why this is even needed.
-
-greg k-h
