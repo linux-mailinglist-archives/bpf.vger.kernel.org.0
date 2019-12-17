@@ -2,92 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AB530123AFC
-	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2019 00:37:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D86B123B00
+	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2019 00:42:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726487AbfLQXh6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Dec 2019 18:37:58 -0500
-Received: from www62.your-server.de ([213.133.104.62]:45226 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726227AbfLQXh5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Dec 2019 18:37:57 -0500
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ihMPa-0007cg-DR; Wed, 18 Dec 2019 00:37:54 +0100
-Received: from [178.197.249.31] (helo=pc-9.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ihMPa-000NWh-22; Wed, 18 Dec 2019 00:37:54 +0100
-Subject: Re: [PATCH v4 bpf-next 2/4] libbpf: support libbpf-provided extern
- variables
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Kernel Team <kernel-team@fb.com>
-References: <20191214014710.3449601-1-andriin@fb.com>
- <20191214014710.3449601-3-andriin@fb.com>
- <20191216111736.GA14887@linux.fritz.box>
- <CAEf4Bzbx+2Fot9NYzGJS-pUF5x5zvcfBnb7fcO_s9_gCQQVuLg@mail.gmail.com>
- <7bf339cf-c746-a780-3117-3348fb5997f1@iogearbox.net>
- <CAEf4BzYAWknN1HGHd0vREtQLHU-z3iTLJWBteRK6q7zkhySBBg@mail.gmail.com>
- <e569134e-68a9-9c69-e894-b21640334bb0@iogearbox.net>
- <20191217201613.iccqsqwuhitsyqyl@ast-mbp.dhcp.thefacebook.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <6be56761-5e4c-2922-bd93-761c0dbd773f@iogearbox.net>
-Date:   Wed, 18 Dec 2019 00:37:53 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1726205AbfLQXmd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Dec 2019 18:42:33 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:44342 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726090AbfLQXmd (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 17 Dec 2019 18:42:33 -0500
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id xBHNbxHQ019171
+        for <bpf@vger.kernel.org>; Tue, 17 Dec 2019 15:42:32 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=4cgWGlB9/h19dutJ9eZqwoN3DG9e6wfF4VOhWGjp2h4=;
+ b=LWDMT7J9ei586goWvGIY5wGIvjSMMx0iMTgsDCA7LSTksImQJPabH4V5JFExagRw+rzT
+ hlqEbh7Oan+AL6SN5Ijx8TXW0zx8L61EnzEbLsAWxOkFYklAg/Ug0F5/JUkwgipm4+jP
+ 445f6/s0mrx7W951ZWMS1Eb5iOKNj9/b1yo= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0001303.ppops.net with ESMTP id 2wxfr0eq5x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 17 Dec 2019 15:42:31 -0800
+Received: from intmgw004.05.ash5.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 17 Dec 2019 15:42:31 -0800
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 892B92EC1A54; Tue, 17 Dec 2019 15:42:30 -0800 (PST)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next] libbpf: reduce log level for custom section names
+Date:   Tue, 17 Dec 2019 15:42:28 -0800
+Message-ID: <20191217234228.1739308-1-andriin@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-In-Reply-To: <20191217201613.iccqsqwuhitsyqyl@ast-mbp.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.101.4/25666/Tue Dec 17 10:54:52 2019)
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
+ definitions=2019-12-17_05:2019-12-17,2019-12-17 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ clxscore=1015 priorityscore=1501 malwarescore=0 adultscore=0
+ suspectscore=25 mlxscore=0 phishscore=0 spamscore=0 mlxlogscore=837
+ bulkscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-1910280000 definitions=main-1912170189
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 12/17/19 9:16 PM, Alexei Starovoitov wrote:
-> On Tue, Dec 17, 2019 at 08:50:31PM +0100, Daniel Borkmann wrote:
->>>
->>> Yes, name collision is a possibility, which means users should
->>> restrain from using LINUX_KERNEL_VERSION and CONFIG_XXX names for
->>> their variables. But if that is ever actually the problem, the way to
->>> resolve this collision/ambiguity would be to put externs in a separate
->>> sections. It's possible to annotate extern variable with custom
->>> section.
->>>
->>> But I guess putting Kconfig-provided externs into ".extern.kconfig"
->>> might be a good idea, actually. That will make it possible to have
->>> writable externs in the future.
->>
->> Yep, and as mentioned it will make it more clear that these get special
->> loader treatment as opposed to regular externs we need to deal with in
->> future. A '.extern.kconfig' section sounds good to me and the BPF helper
->> header could provide a __kconfig annotation for that as well.
-> 
-> I think annotating all extern vars into special section name will be quite
-> cumbersome from bpf program writer pov.
-> imo capital case extern variables LINUX_KERNEL_VERSION and CONFIG_XXX are
-> distinct enough and make it clear they should come from something other than
-> normal C. Traditional C coding style uses all capital letters for macroses. So
-> all capital extern variables are unlikely to conflict with any normal extern
-> vars. Like vars in vmlinux and vars in other bpf elf files.
+Libbpf is trying to recognize BPF program type based on its section name
+during bpf_object__open() phase. This is not strictly enforced and user code
+has ability to specify/override correct BPF program type after open.  But if
+BPF program is using custom section name, libbpf will still emit warnings,
+which can be quite annoying to users. This patch reduces log level of
+information messages emitted by libbpf if section name is not canonical. User
+can still get a list of all supported section names as debug-level message.
 
-But still, how many of the LINUX_KERNEL_VERSION or CONFIG_XXX vars are actually
-used per program. I bet just a handful. And I don't think adding a __kconfig is
-cumbersome, it would make it more self-documenting in fact, denoting that this
-var is not treated the usual way once prog linking is in place. Even if all
-capital letters. Tomorrow, we'd be adding 'extern unsigned long jiffies' as
-another potential example, and then it gets even more confusing on the 'collision'
-side with regular BPF ELF. Same here, instead of __kconfig, this could have a
-__vmlinux or __kernel annotation in order to document its source for the loader
-(and developer) more clearly and also gives flexibility wrt ".extern.xyz"
-subsections on how we want to map them.
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+---
+ tools/lib/bpf/libbpf.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 3fe42d6b0c2f..906bbbf7b2e4 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -5883,7 +5883,7 @@ int libbpf_prog_type_by_name(const char *name, enum bpf_prog_type *prog_type,
+ 		return 0;
+ 	}
+ 
+-	pr_warn("failed to guess program type from ELF section '%s'\n", name);
++	pr_debug("failed to guess program type from ELF section '%s'\n", name);
+ 	type_names = libbpf_get_type_names(false);
+ 	if (type_names != NULL) {
+ 		pr_debug("supported section(type) names are:%s\n", type_names);
+@@ -6001,10 +6001,10 @@ int libbpf_attach_type_by_name(const char *name,
+ 		*attach_type = section_defs[i].attach_type;
+ 		return 0;
+ 	}
+-	pr_warn("failed to guess attach type based on ELF section name '%s'\n", name);
++	pr_debug("failed to guess attach type based on ELF section name '%s'\n", name);
+ 	type_names = libbpf_get_type_names(true);
+ 	if (type_names != NULL) {
+-		pr_info("attachable section(type) names are:%s\n", type_names);
++		pr_debug("attachable section(type) names are:%s\n", type_names);
+ 		free(type_names);
+ 	}
+ 
+-- 
+2.17.1
+
