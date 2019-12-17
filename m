@@ -2,106 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FAAC122104
-	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2019 01:59:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD5881221D2
+	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2019 03:08:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726861AbfLQA7s (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Dec 2019 19:59:48 -0500
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:45524 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726670AbfLQA7s (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 Dec 2019 19:59:48 -0500
-Received: by mail-pf1-f195.google.com with SMTP id 2so6554641pfg.12;
-        Mon, 16 Dec 2019 16:59:48 -0800 (PST)
+        id S1726427AbfLQCHV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Dec 2019 21:07:21 -0500
+Received: from mail-lf1-f67.google.com ([209.85.167.67]:43166 "EHLO
+        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726180AbfLQCHV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 Dec 2019 21:07:21 -0500
+Received: by mail-lf1-f67.google.com with SMTP id 9so5743251lfq.10;
+        Mon, 16 Dec 2019 18:07:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=z+U3mtb5B8o3nMoErvNMR/T0p7amiYHbrwq0mw7E9ew=;
-        b=Z1SwPo9iS7off19v/IGRCKqd6Ep97ohWpywllJdALTsD8ML7E+N+AkhzgM64v2AL3C
-         H5PirixmJhPKitLQbxx6tK5i4bM0fX72RRg5c8wv4ZYIidPEHiaIWVo3AUDVlQjCbhbj
-         KTsdmRNCMlWxdBaMWgRPXdLOOgubzbsO6CPdcPB5kEmfnmo3XE7Tv1Zn/Aa6cZhFNnFz
-         F0b4bY9m/z0aitCMgOthnXHx60tMtpKARNFpNzaOGKjgiOFOdzXcabhRNRph1WmVGz7m
-         0Tr2r/GjGEoFlgGGJ5OMLvnWVtFFCQKgypop5LoZzVncOuGBFchecX3qWN+n8wtdLGfP
-         F18w==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=JyYnLdraZ3i9mAbNELTDahCGz48WPnWVPKPIPNY5hKg=;
+        b=r9cZVoN+YFl3+BZILKRst0PzNyYWJlbPwl0O7Otp8uj/9YdzBzN8/+cRgAF/b8JLZT
+         8MvfF4nnBENkks3F5kNVc8XkNPu8FuK51fC1JdZiDlgTECEMtEEguCx7vNorozjOrjTj
+         G3t2M968DuoWVYpuBYAgtuv6+MVeaLu2QXOILQAHW+Ooxg6Dv7Hx+qqqKaeJEal4Au5F
+         /gQ25CKswtNrY2YgwwwVvkW8oLHcUhN0d5jDALjGP/zRAhqXEFdu9sLkM1o9C8eVYl96
+         32IpWL1lxdfitsVz9w0iTtA6ker/fY4072kNhU/DbuOEQdQ3xMd767tJtp1xvqAowFV7
+         TDtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=z+U3mtb5B8o3nMoErvNMR/T0p7amiYHbrwq0mw7E9ew=;
-        b=Wemk5kbkQQTtdcFHt3F6ZNUDTbTggWTa8NmdeUScusyxOpsqGldZVwLm1K3vV8Bd/l
-         GTrI6i5BR4kVz6YEMl6dUJGWhUuxL8I+6aMVjiGhCPKI3Em9Bc6bdC45nHkEpeJY52ec
-         3sjRVuCiOyqMBizM1CPjYN7mCFNfbF15bGC/a2LMD0yow1V/oN2s5G8Ln+QQpgIKGUyj
-         oO+HE6HbdgMUuCtQwJ3JRvwgia9re6PXOoF+HbBPueAl4r/0aUw3tlp6WIGT+Fdkf7rU
-         UiNXRjQJbImgTMUfRaBcGw2h5B6a5OQpRI6O66i5QRhcW5i2LQSHrMeRoiobJewYBmXm
-         d9Ow==
-X-Gm-Message-State: APjAAAW4dBAKpj070AkhdMSV6zhq07gFj4lE95Zjc7VWxhsByZBTKrhE
-        QgE2ePhN0ga88bXt1sZZzD4wtjfW
-X-Google-Smtp-Source: APXvYqxj9oz2N8CVGVdCAdu3gfGeU6umT5UJ43qpbRzriLeZl6OW0LkaR58EnmSvr4NYpYeqGBEWtQ==
-X-Received: by 2002:a62:6001:: with SMTP id u1mr19633977pfb.158.1576544387579;
-        Mon, 16 Dec 2019 16:59:47 -0800 (PST)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:200::1:48aa])
-        by smtp.gmail.com with ESMTPSA id m9sm24604672pff.38.2019.12.16.16.59.46
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 16 Dec 2019 16:59:46 -0800 (PST)
-Date:   Mon, 16 Dec 2019 16:59:45 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Cc:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Ido Schimmel <idosch@idosch.org>
-Subject: Re: [RFC PATCH bpf-next] xdp: Add tracepoint on XDP program return
-Message-ID: <20191217005944.s3mayy473ldlnldl@ast-mbp.dhcp.thefacebook.com>
-References: <20191216152715.711308-1-toke@redhat.com>
- <CAJ+HfNhYG_hzuFzX5sAH7ReotLtZWTP_9D2jA_iVMg+jUtXXCw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=JyYnLdraZ3i9mAbNELTDahCGz48WPnWVPKPIPNY5hKg=;
+        b=RyRSjTZoAM07+gOpY8ll6RqjVF1MFQP1c704OHf6A2zRwYh+cFsEy1oGZ59O63WLo5
+         QHd9fqi2lm6/KNypDhVc8gfzgRdV6t2LI5nMG8L8yRwxYBQGIUJsfhUeSCG1rABiBaP6
+         4F1NC3rIWMdUZGXccSdCt+1CFl/oFdAkpo2UvzVvycFxVHSQ71n02oBeXbLMyS50AW8s
+         w0TnPVPyQA9ELy16v+hBDJ7b26k1hFNGyxDofABN70eVPOfdWAL8p74Y12jJra7lNv/E
+         HrlAnjZI8SL5rDyZqf9W5DtsuN5Lx1UYE3iL2tcdk4COZoiJVtdhm/8WGl/fZILn4MMu
+         CoCw==
+X-Gm-Message-State: APjAAAXQ+zA6ehYb7Xu/cuxDVzozUheenTWctmO8BNcwLoO+PjLF5m60
+        SKhZHTy1jMKTMzxDfpz1Zk4bzzwY24y5uaLdWtU=
+X-Google-Smtp-Source: APXvYqx8XtOM7Ecfx9GE0h8Mejdo5Rsgcl7suDbjTfcESRRDsZy98q/R6+/sOhxqfpegbA4acAI1oU0rqet8E5iTPAM=
+X-Received: by 2002:a19:6d13:: with SMTP id i19mr1319229lfc.6.1576548438829;
+ Mon, 16 Dec 2019 18:07:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJ+HfNhYG_hzuFzX5sAH7ReotLtZWTP_9D2jA_iVMg+jUtXXCw@mail.gmail.com>
-User-Agent: NeoMutt/20180223
+References: <20191216082738.28421-1-prashantbhole.linux@gmail.com>
+ <20191216132512.GD14887@linux.fritz.box> <CAADnVQKB7hUmXBMmPfFUH4ZxSQfRtam0aEWykBNMhrKS+HjcwQ@mail.gmail.com>
+ <caf893fb-e574-7a67-1e4e-4ce5d7836172@gmail.com>
+In-Reply-To: <caf893fb-e574-7a67-1e4e-4ce5d7836172@gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Mon, 16 Dec 2019 18:07:07 -0800
+Message-ID: <CAADnVQJXK6TykmFx2axj9Z2yjNMRU9VbO98koneUiEQ-dLwu-Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: fix build by renaming variables
+To:     Prashant Bhole <prashantbhole.linux@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Dec 16, 2019 at 07:17:59PM +0100, Björn Töpel wrote:
-> On Mon, 16 Dec 2019 at 16:28, Toke Høiland-Jørgensen <toke@redhat.com> wrote:
+On Mon, Dec 16, 2019 at 4:17 PM Prashant Bhole
+<prashantbhole.linux@gmail.com> wrote:
+>
+>
+>
+> On 12/16/19 11:02 PM, Alexei Starovoitov wrote:
+> > On Mon, Dec 16, 2019 at 5:25 AM Daniel Borkmann <daniel@iogearbox.net> =
+wrote:
+> >>
+> >> On Mon, Dec 16, 2019 at 05:27:38PM +0900, Prashant Bhole wrote:
+> >>> In btf__align_of() variable name 't' is shadowed by inner block
+> >>> declaration of another variable with same name. Patch renames
+> >>> variables in order to fix it.
+> >>>
+> >>>    CC       sharedobjs/btf.o
+> >>> btf.c: In function =E2=80=98btf__align_of=E2=80=99:
+> >>> btf.c:303:21: error: declaration of =E2=80=98t=E2=80=99 shadows a pre=
+vious local [-Werror=3Dshadow]
+> >>>    303 |   int i, align =3D 1, t;
+> >>>        |                     ^
+> >>> btf.c:283:25: note: shadowed declaration is here
+> >>>    283 |  const struct btf_type *t =3D btf__type_by_id(btf, id);
+> >>>        |
+> >>>
+> >>> Fixes: 3d208f4ca111 ("libbpf: Expose btf__align_of() API")
+> >>> Signed-off-by: Prashant Bhole <prashantbhole.linux@gmail.com>
+> >>
+> >> Applied, thanks!
 > >
-> > This adds a new tracepoint, xdp_prog_return, which is triggered at every
-> > XDP program return. This was first discussed back in August[0] as a way to
-> > hook XDP into the kernel drop_monitor framework, to have a one-stop place
-> > to find all packet drops in the system.
-> >
-> > Because trace/events/xdp.h includes filter.h, some ifdef guarding is needed
-> > to be able to use the tracepoint from bpf_prog_run_xdp(). If anyone has any
-> > ideas for how to improve on this, please to speak up. Sending this RFC
-> > because of this issue, and to get some feedback from Ido on whether this
-> > tracepoint has enough data for drop_monitor usage.
-> >
-> 
-> I get that it would be useful, but can it be solved with BPF tracing
-> (i.e. tracing BPF with BPF)? It would be neat not adding another
-> tracepoint in the fast-path...
+> > Prashant,
+> > Thanks for the fixes.
+> > Which compiler do use?
+>
+> gcc (GCC) 9.1.1 20190503 (Red Hat 9.1.1-1)
 
-That was my question as well.
-Here is an example from Eelco:
-https://lore.kernel.org/bpf/78D7857B-82E4-42BC-85E1-E3D7C97BF840@redhat.com/
-BPF_TRACE_2("fexit/xdp_prog_simple", trace_on_exit,
-             struct xdp_buff*, xdp, int, ret)
-{
-     bpf_debug("fexit: [ifindex = %u, queue =  %u, ret = %d]\n",
-               xdp->rxq->dev->ifindex, xdp->rxq->queue_index, ret);
+I've tried devtoolset-8 and devtoolset-9.
+Which is
+gcc version 9.1.1 20190605 (Red Hat 9.1.1-2) (GCC)
 
-     return 0;
-}
-'ret' is return code from xdp program.
-Such approach is per xdp program, but cheaper when not enabled
-and faster when it's triggering comparing to static tracepoint.
-Anything missing there that you'd like to see?
+make clean;make doesn't produce that warning.
+make V=3D1 tells me:
+gcc -O2 -W -Wall -Wextra -Wno-unused-parameter
+-Wno-missing-field-initializers -Wbad-function-cast
+-Wdeclaration-after-statement -Wformat-security -Wformat-y2k
+-Winit-self -Wmissing-declarations -Wmissing-prototypes
+-Wnested-externs -Wno-system-headers -Wold-style-definition -Wpacked
+-Wredundant-decls -Wstrict-prototypes -Wswitch-default -Wundef
+-Wwrite-strings -Wformat -Wstrict-aliasing=3D3 -fno-strict-aliasing
+-Wno-shadow
+... -c -MMD -o gen.o gen.c
 
+For some odd reason this check is failing for me
+$ tools/scripts/Makefile.include
+ifneq ($(filter 3.%,$(MAKE_VERSION)),)  # make-3
+EXTRA_WARNINGS +=3D -fno-strict-aliasing
+EXTRA_WARNINGS +=3D -Wno-shadow
+else
+EXTRA_WARNINGS +=3D -Wshadow
+endif
+
+$ make -v
+GNU Make 3.82
+
+Not sure how to fix this.
