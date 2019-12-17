@@ -2,43 +2,45 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 019601235D6
-	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2019 20:39:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46FD51235F2
+	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2019 20:50:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727773AbfLQTje (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Dec 2019 14:39:34 -0500
-Received: from www62.your-server.de ([213.133.104.62]:50978 "EHLO
+        id S1727241AbfLQTug (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Dec 2019 14:50:36 -0500
+Received: from www62.your-server.de ([213.133.104.62]:53910 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726612AbfLQTje (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Dec 2019 14:39:34 -0500
-Received: from sslproxy02.your-server.de ([78.47.166.47])
+        with ESMTP id S1727162AbfLQTug (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Dec 2019 14:50:36 -0500
+Received: from sslproxy05.your-server.de ([78.46.172.2])
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1ihIgs-00037v-NF; Tue, 17 Dec 2019 20:39:30 +0100
+        id 1ihIrY-0004Aj-Fd; Tue, 17 Dec 2019 20:50:32 +0100
 Received: from [178.197.249.31] (helo=pc-9.home)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89)
         (envelope-from <daniel@iogearbox.net>)
-        id 1ihIgs-000HxU-Dm; Tue, 17 Dec 2019 20:39:30 +0100
-Subject: Re: [PATCH bpf-next v13 1/2] bpf: add new helper get_fd_path for
- mapping a file descriptor to a pathname
-To:     Yonghong Song <yhs@fb.com>, Wenbo Zhang <ethercflow@gmail.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Cc:     "ast@kernel.org" <ast@kernel.org>,
-        "bgregg@netflix.com" <bgregg@netflix.com>,
-        "andrii.nakryiko@gmail.com" <andrii.nakryiko@gmail.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-References: <cover.1576575253.git.ethercflow@gmail.com>
- <8f6b8979fb64bedf5cb406ba29146c5fa2539267.1576575253.git.ethercflow@gmail.com>
- <f54e3df6-626f-e9c4-f2c2-a63fb9953944@fb.com>
+        id 1ihIrY-000SO2-5N; Tue, 17 Dec 2019 20:50:32 +0100
+Subject: Re: [PATCH v4 bpf-next 2/4] libbpf: support libbpf-provided extern
+ variables
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Kernel Team <kernel-team@fb.com>
+References: <20191214014710.3449601-1-andriin@fb.com>
+ <20191214014710.3449601-3-andriin@fb.com>
+ <20191216111736.GA14887@linux.fritz.box>
+ <CAEf4Bzbx+2Fot9NYzGJS-pUF5x5zvcfBnb7fcO_s9_gCQQVuLg@mail.gmail.com>
+ <7bf339cf-c746-a780-3117-3348fb5997f1@iogearbox.net>
+ <CAEf4BzYAWknN1HGHd0vREtQLHU-z3iTLJWBteRK6q7zkhySBBg@mail.gmail.com>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <a8a763e2-65d2-7c71-e99d-ffae1523f0f0@iogearbox.net>
-Date:   Tue, 17 Dec 2019 20:39:29 +0100
+Message-ID: <e569134e-68a9-9c69-e894-b21640334bb0@iogearbox.net>
+Date:   Tue, 17 Dec 2019 20:50:31 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <f54e3df6-626f-e9c4-f2c2-a63fb9953944@fb.com>
+In-Reply-To: <CAEf4BzYAWknN1HGHd0vREtQLHU-z3iTLJWBteRK6q7zkhySBBg@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -49,87 +51,46 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 12/17/19 5:29 PM, Yonghong Song wrote:
-> On 12/17/19 1:47 AM, Wenbo Zhang wrote:
+On 12/17/19 8:03 PM, Andrii Nakryiko wrote:
+> On Tue, Dec 17, 2019 at 6:42 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>> On 12/16/19 8:29 PM, Andrii Nakryiko wrote:
+>>> On Mon, Dec 16, 2019 at 3:17 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>>>> On Fri, Dec 13, 2019 at 05:47:08PM -0800, Andrii Nakryiko wrote:
 [...]
->> + *		On failure, it is filled with zeroes.
-[...]
->>     */
->>    #define __BPF_FUNC_MAPPER(FN)		\
->>    	FN(unspec),			\
->> @@ -2938,7 +2964,8 @@ union bpf_attr {
->>    	FN(probe_read_user),		\
->>    	FN(probe_read_kernel),		\
->>    	FN(probe_read_user_str),	\
->> -	FN(probe_read_kernel_str),
->> +	FN(probe_read_kernel_str),	\
->> +	FN(get_fd_path),
->>    
->>    /* integer value in 'imm' field of BPF_CALL instruction selects which helper
->>     * function eBPF program intends to call
->> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
->> index e5ef4ae9edb5..43a6aa6ad967 100644
->> --- a/kernel/trace/bpf_trace.c
->> +++ b/kernel/trace/bpf_trace.c
->> @@ -762,6 +762,71 @@ static const struct bpf_func_proto bpf_send_signal_proto = {
->>    	.arg1_type	= ARG_ANYTHING,
->>    };
->>    
->> +BPF_CALL_3(bpf_get_fd_path, char *, dst, u32, size, int, fd)
->> +{
->> +	int ret = -EBADF;
->> +	struct file *f;
->> +	char *p;
->> +
->> +	/* Ensure we're in user context which is safe for the helper to
->> +	 * run. This helper has no business in a kthread.
->> +	 */
->> +	if (unlikely(in_interrupt() ||
->> +		     current->flags & (PF_KTHREAD | PF_EXITING))) {
->> +		ret = -EPERM;
->> +		goto error;
->> +	}
->> +
->> +	/* Use fget_raw instead of fget to support O_PATH, and it doesn't
->> +	 * have any sleepable code, so it's ok to be here.
->> +	 */
->> +	f = fget_raw(fd);
->> +	if (!f)
->> +		goto error;
->> +
->> +	/* For unmountable pseudo filesystem, it seems to have no meaning
->> +	 * to get their fake paths as they don't have path, and to be no
->> +	 * way to validate this function pointer can be always safe to call
->> +	 * in the current context.
->> +	 */
->> +	if (f->f_path.dentry->d_op && f->f_path.dentry->d_op->d_dname) {
->> +		ret = -EINVAL;
->> +		fput(f);
->> +		goto error;
->> +	}
->> +
->> +	/* After filter unmountable pseudo filesytem, d_path won't call
->> +	 * dentry->d_op->d_name(), the normally path doesn't have any
->> +	 * sleepable code, and despite it uses the current macro to get
->> +	 * fs_struct (current->fs), we've already ensured we're in user
->> +	 * context, so it's ok to be here.
->> +	 */
->> +	p = d_path(&f->f_path, dst, size);
->> +	if (IS_ERR(p)) {
->> +		ret = PTR_ERR(p);
->> +		fput(f);
->> +		goto error;
->> +	}
->> +
->> +	ret = strlen(p) + 1;
->> +	memmove(dst, p, ret);
->> +	fput(f);
->> +	return ret;
->> +
->> +error:
->> +	memset(dst, '0', size);
+>>> So for application-specific stuff, there isn't really a need to use
+>>> externs to do that. Furthermore, I think allowing using externs as
+>>> just another way to specify application-specific configuration is
+>>> going to create a problem, potentially, as we'll have higher
+>>> probability of collisions with kernel-provided extersn (variables
+>>> and/or functions), or even externs provided by other
+>>> dynamically/statically linked BPF programs (once we have dynamic and
+>>> static linking, of course).
+>>
+>> Yes, that makes more sense, but then we are already potentially colliding
+>> with current CONFIG_* variables once we handle dynamically / statically
+>> linked BPF programs. Perhaps that's my confusion in the first place. Would
+>> have been good if 166750bc1dd2 had a discussion on that as part of the
+>> commit message.
+>>
+>> So, naive question, what's the rationale of not using .rodata variables
+>> for CONFIG_* case and how do we handle these .extern collisions in future?
+>> Should these vars rather have had some sort of annotation or be moved into
+>> special ".extern.config" section or the like where we explicitly know that
+>> these are handled differently so they don't collide with future ".extern"
+>> content once we have linked BPF programs?
+> 
+> Yes, name collision is a possibility, which means users should
+> restrain from using LINUX_KERNEL_VERSION and CONFIG_XXX names for
+> their variables. But if that is ever actually the problem, the way to
+> resolve this collision/ambiguity would be to put externs in a separate
+> sections. It's possible to annotate extern variable with custom
+> section.
+> 
+> But I guess putting Kconfig-provided externs into ".extern.kconfig"
+> might be a good idea, actually. That will make it possible to have
+> writable externs in the future.
 
-You fill it with 0x30's ...
-
->> +	return ret;
->> +}
+Yep, and as mentioned it will make it more clear that these get special
+loader treatment as opposed to regular externs we need to deal with in
+future. A '.extern.kconfig' section sounds good to me and the BPF helper
+header could provide a __kconfig annotation for that as well.
