@@ -2,131 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DBB7B1238FC
-	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2019 22:58:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 859D9123A24
+	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2019 23:38:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726470AbfLQV60 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Dec 2019 16:58:26 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:22156 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726387AbfLQV6Z (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 17 Dec 2019 16:58:25 -0500
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xBHLsPQd024644;
-        Tue, 17 Dec 2019 13:58:10 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=YqRfU3vZPK4Nk7PpdUG5uzuxqxL2a86O3JiHCg7Ahxk=;
- b=pmOGeMpN7rYPopkdnAByFC5We8/3naTBrJOSu8/WSBN1i3iJU7EjqwKSuKqIAd58FpMX
- sLnhqrNOIa4kjDHf6DNeSmjfg7jlcYiwZszxicdN6oZCmaBIhm2nTc0jShZBGSAEkKwG
- GS7FPCBaEvpmDOMMJW/z/aYZgyXVKkFJDN8= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2wxg74p3r8-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 17 Dec 2019 13:58:10 -0800
-Received: from ash-exhub201.TheFacebook.com (2620:10d:c0a8:83::7) by
- ash-exhub204.TheFacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 17 Dec 2019 13:58:09 -0800
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Tue, 17 Dec 2019 13:58:09 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=f2l7ibjQDew9IJorsSissHdUWbRNKJpgzKVrs0FxkNb8udH06sraiUaZFtUNYCyr655KGMsWWCRDhZLQ87ME+5mcloYp3Ud0dMINR34j+d2o/F2b5/yvp6sk/bQH1kqogVaxWnQfMlLwGtKriPtbhVX2NBbRAagBez1jjAZncpORpMPdonK2hXLTQPfWHfLegf/bHwXojtv2UGmWDhINnQlT+cTWkVZ9M2p/Orj7W2Dl9YiXaCb12PCLUiXpqSifwzL0ixrw11vDbJlgS8ZAUtuA5BE4nrHvXA03ZguqgI4pM7JOAzkO1WcOxrTMFpJH8KB+uI1Hfi4No5UXMgxtDA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YqRfU3vZPK4Nk7PpdUG5uzuxqxL2a86O3JiHCg7Ahxk=;
- b=lc61DwWdZr+ultNBcRcMTzsafs2dWFw5XPJX6hefn3hrdZ+aWktxGSGijSbWiFaJzcVhMF750XgbHqtwoPCI0g8/6084MzYCBS0ZkU+yzdOcSKqwLFjc3YQHnl5UtdEGicXVgc370tO95bg+EQYIfyeMewYNGmDg5UITNQjbd2nTV1lqyCy0cdlGeVYaoEdgWYMH8nEUSWh5/oSzVtLbYbUa5PaPr0lKCA1UcRRxSr5kqeR1GSQ/HtREuO+OIU/5A40EbiPmGXXDTZ0fdcww4FO7lFfV/B4XZPQL0xq1F1Tq8X/XGoHDUj7QV2kplP08oAyzxPg0loWKlfOOruZWBw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YqRfU3vZPK4Nk7PpdUG5uzuxqxL2a86O3JiHCg7Ahxk=;
- b=C0INnN80PYsjTl3ZTwVx8Aiq/Av6QndaX6lYselGCg7utWfTw/J7z9GUvcAYA+hMsUvPoFWmp1EDltSm/q6+UfY8WiKeXao11YYkFpKQiOUqqosIAop34tUaHwewy5y4BbzYvysBrDx4rmeIEwOhlbE/5apeLG7gyudRpKCnv0U=
-Received: from DM5PR15MB1675.namprd15.prod.outlook.com (10.175.107.145) by
- DM5PR15MB1548.namprd15.prod.outlook.com (10.173.222.139) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2538.18; Tue, 17 Dec 2019 21:58:08 +0000
-Received: from DM5PR15MB1675.namprd15.prod.outlook.com
- ([fe80::2844:b18d:c296:c23]) by DM5PR15MB1675.namprd15.prod.outlook.com
- ([fe80::2844:b18d:c296:c23%8]) with mapi id 15.20.2538.019; Tue, 17 Dec 2019
- 21:58:08 +0000
-From:   Yonghong Song <yhs@fb.com>
-To:     =?utf-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        "Alexei Starovoitov" <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf-next] libbpf: Fix libbpf_common.h when installing
- libbpf through 'make install'
-Thread-Topic: [PATCH bpf-next] libbpf: Fix libbpf_common.h when installing
- libbpf through 'make install'
-Thread-Index: AQHVtM0klwOq8VxAT0i7zUX30aMLtqe+4ISA
-Date:   Tue, 17 Dec 2019 21:58:08 +0000
-Message-ID: <c6a49edd-3992-6ddc-58d9-2c37acdeeece@fb.com>
-References: <20191217112810.768078-1-toke@redhat.com>
-In-Reply-To: <20191217112810.768078-1-toke@redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MWHPR02CA0002.namprd02.prod.outlook.com
- (2603:10b6:300:4b::12) To DM5PR15MB1675.namprd15.prod.outlook.com
- (2603:10b6:3:11f::17)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:200::3:406]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 6056c49e-6684-415f-a9d6-08d7833c3385
-x-ms-traffictypediagnostic: DM5PR15MB1548:
-x-microsoft-antispam-prvs: <DM5PR15MB15480FAD08A68E48C72CB629D3500@DM5PR15MB1548.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3826;
-x-forefront-prvs: 02543CD7CD
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(396003)(366004)(39860400002)(346002)(136003)(376002)(189003)(199004)(66446008)(66946007)(66556008)(5660300002)(64756008)(66476007)(6486002)(36756003)(71200400001)(186003)(4744005)(2616005)(86362001)(478600001)(316002)(52116002)(6512007)(8936002)(81156014)(81166006)(2906002)(6506007)(31686004)(54906003)(110136005)(8676002)(4326008)(31696002)(53546011);DIR:OUT;SFP:1102;SCL:1;SRVR:DM5PR15MB1548;H:DM5PR15MB1675.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 6AFEBrg2EzyWn2P+sd9fYgie4JKbQeqfgJ288I9jl/emPPvm6Ao/WICBHFe5WTBYh+suBZ5fEheJ9PC7aDnnCGpMKZPfqH8Z0QQ2Q7rxE5kP7rSbm96g1rSPDnMuNucXivu7ZRvNLAnMbZRw97EAoOU3F2/szf0a3Vz5QO6QLgH0sTzPKiM7Db+Mzp0uf8CuinqPLzVOj4kIKcJk8P2ccx158Hw936+hBdyX6mFgcfOuS3mAq4J93Z7bCGH6femKqYhA056hikO7pjFIxKjZlrnSHSvb31hDvr++Dk6V0lndjXRpzxPgX0QExkkx2LOj1h8zxcZFREMN1pPCcb+MyceG55WLgvvmynoR/E+oHOvZo/B2HAAQIOTufAF6oU0v3HWg4QVjkqxXGboO8PeNda+D9X55hc6KUJdChAZBUrzagVfC31CVAxtb6BUXxpap
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <A1E1E071E83B2B43952E9ACA99EBC828@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1726072AbfLQWiT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Dec 2019 17:38:19 -0500
+Received: from foss.arm.com ([217.140.110.172]:50992 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725812AbfLQWiT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Dec 2019 17:38:19 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 69A711FB;
+        Tue, 17 Dec 2019 14:38:18 -0800 (PST)
+Received: from mbp (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7B2153F718;
+        Tue, 17 Dec 2019 14:38:15 -0800 (PST)
+Date:   Tue, 17 Dec 2019 22:38:09 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        kirill.shutemov@linux.intel.com, justin.he@arm.com,
+        linux-mm@kvack.org,
+        syzbot <syzbot+9301f2f33873407d5b33@syzkaller.appspotmail.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
+        bpf <bpf@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>, hawk@kernel.org,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        linux-kernel@vger.kernel.org,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        Network Development <netdev@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        syzkaller-bugs@googlegroups.com, Yonghong Song <yhs@fb.com>
+Subject: Re: WARNING in wp_page_copy
+Message-ID: <20191217223808.GA14982@mbp>
+References: <000000000000a6f2030598bbe38c@google.com>
+ <0000000000000e32950599ac5a96@google.com>
+ <20191216150017.GA27202@linux.fritz.box>
+ <CAJ8uoz3nCxcmnPonNunYhswskidn=PnN8=4_jXW4B=Xu4k_DoQ@mail.gmail.com>
+ <CAJ8uoz312gDBGpqOJiKqrXn456sy6u+Gnvcvv_+0=EimasRoUw@mail.gmail.com>
+ <20191217154031.GI5624@arrakis.emea.arm.com>
+ <CAJ8uoz3yDK8sEE05cKA8siBi-Dc0wtbe1-zYgbz_-pd5t69j8w@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6056c49e-6684-415f-a9d6-08d7833c3385
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Dec 2019 21:58:08.4337
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: stR5qdgWc+lkh4mSlIBk/smu+oCk6UaShzmGL1Vos611IL2SKsjVceuZtSB2of0l
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR15MB1548
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
- definitions=2019-12-17_04:2019-12-17,2019-12-17 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- suspectscore=0 bulkscore=0 mlxscore=0 phishscore=0 priorityscore=1501
- spamscore=0 impostorscore=0 clxscore=1015 lowpriorityscore=0 adultscore=0
- mlxlogscore=973 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1910280000 definitions=main-1912170174
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJ8uoz3yDK8sEE05cKA8siBi-Dc0wtbe1-zYgbz_-pd5t69j8w@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-DQoNCk9uIDEyLzE3LzE5IDM6MjggQU0sIFRva2UgSMO4aWxhbmQtSsO4cmdlbnNlbiB3cm90ZToN
-Cj4gVGhpcyBmaXhlcyB0d28gaXNzdWVzIHdpdGggdGhlIG5ld2x5IGludHJvZHVjZWQgbGliYnBm
-X2NvbW1vbi5oIGZpbGU6DQo+IA0KPiAtIFRoZSBoZWFkZXIgZmFpbGVkIHRvIGluY2x1ZGUgPHN0
-cmluZy5oPiBmb3IgdGhlIGRlZmluaXRpb24gb2YgbWVtc2V0KCkNCj4gLSBUaGUgbmV3IGZpbGUg
-d2FzIG5vdCBpbmNsdWRlZCBpbiB0aGUgaW5zdGFsbF9oZWFkZXJzIHJ1bGUgaW4gdGhlIE1ha2Vm
-aWxlDQo+IA0KPiBCb3RoIG9mIHRoZXNlIGlzc3VlcyBjYXVzZSBicmVha2FnZSB3aGVuIGluc3Rh
-bGxpbmcgbGliYnBmIHdpdGggJ21ha2UNCj4gaW5zdGFsbCcgYW5kIHRyeWluZyB0byB1c2UgaXQg
-aW4gYXBwbGljYXRpb25zLg0KPiANCj4gRml4ZXM6IDU0NDQwMmQ0YjQ5MyAoImxpYmJwZjogRXh0
-cmFjdCBjb21tb24gdXNlci1mYWNpbmcgaGVscGVycyIpDQo+IFNpZ25lZC1vZmYtYnk6IFRva2Ug
-SMO4aWxhbmQtSsO4cmdlbnNlbiA8dG9rZUByZWRoYXQuY29tPg0KDQpBY2tlZC1ieTogWW9uZ2hv
-bmcgU29uZyA8eWhzQGZiLmNvbT4NCg==
+On Tue, Dec 17, 2019 at 04:57:34PM +0100, Magnus Karlsson wrote:
+> On Tue, Dec 17, 2019 at 4:40 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
+> > On Tue, Dec 17, 2019 at 02:27:22PM +0100, Magnus Karlsson wrote:
+> > > On Mon, Dec 16, 2019 at 4:10 PM Magnus Karlsson
+> > > <magnus.karlsson@gmail.com> wrote:
+> > > > On Mon, Dec 16, 2019 at 4:00 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+> > > > > On Sat, Dec 14, 2019 at 08:20:07AM -0800, syzbot wrote:
+> > > > > > syzbot has found a reproducer for the following crash on:
+> > > > > >
+> > > > > > HEAD commit:    1d1997db Revert "nfp: abm: fix memory leak in nfp_abm_u32_..
+> > > > > > git tree:       net-next
+> > > > > > console output: https://syzkaller.appspot.com/x/log.txt?x=1029f851e00000
+> > > > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=cef1fd5032faee91
+> > > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=9301f2f33873407d5b33
+> > > > > > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> > > > > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=119d9fb1e00000
+> > > > > >
+> > > > > > IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> > > > > > Reported-by: syzbot+9301f2f33873407d5b33@syzkaller.appspotmail.com
+> > > > >
+> > > > > Bjorn / Magnus, given xsk below, PTAL, thanks!
+> > > >
+> > > > Thanks. I will take a look at it right away.
+> > > >
+> > > > /Magnus
+> > >
+> > > After looking through the syzcaller report, I have the following
+> > > hypothesis that would dearly need some comments from MM-savy people
+> > > out there. Syzcaller creates, using mmap, a memory area that is
+> >
+> > I guess that's not an anonymous mmap() since we don't seem to have a
+> > struct page for src in cow_user_page() (the WARN_ON_ONCE path). Do you
+> > have more information on the mmap() call?
+> 
+> I have this from the syzcaller logs:
+> 
+> mmap(&(0x7f0000001000/0x2000)=nil, 0x2000, 0xfffffe, 0x12, r8, 0x0)
+> getsockopt$XDP_MMAP_OFFSETS(r8, 0x11b, 0x7, &(0x7f0000001300),
+> &(0x7f0000000100)=0x60)
+> 
+> The full log can be found at:
+> https://syzkaller.appspot.com/x/repro.syz?x=119d9fb1e00000
+
+Thanks. Prior to mmap, we have:
+
+r8 = socket$xdp(0x2c, 0x3, 0x0)
+
+So basically we have an mmap() on a socket descriptor with a subsequent
+copy_to_user() writing this range. We do we even end up doing CoW on
+such mapping? Maybe the socket code should also implement the .fault()
+file op. It needs more digging.
+
+-- 
+Catalin
