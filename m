@@ -2,126 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F126A1226A5
-	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2019 09:26:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3B1D122710
+	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2019 09:52:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726275AbfLQI0g (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Dec 2019 03:26:36 -0500
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:46229 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726141AbfLQI0g (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Dec 2019 03:26:36 -0500
-Received: by mail-lj1-f195.google.com with SMTP id z17so9857249ljk.13
-        for <bpf@vger.kernel.org>; Tue, 17 Dec 2019 00:26:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=S2HWEnfNx14SXY1HnKJhWOptQA0SVJJU0TqB07h1faM=;
-        b=Bug4Nf08piVyLoD3c99gL62iecZ2ijJjbIHj/9AaI3XtVt1JKuhH92l5fTTCFfTSDz
-         it/tX3FCFNjr7VL1QWmsOi1FQp1RHYLVihSCf14IygVY6QL0f/IHXMwqvRX+kjxwS1P9
-         S+LQYy4yXlI/uoZuI26yJwiMNwmj4LNaUmNqg=
+        id S1726571AbfLQIwM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Dec 2019 03:52:12 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:56276 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725893AbfLQIwM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Dec 2019 03:52:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1576572730;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2sfzAo5vBd9xBpXpg/m9erufLQX8/hEzWPbggzsXBlI=;
+        b=E0Pta9IuuNopFvNijTKjpCc7EMVRDfk/MH2lGveeCkuUbzF2fmqI7KSYv+EhukB8R+8vZ7
+        l1sCl7yAIQmZaebLjgrMCH/TIO6v4i9xt8RR6zgB/uJoSa6DylVWIN/5yqZfNkzAzIbxKK
+        8xIDQ5gwoPEmgxVcI3x44pd1f3TMXOI=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-59-y_NiNpLcPQC7qYaL7RmNpw-1; Tue, 17 Dec 2019 03:52:06 -0500
+X-MC-Unique: y_NiNpLcPQC7qYaL7RmNpw-1
+Received: by mail-lf1-f69.google.com with SMTP id x23so929394lfc.5
+        for <bpf@vger.kernel.org>; Tue, 17 Dec 2019 00:52:06 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=S2HWEnfNx14SXY1HnKJhWOptQA0SVJJU0TqB07h1faM=;
-        b=rlE1efQwsbG45xw05cH8buIssfSxtFSprhaIUxJj5P9yZDPw5p0MrRjchhqas8hVm+
-         +VxV/ps568lSDcw9kI8WBnXiG2ZACbukFVAY1xeCd2y5jiqfbVthwcqSE39doHpdaOgI
-         H6rng2/hL/uJ1O5KKp+NJve6K1VWjU9xzjSNV6YNmeA6A6oLB1C3xr8vUn7Cf1zGsCmn
-         5xF9jK2jiYwjDtyQv42cWhgJ51lTLHfzA0w0uij6sIqvepb5QW5MN+/r9zxUELQgxpnd
-         UJne567u4vrDDPBUUv6xJ4vjBlfD3IesNOFvb/HkBo8nypB+lbqDLcBuiFTPN/FyOA8l
-         XNQA==
-X-Gm-Message-State: APjAAAUE/92pwzYobZ70lz5xdk2LRRfZSIxSCv/5I3fQB6TL9YFa7Li8
-        9YvwHHtgxLYkIvHg2ftovmQz6g==
-X-Google-Smtp-Source: APXvYqwOaZ3V0e7e1ht3nZykyxicFylkfmNXt0Yj5dWyZOWLC21Bqvng7/Ce2BPdmBascUTrFbvtZw==
-X-Received: by 2002:a2e:6e03:: with SMTP id j3mr2372004ljc.27.1576571193476;
-        Tue, 17 Dec 2019 00:26:33 -0800 (PST)
-Received: from cloudflare.com ([2a02:a310:c262:aa00:b35e:8938:2c2a:ba8b])
-        by smtp.gmail.com with ESMTPSA id a12sm12063052ljk.48.2019.12.17.00.26.31
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=2sfzAo5vBd9xBpXpg/m9erufLQX8/hEzWPbggzsXBlI=;
+        b=d5oq2P2B/MJWD6ZGmS28vVeqHg5AEkUjH/nhWz+x52LcLFwAPm8yIs8QfUzGhvqxfW
+         83TBsrBDFPf7DP/tCTYaIjyhq0pQSTrL/p+7blzyEop52N9MljheSZIUhyQ5lRFSXYK4
+         TkRXKsmHFXDynZuPPHftLMtRxxH3YFBFaFkNUyf6onCXMEndkB7t/Kvw72fFuOZEJfQi
+         RC5dnfPSWhUeLgI0PjLYY0oDCAELBSbT3p583yeU/umOHWlcE6XI64VFbMR9pR7hZ77f
+         UKPR2RHlEmHQGJpLXcLkI6OZF9k9plUFCDbTt7RC8jVsLH+wHGaVRODNw/5A+3CgHOBg
+         G7Iw==
+X-Gm-Message-State: APjAAAUdp7zu3fOdTgrbGWQOx9Cym9JhFOj/J7mVxrqgEfTUNqSyylKN
+        0F30w82rPr1J9vm3B3l+VIHPIGSOr7lLjkMdPqAb4zFkKdth10EqymHjXIQkUlwus2PNhMHg8Kb
+        +KUty2CuGIQtO
+X-Received: by 2002:ac2:4c98:: with SMTP id d24mr2006037lfl.138.1576572724916;
+        Tue, 17 Dec 2019 00:52:04 -0800 (PST)
+X-Google-Smtp-Source: APXvYqzUTXfP3gC+bSm0puS7McJoc6U2zWJVUpu+u+gPeGHHrQPXQVoIPgkHXF9gVHxdF264lxcjbw==
+X-Received: by 2002:ac2:4c98:: with SMTP id d24mr2006024lfl.138.1576572724703;
+        Tue, 17 Dec 2019 00:52:04 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id i2sm10308240lfl.20.2019.12.17.00.52.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Dec 2019 00:26:32 -0800 (PST)
-References: <20191214004737.1652076-1-kafai@fb.com> <20191214004758.1653342-1-kafai@fb.com> <b321412c-1b42-45a9-4dc6-cc268b55cd0d@gmail.com> <CADVnQy=soQ8KhuUWEQj0n2ge3a43OSgAKS95bmBtp090jqbM_w@mail.gmail.com>
-User-agent: mu4e 1.1.0; emacs 26.2
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
-        Neal Cardwell <ncardwell@google.com>, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
+        Tue, 17 Dec 2019 00:52:04 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 0265C1800B3; Tue, 17 Dec 2019 09:52:02 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        =?utf-8?B?QmrDtnJu?= =?utf-8?B?IFTDtnBlbA==?= 
+        <bjorn.topel@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Netdev <netdev@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 09/13] bpf: Add BPF_FUNC_jiffies
-In-reply-to: <CADVnQy=soQ8KhuUWEQj0n2ge3a43OSgAKS95bmBtp090jqbM_w@mail.gmail.com>
-Date:   Tue, 17 Dec 2019 09:26:31 +0100
-Message-ID: <87o8w7fjd4.fsf@cloudflare.com>
+        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Ido Schimmel <idosch@idosch.org>
+Subject: Re: [RFC PATCH bpf-next] xdp: Add tracepoint on XDP program return
+In-Reply-To: <20191217005944.s3mayy473ldlnldl@ast-mbp.dhcp.thefacebook.com>
+References: <20191216152715.711308-1-toke@redhat.com> <CAJ+HfNhYG_hzuFzX5sAH7ReotLtZWTP_9D2jA_iVMg+jUtXXCw@mail.gmail.com> <20191217005944.s3mayy473ldlnldl@ast-mbp.dhcp.thefacebook.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 17 Dec 2019 09:52:02 +0100
+Message-ID: <87h81z8hcd.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Dec 14, 2019 at 08:25 PM CET, Neal Cardwell wrote:
-> On Fri, Dec 13, 2019 at 9:00 PM Eric Dumazet <eric.dumazet@gmail.com> wrote:
->>
->>
->>
->> On 12/13/19 4:47 PM, Martin KaFai Lau wrote:
->> > This patch adds a helper to handle jiffies.  Some of the
->> > tcp_sock's timing is stored in jiffies.  Although things
->> > could be deduced by CONFIG_HZ, having an easy way to get
->> > jiffies will make the later bpf-tcp-cc implementation easier.
+Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+
+> On Mon, Dec 16, 2019 at 07:17:59PM +0100, Bj=C3=B6rn T=C3=B6pel wrote:
+>> On Mon, 16 Dec 2019 at 16:28, Toke H=C3=B8iland-J=C3=B8rgensen <toke@red=
+hat.com> wrote:
 >> >
->>
->> ...
->>
->> > +
->> > +BPF_CALL_2(bpf_jiffies, u64, in, u64, flags)
->> > +{
->> > +     if (!flags)
->> > +             return get_jiffies_64();
->> > +
->> > +     if (flags & BPF_F_NS_TO_JIFFIES) {
->> > +             return nsecs_to_jiffies(in);
->> > +     } else if (flags & BPF_F_JIFFIES_TO_NS) {
->> > +             if (!in)
->> > +                     in = get_jiffies_64();
->> > +             return jiffies_to_nsecs(in);
->> > +     }
->> > +
->> > +     return 0;
->> > +}
->>
->> This looks a bit convoluted :)
->>
->> Note that we could possibly change net/ipv4/tcp_cubic.c to no longer use jiffies at all.
->>
->> We have in tp->tcp_mstamp an accurate timestamp (in usec) that can be converted to ms.
+>> > This adds a new tracepoint, xdp_prog_return, which is triggered at eve=
+ry
+>> > XDP program return. This was first discussed back in August[0] as a wa=
+y to
+>> > hook XDP into the kernel drop_monitor framework, to have a one-stop pl=
+ace
+>> > to find all packet drops in the system.
+>> >
+>> > Because trace/events/xdp.h includes filter.h, some ifdef guarding is n=
+eeded
+>> > to be able to use the tracepoint from bpf_prog_run_xdp(). If anyone ha=
+s any
+>> > ideas for how to improve on this, please to speak up. Sending this RFC
+>> > because of this issue, and to get some feedback from Ido on whether th=
+is
+>> > tracepoint has enough data for drop_monitor usage.
+>> >
+>>=20
+>> I get that it would be useful, but can it be solved with BPF tracing
+>> (i.e. tracing BPF with BPF)? It would be neat not adding another
+>> tracepoint in the fast-path...
 >
-> If the jiffies functionality stays, how about 3 simple functions that
-> correspond to the underlying C functions, perhaps something like:
+> That was my question as well.
+> Here is an example from Eelco:
+> https://lore.kernel.org/bpf/78D7857B-82E4-42BC-85E1-E3D7C97BF840@redhat.c=
+om/
+> BPF_TRACE_2("fexit/xdp_prog_simple", trace_on_exit,
+>              struct xdp_buff*, xdp, int, ret)
+> {
+>      bpf_debug("fexit: [ifindex =3D %u, queue =3D  %u, ret =3D %d]\n",
+>                xdp->rxq->dev->ifindex, xdp->rxq->queue_index, ret);
 >
->   bpf_nsecs_to_jiffies(nsecs)
->   bpf_jiffies_to_nsecs(jiffies)
->   bpf_get_jiffies_64()
->
-> Separate functions might be easier to read/maintain (and may even be
-> faster, given the corresponding reduction in branches).
+>      return 0;
+> }
+> 'ret' is return code from xdp program.
+> Such approach is per xdp program, but cheaper when not enabled
+> and faster when it's triggering comparing to static tracepoint.
+> Anything missing there that you'd like to see?
 
-Having bpf_nsecs_to_jiffies() would be also handy for BPF sockops progs
-that configure SYN-RTO timeout (BPF_SOCK_OPS_TIMEOUT_INIT).
+For userspace, sure, the fentry/fexit stuff is fine. The main use case
+for this new tracepoint is to hook into the (in-kernel) drop monitor.
+Dunno if that can be convinced to hook into the BPF tracing
+infrastructure instead of tracepoints. Ido, WDYT?
 
-Right now user-space needs to go look for CONFIG_HZ in /proc/config.gz
-or /boot/config-`uname -r`, or derive it from clock resolution [0]
-
-        clock_getres(CLOCK_REALTIME_COARSE, &res);
-        jiffy = res.tv_nsec / 1000000;
-
-to pass timeout in jiffies to the BPF prog.
-
--jkbs
-
-[0] https://www.mail-archive.com/kernelnewbies@nl.linux.org/msg08850.html
+-Toke
 
