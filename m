@@ -2,263 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 31B911227D6
-	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2019 10:44:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36C131227DD
+	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2019 10:45:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726730AbfLQJoW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Dec 2019 04:44:22 -0500
-Received: from mail-vs1-f68.google.com ([209.85.217.68]:43876 "EHLO
-        mail-vs1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725870AbfLQJoW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Dec 2019 04:44:22 -0500
-Received: by mail-vs1-f68.google.com with SMTP id x4so6046234vsx.10;
-        Tue, 17 Dec 2019 01:44:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=H/5NcrJGu3CjoG+hc50b8vgyXhwzQCm3cF8uGW+Z5Dw=;
-        b=uAfULoxiQye70sBlIeX9wo8ItlYRNp8GDLUjMKQLKTkQUT4gA+brV9mHgprqClssE/
-         IbD+VFAXW6549zx14sozJkFVFEXM3hkGC/iVQ8uuW8O3wNX0Y7T82teUyfaUPl2chLla
-         mx2HVDfx2iitbUdHSZIcNj3ED9dYMERTRuFCCg5cgqXUnax1m5KTk6tShrk8n4gnx0rH
-         rWkojdcQbuZq38N9FnvZU7lHcXosAZYOzaoNVaiHrgPvig5fGfEWjI+e+xjg1nHavnFF
-         bu2G9xHdnfzzjj+PSUxpNVLy05pwibRS7EvV1JuhZYqVCyifRulry+rhNt8VULGW+ap2
-         cIOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=H/5NcrJGu3CjoG+hc50b8vgyXhwzQCm3cF8uGW+Z5Dw=;
-        b=ZmnwpCvrVvLPIM7/V9TNB/e/hSllKat7WTuSJ/U8Bzz11NBECf9oA3iVyvBjrqkvDq
-         E2tfEqayHV28TywFzM6hEOiDNRnrMsQAq9Hd2JDxTkTajkzn2cE55r2QFfQlgUrGmFyz
-         KxeDym+WETksirR+0YN73vwUgHq4en4wOcQvqvGbUBHj7/bDDb//BFrYASdgDMhBdX13
-         URp3S/1qTK0494HQZrhOEn7pxM2Fb6rxNME4m57uZOi0XUdDzPDhcgD/MxbxAJgvp5vz
-         /VR5+1RirQbX8418pCJeF4t0PzkCh1a82MhTxfTOy3+MWo6h9tsHNIYK2UUUbVZL7b7+
-         iEjw==
-X-Gm-Message-State: APjAAAUkHQtr8uvAUwhlwoFTbrn8LejrpVyhwlaDcjzuPAwAtMkrJnJk
-        gsnF5wJCNZzk2tm8/QUwSlx9mGsaLrFg0bDyHt4=
-X-Google-Smtp-Source: APXvYqy+3+fxVvyCQPgbavAlnkEPcV1KXs36vzU/hAeaEnOLVZzzFgoygtXfvYMGEddBXoz9zQH44Zblpjw7ZZh3KPw=
-X-Received: by 2002:a67:ed07:: with SMTP id l7mr2153176vsp.47.1576575860599;
- Tue, 17 Dec 2019 01:44:20 -0800 (PST)
+        id S1726813AbfLQJp2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Dec 2019 04:45:28 -0500
+Received: from mga04.intel.com ([192.55.52.120]:31364 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725870AbfLQJp2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Dec 2019 04:45:28 -0500
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 17 Dec 2019 01:45:27 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.69,325,1571727600"; 
+   d="scan'208";a="217719255"
+Received: from gorris-mobl2.ger.corp.intel.com (HELO [10.249.34.224]) ([10.249.34.224])
+  by orsmga003.jf.intel.com with ESMTP; 17 Dec 2019 01:45:20 -0800
+Subject: Re: [Intel-gfx] [PATCH v3 4/7] drm/i915/perf: open access for
+ CAP_SYS_PERFMON privileged process
+To:     Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "jani.nikula@linux.intel.com" <jani.nikula@linux.intel.com>,
+        "joonas.lahtinen@linux.intel.com" <joonas.lahtinen@linux.intel.com>,
+        "rodrigo.vivi@intel.com" <rodrigo.vivi@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Serge Hallyn <serge@hallyn.com>,
+        James Morris <jmorris@namei.org>,
+        Casey Schaufler <casey@schaufler-ca.com>
+Cc:     songliubraving@fb.com, Andi Kleen <ak@linux.intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        Jann Horn <jannh@google.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        intel-gfx@lists.freedesktop.org,
+        Igor Lubashev <ilubashe@akamai.com>,
+        linux-kernel@vger.kernel.org,
+        Stephane Eranian <eranian@google.com>,
+        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
+        "selinux@vger.kernel.org" <selinux@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Brendan Gregg <bgregg@netflix.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+References: <b175f283-d256-e37e-f447-6ba4ab4f3d3a@linux.intel.com>
+ <bc5b2a0d-a185-91b6-5deb-a4b6e1dc3d3e@linux.intel.com>
+From:   Lionel Landwerlin <lionel.g.landwerlin@intel.com>
+Organization: Intel Corporation (UK) Ltd. - Co. Reg. #1134945 - Pipers Way,
+ Swindon SN3 1RJ
+Message-ID: <503ad40c-d94e-df1d-1541-730c002ad3b7@intel.com>
+Date:   Tue, 17 Dec 2019 11:45:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-References: <cover.1576381511.git.ethercflow@gmail.com> <088f1485865016d639cadc891957918060261405.1576381512.git.ethercflow@gmail.com>
- <737b90af-aa51-bd7d-8f68-b68050cbb028@fb.com> <CABtjQmZtzZT+OmZCn=eL9pvTeeCQ+TzKUMGgFJcGzwJDqyk6vw@mail.gmail.com>
- <71c53be6-add4-2557-bc8f-8acb8e4a2f39@fb.com>
-In-Reply-To: <71c53be6-add4-2557-bc8f-8acb8e4a2f39@fb.com>
-From:   Wenbo Zhang <ethercflow@gmail.com>
-Date:   Tue, 17 Dec 2019 17:44:09 +0800
-Message-ID: <CABtjQmYOQy05W8PfK1d--cdWu7hkTGbkm_4gEZp8HBKNPfPddQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v12 2/2] selftests/bpf: test for
- bpf_get_file_path() from tracepoint
-To:     Yonghong Song <yhs@fb.com>
-Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "andrii.nakryiko@gmail.com" <andrii.nakryiko@gmail.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <bc5b2a0d-a185-91b6-5deb-a4b6e1dc3d3e@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> The kernel will actually have 8 bytes of memory to store fd
-> based on trace_event_raw_sys_enter.
+On 16/12/2019 22:03, Alexey Budankov wrote:
+> Open access to i915_perf monitoring for CAP_SYS_PERFMON privileged processes.
+> For backward compatibility reasons access to i915_perf subsystem remains open
+> for CAP_SYS_ADMIN privileged processes but CAP_SYS_ADMIN usage for secure
+> i915_perf monitoring is discouraged with respect to CAP_SYS_PERFMON capability.
+>
+> Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
 
-> For little endian machine, the lower 4 bytes are read based on
-> your sys_enter_newfstat_args, which is "accidentally" the lower
-> 4 bytes in u64, so you get the correct answer.
 
-> For big endian machine, the lower 4 bytes read based on
-> your sys_enter_newfstat_args will be high 4 bytes in u64, which
-> is incorrect.
+Assuming people are fine with this new cap, I like this idea of a 
+lighter privilege for i915-perf.
 
-Oh, get it. Thank you, I'll fix this in the next version.
 
-Yonghong Song <yhs@fb.com> =E4=BA=8E2019=E5=B9=B412=E6=9C=8817=E6=97=A5=E5=
-=91=A8=E4=BA=8C =E4=B8=8B=E5=8D=8812:14=E5=86=99=E9=81=93=EF=BC=9A
->
->
->
-> On 12/16/19 8:01 PM, Wenbo Zhang wrote:
-> >> In non-bpf .c file, typically we do not add 'inline' attribute.
-> >> It is up to compiler to decide whether it should be inlined.
-> >
-> > Thank you, I'll fix this.
-> >
-> >>> +struct sys_enter_newfstat_args {
-> >>> +     unsigned long long pad1;
-> >>> +     unsigned long long pad2;
-> >>> +     unsigned int fd;
-> >>> +};
-> >
-> >> The BTF generated vmlinux.h has the following structure,
-> >> struct trace_entry {
-> >>           short unsigned int type;
-> >>           unsigned char flags;
-> >>           unsigned char preempt_count;
-> >>           int pid;
-> >> };
-> >> struct trace_event_raw_sys_enter {
-> >>           struct trace_entry ent;
-> >>           long int id;
-> >>           long unsigned int args[6];
-> >>           char __data[0];
-> >> };
-> >
-> >> The third parameter type should be long, otherwise,
-> >> it may have issue on big endian machines?
-> >
-> > Sorry, I don't understand why there is a problem on big-endian machines=
-.
-> > Would you please explain that in more detail? Thank you.
->
-> The kernel will actually have 8 bytes of memory to store fd
-> based on trace_event_raw_sys_enter.
->
-> For little endian machine, the lower 4 bytes are read based on
-> your sys_enter_newfstat_args, which is "accidentally" the lower
-> 4 bytes in u64, so you get the correct answer.
->
-> For big endian machine, the lower 4 bytes read based on
-> your sys_enter_newfstat_args will be high 4 bytes in u64, which
-> is incorrect.
->
-> >
-> > Yonghong Song <yhs@fb.com> =E4=BA=8E2019=E5=B9=B412=E6=9C=8816=E6=97=A5=
-=E5=91=A8=E4=B8=80 =E4=B8=8A=E5=8D=8812:25=E5=86=99=E9=81=93=EF=BC=9A
-> >>
-> >>
-> >>
-> >> On 12/14/19 8:01 PM, Wenbo Zhang wrote:
-> >>> trace fstat events by tracepoint syscalls/sys_enter_newfstat, and han=
-dle
-> >>> events only produced by test_file_get_path, which call fstat on sever=
-al
-> >>> different types of files to test bpf_get_file_path's feature.
-> >>>
-> >>> v4->v5: addressed Andrii's feedback
-> >>> - pass NULL for opts as bpf_object__open_file's PARAM2, as not really
-> >>> using any
-> >>> - modify patch subject to keep up with test code
-> >>> - as this test is single-threaded, so use getpid instead of SYS_getti=
-d
-> >>> - remove unnecessary parens around check which after if (i < 3)
-> >>> - in kern use bpf_get_current_pid_tgid() >> 32 to fit getpid() in
-> >>> userspace part
-> >>> - with the patch adding helper as one patch series
-> >>>
-> >>> v3->v4: addressed Andrii's feedback
-> >>> - use a set of fd instead of fds array
-> >>> - use global variables instead of maps (in v3, I mistakenly thought t=
-hat
-> >>> the bpf maps are global variables.)
-> >>> - remove uncessary global variable path_info_index
-> >>> - remove fd compare as the fstat's order is fixed
-> >>>
-> >>> v2->v3: addressed Andrii's feedback
-> >>> - use global data instead of perf_buffer to simplified code
-> >>>
-> >>> v1->v2: addressed Daniel's feedback
-> >>> - rename bpf_fd2path to bpf_get_file_path to be consistent with other
-> >>> helper's names
-> >>>
-> >>> Signed-off-by: Wenbo Zhang <ethercflow@gmail.com>
-> >>> ---
-> >>>    .../selftests/bpf/prog_tests/get_file_path.c  | 171 ++++++++++++++=
-++++
-> >>>    .../selftests/bpf/progs/test_get_file_path.c  |  43 +++++
-> >>>    2 files changed, 214 insertions(+)
-> >>>    create mode 100644 tools/testing/selftests/bpf/prog_tests/get_file=
-_path.c
-> >>>    create mode 100644 tools/testing/selftests/bpf/progs/test_get_file=
-_path.c
-> >>>
-> >>> diff --git a/tools/testing/selftests/bpf/prog_tests/get_file_path.c b=
-/tools/testing/selftests/bpf/prog_tests/get_file_path.c
-> >>> new file mode 100644
-> >>> index 000000000000..7ec11e43e0fc
-> >>> --- /dev/null
-> >>> +++ b/tools/testing/selftests/bpf/prog_tests/get_file_path.c
-> >>> @@ -0,0 +1,171 @@
-> >>> +// SPDX-License-Identifier: GPL-2.0
-> >>> +#define _GNU_SOURCE
-> >>> +#include <test_progs.h>
-> >>> +#include <sys/stat.h>
-> >>> +#include <linux/sched.h>
-> >>> +#include <sys/syscall.h>
-> >>> +
-> >>> +#define MAX_PATH_LEN         128
-> >>> +#define MAX_FDS                      7
-> >>> +#define MAX_EVENT_NUM                16
-> >>> +
-> >>> +static struct file_path_test_data {
-> >>> +     pid_t pid;
-> >>> +     __u32 cnt;
-> >>> +     __u32 fds[MAX_EVENT_NUM];
-> >>> +     char paths[MAX_EVENT_NUM][MAX_PATH_LEN];
-> >>> +} src, dst;
-> >>> +
-> >>> +static inline int set_pathname(int fd)
-> >>
-> >> In non-bpf .c file, typically we do not add 'inline' attribute.
-> >> It is up to compiler to decide whether it should be inlined.
-> >>
-> >>> +{
-> >>> +     char buf[MAX_PATH_LEN];
-> >>> +
-> >>> +     snprintf(buf, MAX_PATH_LEN, "/proc/%d/fd/%d", src.pid, fd);
-> >>> +     src.fds[src.cnt] =3D fd;
-> >>> +     return readlink(buf, src.paths[src.cnt++], MAX_PATH_LEN);
-> >>> +}
-> >>> +
-> >> [...]
-> >>> diff --git a/tools/testing/selftests/bpf/progs/test_get_file_path.c b=
-/tools/testing/selftests/bpf/progs/test_get_file_path.c
-> >>> new file mode 100644
-> >>> index 000000000000..eae663c1262a
-> >>> --- /dev/null
-> >>> +++ b/tools/testing/selftests/bpf/progs/test_get_file_path.c
-> >>> @@ -0,0 +1,43 @@
-> >>> +// SPDX-License-Identifier: GPL-2.0
-> >>> +
-> >>> +#include <linux/bpf.h>
-> >>> +#include <linux/ptrace.h>
-> >>> +#include <string.h>
-> >>> +#include <unistd.h>
-> >>> +#include "bpf_helpers.h"
-> >>> +#include "bpf_tracing.h"
-> >>> +
-> >>> +#define MAX_PATH_LEN         128
-> >>> +#define MAX_EVENT_NUM                16
-> >>> +
-> >>> +static struct file_path_test_data {
-> >>> +     pid_t pid;
-> >>> +     __u32 cnt;
-> >>> +     __u32 fds[MAX_EVENT_NUM];
-> >>> +     char paths[MAX_EVENT_NUM][MAX_PATH_LEN];
-> >>> +} data;
-> >>> +
-> >>> +struct sys_enter_newfstat_args {
-> >>> +     unsigned long long pad1;
-> >>> +     unsigned long long pad2;
-> >>> +     unsigned int fd;
-> >>> +};
-> >>
-> >> The BTF generated vmlinux.h has the following structure,
-> >> struct trace_entry {
-> >>           short unsigned int type;
-> >>           unsigned char flags;
-> >>           unsigned char preempt_count;
-> >>           int pid;
-> >> };
-> >> struct trace_event_raw_sys_enter {
-> >>           struct trace_entry ent;
-> >>           long int id;
-> >>           long unsigned int args[6];
-> >>           char __data[0];
-> >> };
-> >>
-> >> The third parameter type should be long, otherwise,
-> >> it may have issue on big endian machines?
+-Lionel
+
+
