@@ -2,102 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E030123A52
-	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2019 23:55:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE37E123A65
+	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2019 00:01:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726072AbfLQWzB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Dec 2019 17:55:01 -0500
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:43804 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725870AbfLQWzB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Dec 2019 17:55:01 -0500
-Received: by mail-qk1-f196.google.com with SMTP id t129so3558840qke.10;
-        Tue, 17 Dec 2019 14:55:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lL57QSrlVk6cTiuQk1HyrMwEZXGqqzlZkbf62cArXG8=;
-        b=duhypgM2wbfhjfjJ8u/CWYeg7aeo9kuoXNsKUoqufgbHkJsHV3sEyAplCgbBtmMh5E
-         e0iN2A0CpJarxhFI9GNWefXJvOooWeXy49erbELcpNkR6o9s3eKOpDibjey+p3GTu2xX
-         ojOI5lGdOY1UgnoiDVM0566mjrzXJB2vXaTagEuxJ5PpLBRauNzo562aIiP31sUbMEBD
-         S2/HOPqlPwrDpW1G30zbinK3B0aNUWDnfVcYJVZ9If9pERI7hladXyxVE5rggJ4jNUR+
-         e89Pjy8Swx/oSi3Gx/LNw0EIzV/Tt0M5cJNVVAKXD1RvRXainPMc63ppL3/Xe9/b6Ai9
-         OY/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lL57QSrlVk6cTiuQk1HyrMwEZXGqqzlZkbf62cArXG8=;
-        b=dt8QFLsIrYda4evEDguUda2nssr2sq3x1iCUKtaU0lZgT9MpqCZFM/z8S4AVOc4ETr
-         4f+GpLlCdHncNwkl//ypSJ/I3CxrS2lOS8N3cVPpoLKq4BcDQyGUTzGG3WPZCxcLcVIZ
-         DQUof7SxqhbCiLNbNoWEN4/J35Y0HAQzSuUdukrPPTgmbD/7tWhKUtI09BURjZg4Y6ru
-         a72XDitNbivMsazFChKsyH+bjbgMmWH99EpGOjPcnYoltzMa8ep5uamQy+zNimZerSzs
-         lF4xajm0XqAun5b/+OGwnJX3l71E6R7dOQAebCXMMso943GeOszj1x0D5uBSl+Y1wiIz
-         NLjg==
-X-Gm-Message-State: APjAAAWVMtRDDpEg5FI1vnjjV+/hr4foEQkhap2eunqQ2/UbcKopurnc
-        wzV18ZIH4+M3fkNIWY18212zGtLYYrhJgldvUbU=
-X-Google-Smtp-Source: APXvYqz/Bbg2IWpdBgB9n4mvSGL9+o8c/n1VbYAWPcaG7k4lkW3WYaVAcZSu+O/FZTY0WCDvXpdG8DRZCu8scLMniHU=
-X-Received: by 2002:ae9:e809:: with SMTP id a9mr498634qkg.92.1576623300502;
- Tue, 17 Dec 2019 14:55:00 -0800 (PST)
+        id S1726690AbfLQXA5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Dec 2019 18:00:57 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:46240 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726656AbfLQXAy (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 17 Dec 2019 18:00:54 -0500
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xBHMsBS2002740
+        for <bpf@vger.kernel.org>; Tue, 17 Dec 2019 15:00:53 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=ZiK81MIalBtQF5DvkcqT7OXkB9XFoYW32vcKAQX0NE4=;
+ b=UPeQfolMqsdmuKN3KyYdod51zhTzVTsrtrX0yWwgLwrxqge16I/R8kBHSRpX6YwaDWap
+ HtcW89OlGjOYFDZBtlsPCh05/zuFHX8Gou9pewon87el3zDRCBs5LNFRDwfn2nScAABU
+ QCuV+sfoB1XIqrLRXF9eXZwJwagrkSTbIv4= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2wy1qrj5tq-20
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 17 Dec 2019 15:00:53 -0800
+Received: from intmgw001.41.prn1.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 17 Dec 2019 15:00:46 -0800
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 255C12EC1C52; Tue, 17 Dec 2019 15:00:44 -0800 (PST)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH v2 bpf-next 0/3] Skeleton improvements and documentation
+Date:   Tue, 17 Dec 2019 15:00:35 -0800
+Message-ID: <20191217230038.1562848-1-andriin@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-References: <20191217053626.2158870-1-andriin@fb.com> <20191217053626.2158870-4-andriin@fb.com>
- <a722caf8-a4af-4476-d560-396dd30dfb0a@fb.com>
-In-Reply-To: <a722caf8-a4af-4476-d560-396dd30dfb0a@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 17 Dec 2019 14:54:49 -0800
-Message-ID: <CAEf4BzZa9Pp+ibccmn--jEY95LdOs2UZ1AJoQ9x51FjNGsVAiA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 3/3] bpftool: add gen subcommand manpage
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
+ definitions=2019-12-17_04:2019-12-17,2019-12-17 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=8
+ lowpriorityscore=0 adultscore=0 bulkscore=0 priorityscore=1501
+ clxscore=1015 mlxlogscore=999 spamscore=0 mlxscore=0 phishscore=0
+ malwarescore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-1910280000 definitions=main-1912170183
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 17, 2019 at 1:27 PM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 12/16/19 9:36 PM, Andrii Nakryiko wrote:
-> > Add bpftool-gen.rst describing skeleton on the high level. Also include
-> > a small, but complete, example BPF app (BPF side, userspace side, generated
-> > skeleton) in example section to demonstrate skeleton API and its usage.
-> >
-> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
->
-> When applying the patch locally (git apply <>), I see below:
-> -bash-4.4$ git apply ~/p3.txt
-> /home/yhs/p3.txt:183: trailing whitespace.
->
-> /home/yhs/p3.txt:187: trailing whitespace.
->
-> /home/yhs/p3.txt:189: space before tab in indent.
->          __uint(type, BPF_MAP_TYPE_HASH);
-> /home/yhs/p3.txt:190: space before tab in indent.
->          __uint(max_entries, 128);
-> /home/yhs/p3.txt:191: space before tab in indent.
->          __type(key, int);
-> warning: squelched 77 whitespace errors
-> warning: 82 lines add whitespace errors.
-> -bash-4.4$
->
-> space before tab might be fine since it is an code in the example file.
-> But tailing whitespaces probably should be fixed.
+Simplify skeleton usage by embedding source BPF object file inside skeleton
+itself. This allows to keep skeleton and object file in sync at all times with
+no chance of confusion.
 
-I assumed that indentation in ReST's literal block has to be specified
-for all lines, including the empty ones. But seems like
-bpftool-btf.rst doesn't do that, and playing with some online editors
-indicates it's not necessary to indent empty lines to preserve all the
-code as single code block, so I'm going to remove them.
+Also, add bpftool-gen.rst manpage, explaining concepts and ideas behind
+skeleton. In examples section it also includes a complete small BPF
+application utilizing skeleton, as a demonstration of API.
 
->
-> With the above in mind,
->
-> Acked-by: Yonghong Song <yhs@fb.com>
+Patch #2 also removes BPF_EMBED_OBJ, as there is currently no use of it.
+
+v1->v2:
+- remove whitespace from empty lines in code blocks (Yonghong).
+
+Andrii Nakryiko (3):
+  bpftool, selftests/bpf: embed object file inside skeleton
+  libbpf: remove BPF_EMBED_OBJ macro from libbpf.h
+  bpftool: add gen subcommand manpage
+
+ .../bpf/bpftool/Documentation/bpftool-gen.rst | 302 ++++++++++++++++++
+ tools/bpf/bpftool/Documentation/bpftool.rst   |   3 +-
+ tools/bpf/bpftool/gen.c                       | 226 ++++++++-----
+ tools/lib/bpf/libbpf.h                        |  35 --
+ .../selftests/bpf/prog_tests/attach_probe.c   |   4 +-
+ .../selftests/bpf/prog_tests/core_extern.c    |   4 +-
+ .../selftests/bpf/prog_tests/fentry_fexit.c   |  10 +-
+ .../selftests/bpf/prog_tests/fentry_test.c    |   7 +-
+ tools/testing/selftests/bpf/prog_tests/mmap.c |   4 +-
+ .../selftests/bpf/prog_tests/skeleton.c       |   4 +-
+ .../bpf/prog_tests/stacktrace_build_id.c      |   4 +-
+ .../bpf/prog_tests/stacktrace_build_id_nmi.c  |   4 +-
+ 12 files changed, 456 insertions(+), 151 deletions(-)
+ create mode 100644 tools/bpf/bpftool/Documentation/bpftool-gen.rst
+
+-- 
+2.17.1
+
