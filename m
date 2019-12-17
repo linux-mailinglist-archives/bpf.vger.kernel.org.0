@@ -2,59 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BD5881221D2
-	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2019 03:08:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 620161222C8
+	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2019 05:01:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726427AbfLQCHV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Dec 2019 21:07:21 -0500
-Received: from mail-lf1-f67.google.com ([209.85.167.67]:43166 "EHLO
-        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726180AbfLQCHV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 Dec 2019 21:07:21 -0500
-Received: by mail-lf1-f67.google.com with SMTP id 9so5743251lfq.10;
-        Mon, 16 Dec 2019 18:07:19 -0800 (PST)
+        id S1726758AbfLQEBm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Dec 2019 23:01:42 -0500
+Received: from mail-vk1-f193.google.com ([209.85.221.193]:46839 "EHLO
+        mail-vk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726296AbfLQEBm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 Dec 2019 23:01:42 -0500
+Received: by mail-vk1-f193.google.com with SMTP id u6so2282726vkn.13;
+        Mon, 16 Dec 2019 20:01:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=JyYnLdraZ3i9mAbNELTDahCGz48WPnWVPKPIPNY5hKg=;
-        b=r9cZVoN+YFl3+BZILKRst0PzNyYWJlbPwl0O7Otp8uj/9YdzBzN8/+cRgAF/b8JLZT
-         8MvfF4nnBENkks3F5kNVc8XkNPu8FuK51fC1JdZiDlgTECEMtEEguCx7vNorozjOrjTj
-         G3t2M968DuoWVYpuBYAgtuv6+MVeaLu2QXOILQAHW+Ooxg6Dv7Hx+qqqKaeJEal4Au5F
-         /gQ25CKswtNrY2YgwwwVvkW8oLHcUhN0d5jDALjGP/zRAhqXEFdu9sLkM1o9C8eVYl96
-         32IpWL1lxdfitsVz9w0iTtA6ker/fY4072kNhU/DbuOEQdQ3xMd767tJtp1xvqAowFV7
-         TDtw==
+        bh=SxvvCplFFbGKcu6AZIZXxAmOWVIjgVE9X9cnFKHMVGI=;
+        b=bLG+ioMwsCkYUC2kt1SK+bBL9QjX1/1rtB8EX/RHQ6xZDXyAXTEcRJCT3iqyNInx4x
+         nMK9g9caPcPUQZ19TDJxYCyMM+5g4A1YD/0+GqE2u/XWqiPKERzlsVOgox3mjjmlRKhJ
+         uDIPaSenmbaDqGD66DpEsS+bgXytQufKnHDGDUtTqA6T9z7vQTY6t2swCgn1BU/V28jD
+         4ayFmj2/vXSodeEDAY7lYgQZMCeEcq2/NVb6YlmMEA8H+gPEV72yWeKIV/D6Rmr3UT9f
+         /jVkZrv8FU1iFCxkinxVMzXI6y2Z3Dd3nLInnFZQqTirjMLm/0KBYMDQOWtpCHPrFAmy
+         7xZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=JyYnLdraZ3i9mAbNELTDahCGz48WPnWVPKPIPNY5hKg=;
-        b=RyRSjTZoAM07+gOpY8ll6RqjVF1MFQP1c704OHf6A2zRwYh+cFsEy1oGZ59O63WLo5
-         QHd9fqi2lm6/KNypDhVc8gfzgRdV6t2LI5nMG8L8yRwxYBQGIUJsfhUeSCG1rABiBaP6
-         4F1NC3rIWMdUZGXccSdCt+1CFl/oFdAkpo2UvzVvycFxVHSQ71n02oBeXbLMyS50AW8s
-         w0TnPVPyQA9ELy16v+hBDJ7b26k1hFNGyxDofABN70eVPOfdWAL8p74Y12jJra7lNv/E
-         HrlAnjZI8SL5rDyZqf9W5DtsuN5Lx1UYE3iL2tcdk4COZoiJVtdhm/8WGl/fZILn4MMu
-         CoCw==
-X-Gm-Message-State: APjAAAXQ+zA6ehYb7Xu/cuxDVzozUheenTWctmO8BNcwLoO+PjLF5m60
-        SKhZHTy1jMKTMzxDfpz1Zk4bzzwY24y5uaLdWtU=
-X-Google-Smtp-Source: APXvYqx8XtOM7Ecfx9GE0h8Mejdo5Rsgcl7suDbjTfcESRRDsZy98q/R6+/sOhxqfpegbA4acAI1oU0rqet8E5iTPAM=
-X-Received: by 2002:a19:6d13:: with SMTP id i19mr1319229lfc.6.1576548438829;
- Mon, 16 Dec 2019 18:07:18 -0800 (PST)
+        bh=SxvvCplFFbGKcu6AZIZXxAmOWVIjgVE9X9cnFKHMVGI=;
+        b=N5KNh2YsbAGlnWKqFlLyRZ6ERxNMqBXQViPsrFJtnGVyMZhnSmYq2JkIJmhy1sNCjZ
+         GHLnCrSJ7FbktEWK09s4d9QhSxQqSz5pSsPFBTPmsZCUQHkFLGO82HhDdn1DjFvAaAvJ
+         Nwh0mkXcGLFCgUqfs/Fh0tARL4OevG5dzKanHexOuaOSHODWpmDQhcupUl4OL+sxh0WO
+         kIni1fiRSTnscequeytBEnm2rxPMpxbFVQ8HRpTtVx2bx20BExwL3wtBgQqNua1NIc67
+         0ja+Ls/AlTUUBwQaMNZjIh3Uv9g+f7Ki0/jna3PKkX603nbEtwUFA7cLNjYr2WCREg1v
+         RyrA==
+X-Gm-Message-State: APjAAAVPO03NLYF45yxVriQ4zF1pqlPDrqA9b/VAn9TWTchz9wHblX1L
+        8+30f/1/HZ+pMPpGctGQWSiZYTEYtl4yG/3pYsw=
+X-Google-Smtp-Source: APXvYqz4M+iNhpp230LbB61NwArFR0M8wh0oPOmlNkigs5BQqgFQMHPy89TwgZ8q1uW98kUmbr8ltuzeK0GIa9tjTy8=
+X-Received: by 2002:a1f:8cd5:: with SMTP id o204mr1787920vkd.66.1576555300995;
+ Mon, 16 Dec 2019 20:01:40 -0800 (PST)
 MIME-Version: 1.0
-References: <20191216082738.28421-1-prashantbhole.linux@gmail.com>
- <20191216132512.GD14887@linux.fritz.box> <CAADnVQKB7hUmXBMmPfFUH4ZxSQfRtam0aEWykBNMhrKS+HjcwQ@mail.gmail.com>
- <caf893fb-e574-7a67-1e4e-4ce5d7836172@gmail.com>
-In-Reply-To: <caf893fb-e574-7a67-1e4e-4ce5d7836172@gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 16 Dec 2019 18:07:07 -0800
-Message-ID: <CAADnVQJXK6TykmFx2axj9Z2yjNMRU9VbO98koneUiEQ-dLwu-Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: fix build by renaming variables
-To:     Prashant Bhole <prashantbhole.linux@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
+References: <cover.1576381511.git.ethercflow@gmail.com> <088f1485865016d639cadc891957918060261405.1576381512.git.ethercflow@gmail.com>
+ <737b90af-aa51-bd7d-8f68-b68050cbb028@fb.com>
+In-Reply-To: <737b90af-aa51-bd7d-8f68-b68050cbb028@fb.com>
+From:   Wenbo Zhang <ethercflow@gmail.com>
+Date:   Tue, 17 Dec 2019 12:01:29 +0800
+Message-ID: <CABtjQmZtzZT+OmZCn=eL9pvTeeCQ+TzKUMGgFJcGzwJDqyk6vw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v12 2/2] selftests/bpf: test for
+ bpf_get_file_path() from tracepoint
+To:     Yonghong Song <yhs@fb.com>
+Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "andrii.nakryiko@gmail.com" <andrii.nakryiko@gmail.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
@@ -62,67 +62,168 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Dec 16, 2019 at 4:17 PM Prashant Bhole
-<prashantbhole.linux@gmail.com> wrote:
+> In non-bpf .c file, typically we do not add 'inline' attribute.
+> It is up to compiler to decide whether it should be inlined.
+
+Thank you, I'll fix this.
+
+> > +struct sys_enter_newfstat_args {
+> > +     unsigned long long pad1;
+> > +     unsigned long long pad2;
+> > +     unsigned int fd;
+> > +};
+
+> The BTF generated vmlinux.h has the following structure,
+> struct trace_entry {
+>          short unsigned int type;
+>          unsigned char flags;
+>          unsigned char preempt_count;
+>          int pid;
+> };
+> struct trace_event_raw_sys_enter {
+>          struct trace_entry ent;
+>          long int id;
+>          long unsigned int args[6];
+>          char __data[0];
+> };
+
+> The third parameter type should be long, otherwise,
+> it may have issue on big endian machines?
+
+Sorry, I don't understand why there is a problem on big-endian machines.
+Would you please explain that in more detail? Thank you.
+
+Yonghong Song <yhs@fb.com> =E4=BA=8E2019=E5=B9=B412=E6=9C=8816=E6=97=A5=E5=
+=91=A8=E4=B8=80 =E4=B8=8A=E5=8D=8812:25=E5=86=99=E9=81=93=EF=BC=9A
 >
 >
 >
-> On 12/16/19 11:02 PM, Alexei Starovoitov wrote:
-> > On Mon, Dec 16, 2019 at 5:25 AM Daniel Borkmann <daniel@iogearbox.net> =
-wrote:
-> >>
-> >> On Mon, Dec 16, 2019 at 05:27:38PM +0900, Prashant Bhole wrote:
-> >>> In btf__align_of() variable name 't' is shadowed by inner block
-> >>> declaration of another variable with same name. Patch renames
-> >>> variables in order to fix it.
-> >>>
-> >>>    CC       sharedobjs/btf.o
-> >>> btf.c: In function =E2=80=98btf__align_of=E2=80=99:
-> >>> btf.c:303:21: error: declaration of =E2=80=98t=E2=80=99 shadows a pre=
-vious local [-Werror=3Dshadow]
-> >>>    303 |   int i, align =3D 1, t;
-> >>>        |                     ^
-> >>> btf.c:283:25: note: shadowed declaration is here
-> >>>    283 |  const struct btf_type *t =3D btf__type_by_id(btf, id);
-> >>>        |
-> >>>
-> >>> Fixes: 3d208f4ca111 ("libbpf: Expose btf__align_of() API")
-> >>> Signed-off-by: Prashant Bhole <prashantbhole.linux@gmail.com>
-> >>
-> >> Applied, thanks!
+> On 12/14/19 8:01 PM, Wenbo Zhang wrote:
+> > trace fstat events by tracepoint syscalls/sys_enter_newfstat, and handl=
+e
+> > events only produced by test_file_get_path, which call fstat on several
+> > different types of files to test bpf_get_file_path's feature.
 > >
-> > Prashant,
-> > Thanks for the fixes.
-> > Which compiler do use?
+> > v4->v5: addressed Andrii's feedback
+> > - pass NULL for opts as bpf_object__open_file's PARAM2, as not really
+> > using any
+> > - modify patch subject to keep up with test code
+> > - as this test is single-threaded, so use getpid instead of SYS_gettid
+> > - remove unnecessary parens around check which after if (i < 3)
+> > - in kern use bpf_get_current_pid_tgid() >> 32 to fit getpid() in
+> > userspace part
+> > - with the patch adding helper as one patch series
+> >
+> > v3->v4: addressed Andrii's feedback
+> > - use a set of fd instead of fds array
+> > - use global variables instead of maps (in v3, I mistakenly thought tha=
+t
+> > the bpf maps are global variables.)
+> > - remove uncessary global variable path_info_index
+> > - remove fd compare as the fstat's order is fixed
+> >
+> > v2->v3: addressed Andrii's feedback
+> > - use global data instead of perf_buffer to simplified code
+> >
+> > v1->v2: addressed Daniel's feedback
+> > - rename bpf_fd2path to bpf_get_file_path to be consistent with other
+> > helper's names
+> >
+> > Signed-off-by: Wenbo Zhang <ethercflow@gmail.com>
+> > ---
+> >   .../selftests/bpf/prog_tests/get_file_path.c  | 171 +++++++++++++++++=
++
+> >   .../selftests/bpf/progs/test_get_file_path.c  |  43 +++++
+> >   2 files changed, 214 insertions(+)
+> >   create mode 100644 tools/testing/selftests/bpf/prog_tests/get_file_pa=
+th.c
+> >   create mode 100644 tools/testing/selftests/bpf/progs/test_get_file_pa=
+th.c
+> >
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/get_file_path.c b/t=
+ools/testing/selftests/bpf/prog_tests/get_file_path.c
+> > new file mode 100644
+> > index 000000000000..7ec11e43e0fc
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/prog_tests/get_file_path.c
+> > @@ -0,0 +1,171 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +#define _GNU_SOURCE
+> > +#include <test_progs.h>
+> > +#include <sys/stat.h>
+> > +#include <linux/sched.h>
+> > +#include <sys/syscall.h>
+> > +
+> > +#define MAX_PATH_LEN         128
+> > +#define MAX_FDS                      7
+> > +#define MAX_EVENT_NUM                16
+> > +
+> > +static struct file_path_test_data {
+> > +     pid_t pid;
+> > +     __u32 cnt;
+> > +     __u32 fds[MAX_EVENT_NUM];
+> > +     char paths[MAX_EVENT_NUM][MAX_PATH_LEN];
+> > +} src, dst;
+> > +
+> > +static inline int set_pathname(int fd)
 >
-> gcc (GCC) 9.1.1 20190503 (Red Hat 9.1.1-1)
-
-I've tried devtoolset-8 and devtoolset-9.
-Which is
-gcc version 9.1.1 20190605 (Red Hat 9.1.1-2) (GCC)
-
-make clean;make doesn't produce that warning.
-make V=3D1 tells me:
-gcc -O2 -W -Wall -Wextra -Wno-unused-parameter
--Wno-missing-field-initializers -Wbad-function-cast
--Wdeclaration-after-statement -Wformat-security -Wformat-y2k
--Winit-self -Wmissing-declarations -Wmissing-prototypes
--Wnested-externs -Wno-system-headers -Wold-style-definition -Wpacked
--Wredundant-decls -Wstrict-prototypes -Wswitch-default -Wundef
--Wwrite-strings -Wformat -Wstrict-aliasing=3D3 -fno-strict-aliasing
--Wno-shadow
-... -c -MMD -o gen.o gen.c
-
-For some odd reason this check is failing for me
-$ tools/scripts/Makefile.include
-ifneq ($(filter 3.%,$(MAKE_VERSION)),)  # make-3
-EXTRA_WARNINGS +=3D -fno-strict-aliasing
-EXTRA_WARNINGS +=3D -Wno-shadow
-else
-EXTRA_WARNINGS +=3D -Wshadow
-endif
-
-$ make -v
-GNU Make 3.82
-
-Not sure how to fix this.
+> In non-bpf .c file, typically we do not add 'inline' attribute.
+> It is up to compiler to decide whether it should be inlined.
+>
+> > +{
+> > +     char buf[MAX_PATH_LEN];
+> > +
+> > +     snprintf(buf, MAX_PATH_LEN, "/proc/%d/fd/%d", src.pid, fd);
+> > +     src.fds[src.cnt] =3D fd;
+> > +     return readlink(buf, src.paths[src.cnt++], MAX_PATH_LEN);
+> > +}
+> > +
+> [...]
+> > diff --git a/tools/testing/selftests/bpf/progs/test_get_file_path.c b/t=
+ools/testing/selftests/bpf/progs/test_get_file_path.c
+> > new file mode 100644
+> > index 000000000000..eae663c1262a
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/progs/test_get_file_path.c
+> > @@ -0,0 +1,43 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +
+> > +#include <linux/bpf.h>
+> > +#include <linux/ptrace.h>
+> > +#include <string.h>
+> > +#include <unistd.h>
+> > +#include "bpf_helpers.h"
+> > +#include "bpf_tracing.h"
+> > +
+> > +#define MAX_PATH_LEN         128
+> > +#define MAX_EVENT_NUM                16
+> > +
+> > +static struct file_path_test_data {
+> > +     pid_t pid;
+> > +     __u32 cnt;
+> > +     __u32 fds[MAX_EVENT_NUM];
+> > +     char paths[MAX_EVENT_NUM][MAX_PATH_LEN];
+> > +} data;
+> > +
+> > +struct sys_enter_newfstat_args {
+> > +     unsigned long long pad1;
+> > +     unsigned long long pad2;
+> > +     unsigned int fd;
+> > +};
+>
+> The BTF generated vmlinux.h has the following structure,
+> struct trace_entry {
+>          short unsigned int type;
+>          unsigned char flags;
+>          unsigned char preempt_count;
+>          int pid;
+> };
+> struct trace_event_raw_sys_enter {
+>          struct trace_entry ent;
+>          long int id;
+>          long unsigned int args[6];
+>          char __data[0];
+> };
+>
+> The third parameter type should be long, otherwise,
+> it may have issue on big endian machines?
