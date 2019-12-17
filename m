@@ -2,104 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AC1C121FCE
-	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2019 01:34:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FAAC122104
+	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2019 01:59:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727569AbfLQAeT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 16 Dec 2019 19:34:19 -0500
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:38748 "EHLO
+        id S1726861AbfLQA7s (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 16 Dec 2019 19:59:48 -0500
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:45524 "EHLO
         mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726556AbfLQAeT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 16 Dec 2019 19:34:19 -0500
-Received: by mail-pf1-f195.google.com with SMTP id x185so6540006pfc.5;
-        Mon, 16 Dec 2019 16:34:19 -0800 (PST)
+        with ESMTP id S1726670AbfLQA7s (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 16 Dec 2019 19:59:48 -0500
+Received: by mail-pf1-f195.google.com with SMTP id 2so6554641pfg.12;
+        Mon, 16 Dec 2019 16:59:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=1h1Iwz1p6Zo/ukp1R0ap2/6hRtPwN7RSZ1DZgQh/1Ao=;
-        b=AQU2XrRvMlB7dwKwoq8N+9eEDeEofQgPyRwFOSUuiRQRnqcfy2VPD5+4q8FNeLttR2
-         KrGhzqeKXQwIttvZJ1gQQkyvnawZGVAzzlpNmva4JVtPX3WC+JIjB7B0mGHg6BDCkOrg
-         avtmcmNJUDx0Z/h8VmEJKIjaxscmC46lEwG9lP29+8Eqhg9eWpn2+ibKwfqYS+1gI+kV
-         hlpHiSEhm2F9++xEzTNRRTqeDrq/r+5GbOqRVaNsxEprKdTm89dRxBLK3MvUxNINPrEH
-         GayEpxD+rIyYw7AM7uwWOhla5gqpLdUbDLN7C42qJWW7RCdG1waYWI/m8QoEh0864dIy
-         jsoQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=z+U3mtb5B8o3nMoErvNMR/T0p7amiYHbrwq0mw7E9ew=;
+        b=Z1SwPo9iS7off19v/IGRCKqd6Ep97ohWpywllJdALTsD8ML7E+N+AkhzgM64v2AL3C
+         H5PirixmJhPKitLQbxx6tK5i4bM0fX72RRg5c8wv4ZYIidPEHiaIWVo3AUDVlQjCbhbj
+         KTsdmRNCMlWxdBaMWgRPXdLOOgubzbsO6CPdcPB5kEmfnmo3XE7Tv1Zn/Aa6cZhFNnFz
+         F0b4bY9m/z0aitCMgOthnXHx60tMtpKARNFpNzaOGKjgiOFOdzXcabhRNRph1WmVGz7m
+         0Tr2r/GjGEoFlgGGJ5OMLvnWVtFFCQKgypop5LoZzVncOuGBFchecX3qWN+n8wtdLGfP
+         F18w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1h1Iwz1p6Zo/ukp1R0ap2/6hRtPwN7RSZ1DZgQh/1Ao=;
-        b=QXjlHimY+QWpf0O5QWapWll8rpUKpzwztxXeAB36Q/ETW81bQ4LXvhZoq021nTofE6
-         0bDwIRpvej6n3z6yk4Z+63+Rln1monXcOmyY/H2YKM6X+SRQY+jvtixlkq6KIYoycyvZ
-         QnyhuS4GVxA5Qt5HR3jBhSYCICaPIgqM746kSlr0dCDjSsbwG7Yuy1PkVh2cgvBZZnn0
-         njYbLUKr8wQUHG/ly5Ge1/Pd659mvai4fSB5Arr3GhpnLDgvwWFxgBRJbenIy/dFfCLy
-         HFvri+UR+AWYrEMEHQueEhcopJacwuOxifyX1UwuXWYZqjycJF/pFdHbpccifnIan1yp
-         fItQ==
-X-Gm-Message-State: APjAAAVUiH9GiS4NNRQtz64YQ4duyVLjv0xczyZVKH5yCSuYBUaLljVt
-        +kayLiIyeeasQLT3/ZOqrj7hPGoH
-X-Google-Smtp-Source: APXvYqy0zzm+r1BfaDsZX2/8BwRZ68vXgSLCGDStwzafK3/dJpDA2vCVBryTrlCrXkh1nTIxyBLRSw==
-X-Received: by 2002:a63:1c13:: with SMTP id c19mr22113706pgc.450.1576542858306;
-        Mon, 16 Dec 2019 16:34:18 -0800 (PST)
-Received: from [192.168.84.57] ([107.84.158.73])
-        by smtp.gmail.com with ESMTPSA id w11sm23787440pfn.4.2019.12.16.16.34.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Dec 2019 16:34:17 -0800 (PST)
-Subject: Re: [PATCH bpf-next 09/13] bpf: Add BPF_FUNC_jiffies
-To:     Alexei Starovoitov <ast@fb.com>, Martin Lau <kafai@fb.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>
-Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=z+U3mtb5B8o3nMoErvNMR/T0p7amiYHbrwq0mw7E9ew=;
+        b=Wemk5kbkQQTtdcFHt3F6ZNUDTbTggWTa8NmdeUScusyxOpsqGldZVwLm1K3vV8Bd/l
+         GTrI6i5BR4kVz6YEMl6dUJGWhUuxL8I+6aMVjiGhCPKI3Em9Bc6bdC45nHkEpeJY52ec
+         3sjRVuCiOyqMBizM1CPjYN7mCFNfbF15bGC/a2LMD0yow1V/oN2s5G8Ln+QQpgIKGUyj
+         oO+HE6HbdgMUuCtQwJ3JRvwgia9re6PXOoF+HbBPueAl4r/0aUw3tlp6WIGT+Fdkf7rU
+         UiNXRjQJbImgTMUfRaBcGw2h5B6a5OQpRI6O66i5QRhcW5i2LQSHrMeRoiobJewYBmXm
+         d9Ow==
+X-Gm-Message-State: APjAAAW4dBAKpj070AkhdMSV6zhq07gFj4lE95Zjc7VWxhsByZBTKrhE
+        QgE2ePhN0ga88bXt1sZZzD4wtjfW
+X-Google-Smtp-Source: APXvYqxj9oz2N8CVGVdCAdu3gfGeU6umT5UJ43qpbRzriLeZl6OW0LkaR58EnmSvr4NYpYeqGBEWtQ==
+X-Received: by 2002:a62:6001:: with SMTP id u1mr19633977pfb.158.1576544387579;
+        Mon, 16 Dec 2019 16:59:47 -0800 (PST)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:200::1:48aa])
+        by smtp.gmail.com with ESMTPSA id m9sm24604672pff.38.2019.12.16.16.59.46
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 16 Dec 2019 16:59:46 -0800 (PST)
+Date:   Mon, 16 Dec 2019 16:59:45 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Cc:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>,
-        Kernel Team <Kernel-team@fb.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-References: <20191214004737.1652076-1-kafai@fb.com>
- <20191214004758.1653342-1-kafai@fb.com>
- <b321412c-1b42-45a9-4dc6-cc268b55cd0d@gmail.com>
- <20191216191357.ftadvchztbpggcus@kafai-mbp.dhcp.thefacebook.com>
- <d7bcc8c2-f531-91f5-47e6-d18d8a99c1e1@fb.com>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <d34fddb1-4477-12e7-8391-368fdf8ab964@gmail.com>
-Date:   Mon, 16 Dec 2019 16:34:08 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Ido Schimmel <idosch@idosch.org>
+Subject: Re: [RFC PATCH bpf-next] xdp: Add tracepoint on XDP program return
+Message-ID: <20191217005944.s3mayy473ldlnldl@ast-mbp.dhcp.thefacebook.com>
+References: <20191216152715.711308-1-toke@redhat.com>
+ <CAJ+HfNhYG_hzuFzX5sAH7ReotLtZWTP_9D2jA_iVMg+jUtXXCw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <d7bcc8c2-f531-91f5-47e6-d18d8a99c1e1@fb.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJ+HfNhYG_hzuFzX5sAH7ReotLtZWTP_9D2jA_iVMg+jUtXXCw@mail.gmail.com>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 12/16/19 3:08 PM, Alexei Starovoitov wrote:
-> On 12/16/19 11:14 AM, Martin Lau wrote:
->> At least for bpf_dctcp.c, I did not expect it could be that close to tcp_dctcp.c
->> when I just started converted it.  tcp_cubic/bpf_cubic still has some TBD
->> on jiffies/msec.
->>
->> Agree that it is beneficial to have one copy.   It is likely
->> I need to make some changes on the tcp_*.c side also.  Hence, I prefer
->> to give it a try in a separate series, e.g. revert the kernel side
->> changes will be easier.
+On Mon, Dec 16, 2019 at 07:17:59PM +0100, Björn Töpel wrote:
+> On Mon, 16 Dec 2019 at 16:28, Toke Høiland-Jørgensen <toke@redhat.com> wrote:
+> >
+> > This adds a new tracepoint, xdp_prog_return, which is triggered at every
+> > XDP program return. This was first discussed back in August[0] as a way to
+> > hook XDP into the kernel drop_monitor framework, to have a one-stop place
+> > to find all packet drops in the system.
+> >
+> > Because trace/events/xdp.h includes filter.h, some ifdef guarding is needed
+> > to be able to use the tracepoint from bpf_prog_run_xdp(). If anyone has any
+> > ideas for how to improve on this, please to speak up. Sending this RFC
+> > because of this issue, and to get some feedback from Ido on whether this
+> > tracepoint has enough data for drop_monitor usage.
+> >
 > 
-> I've looked at bpf_cubic.c and bpf_dctcp.c as examples of what this
-> patch set can do. They're selftests of the feature.
-> What's the value of keeping them in sync with real kernel cc-s?
-> I think it's fine if they quickly diverge.
-> The value of them as selftests is important though. Quite a bit of BTF
-> and verifier logic is being tested.
-> May be add a comment saying that bpf_cubic.c is like cubic, but doesn't
-> have to be exactly cubic ?
-> 
+> I get that it would be useful, but can it be solved with BPF tracing
+> (i.e. tracing BPF with BPF)? It would be neat not adding another
+> tracepoint in the fast-path...
 
-The reason I mentioned this is that I am currently working on a fix of Hystart
-logic, which is quite broken at the moment.
+That was my question as well.
+Here is an example from Eelco:
+https://lore.kernel.org/bpf/78D7857B-82E4-42BC-85E1-E3D7C97BF840@redhat.com/
+BPF_TRACE_2("fexit/xdp_prog_simple", trace_on_exit,
+             struct xdp_buff*, xdp, int, ret)
+{
+     bpf_debug("fexit: [ifindex = %u, queue =  %u, ret = %d]\n",
+               xdp->rxq->dev->ifindex, xdp->rxq->queue_index, ret);
 
-(hystart_train detection triggers in cases it should not)
+     return 0;
+}
+'ret' is return code from xdp program.
+Such approach is per xdp program, but cheaper when not enabled
+and faster when it's triggering comparing to static tracepoint.
+Anything missing there that you'd like to see?
 
-But yes, if we add a comment warning potential users, this should be fine.
