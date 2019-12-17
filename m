@@ -2,296 +2,152 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FD92122FA6
-	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2019 16:06:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39ABC1230A6
+	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2019 16:40:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727202AbfLQPGh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Dec 2019 10:06:37 -0500
-Received: from mail-lf1-f68.google.com ([209.85.167.68]:36757 "EHLO
-        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727512AbfLQPGh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Dec 2019 10:06:37 -0500
-Received: by mail-lf1-f68.google.com with SMTP id n12so7216115lfe.3
-        for <bpf@vger.kernel.org>; Tue, 17 Dec 2019 07:06:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=EY4jLBMvLeQadan6EjqkhpxwO29/0R68SZ9o81QWu58=;
-        b=uJYXeeWy4RYFOFqEf17xl7gnVK/0FgU+AhTHa2PKK69M8wC33ddO3IaM4waNUxcB1h
-         8hOR0yPIkhHgkLTPAufPHrulROIclWok6hjHvHnIQ1bAsIBH/O0ZLGsLL5Y8ABBZTvIP
-         2+xJdN5bz0i5sz7wKy8coKutJkhiTEfpXIn7o=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=EY4jLBMvLeQadan6EjqkhpxwO29/0R68SZ9o81QWu58=;
-        b=CQd0dnS6KDj0Yx8KKJu2DnBS5weX6IxZHAaF94vTbY6zdJ13QlfdB4MWLxO3W6dbqL
-         fUgT9bAu4JysMJUllX5unSRO0IkBoERmEjmna6EHagkASJ7ev8ukJgM9TcV32YjQQpJB
-         o3ssrmujk8XmbtF0arIUOZIx2KdsfTsVHwV+VlYRx+NO+AUPS+iCM+YT13Fjmlmt0Ga2
-         r/MDqn1AhXFGrifmCj33fm/nzXB3Zt+sLb2tKaRiXb0+yORTnSG68MkJZNm3gy/3aq90
-         B7r4vSHJ3EOu68QO3Fxe9iUBZkLZSPUHiFaDgPP5ima0Pn/1rvxr2PgtswxAze0yrmrz
-         y7YA==
-X-Gm-Message-State: APjAAAXmSSY07V+aXpYfLRPMF6N1LQFygP/FBOtUCg4a7yOfuglU0gLU
-        ZRkDRCvdLGdQ65aeRf7NRBtGnw==
-X-Google-Smtp-Source: APXvYqxF/+Ng+orHICPm7K+4KlpIt9y0iuxkDQbUEY4m5+eaJwNmzU/PPTc4L0ZLfWBx3JLHMNRJcA==
-X-Received: by 2002:ac2:4834:: with SMTP id 20mr2791723lft.166.1576595193577;
-        Tue, 17 Dec 2019 07:06:33 -0800 (PST)
-Received: from cloudflare.com ([176.221.114.230])
-        by smtp.gmail.com with ESMTPSA id g6sm12889267lja.10.2019.12.17.07.06.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Dec 2019 07:06:32 -0800 (PST)
-References: <20191123110751.6729-1-jakub@cloudflare.com> <20191123110751.6729-5-jakub@cloudflare.com> <20191125223845.6t6xoqcwcqxuqbdf@kafai-mbp> <87ftiaocp2.fsf@cloudflare.com> <20191126171607.pzrg5qhbavh7enwh@kafai-mbp.dhcp.thefacebook.com> <87d0deo57q.fsf@cloudflare.com> <87sglsfdda.fsf@cloudflare.com> <20191211172051.clnwh5n5vdeovayy@kafai-mbp> <87pngtg4x4.fsf@cloudflare.com> <20191212192354.umerwea5z4fpwbkq@kafai-mbp>
-User-agent: mu4e 1.1.0; emacs 26.2
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Martin Lau <kafai@fb.com>
-Cc:     John Fastabend <john.fastabend@gmail.com>,
-        "bpf\@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev\@vger.kernel.org" <netdev@vger.kernel.org>,
-        "kernel-team\@cloudflare.com" <kernel-team@cloudflare.com>
-Subject: Re: [PATCH bpf-next 4/8] bpf, sockmap: Don't let child socket inherit psock or its ops on copy
-In-reply-to: <20191212192354.umerwea5z4fpwbkq@kafai-mbp>
-Date:   Tue, 17 Dec 2019 16:06:31 +0100
-Message-ID: <87k16vf0ug.fsf@cloudflare.com>
+        id S1727480AbfLQPkh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Dec 2019 10:40:37 -0500
+Received: from foss.arm.com ([217.140.110.172]:40798 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727415AbfLQPkh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Dec 2019 10:40:37 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C29281FB;
+        Tue, 17 Dec 2019 07:40:36 -0800 (PST)
+Received: from arrakis.emea.arm.com (arrakis.cambridge.arm.com [10.1.197.42])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0D4A73F67D;
+        Tue, 17 Dec 2019 07:40:33 -0800 (PST)
+Date:   Tue, 17 Dec 2019 15:40:31 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        kirill.shutemov@linux.intel.com, justin.he@arm.com,
+        linux-mm@kvack.org,
+        syzbot <syzbot+9301f2f33873407d5b33@syzkaller.appspotmail.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
+        bpf <bpf@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>, hawk@kernel.org,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        linux-kernel@vger.kernel.org,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        Network Development <netdev@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        syzkaller-bugs@googlegroups.com, Yonghong Song <yhs@fb.com>
+Subject: Re: WARNING in wp_page_copy
+Message-ID: <20191217154031.GI5624@arrakis.emea.arm.com>
+References: <000000000000a6f2030598bbe38c@google.com>
+ <0000000000000e32950599ac5a96@google.com>
+ <20191216150017.GA27202@linux.fritz.box>
+ <CAJ8uoz3nCxcmnPonNunYhswskidn=PnN8=4_jXW4B=Xu4k_DoQ@mail.gmail.com>
+ <CAJ8uoz312gDBGpqOJiKqrXn456sy6u+Gnvcvv_+0=EimasRoUw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJ8uoz312gDBGpqOJiKqrXn456sy6u+Gnvcvv_+0=EimasRoUw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 12, 2019 at 08:23 PM CET, Martin Lau wrote:
-> On Thu, Dec 12, 2019 at 12:27:19PM +0100, Jakub Sitnicki wrote:
->> On Wed, Dec 11, 2019 at 06:20 PM CET, Martin Lau wrote:
->> > On Tue, Dec 10, 2019 at 03:45:37PM +0100, Jakub Sitnicki wrote:
->> >> John, Martin,
->> >>
->> >> On Tue, Nov 26, 2019 at 07:36 PM CET, Jakub Sitnicki wrote:
->> >> > On Tue, Nov 26, 2019 at 06:16 PM CET, Martin Lau wrote:
->> >> >> On Tue, Nov 26, 2019 at 04:54:33PM +0100, Jakub Sitnicki wrote:
->> >> >>> On Mon, Nov 25, 2019 at 11:38 PM CET, Martin Lau wrote:
->> >> >>> > On Sat, Nov 23, 2019 at 12:07:47PM +0100, Jakub Sitnicki wrote:
->> >> >>> > [ ... ]
->> >> >>> >
->> >> >>> >> @@ -370,6 +378,11 @@ static inline void sk_psock_restore_proto(struct sock *sk,
->> >> >>> >>  			sk->sk_prot = psock->sk_proto;
->> >> >>> >>  		psock->sk_proto = NULL;
->> >> >>> >>  	}
->> >> >>> >> +
->> >> >>> >> +	if (psock->icsk_af_ops) {
->> >> >>> >> +		icsk->icsk_af_ops = psock->icsk_af_ops;
->> >> >>> >> +		psock->icsk_af_ops = NULL;
->> >> >>> >> +	}
->> >> >>> >>  }
->> >> >>> >
->> >> >>> > [ ... ]
->> >> >>> >
->> >> >>> >> +static struct sock *tcp_bpf_syn_recv_sock(const struct sock *sk,
->> >> >>> >> +					  struct sk_buff *skb,
->> >> >>> >> +					  struct request_sock *req,
->> >> >>> >> +					  struct dst_entry *dst,
->> >> >>> >> +					  struct request_sock *req_unhash,
->> >> >>> >> +					  bool *own_req)
->> >> >>> >> +{
->> >> >>> >> +	const struct inet_connection_sock_af_ops *ops;
->> >> >>> >> +	void (*write_space)(struct sock *sk);
->> >> >>> >> +	struct sk_psock *psock;
->> >> >>> >> +	struct proto *proto;
->> >> >>> >> +	struct sock *child;
->> >> >>> >> +
->> >> >>> >> +	rcu_read_lock();
->> >> >>> >> +	psock = sk_psock(sk);
->> >> >>> >> +	if (likely(psock)) {
->> >> >>> >> +		proto = psock->sk_proto;
->> >> >>> >> +		write_space = psock->saved_write_space;
->> >> >>> >> +		ops = psock->icsk_af_ops;
->> >> >>> > It is not immediately clear to me what ensure
->> >> >>> > ops is not NULL here.
->> >> >>> >
->> >> >>> > It is likely I missed something.  A short comment would
->> >> >>> > be very useful here.
->> >> >>>
->> >> >>> I can see the readability problem. Looking at it now, perhaps it should
->> >> >>> be rewritten, to the same effect, as:
->> >> >>>
->> >> >>> static struct sock *tcp_bpf_syn_recv_sock(...)
->> >> >>> {
->> >> >>> 	const struct inet_connection_sock_af_ops *ops = NULL;
->> >> >>>         ...
->> >> >>>
->> >> >>>         rcu_read_lock();
->> >> >>> 	psock = sk_psock(sk);
->> >> >>> 	if (likely(psock)) {
->> >> >>> 		proto = psock->sk_proto;
->> >> >>> 		write_space = psock->saved_write_space;
->> >> >>> 		ops = psock->icsk_af_ops;
->> >> >>> 	}
->> >> >>> 	rcu_read_unlock();
->> >> >>>
->> >> >>>         if (!ops)
->> >> >>> 		ops = inet_csk(sk)->icsk_af_ops;
->> >> >>>         child = ops->syn_recv_sock(sk, skb, req, dst, req_unhash, own_req);
->> >> >>>
->> >> >>> If psock->icsk_af_ops were NULL, it would mean we haven't initialized it
->> >> >>> properly. To double check what happens here:
->> >> >> I did not mean the init path.  The init path is fine since it init
->> >> >> eveything on psock before publishing the sk to the sock_map.
->> >> >>
->> >> >> I was thinking the delete path (e.g. sock_map_delete_elem).  It is not clear
->> >> >> to me what prevent the earlier pasted sk_psock_restore_proto() which sets
->> >> >> psock->icsk_af_ops to NULL from running in parallel with
->> >> >> tcp_bpf_syn_recv_sock()?  An explanation would be useful.
->> >> >
->> >> > Ah, I misunderstood. Nothing prevents the race, AFAIK.
->> >> >
->> >> > Setting psock->icsk_af_ops to null on restore and not checking for it
->> >> > here was a bad move on my side.  Also I need to revisit what to do about
->> >> > psock->sk_proto so the child socket doesn't end up with null sk_proto.
->> >> >
->> >> > This race should be easy enough to trigger. Will give it a shot.
->> >>
->> >> I've convinced myself that this approach is racy beyond repair.
->> >>
->> >> Once syn_recv_sock() has returned it is too late to reset the child
->> >> sk_user_data and restore its callbacks. It has been already inserted
->> >> into ehash and ingress path can invoke its callbacks.
->> >>
->> >> The race can be triggered with with a reproducer where:
->> >>
->> >> thread-1:
->> >>
->> >>         p = accept(s, ...);
->> >>         close(p);
->> >>
->> >> thread-2:
->> >>
->> >> 	bpf_map_update_elem(mapfd, &key, &s, BPF_NOEXIST);
->> >> 	bpf_map_delete_elem(mapfd, &key);
->> >>
->> >> This a dead-end because we can't have the parent and the child share the
->> >> psock state. Even though psock itself is refcounted, and potentially we
->> >> could grab a reference before cloning the parent, link into the map that
->> >> psock holds is not.
->> >>
->> >> Two ways out come to mind. Both involve touching TCP code, which I was
->> >> hoping to avoid:
->> >>
->> >> 1) reset sk_user_data when initializing the child
->> >>
->> >>    This is problematic because tcp_bpf callbacks are not designed to
->> >>    handle sockets with no psock _and_ with overridden sk_prot
->> >>    callbacks. (Although, I think they could if the fallback was directly
->> >>    on {tcp,tcpv6}_prot based on socket domain.)
->> >>
->> >>    Also, there are other sk_user_data users like DRBD which rely on
->> >>    sharing the sk_user_data pointer between parent and child, if I read
->> >>    the code correctly [0]. If anything, clearing the sk_user_data on
->> >>    clone would have to be guarded by a flag.
->> > Can the copy/not-to-copy sk_user_data decision be made in
->> > sk_clone_lock()?
->>
->> Yes, this could be pushed down to sk_clone_lock(), where we do similar
->> work (reset sk_reuseport_cb and clone bpf_sk_storage):
-> aha.  I missed your eariler "clearing the sk_user_data on clone would have
-> to be guarded by a flag..." part.  It turns out we were talking the same
-> thing on (1).  sock_flag works better if there is still bit left (and it
-> seems there is one),  although I was thinking more like adding
-> something (e.g. a func ptr) to 'struct proto' to mangle sk_user_data
-> before returning newsk....but not sure this kind of logic
-> belongs to 'struct proto'
+Hi Magnus,
 
-Sorry for late reply.
+Thanks for investigating this. I have more questions below rather than a
+solution.
 
-We have 4 bits left by my count. The multi-line comment for SOCK_NOFCS
-is getting in the way of counting them line-for-bit.
+On Tue, Dec 17, 2019 at 02:27:22PM +0100, Magnus Karlsson wrote:
+> On Mon, Dec 16, 2019 at 4:10 PM Magnus Karlsson
+> <magnus.karlsson@gmail.com> wrote:
+> > On Mon, Dec 16, 2019 at 4:00 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+> > >
+> > > On Sat, Dec 14, 2019 at 08:20:07AM -0800, syzbot wrote:
+> > > > syzbot has found a reproducer for the following crash on:
+> > > >
+> > > > HEAD commit:    1d1997db Revert "nfp: abm: fix memory leak in nfp_abm_u32_..
+> > > > git tree:       net-next
+> > > > console output: https://syzkaller.appspot.com/x/log.txt?x=1029f851e00000
+> > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=cef1fd5032faee91
+> > > > dashboard link: https://syzkaller.appspot.com/bug?extid=9301f2f33873407d5b33
+> > > > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> > > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=119d9fb1e00000
+> > > >
+> > > > IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> > > > Reported-by: syzbot+9301f2f33873407d5b33@syzkaller.appspotmail.com
+> > >
+> > > Bjorn / Magnus, given xsk below, PTAL, thanks!
+> >
+> > Thanks. I will take a look at it right away.
+> >
+> > /Magnus
+> 
+> After looking through the syzcaller report, I have the following
+> hypothesis that would dearly need some comments from MM-savy people
+> out there. Syzcaller creates, using mmap, a memory area that is
 
-A callback invoked on socket clone is something I was considering too.
-I'm not sure either where it belongs. At risk of being too use-case
-specific, perhaps it could live together with sk_user_data and sk_prot,
-which it would mangle on sk_clone_lock():
+I guess that's not an anonymous mmap() since we don't seem to have a
+struct page for src in cow_user_page() (the WARN_ON_ONCE path). Do you
+have more information on the mmap() call?
 
-struct sock {
-        ...
-	void			*sk_user_data;
-	void			(*sk_clone)(struct sock *sk,
-					    struct sock *newsk);
-        ...
-}
+> write-only and supplies this to a getsockopt call (in this case
+> XDP_STATISTICS, but probably does not matter really) as the area where
+> it wants the values to be stored. When the getsockopt implementation
+> gets to copy_to_user() to write out the values to user space, it
+> encounters a page fault when accessing this write-only page. When
+> servicing this, it gets to the following piece of code that triggers
+> the warning that syzcaller reports:
+> 
+> static inline bool cow_user_page(struct page *dst, struct page *src,
+>                                  struct vm_fault *vmf)
+> {
+> ....
+> snip
+> ....
+>        /*
+>          * This really shouldn't fail, because the page is there
+>          * in the page tables. But it might just be unreadable,
+>          * in which case we just give up and fill the result with
+>          * zeroes.
+>          */
+>         if (__copy_from_user_inatomic(kaddr, uaddr, PAGE_SIZE)) {
+>                 /*
+>                  * Give a warn in case there can be some obscure
+>                  * use-case
+>                  */
+>                 WARN_ON_ONCE(1);
+>                 clear_page(kaddr);
+>         }
 
-But, I feel adding a new sock field just for this wouldn't be justified.
-I can get by with a sock flag. Unless we have other uses for it?
+So on x86, a PROT_WRITE-only private page is mapped as non-readable? I
+had the impression that write-only still allows reading by looking at
+the __P010 definition.
 
->
->>
->> 	/* User data can hold reference. Child must not
->> 	 * inherit the pointer without acquiring a reference.
->> 	 */
->> 	if (sock_flag(sk, SOCK_OWNS_USER_DATA)) {
->> 		sock_reset_flag(newsk, SOCK_OWNS_USER_DATA);
->> 		RCU_INIT_POINTER(newsk->sk_user_data, NULL);
->> 	}
->>
->> I belive this would still need to be guarded by a flag.  Do you see
->> value in clearing child sk_user_data on clone as opposed to dealying
->> that work until accept() time?
-> It seems to me clearing things up front at the very beginning is more
-> straight forward, such that it does not have to worry about the
-> sk_user_data may be used in a wrong way before it gets a chance
-> to be cleared in accept().
->
-> Just something to consider, if it is obvious that there is no hole in
-> clearing it in accept(), it is fine too.
+Anyway, if it's not an anonymous mmap(), whoever handled the mapping may
+have changed the permissions (e.g. some device).
 
-Just when I thought I could get away with lazily clearing the
-sk_user_data at accept() time, it occurred to me that it is not enough.
+> So without a warning. My hypothesis is that if we create a page in the
+> same way as syzcaller then any getsockopt that does a copy_to_user()
+> (pretty much all of them I guess) will get this warning.
 
-Listening socket could get deleted from sockmap before a child socket
-that inherited a copy of sk_user_data pointer gets accept()'ed. In such
-scenario the pointer would not get NULL'ed on accept(), because
-listening socket would have it's sk_prot->accept restored by then.
+The copy_to_user() only triggers the do_wp_page() fault handling. If
+this is a CoW page (private read-only presumably, or at least not
+writeable), the kernel tries to copy the original page given to
+getsockopt into a new page and restart the copy_to_user(). Since the
+kernel doesn't have a struct page for this (e.g. PFN mapping), it uses
+__copy_from_user_inatomic() which fails because of the read permission.
 
-I will need that flag after all...
+> I have not tried this, so I might be wrong. If this is true, then the
+> question is what to do about it. One possible fix would be just to
+> remove the warning to get the same behavior as before. But it was
+> probably put there for a reason.
 
--jkbs
+It was there for some obscure cases, as the comment says ;). If the
+above is a valid scenario that the user can trigger, we should probably
+remove the WARN_ON.
 
->
->> >>
->> >> 2) Restore sk_prot callbacks on clone to {tcp,tcpv6}_prot
->> >>
->> >>    The simpler way out. tcp_bpf callbacks never get invoked on the child
->> >>    socket so the copied psock reference is no longer a problem. We can
->> >>    clear the pointer on accept().
->> >>
->> >>    So far I wasn't able poke any holes in it and it comes down to
->> >>    patching tcp_create_openreq_child() with:
->> >>
->> >> 	/* sk_msg and ULP frameworks can override the callbacks into
->> >> 	 * protocol. We don't assume they are intended to be inherited
->> >> 	 * by the child. Frameworks can re-install the callbacks on
->> >> 	 * accept() if needed.
->> >> 	 */
->> >> 	WRITE_ONCE(newsk->sk_prot, sk->sk_prot_creator);
->> >>
->> >>    That's what I'm going with for v2.
->> >>
->> >> Open to suggestions.
->> >>
->> >> Thanks,
->> >> Jakub
->> >>
->> >> BTW. Reading into kTLS code, I noticed it has been limited down to just
->> >> established sockets due to the same problem I'm struggling with here:
->> >>
->> >> static int tls_init(struct sock *sk)
->> >> {
->> >> ...
->> >> 	/* The TLS ulp is currently supported only for TCP sockets
->> >> 	 * in ESTABLISHED state.
->> >> 	 * Supporting sockets in LISTEN state will require us
->> >> 	 * to modify the accept implementation to clone rather then
->> >> 	 * share the ulp context.
->> >> 	 */
->> >> 	if (sk->sk_state != TCP_ESTABLISHED)
->> >> 		return -ENOTCONN;
->> >>
->> >> [0] https://urldefense.proofpoint.com/v2/url?u=https-3A__elixir.bootlin.com_linux_v5.5-2Drc1_source_drivers_block_drbd_drbd-5Freceiver.c-23L682&d=DwIBAg&c=5VD0RTtNlTh3ycd41b3MUw&r=VQnoQ7LvghIj0gVEaiQSUw&m=z2Cz1gEcqiw-8YqVOluxlUHh_CBs6PJWQN2vgirOyFk&s=WAiM0asZN0OkqrW02xm2mCMIzWhKQCc3KiY7pzMKNg4&e=
+-- 
+Catalin
