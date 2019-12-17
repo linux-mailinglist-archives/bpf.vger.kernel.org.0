@@ -2,185 +2,225 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 247971234B4
-	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2019 19:23:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D8EE123558
+	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2019 20:03:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726813AbfLQSXK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Dec 2019 13:23:10 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:16890 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726646AbfLQSXK (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 17 Dec 2019 13:23:10 -0500
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xBHIMeaF019078;
-        Tue, 17 Dec 2019 10:22:52 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=JvcUnFwWIM3DIgv3X7+Fyn0MOKEI/rzSrowA2OxAwH8=;
- b=qQ/LOcLHy3m1HGsLMJr31+21T2rl8lHSOycQYzwXRXgsO2UTHQOYNCAyz2i3O1rzr8HB
- cuHlIDD+ViY6z0yRor1MHme2hJ+Rs7olU8TAXZj6yzZH/e3etDdv50CfVt7roH2+wat2
- Zk01/LYa6Lja9aKJcef3mzbTxSePM2YrS/4= 
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by mx0a-00082601.pphosted.com with ESMTP id 2wxcwy65w5-19
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 17 Dec 2019 10:22:52 -0800
-Received: from prn-hub03.TheFacebook.com (2620:10d:c081:35::127) by
- prn-hub06.TheFacebook.com (2620:10d:c081:35::130) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Tue, 17 Dec 2019 10:22:33 -0800
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (192.168.54.28)
- by o365-in.thefacebook.com (192.168.16.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
- via Frontend Transport; Tue, 17 Dec 2019 10:22:32 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LhSHlastRViWoNTY5DmPvMVPwOejT1TuMH8tYlIxy6jYinitLr9BoMquysa0PX8lL6hhnDryOVY20q1IPlheX9oiaU8uC5bNL5n/9fPIOjB/TtPoxV1XslwFKL7psTcIVvZqX0ivt4/Lc+x1TvdaslcaHOzgpyjFeAI/7hjietzsEoaMKZhKaXTRJVZ39lHOb7TYBNGs77NMC4x3t2XA9WBLkdAqUlxMEmTFdG71MHh9xjU0z80eVt8T5e6nEJsF2bjTrlvloBCnU4UqStMBvcLRYrH3ZffkDj8o9Spw2xZ6NBEKq10qylkyU5oim8MDY7+3Tswgmz77MDhFMlfldw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JvcUnFwWIM3DIgv3X7+Fyn0MOKEI/rzSrowA2OxAwH8=;
- b=K+dI+FjzHfW67C/jSWsJpMfb/+hM4UWEcYE2PmUQ7vxu5VG7bMPnsvvK9Q32CrHRTSasaJNIUXxn6YqoFYIUb8hpCXmPybu+lm7dvpfI+KwI6vpSVAS392S1/2VcupbgJTIhH/OcEHP/1ygzYFLia9yBDoFgoLRRFWJAhbd+EH3HO3O2Fle5otv5DEOann6410JrrrlFMNlKRaWY22juOmAia+R4wEsF+uzVcfSwdk4mZydWE30gk+QnJ7yDsmFdIWUkmCL657T+iURXpuw5IAmLNyx12BfxuAWDV0VD49N2bkK7sb0+aU2Y2XnZwkiAr/AZZnzagG9x/LQWvYAABQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JvcUnFwWIM3DIgv3X7+Fyn0MOKEI/rzSrowA2OxAwH8=;
- b=KwHzUnuhTUDaUpLBEGx6/OD3pwOfMyNWlt4SiOls1Ed0ValLlWjpbVkm0pdzEbESc72tukKJfm9XZeBg18tTeqNaesnAGXI2+IaOOj5EaULNTmCPrXIjomgpBVfBCapcq8h4iHXFI8QcSqhSOPXOtwDla6WThvM5xfL+aiz/8hI=
-Received: from MN2PR15MB3213.namprd15.prod.outlook.com (20.179.21.76) by
- MN2PR15MB3424.namprd15.prod.outlook.com (20.179.23.150) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2538.16; Tue, 17 Dec 2019 18:22:31 +0000
-Received: from MN2PR15MB3213.namprd15.prod.outlook.com
- ([fe80::6d1e:f2f7:d36:a42f]) by MN2PR15MB3213.namprd15.prod.outlook.com
- ([fe80::6d1e:f2f7:d36:a42f%4]) with mapi id 15.20.2538.019; Tue, 17 Dec 2019
- 18:22:31 +0000
-From:   Martin Lau <kafai@fb.com>
-To:     Jakub Sitnicki <jakub@cloudflare.com>
-CC:     Eric Dumazet <eric.dumazet@gmail.com>,
-        Neal Cardwell <ncardwell@google.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "Alexei Starovoitov" <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David Miller" <davem@davemloft.net>,
-        Kernel Team <Kernel-team@fb.com>,
-        Netdev <netdev@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 09/13] bpf: Add BPF_FUNC_jiffies
-Thread-Topic: [PATCH bpf-next 09/13] bpf: Add BPF_FUNC_jiffies
-Thread-Index: AQHVsiI0ihgHNw98P02gRrT2dQLnz6e6BCYAgAP+9ICAAKaBAA==
-Date:   Tue, 17 Dec 2019 18:22:31 +0000
-Message-ID: <20191217182228.icbttiozdcmveutq@kafai-mbp.dhcp.thefacebook.com>
-References: <20191214004737.1652076-1-kafai@fb.com>
- <20191214004758.1653342-1-kafai@fb.com>
- <b321412c-1b42-45a9-4dc6-cc268b55cd0d@gmail.com>
- <CADVnQy=soQ8KhuUWEQj0n2ge3a43OSgAKS95bmBtp090jqbM_w@mail.gmail.com>
- <87o8w7fjd4.fsf@cloudflare.com>
-In-Reply-To: <87o8w7fjd4.fsf@cloudflare.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MWHPR17CA0056.namprd17.prod.outlook.com
- (2603:10b6:300:93::18) To MN2PR15MB3213.namprd15.prod.outlook.com
- (2603:10b6:208:3d::12)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:200::1:77de]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: a4b643c3-cd3b-470d-2609-08d7831e149f
-x-ms-traffictypediagnostic: MN2PR15MB3424:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MN2PR15MB34247F8A2E3959F47C1FF4E4D5500@MN2PR15MB3424.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-forefront-prvs: 02543CD7CD
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(39860400002)(136003)(396003)(346002)(376002)(366004)(199004)(189003)(4326008)(6916009)(66446008)(64756008)(66556008)(66476007)(5660300002)(3716004)(316002)(52116002)(1076003)(8936002)(8676002)(86362001)(6486002)(6506007)(66946007)(2906002)(186003)(81166006)(71200400001)(53546011)(81156014)(6512007)(9686003)(54906003)(478600001);DIR:OUT;SFP:1102;SCL:1;SRVR:MN2PR15MB3424;H:MN2PR15MB3213.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: roEfc20808k68Pr7lX39VJyM+Lf3t8dAJBka7muS3P4eZ30Rszr2kdMKqMfc3G+JJoqmur28MpjwqW0Y18GXBTMSRE8tCnlFi5x1dNK9qtHAZt78duSoM+WpzZXEnCFkVrCPFuU0HckveZJUil4qAsbAVhsJR6ltaXz9s3OkQO2I0vRzIniOEokpD5hKmrjmeNmiNx0vTkErBxEvUXT/85pDshtrZWB6TcKvwzuqEifruDRGlPM/yK0FNmaAToEZF555dg9/Mdw4okWi/QWBI39MpnCFTktR+ayQ8k3AhXzR19mQy44uTzAAfzK8RDzuGNtaGydzGhFS4VSDjvnXSWq7ZA8caOTgw42XDHQ6n1GVcnXdGqaNJ3mR5F2DusMzCBhBkpq8e3ifqAJ5gw9DV7V/dySlqw6nOAY/kF2jbXFvhMqEoL2aSWQuwi1d6hT0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <65C18DE0A523E640BE79333D95E7AAA9@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1726939AbfLQTDv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Dec 2019 14:03:51 -0500
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:35895 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726731AbfLQTDv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Dec 2019 14:03:51 -0500
+Received: by mail-qk1-f194.google.com with SMTP id a203so8170843qkc.3;
+        Tue, 17 Dec 2019 11:03:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Z0QJIGyUGn5BEJc8rg5MhNb/nTRQiFDqhn9BJB2B5gk=;
+        b=DCu/zH4XrFRbPyzKoavf03lYkM3nYSbQfgM+r1QvnbPCJncVQZRvNV7rKA+dNjN1rj
+         FnOt0JsLFY7PTo1bVP8DYUms0aZgs1TEjwnGrW9olrr+P78I2mR2Y2pG0CRCJoeMNwjD
+         B/Mf7BwmGORgU89/VdZRQi1MWBab7ISG22wW/KiCgVSnQdzYg90MZSXTc5T4vJ6VDva7
+         RD1FvUX0Mv+jx055PaXgJlyO2U8xO69OmZVDjgMxuHXUZD4gTfQDcdr3Bb7/rIXUZHgN
+         OTx9obMElAviZ1vf3RkBrGTLh7QhJ2vxVBOErQoqR7VPScrNDmlDij5EgtRHhGFHcSzc
+         JNcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Z0QJIGyUGn5BEJc8rg5MhNb/nTRQiFDqhn9BJB2B5gk=;
+        b=DmgrZO23R0Ajmw8JY8Ixs+DIAxHdodkKGZVJ2o9Yt8NcgzOv30s3DOFG5nzkxFJIca
+         7QY9lFeyNvpqSdxU7i6q7gEt8tW83CrYr1aYR/CjPLdll82ZeDMxLI9MIPI4pnmsxwuf
+         /0GPBBx/dDal5Mew+Ues+hwsn8bHJjhRIQJtH4bCO93rbkFPFr4j+lip5oNfiOWsCKxR
+         dA7NtCZCMNvp5MariiJ/aPgjAy0haiNsaXPj82zZtpyyAyfI5FT0UUjYQGGLxw/yfVIj
+         lcuNQdVUmue1pCUxxeQBlcczsCaM+nH1wuscsT9MTSoQkDBcKthXTkoltOrP6EPhofaN
+         9DkQ==
+X-Gm-Message-State: APjAAAWMGiHSrcLm1hQIN/r0TG/DUSLmWMPu8cDt6kxPjs5iB3hnMIa7
+        sTpdXx90X2I4xhF0gBQv6NpsKfloggU2bAZTpH8kGA==
+X-Google-Smtp-Source: APXvYqzP+FnkvIIXpdqOc68VnTFndenTIEi8Pn8kfHEOxb2u3iRIQ8Qnbny0WKcWl6GdwtqF4negIDFdzaAFtVWhrb0=
+X-Received: by 2002:a05:620a:14a2:: with SMTP id x2mr6827045qkj.36.1576609429907;
+ Tue, 17 Dec 2019 11:03:49 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: a4b643c3-cd3b-470d-2609-08d7831e149f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Dec 2019 18:22:31.6844
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ZrGO7Yb7VxULAG1NQSY84gzJ6Gsa0on1t9oUqD1X+LOlpgdSdCehntqGpdaCnah+
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB3424
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
- definitions=2019-12-17_03:2019-12-17,2019-12-17 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
- lowpriorityscore=0 malwarescore=0 spamscore=0 impostorscore=0
- clxscore=1015 adultscore=0 bulkscore=0 mlxlogscore=617 phishscore=0
- suspectscore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-1910280000 definitions=main-1912170144
-X-FB-Internal: deliver
+References: <20191214014710.3449601-1-andriin@fb.com> <20191214014710.3449601-3-andriin@fb.com>
+ <20191216111736.GA14887@linux.fritz.box> <CAEf4Bzbx+2Fot9NYzGJS-pUF5x5zvcfBnb7fcO_s9_gCQQVuLg@mail.gmail.com>
+ <7bf339cf-c746-a780-3117-3348fb5997f1@iogearbox.net>
+In-Reply-To: <7bf339cf-c746-a780-3117-3348fb5997f1@iogearbox.net>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 17 Dec 2019 11:03:38 -0800
+Message-ID: <CAEf4BzYAWknN1HGHd0vREtQLHU-z3iTLJWBteRK6q7zkhySBBg@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 2/4] libbpf: support libbpf-provided extern variables
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 17, 2019 at 09:26:31AM +0100, Jakub Sitnicki wrote:
-> On Sat, Dec 14, 2019 at 08:25 PM CET, Neal Cardwell wrote:
-> > On Fri, Dec 13, 2019 at 9:00 PM Eric Dumazet <eric.dumazet@gmail.com> w=
-rote:
+On Tue, Dec 17, 2019 at 6:42 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>
+> On 12/16/19 8:29 PM, Andrii Nakryiko wrote:
+> > On Mon, Dec 16, 2019 at 3:17 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+> >> On Fri, Dec 13, 2019 at 05:47:08PM -0800, Andrii Nakryiko wrote:
+> >>> Add support for extern variables, provided to BPF program by libbpf. Currently
+> >>> the following extern variables are supported:
+> >>>    - LINUX_KERNEL_VERSION; version of a kernel in which BPF program is
+> >>>      executing, follows KERNEL_VERSION() macro convention, can be 4- and 8-byte
+> >>>      long;
+> >>>    - CONFIG_xxx values; a set of values of actual kernel config. Tristate,
+> >>>      boolean, strings, and integer values are supported.
+> >>>
+> >> [...]
+> >>>
+> >>> All detected extern variables, are put into a separate .extern internal map.
+> >>> It, similarly to .rodata map, is marked as read-only from BPF program side, as
+> >>> well as is frozen on load. This allows BPF verifier to track extern values as
+> >>> constants and perform enhanced branch prediction and dead code elimination.
+> >>> This can be relied upon for doing kernel version/feature detection and using
+> >>> potentially unsupported field relocations or BPF helpers in a CO-RE-based BPF
+> >>> program, while still having a single version of BPF program running on old and
+> >>> new kernels. Selftests are validating this explicitly for unexisting BPF
+> >>> helper.
+> >>>
+> >>> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+> >> [...]
+> >>> +static int bpf_object__resolve_externs(struct bpf_object *obj,
+> >>> +                                    const char *config_path)
+> >>> +{
+> >>> +     bool need_config = false;
+> >>> +     struct extern_desc *ext;
+> >>> +     int err, i;
+> >>> +     void *data;
+> >>> +
+> >>> +     if (obj->nr_extern == 0)
+> >>> +             return 0;
+> >>> +
+> >>> +     data = obj->maps[obj->extern_map_idx].mmaped;
+> >>> +
+> >>> +     for (i = 0; i < obj->nr_extern; i++) {
+> >>> +             ext = &obj->externs[i];
+> >>> +
+> >>> +             if (strcmp(ext->name, "LINUX_KERNEL_VERSION") == 0) {
+> >>> +                     void *ext_val = data + ext->data_off;
+> >>> +                     __u32 kver = get_kernel_version();
+> >>> +
+> >>> +                     if (!kver) {
+> >>> +                             pr_warn("failed to get kernel version\n");
+> >>> +                             return -EINVAL;
+> >>> +                     }
+> >>> +                     err = set_ext_value_num(ext, ext_val, kver);
+> >>> +                     if (err)
+> >>> +                             return err;
+> >>> +                     pr_debug("extern %s=0x%x\n", ext->name, kver);
+> >>> +             } else if (strncmp(ext->name, "CONFIG_", 7) == 0) {
+> >>> +                     need_config = true;
+> >>> +             } else {
+> >>> +                     pr_warn("unrecognized extern '%s'\n", ext->name);
+> >>> +                     return -EINVAL;
+> >>> +             }
 > >>
-> >>
-> >>
-> >> On 12/13/19 4:47 PM, Martin KaFai Lau wrote:
-> >> > This patch adds a helper to handle jiffies.  Some of the
-> >> > tcp_sock's timing is stored in jiffies.  Although things
-> >> > could be deduced by CONFIG_HZ, having an easy way to get
-> >> > jiffies will make the later bpf-tcp-cc implementation easier.
-> >> >
-> >>
-> >> ...
-> >>
-> >> > +
-> >> > +BPF_CALL_2(bpf_jiffies, u64, in, u64, flags)
-> >> > +{
-> >> > +     if (!flags)
-> >> > +             return get_jiffies_64();
-> >> > +
-> >> > +     if (flags & BPF_F_NS_TO_JIFFIES) {
-> >> > +             return nsecs_to_jiffies(in);
-> >> > +     } else if (flags & BPF_F_JIFFIES_TO_NS) {
-> >> > +             if (!in)
-> >> > +                     in =3D get_jiffies_64();
-> >> > +             return jiffies_to_nsecs(in);
-> >> > +     }
-> >> > +
-> >> > +     return 0;
-> >> > +}
-> >>
-> >> This looks a bit convoluted :)
-> >>
-> >> Note that we could possibly change net/ipv4/tcp_cubic.c to no longer u=
-se jiffies at all.
-> >>
-> >> We have in tp->tcp_mstamp an accurate timestamp (in usec) that can be =
-converted to ms.
+> >> I don't quite like that this is (mainly) tracing-only specific, and that
+> >> for everything else we just bail out - there is much more potential than
+> >> just completing above vars. But also, there is also no way to opt-out
+> >> for application developers of /this specific/ semi-magic auto-completion
+> >> of externs.
 > >
-> > If the jiffies functionality stays, how about 3 simple functions that
-> > correspond to the underlying C functions, perhaps something like:
+> > What makes you think it's tracing only? While non-tracing apps
+> > probably don't need to care about LINUX_KERNEL_VERSION, all of the
+> > CONFIG_ stuff is useful and usable for any type of application.
+>
+> Ok, just curious, do you have a concrete example e.g. for tc/xdp networking
+> programs where you have a specific CONFIG_* extern that you're using in your
+> programs currently?
+
+So one good example will be CONFIG_HZ, used by latest Martin's work on
+tcp_congestion_ops, as well as used by other networking BPF programs
+for network stats.
+
+>
+> > As for opt-out, you can easily opt out by not using extern variables.
 > >
-> >   bpf_nsecs_to_jiffies(nsecs)
-> >   bpf_jiffies_to_nsecs(jiffies)
-> >   bpf_get_jiffies_64()
+> >> bpf_object__resolve_externs() should be changed instead to invoke a
+> >> callback obj->resolve_externs(). Former can be passed by the application
+> >> developer to allow them to take care of extern resolution all by themself,
+> >> and if no callback has been passed, then we default to the one above
+> >> being set as obj->resolve_externs.
 > >
-> > Separate functions might be easier to read/maintain (and may even be
-> > faster, given the corresponding reduction in branches).
->=20
-> Having bpf_nsecs_to_jiffies() would be also handy for BPF sockops progs
-> that configure SYN-RTO timeout (BPF_SOCK_OPS_TIMEOUT_INIT).
->=20
-> Right now user-space needs to go look for CONFIG_HZ in /proc/config.gz
-Andrii's extern variable work (already landed) allows a bpf_prog
-to read CONFIG_HZ as a global variable.  It is the path that I am
-pursuing now for jiffies/nsecs conversion without relying on
-a helper.
+> > Can you elaborate on the use case you have in mind? The way I always
+> > imagined BPF applications provide custom read-only parameters to BPF
+> > side is through using .rodata variables. With skeleton it's super easy
+> > to initialize them before BPF program is loaded, and their values will
+> > be well-known by verifier and potentially optimized.
+>
+> We do set the map with .extern contents as read-only memory as well in
+> libbpf as I understand it. So same dead code optimization from the
+> verifier as well in this case. It feels the line with passing external
+> config via .rodata variables vs .extern variables gets therefore a bit
+> blurry.
+>
+> Are we saying that in libbpf convention is that .extern contents must
+> *only* ever be kernel-provided but cannot come from some other configuration
+> data such as env/daemon?
+
+You are right that .rodata and .extern are both read-only and allow
+dead code optimization, which was a requirement for both. The line is
+between who "owns" the data. .rodata should be parameters owned and
+set up by BPF program and its userspace counterpart. While .extern is
+something that's owned and provided by some external party. It is
+libbpf for Kconfig, in the future it might be also kernel variables
+(e.g., jiffies). With static and dynamic linking, extern variables
+will be variables defined in some other BPF object, that we are
+linking with.
+
+>
+> [...]
+> > So for application-specific stuff, there isn't really a need to use
+> > externs to do that. Furthermore, I think allowing using externs as
+> > just another way to specify application-specific configuration is
+> > going to create a problem, potentially, as we'll have higher
+> > probability of collisions with kernel-provided extersn (variables
+> > and/or functions), or even externs provided by other
+> > dynamically/statically linked BPF programs (once we have dynamic and
+> > static linking, of course).
+>
+> Yes, that makes more sense, but then we are already potentially colliding
+> with current CONFIG_* variables once we handle dynamically / statically
+> linked BPF programs. Perhaps that's my confusion in the first place. Would
+> have been good if 166750bc1dd2 had a discussion on that as part of the
+> commit message.
+>
+> So, naive question, what's the rationale of not using .rodata variables
+> for CONFIG_* case and how do we handle these .extern collisions in future?
+> Should these vars rather have had some sort of annotation or be moved into
+> special ".extern.config" section or the like where we explicitly know that
+> these are handled differently so they don't collide with future ".extern"
+> content once we have linked BPF programs?
+
+Yes, name collision is a possibility, which means users should
+restrain from using LINUX_KERNEL_VERSION and CONFIG_XXX names for
+their variables. But if that is ever actually the problem, the way to
+resolve this collision/ambiguity would be to put externs in a separate
+sections. It's possible to annotate extern variable with custom
+section.
+
+But I guess putting Kconfig-provided externs into ".extern.kconfig"
+might be a good idea, actually. That will make it possible to have
+writable externs in the future.
+
+>
+> > So if you still insist we need user to provide custom extern-parsing
+> > logic, can you please elaborate on the use case details?
+> >
+> > BTW, from discussion w/ Alexei on another thread, I think I'm going to
+> > change kconfig_path option to just `kconfig`, which will specify
+> > additional config in Kconfig format. This could be used by
+> > applications to provide their own config, augmenting Kconfig with
+> > custom overrides.
+>
+> Ok.
+>
+> Thanks,
+> Daniel
