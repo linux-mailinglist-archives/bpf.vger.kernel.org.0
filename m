@@ -2,112 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 859D9123A24
-	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2019 23:38:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E030123A52
+	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2019 23:55:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726072AbfLQWiT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Dec 2019 17:38:19 -0500
-Received: from foss.arm.com ([217.140.110.172]:50992 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725812AbfLQWiT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Dec 2019 17:38:19 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 69A711FB;
-        Tue, 17 Dec 2019 14:38:18 -0800 (PST)
-Received: from mbp (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7B2153F718;
-        Tue, 17 Dec 2019 14:38:15 -0800 (PST)
-Date:   Tue, 17 Dec 2019 22:38:09 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        kirill.shutemov@linux.intel.com, justin.he@arm.com,
-        linux-mm@kvack.org,
-        syzbot <syzbot+9301f2f33873407d5b33@syzkaller.appspotmail.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
-        bpf <bpf@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>, hawk@kernel.org,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        linux-kernel@vger.kernel.org,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        Network Development <netdev@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs@googlegroups.com, Yonghong Song <yhs@fb.com>
-Subject: Re: WARNING in wp_page_copy
-Message-ID: <20191217223808.GA14982@mbp>
-References: <000000000000a6f2030598bbe38c@google.com>
- <0000000000000e32950599ac5a96@google.com>
- <20191216150017.GA27202@linux.fritz.box>
- <CAJ8uoz3nCxcmnPonNunYhswskidn=PnN8=4_jXW4B=Xu4k_DoQ@mail.gmail.com>
- <CAJ8uoz312gDBGpqOJiKqrXn456sy6u+Gnvcvv_+0=EimasRoUw@mail.gmail.com>
- <20191217154031.GI5624@arrakis.emea.arm.com>
- <CAJ8uoz3yDK8sEE05cKA8siBi-Dc0wtbe1-zYgbz_-pd5t69j8w@mail.gmail.com>
+        id S1726072AbfLQWzB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Dec 2019 17:55:01 -0500
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:43804 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725870AbfLQWzB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Dec 2019 17:55:01 -0500
+Received: by mail-qk1-f196.google.com with SMTP id t129so3558840qke.10;
+        Tue, 17 Dec 2019 14:55:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lL57QSrlVk6cTiuQk1HyrMwEZXGqqzlZkbf62cArXG8=;
+        b=duhypgM2wbfhjfjJ8u/CWYeg7aeo9kuoXNsKUoqufgbHkJsHV3sEyAplCgbBtmMh5E
+         e0iN2A0CpJarxhFI9GNWefXJvOooWeXy49erbELcpNkR6o9s3eKOpDibjey+p3GTu2xX
+         ojOI5lGdOY1UgnoiDVM0566mjrzXJB2vXaTagEuxJ5PpLBRauNzo562aIiP31sUbMEBD
+         S2/HOPqlPwrDpW1G30zbinK3B0aNUWDnfVcYJVZ9If9pERI7hladXyxVE5rggJ4jNUR+
+         e89Pjy8Swx/oSi3Gx/LNw0EIzV/Tt0M5cJNVVAKXD1RvRXainPMc63ppL3/Xe9/b6Ai9
+         OY/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lL57QSrlVk6cTiuQk1HyrMwEZXGqqzlZkbf62cArXG8=;
+        b=dt8QFLsIrYda4evEDguUda2nssr2sq3x1iCUKtaU0lZgT9MpqCZFM/z8S4AVOc4ETr
+         4f+GpLlCdHncNwkl//ypSJ/I3CxrS2lOS8N3cVPpoLKq4BcDQyGUTzGG3WPZCxcLcVIZ
+         DQUof7SxqhbCiLNbNoWEN4/J35Y0HAQzSuUdukrPPTgmbD/7tWhKUtI09BURjZg4Y6ru
+         a72XDitNbivMsazFChKsyH+bjbgMmWH99EpGOjPcnYoltzMa8ep5uamQy+zNimZerSzs
+         lF4xajm0XqAun5b/+OGwnJX3l71E6R7dOQAebCXMMso943GeOszj1x0D5uBSl+Y1wiIz
+         NLjg==
+X-Gm-Message-State: APjAAAWVMtRDDpEg5FI1vnjjV+/hr4foEQkhap2eunqQ2/UbcKopurnc
+        wzV18ZIH4+M3fkNIWY18212zGtLYYrhJgldvUbU=
+X-Google-Smtp-Source: APXvYqz/Bbg2IWpdBgB9n4mvSGL9+o8c/n1VbYAWPcaG7k4lkW3WYaVAcZSu+O/FZTY0WCDvXpdG8DRZCu8scLMniHU=
+X-Received: by 2002:ae9:e809:: with SMTP id a9mr498634qkg.92.1576623300502;
+ Tue, 17 Dec 2019 14:55:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJ8uoz3yDK8sEE05cKA8siBi-Dc0wtbe1-zYgbz_-pd5t69j8w@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20191217053626.2158870-1-andriin@fb.com> <20191217053626.2158870-4-andriin@fb.com>
+ <a722caf8-a4af-4476-d560-396dd30dfb0a@fb.com>
+In-Reply-To: <a722caf8-a4af-4476-d560-396dd30dfb0a@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 17 Dec 2019 14:54:49 -0800
+Message-ID: <CAEf4BzZa9Pp+ibccmn--jEY95LdOs2UZ1AJoQ9x51FjNGsVAiA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/3] bpftool: add gen subcommand manpage
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        Kernel Team <Kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 17, 2019 at 04:57:34PM +0100, Magnus Karlsson wrote:
-> On Tue, Dec 17, 2019 at 4:40 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
-> > On Tue, Dec 17, 2019 at 02:27:22PM +0100, Magnus Karlsson wrote:
-> > > On Mon, Dec 16, 2019 at 4:10 PM Magnus Karlsson
-> > > <magnus.karlsson@gmail.com> wrote:
-> > > > On Mon, Dec 16, 2019 at 4:00 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
-> > > > > On Sat, Dec 14, 2019 at 08:20:07AM -0800, syzbot wrote:
-> > > > > > syzbot has found a reproducer for the following crash on:
-> > > > > >
-> > > > > > HEAD commit:    1d1997db Revert "nfp: abm: fix memory leak in nfp_abm_u32_..
-> > > > > > git tree:       net-next
-> > > > > > console output: https://syzkaller.appspot.com/x/log.txt?x=1029f851e00000
-> > > > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=cef1fd5032faee91
-> > > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=9301f2f33873407d5b33
-> > > > > > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-> > > > > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=119d9fb1e00000
-> > > > > >
-> > > > > > IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> > > > > > Reported-by: syzbot+9301f2f33873407d5b33@syzkaller.appspotmail.com
-> > > > >
-> > > > > Bjorn / Magnus, given xsk below, PTAL, thanks!
-> > > >
-> > > > Thanks. I will take a look at it right away.
-> > > >
-> > > > /Magnus
-> > >
-> > > After looking through the syzcaller report, I have the following
-> > > hypothesis that would dearly need some comments from MM-savy people
-> > > out there. Syzcaller creates, using mmap, a memory area that is
+On Tue, Dec 17, 2019 at 1:27 PM Yonghong Song <yhs@fb.com> wrote:
+>
+>
+>
+> On 12/16/19 9:36 PM, Andrii Nakryiko wrote:
+> > Add bpftool-gen.rst describing skeleton on the high level. Also include
+> > a small, but complete, example BPF app (BPF side, userspace side, generated
+> > skeleton) in example section to demonstrate skeleton API and its usage.
 > >
-> > I guess that's not an anonymous mmap() since we don't seem to have a
-> > struct page for src in cow_user_page() (the WARN_ON_ONCE path). Do you
-> > have more information on the mmap() call?
-> 
-> I have this from the syzcaller logs:
-> 
-> mmap(&(0x7f0000001000/0x2000)=nil, 0x2000, 0xfffffe, 0x12, r8, 0x0)
-> getsockopt$XDP_MMAP_OFFSETS(r8, 0x11b, 0x7, &(0x7f0000001300),
-> &(0x7f0000000100)=0x60)
-> 
-> The full log can be found at:
-> https://syzkaller.appspot.com/x/repro.syz?x=119d9fb1e00000
+> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+>
+> When applying the patch locally (git apply <>), I see below:
+> -bash-4.4$ git apply ~/p3.txt
+> /home/yhs/p3.txt:183: trailing whitespace.
+>
+> /home/yhs/p3.txt:187: trailing whitespace.
+>
+> /home/yhs/p3.txt:189: space before tab in indent.
+>          __uint(type, BPF_MAP_TYPE_HASH);
+> /home/yhs/p3.txt:190: space before tab in indent.
+>          __uint(max_entries, 128);
+> /home/yhs/p3.txt:191: space before tab in indent.
+>          __type(key, int);
+> warning: squelched 77 whitespace errors
+> warning: 82 lines add whitespace errors.
+> -bash-4.4$
+>
+> space before tab might be fine since it is an code in the example file.
+> But tailing whitespaces probably should be fixed.
 
-Thanks. Prior to mmap, we have:
+I assumed that indentation in ReST's literal block has to be specified
+for all lines, including the empty ones. But seems like
+bpftool-btf.rst doesn't do that, and playing with some online editors
+indicates it's not necessary to indent empty lines to preserve all the
+code as single code block, so I'm going to remove them.
 
-r8 = socket$xdp(0x2c, 0x3, 0x0)
-
-So basically we have an mmap() on a socket descriptor with a subsequent
-copy_to_user() writing this range. We do we even end up doing CoW on
-such mapping? Maybe the socket code should also implement the .fault()
-file op. It needs more digging.
-
--- 
-Catalin
+>
+> With the above in mind,
+>
+> Acked-by: Yonghong Song <yhs@fb.com>
