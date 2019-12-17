@@ -2,256 +2,296 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 896B1122F92
-	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2019 16:02:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FD92122FA6
+	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2019 16:06:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728124AbfLQPCt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Dec 2019 10:02:49 -0500
-Received: from UCOL19PA34.eemsg.mail.mil ([214.24.24.194]:51342 "EHLO
-        UCOL19PA34.eemsg.mail.mil" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726560AbfLQPCt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Dec 2019 10:02:49 -0500
-X-EEMSG-check-017: 62778706|UCOL19PA34_ESA_OUT01.csd.disa.mil
-X-IronPort-AV: E=Sophos;i="5.69,325,1571702400"; 
-   d="scan'208";a="62778706"
-Received: from emsm-gh1-uea10.ncsc.mil ([214.29.60.2])
-  by UCOL19PA34.eemsg.mail.mil with ESMTP/TLS/DHE-RSA-AES256-SHA256; 17 Dec 2019 15:02:46 +0000
+        id S1727202AbfLQPGh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Dec 2019 10:06:37 -0500
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:36757 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727512AbfLQPGh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Dec 2019 10:06:37 -0500
+Received: by mail-lf1-f68.google.com with SMTP id n12so7216115lfe.3
+        for <bpf@vger.kernel.org>; Tue, 17 Dec 2019 07:06:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tycho.nsa.gov; i=@tycho.nsa.gov; q=dns/txt;
-  s=tycho.nsa.gov; t=1576594966; x=1608130966;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=M8vVOKFL7M0o9dNSY+1QS9XWVSEgualJYa5ILUoa1w8=;
-  b=ozyiAI+znvKptnDveIiXFZc5Cf77Vs4nbDYKTSMSd0Xu6CnIwzG1aGu/
-   r87DxKj7MjtUw1yY18ORJi8UDyOaYa5fDv7VtnPcUtu1dHk7xrg3E8iZz
-   MKlVlYMRi9RAQA5hfnUueDeUwG2TDcC0PyoOge+OPQleTVWZzXhJ1LCtu
-   mClMndZVqhG/28Gl3wj0DF8DbDv+hGTssiROmvybA7ooy1XCb/BC5SNoC
-   ra01Bthge0hRvQ7EQBv3VK0BdbJj4NSgEO4kK4dHCpQkB9ZI/cboI8fen
-   K4xf5OArpXkD+S78jk+W4I1sG6MCRl4Bt75bSdR/aoTquVZoskyllAPcu
-   w==;
-X-IronPort-AV: E=Sophos;i="5.69,325,1571702400"; 
-   d="scan'208";a="31183820"
-IronPort-PHdr: =?us-ascii?q?9a23=3A4JhWxRKuMEvgieyRbdmcpTZWNBhigK39O0sv0r?=
- =?us-ascii?q?FitYgVLvjyrarrMEGX3/hxlliBBdydt6sfzbCO7Ou+CSQp2tWoiDg6aptCVh?=
- =?us-ascii?q?sI2409vjcLJ4q7M3D9N+PgdCcgHc5PBxdP9nC/NlVJSo6lPwWB6nK94iQPFR?=
- =?us-ascii?q?rhKAF7Ovr6GpLIj8Swyuu+54Dfbx9HiTagb75+Ngu6oRnTu8UZgIZvKbs6xw?=
- =?us-ascii?q?fUrHdPZ+lY335jK0iJnxb76Mew/Zpj/DpVtvk86cNOUrj0crohQ7BAAzsoL2?=
- =?us-ascii?q?465MvwtRneVgSP/WcTUn8XkhVTHQfI6gzxU4rrvSv7sup93zSaPdHzQLspVz?=
- =?us-ascii?q?mu87tnRRn1gyocKTU37H/YhdBxjKJDoRKuuRp/w5LPYIqIMPZyZ77Rcc8GSW?=
- =?us-ascii?q?ZEWMteWTZBAoehZIURCeQPM/tTo43kq1cQqRayAA+hD/7txDBVnH/7xbA03f?=
- =?us-ascii?q?ovEQ/G3wIuEdwBv3vWo9rpO6kfSvy1wavSwDnfc/9b1zXw5Y7VeR4hu/GMWr?=
- =?us-ascii?q?dwfNLMx0kzCQzFllWQppLjPziIy+oNtnKU7+5kVe2xi28stgZ8oiOyycc3kY?=
- =?us-ascii?q?TJmoIUxUzE9SV+2oo1I8a4R1Rhbd6rF5tQqTiXOo1rSc0sRGFovTw1yrwAuZ?=
- =?us-ascii?q?OjeSgF0pInyhzFZ/yAaYiI7RTuX/uSLzdgnH9pZb2yihmo/UWg1+HwTNe43V?=
- =?us-ascii?q?lUoiZfj9XBsG0G2QbJ5cidUPR9+1+s2TOI1w/O9O5JOVs0la/HK545xb4wi4?=
- =?us-ascii?q?YTvVzDHiDonEX2i7ebdlk+9eiy6uTnf67mqoWdN49yhAH+Nb8uldKjDugiLg?=
- =?us-ascii?q?gPX3SU+eS71LH5+032XK5KgeEsnqncsZDaIdwXpq+/AwBLzoYu8wuzAjip3d?=
- =?us-ascii?q?gCnXQLMUhJdAyIgoT3IV3CPej0DfKljFStlDdryerGPrrkApjVNXjMjazhcK?=
- =?us-ascii?q?1h609c1AUzzddf64hSCrEaOv3/QEDxtNvGDhMhKQy73/7nCMlh1oMZQW+AGK?=
- =?us-ascii?q?uZP73dsFCW5uMjOfKDZJIItznnLfgl5PnujWEilF8ZfKmp24YXaX+iEvRnJU?=
- =?us-ascii?q?WZfWTjgtMbHWgWuQo+SfTgiEeeXj5Le3ayQ6U86ykjCI24EYfMWJqtgb2a0S?=
- =?us-ascii?q?e6GJ1WaHpGBUqRHnj2bYqLRu0AaCWIIs9uijYET6SuS5c91RGysw/306BoIf?=
- =?us-ascii?q?bR+iIGrp/j18Z65/fVlR4s8Tx4FcOd03uCT2tshGMHWyc23LxjoUx60lqD1K?=
- =?us-ascii?q?l4g/pXFdxU/P5JSBk1OoPcz+NgF9D+QB7OftCMSFy+WNWpHSkxTs4tw98Je0?=
- =?us-ascii?q?t9Gc+tjhbC3yawBb8Vlr+LBIEw8q3GxHXxI8d9y3Db1KgulVUmQ81PNXG4ia?=
- =?us-ascii?q?577QTcG4nJk0CBnaawaascxDLN9HuEzWeWvkFYVwlwUaPfUnAEfEfWqc725k?=
- =?us-ascii?q?PeT7+vD7QoLA1BxNWGKqtLbN3pkFpHSO3iONTYf2K+hWOwCQyUybOLaYrgY3?=
- =?us-ascii?q?8d0znFCEgYjwAT+m6LNRI5Bii8uWLeDTNuFVX1b0Py8Ol+tnK7Q1Q1zwGMc0?=
- =?us-ascii?q?1uyb619gQJivybTvMZxqgEtzs5qzVoAFa92MrbBMCbpwp9Z6hcYs0y4E1B1W?=
- =?us-ascii?q?3HswxxJJugL7pthlQGaQR4o1vu1wlrCoVHicUlt20lzAxyKa+D01NOaSmY3Z?=
- =?us-ascii?q?buNb3TMGX94AqvZLTN2lHe0daW/KgP5O4/q1X5swGjDlAi/Gl/09lJz3uc4Y?=
- =?us-ascii?q?3HDBIIXpLsVkY36gN6qqrBYiYn4oPbzmdjPbOzsj/Y1NIjHPElxQq4f9dDLK?=
- =?us-ascii?q?OEExf/E8gCB8ewM+ElhVypbhYaM+BI8a47JcWme+GH2KG2Jupvhi+mh3xd4I?=
- =?us-ascii?q?9hykKM6zZ8SunQ0pYe3f6YxASHWCnngVehqM/3nYREZDEUHmal1SfkA4tRbL?=
- =?us-ascii?q?VofYkXEWeuP9G3xtJmip7vXn5Y80SjB0kH2M+yYheSaUby3QhO2kQWu3Cnnj?=
- =?us-ascii?q?G4zzNsmTEzsqWfxDDOw/jldBcfJmFEXnJigknsIIWvlNAVQEioYBI0lBur4U?=
- =?us-ascii?q?b12bJbqL1jIGbJW0tHYy/2L2R6WKuqqrWCe9JP6I8vsShPUuS8ZlSaSqXnrB?=
- =?us-ascii?q?YBySPsAXZRxDAheDG2oJn2gxt6iGeFJnZpsHXZYd1wxQvY5NHEX/FR3SELRC?=
- =?us-ascii?q?15iTnRG1i9MMOl/dSSl5ffrO++U3itWYFUcSnu1YmArje05XV2AR2jmPC+gs?=
- =?us-ascii?q?PoERIg3i/91tllTyPIoQ3zYons0KS6PuZncVdyCFDg7Mp6H5l0kpEsi5EIxX?=
- =?us-ascii?q?gampKV8GIGkWf3LNVUwrjxbGENRTEV2NPa+gvl11dmLn2TxoL1TGmSwsxkZ9?=
- =?us-ascii?q?OieGMZxjo979xWCKeT9LFLhy91rUS3rA3LZ/hygykSyeE05H4Bg+EJuREtzi?=
- =?us-ascii?q?WeArATG0lVJijslxWO79Cjo6Rbfmevcb6s1EVgmdCtFq2NogZZWHzhYJctAT?=
- =?us-ascii?q?dw7tljMFLLyHDz7JvreNzQbdMTqx2UlRjAgvNWKJ0vjPoKgzRoOWbnsX0i0e?=
- =?us-ascii?q?47ggRk3Yums4ifN2Vt4KW5DwZbNjLrecwT4S3ijaFZnsaVxI2gApVhGi8MXJ?=
- =?us-ascii?q?vtTPKoDTcSue7gNwaUHz02sm2bFqbHHQ+D9EdmqGrCE5KxOHGRInkZzc5vRB?=
- =?us-ascii?q?aaJExYjwAUWCs1koQlGQCtwczraF156SwJ5l7kthtMzfplNwXwUmfbqwalcT?=
- =?us-ascii?q?M0SJmZLBpL8gFC/UDVMcqf7uN8BS1X44OuphSXKmOHfwRIEX0JWkucClD/IL?=
- =?us-ascii?q?mu/8XA8+ufBuakMvvOe66OqfFaV/eJw5KiyY9m/zeKNsWSMXhuFfw72kxfXX?=
- =?us-ascii?q?9nH8TVgSkASysSlyjVdc6UuA+8+jFrrsC46PnrXAPv5Y2SC7pdKNlv4A65jr?=
- =?us-ascii?q?ueN+6KhSZ5NTZZ2ooJxX/P1bcfwVoShD91ejmzHrQPqzTNQLjTmqBJFR4bbT?=
- =?us-ascii?q?18NM9S46I7xAlNNtbRisnp2b5gkv41F1BFWET6ms63YcwKIme9NE7IBUuQKr?=
- =?us-ascii?q?SGKiPEw9vtbaO/V7JQluNUuAO0uTqBFE/jJDuDnSHzVx+zKeFMkD2bPBtGtY?=
- =?us-ascii?q?G5cxZtD3XjTd3/Zh24LtB3lzs2zqMwhn7RK24cPiZzc1lXor2T8yxYmPN/FH?=
- =?us-ascii?q?JF7nZ/KumEgSmZ5fHCKpkKqftrHjh0l+VC7XQ+yrtV6jxERfNslCvKsNFuuV?=
- =?us-ascii?q?+mnvCSyjp8ThVOsC1LiZmVvUVtJ6rZ7INMWXXa8xIX62WfFRAKq8FiCt31tK?=
- =?us-ascii?q?Ba0sLPm77rKDde79LU+tMRB8nSKMKbLnUhNQPlGDHaDAoKVjOrMWDfh1dBkP?=
- =?us-ascii?q?GJ7HGVoII6pYbyl5UTVLBbT181Fu8dCkR9BtACJ413Xjw8m76BkMEI/Wa+rA?=
- =?us-ascii?q?XWRMhCpZ/HWeiSDuvgKDaWlrREYQUHwa/2LYQXN4361FZuZUV9nITPA0DQR8?=
- =?us-ascii?q?xCojV9bg8op0VA6GN+Tmo120LqbgOt4WITGuWunhEslAt+YOIt9Dj37lc5PV?=
- =?us-ascii?q?XGvjc/kE40md/9mzCebCbxLLusXYFREyf7rFAxMp3gTgZrYg29g1ZkOC3HR7?=
- =?us-ascii?q?1Plbtgc35kiAvGtZtIA/5cQrVOYAUMyvGPe/UozVNcpz2jxU9G4+vFFJRjmB?=
- =?us-ascii?q?IycZG2tXJA2hljY8IuKKzOK6pG0EJQiriNviC2zOAxxhERJ0IX/GOVYi4It1?=
- =?us-ascii?q?QCNqM6KCqw4uxs9QuCliNHeGgNUfoqv/1r9lslO+uc1i7vzqBMKl6qOuybLq?=
- =?us-ascii?q?OZoHTAldWSTlM310IIk1NK8qNt0cs5dEqUTU8vn/OtEEEgMcfSJBAdRdde/X?=
- =?us-ascii?q?7QejjG5ezJzIJ4LsO3C+zhS+yJqo4Qg0S5DEAoGZgB6oIKGZz6lAngINvqNv?=
- =?us-ascii?q?Y3yBcp/xjxLR3RFPlVdQiZuDYBrdu2wJJ+0c9aPD5LRS1UKyO+4rrQ7iQjmu?=
- =?us-ascii?q?SKWNcxKnsXFq4JMnV+DMSxniNxvHlaCjSzlOUDx17Gpx76qSOYKT74adN5LK?=
- =?us-ascii?q?ORZBVjD/ms9Dk/+rTwglnSpNGWbWPzM9UkvN7M9OcTj5KGDe5EC7h7r0rY3Y?=
- =?us-ascii?q?JfQjbiB2zGF9/zIZnzdo0lRdj1DGuqFF25lz8xCcz2OYDpZuKKhgbuTJ0StI?=
- =?us-ascii?q?CbwDElOMmVEjAYBgc2pucf6aY6bgoGKdJvYxnvsQ0lcai2IBuZ1Nioa2KsLy?=
- =?us-ascii?q?ZGCfhZ0ei+IbdQynxoJqWgz3c6T549ife2708lRZcWgxWYzvGmLcEKSy//AH?=
- =?us-ascii?q?1SfEPRpDQ4v2lnKus2hOw4xUWM+XAYPiCGdaRSdGVeuM87BE+VPz0iA3Ekb1?=
- =?us-ascii?q?yRl4zO5kirxb9Eu2N3ktBW2OhEtjDes4XFbTS3U6yuqJnJ+34qYN4mi658K4?=
- =?us-ascii?q?ruJo2NrprFnj3ZQ9/XqALTFGaCHude0v1ZKyFVWuNBgilxIcUbvZdawVE4U8?=
- =?us-ascii?q?03YbtVB/9o7pWrYjptACpa4CsdWpmF1TpK1uKk1pPXkhOdapErNloFvNNLn4?=
- =?us-ascii?q?1ZGxV7eCwT7I+qU4HHkSfQUWURLwo77Q1I4BMG0IR3e7ahqKjBSZJXgxtRue?=
- =?us-ascii?q?h1SWOfFJxv7UH6UUmQiF31SbOmieP/mUp5xenhw5EgUx52FEZZyvwewkAhM7?=
- =?us-ascii?q?xmA7IbvofXvDuFbwbxtSTmz+7wd3dLzsiBTEH1FIrIsyLHVyQY/XAFDdtUxG?=
- =?us-ascii?q?r3CYUZkw0/br0i4lpLPtb1KQ7F+zU4ytExTPGDXsexygNg9CxXSg=3D=3D?=
-X-IPAS-Result: =?us-ascii?q?A2BKAACQ7Phd/wHyM5BlHAEBAQEBBwEBEQEEBAEBgWwFA?=
- =?us-ascii?q?QELAYFzgRhVIBIqhASJA4ZzBAaBN4lqj0qBewkBAQEBAQEBAQErDAEBhEACg?=
- =?us-ascii?q?jw2Bw4CEAEBAQQBAQEBAQUDAQFshTcMgjspAYJ6AQUOFRUtFBALGAICJgICV?=
- =?us-ascii?q?wYBDAYCAQGCXz8BglIlD64agTKEDQEBgUCDQIFIgQ4oAYlOgmN5gQeBOA+CX?=
- =?us-ascii?q?T6CZAOEcoJeBI94hxRGlzOCPoJChG2OWwYbgkN0hwKQEC2OIIFGhwqTfgUtg?=
- =?us-ascii?q?VgrCAIYCCEPgycJFjERFI1KiE+FCAFUIwMwAZF/AQE?=
-Received: from tarius.tycho.ncsc.mil (HELO tarius.infosec.tycho.ncsc.mil) ([144.51.242.1])
-  by EMSM-GH1-UEA10.NCSC.MIL with ESMTP; 17 Dec 2019 15:02:44 +0000
-Received: from moss-pluto.infosec.tycho.ncsc.mil (moss-pluto [192.168.25.131])
-        by tarius.infosec.tycho.ncsc.mil (8.14.7/8.14.4) with ESMTP id xBHF1mb0066955;
-        Tue, 17 Dec 2019 10:01:51 -0500
-Subject: Re: [PATCH v3 1/7] capabilities: introduce CAP_SYS_PERFMON to kernel
- and user space
-To:     Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "jani.nikula@linux.intel.com" <jani.nikula@linux.intel.com>,
-        "joonas.lahtinen@linux.intel.com" <joonas.lahtinen@linux.intel.com>,
-        "rodrigo.vivi@intel.com" <rodrigo.vivi@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Serge Hallyn <serge@hallyn.com>,
-        James Morris <jmorris@namei.org>,
-        Casey Schaufler <casey@schaufler-ca.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
-        Stephane Eranian <eranian@google.com>,
-        Igor Lubashev <ilubashe@akamai.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Jann Horn <jannh@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "selinux@vger.kernel.org" <selinux@vger.kernel.org>,
-        linux-kernel@vger.kernel.org,
-        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
-        intel-gfx@lists.freedesktop.org,
-        Brendan Gregg <bgregg@netflix.com>, songliubraving@fb.com,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-References: <b175f283-d256-e37e-f447-6ba4ab4f3d3a@linux.intel.com>
- <bd8adfde-f562-0e56-75aa-371c5354f350@linux.intel.com>
-From:   Stephen Smalley <sds@tycho.nsa.gov>
-Message-ID: <a9542dcd-6f02-92eb-bd97-8aa839e9036f@tycho.nsa.gov>
-Date:   Tue, 17 Dec 2019 10:02:25 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=EY4jLBMvLeQadan6EjqkhpxwO29/0R68SZ9o81QWu58=;
+        b=uJYXeeWy4RYFOFqEf17xl7gnVK/0FgU+AhTHa2PKK69M8wC33ddO3IaM4waNUxcB1h
+         8hOR0yPIkhHgkLTPAufPHrulROIclWok6hjHvHnIQ1bAsIBH/O0ZLGsLL5Y8ABBZTvIP
+         2+xJdN5bz0i5sz7wKy8coKutJkhiTEfpXIn7o=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=EY4jLBMvLeQadan6EjqkhpxwO29/0R68SZ9o81QWu58=;
+        b=CQd0dnS6KDj0Yx8KKJu2DnBS5weX6IxZHAaF94vTbY6zdJ13QlfdB4MWLxO3W6dbqL
+         fUgT9bAu4JysMJUllX5unSRO0IkBoERmEjmna6EHagkASJ7ev8ukJgM9TcV32YjQQpJB
+         o3ssrmujk8XmbtF0arIUOZIx2KdsfTsVHwV+VlYRx+NO+AUPS+iCM+YT13Fjmlmt0Ga2
+         r/MDqn1AhXFGrifmCj33fm/nzXB3Zt+sLb2tKaRiXb0+yORTnSG68MkJZNm3gy/3aq90
+         B7r4vSHJ3EOu68QO3Fxe9iUBZkLZSPUHiFaDgPP5ima0Pn/1rvxr2PgtswxAze0yrmrz
+         y7YA==
+X-Gm-Message-State: APjAAAXmSSY07V+aXpYfLRPMF6N1LQFygP/FBOtUCg4a7yOfuglU0gLU
+        ZRkDRCvdLGdQ65aeRf7NRBtGnw==
+X-Google-Smtp-Source: APXvYqxF/+Ng+orHICPm7K+4KlpIt9y0iuxkDQbUEY4m5+eaJwNmzU/PPTc4L0ZLfWBx3JLHMNRJcA==
+X-Received: by 2002:ac2:4834:: with SMTP id 20mr2791723lft.166.1576595193577;
+        Tue, 17 Dec 2019 07:06:33 -0800 (PST)
+Received: from cloudflare.com ([176.221.114.230])
+        by smtp.gmail.com with ESMTPSA id g6sm12889267lja.10.2019.12.17.07.06.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Dec 2019 07:06:32 -0800 (PST)
+References: <20191123110751.6729-1-jakub@cloudflare.com> <20191123110751.6729-5-jakub@cloudflare.com> <20191125223845.6t6xoqcwcqxuqbdf@kafai-mbp> <87ftiaocp2.fsf@cloudflare.com> <20191126171607.pzrg5qhbavh7enwh@kafai-mbp.dhcp.thefacebook.com> <87d0deo57q.fsf@cloudflare.com> <87sglsfdda.fsf@cloudflare.com> <20191211172051.clnwh5n5vdeovayy@kafai-mbp> <87pngtg4x4.fsf@cloudflare.com> <20191212192354.umerwea5z4fpwbkq@kafai-mbp>
+User-agent: mu4e 1.1.0; emacs 26.2
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Martin Lau <kafai@fb.com>
+Cc:     John Fastabend <john.fastabend@gmail.com>,
+        "bpf\@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev\@vger.kernel.org" <netdev@vger.kernel.org>,
+        "kernel-team\@cloudflare.com" <kernel-team@cloudflare.com>
+Subject: Re: [PATCH bpf-next 4/8] bpf, sockmap: Don't let child socket inherit psock or its ops on copy
+In-reply-to: <20191212192354.umerwea5z4fpwbkq@kafai-mbp>
+Date:   Tue, 17 Dec 2019 16:06:31 +0100
+Message-ID: <87k16vf0ug.fsf@cloudflare.com>
 MIME-Version: 1.0
-In-Reply-To: <bd8adfde-f562-0e56-75aa-371c5354f350@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 12/16/19 2:58 PM, Alexey Budankov wrote:
-> 
-> Introduce CAP_SYS_PERFMON capability devoted to secure system performance
-> monitoring and observability so that CAP_SYS_PERFMON would assist
-> CAP_SYS_ADMIN capability in its governing role for perf_events, i915_perf
-> and other subsystems of the kernel.
-> 
-> CAP_SYS_PERFMON intends to harden system security and integrity during
-> system performance monitoring and observability by decreasing attack surface
-> that is available to CAP_SYS_ADMIN privileged processes.
-> 
-> CAP_SYS_PERFMON intends to take over CAP_SYS_ADMIN credentials related to
-> system performance monitoring and observability and balance amount of
-> CAP_SYS_ADMIN credentials in accordance with the recommendations provided
-> in the man page for CAP_SYS_ADMIN [1]: "Note: this capability is overloaded;
-> see Notes to kernel developers, below."
-> 
-> [1] http://man7.org/linux/man-pages/man7/capabilities.7.html
-> 
-> Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
-> ---
->   include/linux/capability.h          | 1 +
->   include/uapi/linux/capability.h     | 8 +++++++-
->   security/selinux/include/classmap.h | 4 ++--
->   3 files changed, 10 insertions(+), 3 deletions(-)
-> 
-> diff --git a/include/linux/capability.h b/include/linux/capability.h
-> index ecce0f43c73a..6342502c4c2a 100644
-> --- a/include/linux/capability.h
-> +++ b/include/linux/capability.h
-> @@ -251,6 +251,7 @@ extern bool privileged_wrt_inode_uidgid(struct user_namespace *ns, const struct
->   extern bool capable_wrt_inode_uidgid(const struct inode *inode, int cap);
->   extern bool file_ns_capable(const struct file *file, struct user_namespace *ns, int cap);
->   extern bool ptracer_capable(struct task_struct *tsk, struct user_namespace *ns);
-> +#define perfmon_capable() (capable(CAP_SYS_PERFMON) || capable(CAP_SYS_ADMIN))
+On Thu, Dec 12, 2019 at 08:23 PM CET, Martin Lau wrote:
+> On Thu, Dec 12, 2019 at 12:27:19PM +0100, Jakub Sitnicki wrote:
+>> On Wed, Dec 11, 2019 at 06:20 PM CET, Martin Lau wrote:
+>> > On Tue, Dec 10, 2019 at 03:45:37PM +0100, Jakub Sitnicki wrote:
+>> >> John, Martin,
+>> >>
+>> >> On Tue, Nov 26, 2019 at 07:36 PM CET, Jakub Sitnicki wrote:
+>> >> > On Tue, Nov 26, 2019 at 06:16 PM CET, Martin Lau wrote:
+>> >> >> On Tue, Nov 26, 2019 at 04:54:33PM +0100, Jakub Sitnicki wrote:
+>> >> >>> On Mon, Nov 25, 2019 at 11:38 PM CET, Martin Lau wrote:
+>> >> >>> > On Sat, Nov 23, 2019 at 12:07:47PM +0100, Jakub Sitnicki wrote:
+>> >> >>> > [ ... ]
+>> >> >>> >
+>> >> >>> >> @@ -370,6 +378,11 @@ static inline void sk_psock_restore_proto(struct sock *sk,
+>> >> >>> >>  			sk->sk_prot = psock->sk_proto;
+>> >> >>> >>  		psock->sk_proto = NULL;
+>> >> >>> >>  	}
+>> >> >>> >> +
+>> >> >>> >> +	if (psock->icsk_af_ops) {
+>> >> >>> >> +		icsk->icsk_af_ops = psock->icsk_af_ops;
+>> >> >>> >> +		psock->icsk_af_ops = NULL;
+>> >> >>> >> +	}
+>> >> >>> >>  }
+>> >> >>> >
+>> >> >>> > [ ... ]
+>> >> >>> >
+>> >> >>> >> +static struct sock *tcp_bpf_syn_recv_sock(const struct sock *sk,
+>> >> >>> >> +					  struct sk_buff *skb,
+>> >> >>> >> +					  struct request_sock *req,
+>> >> >>> >> +					  struct dst_entry *dst,
+>> >> >>> >> +					  struct request_sock *req_unhash,
+>> >> >>> >> +					  bool *own_req)
+>> >> >>> >> +{
+>> >> >>> >> +	const struct inet_connection_sock_af_ops *ops;
+>> >> >>> >> +	void (*write_space)(struct sock *sk);
+>> >> >>> >> +	struct sk_psock *psock;
+>> >> >>> >> +	struct proto *proto;
+>> >> >>> >> +	struct sock *child;
+>> >> >>> >> +
+>> >> >>> >> +	rcu_read_lock();
+>> >> >>> >> +	psock = sk_psock(sk);
+>> >> >>> >> +	if (likely(psock)) {
+>> >> >>> >> +		proto = psock->sk_proto;
+>> >> >>> >> +		write_space = psock->saved_write_space;
+>> >> >>> >> +		ops = psock->icsk_af_ops;
+>> >> >>> > It is not immediately clear to me what ensure
+>> >> >>> > ops is not NULL here.
+>> >> >>> >
+>> >> >>> > It is likely I missed something.  A short comment would
+>> >> >>> > be very useful here.
+>> >> >>>
+>> >> >>> I can see the readability problem. Looking at it now, perhaps it should
+>> >> >>> be rewritten, to the same effect, as:
+>> >> >>>
+>> >> >>> static struct sock *tcp_bpf_syn_recv_sock(...)
+>> >> >>> {
+>> >> >>> 	const struct inet_connection_sock_af_ops *ops = NULL;
+>> >> >>>         ...
+>> >> >>>
+>> >> >>>         rcu_read_lock();
+>> >> >>> 	psock = sk_psock(sk);
+>> >> >>> 	if (likely(psock)) {
+>> >> >>> 		proto = psock->sk_proto;
+>> >> >>> 		write_space = psock->saved_write_space;
+>> >> >>> 		ops = psock->icsk_af_ops;
+>> >> >>> 	}
+>> >> >>> 	rcu_read_unlock();
+>> >> >>>
+>> >> >>>         if (!ops)
+>> >> >>> 		ops = inet_csk(sk)->icsk_af_ops;
+>> >> >>>         child = ops->syn_recv_sock(sk, skb, req, dst, req_unhash, own_req);
+>> >> >>>
+>> >> >>> If psock->icsk_af_ops were NULL, it would mean we haven't initialized it
+>> >> >>> properly. To double check what happens here:
+>> >> >> I did not mean the init path.  The init path is fine since it init
+>> >> >> eveything on psock before publishing the sk to the sock_map.
+>> >> >>
+>> >> >> I was thinking the delete path (e.g. sock_map_delete_elem).  It is not clear
+>> >> >> to me what prevent the earlier pasted sk_psock_restore_proto() which sets
+>> >> >> psock->icsk_af_ops to NULL from running in parallel with
+>> >> >> tcp_bpf_syn_recv_sock()?  An explanation would be useful.
+>> >> >
+>> >> > Ah, I misunderstood. Nothing prevents the race, AFAIK.
+>> >> >
+>> >> > Setting psock->icsk_af_ops to null on restore and not checking for it
+>> >> > here was a bad move on my side.  Also I need to revisit what to do about
+>> >> > psock->sk_proto so the child socket doesn't end up with null sk_proto.
+>> >> >
+>> >> > This race should be easy enough to trigger. Will give it a shot.
+>> >>
+>> >> I've convinced myself that this approach is racy beyond repair.
+>> >>
+>> >> Once syn_recv_sock() has returned it is too late to reset the child
+>> >> sk_user_data and restore its callbacks. It has been already inserted
+>> >> into ehash and ingress path can invoke its callbacks.
+>> >>
+>> >> The race can be triggered with with a reproducer where:
+>> >>
+>> >> thread-1:
+>> >>
+>> >>         p = accept(s, ...);
+>> >>         close(p);
+>> >>
+>> >> thread-2:
+>> >>
+>> >> 	bpf_map_update_elem(mapfd, &key, &s, BPF_NOEXIST);
+>> >> 	bpf_map_delete_elem(mapfd, &key);
+>> >>
+>> >> This a dead-end because we can't have the parent and the child share the
+>> >> psock state. Even though psock itself is refcounted, and potentially we
+>> >> could grab a reference before cloning the parent, link into the map that
+>> >> psock holds is not.
+>> >>
+>> >> Two ways out come to mind. Both involve touching TCP code, which I was
+>> >> hoping to avoid:
+>> >>
+>> >> 1) reset sk_user_data when initializing the child
+>> >>
+>> >>    This is problematic because tcp_bpf callbacks are not designed to
+>> >>    handle sockets with no psock _and_ with overridden sk_prot
+>> >>    callbacks. (Although, I think they could if the fallback was directly
+>> >>    on {tcp,tcpv6}_prot based on socket domain.)
+>> >>
+>> >>    Also, there are other sk_user_data users like DRBD which rely on
+>> >>    sharing the sk_user_data pointer between parent and child, if I read
+>> >>    the code correctly [0]. If anything, clearing the sk_user_data on
+>> >>    clone would have to be guarded by a flag.
+>> > Can the copy/not-to-copy sk_user_data decision be made in
+>> > sk_clone_lock()?
+>>
+>> Yes, this could be pushed down to sk_clone_lock(), where we do similar
+>> work (reset sk_reuseport_cb and clone bpf_sk_storage):
+> aha.  I missed your eariler "clearing the sk_user_data on clone would have
+> to be guarded by a flag..." part.  It turns out we were talking the same
+> thing on (1).  sock_flag works better if there is still bit left (and it
+> seems there is one),  although I was thinking more like adding
+> something (e.g. a func ptr) to 'struct proto' to mangle sk_user_data
+> before returning newsk....but not sure this kind of logic
+> belongs to 'struct proto'
 
-I think making it a static inline bool function instead of a macro would 
-be preferred?
+Sorry for late reply.
 
-Otherwise,
-Acked-by: Stephen Smalley <sds@tycho.nsa.gov>
+We have 4 bits left by my count. The multi-line comment for SOCK_NOFCS
+is getting in the way of counting them line-for-bit.
 
->   
->   /* audit system wants to get cap info from files as well */
->   extern int get_vfs_caps_from_disk(const struct dentry *dentry, struct cpu_vfs_cap_data *cpu_caps);
-> diff --git a/include/uapi/linux/capability.h b/include/uapi/linux/capability.h
-> index 240fdb9a60f6..98e03cc76c7c 100644
-> --- a/include/uapi/linux/capability.h
-> +++ b/include/uapi/linux/capability.h
-> @@ -366,8 +366,14 @@ struct vfs_ns_cap_data {
->   
->   #define CAP_AUDIT_READ		37
->   
-> +/*
-> + * Allow system performance and observability privileged operations
-> + * using perf_events, i915_perf and other kernel subsystems
-> + */
-> +
-> +#define CAP_SYS_PERFMON		38
->   
-> -#define CAP_LAST_CAP         CAP_AUDIT_READ
-> +#define CAP_LAST_CAP         CAP_SYS_PERFMON
->   
->   #define cap_valid(x) ((x) >= 0 && (x) <= CAP_LAST_CAP)
->   
-> diff --git a/security/selinux/include/classmap.h b/security/selinux/include/classmap.h
-> index 7db24855e12d..bae602c623b0 100644
-> --- a/security/selinux/include/classmap.h
-> +++ b/security/selinux/include/classmap.h
-> @@ -27,9 +27,9 @@
->   	    "audit_control", "setfcap"
->   
->   #define COMMON_CAP2_PERMS  "mac_override", "mac_admin", "syslog", \
-> -		"wake_alarm", "block_suspend", "audit_read"
-> +		"wake_alarm", "block_suspend", "audit_read", "sys_perfmon"
->   
-> -#if CAP_LAST_CAP > CAP_AUDIT_READ
-> +#if CAP_LAST_CAP > CAP_SYS_PERFMON
->   #error New capability defined, please update COMMON_CAP2_PERMS.
->   #endif
->   
-> 
+A callback invoked on socket clone is something I was considering too.
+I'm not sure either where it belongs. At risk of being too use-case
+specific, perhaps it could live together with sk_user_data and sk_prot,
+which it would mangle on sk_clone_lock():
 
+struct sock {
+        ...
+	void			*sk_user_data;
+	void			(*sk_clone)(struct sock *sk,
+					    struct sock *newsk);
+        ...
+}
+
+But, I feel adding a new sock field just for this wouldn't be justified.
+I can get by with a sock flag. Unless we have other uses for it?
+
+>
+>>
+>> 	/* User data can hold reference. Child must not
+>> 	 * inherit the pointer without acquiring a reference.
+>> 	 */
+>> 	if (sock_flag(sk, SOCK_OWNS_USER_DATA)) {
+>> 		sock_reset_flag(newsk, SOCK_OWNS_USER_DATA);
+>> 		RCU_INIT_POINTER(newsk->sk_user_data, NULL);
+>> 	}
+>>
+>> I belive this would still need to be guarded by a flag.  Do you see
+>> value in clearing child sk_user_data on clone as opposed to dealying
+>> that work until accept() time?
+> It seems to me clearing things up front at the very beginning is more
+> straight forward, such that it does not have to worry about the
+> sk_user_data may be used in a wrong way before it gets a chance
+> to be cleared in accept().
+>
+> Just something to consider, if it is obvious that there is no hole in
+> clearing it in accept(), it is fine too.
+
+Just when I thought I could get away with lazily clearing the
+sk_user_data at accept() time, it occurred to me that it is not enough.
+
+Listening socket could get deleted from sockmap before a child socket
+that inherited a copy of sk_user_data pointer gets accept()'ed. In such
+scenario the pointer would not get NULL'ed on accept(), because
+listening socket would have it's sk_prot->accept restored by then.
+
+I will need that flag after all...
+
+-jkbs
+
+>
+>> >>
+>> >> 2) Restore sk_prot callbacks on clone to {tcp,tcpv6}_prot
+>> >>
+>> >>    The simpler way out. tcp_bpf callbacks never get invoked on the child
+>> >>    socket so the copied psock reference is no longer a problem. We can
+>> >>    clear the pointer on accept().
+>> >>
+>> >>    So far I wasn't able poke any holes in it and it comes down to
+>> >>    patching tcp_create_openreq_child() with:
+>> >>
+>> >> 	/* sk_msg and ULP frameworks can override the callbacks into
+>> >> 	 * protocol. We don't assume they are intended to be inherited
+>> >> 	 * by the child. Frameworks can re-install the callbacks on
+>> >> 	 * accept() if needed.
+>> >> 	 */
+>> >> 	WRITE_ONCE(newsk->sk_prot, sk->sk_prot_creator);
+>> >>
+>> >>    That's what I'm going with for v2.
+>> >>
+>> >> Open to suggestions.
+>> >>
+>> >> Thanks,
+>> >> Jakub
+>> >>
+>> >> BTW. Reading into kTLS code, I noticed it has been limited down to just
+>> >> established sockets due to the same problem I'm struggling with here:
+>> >>
+>> >> static int tls_init(struct sock *sk)
+>> >> {
+>> >> ...
+>> >> 	/* The TLS ulp is currently supported only for TCP sockets
+>> >> 	 * in ESTABLISHED state.
+>> >> 	 * Supporting sockets in LISTEN state will require us
+>> >> 	 * to modify the accept implementation to clone rather then
+>> >> 	 * share the ulp context.
+>> >> 	 */
+>> >> 	if (sk->sk_state != TCP_ESTABLISHED)
+>> >> 		return -ENOTCONN;
+>> >>
+>> >> [0] https://urldefense.proofpoint.com/v2/url?u=https-3A__elixir.bootlin.com_linux_v5.5-2Drc1_source_drivers_block_drbd_drbd-5Freceiver.c-23L682&d=DwIBAg&c=5VD0RTtNlTh3ycd41b3MUw&r=VQnoQ7LvghIj0gVEaiQSUw&m=z2Cz1gEcqiw-8YqVOluxlUHh_CBs6PJWQN2vgirOyFk&s=WAiM0asZN0OkqrW02xm2mCMIzWhKQCc3KiY7pzMKNg4&e=
