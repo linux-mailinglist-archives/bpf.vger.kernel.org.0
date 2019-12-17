@@ -2,128 +2,263 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F3B1D122710
-	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2019 09:52:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31B911227D6
+	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2019 10:44:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726571AbfLQIwM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Dec 2019 03:52:12 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:56276 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725893AbfLQIwM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Dec 2019 03:52:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1576572730;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2sfzAo5vBd9xBpXpg/m9erufLQX8/hEzWPbggzsXBlI=;
-        b=E0Pta9IuuNopFvNijTKjpCc7EMVRDfk/MH2lGveeCkuUbzF2fmqI7KSYv+EhukB8R+8vZ7
-        l1sCl7yAIQmZaebLjgrMCH/TIO6v4i9xt8RR6zgB/uJoSa6DylVWIN/5yqZfNkzAzIbxKK
-        8xIDQ5gwoPEmgxVcI3x44pd1f3TMXOI=
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
- [209.85.167.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-59-y_NiNpLcPQC7qYaL7RmNpw-1; Tue, 17 Dec 2019 03:52:06 -0500
-X-MC-Unique: y_NiNpLcPQC7qYaL7RmNpw-1
-Received: by mail-lf1-f69.google.com with SMTP id x23so929394lfc.5
-        for <bpf@vger.kernel.org>; Tue, 17 Dec 2019 00:52:06 -0800 (PST)
+        id S1726730AbfLQJoW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Dec 2019 04:44:22 -0500
+Received: from mail-vs1-f68.google.com ([209.85.217.68]:43876 "EHLO
+        mail-vs1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725870AbfLQJoW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Dec 2019 04:44:22 -0500
+Received: by mail-vs1-f68.google.com with SMTP id x4so6046234vsx.10;
+        Tue, 17 Dec 2019 01:44:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=H/5NcrJGu3CjoG+hc50b8vgyXhwzQCm3cF8uGW+Z5Dw=;
+        b=uAfULoxiQye70sBlIeX9wo8ItlYRNp8GDLUjMKQLKTkQUT4gA+brV9mHgprqClssE/
+         IbD+VFAXW6549zx14sozJkFVFEXM3hkGC/iVQ8uuW8O3wNX0Y7T82teUyfaUPl2chLla
+         mx2HVDfx2iitbUdHSZIcNj3ED9dYMERTRuFCCg5cgqXUnax1m5KTk6tShrk8n4gnx0rH
+         rWkojdcQbuZq38N9FnvZU7lHcXosAZYOzaoNVaiHrgPvig5fGfEWjI+e+xjg1nHavnFF
+         bu2G9xHdnfzzjj+PSUxpNVLy05pwibRS7EvV1JuhZYqVCyifRulry+rhNt8VULGW+ap2
+         cIOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=2sfzAo5vBd9xBpXpg/m9erufLQX8/hEzWPbggzsXBlI=;
-        b=d5oq2P2B/MJWD6ZGmS28vVeqHg5AEkUjH/nhWz+x52LcLFwAPm8yIs8QfUzGhvqxfW
-         83TBsrBDFPf7DP/tCTYaIjyhq0pQSTrL/p+7blzyEop52N9MljheSZIUhyQ5lRFSXYK4
-         TkRXKsmHFXDynZuPPHftLMtRxxH3YFBFaFkNUyf6onCXMEndkB7t/Kvw72fFuOZEJfQi
-         RC5dnfPSWhUeLgI0PjLYY0oDCAELBSbT3p583yeU/umOHWlcE6XI64VFbMR9pR7hZ77f
-         UKPR2RHlEmHQGJpLXcLkI6OZF9k9plUFCDbTt7RC8jVsLH+wHGaVRODNw/5A+3CgHOBg
-         G7Iw==
-X-Gm-Message-State: APjAAAUdp7zu3fOdTgrbGWQOx9Cym9JhFOj/J7mVxrqgEfTUNqSyylKN
-        0F30w82rPr1J9vm3B3l+VIHPIGSOr7lLjkMdPqAb4zFkKdth10EqymHjXIQkUlwus2PNhMHg8Kb
-        +KUty2CuGIQtO
-X-Received: by 2002:ac2:4c98:: with SMTP id d24mr2006037lfl.138.1576572724916;
-        Tue, 17 Dec 2019 00:52:04 -0800 (PST)
-X-Google-Smtp-Source: APXvYqzUTXfP3gC+bSm0puS7McJoc6U2zWJVUpu+u+gPeGHHrQPXQVoIPgkHXF9gVHxdF264lxcjbw==
-X-Received: by 2002:ac2:4c98:: with SMTP id d24mr2006024lfl.138.1576572724703;
-        Tue, 17 Dec 2019 00:52:04 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id i2sm10308240lfl.20.2019.12.17.00.52.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Dec 2019 00:52:04 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 0265C1800B3; Tue, 17 Dec 2019 09:52:02 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        =?utf-8?B?QmrDtnJu?= =?utf-8?B?IFTDtnBlbA==?= 
-        <bjorn.topel@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Ido Schimmel <idosch@idosch.org>
-Subject: Re: [RFC PATCH bpf-next] xdp: Add tracepoint on XDP program return
-In-Reply-To: <20191217005944.s3mayy473ldlnldl@ast-mbp.dhcp.thefacebook.com>
-References: <20191216152715.711308-1-toke@redhat.com> <CAJ+HfNhYG_hzuFzX5sAH7ReotLtZWTP_9D2jA_iVMg+jUtXXCw@mail.gmail.com> <20191217005944.s3mayy473ldlnldl@ast-mbp.dhcp.thefacebook.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 17 Dec 2019 09:52:02 +0100
-Message-ID: <87h81z8hcd.fsf@toke.dk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=H/5NcrJGu3CjoG+hc50b8vgyXhwzQCm3cF8uGW+Z5Dw=;
+        b=ZmnwpCvrVvLPIM7/V9TNB/e/hSllKat7WTuSJ/U8Bzz11NBECf9oA3iVyvBjrqkvDq
+         E2tfEqayHV28TywFzM6hEOiDNRnrMsQAq9Hd2JDxTkTajkzn2cE55r2QFfQlgUrGmFyz
+         KxeDym+WETksirR+0YN73vwUgHq4en4wOcQvqvGbUBHj7/bDDb//BFrYASdgDMhBdX13
+         URp3S/1qTK0494HQZrhOEn7pxM2Fb6rxNME4m57uZOi0XUdDzPDhcgD/MxbxAJgvp5vz
+         /VR5+1RirQbX8418pCJeF4t0PzkCh1a82MhTxfTOy3+MWo6h9tsHNIYK2UUUbVZL7b7+
+         iEjw==
+X-Gm-Message-State: APjAAAUkHQtr8uvAUwhlwoFTbrn8LejrpVyhwlaDcjzuPAwAtMkrJnJk
+        gsnF5wJCNZzk2tm8/QUwSlx9mGsaLrFg0bDyHt4=
+X-Google-Smtp-Source: APXvYqy+3+fxVvyCQPgbavAlnkEPcV1KXs36vzU/hAeaEnOLVZzzFgoygtXfvYMGEddBXoz9zQH44Zblpjw7ZZh3KPw=
+X-Received: by 2002:a67:ed07:: with SMTP id l7mr2153176vsp.47.1576575860599;
+ Tue, 17 Dec 2019 01:44:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <cover.1576381511.git.ethercflow@gmail.com> <088f1485865016d639cadc891957918060261405.1576381512.git.ethercflow@gmail.com>
+ <737b90af-aa51-bd7d-8f68-b68050cbb028@fb.com> <CABtjQmZtzZT+OmZCn=eL9pvTeeCQ+TzKUMGgFJcGzwJDqyk6vw@mail.gmail.com>
+ <71c53be6-add4-2557-bc8f-8acb8e4a2f39@fb.com>
+In-Reply-To: <71c53be6-add4-2557-bc8f-8acb8e4a2f39@fb.com>
+From:   Wenbo Zhang <ethercflow@gmail.com>
+Date:   Tue, 17 Dec 2019 17:44:09 +0800
+Message-ID: <CABtjQmYOQy05W8PfK1d--cdWu7hkTGbkm_4gEZp8HBKNPfPddQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v12 2/2] selftests/bpf: test for
+ bpf_get_file_path() from tracepoint
+To:     Yonghong Song <yhs@fb.com>
+Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "andrii.nakryiko@gmail.com" <andrii.nakryiko@gmail.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+> The kernel will actually have 8 bytes of memory to store fd
+> based on trace_event_raw_sys_enter.
 
-> On Mon, Dec 16, 2019 at 07:17:59PM +0100, Bj=C3=B6rn T=C3=B6pel wrote:
->> On Mon, 16 Dec 2019 at 16:28, Toke H=C3=B8iland-J=C3=B8rgensen <toke@red=
-hat.com> wrote:
->> >
->> > This adds a new tracepoint, xdp_prog_return, which is triggered at eve=
-ry
->> > XDP program return. This was first discussed back in August[0] as a wa=
-y to
->> > hook XDP into the kernel drop_monitor framework, to have a one-stop pl=
-ace
->> > to find all packet drops in the system.
->> >
->> > Because trace/events/xdp.h includes filter.h, some ifdef guarding is n=
-eeded
->> > to be able to use the tracepoint from bpf_prog_run_xdp(). If anyone ha=
-s any
->> > ideas for how to improve on this, please to speak up. Sending this RFC
->> > because of this issue, and to get some feedback from Ido on whether th=
-is
->> > tracepoint has enough data for drop_monitor usage.
->> >
->>=20
->> I get that it would be useful, but can it be solved with BPF tracing
->> (i.e. tracing BPF with BPF)? It would be neat not adding another
->> tracepoint in the fast-path...
+> For little endian machine, the lower 4 bytes are read based on
+> your sys_enter_newfstat_args, which is "accidentally" the lower
+> 4 bytes in u64, so you get the correct answer.
+
+> For big endian machine, the lower 4 bytes read based on
+> your sys_enter_newfstat_args will be high 4 bytes in u64, which
+> is incorrect.
+
+Oh, get it. Thank you, I'll fix this in the next version.
+
+Yonghong Song <yhs@fb.com> =E4=BA=8E2019=E5=B9=B412=E6=9C=8817=E6=97=A5=E5=
+=91=A8=E4=BA=8C =E4=B8=8B=E5=8D=8812:14=E5=86=99=E9=81=93=EF=BC=9A
 >
-> That was my question as well.
-> Here is an example from Eelco:
-> https://lore.kernel.org/bpf/78D7857B-82E4-42BC-85E1-E3D7C97BF840@redhat.c=
-om/
-> BPF_TRACE_2("fexit/xdp_prog_simple", trace_on_exit,
->              struct xdp_buff*, xdp, int, ret)
-> {
->      bpf_debug("fexit: [ifindex =3D %u, queue =3D  %u, ret =3D %d]\n",
->                xdp->rxq->dev->ifindex, xdp->rxq->queue_index, ret);
 >
->      return 0;
-> }
-> 'ret' is return code from xdp program.
-> Such approach is per xdp program, but cheaper when not enabled
-> and faster when it's triggering comparing to static tracepoint.
-> Anything missing there that you'd like to see?
-
-For userspace, sure, the fentry/fexit stuff is fine. The main use case
-for this new tracepoint is to hook into the (in-kernel) drop monitor.
-Dunno if that can be convinced to hook into the BPF tracing
-infrastructure instead of tracepoints. Ido, WDYT?
-
--Toke
-
+>
+> On 12/16/19 8:01 PM, Wenbo Zhang wrote:
+> >> In non-bpf .c file, typically we do not add 'inline' attribute.
+> >> It is up to compiler to decide whether it should be inlined.
+> >
+> > Thank you, I'll fix this.
+> >
+> >>> +struct sys_enter_newfstat_args {
+> >>> +     unsigned long long pad1;
+> >>> +     unsigned long long pad2;
+> >>> +     unsigned int fd;
+> >>> +};
+> >
+> >> The BTF generated vmlinux.h has the following structure,
+> >> struct trace_entry {
+> >>           short unsigned int type;
+> >>           unsigned char flags;
+> >>           unsigned char preempt_count;
+> >>           int pid;
+> >> };
+> >> struct trace_event_raw_sys_enter {
+> >>           struct trace_entry ent;
+> >>           long int id;
+> >>           long unsigned int args[6];
+> >>           char __data[0];
+> >> };
+> >
+> >> The third parameter type should be long, otherwise,
+> >> it may have issue on big endian machines?
+> >
+> > Sorry, I don't understand why there is a problem on big-endian machines=
+.
+> > Would you please explain that in more detail? Thank you.
+>
+> The kernel will actually have 8 bytes of memory to store fd
+> based on trace_event_raw_sys_enter.
+>
+> For little endian machine, the lower 4 bytes are read based on
+> your sys_enter_newfstat_args, which is "accidentally" the lower
+> 4 bytes in u64, so you get the correct answer.
+>
+> For big endian machine, the lower 4 bytes read based on
+> your sys_enter_newfstat_args will be high 4 bytes in u64, which
+> is incorrect.
+>
+> >
+> > Yonghong Song <yhs@fb.com> =E4=BA=8E2019=E5=B9=B412=E6=9C=8816=E6=97=A5=
+=E5=91=A8=E4=B8=80 =E4=B8=8A=E5=8D=8812:25=E5=86=99=E9=81=93=EF=BC=9A
+> >>
+> >>
+> >>
+> >> On 12/14/19 8:01 PM, Wenbo Zhang wrote:
+> >>> trace fstat events by tracepoint syscalls/sys_enter_newfstat, and han=
+dle
+> >>> events only produced by test_file_get_path, which call fstat on sever=
+al
+> >>> different types of files to test bpf_get_file_path's feature.
+> >>>
+> >>> v4->v5: addressed Andrii's feedback
+> >>> - pass NULL for opts as bpf_object__open_file's PARAM2, as not really
+> >>> using any
+> >>> - modify patch subject to keep up with test code
+> >>> - as this test is single-threaded, so use getpid instead of SYS_getti=
+d
+> >>> - remove unnecessary parens around check which after if (i < 3)
+> >>> - in kern use bpf_get_current_pid_tgid() >> 32 to fit getpid() in
+> >>> userspace part
+> >>> - with the patch adding helper as one patch series
+> >>>
+> >>> v3->v4: addressed Andrii's feedback
+> >>> - use a set of fd instead of fds array
+> >>> - use global variables instead of maps (in v3, I mistakenly thought t=
+hat
+> >>> the bpf maps are global variables.)
+> >>> - remove uncessary global variable path_info_index
+> >>> - remove fd compare as the fstat's order is fixed
+> >>>
+> >>> v2->v3: addressed Andrii's feedback
+> >>> - use global data instead of perf_buffer to simplified code
+> >>>
+> >>> v1->v2: addressed Daniel's feedback
+> >>> - rename bpf_fd2path to bpf_get_file_path to be consistent with other
+> >>> helper's names
+> >>>
+> >>> Signed-off-by: Wenbo Zhang <ethercflow@gmail.com>
+> >>> ---
+> >>>    .../selftests/bpf/prog_tests/get_file_path.c  | 171 ++++++++++++++=
+++++
+> >>>    .../selftests/bpf/progs/test_get_file_path.c  |  43 +++++
+> >>>    2 files changed, 214 insertions(+)
+> >>>    create mode 100644 tools/testing/selftests/bpf/prog_tests/get_file=
+_path.c
+> >>>    create mode 100644 tools/testing/selftests/bpf/progs/test_get_file=
+_path.c
+> >>>
+> >>> diff --git a/tools/testing/selftests/bpf/prog_tests/get_file_path.c b=
+/tools/testing/selftests/bpf/prog_tests/get_file_path.c
+> >>> new file mode 100644
+> >>> index 000000000000..7ec11e43e0fc
+> >>> --- /dev/null
+> >>> +++ b/tools/testing/selftests/bpf/prog_tests/get_file_path.c
+> >>> @@ -0,0 +1,171 @@
+> >>> +// SPDX-License-Identifier: GPL-2.0
+> >>> +#define _GNU_SOURCE
+> >>> +#include <test_progs.h>
+> >>> +#include <sys/stat.h>
+> >>> +#include <linux/sched.h>
+> >>> +#include <sys/syscall.h>
+> >>> +
+> >>> +#define MAX_PATH_LEN         128
+> >>> +#define MAX_FDS                      7
+> >>> +#define MAX_EVENT_NUM                16
+> >>> +
+> >>> +static struct file_path_test_data {
+> >>> +     pid_t pid;
+> >>> +     __u32 cnt;
+> >>> +     __u32 fds[MAX_EVENT_NUM];
+> >>> +     char paths[MAX_EVENT_NUM][MAX_PATH_LEN];
+> >>> +} src, dst;
+> >>> +
+> >>> +static inline int set_pathname(int fd)
+> >>
+> >> In non-bpf .c file, typically we do not add 'inline' attribute.
+> >> It is up to compiler to decide whether it should be inlined.
+> >>
+> >>> +{
+> >>> +     char buf[MAX_PATH_LEN];
+> >>> +
+> >>> +     snprintf(buf, MAX_PATH_LEN, "/proc/%d/fd/%d", src.pid, fd);
+> >>> +     src.fds[src.cnt] =3D fd;
+> >>> +     return readlink(buf, src.paths[src.cnt++], MAX_PATH_LEN);
+> >>> +}
+> >>> +
+> >> [...]
+> >>> diff --git a/tools/testing/selftests/bpf/progs/test_get_file_path.c b=
+/tools/testing/selftests/bpf/progs/test_get_file_path.c
+> >>> new file mode 100644
+> >>> index 000000000000..eae663c1262a
+> >>> --- /dev/null
+> >>> +++ b/tools/testing/selftests/bpf/progs/test_get_file_path.c
+> >>> @@ -0,0 +1,43 @@
+> >>> +// SPDX-License-Identifier: GPL-2.0
+> >>> +
+> >>> +#include <linux/bpf.h>
+> >>> +#include <linux/ptrace.h>
+> >>> +#include <string.h>
+> >>> +#include <unistd.h>
+> >>> +#include "bpf_helpers.h"
+> >>> +#include "bpf_tracing.h"
+> >>> +
+> >>> +#define MAX_PATH_LEN         128
+> >>> +#define MAX_EVENT_NUM                16
+> >>> +
+> >>> +static struct file_path_test_data {
+> >>> +     pid_t pid;
+> >>> +     __u32 cnt;
+> >>> +     __u32 fds[MAX_EVENT_NUM];
+> >>> +     char paths[MAX_EVENT_NUM][MAX_PATH_LEN];
+> >>> +} data;
+> >>> +
+> >>> +struct sys_enter_newfstat_args {
+> >>> +     unsigned long long pad1;
+> >>> +     unsigned long long pad2;
+> >>> +     unsigned int fd;
+> >>> +};
+> >>
+> >> The BTF generated vmlinux.h has the following structure,
+> >> struct trace_entry {
+> >>           short unsigned int type;
+> >>           unsigned char flags;
+> >>           unsigned char preempt_count;
+> >>           int pid;
+> >> };
+> >> struct trace_event_raw_sys_enter {
+> >>           struct trace_entry ent;
+> >>           long int id;
+> >>           long unsigned int args[6];
+> >>           char __data[0];
+> >> };
+> >>
+> >> The third parameter type should be long, otherwise,
+> >> it may have issue on big endian machines?
