@@ -2,112 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F5921229F4
-	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2019 12:28:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD743122A46
+	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2019 12:39:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727466AbfLQL2X (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Dec 2019 06:28:23 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:35214 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726623AbfLQL2X (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Dec 2019 06:28:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1576582101;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Q61b8NZiNglATLygY8DSz74dZVTZ21KejyMo2z3MExs=;
-        b=YCcPaSmbwTS4Rwvg+EMqgbRV15UENcXT24PD0H9WyjCYwb/FgyUqJp5UlQnJ1VmtsWz0kh
-        Dj3rvdjHD2txq96CZIkIiYdwtwuCKr1vZ/ftCrFmxUA5mmQdqU/pEef3RfgEYhXu6dKkqU
-        8yG65d9ZI2gvFCsCXUJzKGbm9fi+H/U=
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
- [209.85.208.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-377-OjzvsmhXP7aawy9juLbxXw-1; Tue, 17 Dec 2019 06:28:20 -0500
-X-MC-Unique: OjzvsmhXP7aawy9juLbxXw-1
-Received: by mail-lj1-f197.google.com with SMTP id b12so3136357ljo.11
-        for <bpf@vger.kernel.org>; Tue, 17 Dec 2019 03:28:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Q61b8NZiNglATLygY8DSz74dZVTZ21KejyMo2z3MExs=;
-        b=gNQjwaJFEBaTayv/VhO2XJ36c/d7MgyG1ev3lBOroU143572b4/bdLN63T02Z0DT/O
-         7aDvgABhuBAzOo3Izb5PH0nknejXaUAk1fr4b7ddUbwsC7ihuHoJOmKvtROtN4sfaj43
-         c+pED6W13AkT4DU66VnoLaZ/3shmPhbs8K8UPKpra9GR284XeskNZl1uA6TVMWSStVVm
-         149YjqPrDxIivkKAWXk3UK9F18AbYhSZgF4CPLJlMG7J/zwRvSzp8AC0c90jDTF8RxPz
-         AAJGVLaV8NWMInB5rVyX285foK64b3Skthc/vWK2P6/sg1qA+SlZGCOWi5QaW35aJzab
-         mn1g==
-X-Gm-Message-State: APjAAAUfkWDsIDHZy8zamVYA0aj74UuoO46FwmvbHC8RgRd1CAL9rAS/
-        AYuA3Kp8Z92X9wSeFe5IV1GQUvtgSbe9gPpWFxlirQcOkaZXZx4QvZNAtHMXtRBtXRTLkqWKBt4
-        kin/fI5AZNbpb
-X-Received: by 2002:a2e:b010:: with SMTP id y16mr2836006ljk.238.1576582099147;
-        Tue, 17 Dec 2019 03:28:19 -0800 (PST)
-X-Google-Smtp-Source: APXvYqyIH5Q5OdQH6gcERzOp/eAcntIeffs5mFBn4uuIFZewUEQ+Uus+enM8p4BfdhFU/HZqLE/fQw==
-X-Received: by 2002:a2e:b010:: with SMTP id y16mr2835998ljk.238.1576582098973;
-        Tue, 17 Dec 2019 03:28:18 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id b6sm7289731lfq.11.2019.12.17.03.28.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Dec 2019 03:28:18 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 943471800B3; Tue, 17 Dec 2019 12:28:16 +0100 (CET)
-From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH bpf-next] libbpf: Fix libbpf_common.h when installing libbpf through 'make install'
-Date:   Tue, 17 Dec 2019 12:28:10 +0100
-Message-Id: <20191217112810.768078-1-toke@redhat.com>
-X-Mailer: git-send-email 2.24.1
+        id S1726729AbfLQLjH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Dec 2019 06:39:07 -0500
+Received: from mga14.intel.com ([192.55.52.115]:17567 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726560AbfLQLjH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Dec 2019 06:39:07 -0500
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 17 Dec 2019 03:39:05 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.69,325,1571727600"; 
+   d="scan'208";a="209664859"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga008.jf.intel.com with ESMTP; 17 Dec 2019 03:39:04 -0800
+Received: from [10.125.252.241] (abudanko-mobl.ccr.corp.intel.com [10.125.252.241])
+        by linux.intel.com (Postfix) with ESMTP id 48BEC580458;
+        Tue, 17 Dec 2019 03:38:57 -0800 (PST)
+Subject: Re: [Intel-gfx] [PATCH v3 4/7] drm/i915/perf: open access for
+ CAP_SYS_PERFMON privileged process
+To:     Lionel Landwerlin <lionel.g.landwerlin@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "jani.nikula@linux.intel.com" <jani.nikula@linux.intel.com>,
+        "joonas.lahtinen@linux.intel.com" <joonas.lahtinen@linux.intel.com>,
+        "rodrigo.vivi@intel.com" <rodrigo.vivi@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Serge Hallyn <serge@hallyn.com>,
+        James Morris <jmorris@namei.org>,
+        Casey Schaufler <casey@schaufler-ca.com>
+Cc:     songliubraving@fb.com, Andi Kleen <ak@linux.intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        Jann Horn <jannh@google.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        intel-gfx@lists.freedesktop.org,
+        Igor Lubashev <ilubashe@akamai.com>,
+        linux-kernel@vger.kernel.org,
+        Stephane Eranian <eranian@google.com>,
+        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
+        "selinux@vger.kernel.org" <selinux@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Brendan Gregg <bgregg@netflix.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+References: <b175f283-d256-e37e-f447-6ba4ab4f3d3a@linux.intel.com>
+ <bc5b2a0d-a185-91b6-5deb-a4b6e1dc3d3e@linux.intel.com>
+ <503ad40c-d94e-df1d-1541-730c002ad3b7@intel.com>
+From:   Alexey Budankov <alexey.budankov@linux.intel.com>
+Organization: Intel Corp.
+Message-ID: <d71943f5-9c2d-7d08-5c45-2be1be98eb73@linux.intel.com>
+Date:   Tue, 17 Dec 2019 14:38:56 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <503ad40c-d94e-df1d-1541-730c002ad3b7@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This fixes two issues with the newly introduced libbpf_common.h file:
 
-- The header failed to include <string.h> for the definition of memset()
-- The new file was not included in the install_headers rule in the Makefile
+On 17.12.2019 12:45, Lionel Landwerlin wrote:
+> On 16/12/2019 22:03, Alexey Budankov wrote:
+>> Open access to i915_perf monitoring for CAP_SYS_PERFMON privileged processes.
+>> For backward compatibility reasons access to i915_perf subsystem remains open
+>> for CAP_SYS_ADMIN privileged processes but CAP_SYS_ADMIN usage for secure
+>> i915_perf monitoring is discouraged with respect to CAP_SYS_PERFMON capability.
+>>
+>> Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
+> 
+> 
+> Assuming people are fine with this new cap, I like this idea of a lighter privilege for i915-perf.
 
-Both of these issues cause breakage when installing libbpf with 'make
-install' and trying to use it in applications.
+Lionel, thanks for your meaningful input!
+Appreciate your collaboration.
 
-Fixes: 544402d4b493 ("libbpf: Extract common user-facing helpers")
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
----
- tools/lib/bpf/Makefile        | 1 +
- tools/lib/bpf/libbpf_common.h | 2 ++
- 2 files changed, 3 insertions(+)
+Regards,
+Alexey
 
-diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
-index a3718cb275f2..d4790121adf4 100644
---- a/tools/lib/bpf/Makefile
-+++ b/tools/lib/bpf/Makefile
-@@ -251,6 +251,7 @@ install_headers: bpf_helper_defs.h
- 		$(call do_install,libbpf.h,$(prefix)/include/bpf,644); \
- 		$(call do_install,btf.h,$(prefix)/include/bpf,644); \
- 		$(call do_install,libbpf_util.h,$(prefix)/include/bpf,644); \
-+		$(call do_install,libbpf_common.h,$(prefix)/include/bpf,644); \
- 		$(call do_install,xsk.h,$(prefix)/include/bpf,644); \
- 		$(call do_install,bpf_helpers.h,$(prefix)/include/bpf,644); \
- 		$(call do_install,bpf_helper_defs.h,$(prefix)/include/bpf,644); \
-diff --git a/tools/lib/bpf/libbpf_common.h b/tools/lib/bpf/libbpf_common.h
-index 4fb833840961..a23ae1ac27eb 100644
---- a/tools/lib/bpf/libbpf_common.h
-+++ b/tools/lib/bpf/libbpf_common.h
-@@ -9,6 +9,8 @@
- #ifndef __LIBBPF_LIBBPF_COMMON_H
- #define __LIBBPF_LIBBPF_COMMON_H
- 
-+#include <string.h>
-+
- #ifndef LIBBPF_API
- #define LIBBPF_API __attribute__((visibility("default")))
- #endif
--- 
-2.24.1
-
+> 
+> 
+> -Lionel
+> 
+> 
+> 
