@@ -2,106 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 81895123848
-	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2019 22:05:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABD4C123894
+	for <lists+bpf@lfdr.de>; Tue, 17 Dec 2019 22:21:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728493AbfLQVEM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Dec 2019 16:04:12 -0500
-Received: from mail-pj1-f68.google.com ([209.85.216.68]:53056 "EHLO
-        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728474AbfLQVEL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Dec 2019 16:04:11 -0500
-Received: by mail-pj1-f68.google.com with SMTP id w23so477692pjd.2;
-        Tue, 17 Dec 2019 13:04:10 -0800 (PST)
+        id S1726764AbfLQVVo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Dec 2019 16:21:44 -0500
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:52052 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726608AbfLQVVo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Dec 2019 16:21:44 -0500
+Received: by mail-wm1-f67.google.com with SMTP id d73so4378877wmd.1;
+        Tue, 17 Dec 2019 13:21:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=tI+0rfyZxMpqi1+x5A6g2dbkPTkzQJsbaVymsCKWZsI=;
-        b=ll/7lxuGzMpNF/z6jBXIkCBBP/l8evsRppMFDJI7bAjaSmZSf2uwNip9DKmXsrTrVS
-         6aUPShhdWyoC09fv+0TJY/HZsDrecyx1Kq8wTRKrpyByMfqV6dwqKtXH25eJav1GHi+M
-         Yn1c+H918a9f4xSTBM4YtOdO2Nts2LB3GoHJGFH9OkbHqa9OawcFulYji8y+STna7aXn
-         qDZFGeWjw31MDdX+yhkFMWKn+8GYva3o4NtDWBeN/Z5jk5vyJJVTkiBn1yyN4L7QWQw+
-         c3zIj6HvyKSaeMU6oFr7vronHK8uPxIX9khjEOCDxMDNEF+kcodZXhrn1zwZaU6p8p7t
-         icrg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hgMHC/0V3btfO+qH7JqlsOIYRMjWu+rklj4/8QVHltU=;
+        b=T3UTqYK32/g2yjuAY0Vs7zcaAYGyvNn1N94YMvd+e2rdEfD+Vi8TYYy/kZZ+IFu7xH
+         B9u1xEm2thINxT2dBSsuLKzY7PgaQJav+WLqUbE91Tndw5u4iULhUPAo42eAdqXpFNx7
+         4JtcowWDMWsGFQQeGMANeTktmeRSOM48nC9a2YiRBT+TdwGU9FWn6Ese42cnMYBH7fzM
+         DO1dt5fdh5DimcAV6F297wjlYXZLGOPD1maaR8ZsB300fuxVmzGUaoSFuuKBiHyaogko
+         E9PEKQt6fr/iqHUwqJhc704fYD3AwIQL9OVh8wq9xnahISkyo0DHg1zLdX9IKzCMegoA
+         inYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tI+0rfyZxMpqi1+x5A6g2dbkPTkzQJsbaVymsCKWZsI=;
-        b=QMmzx0UgcI6wFJnfk5p19Fu2dywtAtBVH+vLILFiqf2VtBanQoAjXi8BHdZkpjzyZ1
-         RiucLsiuB2sp3EniMUrL2bmkudACZpAsRY92DTbFZQbVrTzDtrlk2yydb+63GXlotZtm
-         HpG41/eNR2YJqb8ImZn3hall+Reft1wi84RtUvi1n9wg9vckRPH2cy6Lq1DmGFWJPfft
-         UnSKcVwSOUXc6MvT8u7b8cy2IzAXZ/mMiGeeVl/rWz0KNDqAmUYprdprgKLC+SKr17G7
-         T/LgbWdLvPfbKpPMLeJehEkeXC3tRVE2VezRUohTkWtie9DKGBZ0H8hPOJQFC3LhbWD0
-         Q7hg==
-X-Gm-Message-State: APjAAAWwdHOYqgm3MWmpYQ/g9b74qNjT2sSH2pJRnjAi3NwxzezHEaJD
-        lARqBAHrjCHlYfFNyNKTOhdluh+p
-X-Google-Smtp-Source: APXvYqxhKrc6X9ZO/n4xOcapDrldWR+J2OZB5k9YIrw+ZyfsmoFhJvumLAaz0rxyv+shDW/S446xqQ==
-X-Received: by 2002:a17:902:d88f:: with SMTP id b15mr25332312plz.172.1576616650014;
-        Tue, 17 Dec 2019 13:04:10 -0800 (PST)
-Received: from [192.168.86.235] (c-73-241-150-58.hsd1.ca.comcast.net. [73.241.150.58])
-        by smtp.gmail.com with ESMTPSA id 12sm1914571pfn.177.2019.12.17.13.04.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Dec 2019 13:04:09 -0800 (PST)
-Subject: Re: [PATCH bpf-next 09/13] bpf: Add BPF_FUNC_jiffies
-To:     Martin Lau <kafai@fb.com>, Jakub Sitnicki <jakub@cloudflare.com>
-Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
-        Neal Cardwell <ncardwell@google.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>,
-        Kernel Team <Kernel-team@fb.com>,
-        Netdev <netdev@vger.kernel.org>
-References: <20191214004737.1652076-1-kafai@fb.com>
- <20191214004758.1653342-1-kafai@fb.com>
- <b321412c-1b42-45a9-4dc6-cc268b55cd0d@gmail.com>
- <CADVnQy=soQ8KhuUWEQj0n2ge3a43OSgAKS95bmBtp090jqbM_w@mail.gmail.com>
- <87o8w7fjd4.fsf@cloudflare.com>
- <20191217182228.icbttiozdcmveutq@kafai-mbp.dhcp.thefacebook.com>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <48fa41ef-c777-360a-279d-c71d0a5b6c47@gmail.com>
-Date:   Tue, 17 Dec 2019 13:04:03 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hgMHC/0V3btfO+qH7JqlsOIYRMjWu+rklj4/8QVHltU=;
+        b=UEmjtg1YgqyijnT4R8DW/mmqaM3UjT9gBomKzVAw56IyG1lndBedL7bmWCSj+Pb6jB
+         JD6Fka76ZTLRYZKwAfu/Pq3B8/4b20liPO3bs31+v115/tBZrdf2bptNiQKR2668ZPmk
+         sjdJ6duhsFG6kGXA3MCwIoPxURssSWnvYswXsc++4coUjJy37XMiWp6aGSyYaIetdZil
+         eA52bN4uO0R7N/b9aTicok/vnKXVWrvjNaVQhxKyEMjZ6iX5gBZRne/6cRAAi7MHgMEv
+         KNEdZcgISZ5dspSavzQqtK0OJuXInd3ingUOX1vzFWOGCmqW3BFQA60nEQG++Jbz3Z/w
+         Qtrw==
+X-Gm-Message-State: APjAAAXxg9EeMIa0Mxsaiyahw3h6tuTNG68YP1A+qQLwR65GbQwbSsj6
+        FHdN/BEhX/JX3yVQaimTcPNfvkcE57xtSkVGXy4=
+X-Google-Smtp-Source: APXvYqzHJEOvzCi5iHCDt/XgQC/7D97th0ovINqRNJRi6Er8pQXxEZNf/3tSoTW4TxEydYumfklAECyhyJAYl9F9iHg=
+X-Received: by 2002:a1c:7508:: with SMTP id o8mr7597010wmc.74.1576617702146;
+ Tue, 17 Dec 2019 13:21:42 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20191217182228.icbttiozdcmveutq@kafai-mbp.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20191211080109.18765-1-andrey.zhizhikin@leica-geosystems.com>
+In-Reply-To: <20191211080109.18765-1-andrey.zhizhikin@leica-geosystems.com>
+From:   Andrey Zhizhikin <andrey.z@gmail.com>
+Date:   Tue, 17 Dec 2019 22:21:30 +0100
+Message-ID: <CAHtQpK7Rs9_8aUmGXv8Cud=U0muMwV6s14O8do7UhdGHZ9ukOg@mail.gmail.com>
+Subject: Re: [PATCH] tools lib api fs: fix gcc9 compilation error
+To:     ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
+        sergey.senozhatsky@gmail.com, pmladek@suse.com,
+        wangkefeng.wang@huawei.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Hello all,
 
-> Andrii's extern variable work (already landed) allows a bpf_prog
-> to read CONFIG_HZ as a global variable.  It is the path that I am
-> pursuing now for jiffies/nsecs conversion without relying on
-> a helper.
+I'd like to have a gentle ping on this patch, if someone could review
+and apply it - I'd really appreciate it.
 
-I am traveling today, but plan sending a patch series for cubic,
-switching to usec resolution to solve its inability to properly
-detect ack trains in the datacenter.
+On Wed, Dec 11, 2019 at 9:01 AM Andrey Zhizhikin <andrey.z@gmail.com> wrote:
+>
+> GCC9 introduced string hardening mechanisms, which exhibits the error
+> during fs api compilation:
+>
+> error: '__builtin_strncpy' specified bound 4096 equals destination size
+> [-Werror=stringop-truncation]
+>
+> This comes when the length of copy passed to strncpy is is equal to
+> destination size, which could potentially lead to buffer overflow.
+>
+> There is a need to mitigate this potential issue by limiting the size of
+> destination by 1 and explicitly terminate the destination with NULL.
+>
+> Signed-off-by: Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>
+> Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
+> Cc: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  tools/lib/api/fs/fs.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/tools/lib/api/fs/fs.c b/tools/lib/api/fs/fs.c
+> index 11b3885e833e..027b18f7ed8c 100644
+> --- a/tools/lib/api/fs/fs.c
+> +++ b/tools/lib/api/fs/fs.c
+> @@ -210,6 +210,7 @@ static bool fs__env_override(struct fs *fs)
+>         size_t name_len = strlen(fs->name);
+>         /* name + "_PATH" + '\0' */
+>         char upper_name[name_len + 5 + 1];
+> +
+>         memcpy(upper_name, fs->name, name_len);
+>         mem_toupper(upper_name, name_len);
+>         strcpy(&upper_name[name_len], "_PATH");
+> @@ -219,7 +220,8 @@ static bool fs__env_override(struct fs *fs)
+>                 return false;
+>
+>         fs->found = true;
+> -       strncpy(fs->path, override_path, sizeof(fs->path));
+> +       strncpy(fs->path, override_path, sizeof(fs->path) - 1);
+> +       fs->path[sizeof(fs->path) - 1] = '\0';
+>         return true;
+>  }
+>
+> --
+> 2.17.1
+>
 
-But still it will use jiffies32 in some spots,
-as you mentioned already because of tp->lsndtime.
 
-This means bpf could also stick to tp->tcp_mstamp 
-
-extract :
-
--static inline u32 bictcp_clock(void)
-+static inline u32 bictcp_clock_us(const struct sock *sk)
- {
--#if HZ < 1000
--       return ktime_to_ms(ktime_get_real());
--#else
--       return jiffies_to_msecs(jiffies);
--#endif
-+       return tcp_sk(sk)->tcp_mstamp;
- }
-
- 
+-- 
+Regards,
+Andrey.
