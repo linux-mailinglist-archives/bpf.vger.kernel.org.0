@@ -2,126 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BB19C124527
-	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2019 11:54:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B996A124558
+	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2019 12:08:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726698AbfLRKym (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 Dec 2019 05:54:42 -0500
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:46751 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726699AbfLRKym (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 Dec 2019 05:54:42 -0500
-Received: by mail-pf1-f195.google.com with SMTP id y14so983320pfm.13;
-        Wed, 18 Dec 2019 02:54:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=nOoyfv29tdJB4Cs2FbUE63tPrsUbwCLUOgeYj7AkNpw=;
-        b=sXxYQ7OFkbeLBwrv7XlGtpc7WKBBp/am6dU7zwMn2JLT+DNeyeVLLyGWS5n9tnZBVH
-         s7CLWdnr2Wsv7n+vNB9r78jCR/88fUeb15dSlznMWHDfZV4T5mEeI+YmLSMCeDfZzcjZ
-         tKGw4+fgkuH6AZeQgHuDMdPZ/aMD9Uf4pZBJWzvZ59qTALg1ObDYMzT8qIMi4FJOgja2
-         TRz/B26E9vHcekNxEKwvXP7+H+sF75om0nlkOSxzZAbwZ8TSSGLErRDZG2XmKRoDdU9T
-         LKROOBFO5eSZ/aeSdtn/7rgn12AnnQNJoFtGSXJS9FIyN+AU1zcJ5Cz0j5pEj+8g6txR
-         zdPw==
+        id S1726698AbfLRLIm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 Dec 2019 06:08:42 -0500
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:37018 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725785AbfLRLIl (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 18 Dec 2019 06:08:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1576667321;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=t9N6bug9fqhjHQqfRWIzS1Bxa22v0COyCASVHwhVdOk=;
+        b=CoJPhPdb6svHWPuOW5RxGA8likt+O2zzms89qF9PtQ0sEk1zkAlO5u9GnsnhGj7DsWEAB2
+        0OoFRtdU15CssKLCXdS4NQT8Yc23myLlv+E0ixTE/Ix//0lV/H4ObV8+Pjw3QV5zP9f22f
+        E6QOyhkOi/L+w41py2EQE7vtyjyF/YU=
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
+ [209.85.208.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-251-Fom5qzOKPu6vd3Tp0FDPrQ-1; Wed, 18 Dec 2019 06:08:38 -0500
+X-MC-Unique: Fom5qzOKPu6vd3Tp0FDPrQ-1
+Received: by mail-lj1-f197.google.com with SMTP id t11so577478ljo.13
+        for <bpf@vger.kernel.org>; Wed, 18 Dec 2019 03:08:38 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=nOoyfv29tdJB4Cs2FbUE63tPrsUbwCLUOgeYj7AkNpw=;
-        b=j7Y8SApdMwrwrtGZPj4qcsmen0UyLHNmWH1UjbO4QerWkGOUYAfUJoNnrdtsy3ehrQ
-         xjBS9UMtv9QhavIHbEfUtFOqDEdCXG9xIQYcfm44acqIsJRceG5c8LixiRcjN5uRgxGr
-         GsltyFo9RfCVVAJd0OAWVqwf3iatSLsOK+s8kSMFQ9G5uTecS1m1F2KOH8Y5SqZwunqp
-         KeTBfitcJLcxYHTirmVugU1OlELMsGVqHhC/8ocoOdrVmCVCZc3mDG3PaSUHaYA5ZG0N
-         lWdKnpN8i1cYa8bn8l1ChuWU5KQ6SSL0MjQfBcImsioIIoqb6s7ZhnL+b1kgqxK1/l05
-         ruhg==
-X-Gm-Message-State: APjAAAUftpRJMkTduwIakQuekn+c3xC+zF8tCKYvxP07TjdRFrRI60HY
-        hVthiJi6A5g657aeMbTJoZOTNm/WEFKEsw==
-X-Google-Smtp-Source: APXvYqz5AWUhF8otd0DX09ERUQqvzpklTKXj3rtZoEZowWQjaT1ZIYXzww66RXXMUIVJK9TQ9Qktlw==
-X-Received: by 2002:a63:5062:: with SMTP id q34mr2311286pgl.378.1576666481581;
-        Wed, 18 Dec 2019 02:54:41 -0800 (PST)
-Received: from btopel-mobl.ger.intel.com ([192.55.55.41])
-        by smtp.gmail.com with ESMTPSA id k9sm2339000pje.26.2019.12.18.02.54.38
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=t9N6bug9fqhjHQqfRWIzS1Bxa22v0COyCASVHwhVdOk=;
+        b=hP2axXsUcxs0nKfOzgQbbsNNUmhC9Iysx5CGEFbdTIAO6HIDWADEm5xv1RRfCOoM7N
+         GFuUChQXiGl1UKgy1JzlMSWR+xws/6JuZWE5l4hFddA3jr8aqgPBO1iFIkp3e4mIaV+v
+         wG9HJH7s3XBnu/V2RJ7UoNfjupIjHNaSDfc0TvkfOqFa0x6C+YO9eq4V/jWyw58r+ycG
+         3REWf7jBY1kpWaHfM7NymUCE8GmT4+HfZUhrmkMzv4BBRZ6cQmtna5Y8zPxl+B5c8PjB
+         S7h0uJrdg/Jbkogdmfh9xZlWSH4iZT1yZqqcRrQIhQBSska305TTCv0FArEv6+2u73nT
+         cutg==
+X-Gm-Message-State: APjAAAVslg2kwN1mEstmGaueYZ5bHR91YUpqHKO1z50ovOarfo4S2Aeo
+        dcSKVg/tBJQ1QVmaL17CpNykUXQnGHWmrHBquak0yRSTbAl8sWYuwrVWvW2v0r0zYJhEtZ00ogG
+        UJNCqd8PBkEoK
+X-Received: by 2002:a2e:9a51:: with SMTP id k17mr1236315ljj.206.1576667317417;
+        Wed, 18 Dec 2019 03:08:37 -0800 (PST)
+X-Google-Smtp-Source: APXvYqxvL/f+gpRBh2p4/BeptEEvf2ziXJJxLYL3xp5NKCseiQY2pF7SSqzs9T/8bffLHhb2+PPCEw==
+X-Received: by 2002:a2e:9a51:: with SMTP id k17mr1236295ljj.206.1576667317216;
+        Wed, 18 Dec 2019 03:08:37 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id m15sm951499ljj.16.2019.12.18.03.08.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Dec 2019 02:54:41 -0800 (PST)
-From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
-To:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
-        bpf@vger.kernel.org, davem@davemloft.net,
-        jakub.kicinski@netronome.com, hawk@kernel.org,
-        john.fastabend@gmail.com, magnus.karlsson@intel.com,
-        jonathan.lemon@gmail.com
-Subject: [PATCH bpf-next 8/8] xdp: simplify __bpf_tx_xdp_map()
-Date:   Wed, 18 Dec 2019 11:54:00 +0100
-Message-Id: <20191218105400.2895-9-bjorn.topel@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191218105400.2895-1-bjorn.topel@gmail.com>
-References: <20191218105400.2895-1-bjorn.topel@gmail.com>
+        Wed, 18 Dec 2019 03:08:36 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 8A764180969; Wed, 18 Dec 2019 12:08:34 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Yonghong Song <yhs@fb.com>, lkft-triage@lists.linaro.org,
+        Leo Yan <leo.yan@linaro.org>,
+        Daniel Diaz <daniel.diaz@linaro.org>
+Subject: Re: [PATCH bpf-next v2] libbpf: Print hint about ulimit when getting permission denied error
+In-Reply-To: <CA+G9fYssgDcBkiNGSV7BmjE4Tj1j1_fa4VTJFv3N=2FHzewQLg@mail.gmail.com>
+References: <20191216181204.724953-1-toke@redhat.com> <CA+G9fYssgDcBkiNGSV7BmjE4Tj1j1_fa4VTJFv3N=2FHzewQLg@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 18 Dec 2019 12:08:34 +0100
+Message-ID: <878sn97ux9.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Björn Töpel <bjorn.topel@intel.com>
+Naresh Kamboju <naresh.kamboju@linaro.org> writes:
 
-The explicit error checking is not needed. Simply return the error
-instead.
+> On Tue, 17 Dec 2019 at 00:00, Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
+>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+>> index a2cc7313763a..3fe42d6b0c2f 100644
+>> --- a/tools/lib/bpf/libbpf.c
+>> +++ b/tools/lib/bpf/libbpf.c
+>> @@ -41,6 +41,7 @@
+>>  #include <sys/types.h>
+>>  #include <sys/vfs.h>
+>>  #include <sys/utsname.h>
+>> +#include <sys/resource.h>
+>>  #include <tools/libc_compat.h>
+>>  #include <libelf.h>
+>>  #include <gelf.h>
+>> @@ -100,6 +101,32 @@ void libbpf_print(enum libbpf_print_level level, co=
+nst char *format, ...)
+>>         va_end(args);
+>>  }
+>>
+>> +static void pr_perm_msg(int err)
+>> +{
+>> +       struct rlimit limit;
+>> +       char buf[100];
+>> +
+>> +       if (err !=3D -EPERM || geteuid() !=3D 0)
+>> +               return;
+>> +
+>> +       err =3D getrlimit(RLIMIT_MEMLOCK, &limit);
+>> +       if (err)
+>> +               return;
+>> +
+>> +       if (limit.rlim_cur =3D=3D RLIM_INFINITY)
+>> +               return;
+>> +
+>> +       if (limit.rlim_cur < 1024)
+>> +               snprintf(buf, sizeof(buf), "%lu bytes", limit.rlim_cur);
+>
+>  libbpf.c: In function 'pr_perm_msg':
+>  libbpf.c:120:33: error: format '%lu' expects argument of type 'long
+> unsigned int', but argument 4 has type 'rlim_t {aka long long unsigned
+> int}' [-Werror=3Dformat=3D]
+>     snprintf(buf, sizeof(buf), "%lu bytes", limit.rlim_cur);
+>                                 ~~^         ~~~~~~~~~~~~~~
+>                                 %llu
+>
 
-Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
----
- net/core/filter.c | 33 +++++++--------------------------
- 1 file changed, 7 insertions(+), 26 deletions(-)
+Ah, guess this needs PRIu64. Will send a follow-up, thanks for the
+report :)
 
-diff --git a/net/core/filter.c b/net/core/filter.c
-index d9caa3e57ea1..217af9974c86 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -3510,35 +3510,16 @@ xdp_do_redirect_slow(struct net_device *dev, struct xdp_buff *xdp,
- }
- 
- static int __bpf_tx_xdp_map(struct net_device *dev_rx, void *fwd,
--			    struct bpf_map *map,
--			    struct xdp_buff *xdp)
-+			    struct bpf_map *map, struct xdp_buff *xdp)
- {
--	int err;
--
- 	switch (map->map_type) {
- 	case BPF_MAP_TYPE_DEVMAP:
--	case BPF_MAP_TYPE_DEVMAP_HASH: {
--		struct bpf_dtab_netdev *dst = fwd;
--
--		err = dev_map_enqueue(dst, xdp, dev_rx);
--		if (unlikely(err))
--			return err;
--		break;
--	}
--	case BPF_MAP_TYPE_CPUMAP: {
--		struct bpf_cpu_map_entry *rcpu = fwd;
--
--		err = cpu_map_enqueue(rcpu, xdp, dev_rx);
--		if (unlikely(err))
--			return err;
--		break;
--	}
--	case BPF_MAP_TYPE_XSKMAP: {
--		struct xdp_sock *xs = fwd;
--
--		err = __xsk_map_redirect(xs, xdp);
--		return err;
--	}
-+	case BPF_MAP_TYPE_DEVMAP_HASH:
-+		return dev_map_enqueue(fwd, xdp, dev_rx);
-+	case BPF_MAP_TYPE_CPUMAP:
-+		return cpu_map_enqueue(fwd, xdp, dev_rx);
-+	case BPF_MAP_TYPE_XSKMAP:
-+		return __xsk_map_redirect(fwd, xdp);
- 	default:
- 		break;
- 	}
--- 
-2.20.1
+-Toke
 
