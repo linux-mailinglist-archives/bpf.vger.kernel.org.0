@@ -2,334 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D0F0E123C0C
-	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2019 01:56:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9738123D32
+	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2019 03:41:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726674AbfLRA4q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 17 Dec 2019 19:56:46 -0500
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:41183 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726666AbfLRA4p (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 17 Dec 2019 19:56:45 -0500
-Received: by mail-pf1-f193.google.com with SMTP id w62so208383pfw.8;
-        Tue, 17 Dec 2019 16:56:45 -0800 (PST)
+        id S1726496AbfLRClf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 17 Dec 2019 21:41:35 -0500
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:36449 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726467AbfLRClf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 17 Dec 2019 21:41:35 -0500
+Received: by mail-lj1-f193.google.com with SMTP id r19so349741ljg.3;
+        Tue, 17 Dec 2019 18:41:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :in-reply-to:references;
-        bh=MSCEWz8HRaZVvZiWGkNmFURbWjqNRwyr4wQMYh/zDQk=;
-        b=rRLOoI9peT8Etn+gBTdBwmOpPpgFjfLB6wUrnDK+u2IHZQaHkn92sGhjF2YTo4QYCC
-         SpGln6dsaqbqap9bad7o9iA6y6ctLwDKP+aeS88Z451GIHakhsxoaXrztztBZpDb6rIi
-         /zlTIKWyev0kopM0Al3/g9ajLkZCzwgdfyt/Si7ARJHcwYeRxegYCYuH6q86LBKRaLux
-         OQHfkIQ3Uo3LAljtZ6WlJei0c+OqqGHHRp6mjtKZdI3rfKSRnsqPAPBSoQOv03Sz9g+B
-         Y9ExRXjDoTezfmKbJKrfTrpxaFekSLuObvKwIVgk0zkTxXfaXLZUvtiQ0lCUflMf4tVP
-         ikew==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Q3q4QjE40FfpigvCirQu5SPQ/jbG+luYeGcEbe9rUw8=;
+        b=XOERBQKPMu/Wpni4dmx3VfZnA9RvHuABF3DeNotuSiMbotXZyCSCCRJrRnagaan1Bs
+         k4L/5LbmFVZUW2MkpWuOtg/QB3d8X8vAMQ9f7wlLacVdWBN5M0p0z96xnmUNdn9g36Xi
+         u78gdz8RGrZIPUeP4YQmHvO9RIHJK40kJtguQStq9RrR6zimWLHlUM0XyCH7nQxaZOYk
+         lG6CQ66PQ7LMVf8rA0d7fEbYIhHpKE/CH80ydyKpDuNuq9rHqB4py6mjjIItWG8WGweD
+         tsZd/q/ALWXdmzN8Kl0KQ/ng9mO9QCbPdWfWX0xX9+rz1ZgibwpdgLmMJvoP7Mx7bOZW
+         PyPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:in-reply-to:references;
-        bh=MSCEWz8HRaZVvZiWGkNmFURbWjqNRwyr4wQMYh/zDQk=;
-        b=Vs9F/Mk3mSztxvWCYMXphXqO5KthV3E5n0A4sbzCYT3qmIW4K2lcP9Np7BW/jsCjay
-         4GV5VEgAZb2IxigQrHT6ELakCy21E3cchJs+VlDcd65+W4wbGq/F3iHfvNl1UyvcJk6x
-         HiY1QhcUA91Px3EL4+mH8XJGkH4c/+gy9LhgAK19khv7a4Wb48xnvjXsylVZUwWanb7P
-         vRyAtM6dKaap+MZM2sZMGQHmWL8OdIdiiKHxwwAFwb4NUSrtSfgDDr5jNhlJrTa2sH6a
-         lz5Cl8k0D/wSRAIHll1W7mooXLKmA4cygNvDog88Rp7pE5Gh1K0fSrwWADyhR0+oGWi7
-         Sq0g==
-X-Gm-Message-State: APjAAAU5uJI8zHa4MmFY6xaNWbOUEBBYKpiTO6er9ZA4zY28xzpNNCS+
-        ZuUbW3LUEBipq98SJy4WT0SnRdpiTyA=
-X-Google-Smtp-Source: APXvYqz3jIOYpPor2NtTL7np4NPmh+KYxnE+49wNkXHmvR4o1Me12jSQGGiQqTKchh/e73s85bhDdQ==
-X-Received: by 2002:aa7:961b:: with SMTP id q27mr718727pfg.23.1576630604731;
-        Tue, 17 Dec 2019 16:56:44 -0800 (PST)
-Received: from ubuntu-18.04-x8664 ([128.1.49.85])
-        by smtp.gmail.com with ESMTPSA id z129sm278464pfb.67.2019.12.17.16.56.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Dec 2019 16:56:44 -0800 (PST)
-From:   Wenbo Zhang <ethercflow@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, yhs@fb.com,
-        bgregg@netflix.com, andrii.nakryiko@gmail.com,
-        netdev@vger.kernel.org
-Subject: [PATCH bpf-next v14 2/2] selftests/bpf: test for bpf_get_fd_path() from tracepoint
-Date:   Tue, 17 Dec 2019 19:56:29 -0500
-Message-Id: <69db5602f3cb4f17b4f1b26c47db5bf817851ded.1576629200.git.ethercflow@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <cover.1576629200.git.ethercflow@gmail.com>
-References: <8f6b8979fb64bedf5cb406ba29146c5fa2539267.1576575253.git.ethercflow@gmail.com>
- <cover.1576629200.git.ethercflow@gmail.com>
-In-Reply-To: <cover.1576629200.git.ethercflow@gmail.com>
-References: <cover.1576629200.git.ethercflow@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Q3q4QjE40FfpigvCirQu5SPQ/jbG+luYeGcEbe9rUw8=;
+        b=AT3R4K8vePXKPGutq6c/jl5+C0OcXe2jCb6xrqN0F73eGTUr3zG2KgYC+z+f7LUusN
+         vv5e+VPh9BCHixDg7DZjf7zT7Y0+Ea39HIhegzFLM3L9jx0+yLUI/n1YqwcytmKroPrc
+         6JswJmJre6hMze22tTsoSkFpGn8eauuYlv8bLq8c4G6lieS9gD5qhCwGob6ASwpmwcNj
+         eigiE395Cw45L85mRRzJjsnSNR3ZVFPSXJRqMyODTWMonResGjR6evyWZnvpb9Ph3IkW
+         qSEmG2p4zZr2v2chDG/PEzFgsLuhX26I9cQVvNEmc7z6DMOvU/Lg9+cczDzdFRWHIf4H
+         PyCg==
+X-Gm-Message-State: APjAAAUR7tRbvtS9hCdwHdwo0Cq41S2CHou+4ZvRNtAHQ9MDB/f1A9Bw
+        wOtIG2jJc6fYqkaxjfPjdUV0a5RNiwiEtijpibs=
+X-Google-Smtp-Source: APXvYqz4onHdu5AGdWEQRI/ynrNbDLj9quPnWdDj9TmjO/5MP4n+UD9NUMOuc67MCUJvg3m0HOp9ftx/+3+yybXEmp0=
+X-Received: by 2002:a2e:89d0:: with SMTP id c16mr741305ljk.228.1576636892625;
+ Tue, 17 Dec 2019 18:41:32 -0800 (PST)
+MIME-Version: 1.0
+References: <20191217234228.1739308-1-andriin@fb.com>
+In-Reply-To: <20191217234228.1739308-1-andriin@fb.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 17 Dec 2019 18:41:21 -0800
+Message-ID: <CAADnVQJtDHv4r28Skdy1Dt8i7iMareiMz-+3O8M=1gGEG3-4GQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: reduce log level for custom section names
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-trace fstat events by tracepoint syscalls/sys_enter_newfstat, and handle
-events only produced by test_file_fd_path, which call fstat on several
-different types of files to test bpf_fd_file_path's feature.
+On Tue, Dec 17, 2019 at 3:42 PM Andrii Nakryiko <andriin@fb.com> wrote:
+>
+> Libbpf is trying to recognize BPF program type based on its section name
+> during bpf_object__open() phase. This is not strictly enforced and user code
+> has ability to specify/override correct BPF program type after open.  But if
+> BPF program is using custom section name, libbpf will still emit warnings,
+> which can be quite annoying to users. This patch reduces log level of
+> information messages emitted by libbpf if section name is not canonical. User
+> can still get a list of all supported section names as debug-level message.
+>
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 
-v5->v6: addressed Gregg and Yonghong's feedback
-- rename to get_fd_path
-- change sys_enter_newfstat_args's fd type to long to fix issue on
-big-endian machines
+Applied. Thanks
 
-v4->v5: addressed Andrii's feedback
-- pass NULL for opts as bpf_object__open_file's PARAM2, as not really
-using any
-- modify patch subject to keep up with test code
-- as this test is single-threaded, so use getpid instead of SYS_gettid
-- remove unnecessary parens around check which after if (i < 3)
-- in kern use bpf_get_current_pid_tgid() >> 32 to fit getpid() in
-userspace part
-- with the patch adding helper as one patch series
-
-v3->v4: addressed Andrii's feedback
-- use a set of fd instead of fds array
-- use global variables instead of maps (in v3, I mistakenly thought that
-the bpf maps are global variables.)
-- remove uncessary global variable path_info_index
-- remove fd compare as the fstat's order is fixed
-
-v2->v3: addressed Andrii's feedback
-- use global data instead of perf_buffer to simplified code
-
-v1->v2: addressed Daniel's feedback
-- rename bpf_fd2path to bpf_get_file_path to be consistent with other
-helper's names
-
-Signed-off-by: Wenbo Zhang <ethercflow@gmail.com>
----
- .../selftests/bpf/prog_tests/get_fd_path.c    | 171 ++++++++++++++++++
- .../selftests/bpf/progs/test_get_fd_path.c    |  43 +++++
- 2 files changed, 214 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/get_fd_path.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_get_fd_path.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/get_fd_path.c b/tools/testing/selftests/bpf/prog_tests/get_fd_path.c
-new file mode 100644
-index 000000000000..2846f0a4e84b
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/get_fd_path.c
-@@ -0,0 +1,171 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#define _GNU_SOURCE
-+#include <test_progs.h>
-+#include <sys/stat.h>
-+#include <linux/sched.h>
-+#include <sys/syscall.h>
-+
-+#define MAX_PATH_LEN		128
-+#define MAX_FDS			7
-+#define MAX_EVENT_NUM		16
-+
-+static struct fd_path_test_data {
-+	pid_t pid;
-+	__u32 cnt;
-+	__u32 fds[MAX_EVENT_NUM];
-+	char paths[MAX_EVENT_NUM][MAX_PATH_LEN];
-+} src, dst;
-+
-+static int set_pathname(int fd)
-+{
-+	char buf[MAX_PATH_LEN];
-+
-+	snprintf(buf, MAX_PATH_LEN, "/proc/%d/fd/%d", src.pid, fd);
-+	src.fds[src.cnt] = fd;
-+	return readlink(buf, src.paths[src.cnt++], MAX_PATH_LEN);
-+}
-+
-+static int trigger_fstat_events(pid_t pid)
-+{
-+	int pipefd[2] = { -1, -1 };
-+	int sockfd = -1, procfd = -1, devfd = -1;
-+	int localfd = -1, indicatorfd = -1;
-+	struct stat fileStat;
-+	int ret = -1;
-+
-+	/* unmountable pseudo-filesystems */
-+	if (CHECK_FAIL(pipe(pipefd) < 0))
-+		return ret;
-+	/* unmountable pseudo-filesystems */
-+	sockfd = socket(AF_INET, SOCK_STREAM, 0);
-+	if (CHECK_FAIL(sockfd < 0))
-+		goto out_close;
-+	/* mountable pseudo-filesystems */
-+	procfd = open("/proc/self/comm", O_RDONLY);
-+	if (CHECK_FAIL(procfd < 0))
-+		goto out_close;
-+	devfd = open("/dev/urandom", O_RDONLY);
-+	if (CHECK_FAIL(devfd < 0))
-+		goto out_close;
-+	localfd = open("/tmp/fd2path_loadgen.txt", O_CREAT | O_RDONLY);
-+	if (CHECK_FAIL(localfd < 0))
-+		goto out_close;
-+	/* bpf_get_fd_path will return path with (deleted) */
-+	remove("/tmp/fd2path_loadgen.txt");
-+	indicatorfd = open("/tmp/", O_PATH);
-+	if (CHECK_FAIL(indicatorfd < 0))
-+		goto out_close;
-+
-+	src.pid = pid;
-+
-+	ret = set_pathname(pipefd[0]);
-+	if (CHECK_FAIL(ret < 0))
-+		goto out_close;
-+	ret = set_pathname(pipefd[1]);
-+	if (CHECK_FAIL(ret < 0))
-+		goto out_close;
-+	ret = set_pathname(sockfd);
-+	if (CHECK_FAIL(ret < 0))
-+		goto out_close;
-+	ret = set_pathname(procfd);
-+	if (CHECK_FAIL(ret < 0))
-+		goto out_close;
-+	ret = set_pathname(devfd);
-+	if (CHECK_FAIL(ret < 0))
-+		goto out_close;
-+	ret = set_pathname(localfd);
-+	if (CHECK_FAIL(ret < 0))
-+		goto out_close;
-+	ret = set_pathname(indicatorfd);
-+	if (CHECK_FAIL(ret < 0))
-+		goto out_close;
-+
-+	fstat(pipefd[0], &fileStat);
-+	fstat(pipefd[1], &fileStat);
-+	fstat(sockfd, &fileStat);
-+	fstat(procfd, &fileStat);
-+	fstat(devfd, &fileStat);
-+	fstat(localfd, &fileStat);
-+	fstat(indicatorfd, &fileStat);
-+
-+out_close:
-+	close(indicatorfd);
-+	close(localfd);
-+	close(devfd);
-+	close(procfd);
-+	close(sockfd);
-+	close(pipefd[1]);
-+	close(pipefd[0]);
-+
-+	return ret;
-+}
-+
-+void test_get_fd_path(void)
-+{
-+	const char *prog_name = "tracepoint/syscalls/sys_enter_newfstat";
-+	const char *obj_file = "test_get_fd_path.o";
-+	int err, results_map_fd, duration = 0;
-+	struct bpf_program *tp_prog = NULL;
-+	struct bpf_link *tp_link = NULL;
-+	struct bpf_object *obj = NULL;
-+	const int zero = 0;
-+
-+	obj = bpf_object__open_file(obj_file, NULL);
-+	if (CHECK(IS_ERR(obj), "obj_open_file", "err %ld\n", PTR_ERR(obj)))
-+		return;
-+
-+	tp_prog = bpf_object__find_program_by_title(obj, prog_name);
-+	if (CHECK(!tp_prog, "find_tp",
-+		  "prog '%s' not found\n", prog_name))
-+		goto cleanup;
-+
-+	err = bpf_object__load(obj);
-+	if (CHECK(err, "obj_load", "err %d\n", err))
-+		goto cleanup;
-+
-+	results_map_fd = bpf_find_map(__func__, obj, "test_get.bss");
-+	if (CHECK(results_map_fd < 0, "find_bss_map",
-+		  "err %d\n", results_map_fd))
-+		goto cleanup;
-+
-+	tp_link = bpf_program__attach_tracepoint(tp_prog, "syscalls",
-+						 "sys_enter_newfstat");
-+	if (CHECK(IS_ERR(tp_link), "attach_tp",
-+		  "err %ld\n", PTR_ERR(tp_link))) {
-+		tp_link = NULL;
-+		goto cleanup;
-+	}
-+
-+	dst.pid = getpid();
-+	err = bpf_map_update_elem(results_map_fd, &zero, &dst, 0);
-+	if (CHECK(err, "update_elem",
-+		  "failed to set pid filter: %d\n", err))
-+		goto cleanup;
-+
-+	err = trigger_fstat_events(dst.pid);
-+	if (CHECK_FAIL(err < 0))
-+		goto cleanup;
-+
-+	err = bpf_map_lookup_elem(results_map_fd, &zero, &dst);
-+	if (CHECK(err, "get_results",
-+		  "failed to get results: %d\n", err))
-+		goto cleanup;
-+
-+	for (int i = 0; i < MAX_FDS; i++) {
-+		if (i < 3)
-+			CHECK((dst.paths[i][0] != 0), "get_fd_path",
-+			      "failed to filter fs [%d]: %u(%s) vs %u(%s)\n",
-+			      i, src.fds[i], src.paths[i], dst.fds[i],
-+			      dst.paths[i]);
-+		else
-+			CHECK(strncmp(src.paths[i], dst.paths[i], MAX_PATH_LEN),
-+			      "get_fd_path",
-+			      "failed to get path[%d]: %u(%s) vs %u(%s)\n",
-+			      i, src.fds[i], src.paths[i], dst.fds[i],
-+			      dst.paths[i]);
-+	}
-+
-+cleanup:
-+	bpf_link__destroy(tp_link);
-+	bpf_object__close(obj);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_get_fd_path.c b/tools/testing/selftests/bpf/progs/test_get_fd_path.c
-new file mode 100644
-index 000000000000..8bb58f87755e
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_get_fd_path.c
-@@ -0,0 +1,43 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/bpf.h>
-+#include <linux/ptrace.h>
-+#include <string.h>
-+#include <unistd.h>
-+#include "bpf_helpers.h"
-+#include "bpf_tracing.h"
-+
-+#define MAX_PATH_LEN		128
-+#define MAX_EVENT_NUM		16
-+
-+static struct fd_path_test_data {
-+	pid_t pid;
-+	__u32 cnt;
-+	__u32 fds[MAX_EVENT_NUM];
-+	char paths[MAX_EVENT_NUM][MAX_PATH_LEN];
-+} data;
-+
-+struct sys_enter_newfstat_args {
-+	unsigned long long pad1;
-+	unsigned long long pad2;
-+	unsigned long fd;
-+};
-+
-+SEC("tracepoint/syscalls/sys_enter_newfstat")
-+int bpf_prog(struct sys_enter_newfstat_args *args)
-+{
-+	pid_t pid = bpf_get_current_pid_tgid() >> 32;
-+
-+	if (pid != data.pid)
-+		return 0;
-+	if (data.cnt >= MAX_EVENT_NUM)
-+		return 0;
-+
-+	data.fds[data.cnt] = args->fd;
-+	bpf_get_fd_path(data.paths[data.cnt], MAX_PATH_LEN, args->fd);
-+	data.cnt++;
-+
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.17.1
-
+selftests/bpf/ build looks very nice now.
