@@ -2,103 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B993125663
-	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2019 23:17:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B72F125716
+	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2019 23:45:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726510AbfLRWRN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 Dec 2019 17:17:13 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:10522 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726463AbfLRWRN (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 18 Dec 2019 17:17:13 -0500
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id xBILu39n019459
-        for <bpf@vger.kernel.org>; Wed, 18 Dec 2019 14:17:11 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=facebook;
- bh=6oVoRIUSx1VS5czrR0Dgk46K3WidI6qmXRlUZSbYIvI=;
- b=V6ZRHO4eTgUN1DGkMUCRPvG8nN+z+wgbdUNTbBaWvn9Erhc0QG+zlPStahKUj0nJgpp6
- u6vOV4eoJHBmhzo7Ip5Q2hNbbxC9mSlTuxSTofmEQQyMf5FF3MyrDxA4haqEh95WJeQ2
- mBTwAFy26QFRvQzUzzhaKDGVBBXVIc4Lp14= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net with ESMTP id 2wyhy23ce2-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 18 Dec 2019 14:17:11 -0800
-Received: from intmgw004.05.ash5.facebook.com (2620:10d:c085:108::8) by
- mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Wed, 18 Dec 2019 14:17:10 -0800
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id CAD252EC1761; Wed, 18 Dec 2019 14:17:08 -0800 (PST)
-Smtp-Origin-Hostprefix: devbig
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next] bpftool: work-around rst2man conversion bug
-Date:   Wed, 18 Dec 2019 14:17:07 -0800
-Message-ID: <20191218221707.2552199-1-andriin@fb.com>
-X-Mailer: git-send-email 2.17.1
-X-FB-Internal: Safe
+        id S1726616AbfLRWpJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 Dec 2019 17:45:09 -0500
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:35158 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726623AbfLRWpJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 18 Dec 2019 17:45:09 -0500
+Received: by mail-lf1-f68.google.com with SMTP id 15so2909070lfr.2
+        for <bpf@vger.kernel.org>; Wed, 18 Dec 2019 14:45:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=YrrQW+o6yoR9HJnH1mwKSC9v5iWno6eigHp0EBk4LR0=;
+        b=bdF7Zv0VTafIoorJswX48t2yxXJBYxcvjHgrT2SGIIMh8SxTaUWksloPDk4hj8pN+b
+         8Wy7ZGVYH0fWsHmH/IMJnBSfIeVts/sOmiy4I/nlOeq68AiZoaQ1Mqh2e43FlXq9gRLG
+         KshnO+IUvlyZD7e2bgfiCpZOkUn91XMsyCwRx9hGVqlfs3W1si7CDXXM3vtqSXuMWY78
+         Tae1sOhSYoNDJLrJgal+3cpj+/6xa05u+pWrMRgdVnIo9FZyRNB0aI0+sHon8/zGouR0
+         pqwpw4LUVoV4NK9FktzSrs+SeQWsHdxx0QqmCUwextJEn9FOXazhfjjyb53FWNWWcUXk
+         GNTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=YrrQW+o6yoR9HJnH1mwKSC9v5iWno6eigHp0EBk4LR0=;
+        b=r9f+1nwIS8yhthCWIttWCb1GJ0+99Zlvh8h6mTX12geKKIi15E/HIqooUFEx6Olm+2
+         wMb2z1fY9CllmdVwOCpJWwlwVdrXwb1nqfy9EbpeW8hEW62X077GgnQsFvNbYhPO/zel
+         FqBVFFKLlK0zmVX/UebzitV/10chQVv83u0laOpE8P1T15eBZjkm1Rz0fW0GYftGNN5u
+         40PRtKxWn7EpXJWJ+qNWAOQZAhaBcJFRmGRxnXqAbkYx4bkxpDNPcLilUBKaeJTxsZNk
+         ZUdDbXvCx/f+n33x4OWpSb7NelKJaYegy8GgRrQj5vZZgaCEn8kMaFOPRExPZ4yOv8/w
+         2PDg==
+X-Gm-Message-State: APjAAAWc0ZvLDQwSimOpsMsa5Z9yGvHTcWnk47ImPxzeUVtIYfCU8amJ
+        K2T0usOuaLRLvsV3hwZqu/4Llg==
+X-Google-Smtp-Source: APXvYqwPbC3mnICecXB2mktdTfANDFTtD1oSKWMGw8lhRk6/u/eXjGq156/mWoszLGq/OpGErs59TQ==
+X-Received: by 2002:a19:6a06:: with SMTP id u6mr3341913lfu.187.1576709107276;
+        Wed, 18 Dec 2019 14:45:07 -0800 (PST)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id t6sm1792834ljj.62.2019.12.18.14.45.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Dec 2019 14:45:06 -0800 (PST)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 380451012E3; Thu, 19 Dec 2019 01:45:07 +0300 (+03)
+Date:   Thu, 19 Dec 2019 01:45:07 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, bpf@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, kvm@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
+        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>
+Subject: Re: [PATCH v11 01/25] mm/gup: factor out duplicate code from four
+ routines
+Message-ID: <20191218224507.nayxmx7vvsjvyzsc@box>
+References: <20191216222537.491123-1-jhubbard@nvidia.com>
+ <20191216222537.491123-2-jhubbard@nvidia.com>
+ <20191218155211.emcegdp5uqgorfwe@box>
+ <5719efc4-e560-b3d9-8d1f-3ae289bed289@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
- definitions=2019-12-18_07:2019-12-17,2019-12-18 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
- suspectscore=8 spamscore=0 impostorscore=0 malwarescore=0 clxscore=1015
- mlxlogscore=774 bulkscore=0 priorityscore=1501 mlxscore=0
- lowpriorityscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-1910280000 definitions=main-1912180168
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5719efc4-e560-b3d9-8d1f-3ae289bed289@nvidia.com>
+User-Agent: NeoMutt/20180716
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Work-around what appears to be a bug in rst2man convertion tool, used to
-create man pages out of reStructureText-formatted documents. If text line
-starts with dot, rst2man will put it in resulting man file verbatim. This
-seems to cause man tool to interpret it as a directive/command (e.g., `.bs`), and
-subsequently not render entire line because it's unrecognized one.
+On Wed, Dec 18, 2019 at 02:15:53PM -0800, John Hubbard wrote:
+> On 12/18/19 7:52 AM, Kirill A. Shutemov wrote:
+> > On Mon, Dec 16, 2019 at 02:25:13PM -0800, John Hubbard wrote:
+> > > +static void put_compound_head(struct page *page, int refs)
+> > > +{
+> > > +	/* Do a get_page() first, in case refs == page->_refcount */
+> > > +	get_page(page);
+> > > +	page_ref_sub(page, refs);
+> > > +	put_page(page);
+> > > +}
+> > 
+> > It's not terribly efficient. Maybe something like:
+> > 
+> > 	VM_BUG_ON_PAGE(page_ref_count(page) < ref, page);
+> > 	if (refs > 2)
+> > 		page_ref_sub(page, refs - 1);
+> > 	put_page(page);
+> > 
+> > ?
+> 
+> OK, but how about this instead? I don't see the need for a "2", as that
+> is a magic number that requires explanation. Whereas "1" is not a magic
+> number--here it means: either there are "many" (>1) refs, or not.
 
-Enclose '.xxx' words in extra formatting to work around.
+Yeah, it's my thinko. Sure, it has to be '1' (or >= 2, which is less readable).
 
-Fixes: cb21ac588546 ("bpftool: Add gen subcommand manpage")
-Reported-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- tools/bpf/bpftool/Documentation/bpftool-gen.rst | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+> And the routine won't be called with refs less than about 32 (2MB huge
+> page, 64KB base page == 32 subpages) anyway.
 
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-gen.rst b/tools/bpf/bpftool/Documentation/bpftool-gen.rst
-index b6a114bf908d..86a87da97d0b 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-gen.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-gen.rst
-@@ -112,13 +112,14 @@ DESCRIPTION
- 
- 		  If BPF object has global variables, corresponding structs
- 		  with memory layout corresponding to global data data section
--		  layout will be created. Currently supported ones are: .data,
--		  .bss, .rodata, and .extern structs/data sections. These
--		  data sections/structs can be used to set up initial values of
--		  variables, if set before **example__load**. Afterwards, if
--		  target kernel supports memory-mapped BPF arrays, same
--		  structs can be used to fetch and update (non-read-only)
--		  data from userspace, with same simplicity as for BPF side.
-+		  layout will be created. Currently supported ones are: *.data*,
-+		  *.bss*, *.rodata*, and *.kconfig* structs/data sections.
-+		  These data sections/structs can be used to set up initial
-+		  values of variables, if set before **example__load**.
-+		  Afterwards, if target kernel supports memory-mapped BPF
-+		  arrays, same structs can be used to fetch and update
-+		  (non-read-only) data from userspace, with same simplicity
-+		  as for BPF side.
- 
- 	**bpftool gen help**
- 		  Print short help message.
+It's hard to make predictions about future :P
+
+> 	VM_BUG_ON_PAGE(page_ref_count(page) < refs, page);
+> 	/*
+> 	 * Calling put_page() for each ref is unnecessarily slow. Only the last
+> 	 * ref needs a put_page().
+> 	 */
+> 	if (refs > 1)
+> 		page_ref_sub(page, refs - 1);
+> 	put_page(page);
+
+Looks good to me.
+
 -- 
-2.17.1
-
+ Kirill A. Shutemov
