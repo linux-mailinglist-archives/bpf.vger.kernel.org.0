@@ -2,124 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 651941249C3
-	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2019 15:33:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F540124A89
+	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2019 16:00:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726998AbfLROda (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 Dec 2019 09:33:30 -0500
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:43266 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726856AbfLROda (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 Dec 2019 09:33:30 -0500
-Received: by mail-pl1-f193.google.com with SMTP id p27so1047182pli.10;
-        Wed, 18 Dec 2019 06:33:29 -0800 (PST)
+        id S1727126AbfLRPAm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 Dec 2019 10:00:42 -0500
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:46237 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727053AbfLRPAm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 18 Dec 2019 10:00:42 -0500
+Received: by mail-ot1-f65.google.com with SMTP id c22so2810243otj.13;
+        Wed, 18 Dec 2019 07:00:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=S7VuXH2/a6Sp4J23Z7HyebUXkj6FvY8kwo3J39MAX3U=;
-        b=bVktt/ZGMTEU4Plk/R1hGLU3ycvr9tXipByRQqViuESYblINVHxn5eBupumCDQJ1SS
-         o/bFwX7U5jUm6wYQCBfcMLvOQiPVnQi5P6MVxKYxSf4672ZZAX6Y9J1z9t9XXHw6f5hV
-         Xe8guEMu3ISJv5vXnXfCydpYQ0iqOTwr5RufJ7XWuWfqrImhFtbzJto1ndzfwQzRfqgu
-         lIMG6R68O4Ipaqt8gY8qHmEIBxwHqktyJ1Ya/NuLbTAi5P7l2q5XNV3gBAeg/xQ55KG9
-         i2BgexLG4WfBO7ua7CJe52mmCnqmqrzAW/G/XRr22DvlwaRGvPCI4lGpevJfm9DaFQI+
-         C7eA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HtxhUMN0ZQ8RDApQN2b90A3AKYwJoeoLbjxI6U7n3LM=;
+        b=S26wzDsgIT6If/pLHMjQbFvuoL8a2c+7whRkzzuaMT7O1Bg4Ozb7T6HcT1TFUt9xOK
+         yrVPq74llOs6bHAh55cfM0DXnYcCbVUfNVpErX7BtxJFZOj5JCisXQ3NpWJZsLgvtIyY
+         WJT2vNl3xdtofo//eMp5HapB8dhChUD+QYxT89/MPg7bjZuqEB9H6MPH98koS1Q8koy3
+         L2usl2AgD/GTOOwyxWbRPILq36fasCSdSY+sEP0mLOlB5NwCyD3DEth0A9b1dlCFwxdc
+         48q8q5uzf4yyD21h1dCJkfnKhDOVuuC5rRAn2vI+GEgApcrXBrQtCDd2MA3+cl4pQPNq
+         jqhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=S7VuXH2/a6Sp4J23Z7HyebUXkj6FvY8kwo3J39MAX3U=;
-        b=UpwSuzX9cLVo2KFODP4JJyNi9rTdjxIJviBaQ337TUyqgM9/9BV+lZLKsOdf7+qgfY
-         57VytyntDL/4Mtk1eooU/yxYYq7KtdLN3VbZ2iFXWNOpx1yk/TwpCTHiZAXozmGTfa/c
-         Uaz06QPrk5Jo0epqUAmdv7omA66RGKe6uaNwuB2uZ4QKDUwVGjVsc0cYIJ9scZOJ0weC
-         N4Q2OYbD44GcdZI751EDPhPy8hn3cAP0PdlT2YmTqKikcu0FsgcEbjtywSIJnTbLaUfD
-         25E1/70zQzIjo7PPfFij+ARz6pbrYDtm3zz3quaXwT4F4lHOZzkj6vhOn20imj1kACcN
-         15Nw==
-X-Gm-Message-State: APjAAAViNfNj0GaxnBuch3aFNxKSjRYQyQ4CNYR4FlADKscjoIsAO3qB
-        UnM6qetRmYC39xzGNmD9HJc=
-X-Google-Smtp-Source: APXvYqztBgzoAs1ZfcOvHZsCTT447fzwCtV+/kcyavj5LTE6+7P+iXnqZOyqq8h18Ok308rSyjw/kQ==
-X-Received: by 2002:a17:902:6948:: with SMTP id k8mr2962890plt.223.1576679608939;
-        Wed, 18 Dec 2019 06:33:28 -0800 (PST)
-Received: from quaco.ghostprotocols.net ([179.97.35.50])
-        by smtp.gmail.com with ESMTPSA id 68sm3516621pge.14.2019.12.18.06.33.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Dec 2019 06:33:28 -0800 (PST)
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id ED4F840352; Wed, 18 Dec 2019 11:33:25 -0300 (-03)
-Date:   Wed, 18 Dec 2019 11:33:25 -0300
-To:     Andrey Zhizhikin <andrey.z@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
-        sergey.senozhatsky@gmail.com, pmladek@suse.com,
-        wangkefeng.wang@huawei.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>
-Subject: Re: [PATCH] tools lib api fs: fix gcc9 compilation error
-Message-ID: <20191218143325.GE13395@kernel.org>
-References: <20191211080109.18765-1-andrey.zhizhikin@leica-geosystems.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HtxhUMN0ZQ8RDApQN2b90A3AKYwJoeoLbjxI6U7n3LM=;
+        b=Qh50vR1/G4VUY3trTbnqiKKfz8zDMSlBkzDf/OC+x9bJjP+hrGAkLneLqn1WE3JP7C
+         3P4uykX4gxi/qPH5SJo2lJsBolVz3XCQgyDl8DYHTZFiwbsGi0HEqYldc8+YwKAszll/
+         tJW3YlGWy5ucIulu+n2hncb/1UXFhLmsi74b+DL2bf3QwDFsDxWA/xaQoZ2Fg5/97Sap
+         HxqpcugcZI9ACxUP/yD83I5A8/TF5TDZX3bG1VFEq8RbYK7dr7fYbU0fvxxA1NHiT1rb
+         Gw+TthKEODc88IrutYPe6fSxpvyEIXVIeb8q5bTOUU0frPR3qL4he3l3xBOhyDZ7lSky
+         WB9g==
+X-Gm-Message-State: APjAAAXeDWHQ/D9uZmg+6RJ97Nwxfvmn6Jvbq51XxEuJo/848oYUOEqI
+        PPOs3FE10sH3SHC9CwWeVwfE6mrd4zA4BOG203U=
+X-Google-Smtp-Source: APXvYqzdY8+v0Ziio2jx9QkXTvj2SCIvGetVam7OHR7M+H/DPPu/O5WKDGQr2Gpc/zwOq2jDj/5+svUpvzcY1ctI8TE=
+X-Received: by 2002:a05:6830:2141:: with SMTP id r1mr2946729otd.39.1576681241302;
+ Wed, 18 Dec 2019 07:00:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191211080109.18765-1-andrey.zhizhikin@leica-geosystems.com>
-X-Url:  http://acmel.wordpress.com
+References: <000000000000a6f2030598bbe38c@google.com> <0000000000000e32950599ac5a96@google.com>
+ <20191216150017.GA27202@linux.fritz.box> <CAJ8uoz3nCxcmnPonNunYhswskidn=PnN8=4_jXW4B=Xu4k_DoQ@mail.gmail.com>
+ <CAJ8uoz312gDBGpqOJiKqrXn456sy6u+Gnvcvv_+0=EimasRoUw@mail.gmail.com>
+ <20191217154031.GI5624@arrakis.emea.arm.com> <CAJ8uoz3yDK8sEE05cKA8siBi-Dc0wtbe1-zYgbz_-pd5t69j8w@mail.gmail.com>
+ <20191217223808.GA14982@mbp>
+In-Reply-To: <20191217223808.GA14982@mbp>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Wed, 18 Dec 2019 16:00:30 +0100
+Message-ID: <CAJ8uoz358oXf7HGjOdVLO6vXLJqKN8LNV=d1HRQ=ZA=jTtOV2A@mail.gmail.com>
+Subject: Re: WARNING in wp_page_copy
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        kirill.shutemov@linux.intel.com, justin.he@arm.com,
+        linux-mm@kvack.org,
+        syzbot <syzbot+9301f2f33873407d5b33@syzkaller.appspotmail.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        bpf <bpf@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>, hawk@kernel.org,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        linux-kernel@vger.kernel.org,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        Network Development <netdev@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        syzkaller-bugs@googlegroups.com, Yonghong Song <yhs@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Wed, Dec 11, 2019 at 08:01:09AM +0000, Andrey Zhizhikin escreveu:
-> GCC9 introduced string hardening mechanisms, which exhibits the error
-> during fs api compilation:
-> 
-> error: '__builtin_strncpy' specified bound 4096 equals destination size
-> [-Werror=stringop-truncation]
-> 
-> This comes when the length of copy passed to strncpy is is equal to
-> destination size, which could potentially lead to buffer overflow.
-> 
-> There is a need to mitigate this potential issue by limiting the size of
-> destination by 1 and explicitly terminate the destination with NULL.
+On Tue, Dec 17, 2019 at 11:38 PM Catalin Marinas
+<catalin.marinas@arm.com> wrote:
+>
+> On Tue, Dec 17, 2019 at 04:57:34PM +0100, Magnus Karlsson wrote:
+> > On Tue, Dec 17, 2019 at 4:40 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
+> > > On Tue, Dec 17, 2019 at 02:27:22PM +0100, Magnus Karlsson wrote:
+> > > > On Mon, Dec 16, 2019 at 4:10 PM Magnus Karlsson
+> > > > <magnus.karlsson@gmail.com> wrote:
+> > > > > On Mon, Dec 16, 2019 at 4:00 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+> > > > > > On Sat, Dec 14, 2019 at 08:20:07AM -0800, syzbot wrote:
+> > > > > > > syzbot has found a reproducer for the following crash on:
+> > > > > > >
+> > > > > > > HEAD commit:    1d1997db Revert "nfp: abm: fix memory leak in nfp_abm_u32_..
+> > > > > > > git tree:       net-next
+> > > > > > > console output: https://syzkaller.appspot.com/x/log.txt?x=1029f851e00000
+> > > > > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=cef1fd5032faee91
+> > > > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=9301f2f33873407d5b33
+> > > > > > > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> > > > > > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=119d9fb1e00000
+> > > > > > >
+> > > > > > > IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> > > > > > > Reported-by: syzbot+9301f2f33873407d5b33@syzkaller.appspotmail.com
+> > > > > >
+> > > > > > Bjorn / Magnus, given xsk below, PTAL, thanks!
+> > > > >
+> > > > > Thanks. I will take a look at it right away.
+> > > > >
+> > > > > /Magnus
+> > > >
+> > > > After looking through the syzcaller report, I have the following
+> > > > hypothesis that would dearly need some comments from MM-savy people
+> > > > out there. Syzcaller creates, using mmap, a memory area that is
+> > >
+> > > I guess that's not an anonymous mmap() since we don't seem to have a
+> > > struct page for src in cow_user_page() (the WARN_ON_ONCE path). Do you
+> > > have more information on the mmap() call?
+> >
+> > I have this from the syzcaller logs:
+> >
+> > mmap(&(0x7f0000001000/0x2000)=nil, 0x2000, 0xfffffe, 0x12, r8, 0x0)
+> > getsockopt$XDP_MMAP_OFFSETS(r8, 0x11b, 0x7, &(0x7f0000001300),
+> > &(0x7f0000000100)=0x60)
+> >
+> > The full log can be found at:
+> > https://syzkaller.appspot.com/x/repro.syz?x=119d9fb1e00000
+>
+> Thanks. Prior to mmap, we have:
+>
+> r8 = socket$xdp(0x2c, 0x3, 0x0)
+>
+> So basically we have an mmap() on a socket descriptor with a subsequent
+> copy_to_user() writing this range. We do we even end up doing CoW on
+> such mapping? Maybe the socket code should also implement the .fault()
+> file op. It needs more digging.
 
-Thanks, applied and collected the reviewed-by and acked-by provided,
+I am trying to reproduce it with syzkaller, but so far no luck on my
+machine. Will keep you posted.
 
-- Arnaldo
- 
-> Signed-off-by: Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>
-> Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> ---
->  tools/lib/api/fs/fs.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/lib/api/fs/fs.c b/tools/lib/api/fs/fs.c
-> index 11b3885e833e..027b18f7ed8c 100644
-> --- a/tools/lib/api/fs/fs.c
-> +++ b/tools/lib/api/fs/fs.c
-> @@ -210,6 +210,7 @@ static bool fs__env_override(struct fs *fs)
->  	size_t name_len = strlen(fs->name);
->  	/* name + "_PATH" + '\0' */
->  	char upper_name[name_len + 5 + 1];
-> +
->  	memcpy(upper_name, fs->name, name_len);
->  	mem_toupper(upper_name, name_len);
->  	strcpy(&upper_name[name_len], "_PATH");
-> @@ -219,7 +220,8 @@ static bool fs__env_override(struct fs *fs)
->  		return false;
->  
->  	fs->found = true;
-> -	strncpy(fs->path, override_path, sizeof(fs->path));
-> +	strncpy(fs->path, override_path, sizeof(fs->path) - 1);
-> +	fs->path[sizeof(fs->path) - 1] = '\0';
->  	return true;
->  }
->  
-> -- 
-> 2.17.1
+/Magnus
 
--- 
-
-- Arnaldo
+> --
+> Catalin
