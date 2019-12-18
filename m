@@ -2,87 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C6A1E1254EF
-	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2019 22:43:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A368125682
+	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2019 23:19:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726510AbfLRVnw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 Dec 2019 16:43:52 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:43784 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726212AbfLRVnw (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 18 Dec 2019 16:43:52 -0500
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xBILhmMC003640
-        for <bpf@vger.kernel.org>; Wed, 18 Dec 2019 13:43:51 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=facebook;
- bh=4yUfY7Tjj7WNz8PiEy97qP9OQCzQNpzSlGf2IrDbw7w=;
- b=fwp1ManFKmbK+As9yZoqTl4ZnWQyc+L7u5fOQ9Zc8f7DTJm/AEv/MOJygbrJrMl0a5Kt
- MiXLpTSPeMCdWWiL1IqHDlDTZ9OwrpAE35eBzIxUCp15liqbto19VizftAW+wMvTXo7E
- ESbBaeAVGSY35QsCW71NuMEPLLGkLgWX0XU= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2wypvwhwqa-10
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 18 Dec 2019 13:43:51 -0800
-Received: from intmgw004.05.ash5.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 18 Dec 2019 13:43:19 -0800
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 2E5AA2EC1DF5; Wed, 18 Dec 2019 13:43:18 -0800 (PST)
-Smtp-Origin-Hostprefix: devbig
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next] bpftool: simplify format string to not use positional args
-Date:   Wed, 18 Dec 2019 13:43:14 -0800
-Message-ID: <20191218214314.2403729-1-andriin@fb.com>
-X-Mailer: git-send-email 2.17.1
-X-FB-Internal: Safe
+        id S1726617AbfLRWSg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 Dec 2019 17:18:36 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:8890 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726387AbfLRWSg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 18 Dec 2019 17:18:36 -0500
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5dfaa5ad0000>; Wed, 18 Dec 2019 14:18:21 -0800
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Wed, 18 Dec 2019 14:18:31 -0800
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Wed, 18 Dec 2019 14:18:31 -0800
+Received: from [10.2.165.11] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 18 Dec
+ 2019 22:18:30 +0000
+Subject: Re: [PATCH v11 06/25] mm: fix get_user_pages_remote()'s handling of
+ FOLL_LONGTERM
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, <bpf@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <kvm@vger.kernel.org>,
+        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <linux-media@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <netdev@vger.kernel.org>,
+        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        Jason Gunthorpe <jgg@mellanox.com>
+References: <20191216222537.491123-1-jhubbard@nvidia.com>
+ <20191216222537.491123-7-jhubbard@nvidia.com>
+ <20191218161907.yczbijr3ngm7wwnj@box>
+From:   John Hubbard <jhubbard@nvidia.com>
+X-Nvconfidentiality: public
+Message-ID: <c8d746ff-f544-6c9f-110b-215514fb4b5c@nvidia.com>
+Date:   Wed, 18 Dec 2019 14:15:40 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
- definitions=2019-12-18_07:2019-12-17,2019-12-18 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
- priorityscore=1501 impostorscore=0 adultscore=0 mlxscore=0 phishscore=0
- mlxlogscore=866 malwarescore=0 suspectscore=8 lowpriorityscore=0
- clxscore=1015 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1910280000 definitions=main-1912180166
-X-FB-Internal: deliver
+In-Reply-To: <20191218161907.yczbijr3ngm7wwnj@box>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1576707501; bh=sxjwJVdMWX10qxIPxn4THVxS9SYzoQiX2+nIJ9/LG7I=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=UZ8jBMwY32NgWwiJjZwTAPW3ja6CuPOAfe4SpG+9/CDwknPqX5qccd7q+WCVa0kre
+         Av1FM/rgDWBJQowSF6blVYewBi40/EoGKov0KLTmsD25hxZXVoFAuUTjqD9AjunTuW
+         zOw8acZ6PbPZg9ggfzbvjmuiESVGaX+/zsYCSMAQZrWJGMuf5ikxNna4ygsE1Jk8cJ
+         dHbTfbTsY5cfH+d0VRIX71N/Dllb+k91MxmporXWGxV5JQ3DVwfnyQEVBsHmZwuyup
+         I9epWsR1kc8VLnGg3SRALlsRj1gICz0/x78ascTmPUjlda17XHeoBT+12qtVoXpcGN
+         AwPIbnNqxY2bw==
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Change format string referring to just single argument out of two available.
-Some versions of libc can reject such format string.
+On 12/18/19 8:19 AM, Kirill A. Shutemov wrote:
+...
+>> diff --git a/mm/gup.c b/mm/gup.c
+>> index 3ecce297a47f..c0c56888e7cc 100644
+>> --- a/mm/gup.c
+>> +++ b/mm/gup.c
+>> @@ -29,6 +29,13 @@ struct follow_page_context {
+>>   	unsigned int page_mask;
+>>   };
+>>   
+>> +static __always_inline long __gup_longterm_locked(struct task_struct *tsk,
+>> +						  struct mm_struct *mm,
+>> +						  unsigned long start,
+>> +						  unsigned long nr_pages,
+>> +						  struct page **pages,
+>> +						  struct vm_area_struct **vmas,
+>> +						  unsigned int flags);
+> 
+> Any particular reason for the forward declaration? Maybe move
+> get_user_pages_remote() down?
+> 
 
-Reported-by: Nikita Shirokov <tehnerd@tehnerd.com>
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- tools/bpf/bpftool/gen.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Yes, that's exactly why: I was thinking it would be cleaner to put in the
+forward declaration, rather than moving code blocks, but either way seems
+reasonable. I'll go ahead and move the code blocks and delete the forward
+declaration, now that someone has weighed in in favor of that.
 
-diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-index 8d93c8f90f82..851c465f99dc 100644
---- a/tools/bpf/bpftool/gen.c
-+++ b/tools/bpf/bpftool/gen.c
-@@ -567,9 +567,9 @@ static int do_skeleton(int argc, char **argv)
- 			return -1;					    \n\
- 		}							    \n\
- 									    \n\
--		#endif /* %2$s */					    \n\
-+		#endif /* %s */						    \n\
- 		",
--		obj_name, header_guard);
-+		header_guard);
- 	err = 0;
- out:
- 	bpf_object__close(obj);
+thanks,
 -- 
-2.17.1
-
+John Hubbard
+NVIDIA
