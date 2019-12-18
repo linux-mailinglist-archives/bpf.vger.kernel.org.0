@@ -2,280 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 900FB12528F
-	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2019 21:03:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A58112530F
+	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2019 21:19:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727015AbfLRUD4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 Dec 2019 15:03:56 -0500
-Received: from USAT19PA24.eemsg.mail.mil ([214.24.22.198]:55424 "EHLO
-        USAT19PA24.eemsg.mail.mil" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726831AbfLRUD4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 Dec 2019 15:03:56 -0500
-X-Greylist: delayed 431 seconds by postgrey-1.27 at vger.kernel.org; Wed, 18 Dec 2019 15:03:54 EST
-X-EEMSG-check-017: 62262950|USAT19PA24_ESA_OUT05.csd.disa.mil
-X-IronPort-AV: E=Sophos;i="5.69,330,1571702400"; 
-   d="scan'208";a="62262950"
-Received: from emsm-gh1-uea11.ncsc.mil ([214.29.60.3])
-  by USAT19PA24.eemsg.mail.mil with ESMTP/TLS/DHE-RSA-AES256-SHA256; 18 Dec 2019 19:56:40 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tycho.nsa.gov; i=@tycho.nsa.gov; q=dns/txt;
-  s=tycho.nsa.gov; t=1576699000; x=1608235000;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=H6V9sbb/F66JVqn0cl8Cnf1wVZ9VtFVXnUCF/07m3aI=;
-  b=XgvqzVOjYKrJ0dCrRbxk/3A8SiUqqV3bLxotr42KIodA8QP1ff/9S++j
-   m1/AanhIb0Wgav45u7QcRqJbE7u/ZWmt4qtFj+n9KcaeaJWmEU7/V15/0
-   kree7Wv8L/9t6GUEALo/KnFw/zrNUmadQwVyumxCRf3CfEHWRVlZpj+I5
-   ir0DUcHBIl0mZ1Dl985iyDwccDFxexKdueJlb+6Nr3yTBUd3v4W+s7VIi
-   K6SjAbgxTtQAAANsKSc81QMGgSFdMrJKEHX3wgnmqaUU2AzwgrYJHOngC
-   zovb6AAV/uYz6onnR7ms+cd1Qf/Ax9y5ULmBDpCi/PYR68hrlbFu6P3P/
-   w==;
-X-IronPort-AV: E=Sophos;i="5.69,330,1571702400"; 
-   d="scan'208";a="36934795"
-IronPort-PHdr: =?us-ascii?q?9a23=3AKQmHzhTxelP3vH6itYhlOXLUPdpsv+yvbD5Q0Y?=
- =?us-ascii?q?Iujvd0So/mwa6+ZBKEt8tkgFKBZ4jH8fUM07OQ7/m7HzZYsN3Y6i5KWacPfi?=
- =?us-ascii?q?dNsd8RkQ0kDZzNImzAB9muURYHGt9fXkRu5XCxPBsdMs//Y1rPvi/6tmZKSV?=
- =?us-ascii?q?3wOgVvO+v6BJPZgdip2OCu4Z3TZBhDiCagbb9oIxi6sAvcutMIjYd+Lqs9xQ?=
- =?us-ascii?q?bFrmVJdu9L2W5mOFWfkgrm6Myt5pBj6SNQu/wg985ET6r3erkzQKJbAjo7LW?=
- =?us-ascii?q?07/dXnuhbfQwSB4HscSXgWnQFTAwfZ9hH6X4z+vTX8u+FgxSSVJ8z2TbQzWT?=
- =?us-ascii?q?S/86dmTQLjhSkbOzIl9mzcl9d9h7xHrh2/uxN/wpbUYICLO/p4YqPdZs4RSW?=
- =?us-ascii?q?5YUspMSyBNHoawYo0BAOobOeZTspfzqV0AoxCjAQWgHf3jxztNinLwwKY00f?=
- =?us-ascii?q?kuERve0QI9AdwOvnTaotb7OqgcXu+6zrXHwzrYYvNK2zrw8pTEfgwvrPyOW7?=
- =?us-ascii?q?97bMrfyVMoFwPAllietJDlMC2N1uQNrWeb6fdrW/+qi2E9rwFxpiagx8cxgY?=
- =?us-ascii?q?TOnYIa10vE+D5lwIc1OdK4SEl7bcSiEJtLrS6WLYR2QsQ8Q2xxvisx17MIuZ?=
- =?us-ascii?q?m+fCcQyZQnwQbSa/mdfIiO4B/vTuGRIS13hH9jZbmxhA6y/FC9xuDzWcS4yl?=
- =?us-ascii?q?ZHojdfntXSuX0ByQbf5tWBR/Bg5EmuwyyP2BrW6uxcJEA0krfUJIA5z74rk5?=
- =?us-ascii?q?oTrVzDHijrmEXqlKOWdlsr+uyv6+n/frXpvIWcN45pigHlKKgum8q/Aeo/Mg?=
- =?us-ascii?q?gVQWeU5f6w1KHj/ELlQLVKiec6kq/Fv5DBOcsXvKu5Aw5R0oo76ha/CSmp0M?=
- =?us-ascii?q?gAkHUaI19IdwiLgoj0N13UPvz1Aumzj06xnDtzwvDJJLzhApHDLnjZl7fheK?=
- =?us-ascii?q?5w61VBxwoo1t1f+5JVBa0BIPL0QEPxssfYAQUjPwy7xObnFs1x1pkCVmKXHq?=
- =?us-ascii?q?+ZLKTSvEeS6eIrPeaNa5EauTbnJ/c++v7hkGU2mVkefamuw5sac3S4HvVgI0?=
- =?us-ascii?q?WEbnvgmNYBEWEWvgUgSOzmkkGNUTlWZ3yqRaIz+ik7CJ66DYfEXo2tmKKO3D?=
- =?us-ascii?q?ulEZ1MZ2FLEVGMEXHmd4WeQfgDdTydLdV8nTAeUrihUYAh3wm0tADm07pnMv?=
- =?us-ascii?q?bU+ioAuJ35yNd14vPcmAox9TNqFcSd1X+CT2VukmMPXT8207h1oVZhxVebza?=
- =?us-ascii?q?h4n/tYGMRW5/NIVAc6OpncwvdgC9/sRw3Bfs2GSEq8Ttq6BjExS8o7w8USbE?=
- =?us-ascii?q?ZlB9WikhfD0jKoA7APkbyLBYY48qTd33jyOsZ9z2zJ2bIlj1knRMtPKGKnir?=
- =?us-ascii?q?R+9wjVG47GjUGZm7y2eqQb2S7H7H2DwnaWvEFETA5wVr3IXXIYZkvRq9T2/F?=
- =?us-ascii?q?jCQ6WqCbs9MgtB1c+CKq1UZd3vllhGQPbjONLDY2O+gWuwBBCIxq+SY4ruYW?=
- =?us-ascii?q?kSwCLdCE0cmQAJ4XmGLRQ+Bjumo2/GFjxuEk/gY1nt8elxr3O3VFE0zwCUb0?=
- =?us-ascii?q?1gzLe1+xgVheCCRPMXxL4LpCAhqzBsFlanw93WE8aApxZmfKhEe9w9+0tH2H?=
- =?us-ascii?q?natwNjJJygKb5thloEfwRwpUPu2A19Cp9cnsgysHMq0A1yJLqD31xfcTOY3Y?=
- =?us-ascii?q?v9Or7JJWno+hCgdarW1kvC39aM4KgP8/Q4q1TlvAGmDEYi9G9n09ZN2XuG+p?=
- =?us-ascii?q?rKFBYSUY72Uksv7xh1vazaYi0g54PPznBsKrO7sjrZ1N0zHuclzQygf9hHOq?=
- =?us-ascii?q?OeCADyC9EaB9SpKOEynlipdgwLMftM+64wO8OpaeGG2KuxM+Zmhj6mjHlI7J?=
- =?us-ascii?q?pn3UKR7yB8UPLH344Zw/GE2QuKTzX8g02kss/pgoBIfyodHm2jySj4A45RY6?=
- =?us-ascii?q?lycpgLCGq1I8243NN+h4XzVH5e7F6sHUkG2NOveRWMdVz9xg1Q1UUPoXC9hS?=
- =?us-ascii?q?S4yDl0mSkzrqWDxCzO3/jidB0fN25QWmZil1jsLpavgtAaRkeoawwplRuj5U?=
- =?us-ascii?q?rg26dbo6F/JXHJQUhUZyj2M31iUqyou7qAZs5P74kosT9WUOSnel2aTKTyox?=
- =?us-ascii?q?4E3CPiBWdewyo7dz6ysJXjgxN6kH6dLGp0rHfBd8BwxBPf5NjGSfFMwDUJXj?=
- =?us-ascii?q?V3iT7RBlWnJdap59CUm43fveC5UmKrTodTfjXzzYOcqCu74nVnARilkPCpmd?=
- =?us-ascii?q?3rCxI60TLn19luTyrIqgvzb5Lx2KSgNOJrZFVnBFj568BiAIFxjpMwhI0M2X?=
- =?us-ascii?q?gdnpia4WAIkXztPtRbwq/+d2YCRT4RzN7I7gjl3FNsLmiQy43lTHqR2NduZ9?=
- =?us-ascii?q?6/YmkOwCIy89hKCLuI7LxDhSZ1uEC4rQPNbvVmnTcS1+Eu6HgEjOENogYtyT?=
- =?us-ascii?q?+dAr8KF0lCISPsjwiI78y5rKhPZmavdryw1FFkkt26FrGNvBxTWHbjdZc+By?=
- =?us-ascii?q?N/8sJ/MFfU2n3p9o7kYMXQbc4UthCMiRjAjPNYKJYwlvoMmCpmNnjxvXwjy+?=
- =?us-ascii?q?4nkxNu2Yu2s5SAK2Vo5Ki5GAJXNiXpZ8MP/THglbhRntyM0ICpH5VuADMLUY?=
- =?us-ascii?q?DnTfKvFzISuvDnOBiUHDIgrXebHKLVHRWD50d+s3LPD5erOmmWJHkd0NVtXw?=
- =?us-ascii?q?OSJFdfgA8KRzg1hJ05GRqvxMP7cUd1/Cwe5ln9qhFU0OJnKwH/UnvDpAevcj?=
- =?us-ascii?q?o7UpyfIwRZ7w5Y4UfaLNKR7vhpEyFD/p2hrReNKmyYZwRJC2EEQUiEB1HlPr?=
- =?us-ascii?q?mz6tjM6emYBuyiL/TQZbWCs/BRV/CNxZi3yItp4y6MNtmTPnllF/A73FBMXX?=
- =?us-ascii?q?V5G8XZhjUPTSMXmjnOb8GFvhe8/DN4rsSl/PTsQgLv6pOFC6FOPtV35xC2na?=
- =?us-ascii?q?CDOvaThClnNzlYzY8DxXjPyLgcx1MdlyFudyOqEbQFtC7NUafQlrVQDx4BZC?=
- =?us-ascii?q?N5LNFI4L4k3glRJc7bjcv41rxigf4zDVdFVUfsms6uZcwNLGG9ME3ICFyXO7?=
- =?us-ascii?q?SBID3B29v3br+kSb1MkOVUsAW9uSqUE0/nMTWOjD3pVxGpMeFRkCGbJhteuI?=
- =?us-ascii?q?e8chdiE2TsUczpYAWhMNBrlT023aE0hnTSOG4ALzh8aV9Nrr6X7S9Cn/V/AX?=
- =?us-ascii?q?dB7mdhLemFnSaU9O3YKpcQsft2DSV4jeNa4HImy7RL6CFIXuB6mCzXrtR2uV?=
- =?us-ascii?q?GpjvGPyiZ7UBpJsjtLgIOLvUJkOarH8plMQ3nE8AgJ7WqKDRQFutVkBcP1u6?=
- =?us-ascii?q?BUy9jPkrn+KDZE89LI48QcA9LYJ96AMHokKRDpAiLbDBMZTT63MmHSn1ddkP?=
- =?us-ascii?q?aU9n2aqpg6q4Xsl4EUSrBBSlw1F/UaCkt+EdwMO5h7RC8rkbmejMQQ/3qxsA?=
- =?us-ascii?q?HRRNlGvpDATv+SBfTvKDCEjbhLfhcIwq33LZ4VNoLl30xvcUd6nIvUFErKR9?=
- =?us-ascii?q?xNoTNubhUyoEpT9HhyVGoz21jqagm1+n8cCea0ngIqigt5eekt8Dbs41EqJl?=
- =?us-ascii?q?vFvScwi1c+lsn4gTCLcT7xMKexUZhTCyrzqkcxL5f7TBhuYA2skkxrKi3ES6?=
- =?us-ascii?q?hSj7R+b2BrjhHTuZ9VFf5bV61EbwcaxeuLaPUwzVRctiKnyFdc5eTbDZtilQ?=
- =?us-ascii?q?0qcYOjrn9bxQJjY8A6JbbKKKpK0FdQnKSOsTGs1uwrxw8ePUkN+nuIeCEUoE?=
- =?us-ascii?q?wIKqUmJy2w8+xt7wyChyVMeGwVW/olrPJr+VgwO+CBzyL7z75DMVq9N+KFL6?=
- =?us-ascii?q?yHpWfPiNCHQkgz1kMUkElF5aJ60cA5c0qbT0ov1qeeFwwVNcreLgFYd9Fd9G?=
- =?us-ascii?q?DdfSuVr+XNzox6P5+nGuDrU+COrqAUjVygHAozGIQM9MsBFIG20E7ENcfnMK?=
- =?us-ascii?q?IFyRI16QTvJVWFCulJeR2SnDcfuc6/1p533ZJBKTwGH2V9Pju45qzNqg8pnv?=
- =?us-ascii?q?WDRtE2bWkeXoceMXI2QsK6kTZDv3tcFDm3zv4ZyA+a4j/4pyTQCiT8btV7ZP?=
- =?us-ascii?q?eMeRxgEcy59ish86WtjV7X847eJ33hNdh4vd/O6OcaqIycBPNPV7V9tF3cm4?=
- =?us-ascii?q?ZATXywT2HPCcK1J4T3a4Q0adz0C3C6UkGwij4sV8f+IsytLqaRjQH1XoZbrp?=
- =?us-ascii?q?Ob3Cs4OM+jGTERBQ1wq/sA5K1ifw0DZYQ0YRryuwQ5Lay/Lx+S0s+yTGa1NT?=
- =?us-ascii?q?tWU/5fwP2+Z7xWySosc+C7xGI6QZEgyum76E0NS48QjhHY2/mjY5JTUSzyGn?=
- =?us-ascii?q?xGZwXPvjA1l2lnNuY82Ocw2g7HvkcGPD+WbuBpb3ZEv94kD1OIPXp2EnY4R0?=
- =?us-ascii?q?ObjYfb5Q6sx6oS/yxTn9ZV1e1KrmHyvpveYDK3RKymspHVsys7bdg6uK19K5?=
- =?us-ascii?q?fjIsWcuJPYgDPfUMqYjgrQeSq3B/dL0vJNLCteQ/5W0TUsPcEWtJsH41c9X8?=
- =?us-ascii?q?E9IKJnDKgqu6DsaDx4ACpUxigcAcfI5DEej/306brYkgyMap1qZAQJrJhYkP?=
- =?us-ascii?q?McVSBsay8TraPlUJ/ZwSvMY3INKQMf6kxn7Rgen4tweajp7cLtQZtLg2pfqP?=
- =?us-ascii?q?d5eijGDJ9l8x38UG7AxRDZTvqm28mu2QRb1rq419gdVxlXE0VRx+9K0EAvLe?=
- =?us-ascii?q?czY+MSt4jL9DmJdl7+tUrpye27NB9Qz9HZcxvzC4+P/T7+Wysdv3sVRpJLwV?=
- =?us-ascii?q?nbFJIPg0x4bromoBNHJ4XwPg605TsjwY1yWb2xVdyqwVsjhXIHQTq6VdtHF+?=
- =?us-ascii?q?xi9lnQXXctN5Ksr5PsINNWS29M+ZuQrX9dkUNwI2i4z4ZRL4dG5TtaGHAFuz?=
- =?us-ascii?q?KRptq9T4td2NF3J54KPtp7/Xz6HekMbIKWr2c3tbup1H7H+hg9tku3wHO4HK?=
- =?us-ascii?q?ruC6pw+2AOFwRhHHiXsE4xCOow9XmaplnWrnh38v1dC7zJil9+9nI1NJ1IBD?=
- =?us-ascii?q?9M1HbtD1lpVnRAqO5aLaXZb4QISfQ0ZTesNgY4GPpg1FaA5kF1m3i/ZDZ94E?=
- =?us-ascii?q?8SwynAW0ERXCIWj633kCZW/tmuJDsHULpTZDArZmHCMQ3N3WhyvR1fYkxuE7?=
- =?us-ascii?q?0dBttf/rgdld9R5sfqREKoJDsAVRokNw5+2OcJ0QYJskyddDubBw20afHKth?=
- =?us-ascii?q?BmVceYqtWkKuzw5htBh5n8sOEgsa4EQjfuzQ+kRN3F6YX7qsGNs0+DZY/4Ou?=
- =?us-ascii?q?unbHnZRSLQix2qnrclF9/B+C2FdEJgJoN1xDIEaJzlGGiDaQ9LPa0WD0pSUa?=
- =?us-ascii?q?Rrb5NNpeUMI4dGcaME4udIAQidRwinTI6qq+NcL037Qz3bIiTH9faw98ab0r?=
- =?us-ascii?q?3ZTaDMa8WHwHCPF712OpM85TTyELDs+YZE/wz93fI7sgtfQELFexqcsNDoIA?=
- =?us-ascii?q?9DsMyrbEikpIA1GTrQDL95in+rzUZFIY5faCSx/YVQ85hZ4Wv+Te9imhz4uf?=
- =?us-ascii?q?Zf5pF/4ok+/r5txN3xLq6UIvNf5wsvOB+eCx92vq8sC2hjSnoZNvULKfz5fq?=
- =?us-ascii?q?kDi83q7eftGPpExgeS/rliddbfJ0zH0vK6AzWYRA0MyBwNshYGPwCc0LiDgK?=
- =?us-ascii?q?YyRsG787uqknkx6kSze0ZVhItm4p2Jr+/R/r7a?=
-X-IPAS-Result: =?us-ascii?q?A2BjAgB2g/pd/wHyM5BkHAEBAQEBBwEBEQEEBAEBgXyBd?=
- =?us-ascii?q?oEYVSASKoQEiQOGWgaBEiWJapFFCQEBAQEBAQEBASsMAQGEQAKCPTgTAhABA?=
- =?us-ascii?q?QEEAQEBAQEFAwEBbIU3DII7KQGCegEFDhUVLRQQCxgCAiYCAlcGAQwGAgEBg?=
- =?us-ascii?q?l8/AYJSJQ+uDYEyhA0BAYFAgzqBQYEOKIlPgmN5gQeBOAwDgl0+gmQDhHKCX?=
- =?us-ascii?q?gSPeocURpc1gj+CQ4RujlwGG4JDdYcEkBItjiGBRocLlA4igVgrCAIYCCEPg?=
- =?us-ascii?q?ycJFjEYDY0eFxWIT4UIAVQjAzABjywBAQ?=
-Received: from tarius.tycho.ncsc.mil (HELO tarius.infosec.tycho.ncsc.mil) ([144.51.242.1])
-  by emsm-gh1-uea11.NCSC.MIL with ESMTP; 18 Dec 2019 19:56:39 +0000
-Received: from moss-pluto.infosec.tycho.ncsc.mil (moss-pluto [192.168.25.131])
-        by tarius.infosec.tycho.ncsc.mil (8.14.7/8.14.4) with ESMTP id xBIJtrkd126229;
-        Wed, 18 Dec 2019 14:55:54 -0500
-Subject: Re: [PATCH v4 1/9] capabilities: introduce CAP_SYS_PERFMON to kernel
- and user space
-To:     Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "jani.nikula@linux.intel.com" <jani.nikula@linux.intel.com>,
-        "joonas.lahtinen@linux.intel.com" <joonas.lahtinen@linux.intel.com>,
-        "rodrigo.vivi@intel.com" <rodrigo.vivi@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        "james.bottomley@hansenpartnership.com" 
-        <james.bottomley@hansenpartnership.com>,
-        Serge Hallyn <serge@hallyn.com>,
-        James Morris <jmorris@namei.org>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Robert Richter <rric@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
-        Stephane Eranian <eranian@google.com>,
-        Igor Lubashev <ilubashe@akamai.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Jann Horn <jannh@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        Lionel Landwerlin <lionel.g.landwerlin@intel.com>,
-        Song Liu <songliubraving@fb.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "selinux@vger.kernel.org" <selinux@vger.kernel.org>,
-        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org, oprofile-list@lists.sf.net
-References: <c0460c78-b1a6-b5f7-7119-d97e5998f308@linux.intel.com>
- <e0cb2b8d-e964-bc23-bf80-58d7ac4ed6f1@linux.intel.com>
-From:   Stephen Smalley <sds@tycho.nsa.gov>
-Message-ID: <c10d7785-1e75-4503-3560-99ab9f845a11@tycho.nsa.gov>
-Date:   Wed, 18 Dec 2019 14:56:33 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
-MIME-Version: 1.0
-In-Reply-To: <e0cb2b8d-e964-bc23-bf80-58d7ac4ed6f1@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S1726376AbfLRUTz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 Dec 2019 15:19:55 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:34022 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725938AbfLRUTy (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 18 Dec 2019 15:19:54 -0500
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xBIKGHrd006188;
+        Wed, 18 Dec 2019 12:19:39 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=5Tibem/iydgesLYWpKxAuKFUKEc5XbKJhz/PpRKlgBY=;
+ b=nm+j2W1r1UrSHL4+tMAFIo5/ptThoUBkOXGMgRY3ibFiOMlCTOMtGuMMVqAowajLdydj
+ EOsXiT45KQDjFLqRvwTVMqYD9rAvEtzgUouElltk0yY7vpSgry6/C9Po/Z6NB6ZKybNa
+ KRxMqmtIsXXoXtoe3e2CadTeHneRkjhgjDw= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by mx0a-00082601.pphosted.com with ESMTP id 2wyqv4h4kb-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 18 Dec 2019 12:19:39 -0800
+Received: from prn-hub02.TheFacebook.com (2620:10d:c081:35::126) by
+ prn-hub04.TheFacebook.com (2620:10d:c081:35::128) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Wed, 18 Dec 2019 12:19:38 -0800
+Received: from NAM04-BN3-obe.outbound.protection.outlook.com (192.168.54.28)
+ by o365-in.thefacebook.com (192.168.16.26) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
+ via Frontend Transport; Wed, 18 Dec 2019 12:19:38 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DWHUt5oBMp74myxQFRrD5MvxkQb+TPi7o90Nf3uZQyos3HxMj41FmW993IOkQQ7Nx0RRHIkdTSthAB7A32j94QBy1c6BS4wRy6s5gzYEFsg3Qvb8fA3JPVvIc6hdp/UbTufb750EwH1FzGRg/qc3542MG4dULnCerihWqCOlS6Jx77QEpjwn4TTFOFLod+PQ/7U5PfKIyeZ3H5hwzigIfr9CFwJs1+qTtgSJKi8i/wEN3Bn9utRYSdCH1Lbj6buS4xSxVx7aFjcXVQby9V4faQ1oAWSFj683HVUy5sT1PMZTO5PBmipkFkz74wh9JTbGU0ANFmxoror4YhAHljhlnw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5Tibem/iydgesLYWpKxAuKFUKEc5XbKJhz/PpRKlgBY=;
+ b=nAWRDEMqzGZngpccOWw+PF5psalA36RlkP14kGbdbdXb+AzTFTzl6VdV3WfP0JVO8pVoLDkZ7vEG2nxKUTs/rcPY6UmAJyULDbCOkakuyOJTvNJbHO9IMw8TQBU+sPYl7u+KfDFcu01FIcyUbFTkxrhyCW+b8FTfi9YSE/I/UBZwxydE+w6FhVeEM9HXk4GNEB00Shrho5WL7yLvwyJ12QDvV2tBgG5LXWgROzDEU/W9Eb9gAklP2pEG660K4xVJVCTUQqTYtea20PRhHRtFjQxa3pQKrInhTvTfF/ZNDpEyUxlZ5vqgXAlkITHXS+mZ3RMAy53ZZq76E+AXY2LzkQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5Tibem/iydgesLYWpKxAuKFUKEc5XbKJhz/PpRKlgBY=;
+ b=P+K3HdaDvEoF2M9hjJUp1+nNKxtBB1YBURpZ/tyZsiLVNXAVaRN1HC6Mon8/2cV1Mj4VLyNul5qnf7slsBes5+5tjVjcyHJul4zDeKnrro3Jyko4a59RgUe0JoQ8zWqcxaVoOHy4ViMHhnf7Yscjumy+XbArt08VjoG39BHavvQ=
+Received: from MN2PR15MB3213.namprd15.prod.outlook.com (20.179.21.76) by
+ MN2PR15MB3455.namprd15.prod.outlook.com (20.179.21.14) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2559.14; Wed, 18 Dec 2019 20:19:37 +0000
+Received: from MN2PR15MB3213.namprd15.prod.outlook.com
+ ([fe80::6d1e:f2f7:d36:a42f]) by MN2PR15MB3213.namprd15.prod.outlook.com
+ ([fe80::6d1e:f2f7:d36:a42f%4]) with mapi id 15.20.2538.019; Wed, 18 Dec 2019
+ 20:19:37 +0000
+From:   Martin Lau <kafai@fb.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>,
+        "Kernel Team" <Kernel-team@fb.com>,
+        Networking <netdev@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 11/13] bpf: libbpf: Add STRUCT_OPS support
+Thread-Topic: [PATCH bpf-next 11/13] bpf: libbpf: Add STRUCT_OPS support
+Thread-Index: AQHVshgyWEoHfLDvE0Suwi3j+8Waaae/PFiAgABCBoCAAJ92gIAAEJoAgAALPQCAACMQgA==
+Date:   Wed, 18 Dec 2019 20:19:37 +0000
+Message-ID: <20191218201933.2ixhiz3n6zw75eg7@kafai-mbp.dhcp.thefacebook.com>
+References: <20191214004737.1652076-1-kafai@fb.com>
+ <20191214004803.1653618-1-kafai@fb.com>
+ <CAEf4BzbJoso7A0dn=xhOkFMOcKqZ6wYp=XoqGiL+FO+0VKqh5g@mail.gmail.com>
+ <20191218070341.fd2ypexmeca5cefa@kafai-mbp.dhcp.thefacebook.com>
+ <CAEf4BzaGcM6ose=2DJJO1qkRkiqEPR7gU4GizCvffADo5M29wA@mail.gmail.com>
+ <20191218173350.nll5766abgkptjac@kafai-mbp.dhcp.thefacebook.com>
+ <CAEf4BzboyRio_KaQtd2eOqmH+x0FPfYp_CDfnUzv4H698j_wsQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzboyRio_KaQtd2eOqmH+x0FPfYp_CDfnUzv4H698j_wsQ@mail.gmail.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: CO2PR05CA0080.namprd05.prod.outlook.com
+ (2603:10b6:102:2::48) To MN2PR15MB3213.namprd15.prod.outlook.com
+ (2603:10b6:208:3d::12)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c090:180::afeb]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: c825af51-acab-42fa-2309-08d783f79aa0
+x-ms-traffictypediagnostic: MN2PR15MB3455:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MN2PR15MB3455E5C2FE1271477A5B8974D5530@MN2PR15MB3455.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-forefront-prvs: 0255DF69B9
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(346002)(376002)(136003)(366004)(396003)(39860400002)(199004)(189003)(9686003)(6512007)(86362001)(64756008)(66446008)(52116002)(5660300002)(4326008)(6486002)(478600001)(316002)(71200400001)(186003)(66556008)(66476007)(66946007)(6506007)(54906003)(1076003)(81156014)(81166006)(8936002)(6916009)(8676002)(2906002);DIR:OUT;SFP:1102;SCL:1;SRVR:MN2PR15MB3455;H:MN2PR15MB3213.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 2zxhW3UAxtmOqHZqWRrCFM1+yplp7Nm5LxplFbNabmY+MUIHmODpIkNmct4KqEX0wWqWCH5blR4ryKX/xmlZn2xiZ3pOPe+52xlDtgIoj4ecMP7swU4SE9c0YYouHC7i4yICNMC2TGCASRRO9ewXX3w/TF08xg1Vp5pXFnKErUq5Emyj/4y1+zb6MnVBKkSJQOzvFdZEQtrje1Ucmd9KTXSS+iJ8pPxV8QGQVNEHVHPaehP2EadfIvyxNg3LpdL8wkRg/7Urfduf3q8SJux0rZEqUCtTbpAfQwp5zaGEoqtG5oAZYuhuXzoPxSfnFkGXRv812gKrAibvifY/dNZ6bhVcfYOlu5KAjN1px1X+QNgWuaLQUeRmSMoeo4vG9ZOd1WJry/JtPeoOxoD4myRtHW1Cz5QeA3IflRRgBGUElh/SeQ86NixYMHyQTjN/7yRr
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <5EFAEA9761433C41B224931D15379E1E@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: c825af51-acab-42fa-2309-08d783f79aa0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Dec 2019 20:19:37.1720
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: FOIrO+ZWg2tnPIIfXeZxgBYlLFOh7SKU0t7fet+H9v9KryfXnHC7x1PNG4FnSGXn
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB3455
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
+ definitions=2019-12-18_06:2019-12-17,2019-12-18 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ malwarescore=0 bulkscore=0 mlxlogscore=887 mlxscore=0 priorityscore=1501
+ impostorscore=0 phishscore=0 clxscore=1015 suspectscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-1912180155
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 12/18/19 4:24 AM, Alexey Budankov wrote:
-> 
-> Introduce CAP_SYS_PERFMON capability devoted to secure system performance
-> monitoring and observability operations so that CAP_SYS_PERFMON would
-> assist CAP_SYS_ADMIN capability in its governing role for perf_events,
-> i915_perf and other subsystems of the kernel.
-> 
-> CAP_SYS_PERFMON intends to harden system security and integrity during
-> system performance monitoring and observability operations by decreasing
-> attack surface that is available to CAP_SYS_ADMIN privileged processes.
-> 
-> CAP_SYS_PERFMON intends to take over CAP_SYS_ADMIN credentials related
-> to system performance monitoring and observability operations and balance
-> amount of CAP_SYS_ADMIN credentials in accordance with the recommendations
-> provided in the man page for CAP_SYS_ADMIN [1]: "Note: this capability
-> is overloaded; see Notes to kernel developers, below."
-> 
-> [1] http://man7.org/linux/man-pages/man7/capabilities.7.html
-> 
-> Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
-
-Acked-by: Stephen Smalley <sds@tycho.nsa.gov>
-
-Note for selinux developers: we will need to update the 
-selinux-testsuite tests for perf_event when/if this change lands upstream.
-
-> ---
->   include/linux/capability.h          | 4 ++++
->   include/uapi/linux/capability.h     | 8 +++++++-
->   security/selinux/include/classmap.h | 4 ++--
->   3 files changed, 13 insertions(+), 3 deletions(-)
-> 
-> diff --git a/include/linux/capability.h b/include/linux/capability.h
-> index ecce0f43c73a..883c879baa4b 100644
-> --- a/include/linux/capability.h
-> +++ b/include/linux/capability.h
-> @@ -251,6 +251,10 @@ extern bool privileged_wrt_inode_uidgid(struct user_namespace *ns, const struct
->   extern bool capable_wrt_inode_uidgid(const struct inode *inode, int cap);
->   extern bool file_ns_capable(const struct file *file, struct user_namespace *ns, int cap);
->   extern bool ptracer_capable(struct task_struct *tsk, struct user_namespace *ns);
-> +static inline bool perfmon_capable(void)
-> +{
-> +	return capable(CAP_SYS_PERFMON) || capable(CAP_SYS_ADMIN);
-> +}
->   
->   /* audit system wants to get cap info from files as well */
->   extern int get_vfs_caps_from_disk(const struct dentry *dentry, struct cpu_vfs_cap_data *cpu_caps);
-> diff --git a/include/uapi/linux/capability.h b/include/uapi/linux/capability.h
-> index 240fdb9a60f6..98e03cc76c7c 100644
-> --- a/include/uapi/linux/capability.h
-> +++ b/include/uapi/linux/capability.h
-> @@ -366,8 +366,14 @@ struct vfs_ns_cap_data {
->   
->   #define CAP_AUDIT_READ		37
->   
-> +/*
-> + * Allow system performance and observability privileged operations
-> + * using perf_events, i915_perf and other kernel subsystems
-> + */
-> +
-> +#define CAP_SYS_PERFMON		38
->   
-> -#define CAP_LAST_CAP         CAP_AUDIT_READ
-> +#define CAP_LAST_CAP         CAP_SYS_PERFMON
->   
->   #define cap_valid(x) ((x) >= 0 && (x) <= CAP_LAST_CAP)
->   
-> diff --git a/security/selinux/include/classmap.h b/security/selinux/include/classmap.h
-> index 7db24855e12d..bae602c623b0 100644
-> --- a/security/selinux/include/classmap.h
-> +++ b/security/selinux/include/classmap.h
-> @@ -27,9 +27,9 @@
->   	    "audit_control", "setfcap"
->   
->   #define COMMON_CAP2_PERMS  "mac_override", "mac_admin", "syslog", \
-> -		"wake_alarm", "block_suspend", "audit_read"
-> +		"wake_alarm", "block_suspend", "audit_read", "sys_perfmon"
->   
-> -#if CAP_LAST_CAP > CAP_AUDIT_READ
-> +#if CAP_LAST_CAP > CAP_SYS_PERFMON
->   #error New capability defined, please update COMMON_CAP2_PERMS.
->   #endif
->   
-> 
-
+On Wed, Dec 18, 2019 at 10:14:04AM -0800, Andrii Nakryiko wrote:
+[ ... ]
+>=20
+> Where we do have problem is with bpf_link__destroy() unconditionally
+> also detaching whatever was attached (tracepoint, kprobe, or whatever
+> was done to create bpf_link in the first place). Now,
+> bpf_link__destroy() has to be called by user (or skeleton) to at least
+> free up malloc()'ed structs. But it appears that it's not always
+> desirable that upon bpf_link destruction underlying BPF program gets
+> detached. I think this will be the case for xdp and others as well.
+>=20
+> I think the good and generic way to go about this is to have this as a
+> general concept of destroying the link without detaching BPF programs.
+> E.g., what if we have new API call `void bpf_link__unlink()`, which
+> will mark that link as not requiring to detach underlying BPF program.
+> When bpf_link__destroy() is called later, it will just free resources
+> allocated to maintain bpf_link itself, but won't detach any BPF
+> programs/resources.
+>=20
+> With this, user will have to explicitly specify that he doesn't want
+> to detach even when skeleton/link is destroyed. If we get consensus on
+> this, I can add support for this to all the existing bpf_links and you
+> can build on that?
+Keeping the current struct_ops unreg mechanism (i.e.
+bpf_struct_ops__unregister(), to be renamed) and
+having a way to opt-out sounds good to me.  Thanks.
