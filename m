@@ -2,109 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B29612404D
-	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2019 08:29:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0955F124259
+	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2019 10:03:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726545AbfLRH3W (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 Dec 2019 02:29:22 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:36120 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725882AbfLRH3W (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 Dec 2019 02:29:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1576654161;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=W+koJecItxUpWBbkClvTnIgMsQAjFCgBgLdaip1sKlY=;
-        b=HgEJY8wcMK3XBEFLet34nsAXKtuAIo/zIG1uAXZ/TBIsjQz0+FKq+xkK/kJuQGa23P8Bxm
-        G12T/MccDar4TfUZ68LUXXo9kWfpGX3UUM/VvEWL/n80utkD3uHYwvAQK6MP2fAE+qSNCc
-        8+Z7UeLyhNuvAUlxMxpM8Qe8SPJWbEY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-237-KeCKVkgNOpu5eoSnYBoDdg-1; Wed, 18 Dec 2019 02:29:18 -0500
-X-MC-Unique: KeCKVkgNOpu5eoSnYBoDdg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6C21B800EC0;
-        Wed, 18 Dec 2019 07:29:15 +0000 (UTC)
-Received: from krava (ovpn-204-177.brq.redhat.com [10.40.204.177])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6DCF71001B00;
-        Wed, 18 Dec 2019 07:29:11 +0000 (UTC)
-Date:   Wed, 18 Dec 2019 08:29:08 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Andrey Zhizhikin <andrey.z@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
-        sergey.senozhatsky@gmail.com, pmladek@suse.com,
-        wangkefeng.wang@huawei.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>
-Subject: Re: [PATCH] tools lib api fs: fix gcc9 compilation error
-Message-ID: <20191218072908.GA19062@krava>
-References: <20191211080109.18765-1-andrey.zhizhikin@leica-geosystems.com>
+        id S1725828AbfLRJDa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 Dec 2019 04:03:30 -0500
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:34518 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725785AbfLRJDa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 18 Dec 2019 04:03:30 -0500
+Received: by mail-wr1-f65.google.com with SMTP id t2so1392943wrr.1
+        for <bpf@vger.kernel.org>; Wed, 18 Dec 2019 01:03:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=cs9psSZDFsvJWPM8fhGastj+FaAmA+j3qYLmR+w6Po8=;
+        b=TCtu3cRxGwR7MauzVnqFxKgmVWrb+Vx+mgLit1UtmJqKGakMvHDuH75/ZBquZ+T2Ix
+         RO53zAyA4RE554vVc8W5GWKEh8W13TaxwbNDV/+wDKQlFmo13K5TiIRGVTWj57nTVMHG
+         5ZC+ru3PFj2+oTxieq4ERcD5tNK/cSqhQcOrk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=cs9psSZDFsvJWPM8fhGastj+FaAmA+j3qYLmR+w6Po8=;
+        b=VwR1DFXVSDWWpjz04zy4OYKA863ZQIgnDTJgueFARMkdNizHYeWP4jKlQbb3+1JlqT
+         0rSkzEcJ7dNbnjktkptfqenYckYwN3M7dUvj1wsx4ezQmon6Kc0nwJ0cfoE/0S9/J+5n
+         ORUeINSm95EOQ5RCbtaMH/b+nEVMY46KS5P4yq1BQBkuYJZShy27A6VTWRzCmTBcL/Mq
+         A0xOwo1l50qsE/cOgfGnE009yGb4U97X16+9yd4RyCnTa0niQbVHLClWf5nJEM8AegN7
+         4B44MGNPu514SyydTgYocpGWlzNmLp03rOToufp3nAgi+6fBtkXJ7t9ic8G+sunwtFep
+         TFhA==
+X-Gm-Message-State: APjAAAVN5RaleMXKe/2CoczsC5Z2STDVarMaeRHKyG8xJlAW36bvLioX
+        ls8pbvMoeDLSEiWR+vUvIpOPDA==
+X-Google-Smtp-Source: APXvYqzEagSk/iQCF5+XWWrMzd08Wnc6HIKO/HnoSgTbdRaAk6GuCxvXuMpcw3lmRHmAMcGwihFjKg==
+X-Received: by 2002:adf:ea88:: with SMTP id s8mr1487699wrm.293.1576659807426;
+        Wed, 18 Dec 2019 01:03:27 -0800 (PST)
+Received: from cloudflare.com ([176.221.114.230])
+        by smtp.gmail.com with ESMTPSA id g18sm1658013wmh.48.2019.12.18.01.03.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Dec 2019 01:03:26 -0800 (PST)
+References: <20191214004737.1652076-1-kafai@fb.com> <20191214004758.1653342-1-kafai@fb.com> <b321412c-1b42-45a9-4dc6-cc268b55cd0d@gmail.com> <CADVnQy=soQ8KhuUWEQj0n2ge3a43OSgAKS95bmBtp090jqbM_w@mail.gmail.com> <87o8w7fjd4.fsf@cloudflare.com> <20191217182228.icbttiozdcmveutq@kafai-mbp.dhcp.thefacebook.com>
+User-agent: mu4e 1.1.0; emacs 26.3
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Martin Lau <kafai@fb.com>
+Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
+        Neal Cardwell <ncardwell@google.com>,
+        "bpf\@vger.kernel.org" <bpf@vger.kernel.org>,
+        "Alexei Starovoitov" <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David Miller" <davem@davemloft.net>,
+        Kernel Team <Kernel-team@fb.com>,
+        Netdev <netdev@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 09/13] bpf: Add BPF_FUNC_jiffies
+In-reply-to: <20191217182228.icbttiozdcmveutq@kafai-mbp.dhcp.thefacebook.com>
+Date:   Wed, 18 Dec 2019 10:03:25 +0100
+Message-ID: <87o8w63t0i.fsf@cloudflare.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191211080109.18765-1-andrey.zhizhikin@leica-geosystems.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 11, 2019 at 08:01:09AM +0000, Andrey Zhizhikin wrote:
-> GCC9 introduced string hardening mechanisms, which exhibits the error
-> during fs api compilation:
-> 
-> error: '__builtin_strncpy' specified bound 4096 equals destination size
-> [-Werror=stringop-truncation]
-> 
-> This comes when the length of copy passed to strncpy is is equal to
-> destination size, which could potentially lead to buffer overflow.
-> 
-> There is a need to mitigate this potential issue by limiting the size of
-> destination by 1 and explicitly terminate the destination with NULL.
-> 
-> Signed-off-by: Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>
-> Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
-> Cc: Jiri Olsa <jolsa@kernel.org>
+On Tue, Dec 17, 2019 at 07:22 PM CET, Martin Lau wrote:
+> On Tue, Dec 17, 2019 at 09:26:31AM +0100, Jakub Sitnicki wrote:
+>> On Sat, Dec 14, 2019 at 08:25 PM CET, Neal Cardwell wrote:
+>> > On Fri, Dec 13, 2019 at 9:00 PM Eric Dumazet <eric.dumazet@gmail.com> wrote:
+>> >>
+>> >>
+>> >>
+>> >> On 12/13/19 4:47 PM, Martin KaFai Lau wrote:
+>> >> > This patch adds a helper to handle jiffies.  Some of the
+>> >> > tcp_sock's timing is stored in jiffies.  Although things
+>> >> > could be deduced by CONFIG_HZ, having an easy way to get
+>> >> > jiffies will make the later bpf-tcp-cc implementation easier.
+>> >> >
+>> >>
+>> >> ...
+>> >>
+>> >> > +
+>> >> > +BPF_CALL_2(bpf_jiffies, u64, in, u64, flags)
+>> >> > +{
+>> >> > +     if (!flags)
+>> >> > +             return get_jiffies_64();
+>> >> > +
+>> >> > +     if (flags & BPF_F_NS_TO_JIFFIES) {
+>> >> > +             return nsecs_to_jiffies(in);
+>> >> > +     } else if (flags & BPF_F_JIFFIES_TO_NS) {
+>> >> > +             if (!in)
+>> >> > +                     in = get_jiffies_64();
+>> >> > +             return jiffies_to_nsecs(in);
+>> >> > +     }
+>> >> > +
+>> >> > +     return 0;
+>> >> > +}
+>> >>
+>> >> This looks a bit convoluted :)
+>> >>
+>> >> Note that we could possibly change net/ipv4/tcp_cubic.c to no longer use jiffies at all.
+>> >>
+>> >> We have in tp->tcp_mstamp an accurate timestamp (in usec) that can be converted to ms.
+>> >
+>> > If the jiffies functionality stays, how about 3 simple functions that
+>> > correspond to the underlying C functions, perhaps something like:
+>> >
+>> >   bpf_nsecs_to_jiffies(nsecs)
+>> >   bpf_jiffies_to_nsecs(jiffies)
+>> >   bpf_get_jiffies_64()
+>> >
+>> > Separate functions might be easier to read/maintain (and may even be
+>> > faster, given the corresponding reduction in branches).
+>>
+>> Having bpf_nsecs_to_jiffies() would be also handy for BPF sockops progs
+>> that configure SYN-RTO timeout (BPF_SOCK_OPS_TIMEOUT_INIT).
+>>
+>> Right now user-space needs to go look for CONFIG_HZ in /proc/config.gz
+> Andrii's extern variable work (already landed) allows a bpf_prog
+> to read CONFIG_HZ as a global variable.  It is the path that I am
+> pursuing now for jiffies/nsecs conversion without relying on
+> a helper.
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
+Thank yor for the pointer, and Andrii for implementing it.
+Selftest [0] from extern-var-support series demonstrates it nicely.
 
-thanks,
-jirka
-
-> ---
->  tools/lib/api/fs/fs.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/lib/api/fs/fs.c b/tools/lib/api/fs/fs.c
-> index 11b3885e833e..027b18f7ed8c 100644
-> --- a/tools/lib/api/fs/fs.c
-> +++ b/tools/lib/api/fs/fs.c
-> @@ -210,6 +210,7 @@ static bool fs__env_override(struct fs *fs)
->  	size_t name_len = strlen(fs->name);
->  	/* name + "_PATH" + '\0' */
->  	char upper_name[name_len + 5 + 1];
-> +
->  	memcpy(upper_name, fs->name, name_len);
->  	mem_toupper(upper_name, name_len);
->  	strcpy(&upper_name[name_len], "_PATH");
-> @@ -219,7 +220,8 @@ static bool fs__env_override(struct fs *fs)
->  		return false;
->  
->  	fs->found = true;
-> -	strncpy(fs->path, override_path, sizeof(fs->path));
-> +	strncpy(fs->path, override_path, sizeof(fs->path) - 1);
-> +	fs->path[sizeof(fs->path) - 1] = '\0';
->  	return true;
->  }
->  
-> -- 
-> 2.17.1
-> 
-
+[0] https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=330a73a7b6ca93a415de1b7da68d7a0698fe4937
