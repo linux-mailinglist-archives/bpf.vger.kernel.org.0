@@ -2,152 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B9A991243E0
-	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2019 11:02:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6145B1244FA
+	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2019 11:48:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726699AbfLRKC5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 Dec 2019 05:02:57 -0500
-Received: from fd.dlink.ru ([178.170.168.18]:36378 "EHLO fd.dlink.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725799AbfLRKC5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 Dec 2019 05:02:57 -0500
-Received: by fd.dlink.ru (Postfix, from userid 5000)
-        id 7A0251B20468; Wed, 18 Dec 2019 13:02:54 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 fd.dlink.ru 7A0251B20468
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dlink.ru; s=mail;
-        t=1576663374; bh=gDGQswSJmOCrBpGvaSKjgS8f9nsrlgdTnRggmnaY5a4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References;
-        b=XPMAyoi4OAfBqI7lHEMD5nGmnvsojNVwYLElsQkuWfLCfCputZJXlVR8+uT8t9gAN
-         soy8fWB9YbxgrYUOKWCH9hXK74Z4yk69X3NOip7fgYgjkuOkP6qC/a6NJmM3PWiQVC
-         AZxaAKQQ3fpM3fKMPtzwTposZHLCJyfvyOMeN91c=
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dlink.ru
-X-Spam-Level: 
-X-Spam-Status: No, score=-99.2 required=7.5 tests=BAYES_50,URIBL_BLOCKED,
-        USER_IN_WHITELIST autolearn=disabled version=3.4.2
-Received: from mail.rzn.dlink.ru (mail.rzn.dlink.ru [178.170.168.13])
-        by fd.dlink.ru (Postfix) with ESMTP id 395251B20091;
-        Wed, 18 Dec 2019 13:02:42 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 fd.dlink.ru 395251B20091
-Received: from mail.rzn.dlink.ru (localhost [127.0.0.1])
-        by mail.rzn.dlink.ru (Postfix) with ESMTP id CFEC01B20367;
-        Wed, 18 Dec 2019 13:02:41 +0300 (MSK)
-Received: from mail.rzn.dlink.ru (localhost [127.0.0.1])
-        by mail.rzn.dlink.ru (Postfix) with ESMTPA;
-        Wed, 18 Dec 2019 13:02:41 +0300 (MSK)
+        id S1726545AbfLRKsB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 Dec 2019 05:48:01 -0500
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:39324 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725828AbfLRKsA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 18 Dec 2019 05:48:00 -0500
+Received: by mail-lj1-f193.google.com with SMTP id l2so1584536lja.6
+        for <bpf@vger.kernel.org>; Wed, 18 Dec 2019 02:47:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=y8I/adrDsHbrQ6DaD2YmiInq83JS4UeecTD+gcoH/1s=;
+        b=u6OlLBMH8JFVpb4s+j4q3R9ucjYTDTNA55XeSgxhvd4IO4swKM57Egy7WDHHqGMXRH
+         4AMBa2JWXte+r0GBXYAngi/Vgx9p8sZuwo+MAbFvvVn2p0BJpQsHGt8RvXmrpx/bM6aS
+         ypzv1xRX/3PkAiWzJGQro/TSLwZiLpuowsNe+ZKzKxvNbda91CFDjJvCrseUcy/Fge4A
+         qndu80X6gWE2aGbKPgyGlTmxny+fOPpL9GgIDhAPfuiEycKD+KEBYW2oNo0VjG3wMMSF
+         HygZn+aI53tigr7+FrZtV0b1n8qwa+afu/AVOTPdWKaBQwmrKsvC2BjeWH6r57FjYDCT
+         1EUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=y8I/adrDsHbrQ6DaD2YmiInq83JS4UeecTD+gcoH/1s=;
+        b=YPvZPe1XeokHyVD6lEewxDSGMUnAbV7cMlwMb1SRJgTAj0/IQ8ZN7N637kPku0sphc
+         gH4A+08VM5j0SyWVbT1BRcmpj48n1e3WdWJpioaBCERcmn2+B0fQRJV8Kjvt7flnOUur
+         Y8pAiKDFsUymiwlJkaE8pcavovtwSVzNSlVkekHtqf6ZoQ5GVGX6bdklhYySssObEKH+
+         HDRdIkTuiOpL62Qzcux/7YhEw49jYRZh7zPccArMqGhsygxUy4b6x3JL+nHuhk/svlmv
+         0iNgLZB6uHeggEO4Jpc6czTJDJ3+CF2NBstDj79VAHDLYcTUB59V0MU0ToTjjJVyDLJ0
+         e2bw==
+X-Gm-Message-State: APjAAAV4ZXOOg/ZkRnijPdO7yIaUMTvkYrVAkv7R2mqIvU/i4d0q2Yzd
+        rTmG4qJ/zDtXVcsupYfE5Lmtx5S1yRo0e4yimkYPwg==
+X-Google-Smtp-Source: APXvYqz2BHIUBhMYQ8Mw1QMdzuxRcwCcNi/RIyF8IXY1rtWdbBB23cfR7RMW9crqnoNVMHhCcmaiyWuuTuXhN468yBg=
+X-Received: by 2002:a2e:868c:: with SMTP id l12mr1125967lji.194.1576666078690;
+ Wed, 18 Dec 2019 02:47:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Wed, 18 Dec 2019 13:02:41 +0300
-From:   Alexander Lobakin <alobakin@dlink.ru>
-To:     Paul Chaignon <paul.chaignon@orange.com>
-Cc:     Paul Burton <paulburton@kernel.org>,
-        =?UTF-8?Q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn.topel@gmail.com>,
-        Mahshid Khezri <khezri.mahshid@gmail.com>,
-        paul.chaignon@gmail.com, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+References: <20191216181204.724953-1-toke@redhat.com>
+In-Reply-To: <20191216181204.724953-1-toke@redhat.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 18 Dec 2019 16:17:46 +0530
+Message-ID: <CA+G9fYssgDcBkiNGSV7BmjE4Tj1j1_fa4VTJFv3N=2FHzewQLg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] libbpf: Print hint about ulimit when getting
+ permission denied error
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Subject: Re: [PATCH bpf 2/2] bpf, mips: limit to 33 tail calls
-In-Reply-To: <20191218095825.GA15840@Omicron>
-References: <cover.1575916815.git.paul.chaignon@gmail.com>
- <b8eb2caac1c25453c539248e56ca22f74b5316af.1575916815.git.paul.chaignon@gmail.com>
- <20191210232316.aastpgbirqp4yaoi@lantea.localdomain>
- <8cf09e73329b3205a64eae4886b02fea@dlink.ru> <20191218095825.GA15840@Omicron>
-User-Agent: Roundcube Webmail/1.4.0
-Message-ID: <4090532015bc8b26e89ba90f9f881d7f@dlink.ru>
-X-Sender: alobakin@dlink.ru
+        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Yonghong Song <yhs@fb.com>, lkft-triage@lists.linaro.org,
+        Leo Yan <leo.yan@linaro.org>,
+        Daniel Diaz <daniel.diaz@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Paul Chaignon wrote 18.12.2019 12:58:
-> On Wed, Dec 18, 2019 at 12:32:53PM +0300, Alexander Lobakin wrote:
->> Paul Burton wrote 11.12.2019 02:23:
->> > Hi Paul,
->> >
->> > On Mon, Dec 09, 2019 at 07:52:52PM +0100, Paul Chaignon wrote:
->> > > All BPF JIT compilers except RISC-V's and MIPS' enforce a 33-tail
->> > > calls
->> > > limit at runtime.  In addition, a test was recently added, in
->> > > tailcalls2,
->> > > to check this limit.
->> > >
->> > > This patch updates the tail call limit in MIPS' JIT compiler to allow
->> > > 33 tail calls.
->> 
->> Hi Paul,
->> 
->> You've restored MIPS cBPF in mips-fixes tree, doesn't it require any
->> changes to limit tail calls to 33? This series includes only eBPF as
->> there was no MIPS cBPF at the moment of writing.
-> 
-> cBPF doesn't support tail calls or even the call instruction for
-> helpers.
+On Tue, 17 Dec 2019 at 00:00, Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat=
+.com> wrote:
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index a2cc7313763a..3fe42d6b0c2f 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -41,6 +41,7 @@
+>  #include <sys/types.h>
+>  #include <sys/vfs.h>
+>  #include <sys/utsname.h>
+> +#include <sys/resource.h>
+>  #include <tools/libc_compat.h>
+>  #include <libelf.h>
+>  #include <gelf.h>
+> @@ -100,6 +101,32 @@ void libbpf_print(enum libbpf_print_level level, con=
+st char *format, ...)
+>         va_end(args);
+>  }
+>
+> +static void pr_perm_msg(int err)
+> +{
+> +       struct rlimit limit;
+> +       char buf[100];
+> +
+> +       if (err !=3D -EPERM || geteuid() !=3D 0)
+> +               return;
+> +
+> +       err =3D getrlimit(RLIMIT_MEMLOCK, &limit);
+> +       if (err)
+> +               return;
+> +
+> +       if (limit.rlim_cur =3D=3D RLIM_INFINITY)
+> +               return;
+> +
+> +       if (limit.rlim_cur < 1024)
+> +               snprintf(buf, sizeof(buf), "%lu bytes", limit.rlim_cur);
 
-Aww, didn't know that. Thanks!
+ libbpf.c: In function 'pr_perm_msg':
+ libbpf.c:120:33: error: format '%lu' expects argument of type 'long
+unsigned int', but argument 4 has type 'rlim_t {aka long long unsigned
+int}' [-Werror=3Dformat=3D]
+    snprintf(buf, sizeof(buf), "%lu bytes", limit.rlim_cur);
+                                ~~^         ~~~~~~~~~~~~~~
+                                %llu
 
-> Paul C.
-> 
->> 
->> > > Fixes: b6bd53f9c4e8 ("MIPS: Add missing file for eBPF JIT.")
->> > > Reported-by: Mahshid Khezri <khezri.mahshid@gmail.com>
->> > > Signed-off-by: Paul Chaignon <paul.chaignon@orange.com>
->> >
->> > I'd be happy to take this through mips-fixes, but equally happy for it
->> > to go through the BPF/net trees in which case:
->> >
->> >   Acked-by: Paul Burton <paulburton@kernel.org>
->> >
->> > Thanks,
->> >     Paul
->> >
->> > > ---
->> > >  arch/mips/net/ebpf_jit.c | 9 +++++----
->> > >  1 file changed, 5 insertions(+), 4 deletions(-)
->> > >
->> > > diff --git a/arch/mips/net/ebpf_jit.c b/arch/mips/net/ebpf_jit.c
->> > > index 46b76751f3a5..3ec69d9cbe88 100644
->> > > --- a/arch/mips/net/ebpf_jit.c
->> > > +++ b/arch/mips/net/ebpf_jit.c
->> > > @@ -604,6 +604,7 @@ static void emit_const_to_reg(struct jit_ctx
->> > > *ctx, int dst, u64 value)
->> > >  static int emit_bpf_tail_call(struct jit_ctx *ctx, int this_idx)
->> > >  {
->> > >  	int off, b_off;
->> > > +	int tcc_reg;
->> > >
->> > >  	ctx->flags |= EBPF_SEEN_TC;
->> > >  	/*
->> > > @@ -616,14 +617,14 @@ static int emit_bpf_tail_call(struct jit_ctx
->> > > *ctx, int this_idx)
->> > >  	b_off = b_imm(this_idx + 1, ctx);
->> > >  	emit_instr(ctx, bne, MIPS_R_AT, MIPS_R_ZERO, b_off);
->> > >  	/*
->> > > -	 * if (--TCC < 0)
->> > > +	 * if (TCC-- < 0)
->> > >  	 *     goto out;
->> > >  	 */
->> > >  	/* Delay slot */
->> > > -	emit_instr(ctx, daddiu, MIPS_R_T5,
->> > > -		   (ctx->flags & EBPF_TCC_IN_V1) ? MIPS_R_V1 : MIPS_R_S4, -1);
->> > > +	tcc_reg = (ctx->flags & EBPF_TCC_IN_V1) ? MIPS_R_V1 : MIPS_R_S4;
->> > > +	emit_instr(ctx, daddiu, MIPS_R_T5, tcc_reg, -1);
->> > >  	b_off = b_imm(this_idx + 1, ctx);
->> > > -	emit_instr(ctx, bltz, MIPS_R_T5, b_off);
->> > > +	emit_instr(ctx, bltz, tcc_reg, b_off);
->> > >  	/*
->> > >  	 * prog = array->ptrs[index];
->> > >  	 * if (prog == NULL)
->> > > --
->> > > 2.17.1
->> > >
->> 
->> Regards,
->> ᚷ ᛖ ᚢ ᚦ ᚠ ᚱ
+Linux next i386 and arm builds failed due to this error.
 
-Regards,
-ᚷ ᛖ ᚢ ᚦ ᚠ ᚱ
+Full build log link,
+https://ci.linaro.org/view/lkft/job/openembedded-lkft-linux-next/DISTRO=3Dl=
+kft,MACHINE=3Dintel-core2-32,label=3Ddocker-lkft/672/consoleText
+https://ci.linaro.org/view/lkft/job/openembedded-lkft-linux-next/DISTRO=3Dl=
+kft,MACHINE=3Dam57xx-evm,label=3Ddocker-lkft/672/consoleText
+
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
