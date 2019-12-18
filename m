@@ -2,161 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B68C1247AC
-	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2019 14:09:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0053A12495E
+	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2019 15:22:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726710AbfLRNJg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 Dec 2019 08:09:36 -0500
-Received: from mail-qv1-f66.google.com ([209.85.219.66]:35471 "EHLO
-        mail-qv1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726591AbfLRNJg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 Dec 2019 08:09:36 -0500
-Received: by mail-qv1-f66.google.com with SMTP id u10so634233qvi.2;
-        Wed, 18 Dec 2019 05:09:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=9fMhu2HY6cXBY8c2OuJYtWQsWKKglKnVQNGShQV3bMI=;
-        b=lvopBNbqu0sI9I6IF8sHtepj3mAuUBZtc/Qyhrc/hqLfmMi7wqcrr1+6IzIMNVUASf
-         Px+o0LbUnMF6zS++gEEuPkUNw5UYdN8Gyl1Ph9qS/jrfj7uGCeYQpYkW8OcLBGMwPFvi
-         7tkNlQY9To+WPfTzsDcDcV9kNwJr9Gzv5qNPjgJn8T+2t6FtpM5AxKk2U3GI63WluE3o
-         quY/ZaLr6yWQK1xM12FO1v+p13L8qjgkOIcQEehslLpdPKc2M+qg59hv5vkNODaiCoSG
-         tIvVC+ZZY8XF6hMDUrgcwAo9DA78A+khXENCT3UMVk1C8GpvQSL2F1M7rjw7Z2sxO2dA
-         E/jg==
+        id S1726921AbfLROW6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 Dec 2019 09:22:58 -0500
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:38137 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726856AbfLROW6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 18 Dec 2019 09:22:58 -0500
+Received: by mail-wr1-f65.google.com with SMTP id y17so2505566wrh.5;
+        Wed, 18 Dec 2019 06:22:56 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=9fMhu2HY6cXBY8c2OuJYtWQsWKKglKnVQNGShQV3bMI=;
-        b=R47EPNwgWYSjP1v8Xp8fLBqh4Ue7lpVVli/o82bvICuw3Fr++Zu1YRTM4EGPm3FriV
-         yjiOuoW6PaC/kXI3On6YF8CpYOwg5DTiS3Kkt03VFo/rO4zaaI8PFGGhy9es2hb52utn
-         jD2TD0L81PVNvrCJnRPoEgMHtR3xtunZkzX1ohHj0J1skn+lMws6gRZGcL33DagQtJte
-         rv7quiwEJmJJ7nx/oCsgWBj82u/MKdXzfMFQH7SEECxTmbv2sWeV0GZRlMqBlUOztXq6
-         XgtvGabt5wOURib9CQmZFLFFcnQcYcUGEv9u3/fBZKjqkL/e18y9LdAyjsCB7zFBVtdw
-         s06g==
-X-Gm-Message-State: APjAAAVxZxZu9zyvbi6+StRNW7k6LFSk4A/1Ozmt2l42/YOYDxlIu6Ii
-        GOp2/uT7a8l5YkiOxur0cgwicNuVdkKVo8PFYq0=
-X-Google-Smtp-Source: APXvYqw5/kKXEadfnvekAx2yUiKXwcZWl7qWOZL2Bw3dU6/BRHJYZQTGg1SRlqStBl3ByZ+pshyQiV6TW04lnxok7xg=
-X-Received: by 2002:a0c:e2cf:: with SMTP id t15mr2175626qvl.127.1576674575416;
- Wed, 18 Dec 2019 05:09:35 -0800 (PST)
-MIME-Version: 1.0
-References: <20191218105400.2895-1-bjorn.topel@gmail.com> <20191218105400.2895-8-bjorn.topel@gmail.com>
- <20191218140318.2c1d7140@carbon>
-In-Reply-To: <20191218140318.2c1d7140@carbon>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Wed, 18 Dec 2019 14:09:23 +0100
-Message-ID: <CAJ+HfNjg5kRhBuWQ0F1jM+YL8CYW2okes0jbFy6MQw9umT_dcA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 7/8] xdp: remove map_to_flush and map swap detection
-To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
-Cc:     Netdev <netdev@vger.kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=PHzGUvVP8gQcYAoL9L+uoV5KatVEVFDCa4ZXtb+5JGo=;
+        b=T0u+UAqiC4lp6o39z0J4nzD1noUtybY5ozJ+1vYpoaD7tyeiauPNaAjcFjDH/ig1/3
+         3Z200ROgRjWUSn2uYAAnsHNlc1hUTaWNQy6b4g2c3ju3VM8DtxE3+Vy2SZX4Syc8ZaWd
+         BuRyPyZ7X8wEfMDrOwWNC/6900lJCBnbwH3zgPvgZFgmluOhCnqw1AgjxrggwoYK3D+k
+         sL996mai/MVD+uLIxWfNhdiXxkP+qs6PaYffsQlbjEU6sLItslUTVQrGq81peEYkPwRf
+         0oVtEGq2ADD8jUAxlMfaUE0lwhz+43fD6BXyhktPUmTzwmtutDw9ATrL0Y1q9SzN8GGT
+         aQaw==
+X-Gm-Message-State: APjAAAWw/2IqPgZKJwITZk7P2j0iP6GFH7n0WJw0hVxUvy3BNQDwivwK
+        9kLVh96RATTchfa3K7QcFCsZsgtfE3IhSA==
+X-Google-Smtp-Source: APXvYqwFB1TI0ds5UbOMxeJ1h87AI0McF/LwNvO9iiRWJBVfTb6UmoaYqVXbHM5+tB2oWZeCmlfxuQ==
+X-Received: by 2002:a5d:528e:: with SMTP id c14mr3322561wrv.308.1576678975758;
+        Wed, 18 Dec 2019 06:22:55 -0800 (PST)
+Received: from Omicron ([217.76.31.1])
+        by smtp.gmail.com with ESMTPSA id o194sm2678610wme.45.2019.12.18.06.22.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Dec 2019 06:22:55 -0800 (PST)
+Date:   Wed, 18 Dec 2019 15:22:54 +0100
+From:   Paul Chaignon <paul.chaignon@orange.com>
+To:     bpf@vger.kernel.org
+Cc:     paul.chaignon@gmail.com, netdev@vger.kernel.org,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        bpf <bpf@vger.kernel.org>, David Miller <davem@davemloft.net>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Subject: [PATCH bpf-next 0/3] Single-cpu updates for per-cpu maps
+Message-ID: <cover.1576673841.git.paul.chaignon@orange.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 18 Dec 2019 at 14:03, Jesper Dangaard Brouer <jbrouer@redhat.com> w=
-rote:
->
-> On Wed, 18 Dec 2019 11:53:59 +0100
-> Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> wrote:
->
-> > From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
-> >
-> > Now that all XDP maps that can be used with bpf_redirect_map() tracks
-> > entries to be flushed in a global fashion, there is not need to track
-> > that the map has changed and flush from xdp_do_generic_map()
-> > anymore. All entries will be flushed in xdp_do_flush_map().
-> >
-> > This means that the map_to_flush can be removed, and the corresponding
-> > checks. Moving the flush logic to one place, xdp_do_flush_map(), give
-> > a bulking behavior and performance boost.
-> >
-> > Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
-> > ---
-> >  include/linux/filter.h |  1 -
-> >  net/core/filter.c      | 27 +++------------------------
-> >  2 files changed, 3 insertions(+), 25 deletions(-)
-> >
-> > diff --git a/include/linux/filter.h b/include/linux/filter.h
-> > index 37ac7025031d..69d6706fc889 100644
-> > --- a/include/linux/filter.h
-> > +++ b/include/linux/filter.h
-> > @@ -592,7 +592,6 @@ struct bpf_redirect_info {
-> >       u32 tgt_index;
-> >       void *tgt_value;
-> >       struct bpf_map *map;
-> > -     struct bpf_map *map_to_flush;
-> >       u32 kern_flags;
-> >  };
-> >
-> > diff --git a/net/core/filter.c b/net/core/filter.c
-> > index c706325b3e66..d9caa3e57ea1 100644
-> > --- a/net/core/filter.c
-> > +++ b/net/core/filter.c
-> > @@ -3547,26 +3547,9 @@ static int __bpf_tx_xdp_map(struct net_device *d=
-ev_rx, void *fwd,
-> >
-> >  void xdp_do_flush_map(void)
-> >  {
-> > -     struct bpf_redirect_info *ri =3D this_cpu_ptr(&bpf_redirect_info)=
-;
-> > -     struct bpf_map *map =3D ri->map_to_flush;
-> > -
-> > -     ri->map_to_flush =3D NULL;
-> > -     if (map) {
-> > -             switch (map->map_type) {
-> > -             case BPF_MAP_TYPE_DEVMAP:
-> > -             case BPF_MAP_TYPE_DEVMAP_HASH:
-> > -                     __dev_map_flush();
-> > -                     break;
-> > -             case BPF_MAP_TYPE_CPUMAP:
-> > -                     __cpu_map_flush();
-> > -                     break;
-> > -             case BPF_MAP_TYPE_XSKMAP:
-> > -                     __xsk_map_flush();
-> > -                     break;
-> > -             default:
-> > -                     break;
-> > -             }
-> > -     }
-> > +     __dev_map_flush();
-> > +     __cpu_map_flush();
-> > +     __xsk_map_flush();
-> >  }
-> >  EXPORT_SYMBOL_GPL(xdp_do_flush_map);
-> >
-> > @@ -3615,14 +3598,10 @@ static int xdp_do_redirect_map(struct net_devic=
-e *dev, struct xdp_buff *xdp,
-> >       ri->tgt_value =3D NULL;
-> >       WRITE_ONCE(ri->map, NULL);
-> >
-> > -     if (ri->map_to_flush && unlikely(ri->map_to_flush !=3D map))
-> > -             xdp_do_flush_map();
-> > -
->
-> I guess, I need to read the other patches to understand why this is valid=
-.
->
+Currently, userspace programs have to update the values of all CPUs at
+once when updating per-cpu maps.  This limitation prevents the update of a
+single CPU's value without the risk of missing concurrent updates on other
+CPU's values.
 
-Please do; Review would be very much appreciated!
+The first patch allows userspace to update the value of a specific CPU in
+per-cpu maps.  The second and last patches add test cases and support in
+bpftool respectively.
 
-> The idea here is to detect if the BPF-prog are using several different
-> redirect maps, and do the flush if the program uses another map.  I
-> assume you handle this?
->
+Paul Chaignon (3):
+  bpf: Single-cpu updates for per-cpu maps
+  selftests/bpf: Tests for single-cpu updates of per-cpu maps
+  bpftool: Support single-cpu updates for per-cpu maps
 
-Yes, the highlevel idea is that since the maps are dealing partly with
-this already (but swaps map internal), let the map code deal with map
-swaps as well.
+ include/uapi/linux/bpf.h                      |  4 ++
+ kernel/bpf/arraymap.c                         | 19 +++--
+ kernel/bpf/hashtab.c                          | 49 +++++++------
+ kernel/bpf/local_storage.c                    | 16 +++--
+ kernel/bpf/syscall.c                          | 17 +++--
+ .../bpf/bpftool/Documentation/bpftool-map.rst | 13 ++--
+ tools/bpf/bpftool/bash-completion/bpftool     |  2 +-
+ tools/bpf/bpftool/map.c                       | 70 ++++++++++++++-----
+ tools/include/uapi/linux/bpf.h                |  4 ++
+ tools/testing/selftests/bpf/test_maps.c       | 34 ++++++++-
+ 10 files changed, 168 insertions(+), 60 deletions(-)
+
+-- 
+2.24.0
+
