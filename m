@@ -2,320 +2,188 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E111124E40
-	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2019 17:47:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9073124E7F
+	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2019 17:58:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727511AbfLRQrs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 Dec 2019 11:47:48 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:36541 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726955AbfLRQrs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 Dec 2019 11:47:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1576687666;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=C3RsYXjgwMU7RJk3TdNW640Gf15xNczw+8Y/nQccQZY=;
-        b=EYJDwsYOhuu+i21P+drl2Zt57DJujPDN9fMSeW+SJthvqMo1HGqJqiE57duwHQi56VxACZ
-        N7DphLkBWKrKvkye0sc2ldyOAA/7+bJDplRdJMokdlX1ZCofQ2PsV7YsJGIEaZn18ob8fQ
-        gax8yYhEkEBCGbBqbF6C7Qke/tMuAU4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-329-Bd-KjdQ1MB-0OIBMnV5_ig-1; Wed, 18 Dec 2019 11:47:45 -0500
-X-MC-Unique: Bd-KjdQ1MB-0OIBMnV5_ig-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 44AD9184BEEA;
-        Wed, 18 Dec 2019 16:47:42 +0000 (UTC)
-Received: from krava (unknown [10.43.17.106])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 08E6226DC5;
-        Wed, 18 Dec 2019 16:47:33 +0000 (UTC)
-Date:   Wed, 18 Dec 2019 17:47:31 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Quentin Monnet <quentin.monnet@netronome.com>
-Subject: [PATCH] Renaming struct trace_buffer to struct array_buffer
-Message-ID: <20191218164731.GD15571@krava>
+        id S1727594AbfLRQ6h (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 Dec 2019 11:58:37 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:34842 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727561AbfLRQ6g (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 18 Dec 2019 11:58:36 -0500
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xBIGqPt1020295;
+        Wed, 18 Dec 2019 08:58:21 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=81cMLMWP5gZNtkDeU4Gwk064KH5AOnkfsItCyBOispc=;
+ b=T33bc7sHq0lmtg6Ye9TQ+Xeoaq68XkeBd7+LbR4+waIpYpmAYjs0ATO8deEN9sY8F6ns
+ yU61+ziCV5NoimFIo1X/EYCngKGil8GJNWltp/22xExfewZmzsq9YOzJ5XBVNg4KQLgZ
+ 0AbZxoA6G97xI4ZifEfFGCr6Uhs425y+wv4= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2wyqv4g2rw-9
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 18 Dec 2019 08:58:21 -0800
+Received: from ash-exhub104.TheFacebook.com (2620:10d:c0a8:82::d) by
+ ash-exhub103.TheFacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 18 Dec 2019 08:57:59 -0800
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.175) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Wed, 18 Dec 2019 08:57:59 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=P+K1d4km7ESAv620vObmIePOYoCdl+KuTDobbmlvBT4qGGuajBzl+raa2vb9P+g9AE2cTXk687tDUoDJuJquvITDHPVNn1tGdOHx90LNtnRHHgCyyJU2G/932W2g5JgJ032YoSHEN/XuBbeF9hGzw08sxCviYQir7ZaXRJK4B3qEmTAJE4DLskidASYaJYefZhyJWyIfMH13IweOHE4C/5jvFBlk4w+8iFIDpJzE01qhyc50pfTM2401BNwKIKxGl19fBGC1T2dZ8dJUVr9p2WlX6KOnsHysneAJOk1tJtLMj15EAJQIviALYQdLqcZtmjje8rnq/IshhfVzUFMHyA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=81cMLMWP5gZNtkDeU4Gwk064KH5AOnkfsItCyBOispc=;
+ b=J6fPXjvxaVSo+vGiIgNiclZ0/FLliP4qpbVIyV/xHpX1f8ZXMk0XEIdYRz09emPBsIzPajGv6qFgmsYe9rqjo/FVuBrUEnzMzsmdvd+BokxPBpqeBAxOzOoAGNVtoRBzCNhET1bv7Hnfs1KSEsz/70Ecia46NCPbOoFvF9WR+l04Gdpag3cfGBwHbhHLVmGnXek1oBEIVb+o1lf6bbR4L7kwLAqy8BY6WlGEEKjBDwtPI64unxoUNROGN5u88CnrrO5IxtNMZ38nMLrNSW//TBetFnZmHN5qPSMJdllWqTOVh5UoCVEUIjJ3fJeefKvLg/Z5++SQeiL4Z1FfK4EzFg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=81cMLMWP5gZNtkDeU4Gwk064KH5AOnkfsItCyBOispc=;
+ b=gpGb9prg+97Rsh9UROdK3HN4D7M/YR1RRboY/C79P/PQHUnVT+5kA1NEay+S4Ve1LQHBF9ZZf8IQ1O723rDeRTbEtyoYZQd0J8m0bey66rNUBVp/2Vin4sKSqA5mlXGk7W9dY5oOiVppOyXwRGUzDHixYRBP/vZ6fiPFvNvIc30=
+Received: from MWHPR15MB1294.namprd15.prod.outlook.com (10.175.3.150) by
+ MWHPR15MB1424.namprd15.prod.outlook.com (10.173.234.138) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2538.18; Wed, 18 Dec 2019 16:57:58 +0000
+Received: from MWHPR15MB1294.namprd15.prod.outlook.com
+ ([fe80::5160:b3c0:bed1:e26c]) by MWHPR15MB1294.namprd15.prod.outlook.com
+ ([fe80::5160:b3c0:bed1:e26c%10]) with mapi id 15.20.2559.012; Wed, 18 Dec
+ 2019 16:57:57 +0000
+Received: from localhost (2620:10d:c090:180::7ec8) by MWHPR1701CA0008.namprd17.prod.outlook.com (2603:10b6:301:14::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2559.14 via Frontend Transport; Wed, 18 Dec 2019 16:57:57 +0000
+From:   Andrey Ignatov <rdna@fb.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>
+CC:     bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+        "Martin Lau" <kafai@fb.com>, Andrii Nakryiko <andriin@fb.com>,
+        Kernel Team <Kernel-team@fb.com>
+Subject: Re: [PATCH v2 bpf-next 6/6] selftests/bpf: Cover BPF_F_REPLACE in
+ test_cgroup_attach
+Thread-Topic: [PATCH v2 bpf-next 6/6] selftests/bpf: Cover BPF_F_REPLACE in
+ test_cgroup_attach
+Thread-Index: AQHVsURuuxkAl3N4Lkm2i24iTPRS86e3o64AgAiCXoA=
+Date:   Wed, 18 Dec 2019 16:57:57 +0000
+Message-ID: <20191218165755.GA94162@rdna-mbp.dhcp.thefacebook.com>
+References: <cover.1576193131.git.rdna@fb.com>
+ <bc55a274ea572d237bd091819f38502fa837abb5.1576193131.git.rdna@fb.com>
+ <CAEf4Bza7KU1r3iRuXiwL7AiOnEbNmxx_hsEUZL8up2OVtJX3XA@mail.gmail.com>
+In-Reply-To: <CAEf4Bza7KU1r3iRuXiwL7AiOnEbNmxx_hsEUZL8up2OVtJX3XA@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MWHPR1701CA0008.namprd17.prod.outlook.com
+ (2603:10b6:301:14::18) To MWHPR15MB1294.namprd15.prod.outlook.com
+ (2603:10b6:320:25::22)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c090:180::7ec8]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: a3a1b952-ac3b-4feb-feec-08d783db6e93
+x-ms-traffictypediagnostic: MWHPR15MB1424:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MWHPR15MB1424985A3FEC3D9A65278371A8530@MWHPR15MB1424.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6430;
+x-forefront-prvs: 0255DF69B9
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(346002)(396003)(376002)(39860400002)(136003)(366004)(189003)(199004)(8936002)(71200400001)(81166006)(81156014)(9686003)(5660300002)(8676002)(66446008)(64756008)(66556008)(6496006)(86362001)(16526019)(54906003)(110136005)(316002)(4001150100001)(52116002)(33656002)(53546011)(66946007)(478600001)(1076003)(4326008)(66476007)(186003)(2906002)(6486002);DIR:OUT;SFP:1102;SCL:1;SRVR:MWHPR15MB1424;H:MWHPR15MB1294.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: gRcKwhiFdsDskm55z3jq0YPX0au0z9v+lChjRldrJ1Z/BCTlSgDTEI9X/WHlo9yZX57KqDISYsD0xyqyMQgHxBHPTUH9yaf6VHXKxrS2DAiJQ4enH7SIv4semwgwNHa8PjiYZPk1d2+sRU68YLYzbUjypJl4jT2I2q5lnu9fDeqgIUdrBUpvKiEjNXeagCsJQLaCYTj8LO2AV1gpdpV64Zv7G8dTyN3k5gmYYk8hg5MpJdlipdhesKWDRAxaSZ2iCytdCqFMNEZ3MJHtvt7+afEYoG96Ckm9alT4HUcjThYYMO8f3yIQ0izrQVYnBMNZY3l/croOl5CD9iXpgCo2dwaHWquPoQ57SC7nHVdMt6//mZiWY1b68aflnYGM7csaE2JE3hhf1eMVSitSTfSilXtQoEDyx/r1Zwskg534Jv9owMFFFR/oCXqRMT1+EkiR
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <4FBD76767B247A4293EE34C2CA16556F@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-MS-Exchange-CrossTenant-Network-Message-Id: a3a1b952-ac3b-4feb-feec-08d783db6e93
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Dec 2019 16:57:57.8031
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: MtwTl4Mv//q95i3BVFh3/sLTgpOVnJVQ4/LisjNJJ3lhUy3Jhjn+2cga3eupK8Sq
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1424
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
+ definitions=2019-12-18_05:2019-12-17,2019-12-18 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ malwarescore=0 bulkscore=0 mlxlogscore=999 mlxscore=0 priorityscore=1501
+ impostorscore=0 phishscore=0 clxscore=1015 suspectscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-1912180138
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-As part of renaming perf's and ftrace's ring buffers,
-to avoid collision with new name for ftrace buffer.
-
-perf's ring_buffer -> perf_buffer
-ftrace's ring_buffer -> trace_buffer
-
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- include/linux/trace_events.h  |  2 +-
- kernel/trace/trace.c          | 42 +++++++++++++++++------------------
- kernel/trace/trace.h          |  8 +++----
- kernel/trace/trace_selftest.c |  4 ++--
- 4 files changed, 28 insertions(+), 28 deletions(-)
-
-diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
-index 4c6e15605766..ed5f8ef4b220 100644
---- a/include/linux/trace_events.h
-+++ b/include/linux/trace_events.h
-@@ -79,7 +79,7 @@ struct trace_entry {
- struct trace_iterator {
- 	struct trace_array	*tr;
- 	struct tracer		*trace;
--	struct trace_buffer	*trace_buffer;
-+	struct array_buffer	*trace_buffer;
- 	void			*private;
- 	int			cpu_file;
- 	struct mutex		mutex;
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 23459d53d576..c320b7833ab2 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -603,7 +603,7 @@ int trace_pid_write(struct trace_pid_list *filtered_pids,
- 	return read;
- }
- 
--static u64 buffer_ftrace_now(struct trace_buffer *buf, int cpu)
-+static u64 buffer_ftrace_now(struct array_buffer *buf, int cpu)
- {
- 	u64 ts;
- 
-@@ -1036,9 +1036,9 @@ void *tracing_cond_snapshot_data(struct trace_array *tr)
- }
- EXPORT_SYMBOL_GPL(tracing_cond_snapshot_data);
- 
--static int resize_buffer_duplicate_size(struct trace_buffer *trace_buf,
--					struct trace_buffer *size_buf, int cpu_id);
--static void set_buffer_entries(struct trace_buffer *buf, unsigned long val);
-+static int resize_buffer_duplicate_size(struct array_buffer *trace_buf,
-+					struct array_buffer *size_buf, int cpu_id);
-+static void set_buffer_entries(struct array_buffer *buf, unsigned long val);
- 
- int tracing_alloc_snapshot_instance(struct trace_array *tr)
- {
-@@ -1590,8 +1590,8 @@ void latency_fsnotify(struct trace_array *tr)
- static void
- __update_max_tr(struct trace_array *tr, struct task_struct *tsk, int cpu)
- {
--	struct trace_buffer *trace_buf = &tr->trace_buffer;
--	struct trace_buffer *max_buf = &tr->max_buffer;
-+	struct array_buffer *trace_buf = &tr->trace_buffer;
-+	struct array_buffer *max_buf = &tr->max_buffer;
- 	struct trace_array_cpu *data = per_cpu_ptr(trace_buf->data, cpu);
- 	struct trace_array_cpu *max_data = per_cpu_ptr(max_buf->data, cpu);
- 
-@@ -1962,7 +1962,7 @@ int __init register_tracer(struct tracer *type)
- 	return ret;
- }
- 
--static void tracing_reset_cpu(struct trace_buffer *buf, int cpu)
-+static void tracing_reset_cpu(struct array_buffer *buf, int cpu)
- {
- 	struct ring_buffer *buffer = buf->buffer;
- 
-@@ -1978,7 +1978,7 @@ static void tracing_reset_cpu(struct trace_buffer *buf, int cpu)
- 	ring_buffer_record_enable(buffer);
- }
- 
--void tracing_reset_online_cpus(struct trace_buffer *buf)
-+void tracing_reset_online_cpus(struct array_buffer *buf)
- {
- 	struct ring_buffer *buffer = buf->buffer;
- 	int cpu;
-@@ -3602,7 +3602,7 @@ static void s_stop(struct seq_file *m, void *p)
- }
- 
- static void
--get_total_entries_cpu(struct trace_buffer *buf, unsigned long *total,
-+get_total_entries_cpu(struct array_buffer *buf, unsigned long *total,
- 		      unsigned long *entries, int cpu)
- {
- 	unsigned long count;
-@@ -3624,7 +3624,7 @@ get_total_entries_cpu(struct trace_buffer *buf, unsigned long *total,
- }
- 
- static void
--get_total_entries(struct trace_buffer *buf,
-+get_total_entries(struct array_buffer *buf,
- 		  unsigned long *total, unsigned long *entries)
- {
- 	unsigned long t, e;
-@@ -3676,7 +3676,7 @@ static void print_lat_help_header(struct seq_file *m)
- 		    "#     \\   /      |||||  \\    |   /         \n");
- }
- 
--static void print_event_info(struct trace_buffer *buf, struct seq_file *m)
-+static void print_event_info(struct array_buffer *buf, struct seq_file *m)
- {
- 	unsigned long total;
- 	unsigned long entries;
-@@ -3687,7 +3687,7 @@ static void print_event_info(struct trace_buffer *buf, struct seq_file *m)
- 	seq_puts(m, "#\n");
- }
- 
--static void print_func_help_header(struct trace_buffer *buf, struct seq_file *m,
-+static void print_func_help_header(struct array_buffer *buf, struct seq_file *m,
- 				   unsigned int flags)
- {
- 	bool tgid = flags & TRACE_ITER_RECORD_TGID;
-@@ -3698,7 +3698,7 @@ static void print_func_help_header(struct trace_buffer *buf, struct seq_file *m,
- 	seq_printf(m, "#              | |     %s    |       |         |\n",	 tgid ? "  |      " : "");
- }
- 
--static void print_func_help_header_irq(struct trace_buffer *buf, struct seq_file *m,
-+static void print_func_help_header_irq(struct array_buffer *buf, struct seq_file *m,
- 				       unsigned int flags)
- {
- 	bool tgid = flags & TRACE_ITER_RECORD_TGID;
-@@ -3720,7 +3720,7 @@ void
- print_trace_header(struct seq_file *m, struct trace_iterator *iter)
- {
- 	unsigned long sym_flags = (global_trace.trace_flags & TRACE_ITER_SYM_MASK);
--	struct trace_buffer *buf = iter->trace_buffer;
-+	struct array_buffer *buf = iter->trace_buffer;
- 	struct trace_array_cpu *data = per_cpu_ptr(buf->data, buf->cpu);
- 	struct tracer *type = iter->trace;
- 	unsigned long entries;
-@@ -4357,7 +4357,7 @@ static int tracing_open(struct inode *inode, struct file *file)
- 	/* If this file was open for write, then erase contents */
- 	if ((file->f_mode & FMODE_WRITE) && (file->f_flags & O_TRUNC)) {
- 		int cpu = tracing_get_cpu(inode);
--		struct trace_buffer *trace_buf = &tr->trace_buffer;
-+		struct array_buffer *trace_buf = &tr->trace_buffer;
- 
- #ifdef CONFIG_TRACER_MAX_TRACE
- 		if (tr->current_trace->print_max)
-@@ -5532,7 +5532,7 @@ int tracer_init(struct tracer *t, struct trace_array *tr)
- 	return t->init(tr);
- }
- 
--static void set_buffer_entries(struct trace_buffer *buf, unsigned long val)
-+static void set_buffer_entries(struct array_buffer *buf, unsigned long val)
- {
- 	int cpu;
- 
-@@ -5542,8 +5542,8 @@ static void set_buffer_entries(struct trace_buffer *buf, unsigned long val)
- 
- #ifdef CONFIG_TRACER_MAX_TRACE
- /* resize @tr's buffer to the size of @size_tr's entries */
--static int resize_buffer_duplicate_size(struct trace_buffer *trace_buf,
--					struct trace_buffer *size_buf, int cpu_id)
-+static int resize_buffer_duplicate_size(struct array_buffer *trace_buf,
-+					struct array_buffer *size_buf, int cpu_id)
- {
- 	int cpu, ret = 0;
- 
-@@ -7607,7 +7607,7 @@ tracing_stats_read(struct file *filp, char __user *ubuf,
- {
- 	struct inode *inode = file_inode(filp);
- 	struct trace_array *tr = inode->i_private;
--	struct trace_buffer *trace_buf = &tr->trace_buffer;
-+	struct array_buffer *trace_buf = &tr->trace_buffer;
- 	int cpu = tracing_get_cpu(inode);
- 	struct trace_seq *s;
- 	unsigned long cnt;
-@@ -8354,7 +8354,7 @@ static void
- init_tracer_tracefs(struct trace_array *tr, struct dentry *d_tracer);
- 
- static int
--allocate_trace_buffer(struct trace_array *tr, struct trace_buffer *buf, int size)
-+allocate_trace_buffer(struct trace_array *tr, struct array_buffer *buf, int size)
- {
- 	enum ring_buffer_flags rb_flags;
- 
-@@ -8409,7 +8409,7 @@ static int allocate_trace_buffers(struct trace_array *tr, int size)
- 	return 0;
- }
- 
--static void free_trace_buffer(struct trace_buffer *buf)
-+static void free_trace_buffer(struct array_buffer *buf)
- {
- 	if (buf->buffer) {
- 		ring_buffer_free(buf->buffer);
-diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-index 63bf60f79398..c38524d402f5 100644
---- a/kernel/trace/trace.h
-+++ b/kernel/trace/trace.h
-@@ -176,7 +176,7 @@ struct trace_array_cpu {
- struct tracer;
- struct trace_option_dentry;
- 
--struct trace_buffer {
-+struct array_buffer {
- 	struct trace_array		*tr;
- 	struct ring_buffer		*buffer;
- 	struct trace_array_cpu __percpu	*data;
-@@ -249,7 +249,7 @@ struct cond_snapshot {
- struct trace_array {
- 	struct list_head	list;
- 	char			*name;
--	struct trace_buffer	trace_buffer;
-+	struct array_buffer	trace_buffer;
- #ifdef CONFIG_TRACER_MAX_TRACE
- 	/*
- 	 * The max_buffer is used to snapshot the trace when a maximum
-@@ -262,7 +262,7 @@ struct trace_array {
- 	 * with the buffer of the trace_buffer and the buffers are reset for
- 	 * the trace_buffer so the tracing can continue.
- 	 */
--	struct trace_buffer	max_buffer;
-+	struct array_buffer	max_buffer;
- 	bool			allocated_snapshot;
- #endif
- #if defined(CONFIG_TRACER_MAX_TRACE) || defined(CONFIG_HWLAT_TRACER)
-@@ -685,7 +685,7 @@ trace_buffer_iter(struct trace_iterator *iter, int cpu)
- 
- int tracer_init(struct tracer *t, struct trace_array *tr);
- int tracing_is_enabled(void);
--void tracing_reset_online_cpus(struct trace_buffer *buf);
-+void tracing_reset_online_cpus(struct array_buffer *buf);
- void tracing_reset_current(int cpu);
- void tracing_reset_all_online_cpus(void);
- int tracing_open_generic(struct inode *inode, struct file *filp);
-diff --git a/kernel/trace/trace_selftest.c b/kernel/trace/trace_selftest.c
-index 69ee8ef12cee..3c8171fe229c 100644
---- a/kernel/trace/trace_selftest.c
-+++ b/kernel/trace/trace_selftest.c
-@@ -23,7 +23,7 @@ static inline int trace_valid_entry(struct trace_entry *entry)
- 	return 0;
- }
- 
--static int trace_test_buffer_cpu(struct trace_buffer *buf, int cpu)
-+static int trace_test_buffer_cpu(struct array_buffer *buf, int cpu)
- {
- 	struct ring_buffer_event *event;
- 	struct trace_entry *entry;
-@@ -60,7 +60,7 @@ static int trace_test_buffer_cpu(struct trace_buffer *buf, int cpu)
-  * Test the trace buffer to see if all the elements
-  * are still sane.
-  */
--static int __maybe_unused trace_test_buffer(struct trace_buffer *buf, unsigned long *count)
-+static int __maybe_unused trace_test_buffer(struct array_buffer *buf, unsigned long *count)
- {
- 	unsigned long flags, cnt = 0;
- 	int cpu, ret = 0;
--- 
-2.24.1
-
+QW5kcmlpIE5ha3J5aWtvIDxhbmRyaWkubmFrcnlpa29AZ21haWwuY29tPiBbVGh1LCAyMDE5LTEy
+LTEyIDIzOjAxIC0wODAwXToNCj4gT24gVGh1LCBEZWMgMTIsIDIwMTkgYXQgMzozNCBQTSBBbmRy
+ZXkgSWduYXRvdiA8cmRuYUBmYi5jb20+IHdyb3RlOg0KPiA+DQo+ID4gVGVzdCByZXBsYWNlbWVu
+dCBvZiBhIGNncm91cC1icGYgcHJvZ3JhbSBhdHRhY2hlZCB3aXRoIEJQRl9GX0FMTE9XX01VTFRJ
+DQo+ID4gYW5kIHBvc3NpYmxlIGZhaWx1cmUgbW9kZXM6IGludmFsaWQgY29tYmluYXRpb24gb2Yg
+ZmxhZ3MsIGludmFsaWQNCj4gPiByZXBsYWNlX2JwZl9mZCwgcmVwbGFjaW5nIGEgbm9uLWF0dGFj
+aGQgdG8gc3BlY2lmaWVkIGNncm91cCBwcm9ncmFtLg0KPiA+DQo+ID4gRXhhbXBsZSBvZiBwcm9n
+cmFtIHJlcGxhY2luZzoNCj4gPg0KPiA+ICAgIyBnZGIgLXEgLi90ZXN0X2Nncm91cF9hdHRhY2gN
+Cj4gPiAgIFJlYWRpbmcgc3ltYm9scyBmcm9tIC9kYXRhL3VzZXJzL3JkbmEvYmluL3Rlc3RfY2dy
+b3VwX2F0dGFjaC4uLmRvbmUuDQo+ID4gICAuLi4NCj4gPiAgIEJyZWFrcG9pbnQgMSwgdGVzdF9t
+dWx0aXByb2cgKCkgYXQgdGVzdF9jZ3JvdXBfYXR0YWNoLmM6NDQzDQo+ID4gICA0NDMgICAgIHRl
+c3RfY2dyb3VwX2F0dGFjaC5jOiBObyBzdWNoIGZpbGUgb3IgZGlyZWN0b3J5Lg0KPiA+ICAgKGdk
+YikNCj4gPiAgIFsyXSsgIFN0b3BwZWQgICAgICAgICAgICAgICAgIGdkYiAtcSAuL3Rlc3RfY2dy
+b3VwX2F0dGFjaA0KPiA+ICAgIyBicGZ0b29sIGMgcyAvbW50L2Nncm91cDIvY2dyb3VwLXRlc3Qt
+d29yay1kaXIvY2cxDQo+ID4gICBJRCAgICAgICBBdHRhY2hUeXBlICAgICAgQXR0YWNoRmxhZ3Mg
+ICAgIE5hbWUNCj4gPiAgIDM1ICAgICAgIGVncmVzcyAgICAgICAgICBtdWx0aQ0KPiA+ICAgMzYg
+ICAgICAgZWdyZXNzICAgICAgICAgIG11bHRpDQo+ID4gICAjIGZnIGdkYiAtcSAuL3Rlc3RfY2dy
+b3VwX2F0dGFjaA0KPiA+ICAgYw0KPiA+ICAgQ29udGludWluZy4NCj4gPiAgIERldGFjaGluZyBh
+ZnRlciBmb3JrIGZyb20gY2hpbGQgcHJvY2VzcyAzNjEuDQo+ID4NCj4gPiAgIEJyZWFrcG9pbnQg
+MiwgdGVzdF9tdWx0aXByb2cgKCkgYXQgdGVzdF9jZ3JvdXBfYXR0YWNoLmM6NDU0DQo+ID4gICA0
+NTQgICAgIGluIHRlc3RfY2dyb3VwX2F0dGFjaC5jDQo+ID4gICAoZ2RiKQ0KPiA+ICAgWzJdKyAg
+U3RvcHBlZCAgICAgICAgICAgICAgICAgZ2RiIC1xIC4vdGVzdF9jZ3JvdXBfYXR0YWNoDQo+ID4g
+ICAjIGJwZnRvb2wgYyBzIC9tbnQvY2dyb3VwMi9jZ3JvdXAtdGVzdC13b3JrLWRpci9jZzENCj4g
+PiAgIElEICAgICAgIEF0dGFjaFR5cGUgICAgICBBdHRhY2hGbGFncyAgICAgTmFtZQ0KPiA+ICAg
+NDEgICAgICAgZWdyZXNzICAgICAgICAgIG11bHRpDQo+ID4gICAzNiAgICAgICBlZ3Jlc3MgICAg
+ICAgICAgbXVsdGkNCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IEFuZHJleSBJZ25hdG92IDxyZG5h
+QGZiLmNvbT4NCj4gPiAtLS0NCj4gPiAgLi4uL3NlbGZ0ZXN0cy9icGYvdGVzdF9jZ3JvdXBfYXR0
+YWNoLmMgICAgICAgIHwgNjIgKysrKysrKysrKysrKysrKystLQ0KPiA+ICAxIGZpbGUgY2hhbmdl
+ZCwgNTcgaW5zZXJ0aW9ucygrKSwgNSBkZWxldGlvbnMoLSkNCj4gPg0KPiANCj4gSSBzZWNvbmQg
+QWxleGVpJ3Mgc2VudGltZW50LiBIYXZpbmcgdGhpcyBhcyBwYXJ0IG9mIHRlc3RfcHJvZ3Mgd291
+bGQNCj4gY2VydGFpbmx5IGJlIGJldHRlciBpbiB0ZXJtcyBvZiBlbnN1cmluZyB0aGlzIGRvZXNu
+J3QgYWNjaWRlbnRhbGx5DQo+IGJyZWFrcy4NCg0KT0ssIEkgY29udmVydGVkIGJvdGggZXhpc3Rp
+bmcgdGVzdF9jZ3JvdXBfYXR0YWNoIGFuZCBteSB0ZXN0IGZvcg0KQlBGX0ZfUkVQTEFDRSB0byB0
+ZXN0X3Byb2dzIGFuZCB3aWxsIHNlbmQgdjMgd2l0aCB0aGlzIGNoYW5nZS4NCg0KDQo+IFsuLi5d
+DQo+IA0KPiA+DQo+ID4gKyAgICAgICAvKiBpbnZhbGlkIGlucHV0ICovDQo+ID4gKw0KPiA+ICsg
+ICAgICAgREVDTEFSRV9MSUJCUEZfT1BUUyhicGZfcHJvZ19hdHRhY2hfb3B0cywgYXR0YWNoX29w
+dHMsDQo+ID4gKyAgICAgICAgICAgICAgIC50YXJnZXRfZmQgICAgICAgICAgICAgID0gY2cxLA0K
+PiA+ICsgICAgICAgICAgICAgICAucHJvZ19mZCAgICAgICAgICAgICAgICA9IGFsbG93X3Byb2db
+Nl0sDQo+ID4gKyAgICAgICAgICAgICAgIC5yZXBsYWNlX3Byb2dfZmQgICAgICAgID0gYWxsb3df
+cHJvZ1swXSwNCj4gPiArICAgICAgICAgICAgICAgLnR5cGUgICAgICAgICAgICAgICAgICAgPSBC
+UEZfQ0dST1VQX0lORVRfRUdSRVNTLA0KPiA+ICsgICAgICAgICAgICAgICAuZmxhZ3MgICAgICAg
+ICAgICAgICAgICA9IEJQRl9GX0FMTE9XX01VTFRJIHwgQlBGX0ZfUkVQTEFDRSwNCj4gPiArICAg
+ICAgICk7DQo+IA0KPiBUaGlzIG1pZ2h0IGNhdXNlIGNvbXBpbGVyIHdhcm5pbmdzIChkZXBlbmRp
+bmcgb24gY29tcGlsZXIgc2V0dGluZ3MsIG9mDQo+IGNvdXJzZSkuIERFQ0xBUkVfTElCQlBGX09Q
+VFMgZG9lcyBkZWNsYXJlIHZhcmlhYmxlLCBzbyB0aGlzIGlzIGENCj4gc2l0dWF0aW9uIG9mIG1p
+eGluZyBjb2RlIGFuZCB2YXJpYWJsZSBkZWNsYXJhdGlvbnMsIHdoaWNoIHVuZGVyIEM4OQ0KPiAo
+b3Igd2hhdGV2ZXIgaXQncyBuYW1lZCwgdGhlIG9sZGVyIHN0YW5kYXJkIHRoYXQga2VybmVsIGlz
+IHRyeWluZyB0bw0KPiBzdGljayB0byBmb3IgdGhlIG1vc3QgcGFydCkgaXMgbm90IGFsbG93ZWQu
+DQoNClllYWgsIEkga25vdyBhYm91dCBzdWNoIGEgd2FybmluZyBhbmQgZXhwZWN0ZWQgaXQgYnV0
+IGRpZG4ndCBnZXQgaXQgd2l0aA0KdGhlIGN1cnJlbnQgc2V0dXAgKHdoYXQgc3VycHJpc2VkIG1l
+IGJ0dykgYW5kIGRlY2lkZWQgdG8ga2VlcCBpdC4NCg0KVGhlIG1haW4gcmVhc29uIEkga2VwdCBp
+dCBpcyBpdCdzIG5vdCBhY3R1YWxseSBjbGVhciBob3cgdG8gc2VwYXJhdGUNCmRlY2xhcmF0aW9u
+IGFuZCBpbml0aWFsaXphdGlvbiBvZiBvcHRzIHN0cnVjdHVyZSB3aGVuDQpERUNMQVJFX0xJQkJQ
+Rl9PUFRTIGlzIHVzZWQgc2luY2UgdGhlIG1hY3JvIGRvZXMgYm90aCB0aGluZ3MgYXQgb25jZS4g
+SW4NCnNlbGZ0ZXN0cyBJIGNhbiBqdXN0IHN3aXRjaCB0byBkaXJlY3QgaW5pdGlhbGl6YXRpb24g
+KHcvbyB0aGUgbWFjcm8pDQpzaW5jZSBsaWJicGYgYW5kIHNlbGZ0ZXN0cyBhcmUgaW4gc3luYywg
+YnV0IGZvciByZWFsIHVzZS1jYXNlcyB0aGVyZQ0Kc2hvdWxkIGJlIHNtdGggZWxzZSAoZS5nLiBJ
+TklUX0xJQkJQRl9PUFRTIG1hY3JvIHRoYXQgZG9lcyBvbmx5DQppbml0aWFsaXphdGlvbiBvZiBh
+bHJlYWR5IGRlY2xhcmVkIHN0cnVjdCkuDQoNCg0KPiA+ICsNCj4gPiArICAgICAgIGF0dGFjaF9v
+cHRzLmZsYWdzID0gQlBGX0ZfQUxMT1dfT1ZFUlJJREUgfCBCUEZfRl9SRVBMQUNFOw0KPiA+ICsg
+ICAgICAgaWYgKCFicGZfcHJvZ19hdHRhY2hfeGF0dHIoJmF0dGFjaF9vcHRzKSkgew0KPiA+ICsg
+ICAgICAgICAgICAgICBsb2dfZXJyKCJVbmV4cGVjdGVkIHN1Y2Nlc3Mgd2l0aCBPVkVSUklERSB8
+IFJFUExBQ0UiKTsNCj4gPiArICAgICAgICAgICAgICAgZ290byBlcnI7DQo+ID4gKyAgICAgICB9
+DQo+ID4gKyAgICAgICBhc3NlcnQoZXJybm8gPT0gRUlOVkFMKTsNCj4gPiArDQoNCi0tIA0KQW5k
+cmV5IElnbmF0b3YNCg==
