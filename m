@@ -2,86 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9357B1245BD
-	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2019 12:27:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2D3D1245C3
+	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2019 12:28:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726141AbfLRL1w (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 Dec 2019 06:27:52 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:22307 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725930AbfLRL1w (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 Dec 2019 06:27:52 -0500
+        id S1726591AbfLRL2z (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 Dec 2019 06:28:55 -0500
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:52971 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726551AbfLRL2y (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 18 Dec 2019 06:28:54 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1576668471;
+        s=mimecast20190719; t=1576668533;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3as0fMepjXKiH9hYeKlkTzZXSRWa3b2rrvx/TlzOdnc=;
-        b=TfchaALNm1IqAFQmYb5LuPzROT8YuE7Rr3nZSBt5+Xwg082MIAjsSf/45x7U3IinG/EYlR
-        ysD99UP6L1hX51RFgwW8RPDXKAE3mAqMrS3yw6AiAHH6N6IcwXIsG8zoeTVBMbiMjufJhH
-        0MvcIopubbl+kRgEX8v/Hdiun0k5a3k=
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
- [209.85.208.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-70-x1oIuSt6NUm7njCLEi6-Vw-1; Wed, 18 Dec 2019 06:27:49 -0500
-X-MC-Unique: x1oIuSt6NUm7njCLEi6-Vw-1
-Received: by mail-lj1-f198.google.com with SMTP id z23so582287ljk.21
-        for <bpf@vger.kernel.org>; Wed, 18 Dec 2019 03:27:48 -0800 (PST)
+         content-transfer-encoding:content-transfer-encoding;
+        bh=QRJr/B2m1bfY4zcvmbafbqc9YbAmCQuMSeK/uvTtGL0=;
+        b=JZTxgnlW0gkCrqb7mrLZaJ0k4tWt6T2Y3Wh3Iz+/T4P6M2MQd5Av9FuY7jQ6G/7P9W4dQd
+        E7ucoMwjGXoyojJUNB0Jj8kU5fD42KOLZ/zuAeIa9Bg9PCJ+dFmnigY3Cf+JowSGi9sSBT
+        71XI6Rza548suIJr/1Pe/kjcfloNvn4=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-254-jTFIh4dGMDqJX8q1wXNhHg-1; Wed, 18 Dec 2019 06:28:52 -0500
+X-MC-Unique: jTFIh4dGMDqJX8q1wXNhHg-1
+Received: by mail-lj1-f200.google.com with SMTP id y24so589469ljc.19
+        for <bpf@vger.kernel.org>; Wed, 18 Dec 2019 03:28:52 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=3as0fMepjXKiH9hYeKlkTzZXSRWa3b2rrvx/TlzOdnc=;
-        b=h8UyYOc2XPi0LCCl4FhWFqAFusIK9D22US3x8NDlcwsrNjE665W54Wfq2/qkiXDv9k
-         YIwaB3bZpOYvcERJkphQsKh/Kzaj02nS6ZQkrFV/WCCl3uclAH4TMv/mOx6HLk0Hpgce
-         nv160NmRgkKP6LNOitKXvOhVTB2NyLMchXKReLnrXjuwHjRELvfbbOwSLH7mAkW9Gzg1
-         qvM8F+PzXozucreJ/768lzzfSPaK4dcTH/EQtROoVzvDaz0AfBh2ZgyhctVnDT/W/8YN
-         nqc5xz2ro92edyve9bO6ye5+Ukz+q8hLfOH5gYQOS/elM3h4lp9rF2qWWuYcFqqrSnLA
-         aITA==
-X-Gm-Message-State: APjAAAUYFNEj85vv9cBlOIPBucynYf+qcpskvEEULSkJEexf7FFsvzui
-        NLeJogt8himIrgjkmZ77h9+Z6wVITsWRAVF3U7u3k/i/BSdXVbIKE5Pn1jvre1sFhybzg2YEMgg
-        zru97m9NtcvwX
-X-Received: by 2002:a2e:8745:: with SMTP id q5mr1365611ljj.208.1576668043912;
-        Wed, 18 Dec 2019 03:20:43 -0800 (PST)
-X-Google-Smtp-Source: APXvYqwT0sB2A0HN5RirCpDjdI6buBQBKUL1wmyz2cbpK4RtNgJzszK5rudZ2tx2g/YsmVeUorBvew==
-X-Received: by 2002:a2e:8745:: with SMTP id q5mr1365592ljj.208.1576668043811;
-        Wed, 18 Dec 2019 03:20:43 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id c8sm968308lfm.65.2019.12.18.03.20.43
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QRJr/B2m1bfY4zcvmbafbqc9YbAmCQuMSeK/uvTtGL0=;
+        b=nsDy57PTTzTTYH6pLieOgG7ZoXKTS15NDAMuRoYeqr6Dd2yHkPSk0xB1iep5DsxrLA
+         dFLW4ryqdUCMrY4PFfVQFq7qR8HshkUHLs1y9QUQjSu+OXOj+ujKh8ikrd8ZdM3xzNWh
+         2gxLBJec6VRtbcXsFB1OVM/xuQL3sLSC56Pvpv/NDDDB57xunvVpbHkB8c+hkLKg1DR/
+         UHtdKDDXFWWcUYsVdJVVqd7XOCzJXFjNLowHqrBMyzowYuXv2KJ7Fa3RO4uqvBWNCGqT
+         hyLMexdTD60CVRCWxaZTWtE0Dxfpk0hu1AwUHHk6FzWvRZ9yPF62d4VeOD29ShwSkJ5b
+         iSGA==
+X-Gm-Message-State: APjAAAXgV2vSizln1grdpib6911urNCYA22V5czQrLZcNCABuQUE9X0Z
+        29rO6i3zk1Ls1Q9rWeOaFm91FKsYbOE2VUwkdQ3sG3zMVDXSB7quWfQVG3kKyQw+BYJwOGHC10a
+        ksyKtjCREP7eQ
+X-Received: by 2002:a2e:3005:: with SMTP id w5mr1406726ljw.184.1576668530191;
+        Wed, 18 Dec 2019 03:28:50 -0800 (PST)
+X-Google-Smtp-Source: APXvYqxkpBeh7QUQZE6okZj6Fj+1Ja1B30srut8El8dHeCsO+xLWCsDc3RQXDsLaFhO0W4yJNgTnWw==
+X-Received: by 2002:a2e:3005:: with SMTP id w5mr1406720ljw.184.1576668530046;
+        Wed, 18 Dec 2019 03:28:50 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id w17sm968212lfn.22.2019.12.18.03.28.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Dec 2019 03:20:43 -0800 (PST)
+        Wed, 18 Dec 2019 03:28:49 -0800 (PST)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 98EAD180969; Wed, 18 Dec 2019 12:20:42 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net
-Cc:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        bpf@vger.kernel.org, davem@davemloft.net,
-        jakub.kicinski@netronome.com, hawk@kernel.org,
-        john.fastabend@gmail.com, magnus.karlsson@intel.com,
-        jonathan.lemon@gmail.com
-Subject: Re: [PATCH bpf-next 8/8] xdp: simplify __bpf_tx_xdp_map()
-In-Reply-To: <20191218105400.2895-9-bjorn.topel@gmail.com>
-References: <20191218105400.2895-1-bjorn.topel@gmail.com> <20191218105400.2895-9-bjorn.topel@gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 18 Dec 2019 12:20:42 +0100
-Message-ID: <87immd6fsl.fsf@toke.dk>
+        id 97EAB180969; Wed, 18 Dec 2019 12:28:48 +0100 (CET)
+From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
+Subject: [PATCH bpf-next] libbpf: Use PRIu64 when printing ulimit value
+Date:   Wed, 18 Dec 2019 12:28:40 +0100
+Message-Id: <20191218112840.871338-1-toke@redhat.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> writes:
+Naresh pointed out that libbpf builds fail on 32-bit architectures because
+rlimit.rlim_cur is defined as 'unsigned long long' on those architectures.
+Fix this by using the PRIu64 definition in printf.
 
-> From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
->
-> The explicit error checking is not needed. Simply return the error
-> instead.
->
-> Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+Fixes: dc3a2d254782 ("libbpf: Print hint about ulimit when getting permission denied error")
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+---
+ tools/lib/bpf/libbpf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 3fe42d6b0c2f..ba31083998ce 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -117,7 +117,7 @@ static void pr_perm_msg(int err)
+ 		return;
+ 
+ 	if (limit.rlim_cur < 1024)
+-		snprintf(buf, sizeof(buf), "%lu bytes", limit.rlim_cur);
++		snprintf(buf, sizeof(buf), "%"PRIu64" bytes", limit.rlim_cur);
+ 	else if (limit.rlim_cur < 1024*1024)
+ 		snprintf(buf, sizeof(buf), "%.1f KiB", (double)limit.rlim_cur / 1024);
+ 	else
+-- 
+2.24.1
 
