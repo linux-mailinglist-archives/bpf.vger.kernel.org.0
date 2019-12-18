@@ -2,63 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F540124A89
-	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2019 16:00:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2F8E124AD6
+	for <lists+bpf@lfdr.de>; Wed, 18 Dec 2019 16:11:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727126AbfLRPAm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 Dec 2019 10:00:42 -0500
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:46237 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727053AbfLRPAm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 Dec 2019 10:00:42 -0500
-Received: by mail-ot1-f65.google.com with SMTP id c22so2810243otj.13;
-        Wed, 18 Dec 2019 07:00:41 -0800 (PST)
+        id S1727456AbfLRPLZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 Dec 2019 10:11:25 -0500
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:34277 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727417AbfLRPLZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 18 Dec 2019 10:11:25 -0500
+Received: by mail-lj1-f195.google.com with SMTP id k1so1888703ljg.1
+        for <bpf@vger.kernel.org>; Wed, 18 Dec 2019 07:11:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HtxhUMN0ZQ8RDApQN2b90A3AKYwJoeoLbjxI6U7n3LM=;
-        b=S26wzDsgIT6If/pLHMjQbFvuoL8a2c+7whRkzzuaMT7O1Bg4Ozb7T6HcT1TFUt9xOK
-         yrVPq74llOs6bHAh55cfM0DXnYcCbVUfNVpErX7BtxJFZOj5JCisXQ3NpWJZsLgvtIyY
-         WJT2vNl3xdtofo//eMp5HapB8dhChUD+QYxT89/MPg7bjZuqEB9H6MPH98koS1Q8koy3
-         L2usl2AgD/GTOOwyxWbRPILq36fasCSdSY+sEP0mLOlB5NwCyD3DEth0A9b1dlCFwxdc
-         48q8q5uzf4yyD21h1dCJkfnKhDOVuuC5rRAn2vI+GEgApcrXBrQtCDd2MA3+cl4pQPNq
-         jqhw==
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=0o452dtZDcKvnVAQ8Kj3Gm0Xbx2pj/IYUiQTJzQO9gE=;
+        b=Fkg0mQdKOLV1WZE8Z1XxbvNcqJdb67rz/Q/NjePD7qIU9ny1yPyJKOOfsOOA4OEkL5
+         u+WyT9wy7radyNji9r6O0NL01H1e+aRCp58B6flFwf4fmwkGrGcLEA71Xm7XdDJu9GCh
+         NowL3CKkqunsqL0t1gWO2GDCHsWK7l81/dWd7viQeajhILnoEgRkGoTYqA+M8YJN+p0m
+         /aiV9wMWADePF00JXxJUjmUrnTyi/mWhUAvDUJCJypvfxj0NKsQhgC5Ui4jhFwGIUnd8
+         yZmidC4lSdm9/1PCTq2HFveGp/PVULv2K8U0MH2xtFCdG4H6z4GEhB12BFgYynk34v3W
+         79nQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HtxhUMN0ZQ8RDApQN2b90A3AKYwJoeoLbjxI6U7n3LM=;
-        b=Qh50vR1/G4VUY3trTbnqiKKfz8zDMSlBkzDf/OC+x9bJjP+hrGAkLneLqn1WE3JP7C
-         3P4uykX4gxi/qPH5SJo2lJsBolVz3XCQgyDl8DYHTZFiwbsGi0HEqYldc8+YwKAszll/
-         tJW3YlGWy5ucIulu+n2hncb/1UXFhLmsi74b+DL2bf3QwDFsDxWA/xaQoZ2Fg5/97Sap
-         HxqpcugcZI9ACxUP/yD83I5A8/TF5TDZX3bG1VFEq8RbYK7dr7fYbU0fvxxA1NHiT1rb
-         Gw+TthKEODc88IrutYPe6fSxpvyEIXVIeb8q5bTOUU0frPR3qL4he3l3xBOhyDZ7lSky
-         WB9g==
-X-Gm-Message-State: APjAAAXeDWHQ/D9uZmg+6RJ97Nwxfvmn6Jvbq51XxEuJo/848oYUOEqI
-        PPOs3FE10sH3SHC9CwWeVwfE6mrd4zA4BOG203U=
-X-Google-Smtp-Source: APXvYqzdY8+v0Ziio2jx9QkXTvj2SCIvGetVam7OHR7M+H/DPPu/O5WKDGQr2Gpc/zwOq2jDj/5+svUpvzcY1ctI8TE=
-X-Received: by 2002:a05:6830:2141:: with SMTP id r1mr2946729otd.39.1576681241302;
- Wed, 18 Dec 2019 07:00:41 -0800 (PST)
-MIME-Version: 1.0
-References: <000000000000a6f2030598bbe38c@google.com> <0000000000000e32950599ac5a96@google.com>
- <20191216150017.GA27202@linux.fritz.box> <CAJ8uoz3nCxcmnPonNunYhswskidn=PnN8=4_jXW4B=Xu4k_DoQ@mail.gmail.com>
- <CAJ8uoz312gDBGpqOJiKqrXn456sy6u+Gnvcvv_+0=EimasRoUw@mail.gmail.com>
- <20191217154031.GI5624@arrakis.emea.arm.com> <CAJ8uoz3yDK8sEE05cKA8siBi-Dc0wtbe1-zYgbz_-pd5t69j8w@mail.gmail.com>
- <20191217223808.GA14982@mbp>
-In-Reply-To: <20191217223808.GA14982@mbp>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Wed, 18 Dec 2019 16:00:30 +0100
-Message-ID: <CAJ8uoz358oXf7HGjOdVLO6vXLJqKN8LNV=d1HRQ=ZA=jTtOV2A@mail.gmail.com>
-Subject: Re: WARNING in wp_page_copy
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=0o452dtZDcKvnVAQ8Kj3Gm0Xbx2pj/IYUiQTJzQO9gE=;
+        b=cimG54f2sowNbqSx5EEKUJbyCudWVkHFt2mAT1iMKSImY+a8iM3fYAe0QuywAs79qU
+         Y03Ycc9x+anWG5VhXm2nCvx3QY4QDwUN0P0wI4nM0Z9H2i1XQ0WbRiOBJ8QOVYlV1Wdl
+         F6B0sqxwPvwMD3aq5p8RAkDalIzsxKM0tiM7xNJFt+AJNmyL42lWrOIbKGrgc8eBjyz7
+         dSuUueKEcG1rzLtyt/FJR/QvKD0Au45fnQjyPjl3JPlQr/48pVsFyyKENeI47Jr8p6l0
+         c/G7xv9BGaLbLoZCHsBq9sYo29CMj/ol5sGSLSUMU63IpdyqhwXIznr0bwmGp1CMQeMF
+         m5Aw==
+X-Gm-Message-State: APjAAAUYuNCHP17OFHhk30GXB/Gl2JKW28gPLHReFq9nirYPeBViuKcY
+        5k15xAuhbB6/iKyA36V3rswBwQ==
+X-Google-Smtp-Source: APXvYqwoxIn9nfRFjJUPqQwR+khLXfWKms5b5AuArgOziPlcTFDSZdYBhtuiosiiZzJKNtWPyEXDzg==
+X-Received: by 2002:a2e:58c:: with SMTP id 134mr2221234ljf.12.1576681882374;
+        Wed, 18 Dec 2019 07:11:22 -0800 (PST)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id i4sm1736919lji.0.2019.12.18.07.11.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Dec 2019 07:11:20 -0800 (PST)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 934571012CF; Wed, 18 Dec 2019 18:11:21 +0300 (+03)
+Date:   Wed, 18 Dec 2019 18:11:21 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
 To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+Cc:     Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         kirill.shutemov@linux.intel.com, justin.he@arm.com,
         linux-mm@kvack.org,
         syzbot <syzbot+9301f2f33873407d5b33@syzkaller.appspotmail.com>,
         Andrii Nakryiko <andriin@fb.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
         bpf <bpf@vger.kernel.org>,
         "David S. Miller" <davem@davemloft.net>, hawk@kernel.org,
         Jakub Kicinski <jakub.kicinski@netronome.com>,
@@ -70,15 +68,27 @@ Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         Network Development <netdev@vger.kernel.org>,
         Song Liu <songliubraving@fb.com>,
         syzkaller-bugs@googlegroups.com, Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: WARNING in wp_page_copy
+Message-ID: <20191218151121.nllpaaq4v5yictib@box>
+References: <000000000000a6f2030598bbe38c@google.com>
+ <0000000000000e32950599ac5a96@google.com>
+ <20191216150017.GA27202@linux.fritz.box>
+ <CAJ8uoz3nCxcmnPonNunYhswskidn=PnN8=4_jXW4B=Xu4k_DoQ@mail.gmail.com>
+ <CAJ8uoz312gDBGpqOJiKqrXn456sy6u+Gnvcvv_+0=EimasRoUw@mail.gmail.com>
+ <20191217154031.GI5624@arrakis.emea.arm.com>
+ <CAJ8uoz3yDK8sEE05cKA8siBi-Dc0wtbe1-zYgbz_-pd5t69j8w@mail.gmail.com>
+ <20191217223808.GA14982@mbp>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191217223808.GA14982@mbp>
+User-Agent: NeoMutt/20180716
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 17, 2019 at 11:38 PM Catalin Marinas
-<catalin.marinas@arm.com> wrote:
->
+On Tue, Dec 17, 2019 at 10:38:09PM +0000, Catalin Marinas wrote:
 > On Tue, Dec 17, 2019 at 04:57:34PM +0100, Magnus Karlsson wrote:
 > > On Tue, Dec 17, 2019 at 4:40 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
 > > > On Tue, Dec 17, 2019 at 02:27:22PM +0100, Magnus Karlsson wrote:
@@ -112,29 +122,44 @@ On Tue, Dec 17, 2019 at 11:38 PM Catalin Marinas
 > > > I guess that's not an anonymous mmap() since we don't seem to have a
 > > > struct page for src in cow_user_page() (the WARN_ON_ONCE path). Do you
 > > > have more information on the mmap() call?
-> >
+> > 
 > > I have this from the syzcaller logs:
-> >
+> > 
 > > mmap(&(0x7f0000001000/0x2000)=nil, 0x2000, 0xfffffe, 0x12, r8, 0x0)
 > > getsockopt$XDP_MMAP_OFFSETS(r8, 0x11b, 0x7, &(0x7f0000001300),
 > > &(0x7f0000000100)=0x60)
-> >
+> > 
 > > The full log can be found at:
 > > https://syzkaller.appspot.com/x/repro.syz?x=119d9fb1e00000
->
+> 
 > Thanks. Prior to mmap, we have:
->
+> 
 > r8 = socket$xdp(0x2c, 0x3, 0x0)
->
+> 
 > So basically we have an mmap() on a socket descriptor with a subsequent
 > copy_to_user() writing this range. We do we even end up doing CoW on
-> such mapping? Maybe the socket code should also implement the .fault()
+> such mapping?
+
+It's a non-readable private mapping of a socket. Any write to it would
+cause CoW.
+
+BTW, how useful memory mapped sockets are? I don't know much about
+networking, but it looks like a rarely used feature that substantially
+increase attack surface. CAP_NET_RAW is easy to come by nowadays with
+user-ns.
+
+Few years back I was able to modify zero page via memory mapped socket...
+
+> Maybe the socket code should also implement the .fault()
 > file op. It needs more digging.
 
-I am trying to reproduce it with syzkaller, but so far no luck on my
-machine. Will keep you posted.
+Caller definitely does a weird thing here that doesn't suppose to produce
+a meaningful result. I think we can keep the warning for now just to make
+sure we don't have any more-or-less legitimate obscure use-case.
 
-/Magnus
+But ultimately this WARN_ON_ONCE() has to be upgraded to SIGSEGV or
+SIGBUS. Pretending that we do anything meaningful here by clearing the
+page unlikely does anything useful to a user.
 
-> --
-> Catalin
+-- 
+ Kirill A. Shutemov
