@@ -2,202 +2,294 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EFA2D1264B4
-	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2019 15:29:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FE051264EB
+	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2019 15:36:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726908AbfLSO3l (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Dec 2019 09:29:41 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:22595 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726875AbfLSO3l (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Dec 2019 09:29:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1576765780;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=UKuhuDZ28lcg6ktC/LRHyhMwfrATZ70bwbds9FUsBUk=;
-        b=LQzALclgabJBB6XN7pgnjZ96iuMYIx9cufzhQr9VHB9fz4ybFamGdBc7VdsD2dYPey9xCL
-        gAGgSt+/vDUHLKF/muRpSOgCBPjD40DQRO3RH2Evf6hhDb/og8HwfB6HtBPL1ZQYeMFFdY
-        Gl8NPvVSTSz/l7d/jmquX7zjwiyRfhI=
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
- [209.85.208.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-39-oeR31e55NvCqMZWwUAQ44w-1; Thu, 19 Dec 2019 09:29:39 -0500
-X-MC-Unique: oeR31e55NvCqMZWwUAQ44w-1
-Received: by mail-lj1-f197.google.com with SMTP id l10so1972226ljb.15
-        for <bpf@vger.kernel.org>; Thu, 19 Dec 2019 06:29:36 -0800 (PST)
+        id S1726757AbfLSOgB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Dec 2019 09:36:01 -0500
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:39369 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726751AbfLSOgB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 Dec 2019 09:36:01 -0500
+Received: by mail-wm1-f65.google.com with SMTP id 20so5731895wmj.4;
+        Thu, 19 Dec 2019 06:35:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=duNKYJwzOr5TqxBXaSvS3NZEYly1fL02PUJyC630Yac=;
+        b=nk50jqDYMuazRt69qfEi9Hil1cbod+jPTQyoRZijkPCuTBnfzwYkBWnyItZItm5xGu
+         /L1T/e0UXgcUjdl/hOYsNCGHp27q+cXA/1/pE5Q1bnz4J7PpeXCW2haUYWJ3QmWAi/p7
+         IJtjq7V/dHbNKrwJp0XdhqJY7T0xXGzT9lDmfG+1X6fYMQU+ohGqPyOR7nGHNTUk9KvS
+         dFrV2bE0mE/Yf5iaXYvR4O6UIaSGqbY0eyWcLVl07ZSew95c90lMvIdWnH9KhhwFfYFi
+         tJpxck67AIVf3TDt7AX+YIbU8UW7Fo2oe9L+kkn4JxyIcDG7uft2xI4EMpeuDVwRP2+Z
+         vQrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:date:message-id:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=UKuhuDZ28lcg6ktC/LRHyhMwfrATZ70bwbds9FUsBUk=;
-        b=WbEy87esWXwI7NhZwtWEWtfg6Pcv/3O2MPx/RVeWdR3poY1jYOlJvD2+pSn5sv6mUp
-         Xv4qzuqnOShGFc+LCccmQTzZ+boJbdZINwnQ9GQHbLobHtgFosz0OOXepKRfctOztp9T
-         a7uKZq4J5wAENu2AfQxzFAvdJCmJ90ttGCB70V0wYO2M34qgr36ilIjjTvhdIS7MNIv3
-         3UcmxfV6LZRc6t2qatyd6duURiPYz5vVpU6nKt6nSbL7RG7CAArL8wYnBtJPVnwwNq8U
-         idK8SsURBGV5lIIvBGQqybN+iRBZpJaGGq+QDsx7yb948ldtEHJWMLDjEpcvy8agPSLA
-         u11g==
-X-Gm-Message-State: APjAAAUCHRL8dB+E9elnZMe+eer5bqTj3yj9bos49gXbxeoQ+7VHcCul
-        hwTssdqFu2jb5pAIqsCMMez4itWB0RF9XjEXGnYek9QbjTET6DfHv/2aHR8cE0zNDQTu/wNrCsS
-        XwJQbYKZcP8Od
-X-Received: by 2002:a2e:b0db:: with SMTP id g27mr6418224ljl.74.1576765775470;
-        Thu, 19 Dec 2019 06:29:35 -0800 (PST)
-X-Google-Smtp-Source: APXvYqxNDBp/rL2FrdoZdx7dGqWj4YiuJc4YV5pg+Bpobb9ccT2fGoE6MPT9y7qIMewiLJidU4AzOw==
-X-Received: by 2002:a2e:b0db:: with SMTP id g27mr6418205ljl.74.1576765775262;
-        Thu, 19 Dec 2019 06:29:35 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id s18sm3625170ljj.36.2019.12.19.06.29.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Dec 2019 06:29:34 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id D8D7818096A; Thu, 19 Dec 2019 15:29:33 +0100 (CET)
-Subject: [PATCH RFC bpf-next 3/3] selftests/bpf: Add selftest for XDP
- multiprogs
-From:   =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Date:   Thu, 19 Dec 2019 15:29:33 +0100
-Message-ID: <157676577376.957277.10941753215180409553.stgit@toke.dk>
-In-Reply-To: <157676577049.957277.3346427306600998172.stgit@toke.dk>
-References: <157676577049.957277.3346427306600998172.stgit@toke.dk>
-User-Agent: StGit/0.21
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=duNKYJwzOr5TqxBXaSvS3NZEYly1fL02PUJyC630Yac=;
+        b=dxMkNV/1u87cS+a3aODqpTSpt3cEIGyK6+XAZ0RxpFrVayotlx6svHAmtC/C1akTPS
+         NfRGPOXE0sWKUT3q8weogFmKaKzmLpwP6FGklPPBUaSVK+2slK+lX1r1Y5Fjv5js8CLf
+         KQfTPr5WuAADDUoPmtjkScBVzUZ6d/CZn0RLK6AcR7s2v96bUt4OQYdJps0J/hAt+KDi
+         8u9GQC3/Hjnp/v0WmW0HKG7AuXgUgA1qXp0YN+QSpsrfzBUU6bJxOL82AEx3YL60DM3q
+         kI5VmV38XZRmfkGWOxALBmFw9oaBlBprI/uoY+1EKDmjQkCyTz/EQMMHm/BX6UdTzxXo
+         qMHA==
+X-Gm-Message-State: APjAAAUTebN0CJ7PYWbfAA8i5tarY8HGPVgMUJJwYfJ9xJ/CpdDj8GuZ
+        YZg1s+PHeOCq9nCLUp+gXrcMk8zMhKUH6SJj1tg=
+X-Google-Smtp-Source: APXvYqy/hBVQ4GhYeM8II4C52e8sssCDbtvtu+C6US5pAaeCNlSq2Bl06jHsCM0DcHxMlCM5bKJlD0v+TtyutwAoUhM=
+X-Received: by 2002:a1c:234b:: with SMTP id j72mr10706001wmj.128.1576766158422;
+ Thu, 19 Dec 2019 06:35:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <1575878189-31860-1-git-send-email-magnus.karlsson@intel.com>
+ <1575878189-31860-3-git-send-email-magnus.karlsson@intel.com>
+ <63329cd7-4d3a-9497-e5ed-6995f05cd81f@mellanox.com> <CAJ8uoz1k6PwnfVgaa47Yt3K40NciHLf=_5ixsGs0MESrnoo0RA@mail.gmail.com>
+In-Reply-To: <CAJ8uoz1k6PwnfVgaa47Yt3K40NciHLf=_5ixsGs0MESrnoo0RA@mail.gmail.com>
+From:   Maxim Mikityanskiy <maxtram95@gmail.com>
+Date:   Thu, 19 Dec 2019 16:35:31 +0200
+Message-ID: <CAKErNvoK5eVD974=+bs=k+OMeyG=TeRU0TeWPGDwe7dNQN3i5g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 02/12] xsk: consolidate to one single cached
+ producer pointer
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>
+Cc:     Maxim Mikityanskiy <maximmi@mellanox.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        "bjorn.topel@intel.com" <bjorn.topel@intel.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "jonathan.lemon@gmail.com" <jonathan.lemon@gmail.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        "jeffrey.t.kirsher@intel.com" <jeffrey.t.kirsher@intel.com>,
+        "maciej.fijalkowski@intel.com" <maciej.fijalkowski@intel.com>,
+        "maciejromanfijalkowski@gmail.com" <maciejromanfijalkowski@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Toke Høiland-Jørgensen <toke@redhat.com>
+On Mon, Dec 16, 2019 at 10:46 AM Magnus Karlsson
+<magnus.karlsson@gmail.com> wrote:
+>
+> On Fri, Dec 13, 2019 at 7:04 PM Maxim Mikityanskiy <maximmi@mellanox.com> wrote:
+> >
+> > On 2019-12-09 09:56, Magnus Karlsson wrote:
+> > > Currently, the xsk ring code has two cached producer pointers:
+> > > prod_head and prod_tail. This patch consolidates these two into a
+> > > single one called cached_prod to make the code simpler and easier to
+> > > maintain. This will be in line with the user space part of the the
+> > > code found in libbpf, that only uses a single cached pointer.
+> > >
+> > > The Rx path only uses the two top level functions
+> > > xskq_produce_batch_desc and xskq_produce_flush_desc and they both use
+> > > prod_head and never prod_tail. So just move them over to
+> > > cached_prod.
+> > >
+> > > The Tx XDP_DRV path uses xskq_produce_addr_lazy and
+> > > xskq_produce_flush_addr_n and unnecessarily operates on both prod_tail
+> > > and prod_cons, so move them over to just use cached_prod by skipping
+> > > the intermediate step of updating prod_tail.
+> > >
+> > > The Tx path in XDP_SKB mode uses xskq_reserve_addr and
+> > > xskq_produce_addr. They currently use both cached pointers, but we can
+> > > operate on the global producer pointer in xskq_produce_addr since it
+> > > has to be updated anyway, thus eliminating the use of both cached
+> > > pointers. We can also remove the xskq_nb_free in xskq_produce_addr
+> > > since it is already called in xskq_reserve_addr. No need to do it
+> > > twice.
+> > >
+> > > When there is only one cached producer pointer, we can also simplify
+> > > xskq_nb_free by removing one argument.
+> > >
+> > > Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+> > > ---
+> > >   net/xdp/xsk_queue.h | 49 ++++++++++++++++++++++---------------------------
+> > >   1 file changed, 22 insertions(+), 27 deletions(-)
+> > >
+> > > diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
+> > > index a2f0ba6..d88e1a0 100644
+> > > --- a/net/xdp/xsk_queue.h
+> > > +++ b/net/xdp/xsk_queue.h
+> > > @@ -35,8 +35,7 @@ struct xsk_queue {
+> > >       u64 size;
+> > >       u32 ring_mask;
+> > >       u32 nentries;
+> > > -     u32 prod_head;
+> > > -     u32 prod_tail;
+> > > +     u32 cached_prod;
+> > >       u32 cons_head;
+> > >       u32 cons_tail;
+> > >       struct xdp_ring *ring;
+> > > @@ -94,39 +93,39 @@ static inline u64 xskq_nb_invalid_descs(struct xsk_queue *q)
+> > >
+> > >   static inline u32 xskq_nb_avail(struct xsk_queue *q, u32 dcnt)
+> > >   {
+> > > -     u32 entries = q->prod_tail - q->cons_tail;
+> > > +     u32 entries = q->cached_prod - q->cons_tail;
+> > >
+> > >       if (entries == 0) {
+> > >               /* Refresh the local pointer */
+> > > -             q->prod_tail = READ_ONCE(q->ring->producer);
+> > > -             entries = q->prod_tail - q->cons_tail;
+> > > +             q->cached_prod = READ_ONCE(q->ring->producer);
+> > > +             entries = q->cached_prod - q->cons_tail;
+> > >       }
+> > >
+> > >       return (entries > dcnt) ? dcnt : entries;
+> > >   }
+> > >
+> > > -static inline u32 xskq_nb_free(struct xsk_queue *q, u32 producer, u32 dcnt)
+> > > +static inline u32 xskq_nb_free(struct xsk_queue *q, u32 dcnt)
+> > >   {
+> > > -     u32 free_entries = q->nentries - (producer - q->cons_tail);
+> > > +     u32 free_entries = q->nentries - (q->cached_prod - q->cons_tail);
+> > >
+> > >       if (free_entries >= dcnt)
+> > >               return free_entries;
+> > >
+> > >       /* Refresh the local tail pointer */
+> > >       q->cons_tail = READ_ONCE(q->ring->consumer);
+> > > -     return q->nentries - (producer - q->cons_tail);
+> > > +     return q->nentries - (q->cached_prod - q->cons_tail);
+> > >   }
+> > >
+> > >   static inline bool xskq_has_addrs(struct xsk_queue *q, u32 cnt)
+> > >   {
+> > > -     u32 entries = q->prod_tail - q->cons_tail;
+> > > +     u32 entries = q->cached_prod - q->cons_tail;
+> > >
+> > >       if (entries >= cnt)
+> > >               return true;
+> > >
+> > >       /* Refresh the local pointer. */
+> > > -     q->prod_tail = READ_ONCE(q->ring->producer);
+> > > -     entries = q->prod_tail - q->cons_tail;
+> > > +     q->cached_prod = READ_ONCE(q->ring->producer);
+> > > +     entries = q->cached_prod - q->cons_tail;
+> > >
+> > >       return entries >= cnt;
+> > >   }
+> > > @@ -220,17 +219,15 @@ static inline void xskq_discard_addr(struct xsk_queue *q)
+> > >   static inline int xskq_produce_addr(struct xsk_queue *q, u64 addr)
+> > >   {
+> > >       struct xdp_umem_ring *ring = (struct xdp_umem_ring *)q->ring;
+> > > -
+> > > -     if (xskq_nb_free(q, q->prod_tail, 1) == 0)
+> > > -             return -ENOSPC;
+> > > +     unsigned int idx = q->ring->producer;
+> > >
+> > >       /* A, matches D */
+> > > -     ring->desc[q->prod_tail++ & q->ring_mask] = addr;
+> > > +     ring->desc[idx++ & q->ring_mask] = addr;
+> > >
+> > >       /* Order producer and data */
+> > >       smp_wmb(); /* B, matches C */
+> > >
+> > > -     WRITE_ONCE(q->ring->producer, q->prod_tail);
+> > > +     WRITE_ONCE(q->ring->producer, idx);
+> > >       return 0;
+> > >   }
+> > >
+> > > @@ -238,11 +235,11 @@ static inline int xskq_produce_addr_lazy(struct xsk_queue *q, u64 addr)
+> > >   {
+> > >       struct xdp_umem_ring *ring = (struct xdp_umem_ring *)q->ring;
+> > >
+> > > -     if (xskq_nb_free(q, q->prod_head, 1) == 0)
+> > > +     if (xskq_nb_free(q, 1) == 0)
+> > >               return -ENOSPC;
+> > >
+> > >       /* A, matches D */
+> > > -     ring->desc[q->prod_head++ & q->ring_mask] = addr;
+> > > +     ring->desc[q->cached_prod++ & q->ring_mask] = addr;
+> > >       return 0;
+> > >   }
+> > >
+> > > @@ -252,17 +249,16 @@ static inline void xskq_produce_flush_addr_n(struct xsk_queue *q,
+> > >       /* Order producer and data */
+> > >       smp_wmb(); /* B, matches C */
+> > >
+> > > -     q->prod_tail += nb_entries;
+> > > -     WRITE_ONCE(q->ring->producer, q->prod_tail);
+> > > +     WRITE_ONCE(q->ring->producer, q->ring->producer + nb_entries);
+> > >   }
+> > >
+> > >   static inline int xskq_reserve_addr(struct xsk_queue *q)
+> > >   {
+> > > -     if (xskq_nb_free(q, q->prod_head, 1) == 0)
+> > > +     if (xskq_nb_free(q, 1) == 0)
+> > >               return -ENOSPC;
+> > >
+> > >       /* A, matches D */
+> > > -     q->prod_head++;
+> > > +     q->cached_prod++;
+> > >       return 0;
+> > >   }
+> > >
+> > > @@ -340,11 +336,11 @@ static inline int xskq_produce_batch_desc(struct xsk_queue *q,
+> > >       struct xdp_rxtx_ring *ring = (struct xdp_rxtx_ring *)q->ring;
+> > >       unsigned int idx;
+> > >
+> > > -     if (xskq_nb_free(q, q->prod_head, 1) == 0)
+> > > +     if (xskq_nb_free(q, 1) == 0)
+> > >               return -ENOSPC;
+> > >
+> > >       /* A, matches D */
+> > > -     idx = (q->prod_head++) & q->ring_mask;
+> > > +     idx = q->cached_prod++ & q->ring_mask;
+> > >       ring->desc[idx].addr = addr;
+> > >       ring->desc[idx].len = len;
+> > >
+> > > @@ -356,8 +352,7 @@ static inline void xskq_produce_flush_desc(struct xsk_queue *q)
+> > >       /* Order producer and data */
+> > >       smp_wmb(); /* B, matches C */
+> > >
+> > > -     q->prod_tail = q->prod_head;
+> > > -     WRITE_ONCE(q->ring->producer, q->prod_tail);
+> > > +     WRITE_ONCE(q->ring->producer, q->cached_prod);
+> > >   }
+> > >
+> > >   static inline bool xskq_full_desc(struct xsk_queue *q)
+> > > @@ -367,7 +362,7 @@ static inline bool xskq_full_desc(struct xsk_queue *q)
+> > >
+> > >   static inline bool xskq_empty_desc(struct xsk_queue *q)
+> > >   {
+> > > -     return xskq_nb_free(q, q->prod_tail, q->nentries) == q->nentries;
+> > > +     return xskq_nb_free(q, q->nentries) == q->nentries;
+> >
+> > I don't think this change is correct. The old code checked the number of
+> > free items against prod_tail (== producer). The new code changes it to
+> > prod_head (which is now cached_prod). xskq_nb_free is used in xsk_poll
+> > to set EPOLLIN. After this change EPOLLIN will be set right after
+> > xskq_produce_batch_desc, but it should only be set after
+> > xskq_produce_flush_desc, just as before, otherwise the application will
+> > wake up before the data is available, and it will just waste CPU cycles.
+>
+> That is correct. It will be inefficient during patch 2 and 3 as this
+> gets fixed in patch 4.
 
-This adds a simple selftest that combines two XDP programs through a third
-dispatcher, exercising the libbpf function externals handling.
+Looking at patch 4, I see it still uses cached_prod, not producer.
+However, I see you changed it in the v2, so it should be fine now.
 
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
----
- .../selftests/bpf/prog_tests/xdp_multiprog.c       |   52 ++++++++++++++++++++
- tools/testing/selftests/bpf/progs/xdp_drop.c       |   13 +++++
- tools/testing/selftests/bpf/progs/xdp_multiprog.c  |   26 ++++++++++
- 3 files changed, 91 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_multiprog.c
- create mode 100644 tools/testing/selftests/bpf/progs/xdp_drop.c
- create mode 100644 tools/testing/selftests/bpf/progs/xdp_multiprog.c
+> I chose this as I thought the patch progression
+> and simplification process would be clearer this way. So what to do
+> about it? Some options:
+>
+> * Document this in patch 2 and keep the current order
+>
+> *  Put patch 4 before patch 2 so that the code is always efficient.
+> This is doable, but I have the feeling it will be somewhat less clear
+> from a simplification perspective. The advantage, on the other hand,
+> is that the poll code is always efficient during the whole patch set.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_multiprog.c b/tools/testing/selftests/bpf/prog_tests/xdp_multiprog.c
-new file mode 100644
-index 000000000000..40a743437222
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/xdp_multiprog.c
-@@ -0,0 +1,52 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <test_progs.h>
-+
-+void test_xdp_multiprog(void)
-+{
-+	const char *file_dispatcher = "./xdp_multiprog.o";
-+	const char *file_drop = "./xdp_drop.o";
-+	const char *file_pass = "./xdp_dummy.o";
-+	struct bpf_object *obj, *obj_drop, *obj_pass;
-+	int err;
-+
-+
-+	obj = bpf_object__open_file(file_dispatcher, NULL);
-+	err = libbpf_get_error(obj);
-+	if (CHECK_FAIL(err))
-+		return;
-+
-+	obj_drop = bpf_object__open_file(file_drop, NULL);
-+	err = libbpf_get_error(obj_drop);
-+	if (CHECK_FAIL(err))
-+		goto out_obj;
-+
-+	obj_pass = bpf_object__open_file(file_pass, NULL);
-+	err = libbpf_get_error(obj_pass);
-+	if (CHECK_FAIL(err))
-+		goto out_drop;
-+
-+        err = bpf_object__load(obj_drop);
-+        err = err ?: bpf_object__load(obj_pass);
-+
-+        if (CHECK_FAIL(err))
-+                goto out;
-+
-+	struct bpf_extern_call_tgt tgts[] =
-+		{
-+		 {.name = "prog1", .tgt_prog_name = "xdp_dummy_prog", .tgt_obj = obj_pass},
-+		 {.name = "prog2", .tgt_prog_name = "xdp_drop_prog", .tgt_obj = obj_drop},
-+		};
-+	struct bpf_extern_calls calls = {.num_tgts = 2, .tgts = tgts };
-+
-+	DECLARE_LIBBPF_OPTS(bpf_object_load_opts, load_opts,
-+			    .ext_calls = &calls);
-+
-+	err = bpf_object__load2(obj, &load_opts);
-+        CHECK_FAIL(err);
-+out:
-+	bpf_object__close(obj_pass);
-+out_drop:
-+	bpf_object__close(obj_drop);
-+out_obj:
-+	bpf_object__close(obj);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/xdp_drop.c b/tools/testing/selftests/bpf/progs/xdp_drop.c
-new file mode 100644
-index 000000000000..10e415e49564
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/xdp_drop.c
-@@ -0,0 +1,13 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#define KBUILD_MODNAME "xdp_drop"
-+#include <linux/bpf.h>
-+#include "bpf_helpers.h"
-+
-+SEC("xdp_drop")
-+int xdp_drop_prog(struct xdp_md *ctx)
-+{
-+	return XDP_DROP;
-+}
-+
-+char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/progs/xdp_multiprog.c b/tools/testing/selftests/bpf/progs/xdp_multiprog.c
-new file mode 100644
-index 000000000000..ef5ba8172038
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/xdp_multiprog.c
-@@ -0,0 +1,26 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#define KBUILD_MODNAME "xdp_multiprog"
-+#include <linux/bpf.h>
-+#include "bpf_helpers.h"
-+
-+extern int prog1(struct xdp_md *ctx);
-+extern int prog2(struct xdp_md *ctx);
-+
-+SEC("xdp_test")
-+int xdp_main(struct xdp_md *ctx)
-+{
-+        int ret;
-+
-+        ret = prog1(ctx);
-+        if (ret != XDP_PASS)
-+                goto out;
-+
-+        ret = prog2(ctx);
-+        if (ret != XDP_DROP)
-+                goto out;
-+out:
-+        return ret;
-+}
-+
-+char _license[] SEC("license") = "GPL";
+I'm sorry that it takes long for me to answer, I'm on vacation now.
+Anyway, either option looks good to me, as long as xskq_prod_is_empty
+has the correct check (as in v2 patch 2).
 
+> /Magnus
+>
+> > >   }
+> > >
+> > >   void xskq_set_umem(struct xsk_queue *q, u64 size, u64 chunk_mask);
+> > >
+> >
