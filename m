@@ -2,155 +2,216 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 60B38125D60
-	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2019 10:14:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B92B126068
+	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2019 12:04:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726609AbfLSJOX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Dec 2019 04:14:23 -0500
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:44914 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726599AbfLSJOW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Dec 2019 04:14:22 -0500
-Received: by mail-wr1-f66.google.com with SMTP id q10so5150234wrm.11;
-        Thu, 19 Dec 2019 01:14:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=S665pIJS3c5uCPmPgzBwkP3LU07+b+t424iKJ7p8WuI=;
-        b=q19B2cii8UHuaVoH1Z7GhGc0xwaH5gIeq4MDPVNlIC4PyH2fyB/CdrAV7I2q8SCp9Q
-         uIdKs7ru5EiD5tdJbUzDCKB9Yfex4h3NkeViqTTwPxvhxzZfVtNZRI0Ki3quxFhEFNeX
-         7K1y6sGO/vhbsgAI5Pq9STq2ERhDmp9eLCc6im49TOK37Xb9EyzBuMp23XOhwz4GmhW4
-         4AtdHimMF7aRUoc/+URI+6OtRtnBnATuWbRnsMga8vcpIusmOC7cfA9/9x9q3NGQgTsR
-         mgg+fSkqoF0Zdr4Tuu9Zj9uOT/e6Cs3UIBfzExZyxtTtVgHVS3thTJw6ht135kU0My/K
-         2Mpg==
-X-Gm-Message-State: APjAAAWUwQE2qw59Y6NdARbdXrGPXalgV9sIsmOOItbK5c/Kh2yEjDx7
-        h5+M+e2Kv+EId5H7IUztXi8=
-X-Google-Smtp-Source: APXvYqyxnlaH4Rd9JEvTobmsyRjoTlGJORS1lnWlaZIjisRjmr6Dn/QCguA4BOgpiX2fM5yaMPfW2A==
-X-Received: by 2002:adf:fd87:: with SMTP id d7mr8262096wrr.226.1576746859928;
-        Thu, 19 Dec 2019 01:14:19 -0800 (PST)
-Received: from Omicron ([217.76.31.1])
-        by smtp.gmail.com with ESMTPSA id g23sm5476207wmk.14.2019.12.19.01.14.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Dec 2019 01:14:19 -0800 (PST)
-Date:   Thu, 19 Dec 2019 10:14:18 +0100
-From:   Paul Chaignon <paul.chaignon@orange.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf@vger.kernel.org, paul.chaignon@gmail.com,
-        netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Subject: Re: [PATCH bpf-next 1/3] bpf: Single-cpu updates for per-cpu maps
-Message-ID: <20191219091418.GA6322@Omicron>
-References: <cover.1576673841.git.paul.chaignon@orange.com>
- <ec8fd77bb20881e7149f7444e731c510790191ce.1576673842.git.paul.chaignon@orange.com>
- <20191218180042.2ktkmok5ugeahczn@ast-mbp.dhcp.thefacebook.com>
+        id S1726701AbfLSLEQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Dec 2019 06:04:16 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:33174 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726694AbfLSLEQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 Dec 2019 06:04:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1576753455;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=s87526mx9qsysBObwAI2WyHflUMBtSSBLp0eIi2jCtI=;
+        b=e0mdoaxIn/vQDSBJET8xv6BUuWX5VaEceC3R6Frj9rgChkpysxrDAVwBvrwEzx7gDDxBOx
+        h86y87Pl075zdYjH3ofI5oSFZ7Y1iD8sVlRs34XCugP0VofQogudIu4ZOzxA7Jz0cD3Ubf
+        WFiblFQ9VWQfBLoCNxdhvYsNQ0L2/AA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-249-sPsUsn4YPQW-41SjKAElsA-1; Thu, 19 Dec 2019 06:04:13 -0500
+X-MC-Unique: sPsUsn4YPQW-41SjKAElsA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 47455800D48;
+        Thu, 19 Dec 2019 11:04:12 +0000 (UTC)
+Received: from localhost.localdomain (wsfd-netdev76.ntdv.lab.eng.bos.redhat.com [10.19.188.157])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id AE3E010013A1;
+        Thu, 19 Dec 2019 11:04:11 +0000 (UTC)
+From:   Eelco Chaudron <echaudro@redhat.com>
+To:     bpf@vger.kernel.org
+Cc:     davem@davemloft.net, ast@kernel.org, netdev@vger.kernel.org
+Subject: [PATCH bpf-next] selftests/bpf: Add a test for attaching a bpf fentry/fexit trace to an XDP program
+Date:   Thu, 19 Dec 2019 11:03:29 +0000
+Message-Id: <157675340354.60799.13351496736033615965.stgit@xdp-tutorial>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191218180042.2ktkmok5ugeahczn@ast-mbp.dhcp.thefacebook.com>
+Content-Type: text/plain; charset="utf-8"
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Thanks everyone for the reviews and suggestions!
+Add a test that will attach a FENTRY and FEXIT program to the XDP test
+program. It will also verify data from the XDP context on FENTRY and
+verifies the return code on exit.
 
-On Wed, Dec 18, 2019 at 10:00:44AM -0800, Alexei Starovoitov wrote:
-> On Wed, Dec 18, 2019 at 03:23:04PM +0100, Paul Chaignon wrote:
-> > Currently, userspace programs have to update the values of all CPUs at
-> > once when updating per-cpu maps.  This limitation prevents the update of
-> > a single CPU's value without the risk of missing concurrent updates on
-> > other CPU's values.
-> > 
-> > This patch allows userspace to update the value of a specific CPU in
-> > per-cpu maps.  The CPU whose value should be updated is encoded in the
-> > 32 upper-bits of the flags argument, as follows.  The new BPF_CPU flag
-> > can be combined with existing flags.
-> 
-> In general makes sense. Could you elaborate more on concrete issue?
+Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
+---
+ .../testing/selftests/bpf/prog_tests/xdp_bpf2bpf.c |   95 ++++++++++++++=
+++++++
+ .../testing/selftests/bpf/progs/test_xdp_bpf2bpf.c |   44 +++++++++
+ 2 files changed, 139 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_bpf2bpf.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_bpf2bpf.c
 
-Sure.  I have a BPF program that matches incoming packets against
-packet-filtering rules, with a NIC that steers some flows (correspond to
-different tenants) to specific CPUs.  Rules are stored in a per-cpu
-hashmap with a counter (counting matching packets) and an off/on switch.
-To enable a rule on a new CPU, I lookup the value for that rule, switch
-the on/off variable in the value corresponding to the given CPU and
-update the map.  However, the counters corresponding to other CPUs for
-that same rule might have been updated between the lookup and the
-update.
+diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_bpf2bpf.c b/tools=
+/testing/selftests/bpf/prog_tests/xdp_bpf2bpf.c
+new file mode 100644
+index 000000000000..175364843ec5
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/xdp_bpf2bpf.c
+@@ -0,0 +1,95 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <test_progs.h>
++#include <net/if.h>
++
++#define PROG_CNT 2
++
++void test_xdp_bpf2bpf(void)
++{
++	const char *prog_name[PROG_CNT] =3D {
++		"fentry/_xdp_tx_iptunnel",
++		"fexit/_xdp_tx_iptunnel"
++	};
++	struct bpf_link *link[PROG_CNT] =3D {};
++	struct bpf_program *prog[PROG_CNT];
++	struct bpf_map *data_map;
++	const int zero =3D 0;
++	u64 result[PROG_CNT];
++	struct vip key4 =3D {.protocol =3D 6, .family =3D AF_INET};
++	struct iptnl_info value4 =3D {.family =3D AF_INET};
++	const char *file =3D "./test_xdp.o";
++	struct bpf_object *obj, *tracer_obj =3D NULL;
++	char buf[128];
++	struct iphdr *iph =3D (void *)buf + sizeof(struct ethhdr);
++	__u32 duration, retval, size;
++	int err, prog_fd, map_fd;
++
++	/* Load XDP program to introspect */
++	err =3D bpf_prog_load(file, BPF_PROG_TYPE_XDP, &obj, &prog_fd);
++	if (CHECK_FAIL(err))
++		return;
++
++	map_fd =3D bpf_find_map(__func__, obj, "vip2tnl");
++	if (map_fd < 0)
++		goto out;
++	bpf_map_update_elem(map_fd, &key4, &value4, 0);
++
++	/* Load eBPF trace program */
++	DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts,
++			    .attach_prog_fd =3D prog_fd,
++			   );
++
++	tracer_obj =3D bpf_object__open_file("./test_xdp_bpf2bpf.o", &opts);
++	if (CHECK(IS_ERR_OR_NULL(tracer_obj), "obj_open",
++		  "failed to open test_xdp_bpf2bpf: %ld\n",
++		  PTR_ERR(tracer_obj)))
++		goto out;
++
++	err =3D bpf_object__load(tracer_obj);
++	if (CHECK(err, "obj_load", "err %d\n", err))
++		goto out;
++
++	for (int i =3D 0; i < PROG_CNT; i++) {
++		prog[i] =3D bpf_object__find_program_by_title(tracer_obj,
++							    prog_name[i]);
++		if (CHECK(!prog[i], "find_prog", "prog %s not found\n",
++			  prog_name[i]))
++			goto out;
++		link[i] =3D bpf_program__attach_trace(prog[i]);
++		if (CHECK(IS_ERR(link[i]), "attach_trace", "failed to link\n"))
++			goto out;
++	}
++	data_map =3D bpf_object__find_map_by_name(tracer_obj, "test_xdp.bss");
++	if (CHECK(!data_map, "find_data_map", "data map not found\n"))
++		goto out;
++
++	/* Run test program */
++	err =3D bpf_prog_test_run(prog_fd, 1, &pkt_v4, sizeof(pkt_v4),
++				buf, &size, &retval, &duration);
++
++	CHECK(err || retval !=3D XDP_TX || size !=3D 74 ||
++	      iph->protocol !=3D IPPROTO_IPIP, "ipv4",
++	      "err %d errno %d retval %d size %d\n",
++	      err, errno, retval, size);
++
++	/* Verify test results */
++	err =3D bpf_map_lookup_elem(bpf_map__fd(data_map), &zero, &result);
++	if (CHECK(err, "get_result",
++		  "failed to get output data: %d\n", err))
++		goto out;
++
++	if (CHECK(result[0] !=3D if_nametoindex("lo"),
++		  "result", "%s failed err %ld\n", prog_name[0], result[0]))
++		goto out;
++
++	if (CHECK(result[1] !=3D XDP_TX, "result", "%s failed err %ld\n",
++		  prog_name[1], result[1]))
++		goto out;
++out:
++	for (int i =3D 0; i < PROG_CNT; i++)
++		if (!IS_ERR_OR_NULL(link[i]))
++			bpf_link__destroy(link[i]);
++	if (!IS_ERR_OR_NULL(tracer_obj))
++		bpf_object__close(tracer_obj);
++	bpf_object__close(obj);
++}
+diff --git a/tools/testing/selftests/bpf/progs/test_xdp_bpf2bpf.c b/tools=
+/testing/selftests/bpf/progs/test_xdp_bpf2bpf.c
+new file mode 100644
+index 000000000000..82b87b2fc4e1
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_xdp_bpf2bpf.c
+@@ -0,0 +1,44 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/bpf.h>
++#include "bpf_helpers.h"
++#include "bpf_trace_helpers.h"
++
++struct net_device {
++	/* Structure does not need to contain all entries,
++	 * as "preserve_access_index" will use BTF to fix this...
++	 */
++	int ifindex;
++} __attribute__((preserve_access_index));
++
++struct xdp_rxq_info {
++	/* Structure does not need to contain all entries,
++	 * as "preserve_access_index" will use BTF to fix this...
++	 */
++	struct net_device *dev;
++	__u32 queue_index;
++} __attribute__((preserve_access_index));
++
++struct xdp_buff {
++	void *data;
++	void *data_end;
++	void *data_meta;
++	void *data_hard_start;
++	unsigned long handle;
++	struct xdp_rxq_info *rxq;
++} __attribute__((preserve_access_index));
++
++static volatile __u64 test_result_fentry;
++BPF_TRACE_1("fentry/_xdp_tx_iptunnel", trace_on_entry,
++	    struct xdp_buff *, xdp)
++{
++	test_result_fentry =3D xdp->rxq->dev->ifindex;
++	return 0;
++}
++
++static volatile __u64 test_result_fexit;
++BPF_TRACE_2("fexit/_xdp_tx_iptunnel", trace_on_exit,
++	    struct xdp_buff*, xdp, int, ret)
++{
++	test_result_fexit =3D ret;
++	return 0;
++}
 
-Other BPF users have requested the same feature before on the bcc
-repository [1].  They probably have different (tracing-related?) use
-cases.
-
-1 - https://github.com/iovisor/bcc/issues/1886
-
-> 
-> >   bpf_map_update_elem(..., cpuid << 32 | BPF_CPU)
-> > 
-> > Signed-off-by: Paul Chaignon <paul.chaignon@orange.com>
-> > ---
-> >  include/uapi/linux/bpf.h       |  4 +++
-> >  kernel/bpf/arraymap.c          | 19 ++++++++-----
-> >  kernel/bpf/hashtab.c           | 49 ++++++++++++++++++++--------------
-> >  kernel/bpf/local_storage.c     | 16 +++++++----
-> >  kernel/bpf/syscall.c           | 17 +++++++++---
-> >  tools/include/uapi/linux/bpf.h |  4 +++
-> >  6 files changed, 74 insertions(+), 35 deletions(-)
-> > 
-> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > index dbbcf0b02970..2efb17d2c77a 100644
-> > --- a/include/uapi/linux/bpf.h
-> > +++ b/include/uapi/linux/bpf.h
-> > @@ -316,6 +316,10 @@ enum bpf_attach_type {
-> >  #define BPF_NOEXIST	1 /* create new element if it didn't exist */
-> >  #define BPF_EXIST	2 /* update existing element */
-> >  #define BPF_F_LOCK	4 /* spin_lock-ed map_lookup/map_update */
-> > +#define BPF_CPU		8 /* single-cpu update for per-cpu maps */
-> 
-> BPF_F_CPU would be more consistent with the rest of flags.
-> 
-> Can BPF_F_CURRENT_CPU be supported as well?
-
-You mean to update the value corresponding to the CPU on which the
-userspace program is running?  BPF_F_CURRENT_CPU is a mask on the lower 
-32 bits so it would clash with existing flags, but there's probably
-another way to implement the same.  Not sure I see the use case though;
-userspace programs can easily update the value for the current CPU with
-BPF_F_CPU.
-
-> 
-> And for consistency support this flag in map_lookup_elem too?
-
-Sure, I'll add it to the v2.
-
-> 
-> > +
-> > +/* CPU mask for single-cpu updates */
-> > +#define BPF_CPU_MASK	0xFFFFFFFF00000000ULL
-> 
-> what is the reason to expose this in uapi?
-
-No reason; that's a mistake.
-
-> 
-> >  /* flags for BPF_MAP_CREATE command */
-> >  #define BPF_F_NO_PREALLOC	(1U << 0)
-> > diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
-> > index f0d19bbb9211..a96e94696819 100644
-> > --- a/kernel/bpf/arraymap.c
-> > +++ b/kernel/bpf/arraymap.c
-> > @@ -302,7 +302,8 @@ static int array_map_update_elem(struct bpf_map *map, void *key, void *value,
-> >  	u32 index = *(u32 *)key;
-> >  	char *val;
-> >  
-> > -	if (unlikely((map_flags & ~BPF_F_LOCK) > BPF_EXIST))
-> > +	if (unlikely((map_flags & ~BPF_CPU_MASK & ~BPF_F_LOCK &
-> > +				  ~BPF_CPU) > BPF_EXIST))
-> 
-> that reads odd.
-> More traditional would be ~ (A | B | C)
-> 
