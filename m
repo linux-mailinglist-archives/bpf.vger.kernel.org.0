@@ -2,55 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 56BBE125AE6
-	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2019 06:50:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99E99125B07
+	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2019 06:53:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725993AbfLSFuH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Dec 2019 00:50:07 -0500
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:41184 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725844AbfLSFuH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Dec 2019 00:50:07 -0500
-Received: by mail-qk1-f195.google.com with SMTP id x129so3694235qke.8
-        for <bpf@vger.kernel.org>; Wed, 18 Dec 2019 21:50:06 -0800 (PST)
+        id S1725887AbfLSFxH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Dec 2019 00:53:07 -0500
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:46001 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725821AbfLSFxH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 Dec 2019 00:53:07 -0500
+Received: by mail-qk1-f196.google.com with SMTP id x1so3681952qkl.12;
+        Wed, 18 Dec 2019 21:53:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=cMc8aC7HzuZVioRjqR6o3KygIqAra8nMZPyY0R3yvVo=;
-        b=MRlIKFrQy90yKT+jQtub+MokC6L6K0h0WHRckJNUIm65WrCpfnJh+WSB3pIgbNkHPZ
-         wgf8d1QbBXzoBnVg66ESHfPr5eO0Adi1ORxNW+C4A6L8imnUdp1TRIfMi86ZDIh6BX4v
-         YU7ZBkBxN6Zg6p14flEvpxvOQkaa8brEiS3KoYyj58qPI5FpBsn/NeFGR8ZsZdbFCImk
-         AESo7DXosqsV1FUeTiA8/sTV7EL2NpBowyifx5yzwINVZcLNxDsrR15+/hPgXv0r1Vz5
-         FTTcfoCd0ocWarmHydvd8g2n3yKclN8FLfXHpCQdE5ONh0tWbozPz03U4L68u/spo1oZ
-         Io6A==
+        bh=sY7kXZgof7kBpv2nRNAA3pzkX6v7x1JkY9eB+ySk0ZI=;
+        b=dj9L7rjVc+eenQztxoeE7n+EBFcyZ/k1p8SeUM+PFcteKKrItaKLlvNC3zBPDxOmcH
+         of0YTWZf1+Ngj2PdHKDhyUXQt4j4BJp3l6O/VUdvqRC8RUeVxfdCFtURuNkg2+R75T+4
+         zjz2xdJ6Qw68ETkDh4+T2H5WeNQDSpqdm+9U1wR+B85GzOtikxzYKJW/bKaFzsr2dNtp
+         b99LWTfXEIVprUKOCNgQNrAX19wmJvna9/gZ4gzhSCfY87YRAiVj/TIUohLTnDUAU56b
+         YJybi78+Ox5fzPrSnRIPm/jduvQ6LGd1KOOKwGo9CaX9NKw22cBpA9CJAMdZZGXlLJ/r
+         unQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=cMc8aC7HzuZVioRjqR6o3KygIqAra8nMZPyY0R3yvVo=;
-        b=Gd6uVd7rSE6aY0YpepvWh03HgVvusqa5d7IjKIOFs2+yb3voV/zwaoNXXjXJr3BwJ+
-         cAlQCsmBDpZUsCQinyfxTNTMSN+b29ItL06UO7XfDwEYJbOmNrkRUjdyZYScFMB1eav+
-         0xARGt+FkGR4/pQVFSCUkdmrGeVVQfyqjnXddMoBlvNUJcnN62Z50iNVn1He36AlqIJF
-         1g5MA5kudJGG3+0Fzdt44veztlcEq+kh/4b4khriY62FPSYO1B6UbxybGNMhdX2eJbFC
-         cC4eWOLWy1xpCiop6kvrZqk0WgVS9ZqTnNgGD4BdnU7ZZkXIz2ijdo8Mbzp6tYa+4wQr
-         SDFQ==
-X-Gm-Message-State: APjAAAWxWHQAF8+TUeGhLeKe/iNarCu28fUqj1r6O6YQq4V+Voy53sZZ
-        sjGgcOufpr+DvXDAa3vd7nElkK9CY0qjZ+CbOoA=
-X-Google-Smtp-Source: APXvYqxY2S7ueqBXoPAOJLKcQgtVOgh6+mwybwCp5Oa+pOvEJfZThVtlJzhPY9hDwpebpzhqcn8HHlGFPuu2ZabVH3M=
-X-Received: by 2002:ae9:e809:: with SMTP id a9mr6553637qkg.92.1576734606351;
- Wed, 18 Dec 2019 21:50:06 -0800 (PST)
+        bh=sY7kXZgof7kBpv2nRNAA3pzkX6v7x1JkY9eB+ySk0ZI=;
+        b=VZd8fHhT+XFu0MiIGQgoes7ffZP+0SaKrr9dq4m2GCZrflfF8n4w6No1rB92d9t4VO
+         QbyLg/W4r2NWYUcA7yw0HVgjx7hEf5XwbVH9e8zEpouuuCAh5abdNNX85c1uAi+zMHyl
+         xV4XAHZ0HbMIrCcvJsYcZhXT/KaAgfCbPpJCXXSFgB4ZMPWXc151C+G3U44V4of35fYR
+         lJ6DGFSmZdiJU5Zni8chHlbOp/raVA8rgm9lOd5xyAdHQU75qjXddf+cAimEHuE4qs4u
+         9jagWl50TZ6gBefJcz6V3xNhwFJm858+OGDCfNtA6YtOVOZnJt54N1gemAWwVcbGVipx
+         dy+A==
+X-Gm-Message-State: APjAAAVDHo7ukffKozB6MiFsmcQFUiiAaSNvxwI5qCY7b1szuxe6kPfF
+        vBCet1XKuFSEOxWoJU9/DFE6GGnvNRkYOYYJM68=
+X-Google-Smtp-Source: APXvYqzM46Wp+cFp49N3qdXM0/1vLmZjKzW8CXyJ8ZHSzdqiO30WmcXCh1nQjT0kQpVVA/eCr2SE2oJYyn0Jdb7CbZQ=
+X-Received: by 2002:a37:a685:: with SMTP id p127mr6703397qke.449.1576734786581;
+ Wed, 18 Dec 2019 21:53:06 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1576720240.git.rdna@fb.com> <a47ee7676254d3e94d3ff61afe20477eb8ace561.1576720240.git.rdna@fb.com>
-In-Reply-To: <a47ee7676254d3e94d3ff61afe20477eb8ace561.1576720240.git.rdna@fb.com>
+References: <20191219020442.1922617-1-ast@kernel.org>
+In-Reply-To: <20191219020442.1922617-1-ast@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 18 Dec 2019 21:49:55 -0800
-Message-ID: <CAEf4BzZEmnmQm=JEVyq4G=DfAvZY3M9NK+gwkGgQmgTrhizNvw@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 4/6] libbpf: Introduce bpf_prog_attach_xattr
-To:     Andrey Ignatov <rdna@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+Date:   Wed, 18 Dec 2019 21:52:55 -0800
+Message-ID: <CAEf4BzZvUQtqXWZvBrZp_H17TDwYaU1RRAbdBqcYZJN7NAz-zA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Fix test_attach_probe
+To:     Alexei Starovoitov <ast@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>, Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
@@ -58,80 +58,54 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 18, 2019 at 6:56 PM Andrey Ignatov <rdna@fb.com> wrote:
+On Wed, Dec 18, 2019 at 6:04 PM Alexei Starovoitov <ast@kernel.org> wrote:
 >
-> Introduce a new bpf_prog_attach_xattr function that, in addition to
-> program fd, target fd and attach type, accepts an extendable struct
-> bpf_prog_attach_opts.
+> Fix two issues in test_attach_probe:
+> 1. it was not able to parse /proc/self/maps beyond the first line,
+>    since %s means parse string until white space.
+> 2. offset has to be accounted for otherwise uprobed address is incorrect.
 >
-> bpf_prog_attach_opts relies on DECLARE_LIBBPF_OPTS macro to maintain
-> backward and forward compatibility and has the following "optional"
-> attach attributes:
->
-> * existing attach_flags, since it's not required when attaching in NONE
->   mode. Even though it's quite often used in MULTI and OVERRIDE mode it
->   seems to be a good idea to reduce number of arguments to
->   bpf_prog_attach_xattr;
->
-> * newly introduced attribute of BPF_PROG_ATTACH command: replace_prog_fd
->   that is fd of previously attached cgroup-bpf program to replace if
->   BPF_F_REPLACE flag is used.
->
-> The new function is named to be consistent with other xattr-functions
-> (bpf_prog_test_run_xattr, bpf_create_map_xattr, bpf_load_program_xattr).
->
-> The struct bpf_prog_attach_opts is supposed to be used with
-> DECLARE_LIBBPF_OPTS macro.
->
-> Signed-off-by: Andrey Ignatov <rdna@fb.com>
+> Fixes: 1e8611bbdfc9 ("selftests/bpf: add kprobe/uprobe selftests")
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 > ---
->  tools/lib/bpf/bpf.c      | 16 +++++++++++++++-
->  tools/lib/bpf/bpf.h      | 11 +++++++++++
->  tools/lib/bpf/libbpf.map |  1 +
->  3 files changed, 27 insertions(+), 1 deletion(-)
+
+Thanks for fixing!
+
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+
+>  tools/testing/selftests/bpf/prog_tests/attach_probe.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
 >
-> diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-> index 98596e15390f..ebb4f8d71bdb 100644
-> --- a/tools/lib/bpf/bpf.c
-> +++ b/tools/lib/bpf/bpf.c
-> @@ -466,6 +466,17 @@ int bpf_obj_get(const char *pathname)
+> diff --git a/tools/testing/selftests/bpf/prog_tests/attach_probe.c b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
+> index 5ed90ede2f1d..a0ee87c8e1ea 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/attach_probe.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
+> @@ -3,7 +3,7 @@
+>  #include "test_attach_probe.skel.h"
 >
->  int bpf_prog_attach(int prog_fd, int target_fd, enum bpf_attach_type type,
->                     unsigned int flags)
-> +{
-> +       DECLARE_LIBBPF_OPTS(bpf_prog_attach_opts, opts,
-> +               .flags = flags,
-> +       );
-> +
-> +       return bpf_prog_attach_xattr(prog_fd, target_fd, type, &opts);
-> +}
-> +
-> +int bpf_prog_attach_xattr(int prog_fd, int target_fd,
-> +                         enum bpf_attach_type type,
-> +                         const struct bpf_prog_attach_opts *opts)
->  {
->         union bpf_attr attr;
+>  ssize_t get_base_addr() {
+> -       size_t start;
+> +       size_t start, offset;
+>         char buf[256];
+>         FILE *f;
 >
-
-You need to validate opts with OPTS_VALID macro (see
-btf_dump__emit_type_decl() for simple example).
-
-> @@ -473,7 +484,10 @@ int bpf_prog_attach(int prog_fd, int target_fd, enum bpf_attach_type type,
->         attr.target_fd     = target_fd;
->         attr.attach_bpf_fd = prog_fd;
->         attr.attach_type   = type;
-> -       attr.attach_flags  = flags;
-> +       if (opts) {
-> +               attr.attach_flags = opts->flags;
-> +               attr.replace_bpf_fd = opts->replace_prog_fd;
-> +       }
-
-Please use OPTS_GET() macro to fetch values from opts struct and
-provide default value if they are not specified.
-
-
+> @@ -11,10 +11,11 @@ ssize_t get_base_addr() {
+>         if (!f)
+>                 return -errno;
 >
->         return sys_bpf(BPF_PROG_ATTACH, &attr, sizeof(attr));
->  }
+> -       while (fscanf(f, "%zx-%*x %s %*s\n", &start, buf) == 2) {
+> +       while (fscanf(f, "%zx-%*x %s %zx %*[^\n]\n",
 
-[...]
+never new [^<chars>] is possible, very nice!
+
+> +                     &start, buf, &offset) == 3) {
+>                 if (strcmp(buf, "r-xp") == 0) {
+>                         fclose(f);
+> -                       return start;
+> +                       return start - offset;
+>                 }
+>         }
+>
+> --
+> 2.23.0
+>
