@@ -2,74 +2,345 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CF44125945
-	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2019 02:35:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD22B125969
+	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2019 02:56:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726725AbfLSBf3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 Dec 2019 20:35:29 -0500
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:45050 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726463AbfLSBf3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 Dec 2019 20:35:29 -0500
-Received: by mail-pg1-f193.google.com with SMTP id x7so2217903pgl.11;
-        Wed, 18 Dec 2019 17:35:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=V9CV9BaQt0xTPSvPPcYe5ZuTRlahoiIA49Vi1uWbMvM=;
-        b=cbzK8Dck0ndGX8bRvwxkVj8Uo0hrI5ltXJXALS/8XqaLCZtedvC0mY7abFutYaz5hC
-         CQgoY0ZMYIZ3vcQYM1tuoZg2TVlN2WalGj1G7jgyCOJkBJA4i9wjw2pmFKSvT2dUpolS
-         NnWYCrq9tqlswbwMNpinOwrrEKbG/MjuJFMRh7F1aiyiD0ni39+LynMeusDe+EUWhfM1
-         2lVirY7p06POHezp4IUR14yLBkTFfF71v/T9vck0btC2w7OZdSA+6Y5/Bx2jeogI4YpA
-         qJGb4Pi92uBgnbUHqqVaKd1bD/jmk4yJkkpfwjDVLmNfmMQPd09Li+zlce3av6olws43
-         H1+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=V9CV9BaQt0xTPSvPPcYe5ZuTRlahoiIA49Vi1uWbMvM=;
-        b=VHkGHdaxwV9dHD6tLM0OrRFOPX71VBYJs1QAJDgjIRmwxqpOR20ueUebBqPLS7IP4b
-         puwe04TTK3Fx5OljBtxgwFS4nya1QOgDyvxPvhUFuQTuTQXt5X1Het+SFZ/05BSbZPf8
-         Q7pb/H/uRFm/hQ8Jr8iNraJxIuZslcEvp0GVpBVje/sVseqzwOIS3xCiTHe5QjcKvN93
-         /tVNrCBB6v7Xzap5RRf7minJSE7USxRiDbSUUcOQvBd9ByPuq+vCLrE5wKENB3t86W2w
-         mKMWbPk85+j+WaubwMn/B2JbKBwVMoJIzvUNsXEVuZ6wqwyvkAiuXKemR+M5FTsbYyOQ
-         OYFg==
-X-Gm-Message-State: APjAAAWpUI3GvPOM8N/MuKBVCQB8ePmK2yscl4MPqefomyQcCkc8BQXi
-        Xx4MMh0LJF6iw6HLR0Z2NXI=
-X-Google-Smtp-Source: APXvYqyt41S9BWAxY1jH/gqa8OMjLQxbDKx07HbzVI6HJI5rRAGu39IEy8qRUv9sDgQDqduRt9PMqQ==
-X-Received: by 2002:a63:a43:: with SMTP id z3mr6364243pgk.232.1576719328218;
-        Wed, 18 Dec 2019 17:35:28 -0800 (PST)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:200::4108])
-        by smtp.gmail.com with ESMTPSA id 144sm5437955pfc.124.2019.12.18.17.35.26
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 18 Dec 2019 17:35:27 -0800 (PST)
-Date:   Wed, 18 Dec 2019 17:35:25 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
-        daniel@iogearbox.net, andrii.nakryiko@gmail.com, kernel-team@fb.com
-Subject: Re: [PATCH bpf-next 0/3] Libbpf extern support improvements
-Message-ID: <20191219013524.klow6gvmumgpqb6s@ast-mbp.dhcp.thefacebook.com>
-References: <20191219002837.3074619-1-andriin@fb.com>
+        id S1726694AbfLSB4k (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 Dec 2019 20:56:40 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:15786 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726518AbfLSB4j (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 18 Dec 2019 20:56:39 -0500
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id xBJ1sAuO016707
+        for <bpf@vger.kernel.org>; Wed, 18 Dec 2019 17:56:37 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=facebook; bh=JeiNrwK3nN609xWf/hZeu91oUmpTSWNq/TZS00HXDL4=;
+ b=CjLDtvxd1sfnFUUW8KVYZEOE1QSOqYtWZY9wS92SWZW6kSHO4sIsvz5i/0SoO+OrVr4e
+ nsHHTdoE8ImQJA7sW74YF5TJxJ1cksHrc9NQzUfQu+7q7L7GXfoHVBLVcUmQoM3aqhZH
+ JWAw3s93Yh9twCfbHCMcoLCC+Y1ISEOZ8Io= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net with ESMTP id 2wyc7tdd8g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 18 Dec 2019 17:56:37 -0800
+Received: from intmgw001.06.prn3.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Wed, 18 Dec 2019 17:56:36 -0800
+Received: by dev082.prn2.facebook.com (Postfix, from userid 572249)
+        id 72E433711476; Wed, 18 Dec 2019 17:56:35 -0800 (PST)
+Smtp-Origin-Hostprefix: dev
+From:   Andrey Ignatov <rdna@fb.com>
+Smtp-Origin-Hostname: dev082.prn2.facebook.com
+To:     <bpf@vger.kernel.org>
+CC:     Andrey Ignatov <rdna@fb.com>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <kafai@fb.com>, <andriin@fb.com>,
+        <kernel-team@fb.com>
+Smtp-Origin-Cluster: prn2c23
+Subject: [PATCH v3 bpf-next 3/6] bpf: Support replacing cgroup-bpf program in MULTI mode
+Date:   Wed, 18 Dec 2019 17:56:00 -0800
+Message-ID: <30cd850044a0057bdfcaaf154b7d2f39850ba813.1576720240.git.rdna@fb.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <cover.1576720240.git.rdna@fb.com>
+References: <cover.1576720240.git.rdna@fb.com>
+X-FB-Internal: Safe
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191219002837.3074619-1-andriin@fb.com>
-User-Agent: NeoMutt/20180223
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
+ definitions=2019-12-18_08:2019-12-17,2019-12-18 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
+ suspectscore=38 clxscore=1015 priorityscore=1501 mlxscore=0 spamscore=0
+ phishscore=0 adultscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-1912190013
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 18, 2019 at 04:28:33PM -0800, Andrii Nakryiko wrote:
-> Based on latest feedback and discussions, this patch set implements the
-> following changes:
-> 
-> - Kconfig-provided externs have to be in .kconfig section, for which
->   bpf_helpers.h provides convenient __kconfig macro (Daniel);
-> - instead of allowing to override Kconfig file path, switch this to ability to
->   extend and override system Kconfig with user-provided custom values (Alexei);
-> - BTF is required when externs are used.
+The common use-case in production is to have multiple cgroup-bpf
+programs per attach type that cover multiple use-cases. Such programs
+are attached with BPF_F_ALLOW_MULTI and can be maintained by different
+people.
 
-Applied, Thanks
+Order of programs usually matters, for example imagine two egress
+programs: the first one drops packets and the second one counts packets.
+If they're swapped the result of counting program will be different.
+
+It brings operational challenges with updating cgroup-bpf program(s)
+attached with BPF_F_ALLOW_MULTI since there is no way to replace a
+program:
+
+* One way to update is to detach all programs first and then attach the
+  new version(s) again in the right order. This introduces an
+  interruption in the work a program is doing and may not be acceptable
+  (e.g. if it's egress firewall);
+
+* Another way is attach the new version of a program first and only then
+  detach the old version. This introduces the time interval when two
+  versions of same program are working, what may not be acceptable if a
+  program is not idempotent. It also imposes additional burden on
+  program developers to make sure that two versions of their program can
+  co-exist.
+
+Solve the problem by introducing a "replace" mode in BPF_PROG_ATTACH
+command for cgroup-bpf programs being attached with BPF_F_ALLOW_MULTI
+flag. This mode is enabled by newly introduced BPF_F_REPLACE attach flag
+and bpf_attr.replace_bpf_fd attribute to pass fd of the old program to
+replace
+
+That way user can replace any program among those attached with
+BPF_F_ALLOW_MULTI flag without the problems described above.
+
+Details of the new API:
+
+* If BPF_F_REPLACE is set but replace_bpf_fd doesn't have valid
+  descriptor of BPF program, BPF_PROG_ATTACH will return corresponding
+  error (EINVAL or EBADF).
+
+* If replace_bpf_fd has valid descriptor of BPF program but such a
+  program is not attached to specified cgroup, BPF_PROG_ATTACH will
+  return ENOENT.
+
+BPF_F_REPLACE is introduced to make the user intent clear, since
+replace_bpf_fd alone can't be used for this (its default value, 0, is a
+valid fd). BPF_F_REPLACE also makes it possible to extend the API in the
+future (e.g. add BPF_F_BEFORE and BPF_F_AFTER if needed).
+
+Signed-off-by: Andrey Ignatov <rdna@fb.com>
+Acked-by: Martin KaFai Lau <kafai@fb.com>
+---
+ include/linux/bpf-cgroup.h     |  4 +++-
+ include/uapi/linux/bpf.h       | 10 ++++++++++
+ kernel/bpf/cgroup.c            | 30 ++++++++++++++++++++++++++----
+ kernel/bpf/syscall.c           |  4 ++--
+ kernel/cgroup/cgroup.c         |  5 +++--
+ tools/include/uapi/linux/bpf.h | 10 ++++++++++
+ 6 files changed, 54 insertions(+), 9 deletions(-)
+
+diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
+index 169fd25f6bc2..18f6a6da7c3c 100644
+--- a/include/linux/bpf-cgroup.h
++++ b/include/linux/bpf-cgroup.h
+@@ -85,6 +85,7 @@ int cgroup_bpf_inherit(struct cgroup *cgrp);
+ void cgroup_bpf_offline(struct cgroup *cgrp);
+ 
+ int __cgroup_bpf_attach(struct cgroup *cgrp, struct bpf_prog *prog,
++			struct bpf_prog *replace_prog,
+ 			enum bpf_attach_type type, u32 flags);
+ int __cgroup_bpf_detach(struct cgroup *cgrp, struct bpf_prog *prog,
+ 			enum bpf_attach_type type);
+@@ -93,7 +94,8 @@ int __cgroup_bpf_query(struct cgroup *cgrp, const union bpf_attr *attr,
+ 
+ /* Wrapper for __cgroup_bpf_*() protected by cgroup_mutex */
+ int cgroup_bpf_attach(struct cgroup *cgrp, struct bpf_prog *prog,
+-		      enum bpf_attach_type type, u32 flags);
++		      struct bpf_prog *replace_prog, enum bpf_attach_type type,
++		      u32 flags);
+ int cgroup_bpf_detach(struct cgroup *cgrp, struct bpf_prog *prog,
+ 		      enum bpf_attach_type type, u32 flags);
+ int cgroup_bpf_query(struct cgroup *cgrp, const union bpf_attr *attr,
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index dbbcf0b02970..7df436da542d 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -231,6 +231,11 @@ enum bpf_attach_type {
+  * When children program makes decision (like picking TCP CA or sock bind)
+  * parent program has a chance to override it.
+  *
++ * With BPF_F_ALLOW_MULTI a new program is added to the end of the list of
++ * programs for a cgroup. Though it's possible to replace an old program at
++ * any position by also specifying BPF_F_REPLACE flag and position itself in
++ * replace_bpf_fd attribute. Old program at this position will be released.
++ *
+  * A cgroup with MULTI or OVERRIDE flag allows any attach flags in sub-cgroups.
+  * A cgroup with NONE doesn't allow any programs in sub-cgroups.
+  * Ex1:
+@@ -249,6 +254,7 @@ enum bpf_attach_type {
+  */
+ #define BPF_F_ALLOW_OVERRIDE	(1U << 0)
+ #define BPF_F_ALLOW_MULTI	(1U << 1)
++#define BPF_F_REPLACE		(1U << 2)
+ 
+ /* If BPF_F_STRICT_ALIGNMENT is used in BPF_PROG_LOAD command, the
+  * verifier will perform strict alignment checking as if the kernel
+@@ -442,6 +448,10 @@ union bpf_attr {
+ 		__u32		attach_bpf_fd;	/* eBPF program to attach */
+ 		__u32		attach_type;
+ 		__u32		attach_flags;
++		__u32		replace_bpf_fd;	/* previously attached eBPF
++						 * program to replace if
++						 * BPF_F_REPLACE is used
++						 */
+ 	};
+ 
+ 	struct { /* anonymous struct used by BPF_PROG_TEST_RUN command */
+diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+index 283efe3ce052..45346c79613a 100644
+--- a/kernel/bpf/cgroup.c
++++ b/kernel/bpf/cgroup.c
+@@ -282,14 +282,17 @@ static int update_effective_progs(struct cgroup *cgrp,
+  *                         propagate the change to descendants
+  * @cgrp: The cgroup which descendants to traverse
+  * @prog: A program to attach
++ * @replace_prog: Previously attached program to replace if BPF_F_REPLACE is set
+  * @type: Type of attach operation
+  * @flags: Option flags
+  *
+  * Must be called with cgroup_mutex held.
+  */
+ int __cgroup_bpf_attach(struct cgroup *cgrp, struct bpf_prog *prog,
++			struct bpf_prog *replace_prog,
+ 			enum bpf_attach_type type, u32 flags)
+ {
++	u32 saved_flags = (flags & (BPF_F_ALLOW_OVERRIDE | BPF_F_ALLOW_MULTI));
+ 	struct list_head *progs = &cgrp->bpf.progs[type];
+ 	struct bpf_prog *old_prog = NULL;
+ 	struct bpf_cgroup_storage *storage[MAX_BPF_CGROUP_STORAGE_TYPE],
+@@ -298,14 +301,15 @@ int __cgroup_bpf_attach(struct cgroup *cgrp, struct bpf_prog *prog,
+ 	enum bpf_cgroup_storage_type stype;
+ 	int err;
+ 
+-	if ((flags & BPF_F_ALLOW_OVERRIDE) && (flags & BPF_F_ALLOW_MULTI))
++	if (((flags & BPF_F_ALLOW_OVERRIDE) && (flags & BPF_F_ALLOW_MULTI)) ||
++	    ((flags & BPF_F_REPLACE) && !(flags & BPF_F_ALLOW_MULTI)))
+ 		/* invalid combination */
+ 		return -EINVAL;
+ 
+ 	if (!hierarchy_allows_attach(cgrp, type))
+ 		return -EPERM;
+ 
+-	if (!list_empty(progs) && cgrp->bpf.flags[type] != flags)
++	if (!list_empty(progs) && cgrp->bpf.flags[type] != saved_flags)
+ 		/* Disallow attaching non-overridable on top
+ 		 * of existing overridable in this cgroup.
+ 		 * Disallow attaching multi-prog if overridable or none
+@@ -320,7 +324,12 @@ int __cgroup_bpf_attach(struct cgroup *cgrp, struct bpf_prog *prog,
+ 			if (pl->prog == prog)
+ 				/* disallow attaching the same prog twice */
+ 				return -EINVAL;
++			if (pl->prog == replace_prog)
++				replace_pl = pl;
+ 		}
++		if ((flags & BPF_F_REPLACE) && !replace_pl)
++			/* prog to replace not found for cgroup */
++			return -ENOENT;
+ 	} else if (!list_empty(progs)) {
+ 		replace_pl = list_first_entry(progs, typeof(*pl), node);
+ 	}
+@@ -356,7 +365,7 @@ int __cgroup_bpf_attach(struct cgroup *cgrp, struct bpf_prog *prog,
+ 	for_each_cgroup_storage_type(stype)
+ 		pl->storage[stype] = storage[stype];
+ 
+-	cgrp->bpf.flags[type] = flags;
++	cgrp->bpf.flags[type] = saved_flags;
+ 
+ 	err = update_effective_progs(cgrp, type);
+ 	if (err)
+@@ -522,6 +531,7 @@ int __cgroup_bpf_query(struct cgroup *cgrp, const union bpf_attr *attr,
+ int cgroup_bpf_prog_attach(const union bpf_attr *attr,
+ 			   enum bpf_prog_type ptype, struct bpf_prog *prog)
+ {
++	struct bpf_prog *replace_prog = NULL;
+ 	struct cgroup *cgrp;
+ 	int ret;
+ 
+@@ -529,8 +539,20 @@ int cgroup_bpf_prog_attach(const union bpf_attr *attr,
+ 	if (IS_ERR(cgrp))
+ 		return PTR_ERR(cgrp);
+ 
+-	ret = cgroup_bpf_attach(cgrp, prog, attr->attach_type,
++	if ((attr->attach_flags & BPF_F_ALLOW_MULTI) &&
++	    (attr->attach_flags & BPF_F_REPLACE)) {
++		replace_prog = bpf_prog_get_type(attr->replace_bpf_fd, ptype);
++		if (IS_ERR(replace_prog)) {
++			cgroup_put(cgrp);
++			return PTR_ERR(replace_prog);
++		}
++	}
++
++	ret = cgroup_bpf_attach(cgrp, prog, replace_prog, attr->attach_type,
+ 				attr->attach_flags);
++
++	if (replace_prog)
++		bpf_prog_put(replace_prog);
+ 	cgroup_put(cgrp);
+ 	return ret;
+ }
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index b08c362f4e02..81ee8595dfee 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -2073,10 +2073,10 @@ static int bpf_prog_attach_check_attach_type(const struct bpf_prog *prog,
+ 	}
+ }
+ 
+-#define BPF_PROG_ATTACH_LAST_FIELD attach_flags
++#define BPF_PROG_ATTACH_LAST_FIELD replace_bpf_fd
+ 
+ #define BPF_F_ATTACH_MASK \
+-	(BPF_F_ALLOW_OVERRIDE | BPF_F_ALLOW_MULTI)
++	(BPF_F_ALLOW_OVERRIDE | BPF_F_ALLOW_MULTI | BPF_F_REPLACE)
+ 
+ static int bpf_prog_attach(const union bpf_attr *attr)
+ {
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 735af8f15f95..725365df066d 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -6288,12 +6288,13 @@ void cgroup_sk_free(struct sock_cgroup_data *skcd)
+ 
+ #ifdef CONFIG_CGROUP_BPF
+ int cgroup_bpf_attach(struct cgroup *cgrp, struct bpf_prog *prog,
+-		      enum bpf_attach_type type, u32 flags)
++		      struct bpf_prog *replace_prog, enum bpf_attach_type type,
++		      u32 flags)
+ {
+ 	int ret;
+ 
+ 	mutex_lock(&cgroup_mutex);
+-	ret = __cgroup_bpf_attach(cgrp, prog, type, flags);
++	ret = __cgroup_bpf_attach(cgrp, prog, replace_prog, type, flags);
+ 	mutex_unlock(&cgroup_mutex);
+ 	return ret;
+ }
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index dbbcf0b02970..7df436da542d 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -231,6 +231,11 @@ enum bpf_attach_type {
+  * When children program makes decision (like picking TCP CA or sock bind)
+  * parent program has a chance to override it.
+  *
++ * With BPF_F_ALLOW_MULTI a new program is added to the end of the list of
++ * programs for a cgroup. Though it's possible to replace an old program at
++ * any position by also specifying BPF_F_REPLACE flag and position itself in
++ * replace_bpf_fd attribute. Old program at this position will be released.
++ *
+  * A cgroup with MULTI or OVERRIDE flag allows any attach flags in sub-cgroups.
+  * A cgroup with NONE doesn't allow any programs in sub-cgroups.
+  * Ex1:
+@@ -249,6 +254,7 @@ enum bpf_attach_type {
+  */
+ #define BPF_F_ALLOW_OVERRIDE	(1U << 0)
+ #define BPF_F_ALLOW_MULTI	(1U << 1)
++#define BPF_F_REPLACE		(1U << 2)
+ 
+ /* If BPF_F_STRICT_ALIGNMENT is used in BPF_PROG_LOAD command, the
+  * verifier will perform strict alignment checking as if the kernel
+@@ -442,6 +448,10 @@ union bpf_attr {
+ 		__u32		attach_bpf_fd;	/* eBPF program to attach */
+ 		__u32		attach_type;
+ 		__u32		attach_flags;
++		__u32		replace_bpf_fd;	/* previously attached eBPF
++						 * program to replace if
++						 * BPF_F_REPLACE is used
++						 */
+ 	};
+ 
+ 	struct { /* anonymous struct used by BPF_PROG_TEST_RUN command */
+-- 
+2.17.1
+
