@@ -2,64 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D6EE1126FDA
-	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2019 22:43:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FAAE126FEE
+	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2019 22:46:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726963AbfLSVnh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Dec 2019 16:43:37 -0500
-Received: from mail-lf1-f68.google.com ([209.85.167.68]:44840 "EHLO
-        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726873AbfLSVnh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Dec 2019 16:43:37 -0500
-Received: by mail-lf1-f68.google.com with SMTP id v201so5386912lfa.11;
-        Thu, 19 Dec 2019 13:43:36 -0800 (PST)
+        id S1726880AbfLSVq3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Dec 2019 16:46:29 -0500
+Received: from mail-qt1-f177.google.com ([209.85.160.177]:33873 "EHLO
+        mail-qt1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727229AbfLSVq2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 Dec 2019 16:46:28 -0500
+Received: by mail-qt1-f177.google.com with SMTP id 5so6367471qtz.1
+        for <bpf@vger.kernel.org>; Thu, 19 Dec 2019 13:46:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=B2x1kO+jp983OlkibryiHtgzpdg4AuYFoNIdiRMNKMk=;
-        b=dFuom9HGgaiG8JGCQdm7TJNGyi9n9QkOcs/dL0q/ip7/3iQX4JFa5Z3OIClG2TV/oo
-         M2nidKwNK3pGqvgUn5fwf7Khq5IIe7FhZEWYdQlWBa2+njS8yd5LnjIbc0HTZdTuP6QA
-         hKmo5cL+3deCZurdcRcuYhXGs2aIEPcpxqGDBLUU0bOo3XzTOv6daYYQV8eUOKRrw0l6
-         VhmJy32yqg0lZ1cTfhRSPPEuKXxp9CVqVT2Smgahn9c7j4RAgXsCNKWK9DBdZBxtOP2W
-         uoNY3MLk6/9uS8XXia9VysVfNfAgGJQxGhIVQ0yqqLVqtmrfVh/1Nr2jyXA6mqKIUwpd
-         QVCg==
+        d=cloudflare.com; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=VO6Oa9byymwyW6n23ILZAJDl6f5Ys1IOFf5yRPmHuPo=;
+        b=LzRhNFGA5iZor0jf32Zm9YWEhI87EluLTGg6MUh3iGNs6XNwn0UTbGxldDCEF4IOfz
+         3DsLwGj94OyxxRUwEXEOz683yvpPPgpXQ8XvqTJ/DnFPn/0tYWAff+ABqyS6abz0CkeH
+         cHPthvsyIRSJL8qxrYA9agRd7wyidVd/liGYo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=B2x1kO+jp983OlkibryiHtgzpdg4AuYFoNIdiRMNKMk=;
-        b=JKZkBMAvtXgnntKOR4yfyPaYkdOFMVf7zYX4MCwMNrCFZ9XqXM1Lb7AKh7xHu4WSKX
-         00VzeBqnPdL5ohwdVW0cWE3D6QVkhdq4yGpjLc0Q5WkrYkAZDhn4BLrGtHEeQ1Pbecrx
-         oSD2WVSTNCECv4DNcncamzDq4XjPXsIj4dW/KbqLBvOm4pbMk1opM/WUqplQeq6cXqf2
-         2U4jO9mNBZk4GGvZMaTwTeOlpjzC3qiwHybwU1bfDqRWiVsRV4nsFujSkyING1Rcki7r
-         FtwSEHJH/m5ehW0FZ32VxWWIrg488PSGw8oqy7aXbXAnX+x90x1a3peodWN7sjCP/Icc
-         7Jng==
-X-Gm-Message-State: APjAAAWaMJoO/kESkOmKdbiQlbV+v1wCdBq5Gy99iVQmdaeQEzf+7CZG
-        Dr3yD3YRUbHOopRXDyyyTDRjqmdohfxNsQFlsdKOnQ==
-X-Google-Smtp-Source: APXvYqxAd0RJ48HiUp5oJpRB/xO2eadeDbXZtz5NjBTEbhe+o+4RjjhJgMyH6WEOSc2O3bYbs6IsJqJNT0psfjkfk2M=
-X-Received: by 2002:ac2:47ec:: with SMTP id b12mr6536580lfp.162.1576791815288;
- Thu, 19 Dec 2019 13:43:35 -0800 (PST)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=VO6Oa9byymwyW6n23ILZAJDl6f5Ys1IOFf5yRPmHuPo=;
+        b=I92e+mhUQa4uPtc+JmZx9Ac6tNnhiwL+sf7zH/7tbQ1IWnM3b5MluunPa+UEDtIjZ0
+         x5l81fCVMUNx6Nn9qa3hf2TRLRT3uPwU+13f9zqbl4UPKLNr2/95TfuZecKXMEVFz7Io
+         pM+ePQlas4fW45S6BAty62luPCRWnTIeSlXnfh5TgU0Zyp1f6/CYvJwNKkelkPgRHVOa
+         QK+4t6GOPEosiIjWze2VjjvIokbvstjTmMCaIu/1h2d9QedkF1RYJT4pH51Wy4HFac8n
+         ljGcSB+J93l5oNmzCptWLLpKNNUHHAiEZGCw9gPajF/pHO2PVo8H4Yo3n22PVLR/ISh8
+         XdMw==
+X-Gm-Message-State: APjAAAUjio4YqkirnAsfGortZwQ8QFWX5WOUD+FEoPVij6CMkhIxSG2O
+        YE99ithAl86a3X0hY9BUd3xZR9F1JpGKrdoPvzrv+F1+vo06Tg==
+X-Google-Smtp-Source: APXvYqwpqC74xeUMj8yQEwAE+ZczgnB/Uh/jOqqfs4iRaiimV06OcME38a4mJLo8X5ezJq61ccNR97lNfS0+INihS/4=
+X-Received: by 2002:ac8:602:: with SMTP id d2mr9200816qth.245.1576791987660;
+ Thu, 19 Dec 2019 13:46:27 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1576789878.git.daniel@iogearbox.net>
-In-Reply-To: <cover.1576789878.git.daniel@iogearbox.net>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 19 Dec 2019 13:43:23 -0800
-Message-ID: <CAADnVQKmaepHe_zek_nGaAwL0KYzQ2ww-1Db14rbLUb_2BMbwA@mail.gmail.com>
-Subject: Re: [PATCH bpf 0/2] Fix record_func_key to perform backtracking on r3
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
+From:   Alex Forster <aforster@cloudflare.com>
+Date:   Thu, 19 Dec 2019 15:46:16 -0600
+Message-ID: <CAKxSbF2XaqwLAby0BBbhT_8vBviMvkA_7fiK-ivAs2DHWqARxw@mail.gmail.com>
+Subject: getsockopt(XDP_MMAP_OFFSETS) syscall ABI breakage?
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 19, 2019 at 1:20 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> Fixes pruning behavior when record_func_key() is used. See main
-> description in patch 1, test cases added in patch 2.
+The getsockopt(XDP_MMAP_OFFSETS) socket option returns a struct
+xdp_mmap_offsets (from uapi/linux/if_xdp.h) which is defined as:
 
-Applied. Thanks
+    struct xdp_mmap_offsets {
+        struct xdp_ring_offset rx;
+        struct xdp_ring_offset tx;
+        struct xdp_ring_offset fr; /* Fill */
+        struct xdp_ring_offset cr; /* Completion */
+    };
+
+Prior to kernel 5.4, struct xdp_ring_offset (from the same header) was
+defined as:
+
+    struct xdp_ring_offset {
+        __u64 producer;
+        __u64 consumer;
+        __u64 desc;
+    };
+
+A few months ago, in 77cd0d7, it was changed to the following:
+
+    struct xdp_ring_offset {
+        __u64 producer;
+        __u64 consumer;
+        __u64 desc;
+        __u64 flags;
+    };
+
+I believe this constitutes a syscall ABI breakage, which I did not
+think was allowed. Have I misunderstood the current stability
+guarantees for AF_XDP?
+
+Alex Forster
