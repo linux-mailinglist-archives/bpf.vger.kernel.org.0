@@ -2,34 +2,34 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F3FD125C33
-	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2019 08:45:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5352E125C2B
+	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2019 08:45:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726681AbfLSHpn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Dec 2019 02:45:43 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:52524 "EHLO
+        id S1726439AbfLSHpO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Dec 2019 02:45:14 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:7404 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726303AbfLSHpm (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 19 Dec 2019 02:45:42 -0500
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xBJ7efqV013436
-        for <bpf@vger.kernel.org>; Wed, 18 Dec 2019 23:45:42 -0800
+        by vger.kernel.org with ESMTP id S1726303AbfLSHpO (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 19 Dec 2019 02:45:14 -0500
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xBJ7erH0031420
+        for <bpf@vger.kernel.org>; Wed, 18 Dec 2019 23:45:13 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=facebook;
- bh=UnJdQGO+RyHYsL8UiXgCY7P/R2giOX77rGChm1iO5q4=;
- b=ihm3Q8yivsl3jqIpn0keRwmFw0Z/wgy2jOxsdP4kjSWXIz8mHbInyKZ56NDAJterGbUe
- C5/4IB96xGxBFrY60b/6choyqklVJF42dRvfQZzxFD/kJjzjviQ+QF4421SmkeMVD0Xg
- D42wiEPxEGlSa8eUqzHO/bLo/0mWW+k6NHk= 
+ : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=facebook; bh=A3sa158hA6zbREWxvxveyq8Gd95yJYYiwnsYK6hgXOc=;
+ b=LEFnZsM9zu2MO1uamafgYZDvDCH97S8wkzLtFpyRjn+9OdlIzXkPjFuMqfx3o/ZDf5Xe
+ oOoz6DObUn6oUqQ7ZmRu0xTQO0sZApNqYXn811Deovc2o1H/7CPVTEimVzMemkzRaJiR
+ V4rMPIQDYAVQ9Ji+iAxujoqZyJYeUssDuh8= 
 Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by mx0a-00082601.pphosted.com with ESMTP id 2wyqv4khn5-7
+        by mx0a-00082601.pphosted.com with ESMTP id 2wykmqmtw6-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 18 Dec 2019 23:45:41 -0800
+        for <bpf@vger.kernel.org>; Wed, 18 Dec 2019 23:45:13 -0800
 Received: from intmgw001.06.prn3.facebook.com (2620:10d:c081:10::13) by
- mail.thefacebook.com (2620:10d:c081:35::126) with Microsoft SMTP Server
+ mail.thefacebook.com (2620:10d:c081:35::129) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
- Wed, 18 Dec 2019 23:45:07 -0800
+ Wed, 18 Dec 2019 23:45:12 -0800
 Received: by dev082.prn2.facebook.com (Postfix, from userid 572249)
-        id AFEB937138B6; Wed, 18 Dec 2019 23:45:06 -0800 (PST)
+        id 182BD37138B6; Wed, 18 Dec 2019 23:45:10 -0800 (PST)
 Smtp-Origin-Hostprefix: dev
 From:   Andrey Ignatov <rdna@fb.com>
 Smtp-Origin-Hostname: dev082.prn2.facebook.com
@@ -38,19 +38,21 @@ CC:     Andrey Ignatov <rdna@fb.com>, <ast@kernel.org>,
         <daniel@iogearbox.net>, <kafai@fb.com>, <andriin@fb.com>,
         <kernel-team@fb.com>
 Smtp-Origin-Cluster: prn2c23
-Subject: [PATCH v4 bpf-next 0/6] bpf: Support replacing cgroup-bpf program in MULTI mode
-Date:   Wed, 18 Dec 2019 23:44:32 -0800
-Message-ID: <cover.1576741281.git.rdna@fb.com>
+Subject: [PATCH v4 bpf-next 1/6] bpf: Simplify __cgroup_bpf_attach
+Date:   Wed, 18 Dec 2019 23:44:33 -0800
+Message-ID: <c6193db6fe630797110b0d3ff06c125d093b834c.1576741281.git.rdna@fb.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <cover.1576741281.git.rdna@fb.com>
+References: <cover.1576741281.git.rdna@fb.com>
 X-FB-Internal: Safe
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
  definitions=2019-12-18_08:2019-12-17,2019-12-18 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- malwarescore=0 bulkscore=0 mlxlogscore=624 mlxscore=0 priorityscore=1501
- impostorscore=0 phishscore=0 clxscore=1015 suspectscore=13 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
+ suspectscore=38 priorityscore=1501 malwarescore=0 mlxlogscore=819
+ impostorscore=0 bulkscore=0 lowpriorityscore=0 mlxscore=0 spamscore=0
+ clxscore=1015 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-1910280000 definitions=main-1912190065
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
@@ -58,63 +60,138 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-v3->v4:
-- use OPTS_VALID and OPTS_GET to handle bpf_prog_attach_opts.
+__cgroup_bpf_attach has a lot of identical code to handle two scenarios:
+BPF_F_ALLOW_MULTI is set and unset.
 
-v2->v3:
-- rely on DECLARE_LIBBPF_OPTS from libbpf_common.h;
-- separate "required" and "optional" arguments in bpf_prog_attach_xattr;
-- convert test_cgroup_attach to prog_tests;
-- move the new selftest to prog_tests/cgroup_attach_multi.
+Simplify it by splitting the two main steps:
 
-v1->v2:
-- move DECLARE_LIBBPF_OPTS from libbpf.h to bpf.h (patch 4);
-- switch new libbpf API to OPTS framework;
-- switch selftest to libbpf OPTS framework.
+* First, the decision is made whether a new bpf_prog_list entry should
+  be allocated or existing entry should be reused for the new program.
+  This decision is saved in replace_pl pointer;
 
-This patch set adds support for replacing cgroup-bpf programs attached with
-BPF_F_ALLOW_MULTI flag so that any program in a list can be updated to a new
-version without service interruption and order of programs can be preserved.
+* Next, replace_pl pointer is used to handle both possible states of
+  BPF_F_ALLOW_MULTI flag (set / unset) instead of doing similar work for
+  them separately.
 
-Please see patch 3 for details on the use-case and API changes.
+This splitting, in turn, allows to make further simplifications:
 
-Other patches:
-Patch 1 is preliminary refactoring of __cgroup_bpf_attach to simplify it.
-Patch 2 is minor cleanup of hierarchy_allows_attach.
-Patch 4 extends libbpf API to support new set of attach attributes.
-Patch 5 converts test_cgroup_attach to prog_tests.
-Patch 6 adds selftest coverage for the new API.
+* The check for attaching same program twice in BPF_F_ALLOW_MULTI mode
+  can be done before allocating cgroup storage, so that if user tries to
+  attach same program twice no alloc/free happens as it was before;
 
+* pl_was_allocated becomes redundant so it's removed.
 
-Andrey Ignatov (6):
-  bpf: Simplify __cgroup_bpf_attach
-  bpf: Remove unused new_flags in hierarchy_allows_attach()
-  bpf: Support replacing cgroup-bpf program in MULTI mode
-  libbpf: Introduce bpf_prog_attach_xattr
-  selftests/bpf: Convert test_cgroup_attach to prog_tests
-  selftests/bpf: Test BPF_F_REPLACE in cgroup_attach_multi
+Signed-off-by: Andrey Ignatov <rdna@fb.com>
+Acked-by: Martin KaFai Lau <kafai@fb.com>
+---
+ kernel/bpf/cgroup.c | 62 +++++++++++++++++----------------------------
+ 1 file changed, 23 insertions(+), 39 deletions(-)
 
- include/linux/bpf-cgroup.h                    |   4 +-
- include/uapi/linux/bpf.h                      |  10 +
- kernel/bpf/cgroup.c                           |  97 +--
- kernel/bpf/syscall.c                          |   4 +-
- kernel/cgroup/cgroup.c                        |   5 +-
- tools/include/uapi/linux/bpf.h                |  10 +
- tools/lib/bpf/bpf.c                           |  17 +-
- tools/lib/bpf/bpf.h                           |  11 +
- tools/lib/bpf/libbpf.map                      |   1 +
- tools/testing/selftests/bpf/.gitignore        |   1 -
- tools/testing/selftests/bpf/Makefile          |   3 +-
- .../bpf/prog_tests/cgroup_attach_autodetach.c | 111 ++++
- .../bpf/prog_tests/cgroup_attach_multi.c      | 285 +++++++++
- .../bpf/prog_tests/cgroup_attach_override.c   | 148 +++++
- .../selftests/bpf/test_cgroup_attach.c        | 571 ------------------
- 15 files changed, 652 insertions(+), 626 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_attach_autodetach.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_attach_multi.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_attach_override.c
- delete mode 100644 tools/testing/selftests/bpf/test_cgroup_attach.c
-
+diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+index 9f90d3c92bda..e8cbdd1be687 100644
+--- a/kernel/bpf/cgroup.c
++++ b/kernel/bpf/cgroup.c
+@@ -295,9 +295,8 @@ int __cgroup_bpf_attach(struct cgroup *cgrp, struct bpf_prog *prog,
+ 	struct bpf_prog *old_prog = NULL;
+ 	struct bpf_cgroup_storage *storage[MAX_BPF_CGROUP_STORAGE_TYPE],
+ 		*old_storage[MAX_BPF_CGROUP_STORAGE_TYPE] = {NULL};
++	struct bpf_prog_list *pl, *replace_pl = NULL;
+ 	enum bpf_cgroup_storage_type stype;
+-	struct bpf_prog_list *pl;
+-	bool pl_was_allocated;
+ 	int err;
+ 
+ 	if ((flags & BPF_F_ALLOW_OVERRIDE) && (flags & BPF_F_ALLOW_MULTI))
+@@ -317,6 +316,16 @@ int __cgroup_bpf_attach(struct cgroup *cgrp, struct bpf_prog *prog,
+ 	if (prog_list_length(progs) >= BPF_CGROUP_MAX_PROGS)
+ 		return -E2BIG;
+ 
++	if (flags & BPF_F_ALLOW_MULTI) {
++		list_for_each_entry(pl, progs, node) {
++			if (pl->prog == prog)
++				/* disallow attaching the same prog twice */
++				return -EINVAL;
++		}
++	} else if (!list_empty(progs)) {
++		replace_pl = list_first_entry(progs, typeof(*pl), node);
++	}
++
+ 	for_each_cgroup_storage_type(stype) {
+ 		storage[stype] = bpf_cgroup_storage_alloc(prog, stype);
+ 		if (IS_ERR(storage[stype])) {
+@@ -327,52 +336,27 @@ int __cgroup_bpf_attach(struct cgroup *cgrp, struct bpf_prog *prog,
+ 		}
+ 	}
+ 
+-	if (flags & BPF_F_ALLOW_MULTI) {
+-		list_for_each_entry(pl, progs, node) {
+-			if (pl->prog == prog) {
+-				/* disallow attaching the same prog twice */
+-				for_each_cgroup_storage_type(stype)
+-					bpf_cgroup_storage_free(storage[stype]);
+-				return -EINVAL;
+-			}
++	if (replace_pl) {
++		pl = replace_pl;
++		old_prog = pl->prog;
++		for_each_cgroup_storage_type(stype) {
++			old_storage[stype] = pl->storage[stype];
++			bpf_cgroup_storage_unlink(old_storage[stype]);
+ 		}
+-
++	} else {
+ 		pl = kmalloc(sizeof(*pl), GFP_KERNEL);
+ 		if (!pl) {
+ 			for_each_cgroup_storage_type(stype)
+ 				bpf_cgroup_storage_free(storage[stype]);
+ 			return -ENOMEM;
+ 		}
+-
+-		pl_was_allocated = true;
+-		pl->prog = prog;
+-		for_each_cgroup_storage_type(stype)
+-			pl->storage[stype] = storage[stype];
+ 		list_add_tail(&pl->node, progs);
+-	} else {
+-		if (list_empty(progs)) {
+-			pl = kmalloc(sizeof(*pl), GFP_KERNEL);
+-			if (!pl) {
+-				for_each_cgroup_storage_type(stype)
+-					bpf_cgroup_storage_free(storage[stype]);
+-				return -ENOMEM;
+-			}
+-			pl_was_allocated = true;
+-			list_add_tail(&pl->node, progs);
+-		} else {
+-			pl = list_first_entry(progs, typeof(*pl), node);
+-			old_prog = pl->prog;
+-			for_each_cgroup_storage_type(stype) {
+-				old_storage[stype] = pl->storage[stype];
+-				bpf_cgroup_storage_unlink(old_storage[stype]);
+-			}
+-			pl_was_allocated = false;
+-		}
+-		pl->prog = prog;
+-		for_each_cgroup_storage_type(stype)
+-			pl->storage[stype] = storage[stype];
+ 	}
+ 
++	pl->prog = prog;
++	for_each_cgroup_storage_type(stype)
++		pl->storage[stype] = storage[stype];
++
+ 	cgrp->bpf.flags[type] = flags;
+ 
+ 	err = update_effective_progs(cgrp, type);
+@@ -401,7 +385,7 @@ int __cgroup_bpf_attach(struct cgroup *cgrp, struct bpf_prog *prog,
+ 		pl->storage[stype] = old_storage[stype];
+ 		bpf_cgroup_storage_link(old_storage[stype], cgrp, type);
+ 	}
+-	if (pl_was_allocated) {
++	if (!replace_pl) {
+ 		list_del(&pl->node);
+ 		kfree(pl);
+ 	}
 -- 
 2.17.1
 
