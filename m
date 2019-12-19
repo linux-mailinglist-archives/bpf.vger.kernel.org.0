@@ -2,294 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FE051264EB
-	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2019 15:36:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5164C126580
+	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2019 16:17:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726757AbfLSOgB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Dec 2019 09:36:01 -0500
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:39369 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726751AbfLSOgB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Dec 2019 09:36:01 -0500
-Received: by mail-wm1-f65.google.com with SMTP id 20so5731895wmj.4;
-        Thu, 19 Dec 2019 06:35:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=duNKYJwzOr5TqxBXaSvS3NZEYly1fL02PUJyC630Yac=;
-        b=nk50jqDYMuazRt69qfEi9Hil1cbod+jPTQyoRZijkPCuTBnfzwYkBWnyItZItm5xGu
-         /L1T/e0UXgcUjdl/hOYsNCGHp27q+cXA/1/pE5Q1bnz4J7PpeXCW2haUYWJ3QmWAi/p7
-         IJtjq7V/dHbNKrwJp0XdhqJY7T0xXGzT9lDmfG+1X6fYMQU+ohGqPyOR7nGHNTUk9KvS
-         dFrV2bE0mE/Yf5iaXYvR4O6UIaSGqbY0eyWcLVl07ZSew95c90lMvIdWnH9KhhwFfYFi
-         tJpxck67AIVf3TDt7AX+YIbU8UW7Fo2oe9L+kkn4JxyIcDG7uft2xI4EMpeuDVwRP2+Z
-         vQrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=duNKYJwzOr5TqxBXaSvS3NZEYly1fL02PUJyC630Yac=;
-        b=dxMkNV/1u87cS+a3aODqpTSpt3cEIGyK6+XAZ0RxpFrVayotlx6svHAmtC/C1akTPS
-         NfRGPOXE0sWKUT3q8weogFmKaKzmLpwP6FGklPPBUaSVK+2slK+lX1r1Y5Fjv5js8CLf
-         KQfTPr5WuAADDUoPmtjkScBVzUZ6d/CZn0RLK6AcR7s2v96bUt4OQYdJps0J/hAt+KDi
-         8u9GQC3/Hjnp/v0WmW0HKG7AuXgUgA1qXp0YN+QSpsrfzBUU6bJxOL82AEx3YL60DM3q
-         kI5VmV38XZRmfkGWOxALBmFw9oaBlBprI/uoY+1EKDmjQkCyTz/EQMMHm/BX6UdTzxXo
-         qMHA==
-X-Gm-Message-State: APjAAAUTebN0CJ7PYWbfAA8i5tarY8HGPVgMUJJwYfJ9xJ/CpdDj8GuZ
-        YZg1s+PHeOCq9nCLUp+gXrcMk8zMhKUH6SJj1tg=
-X-Google-Smtp-Source: APXvYqy/hBVQ4GhYeM8II4C52e8sssCDbtvtu+C6US5pAaeCNlSq2Bl06jHsCM0DcHxMlCM5bKJlD0v+TtyutwAoUhM=
-X-Received: by 2002:a1c:234b:: with SMTP id j72mr10706001wmj.128.1576766158422;
- Thu, 19 Dec 2019 06:35:58 -0800 (PST)
-MIME-Version: 1.0
-References: <1575878189-31860-1-git-send-email-magnus.karlsson@intel.com>
- <1575878189-31860-3-git-send-email-magnus.karlsson@intel.com>
- <63329cd7-4d3a-9497-e5ed-6995f05cd81f@mellanox.com> <CAJ8uoz1k6PwnfVgaa47Yt3K40NciHLf=_5ixsGs0MESrnoo0RA@mail.gmail.com>
-In-Reply-To: <CAJ8uoz1k6PwnfVgaa47Yt3K40NciHLf=_5ixsGs0MESrnoo0RA@mail.gmail.com>
-From:   Maxim Mikityanskiy <maxtram95@gmail.com>
-Date:   Thu, 19 Dec 2019 16:35:31 +0200
-Message-ID: <CAKErNvoK5eVD974=+bs=k+OMeyG=TeRU0TeWPGDwe7dNQN3i5g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 02/12] xsk: consolidate to one single cached
- producer pointer
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc:     Maxim Mikityanskiy <maximmi@mellanox.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        "bjorn.topel@intel.com" <bjorn.topel@intel.com>,
+        id S1726757AbfLSPRc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Dec 2019 10:17:32 -0500
+Received: from mx0a-00273201.pphosted.com ([208.84.65.16]:12046 "EHLO
+        mx0b-00273201.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726712AbfLSPRc (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 19 Dec 2019 10:17:32 -0500
+X-Greylist: delayed 1592 seconds by postgrey-1.27 at vger.kernel.org; Thu, 19 Dec 2019 10:17:31 EST
+Received: from pps.filterd (m0108157.ppops.net [127.0.0.1])
+        by mx0a-00273201.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xBJElol7001686;
+        Thu, 19 Dec 2019 06:50:45 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=juniper.net; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-id : content-transfer-encoding : mime-version; s=PPS1017;
+ bh=q9wl/knsR99XFzHQWCD+N4W4k9bf+GW0SMCVDJuc19Y=;
+ b=r3G/CBtmIIgvg80gIRoa3CCCh6VqBx9jzEI8TsosNWW8GJpCaqPzJ84dIzSkf5/wD3AF
+ Iuxm5A4BUV8PHEHx6SBpVDurCNubFdqYUkov5ubIRoBHgeMU0vYq2PmUUFHRToJ9zjA2
+ NwpSgFscB1xlc+J70MOLiLL4psLsdtSFDubSGnfFDCw6xqGbyZKZzTjmsp0WraRCb1ry
+ zeVYD2H+ieoXkyIm5rWaMJ78dpmAjK7tzF8zOHaEBXi+Ti2vBWwMq6Evb6KZnZSlIEPC
+ TzGH/jYpu/Y0EVAcrA76jScY8CJJUgWQenQzjVkRuo79nL9QCatyRJ88CxCl26G8niES SQ== 
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2169.outbound.protection.outlook.com [104.47.58.169])
+        by mx0a-00273201.pphosted.com with ESMTP id 2wypsx1wf2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 19 Dec 2019 06:50:44 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XGuCR7ulJyIZ/tLsXt11vERLvdffbyY+hABa0yUFcUK9mE70Jbt+8Iw3iGQDUsbLJzEAyh6eMNNY9u/6EsbJIRGxSTjNC8wQkSmKAIp34yNB5vBsWKQGlMqYl8HIcWCKxD00Euqo1J3VFjLe8/AYDuinGOWrI+H9LHJV8evOboAl4RO4nWtIx0ASgEdFr73AY3s8ivEufFLwVeFeQCM+YNwdUni4LBimvFO9sxupDsQbdrEPGz/s0sR/DgFpSoVLNkimyDWULuugDThfvmXoDzD+TYXOgNmuBjRCtR+a8IrYtvQZZjkL1m9QmqrjSso0zt97yYc6UreehWn6ZvN21A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=q9wl/knsR99XFzHQWCD+N4W4k9bf+GW0SMCVDJuc19Y=;
+ b=En6X6BWd/5c8Qoh1BclT4mWFUZDjhBvOS+Hx/LyLgQiKcHbzRYotWIqXghxz5oMkZVVbE7Iiy/JUqqhy4kx1qbbJcmRLoZCzMtJm8+2gFecT2JXsmeLdup7QyM+YFlC7PsCnV4pN9f5nwSeUi/1oGaKDLAt6R+4mZLxDwPINB9uoKZismHfauj92NUtnP0lEOd787gLXARXE48y0mdP1TmFqYoE3j1vI80PjgDmi7lMXEScblBiw7i4nig9LHRDazXBillBGnE8HVAJp1/61IgiFJIn38Nbfb5STm18YwngYQXq1OD5k3RS7ya5IeoAm5KdEpiFLD8u1sAb/pCd9/w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=juniper.net; dmarc=pass action=none header.from=juniper.net;
+ dkim=pass header.d=juniper.net; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=juniper.net;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=q9wl/knsR99XFzHQWCD+N4W4k9bf+GW0SMCVDJuc19Y=;
+ b=Vl1fvC9E6AQcNwdCwSwb0axoPZgPqiYCHV8My4enXC260G7Eq5v7Xs2O41GoD7BO38iBScxCM5cKHF+X7nfhYvgNGdkfZ631tf6YAi6S37le2/+oHLdIvD8h0c/3kA74l5kBsgy6Qgrm264+U4EAb1bLbZlc+ZAnrELVTidT7oY=
+Received: from CY4PR0501MB3827.namprd05.prod.outlook.com (52.132.99.143) by
+ CY4PR0501MB3844.namprd05.prod.outlook.com (52.132.98.159) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2559.12; Thu, 19 Dec 2019 14:50:42 +0000
+Received: from CY4PR0501MB3827.namprd05.prod.outlook.com
+ ([fe80::8d77:6795:84cf:dd47]) by CY4PR0501MB3827.namprd05.prod.outlook.com
+ ([fe80::8d77:6795:84cf:dd47%7]) with mapi id 15.20.2559.012; Thu, 19 Dec 2019
+ 14:50:42 +0000
+From:   Edwin Peer <epeer@juniper.net>
+To:     Y Song <ys114321@gmail.com>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
         "ast@kernel.org" <ast@kernel.org>,
         "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "jonathan.lemon@gmail.com" <jonathan.lemon@gmail.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        "jeffrey.t.kirsher@intel.com" <jeffrey.t.kirsher@intel.com>,
-        "maciej.fijalkowski@intel.com" <maciej.fijalkowski@intel.com>,
-        "maciejromanfijalkowski@gmail.com" <maciejromanfijalkowski@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        bpf <bpf@vger.kernel.org>
+Subject: Re: [RFC PATCH bpf-next 0/2] unprivileged BPF_PROG_TEST_RUN
+Thread-Topic: [RFC PATCH bpf-next 0/2] unprivileged BPF_PROG_TEST_RUN
+Thread-Index: AQHVtgy6x2wMuQ42JECcwOBV53W8TKfBDSIA///4BwA=
+Date:   Thu, 19 Dec 2019 14:50:42 +0000
+Message-ID: <69266F42-6D0B-4F0B-805C-414880AC253D@juniper.net>
+References: <20191219013534.125342-1-epeer@juniper.net>
+ <CAH3MdRUTcd7rjum12HBtrQ_nmyx0LvdOokZmA1YuhP2WtGfJqA@mail.gmail.com>
+In-Reply-To: <CAH3MdRUTcd7rjum12HBtrQ_nmyx0LvdOokZmA1YuhP2WtGfJqA@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_9784d817-3396-4a4f-b60c-3ef6b345fe55_Enabled=true;MSIP_Label_9784d817-3396-4a4f-b60c-3ef6b345fe55_Name=Juniper
+ Business Use
+ Only;MSIP_Label_9784d817-3396-4a4f-b60c-3ef6b345fe55_Enabled=true;MSIP_Label_9784d817-3396-4a4f-b60c-3ef6b345fe55_SiteId=bea78b3c-4cdb-4130-854a-1d193232e5f4;MSIP_Label_9784d817-3396-4a4f-b60c-3ef6b345fe55_ContentBits=0;MSIP_Label_9784d817-3396-4a4f-b60c-3ef6b345fe55_Method=Standard;MSIP_Label_9784d817-3396-4a4f-b60c-3ef6b345fe55_ActionId=4c60a29f-fa1a-4f9c-8881-0000083796ad;MSIP_Label_9784d817-3396-4a4f-b60c-3ef6b345fe55_SetDate=2019-12-19T14:45:18Z;
+x-originating-ip: [66.129.242.14]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 6a196ae7-9f36-454c-341b-08d78492d264
+x-ms-traffictypediagnostic: CY4PR0501MB3844:
+x-microsoft-antispam-prvs: <CY4PR0501MB3844841D2321CCCB17575F6EB3520@CY4PR0501MB3844.namprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-forefront-prvs: 0256C18696
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(346002)(366004)(136003)(396003)(39860400002)(376002)(189003)(199004)(66946007)(66556008)(66476007)(64756008)(66446008)(76116006)(71200400001)(6916009)(6486002)(186003)(91956017)(33656002)(54906003)(6506007)(6512007)(2616005)(4744005)(53546011)(316002)(8676002)(4326008)(26005)(86362001)(81166006)(2906002)(5660300002)(81156014)(478600001)(8936002)(36756003);DIR:OUT;SFP:1102;SCL:1;SRVR:CY4PR0501MB3844;H:CY4PR0501MB3827.namprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: juniper.net does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 6xSu/K2CTSp3jppjZu0T8oez7+DPxQ8uKFatRCy/+hh7iwuOCjuqyUuBXVFRYLiG54PnDGTbZc/6U7S7o+cMcAWAhPK2q6P7igM5Y/eCk+9eI40MHWQeiuWcnctqu+zXN5A/AlyrqdV2doLUF2ho2cy9L7DMT6702HFL4Y8CdH2vuLdW1FsIxGRWiXqxrc35efww2nB8ojuJAx+FMuyPI9oikZHx/+upPX0IpAhG/bJUz6R2jZ1mcy0CgeGqJcuoGvfuk7VKWTQdcB/4bpgXRlOLYiwC0Z5L2ar8tmimAPMCg95WaID6dUOqRZpoOZBs9qPcdOHOcpPdDoTElZclknLuOLwbQWTKTsMWKee2vLBiLd0hhaE/cFYIkv3KL8c+JC8REeajAFeORLSFp/mQjR7MxPIyW/he7k4IUgw0PGwurYvenGlmPYoo7ax7U0HV
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <58152E6557FA3444B115F2A926EFE5A5@namprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: juniper.net
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6a196ae7-9f36-454c-341b-08d78492d264
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Dec 2019 14:50:42.4626
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: bea78b3c-4cdb-4130-854a-1d193232e5f4
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Tc8nRJ6HypZ0mcN5iH2UdY0Gsz3M6ZLexnvJEaybto0KZcQHqiABXPQqSkZJrkxNpcKkwJY5itW1mGShYgK6GA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR0501MB3844
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
+ definitions=2019-12-19_03:2019-12-17,2019-12-19 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_spam_notspam policy=outbound_spam score=0 lowpriorityscore=0
+ suspectscore=0 priorityscore=1501 mlxscore=0 phishscore=0 spamscore=0
+ clxscore=1011 bulkscore=0 impostorscore=0 mlxlogscore=773 malwarescore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-1912190124
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Dec 16, 2019 at 10:46 AM Magnus Karlsson
-<magnus.karlsson@gmail.com> wrote:
->
-> On Fri, Dec 13, 2019 at 7:04 PM Maxim Mikityanskiy <maximmi@mellanox.com> wrote:
-> >
-> > On 2019-12-09 09:56, Magnus Karlsson wrote:
-> > > Currently, the xsk ring code has two cached producer pointers:
-> > > prod_head and prod_tail. This patch consolidates these two into a
-> > > single one called cached_prod to make the code simpler and easier to
-> > > maintain. This will be in line with the user space part of the the
-> > > code found in libbpf, that only uses a single cached pointer.
-> > >
-> > > The Rx path only uses the two top level functions
-> > > xskq_produce_batch_desc and xskq_produce_flush_desc and they both use
-> > > prod_head and never prod_tail. So just move them over to
-> > > cached_prod.
-> > >
-> > > The Tx XDP_DRV path uses xskq_produce_addr_lazy and
-> > > xskq_produce_flush_addr_n and unnecessarily operates on both prod_tail
-> > > and prod_cons, so move them over to just use cached_prod by skipping
-> > > the intermediate step of updating prod_tail.
-> > >
-> > > The Tx path in XDP_SKB mode uses xskq_reserve_addr and
-> > > xskq_produce_addr. They currently use both cached pointers, but we can
-> > > operate on the global producer pointer in xskq_produce_addr since it
-> > > has to be updated anyway, thus eliminating the use of both cached
-> > > pointers. We can also remove the xskq_nb_free in xskq_produce_addr
-> > > since it is already called in xskq_reserve_addr. No need to do it
-> > > twice.
-> > >
-> > > When there is only one cached producer pointer, we can also simplify
-> > > xskq_nb_free by removing one argument.
-> > >
-> > > Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-> > > ---
-> > >   net/xdp/xsk_queue.h | 49 ++++++++++++++++++++++---------------------------
-> > >   1 file changed, 22 insertions(+), 27 deletions(-)
-> > >
-> > > diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
-> > > index a2f0ba6..d88e1a0 100644
-> > > --- a/net/xdp/xsk_queue.h
-> > > +++ b/net/xdp/xsk_queue.h
-> > > @@ -35,8 +35,7 @@ struct xsk_queue {
-> > >       u64 size;
-> > >       u32 ring_mask;
-> > >       u32 nentries;
-> > > -     u32 prod_head;
-> > > -     u32 prod_tail;
-> > > +     u32 cached_prod;
-> > >       u32 cons_head;
-> > >       u32 cons_tail;
-> > >       struct xdp_ring *ring;
-> > > @@ -94,39 +93,39 @@ static inline u64 xskq_nb_invalid_descs(struct xsk_queue *q)
-> > >
-> > >   static inline u32 xskq_nb_avail(struct xsk_queue *q, u32 dcnt)
-> > >   {
-> > > -     u32 entries = q->prod_tail - q->cons_tail;
-> > > +     u32 entries = q->cached_prod - q->cons_tail;
-> > >
-> > >       if (entries == 0) {
-> > >               /* Refresh the local pointer */
-> > > -             q->prod_tail = READ_ONCE(q->ring->producer);
-> > > -             entries = q->prod_tail - q->cons_tail;
-> > > +             q->cached_prod = READ_ONCE(q->ring->producer);
-> > > +             entries = q->cached_prod - q->cons_tail;
-> > >       }
-> > >
-> > >       return (entries > dcnt) ? dcnt : entries;
-> > >   }
-> > >
-> > > -static inline u32 xskq_nb_free(struct xsk_queue *q, u32 producer, u32 dcnt)
-> > > +static inline u32 xskq_nb_free(struct xsk_queue *q, u32 dcnt)
-> > >   {
-> > > -     u32 free_entries = q->nentries - (producer - q->cons_tail);
-> > > +     u32 free_entries = q->nentries - (q->cached_prod - q->cons_tail);
-> > >
-> > >       if (free_entries >= dcnt)
-> > >               return free_entries;
-> > >
-> > >       /* Refresh the local tail pointer */
-> > >       q->cons_tail = READ_ONCE(q->ring->consumer);
-> > > -     return q->nentries - (producer - q->cons_tail);
-> > > +     return q->nentries - (q->cached_prod - q->cons_tail);
-> > >   }
-> > >
-> > >   static inline bool xskq_has_addrs(struct xsk_queue *q, u32 cnt)
-> > >   {
-> > > -     u32 entries = q->prod_tail - q->cons_tail;
-> > > +     u32 entries = q->cached_prod - q->cons_tail;
-> > >
-> > >       if (entries >= cnt)
-> > >               return true;
-> > >
-> > >       /* Refresh the local pointer. */
-> > > -     q->prod_tail = READ_ONCE(q->ring->producer);
-> > > -     entries = q->prod_tail - q->cons_tail;
-> > > +     q->cached_prod = READ_ONCE(q->ring->producer);
-> > > +     entries = q->cached_prod - q->cons_tail;
-> > >
-> > >       return entries >= cnt;
-> > >   }
-> > > @@ -220,17 +219,15 @@ static inline void xskq_discard_addr(struct xsk_queue *q)
-> > >   static inline int xskq_produce_addr(struct xsk_queue *q, u64 addr)
-> > >   {
-> > >       struct xdp_umem_ring *ring = (struct xdp_umem_ring *)q->ring;
-> > > -
-> > > -     if (xskq_nb_free(q, q->prod_tail, 1) == 0)
-> > > -             return -ENOSPC;
-> > > +     unsigned int idx = q->ring->producer;
-> > >
-> > >       /* A, matches D */
-> > > -     ring->desc[q->prod_tail++ & q->ring_mask] = addr;
-> > > +     ring->desc[idx++ & q->ring_mask] = addr;
-> > >
-> > >       /* Order producer and data */
-> > >       smp_wmb(); /* B, matches C */
-> > >
-> > > -     WRITE_ONCE(q->ring->producer, q->prod_tail);
-> > > +     WRITE_ONCE(q->ring->producer, idx);
-> > >       return 0;
-> > >   }
-> > >
-> > > @@ -238,11 +235,11 @@ static inline int xskq_produce_addr_lazy(struct xsk_queue *q, u64 addr)
-> > >   {
-> > >       struct xdp_umem_ring *ring = (struct xdp_umem_ring *)q->ring;
-> > >
-> > > -     if (xskq_nb_free(q, q->prod_head, 1) == 0)
-> > > +     if (xskq_nb_free(q, 1) == 0)
-> > >               return -ENOSPC;
-> > >
-> > >       /* A, matches D */
-> > > -     ring->desc[q->prod_head++ & q->ring_mask] = addr;
-> > > +     ring->desc[q->cached_prod++ & q->ring_mask] = addr;
-> > >       return 0;
-> > >   }
-> > >
-> > > @@ -252,17 +249,16 @@ static inline void xskq_produce_flush_addr_n(struct xsk_queue *q,
-> > >       /* Order producer and data */
-> > >       smp_wmb(); /* B, matches C */
-> > >
-> > > -     q->prod_tail += nb_entries;
-> > > -     WRITE_ONCE(q->ring->producer, q->prod_tail);
-> > > +     WRITE_ONCE(q->ring->producer, q->ring->producer + nb_entries);
-> > >   }
-> > >
-> > >   static inline int xskq_reserve_addr(struct xsk_queue *q)
-> > >   {
-> > > -     if (xskq_nb_free(q, q->prod_head, 1) == 0)
-> > > +     if (xskq_nb_free(q, 1) == 0)
-> > >               return -ENOSPC;
-> > >
-> > >       /* A, matches D */
-> > > -     q->prod_head++;
-> > > +     q->cached_prod++;
-> > >       return 0;
-> > >   }
-> > >
-> > > @@ -340,11 +336,11 @@ static inline int xskq_produce_batch_desc(struct xsk_queue *q,
-> > >       struct xdp_rxtx_ring *ring = (struct xdp_rxtx_ring *)q->ring;
-> > >       unsigned int idx;
-> > >
-> > > -     if (xskq_nb_free(q, q->prod_head, 1) == 0)
-> > > +     if (xskq_nb_free(q, 1) == 0)
-> > >               return -ENOSPC;
-> > >
-> > >       /* A, matches D */
-> > > -     idx = (q->prod_head++) & q->ring_mask;
-> > > +     idx = q->cached_prod++ & q->ring_mask;
-> > >       ring->desc[idx].addr = addr;
-> > >       ring->desc[idx].len = len;
-> > >
-> > > @@ -356,8 +352,7 @@ static inline void xskq_produce_flush_desc(struct xsk_queue *q)
-> > >       /* Order producer and data */
-> > >       smp_wmb(); /* B, matches C */
-> > >
-> > > -     q->prod_tail = q->prod_head;
-> > > -     WRITE_ONCE(q->ring->producer, q->prod_tail);
-> > > +     WRITE_ONCE(q->ring->producer, q->cached_prod);
-> > >   }
-> > >
-> > >   static inline bool xskq_full_desc(struct xsk_queue *q)
-> > > @@ -367,7 +362,7 @@ static inline bool xskq_full_desc(struct xsk_queue *q)
-> > >
-> > >   static inline bool xskq_empty_desc(struct xsk_queue *q)
-> > >   {
-> > > -     return xskq_nb_free(q, q->prod_tail, q->nentries) == q->nentries;
-> > > +     return xskq_nb_free(q, q->nentries) == q->nentries;
-> >
-> > I don't think this change is correct. The old code checked the number of
-> > free items against prod_tail (== producer). The new code changes it to
-> > prod_head (which is now cached_prod). xskq_nb_free is used in xsk_poll
-> > to set EPOLLIN. After this change EPOLLIN will be set right after
-> > xskq_produce_batch_desc, but it should only be set after
-> > xskq_produce_flush_desc, just as before, otherwise the application will
-> > wake up before the data is available, and it will just waste CPU cycles.
->
-> That is correct. It will be inefficient during patch 2 and 3 as this
-> gets fixed in patch 4.
-
-Looking at patch 4, I see it still uses cached_prod, not producer.
-However, I see you changed it in the v2, so it should be fine now.
-
-> I chose this as I thought the patch progression
-> and simplification process would be clearer this way. So what to do
-> about it? Some options:
->
-> * Document this in patch 2 and keep the current order
->
-> *  Put patch 4 before patch 2 so that the code is always efficient.
-> This is doable, but I have the feeling it will be somewhat less clear
-> from a simplification perspective. The advantage, on the other hand,
-> is that the poll code is always efficient during the whole patch set.
-
-I'm sorry that it takes long for me to answer, I'm on vacation now.
-Anyway, either option looks good to me, as long as xskq_prod_is_empty
-has the correct check (as in v2 patch 2).
-
-> /Magnus
->
-> > >   }
-> > >
-> > >   void xskq_set_umem(struct xsk_queue *q, u64 size, u64 chunk_mask);
-> > >
-> >
+T24gMTIvMTgvMTksIDIzOjE5LCAiWSBTb25nIiA8eXMxMTQzMjFAZ21haWwuY29tPiB3cm90ZToN
+Cg0KPiAgQWRkZWQgY2MgdG8gYnBmQHZnZXIua2VybmVsLm9yZy4NCiAgICANClRoYW5rIHlvdSwg
+SSB3aWxsIHJlbWVtYmVyIHRvIGRvIHRoaXMgbmV4dCB0aW1lLg0KDQo+IEhhdmUgeW91IHRyaWVk
+IHlvdXIgcGF0Y2ggd2l0aCBzb21lIGJwZiBwcm9ncmFtcz8gdmVyaWZpZXIgYW5kIGppdCAgcHV0
+IHNvbWUNCj4gcmVzdHJpY3Rpb25zIG9uIHVucHJpdiBwcm9ncmFtcy4gVG8gdHJ1ZWx5IHRlc3Qg
+dGhlIHByb2dyYW0sIG1vc3QgaWYgbm90IGFsbCB0aGVzZQ0KPiByZXN0cmljdGlvbnMgc2hvdWxk
+IGJlIGxpZnRlZCwgc28gdGhlIHNhbWUgdGVzdGVkIHByb2dyYW0gc2hvdWxkIGJlIGFibGUgdG8N
+Cj4gcnVuIG9uIHByb2R1Y3Rpb24gc2VydmVyIGFuZCB2aWNlIHZlcnNlLg0KDQpBZ3JlZWQsIEkg
+YW0gYXdhcmUgb2Ygc29tZSBvZiB0aGVzZSBkaWZmZXJlbmNlcyBpbiB0aGUgbG9hZC92ZXJpZmll
+ciBiZWhhdmlvciB3aXRoIGFuZCB3aXRob3V0DQpDQVBfU1lTX0FETUlOLiBJbiBwYXJ0aWN1bGFy
+LCB3aXRob3V0IENBUF9TWVNfQURNSU4gcHJvZ3JhbXMgYXJlIHN0aWxsIHJlc3RyaWN0ZWQgdG8g
+NGssIHNvbWUgaGVscGVycyBhcmUgbm90IGF2YWlsYWJsZSAoc3BpbiBsb2NrcywgdHJhY2UgcHJp
+bnRrKSBhbmQgdGhlcmUgYXJlIHNvbWUgZGlmZmVyZW5jZXMgaW4gY29udGV4dCBhY2Nlc3MgY2hl
+Y2tzLg0KDQpJIHRoaW5rIHRoZXNlIGNhbiBiZSBhZGRyZXNzZWQgaW5jcmVtZW50YWxseSwgYXNz
+dW1pbmcgZm9sayBhcmUgb24gYm9hcmQgd2l0aCB0aGlzIGFwcHJvYWNoIGluIGdlbmVyYWw/DQoN
+ClJlZ2FyZHMsDQpFZHdpbiBQZWVyDQogDQoNCg==
