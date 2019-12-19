@@ -2,100 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CF5B3126DEE
-	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2019 20:26:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06353126E06
+	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2019 20:33:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726836AbfLST0v (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Dec 2019 14:26:51 -0500
-Received: from mail-pj1-f68.google.com ([209.85.216.68]:40889 "EHLO
-        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727006AbfLST0u (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Dec 2019 14:26:50 -0500
-Received: by mail-pj1-f68.google.com with SMTP id bg7so2500254pjb.5;
-        Thu, 19 Dec 2019 11:26:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=DftQt3RvHQyNwWIgNSKTLfN/c3SX0qQWX26ozRGzZp0=;
-        b=mtP4SWQnCQIayG+skanJOLqxzsX5SSz+dtlLgRE45niiPKGC3mbAWOiMX/6Lc4b4ih
-         6bbi/asmpm4IKS0VqlltlPDuYq/EQ4zXQ8WHXS//ZnpEcMm7SDr33/LYuWQTR0PU1aGW
-         hNE8Fng6+SSoD7sjs3qAsVeSxis8dkD1pmo5mi/hTFVjfRWaWN4eRA0ZzrkJFKhduVXl
-         xprpHFEO4tzdah2P63fPndyxTa6g8J0ENULJXOzIXkkUmLbX40htOxvPZvHOHEpbWQI/
-         MEHZnu8BZFSWIVlyi+S025B/eGwJduS3rfWh0aLGiRNGSk5pMFwY8kZmZxZYjMblC/I0
-         x2yw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=DftQt3RvHQyNwWIgNSKTLfN/c3SX0qQWX26ozRGzZp0=;
-        b=BwiOespQBqVXdduSmgDaifB8/l/BvQZ2KtX2d0EyzRG8CS2d/nwp/pYlcj5GEJzpfR
-         Vt+dqSqF5PrgSvXM5EFGOOzqtHdyDZAl5TAx1d9xIPVIA9ZpGhQcmV84pdERamGcOHjn
-         m8SlXJyEZTG3fCUS32nzjdmhX96boT0N60xlkDXIf0+pkhc7KwIGoINd0UpkFkVagb27
-         yYPtfp2YSqolNGBrOR2ZP2/2M2UCHIEWFbxmmRJ5fDfc/+XPjRrkoiqayMB7uYTvTZ4d
-         MEDjdyOWp5GMG+PUExc85eAAMfToy3TEd4SO+8f60ieu91RA02RgMRUjBLENLCS/iF2E
-         cRGA==
-X-Gm-Message-State: APjAAAXWjRaS1Rl05/erSsJWZQCY1UzA+WTPblSy46RcMJqbrg/5EelG
-        JFk2aUvOV80q2EA1rWveDc8=
-X-Google-Smtp-Source: APXvYqxpl6RI/gMFNC+0gg2n47wEEeL4nKp6Q4ecO7bz3MFfwfHS9pRZNNDkxLKesrspcS9uUN+U5g==
-X-Received: by 2002:a17:90a:22e7:: with SMTP id s94mr11758225pjc.12.1576783609833;
-        Thu, 19 Dec 2019 11:26:49 -0800 (PST)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:180::6b48])
-        by smtp.gmail.com with ESMTPSA id v19sm7603526pju.27.2019.12.19.11.26.48
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 19 Dec 2019 11:26:48 -0800 (PST)
-Date:   Thu, 19 Dec 2019 11:26:47 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Edwin Peer <epeer@juniper.net>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Y Song <ys114321@gmail.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [RFC PATCH bpf-next 0/2] unprivileged BPF_PROG_TEST_RUN
-Message-ID: <20191219192645.5tbvxlhuugstokxf@ast-mbp.dhcp.thefacebook.com>
-References: <20191219013534.125342-1-epeer@juniper.net>
- <CAH3MdRUTcd7rjum12HBtrQ_nmyx0LvdOokZmA1YuhP2WtGfJqA@mail.gmail.com>
- <69266F42-6D0B-4F0B-805C-414880AC253D@juniper.net>
- <20191219154704.GC4198@linux-9.fritz.box>
- <CEA84064-FF2B-4AA7-84EE-B768D6ABC077@juniper.net>
+        id S1727191AbfLSTdn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Dec 2019 14:33:43 -0500
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:47496 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727188AbfLSTdn (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 19 Dec 2019 14:33:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1576784022;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nCvqPY+vnwTd5bbgsCTQ33owNN9RX4miC0ItjklZDLs=;
+        b=IGOFwaaTbT9Yo7K56lvy899yOA4jzPugV7aUQeRDyW+Uj/dT1SAPBhRtxRz+XfT9rOQwb2
+        b2bu03SnFBz2T4LLCH5sBfeNfRKQvjhvIW3WIAmc1kV0d1DQo/xXHld29gHwtreAry+GsK
+        U/hpuwvTm87OgJk0Unv5by4gXFpUhv4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-259-Cxcfj4yKM8a6uSiQ0x2sFA-1; Thu, 19 Dec 2019 14:33:38 -0500
+X-MC-Unique: Cxcfj4yKM8a6uSiQ0x2sFA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E4C86800D48;
+        Thu, 19 Dec 2019 19:33:36 +0000 (UTC)
+Received: from carbon (ovpn-200-37.brq.redhat.com [10.40.200.37])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B536310013A1;
+        Thu, 19 Dec 2019 19:33:30 +0000 (UTC)
+Date:   Thu, 19 Dec 2019 20:33:29 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        Netdev <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>, David Miller <davem@davemloft.net>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Maciej Fijalkowski <maciejromanfijalkowski@gmail.com>,
+        brouer@redhat.com
+Subject: Re: [PATCH bpf-next 0/8] Simplify
+ xdp_do_redirect_map()/xdp_do_flush_map() and XDP maps
+Message-ID: <20191219203329.75d4bead@carbon>
+In-Reply-To: <CAEf4BzZab=FvCuvKOKsj0M5RRoGuuXW2ME5EoDuqT8sJOd2Xtg@mail.gmail.com>
+References: <20191218105400.2895-1-bjorn.topel@gmail.com>
+        <20191218121132.4023f4f1@carbon>
+        <CAJ+HfNgKsPN7V9r=N=hDoVb23-nk3q=y+Nv4jB3koPw0+4Zw9A@mail.gmail.com>
+        <20191218130346.1a346606@carbon>
+        <CAEf4BzZab=FvCuvKOKsj0M5RRoGuuXW2ME5EoDuqT8sJOd2Xtg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CEA84064-FF2B-4AA7-84EE-B768D6ABC077@juniper.net>
-User-Agent: NeoMutt/20180223
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 19, 2019 at 05:05:42PM +0000, Edwin Peer wrote:
-> On 12/19/19, 07:47, "Daniel Borkmann" <daniel@iogearbox.net> wrote:
-> 
-> >  What about CAP_BPF?
-> 
-> What is the status of this? It might solve some of the problems, but it is still puts testing
-> BPF outside reach of normal users.
+On Wed, 18 Dec 2019 16:39:08 -0800
+Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
 
-why?
-I think CAP_BPF is solving exactly what you're trying to achieve.
-Use CAP_BPF to load _any_ program type and use prog_test_run to run it.
-While discussing CAP_BPF during plumbers conf we realized that the kernel doesn't need
-to check CAP_BPF for prog_test_run. It's user supplied data. No security risk. Though
-the kernel needs to make sure that dangerous helpers are not used for prog_test_run.
-Whether bpf_clone_redirect() is such helper is still tbd. Unpriv user can flood netdevs
-without any bpf.
+> On Wed, Dec 18, 2019 at 4:04 AM Jesper Dangaard Brouer
+> <brouer@redhat.com> wrote:
+> >
+> > On Wed, 18 Dec 2019 12:39:53 +0100
+> > Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> wrote:
+> > =20
+> > > On Wed, 18 Dec 2019 at 12:11, Jesper Dangaard Brouer <brouer@redhat.c=
+om> wrote: =20
+> > > >
+> > > > On Wed, 18 Dec 2019 11:53:52 +0100
+> > > > Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> wrote:
+> > > > =20
+> > > > >   $ sudo ./xdp_redirect_cpu --dev enp134s0f0 --cpu 22 xdp_cpu_map0
+> > > > >
+> > > > >   Running XDP/eBPF prog_name:xdp_cpu_map5_lb_hash_ip_pairs
+> > > > >   XDP-cpumap      CPU:to  pps            drop-pps    extra-info
+> > > > >   XDP-RX          20      7723038        0           0
+> > > > >   XDP-RX          total   7723038        0
+> > > > >   cpumap_kthread  total   0              0           0
+> > > > >   redirect_err    total   0              0
+> > > > >   xdp_exception   total   0              0 =20
+> > > >
+> > > > Hmm... I'm missing some counters on the kthread side.
+> > > > =20
+> > >
+> > > Oh? Any ideas why? I just ran the upstream sample straight off. =20
+> >
+> > Looks like it happened in commit: bbaf6029c49c ("samples/bpf: Convert
+> > XDP samples to libbpf usage") (Cc Maciej).
+> >
+> > The old bpf_load.c will auto attach the tracepoints... for and libbpf
+> > you have to be explicit about it. =20
+>=20
+> ... or you can use skeleton, which will auto-attach them as well,
+> provided BPF program's section names follow expected naming
+> convention. So it might be a good idea to try it out.
 
-> > IIRC, there are also other issues e.g. you could abuse the test interface as a packet
-> >  generator (bpf_clone_redirect) which is not something fully unpriv should be doing.
-> 
-> Good point. I suspect solutions exist - I'm trying to ascertain if they are worth pursuing
-> or if the idea of unprivileged testing is a complete non-starter to begin with.
-> 
-> Are there other helpers of concern that come immediately to mind? A first stab might
-> add these to the list in the verifier that require privilege. This has the drawback that
-> programs that actually need this kind of functionality are beyond the test framework.
+To Andrii, can you provide some more info on how to use this new
+skeleton system of yours?  (Pointers to code examples?)
 
-So far majority of programs require root-only verifier features. The programs are
-getting more complex and benefit the most from testing. Relaxing test_run for unpriv
-progs is imo very narrow use case. I'd rather use CAP_BPF.
+--=20
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
