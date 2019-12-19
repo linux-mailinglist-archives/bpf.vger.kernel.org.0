@@ -2,52 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BBFA81270D4
-	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2019 23:41:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A03521270D6
+	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2019 23:43:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726911AbfLSWl3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Dec 2019 17:41:29 -0500
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:45862 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726818AbfLSWl2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Dec 2019 17:41:28 -0500
-Received: by mail-qk1-f196.google.com with SMTP id x1so6016393qkl.12
-        for <bpf@vger.kernel.org>; Thu, 19 Dec 2019 14:41:28 -0800 (PST)
+        id S1726880AbfLSWnL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Dec 2019 17:43:11 -0500
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:38348 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726818AbfLSWnL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 Dec 2019 17:43:11 -0500
+Received: by mail-qt1-f195.google.com with SMTP id n15so6477968qtp.5
+        for <bpf@vger.kernel.org>; Thu, 19 Dec 2019 14:43:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=70AoCw7gR/ANBDfALYHWvs5rEExyH90S86seDrQcu0Y=;
-        b=iISSv5wgM/XpaX0RDpzDfmT0RcdgGp7sB4jESAawd+o0BoRU4w5RPkuV4fOfRStLe7
-         DJ7LKxPoJeHjufMLvNY7l2iP/rWQTXC4rDpoj/o7q/ET2qTfO0v6cS+rJ0jBCBtvqKAQ
-         /A5tQY01WrB4m8Vdz5B3zlPjKLj/gUYD14aInA7aEy2S0+aZAOrVSaR/PsD7NgTVZ2OU
-         2eF0uSen9xQSLmFxENXk7rK97jn2OlV0gXVUVGVYI1tX7j16TNo0oY0GIrEdKPaRBW5q
-         DAmFPqLNLz8jMnzS9XbaEuT34j3tpVaTFoiibdCcAJZUCuIJzYaM2/oGUcdIb2djBgFN
-         9ekg==
+        bh=8SmMbowtTfAsbOVAZeLeZB+ZGZ+/7tm77KWfmwIKdb4=;
+        b=XZmYEIH46LKUs03Xl0hOlGSqzReBbz9tImTF9PRYNLUdvD1Eku+iFe+fzEUE6u/pS5
+         lR2HQJf8ay92exAWL/RrfiFLGZanVYE/74UC4QeC6Kt7J2VdCOqFBZaywl4N5JB4pfFN
+         CZMBtJrEhHqi4vJAIp7+TjI7Yu5nw2BfIJxIEEj9b/Wn3wzpFZKuxAb+NEUEt1b/rQ3p
+         yA2jTYZ4BGZv/2OS11NtoAaHwccHFNtbeLYF1as8dtzA0vifk+TjMC3RiHZEdGdbGx8W
+         MFjlFoOOe2TuelS0Hoo4mfWEzYu0akm9SqAS/fvR7xGASXLCkKd+ljmaPucbjANs4EUc
+         wVfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=70AoCw7gR/ANBDfALYHWvs5rEExyH90S86seDrQcu0Y=;
-        b=qdWKHWzk3wqw91md/vvX5XcdmRv0xA5udvhOvZGv0hOs+7Hn6XHt3uaXbwhPS6mKnI
-         QSosvnQ6pq7a7LluV1FOEFRKtygPyGBDu+GO6DOGLluHFxuq5x6VkLoRVe7ZgTGtvTQB
-         pHvhU1xSxqAG/KnJurC5Ua+pZaPTla40ydLyfcoxQOWj0v5VRSWTS47OcbhTPUGOWXfV
-         i5vuApI/CFyPlCvkiTkuA1UGwr7V3IVYwBqRNV7HwRwKT4mbAy7GEa+W1X0OHHPqGUKm
-         akQnXZ79nP7JeqCruOGq/RKfAzPy9ttK3aAjyvVNaLkgF9MVGZpavoUZnS7Tn8E05zUX
-         omgA==
-X-Gm-Message-State: APjAAAW51HzRagoZfCIrkU51eXq9kNAvwyQjV1dTFyDQf4kkx5dLMyUl
-        F//zlZ0EoqwnkxQ8CqF/9FOAsa05SMtcFxrbkUNAZjBt
-X-Google-Smtp-Source: APXvYqyRQJeCjtep4nRdALFOOawBRVV3x8DY6cEgZnMwmYXj2Jt/PtgPgUJ3CS/LNaCYOiLN2LXIeNyTNQBIheIi870=
-X-Received: by 2002:a05:620a:5ae:: with SMTP id q14mr10865787qkq.437.1576795287863;
- Thu, 19 Dec 2019 14:41:27 -0800 (PST)
+        bh=8SmMbowtTfAsbOVAZeLeZB+ZGZ+/7tm77KWfmwIKdb4=;
+        b=DJPVce7vYk2vNgrrYWsSTU+A5VHmXYtA0Suoh0qyyNhZCdnUHLx7DLhHp/kmpuEP8Q
+         JA5ZhFkPDaoHbVCqhHjYxR0vAo5fgpgP6YoOr5z8FA4tFd7zyE0nmcZG+94l8VaNIdaB
+         GgYp49w5zQKj8EViUGURA2KmaXTH7luvknO5XNq2Wtkz0JVPRyHPV4weJ7oGs+OonKjq
+         WeNFh9VSDXo4n43fRiRFXMDeh+V2jN8ckCzVbV0BnhjRsoPHE3C5pehSjiGKNkOy9EW8
+         3Ea0r+EIQ9xzMag5VIjGJiEegjPnKU+g7+nEyV/j7V4HX2Rs4JIVmj6W0qxDoUvMNx5D
+         r3GA==
+X-Gm-Message-State: APjAAAVXsL1jFG+PeinkDa8pcCtkFAquomYD0L6E1rLVXrTDbv83ft+R
+        EkJVoGSHfOOu3KvI6l3dUf0dc2ak3BaAKt2Y25Q4ih4z
+X-Google-Smtp-Source: APXvYqzVoazwULr6X7Xyh/BspWYhEiQ+E57X4awFh5cH3Gk0sb49biFKquTdybha8i9G0c+YuNfhzTa5UdP4yHNWrVg=
+X-Received: by 2002:ac8:5457:: with SMTP id d23mr8920577qtq.93.1576795390308;
+ Thu, 19 Dec 2019 14:43:10 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1576741281.git.rdna@fb.com> <30cd850044a0057bdfcaaf154b7d2f39850ba813.1576741281.git.rdna@fb.com>
-In-Reply-To: <30cd850044a0057bdfcaaf154b7d2f39850ba813.1576741281.git.rdna@fb.com>
+References: <cover.1576741281.git.rdna@fb.com> <bd6e0732303eb14e4b79cb128268d9e9ad6db208.1576741281.git.rdna@fb.com>
+In-Reply-To: <bd6e0732303eb14e4b79cb128268d9e9ad6db208.1576741281.git.rdna@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 19 Dec 2019 14:41:16 -0800
-Message-ID: <CAEf4BzaBE3dowJ4ZtO3YxoSMuAYDLz9mejcmhS78iHoUH=Ke7Q@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 3/6] bpf: Support replacing cgroup-bpf program
- in MULTI mode
+Date:   Thu, 19 Dec 2019 14:42:59 -0800
+Message-ID: <CAEf4BzY_U0dTcvCuF73g_Vh+6nJTBce0wHsDXeaJWSQ3Ud4rRA@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 4/6] libbpf: Introduce bpf_prog_attach_xattr
 To:     Andrey Ignatov <rdna@fb.com>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -61,70 +60,40 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Wed, Dec 18, 2019 at 11:45 PM Andrey Ignatov <rdna@fb.com> wrote:
 >
-> The common use-case in production is to have multiple cgroup-bpf
-> programs per attach type that cover multiple use-cases. Such programs
-> are attached with BPF_F_ALLOW_MULTI and can be maintained by different
-> people.
+> Introduce a new bpf_prog_attach_xattr function that, in addition to
+> program fd, target fd and attach type, accepts an extendable struct
+> bpf_prog_attach_opts.
 >
-> Order of programs usually matters, for example imagine two egress
-> programs: the first one drops packets and the second one counts packets.
-> If they're swapped the result of counting program will be different.
+> bpf_prog_attach_opts relies on DECLARE_LIBBPF_OPTS macro to maintain
+> backward and forward compatibility and has the following "optional"
+> attach attributes:
 >
-> It brings operational challenges with updating cgroup-bpf program(s)
-> attached with BPF_F_ALLOW_MULTI since there is no way to replace a
-> program:
+> * existing attach_flags, since it's not required when attaching in NONE
+>   mode. Even though it's quite often used in MULTI and OVERRIDE mode it
+>   seems to be a good idea to reduce number of arguments to
+>   bpf_prog_attach_xattr;
 >
-> * One way to update is to detach all programs first and then attach the
->   new version(s) again in the right order. This introduces an
->   interruption in the work a program is doing and may not be acceptable
->   (e.g. if it's egress firewall);
+> * newly introduced attribute of BPF_PROG_ATTACH command: replace_prog_fd
+>   that is fd of previously attached cgroup-bpf program to replace if
+>   BPF_F_REPLACE flag is used.
 >
-> * Another way is attach the new version of a program first and only then
->   detach the old version. This introduces the time interval when two
->   versions of same program are working, what may not be acceptable if a
->   program is not idempotent. It also imposes additional burden on
->   program developers to make sure that two versions of their program can
->   co-exist.
+> The new function is named to be consistent with other xattr-functions
+> (bpf_prog_test_run_xattr, bpf_create_map_xattr, bpf_load_program_xattr).
 >
-> Solve the problem by introducing a "replace" mode in BPF_PROG_ATTACH
-> command for cgroup-bpf programs being attached with BPF_F_ALLOW_MULTI
-> flag. This mode is enabled by newly introduced BPF_F_REPLACE attach flag
-> and bpf_attr.replace_bpf_fd attribute to pass fd of the old program to
-> replace
->
-> That way user can replace any program among those attached with
-> BPF_F_ALLOW_MULTI flag without the problems described above.
->
-> Details of the new API:
->
-> * If BPF_F_REPLACE is set but replace_bpf_fd doesn't have valid
->   descriptor of BPF program, BPF_PROG_ATTACH will return corresponding
->   error (EINVAL or EBADF).
->
-> * If replace_bpf_fd has valid descriptor of BPF program but such a
->   program is not attached to specified cgroup, BPF_PROG_ATTACH will
->   return ENOENT.
->
-> BPF_F_REPLACE is introduced to make the user intent clear, since
-> replace_bpf_fd alone can't be used for this (its default value, 0, is a
-> valid fd). BPF_F_REPLACE also makes it possible to extend the API in the
-> future (e.g. add BPF_F_BEFORE and BPF_F_AFTER if needed).
+> The struct bpf_prog_attach_opts is supposed to be used with
+> DECLARE_LIBBPF_OPTS macro.
 >
 > Signed-off-by: Andrey Ignatov <rdna@fb.com>
-> Acked-by: Martin KaFai Lau <kafai@fb.com>
 > ---
 
-Looks good.
+Looks great, thanks!
 
-Acked-by: Andrii Narkyiko <andriin@fb.com>
+Acked-by: Andrii Nakryiko <andriin@fb.com>
 
->  include/linux/bpf-cgroup.h     |  4 +++-
->  include/uapi/linux/bpf.h       | 10 ++++++++++
->  kernel/bpf/cgroup.c            | 30 ++++++++++++++++++++++++++----
->  kernel/bpf/syscall.c           |  4 ++--
->  kernel/cgroup/cgroup.c         |  5 +++--
->  tools/include/uapi/linux/bpf.h | 10 ++++++++++
->  6 files changed, 54 insertions(+), 9 deletions(-)
+>  tools/lib/bpf/bpf.c      | 17 ++++++++++++++++-
+>  tools/lib/bpf/bpf.h      | 11 +++++++++++
+>  tools/lib/bpf/libbpf.map |  1 +
+>  3 files changed, 28 insertions(+), 1 deletion(-)
 >
 
 [...]
