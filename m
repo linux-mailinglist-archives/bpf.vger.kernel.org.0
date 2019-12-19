@@ -2,188 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A161F125B21
-	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2019 06:58:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80FD7125B37
+	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2019 07:06:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725987AbfLSF64 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Dec 2019 00:58:56 -0500
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:42190 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725821AbfLSF64 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Dec 2019 00:58:56 -0500
-Received: by mail-qk1-f196.google.com with SMTP id z14so2466777qkg.9
-        for <bpf@vger.kernel.org>; Wed, 18 Dec 2019 21:58:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Dt3M2L0p8ec0hogt/EdarQMFj7CZ3Qo4uWUehotx128=;
-        b=a9Ges/fFYhgBPv0PCXN7438mgG8KdPC3/pdTU4ngcEFqIR9+I/T26wvfi08+3qF2bM
-         4gwI2KI7gPxe2BZyoO1m5bRsac1qQK6W65OTM5EiYuB31rcpve1EakMJVNDLDWacEdI4
-         wgCnaGg89KPa1b4QU5HTTDLa62nOFc0bn7y1gax+H46cYJl8OYn3vu2Jlke4m7yTjBwx
-         e6GH2Pbx9EuFQoPSV11kpXPMjfcdoEdO2X9iZBG8yYKtNew2m+jVkFa6gNyha6wOv+0B
-         twnip5o7fnaS4MTLb+GAMXQhbDWbKphxH/C/792NvaRN7UghiZBwf1Lw9AQ3u58tGN6N
-         kdMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Dt3M2L0p8ec0hogt/EdarQMFj7CZ3Qo4uWUehotx128=;
-        b=RofkF6rnlnYJpzyoaIHjsKi2RGLXk6ZswqMg+AOB397MZo7uimWhjGY6IATXtrD79Y
-         zyOAoE+hQROvwpnojERIrmtoCXzWIXYnbJZcq4M1QMaktcfOdBq3VbsL1OH53Lfi6bNy
-         8t8gypDuSmKwJVzVe/xhIO0WahcB5anfO08TsXkqTVN8ZelvxNjUDdVaVg5cayOIxJB4
-         vvLQHcyq4FDKmbNZQa2CsOps8KD5wSHVF4sepaRpx28ylMY8l/YRhY7ZNmG2xdIVl0W7
-         Bp1xRlX8ArsUgUQ4So6hyFMe7v7oEEYiTbz+WlzZvOUNQXpUlUE5AKB+2mGxJdbrmQLu
-         Rb7w==
-X-Gm-Message-State: APjAAAUL3JBGrJdLpPQUpTH2J9KpBZwfGWyJK2ljl/S/+jYMMGLB2kFu
-        banSD8R/JkLCEma2W6ih83VVYC9aDdxaAoTlr4E=
-X-Google-Smtp-Source: APXvYqzR1JQpoQ7Eod5ObASo7GWN0q1vL/QSdlNyfgtQmZtYE6O9x969Lj7USIaphkxfrZS8QCAokadbYpxk6dEWkl0=
-X-Received: by 2002:a37:e408:: with SMTP id y8mr6484146qkf.39.1576735134898;
- Wed, 18 Dec 2019 21:58:54 -0800 (PST)
+        id S1726617AbfLSGGO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Dec 2019 01:06:14 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:44338 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726300AbfLSGGO (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 19 Dec 2019 01:06:14 -0500
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xBJ64kKa031834
+        for <bpf@vger.kernel.org>; Wed, 18 Dec 2019 22:06:13 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=G9fijYrpM5dBHYhwf6g8YBIrY8qVfJTOmKWSiR08ze0=;
+ b=dP8qD9mG23oW8PqfpcH03/n1TPU2lcqxCt22Qujl5lh4PXZdo+LZVmvjn1pQNby6NG2L
+ oVJ8hMMJmTbNUZBmUfyoItxX9vmpC5XEm4Y0nMpH/iPjCVkNK1M/v/8cw5EeTiEwoKkx
+ hqCx0x+/Fep0aiHr5W8oro/3FR1uDtE6PTQ= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2wye5f5rw2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 18 Dec 2019 22:06:13 -0800
+Received: from intmgw002.41.prn1.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 18 Dec 2019 22:06:11 -0800
+Received: by dev082.prn2.facebook.com (Postfix, from userid 572249)
+        id EC8FE3711476; Wed, 18 Dec 2019 17:56:16 -0800 (PST)
+Smtp-Origin-Hostprefix: dev
+From:   Andrey Ignatov <rdna@fb.com>
+Smtp-Origin-Hostname: dev082.prn2.facebook.com
+To:     <bpf@vger.kernel.org>
+CC:     Andrey Ignatov <rdna@fb.com>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <kafai@fb.com>, <andriin@fb.com>,
+        <kernel-team@fb.com>
+Smtp-Origin-Cluster: prn2c23
+Subject: [PATCH v3 bpf-next 0/6] bpf: Support replacing cgroup-bpf program in MULTI mode
+Date:   Wed, 18 Dec 2019 17:55:57 -0800
+Message-ID: <cover.1576720240.git.rdna@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-References: <cover.1576720240.git.rdna@fb.com> <31ac56887591418c2c098fabc14ad00de008e603.1576720240.git.rdna@fb.com>
-In-Reply-To: <31ac56887591418c2c098fabc14ad00de008e603.1576720240.git.rdna@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 18 Dec 2019 21:58:43 -0800
-Message-ID: <CAEf4BzYWJLJgCt4QCcThg4-kbPr=L+Nv2A5Nd0YknWWkuM05tg@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 6/6] selftests/bpf: Test BPF_F_REPLACE in cgroup_attach_multi
-To:     Andrey Ignatov <rdna@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>, Andrii Nakryiko <andriin@fb.com>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
+ definitions=2019-12-18_08:2019-12-17,2019-12-18 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ bulkscore=0 priorityscore=1501 spamscore=0 lowpriorityscore=0
+ mlxlogscore=659 suspectscore=13 phishscore=0 adultscore=0 clxscore=1015
+ mlxscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-1912190050
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 18, 2019 at 6:17 PM Andrey Ignatov <rdna@fb.com> wrote:
->
-> Test replacing a cgroup-bpf program attached with BPF_F_ALLOW_MULTI and
-> possible failure modes: invalid combination of flags, invalid
-> replace_bpf_fd, replacing a non-attachd to specified cgroup program.
->
-> Example of program replacing:
->
->   # gdb -q --args ./test_progs --name=cgroup_attach_multi
->   ...
->   Breakpoint 1, test_cgroup_attach_multi () at cgroup_attach_multi.c:227
->   (gdb)
->   [1]+  Stopped                 gdb -q --args ./test_progs --name=cgroup_attach_multi
->   # bpftool c s /mnt/cgroup2/cgroup-test-work-dir/cg1
->   ID       AttachType      AttachFlags     Name
->   2133     egress          multi
->   2134     egress          multi
->   # fg
->   gdb -q --args ./test_progs --name=cgroup_attach_multi
->   (gdb) c
->   Continuing.
->
->   Breakpoint 2, test_cgroup_attach_multi () at cgroup_attach_multi.c:233
->   (gdb)
->   [1]+  Stopped                 gdb -q --args ./test_progs --name=cgroup_attach_multi
->   # bpftool c s /mnt/cgroup2/cgroup-test-work-dir/cg1
->   ID       AttachType      AttachFlags     Name
->   2139     egress          multi
->   2134     egress          multi
->
-> Signed-off-by: Andrey Ignatov <rdna@fb.com>
-> ---
->  .../bpf/prog_tests/cgroup_attach_multi.c      | 53 +++++++++++++++++--
->  1 file changed, 50 insertions(+), 3 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_attach_multi.c b/tools/testing/selftests/bpf/prog_tests/cgroup_attach_multi.c
-> index 4eaab7435044..2ff21dbce179 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/cgroup_attach_multi.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/cgroup_attach_multi.c
-> @@ -78,7 +78,8 @@ void test_cgroup_attach_multi(void)
->  {
->         __u32 prog_ids[4], prog_cnt = 0, attach_flags, saved_prog_id;
->         int cg1 = 0, cg2 = 0, cg3 = 0, cg4 = 0, cg5 = 0, key = 0;
-> -       int allow_prog[6] = {-1};
-> +       DECLARE_LIBBPF_OPTS(bpf_prog_attach_opts, attach_opts);
-> +       int allow_prog[7] = {-1};
->         unsigned long long value;
->         __u32 duration = 0;
->         int i = 0;
-> @@ -189,6 +190,52 @@ void test_cgroup_attach_multi(void)
->         CHECK_FAIL(bpf_map_lookup_elem(map_fd, &key, &value));
->         CHECK_FAIL(value != 1 + 2 + 8 + 16);
->
-> +       /* test replace */
-> +
-> +       attach_opts.flags = BPF_F_ALLOW_OVERRIDE | BPF_F_REPLACE;
-> +       attach_opts.replace_prog_fd = allow_prog[0];
-> +       if (CHECK(!bpf_prog_attach_xattr(allow_prog[6], cg1,
-> +                                        BPF_CGROUP_INET_EGRESS, &attach_opts),
-> +                 "fail_prog_replace_override", "unexpected success\n"))
-> +               goto err;
-> +       CHECK_FAIL(errno != EINVAL);
+v2->v3:
+- rely on DECLARE_LIBBPF_OPTS from libbpf_common.h;
+- separate "required" and "optional" arguments in bpf_prog_attach_xattr;
+- convert test_cgroup_attach to prog_tests;
+- move the new selftest to prog_tests/cgroup_attach_multi.
 
-CHECK macro above can prints both in success and failure scenarios,
-which means that errno of bpf_prog_attach_xattr can be overriden by a
-bunch of other functions. So if this check is critical, you'd have to
-remember errno before calling CHECK. Same for all the check below.
+v1->v2:
+- move DECLARE_LIBBPF_OPTS from libbpf.h to bpf.h (patch 4);
+- switch new libbpf API to OPTS framework;
+- switch selftest to libbpf OPTS framework.
 
-> +
-> +       attach_opts.flags = BPF_F_REPLACE;
-> +       if (CHECK(!bpf_prog_attach_xattr(allow_prog[6], cg1,
-> +                                        BPF_CGROUP_INET_EGRESS, &attach_opts),
-> +                 "fail_prog_replace_no_multi", "unexpected success\n"))
-> +               goto err;
-> +       CHECK_FAIL(errno != EINVAL);
-> +
-> +       attach_opts.flags = BPF_F_ALLOW_MULTI | BPF_F_REPLACE;
-> +       attach_opts.replace_prog_fd = -1;
-> +       if (CHECK(!bpf_prog_attach_xattr(allow_prog[6], cg1,
-> +                                        BPF_CGROUP_INET_EGRESS, &attach_opts),
-> +                 "fail_prog_replace_bad_fd", "unexpected success\n"))
-> +               goto err;
-> +       CHECK_FAIL(errno != EBADF);
-> +
-> +       /* replacing a program that is not attached to cgroup should fail  */
-> +       attach_opts.replace_prog_fd = allow_prog[3];
-> +       if (CHECK(!bpf_prog_attach_xattr(allow_prog[6], cg1,
-> +                                        BPF_CGROUP_INET_EGRESS, &attach_opts),
-> +                 "fail_prog_replace_no_ent", "unexpected success\n"))
-> +               goto err;
-> +       CHECK_FAIL(errno != ENOENT);
-> +
-> +       /* replace 1st from the top program */
-> +       attach_opts.replace_prog_fd = allow_prog[0];
-> +       if (CHECK(bpf_prog_attach_xattr(allow_prog[6], cg1,
-> +                                       BPF_CGROUP_INET_EGRESS, &attach_opts),
-> +                 "prog_replace", "errno=%d\n", errno))
-> +               goto err;
-> +
-> +       value = 0;
-> +       CHECK_FAIL(bpf_map_update_elem(map_fd, &key, &value, 0));
-> +       CHECK_FAIL(system(PING_CMD));
-> +       CHECK_FAIL(bpf_map_lookup_elem(map_fd, &key, &value));
-> +       CHECK_FAIL(value != 64 + 2 + 8 + 16);
-> +
->         /* detach 3rd from bottom program and ping again */
->         if (CHECK(!bpf_prog_detach2(0, cg3, BPF_CGROUP_INET_EGRESS),
->                   "fail_prog_detach_from_cg3", "unexpected success\n"))
-> @@ -202,7 +249,7 @@ void test_cgroup_attach_multi(void)
->         CHECK_FAIL(bpf_map_update_elem(map_fd, &key, &value, 0));
->         CHECK_FAIL(system(PING_CMD));
->         CHECK_FAIL(bpf_map_lookup_elem(map_fd, &key, &value));
-> -       CHECK_FAIL(value != 1 + 2 + 16);
-> +       CHECK_FAIL(value != 64 + 2 + 16);
->
->         /* detach 2nd from bottom program and ping again */
->         if (CHECK(bpf_prog_detach2(-1, cg4, BPF_CGROUP_INET_EGRESS),
-> @@ -213,7 +260,7 @@ void test_cgroup_attach_multi(void)
->         CHECK_FAIL(bpf_map_update_elem(map_fd, &key, &value, 0));
->         CHECK_FAIL(system(PING_CMD));
->         CHECK_FAIL(bpf_map_lookup_elem(map_fd, &key, &value));
-> -       CHECK_FAIL(value != 1 + 2 + 4);
-> +       CHECK_FAIL(value != 64 + 2 + 4);
->
->         prog_cnt = 4;
->         CHECK_FAIL(bpf_prog_query(cg5, BPF_CGROUP_INET_EGRESS,
-> --
-> 2.17.1
->
+This patch set adds support for replacing cgroup-bpf programs attached with
+BPF_F_ALLOW_MULTI flag so that any program in a list can be updated to a new
+version without service interruption and order of programs can be preserved.
+
+Please see patch 3 for details on the use-case and API changes.
+
+Other patches:
+Patch 1 is preliminary refactoring of __cgroup_bpf_attach to simplify it.
+Patch 2 is minor cleanup of hierarchy_allows_attach.
+Patch 4 extends libbpf API to support new set of attach attributes.
+Patch 5 converts test_cgroup_attach to prog_tests.
+Patch 6 adds selftest coverage for the new API.
+
+
+Andrey Ignatov (6):
+  bpf: Simplify __cgroup_bpf_attach
+  bpf: Remove unused new_flags in hierarchy_allows_attach()
+  bpf: Support replacing cgroup-bpf program in MULTI mode
+  libbpf: Introduce bpf_prog_attach_xattr
+  selftests/bpf: Convert test_cgroup_attach to prog_tests
+  selftests/bpf: Test BPF_F_REPLACE in cgroup_attach_multi
+
+ include/linux/bpf-cgroup.h                    |   4 +-
+ include/uapi/linux/bpf.h                      |  10 +
+ kernel/bpf/cgroup.c                           |  97 +--
+ kernel/bpf/syscall.c                          |   4 +-
+ kernel/cgroup/cgroup.c                        |   5 +-
+ tools/include/uapi/linux/bpf.h                |  10 +
+ tools/lib/bpf/bpf.c                           |  16 +-
+ tools/lib/bpf/bpf.h                           |  11 +
+ tools/lib/bpf/libbpf.map                      |   1 +
+ tools/testing/selftests/bpf/.gitignore        |   1 -
+ tools/testing/selftests/bpf/Makefile          |   3 +-
+ .../bpf/prog_tests/cgroup_attach_autodetach.c | 111 ++++
+ .../bpf/prog_tests/cgroup_attach_multi.c      | 285 +++++++++
+ .../bpf/prog_tests/cgroup_attach_override.c   | 148 +++++
+ .../selftests/bpf/test_cgroup_attach.c        | 571 ------------------
+ 15 files changed, 651 insertions(+), 626 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_attach_autodetach.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_attach_multi.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_attach_override.c
+ delete mode 100644 tools/testing/selftests/bpf/test_cgroup_attach.c
+
+-- 
+2.17.1
+
