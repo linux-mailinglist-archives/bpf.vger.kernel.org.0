@@ -2,33 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AB4541265EE
-	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2019 16:41:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61A6B12660A
+	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2019 16:47:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726779AbfLSPlk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Dec 2019 10:41:40 -0500
-Received: from www62.your-server.de ([213.133.104.62]:48802 "EHLO
+        id S1726779AbfLSPrH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Dec 2019 10:47:07 -0500
+Received: from www62.your-server.de ([213.133.104.62]:50000 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726776AbfLSPlk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Dec 2019 10:41:40 -0500
+        with ESMTP id S1726757AbfLSPrH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 Dec 2019 10:47:07 -0500
 Received: from [2001:1620:665:0:5795:5b0a:e5d5:5944] (helo=localhost)
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1ihxvm-0008Re-07; Thu, 19 Dec 2019 16:41:38 +0100
-Date:   Thu, 19 Dec 2019 16:41:37 +0100
+        id 1ihy13-0000Ip-BL; Thu, 19 Dec 2019 16:47:05 +0100
+Date:   Thu, 19 Dec 2019 16:47:04 +0100
 From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
-        andrii.nakryiko@gmail.com, kernel-team@fb.com
-Subject: Re: [PATCH bpf-next 2/3] libbpf/tools: add runqslower tool to libbpf
-Message-ID: <20191219154137.GB4198@linux-9.fritz.box>
-References: <20191219070659.424273-1-andriin@fb.com>
- <20191219070659.424273-3-andriin@fb.com>
+To:     Edwin Peer <epeer@juniper.net>
+Cc:     Y Song <ys114321@gmail.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: [RFC PATCH bpf-next 0/2] unprivileged BPF_PROG_TEST_RUN
+Message-ID: <20191219154704.GC4198@linux-9.fritz.box>
+References: <20191219013534.125342-1-epeer@juniper.net>
+ <CAH3MdRUTcd7rjum12HBtrQ_nmyx0LvdOokZmA1YuhP2WtGfJqA@mail.gmail.com>
+ <69266F42-6D0B-4F0B-805C-414880AC253D@juniper.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191219070659.424273-3-andriin@fb.com>
+In-Reply-To: <69266F42-6D0B-4F0B-805C-414880AC253D@juniper.net>
 User-Agent: Mutt/1.12.1 (2019-06-15)
 X-Authenticated-Sender: daniel@iogearbox.net
 X-Virus-Scanned: Clear (ClamAV 0.101.4/25668/Thu Dec 19 10:55:58 2019)
@@ -37,30 +39,26 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 18, 2019 at 11:06:57PM -0800, Andrii Nakryiko wrote:
-> Convert one of BCC tools (runqslower [0]) to BPF CO-RE + libbpf. It matches
-> its BCC-based counterpart 1-to-1, supporting all the same parameters and
-> functionality.
+On Thu, Dec 19, 2019 at 02:50:42PM +0000, Edwin Peer wrote:
+> On 12/18/19, 23:19, "Y Song" <ys114321@gmail.com> wrote:
 > 
-> runqslower tool utilizes BPF skeleton, auto-generated from BPF object file,
-> as well as memory-mapped interface to global (read-only, in this case) data.
-> Its makefile also ensures auto-generation of "relocatable" vmlinux.h, which is
-> necessary for BTF-typed raw tracepoints with direct memory access.
+> >  Added cc to bpf@vger.kernel.org.
+>
+> Thank you, I will remember to do this next time.
+>
+> > Have you tried your patch with some bpf programs? verifier and jit  put some
+> > restrictions on unpriv programs. To truely test the program, most if not all these
+> > restrictions should be lifted, so the same tested program should be able to
+> > run on production server and vice verse.
 > 
->   [0] https://github.com/iovisor/bcc/blob/11bf5d02c895df9646c117c713082eb192825293/tools/runqslower.py
+> Agreed, I am aware of some of these differences in the load/verifier behavior with and without
+> CAP_SYS_ADMIN. In particular, without CAP_SYS_ADMIN programs are still restricted to 4k, some helpers are not available (spin locks, trace printk) and there are some differences in context access checks.
 > 
-> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> ---
->  tools/lib/bpf/tools/runqslower/.gitignore     |   2 +
->  tools/lib/bpf/tools/runqslower/Makefile       |  60 ++++++
->  .../lib/bpf/tools/runqslower/runqslower.bpf.c | 101 ++++++++++
->  tools/lib/bpf/tools/runqslower/runqslower.c   | 187 ++++++++++++++++++
->  tools/lib/bpf/tools/runqslower/runqslower.h   |  13 ++
+> I think these can be addressed incrementally, assuming folk are on board with this approach in general?
 
-tools/lib/bpf/tools/ is rather weird, please add to tools/bpf/ which is the
-more appropriate place we have for small tools. Could also live directly in
-there, e.g. tools/bpf/runqslower.{c,h,bpf.c} and then built/run from selftests,
-but under libbpf directly is too odd.
+What about CAP_BPF? IIRC, there are also other issues e.g. you could abuse
+the test interface as a packet generator (bpf_clone_redirect) which is not
+something fully unpriv should be doing.
 
 Thanks,
 Daniel
