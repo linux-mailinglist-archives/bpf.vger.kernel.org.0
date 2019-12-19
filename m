@@ -2,128 +2,214 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 50873125B53
-	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2019 07:10:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AD1C125B54
+	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2019 07:11:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726303AbfLSGKx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Dec 2019 01:10:53 -0500
-Received: from mail-pj1-f65.google.com ([209.85.216.65]:33995 "EHLO
-        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725821AbfLSGKx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Dec 2019 01:10:53 -0500
-Received: by mail-pj1-f65.google.com with SMTP id s94so2163410pjc.1;
-        Wed, 18 Dec 2019 22:10:53 -0800 (PST)
+        id S1726300AbfLSGLM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Dec 2019 01:11:12 -0500
+Received: from mail-qv1-f68.google.com ([209.85.219.68]:38070 "EHLO
+        mail-qv1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725821AbfLSGLM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 Dec 2019 01:11:12 -0500
+Received: by mail-qv1-f68.google.com with SMTP id t6so1795812qvs.5
+        for <bpf@vger.kernel.org>; Wed, 18 Dec 2019 22:11:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=utd1Hqu7RRNBlQe9bT/Ku0KqdnYMgvtr/pTMjx58tKw=;
-        b=FLvvq0k2z5q+440WameVkfcrOa8VeXMzqwSzNe1r9ndjPo8sAbPGE2E3qYARAesrdc
-         W6NMRvO9hQrNEz6NiTrovrJ4Bo8+wa3xcTTkhU7KrvL56mg7XJICs+gfAqcATWw+fJTk
-         ltpFCoCeuXM1uOiwJ268gbObOgumLubSKh6KILHxBsj2les82guw5adOPP7fhTMNHJtN
-         z3/D+dykrXWvumNYrnQr8fnroiEJ1fVmPJqQUfmrWLM9JwVjORm8acqItT20C40Y9wNK
-         o9wV4PHZd97y+GpuDYpm4hhOYh9hmyN87jGP2YP6Ys7/Ewdsu3nY2LUPNLlHzqRlIlbR
-         Ifyw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+Dygq6LvynjqAF9eAg4KaBVu7HLkGvpmSlWiIQGu+BU=;
+        b=WKXh2CJmgmIheOQd1xjPt5CfTce+ZSzdKrPCK3psUwbiiOlge4156XuM1CZZo26hlE
+         kJ4t6SEyoh+jelnxZ0B16K+ejzGFKgNEJki1JTTBhTJOFtgfoPO1/auXOC1IOq3RJGzF
+         OUXys44/WAyb42m6A93itWLrjpBkz0Wus/q3Ko5oTX4pSorE66XYFi5Wk/xHItWUkVOI
+         35lplRHg9Efc1/LxOxEkGV6DWnw2m447OCjv9CMzwc7rtrjqYUELbqfqrb0WdGiTHXD0
+         7Z9YK5evNYHvz5dU7h9Ul7vHlTODpmkWliRlMogbyjXW5S1QyAuYk8EC7yn3xg914btX
+         94nA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=utd1Hqu7RRNBlQe9bT/Ku0KqdnYMgvtr/pTMjx58tKw=;
-        b=Ak4IHzqWJucqntGlXdtDV+yrYB6OXKu/9YHDEnNFMsNTbP5tHmfQyk0Lfclo6jEWyM
-         ca+dFY2odFShoRcKOhwQefTYXTGW5kTMsupOyD9e+zQzyXVXtA+CBKbk3Xt9+0K0ynrB
-         u1j+b2zm7WKypQ6bAhp9Fjdh2gPFTZEbW95a9mI0EtgF/VED4ofhreJ4pc/qx6f+eUbw
-         N1044xijt/whu2h/PhIAHA2SPDijUKy9h/2kNNfiiysHBCG+Q6yuDRIUp57CWQ5lkTMP
-         0suDgra5QKN8W7USzoIoNDf1hO4+ceq0TC5SPEGKtR9IjwCKzvZyAQfTSOfX1CEdDCiy
-         zD1Q==
-X-Gm-Message-State: APjAAAUlizqxdcrnc8z8NmxkmIDBbsBzBNZKlpVE4BuKyA6KuAFBfMpq
-        4Bft7uCQJPyQXXGkmVo2oqKrlz4lj9P1Yw==
-X-Google-Smtp-Source: APXvYqwefORJJxeEsXsY2YBiZP2QtNcGKKl53AaMiPREUyLPaX3xjtCIwm7IpWbf8scImVwHjiZTHA==
-X-Received: by 2002:a17:902:b704:: with SMTP id d4mr6989162pls.54.1576735852284;
-        Wed, 18 Dec 2019 22:10:52 -0800 (PST)
-Received: from btopel-mobl.ger.intel.com (fmdmzpr04-ext.fm.intel.com. [192.55.55.39])
-        by smtp.gmail.com with ESMTPSA id t23sm6465062pfq.106.2019.12.18.22.10.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Dec 2019 22:10:51 -0800 (PST)
-From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
-To:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
-        bpf@vger.kernel.org, davem@davemloft.net,
-        jakub.kicinski@netronome.com, hawk@kernel.org,
-        john.fastabend@gmail.com, magnus.karlsson@intel.com,
-        jonathan.lemon@gmail.com,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Subject: [PATCH bpf-next v2 8/8] xdp: simplify __bpf_tx_xdp_map()
-Date:   Thu, 19 Dec 2019 07:10:06 +0100
-Message-Id: <20191219061006.21980-9-bjorn.topel@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191219061006.21980-1-bjorn.topel@gmail.com>
-References: <20191219061006.21980-1-bjorn.topel@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+Dygq6LvynjqAF9eAg4KaBVu7HLkGvpmSlWiIQGu+BU=;
+        b=q88DPN2q1BrSTtKZvTMej4d8cCiVScNkmGj1zs6pXMs7OywXiP2KIAzr/AXeq13ayd
+         ZDigF4/SdYgAdynfRBXxQlxg072fiZTT0XnP6Wdy1MkjrpNk2e+anwq7bE/025yApizL
+         mDEgAd/a/iVeLutI9ULaiCJwNrUbWK7qH0JgZju5X8UpwJpm/el8fpzgIcGI2K4nlX3M
+         ipplTby/8HAopwbNasgFUsFQQ2ZLni69XfCuChmXSE1rML0tQtsVkrYNU3mH7dqI3eyQ
+         M0p66vPDa3chRhp3/cHBvdPQuAgVz8DMdtpyUBHDk8T4KTxXSWdDS1tA/O3gsOeIngzc
+         Z6DQ==
+X-Gm-Message-State: APjAAAW6Ogr3i3xZeKpf3V6HdaoO69mcefaewrLN+fxEXgzS3VqZvdVT
+        xsglUPxnlt3mHCx0u28YGscqVhDdvaiYxBb5vCCoZEMf
+X-Google-Smtp-Source: APXvYqxSVwmEot6ljVjEGe97I+TnKD1q5u7duD4CpdmJLWVOjKdfJ6F8rmE5MitYPPd9ciJg6DtukhKHxfSBa5Zr9cU=
+X-Received: by 2002:a05:6214:38c:: with SMTP id l12mr6139695qvy.224.1576735871319;
+ Wed, 18 Dec 2019 22:11:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <cover.1576720240.git.rdna@fb.com> <a13336d12dff699d2b437ffa024adc1d95c97fcd.1576720240.git.rdna@fb.com>
+In-Reply-To: <a13336d12dff699d2b437ffa024adc1d95c97fcd.1576720240.git.rdna@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 18 Dec 2019 22:11:00 -0800
+Message-ID: <CAEf4Bzb2_UqGJxxXvqqpdymzrE06dhj4-XWg5ndsgDndNw787w@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 5/6] selftests/bpf: Convert test_cgroup_attach
+ to prog_tests
+To:     Andrey Ignatov <rdna@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin Lau <kafai@fb.com>, Andrii Nakryiko <andriin@fb.com>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Björn Töpel <bjorn.topel@intel.com>
+On Wed, Dec 18, 2019 at 6:14 PM Andrey Ignatov <rdna@fb.com> wrote:
+>
+> Convert test_cgroup_attach to prog_tests.
+>
+> This change does a lot of things but in many cases it's pretty expensive
+> to separate them, so they go in one commit. Nevertheless the logic is
+> ketp as is and changes made are just moving things around, simplifying
+> them (w/o changing the meaning of the tests) and making prog_tests
+> compatible:
+>
+> * split the 3 tests in the file into 3 separate files in prog_tests/;
+>
+> * rename the test functions to test_<file_base_name>;
+>
+> * remove unused includes, constants, variables and functions from every
+>   test;
+>
+> * replace `if`-s with or `if (CHECK())` where additional context should
+>   be logged and with `if (CHECK_FAIL())` where line number is enough;
+>
+> * switch from `log_err()` to logging via `CHECK()`;
+>
+> * replace `assert`-s with `CHECK_FAIL()` to avoid crashing the whole
+>   test_progs if one assertion fails;
+>
+> * replace cgroup_helpers with test__join_cgroup() in
+>   cgroup_attach_override only, other tests need more fine-grained
+>   control for cgroup creation/deletion so cgroup_helpers are still used
+>   there;
+>
+> * simplify cgroup_attach_autodetach by switching to easiest possible
+>   program since this test doesn't really need such a complicated program
+>   as cgroup_attach_multi does;
+>
+> * remove test_cgroup_attach.c itself.
+>
+> Signed-off-by: Andrey Ignatov <rdna@fb.com>
+> ---
+>  tools/testing/selftests/bpf/.gitignore        |   1 -
+>  tools/testing/selftests/bpf/Makefile          |   3 +-
+>  .../bpf/prog_tests/cgroup_attach_autodetach.c | 111 ++++
+>  .../bpf/prog_tests/cgroup_attach_multi.c      | 238 ++++++++
+>  .../bpf/prog_tests/cgroup_attach_override.c   | 148 +++++
+>  .../selftests/bpf/test_cgroup_attach.c        | 571 ------------------
+>  6 files changed, 498 insertions(+), 574 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_attach_autodetach.c
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_attach_multi.c
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_attach_override.c
+>  delete mode 100644 tools/testing/selftests/bpf/test_cgroup_attach.c
+>
 
-The explicit error checking is not needed. Simply return the error
-instead.
+[...]
 
-Acked-by: Toke Høiland-Jørgensen <toke@redhat.com>
-Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
----
- net/core/filter.c | 33 +++++++--------------------------
- 1 file changed, 7 insertions(+), 26 deletions(-)
+> +
+> +       if (CHECK_FAIL(setup_cgroup_environment()))
+> +               goto err;
+> +
+> +       cg1 = create_and_get_cgroup("/cg1");
+> +       if (CHECK_FAIL(cg1 < 0))
+> +               goto err;
+> +       cg2 = create_and_get_cgroup("/cg1/cg2");
+> +       if (CHECK_FAIL(cg2 < 0))
+> +               goto err;
+> +       cg3 = create_and_get_cgroup("/cg1/cg2/cg3");
+> +       if (CHECK_FAIL(cg3 < 0))
+> +               goto err;
+> +       cg4 = create_and_get_cgroup("/cg1/cg2/cg3/cg4");
+> +       if (CHECK_FAIL(cg4 < 0))
+> +               goto err;
+> +       cg5 = create_and_get_cgroup("/cg1/cg2/cg3/cg4/cg5");
+> +       if (CHECK_FAIL(cg5 < 0))
+> +               goto err;
+> +
+> +       if (CHECK_FAIL(join_cgroup("/cg1/cg2/cg3/cg4/cg5")))
+> +               goto err;
+> +
+> +       if (CHECK(bpf_prog_attach(allow_prog[0], cg1, BPF_CGROUP_INET_EGRESS,
+> +                                 BPF_F_ALLOW_MULTI),
+> +                 "prog0_attach_to_cg1_multi", "errno=%d\n", errno))
+> +               goto err;
+> +
+> +       if (CHECK(!bpf_prog_attach(allow_prog[0], cg1, BPF_CGROUP_INET_EGRESS,
+> +                                  BPF_F_ALLOW_MULTI),
+> +                 "fail_same_prog_attach_to_cg1", "unexpected success\n"))
+> +               goto err;
+> +
+> +       if (CHECK(bpf_prog_attach(allow_prog[1], cg1, BPF_CGROUP_INET_EGRESS,
+> +                                 BPF_F_ALLOW_MULTI),
+> +                 "prog1_attach_to_cg1_multi", "errno=%d\n", errno))
+> +               goto err;
+> +
+> +       if (CHECK(bpf_prog_attach(allow_prog[2], cg2, BPF_CGROUP_INET_EGRESS,
+> +                                 BPF_F_ALLOW_OVERRIDE),
+> +                 "prog2_attach_to_cg2_override", "errno=%d\n", errno))
+> +               goto err;
+> +
+> +       if (CHECK(bpf_prog_attach(allow_prog[3], cg3, BPF_CGROUP_INET_EGRESS,
+> +                                 BPF_F_ALLOW_MULTI),
+> +                 "prog3_attach_to_cg3_multi", "errno=%d\n", errno))
+> +               goto err;
+> +
+> +       if (CHECK(bpf_prog_attach(allow_prog[4], cg4, BPF_CGROUP_INET_EGRESS,
+> +                           BPF_F_ALLOW_OVERRIDE),
+> +                 "prog4_attach_to_cg4_override", "errno=%d\n", errno))
+> +               goto err;
+> +
+> +       if (CHECK(bpf_prog_attach(allow_prog[5], cg5, BPF_CGROUP_INET_EGRESS, 0),
+> +                 "prog5_attach_to_cg5_none", "errno=%d\n", errno))
+> +               goto err;
 
-diff --git a/net/core/filter.c b/net/core/filter.c
-index d9caa3e57ea1..217af9974c86 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -3510,35 +3510,16 @@ xdp_do_redirect_slow(struct net_device *dev, struct xdp_buff *xdp,
- }
- 
- static int __bpf_tx_xdp_map(struct net_device *dev_rx, void *fwd,
--			    struct bpf_map *map,
--			    struct xdp_buff *xdp)
-+			    struct bpf_map *map, struct xdp_buff *xdp)
- {
--	int err;
--
- 	switch (map->map_type) {
- 	case BPF_MAP_TYPE_DEVMAP:
--	case BPF_MAP_TYPE_DEVMAP_HASH: {
--		struct bpf_dtab_netdev *dst = fwd;
--
--		err = dev_map_enqueue(dst, xdp, dev_rx);
--		if (unlikely(err))
--			return err;
--		break;
--	}
--	case BPF_MAP_TYPE_CPUMAP: {
--		struct bpf_cpu_map_entry *rcpu = fwd;
--
--		err = cpu_map_enqueue(rcpu, xdp, dev_rx);
--		if (unlikely(err))
--			return err;
--		break;
--	}
--	case BPF_MAP_TYPE_XSKMAP: {
--		struct xdp_sock *xs = fwd;
--
--		err = __xsk_map_redirect(xs, xdp);
--		return err;
--	}
-+	case BPF_MAP_TYPE_DEVMAP_HASH:
-+		return dev_map_enqueue(fwd, xdp, dev_rx);
-+	case BPF_MAP_TYPE_CPUMAP:
-+		return cpu_map_enqueue(fwd, xdp, dev_rx);
-+	case BPF_MAP_TYPE_XSKMAP:
-+		return __xsk_map_redirect(fwd, xdp);
- 	default:
- 		break;
- 	}
--- 
-2.20.1
+nit: this looks like a good candidate for a loop...
 
+> +
+> +       CHECK_FAIL(system(PING_CMD));
+> +       CHECK_FAIL(bpf_map_lookup_elem(map_fd, &key, &value));
+> +       CHECK_FAIL(value != 1 + 2 + 8 + 32);
+> +
+
+[...]
+
+> -int main(void)
+> -{
+> -       int (*tests[])(void) = {
+> -               test_foo_bar,
+> -               test_multiprog,
+> -               test_autodetach,
+> -       };
+> -       int errors = 0;
+> -       int i;
+> -
+> -       for (i = 0; i < ARRAY_SIZE(tests); i++)
+> -               if (tests[i]())
+> -                       errors++;
+
+Depending on what you think is better structure (I couldn't follow
+through entire test logic...), you could have done this as a single
+test with 3 subtests. Search for test__start_subtest(). If that saves
+you some duplication, I think it's worth converting (which will be
+1-to-1 with original structure).
+
+But either way thanks a lot for doing the convertion, brings as
+another step closer to more uniform and consolidated testing infra.
+
+> -
+> -       if (errors)
+> -               printf("test_cgroup_attach:FAIL\n");
+> -       else
+> -               printf("test_cgroup_attach:PASS\n");
+> -
+> -       return errors ? EXIT_FAILURE : EXIT_SUCCESS;
+> -}
+> --
+> 2.17.1
+>
