@@ -2,121 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C863C12701A
-	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2019 22:58:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDD3E127041
+	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2019 23:04:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726998AbfLSV6R (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Dec 2019 16:58:17 -0500
-Received: from www62.your-server.de ([213.133.104.62]:37282 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726866AbfLSV6R (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Dec 2019 16:58:17 -0500
-Received: from 31.249.197.178.dynamic.dsl-lte-bonding.lssmb00p-msn.res.cust.swisscom.ch ([178.197.249.31] helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ii3oD-0007Lh-5b; Thu, 19 Dec 2019 22:58:13 +0100
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     davem@davemloft.net
-Cc:     jakub.kicinski@netronome.com, daniel@iogearbox.net, ast@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: pull-request: bpf 2019-12-19
-Date:   Thu, 19 Dec 2019 22:58:12 +0100
-Message-Id: <20191219215812.20451-1-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
+        id S1727121AbfLSWEH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Dec 2019 17:04:07 -0500
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:41266 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726866AbfLSWEH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 Dec 2019 17:04:07 -0500
+Received: by mail-pf1-f196.google.com with SMTP id w62so4047193pfw.8;
+        Thu, 19 Dec 2019 14:04:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=iKSHvrn/3r8/ReeJhzgkZ/w1RHXoQnMBbiU9xmGogzM=;
+        b=t8R6Dq6vslycH7CC3VcjeWk28+hY/EsPTeudJAJsWxh5exwtPFDpaFw5OjwuXaa04B
+         Yq2FuKA4HGrzfm6MVowzp1h6iV65fAfxysUh/YPd/w2pVe0EMJc3xmDZLWRAh8CagsXb
+         lgK0Hclm279SquBjrW5kL2E30X+Gs0I0f1WSrCDGXpECFwc8fy+fHHQTLsIsQqcOES1O
+         Zh3yNiYOh9Uy4jVv6ZzaWhuou4jRj3qRrev6a/tvnJQDhT/BAYmOApaydUnX/AO+MA4N
+         /qJhpqyQROy94Q2fZyJMOb6ftnOBU5CzYyk0qAleQmJ5Lr4jJkmU8h9r5LSdohXR9D1S
+         5aVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=iKSHvrn/3r8/ReeJhzgkZ/w1RHXoQnMBbiU9xmGogzM=;
+        b=d8ftHccV4q/bqcdyHavF1FTQG80eXe9NbG/l6ZwW1MdmB4XXX7TJFHF0kkma5Wv8Mh
+         lHh+Y1cj/ZSpare+kV4s8n+ydNHXjwyCFj+KV4Vtvv16kkNXiHPvW1Ap+BJA6/SKDfpm
+         363eB1C2/zcWJF9X3F5YsRtg2jvcuX6vQqA7hZsLZypTKTTALgHBAQXlXf3nTDceSdOu
+         Osz45iBz6hZ28M6SvTj6e7/sPkddmANeHkXRr/NrAYC44sOLEADwM8Ll+jSRfurRugjs
+         slWhGqm0yH7tWoKx929uF3w1FJk0ZMh1vXnXF0YZLyA6e+nXz1AqBe3gfczCOOWpyRRS
+         3I+A==
+X-Gm-Message-State: APjAAAXMa3fnRRLKErcKXn5CKv5Dysdn+2V2mf01zFIjR6xXFexaW4aF
+        gNBoGHQbGp689EEqe1zelU2eJ70A
+X-Google-Smtp-Source: APXvYqx6WhMI/pC0qKh3qCXAqIXdHi0Sth1kXisyGajGpzBSrlUZ8nO8k2telIXUkh1l4gbO62y7rQ==
+X-Received: by 2002:a63:3484:: with SMTP id b126mr11052537pga.17.1576793046092;
+        Thu, 19 Dec 2019 14:04:06 -0800 (PST)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:180::b180])
+        by smtp.gmail.com with ESMTPSA id y128sm7957829pfy.146.2019.12.19.14.04.04
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 19 Dec 2019 14:04:04 -0800 (PST)
+Date:   Thu, 19 Dec 2019 14:04:03 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next 1/3] bpftool: add extra CO-RE mode to btf dump
+ command
+Message-ID: <20191219220402.cdmxkkz3nmwmk6rc@ast-mbp.dhcp.thefacebook.com>
+References: <20191219070659.424273-1-andriin@fb.com>
+ <20191219070659.424273-2-andriin@fb.com>
+ <20191219170602.4xkljpjowi4i2e3q@ast-mbp.dhcp.thefacebook.com>
+ <CAEf4BzYKf=+WNZv5HMv=W8robWWTab1L5NURAT=N7LQNW4oeGQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.101.4/25668/Thu Dec 19 10:55:58 2019)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzYKf=+WNZv5HMv=W8robWWTab1L5NURAT=N7LQNW4oeGQ@mail.gmail.com>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi David,
+On Thu, Dec 19, 2019 at 01:07:38PM -0800, Andrii Nakryiko wrote:
+> On Thu, Dec 19, 2019 at 9:06 AM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Wed, Dec 18, 2019 at 11:06:56PM -0800, Andrii Nakryiko wrote:
+> > > +     if (core_mode) {
+> > > +             printf("#if defined(__has_attribute) && __has_attribute(preserve_access_index)\n");
+> > > +             printf("#define __CLANG_BPF_CORE_SUPPORTED\n");
+> > > +             printf("#pragma clang attribute push (__attribute__((preserve_access_index)), apply_to = record)\n");
+> > > +             printf("#endif\n\n");
+> >
+> > I think it's dangerous to automatically opt-out when clang is not new enough.
+> > bpf prog will compile fine, but it will be missing co-re relocations.
+> > How about doing something like:
+> >   printf("#ifdef NEEDS_CO_RE\n");
+> >   printf("#pragma clang attribute push (__attribute__((preserve_access_index)), apply_to = record)\n");
+> >   printf("#endif\n\n");
+> > and emit it always when 'format c'.
+> > Then on the program side it will look:
+> > #define NEEDS_CO_RE
+> > #include "vmlinux.h"
+> > If clang is too old there will be a compile time error which is a good thing.
+> > Future features will have different NEEDS_ macros.
+> 
+> Wouldn't it be cleaner to separate vanilla C types dump vs
+> CO-RE-specific one? I'd prefer to have them separate and not require
+> every application to specify this #define NEEDS_CO_RE macro.
+> Furthermore, later we probably are going to add some additional
+> auto-generated types, definitions, etc, so plain C types dump and
+> CO-RE-specific one will deviate quite a bit. So it feels cleaner to
+> separate them now instead of polluting `format c` with irrelevant
+> noise.
 
-The following pull-request contains BPF updates for your *net* tree.
-
-We've added 10 non-merge commits during the last 8 day(s) which contain
-a total of 21 files changed, 269 insertions(+), 108 deletions(-).
-
-The main changes are:
-
-1) Fix lack of synchronization between xsk wakeup and destroying resources
-   used by xsk wakeup, from Maxim Mikityanskiy.
-
-2) Fix pruning with tail call patching, untrack programs in case of verifier
-   error and fix a cgroup local storage tracking bug, from Daniel Borkmann.
-
-3) Fix clearing skb->tstamp in bpf_redirect() when going from ingress to
-   egress which otherwise cause issues e.g. on fq qdisc, from Lorenz Bauer.
-
-4) Fix compile warning of unused proc_dointvec_minmax_bpf_restricted() when
-   only cBPF is present, from Alexander Lobakin.
-
-Please consider pulling these changes from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
-
-Thanks a lot!
-
-Also thanks to reporters, reviewers and testers of commits in this pull-request:
-
-Eric Dumazet, Yonghong Song
-
-----------------------------------------------------------------
-
-The following changes since commit 0af67e49b018e7280a4227bfe7b6005bc9d3e442:
-
-  qede: Fix multicast mac configuration (2019-12-12 11:08:36 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git 
-
-for you to fetch changes up to 3123d8018d4686cf193806c4e27a9853550ed895:
-
-  bpf: Add further test_verifier cases for record_func_key (2019-12-19 13:39:22 -0800)
-
-----------------------------------------------------------------
-Alexander Lobakin (1):
-      net, sysctl: Fix compiler warning when only cBPF is present
-
-Daniel Borkmann (5):
-      bpf: Fix missing prog untrack in release_maps
-      bpf: Fix cgroup local storage prog tracking
-      Merge branch 'bpf-fix-xsk-wakeup'
-      bpf: Fix record_func_key to perform backtracking on r3
-      bpf: Add further test_verifier cases for record_func_key
-
-Lorenz Bauer (1):
-      bpf: Clear skb->tstamp in bpf_redirect when necessary
-
-Maxim Mikityanskiy (4):
-      xsk: Add rcu_read_lock around the XSK wakeup
-      net/mlx5e: Fix concurrency issues between config flow and XSK
-      net/i40e: Fix concurrency issues between config flow and XSK
-      net/ixgbe: Fix concurrency issues between config flow and XSK
-
- drivers/net/ethernet/intel/i40e/i40e.h             |   2 +-
- drivers/net/ethernet/intel/i40e/i40e_main.c        |  10 +-
- drivers/net/ethernet/intel/i40e/i40e_xsk.c         |   4 +
- drivers/net/ethernet/intel/ixgbe/ixgbe_main.c      |   7 +-
- drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c       |   8 +-
- drivers/net/ethernet/mellanox/mlx5/core/en.h       |   2 +-
- drivers/net/ethernet/mellanox/mlx5/core/en/xdp.h   |  22 ++-
- .../net/ethernet/mellanox/mlx5/core/en/xsk/setup.c |   1 +
- .../net/ethernet/mellanox/mlx5/core/en/xsk/tx.c    |   2 +-
- drivers/net/ethernet/mellanox/mlx5/core/en_main.c  |  19 +--
- include/linux/bpf-cgroup.h                         |   8 +-
- include/linux/bpf.h                                |   2 +
- kernel/bpf/core.c                                  |  17 ++-
- kernel/bpf/local_storage.c                         |  24 ++--
- kernel/bpf/verifier.c                              |  24 ++--
- net/core/filter.c                                  |   1 +
- net/core/sysctl_net_core.c                         |   2 +
- net/xdp/xsk.c                                      |  22 +--
- tools/testing/selftests/bpf/test_verifier.c        |  43 +++---
- .../testing/selftests/bpf/verifier/ref_tracking.c  |   6 +-
- tools/testing/selftests/bpf/verifier/runtime_jit.c | 151 +++++++++++++++++++++
- 21 files changed, 269 insertions(+), 108 deletions(-)
+Say we do this 'format core' today then tomorrow another tweak to vmlinux.h
+would need 'format core2' ? I think adding new format to bpftool for every
+little feature will be annoying to users. I think the output should stay as
+'format c' and that format should be extensible/customizable by bpf progs via
+#define NEEDS_FEATURE_X. Then these features can grow without a need to keep
+adding new cmd line args. This preserve_access_index feature makes up for less
+than 1% difference in generated vmlinux.h. If some feature extension would
+drastically change generated .h then it would justify new 'format'. This one is
+just a small tweak. Also #define NEEDS_CO_RE is probably too broad. I think
+#define CLANG_NEEDS_TO_EMIT_RELO would be more precise and less ambiguous.
