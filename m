@@ -2,101 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D0041270E2
-	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2019 23:48:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B2251270FC
+	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2019 23:56:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726830AbfLSWsT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Dec 2019 17:48:19 -0500
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:44072 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726818AbfLSWsT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Dec 2019 17:48:19 -0500
-Received: by mail-qk1-f196.google.com with SMTP id w127so6030326qkb.11
-        for <bpf@vger.kernel.org>; Thu, 19 Dec 2019 14:48:18 -0800 (PST)
+        id S1727129AbfLSW4Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Dec 2019 17:56:16 -0500
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:42145 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727128AbfLSW4Q (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 Dec 2019 17:56:16 -0500
+Received: by mail-qk1-f194.google.com with SMTP id z14so4816762qkg.9;
+        Thu, 19 Dec 2019 14:56:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/XlMYuAWe99Qbj4KvKqgiv835zxVu0mJXn+Y6HJ71BU=;
-        b=JE+yW+ExTEngLhBL6puf+HVsTn9AI84SbOAs0/I9vQ3GPmCIGr9/khd4TIPG8x6w67
-         jed4DfO71r4T10Fm5h8lSup6pZRhVnllwryOqtbGscjbE/SBZiRo9oE+9YyaWqudeew/
-         qAvcx3MH2P2R8TxAH6qxaLjee4BV8+39waKTb9iimzmdRuqfcmun3GGUvnXZbpGtMUEY
-         /hQZ35RJIljYB5hUErebQVqas0UGQk6FFKJ4JvnT35zhQtMQyzgKpY592TVmL2RDukpq
-         eBu0faPAQVMKMd5YDhCHyyiAAh/2RC/9TYB1CrvsdukcbyP1MZRdv5UZ8CNelBYC/krL
-         iq9A==
+         :cc:content-transfer-encoding;
+        bh=iXkUlTxofge+68S2qKmExLsxr3C16B8BqGTQ8GuFZgI=;
+        b=edzARg7FRmRjK8jc/6g1M52nIVC9TD768eyTajC07EAzIgkfV1q/iUQ8fa7GtXGlZL
+         P24zYCZn34G9CmNdk8speQm70yeD3IuwhBn0JNCSjzYC7wA5jM+z5WaozMdR5Ua9MTbf
+         ZZogQyJrGzWIrdx640+uVIr7nLQTXZsK1fzfYxi0hR5T97BNCdkjlgCnfRaMsPxX2D6n
+         IcbERZ/deM7Cmul5gC9PZo/jAu771Cs63rTdDA8e69K+pKtCcMdI36khweGnsBdYMh3D
+         zO5zDfm22MVQpPAxFfbyV6p8PbPG/S3VCpL21zUwxuYCLh+ZFiQoBn8PLn0/YL49Bxmx
+         898Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/XlMYuAWe99Qbj4KvKqgiv835zxVu0mJXn+Y6HJ71BU=;
-        b=U09OE2Mi4GCTgB+p/RHFuvRWf5IRzlz79cuc9Dk26uSyT1vB6aLPVE0gL6jX3oxvOe
-         zl351iyOwCroDtLLkSf0JnsKW+pzc5vI77oHTDI0m6AOn8JS/JzBxsFFN9kwGrOtrPTq
-         4mugkBoCfvyJxFsASQs0cBJ8EJ5dhOSYjv98FA5oUKaBDK7cvg/nH0Zd1gPF/kWlSQ3R
-         z96sYEyHE3wtbIQWOWibqyaZa6w5LpmSvC9i+Q2/ZkQXRjZHqjQCfm7aNVPjNLS6t1bD
-         dOk1WyWEa4FooqdegTK3aOiCpv1maALNQML5aoey0N2MQLE0i/S16bpa64ktsqwLWKwf
-         zFZA==
-X-Gm-Message-State: APjAAAXDg908s70DUONVzAdHyTYgifUi3achqUF8HHhEgypGTO7MlA1I
-        doXRqHWkX1lW7iO3kkFM6bqDjqUHYIFvT8eEaoU=
-X-Google-Smtp-Source: APXvYqz5LCWIachsgbHWVW3AWmJbTXiEeiDRiHNliJKtPiswEGD8UCebFm4FI60Uy5JiYFTCTih58dmsWLUuy1hnq/k=
-X-Received: by 2002:a05:620a:5ae:: with SMTP id q14mr10889282qkq.437.1576795698269;
- Thu, 19 Dec 2019 14:48:18 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=iXkUlTxofge+68S2qKmExLsxr3C16B8BqGTQ8GuFZgI=;
+        b=cCt37rWtKeIuVWkSxp9fWnO/pMo7byUYzZ0ScbvR1QFcsh6xAXv2JtPmK59OW3tAiD
+         DGoWxyJxRZPFJgiHN+Q9j2HGQZ9DXrfWgKPDE83SlVnXiP67br8UH7AujR2HfvGjA4dN
+         7Mi7Ee0MX7H7rXGyh+gAOE4XOHfN6fFx17PsvOYrNR8NtadiZlJ9FdZOTnDCJQh6t6yw
+         uenrdIkYLPo4+96U+fg+iyWqfWB3oQiRIbAnJoI8IkVqI0HpUoChiD0CKr5vAPF9AZrW
+         Uhuxc7GctQ2ZZsZQ0KG3u0E8eSMfaMp459afNiapB91Km1L28P9ZKLxIkHWmo3uDMxeQ
+         JCuw==
+X-Gm-Message-State: APjAAAWy/qqytUhPj6/OGpCVRYP55GOO44CWSI7t48ayMyO3xU/0i1KL
+        9U8QO0YzeVvjJ5kZlq/CbEEvi9gNvTKB3omYStk=
+X-Google-Smtp-Source: APXvYqxrPUSTJd6lMN61zhFOPOHy5CHGsb5RT8jePCy4kBXJfSO+CQBnlh8pigD+DrdQ7s9O+HBlGhywyqV3eNVhldk=
+X-Received: by 2002:ae9:e809:: with SMTP id a9mr10703636qkg.92.1576796175099;
+ Thu, 19 Dec 2019 14:56:15 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1576741281.git.rdna@fb.com> <7b9b83e8d5fb82e15b034341bd40b6fb2431eeba.1576741281.git.rdna@fb.com>
-In-Reply-To: <7b9b83e8d5fb82e15b034341bd40b6fb2431eeba.1576741281.git.rdna@fb.com>
+References: <20191218105400.2895-1-bjorn.topel@gmail.com> <20191218121132.4023f4f1@carbon>
+ <CAJ+HfNgKsPN7V9r=N=hDoVb23-nk3q=y+Nv4jB3koPw0+4Zw9A@mail.gmail.com>
+ <20191218130346.1a346606@carbon> <CAEf4BzZab=FvCuvKOKsj0M5RRoGuuXW2ME5EoDuqT8sJOd2Xtg@mail.gmail.com>
+ <20191219203329.75d4bead@carbon> <4e5cb0b0-14b9-5de9-4346-e4c2955e99a0@iogearbox.net>
+In-Reply-To: <4e5cb0b0-14b9-5de9-4346-e4c2955e99a0@iogearbox.net>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 19 Dec 2019 14:48:07 -0800
-Message-ID: <CAEf4BzZ_48vOHeq7v1CwZGsCofMiDnq5n=dOzONnDLWicr+0Ug@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 6/6] selftests/bpf: Test BPF_F_REPLACE in cgroup_attach_multi
-To:     Andrey Ignatov <rdna@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>, Andrii Nakryiko <andriin@fb.com>,
-        Kernel Team <kernel-team@fb.com>
+Date:   Thu, 19 Dec 2019 14:56:04 -0800
+Message-ID: <CAEf4Bzb0=Uwf0V1u2k4cvucAnEFxG-g_TYcy6YZHUCACgiNFyg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/8] Simplify xdp_do_redirect_map()/xdp_do_flush_map()
+ and XDP maps
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        Netdev <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Maciej Fijalkowski <maciejromanfijalkowski@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 18, 2019 at 11:45 PM Andrey Ignatov <rdna@fb.com> wrote:
+On Thu, Dec 19, 2019 at 12:08 PM Daniel Borkmann <daniel@iogearbox.net> wro=
+te:
 >
-> Test replacing a cgroup-bpf program attached with BPF_F_ALLOW_MULTI and
-> possible failure modes: invalid combination of flags, invalid
-> replace_bpf_fd, replacing a non-attachd to specified cgroup program.
+> On 12/19/19 8:33 PM, Jesper Dangaard Brouer wrote:
+> > On Wed, 18 Dec 2019 16:39:08 -0800
+> > Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> >
+> >> On Wed, Dec 18, 2019 at 4:04 AM Jesper Dangaard Brouer
+> >> <brouer@redhat.com> wrote:
+> >>>
+> >>> On Wed, 18 Dec 2019 12:39:53 +0100
+> >>> Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> wrote:
+> >>>
+> >>>> On Wed, 18 Dec 2019 at 12:11, Jesper Dangaard Brouer <brouer@redhat.=
+com> wrote:
+> >>>>>
+> >>>>> On Wed, 18 Dec 2019 11:53:52 +0100
+> >>>>> Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> wrote:
+> >>>>>
+> >>>>>>    $ sudo ./xdp_redirect_cpu --dev enp134s0f0 --cpu 22 xdp_cpu_map=
+0
+> >>>>>>
+> >>>>>>    Running XDP/eBPF prog_name:xdp_cpu_map5_lb_hash_ip_pairs
+> >>>>>>    XDP-cpumap      CPU:to  pps            drop-pps    extra-info
+> >>>>>>    XDP-RX          20      7723038        0           0
+> >>>>>>    XDP-RX          total   7723038        0
+> >>>>>>    cpumap_kthread  total   0              0           0
+> >>>>>>    redirect_err    total   0              0
+> >>>>>>    xdp_exception   total   0              0
+> >>>>>
+> >>>>> Hmm... I'm missing some counters on the kthread side.
+> >>>>>
+> >>>>
+> >>>> Oh? Any ideas why? I just ran the upstream sample straight off.
+> >>>
+> >>> Looks like it happened in commit: bbaf6029c49c ("samples/bpf: Convert
+> >>> XDP samples to libbpf usage") (Cc Maciej).
+> >>>
+> >>> The old bpf_load.c will auto attach the tracepoints... for and libbpf
+> >>> you have to be explicit about it.
+> >>
+> >> ... or you can use skeleton, which will auto-attach them as well,
+> >> provided BPF program's section names follow expected naming
+> >> convention. So it might be a good idea to try it out.
+> >
+> > To Andrii, can you provide some more info on how to use this new
+> > skeleton system of yours?  (Pointers to code examples?)
 >
-> Example of program replacing:
+> There's a man page ;-)
 >
->   # gdb -q --args ./test_progs --name=cgroup_attach_multi
->   ...
->   Breakpoint 1, test_cgroup_attach_multi () at cgroup_attach_multi.c:227
->   (gdb)
->   [1]+  Stopped                 gdb -q --args ./test_progs --name=cgroup_attach_multi
->   # bpftool c s /mnt/cgroup2/cgroup-test-work-dir/cg1
->   ID       AttachType      AttachFlags     Name
->   2133     egress          multi
->   2134     egress          multi
->   # fg
->   gdb -q --args ./test_progs --name=cgroup_attach_multi
->   (gdb) c
->   Continuing.
->
->   Breakpoint 2, test_cgroup_attach_multi () at cgroup_attach_multi.c:233
->   (gdb)
->   [1]+  Stopped                 gdb -q --args ./test_progs --name=cgroup_attach_multi
->   # bpftool c s /mnt/cgroup2/cgroup-test-work-dir/cg1
->   ID       AttachType      AttachFlags     Name
->   2139     egress          multi
->   2134     egress          multi
->
-> Signed-off-by: Andrey Ignatov <rdna@fb.com>
-> ---
+> https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/too=
+ls/bpf/bpftool/Documentation/bpftool-gen.rst
 
-LGTM.
-
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-
->  .../bpf/prog_tests/cgroup_attach_multi.c      | 53 +++++++++++++++++--
->  1 file changed, 50 insertions(+), 3 deletions(-)
->
-
-[...]
+Also see runqslower patch set for end-to-end set up. There are a bunch
+of selftests already using skeletons (test_attach_probe,
+test_core_extern, test_skeleton).
