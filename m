@@ -2,91 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A3B9D1258E7
-	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2019 01:54:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DAD3125908
+	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2019 02:03:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726616AbfLSAyk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 18 Dec 2019 19:54:40 -0500
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:45463 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726518AbfLSAyk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 18 Dec 2019 19:54:40 -0500
-Received: by mail-qt1-f196.google.com with SMTP id l12so3542480qtq.12;
-        Wed, 18 Dec 2019 16:54:39 -0800 (PST)
+        id S1726722AbfLSBDq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 18 Dec 2019 20:03:46 -0500
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:33452 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726463AbfLSBDq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 18 Dec 2019 20:03:46 -0500
+Received: by mail-lf1-f68.google.com with SMTP id n25so3088426lfl.0;
+        Wed, 18 Dec 2019 17:03:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=A1Urs4RsdGYBrM/Z6psT6VFuLwM10wg/j95CYysxehQ=;
-        b=QafT74dzFrnd5FdUc7ZzJZlaKDob9h1sLpE+XITJl54ZNHghpJtwWE7dcAkDiPKqhX
-         lbx2ass0Ebil/RJsJijTZP3Js7drMaUnjPbmxgFL73QBDCWFkHtn8OnDLO7T2pW41HaO
-         nPio5pHds+vJOAx6gQvrzuGJzL+qNvKkFbJWykiaU1K1mEuKaGQG3t4zi8vdh6XGuiH8
-         ypLnvN3hshsvmwhleq2fcjUpOqWlbaAbajNsGYxNtjdDW5RmWuUhZYXkTQHWs8eDVOTT
-         MGsQrBruQfvqqAkjtR3vXomeOsANkyO9SBKlLxmJq+BKIo4lj4y7nlZPQGHhrrLkQvtV
-         3yhA==
+        bh=jT5hb5SEsah1czjL3B1Bpd4FwaIjE7wJo9044Z3h+P8=;
+        b=OU8SIxH9wZKD1hrscY0n4kYDWOsir8OgtJnws81il0j/rdyT/I4SCTz/K5PKj8wuNc
+         jcoduHBasRLR2z6X3jMnKpxPsLtAGEgp+xQTjxdbX4buDy3GiICT1T+pj5rBnkvc3fo3
+         LoV4oMuO42Ec7QrC/WfrpI1nOHZlSEkDIOxcHrJoaAZk6PVZ5VrM4lxZxLCdnufBfCBl
+         s6RkQK768PJM07SQYu+zrGUtfRtMUujGM8PxBe7I0nNeqR55iqNkAPJMey8b2Pk0HDI9
+         1L+MK1qJMID5Yzv0B3Uj2vOUmgvzGZOhXXsn7JpWarG/QKwKZ+fzT92AJArWEF4uhhyO
+         Kd5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=A1Urs4RsdGYBrM/Z6psT6VFuLwM10wg/j95CYysxehQ=;
-        b=oZItB2ygC0o5F3mWiVDgyWz6NPeCRL5UaBjJJQ9vuXKBm4qLLtpWFDkiSBuZpy+ls6
-         qGcpg4LsYNzArxP1WZAAI0hxEqcy5Ni8sG/8DVdRM7nax4hqM9A3DxsP1+3CGFNf3IvV
-         9os9N2OSHx0IseynNSnTve2eC9QmN/IPBVJYQ+WjXZ9HtM8ZiK/UpOoPRCLYidmDxeCS
-         i+Dl5VLY1e0C+UNUfTApaUgG0XZrletARbniOUOnDWrlSHu4VD/GXLQFxs/26wgzJdM2
-         KNPeV18mx4mgqyEEAVUNGZxySGvSSUIW/M42xOZhuN6L4MyA8Z6D1kBSUIxhssv7O76+
-         cbUw==
-X-Gm-Message-State: APjAAAWHNDtrueTMU6ZEgEFAq9nRow6hjQaCQ6RxOoEQguewxlVrlX/q
-        RcABIhZfkIbqKgCQgtwKEq/+Ob6sJOo9HIR2Atc=
-X-Google-Smtp-Source: APXvYqxYXKEfiJIR4aztDlh6AyQHzq1Z+GedyfsEKbjzdal3F7FXFiTAT4o0HbCkk48AOkhwhMPm+llnUg8iQhz4gJw=
-X-Received: by 2002:ac8:4050:: with SMTP id j16mr4757783qtl.171.1576716879274;
- Wed, 18 Dec 2019 16:54:39 -0800 (PST)
+        bh=jT5hb5SEsah1czjL3B1Bpd4FwaIjE7wJo9044Z3h+P8=;
+        b=io2XBCe1n2VNkwgrLElSYBCqYgwUv+BIH4mFFnTKRBTjPJuamJm9UtFwaDlQ8Fht2x
+         euPNTULS97nFtkq2Li5VqPrbW34rLGhzX0L6XZt1Qugr2X/Ia+u6UPAERZGPfgskyiVV
+         fl4et5w1i/f2+k3kxlDv/XIwLVK5zKIF7NOf8zuU480WGOySHwq/N3J2jmJo6rR3Ai8l
+         +TvBWxwdDww2dpQAM52x69NFUlMcRStBr5Iix2ET3mmHNZpFkvlb9R5QszZPdPDYSMOC
+         0fbjfnIuOkKRmfGC7ToDf7mSDSMs2xh0DRBqAdcZdXmJGL2SCbJkOF3YlY4kxcOHFy9I
+         W+9g==
+X-Gm-Message-State: APjAAAXSikJt6ltPCI+ytUZPsbFmQIAhZdjb7tV7Xsf2YhBsnyTXZiou
+        IY2YlFDsOFhce+q89fcqytpFZ9S4pQb1Agdg7Fk=
+X-Google-Smtp-Source: APXvYqwJ1bTa+ZCeaCERaDVZW8VjfpuR2336nirPKbPvClRbzSH+QFyWBiMEfqXl9Ahi4Ipokwnl+4OqvxJF80Gzrvo=
+X-Received: by 2002:ac2:52a5:: with SMTP id r5mr3671573lfm.19.1576717423770;
+ Wed, 18 Dec 2019 17:03:43 -0800 (PST)
 MIME-Version: 1.0
-References: <20191211223344.165549-1-brianvv@google.com> <20191211223344.165549-9-brianvv@google.com>
-In-Reply-To: <20191211223344.165549-9-brianvv@google.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 18 Dec 2019 16:54:28 -0800
-Message-ID: <CAEf4BzaeLV8EkGunioqD=sn0Bin4EL0WMzp1T6GjdBajWaFQ+w@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 08/11] libbpf: add libbpf support to batch ops
-To:     Brian Vazquez <brianvv@google.com>
-Cc:     Brian Vazquez <brianvv.kernel@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S . Miller" <davem@davemloft.net>,
-        Yonghong Song <yhs@fb.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Petar Penkov <ppenkov@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+References: <20191218214314.2403729-1-andriin@fb.com> <5fc9f067-019c-8cf0-6f27-fc2afecdd4ea@fb.com>
+In-Reply-To: <5fc9f067-019c-8cf0-6f27-fc2afecdd4ea@fb.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 18 Dec 2019 17:03:21 -0800
+Message-ID: <CAADnVQL0DsDUW2QL0KhqzXDK5nZoqj8Rf=T9za+_53vg69LKOQ@mail.gmail.com>
+Subject: Re: [Potential Spoof] [PATCH bpf-next] bpftool: simplify format
+ string to not use positional args
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "andrii.nakryiko@gmail.com" <andrii.nakryiko@gmail.com>,
+        Kernel Team <Kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 11, 2019 at 2:35 PM Brian Vazquez <brianvv@google.com> wrote:
+On Wed, Dec 18, 2019 at 3:28 PM Yonghong Song <yhs@fb.com> wrote:
 >
-> From: Yonghong Song <yhs@fb.com>
 >
-> Added four libbpf API functions to support map batch operations:
->   . int bpf_map_delete_batch( ... )
->   . int bpf_map_lookup_batch( ... )
->   . int bpf_map_lookup_and_delete_batch( ... )
->   . int bpf_map_update_batch( ... )
 >
-> Signed-off-by: Yonghong Song <yhs@fb.com>
-> ---
+> On 12/18/19 1:43 PM, Andrii Nakryiko wrote:
+> > Change format string referring to just single argument out of two available.
+> > Some versions of libc can reject such format string.
+> >
+> > Reported-by: Nikita Shirokov <tehnerd@tehnerd.com>
+> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+>
+> Acked-by: Yonghong Song <yhs@fb.com>
 
-These libbpf APIs should use _opts approach from the get go to make
-them extensible, but preserving backwards/forward compatibility.
-Please take a look at one of few that are already using them (or
-follow Andrey's bpf_prog_attach work, as he's adding opts-based one at
-the moment).
-
->  tools/lib/bpf/bpf.c      | 61 ++++++++++++++++++++++++++++++++++++++++
->  tools/lib/bpf/bpf.h      | 14 +++++++++
->  tools/lib/bpf/libbpf.map |  4 +++
->  3 files changed, 79 insertions(+)
->
-
-[...]
+Applied. Thanks
