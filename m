@@ -2,33 +2,32 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2519B126655
-	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2019 17:01:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C67D126657
+	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2019 17:02:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726793AbfLSQBk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Dec 2019 11:01:40 -0500
-Received: from www62.your-server.de ([213.133.104.62]:53080 "EHLO
+        id S1726789AbfLSQCI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Dec 2019 11:02:08 -0500
+Received: from www62.your-server.de ([213.133.104.62]:53164 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726778AbfLSQBk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Dec 2019 11:01:40 -0500
+        with ESMTP id S1726778AbfLSQCI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 Dec 2019 11:02:08 -0500
 Received: from [2001:1620:665:0:5795:5b0a:e5d5:5944] (helo=localhost)
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1ihyF8-0001Zw-E2; Thu, 19 Dec 2019 17:01:38 +0100
-Date:   Thu, 19 Dec 2019 17:01:38 +0100
+        id 1ihyFa-0001bO-HL; Thu, 19 Dec 2019 17:02:06 +0100
+Date:   Thu, 19 Dec 2019 17:02:06 +0100
 From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Naresh Kamboju <naresh.kamboju@linaro.org>
-Subject: Re: [PATCH bpf-next v2] libbpf: Fix printing of ulimit value
-Message-ID: <20191219160138.GB8564@linux-9.fritz.box>
-References: <20191219090236.905059-1-toke@redhat.com>
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
+        andrii.nakryiko@gmail.com, kernel-team@fb.com
+Subject: Re: [PATCH bpf-next] libbpf: fix another __u64 printf warning
+Message-ID: <20191219160206.GC8564@linux-9.fritz.box>
+References: <20191219052103.3515-1-andriin@fb.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20191219090236.905059-1-toke@redhat.com>
+In-Reply-To: <20191219052103.3515-1-andriin@fb.com>
 User-Agent: Mutt/1.12.1 (2019-06-15)
 X-Authenticated-Sender: daniel@iogearbox.net
 X-Virus-Scanned: Clear (ClamAV 0.101.4/25668/Thu Dec 19 10:55:58 2019)
@@ -37,13 +36,11 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 19, 2019 at 10:02:36AM +0100, Toke Høiland-Jørgensen wrote:
-> Naresh pointed out that libbpf builds fail on 32-bit architectures because
-> rlimit.rlim_cur is defined as 'unsigned long long' on those architectures.
-> Fix this by using %zu in printf and casting to size_t.
+On Wed, Dec 18, 2019 at 09:21:03PM -0800, Andrii Nakryiko wrote:
+> Fix yet another printf warning for %llu specifier on ppc64le. This time size_t
+> casting won't work, so cast to verbose `unsigned long long`.
 > 
-> Fixes: dc3a2d254782 ("libbpf: Print hint about ulimit when getting permission denied error")
-> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+> Fixes: 166750bc1dd2 ("libbpf: Support libbpf-provided extern variables")
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 
 Applied, thanks!
