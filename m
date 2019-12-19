@@ -2,214 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AD1C125B54
-	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2019 07:11:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DADD8125BA3
+	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2019 07:52:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726300AbfLSGLM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Dec 2019 01:11:12 -0500
-Received: from mail-qv1-f68.google.com ([209.85.219.68]:38070 "EHLO
-        mail-qv1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725821AbfLSGLM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Dec 2019 01:11:12 -0500
-Received: by mail-qv1-f68.google.com with SMTP id t6so1795812qvs.5
-        for <bpf@vger.kernel.org>; Wed, 18 Dec 2019 22:11:11 -0800 (PST)
+        id S1726683AbfLSGwr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Dec 2019 01:52:47 -0500
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:35016 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726681AbfLSGwq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 Dec 2019 01:52:46 -0500
+Received: by mail-ot1-f68.google.com with SMTP id k16so1313721otb.2
+        for <bpf@vger.kernel.org>; Wed, 18 Dec 2019 22:52:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=+Dygq6LvynjqAF9eAg4KaBVu7HLkGvpmSlWiIQGu+BU=;
-        b=WKXh2CJmgmIheOQd1xjPt5CfTce+ZSzdKrPCK3psUwbiiOlge4156XuM1CZZo26hlE
-         kJ4t6SEyoh+jelnxZ0B16K+ejzGFKgNEJki1JTTBhTJOFtgfoPO1/auXOC1IOq3RJGzF
-         OUXys44/WAyb42m6A93itWLrjpBkz0Wus/q3Ko5oTX4pSorE66XYFi5Wk/xHItWUkVOI
-         35lplRHg9Efc1/LxOxEkGV6DWnw2m447OCjv9CMzwc7rtrjqYUELbqfqrb0WdGiTHXD0
-         7Z9YK5evNYHvz5dU7h9Ul7vHlTODpmkWliRlMogbyjXW5S1QyAuYk8EC7yn3xg914btX
-         94nA==
+        bh=dhLbadWhXkT8uLUvoIQHEOPXZo986OHkQZmNW5JELSg=;
+        b=SiBKFSWbGZ/DlTuqAeJWCQJfko4CpkONzPTdXHk5ITfn6wjNPKckEYMfWXVa2KjE/9
+         EnvKM5uCkbPNuMcmnnmOIL13PX8cysvho7VLWXbG/qQdn+K7/fzi8Ww4DNnz531U3iaT
+         ek1DixOnTmNKqPks25kBzv6fRlRYJb99R8rIhogy+n5/aKHmuRVk2bVwwFWgffjz3noA
+         ZerH0bwQzplUBLkBL/JrHxP9P4K0mBWvBTnlliMpof9I4Sttm4IJTOIKoWl16jE3wTmG
+         IAzt5ZvdYfPhwgyAVURwEUcOXBJqNdhdpF54lEQXTrtdeMxzkaBCmBvpJo6eizOwHL7A
+         6gAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=+Dygq6LvynjqAF9eAg4KaBVu7HLkGvpmSlWiIQGu+BU=;
-        b=q88DPN2q1BrSTtKZvTMej4d8cCiVScNkmGj1zs6pXMs7OywXiP2KIAzr/AXeq13ayd
-         ZDigF4/SdYgAdynfRBXxQlxg072fiZTT0XnP6Wdy1MkjrpNk2e+anwq7bE/025yApizL
-         mDEgAd/a/iVeLutI9ULaiCJwNrUbWK7qH0JgZju5X8UpwJpm/el8fpzgIcGI2K4nlX3M
-         ipplTby/8HAopwbNasgFUsFQQ2ZLni69XfCuChmXSE1rML0tQtsVkrYNU3mH7dqI3eyQ
-         M0p66vPDa3chRhp3/cHBvdPQuAgVz8DMdtpyUBHDk8T4KTxXSWdDS1tA/O3gsOeIngzc
-         Z6DQ==
-X-Gm-Message-State: APjAAAW6Ogr3i3xZeKpf3V6HdaoO69mcefaewrLN+fxEXgzS3VqZvdVT
-        xsglUPxnlt3mHCx0u28YGscqVhDdvaiYxBb5vCCoZEMf
-X-Google-Smtp-Source: APXvYqxSVwmEot6ljVjEGe97I+TnKD1q5u7duD4CpdmJLWVOjKdfJ6F8rmE5MitYPPd9ciJg6DtukhKHxfSBa5Zr9cU=
-X-Received: by 2002:a05:6214:38c:: with SMTP id l12mr6139695qvy.224.1576735871319;
- Wed, 18 Dec 2019 22:11:11 -0800 (PST)
+        bh=dhLbadWhXkT8uLUvoIQHEOPXZo986OHkQZmNW5JELSg=;
+        b=cCp+vGJ5M8Daoo5dSO6SApMsGlKyfJaz1PhWQXwP/aywTmBDmjQW/rqRl4N3u8hxFD
+         CbuLp2o/Qf4ZTCT9pjWgRnlE0XdpDMWYzU+AG/VAbUqBI9MJ50asmNZUujugFW0walxr
+         xcRqqyPUlhf9MsqaA+X3pzx4bNfuhC/syaITVeDde54wy8MpHIce3c0HeU1vP1wQSD7u
+         8ZZFPKheHen1bmRXMa/JRWDY+G5abfEVJsmsawYlptUPS4kxau+yd6KhX7MMAU7wiuGp
+         IRcFBMyufxHWAKQkcjsMkkFO7wIKU3++NPm6nDvR/PzYmvYiG8yq2oNaiRrQbt4pXEdG
+         9ouQ==
+X-Gm-Message-State: APjAAAUxLC6/9+H/RMkcmae3Rp6H06m6V93egoTw7i5dHWEF+zwYZUQK
+        wX8d9kDWteKauZIjspg/yk1o+0z1tnOHWe+Kt4/a4Q==
+X-Google-Smtp-Source: APXvYqx2SQBCxtdPGsjOU3QNzNDjKuhpt1dAk9YJbVoUKqLIltD16iivCU1omckA5/EjvPPrP0sP5CVaNkhukyqv6+8=
+X-Received: by 2002:a9d:6f11:: with SMTP id n17mr7085591otq.126.1576738365531;
+ Wed, 18 Dec 2019 22:52:45 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1576720240.git.rdna@fb.com> <a13336d12dff699d2b437ffa024adc1d95c97fcd.1576720240.git.rdna@fb.com>
-In-Reply-To: <a13336d12dff699d2b437ffa024adc1d95c97fcd.1576720240.git.rdna@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 18 Dec 2019 22:11:00 -0800
-Message-ID: <CAEf4Bzb2_UqGJxxXvqqpdymzrE06dhj4-XWg5ndsgDndNw787w@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 5/6] selftests/bpf: Convert test_cgroup_attach
- to prog_tests
-To:     Andrey Ignatov <rdna@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>, Andrii Nakryiko <andriin@fb.com>,
-        Kernel Team <kernel-team@fb.com>
+References: <20191216222537.491123-1-jhubbard@nvidia.com> <20191216222537.491123-5-jhubbard@nvidia.com>
+ <CAPcyv4hQBMxYMurxG=Vwh0=FKWoT3z-Kf=dqES1-icRV5bLwKg@mail.gmail.com> <d0a99e75-0175-0f31-f176-8c37c18a4108@nvidia.com>
+In-Reply-To: <d0a99e75-0175-0f31-f176-8c37c18a4108@nvidia.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Wed, 18 Dec 2019 22:52:34 -0800
+Message-ID: <CAPcyv4j+Zgom17UZ-6Njkij1R0UQ=vUQdnaEZj9qDezEUJSZGg@mail.gmail.com>
+Subject: Re: [PATCH v11 04/25] mm: devmap: refactor 1-based refcounting for
+ ZONE_DEVICE pages
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, bpf@vger.kernel.org,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>, KVM list <kvm@vger.kernel.org>,
+        linux-block@vger.kernel.org,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org,
+        "Linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Netdev <netdev@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 18, 2019 at 6:14 PM Andrey Ignatov <rdna@fb.com> wrote:
+On Wed, Dec 18, 2019 at 9:51 PM John Hubbard <jhubbard@nvidia.com> wrote:
 >
-> Convert test_cgroup_attach to prog_tests.
+> On 12/18/19 9:27 PM, Dan Williams wrote:
+> ...
+> >> @@ -461,5 +449,5 @@ void __put_devmap_managed_page(struct page *page)
+> >>          page->mapping = NULL;
+> >>          page->pgmap->ops->page_free(page);
+> >>   }
+> >> -EXPORT_SYMBOL(__put_devmap_managed_page);
+> >> +EXPORT_SYMBOL(free_devmap_managed_page);
+> >
+> > This patch does not have a module consumer for
+> > free_devmap_managed_page(), so the export should move to the patch
+> > that needs the new export.
 >
-> This change does a lot of things but in many cases it's pretty expensive
-> to separate them, so they go in one commit. Nevertheless the logic is
-> ketp as is and changes made are just moving things around, simplifying
-> them (w/o changing the meaning of the tests) and making prog_tests
-> compatible:
+> Hi Dan,
 >
-> * split the 3 tests in the file into 3 separate files in prog_tests/;
+> OK, I know that's a policy--although it seems quite pointless here given
+> that this is definitely going to need an EXPORT.
 >
-> * rename the test functions to test_<file_base_name>;
+> At the moment, the series doesn't use it in any module at all, so I'll just
+> delete the EXPORT for now.
 >
-> * remove unused includes, constants, variables and functions from every
->   test;
+> >
+> > Also the only reason that put_devmap_managed_page() is EXPORT_SYMBOL
+> > instead of EXPORT_SYMBOL_GPL is that there was no practical way to
+> > hide the devmap details from evey module in the kernel that did
+> > put_page(). I would expect free_devmap_managed_page() to
+> > EXPORT_SYMBOL_GPL if it is not inlined into an existing exported
+> > static inline api.
+> >
 >
-> * replace `if`-s with or `if (CHECK())` where additional context should
->   be logged and with `if (CHECK_FAIL())` where line number is enough;
+> Sure, I'll change it to EXPORT_SYMBOL_GPL when the time comes. We do have
+> to be careful that we don't shut out normal put_page() types of callers,
+> but...glancing through the current callers, that doesn't look to be a problem.
+> Good. So it should be OK to do EXPORT_SYMBOL_GPL here.
 >
-> * switch from `log_err()` to logging via `CHECK()`;
->
-> * replace `assert`-s with `CHECK_FAIL()` to avoid crashing the whole
->   test_progs if one assertion fails;
->
-> * replace cgroup_helpers with test__join_cgroup() in
->   cgroup_attach_override only, other tests need more fine-grained
->   control for cgroup creation/deletion so cgroup_helpers are still used
->   there;
->
-> * simplify cgroup_attach_autodetach by switching to easiest possible
->   program since this test doesn't really need such a complicated program
->   as cgroup_attach_multi does;
->
-> * remove test_cgroup_attach.c itself.
->
-> Signed-off-by: Andrey Ignatov <rdna@fb.com>
-> ---
->  tools/testing/selftests/bpf/.gitignore        |   1 -
->  tools/testing/selftests/bpf/Makefile          |   3 +-
->  .../bpf/prog_tests/cgroup_attach_autodetach.c | 111 ++++
->  .../bpf/prog_tests/cgroup_attach_multi.c      | 238 ++++++++
->  .../bpf/prog_tests/cgroup_attach_override.c   | 148 +++++
->  .../selftests/bpf/test_cgroup_attach.c        | 571 ------------------
->  6 files changed, 498 insertions(+), 574 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_attach_autodetach.c
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_attach_multi.c
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_attach_override.c
->  delete mode 100644 tools/testing/selftests/bpf/test_cgroup_attach.c
->
+> Are you *sure* you don't want to just pre-emptively EXPORT now, and save
+> looking at it again?
 
-[...]
-
-> +
-> +       if (CHECK_FAIL(setup_cgroup_environment()))
-> +               goto err;
-> +
-> +       cg1 = create_and_get_cgroup("/cg1");
-> +       if (CHECK_FAIL(cg1 < 0))
-> +               goto err;
-> +       cg2 = create_and_get_cgroup("/cg1/cg2");
-> +       if (CHECK_FAIL(cg2 < 0))
-> +               goto err;
-> +       cg3 = create_and_get_cgroup("/cg1/cg2/cg3");
-> +       if (CHECK_FAIL(cg3 < 0))
-> +               goto err;
-> +       cg4 = create_and_get_cgroup("/cg1/cg2/cg3/cg4");
-> +       if (CHECK_FAIL(cg4 < 0))
-> +               goto err;
-> +       cg5 = create_and_get_cgroup("/cg1/cg2/cg3/cg4/cg5");
-> +       if (CHECK_FAIL(cg5 < 0))
-> +               goto err;
-> +
-> +       if (CHECK_FAIL(join_cgroup("/cg1/cg2/cg3/cg4/cg5")))
-> +               goto err;
-> +
-> +       if (CHECK(bpf_prog_attach(allow_prog[0], cg1, BPF_CGROUP_INET_EGRESS,
-> +                                 BPF_F_ALLOW_MULTI),
-> +                 "prog0_attach_to_cg1_multi", "errno=%d\n", errno))
-> +               goto err;
-> +
-> +       if (CHECK(!bpf_prog_attach(allow_prog[0], cg1, BPF_CGROUP_INET_EGRESS,
-> +                                  BPF_F_ALLOW_MULTI),
-> +                 "fail_same_prog_attach_to_cg1", "unexpected success\n"))
-> +               goto err;
-> +
-> +       if (CHECK(bpf_prog_attach(allow_prog[1], cg1, BPF_CGROUP_INET_EGRESS,
-> +                                 BPF_F_ALLOW_MULTI),
-> +                 "prog1_attach_to_cg1_multi", "errno=%d\n", errno))
-> +               goto err;
-> +
-> +       if (CHECK(bpf_prog_attach(allow_prog[2], cg2, BPF_CGROUP_INET_EGRESS,
-> +                                 BPF_F_ALLOW_OVERRIDE),
-> +                 "prog2_attach_to_cg2_override", "errno=%d\n", errno))
-> +               goto err;
-> +
-> +       if (CHECK(bpf_prog_attach(allow_prog[3], cg3, BPF_CGROUP_INET_EGRESS,
-> +                                 BPF_F_ALLOW_MULTI),
-> +                 "prog3_attach_to_cg3_multi", "errno=%d\n", errno))
-> +               goto err;
-> +
-> +       if (CHECK(bpf_prog_attach(allow_prog[4], cg4, BPF_CGROUP_INET_EGRESS,
-> +                           BPF_F_ALLOW_OVERRIDE),
-> +                 "prog4_attach_to_cg4_override", "errno=%d\n", errno))
-> +               goto err;
-> +
-> +       if (CHECK(bpf_prog_attach(allow_prog[5], cg5, BPF_CGROUP_INET_EGRESS, 0),
-> +                 "prog5_attach_to_cg5_none", "errno=%d\n", errno))
-> +               goto err;
-
-nit: this looks like a good candidate for a loop...
-
-> +
-> +       CHECK_FAIL(system(PING_CMD));
-> +       CHECK_FAIL(bpf_map_lookup_elem(map_fd, &key, &value));
-> +       CHECK_FAIL(value != 1 + 2 + 8 + 32);
-> +
-
-[...]
-
-> -int main(void)
-> -{
-> -       int (*tests[])(void) = {
-> -               test_foo_bar,
-> -               test_multiprog,
-> -               test_autodetach,
-> -       };
-> -       int errors = 0;
-> -       int i;
-> -
-> -       for (i = 0; i < ARRAY_SIZE(tests); i++)
-> -               if (tests[i]())
-> -                       errors++;
-
-Depending on what you think is better structure (I couldn't follow
-through entire test logic...), you could have done this as a single
-test with 3 subtests. Search for test__start_subtest(). If that saves
-you some duplication, I think it's worth converting (which will be
-1-to-1 with original structure).
-
-But either way thanks a lot for doing the convertion, brings as
-another step closer to more uniform and consolidated testing infra.
-
-> -
-> -       if (errors)
-> -               printf("test_cgroup_attach:FAIL\n");
-> -       else
-> -               printf("test_cgroup_attach:PASS\n");
-> -
-> -       return errors ? EXIT_FAILURE : EXIT_SUCCESS;
-> -}
-> --
-> 2.17.1
->
+I'm positive. There is enough history for "trust me the consumer is
+coming" turning out not to be true to justify the hassle in my mind. I
+do trust you, but things happen.
