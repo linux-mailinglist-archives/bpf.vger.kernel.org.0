@@ -2,93 +2,160 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E1BFA1261B6
-	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2019 13:07:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DC2C12624D
+	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2019 13:39:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726754AbfLSMHd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Dec 2019 07:07:33 -0500
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:45195 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726668AbfLSMHc (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 19 Dec 2019 07:07:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1576757252;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Br/cg8Xfu6sMsg27brwJ8qm737WLDYMwR8gi4ySebN4=;
-        b=RUYV27KeTkQZ1KLwMeaX9JdA/vSIBRvggRjS56CzTNnykSxb4yazT/WVMPeqMIMOkgYl7I
-        R8PW1RJqihOJ9lWCoHSu9G6WmcICdszbvdIJw6W8NntOM18TBM3PZYmU55G6jik/59tY1w
-        oBO6De7PkXtbTTDupyZnQtwT9ayLxeU=
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
- [209.85.208.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-192-jN_wo5wvOxKek1etAWogoA-1; Thu, 19 Dec 2019 07:07:27 -0500
-X-MC-Unique: jN_wo5wvOxKek1etAWogoA-1
-Received: by mail-lj1-f198.google.com with SMTP id t11so1837003ljo.13
-        for <bpf@vger.kernel.org>; Thu, 19 Dec 2019 04:07:26 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Br/cg8Xfu6sMsg27brwJ8qm737WLDYMwR8gi4ySebN4=;
-        b=NSvUL3uoSLobnzigKZsGygRLXjBAKuxTK5flF94BQomRntWccWGuxy9wXGggWE9m9f
-         2tIKcHgl3jOfLaXIUV1tr6m6gyeDqbQjL1rdVqtlxXO+q+RFf41ALA0CiXwL9OkhbDuI
-         eolCQeGB/IHxMBgQUiUDTx56P1DO3cwqqB+jsm7TEi4PE/SZooQNi3DU0yeq9TN3Yzob
-         Mrmpg3exqcBxqIeywsJPT4hXK23+B2VFk2F4RiOrpSLlrg9O6zNhXJjlL60Bi/wx7N29
-         kMlmZ53BpwYy4mn78sePjkbtV+ft0PMGR/Ioa6ht7eIhJ+ze76BqBFQQGanGdzIStR5O
-         2nlw==
-X-Gm-Message-State: APjAAAWcefWeobtp8YmGZFUO9glWpgrKEu4HH41Kr9MjjKOrgnaXYiDt
-        8jFjvTJXL0lynNpfOlEWnyZ0vek7G8Ri9wEQvc9j0bagC2Ye7UHBpcpxfkkeIQ069b3cCho/bHD
-        hhlnWV2YUfdaP
-X-Received: by 2002:a2e:3609:: with SMTP id d9mr5632716lja.188.1576757245481;
-        Thu, 19 Dec 2019 04:07:25 -0800 (PST)
-X-Google-Smtp-Source: APXvYqx+DUn8p4tIwpYWIONrSldquMChWpqKujbcbHNpW4ZKGW2L9RPA7P1btsS8OQaY+xN5eRD+fw==
-X-Received: by 2002:a2e:3609:: with SMTP id d9mr5632706lja.188.1576757245329;
-        Thu, 19 Dec 2019 04:07:25 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id y14sm2754049ljk.46.2019.12.19.04.07.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Dec 2019 04:07:24 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 47B5B180969; Thu, 19 Dec 2019 13:07:23 +0100 (CET)
-From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH bpf-next] libbpf: Add missing newline in opts validation macro
-Date:   Thu, 19 Dec 2019 13:07:14 +0100
-Message-Id: <20191219120714.928380-1-toke@redhat.com>
-X-Mailer: git-send-email 2.24.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        id S1726779AbfLSMji (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Dec 2019 07:39:38 -0500
+Received: from mga11.intel.com ([192.55.52.93]:27930 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726695AbfLSMjh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 Dec 2019 07:39:37 -0500
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 19 Dec 2019 04:39:37 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.69,331,1571727600"; 
+   d="scan'208";a="366062462"
+Received: from mkarlsso-mobl.ger.corp.intel.com (HELO localhost.localdomain) ([10.252.49.245])
+  by orsmga004.jf.intel.com with ESMTP; 19 Dec 2019 04:39:33 -0800
+From:   Magnus Karlsson <magnus.karlsson@intel.com>
+To:     magnus.karlsson@intel.com, bjorn.topel@intel.com, ast@kernel.org,
+        daniel@iogearbox.net, netdev@vger.kernel.org,
+        jonathan.lemon@gmail.com
+Cc:     bpf@vger.kernel.org, saeedm@mellanox.com,
+        jeffrey.t.kirsher@intel.com, maciej.fijalkowski@intel.com,
+        maciejromanfijalkowski@gmail.com
+Subject: [PATCH bpf-next v2 00/12] xsk: clean up ring access functions
+Date:   Thu, 19 Dec 2019 13:39:19 +0100
+Message-Id: <1576759171-28550-1-git-send-email-magnus.karlsson@intel.com>
+X-Mailer: git-send-email 2.7.4
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The error log output in the opts validation macro was missing a newline.
+This patch set cleans up the ring access functions of AF_XDP in hope
+that it will now be easier to understand and maintain. I used to get a
+headache every time I looked at this code in order to really understand it,
+but now I do think it is a lot less painful.
 
-Fixes: 2ce8450ef5a3 ("libbpf: add bpf_object__open_{file, mem} w/ extensible opts")
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
----
- tools/lib/bpf/libbpf_internal.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The code has been simplified a lot and as a bonus we get better
+performance in nearly all cases. On my new 2.1 GHz Cascade Lake
+machine with a standard default config plus AF_XDP support and
+CONFIG_PREEMPT on I get the following results in percent performance
+increases with this patch set compared to without it:
 
-diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
-index 7d71621bb7e8..8c3afbd97747 100644
---- a/tools/lib/bpf/libbpf_internal.h
-+++ b/tools/lib/bpf/libbpf_internal.h
-@@ -76,7 +76,7 @@ static inline bool libbpf_validate_opts(const char *opts,
- 
- 		for (i = opts_sz; i < user_sz; i++) {
- 			if (opts[i]) {
--				pr_warn("%s has non-zero extra bytes",
-+				pr_warn("%s has non-zero extra bytes\n",
- 					type_name);
- 				return false;
- 			}
--- 
-2.24.1
+Zero-copy (-N):
+          rxdrop        txpush        l2fwd
+1 core:    -2%            0%            3%
+2 cores:    4%            0%            3%
 
+Zero-copy with poll() (-N -p):
+          rxdrop        txpush        l2fwd
+1 core:     3%            0%            1%
+2 cores:   21%            0%            9%
+
+Skb mode (-S):
+Shows a 0% to 5% performance improvement over the same benchmarks as
+above.
+
+Here 1 core means that we are running the driver processing and the
+application on the same core, while 2 cores means that they execute on
+separate cores. The applications are from the xdpsock sample app.
+
+On my older 2.0 Ghz Broadwell machine that I used for the v1, I get
+the following results:
+
+Zero-copy (-N):
+          rxdrop        txpush        l2fwd
+1 core:     4%            5%            4%
+2 cores:    1%            0%            2%
+
+Zero-copy with poll() (-N -p):
+          rxdrop        txpush        l2fwd
+1 core:     1%            3%            3%
+2 cores:   22%            0%            5%
+
+Skb mode (-S):
+Shows a 0% to 1% performance improvement over the same benchmarks as
+above.
+
+When a results says 21 or 22% better, as in the case of poll mode with
+2 cores and rxdrop, my first reaction is that it must be a
+bug. Everything else shows between 0% and 5% performance
+improvement. What is giving rise to 22%? A quick bisect indicates that
+it is patches 2, 3, 4, 5, and 6 that are giving rise to most of this
+improvement. So not one patch in particular, but something around 4%
+improvement from each one of them. Note that exactly this benchmark
+has previously had an extraordinary slow down compared to when running
+without poll syscalls. For all the other poll tests above, the
+slowdown has always been around 4% for using poll syscalls. But with
+the bad performing test in question, it was above 25%. Interestingly,
+after this clean up, the slow down is 4%, just like all the other poll
+tests. Please take an extra peek at this so I have not messed up
+something.
+
+The 0% for several txpush results are due to the test bottlenecking on
+a non-CPU HW resource. If I eliminated that bottleneck on my system, I
+would expect to see an increase there too.
+
+Changes v1 -> v2:
+* Corrected textual errors in the commit logs (Sergei and Martin)
+* Fixed the functions that detect empty and full rings so that they
+  now operate on the global ring state (Maxim)
+
+This patch has been applied against commit a352a82496d1 ("Merge branch 'libbpf-extern-followups'")
+
+Structure of the patch set:
+
+Patch 1: Eliminate the lazy update threshold used when preallocating
+         entries in the completion ring
+Patch 2: Simplify the detection of empty and full rings
+Patch 3: Consolidate the two local producer pointers into one
+Patch 4: Standardize the naming of the producer ring access functions
+Patch 5: Eliminate the Rx batch size used for the fill ring
+Patch 6: Simplify the functions xskq_nb_avail and xskq_nb_free
+Patch 7: Simplify and standardize the naming of the consumer ring
+         access functions
+Patch 8: Change the names of the validation functions to improve
+         readability and also the return value of these functions
+Patch 9: Change the name of xsk_umem_discard_addr() to
+         xsk_umem_release_addr() to better reflect the new
+         names. Requires a name change in the drivers that support AF_XDP
+         zero-copy.
+Patch 10: Remove unnecessary READ_ONCE of data in the ring
+Patch 11: Add overall function naming comment and reorder the functions
+          for easier reference
+Patch 12: Use the struct_size helper function when allocating rings
+
+Thanks: Magnus
+
+Magnus Karlsson (12):
+  xsk: eliminate the lazy update threshold
+  xsk: simplify detection of empty and full rings
+  xsk: consolidate to one single cached producer pointer
+  xsk: standardize naming of producer ring access functions
+  xsk: eliminate the RX batch size
+  xsk: simplify xskq_nb_avail and xskq_nb_free
+  xsk: simplify the consumer ring access functions
+  xsk: change names of validation functions
+  xsk: ixgbe: i40e: ice: mlx5: xsk_umem_discard_addr to
+    xsk_umem_release_addr
+  xsk: remove unnecessary READ_ONCE of data
+  xsk: add function naming comments and reorder functions
+  xsk: use struct_size() helper
+
+ drivers/net/ethernet/intel/i40e/i40e_xsk.c         |   4 +-
+ drivers/net/ethernet/intel/ice/ice_xsk.c           |   4 +-
+ drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c       |   4 +-
+ .../net/ethernet/mellanox/mlx5/core/en/xsk/rx.c    |   2 +-
+ include/net/xdp_sock.h                             |  14 +-
+ net/xdp/xsk.c                                      |  62 ++--
+ net/xdp/xsk_queue.c                                |  15 +-
+ net/xdp/xsk_queue.h                                | 371 +++++++++++----------
+ 8 files changed, 246 insertions(+), 230 deletions(-)
+
+--
+2.7.4
