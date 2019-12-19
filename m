@@ -2,116 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 80FD7125B37
-	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2019 07:06:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D4ED125B42
+	for <lists+bpf@lfdr.de>; Thu, 19 Dec 2019 07:10:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726617AbfLSGGO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Dec 2019 01:06:14 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:44338 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726300AbfLSGGO (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 19 Dec 2019 01:06:14 -0500
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xBJ64kKa031834
-        for <bpf@vger.kernel.org>; Wed, 18 Dec 2019 22:06:13 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=facebook;
- bh=G9fijYrpM5dBHYhwf6g8YBIrY8qVfJTOmKWSiR08ze0=;
- b=dP8qD9mG23oW8PqfpcH03/n1TPU2lcqxCt22Qujl5lh4PXZdo+LZVmvjn1pQNby6NG2L
- oVJ8hMMJmTbNUZBmUfyoItxX9vmpC5XEm4Y0nMpH/iPjCVkNK1M/v/8cw5EeTiEwoKkx
- hqCx0x+/Fep0aiHr5W8oro/3FR1uDtE6PTQ= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2wye5f5rw2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 18 Dec 2019 22:06:13 -0800
-Received: from intmgw002.41.prn1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 18 Dec 2019 22:06:11 -0800
-Received: by dev082.prn2.facebook.com (Postfix, from userid 572249)
-        id EC8FE3711476; Wed, 18 Dec 2019 17:56:16 -0800 (PST)
-Smtp-Origin-Hostprefix: dev
-From:   Andrey Ignatov <rdna@fb.com>
-Smtp-Origin-Hostname: dev082.prn2.facebook.com
-To:     <bpf@vger.kernel.org>
-CC:     Andrey Ignatov <rdna@fb.com>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <kafai@fb.com>, <andriin@fb.com>,
-        <kernel-team@fb.com>
-Smtp-Origin-Cluster: prn2c23
-Subject: [PATCH v3 bpf-next 0/6] bpf: Support replacing cgroup-bpf program in MULTI mode
-Date:   Wed, 18 Dec 2019 17:55:57 -0800
-Message-ID: <cover.1576720240.git.rdna@fb.com>
-X-Mailer: git-send-email 2.17.1
-X-FB-Internal: Safe
+        id S1726736AbfLSGKW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Dec 2019 01:10:22 -0500
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:44648 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725821AbfLSGKW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 Dec 2019 01:10:22 -0500
+Received: by mail-pg1-f194.google.com with SMTP id x7so2533060pgl.11;
+        Wed, 18 Dec 2019 22:10:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xMF/TojBWQfbm302Q19EAXhnW35epVx/C2QbiWAVRrg=;
+        b=o0VfzyZB2XM7zcVQpekRJ7iX2OsxCDxX5kp8yBCEgrG+HKjNFxYkydoWgfxj8GvPkL
+         erqxOqefTcCgisfku6IVKJpfCEIzaG6gZ1DCi84sOUsrKmSlnzcKa8G5dnTVVBq/LTDA
+         xarxhRAHcqF6iRoN+FVoGX9ATS9V6yBAmXnissEWKPjPuJKvg5L6arFg+WwAG1YFyKes
+         BCmjAGkWwOtCVHCXvV8Bl1T8kydyxjI5yvio7MqVJTGenPQN5XLkCFLyWFR7Zpgpz0nz
+         HyB2buyw/N7UTeg0Qxw/2PzrfWwhtanKveX9TxEIMEaooeKezkzorcfwAlkXFLCKev+5
+         Bu2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xMF/TojBWQfbm302Q19EAXhnW35epVx/C2QbiWAVRrg=;
+        b=gD8A4D+mOnsgg+2E3rqbOu0ZJN6gOwtJPf145LGZ635IXs6jkpagvO/KBwIOo/rWVp
+         89UMP8TROVYGbe6JG9yJ3LnpDEMV8Dp8aIdKXKUVkhQ7V+jqkATwakFypgGHmTKjX6Kz
+         LYVdL8gthFojDhjtbD/H6Pxh9vej3N/dVg5XDcqkp2JT+pnMWmn9kGfXbSiuF123Ge3E
+         UAp4MlkTXkQbSwJ+qNa/8kijV9S4c6LnJcXXkmWrJ285w3nWHsbhh1LB1RvhKWBXCVlX
+         4HOXtwKBoMXqhc2/fLlXdm1WGDJfczoN532JFRFiS64FnDopvdTlLLLBKrao6je6pc1u
+         B1NA==
+X-Gm-Message-State: APjAAAVpXdelXRe2Vj1cMf/BTv9Gtn7IUoF9vqc2EHs4GBXDJLs1wsGH
+        Yb5SkSqY9letViMh+kIdShQ3QSJfIGv2dA==
+X-Google-Smtp-Source: APXvYqwIM8ATVD+44r7227adjeEPmzMhZWSR1FtHFSYBY1i/1z54aTHyMNTsecpOjwHlFcmCjph3Aw==
+X-Received: by 2002:a65:6794:: with SMTP id e20mr7374003pgr.152.1576735821334;
+        Wed, 18 Dec 2019 22:10:21 -0800 (PST)
+Received: from btopel-mobl.ger.intel.com (fmdmzpr04-ext.fm.intel.com. [192.55.55.39])
+        by smtp.gmail.com with ESMTPSA id t23sm6465062pfq.106.2019.12.18.22.10.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Dec 2019 22:10:20 -0800 (PST)
+From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
+To:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net
+Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>,
+        bpf@vger.kernel.org, davem@davemloft.net,
+        jakub.kicinski@netronome.com, hawk@kernel.org,
+        john.fastabend@gmail.com, magnus.karlsson@intel.com,
+        jonathan.lemon@gmail.com
+Subject: [PATCH bpf-next v2 0/8] Simplify xdp_do_redirect_map()/xdp_do_flush_map() and XDP maps
+Date:   Thu, 19 Dec 2019 07:09:58 +0100
+Message-Id: <20191219061006.21980-1-bjorn.topel@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
- definitions=2019-12-18_08:2019-12-17,2019-12-18 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- bulkscore=0 priorityscore=1501 spamscore=0 lowpriorityscore=0
- mlxlogscore=659 suspectscore=13 phishscore=0 adultscore=0 clxscore=1015
- mlxscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1910280000 definitions=main-1912190050
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-v2->v3:
-- rely on DECLARE_LIBBPF_OPTS from libbpf_common.h;
-- separate "required" and "optional" arguments in bpf_prog_attach_xattr;
-- convert test_cgroup_attach to prog_tests;
-- move the new selftest to prog_tests/cgroup_attach_multi.
+This series aims to simplify the XDP maps and
+xdp_do_redirect_map()/xdp_do_flush_map(), and to crank out some more
+performance from XDP_REDIRECT scenarios.
 
-v1->v2:
-- move DECLARE_LIBBPF_OPTS from libbpf.h to bpf.h (patch 4);
-- switch new libbpf API to OPTS framework;
-- switch selftest to libbpf OPTS framework.
+The first part of the series simplifies all XDP_REDIRECT capable maps,
+so that __XXX_flush_map() does not require the map parameter, by
+moving the flush list from the map to global scope.
 
-This patch set adds support for replacing cgroup-bpf programs attached with
-BPF_F_ALLOW_MULTI flag so that any program in a list can be updated to a new
-version without service interruption and order of programs can be preserved.
+This results in that the map_to_flush member can be removed from
+struct bpf_redirect_info, and its corresponding logic.
 
-Please see patch 3 for details on the use-case and API changes.
+Simpler code, and more performance due to that checks/code per-packet
+is moved to flush.
 
-Other patches:
-Patch 1 is preliminary refactoring of __cgroup_bpf_attach to simplify it.
-Patch 2 is minor cleanup of hierarchy_allows_attach.
-Patch 4 extends libbpf API to support new set of attach attributes.
-Patch 5 converts test_cgroup_attach to prog_tests.
-Patch 6 adds selftest coverage for the new API.
+Pre-series performance:
+  $ sudo taskset -c 22 ./xdpsock -i enp134s0f0 -q 20 -n 1 -r -z
+  
+   sock0@enp134s0f0:20 rxdrop xdp-drv 
+                  pps         pkts        1.00       
+  rx              20,797,350  230,942,399
+  tx              0           0          
+  
+  $ sudo ./xdp_redirect_cpu --dev enp134s0f0 --cpu 22 xdp_cpu_map0
+  
+  Running XDP/eBPF prog_name:xdp_cpu_map5_lb_hash_ip_pairs
+  XDP-cpumap      CPU:to  pps            drop-pps    extra-info
+  XDP-RX          20      7723038        0           0
+  XDP-RX          total   7723038        0
+  cpumap_kthread  total   0              0           0
+  redirect_err    total   0              0
+  xdp_exception   total   0              0
 
+Post-series performance:
+  $ sudo taskset -c 22 ./xdpsock -i enp134s0f0 -q 20 -n 1 -r -z
 
-Andrey Ignatov (6):
-  bpf: Simplify __cgroup_bpf_attach
-  bpf: Remove unused new_flags in hierarchy_allows_attach()
-  bpf: Support replacing cgroup-bpf program in MULTI mode
-  libbpf: Introduce bpf_prog_attach_xattr
-  selftests/bpf: Convert test_cgroup_attach to prog_tests
-  selftests/bpf: Test BPF_F_REPLACE in cgroup_attach_multi
+   sock0@enp134s0f0:20 rxdrop xdp-drv 
+                  pps         pkts        1.00       
+  rx              21,524,979  86,835,327 
+  tx              0           0          
+  
+  $ sudo ./xdp_redirect_cpu --dev enp134s0f0 --cpu 22 xdp_cpu_map0
 
- include/linux/bpf-cgroup.h                    |   4 +-
- include/uapi/linux/bpf.h                      |  10 +
- kernel/bpf/cgroup.c                           |  97 +--
- kernel/bpf/syscall.c                          |   4 +-
- kernel/cgroup/cgroup.c                        |   5 +-
- tools/include/uapi/linux/bpf.h                |  10 +
- tools/lib/bpf/bpf.c                           |  16 +-
- tools/lib/bpf/bpf.h                           |  11 +
- tools/lib/bpf/libbpf.map                      |   1 +
- tools/testing/selftests/bpf/.gitignore        |   1 -
- tools/testing/selftests/bpf/Makefile          |   3 +-
- .../bpf/prog_tests/cgroup_attach_autodetach.c | 111 ++++
- .../bpf/prog_tests/cgroup_attach_multi.c      | 285 +++++++++
- .../bpf/prog_tests/cgroup_attach_override.c   | 148 +++++
- .../selftests/bpf/test_cgroup_attach.c        | 571 ------------------
- 15 files changed, 651 insertions(+), 626 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_attach_autodetach.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_attach_multi.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_attach_override.c
- delete mode 100644 tools/testing/selftests/bpf/test_cgroup_attach.c
+  Running XDP/eBPF prog_name:xdp_cpu_map5_lb_hash_ip_pairs
+  XDP-cpumap      CPU:to  pps            drop-pps    extra-info
+  XDP-RX          20      7840124        0           0          
+  XDP-RX          total   7840124        0          
+  cpumap_kthread  total   0              0           0          
+  redirect_err    total   0              0          
+  xdp_exception   total   0              0          
+  
+Results: +3.5% and +1.5% for the ubenchmarks.
+
+v1->v2 [1]:
+  * Removed 'unused-variable' compiler warning (Jakub)
+
+[1] https://lore.kernel.org/bpf/20191218105400.2895-1-bjorn.topel@gmail.com/
+
+Björn Töpel (8):
+  xdp: simplify devmap cleanup
+  xdp: simplify cpumap cleanup
+  xdp: fix graze->grace type-o in cpumap comments
+  xsk: make xskmap flush_list common for all map instances
+  xdp: make devmap flush_list common for all map instances
+  xdp: make cpumap flush_list common for all map instances
+  xdp: remove map_to_flush and map swap detection
+  xdp: simplify __bpf_tx_xdp_map()
+
+ include/linux/bpf.h    |  8 ++---
+ include/linux/filter.h |  1 -
+ include/net/xdp_sock.h | 11 +++---
+ kernel/bpf/cpumap.c    | 76 ++++++++++++++--------------------------
+ kernel/bpf/devmap.c    | 78 ++++++++++--------------------------------
+ kernel/bpf/xskmap.c    | 18 ++--------
+ net/core/filter.c      | 63 ++++++----------------------------
+ net/xdp/xsk.c          | 17 ++++-----
+ 8 files changed, 75 insertions(+), 197 deletions(-)
 
 -- 
-2.17.1
+2.20.1
 
