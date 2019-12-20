@@ -2,113 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A077312843E
-	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2019 23:02:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D50DE128442
+	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2019 23:05:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727517AbfLTWCC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 Dec 2019 17:02:02 -0500
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:45034 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727473AbfLTWCC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 Dec 2019 17:02:02 -0500
-Received: by mail-qt1-f193.google.com with SMTP id t3so9473316qtr.11;
-        Fri, 20 Dec 2019 14:02:02 -0800 (PST)
+        id S1727491AbfLTWFK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 Dec 2019 17:05:10 -0500
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:44777 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727473AbfLTWFK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 20 Dec 2019 17:05:10 -0500
+Received: by mail-pg1-f193.google.com with SMTP id x7so5598233pgl.11;
+        Fri, 20 Dec 2019 14:05:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qbGwMOUgd9d3+9XSi5Vb8fzDSP5GXsC9AtqNSEri7cQ=;
-        b=mjU2e8nFeEpF9D5JbjQG3jnbToqItWMRqbp6FizZr/RR+Al/k0xkpWOpivSbXiwxFG
-         sSvLfB3wVOwBC/tIXJIB49JLPneJk4JtF0d41clIPR/ZoJgRGl6cZrPytcnxBTMbofZt
-         ym8ch/GrMH+HVoaSmduCkfhQwRD5bzb9+u4oKDqBATq6sh4FCJRplu1+u8WmwzmD3hLO
-         bJIVB7sWCUBRJ8uaSU5ZUXIYK+p9ypVIHC0BkkpHhlkJ0uNz+UhT/P2pBrg4QcnjL8eE
-         pRmECjee7EoWRjeQWsAG4IdOgaV1zml91ezdW+fkwfgtTH2XPL5vb/TlmXxVoLWjXHfw
-         ne1w==
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1Eh3tLTfa9xKRZnK5smb8nRu2xTiAGH5NS4uJ3m/L/Y=;
+        b=eU1XaGdlRacM82UubO8a2yDv6v2ZTsRCgUyxOZwtINc5LvKB3kI515/oTc13VZyd/T
+         csCtlwfHSnkGaXw8feY080++xDiQxmNLLh93wM7JsOarna6QBWK58vMrPbMRYFz+hmRy
+         UJBPfrErxdlrk5/llt1MpiOukqK+VFCI54QhPnsbX1xun18Ie+y33DtX+uUsKVUQ7pC9
+         fxyg776u4jW69fXHivM00Z3vX6M9pNG1w6KHE6BuIeGokggmRDJLmhZTsl9hUgkmQ1C/
+         cFV1hNqiH3WDB668tQnrybhyJE8t6NsIXLBDit39x4vReJJ8urPruXqWd5N4KQmnZiBI
+         6I4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qbGwMOUgd9d3+9XSi5Vb8fzDSP5GXsC9AtqNSEri7cQ=;
-        b=TfgVu1n6mrSRqbFbFOOPniYxizlgx5CopNggBwBx4j42djwQ3+sFEUy3oE72s8vyD7
-         w+WPg+nzDKj6EYU3hkZ18bXMzrWP+AFQu01lgBoMNyse/Kgs1Z1sb5FXTtpMAmWDPBFh
-         RhhxYj/aUHk6BhBjZlXjRl+erH7I3txZRM4kHAuhI/bGoB+BQ2ty+kLxnYytzww3oFbh
-         AcH1q9CS3vYS+nFFjfPg+btqg1eINssDSlgUYl6FgA+ehX24xb+s/C4AfBBNw41Uf6+5
-         rmrNuPW1pGoSgRGNWUkM9Tl2NpTqxND8SNYQw8j/m9JK+mRqGlbLlSG2UDooZEWkvspv
-         wMeQ==
-X-Gm-Message-State: APjAAAXuX0Rn5T9TbFBN8naFEr+VoBWQhLAONLWIu68ZdUozMraX1M5B
-        hIodFRuhzzGd6QsQWsW63JOE3J6NiH5riirdb5w=
-X-Google-Smtp-Source: APXvYqxTOj4lrM4oOy2BlmCDw4mQNK7wK64SlnVixE0mdQR/RiA77nZ/xACY35QlcB24aVT/3ti/ugdAHMIMJ2BCSUY=
-X-Received: by 2002:ac8:5457:: with SMTP id d23mr13091366qtq.93.1576879321519;
- Fri, 20 Dec 2019 14:02:01 -0800 (PST)
-MIME-Version: 1.0
-References: <20191220032558.3259098-1-namhyung@kernel.org>
-In-Reply-To: <20191220032558.3259098-1-namhyung@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 20 Dec 2019 14:01:50 -0800
-Message-ID: <CAEf4BzahazYCzutyULrugwjjz-Fxg_rzJ8v+pXUKpsmzpsHfJQ@mail.gmail.com>
-Subject: Re: [PATCH] libbpf: Fix build on read-only filesystems
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1Eh3tLTfa9xKRZnK5smb8nRu2xTiAGH5NS4uJ3m/L/Y=;
+        b=NJhhEaYfnLzT6Qhiv5r8TEL0rR5GadiYDb36AAsfilBIg6UC245AHS5odysZqNV1vI
+         gwGcPaaw1t7h9cRfQh6UxF9odWThsgZNYgl7N39sxtK+ygKOsPutQ8Sl7uc6/HbAbQYe
+         EUmFg6LiBNRZn73Vu+uJ5WKB2xJY/A4cb9gvtrKUhVP3bskHythk07DhdwJ7I6hAczVD
+         BOlOSaMMb8FbAqqfWmVsZ0ONhYNYvLihnKvlSx0cIUAqmULxXW0ylHUoegs1zXrJiTmJ
+         A2y4Vr6fC+SkOxOhjSHvz1Nj3tfzcGdJm5xHbHQycAFAZl27jqe2DhKLEG125brW/wlt
+         AZ6g==
+X-Gm-Message-State: APjAAAWtfzbOU8vrHNmFTtbhKGJkNDK7K0fe6Hig50T3Bwz8UQ2KPAv3
+        pOj5ZUDri2WreA1EOFmuMwBXw1vk
+X-Google-Smtp-Source: APXvYqzX0S6vxuk1wo0C02S1wS6N1KQA6MeU4h/q98iJaEaS+pTfh5hBIILQRONK0eDnHs0hBjOesA==
+X-Received: by 2002:a62:1548:: with SMTP id 69mr19001240pfv.239.1576879509927;
+        Fri, 20 Dec 2019 14:05:09 -0800 (PST)
+Received: from quaco.ghostprotocols.net ([179.97.35.50])
+        by smtp.gmail.com with ESMTPSA id u5sm13410174pfm.115.2019.12.20.14.05.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Dec 2019 14:05:09 -0800 (PST)
+From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id CB7B840CB9; Fri, 20 Dec 2019 19:05:06 -0300 (-03)
+Date:   Fri, 20 Dec 2019 19:05:06 -0300
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
         Jiri Olsa <jolsa@redhat.com>,
         LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH] libbpf: Fix build on read-only filesystems
+Message-ID: <20191220220506.GC9076@kernel.org>
+References: <20191220032558.3259098-1-namhyung@kernel.org>
+ <CAEf4BzaZBSRK2M4LD-c12_2-QLa8+jpPs1E4nA9BNeUDskOMBQ@mail.gmail.com>
+ <20191220204748.GA9076@kernel.org>
+ <CAEf4BzZW+bDxkdmXBJrrCHqBP5UT1NLJJ7mXLNqc6eypRCib6Q@mail.gmail.com>
+ <20191220215328.GB9076@kernel.org>
+ <CAEf4BzZBnY0neQJQ=opaGTO5yMKWhqBB_YRE4QTTBNYBD-RF9g@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzZBnY0neQJQ=opaGTO5yMKWhqBB_YRE4QTTBNYBD-RF9g@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 19, 2019 at 7:26 PM Namhyung Kim <namhyung@kernel.org> wrote:
->
-> I got the following error when I tried to build perf on a read-only
-> filesystem with O=dir option.
->
->   $ cd /some/where/ro/linux/tools/perf
->   $ make O=$HOME/build/perf
->   ...
->     CC       /home/namhyung/build/perf/lib.o
->   /bin/sh: bpf_helper_defs.h: Read-only file system
->   make[3]: *** [Makefile:184: bpf_helper_defs.h] Error 1
->   make[2]: *** [Makefile.perf:778: /home/namhyung/build/perf/libbpf.a] Error 2
->   make[2]: *** Waiting for unfinished jobs....
->     LD       /home/namhyung/build/perf/libperf-in.o
->     AR       /home/namhyung/build/perf/libperf.a
->     PERF_VERSION = 5.4.0
->   make[1]: *** [Makefile.perf:225: sub-make] Error 2
->   make: *** [Makefile:70: all] Error 2
->
-> It was becaused bpf_helper_defs.h was generated in current directory.
-> Move it to OUTPUT directory.
->
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> ---
->  tools/lib/bpf/Makefile | 14 +++++++-------
->  1 file changed, 7 insertions(+), 7 deletions(-)
->
-> diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
-> index 99425d0be6ff..2f42a35f4634 100644
-> --- a/tools/lib/bpf/Makefile
-> +++ b/tools/lib/bpf/Makefile
-> @@ -159,7 +159,7 @@ all: fixdep
->
->  all_cmd: $(CMD_TARGETS) check
->
-> -$(BPF_IN_SHARED): force elfdep bpfdep bpf_helper_defs.h
-> +$(BPF_IN_SHARED): force elfdep bpfdep $(OUTPUT)bpf_helper_defs.h
+Em Fri, Dec 20, 2019 at 02:00:48PM -0800, Andrii Nakryiko escreveu:
+> On Fri, Dec 20, 2019 at 1:53 PM Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com> wrote:
+> > Em Fri, Dec 20, 2019 at 01:45:52PM -0800, Andrii Nakryiko escreveu:
+> > > On Fri, Dec 20, 2019 at 12:47 PM Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com> wrote:
+> > > > Shouldn't this be applied to the current merge window since a behaviour
+> > > > that people relied, i.e. using O= to generate the build in a separate
+> > > > directory, since its not possible to use the source dir tree as it is
+> > > > read-only is now broken, i.e. isn't this a regression?
 
-btw, there is a lot of $(OUTPUT)bpf_helper_defs.h repetition, could
-you please extract it into a variable, similar to BPF_IN_SHARED and
-others? E.g., just BPF_HELPER_DEFS would work. Thanks!
+> > > Sure, it can be applied against bpf as well, but selftests still need
+> > > to be fixed first.
 
->         @(test -f ../../include/uapi/linux/bpf.h -a -f ../../../include/uapi/linux/bpf.h && ( \
->         (diff -B ../../include/uapi/linux/bpf.h ../../../include/uapi/linux/bpf.h >/dev/null) || \
->         echo "Warning: Kernel ABI header at 'tools/include/uapi/linux/bpf.h' differs from latest version at 'include/uapi/linux/bpf.h'" >&2 )) || true
-> @@ -177,12 +177,12 @@ $(BPF_IN_SHARED): force elfdep bpfdep bpf_helper_defs.h
->         echo "Warning: Kernel ABI header at 'tools/include/uapi/linux/if_xdp.h' differs from latest version at 'include/uapi/linux/if_xdp.h'" >&2 )) || true
->         $(Q)$(MAKE) $(build)=libbpf OUTPUT=$(SHARED_OBJDIR) CFLAGS="$(CFLAGS) $(SHLIB_FLAGS)"
+> > I guess this can be done on a separate patch? I.e. if the user doesn't
+> > use selftests the only regression it will see is when trying to build
+> > tools/perf using O=.
 
-[...]
+> > I think two patches is best, better granularity, do you see a strict
+> > need for both to be in the same patch?
+ 
+> Sure, it can be two separate patches, but they should go in together,
+> otherwise selftests will be broken.
+
+Sure, both have to be fixed :-)
+
+- Arnaldo
