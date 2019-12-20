@@ -2,92 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D7AC4127811
-	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2019 10:26:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F4FD127842
+	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2019 10:34:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727193AbfLTJ0b (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 Dec 2019 04:26:31 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:36593 "EHLO
+        id S1727317AbfLTJec (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 Dec 2019 04:34:32 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:38257 "EHLO
         us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727169AbfLTJ0b (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 Dec 2019 04:26:31 -0500
+        with ESMTP id S1727235AbfLTJec (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 20 Dec 2019 04:34:32 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1576833990;
+        s=mimecast20190719; t=1576834471;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=qqR8lwUOuBpvxH2x8/pvM8hypDpbA173h4KwuaI5cck=;
-        b=drnfjb+f7uClnw0hktizhZORoD07ZP0PaXTGXl9faU+ajlbiWLUHum9d6DpD0TTy4FzV+p
-        C9my1Fs7woiqPSyySg6/Km0jJr6wtUZkYnj2abbrgBSt/MAOmMEyFJMVzbLBGD0EdKEBax
-        IzrUC++chiHRdHiVAhiZHS10wEDSSKc=
+        bh=0/UxvPCeTXUKVldWIXLXTiQznfkGrThtTbge0OdQKe4=;
+        b=Wr73SsqLoUnzP0qsA+LNqwxJnV7UETTmNcjUAqU4jlb9W37Lxg5+FoBMBm472gBMnd9uN2
+        VWV55W3nT7fudccG0+budwK+SwkvapTznOG/+y0bhtsntmn+qAyJZ0wPdbxgrqmEWMhbzK
+        gRY3OGLXWMYiwaT3QSTEWxwUamAfBmo=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-110-MQtIfutfNFe_4eI-r0rmsw-1; Fri, 20 Dec 2019 04:26:24 -0500
-X-MC-Unique: MQtIfutfNFe_4eI-r0rmsw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+ us-mta-102--qmUq0DYNauUF-7U1HEAow-1; Fri, 20 Dec 2019 04:34:28 -0500
+X-MC-Unique: -qmUq0DYNauUF-7U1HEAow-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B0A44593C6;
-        Fri, 20 Dec 2019 09:26:22 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E9D3510054E3;
+        Fri, 20 Dec 2019 09:34:26 +0000 (UTC)
 Received: from carbon (ovpn-200-18.brq.redhat.com [10.40.200.18])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B5EC15C1B0;
-        Fri, 20 Dec 2019 09:26:16 +0000 (UTC)
-Date:   Fri, 20 Dec 2019 10:26:15 +0100
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 42B5A67009;
+        Fri, 20 Dec 2019 09:34:21 +0000 (UTC)
+Date:   Fri, 20 Dec 2019 10:34:20 +0100
 From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        Network Development <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>, brouer@redhat.com
-Subject: Re: [PATCH bpf-next v2 0/8] Simplify
- xdp_do_redirect_map()/xdp_do_flush_map() and XDP maps
-Message-ID: <20191220102615.45fe022d@carbon>
-In-Reply-To: <20191220084651.6dacb941@carbon>
-References: <20191219061006.21980-1-bjorn.topel@gmail.com>
-        <CAADnVQL1x8AJmCOjesA_6Z3XprFVEdWgbREfpn3CC-XO8k4PDA@mail.gmail.com>
-        <20191220084651.6dacb941@carbon>
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, brouer@redhat.com,
+        LKML <linux-kernel@vger.kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Dennis Zhou <dennis@kernel.org>
+Subject: Re: Percpu variables, benchmarking, and performance weirdness
+Message-ID: <20191220103420.6f9304ab@carbon>
+In-Reply-To: <CAJ+HfNgNAzvdBw7gBJTCDQsne-HnWm90H50zNvXBSp4izbwFTA@mail.gmail.com>
+References: <CAJ+HfNgNAzvdBw7gBJTCDQsne-HnWm90H50zNvXBSp4izbwFTA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 20 Dec 2019 08:46:51 +0100
-Jesper Dangaard Brouer <brouer@redhat.com> wrote:
+On Fri, 20 Dec 2019 09:25:43 +0100
+Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> wrote:
 
-> On Thu, 19 Dec 2019 21:21:39 -0800
-> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> I've been doing some benchmarking with AF_XDP, and more specific the
+> bpf_xdp_redirect_map() helper and xdp_do_redirect(). One thing that
+> puzzles me is that the percpu-variable accesses stands out.
 >=20
-> > > v1->v2 [1]:
-> > >   * Removed 'unused-variable' compiler warning (Jakub)
-> > >
-> > > [1] https://lore.kernel.org/bpf/20191218105400.2895-1-bjorn.topel@gma=
-il.com/   =20
-> >=20
-> > My understanding that outstanding discussions are not objecting to the
-> > core ideas of the patch set, hence applied. Thanks =20
->=20
-> I had hoped to have time to review it in details today.  But as I don't
-> have any objecting to the core ideas, then I don't mind it getting
-> applied. We can just fix things in followups.
+> I did a horrible hack that just accesses a regular global variable,
+> instead of the percpu struct bpf_redirect_info, and got a performance
+> boost from 22.7 Mpps to 23.8 Mpps with the rxdrop scenario from
+> xdpsock.
 
-I have now went over the entire patchset, and everything look perfect,
-I will go as far as saying it is brilliant.  We previously had the
-issue, that using different redirect maps in a BPF-prog would cause the
-bulking effect to be reduced, as map_to_flush cause previous map to get
-flushed. This is now solved :-)
+Yes, this an 2 ns overhead, which is annoying in XDP context.
+ (1/22.7-1/23.8)*1000 =3D 2 ns
 
-Thanks you Bj=C3=B8rn!
+> Have anyone else seen this?
+
+Yes, I see it all the time...
+
+> So, my question to the uarch/percpu folks out there: Why are percpu
+> accesses (%gs segment register) more expensive than regular global
+> variables in this scenario.
+
+I'm also VERY interested in knowing the answer to above question!?
+(Adding LKML to reach more people)
+
+
+> One way around that is changing BPF_PROG_RUN, and BPF_CALL_x to pass a
+> context (struct bpf_redirect_info) explicitly, and access that instead
+> of doing percpu access. That would be a pretty churny patch, and
+> before doing that it would be nice to understand why percpu stands out
+> performance-wise.
 
 --=20
 Best regards,
