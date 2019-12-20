@@ -2,189 +2,226 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 26A8612854F
-	for <lists+bpf@lfdr.de>; Sat, 21 Dec 2019 00:04:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B9E9128567
+	for <lists+bpf@lfdr.de>; Sat, 21 Dec 2019 00:14:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726389AbfLTXES (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 Dec 2019 18:04:18 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:11076 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726129AbfLTXES (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 20 Dec 2019 18:04:18 -0500
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xBKN4D2O018855
-        for <bpf@vger.kernel.org>; Fri, 20 Dec 2019 15:04:16 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=facebook;
- bh=xlVayruYy6qCIhl6n/6N39OkD1J4j4ihbhzK+dcUxOg=;
- b=PaJNlobiVj1hoh8iFp/hgWWILS25i3vtQt9FFJTYfPnq/tIRd/Npr+Y2tNsY51ZT7XlP
- u/c+ZaZk0IvZwgH6l6mcrEd+sq3Mfn87e2rfbad6a6ILT260FZ51GewADl15tTMa5Qn7
- zp6Ub758p7Du+uRG3C0AvjLjZUeDwWyxSu4= 
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by mx0a-00082601.pphosted.com with ESMTP id 2x0m9yn6ds-5
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 20 Dec 2019 15:04:16 -0800
-Received: from intmgw004.06.prn3.facebook.com (2620:10d:c081:10::13) by
- mail.thefacebook.com (2620:10d:c081:35::128) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
- Fri, 20 Dec 2019 15:03:54 -0800
-Received: by devvm3632.prn2.facebook.com (Postfix, from userid 172007)
-        id 2BE6A29FFDC0A; Fri, 20 Dec 2019 15:03:53 -0800 (PST)
-Smtp-Origin-Hostprefix: devvm
-From:   Hechao Li <hechaol@fb.com>
-Smtp-Origin-Hostname: devvm3632.prn2.facebook.com
-To:     <bpf@vger.kernel.org>
-CC:     <hechaol@fb.com>, <rdna@fb.com>, <daniel@iogearbox.net>,
-        <ast@kernel.org>
-Smtp-Origin-Cluster: prn2c23
-Subject: [PATCH bpf-next] bpf: Print error message for bpftool cgroup show
-Date:   Fri, 20 Dec 2019 15:03:01 -0800
-Message-ID: <20191220230301.888477-1-hechaol@fb.com>
-X-Mailer: git-send-email 2.17.1
-X-FB-Internal: Safe
+        id S1726530AbfLTXOL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 Dec 2019 18:14:11 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:9006 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726470AbfLTXOL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 20 Dec 2019 18:14:11 -0500
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5dfd55980001>; Fri, 20 Dec 2019 15:13:29 -0800
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Fri, 20 Dec 2019 15:14:00 -0800
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Fri, 20 Dec 2019 15:14:00 -0800
+Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 20 Dec
+ 2019 23:13:58 +0000
+Subject: Re: [PATCH v11 00/25] mm/gup: track dma-pinned pages: FOLL_PIN
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jens Axboe <axboe@kernel.dk>, Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, <bpf@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <kvm@vger.kernel.org>,
+        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <linux-media@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <netdev@vger.kernel.org>,
+        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        Maor Gottlieb <maorg@mellanox.com>
+References: <20191216222537.491123-1-jhubbard@nvidia.com>
+ <20191219132607.GA410823@unreal>
+ <a4849322-8e17-119e-a664-80d9f95d850b@nvidia.com>
+ <20191219210743.GN17227@ziepe.ca>
+ <f10b2a18-a109-d87d-f156-2e5941cbf4a0@nvidia.com>
+ <20191220184821.GB10944@unreal>
+From:   John Hubbard <jhubbard@nvidia.com>
+X-Nvconfidentiality: public
+Message-ID: <b70ac328-2dc0-efe3-05c2-3e040b662256@nvidia.com>
+Date:   Fri, 20 Dec 2019 15:13:57 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
- definitions=2019-12-20_07:2019-12-17,2019-12-20 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 phishscore=0
- mlxlogscore=867 clxscore=1011 adultscore=0 impostorscore=0 malwarescore=0
- suspectscore=13 bulkscore=0 spamscore=0 lowpriorityscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1910280000 definitions=main-1912200177
-X-FB-Internal: deliver
+In-Reply-To: <20191220184821.GB10944@unreal>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1576883609; bh=YyPKn1pTUo9maui0Cl8wPUC9pCaG4pozfEeSM/q2Xuw=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=BbpbjMRADbiieG0wZwg7/MNcvb0htkXoIVaUqVfL2cVFSq6P/VSfqRlwCWpnneJfD
+         xftzXoBcLiTWuqMXsQ7t6AWCT71WLO1xkGZrhrOn0tcyM5yAfm54j70C7fBwcgnofn
+         b/9H8aCfEVq0LawCERbdcQV3VCGhVN60vVxhAFwFbbDtIhnnLa+AeJbbNjJrpU3Dje
+         2yRq6wb9M/4s8MWJ9EJb7rqgBCMp3VCFwcIApBLsdFacXnYn6jAEGhJxMH7ZmKJPOr
+         2JhGFatda38gjZx3YL2suxRK7cjyk0lHKZiEYew9WUnhSKJKmAtAm3lHA3ArKec7HY
+         TMeZ1MUC9Bnkw==
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Currently, when bpftool cgroup show <path> has an error, no error
-message is printed. This is confusing because the user may think the
-result is empty.
+On 12/20/19 10:48 AM, Leon Romanovsky wrote:
+...
+>> test_query_qp (tests.test_qp.QPTest) ... ok
+>> test_rdmacm_sync_traffic (tests.test_rdmacm.CMTestCase) ... skipped 'No devices with net interface'
+>>
+>> ======================================================================
+>> FAIL: test_query_port (tests.test_device.DeviceTest)
+>> ----------------------------------------------------------------------
+>> Traceback (most recent call last):
+>>   File "/kernel_work/rdma-core/tests/test_device.py", line 129, in test_query_port
+>>     self.verify_port_attr(port_attr)
+>>   File "/kernel_work/rdma-core/tests/test_device.py", line 113, in verify_port_attr
+>>     assert 'Invalid' not in d.speed_to_str(attr.active_speed)
+>> AssertionError
+> 
+> I'm very curious how did you get this assert "d.speed_to_str" covers all
+> known speeds according to the IBTA.
+> 
 
-Before the change:
+Hi Leon,
 
-$ bpftool cgroup show /sys/fs/cgroup
-ID       AttachType      AttachFlags     Name
-$ echo $?
-255
+Short answer: I can make that one pass, with a small fix the the rdma-core test
+suite:
 
-After the change:
-$ ./bpftool cgroup show /sys/fs/cgroup
-Error: can't query bpf programs attached to /sys/fs/cgroup: Operation
-not permitted
+commit a1b9fb0846e1b2356d7a16f4fbdd1960cf8dcbe5 (HEAD -> fix_speed_to_str)
+Author: John Hubbard <jhubbard@nvidia.com>
+Date:   Fri Dec 20 15:07:47 2019 -0800
 
-Signed-off-by: Hechao Li <hechaol@fb.com>
----
- tools/bpf/bpftool/cgroup.c | 60 ++++++++++++++++++++++++++------------
- 1 file changed, 42 insertions(+), 18 deletions(-)
+    device: fix speed_to_str(), to handle disabled links
+    
+    For disabled links, the raw speed token is 0. However,
+    speed_to_str() doesn't have that in the list. This leads
+    to an assertion when running tests (test_query_port) when
+    one link is down and other link(s) are up.
+    
+    Fix this by returning '(Disabled/down)' for the zero speed
+    case.
 
-diff --git a/tools/bpf/bpftool/cgroup.c b/tools/bpf/bpftool/cgroup.c
-index 1ef45e55039e..74b57e2d7524 100644
---- a/tools/bpf/bpftool/cgroup.c
-+++ b/tools/bpf/bpftool/cgroup.c
-@@ -117,6 +117,28 @@ static int count_attached_bpf_progs(int cgroup_fd, enum bpf_attach_type type)
- 	return prog_cnt;
- }
+diff --git a/pyverbs/device.pyx b/pyverbs/device.pyx
+index 33d133fd..f8b7826b 100755
+--- a/pyverbs/device.pyx
++++ b/pyverbs/device.pyx
+@@ -923,8 +923,8 @@ def width_to_str(width):
  
-+#define QUERY_CGROUP_ERR (-1)
-+#define QUERY_CGROUP_NO_PROG (0)
-+#define QUERY_CGROUP_SUCCESS (1)
-+static int check_query_cgroup_progs(int cgroup_fd)
-+{
-+	enum bpf_attach_type type;
-+	bool no_prog = true;
-+
-+	for (type = 0; type < __MAX_BPF_ATTACH_TYPE; type++) {
-+		int count = count_attached_bpf_progs(cgroup_fd, type);
-+
-+		if (count < 0 && errno != EINVAL)
-+			return QUERY_CGROUP_ERR;
-+
-+		if (count > 0) {
-+			no_prog = false;
-+			break;
-+		}
-+	}
-+
-+	return no_prog ? QUERY_CGROUP_NO_PROG : QUERY_CGROUP_SUCCESS;
-+}
- static int show_attached_bpf_progs(int cgroup_fd, enum bpf_attach_type type,
- 				   int level)
- {
-@@ -162,6 +184,7 @@ static int do_show(int argc, char **argv)
- {
- 	enum bpf_attach_type type;
- 	const char *path;
-+	int query_check;
- 	int cgroup_fd;
- 	int ret = -1;
  
-@@ -192,6 +215,16 @@ static int do_show(int argc, char **argv)
- 		goto exit;
- 	}
- 
-+	query_check = check_query_cgroup_progs(cgroup_fd);
-+	if (query_check == QUERY_CGROUP_ERR) {
-+		p_err("can't query bpf programs attached to %s: %s",
-+		      path, strerror(errno));
-+		goto exit_cgroup;
-+	} else if (query_check == QUERY_CGROUP_NO_PROG) {
-+		ret = 0;
-+		goto exit_cgroup;
-+	}
-+
- 	if (json_output)
- 		jsonw_start_array(json_wtr);
- 	else
-@@ -212,8 +245,8 @@ static int do_show(int argc, char **argv)
- 	if (json_output)
- 		jsonw_end_array(json_wtr);
- 
-+exit_cgroup:
- 	close(cgroup_fd);
--exit:
- 	return ret;
- }
- 
-@@ -228,7 +261,7 @@ static int do_show_tree_fn(const char *fpath, const struct stat *sb,
- 			   int typeflag, struct FTW *ftw)
- {
- 	enum bpf_attach_type type;
--	bool skip = true;
-+	int query_check;
- 	int cgroup_fd;
- 
- 	if (typeflag != FTW_D)
-@@ -240,22 +273,13 @@ static int do_show_tree_fn(const char *fpath, const struct stat *sb,
- 		return SHOW_TREE_FN_ERR;
- 	}
- 
--	for (type = 0; type < __MAX_BPF_ATTACH_TYPE; type++) {
--		int count = count_attached_bpf_progs(cgroup_fd, type);
--
--		if (count < 0 && errno != EINVAL) {
--			p_err("can't query bpf programs attached to %s: %s",
--			      fpath, strerror(errno));
--			close(cgroup_fd);
--			return SHOW_TREE_FN_ERR;
--		}
--		if (count > 0) {
--			skip = false;
--			break;
--		}
--	}
--
--	if (skip) {
-+	query_check = check_query_cgroup_progs(cgroup_fd);
-+	if (query_check == QUERY_CGROUP_ERR) {
-+		p_err("can't query bpf programs attached to %s: %s",
-+		      fpath, strerror(errno));
-+		close(cgroup_fd);
-+		return SHOW_TREE_FN_ERR;
-+	} else if (query_check == QUERY_CGROUP_NO_PROG) {
- 		close(cgroup_fd);
- 		return 0;
- 	}
+ def speed_to_str(speed):
+-    l = {1: '2.5 Gbps', 2: '5.0 Gbps', 4: '5.0 Gbps', 8: '10.0 Gbps',
+-         16: '14.0 Gbps', 32: '25.0 Gbps', 64: '50.0 Gbps'}
++    l = {0: '(Disabled/down)', 1: '2.5 Gbps', 2: '5.0 Gbps', 4: '5.0 Gbps',
++         8: '10.0 Gbps', 16: '14.0 Gbps', 32: '25.0 Gbps', 64: '50.0 Gbps'}
+     try:
+         return '{s} ({n})'.format(s=l[speed], n=speed)
+     except KeyError:
+
+
+Longer answer:
+==============
+
+It looks like this test suite assumes that every link is connected! (Probably
+in most test systems, they are.) But in my setup, the ConnectX cards each have
+two slots, and I only have (and only need) one cable. So one link is up, and
+the other is disabled. 
+
+This leads to the other problem, which is that if a link is disabled, the
+test suite finds a "0" token for attr.active_speed. That token is not in the
+approved list, and so d.speed_to_str() asserts.
+
+With some diagnostics added, I can see it checking each link: one passes, and
+the other asserts:
+
+diff --git a/tests/test_device.py b/tests/test_device.py
+index 524e0e89..7b33d7db 100644
+--- a/tests/test_device.py
++++ b/tests/test_device.py
+@@ -110,6 +110,12 @@ class DeviceTest(unittest.TestCase):
+         assert 'Invalid' not in d.translate_mtu(attr.max_mtu)
+         assert 'Invalid' not in d.translate_mtu(attr.active_mtu)
+         assert 'Invalid' not in d.width_to_str(attr.active_width)
++        print("")
++        print('Diagnostics ===========================================')
++        print('phys_state:    ', d.phys_state_to_str(attr.phys_state))
++        print('active_width): ', d.width_to_str(attr.active_width))
++        print('active_speed:  ',   d.speed_to_str(attr.active_speed))
++        print('END of Diagnostics ====================================')
+         assert 'Invalid' not in d.speed_to_str(attr.active_speed)
+         assert 'Invalid' not in d.translate_link_layer(attr.link_layer)
+         assert attr.max_msg_sz > 0x1000
+
+         assert attr.max_msg_sz > 0x1000
+
+...and the test run from that is:
+
+# ./build/bin/run_tests.py --verbose tests.test_device.DeviceTest
+test_dev_list (tests.test_device.DeviceTest) ... ok
+test_open_dev (tests.test_device.DeviceTest) ... ok
+test_query_device (tests.test_device.DeviceTest) ... ok
+test_query_device_ex (tests.test_device.DeviceTest) ... ok
+test_query_gid (tests.test_device.DeviceTest) ... ok
+test_query_port (tests.test_device.DeviceTest) ... 
+Diagnostics ===========================================
+phys_state:     Link up (5)
+active_width):  4X (2)
+active_speed:   25.0 Gbps (32)
+END of Diagnostics ====================================
+
+Diagnostics ===========================================
+phys_state:     Disabled (3)
+active_width):  4X (2)
+active_speed:   Invalid speed
+END of Diagnostics ====================================
+FAIL
+test_query_port_bad_flow (tests.test_device.DeviceTest) ... ok
+
+======================================================================
+FAIL: test_query_port (tests.test_device.DeviceTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/kernel_work/rdma-core/tests/test_device.py", line 135, in test_query_port
+    self.verify_port_attr(port_attr)
+  File "/kernel_work/rdma-core/tests/test_device.py", line 119, in verify_port_attr
+    assert 'Invalid' not in d.speed_to_str(attr.active_speed)
+AssertionError
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.055s
+
+FAILED (failures=1)
+
+
+
+thanks,
 -- 
-2.17.1
+John Hubbard
+NVIDIA
 
