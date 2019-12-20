@@ -2,77 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A72B12771A
-	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2019 09:25:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 662AA12779A
+	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2019 09:55:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727165AbfLTIZz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 Dec 2019 03:25:55 -0500
-Received: from mail-qt1-f172.google.com ([209.85.160.172]:45778 "EHLO
-        mail-qt1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725941AbfLTIZz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 Dec 2019 03:25:55 -0500
-Received: by mail-qt1-f172.google.com with SMTP id l12so7503506qtq.12
-        for <bpf@vger.kernel.org>; Fri, 20 Dec 2019 00:25:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=1T8HA2aq9BJi1iiA/HgNEuqQ8HFk4ZzhQUPeK2hPtG0=;
-        b=acp1z6EWcwuaewW0yD2922JYyBl8caBQllPlsMHurn21l6w2YGwo8AX4CggYuVfyxI
-         zmDanH9qSnWe4DXzJ56hdLW17sCinureRcZ8bl8ePfKT5tp/fUE8dVxoMoO90eptOdr+
-         p51f96V8ml1dFXNewldjxIPDeL7NM94Y19vf1OH3WEDEmGPQsY+ssKMe9eEUW/3DTXVl
-         mxYLbKGtbYeG0mzUYjvmoW9Ad3VK3Hwd1y/PTGPDKGZKd3/hIziiKTQHO/+auL5RRkA4
-         L26jcJCp542afRsYS9r2KktdyFmuZ6xLj3rC/rF2OyMWFzWGXz2nKWg6BOW9H2V1O/NP
-         cW7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=1T8HA2aq9BJi1iiA/HgNEuqQ8HFk4ZzhQUPeK2hPtG0=;
-        b=MlMaNQ2kfNavNDQ3ZhnC2K589nbvDf7cKr+PG7Z77mWMpuwfZXVJeEF/oehyR1xzof
-         u64x/J1wyslhjcnyYmKQvFvpaC8hMkgCvf5hcnRK1oQQksA6aeCfNQxYhEJg/gSr9bBY
-         JesQP8zBXvK1wBnRvJeezwyVs73S/3SmS0tdpMN6gGKu0++U8vhMMAH6CGH31gHMIUiS
-         8OvJsCJAQbY2EtqqLyz8UOIcbH4Xyp5y/pFSZb2R8pglwMq1gJDlCA1/b5mP9PqiA9nP
-         sOlmY+5sjyeTOKWONOaPRE/w9/9oQvbwnMk+swmx8Toeirw/DdvCyLPsfAqAqzakg+QN
-         vefQ==
-X-Gm-Message-State: APjAAAWUUokNlrZ5F/kBsO8oHXiC6LH/CmYwesPXL444+lx5dq4A6vwt
-        E68HX3pB9Y0c5OhL88u1tcgmEwF9ajJzCIlaodRbQUEbimU=
-X-Google-Smtp-Source: APXvYqxY0Y+o9NH0cqA4V8svWqg9DRsQkD11wMc2NqjZp+rJ//7InfyDxdudr2fers21C6z23ity5zUYmv0EbbOnrU4=
-X-Received: by 2002:ac8:33a5:: with SMTP id c34mr10913547qtb.359.1576830354038;
- Fri, 20 Dec 2019 00:25:54 -0800 (PST)
-MIME-Version: 1.0
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Fri, 20 Dec 2019 09:25:43 +0100
-Message-ID: <CAJ+HfNgNAzvdBw7gBJTCDQsne-HnWm90H50zNvXBSp4izbwFTA@mail.gmail.com>
-Subject: Percpu variables, benchmarking, and performance weirdness
-To:     bpf <bpf@vger.kernel.org>
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S1727239AbfLTIzP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 Dec 2019 03:55:15 -0500
+Received: from mga09.intel.com ([134.134.136.24]:34861 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727209AbfLTIzP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 20 Dec 2019 03:55:15 -0500
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 20 Dec 2019 00:55:14 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.69,335,1571727600"; 
+   d="scan'208";a="218434371"
+Received: from unknown (HELO localhost.localdomain) ([10.190.210.212])
+  by orsmga006.jf.intel.com with ESMTP; 20 Dec 2019 00:55:12 -0800
+Received: from localhost.localdomain (localhost [127.0.0.1])
+        by localhost.localdomain (8.15.2/8.15.2/Debian-10) with ESMTPS id xBK8tYhk005032
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Fri, 20 Dec 2019 14:25:34 +0530
+Received: (from root@localhost)
+        by localhost.localdomain (8.15.2/8.15.2/Submit) id xBK8tWEc005029;
+        Fri, 20 Dec 2019 14:25:32 +0530
+From:   Jay Jayatheerthan <jay.jayatheerthan@intel.com>
+To:     magnus.karlsson@intel.com, bjorn.topel@intel.com, ast@kernel.org,
+        daniel@iogearbox.net, netdev@vger.kernel.org,
+        jonathan.lemon@gmail.com
+Cc:     bpf@vger.kernel.org,
+        Jay Jayatheerthan <jay.jayatheerthan@intel.com>
+Subject: [PATCH bpf-next 0/6] Enhancements to xdpsock application
+Date:   Fri, 20 Dec 2019 14:25:24 +0530
+Message-Id: <20191220085530.4980-1-jay.jayatheerthan@intel.com>
+X-Mailer: git-send-email 2.17.1
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-I've been doing some benchmarking with AF_XDP, and more specific the
-bpf_xdp_redirect_map() helper and xdp_do_redirect(). One thing that
-puzzles me is that the percpu-variable accesses stands out.
+This series of patches enhances xdpsock application with command line
+parameters to set transmit packet size and fill pattern among other options.
+The application has also been enhanced to use Linux Ethernet/IP/UDP header
+structs and calculate IP and UDP checksums.
 
-I did a horrible hack that just accesses a regular global variable,
-instead of the percpu struct bpf_redirect_info, and got a performance
-boost from 22.7 Mpps to 23.8 Mpps with the rxdrop scenario from
-xdpsock.
+I have measured the performance of the xdpsock application before and after
+this patch set and have not been able to detect any difference.
 
-Have anyone else seen this? So, my question to the uarch/percpu folks
-out there: Why are percpu accesses (%gs segment register) more
-expensive than regular global variables in this scenario.
+Packet Size:
+------------
+There is a new option '-s' or '--tx-pkt-size' to specify the transmit packet
+size. It ranges from 47 to 4096 bytes. Default packet size is 64 bytes
+which is same as before.
 
-One way around that is changing BPF_PROG_RUN, and BPF_CALL_x to pass a
-context (struct bpf_redirect_info) explicitly, and access that instead
-of doing percpu access. That would be a pretty churny patch, and
-before doing that it would be nice to understand why percpu stands out
-performance-wise.
+Fill Pattern:
+-------------
+The transmit UDP payload fill pattern is specified using '-P' or
+'--tx-pkt-pattern'option. It is an unsigned 32 bit field and defaulted
+to 0x12345678.
 
+Packet Count:
+-------------
+The number of packets to send is specified using '-C' or '--tx-pkt-count'
+option. If it is not specified, the application sends packets forever.
 
-Cheers,
-Bj=C3=B6rn
+Batch Size:
+-----------
+The batch size for transmit, receive and l2fwd features of the application is
+specified using '-b' or '--batch-size' options. Default value when this option
+is not provided is 64 (same as before).
+
+Duration:
+---------
+The application supports '-d' or '--duration' option to specify number of
+seconds to run. This is used in tx, rx and l2fwd features. If this option is
+not provided, the application runs for ever.
+
+This patchset has been applied against commit 99cacdc6f661f50f
+("Merge branch 'replace-cg_bpf-prog'")
+
+Jay Jayatheerthan (6):
+  samples/bpf: xdpsock: Add duration option to specify how long to run
+  samples/bpf: xdpsock: Use common code to handle signal and main exit
+  samples/bpf: xdpsock: Add option to specify batch size
+  samples/bpf: xdpsock: Add option to specify number of packets to send
+  samples/bpf: xdpsock: Add option to specify tx packet size
+  samples/bpf: xdpsock: Add option to specify transmit fill pattern
+
+ samples/bpf/xdpsock_user.c | 426 +++++++++++++++++++++++++++++++++----
+ 1 file changed, 387 insertions(+), 39 deletions(-)
+
+-- 
+2.17.1
+
