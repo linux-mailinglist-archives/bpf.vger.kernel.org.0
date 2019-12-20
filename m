@@ -2,52 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 30D9A1271CE
-	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2019 00:51:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3B7F1271FC
+	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2019 01:02:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726963AbfLSXvK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Dec 2019 18:51:10 -0500
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:44147 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726952AbfLSXvK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Dec 2019 18:51:10 -0500
-Received: by mail-qk1-f193.google.com with SMTP id w127so6141676qkb.11;
-        Thu, 19 Dec 2019 15:51:09 -0800 (PST)
+        id S1727031AbfLTACk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Dec 2019 19:02:40 -0500
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:40189 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726963AbfLTACj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 19 Dec 2019 19:02:39 -0500
+Received: by mail-qk1-f194.google.com with SMTP id c17so6186716qkg.7;
+        Thu, 19 Dec 2019 16:02:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=XrJ59tiWQE9MErbGB8Avs3Qqob/Udw2Qp1l0w9c5NOs=;
-        b=YqP6JvZXKJNj0g05OnixHUstywAGGOwvGR98BCY5UHBnCqmJ4CZceu7/zl/KL25eTh
-         3QqovONJOLNDdIIVaPAlV0048S67yRssvmNSeCO3lXNu4Cp1oxeaJYtRRV4Sy9tUOLAe
-         vTfVVwaWh+JLV+jQkxP2PyEUKDOR4CosMAzvQ7i9xTB+D9qmElQSzCnNXsIiiM9vfvAv
-         p0ZbWosnPBpVoyad7CFo19JZZUi8/TepA6ULAgrk3m/oSNKwOujsN3NHX+D8BUhcIgJ+
-         7qSLKXagcAWU565X3fCEaAIYDsXOnwB+14Pb4yPHit5VYw3izhenhALuW+UTCUPkb/yF
-         jbkw==
+        bh=DflVdIpQoJVyFG2BYO2Tb9HnXbDJdzN08W+fLPNFXdw=;
+        b=J2K9KKfk7sNRJRboR9FGRYGVRv0Hnm+oqc4ULUvo81K3Zn9eSLsLIxoqt9t4HOkaFE
+         IWRGvvMxGF4w7lB+49j0URKQU41q6Es4aybrNhT8rvTdtO3+ygRgq6KLdLIj4hPf8fuO
+         GHz42/E+o9i+XZ+XuNyEpd1KJDxaRr/eGg7XP2HQNSqi6AO3o21BDZ/I44ostzpiRhBN
+         KEOOqnS+KdWysOYjx8xPR4nWLgedEHw+W5545s+M6GYte9wdr89SXe2kIWnU4yDez/4E
+         OG0W4Xx+btm/IaOSq+hatDt00N359c1ApOy+i3OaZLZ98Pu+HasiqeGDoh4xJ0Pm4kBD
+         /HEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=XrJ59tiWQE9MErbGB8Avs3Qqob/Udw2Qp1l0w9c5NOs=;
-        b=MMdQ3KC15yACuZzb1kQ4VuJYFMS9k9FRUROhLd+WNlSdkMrewGIMxYvYfwQPUOne2r
-         CBozlK+JsvYe2JQw/x2mqyZJUlNW6L+lYc0UrVQo2m097LxOyS3M/rSQ/PZKjtnB4tFU
-         uCHXlmwTCGW0ymxgJE8f6UBXh/UMhNQ/Q/xSrXdKzcKzMCy7ZFaRvNqngLTg8J4HpUi8
-         s2xDcNAKmowF8snOFRv98MsorycJfRuMyPGM7Mtd89YnNkB+/groujlz3ElkKUaJAw4m
-         loV3L8HmGEzRAmX3YUp7kKyuOgCYP5EeHm90tHZDSR8mkKpF2j2dYtCG619OfHV25esN
-         LGKQ==
-X-Gm-Message-State: APjAAAXbYJg+1RBtJh6HZJh85SOt+SvMxFXlPhMlT44OspHtYh87a+b5
-        WTmkzB48NFG7yTw+t3Kqc1+UUrGQifVDPrLiqks=
-X-Google-Smtp-Source: APXvYqx8iRx0fILDilvpUpFh8/wa422wtk6gaAAbGduPeng/XfncldBLa27iM/LSYyRrQol/aJgP9hIicC5//QbkEoY=
-X-Received: by 2002:a37:a685:: with SMTP id p127mr11233546qke.449.1576799468986;
- Thu, 19 Dec 2019 15:51:08 -0800 (PST)
+        bh=DflVdIpQoJVyFG2BYO2Tb9HnXbDJdzN08W+fLPNFXdw=;
+        b=ltlZ1O5ef+ctTvCMSIY3AtZb8NSTnijd7G94plx7B/hQQ4ahzLerVhXpr/W0Zyi6JP
+         KGepp+Henv4bh5RT4lUWaUef9aejA654yoEeowHJGVRR3a1BtLm97eS3gf9D7s+GFy4t
+         HTfmuIbzHqlw/tUGqVvnMr7X0bhOq8SOiPQSTflTbflm+bExnfrsV05DN7SnAgzH8huS
+         I5CKyiOQuieWZoKGxX62T/vOYxAAK/t00w05qQ4YJXx3aOWedcdJt8aBQ9DmF+pM+Kt9
+         6Owo+qoraLkHsZGRgSmuu/LdiN+sN600P532A/PAsotSQN0lUg45coO7mUcMYhz6Fdr5
+         abfw==
+X-Gm-Message-State: APjAAAXXUKQlUs2UI5VyYt8pxq8TQMDnfzYA1X+YYl6ctkLOKfSJTJJu
+        qcmxUmhU9XxZzU/uC0OJCkoG3sJgmLWwc7xc6BQ=
+X-Google-Smtp-Source: APXvYqw9TDa7w6xj+qx/o6YYN4t9kpVyB/JwaShoiKk7HyvfPJQa+5Tszx3kLCLBj49gCNLEzwgaWVI1NA61UOPotN8=
+X-Received: by 2002:ae9:e809:: with SMTP id a9mr10933464qkg.92.1576800158825;
+ Thu, 19 Dec 2019 16:02:38 -0800 (PST)
 MIME-Version: 1.0
-References: <157676577049.957277.3346427306600998172.stgit@toke.dk> <157676577159.957277.7471130922810004500.stgit@toke.dk>
-In-Reply-To: <157676577159.957277.7471130922810004500.stgit@toke.dk>
+References: <157676577049.957277.3346427306600998172.stgit@toke.dk> <157676577267.957277.6240503077867756432.stgit@toke.dk>
+In-Reply-To: <157676577267.957277.6240503077867756432.stgit@toke.dk>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 19 Dec 2019 15:50:57 -0800
-Message-ID: <CAEf4BzYKpstQk8JO_iOws93VpHEEs+J+z+ZO7cKRiKRNvN1zMg@mail.gmail.com>
-Subject: Re: [PATCH RFC bpf-next 1/3] libbpf: Add new bpf_object__load2()
- using new-style opts
+Date:   Thu, 19 Dec 2019 16:02:27 -0800
+Message-ID: <CAEf4BzZYOrXQFtVbqhw7PagzT6VhfM5LRV93cLuzABy8eHWyqw@mail.gmail.com>
+Subject: Re: [PATCH RFC bpf-next 2/3] libbpf: Handle function externs and
+ support static linking
 To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
 Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -68,139 +68,82 @@ at.com> wrote:
 >
 > From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 >
-> Since we introduced DECLARE_LIBBPF_OPTS and related macros for declaring
-> function options, that is now the preferred way to extend APIs. Introduce=
- a
-> variant of the bpf_object__load() function that uses this function, and
-> deprecate the _xattr variant. Since all the good function names were take=
-n,
-> the new function is unimaginatively called bpf_object__load2().
+> This adds support for resolving function externs to libbpf, with a new AP=
+I
+> to resolve external function calls by static linking at load-time. The AP=
+I
+> for this requires the caller to supply the object files containing the
+> target functions, and to specify an explicit mapping between extern
+> function names in the calling program, and function names in the target
+> object file. This is to support the XDP multi-prog case, where the
+> dispatcher program may not necessarily have control over function names i=
+n
+> the target programs, so simple function name resolution can't be used.
+>
+> The target object files must be loaded into the kernel before the calling
+> program, to ensure all relocations are done on the target functions, so w=
+e
+> can just copy over the instructions.
 >
 > Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 > ---
 
-I've been thinking about options for load quite a bit lately, and I'm
-leaning towards an opinion, that bpf_object__load() shouldn't take any
-options, and all the various per-bpf_object options have to be
-specified in bpf_object_open_opts and stored, if necessary for
-load/attach phase. So I'd rather move target_btf_path and log_level to
-open_opts instead.
+A bunch of this code will change after you update to latest Clang with
+proper type info for extern functions. E.g., there shouldn't be any
+size/alignment for BTF_KIND_FUNC_PROTO, it's illegal. But that
+Yonghong already mentioned.
 
-For cases where we need to tune load behavior/options per individual
-BPF program, bpf_object_load_opts don't work either way, and we'll
-have to add some getters/setters for bpf_program objects, anyways. So
-I think it's overall cleaner to specify everything per-bpf_object at
-"creation time" (which is open), and keep load()/attach() option-less.
+As for the overall approach. I think doing static linking outside of
+bpf_object opening/loading is cleaner approach. If we introduce
+bpf_linker concept/object and have someting like
+bpf_linked__new(options) + a sequence of
+bpf_linker__add_object(bpf_object) + final bpf_linker__link(), which
+will produce usable bpf_object, as if bpf_object__open() was just
+called, it will be better and will allow quite a lot of flexibility in
+how we do things, without cluttering bpf_object API itself.
+Additionally, we can even have bpf_linker__write_file() to emit a
+final ELF file with statically linked object, which can then be loaded
+through bpf_object__open_file (we can do the same for in-memory
+buffer, of course). You can imagine LLC some day using libbpf to do
+actual linking of BPF .o files into a final BPF executable/object
+file, just like you expect it to do for non-BPF object files. WDYT?
 
->  tools/lib/bpf/libbpf.c   |   31 ++++++++++++++++++-------------
->  tools/lib/bpf/libbpf.h   |   13 +++++++++++++
->  tools/lib/bpf/libbpf.map |    1 +
->  3 files changed, 32 insertions(+), 13 deletions(-)
+Additionally, and seems you already realized that as well (judging by
+FIXMEs), we'll need to merge those individual objects' BTFs and
+deduplicate them, so that they form coherent set of types. Adjusting
+line info/func info is mandatory as well.
+
+Another thing we should think through is sharing maps. With
+BTF-defined maps, it should be pretty easy to have declaration vs
+definiton of maps. E.g.,
+
+prog_a.c:
+
+struct {
+    __uint(type, BPF_MAP_TYPE_ARRAY);
+    __uint(max_entries, 123);
+    ... and so on, complete definition
+} my_map SEC(".maps");
+
+prog_b.c:
+
+extern struct {
+    ... here we can discuss which pieces are necessary/allowed,
+potentially all (and they all should match, of course) ...
+} my_map SEC(".maps");
+
+prog_b.c won't create a new map, it will just use my_map from prog_a.c.
+
+I might be missing something else as well, but those are the top things, IM=
+O.
+
+I hope this is helpful.
+
+>  tools/lib/bpf/btf.c    |   10 +-
+>  tools/lib/bpf/libbpf.c |  268 +++++++++++++++++++++++++++++++++++++++---=
+------
+>  tools/lib/bpf/libbpf.h |   17 +++
+>  3 files changed, 244 insertions(+), 51 deletions(-)
 >
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index febbaac3daf4..266b725e444b 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -4844,15 +4844,12 @@ static int bpf_object__resolve_externs(struct bpf=
-_object *obj,
->         return 0;
->  }
->
-> -int bpf_object__load_xattr(struct bpf_object_load_attr *attr)
-> +int bpf_object__load2(struct bpf_object *obj,
-> +                     const struct bpf_object_load_opts *opts)
->  {
-> -       struct bpf_object *obj;
->         int err, i;
->
-> -       if (!attr)
-> -               return -EINVAL;
-> -       obj =3D attr->obj;
-> -       if (!obj)
-> +       if (!obj || !OPTS_VALID(opts, bpf_object_load_opts))
->                 return -EINVAL;
->
->         if (obj->loaded) {
-> @@ -4867,8 +4864,10 @@ int bpf_object__load_xattr(struct bpf_object_load_=
-attr *attr)
->         err =3D err ? : bpf_object__sanitize_and_load_btf(obj);
->         err =3D err ? : bpf_object__sanitize_maps(obj);
->         err =3D err ? : bpf_object__create_maps(obj);
-> -       err =3D err ? : bpf_object__relocate(obj, attr->target_btf_path);
-> -       err =3D err ? : bpf_object__load_progs(obj, attr->log_level);
-> +       err =3D err ? : bpf_object__relocate(obj,
-> +                                          OPTS_GET(opts, target_btf_path=
-, NULL));
-> +       err =3D err ? : bpf_object__load_progs(obj,
-> +                                            OPTS_GET(opts, log_level, 0)=
-);
->         if (err)
->                 goto out;
->
-> @@ -4884,13 +4883,19 @@ int bpf_object__load_xattr(struct bpf_object_load=
-_attr *attr)
->         return err;
->  }
->
-> -int bpf_object__load(struct bpf_object *obj)
-> +int bpf_object__load_xattr(struct bpf_object_load_attr *attr)
->  {
-> -       struct bpf_object_load_attr attr =3D {
-> -               .obj =3D obj,
-> -       };
-> +       DECLARE_LIBBPF_OPTS(bpf_object_load_opts, opts,
-> +           .log_level =3D attr->log_level,
-> +           .target_btf_path =3D attr->target_btf_path,
-> +       );
-> +
-> +       return bpf_object__load2(attr->obj, &opts);
-> +}
->
-> -       return bpf_object__load_xattr(&attr);
-> +int bpf_object__load(struct bpf_object *obj)
-> +{
-> +       return bpf_object__load2(obj, NULL);
->  }
->
->  static int make_parent_dir(const char *path)
-> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> index fe592ef48f1b..ce86277d7445 100644
-> --- a/tools/lib/bpf/libbpf.h
-> +++ b/tools/lib/bpf/libbpf.h
-> @@ -132,8 +132,21 @@ struct bpf_object_load_attr {
->         const char *target_btf_path;
->  };
->
-> +struct bpf_object_load_opts {
-> +       /* size of this struct, for forward/backward compatiblity */
-> +       size_t sz;
-> +       /* log level on load */
-> +       int log_level;
-> +       /* BTF path (for CO-RE relocations) */
-> +       const char *target_btf_path;
-> +};
-> +#define bpf_object_load_opts__last_field target_btf_path
-> +
->  /* Load/unload object into/from kernel */
->  LIBBPF_API int bpf_object__load(struct bpf_object *obj);
-> +LIBBPF_API int bpf_object__load2(struct bpf_object *obj,
-> +                                const struct bpf_object_load_opts *opts)=
-;
-> +/* deprecated, use bpf_object__load2() instead */
->  LIBBPF_API int bpf_object__load_xattr(struct bpf_object_load_attr *attr)=
-;
->  LIBBPF_API int bpf_object__unload(struct bpf_object *obj);
->
-> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-> index e3a471f38a71..d6cb860763d1 100644
-> --- a/tools/lib/bpf/libbpf.map
-> +++ b/tools/lib/bpf/libbpf.map
-> @@ -217,6 +217,7 @@ LIBBPF_0.0.7 {
->                 bpf_object__attach_skeleton;
->                 bpf_object__destroy_skeleton;
->                 bpf_object__detach_skeleton;
-> +               bpf_object__load2;
->                 bpf_object__load_skeleton;
->                 bpf_object__open_skeleton;
->                 bpf_program__attach;
->
+
+[...]
