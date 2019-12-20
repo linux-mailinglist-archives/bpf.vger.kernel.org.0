@@ -2,148 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E3B7F1271FC
-	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2019 01:02:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AC6B127203
+	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2019 01:06:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727031AbfLTACk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 19 Dec 2019 19:02:40 -0500
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:40189 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726963AbfLTACj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 19 Dec 2019 19:02:39 -0500
-Received: by mail-qk1-f194.google.com with SMTP id c17so6186716qkg.7;
-        Thu, 19 Dec 2019 16:02:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=DflVdIpQoJVyFG2BYO2Tb9HnXbDJdzN08W+fLPNFXdw=;
-        b=J2K9KKfk7sNRJRboR9FGRYGVRv0Hnm+oqc4ULUvo81K3Zn9eSLsLIxoqt9t4HOkaFE
-         IWRGvvMxGF4w7lB+49j0URKQU41q6Es4aybrNhT8rvTdtO3+ygRgq6KLdLIj4hPf8fuO
-         GHz42/E+o9i+XZ+XuNyEpd1KJDxaRr/eGg7XP2HQNSqi6AO3o21BDZ/I44ostzpiRhBN
-         KEOOqnS+KdWysOYjx8xPR4nWLgedEHw+W5545s+M6GYte9wdr89SXe2kIWnU4yDez/4E
-         OG0W4Xx+btm/IaOSq+hatDt00N359c1ApOy+i3OaZLZ98Pu+HasiqeGDoh4xJ0Pm4kBD
-         /HEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=DflVdIpQoJVyFG2BYO2Tb9HnXbDJdzN08W+fLPNFXdw=;
-        b=ltlZ1O5ef+ctTvCMSIY3AtZb8NSTnijd7G94plx7B/hQQ4ahzLerVhXpr/W0Zyi6JP
-         KGepp+Henv4bh5RT4lUWaUef9aejA654yoEeowHJGVRR3a1BtLm97eS3gf9D7s+GFy4t
-         HTfmuIbzHqlw/tUGqVvnMr7X0bhOq8SOiPQSTflTbflm+bExnfrsV05DN7SnAgzH8huS
-         I5CKyiOQuieWZoKGxX62T/vOYxAAK/t00w05qQ4YJXx3aOWedcdJt8aBQ9DmF+pM+Kt9
-         6Owo+qoraLkHsZGRgSmuu/LdiN+sN600P532A/PAsotSQN0lUg45coO7mUcMYhz6Fdr5
-         abfw==
-X-Gm-Message-State: APjAAAXXUKQlUs2UI5VyYt8pxq8TQMDnfzYA1X+YYl6ctkLOKfSJTJJu
-        qcmxUmhU9XxZzU/uC0OJCkoG3sJgmLWwc7xc6BQ=
-X-Google-Smtp-Source: APXvYqw9TDa7w6xj+qx/o6YYN4t9kpVyB/JwaShoiKk7HyvfPJQa+5Tszx3kLCLBj49gCNLEzwgaWVI1NA61UOPotN8=
-X-Received: by 2002:ae9:e809:: with SMTP id a9mr10933464qkg.92.1576800158825;
- Thu, 19 Dec 2019 16:02:38 -0800 (PST)
+        id S1726963AbfLTAGI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 19 Dec 2019 19:06:08 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:60074 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726952AbfLTAGI (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 19 Dec 2019 19:06:08 -0500
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xBK065Dc027783
+        for <bpf@vger.kernel.org>; Thu, 19 Dec 2019 16:06:06 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=tgxsbb75xYTsX1XasmXEy3vduWeJK7gddMxmt+iVejI=;
+ b=gplEJYxb/Nz5GAmIM44EWc/6v7wjwhtwTQ7zc3ip/TGEEfA7dn3B7/5/qHg3/2pMnyDe
+ upxBpxwy8e+W94bxedijXAoAbF4OAulJmtfB3xXYu5ZCLxHMm6IjF664bZ6zEgt9EFwu
+ IcdBLVmGOPX45emPY5sa41GqfjpCEDO9UB8= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 2wyqmcqvq9-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 19 Dec 2019 16:06:06 -0800
+Received: from intmgw002.06.prn3.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Thu, 19 Dec 2019 16:05:49 -0800
+Received: by dev082.prn2.facebook.com (Postfix, from userid 572249)
+        id 7F5EA3713995; Thu, 19 Dec 2019 16:05:48 -0800 (PST)
+Smtp-Origin-Hostprefix: dev
+From:   Andrey Ignatov <rdna@fb.com>
+Smtp-Origin-Hostname: dev082.prn2.facebook.com
+To:     <bpf@vger.kernel.org>
+CC:     Andrey Ignatov <rdna@fb.com>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <andriin@fb.com>, <kernel-team@fb.com>
+Smtp-Origin-Cluster: prn2c23
+Subject: [PATCH bpf-next] selftests/bpf: Preserve errno in test_progs CHECK macros
+Date:   Thu, 19 Dec 2019 16:05:11 -0800
+Message-ID: <20191220000511.1684853-1-rdna@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-References: <157676577049.957277.3346427306600998172.stgit@toke.dk> <157676577267.957277.6240503077867756432.stgit@toke.dk>
-In-Reply-To: <157676577267.957277.6240503077867756432.stgit@toke.dk>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 19 Dec 2019 16:02:27 -0800
-Message-ID: <CAEf4BzZYOrXQFtVbqhw7PagzT6VhfM5LRV93cLuzABy8eHWyqw@mail.gmail.com>
-Subject: Re: [PATCH RFC bpf-next 2/3] libbpf: Handle function externs and
- support static linking
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
+ definitions=2019-12-19_08:2019-12-17,2019-12-19 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ impostorscore=0 clxscore=1015 malwarescore=0 bulkscore=0
+ priorityscore=1501 mlxlogscore=643 suspectscore=1 phishscore=0 mlxscore=0
+ spamscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-1912190176
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 19, 2019 at 6:29 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
-at.com> wrote:
->
-> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->
-> This adds support for resolving function externs to libbpf, with a new AP=
-I
-> to resolve external function calls by static linking at load-time. The AP=
-I
-> for this requires the caller to supply the object files containing the
-> target functions, and to specify an explicit mapping between extern
-> function names in the calling program, and function names in the target
-> object file. This is to support the XDP multi-prog case, where the
-> dispatcher program may not necessarily have control over function names i=
-n
-> the target programs, so simple function name resolution can't be used.
->
-> The target object files must be loaded into the kernel before the calling
-> program, to ensure all relocations are done on the target functions, so w=
-e
-> can just copy over the instructions.
->
-> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> ---
+It's follow-up for discussion [1]
 
-A bunch of this code will change after you update to latest Clang with
-proper type info for extern functions. E.g., there shouldn't be any
-size/alignment for BTF_KIND_FUNC_PROTO, it's illegal. But that
-Yonghong already mentioned.
+CHECK and CHECK_FAIL macros in test_progs.h can affect errno in some
+circumstances, e.g. if some code accidentally closes stdout. It makes
+checking errno in patterns like this unreliable:
 
-As for the overall approach. I think doing static linking outside of
-bpf_object opening/loading is cleaner approach. If we introduce
-bpf_linker concept/object and have someting like
-bpf_linked__new(options) + a sequence of
-bpf_linker__add_object(bpf_object) + final bpf_linker__link(), which
-will produce usable bpf_object, as if bpf_object__open() was just
-called, it will be better and will allow quite a lot of flexibility in
-how we do things, without cluttering bpf_object API itself.
-Additionally, we can even have bpf_linker__write_file() to emit a
-final ELF file with statically linked object, which can then be loaded
-through bpf_object__open_file (we can do the same for in-memory
-buffer, of course). You can imagine LLC some day using libbpf to do
-actual linking of BPF .o files into a final BPF executable/object
-file, just like you expect it to do for non-BPF object files. WDYT?
+	if (CHECK(!bpf_prog_attach_xattr(...), "tag", "msg"))
+		goto err;
+	CHECK_FAIL(errno != ENOENT);
 
-Additionally, and seems you already realized that as well (judging by
-FIXMEs), we'll need to merge those individual objects' BTFs and
-deduplicate them, so that they form coherent set of types. Adjusting
-line info/func info is mandatory as well.
+, since by CHECK_FAIL time errno could be affected not only by
+bpf_prog_attach_xattr but by CHECK as well.
 
-Another thing we should think through is sharing maps. With
-BTF-defined maps, it should be pretty easy to have declaration vs
-definiton of maps. E.g.,
+Fix it by saving and restoring errno in the macros. There is no "Fixes"
+tag since no problems were discovered yet and it's rather precaution.
 
-prog_a.c:
+test_progs was run with this change and no difference was identified.
 
-struct {
-    __uint(type, BPF_MAP_TYPE_ARRAY);
-    __uint(max_entries, 123);
-    ... and so on, complete definition
-} my_map SEC(".maps");
+[1] https://lore.kernel.org/bpf/20191219210907.GD16266@rdna-mbp.dhcp.thefacebook.com/
 
-prog_b.c:
+Signed-off-by: Andrey Ignatov <rdna@fb.com>
+---
+ tools/testing/selftests/bpf/test_progs.h | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-extern struct {
-    ... here we can discuss which pieces are necessary/allowed,
-potentially all (and they all should match, of course) ...
-} my_map SEC(".maps");
+diff --git a/tools/testing/selftests/bpf/test_progs.h b/tools/testing/selftests/bpf/test_progs.h
+index 8477df835979..de1fdaa4e7b4 100644
+--- a/tools/testing/selftests/bpf/test_progs.h
++++ b/tools/testing/selftests/bpf/test_progs.h
+@@ -100,6 +100,7 @@ extern struct ipv6_packet pkt_v6;
+ 
+ #define _CHECK(condition, tag, duration, format...) ({			\
+ 	int __ret = !!(condition);					\
++	int __save_errno = errno;					\
+ 	if (__ret) {							\
+ 		test__fail();						\
+ 		printf("%s:FAIL:%s ", __func__, tag);			\
+@@ -108,15 +109,18 @@ extern struct ipv6_packet pkt_v6;
+ 		printf("%s:PASS:%s %d nsec\n",				\
+ 		       __func__, tag, duration);			\
+ 	}								\
++	errno = __save_errno;						\
+ 	__ret;								\
+ })
+ 
+ #define CHECK_FAIL(condition) ({					\
+ 	int __ret = !!(condition);					\
++	int __save_errno = errno;					\
+ 	if (__ret) {							\
+ 		test__fail();						\
+ 		printf("%s:FAIL:%d\n", __func__, __LINE__);		\
+ 	}								\
++	errno = __save_errno;						\
+ 	__ret;								\
+ })
+ 
+-- 
+2.17.1
 
-prog_b.c won't create a new map, it will just use my_map from prog_a.c.
-
-I might be missing something else as well, but those are the top things, IM=
-O.
-
-I hope this is helpful.
-
->  tools/lib/bpf/btf.c    |   10 +-
->  tools/lib/bpf/libbpf.c |  268 +++++++++++++++++++++++++++++++++++++++---=
-------
->  tools/lib/bpf/libbpf.h |   17 +++
->  3 files changed, 244 insertions(+), 51 deletions(-)
->
-
-[...]
