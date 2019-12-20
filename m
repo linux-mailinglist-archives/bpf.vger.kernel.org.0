@@ -2,114 +2,160 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 020EE1279A2
-	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2019 11:50:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3554F127BBB
+	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2019 14:34:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727177AbfLTKuX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 Dec 2019 05:50:23 -0500
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:39654 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726210AbfLTKuW (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 20 Dec 2019 05:50:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1576839021;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zMpOOo3iufJ9ca6/YVFrdxmrvBnoxtNnRc6ySdLQkNQ=;
-        b=HkuQSnhAvtOJTCGXuXjDjyLoUOUISo9E/XNngyhp/F0M0+Pjtt/llnK0TGVjamzdTU4eIf
-        nS9oWdoWpfhWvZE+LrS1o/J45+TxqqJwREpk1Ulo7pypzbEc/WSeCtEfMwJQe3czFsUZnE
-        +j5UO3GFrBavYVhMkLGXkUuwYFpwqjE=
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
- [209.85.167.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-51-ayoyuHTFMrSpruGUBhOy0A-1; Fri, 20 Dec 2019 05:50:19 -0500
-X-MC-Unique: ayoyuHTFMrSpruGUBhOy0A-1
-Received: by mail-lf1-f72.google.com with SMTP id h7so1056762lfp.20
-        for <bpf@vger.kernel.org>; Fri, 20 Dec 2019 02:50:19 -0800 (PST)
+        id S1727391AbfLTNe0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 Dec 2019 08:34:26 -0500
+Received: from mail-qv1-f67.google.com ([209.85.219.67]:33530 "EHLO
+        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727362AbfLTNe0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 20 Dec 2019 08:34:26 -0500
+Received: by mail-qv1-f67.google.com with SMTP id z3so3620528qvn.0
+        for <bpf@vger.kernel.org>; Fri, 20 Dec 2019 05:34:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=5r9Zi+Au/gtKbsFaE0fKhn5Z9mh4Uiv+qjM4b27ESt8=;
+        b=gS91bsS4NjRyWzEDV454oc5qOgomjYBCltRmKzH7Nu9vdI8tQd65a6Yp2TVGSlgA1T
+         37v5Lb1zFtvOvSi94i0Yt83/4AqEpVzmzRwSkFPiESUgqKx4PUFqFCjV/s3xXBOVi9U4
+         w+ZUvVeXy6xbZ8B7zSi+DLnr0w1yjX7v6UIJiebq6UOkRZYcGvU4/THsXU/G/ZDo26P9
+         Xc2y8nF265eAeIX5xgl66hBVWEixNbJ1XzQjNRNan6ViT+Wn6RFHm+C8bWOAWNCFyUU3
+         D0D+BCr//3+mjkgiCcFfBfObTFOz8gI7nHowmgBdF1XYr9LIFcBR6SXbWA6e0W7l8hfH
+         tNRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=zMpOOo3iufJ9ca6/YVFrdxmrvBnoxtNnRc6ySdLQkNQ=;
-        b=Bd8lVGNY3zeEPTmpr+c+nIsORGM1HeUEOIuJCn09yuyydhhwdWBm2tFsyHTiJ4zXcY
-         YAJG8W2ZB1gMEUhqOgEWMe04b/pVqJOm81gMgzxTs9l3ksJWfFvl4kh/4E86FynjVBei
-         08fMrnPLgw+8p/po3di6MAiMShLozvsQO6zlMzsIsDP5RkzPxLsIW4INQb1WbQdG6WIE
-         UAXpEG22RNMBiNb6SxDaYEWs7YhqIeV65YZZWn5Rx10XGG75WXC4cq1VXFHPnu3YUD9+
-         wW13sryAtbT1l4QvQCie3xkJcD86ufYFVovRVCVIwz5so+RkIwMyhZs+fTD4fJEA4Q0I
-         dpUQ==
-X-Gm-Message-State: APjAAAWay/M8vsM4jwtGaEIShZEr0aoUJQV+3+3L213drsixhGYgpEEj
-        l+d5RqHCZ94j1UEGXwjILVf9lZbJYL42XYA8DDFikz8DRBWBBsnqu7Nz95usRdoJh6MsHLnhu9S
-        N3Bap9GU3VaIo
-X-Received: by 2002:a2e:721a:: with SMTP id n26mr9399422ljc.128.1576839018156;
-        Fri, 20 Dec 2019 02:50:18 -0800 (PST)
-X-Google-Smtp-Source: APXvYqxWai7mH5bN6DUYqYikkEJa3ngKRJyCOOPV4p4up1n/uVniG9/nnEFiXV1TbCsg5IX8+FwN8w==
-X-Received: by 2002:a2e:721a:: with SMTP id n26mr9399405ljc.128.1576839017992;
-        Fri, 20 Dec 2019 02:50:17 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id x21sm4010516ljd.2.2019.12.20.02.50.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Dec 2019 02:50:17 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 98282180969; Fri, 20 Dec 2019 11:50:16 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH RFC bpf-next 1/3] libbpf: Add new bpf_object__load2() using new-style opts
-In-Reply-To: <CAEf4BzYKpstQk8JO_iOws93VpHEEs+J+z+ZO7cKRiKRNvN1zMg@mail.gmail.com>
-References: <157676577049.957277.3346427306600998172.stgit@toke.dk> <157676577159.957277.7471130922810004500.stgit@toke.dk> <CAEf4BzYKpstQk8JO_iOws93VpHEEs+J+z+ZO7cKRiKRNvN1zMg@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 20 Dec 2019 11:50:16 +0100
-Message-ID: <87eewz2rvb.fsf@toke.dk>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=5r9Zi+Au/gtKbsFaE0fKhn5Z9mh4Uiv+qjM4b27ESt8=;
+        b=Bkr56Wcb7BcYf1d/MzDoSAcySvWeLE22UOIdTB93vwsVLwo2zHynSHnEOKq4pWjapA
+         bSGm3Tn56JUp9bDHzf8ks9T6wvV2GI47dcK4HXZKUgPV0hK1qsPO/y8ZVoAAybbJMkOy
+         gHJavKGabhJcwuFonxgG7C3Ywfu7Hxu7CPqBSNubiXISchfeLy2CuDWUaugUvXAwSVC2
+         c0tSAqFppgFLSaEHovhHySFndKnt41qHWZXonAjUdvvXm56TAHDIxFqTVvFIV3xhqwOq
+         YDvtZxEMPcE6B0qNzrfnc8fY2+0CoZt5XUcRtYt4L4YHQu9KsWriHOamErpEsA52/LnL
+         vF8A==
+X-Gm-Message-State: APjAAAWDYCt+l0nMNOy7+YqctdXcLDqrgX1GNBbTRVBb6aGAN0cekFMQ
+        35IPK6MIKLrNiap7Z+xR0HJAtg==
+X-Google-Smtp-Source: APXvYqz9az5JjtCMEl1OLVSzBMZYIFm7RbLMGJ3PjpAUx1pKMUVrf5ynor78RCoLoFWtbwHwcCO7NQ==
+X-Received: by 2002:a0c:893d:: with SMTP id 58mr4949386qvp.4.1576848864984;
+        Fri, 20 Dec 2019 05:34:24 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id q73sm2786969qka.56.2019.12.20.05.34.23
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 20 Dec 2019 05:34:24 -0800 (PST)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1iiIQB-0003cq-Co; Fri, 20 Dec 2019 09:34:23 -0400
+Date:   Fri, 20 Dec 2019 09:34:23 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jens Axboe <axboe@kernel.dk>, Jonathan Corbet <corbet@lwn.net>,
+        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, bpf@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, kvm@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
+        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
+        Maor Gottlieb <maorg@mellanox.com>
+Subject: Re: [PATCH v11 00/25] mm/gup: track dma-pinned pages: FOLL_PIN
+Message-ID: <20191220133423.GA13506@ziepe.ca>
+References: <20191216222537.491123-1-jhubbard@nvidia.com>
+ <20191219132607.GA410823@unreal>
+ <a4849322-8e17-119e-a664-80d9f95d850b@nvidia.com>
+ <20191219210743.GN17227@ziepe.ca>
+ <42a3e5c1-6301-db0b-5d09-212edf5ecf2a@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <42a3e5c1-6301-db0b-5d09-212edf5ecf2a@nvidia.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+On Thu, Dec 19, 2019 at 01:13:54PM -0800, John Hubbard wrote:
+> On 12/19/19 1:07 PM, Jason Gunthorpe wrote:
+> > On Thu, Dec 19, 2019 at 12:30:31PM -0800, John Hubbard wrote:
+> > > On 12/19/19 5:26 AM, Leon Romanovsky wrote:
+> > > > On Mon, Dec 16, 2019 at 02:25:12PM -0800, John Hubbard wrote:
+> > > > > Hi,
+> > > > > 
+> > > > > This implements an API naming change (put_user_page*() -->
+> > > > > unpin_user_page*()), and also implements tracking of FOLL_PIN pages. It
+> > > > > extends that tracking to a few select subsystems. More subsystems will
+> > > > > be added in follow up work.
+> > > > 
+> > > > Hi John,
+> > > > 
+> > > > The patchset generates kernel panics in our IB testing. In our tests, we
+> > > > allocated single memory block and registered multiple MRs using the single
+> > > > block.
+> > > > 
+> > > > The possible bad flow is:
+> > > >    ib_umem_geti() ->
+> > > >     pin_user_pages_fast(FOLL_WRITE) ->
+> > > >      internal_get_user_pages_fast(FOLL_WRITE) ->
+> > > >       gup_pgd_range() ->
+> > > >        gup_huge_pd() ->
+> > > >         gup_hugepte() ->
+> > > >          try_grab_compound_head() ->
+> > > 
+> > > Hi Leon,
+> > > 
+> > > Thanks very much for the detailed report! So we're overflowing...
+> > > 
+> > > At first look, this seems likely to be hitting a weak point in the
+> > > GUP_PIN_COUNTING_BIAS-based design, one that I believed could be deferred
+> > > (there's a writeup in Documentation/core-api/pin_user_page.rst, lines
+> > > 99-121). Basically it's pretty easy to overflow the page->_refcount
+> > > with huge pages if the pages have a *lot* of subpages.
+> > > 
+> > > We can only do about 7 pins on 1GB huge pages that use 4KB subpages.
+> > 
+> > Considering that establishing these pins is entirely under user
+> > control, we can't have a limit here.
+> 
+> There's already a limit, it's just a much larger one. :) What does "no limit"
+> really mean, numerically, to you in this case?
 
-> On Thu, Dec 19, 2019 at 6:29 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
-dhat.com> wrote:
->>
->> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->>
->> Since we introduced DECLARE_LIBBPF_OPTS and related macros for declaring
->> function options, that is now the preferred way to extend APIs. Introduc=
-e a
->> variant of the bpf_object__load() function that uses this function, and
->> deprecate the _xattr variant. Since all the good function names were tak=
-en,
->> the new function is unimaginatively called bpf_object__load2().
->>
->> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->> ---
->
-> I've been thinking about options for load quite a bit lately, and I'm
-> leaning towards an opinion, that bpf_object__load() shouldn't take any
-> options, and all the various per-bpf_object options have to be
-> specified in bpf_object_open_opts and stored, if necessary for
-> load/attach phase. So I'd rather move target_btf_path and log_level to
-> open_opts instead.
+I guess I mean 'hidden limit' - hitting the limit and failing would
+be managable.
 
-Hmm, yeah, don't really object to that. I do think the 'log_level' is a
-bit of an odd parameter in any case, though. If I turn on verbose
-logging using the log_level parameter, that won't affect the logging of
-libbpf itself, which was certainly surprising to me when I first
-discovered it. So maybe rename it when adding it as an open option
-("verbose_verifier" or something along those lines?).
+I think 7 is probably too low though, but we are not using 1GB huge
+pages, only 2M..
 
-Anyhow, given your idea with having a separate bpf_linker__() type, this
-is not really needed for linking in any case, so I'll just drop this
-patch for now...
+> > If the number of allowed pins are exhausted then the
+> > pin_user_pages_fast() must fail back to the user.
+> 
+> I'll poke around the IB call stack and see how much of that return
+> path is in place, if any. Because it's the same situation for
+> get_user_pages_fast().  This code just added a warning on overflow
+> so we could spot it early.
 
--Toke
+All GUP callers must be prepared for failure, IB should be fine...
 
+Jason
