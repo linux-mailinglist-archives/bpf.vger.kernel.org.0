@@ -2,203 +2,309 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A49791278E1
-	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2019 11:10:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 687F4127918
+	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2019 11:16:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727180AbfLTKKK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 Dec 2019 05:10:10 -0500
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:41618 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726210AbfLTKKK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 Dec 2019 05:10:10 -0500
-Received: by mail-qk1-f194.google.com with SMTP id x129so7168293qke.8;
-        Fri, 20 Dec 2019 02:10:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=15e0lkCjkPeEZrmYiFOGrDKXMpH42X3ZivF1r0Ic8Vo=;
-        b=rJmIcCoD+afgNjcL4JsdOOk9U5U8Jj+nivg30zpv/EX9WnTHjrWz+VcagW/i7RlhMR
-         i0bdQqCMw4+4kv3j9xNUeqWfJyMrIndOiDriOol+qRVnuXlz0524kskmeNLPLIYjaA6k
-         LJJ1ERY/7MSETSJtDH0hUBECKMKsuci4dZQQ44OC1fjAr/0yLw+fSwUNnpTeacHaVQfI
-         5H27VVzByyjh56ISLbkccKnzhGdbOuwpNZlkSct36OEBU/tN3mEg9UAWAyArFfB9WYe6
-         GLvPT69Wkt11OLI0hFhsmP7Imcd2YwArCGXSh6hNWFY/OU/HYo7Q5Uj10vdi2yHxl9E0
-         XWdg==
+        id S1727216AbfLTKQ6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 Dec 2019 05:16:58 -0500
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:36196 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727167AbfLTKQ6 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 20 Dec 2019 05:16:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1576837016;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mePGlrqkyL6AIC+0QPObCsIHEuKB1/+izMXxsmGzIw0=;
+        b=GxrBtx5gllZDDOD+EQH1DtT4TLZstT23LsvdxpdWVM0ecRIqcCS6YUC8LaWWyXxS0HaZC7
+        Ry2gzK/2aq0xZThqhtuIpDfQbP1EaM4dGGFNWxsgI+i46RJinSmKf+5QIBywo601R/Xm8e
+        2fJ++Y6ikIChWMEpS3Mu7JiivbNGrcE=
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
+ [209.85.208.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-270-z53rsnxAPh6AmV63J3qRLA-1; Fri, 20 Dec 2019 05:16:55 -0500
+X-MC-Unique: z53rsnxAPh6AmV63J3qRLA-1
+Received: by mail-lj1-f199.google.com with SMTP id f1so2728416ljp.5
+        for <bpf@vger.kernel.org>; Fri, 20 Dec 2019 02:16:54 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=15e0lkCjkPeEZrmYiFOGrDKXMpH42X3ZivF1r0Ic8Vo=;
-        b=sSNb7H33YEcBI7VlbMOuvapSO52CbSDDZJNnsrsbaF3c+WhQInsHLxfvGmUsxifgPR
-         uzyfd8jO7jhLJu5lTsUvDQ1N/YLlprkFHJ1CUQlMT1vTxYq1/K99P90DjjlNpt2pBTUy
-         TISh8Clwp3elEctlv+lZ9wNJUT21uTihjIbm+4vHMsTMgRDxo4NSHsWfPjUm6naEJFp1
-         1CcbBK6D6HM1Ovka128cDDXUU89lCl+wfRrSkaGC9a+3G1cAkOJcp4ZK+SrNTzeSxOzk
-         +wmkDS8zRsOK5+qZv5APgtopTcervkbF6B5NWV+IATOSqWmYC5wVrF1TlyGhgPObsY6k
-         wwJA==
-X-Gm-Message-State: APjAAAXwwhMgL3AnLYTb7eA5El6E7s7uMhqQXmfPy/9yLNhi+C7rNaBq
-        K/j5q81RcHgKsAPsWHnn/8zbu13BgObw2Ll/C08=
-X-Google-Smtp-Source: APXvYqz+BnZucLS15/50NtXUoImnWTOjjv92ldpdv5cA/AKa9hYj5Q3RfybLZyfvPVERJfCwmf8vIrF62+9r28hOdCw=
-X-Received: by 2002:a37:63c7:: with SMTP id x190mr12477981qkb.232.1576836608574;
- Fri, 20 Dec 2019 02:10:08 -0800 (PST)
-MIME-Version: 1.0
-References: <1576759171-28550-1-git-send-email-magnus.karlsson@intel.com>
-In-Reply-To: <1576759171-28550-1-git-send-email-magnus.karlsson@intel.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Fri, 20 Dec 2019 11:09:57 +0100
-Message-ID: <CAJ+HfNh0mGnDnQD0FZqza0oEDZpj+nh_DS=JvWvJMATwsOMJEA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 00/12] xsk: clean up ring access functions
-To:     Magnus Karlsson <magnus.karlsson@intel.com>
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=mePGlrqkyL6AIC+0QPObCsIHEuKB1/+izMXxsmGzIw0=;
+        b=f8sStOVIX+6JSDHIrKobVPx0mdLbRsIQsJSfyNEIFFqb1B+gZWIiB4sCAGWl7TnKft
+         3IvgDGfj4ZbTc/0RY/qR5I2EVQUDEbvDKViE3gPLKBkXd0xLTjS0AzFvIqJv2HaAKv7h
+         /hVH6K9yyHESVeOpmK3S+AxUDCVky4LGoN+Z5AYuDiw36z/NAUXmQqFjoohXWimJ5zXZ
+         0Bxi10U7RSVJ3WUrZ5OcxgeJLyKym+h4hz9gR7NIUwH0YRMcY93yTVRsoEIE3bwwF8mQ
+         f6sG1uHHV2x6uYAo0mC2bsM0gvHP0o3QOdmNlI9gGsbR/JpDzyiRT2AsDK1dNuXuL9KL
+         Iz0g==
+X-Gm-Message-State: APjAAAV/Tk3u/4otIwGfxiFubfk5rxwGgxubtEJxObcQv85fyX7RVdR7
+        7VKecnsiL+6r7cM3JJPbUQ6gtHvKLmcaHOkG6ugL/0TX5i6PEawR1SVYSkV9ChQWQz4HBkbLRgm
+        NFKXtHgaKWpOW
+X-Received: by 2002:ac2:5310:: with SMTP id c16mr8444560lfh.102.1576837013520;
+        Fri, 20 Dec 2019 02:16:53 -0800 (PST)
+X-Google-Smtp-Source: APXvYqwn2p9/Ws3hd9WTr49Wnde1WCnioR4CSlNwoE/RQHFMOe8I1BE1aP9AhU8Bq4euzofUMb0dXA==
+X-Received: by 2002:ac2:5310:: with SMTP id c16mr8444543lfh.102.1576837013126;
+        Fri, 20 Dec 2019 02:16:53 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id u18sm4082506lje.69.2019.12.20.02.16.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Dec 2019 02:16:52 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 6AB7E180969; Fri, 20 Dec 2019 11:16:51 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Martin Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Netdev <netdev@vger.kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Saeed Mahameed <saeedm@mellanox.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
-        Maciej Fijalkowski <maciejromanfijalkowski@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        David Miller <davem@davemloft.net>,
+        Kernel Team <Kernel-team@fb.com>,
+        Networking <netdev@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 11/13] bpf: libbpf: Add STRUCT_OPS support
+In-Reply-To: <CAEf4BzYr+cBH4r7nmX+2uBTOkaxtp2q3ARqm-Gb9ADA9cdqSgQ@mail.gmail.com>
+References: <20191214004737.1652076-1-kafai@fb.com> <20191214004803.1653618-1-kafai@fb.com> <CAEf4BzbJoso7A0dn=xhOkFMOcKqZ6wYp=XoqGiL+FO+0VKqh5g@mail.gmail.com> <20191218070341.fd2ypexmeca5cefa@kafai-mbp.dhcp.thefacebook.com> <CAEf4BzaGcM6ose=2DJJO1qkRkiqEPR7gU4GizCvffADo5M29wA@mail.gmail.com> <20191218173350.nll5766abgkptjac@kafai-mbp.dhcp.thefacebook.com> <CAEf4BzboyRio_KaQtd2eOqmH+x0FPfYp_CDfnUzv4H698j_wsQ@mail.gmail.com> <87fthg4rx5.fsf@toke.dk> <CAEf4BzYr+cBH4r7nmX+2uBTOkaxtp2q3ARqm-Gb9ADA9cdqSgQ@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Fri, 20 Dec 2019 11:16:51 +0100
+Message-ID: <87pngj2tf0.fsf@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 19 Dec 2019 at 13:40, Magnus Karlsson <magnus.karlsson@intel.com> w=
-rote:
->
-> This patch set cleans up the ring access functions of AF_XDP in hope
-> that it will now be easier to understand and maintain. I used to get a
-> headache every time I looked at this code in order to really understand i=
-t,
-> but now I do think it is a lot less painful.
->
-> The code has been simplified a lot and as a bonus we get better
-> performance in nearly all cases. On my new 2.1 GHz Cascade Lake
-> machine with a standard default config plus AF_XDP support and
-> CONFIG_PREEMPT on I get the following results in percent performance
-> increases with this patch set compared to without it:
->
-> Zero-copy (-N):
->           rxdrop        txpush        l2fwd
-> 1 core:    -2%            0%            3%
-> 2 cores:    4%            0%            3%
->
-> Zero-copy with poll() (-N -p):
->           rxdrop        txpush        l2fwd
-> 1 core:     3%            0%            1%
-> 2 cores:   21%            0%            9%
->
-> Skb mode (-S):
-> Shows a 0% to 5% performance improvement over the same benchmarks as
-> above.
->
-> Here 1 core means that we are running the driver processing and the
-> application on the same core, while 2 cores means that they execute on
-> separate cores. The applications are from the xdpsock sample app.
->
-> On my older 2.0 Ghz Broadwell machine that I used for the v1, I get
-> the following results:
->
-> Zero-copy (-N):
->           rxdrop        txpush        l2fwd
-> 1 core:     4%            5%            4%
-> 2 cores:    1%            0%            2%
->
-> Zero-copy with poll() (-N -p):
->           rxdrop        txpush        l2fwd
-> 1 core:     1%            3%            3%
-> 2 cores:   22%            0%            5%
->
-> Skb mode (-S):
-> Shows a 0% to 1% performance improvement over the same benchmarks as
-> above.
->
-> When a results says 21 or 22% better, as in the case of poll mode with
-> 2 cores and rxdrop, my first reaction is that it must be a
-> bug. Everything else shows between 0% and 5% performance
-> improvement. What is giving rise to 22%? A quick bisect indicates that
-> it is patches 2, 3, 4, 5, and 6 that are giving rise to most of this
-> improvement. So not one patch in particular, but something around 4%
-> improvement from each one of them. Note that exactly this benchmark
-> has previously had an extraordinary slow down compared to when running
-> without poll syscalls. For all the other poll tests above, the
-> slowdown has always been around 4% for using poll syscalls. But with
-> the bad performing test in question, it was above 25%. Interestingly,
-> after this clean up, the slow down is 4%, just like all the other poll
-> tests. Please take an extra peek at this so I have not messed up
-> something.
->
-> The 0% for several txpush results are due to the test bottlenecking on
-> a non-CPU HW resource. If I eliminated that bottleneck on my system, I
-> would expect to see an increase there too.
->
-> Changes v1 -> v2:
-> * Corrected textual errors in the commit logs (Sergei and Martin)
-> * Fixed the functions that detect empty and full rings so that they
->   now operate on the global ring state (Maxim)
->
-> This patch has been applied against commit a352a82496d1 ("Merge branch 'l=
-ibbpf-extern-followups'")
->
-> Structure of the patch set:
->
-> Patch 1: Eliminate the lazy update threshold used when preallocating
->          entries in the completion ring
-> Patch 2: Simplify the detection of empty and full rings
-> Patch 3: Consolidate the two local producer pointers into one
-> Patch 4: Standardize the naming of the producer ring access functions
-> Patch 5: Eliminate the Rx batch size used for the fill ring
-> Patch 6: Simplify the functions xskq_nb_avail and xskq_nb_free
-> Patch 7: Simplify and standardize the naming of the consumer ring
->          access functions
-> Patch 8: Change the names of the validation functions to improve
->          readability and also the return value of these functions
-> Patch 9: Change the name of xsk_umem_discard_addr() to
->          xsk_umem_release_addr() to better reflect the new
->          names. Requires a name change in the drivers that support AF_XDP
->          zero-copy.
-> Patch 10: Remove unnecessary READ_ONCE of data in the ring
-> Patch 11: Add overall function naming comment and reorder the functions
->           for easier reference
-> Patch 12: Use the struct_size helper function when allocating rings
->
-> Thanks: Magnus
->
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-Very nice cleanup (and performance boost)!
-
-For the series:
-Reviewed-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
-Tested-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
-Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
-
-
-> Magnus Karlsson (12):
->   xsk: eliminate the lazy update threshold
->   xsk: simplify detection of empty and full rings
->   xsk: consolidate to one single cached producer pointer
->   xsk: standardize naming of producer ring access functions
->   xsk: eliminate the RX batch size
->   xsk: simplify xskq_nb_avail and xskq_nb_free
->   xsk: simplify the consumer ring access functions
->   xsk: change names of validation functions
->   xsk: ixgbe: i40e: ice: mlx5: xsk_umem_discard_addr to
->     xsk_umem_release_addr
->   xsk: remove unnecessary READ_ONCE of data
->   xsk: add function naming comments and reorder functions
->   xsk: use struct_size() helper
+> On Thu, Dec 19, 2019 at 12:54 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@r=
+edhat.com> wrote:
+>>
+>> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+>>
+>> > On Wed, Dec 18, 2019 at 9:34 AM Martin Lau <kafai@fb.com> wrote:
+>> >>
+>> >> On Wed, Dec 18, 2019 at 08:34:25AM -0800, Andrii Nakryiko wrote:
+>> >> > On Tue, Dec 17, 2019 at 11:03 PM Martin Lau <kafai@fb.com> wrote:
+>> >> > >
+>> >> > > On Tue, Dec 17, 2019 at 07:07:23PM -0800, Andrii Nakryiko wrote:
+>> >> > > > On Fri, Dec 13, 2019 at 4:48 PM Martin KaFai Lau <kafai@fb.com>=
+ wrote:
+>> >> > > > >
+>> >> > > > > This patch adds BPF STRUCT_OPS support to libbpf.
+>> >> > > > >
+>> >> > > > > The only sec_name convention is SEC("struct_ops") to identify=
+ the
+>> >> > > > > struct ops implemented in BPF, e.g.
+>> >> > > > > SEC("struct_ops")
+>> >> > > > > struct tcp_congestion_ops dctcp =3D {
+>> >> > > > >         .init           =3D (void *)dctcp_init,  /* <-- a bpf=
+_prog */
+>> >> > > > >         /* ... some more func prts ... */
+>> >> > > > >         .name           =3D "bpf_dctcp",
+>> >> > > > > };
+>> >> > > > >
+>> >> > > > > In the bpf_object__open phase, libbpf will look for the "stru=
+ct_ops"
+>> >> > > > > elf section and find out what is the btf-type the "struct_ops=
+" is
+>> >> > > > > implementing.  Note that the btf-type here is referring to
+>> >> > > > > a type in the bpf_prog.o's btf.  It will then collect (throug=
+h SHT_REL)
+>> >> > > > > where are the bpf progs that the func ptrs are referring to.
+>> >> > > > >
+>> >> > > > > In the bpf_object__load phase, the prepare_struct_ops() will =
+load
+>> >> > > > > the btf_vmlinux and obtain the corresponding kernel's btf-typ=
+e.
+>> >> > > > > With the kernel's btf-type, it can then set the prog->type,
+>> >> > > > > prog->attach_btf_id and the prog->expected_attach_type.  Thus,
+>> >> > > > > the prog's properties do not rely on its section name.
+>> >> > > > >
+>> >> > > > > Currently, the bpf_prog's btf-type =3D=3D> btf_vmlinux's btf-=
+type matching
+>> >> > > > > process is as simple as: member-name match + btf-kind match +=
+ size match.
+>> >> > > > > If these matching conditions fail, libbpf will reject.
+>> >> > > > > The current targeting support is "struct tcp_congestion_ops" =
+which
+>> >> > > > > most of its members are function pointers.
+>> >> > > > > The member ordering of the bpf_prog's btf-type can be differe=
+nt from
+>> >> > > > > the btf_vmlinux's btf-type.
+>> >> > > > >
+>> >> > > > > Once the prog's properties are all set,
+>> >> > > > > the libbpf will proceed to load all the progs.
+>> >> > > > >
+>> >> > > > > After that, register_struct_ops() will create a map, finalize=
+ the
+>> >> > > > > map-value by populating it with the prog-fd, and then registe=
+r this
+>> >> > > > > "struct_ops" to the kernel by updating the map-value to the m=
+ap.
+>> >> > > > >
+>> >> > > > > By default, libbpf does not unregister the struct_ops from th=
+e kernel
+>> >> > > > > during bpf_object__close().  It can be changed by setting the=
+ new
+>> >> > > > > "unreg_st_ops" in bpf_object_open_opts.
+>> >> > > > >
+>> >> > > > > Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+>> >> > > > > ---
+>> >> > > >
+>> >> > > > This looks pretty good to me. The big two things is exposing st=
+ructops
+>> >> > > > as real struct bpf_map, so that users can interact with it using
+>> >> > > > libbpf APIs, as well as splitting struct_ops map creation and
+>> >> > > > registration. bpf_object__load() should only make sure all maps=
+ are
+>> >> > > > created, progs are loaded/verified, but none of BPF program can=
+ yet be
+>> >> > > > called. Then attach is the phase where registration happens.
+>> >> > > Thanks for the review.
+>> >> > >
+>> >> > > [ ... ]
+>> >> > >
+>> >> > > > >  static inline __u64 ptr_to_u64(const void *ptr)
+>> >> > > > >  {
+>> >> > > > >         return (__u64) (unsigned long) ptr;
+>> >> > > > > @@ -233,6 +239,32 @@ struct bpf_map {
+>> >> > > > >         bool reused;
+>> >> > > > >  };
+>> >> > > > >
+>> >> > > > > +struct bpf_struct_ops {
+>> >> > > > > +       const char *var_name;
+>> >> > > > > +       const char *tname;
+>> >> > > > > +       const struct btf_type *type;
+>> >> > > > > +       struct bpf_program **progs;
+>> >> > > > > +       __u32 *kern_func_off;
+>> >> > > > > +       /* e.g. struct tcp_congestion_ops in bpf_prog's btf f=
+ormat */
+>> >> > > > > +       void *data;
+>> >> > > > > +       /* e.g. struct __bpf_tcp_congestion_ops in btf_vmlinu=
+x's btf
+>> >> > > >
+>> >> > > > Using __bpf_ prefix for this struct_ops-specific types is a bit=
+ too
+>> >> > > > generic (e.g., for raw_tp stuff Alexei used btf_trace_). So may=
+be make
+>> >> > > > it btf_ops_ or btf_structops_?
+>> >> > > Is it a concern on name collision?
+>> >> > >
+>> >> > > The prefix pick is to use a more representative name.
+>> >> > > struct_ops use many bpf pieces and btf is one of them.
+>> >> > > Very soon, all new codes will depend on BTF and btf_ prefix
+>> >> > > could become generic also.
+>> >> > >
+>> >> > > Unlike tracepoint, there is no non-btf version of struct_ops.
+>> >> >
+>> >> > Not so much name collision, as being able to immediately recognize
+>> >> > that it's used to provide type information for struct_ops. Think ab=
+out
+>> >> > some automated tooling parsing vmlinux BTF and trying to create some
+>> >> > derivative types for those btf_trace_xxx and __bpf_xxx types. Having
+>> >> > unique prefix that identifies what kind of type-providing struct it=
+ is
+>> >> > is very useful to do generic tool like that. While __bpf_ isn't
+>> >> > specifying in any ways that it's for struct_ops.
+>> >> >
+>> >> > >
+>> >> > > >
+>> >> > > >
+>> >> > > > > +        * format.
+>> >> > > > > +        * struct __bpf_tcp_congestion_ops {
+>> >> > > > > +        *      [... some other kernel fields ...]
+>> >> > > > > +        *      struct tcp_congestion_ops data;
+>> >> > > > > +        * }
+>> >> > > > > +        * kern_vdata in the sizeof(struct __bpf_tcp_congesti=
+on_ops).
+>> >> > > >
+>> >> > > > Comment isn't very clear.. do you mean that data pointed to by
+>> >> > > > kern_vdata is of sizeof(...) bytes?
+>> >> > > >
+>> >> > > > > +        * prepare_struct_ops() will populate the "data" into
+>> >> > > > > +        * "kern_vdata".
+>> >> > > > > +        */
+>> >> > > > > +       void *kern_vdata;
+>> >> > > > > +       __u32 type_id;
+>> >> > > > > +       __u32 kern_vtype_id;
+>> >> > > > > +       __u32 kern_vtype_size;
+>> >> > > > > +       int fd;
+>> >> > > > > +       bool unreg;
+>> >> > > >
+>> >> > > > This unreg flag (and default behavior to not unregister) is bot=
+hering
+>> >> > > > me a bit.. Shouldn't this be controlled by map's lifetime, at l=
+east.
+>> >> > > > E.g., if no one pins that map - then struct_ops should be unreg=
+istered
+>> >> > > > on map destruction. If application wants to keep BPF programs
+>> >> > > > attached, it should make sure to pin map, before userspace part=
+ exits?
+>> >> > > > Is this problematic in any way?
+>> >> > > I don't think it should in the struct_ops case.  I think of the
+>> >> > > struct_ops map is a set of progs "attach" to a subsystem (tcp_cong
+>> >> > > in this case) and this map-progs stay (or keep attaching) until i=
+t is
+>> >> > > detached.  Like other attached bpf_prog keeps running without
+>> >> > > caring if the bpf_prog is pinned or not.
+>> >> >
+>> >> > I'll let someone else comment on how this behaves for cgroup, xdp,
+>> >> > etc,
+>> >> > but for tracing, for example, we have FD-based BPF links, which
+>> >> > will detach program automatically when FD is closed. I think the id=
+ea
+>> >> > is to extend this to other types of BPF programs as well, so there =
+is
+>> >> > no risk of leaving some stray BPF program running after unintended
+>> >> Like xdp_prog, struct_ops does not have another fd-based-link.
+>> >> This link can be created for struct_ops, xdp_prog and others later.
+>> >> I don't see a conflict here.
+>> >
+>> > My point was that default behavior should be conservative: free up
+>> > resources automatically on process exit, unless specifically pinned by
+>> > user.
+>> > But this discussion made me realize that we miss one thing from
+>> > general bpf_link framework. See below.
+>> >
+>> >>
+>> >> > crash of userspace program. When application explicitly needs BPF
+>> >> > program to outlive its userspace control app, then this can be
+>> >> > achieved by pinning map/program in BPFFS.
+>> >> If the concern is about not leaving struct_ops behind,
+>> >> lets assume there is no "detach" and only depends on the very
+>> >> last userspace's handles (FD/pinned) of a map goes away,
+>> >> what may be an easy way to remove bpf_cubic from the system:
+>> >
+>> > Yeah, I think this "last map FD close frees up resources/detaches" is
+>> > a good behavior.
+>> >
+>> > Where we do have problem is with bpf_link__destroy() unconditionally
+>> > also detaching whatever was attached (tracepoint, kprobe, or whatever
+>> > was done to create bpf_link in the first place). Now,
+>> > bpf_link__destroy() has to be called by user (or skeleton) to at least
+>> > free up malloc()'ed structs. But it appears that it's not always
+>> > desirable that upon bpf_link destruction underlying BPF program gets
+>> > detached. I think this will be the case for xdp and others as well.
+>>
+>> For XDP the model has thus far been "once attached, the program stays
+>> until explicitly detached". Changing that would certainly be surprising,
+>> so I agree that splitting the API is best (not that I'm sure how many
+>> XDP programs will end up using that API, but that's a different
+>> concern)...
 >
->  drivers/net/ethernet/intel/i40e/i40e_xsk.c         |   4 +-
->  drivers/net/ethernet/intel/ice/ice_xsk.c           |   4 +-
->  drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c       |   4 +-
->  .../net/ethernet/mellanox/mlx5/core/en/xsk/rx.c    |   2 +-
->  include/net/xdp_sock.h                             |  14 +-
->  net/xdp/xsk.c                                      |  62 ++--
->  net/xdp/xsk_queue.c                                |  15 +-
->  net/xdp/xsk_queue.h                                | 371 +++++++++++----=
-------
->  8 files changed, 246 insertions(+), 230 deletions(-)
->
-> --
-> 2.7.4
+> This would be a new FD-based API for XDP, I don't think we can change
+> existing API. But I think default behavior should still be to
+> auto-detach, unless explicitly "pinned" in whatever way. That would
+> prevent surprising "leakage" of BPF programs for unsuspecting users.
+
+But why do we need a new API for attaching XDP programs? Also, what are
+the use cases where it makes sense to have this kind of "transient" XDP
+program? The only one I can think about is something like xdpdump, which
+moves packets to userspace (and should stop doing that when the
+userspace listener goes away). But with bpf-to-bpf tracing, xdpdump
+won't actually be an XDP program, so what's left? The system firewall
+rules don't go away when the program that installed them exits either;
+why should an XDP program?
+
+-Toke
+
