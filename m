@@ -2,195 +2,159 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 98B6312825E
-	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2019 19:48:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3258912830A
+	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2019 21:10:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727422AbfLTSs1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 Dec 2019 13:48:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43514 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727394AbfLTSs1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 Dec 2019 13:48:27 -0500
-Received: from localhost (unknown [5.29.147.182])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6D0FC20866;
-        Fri, 20 Dec 2019 18:48:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1576867705;
-        bh=9uwZwW8nPS+75031v8hDGC7HtDf+0EIn7DmGn/ZPhLI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LWTpeDghlapT7e9QeowMyEsKots1GGKoA5cxDBWPKxcsMa8afpvj3TIhg42NfecMr
-         n4GpE+h71j//kE94YhR/cIu0AoNi6vRxas1Bt4JmzW5rS36c/LVw4EGx6UtAXWnHfJ
-         xwyw4vcYCuXeNv4Wj/Dw3P5l12jwtULyC7zQzCys=
-Date:   Fri, 20 Dec 2019 20:48:21 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jens Axboe <axboe@kernel.dk>, Jonathan Corbet <corbet@lwn.net>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, bpf@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, kvm@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
-        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
-        Maor Gottlieb <maorg@mellanox.com>
-Subject: Re: [PATCH v11 00/25] mm/gup: track dma-pinned pages: FOLL_PIN
-Message-ID: <20191220184821.GB10944@unreal>
-References: <20191216222537.491123-1-jhubbard@nvidia.com>
- <20191219132607.GA410823@unreal>
- <a4849322-8e17-119e-a664-80d9f95d850b@nvidia.com>
- <20191219210743.GN17227@ziepe.ca>
- <f10b2a18-a109-d87d-f156-2e5941cbf4a0@nvidia.com>
+        id S1727402AbfLTUKp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 Dec 2019 15:10:45 -0500
+Received: from mail-qv1-f65.google.com ([209.85.219.65]:43440 "EHLO
+        mail-qv1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727394AbfLTUKp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 20 Dec 2019 15:10:45 -0500
+Received: by mail-qv1-f65.google.com with SMTP id p2so4082407qvo.10;
+        Fri, 20 Dec 2019 12:10:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5AnFVXcpaMggl4isK2KnEZsWpPp4HGly8JnBK5gmpAI=;
+        b=oK+kh+0MsknQ032w8zMAVC02TIgrYGdMIyen1bd/7jTfWFT2IFI1Nc2kd5KWVzFBOz
+         K03JieNRd9G5plx77dxoI8pRx/tXmZjQ9tfPA/ZzV05xXsg+dv8wNBFvhgLL49Hhq2NT
+         BocZcc8p1vTo2TDOWcA7k/VwvY6oHtPI8k50P6fSHcJ3W8HqbgoHL0eWlVm8tKocoFk5
+         1T2RMeGY37h32j/v00dGq8XeIDJAuCP30SgmB285PfEyxSPCzjecSWA4SutWSotiYTKD
+         BYeK0hgzwG5sg3mXolyArUptUW8rai4nDroBqbWa5fHgb44vizfRtdMpmgK1OgkAcIXU
+         Fifw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5AnFVXcpaMggl4isK2KnEZsWpPp4HGly8JnBK5gmpAI=;
+        b=F2hk3ZkxJxsow+VvAEKZzoZVo6uDl0jiNKmRPJ7irvH5qws0R7xZ2saPF+uJX6/91A
+         +ZI+gGPSO1RZhzi7iaot06PF8OZMn12LPr0Naak3LUZTFfdCPVQZTOZMwHUWE4J4tRRv
+         RNGieo4c3a3qyCgkA/cruYhNJlaYd2ffFtZ+2FgsSfZ1d10tg/9sPNwIHr+CEF/fPuRI
+         4uo0Yeq1cWR9q7TLbMrAVa5qlXD1XP9jcqa9pxT7F5bPpsJOab1pvRcfhJL8sILMNOVz
+         eSi7txpvVxT0PAIhCyi1ok2+jpJxdEd/glXg0DBajqVDBvaUTQJjPwh/N9izLq/9cNZd
+         p3hg==
+X-Gm-Message-State: APjAAAXAneVIKVMGIohjui//EfTMH7kfWcmDGP/Bvk4hVLvHRrsidQ2z
+        j5w450Pml6qiGYhgBAcGmQwX/q3locxqt4vfh+8=
+X-Google-Smtp-Source: APXvYqzMC8VDhootDrscnawAbrG4m/tH2DJ6nL/RoOUGJXfF1Ax00uff5xVnpdZ4pFD120TXNJUKVLUW0LWv4zXXmXs=
+X-Received: by 2002:a0c:990d:: with SMTP id h13mr13782566qvd.247.1576872643845;
+ Fri, 20 Dec 2019 12:10:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f10b2a18-a109-d87d-f156-2e5941cbf4a0@nvidia.com>
+References: <20191220154208.15895-1-kpsingh@chromium.org> <20191220154208.15895-2-kpsingh@chromium.org>
+In-Reply-To: <20191220154208.15895-2-kpsingh@chromium.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 20 Dec 2019 12:10:32 -0800
+Message-ID: <CAEf4BzZJf_GBCXYYmE0Hk7O2GdeOr-3VCxdAaxCUk-MHRar3Og@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 01/13] bpf: Refactor BPF_EVENT context macros
+ to its own header.
+To:     KP Singh <kpsingh@chromium.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, linux-security-module@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        James Morris <jmorris@namei.org>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Garnier <thgarnie@chromium.org>,
+        Michael Halcrow <mhalcrow@google.com>,
+        Paul Turner <pjt@google.com>,
+        Brendan Gregg <brendan.d.gregg@gmail.com>,
+        Jann Horn <jannh@google.com>,
+        Matthew Garrett <mjg59@google.com>,
+        Christian Brauner <christian@brauner.io>,
+        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Quentin Monnet <quentin.monnet@netronome.com>,
+        Andrey Ignatov <rdna@fb.com>, Joe Stringer <joe@wand.net.nz>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 19, 2019 at 02:58:43PM -0800, John Hubbard wrote:
-> On 12/19/19 1:07 PM, Jason Gunthorpe wrote:
-> ...
-> > > 3. It would be nice if I could reproduce this. I have a two-node mlx5 Infiniband
-> > > test setup, but I have done only the tiniest bit of user space IB coding, so
-> > > if you have any test programs that aren't too hard to deal with that could
-> > > possibly hit this, or be tweaked to hit it, I'd be grateful. Keeping in mind
-> > > that I'm not an advanced IB programmer. At all. :)
-> >
-> > Clone this:
-> >
-> > https://github.com/linux-rdma/rdma-core.git
-> >
-> > Install all the required deps to build it (notably cython), see the README.md
-> >
-> > $ ./build.sh
-> > $ build/bin/run_tests.py
-> >
-> > If you get things that far I think Leon can get a reproduction for you
-> >
+On Fri, Dec 20, 2019 at 7:43 AM KP Singh <kpsingh@chromium.org> wrote:
 >
-> Cool, it's up and running (1 failure, 3 skipped, out of 67 tests).
+> From: KP Singh <kpsingh@google.com>
 >
-> This is a great test suite to have running, I'll add it to my scripts. Here's the
-> full output in case the failure or skip cases are a problem:
+> These macros are useful for other program types than tracing.
+> i.e. KRSI (an upccoming BPF based LSM) which does not use
+> BPF_PROG_TYPE_TRACE but uses verifiable BTF accesses similar
+> to raw tracepoints.
 >
-> $ sudo ./build/bin/run_tests.py --verbose
+> Signed-off-by: KP Singh <kpsingh@google.com>
+> ---
+>  include/linux/bpf_event.h | 78 +++++++++++++++++++++++++++++++++++++++
+>  include/trace/bpf_probe.h | 30 +--------------
+>  kernel/trace/bpf_trace.c  | 24 +-----------
+>  3 files changed, 81 insertions(+), 51 deletions(-)
+>  create mode 100644 include/linux/bpf_event.h
 >
-> test_create_ah (tests.test_addr.AHTest) ... ok
-> test_create_ah_roce (tests.test_addr.AHTest) ... skipped "Can't run RoCE tests on IB link layer"
-> test_destroy_ah (tests.test_addr.AHTest) ... ok
-> test_create_comp_channel (tests.test_cq.CCTest) ... ok
-> test_destroy_comp_channel (tests.test_cq.CCTest) ... ok
-> test_create_cq_ex (tests.test_cq.CQEXTest) ... ok
-> test_create_cq_ex_bad_flow (tests.test_cq.CQEXTest) ... ok
-> test_destroy_cq_ex (tests.test_cq.CQEXTest) ... ok
-> test_create_cq (tests.test_cq.CQTest) ... ok
-> test_create_cq_bad_flow (tests.test_cq.CQTest) ... ok
-> test_destroy_cq (tests.test_cq.CQTest) ... ok
-> test_rc_traffic_cq_ex (tests.test_cqex.CqExTestCase) ... ok
-> test_ud_traffic_cq_ex (tests.test_cqex.CqExTestCase) ... ok
-> test_xrc_traffic_cq_ex (tests.test_cqex.CqExTestCase) ... ok
-> test_create_dm (tests.test_device.DMTest) ... ok
-> test_create_dm_bad_flow (tests.test_device.DMTest) ... ok
-> test_destroy_dm (tests.test_device.DMTest) ... ok
-> test_destroy_dm_bad_flow (tests.test_device.DMTest) ... ok
-> test_dm_read (tests.test_device.DMTest) ... ok
-> test_dm_write (tests.test_device.DMTest) ... ok
-> test_dm_write_bad_flow (tests.test_device.DMTest) ... ok
-> test_dev_list (tests.test_device.DeviceTest) ... ok
-> test_open_dev (tests.test_device.DeviceTest) ... ok
-> test_query_device (tests.test_device.DeviceTest) ... ok
-> test_query_device_ex (tests.test_device.DeviceTest) ... ok
-> test_query_gid (tests.test_device.DeviceTest) ... ok
-> test_query_port (tests.test_device.DeviceTest) ... FAIL
-> test_query_port_bad_flow (tests.test_device.DeviceTest) ... ok
-> test_create_dm_mr (tests.test_mr.DMMRTest) ... ok
-> test_destroy_dm_mr (tests.test_mr.DMMRTest) ... ok
-> test_buffer (tests.test_mr.MRTest) ... ok
-> test_dereg_mr (tests.test_mr.MRTest) ... ok
-> test_dereg_mr_twice (tests.test_mr.MRTest) ... ok
-> test_lkey (tests.test_mr.MRTest) ... ok
-> test_read (tests.test_mr.MRTest) ... ok
-> test_reg_mr (tests.test_mr.MRTest) ... ok
-> test_reg_mr_bad_flags (tests.test_mr.MRTest) ... ok
-> test_reg_mr_bad_flow (tests.test_mr.MRTest) ... ok
-> test_rkey (tests.test_mr.MRTest) ... ok
-> test_write (tests.test_mr.MRTest) ... ok
-> test_dereg_mw_type1 (tests.test_mr.MWTest) ... ok
-> test_dereg_mw_type2 (tests.test_mr.MWTest) ... ok
-> test_reg_mw_type1 (tests.test_mr.MWTest) ... ok
-> test_reg_mw_type2 (tests.test_mr.MWTest) ... ok
-> test_reg_mw_wrong_type (tests.test_mr.MWTest) ... ok
-> test_odp_rc_traffic (tests.test_odp.OdpTestCase) ... ok
-> test_odp_ud_traffic (tests.test_odp.OdpTestCase) ... skipped 'ODP is not supported - ODP recv not supported'
-> test_odp_xrc_traffic (tests.test_odp.OdpTestCase) ... ok
-> test_default_allocators (tests.test_parent_domain.ParentDomainTestCase) ... ok
-> test_mem_align_allocators (tests.test_parent_domain.ParentDomainTestCase) ... ok
-> test_without_allocators (tests.test_parent_domain.ParentDomainTestCase) ... ok
-> test_alloc_pd (tests.test_pd.PDTest) ... ok
-> test_create_pd_none_ctx (tests.test_pd.PDTest) ... ok
-> test_dealloc_pd (tests.test_pd.PDTest) ... ok
-> test_destroy_pd_twice (tests.test_pd.PDTest) ... ok
-> test_multiple_pd_creation (tests.test_pd.PDTest) ... ok
-> test_create_qp_ex_no_attr (tests.test_qp.QPTest) ... ok
-> test_create_qp_ex_no_attr_connected (tests.test_qp.QPTest) ... ok
-> test_create_qp_ex_with_attr (tests.test_qp.QPTest) ... ok
-> test_create_qp_ex_with_attr_connected (tests.test_qp.QPTest) ... ok
-> test_create_qp_no_attr (tests.test_qp.QPTest) ... ok
-> test_create_qp_no_attr_connected (tests.test_qp.QPTest) ... ok
-> test_create_qp_with_attr (tests.test_qp.QPTest) ... ok
-> test_create_qp_with_attr_connected (tests.test_qp.QPTest) ... ok
-> test_modify_qp (tests.test_qp.QPTest) ... ok
-> test_query_qp (tests.test_qp.QPTest) ... ok
-> test_rdmacm_sync_traffic (tests.test_rdmacm.CMTestCase) ... skipped 'No devices with net interface'
->
-> ======================================================================
-> FAIL: test_query_port (tests.test_device.DeviceTest)
-> ----------------------------------------------------------------------
-> Traceback (most recent call last):
->   File "/kernel_work/rdma-core/tests/test_device.py", line 129, in test_query_port
->     self.verify_port_attr(port_attr)
->   File "/kernel_work/rdma-core/tests/test_device.py", line 113, in verify_port_attr
->     assert 'Invalid' not in d.speed_to_str(attr.active_speed)
-> AssertionError
+> diff --git a/include/linux/bpf_event.h b/include/linux/bpf_event.h
+> new file mode 100644
+> index 000000000000..353eb1f5a3d0
+> --- /dev/null
+> +++ b/include/linux/bpf_event.h
+> @@ -0,0 +1,78 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +
+> +
+> +/*
+> + * Copyright (c) 2018 Facebook
+> + * Copyright 2019 Google LLC.
+> + */
+> +
+> +#ifndef _LINUX_BPF_EVENT_H
+> +#define _LINUX_BPF_EVENT_H
+> +
+> +#ifdef CONFIG_BPF_EVENTS
+> +
+> +/* cast any integer, pointer, or small struct to u64 */
+> +#define UINTTYPE(size) \
+> +       __typeof__(__builtin_choose_expr(size == 1,  (u8)1, \
+> +                  __builtin_choose_expr(size == 2, (u16)2, \
+> +                  __builtin_choose_expr(size == 4, (u32)3, \
+> +                  __builtin_choose_expr(size == 8, (u64)4, \
+> +                                        (void)5)))))
+> +#define __CAST_TO_U64(x) ({ \
+> +       typeof(x) __src = (x); \
+> +       UINTTYPE(sizeof(x)) __dst; \
+> +       memcpy(&__dst, &__src, sizeof(__dst)); \
+> +       (u64)__dst; })
+> +
+> +#define __CAST0(...) 0
+> +#define __CAST1(a, ...) __CAST_TO_U64(a)
+> +#define __CAST2(a, ...) __CAST_TO_U64(a), __CAST1(__VA_ARGS__)
+> +#define __CAST3(a, ...) __CAST_TO_U64(a), __CAST2(__VA_ARGS__)
+> +#define __CAST4(a, ...) __CAST_TO_U64(a), __CAST3(__VA_ARGS__)
+> +#define __CAST5(a, ...) __CAST_TO_U64(a), __CAST4(__VA_ARGS__)
+> +#define __CAST6(a, ...) __CAST_TO_U64(a), __CAST5(__VA_ARGS__)
+> +#define __CAST7(a, ...) __CAST_TO_U64(a), __CAST6(__VA_ARGS__)
+> +#define __CAST8(a, ...) __CAST_TO_U64(a), __CAST7(__VA_ARGS__)
+> +#define __CAST9(a, ...) __CAST_TO_U64(a), __CAST8(__VA_ARGS__)
+> +#define __CAST10(a ,...) __CAST_TO_U64(a), __CAST9(__VA_ARGS__)
+> +#define __CAST11(a, ...) __CAST_TO_U64(a), __CAST10(__VA_ARGS__)
+> +#define __CAST12(a, ...) __CAST_TO_U64(a), __CAST11(__VA_ARGS__)
+> +/* tracepoints with more than 12 arguments will hit build error */
+> +#define CAST_TO_U64(...) CONCATENATE(__CAST, COUNT_ARGS(__VA_ARGS__))(__VA_ARGS__)
+> +
+> +#define UINTTYPE(size) \
+> +       __typeof__(__builtin_choose_expr(size == 1,  (u8)1, \
+> +                  __builtin_choose_expr(size == 2, (u16)2, \
+> +                  __builtin_choose_expr(size == 4, (u32)3, \
+> +                  __builtin_choose_expr(size == 8, (u64)4, \
+> +                                        (void)5)))))
 
-I'm very curious how did you get this assert "d.speed_to_str" covers all
-known speeds according to the IBTA.
+Is it the same macro as above?
 
-Thanks
+> +
 
->
-> ----------------------------------------------------------------------
-> Ran 67 tests in 10.058s
->
-> FAILED (failures=1, skipped=3)
->
->
-> thanks,
-> --
-> John Hubbard
-> NVIDIA
+[...]
