@@ -2,121 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 80501127798
-	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2019 09:55:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E47A41277F0
+	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2019 10:22:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727391AbfLTIzX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 Dec 2019 03:55:23 -0500
-Received: from mga09.intel.com ([134.134.136.24]:34862 "EHLO mga09.intel.com"
+        id S1727202AbfLTJWC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 Dec 2019 04:22:02 -0500
+Received: from mx2.suse.de ([195.135.220.15]:46708 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727135AbfLTIzR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 Dec 2019 03:55:17 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 20 Dec 2019 00:55:15 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,335,1571727600"; 
-   d="scan'208";a="218434383"
-Received: from unknown (HELO localhost.localdomain) ([10.190.210.212])
-  by orsmga006.jf.intel.com with ESMTP; 20 Dec 2019 00:55:13 -0800
-Received: from localhost.localdomain (localhost [127.0.0.1])
-        by localhost.localdomain (8.15.2/8.15.2/Debian-10) with ESMTPS id xBK8tZRH005056
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Fri, 20 Dec 2019 14:25:35 +0530
-Received: (from root@localhost)
-        by localhost.localdomain (8.15.2/8.15.2/Submit) id xBK8tZGF005055;
-        Fri, 20 Dec 2019 14:25:35 +0530
-From:   Jay Jayatheerthan <jay.jayatheerthan@intel.com>
-To:     magnus.karlsson@intel.com, bjorn.topel@intel.com, ast@kernel.org,
-        daniel@iogearbox.net, netdev@vger.kernel.org,
-        jonathan.lemon@gmail.com
-Cc:     bpf@vger.kernel.org,
-        Jay Jayatheerthan <jay.jayatheerthan@intel.com>
-Subject: [PATCH bpf-next 6/6] samples/bpf: xdpsock: Add option to specify transmit fill pattern
-Date:   Fri, 20 Dec 2019 14:25:30 +0530
-Message-Id: <20191220085530.4980-7-jay.jayatheerthan@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20191220085530.4980-1-jay.jayatheerthan@intel.com>
-References: <20191220085530.4980-1-jay.jayatheerthan@intel.com>
+        id S1727188AbfLTJWB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 20 Dec 2019 04:22:01 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 98BD2AE00;
+        Fri, 20 Dec 2019 09:21:57 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 38E621E0B44; Fri, 20 Dec 2019 10:21:54 +0100 (CET)
+Date:   Fri, 20 Dec 2019 10:21:54 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, bpf@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, kvm@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
+        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
+        Maor Gottlieb <maorg@mellanox.com>
+Subject: Re: [PATCH v11 00/25] mm/gup: track dma-pinned pages: FOLL_PIN
+Message-ID: <20191220092154.GA10068@quack2.suse.cz>
+References: <20191216222537.491123-1-jhubbard@nvidia.com>
+ <20191219132607.GA410823@unreal>
+ <a4849322-8e17-119e-a664-80d9f95d850b@nvidia.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a4849322-8e17-119e-a664-80d9f95d850b@nvidia.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The UDP payload fill pattern can be specified using '-P' or '--tx-pkt-pattern'
-option. It is an unsigned 32 bit field and defaulted to 0x12345678.
+On Thu 19-12-19 12:30:31, John Hubbard wrote:
+> On 12/19/19 5:26 AM, Leon Romanovsky wrote:
+> > On Mon, Dec 16, 2019 at 02:25:12PM -0800, John Hubbard wrote:
+> > > Hi,
+> > > 
+> > > This implements an API naming change (put_user_page*() -->
+> > > unpin_user_page*()), and also implements tracking of FOLL_PIN pages. It
+> > > extends that tracking to a few select subsystems. More subsystems will
+> > > be added in follow up work.
+> > 
+> > Hi John,
+> > 
+> > The patchset generates kernel panics in our IB testing. In our tests, we
+> > allocated single memory block and registered multiple MRs using the single
+> > block.
+> > 
+> > The possible bad flow is:
+> >   ib_umem_geti() ->
+> >    pin_user_pages_fast(FOLL_WRITE) ->
+> >     internal_get_user_pages_fast(FOLL_WRITE) ->
+> >      gup_pgd_range() ->
+> >       gup_huge_pd() ->
+> >        gup_hugepte() ->
+> >         try_grab_compound_head() ->
+> 
+> Hi Leon,
+> 
+> Thanks very much for the detailed report! So we're overflowing...
+> 
+> At first look, this seems likely to be hitting a weak point in the
+> GUP_PIN_COUNTING_BIAS-based design, one that I believed could be deferred
+> (there's a writeup in Documentation/core-api/pin_user_page.rst, lines
+> 99-121). Basically it's pretty easy to overflow the page->_refcount
+> with huge pages if the pages have a *lot* of subpages.
+> 
+> We can only do about 7 pins on 1GB huge pages that use 4KB subpages.
+> Do you have any idea how many pins (repeated pins on the same page, which
+> it sounds like you have) might be involved in your test case,
+> and the huge page and system page sizes? That would allow calculating
+> if we're likely overflowing for that reason.
+> 
+> So, ideas and next steps:
+> 
+> 1. Assuming that you *are* hitting this, I think I may have to fall back to
+> implementing the "deferred" part of this design, as part of this series, after
+> all. That means:
+> 
+>   For the pin/unpin calls at least, stop treating all pages as if they are
+>   a cluster of PAGE_SIZE pages; instead, retrieve a huge page as one page.
+>   That's not how it works now, and the need to hand back a huge array of
+>   subpages is part of the problem. This affects the callers too, so it's not
+>   a super quick change to make. (I was really hoping not to have to do this
+>   yet.)
 
-The IP and UDP checksum is calculated by the code as per the content of
-the packet before transmission.
+Does that mean that you would need to make all GUP users huge page aware?
+Otherwise I don't see how what you suggest would work... And I don't think
+making all GUP users huge page aware is realistic (effort-wise) or even
+wanted (maintenance overhead in all those places).
 
-Signed-off-by: Jay Jayatheerthan <jay.jayatheerthan@intel.com>
----
- samples/bpf/xdpsock_user.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+I believe there might be also a different solution for this: For
+transparent huge pages, we could find a space in 'struct page' of the
+second page in the huge page for proper pin counter and just account pins
+there so we'd have full width of 32-bits for it.
 
-diff --git a/samples/bpf/xdpsock_user.c b/samples/bpf/xdpsock_user.c
-index 2297158a32bd..d74c4c83fc93 100644
---- a/samples/bpf/xdpsock_user.c
-+++ b/samples/bpf/xdpsock_user.c
-@@ -76,7 +76,7 @@ static bool benchmark_done;
- static u32 opt_batch_size = 64;
- static int opt_pkt_count;
- static u16 opt_pkt_size = MIN_PKT_SIZE;
--static u32 pkt_fill_pattern = 0x12345678;
-+static u32 opt_pkt_fill_pattern = 0x12345678;
- static int opt_poll;
- static int opt_interval = 1;
- static u32 opt_xdp_bind_flags = XDP_USE_NEED_WAKEUP;
-@@ -517,7 +517,7 @@ static void gen_eth_hdr_data(void)
- 	udp_hdr->len = htons(UDP_PKT_SIZE);
- 
- 	/* UDP data */
--	memset32_htonl(pkt_data + PKT_HDR_SIZE, pkt_fill_pattern,
-+	memset32_htonl(pkt_data + PKT_HDR_SIZE, opt_pkt_fill_pattern,
- 		       UDP_PKT_DATA_SIZE);
- 
- 	/* UDP header checksum */
-@@ -630,6 +630,7 @@ static struct option long_options[] = {
- 	{"batch-size", required_argument, 0, 'b'},
- 	{"tx-pkt-count", required_argument, 0, 'C'},
- 	{"tx-pkt-size", required_argument, 0, 's'},
-+	{"tx-pkt-pattern", required_argument, 0, 'P'},
- 	{0, 0, 0, 0}
- };
- 
-@@ -663,10 +664,11 @@ static void usage(const char *prog)
- 		"  -s, --tx-pkt-size=n	Transmit packet size.\n"
- 		"			(Default: %d bytes)\n"
- 		"			Min size: %d, Max size %d.\n"
-+		"  -P, --tx-pkt-pattern=nPacket fill pattern. Default: 0x%x\n"
- 		"\n";
- 	fprintf(stderr, str, prog, XSK_UMEM__DEFAULT_FRAME_SIZE,
- 		opt_batch_size, MIN_PKT_SIZE, MIN_PKT_SIZE,
--		XSK_UMEM__DEFAULT_FRAME_SIZE);
-+		XSK_UMEM__DEFAULT_FRAME_SIZE, opt_pkt_fill_pattern);
- 
- 	exit(EXIT_FAILURE);
- }
-@@ -678,7 +680,7 @@ static void parse_command_line(int argc, char **argv)
- 	opterr = 0;
- 
- 	for (;;) {
--		c = getopt_long(argc, argv, "Frtli:q:pSNn:czf:muMd:b:C:s:",
-+		c = getopt_long(argc, argv, "Frtli:q:pSNn:czf:muMd:b:C:s:P:",
- 				long_options, &option_index);
- 		if (c == -1)
- 			break;
-@@ -756,6 +758,9 @@ static void parse_command_line(int argc, char **argv)
- 				usage(basename(argv[0]));
- 			}
- 			break;
-+		case 'P':
-+			opt_pkt_fill_pattern = strtol(optarg, NULL, 16);
-+			break;
- 		default:
- 			usage(basename(argv[0]));
- 		}
+								Honza
 -- 
-2.17.1
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
