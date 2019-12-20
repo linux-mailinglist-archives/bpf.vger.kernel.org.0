@@ -2,309 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 687F4127918
-	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2019 11:16:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51C23127959
+	for <lists+bpf@lfdr.de>; Fri, 20 Dec 2019 11:30:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727216AbfLTKQ6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 Dec 2019 05:16:58 -0500
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:36196 "EHLO
+        id S1727378AbfLTKaK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 Dec 2019 05:30:10 -0500
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:28103 "EHLO
         us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727167AbfLTKQ6 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 20 Dec 2019 05:16:58 -0500
+        by vger.kernel.org with ESMTP id S1726210AbfLTKaH (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 20 Dec 2019 05:30:07 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1576837016;
+        s=mimecast20190719; t=1576837806;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=mePGlrqkyL6AIC+0QPObCsIHEuKB1/+izMXxsmGzIw0=;
-        b=GxrBtx5gllZDDOD+EQH1DtT4TLZstT23LsvdxpdWVM0ecRIqcCS6YUC8LaWWyXxS0HaZC7
-        Ry2gzK/2aq0xZThqhtuIpDfQbP1EaM4dGGFNWxsgI+i46RJinSmKf+5QIBywo601R/Xm8e
-        2fJ++Y6ikIChWMEpS3Mu7JiivbNGrcE=
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
- [209.85.208.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-270-z53rsnxAPh6AmV63J3qRLA-1; Fri, 20 Dec 2019 05:16:55 -0500
-X-MC-Unique: z53rsnxAPh6AmV63J3qRLA-1
-Received: by mail-lj1-f199.google.com with SMTP id f1so2728416ljp.5
-        for <bpf@vger.kernel.org>; Fri, 20 Dec 2019 02:16:54 -0800 (PST)
+        bh=bLxRxHGGdK9fwJ8AQcIOollF4v5MCCwpG8KKa6zir/c=;
+        b=R33cYBJF0qduAo9bzv61Fe4+iIwCZzr26q8NZpeMmniGff+uOww8uLhH+mY/XTwuuunulo
+        jq3heo03kFtl1AAd99Xe61Q/j1k4nJeUg0G8HnO8fTK4HAfjVmbSj8SHWZ/5lE229R57nP
+        0gWHSlq7ZUzZK+KOAEuuxvQQSYTt65o=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-284-yEif2ZmyOYeickp5oarPxQ-1; Fri, 20 Dec 2019 05:30:02 -0500
+X-MC-Unique: yEif2ZmyOYeickp5oarPxQ-1
+Received: by mail-lf1-f70.google.com with SMTP id f22so1051805lfh.4
+        for <bpf@vger.kernel.org>; Fri, 20 Dec 2019 02:30:02 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=mePGlrqkyL6AIC+0QPObCsIHEuKB1/+izMXxsmGzIw0=;
-        b=f8sStOVIX+6JSDHIrKobVPx0mdLbRsIQsJSfyNEIFFqb1B+gZWIiB4sCAGWl7TnKft
-         3IvgDGfj4ZbTc/0RY/qR5I2EVQUDEbvDKViE3gPLKBkXd0xLTjS0AzFvIqJv2HaAKv7h
-         /hVH6K9yyHESVeOpmK3S+AxUDCVky4LGoN+Z5AYuDiw36z/NAUXmQqFjoohXWimJ5zXZ
-         0Bxi10U7RSVJ3WUrZ5OcxgeJLyKym+h4hz9gR7NIUwH0YRMcY93yTVRsoEIE3bwwF8mQ
-         f6sG1uHHV2x6uYAo0mC2bsM0gvHP0o3QOdmNlI9gGsbR/JpDzyiRT2AsDK1dNuXuL9KL
-         Iz0g==
-X-Gm-Message-State: APjAAAV/Tk3u/4otIwGfxiFubfk5rxwGgxubtEJxObcQv85fyX7RVdR7
-        7VKecnsiL+6r7cM3JJPbUQ6gtHvKLmcaHOkG6ugL/0TX5i6PEawR1SVYSkV9ChQWQz4HBkbLRgm
-        NFKXtHgaKWpOW
-X-Received: by 2002:ac2:5310:: with SMTP id c16mr8444560lfh.102.1576837013520;
-        Fri, 20 Dec 2019 02:16:53 -0800 (PST)
-X-Google-Smtp-Source: APXvYqwn2p9/Ws3hd9WTr49Wnde1WCnioR4CSlNwoE/RQHFMOe8I1BE1aP9AhU8Bq4euzofUMb0dXA==
-X-Received: by 2002:ac2:5310:: with SMTP id c16mr8444543lfh.102.1576837013126;
-        Fri, 20 Dec 2019 02:16:53 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id u18sm4082506lje.69.2019.12.20.02.16.51
+         :message-id:mime-version;
+        bh=bLxRxHGGdK9fwJ8AQcIOollF4v5MCCwpG8KKa6zir/c=;
+        b=KYkpXKQY00d8K3yCMv/++CsPoSWubzTIm6ZrFnmh1VMycabq39Tp/OZUcT+XFC3GPS
+         pSLWqUCSI44CIBODu8hJ1ELSVhtZ7gBnyBo+3YvzpCQ0HYkkhx4b+FWs4wQ3aCXskm1f
+         Q2DxFU2gLafdQ7QzDJMUuldlGEtR0OgNMfaduEY2ILloyvrKSrC4zRMURg8dv58binUy
+         lpgJaCk0E6UaR5Xq/Vziib0D1zHrhaGSp+hkaUUnfozitIzDOTpJI2y5st8MQHZz7mwP
+         YP4H/L6gGjlbc+1C3f32iKET9TkIPOLAUFFtIopc+NKVp4wjgbdeYk5ysoP1O1+b/lPQ
+         nmSw==
+X-Gm-Message-State: APjAAAV45TZsmd9s+KBfyy6mSWsLfH1OXQI4xAYrkVUIA2NfAxWAQH5K
+        +nawi3Pl0dQkoOYR5G+l+ZMKNnWxpheMXy8ScBBWQ9wqim1MoFv/XmLqiI1YDuxas2hIzD2giq1
+        k9XghlDVXJncx
+X-Received: by 2002:a2e:96c4:: with SMTP id d4mr289062ljj.225.1576837800986;
+        Fri, 20 Dec 2019 02:30:00 -0800 (PST)
+X-Google-Smtp-Source: APXvYqzqkv9n7zq5sZW/toeG72RiasxsxgD85KG+ni8gYTocULVjC6qb+mO1RPZTO5BeAC5siMBpoA==
+X-Received: by 2002:a2e:96c4:: with SMTP id d4mr289043ljj.225.1576837800802;
+        Fri, 20 Dec 2019 02:30:00 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id l28sm3762553lfk.21.2019.12.20.02.29.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Dec 2019 02:16:52 -0800 (PST)
+        Fri, 20 Dec 2019 02:30:00 -0800 (PST)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 6AB7E180969; Fri, 20 Dec 2019 11:16:51 +0100 (CET)
+        id 37485180969; Fri, 20 Dec 2019 11:29:59 +0100 (CET)
 From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Martin Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
+To:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        Network Development <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>,
-        Kernel Team <Kernel-team@fb.com>,
-        Networking <netdev@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 11/13] bpf: libbpf: Add STRUCT_OPS support
-In-Reply-To: <CAEf4BzYr+cBH4r7nmX+2uBTOkaxtp2q3ARqm-Gb9ADA9cdqSgQ@mail.gmail.com>
-References: <20191214004737.1652076-1-kafai@fb.com> <20191214004803.1653618-1-kafai@fb.com> <CAEf4BzbJoso7A0dn=xhOkFMOcKqZ6wYp=XoqGiL+FO+0VKqh5g@mail.gmail.com> <20191218070341.fd2ypexmeca5cefa@kafai-mbp.dhcp.thefacebook.com> <CAEf4BzaGcM6ose=2DJJO1qkRkiqEPR7gU4GizCvffADo5M29wA@mail.gmail.com> <20191218173350.nll5766abgkptjac@kafai-mbp.dhcp.thefacebook.com> <CAEf4BzboyRio_KaQtd2eOqmH+x0FPfYp_CDfnUzv4H698j_wsQ@mail.gmail.com> <87fthg4rx5.fsf@toke.dk> <CAEf4BzYr+cBH4r7nmX+2uBTOkaxtp2q3ARqm-Gb9ADA9cdqSgQ@mail.gmail.com>
+        bpf <bpf@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "Karlsson\, Magnus" <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>, brouer@redhat.com
+Subject: Re: [PATCH bpf-next v2 0/8] Simplify xdp_do_redirect_map()/xdp_do_flush_map() and XDP maps
+In-Reply-To: <20191220102615.45fe022d@carbon>
+References: <20191219061006.21980-1-bjorn.topel@gmail.com> <CAADnVQL1x8AJmCOjesA_6Z3XprFVEdWgbREfpn3CC-XO8k4PDA@mail.gmail.com> <20191220084651.6dacb941@carbon> <20191220102615.45fe022d@carbon>
 X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 20 Dec 2019 11:16:51 +0100
-Message-ID: <87pngj2tf0.fsf@toke.dk>
+Date:   Fri, 20 Dec 2019 11:29:59 +0100
+Message-ID: <87mubn2st4.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+Jesper Dangaard Brouer <brouer@redhat.com> writes:
 
-> On Thu, Dec 19, 2019 at 12:54 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@r=
-edhat.com> wrote:
->>
->> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
->>
->> > On Wed, Dec 18, 2019 at 9:34 AM Martin Lau <kafai@fb.com> wrote:
->> >>
->> >> On Wed, Dec 18, 2019 at 08:34:25AM -0800, Andrii Nakryiko wrote:
->> >> > On Tue, Dec 17, 2019 at 11:03 PM Martin Lau <kafai@fb.com> wrote:
->> >> > >
->> >> > > On Tue, Dec 17, 2019 at 07:07:23PM -0800, Andrii Nakryiko wrote:
->> >> > > > On Fri, Dec 13, 2019 at 4:48 PM Martin KaFai Lau <kafai@fb.com>=
- wrote:
->> >> > > > >
->> >> > > > > This patch adds BPF STRUCT_OPS support to libbpf.
->> >> > > > >
->> >> > > > > The only sec_name convention is SEC("struct_ops") to identify=
- the
->> >> > > > > struct ops implemented in BPF, e.g.
->> >> > > > > SEC("struct_ops")
->> >> > > > > struct tcp_congestion_ops dctcp =3D {
->> >> > > > >         .init           =3D (void *)dctcp_init,  /* <-- a bpf=
-_prog */
->> >> > > > >         /* ... some more func prts ... */
->> >> > > > >         .name           =3D "bpf_dctcp",
->> >> > > > > };
->> >> > > > >
->> >> > > > > In the bpf_object__open phase, libbpf will look for the "stru=
-ct_ops"
->> >> > > > > elf section and find out what is the btf-type the "struct_ops=
-" is
->> >> > > > > implementing.  Note that the btf-type here is referring to
->> >> > > > > a type in the bpf_prog.o's btf.  It will then collect (throug=
-h SHT_REL)
->> >> > > > > where are the bpf progs that the func ptrs are referring to.
->> >> > > > >
->> >> > > > > In the bpf_object__load phase, the prepare_struct_ops() will =
-load
->> >> > > > > the btf_vmlinux and obtain the corresponding kernel's btf-typ=
-e.
->> >> > > > > With the kernel's btf-type, it can then set the prog->type,
->> >> > > > > prog->attach_btf_id and the prog->expected_attach_type.  Thus,
->> >> > > > > the prog's properties do not rely on its section name.
->> >> > > > >
->> >> > > > > Currently, the bpf_prog's btf-type =3D=3D> btf_vmlinux's btf-=
-type matching
->> >> > > > > process is as simple as: member-name match + btf-kind match +=
- size match.
->> >> > > > > If these matching conditions fail, libbpf will reject.
->> >> > > > > The current targeting support is "struct tcp_congestion_ops" =
-which
->> >> > > > > most of its members are function pointers.
->> >> > > > > The member ordering of the bpf_prog's btf-type can be differe=
-nt from
->> >> > > > > the btf_vmlinux's btf-type.
->> >> > > > >
->> >> > > > > Once the prog's properties are all set,
->> >> > > > > the libbpf will proceed to load all the progs.
->> >> > > > >
->> >> > > > > After that, register_struct_ops() will create a map, finalize=
- the
->> >> > > > > map-value by populating it with the prog-fd, and then registe=
-r this
->> >> > > > > "struct_ops" to the kernel by updating the map-value to the m=
-ap.
->> >> > > > >
->> >> > > > > By default, libbpf does not unregister the struct_ops from th=
-e kernel
->> >> > > > > during bpf_object__close().  It can be changed by setting the=
- new
->> >> > > > > "unreg_st_ops" in bpf_object_open_opts.
->> >> > > > >
->> >> > > > > Signed-off-by: Martin KaFai Lau <kafai@fb.com>
->> >> > > > > ---
->> >> > > >
->> >> > > > This looks pretty good to me. The big two things is exposing st=
-ructops
->> >> > > > as real struct bpf_map, so that users can interact with it using
->> >> > > > libbpf APIs, as well as splitting struct_ops map creation and
->> >> > > > registration. bpf_object__load() should only make sure all maps=
- are
->> >> > > > created, progs are loaded/verified, but none of BPF program can=
- yet be
->> >> > > > called. Then attach is the phase where registration happens.
->> >> > > Thanks for the review.
->> >> > >
->> >> > > [ ... ]
->> >> > >
->> >> > > > >  static inline __u64 ptr_to_u64(const void *ptr)
->> >> > > > >  {
->> >> > > > >         return (__u64) (unsigned long) ptr;
->> >> > > > > @@ -233,6 +239,32 @@ struct bpf_map {
->> >> > > > >         bool reused;
->> >> > > > >  };
->> >> > > > >
->> >> > > > > +struct bpf_struct_ops {
->> >> > > > > +       const char *var_name;
->> >> > > > > +       const char *tname;
->> >> > > > > +       const struct btf_type *type;
->> >> > > > > +       struct bpf_program **progs;
->> >> > > > > +       __u32 *kern_func_off;
->> >> > > > > +       /* e.g. struct tcp_congestion_ops in bpf_prog's btf f=
-ormat */
->> >> > > > > +       void *data;
->> >> > > > > +       /* e.g. struct __bpf_tcp_congestion_ops in btf_vmlinu=
-x's btf
->> >> > > >
->> >> > > > Using __bpf_ prefix for this struct_ops-specific types is a bit=
- too
->> >> > > > generic (e.g., for raw_tp stuff Alexei used btf_trace_). So may=
-be make
->> >> > > > it btf_ops_ or btf_structops_?
->> >> > > Is it a concern on name collision?
->> >> > >
->> >> > > The prefix pick is to use a more representative name.
->> >> > > struct_ops use many bpf pieces and btf is one of them.
->> >> > > Very soon, all new codes will depend on BTF and btf_ prefix
->> >> > > could become generic also.
->> >> > >
->> >> > > Unlike tracepoint, there is no non-btf version of struct_ops.
->> >> >
->> >> > Not so much name collision, as being able to immediately recognize
->> >> > that it's used to provide type information for struct_ops. Think ab=
-out
->> >> > some automated tooling parsing vmlinux BTF and trying to create some
->> >> > derivative types for those btf_trace_xxx and __bpf_xxx types. Having
->> >> > unique prefix that identifies what kind of type-providing struct it=
- is
->> >> > is very useful to do generic tool like that. While __bpf_ isn't
->> >> > specifying in any ways that it's for struct_ops.
->> >> >
->> >> > >
->> >> > > >
->> >> > > >
->> >> > > > > +        * format.
->> >> > > > > +        * struct __bpf_tcp_congestion_ops {
->> >> > > > > +        *      [... some other kernel fields ...]
->> >> > > > > +        *      struct tcp_congestion_ops data;
->> >> > > > > +        * }
->> >> > > > > +        * kern_vdata in the sizeof(struct __bpf_tcp_congesti=
-on_ops).
->> >> > > >
->> >> > > > Comment isn't very clear.. do you mean that data pointed to by
->> >> > > > kern_vdata is of sizeof(...) bytes?
->> >> > > >
->> >> > > > > +        * prepare_struct_ops() will populate the "data" into
->> >> > > > > +        * "kern_vdata".
->> >> > > > > +        */
->> >> > > > > +       void *kern_vdata;
->> >> > > > > +       __u32 type_id;
->> >> > > > > +       __u32 kern_vtype_id;
->> >> > > > > +       __u32 kern_vtype_size;
->> >> > > > > +       int fd;
->> >> > > > > +       bool unreg;
->> >> > > >
->> >> > > > This unreg flag (and default behavior to not unregister) is bot=
-hering
->> >> > > > me a bit.. Shouldn't this be controlled by map's lifetime, at l=
-east.
->> >> > > > E.g., if no one pins that map - then struct_ops should be unreg=
-istered
->> >> > > > on map destruction. If application wants to keep BPF programs
->> >> > > > attached, it should make sure to pin map, before userspace part=
- exits?
->> >> > > > Is this problematic in any way?
->> >> > > I don't think it should in the struct_ops case.  I think of the
->> >> > > struct_ops map is a set of progs "attach" to a subsystem (tcp_cong
->> >> > > in this case) and this map-progs stay (or keep attaching) until i=
-t is
->> >> > > detached.  Like other attached bpf_prog keeps running without
->> >> > > caring if the bpf_prog is pinned or not.
->> >> >
->> >> > I'll let someone else comment on how this behaves for cgroup, xdp,
->> >> > etc,
->> >> > but for tracing, for example, we have FD-based BPF links, which
->> >> > will detach program automatically when FD is closed. I think the id=
-ea
->> >> > is to extend this to other types of BPF programs as well, so there =
-is
->> >> > no risk of leaving some stray BPF program running after unintended
->> >> Like xdp_prog, struct_ops does not have another fd-based-link.
->> >> This link can be created for struct_ops, xdp_prog and others later.
->> >> I don't see a conflict here.
->> >
->> > My point was that default behavior should be conservative: free up
->> > resources automatically on process exit, unless specifically pinned by
->> > user.
->> > But this discussion made me realize that we miss one thing from
->> > general bpf_link framework. See below.
->> >
->> >>
->> >> > crash of userspace program. When application explicitly needs BPF
->> >> > program to outlive its userspace control app, then this can be
->> >> > achieved by pinning map/program in BPFFS.
->> >> If the concern is about not leaving struct_ops behind,
->> >> lets assume there is no "detach" and only depends on the very
->> >> last userspace's handles (FD/pinned) of a map goes away,
->> >> what may be an easy way to remove bpf_cubic from the system:
->> >
->> > Yeah, I think this "last map FD close frees up resources/detaches" is
->> > a good behavior.
->> >
->> > Where we do have problem is with bpf_link__destroy() unconditionally
->> > also detaching whatever was attached (tracepoint, kprobe, or whatever
->> > was done to create bpf_link in the first place). Now,
->> > bpf_link__destroy() has to be called by user (or skeleton) to at least
->> > free up malloc()'ed structs. But it appears that it's not always
->> > desirable that upon bpf_link destruction underlying BPF program gets
->> > detached. I think this will be the case for xdp and others as well.
->>
->> For XDP the model has thus far been "once attached, the program stays
->> until explicitly detached". Changing that would certainly be surprising,
->> so I agree that splitting the API is best (not that I'm sure how many
->> XDP programs will end up using that API, but that's a different
->> concern)...
+> On Fri, 20 Dec 2019 08:46:51 +0100
+> Jesper Dangaard Brouer <brouer@redhat.com> wrote:
 >
-> This would be a new FD-based API for XDP, I don't think we can change
-> existing API. But I think default behavior should still be to
-> auto-detach, unless explicitly "pinned" in whatever way. That would
-> prevent surprising "leakage" of BPF programs for unsuspecting users.
+>> On Thu, 19 Dec 2019 21:21:39 -0800
+>> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+>> 
+>> > > v1->v2 [1]:
+>> > >   * Removed 'unused-variable' compiler warning (Jakub)
+>> > >
+>> > > [1] https://lore.kernel.org/bpf/20191218105400.2895-1-bjorn.topel@gmail.com/    
+>> > 
+>> > My understanding that outstanding discussions are not objecting to the
+>> > core ideas of the patch set, hence applied. Thanks  
+>> 
+>> I had hoped to have time to review it in details today.  But as I don't
+>> have any objecting to the core ideas, then I don't mind it getting
+>> applied. We can just fix things in followups.
+>
+> I have now went over the entire patchset, and everything look perfect,
+> I will go as far as saying it is brilliant.  We previously had the
+> issue, that using different redirect maps in a BPF-prog would cause the
+> bulking effect to be reduced, as map_to_flush cause previous map to get
+> flushed. This is now solved :-)
 
-But why do we need a new API for attaching XDP programs? Also, what are
-the use cases where it makes sense to have this kind of "transient" XDP
-program? The only one I can think about is something like xdpdump, which
-moves packets to userspace (and should stop doing that when the
-userspace listener goes away). But with bpf-to-bpf tracing, xdpdump
-won't actually be an XDP program, so what's left? The system firewall
-rules don't go away when the program that installed them exits either;
-why should an XDP program?
+Another thing that occurred to me while thinking about this: Now that we
+have a single flush list, is there any reason we couldn't move the
+devmap xdp_bulk_queue into struct net_device? That way it could also be
+used for the non-map variant of bpf_redirect()?
 
 -Toke
 
