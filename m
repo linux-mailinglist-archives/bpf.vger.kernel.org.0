@@ -2,254 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 884BA128A64
-	for <lists+bpf@lfdr.de>; Sat, 21 Dec 2019 17:24:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32292128BFD
+	for <lists+bpf@lfdr.de>; Sun, 22 Dec 2019 01:02:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726593AbfLUQYi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 21 Dec 2019 11:24:38 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:26360 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726709AbfLUQYi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 21 Dec 2019 11:24:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1576945476;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0mM/O2UmUWT5pwYtZWXzKYITjKsYGiROXs6Zgo37zdg=;
-        b=h8yoVIo4NGVtRHCSI32FMDXihppcu+e+uWBr4uEkbS7o7KN0HsVPCmvGefhR1T9inoEMEx
-        CEgm1mBw6ESeTjB0jxhtDeESytknDmp3xsA197+4A62/Ba+XNpQzKC/8YjOmK/gPI5zhnJ
-        UBMWT2U8nAQlJatn7RC5fyvqKHcNP0Q=
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
- [209.85.208.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-97-2sffPcmcP9CHXGNi7GibZQ-1; Sat, 21 Dec 2019 11:24:33 -0500
-X-MC-Unique: 2sffPcmcP9CHXGNi7GibZQ-1
-Received: by mail-lj1-f200.google.com with SMTP id y18so3328638ljj.16
-        for <bpf@vger.kernel.org>; Sat, 21 Dec 2019 08:24:33 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=0mM/O2UmUWT5pwYtZWXzKYITjKsYGiROXs6Zgo37zdg=;
-        b=QQ6PARGGQlUbYABYjjr8sXxHSkrgDa2LvtC6Yt0ySEkX/nNBnJJC772Dv+WqYNSVlQ
-         BrQUljvq83cxxhZV/PaSDfY0SmvLjdQbSnwVGqIcxn2RkooZdU+rtZueL6y95w6DKVcp
-         EG/6z+GleblWYuA7jROK/4SF1rjO+A48mzqQ0haVGpFvyDNiPzXPouHFYzqjaEPZl/zG
-         QxR0/GUitAfBiRuFvpvfmrQt1o1mPaZBNGL5GAM0f0uUVKr9rsnsqCrA1SNpn5uDjenB
-         jqIujLTDsO512MIy+rIrT2v8SlO7n9LM0W/jSdzqckDU/u8lM2lXgfG10uHwl2dORz7/
-         Qs+g==
-X-Gm-Message-State: APjAAAWPF1wGncXtrN7wS8irt5qWMqofw2x6QRjkngB56whFVoXlDGgW
-        jtEFSbUGSe4N+SM2s2AJvlqFq/CyhYuLngiddwlEP2jbI+lVSgmSkPp5GcaAaNqjIbqtbbdmfxj
-        2IMbP4uu6zfv2
-X-Received: by 2002:a19:c0b:: with SMTP id 11mr12664199lfm.135.1576945471847;
-        Sat, 21 Dec 2019 08:24:31 -0800 (PST)
-X-Google-Smtp-Source: APXvYqxWis+AezKuBdTb9TCYVxhLvaVdMFmz/rXTn+53cgoo8JXdv1T47lsE8+nlvgGKr7LnytuQDA==
-X-Received: by 2002:a19:c0b:: with SMTP id 11mr12664191lfm.135.1576945471572;
-        Sat, 21 Dec 2019 08:24:31 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id i17sm4100482ljd.34.2019.12.21.08.24.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Dec 2019 08:24:30 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 83F9D18096B; Sat, 21 Dec 2019 17:24:24 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH RFC bpf-next 0/3] libbpf: Add support for extern function calls
-In-Reply-To: <20191220203045.hmeoum5l4uw7gy5g@ast-mbp.dhcp.thefacebook.com>
-References: <157676577049.957277.3346427306600998172.stgit@toke.dk> <20191220203045.hmeoum5l4uw7gy5g@ast-mbp.dhcp.thefacebook.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Sat, 21 Dec 2019 17:24:24 +0100
-Message-ID: <878sn53avb.fsf@toke.dk>
+        id S1726318AbfLVACZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 21 Dec 2019 19:02:25 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:3582 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726024AbfLVACY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 21 Dec 2019 19:02:24 -0500
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5dfeb2820001>; Sat, 21 Dec 2019 16:02:11 -0800
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Sat, 21 Dec 2019 16:02:22 -0800
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Sat, 21 Dec 2019 16:02:22 -0800
+Received: from [10.2.167.41] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sun, 22 Dec
+ 2019 00:02:18 +0000
+Subject: Re: [PATCH v11 00/25] mm/gup: track dma-pinned pages: FOLL_PIN
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jens Axboe <axboe@kernel.dk>, Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, <bpf@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <kvm@vger.kernel.org>,
+        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <linux-media@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <netdev@vger.kernel.org>,
+        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        Maor Gottlieb <maorg@mellanox.com>
+References: <20191216222537.491123-1-jhubbard@nvidia.com>
+ <20191219132607.GA410823@unreal>
+ <a4849322-8e17-119e-a664-80d9f95d850b@nvidia.com>
+ <20191219210743.GN17227@ziepe.ca> <20191220182939.GA10944@unreal>
+ <1001a5fc-a71d-9c0f-1090-546c4913d8a2@nvidia.com>
+ <20191221100843.GB13335@unreal>
+From:   John Hubbard <jhubbard@nvidia.com>
+X-Nvconfidentiality: public
+Message-ID: <9261f37b-5932-4580-cbc8-f591b0b33b2a@nvidia.com>
+Date:   Sat, 21 Dec 2019 15:59:24 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20191221100843.GB13335@unreal>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1576972931; bh=95pYs1E9YJXlQbksWpOmj6qddfnejBQ8umGtr6ZpFwY=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=Ih1gQcFIGgKg5n193VWHK/fpuYOWnxEAjDWwUpeL0db+IZfCrijIZXMmxlXytkJAy
+         GyHybquB0rAC4PSC5fyYYOxPtnlJHJXbYbE1OnuToKQzSNtOX1E6jCjMDILoLbqZ4V
+         OX5Q1eZnL4jcgn4z6z9ok9K0mg+OyYm6pC3L/Y0Cn97KIjBe5Xa80wOPiCj7nBJ7Qf
+         tzyFw5L1dY/NfwyZ7ZrE7k0OMtxXiptqvzxEOmfi4Y/W4Mi7z2d4dMo373vMb2W5ZL
+         8xmwOO+L537Cy6K9gc3OcvyItc0amK8uE6k5ZFJ8R4rau7j4DfEX/idektDGaSQXw9
+         Z/MQNsIwlLFsA==
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+On 12/21/19 2:08 AM, Leon Romanovsky wrote:
+> On Fri, Dec 20, 2019 at 03:54:55PM -0800, John Hubbard wrote:
+>> On 12/20/19 10:29 AM, Leon Romanovsky wrote:
+>> ...
+>>>> $ ./build.sh
+>>>> $ build/bin/run_tests.py
+>>>>
+>>>> If you get things that far I think Leon can get a reproduction for you
+>>>
+>>> I'm not so optimistic about that.
+>>>
+>>
+>> OK, I'm going to proceed for now on the assumption that I've got an overflow
+>> problem that happens when huge pages are pinned. If I can get more information,
+>> great, otherwise it's probably enough.
+>>
+>> One thing: for your repro, if you know the huge page size, and the system
+>> page size for that case, that would really help. Also the number of pins per
+>> page, more or less, that you'd expect. Because Jason says that only 2M huge
+>> pages are used...
+>>
+>> Because the other possibility is that the refcount really is going negative,
+>> likely due to a mismatched pin/unpin somehow.
+>>
+>> If there's not an obvious repro case available, but you do have one (is it easy
+>> to repro, though?), then *if* you have the time, I could point you to a github
+>> branch that reduces GUP_PIN_COUNTING_BIAS by, say, 4x, by applying this:
+> 
+> I'll see what I can do this Sunday.
+> 
 
-> On Thu, Dec 19, 2019 at 03:29:30PM +0100, Toke H=C3=B8iland-J=C3=B8rgense=
-n wrote:
->> This series adds support for resolving function calls to functions marke=
-d as
->> 'extern' in eBPF source files, by resolving the function call targets at=
- load
->> time. For now, this only works by static linking (i.e., copying over the
->> instructions from the function target. Once the kernel support for dynam=
-ic
->> linking lands, support can be added for having a function target be an a=
-lready
->> loaded program fd instead of a bpf object.
->>=20
->> The API I'm proposing for this is that the caller specifies an explicit =
-mapping
->> between extern function names and function names in the target object fi=
-le.
->> This is to support the XDP multi-prog case, where the dispatcher program=
- may not
->> necessarily have control over function names in the target programs, so =
-simple
->> function name resolution can't be used.
->
-> I think simple name resolution should be the default behavior for both st=
-atic
-> and dynamic linking. That's the part where I think we must not reinvent t=
-he wheel.
-> When one .c has
-> extern int prog1(struct xdp_md *ctx);
-> another .c should have:
-> int prog1(struct xdp_md *ctx) {...}
-> Both static and dynamic linking should link these two .c together without=
- any
-> extra steps from the user. It's expected behavior that any C user assumes=
- and
-> it should 'just work'.
+The other data point that might shed light on whether it's a mismatch (this only
+works if the system is not actually crashing, though), is checking the new
+vmstat items, like this:
 
-Sure, absolutely, when we can, we should just auto-resolve function
-signatures and names...
+$ grep foll_pin /proc/vmstat
+nr_foll_pin_requested 16288188
+nr_foll_pin_returned 16288188
 
-> Where we need to be creative is how plug two xdp firewalls with arbitrary
-> program names (including the same names) into common roolet.
+...but OTOH, if you've got long-term pins, then those are *supposed* to be
+mismatched, so it only really helps in between tests.
 
-...however, the "same name" issue is why I started down the path of
-specifying links explicitly. I figure it will be somewhat common to have
-to link in two independent XDP programs that both picked the same
-function name (such as "xdp_main").
-
-> One firewall can be:
-> noinline int foo(struct xdp_md *ctx)
-> { // some logic
-> }
-> SEC("xdp")
-> int xdp_prog1(struct xdp_md *ctx)
-> {
->        return foo(ctx);
-> }
->
-> And another firewall:
-> noinline int foo(struct xdp_md *ctx)
-> { // some other logic
-> }
-> SEC("xdp")
-> int xdp_prog2(struct xdp_md *ctx)
-> {
->        return foo(ctx);
-> }
->
-> Both xdp programs (with multiple functions) need to be connected into:
->
-> __weak noinline int dummy1(struct xdp_md *ctx) { return XDP_PASS; }
-> __weak noinline int dummy2(struct xdp_md *ctx) { return XDP_PASS; }
->
-> SEC("xdp")
-> int rootlet(struct xdp_md *ctx)
-> {
->         int ret;
->
->         ret =3D dummy1(ctx);
->         if (ret !=3D XDP_PASS)
->                 goto out;
->
->         ret =3D dummy2(ctx);
->         if (ret !=3D XDP_DROP)
->                 goto out;
-> out:
->         return ret;
-> }
->
-> where xdp_prog1() from 1st firewall needs to replace dummy1()
-> and xdp_prog2() from 2nd firewall needs to replaced dummy2().
-> Or the other way around depending on the order of installation.
->
-> At the kernel level the API is actually simple. It's the pair of
-> target_prog_fd + btf_id I described earlier in "static/dynamic linking" t=
-hread.
-> Where target_prog_fd is FD of loaded into kernel rootlet and
-> btf_id is BTF id of dummy1 or dummy2.
-
-Ah, right; I was thinking it would need a name, but I agree that btf_id
-is better.
-
-> When 1st firewall is being loaded libbpf needs to pass target_prog_fd+btf=
-_id
-> along with xdp_prog1() into the kernel, so that the verifier can do
-> appropriate checking and refcnting.
->
-> Note that the kernel and every program have their own BTF id space.
-> Their own BTF ids =3D=3D their own names.
-> Loading two programs with exactly the same name is ok today and in the fu=
-ture.
-> Linking into other program name space is where we need to agree on naming=
- first.
->
-> The static linking of two .o should follow familiar user space linker log=
-ic.
-> Proposed bpf_linker__..("first.o") and bpf_linker__..("second.o") should =
-work.
-> Meaning that "extern int foo()" in "second.o" will get resolved with "int=
- foo()"
-> from "first.o".
-> Dynamic linking is when "first.o" with "int foo()" was already loaded into
-> the kernel and "second.o" is loaded after. In such case its "extern int f=
-oo()"
-> will be resolved dynamically from previously loaded program.
-> The user space analogy of this behavior is glibc.
-> "first.o" is glibc.so that supplies memcpy() and friends.
-> "second.o" is some a.out that used "extern int memcpy()".
-
-Right, this makes sense. Are you proposing that the kernel does this
-without any intervention from libbpf when the BTF indicates it has an
-extern KIND_FUNC_PROTO? What about overriding the names (dynamically
-linking against two programs with identical function names)?
-
-> For XDP rootlet case already loaded weak function dummy[12]() need to
-> be replaced later by xdp_prog[12](). It's like replacing memcpy() in glib=
-c.so.
-> I think the user space doesn't have such concepts. I was simply calling it
-> dynamic linking too, but it's not quite accurate. It's dynamically replac=
-ing
-> already loaded functions. Let's call it "dynamic re-linking" ?
-
-I guess it's kinda akin to LD_PRELOAD? But I'm fine with calling it by a
-separate name.
-
-> As far as libbpf api for dynamic linking, so far I didn't need to add new=
- stuff.
-> I'm trying to piggy back on fexit/fentry approach.
-
-Cool :)
-
-> I think to prototype re-linking without kernel support. We can do static =
-re-linking.
-> I think the best approach is to stick with name based resolution. libxdp =
-can do:
-> - add alias("dummy1") to xdp_prog1() in first_firewall.o
-> - rename foo() in first_firewall.o into unique_foo().
-> - add alias("dummy2") to xdp_prog2() in second_firewall.o
-> - rename foo() in second_firewall.o into very_unique_foo().
-> - use standard static linking of first_firewall.o + second_firewall.o + r=
-ootlet.o
-
-The alias() would be a BTF annotation? Or something else?
-
-> The static re-linking is more work than dynamic re-linking because it nee=
-ds to
-> operate in a single name space of final .o. Whereas dynamic re-linking has
-> individual name space for every loaded into kernel program.
-> I'm hoping to share a prototype of dynamic re-linking soon.
-
-Excellent! At the rate you're going, you'll have the dynamic re-linking
-working before I get static linking done :)
-
--Toke
-
+thanks,
+-- 
+John Hubbard
+NVIDIA
