@@ -2,145 +2,254 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 97524128A60
-	for <lists+bpf@lfdr.de>; Sat, 21 Dec 2019 17:22:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 884BA128A64
+	for <lists+bpf@lfdr.de>; Sat, 21 Dec 2019 17:24:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726709AbfLUQWE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 21 Dec 2019 11:22:04 -0500
-Received: from mail-pj1-f65.google.com ([209.85.216.65]:55267 "EHLO
-        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726593AbfLUQWD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 21 Dec 2019 11:22:03 -0500
-Received: by mail-pj1-f65.google.com with SMTP id kx11so1397234pjb.4;
-        Sat, 21 Dec 2019 08:22:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=4R50o9Q/QVb/27CP47foPm4kgwdQXbgPWO/zyAUY+90=;
-        b=AjOhXEJDNPMP/wrgRNnptbTYHwGAK6hHnqpZJCxUZUfHOJoRLEOkJAImSBuoqAPxXn
-         /576D8uVSTB9a+V4T5xrMZnLRrJuK6+DKt1AY4J6STcwYbm4nmjiF4HTdUy/0Ps2ToB0
-         kvBCIvpWxigroo4sVJRABmLOrJYvddqQqoGFDe56LG1GcyPncAS9ux9ZNI85ja1pAsZs
-         2tjDGiE/bE4dhelGVdNYBWeCZIX3FR6p/xGnwcYzCS6oCSYZqCVmLjBgGh7txVIsH1+y
-         aFga20o+4oevoedsA0x9tIcLPm0kQppU3+0AxyxuqsO7F6cqkSIUGpkS2vhymAQjC6+g
-         sMnA==
+        id S1726593AbfLUQYi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 21 Dec 2019 11:24:38 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:26360 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726709AbfLUQYi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 21 Dec 2019 11:24:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1576945476;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0mM/O2UmUWT5pwYtZWXzKYITjKsYGiROXs6Zgo37zdg=;
+        b=h8yoVIo4NGVtRHCSI32FMDXihppcu+e+uWBr4uEkbS7o7KN0HsVPCmvGefhR1T9inoEMEx
+        CEgm1mBw6ESeTjB0jxhtDeESytknDmp3xsA197+4A62/Ba+XNpQzKC/8YjOmK/gPI5zhnJ
+        UBMWT2U8nAQlJatn7RC5fyvqKHcNP0Q=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-97-2sffPcmcP9CHXGNi7GibZQ-1; Sat, 21 Dec 2019 11:24:33 -0500
+X-MC-Unique: 2sffPcmcP9CHXGNi7GibZQ-1
+Received: by mail-lj1-f200.google.com with SMTP id y18so3328638ljj.16
+        for <bpf@vger.kernel.org>; Sat, 21 Dec 2019 08:24:33 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=4R50o9Q/QVb/27CP47foPm4kgwdQXbgPWO/zyAUY+90=;
-        b=KHmcP9NKr67odibXw9OoWGEM2VxvmTjiEXi7XJ9VRxhRlyg6SA7EWYA/YrVGpNmh9m
-         L9wySHpCSkwYuvFcTltUug7IFeJsvdhpYeE8eJJcEiq5BT4AJ9VAq0EG+1KFhRlkJMyh
-         bliVpK3OO9fglYw/P8+VKIdAVszEJnn1k8A5240PuTWu9R0syIg2I+6dlKZbEu+k4D01
-         4EFtj4EY6cxBvOiYkwafaygZ/J7t4C4LdKZ96G98qKndMOWz29MnKVxqjkqXGidIsnu8
-         i39iCULSvgyPXhscb9kLysF8J2sHTzmEzToZsXGjv5l06Dnz9BE8hIFmAqNofDW9bJTx
-         aung==
-X-Gm-Message-State: APjAAAWByIUU25h9JEWO1ZPtgMq/5sX7XjFnbF7A7QSApZQfk7ha1gjQ
-        xIUFPbcvagMEXbBkhIkZRbc=
-X-Google-Smtp-Source: APXvYqw2SMp+9K0gAxuviJ2DVsRsv2yXKZ3IIL5C8oC/k4t7sz+XNein9xActbMxq1yHVMhsMD7NlQ==
-X-Received: by 2002:a17:90a:b906:: with SMTP id p6mr22906744pjr.81.1576945322822;
-        Sat, 21 Dec 2019 08:22:02 -0800 (PST)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:180::a285])
-        by smtp.gmail.com with ESMTPSA id a69sm16879243pfa.129.2019.12.21.08.22.01
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 21 Dec 2019 08:22:02 -0800 (PST)
-Date:   Sat, 21 Dec 2019 08:22:00 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=0mM/O2UmUWT5pwYtZWXzKYITjKsYGiROXs6Zgo37zdg=;
+        b=QQ6PARGGQlUbYABYjjr8sXxHSkrgDa2LvtC6Yt0ySEkX/nNBnJJC772Dv+WqYNSVlQ
+         BrQUljvq83cxxhZV/PaSDfY0SmvLjdQbSnwVGqIcxn2RkooZdU+rtZueL6y95w6DKVcp
+         EG/6z+GleblWYuA7jROK/4SF1rjO+A48mzqQ0haVGpFvyDNiPzXPouHFYzqjaEPZl/zG
+         QxR0/GUitAfBiRuFvpvfmrQt1o1mPaZBNGL5GAM0f0uUVKr9rsnsqCrA1SNpn5uDjenB
+         jqIujLTDsO512MIy+rIrT2v8SlO7n9LM0W/jSdzqckDU/u8lM2lXgfG10uHwl2dORz7/
+         Qs+g==
+X-Gm-Message-State: APjAAAWPF1wGncXtrN7wS8irt5qWMqofw2x6QRjkngB56whFVoXlDGgW
+        jtEFSbUGSe4N+SM2s2AJvlqFq/CyhYuLngiddwlEP2jbI+lVSgmSkPp5GcaAaNqjIbqtbbdmfxj
+        2IMbP4uu6zfv2
+X-Received: by 2002:a19:c0b:: with SMTP id 11mr12664199lfm.135.1576945471847;
+        Sat, 21 Dec 2019 08:24:31 -0800 (PST)
+X-Google-Smtp-Source: APXvYqxWis+AezKuBdTb9TCYVxhLvaVdMFmz/rXTn+53cgoo8JXdv1T47lsE8+nlvgGKr7LnytuQDA==
+X-Received: by 2002:a19:c0b:: with SMTP id 11mr12664191lfm.135.1576945471572;
+        Sat, 21 Dec 2019 08:24:31 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id i17sm4100482ljd.34.2019.12.21.08.24.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 21 Dec 2019 08:24:30 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 83F9D18096B; Sat, 21 Dec 2019 17:24:24 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] libbpf: Fix build on read-only filesystems
-Message-ID: <20191221162158.rw6xqqktubozg6fg@ast-mbp.dhcp.thefacebook.com>
-References: <20191220032558.3259098-1-namhyung@kernel.org>
- <CAEf4BzaZBSRK2M4LD-c12_2-QLa8+jpPs1E4nA9BNeUDskOMBQ@mail.gmail.com>
- <CAM9d7cg0A0+Oq5uDS6ZJNzAgFsWc-Pd30GYC0+PxEXdcxAxBKg@mail.gmail.com>
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH RFC bpf-next 0/3] libbpf: Add support for extern function calls
+In-Reply-To: <20191220203045.hmeoum5l4uw7gy5g@ast-mbp.dhcp.thefacebook.com>
+References: <157676577049.957277.3346427306600998172.stgit@toke.dk> <20191220203045.hmeoum5l4uw7gy5g@ast-mbp.dhcp.thefacebook.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Sat, 21 Dec 2019 17:24:24 +0100
+Message-ID: <878sn53avb.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAM9d7cg0A0+Oq5uDS6ZJNzAgFsWc-Pd30GYC0+PxEXdcxAxBKg@mail.gmail.com>
-User-Agent: NeoMutt/20180223
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Dec 21, 2019 at 05:25:51PM +0900, Namhyung Kim wrote:
-> Hello,
-> 
-> On Sat, Dec 21, 2019 at 5:29 AM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Thu, Dec 19, 2019 at 7:26 PM Namhyung Kim <namhyung@kernel.org> wrote:
-> > >
-> > > I got the following error when I tried to build perf on a read-only
-> > > filesystem with O=dir option.
-> > >
-> > >   $ cd /some/where/ro/linux/tools/perf
-> > >   $ make O=$HOME/build/perf
-> > >   ...
-> > >     CC       /home/namhyung/build/perf/lib.o
-> > >   /bin/sh: bpf_helper_defs.h: Read-only file system
-> > >   make[3]: *** [Makefile:184: bpf_helper_defs.h] Error 1
-> > >   make[2]: *** [Makefile.perf:778: /home/namhyung/build/perf/libbpf.a] Error 2
-> > >   make[2]: *** Waiting for unfinished jobs....
-> > >     LD       /home/namhyung/build/perf/libperf-in.o
-> > >     AR       /home/namhyung/build/perf/libperf.a
-> > >     PERF_VERSION = 5.4.0
-> > >   make[1]: *** [Makefile.perf:225: sub-make] Error 2
-> > >   make: *** [Makefile:70: all] Error 2
-> > >
-> > > It was becaused bpf_helper_defs.h was generated in current directory.
-> > > Move it to OUTPUT directory.
-> > >
-> > > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > > ---
-> >
-> > Overall nothing is obviously broken, except you need to fix up
-> > selftests/bpf's Makefile as well.
-> 
-> Thanks for pointing this out.  It's because bpf selftest also needs the
-> bpf_helper_defs.h right?  But I'm currently having a problem with LLVM
-> when building the selftests.  Can you help me testing the patch below?
-> (It should be applied after this patch.  Are you ok with it?)
-> 
-> 
-> >
-> > BTW, this patch doesn't apply cleanly to latest bpf-next, so please rebase.
-> >
-> > Also subject prefix should look like [PATCH bpf-next] if it's meant to
-> > be applied against bpf-next.
-> 
-> Will do.
-> 
-> Thanks
-> Namhyung
-> 
-> -----------8<-------------
-> diff --git a/tools/testing/selftests/bpf/Makefile
-> b/tools/testing/selftests/bpf/Makefile
-> index 866fc1cadd7c..897877f7849b 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -151,9 +151,9 @@ $(DEFAULT_BPFTOOL): force
->  $(BPFOBJ): force
->         $(MAKE) -C $(BPFDIR) OUTPUT=$(OUTPUT)/
-> 
-> -BPF_HELPERS := $(BPFDIR)/bpf_helper_defs.h $(wildcard $(BPFDIR)/bpf_*.h)
-> -$(BPFDIR)/bpf_helper_defs.h:
-> -       $(MAKE) -C $(BPFDIR) OUTPUT=$(OUTPUT)/ bpf_helper_defs.h
-> +BPF_HELPERS := $(OUTPUT)/bpf_helper_defs.h $(wildcard $(BPFDIR)/bpf_*.h)
-> +$(OUTPUT)/bpf_helper_defs.h:
-> +       $(MAKE) -C $(BPFDIR) OUTPUT=$(OUTPUT)/ $(OUTPUT)/bpf_helper_defs.h
+Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
 
-The fix makes sense, but you cannot break it down into two patches.
-The selftests/bpf are absolutely essential for everyone working on bpf.
-For both developers and maintainers. You cannot break them in one patch
-and then try to fix in another.
-Please resubmit as one patch and tag the subject as [PATCH bpf].
+> On Thu, Dec 19, 2019 at 03:29:30PM +0100, Toke H=C3=B8iland-J=C3=B8rgense=
+n wrote:
+>> This series adds support for resolving function calls to functions marke=
+d as
+>> 'extern' in eBPF source files, by resolving the function call targets at=
+ load
+>> time. For now, this only works by static linking (i.e., copying over the
+>> instructions from the function target. Once the kernel support for dynam=
+ic
+>> linking lands, support can be added for having a function target be an a=
+lready
+>> loaded program fd instead of a bpf object.
+>>=20
+>> The API I'm proposing for this is that the caller specifies an explicit =
+mapping
+>> between extern function names and function names in the target object fi=
+le.
+>> This is to support the XDP multi-prog case, where the dispatcher program=
+ may not
+>> necessarily have control over function names in the target programs, so =
+simple
+>> function name resolution can't be used.
+>
+> I think simple name resolution should be the default behavior for both st=
+atic
+> and dynamic linking. That's the part where I think we must not reinvent t=
+he wheel.
+> When one .c has
+> extern int prog1(struct xdp_md *ctx);
+> another .c should have:
+> int prog1(struct xdp_md *ctx) {...}
+> Both static and dynamic linking should link these two .c together without=
+ any
+> extra steps from the user. It's expected behavior that any C user assumes=
+ and
+> it should 'just work'.
+
+Sure, absolutely, when we can, we should just auto-resolve function
+signatures and names...
+
+> Where we need to be creative is how plug two xdp firewalls with arbitrary
+> program names (including the same names) into common roolet.
+
+...however, the "same name" issue is why I started down the path of
+specifying links explicitly. I figure it will be somewhat common to have
+to link in two independent XDP programs that both picked the same
+function name (such as "xdp_main").
+
+> One firewall can be:
+> noinline int foo(struct xdp_md *ctx)
+> { // some logic
+> }
+> SEC("xdp")
+> int xdp_prog1(struct xdp_md *ctx)
+> {
+>        return foo(ctx);
+> }
+>
+> And another firewall:
+> noinline int foo(struct xdp_md *ctx)
+> { // some other logic
+> }
+> SEC("xdp")
+> int xdp_prog2(struct xdp_md *ctx)
+> {
+>        return foo(ctx);
+> }
+>
+> Both xdp programs (with multiple functions) need to be connected into:
+>
+> __weak noinline int dummy1(struct xdp_md *ctx) { return XDP_PASS; }
+> __weak noinline int dummy2(struct xdp_md *ctx) { return XDP_PASS; }
+>
+> SEC("xdp")
+> int rootlet(struct xdp_md *ctx)
+> {
+>         int ret;
+>
+>         ret =3D dummy1(ctx);
+>         if (ret !=3D XDP_PASS)
+>                 goto out;
+>
+>         ret =3D dummy2(ctx);
+>         if (ret !=3D XDP_DROP)
+>                 goto out;
+> out:
+>         return ret;
+> }
+>
+> where xdp_prog1() from 1st firewall needs to replace dummy1()
+> and xdp_prog2() from 2nd firewall needs to replaced dummy2().
+> Or the other way around depending on the order of installation.
+>
+> At the kernel level the API is actually simple. It's the pair of
+> target_prog_fd + btf_id I described earlier in "static/dynamic linking" t=
+hread.
+> Where target_prog_fd is FD of loaded into kernel rootlet and
+> btf_id is BTF id of dummy1 or dummy2.
+
+Ah, right; I was thinking it would need a name, but I agree that btf_id
+is better.
+
+> When 1st firewall is being loaded libbpf needs to pass target_prog_fd+btf=
+_id
+> along with xdp_prog1() into the kernel, so that the verifier can do
+> appropriate checking and refcnting.
+>
+> Note that the kernel and every program have their own BTF id space.
+> Their own BTF ids =3D=3D their own names.
+> Loading two programs with exactly the same name is ok today and in the fu=
+ture.
+> Linking into other program name space is where we need to agree on naming=
+ first.
+>
+> The static linking of two .o should follow familiar user space linker log=
+ic.
+> Proposed bpf_linker__..("first.o") and bpf_linker__..("second.o") should =
+work.
+> Meaning that "extern int foo()" in "second.o" will get resolved with "int=
+ foo()"
+> from "first.o".
+> Dynamic linking is when "first.o" with "int foo()" was already loaded into
+> the kernel and "second.o" is loaded after. In such case its "extern int f=
+oo()"
+> will be resolved dynamically from previously loaded program.
+> The user space analogy of this behavior is glibc.
+> "first.o" is glibc.so that supplies memcpy() and friends.
+> "second.o" is some a.out that used "extern int memcpy()".
+
+Right, this makes sense. Are you proposing that the kernel does this
+without any intervention from libbpf when the BTF indicates it has an
+extern KIND_FUNC_PROTO? What about overriding the names (dynamically
+linking against two programs with identical function names)?
+
+> For XDP rootlet case already loaded weak function dummy[12]() need to
+> be replaced later by xdp_prog[12](). It's like replacing memcpy() in glib=
+c.so.
+> I think the user space doesn't have such concepts. I was simply calling it
+> dynamic linking too, but it's not quite accurate. It's dynamically replac=
+ing
+> already loaded functions. Let's call it "dynamic re-linking" ?
+
+I guess it's kinda akin to LD_PRELOAD? But I'm fine with calling it by a
+separate name.
+
+> As far as libbpf api for dynamic linking, so far I didn't need to add new=
+ stuff.
+> I'm trying to piggy back on fexit/fentry approach.
+
+Cool :)
+
+> I think to prototype re-linking without kernel support. We can do static =
+re-linking.
+> I think the best approach is to stick with name based resolution. libxdp =
+can do:
+> - add alias("dummy1") to xdp_prog1() in first_firewall.o
+> - rename foo() in first_firewall.o into unique_foo().
+> - add alias("dummy2") to xdp_prog2() in second_firewall.o
+> - rename foo() in second_firewall.o into very_unique_foo().
+> - use standard static linking of first_firewall.o + second_firewall.o + r=
+ootlet.o
+
+The alias() would be a BTF annotation? Or something else?
+
+> The static re-linking is more work than dynamic re-linking because it nee=
+ds to
+> operate in a single name space of final .o. Whereas dynamic re-linking has
+> individual name space for every loaded into kernel program.
+> I'm hoping to share a prototype of dynamic re-linking soon.
+
+Excellent! At the rate you're going, you'll have the dynamic re-linking
+working before I get static linking done :)
+
+-Toke
+
