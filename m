@@ -2,85 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C5BF1285E0
-	for <lists+bpf@lfdr.de>; Sat, 21 Dec 2019 01:09:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22E641285E7
+	for <lists+bpf@lfdr.de>; Sat, 21 Dec 2019 01:12:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726485AbfLUAJU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 Dec 2019 19:09:20 -0500
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:37990 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726462AbfLUAJU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 Dec 2019 19:09:20 -0500
-Received: by mail-lj1-f194.google.com with SMTP id k8so11680362ljh.5
-        for <bpf@vger.kernel.org>; Fri, 20 Dec 2019 16:09:19 -0800 (PST)
+        id S1726514AbfLUAMe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 Dec 2019 19:12:34 -0500
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:35534 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726462AbfLUAMe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 20 Dec 2019 19:12:34 -0500
+Received: by mail-lf1-f68.google.com with SMTP id 15so8325978lfr.2;
+        Fri, 20 Dec 2019 16:12:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=u4q1kw9KdxyrcQWVabR9MTsO76cXQm+dLIWvVn8YebI=;
-        b=VQfRFH/E/5dVxlrHb1ojU2bi6b09Qb3LfjvST+wn3iGitfOQ4aL5VFLgjIedqAop5f
-         julZuEp2LaKCemwro3iVfguRbLNgDVKjR839LAv5Qif7VL8oudETNVIOKQEU1+HN02P8
-         u7XgZbRWnsPWla17gJkDDAwgA8pGwx9wtZRUDIB5MKWedXltyqvEG89hDr9eM5E8RBRz
-         PCG5hd0DbVKsxoN+Q9C6TJId/sh6zOXDEcQPyemgZylKT01qCAX3ZMD3bpAXEdx7qWY+
-         BFIsT9Z66U4/1M4QWsdPgaHRL+fNMI0R41QA5KyZsHi8s9yFmofsmvCqp9wcvpIRtyen
-         tdnw==
+         :cc:content-transfer-encoding;
+        bh=MrGmPqolGd96pP/FN45eyt5MVuiGVslvVqixyKEBxIw=;
+        b=uwGOyvgskx5fOmdYxsdc1IF+KcCZt4uvfiOJYLYg2UIH49tMuB5boig7DMmtX31K1a
+         0UIMVls0SpSEkqSOIKbAmYmHuNXqBrsH7halBzoHQZMWNpg/nv8q1S5lDPDg6Jz/rq5S
+         cuboFThIK54f9D/vkl6m6w2uTInMGn9/TwXFDWrqpJAniGuyVD8bqY5NAyWGjxvc7n79
+         tuFyGSZnF1Umyuids2V06riV9KE1VNGXNmhmrPXvIc3v0fJUnGFc5ZUbBUDQkPFdugtR
+         zgqsRYzTOUJllkbxHPItrNI2O98Hm2AbDaeF11d/tSPwT5rI6ccQREv58FVdAbvOD9h2
+         Zr2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=u4q1kw9KdxyrcQWVabR9MTsO76cXQm+dLIWvVn8YebI=;
-        b=NdhUUEM3SP6ThVoXin7oJ8vZxi88aHdm03nCh9CXnso5edYUK35dqzL7lQyAOjF3/i
-         7P2rYtOJAqL9IZar8Wf9pWt4nz+ujooT4YAsokWeF3f5crdLnFOOa4CKojh2l5HbChlP
-         y3UUKXh61rPk0yYAPGAjctSj174IXK5sNQBhp+OmK0YpaZU+HkiPr6bj9nga+vbXsAD5
-         uTvL36Z/GlZVc8ZX5Sie/xUHcNl1di27ywSZA/ARx95OqB3Fzc7t5yQN7+0KSxNZwhJ5
-         NRvqB34p2gUzDTjst061Xd/Um0lTxN+4/g2QMJjQO/I5mI5JkRjmvVSERfHtHfeDSQB4
-         EpSA==
-X-Gm-Message-State: APjAAAXaKmsXClX0sQ7AiY5MQSB2PRBExB67obQxJBqGhOPaQ94FM1xc
-        +468PE0ITUga24FKzeD3+Yom2MI3rmM43UkwnBc=
-X-Google-Smtp-Source: APXvYqwhKrQ1bQnbDsvYsfnEp8RGc0Y7d0O2RyUzeOVZewYr44cudxJAxpu6Y1Gb6KIv9DcXWZJvyfvDzZ4RyjPlnxk=
-X-Received: by 2002:a2e:8e22:: with SMTP id r2mr3911020ljk.51.1576886958082;
- Fri, 20 Dec 2019 16:09:18 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=MrGmPqolGd96pP/FN45eyt5MVuiGVslvVqixyKEBxIw=;
+        b=DX+jxVTtOj5/WzkGf8UeRTr/60qzb9det5MGQodgdUfKOUzFK3mtrDAxfXf1V9wk/L
+         +C6owhvvjB8FBInT50mUwBqje9D3Hp/Xtlvc64QLLrQN99anfAJHpcbG5myyoJByiUCl
+         9cjaI8jOJ6BnjNiN8f19S2Y0Xqcakw+3EXNu9zIxtWaMcqCao/z/CTVKHt4TTgqChdU/
+         FY9lO3xOAXdAi2JxJ8aGg66w8PA8P0iO97vc8DPpSsUrVCknpn/si8dzLHb5yM2PzloG
+         3o8Y8gUwXT0hG7jqPBI92b1lUbJV/DAu52UJWujL2sS4safW3W/iy2lxFPRQ88zCiLTu
+         C9nA==
+X-Gm-Message-State: APjAAAUufI/s5Y4dcMOAlcd9os9TXM5Z7BlU1E/3WrrSIUrkvivNOlkb
+        INS2kV22aV6lGn5KkcBpLAaM7H8kjiZgKMARK5k=
+X-Google-Smtp-Source: APXvYqxL8EO4L3VAXuf8woaA/SqlX99jKQ511pDru1vKnAmEXZf+mPcnUX0TJ7aHGb3v6MwcmhtUkT25tD1cAGvPJfs=
+X-Received: by 2002:ac2:44d9:: with SMTP id d25mr10962987lfm.15.1576887152151;
+ Fri, 20 Dec 2019 16:12:32 -0800 (PST)
 MIME-Version: 1.0
-References: <20191220000511.1684853-1-rdna@fb.com>
-In-Reply-To: <20191220000511.1684853-1-rdna@fb.com>
+References: <20191220085530.4980-1-jay.jayatheerthan@intel.com> <CAJ+HfNjAC-hFdW14yCDSkBUZVmRM=ya+GFyWV5AOYAi8=KBV6w@mail.gmail.com>
+In-Reply-To: <CAJ+HfNjAC-hFdW14yCDSkBUZVmRM=ya+GFyWV5AOYAi8=KBV6w@mail.gmail.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 20 Dec 2019 16:09:06 -0800
-Message-ID: <CAADnVQKo=nP1KK2KPoeJSxapnXbLOwYFUX1jg-CyVAQ2PGy9TA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: Preserve errno in test_progs
- CHECK macros
-To:     Andrey Ignatov <rdna@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+Date:   Fri, 20 Dec 2019 16:12:20 -0800
+Message-ID: <CAADnVQKYkasST76L=49kqG0E8rOFh3Ja47AmaMPuCjDAVjgZZQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/6] Enhancements to xdpsock application
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Cc:     Jay Jayatheerthan <jay.jayatheerthan@intel.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Kernel Team <kernel-team@fb.com>
+        Netdev <netdev@vger.kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 19, 2019 at 4:05 PM Andrey Ignatov <rdna@fb.com> wrote:
+On Fri, Dec 20, 2019 at 2:04 AM Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.co=
+m> wrote:
 >
-> It's follow-up for discussion [1]
+> On Fri, 20 Dec 2019 at 09:55, Jay Jayatheerthan
+> <jay.jayatheerthan@intel.com> wrote:
+> >
+> > This series of patches enhances xdpsock application with command line
+> > parameters to set transmit packet size and fill pattern among other opt=
+ions.
+> > The application has also been enhanced to use Linux Ethernet/IP/UDP hea=
+der
+> > structs and calculate IP and UDP checksums.
+> >
+> > I have measured the performance of the xdpsock application before and a=
+fter
+> > this patch set and have not been able to detect any difference.
+> >
+> > Packet Size:
+> > ------------
+> > There is a new option '-s' or '--tx-pkt-size' to specify the transmit p=
+acket
+> > size. It ranges from 47 to 4096 bytes. Default packet size is 64 bytes
+> > which is same as before.
+> >
+> > Fill Pattern:
+> > -------------
+> > The transmit UDP payload fill pattern is specified using '-P' or
+> > '--tx-pkt-pattern'option. It is an unsigned 32 bit field and defaulted
+> > to 0x12345678.
+> >
+> > Packet Count:
+> > -------------
+> > The number of packets to send is specified using '-C' or '--tx-pkt-coun=
+t'
+> > option. If it is not specified, the application sends packets forever.
+> >
+> > Batch Size:
+> > -----------
+> > The batch size for transmit, receive and l2fwd features of the applicat=
+ion is
+> > specified using '-b' or '--batch-size' options. Default value when this=
+ option
+> > is not provided is 64 (same as before).
+> >
+> > Duration:
+> > ---------
+> > The application supports '-d' or '--duration' option to specify number =
+of
+> > seconds to run. This is used in tx, rx and l2fwd features. If this opti=
+on is
+> > not provided, the application runs for ever.
+> >
+> > This patchset has been applied against commit 99cacdc6f661f50f
+> > ("Merge branch 'replace-cg_bpf-prog'")
+> >
 >
-> CHECK and CHECK_FAIL macros in test_progs.h can affect errno in some
-> circumstances, e.g. if some code accidentally closes stdout. It makes
-> checking errno in patterns like this unreliable:
+> Thanks for the hard work! I really like the synchronous cleanup! My
+> scripts are already using the '-d' flag!
 >
->         if (CHECK(!bpf_prog_attach_xattr(...), "tag", "msg"))
->                 goto err;
->         CHECK_FAIL(errno != ENOENT);
->
-> , since by CHECK_FAIL time errno could be affected not only by
-> bpf_prog_attach_xattr but by CHECK as well.
->
-> Fix it by saving and restoring errno in the macros. There is no "Fixes"
-> tag since no problems were discovered yet and it's rather precaution.
->
-> test_progs was run with this change and no difference was identified.
->
-> [1] https://lore.kernel.org/bpf/20191219210907.GD16266@rdna-mbp.dhcp.thefacebook.com/
->
-> Signed-off-by: Andrey Ignatov <rdna@fb.com>
+> For the series:
+> Tested-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+> Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
 
 Applied. Thanks
