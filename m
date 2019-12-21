@@ -2,115 +2,168 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 06DB312879E
-	for <lists+bpf@lfdr.de>; Sat, 21 Dec 2019 06:40:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87C8C1287BD
+	for <lists+bpf@lfdr.de>; Sat, 21 Dec 2019 07:26:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725774AbfLUFka (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 21 Dec 2019 00:40:30 -0500
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:34307 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725773AbfLUFka (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 21 Dec 2019 00:40:30 -0500
-Received: by mail-qt1-f194.google.com with SMTP id 5so10263758qtz.1;
-        Fri, 20 Dec 2019 21:40:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DInoTaRogGS3Ud5i8imN5LsSNyxk5kc73MapUyS7J9E=;
-        b=tyTDM0MNTBEqjbM3QK94+VIYEPP1jFBNI1IJ77S6R2ONVJrP4TtA3euUNC4/S5/FQz
-         lmR/gQJGQNf1GLvFuRY2bFaolCOnnvY6cos8JwWvAmsoFvhVvco7EMCFrVsh0lERwbtk
-         TmU6yhnpHJLtvMFsnX7t29moZrrAV83BoZtRuLC5QAhLX23Cfjr8LUT9FQqww+rSmjIW
-         QwwjcaZD5p5mJ0XVUUq+vwKTZ4nF/8zD6I69T/9mhlyjHfILSBwIhpc2h9La5554xcBp
-         AvIFwhkB4lIhClKS1iYoxSKn2wWccnLVAMuQ0EoSWFc7vAJEdeFiBplBhxtybcGeyjYa
-         eC7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DInoTaRogGS3Ud5i8imN5LsSNyxk5kc73MapUyS7J9E=;
-        b=EdtIS34kQyHVLjmtlYkJV8G/zrC1avweu44vOKCj784J0gqo6xJIseDdhqUYQZdw4N
-         N+yXXynKPSdnl2dMfZlyvX426E5vAN6KSoyCELHxqh621ZJX4xXSMkdzRhgEHko6nXE7
-         2Csbzgku+/lGMK5EFx8PKxVudP4D2mydLpn1v2XL3rief6U2F5CXiOCgcGEOvQPjYVij
-         yMG+eQ6LexPAnLDRoWhhyWmoEcVF0XV5GqfEp6FNBYRqSSBzMfYIlLjx6ZP3e2S8i8/S
-         tYvmvRMnlIGbrmG6BasBx17Uou6E5qWP+F+Vqf8IZPRMVQBk0dL5hf60/O45IyVib0zN
-         Td4w==
-X-Gm-Message-State: APjAAAWccTd4Oilwm6y7oL0nawRF7xFDSiGAWlsq9EiNanj4ezDlg/2G
-        TF71pm1jQ4wsNLwaG4Wbe00wRZtLkIOmzzbezR0=
-X-Google-Smtp-Source: APXvYqyLEMOL5elQRd4GYGFUYjz/vJv0dlMoH/hU5vu1gtnfpMu0lkPFIQwCve7bWCWJJUluvZMjrlXLWr2kyrAeZr4=
-X-Received: by 2002:ac8:5457:: with SMTP id d23mr14126090qtq.93.1576906828937;
- Fri, 20 Dec 2019 21:40:28 -0800 (PST)
-MIME-Version: 1.0
-References: <20191219070659.424273-1-andriin@fb.com> <20191219070659.424273-2-andriin@fb.com>
- <20191219170602.4xkljpjowi4i2e3q@ast-mbp.dhcp.thefacebook.com>
- <CAEf4BzYKf=+WNZv5HMv=W8robWWTab1L5NURAT=N7LQNW4oeGQ@mail.gmail.com>
- <20191219220402.cdmxkkz3nmwmk6rc@ast-mbp.dhcp.thefacebook.com>
- <CAEf4Bzayg2UZi1H1NZaFgAUabtS5a=-yCE7NsUmtaO7kS5CJmw@mail.gmail.com> <20191221032147.b7s2zm5pkzatbu57@ast-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20191221032147.b7s2zm5pkzatbu57@ast-mbp.dhcp.thefacebook.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 20 Dec 2019 21:40:17 -0800
-Message-ID: <CAEf4BzY4ffWaeFckPuqNGNAU1uBG3TmTK+CjY1LVa2G+RGz=cA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/3] bpftool: add extra CO-RE mode to btf dump command
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+        id S1725997AbfLUGZ7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 21 Dec 2019 01:25:59 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:10558 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725845AbfLUGZ7 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sat, 21 Dec 2019 01:25:59 -0500
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xBL6MXu2001069
+        for <bpf@vger.kernel.org>; Fri, 20 Dec 2019 22:25:58 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=gIctzVgqF2q5WrsP2r3TZ7HikuxlAaCCX1oGTnrBGgk=;
+ b=HbeMk1UgHFVgjfMT+jUT+bBCEJjr8SvVY0mX9h7+JUVHh3kOvfcC328+xjuvwe0niED8
+ 9IdP8UXj6Q7IDzXDkkdpFy+on67GifFNhK1BkBzQ7nj8mUOt0ZggNmH2wVus3VlQFoxm
+ jQBisvMcBbe4260zMzuz8mmCHhIMio79F1k= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2x0ehsgaum-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 20 Dec 2019 22:25:58 -0800
+Received: from intmgw001.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Fri, 20 Dec 2019 22:25:57 -0800
+Received: by devbig005.ftw2.facebook.com (Postfix, from userid 6611)
+        id 684C82946127; Fri, 20 Dec 2019 22:25:56 -0800 (PST)
+Smtp-Origin-Hostprefix: devbig
+From:   Martin KaFai Lau <kafai@fb.com>
+Smtp-Origin-Hostname: devbig005.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        David Miller <davem@davemloft.net>, <kernel-team@fb.com>,
+        <netdev@vger.kernel.org>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next v2 00/11] Introduce BPF STRUCT_OPS
+Date:   Fri, 20 Dec 2019 22:25:56 -0800
+Message-ID: <20191221062556.1182261-1-kafai@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
+ definitions=2019-12-21_01:2019-12-17,2019-12-21 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
+ priorityscore=1501 mlxlogscore=683 malwarescore=0 phishscore=0
+ suspectscore=13 adultscore=0 lowpriorityscore=0 bulkscore=0 clxscore=1015
+ impostorscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-1910280000 definitions=main-1912210053
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Dec 20, 2019 at 7:21 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Fri, Dec 20, 2019 at 09:40:31AM -0800, Andrii Nakryiko wrote:
-> >
-> > This one is a small line-number-wise. But the big difference between
-> > `format c` and `format core` is that the latter assumes we are dumping
-> > *vmlinux's BTF* for use with *BPF CO-RE from BPF side*. `format c`
-> > doesn't make any assumptions and faithfully dumps whatever BTF
-> > information is provided, which can be some other BPF program, or just
-> > any userspace program, on which pahole -J was executed.
->
-> When 'format c' was introduced it was specifically targeting CO-RE framework.
+This series introduces BPF STRUCT_OPS.  It is an infra to allow
+implementing some specific kernel's function pointers in BPF.
+The first use case included in this series is to implement
+TCP congestion control algorithm in BPF  (i.e. implement
+struct tcp_congestion_ops in BPF).
 
-No it wasn't. Here's "motivational" part of BTF-to-C dump API patch set:
+There has been attempt to move the TCP CC to the user space
+(e.g. CCP in TCP).   The common arguments are faster turn around,
+get away from long-tail kernel versions in production...etc,
+which are legit points.
 
-  "This patch set adds BTF-to-C dumping APIs to libbpf, allowing to output
-  a subset of BTF types as a compilable C type definitions. This is useful by
-  itself, as raw BTF output is not easy to inspect and comprehend. But it's also
-  a big part of BPF CO-RE (compile once - run everywhere) initiative aimed at
-  allowing to write relocatable BPF programs, that won't require on-the-host
-  kernel headers (and would be able to inspect internal kernel structures, not
-  exposed through kernel headers)."
+BPF has been the continuous effort to join both kernel and
+userspace upsides together (e.g. XDP to gain the performance
+advantage without bypassing the kernel).  The recent BPF
+advancements (in particular BTF-aware verifier, BPF trampoline,
+BPF CO-RE...) made implementing kernel struct ops (e.g. tcp cc)
+possible in BPF.
 
-And here's `format c` patch commit message:
+The idea is to allow implementing tcp_congestion_ops in bpf.
+It allows a faster turnaround for testing algorithm in the
+production while leveraging the existing (and continue growing) BPF
+feature/framework instead of building one specifically for
+userspace TCP CC.
 
-  "Utilize new libbpf's btf_dump API to emit BTF as a C definitions."
+Please see individual patch for details.
 
-It was never **just** for CO-RE framework, rather as a convenient
-C-syntax view of BTF types.
+The bpftool support will be posted in follow-up patches.
 
-> It is useful with BPF_CORE_READ macro and with builtin_preserve_access_index.
-> Then we realized that both macro and builtin(({ ... })) are quite cumbersome to
-> use and came with new clang attribute((preserve_access_index)) which makes
-> programs read like normal C without any extra gotchas. Obviously it's nice if
-> vmlinux.h already contains this attribute. Hence the need to either add extra
-> flag to bpftool to emit this attribute or just emit it by default. So
-> introducing new 'format core' (which is 99% the same as 'format c') and
-> deprecating 'format c' to 'this is just .h dump of BTF' when it was around for
-> few month only is absolutely no go. You need to find a way to extend 'format c'
+v2:
+- Dropped cubic for now.  They will be reposted
+  once there are more clarity in "jiffies" on both
+  bpf side (about the helper) and
+  tcp_cubic side (some of jiffies usages are being replaced
+  by tp->tcp_mstamp)
+- Remove unnecssary check on bitfield support from btf_struct_access()
+  (Yonghong)
+- BTF_TYPE_EMIT macro (Yonghong, Andrii)
+- value_name's length check to avoid an unlikely
+  type match during truncation case (Yonghong)
+- BUILD_BUG_ON to ensure no trampoline-image overrun
+  in the future (Yonghong)
+- Simplify get_next_key() (Yonghong)
+- Added comment to explain how to check mandatory
+  func ptr in net/ipv4/bpf_tcp_ca.c (Yonghong)
+- Rename "__bpf_" to "bpf_struct_ops_" for value prefix (Andrii)
+- Add comment to highlight the bpf_dctcp.c is not necessarily
+  the same as tcp_dctcp.c. (Alexei, Eric)
+- libbpf: Renmae "struct_ops" to ".struct_ops" for elf sec (Andrii)
+- libbpf: Expose struct_ops as a bpf_map (Andrii)
+- libbpf: Support multiple struct_ops in SEC(".struct_ops") (Andrii)
+- libbpf: Add bpf_map__attach_struct_ops()  (Andrii)
 
-I found the way, that's not the point of this discussion and
-absolutely **not why** I'm adding `format core`. I feel like having
-plain C dump of BTF is useful by itself (at least as a diagnostics
-tool for BTF, similarly to objdump/readelf for ELF). But if no one
-else cares, sure, I'll just reuse `format c` as CO-RE-specific BTF
-dumper.
+Martin KaFai Lau (11):
+  bpf: Save PTR_TO_BTF_ID register state when spilling to stack
+  bpf: Avoid storing modifier to info->btf_id
+  bpf: Add enum support to btf_ctx_access()
+  bpf: Support bitfield read access in btf_struct_access
+  bpf: Introduce BPF_PROG_TYPE_STRUCT_OPS
+  bpf: Introduce BPF_MAP_TYPE_STRUCT_OPS
+  bpf: tcp: Support tcp_congestion_ops in bpf
+  bpf: Add BPF_FUNC_tcp_send_ack helper
+  bpf: Synch uapi bpf.h to tools/
+  bpf: libbpf: Add STRUCT_OPS support
+  bpf: Add bpf_dctcp example
 
-> without breaking existing users. Yes. Likely there are no such users, but that
-> doesn't matter. Once new api is introduced we have to stick to it. 'format c'
-> is such api.
+ arch/x86/net/bpf_jit_comp.c                   |  11 +-
+ include/linux/bpf.h                           |  79 ++-
+ include/linux/bpf_types.h                     |   7 +
+ include/linux/btf.h                           |  47 ++
+ include/linux/filter.h                        |   2 +
+ include/net/tcp.h                             |   1 +
+ include/uapi/linux/bpf.h                      |  19 +-
+ kernel/bpf/Makefile                           |   2 +-
+ kernel/bpf/bpf_struct_ops.c                   | 586 ++++++++++++++++
+ kernel/bpf/bpf_struct_ops_types.h             |   9 +
+ kernel/bpf/btf.c                              | 129 ++--
+ kernel/bpf/map_in_map.c                       |   3 +-
+ kernel/bpf/syscall.c                          |  66 +-
+ kernel/bpf/trampoline.c                       |   5 +-
+ kernel/bpf/verifier.c                         | 140 +++-
+ net/core/filter.c                             |   2 +-
+ net/ipv4/Makefile                             |   4 +
+ net/ipv4/bpf_tcp_ca.c                         | 248 +++++++
+ net/ipv4/tcp_cong.c                           |  14 +-
+ net/ipv4/tcp_ipv4.c                           |   6 +-
+ net/ipv4/tcp_minisocks.c                      |   4 +-
+ net/ipv4/tcp_output.c                         |   4 +-
+ tools/include/uapi/linux/bpf.h                |  19 +-
+ tools/lib/bpf/bpf.c                           |  10 +-
+ tools/lib/bpf/bpf.h                           |   5 +-
+ tools/lib/bpf/libbpf.c                        | 639 +++++++++++++++++-
+ tools/lib/bpf/libbpf.h                        |   1 +
+ tools/lib/bpf/libbpf.map                      |   1 +
+ tools/lib/bpf/libbpf_probes.c                 |   2 +
+ tools/testing/selftests/bpf/bpf_tcp_helpers.h | 228 +++++++
+ .../selftests/bpf/prog_tests/bpf_tcp_ca.c     | 218 ++++++
+ tools/testing/selftests/bpf/progs/bpf_dctcp.c | 210 ++++++
+ 32 files changed, 2582 insertions(+), 139 deletions(-)
+ create mode 100644 kernel/bpf/bpf_struct_ops.c
+ create mode 100644 kernel/bpf/bpf_struct_ops_types.h
+ create mode 100644 net/ipv4/bpf_tcp_ca.c
+ create mode 100644 tools/testing/selftests/bpf/bpf_tcp_helpers.h
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_dctcp.c
+
+-- 
+2.17.1
+
