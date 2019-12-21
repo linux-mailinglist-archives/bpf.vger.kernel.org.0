@@ -2,133 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DCE61128630
-	for <lists+bpf@lfdr.de>; Sat, 21 Dec 2019 01:54:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D88201286BE
+	for <lists+bpf@lfdr.de>; Sat, 21 Dec 2019 04:21:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726565AbfLUAyE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 20 Dec 2019 19:54:04 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:13147 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726537AbfLUAyD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 20 Dec 2019 19:54:03 -0500
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5dfd6d050000>; Fri, 20 Dec 2019 16:53:25 -0800
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Fri, 20 Dec 2019 16:53:56 -0800
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Fri, 20 Dec 2019 16:53:56 -0800
-Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sat, 21 Dec
- 2019 00:53:51 +0000
-Subject: Re: [PATCH v11 00/25] mm/gup: track dma-pinned pages: FOLL_PIN
-To:     Dan Williams <dan.j.williams@intel.com>
-CC:     Jan Kara <jack@suse.cz>, Leon Romanovsky <leon@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        "Alex Williamson" <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        "Mike Kravetz" <mike.kravetz@oracle.com>,
-        Paul Mackerras <paulus@samba.org>,
-        "Shuah Khan" <shuah@kernel.org>, Vlastimil Babka <vbabka@suse.cz>,
-        <bpf@vger.kernel.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>, KVM list <kvm@vger.kernel.org>,
-        <linux-block@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>,
-        "Linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Netdev <netdev@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Maor Gottlieb <maorg@mellanox.com>
-References: <20191216222537.491123-1-jhubbard@nvidia.com>
- <20191219132607.GA410823@unreal>
- <a4849322-8e17-119e-a664-80d9f95d850b@nvidia.com>
- <20191220092154.GA10068@quack2.suse.cz>
- <CAPcyv4gYnXE-y_aGehazzF-Kej5ibSfqvE2hTnjKJD68bm8ANg@mail.gmail.com>
- <437f2bff-13ba-0ae9-2f3c-bc8eb82d20f0@nvidia.com>
- <CAPcyv4hMvTmb5X8gNtXnapJFR1qej1bKto2fvv9zUtebHMhvVw@mail.gmail.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-X-Nvconfidentiality: public
-Message-ID: <12a28917-f8c9-5092-2f01-92bb74714cae@nvidia.com>
-Date:   Fri, 20 Dec 2019 16:53:50 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+        id S1726633AbfLUDVy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 20 Dec 2019 22:21:54 -0500
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:42639 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726537AbfLUDVx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 20 Dec 2019 22:21:53 -0500
+Received: by mail-pg1-f195.google.com with SMTP id s64so5898178pgb.9;
+        Fri, 20 Dec 2019 19:21:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Ju5v3AjkEO2xnqkCXCFuiKcXWoSkK3WTFjgA+J3XmS8=;
+        b=sWi4v4D1UYUFxivWgas5Ucin1pW1krBSmf4pCdlImtCAXuhgdk/F3/Z8kq+HE7/9ZO
+         +c/YGxg15Dj1MUWIg21VWWsmAdvECZ3KmNTyfbj9szvzKV9ZbTvmOGfu5p32nciJlbGT
+         Wh/wqee9ttNgDusFEP+VR4yLMlaFarylKDTDgCm79EJFIcBboWnWd6T5E1F+gbJ8RqGU
+         ggSpDHDbav2y05tz64hQJka0OHsoMeMDmieSxMPk3k7jIIjDNRVCfIxA6hIw/3ouG0mE
+         kH0SBgT7aNpfGE4iKi685LA3rPZd1CaiwRl0LjiTNk2wGV3IvDFyAXB2doaRbLoyvFpF
+         VbLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Ju5v3AjkEO2xnqkCXCFuiKcXWoSkK3WTFjgA+J3XmS8=;
+        b=StEdcpjsjBE/G9A1Q00P8GVz70r6s8VFu94mWH8Bnx+82kHEhddhQns7xVn0L2Jjgp
+         0zZG10Pf5GTdwOPYjhC0k1ZJdabQFXGgBemAOaoTy4zuMsqCVt0g/2wQPPeIh+g8hMWm
+         hgrPFuvj5mJ/gARHO/EWox7yBKc1kdTKnljq1+yLSp1lj5zmypK/DYksiwoSteQracx8
+         pw3HzmcXEOks6/Ndzgr+UKXc55uVbYuYf8G4Vb7Tq22e6LCFDyY+7kIiVOu23o0zxaJw
+         L+nyglfIsfSKft2BXhzwWjXNLGhlQJ3LXwmGcPro0PnAp8AUdLfeOyvU2kLSZZtnyW5J
+         gErw==
+X-Gm-Message-State: APjAAAUgLjnfFQfssBctD1YOQENp++DJfqp3mMq+hFuQcYBDDjtPyjfl
+        rVQgERZDemNY72r1CJ5hK9s=
+X-Google-Smtp-Source: APXvYqxjs4JVBBjRyFkW24NUPjQHrx9slMBlt7XCD1QYAq/UUCDSK9IUcVx1QvHp3kPy7MEuBC92MQ==
+X-Received: by 2002:a65:620d:: with SMTP id d13mr276125pgv.252.1576898512957;
+        Fri, 20 Dec 2019 19:21:52 -0800 (PST)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:180::a07b])
+        by smtp.gmail.com with ESMTPSA id b2sm15851268pjq.3.2019.12.20.19.21.51
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 20 Dec 2019 19:21:52 -0800 (PST)
+Date:   Fri, 20 Dec 2019 19:21:49 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrii Nakryiko <andriin@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next 1/3] bpftool: add extra CO-RE mode to btf dump
+ command
+Message-ID: <20191221032147.b7s2zm5pkzatbu57@ast-mbp.dhcp.thefacebook.com>
+References: <20191219070659.424273-1-andriin@fb.com>
+ <20191219070659.424273-2-andriin@fb.com>
+ <20191219170602.4xkljpjowi4i2e3q@ast-mbp.dhcp.thefacebook.com>
+ <CAEf4BzYKf=+WNZv5HMv=W8robWWTab1L5NURAT=N7LQNW4oeGQ@mail.gmail.com>
+ <20191219220402.cdmxkkz3nmwmk6rc@ast-mbp.dhcp.thefacebook.com>
+ <CAEf4Bzayg2UZi1H1NZaFgAUabtS5a=-yCE7NsUmtaO7kS5CJmw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAPcyv4hMvTmb5X8gNtXnapJFR1qej1bKto2fvv9zUtebHMhvVw@mail.gmail.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1576889605; bh=tpI8g3cGtI3RbtQKzNDwLh+jY1UnQFhrLmQoaZFESA8=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=gT92UnAPvjWo9Dyarc3BsQj2Nl0ZSZOB5xO5S1hvSTkAn6HQKFYCbmGMns41Asul4
-         eMkGBYUVekYb1GDqzt3tUGEwYX/qiLyAv9PBah19Qnk9kLrPhGqoza8LPYP20EKh8A
-         rpksQuLIxtU3WgPWODyJ4Q9+O1Y8CfsR7+NeFhDEz5kdhRtxtRV/c4gCIoz4Xh2tr4
-         dqYIG3iAXmQiFA+EerZ5Kzd0MzHGZsUPeYIr/zdgX84A5MWU+lGn2mDX6OuVhtBYkB
-         sM9JvXEn3c8apvXt6FAkZHRg4c2qB8/6lfd0asa7z5htLXf1pi4lQc9aIPZeePVDOP
-         YXljCFL0SkWSA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4Bzayg2UZi1H1NZaFgAUabtS5a=-yCE7NsUmtaO7kS5CJmw@mail.gmail.com>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 12/20/19 4:51 PM, Dan Williams wrote:
-> On Fri, Dec 20, 2019 at 4:41 PM John Hubbard <jhubbard@nvidia.com> wrote:
->>
->> On 12/20/19 4:33 PM, Dan Williams wrote:
->> ...
->>>> I believe there might be also a different solution for this: For
->>>> transparent huge pages, we could find a space in 'struct page' of the
->>>> second page in the huge page for proper pin counter and just account pins
->>>> there so we'd have full width of 32-bits for it.
->>>
->>> That would require THP accounting for dax pages. It is something that
->>> was probably going to be needed, but this would seem to force the
->>> issue.
->>>
->>
->> Thanks for mentioning that, it wasn't obvious to me yet.
->>
->> How easy is it for mere mortals outside of Intel, to set up a DAX (nvdimm?)
->> test setup? I'd hate to go into this without having that coverage up
->> and running. It's been sketchy enough as it is. :)
+On Fri, Dec 20, 2019 at 09:40:31AM -0800, Andrii Nakryiko wrote:
 > 
-> You too can have the power of the gods for the low low price of a
-> kernel command line parameter, or a qemu setup.
-> 
-> Details here:
-> 
-> https://nvdimm.wiki.kernel.org/how_to_choose_the_correct_memmap_kernel_parameter_for_pmem_on_your_system
-> https://nvdimm.wiki.kernel.org/pmem_in_qemu
-> 
+> This one is a small line-number-wise. But the big difference between
+> `format c` and `format core` is that the latter assumes we are dumping
+> *vmlinux's BTF* for use with *BPF CO-RE from BPF side*. `format c`
+> doesn't make any assumptions and faithfully dumps whatever BTF
+> information is provided, which can be some other BPF program, or just
+> any userspace program, on which pahole -J was executed.
 
-Sweeeet! Now I can really cause some damage. :)
-
-thanks,
--- 
-John Hubbard
-NVIDIA
+When 'format c' was introduced it was specifically targeting CO-RE framework.
+It is useful with BPF_CORE_READ macro and with builtin_preserve_access_index.
+Then we realized that both macro and builtin(({ ... })) are quite cumbersome to
+use and came with new clang attribute((preserve_access_index)) which makes
+programs read like normal C without any extra gotchas. Obviously it's nice if
+vmlinux.h already contains this attribute. Hence the need to either add extra
+flag to bpftool to emit this attribute or just emit it by default. So
+introducing new 'format core' (which is 99% the same as 'format c') and
+deprecating 'format c' to 'this is just .h dump of BTF' when it was around for
+few month only is absolutely no go. You need to find a way to extend 'format c'
+without breaking existing users. Yes. Likely there are no such users, but that
+doesn't matter. Once new api is introduced we have to stick to it. 'format c'
+is such api.
