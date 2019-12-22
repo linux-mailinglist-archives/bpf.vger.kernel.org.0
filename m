@@ -2,172 +2,232 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0529B128C25
-	for <lists+bpf@lfdr.de>; Sun, 22 Dec 2019 02:27:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA3A3128E0E
+	for <lists+bpf@lfdr.de>; Sun, 22 Dec 2019 14:24:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726131AbfLVB1a (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 21 Dec 2019 20:27:30 -0500
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:41059 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726115AbfLVB13 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 21 Dec 2019 20:27:29 -0500
-Received: by mail-pf1-f194.google.com with SMTP id w62so7311869pfw.8;
-        Sat, 21 Dec 2019 17:27:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=tkfasVhjkiXRo4y/SdMA6WHfZdAOzeb5acRwT7JCd/4=;
-        b=Q86FXMrhLCdpVxdd76AiAH284fsVdwUdoMnkAPH0AxmHClF+KlWTIwqu1QmOeVrx7V
-         iBQESqVRZ2uaLBzsb/MlHk+12o1/DpwrjIGOBXAkJWUtAcLRvwcF7GHV7uKJ24zBNkqk
-         MfdUP5c+oqjM0ydAnK0aTp+uUSFQgZN/bvYcbq2DWPJmV+s4j4XX66r1JbEGPzk/QDOc
-         1KzXjqLG1HfnVTh+dQnB2SXN/LHyTIMBJReqcOff0pEHHSNgFt0ZETKMJw3xjuZKpZTR
-         L08fIxgUnOlp0QAiQd9gMTWb7/oxHKGxPDaJzy6efo3NCiwExh1jzRhZmTtJ1npEEzRL
-         gS9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=tkfasVhjkiXRo4y/SdMA6WHfZdAOzeb5acRwT7JCd/4=;
-        b=r50BGiKn6JF1/OCQZWMjQjtsy9JY8KShozPWDDjqs9xYxRt6DUWgIbE6sHAclD0QlB
-         RyjYqRd1dP6IgvBawVy78ahfwSv9W7B80NR1wOvV9UthOS4YEzB/WHdnV3GwrrGrN1Mu
-         uIv8Di8Stn8at9fGxjAi6S0xZiejzELsAg3CmzsEG7G4QNozzyeS6ROwXFGCv8GofYb5
-         4eiJcBP4salV4xaihhgblVZACJDtq4Lq1zomcDvCpflZ1xRb0qqkeW1zLqFJGxKS0P5e
-         2p4U78nM9NV2Wp+XaIgm51GErBu6SIVzRPa4byr/m/8XvjfThfYdN3Q5FM0YusLsv/Ek
-         uRaw==
-X-Gm-Message-State: APjAAAWlJJoNojfvXSnbQO3ghbfhVtRBXtKBxJW6Lf/v6Fv7aFCC4bct
-        2VuZmnauwCxh/ThN8fYkdbM=
-X-Google-Smtp-Source: APXvYqyzF37Wr83/MMsHlAx39SfrIAzDHVoFQd5qust1Gyqf3rJp3+h++6iETeKkUjVBQJsml6C/gQ==
-X-Received: by 2002:a65:6815:: with SMTP id l21mr22943252pgt.283.1576978048431;
-        Sat, 21 Dec 2019 17:27:28 -0800 (PST)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:180::2aea])
-        by smtp.gmail.com with ESMTPSA id 189sm19019028pfw.73.2019.12.21.17.27.25
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 21 Dec 2019 17:27:27 -0800 (PST)
-Date:   Sat, 21 Dec 2019 17:27:24 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     KP Singh <kpsingh@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        James Morris <jmorris@namei.org>,
-        Kees Cook <keescook@chromium.org>,
-        Thomas Garnier <thgarnie@chromium.org>,
-        Michael Halcrow <mhalcrow@google.com>,
-        Paul Turner <pjt@google.com>,
-        Brendan Gregg <brendan.d.gregg@gmail.com>,
-        Jann Horn <jannh@google.com>,
-        Matthew Garrett <mjg59@google.com>,
-        Christian Brauner <christian@brauner.io>,
-        =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Quentin Monnet <quentin.monnet@netronome.com>,
-        Andrey Ignatov <rdna@fb.com>, Joe Stringer <joe@wand.net.nz>
-Subject: Re: [PATCH bpf-next v1 00/13] MAC and Audit policy using eBPF (KRSI)
-Message-ID: <20191222012722.gdqhppxpfmqfqbld@ast-mbp.dhcp.thefacebook.com>
-References: <20191220154208.15895-1-kpsingh@chromium.org>
+        id S1725807AbfLVNYD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 22 Dec 2019 08:24:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52072 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725791AbfLVNYC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 22 Dec 2019 08:24:02 -0500
+Received: from localhost (unknown [193.47.165.251])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EAF2F206D3;
+        Sun, 22 Dec 2019 13:23:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1577021040;
+        bh=483rbuBN6u8s6eQHgpawXUOLSB7wNwqu6dfS1IVBUTQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HCcjH9yc8u/Vu1a+J6ffdhdH2EQVw5nD3NYhUbwC2GUSnm6xSh3uwn+/F9m4ilyzx
+         lTmfUsU/ZGfq6BBNKcYt9vWVR3mQLngV7t/V1RQWwq/9eKi8XawAM/+XuBwJ0m9BKE
+         mbbyx0jewMth0tRdvRaxLLJjjH32G6FGxmP5fBCg=
+Date:   Sun, 22 Dec 2019 15:23:57 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jens Axboe <axboe@kernel.dk>, Jonathan Corbet <corbet@lwn.net>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, bpf@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, kvm@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
+        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
+        Maor Gottlieb <maorg@mellanox.com>,
+        Ran Rozenstein <ranro@mellanox.com>
+Subject: Re: [PATCH v11 00/25] mm/gup: track dma-pinned pages: FOLL_PIN
+Message-ID: <20191222132357.GF13335@unreal>
+References: <20191216222537.491123-1-jhubbard@nvidia.com>
+ <20191219132607.GA410823@unreal>
+ <a4849322-8e17-119e-a664-80d9f95d850b@nvidia.com>
+ <20191219210743.GN17227@ziepe.ca>
+ <20191220182939.GA10944@unreal>
+ <1001a5fc-a71d-9c0f-1090-546c4913d8a2@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191220154208.15895-1-kpsingh@chromium.org>
-User-Agent: NeoMutt/20180223
+In-Reply-To: <1001a5fc-a71d-9c0f-1090-546c4913d8a2@nvidia.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Dec 20, 2019 at 04:41:55PM +0100, KP Singh wrote:
-> // Declare the eBPF program mprotect_audit which attaches to
-> // to the file_mprotect LSM hook and accepts three arguments.
-> BPF_TRACE_3("lsm/file_mprotect", mprotect_audit,
-> 	    struct vm_area_struct *, vma,
-> 	    unsigned long, reqprot, unsigned long, prot
-> {
-> 	unsigned long vm_start = _(vma->vm_start);
-> 	return 0;
-> }
+On Fri, Dec 20, 2019 at 03:54:55PM -0800, John Hubbard wrote:
+> On 12/20/19 10:29 AM, Leon Romanovsky wrote:
+> ...
+> >> $ ./build.sh
+> >> $ build/bin/run_tests.py
+> >>
+> >> If you get things that far I think Leon can get a reproduction for you
+> >
+> > I'm not so optimistic about that.
+> >
+>
+> OK, I'm going to proceed for now on the assumption that I've got an overflow
+> problem that happens when huge pages are pinned. If I can get more information,
+> great, otherwise it's probably enough.
+>
+> One thing: for your repro, if you know the huge page size, and the system
+> page size for that case, that would really help. Also the number of pins per
+> page, more or less, that you'd expect. Because Jason says that only 2M huge
+> pages are used...
+>
+> Because the other possibility is that the refcount really is going negative,
+> likely due to a mismatched pin/unpin somehow.
+>
+> If there's not an obvious repro case available, but you do have one (is it easy
+> to repro, though?), then *if* you have the time, I could point you to a github
+> branch that reduces GUP_PIN_COUNTING_BIAS by, say, 4x, by applying this:
+>
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index bb44c4d2ada7..8526fd03b978 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -1077,7 +1077,7 @@ static inline void put_page(struct page *page)
+>   * get_user_pages and page_mkclean and other calls that race to set up page
+>   * table entries.
+>   */
+> -#define GUP_PIN_COUNTING_BIAS (1U << 10)
+> +#define GUP_PIN_COUNTING_BIAS (1U << 8)
+>
+>  void unpin_user_page(struct page *page);
+>  void unpin_user_pages_dirty_lock(struct page **pages, unsigned long npages,
+>
+> If that fails to repro, then we would be zeroing in on the root cause.
+>
+> The branch is here (I just tested it and it seems healthy):
+>
+> git@github.com:johnhubbard/linux.git  pin_user_pages_tracking_v11_with_diags
 
-I think the only sore point of the patchset is:
-security/bpf/include/hooks.h   | 1015 ++++++++++++++++++++++++++++++++
-With bpf trampoline this type of 'kernel types -> bpf types' converters
-are no longer necessary. Please take a look at tcp-congestion-control patchset:
-https://patchwork.ozlabs.org/cover/1214417/
-Instead of doing similar thing (like your patch 1 plus patch 6) it's using
-trampoline to provide bpf based congestion control callbacks into tcp stack.
-The same trampoline-based mechanism can be reused by bpf_lsm.
-Then all manual work of doing BPF_LSM_HOOK(...) for every hook won't be
-necessary. It will also prove the point that attaching BPF to raw LSM hooks
-doesn't freeze them into stable abi.
-The programs can keep the same syntax as in your examples:
-BPF_TRACE_3("lsm/file_mprotect", mprotect_audit,
-libbpf will find file_mprotect's btf_id in kernel vmlinux and pass it to
-the kernel for attaching. Just like fentry/fexit bpf progs are doing
-and just like bpf-based cc is doing as well.
+Hi,
 
-> In order to better illustrate the capabilities of the framework some
-> more advanced prototype code has also been published separately:
-> 
-> * Logging execution events (including environment variables and arguments):
-> https://github.com/sinkap/linux-krsi/blob/patch/v1/examples/samples/bpf/lsm_audit_env.c
-> * Detecting deletion of running executables:
-> https://github.com/sinkap/linux-krsi/blob/patch/v1/examples/samples/bpf/lsm_detect_exec_unlink.c
-> * Detection of writes to /proc/<pid>/mem:
-> https://github.com/sinkap/linux-krsi/blob/patch/v1/examples/samples/bpf/lsm_audit_env.c
+We tested the following branch and here comes results:
+[root@server consume_mtts]# (master) $ grep foll_pin /proc/vmstat
+nr_foll_pin_requested 0
+nr_foll_pin_returned 0
 
-Thank you for sharing these examples. That definitely helps to see more
-complete picture. I noticed that the examples are using the pattern:
-  u32 map_id = 0;
-  env = bpf_map_lookup_elem(&env_map, &map_id);
-Essentially they're global variables. libbpf already supports them.
-bpf prog can use them as:
-  struct env_value env;
-  int bpf_prog(..)
-  {
-    env.name... env.value..
-  }
-That will make progs a bit easier to read and faster too.
-Accesing global vars from user space is also trivial with skeleton work:
-  lsm_audit_env_skel->bss->env.name... env.value.
-Both bpf side and user side can access globals as normal C variables.
+[root@serer consume_mtts]# (master) $ dmesg
+[  425.221459] ------------[ cut here ]------------
+[  425.225894] WARNING: CPU: 1 PID: 6738 at mm/gup.c:61 try_grab_compound_head+0x90/0xa0
+[  425.228021] Modules linked in: mlx5_ib mlx5_core mlxfw mlx4_ib mlx4_en ptp pps_core mlx4_core bonding ip6_gre ip6_tunnel tunnel6 ip_gre gre ip_tunnel rdma_rxe ip6_udp_tunnel udp_tunnel rdma_ucm ib_uverbs ib_ipoib ib_umad ib_srp scsi_transport_srp rpcrdma ib_iser libiscsi scsi_transport_iscsi rdma_cm iw_cm ib_cm ib_core [last unloaded: mlxfw]
+[  425.235266] CPU: 1 PID: 6738 Comm: consume_mtts Tainted: G           O      5.5.0-rc2+ #1
+[  425.237480] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.10.2-1ubuntu1 04/01/2014
+[  425.239738] RIP: 0010:try_grab_compound_head+0x90/0xa0
+[  425.241170] Code: 06 48 8d 4f 34 f0 0f b1 57 34 74 cd 85 c0 74 cf 8d 14 06 f0 0f b1 11 74 c0 eb f1 8d 14 06 f0 0f b1 11 74 b5 85 c0 75 f3 eb b5 <0f> 0b 31 c0 c3 90 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 41
+[  425.245739] RSP: 0018:ffffc900006878a8 EFLAGS: 00010082
+[  425.247124] RAX: 0000000080000001 RBX: 00007f780488a000 RCX: 0000000000000bb0
+[  425.248956] RDX: ffffea000e031087 RSI: 0000000000008a00 RDI: ffffea000dc58000
+[  425.250761] RBP: ffffea000e031080 R08: ffffc90000687974 R09: 000fffffffe00000
+[  425.252661] R10: 0000000000000000 R11: ffff888362560000 R12: 000000000000008a
+[  425.254487] R13: 80000003716000e7 R14: 00007f780488a000 R15: ffffc90000687974
+[  425.256309] FS:  00007f780d9d3740(0000) GS:ffff8883b1c80000(0000) knlGS:0000000000000000
+[  425.258401] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  425.259949] CR2: 0000000002334048 CR3: 000000039c68c001 CR4: 00000000001606a0
+[  425.261884] Call Trace:
+[  425.262735]  gup_pgd_range+0x517/0x5a0
+[  425.263819]  internal_get_user_pages_fast+0x210/0x250
+[  425.265193]  ib_umem_get+0x298/0x550 [ib_uverbs]
+[  425.266476]  mr_umem_get+0xc9/0x260 [mlx5_ib]
+[  425.267699]  mlx5_ib_reg_user_mr+0xcc/0x7e0 [mlx5_ib]
+[  425.269134]  ? xas_load+0x8/0x80
+[  425.270074]  ? xa_load+0x48/0x90
+[  425.271038]  ? lookup_get_idr_uobject.part.10+0x12/0x70 [ib_uverbs]
+[  425.272757]  ib_uverbs_reg_mr+0x127/0x280 [ib_uverbs]
+[  425.274120]  ib_uverbs_handler_UVERBS_METHOD_INVOKE_WRITE+0xc2/0xf0 [ib_uverbs]
+[  425.276058]  ib_uverbs_cmd_verbs.isra.6+0x5be/0xbe0 [ib_uverbs]
+[  425.277657]  ? uverbs_disassociate_api+0xd0/0xd0 [ib_uverbs]
+[  425.279155]  ? __alloc_pages_nodemask+0x148/0x2b0
+[  425.280445]  ib_uverbs_ioctl+0xc0/0x120 [ib_uverbs]
+[  425.281755]  do_vfs_ioctl+0x9d/0x650
+[  425.282766]  ksys_ioctl+0x70/0x80
+[  425.283745]  __x64_sys_ioctl+0x16/0x20
+[  425.284912]  do_syscall_64+0x42/0x130
+[  425.285973]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[  425.287377] RIP: 0033:0x7f780d2df267
+[  425.288449] Code: b3 66 90 48 8b 05 19 3c 2c 00 64 c7 00 26 00 00 00 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 b8 10 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d e9 3b 2c 00 f7 d8 64 89 01 48
+[  425.293073] RSP: 002b:00007ffce49a88a8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+[  425.295034] RAX: ffffffffffffffda RBX: 00007ffce49a8938 RCX: 00007f780d2df267
+[  425.296895] RDX: 00007ffce49a8920 RSI: 00000000c0181b01 RDI: 0000000000000003
+[  425.298689] RBP: 00007ffce49a8900 R08: 0000000000000003 R09: 00007f780d9a1010
+[  425.300480] R10: 00000000ffffffff R11: 0000000000000246 R12: 00007f780d9a1150
+[  425.302290] R13: 00007ffce49a8900 R14: 00007ffce49a8ad8 R15: 00007f780468a000
+[  425.304113] ---[ end trace 1ecbefdb403190dd ]---
+[  425.305434] ------------[ cut here ]------------
+[  425.307147] WARNING: CPU: 1 PID: 6738 at mm/gup.c:150 try_grab_page+0x56/0x60
+[  425.309111] Modules linked in: mlx5_ib mlx5_core mlxfw mlx4_ib mlx4_en ptp pps_core mlx4_core bonding ip6_gre ip6_tunnel tunnel6 ip_gre gre ip_tunnel rdma_rxe ip6_udp_tunnel udp_tunnel rdma_ucm ib_uverbs ib_ipoib ib_umad ib_srp scsi_transport_srp rpcrdma ib_iser libiscsi scsi_transport_iscsi rdma_cm iw_cm ib_cm ib_core [last unloaded: mlxfw]
+[  425.316461] CPU: 1 PID: 6738 Comm: consume_mtts Tainted: G        W  O      5.5.0-rc2+ #1
+[  425.318582] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.10.2-1ubuntu1 04/01/2014
+[  425.320958] RIP: 0010:try_grab_page+0x56/0x60
+[  425.322167] Code: 7e 28 f0 81 47 34 00 01 00 00 c3 48 8b 47 08 48 8d 50 ff a8 01 48 0f 45 fa 8b 47 34 85 c0 7e 0f f0 ff 47 34 b8 01 00 00 00 c3 <0f> 0b 31 c0 c3 0f 0b 31 c0 c3 0f 1f 44 00 00 41 57 41 56 41 55 41
+[  425.326814] RSP: 0018:ffffc90000687830 EFLAGS: 00010282
+[  425.328226] RAX: 0000000000000001 RBX: ffffea000dc58000 RCX: ffffea000e031087
+[  425.330104] RDX: 0000000080000001 RSI: 0000000000040000 RDI: ffffea000dc58000
+[  425.331980] RBP: 00007f7804800000 R08: 000ffffffffff000 R09: 80000003716000e7
+[  425.333898] R10: ffff88834af80120 R11: ffff8883ac16f000 R12: ffff88834af80120
+[  425.335704] R13: ffff88837c0915c0 R14: 0000000000050201 R15: 00007f7804800000
+[  425.337638] FS:  00007f780d9d3740(0000) GS:ffff8883b1c80000(0000) knlGS:0000000000000000
+[  425.339734] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  425.341369] CR2: 0000000002334048 CR3: 000000039c68c001 CR4: 00000000001606a0
+[  425.343160] Call Trace:
+[  425.343967]  follow_trans_huge_pmd+0x16f/0x2e0
+[  425.345263]  follow_p4d_mask+0x51c/0x630
+[  425.346344]  __get_user_pages+0x1a1/0x6c0
+[  425.347463]  internal_get_user_pages_fast+0x17b/0x250
+[  425.348918]  ib_umem_get+0x298/0x550 [ib_uverbs]
+[  425.350174]  mr_umem_get+0xc9/0x260 [mlx5_ib]
+[  425.351383]  mlx5_ib_reg_user_mr+0xcc/0x7e0 [mlx5_ib]
+[  425.352849]  ? xas_load+0x8/0x80
+[  425.353776]  ? xa_load+0x48/0x90
+[  425.354730]  ? lookup_get_idr_uobject.part.10+0x12/0x70 [ib_uverbs]
+[  425.356410]  ib_uverbs_reg_mr+0x127/0x280 [ib_uverbs]
+[  425.357843]  ib_uverbs_handler_UVERBS_METHOD_INVOKE_WRITE+0xc2/0xf0 [ib_uverbs]
+[  425.359749]  ib_uverbs_cmd_verbs.isra.6+0x5be/0xbe0 [ib_uverbs]
+[  425.361405]  ? uverbs_disassociate_api+0xd0/0xd0 [ib_uverbs]
+[  425.362898]  ? __alloc_pages_nodemask+0x148/0x2b0
+[  425.364206]  ib_uverbs_ioctl+0xc0/0x120 [ib_uverbs]
+[  425.365564]  do_vfs_ioctl+0x9d/0x650
+[  425.366567]  ksys_ioctl+0x70/0x80
+[  425.367537]  __x64_sys_ioctl+0x16/0x20
+[  425.368698]  do_syscall_64+0x42/0x130
+[  425.369782]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[  425.371117] RIP: 0033:0x7f780d2df267
+[  425.372159] Code: b3 66 90 48 8b 05 19 3c 2c 00 64 c7 00 26 00 00 00 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 b8 10 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d e9 3b 2c 00 f7 d8 64 89 01 48
+[  425.376774] RSP: 002b:00007ffce49a88a8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+[  425.378740] RAX: ffffffffffffffda RBX: 00007ffce49a8938 RCX: 00007f780d2df267
+[  425.380598] RDX: 00007ffce49a8920 RSI: 00000000c0181b01 RDI: 0000000000000003
+[  425.382411] RBP: 00007ffce49a8900 R08: 0000000000000003 R09: 00007f780d9a1010
+[  425.384312] R10: 00000000ffffffff R11: 0000000000000246 R12: 00007f780d9a1150
+[  425.386132] R13: 00007ffce49a8900 R14: 00007ffce49a8ad8 R15: 00007f780468a000
+[  425.387964] ---[ end trace 1ecbefdb403190de ]---
 
-There is a small issue in the patches 8 and 10.
-bpf program names are not unique and bpf-lsm should not require them to be different.
-bpf_attr->prog_name is also short at 16 bytes. It's for introspection only.
-Longer program names are supplied via btf's func_info.
-It feels that:
-cat /sys/kernel/security/bpf/process_execution
-env_dumper__v2
-is reinventing the wheel. bpftool is the main introspection tool.
-It can print progs attached to perf, cgroup, networking. I think it's better to
-stay consistent and do the same with bpf-lsm.
+Thanks
 
-Another issue is in proposed attaching method:
-hook_fd = open("/sys/kernel/security/bpf/process_execution");
-sys_bpf(attach, prog_fd, hook_fd);
-With bpf tracing we moved to FD-based attaching, because permanent attaching is
-problematic in production. We're going to provide FD-based api to attach to
-networking as well, because xdp/tc/cgroup prog attaching suffers from the same
-production issues. Mainly with permanent attaching there is no ownership of
-attachment. Everything is global and permanent. It's not clear what
-process/script suppose to detach/cleanup. I suggest bpf-lsm use FD-based
-attaching from the beginning. Take a look at raw_tp/tp_btf/fentry/fexit style
-of attaching. All of them return FD which represents what libbpf calls
-'bpf_link' concept. Once refcnt of that FD goes to zero that link (attachment)
-is destroyed and program is detached _by the kernel_. To make such links
-permanent the application can pin them in bpffs. The pinning patches haven't
-landed yet, but the concept of the link is quite powerful and much more
-production friendly than permanent attaching.
-bpf-lsm will still be able to attach multiple progs to the same hook and
-see what is attached via bpftool.
-
-The rest looks good. Thank you for working on it.
+>
+>
+>
+> thanks,
+> --
+> John Hubbard
+> NVIDIA
