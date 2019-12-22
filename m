@@ -2,232 +2,286 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DA3A3128E0E
-	for <lists+bpf@lfdr.de>; Sun, 22 Dec 2019 14:24:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C04812902F
+	for <lists+bpf@lfdr.de>; Sun, 22 Dec 2019 23:37:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725807AbfLVNYD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 22 Dec 2019 08:24:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52072 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725791AbfLVNYC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 22 Dec 2019 08:24:02 -0500
-Received: from localhost (unknown [193.47.165.251])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EAF2F206D3;
-        Sun, 22 Dec 2019 13:23:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1577021040;
-        bh=483rbuBN6u8s6eQHgpawXUOLSB7wNwqu6dfS1IVBUTQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HCcjH9yc8u/Vu1a+J6ffdhdH2EQVw5nD3NYhUbwC2GUSnm6xSh3uwn+/F9m4ilyzx
-         lTmfUsU/ZGfq6BBNKcYt9vWVR3mQLngV7t/V1RQWwq/9eKi8XawAM/+XuBwJ0m9BKE
-         mbbyx0jewMth0tRdvRaxLLJjjH32G6FGxmP5fBCg=
-Date:   Sun, 22 Dec 2019 15:23:57 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jens Axboe <axboe@kernel.dk>, Jonathan Corbet <corbet@lwn.net>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, bpf@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, kvm@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
-        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
-        Maor Gottlieb <maorg@mellanox.com>,
-        Ran Rozenstein <ranro@mellanox.com>
-Subject: Re: [PATCH v11 00/25] mm/gup: track dma-pinned pages: FOLL_PIN
-Message-ID: <20191222132357.GF13335@unreal>
-References: <20191216222537.491123-1-jhubbard@nvidia.com>
- <20191219132607.GA410823@unreal>
- <a4849322-8e17-119e-a664-80d9f95d850b@nvidia.com>
- <20191219210743.GN17227@ziepe.ca>
- <20191220182939.GA10944@unreal>
- <1001a5fc-a71d-9c0f-1090-546c4913d8a2@nvidia.com>
+        id S1726541AbfLVWhp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 22 Dec 2019 17:37:45 -0500
+Received: from www62.your-server.de ([213.133.104.62]:41570 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726521AbfLVWhp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 22 Dec 2019 17:37:45 -0500
+Received: from [185.105.41.14] (helo=localhost)
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1ij9r4-0007aB-3a; Sun, 22 Dec 2019 23:37:42 +0100
+From:   Daniel Borkmann <daniel@iogearbox.net>
+To:     ast@kernel.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        anatoly.trosinenko@gmail.com,
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: [PATCH bpf] bpf: Fix precision tracking for unbounded scalars
+Date:   Sun, 22 Dec 2019 23:37:40 +0100
+Message-Id: <20191222223740.25297-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1001a5fc-a71d-9c0f-1090-546c4913d8a2@nvidia.com>
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.101.4/25671/Sun Dec 22 10:58:12 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Dec 20, 2019 at 03:54:55PM -0800, John Hubbard wrote:
-> On 12/20/19 10:29 AM, Leon Romanovsky wrote:
-> ...
-> >> $ ./build.sh
-> >> $ build/bin/run_tests.py
-> >>
-> >> If you get things that far I think Leon can get a reproduction for you
-> >
-> > I'm not so optimistic about that.
-> >
->
-> OK, I'm going to proceed for now on the assumption that I've got an overflow
-> problem that happens when huge pages are pinned. If I can get more information,
-> great, otherwise it's probably enough.
->
-> One thing: for your repro, if you know the huge page size, and the system
-> page size for that case, that would really help. Also the number of pins per
-> page, more or less, that you'd expect. Because Jason says that only 2M huge
-> pages are used...
->
-> Because the other possibility is that the refcount really is going negative,
-> likely due to a mismatched pin/unpin somehow.
->
-> If there's not an obvious repro case available, but you do have one (is it easy
-> to repro, though?), then *if* you have the time, I could point you to a github
-> branch that reduces GUP_PIN_COUNTING_BIAS by, say, 4x, by applying this:
->
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index bb44c4d2ada7..8526fd03b978 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -1077,7 +1077,7 @@ static inline void put_page(struct page *page)
->   * get_user_pages and page_mkclean and other calls that race to set up page
->   * table entries.
->   */
-> -#define GUP_PIN_COUNTING_BIAS (1U << 10)
-> +#define GUP_PIN_COUNTING_BIAS (1U << 8)
->
->  void unpin_user_page(struct page *page);
->  void unpin_user_pages_dirty_lock(struct page **pages, unsigned long npages,
->
-> If that fails to repro, then we would be zeroing in on the root cause.
->
-> The branch is here (I just tested it and it seems healthy):
->
-> git@github.com:johnhubbard/linux.git  pin_user_pages_tracking_v11_with_diags
+Anatoly has been fuzzing with kBdysch harness and reported a hang in one
+of the outcomes. Upon closer analysis, it turns out that precise scalar
+value tracking is missing a few precision markings for unknown scalars:
 
-Hi,
+  0: R1=ctx(id=0,off=0,imm=0) R10=fp0
+  0: (b7) r0 = 0
+  1: R0_w=invP0 R1=ctx(id=0,off=0,imm=0) R10=fp0
+  1: (35) if r0 >= 0xf72e goto pc+0
+  --> only follow fallthrough
+  2: R0_w=invP0 R1=ctx(id=0,off=0,imm=0) R10=fp0
+  2: (35) if r0 >= 0x80fe0000 goto pc+0
+  --> only follow fallthrough
+  3: R0_w=invP0 R1=ctx(id=0,off=0,imm=0) R10=fp0
+  3: (14) w0 -= -536870912
+  4: R0_w=invP536870912 R1=ctx(id=0,off=0,imm=0) R10=fp0
+  4: (0f) r1 += r0
+  5: R0_w=invP536870912 R1_w=inv(id=0) R10=fp0
+  5: (55) if r1 != 0x104c1500 goto pc+0
+  --> push other branch for later analysis
+  R0_w=invP536870912 R1_w=inv273421568 R10=fp0
+  6: R0_w=invP536870912 R1_w=inv273421568 R10=fp0
+  6: (b7) r0 = 0
+  7: R0=invP0 R1=inv273421568 R10=fp0
+  7: (76) if w1 s>= 0xffffff00 goto pc+3
+  --> only follow goto
+  11: R0=invP0 R1=inv273421568 R10=fp0
+  11: (95) exit
+  6: R0_w=invP536870912 R1_w=inv(id=0) R10=fp0
+  6: (b7) r0 = 0
+  propagating r0
+  7: safe
+  processed 11 insns [...]
 
-We tested the following branch and here comes results:
-[root@server consume_mtts]# (master) $ grep foll_pin /proc/vmstat
-nr_foll_pin_requested 0
-nr_foll_pin_returned 0
+In the analysis of the second path coming after the successful exit above,
+the path is being pruned at line 7. Pruning analysis found that both r0 are
+precise P0 and both R1 are non-precise scalars and given prior path with
+R1 as non-precise scalar succeeded, this one is therefore safe as well.
 
-[root@serer consume_mtts]# (master) $ dmesg
-[  425.221459] ------------[ cut here ]------------
-[  425.225894] WARNING: CPU: 1 PID: 6738 at mm/gup.c:61 try_grab_compound_head+0x90/0xa0
-[  425.228021] Modules linked in: mlx5_ib mlx5_core mlxfw mlx4_ib mlx4_en ptp pps_core mlx4_core bonding ip6_gre ip6_tunnel tunnel6 ip_gre gre ip_tunnel rdma_rxe ip6_udp_tunnel udp_tunnel rdma_ucm ib_uverbs ib_ipoib ib_umad ib_srp scsi_transport_srp rpcrdma ib_iser libiscsi scsi_transport_iscsi rdma_cm iw_cm ib_cm ib_core [last unloaded: mlxfw]
-[  425.235266] CPU: 1 PID: 6738 Comm: consume_mtts Tainted: G           O      5.5.0-rc2+ #1
-[  425.237480] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.10.2-1ubuntu1 04/01/2014
-[  425.239738] RIP: 0010:try_grab_compound_head+0x90/0xa0
-[  425.241170] Code: 06 48 8d 4f 34 f0 0f b1 57 34 74 cd 85 c0 74 cf 8d 14 06 f0 0f b1 11 74 c0 eb f1 8d 14 06 f0 0f b1 11 74 b5 85 c0 75 f3 eb b5 <0f> 0b 31 c0 c3 90 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 41
-[  425.245739] RSP: 0018:ffffc900006878a8 EFLAGS: 00010082
-[  425.247124] RAX: 0000000080000001 RBX: 00007f780488a000 RCX: 0000000000000bb0
-[  425.248956] RDX: ffffea000e031087 RSI: 0000000000008a00 RDI: ffffea000dc58000
-[  425.250761] RBP: ffffea000e031080 R08: ffffc90000687974 R09: 000fffffffe00000
-[  425.252661] R10: 0000000000000000 R11: ffff888362560000 R12: 000000000000008a
-[  425.254487] R13: 80000003716000e7 R14: 00007f780488a000 R15: ffffc90000687974
-[  425.256309] FS:  00007f780d9d3740(0000) GS:ffff8883b1c80000(0000) knlGS:0000000000000000
-[  425.258401] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  425.259949] CR2: 0000000002334048 CR3: 000000039c68c001 CR4: 00000000001606a0
-[  425.261884] Call Trace:
-[  425.262735]  gup_pgd_range+0x517/0x5a0
-[  425.263819]  internal_get_user_pages_fast+0x210/0x250
-[  425.265193]  ib_umem_get+0x298/0x550 [ib_uverbs]
-[  425.266476]  mr_umem_get+0xc9/0x260 [mlx5_ib]
-[  425.267699]  mlx5_ib_reg_user_mr+0xcc/0x7e0 [mlx5_ib]
-[  425.269134]  ? xas_load+0x8/0x80
-[  425.270074]  ? xa_load+0x48/0x90
-[  425.271038]  ? lookup_get_idr_uobject.part.10+0x12/0x70 [ib_uverbs]
-[  425.272757]  ib_uverbs_reg_mr+0x127/0x280 [ib_uverbs]
-[  425.274120]  ib_uverbs_handler_UVERBS_METHOD_INVOKE_WRITE+0xc2/0xf0 [ib_uverbs]
-[  425.276058]  ib_uverbs_cmd_verbs.isra.6+0x5be/0xbe0 [ib_uverbs]
-[  425.277657]  ? uverbs_disassociate_api+0xd0/0xd0 [ib_uverbs]
-[  425.279155]  ? __alloc_pages_nodemask+0x148/0x2b0
-[  425.280445]  ib_uverbs_ioctl+0xc0/0x120 [ib_uverbs]
-[  425.281755]  do_vfs_ioctl+0x9d/0x650
-[  425.282766]  ksys_ioctl+0x70/0x80
-[  425.283745]  __x64_sys_ioctl+0x16/0x20
-[  425.284912]  do_syscall_64+0x42/0x130
-[  425.285973]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[  425.287377] RIP: 0033:0x7f780d2df267
-[  425.288449] Code: b3 66 90 48 8b 05 19 3c 2c 00 64 c7 00 26 00 00 00 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 b8 10 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d e9 3b 2c 00 f7 d8 64 89 01 48
-[  425.293073] RSP: 002b:00007ffce49a88a8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-[  425.295034] RAX: ffffffffffffffda RBX: 00007ffce49a8938 RCX: 00007f780d2df267
-[  425.296895] RDX: 00007ffce49a8920 RSI: 00000000c0181b01 RDI: 0000000000000003
-[  425.298689] RBP: 00007ffce49a8900 R08: 0000000000000003 R09: 00007f780d9a1010
-[  425.300480] R10: 00000000ffffffff R11: 0000000000000246 R12: 00007f780d9a1150
-[  425.302290] R13: 00007ffce49a8900 R14: 00007ffce49a8ad8 R15: 00007f780468a000
-[  425.304113] ---[ end trace 1ecbefdb403190dd ]---
-[  425.305434] ------------[ cut here ]------------
-[  425.307147] WARNING: CPU: 1 PID: 6738 at mm/gup.c:150 try_grab_page+0x56/0x60
-[  425.309111] Modules linked in: mlx5_ib mlx5_core mlxfw mlx4_ib mlx4_en ptp pps_core mlx4_core bonding ip6_gre ip6_tunnel tunnel6 ip_gre gre ip_tunnel rdma_rxe ip6_udp_tunnel udp_tunnel rdma_ucm ib_uverbs ib_ipoib ib_umad ib_srp scsi_transport_srp rpcrdma ib_iser libiscsi scsi_transport_iscsi rdma_cm iw_cm ib_cm ib_core [last unloaded: mlxfw]
-[  425.316461] CPU: 1 PID: 6738 Comm: consume_mtts Tainted: G        W  O      5.5.0-rc2+ #1
-[  425.318582] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.10.2-1ubuntu1 04/01/2014
-[  425.320958] RIP: 0010:try_grab_page+0x56/0x60
-[  425.322167] Code: 7e 28 f0 81 47 34 00 01 00 00 c3 48 8b 47 08 48 8d 50 ff a8 01 48 0f 45 fa 8b 47 34 85 c0 7e 0f f0 ff 47 34 b8 01 00 00 00 c3 <0f> 0b 31 c0 c3 0f 0b 31 c0 c3 0f 1f 44 00 00 41 57 41 56 41 55 41
-[  425.326814] RSP: 0018:ffffc90000687830 EFLAGS: 00010282
-[  425.328226] RAX: 0000000000000001 RBX: ffffea000dc58000 RCX: ffffea000e031087
-[  425.330104] RDX: 0000000080000001 RSI: 0000000000040000 RDI: ffffea000dc58000
-[  425.331980] RBP: 00007f7804800000 R08: 000ffffffffff000 R09: 80000003716000e7
-[  425.333898] R10: ffff88834af80120 R11: ffff8883ac16f000 R12: ffff88834af80120
-[  425.335704] R13: ffff88837c0915c0 R14: 0000000000050201 R15: 00007f7804800000
-[  425.337638] FS:  00007f780d9d3740(0000) GS:ffff8883b1c80000(0000) knlGS:0000000000000000
-[  425.339734] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  425.341369] CR2: 0000000002334048 CR3: 000000039c68c001 CR4: 00000000001606a0
-[  425.343160] Call Trace:
-[  425.343967]  follow_trans_huge_pmd+0x16f/0x2e0
-[  425.345263]  follow_p4d_mask+0x51c/0x630
-[  425.346344]  __get_user_pages+0x1a1/0x6c0
-[  425.347463]  internal_get_user_pages_fast+0x17b/0x250
-[  425.348918]  ib_umem_get+0x298/0x550 [ib_uverbs]
-[  425.350174]  mr_umem_get+0xc9/0x260 [mlx5_ib]
-[  425.351383]  mlx5_ib_reg_user_mr+0xcc/0x7e0 [mlx5_ib]
-[  425.352849]  ? xas_load+0x8/0x80
-[  425.353776]  ? xa_load+0x48/0x90
-[  425.354730]  ? lookup_get_idr_uobject.part.10+0x12/0x70 [ib_uverbs]
-[  425.356410]  ib_uverbs_reg_mr+0x127/0x280 [ib_uverbs]
-[  425.357843]  ib_uverbs_handler_UVERBS_METHOD_INVOKE_WRITE+0xc2/0xf0 [ib_uverbs]
-[  425.359749]  ib_uverbs_cmd_verbs.isra.6+0x5be/0xbe0 [ib_uverbs]
-[  425.361405]  ? uverbs_disassociate_api+0xd0/0xd0 [ib_uverbs]
-[  425.362898]  ? __alloc_pages_nodemask+0x148/0x2b0
-[  425.364206]  ib_uverbs_ioctl+0xc0/0x120 [ib_uverbs]
-[  425.365564]  do_vfs_ioctl+0x9d/0x650
-[  425.366567]  ksys_ioctl+0x70/0x80
-[  425.367537]  __x64_sys_ioctl+0x16/0x20
-[  425.368698]  do_syscall_64+0x42/0x130
-[  425.369782]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[  425.371117] RIP: 0033:0x7f780d2df267
-[  425.372159] Code: b3 66 90 48 8b 05 19 3c 2c 00 64 c7 00 26 00 00 00 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 b8 10 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d e9 3b 2c 00 f7 d8 64 89 01 48
-[  425.376774] RSP: 002b:00007ffce49a88a8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-[  425.378740] RAX: ffffffffffffffda RBX: 00007ffce49a8938 RCX: 00007f780d2df267
-[  425.380598] RDX: 00007ffce49a8920 RSI: 00000000c0181b01 RDI: 0000000000000003
-[  425.382411] RBP: 00007ffce49a8900 R08: 0000000000000003 R09: 00007f780d9a1010
-[  425.384312] R10: 00000000ffffffff R11: 0000000000000246 R12: 00007f780d9a1150
-[  425.386132] R13: 00007ffce49a8900 R14: 00007ffce49a8ad8 R15: 00007f780468a000
-[  425.387964] ---[ end trace 1ecbefdb403190de ]---
+However, problem is that given condition at insn 7 in the first run, we only
+followed goto and didn't push the other branch for later analysis, we've
+never walked the few insns in there and therefore dead-code sanitation
+rewrites it as goto pc-1, causing the hang depending on the skb address
+hitting these conditions. The issue is that R1 should have been marked as
+precise as well such that pruning enforces range check and conluded that new
+R1 is not in range of old R1. In insn 4, we mark R1 (skb) as unknown scalar
+via __mark_reg_unbounded() but not mark_reg_unbounded() and therefore
+regs->precise remains as false.
 
-Thanks
+Back in b5dc0163d8fd ("bpf: precise scalar_value tracking"), this was not
+the case since marking out of __mark_reg_unbounded() had this covered as well.
+Once in both are set as precise in 4 as they should have been, we conclude
+that given R1 was in prior fall-through path 0x104c1500 and now is completely
+unknown, the check at insn 7 concludes that we need to continue walking.
+Analysis after the fix:
 
->
->
->
-> thanks,
-> --
-> John Hubbard
-> NVIDIA
+  0: R1=ctx(id=0,off=0,imm=0) R10=fp0
+  0: (b7) r0 = 0
+  1: R0_w=invP0 R1=ctx(id=0,off=0,imm=0) R10=fp0
+  1: (35) if r0 >= 0xf72e goto pc+0
+  2: R0_w=invP0 R1=ctx(id=0,off=0,imm=0) R10=fp0
+  2: (35) if r0 >= 0x80fe0000 goto pc+0
+  3: R0_w=invP0 R1=ctx(id=0,off=0,imm=0) R10=fp0
+  3: (14) w0 -= -536870912
+  4: R0_w=invP536870912 R1=ctx(id=0,off=0,imm=0) R10=fp0
+  4: (0f) r1 += r0
+  5: R0_w=invP536870912 R1_w=invP(id=0) R10=fp0
+  5: (55) if r1 != 0x104c1500 goto pc+0
+  R0_w=invP536870912 R1_w=invP273421568 R10=fp0
+  6: R0_w=invP536870912 R1_w=invP273421568 R10=fp0
+  6: (b7) r0 = 0
+  7: R0=invP0 R1=invP273421568 R10=fp0
+  7: (76) if w1 s>= 0xffffff00 goto pc+3
+  11: R0=invP0 R1=invP273421568 R10=fp0
+  11: (95) exit
+  6: R0_w=invP536870912 R1_w=invP(id=0) R10=fp0
+  6: (b7) r0 = 0
+  7: R0_w=invP0 R1_w=invP(id=0) R10=fp0
+  7: (76) if w1 s>= 0xffffff00 goto pc+3
+  R0_w=invP0 R1_w=invP(id=0) R10=fp0
+  8: R0_w=invP0 R1_w=invP(id=0) R10=fp0
+  8: (a5) if r0 < 0x2007002a goto pc+0
+  9: R0_w=invP0 R1_w=invP(id=0) R10=fp0
+  9: (57) r0 &= -16316416
+  10: R0_w=invP0 R1_w=invP(id=0) R10=fp0
+  10: (a6) if w0 < 0x1201 goto pc+0
+  11: R0_w=invP0 R1_w=invP(id=0) R10=fp0
+  11: (95) exit
+  11: R0=invP0 R1=invP(id=0) R10=fp0
+  11: (95) exit
+  processed 16 insns [...]
+
+Fixes: 6754172c208d ("bpf: fix precision tracking in presence of bpf2bpf calls")
+Reported-by: Anatoly Trosinenko <anatoly.trosinenko@gmail.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+---
+ kernel/bpf/verifier.c | 43 ++++++++++++++++++++++---------------------
+ 1 file changed, 22 insertions(+), 21 deletions(-)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 4983940cbdca..6f63ae7a370c 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -907,7 +907,8 @@ static const int caller_saved[CALLER_SAVED_REGS] = {
+ 	BPF_REG_0, BPF_REG_1, BPF_REG_2, BPF_REG_3, BPF_REG_4, BPF_REG_5
+ };
+ 
+-static void __mark_reg_not_init(struct bpf_reg_state *reg);
++static void __mark_reg_not_init(const struct bpf_verifier_env *env,
++				struct bpf_reg_state *reg);
+ 
+ /* Mark the unknown part of a register (variable offset or scalar value) as
+  * known to have the value @imm.
+@@ -945,7 +946,7 @@ static void mark_reg_known_zero(struct bpf_verifier_env *env,
+ 		verbose(env, "mark_reg_known_zero(regs, %u)\n", regno);
+ 		/* Something bad happened, let's kill all regs */
+ 		for (regno = 0; regno < MAX_BPF_REG; regno++)
+-			__mark_reg_not_init(regs + regno);
++			__mark_reg_not_init(env, regs + regno);
+ 		return;
+ 	}
+ 	__mark_reg_known_zero(regs + regno);
+@@ -1054,7 +1055,8 @@ static void __mark_reg_unbounded(struct bpf_reg_state *reg)
+ }
+ 
+ /* Mark a register as having a completely unknown (scalar) value. */
+-static void __mark_reg_unknown(struct bpf_reg_state *reg)
++static void __mark_reg_unknown(const struct bpf_verifier_env *env,
++			       struct bpf_reg_state *reg)
+ {
+ 	/*
+ 	 * Clear type, id, off, and union(map_ptr, range) and
+@@ -1064,6 +1066,8 @@ static void __mark_reg_unknown(struct bpf_reg_state *reg)
+ 	reg->type = SCALAR_VALUE;
+ 	reg->var_off = tnum_unknown;
+ 	reg->frameno = 0;
++	reg->precise = env->subprog_cnt > 1 || !env->allow_ptr_leaks ?
++		       true : false;
+ 	__mark_reg_unbounded(reg);
+ }
+ 
+@@ -1074,19 +1078,16 @@ static void mark_reg_unknown(struct bpf_verifier_env *env,
+ 		verbose(env, "mark_reg_unknown(regs, %u)\n", regno);
+ 		/* Something bad happened, let's kill all regs except FP */
+ 		for (regno = 0; regno < BPF_REG_FP; regno++)
+-			__mark_reg_not_init(regs + regno);
++			__mark_reg_not_init(env, regs + regno);
+ 		return;
+ 	}
+-	regs += regno;
+-	__mark_reg_unknown(regs);
+-	/* constant backtracking is enabled for root without bpf2bpf calls */
+-	regs->precise = env->subprog_cnt > 1 || !env->allow_ptr_leaks ?
+-			true : false;
++	__mark_reg_unknown(env, regs + regno);
+ }
+ 
+-static void __mark_reg_not_init(struct bpf_reg_state *reg)
++static void __mark_reg_not_init(const struct bpf_verifier_env *env,
++				struct bpf_reg_state *reg)
+ {
+-	__mark_reg_unknown(reg);
++	__mark_reg_unknown(env, reg);
+ 	reg->type = NOT_INIT;
+ }
+ 
+@@ -1097,10 +1098,10 @@ static void mark_reg_not_init(struct bpf_verifier_env *env,
+ 		verbose(env, "mark_reg_not_init(regs, %u)\n", regno);
+ 		/* Something bad happened, let's kill all regs except FP */
+ 		for (regno = 0; regno < BPF_REG_FP; regno++)
+-			__mark_reg_not_init(regs + regno);
++			__mark_reg_not_init(env, regs + regno);
+ 		return;
+ 	}
+-	__mark_reg_not_init(regs + regno);
++	__mark_reg_not_init(env, regs + regno);
+ }
+ 
+ #define DEF_NOT_SUBREG	(0)
+@@ -3234,7 +3235,7 @@ static int check_stack_boundary(struct bpf_verifier_env *env, int regno,
+ 		}
+ 		if (state->stack[spi].slot_type[0] == STACK_SPILL &&
+ 		    state->stack[spi].spilled_ptr.type == SCALAR_VALUE) {
+-			__mark_reg_unknown(&state->stack[spi].spilled_ptr);
++			__mark_reg_unknown(env, &state->stack[spi].spilled_ptr);
+ 			for (j = 0; j < BPF_REG_SIZE; j++)
+ 				state->stack[spi].slot_type[j] = STACK_MISC;
+ 			goto mark;
+@@ -3892,7 +3893,7 @@ static void __clear_all_pkt_pointers(struct bpf_verifier_env *env,
+ 		if (!reg)
+ 			continue;
+ 		if (reg_is_pkt_pointer_any(reg))
+-			__mark_reg_unknown(reg);
++			__mark_reg_unknown(env, reg);
+ 	}
+ }
+ 
+@@ -3920,7 +3921,7 @@ static void release_reg_references(struct bpf_verifier_env *env,
+ 		if (!reg)
+ 			continue;
+ 		if (reg->ref_obj_id == ref_obj_id)
+-			__mark_reg_unknown(reg);
++			__mark_reg_unknown(env, reg);
+ 	}
+ }
+ 
+@@ -4582,7 +4583,7 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
+ 		/* Taint dst register if offset had invalid bounds derived from
+ 		 * e.g. dead branches.
+ 		 */
+-		__mark_reg_unknown(dst_reg);
++		__mark_reg_unknown(env, dst_reg);
+ 		return 0;
+ 	}
+ 
+@@ -4834,13 +4835,13 @@ static int adjust_scalar_min_max_vals(struct bpf_verifier_env *env,
+ 		/* Taint dst register if offset had invalid bounds derived from
+ 		 * e.g. dead branches.
+ 		 */
+-		__mark_reg_unknown(dst_reg);
++		__mark_reg_unknown(env, dst_reg);
+ 		return 0;
+ 	}
+ 
+ 	if (!src_known &&
+ 	    opcode != BPF_ADD && opcode != BPF_SUB && opcode != BPF_AND) {
+-		__mark_reg_unknown(dst_reg);
++		__mark_reg_unknown(env, dst_reg);
+ 		return 0;
+ 	}
+ 
+@@ -6982,7 +6983,7 @@ static void clean_func_state(struct bpf_verifier_env *env,
+ 			/* since the register is unused, clear its state
+ 			 * to make further comparison simpler
+ 			 */
+-			__mark_reg_not_init(&st->regs[i]);
++			__mark_reg_not_init(env, &st->regs[i]);
+ 	}
+ 
+ 	for (i = 0; i < st->allocated_stack / BPF_REG_SIZE; i++) {
+@@ -6990,7 +6991,7 @@ static void clean_func_state(struct bpf_verifier_env *env,
+ 		/* liveness must not touch this stack slot anymore */
+ 		st->stack[i].spilled_ptr.live |= REG_LIVE_DONE;
+ 		if (!(live & REG_LIVE_READ)) {
+-			__mark_reg_not_init(&st->stack[i].spilled_ptr);
++			__mark_reg_not_init(env, &st->stack[i].spilled_ptr);
+ 			for (j = 0; j < BPF_REG_SIZE; j++)
+ 				st->stack[i].slot_type[j] = STACK_INVALID;
+ 		}
+-- 
+2.20.1
+
