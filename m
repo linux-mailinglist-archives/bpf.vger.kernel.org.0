@@ -2,84 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 170B11297B1
-	for <lists+bpf@lfdr.de>; Mon, 23 Dec 2019 15:48:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2930E1299A9
+	for <lists+bpf@lfdr.de>; Mon, 23 Dec 2019 18:57:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726860AbfLWOs1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 Dec 2019 09:48:27 -0500
-Received: from www62.your-server.de ([213.133.104.62]:42862 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726846AbfLWOs1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 23 Dec 2019 09:48:27 -0500
-Received: from [185.105.41.126] (helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ijP0R-0006jC-FF; Mon, 23 Dec 2019 15:48:23 +0100
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     davem@davemloft.net
-Cc:     jakub.kicinski@netronome.com, daniel@iogearbox.net, ast@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: pull-request: bpf 2019-12-23
-Date:   Mon, 23 Dec 2019 15:48:23 +0100
-Message-Id: <20191223144823.3456-1-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
+        id S1726795AbfLWR5b (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 Dec 2019 12:57:31 -0500
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:39963 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726783AbfLWR5b (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 Dec 2019 12:57:31 -0500
+Received: by mail-qt1-f194.google.com with SMTP id e6so16022415qtq.7;
+        Mon, 23 Dec 2019 09:57:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=8JCaTSq/+02dJY9s7zbnW0TXVGk9/V0OTl8EOqzOV5A=;
+        b=bDeSaNdFbIU6nxxlwffN/HsXUWwDaCPSShKHtyQbKKaynIvuhz86JKVxAS/0J9R37i
+         vbwhVTFz+F8/mHJKx111vDiS0dZU5W+JwizBscFXY6YVtzLdCLE2XkdRoA4UF4km0m1b
+         03AEaegBg1v9EnWEbfVtzLdN3DyPsRXS9NdoHGzZ624HsFuMtLzDqzFpzMlOtZkfN9v9
+         2RBWv5TxY+ACBtnjUj2q57F6CMqb+abha30ySm8ZYtfzmq5h3r8vcLCfSWjDgKxevT/G
+         Dpj2Cw6CQ4E6IosmokztY48xdszt+mI22lP8GMO9AhNMcFAxsWnC3B0Y0ZupI3lmBA/5
+         5ddw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=8JCaTSq/+02dJY9s7zbnW0TXVGk9/V0OTl8EOqzOV5A=;
+        b=JxWWlAG2ATsJq4z1wHyp8Zgu6h+PHoX1+GXUS+VWiAa1rLhKitFJYqG8zKvIXdQVXa
+         iC+7VLtr4phEA1sxUKjDq6/rq7s/tnVR7m5idXDa8mRAo8ly9VIaa9uYK09/LH7Em1t3
+         ImGUJLQF/6PaSujCcb+1b2QCG+FD6XjOYz/nJIycF2ke7hJIxhcXeuorEli4VZXl6fVV
+         mcSNaR3lRTQe2p/J8CaK99BFXEIfyx+iBr9rLZO38D2a6q/1Gdf1qswcL+o9mEPuxk9K
+         W4bixKtI8nQLLUdFxHCynM3FAaZpA/7rEOfXXUw9aP8bNnNKkYBtBB//6sGtXD6WVul8
+         SS8w==
+X-Gm-Message-State: APjAAAV2xB6iteGmFB82tLJPw+Dz3uXawHOzbbp1iP8JudIVJumk6VVI
+        zlEEOE+HgRxeR8c/H0x9Wzz+aNN5dX95y0BtprQ=
+X-Google-Smtp-Source: APXvYqwUpOlxFq+gnM/X4F7GqoC/317UYOkBHGK7ubA8Xj1MbUxhLTlDVfAD7a9vLHJmcXzSH75ljncHL1pBVbmamDg=
+X-Received: by 2002:ac8:140c:: with SMTP id k12mr23936471qtj.117.1577123850208;
+ Mon, 23 Dec 2019 09:57:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.101.4/25672/Mon Dec 23 10:53:10 2019)
+References: <157675340354.60799.13351496736033615965.stgit@xdp-tutorial>
+ <CAEf4BzYxDE5VoBiCaPwv=buUk87Cv0JF09usmQf0WvUceb8A5A@mail.gmail.com> <FE4A1C64-70CF-4831-922C-F3992C40E57B@redhat.com>
+In-Reply-To: <FE4A1C64-70CF-4831-922C-F3992C40E57B@redhat.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 23 Dec 2019 09:57:19 -0800
+Message-ID: <CAEf4BzYppnG--OnEo0Ft9+pcvJ6+mY47XzY5F+r+2p3+FeUQcA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Add a test for attaching a bpf
+ fentry/fexit trace to an XDP program
+To:     Eelco Chaudron <echaudro@redhat.com>
+Cc:     bpf <bpf@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Networking <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi David,
+On Mon, Dec 23, 2019 at 4:54 AM Eelco Chaudron <echaudro@redhat.com> wrote:
+>
+>
+>
+> On 20 Dec 2019, at 0:02, Andrii Nakryiko wrote:
+>
+> > On Thu, Dec 19, 2019 at 3:04 AM Eelco Chaudron <echaudro@redhat.com>
+> > wrote:
+> >>
+> >> Add a test that will attach a FENTRY and FEXIT program to the XDP
+> >> test
+> >> program. It will also verify data from the XDP context on FENTRY and
+> >> verifies the return code on exit.
+> >>
+> >> Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
+> >> ---
+> >>  .../testing/selftests/bpf/prog_tests/xdp_bpf2bpf.c |   95
+> >> ++++++++++++++++++++
+> >>  .../testing/selftests/bpf/progs/test_xdp_bpf2bpf.c |   44 +++++++++
+> >>  2 files changed, 139 insertions(+)
+> >>  create mode 100644
+> >> tools/testing/selftests/bpf/prog_tests/xdp_bpf2bpf.c
+> >>  create mode 100644
+> >> tools/testing/selftests/bpf/progs/test_xdp_bpf2bpf.c
+> >>
+> >
+> > [...]
+>
+> Thanks for the review, updated my kernel to the latest bfp-next, but now
+> I get the following build issue for the test suite:
+>
+>     GEN-SKEL [test_progs] loop3.skel.h
+>     GEN-SKEL [test_progs] test_skeleton.skel.h
+> libbpf: failed to find BTF for extern 'CONFIG_BPF_SYSCALL': -2
 
-The following pull-request contains BPF updates for your *net* tree.
+This looks like you have Clang without BTF types for extern. Can you
+try pull the very latest Clang/LLVM and try again? The latest commit
+you should have is e3d8ee35e4ad ("reland "[DebugInfo] Support to emit
+debugInfo for extern variables"").
 
-We've added 2 non-merge commits during the last 1 day(s) which contain
-a total of 4 files changed, 34 insertions(+), 31 deletions(-).
-
-The main changes are:
-
-1) Fix libbpf build when building on a read-only filesystem with O=dir
-   option, from Namhyung Kim.
-
-2) Fix a precision tracking bug for unknown scalars, from Daniel Borkmann.
-
-Please consider pulling these changes from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
-
-Thanks a lot & Merry Xmas!
-
-Also thanks to reporters, reviewers and testers of commits in this pull-request:
-
-Anatoly Trosinenko, Andrii Nakryiko
-
-----------------------------------------------------------------
-
-The following changes since commit c60174717544aa8959683d7e19d568309c3a0c65:
-
-  Merge tag 'xfs-5.5-fixes-2' of git://git.kernel.org/pub/scm/fs/xfs/xfs-linux (2019-12-22 10:59:06 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git 
-
-for you to fetch changes up to fa633a0f89192379828103957874682d389eae83:
-
-  libbpf: Fix build on read-only filesystems (2019-12-23 15:34:06 +0100)
-
-----------------------------------------------------------------
-Daniel Borkmann (1):
-      bpf: Fix precision tracking for unbounded scalars
-
-Namhyung Kim (1):
-      libbpf: Fix build on read-only filesystems
-
- kernel/bpf/verifier.c                  | 43 +++++++++++++++++-----------------
- tools/lib/bpf/Makefile                 | 15 ++++++------
- tools/testing/selftests/bpf/.gitignore |  1 +
- tools/testing/selftests/bpf/Makefile   |  6 ++---
- 4 files changed, 34 insertions(+), 31 deletions(-)
+> Error: failed to open BPF object file: 0
+> make: *** [Makefile:333:
+> /data/linux_kernel/tools/testing/selftests/bpf/test_skeleton.skel.h]
+> Error 255
+> make: *** Deleting file
+> '/data/linux_kernel/tools/testing/selftests/bpf/test_skeleton.skel.h'
+>
+> Verified, and I still have all the correct config and CLANG version.
+> Something else I need to update?
+> I have pahole v1.15 in my search path=E2=80=A6
+>
+> >
+> >> +       /* Load XDP program to introspect */
+> >> +       err =3D bpf_prog_load(file, BPF_PROG_TYPE_XDP, &obj, &prog_fd)=
+;
+> >
+> > Please use BPF skeleton for this test. It will make it significantly
+> > shorter and clearer. See other fentry_fexit selftest for example.
+> >
+> >> +       if (CHECK_FAIL(err))
+> >> +               return;
+> >> +
+> >
+> > [...]
+> >
+> >> +
+> >> +static volatile __u64 test_result_fentry;
+> >
+> > no need for static volatile anymore, just use global var
+> >
+> >> +BPF_TRACE_1("fentry/_xdp_tx_iptunnel", trace_on_entry,
+> >> +           struct xdp_buff *, xdp)
+> >> +{
+> >> +       test_result_fentry =3D xdp->rxq->dev->ifindex;
+> >> +       return 0;
+> >> +}
+> >> +
+> >> +static volatile __u64 test_result_fexit;
+> >
+> > same here
+> >
+> >> +BPF_TRACE_2("fexit/_xdp_tx_iptunnel", trace_on_exit,
+> >> +           struct xdp_buff*, xdp, int, ret)
+> >> +{
+> >> +       test_result_fexit =3D ret;
+> >> +       return 0;
+> >> +}
+> >>
+>
