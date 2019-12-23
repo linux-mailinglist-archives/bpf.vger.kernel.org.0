@@ -2,156 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E9E51299AB
-	for <lists+bpf@lfdr.de>; Mon, 23 Dec 2019 18:58:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A4001299B9
+	for <lists+bpf@lfdr.de>; Mon, 23 Dec 2019 19:03:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726787AbfLWR6h (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 Dec 2019 12:58:37 -0500
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:41818 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726783AbfLWR6h (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 23 Dec 2019 12:58:37 -0500
-Received: by mail-qt1-f194.google.com with SMTP id k40so16022304qtk.8;
-        Mon, 23 Dec 2019 09:58:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MOIJPLnYWO6xhwNtkPa9aUeQn2rPZqunfhFQTUewSq8=;
-        b=V6p/o4m4SyafWDM+yhgE1T3q2Vs1LEhS94p3HAek0I7DtIHmfvqF71rmZz8hgQwWqf
-         e9IMLM0fRAoeal838i9B8pVMTh1dMc1KOrpvE4WGHeDMTFbfgBEWvc63YLJwC5NWXGmQ
-         CvfCjCH8xE2ytmwqmgY47oNJN7xY4KPUzWSe2ZJCsTSGRaY0JFu43W0MCeqoy+EkiK34
-         Cv/c4WRBw3UTu5EMHy7Iy3EQyIlwaIByStI5y1obhDT29uwlInKK7sq4zwnFU8J5MlCn
-         bWpGsb3v8aqTkwei6+l1mtJLlzjKUNCoyy4A10mJ8XrOi7TC8Cm+HpIyE5+rPifS0JyY
-         cqWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MOIJPLnYWO6xhwNtkPa9aUeQn2rPZqunfhFQTUewSq8=;
-        b=QSoxIFl+Ho+URzSEP1HnbCIMdioswVgQkAwbFMuvlkfxEBdQBfqvKnLIVos+oGa55M
-         ajjbK1OZ/kNr9PGq0ByRWEZC+wullLEPqe67kFUtC0NpSA3fcz2kqVyIOzfq1C0R6AG7
-         kawIgnjF4wixMg5Wmn6mdGFUuLS86oXCTOan09DyAWJyf8tkhHQUpiVEhkYc7KSj6KV0
-         ibZiO8xvOZ3mL3ZV/IqVDqaMJ2xbUhxG0W4xVaJRP6y4cCmiohf1SnIJYKhyN0k95s6r
-         rvChCH6neq/BZNpGQmJO0kHjnm71E2rYhYPVRCSe8VT8EgB48hZazAOhfV6KQtL9mw7s
-         P+Pg==
-X-Gm-Message-State: APjAAAUXZQ/nHJIQQvMbcUbCHxv/at6g3pguGjd1WpTILuMlhH0Wux2L
-        a83Q+kfUyNeAFMYluJ/9ocdLOSZy3SxUlYW5g0MzZw==
-X-Google-Smtp-Source: APXvYqxC8I8i03imTUMCnWH/ljIBn+G/veL9mAbYHXIQR0HbOaK+QQTFUTz8djDmdN0xU+Vq7kXkQrE2EwZOlZ+CLtY=
-X-Received: by 2002:ac8:4050:: with SMTP id j16mr23342586qtl.171.1577123915944;
- Mon, 23 Dec 2019 09:58:35 -0800 (PST)
+        id S1726871AbfLWSDV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 Dec 2019 13:03:21 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:24586 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726766AbfLWSDV (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 23 Dec 2019 13:03:21 -0500
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xBNI0KjL009653
+        for <bpf@vger.kernel.org>; Mon, 23 Dec 2019 10:03:20 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=Wu85cQXWCEoswfqnumcZzCb1zfQYhPBo2sSFwLFNKxc=;
+ b=LxR+cUe82RdYC8VUjC4HS+hq0Xi+2T8XB07Zxcs09bRYAyEC9bFvnqqp+mT85mkopI9N
+ KAjm4nGhGKnYOnJ/NOIaWK0Y9u8MCbHVuKVD+ZOivMdwgQJA1nkfnAIW072QqAOhdI5R
+ iC0nKFcFDNTCLh4ieZlsy4zZYazkLhy/SmE= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2x2410dcfh-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 23 Dec 2019 10:03:20 -0800
+Received: from intmgw002.06.prn3.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 23 Dec 2019 10:03:18 -0800
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 20E362EC19BA; Mon, 23 Dec 2019 10:03:15 -0800 (PST)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>, <yhs@fb.com>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH v2 bpf-next] libbpf: support CO-RE relocations for LDX/ST/STX instructions
+Date:   Mon, 23 Dec 2019 10:03:05 -0800
+Message-ID: <20191223180305.86417-1-andriin@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-References: <20191223061855.1601999-1-andriin@fb.com> <e70fde6d-77fd-6fa8-c6ce-23848dce4b22@fb.com>
-In-Reply-To: <e70fde6d-77fd-6fa8-c6ce-23848dce4b22@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 23 Dec 2019 09:58:24 -0800
-Message-ID: <CAEf4Bzb4T0fxPGROLOFua9D5smjwqyGwkH7FqA58PBj=+1Dvew@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: support CO-RE relocations for
- LD/LDX/ST/STX instructions
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
+ definitions=2019-12-23_07:2019-12-23,2019-12-23 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0 phishscore=0
+ mlxlogscore=999 mlxscore=0 bulkscore=0 suspectscore=0 clxscore=1015
+ spamscore=0 impostorscore=0 malwarescore=0 lowpriorityscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-1912230154
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Dec 22, 2019 at 11:48 PM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 12/22/19 10:18 PM, Andrii Nakryiko wrote:
-> > Clang patch [0] enables emitting relocatable generic ALU/ALU64 instructions
-> > (i.e, shifts and arithmetic operations), as well as generic load/store
-> > instructions. The former ones are already supported by libbpf as is. This
-> > patch adds further support for load/store instructions. Relocatable field
-> > offset is encoded in BPF instruction's 16-bit offset section and are adjusted
-> > by libbpf based on target kernel BTF.
-> >
-> > These Clang changes and corresponding libbpf changes allow for more succinct
-> > generated BPF code by encoding relocatable field reads as a single
-> > LD/ST/LDX/STX instruction. It also enables relocatable access to BPF context.
-> > Previously, if context struct (e.g., __sk_buff) was accessed with CO-RE
-> > relocations (e.g., due to preserve_access_index attribute), it would be
-> > rejected by BPF verifier due to modified context pointer dereference. With
-> > Clang patch, such context accesses are both relocatable and have a fixed
-> > offset from the point of view of BPF verifier.
-> >
-> >    [0] https://reviews.llvm.org/D71790
-> >
-> > Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-> > ---
-> >   tools/lib/bpf/libbpf.c | 32 +++++++++++++++++++++++++++++---
-> >   1 file changed, 29 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > index 9576a90c5a1c..2dbc2204a02c 100644
-> > --- a/tools/lib/bpf/libbpf.c
-> > +++ b/tools/lib/bpf/libbpf.c
-> > @@ -18,6 +18,7 @@
-> >   #include <stdarg.h>
-> >   #include <libgen.h>
-> >   #include <inttypes.h>
-> > +#include <limits.h>
-> >   #include <string.h>
-> >   #include <unistd.h>
-> >   #include <endian.h>
-> > @@ -3810,11 +3811,13 @@ static int bpf_core_reloc_insn(struct bpf_program *prog,
-> >       insn = &prog->insns[insn_idx];
-> >       class = BPF_CLASS(insn->code);
-> >
-> > -     if (class == BPF_ALU || class == BPF_ALU64) {
-> > +     switch (class) {
-> > +     case BPF_ALU:
-> > +     case BPF_ALU64:
-> >               if (BPF_SRC(insn->code) != BPF_K)
-> >                       return -EINVAL;
-> >               if (!failed && validate && insn->imm != orig_val) {
-> > -                     pr_warn("prog '%s': unexpected insn #%d value: got %u, exp %u -> %u\n",
-> > +                     pr_warn("prog '%s': unexpected insn #%d (ALU/ALU64) value: got %u, exp %u -> %u\n",
-> >                               bpf_program__title(prog, false), insn_idx,
-> >                               insn->imm, orig_val, new_val);
-> >                       return -EINVAL;
-> > @@ -3824,7 +3827,30 @@ static int bpf_core_reloc_insn(struct bpf_program *prog,
-> >               pr_debug("prog '%s': patched insn #%d (ALU/ALU64)%s imm %u -> %u\n",
-> >                        bpf_program__title(prog, false), insn_idx,
-> >                        failed ? " w/ failed reloc" : "", orig_val, new_val);
-> > -     } else {
-> > +             break;
-> > +     case BPF_LD:
->
-> Maybe we should remove BPF_LD here? BPF_LD is used for ld_imm64, ld_abs
-> and ld_ind, where the insn->off = 0 and not really used.
+Clang patch [0] enables emitting relocatable generic ALU/ALU64 instructions
+(i.e, shifts and arithmetic operations), as well as generic load/store
+instructions. The former ones are already supported by libbpf as is. This
+patch adds further support for load/store instructions. Relocatable field
+offset is encoded in BPF instruction's 16-bit offset section and are adjusted
+by libbpf based on target kernel BTF.
 
-Sure, I can drop BPF_LD case. Will send v2 soon.
+These Clang changes and corresponding libbpf changes allow for more succinct
+generated BPF code by encoding relocatable field reads as a single
+ST/LDX/STX instruction. It also enables relocatable access to BPF context.
+Previously, if context struct (e.g., __sk_buff) was accessed with CO-RE
+relocations (e.g., due to preserve_access_index attribute), it would be
+rejected by BPF verifier due to modified context pointer dereference. With
+Clang patch, such context accesses are both relocatable and have a fixed
+offset from the point of view of BPF verifier.
 
-> > +     case BPF_LDX:
-> > +     case BPF_ST:
-> > +     case BPF_STX: > +               if (!failed && validate && insn->off != orig_val) {
-> > +                     pr_warn("prog '%s': unexpected insn #%d (LD/LDX/ST/STX) value: got %u, exp %u -> %u\n",
-> > +                             bpf_program__title(prog, false), insn_idx,
-> > +                             insn->off, orig_val, new_val);
-> > +                     return -EINVAL;
-> > +             }
-> > +             if (new_val > SHRT_MAX) {
-> > +                     pr_warn("prog '%s': insn #%d (LD/LDX/ST/STX) value too big: %u\n",
-> > +                             bpf_program__title(prog, false), insn_idx,
-> > +                             new_val);
-> > +                     return -ERANGE;
-> > +             }
-> > +             orig_val = insn->off;
-> > +             insn->off = new_val;
-> > +             pr_debug("prog '%s': patched insn #%d (LD/LDX/ST/STX)%s off %u -> %u\n",
-> > +                      bpf_program__title(prog, false), insn_idx,
-> > +                      failed ? " w/ failed reloc" : "", orig_val, new_val);
-> > +             break;
-> > +     default:
-> >               pr_warn("prog '%s': trying to relocate unrecognized insn #%d, code:%x, src:%x, dst:%x, off:%x, imm:%x\n",
-> >                       bpf_program__title(prog, false),
-> >                       insn_idx, insn->code, insn->src_reg, insn->dst_reg,
-> >
+  [0] https://reviews.llvm.org/D71790
+
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+---
+ tools/lib/bpf/libbpf.c | 31 ++++++++++++++++++++++++++++---
+ 1 file changed, 28 insertions(+), 3 deletions(-)
+
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 9576a90c5a1c..7513165b104f 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -18,6 +18,7 @@
+ #include <stdarg.h>
+ #include <libgen.h>
+ #include <inttypes.h>
++#include <limits.h>
+ #include <string.h>
+ #include <unistd.h>
+ #include <endian.h>
+@@ -3810,11 +3811,13 @@ static int bpf_core_reloc_insn(struct bpf_program *prog,
+ 	insn = &prog->insns[insn_idx];
+ 	class = BPF_CLASS(insn->code);
+ 
+-	if (class == BPF_ALU || class == BPF_ALU64) {
++	switch (class) {
++	case BPF_ALU:
++	case BPF_ALU64:
+ 		if (BPF_SRC(insn->code) != BPF_K)
+ 			return -EINVAL;
+ 		if (!failed && validate && insn->imm != orig_val) {
+-			pr_warn("prog '%s': unexpected insn #%d value: got %u, exp %u -> %u\n",
++			pr_warn("prog '%s': unexpected insn #%d (ALU/ALU64) value: got %u, exp %u -> %u\n",
+ 				bpf_program__title(prog, false), insn_idx,
+ 				insn->imm, orig_val, new_val);
+ 			return -EINVAL;
+@@ -3824,7 +3827,29 @@ static int bpf_core_reloc_insn(struct bpf_program *prog,
+ 		pr_debug("prog '%s': patched insn #%d (ALU/ALU64)%s imm %u -> %u\n",
+ 			 bpf_program__title(prog, false), insn_idx,
+ 			 failed ? " w/ failed reloc" : "", orig_val, new_val);
+-	} else {
++		break;
++	case BPF_LDX:
++	case BPF_ST:
++	case BPF_STX:
++		if (!failed && validate && insn->off != orig_val) {
++			pr_warn("prog '%s': unexpected insn #%d (LD/LDX/ST/STX) value: got %u, exp %u -> %u\n",
++				bpf_program__title(prog, false), insn_idx,
++				insn->off, orig_val, new_val);
++			return -EINVAL;
++		}
++		if (new_val > SHRT_MAX) {
++			pr_warn("prog '%s': insn #%d (LD/LDX/ST/STX) value too big: %u\n",
++				bpf_program__title(prog, false), insn_idx,
++				new_val);
++			return -ERANGE;
++		}
++		orig_val = insn->off;
++		insn->off = new_val;
++		pr_debug("prog '%s': patched insn #%d (LD/LDX/ST/STX)%s off %u -> %u\n",
++			 bpf_program__title(prog, false), insn_idx,
++			 failed ? " w/ failed reloc" : "", orig_val, new_val);
++		break;
++	default:
+ 		pr_warn("prog '%s': trying to relocate unrecognized insn #%d, code:%x, src:%x, dst:%x, off:%x, imm:%x\n",
+ 			bpf_program__title(prog, false),
+ 			insn_idx, insn->code, insn->src_reg, insn->dst_reg,
+-- 
+2.17.1
+
