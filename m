@@ -2,164 +2,457 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E8C2129A65
-	for <lists+bpf@lfdr.de>; Mon, 23 Dec 2019 20:34:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3811129A9B
+	for <lists+bpf@lfdr.de>; Mon, 23 Dec 2019 20:54:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726824AbfLWTd7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 Dec 2019 14:33:59 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:49574 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726787AbfLWTd7 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 23 Dec 2019 14:33:59 -0500
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xBNJTTLq015709;
-        Mon, 23 Dec 2019 11:33:43 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=69JQjPCnyOtCykoj4NTG9tkxLNzmVZGUdE/RQjxW4fU=;
- b=KqT7zuNvrl9E/r9ovrfk7WAcAKKF8U2dx4RV4sJDgkiQhlrdBI0MngMztXsnU4S8gVtL
- gPi7R5UrOrJ1WfqqsYqREFyNTIOwjPorTlsuMSniNit0/b5YaV3/OlaKzAOXcBSOwMd3
- Y+5ofnkgYRoKS4LVI3S7aYEQuV+VhDbdr40= 
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by mx0a-00082601.pphosted.com with ESMTP id 2x1hswgn08-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Mon, 23 Dec 2019 11:33:43 -0800
-Received: from prn-hub01.TheFacebook.com (2620:10d:c081:35::125) by
- prn-hub05.TheFacebook.com (2620:10d:c081:35::129) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Mon, 23 Dec 2019 11:33:42 -0800
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (192.168.54.28)
- by o365-in.thefacebook.com (192.168.16.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
- via Frontend Transport; Mon, 23 Dec 2019 11:33:41 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kPzNom4QQV6KDVLlauueh8JyGL0cbyO5YSyGwsf+26OrmbD/dn52ODR8dVCZK6QCNssIMfWVapDG48fABJ6vvYLYQNjgOSQlS9CRmraVcJKpNFBsCJZflBntUIRA4bxTe51571ZLsO5oLjZdulF8frPO+/qyKyyy/OujExl/whM4gv6Ms1OxVnpVd9IN9BCfsG1nZvNhdDjf1oiMjPYsCjdnuEIMLesaEZXQtI6wF8l6ReiA/y0Vi1gliJIx1GmVqKMlvCXJtXWWnme30YxAuAcdzv/n+khYAHDRsQRFCA+n9WD0dm9im0BMYxLfZ9kOteqQk9FKae5r7cxKn+0KGw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=69JQjPCnyOtCykoj4NTG9tkxLNzmVZGUdE/RQjxW4fU=;
- b=ZFX8SDkuwF9ZfqSklIBiwArma0qisFWnRZKDYbxJJSM/H+xT2hImUTzy4D9XlfwKUIdGzxoVjKbHdIxhNGls67pl66iKutyIg3KvE8nxbMpK4AjDzNkUKEEq2Y+be4EYcfnudlWe+gKakQwJ2BXV7GotIQ69ERNV/K0/AVx1tQWDXUApvQUHkAAByBV3CKbZycXkyd6iwNSP5y39+V73Zi6C55d+11EyVcQEstuVXIbqdVI1xZDNQEd8tloOmFZneiO4lcQBVCI51geFyqkVgZBk2gK+/dYKA+e13zt6D6MCzjB9qbmaAfmlqwf1LWEbgJxPUoRwP0TruI8lLniz4w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=69JQjPCnyOtCykoj4NTG9tkxLNzmVZGUdE/RQjxW4fU=;
- b=UGk4leduy8j013bMBzfdFEYj46wnAwzZRjPWAkN8Q8alqXeYZhQuDAdxPX1bN5I+a4RoTl09xxlJEaFmCoIZ+V96leWCF3Um5RGsL7Y3JaH4MXRgMcFMQJpkswEFTzZTrYlRSkyKNE1LiHzzktWo5mdp8QRWXglSOTvTkwAwBMM=
-Received: from DM5PR15MB1675.namprd15.prod.outlook.com (10.175.107.145) by
- DM5PR15MB1177.namprd15.prod.outlook.com (10.173.209.7) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2559.14; Mon, 23 Dec 2019 19:33:41 +0000
-Received: from DM5PR15MB1675.namprd15.prod.outlook.com
- ([fe80::2844:b18d:c296:c23]) by DM5PR15MB1675.namprd15.prod.outlook.com
- ([fe80::2844:b18d:c296:c23%8]) with mapi id 15.20.2559.017; Mon, 23 Dec 2019
- 19:33:40 +0000
-Received: from macbook-pro-52.dhcp.thefacebook.com (2620:10d:c090:200::4a23) by MWHPR1401CA0006.namprd14.prod.outlook.com (2603:10b6:301:4b::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2559.14 via Frontend Transport; Mon, 23 Dec 2019 19:33:39 +0000
-From:   Yonghong Song <yhs@fb.com>
-To:     Martin Lau <kafai@fb.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
+        id S1726787AbfLWTya (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 Dec 2019 14:54:30 -0500
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:38772 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726766AbfLWTya (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 Dec 2019 14:54:30 -0500
+Received: by mail-qt1-f196.google.com with SMTP id n15so16283792qtp.5;
+        Mon, 23 Dec 2019 11:54:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8Z8mJitHlh8Ttp0FqGlEbh0Zh56mutdI8yhN/EVuZNk=;
+        b=NDtalJPYKSa+EFpUmZpogyUZHTCGYo2AjgApFRSaNQJDptshzlRt0fmEzyxlelNK3T
+         9PQVX6BQOiI0YldAWWbo0o6iUHc4oAX278FJwkAFhc2LmhTxlToWDdjfgbTvkbJ3KVKp
+         hdfHdAM/KvKE7K/BlJldHi2mJBf9VQ8PGHmgDtvcLsYv09iVWQqjioz94JVQEUG0t/lQ
+         Nyip1eDGdd+l004LjGqeKxxYGU7DibvhluejTM4K2RwEAyzhcRDa2dIGOk4e6xApVU9f
+         4x1XD3k7X3V4ufoV+NZHCSSkVZ6q39hH6oxmRMMrup79K5rmZoA/EgJwiS6xyJPLJJVy
+         uxGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8Z8mJitHlh8Ttp0FqGlEbh0Zh56mutdI8yhN/EVuZNk=;
+        b=NCZrpruG1Bxi1xkeipnzHrOXTiyOZEqYPdGAELor6w78uT8uXvtUFjtsBKAJLZfoT0
+         aXpwMOpSEmb/leHh4YAE+Wtr+4OP1fynqy8wJGYp56OxnwMASk0peHhi9HwpeJlD9TkZ
+         aDO27ZmF70lK3zBgPoMpXaZhcv+NpiEUTHV0mQKjVEgijS7ESg5wil5+J/GxLlIMoZAA
+         MwiInaXMZrgITJ9cxP/u6ZHqc+UZxmXHaiUUTXi1x8iwXJQVX+6w9dXwZ6ZWCRTU7xmw
+         HTGt3yLkSDB4aq/HyzTlEqmbf4xI/DjRzTWFs0PyfBaYdUCq1Y7o7G4oE4uOfRehj9nm
+         N41Q==
+X-Gm-Message-State: APjAAAXh1m0j7Mk3GEPskjVodNBexA2eltJvBJ+KLOTXgdMC6Au/C+vd
+        DyfxUYnLCK+mAT5UfOY8lBBXp7Ov08DONrxXrr7IpbAF
+X-Google-Smtp-Source: APXvYqzUjs7H7E7VV7odAqBNLEtc5BowRiHsgRR8lHZpMaGeA1MyRsgTOhaUt4Rz/+amRO4+ydRtvJJYyEfmp4zo7ic=
+X-Received: by 2002:ac8:140c:: with SMTP id k12mr24324586qtj.117.1577130869082;
+ Mon, 23 Dec 2019 11:54:29 -0800 (PST)
+MIME-Version: 1.0
+References: <20191221062556.1182261-1-kafai@fb.com> <20191221062617.1183905-1-kafai@fb.com>
+In-Reply-To: <20191221062617.1183905-1-kafai@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 23 Dec 2019 11:54:17 -0800
+Message-ID: <CAEf4BzY5wopSFj2B2_Q9VtNGoGtzyZ7MOUv1oDugCXma1kk3UA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 10/11] bpf: libbpf: Add STRUCT_OPS support
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         David Miller <davem@davemloft.net>,
-        Kernel Team <Kernel-team@fb.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v2 05/11] bpf: Introduce BPF_PROG_TYPE_STRUCT_OPS
-Thread-Topic: [PATCH bpf-next v2 05/11] bpf: Introduce
- BPF_PROG_TYPE_STRUCT_OPS
-Thread-Index: AQHVt8eKP2WKQJFTCEGWlNbUr6aAQ6fIIC+A
-Date:   Mon, 23 Dec 2019 19:33:40 +0000
-Message-ID: <9da5d3dc-6de5-c3c8-5184-67c5adba97ef@fb.com>
-References: <20191221062556.1182261-1-kafai@fb.com>
- <20191221062606.1182939-1-kafai@fb.com>
-In-Reply-To: <20191221062606.1182939-1-kafai@fb.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MWHPR1401CA0006.namprd14.prod.outlook.com
- (2603:10b6:301:4b::16) To DM5PR15MB1675.namprd15.prod.outlook.com
- (2603:10b6:3:11f::17)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:200::4a23]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 3e65eed4-1446-4aa9-f7c9-08d787df0389
-x-ms-traffictypediagnostic: DM5PR15MB1177:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM5PR15MB1177EBD22C6412686E99E299D32E0@DM5PR15MB1177.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-forefront-prvs: 0260457E99
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(396003)(366004)(39860400002)(376002)(136003)(346002)(189003)(199004)(66446008)(8936002)(6506007)(8676002)(186003)(66476007)(66556008)(64756008)(53546011)(81166006)(52116002)(16526019)(5660300002)(2906002)(86362001)(6486002)(81156014)(4326008)(31686004)(2616005)(71200400001)(6666004)(36756003)(54906003)(316002)(31696002)(6512007)(66946007)(478600001)(110136005);DIR:OUT;SFP:1102;SCL:1;SRVR:DM5PR15MB1177;H:DM5PR15MB1675.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: B18TVOV0e7t+Fy07V9hW/cCpOH0EPEPelWlWyvbH047S6JOgHFVnc8vv+y1T50fHctYFVuZtps71urlN3nJNe0uBE/lRtTcWeul+PrzlJpS0Mk+FBoDlSDmsRrSSu/lCEVV5gtlfF4AusStsmnxHSJ4MraYZ/w9y/qWqCApUHUaYK0bh0H9CJ8AJnVVtVrEPc4nfu34yzDj9BoapQydxnSIuMbFm+ZxS7Ga/j9yjsUy/yU+Flyf8I1K+CzEN4osWZSE5Z77nPvFaybKulwd+nQqqYXWZfNOU+OGurAHF932Tz7qClPb7rZ544Hs3DOmCReM5d+iEs6jTjMzeZRGvhTenaKZBziCvIhGs68s20zAhOC+OIPMujvDl99kLl5pNuRphLKp12nh0rgoQAzrAfQ+pS2u2Gm79pIzuIg7XlPJmeXY2kmH0n76z61W3BCdJ
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <56934AA07C8D4F40AE0DC969B0C7CB61@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3e65eed4-1446-4aa9-f7c9-08d787df0389
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Dec 2019 19:33:40.7462
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 5zRXlJCKDGcFsAXcClcIfSH0/o0gWo4Yfpk26PaUwpUBKl3s/1nzmNcQQLil7n5S
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR15MB1177
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
- definitions=2019-12-23_07:2019-12-23,2019-12-23 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- impostorscore=0 mlxscore=0 bulkscore=0 priorityscore=1501 clxscore=1015
- mlxlogscore=706 phishscore=0 adultscore=0 lowpriorityscore=0 spamscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1910280000 definitions=main-1912230168
-X-FB-Internal: deliver
+        Kernel Team <kernel-team@fb.com>,
+        Networking <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-DQoNCk9uIDEyLzIwLzE5IDEwOjI2IFBNLCBNYXJ0aW4gS2FGYWkgTGF1IHdyb3RlOg0KPiBUaGlz
-IHBhdGNoIGFsbG93cyB0aGUga2VybmVsJ3Mgc3RydWN0IG9wcyAoaS5lLiBmdW5jIHB0cikgdG8g
-YmUNCj4gaW1wbGVtZW50ZWQgaW4gQlBGLiAgVGhlIGZpcnN0IHVzZSBjYXNlIGluIHRoaXMgc2Vy
-aWVzIGlzIHRoZQ0KPiAic3RydWN0IHRjcF9jb25nZXN0aW9uX29wcyIgd2hpY2ggd2lsbCBiZSBp
-bnRyb2R1Y2VkIGluIGENCj4gbGF0dGVyIHBhdGNoLg0KPiANCj4gVGhpcyBwYXRjaCBpbnRyb2R1
-Y2VzIGEgbmV3IHByb2cgdHlwZSBCUEZfUFJPR19UWVBFX1NUUlVDVF9PUFMuDQo+IFRoZSBCUEZf
-UFJPR19UWVBFX1NUUlVDVF9PUFMgcHJvZyBpcyB2ZXJpZmllZCBhZ2FpbnN0IGEgcGFydGljdWxh
-cg0KPiBmdW5jIHB0ciBvZiBhIGtlcm5lbCBzdHJ1Y3QuICBUaGUgYXR0ci0+YXR0YWNoX2J0Zl9p
-ZCBpcyB0aGUgYnRmIGlkDQo+IG9mIGEga2VybmVsIHN0cnVjdC4gIFRoZSBhdHRyLT5leHBlY3Rl
-ZF9hdHRhY2hfdHlwZSBpcyB0aGUgbWVtYmVyDQo+ICJpbmRleCIgb2YgdGhhdCBrZXJuZWwgc3Ry
-dWN0LiAgVGhlIGZpcnN0IG1lbWJlciBvZiBhIHN0cnVjdCBzdGFydHMNCj4gd2l0aCBtZW1iZXIg
-aW5kZXggMC4gIFRoYXQgd2lsbCBhdm9pZCBhbWJpZ3VpdHkgd2hlbiBhIGtlcm5lbCBzdHJ1Y3QN
-Cj4gaGFzIG11bHRpcGxlIGZ1bmMgcHRycyB3aXRoIHRoZSBzYW1lIGZ1bmMgc2lnbmF0dXJlLg0K
-PiANCj4gRm9yIGV4YW1wbGUsIGEgQlBGX1BST0dfVFlQRV9TVFJVQ1RfT1BTIHByb2cgaXMgd3Jp
-dHRlbg0KPiB0byBpbXBsZW1lbnQgdGhlICJpbml0IiBmdW5jIHB0ciBvZiB0aGUgInN0cnVjdCB0
-Y3BfY29uZ2VzdGlvbl9vcHMiLg0KPiBUaGUgYXR0ci0+YXR0YWNoX2J0Zl9pZCBpcyB0aGUgYnRm
-IGlkIG9mIHRoZSAic3RydWN0IHRjcF9jb25nZXN0aW9uX29wcyINCj4gb2YgdGhlIF9ydW5uaW5n
-XyBrZXJuZWwuICBUaGUgYXR0ci0+ZXhwZWN0ZWRfYXR0YWNoX3R5cGUgaXMgMy4NCj4gDQo+IFRo
-ZSBjdHggb2YgQlBGX1BST0dfVFlQRV9TVFJVQ1RfT1BTIGlzIGFuIGFycmF5IG9mIHU2NCBhcmdz
-IHNhdmVkDQo+IGJ5IGFyY2hfcHJlcGFyZV9icGZfdHJhbXBvbGluZSB0aGF0IHdpbGwgYmUgZG9u
-ZSBpbiB0aGUgbmV4dA0KPiBwYXRjaCB3aGVuIGludHJvZHVjaW5nIEJQRl9NQVBfVFlQRV9TVFJV
-Q1RfT1BTLg0KPiANCj4gInN0cnVjdCBicGZfc3RydWN0X29wcyIgaXMgaW50cm9kdWNlZCBhcyBh
-IGNvbW1vbiBpbnRlcmZhY2UgZm9yIHRoZSBrZXJuZWwNCj4gc3RydWN0IHRoYXQgc3VwcG9ydHMg
-QlBGX1BST0dfVFlQRV9TVFJVQ1RfT1BTIHByb2cuICBUaGUgc3VwcG9ydGluZyBrZXJuZWwNCj4g
-c3RydWN0IHdpbGwgbmVlZCB0byBpbXBsZW1lbnQgYW4gaW5zdGFuY2Ugb2YgdGhlICJzdHJ1Y3Qg
-YnBmX3N0cnVjdF9vcHMiLg0KPiANCj4gVGhlIHN1cHBvcnRpbmcga2VybmVsIHN0cnVjdCBhbHNv
-IG5lZWRzIHRvIGltcGxlbWVudCBhIGJwZl92ZXJpZmllcl9vcHMuDQo+IER1cmluZyBCUEZfUFJP
-R19MT0FELCBicGZfc3RydWN0X29wc19maW5kKCkgd2lsbCBmaW5kIHRoZSByaWdodA0KPiBicGZf
-dmVyaWZpZXJfb3BzIGJ5IHNlYXJjaGluZyB0aGUgYXR0ci0+YXR0YWNoX2J0Zl9pZC4NCj4gDQo+
-IEEgbmV3ICJidGZfc3RydWN0X2FjY2VzcyIgaXMgYWxzbyBhZGRlZCB0byB0aGUgYnBmX3Zlcmlm
-aWVyX29wcyBzdWNoDQo+IHRoYXQgdGhlIHN1cHBvcnRpbmcga2VybmVsIHN0cnVjdCBjYW4gb3B0
-aW9uYWxseSBwcm92aWRlIGl0cyBvd24gc3BlY2lmaWMNCj4gY2hlY2sgb24gYWNjZXNzaW5nIHRo
-ZSBmdW5jIGFyZyAoZS5nLiBwcm92aWRlIGxpbWl0ZWQgd3JpdGUgYWNjZXNzKS4NCj4gDQo+IEFm
-dGVyIGJ0Zl92bWxpbnV4IGlzIHBhcnNlZCwgdGhlIG5ldyBicGZfc3RydWN0X29wc19pbml0KCkg
-aXMgY2FsbGVkDQo+IHRvIGluaXRpYWxpemUgc29tZSB2YWx1ZXMgKGUuZy4gdGhlIGJ0ZiBpZCBv
-ZiB0aGUgc3VwcG9ydGluZyBrZXJuZWwNCj4gc3RydWN0KSBhbmQgaXQgY2FuIG9ubHkgYmUgZG9u
-ZSBvbmNlIHRoZSBidGZfdm1saW51eCBpcyBhdmFpbGFibGUuDQo+IA0KPiBUaGUgUjAgY2hlY2tz
-IGF0IEJQRl9FWElUIGlzIGV4Y2x1ZGVkIGZvciB0aGUgQlBGX1BST0dfVFlQRV9TVFJVQ1RfT1BT
-IHByb2cNCj4gaWYgdGhlIHJldHVybiB0eXBlIG9mIHRoZSBwcm9nLT5hdXgtPmF0dGFjaF9mdW5j
-X3Byb3RvIGlzICJ2b2lkIi4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IE1hcnRpbiBLYUZhaSBMYXUg
-PGthZmFpQGZiLmNvbT4NCg0KQWNrZWQtYnk6IFlvbmdob25nIFNvbmcgPHloc0BmYi5jb20+DQo=
+On Fri, Dec 20, 2019 at 10:26 PM Martin KaFai Lau <kafai@fb.com> wrote:
+>
+> This patch adds BPF STRUCT_OPS support to libbpf.
+>
+> The only sec_name convention is SEC(".struct_ops") to identify the
+> struct_ops implemented in BPF,
+> e.g. To implement a tcp_congestion_ops:
+>
+> SEC(".struct_ops")
+> struct tcp_congestion_ops dctcp = {
+>         .init           = (void *)dctcp_init,  /* <-- a bpf_prog */
+>         /* ... some more func prts ... */
+>         .name           = "bpf_dctcp",
+> };
+>
+> Each struct_ops is defined as a global variable under SEC(".struct_ops")
+> as above.  libbpf creates a map for each variable and the variable name
+> is the map's name.  Multiple struct_ops is supported under
+> SEC(".struct_ops").
+>
+> In the bpf_object__open phase, libbpf will look for the SEC(".struct_ops")
+> section and find out what is the btf-type the struct_ops is
+> implementing.  Note that the btf-type here is referring to
+> a type in the bpf_prog.o's btf.  A "struct bpf_map" is added
+> by bpf_object__add_map() as other maps do.  It will then
+> collect (through SHT_REL) where are the bpf progs that the
+> func ptrs are referring to.  No btf_vmlinux is needed in
+> the open phase.
+>
+> In the bpf_object__load phase, the map-fields, which depend
+> on the btf_vmlinux, are initialized (in bpf_map__init_kern_struct_ops()).
+> It will also set the prog->type, prog->attach_btf_id, and
+> prog->expected_attach_type.  Thus, the prog's properties do
+> not rely on its section name.
+> [ Currently, the bpf_prog's btf-type ==> btf_vmlinux's btf-type matching
+>   process is as simple as: member-name match + btf-kind match + size match.
+>   If these matching conditions fail, libbpf will reject.
+>   The current targeting support is "struct tcp_congestion_ops" which
+>   most of its members are function pointers.
+>   The member ordering of the bpf_prog's btf-type can be different from
+>   the btf_vmlinux's btf-type. ]
+>
+> Then, all obj->maps are created as usual (in bpf_object__create_maps()).
+>
+> Once the maps are created and prog's properties are all set,
+> the libbpf will proceed to load all the progs.
+>
+> bpf_map__attach_struct_ops() is added to register a struct_ops
+> map to a kernel subsystem.
+>
+> Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+> ---
+
+This looks great, Martin! I just have few nits/suggestions, but
+overall I think this approach is much better.
+
+After this lands, please follow up with adding support for struct_ops
+maps into BPF skeleton, so that it's attached automatically on
+skeleton load.
+
+>  tools/lib/bpf/bpf.c           |  10 +-
+>  tools/lib/bpf/bpf.h           |   5 +-
+>  tools/lib/bpf/libbpf.c        | 639 +++++++++++++++++++++++++++++++++-
+>  tools/lib/bpf/libbpf.h        |   1 +
+>  tools/lib/bpf/libbpf.map      |   1 +
+>  tools/lib/bpf/libbpf_probes.c |   2 +
+>  6 files changed, 646 insertions(+), 12 deletions(-)
+>
+
+[...]
+
+> +       member = btf_members(type);
+> +       for (i = 0; i < btf_vlen(type); i++, member++) {
+> +               const struct btf_type *mtype, *kern_mtype;
+> +               __u32 mtype_id, kern_mtype_id;
+> +               void *mdata, *kern_mdata;
+> +               __s64 msize, kern_msize;
+> +               __u32 moff, kern_moff;
+> +               __u32 kern_member_idx;
+> +               const char *mname;
+> +
+> +               mname = btf__name_by_offset(btf, member->name_off);
+> +               kern_member = find_member_by_name(kern_btf, kern_type, mname);
+> +               if (!kern_member) {
+> +                       pr_warn("struct_ops map %s init_kern %s: Cannot find member %s in kernel BTF\n",
+> +                               map->name, tname, mname);
+> +                       return -ENOTSUP;
+> +               }
+> +
+> +               kern_member_idx = kern_member - btf_members(kern_type);
+> +               if (btf_member_bitfield_size(type, i) ||
+> +                   btf_member_bitfield_size(kern_type, kern_member_idx)) {
+> +                       pr_warn("struct_ops map %s init_kern %s: bitfield %s is not supported\n",
+> +                               map->name, tname, mname);
+> +                       return -ENOTSUP;
+> +               }
+> +
+> +               moff = member->offset / 8;
+> +               kern_moff = kern_member->offset / 8;
+> +
+> +               mdata = data + moff;
+> +               kern_mdata = kern_data + kern_moff;
+> +
+> +               mtype_id = member->type;
+> +               kern_mtype_id = kern_member->type;
+> +
+> +               mtype = resolve_ptr(btf, mtype_id, NULL);
+> +               kern_mtype = resolve_ptr(kern_btf, kern_mtype_id, NULL);
+> +               if (mtype && kern_mtype) {
+
+This check seems more logical after you resolve mtype_id and
+kern_mtype_id below and check that they have same BTF_INFO_KIND. After
+that you can check for a case of pointers and handle it, if not
+pointers - proceed to determining size.
+
+That way you might also get rid of resolve_ptr and resolve_func_ptr
+functions, because here you already resolved pointer, so just normal
+btf__resolve_type will give you what it's pointing to. Then the only
+use of resolve_func_ptr_resolve_ptr will be in
+bpf_object__collect_struct_ops_map_reloc, which you can just inline at
+that point and not really loose any readability.
+
+> +                       struct bpf_program *prog;
+> +
+> +                       if (!btf_is_func_proto(mtype) ||
+> +                           !btf_is_func_proto(kern_mtype)) {
+> +                               pr_warn("struct_ops map %s init_kern %s: non func ptr %s is not supported\n",
+> +                                       map->name, tname, mname);
+> +                               return -ENOTSUP;
+> +                       }
+> +
+> +                       prog = st_ops->progs[i];
+> +                       if (!prog) {
+> +                               pr_debug("struct_ops map %s init_kern %s: func ptr %s is not set\n",
+> +                                        map->name, tname, mname);
+> +                               continue;
+> +                       }
+> +
+> +                       if (prog->type != BPF_PROG_TYPE_UNSPEC &&
+> +                           (prog->type != BPF_PROG_TYPE_STRUCT_OPS ||
+> +                            prog->attach_btf_id != kern_type_id ||
+> +                            prog->expected_attach_type != kern_member_idx)) {
+> +                               pr_warn("struct_ops map %s init_kern %s: Cannot use prog %s in type %u attach_btf_id %u expected_attach_type %u for func ptr %s\n",
+> +                                       map->name, tname, prog->name,
+> +                                       prog->type, prog->attach_btf_id,
+> +                                       prog->expected_attach_type, mname);
+> +                               return -ENOTSUP;
+> +                       }
+> +
+> +                       prog->type = BPF_PROG_TYPE_STRUCT_OPS;
+> +                       prog->attach_btf_id = kern_type_id;
+> +                       prog->expected_attach_type = kern_member_idx;
+> +
+> +                       st_ops->kern_func_off[i] = kern_data_off + kern_moff;
+> +
+> +                       pr_debug("struct_ops map %s init_kern %s: func ptr %s is set to prog %s from data(+%u) to kern_data(+%u)\n",
+> +                                map->name, tname, mname, prog->name, moff,
+> +                                kern_moff);
+> +
+> +                       continue;
+> +               }
+> +
+> +               mtype_id = btf__resolve_type(btf, mtype_id);
+> +               kern_mtype_id = btf__resolve_type(kern_btf, kern_mtype_id);
+> +               if (mtype_id < 0 || kern_mtype_id < 0) {
+> +                       pr_warn("struct_ops map %s init_kern %s: Cannot resolve the type for %s\n",
+> +                               map->name, tname, mname);
+> +                       return -ENOTSUP;
+> +               }
+> +
+> +               mtype = btf__type_by_id(btf, mtype_id);
+> +               kern_mtype = btf__type_by_id(kern_btf, kern_mtype_id);
+> +               if (BTF_INFO_KIND(mtype->info) !=
+> +                   BTF_INFO_KIND(kern_mtype->info)) {
+> +                       pr_warn("struct_ops map %s init_kern %s: Unmatched member type %s %u != %u(kernel)\n",
+> +                               map->name, tname, mname,
+> +                               BTF_INFO_KIND(mtype->info),
+> +                               BTF_INFO_KIND(kern_mtype->info));
+> +                       return -ENOTSUP;
+> +               }
+> +
+> +               msize = btf__resolve_size(btf, mtype_id);
+> +               kern_msize = btf__resolve_size(kern_btf, kern_mtype_id);
+> +               if (msize < 0 || kern_msize < 0 || msize != kern_msize) {
+> +                       pr_warn("struct_ops map %s init_kern %s: Error in size of member %s: %zd != %zd(kernel)\n",
+> +                               map->name, tname, mname,
+> +                               (ssize_t)msize, (ssize_t)kern_msize);
+> +                       return -ENOTSUP;
+> +               }
+> +
+> +               pr_debug("struct_ops map %s init_kern %s: copy %s %u bytes from data(+%u) to kern_data(+%u)\n",
+> +                        map->name, tname, mname, (unsigned int)msize,
+> +                        moff, kern_moff);
+> +               memcpy(kern_mdata, mdata, msize);
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+
+[...]
+
+> +       symbols = obj->efile.symbols;
+> +       btf = obj->btf;
+> +       nrels = shdr->sh_size / shdr->sh_entsize;
+> +       for (i = 0; i < nrels; i++) {
+> +               if (!gelf_getrel(data, i, &rel)) {
+> +                       pr_warn("struct_ops map reloc: failed to get %d reloc\n", i);
+> +                       return -LIBBPF_ERRNO__FORMAT;
+> +               }
+> +
+> +               if (!gelf_getsym(symbols, GELF_R_SYM(rel.r_info), &sym)) {
+> +                       pr_warn("struct_ops map reloc: symbol %" PRIx64 " not found\n",
+
+please use %zx and explicit cast to size_t instead of PRIx64
+
+> +                               GELF_R_SYM(rel.r_info));
+> +                       return -LIBBPF_ERRNO__FORMAT;
+> +               }
+> +
+> +               name = elf_strptr(obj->efile.elf, obj->efile.strtabidx,
+> +                                 sym.st_name) ? : "<?>";
+> +               map = find_struct_ops_map_by_offset(obj, rel.r_offset);
+> +               if (!map) {
+> +                       pr_warn("struct_ops map reloc: cannot find map at rel.r_offset %zu\n",
+> +                               (size_t)rel.r_offset);
+> +                       return -EINVAL;
+> +               }
+> +
+> +               moff = rel.r_offset -  map->sec_offset;
+
+nit: double space
+
+> +               shdr_idx = sym.st_shndx;
+> +               st_ops = map->st_ops;
+> +               tname = st_ops->tname;
+
+[...]
+
+> +       datasec = btf__type_by_id(btf, datasec_id);
+> +       vsi = btf_var_secinfos(datasec);
+> +       for (i = 0; i < btf_vlen(datasec); i++, vsi++) {
+> +               type = btf__type_by_id(obj->btf, vsi->type);
+> +               var_name = btf__name_by_offset(obj->btf, type->name_off);
+> +
+> +               type_id = btf__resolve_type(obj->btf, vsi->type);
+> +               if (type_id < 0) {
+> +                       pr_warn("struct_ops init: Cannot resolve var type_id %u in DATASEC %s\n",
+> +                               vsi->type, STRUCT_OPS_SEC);
+> +                       return -EINVAL;
+> +               }
+> +
+> +               type = btf__type_by_id(obj->btf, type_id);
+> +               tname = btf__name_by_offset(obj->btf, type->name_off);
+> +               if (!btf_is_struct(type)) {
+
+if tname is empty, it's also not of much use, so might be a good idea
+to error out here with some context?
+
+> +                       pr_warn("struct_ops init: %s is not a struct\n", tname);
+> +                       return -EINVAL;
+> +               }
+> +
+> +               map = bpf_object__add_map(obj);
+> +               if (IS_ERR(map))
+> +                       return PTR_ERR(map);
+> +
+> +               map->sec_idx = obj->efile.st_ops_shndx;
+> +               map->sec_offset = vsi->offset;
+> +               map->name = strdup(var_name);
+> +               if (!map->name)
+> +                       return -ENOMEM;
+> +
+> +               map->def.type = BPF_MAP_TYPE_STRUCT_OPS;
+> +               map->def.key_size = sizeof(int);
+> +               map->def.value_size = type->size;
+> +               map->def.max_entries = 1;
+> +
+> +               map->st_ops = calloc(1, sizeof(*map->st_ops));
+> +               if (!map->st_ops)
+> +                       return -ENOMEM;
+> +               st_ops = map->st_ops;
+> +               st_ops->data = malloc(type->size);
+> +               st_ops->progs = calloc(btf_vlen(type), sizeof(*st_ops->progs));
+> +               st_ops->kern_func_off = malloc(btf_vlen(type) *
+> +                                              sizeof(*st_ops->kern_func_off));
+> +               if (!st_ops->data || !st_ops->progs || !st_ops->kern_func_off)
+> +                       return -ENOMEM;
+> +
+> +               memcpy(st_ops->data,
+> +                      obj->efile.st_ops_data->d_buf + vsi->offset,
+> +                      type->size);
+
+maybe also check that d_size is big enough to read data from?
+
+> +               st_ops->tname = tname;
+> +               st_ops->type = type;
+> +               st_ops->type_id = type_id;
+> +
+> +               pr_debug("struct_ops init: %s found. type_id:%u var_name:%s offset:%u\n",
+> +                        tname, type_id, var_name, vsi->offset);
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+
+[...]
+
+>
+> -       for (i = 0; i < obj->nr_maps; i++)
+> +       for (i = 0; i < obj->nr_maps; i++) {
+>                 zclose(obj->maps[i].fd);
+> +               if (obj->maps[i].st_ops)
+> +                       zfree(&obj->maps[i].st_ops->kern_vdata);
+
+any specific reason to deallocate only kern_vdata? maybe just
+consolidate all the clean up in bpf_object__close instead?
+
+> +       }
+>
+>         for (i = 0; i < obj->nr_programs; i++)
+>                 bpf_program__unload(&obj->programs[i]);
+> @@ -4866,6 +5427,7 @@ int bpf_object__load_xattr(struct bpf_object_load_attr *attr)
+>         err = err ? : bpf_object__resolve_externs(obj, obj->kconfig);
+>         err = err ? : bpf_object__sanitize_and_load_btf(obj);
+>         err = err ? : bpf_object__sanitize_maps(obj);
+> +       err = err ? : bpf_object__init_kern_struct_ops_maps(obj);
+>         err = err ? : bpf_object__create_maps(obj);
+>         err = err ? : bpf_object__relocate(obj, attr->target_btf_path);
+>         err = err ? : bpf_object__load_progs(obj, attr->log_level);
+> @@ -5453,6 +6015,13 @@ void bpf_object__close(struct bpf_object *obj)
+>                         map->mmaped = NULL;
+>                 }
+>
+> +               if (map->st_ops) {
+> +                       zfree(&map->st_ops->data);
+> +                       zfree(&map->st_ops->progs);
+> +                       zfree(&map->st_ops->kern_func_off);
+> +                       zfree(&map->st_ops);
+> +               }
+> +
+>                 zfree(&map->name);
+>                 zfree(&map->pin_path);
+>         }
+> @@ -5954,7 +6523,7 @@ int libbpf_prog_type_by_name(const char *name, enum bpf_prog_type *prog_type,
+>  int libbpf_find_vmlinux_btf_id(const char *name,
+>                                enum bpf_attach_type attach_type)
+>  {
+> -       struct btf *btf = bpf_core_find_kernel_btf();
+> +       struct btf *btf = bpf_find_kernel_btf();
+>         char raw_tp_btf[128] = BTF_PREFIX;
+>         char *dst = raw_tp_btf + sizeof(BTF_PREFIX) - 1;
+>         const char *btf_name;
+> @@ -6780,6 +7349,58 @@ struct bpf_link *bpf_program__attach(struct bpf_program *prog)
+>         return sec_def->attach_fn(sec_def, prog);
+>  }
+>
+> +static int bpf_link__detach_struct_ops(struct bpf_link *link)
+> +{
+> +       struct bpf_link_fd *l = (void *)link;
+> +       __u32 zero = 0;
+> +
+> +       if (bpf_map_delete_elem(l->fd, &zero))
+> +               return -errno;
+> +
+> +       return 0;
+> +}
+> +
+> +struct bpf_link *bpf_map__attach_struct_ops(struct bpf_map *map)
+> +{
+
+This looks great!
+
+[...]
+
+>  enum bpf_perf_event_ret
+>  bpf_perf_event_read_simple(void *mmap_mem, size_t mmap_size, size_t page_size,
+>                            void **copy_mem, size_t *copy_size,
+> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> index fe592ef48f1b..9c54f252f90f 100644
+> --- a/tools/lib/bpf/libbpf.h
+> +++ b/tools/lib/bpf/libbpf.h
+> @@ -355,6 +355,7 @@ struct bpf_map_def {
+>   * so no need to worry about a name clash.
+>   */
+>  struct bpf_map;
+> +LIBBPF_API struct bpf_link *bpf_map__attach_struct_ops(struct bpf_map *map);
+
+nit: can you please move it into the section with all the bpf_link and
+attach APIs?
+
+>  LIBBPF_API struct bpf_map *
+>  bpf_object__find_map_by_name(const struct bpf_object *obj, const char *name);
+>
+
+[...]
