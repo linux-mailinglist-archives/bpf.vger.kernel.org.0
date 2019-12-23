@@ -2,136 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 235E5129628
-	for <lists+bpf@lfdr.de>; Mon, 23 Dec 2019 13:54:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0866129798
+	for <lists+bpf@lfdr.de>; Mon, 23 Dec 2019 15:39:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726680AbfLWMyK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 Dec 2019 07:54:10 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:43743 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726676AbfLWMyK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 23 Dec 2019 07:54:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1577105649;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+5cCaDQq8qftgZrhzoIg1xkFR5ZFmPM72Ud6lVvdAOY=;
-        b=GR1CXEEX7dGleW1aTTc+vfIYZ5cZIRajzKhsWM/xJqqcnAtfwbFPBMoQvrfIP7DwuYl5ur
-        9GiLwFeHUWLzR0gzPKz++L2gUkGV1r3gD0mxRZG9UNA/zDcIIaJaQLOiz82NGfGNC/qcQn
-        TDO2N7uUL9S0pqCX41CjY86Bxa/ay/A=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-11-0BB99bblPpGfRkNfeXmXVg-1; Mon, 23 Dec 2019 07:54:04 -0500
-X-MC-Unique: 0BB99bblPpGfRkNfeXmXVg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B406FDB20;
-        Mon, 23 Dec 2019 12:54:02 +0000 (UTC)
-Received: from [10.36.116.219] (ovpn-116-219.ams2.redhat.com [10.36.116.219])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5B36610840E0;
-        Mon, 23 Dec 2019 12:54:01 +0000 (UTC)
-From:   "Eelco Chaudron" <echaudro@redhat.com>
-To:     "Andrii Nakryiko" <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>,
-        "Alexei Starovoitov" <ast@kernel.org>,
-        Networking <netdev@vger.kernel.org>
-Subject: Re: [PATCH bpf-next] selftests/bpf: Add a test for attaching a bpf
- fentry/fexit trace to an XDP program
-Date:   Mon, 23 Dec 2019 13:53:59 +0100
-Message-ID: <FE4A1C64-70CF-4831-922C-F3992C40E57B@redhat.com>
-In-Reply-To: <CAEf4BzYxDE5VoBiCaPwv=buUk87Cv0JF09usmQf0WvUceb8A5A@mail.gmail.com>
-References: <157675340354.60799.13351496736033615965.stgit@xdp-tutorial>
- <CAEf4BzYxDE5VoBiCaPwv=buUk87Cv0JF09usmQf0WvUceb8A5A@mail.gmail.com>
+        id S1726828AbfLWOjs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 Dec 2019 09:39:48 -0500
+Received: from www62.your-server.de ([213.133.104.62]:41776 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726777AbfLWOjs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 Dec 2019 09:39:48 -0500
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1ijOs2-0006DU-Ro; Mon, 23 Dec 2019 15:39:42 +0100
+Received: from [185.105.41.126] (helo=linux-9.fritz.box)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1ijOs2-000Dco-CN; Mon, 23 Dec 2019 15:39:42 +0100
+Subject: Re: [PATCH bpf v3] libbpf: Fix build on read-only filesystems
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Namhyung Kim <namhyung@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        bpf <bpf@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org
+References: <CAM9d7ch1=pmgkFbgGr2YignQwdNjke2QeOAFLCFYu8L8J-Z8vw@mail.gmail.com>
+ <20191223061326.843366-1-namhyung@kernel.org>
+ <CAEf4BzY1HvhkPzR1HE7-reGhfZnfySe-LxQ-5MS7Nx-Uv4oVug@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <2d6767c6-ff4c-8f88-f186-23cddbb4969a@iogearbox.net>
+Date:   Mon, 23 Dec 2019 15:39:41 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAEf4BzY1HvhkPzR1HE7-reGhfZnfySe-LxQ-5MS7Nx-Uv4oVug@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.101.4/25672/Mon Dec 23 10:53:10 2019)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 20 Dec 2019, at 0:02, Andrii Nakryiko wrote:
-
-> On Thu, Dec 19, 2019 at 3:04 AM Eelco Chaudron <echaudro@redhat.com>=20
-> wrote:
+On 12/23/19 7:29 AM, Andrii Nakryiko wrote:
+> On Sun, Dec 22, 2019 at 10:14 PM Namhyung Kim <namhyung@kernel.org> wrote:
 >>
->> Add a test that will attach a FENTRY and FEXIT program to the XDP=20
->> test
->> program. It will also verify data from the XDP context on FENTRY and
->> verifies the return code on exit.
+>> I got the following error when I tried to build perf on a read-only
+>> filesystem with O=dir option.
 >>
->> Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
+>>    $ cd /some/where/ro/linux/tools/perf
+>>    $ make O=$HOME/build/perf
+>>    ...
+>>      CC       /home/namhyung/build/perf/lib.o
+>>    /bin/sh: bpf_helper_defs.h: Read-only file system
+>>    make[3]: *** [Makefile:184: bpf_helper_defs.h] Error 1
+>>    make[2]: *** [Makefile.perf:778: /home/namhyung/build/perf/libbpf.a] Error 2
+>>    make[2]: *** Waiting for unfinished jobs....
+>>      LD       /home/namhyung/build/perf/libperf-in.o
+>>      AR       /home/namhyung/build/perf/libperf.a
+>>      PERF_VERSION = 5.4.0
+>>    make[1]: *** [Makefile.perf:225: sub-make] Error 2
+>>    make: *** [Makefile:70: all] Error 2
+>>
+>> It was becaused bpf_helper_defs.h was generated in current directory.
+>> Move it to OUTPUT directory.
+>>
+>> Tested-by: Andrii Nakryiko <andriin@fb.com>
+>> Acked-by: Andrii Nakryiko <andriin@fb.com>
+>> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 >> ---
->>  .../testing/selftests/bpf/prog_tests/xdp_bpf2bpf.c |   95=20
->> ++++++++++++++++++++
->>  .../testing/selftests/bpf/progs/test_xdp_bpf2bpf.c |   44 +++++++++
->>  2 files changed, 139 insertions(+)
->>  create mode 100644=20
->> tools/testing/selftests/bpf/prog_tests/xdp_bpf2bpf.c
->>  create mode 100644=20
->> tools/testing/selftests/bpf/progs/test_xdp_bpf2bpf.c
+>>   tools/lib/bpf/Makefile                 | 15 ++++++++-------
+>>   tools/testing/selftests/bpf/.gitignore |  1 +
+>>   tools/testing/selftests/bpf/Makefile   |  6 +++---
+>>   3 files changed, 12 insertions(+), 10 deletions(-)
 >>
->
+> 
 > [...]
+> 
+>> diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selftests/bpf/.gitignore
+>> index 419652458da4..1ff0a9f49c01 100644
+>> --- a/tools/testing/selftests/bpf/.gitignore
+>> +++ b/tools/testing/selftests/bpf/.gitignore
+>> @@ -40,3 +40,4 @@ xdping
+>>   test_cpp
+>>   /no_alu32
+>>   /bpf_gcc
+>> +bpf_helper_defs.h
+> 
+> looks good, thanks!
 
-Thanks for the review, updated my kernel to the latest bfp-next, but now=20
-I get the following build issue for the test suite:
-
-    GEN-SKEL [test_progs] loop3.skel.h
-    GEN-SKEL [test_progs] test_skeleton.skel.h
-libbpf: failed to find BTF for extern 'CONFIG_BPF_SYSCALL': -2
-Error: failed to open BPF object file: 0
-make: *** [Makefile:333:=20
-/data/linux_kernel/tools/testing/selftests/bpf/test_skeleton.skel.h]=20
-Error 255
-make: *** Deleting file=20
-'/data/linux_kernel/tools/testing/selftests/bpf/test_skeleton.skel.h'
-
-Verified, and I still have all the correct config and CLANG version.=20
-Something else I need to update?
-I have pahole v1.15 in my search path=E2=80=A6
-
->
->> +       /* Load XDP program to introspect */
->> +       err =3D bpf_prog_load(file, BPF_PROG_TYPE_XDP, &obj, &prog_fd)=
-;
->
-> Please use BPF skeleton for this test. It will make it significantly
-> shorter and clearer. See other fentry_fexit selftest for example.
->
->> +       if (CHECK_FAIL(err))
->> +               return;
->> +
->
-> [...]
->
->> +
->> +static volatile __u64 test_result_fentry;
->
-> no need for static volatile anymore, just use global var
->
->> +BPF_TRACE_1("fentry/_xdp_tx_iptunnel", trace_on_entry,
->> +           struct xdp_buff *, xdp)
->> +{
->> +       test_result_fentry =3D xdp->rxq->dev->ifindex;
->> +       return 0;
->> +}
->> +
->> +static volatile __u64 test_result_fexit;
->
-> same here
->
->> +BPF_TRACE_2("fexit/_xdp_tx_iptunnel", trace_on_exit,
->> +           struct xdp_buff*, xdp, int, ret)
->> +{
->> +       test_result_fexit =3D ret;
->> +       return 0;
->> +}
->>
-
+Applied, thanks!
