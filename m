@@ -2,138 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 498CB129398
-	for <lists+bpf@lfdr.de>; Mon, 23 Dec 2019 10:25:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 235E5129628
+	for <lists+bpf@lfdr.de>; Mon, 23 Dec 2019 13:54:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726059AbfLWJZY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 Dec 2019 04:25:24 -0500
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:41003 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726034AbfLWJZY (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 23 Dec 2019 04:25:24 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 1670A218C1;
-        Mon, 23 Dec 2019 04:25:23 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Mon, 23 Dec 2019 04:25:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; bh=vMMfxu/cPCNvuQ43lK6puzAyRLSCXYLtlGInr9Pdr
-        jw=; b=HiOR9fpoB8tE9yUqqMVp9obC48Ts0NfzeUZqRL71Rl7YPwLuAweGP2cuQ
-        KLy9uEAdSrXapunvKMaID6/cde0HT9v/MLf+8SF7NwymxKGJVCeWAqCVt4DaOkVR
-        RDeyEMvIVvY2+4XtuL5jalQ3AfkBIHGwWQM5hw8WgzO1tP85xsRWw6P7S0GKCnH3
-        80Z5Jiy8VoxpWo5dy3XOLRbmGLUaTkjLbAC1yQ2W/hZptBVM5dufcL01cv3jqo7T
-        sIOtZV5rzoJf/XF/q5hkoOfqTL8tmSzojqW7yo/FbF4IWxI9M7m5MO9BOd8Y/e8C
-        eYscpcXKeajuDqdUQiEBIbfZCJWpA==
-X-ME-Sender: <xms:AogAXrMa5GK3Yf2fL6BqJ1TPy2CBg0R_WbI0navIai6FEbPn32WAvA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedufedrvddvtddgtdefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtugfgjgesthekredttddtudenucfhrhhomhepkfguohcu
-    ufgthhhimhhmvghluceoihguohhstghhsehiughoshgthhdrohhrgheqnecuffhomhgrih
-    hnpehkvghrnhgvlhdrohhrghdpghhithhhuhgsrdgtohhmnecukfhppeduleefrdegjedr
-    udeihedrvdehudenucfrrghrrghmpehmrghilhhfrhhomhepihguohhstghhsehiughosh
-    gthhdrohhrghenucevlhhushhtvghrufhiiigvpedt
-X-ME-Proxy: <xmx:AogAXnwbyefyMoWrJd2SY6XvCBY9_vasxXVASl6nDIyLzBjEAaVb5g>
-    <xmx:AogAXsBFB9zx-fQ8ik1KJC0jKobthDh9zz6jkYaDUChOsxr4xX1S7Q>
-    <xmx:AogAXg795MxjLxl2BFHdUH2JZIR8XM9ufWNfkSS4uft-rJd3UbL5gQ>
-    <xmx:A4gAXjScsjNJ-rF_86ZxPGuyyKq8rp5tJPnaNB7_s-IDlyAeKo1GxA>
-Received: from localhost (unknown [193.47.165.251])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 4E9783060A6E;
-        Mon, 23 Dec 2019 04:25:22 -0500 (EST)
-Date:   Mon, 23 Dec 2019 11:25:20 +0200
-From:   Ido Schimmel <idosch@idosch.org>
-To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: Re: [RFC PATCH bpf-next] xdp: Add tracepoint on XDP program return
-Message-ID: <20191223092520.GA838734@splinter>
-References: <20191216152715.711308-1-toke@redhat.com>
- <CAJ+HfNhYG_hzuFzX5sAH7ReotLtZWTP_9D2jA_iVMg+jUtXXCw@mail.gmail.com>
- <20191217005944.s3mayy473ldlnldl@ast-mbp.dhcp.thefacebook.com>
- <87h81z8hcd.fsf@toke.dk>
+        id S1726680AbfLWMyK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 Dec 2019 07:54:10 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:43743 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726676AbfLWMyK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 Dec 2019 07:54:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1577105649;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+5cCaDQq8qftgZrhzoIg1xkFR5ZFmPM72Ud6lVvdAOY=;
+        b=GR1CXEEX7dGleW1aTTc+vfIYZ5cZIRajzKhsWM/xJqqcnAtfwbFPBMoQvrfIP7DwuYl5ur
+        9GiLwFeHUWLzR0gzPKz++L2gUkGV1r3gD0mxRZG9UNA/zDcIIaJaQLOiz82NGfGNC/qcQn
+        TDO2N7uUL9S0pqCX41CjY86Bxa/ay/A=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-11-0BB99bblPpGfRkNfeXmXVg-1; Mon, 23 Dec 2019 07:54:04 -0500
+X-MC-Unique: 0BB99bblPpGfRkNfeXmXVg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B406FDB20;
+        Mon, 23 Dec 2019 12:54:02 +0000 (UTC)
+Received: from [10.36.116.219] (ovpn-116-219.ams2.redhat.com [10.36.116.219])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5B36610840E0;
+        Mon, 23 Dec 2019 12:54:01 +0000 (UTC)
+From:   "Eelco Chaudron" <echaudro@redhat.com>
+To:     "Andrii Nakryiko" <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>,
+        "Alexei Starovoitov" <ast@kernel.org>,
+        Networking <netdev@vger.kernel.org>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Add a test for attaching a bpf
+ fentry/fexit trace to an XDP program
+Date:   Mon, 23 Dec 2019 13:53:59 +0100
+Message-ID: <FE4A1C64-70CF-4831-922C-F3992C40E57B@redhat.com>
+In-Reply-To: <CAEf4BzYxDE5VoBiCaPwv=buUk87Cv0JF09usmQf0WvUceb8A5A@mail.gmail.com>
+References: <157675340354.60799.13351496736033615965.stgit@xdp-tutorial>
+ <CAEf4BzYxDE5VoBiCaPwv=buUk87Cv0JF09usmQf0WvUceb8A5A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87h81z8hcd.fsf@toke.dk>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 17, 2019 at 09:52:02AM +0100, Toke Høiland-Jørgensen wrote:
-> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
-> 
-> > On Mon, Dec 16, 2019 at 07:17:59PM +0100, Björn Töpel wrote:
-> >> On Mon, 16 Dec 2019 at 16:28, Toke Høiland-Jørgensen <toke@redhat.com> wrote:
-> >> >
-> >> > This adds a new tracepoint, xdp_prog_return, which is triggered at every
-> >> > XDP program return. This was first discussed back in August[0] as a way to
-> >> > hook XDP into the kernel drop_monitor framework, to have a one-stop place
-> >> > to find all packet drops in the system.
-> >> >
-> >> > Because trace/events/xdp.h includes filter.h, some ifdef guarding is needed
-> >> > to be able to use the tracepoint from bpf_prog_run_xdp(). If anyone has any
-> >> > ideas for how to improve on this, please to speak up. Sending this RFC
-> >> > because of this issue, and to get some feedback from Ido on whether this
-> >> > tracepoint has enough data for drop_monitor usage.
-> >> >
-> >> 
-> >> I get that it would be useful, but can it be solved with BPF tracing
-> >> (i.e. tracing BPF with BPF)? It would be neat not adding another
-> >> tracepoint in the fast-path...
-> >
-> > That was my question as well.
-> > Here is an example from Eelco:
-> > https://lore.kernel.org/bpf/78D7857B-82E4-42BC-85E1-E3D7C97BF840@redhat.com/
-> > BPF_TRACE_2("fexit/xdp_prog_simple", trace_on_exit,
-> >              struct xdp_buff*, xdp, int, ret)
-> > {
-> >      bpf_debug("fexit: [ifindex = %u, queue =  %u, ret = %d]\n",
-> >                xdp->rxq->dev->ifindex, xdp->rxq->queue_index, ret);
-> >
-> >      return 0;
-> > }
-> > 'ret' is return code from xdp program.
-> > Such approach is per xdp program, but cheaper when not enabled
-> > and faster when it's triggering comparing to static tracepoint.
-> > Anything missing there that you'd like to see?
-> 
-> For userspace, sure, the fentry/fexit stuff is fine. The main use case
-> for this new tracepoint is to hook into the (in-kernel) drop monitor.
-> Dunno if that can be convinced to hook into the BPF tracing
-> infrastructure instead of tracepoints. Ido, WDYT?
 
-Hi Toke,
 
-Sorry for the delay. I wasn't available most of last week.
+On 20 Dec 2019, at 0:02, Andrii Nakryiko wrote:
 
-Regarding the tracepoint, the data it provides seems sufficient to me.
-Regarding the fentry/fexit stuff, it would be great to hook it into drop
-monitor, but I'm not sure how to do that at this point. It seems that at
-minimum user would need to pass the XDP programs that need to be traced?
+> On Thu, Dec 19, 2019 at 3:04 AM Eelco Chaudron <echaudro@redhat.com>=20
+> wrote:
+>>
+>> Add a test that will attach a FENTRY and FEXIT program to the XDP=20
+>> test
+>> program. It will also verify data from the XDP context on FENTRY and
+>> verifies the return code on exit.
+>>
+>> Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
+>> ---
+>>  .../testing/selftests/bpf/prog_tests/xdp_bpf2bpf.c |   95=20
+>> ++++++++++++++++++++
+>>  .../testing/selftests/bpf/progs/test_xdp_bpf2bpf.c |   44 +++++++++
+>>  2 files changed, 139 insertions(+)
+>>  create mode 100644=20
+>> tools/testing/selftests/bpf/prog_tests/xdp_bpf2bpf.c
+>>  create mode 100644=20
+>> tools/testing/selftests/bpf/progs/test_xdp_bpf2bpf.c
+>>
+>
+> [...]
 
-FYI, I'm not too happy with the current way of capturing the events via
-nlmon, so I started creating a utility to directly output the events to
-pcap [1] (inspired by Florian's nfqdump). Will send a pull request to
-Neil when it's ready. You can do:
+Thanks for the review, updated my kernel to the latest bfp-next, but now=20
+I get the following build issue for the test suite:
 
-# dwdump -w /dev/stdout | tshark -V -r -
+    GEN-SKEL [test_progs] loop3.skel.h
+    GEN-SKEL [test_progs] test_skeleton.skel.h
+libbpf: failed to find BTF for extern 'CONFIG_BPF_SYSCALL': -2
+Error: failed to open BPF object file: 0
+make: *** [Makefile:333:=20
+/data/linux_kernel/tools/testing/selftests/bpf/test_skeleton.skel.h]=20
+Error 255
+make: *** Deleting file=20
+'/data/linux_kernel/tools/testing/selftests/bpf/test_skeleton.skel.h'
 
-A recent enough wireshark will correctly dissect these events. My next
-step is to add '--unique' which will load an eBPF program on the socket
-and only allow unique events to be enqueued. The program will store
-{5-tuple, IP/drop reason} in LRU hash with corresponding count. I can
-then instrument the application for Prometheus so that it will export
-the contents of the map as metrics.
+Verified, and I still have all the correct config and CLANG version.=20
+Something else I need to update?
+I have pahole v1.15 in my search path=E2=80=A6
 
-Please let me know if you have more suggestions.
+>
+>> +       /* Load XDP program to introspect */
+>> +       err =3D bpf_prog_load(file, BPF_PROG_TYPE_XDP, &obj, &prog_fd)=
+;
+>
+> Please use BPF skeleton for this test. It will make it significantly
+> shorter and clearer. See other fentry_fexit selftest for example.
+>
+>> +       if (CHECK_FAIL(err))
+>> +               return;
+>> +
+>
+> [...]
+>
+>> +
+>> +static volatile __u64 test_result_fentry;
+>
+> no need for static volatile anymore, just use global var
+>
+>> +BPF_TRACE_1("fentry/_xdp_tx_iptunnel", trace_on_entry,
+>> +           struct xdp_buff *, xdp)
+>> +{
+>> +       test_result_fentry =3D xdp->rxq->dev->ifindex;
+>> +       return 0;
+>> +}
+>> +
+>> +static volatile __u64 test_result_fexit;
+>
+> same here
+>
+>> +BPF_TRACE_2("fexit/_xdp_tx_iptunnel", trace_on_exit,
+>> +           struct xdp_buff*, xdp, int, ret)
+>> +{
+>> +       test_result_fexit =3D ret;
+>> +       return 0;
+>> +}
+>>
 
-[1] https://github.com/idosch/dropwatch/blob/dwdump/src/dwdump.c
