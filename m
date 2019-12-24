@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 67C7A129E2C
-	for <lists+bpf@lfdr.de>; Tue, 24 Dec 2019 07:45:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F6A0129E36
+	for <lists+bpf@lfdr.de>; Tue, 24 Dec 2019 07:49:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726047AbfLXGpG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Dec 2019 01:45:06 -0500
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:43297 "EHLO
+        id S1726047AbfLXGtP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Dec 2019 01:49:15 -0500
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:40976 "EHLO
         mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725993AbfLXGpG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 Dec 2019 01:45:06 -0500
-Received: by mail-qk1-f196.google.com with SMTP id t129so15368716qke.10;
-        Mon, 23 Dec 2019 22:45:05 -0800 (PST)
+        with ESMTP id S1725993AbfLXGtO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 Dec 2019 01:49:14 -0500
+Received: by mail-qk1-f196.google.com with SMTP id x129so15386272qke.8;
+        Mon, 23 Dec 2019 22:49:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=rBwbpDsBTx0TBXWTathQ7eBqCJIKnOlRHIXajiSIAMk=;
-        b=CV5XJmeC5AhbgrwvDGaT3y2ih3+FWhLu1miFdFmpTnQ4hL3fABuC2zB2M5aVLg0bEK
-         8Z9pS4cBYe3rHNVK70fWYBoLkkc3bnEqIF8pw4OTlz/m7Imk3MkARYVKgQ40UvqKgRmt
-         Fyh+qBh4Wc+uytZWSDOuTPXoqGpRwKe6Ve1T6k60dxO/5m79IjFjbp333KwjOWq3cden
-         Cvpn9UdTqhUygXOEOm//DikMHNMBUshdunGaX8ZuE6/QRUVzdlZcLSzpWkK2HIJr/N3M
-         4R2Bs0wx1JXv8G8cADzS416vjKKSHfJdcVho0PiLKUT8OaPsHPMkmz2Or01d854a3afl
-         VQeg==
+        bh=b0iWCxYNiohR6WwhEbZybBC5LDbEHyzHqqdr/s35y2A=;
+        b=ocHLjwlgwQvTgt5s8m6AoIqr3nSoecTTinGqUMnsnTJU2Fn9HkhAf21+Vl424/hcA6
+         W/bkkobX2Kacb5uyVmV8mvqUfugHcNZ5sbSGIch8ZTcq51gtHjN2Q99AybvXvNbJ/GAE
+         yP5+Qt/nVewgtXKiG2Zf97x+rl0eEm1PztpnfpFH6xfTSUEN2FeDuQWnfP8/hvZbMrqN
+         fYQhaG3lsSlN6V1eyz7n818WJSSGNMH2sBTYwZmzc3f9HbDZ7odmBEevFRNyeOKyj/cC
+         G83fq6RoabavJ91XfaFBxBuPeuaxXnVbkvcfRvBZ9O/96HU7NpOy8K/WGiLbqDUc69qS
+         LtaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=rBwbpDsBTx0TBXWTathQ7eBqCJIKnOlRHIXajiSIAMk=;
-        b=nskMdpAdmLSjNkrrkc4PtHg+bv5wUp0xXOvLrXxbmJ8/m9qLM8PXOR5hA7QlvgYDJL
-         hU8MAa64NgFDAApGNyKrSXCXOmKEPdTsJHbB1c/Zeh7C6nYhEOFTZB7KhWDhnZSISWHr
-         xRsxGajJIbwkss1dUE55vCH7HbABRljIa0U0oqSEQOgeXV0Z/BiDu96ks+t+2BzKqiBm
-         WFsm5puAC+OAe3RSZTOTrDb1LGUTRZueRKJzUETtk2ZfKNZkzqmk5/jGMmWMqeJdtcXc
-         sQxiO8ZtiqJlqQdOAhfPzLK6j4ZsRh0Z6HCLPOZL2MO/sk967mBt7WJWBAUC302DatL/
-         r0XQ==
-X-Gm-Message-State: APjAAAXLjnUE8XZEvGnae/38sblKFKXJUAj6UULzemhkmSefXEg1xTph
-        eXQVvG2AESmMV3D9j0nzk/aZCLrcytEQ1btm8h4=
-X-Google-Smtp-Source: APXvYqwprX+GZsxqu4aOiFRTl+Wg4TNP/ha2IvNFmVWrlVvYQbkPTvJO+OxYjhMk0oQjBaTTk6Pl33xM/mp65XF+p7M=
-X-Received: by 2002:a37:a685:: with SMTP id p127mr30990481qke.449.1577169905101;
- Mon, 23 Dec 2019 22:45:05 -0800 (PST)
+        bh=b0iWCxYNiohR6WwhEbZybBC5LDbEHyzHqqdr/s35y2A=;
+        b=IxGZbMin4Vi4fovcriz3Z+G18Cds1BhXDBRRVlCvbC07QPdKddwuJ5JeSszglJnv+d
+         q0jjIe1BFb1T521erHgeFceikqdTxjlMukKl3pq4QB3qzZU2w4kygqgEqzJ8qPLiXbbY
+         iCVrZYvwuo3yVGqptAXUUnIrVughDR7s1Y+weHBxHo5ePV/ATIsxb+eZJm43QpnD1Qi5
+         HtmEI5ub+3VtClzZZcg51B8CkHTLavwDzozM51tG7/24caX8cbfm3na3nyz73PYm1jfw
+         T0CYyW4k3CwGgjTEH7FBpyixfswOf8LUQ0L3NMiqJbxJZcm1K3GKBBCq8QDp2+DdpgMG
+         GI8A==
+X-Gm-Message-State: APjAAAVXMHLXQR1y0/cjfYinLRAi6THq4nHcz0zbGzqFXLrQxGtFUF48
+        LUd8eigo3FWSG3ShW8O+KV7Df/TdNYvuHLvh5NA=
+X-Google-Smtp-Source: APXvYqx063YpqLWsE5eZLPp9MLPEcL75/CYO1EL5WVhFsRLVGm0/BcTK4xHhjYVcgT/wmpWMMkiGzVWihz8aUBSWOO8=
+X-Received: by 2002:ae9:e809:: with SMTP id a9mr29498123qkg.92.1577170153656;
+ Mon, 23 Dec 2019 22:49:13 -0800 (PST)
 MIME-Version: 1.0
-References: <20191220154208.15895-1-kpsingh@chromium.org> <20191220154208.15895-12-kpsingh@chromium.org>
-In-Reply-To: <20191220154208.15895-12-kpsingh@chromium.org>
+References: <20191220154208.15895-1-kpsingh@chromium.org> <20191220154208.15895-13-kpsingh@chromium.org>
+In-Reply-To: <20191220154208.15895-13-kpsingh@chromium.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 23 Dec 2019 22:44:54 -0800
-Message-ID: <CAEf4BzZFi_h_9t+u=BSOLA8KYxs2BsnFywLOrhvKckD2xDuLpg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 11/13] tools/libbpf: Add bpf_program__attach_lsm
+Date:   Mon, 23 Dec 2019 22:49:02 -0800
+Message-ID: <CAEf4BzY4K-vgSFPjV=pn3quc5DT1+eGkJnZfSw4+b0fERzPVfw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 12/13] bpf: lsm: Add selftests for BPF_PROG_TYPE_LSM
 To:     KP Singh <kpsingh@chromium.org>
 Cc:     open list <linux-kernel@vger.kernel.org>,
         bpf <bpf@vger.kernel.org>, linux-security-module@vger.kernel.org,
@@ -84,78 +84,72 @@ On Fri, Dec 20, 2019 at 7:42 AM KP Singh <kpsingh@chromium.org> wrote:
 >
 > From: KP Singh <kpsingh@google.com>
 >
-> Add functionality in libbpf to attach eBPF program to LSM hooks.
+> * Load a BPF program that audits mprotect calls
+> * Attach the program to the "file_mprotect" LSM hook
+> * Verify if the program is actually loading by reading
+>   securityfs
+> * Initialize the perf events buffer and poll for audit events
+> * Do an mprotect on some memory allocated on the heap
+> * Verify if the audit event was received
 >
 > Signed-off-by: KP Singh <kpsingh@google.com>
 > ---
->  tools/lib/bpf/libbpf.c   | 127 +++++++++++++++++++++++++++++++++++++--
->  tools/lib/bpf/libbpf.h   |   2 +
->  tools/lib/bpf/libbpf.map |   1 +
->  3 files changed, 126 insertions(+), 4 deletions(-)
->
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index b0b27d8e5a37..ab2b23b4f21f 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -5122,8 +5122,8 @@ int libbpf_prog_type_by_name(const char *name, enum bpf_prog_type *prog_type,
->         return -ESRCH;
->  }
->
-> -static inline int __btf__typdef_with_prefix(struct btf *btf, const char *name,
-> -                                           const char *prefix)
-> +static inline int __btf__type_with_prefix(struct btf *btf, const char *name,
-> +                                         const char *prefix)
-
-Please do this rename in a patch that introduced this function, there
-is no need to split such changes between two patches. See also my
-request to rename and generalize it a bit.
-
->  {
->
->         size_t prefix_len = strlen(prefix);
-> @@ -5149,9 +5149,9 @@ int libbpf_find_vmlinux_btf_id(const char *name,
->         }
+>  MAINTAINERS                                   |   2 +
+>  .../bpf/prog_tests/lsm_mprotect_audit.c       | 129 ++++++++++++++++++
+>  .../selftests/bpf/progs/lsm_mprotect_audit.c  |  58 ++++++++
+>  3 files changed, 189 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/lsm_mprotect_audit.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/lsm_mprotect_audit.c
 >
 
 [...]
 
->
+> +/*
+> + * Define some of the structs used in the BPF program.
+> + * Only the field names and their sizes need to be the
+> + * same as the kernel type, the order is irrelevant.
+> + */
+> +struct mm_struct {
+> +       unsigned long start_brk, brk, start_stack;
+> +};
 > +
-> +static int bpf_link__destroy_lsm(struct bpf_link *link)
+> +struct vm_area_struct {
+> +       unsigned long start_brk, brk, start_stack;
+> +       unsigned long vm_start, vm_end;
+> +       struct mm_struct *vm_mm;
+> +       unsigned long vm_flags;
+> +};
+> +
+> +BPF_TRACE_3("lsm/file_mprotect", mprotect_audit,
+> +           struct vm_area_struct *, vma,
+> +           unsigned long, reqprot, unsigned long, prot)
 > +{
-> +       struct bpf_link_lsm *ll = container_of(link, struct bpf_link_lsm, link);
-
-struct bpf_link link being a first field is a requirement for
-bpf_link, so you don't need container_of, just cast link to your type.
-
-> +       char errmsg[STRERR_BUFSIZE];
-> +       int ret;
+> +       struct mprotect_audit_log audit_log = {};
+> +       int is_heap = 0;
 > +
-> +       ret = bpf_prog_detach2(ll->prog_fd, ll->hook_fd, BPF_LSM_MAC);
-> +       if (ret < 0) {
-> +               ret = -errno;
-> +               pr_warn("failed to detach from hook: %s\n",
-> +                       libbpf_strerror_r(ret, errmsg, sizeof(errmsg)));
-> +               return ret;
-> +       }
-> +       close(ll->hook_fd);
+> +       __builtin_preserve_access_index(({
+
+you don't need __builtin_preserve_access_index, if you mark
+vm_area_struct and mm_struct with
+__attribute__((preserve_access_index)
+
+> +               is_heap = (vma->vm_start >= vma->vm_mm->start_brk &&
+> +                                    vma->vm_end <= vma->vm_mm->brk);
+> +       }));
+> +
+> +       audit_log.magic = MPROTECT_AUDIT_MAGIC;
+> +       audit_log.is_heap = is_heap;
+> +       bpf_lsm_event_output(&perf_buf_map, BPF_F_CURRENT_CPU, &audit_log,
+> +                            sizeof(audit_log));
+
+You test would be much simpler if you use global variables to pass
+data back to userspace, instead of using perf buffer.
+
+Also please see fentry_fexit.c test for example of using BPF skeleton
+to shorten and simpify userspace part of test.
+
 > +       return 0;
 > +}
-> +
-> +static const char *__lsm_hook_name(const char *title)
-> +{
-> +
-> +       int i;
-> +
-> +       if (!title)
-> +               return ERR_PTR(-EINVAL);
-> +
-> +       for (i = 0; i < ARRAY_SIZE(section_names); i++) {
-
-section_names have been renamed to section_defs a while ago, please rebase
-
-> +               if (section_names[i].prog_type != BPF_PROG_TYPE_LSM)
-> +                       continue;
-> +
-
-[...]
+> --
+> 2.20.1
+>
