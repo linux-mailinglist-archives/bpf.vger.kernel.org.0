@@ -2,28 +2,29 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 545D412A0DD
-	for <lists+bpf@lfdr.de>; Tue, 24 Dec 2019 12:47:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4124F12A14C
+	for <lists+bpf@lfdr.de>; Tue, 24 Dec 2019 13:29:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726183AbfLXLrO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Dec 2019 06:47:14 -0500
-Received: from mga12.intel.com ([192.55.52.136]:12722 "EHLO mga12.intel.com"
+        id S1726195AbfLXM30 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Dec 2019 07:29:26 -0500
+Received: from mga04.intel.com ([192.55.52.120]:48286 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726124AbfLXLrO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 Dec 2019 06:47:14 -0500
-X-Amp-Result: UNSCANNABLE
+        id S1726140AbfLXM30 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 Dec 2019 07:29:26 -0500
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
 X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 24 Dec 2019 03:47:11 -0800
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 24 Dec 2019 04:29:21 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.69,351,1571727600"; 
-   d="gz'50?scan'50,208,50";a="391865218"
+   d="gz'50?scan'50,208,50";a="219428175"
 Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 24 Dec 2019 03:47:08 -0800
+  by orsmga006.jf.intel.com with ESMTP; 24 Dec 2019 04:29:19 -0800
 Received: from kbuild by lkp-server01 with local (Exim 4.89)
         (envelope-from <lkp@intel.com>)
-        id 1ijiea-000ENo-8d; Tue, 24 Dec 2019 19:47:08 +0800
-Date:   Tue, 24 Dec 2019 19:46:54 +0800
+        id 1ijjJO-000AaT-Pv; Tue, 24 Dec 2019 20:29:18 +0800
+Date:   Tue, 24 Dec 2019 20:28:24 +0800
 From:   kbuild test robot <lkp@intel.com>
 To:     Martin KaFai Lau <kafai@fb.com>
 Cc:     kbuild-all@lists.01.org, bpf@vger.kernel.org,
@@ -31,13 +32,13 @@ Cc:     kbuild-all@lists.01.org, bpf@vger.kernel.org,
         Daniel Borkmann <daniel@iogearbox.net>,
         David Miller <davem@davemloft.net>, kernel-team@fb.com,
         netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2 05/11] bpf: Introduce BPF_PROG_TYPE_STRUCT_OPS
-Message-ID: <201912241954.wDhIi9xP%lkp@intel.com>
-References: <20191221062606.1182939-1-kafai@fb.com>
+Subject: Re: [PATCH bpf-next v2 06/11] bpf: Introduce BPF_MAP_TYPE_STRUCT_OPS
+Message-ID: <201912242019.rQeJ2muE%lkp@intel.com>
+References: <20191221062608.1183091-1-kafai@fb.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="6xz2nypr56pgs4is"
+Content-Type: multipart/mixed; boundary="rwof7khxctmnpkc2"
 Content-Disposition: inline
-In-Reply-To: <20191221062606.1182939-1-kafai@fb.com>
+In-Reply-To: <20191221062608.1183091-1-kafai@fb.com>
 User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
@@ -45,7 +46,7 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 
---6xz2nypr56pgs4is
+--rwof7khxctmnpkc2
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
@@ -72,98 +73,330 @@ reproduce:
 If you fix the issue, kindly add following tag
 Reported-by: kbuild test robot <lkp@intel.com>
 
-All errors (new ones prefixed by >>):
+All error/warnings (new ones prefixed by >>):
 
    kernel/bpf/bpf_struct_ops.c: In function 'bpf_struct_ops_init':
->> kernel/bpf/bpf_struct_ops.c:86:8: error: implicit declaration of function 'btf_distill_func_proto'; did you mean 'btf_type_is_func_proto'? [-Werror=implicit-function-declaration]
+   kernel/bpf/bpf_struct_ops.c:176:8: error: implicit declaration of function 'btf_distill_func_proto'; did you mean 'btf_type_is_func_proto'? [-Werror=implicit-function-declaration]
            btf_distill_func_proto(&log, _btf_vmlinux,
            ^~~~~~~~~~~~~~~~~~~~~~
            btf_type_is_func_proto
+   kernel/bpf/bpf_struct_ops.c: In function 'bpf_struct_ops_map_update_elem':
+>> kernel/bpf/bpf_struct_ops.c:408:2: error: implicit declaration of function 'bpf_map_inc'; did you mean 'bpf_map_put'? [-Werror=implicit-function-declaration]
+     bpf_map_inc(map);
+     ^~~~~~~~~~~
+     bpf_map_put
+   kernel/bpf/bpf_struct_ops.c: In function 'bpf_struct_ops_map_free':
+>> kernel/bpf/bpf_struct_ops.c:468:2: error: implicit declaration of function 'bpf_map_area_free'; did you mean 'bpf_prog_free'? [-Werror=implicit-function-declaration]
+     bpf_map_area_free(st_map->progs);
+     ^~~~~~~~~~~~~~~~~
+     bpf_prog_free
+   kernel/bpf/bpf_struct_ops.c: In function 'bpf_struct_ops_map_alloc':
+   kernel/bpf/bpf_struct_ops.c:515:8: error: implicit declaration of function 'bpf_map_charge_init'; did you mean 'bpf_prog_change_xdp'? [-Werror=implicit-function-declaration]
+     err = bpf_map_charge_init(&mem, map_total_size);
+           ^~~~~~~~~~~~~~~~~~~
+           bpf_prog_change_xdp
+>> kernel/bpf/bpf_struct_ops.c:519:11: error: implicit declaration of function 'bpf_map_area_alloc'; did you mean 'bpf_prog_alloc'? [-Werror=implicit-function-declaration]
+     st_map = bpf_map_area_alloc(st_map_size, NUMA_NO_NODE);
+              ^~~~~~~~~~~~~~~~~~
+              bpf_prog_alloc
+>> kernel/bpf/bpf_struct_ops.c:519:9: warning: assignment makes pointer from integer without a cast [-Wint-conversion]
+     st_map = bpf_map_area_alloc(st_map_size, NUMA_NO_NODE);
+            ^
+>> kernel/bpf/bpf_struct_ops.c:521:3: error: implicit declaration of function 'bpf_map_charge_finish'; did you mean 'bpf_map_flags_to_cap'? [-Werror=implicit-function-declaration]
+      bpf_map_charge_finish(&mem);
+      ^~~~~~~~~~~~~~~~~~~~~
+      bpf_map_flags_to_cap
+   kernel/bpf/bpf_struct_ops.c:527:17: warning: assignment makes pointer from integer without a cast [-Wint-conversion]
+     st_map->uvalue = bpf_map_area_alloc(vt->size, NUMA_NO_NODE);
+                    ^
+   kernel/bpf/bpf_struct_ops.c:528:16: warning: assignment makes pointer from integer without a cast [-Wint-conversion]
+     st_map->progs =
+                   ^
+   kernel/bpf/bpf_struct_ops.c:545:2: error: implicit declaration of function 'bpf_map_init_from_attr'; did you mean 'bpf_jit_get_func_addr'? [-Werror=implicit-function-declaration]
+     bpf_map_init_from_attr(map, attr);
+     ^~~~~~~~~~~~~~~~~~~~~~
+     bpf_jit_get_func_addr
+   kernel/bpf/bpf_struct_ops.c:546:2: error: implicit declaration of function 'bpf_map_charge_move'; did you mean 'bpf_prog_change_xdp'? [-Werror=implicit-function-declaration]
+     bpf_map_charge_move(&map->memory, &mem);
+     ^~~~~~~~~~~~~~~~~~~
+     bpf_prog_change_xdp
    cc1: some warnings being treated as errors
 
-vim +86 kernel/bpf/bpf_struct_ops.c
+vim +408 kernel/bpf/bpf_struct_ops.c
 
-    37	
-    38	void bpf_struct_ops_init(struct btf *_btf_vmlinux)
-    39	{
-    40		const struct btf_member *member;
-    41		struct bpf_struct_ops *st_ops;
-    42		struct bpf_verifier_log log = {};
-    43		const struct btf_type *t;
-    44		const char *mname;
-    45		s32 type_id;
-    46		u32 i, j;
-    47	
-    48		for (i = 0; i < ARRAY_SIZE(bpf_struct_ops); i++) {
-    49			st_ops = bpf_struct_ops[i];
-    50	
-    51			type_id = btf_find_by_name_kind(_btf_vmlinux, st_ops->name,
-    52							BTF_KIND_STRUCT);
-    53			if (type_id < 0) {
-    54				pr_warn("Cannot find struct %s in btf_vmlinux\n",
-    55					st_ops->name);
-    56				continue;
-    57			}
-    58			t = btf_type_by_id(_btf_vmlinux, type_id);
-    59			if (btf_type_vlen(t) > BPF_STRUCT_OPS_MAX_NR_MEMBERS) {
-    60				pr_warn("Cannot support #%u members in struct %s\n",
-    61					btf_type_vlen(t), st_ops->name);
-    62				continue;
-    63			}
-    64	
-    65			for_each_member(j, t, member) {
-    66				const struct btf_type *func_proto;
-    67	
-    68				mname = btf_name_by_offset(_btf_vmlinux,
-    69							   member->name_off);
-    70				if (!*mname) {
-    71					pr_warn("anon member in struct %s is not supported\n",
-    72						st_ops->name);
-    73					break;
-    74				}
-    75	
-    76				if (btf_member_bitfield_size(t, member)) {
-    77					pr_warn("bit field member %s in struct %s is not supported\n",
-    78						mname, st_ops->name);
-    79					break;
-    80				}
-    81	
-    82				func_proto = btf_type_resolve_func_ptr(_btf_vmlinux,
-    83								       member->type,
-    84								       NULL);
-    85				if (func_proto &&
-  > 86				    btf_distill_func_proto(&log, _btf_vmlinux,
-    87							   func_proto, mname,
-    88							   &st_ops->func_models[j])) {
-    89					pr_warn("Error in parsing func ptr %s in struct %s\n",
-    90						mname, st_ops->name);
-    91					break;
-    92				}
-    93			}
-    94	
-    95			if (j == btf_type_vlen(t)) {
-    96				if (st_ops->init(_btf_vmlinux)) {
-    97					pr_warn("Error in init bpf_struct_ops %s\n",
-    98						st_ops->name);
-    99				} else {
-   100					st_ops->type_id = type_id;
-   101					st_ops->type = t;
-   102				}
-   103			}
-   104		}
-   105	}
-   106	
+   289	
+   290	static int bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
+   291						  void *value, u64 flags)
+   292	{
+   293		struct bpf_struct_ops_map *st_map = (struct bpf_struct_ops_map *)map;
+   294		const struct bpf_struct_ops *st_ops = st_map->st_ops;
+   295		struct bpf_struct_ops_value *uvalue, *kvalue;
+   296		const struct btf_member *member;
+   297		const struct btf_type *t = st_ops->type;
+   298		void *udata, *kdata;
+   299		int prog_fd, err = 0;
+   300		void *image;
+   301		u32 i;
+   302	
+   303		if (flags)
+   304			return -EINVAL;
+   305	
+   306		if (*(u32 *)key != 0)
+   307			return -E2BIG;
+   308	
+   309		uvalue = (struct bpf_struct_ops_value *)value;
+   310		if (uvalue->state || refcount_read(&uvalue->refcnt))
+   311			return -EINVAL;
+   312	
+   313		uvalue = (struct bpf_struct_ops_value *)st_map->uvalue;
+   314		kvalue = (struct bpf_struct_ops_value *)&st_map->kvalue;
+   315	
+   316		spin_lock(&st_map->lock);
+   317	
+   318		if (kvalue->state != BPF_STRUCT_OPS_STATE_INIT) {
+   319			err = -EBUSY;
+   320			goto unlock;
+   321		}
+   322	
+   323		memcpy(uvalue, value, map->value_size);
+   324	
+   325		udata = &uvalue->data;
+   326		kdata = &kvalue->data;
+   327		image = st_map->image;
+   328	
+   329		for_each_member(i, t, member) {
+   330			const struct btf_type *mtype, *ptype;
+   331			struct bpf_prog *prog;
+   332			u32 moff;
+   333	
+   334			moff = btf_member_bit_offset(t, member) / 8;
+   335			mtype = btf_type_by_id(btf_vmlinux, member->type);
+   336			ptype = btf_type_resolve_ptr(btf_vmlinux, member->type, NULL);
+   337			if (ptype == module_type) {
+   338				*(void **)(kdata + moff) = BPF_MODULE_OWNER;
+   339				continue;
+   340			}
+   341	
+   342			err = st_ops->init_member(t, member, kdata, udata);
+   343			if (err < 0)
+   344				goto reset_unlock;
+   345	
+   346			/* The ->init_member() has handled this member */
+   347			if (err > 0)
+   348				continue;
+   349	
+   350			/* If st_ops->init_member does not handle it,
+   351			 * we will only handle func ptrs and zero-ed members
+   352			 * here.  Reject everything else.
+   353			 */
+   354	
+   355			/* All non func ptr member must be 0 */
+   356			if (!btf_type_resolve_func_ptr(btf_vmlinux, member->type,
+   357						       NULL)) {
+   358				u32 msize;
+   359	
+   360				mtype = btf_resolve_size(btf_vmlinux, mtype,
+   361							 &msize, NULL, NULL);
+   362				if (IS_ERR(mtype)) {
+   363					err = PTR_ERR(mtype);
+   364					goto reset_unlock;
+   365				}
+   366	
+   367				if (memchr_inv(udata + moff, 0, msize)) {
+   368					err = -EINVAL;
+   369					goto reset_unlock;
+   370				}
+   371	
+   372				continue;
+   373			}
+   374	
+   375			prog_fd = (int)(*(unsigned long *)(udata + moff));
+   376			/* Similar check as the attr->attach_prog_fd */
+   377			if (!prog_fd)
+   378				continue;
+   379	
+   380			prog = bpf_prog_get(prog_fd);
+   381			if (IS_ERR(prog)) {
+   382				err = PTR_ERR(prog);
+   383				goto reset_unlock;
+   384			}
+   385			st_map->progs[i] = prog;
+   386	
+   387			if (prog->type != BPF_PROG_TYPE_STRUCT_OPS ||
+   388			    prog->aux->attach_btf_id != st_ops->type_id ||
+   389			    prog->expected_attach_type != i) {
+   390				err = -EINVAL;
+   391				goto reset_unlock;
+   392			}
+   393	
+   394			err = arch_prepare_bpf_trampoline(image,
+   395							  &st_ops->func_models[i], 0,
+   396							  &prog, 1, NULL, 0, NULL);
+   397			if (err < 0)
+   398				goto reset_unlock;
+   399	
+   400			*(void **)(kdata + moff) = image;
+   401			image += err;
+   402	
+   403			/* put prog_id to udata */
+   404			*(unsigned long *)(udata + moff) = prog->aux->id;
+   405		}
+   406	
+   407		refcount_set(&kvalue->refcnt, 1);
+ > 408		bpf_map_inc(map);
+   409	
+   410		err = st_ops->reg(kdata);
+   411		if (!err) {
+   412			/* Pair with smp_load_acquire() during lookup */
+   413			smp_store_release(&kvalue->state, BPF_STRUCT_OPS_STATE_INUSE);
+   414			goto unlock;
+   415		}
+   416	
+   417		/* Error during st_ops->reg() */
+   418		bpf_map_put(map);
+   419	
+   420	reset_unlock:
+   421		bpf_struct_ops_map_put_progs(st_map);
+   422		memset(uvalue, 0, map->value_size);
+   423		memset(kvalue, 0, map->value_size);
+   424	
+   425	unlock:
+   426		spin_unlock(&st_map->lock);
+   427		return err;
+   428	}
+   429	
+   430	static int bpf_struct_ops_map_delete_elem(struct bpf_map *map, void *key)
+   431	{
+   432		enum bpf_struct_ops_state prev_state;
+   433		struct bpf_struct_ops_map *st_map;
+   434	
+   435		st_map = (struct bpf_struct_ops_map *)map;
+   436		prev_state = cmpxchg(&st_map->kvalue.state,
+   437				     BPF_STRUCT_OPS_STATE_INUSE,
+   438				     BPF_STRUCT_OPS_STATE_TOBEFREE);
+   439		if (prev_state == BPF_STRUCT_OPS_STATE_INUSE) {
+   440			st_map->st_ops->unreg(&st_map->kvalue.data);
+   441			if (refcount_dec_and_test(&st_map->kvalue.refcnt))
+   442				bpf_map_put(map);
+   443		}
+   444	
+   445		return 0;
+   446	}
+   447	
+   448	static void bpf_struct_ops_map_seq_show_elem(struct bpf_map *map, void *key,
+   449						     struct seq_file *m)
+   450	{
+   451		void *value;
+   452	
+   453		value = bpf_struct_ops_map_lookup_elem(map, key);
+   454		if (!value)
+   455			return;
+   456	
+   457		btf_type_seq_show(btf_vmlinux, map->btf_vmlinux_value_type_id,
+   458				  value, m);
+   459		seq_puts(m, "\n");
+   460	}
+   461	
+   462	static void bpf_struct_ops_map_free(struct bpf_map *map)
+   463	{
+   464		struct bpf_struct_ops_map *st_map = (struct bpf_struct_ops_map *)map;
+   465	
+   466		if (st_map->progs)
+   467			bpf_struct_ops_map_put_progs(st_map);
+ > 468		bpf_map_area_free(st_map->progs);
+   469		bpf_jit_free_exec(st_map->image);
+   470		bpf_map_area_free(st_map->uvalue);
+   471		bpf_map_area_free(st_map);
+   472	}
+   473	
+   474	static int bpf_struct_ops_map_alloc_check(union bpf_attr *attr)
+   475	{
+   476		if (attr->key_size != sizeof(unsigned int) || attr->max_entries != 1 ||
+   477		    attr->map_flags || !attr->btf_vmlinux_value_type_id)
+   478			return -EINVAL;
+   479		return 0;
+   480	}
+   481	
+   482	static struct bpf_map *bpf_struct_ops_map_alloc(union bpf_attr *attr)
+   483	{
+   484		const struct bpf_struct_ops *st_ops;
+   485		size_t map_total_size, st_map_size;
+   486		struct bpf_struct_ops_map *st_map;
+   487		const struct btf_type *t, *vt;
+   488		struct bpf_map_memory mem;
+   489		struct bpf_map *map;
+   490		int err;
+   491	
+   492		if (!capable(CAP_SYS_ADMIN))
+   493			return ERR_PTR(-EPERM);
+   494	
+   495		st_ops = bpf_struct_ops_find_value(attr->btf_vmlinux_value_type_id);
+   496		if (!st_ops)
+   497			return ERR_PTR(-ENOTSUPP);
+   498	
+   499		vt = st_ops->value_type;
+   500		if (attr->value_size != vt->size)
+   501			return ERR_PTR(-EINVAL);
+   502	
+   503		t = st_ops->type;
+   504	
+   505		st_map_size = sizeof(*st_map) +
+   506			/* kvalue stores the
+   507			 * struct bpf_struct_ops_tcp_congestions_ops
+   508			 */
+   509			(vt->size - sizeof(struct bpf_struct_ops_value));
+   510		map_total_size = st_map_size +
+   511			/* uvalue */
+   512			sizeof(vt->size) +
+   513			/* struct bpf_progs **progs */
+   514			 btf_type_vlen(t) * sizeof(struct bpf_prog *);
+ > 515		err = bpf_map_charge_init(&mem, map_total_size);
+   516		if (err < 0)
+   517			return ERR_PTR(err);
+   518	
+ > 519		st_map = bpf_map_area_alloc(st_map_size, NUMA_NO_NODE);
+   520		if (!st_map) {
+ > 521			bpf_map_charge_finish(&mem);
+   522			return ERR_PTR(-ENOMEM);
+   523		}
+   524		st_map->st_ops = st_ops;
+   525		map = &st_map->map;
+   526	
+   527		st_map->uvalue = bpf_map_area_alloc(vt->size, NUMA_NO_NODE);
+   528		st_map->progs =
+   529			bpf_map_area_alloc(btf_type_vlen(t) * sizeof(struct bpf_prog *),
+   530					   NUMA_NO_NODE);
+   531		/* Each trampoline costs < 64 bytes.  Ensure one page
+   532		 * is enough for max number of func ptrs.
+   533		 */
+   534		BUILD_BUG_ON(PAGE_SIZE / 64 < BPF_STRUCT_OPS_MAX_NR_MEMBERS);
+   535		st_map->image = bpf_jit_alloc_exec(PAGE_SIZE);
+   536		if (!st_map->uvalue || !st_map->progs || !st_map->image) {
+   537			bpf_struct_ops_map_free(map);
+   538			bpf_map_charge_finish(&mem);
+   539			return ERR_PTR(-ENOMEM);
+   540		}
+   541	
+   542		spin_lock_init(&st_map->lock);
+   543		set_vm_flush_reset_perms(st_map->image);
+   544		set_memory_x((long)st_map->image, 1);
+   545		bpf_map_init_from_attr(map, attr);
+   546		bpf_map_charge_move(&map->memory, &mem);
+   547	
+   548		return map;
+   549	}
+   550	
 
 ---
 0-DAY kernel test infrastructure                 Open Source Technology Center
 https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org Intel Corporation
 
---6xz2nypr56pgs4is
+--rwof7khxctmnpkc2
 Content-Type: application/gzip
 Content-Disposition: attachment; filename=".config.gz"
 Content-Transfer-Encoding: base64
 
-H4sICLPYAV4AAy5jb25maWcAnDzbcuM2su/5ClXyktRWsrrZ45xTfgBBkELE2wCgJM8LS/Fo
+H4sICGr8AV4AAy5jb25maWcAnDzbcuM2su/5ClXyktRWsrrZ45xTfgBBkELE2wCgJM8LS/Fo
 Zl3ry6xsJ5m/326AFwAEnTknNUlG3Y1bo9E3NPjDdz/MyOvL08Px5e72eH//dfb59Hg6H19O
 H2ef7u5P/zuLy1lRqhmLufoFiLO7x9e//nk8P1yuZxe/XPwy//l8u5htT+fH0/2MPj1+uvv8
 Cs3vnh6/++E7+PMDAB++QE/n/5kdj+fbf12uf77HPn7+fHs7+zGl9KfZO+wHaGlZJDxtKG24
@@ -1025,4 +1258,4 @@ DEWAoZoKIMzZj6AyGeHIQyc+wuA2kiViOMaLwDo4s+95wepTIXdN+vBGWgKJ05INht0tvepq
 wSYqzN3L0/lZWIkRTQmcpG6RTbCgj73ckqMxRgIdH2zLwpYld8dqKjqxELdXi4WWcxrhJsw3
 jN6Pri3jy5n7psS8zCg7xBKLOl+uwur7ZIE8IRkUiP8HAKij9sUkAwA=
 
---6xz2nypr56pgs4is--
+--rwof7khxctmnpkc2--
