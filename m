@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F3E76129E18
-	for <lists+bpf@lfdr.de>; Tue, 24 Dec 2019 07:36:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C6F8129E27
+	for <lists+bpf@lfdr.de>; Tue, 24 Dec 2019 07:38:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726084AbfLXGgV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Dec 2019 01:36:21 -0500
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:34756 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726043AbfLXGgV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 Dec 2019 01:36:21 -0500
-Received: by mail-qk1-f195.google.com with SMTP id j9so15764595qkk.1;
-        Mon, 23 Dec 2019 22:36:20 -0800 (PST)
+        id S1726070AbfLXGis (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Dec 2019 01:38:48 -0500
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:40739 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726043AbfLXGis (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 Dec 2019 01:38:48 -0500
+Received: by mail-qt1-f193.google.com with SMTP id e6so17419707qtq.7;
+        Mon, 23 Dec 2019 22:38:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=9f49rZjJKxHQwfDaONd7CPvs6B/LdSmBjADe//pqNas=;
-        b=Q0fI68b6Cz4xabYadXmuPHobPKvFG2OM8qtvz8n0gm8iaRy3QkQsf70C667oqYKFz7
-         BbI26kf9LSBYxPmQNBrn3mVmcj6aafUbeda7TeVJXEF0yUbnnrR9UyW1fKM9D1Vv9IFV
-         cx5hM2YiJ8YArAo+JKOqpVlxtmu3Iu1/Lxg2MXOUfKWnPp/g55P6tl8qjLvfZCKRWkyF
-         FN1T92sjrgi6Kr6aaAFRvrwLM68W468QdIfSmsqidLKwQtPfX1yaJ9qT0Hls3JA/VeRf
-         77/Ye1FIneqm2xNioqZXdt0RY6nOm1WHooixyQIarWb4B5BdsAml5GnIII/wXZLXLna9
-         Uuug==
+        bh=+8SgjfTKtbI/OsvUe4mDJhPn/RjOhvVH4HFrW8MrWgU=;
+        b=sNTmKKz7flm2ceZzkOzoqOS5wQkriTkJx8gt7PxuNX5V+6hxXlo1Ye1Na6xFLRf0JX
+         s1TrQvfXI7hriHQegYNCMgFkXI0NogCAAh8+PjaCRlK8+PXMoBl5/tE17Ccz+ZaVxARj
+         Nay1eYH1hlPPOBC0AWZ/HGxZq10sF5e4MHoJ+Ofd8j8WHyYERQFgxUxkqUtQg5eRMdcx
+         oE3LoGlhJRxIf3InQFIyzGJJFf/DixZD3eV1A8eAAJjgQOJ5UUxsE9kQkKaYIQp6KB+J
+         T1+jqhzYlGB36JUm8D33o81McLlDJyZuL2xPEjXOPgX9hq4ehMLCvMx6J1jXno1Dg1z9
+         GyeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=9f49rZjJKxHQwfDaONd7CPvs6B/LdSmBjADe//pqNas=;
-        b=IdeS6jf0k4mQaC4TPVx1Ha/ecDPmIl8D+yYqC9CrvUI4uZ3V3/dzW9UcKYvYaSdHcx
-         QUF2TY6mVrXXIBMWqj2y4zeQy0Ogauiu7mXdfl64yQXVGuKB1M1mgHljyS0DbV1NYnA/
-         m81KDHly/ASdJb+sOsDWA6oZqTo9+fHzvPTbU4v4i1a7bk9jP+pWfGWLr4sJYiRgBC5n
-         30tVapHMC9WdALyZ30cM2+ZKlaaHNIVKNsNbnQNElnnog6olhVrH3mmck1Q3pV23Wptu
-         j92lt8J3HNsMzuTaAGueIOImzqcd58btWR5PtSEX/GdAu/x/Xsv14WShfehyOLJh/a7P
-         F1Sw==
-X-Gm-Message-State: APjAAAVD3C/ZxhAUmDj06Ca6m+QD6NZ+jI3T2p+ioExi2NUHCQKitKoJ
-        fgNqfhCWC8w6gHLyLzIgFPWGjEq0SScYI9RJA4c=
-X-Google-Smtp-Source: APXvYqzAaS5x91eisBrBiUd9yh3gyBoa1BMy6JI4p5M2rCh8P5rjFxKBEJ84ucdaMez0uun3rPsL8FDjllogmrn39ZM=
-X-Received: by 2002:a37:a685:: with SMTP id p127mr30971238qke.449.1577169379912;
- Mon, 23 Dec 2019 22:36:19 -0800 (PST)
+        bh=+8SgjfTKtbI/OsvUe4mDJhPn/RjOhvVH4HFrW8MrWgU=;
+        b=VfFDlf+ewWYraFqQAZuWRYuQYMJodZLcOJdjJL85Wr2XgN2CNQYZ0PL8zbP+tVDFb4
+         971sHlBocZRYUUVgzooSPpcahiPLHYs6xDSqnDMhoLpKGVqjyU//LlSBFg1ZNPe337Hs
+         m4nOGWrjoLvm83SPdyW3YljuYz8BzL0xuIx75HXv8EInzSiOSnESNHnVPa5vQd+KDtrj
+         lGl3K21+pQ+uSzU/ZcXMFyvScadEWHmxqhqsdmNbE6+1KkJ3DXbgulzP1gkQEQkc6Oyp
+         5k8Ui2TRoD3FfF/05sweA7eQguDXLjF6298Vdf1IvyABuxhO8XgcNSsO4ZUyR6J71+FJ
+         IGLQ==
+X-Gm-Message-State: APjAAAV76ei0Zh1GDo4CWN8mmPyIjmohjcup7RooLzEnIsD6H5e0yJ++
+        jz2INwWgW/veGmeNYXyx5+VBY3MMT6vu5Ea5isE=
+X-Google-Smtp-Source: APXvYqzNKApi9fGOk0dJj8+JFyxqumG+OcAs4M2DFo3CrQOrjqhe//xgMkubxtcvWNsOnIkuFcBkbp712JaE+YsZQiY=
+X-Received: by 2002:ac8:4050:: with SMTP id j16mr25335033qtl.171.1577169526952;
+ Mon, 23 Dec 2019 22:38:46 -0800 (PST)
 MIME-Version: 1.0
-References: <20191220154208.15895-1-kpsingh@chromium.org> <20191220154208.15895-10-kpsingh@chromium.org>
-In-Reply-To: <20191220154208.15895-10-kpsingh@chromium.org>
+References: <20191220154208.15895-1-kpsingh@chromium.org> <20191220154208.15895-11-kpsingh@chromium.org>
+In-Reply-To: <20191220154208.15895-11-kpsingh@chromium.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 23 Dec 2019 22:36:08 -0800
-Message-ID: <CAEf4BzYgcez2G1qJW9saJmzfeYirGdH58aAcUk-+YTJF6vyOuQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 09/13] bpf: lsm: Add a helper function bpf_lsm_event_output
+Date:   Mon, 23 Dec 2019 22:38:36 -0800
+Message-ID: <CAEf4BzYLk4ozotVnFnhgahML+mnurqWUVtKOt3fDpAMghqGVLQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 10/13] bpf: lsm: Handle attachment of the same program
 To:     KP Singh <kpsingh@chromium.org>
 Cc:     open list <linux-kernel@vger.kernel.org>,
         bpf <bpf@vger.kernel.org>, linux-security-module@vger.kernel.org,
@@ -80,57 +80,48 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Dec 20, 2019 at 7:43 AM KP Singh <kpsingh@chromium.org> wrote:
+On Fri, Dec 20, 2019 at 7:42 AM KP Singh <kpsingh@chromium.org> wrote:
 >
 > From: KP Singh <kpsingh@google.com>
 >
-> This helper is similar to bpf_perf_event_output except that
-> it does need a ctx argument which is more usable in the
-> BTF based LSM programs where the context is converted to
-> the signature of the attacthed BTF type.
+> Allow userspace to attach a newer version of a program without having
+> duplicates of the same program.
 >
-> An example usage of this function would be:
+> If BPF_F_ALLOW_OVERRIDE is passed, the attachment logic compares the
+> name of the new program to the names of existing attached programs. The
+> names are only compared till a "__" (or '\0', if there is no "__"). If
+> a successful match is found, the existing program is replaced with the
+> newer attachment.
 >
-> struct {
->          __uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
->          __uint(key_size, sizeof(int));
->          __uint(value_size, sizeof(u32));
-> } perf_map SEC(".maps");
+> ./loader Attaches "env_dumper__v1" followed by "env_dumper__v2"
+> to the bprm_check_security hook..
 >
-> BPF_TRACE_1(bpf_prog1, "lsm/bprm_check_security,
->             struct linux_binprm *, bprm)
-> {
->         char buf[BUF_SIZE];
->         int len;
->         u64 flags = BPF_F_CURRENT_CPU;
+> ./loader
+> ./loader
 >
->         /* some logic that fills up buf with len data */
->         len = fill_up_buf(buf);
->         if (len < 0)
->                 return len;
->         if (len > BU)
->                 return 0;
+> Before:
 >
->         bpf_lsm_event_output(&perf_map, flags, buf, len);
-
-This seems to be generally useful and not LSM-specific, so maybe name
-it more generically as bpf_event_output instead?
-
-I'm also curious why we needed both bpf_perf_event_output and
-bpf_perf_event_output_raw_tp, if it could be done as simply as you did
-it here. What's different between those three and why your
-bpf_lsm_event_output doesn't need pt_regs passed into them?
-
->         return 0;
-> }
+>   cat /sys/kernel/security/bpf/process_execution
+>   env_dumper__v1
+>   env_dumper__v2
+>
+> After:
+>
+>   cat /sys/kernel/security/bpf/process_execution
+>   env_dumper__v2
 >
 > Signed-off-by: KP Singh <kpsingh@google.com>
 > ---
->  include/uapi/linux/bpf.h       | 10 +++++++++-
->  kernel/bpf/verifier.c          |  1 +
->  security/bpf/ops.c             | 21 +++++++++++++++++++++
->  tools/include/uapi/linux/bpf.h | 10 +++++++++-
->  4 files changed, 40 insertions(+), 2 deletions(-)
+
+
+Andrey Ignatov just posted patch set few days ago solving similar
+problem for cgroup BPF programs. His approach was to actually also
+specify FD of BPF program to be replaced. This seems like a more
+reliable way than doing this based on name only. Please take a look at
+that patch and see if same approach can work for your use case.
+
+>  security/bpf/ops.c | 57 +++++++++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 56 insertions(+), 1 deletion(-)
 >
 
 [...]
