@@ -2,132 +2,209 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 922F7129E40
-	for <lists+bpf@lfdr.de>; Tue, 24 Dec 2019 07:52:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4920129E51
+	for <lists+bpf@lfdr.de>; Tue, 24 Dec 2019 08:02:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726047AbfLXGwA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Dec 2019 01:52:00 -0500
-Received: from mail-qv1-f68.google.com ([209.85.219.68]:41505 "EHLO
-        mail-qv1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726043AbfLXGwA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 Dec 2019 01:52:00 -0500
-Received: by mail-qv1-f68.google.com with SMTP id x1so7165943qvr.8;
-        Mon, 23 Dec 2019 22:52:00 -0800 (PST)
+        id S1726037AbfLXHCI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Dec 2019 02:02:08 -0500
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:37437 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725993AbfLXHCH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 Dec 2019 02:02:07 -0500
+Received: by mail-qk1-f195.google.com with SMTP id 21so15439477qky.4;
+        Mon, 23 Dec 2019 23:02:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=2FiFs5c//TsPMpAtCEnFYceuoC6j/d/tXyUmG5GN0MI=;
-        b=RJSWRglUT8sjanJ6gOTOiSGTeN28TU8bhPDg44fzSvrbSNTeNQRCUltg6gXVCJHEDB
-         PaXMWRk/kd6CVUfS6bhL35GSDTFn/z6xiZ69kqT9Bt31JBELPNbiesGmrBRltEmqyFwl
-         GnGbPAhIyrWIgiPc5aBj5wGk1tSEdmLJklHE09mY7q4tDCFo8vZ2xgO8gxwEoaT4Q0Ac
-         6THgzf1HXYVM4KtKNVsbpCSyKLJ38MppiqgMvx69i57kSm2PLglHyDWfU/LR+QhXfjfN
-         UA/UL7xVLxA9yNDGkexyv5Gm+77k807l8sYR9/95dX2GKG8HhWaF5GD8khF2605AsSRu
-         HKTQ==
+        bh=S6WMlhNYljVx4fqcFwvkQVwW/hWHhMZYIqjCowPZnuQ=;
+        b=KCSIZn1z/5QKU6hoI3gpxJlgBnhnnZMPv7xMSxzwiNYDrGsD231v4SVBduQhm6/ufC
+         xQbCr8VswRk5NcBeL4rIr3JmWKNKpUfR0x2eaGwwJB2D68YoeKqFeQj9qarOyCoHU6OI
+         jr5Sx2lVNH/xo2cnyMeSTsRwbP7mxZvKQybKUHBEBvXhr+F81lIPzwh7OAgwJe4KgSCC
+         a4UIQVSBTCj4YWpDCh+6VFE8KTWzTfjS++eMAnstnWRvzVEo1MqdRTt0QM6ILFUukZ+u
+         /CL1tqhJuoJB1CnX5u5CDvvJeWL8x3geSvPK+MuSUH+oHQWo0oB1kEStXY/ySgtKc9tb
+         L8mQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=2FiFs5c//TsPMpAtCEnFYceuoC6j/d/tXyUmG5GN0MI=;
-        b=LWfJKa6nc02uhrNt8nPSfSU8Y/AbYYsHZMDRGT4w8djfLwMCLGKZjyKkq98LXZi6Mz
-         +o+Q3a5ypV2uHbKL0XHP9g6T9lL06FTDiqepXwhCcbZZaz3LdY54E4TASe9phmrX3yBc
-         gZwH4B9KTuIhCbHgOWMlKyE4R+pOp6iFFjGj4ZjNvTs+gL1tKJx8JsnF+Tb7TzL+VVeh
-         0fPbWfhotqu9JyCsxieU0ax30RmXS/bROldCLmw8L+vDDCebXh6LqY+z36/5XDiZNlHF
-         YGvvfOyjSrY8Vio9xcEnF/zGavwzk8ltctXvU4Mc8I5g2R5FLT3ji518Fd9zAHQH1+Fc
-         HYMQ==
-X-Gm-Message-State: APjAAAWrElITEVZsjdaDx3+jSHGYHra22nP2p2zImSozBE98lEu99kfn
-        Yit3ywQAgaUWhD51ngZUvhl++TL584sVOGEMsjg=
-X-Google-Smtp-Source: APXvYqxLV+P+/PLkhwN2nIhsav78E8rWy2Nk3RBdEOJrEJa5lB2tOH8SP21hDONloLtiK778n0nM49S9sbc3W2eXjYg=
-X-Received: by 2002:a05:6214:38c:: with SMTP id l12mr27595725qvy.224.1577170319418;
- Mon, 23 Dec 2019 22:51:59 -0800 (PST)
+        bh=S6WMlhNYljVx4fqcFwvkQVwW/hWHhMZYIqjCowPZnuQ=;
+        b=QmllmjIvIFT1RgPdkkIh5cYmKWfUgR6i4y9Z4aQaj30VH6/FMCGaGpaTrC+YYhTn8w
+         /w8mCFjQhcpzN/c8V9R/C47Y6x5WPzEM+eagAVI5/fmy725ljmwk1Flq8Bj9PuaBL6rD
+         3zItt/79yTQrrtlMZo+eB2q/v8ztSocKxS92hL+GVg5Au57wYHrj024gYKEBM7z/IJzC
+         vJsHNM7Yh9YrcQ3xM0VIT9+mVtSzUPAlrvT9NF5NlGr6cbPKiL7SHTxlVKFBodI1jZsu
+         qSdjt+3Jj70lnsdcVFIfovGKBMT42CIdZnSYgZdocW/nPIoI8HtxNGHgCXXf04mzKDkV
+         f3pA==
+X-Gm-Message-State: APjAAAWt1ZcC7SMQy22zqrxIlTLZtrCvHxAtVqChbW3vYocLMG91+8+P
+        +yxcjFIT0p61PJVc/gdXasJDg/WYMObWK5abDVY=
+X-Google-Smtp-Source: APXvYqyZSbZBdslEFL0LLI5LdcAnVyjbWvMFao9nISr88WHezTkc0EQapuokyrcSOQsLFKtqQZsu7mFtjjPGm1VdH2E=
+X-Received: by 2002:ae9:e809:: with SMTP id a9mr29525784qkg.92.1577170926357;
+ Mon, 23 Dec 2019 23:02:06 -0800 (PST)
 MIME-Version: 1.0
-References: <20191220154208.15895-1-kpsingh@chromium.org>
-In-Reply-To: <20191220154208.15895-1-kpsingh@chromium.org>
+References: <20191221062556.1182261-1-kafai@fb.com> <20191221062620.1184118-1-kafai@fb.com>
+ <CAEf4BzZX_TNUXJktJUtqmxgMefDzie=Ta18TbBqBhG0-GSLQMg@mail.gmail.com> <20191224013140.ibn33unj77mtbkne@kafai-mbp>
+In-Reply-To: <20191224013140.ibn33unj77mtbkne@kafai-mbp>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 23 Dec 2019 22:51:48 -0800
-Message-ID: <CAEf4BzYiUZtSJKh-UBL0jwyo6d=Cne2YtEyGU8ONykmSUSsuNA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 00/13] MAC and Audit policy using eBPF (KRSI)
-To:     KP Singh <kpsingh@chromium.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, linux-security-module@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
+Date:   Mon, 23 Dec 2019 23:01:55 -0800
+Message-ID: <CAEf4Bzb2fRZJsccx2CG_pASy+2eMMWPXk6m3d6SbN+o0MSdQPg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 11/11] bpf: Add bpf_dctcp example
+To:     Martin Lau <kafai@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        James Morris <jmorris@namei.org>,
-        Kees Cook <keescook@chromium.org>,
-        Thomas Garnier <thgarnie@chromium.org>,
-        Michael Halcrow <mhalcrow@google.com>,
-        Paul Turner <pjt@google.com>,
-        Brendan Gregg <brendan.d.gregg@gmail.com>,
-        Jann Horn <jannh@google.com>,
-        Matthew Garrett <mjg59@google.com>,
-        Christian Brauner <christian@brauner.io>,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Quentin Monnet <quentin.monnet@netronome.com>,
-        Andrey Ignatov <rdna@fb.com>, Joe Stringer <joe@wand.net.nz>
+        David Miller <davem@davemloft.net>,
+        Kernel Team <Kernel-team@fb.com>,
+        Networking <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Dec 20, 2019 at 7:42 AM KP Singh <kpsingh@chromium.org> wrote:
+On Mon, Dec 23, 2019 at 5:31 PM Martin Lau <kafai@fb.com> wrote:
 >
-> From: KP Singh <kpsingh@google.com>
+> On Mon, Dec 23, 2019 at 03:26:50PM -0800, Andrii Nakryiko wrote:
+> > On Fri, Dec 20, 2019 at 10:26 PM Martin KaFai Lau <kafai@fb.com> wrote:
+> > >
+> > > This patch adds a bpf_dctcp example.  It currently does not do
+> > > no-ECN fallback but the same could be done through the cgrp2-bpf.
+> > >
+> > > Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+> > > ---
+> > >  tools/testing/selftests/bpf/bpf_tcp_helpers.h | 228 ++++++++++++++++++
+> > >  .../selftests/bpf/prog_tests/bpf_tcp_ca.c     | 218 +++++++++++++++++
+> > >  tools/testing/selftests/bpf/progs/bpf_dctcp.c | 210 ++++++++++++++++
+> > >  3 files changed, 656 insertions(+)
+> > >  create mode 100644 tools/testing/selftests/bpf/bpf_tcp_helpers.h
+> > >  create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
+> > >  create mode 100644 tools/testing/selftests/bpf/progs/bpf_dctcp.c
+> > >
+> > > diff --git a/tools/testing/selftests/bpf/bpf_tcp_helpers.h b/tools/testing/selftests/bpf/bpf_tcp_helpers.h
+> > > new file mode 100644
+> > > index 000000000000..7ba8c1b4157a
+> > > --- /dev/null
+> > > +++ b/tools/testing/selftests/bpf/bpf_tcp_helpers.h
+> > > @@ -0,0 +1,228 @@
+> > > +/* SPDX-License-Identifier: GPL-2.0 */
+> > > +#ifndef __BPF_TCP_HELPERS_H
+> > > +#define __BPF_TCP_HELPERS_H
+> > > +
+> > > +#include <stdbool.h>
+> > > +#include <linux/types.h>
+> > > +#include <bpf_helpers.h>
+> > > +#include <bpf_core_read.h>
+> > > +#include "bpf_trace_helpers.h"
+> > > +
+> > > +#define BPF_TCP_OPS_0(fname, ret_type, ...) BPF_TRACE_x(0, #fname"_sec", fname, ret_type, __VA_ARGS__)
+> > > +#define BPF_TCP_OPS_1(fname, ret_type, ...) BPF_TRACE_x(1, #fname"_sec", fname, ret_type, __VA_ARGS__)
+> > > +#define BPF_TCP_OPS_2(fname, ret_type, ...) BPF_TRACE_x(2, #fname"_sec", fname, ret_type, __VA_ARGS__)
+> > > +#define BPF_TCP_OPS_3(fname, ret_type, ...) BPF_TRACE_x(3, #fname"_sec", fname, ret_type, __VA_ARGS__)
+> > > +#define BPF_TCP_OPS_4(fname, ret_type, ...) BPF_TRACE_x(4, #fname"_sec", fname, ret_type, __VA_ARGS__)
+> > > +#define BPF_TCP_OPS_5(fname, ret_type, ...) BPF_TRACE_x(5, #fname"_sec", fname, ret_type, __VA_ARGS__)
+> >
+> > Should we try to put those BPF programs into some section that would
+> > indicate they are used with struct opts? libbpf doesn't use or enforce
+> > that (even though it could to derive and enforce that they are
+> > STRUCT_OPS programs). So something like
+> > SEC("struct_ops/<ideally-operation-name-here>"). I think having this
+> > convention is very useful for consistency and to do a quick ELF dump
+> > and see what is where. WDYT?
+> I did not use it here because I don't want any misperception that it is
+> a required convention by libbpf.
 >
-> This patch series is a continuation of the KRSI RFC
-> (https://lore.kernel.org/bpf/20190910115527.5235-1-kpsingh@chromium.org/)
+> Sure, I can prefix it here and comment that it is just a
+> convention but not a libbpf's requirement.
+
+Well, we can actually make it a requirement of sorts. Currently your
+code expects that BPF program's type is UNSPEC and then it sets it to
+STRUCT_OPS. Alternatively we can say that any BPF program in
+SEC("struct_ops/<whatever>") will be automatically assigned
+STRUCT_OPTS BPF program type (which is done generically in
+bpf_object__open()), and then as .struct_ops section is parsed, all
+those programs will be "assembled" by the code you added into a
+struct_ops map.
+
+It's a requirement "of sorts", because even if user doesn't do that,
+stuff will still work, if user manually will call
+bpf_program__set_struct_ops(prog). Which actually reminds me that it
+would be good to add bpf_program__set_struct_ops() and
+bpf_program__is_struct_ops() APIs for completeness, similarly to how
+KP's LSM patch set does.
+
+BTW, libbpf will emit debug message for every single BPF program it
+doesn't recognize section for, so it is still nice to have it be
+something more or less standardized and recognizable by libbpf.
+
 >
+> >
+> > > +
 
 [...]
 
-> # Usage Examples
->
-> A simple example and some documentation is included in the patchset.
->
-> In order to better illustrate the capabilities of the framework some
-> more advanced prototype code has also been published separately:
->
-> * Logging execution events (including environment variables and arguments):
-> https://github.com/sinkap/linux-krsi/blob/patch/v1/examples/samples/bpf/lsm_audit_env.c
-> * Detecting deletion of running executables:
-> https://github.com/sinkap/linux-krsi/blob/patch/v1/examples/samples/bpf/lsm_detect_exec_unlink.c
-> * Detection of writes to /proc/<pid>/mem:
-> https://github.com/sinkap/linux-krsi/blob/patch/v1/examples/samples/bpf/lsm_audit_env.c
+> >
+> > Can all of these types come from vmlinux.h instead of being duplicated here?
+> It can but I prefer leaving it as is in bpf_tcp_helpers.h like another
+> existing test in kfree_skb.c.  Without directly using the same struct in
+> vmlinux.h,  I think it is a good test for libbpf.
+> That remind me to shuffle the member ordering a little in tcp_congestion_ops
+> here.
 
-Are you planning on submitting these examples for inclusion into
-samples/bpf or selftests/bpf? It would be great to have more examples
-and we can review and suggest nicer ways to go about writing them
-(e.g., BPF skeleton and global data Alexei mentioned earlier).
+Sure no problem. When I looked at this it was a bit discouraging on
+how much types I'd need to duplicate, but surely we don't want to make
+an impression that vmlinux.h is the only way to achieve this.
 
 >
-> We have updated Google's internal telemetry infrastructure and have
-> started deploying this LSM on our Linux Workstations. This gives us more
-> confidence in the real-world applications of such a system.
+> >
+> > > +
+> > > +#define min(a, b) ((a) < (b) ? (a) : (b))
+> > > +#define max(a, b) ((a) > (b) ? (a) : (b))
+> > > +#define min_not_zero(x, y) ({                  \
+> > > +       typeof(x) __x = (x);                    \
+> > > +       typeof(y) __y = (y);                    \
+> > > +       __x == 0 ? __y : ((__y == 0) ? __x : min(__x, __y)); })
+> > > +
+> >
+> > [...]
+> >
+> > > +static struct bpf_object *load(const char *filename, const char *map_name,
+> > > +                              struct bpf_link **link)
+> > > +{
+> > > +       struct bpf_object *obj;
+> > > +       struct bpf_map *map;
+> > > +       struct bpf_link *l;
+> > > +       int err;
+> > > +
+> > > +       obj = bpf_object__open(filename);
+> > > +       if (CHECK(IS_ERR(obj), "bpf_obj__open_file", "obj:%ld\n",
+> > > +                 PTR_ERR(obj)))
+> > > +               return obj;
+> > > +
+> > > +       err = bpf_object__load(obj);
+> > > +       if (CHECK(err, "bpf_object__load", "err:%d\n", err)) {
+> > > +               bpf_object__close(obj);
+> > > +               return ERR_PTR(err);
+> > > +       }
+> > > +
+> > > +       map = bpf_object__find_map_by_name(obj, map_name);
+> > > +       if (CHECK(!map, "bpf_object__find_map_by_name", "%s not found\n",
+> > > +                   map_name)) {
+> > > +               bpf_object__close(obj);
+> > > +               return ERR_PTR(-ENOENT);
+> > > +       }
+> > > +
+> >
+> > use skeleton instead?
+> Will give it a spin.
 >
-> KP Singh (13):
->   bpf: Refactor BPF_EVENT context macros to its own header.
->   bpf: lsm: Add a skeleton and config options
->   bpf: lsm: Introduce types for eBPF based LSM
->   bpf: lsm: Allow btf_id based attachment for LSM hooks
->   tools/libbpf: Add support in libbpf for BPF_PROG_TYPE_LSM
->   bpf: lsm: Init Hooks and create files in securityfs
->   bpf: lsm: Implement attach, detach and execution.
->   bpf: lsm: Show attached program names in hook read handler.
->   bpf: lsm: Add a helper function bpf_lsm_event_output
->   bpf: lsm: Handle attachment of the same program
->   tools/libbpf: Add bpf_program__attach_lsm
->   bpf: lsm: Add selftests for BPF_PROG_TYPE_LSM
->   bpf: lsm: Add Documentation
->
-
-[...]
+> >
+> > > +       l = bpf_map__attach_struct_ops(map);
+> > > +       if (CHECK(IS_ERR(l), "bpf_struct_ops_map__attach", "err:%ld\n",
+> > > +                 PTR_ERR(l))) {
+> > > +               bpf_object__close(obj);
+> > > +               return (void *)l;
+> > > +       }
+> > > +
+> > > +       *link = l;
+> > > +
+> > > +       return obj;
+> > > +}
+> > > +
