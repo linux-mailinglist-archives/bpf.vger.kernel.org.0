@@ -2,549 +2,249 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A96012AED0
-	for <lists+bpf@lfdr.de>; Thu, 26 Dec 2019 22:19:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E9A312AF22
+	for <lists+bpf@lfdr.de>; Thu, 26 Dec 2019 23:20:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726812AbfLZVTU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 Dec 2019 16:19:20 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:9988 "EHLO
+        id S1726277AbfLZWUb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 Dec 2019 17:20:31 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:28618 "EHLO
         mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726105AbfLZVTU (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 26 Dec 2019 16:19:20 -0500
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xBQL9u2Y028768
-        for <bpf@vger.kernel.org>; Thu, 26 Dec 2019 13:19:17 -0800
+        by vger.kernel.org with ESMTP id S1726105AbfLZWUb (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 26 Dec 2019 17:20:31 -0500
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id xBQMF8M9013298;
+        Thu, 26 Dec 2019 14:20:15 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=facebook;
- bh=xrWag5ptm8VTUu3lPHQoHI7kSkNcGG6RbhRZze+jT2Q=;
- b=WA0F2pUZPelXmi8VR17c7aauqm/XVSKtuPkpvWTAQYvM6PHy6K+3d/4LS6V23FIjCooN
- 38I9c44Rva8yMkNGrNqB2Gl4fVW6UY4p7C4Ynf+s/nHeW1LdkPDiFO9fMYKRcr1Lrh+x
- VP6dzQbnewrBFmcBakq0XrVL8Dk9NcdEeoo= 
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=rzY0ZM6q35oXhwZ6cCNCQ6plBjDqtQq9JsTkfxqYhs4=;
+ b=UEzztJZrc0PV/UPaFGie3QOEuQVXAc+l+5FdGrHgByjj5WzEOb0w1vxlp+0eRMjLSqyh
+ wxAAx7eDs1qdQiQChOLxSWcf0PwkTc0RmgoHpfWvI/LAsuSXF8aDzF4JboyIqezCtVmJ
+ 3fUqHvPluFA5U2K9V2wMDNRFMQ0E0ydVz+U= 
 Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by mx0a-00082601.pphosted.com with ESMTP id 2x48vemk2n-5
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 26 Dec 2019 13:19:17 -0800
-Received: from intmgw004.05.ash5.facebook.com (2620:10d:c081:10::13) by
- mail.thefacebook.com (2620:10d:c081:35::129) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
- Thu, 26 Dec 2019 13:19:06 -0800
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 7F9652EC1C37; Thu, 26 Dec 2019 13:19:04 -0800 (PST)
-Smtp-Origin-Hostprefix: devbig
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>, <yhs@fb.com>, <kafai@fb.com>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next] selftests/bpf: add BPF_HANDLER, BPF_KPROBE, and BPF_KRETPROBE macros
-Date:   Thu, 26 Dec 2019 13:18:55 -0800
-Message-ID: <20191226211855.3190765-1-andriin@fb.com>
-X-Mailer: git-send-email 2.17.1
-X-FB-Internal: Safe
+        by mx0a-00082601.pphosted.com with ESMTP id 2x3k5u8c29-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Thu, 26 Dec 2019 14:20:14 -0800
+Received: from prn-hub03.TheFacebook.com (2620:10d:c081:35::127) by
+ prn-hub03.TheFacebook.com (2620:10d:c081:35::127) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Thu, 26 Dec 2019 14:20:13 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (192.168.54.28)
+ by o365-in.thefacebook.com (192.168.16.27) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
+ via Frontend Transport; Thu, 26 Dec 2019 14:20:13 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Jw/LQCPaa/hYUFUid0WMss6Jdkpg4ISKcpzGyFa3uKZn9YYprRC2F5DLeUdIj2jS/hgn6pkYJlVCXWfQ1/JMzkNHoW+SvIly1vHdcqtq5e/LRXXNqsJ8zhBG/nXltsI9yO+EeoXAZiUQovvkHUZA2BAaX4UzDkUhvNO8tpNOE01D3Jr7W5RUob9VEAJeP6ysxtunAuxCu6D110XsoVULca6vq77mLUQ+e7cWHy6CLie8XwOdZ9H/gqQSuvlS2KKDwq8Xjz6jQARt0pIcntOJ4f+uFBevaoqbaURyExjzs+qLX7dSqZYynK52xN4KVMAJB5xdNtpNTu9OXnRA8pGAGQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rzY0ZM6q35oXhwZ6cCNCQ6plBjDqtQq9JsTkfxqYhs4=;
+ b=E+8TIjwfqQXdN7ARk4845sy3yivQ0T5uMnQXp/lunNdnKXxQSZ6D6O7Rh5pTP+0s7DON5bemzjvIfB5zy1EajcY3u4xiPEi6rrPU9/VqzgiTNhV2n94j6o+LUZc2lgNIBdLu1Kv/fr1MpnsPcGhDHLJdRl/QtZlrEKPIIsXDAnBedEa8enteINXU/Ezj6PJSHlHyU4gkYvJlZbIzajpljz/sLZni3F9ySyU3MktShMPeIKarYDF8Q+dM3fBqDHxUugBwk6fX0NCFrVSiax//037f7AsmGgfurbXAd8Oj5Ebb0081ZBUKveA/jlTUg/Pamcy0RWbB3wytV312jh6kEg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rzY0ZM6q35oXhwZ6cCNCQ6plBjDqtQq9JsTkfxqYhs4=;
+ b=h4h09tGHZq7cdwbhz10wHHJjTu0WDy2ouAAsRL35IIFws58NTjUNInVQKs8UDS625EeT7MxioKxtkzM5Hhv8GyF2TcMLRoiDvuqtglD9pQc7lV0IIIhbCiOmvwBOxnwrFKUkQmSw33vRaW1vEgYST5ulCafmBVD6x9JXVrQz2X4=
+Received: from MN2PR15MB3213.namprd15.prod.outlook.com (20.179.21.76) by
+ MN2PR15MB2973.namprd15.prod.outlook.com (20.178.253.220) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2559.14; Thu, 26 Dec 2019 22:20:12 +0000
+Received: from MN2PR15MB3213.namprd15.prod.outlook.com
+ ([fe80::6d1e:f2f7:d36:a42f]) by MN2PR15MB3213.namprd15.prod.outlook.com
+ ([fe80::6d1e:f2f7:d36:a42f%4]) with mapi id 15.20.2559.017; Thu, 26 Dec 2019
+ 22:20:12 +0000
+Received: from kafai-mbp (2620:10d:c090:180::a2c3) by MWHPR17CA0080.namprd17.prod.outlook.com (2603:10b6:300:c2::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2581.11 via Frontend Transport; Thu, 26 Dec 2019 22:20:10 +0000
+From:   Martin Lau <kafai@fb.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>,
+        "Kernel Team" <Kernel-team@fb.com>,
+        Networking <netdev@vger.kernel.org>
+Subject: Re: [PATCH bpf-next v2 11/11] bpf: Add bpf_dctcp example
+Thread-Topic: [PATCH bpf-next v2 11/11] bpf: Add bpf_dctcp example
+Thread-Index: AQHVueh9eJgyi9Vd8EqEIu9FcYh4uKfIf/YAgABcRoCAAKRSgIADSacAgAAXIACAAAZpgIAAGbKA
+Date:   Thu, 26 Dec 2019 22:20:12 +0000
+Message-ID: <20191226222007.5m4kra2lqa5igpfm@kafai-mbp>
+References: <20191221062556.1182261-1-kafai@fb.com>
+ <20191221062620.1184118-1-kafai@fb.com>
+ <CAEf4BzZX_TNUXJktJUtqmxgMefDzie=Ta18TbBqBhG0-GSLQMg@mail.gmail.com>
+ <20191224013140.ibn33unj77mtbkne@kafai-mbp>
+ <CAEf4Bzb2fRZJsccx2CG_pASy+2eMMWPXk6m3d6SbN+o0MSdQPg@mail.gmail.com>
+ <20191224165003.oi4kvxad6mlsg5kw@kafai-mbp>
+ <CAEf4BzYA=xS7pHPqGxK4LsRHpxN=Y4dLcbG8WNMqGhKpauh7gQ@mail.gmail.com>
+ <20191226202512.abhyhdtetv46z5sd@kafai-mbp>
+ <CAEf4BzagEe4sbUfz6=Y6MHCsAAUAVe1GKi_XJUNu8xpHdd_mAQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzagEe4sbUfz6=Y6MHCsAAUAVe1GKi_XJUNu8xpHdd_mAQ@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MWHPR17CA0080.namprd17.prod.outlook.com
+ (2603:10b6:300:c2::18) To MN2PR15MB3213.namprd15.prod.outlook.com
+ (2603:10b6:208:3d::12)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c090:180::a2c3]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: fbc39db5-5bcf-43b5-8876-08d78a51c656
+x-ms-traffictypediagnostic: MN2PR15MB2973:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MN2PR15MB2973447811458B480403A639D52B0@MN2PR15MB2973.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-forefront-prvs: 02638D901B
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(39860400002)(136003)(376002)(346002)(366004)(396003)(189003)(199004)(16526019)(5660300002)(33716001)(186003)(316002)(8676002)(71200400001)(81156014)(81166006)(478600001)(4326008)(53546011)(6916009)(6496006)(52116002)(66946007)(1076003)(64756008)(66476007)(55016002)(8936002)(54906003)(66556008)(66446008)(86362001)(2906002)(9686003);DIR:OUT;SFP:1102;SCL:1;SRVR:MN2PR15MB2973;H:MN2PR15MB3213.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ppSKSabrBcgc0FaCZZbvduPQZd+2n5zEsWIgXlE9ltZWpIDvkcGE+U8ayS7hcYD3hj7fy7WwxVA/D/QJXRmvxUoInB75hbJImCPcP1H1kOAn7mot2hxqFa6tfZuu01mBUwyOtxrlpbWDO41WFw4rokKJWcpF0WdXDj181wT4UB15Lx4rbXwluKKVQNkQvLjj450lPVaMJjEFjQQTEc8PplWu0kg08d4ZCFIbzTrStSCjIV3sxZwvKONyv3p0/JdeA33HH+BmnNE12m6IjGqftJWBVrpxwzhWfpYqmdBGQCdrw0vcD2f4Avi+F/GVBeQOhkDcmJUUyCdnJsRW3Mq7tPr4pfkyg607erV60lvcTwvgwwrxLUDeyt1HSydt2pKJkxNnmsE2iCTZSAUNjDgKO3kcv2Uyfo9Co1m7hUPJBFBi8YSZu9X6behfRwFgu1E3
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <17D0B1E1E8641649837B330E6C4AD13A@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
+X-MS-Exchange-CrossTenant-Network-Message-Id: fbc39db5-5bcf-43b5-8876-08d78a51c656
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Dec 2019 22:20:12.2717
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: y0MKcoBanYjLAaZEJxQWaR+cnk68MzKQnxPNw9sj7drJq49iUVRJhawNz37HwHNI
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB2973
+X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
  definitions=2019-12-26_05:2019-12-24,2019-12-26 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 malwarescore=0
- impostorscore=0 priorityscore=1501 suspectscore=8 bulkscore=0
- mlxlogscore=999 phishscore=0 spamscore=0 clxscore=1015 adultscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1910280000 definitions=main-1912260188
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 adultscore=0
+ impostorscore=0 suspectscore=0 bulkscore=0 mlxlogscore=999
+ lowpriorityscore=0 phishscore=0 priorityscore=1501 clxscore=1015
+ spamscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-1912260196
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Streamline BPF_TRACE_x macro by moving out return type and section attribute
-definition out of macro itself. That makes those function look in source code
-similar to other BPF programs. Additionally, simplify its usage by determining
-number of arguments automatically (so just single BPF_TRACE vs a family of
-BPF_TRACE_1, BPF_TRACE_2, etc). Also, allow more natural function argument
-syntax without commas inbetween argument type and name.
+On Thu, Dec 26, 2019 at 12:48:09PM -0800, Andrii Nakryiko wrote:
+> On Thu, Dec 26, 2019 at 12:25 PM Martin Lau <kafai@fb.com> wrote:
+> >
+> > On Thu, Dec 26, 2019 at 11:02:26AM -0800, Andrii Nakryiko wrote:
+> > > On Tue, Dec 24, 2019 at 8:50 AM Martin Lau <kafai@fb.com> wrote:
+> > > >
+> > > > On Mon, Dec 23, 2019 at 11:01:55PM -0800, Andrii Nakryiko wrote:
+> > > > > On Mon, Dec 23, 2019 at 5:31 PM Martin Lau <kafai@fb.com> wrote:
+> > > > > >
+> > > > > > On Mon, Dec 23, 2019 at 03:26:50PM -0800, Andrii Nakryiko wrote=
+:
+> > > > > > > On Fri, Dec 20, 2019 at 10:26 PM Martin KaFai Lau <kafai@fb.c=
+om> wrote:
+> > > > > > > >
+> > > > > > > > This patch adds a bpf_dctcp example.  It currently does not=
+ do
+> > > > > > > > no-ECN fallback but the same could be done through the cgrp=
+2-bpf.
+> > > > > > > >
+> > > > > > > > Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+> > > > > > > > ---
+> > > > > > > >  tools/testing/selftests/bpf/bpf_tcp_helpers.h | 228 ++++++=
+++++++++++++
+> > > > > > > >  .../selftests/bpf/prog_tests/bpf_tcp_ca.c     | 218 ++++++=
++++++++++++
+> > > > > > > >  tools/testing/selftests/bpf/progs/bpf_dctcp.c | 210 ++++++=
+++++++++++
+> > > > > > > >  3 files changed, 656 insertions(+)
+> > > > > > > >  create mode 100644 tools/testing/selftests/bpf/bpf_tcp_hel=
+pers.h
+> > > > > > > >  create mode 100644 tools/testing/selftests/bpf/prog_tests/=
+bpf_tcp_ca.c
+> > > > > > > >  create mode 100644 tools/testing/selftests/bpf/progs/bpf_d=
+ctcp.c
+> > > > > > > >
+> > > > > > > > diff --git a/tools/testing/selftests/bpf/bpf_tcp_helpers.h =
+b/tools/testing/selftests/bpf/bpf_tcp_helpers.h
+> > > > > > > > new file mode 100644
+> > > > > > > > index 000000000000..7ba8c1b4157a
+> > > > > > > > --- /dev/null
+> > > > > > > > +++ b/tools/testing/selftests/bpf/bpf_tcp_helpers.h
+> > > > > > > > @@ -0,0 +1,228 @@
+> > > > > > > > +/* SPDX-License-Identifier: GPL-2.0 */
+> > > > > > > > +#ifndef __BPF_TCP_HELPERS_H
+> > > > > > > > +#define __BPF_TCP_HELPERS_H
+> > > > > > > > +
+> > > > > > > > +#include <stdbool.h>
+> > > > > > > > +#include <linux/types.h>
+> > > > > > > > +#include <bpf_helpers.h>
+> > > > > > > > +#include <bpf_core_read.h>
+> > > > > > > > +#include "bpf_trace_helpers.h"
+> > > > > > > > +
+> > > > > > > > +#define BPF_TCP_OPS_0(fname, ret_type, ...) BPF_TRACE_x(0,=
+ #fname"_sec", fname, ret_type, __VA_ARGS__)
+> > > > > > > > +#define BPF_TCP_OPS_1(fname, ret_type, ...) BPF_TRACE_x(1,=
+ #fname"_sec", fname, ret_type, __VA_ARGS__)
+> > > > > > > > +#define BPF_TCP_OPS_2(fname, ret_type, ...) BPF_TRACE_x(2,=
+ #fname"_sec", fname, ret_type, __VA_ARGS__)
+> > > > > > > > +#define BPF_TCP_OPS_3(fname, ret_type, ...) BPF_TRACE_x(3,=
+ #fname"_sec", fname, ret_type, __VA_ARGS__)
+> > > > > > > > +#define BPF_TCP_OPS_4(fname, ret_type, ...) BPF_TRACE_x(4,=
+ #fname"_sec", fname, ret_type, __VA_ARGS__)
+> > > > > > > > +#define BPF_TCP_OPS_5(fname, ret_type, ...) BPF_TRACE_x(5,=
+ #fname"_sec", fname, ret_type, __VA_ARGS__)
+> > > > > > >
+> > > > > > > Should we try to put those BPF programs into some section tha=
+t would
+> > > > > > > indicate they are used with struct opts? libbpf doesn't use o=
+r enforce
+> > > > > > > that (even though it could to derive and enforce that they ar=
+e
+> > > > > > > STRUCT_OPS programs). So something like
+> > > > > > > SEC("struct_ops/<ideally-operation-name-here>"). I think havi=
+ng this
+> > > > > > > convention is very useful for consistency and to do a quick E=
+LF dump
+> > > > > > > and see what is where. WDYT?
+> > > > > > I did not use it here because I don't want any misperception th=
+at it is
+> > > > > > a required convention by libbpf.
+> > > > > >
+> > > > > > Sure, I can prefix it here and comment that it is just a
+> > > > > > convention but not a libbpf's requirement.
+> > > > >
+> > > > > Well, we can actually make it a requirement of sorts. Currently y=
+our
+> > > > > code expects that BPF program's type is UNSPEC and then it sets i=
+t to
+> > > > > STRUCT_OPS. Alternatively we can say that any BPF program in
+> > > > > SEC("struct_ops/<whatever>") will be automatically assigned
+> > > > > STRUCT_OPTS BPF program type (which is done generically in
+> > > > > bpf_object__open()), and then as .struct_ops section is parsed, a=
+ll
+> > > > > those programs will be "assembled" by the code you added into a
+> > > > > struct_ops map.
+> > > > Setting BPF_PROG_TYPE_STRUCT_OPS can be done automatically at open
+> > > > phase (during collect_reloc time).  I will make this change.
+> > > >
+> > >
+> > > Can you please extend exiting logic in __bpf_object__open() to do
+> > > this? See how libbpf_prog_type_by_name() is used for that.
+> > Does it have to call libbpf_prog_type_by_name() if everything
+> > has already been decided by the earlier
+> > bpf_object__collect_struct_ops_map_reloc()?
+>=20
+> We can certainly change the logic to omit guessing program type if
+> it's already set to something else than UNSPEC.
+>=20
+> But all I'm asking is that instead of using #fname"_sec" section name,
+> is to use "struct_ops/"#fname, because it's consistent with all other
+> program types. If you do that, then you don't have to do anything
+> extra (well, add single entry to section_defs, of course), it will
+> just work as is.
+Re: adding "struct_ops/" to section_defs,
+Sure. as long as SEC(".struct_ops") can use prog that
+libbpf_prog_type_by_name() concluded it is either -ESRCH or
+STRUCT_OPS.
 
-Given this helper is useful not only for tracing tp_btf/fenty/fexit programs,
-but could be used for LSM programs and others following the same pattern,
-rename BPF_TRACE macro into more generic BPF_HANDLER. Existing BPF_TRACE_x
-usages in selftests are converted to new BPF_HANDLER macro.
-
-Following the same pattern, define BPF_KPROBE and BPF_KRETPROBE macros for
-nicer usage of kprobe/kretprobe arguments, respectively. BPF_KRETPROBE, adopts
-same convention used by fexit programs, that last defined argument is probed
-function's return result.
-
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- .../testing/selftests/bpf/bpf_trace_helpers.h | 130 +++++++++++-------
- .../testing/selftests/bpf/progs/fentry_test.c |  21 +--
- .../selftests/bpf/progs/fexit_bpf2bpf.c       |   8 +-
- .../bpf/progs/fexit_bpf2bpf_simple.c          |   5 +-
- .../testing/selftests/bpf/progs/fexit_test.c  |  24 ++--
- tools/testing/selftests/bpf/progs/kfree_skb.c |  17 +--
- .../selftests/bpf/progs/test_overhead.c       |  32 +++--
- .../selftests/bpf/progs/test_perf_buffer.c    |   3 +-
- .../selftests/bpf/progs/test_probe_user.c     |   3 +-
- 9 files changed, 145 insertions(+), 98 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/bpf_trace_helpers.h b/tools/testing/selftests/bpf/bpf_trace_helpers.h
-index c76a214a53b0..023b6565d663 100644
---- a/tools/testing/selftests/bpf/bpf_trace_helpers.h
-+++ b/tools/testing/selftests/bpf/bpf_trace_helpers.h
-@@ -4,55 +4,85 @@
- 
- #include "bpf_helpers.h"
- 
--#define __BPF_MAP_0(i, m, v, ...) v
--#define __BPF_MAP_1(i, m, v, t, a, ...) m(t, a, ctx[i])
--#define __BPF_MAP_2(i, m, v, t, a, ...) m(t, a, ctx[i]), __BPF_MAP_1(i+1, m, v, __VA_ARGS__)
--#define __BPF_MAP_3(i, m, v, t, a, ...) m(t, a, ctx[i]), __BPF_MAP_2(i+1, m, v, __VA_ARGS__)
--#define __BPF_MAP_4(i, m, v, t, a, ...) m(t, a, ctx[i]), __BPF_MAP_3(i+1, m, v, __VA_ARGS__)
--#define __BPF_MAP_5(i, m, v, t, a, ...) m(t, a, ctx[i]), __BPF_MAP_4(i+1, m, v, __VA_ARGS__)
--#define __BPF_MAP_6(i, m, v, t, a, ...) m(t, a, ctx[i]), __BPF_MAP_5(i+1, m, v, __VA_ARGS__)
--#define __BPF_MAP_7(i, m, v, t, a, ...) m(t, a, ctx[i]), __BPF_MAP_6(i+1, m, v, __VA_ARGS__)
--#define __BPF_MAP_8(i, m, v, t, a, ...) m(t, a, ctx[i]), __BPF_MAP_7(i+1, m, v, __VA_ARGS__)
--#define __BPF_MAP_9(i, m, v, t, a, ...) m(t, a, ctx[i]), __BPF_MAP_8(i+1, m, v, __VA_ARGS__)
--#define __BPF_MAP_10(i, m, v, t, a, ...) m(t, a, ctx[i]), __BPF_MAP_9(i+1, m, v, __VA_ARGS__)
--#define __BPF_MAP_11(i, m, v, t, a, ...) m(t, a, ctx[i]), __BPF_MAP_10(i+1, m, v, __VA_ARGS__)
--#define __BPF_MAP_12(i, m, v, t, a, ...) m(t, a, ctx[i]), __BPF_MAP_11(i+1, m, v, __VA_ARGS__)
--#define __BPF_MAP(n, ...) __BPF_MAP_##n(0, __VA_ARGS__)
--
--/* BPF sizeof(void *) is always 8, so no need to cast to long first
-- * for ptr to avoid compiler warning.
-- */
--#define __BPF_CAST(t, a, ctx) (t) ctx
--#define __BPF_V void
--#define __BPF_N
--
--#define __BPF_DECL_ARGS(t, a, ctx) t a
--
--#define BPF_TRACE_x(x, sec_name, fname, ret_type, ...)			\
--static __always_inline ret_type						\
--____##fname(__BPF_MAP(x, __BPF_DECL_ARGS, __BPF_V, __VA_ARGS__));	\
--									\
--SEC(sec_name)								\
--ret_type fname(__u64 *ctx)						\
--{									\
--	return ____##fname(__BPF_MAP(x, __BPF_CAST, __BPF_N, __VA_ARGS__));\
--}									\
--									\
--static __always_inline							\
--ret_type ____##fname(__BPF_MAP(x, __BPF_DECL_ARGS, __BPF_V, __VA_ARGS__))
--
--#define BPF_TRACE_0(sec, fname, ...)  BPF_TRACE_x(0, sec, fname, int, __VA_ARGS__)
--#define BPF_TRACE_1(sec, fname, ...)  BPF_TRACE_x(1, sec, fname, int, __VA_ARGS__)
--#define BPF_TRACE_2(sec, fname, ...)  BPF_TRACE_x(2, sec, fname, int, __VA_ARGS__)
--#define BPF_TRACE_3(sec, fname, ...)  BPF_TRACE_x(3, sec, fname, int, __VA_ARGS__)
--#define BPF_TRACE_4(sec, fname, ...)  BPF_TRACE_x(4, sec, fname, int, __VA_ARGS__)
--#define BPF_TRACE_5(sec, fname, ...)  BPF_TRACE_x(5, sec, fname, int, __VA_ARGS__)
--#define BPF_TRACE_6(sec, fname, ...)  BPF_TRACE_x(6, sec, fname, int, __VA_ARGS__)
--#define BPF_TRACE_7(sec, fname, ...)  BPF_TRACE_x(7, sec, fname, int, __VA_ARGS__)
--#define BPF_TRACE_8(sec, fname, ...)  BPF_TRACE_x(8, sec, fname, int, __VA_ARGS__)
--#define BPF_TRACE_9(sec, fname, ...)  BPF_TRACE_x(9, sec, fname, int, __VA_ARGS__)
--#define BPF_TRACE_10(sec, fname, ...)  BPF_TRACE_x(10, sec, fname, int, __VA_ARGS__)
--#define BPF_TRACE_11(sec, fname, ...)  BPF_TRACE_x(11, sec, fname, int, __VA_ARGS__)
--#define BPF_TRACE_12(sec, fname, ...)  BPF_TRACE_x(12, sec, fname, int, __VA_ARGS__)
-+#define ___bpf_concat(a, b) a ## b
-+#define ___bpf_apply(fn, n) ___bpf_concat(fn, n)
-+#define ___bpf_nth(_, _1, _2, _3, _4, _5, _6, _7, _8, _9, _a, _b, _c, N, ...) N
-+#define ___bpf_narg(...) \
-+	___bpf_nth(_, ##__VA_ARGS__, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
-+#define ___bpf_empty(...) \
-+	___bpf_nth(_, ##__VA_ARGS__, N, N, N, N, N, N, N, N, N, N, 0)
- 
-+#define ___bpf_ctx_cast0()
-+#define ___bpf_ctx_cast1(x) (void *)ctx[0]
-+#define ___bpf_ctx_cast2(x, args...) ___bpf_ctx_cast1(args), (void *)ctx[1]
-+#define ___bpf_ctx_cast3(x, args...) ___bpf_ctx_cast2(args), (void *)ctx[2]
-+#define ___bpf_ctx_cast4(x, args...) ___bpf_ctx_cast3(args), (void *)ctx[3]
-+#define ___bpf_ctx_cast5(x, args...) ___bpf_ctx_cast4(args), (void *)ctx[4]
-+#define ___bpf_ctx_cast6(x, args...) ___bpf_ctx_cast5(args), (void *)ctx[5]
-+#define ___bpf_ctx_cast7(x, args...) ___bpf_ctx_cast6(args), (void *)ctx[6]
-+#define ___bpf_ctx_cast8(x, args...) ___bpf_ctx_cast7(args), (void *)ctx[7]
-+#define ___bpf_ctx_cast9(x, args...) ___bpf_ctx_cast8(args), (void *)ctx[8]
-+#define ___bpf_ctx_cast10(x, args...) ___bpf_ctx_cast9(args), (void *)ctx[9]
-+#define ___bpf_ctx_cast11(x, args...) ___bpf_ctx_cast10(args), (void *)ctx[10]
-+#define ___bpf_ctx_cast12(x, args...) ___bpf_ctx_cast11(args), (void *)ctx[11]
-+#define ___bpf_ctx_cast(args...) \
-+	___bpf_apply(___bpf_ctx_cast, ___bpf_narg(args))(args)
-+
-+#define BPF_HANDLER(name, args...)					    \
-+name(unsigned long long *ctx);						    \
-+static __always_inline typeof(name(0)) ____##name(args);		    \
-+typeof(name(0)) name(unsigned long long *ctx)				    \
-+{									    \
-+	_Pragma("GCC diagnostic push")					    \
-+	_Pragma("GCC diagnostic ignored \"-Wint-conversion\"")		    \
-+	return ____##name(___bpf_ctx_cast(args));			    \
-+	_Pragma("GCC diagnostic pop")					    \
-+}									    \
-+static __always_inline typeof(name(0)) ____##name(args)
-+
-+struct pt_regs;
-+
-+#define ___bpf_kprobe_args0() ctx
-+#define ___bpf_kprobe_args1(x) \
-+	___bpf_kprobe_args0(), (void *)PT_REGS_PARM1(ctx)
-+#define ___bpf_kprobe_args2(x, args...) \
-+	___bpf_kprobe_args1(args), (void *)PT_REGS_PARM2(ctx)
-+#define ___bpf_kprobe_args3(x, args...) \
-+	___bpf_kprobe_args2(args), (void *)PT_REGS_PARM3(ctx)
-+#define ___bpf_kprobe_args4(x, args...) \
-+	___bpf_kprobe_args3(args), (void *)PT_REGS_PARM4(ctx)
-+#define ___bpf_kprobe_args5(x, args...) \
-+	___bpf_kprobe_args4(args), (void *)PT_REGS_PARM5(ctx)
-+#define ___bpf_kprobe_args(args...) \
-+	___bpf_apply(___bpf_kprobe_args, ___bpf_narg(args))(args)
-+
-+#define BPF_KPROBE(name, args...)					    \
-+name(struct pt_regs *ctx);						    \
-+static __always_inline typeof(name(0)) ____##name(struct pt_regs *ctx, ##args);\
-+typeof(name(0)) name(struct pt_regs *ctx)				    \
-+{									    \
-+	_Pragma("GCC diagnostic push")					    \
-+	_Pragma("GCC diagnostic ignored \"-Wint-conversion\"")		    \
-+	return ____##name(___bpf_kprobe_args(args));			    \
-+	_Pragma("GCC diagnostic pop")					    \
-+}									    \
-+static __always_inline typeof(name(0)) ____##name(struct pt_regs *ctx, ##args)
-+
-+#define ___bpf_kretprobe_args0() ctx
-+#define ___bpf_kretprobe_argsN(x, args...) \
-+	___bpf_kprobe_args(args), (void *)PT_REGS_RET(ctx)
-+#define ___bpf_kretprobe_args(args...) \
-+	___bpf_apply(___bpf_kretprobe_args, ___bpf_empty(args))(args)
-+
-+#define BPF_KRETPROBE(name, args...)					    \
-+name(struct pt_regs *ctx);						    \
-+static __always_inline typeof(name(0)) ____##name(struct pt_regs *ctx, ##args);\
-+typeof(name(0)) name(struct pt_regs *ctx)				    \
-+{									    \
-+	_Pragma("GCC diagnostic push")					    \
-+	_Pragma("GCC diagnostic ignored \"-Wint-conversion\"")		    \
-+	return ____##name(___bpf_kretprobe_args(args));			    \
-+	_Pragma("GCC diagnostic pop")					    \
-+}									    \
-+static __always_inline typeof(name(0)) ____##name(struct pt_regs *ctx, ##args)
- #endif
-diff --git a/tools/testing/selftests/bpf/progs/fentry_test.c b/tools/testing/selftests/bpf/progs/fentry_test.c
-index 615f7c6bca77..59109a0cd218 100644
---- a/tools/testing/selftests/bpf/progs/fentry_test.c
-+++ b/tools/testing/selftests/bpf/progs/fentry_test.c
-@@ -7,37 +7,40 @@
- char _license[] SEC("license") = "GPL";
- 
- __u64 test1_result = 0;
--BPF_TRACE_1("fentry/bpf_fentry_test1", test1, int, a)
-+SEC("fentry/bpf_fentry_test1")
-+int BPF_HANDLER(test1, int a)
- {
- 	test1_result = a == 1;
- 	return 0;
- }
- 
- __u64 test2_result = 0;
--BPF_TRACE_2("fentry/bpf_fentry_test2", test2, int, a, __u64, b)
-+SEC("fentry/bpf_fentry_test2")
-+int BPF_HANDLER(test2, int a, __u64 b)
- {
- 	test2_result = a == 2 && b == 3;
- 	return 0;
- }
- 
- __u64 test3_result = 0;
--BPF_TRACE_3("fentry/bpf_fentry_test3", test3, char, a, int, b, __u64, c)
-+SEC("fentry/bpf_fentry_test3")
-+int BPF_HANDLER(test3, char a, int b, __u64 c)
- {
- 	test3_result = a == 4 && b == 5 && c == 6;
- 	return 0;
- }
- 
- __u64 test4_result = 0;
--BPF_TRACE_4("fentry/bpf_fentry_test4", test4,
--	    void *, a, char, b, int, c, __u64, d)
-+SEC("fentry/bpf_fentry_test4")
-+int BPF_HANDLER(test4, void *a, char b, int c, __u64 d)
- {
- 	test4_result = a == (void *)7 && b == 8 && c == 9 && d == 10;
- 	return 0;
- }
- 
- __u64 test5_result = 0;
--BPF_TRACE_5("fentry/bpf_fentry_test5", test5,
--	    __u64, a, void *, b, short, c, int, d, __u64, e)
-+SEC("fentry/bpf_fentry_test5")
-+int BPF_HANDLER(test5, __u64 a, void *b, short c, int d, __u64 e)
- {
- 	test5_result = a == 11 && b == (void *)12 && c == 13 && d == 14 &&
- 		e == 15;
-@@ -45,8 +48,8 @@ BPF_TRACE_5("fentry/bpf_fentry_test5", test5,
- }
- 
- __u64 test6_result = 0;
--BPF_TRACE_6("fentry/bpf_fentry_test6", test6,
--	    __u64, a, void *, b, short, c, int, d, void *, e, __u64, f)
-+SEC("fentry/bpf_fentry_test6")
-+int BPF_HANDLER(test6, __u64 a, void *b, short c, int d, void * e, __u64 f)
- {
- 	test6_result = a == 16 && b == (void *)17 && c == 18 && d == 19 &&
- 		e == (void *)20 && f == 21;
-diff --git a/tools/testing/selftests/bpf/progs/fexit_bpf2bpf.c b/tools/testing/selftests/bpf/progs/fexit_bpf2bpf.c
-index 2d211ee98a1c..a23cc22b960c 100644
---- a/tools/testing/selftests/bpf/progs/fexit_bpf2bpf.c
-+++ b/tools/testing/selftests/bpf/progs/fexit_bpf2bpf.c
-@@ -9,8 +9,8 @@ struct sk_buff {
- };
- 
- __u64 test_result = 0;
--BPF_TRACE_2("fexit/test_pkt_access", test_main,
--	    struct sk_buff *, skb, int, ret)
-+SEC("fexit/test_pkt_access")
-+int BPF_HANDLER(test_main, struct sk_buff *skb, int ret)
- {
- 	int len;
- 
-@@ -24,8 +24,8 @@ BPF_TRACE_2("fexit/test_pkt_access", test_main,
- }
- 
- __u64 test_result_subprog1 = 0;
--BPF_TRACE_2("fexit/test_pkt_access_subprog1", test_subprog1,
--	    struct sk_buff *, skb, int, ret)
-+SEC("fexit/test_pkt_access_subprog1")
-+int BPF_HANDLER(test_subprog1, struct sk_buff *skb, int ret)
- {
- 	int len;
- 
-diff --git a/tools/testing/selftests/bpf/progs/fexit_bpf2bpf_simple.c b/tools/testing/selftests/bpf/progs/fexit_bpf2bpf_simple.c
-index ebc0ab7f0f5c..381a8a61781d 100644
---- a/tools/testing/selftests/bpf/progs/fexit_bpf2bpf_simple.c
-+++ b/tools/testing/selftests/bpf/progs/fexit_bpf2bpf_simple.c
-@@ -9,8 +9,9 @@ struct sk_buff {
- };
- 
- __u64 test_result = 0;
--BPF_TRACE_2("fexit/test_pkt_md_access", test_main2,
--	    struct sk_buff *, skb, int, ret)
-+
-+SEC("fexit/test_pkt_md_access")
-+int BPF_HANDLER(test_main2, struct sk_buff *skb, int ret)
- {
- 	int len;
- 
-diff --git a/tools/testing/selftests/bpf/progs/fexit_test.c b/tools/testing/selftests/bpf/progs/fexit_test.c
-index 86db0d60fb6e..ea4091f6dca1 100644
---- a/tools/testing/selftests/bpf/progs/fexit_test.c
-+++ b/tools/testing/selftests/bpf/progs/fexit_test.c
-@@ -7,39 +7,41 @@
- char _license[] SEC("license") = "GPL";
- 
- __u64 test1_result = 0;
--BPF_TRACE_2("fexit/bpf_fentry_test1", test1, int, a, int, ret)
-+SEC("fexit/bpf_fentry_test1")
-+int BPF_HANDLER(test1, int a, int ret)
- {
- 	test1_result = a == 1 && ret == 2;
- 	return 0;
- }
- 
- __u64 test2_result = 0;
--BPF_TRACE_3("fexit/bpf_fentry_test2", test2, int, a, __u64, b, int, ret)
-+SEC("fexit/bpf_fentry_test2")
-+int BPF_HANDLER(test2, int a, __u64 b, int ret)
- {
- 	test2_result = a == 2 && b == 3 && ret == 5;
- 	return 0;
- }
- 
- __u64 test3_result = 0;
--BPF_TRACE_4("fexit/bpf_fentry_test3", test3, char, a, int, b, __u64, c, int, ret)
-+SEC("fexit/bpf_fentry_test3")
-+int BPF_HANDLER(test3, char a, int b, __u64 c, int ret)
- {
- 	test3_result = a == 4 && b == 5 && c == 6 && ret == 15;
- 	return 0;
- }
- 
- __u64 test4_result = 0;
--BPF_TRACE_5("fexit/bpf_fentry_test4", test4,
--	    void *, a, char, b, int, c, __u64, d, int, ret)
-+SEC("fexit/bpf_fentry_test4")
-+int BPF_HANDLER(test4, void *a, char b, int c, __u64 d, int ret)
- {
--
- 	test4_result = a == (void *)7 && b == 8 && c == 9 && d == 10 &&
- 		ret == 34;
- 	return 0;
- }
- 
- __u64 test5_result = 0;
--BPF_TRACE_6("fexit/bpf_fentry_test5", test5,
--	    __u64, a, void *, b, short, c, int, d, __u64, e, int, ret)
-+SEC("fexit/bpf_fentry_test5")
-+int BPF_HANDLER(test5, __u64 a, void *b, short c, int d, __u64 e, int ret)
- {
- 	test5_result = a == 11 && b == (void *)12 && c == 13 && d == 14 &&
- 		e == 15 && ret == 65;
-@@ -47,9 +49,9 @@ BPF_TRACE_6("fexit/bpf_fentry_test5", test5,
- }
- 
- __u64 test6_result = 0;
--BPF_TRACE_7("fexit/bpf_fentry_test6", test6,
--	    __u64, a, void *, b, short, c, int, d, void *, e, __u64, f,
--	    int, ret)
-+SEC("fexit/bpf_fentry_test6")
-+int BPF_HANDLER(test6, __u64 a, void *b, short c, int d, void *e, __u64 f,
-+		       int ret)
- {
- 	test6_result = a == 16 && b == (void *)17 && c == 18 && d == 19 &&
- 		e == (void *)20 && f == 21 && ret == 111;
-diff --git a/tools/testing/selftests/bpf/progs/kfree_skb.c b/tools/testing/selftests/bpf/progs/kfree_skb.c
-index 974d6f3bb319..d36427ae795f 100644
---- a/tools/testing/selftests/bpf/progs/kfree_skb.c
-+++ b/tools/testing/selftests/bpf/progs/kfree_skb.c
-@@ -57,8 +57,8 @@ struct meta {
- /* TRACE_EVENT(kfree_skb,
-  *         TP_PROTO(struct sk_buff *skb, void *location),
-  */
--BPF_TRACE_2("tp_btf/kfree_skb", trace_kfree_skb,
--	    struct sk_buff *, skb, void *, location)
-+SEC("tp_btf/kfree_skb")
-+int BPF_HANDLER(trace_kfree_skb, struct sk_buff *skb, void *location)
- {
- 	struct net_device *dev;
- 	struct callback_head *ptr;
-@@ -114,9 +114,9 @@ static volatile struct {
- 	bool fexit_test_ok;
- } result;
- 
--BPF_TRACE_3("fentry/eth_type_trans", fentry_eth_type_trans,
--	    struct sk_buff *, skb, struct net_device *, dev,
--	    unsigned short, protocol)
-+SEC("fentry/eth_type_trans")
-+int BPF_HANDLER(fentry_eth_type_trans, struct sk_buff *skb,
-+		struct net_device *dev, unsigned short protocol)
- {
- 	int len, ifindex;
- 
-@@ -132,9 +132,10 @@ BPF_TRACE_3("fentry/eth_type_trans", fentry_eth_type_trans,
- 	return 0;
- }
- 
--BPF_TRACE_3("fexit/eth_type_trans", fexit_eth_type_trans,
--	    struct sk_buff *, skb, struct net_device *, dev,
--	    unsigned short, protocol)
-+SEC("fexit/eth_type_trans")
-+int BPF_HANDLER(fexit_eth_type_trans,
-+	    struct sk_buff *skb, struct net_device *dev,
-+	    unsigned short protocol)
- {
- 	int len, ifindex;
- 
-diff --git a/tools/testing/selftests/bpf/progs/test_overhead.c b/tools/testing/selftests/bpf/progs/test_overhead.c
-index 96c0124a04ba..f8599b3937e9 100644
---- a/tools/testing/selftests/bpf/progs/test_overhead.c
-+++ b/tools/testing/selftests/bpf/progs/test_overhead.c
-@@ -1,39 +1,47 @@
- // SPDX-License-Identifier: GPL-2.0
- /* Copyright (c) 2019 Facebook */
-+#include <stdbool.h>
-+#include <stddef.h>
- #include <linux/bpf.h>
-+#include <linux/ptrace.h>
- #include "bpf_helpers.h"
- #include "bpf_tracing.h"
- #include "bpf_trace_helpers.h"
- 
-+struct task_struct;
-+
- SEC("kprobe/__set_task_comm")
--int prog1(struct pt_regs *ctx)
-+int BPF_KPROBE(prog1, struct task_struct *tsk, const char *buf, bool exec)
- {
--	return 0;
-+	return tsk == NULL;
- }
- 
- SEC("kretprobe/__set_task_comm")
--int prog2(struct pt_regs *ctx)
-+int BPF_KRETPROBE(prog2,
-+		  struct task_struct *tsk, const char *buf, bool exec,
-+		  int ret)
- {
--	return 0;
-+	return PT_REGS_PARM1(ctx) == 0 && ret != 0;
- }
- 
- SEC("raw_tp/task_rename")
- int prog3(struct bpf_raw_tracepoint_args *ctx)
- {
--	return 0;
-+	return ctx->args[0] == 0;;
- }
- 
--struct task_struct;
--BPF_TRACE_3("fentry/__set_task_comm", prog4,
--	    struct task_struct *, tsk, const char *, buf, __u8, exec)
-+SEC("fentry/__set_task_comm")
-+int BPF_HANDLER(prog4, struct task_struct *tsk, const char *buf, bool exec)
- {
--	return 0;
-+	return tsk == NULL;
- }
- 
--BPF_TRACE_3("fexit/__set_task_comm", prog5,
--	    struct task_struct *, tsk, const char *, buf, __u8, exec)
-+SEC("fexit/__set_task_comm")
-+int BPF_HANDLER(prog5,
-+		struct task_struct *tsk, const char *buf, bool exec,
-+		int ret)
- {
--	return 0;
-+	return tsk == NULL && ret != 0;
- }
- 
- char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/progs/test_perf_buffer.c b/tools/testing/selftests/bpf/progs/test_perf_buffer.c
-index 07c09ca5546a..1fdc999031ac 100644
---- a/tools/testing/selftests/bpf/progs/test_perf_buffer.c
-+++ b/tools/testing/selftests/bpf/progs/test_perf_buffer.c
-@@ -4,6 +4,7 @@
- #include <linux/ptrace.h>
- #include <linux/bpf.h>
- #include "bpf_helpers.h"
-+#include "bpf_trace_helpers.h"
- 
- struct {
- 	__uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
-@@ -12,7 +13,7 @@ struct {
- } perf_buf_map SEC(".maps");
- 
- SEC("kprobe/sys_nanosleep")
--int handle_sys_nanosleep_entry(struct pt_regs *ctx)
-+int BPF_KPROBE(handle_sys_nanosleep_entry)
- {
- 	int cpu = bpf_get_smp_processor_id();
- 
-diff --git a/tools/testing/selftests/bpf/progs/test_probe_user.c b/tools/testing/selftests/bpf/progs/test_probe_user.c
-index 1871e2ece0c4..5b570969e5c5 100644
---- a/tools/testing/selftests/bpf/progs/test_probe_user.c
-+++ b/tools/testing/selftests/bpf/progs/test_probe_user.c
-@@ -7,11 +7,12 @@
- 
- #include "bpf_helpers.h"
- #include "bpf_tracing.h"
-+#include "bpf_trace_helpers.h"
- 
- static struct sockaddr_in old;
- 
- SEC("kprobe/__sys_connect")
--int handle_sys_connect(struct pt_regs *ctx)
-+int BPF_KPROBE(handle_sys_connect)
- {
- 	void *ptr = (void *)PT_REGS_PARM2(ctx);
- 	struct sockaddr_in new;
--- 
-2.17.1
-
+It is not the only change though.  Other changes are still
+needed in collect_reloc (e.g. check prog type mismatch).
+They won't be much though.
