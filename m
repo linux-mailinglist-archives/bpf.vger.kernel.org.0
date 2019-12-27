@@ -2,148 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E54E912B5CA
-	for <lists+bpf@lfdr.de>; Fri, 27 Dec 2019 17:17:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15F6D12B84C
+	for <lists+bpf@lfdr.de>; Fri, 27 Dec 2019 18:55:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726602AbfL0QRC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 Dec 2019 11:17:02 -0500
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:55263 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726562AbfL0QRB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 Dec 2019 11:17:01 -0500
-Received: by mail-wm1-f65.google.com with SMTP id b19so8391616wmj.4;
-        Fri, 27 Dec 2019 08:17:00 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=SG7nr9ICGnz7OFhLtGkWxeugBCCgStuFW1fApxIreNQ=;
-        b=AgvVpyjDm8loZLo6+VCaFOMhnMTYCpy1QBINIh2InUpHnxTlZ+Cbnm/zCzRbYZryx0
-         ER+0KtW1zlc50u/C5UQkaxsF7M+nZ3cM7afQ0jcUDxjBWg51aRKZLcRRkXjnDHGS1DhO
-         DMvT64EGzawhNtJ43YJwX+Go7475w7HSgdituGVOeTqNs64FuPT7PtniLaK+uCMBvzVE
-         yPm/ugil5gUh5trjLV0skGPDYpJmyo1m0+Z8ZvP6D2YtvThH2NDU2aCNtWa+MLZArH3M
-         xgYm+TLKnksC5ZQWr5iANcPAQzvLPLfsFE+4+k4xRha90ASdr7ycIHZABT7ZhM2y8iaF
-         yEyg==
-X-Gm-Message-State: APjAAAUJplQw2ZIWj3lpTv9wqMnTrOvHPn5O8ENnhmrtBltT2HSNCTRv
-        SBt+6+5MW7B5cTxEp1ocf5/mSC61wnU=
-X-Google-Smtp-Source: APXvYqwOCSXkPlq/h42+G6nm5JcdbVPSDwMAAUSz+cYndNEyvgpZ9zzftenbWKl11ZiOJ1hDdyzCtg==
-X-Received: by 2002:a7b:c775:: with SMTP id x21mr20008536wmk.59.1577463419432;
-        Fri, 27 Dec 2019 08:16:59 -0800 (PST)
-Received: from Nover ([161.105.209.130])
-        by smtp.gmail.com with ESMTPSA id 60sm36190353wrn.86.2019.12.27.08.16.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Dec 2019 08:16:59 -0800 (PST)
-Date:   Fri, 27 Dec 2019 17:16:58 +0100
-From:   Paul Chaignon <paul.chaignon@orange.com>
-To:     bpf@vger.kernel.org
-Cc:     paul.chaignon@gmail.com, Alexei Starovoitov <ast@kernel.org>,
+        id S1727841AbfL0RmY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 Dec 2019 12:42:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39252 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727456AbfL0RmX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 Dec 2019 12:42:23 -0500
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 836E624656;
+        Fri, 27 Dec 2019 17:42:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1577468542;
+        bh=sA28e4/Vn28o0eBK2OtFILC07rU4A36VwG070Roqi1Y=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=TiKHpEc6CjWZYqHnTSwrNT6baXTcn23/DRReuzfA9XS8TZUMxmDmnBH5smo1ha96M
+         ehPvzrdCkn1N0u2vCUI6ia6pA8vZCNYLNODmvK+ehrpI7xlOCdF3zGXDsaubdsgEdu
+         d+76EAmFFcvYvSbQs3m1aOdCaEKFlLWSLbIiE72Q=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Paul Chaignon <paul.chaignon@orange.com>,
+        Mahshid Khezri <khezri.mahshid@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org
-Subject: [PATCH bpf-next] bpftool: allow match by name prefixes
-Message-ID: <20191227161657.GA16029@Nover>
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
+        linux-riscv@lists.infradead.org, bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 071/187] bpf, riscv: Limit to 33 tail calls
+Date:   Fri, 27 Dec 2019 12:38:59 -0500
+Message-Id: <20191227174055.4923-71-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20191227174055.4923-1-sashal@kernel.org>
+References: <20191227174055.4923-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=UTF-8
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch extends bpftool to support lookup of programs and maps by
-name prefixes (instead of full name only), as follows.
+From: Paul Chaignon <paul.chaignon@orange.com>
 
-  $ ./bpftool prog show name tcp_
-  19: kprobe  name tcp_cleanup_rbu  tag 639217cf5b184808  gpl
-      [...]
-  20: kprobe  name tcp_sendmsg  tag 6546b9784163ee69  gpl
-      [...]
+[ Upstream commit 96bc4432f5ade1045521f3b247f516b1478166bd ]
 
+All BPF JIT compilers except RISC-V's and MIPS' enforce a 33-tail calls
+limit at runtime.  In addition, a test was recently added, in tailcalls2,
+to check this limit.
+
+This patch updates the tail call limit in RISC-V's JIT compiler to allow
+33 tail calls.  I tested it using the above selftest on an emulated
+RISCV64.
+
+Fixes: 2353ecc6f91f ("bpf, riscv: add BPF JIT for RV64G")
+Reported-by: Mahshid Khezri <khezri.mahshid@gmail.com>
 Signed-off-by: Paul Chaignon <paul.chaignon@orange.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Björn Töpel <bjorn.topel@gmail.com>
+Acked-by: Martin KaFai Lau <kafai@fb.com>
+Link: https://lore.kernel.org/bpf/966fe384383bf23a0ee1efe8d7291c78a3fb832b.1575916815.git.paul.chaignon@gmail.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/bpf/bpftool/Documentation/bpftool-map.rst  | 4 ++--
- tools/bpf/bpftool/Documentation/bpftool-prog.rst | 2 +-
- tools/bpf/bpftool/main.h                         | 4 ++--
- tools/bpf/bpftool/map.c                          | 2 +-
- tools/bpf/bpftool/prog.c                         | 2 +-
- 5 files changed, 7 insertions(+), 7 deletions(-)
+ arch/riscv/net/bpf_jit_comp.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-map.rst b/tools/bpf/bpftool/Documentation/bpftool-map.rst
-index cdeae8ae90ba..bcc38ff9da65 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-map.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-map.rst
-@@ -39,9 +39,9 @@ MAP COMMANDS
- |	**bpftool** **map freeze**     *MAP*
- |	**bpftool** **map help**
- |
--|	*MAP* := { **id** *MAP_ID* | **pinned** *FILE* | **name** *MAP_NAME* }
-+|	*MAP* := { **id** *MAP_ID* | **pinned** *FILE* | **name** *NAME_PREFIX* }
- |	*DATA* := { [**hex**] *BYTES* }
--|	*PROG* := { **id** *PROG_ID* | **pinned** *FILE* | **tag** *PROG_TAG* | **name** *PROG_NAME* }
-+|	*PROG* := { **id** *PROG_ID* | **pinned** *FILE* | **tag** *PROG_TAG* | **name** *NAME_PREFIX* }
- |	*VALUE* := { *DATA* | *MAP* | *PROG* }
- |	*UPDATE_FLAGS* := { **any** | **exist** | **noexist** }
- |	*TYPE* := { **hash** | **array** | **prog_array** | **perf_event_array** | **percpu_hash**
-diff --git a/tools/bpf/bpftool/Documentation/bpftool-prog.rst b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
-index 64ddf8a4c518..8e39ac362c16 100644
---- a/tools/bpf/bpftool/Documentation/bpftool-prog.rst
-+++ b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
-@@ -33,7 +33,7 @@ PROG COMMANDS
- |	**bpftool** **prog help**
- |
- |	*MAP* := { **id** *MAP_ID* | **pinned** *FILE* }
--|	*PROG* := { **id** *PROG_ID* | **pinned** *FILE* | **tag** *PROG_TAG* | **name** *PROG_NAME* }
-+|	*PROG* := { **id** *PROG_ID* | **pinned** *FILE* | **tag** *PROG_TAG* | **name** *NAME_PREFIX* }
- |	*TYPE* := {
- |		**socket** | **kprobe** | **kretprobe** | **classifier** | **action** |
- |		**tracepoint** | **raw_tracepoint** | **xdp** | **perf_event** | **cgroup/skb** |
-diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
-index 4e75b58d3989..8e70617e55fb 100644
---- a/tools/bpf/bpftool/main.h
-+++ b/tools/bpf/bpftool/main.h
-@@ -42,12 +42,12 @@
- #define BPF_TAG_FMT	"%02hhx%02hhx%02hhx%02hhx%02hhx%02hhx%02hhx%02hhx"
+diff --git a/arch/riscv/net/bpf_jit_comp.c b/arch/riscv/net/bpf_jit_comp.c
+index 5451ef3845f2..7fbf56aab661 100644
+--- a/arch/riscv/net/bpf_jit_comp.c
++++ b/arch/riscv/net/bpf_jit_comp.c
+@@ -631,14 +631,14 @@ static int emit_bpf_tail_call(int insn, struct rv_jit_context *ctx)
+ 		return -1;
+ 	emit(rv_bgeu(RV_REG_A2, RV_REG_T1, off >> 1), ctx);
  
- #define HELP_SPEC_PROGRAM						\
--	"PROG := { id PROG_ID | pinned FILE | tag PROG_TAG | name PROG_NAME }"
-+	"PROG := { id PROG_ID | pinned FILE | tag PROG_TAG | name NAME_PREFIX }"
- #define HELP_SPEC_OPTIONS						\
- 	"OPTIONS := { {-j|--json} [{-p|--pretty}] | {-f|--bpffs} |\n"	\
- 	"\t            {-m|--mapcompat} | {-n|--nomount} }"
- #define HELP_SPEC_MAP							\
--	"MAP := { id MAP_ID | pinned FILE | name MAP_NAME }"
-+	"MAP := { id MAP_ID | pinned FILE | name NAME_PREFIX }"
+-	/* if (--TCC < 0)
++	/* if (TCC-- < 0)
+ 	 *     goto out;
+ 	 */
+ 	emit(rv_addi(RV_REG_T1, tcc, -1), ctx);
+ 	off = (tc_ninsn - (ctx->ninsns - start_insn)) << 2;
+ 	if (is_13b_check(off, insn))
+ 		return -1;
+-	emit(rv_blt(RV_REG_T1, RV_REG_ZERO, off >> 1), ctx);
++	emit(rv_blt(tcc, RV_REG_ZERO, off >> 1), ctx);
  
- static const char * const prog_type_name[] = {
- 	[BPF_PROG_TYPE_UNSPEC]			= "unspec",
-diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
-index c01f76fa6876..79e0d72ffdd2 100644
---- a/tools/bpf/bpftool/map.c
-+++ b/tools/bpf/bpftool/map.c
-@@ -125,7 +125,7 @@ static int map_fd_by_name(char *name, int **fds)
- 			goto err_close_fd;
- 		}
- 
--		if (strncmp(name, info.name, BPF_OBJ_NAME_LEN)) {
-+		if (!is_prefix(name, info.name)) {
- 			close(fd);
- 			continue;
- 		}
-diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-index 2221bae037f1..295509548c8b 100644
---- a/tools/bpf/bpftool/prog.c
-+++ b/tools/bpf/bpftool/prog.c
-@@ -117,7 +117,7 @@ static int prog_fd_by_nametag(void *nametag, int **fds, bool tag)
- 		}
- 
- 		if ((tag && memcmp(nametag, info.tag, BPF_TAG_SIZE)) ||
--		    (!tag && strncmp(nametag, info.name, BPF_OBJ_NAME_LEN))) {
-+		    (!tag && !is_prefix(nametag, info.name))) {
- 			close(fd);
- 			continue;
- 		}
+ 	/* prog = array->ptrs[index];
+ 	 * if (!prog)
 -- 
-2.17.1
+2.20.1
 
