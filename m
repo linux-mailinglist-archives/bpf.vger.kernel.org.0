@@ -2,84 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7879512BA7A
-	for <lists+bpf@lfdr.de>; Fri, 27 Dec 2019 19:19:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 398B312BAB6
+	for <lists+bpf@lfdr.de>; Fri, 27 Dec 2019 20:07:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727173AbfL0STP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 Dec 2019 13:19:15 -0500
-Received: from mx2.suse.de ([195.135.220.15]:41764 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727393AbfL0SO4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 Dec 2019 13:14:56 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 11550ABEA;
-        Fri, 27 Dec 2019 18:14:54 +0000 (UTC)
-Date:   Fri, 27 Dec 2019 18:14:48 +0000
-From:   Michal Rostecki <mrostecki@opensuse.org>
-To:     mrostecki@opensuse.org
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next 0/2] bpftool/libbpf: Add probe for large INSN
- limit
-Message-ID: <20191227181448.GA452@wotan.suse.de>
-References: <20191227105346.867-1-mrostecki@opensuse.org>
+        id S1727023AbfL0THp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 Dec 2019 14:07:45 -0500
+Received: from mail-qt1-f178.google.com ([209.85.160.178]:46216 "EHLO
+        mail-qt1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726495AbfL0THp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 Dec 2019 14:07:45 -0500
+Received: by mail-qt1-f178.google.com with SMTP id g1so18274570qtr.13;
+        Fri, 27 Dec 2019 11:07:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=XdWlJgq0IM3FDdQEfRF08SkHVZo/GOOoncVdUM2B0VI=;
+        b=phU1zBmeclG+Y4+Uf4rFwYrMuJguAEFI89dfra5kmLRDVmb7EbQOvP8mgZQiS97Gid
+         +GuQJ6XbiLfh1o0FE0xSfu4Mh7/b3HJrS+QmGDHjyU94O72aOmCCL8CNpPxx1v+FJk35
+         kaQKXQ5SlqQzHB9HyugmP0P43HokMujZyA+RYR9P4qfrgd7e5bqljduBqz6XU4GUGO/1
+         3o+qs4z5Sww5uYiSwtSH5i2SQdwzRsU74PBMd5UhFdhiKKTXzsisTgSx/mP7l9Cve6V0
+         t/VYj8NiUXsNbaEfKtkSUmPCNhDdwB4BkL4oKKsuTi+QJYslXY5l7K7v3F7W1FSjxSzS
+         BrKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=XdWlJgq0IM3FDdQEfRF08SkHVZo/GOOoncVdUM2B0VI=;
+        b=VuIpUdK33mt73ifFmfhFW0hWQLM1o7y4ThxV93ZnwHCkfvOynX2dJpI7ifly1o0Kub
+         5vAsxGXMKGWpivhvwYWtVuLOPbSWEBadtqe/zC6GF6QXTdjfWUtZelPfGK6Z/Ug2/5oT
+         HuB13kh4gXZ7JiOWOZ0Mg+OoLz3F37/Ra6k7mW+Q+qTHyn8InFKsVc47K+FwU7U8Wqbe
+         X8FY8KAakumM1b20s49anl9JCcbU0nB6bZGM0HCrFiTbFCcDgyeH1DCLYIF7EpHwKMSc
+         LmJMNarBAHCX9FadNeB8dEyFcrbqirhBUsUbDMaJVLOFXsfCQG+uZT0aKYL6O2s02is+
+         b15g==
+X-Gm-Message-State: APjAAAWO4VsCPoXhIJiCs4q/5zHybQ57ZMqbhhUoajbHMOokEfsu2kaj
+        em11BQfzCspHx1FVfN9Qg67Hyd1m/8cpWZLXE8eZW23l
+X-Google-Smtp-Source: APXvYqy1GzeuGT4FhrVEvdzTen8aZ/OprXEl+Ct2sfVw5pr1g16JsBdkjmJ7JeGCMt9jhSbd9oXZZCcsZXF07wf8SG8=
+X-Received: by 2002:ac8:554b:: with SMTP id o11mr39070292qtr.36.1577473664326;
+ Fri, 27 Dec 2019 11:07:44 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191227105346.867-1-mrostecki@opensuse.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20191227180817.30438-1-daniel@iogearbox.net>
+In-Reply-To: <20191227180817.30438-1-daniel@iogearbox.net>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Fri, 27 Dec 2019 20:07:33 +0100
+Message-ID: <CAJ+HfNhW=tWdAD0jUyNCE7+Hby6874JAr8bfJHnc+edFLQExRg@mail.gmail.com>
+Subject: Re: pull-request: bpf-next 2019-12-27
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Dec 27, 2019 at 11:53:44AM +0100, mrostecki@opensuse.org wrote:
-> From: Michal Rostecki <mrostecki@opensuse.org>
-> 
-> This series implements a new BPF feature probe which checks for the
-> commit c04c0d2b968a ("bpf: increase complexity limit and maximum program
-> size"), which increases the maximum program size to 1M. It's based on
-> the similar check in Cilium, althogh Cilium is already aiming to use
-> bpftool checks and eventually drop all its custom checks.
-> 
-> Examples of outputs:
-> 
-> # bpftool feature probe
-> [...]
-> Scanning miscellaneous eBPF features...
-> Large complexity limit and maximum program size (1M) is available
-> 
-> # bpftool feature probe macros
-> [...]
-> /*** eBPF misc features ***/
-> #define HAVE_HAVE_LARGE_INSN_LIMIT
-> 
-> # bpftool feature probe -j | jq '.["misc"]'
-> {
->   "have_large_insn_limit": true
-> }
-> 
-> Michal Rostecki (2):
->   libbpf: Add probe for large INSN limit
->   bpftool: Add misc secion and probe for large INSN limit
-> 
->  tools/bpf/bpftool/feature.c   | 18 ++++++++++++++++++
->  tools/lib/bpf/libbpf.h        |  1 +
->  tools/lib/bpf/libbpf.map      |  1 +
->  tools/lib/bpf/libbpf_probes.c | 23 +++++++++++++++++++++++
->  4 files changed, 43 insertions(+)
-> 
-> -- 
-> 2.16.4
-> 
+On Fri, 27 Dec 2019 at 19:08, Daniel Borkmann <daniel@iogearbox.net> wrote:
+>
+[...]
+>
+> 2) Merge conflict in arch/riscv/net/bpf_jit_comp.c:
+>
+> (I'm keeping Bjorn in Cc here for a double-check in case I got it wrong.)
+>
+>   <<<<<<< HEAD
+>           if (is_13b_check(off, insn))
+>                   return -1;
+>           emit(rv_blt(tcc, RV_REG_ZERO, off >> 1), ctx);
+>   =3D=3D=3D=3D=3D=3D=3D
+>           emit_branch(BPF_JSLT, RV_REG_T1, RV_REG_ZERO, off, ctx);
+>   >>>>>>> 7c8dce4b166113743adad131b5a24c4acc12f92c
+>
+> Result should look like:
+>
+>           emit_branch(BPF_JSLT, tcc, RV_REG_ZERO, off, ctx);
+>
 
-Sorry for sending this twice! I didn't see the thread immediately after
-sending the first time, so I though there is some problem with my
-@opensuse.org alias or SMTP server not accepting it. Please review this
-series, since I'm using @opensuse.org alias for upstream development
-more frequently than @suse.de.
+That's correct. Thanks, Daniel, for the fixup (over the holiday)!
+
+
+Happy holidays,
+Bj=C3=B6rn
