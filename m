@@ -2,57 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F167212AFB4
-	for <lists+bpf@lfdr.de>; Fri, 27 Dec 2019 00:25:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55B3D12B0AE
+	for <lists+bpf@lfdr.de>; Fri, 27 Dec 2019 03:42:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726277AbfLZXZX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 Dec 2019 18:25:23 -0500
-Received: from shards.monkeyblade.net ([23.128.96.9]:44592 "EHLO
-        shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725909AbfLZXZX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 26 Dec 2019 18:25:23 -0500
-Received: from localhost (unknown [IPv6:2601:601:9f00:1c3::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id C734B1539F551;
-        Thu, 26 Dec 2019 15:25:22 -0800 (PST)
-Date:   Thu, 26 Dec 2019 15:25:22 -0800 (PST)
-Message-Id: <20191226.152522.547752807327139189.davem@davemloft.net>
-To:     daniel@iogearbox.net
-Cc:     jakub.kicinski@netronome.com, ast@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: pull-request: bpf 2019-12-23
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20191223144823.3456-1-daniel@iogearbox.net>
-References: <20191223144823.3456-1-daniel@iogearbox.net>
-X-Mailer: Mew version 6.8 on Emacs 26.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Thu, 26 Dec 2019 15:25:23 -0800 (PST)
+        id S1726277AbfL0CmG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 Dec 2019 21:42:06 -0500
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:59178 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726138AbfL0CmG (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 26 Dec 2019 21:42:06 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=shile.zhang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0Tm.kANK_1577414518;
+Received: from e18g09479.et15sqa.tbsite.net(mailfrom:shile.zhang@linux.alibaba.com fp:SMTPD_---0Tm.kANK_1577414518)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 27 Dec 2019 10:42:04 +0800
+From:   Shile Zhang <shile.zhang@linux.alibaba.com>
+To:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andriin@fb.com>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shile Zhang <shile.zhang@linux.alibaba.com>
+Subject: [PATCH] libbpf: Use $(SRCARCH) for include path
+Date:   Fri, 27 Dec 2019 10:41:56 +0800
+Message-Id: <20191227024156.150419-1-shile.zhang@linux.alibaba.com>
+X-Mailer: git-send-email 2.24.0.rc2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Daniel Borkmann <daniel@iogearbox.net>
-Date: Mon, 23 Dec 2019 15:48:23 +0100
+To include right x86 centric include path for ARCH=x86_64.
 
-> The following pull-request contains BPF updates for your *net* tree.
-> 
-> We've added 2 non-merge commits during the last 1 day(s) which contain
-> a total of 4 files changed, 34 insertions(+), 31 deletions(-).
-> 
-> The main changes are:
-> 
-> 1) Fix libbpf build when building on a read-only filesystem with O=dir
->    option, from Namhyung Kim.
-> 
-> 2) Fix a precision tracking bug for unknown scalars, from Daniel Borkmann.
-> 
-> Please consider pulling these changes from:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+Signed-off-by: Shile Zhang <shile.zhang@linux.alibaba.com>
+---
+ tools/lib/bpf/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Pulled, thanks Daniel.
+diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
+index defae23a0169..197d96886303 100644
+--- a/tools/lib/bpf/Makefile
++++ b/tools/lib/bpf/Makefile
+@@ -59,7 +59,7 @@ FEATURE_USER = .libbpf
+ FEATURE_TESTS = libelf libelf-mmap bpf reallocarray
+ FEATURE_DISPLAY = libelf bpf
+ 
+-INCLUDES = -I. -I$(srctree)/tools/include -I$(srctree)/tools/arch/$(ARCH)/include/uapi -I$(srctree)/tools/include/uapi
++INCLUDES = -I. -I$(srctree)/tools/include -I$(srctree)/tools/arch/$(SRCARCH)/include/uapi -I$(srctree)/tools/include/uapi
+ FEATURE_CHECK_CFLAGS-bpf = $(INCLUDES)
+ 
+ check_feat := 1
+-- 
+2.24.0.rc2
+
