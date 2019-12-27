@@ -2,40 +2,41 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BF3112BA70
-	for <lists+bpf@lfdr.de>; Fri, 27 Dec 2019 19:19:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17A1A12B9F6
+	for <lists+bpf@lfdr.de>; Fri, 27 Dec 2019 19:15:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727526AbfL0SO4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 Dec 2019 13:14:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39434 "EHLO mail.kernel.org"
+        id S1727578AbfL0SPd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 Dec 2019 13:15:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40064 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727503AbfL0SOz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 Dec 2019 13:14:55 -0500
+        id S1727902AbfL0SPQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 Dec 2019 13:15:16 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7CC1A20CC7;
-        Fri, 27 Dec 2019 18:14:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6C98E21582;
+        Fri, 27 Dec 2019 18:15:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1577470495;
-        bh=4qsaJPCsqdeGWjUH3Q5NHhiloyBEEgLcVzLHgGTZ9jQ=;
+        s=default; t=1577470516;
+        bh=XyKOjQslPdTHlWPxGpQ+P5WzATKnm4hOAEZiiYEXo9o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RRI/wfxZeSNv9eL3qnFDDVIvAzjpOBv0W2qGaqXeqBGc5ArhV7JL2g4V1dAZ5tb4d
-         hpAtNXItrX3gIEcD9WJJ3bsA7dplOy/KLMo7REq187va7bF9wI3nAUT8ULFwQ+aplQ
-         X/GLeulqi76wY5W9ccONvGNotZp/jDXCGvFdwhb8=
+        b=Xa0/YQLL1iHqJKnOL4nMZg9OwLUUMmbYAdf3qF+U+JbcAecjkhoa8NG26wQW71AQy
+         T46DP/KWWJE+7jtCR0daALtBl4zHuw6GnBRq+I7gnZl2tRuj1bdnSuFVO9MrNGN519
+         IMpBNLBNcdlX/6jrqZk8apLpg+0cIksI7bJdRuxU=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     "Daniel T. Lee" <danieltimlee@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+Cc:     Alexander Lobakin <alobakin@dlink.ru>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 15/38] samples: bpf: Replace symbol compare of trace_event
-Date:   Fri, 27 Dec 2019 13:14:12 -0500
-Message-Id: <20191227181435.7644-15-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.9 33/38] net, sysctl: Fix compiler warning when only cBPF is present
+Date:   Fri, 27 Dec 2019 13:14:30 -0500
+Message-Id: <20191227181435.7644-33-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20191227181435.7644-1-sashal@kernel.org>
 References: <20191227181435.7644-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -44,43 +45,64 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: "Daniel T. Lee" <danieltimlee@gmail.com>
+From: Alexander Lobakin <alobakin@dlink.ru>
 
-[ Upstream commit bba1b2a890253528c45aa66cf856f289a215bfbc ]
+[ Upstream commit 1148f9adbe71415836a18a36c1b4ece999ab0973 ]
 
-Previously, when this sample is added, commit 1c47910ef8013
-("samples/bpf: add perf_event+bpf example"), a symbol 'sys_read' and
-'sys_write' has been used without no prefixes. But currently there are
-no exact symbols with these under kallsyms and this leads to failure.
+proc_dointvec_minmax_bpf_restricted() has been firstly introduced
+in commit 2e4a30983b0f ("bpf: restrict access to core bpf sysctls")
+under CONFIG_HAVE_EBPF_JIT. Then, this ifdef has been removed in
+ede95a63b5e8 ("bpf: add bpf_jit_limit knob to restrict unpriv
+allocations"), because a new sysctl, bpf_jit_limit, made use of it.
+Finally, this parameter has become long instead of integer with
+fdadd04931c2 ("bpf: fix bpf_jit_limit knob for PAGE_SIZE >= 64K")
+and thus, a new proc_dolongvec_minmax_bpf_restricted() has been
+added.
 
-This commit changes exact compare to substring compare to keep compatible
-with exact symbol or prefixed symbol.
+With this last change, we got back to that
+proc_dointvec_minmax_bpf_restricted() is used only under
+CONFIG_HAVE_EBPF_JIT, but the corresponding ifdef has not been
+brought back.
 
-Fixes: 1c47910ef8013 ("samples/bpf: add perf_event+bpf example")
-Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Link: https://lore.kernel.org/bpf/20191205080114.19766-2-danieltimlee@gmail.com
+So, in configurations like CONFIG_BPF_JIT=y && CONFIG_HAVE_EBPF_JIT=n
+since v4.20 we have:
+
+  CC      net/core/sysctl_net_core.o
+net/core/sysctl_net_core.c:292:1: warning: ‘proc_dointvec_minmax_bpf_restricted’ defined but not used [-Wunused-function]
+  292 | proc_dointvec_minmax_bpf_restricted(struct ctl_table *table, int write,
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Suppress this by guarding it with CONFIG_HAVE_EBPF_JIT again.
+
+Fixes: fdadd04931c2 ("bpf: fix bpf_jit_limit knob for PAGE_SIZE >= 64K")
+Signed-off-by: Alexander Lobakin <alobakin@dlink.ru>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Link: https://lore.kernel.org/bpf/20191218091821.7080-1-alobakin@dlink.ru
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- samples/bpf/trace_event_user.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/core/sysctl_net_core.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/samples/bpf/trace_event_user.c b/samples/bpf/trace_event_user.c
-index 9a130d31ecf2..6fbb5eb9daf3 100644
---- a/samples/bpf/trace_event_user.c
-+++ b/samples/bpf/trace_event_user.c
-@@ -33,9 +33,9 @@ static void print_ksym(__u64 addr)
- 		return;
- 	sym = ksym_search(addr);
- 	printf("%s;", sym->name);
--	if (!strcmp(sym->name, "sys_read"))
-+	if (!strstr(sym->name, "sys_read"))
- 		sys_read_seen = true;
--	else if (!strcmp(sym->name, "sys_write"))
-+	else if (!strstr(sym->name, "sys_write"))
- 		sys_write_seen = true;
+diff --git a/net/core/sysctl_net_core.c b/net/core/sysctl_net_core.c
+index a6fc82704f0c..b4318c1b5b96 100644
+--- a/net/core/sysctl_net_core.c
++++ b/net/core/sysctl_net_core.c
+@@ -255,6 +255,7 @@ static int proc_dointvec_minmax_bpf_enable(struct ctl_table *table, int write,
+ 	return ret;
  }
  
++# ifdef CONFIG_HAVE_EBPF_JIT
+ static int
+ proc_dointvec_minmax_bpf_restricted(struct ctl_table *table, int write,
+ 				    void __user *buffer, size_t *lenp,
+@@ -265,6 +266,7 @@ proc_dointvec_minmax_bpf_restricted(struct ctl_table *table, int write,
+ 
+ 	return proc_dointvec_minmax(table, write, buffer, lenp, ppos);
+ }
++# endif /* CONFIG_HAVE_EBPF_JIT */
+ 
+ static int
+ proc_dolongvec_minmax_bpf_restricted(struct ctl_table *table, int write,
 -- 
 2.20.1
 
