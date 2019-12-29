@@ -2,27 +2,27 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 66D2712C533
-	for <lists+bpf@lfdr.de>; Sun, 29 Dec 2019 18:41:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0696D12C9FB
+	for <lists+bpf@lfdr.de>; Sun, 29 Dec 2019 19:19:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729691AbfL2Rek (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 29 Dec 2019 12:34:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37992 "EHLO mail.kernel.org"
+        id S1727857AbfL2RZC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 29 Dec 2019 12:25:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44362 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729681AbfL2Reg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 29 Dec 2019 12:34:36 -0500
+        id S1727551AbfL2RZC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 29 Dec 2019 12:25:02 -0500
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 822F5206CB;
-        Sun, 29 Dec 2019 17:34:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A1A92207FF;
+        Sun, 29 Dec 2019 17:25:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1577640875;
-        bh=Fbu8SHokZjIsjFXUXyXdsJlb652+II5JYYPjk7N0wb0=;
+        s=default; t=1577640301;
+        bh=uOqrLXsEjwUWzAjQ9LQuiIhQzPPYLGgPnCRrGNgGqbg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qjA8Oa3nGyDaO0PmOt6mBM6Wn7cRIo1Q4eCmrKa072NwTYABU6Q0YzLAUKINV5Q4l
-         RvHBIrMYoMyvQnBFZ4gngJ6LSVyfPCYPBOo8F4RI0p8WzlKJGkzuJCdDuqqw1m07qF
-         PnbBcVaELJWZTFD1oYLkFbb5V7zVD0XT0Ezb3YVE=
+        b=1fREwNGfdYG9uOLpXgwp2SdDIl0ZcLBzLinr5Ytr55XsGW1njzyCWCQ5nCVsT8wdy
+         pa1M/5huVqG7GGz+ciXAN1jZR4QMiqsQ42+UDieqoTDjUWo+fIms5gLxW35dSm2ZTy
+         lFP/CWLc8QEl7WkuRUUU0Wbqqer1yoSxAChMOFh8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -46,12 +46,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         clang-built-linux@googlegroups.com, netdev@vger.kernel.org,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 136/219] perf parse: If pmu configuration fails free terms
-Date:   Sun, 29 Dec 2019 18:18:58 +0100
-Message-Id: <20191229162529.130389505@linuxfoundation.org>
+Subject: [PATCH 4.14 101/161] perf parse: If pmu configuration fails free terms
+Date:   Sun, 29 Dec 2019 18:19:09 +0100
+Message-Id: <20191229162427.034921434@linuxfoundation.org>
 X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20191229162508.458551679@linuxfoundation.org>
-References: <20191229162508.458551679@linuxfoundation.org>
+In-Reply-To: <20191229162355.500086350@linuxfoundation.org>
+References: <20191229162355.500086350@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -95,10 +95,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 8 insertions(+), 1 deletion(-)
 
 diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-index 7ea1a230e89d..95043cae5774 100644
+index 29e2bb304168..096c52f296d7 100644
 --- a/tools/perf/util/parse-events.c
 +++ b/tools/perf/util/parse-events.c
-@@ -1282,8 +1282,15 @@ int parse_events_add_pmu(struct parse_events_state *parse_state,
+@@ -1253,8 +1253,15 @@ static int __parse_events_add_pmu(struct parse_events_state *parse_state,
  	if (get_config_terms(head_config, &config_terms))
  		return -ENOMEM;
  
