@@ -2,51 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 826EE12D14E
-	for <lists+bpf@lfdr.de>; Mon, 30 Dec 2019 15:58:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E25512D155
+	for <lists+bpf@lfdr.de>; Mon, 30 Dec 2019 16:04:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727543AbfL3O6x (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Dec 2019 09:58:53 -0500
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:41695 "EHLO
+        id S1727577AbfL3PE3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Dec 2019 10:04:29 -0500
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:44316 "EHLO
         mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727499AbfL3O6x (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 Dec 2019 09:58:53 -0500
-Received: by mail-wr1-f65.google.com with SMTP id c9so32878354wrw.8
-        for <bpf@vger.kernel.org>; Mon, 30 Dec 2019 06:58:50 -0800 (PST)
+        with ESMTP id S1727531AbfL3PE3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Dec 2019 10:04:29 -0500
+Received: by mail-wr1-f65.google.com with SMTP id q10so32896572wrm.11
+        for <bpf@vger.kernel.org>; Mon, 30 Dec 2019 07:04:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:date:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=3ykkZlgnRsNht0PuRb5+rfdoktA+Ro07BTKZUT/52sQ=;
-        b=f4sfJVsKxE+YQYVIX12Rvx7jkPm+Y5nVGTWdvL2wAqgU5z4zePRng08NDVYH7S75Ex
-         7kbez5PQZK9A+xS6V3nOMWWQg8GDIqX0KdEDqcTtFSoNQoB/djwApOT+DnCGovwQBneu
-         UJ8gLBGzAihnDP97JWPlgpM5LjGjUnc+c87r0=
+        bh=8+MR8QpDYRl1K4CKbQs7az/sCFuxDTT5Mi/1afsWgo4=;
+        b=Y3AiIw0VpkhEo5XfGpafqapJfq3WnOagdT57zYHbZqyED5lbTT1s7kqb8CcN1h3Kjk
+         3UNGbVf5Os5EyNc4IQTTde2lxLW5qbfC5rlmFd29UfLuXDnR6Q/7hxhl9anA3of4XDfz
+         uaIBWT8pF5eFFXHD2GXEPrMrLXoC78nEEJv9Y=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:date:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=3ykkZlgnRsNht0PuRb5+rfdoktA+Ro07BTKZUT/52sQ=;
-        b=d6tyoiujoNRnZDfnLPwh15zCtwKobQwt1VSvkPGxXGYd9uXZwQnR/1bFJHmerAalDv
-         LPyqH2eTCUEI0WcT9oAac0FkWJ2RlLkj+R9r4XwKE4U0wsmWq6KVdVQLDd0EAKTe41Rk
-         YnRK0Iv3nDrZk0gu+0JwicHY0EmWHRK6OSbnKeGqbTsXSoasDt/dCD0kkRTALEuakfem
-         GnIU2WF8ALhMjM5LOShVMvmjGOv3Gb+P1vrCv4qlpduBIDbM7PLbOpZxKX1/BMDFwyDk
-         iLrEtUT2xKyELezOvrv1fuuWKARz/MUVyA9yiNwuzBjGB7PeYV9A+42mpGN7jQ/bOJ2r
-         gENA==
-X-Gm-Message-State: APjAAAUHnr2xCSuDRoKpcdRTi7MPOW6kKD5xeRXh+rgfH9smK+yXrptE
-        0kLXHrWkslJe6/SXsPvqvrtz+A==
-X-Google-Smtp-Source: APXvYqyrChEBuWfvyL7iVI3MIwwOOWYXR6fFR6Hgp+jMsKv3Zt08HMbpzRNHTxf+k1uSTHO2l2RKYw==
-X-Received: by 2002:adf:e58d:: with SMTP id l13mr65165524wrm.135.1577717929673;
-        Mon, 30 Dec 2019 06:58:49 -0800 (PST)
+        bh=8+MR8QpDYRl1K4CKbQs7az/sCFuxDTT5Mi/1afsWgo4=;
+        b=uUOg41YQl9GFBthPf9llWaOfrqiprZO6RFLF7g2blL8B1Qt1AI4l9a8dbFMEWOy0UQ
+         GFLt++1MKhFV1G5SQHgWG6gwJV8mxY8jwq5sMVFgRHq25JcNFQYVUD0dK+ya/0kQw7Nx
+         wSNL6FxvpXeCGIVu8H1C6+UBZK1Fr41dVLSGmdQinIMzXhuM0KxRhJqKPXqyKu1A0hh4
+         aRP1XaKuEiK2u7N6hJzUFvD+xAV0BqIhFFQ4vntyu+oYic0lG3CNEGl2pqqyLYHlhpaL
+         PEqLUbisOEHtIOdxu20i4ZNPb8nWUku4Meo/tYwUyxXkt4D3q+r9CzbwUm6zUKRSChKB
+         dHqw==
+X-Gm-Message-State: APjAAAWN345MPhllxRmwqDxbHp6U0CsQ+cfpi6sS+UZOYS8wRPuaKpwB
+        yX7ERK7AIxBKPilAZCFCN4VIRg==
+X-Google-Smtp-Source: APXvYqyRETMke4ntb1hP/F2ZQWDMdwJ3pOihAaK17lB88wFxNFcfzWHy8NTG46xLtLWvIc6NBVQo1g==
+X-Received: by 2002:adf:f6c1:: with SMTP id y1mr72512584wrp.17.1577718267244;
+        Mon, 30 Dec 2019 07:04:27 -0800 (PST)
 Received: from google.com ([2a00:79e0:42:204:8a21:ba0c:bb42:75ec])
-        by smtp.gmail.com with ESMTPSA id r6sm45918175wrq.92.2019.12.30.06.58.48
+        by smtp.gmail.com with ESMTPSA id c15sm46419168wrt.1.2019.12.30.07.04.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Dec 2019 06:58:49 -0800 (PST)
+        Mon, 30 Dec 2019 07:04:26 -0800 (PST)
 From:   KP Singh <kpsingh@chromium.org>
 X-Google-Original-From: KP Singh <kpsingh>
-Date:   Mon, 30 Dec 2019 15:58:46 +0100
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
+Date:   Mon, 30 Dec 2019 16:04:24 +0100
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     KP Singh <kpsingh@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, linux-security-module@vger.kernel.org,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         James Morris <jmorris@namei.org>,
@@ -72,160 +73,81 @@ Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
         Quentin Monnet <quentin.monnet@netronome.com>,
         Andrey Ignatov <rdna@fb.com>, Joe Stringer <joe@wand.net.nz>
 Subject: Re: [PATCH bpf-next v1 00/13] MAC and Audit policy using eBPF (KRSI)
-Message-ID: <20191230145846.GA70684@google.com>
+Message-ID: <20191230150424.GB70684@google.com>
 References: <20191220154208.15895-1-kpsingh@chromium.org>
- <20191222012722.gdqhppxpfmqfqbld@ast-mbp.dhcp.thefacebook.com>
+ <CAEf4BzYiUZtSJKh-UBL0jwyo6d=Cne2YtEyGU8ONykmSUSsuNA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191222012722.gdqhppxpfmqfqbld@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <CAEf4BzYiUZtSJKh-UBL0jwyo6d=Cne2YtEyGU8ONykmSUSsuNA@mail.gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 21-Dez 17:27, Alexei Starovoitov wrote:
-> On Fri, Dec 20, 2019 at 04:41:55PM +0100, KP Singh wrote:
-> > // Declare the eBPF program mprotect_audit which attaches to
-> > // to the file_mprotect LSM hook and accepts three arguments.
-> > BPF_TRACE_3("lsm/file_mprotect", mprotect_audit,
-> > 	    struct vm_area_struct *, vma,
-> > 	    unsigned long, reqprot, unsigned long, prot
-> > {
-> > 	unsigned long vm_start = _(vma->vm_start);
-> > 	return 0;
-> > }
+On 23-Dec 22:51, Andrii Nakryiko wrote:
+> On Fri, Dec 20, 2019 at 7:42 AM KP Singh <kpsingh@chromium.org> wrote:
+> >
+> > From: KP Singh <kpsingh@google.com>
+> >
+> > This patch series is a continuation of the KRSI RFC
+> > (https://lore.kernel.org/bpf/20190910115527.5235-1-kpsingh@chromium.org/)
+> >
 > 
-
-Hi Alexei,
-
-Thanks for the feedback. This is really helpful!
-
-> I think the only sore point of the patchset is:
-> security/bpf/include/hooks.h   | 1015 ++++++++++++++++++++++++++++++++
-> With bpf trampoline this type of 'kernel types -> bpf types' converters
-> are no longer necessary. Please take a look at tcp-congestion-control patchset:
-> https://patchwork.ozlabs.org/cover/1214417/
-> Instead of doing similar thing (like your patch 1 plus patch 6) it's using
-> trampoline to provide bpf based congestion control callbacks into tcp stack.
-> The same trampoline-based mechanism can be reused by bpf_lsm.
-> Then all manual work of doing BPF_LSM_HOOK(...) for every hook won't be
-> necessary. It will also prove the point that attaching BPF to raw LSM hooks
-> doesn't freeze them into stable abi.
-
-Really cool!
-
-I looked into how BPF trampolines are being used in tracing and the
-new STRUCT_OPS patchset and was able protoype
-(https://github.com/sinkap/linux-krsi/tree/patch/v1/trampoline_prototype,
-not ready for review yet) which:
-
-* Gets rid of security/bpf/include/hooks.h and all of the static
-  macro magic essentially making the LSM ~truly instrumentable~ at
-  runtime.
-* Gets rid of the generation of any new types as we already have
-  all the BTF information in the kernel in the following two types:
-
-struct security_hook_heads {
-        .
-        .
-        struct hlist_head file_mprotect;   <- Append the callback at this offset
-        .
-        .
-};
-
-and
-
-union security_list_options {
-	int (*file_mprotect)(struct vm_area_struct *vma, unsigned long reqprot,
-				unsigned long prot);
-};
-
-Which is the same type as the typedef that's currently being generated
-, i.e. lsm_btf_file_mprotect
-
-In the current prototype, libbpf converts the name of the hook into an
-offset into the security_hook_heads and the verifier does the
-following when a program is loaded:
-
-* Verifies the offset and the type at the offset (struct hlist_head).
-* Resolves the func_proto (by looking up the type in
-  security_list_options) and updates prog->aux with the name and
-  func_proto which are then verified similar to raw_tp programs with
-  btf_ctx_access.
-
-On attachment:
-
-* A trampoline is created and appended to the security_hook_heads
-  for the BPF LSM.
-* An anonymous FD is returned and the attachment is conditional on the
-  references to FD (as suggested and similar to fentry/fexit tracing
-  programs).
-
-This implies that the BPF programs are "the LSM hook" as opposed to
-being executed inside a statically defined hook body which requires
-mutable LSM hooks for which I was able to re-use some of ideas in
-Sargun's patch:
-
-https://lore.kernel.org/lkml/20180408065916.GA2832@ircssh-2.c.rugged-nimbus-611.internal/
-
-to maintain a separate security_hook_heads struct for dynamically
-added LSM hooks by the BPF LSM which are executed after all the
-statically defined hooks.
-
-> Longer program names are supplied via btf's func_info.
-> It feels that:
-> cat /sys/kernel/security/bpf/process_execution
-> env_dumper__v2
-> is reinventing the wheel. bpftool is the main introspection tool.
-> It can print progs attached to perf, cgroup, networking. I think it's better to
-> stay consistent and do the same with bpf-lsm.
-
-I agree, based on the new feedback, I don't think we need securityFS
-attachment points anymore. I was able to get rid of it completely.
-
+> [...]
 > 
-> Another issue is in proposed attaching method:
-> hook_fd = open("/sys/kernel/security/bpf/process_execution");
-> sys_bpf(attach, prog_fd, hook_fd);
-> With bpf tracing we moved to FD-based attaching, because permanent attaching is
-> problematic in production. We're going to provide FD-based api to attach to
-> networking as well, because xdp/tc/cgroup prog attaching suffers from the same
-> production issues. Mainly with permanent attaching there is no ownership of
-> attachment. Everything is global and permanent. It's not clear what
-> process/script suppose to detach/cleanup. I suggest bpf-lsm use FD-based
-> attaching from the beginning. Take a look at raw_tp/tp_btf/fentry/fexit style
-> of attaching. All of them return FD which represents what libbpf calls
-> 'bpf_link' concept. Once refcnt of that FD goes to zero that link (attachment)
-> is destroyed and program is detached _by the kernel_. To make such links
-> permanent the application can pin them in bpffs. The pinning patches haven't
-> landed yet, but the concept of the link is quite powerful and much more
-> production friendly than permanent attaching.
-
-I like this. This also means we don't immediately need the handling of
-duplicate names so I dropped that bit of the patch as well and updated
-the attachment to use this mechanism.
-
-> bpf-lsm will still be able to attach multiple progs to the same hook and
-> see what is attached via bpftool.
+> > # Usage Examples
+> >
+> > A simple example and some documentation is included in the patchset.
+> >
+> > In order to better illustrate the capabilities of the framework some
+> > more advanced prototype code has also been published separately:
+> >
+> > * Logging execution events (including environment variables and arguments):
+> > https://github.com/sinkap/linux-krsi/blob/patch/v1/examples/samples/bpf/lsm_audit_env.c
+> > * Detecting deletion of running executables:
+> > https://github.com/sinkap/linux-krsi/blob/patch/v1/examples/samples/bpf/lsm_detect_exec_unlink.c
+> > * Detection of writes to /proc/<pid>/mem:
+> > https://github.com/sinkap/linux-krsi/blob/patch/v1/examples/samples/bpf/lsm_audit_env.c
 > 
-> The rest looks good. Thank you for working on it.
+> Are you planning on submitting these examples for inclusion into
+> samples/bpf or selftests/bpf? It would be great to have more examples
+> and we can review and suggest nicer ways to go about writing them
+> (e.g., BPF skeleton and global data Alexei mentioned earlier).
 
-There are some choices we need to make here from an API perspective:
+Eventually, yes and in selftest/bpf.
 
-* Should we "repurpose" attr->attach_btf_id and use it as an offset
-  into security_hook_heads or add a new attribute
-  (e.g lsm_hook_offset) for the offset or use name of the LSM hook
-  (e.g. lsm_hook_name).
-* Since we don't have the files in securityFS, the attachment does not
-  have a target_fd. Should we add a new type of BPF command?
-  e.g. LSM_HOOK_OPEN?
+But these examples depend on using security blobs and some non-atomic
+calls in the BPF helpers which are not handled as a part of the
+initial patch-set.
 
-I will clean up the prototype, incorporate some of the other feedback
-received, and send a v2.
-
-Wishing everyone a very Happy New Year!
+Once we have the initial framework finalized, I will update the
+examples and the helpers they are based on and send these separate
+patch-sets on the list for review.
 
 - KP
 
+> 
+> >
+> > We have updated Google's internal telemetry infrastructure and have
+> > started deploying this LSM on our Linux Workstations. This gives us more
+> > confidence in the real-world applications of such a system.
+> >
+> > KP Singh (13):
+> >   bpf: Refactor BPF_EVENT context macros to its own header.
+> >   bpf: lsm: Add a skeleton and config options
+> >   bpf: lsm: Introduce types for eBPF based LSM
+> >   bpf: lsm: Allow btf_id based attachment for LSM hooks
+> >   tools/libbpf: Add support in libbpf for BPF_PROG_TYPE_LSM
+> >   bpf: lsm: Init Hooks and create files in securityfs
+> >   bpf: lsm: Implement attach, detach and execution.
+> >   bpf: lsm: Show attached program names in hook read handler.
+> >   bpf: lsm: Add a helper function bpf_lsm_event_output
+> >   bpf: lsm: Handle attachment of the same program
+> >   tools/libbpf: Add bpf_program__attach_lsm
+> >   bpf: lsm: Add selftests for BPF_PROG_TYPE_LSM
+> >   bpf: lsm: Add Documentation
+> >
+> 
+> [...]
