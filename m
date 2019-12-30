@@ -2,53 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B194112D399
-	for <lists+bpf@lfdr.de>; Mon, 30 Dec 2019 19:53:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D93C12D3A1
+	for <lists+bpf@lfdr.de>; Mon, 30 Dec 2019 19:56:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727565AbfL3SxG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Dec 2019 13:53:06 -0500
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:36602 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727544AbfL3SxG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 Dec 2019 13:53:06 -0500
-Received: by mail-qt1-f195.google.com with SMTP id q20so30210025qtp.3;
-        Mon, 30 Dec 2019 10:53:05 -0800 (PST)
+        id S1727278AbfL3S4s (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Dec 2019 13:56:48 -0500
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:42273 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727496AbfL3S4s (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Dec 2019 13:56:48 -0500
+Received: by mail-qk1-f193.google.com with SMTP id z14so25631899qkg.9;
+        Mon, 30 Dec 2019 10:56:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=+c40Umyv+PJGdt3spV+EstIvDbkd5D0AGvQSQkDVHlE=;
-        b=X0ZUb3rTrrFjYcz72psK9SsBIyQgQr6b3bN68P+4IBUyFSjzGkgJhGqPD5RvOLNyFV
-         G8zKkV4NleJSlxF6LpRW8fiqGLUf3m7I34JV/rBYgE3bP7d+KxNkTcoYSMOLZitR5PUY
-         hYVWwuaW4vtw4nU45SIjjaVyqs2l2bcsYlHMMq6bLOqNBipNXUNM/TuDb/gC0z+oTZN6
-         YPD6fhVEbtrV0gcvyv7Slj32vsHs2jEZ1JG8PGePMutRa0j+YpI8t/JF2ZLfQDeH5z4s
-         3Wg5cWcJ6co/4y7bf6pOHOJcbyqd/9O8YQCMHPI6/q8Uk3Wx2awsX2+HIDXFg8m26whB
-         jiQw==
+        bh=TNO/Hk5SvlZUntSVYUXT/N6cNir5bvB5pW0khbEEdBg=;
+        b=TN+ftY369cQzd2rj90leoiCh82gVHdPl6rkfpEdvmGf/gQt5OGjjLSPVhracdpLchO
+         qkckrsFU7qc+FZ9hXLWDjdX8gE2HWzxDYiQhFRiJS3WdhNzwtvY0bw8+Svpnox1N8d4W
+         9m9s4u/b8P8Zm2Zhys9yWE40tKNOLX3qD1JPVKhtS/6MyPWduUwp8HdKZw2LJD6w+ODY
+         0Rr3Xg25LWIuwu82Ha3EYiKFvkKaKSv5D0xPFIViQMkIkIKRh6eE4Z7S9hzpdC5yUW2j
+         Pqe/C0QlbSqzfHzGM4Pm37706OyAT7GPWFWqWgODF0VlTdYzUEyym1KFBAq+PRYf6fbF
+         crXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=+c40Umyv+PJGdt3spV+EstIvDbkd5D0AGvQSQkDVHlE=;
-        b=dbjhU2j583/3yae5hsZB7K4wMLvrjRA8OxPvPjV4OGn1vs0uLk+RyZ0rDOUhkYwujm
-         I9VoMV2p1gp4BTsZcm4ffpufhY8Rba9XJXsYoRO1Jhd2XAXBIIq9OQzKE8hf9fg/QcjZ
-         I2FvHdh5jDKPmpnvyzhGI9BWHphAODqIys8kgS/JbczwcHXT5iSlLOZSM1gdIbV95YQy
-         Gt25n1zOd/KZN0AvxzYRCwPvMIQ4dKfpCWe7wLhetFRHef+IAIYoa+3lfF+DZCI25WzX
-         rFqNjVe8hn9sSxI80OhrprcjDgcslWpdWtKZT0fdWgf9NeLL29fApgWMnJDhKRp11N9E
-         cBqg==
-X-Gm-Message-State: APjAAAUOLU4cxwQyzFsFA0U4hm7bInxrXn0DN74x8blh2UF+NFP6VZxW
-        z/6SXTsg7n4AsIfIlscy7fnylAZvXHOwGdbnXQo=
-X-Google-Smtp-Source: APXvYqzet2GpbojUKcLCDtYFJKQt7QGPuD359wUZPKWOUBYf2AvhYSaCGvtSpLCmR6p4XB+Xeun539/qyMaK8whl59k=
-X-Received: by 2002:ac8:140c:: with SMTP id k12mr49752689qtj.117.1577731985066;
- Mon, 30 Dec 2019 10:53:05 -0800 (PST)
+        bh=TNO/Hk5SvlZUntSVYUXT/N6cNir5bvB5pW0khbEEdBg=;
+        b=XGdIl7vIpE+XGHS0ysFDU5e8oyhN/f7o0VQFdYASEesxinncIYozMM1mF5hVzVgBXR
+         1x1R6cJyL3TmycycYsk1wmoz0f1MxmTw22gBpX70RTLX3PTiO0MnfumGS2Vh5iQE4xPy
+         mt+M/c3JZEvXBcugO3+F1m6PmgGTnWgKTtdtJ6lP/3Mm6wfzY3p+vO8lez15tnZtqWEK
+         jEg6fyafhmeGzRWeQ+kcN19p4lbIJXz3ITaGGGkVr8+nVOblKwZwvlNR/IhFPH+cgoPL
+         1GD62CZfAPK/rVV7AzKk0DxNU2NwH+WMe+452oHNva9cjssDFI5MJJdCr4U2p+F3bVGK
+         +RYQ==
+X-Gm-Message-State: APjAAAVaqns1QSVhRsPDkHMJH0s7XJ2oWnMRC3wDNl/zzPz1o048e+Cs
+        tuWBhMUL1aznx85yF+mqANIfevn5vvAYrzQr238=
+X-Google-Smtp-Source: APXvYqxe+dIas1aZfaZPUYlz0AHLEVSoZ3Cf4l76RSzTnmKm6vgknRi8IUOmSVg8aVwzNiFKcqRiBViVgKBfYHxFCEo=
+X-Received: by 2002:a37:e408:: with SMTP id y8mr55475323qkf.39.1577732206986;
+ Mon, 30 Dec 2019 10:56:46 -0800 (PST)
 MIME-Version: 1.0
-References: <20191220154208.15895-1-kpsingh@chromium.org> <20191220154208.15895-7-kpsingh@chromium.org>
- <CAEf4BzZ+wMTjghpr4=e5AY9xeFjvm-Rc+JooJzJstBW1r73z4A@mail.gmail.com> <20191230153711.GD70684@google.com>
-In-Reply-To: <20191230153711.GD70684@google.com>
+References: <20191220154208.15895-1-kpsingh@chromium.org> <20191220154208.15895-10-kpsingh@chromium.org>
+ <CAEf4BzYgcez2G1qJW9saJmzfeYirGdH58aAcUk-+YTJF6vyOuQ@mail.gmail.com> <20191230151135.GC70684@google.com>
+In-Reply-To: <20191230151135.GC70684@google.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 30 Dec 2019 10:52:53 -0800
-Message-ID: <CAEf4BzaGkbcsL=NCVteeWEPZ5UMEV6vo+DqTn0YF+hg+y7TsDg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 06/13] bpf: lsm: Init Hooks and create files
- in securityfs
+Date:   Mon, 30 Dec 2019 10:56:35 -0800
+Message-ID: <CAEf4BzaXBLRYP=BZYzr3fmc7ZH=JZ9TY27_HnOxj3ut2RCnZjQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 09/13] bpf: lsm: Add a helper function bpf_lsm_event_output
 To:     KP Singh <kpsingh@chromium.org>
 Cc:     open list <linux-kernel@vger.kernel.org>,
         bpf <bpf@vger.kernel.org>, linux-security-module@vger.kernel.org,
@@ -82,214 +81,90 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Dec 30, 2019 at 7:37 AM KP Singh <kpsingh@chromium.org> wrote:
+On Mon, Dec 30, 2019 at 7:11 AM KP Singh <kpsingh@chromium.org> wrote:
 >
-> On 23-Dec 22:28, Andrii Nakryiko wrote:
+> On 23-Dec 22:36, Andrii Nakryiko wrote:
 > > On Fri, Dec 20, 2019 at 7:43 AM KP Singh <kpsingh@chromium.org> wrote:
 > > >
 > > > From: KP Singh <kpsingh@google.com>
 > > >
-> > > The LSM creates files in securityfs for each hook registered with the
-> > > LSM.
+> > > This helper is similar to bpf_perf_event_output except that
+> > > it does need a ctx argument which is more usable in the
+> > > BTF based LSM programs where the context is converted to
+> > > the signature of the attacthed BTF type.
 > > >
-> > >     /sys/kernel/security/bpf/<h_name>
+> > > An example usage of this function would be:
 > > >
-> > > The list of LSM hooks are maintained in an internal header "hooks.h"
-> > > Eventually, this list should either be defined collectively in
-> > > include/linux/lsm_hooks.h or auto-generated from it.
+> > > struct {
+> > >          __uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
+> > >          __uint(key_size, sizeof(int));
+> > >          __uint(value_size, sizeof(u32));
+> > > } perf_map SEC(".maps");
 > > >
-> > > * Creation of a file for the hook in the securityfs.
-> > > * Allocation of a bpf_lsm_hook data structure which stores
-> > >   a pointer to the dentry of the newly created file in securityfs.
-> > > * Creation of a typedef for the hook so that BTF information
-> > >   can be generated for the LSM hooks to:
+> > > BPF_TRACE_1(bpf_prog1, "lsm/bprm_check_security,
+> > >             struct linux_binprm *, bprm)
+> > > {
+> > >         char buf[BUF_SIZE];
+> > >         int len;
+> > >         u64 flags = BPF_F_CURRENT_CPU;
 > > >
-> > >   - Make them "Compile Once, Run Everywhere".
-> > >   - Pass the right arguments when the attached programs are run.
-> > >   - Verify the accesses made by the program by using the BTF
-> > >     information.
+> > >         /* some logic that fills up buf with len data */
+> > >         len = fill_up_buf(buf);
+> > >         if (len < 0)
+> > >                 return len;
+> > >         if (len > BU)
+> > >                 return 0;
+> > >
+> > >         bpf_lsm_event_output(&perf_map, flags, buf, len);
+> >
+> > This seems to be generally useful and not LSM-specific, so maybe name
+> > it more generically as bpf_event_output instead?
+>
+> Agreed, I am happy to rename this.
+>
+> >
+> > I'm also curious why we needed both bpf_perf_event_output and
+> > bpf_perf_event_output_raw_tp, if it could be done as simply as you did
+> > it here. What's different between those three and why your
+> > bpf_lsm_event_output doesn't need pt_regs passed into them?
+>
+> That's because my implementation uses the following function from
+> bpf_trace.c:
+>
+> u64 bpf_event_output(struct bpf_map *map, u64 flags, void *meta, u64 meta_size,
+>                      void *ctx, u64 ctx_size, bpf_ctx_copy_t ctx_copy)
+>
+> This does not require a pt_regs argument and handles fetching them
+> internally:
+>
+>         regs = this_cpu_ptr(&bpf_pt_regs.regs[nest_level - 1]);
+>
+>         perf_fetch_caller_regs(regs);
+>         perf_sample_data_init(sd, 0, 0);
+>         sd->raw = &raw;
+>
+>         ret = __bpf_perf_event_output(regs, map, flags, sd);
+>
+> - KP
+
+Yeah, I saw that bit. I guess I'm confused why we couldn't do the same
+for, say, raw_tracepoint case. Now Jiri Olsa is adding another similar
+helper doing its own storage of pt_regs. If all of them can share the
+same (even if with bigger nest_level) array of pt_regs, that would
+great.
+
+>
+> >
+> > >         return 0;
+> > > }
 > > >
 > > > Signed-off-by: KP Singh <kpsingh@google.com>
 > > > ---
-> > >  include/linux/bpf_lsm.h        |   12 +
-> > >  security/bpf/Makefile          |    4 +-
-> > >  security/bpf/include/bpf_lsm.h |   63 ++
-> > >  security/bpf/include/fs.h      |   23 +
-> > >  security/bpf/include/hooks.h   | 1015 ++++++++++++++++++++++++++++++++
-> > >  security/bpf/lsm.c             |  138 ++++-
-> > >  security/bpf/lsm_fs.c          |   82 +++
-> > >  7 files changed, 1333 insertions(+), 4 deletions(-)
-> > >  create mode 100644 include/linux/bpf_lsm.h
-> > >  create mode 100644 security/bpf/include/bpf_lsm.h
-> > >  create mode 100644 security/bpf/include/fs.h
-> > >  create mode 100644 security/bpf/include/hooks.h
-> > >  create mode 100644 security/bpf/lsm_fs.c
+> > >  include/uapi/linux/bpf.h       | 10 +++++++++-
+> > >  kernel/bpf/verifier.c          |  1 +
+> > >  security/bpf/ops.c             | 21 +++++++++++++++++++++
+> > >  tools/include/uapi/linux/bpf.h | 10 +++++++++-
+> > >  4 files changed, 40 insertions(+), 2 deletions(-)
 > > >
-> >
-> > [...]
-> >
-> > > +
-> > > +/*
-> > > + * The hooks can have an int or void return type, these macros allow having a
-> > > + * single implementation of DEFINE_LSM_HOOK irrespective of the return type.
-> > > + */
-> > > +#define LSM_HOOK_RET(ret, x) LSM_HOOK_RET_##ret(x)
-> > > +#define LSM_HOOK_RET_int(x) x
-> > > +#define LSM_HOOK_RET_void(x)
-> > > +
-> > > +/*
-> > > + * This macro defines the body of a LSM hook which runs the eBPF programs that
-> > > + * are attached to the hook and returns the error code from the eBPF programs if
-> > > + * the return type of the hook is int.
-> > > + */
-> > > +#define DEFINE_LSM_HOOK(hook, ret, proto, args)                                \
-> > > +typedef ret (*lsm_btf_##hook)(proto);                                  \
-> > > +static ret bpf_lsm_##hook(proto)                                       \
-> > > +{                                                                      \
-> > > +       return LSM_HOOK_RET(ret, LSM_RUN_PROGS(hook##_type, args));     \
-> > >  }
-> >
-> > I'm probably missing something, but according to LSM_HOOK_RET
-> > definition for when ret==void, bpf_lsm_##hook will be a noop and won't
-> > call any BPF program. Did I miss some additional macro magic?
-> >
->
-> Good catch! You're right. These macros will not be there in v2 as
-> we move to using trampolines based callbacks.
-
-Cool, no worries.
-
->
-> > >
-> > > +/*
-> > > + * Define the body of each of the LSM hooks defined in hooks.h.
-> > > + */
-> > > +#define BPF_LSM_HOOK(hook, ret, args, proto) \
-> > > +       DEFINE_LSM_HOOK(hook, ret, BPF_LSM_ARGS(args), BPF_LSM_ARGS(proto))
-> > > +#include "hooks.h"
-> > > +#undef BPF_LSM_HOOK
-> > > +#undef DEFINE_LSM_HOOK
-> > > +
-> > > +/*
-> > > + * Initialize the bpf_lsm_hooks_list for each of the hooks defined in hooks.h.
-> > > + * The list contains information for each of the hook and can be indexed by the
-> > > + * its type to initialize security FS, attach, detach and execute eBPF programs
-> > > + * for the hook.
-> > > + */
-> > > +struct bpf_lsm_hook bpf_lsm_hooks_list[] = {
-> > > +       #define BPF_LSM_HOOK(h, ...)                                    \
-> > > +               [h##_type] = {                                          \
-> > > +                       .h_type = h##_type,                             \
-> > > +                       .mutex = __MUTEX_INITIALIZER(                   \
-> > > +                               bpf_lsm_hooks_list[h##_type].mutex),    \
-> > > +                       .name = #h,                                     \
-> > > +                       .btf_hook_func =                                \
-> > > +                               (void *)(lsm_btf_##h)(bpf_lsm_##h),     \
-> >
-> > this btf_hook_func, is it assigned just so that type information for
-> > bpf_lsm_xxx typedefs are preserved, is that right? It doesn't seem to
-> > be ever called or read. If I'm not missing anything, check out
-> > Martin's latest STRUCT_OPS patch set. He defines EMIT_TYPE_INFO(type)
-> > macro, which will ensure that BTF for specified type is emitted into
-> > vmlinux BTF, without actually using any extra space, defining extra
-> > fields or static variables, etc. I suggest using the same for the
-> > cleanest result.
-> >
-> > One more thing regarding lsm_bpf_ typedefs. Currently you are defining
-> > them as a pointer to func_proto, matching LSM hook. There is an
-> > alternative approach, which has few benefits over using func_proto. If
-> > instead you define a struct, where each argument of func prototype is
-> > represented as 8-byte aligned field, this will contain all the
-> > necessary information for BPF verifier to do its job (just like
-> > func_proto). But in addition to that, when vmlinux.h is generated, it
-> > will contain a nice struct bpf_lsm_<hook_name> with correct structure
-> > to be used **directly** in BPF program, as a single context argument.
-> > So with vmlinux.h, users won't have to re-define all the argument
-> > types and names in their BPF_TRACE_x definition. Let me provide
-> > concrete example from your cover letter. This is what you provide as
-> > an example:
->
-> Is this also doable for the new approach suggsted by Alexei
-> and prototyped in?
->
-> https://lore.kernel.org/bpf/CAEf4BzYiUZtSJKh-UBL0jwyo6d=Cne2YtEyGU8ONykmSUSsuNA@mail.gmail.com/T/#m7c7ec0e7d8e803c6c357495d9eea59028a67cac6
->
-> which uses trampolines. The new approach gets rid of any type
-> generation and macros in security/bpf/lsm_hooks.h. Maybe the
-> btf_vmlinux can be augmented at runtime to generate context struct
-> upon attachment?
-
-If it doesn't generate "controllable" types (and seems like existing
-types are not readily usable as well), then we can't use vmlinux's BTF
-as is. But we can augment vmlinux.h header during generation time,
-based on naming convention and extra post-processing of vmlinux BTF.
-That's sort of a point of special `format core` mode in bpftool, which
-we currently discuss on mailing list as well, see [0].
-
-  [0] https://lore.kernel.org/bpf/CAEf4BzY4ffWaeFckPuqNGNAU1uBG3TmTK+CjY1LVa2G+RGz=cA@mail.gmail.com/T/#u
-
-
->
-> >
-> > BPF_TRACE_3("lsm/file_mprotect", mprotect_audit,
-> >             struct vm_area_struct *, vma,
-> >             unsigned long, reqprot, unsigned long, prot) {...}
-> >
-> > on kernel side, you'll have:
-> >
-> > typedef int (*bpf_lsm_file_mprotect)(struct vm_area_struct *vma,
-> >                                      unsigned long reqprot,
-> >                                      unsigned long prot);
-> >
-> > So you can see that user has to go and copy/paste all the arguments
-> > and their types and paste them in this verbose BPF_TRACE_3 macro to
-> > define correct BPF program.
-> >
-> > Now, imagine that instead of typedef above, we define equivalent struct:
-> >
-> > struct bpf_lsm_file_mprotect {
-> >     struct vm_area_struct *vma;
-> >     unsigned long reqprot;
-> >     unsigned long prot;
-> > };
-> >
-> > This type will get dumped into vmlinux.h, which can be used from BPF
-> > user code as such:
-> >
-> > SEC("lsm/file_mprotect")
-> > int mprotect_audito(struct bpf_lsm_file_mprotect *ctx)
-> > {
-> >     ... here you can use ctx->vma, ctx->reqprot, ctx->prot ...
-> > }
-> >
-> >
-> > Meanwhile, there will be just minimal changes to BPF verifier to use
-> > such struct instead of func_proto for verification of LSM programs.
-> >
-> > We currently have similar issue with raw_tp programs and I've been
-> > thinking about switching that to structs instead of func_proto, so we
-> > might as well coordinate that and reuse the same logic in BPF
-> > verifier.
-> >
-> > Thoughts?
->
-> Thanks for the explanation!
->
-> Using structs is definitely better if we chose to go with static type
-> generation.
->
-
-Yes, that's what I think is preferable for tp_btf programs as well.
-
-> - KP
->
-> >
-> >
-> >
-> > > +               },
-> > > +       #include "hooks.h"
-> > > +       #undef BPF_LSM_HOOK
-> > > +};
-> > > +
 > >
 > > [...]
