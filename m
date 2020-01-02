@@ -2,132 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B27EB12E479
-	for <lists+bpf@lfdr.de>; Thu,  2 Jan 2020 10:35:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 248BB12E722
+	for <lists+bpf@lfdr.de>; Thu,  2 Jan 2020 15:13:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727936AbgABJfK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Jan 2020 04:35:10 -0500
-Received: from mail-il1-f199.google.com ([209.85.166.199]:41335 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727924AbgABJfK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Jan 2020 04:35:10 -0500
-Received: by mail-il1-f199.google.com with SMTP id k9so34456666ili.8
-        for <bpf@vger.kernel.org>; Thu, 02 Jan 2020 01:35:10 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=vccpKWCKoUf8l6AatqgQWk56oswB+uFCmRgqQNd92sk=;
-        b=Y7HliXekeR3llqDyoAiIlbFxyor4bw6YNrTKKQesrjc1cwhjYfEUHuKlHdVhhxi12r
-         ZYYNkQjV6iUcUgXkU/VhChA20UV72jth2yvi3v7kO73gtiOZh1okWYv+bEI8Ff0AwHYp
-         lpgNhovdjhGfjM/GVszLlyEUjyYYzQt5zPJQg/GR94dcsCCqvP8fpHhuK+IMeWD0uRi8
-         u/AeEbhFxUySGDXRMNHy7EK9D5UOBwnpJfhurT/GkPoTmevlq4rZ962j2PAImIetJeyi
-         701tOx/dYC/9utfzJti/SwNxhjxLrKB8XUobQDZucJUu1DBZjLk/sHhvrpfAWDCj0/t2
-         10OA==
-X-Gm-Message-State: APjAAAW1RdZImvj9Jakcwt/avDWH16JiXGbFJcqd+ATYLB7QnEoHbkD9
-        hVCZRL0VWub4V1jIQqamivtscImIgdtrTfi31DWWobv2XtmH
-X-Google-Smtp-Source: APXvYqwgXiuGJScM9HTvKT1JKowivfEyDa3R3JABkpcQ+SmXuDFJz37fAWalmuc38j0znHS1uZnnEWq11pqt6O3wAlk/6oj1hXLh
+        id S1728440AbgABONY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Jan 2020 09:13:24 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:53210 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728449AbgABONX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 2 Jan 2020 09:13:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1577974402;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ag2JLgB6MWnezzVJRs86QwTCJWVo9Yhvt0qhzObIR9Y=;
+        b=E9JQL4zxCMq5s1latY5Qm09kSHXM/gpnoKKtNpv7tRrtXWoYAIIXj9oUH/6U79HeGgZmrO
+        ylcKO4duycL2QvWvqvKTUitNnkxOkAgdkodFbirMgidXx8XTUnHPqeVTuQPveln5RuzN45
+        JGnSm97YGGUOTGe9+vqVE8ikND04HAs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-370-Ir9Eq76HOneKCW92U3vOHA-1; Thu, 02 Jan 2020 09:13:19 -0500
+X-MC-Unique: Ir9Eq76HOneKCW92U3vOHA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DB56A107ACC4;
+        Thu,  2 Jan 2020 14:13:17 +0000 (UTC)
+Received: from [10.36.116.211] (ovpn-116-211.ams2.redhat.com [10.36.116.211])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id D2CE219C4F;
+        Thu,  2 Jan 2020 14:13:16 +0000 (UTC)
+From:   "Eelco Chaudron" <echaudro@redhat.com>
+To:     "Andrii Nakryiko" <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>,
+        "Alexei Starovoitov" <ast@kernel.org>,
+        Networking <netdev@vger.kernel.org>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Add a test for attaching a bpf
+ fentry/fexit trace to an XDP program
+Date:   Thu, 02 Jan 2020 15:13:15 +0100
+Message-ID: <8F140E5A-2E29-4594-94BA-4D43B592A5B1@redhat.com>
+In-Reply-To: <CAEf4BzYxDE5VoBiCaPwv=buUk87Cv0JF09usmQf0WvUceb8A5A@mail.gmail.com>
+References: <157675340354.60799.13351496736033615965.stgit@xdp-tutorial>
+ <CAEf4BzYxDE5VoBiCaPwv=buUk87Cv0JF09usmQf0WvUceb8A5A@mail.gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a6b:fc0c:: with SMTP id r12mr51294497ioh.189.1577957709959;
- Thu, 02 Jan 2020 01:35:09 -0800 (PST)
-Date:   Thu, 02 Jan 2020 01:35:09 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c5d741059b24e89d@google.com>
-Subject: WARNING: locking bug in __inet6_bind
-From:   syzbot <syzbot+414dcdfe035bbcf35fc5@syzkaller.appspotmail.com>
-To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, kafai@fb.com,
-        kuznet@ms2.inr.ac.ru, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com,
-        yoshfuji@linux-ipv6.org
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
-
-syzbot found the following crash on:
-
-HEAD commit:    bf8d1cd4 Merge tag 'scsi-fixes' of git://git.kernel.org/pu..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=155ac9fee00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ed9d672709340e35
-dashboard link: https://syzkaller.appspot.com/bug?extid=414dcdfe035bbcf35fc5
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1245bac6e00000
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+414dcdfe035bbcf35fc5@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 32733 at kernel/locking/lockdep.c:840  
-look_up_lock_class kernel/locking/lockdep.c:840 [inline]
-WARNING: CPU: 0 PID: 32733 at kernel/locking/lockdep.c:840  
-register_lock_class+0x206/0x1850 kernel/locking/lockdep.c:1185
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 0 PID: 32733 Comm: syz-executor.0 Not tainted 5.5.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-Google 01/01/2011
-Call Trace:
-  __dump_stack lib/dump_stack.c:77 [inline]
-  dump_stack+0x197/0x210 lib/dump_stack.c:118
-  panic+0x2e3/0x75c kernel/panic.c:221
-  __warn.cold+0x2f/0x3e kernel/panic.c:582
-  report_bug+0x289/0x300 lib/bug.c:195
-  fixup_bug arch/x86/kernel/traps.c:174 [inline]
-  fixup_bug arch/x86/kernel/traps.c:169 [inline]
-  do_error_trap+0x11b/0x200 arch/x86/kernel/traps.c:267
-  do_invalid_op+0x37/0x50 arch/x86/kernel/traps.c:286
-  invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1027
-RIP: 0010:look_up_lock_class kernel/locking/lockdep.c:840 [inline]
-RIP: 0010:register_lock_class+0x206/0x1850 kernel/locking/lockdep.c:1185
-Code: fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 aa 10 00 00 4c 3b 7b  
-18 44 8b 35 85 9e 08 0a 74 0b 48 81 3b a0 79 bb 8a 74 02 <0f> 0b 45 85 ed  
-0f 84 71 03 00 00 f6 85 70 ff ff ff 01 0f 85 64 03
-RSP: 0018:ffffc90003d17a28 EFLAGS: 00010006
-RAX: dffffc0000000000 RBX: ffff88809a06d120 RCX: 0000000000000000
-RDX: 1ffff1101340da27 RSI: 0000000000000000 RDI: ffff88809a06d138
-RBP: ffffc90003d17af0 R08: 1ffff920007a2f4d R09: ffffffff8b63b560
-R10: ffffffff8b2c5ce8 R11: 0000000000000000 R12: ffffffff8b3089e0
-R13: 0000000000000000 R14: 0000000000000000 R15: ffffffff88d4e000
-  __lock_acquire+0xf4/0x4a00 kernel/locking/lockdep.c:3837
-  lock_acquire+0x190/0x410 kernel/locking/lockdep.c:4485
-  __raw_spin_lock_bh include/linux/spinlock_api_smp.h:135 [inline]
-  _raw_spin_lock_bh+0x33/0x50 kernel/locking/spinlock.c:175
-  spin_lock_bh include/linux/spinlock.h:343 [inline]
-  lock_sock_nested+0x41/0x120 net/core/sock.c:2936
-  lock_sock include/net/sock.h:1531 [inline]
-  __inet6_bind+0x788/0x19b0 net/ipv6/af_inet6.c:300
-  inet6_bind+0xfa/0x155 net/ipv6/af_inet6.c:453
-  __sys_bind+0x239/0x290 net/socket.c:1649
-  __do_sys_bind net/socket.c:1660 [inline]
-  __se_sys_bind net/socket.c:1658 [inline]
-  __x64_sys_bind+0x73/0xb0 net/socket.c:1658
-  do_syscall_64+0xfa/0x790 arch/x86/entry/common.c:294
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-RIP: 0033:0x45a919
-Code: ad b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7  
-48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
-ff 0f 83 7b b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f66ae74ec78 EFLAGS: 00000246 ORIG_RAX: 0000000000000031
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 000000000045a919
-RDX: 000000000000001c RSI: 0000000020000000 RDI: 0000000000000004
-RBP: 000000000075bfc8 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f66ae74f6d4
-R13: 00000000004c0ca5 R14: 00000000004d47d8 R15: 00000000ffffffff
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
 
 
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+On 20 Dec 2019, at 0:02, Andrii Nakryiko wrote:
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+> On Thu, Dec 19, 2019 at 3:04 AM Eelco Chaudron <echaudro@redhat.com>=20
+> wrote:
+>>
+>> Add a test that will attach a FENTRY and FEXIT program to the XDP=20
+>> test
+>> program. It will also verify data from the XDP context on FENTRY and
+>> verifies the return code on exit.
+>>
+>> Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
+>> ---
+>>  .../testing/selftests/bpf/prog_tests/xdp_bpf2bpf.c |   95=20
+>> ++++++++++++++++++++
+>>  .../testing/selftests/bpf/progs/test_xdp_bpf2bpf.c |   44 +++++++++
+>>  2 files changed, 139 insertions(+)
+>>  create mode 100644=20
+>> tools/testing/selftests/bpf/prog_tests/xdp_bpf2bpf.c
+>>  create mode 100644=20
+>> tools/testing/selftests/bpf/progs/test_xdp_bpf2bpf.c
+>>
+>
+> [...]
+>
+>> +       /* Load XDP program to introspect */
+>> +       err =3D bpf_prog_load(file, BPF_PROG_TYPE_XDP, &obj, &prog_fd)=
+;
+>
+> Please use BPF skeleton for this test. It will make it significantly
+> shorter and clearer. See other fentry_fexit selftest for example.
+>
+
+Trying to do this, however, I=E2=80=99m getting the following when trying=
+ to=20
+execute the test:
+
+test_xdp_bpf2bpf:PASS:pkt_skel_load 0 nsec
+libbpf: fentry/_xdp_tx_iptunnel is not found in vmlinux BTF
+libbpf: failed to load object 'test_xdp_bpf2bpf'
+libbpf: failed to load BPF skeleton 'test_xdp_bpf2bpf': -2
+test_xdp_bpf2bpf:FAIL:ftrace_skel_load ftrace skeleton failed
+
+
+My program is straight forward following the fentry_fexit.c example:
+
+     pkt_skel =3D test_xdp__open_and_load();
+     if (CHECK(!pkt_skel, "pkt_skel_load", "test_xdp skeleton=20
+failed\n"))
+         return;
+
+     map_fd =3D bpf_map__fd(pkt_skel->maps.vip2tnl);
+     bpf_map_update_elem(map_fd, &key4, &value4, 0);
+
+     /* Load eBPF trace program */
+     ftrace_skel =3D test_xdp_bpf2bpf__open_and_load();
+     if (CHECK(!ftrace_skel, "ftrace_skel_load", "ftrace skeleton=20
+failed\n"))
+         goto out;
+
+I assume this is due to the missing link from the XDP program to the=20
+eBPF trace program.
+Previously I did this trough:
+
++	DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts,
++			    .attach_prog_fd =3D prog_fd,
++			   );
++
++	tracer_obj =3D bpf_object__open_file("./test_xdp_bpf2bpf.o", &opts);
+
+
+If I use this approach as before it works, i.e.:
+
+         DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts,
+                             .attach_prog_fd =3D pkt_fd,
+                            );
+
+         ftrace_skel =3D test_xdp_bpf2bpf__open_opts(&opts);
+         if (CHECK(!ftrace_skel, "__open_opts=E2=80=9D, "ftrace skeleton=20
+failed\n"))
+           goto out;
+         if (CHECK(test_xdp_bpf2bpf__load(ftrace_skel), "__load",=20
+"ftrace skeleton failed\n"))
+           goto out;
+
+But I do not see this in the fentry_fexit.c example, guess I might be=20
+missing something that is right in front of me :(
+
+
+[...]
+
