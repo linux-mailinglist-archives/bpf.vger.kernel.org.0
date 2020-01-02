@@ -2,147 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 248BB12E722
-	for <lists+bpf@lfdr.de>; Thu,  2 Jan 2020 15:13:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44EE912E9B0
+	for <lists+bpf@lfdr.de>; Thu,  2 Jan 2020 19:05:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728440AbgABONY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 2 Jan 2020 09:13:24 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:53210 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728449AbgABONX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 2 Jan 2020 09:13:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1577974402;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ag2JLgB6MWnezzVJRs86QwTCJWVo9Yhvt0qhzObIR9Y=;
-        b=E9JQL4zxCMq5s1latY5Qm09kSHXM/gpnoKKtNpv7tRrtXWoYAIIXj9oUH/6U79HeGgZmrO
-        ylcKO4duycL2QvWvqvKTUitNnkxOkAgdkodFbirMgidXx8XTUnHPqeVTuQPveln5RuzN45
-        JGnSm97YGGUOTGe9+vqVE8ikND04HAs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-370-Ir9Eq76HOneKCW92U3vOHA-1; Thu, 02 Jan 2020 09:13:19 -0500
-X-MC-Unique: Ir9Eq76HOneKCW92U3vOHA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DB56A107ACC4;
-        Thu,  2 Jan 2020 14:13:17 +0000 (UTC)
-Received: from [10.36.116.211] (ovpn-116-211.ams2.redhat.com [10.36.116.211])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D2CE219C4F;
-        Thu,  2 Jan 2020 14:13:16 +0000 (UTC)
-From:   "Eelco Chaudron" <echaudro@redhat.com>
-To:     "Andrii Nakryiko" <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>,
-        "Alexei Starovoitov" <ast@kernel.org>,
-        Networking <netdev@vger.kernel.org>
-Subject: Re: [PATCH bpf-next] selftests/bpf: Add a test for attaching a bpf
- fentry/fexit trace to an XDP program
-Date:   Thu, 02 Jan 2020 15:13:15 +0100
-Message-ID: <8F140E5A-2E29-4594-94BA-4D43B592A5B1@redhat.com>
-In-Reply-To: <CAEf4BzYxDE5VoBiCaPwv=buUk87Cv0JF09usmQf0WvUceb8A5A@mail.gmail.com>
-References: <157675340354.60799.13351496736033615965.stgit@xdp-tutorial>
- <CAEf4BzYxDE5VoBiCaPwv=buUk87Cv0JF09usmQf0WvUceb8A5A@mail.gmail.com>
+        id S1727838AbgABSFF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 2 Jan 2020 13:05:05 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:6702 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727829AbgABSFF (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 2 Jan 2020 13:05:05 -0500
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 002I46FD004308;
+        Thu, 2 Jan 2020 10:04:51 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=SYORyHnpACPCy7bk3qFc3TJY+/bv4fpaug6dzuTbIfo=;
+ b=gd0ubtr+N82FLJllaGDrBAHL6XYujcrI8Cark8VGJJQyJgQLgu7JiGPoUlUkKtple/lV
+ zwICZES2g41EcqW7w1wQAjf3OmOAPPcli8kr5kQg1i7xLNQ+riPp4IebvgIoMMaOLK2A
+ VwOvzZtqSL7NGDFdkAKnqAKTrpu/TzujLwY= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2x6qn088c4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 02 Jan 2020 10:04:51 -0800
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 2 Jan 2020 10:04:49 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XVgbM/E8zUNj8nMdgC5o2iZR4Vd4IKuRpp8LPnBmYLnBGhM2/dFHq4RbOTbB9NPo2YKu3Y6JFLFW/h6XgeorynUzlxe//8NbCVWDw9FAp5bOe/47MUIvwZ2KW3MZ8Cb3O51LdihZTK7xKgnftMzKteuCnOK8ESz1vsddVXY8/SUM05Jl9MAK2cdjP8DB+7Ebn+F6Gct7m1iKtREYp5sNihcUlJkgwlDt2yPtATr2FoJnZ9vBCGftYDYgJY0YdFs/tkWkxy9BGq0NK5+H+aF2VWeknmcGVp+PYu/5iHK4Wup7faxscfN+ozM70USAGBZWCcP8y9eexFkCx+kgvDoFkQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SYORyHnpACPCy7bk3qFc3TJY+/bv4fpaug6dzuTbIfo=;
+ b=BXQlRgPVe3XqflK1K/RhiMod+QHnSUjJYHIgy0aKKmaocx1tbM1E4PSRIXncLDyIiYMuPiWRsDQyH5y+WL0ocscG60MMeW1Dn413nc36mYS1PhG8qVsY8yQhjX+tPQhTjGLhPGwcdk6z+XMNZ39G4k5NwaCBPJppXPEl2fcpjaO1axg6Lh2Tx5A52NOLh1hNwee/uXHQ5NhVjUPUFd4QoBXb3HJ+2jg5Da4mxPQe2EbKrX5rZIZfV/vRzAnXTFFo7DjBKX4Uuwq9duJuduRyJDdMvuEJZRUGbAac91Fzh7bL7wwEDPD9NRNC8ClnqEXVfq89LVzuZnSY1hQxK45/DQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SYORyHnpACPCy7bk3qFc3TJY+/bv4fpaug6dzuTbIfo=;
+ b=aHFFy77TNUzNA7ZqYIfuF2dq56osyoILp70HF9kN/ZxN/IfuJZYjn2AH2sa6UmACF8CMKwGR8kvHvS0wNTmP8jktAQINJIHBrIqsuZ5DumxEJb2NEOPxCRgmNm6J60TArgdDT1+IkFw9Eo1TYJBCAVOjtKn9+e/Yb+Auug3bStE=
+Received: from DM5PR15MB1675.namprd15.prod.outlook.com (10.175.107.145) by
+ DM5PR15MB1610.namprd15.prod.outlook.com (10.175.111.136) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2602.11; Thu, 2 Jan 2020 18:04:48 +0000
+Received: from DM5PR15MB1675.namprd15.prod.outlook.com
+ ([fe80::1cbf:c518:3a4d:291b]) by DM5PR15MB1675.namprd15.prod.outlook.com
+ ([fe80::1cbf:c518:3a4d:291b%11]) with mapi id 15.20.2581.014; Thu, 2 Jan 2020
+ 18:04:48 +0000
+Received: from MacBook-Pro-52.local (2620:10d:c090:200::89dc) by CO2PR18CA0066.namprd18.prod.outlook.com (2603:10b6:104:2::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2602.10 via Frontend Transport; Thu, 2 Jan 2020 18:04:47 +0000
+From:   Yonghong Song <yhs@fb.com>
+To:     Martin Lau <kafai@fb.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>,
+        Kernel Team <Kernel-team@fb.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: Re: [PATCH bpf-next v3 04/11] bpf: Support bitfield read access in
+ btf_struct_access
+Thread-Topic: [PATCH bpf-next v3 04/11] bpf: Support bitfield read access in
+ btf_struct_access
+Thread-Index: AQHVv6Jz68VM098+YU+rGKHyi/FvFqfXruoA
+Date:   Thu, 2 Jan 2020 18:04:48 +0000
+Message-ID: <cd17fa0c-3139-3031-4750-62f7f05949bb@fb.com>
+References: <20191231062037.280596-1-kafai@fb.com>
+ <20191231062046.281300-1-kafai@fb.com>
+In-Reply-To: <20191231062046.281300-1-kafai@fb.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: CO2PR18CA0066.namprd18.prod.outlook.com
+ (2603:10b6:104:2::34) To DM5PR15MB1675.namprd15.prod.outlook.com
+ (2603:10b6:3:11f::17)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c090:200::89dc]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 5fdb84aa-31b6-4fc0-2722-08d78fae416f
+x-ms-traffictypediagnostic: DM5PR15MB1610:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM5PR15MB161060A8E44DE8E956F9C56AD3200@DM5PR15MB1610.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2657;
+x-forefront-prvs: 0270ED2845
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(366004)(396003)(39860400002)(346002)(376002)(136003)(189003)(199004)(6512007)(110136005)(81156014)(81166006)(4326008)(8936002)(8676002)(5660300002)(6486002)(31696002)(186003)(2906002)(16526019)(316002)(54906003)(2616005)(86362001)(66556008)(4744005)(66946007)(6506007)(71200400001)(478600001)(31686004)(66476007)(64756008)(66446008)(36756003)(52116002)(53546011);DIR:OUT;SFP:1102;SCL:1;SRVR:DM5PR15MB1610;H:DM5PR15MB1675.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 0h69TiJSC0bp9bCA86UV46BrCQzWxeZ2ELqE6CA/4n0Fu+YxzNmruB5ut0h+7i81Xh48qBjpecfAJYOxGeIprS7dwYkec7FuJV8nI9g582dYnRFa60qUoocdr3YyAKdyzyjFNj5lD3QQJSQb9ZDx00yP3i7qxfsaZaDUGBK25oVWWwa6mMwcbfTydsM3zkyYTtA/5S5tgldvYYcdIcudCQ52y6QWq65OwMs9g3/pLQqPvNnQoiBmjsH8nUdihILMUV7QaxmygN72k1QD/4CddUndL52FWW4J4m1pb11ir0P0mGgW2k7783rLVKjojrWzrPs1zu+/Mc+CEeOKfe8yxQ10mBe8sSNEAHKBgGuq0JlA7dj46OCu4EkAhjRnkfzbdbd4wtfpB31Q9xJjbEToNpadEoN1B4vJXNKUUXrT7NUWxpdskyHdZg/0eGue5oMm
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <DB66BEC498913C439067F20E1B2141D4@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5fdb84aa-31b6-4fc0-2722-08d78fae416f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Jan 2020 18:04:48.4837
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: i/hxSkSXtx2iFfsPU+Lqo0yML74a49j4zB1BkLrTjR87nFdusXYmoLic1BDiklmG
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR15MB1610
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
+ definitions=2020-01-02_05:2020-01-02,2020-01-02 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=999
+ lowpriorityscore=0 phishscore=0 clxscore=1015 bulkscore=0 suspectscore=0
+ impostorscore=0 priorityscore=1501 malwarescore=0 adultscore=0 mlxscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-2001020151
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 20 Dec 2019, at 0:02, Andrii Nakryiko wrote:
-
-> On Thu, Dec 19, 2019 at 3:04 AM Eelco Chaudron <echaudro@redhat.com>=20
-> wrote:
->>
->> Add a test that will attach a FENTRY and FEXIT program to the XDP=20
->> test
->> program. It will also verify data from the XDP context on FENTRY and
->> verifies the return code on exit.
->>
->> Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
->> ---
->>  .../testing/selftests/bpf/prog_tests/xdp_bpf2bpf.c |   95=20
->> ++++++++++++++++++++
->>  .../testing/selftests/bpf/progs/test_xdp_bpf2bpf.c |   44 +++++++++
->>  2 files changed, 139 insertions(+)
->>  create mode 100644=20
->> tools/testing/selftests/bpf/prog_tests/xdp_bpf2bpf.c
->>  create mode 100644=20
->> tools/testing/selftests/bpf/progs/test_xdp_bpf2bpf.c
->>
->
-> [...]
->
->> +       /* Load XDP program to introspect */
->> +       err =3D bpf_prog_load(file, BPF_PROG_TYPE_XDP, &obj, &prog_fd)=
-;
->
-> Please use BPF skeleton for this test. It will make it significantly
-> shorter and clearer. See other fentry_fexit selftest for example.
->
-
-Trying to do this, however, I=E2=80=99m getting the following when trying=
- to=20
-execute the test:
-
-test_xdp_bpf2bpf:PASS:pkt_skel_load 0 nsec
-libbpf: fentry/_xdp_tx_iptunnel is not found in vmlinux BTF
-libbpf: failed to load object 'test_xdp_bpf2bpf'
-libbpf: failed to load BPF skeleton 'test_xdp_bpf2bpf': -2
-test_xdp_bpf2bpf:FAIL:ftrace_skel_load ftrace skeleton failed
-
-
-My program is straight forward following the fentry_fexit.c example:
-
-     pkt_skel =3D test_xdp__open_and_load();
-     if (CHECK(!pkt_skel, "pkt_skel_load", "test_xdp skeleton=20
-failed\n"))
-         return;
-
-     map_fd =3D bpf_map__fd(pkt_skel->maps.vip2tnl);
-     bpf_map_update_elem(map_fd, &key4, &value4, 0);
-
-     /* Load eBPF trace program */
-     ftrace_skel =3D test_xdp_bpf2bpf__open_and_load();
-     if (CHECK(!ftrace_skel, "ftrace_skel_load", "ftrace skeleton=20
-failed\n"))
-         goto out;
-
-I assume this is due to the missing link from the XDP program to the=20
-eBPF trace program.
-Previously I did this trough:
-
-+	DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts,
-+			    .attach_prog_fd =3D prog_fd,
-+			   );
-+
-+	tracer_obj =3D bpf_object__open_file("./test_xdp_bpf2bpf.o", &opts);
-
-
-If I use this approach as before it works, i.e.:
-
-         DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts,
-                             .attach_prog_fd =3D pkt_fd,
-                            );
-
-         ftrace_skel =3D test_xdp_bpf2bpf__open_opts(&opts);
-         if (CHECK(!ftrace_skel, "__open_opts=E2=80=9D, "ftrace skeleton=20
-failed\n"))
-           goto out;
-         if (CHECK(test_xdp_bpf2bpf__load(ftrace_skel), "__load",=20
-"ftrace skeleton failed\n"))
-           goto out;
-
-But I do not see this in the fentry_fexit.c example, guess I might be=20
-missing something that is right in front of me :(
-
-
-[...]
-
+DQoNCk9uIDEyLzMwLzE5IDEwOjIwIFBNLCBNYXJ0aW4gS2FGYWkgTGF1IHdyb3RlOg0KPiBUaGlz
+IHBhdGNoIGFsbG93cyBiaXRmaWVsZCBhY2Nlc3MgYXMgYSBzY2FsYXIuDQo+IA0KPiBJdCBjaGVj
+a3MgIm9mZiArIHNpemUgPiB0LT5zaXplIiB0byBhdm9pZCBhY2Nlc3NpbmcgYml0ZmllbGQNCj4g
+ZW5kIHVwIGFjY2Vzc2luZyBiZXlvbmQgdGhlIHN0cnVjdC4gIFRoaXMgY2hlY2sgaXMgZG9uZQ0K
+PiBvdXRzaWRlIG9mIHRoZSBsb29wIHNpbmNlIGl0IGlzIGFwcGxpY2FibGUgdG8gYWxsIGFjY2Vz
+cy4NCj4gDQo+IEl0IGFsc28gdGFrZXMgdGhpcyBjaGFuY2UgdG8gYnJlYWsgZWFybHkgb24gdGhl
+ICJvZmYgPCBtb2ZmIiBjYXNlLg0KPiANCj4gU2lnbmVkLW9mZi1ieTogTWFydGluIEthRmFpIExh
+dSA8a2FmYWlAZmIuY29tPg0KDQpBY2tlZC1ieTogWW9uZ2hvbmcgU29uZyA8eWhzQGZiLmNvbT4N
+Cg==
