@@ -2,89 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A8D512FBBF
-	for <lists+bpf@lfdr.de>; Fri,  3 Jan 2020 18:47:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EA5312FCEC
+	for <lists+bpf@lfdr.de>; Fri,  3 Jan 2020 20:18:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728220AbgACRrQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Jan 2020 12:47:16 -0500
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:33647 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728110AbgACRrQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 Jan 2020 12:47:16 -0500
-Received: by mail-lj1-f193.google.com with SMTP id y6so36600343lji.0;
-        Fri, 03 Jan 2020 09:47:14 -0800 (PST)
+        id S1728496AbgACTSk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Jan 2020 14:18:40 -0500
+Received: from mail-qv1-f65.google.com ([209.85.219.65]:44271 "EHLO
+        mail-qv1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728380AbgACTSk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 Jan 2020 14:18:40 -0500
+Received: by mail-qv1-f65.google.com with SMTP id n8so16599230qvg.11;
+        Fri, 03 Jan 2020 11:18:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=L0RSeiMU8QPdyOoG9B7y/fvlmT9zXEcFUjZ8OB6A7lk=;
-        b=KqwmgltChF4dNJvggsEgsGSiEsBSUXu+bcHz6HLV8dVvSnyVFmshCVm7mtsBYqtA+e
-         09lS+yhsyGC2JGAGM58yWnZ1eW9V1k6RRebEHZkpy5XkUp5aRONRu0Ih4g9LPfG2iOxE
-         LWBHodFYN1sKKWJEyHuRIPy0YrV39XFdFJ4OgW9ukiK4uRAj3b/nTbLtRtEsC0/YXxGv
-         TsZRgehd1v6WYfO/WFHID9jwuzpblaSKNiLsNtRiGjRl82h8bWpJdTDKpXFLddz049nG
-         eJIxEHqhzRJoNM9NVrJKRGknHmgSeCKXEQ6Ms4gaXH1Jw1WrBOe64KcDWSGVy1Saf/y6
-         +69g==
+        bh=yu1PQeV86PC8O/FDOg5jNn1X99e7ZatzvafUBFhxrGM=;
+        b=syVCeyMMTbrbspjyaBc7Dz7ShCs5rmTzYqukMmvk98MeX16ciBpHJkK2yEyYUYKIBU
+         p9UImKs3V9W/BrutfHdaei3r9XOYb0ymSvRfQQy7I6QnKO1Rb4BcX1c2SZPHineKkL2d
+         U1LiOhzkw53PnWqIydlVUNtqlU2A4Wnvz7yqfPMN5b+/OCzv7cZw9QTL7hMx6A9pcXrT
+         8Vcht+A7XQnP90H8xRyUp8ptIC5IRK65zH9nJ7n434QHGyYWURDlp0pH5EtBLERPWp1m
+         k4lgSg9Vg2ns98kmdDz30c1Z9LJJEEoqJ80ekT03h/mtviP7KGW50s17A/SVLrTRt/iC
+         xVQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=L0RSeiMU8QPdyOoG9B7y/fvlmT9zXEcFUjZ8OB6A7lk=;
-        b=ejQ5MRBfASwIEnCTFqMN49bvA78nP+p/M1MJnUwDWbkAHjRTmATirxyV55TrHGHfn1
-         fwwwIZtJRLkMiVsr8te2uJngRl8vMYpBof/aoF4Cv9CeubrL19LYUVkeXQXFaXJ23e/l
-         ppoT/RtTSMTHkuawMzyN0hoApC6tErMQ+1DTAKTugUi1YOaO30At3diaMgAf44DYhzFh
-         +vBQzPGzw1vW2/hsXFzVeX7sy7Hky12jfHQ6MlkvT4GpEl7T93txmJJvmkZ1VncrpsMd
-         vPOw292SxbXgtYD63c8i/7epNVf8QH1dKUCXNEWmS6/qE9puA2PG0IZG4Ymxj9kuChic
-         OzvA==
-X-Gm-Message-State: APjAAAVdB0KxAILsQepRrmW4vU+WQ4cuLgKw9Fi8S78R2J0OdgfzUU4U
-        GAwz7sqpXo9FG2W7lbHoLddV8fkWj0vaAfOo2fawZlz9
-X-Google-Smtp-Source: APXvYqzVneOWPg55BXdA3ZDaSFLNRTK6aUClojuZRBSWrtYXVqP/JPBgHG7a/2h8VK53E45cVQy+QGViybaJibiKk9g=
-X-Received: by 2002:a2e:b4cb:: with SMTP id r11mr53035655ljm.68.1578073633455;
- Fri, 03 Jan 2020 09:47:13 -0800 (PST)
+        bh=yu1PQeV86PC8O/FDOg5jNn1X99e7ZatzvafUBFhxrGM=;
+        b=TP4ld3HSJmufDEsKr4+wWbCsilyTbBBIsTv/yrrBZcBA3zth7tgG44c78i/mo1gtf7
+         MzYreQHmbJrQvJmIvKfvAEsxzgHJYgQc2uyl9lsH0S+izpSVSe9G40DD8i8OK3GW/+ju
+         CZEjwK+87avrLkN4SuK3OqLhD7UO0NiGQw9/jNOjSs6UIWU/4mC4SNaiuEPeD4yvZjed
+         MoNLvdtSLihvXYhaa3qSmpJp3q3Av8vTtwnfp/yjwIH56gdy3GjnVtOyDDvSelHX1G6F
+         fLOnl2ad7CSAnS/WPjgc9CvgzpEaDY1rTw8cDENJ6hTQm5d5AQzIWdasgk/+an8K45m0
+         qdYg==
+X-Gm-Message-State: APjAAAXNI073VGLgl1pPakzfConXGXiMBeGMPvm0GShdiI2wi/eoJIPy
+        XynB+fmNx9YjoT3Bo3YnXMKsSxk6iMTYm0FYEeM=
+X-Google-Smtp-Source: APXvYqxwbLcBHd9eGb/ikZ0DYoOyo3nhlhVq+UHTumSxAcsa74RtbTOjuV0k6MX3hbODEG9EIML0P/qcQNXpW922r6g=
+X-Received: by 2002:a05:6214:923:: with SMTP id dk3mr66651024qvb.96.1578079119506;
+ Fri, 03 Jan 2020 11:18:39 -0800 (PST)
 MIME-Version: 1.0
-References: <20191227215034.3169624-1-guro@fb.com>
-In-Reply-To: <20191227215034.3169624-1-guro@fb.com>
+References: <1578031353-27654-1-git-send-email-lirongqing@baidu.com> <20200103082712.GF12930@netronome.com>
+In-Reply-To: <20200103082712.GF12930@netronome.com>
 From:   Song Liu <liu.song.a23@gmail.com>
-Date:   Fri, 3 Jan 2020 09:47:01 -0800
-Message-ID: <CAPhsuW7SKrS9WOVZXXoXjeGaFugUZmwip-m44gWAWyCbEkhBvA@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: cgroup: prevent out-of-order release of cgroup bpf
-To:     Roman Gushchin <guro@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        open list <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Networking <netdev@vger.kernel.org>, stable@vger.kernel.org
+Date:   Fri, 3 Jan 2020 11:18:28 -0800
+Message-ID: <CAPhsuW6z+jh0xofi8FCA0uvTJ5jSL_ZGpwPu1Eg566XeJ03pZA@mail.gmail.com>
+Subject: Re: [PATCH][bpf-next] bpf: change bpf_skb_generic_push type as void
+To:     Simon Horman <simon.horman@netronome.com>
+Cc:     Li RongQing <lirongqing@baidu.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Dec 27, 2019 at 1:50 PM Roman Gushchin <guro@fb.com> wrote:
+On Fri, Jan 3, 2020 at 12:27 AM Simon Horman <simon.horman@netronome.com> wrote:
 >
-> Before commit 4bfc0bb2c60e ("bpf: decouple the lifetime of cgroup_bpf
-> from cgroup itself") cgroup bpf structures were released with
-> corresponding cgroup structures. It guaranteed the hierarchical order
-> of destruction: children were always first. It preserved attached
-> programs from being released before their propagated copies.
+> On Fri, Jan 03, 2020 at 02:02:33PM +0800, Li RongQing wrote:
+> > bpf_skb_generic_push always returns 0, not need to check
+> > its return, so change its type as void
+> >
+> > Signed-off-by: Li RongQing <lirongqing@baidu.com>
 >
-> But with cgroup auto-detachment there are no such guarantees anymore:
-> cgroup bpf is released as soon as the cgroup is offline and there are
-> no live associated sockets. It means that an attached program can be
-> detached and released, while its propagated copy is still living
-> in the cgroup subtree. This will obviously lead to an use-after-free
-> bug.
->
-[...]
->
-> Thanks to Josef Bacik for the debugging and the initial analysis of
-> the problem.
->
-> Fixes: 4bfc0bb2c60e ("bpf: decouple the lifetime of cgroup_bpf from cgroup itself")
-> Reported-by: Josef Bacik <josef@toxicpanda.com>
-> Signed-off-by: Roman Gushchin <guro@fb.com>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: stable@vger.kernel.org
-
-LGTM. Thanks for the fix!
-
+> Reviewed-by: Simon Horman <simon.horman@netronome.com>
 Acked-by: Song Liu <songliubraving@fb.com>
+
+>
+> > ---
+> >  net/core/filter.c | 30 ++++++++++--------------------
+> >  1 file changed, 10 insertions(+), 20 deletions(-)
+> >
+> > diff --git a/net/core/filter.c b/net/core/filter.c
+> > index 42fd17c48c5f..1cbac34a4e11 100644
+> > --- a/net/core/filter.c
+> > +++ b/net/core/filter.c
+>
+> ...
+>
+> > @@ -5144,7 +5134,7 @@ BPF_CALL_3(bpf_lwt_seg6_adjust_srh, struct sk_buff *, skb, u32, offset,
+> >               if (unlikely(ret < 0))
+> >                       return ret;
+> >
+> > -             ret = bpf_skb_net_hdr_push(skb, offset, len);
+> > +             bpf_skb_net_hdr_push(skb, offset, len);
+>
+> There is a check for (ret < 0) just below this if block.
+> That is ok becuase in order to get to here (ret < 0) must
+> be true as per the check a few lines above.
+>
+> So I think this is ok although the asymmetry with the else arm
+> of this if statement is not ideal IMHO.
+
+Agreed with this concern. But I cannot think of any free solution. I guess we
+will just live with assumption that skb_cow_head() never return >0.
+
+Thanks,
+Song
