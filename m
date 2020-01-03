@@ -2,65 +2,50 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F31312FD01
-	for <lists+bpf@lfdr.de>; Fri,  3 Jan 2020 20:27:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7097F12FDF7
+	for <lists+bpf@lfdr.de>; Fri,  3 Jan 2020 21:33:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728503AbgACT11 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Jan 2020 14:27:27 -0500
-Received: from mail-qk1-f171.google.com ([209.85.222.171]:37715 "EHLO
-        mail-qk1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728485AbgACT11 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 3 Jan 2020 14:27:27 -0500
-Received: by mail-qk1-f171.google.com with SMTP id 21so34636593qky.4;
-        Fri, 03 Jan 2020 11:27:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dMeBWVG91pHubNQWYivBpH2U/MdEbVYxoDpB6kBimc8=;
-        b=bBcQoSAZqxJ86WrFmQLxtF0khw3qu8NdpIqVsiNsZz5FwVjuSH0+rUPAJwSCk6zm0V
-         U0199OaSF+u0TVC43kgylZJJzSmQvieO3ppgiAnXpRH2GGjy+/fg0YD5A32pg48eDvCz
-         eTpkaLntLRrQW2e8LjSvEW9/SzNP23ovgt6vxfWRJbhAn+NLJ6F6QDI7NLLyA2rHdwd3
-         XdDPSBcWDDOSYkdgSGgysfQtdQAM8CcVl2JYGsEHQ4hew5sbw1rsXOtSwLIarm/ZSrIB
-         UZnBkhW29ZC2WxxeKSrY6kXL+INVQwlSjtpdrEy1uW/6V82OtAgKHE4OyCQb7vsTfCpT
-         SQSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dMeBWVG91pHubNQWYivBpH2U/MdEbVYxoDpB6kBimc8=;
-        b=nDnibp90X0rGb0YqNQYSUThTyAzDc1FtbOieK0rPcdO20rhxtUvoMbAmo1922iXY1s
-         iaQKCvOiQ2DI9yHoSctizICI77ER/w05/B0aOcx1iWSUyU2/AylegBh6Uuounwzx1l7w
-         HL/EGu/srDXGDwAu5j09xFBT3rAS9SyzG2Y4rwrG8QfTlx9FDspJNg+ohSyiCe6U4TsI
-         J4bn/Q4PldLzKGJYDqAfBQwpY7mAJZKX8WdcmR7vAlgrDPAlUhtwZVGOVCq6PEocIiS7
-         8PvJh7Um2pyGclbFBWtn+YHZmF40982eptcvXeXoMN05qbC84/crPPbSLNCd3o1oWO9u
-         S5SQ==
-X-Gm-Message-State: APjAAAU9rmDxY+ijlymRAZUllJejxqd5d8Jfua1FQ7qCmoTuyYHFTizv
-        XwDec3BcJffrbK0S5J/YM5KA+5GjnFy57K6N95w=
-X-Google-Smtp-Source: APXvYqwpj0MxNUn2no56Ue+nb3rSr2sEVuat2D3u1eAsTiEmDw4u3iOiGU+9ogvAkWCDGjnipY9zW5knmlNjOZzf5lc=
-X-Received: by 2002:a05:620a:1324:: with SMTP id p4mr74143048qkj.497.1578079646156;
- Fri, 03 Jan 2020 11:27:26 -0800 (PST)
-MIME-Version: 1.0
-References: <1578032749-18197-1-git-send-email-lirongqing@baidu.com>
-In-Reply-To: <1578032749-18197-1-git-send-email-lirongqing@baidu.com>
-From:   Song Liu <liu.song.a23@gmail.com>
-Date:   Fri, 3 Jan 2020 11:27:15 -0800
-Message-ID: <CAPhsuW6FOKjAzjqfnddJKMxcH2VQKXqLdoxzBQ558UK8fiCrXA@mail.gmail.com>
-Subject: Re: [PATCH][bpf-next] bpf: return EOPNOTSUPP when invalid map type in __bpf_tx_xdp_map
-To:     Li RongQing <lirongqing@baidu.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1728467AbgACUdP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 3 Jan 2020 15:33:15 -0500
+Received: from shards.monkeyblade.net ([23.128.96.9]:47150 "EHLO
+        shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727400AbgACUdP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 3 Jan 2020 15:33:15 -0500
+Received: from localhost (unknown [IPv6:2601:601:9f00:1c3::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 3F8E41569D361;
+        Fri,  3 Jan 2020 12:33:14 -0800 (PST)
+Date:   Fri, 03 Jan 2020 12:33:13 -0800 (PST)
+Message-Id: <20200103.123313.205020922142036843.davem@davemloft.net>
+To:     yukuai3@huawei.com
+Cc:     netanel@amazon.com, saeedb@amazon.com, zorik@amazon.com,
+        ast@kernel.org, daniel@iogearbox.net, jakub.kicinski@netronome.com,
+        hawk@kernel.org, john.fastabend@gmail.com, sameehj@amazon.com,
+        akiyano@amazon.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        yi.zhang@huawei.com, zhengbin13@huawei.com
+Subject: Re: [PATCH] net: ena: remove set but not used variable 'rx_ring'
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200103120701.47681-1-yukuai3@huawei.com>
+References: <20200103120701.47681-1-yukuai3@huawei.com>
+X-Mailer: Mew version 6.8 on Emacs 26.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=iso-8859-7
+Content-Transfer-Encoding: base64
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Fri, 03 Jan 2020 12:33:14 -0800 (PST)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 2, 2020 at 10:26 PM Li RongQing <lirongqing@baidu.com> wrote:
->
-> a negative value -EOPNOTSUPP should be returned if map->map_type
-> is invalid although that seems unlikely now, then the caller will
-> continue to handle buffer, or else the buffer will be leaked
->
-> Signed-off-by: Li RongQing <lirongqing@baidu.com>
-
-Acked-by: Song Liu <songliubraving@fb.com>
+RnJvbTogeXUga3VhaSA8eXVrdWFpM0BodWF3ZWkuY29tPg0KRGF0ZTogRnJpLCAzIEphbiAyMDIw
+IDIwOjA3OjAxICswODAwDQoNCj4gRml4ZXMgZ2NjICctV3VudXNlZC1idXQtc2V0LXZhcmlhYmxl
+JyB3YXJuaW5nOg0KPiANCj4gZHJpdmVycy9uZXQvZXRoZXJuZXQvYW1hem9uL2VuYS9lbmFfbmV0
+ZGV2LmM6IEluIGZ1bmN0aW9uDQo+IKFlbmFfeGRwX3htaXRfYnVmZqI6DQo+IGRyaXZlcnMvbmV0
+L2V0aGVybmV0L2FtYXpvbi9lbmEvZW5hX25ldGRldi5jOjMxNjoxOTogd2FybmluZzoNCj4gdmFy
+aWFibGUgoXJ4X3JpbmeiIHNldCBidXQgbm90IHVzZWQgWy1XdW51c2VkLWJ1dC1zZXQtdmFyaWFi
+bGVdDQo+IA0KPiBJdCBpcyBuZXZlciB1c2VkLCBhbmQgc28gY2FuIGJlIHJlbW92ZWQuDQo+IA0K
+PiBTaWduZWQtb2ZmLWJ5OiB5dSBrdWFpIDx5dWt1YWkzQGh1YXdlaS5jb20+DQoNCkRvZXMgbm90
+IGFwcGx5IHRvIG5ldC1uZXh0Lg0K
