@@ -2,196 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 15BDA130055
-	for <lists+bpf@lfdr.de>; Sat,  4 Jan 2020 04:01:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3343D13042D
+	for <lists+bpf@lfdr.de>; Sat,  4 Jan 2020 20:53:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727266AbgADDBG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 3 Jan 2020 22:01:06 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:4270 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727255AbgADDBG (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 3 Jan 2020 22:01:06 -0500
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 00430EGx005310;
-        Fri, 3 Jan 2020 19:00:49 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=64ZNoXcHx6ltjc90/42qvPeBQZUBYeYIfSt/l8jy6aI=;
- b=jBFdc6hdl4KT3NNgWHFtqNJACHF6/IaIHf+5hcd6aF89xf/ndBfNG75vZW2A8g6E3U22
- 3vA7CH5tdP/mwqMLr+8QkH2aCK55AYH+Eo5b1NK4wC4bDR82o3Rqx+iBuRGtJGB289DN
- /BqM51h094WA8ZmcrWFRxUvVzJTVbJu9Frw= 
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by mx0a-00082601.pphosted.com with ESMTP id 2x9tnw52w9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Fri, 03 Jan 2020 19:00:49 -0800
-Received: from prn-hub02.TheFacebook.com (2620:10d:c081:35::126) by
- prn-hub03.TheFacebook.com (2620:10d:c081:35::127) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Fri, 3 Jan 2020 19:00:48 -0800
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (192.168.54.28)
- by o365-in.thefacebook.com (192.168.16.26) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
- via Frontend Transport; Fri, 3 Jan 2020 19:00:48 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Q0NkFQQU5E+4v6w6hycFWlt78ax9lCWmBuppTaYydFVlhTeeekST2SLio8PTkvxDQUKPJvi/V5q/JR/zCgOt30RQxsoAmqMTaxzamS8BdG5VYyTrlxOZe9G2IyVenlaXnCrvvmnPtB4oiXTlA2jEM9pB97RLQtmVNiyYWueBXiwm+MRIhHhK8ksq7x9toNUq6OQj5Hodzu++XlsoOIQU+gcMUxUFBroMVTyKsHaTCXV2DlBDbcscvyCsLiSvonjoXlcS0XNBlKtDBofaHDjXghUj3Rh/DGt4z401pbPkgz8hfCRmXiiJInuIjv8rvtkr7aP7AZ4EJJ3jl0+vacJIdg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=64ZNoXcHx6ltjc90/42qvPeBQZUBYeYIfSt/l8jy6aI=;
- b=EbYkkZMzvdLj/u7WJuK6OUhSBJsrgnm5L0euhWHvVWbNWa55hAPuI0ijXI8eHo/MKYkg+af4Hd+0ChMUj81UPsZTf4zVgY5ejaju84xGj0FUmL1+mDF7uFGrlCAAxFT5BefY+/pLzMxSgB6LTOV1uVjQcU17gsIY1bN+atpspbx6fU2LSlLUg/JCNT+D+QNQK2txAVYBn9yO57QTG3XNRDuPP+hHnlSzR/ruAlUdZVO2tXGKl7PQTB0k0MpOLc92B5QCRvoSN2rQmOw+ULAGHRIkCpWveH39mUFRozfggcq7bPlwKGKsU4oYL9ptxo+qKZWgucGC4XTaCgLkZYHpTQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=64ZNoXcHx6ltjc90/42qvPeBQZUBYeYIfSt/l8jy6aI=;
- b=ayu/qncVteuLqCLJXAdhPFCQ9kGEbnE/K43HEZf/nTRRuTjrpJqan/BUN5T5Ml1v+1h+j8BdoUeYxWciI6/5FCuQIr0ia15IBRx9X6jq/368QC8Ep0PAIf15s3SziwJ6huHnIR9Skx1Bvt9lya8NtAbhH77XA/4vF7eF1TRCkwk=
-Received: from BYAPR15MB2631.namprd15.prod.outlook.com (20.179.155.147) by
- BYAPR15MB2389.namprd15.prod.outlook.com (52.135.195.33) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2602.12; Sat, 4 Jan 2020 03:00:46 +0000
-Received: from BYAPR15MB2631.namprd15.prod.outlook.com
- ([fe80::8cc8:bdb1:a9c7:7f60]) by BYAPR15MB2631.namprd15.prod.outlook.com
- ([fe80::8cc8:bdb1:a9c7:7f60%3]) with mapi id 15.20.2581.014; Sat, 4 Jan 2020
- 03:00:46 +0000
-Received: from localhost.localdomain (2620:10d:c090:180::dfd4) by MWHPR15CA0071.namprd15.prod.outlook.com (2603:10b6:301:4c::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2602.11 via Frontend Transport; Sat, 4 Jan 2020 03:00:44 +0000
-From:   Roman Gushchin <guro@fb.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        "tj@kernel.org" <tj@kernel.org>
-CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: Re: [PATCH bpf] bpf: cgroup: prevent out-of-order release of cgroup
- bpf
-Thread-Topic: [PATCH bpf] bpf: cgroup: prevent out-of-order release of cgroup
- bpf
-Thread-Index: AQHVvP+26yjH3drshkGEPJ14gI885qfZs7aAgAAKlQCAABXHAIAACDqA
-Date:   Sat, 4 Jan 2020 03:00:46 +0000
-Message-ID: <20200104030041.GA12685@localhost.localdomain>
-References: <20191227215034.3169624-1-guro@fb.com>
- <20200104003523.rfte5rw6hbnncjes@ast-mbp>
- <20200104011318.GA11376@localhost.localdomain>
- <20200104023112.6edfdvsff6cgsstn@ast-mbp>
-In-Reply-To: <20200104023112.6edfdvsff6cgsstn@ast-mbp>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MWHPR15CA0071.namprd15.prod.outlook.com
- (2603:10b6:301:4c::33) To BYAPR15MB2631.namprd15.prod.outlook.com
- (2603:10b6:a03:150::19)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:180::dfd4]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 4be83e1b-1bbb-40bc-7bbe-08d790c24b60
-x-ms-traffictypediagnostic: BYAPR15MB2389:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR15MB23896F866C559A6398FBF19EBE220@BYAPR15MB2389.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-forefront-prvs: 02723F29C4
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(39860400002)(366004)(396003)(346002)(136003)(376002)(199004)(189003)(66446008)(16526019)(186003)(8676002)(52116002)(8936002)(66556008)(478600001)(64756008)(7696005)(55016002)(110136005)(81166006)(54906003)(71200400001)(6506007)(33656002)(66476007)(2906002)(9686003)(81156014)(69590400006)(1076003)(5660300002)(86362001)(66946007)(316002)(4326008);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB2389;H:BYAPR15MB2631.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Tigk6s6cttKBZz6bZai9Ibtip9XLFVf/j9pEo0BH79p9RUP7d3Re5liVwNvWKmjnl/tIIUY8Fammzpvb0R/7pQIqTw42IytcBFsIMq4X/sTaQopw6w7yk2KEJpy4eZSWlPTm+VmzDR/K2VYhNc3xtvj0i1kS2mPZAfnwwuKpI4NRaNQqlyRx81z7U+n3W9nOlzjmbT+YXsFQkNoPT6hC0q96ejhMVGC6pTzm+ryEghIcoCS7g3n6IJlvlqL+1zy/uBgdWNUEe8nhrgpxqh8Zwy/f0XDU8wG+fKveKnUFSDMvhYOwUbjTrFpPp+62OUSjkYoHahdW8mW5ehObuBTSE4K4bl0XanYP3DnwpRvtSObJBcxygo+8+qlPhrKoVZOiYaYXCJxa1R3x9chUZAk8WbO/Xt6+DbhRjU1T7oRc4pHP+KmKnZ0FyWzFJd2AYkgkke1o4hVnMbqF9Xl1/mwXePdxbBYFKYF9lprjNW7oOOQFfeTaA/KCliwFjWC8N7Di
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <FCBC2CEE694DEF4DB82ACACD9CF20058@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4be83e1b-1bbb-40bc-7bbe-08d790c24b60
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Jan 2020 03:00:46.0842
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 0/aQv1RzWCskVdyCEmcTYdPI5m6Vw2DKeCPYRWwPgMu8sxKuVRw8QuRQIxMvOPOR
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2389
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
- definitions=2020-01-03_06:2020-01-02,2020-01-03 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
- priorityscore=1501 mlxscore=0 spamscore=0 suspectscore=0 malwarescore=0
- phishscore=0 clxscore=1015 impostorscore=0 lowpriorityscore=0 bulkscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1910280000 definitions=main-2001040027
-X-FB-Internal: deliver
+        id S1726143AbgADTwl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 4 Jan 2020 14:52:41 -0500
+Received: from mout.kundenserver.de ([217.72.192.74]:33399 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726118AbgADTwl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 4 Jan 2020 14:52:41 -0500
+Received: from orion.localdomain ([95.114.65.70]) by mrelayeu.kundenserver.de
+ (mreue109 [212.227.15.183]) with ESMTPSA (Nemesis) id
+ 1N6bsG-1jmdkd0icQ-0180xh; Sat, 04 Jan 2020 20:52:09 +0100
+From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     davem@davemloft.net, mareklindner@neomailbox.ch,
+        sw@simonwunderlich.de, a@unstable.cc, sven@narfation.org,
+        marcel@holtmann.org, johan.hedberg@gmail.com,
+        roopa@cumulusnetworks.com, nikolay@cumulusnetworks.com,
+        edumazet@google.com, kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org,
+        jon.maloy@ericsson.com, ying.xue@windriver.com, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
+        netdev@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net,
+        linux-hyperv@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH 1/8] net: 8021q: remove unneeded MODULE_VERSION() usage
+Date:   Sat,  4 Jan 2020 20:51:24 +0100
+Message-Id: <20200104195131.16577-1-info@metux.net>
+X-Mailer: git-send-email 2.11.0
+X-Provags-ID: V03:K1:DUOrLYqXKtl8pRCBke7g4p2qlUJHYsLFb883aZwwRQAyiSsQXdT
+ cy4bqnEYpTvE2T7ZW2zmyRvoH9reEOrH+MCZw1+MTfEwclx1qtJJ+z9F0An+vNLD57fidnW
+ iekCAJ+XZ3u5qQI4aHADVsFfAROL8S8ePLXhBCHYTNrg+oAOpgce5KbMpkzHThP9fVnaK2u
+ dw99EkkdAMJWuXX6rXgCw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:VvZJXNrGmTM=:3/L+iYL2SDXV5M3uG6JcT1
+ sbVVqyUggaxakdBmx6vlSFM9NRK6OYv9mISDkjQAM+dGpXa0m+BNpMiP0jPmFVVA4lJLEpcV8
+ /WNf4HCYPv1hKczaua13+mF1Cx/JG90C9DTg+9MQnoPiBM7hxjEE0zjaA2G5N15gXt63gUW1X
+ 304gM8cV6s4X14STp3U19LjjRN9S70ftbC+I3M/FbAvzImCNZl9p47QLaVnJ3jiBCaFnhq+y4
+ 4bu+swHZtsbNmpOCzuFREH4ruFNQNGIGvdavgU/T4RzyxmFIE8NdZbZbwKhq1xZaaat0sNvJt
+ 5vwpC+lZtAHVZkNTMJhS/pRloeKaKdLbt/UEvbIHUnprcFvZdZfe6ulqaTyCteGgn9M+ooM15
+ tQo+DNSMBHWbINyFMcTju0yYl6YE7wRQBjR3Ad1PCv2MbdlniogWIlMb2f0vG7QsD6CVbOAvi
+ ongj0p4vdHcA/qXb6BkueIjdn54vJc3n2FU2Px+yassEOWno+5K5WMW2Y7RtJkgyI4rND1RZG
+ oiqwSsx7tRxwxoDjHX2ol9wjbbidnKOcNVdWBvMNPSUUXvVfH2P/Qh5GYWH4ddmjfX6OigGbl
+ 2nKH/xJfZ3NeDwwf+3uZMuaeWlRuVTvsrG+N/B01h55qTE9Q+5LZ2GQODM3VAKv/TYFkWphz/
+ cnhQeuDYPzpL4FPiGuFA9yoyBvD+okzIToXErulKu1C7lV6o0fg0NjObpRUTQwbNO6ag2jgul
+ c6GetK92ee1+uhoRlYpFoJqwavmkTKu9gpUUQV+WZaP49K9Q00DgMIiP4Fkjlj0f8jRZQ/Zbe
+ 3/PRCteVkjCVOj3YS69w8lEt99PpY2nWtVLzW8DJh4dvE9BPnva3meP8ZJNgPt/Tpt3YaxeYq
+ DRh1ul25K858EuZdVNKA==
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jan 03, 2020 at 06:31:14PM -0800, Alexei Starovoitov wrote:
-> On Sat, Jan 04, 2020 at 01:13:24AM +0000, Roman Gushchin wrote:
-> > On Fri, Jan 03, 2020 at 04:35:25PM -0800, Alexei Starovoitov wrote:
-> > > On Fri, Dec 27, 2019 at 01:50:34PM -0800, Roman Gushchin wrote:
-> > > > Before commit 4bfc0bb2c60e ("bpf: decouple the lifetime of cgroup_b=
-pf
-> > > > from cgroup itself") cgroup bpf structures were released with
-> > > > corresponding cgroup structures. It guaranteed the hierarchical ord=
-er
-> > > > of destruction: children were always first. It preserved attached
-> > > > programs from being released before their propagated copies.
-> > > >=20
-> > > > But with cgroup auto-detachment there are no such guarantees anymor=
-e:
-> > > > cgroup bpf is released as soon as the cgroup is offline and there a=
-re
-> > > > no live associated sockets. It means that an attached program can b=
-e
-> > > > detached and released, while its propagated copy is still living
-> > > > in the cgroup subtree. This will obviously lead to an use-after-fre=
-e
-> > > > bug.
-> > > ...
-> > > > @@ -65,6 +65,9 @@ static void cgroup_bpf_release(struct work_struct=
- *work)
-> > > > =20
-> > > >  	mutex_unlock(&cgroup_mutex);
-> > > > =20
-> > > > +	for (p =3D cgroup_parent(cgrp); p; p =3D cgroup_parent(p))
-> > > > +		cgroup_bpf_put(p);
-> > > > +
-> > >=20
-> > > The fix makes sense, but is it really safe to walk cgroup hierarchy
-> > > without holding cgroup_mutex?
-> >=20
-> > It is, because we're holding a reference to the original cgroup and goi=
-ng
-> > towards the root. On each level the cgroup is protected by a reference
-> > from their child cgroup.
->=20
-> cgroup_bpf_put(p) can make bpf.refcnt zero which may call cgroup_bpf_rele=
-ase()
-> on another cpu which will do cgroup_put() and this cpu p =3D cgroup_paren=
-t(p)
-> would be use-after-free?
-> May be not due to the way work_queues are implemented.
-> But it feels dangerous to have such delicate release logic.
+Remove MODULE_VERSION(), as it isn't needed at all: the only version
+making sense is the kernel version.
 
-If I understand your concern correctly: you assume that parent's
-cgroup_bpf_release() can be finished prior to the child's one and
-the final cgroup_put() will release the parent?
+Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
+---
+ net/8021q/vlan.c | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
 
-If so, it's not possible, because the child hold a reference to the
-parent (independent to all cgroup bpf stuff), which exists at least
-until the final cgroup_put() in cgroup_bpf_release(). Please, look
-at css_free_rwork_fn() for details.
+diff --git a/net/8021q/vlan.c b/net/8021q/vlan.c
+index d4bcfd8f95bf..ded7bf7229cf 100644
+--- a/net/8021q/vlan.c
++++ b/net/8021q/vlan.c
+@@ -36,15 +36,10 @@
+ #include "vlan.h"
+ #include "vlanproc.h"
+ 
+-#define DRV_VERSION "1.8"
+-
+ /* Global VLAN variables */
+ 
+ unsigned int vlan_net_id __read_mostly;
+ 
+-const char vlan_fullname[] = "802.1Q VLAN Support";
+-const char vlan_version[] = DRV_VERSION;
+-
+ /* End of global variables definitions. */
+ 
+ static int vlan_group_prealloc_vid(struct vlan_group *vg,
+@@ -683,7 +678,7 @@ static int __init vlan_proto_init(void)
+ {
+ 	int err;
+ 
+-	pr_info("%s v%s\n", vlan_fullname, vlan_version);
++	pr_info("802.1Q VLAN Support\n");
+ 
+ 	err = register_pernet_subsys(&vlan_net_ops);
+ 	if (err < 0)
+@@ -739,4 +734,3 @@ module_init(vlan_proto_init);
+ module_exit(vlan_cleanup_module);
+ 
+ MODULE_LICENSE("GPL");
+-MODULE_VERSION(DRV_VERSION);
+-- 
+2.11.0
 
-> Why not to move the loop under the mutex and make things obvious?
-
-Traversing the cgroup tree to the root cgroup without additional
-locking seems pretty common to me. You can find a ton of examples in
-mm/memcontrol.c. So it doesn't look scary or adventurous to me.
-
-I think it doesn't matter that much here, so I'm ok with putting it
-under the mutex, but IMO it won't make the code any safer.
-
-
-cc Tejun for the second opinion on cgroup locking
