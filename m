@@ -2,148 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D470E131AB6
-	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2020 22:52:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0CF2131B14
+	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2020 23:07:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726695AbgAFVwJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Jan 2020 16:52:09 -0500
-Received: from www62.your-server.de ([213.133.104.62]:32854 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726683AbgAFVwJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Jan 2020 16:52:09 -0500
-Received: from 51.249.197.178.dynamic.dsl-lte-bonding.lssmb00p-msn.res.cust.swisscom.ch ([178.197.249.51] helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ioaIB-0000Op-F6; Mon, 06 Jan 2020 22:52:07 +0100
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     ast@kernel.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        anatoly.trosinenko@gmail.com,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: [PATCH bpf] bpf: Fix passing modified ctx to ld/abs/ind instruction
-Date:   Mon,  6 Jan 2020 22:51:57 +0100
-Message-Id: <20200106215157.3553-1-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
+        id S1726820AbgAFWHv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Jan 2020 17:07:51 -0500
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:36166 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726760AbgAFWHv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Jan 2020 17:07:51 -0500
+Received: by mail-pl1-f193.google.com with SMTP id a6so21622745plm.3;
+        Mon, 06 Jan 2020 14:07:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=pH0bW5L244MhRBbTgYq971yU1s9EHra7myYPhaQViJg=;
+        b=U3ESQHwtHWbtFMdfTuDBniP6O0qQcGNps8BjZGNmHiiZ3MjD29QZYDu5t9gA8C6zeI
+         kPPUWZwLXplbBsAeo2r3ToaG1hpj4G+zYvoJurqGgzghNPvinzIdQvKHuhuOIqEfUzwj
+         SW3cCAxDBUNUZqtW8JwH2zT98ODIthR8aRgPyOQq0ZaJH+tR01uCMUI1rIv0zmKGXAYn
+         lQBX/Yvvhz+hbrEldYo3kxC4hQkMFIHlNkyy00qRpKY+PcbUBLtBYFC2UPvJ3WrXCnOf
+         Oa8OANHUEqg6Ary+vPRYwfzGyvRZHdUrMx4G8XeEPQZ/z2j+fBQE9bB0rxLNQyy/3t2T
+         IhLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=pH0bW5L244MhRBbTgYq971yU1s9EHra7myYPhaQViJg=;
+        b=cPc+Wf/s+V2Ky+2m5XyDECmXdzMEkBlld7TqavuWA0JJuP+3zI1zEC3ln9U3IJIoOt
+         nFDdLne8Qpjgxa8wCc0rKGfv1WfTzFJlvgVfeewg9Mmc78ISTd+cHQGcIei4nR1lmiNw
+         4H6kqiNgL8qFht6FI8db5aDMQ6e/8nm1up6yNQpqlQZKikJaKBrA2HWYkMdvAtYNuJCw
+         Gyl/838EvPInaFjbThRO7Y8+EzoQUH5L93QouqVSfVSfuavg8+cCVIjFHuOe+UY70tvk
+         BCB6ic9j+UqMRZm2TjpF0O6ZlCrhy9c0/cRvWrnz1UOapXmJOAxX2c2btcR9D0iIPK56
+         /TKA==
+X-Gm-Message-State: APjAAAUMzWdXdgpq9j4iOle23hMMmT5uJdXEUXX9FFLGjBgmdfZHn4p9
+        PQ3JzhnxDc6eFzrIpgSK4K0=
+X-Google-Smtp-Source: APXvYqz59p5J+wJOEJOLpGeB4wIJfEe9IM9k8rTohNejmSeefpox5Hm1VCMzuUD+KYDflhtOTh7liQ==
+X-Received: by 2002:a17:902:8ec4:: with SMTP id x4mr93239772plo.234.1578348470494;
+        Mon, 06 Jan 2020 14:07:50 -0800 (PST)
+Received: from ast-mbp ([2620:10d:c090:200::1:2bf6])
+        by smtp.gmail.com with ESMTPSA id n1sm79713492pfd.47.2020.01.06.14.07.49
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 06 Jan 2020 14:07:49 -0800 (PST)
+Date:   Mon, 6 Jan 2020 14:07:48 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     "tj@kernel.org" <tj@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: [PATCH bpf] bpf: cgroup: prevent out-of-order release of cgroup
+ bpf
+Message-ID: <20200106220746.fm3hp3zynaiaqgly@ast-mbp>
+References: <20191227215034.3169624-1-guro@fb.com>
+ <20200104003523.rfte5rw6hbnncjes@ast-mbp>
+ <20200104011318.GA11376@localhost.localdomain>
+ <20200104023112.6edfdvsff6cgsstn@ast-mbp>
+ <20200104030041.GA12685@localhost.localdomain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.101.4/25686/Mon Jan  6 10:55:07 2020)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200104030041.GA12685@localhost.localdomain>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Anatoly has been fuzzing with kBdysch harness and reported a KASAN
-slab oob in one of the outcomes:
+On Sat, Jan 04, 2020 at 03:00:46AM +0000, Roman Gushchin wrote:
+> On Fri, Jan 03, 2020 at 06:31:14PM -0800, Alexei Starovoitov wrote:
+> > On Sat, Jan 04, 2020 at 01:13:24AM +0000, Roman Gushchin wrote:
+> > > On Fri, Jan 03, 2020 at 04:35:25PM -0800, Alexei Starovoitov wrote:
+> > > > On Fri, Dec 27, 2019 at 01:50:34PM -0800, Roman Gushchin wrote:
+> > > > > Before commit 4bfc0bb2c60e ("bpf: decouple the lifetime of cgroup_bpf
+> > > > > from cgroup itself") cgroup bpf structures were released with
+> > > > > corresponding cgroup structures. It guaranteed the hierarchical order
+> > > > > of destruction: children were always first. It preserved attached
+> > > > > programs from being released before their propagated copies.
+> > > > > 
+> > > > > But with cgroup auto-detachment there are no such guarantees anymore:
+> > > > > cgroup bpf is released as soon as the cgroup is offline and there are
+> > > > > no live associated sockets. It means that an attached program can be
+> > > > > detached and released, while its propagated copy is still living
+> > > > > in the cgroup subtree. This will obviously lead to an use-after-free
+> > > > > bug.
+> > > > ...
+> > > > > @@ -65,6 +65,9 @@ static void cgroup_bpf_release(struct work_struct *work)
+> > > > >  
+> > > > >  	mutex_unlock(&cgroup_mutex);
+> > > > >  
+> > > > > +	for (p = cgroup_parent(cgrp); p; p = cgroup_parent(p))
+> > > > > +		cgroup_bpf_put(p);
+> > > > > +
+> > > > 
+> > > > The fix makes sense, but is it really safe to walk cgroup hierarchy
+> > > > without holding cgroup_mutex?
+> > > 
+> > > It is, because we're holding a reference to the original cgroup and going
+> > > towards the root. On each level the cgroup is protected by a reference
+> > > from their child cgroup.
+> > 
+> > cgroup_bpf_put(p) can make bpf.refcnt zero which may call cgroup_bpf_release()
+> > on another cpu which will do cgroup_put() and this cpu p = cgroup_parent(p)
+> > would be use-after-free?
+> > May be not due to the way work_queues are implemented.
+> > But it feels dangerous to have such delicate release logic.
+> 
+> If I understand your concern correctly: you assume that parent's
+> cgroup_bpf_release() can be finished prior to the child's one and
+> the final cgroup_put() will release the parent?
+> 
+> If so, it's not possible, because the child hold a reference to the
+> parent (independent to all cgroup bpf stuff), which exists at least
+> until the final cgroup_put() in cgroup_bpf_release(). Please, look
+> at css_free_rwork_fn() for details.
+> 
+> > Why not to move the loop under the mutex and make things obvious?
+> 
+> Traversing the cgroup tree to the root cgroup without additional
+> locking seems pretty common to me. You can find a ton of examples in
+> mm/memcontrol.c. So it doesn't look scary or adventurous to me.
+> 
+> I think it doesn't matter that much here, so I'm ok with putting it
+> under the mutex, but IMO it won't make the code any safer.
+> 
+> 
+> cc Tejun for the second opinion on cgroup locking
 
-  [...]
-  [   77.359642] BUG: KASAN: slab-out-of-bounds in bpf_skb_load_helper_8_no_cache+0x71/0x130
-  [   77.360463] Read of size 4 at addr ffff8880679bac68 by task bpf/406
-  [   77.361119]
-  [   77.361289] CPU: 2 PID: 406 Comm: bpf Not tainted 5.5.0-rc2-xfstests-00157-g2187f215eba #1
-  [   77.362134] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
-  [   77.362984] Call Trace:
-  [   77.363249]  dump_stack+0x97/0xe0
-  [   77.363603]  print_address_description.constprop.0+0x1d/0x220
-  [   77.364251]  ? bpf_skb_load_helper_8_no_cache+0x71/0x130
-  [   77.365030]  ? bpf_skb_load_helper_8_no_cache+0x71/0x130
-  [   77.365860]  __kasan_report.cold+0x37/0x7b
-  [   77.366365]  ? bpf_skb_load_helper_8_no_cache+0x71/0x130
-  [   77.366940]  kasan_report+0xe/0x20
-  [   77.367295]  bpf_skb_load_helper_8_no_cache+0x71/0x130
-  [   77.367821]  ? bpf_skb_load_helper_8+0xf0/0xf0
-  [   77.368278]  ? mark_lock+0xa3/0x9b0
-  [   77.368641]  ? kvm_sched_clock_read+0x14/0x30
-  [   77.369096]  ? sched_clock+0x5/0x10
-  [   77.369460]  ? sched_clock_cpu+0x18/0x110
-  [   77.369876]  ? bpf_skb_load_helper_8+0xf0/0xf0
-  [   77.370330]  ___bpf_prog_run+0x16c0/0x28f0
-  [   77.370755]  __bpf_prog_run32+0x83/0xc0
-  [   77.371153]  ? __bpf_prog_run64+0xc0/0xc0
-  [   77.371568]  ? match_held_lock+0x1b/0x230
-  [   77.371984]  ? rcu_read_lock_held+0xa1/0xb0
-  [   77.372416]  ? rcu_is_watching+0x34/0x50
-  [   77.372826]  sk_filter_trim_cap+0x17c/0x4d0
-  [   77.373259]  ? sock_kzfree_s+0x40/0x40
-  [   77.373648]  ? __get_filter+0x150/0x150
-  [   77.374059]  ? skb_copy_datagram_from_iter+0x80/0x280
-  [   77.374581]  ? do_raw_spin_unlock+0xa5/0x140
-  [   77.375025]  unix_dgram_sendmsg+0x33a/0xa70
-  [   77.375459]  ? do_raw_spin_lock+0x1d0/0x1d0
-  [   77.375893]  ? unix_peer_get+0xa0/0xa0
-  [   77.376287]  ? __fget_light+0xa4/0xf0
-  [   77.376670]  __sys_sendto+0x265/0x280
-  [   77.377056]  ? __ia32_sys_getpeername+0x50/0x50
-  [   77.377523]  ? lock_downgrade+0x350/0x350
-  [   77.377940]  ? __sys_setsockopt+0x2a6/0x2c0
-  [   77.378374]  ? sock_read_iter+0x240/0x240
-  [   77.378789]  ? __sys_socketpair+0x22a/0x300
-  [   77.379221]  ? __ia32_sys_socket+0x50/0x50
-  [   77.379649]  ? mark_held_locks+0x1d/0x90
-  [   77.380059]  ? trace_hardirqs_on_thunk+0x1a/0x1c
-  [   77.380536]  __x64_sys_sendto+0x74/0x90
-  [   77.380938]  do_syscall_64+0x68/0x2a0
-  [   77.381324]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-  [   77.381878] RIP: 0033:0x44c070
-  [...]
+Checked with TJ offline. This seems fine.
 
-After further debugging, turns out while in case of other helper functions
-we disallow passing modified ctx, the special case of ld/abs/ind instruction
-which has similar semantics (except r6 being the ctx argument) is missing
-such check. Modified ctx is impossible here as bpf_skb_load_helper_8_no_cache()
-and others are expecting skb fields in original position, hence, add
-check_ctx_reg() to reject any modified ctx. Issue was first introduced back
-in f1174f77b50c ("bpf/verifier: rework value tracking").
+I tweaked commit log:
+- extra 'diff' lines were confusing 'git am'
+- commit description shouldn't be split into multiline
 
-Fixes: f1174f77b50c ("bpf/verifier: rework value tracking")
-Reported-by: Anatoly Trosinenko <anatoly.trosinenko@gmail.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
----
- kernel/bpf/verifier.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 6f63ae7a370c..ce85e7041f0c 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -6264,6 +6264,7 @@ static bool may_access_skb(enum bpf_prog_type type)
- static int check_ld_abs(struct bpf_verifier_env *env, struct bpf_insn *insn)
- {
- 	struct bpf_reg_state *regs = cur_regs(env);
-+	static const int ctx_reg = BPF_REG_6;
- 	u8 mode = BPF_MODE(insn->code);
- 	int i, err;
- 
-@@ -6297,7 +6298,7 @@ static int check_ld_abs(struct bpf_verifier_env *env, struct bpf_insn *insn)
- 	}
- 
- 	/* check whether implicit source operand (register R6) is readable */
--	err = check_reg_arg(env, BPF_REG_6, SRC_OP);
-+	err = check_reg_arg(env, ctx_reg, SRC_OP);
- 	if (err)
- 		return err;
- 
-@@ -6316,7 +6317,7 @@ static int check_ld_abs(struct bpf_verifier_env *env, struct bpf_insn *insn)
- 		return -EINVAL;
- 	}
- 
--	if (regs[BPF_REG_6].type != PTR_TO_CTX) {
-+	if (regs[ctx_reg].type != PTR_TO_CTX) {
- 		verbose(env,
- 			"at the time of BPF_LD_ABS|IND R6 != pointer to skb\n");
- 		return -EINVAL;
-@@ -6329,6 +6330,10 @@ static int check_ld_abs(struct bpf_verifier_env *env, struct bpf_insn *insn)
- 			return err;
- 	}
- 
-+	err = check_ctx_reg(env, &regs[ctx_reg], ctx_reg);
-+	if (err < 0)
-+		return err;
-+
- 	/* reset caller saved regs to unreadable */
- 	for (i = 0; i < CALLER_SAVED_REGS; i++) {
- 		mark_reg_not_init(env, regs, caller_saved[i]);
--- 
-2.20.1
-
+And applied to bpf tree. Thanks
