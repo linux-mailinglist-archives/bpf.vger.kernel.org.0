@@ -2,114 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B22281315C4
-	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2020 17:08:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40617131638
+	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2020 17:40:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727025AbgAFQHq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Jan 2020 11:07:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45624 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726945AbgAFQHp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Jan 2020 11:07:45 -0500
-Received: from quaco.ghostprotocols.net (unknown [179.97.35.50])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 995CE20848;
-        Mon,  6 Jan 2020 16:07:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1578326865;
-        bh=+bP/ptlSmJSO82qQTP0/FgN73UUbcDYZmeD0+TwlNZM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Il7nXo9CytiaNTDU2a5xvVwMIrv15W9ZsliwdD+7CLLQQka9PCWVnpIHmORggBdWV
-         Wzo9/sz3jE9hc8PcCvjhapJGNo8gaihi+3eSEeRlIrmROAEH9p2R/RZ+rQ4OEsY8+3
-         PzvjLU+aLmrGHpBAbo2PXh67whOokf3NwOq0Enfo=
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-        Clark Williams <williams@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Andrey Zhizhikin <andrey.z@gmail.com>,
-        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 08/20] tools lib api fs: Fix gcc9 stringop-truncation compilation error
-Date:   Mon,  6 Jan 2020 13:06:53 -0300
-Message-Id: <20200106160705.10899-9-acme@kernel.org>
-X-Mailer: git-send-email 2.21.1
-In-Reply-To: <20200106160705.10899-1-acme@kernel.org>
-References: <20200106160705.10899-1-acme@kernel.org>
+        id S1726668AbgAFQkA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Jan 2020 11:40:00 -0500
+Received: from mail-ot1-f44.google.com ([209.85.210.44]:38724 "EHLO
+        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726448AbgAFQkA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Jan 2020 11:40:00 -0500
+Received: by mail-ot1-f44.google.com with SMTP id d7so67963529otf.5
+        for <bpf@vger.kernel.org>; Mon, 06 Jan 2020 08:40:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=BYX+ysDLixguPL9U7dTnnMHsyuHIKDFw1NJsrezq400=;
+        b=HYACJWe7iC1JO54rLjWk/PavmoaeeOJJuzQRDOcsQWfJO67/UJxQhZOj7/OHKg/L8x
+         0ysV6fkDOhztER0XKzJ1PwzCjL7zapiZoZqwysTAVMsry+duaYK1I/j8cVw89/qWN1r6
+         UKsTgFexVIq0TbVZLxEB3tkuHabjQfhsLR3ofgyqxSs7IUCTmAzkXf6nOd3RPT2IK3L9
+         JGZolBaGH0slMOBbYeUGag+MGi9wLIYV0cPaFGRfYnXb89/8N/O6iDI2kvoC3HOJI1Eb
+         b2V4RqWKPrfLMpvyjWnsj8D+l+sTzgtEBRw9PsQ0WjFYkjT20hVMrzI9S9bm+pGII2yf
+         EvYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=BYX+ysDLixguPL9U7dTnnMHsyuHIKDFw1NJsrezq400=;
+        b=tQ0Zd8jkzsOXIRMIhvtM0almEU79Rsikh24ITR6ELlgzmYmVa2QIWYv+R75oujwonC
+         xmCVSF56OYoH2YlYKAS1jxMDuCqtGi8W8bTA4aaVt+epzPrwWZ6zo3uWxdjaswLt5zFZ
+         6JdnVgC7AXdWPtYAERYzk9bK02sKMuyeqOQCd/zOuAvv4G3/X43gR3Pms4NPFCUBtbfV
+         Y9X/aZWfCitWFVAnSnDX8viGVGUw7LxYu7MAZRwQR5brMO1XWcu8kYqXF8GN8Ej2cjtD
+         HxJJ5c5xQ29LCNj+ms1gzSG8BSxYOyFVH8PI0xO294HNyUpu0g/p7KTasGG5w1+RmptR
+         PCqw==
+X-Gm-Message-State: APjAAAVsW2uV0vhLE1srB2LqvNtrAbVuIxXm2W6lP07Qp3NeEiWngAlO
+        PgGCSD7Hr7AOYfeKhQgFt5UIAavk8pVHfvAwrckOShs21+4=
+X-Google-Smtp-Source: APXvYqyzJZgS9aC7Sd3hjVODNTRsj55lXa5LHChcNvYlVMoVjaqF3LKL0u3oYBiod7r1Yv6oUpSmScmSEqnX9/uI01k=
+X-Received: by 2002:a9d:c02:: with SMTP id 2mr119359452otr.183.1578328797486;
+ Mon, 06 Jan 2020 08:39:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   Jann Horn <jannh@google.com>
+Date:   Mon, 6 Jan 2020 17:39:30 +0100
+Message-ID: <CAG48ez2gDDRtKaOcGdKLREd7RGtVzCypXiBMHBguOGSpxQFk3w@mail.gmail.com>
+Subject: BPF tracing trampoline synchronization between update/freeing and execution?
+To:     bpf@vger.kernel.org, live-patching@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     KP Singh <kpsingh@chromium.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Andrey Zhizhikin <andrey.z@gmail.com>
+Hi!
 
-GCC9 introduced string hardening mechanisms, which exhibits the error
-during fs api compilation:
+I was chatting with kpsingh about BPF trampolines, and I noticed that
+it looks like BPF trampolines (as of current bpf-next/master) seem to
+be missing synchronization between trampoline code updates and
+trampoline execution. Or maybe I'm missing something?
 
-error: '__builtin_strncpy' specified bound 4096 equals destination size
-[-Werror=stringop-truncation]
+If I understand correctly, trampolines are executed directly from the
+fentry placeholders at the start of arbitrary kernel functions, so
+they can run without any locks held. So for example, if task A starts
+executing a trampoline on entry to sys_open(), then gets preempted in
+the middle of the trampoline, and then task B quickly calls
+BPF_RAW_TRACEPOINT_OPEN twice, and then task A continues execution,
+task A will end up executing the middle of newly-written machine code,
+which can probably end up crashing the kernel somehow?
 
-This comes when the length of copy passed to strncpy is is equal to
-destination size, which could potentially lead to buffer overflow.
+I think that at least to synchronize trampoline text freeing with
+concurrent trampoline execution, it is necessary to do something
+similar to what the livepatching code does with klp_check_stack(), and
+then either use a callback from the scheduler to periodically re-check
+tasks that were in the trampoline or let the trampoline tail-call into
+a cleanup helper that is part of normal kernel text. And you'd
+probably have to gate BPF trampolines on
+CONFIG_HAVE_RELIABLE_STACKTRACE.
 
-There is a need to mitigate this potential issue by limiting the size of
-destination by 1 and explicitly terminate the destination with NULL.
-
-Signed-off-by: Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>
-Reviewed-by: Petr Mladek <pmladek@suse.com>
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Andrii Nakryiko <andriin@fb.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc: Martin KaFai Lau <kafai@fb.com>
-Cc: Petr Mladek <pmladek@suse.com>
-Cc: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Cc: Song Liu <songliubraving@fb.com>
-Cc: Yonghong Song <yhs@fb.com>
-Cc: bpf@vger.kernel.org
-Cc: netdev@vger.kernel.org
-Link: http://lore.kernel.org/lkml/20191211080109.18765-1-andrey.zhizhikin@leica-geosystems.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
----
- tools/lib/api/fs/fs.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/tools/lib/api/fs/fs.c b/tools/lib/api/fs/fs.c
-index 11b3885e833e..027b18f7ed8c 100644
---- a/tools/lib/api/fs/fs.c
-+++ b/tools/lib/api/fs/fs.c
-@@ -210,6 +210,7 @@ static bool fs__env_override(struct fs *fs)
- 	size_t name_len = strlen(fs->name);
- 	/* name + "_PATH" + '\0' */
- 	char upper_name[name_len + 5 + 1];
-+
- 	memcpy(upper_name, fs->name, name_len);
- 	mem_toupper(upper_name, name_len);
- 	strcpy(&upper_name[name_len], "_PATH");
-@@ -219,7 +220,8 @@ static bool fs__env_override(struct fs *fs)
- 		return false;
- 
- 	fs->found = true;
--	strncpy(fs->path, override_path, sizeof(fs->path));
-+	strncpy(fs->path, override_path, sizeof(fs->path) - 1);
-+	fs->path[sizeof(fs->path) - 1] = '\0';
- 	return true;
- }
- 
--- 
-2.21.1
-
+[Trampoline *updates* could probably be handled more easily if a
+trampoline consisted of an immutable header that increments something
+like a percpu refcount followed by a mutable body, but given that that
+doesn't solve freeing trampolines, I'm not sure if it'd be worth the
+effort. Unless you just never free trampoline memory, but that's
+probably not a great idea.]
