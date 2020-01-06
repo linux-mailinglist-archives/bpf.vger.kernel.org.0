@@ -2,42 +2,41 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5944E131B89
-	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2020 23:35:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 882AB131BDD
+	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2020 23:52:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727200AbgAFWfI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Jan 2020 17:35:08 -0500
-Received: from www62.your-server.de ([213.133.104.62]:41688 "EHLO
+        id S1726794AbgAFWwU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Jan 2020 17:52:20 -0500
+Received: from www62.your-server.de ([213.133.104.62]:45328 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726721AbgAFWfI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Jan 2020 17:35:08 -0500
+        with ESMTP id S1726721AbgAFWwU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Jan 2020 17:52:20 -0500
 Received: from sslproxy05.your-server.de ([78.46.172.2])
         by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89_1)
         (envelope-from <daniel@iogearbox.net>)
-        id 1ioaxl-0003Pm-7W; Mon, 06 Jan 2020 23:35:05 +0100
+        id 1iobEQ-0004FY-5m; Mon, 06 Jan 2020 23:52:18 +0100
 Received: from [178.197.249.51] (helo=pc-9.home)
         by sslproxy05.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.89)
         (envelope-from <daniel@iogearbox.net>)
-        id 1ioaxk-000JD8-UH; Mon, 06 Jan 2020 23:35:04 +0100
-Subject: Re: [PATCH][bpf-next] bpf: change bpf_skb_generic_push type as void
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Song Liu <liu.song.a23@gmail.com>
-Cc:     Simon Horman <simon.horman@netronome.com>,
-        Li RongQing <lirongqing@baidu.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-References: <1578031353-27654-1-git-send-email-lirongqing@baidu.com>
- <20200103082712.GF12930@netronome.com>
- <CAPhsuW6z+jh0xofi8FCA0uvTJ5jSL_ZGpwPu1Eg566XeJ03pZA@mail.gmail.com>
- <20200106223206.uxq6isyk7pjruxx3@ast-mbp>
+        id 1iobEP-000Cny-Q7; Mon, 06 Jan 2020 23:52:17 +0100
+Subject: Re: [PATCH bpf-next 1/2] libbpf: Add probe for large INSN limit
+To:     Michal Rostecki <mrostecki@suse.de>, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20191227110605.1757-1-mrostecki@suse.de>
+ <20191227110605.1757-2-mrostecki@suse.de>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <f5477d69-f028-a0ca-6889-fecca3769582@iogearbox.net>
-Date:   Mon, 6 Jan 2020 23:35:04 +0100
+Message-ID: <aa996612-7ba5-ef76-6f22-112fe1d7b278@iogearbox.net>
+Date:   Mon, 6 Jan 2020 23:52:17 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20200106223206.uxq6isyk7pjruxx3@ast-mbp>
+In-Reply-To: <20191227110605.1757-2-mrostecki@suse.de>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -48,49 +47,87 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 1/6/20 11:32 PM, Alexei Starovoitov wrote:
-> On Fri, Jan 03, 2020 at 11:18:28AM -0800, Song Liu wrote:
->> On Fri, Jan 3, 2020 at 12:27 AM Simon Horman <simon.horman@netronome.com> wrote:
->>> On Fri, Jan 03, 2020 at 02:02:33PM +0800, Li RongQing wrote:
->>>> bpf_skb_generic_push always returns 0, not need to check
->>>> its return, so change its type as void
->>>>
->>>> Signed-off-by: Li RongQing <lirongqing@baidu.com>
->>>
->>> Reviewed-by: Simon Horman <simon.horman@netronome.com>
->> Acked-by: Song Liu <songliubraving@fb.com>
->>
->>>
->>>> ---
->>>>   net/core/filter.c | 30 ++++++++++--------------------
->>>>   1 file changed, 10 insertions(+), 20 deletions(-)
->>>>
->>>> diff --git a/net/core/filter.c b/net/core/filter.c
->>>> index 42fd17c48c5f..1cbac34a4e11 100644
->>>> --- a/net/core/filter.c
->>>> +++ b/net/core/filter.c
->>>
->>> ...
->>>
->>>> @@ -5144,7 +5134,7 @@ BPF_CALL_3(bpf_lwt_seg6_adjust_srh, struct sk_buff *, skb, u32, offset,
->>>>                if (unlikely(ret < 0))
->>>>                        return ret;
->>>>
->>>> -             ret = bpf_skb_net_hdr_push(skb, offset, len);
->>>> +             bpf_skb_net_hdr_push(skb, offset, len);
->>>
->>> There is a check for (ret < 0) just below this if block.
->>> That is ok becuase in order to get to here (ret < 0) must
->>> be true as per the check a few lines above.
->>>
->>> So I think this is ok although the asymmetry with the else arm
->>> of this if statement is not ideal IMHO.
->>
->> Agreed with this concern. But I cannot think of any free solution. I guess we
->> will just live with assumption that skb_cow_head() never return >0.
+On 12/27/19 12:06 PM, Michal Rostecki wrote:
+> Introduce a new probe which checks whether kernel has large maximum
+> program size (1M) which was increased in commit c04c0d2b968a ("bpf:
+> increase complexity limit and maximum program size").
 > 
-> I don't think this patch is worth doing.
-> I can imagine bpf_skb_generic_push() handling some errors in the future.
-> compiler can do this optimization job instead.
+> Based on the similar check in Cilium[0], authored by Daniel Borkmann.
+> 
+> [0] https://github.com/cilium/cilium/commit/657d0f585afd26232cfa5d4e70b6f64d2ea91596
+> 
+> Co-authored-by: Daniel Borkmann <daniel@iogearbox.net>
+> Signed-off-by: Michal Rostecki <mrostecki@suse.de>
+> ---
+>   tools/lib/bpf/libbpf.h        |  1 +
+>   tools/lib/bpf/libbpf.map      |  1 +
+>   tools/lib/bpf/libbpf_probes.c | 23 +++++++++++++++++++++++
+>   3 files changed, 25 insertions(+)
+> 
+> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> index fe592ef48f1b..26bf539f1b3c 100644
+> --- a/tools/lib/bpf/libbpf.h
+> +++ b/tools/lib/bpf/libbpf.h
+> @@ -521,6 +521,7 @@ LIBBPF_API bool bpf_probe_prog_type(enum bpf_prog_type prog_type,
+>   LIBBPF_API bool bpf_probe_map_type(enum bpf_map_type map_type, __u32 ifindex);
+>   LIBBPF_API bool bpf_probe_helper(enum bpf_func_id id,
+>   				 enum bpf_prog_type prog_type, __u32 ifindex);
+> +LIBBPF_API bool bpf_probe_large_insn_limit(__u32 ifindex);
+>   
+>   /*
+>    * Get bpf_prog_info in continuous memory
+> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> index e9713a574243..b300d74c921a 100644
+> --- a/tools/lib/bpf/libbpf.map
+> +++ b/tools/lib/bpf/libbpf.map
+> @@ -219,6 +219,7 @@ LIBBPF_0.0.7 {
+>   		bpf_object__detach_skeleton;
+>   		bpf_object__load_skeleton;
+>   		bpf_object__open_skeleton;
+> +		bpf_probe_large_insn_limit;
+>   		bpf_prog_attach_xattr;
+>   		bpf_program__attach;
+>   		bpf_program__name;
+> diff --git a/tools/lib/bpf/libbpf_probes.c b/tools/lib/bpf/libbpf_probes.c
+> index a9eb8b322671..925f95106a52 100644
+> --- a/tools/lib/bpf/libbpf_probes.c
+> +++ b/tools/lib/bpf/libbpf_probes.c
+> @@ -17,6 +17,8 @@
+>   #include "libbpf.h"
+>   #include "libbpf_internal.h"
+>   
+> +#define INSN_REPEAT 4128
+> +
+>   static bool grep(const char *buffer, const char *pattern)
+>   {
+>   	return !!strstr(buffer, pattern);
+> @@ -321,3 +323,24 @@ bool bpf_probe_helper(enum bpf_func_id id, enum bpf_prog_type prog_type,
+>   
+>   	return res;
+>   }
+> +
+> +/*
+> + * Probe for availability of kernel commit (5.3):
+> + *
+> + * c04c0d2b968a ("bpf: increase complexity limit and maximum program size")
+> + */
+> +bool bpf_probe_large_insn_limit(__u32 ifindex)
+> +{
+> +	struct bpf_insn insns[INSN_REPEAT + 1];
+> +	int i;
 
-Yep, fully agree.
+Looks good, but lets test for 'BPF_MAXINSNS + 1' number of total insns, less
+arbitrary than 4128.
+
+> +	for (i = 0; i < INSN_REPEAT; i++)
+> +		insns[i] = BPF_MOV64_IMM(BPF_REG_0, 1);
+> +	insns[INSN_REPEAT] = BPF_EXIT_INSN();
+> +
+> +	errno = 0;
+> +	probe_load(BPF_PROG_TYPE_SCHED_CLS, insns, ARRAY_SIZE(insns), NULL, 0,
+> +		   ifindex);
+> +
+> +	return errno != E2BIG && errno != EINVAL;
+> +}
+> 
+
