@@ -2,81 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B4B2131B43
-	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2020 23:24:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC4B5131B45
+	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2020 23:25:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726731AbgAFWY6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Jan 2020 17:24:58 -0500
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:40638 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726721AbgAFWY6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Jan 2020 17:24:58 -0500
-Received: by mail-pf1-f195.google.com with SMTP id q8so27582538pfh.7;
-        Mon, 06 Jan 2020 14:24:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=7FdarFEm8UZ45SG7Jc44ZflZoN8XveCp2/wpvikNMsQ=;
-        b=XQKOzmWyCWDk514YGteRMVLYM+OhXlMC7BAtUchaLkd18KsUegXGVZ9zeFL9XA+Lr1
-         PQK9Kpbb9zXmL+Ar6BKJHORR/wQPf1TpfhhJ2mrgl1YQUHkQeh//dsNZek68fdPT1NL+
-         fO9CAQoR1+aiiw0/Ffgs5HfoSzSkREmdOTl0z60n396ZhhSnQXjmfg+/+IGXZkkY1bV9
-         AQHc7KY47dR6wJNFFCmgS3D70EEl6wUojlht1bmDum1eDV6VTD9nyeI8DmqEbIMf2NT9
-         S//7ERXqzskxkYN2ViH+PooMghZcCmI7rcyx0bph2m9yqXyILG+CZ1pTbQCtULGBxOhf
-         oXCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=7FdarFEm8UZ45SG7Jc44ZflZoN8XveCp2/wpvikNMsQ=;
-        b=nEeEURkw/LC6QWgG/NZ0RvYt5ffnZizykOLiM7IC/ZDRE4/9Xi0iGSNjF/cQpu9yi6
-         k/XNSjTmBMc4B1cCVwLzqBk16/UqP852vKflPLd7VyuJoKLKtVbM4RnX1wUOlGrBD59p
-         ID9IfvhSYMTDPKja2RsHQc94d6kqYJyWh30b49jhz08hzxX04BaSRZGS6y6G5ud5/sKK
-         K3gnDCOgIo7OYXFl4dHWjAkfH9U3wQ6d7ZlsnjMCFj0iSJaUgi37qXIHiccb4YRoABDu
-         n2bENIbD/VP0ME51yE6k8+QtVp/wDfpFc+5DJ7NzRQ0KsXyO85Zl4Jx399aK+ecl/WrG
-         ew9g==
-X-Gm-Message-State: APjAAAX4g2oqEB3Dn2Iu8hukWBN5HFrRy76fD8mqK/CD+BiaDQBMHDBl
-        s8tUlUN9+bKzHTjnbQrOwWW5IuaJ
-X-Google-Smtp-Source: APXvYqyVPohgs+oGxZGNS0el6auiDkfRO8/RD30+5H3TjyT8OHDMxyUcESl/EWW9UT53y1GecgnTAA==
-X-Received: by 2002:a62:aa03:: with SMTP id e3mr103604557pff.61.1578349497624;
-        Mon, 06 Jan 2020 14:24:57 -0800 (PST)
-Received: from ast-mbp ([2620:10d:c090:200::1:2bf6])
-        by smtp.gmail.com with ESMTPSA id m15sm72995454pgi.91.2020.01.06.14.24.56
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 06 Jan 2020 14:24:56 -0800 (PST)
-Date:   Mon, 6 Jan 2020 14:24:55 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     ast@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        anatoly.trosinenko@gmail.com
-Subject: Re: [PATCH bpf] bpf: Fix passing modified ctx to ld/abs/ind
- instruction
-Message-ID: <20200106222454.6ajkzw4s2vfq2mye@ast-mbp>
-References: <20200106215157.3553-1-daniel@iogearbox.net>
+        id S1726794AbgAFWZb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Jan 2020 17:25:31 -0500
+Received: from mga18.intel.com ([134.134.136.126]:46983 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726721AbgAFWZb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Jan 2020 17:25:31 -0500
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga106.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 06 Jan 2020 14:25:30 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.69,403,1571727600"; 
+   d="scan'208";a="253509785"
+Received: from orsmsx106.amr.corp.intel.com ([10.22.225.133])
+  by fmsmga002.fm.intel.com with ESMTP; 06 Jan 2020 14:25:29 -0800
+Received: from orsmsx116.amr.corp.intel.com (10.22.240.14) by
+ ORSMSX106.amr.corp.intel.com (10.22.225.133) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Mon, 6 Jan 2020 14:25:28 -0800
+Received: from orsmsx112.amr.corp.intel.com ([169.254.3.41]) by
+ ORSMSX116.amr.corp.intel.com ([169.254.7.30]) with mapi id 14.03.0439.000;
+ Mon, 6 Jan 2020 14:25:28 -0800
+From:   "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+To:     "kpsingh@chromium.org" <kpsingh@chromium.org>,
+        "luto@amacapital.net" <luto@amacapital.net>
+CC:     "songliubraving@fb.com" <songliubraving@fb.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "kuznet@ms2.inr.ac.ru" <kuznet@ms2.inr.ac.ru>,
+        "jannh@google.com" <jannh@google.com>,
+        "mjg59@google.com" <mjg59@google.com>,
+        "thgarnie@chromium.org" <thgarnie@chromium.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "revest@chromium.org" <revest@chromium.org>,
+        "jackmanb@chromium.org" <jackmanb@chromium.org>,
+        "kafai@fb.com" <kafai@fb.com>, "yhs@fb.com" <yhs@fb.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "yoshfuji@linux-ipv6.org" <yoshfuji@linux-ipv6.org>,
+        "mhalcrow@google.com" <mhalcrow@google.com>,
+        "andriin@fb.com" <andriin@fb.com>
+Subject: Re: [PATCH bpf-next] bpf: Make trampolines W^X
+Thread-Topic: [PATCH bpf-next] bpf: Make trampolines W^X
+Thread-Index: AQHVwpjLpCzVLdPZ5Em9CS0HIZ/iOKfewVwA
+Date:   Mon, 6 Jan 2020 22:25:27 +0000
+Message-ID: <21bf6bb46544eab79e792980f82520f8fbdae9b5.camel@intel.com>
+References: <20200103234725.22846-1-kpsingh@chromium.org>
+         <F25C9071-A7A7-4221-BC49-A769E1677EE1@amacapital.net>
+In-Reply-To: <F25C9071-A7A7-4221-BC49-A769E1677EE1@amacapital.net>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.54.75.11]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <C1D761781F8B5E4EBBB83ABF3CB2AE9E@intel.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200106215157.3553-1-daniel@iogearbox.net>
-User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 06, 2020 at 10:51:57PM +0100, Daniel Borkmann wrote:
-> Anatoly has been fuzzing with kBdysch harness and reported a KASAN
-> slab oob in one of the outcomes:
-> 
-> After further debugging, turns out while in case of other helper functions
-> we disallow passing modified ctx, the special case of ld/abs/ind instruction
-> which has similar semantics (except r6 being the ctx argument) is missing
-> such check. Modified ctx is impossible here as bpf_skb_load_helper_8_no_cache()
-> and others are expecting skb fields in original position, hence, add
-> check_ctx_reg() to reject any modified ctx. Issue was first introduced back
-> in f1174f77b50c ("bpf/verifier: rework value tracking").
-> 
-> Fixes: f1174f77b50c ("bpf/verifier: rework value tracking")
-> Reported-by: Anatoly Trosinenko <anatoly.trosinenko@gmail.com>
-> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-
-Applied, Thanks
+T24gU2F0LCAyMDIwLTAxLTA0IGF0IDA5OjQ5ICswOTAwLCBBbmR5IEx1dG9taXJza2kgd3JvdGU6
+DQo+ID4gT24gSmFuIDQsIDIwMjAsIGF0IDg6NDcgQU0sIEtQIFNpbmdoIDxrcHNpbmdoQGNocm9t
+aXVtLm9yZz4gd3JvdGU6DQo+ID4gDQo+ID4g77u/RnJvbTogS1AgU2luZ2ggPGtwc2luZ2hAZ29v
+Z2xlLmNvbT4NCj4gPiANCj4gPiBUaGUgaW1hZ2UgZm9yIHRoZSBCUEYgdHJhbXBvbGluZXMgaXMg
+YWxsb2NhdGVkIHdpdGgNCj4gPiBicGZfaml0X2FsbG9jX2V4ZV9wYWdlIHdoaWNoIG1hcmtzIHRo
+aXMgYWxsb2NhdGVkIHBhZ2UgZXhlY3V0YWJsZS4gVGhpcw0KPiA+IG1lYW5zIHRoYXQgdGhlIGFs
+bG9jYXRlZCBtZW1vcnkgaXMgVyBhbmQgWCBhdCB0aGUgc2FtZSB0aW1lIG1ha2luZyBpdA0KPiA+
+IHN1c2NlcHRpYmxlIHRvIFdYIGJhc2VkIGF0dGFja3MuDQo+ID4gDQo+ID4gU2luY2UgdGhlIGFs
+bG9jYXRlZCBtZW1vcnkgaXMgc2hhcmVkIGJldHdlZW4gdHdvIHRyYW1wb2xpbmVzICh0aGUNCj4g
+PiBjdXJyZW50IGFuZCB0aGUgbmV4dCksIDIgcGFnZXMgbXVzdCBiZSBhbGxvY2F0ZWQgdG8gYWRo
+ZXJlIHRvIFdeWCBhbmQNCj4gPiB0aGUgZm9sbG93aW5nIHNlcXVlbmNlIGlzIG9iZXllZCB3aGVy
+ZSB0cmFtcG9saW5lcyBhcmUgbW9kaWZpZWQ6DQo+IA0KPiBDYW4gd2UgcGxlYXNlIGRvIGJldHRl
+ciByYXRoZXIgdGhhbiBwaWxpbmcgZ2FyYmFnZSBvbiB0b3Agb2YgZ2FyYmFnZT8NCj4gDQo+ID4g
+DQo+ID4gLSBNYXJrIG1lbW9yeSBhcyBub24gZXhlY3V0YWJsZSAoc2V0X21lbW9yeV9ueCkuIFdo
+aWxlIG1vZHVsZV9hbGxvYyBmb3INCj4gPiB4ODYgYWxsb2NhdGVzIHRoZSBtZW1vcnkgYXMgUEFH
+RV9LRVJORUwgYW5kIG5vdCBQQUdFX0tFUk5FTF9FWEVDLCBub3QNCj4gPiBhbGwgaW1wbGVtZW50
+YXRpb25zIG9mIG1vZHVsZV9hbGxvYyBkbyBzbw0KPiANCj4gSG93IGFib3V0IGZpeGluZyB0aGlz
+IGluc3RlYWQ/DQo+IA0KPiA+IC0gTWFyayB0aGUgbWVtb3J5IGFzIHJlYWQvd3JpdGUgKHNldF9t
+ZW1vcnlfcncpDQo+IA0KPiBQcm9iYWJseSBoYXJtbGVzcywgYnV0IHNlZSBhYm92ZSBhYm91dCBm
+aXhpbmcgaXQuDQo+IA0KPiA+IC0gTW9kaWZ5IHRoZSB0cmFtcG9saW5lDQo+IA0KPiBTZWVtcyBy
+ZWFzb25hYmxlLiBJdOKAmXMgd29ydGggbm90aW5nIHRoYXQgdGhpcyB3aG9sZSBhcHByb2FjaCBp
+cyBzdWJvcHRpbWFsOg0KPiB0aGUg4oCcbW9kdWxl4oCdIGFsbG9jYXRvciBzaG91bGQgcmVhbGx5
+IGJlIHJldHVybmluZyBhIGxpc3Qgb2YgcGFnZXMgdG8gYmUNCj4gd3JpdHRlbiAobm90IGF0IHRo
+ZSBmaW5hbCBhZGRyZXNzISkgd2l0aCB0aGUgYWN0dWFsIGV4ZWN1dGFibGUgbWFwcGluZyB0byBi
+ZQ0KPiBtYXRlcmlhbGl6ZWQgbGF0ZXIsIGJ1dCB0aGF04oCZcyBhIGJpZ2dlciBwcm9qZWN0IHRo
+YXQgeW914oCZcmUgd2VsY29tZSB0byBpZ25vcmUNCj4gZm9yIG5vdy4gIChDb25jcmV0ZWx5LCBp
+dCBzaG91bGQgcHJvZHVjZSBhIHZtYXAgYWRkcmVzcyB3aXRoIGJhY2tpbmcgcGFnZXMgYnV0DQo+
+IHdpdGggdGhlIHZtYXAgYWxpYXMgZWl0aGVyIGVudGlyZWx5IHVubWFwcGVkIG9yIHJlYWQtb25s
+eS4gQSBzdWJzZXF1ZW50IGhlYWxlcg0KPiB3b3VsZCwgYWxsIGF0IG9uY2UsIG1ha2UgdGhlIGRp
+cmVjdCBtYXAgcGFnZXMgUk8gb3Igbm90LXByZXNlbnQgYW5kIG1ha2UgdGhlDQo+IHZtYXAgYWxp
+YXMgUlguKQ0KPiA+IC0gTWFyayB0aGUgbWVtb3J5IGFzIHJlYWQtb25seSAoc2V0X21lbW9yeV9y
+bykNCj4gPiAtIE1hcmsgdGhlIG1lbW9yeSBhcyBleGVjdXRhYmxlIChzZXRfbWVtb3J5X3gpDQo+
+IA0KPiBObywgdGhhbmtzLiBUaGVyZeKAmXMgdmVyeSBsaXR0bGUgZXhjdXNlIGZvciBkb2luZyB0
+d28gSVBJIGZsdXNoZXMgd2hlbiBvbmUNCj4gd291bGQgc3VmZmljZS4NCj4gDQo+IEFzIGZhciBh
+cyBJIGtub3csIGFsbCBhcmNoaXRlY3R1cmVzIGNhbiBkbyB0aGlzIHdpdGggYSBzaW5nbGUgZmx1
+c2ggd2l0aG91dA0KPiByYWNlcyAgeDg2IGNlcnRhaW5seSBjYW4uIFRoZSBtb2R1bGUgZnJlZWlu
+ZyBjb2RlIGdldHMgdGhpcyBzZXF1ZW5jZSByaWdodC4NCj4gUGxlYXNlIHJldXNlIGl0cyBtZWNo
+YW5pc20gb3IsIGlmIG5lZWRlZCwgZXhwb3J0IHRoZSByZWxldmFudCBpbnRlcmZhY2VzLg0KDQpT
+byBpZiBJIHVuZGVyc3RhbmQgdGhpcyByaWdodCwgc29tZSB0cmFtcG9saW5lcyBoYXZlIGJlZW4g
+YWRkZWQgdGhhdCBhcmUNCmN1cnJlbnRseSBzZXQgYXMgUldYIGF0IG1vZGlmaWNhdGlvbiB0aW1l
+IEFORCBsZWZ0IHRoYXQgd2F5IGR1cmluZyBydW50aW1lPyBUaGUNCmRpc2N1c3Npb24gb24gdGhl
+IG9yZGVyIG9mIHNldF9tZW1vcnlfKCkgY2FsbHMgaW4gdGhlIGNvbW1pdCBtZXNzYWdlIG1hZGUg
+bWUNCnRoaW5rIHRoYXQgdGhpcyB3YXMganVzdCBhIG1vZGlmaWNhdGlvbiB0aW1lIHRoaW5nIGF0
+IGZpcnN0Lg0KDQpBbHNvLCBpcyB0aGVyZSBhIHJlYXNvbiB5b3UgY291bGRuJ3QgdXNlIHRleHRf
+cG9rZSgpIHRvIG1vZGlmeSB0aGUgdHJhbXBvbGluZQ0Kd2l0aCBhIHNpbmdsZSBmbHVzaD8NCg0K
+DQo=
