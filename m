@@ -2,141 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E0CF2131B14
-	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2020 23:07:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A4B6131B1D
+	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2020 23:13:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726820AbgAFWHv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Jan 2020 17:07:51 -0500
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:36166 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726760AbgAFWHv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Jan 2020 17:07:51 -0500
-Received: by mail-pl1-f193.google.com with SMTP id a6so21622745plm.3;
-        Mon, 06 Jan 2020 14:07:51 -0800 (PST)
+        id S1726721AbgAFWNW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Jan 2020 17:13:22 -0500
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:36679 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726695AbgAFWNV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Jan 2020 17:13:21 -0500
+Received: by mail-pg1-f193.google.com with SMTP id k3so27493050pgc.3;
+        Mon, 06 Jan 2020 14:13:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=pH0bW5L244MhRBbTgYq971yU1s9EHra7myYPhaQViJg=;
-        b=U3ESQHwtHWbtFMdfTuDBniP6O0qQcGNps8BjZGNmHiiZ3MjD29QZYDu5t9gA8C6zeI
-         kPPUWZwLXplbBsAeo2r3ToaG1hpj4G+zYvoJurqGgzghNPvinzIdQvKHuhuOIqEfUzwj
-         SW3cCAxDBUNUZqtW8JwH2zT98ODIthR8aRgPyOQq0ZaJH+tR01uCMUI1rIv0zmKGXAYn
-         lQBX/Yvvhz+hbrEldYo3kxC4hQkMFIHlNkyy00qRpKY+PcbUBLtBYFC2UPvJ3WrXCnOf
-         Oa8OANHUEqg6Ary+vPRYwfzGyvRZHdUrMx4G8XeEPQZ/z2j+fBQE9bB0rxLNQyy/3t2T
-         IhLg==
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=eyolJd68ERnJpeKV8cAEbEAjcAmeu/bmG+0f7OhQ2SA=;
+        b=Yijm0XTU+T/0xsej33JyRLg5dgQC8KC6yShekyLo5/vaHao2/7DcUd/SI8l20lCGjS
+         mRL39ZS33Ne/7Xm2Xr0sU8REN9pHR8iHGfOPR8aFm6qsoL9a5bDUvRjAKzh1H8gTlYXD
+         vA+ciQ0duA1TVCe/iUPA98eLjzYzfOznyTYKt26YlD2xIA1iR5QxQw7oKy+44L788t+0
+         wY8COOYx7B1l+NnVPkBDk6qqAZy8y6rR/ERf5q324H0L4iTy6eyLKivhcRUHS/vhPsoh
+         rjV0KqBOp+Skwxq71Lo0SP/nGtKA3TTCzRrtYu6jJ/vVG/IqlW7FjkIb2QuFmRVpzDTu
+         EN8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=pH0bW5L244MhRBbTgYq971yU1s9EHra7myYPhaQViJg=;
-        b=cPc+Wf/s+V2Ky+2m5XyDECmXdzMEkBlld7TqavuWA0JJuP+3zI1zEC3ln9U3IJIoOt
-         nFDdLne8Qpjgxa8wCc0rKGfv1WfTzFJlvgVfeewg9Mmc78ISTd+cHQGcIei4nR1lmiNw
-         4H6kqiNgL8qFht6FI8db5aDMQ6e/8nm1up6yNQpqlQZKikJaKBrA2HWYkMdvAtYNuJCw
-         Gyl/838EvPInaFjbThRO7Y8+EzoQUH5L93QouqVSfVSfuavg8+cCVIjFHuOe+UY70tvk
-         BCB6ic9j+UqMRZm2TjpF0O6ZlCrhy9c0/cRvWrnz1UOapXmJOAxX2c2btcR9D0iIPK56
-         /TKA==
-X-Gm-Message-State: APjAAAUMzWdXdgpq9j4iOle23hMMmT5uJdXEUXX9FFLGjBgmdfZHn4p9
-        PQ3JzhnxDc6eFzrIpgSK4K0=
-X-Google-Smtp-Source: APXvYqz59p5J+wJOEJOLpGeB4wIJfEe9IM9k8rTohNejmSeefpox5Hm1VCMzuUD+KYDflhtOTh7liQ==
-X-Received: by 2002:a17:902:8ec4:: with SMTP id x4mr93239772plo.234.1578348470494;
-        Mon, 06 Jan 2020 14:07:50 -0800 (PST)
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=eyolJd68ERnJpeKV8cAEbEAjcAmeu/bmG+0f7OhQ2SA=;
+        b=p+UKY58PiIUATy9p9bK+zSQllH62xQFusFAyFxW/Wvxo7JP/JwcxHj44his3hjEV9u
+         /+HCRz5/XRSjhm6i3mbB307YIy/mSvedWv25Z7NmGl1Vlk9Ha6wA6vB4q1sAB4ypOY0s
+         Tr3qb2Q1VyK9X/Vpt4HX+WlUirAOHEuIwxhL4gsSsQH2aNiyFYwLNunlX8mizuHaIY7L
+         lYSk10KKLa37sP390jxrB3cJrFXFsF8XoSTVuLmcfog/zPLOgdxSXKOueYr52XYN9IDL
+         MveM7tYJyKKq0u0om3IpM3O5YCaFqxHhGvILpPvUO5Ao6IN0Z+wuJ7Php6k2Rn2QYmCS
+         InAA==
+X-Gm-Message-State: APjAAAUSBqJv/YIWkFFxMRD9KxgMI+yiKD2NItFSeJV8qXFIOIqHb0PH
+        xNwxm/1fvz4EYK39X00cN2A=
+X-Google-Smtp-Source: APXvYqwYCJHcfeniuDi19iZ4yWsGvSHZV7jg0PZh3evoX6cntwbvydeSWfPAi1Ewbi82beKuDIKX3Q==
+X-Received: by 2002:a63:31d1:: with SMTP id x200mr106298627pgx.405.1578348801200;
+        Mon, 06 Jan 2020 14:13:21 -0800 (PST)
 Received: from ast-mbp ([2620:10d:c090:200::1:2bf6])
-        by smtp.gmail.com with ESMTPSA id n1sm79713492pfd.47.2020.01.06.14.07.49
+        by smtp.gmail.com with ESMTPSA id w131sm81274287pfc.16.2020.01.06.14.13.19
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 06 Jan 2020 14:07:49 -0800 (PST)
-Date:   Mon, 6 Jan 2020 14:07:48 -0800
+        Mon, 06 Jan 2020 14:13:20 -0800 (PST)
+Date:   Mon, 6 Jan 2020 14:13:18 -0800
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     "tj@kernel.org" <tj@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+To:     Andy Lutomirski <luto@amacapital.net>
+Cc:     Justin Capella <justincapella@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org, x86@kernel.org,
+        linux-security-module@vger.kernel.org,
+        Kees Cook <keescook@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: Re: [PATCH bpf] bpf: cgroup: prevent out-of-order release of cgroup
- bpf
-Message-ID: <20200106220746.fm3hp3zynaiaqgly@ast-mbp>
-References: <20191227215034.3169624-1-guro@fb.com>
- <20200104003523.rfte5rw6hbnncjes@ast-mbp>
- <20200104011318.GA11376@localhost.localdomain>
- <20200104023112.6edfdvsff6cgsstn@ast-mbp>
- <20200104030041.GA12685@localhost.localdomain>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Thomas Garnier <thgarnie@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Jann Horn <jannh@google.com>,
+        Matthew Garrett <mjg59@google.com>,
+        Michael Halcrow <mhalcrow@google.com>
+Subject: Re: [PATCH bpf-next] bpf: Make trampolines W^X
+Message-ID: <20200106221317.wpwut2rgw23tdaoo@ast-mbp>
+References: <CAMrEMU8Vsn8rfULqf1gfuYL_-ybqzit29CLYReskaZ8XUroZww@mail.gmail.com>
+ <768BAF04-BEBF-489A-8737-B645816B262A@amacapital.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200104030041.GA12685@localhost.localdomain>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <768BAF04-BEBF-489A-8737-B645816B262A@amacapital.net>
 User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jan 04, 2020 at 03:00:46AM +0000, Roman Gushchin wrote:
-> On Fri, Jan 03, 2020 at 06:31:14PM -0800, Alexei Starovoitov wrote:
-> > On Sat, Jan 04, 2020 at 01:13:24AM +0000, Roman Gushchin wrote:
-> > > On Fri, Jan 03, 2020 at 04:35:25PM -0800, Alexei Starovoitov wrote:
-> > > > On Fri, Dec 27, 2019 at 01:50:34PM -0800, Roman Gushchin wrote:
-> > > > > Before commit 4bfc0bb2c60e ("bpf: decouple the lifetime of cgroup_bpf
-> > > > > from cgroup itself") cgroup bpf structures were released with
-> > > > > corresponding cgroup structures. It guaranteed the hierarchical order
-> > > > > of destruction: children were always first. It preserved attached
-> > > > > programs from being released before their propagated copies.
-> > > > > 
-> > > > > But with cgroup auto-detachment there are no such guarantees anymore:
-> > > > > cgroup bpf is released as soon as the cgroup is offline and there are
-> > > > > no live associated sockets. It means that an attached program can be
-> > > > > detached and released, while its propagated copy is still living
-> > > > > in the cgroup subtree. This will obviously lead to an use-after-free
-> > > > > bug.
-> > > > ...
-> > > > > @@ -65,6 +65,9 @@ static void cgroup_bpf_release(struct work_struct *work)
-> > > > >  
-> > > > >  	mutex_unlock(&cgroup_mutex);
-> > > > >  
-> > > > > +	for (p = cgroup_parent(cgrp); p; p = cgroup_parent(p))
-> > > > > +		cgroup_bpf_put(p);
-> > > > > +
-> > > > 
-> > > > The fix makes sense, but is it really safe to walk cgroup hierarchy
-> > > > without holding cgroup_mutex?
-> > > 
-> > > It is, because we're holding a reference to the original cgroup and going
-> > > towards the root. On each level the cgroup is protected by a reference
-> > > from their child cgroup.
+On Sun, Jan 05, 2020 at 10:33:54AM +0900, Andy Lutomirski wrote:
+> 
+> >> On Jan 4, 2020, at 8:03 PM, Justin Capella <justincapella@gmail.com> wrote:
+> > ﻿
+> > I'm rather ignorant about this topic but it would make sense to check prior to making executable from a security standpoint wouldn't it? (In support of the (set_memory_ro + set_memory_x)
 > > 
-> > cgroup_bpf_put(p) can make bpf.refcnt zero which may call cgroup_bpf_release()
-> > on another cpu which will do cgroup_put() and this cpu p = cgroup_parent(p)
-> > would be use-after-free?
-> > May be not due to the way work_queues are implemented.
-> > But it feels dangerous to have such delicate release logic.
 > 
-> If I understand your concern correctly: you assume that parent's
-> cgroup_bpf_release() can be finished prior to the child's one and
-> the final cgroup_put() will release the parent?
+> Maybe, depends if it’s structured in a way that’s actually helpful from a security perspective.
 > 
-> If so, it's not possible, because the child hold a reference to the
-> parent (independent to all cgroup bpf stuff), which exists at least
-> until the final cgroup_put() in cgroup_bpf_release(). Please, look
-> at css_free_rwork_fn() for details.
-> 
-> > Why not to move the loop under the mutex and make things obvious?
-> 
-> Traversing the cgroup tree to the root cgroup without additional
-> locking seems pretty common to me. You can find a ton of examples in
-> mm/memcontrol.c. So it doesn't look scary or adventurous to me.
-> 
-> I think it doesn't matter that much here, so I'm ok with putting it
-> under the mutex, but IMO it won't make the code any safer.
-> 
-> 
-> cc Tejun for the second opinion on cgroup locking
+> It doesn’t help that set_memory_x and friends are not optimized at all. These functions are very, very, very slow and adversely affect all CPUs.
 
-Checked with TJ offline. This seems fine.
-
-I tweaked commit log:
-- extra 'diff' lines were confusing 'git am'
-- commit description shouldn't be split into multiline
-
-And applied to bpf tree. Thanks
+That was one of the reason it wasn't done in the first.
+Also ftrace trampoline break w^x as well.
+Not sure what is the plan for ftrace, but for bpf trampoline I'm going to switch
+to text_poke (without _bp) once tip bits get merged during next merge window.
+Then bpf trampoline will be allocated as ro+x and text_poke will be used instead of memcpy.
