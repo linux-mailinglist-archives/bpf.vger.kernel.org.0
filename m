@@ -2,80 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 60732130E99
-	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2020 09:23:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28C57130F14
+	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2020 10:02:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726293AbgAFIXj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Jan 2020 03:23:39 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:57718 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725446AbgAFIXj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Jan 2020 03:23:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=nYOr/sf0nD1L6E/qjNg4zuKpPzCSoERM7P4MkiuiORA=; b=HijrWx5DY7NCS/gFZmqZ8abiU
-        e+aI9JakRwOWAEkl0/WwuV8+FIDdWoVILFVDZ6FO3AemSQ8V2zNHPBoXpqS0YodhIClCmaiRBBOk+
-        22aJFGVf4Un+DQolK0M2k2DNHpN9lp2f/mm+dyAnzoNs0w4N58fSwZJ+1TWQw5rvTbqHya0Io0aaR
-        Ype2ZK+wVhWx3Ir23o3L6fY/3AQXbLqxD+CYOwHYCHsqT+LaIZ22xcwmvXSAMgv1KKOMnHYSOuz1e
-        c1ljrjJTCkQKr+HQbhe2SzhZ4Npnpl6Y4ci6Euyuuo0QTJXOm4RcXPmYQPOCfvwKUzxfbJy8EzVbf
-        xoZM56CVQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1ioNfT-0003Np-16; Mon, 06 Jan 2020 08:23:19 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BB4DE304124;
-        Mon,  6 Jan 2020 09:21:43 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id AAEAC2B627466; Mon,  6 Jan 2020 09:23:15 +0100 (CET)
-Date:   Mon, 6 Jan 2020 09:23:15 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Andy Lutomirski <luto@amacapital.net>
-Cc:     KP Singh <kpsingh@chromium.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org, x86@kernel.org,
-        linux-security-module@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Thomas Garnier <thgarnie@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        Jann Horn <jannh@google.com>,
-        Matthew Garrett <mjg59@google.com>,
-        Michael Halcrow <mhalcrow@google.com>
-Subject: Re: [PATCH bpf-next] bpf: Make trampolines W^X
-Message-ID: <20200106082315.GL2810@hirez.programming.kicks-ass.net>
-References: <20200103234725.22846-1-kpsingh@chromium.org>
- <F25C9071-A7A7-4221-BC49-A769E1677EE1@amacapital.net>
+        id S1726264AbgAFJCA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Jan 2020 04:02:00 -0500
+Received: from mx2.suse.de ([195.135.220.15]:50152 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725446AbgAFJCA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Jan 2020 04:02:00 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id B2328B027;
+        Mon,  6 Jan 2020 09:01:55 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 821931E0B47; Mon,  6 Jan 2020 10:01:47 +0100 (CET)
+Date:   Mon, 6 Jan 2020 10:01:47 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Leon Romanovsky <leon@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jens Axboe <axboe@kernel.dk>, Jonathan Corbet <corbet@lwn.net>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, bpf@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, kvm@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
+        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
+        Maor Gottlieb <maorg@mellanox.com>,
+        Ran Rozenstein <ranro@mellanox.com>
+Subject: Re: [PATCH v11 00/25] mm/gup: track dma-pinned pages: FOLL_PIN
+Message-ID: <20200106090147.GA9176@quack2.suse.cz>
+References: <20191219132607.GA410823@unreal>
+ <a4849322-8e17-119e-a664-80d9f95d850b@nvidia.com>
+ <20191219210743.GN17227@ziepe.ca>
+ <20191220182939.GA10944@unreal>
+ <1001a5fc-a71d-9c0f-1090-546c4913d8a2@nvidia.com>
+ <20191222132357.GF13335@unreal>
+ <49d57efe-85e1-6910-baf5-c18df1382206@nvidia.com>
+ <20191225052612.GA212002@unreal>
+ <b879d191-a07c-e808-e48f-2b9bd8ba4fa3@nvidia.com>
+ <612aa292-ec45-295c-b56c-c622876620fa@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <F25C9071-A7A7-4221-BC49-A769E1677EE1@amacapital.net>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <612aa292-ec45-295c-b56c-c622876620fa@nvidia.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jan 04, 2020 at 09:49:10AM +0900, Andy Lutomirski wrote:
-
-> > - Mark memory as non executable (set_memory_nx). While module_alloc for
-> > x86 allocates the memory as PAGE_KERNEL and not PAGE_KERNEL_EXEC, not
-> > all implementations of module_alloc do so
+On Sat 28-12-19 20:33:32, John Hubbard wrote:
+> On 12/27/19 1:56 PM, John Hubbard wrote:
+> ...
+> >> It is ancient verification test (~10y) which is not an easy task to
+> >> make it understandable and standalone :).
+> >>
+> > 
+> > Is this the only test that fails, btw? No other test failures or hints of
+> > problems?
+> > 
+> > (Also, maybe hopeless, but can *anyone* on the RDMA list provide some
+> > characterization of the test, such as how many pins per page, what page
+> > sizes are used? I'm still hoping to write a test to trigger something
+> > close to this...)
+> > 
+> > I do have a couple more ideas for test runs:
+> > 
+> > 1. Reduce GUP_PIN_COUNTING_BIAS to 1. That would turn the whole override of
+> > page->_refcount into a no-op, and so if all is well (it may not be!) with the
+> > rest of the patch, then we'd expect this problem to not reappear.
+> > 
+> > 2. Active /proc/vmstat *foll_pin* statistics unconditionally (just for these
+> > tests, of course), so we can see if there is a get/put mismatch. However, that
+> > will change the timing, and so it must be attempted independently of (1), in
+> > order to see if it ends up hiding the repro.
+> > 
+> > I've updated this branch to implement (1), but not (2), hoping you can give
+> > this one a spin?
+> > 
+> >     git@github.com:johnhubbard/linux.git  pin_user_pages_tracking_v11_with_diags
+> > 
+> > 
 > 
-> How about fixing this instead?
+> Also, looking ahead:
+> 
+> a) if the problem disappears with the latest above test, then we likely have
+>    a huge page refcount overflow, and there are a couple of different ways to
+>    fix it. 
+> 
+> b) if it still reproduces with the above, then it's some other random mistake,
+>    and in that case I'd be inclined to do a sort of guided (or classic, unguided)
+>    git bisect of the series. Because it could be any of several patches.
+> 
+>    If that's too much trouble, then I'd have to fall back to submitting a few
+>    patches at a time and working my way up to the tracking patch...
 
-We only care about STRICT_MODULE_RMW (iow, arm, arm64, s390, x86). Of
-those only s390 seems to be 'off'.
+It could also be that an ordinary page reference is dropped with 'unpin'
+thus underflowing the page refcount...
+
+								Honza
+
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
