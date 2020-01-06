@@ -2,102 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D4B30131BE1
-	for <lists+bpf@lfdr.de>; Mon,  6 Jan 2020 23:55:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69DC2131C4D
+	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2020 00:27:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726731AbgAFWza (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Jan 2020 17:55:30 -0500
-Received: from www62.your-server.de ([213.133.104.62]:45756 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726721AbgAFWz3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Jan 2020 17:55:29 -0500
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iobHT-0004Xi-8H; Mon, 06 Jan 2020 23:55:27 +0100
-Received: from [178.197.249.51] (helo=pc-9.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iobHS-000TMk-Se; Mon, 06 Jan 2020 23:55:26 +0100
-Subject: Re: [PATCH bpf-next 2/2] bpftool: Add misc secion and probe for large
- INSN limit
-To:     Michal Rostecki <mrostecki@suse.de>, bpf@vger.kernel.org
+        id S1727217AbgAFX1Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 6 Jan 2020 18:27:25 -0500
+Received: from mail-pj1-f68.google.com ([209.85.216.68]:53294 "EHLO
+        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726545AbgAFX1Z (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 6 Jan 2020 18:27:25 -0500
+Received: by mail-pj1-f68.google.com with SMTP id n96so8173818pjc.3;
+        Mon, 06 Jan 2020 15:27:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=jPn73DMtcSflnfxRH7mWnc629ZU8jN1Lxj0uZf2hOW0=;
+        b=gBvU4+agLc1idy19vdOvtBbeFKjO+2hSsumc0LK9UAWUbq7dkUSufpzJGJYVdzE1QQ
+         OTnKOjHXusalohw0qFO92P5S6OULk50DMcNXoCGDgvT1a2kQRaiECkpLwmeitBLb+uP0
+         vwoCduIf7uNHOfkwwgf84KNXXVAbDZbSMyBxf96sQC8fhadlY0eOvvmtgFtPuYo7qx+Q
+         NWBbVXxkjuzAWdhuET7xeo3gt5dWs9DGx/dQEPtfqT+rQ7nckzwJ1ZusipvQNue4NC95
+         CBZHJ13A0NRvSwNDBUTeO8/hqnqzGpCsSN4MjHvONx0j8wR/YwBbUAMlJkPMResUQp4p
+         owTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=jPn73DMtcSflnfxRH7mWnc629ZU8jN1Lxj0uZf2hOW0=;
+        b=sViqPgia3Wynv1zAPyztjwHzykMCcszq2AhMsQHfS1pM/ONngi5+bmxozayz4Nnws1
+         U/L3LYB7kK5vT9OHzNKdvKGqdBW4NLTU29bqpS0O1Cxe+ok5tYDQ6gCeaa4QFaN7H4r8
+         ERfjsHD+WCj6xxIRKawH2Ku7NtogofD2fZQwSiy/a+XS1ugfZMtE1IyOHour3hNP6IaS
+         xcixOcMtC428tBqxml4vZHHg7Cs56EySyUicTxDdz+JAxfUZpjyZ/rZZFqZSdA+QQzAz
+         T+pHP92P7WRTG+wEMXywPjxg2R6+lryg2ALDdKKQIp9bTgMZmHmrseXQyAVilE6m4PCE
+         6lOg==
+X-Gm-Message-State: APjAAAU4Q3yApwiJPM4WVTvXZbEt08JsQr6HZ+VEZMHuklAlHuWfgfMk
+        KPc0idFtn0H3iqAx6SGBvUo=
+X-Google-Smtp-Source: APXvYqyNDfvHrzZmSH+QSReWHcBP97ZKs44mvqrr6GoukkUQJo/HkqO2I7JmQSw9nQPE/HunDnazsw==
+X-Received: by 2002:a17:902:bf49:: with SMTP id u9mr54991136pls.199.1578353244147;
+        Mon, 06 Jan 2020 15:27:24 -0800 (PST)
+Received: from ast-mbp ([2620:10d:c090:200::1:2bf6])
+        by smtp.gmail.com with ESMTPSA id o31sm74415725pgb.56.2020.01.06.15.27.22
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 06 Jan 2020 15:27:23 -0800 (PST)
+Date:   Mon, 6 Jan 2020 15:27:21 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Jiri Olsa <jolsa@kernel.org>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20191227110605.1757-1-mrostecki@suse.de>
- <20191227110605.1757-3-mrostecki@suse.de>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <afbb24f9-a31a-7a19-c09d-114c7221a413@iogearbox.net>
-Date:   Mon, 6 Jan 2020 23:55:26 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Andrii Nakryiko <andriin@fb.com>,
+        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        David Miller <davem@redhat.com>
+Subject: Re: [PATCH 2/5] bpf: Add bpf_perf_event_output_kfunc
+Message-ID: <20200106232719.nk4k27ijm4uuwwo3@ast-mbp>
+References: <20191229143740.29143-1-jolsa@kernel.org>
+ <20191229143740.29143-3-jolsa@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20191227110605.1757-3-mrostecki@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.101.4/25686/Mon Jan  6 10:55:07 2020)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191229143740.29143-3-jolsa@kernel.org>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 12/27/19 12:06 PM, Michal Rostecki wrote:
-> Introduce a new probe section (misc) for probes not related to concrete
-> map types, program types, functions or kernel configuration. Introduce a
-> probe for large INSN limit as the first one in that section.
+On Sun, Dec 29, 2019 at 03:37:37PM +0100, Jiri Olsa wrote:
+> Adding support to use perf_event_output in
+> BPF_TRACE_FENTRY/BPF_TRACE_FEXIT programs.
 > 
-> Signed-off-by: Michal Rostecki <mrostecki@suse.de>
+> There are no pt_regs available in the trampoline,
+> so getting one via bpf_kfunc_regs array.
+> 
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
->   tools/bpf/bpftool/feature.c | 18 ++++++++++++++++++
->   1 file changed, 18 insertions(+)
+>  kernel/trace/bpf_trace.c | 67 ++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 67 insertions(+)
 > 
-> diff --git a/tools/bpf/bpftool/feature.c b/tools/bpf/bpftool/feature.c
-> index 03bdc5b3ac49..4a7359b9a427 100644
-> --- a/tools/bpf/bpftool/feature.c
-> +++ b/tools/bpf/bpftool/feature.c
-> @@ -572,6 +572,18 @@ probe_helpers_for_progtype(enum bpf_prog_type prog_type, bool supported_type,
->   		printf("\n");
->   }
->   
-> +static void
-> +probe_large_insn_limit(const char *define_prefix, __u32 ifindex)
-> +{
-> +	bool res;
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index e5ef4ae9edb5..1b270bbd9016 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -1151,6 +1151,69 @@ raw_tp_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+>  	}
+>  }
+>  
+> +struct bpf_kfunc_regs {
+> +	struct pt_regs regs[3];
+> +};
 > +
-> +	res = bpf_probe_large_insn_limit(ifindex);
-> +	print_bool_feature("have_large_insn_limit",
-> +			   "Large complexity limit and maximum program size (1M)",
-> +			   "HAVE_LARGE_INSN_LIMIT",
+> +static DEFINE_PER_CPU(struct bpf_kfunc_regs, bpf_kfunc_regs);
+> +static DEFINE_PER_CPU(int, bpf_kfunc_nest_level);
 
-HAVE_LARGE_INSN_LIMIT is good, but official description should not explicitly
-state the 1M limit since this could be subject to change. Perhaps just stating
-"Large complexity and program size limit" is better suited here.
+Thanks a bunch for working on it.
 
-> +			   res, define_prefix);
-> +}
-> +
->   static int do_probe(int argc, char **argv)
->   {
->   	enum probe_component target = COMPONENT_UNSPEC;
-> @@ -724,6 +736,12 @@ static int do_probe(int argc, char **argv)
->   		probe_helpers_for_progtype(i, supported_types[i],
->   					   define_prefix, ifindex);
->   
-> +	print_end_then_start_section("misc",
-> +				     "Scanning miscellaneous eBPF features...",
-> +				     "/*** eBPF misc features ***/",
-> +				     define_prefix);
-> +	probe_large_insn_limit(define_prefix, ifindex);
-> +
->   exit_close_json:
->   	if (json_output) {
->   		/* End current "section" of probes */
-> 
-
+I don't understand why new regs array and nest level is needed.
+Can raw_tp_prog_func_proto() be reused as-is?
+Instead of patches 2,3,4 ?
