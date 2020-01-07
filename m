@@ -2,76 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 004291334D8
-	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2020 22:31:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6273A1334E6
+	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2020 22:32:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727189AbgAGV3J (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Jan 2020 16:29:09 -0500
-Received: from namei.org ([65.99.196.166]:55964 "EHLO namei.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726820AbgAGV3J (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Jan 2020 16:29:09 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by namei.org (8.14.4/8.14.4) with ESMTP id 007LS3RZ015407;
-        Tue, 7 Jan 2020 21:28:03 GMT
-Date:   Wed, 8 Jan 2020 08:28:03 +1100 (AEDT)
-From:   James Morris <jmorris@namei.org>
-To:     KP Singh <kpsingh@chromium.org>
-cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kees Cook <keescook@chromium.org>,
-        Thomas Garnier <thgarnie@chromium.org>,
-        Michael Halcrow <mhalcrow@google.com>,
-        Paul Turner <pjt@google.com>,
-        Brendan Gregg <brendan.d.gregg@gmail.com>,
-        Jann Horn <jannh@google.com>,
-        Matthew Garrett <mjg59@google.com>,
-        Christian Brauner <christian@brauner.io>,
-        =?ISO-8859-15?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Quentin Monnet <quentin.monnet@netronome.com>,
-        Andrey Ignatov <rdna@fb.com>, Joe Stringer <joe@wand.net.nz>
-Subject: Re: [PATCH bpf-next v1 08/13] bpf: lsm: Show attached program names
- in hook read handler.
-In-Reply-To: <20191220154208.15895-9-kpsingh@chromium.org>
-Message-ID: <alpine.LRH.2.21.2001080827480.9683@namei.org>
-References: <20191220154208.15895-1-kpsingh@chromium.org> <20191220154208.15895-9-kpsingh@chromium.org>
-User-Agent: Alpine 2.21 (LRH 202 2017-01-01)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S1727124AbgAGVb4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Jan 2020 16:31:56 -0500
+Received: from shards.monkeyblade.net ([23.128.96.9]:38316 "EHLO
+        shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726389AbgAGVb4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Jan 2020 16:31:56 -0500
+Received: from localhost (unknown [IPv6:2601:601:9f00:1c3::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id CBB7115A17087;
+        Tue,  7 Jan 2020 13:31:55 -0800 (PST)
+Date:   Tue, 07 Jan 2020 13:31:55 -0800 (PST)
+Message-Id: <20200107.133155.65415495361949231.davem@davemloft.net>
+To:     daniel@iogearbox.net
+Cc:     jakub.kicinski@netronome.com, ast@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: pull-request: bpf 2020-01-07
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200107093438.10089-1-daniel@iogearbox.net>
+References: <20200107093438.10089-1-daniel@iogearbox.net>
+X-Mailer: Mew version 6.8 on Emacs 26.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Tue, 07 Jan 2020 13:31:56 -0800 (PST)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 20 Dec 2019, KP Singh wrote:
+From: Daniel Borkmann <daniel@iogearbox.net>
+Date: Tue,  7 Jan 2020 10:34:38 +0100
 
-> From: KP Singh <kpsingh@google.com>
+> The following pull-request contains BPF updates for your *net* tree.
 > 
-> For inspectability the system administrator should be able to view the
-> list of active KRSI programs:
+> We've added 2 non-merge commits during the last 1 day(s) which contain
+> a total of 2 files changed, 16 insertions(+), 4 deletions(-).
 > 
->    bash # cat /sys/kernel/security/bpf/bprm_check_security
->    bpf_prog1
+> The main changes are:
 > 
-> Signed-off-by: KP Singh <kpsingh@google.com>
+> 1) Fix a use-after-free in cgroup BPF due to auto-detachment, from Roman Gushchin.
+> 
+> 2) Fix skb out-of-bounds access in ld_abs/ind instruction, from Daniel Borkmann.
+> 
+> Please consider pulling these changes from:
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
 
-
-Reviewed-by: James Morris <jamorris@linux.microsoft.com>
-
-
--- 
-James Morris
-<jmorris@namei.org>
-
+Pulled, thanks Daniel.
