@@ -2,87 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2548913215C
-	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2020 09:28:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83409132165
+	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2020 09:30:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726492AbgAGI2p (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Jan 2020 03:28:45 -0500
-Received: from mx2.suse.de ([195.135.220.15]:45134 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726485AbgAGI2p (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Jan 2020 03:28:45 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 0A8EBAAA6;
-        Tue,  7 Jan 2020 08:28:43 +0000 (UTC)
-Date:   Tue, 7 Jan 2020 09:28:42 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Jann Horn <jannh@google.com>, bpf@vger.kernel.org,
-        live-patching@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        KP Singh <kpsingh@chromium.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>
-Subject: Re: BPF tracing trampoline synchronization between update/freeing
- and execution?
-Message-ID: <20200107082842.5w6zjgxy56wiftmm@pathway.suse.cz>
-References: <CAG48ez2gDDRtKaOcGdKLREd7RGtVzCypXiBMHBguOGSpxQFk3w@mail.gmail.com>
- <20200106165654.GP2844@hirez.programming.kicks-ass.net>
+        id S1726514AbgAGIaV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Jan 2020 03:30:21 -0500
+Received: from www62.your-server.de ([213.133.104.62]:39152 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726485AbgAGIaV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Jan 2020 03:30:21 -0500
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1iokFj-0008Ry-JY; Tue, 07 Jan 2020 09:30:15 +0100
+Received: from [2001:1620:665:0:5795:5b0a:e5d5:5944] (helo=linux.fritz.box)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1iokFj-000N0L-1Z; Tue, 07 Jan 2020 09:30:15 +0100
+Subject: Re: [PATCH 5/5] bpf: Allow to resolve bpf trampoline in unwind
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Jiri Olsa <jolsa@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Andrii Nakryiko <andriin@fb.com>,
+        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        David Miller <davem@redhat.com>, bjorn.topel@intel.com
+References: <20191229143740.29143-1-jolsa@kernel.org>
+ <20191229143740.29143-6-jolsa@kernel.org>
+ <20200106234639.fo2ctgkb5vumayyl@ast-mbp>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <fab5466e-95e7-8abf-c416-6a6f7b7151ba@iogearbox.net>
+Date:   Tue, 7 Jan 2020 09:30:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200106165654.GP2844@hirez.programming.kicks-ass.net>
-User-Agent: NeoMutt/20170912 (1.9.0)
+In-Reply-To: <20200106234639.fo2ctgkb5vumayyl@ast-mbp>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.101.4/25686/Mon Jan  6 10:55:07 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon 2020-01-06 17:56:54, Peter Zijlstra wrote:
-> On Mon, Jan 06, 2020 at 05:39:30PM +0100, Jann Horn wrote:
-> > Hi!
-> > 
-> > I was chatting with kpsingh about BPF trampolines, and I noticed that
-> > it looks like BPF trampolines (as of current bpf-next/master) seem to
-> > be missing synchronization between trampoline code updates and
-> > trampoline execution. Or maybe I'm missing something?
-> > 
-> > If I understand correctly, trampolines are executed directly from the
-> > fentry placeholders at the start of arbitrary kernel functions, so
-> > they can run without any locks held. So for example, if task A starts
-> > executing a trampoline on entry to sys_open(), then gets preempted in
-> > the middle of the trampoline, and then task B quickly calls
-> > BPF_RAW_TRACEPOINT_OPEN twice, and then task A continues execution,
-> > task A will end up executing the middle of newly-written machine code,
-> > which can probably end up crashing the kernel somehow?
-> > 
-> > I think that at least to synchronize trampoline text freeing with
-> > concurrent trampoline execution, it is necessary to do something
-> > similar to what the livepatching code does with klp_check_stack(), and
-> > then either use a callback from the scheduler to periodically re-check
-> > tasks that were in the trampoline or let the trampoline tail-call into
-> > a cleanup helper that is part of normal kernel text. And you'd
-> > probably have to gate BPF trampolines on
-> > CONFIG_HAVE_RELIABLE_STACKTRACE.
+On 1/7/20 12:46 AM, Alexei Starovoitov wrote:
+> On Sun, Dec 29, 2019 at 03:37:40PM +0100, Jiri Olsa wrote:
+>> When unwinding the stack we need to identify each
+>> address to successfully continue. Adding latch tree
+>> to keep trampolines for quick lookup during the
+>> unwind.
+>>
+>> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ...
+>> +bool is_bpf_trampoline(void *addr)
+>> +{
+>> +	return latch_tree_find(addr, &tree, &tree_ops) != NULL;
+>> +}
+>> +
+>>   struct bpf_trampoline *bpf_trampoline_lookup(u64 key)
+>>   {
+>>   	struct bpf_trampoline *tr;
+>> @@ -65,6 +98,7 @@ struct bpf_trampoline *bpf_trampoline_lookup(u64 key)
+>>   	for (i = 0; i < BPF_TRAMP_MAX; i++)
+>>   		INIT_HLIST_HEAD(&tr->progs_hlist[i]);
+>>   	tr->image = image;
+>> +	latch_tree_insert(&tr->tnode, &tree, &tree_ops);
 > 
-> ftrace uses synchronize_rcu_tasks() to flip between trampolines iirc.
+> Thanks for the fix. I was thinking to apply it, but then realized that bpf
+> dispatcher logic has the same issue.
+> Could you generalize the fix for both?
+> May be bpf_jit_alloc_exec_page() can do latch_tree_insert() ?
+> and new version of bpf_jit_free_exec() is needed that will do latch_tree_erase().
+> Wdyt?
 
-ftrace calls also schedule_on_each_cpu(ftrace_sync) to handle
-situations where RCU is not watching, see rcu_is_watching().
+Also this patch is buggy since your latch lookup happens under RCU, but
+I don't see anything that waits a grace period once you remove from the
+tree. Instead you free the trampoline right away.
 
-The following is called in ftrace_shutdown():
-
-	schedule_on_each_cpu(ftrace_sync);
-
-	if (IS_ENABLED(CONFIG_PREEMPTION))
-		synchronize_rcu_tasks();
-
-	arch_ftrace_trampoline_free(ops);
-
-Best Regards,
-Petr
+On a different question, given we have all the kallsym infrastructure
+for BPF already in place, did you look into whether it's feasible to
+make it a bit more generic to also cover JITed buffers from trampolines?
