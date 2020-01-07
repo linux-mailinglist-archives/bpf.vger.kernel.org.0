@@ -2,38 +2,44 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DD074133490
-	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2020 22:26:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D27A4133482
+	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2020 22:26:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728022AbgAGU7D (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Jan 2020 15:59:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59456 "EHLO mail.kernel.org"
+        id S1728054AbgAGU7F (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Jan 2020 15:59:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59570 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727582AbgAGU7C (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Jan 2020 15:59:02 -0500
+        id S1728036AbgAGU7E (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Jan 2020 15:59:04 -0500
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 56C5E21744;
-        Tue,  7 Jan 2020 20:59:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9B19A2087F;
+        Tue,  7 Jan 2020 20:59:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1578430741;
-        bh=vCIHg4nrV33PHnHUdiahTM63gn1eC2OQrBoSflm+lEc=;
+        s=default; t=1578430744;
+        bh=+8/l5PDbTPjHpcojaSQlovgVrTLf3sxj8sgQ4f4RTCE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XE0fMj9GPucGYOqbV42hvUywagg9WEeVCGw3q9SvVGjmHcS6eKIEsaYkguR5CHIdP
-         739AgbqOGWQerSgddUKux/PtCo+0IriRZahGhZG4epgCYZtjYY/YcF+ve3x8BRM7Iw
-         JXihfkezJ8cS/MpFCK3aYcMh4VED+kZAEHoLV7oo=
+        b=xd/I2THQfD9fwWq2l0VueCBWyySIJ5qh/674ou4KpZKnl0eqCh0l0rN8zZu9VSU10
+         vZEvBNSSNzj6o+sdQX2b+AKBJWqap/Rnxx66DrQXxVo7ryRTHPz31xMmeCTZ0joGxd
+         AUBFhLLs1JULdhrj7F6+95Z1UohgxF8nOkJUpZpk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paul Burton <paulburton@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        stable@vger.kernel.org, Alexander Lobakin <alobakin@dlink.ru>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        James Hogan <jhogan@kernel.org>,
         Hassan Naveed <hnaveed@wavecomp.com>,
-        Tony Ambardar <itugrok@yahoo.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-mips@vger.kernel.org
-Subject: [PATCH 5.4 076/191] MIPS: BPF: Disable MIPS32 eBPF JIT
-Date:   Tue,  7 Jan 2020 21:53:16 +0100
-Message-Id: <20200107205337.048444554@linuxfoundation.org>
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>, linux-mips@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH 5.4 077/191] MIPS: BPF: eBPF JIT: check for MIPS ISA compliance in Kconfig
+Date:   Tue,  7 Jan 2020 21:53:17 +0100
+Message-Id: <20200107205337.103399328@linuxfoundation.org>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200107205332.984228665@linuxfoundation.org>
 References: <20200107205332.984228665@linuxfoundation.org>
@@ -46,74 +52,43 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Paul Burton <paulburton@kernel.org>
+From: Alexander Lobakin <alobakin@dlink.ru>
 
-commit f8fffebdea752a25757b906f3dffecf1a59a6194 upstream.
+commit f596cf0d8062cb5d0a4513a8b3afca318c13be10 upstream.
 
-Commit 716850ab104d ("MIPS: eBPF: Initial eBPF support for MIPS32
-architecture.") enabled our eBPF JIT for MIPS32 kernels, whereas it has
-previously only been availailable for MIPS64. It was my understanding at
-the time that the BPF test suite was passing & JITing a comparable
-number of tests to our cBPF JIT [1], but it turns out that was not the
-case.
+It is completely wrong to check for compile-time MIPS ISA revision in
+the body of bpf_int_jit_compile() as it may lead to get MIPS JIT fully
+omitted by the CC while the rest system will think that the JIT is
+actually present and works [1].
+We can check if the selected CPU really supports MIPS eBPF JIT at
+configure time and avoid such situations when kernel can be built
+without both JIT and interpreter, but with CONFIG_BPF_SYSCALL=y.
 
-The eBPF JIT has a number of problems on MIPS32:
+[1] https://lore.kernel.org/linux-mips/09d713a59665d745e21d021deeaebe0a@dlink.ru/
 
-- Most notably various code paths still result in emission of MIPS64
-  instructions which will cause reserved instruction exceptions & kernel
-  panics when run on MIPS32 CPUs.
-
-- The eBPF JIT doesn't account for differences between the O32 ABI used
-  by MIPS32 kernels versus the N64 ABI used by MIPS64 kernels. Notably
-  arguments beyond the first 4 are passed on the stack in O32, and this
-  is entirely unhandled when JITing a BPF_CALL instruction. Stack space
-  must be reserved for arguments even if they all fit in registers, and
-  the callee is free to assume that stack space has been reserved for
-  its use - with the eBPF JIT this is not the case, so calling any
-  function can result in clobbering values on the stack & unpredictable
-  behaviour. Function arguments in eBPF are always 64-bit values which
-  is also entirely unhandled - the JIT still uses a single (32-bit)
-  register per argument. As a result all function arguments are always
-  passed incorrectly when JITing a BPF_CALL instruction, leading to
-  kernel crashes or strange behavior.
-
-- The JIT attempts to bail our on use of ALU64 instructions or 64-bit
-  memory access instructions. The code doing this at the start of
-  build_one_insn() incorrectly checks whether BPF_OP() equals BPF_DW,
-  when it should really be checking BPF_SIZE() & only doing so when
-  BPF_CLASS() is one of BPF_{LD,LDX,ST,STX}. This results in false
-  positives that cause more bailouts than intended, and that in turns
-  hides some of the problems described above.
-
-- The kernel's cBPF->eBPF translation makes heavy use of 64-bit eBPF
-  instructions that the MIPS32 eBPF JIT bails out on, leading to most
-  cBPF programs not being JITed at all.
-
-Until these problems are resolved, revert the enabling of the eBPF JIT
-on MIPS32 done by commit 716850ab104d ("MIPS: eBPF: Initial eBPF support
-for MIPS32 architecture.").
-
-Note that this does not undo the changes made to the eBPF JIT by that
-commit, since they are a useful starting point to providing MIPS32
-support - they're just not nearly complete.
-
-[1] https://lore.kernel.org/linux-mips/MWHPR2201MB13583388481F01A422CE7D66D4410@MWHPR2201MB1358.namprd22.prod.outlook.com/
-
-Signed-off-by: Paul Burton <paulburton@kernel.org>
 Fixes: 716850ab104d ("MIPS: eBPF: Initial eBPF support for MIPS32 architecture.")
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Hassan Naveed <hnaveed@wavecomp.com>
-Cc: Tony Ambardar <itugrok@yahoo.com>
-Cc: bpf@vger.kernel.org
-Cc: netdev@vger.kernel.org
 Cc: <stable@vger.kernel.org> # v5.2+
+Signed-off-by: Alexander Lobakin <alobakin@dlink.ru>
+Signed-off-by: Paul Burton <paulburton@kernel.org>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: James Hogan <jhogan@kernel.org>
+Cc: Hassan Naveed <hnaveed@wavecomp.com>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Martin KaFai Lau <kafai@fb.com>
+Cc: Song Liu <songliubraving@fb.com>
+Cc: Yonghong Song <yhs@fb.com>
+Cc: Andrii Nakryiko <andriin@fb.com>
 Cc: linux-mips@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Cc: bpf@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/mips/Kconfig |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/mips/Kconfig        |    2 +-
+ arch/mips/net/ebpf_jit.c |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
 --- a/arch/mips/Kconfig
 +++ b/arch/mips/Kconfig
@@ -121,10 +96,21 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  	select HAVE_ARCH_TRACEHOOK
  	select HAVE_ARCH_TRANSPARENT_HUGEPAGE if CPU_SUPPORTS_HUGEPAGES
  	select HAVE_ASM_MODVERSIONS
--	select HAVE_EBPF_JIT if (!CPU_MICROMIPS)
-+	select HAVE_EBPF_JIT if (64BIT && !CPU_MICROMIPS)
+-	select HAVE_EBPF_JIT if (64BIT && !CPU_MICROMIPS)
++	select HAVE_EBPF_JIT if 64BIT && !CPU_MICROMIPS && TARGET_ISA_REV >= 2
  	select HAVE_CONTEXT_TRACKING
  	select HAVE_COPY_THREAD_TLS
  	select HAVE_C_RECORDMCOUNT
+--- a/arch/mips/net/ebpf_jit.c
++++ b/arch/mips/net/ebpf_jit.c
+@@ -1803,7 +1803,7 @@ struct bpf_prog *bpf_int_jit_compile(str
+ 	unsigned int image_size;
+ 	u8 *image_ptr;
+ 
+-	if (!prog->jit_requested || MIPS_ISA_REV < 2)
++	if (!prog->jit_requested)
+ 		return prog;
+ 
+ 	tmp = bpf_jit_blind_constants(prog);
 
 
