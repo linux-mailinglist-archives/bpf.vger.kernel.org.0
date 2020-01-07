@@ -2,90 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F2AA13279E
-	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2020 14:30:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C67E913281D
+	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2020 14:52:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728005AbgAGNap (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Jan 2020 08:30:45 -0500
-Received: from mga18.intel.com ([134.134.136.126]:5777 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727559AbgAGNap (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Jan 2020 08:30:45 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga106.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 07 Jan 2020 05:30:39 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,406,1571727600"; 
-   d="scan'208";a="222577449"
-Received: from mjaganna-mobl1.amr.corp.intel.com (HELO btopel-mobl.ger.intel.com) ([10.249.36.63])
-  by orsmga006.jf.intel.com with ESMTP; 07 Jan 2020 05:30:36 -0800
-Subject: Re: [PATCH 5/5] bpf: Allow to resolve bpf trampoline in unwind
-To:     Jiri Olsa <jolsa@redhat.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Andrii Nakryiko <andriin@fb.com>,
-        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
+        id S1728113AbgAGNwW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Jan 2020 08:52:22 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:29333 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728110AbgAGNwV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Jan 2020 08:52:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1578405140;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bBb8vAuu0IE/ylefHBaFu6JrntXatLcFwAw8i7bsmGM=;
+        b=hh83FETxV+S4Jz6uJvh3flZ+0wh0lqlS3rkyGW9xzF0jNxzMGsNmim4kpOW16qqfDL9OGT
+        gbEEPFjzS0rIBnNOB7A67DY7+8wXD2/3s7IEvNdnRAzStWDi/pWwOKRaTHVut3O5XpRJoe
+        5PhyuNQBTXmsMR5nNCuoJGEYm7TbZns=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-384-yWdAZ2k9NuC_IxCi9bNLJw-1; Tue, 07 Jan 2020 08:52:17 -0500
+X-MC-Unique: yWdAZ2k9NuC_IxCi9bNLJw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2D53B18C35B1;
+        Tue,  7 Jan 2020 13:52:15 +0000 (UTC)
+Received: from carbon (ovpn-200-37.brq.redhat.com [10.40.200.37])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E834A84672;
+        Tue,  7 Jan 2020 13:52:05 +0000 (UTC)
+Date:   Tue, 7 Jan 2020 14:52:04 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>
+Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Network Development <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <jakub.kicinski@netronome.com>,
-        David Miller <davem@redhat.com>
-References: <20191229143740.29143-1-jolsa@kernel.org>
- <20191229143740.29143-6-jolsa@kernel.org>
- <20200106234639.fo2ctgkb5vumayyl@ast-mbp> <20200107130546.GI290055@krava>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
-Message-ID: <76a10338-391a-ffca-9af8-f407265d146a@intel.com>
-Date:   Tue, 7 Jan 2020 14:30:35 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        John Fastabend <john.fastabend@gmail.com>,
+        "Karlsson\, Magnus" <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>, brouer@redhat.com
+Subject: Re: [PATCH bpf-next v2 0/8] Simplify
+ xdp_do_redirect_map()/xdp_do_flush_map() and XDP maps
+Message-ID: <20200107145204.76710703@carbon>
+In-Reply-To: <87r20biegi.fsf@toke.dk>
+References: <20191219061006.21980-1-bjorn.topel@gmail.com>
+        <CAADnVQL1x8AJmCOjesA_6Z3XprFVEdWgbREfpn3CC-XO8k4PDA@mail.gmail.com>
+        <20191220084651.6dacb941@carbon>
+        <20191220102615.45fe022d@carbon>
+        <87mubn2st4.fsf@toke.dk>
+        <CAJ+HfNhLDi1MJAughKFCVUjSvdOfPUcbvO9=RXmXQBS6Q3mv3w@mail.gmail.com>
+        <87zhezik3o.fsf@toke.dk>
+        <20200107140544.6b860e28@carbon>
+        <87r20biegi.fsf@toke.dk>
 MIME-Version: 1.0
-In-Reply-To: <20200107130546.GI290055@krava>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2020-01-07 14:05, Jiri Olsa wrote:
-> On Mon, Jan 06, 2020 at 03:46:40PM -0800, Alexei Starovoitov wrote:
->> On Sun, Dec 29, 2019 at 03:37:40PM +0100, Jiri Olsa wrote:
->>> When unwinding the stack we need to identify each
->>> address to successfully continue. Adding latch tree
->>> to keep trampolines for quick lookup during the
->>> unwind.
->>>
->>> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
->> ...
->>> +bool is_bpf_trampoline(void *addr)
->>> +{
->>> +	return latch_tree_find(addr, &tree, &tree_ops) != NULL;
->>> +}
->>> +
->>>   struct bpf_trampoline *bpf_trampoline_lookup(u64 key)
->>>   {
->>>   	struct bpf_trampoline *tr;
->>> @@ -65,6 +98,7 @@ struct bpf_trampoline *bpf_trampoline_lookup(u64 key)
->>>   	for (i = 0; i < BPF_TRAMP_MAX; i++)
->>>   		INIT_HLIST_HEAD(&tr->progs_hlist[i]);
->>>   	tr->image = image;
->>> +	latch_tree_insert(&tr->tnode, &tree, &tree_ops);
->>
->> Thanks for the fix. I was thinking to apply it, but then realized that bpf
->> dispatcher logic has the same issue.
->> Could you generalize the fix for both?
->> May be bpf_jit_alloc_exec_page() can do latch_tree_insert() ?
->> and new version of bpf_jit_free_exec() is needed that will do latch_tree_erase().
->> Wdyt?
-> 
-> I need to check the dispatcher code, but seems ok.. will check
->
+On Tue, 07 Jan 2020 14:27:41 +0100
+Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com> wrote:
 
-Thanks Jiri! The trampoline and dispatcher share the image allocation, 
-so putting it there would make sense.
+> Jesper Dangaard Brouer <brouer@redhat.com> writes:
+>=20
+> > On Tue, 07 Jan 2020 12:25:47 +0100
+> > Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com> wrote:
+> > =20
+> >> Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> writes:
+> >>  =20
+> >> > On Fri, 20 Dec 2019 at 11:30, Toke H=C3=B8iland-J=C3=B8rgensen <toke=
+@redhat.com> wrote:   =20
+> >> >>
+> >> >> Jesper Dangaard Brouer <brouer@redhat.com> writes:
+> >> >>   =20
+> >> > [...]   =20
+> >> >> > I have now went over the entire patchset, and everything look per=
+fect,
+> >> >> > I will go as far as saying it is brilliant.  We previously had the
+> >> >> > issue, that using different redirect maps in a BPF-prog would cau=
+se the
+> >> >> > bulking effect to be reduced, as map_to_flush cause previous map =
+to get
+> >> >> > flushed. This is now solved :-)   =20
+> >> >>
+> >> >> Another thing that occurred to me while thinking about this: Now th=
+at we
+> >> >> have a single flush list, is there any reason we couldn't move the
+> >> >> devmap xdp_bulk_queue into struct net_device? That way it could als=
+o be
+> >> >> used for the non-map variant of bpf_redirect()?
+> >> >>   =20
+> >> >
+> >> > Indeed! (At least I don't see any blockers...)   =20
+> >>=20
+> >> Cool, that's what I thought. Maybe I'll give that a shot, then, unless
+> >> you beat me to it ;) =20
+> > =20
+> > Generally sounds like a good idea.
+> >
+> > It this only for devmap xdp_bulk_queue? =20
+>=20
+> Non-map redirect only supports redirecting across interfaces (the
+> parameter is an ifindex), so yeah, this would be just for that.
 
-It's annoying that the dispatcher doesn't show up correctly in perf, and 
-it's been on my list to fix that. Hopefully you beat me to it! :-D
+Sure, then you don't need to worry about below gotchas.
+
+I do like the idea, as this would/should solve the non-map redirect
+performance issue.
 
 
-Björn
+> > Some gotchas off the top of my head.
+> >
+> > The cpumap also have a struct xdp_bulk_queue, which have a different
+> > layout. (sidenote: due to BTF we likely want rename that).
+> >
+> > If you want to generalize this across all redirect maps type. You
+> > should know, that it was on purpose that I designed the bulking to be
+> > map specific, because that allowed each map to control its own optimal
+> > bulking.  E.g. devmap does 16 frames bulking, cpumap does 8 frames (as
+> > it matches sending 1 cacheline into underlying ptr_ring), xskmap does
+> > 64 AFAIK (which could hurt-latency, but that is another discussion). =20
+>=20
+> Bj=C3=B6rn's patches do leave the per-type behaviour, they just get rid of
+> the per-map flush queues... :)
+
+Yes, I know ;-)
+
+--=20
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
