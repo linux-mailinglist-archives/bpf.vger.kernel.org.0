@@ -2,163 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 63C76132905
-	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2020 15:36:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B1FC132A70
+	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2020 16:50:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728129AbgAGOgT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Jan 2020 09:36:19 -0500
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:39713 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727658AbgAGOgT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Jan 2020 09:36:19 -0500
-Received: by mail-wr1-f68.google.com with SMTP id y11so54188175wrt.6
-        for <bpf@vger.kernel.org>; Tue, 07 Jan 2020 06:36:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
-        h=to:cc:references:from:openpgp:autocrypt:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=73LjBmiEkGIYm4Th768t00zd9pN6SU7FcL2GNuvIly4=;
-        b=hbOsyfYA8mfDEbvNDDbXegn+/ld528lPjXtjdqGd41D4mcJ0gkwLBBw5hvfLRrhsgo
-         8ZzZWm1f+RV0eZ8M6Q2mCxJHlBC0cq6NX/3LrqHTV4FT+n34tC7O8mPhsHllnz6SdCtx
-         /Mrc7W+LTHNhr8/oEznNXCrGRfpaK2da5HTfWVFURHiPUP/vP7WOLy5LlXy6Q4JluxXK
-         6C1P53AeTBTKy33pwuREr9wbuh3n+s8WioevHzeIxkW1TzqTceTTxpiKVXASPOYXDVPo
-         wXuhR27QqTxmWTknQ04V3dMPgrOT/k//ok/pCcpyXaGpFyLMrmg6drtDba63rviX4T3Y
-         Qg0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:openpgp:autocrypt:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=73LjBmiEkGIYm4Th768t00zd9pN6SU7FcL2GNuvIly4=;
-        b=DdPqE+4XIUidQ1WHZ6YnlLIhRDhCrRVRVlTsjIsu87c6RkTOP8jy1WpMhl7kWxnaV6
-         L7ogCf7NdxNt+w4AFsoE71VEOVNWHQu8qHgVDO8O+JXHANzNuE6WZ9WCE9iwEEKqBtdn
-         /NzROkX7Gl+Gme6+fnbcUaGHqJBh+z5TcJ4BlQwLK5VNai2aQWznofo6A8qonjebPBZY
-         3ZtCDX4xFGlPHLZ00Acfrji7vnIqME6JzaQdHXrxs1DXOizqDGoNOMdpggFjn5xdwmnO
-         vioC+kTERJ9Rfm1pPLjYxWPl54JK4ewKhvFvrHsm0r2C+h8kBY5psp5gPj/Y/tZdt/OP
-         izQg==
-X-Gm-Message-State: APjAAAVmZQ01YbDNr1sEOtmGqNI1l17DJdtNPlJRoTHLnJreec6SbqbP
-        x+6pSElfSGWqxTkpis9IyICLbA==
-X-Google-Smtp-Source: APXvYqx8EK4r2U+w5EdthGweQWs26preoOTiuOyCt7mCGziquf9Axoe9nbyDgelNKewOnUQ75OdmaQ==
-X-Received: by 2002:a5d:6b03:: with SMTP id v3mr110415159wrw.289.1578407776410;
-        Tue, 07 Jan 2020 06:36:16 -0800 (PST)
-Received: from [172.20.1.104] ([217.38.71.146])
-        by smtp.gmail.com with ESMTPSA id a5sm27168885wmb.37.2020.01.07.06.36.15
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 07 Jan 2020 06:36:15 -0800 (PST)
-To:     Michal Rostecki <mrostecki@opensuse.org>, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        id S1728345AbgAGPus (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Jan 2020 10:50:48 -0500
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:34391 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727559AbgAGPus (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 7 Jan 2020 10:50:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1578412247;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=okkw4R7rDlzwrr1SRZoyB95nisQucs+Te4tLvgMSVEc=;
+        b=UxGXnME6mJrz+8gMbrUWuw6kdTK/W+fYAhy6Q9kSY9ce+KsAuaWnSR383Y9zi5ykxgf33J
+        VH9H/8NCQjkXYnCY0pxFMRAc293G9os4VO07KbrevrBKbAEPoODvB5neD79PZYp4sJg0kS
+        x4fOYF0e8pn3q8FJdMwIy3oFVjz4HBw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-255-HUmOplTzPTKjhTxHoXNUzA-1; Tue, 07 Jan 2020 10:50:40 -0500
+X-MC-Unique: HUmOplTzPTKjhTxHoXNUzA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DC87DDBAE;
+        Tue,  7 Jan 2020 15:50:35 +0000 (UTC)
+Received: from krava (unknown [10.43.17.48])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B396A10016EB;
+        Tue,  7 Jan 2020 15:50:33 +0000 (UTC)
+Date:   Tue, 7 Jan 2020 16:50:31 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>, Martin Lau <kafai@fb.com>,
         Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Peter Wu <peter@lekensteyn.nl>,
-        Prashant Bhole <bhole_prashant_q7@lab.ntt.co.jp>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200107130308.20242-1-mrostecki@opensuse.org>
- <20200107130308.20242-3-mrostecki@opensuse.org>
-From:   Quentin Monnet <quentin.monnet@netronome.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=quentin.monnet@netronome.com; prefer-encrypt=mutual; keydata=
- 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
- RHhSHGnKaQ6MfrTge5Q0h5A=
-Subject: Re: [PATCH bpf-next v2 2/2] bpftool: Add misc secion and probe for
- large INSN limit
-Message-ID: <70565317-89af-358f-313c-c4b327cdca4a@netronome.com>
-Date:   Tue, 7 Jan 2020 14:36:15 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.1
+        David Miller <davem@redhat.com>
+Subject: Re: [PATCH 1/5] bpf: Allow non struct type for btf ctx access
+Message-ID: <20200107155031.GB349285@krava>
+References: <20191229143740.29143-1-jolsa@kernel.org>
+ <20191229143740.29143-2-jolsa@kernel.org>
+ <d7b8cecf-d28a-1f4d-eb2b-eb8a601b9914@fb.com>
+ <20200107121319.GG290055@krava>
 MIME-Version: 1.0
-In-Reply-To: <20200107130308.20242-3-mrostecki@opensuse.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200107121319.GG290055@krava>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Nit: typo in subject ("secion").
-
-2020-01-07 14:03 UTC+0100 ~ Michal Rostecki <mrostecki@opensuse.org>
-> Introduce a new probe section (misc) for probes not related to concrete
-> map types, program types, functions or kernel configuration. Introduce a
-> probe for large INSN limit as the first one in that section.
+On Tue, Jan 07, 2020 at 01:13:23PM +0100, Jiri Olsa wrote:
+> On Mon, Jan 06, 2020 at 09:36:17PM +0000, Yonghong Song wrote:
+> > 
+> > 
+> > On 12/29/19 6:37 AM, Jiri Olsa wrote:
+> > > I'm not sure why the restriction was added,
+> > > but I can't access pointers to POD types like
+> > > const char * when probing vfs_read function.
+> > > 
+> > > Removing the check and allow non struct type
+> > > access in context.
+> > > 
+> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > > ---
+> > >   kernel/bpf/btf.c | 6 ------
+> > >   1 file changed, 6 deletions(-)
+> > > 
+> > > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> > > index ed2075884724..ae90f60ac1b8 100644
+> > > --- a/kernel/bpf/btf.c
+> > > +++ b/kernel/bpf/btf.c
+> > > @@ -3712,12 +3712,6 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
+> > >   	/* skip modifiers */
+> > >   	while (btf_type_is_modifier(t))
+> > >   		t = btf_type_by_id(btf, t->type);
+> > > -	if (!btf_type_is_struct(t)) {
+> > > -		bpf_log(log,
+> > > -			"func '%s' arg%d type %s is not a struct\n",
+> > > -			tname, arg, btf_kind_str[BTF_INFO_KIND(t->info)]);
+> > > -		return false;
+> > > -	}
+> > 
+> > Hi, Jiri, the RFC looks great! Especially, you also referenced this will
+> > give great performance boost for bcc scripts.
+> > 
+> > Could you provide more context on why the above change is needed?
+> > The function btf_ctx_access is used to check validity of accessing
+> > function parameters which are wrapped inside a structure, I am wondering
+> > what kinds of accesses you tried to address here.
 > 
-> Signed-off-by: Michal Rostecki <mrostecki@opensuse.org>
-> ---
->  tools/bpf/bpftool/feature.c | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
+> when I was transforming opensnoop.py to use this I got fail in
+> there when I tried to access filename arg in do_sys_open
 > 
-> diff --git a/tools/bpf/bpftool/feature.c b/tools/bpf/bpftool/feature.c
-> index 03bdc5b3ac49..d8ce93092c45 100644
-> --- a/tools/bpf/bpftool/feature.c
-> +++ b/tools/bpf/bpftool/feature.c
-> @@ -572,6 +572,18 @@ probe_helpers_for_progtype(enum bpf_prog_type prog_type, bool supported_type,
->  		printf("\n");
->  }
->  
-> +static void
-> +probe_large_insn_limit(const char *define_prefix, __u32 ifindex)
-> +{
-> +	bool res;
-> +
-> +	res = bpf_probe_large_insn_limit(ifindex);
-> +	print_bool_feature("have_large_insn_limit",
-> +			   "Large complexity and program size limit",
+> but actualy it seems this should get recognized earlier by:
+> 
+>           if (btf_type_is_int(t))
+>                 /* accessing a scalar */
+>                 return true;
+> 
+> I'm not sure why it did not pass for const char*, I'll check
 
-I am not sure we should mention "complexity" here. Although it is
-related to program size in the kernel commit you describe, the probe
-that is run is only on instruction number. This can make a difference
-for offloaded programs: When you probe a device, if kernel has commit
-c04c0d2b968a and supports up to 1M instructions, but hardware supports
-no more than 4k instructions, you may still benefit from the new value
-for BPF_COMPLEXITY_LIMIT_INSNS for complexity, but not for the total
-number of available instructions. In that case the probe will fail, and
-the message on complexity would not be accurate.
+it seems we don't check for pointer to scalar (just void),
+which is the case in my example 'const char *filename'
 
-Looks good otherwise, thanks Michal!
+I'll post this in v2 with other changes
 
-Quentin
+jirka
+
+
+---
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index ed2075884724..650df4ed346e 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -3633,7 +3633,7 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
+ 		    const struct bpf_prog *prog,
+ 		    struct bpf_insn_access_aux *info)
+ {
+-	const struct btf_type *t = prog->aux->attach_func_proto;
++	const struct btf_type *tp, *t = prog->aux->attach_func_proto;
+ 	struct bpf_prog *tgt_prog = prog->aux->linked_prog;
+ 	struct btf *btf = bpf_prog_get_target_btf(prog);
+ 	const char *tname = prog->aux->attach_func_name;
+@@ -3695,6 +3695,17 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
+ 		 */
+ 		return true;
+ 
++	tp = btf_type_by_id(btf, t->type);
++	/* skip modifiers */
++	while (btf_type_is_modifier(tp))
++		tp = btf_type_by_id(btf, tp->type);
++
++	if (btf_type_is_int(tp))
++		/* This is a pointer scalar.
++		 * It is the same as scalar from the verifier safety pov.
++		 */
++		return true;
++
+ 	/* this is a pointer to another type */
+ 	info->reg_type = PTR_TO_BTF_ID;
+ 	info->btf_id = t->type;
+
