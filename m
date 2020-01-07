@@ -2,300 +2,171 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CE725132021
-	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2020 08:02:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C16913211D
+	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2020 09:14:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726514AbgAGHCU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Jan 2020 02:02:20 -0500
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:41514 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725781AbgAGHCT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Jan 2020 02:02:19 -0500
-Received: by mail-lj1-f194.google.com with SMTP id h23so53569686ljc.8;
-        Mon, 06 Jan 2020 23:02:18 -0800 (PST)
+        id S1726485AbgAGIOI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Jan 2020 03:14:08 -0500
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:38080 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725987AbgAGIOI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Jan 2020 03:14:08 -0500
+Received: by mail-qk1-f194.google.com with SMTP id k6so41928607qki.5;
+        Tue, 07 Jan 2020 00:14:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=otoI+u7orc5dRlizjzTthDQTWcCumvJBfaQq5FSxrGU=;
-        b=VGnb+cbEYS1htdtN7ueHhtCNl5FNlEVcRv31h+gdRjUHQVlAovKIqRnRaAYVbYUS6O
-         g8pWMoWmy13CTP5jMRWB2U6EVgKtSjzjN6kxODYyyBLShG1JoOQBYNGcRLsgKfu2BC1T
-         CeKXhli/JFwleWQG5L8wxM+dBU3HOPJlGZpd2ZLuDPL2G5Vhai+qbD28RxHv+/wMC25r
-         iePX6Lfconq76GqXZcoAUlgaDF5GDMEOhV/Z99QqLldMQah2U6W2QVYFxtvlhsC+ilNo
-         0X5dIoPFkgjKOATodsYiMUV9MnYyd3YWCSkyMyQw2BN31QK9NihaZtqwjHOelo2mcwgm
-         DV3g==
+         :cc:content-transfer-encoding;
+        bh=akW4UWcOdP6Grp2KonZlQcBnfvoYSwriz8j1t5Jkqsc=;
+        b=bwwjdTWn07UYSehfmFp9lXNZC24KgC9QAy12z2S2u1lZBdj13/bm4d6XXe3pYuUf/t
+         CEj1OTDObiRuzXXlhrVP26ofMrwaJJsjbXfpkuEj2JXgDI1h69BPWLTP1QoM7YoUVE0P
+         VxwgCqzfjFhrUqd++O79MhTVv1KM0jcQtMO/D4Azgpz4n0MHdqZn5qY8nUCJpdQZyfMv
+         GF1/udulvUP+3WPiKoP+h4XX71z1aBrcBh0UKCsYhscb/Di3O4fCHXRGyOp6iDbamCqv
+         JJ+78i+6xp5i8/1SvT5mnlCJ5MeNM45ttLClkLYXGdV147/NKVOV0JFujb4C+ehp3lPi
+         Jubw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=otoI+u7orc5dRlizjzTthDQTWcCumvJBfaQq5FSxrGU=;
-        b=nuXY6hg03hsdew9yqb7MJs0xBf1F6w7CuGF2QYnRNaxFf3TtFivIwJib5xCXcNhVcX
-         HoF8kUiJCw2XNWTlQEifVGIwJK9FPwqsgtDHOap2YCMqvE7NUteVguE0RcJ3AOVh7DSj
-         8q/H2kyWE01xN00w0TGf3cnLs6QJeEWg5tQE1TqY+HraQyJA4e+elt8j7Qyn48MQyV+q
-         EszZuSYQLUVWpaS/14uUT5JVVSYp5b3lYSVcMwnczDoHbiE729sBU0ah/h2Tw2RxtuuG
-         EoPPPWF61rk81+22GEceCILLZqZa1KQ7L9n+n8wnx3wfN+OrV6fhvFX14SeutAQS9WSH
-         c4og==
-X-Gm-Message-State: APjAAAWAe8oaTxpMsVzdBbjau5JV48nhNIHpIJ6627sbPTZQtSeW2I3N
-        VpHhnCWZ8OUf+JlmwnA+W89BPGZPLKkHFXZbrrCceQ==
-X-Google-Smtp-Source: APXvYqzXPmBqodoErMJZqJFDV5mPw27PaZ4GJyNSdHdme4355OC8ntuo4ejjWgUJqqxcnW6sqVVqL0PIBRTtCWwVV/g=
-X-Received: by 2002:a2e:858b:: with SMTP id b11mr56964986lji.135.1578380537246;
- Mon, 06 Jan 2020 23:02:17 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=akW4UWcOdP6Grp2KonZlQcBnfvoYSwriz8j1t5Jkqsc=;
+        b=shaN5QHCTAaLuSwe+BsIyjQWQQkIf0CSwq55l+/aChyK70objwzq9mcaxBzXfjOMnu
+         pcXYuO3qgYpWRAuhaPuieXTHnEmCjl1535rpLF1M8eTqeaF1SKAak5WWVSyN2zfj8wOQ
+         wMnn+Nyp27NlMUGjiAVrRLJhrdEU2YsEZ9NaJXmVSCkMPVSPjOsgbbhMVQcLsU+E7W2Z
+         E6CLaCjUeFzCSf+wvTl9UkgUwOU08YYz3sJyAARf8XYkkkrXUABTi5iheysyfVSTs1dI
+         Z94RkIVhnx/qZaiy8eUs7UPaBQLgNJtL0588qOnKShcbZasiXGdVl00dsWj44GhEmCUQ
+         Cdpg==
+X-Gm-Message-State: APjAAAVJeNLXxR+YiAmWKsey8Iekr2K+Is0YmA/XQAlvm6p1iZ8peGBr
+        oUysGH+8NupvmG6prMs4EzkG97EZRAmiCZoHvCM=
+X-Google-Smtp-Source: APXvYqzWFUk7QyJ3Tpw6LqkcUf8FNEwTpCYweqa0ESJaK3f6n2P2SGGbBoxMUIMqV1Q2T354z2gOCnCjI/oeb9i8fvo=
+X-Received: by 2002:a05:620a:14a4:: with SMTP id x4mr86046437qkj.493.1578384847200;
+ Tue, 07 Jan 2020 00:14:07 -0800 (PST)
 MIME-Version: 1.0
-References: <20191211223344.165549-1-brianvv@google.com> <20191211223344.165549-7-brianvv@google.com>
- <a33dab7b-0f46-c29f-0db1-a5539c433b3d@fb.com>
-In-Reply-To: <a33dab7b-0f46-c29f-0db1-a5539c433b3d@fb.com>
-From:   Brian Vazquez <brianvv.kernel@gmail.com>
-Date:   Tue, 7 Jan 2020 01:02:05 -0600
-Message-ID: <CABCgpaVC-gCf58VmCx2XwwHoZ2FXHmtBfqzqJoPeeg2Q=DvRzg@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 06/11] bpf: add batch ops to all htab bpf map
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Brian Vazquez <brianvv@google.com>,
+References: <20191216091343.23260-1-bjorn.topel@gmail.com> <20191216091343.23260-3-bjorn.topel@gmail.com>
+ <mhng-6be38b2a-78df-4016-aaea-f35aa0acd7e0@palmerdabbelt-glaptop>
+In-Reply-To: <mhng-6be38b2a-78df-4016-aaea-f35aa0acd7e0@palmerdabbelt-glaptop>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Tue, 7 Jan 2020 09:13:56 +0100
+Message-ID: <CAJ+HfNjoO2ihHMh2NHMQfxG8X1zLdzEq6Ywr=b2qD0tNwXreFA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/9] riscv, bpf: add support for far branching
+To:     Palmer Dabbelt <palmerdabbelt@google.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S . Miller" <davem@davemloft.net>,
-        Stanislav Fomichev <sdf@google.com>,
-        Petar Penkov <ppenkov@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+        Netdev <netdev@vger.kernel.org>, linux-riscv@lists.infradead.org,
+        Luke Nelson <lukenels@cs.washington.edu>,
+        bpf <bpf@vger.kernel.org>, Xi Wang <xi.wang@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Dec 13, 2019 at 12:58 PM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 12/11/19 2:33 PM, Brian Vazquez wrote:
-> > From: Yonghong Song <yhs@fb.com>
-> >
-> > htab can't use generic batch support due some problematic behaviours
-> > inherent to the data structre, i.e. while iterating the bpf map  a
-> > concurrent program might delete the next entry that batch was about to
-> > use, in that case there's no easy solution to retrieve the next entry,
-> > the issue has been discussed multiple times (see [1] and [2]).
-> >
-> > The only way hmap can be traversed without the problem previously
-> > exposed is by making sure that the map is traversing entire buckets.
-> > This commit implements those strict requirements for hmap, the
-> > implementation follows the same interaction that generic support with
-> > some exceptions:
-> >
-> >   - If keys/values buffer are not big enough to traverse a bucket,
-> >     ENOSPC will be returned.
-> >   - out_batch contains the value of the next bucket in the iteration, not
-> >     the next key, but this is transparent for the user since the user
-> >     should never use out_batch for other than bpf batch syscalls.
-> >
-> > Note that only lookup and lookup_and_delete batch ops require the hmap
-> > specific implementation, update/delete batch ops can be the generic
-> > ones.
-> >
-> > [1] https://lore.kernel.org/bpf/20190724165803.87470-1-brianvv@google.com/
-> > [2] https://lore.kernel.org/bpf/20190906225434.3635421-1-yhs@fb.com/
-> >
-> > Signed-off-by: Yonghong Song <yhs@fb.com>
-> > Signed-off-by: Brian Vazquez <brianvv@google.com>
-> > ---
-> >   kernel/bpf/hashtab.c | 242 +++++++++++++++++++++++++++++++++++++++++++
-> >   1 file changed, 242 insertions(+)
-> >
-> > diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-> > index 22066a62c8c97..fac107bdaf9ec 100644
-> > --- a/kernel/bpf/hashtab.c
-> > +++ b/kernel/bpf/hashtab.c
-> > @@ -17,6 +17,17 @@
-> >       (BPF_F_NO_PREALLOC | BPF_F_NO_COMMON_LRU | BPF_F_NUMA_NODE |    \
-> >        BPF_F_ACCESS_MASK | BPF_F_ZERO_SEED)
-> >
-> > +#define BATCH_OPS(_name)                     \
-> > +     .map_lookup_batch =                     \
-> > +     _name##_map_lookup_batch,               \
-> > +     .map_lookup_and_delete_batch =          \
-> > +     _name##_map_lookup_and_delete_batch,    \
-> > +     .map_update_batch =                     \
-> > +     generic_map_update_batch,               \
-> > +     .map_delete_batch =                     \
-> > +     generic_map_delete_batch
-> > +
-> > +
-> >   struct bucket {
-> >       struct hlist_nulls_head head;
-> >       raw_spinlock_t lock;
-> > @@ -1232,6 +1243,233 @@ static void htab_map_seq_show_elem(struct bpf_map *map, void *key,
-> >       rcu_read_unlock();
-> >   }
-> >
-> > +static int
-> > +__htab_map_lookup_and_delete_batch(struct bpf_map *map,
-> > +                                const union bpf_attr *attr,
-> > +                                union bpf_attr __user *uattr,
-> > +                                bool do_delete, bool is_lru_map,
-> > +                                bool is_percpu)
-> > +{
-> > +     struct bpf_htab *htab = container_of(map, struct bpf_htab, map);
-> > +     u32 bucket_cnt, total, key_size, value_size, roundup_key_size;
-> > +     void *keys = NULL, *values = NULL, *value, *dst_key, *dst_val;
-> > +     void __user *uvalues = u64_to_user_ptr(attr->batch.values);
-> > +     void __user *ukeys = u64_to_user_ptr(attr->batch.keys);
-> > +     void *ubatch = u64_to_user_ptr(attr->batch.in_batch);
-> > +     u64 elem_map_flags, map_flags;
-> > +     struct hlist_nulls_head *head;
-> > +     u32 batch, max_count, size;
-> > +     struct hlist_nulls_node *n;
-> > +     unsigned long flags;
-> > +     struct htab_elem *l;
-> > +     struct bucket *b;
-> > +     int ret = 0;
-> > +
-> > +     max_count = attr->batch.count;
-> > +     if (!max_count)
-> > +             return 0;
-> > +
-> > +     elem_map_flags = attr->batch.elem_flags;
-> > +     if ((elem_map_flags & ~BPF_F_LOCK) ||
-> > +         ((elem_map_flags & BPF_F_LOCK) && !map_value_has_spin_lock(map)))
-> > +             return -EINVAL;
-> > +
-> > +     map_flags = attr->batch.flags;
-> > +     if (map_flags)
-> > +             return -EINVAL;
-> > +
-> > +     batch = 0;
-> > +     if (ubatch && copy_from_user(&batch, ubatch, sizeof(batch)))
-> > +             return -EFAULT;
-> > +
-> > +     if (batch >= htab->n_buckets)
-> > +             return -ENOENT;
-> > +
-> > +     /* We cannot do copy_from_user or copy_to_user inside
-> > +      * the rcu_read_lock. Allocate enough space here.
-> > +      */
-> > +     key_size = htab->map.key_size;
-> > +     roundup_key_size = round_up(htab->map.key_size, 8);
-> > +     value_size = htab->map.value_size;
-> > +     size = round_up(value_size, 8);
-> > +     if (is_percpu)
-> > +             value_size = size * num_possible_cpus();
-> > +     keys = kvmalloc(key_size, GFP_USER | __GFP_NOWARN);
-> > +     values = kvmalloc(value_size, GFP_USER | __GFP_NOWARN);
-> > +     if (!keys || !values) {
-> > +             ret = -ENOMEM;
-> > +             goto out;
-> > +     }
-> > +
-> > +     dst_key = keys;
-> > +     dst_val = values;
-> > +     total = 0;
-> > +
-> > +     preempt_disable();
-> > +     this_cpu_inc(bpf_prog_active);
-> > +     rcu_read_lock();
-> > +
-> > +again:
-> > +     b = &htab->buckets[batch];
-> > +     head = &b->head;
-> > +     raw_spin_lock_irqsave(&b->lock, flags);
-> > +
-> > +     bucket_cnt = 0;
-> > +     hlist_nulls_for_each_entry_rcu(l, n, head, hash_node)
-> > +             bucket_cnt++;
-> > +
-> > +     if (bucket_cnt > (max_count - total)) {
-> > +             if (total == 0)
-> > +                     ret = -ENOSPC;
-> > +             goto after_loop;
-> > +     }
-> > +
-> > +     hlist_nulls_for_each_entry_safe(l, n, head, hash_node) {
-> > +             memcpy(dst_key, l->key, key_size);
-> > +
-> > +             if (is_percpu) {
-> > +                     int off = 0, cpu;
-> > +                     void __percpu *pptr;
-> > +
-> > +                     pptr = htab_elem_get_ptr(l, map->key_size);
-> > +                     for_each_possible_cpu(cpu) {
-> > +                             bpf_long_memcpy(dst_val + off,
-> > +                                             per_cpu_ptr(pptr, cpu), size);
-> > +                             off += size;
-> > +                     }
-> > +             } else {
-> > +                     value = l->key + roundup_key_size;
-> > +                     if (elem_map_flags & BPF_F_LOCK)
-> > +                             copy_map_value_locked(map, dst_val, value,
-> > +                                                   true);
-> > +                     else
-> > +                             copy_map_value(map, dst_val, value);
-> > +                     check_and_init_map_lock(map, dst_val);
-> > +             }
-> > +             if (do_delete) {
-> > +                     hlist_nulls_del_rcu(&l->hash_node);
-> > +                     if (is_lru_map)
-> > +                             bpf_lru_push_free(&htab->lru, &l->lru_node);
-> > +                     else
-> > +                             free_htab_elem(htab, l);
-> > +             }
-> > +             if (copy_to_user(ukeys + total * key_size, keys, key_size) ||
-> > +                copy_to_user(uvalues + total * value_size, values,
-> > +                value_size)) {
->
-> We cannot do copy_to_user inside atomic region where irq is disabled
-> with raw_spin_lock_irqsave(). We could do the following:
->     . we kalloc memory before preempt_disable() with the current count
->       of bucket size.
->     . inside the raw_spin_lock_irqsave() region, we can do copy to kernel
->       memory.
->     . inside the raw_spin_lock_irqsave() region, if the bucket size
->       changes, we can have a few retries to increase allocation size
->       before giving up.
-> Do you think this may work?
+Back from the holidays; Sorry about the delayed reply.
 
-Yes, it does.
-
-What should be the initial value for the allocated memory
-max_entries/2? Do you see any issue if we just kalloc the entire
-buffer?
-
+On Mon, 23 Dec 2019 at 19:03, Palmer Dabbelt <palmerdabbelt@google.com> wro=
+te:
 >
-> > +                     ret = -EFAULT;
-> > +                     goto after_loop;
+> On Mon, 16 Dec 2019 01:13:36 PST (-0800), Bjorn Topel wrote:
+> > This commit adds branch relaxation to the BPF JIT, and with that
+[...]
+> > @@ -1557,6 +1569,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_p=
+rog *prog)
+> >  {
+> >       bool tmp_blinded =3D false, extra_pass =3D false;
+> >       struct bpf_prog *tmp, *orig_prog =3D prog;
+> > +     int pass =3D 0, prev_ninsns =3D 0, i;
+> >       struct rv_jit_data *jit_data;
+> >       struct rv_jit_context *ctx;
+> >       unsigned int image_size;
+> > @@ -1596,15 +1609,25 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf=
+_prog *prog)
+> >               prog =3D orig_prog;
+> >               goto out_offset;
+> >       }
+> > +     for (i =3D 0; i < prog->len; i++) {
+> > +             prev_ninsns +=3D 32;
+> > +             ctx->offset[i] =3D prev_ninsns;
+> > +     }
+>
+> It feels like the first-order implementation is the same as binutils here=
+: the
+> first round is worst cased, after which things can be more exact.  We're =
+only
+> doing one pass in binutils because most of the relaxation happens in the
+> linker, but this approach seems reasonable to me.  I'd be interested in s=
+eeing
+> some benchmarks, as it may be worth relaxing these in the binutils linker=
+ as
+> well -- I can certainly come up with contrived test cases that aren't rel=
+axed,
+> but I'm not sure how common this is.
+>
+
+Ah, interesting! Let me try to pull out some branch relaxation
+statistics/benchmarks for the BPF selftests.
+
+> My only worry is that that invariant should be more explicit.  Specifical=
+ly,
+> I'm thinking that every time offset is updated there should be some sort =
+of
+> assertion that the offset is shrinking.  This is enforced structurally in=
+ the
+> binutils code because we only generate code once and then move it around,=
+ but
+> since you're generating code every time it'd be easy for a bug to sneak i=
+n as
+> the JIT gets more complicated.
+>
+
+Hmm, yes. Maybe use a checksum for the program in addition to the
+length invariant, and converge condition would then be prev_len =3D=3D len
+&& prev_crc =3D=3D crc?
+
+> Since most of the branches should be forward, you'll probably end up with=
+ way
+> fewer iterations if you do the optimization passes backwards.
+>
+
+Good idea!
+
+> > -     /* First pass generates the ctx->offset, but does not emit an ima=
+ge. */
+> > -     if (build_body(ctx, extra_pass)) {
+> > -             prog =3D orig_prog;
+> > -             goto out_offset;
+> > +     for (i =3D 0; i < 16; i++) {
+> > +             pass++;
+> > +             ctx->ninsns =3D 0;
+> > +             if (build_body(ctx, extra_pass)) {
+> > +                     prog =3D orig_prog;
+> > +                     goto out_offset;
+>
+> Isn't this returning a broken program if build_body() errors out the firs=
+t time
+> through?
+>
+
+Hmm, care to elaborate? I don't see how?
+
 > > +             }
-> > +             total++;
-> > +     }
-> > +
-> > +     batch++;
-> > +     if (batch >= htab->n_buckets) {
-> > +             ret = -ENOENT;
-> > +             goto after_loop;
-> > +     }
-> > +
-> > +     raw_spin_unlock_irqrestore(&b->lock, flags);
-> > +     goto again;
-> > +
-> > +after_loop:
-> > +     raw_spin_unlock_irqrestore(&b->lock, flags);
-> > +
-> > +     rcu_read_unlock();
-> > +     this_cpu_dec(bpf_prog_active);
-> > +     preempt_enable();
-> > +
-> > +     if (ret && ret != -ENOENT)
-> > +             goto out;
-> > +
-> > +     /* copy data back to user */
-> > +     ubatch = u64_to_user_ptr(attr->batch.out_batch);
-> > +     if (copy_to_user(ubatch, &batch, sizeof(batch)) ||
-> > +         put_user(total, &uattr->batch.count))
-> > +             ret = -EFAULT;
-> > +
-> > +out:
-> > +     kvfree(keys);
-> > +     kvfree(values);
-> > +     return ret;
-> > +}
-> > +
-> [...]
+> > +             build_prologue(ctx);
+> > +             ctx->epilogue_offset =3D ctx->ninsns;
+> > +             build_epilogue(ctx);
+> > +             if (ctx->ninsns =3D=3D prev_ninsns)
+> > +                     break;
+> > +             prev_ninsns =3D ctx->ninsns;
+>
+> IDK how important the performance of the JIT is, but you could probably g=
+et
+> away with skipping an iteration by keeping track of some simple metric th=
+at
+> determines if it would be possible to
+>
+
+...to? Given that the programs are getting larger, performance of the
+JIT is important. So, any means the number of passes can be reduced is
+a good thing!
+
+
+Thanks for the review/suggestions!
+Bj=C3=B6rn
