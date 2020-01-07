@@ -2,87 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D6204132218
-	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2020 10:17:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A587813228E
+	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2020 10:35:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727730AbgAGJQx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Jan 2020 04:16:53 -0500
-Received: from mx2.suse.de ([195.135.220.15]:40856 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727696AbgAGJQx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Jan 2020 04:16:53 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id C4A4EAC8B;
-        Tue,  7 Jan 2020 09:16:50 +0000 (UTC)
-Date:   Tue, 7 Jan 2020 10:16:50 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Clark Williams <williams@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Andrey Zhizhikin <andrey.z@gmail.com>,
-        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: Re: [PATCH 08/20] tools lib api fs: Fix gcc9 stringop-truncation
- compilation error
-Message-ID: <20200107091650.dydvcjnve7hz2345@pathway.suse.cz>
-References: <20200106160705.10899-1-acme@kernel.org>
- <20200106160705.10899-9-acme@kernel.org>
+        id S1727752AbgAGJes (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Jan 2020 04:34:48 -0500
+Received: from www62.your-server.de ([213.133.104.62]:52526 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727720AbgAGJes (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Jan 2020 04:34:48 -0500
+Received: from [2001:1620:665:0:5795:5b0a:e5d5:5944] (helo=localhost)
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1iolG3-0005pp-LS; Tue, 07 Jan 2020 10:34:39 +0100
+From:   Daniel Borkmann <daniel@iogearbox.net>
+To:     davem@davemloft.net
+Cc:     jakub.kicinski@netronome.com, daniel@iogearbox.net, ast@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: pull-request: bpf 2020-01-07
+Date:   Tue,  7 Jan 2020 10:34:38 +0100
+Message-Id: <20200107093438.10089-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200106160705.10899-9-acme@kernel.org>
-User-Agent: NeoMutt/20170912 (1.9.0)
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.101.4/25686/Mon Jan  6 10:55:07 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon 2020-01-06 13:06:53, Arnaldo Carvalho de Melo wrote:
-> From: Andrey Zhizhikin <andrey.z@gmail.com>
-> 
-> GCC9 introduced string hardening mechanisms, which exhibits the error
-> during fs api compilation:
-> 
-> error: '__builtin_strncpy' specified bound 4096 equals destination size
-> [-Werror=stringop-truncation]
-> 
-> This comes when the length of copy passed to strncpy is is equal to
-> destination size, which could potentially lead to buffer overflow.
-> 
-> There is a need to mitigate this potential issue by limiting the size of
-> destination by 1 and explicitly terminate the destination with NULL.
-> 
-> Signed-off-by: Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>
-> Reviewed-by: Petr Mladek <pmladek@suse.com>
-> Acked-by: Jiri Olsa <jolsa@kernel.org>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Andrii Nakryiko <andriin@fb.com>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Kefeng Wang <wangkefeng.wang@huawei.com>
-> Cc: Martin KaFai Lau <kafai@fb.com>
-> Cc: Petr Mladek <pmladek@suse.com>
-> Cc: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-> Cc: Song Liu <songliubraving@fb.com>
-> Cc: Yonghong Song <yhs@fb.com>
-> Cc: bpf@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Link: http://lore.kernel.org/lkml/20191211080109.18765-1-andrey.zhizhikin@leica-geosystems.com
-> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Hi David,
 
-Reviewed-by: Petr Mladek <pmladek@suse.com>
+The following pull-request contains BPF updates for your *net* tree.
 
-Best Regards,
-Petr
+We've added 2 non-merge commits during the last 1 day(s) which contain
+a total of 2 files changed, 16 insertions(+), 4 deletions(-).
+
+The main changes are:
+
+1) Fix a use-after-free in cgroup BPF due to auto-detachment, from Roman Gushchin.
+
+2) Fix skb out-of-bounds access in ld_abs/ind instruction, from Daniel Borkmann.
+
+Please consider pulling these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+
+Thanks a lot!
+
+Also thanks to reporters, reviewers and testers of commits in this pull-request:
+
+Anatoly Trosinenko, Josef Bacik, Song Liu
+
+----------------------------------------------------------------
+
+The following changes since commit 4012a6f2fa562b4b2884ea96db263caa4c6057a8:
+
+  firmware: tee_bnxt: Fix multiple call to tee_client_close_context (2020-01-06 13:51:37 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git 
+
+for you to fetch changes up to 6d4f151acf9a4f6fab09b615f246c717ddedcf0c:
+
+  bpf: Fix passing modified ctx to ld/abs/ind instruction (2020-01-06 14:19:47 -0800)
+
+----------------------------------------------------------------
+Daniel Borkmann (1):
+      bpf: Fix passing modified ctx to ld/abs/ind instruction
+
+Roman Gushchin (1):
+      bpf: cgroup: prevent out-of-order release of cgroup bpf
+
+ kernel/bpf/cgroup.c   | 11 +++++++++--
+ kernel/bpf/verifier.c |  9 +++++++--
+ 2 files changed, 16 insertions(+), 4 deletions(-)
