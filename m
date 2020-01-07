@@ -2,281 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E8DCD132A9C
-	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2020 17:00:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE1F3132D12
+	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2020 18:32:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728364AbgAGQAq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Jan 2020 11:00:46 -0500
-Received: from www62.your-server.de ([213.133.104.62]:52230 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728348AbgAGQAq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Jan 2020 11:00:46 -0500
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iorHa-0006u1-22; Tue, 07 Jan 2020 17:00:38 +0100
-Received: from [2001:1620:665:0:5795:5b0a:e5d5:5944] (helo=linux.fritz.box)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iorHZ-000VPD-PW; Tue, 07 Jan 2020 17:00:37 +0100
-Subject: Re: [PATCH bpf-next v3 06/11] bpf: Introduce BPF_MAP_TYPE_STRUCT_OPS
-To:     Martin KaFai Lau <kafai@fb.com>, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        David Miller <davem@davemloft.net>, kernel-team@fb.com,
-        netdev@vger.kernel.org
-References: <20191231062037.280596-1-kafai@fb.com>
- <20191231062050.281712-1-kafai@fb.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <4d0aafe9-75c7-43fe-d9eb-62bb2053b53e@iogearbox.net>
-Date:   Tue, 7 Jan 2020 17:00:37 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
-MIME-Version: 1.0
-In-Reply-To: <20191231062050.281712-1-kafai@fb.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.101.4/25687/Tue Jan  7 10:56:22 2020)
+        id S1728437AbgAGRcn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Jan 2020 12:32:43 -0500
+Received: from mail-il1-f194.google.com ([209.85.166.194]:41907 "EHLO
+        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728325AbgAGRcm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Jan 2020 12:32:42 -0500
+Received: by mail-il1-f194.google.com with SMTP id f10so257125ils.8;
+        Tue, 07 Jan 2020 09:32:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=5/kHjCEs62h1faHWfCUdOVVEQSiVDI+7+0pArTEC4Tw=;
+        b=MlAN7OTONzWQICMe80rTKHut2UQJGNNOPyx8Wclo+BBy4pXRERNHznOw1BU84DIJ4g
+         0gEzBFT06FwqdvUkDI0f7Mptq3axi242xZt+UNQGPrRp0ayDF5ujQxaiT7Jjr9+aLTfJ
+         Y1BqVaBeydVK1vLBFA0Ss+Sz4UgHbVpLHkCWu7YhPqdX249JcjR1FGgVMis+Ih/RKx/f
+         JFBOyY1aFfFjTjzwEbUSQ0RD08rH894GcWS3m/NUDBnx4m+YzjKztH0Y/O5w+7v5mC68
+         RhxV91GNH8d5s5YHAli5lYChBGfnAlJ+Lq1zbVjJERR1eoU/tlABtVTRwYmFTH6y9XJT
+         FSyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=5/kHjCEs62h1faHWfCUdOVVEQSiVDI+7+0pArTEC4Tw=;
+        b=qBNtUYhJp04xVmsQD5Qxxdb3oEmb4MUW7+eFtl+QVliBBubCFCeGPCiTGm6B8sWBaq
+         d9fWqvIeCL1Ywvv257BQeQ74FjT3j/OkTzyWE2NjztoRBubKcxHkKtPcT7txMV/OY31U
+         s35nK39zrheT22mDjkC7KPOYSb0HBuqF+D0FVK75LZ/oJ3eZvAr+5OaI6QO0AlwWR1gY
+         43lYmjbEFkWPk0JQCEaDBKYi+ldiiYs6wlPVoWusLpcdxDxa95KLhOqMs0XhGAIUAkIa
+         Mkn2qNM03vLIVwp/p9CqQPdxGpqSuTDm7ONgoxkvHBdFKS8o7IeY+WkYtGvJW5GuRlXa
+         uruQ==
+X-Gm-Message-State: APjAAAULKy+Mq71mSFyHewnV4AdXgUXknsidmTfFtIWVXeJ/0FpsDxRo
+        pBWWm641c23ZmfRx3REEBlA=
+X-Google-Smtp-Source: APXvYqys0Ci4OFCUjTb9h8G30XjjNZSlpzB6cSx8PE+JktmIp4Xd0EV9K+791h2+SmQefbTiUbSs2Q==
+X-Received: by 2002:a92:a1c7:: with SMTP id b68mr208205ill.134.1578418361778;
+        Tue, 07 Jan 2020 09:32:41 -0800 (PST)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id g3sm27915ioq.75.2020.01.07.09.32.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Jan 2020 09:32:41 -0800 (PST)
+Date:   Tue, 07 Jan 2020 09:32:33 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net
+Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        bpf@vger.kernel.org, davem@davemloft.net,
+        jakub.kicinski@netronome.com, hawk@kernel.org,
+        john.fastabend@gmail.com, magnus.karlsson@intel.com,
+        jonathan.lemon@gmail.com,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Message-ID: <5e14c0b1740ca_67962afd051fc5c0a5@john-XPS-13-9370.notmuch>
+In-Reply-To: <20191219061006.21980-2-bjorn.topel@gmail.com>
+References: <20191219061006.21980-1-bjorn.topel@gmail.com>
+ <20191219061006.21980-2-bjorn.topel@gmail.com>
+Subject: RE: [PATCH bpf-next v2 1/8] xdp: simplify devmap cleanup
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 12/31/19 7:20 AM, Martin KaFai Lau wrote:
-[...]
-> +static int bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
-> +					  void *value, u64 flags)
-> +{
-> +	struct bpf_struct_ops_map *st_map = (struct bpf_struct_ops_map *)map;
-> +	const struct bpf_struct_ops *st_ops = st_map->st_ops;
-> +	struct bpf_struct_ops_value *uvalue, *kvalue;
-> +	const struct btf_member *member;
-> +	const struct btf_type *t = st_ops->type;
-> +	void *udata, *kdata;
-> +	int prog_fd, err = 0;
-> +	void *image;
-> +	u32 i;
-> +
-> +	if (flags)
-> +		return -EINVAL;
-> +
-> +	if (*(u32 *)key != 0)
-> +		return -E2BIG;
-> +
-> +	err = check_zero_holes(st_ops->value_type, value);
-> +	if (err)
-> +		return err;
-> +
-> +	uvalue = (struct bpf_struct_ops_value *)value;
-> +	err = check_zero_holes(t, uvalue->data);
-> +	if (err)
-> +		return err;
-> +
-> +	if (uvalue->state || refcount_read(&uvalue->refcnt))
-> +		return -EINVAL;
-> +
-> +	uvalue = (struct bpf_struct_ops_value *)st_map->uvalue;
-> +	kvalue = (struct bpf_struct_ops_value *)&st_map->kvalue;
-> +
-> +	spin_lock(&st_map->lock);
-> +
-> +	if (kvalue->state != BPF_STRUCT_OPS_STATE_INIT) {
-> +		err = -EBUSY;
-> +		goto unlock;
-> +	}
-> +
-> +	memcpy(uvalue, value, map->value_size);
-> +
-> +	udata = &uvalue->data;
-> +	kdata = &kvalue->data;
-> +	image = st_map->image;
-> +
-> +	for_each_member(i, t, member) {
-> +		const struct btf_type *mtype, *ptype;
-> +		struct bpf_prog *prog;
-> +		u32 moff;
-> +
-> +		moff = btf_member_bit_offset(t, member) / 8;
-> +		ptype = btf_type_resolve_ptr(btf_vmlinux, member->type, NULL);
-> +		if (ptype == module_type) {
-> +			if (*(void **)(udata + moff))
-> +				goto reset_unlock;
-> +			*(void **)(kdata + moff) = BPF_MODULE_OWNER;
-> +			continue;
-> +		}
-> +
-> +		err = st_ops->init_member(t, member, kdata, udata);
-> +		if (err < 0)
-> +			goto reset_unlock;
-> +
-> +		/* The ->init_member() has handled this member */
-> +		if (err > 0)
-> +			continue;
-> +
-> +		/* If st_ops->init_member does not handle it,
-> +		 * we will only handle func ptrs and zero-ed members
-> +		 * here.  Reject everything else.
-> +		 */
-> +
-> +		/* All non func ptr member must be 0 */
-> +		if (!ptype || !btf_type_is_func_proto(ptype)) {
-> +			u32 msize;
-> +
-> +			mtype = btf_type_by_id(btf_vmlinux, member->type);
-> +			mtype = btf_resolve_size(btf_vmlinux, mtype, &msize,
-> +						 NULL, NULL);
-> +			if (IS_ERR(mtype)) {
-> +				err = PTR_ERR(mtype);
-> +				goto reset_unlock;
-> +			}
-> +
-> +			if (memchr_inv(udata + moff, 0, msize)) {
-> +				err = -EINVAL;
-> +				goto reset_unlock;
-> +			}
-> +
-> +			continue;
-> +		}
-> +
-> +		prog_fd = (int)(*(unsigned long *)(udata + moff));
-> +		/* Similar check as the attr->attach_prog_fd */
-> +		if (!prog_fd)
-> +			continue;
-> +
-> +		prog = bpf_prog_get(prog_fd);
-> +		if (IS_ERR(prog)) {
-> +			err = PTR_ERR(prog);
-> +			goto reset_unlock;
-> +		}
-> +		st_map->progs[i] = prog;
-> +
-> +		if (prog->type != BPF_PROG_TYPE_STRUCT_OPS ||
-> +		    prog->aux->attach_btf_id != st_ops->type_id ||
-> +		    prog->expected_attach_type != i) {
-> +			err = -EINVAL;
-> +			goto reset_unlock;
-> +		}
-> +
-> +		err = arch_prepare_bpf_trampoline(image,
-> +						  st_map->image + PAGE_SIZE,
-> +						  &st_ops->func_models[i], 0,
-> +						  &prog, 1, NULL, 0, NULL);
-> +		if (err < 0)
-> +			goto reset_unlock;
-> +
-> +		*(void **)(kdata + moff) = image;
-> +		image += err;
-> +
-> +		/* put prog_id to udata */
-> +		*(unsigned long *)(udata + moff) = prog->aux->id;
-> +	}
-> +
-> +	refcount_set(&kvalue->refcnt, 1);
-> +	bpf_map_inc(map);
-> +
-> +	err = st_ops->reg(kdata);
-> +	if (!err) {
-> +		/* Pair with smp_load_acquire() during lookup */
-> +		smp_store_release(&kvalue->state, BPF_STRUCT_OPS_STATE_INUSE);
+Bj=C3=B6rn T=C3=B6pel wrote:
+> From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+> =
 
-Is there a reason using READ_ONCE/WRITE_ONCE pair is not enough?
+> After the RCU flavor consolidation [1], call_rcu() and
+> synchronize_rcu() waits for preempt-disable regions (NAPI) in addition
+> to the read-side critical sections. As a result of this, the cleanup
+> code in devmap can be simplified
 
-> +		goto unlock;
-> +	}
-> +
-> +	/* Error during st_ops->reg() */
-> +	bpf_map_put(map);
-> +
-> +reset_unlock:
-> +	bpf_struct_ops_map_put_progs(st_map);
-> +	memset(uvalue, 0, map->value_size);
-> +	memset(kvalue, 0, map->value_size);
-> +
-> +unlock:
-> +	spin_unlock(&st_map->lock);
-> +	return err;
-> +}
-[...]
-> +static struct bpf_map *bpf_struct_ops_map_alloc(union bpf_attr *attr)
-> +{
-> +	const struct bpf_struct_ops *st_ops;
-> +	size_t map_total_size, st_map_size;
-> +	struct bpf_struct_ops_map *st_map;
-> +	const struct btf_type *t, *vt;
-> +	struct bpf_map_memory mem;
-> +	struct bpf_map *map;
-> +	int err;
-> +
-> +	if (!capable(CAP_SYS_ADMIN))
-> +		return ERR_PTR(-EPERM);
-> +
-> +	st_ops = bpf_struct_ops_find_value(attr->btf_vmlinux_value_type_id);
-> +	if (!st_ops)
-> +		return ERR_PTR(-ENOTSUPP);
-> +
-> +	vt = st_ops->value_type;
-> +	if (attr->value_size != vt->size)
-> +		return ERR_PTR(-EINVAL);
-> +
-> +	t = st_ops->type;
-> +
-> +	st_map_size = sizeof(*st_map) +
-> +		/* kvalue stores the
-> +		 * struct bpf_struct_ops_tcp_congestions_ops
-> +		 */
-> +		(vt->size - sizeof(struct bpf_struct_ops_value));
-> +	map_total_size = st_map_size +
-> +		/* uvalue */
-> +		sizeof(vt->size) +
-> +		/* struct bpf_progs **progs */
-> +		 btf_type_vlen(t) * sizeof(struct bpf_prog *);
-> +	err = bpf_map_charge_init(&mem, map_total_size);
-> +	if (err < 0)
-> +		return ERR_PTR(err);
-> +
-> +	st_map = bpf_map_area_alloc(st_map_size, NUMA_NO_NODE);
-> +	if (!st_map) {
-> +		bpf_map_charge_finish(&mem);
-> +		return ERR_PTR(-ENOMEM);
-> +	}
-> +	st_map->st_ops = st_ops;
-> +	map = &st_map->map;
-> +
-> +	st_map->uvalue = bpf_map_area_alloc(vt->size, NUMA_NO_NODE);
-> +	st_map->progs =
-> +		bpf_map_area_alloc(btf_type_vlen(t) * sizeof(struct bpf_prog *),
-> +				   NUMA_NO_NODE);
-> +	st_map->image = bpf_jit_alloc_exec(PAGE_SIZE);
-> +	if (!st_map->uvalue || !st_map->progs || !st_map->image) {
-> +		bpf_struct_ops_map_free(map);
-> +		bpf_map_charge_finish(&mem);
-> +		return ERR_PTR(-ENOMEM);
-> +	}
-> +
-> +	spin_lock_init(&st_map->lock);
-> +	set_vm_flush_reset_perms(st_map->image);
-> +	set_memory_x((long)st_map->image, 1);
+OK great makes sense. One comment below.
 
-Shouldn't this be using text poke as well once you write the image later on,
-otherwise we create yet another instance of W+X memory ... :/
+> =
 
-> +	bpf_map_init_from_attr(map, attr);
-> +	bpf_map_charge_move(&map->memory, &mem);
-> +
-> +	return map;
-> +}
-> +
-> +const struct bpf_map_ops bpf_struct_ops_map_ops = {
-> +	.map_alloc_check = bpf_struct_ops_map_alloc_check,
-> +	.map_alloc = bpf_struct_ops_map_alloc,
-> +	.map_free = bpf_struct_ops_map_free,
-> +	.map_get_next_key = bpf_struct_ops_map_get_next_key,
-> +	.map_lookup_elem = bpf_struct_ops_map_lookup_elem,
-> +	.map_delete_elem = bpf_struct_ops_map_delete_elem,
-> +	.map_update_elem = bpf_struct_ops_map_update_elem,
-> +	.map_seq_show_elem = bpf_struct_ops_map_seq_show_elem,
-> +};
-[...]
+> * There is no longer a need to flush in __dev_map_entry_free, since we
+>   know that this has been done when the call_rcu() callback is
+>   triggered.
+> =
+
+> * When freeing the map, there is no need to explicitly wait for a
+>   flush. It's guaranteed to be done after the synchronize_rcu() call
+>   in dev_map_free(). The rcu_barrier() is still needed, so that the
+>   map is not freed prior the elements.
+> =
+
+> [1] https://lwn.net/Articles/777036/
+> =
+
+> Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+> ---
+>  kernel/bpf/devmap.c | 43 +++++--------------------------------------
+>  1 file changed, 5 insertions(+), 38 deletions(-)
+> =
+
+> diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
+> index 3d3d61b5985b..b7595de6a91a 100644
+> --- a/kernel/bpf/devmap.c
+> +++ b/kernel/bpf/devmap.c
+> @@ -201,7 +201,7 @@ static struct bpf_map *dev_map_alloc(union bpf_attr=
+ *attr)
+>  static void dev_map_free(struct bpf_map *map)
+>  {
+>  	struct bpf_dtab *dtab =3D container_of(map, struct bpf_dtab, map);
+> -	int i, cpu;
+> +	int i;
+>  =
+
+>  	/* At this point bpf_prog->aux->refcnt =3D=3D 0 and this map->refcnt =
+=3D=3D 0,
+>  	 * so the programs (can be more than one that used this map) were
+> @@ -221,18 +221,6 @@ static void dev_map_free(struct bpf_map *map)
+>  	/* Make sure prior __dev_map_entry_free() have completed. */
+>  	rcu_barrier();
+>  =
+
+
+The comment at the start of this function also needs to be fixed it says,=
+
+
+  /* At this point bpf_prog->aux->refcnt =3D=3D 0 and this map->refcnt =3D=
+=3D 0,
+   * so the programs (can be more than one that used this map) were
+   * disconnected from events. Wait for outstanding critical sections in
+   * these programs to complete. The rcu critical section only guarantees=
+
+   * no further reads against netdev_map. It does __not__ ensure pending
+   * flush operations (if any) are complete.
+   */
+
+also comment in dev_map_delete_elem() needs update.
+
+> -	/* To ensure all pending flush operations have completed wait for flu=
+sh
+> -	 * list to empty on _all_ cpus.
+> -	 * Because the above synchronize_rcu() ensures the map is disconnecte=
+d
+> -	 * from the program we can assume no new items will be added.
+> -	 */
+> -	for_each_online_cpu(cpu) {
+> -		struct list_head *flush_list =3D per_cpu_ptr(dtab->flush_list, cpu);=
+
+> -
+> -		while (!list_empty(flush_list))
+> -			cond_resched();
+> -	}
+> -
+>  	if (dtab->map.map_type =3D=3D BPF_MAP_TYPE_DEVMAP_HASH) {
+>  		for (i =3D 0; i < dtab->n_buckets; i++) {
+>  			struct bpf_dtab_netdev *dev;
+> @@ -345,8 +333,7 @@ static int dev_map_hash_get_next_key(struct bpf_map=
+ *map, void *key,
+>  	return -ENOENT;
+>  }
+
+Otherwise LGTM thanks.=
