@@ -2,166 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B6E2131D46
-	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2020 02:37:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BC38131FDF
+	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2020 07:39:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727380AbgAGBgz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 6 Jan 2020 20:36:55 -0500
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:45022 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727250AbgAGBgw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 6 Jan 2020 20:36:52 -0500
-Received: by mail-pf1-f196.google.com with SMTP id 195so26909724pfw.11
-        for <bpf@vger.kernel.org>; Mon, 06 Jan 2020 17:36:51 -0800 (PST)
+        id S1725874AbgAGGjW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Jan 2020 01:39:22 -0500
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:43994 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725781AbgAGGjW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Jan 2020 01:39:22 -0500
+Received: by mail-lf1-f68.google.com with SMTP id 9so38060326lfq.10;
+        Mon, 06 Jan 2020 22:39:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=HWVPU6NTGp9nzRxw5BWJeatmP8pnvZxGmvGTyfzAkRc=;
-        b=H/bxSDl9ArODmhysOekCr4511LlfvhHtaBDU8GIImpRdmsvDx40o7nMg/xP6prsIR3
-         W3wfDDHw7bYbaNMyMAt/CZBXvSY1qUoH2OGKUMGcoGkZjTvK/Ss3sTUWmjPTx+xUnPcB
-         /Ri5nVSIBJ4fQ8uFTyem8NfwiSa8/uBW6+OJbrR+gDUtYqvj2yLwQek6ho40oG80i7c3
-         utvI49OLakatRGxFuN91PBHLPNGJO+b3PNIg2CMjCDaW5r58PLezOGoGIxRgPFxmOhIr
-         jmlP+7U7gJwDrjgCWKNqBW3MxgSLx2NQth3QScpuYOm1wjI7LyouHYobvzIozvvpD+8X
-         AyHg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SB8O/5JIMzYKiSuEZZhJIz1BTBaOY4SFu2N4rg13oQw=;
+        b=rSTuzj7r+Cfs1/Wvl40AY39m7ODXOwes5dphdCGuNtzSMVxkCIjozPNhi+QtLMja4F
+         Svcmc86MaR0XOjVCWWgYHlXzkUKj+FqslOPiM0q0Op3aOM1QbrIL/E8LKlzcxaNoBBFH
+         nk+HOAP82/ETwqNc/RHhxeRrs8oeEjkRPhwsNSqobliN8IbXPenAvwHkA7IkbqEKpn9W
+         FYva/rgdcIZuWtn0b5DcUJXueOyp9vYqoFJQXGh+uBf1dBiu76prSgQv41zVcakrV0IT
+         asghGM+Bw6KRNOZnifh37TMyJd1japsgTddWLZ/4PY4Bm2ibcQ5aWe9qAdFn9tyZe359
+         oa+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=HWVPU6NTGp9nzRxw5BWJeatmP8pnvZxGmvGTyfzAkRc=;
-        b=uKy9vHVbNUxw+hVMLG1x3US3gd1Xk+wNuq4oLi1n4MESMloTx3l1jWUoBunis0P36N
-         pb+36RLTRlK5DBU85JbhPJ1ZwzMcgidtOgky2Fva/2PpvWRAdWzATskFCu1CVGkB9ugw
-         x8C7T0W+I1yfuw2CgLShf5zHkkujOJXeXBNq6eV9fNeP+7M4KW1ALVxUx5t00pzL2bJj
-         EMBpIOqwnVyqtT+xuPi34mk/RgjZkabvCdIdCXfsx8gbjX7tezj6bR65CwxVN2F4tM0L
-         FRTjy6j+D1D+UjyMdKdVyqp68fDmHgTEgr0xpzz7VGCeV26ufGZ2fgVxi5FyTgSucUMK
-         s9Mg==
-X-Gm-Message-State: APjAAAW+e9wb0mXIJ+xfYapLAAWO2baAWAREDIN+uS4vs6SB8UXfbwe2
-        sQUyGp9RK1wX6mOubfI7yGEL1w==
-X-Google-Smtp-Source: APXvYqwABUMpjwkXRj3CIQncBFYa4iBNoJvcnED7WOpDnd8SZzBtyrCvkbT8+x2IU2YDKmbRxbrMDw==
-X-Received: by 2002:aa7:9218:: with SMTP id 24mr110748206pfo.145.1578361011553;
-        Mon, 06 Jan 2020 17:36:51 -0800 (PST)
-Received: from ?IPv6:2600:1013:b01b:fb95:11fc:e81d:31f1:7b96? ([2600:1013:b01b:fb95:11fc:e81d:31f1:7b96])
-        by smtp.gmail.com with ESMTPSA id q12sm78770893pfh.158.2020.01.06.17.36.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Jan 2020 17:36:50 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH bpf-next] bpf: Make trampolines W^X
-Date:   Mon, 6 Jan 2020 15:36:49 -1000
-Message-Id: <DB882EE8-20B2-4631-A808-E5C968B24CEB@amacapital.net>
-References: <21bf6bb46544eab79e792980f82520f8fbdae9b5.camel@intel.com>
-Cc:     "kpsingh@chromium.org" <kpsingh@chromium.org>,
-        "songliubraving@fb.com" <songliubraving@fb.com>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SB8O/5JIMzYKiSuEZZhJIz1BTBaOY4SFu2N4rg13oQw=;
+        b=cfxcy0sPxDqXJKATBn+xxV6agi+VVmjIRYLKJ8GOFCUWtvjJOyaA3qj1TTNxLjV25s
+         e/SaSmaeSAcmIGmu/A6183z3eM/uj5G1b1To2VW8zPhddCFcvpkv5yv2s6J+7Po8K3G9
+         X7mPhNxs0yjAhybgaN4YViP7DhCNYR36FJmwFO79BycxrQUd2Vvl+oem8BiPjRdRQ7K/
+         r13XPvVfxxGNwCAfNg5HfffhmKg85U7/XvFw/d4l7PBzg8f6/3XMO6VhrHd4p478V/rb
+         mim9aZ/no4sgo0ldZ3ydyftL0Wq568mPlLeCMSIniysEvrWDWCDCBCXmVt1vdshvpyBV
+         yZFw==
+X-Gm-Message-State: APjAAAUmL0Thr4q5BUW/sWh0ch9O+d854o6M1oHIF5dhdRFWF87ALVNA
+        qXoBACIH9UzCHHqJcenXX1LCBDvhnSoOSQwCxJw=
+X-Google-Smtp-Source: APXvYqy0lJXQV/MFyNa8/f6IaFQpoBMXBPmOnZmlJZ17/dmbIJbjTf10vbzRwRN3lBuqRkZpk7hYfpS2Vsy0oLYUrgI=
+X-Received: by 2002:ac2:51a4:: with SMTP id f4mr62079590lfk.76.1578379159255;
+ Mon, 06 Jan 2020 22:39:19 -0800 (PST)
+MIME-Version: 1.0
+References: <20191211223344.165549-1-brianvv@google.com> <20191211223344.165549-6-brianvv@google.com>
+ <ba15746b-2cd8-5a04-08fa-3c85b94db15b@fb.com>
+In-Reply-To: <ba15746b-2cd8-5a04-08fa-3c85b94db15b@fb.com>
+From:   Brian Vazquez <brianvv.kernel@gmail.com>
+Date:   Tue, 7 Jan 2020 00:39:07 -0600
+Message-ID: <CABCgpaUHEWg6nwEEy47rF=aeK0AtNpAp3+pJVnObZU87FuUMgw@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 05/11] bpf: add generic_batch_ops to lpm_trie map
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Brian Vazquez <brianvv@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S . Miller" <davem@davemloft.net>,
+        Stanislav Fomichev <sdf@google.com>,
+        Petar Penkov <ppenkov@google.com>,
+        Willem de Bruijn <willemb@google.com>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "kuznet@ms2.inr.ac.ru" <kuznet@ms2.inr.ac.ru>,
-        "jannh@google.com" <jannh@google.com>,
-        "mjg59@google.com" <mjg59@google.com>,
-        "thgarnie@chromium.org" <thgarnie@chromium.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "revest@chromium.org" <revest@chromium.org>,
-        "jackmanb@chromium.org" <jackmanb@chromium.org>,
-        "kafai@fb.com" <kafai@fb.com>, "yhs@fb.com" <yhs@fb.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "yoshfuji@linux-ipv6.org" <yoshfuji@linux-ipv6.org>,
-        "mhalcrow@google.com" <mhalcrow@google.com>,
-        "andriin@fb.com" <andriin@fb.com>
-In-Reply-To: <21bf6bb46544eab79e792980f82520f8fbdae9b5.camel@intel.com>
-To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-X-Mailer: iPhone Mail (17C54)
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Hi Yonghong, thanks for reviewing it and sorry for the late reply I
+had been traveling.
 
-> On Jan 6, 2020, at 12:25 PM, Edgecombe, Rick P <rick.p.edgecombe@intel.com=
-> wrote:
->=20
-> =EF=BB=BFOn Sat, 2020-01-04 at 09:49 +0900, Andy Lutomirski wrote:
->>>> On Jan 4, 2020, at 8:47 AM, KP Singh <kpsingh@chromium.org> wrote:
->>>=20
->>> =EF=BB=BFFrom: KP Singh <kpsingh@google.com>
->>>=20
->>> The image for the BPF trampolines is allocated with
->>> bpf_jit_alloc_exe_page which marks this allocated page executable. This
->>> means that the allocated memory is W and X at the same time making it
->>> susceptible to WX based attacks.
->>>=20
->>> Since the allocated memory is shared between two trampolines (the
->>> current and the next), 2 pages must be allocated to adhere to W^X and
->>> the following sequence is obeyed where trampolines are modified:
->>=20
->> Can we please do better rather than piling garbage on top of garbage?
->>=20
->>>=20
->>> - Mark memory as non executable (set_memory_nx). While module_alloc for
->>> x86 allocates the memory as PAGE_KERNEL and not PAGE_KERNEL_EXEC, not
->>> all implementations of module_alloc do so
->>=20
->> How about fixing this instead?
->>=20
->>> - Mark the memory as read/write (set_memory_rw)
->>=20
->> Probably harmless, but see above about fixing it.
->>=20
->>> - Modify the trampoline
->>=20
->> Seems reasonable. It=E2=80=99s worth noting that this whole approach is s=
-uboptimal:
->> the =E2=80=9Cmodule=E2=80=9D allocator should really be returning a list o=
-f pages to be
->> written (not at the final address!) with the actual executable mapping to=
- be
->> materialized later, but that=E2=80=99s a bigger project that you=E2=80=99=
-re welcome to ignore
->> for now.  (Concretely, it should produce a vmap address with backing page=
-s but
->> with the vmap alias either entirely unmapped or read-only. A subsequent h=
-ealer
->> would, all at once, make the direct map pages RO or not-present and make t=
-he
->> vmap alias RX.)
->>> - Mark the memory as read-only (set_memory_ro)
->>> - Mark the memory as executable (set_memory_x)
->>=20
->> No, thanks. There=E2=80=99s very little excuse for doing two IPI flushes w=
-hen one
->> would suffice.
->>=20
->> As far as I know, all architectures can do this with a single flush witho=
-ut
->> races  x86 certainly can. The module freeing code gets this sequence righ=
-t.
->> Please reuse its mechanism or, if needed, export the relevant interfaces.=
+On Fri, Dec 13, 2019 at 11:46 AM Yonghong Song <yhs@fb.com> wrote:
+>
+>
+>
+> On 12/11/19 2:33 PM, Brian Vazquez wrote:
+> > This adds the generic batch ops functionality to bpf lpm_trie.
+> >
+> > Signed-off-by: Brian Vazquez <brianvv@google.com>
+> > ---
+> >   kernel/bpf/lpm_trie.c | 4 ++++
+> >   1 file changed, 4 insertions(+)
+> >
+> > diff --git a/kernel/bpf/lpm_trie.c b/kernel/bpf/lpm_trie.c
+> > index 56e6c75d354d9..92c47b4f03337 100644
+> > --- a/kernel/bpf/lpm_trie.c
+> > +++ b/kernel/bpf/lpm_trie.c
+> > @@ -743,4 +743,8 @@ const struct bpf_map_ops trie_map_ops = {
+> >       .map_update_elem = trie_update_elem,
+> >       .map_delete_elem = trie_delete_elem,
+> >       .map_check_btf = trie_check_btf,
+> > +     .map_lookup_batch = generic_map_lookup_batch,
+> > +     .map_lookup_and_delete_batch = generic_map_lookup_and_delete_batch,
+>
+> Not 100% sure whether trie should use generic map
+> lookup/lookup_and_delete or not. If the key is not available,
+> the get_next_key will return the 'leftmost' node which roughly
+> corresponding to the first node in the hash table.
+>
 
->=20
-> So if I understand this right, some trampolines have been added that are
-> currently set as RWX at modification time AND left that way during runtime=
-? The
-> discussion on the order of set_memory_() calls in the commit message made m=
-e
-> think that this was just a modification time thing at first.
+I think you're right, we shouldn't use generic
+lookup/lookup_and_delete for lpm_trie. That being said, would you be
+ok, if we don't add lpm_trie support in this patch series? Also we can
+drop the generic_map_lookup_and_delete implementation in this patch
+series and add it in the future, if needed. What do you think?
 
-I=E2=80=99m not sure what the status quo is.
-
-We really ought to have a genuinely good API for allocation and initializati=
-on of text.  We can do so much better than set_memory_blahblah.
-
-FWIW, I have some ideas about making kernel flushes cheaper. It=E2=80=99s cu=
-rrently blocked on finding some time and on tglx=E2=80=99s irqtrace work.
-
->=20
-> Also, is there a reason you couldn't use text_poke() to modify the trampol=
-ine
-> with a single flush?
->=20
-
-Does text_poke to an IPI these days?=
+> > +     .map_delete_batch = generic_map_delete_batch,
+> > +     .map_update_batch = generic_map_update_batch,with efault
+> >   };
+> >
