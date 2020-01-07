@@ -2,142 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A31A1132EEB
-	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2020 20:02:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44C6B132F83
+	for <lists+bpf@lfdr.de>; Tue,  7 Jan 2020 20:32:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728679AbgAGTBq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Jan 2020 14:01:46 -0500
-Received: from mga14.intel.com ([192.55.52.115]:46496 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728358AbgAGTBq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Jan 2020 14:01:46 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 07 Jan 2020 11:01:45 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,406,1571727600"; 
-   d="scan'208";a="223297319"
-Received: from orsmsx109.amr.corp.intel.com ([10.22.240.7])
-  by orsmga003.jf.intel.com with ESMTP; 07 Jan 2020 11:01:45 -0800
-Received: from orsmsx112.amr.corp.intel.com ([169.254.3.41]) by
- ORSMSX109.amr.corp.intel.com ([169.254.11.176]) with mapi id 14.03.0439.000;
- Tue, 7 Jan 2020 11:01:45 -0800
-From:   "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-To:     "luto@amacapital.net" <luto@amacapital.net>
-CC:     "songliubraving@fb.com" <songliubraving@fb.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "jeyu@kernel.org" <jeyu@kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "kuznet@ms2.inr.ac.ru" <kuznet@ms2.inr.ac.ru>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "mjg59@google.com" <mjg59@google.com>,
-        "thgarnie@chromium.org" <thgarnie@chromium.org>,
-        "kpsingh@chromium.org" <kpsingh@chromium.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "revest@chromium.org" <revest@chromium.org>,
-        "jannh@google.com" <jannh@google.com>,
-        "namit@vmware.com" <namit@vmware.com>,
-        "jackmanb@chromium.org" <jackmanb@chromium.org>,
-        "kafai@fb.com" <kafai@fb.com>, "yhs@fb.com" <yhs@fb.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "yoshfuji@linux-ipv6.org" <yoshfuji@linux-ipv6.org>,
-        "mhalcrow@google.com" <mhalcrow@google.com>,
-        "andriin@fb.com" <andriin@fb.com>
-Subject: Re: [PATCH bpf-next] bpf: Make trampolines W^X
-Thread-Topic: [PATCH bpf-next] bpf: Make trampolines W^X
-Thread-Index: AQHVwpjLpCzVLdPZ5Em9CS0HIZ/iOKfewVwAgAA1aoCAASP/gA==
-Date:   Tue, 7 Jan 2020 19:01:44 +0000
-Message-ID: <cdd157ef011efda92c9434f76141fc3aef174d85.camel@intel.com>
-References: <21bf6bb46544eab79e792980f82520f8fbdae9b5.camel@intel.com>
-         <DB882EE8-20B2-4631-A808-E5C968B24CEB@amacapital.net>
-In-Reply-To: <DB882EE8-20B2-4631-A808-E5C968B24CEB@amacapital.net>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.54.75.11]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <DE01A131372B9D4684BF9EC8078CC1AB@intel.com>
-Content-Transfer-Encoding: base64
+        id S1728654AbgAGTa4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Jan 2020 14:30:56 -0500
+Received: from www62.your-server.de ([213.133.104.62]:47852 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728702AbgAGTaq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Jan 2020 14:30:46 -0500
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1iouYs-0007tt-62; Tue, 07 Jan 2020 20:30:42 +0100
+Received: from [178.197.249.51] (helo=pc-9.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1iouYr-000DeW-Nz; Tue, 07 Jan 2020 20:30:41 +0100
+Subject: Re: [PATCH 5/5] bpf: Allow to resolve bpf trampoline in unwind
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Andrii Nakryiko <andriin@fb.com>,
+        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        David Miller <davem@redhat.com>, bjorn.topel@intel.com
+References: <20191229143740.29143-1-jolsa@kernel.org>
+ <20191229143740.29143-6-jolsa@kernel.org>
+ <20200106234639.fo2ctgkb5vumayyl@ast-mbp>
+ <fab5466e-95e7-8abf-c416-6a6f7b7151ba@iogearbox.net>
+ <20200107131554.GJ290055@krava>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <5a0fbe29-a9ec-a917-b52f-c81c96672ae8@iogearbox.net>
+Date:   Tue, 7 Jan 2020 20:30:40 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
+In-Reply-To: <20200107131554.GJ290055@krava>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.101.4/25687/Tue Jan  7 10:56:22 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Q0MgTmFkYXYgYW5kIEplc3NpY2EuDQoNCk9uIE1vbiwgMjAyMC0wMS0wNiBhdCAxNTozNiAtMTAw
-MCwgQW5keSBMdXRvbWlyc2tpIHdyb3RlOg0KPiA+IE9uIEphbiA2LCAyMDIwLCBhdCAxMjoyNSBQ
-TSwgRWRnZWNvbWJlLCBSaWNrIFAgPHJpY2sucC5lZGdlY29tYmVAaW50ZWwuY29tPg0KPiA+IHdy
-b3RlOg0KPiA+IA0KPiA+IO+7v09uIFNhdCwgMjAyMC0wMS0wNCBhdCAwOTo0OSArMDkwMCwgQW5k
-eSBMdXRvbWlyc2tpIHdyb3RlOg0KPiA+ID4gPiA+IE9uIEphbiA0LCAyMDIwLCBhdCA4OjQ3IEFN
-LCBLUCBTaW5naCA8a3BzaW5naEBjaHJvbWl1bS5vcmc+IHdyb3RlOg0KPiA+ID4gPiANCj4gPiA+
-ID4g77u/RnJvbTogS1AgU2luZ2ggPGtwc2luZ2hAZ29vZ2xlLmNvbT4NCj4gPiA+ID4gDQo+ID4g
-PiA+IFRoZSBpbWFnZSBmb3IgdGhlIEJQRiB0cmFtcG9saW5lcyBpcyBhbGxvY2F0ZWQgd2l0aA0K
-PiA+ID4gPiBicGZfaml0X2FsbG9jX2V4ZV9wYWdlIHdoaWNoIG1hcmtzIHRoaXMgYWxsb2NhdGVk
-IHBhZ2UgZXhlY3V0YWJsZS4gVGhpcw0KPiA+ID4gPiBtZWFucyB0aGF0IHRoZSBhbGxvY2F0ZWQg
-bWVtb3J5IGlzIFcgYW5kIFggYXQgdGhlIHNhbWUgdGltZSBtYWtpbmcgaXQNCj4gPiA+ID4gc3Vz
-Y2VwdGlibGUgdG8gV1ggYmFzZWQgYXR0YWNrcy4NCj4gPiA+ID4gDQo+ID4gPiA+IFNpbmNlIHRo
-ZSBhbGxvY2F0ZWQgbWVtb3J5IGlzIHNoYXJlZCBiZXR3ZWVuIHR3byB0cmFtcG9saW5lcyAodGhl
-DQo+ID4gPiA+IGN1cnJlbnQgYW5kIHRoZSBuZXh0KSwgMiBwYWdlcyBtdXN0IGJlIGFsbG9jYXRl
-ZCB0byBhZGhlcmUgdG8gV15YIGFuZA0KPiA+ID4gPiB0aGUgZm9sbG93aW5nIHNlcXVlbmNlIGlz
-IG9iZXllZCB3aGVyZSB0cmFtcG9saW5lcyBhcmUgbW9kaWZpZWQ6DQo+ID4gPiANCj4gPiA+IENh
-biB3ZSBwbGVhc2UgZG8gYmV0dGVyIHJhdGhlciB0aGFuIHBpbGluZyBnYXJiYWdlIG9uIHRvcCBv
-ZiBnYXJiYWdlPw0KPiA+ID4gDQo+ID4gPiA+IA0KPiA+ID4gPiAtIE1hcmsgbWVtb3J5IGFzIG5v
-biBleGVjdXRhYmxlIChzZXRfbWVtb3J5X254KS4gV2hpbGUgbW9kdWxlX2FsbG9jIGZvcg0KPiA+
-ID4gPiB4ODYgYWxsb2NhdGVzIHRoZSBtZW1vcnkgYXMgUEFHRV9LRVJORUwgYW5kIG5vdCBQQUdF
-X0tFUk5FTF9FWEVDLCBub3QNCj4gPiA+ID4gYWxsIGltcGxlbWVudGF0aW9ucyBvZiBtb2R1bGVf
-YWxsb2MgZG8gc28NCj4gPiA+IA0KPiA+ID4gSG93IGFib3V0IGZpeGluZyB0aGlzIGluc3RlYWQ/
-DQo+ID4gPiANCj4gPiA+ID4gLSBNYXJrIHRoZSBtZW1vcnkgYXMgcmVhZC93cml0ZSAoc2V0X21l
-bW9yeV9ydykNCj4gPiA+IA0KPiA+ID4gUHJvYmFibHkgaGFybWxlc3MsIGJ1dCBzZWUgYWJvdmUg
-YWJvdXQgZml4aW5nIGl0Lg0KPiA+ID4gDQo+ID4gPiA+IC0gTW9kaWZ5IHRoZSB0cmFtcG9saW5l
-DQo+ID4gPiANCj4gPiA+IFNlZW1zIHJlYXNvbmFibGUuIEl04oCZcyB3b3J0aCBub3RpbmcgdGhh
-dCB0aGlzIHdob2xlIGFwcHJvYWNoIGlzDQo+ID4gPiBzdWJvcHRpbWFsOg0KPiA+ID4gdGhlIOKA
-nG1vZHVsZeKAnSBhbGxvY2F0b3Igc2hvdWxkIHJlYWxseSBiZSByZXR1cm5pbmcgYSBsaXN0IG9m
-IHBhZ2VzIHRvIGJlDQo+ID4gPiB3cml0dGVuIChub3QgYXQgdGhlIGZpbmFsIGFkZHJlc3MhKSB3
-aXRoIHRoZSBhY3R1YWwgZXhlY3V0YWJsZSBtYXBwaW5nIHRvDQo+ID4gPiBiZQ0KPiA+ID4gbWF0
-ZXJpYWxpemVkIGxhdGVyLCBidXQgdGhhdOKAmXMgYSBiaWdnZXIgcHJvamVjdCB0aGF0IHlvdeKA
-mXJlIHdlbGNvbWUgdG8NCj4gPiA+IGlnbm9yZQ0KPiA+ID4gZm9yIG5vdy4gIChDb25jcmV0ZWx5
-LCBpdCBzaG91bGQgcHJvZHVjZSBhIHZtYXAgYWRkcmVzcyB3aXRoIGJhY2tpbmcgcGFnZXMNCj4g
-PiA+IGJ1dA0KPiA+ID4gd2l0aCB0aGUgdm1hcCBhbGlhcyBlaXRoZXIgZW50aXJlbHkgdW5tYXBw
-ZWQgb3IgcmVhZC1vbmx5LiBBIHN1YnNlcXVlbnQNCj4gPiA+IGhlYWxlcg0KPiA+ID4gd291bGQs
-IGFsbCBhdCBvbmNlLCBtYWtlIHRoZSBkaXJlY3QgbWFwIHBhZ2VzIFJPIG9yIG5vdC1wcmVzZW50
-IGFuZCBtYWtlDQo+ID4gPiB0aGUNCj4gPiA+IHZtYXAgYWxpYXMgUlguKQ0KPiA+ID4gPiAtIE1h
-cmsgdGhlIG1lbW9yeSBhcyByZWFkLW9ubHkgKHNldF9tZW1vcnlfcm8pDQo+ID4gPiA+IC0gTWFy
-ayB0aGUgbWVtb3J5IGFzIGV4ZWN1dGFibGUgKHNldF9tZW1vcnlfeCkNCj4gPiA+IA0KPiA+ID4g
-Tm8sIHRoYW5rcy4gVGhlcmXigJlzIHZlcnkgbGl0dGxlIGV4Y3VzZSBmb3IgZG9pbmcgdHdvIElQ
-SSBmbHVzaGVzIHdoZW4gb25lDQo+ID4gPiB3b3VsZCBzdWZmaWNlLg0KPiA+ID4gDQo+ID4gPiBB
-cyBmYXIgYXMgSSBrbm93LCBhbGwgYXJjaGl0ZWN0dXJlcyBjYW4gZG8gdGhpcyB3aXRoIGEgc2lu
-Z2xlIGZsdXNoDQo+ID4gPiB3aXRob3V0DQo+ID4gPiByYWNlcyAgeDg2IGNlcnRhaW5seSBjYW4u
-IFRoZSBtb2R1bGUgZnJlZWluZyBjb2RlIGdldHMgdGhpcyBzZXF1ZW5jZQ0KPiA+ID4gcmlnaHQu
-DQo+ID4gPiBQbGVhc2UgcmV1c2UgaXRzIG1lY2hhbmlzbSBvciwgaWYgbmVlZGVkLCBleHBvcnQg
-dGhlIHJlbGV2YW50IGludGVyZmFjZXMuDQo+ID4gDQo+ID4gU28gaWYgSSB1bmRlcnN0YW5kIHRo
-aXMgcmlnaHQsIHNvbWUgdHJhbXBvbGluZXMgaGF2ZSBiZWVuIGFkZGVkIHRoYXQgYXJlDQo+ID4g
-Y3VycmVudGx5IHNldCBhcyBSV1ggYXQgbW9kaWZpY2F0aW9uIHRpbWUgQU5EIGxlZnQgdGhhdCB3
-YXkgZHVyaW5nIHJ1bnRpbWU/DQo+ID4gVGhlDQo+ID4gZGlzY3Vzc2lvbiBvbiB0aGUgb3JkZXIg
-b2Ygc2V0X21lbW9yeV8oKSBjYWxscyBpbiB0aGUgY29tbWl0IG1lc3NhZ2UgbWFkZSBtZQ0KPiA+
-IHRoaW5rIHRoYXQgdGhpcyB3YXMganVzdCBhIG1vZGlmaWNhdGlvbiB0aW1lIHRoaW5nIGF0IGZp
-cnN0Lg0KPiANCj4gSeKAmW0gbm90IHN1cmUgd2hhdCB0aGUgc3RhdHVzIHF1byBpcy4NCj4gDQo+
-IFdlIHJlYWxseSBvdWdodCB0byBoYXZlIGEgZ2VudWluZWx5IGdvb2QgQVBJIGZvciBhbGxvY2F0
-aW9uIGFuZCBpbml0aWFsaXphdGlvbg0KPiBvZiB0ZXh0LiAgV2UgY2FuIGRvIHNvIG11Y2ggYmV0
-dGVyIHRoYW4gc2V0X21lbW9yeV9ibGFoYmxhaC4NCj4gDQo+IEZXSVcsIEkgaGF2ZSBzb21lIGlk
-ZWFzIGFib3V0IG1ha2luZyBrZXJuZWwgZmx1c2hlcyBjaGVhcGVyLiBJdOKAmXMgY3VycmVudGx5
-DQo+IGJsb2NrZWQgb24gZmluZGluZyBzb21lIHRpbWUgYW5kIG9uIHRnbHjigJlzIGlycXRyYWNl
-IHdvcmsuDQo+IA0KDQpNYWtlcyBzZW5zZSB0byBtZS4gSSBndWVzcyB0aGVyZSBhcmUgNiB0eXBl
-cyBvZiB0ZXh0IGFsbG9jYXRpb25zIG5vdzoNCiAtIFRoZXNlIHR3byBCUEYgdHJhbXBvbGluZXMN
-CiAtIEJQRiBKSVRzDQogLSBNb2R1bGVzDQogLSBLcHJvYmVzDQogLSBGdHJhY2UNCg0KQWxsIGRv
-aW5nIChvciBzaG91bGQgYmUgZG9pbmcpIHByZXR0eSBtdWNoIHRoZSBzYW1lIHRoaW5nLiBJIGJl
-bGlldmUgSmVzc2ljYSBoYWQNCnNhaWQgYXQgb25lIHBvaW50IHRoYXQgc2hlIGRpZG4ndCBsaWtl
-IGFsbCB0aGUgb3RoZXIgZmVhdHVyZXMgdXNpbmcNCm1vZHVsZV9hbGxvYygpIGFzIGl0IHdhcyBz
-dXBwb3NlZCB0byBiZSBqdXN0IGZvciByZWFsIG1vZHVsZXMuIFdoZXJlIHdvdWxkIHRoZQ0KQVBJ
-IGxpdmU/DQoNCj4gPiANCj4gPiBBbHNvLCBpcyB0aGVyZSBhIHJlYXNvbiB5b3UgY291bGRuJ3Qg
-dXNlIHRleHRfcG9rZSgpIHRvIG1vZGlmeSB0aGUNCj4gPiB0cmFtcG9saW5lDQo+ID4gd2l0aCBh
-IHNpbmdsZSBmbHVzaD8NCj4gPiANCj4gDQo+IERvZXMgdGV4dF9wb2tlIHRvIGFuIElQSSB0aGVz
-ZSBkYXlzPw0KDQpJIGRvbid0IHRoaW5rIHNvIHNpbmNlIHRoZSBSVyBtYXBwaW5nIGlzIGp1c3Qg
-b24gYSBzaW5nbGUgQ1BVLiBUaGF0IHdhcyBvbmUgb2YNCnRoZSBiZW5lZml0cyBvZiB0aGUgdGVt
-cG9yYXJ5IG1tIHN0cnVjdCBiYXNlZCB0aGluZyBOYWRhdiBkaWQuIEkgaGF2ZW4ndCBsb29rZWQN
-CmludG8gUGV0ZXJaJ3MgY2hhbmdlcyB0aG91Z2guDQo=
+On 1/7/20 2:15 PM, Jiri Olsa wrote:
+> On Tue, Jan 07, 2020 at 09:30:12AM +0100, Daniel Borkmann wrote:
+>> On 1/7/20 12:46 AM, Alexei Starovoitov wrote:
+>>> On Sun, Dec 29, 2019 at 03:37:40PM +0100, Jiri Olsa wrote:
+>>>> When unwinding the stack we need to identify each
+>>>> address to successfully continue. Adding latch tree
+>>>> to keep trampolines for quick lookup during the
+>>>> unwind.
+>>>>
+>>>> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+>>> ...
+>>>> +bool is_bpf_trampoline(void *addr)
+>>>> +{
+>>>> +	return latch_tree_find(addr, &tree, &tree_ops) != NULL;
+>>>> +}
+>>>> +
+>>>>    struct bpf_trampoline *bpf_trampoline_lookup(u64 key)
+>>>>    {
+>>>>    	struct bpf_trampoline *tr;
+>>>> @@ -65,6 +98,7 @@ struct bpf_trampoline *bpf_trampoline_lookup(u64 key)
+>>>>    	for (i = 0; i < BPF_TRAMP_MAX; i++)
+>>>>    		INIT_HLIST_HEAD(&tr->progs_hlist[i]);
+>>>>    	tr->image = image;
+>>>> +	latch_tree_insert(&tr->tnode, &tree, &tree_ops);
+>>>
+>>> Thanks for the fix. I was thinking to apply it, but then realized that bpf
+>>> dispatcher logic has the same issue.
+>>> Could you generalize the fix for both?
+>>> May be bpf_jit_alloc_exec_page() can do latch_tree_insert() ?
+>>> and new version of bpf_jit_free_exec() is needed that will do latch_tree_erase().
+>>> Wdyt?
+>>
+>> Also this patch is buggy since your latch lookup happens under RCU, but
+>> I don't see anything that waits a grace period once you remove from the
+>> tree. Instead you free the trampoline right away.
+> 
+> thanks, did not think of that.. will (try to) fix ;-)
+> 
+>> On a different question, given we have all the kallsym infrastructure
+>> for BPF already in place, did you look into whether it's feasible to
+>> make it a bit more generic to also cover JITed buffers from trampolines?
+> 
+> hum, it did not occur to me that we want to see it in kallsyms,
+> but sure.. how about: bpf_trampoline_<key> ?
+> 
+> key would be taken from bpf_trampoline::key as function's BTF id
+
+Yeap, I think bpf_trampoline_<btf_id> would make sense here.
+
+Thanks,
+Daniel
