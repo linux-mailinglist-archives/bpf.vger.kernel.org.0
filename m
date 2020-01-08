@@ -2,191 +2,172 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DA6EE134B92
-	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2020 20:40:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 282FE134CBE
+	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2020 21:07:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730065AbgAHTkU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Jan 2020 14:40:20 -0500
-Received: from USFB19PA31.eemsg.mail.mil ([214.24.26.194]:3644 "EHLO
-        USFB19PA31.eemsg.mail.mil" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727247AbgAHTkU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Jan 2020 14:40:20 -0500
-X-Greylist: delayed 424 seconds by postgrey-1.27 at vger.kernel.org; Wed, 08 Jan 2020 14:40:20 EST
-X-EEMSG-check-017: 42325420|USFB19PA31_ESA_OUT01.csd.disa.mil
-X-IronPort-AV: E=Sophos;i="5.69,411,1571702400"; 
-   d="scan'208";a="42325420"
-Received: from emsm-gh1-uea11.ncsc.mil ([214.29.60.3])
-  by USFB19PA31.eemsg.mail.mil with ESMTP/TLS/DHE-RSA-AES256-SHA256; 08 Jan 2020 19:33:14 +0000
+        id S1726182AbgAHUHI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Jan 2020 15:07:08 -0500
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:44576 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726445AbgAHUHB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Jan 2020 15:07:01 -0500
+Received: by mail-pg1-f196.google.com with SMTP id x7so2061476pgl.11;
+        Wed, 08 Jan 2020 12:07:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tycho.nsa.gov; i=@tycho.nsa.gov; q=dns/txt;
-  s=tycho.nsa.gov; t=1578511994; x=1610047994;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=5vtn4nl+vULDkbXvwPAZaK8U99nfGQpZnPOpY7Pr5FE=;
-  b=Lo/Mml0zbhap+ALWEBhBX0jACG3dHFljtomSc1NRgvxLKAfyhnoAHtGG
-   YX1+GbXp22dQtKkTPpqExnDCFHoPsFGwvxS+Kj7JIqQ1kkS3ejO1LiaZ/
-   3qNpJ/mBWyC09srGZl/0k+cR2OamaiFgE56pLwguUsRyrDPo5Pst8H9A1
-   USjObGuQznVcRgSdGPhL8oXcJ4+XpvbMExVXzFk7DnproffGBZNT2UIkx
-   iocupJ432cclvV/bzYwBUJoGpQgrFVSIm1gvNwvmSNIDyw6hdT7RdVVv9
-   3OuBvcvYJkzdjttpzCaNmuEF36LMWei3FZ1rtE3QQw+rVSsOBiUpySnZ0
-   g==;
-X-IronPort-AV: E=Sophos;i="5.69,411,1571702400"; 
-   d="scan'208";a="37510737"
-IronPort-PHdr: =?us-ascii?q?9a23=3ABvES1RU5jmv5HPC14ZHaSC+3pb7V8LGtZVwlr6?=
- =?us-ascii?q?E/grcLSJyIuqrYZhGEvadThVPEFb/W9+hDw7KP9fy5AipavMbK6SpZOLV3FD?=
- =?us-ascii?q?Y9wf0MmAIhBMPXQWbaF9XNKxIAIcJZSVV+9Gu6O0UGUOz3ZlnVv2HgpWVKQk?=
- =?us-ascii?q?a3OgV6PPn6FZDPhMqrye+y54fTYwJVjzahfL9+Nhq7oRjfu8UMn4dvKqU8xh?=
- =?us-ascii?q?TUrndWdeld2H9lK0+Ukxvg/Mm74YRt8z5Xu/Iv9s5AVbv1cqElRrFGDzooLn?=
- =?us-ascii?q?446tTzuRbMUQWA6H0cUn4LkhVTGAjK8Av6XpbqvSTksOd2xTSXMtf3TbAwXj?=
- =?us-ascii?q?Si8rtrRRr1gyoJKzI17GfagdFrgalFvByuuQBww4/MYIGUKvV+eL/dfcgHTm?=
- =?us-ascii?q?ZFR8pdSjBNDp+5Y4YJAeUBJ+JYpJTjqVUIoxW1GA2gCPrvxzJMg3P727Ax3e?=
- =?us-ascii?q?Y8HgHcxAEuAswAsHrUotv2OqkdX++6w6vUwjvMdP5WxTXw5ZLUfhw9r/yBX7?=
- =?us-ascii?q?R9etfRx0k1EAPFi02dp5H5PzyLzuQNs3aU7+x9Xuyyjm4osQVxojyxycYsl4?=
- =?us-ascii?q?LEgZkVxU3f9Shi3IY0JcG3SE58YdK+FptQrDuVO5F5QsMlXWFloSA3waAFt5?=
- =?us-ascii?q?6jZCUG1ZsqyhHFZ/GHboSE+AzvWemPLTtimX5ofq+0iQyo/ki60OL8U9G50F?=
- =?us-ascii?q?NNriVYjNbBrmsN1xnP6sifTft941uh1S6P1w/N7uFEJlg5lbbBJJ47w74wi4?=
- =?us-ascii?q?ETvV7CHi/wlkX2i7SWeVs49eSy9+TmYqnppp+bN4NujAHxLr8uldClDeQ9Mw?=
- =?us-ascii?q?gOW3CX+eW61LL94U30WKhGg/I5n6XDsJ3WON4XqrC2DgNLyIov9g6zDzK839?=
- =?us-ascii?q?QZmXkHIkhFeBWCj4XxIFHBPev4AOyjg1WsjDhrx/fGMqfnApXWNHfPirjhfb?=
- =?us-ascii?q?Fj60JE0go80chf545ICrEGOP/zWErxtNvCDh8jMgy02P3qCNNn2YMbR22PA7?=
- =?us-ascii?q?WVMKTIsV+H/ugvOfWDZJcJuDbhLPgo//3ugmEnll8GYaap2pwXaHOjE/t6I0?=
- =?us-ascii?q?WZe33sgtIAEWcXuwoyVuvqiEeNUTRLfXa9Q7o85i0nCIKhFYrDRZitgKeA3C?=
- =?us-ascii?q?e9EZ1WZntLBUyMEXfycIWEXvYMaD+XIsN7lTwET7ehQZc71R6yrA/616ZnLu?=
- =?us-ascii?q?3M9yIEr53jz8Z65u3ImBEp6TN0D96S03yDT2FwgGwIXSY607xlrkBn1liD1q?=
- =?us-ascii?q?14ieRCFdNP//NJThs6NZnEwux+CtDyXB/Bf9iQRFalXNqmGzcxQcw1w9IVfU?=
- =?us-ascii?q?Z9FMutjgrZ0yqpHbAVjbqLC4Iw8q7G2HjxPcl9wW7c1KY9l1kmXtdPNWq+i6?=
- =?us-ascii?q?Fk7wjTCZXEk1uWl6m0b6QQxi3N+3mZzWqIok5YVBR8UaLfXXAQfkHWt8j25l?=
- =?us-ascii?q?veT7+yDrQqKg9Byc+EKqtXZdzllE5GS+n/N9TDeWKxmnuwBBaRyrOJa4rlZn?=
- =?us-ascii?q?gd3CHDB0UfjQAT8miJNRIkCieivW3eFjpuGkzrY0/29ul+sny7RFcuzw6Wd0?=
- =?us-ascii?q?1hy6a1+hkNiPOGUPMTwqkJuCQ/pDVuGlaywdbWB8CHpwp7c6VWeck970tf1W?=
- =?us-ascii?q?LFqwx9OYStIL14iV4YcgR4oUfu2g52CoVHnsglsmklzBBpJqKf31JNbTWY0o?=
- =?us-ascii?q?7sOrfPMGn94Aiva7LK2lHZyNuW5qcP6PsipFX5ugGpF1Qt/m573NlVyXuc4Z?=
- =?us-ascii?q?DKDAsPUZL0SEo38AJ6p77CaCkn+4zUzWFsMbWzsjLa3tIpBPEqyhK8cNdFN6?=
- =?us-ascii?q?OFGhT/E8IdB8ipJ+wqn0amYggYM+BV8a4+J9mmeOee2K63IOZgmyqrjXxF4I?=
- =?us-ascii?q?BhyU+M+C18SunH35YB3f6UxBeIVzD5jF25qMD4hZhEZS0OHmq40SXrH5RRab?=
- =?us-ascii?q?N0fYkWE2iuJde7ychki57iQX5X6lGjB1wd1c+mfBqddV393QlK2UsLpnynnD?=
- =?us-ascii?q?OyzyZonDExsqqfwCvOzvzgdBUdPG5LQmligEzjIYiziNAaU0yoYBYzmBS54k?=
- =?us-ascii?q?b6wrBRpL5jIGnLXUdIYy/2InlnUquyubqPY8pC5YgnsSVQV+S8blSaRaDnrx?=
- =?us-ascii?q?QG1CPjGnNUxConeDGyppX5gxt6hXqBI3ZztnrZeNpwxQve5NPGQ/5cxSEJRD?=
- =?us-ascii?q?NihjnKAFizIcOp8c+Vl5fEquq+TX6uVoVPcSn3yoONrC675Wx2DhCkgv+zm9?=
- =?us-ascii?q?LnEQk50S/8ytZmTyPIowjgYoPzzaS1LfpnflV0BF/788d6AJ9xkpUui5ELxX?=
- =?us-ascii?q?gXnYma/XodkWf0NNVb2L/+bH8XST4M2d7V7xDv2Fd/IXKR24L5SnKdz9NjZ9?=
- =?us-ascii?q?agfmwW2Sc94NpMCKiP97FLgSt1okC/rQLUYPh9gzIdxeEp6H4AjOEDoBAtwT?=
- =?us-ascii?q?mFArAOAUlYOjThlxeS4NCwtqpXZX2icbar20Zkgd+hC7SCqBlGWHnlYpciAT?=
- =?us-ascii?q?Nw7sJnPVLX133z7I7keN3RbdIOrRKUiQ3Pj/ZUKJI3mfoHniRnNnnnsXI5zO?=
- =?us-ascii?q?47iARk3Yums4ifN2Vt4KW5DwZYNz31fMMe4T/tgr1EksmK2ICvG41rGi8XU5?=
- =?us-ascii?q?vwUfKoDDUSuOz8NwmQCj08pWmUFKHfHQCF7Edmq3LOE5axO36LI3kZyM1oRA?=
- =?us-ascii?q?OBK0xHnAAUQDI6k4Y8Fg+2xMzubkd56SoK6VL/sRtD0OdoNwLiUmfZqwelcT?=
- =?us-ascii?q?Q0R4aFLBpQ8A5C413ZMcuE7uJ8BytY5IGurBSRKmyHYARFFXwGVVaaB1/9O7?=
- =?us-ascii?q?mj/sTP/PKGBuWgKvvOZbKOqeJCV/uSw5KgzJdm9S6WNsqTJnliE+E72k1bUH?=
- =?us-ascii?q?B2AcTWhToPSy8Xly/Wa86bpRG8+jB4r8Cx9/TrRQTv6paVBLtOMNVv/Ba2jb?=
- =?us-ascii?q?2EN+6KiyZzMSxY2Y8UxX/U1Lgf20YfiydvdzaxFrQAsTTCTLnKlq9ZEREbcT?=
- =?us-ascii?q?lzO9VT4qI53wlCJdTbitTp2b54j/41E01JWkDmmsGsfcYKOX2yNEvbBEaXM7?=
- =?us-ascii?q?SLPSbLzNz5Ya6nRr1Qi+JUtxK0uTmFCUPsIjODlzzxXRC1Le5MlD2bPABZuI?=
- =?us-ascii?q?ylaxZtFHbsTNT6ah26Nt97lzg2wboyhnPMK2EcLSNxc0VTob2M9yNYhfN/G2?=
- =?us-ascii?q?tE7nV7N+WLhyGZ7+zAIJYMrfRrGjh0l/5d4Hki0bta8SdES+ZulSvctdFiuU?=
- =?us-ascii?q?2pku6KyjB/ShpBti5LhJ6XvUVlIajZ9J5AVmjf8RMD92qQDQkFq8FjCtLxp6?=
- =?us-ascii?q?Bc0N7PlaPrIjdY793U5dccB9TTKM+fKHouKwfpGDrPAQsdVzGrKGXfi1VYkP?=
- =?us-ascii?q?GV8X2VtIY1poLwl5oJT78IHGAyQ9ETD0l+VPkFOo12RXtwk7ucltQJ/lK4pR?=
- =?us-ascii?q?zcRYNdpJ+RBdyIBvC6EyqUlblJYVMzxLr8KYkCftng11dKdkhxnIOMHVHZG9?=
- =?us-ascii?q?9KvHsyPUcPvExR/S0mHSUI0EX/Z1bouSJCGA=3D=3D?=
-X-IPAS-Result: =?us-ascii?q?A2DxAwAQLRZe/wHyM5BmHQEBAQkBEQUFAYF8gX2BbSASh?=
- =?us-ascii?q?DOJA4ZeAQEBAQEBBoESJYlukUgJAQEBAQEBAQEBNwEBhEACgg44EwIQAQEBB?=
- =?us-ascii?q?AEBAQEBBQMBAWyFCwgwgjspAYJ6AQUjFUEQCw4KAgImAgJXBg0IAQGCXz+CU?=
- =?us-ascii?q?yWsMIEyhU+DP4E9gQ4ojDN5gQeBEScMA4JdPodZgl4EkAmHFUaXQ4JAgkWTV?=
- =?us-ascii?q?wYbmmKrTiKBWCsIAhgIIQ+DKE8YDYEUmmIjA5ErAQE?=
-Received: from tarius.tycho.ncsc.mil (HELO tarius.infosec.tycho.ncsc.mil) ([144.51.242.1])
-  by emsm-gh1-uea11.NCSC.MIL with ESMTP; 08 Jan 2020 19:33:10 +0000
-Received: from moss-pluto.infosec.tycho.ncsc.mil (moss-pluto [192.168.25.131])
-        by tarius.infosec.tycho.ncsc.mil (8.14.7/8.14.4) with ESMTP id 008JWT9g122499;
-        Wed, 8 Jan 2020 14:32:29 -0500
-Subject: Re: [PATCH bpf-next v1 00/13] MAC and Audit policy using eBPF (KRSI)
-To:     James Morris <jmorris@namei.org>
-Cc:     Kees Cook <keescook@chromium.org>, KP Singh <kpsingh@chromium.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, linux-security-module@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Thomas Garnier <thgarnie@chromium.org>,
-        Michael Halcrow <mhalcrow@google.com>,
-        Paul Turner <pjt@google.com>,
-        Brendan Gregg <brendan.d.gregg@gmail.com>,
-        Jann Horn <jannh@google.com>,
-        Matthew Garrett <mjg59@google.com>,
-        Christian Brauner <christian@brauner.io>,
-        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Quentin Monnet <quentin.monnet@netronome.com>,
-        Andrey Ignatov <rdna@fb.com>, Joe Stringer <joe@wand.net.nz>,
-        Paul Moore <paul@paul-moore.com>
-References: <20191220154208.15895-1-kpsingh@chromium.org>
- <95036040-6b1c-116c-bd6b-684f00174b4f@schaufler-ca.com>
- <CACYkzJ5nYh7eGuru4vQ=2ZWumGPszBRbgqxmhd4WQRXktAUKkQ@mail.gmail.com>
- <201912301112.A1A63A4@keescook>
- <c4e6cdf2-1233-fc82-ca01-ba84d218f5aa@tycho.nsa.gov>
- <alpine.LRH.2.21.2001090551000.27794@namei.org>
-From:   Stephen Smalley <sds@tycho.nsa.gov>
-Message-ID: <e59607cc-1a84-cbdd-5117-7efec86b11ff@tycho.nsa.gov>
-Date:   Wed, 8 Jan 2020 14:33:39 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.1
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=YJoxGhpLW7J/4mYd9QsM4KrmhrJ1SO89mq6/x30EQ3Y=;
+        b=K4CJl8Vmvjpyxf/AHOfY/HNtyLhh1i3XcAUu8kKg+Z3q+/z/p+DjvBZT6S+EfWhzkH
+         TaN1fXxGPq4ljfI9PhzjdB8V19KgB5dLyyqhf+bR2JKlLQEB0EovIGSMYkyJwR0qc+Ij
+         WL61ZUzblE77FpxYg3+dI5wz/iqv1dqFQHkllbLvDEp1p5Zt9CM3tOwP7hIsUBqlizvA
+         eP0FRms6SvrcrApefzh4J7tTI5AgBpHjAVZCpyYZBPKT/shPmS7/T5mzOVeqGWlz1QP0
+         qNvrs36zzFvam/4MEGcxecbORI45KXarSVWPOz1+fpPSzyYRdbizcd9QRuDODW9+JNsr
+         HKlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=YJoxGhpLW7J/4mYd9QsM4KrmhrJ1SO89mq6/x30EQ3Y=;
+        b=IoKXKSd8AP4tYYwRYBL2gsCz3HMgpcpd3JCgSn6fnBjTiZSQjo0dVGRMkA6QckVABE
+         7jOZQm+zfbp9NkPneQtn8fvQbIbld4cmUhnXqYfFU5pNFvA+abTeR93ZnaJXUdEU5dnW
+         3fSIFnpPHkecll7tNXsKBsuwe3dX9dBFyd4TOWe7acxtn0Ns54GWm14kLYmL7Jnq5hL4
+         T2sQdkrTMYuBSsCaeFq42yIceLXGMChjmETS2GZ2Hv3w41wNTL0akLF4hlhnfb56H0Su
+         kuhqPRymlPItu5fRGNDbzJ3qWq7mEWu38CVTxylycoAb/cD8qtbm4Q5nEzXZlIc/Oa6p
+         H2wQ==
+X-Gm-Message-State: APjAAAUFLaiVaQhcBbASGq/g49BZBLYJrQ/TxYe4xjrA5JbyQ8xYuws4
+        z/o2QhA4AMMUWbInisz52K0=
+X-Google-Smtp-Source: APXvYqyLGNHsMlB61XAyRq8+VnBeA7qBtwIsLfuOMbzdi1+9jKOKot7v7/DjzWN+RV510G5iNXqXOw==
+X-Received: by 2002:a63:e4b:: with SMTP id 11mr7104079pgo.5.1578514019686;
+        Wed, 08 Jan 2020 12:06:59 -0800 (PST)
+Received: from ast-mbp ([2620:10d:c090:200::3:1e54])
+        by smtp.gmail.com with ESMTPSA id d129sm4851284pfd.115.2020.01.08.12.06.58
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 08 Jan 2020 12:06:58 -0800 (PST)
+Date:   Wed, 8 Jan 2020 12:06:56 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>, davem@davemloft.net,
+        daniel@iogearbox.net, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH bpf-next 3/6] bpf: Introduce function-by-function
+ verification
+Message-ID: <20200108200655.vfjqa7pq65f7evkq@ast-mbp>
+References: <20200108072538.3359838-1-ast@kernel.org>
+ <20200108072538.3359838-4-ast@kernel.org>
+ <87y2uigs3e.fsf@toke.dk>
 MIME-Version: 1.0
-In-Reply-To: <alpine.LRH.2.21.2001090551000.27794@namei.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87y2uigs3e.fsf@toke.dk>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 1/8/20 1:58 PM, James Morris wrote:
-> On Wed, 8 Jan 2020, Stephen Smalley wrote:
+On Wed, Jan 08, 2020 at 11:28:21AM +0100, Toke Høiland-Jørgensen wrote:
+> Alexei Starovoitov <ast@kernel.org> writes:
 > 
->> This appears to impose a very different standard to this eBPF-based LSM than
->> has been applied to the existing LSMs, e.g. we are required to preserve
->> SELinux policy compatibility all the way back to Linux 2.6.0 such that new
->> kernel with old policy does not break userspace.  If that standard isn't being
->> applied to the eBPF-based LSM, it seems to inhibit its use in major Linux
->> distros, since otherwise users will in fact start experiencing breakage on the
->> first such incompatible change.  Not arguing for or against, just trying to
->> make sure I understand correctly...
+> > New llvm and old llvm with libbpf help produce BTF that distinguish global and
+> > static functions. Unlike arguments of static function the arguments of global
+> > functions cannot be removed or optimized away by llvm. The compiler has to use
+> > exactly the arguments specified in a function prototype. The argument type
+> > information allows the verifier validate each global function independently.
+> > For now only supported argument types are pointer to context and scalars. In
+> > the future pointers to structures, sizes, pointer to packet data can be
+> > supported as well. Consider the following example:
+> >
+> > static int f1(int ...)
+> > {
+> >   ...
+> > }
+> >
+> > int f3(int b);
+> >
+> > int f2(int a)
+> > {
+> >   f1(a) + f3(a);
+> > }
+> >
+> > int f3(int b)
+> > {
+> >   ...
+> > }
+> >
+> > int main(...)
+> > {
+> >   f1(...) + f2(...) + f3(...);
+> > }
+> >
+> > The verifier will start its safety checks from the first global function f2().
+> > It will recursively descend into f1() because it's static. Then it will check
+> > that arguments match for the f3() invocation inside f2(). It will not descend
+> > into f3(). It will finish f2() that has to be successfully verified for all
+> > possible values of 'a'. Then it will proceed with f3(). That function also has
+> > to be safe for all possible values of 'b'. Then it will start subprog 0 (which
+> > is main() function). It will recursively descend into f1() and will skip full
+> > check of f2() and f3(), since they are global. The order of processing global
+> > functions doesn't affect safety, since all global functions must be proven safe
+> > based on their arguments only.
+> >
+> > Such function by function verification can drastically improve speed of the
+> > verification and reduce complexity.
+> >
+> > Note that the stack limit of 512 still applies to the call chain regardless whether
+> > functions were static or global. The nested level of 8 also still applies. The
+> > same recursion prevention checks are in place as well.
+> >
+> > The type information and static/global kind is preserved after the verification
+> > hence in the above example global function f2() and f3() can be replaced later
+> > by equivalent functions with the same types that are loaded and verified later
+> > without affecting safety of this main() program. Such replacement (re-linking)
+> > of global functions is a subject of future patches.
+> >
+> > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 > 
-> A different standard would be applied here vs. a standard LSM like
-> SELinux, which are retrofitted access control systems.
+> Great to see this progressing; and thanks for breaking things up, makes
+> it much easier to follow along!
 > 
-> I see KRSI as being more of a debugging / analytical API, rather than an
-> access control system. You could of course build such a system with KRSI
-> but it would need to provide a layer of abstraction for general purpose
-> users.
+> One question:
 > 
-> So yes this would be a special case, as its real value is in being a
-> special case, i.e. dynamic security telemetry.
+> > +enum btf_func_linkage {
+> > +	BTF_FUNC_STATIC = 0,
+> > +	BTF_FUNC_GLOBAL = 1,
+> > +	BTF_FUNC_EXTERN = 2,
+> > +};
+> 
+> What's supposed to happen with FUNC_EXTERN? That is specifically for the
+> re-linking follow-up?
 
-The cover letter subject line and the Kconfig help text refer to it as a 
-BPF-based "MAC and Audit policy".  It has an enforce config option that 
-enables the bpf programs to deny access, providing access control. IIRC, 
-in the earlier discussion threads, the BPF maintainers suggested that 
-Smack and other LSMs could be entirely re-implemented via it in the 
-future, and that such an implementation would be more optimal.
+I was thinking to complete the whole thing with re-linking and then send it,
+but llvm 10 feature cut off date is end of this week, so we have to land llvm
+bits asap. I'd like to land patch 1 with libbpf sanitization first before
+landing llvm. llvm release cadence is ~4 month and it would be sad to miss it.
+Note we will be able to tweak encoding if really necessary after next week.
+(BTF encoding gets fixed in ABI only after full kernel release).
+It's unlikely though. I think the encoding is good. I've played with few
+different variants and this one fits the best. FUNC_EXTERN encoding as 2 is
+kinda obvious when encoding for global vs static is selected. The kernel and
+libbpf will not be using FUNC_EXTERN yet, but llvm is tested to do the right
+thing already, so I think it's fine to add it to btf.h now.
 
-Again, not arguing for or against, but wondering if people fully 
-understand the implications.  If it ends up being useful, people will 
-build access control systems with it, and it directly exposes a lot of 
-kernel internals to userspace.  There was a lot of concern originally 
-about the LSM hook interface becoming a stable ABI and/or about it being 
-misused.  Exposing that interface along with every kernel data structure 
-exposed through it to userspace seems like a major leap.  Even if the 
-mainline kernel doesn't worry about any kind of stable interface 
-guarantees for it, the distros might be forced to provide some kABI 
-guarantees for it to appease ISVs and users...
+As far as future plans when libbpf sees FUNC_EXTERN it will do the linking the
+way we discussed in the other thread. The kernel will support FUNC_EXTERN when
+we introduce dynamic libraries. A collection of bpf functions will be loaded
+into the kernel first (like libc.so) and later programs will have FUNC_EXTERN
+as part of their BTF to be resolved while loading. The func name to btf_id
+resolution will be done by libbpf. The kernel verifier will do the type
+checking on BTFs. So the kernel side of FUNC_EXTERN support will be minimal,
+but to your point below...
+
+> This doesn't reject linkage==BTF_FUNC_EXTERN; so for this patch
+> FUNC_EXTERN will be treated the same as FUNC_STATIC (it'll fail the
+> is_global check below)? Or did I miss somewhere else where
+> BTF_FUNC_EXTERN is rejected?
+
+... is absolutely correct. My bad. Added this bit too soon.
+Will remove. The kernel should accept FUNC_GLOBAL only in this patch set.
