@@ -2,178 +2,169 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 943BC134CEA
-	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2020 21:13:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A8AE134D0E
+	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2020 21:20:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726320AbgAHUNA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Jan 2020 15:13:00 -0500
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:37134 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725941AbgAHUNA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Jan 2020 15:13:00 -0500
-Received: by mail-pf1-f194.google.com with SMTP id p14so2173188pfn.4;
-        Wed, 08 Jan 2020 12:12:59 -0800 (PST)
+        id S1725941AbgAHUUr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Jan 2020 15:20:47 -0500
+Received: from mail-pj1-f65.google.com ([209.85.216.65]:37461 "EHLO
+        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725881AbgAHUUr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Jan 2020 15:20:47 -0500
+Received: by mail-pj1-f65.google.com with SMTP id m13so103746pjb.2;
+        Wed, 08 Jan 2020 12:20:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=Pmq7WOU5AkHP85i5Rhy4xBLNQeJ5Y4ms/Tcvza1stQ0=;
-        b=UAHZYz3TujaUfEV2FpdbfyhiRu+XRjIvK966ytWAXIV0yxPEnmndwaH85PaOYTEOKS
-         mxFht9hf6dRGgymp68Vd+mF+ZUwTB5qW32+qtE5HOPIIfoEHNnjLeatX5BadPCFVvEET
-         AoHlCvM+onBtBKpKsUQk9y1zOvzqlmnpqmAV/F+vutvdiq19WsDp4i44OdV3/5f2UHX7
-         VPuEFVhX4hOqosNj9KG2Xq9HC5WIbrcdxbvtm+0hXdN0k9CKcr4lktGLsgDXoz0A0mj+
-         XyHWbU12ktEG90lH/dZGRpamPmRw4J0XZdSdUFy9htm84kTpP5+8cXBYHkDO2MR/I/i+
-         rgKA==
+        bh=aeyJoba8uJ+DuqzxagZ15T2uRzxkV/DOR+oSEvEwDi0=;
+        b=Y/RSOi2+vqeiPrZ+a0lHXl/z4ydSo1x+iPCD6R51fgyk7qGSUQjuFv+9x7DVZaosyo
+         kC9PVByQP0XdI83G/Q7uHPfnBzxJU76yu8KozwXDRTDebumJ3kBmfVzHqhrDC46HKw+K
+         BZeDwcjNsENgv67eAvbzYKHRjsgvUdEphrRwBkOV3Syt6jHio/COD6ZBhGUSm6yxnugc
+         s6EIUXji/ha9YV6P4cwKDH8YmnFocHlnrW8ZUNiVB1Ah6pju6Tfra+tKvvjqlTJymW2y
+         y4BILGYxFkXbl4MEdL3DVlOj3fqK8YWKYgnIOCe+Uu8/TPwrsrop85YD/06lWDex4jxV
+         pwCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Pmq7WOU5AkHP85i5Rhy4xBLNQeJ5Y4ms/Tcvza1stQ0=;
-        b=do1YnIaexjSEjOijkKsfug/G3UajBs1yY5SRIsHizY0JKZWTIJnBFjCrdgdJI1Qa0M
-         2qZRPdycKavsJjaYnh82Pg/RKOjzgBFDuY3NPbf87vEP1o69nto/com1I09FhRMqHQ4m
-         nJRXWe+1DcaKMqvnqjHGAqCXjNIaW3XbYxIej3ytNn59XH9OAQfNN9xSXue2gmpJf5g7
-         hFKLu+7A3qr2HutvrSTu7Pg0ClPD/rsC8HcVYklgn5baup9xE3Bp5zMj3F3TeSak+f9j
-         RzWQmbH6ZWorpkW9fCfQ+JQ+scjkov205ugS7LvvFNNrIWdOHfNRKQ0mkNW9OtMVf86+
-         rJAg==
-X-Gm-Message-State: APjAAAVNg9xKHxBYNzIzBMFO7oOjTFocHFizyEHxrYRE2zZ7i+MR5+pW
-        WdGNR8jRIkLmgOVHft0eeTw=
-X-Google-Smtp-Source: APXvYqxUrEcgty5JksDAvM9E8RTnHQYOaCYAL74Tj5q8oO+Zjavm6cCrmJvXxtNgo3u6NH9ZiiQpYg==
-X-Received: by 2002:a05:6a00:90:: with SMTP id c16mr6803170pfj.230.1578514379418;
-        Wed, 08 Jan 2020 12:12:59 -0800 (PST)
+        bh=aeyJoba8uJ+DuqzxagZ15T2uRzxkV/DOR+oSEvEwDi0=;
+        b=Jsytt8iG4eEOIf8a3aDvFaE6RL9ptNe5j0vzk3Bc0zPdcfr5UbqcikVymTUEFWrLHz
+         6QVLPVC4ahutyRfLvFoKOyYVLW8MSClNHhOgo1qev0S9EjwZYkNS6D24fqRFNFw30MAT
+         +smSSnLEuww/21dMtiybwejyu3mmHtQpfMgRlqpYl4Bs3btkiy+nFXqsGgOP8LWo7wG5
+         ZUu4OkOszde1tLRGOVuydkjrTbaF+wHrXzWsTmXHjdcX99cll/Cmd4WPYTZ4YGjXeqqG
+         0FTcUqAQFn1w/Dc6ndUDruk0U2VQ8bqnRe00yCW2UdhND9O8QujcfCHad7tCV47Oh4QQ
+         G8uw==
+X-Gm-Message-State: APjAAAUx2G6fjSY4Scg/cY0e+Hc7BzFe43h9GirTiJT0u8CvpD0wiGk3
+        7TmExqntSgoRHWyn3wll9aw=
+X-Google-Smtp-Source: APXvYqyuFE6wfN8uogNqwaovQuoUK6ixP9f6X30h8BcnssDgiqFRp/04a+LgnMVGyuql4CiwAJVGDA==
+X-Received: by 2002:a17:902:ac90:: with SMTP id h16mr6900632plr.164.1578514846221;
+        Wed, 08 Jan 2020 12:20:46 -0800 (PST)
 Received: from ast-mbp ([2620:10d:c090:200::3:1e54])
-        by smtp.gmail.com with ESMTPSA id q22sm4724369pfg.170.2020.01.08.12.12.58
+        by smtp.gmail.com with ESMTPSA id l2sm118372pjt.31.2020.01.08.12.20.44
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 08 Jan 2020 12:12:58 -0800 (PST)
-Date:   Wed, 8 Jan 2020 12:12:57 -0800
+        Wed, 08 Jan 2020 12:20:45 -0800 (PST)
+Date:   Wed, 8 Jan 2020 12:20:44 -0800
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Yonghong Song <yhs@fb.com>
+To:     Song Liu <songliubraving@fb.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
+        David Miller <davem@davemloft.net>,
         "daniel@iogearbox.net" <daniel@iogearbox.net>,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
         "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
         Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH bpf-next 1/6] libbpf: Sanitize BTF_KIND_FUNC linkage
-Message-ID: <20200108201256.2wtawgl3e4d4dkka@ast-mbp>
+Subject: Re: [PATCH bpf-next 3/6] bpf: Introduce function-by-function
+ verification
+Message-ID: <20200108202043.bo6sdqe5i7lttgvp@ast-mbp>
 References: <20200108072538.3359838-1-ast@kernel.org>
- <20200108072538.3359838-2-ast@kernel.org>
- <d2fab68b-cd03-7a15-e353-c614f6079b89@fb.com>
+ <20200108072538.3359838-4-ast@kernel.org>
+ <2A66F154-7F54-4856-B6ED-E787EE215631@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d2fab68b-cd03-7a15-e353-c614f6079b89@fb.com>
+In-Reply-To: <2A66F154-7F54-4856-B6ED-E787EE215631@fb.com>
 User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 08, 2020 at 06:57:18PM +0000, Yonghong Song wrote:
+On Wed, Jan 08, 2020 at 07:10:59PM +0000, Song Liu wrote:
 > 
 > 
-> On 1/7/20 11:25 PM, Alexei Starovoitov wrote:
-> > In case kernel doesn't support static/global/extern liknage of BTF_KIND_FUNC
-> > sanitize BTF produced by llvm.
+> > On Jan 7, 2020, at 11:25 PM, Alexei Starovoitov <ast@kernel.org> wrote:
+> > 
+> > New llvm and old llvm with libbpf help produce BTF that distinguish global and
+> > static functions. Unlike arguments of static function the arguments of global
+> > functions cannot be removed or optimized away by llvm. The compiler has to use
+> > exactly the arguments specified in a function prototype. The argument type
+> > information allows the verifier validate each global function independently.
+> > For now only supported argument types are pointer to context and scalars. In
+> > the future pointers to structures, sizes, pointer to packet data can be
+> > supported as well. Consider the following example:
+> 
+> [...]
+> 
+> > The type information and static/global kind is preserved after the verification
+> > hence in the above example global function f2() and f3() can be replaced later
+> > by equivalent functions with the same types that are loaded and verified later
+> > without affecting safety of this main() program. Such replacement (re-linking)
+> > of global functions is a subject of future patches.
 > > 
 > > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 > > ---
-> >   tools/include/uapi/linux/btf.h |  6 ++++++
-> >   tools/lib/bpf/libbpf.c         | 35 +++++++++++++++++++++++++++++++++-
-> >   2 files changed, 40 insertions(+), 1 deletion(-)
+> > include/linux/bpf.h          |   7 +-
+> > include/linux/bpf_verifier.h |   7 +-
+> > include/uapi/linux/btf.h     |   6 +
+> > kernel/bpf/btf.c             | 147 +++++++++++++++++-----
+> > kernel/bpf/verifier.c        | 228 +++++++++++++++++++++++++++--------
+> > 5 files changed, 317 insertions(+), 78 deletions(-)
 > > 
-> > diff --git a/tools/include/uapi/linux/btf.h b/tools/include/uapi/linux/btf.h
-> > index 1a2898c482ee..5a667107ad2c 100644
-> > --- a/tools/include/uapi/linux/btf.h
-> > +++ b/tools/include/uapi/linux/btf.h
-> > @@ -146,6 +146,12 @@ enum {
-> >   	BTF_VAR_GLOBAL_EXTERN = 2,
-> >   };
-> >   
-> > +enum btf_func_linkage {
-> > +	BTF_FUNC_STATIC = 0,
-> > +	BTF_FUNC_GLOBAL = 1,
-> > +	BTF_FUNC_EXTERN = 2,
-> > +};
-> > +
-> >   /* BTF_KIND_VAR is followed by a single "struct btf_var" to describe
-> >    * additional information related to the variable such as its linkage.
-> >    */
-> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > index 7513165b104f..f72b3ed6c34b 100644
-> > --- a/tools/lib/bpf/libbpf.c
-> > +++ b/tools/lib/bpf/libbpf.c
-> > @@ -166,6 +166,8 @@ struct bpf_capabilities {
-> >   	__u32 btf_datasec:1;
-> >   	/* BPF_F_MMAPABLE is supported for arrays */
-> >   	__u32 array_mmap:1;
-> > +	/* static/global/extern is supported for BTF_KIND_FUNC */
-> > +	__u32 btf_func_linkage:1;
-> >   };
-> >   
-> >   enum reloc_type {
-> > @@ -1817,13 +1819,14 @@ static bool section_have_execinstr(struct bpf_object *obj, int idx)
-> >   
-> >   static void bpf_object__sanitize_btf(struct bpf_object *obj)
-> >   {
-> > +	bool has_func_linkage = obj->caps.btf_func_linkage;
-> >   	bool has_datasec = obj->caps.btf_datasec;
-> >   	bool has_func = obj->caps.btf_func;
-> >   	struct btf *btf = obj->btf;
-> >   	struct btf_type *t;
-> >   	int i, j, vlen;
-> >   
-> > -	if (!obj->btf || (has_func && has_datasec))
-> > +	if (!obj->btf || (has_func && has_datasec && has_func_linkage))
-> >   		return;
-> >   
-> >   	for (i = 1; i <= btf__get_nr_types(btf); i++) {
-> > @@ -1871,6 +1874,9 @@ static void bpf_object__sanitize_btf(struct bpf_object *obj)
-> >   		} else if (!has_func && btf_is_func(t)) {
-> >   			/* replace FUNC with TYPEDEF */
-> >   			t->info = BTF_INFO_ENC(BTF_KIND_TYPEDEF, 0, 0);
-> > +		} else if (!has_func_linkage && btf_is_func(t)) {
-> > +			/* replace BTF_FUNC_GLOBAL with BTF_FUNC_STATIC */
-> > +			t->info = BTF_INFO_ENC(BTF_KIND_FUNC, 0, 0);
+> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > index b14e51d56a82..ceb5b6c13abc 100644
+> > --- a/include/linux/bpf.h
+> > +++ b/include/linux/bpf.h
+> > @@ -558,6 +558,7 @@ static inline void bpf_dispatcher_change_prog(struct bpf_dispatcher *d,
+> > #endif
+> > 
+> > struct bpf_func_info_aux {
+> > +	u32 linkage;
 > 
-> The comment says we only sanitize BTF_FUNC_GLOBAL here.
-> Actually, it also sanitize BTF_FUNC_EXTERN.
-> 
-> Currently, in kernel/bpf/btf.c, we have
-> static int btf_check_all_types(struct btf_verifier_env *env)
-> {
-> 		...
->                  if (btf_type_is_func(t)) {
->                          err = btf_func_check(env, t);
->                          if (err)
->                                  return err;
->                  }
-> 		...
-> }
-> 
-> btf_func_check() will ensure func btf_type->type is a func_proto
-> and all arguments of func_proto has a name except void which is
-> considered as varg.
-> 
-> For extern function, the argument name is lost in llvm/clang.
-> 
-> -bash-4.4$ cat test.c 
-> 
-> extern int foo(int a);
-> int test() { return foo(5); }
-> -bash-4.4$
-> -bash-4.4$ clang -target bpf -O2 -g -S -emit-llvm test.c
-> 
-> !2 = !{}
-> !4 = !DISubprogram(name: "foo", scope: !1, file: !1, line: 1, type: !5, 
-> flags: DIFlagPrototyped, spFlags: DISPFlagOptimized, retainedNodes: !2)
-> !5 = !DISubroutineType(types: !6)
-> !6 = !{!7, !7}
-> !7 = !DIBasicType(name: "int", size: 32, encoding: DW_ATE_signed)
-> 
-> To avoid kernel complaints, we need to sanitize in a different way.
-> For example extern BTF_KIND_FUNC could be rewritten to a
-> BTF_KIND_PTR to void.
+> How about we use u16 or even u8 for linkage? We are using BTF_INFO_VLEN() which 
+> is 16-bit long. Maybe we should save some bits for future extensions?
 
-Good point. I'll reword the comment and rename the test to btf_func_global,
-so it probes kernel for KIND_GLOBAL only and santizes only that bit.
-KIND_EXTERN sanitization is to be done later. Separate libbpf and kernel patches.
+sure. u16 is fine.
+Will also introduce btf_func_kind() helper to avoid misleading BTF_INFO_VLEN macro.
+
+> > -int btf_check_func_arg_match(struct bpf_verifier_env *env, int subprog)
+> > +/* Compare BTF of a function with given bpf_reg_state */
+> > +int btf_check_func_arg_match(struct bpf_verifier_env *env, int subprog,
+> > +			     struct bpf_reg_state *reg)
+> 
+> I think we need more comments for the retval of btf_check_func_arg_match().
+
+sure.
+
+> > {
+> > -	struct bpf_verifier_state *st = env->cur_state;
+> > -	struct bpf_func_state *func = st->frame[st->curframe];
+> > -	struct bpf_reg_state *reg = func->regs;
+> > 	struct bpf_verifier_log *log = &env->log;
+> > 	struct bpf_prog *prog = env->prog;
+> > 	struct btf *btf = prog->aux->btf;
+> [...]
+> > +
+> > +/* Convert BTF of a function into bpf_reg_state if possible */
+> > +int btf_prepare_func_args(struct bpf_verifier_env *env, int subprog,
+> > +			  struct bpf_reg_state *reg)
+> > +{
+> > +	struct bpf_verifier_log *log = &env->log;
+> > +	struct bpf_prog *prog = env->prog;
+> > +	struct btf *btf = prog->aux->btf;
+> > +	const struct btf_param *args;
+> > +	const struct btf_type *t;
+> > +	u32 i, nargs, btf_id;
+> > +	const char *tname;
+> > +
+> > +	if (!prog->aux->func_info ||
+> > +	    prog->aux->func_info_aux[subprog].linkage != BTF_FUNC_GLOBAL) {
+> > +		bpf_log(log, "Verifier bug\n");
+> 
+> IIUC, this should never happen? Maybe we need more details in the log, and 
+> maybe also WARN_ONCE()?
+
+Should never happen and I think it's pretty clear from the diff, since
+this function is called after == FUNC_GLOBAL check in the caller.
+I didn't add WARN to avoid wasting .text even more here.
+Single 'if' above already feels a bit overly defensive.
+It's not like other cases in the verifier where we have WARN_ONCE.
+Those are for complex things. Here it's one callsite and trivial control flow.
+
+> > +	if (prog->aux->func_info_aux[subprog].unreliable) {
+> > +		bpf_log(log, "Verifier bug in function %s()\n", tname);
+> > +		return -EFAULT;
+> 
+> Why -EFAULT instead of -EINVAL? I think we treat them the same? 
+
+EFAULT is a verifier bug like in all other places in the verifier
+where EFAULT is returned. EINVAL is normal error.
