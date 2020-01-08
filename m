@@ -2,300 +2,206 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 94463134A93
-	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2020 19:42:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A46D8134B06
+	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2020 19:57:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727366AbgAHSmT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Jan 2020 13:42:19 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:15452 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725941AbgAHSmT (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 8 Jan 2020 13:42:19 -0500
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 008IfudI030881;
-        Wed, 8 Jan 2020 10:42:02 -0800
+        id S1727814AbgAHS5d (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Jan 2020 13:57:33 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:50564 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726401AbgAHS5d (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 8 Jan 2020 13:57:33 -0500
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 008Iq3P8009951;
+        Wed, 8 Jan 2020 10:57:20 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : references : in-reply-to : content-type : content-id
  : content-transfer-encoding : mime-version; s=facebook;
- bh=GuH5wmLXt/sT1GnF7qcBWW72EN5E1v1KRCFpaT0HPa4=;
- b=VAyEeO6nxI0dKxaToVDCkVGbvCkIqKfDBMnTDunfLgBE9nUbaqxkHKEE1WX860SeVFCb
- HoRzMTmKbIU3yxnhgg4WRcVMkaHszulxDHunUNsxzCTJeKJh2Bjj+EjVWDJeZROIdMSE
- DEzNBmXO5g8c5m8+BdmBjPbelH1S0lH+P1w= 
+ bh=WOxbgSHTKspLDJvPX08d0zUb7qGUJNnuXte2uA0Z6wQ=;
+ b=Q9B+xVYoGYstXHMp3KI1AwBmxYsnzcKfmgzWMTB7iHVQ0AUOljR1+ov2fraStnpdl9gO
+ VY5zpWy709iMWaqRA33XEJe/JP95lDn7tjVi5uXgdvA7UymC0mDL+C9mPcRQYmTpKc2G
+ KUvlelYlYJ3FRWkoJxCdkb3fOEwWizxX+aY= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net with ESMTP id 2xd2265d5t-4
+        by mx0a-00082601.pphosted.com with ESMTP id 2xd3ep4wx7-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 08 Jan 2020 10:42:02 -0800
-Received: from NAM04-SN1-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.197) with Microsoft SMTP Server
+        Wed, 08 Jan 2020 10:57:20 -0800
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.198) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Wed, 8 Jan 2020 10:41:42 -0800
+ 15.1.1779.2; Wed, 8 Jan 2020 10:57:19 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dSNPxQd3z/qwyhh67PlHstZYHJIJ9piGLv5X1akLjmEcbh+16HRqC1d/U+0aAs52fuB6MAbrEWWh3z2wlCUEOFWeUkcb01n5BMswMAY+JZ/HodlrePVvZc3yWolFDHXQNew95AGIN86KUzRLk1IUBAd+048e9pN7/W2vXi4keuUwyFPyhrMu6+upg9SaL0mEFWOxieFk9ul1b7ArBzilYcj2TkxD8E6c1MNaXAe3nA8UwSrVRPvMNaHd/fCXamvPnRa3Vlem4hgrBUXcKT9JBE4zJUV14vjUXnT39zXDwB0hlHP2A2hcH1bkIvuX5WJF1hNewN2+hWCl4lFAoHwqGw==
+ b=RTmMD+LA6+AowoHY62pzjtgFHEdfBGFuub9nqo5R+K3/6UcrnGzX1wYUPWlJJFlAkPEWo3TB/aXwLx0tB+Czyj9jBYjAvQ822dMqpHhCWbIY4kiMO5IxtDH5vYJhMScfFhjMuub86ijVbYtveAqYaNmPST29JHkwkv+b4CavxFl5/EFrqFiQQxGf9TMZDLiFjBBrY5FH4LnnufIPiG/DspSb6WuSGY9Eqe9AJ/ApE+OT59qBSEXqmYG5d/GUoG81TvNhX05VU/wMsH663Cj/wdbDWurJYn9xAOMSMFBcJg29mkgNxcY0uVBbZ4K13McsaG0P9W4lmK1Of4EvwIv1UA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GuH5wmLXt/sT1GnF7qcBWW72EN5E1v1KRCFpaT0HPa4=;
- b=AGJUx6VQoKL0gLJHpVotMonHrVqCFClqvMm7vZeYMQ8segNJm8jIHaCPlds270b0FlEaP3/V7nX/j55hCrrv+QM8wvGrM7Z36jC1VdoBTe6FF4WKDKtydWqy8xb+s/lLO86woiRH/tn4t92hwdGFRc9je4pV11utSKP12ya5Hkt9I628aY4wwB623UhygBI0EGtIH5w6NrtCGeQOxKIoiLAMLbI76rpw3fFY7SjU9vMKwe1pguXZ+NtqI8Izftoyk/FiZCbnL+SqbOfA2j5FqxUO7F3Da3zFoOpKVnSglzpve4YSSKNFANq71t5/YiXz6pj8F7zIqGkhaMkTs5kQyw==
+ bh=WOxbgSHTKspLDJvPX08d0zUb7qGUJNnuXte2uA0Z6wQ=;
+ b=noVBb7JE74R3k3ab+1sjtoQvqlOZ93R6VqK1tsMIHCixA7ub1usobkPny7LmPT11QbtvgHEbvYym/PoW2bvgnvQklsIdzw242Z67c4aOyBHL6a+oyo5ap2Yz8KEa6Ca7qeP80yIYJVuHErflRzWtF/OQKC67MDWJVVuaRtERTezU1kjFEw8lPbjXxh3Yz1hOZHHkXHj8Lhdo4Ni5EniaZfnSViilznpGInSW83W6tEMUDvC2oHOFNzlYYNYBZw02rHu9OzhkIbjLH2q8fo1SVYoRKPWOkinKiIA14sLPvslbrQWQOa+3ydFe28/2kJvrqf7PzX+EzA1TBKAg6xRLYA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
  s=selector2-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GuH5wmLXt/sT1GnF7qcBWW72EN5E1v1KRCFpaT0HPa4=;
- b=lLoPcxagsXqFc2qc16uVegCTYVT37KYYJhXjFUqtSzQN6vSgndV6ayvGihKROmJl5vxAj3cAOssLqrMFMJcAywa0yShHRjX0CYtRJpx28uNrhTDqig8L9qCGvCetaOL3dZW1SVyekkungF4b+pVHKXdJPjZFVv9iqYy1k18xr+M=
-Received: from MN2PR15MB3213.namprd15.prod.outlook.com (20.179.21.76) by
- MN2PR15MB3040.namprd15.prod.outlook.com (20.178.253.90) with Microsoft SMTP
+ bh=WOxbgSHTKspLDJvPX08d0zUb7qGUJNnuXte2uA0Z6wQ=;
+ b=YIyp5aKw3il+dIxNP9A84L04Vy8UQxOjKSiah6r9bDaVSNTW9H8ht/vX1QpY9FDFu0fX3VZJrycNZf52uMETdwf7s3RDzYrWHKYpOlAFwyMRsdxg326+0Pz6/UnpjGLZHGLJBKZcnqQ/uQ4L/D10sneKxTjf1lX0LOUtIE1+yGI=
+Received: from MWHPR15MB1677.namprd15.prod.outlook.com (10.175.135.150) by
+ MWHPR15MB1632.namprd15.prod.outlook.com (10.175.140.136) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2623.9; Wed, 8 Jan 2020 18:41:41 +0000
-Received: from MN2PR15MB3213.namprd15.prod.outlook.com
- ([fe80::6d1e:f2f7:d36:a42f]) by MN2PR15MB3213.namprd15.prod.outlook.com
- ([fe80::6d1e:f2f7:d36:a42f%4]) with mapi id 15.20.2623.008; Wed, 8 Jan 2020
- 18:41:41 +0000
-Received: from kafai-mbp (2620:10d:c090:180::a807) by MWHPR22CA0060.namprd22.prod.outlook.com (2603:10b6:300:12a::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2623.9 via Frontend Transport; Wed, 8 Jan 2020 18:41:39 +0000
-From:   Martin Lau <kafai@fb.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Kernel Team <Kernel-team@fb.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v3 06/11] bpf: Introduce BPF_MAP_TYPE_STRUCT_OPS
-Thread-Topic: [PATCH bpf-next v3 06/11] bpf: Introduce BPF_MAP_TYPE_STRUCT_OPS
-Thread-Index: AQHVxbmhzGmX9mEqt0CHVtxru5vAKKfgARaAgAD73QCAAB4cAA==
-Date:   Wed, 8 Jan 2020 18:41:40 +0000
-Message-ID: <20200108184136.f7fuv7p6scxheirq@kafai-mbp>
-References: <20191231062037.280596-1-kafai@fb.com>
- <20191231062050.281712-1-kafai@fb.com>
- <4ea486a8-61cf-3c2e-c72c-96bb4f69d006@iogearbox.net>
- <20200108015223.sdecaqnjeconwpgq@kafai-mbp>
- <20200108165350.GA7014@linux-3.fritz.box>
-In-Reply-To: <20200108165350.GA7014@linux-3.fritz.box>
+ 15.20.2623.9; Wed, 8 Jan 2020 18:57:18 +0000
+Received: from MWHPR15MB1677.namprd15.prod.outlook.com
+ ([fe80::45e0:16f7:c6ee:d50d]) by MWHPR15MB1677.namprd15.prod.outlook.com
+ ([fe80::45e0:16f7:c6ee:d50d%3]) with mapi id 15.20.2623.008; Wed, 8 Jan 2020
+ 18:57:18 +0000
+Received: from macbook-pro-52.dhcp.thefacebook.com (2620:10d:c090:200::3:f9d7) by CO2PR05CA0096.namprd05.prod.outlook.com (2603:10b6:104:1::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2623.6 via Frontend Transport; Wed, 8 Jan 2020 18:57:18 +0000
+From:   Yonghong Song <yhs@fb.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>
+CC:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "Kernel Team" <Kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next 1/6] libbpf: Sanitize BTF_KIND_FUNC linkage
+Thread-Topic: [PATCH bpf-next 1/6] libbpf: Sanitize BTF_KIND_FUNC linkage
+Thread-Index: AQHVxfTmu39PjjS/206/gtE5ycEqYqfhHvkA
+Date:   Wed, 8 Jan 2020 18:57:18 +0000
+Message-ID: <d2fab68b-cd03-7a15-e353-c614f6079b89@fb.com>
+References: <20200108072538.3359838-1-ast@kernel.org>
+ <20200108072538.3359838-2-ast@kernel.org>
+In-Reply-To: <20200108072538.3359838-2-ast@kernel.org>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-clientproxiedby: MWHPR22CA0060.namprd22.prod.outlook.com
- (2603:10b6:300:12a::22) To MN2PR15MB3213.namprd15.prod.outlook.com
- (2603:10b6:208:3d::12)
+x-clientproxiedby: CO2PR05CA0096.namprd05.prod.outlook.com
+ (2603:10b6:104:1::22) To MWHPR15MB1677.namprd15.prod.outlook.com
+ (2603:10b6:300:11b::22)
 x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:180::a807]
+x-originating-ip: [2620:10d:c090:200::3:f9d7]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: bd7b6e73-100c-42bb-da91-08d7946a66b0
-x-ms-traffictypediagnostic: MN2PR15MB3040:
+x-ms-office365-filtering-correlation-id: 3ca60120-81a9-438b-6edd-08d7946c959c
+x-ms-traffictypediagnostic: MWHPR15MB1632:
 x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MN2PR15MB304022388AA3E8B8D305DBADD53E0@MN2PR15MB3040.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5516;
+x-microsoft-antispam-prvs: <MWHPR15MB16322C4FA63FECCAC7E176F9D33E0@MWHPR15MB1632.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
 x-forefront-prvs: 02760F0D1C
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(366004)(189003)(199004)(52314003)(43544003)(81156014)(86362001)(33716001)(6666004)(5660300002)(55016002)(9686003)(81166006)(1076003)(2906002)(8676002)(8936002)(54906003)(66476007)(64756008)(66556008)(66946007)(53546011)(498600001)(6916009)(6496006)(66446008)(186003)(52116002)(4326008)(16526019)(71200400001);DIR:OUT;SFP:1102;SCL:1;SRVR:MN2PR15MB3040;H:MN2PR15MB3213.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(376002)(366004)(396003)(346002)(136003)(39860400002)(199004)(189003)(6486002)(186003)(16526019)(6506007)(54906003)(81156014)(52116002)(66446008)(66946007)(64756008)(66556008)(66476007)(53546011)(6512007)(2906002)(2616005)(110136005)(316002)(36756003)(71200400001)(31686004)(4326008)(8936002)(86362001)(31696002)(478600001)(81166006)(8676002)(5660300002);DIR:OUT;SFP:1102;SCL:1;SRVR:MWHPR15MB1632;H:MWHPR15MB1677.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
 received-spf: None (protection.outlook.com: fb.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: QWZp+3VYOVv83aEJ0hIe6bytY6NXGMvGRc3uV4U7OIRnhykl7MYXX/gL5nIJDTDnQwoy+VfPxA22Lpo2exrdv5kHD9yf5lvK3rdOvPECobZOIe5JVlOGr5EhK/qbxaVRksXNJ+F4IQh7Q6ybctMJ0iJ2T7ifGK4RSlKW2jUpBLSk6/UZclig/tYq6qXAVjY/XZGz8sH2WJ16NKLUEXfP2bThVK/JsrBHl6I1AIFxkBOdPxc9yZlFpuYZSWNk/ypQ2VUNwD1q5gSCjWa7tB4KzUvUq7wP8FFrZicS24AyBZ6w4CUMPcEHjmSjc/rKHNN68nXULhXI+NNtqGGztwn1tQ9ykwSHqUgKIV7a8G9lYb7HXF/Qy2d22CODc0Z00fRCxvVsBwmch/+97tdWvCLiBQu0dhoQ9tNWYhPwC3pf8nM8zoeWFrBiz+KVJtT0NTYbfcNTXEC62QXc4z2MWStxw3eoWAboamPMpWYOJbK0VDku9ZgMw+pgruiQL6OPTxyNl+yz/jdRc2Zt/ZUUhstZfw==
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <DF66721DD3D41345B76257D6F4EC00A4@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+x-microsoft-antispam-message-info: WEflbbEo/Rrcr8IzXjqMInWhBhUKR5dneAJ3B7pz9T7qRIpVAzj9uR1coO10dZTH3HSc5RRbKKI9ucgawdhUfLIQGd4Ix3t5wTGhQ/+DTby+qupnfHxoHNnqVInOXvglJ8sRYj+GnZJu4bkzpvEs/IMVTn+vD4oydtCGO7rgWMa/2/bwxMftrN5ar5XOPyISQoUai6TaliuUPP9evDoMu/SY/Z0SQdhLD454iGAvK4TO+RaUDk1evX7uTsFCoaq1rd1R860j3lFsVXzEmzbC+1IXD5hK/6EJRmIcFU5KBA9M+/yFKz+4330HYNHdy2gplm+5M5Muxjfjr8ZUVw0NN6BGb+FGbDX/+XZIkfIfPSw2j8ILYF69VxTF69T3dhJI4kcA1xdri2aRYCOY3O1OSvGIVYeoLrb4N0yaqPOKvSoutZsLOqiiCoiasabdy7eh
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <BE1B2C78BA19C34B8647E057BB40F90A@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: bd7b6e73-100c-42bb-da91-08d7946a66b0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Jan 2020 18:41:40.8473
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3ca60120-81a9-438b-6edd-08d7946c959c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Jan 2020 18:57:18.5829
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: /xELwMzss3be2UF9eHF1R04Mb40kVA7+1uPS3eEJhcaqHi8oTcD1FQPHLh2epRSN
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB3040
+X-MS-Exchange-CrossTenant-userprincipalname: n8UQ/MoB/6s+8MROHDSvDkqB8utWAWiZMjOWQ1KDjnjt/EJaR/UcLbz13Tz9KUEc
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1632
 X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
  definitions=2020-01-08_05:2020-01-08,2020-01-08 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0 mlxscore=0
- malwarescore=0 mlxlogscore=999 suspectscore=0 bulkscore=0 clxscore=1015
- adultscore=0 impostorscore=0 priorityscore=1501 spamscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1910280000 definitions=main-2001080149
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ mlxlogscore=999 phishscore=0 clxscore=1015 impostorscore=0 mlxscore=0
+ adultscore=0 bulkscore=0 lowpriorityscore=0 spamscore=0 priorityscore=1501
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-2001080150
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 08, 2020 at 05:53:50PM +0100, Daniel Borkmann wrote:
-> On Wed, Jan 08, 2020 at 01:52:26AM +0000, Martin Lau wrote:
-> > On Wed, Jan 08, 2020 at 01:21:39AM +0100, Daniel Borkmann wrote:
-> > > On 12/31/19 7:20 AM, Martin KaFai Lau wrote:
-> > > > The patch introduces BPF_MAP_TYPE_STRUCT_OPS.  The map value
-> > > > is a kernel struct with its func ptr implemented in bpf prog.
-> > > > This new map is the interface to register/unregister/introspect
-> > > > a bpf implemented kernel struct.
-> > > >=20
-> > > > The kernel struct is actually embedded inside another new struct
-> > > > (or called the "value" struct in the code).  For example,
-> > > > "struct tcp_congestion_ops" is embbeded in:
-> > > > struct bpf_struct_ops_tcp_congestion_ops {
-> > > > 	refcount_t refcnt;
-> > > > 	enum bpf_struct_ops_state state;
-> > > > 	struct tcp_congestion_ops data;  /* <-- kernel subsystem struct he=
-re */
-> > > > }
-> > > > The map value is "struct bpf_struct_ops_tcp_congestion_ops".
-> > > > The "bpftool map dump" will then be able to show the
-> > > > state ("inuse"/"tobefree") and the number of subsystem's refcnt (e.=
-g.
-> > > > number of tcp_sock in the tcp_congestion_ops case).  This "value" s=
-truct
-> > > > is created automatically by a macro.  Having a separate "value" str=
-uct
-> > > > will also make extending "struct bpf_struct_ops_XYZ" easier (e.g. a=
-dding
-> > > > "void (*init)(void)" to "struct bpf_struct_ops_XYZ" to do some
-> > > > initialization works before registering the struct_ops to the kerne=
-l
-> > > > subsystem).  The libbpf will take care of finding and populating th=
-e
-> > > > "struct bpf_struct_ops_XYZ" from "struct XYZ".
-> > > >=20
-> > > > Register a struct_ops to a kernel subsystem:
-> > > > 1. Load all needed BPF_PROG_TYPE_STRUCT_OPS prog(s)
-> > > > 2. Create a BPF_MAP_TYPE_STRUCT_OPS with attr->btf_vmlinux_value_ty=
-pe_id
-> > > >     set to the btf id "struct bpf_struct_ops_tcp_congestion_ops" of=
- the
-> > > >     running kernel.
-> > > >     Instead of reusing the attr->btf_value_type_id,
-> > > >     btf_vmlinux_value_type_id s added such that attr->btf_fd can st=
-ill be
-> > > >     used as the "user" btf which could store other useful sysadmin/=
-debug
-> > > >     info that may be introduced in the furture,
-> > > >     e.g. creation-date/compiler-details/map-creator...etc.
-> > > > 3. Create a "struct bpf_struct_ops_tcp_congestion_ops" object as de=
-scribed
-> > > >     in the running kernel btf.  Populate the value of this object.
-> > > >     The function ptr should be populated with the prog fds.
-> > > > 4. Call BPF_MAP_UPDATE with the object created in (3) as
-> > > >     the map value.  The key is always "0".
-> > > >=20
-> > > > During BPF_MAP_UPDATE, the code that saves the kernel-func-ptr's
-> > > > args as an array of u64 is generated.  BPF_MAP_UPDATE also allows
-> > > > the specific struct_ops to do some final checks in "st_ops->init_me=
-mber()"
-> > > > (e.g. ensure all mandatory func ptrs are implemented).
-> > > > If everything looks good, it will register this kernel struct
-> > > > to the kernel subsystem.  The map will not allow further update
-> > > > from this point.
-> > >=20
-> > > Btw, did you have any thoughts on whether it would have made sense to=
- add
-> > > a new core construct for BPF aside from progs or maps, e.g. BPF modul=
-es
-> > > which then resemble a collection of progs/ops (given this would not b=
-e limited
-> > > to tcp congestion control only). Given the possibilities, having a bi=
-t of second
-> > > thoughts on abusing BPF map interface this way which is not overly pr=
-etty. It's
-> > > not a map anymore at this point anyway, we're just reusing the syscal=
-l interface
-> > > since it's convenient though cannot be linked to any prog is just a s=
-ingle slot
-> > > etc, but technically some sort of BPF module registration would be ni=
-cer. Also in
-> > > terms of 'bpftool modules' then listing all such currently loaded mod=
-ules which
-> > > need to be cleaned up this way through explicit removal (similar to i=
-nsmod/
-> > > lsmod/rmmod); at least feels more natural conceptually than BPF maps =
-and the way
-> > > you refcount them, and would perhaps also be a fit for BPF lib helper=
-s for dynamic
-> > > linking to load that way. So essentially similar but more lightweight=
- infrastructure
-> > > as with kernel modules. Thoughts?
-> > Inventing a new bpf obj type (vs adding new map type like in this patch=
-) was
-> > one considered (and briefly-tried) option.
-> >=20
-> > Once BTF was introduced to bpf map,  I see bpf map as an introspectible
-> > bpf obj that can store any blob described by BTF.  I don't think
-> > creating a new bpf obj type worth it while both of them are basically
-> > storing a value described by BTF.
-> >=20
-> > I did try to create register/unregister interface and new bpf-cmd.
-> > At the end, it ends up very similar to update_elem() which is basically
-> > updating a blob of a struct described by BTF.  Hence, I tossed that and
-> > came back to the current approach.
-> >=20
-> > Put aside the new bpf obj type needs kernel support like another idr,
-> > likely pin-able, fd, get_info...etc,  I suspect most users have already
-> > been used to do 'bpftool map dump' to introspect bpf obj that is storin=
-g
-> > a 'struct'.
-> >=20
-> > The map type is enough to distinguish the map usage instead of creating
-> > another bpf obj type.  The 'bpftool modules' will work on the struct_op=
-s
-> > map only.
->=20
-> Right, but under long-term I'd expect more users of this interface and gi=
-ven
-> we abuse the map only to keep other entities (here: bpf tcp congctl modul=
-e)
-> 'alive', but cannot do anything else with this map (as in: usage in the B=
-PF
-> program),
-For now, yes.  In the future, a bpf_prog may want to switch to another
-bpf-tcp-cc (could be by looking it up from map-in-map also).  I do not
-mean there is an immediate usecase but it is good to keep this
-flexibility.
-
-> it feels that this begs for a better interface. Given we need an
-> explicit delete operation of the map slot in order to eventually unregist=
-er
-> the congctl module once no application is using it anymore, how are users
-> supposed to operate this considering the loader performs either only a lo=
-ad
-> or crashes before the map delete happens? If you had 'bpftool modules' li=
-ke
-> cmdline interface with similar insmod/lsmod/rmmod type operation as we ha=
-ve
-> for kernel modules, it's pretty obvious and intuitive. Here, you'd need a
-> 'bpftool map dump' to get to the concrete ops map, and then perform an
-> explicit delete operation for releasing the ops refcount and thus to unlo=
-ad
-> the set of progs. Such extension for bpftool should be done regardless, e=
-ven
-A new bpftool command to operate on struct_ops map alone is in the pipeline=
-.
-
-The first thing though is to improve bpftool to recognize
-btf_vmlinux_value_type_id which could be useful in the future
-maps that also store a kernel's struct.
-
-Regarding 'bpftool map show' first to figure out which
-'struct_ops' map to delete,  the same is also true for lsmod/rmmod.
-I also usually do lsmod to figure out which one I am looking at first
-before issuing rmmod.  I suspect even the same lookup and then
-delete/rmmod operation will still have to be done for the future
-'bpftool modules (or struct_ops)' command.
-
-> if we end up to keep abusing the map interface for this, but API wise fee=
-ls
-> way cleaner to have a dedicated register/unregister interface.
-Other than the BPF syscall command name difference, lets explore how
-would register/unregister be different from update/delete.
-
-The first attempt I did on BPF_STRUCT_OPS_REGISTER is to do update alone
-which ends-up very close to BPF_MAP_UPDATE_ELEM.
-
-The second attempt I did on register is to do map-create and map-update
-together and then return a fd.  However, I still don't see enough
-benefit that deserves a separate BPF command to just combine these
-two.  The global .rodata map is also map-create, map-update,
-and map-freeze which technically it can do all of them under
-a new command.
-
-If update-vs-register looks the same, it then logically follows
-update-then-delete.  For BPF_STRUCT_OPS_UNREGISTER, I also do not
-see any difference except the key can be avoided.  Also, the
-struct_ops map has a btf_key_type_id 0 which is "void" and
-it is a clean interface to tell the map is key-less.
+DQoNCk9uIDEvNy8yMCAxMToyNSBQTSwgQWxleGVpIFN0YXJvdm9pdG92IHdyb3RlOg0KPiBJbiBj
+YXNlIGtlcm5lbCBkb2Vzbid0IHN1cHBvcnQgc3RhdGljL2dsb2JhbC9leHRlcm4gbGlrbmFnZSBv
+ZiBCVEZfS0lORF9GVU5DDQo+IHNhbml0aXplIEJURiBwcm9kdWNlZCBieSBsbHZtLg0KPiANCj4g
+U2lnbmVkLW9mZi1ieTogQWxleGVpIFN0YXJvdm9pdG92IDxhc3RAa2VybmVsLm9yZz4NCj4gLS0t
+DQo+ICAgdG9vbHMvaW5jbHVkZS91YXBpL2xpbnV4L2J0Zi5oIHwgIDYgKysrKysrDQo+ICAgdG9v
+bHMvbGliL2JwZi9saWJicGYuYyAgICAgICAgIHwgMzUgKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKysrLQ0KPiAgIDIgZmlsZXMgY2hhbmdlZCwgNDAgaW5zZXJ0aW9ucygrKSwgMSBkZWxl
+dGlvbigtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL3Rvb2xzL2luY2x1ZGUvdWFwaS9saW51eC9idGYu
+aCBiL3Rvb2xzL2luY2x1ZGUvdWFwaS9saW51eC9idGYuaA0KPiBpbmRleCAxYTI4OThjNDgyZWUu
+LjVhNjY3MTA3YWQyYyAxMDA2NDQNCj4gLS0tIGEvdG9vbHMvaW5jbHVkZS91YXBpL2xpbnV4L2J0
+Zi5oDQo+ICsrKyBiL3Rvb2xzL2luY2x1ZGUvdWFwaS9saW51eC9idGYuaA0KPiBAQCAtMTQ2LDYg
+KzE0NiwxMiBAQCBlbnVtIHsNCj4gICAJQlRGX1ZBUl9HTE9CQUxfRVhURVJOID0gMiwNCj4gICB9
+Ow0KPiAgIA0KPiArZW51bSBidGZfZnVuY19saW5rYWdlIHsNCj4gKwlCVEZfRlVOQ19TVEFUSUMg
+PSAwLA0KPiArCUJURl9GVU5DX0dMT0JBTCA9IDEsDQo+ICsJQlRGX0ZVTkNfRVhURVJOID0gMiwN
+Cj4gK307DQo+ICsNCj4gICAvKiBCVEZfS0lORF9WQVIgaXMgZm9sbG93ZWQgYnkgYSBzaW5nbGUg
+InN0cnVjdCBidGZfdmFyIiB0byBkZXNjcmliZQ0KPiAgICAqIGFkZGl0aW9uYWwgaW5mb3JtYXRp
+b24gcmVsYXRlZCB0byB0aGUgdmFyaWFibGUgc3VjaCBhcyBpdHMgbGlua2FnZS4NCj4gICAgKi8N
+Cj4gZGlmZiAtLWdpdCBhL3Rvb2xzL2xpYi9icGYvbGliYnBmLmMgYi90b29scy9saWIvYnBmL2xp
+YmJwZi5jDQo+IGluZGV4IDc1MTMxNjViMTA0Zi4uZjcyYjNlZDZjMzRiIDEwMDY0NA0KPiAtLS0g
+YS90b29scy9saWIvYnBmL2xpYmJwZi5jDQo+ICsrKyBiL3Rvb2xzL2xpYi9icGYvbGliYnBmLmMN
+Cj4gQEAgLTE2Niw2ICsxNjYsOCBAQCBzdHJ1Y3QgYnBmX2NhcGFiaWxpdGllcyB7DQo+ICAgCV9f
+dTMyIGJ0Zl9kYXRhc2VjOjE7DQo+ICAgCS8qIEJQRl9GX01NQVBBQkxFIGlzIHN1cHBvcnRlZCBm
+b3IgYXJyYXlzICovDQo+ICAgCV9fdTMyIGFycmF5X21tYXA6MTsNCj4gKwkvKiBzdGF0aWMvZ2xv
+YmFsL2V4dGVybiBpcyBzdXBwb3J0ZWQgZm9yIEJURl9LSU5EX0ZVTkMgKi8NCj4gKwlfX3UzMiBi
+dGZfZnVuY19saW5rYWdlOjE7DQo+ICAgfTsNCj4gICANCj4gICBlbnVtIHJlbG9jX3R5cGUgew0K
+PiBAQCAtMTgxNywxMyArMTgxOSwxNCBAQCBzdGF0aWMgYm9vbCBzZWN0aW9uX2hhdmVfZXhlY2lu
+c3RyKHN0cnVjdCBicGZfb2JqZWN0ICpvYmosIGludCBpZHgpDQo+ICAgDQo+ICAgc3RhdGljIHZv
+aWQgYnBmX29iamVjdF9fc2FuaXRpemVfYnRmKHN0cnVjdCBicGZfb2JqZWN0ICpvYmopDQo+ICAg
+ew0KPiArCWJvb2wgaGFzX2Z1bmNfbGlua2FnZSA9IG9iai0+Y2Fwcy5idGZfZnVuY19saW5rYWdl
+Ow0KPiAgIAlib29sIGhhc19kYXRhc2VjID0gb2JqLT5jYXBzLmJ0Zl9kYXRhc2VjOw0KPiAgIAli
+b29sIGhhc19mdW5jID0gb2JqLT5jYXBzLmJ0Zl9mdW5jOw0KPiAgIAlzdHJ1Y3QgYnRmICpidGYg
+PSBvYmotPmJ0ZjsNCj4gICAJc3RydWN0IGJ0Zl90eXBlICp0Ow0KPiAgIAlpbnQgaSwgaiwgdmxl
+bjsNCj4gICANCj4gLQlpZiAoIW9iai0+YnRmIHx8IChoYXNfZnVuYyAmJiBoYXNfZGF0YXNlYykp
+DQo+ICsJaWYgKCFvYmotPmJ0ZiB8fCAoaGFzX2Z1bmMgJiYgaGFzX2RhdGFzZWMgJiYgaGFzX2Z1
+bmNfbGlua2FnZSkpDQo+ICAgCQlyZXR1cm47DQo+ICAgDQo+ICAgCWZvciAoaSA9IDE7IGkgPD0g
+YnRmX19nZXRfbnJfdHlwZXMoYnRmKTsgaSsrKSB7DQo+IEBAIC0xODcxLDYgKzE4NzQsOSBAQCBz
+dGF0aWMgdm9pZCBicGZfb2JqZWN0X19zYW5pdGl6ZV9idGYoc3RydWN0IGJwZl9vYmplY3QgKm9i
+aikNCj4gICAJCX0gZWxzZSBpZiAoIWhhc19mdW5jICYmIGJ0Zl9pc19mdW5jKHQpKSB7DQo+ICAg
+CQkJLyogcmVwbGFjZSBGVU5DIHdpdGggVFlQRURFRiAqLw0KPiAgIAkJCXQtPmluZm8gPSBCVEZf
+SU5GT19FTkMoQlRGX0tJTkRfVFlQRURFRiwgMCwgMCk7DQo+ICsJCX0gZWxzZSBpZiAoIWhhc19m
+dW5jX2xpbmthZ2UgJiYgYnRmX2lzX2Z1bmModCkpIHsNCj4gKwkJCS8qIHJlcGxhY2UgQlRGX0ZV
+TkNfR0xPQkFMIHdpdGggQlRGX0ZVTkNfU1RBVElDICovDQo+ICsJCQl0LT5pbmZvID0gQlRGX0lO
+Rk9fRU5DKEJURl9LSU5EX0ZVTkMsIDAsIDApOw0KDQpUaGUgY29tbWVudCBzYXlzIHdlIG9ubHkg
+c2FuaXRpemUgQlRGX0ZVTkNfR0xPQkFMIGhlcmUuDQpBY3R1YWxseSwgaXQgYWxzbyBzYW5pdGl6
+ZSBCVEZfRlVOQ19FWFRFUk4uDQoNCkN1cnJlbnRseSwgaW4ga2VybmVsL2JwZi9idGYuYywgd2Ug
+aGF2ZQ0Kc3RhdGljIGludCBidGZfY2hlY2tfYWxsX3R5cGVzKHN0cnVjdCBidGZfdmVyaWZpZXJf
+ZW52ICplbnYpDQp7DQoJCS4uLg0KICAgICAgICAgICAgICAgICBpZiAoYnRmX3R5cGVfaXNfZnVu
+Yyh0KSkgew0KICAgICAgICAgICAgICAgICAgICAgICAgIGVyciA9IGJ0Zl9mdW5jX2NoZWNrKGVu
+diwgdCk7DQogICAgICAgICAgICAgICAgICAgICAgICAgaWYgKGVycikNCiAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIHJldHVybiBlcnI7DQogICAgICAgICAgICAgICAgIH0NCgkJLi4u
+DQp9DQoNCmJ0Zl9mdW5jX2NoZWNrKCkgd2lsbCBlbnN1cmUgZnVuYyBidGZfdHlwZS0+dHlwZSBp
+cyBhIGZ1bmNfcHJvdG8NCmFuZCBhbGwgYXJndW1lbnRzIG9mIGZ1bmNfcHJvdG8gaGFzIGEgbmFt
+ZSBleGNlcHQgdm9pZCB3aGljaCBpcw0KY29uc2lkZXJlZCBhcyB2YXJnLg0KDQpGb3IgZXh0ZXJu
+IGZ1bmN0aW9uLCB0aGUgYXJndW1lbnQgbmFtZSBpcyBsb3N0IGluIGxsdm0vY2xhbmcuDQoNCi1i
+YXNoLTQuNCQgY2F0IHRlc3QuYyANCg0KZXh0ZXJuIGludCBmb28oaW50IGEpOw0KaW50IHRlc3Qo
+KSB7IHJldHVybiBmb28oNSk7IH0NCi1iYXNoLTQuNCQNCi1iYXNoLTQuNCQgY2xhbmcgLXRhcmdl
+dCBicGYgLU8yIC1nIC1TIC1lbWl0LWxsdm0gdGVzdC5jDQoNCiEyID0gIXt9DQohNCA9ICFESVN1
+YnByb2dyYW0obmFtZTogImZvbyIsIHNjb3BlOiAhMSwgZmlsZTogITEsIGxpbmU6IDEsIHR5cGU6
+ICE1LCANCmZsYWdzOiBESUZsYWdQcm90b3R5cGVkLCBzcEZsYWdzOiBESVNQRmxhZ09wdGltaXpl
+ZCwgcmV0YWluZWROb2RlczogITIpDQohNSA9ICFESVN1YnJvdXRpbmVUeXBlKHR5cGVzOiAhNikN
+CiE2ID0gIXshNywgITd9DQohNyA9ICFESUJhc2ljVHlwZShuYW1lOiAiaW50Iiwgc2l6ZTogMzIs
+IGVuY29kaW5nOiBEV19BVEVfc2lnbmVkKQ0KDQpUbyBhdm9pZCBrZXJuZWwgY29tcGxhaW50cywg
+d2UgbmVlZCB0byBzYW5pdGl6ZSBpbiBhIGRpZmZlcmVudCB3YXkuDQpGb3IgZXhhbXBsZSBleHRl
+cm4gQlRGX0tJTkRfRlVOQyBjb3VsZCBiZSByZXdyaXR0ZW4gdG8gYQ0KQlRGX0tJTkRfUFRSIHRv
+IHZvaWQuDQoNCj4gICAJCX0NCj4gICAJfQ0KPiAgIH0NCj4gQEAgLTI4MDQsNiArMjgxMCwzMiBA
+QCBzdGF0aWMgaW50IGJwZl9vYmplY3RfX3Byb2JlX2J0Zl9mdW5jKHN0cnVjdCBicGZfb2JqZWN0
+ICpvYmopDQo+ICAgCXJldHVybiAwOw0KPiAgIH0NCj4gICANCj4gK3N0YXRpYyBpbnQgYnBmX29i
+amVjdF9fcHJvYmVfYnRmX2Z1bmNfbGlua2FnZShzdHJ1Y3QgYnBmX29iamVjdCAqb2JqKQ0KPiAr
+ew0KPiArCXN0YXRpYyBjb25zdCBjaGFyIHN0cnNbXSA9ICJcMGludFwweFwwYSI7DQo+ICsJLyog
+c3RhdGljIHZvaWQgeChpbnQgYSkge30gKi8NCj4gKwlfX3UzMiB0eXBlc1tdID0gew0KPiArCQkv
+KiBpbnQgKi8NCj4gKwkJQlRGX1RZUEVfSU5UX0VOQygxLCBCVEZfSU5UX1NJR05FRCwgMCwgMzIs
+IDQpLCAgLyogWzFdICovDQo+ICsJCS8qIEZVTkNfUFJPVE8gKi8gICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIC8qIFsyXSAqLw0KPiArCQlCVEZfVFlQRV9FTkMoMCwgQlRGX0lORk9fRU5D
+KEJURl9LSU5EX0ZVTkNfUFJPVE8sIDAsIDEpLCAwKSwNCj4gKwkJQlRGX1BBUkFNX0VOQyg3LCAx
+KSwNCj4gKwkJLyogRlVOQyB4IEJURl9GVU5DX0dMT0JBTCAqLyAgICAgICAgICAgICAgICAgICAg
+LyogWzNdICovDQo+ICsJCUJURl9UWVBFX0VOQyg1LCBCVEZfSU5GT19FTkMoQlRGX0tJTkRfRlVO
+QywgMCwgMSksIDIpLA0KPiArCX07DQo+ICsJaW50IGJ0Zl9mZDsNCj4gKw0KPiArCWJ0Zl9mZCA9
+IGxpYmJwZl9fbG9hZF9yYXdfYnRmKChjaGFyICopdHlwZXMsIHNpemVvZih0eXBlcyksDQo+ICsJ
+CQkJICAgICAgc3Rycywgc2l6ZW9mKHN0cnMpKTsNCj4gKwlpZiAoYnRmX2ZkID49IDApIHsNCj4g
+KwkJb2JqLT5jYXBzLmJ0Zl9mdW5jX2xpbmthZ2UgPSAxOw0KPiArCQljbG9zZShidGZfZmQpOw0K
+PiArCQlyZXR1cm4gMTsNCj4gKwl9DQo+ICsNCj4gKwlyZXR1cm4gMDsNCj4gK30NCj4gKw0KPiAg
+IHN0YXRpYyBpbnQgYnBmX29iamVjdF9fcHJvYmVfYnRmX2RhdGFzZWMoc3RydWN0IGJwZl9vYmpl
+Y3QgKm9iaikNCj4gICB7DQo+ICAgCXN0YXRpYyBjb25zdCBjaGFyIHN0cnNbXSA9ICJcMHhcMC5k
+YXRhIjsNCj4gQEAgLTI4NTksNiArMjg5MSw3IEBAIGJwZl9vYmplY3RfX3Byb2JlX2NhcHMoc3Ry
+dWN0IGJwZl9vYmplY3QgKm9iaikNCj4gICAJCWJwZl9vYmplY3RfX3Byb2JlX25hbWUsDQo+ICAg
+CQlicGZfb2JqZWN0X19wcm9iZV9nbG9iYWxfZGF0YSwNCj4gICAJCWJwZl9vYmplY3RfX3Byb2Jl
+X2J0Zl9mdW5jLA0KPiArCQlicGZfb2JqZWN0X19wcm9iZV9idGZfZnVuY19saW5rYWdlLA0KPiAg
+IAkJYnBmX29iamVjdF9fcHJvYmVfYnRmX2RhdGFzZWMsDQo+ICAgCQlicGZfb2JqZWN0X19wcm9i
+ZV9hcnJheV9tbWFwLA0KPiAgIAl9Ow0KPiANCg==
