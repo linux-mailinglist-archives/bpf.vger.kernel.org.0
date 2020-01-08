@@ -2,124 +2,180 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 512AC134703
-	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2020 17:02:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68A83134733
+	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2020 17:08:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728121AbgAHQBO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Jan 2020 11:01:14 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:20926 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727154AbgAHQBO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Jan 2020 11:01:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1578499273;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4xKVuM9nzEaeHEeZtkNiiZBSz9T76Ah6WfmYf30vCkQ=;
-        b=Urt8yBP8e5dFrtLw8YcPFoCNOC8zCqzfY9AObho/dUBynOTRzxcUnmN2U75vx765j47RM0
-        BiaAha7klh+XzONVDWwLxt1sSX1W6gFrWPrxD7BG3cFzMKM9eKUhN8F243D2RXY68L0wMc
-        7fQKDAqjpqHbBXAXtiNe2OdqELZdHRU=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-85-JtY4Us-cOJKXd3NTGOFzgw-1; Wed, 08 Jan 2020 11:01:11 -0500
-X-MC-Unique: JtY4Us-cOJKXd3NTGOFzgw-1
-Received: by mail-wm1-f71.google.com with SMTP id t16so1005098wmt.4
-        for <bpf@vger.kernel.org>; Wed, 08 Jan 2020 08:01:11 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=4xKVuM9nzEaeHEeZtkNiiZBSz9T76Ah6WfmYf30vCkQ=;
-        b=Nf/BFgF8D5q5bd0itlrmPl51+P7/nO8ohmy4S0tcj9M8hzFui7umcbrcgJEMS6DVoZ
-         KZ+Gq55lcWPBXlwp4WFmhlYdPPDY3I2M2bqGPLctY5mPYIDN4jSqsnZarkKkjD49uLaG
-         bL5XSFpnWd+eUt1EqIKEACXXbyeV6EHpyqT5qNsBIX4tpdQ5r8ywi0NVc+z5wVCwPUF1
-         tZ4UnyDrCzuNmspJ3xH3HMwPDSw7bUWLY3wWuxlntvJvPPsg5fE83jzyv58m7AA1U7dO
-         O9xcq0m/DlCjY6bcPJg6hY87yvC3dx7SkMSl1jrsMRN0gB+XK4C6jmhhFSTIBmRg5F1B
-         rKfg==
-X-Gm-Message-State: APjAAAVPW/Y4er1EMsV88cpaMQw6GVQi4Ci1SbRL5sRS7HRDQh6erVn/
-        sMoximH1jyUQ4UUFU5Jawkf6iVztdl0FXKgdJlzgbT5zgUBVx6SG+Km38sGsTajz5aLfCN6trXN
-        wx2BKPa49bQZ2
-X-Received: by 2002:a1c:ddc5:: with SMTP id u188mr4471330wmg.83.1578499270571;
-        Wed, 08 Jan 2020 08:01:10 -0800 (PST)
-X-Google-Smtp-Source: APXvYqz7XenpCkrRousPs3FwhO87GodymB5dcnjWrb2g5RKaBO6MSxTljmljmjgY3DBhlAnAkhIWLA==
-X-Received: by 2002:a1c:ddc5:: with SMTP id u188mr4471306wmg.83.1578499270397;
-        Wed, 08 Jan 2020 08:01:10 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id t12sm4664010wrs.96.2020.01.08.08.01.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Jan 2020 08:01:08 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 69D17180ADD; Wed,  8 Jan 2020 17:01:08 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     John Fastabend <john.fastabend@gmail.com>,
-        =?utf-8?B?QmrDtnJuIFTDtnBl?= =?utf-8?B?bA==?= 
-        <bjorn.topel@gmail.com>, John Fastabend <john.fastabend@gmail.com>
-Cc:     Netdev <netdev@vger.kernel.org>,
+        id S1727916AbgAHQHt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Jan 2020 11:07:49 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:58506 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727421AbgAHQHt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Jan 2020 11:07:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=vTWY1coa2Uglbk+2ijUNU4PAcTKo3OAi9shtTNMi0Rk=; b=gqbvtODkaNnvdu0BtI1I+oz9W
+        A/2kAzeM+Of8bAddV33sSuyFB5xF+Iq5ljJRIvioI+k+R95x57awB/8d2/OaCxPEWI73HH3ggqw/b
+        sRuPnU/M3cuEf3KHzciBaTOkOpg9la+z/euW56512nmDwFzNGDIve2Ho4jXCQShNWbCSAJw0jVzgp
+        W73rwpfbOnlx/JXYvxqZG+ueOUqg0TTsDyxTW539J3TnC4nfAFSqo8UjcEPXCvaV8lYoYsU9cKROX
+        c5nXwgc0c5to6F7JUcDXFL8eRwzCCSZ1nK2sOxQ5uehPgx5U+VprgiM8abXXvQlwSBJdkTRyrU3JI
+        mPuHTmEYQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1ipDrb-0002aV-JF; Wed, 08 Jan 2020 16:07:19 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0BFB530018B;
+        Wed,  8 Jan 2020 17:05:40 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 08A5520B79C82; Wed,  8 Jan 2020 17:07:14 +0100 (CET)
+Date:   Wed, 8 Jan 2020 17:07:13 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Alexey Budankov <alexey.budankov@linux.intel.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "jani.nikula@linux.intel.com" <jani.nikula@linux.intel.com>,
+        "joonas.lahtinen@linux.intel.com" <joonas.lahtinen@linux.intel.com>,
+        "rodrigo.vivi@intel.com" <rodrigo.vivi@intel.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        bpf <bpf@vger.kernel.org>, David Miller <davem@davemloft.net>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        "Karlsson\, Magnus" <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>
-Subject: Re: [PATCH bpf-next v2 4/8] xsk: make xskmap flush_list common for all map instances
-In-Reply-To: <5e15faaac42e7_67ea2afd262665bc44@john-XPS-13-9370.notmuch>
-References: <20191219061006.21980-1-bjorn.topel@gmail.com> <20191219061006.21980-5-bjorn.topel@gmail.com> <5e14c5d4c4959_67962afd051fc5c062@john-XPS-13-9370.notmuch> <CAJ+HfNiQOpAbHHT9V-gcp9u=vVDoP6uSoz2f-diEFrfX_88pMg@mail.gmail.com> <5e15faaac42e7_67ea2afd262665bc44@john-XPS-13-9370.notmuch>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 08 Jan 2020 17:01:08 +0100
-Message-ID: <87lfqigcor.fsf@toke.dk>
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        "james.bottomley@hansenpartnership.com" 
+        <james.bottomley@hansenpartnership.com>,
+        Serge Hallyn <serge@hallyn.com>,
+        James Morris <jmorris@namei.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Robert Richter <rric@kernel.org>, Jiri Olsa <jolsa@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Stephane Eranian <eranian@google.com>,
+        Igor Lubashev <ilubashe@akamai.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Jann Horn <jannh@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        Lionel Landwerlin <lionel.g.landwerlin@intel.com>,
+        Song Liu <songliubraving@fb.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "selinux@vger.kernel.org" <selinux@vger.kernel.org>,
+        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org, oprofile-list@lists.sf.net
+Subject: Re: [PATCH v4 2/9] perf/core: open access for CAP_SYS_PERFMON
+ privileged process
+Message-ID: <20200108160713.GI2844@hirez.programming.kicks-ass.net>
+References: <c0460c78-b1a6-b5f7-7119-d97e5998f308@linux.intel.com>
+ <c93309dc-b920-f5fa-f997-e8b2faf47b88@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c93309dc-b920-f5fa-f997-e8b2faf47b88@linux.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-John Fastabend <john.fastabend@gmail.com> writes:
+On Wed, Dec 18, 2019 at 12:25:35PM +0300, Alexey Budankov wrote:
+> 
+> Open access to perf_events monitoring for CAP_SYS_PERFMON privileged
+> processes. For backward compatibility reasons access to perf_events
+> subsystem remains open for CAP_SYS_ADMIN privileged processes but
+> CAP_SYS_ADMIN usage for secure perf_events monitoring is discouraged
+> with respect to CAP_SYS_PERFMON capability.
+> 
+> Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
+> ---
+>  include/linux/perf_event.h | 6 +++---
+>  kernel/events/core.c       | 6 +++---
+>  2 files changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+> index 34c7c6910026..f46acd69425f 100644
+> --- a/include/linux/perf_event.h
+> +++ b/include/linux/perf_event.h
+> @@ -1285,7 +1285,7 @@ static inline int perf_is_paranoid(void)
+>  
+>  static inline int perf_allow_kernel(struct perf_event_attr *attr)
+>  {
+> -	if (sysctl_perf_event_paranoid > 1 && !capable(CAP_SYS_ADMIN))
+> +	if (sysctl_perf_event_paranoid > 1 && !perfmon_capable())
+>  		return -EACCES;
+>  
+>  	return security_perf_event_open(attr, PERF_SECURITY_KERNEL);
+> @@ -1293,7 +1293,7 @@ static inline int perf_allow_kernel(struct perf_event_attr *attr)
+>  
+>  static inline int perf_allow_cpu(struct perf_event_attr *attr)
+>  {
+> -	if (sysctl_perf_event_paranoid > 0 && !capable(CAP_SYS_ADMIN))
+> +	if (sysctl_perf_event_paranoid > 0 && !perfmon_capable())
+>  		return -EACCES;
+>  
+>  	return security_perf_event_open(attr, PERF_SECURITY_CPU);
+> @@ -1301,7 +1301,7 @@ static inline int perf_allow_cpu(struct perf_event_attr *attr)
+>  
+>  static inline int perf_allow_tracepoint(struct perf_event_attr *attr)
+>  {
+> -	if (sysctl_perf_event_paranoid > -1 && !capable(CAP_SYS_ADMIN))
+> +	if (sysctl_perf_event_paranoid > -1 && !perfmon_capable())
+>  		return -EPERM;
+>  
+>  	return security_perf_event_open(attr, PERF_SECURITY_TRACEPOINT);
 
-> Bj=C3=B6rn T=C3=B6pel wrote:
->> On Tue, 7 Jan 2020 at 18:54, John Fastabend <john.fastabend@gmail.com> w=
-rote:
->> >
->> > Bj=C3=B6rn T=C3=B6pel wrote:
->> > > From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
->> > >
->> > > The xskmap flush list is used to track entries that need to flushed
->> > > from via the xdp_do_flush_map() function. This list used to be
->> > > per-map, but there is really no reason for that. Instead make the
->> > > flush list global for all xskmaps, which simplifies __xsk_map_flush()
->> > > and xsk_map_alloc().
->> > >
->> > > Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->> > > Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
->> > > ---
->> >
->> > Just to check. The reason this is OK is because xdp_do_flush_map()
->> > is called from NAPI context and is per CPU so the only entries on
->> > the list will be from the current cpu napi context?
->>=20
->> Correct!
->>=20
->> > Even in the case
->> > where multiple xskmaps exist we can't have entries from more than
->> > a single map on any list at the same time by my reading.
->> >
->>=20
->> No, there can be entries from different (XSK) maps. Instead of
->> focusing on maps to flush, focus on *entries* to flush. At the end of
->> the poll function, all entries (regardless of map origin) will be
->> flushed. Makes sense?
->
-> Ah OK. This would mean that a single program used multiple maps
-> though correct? Because we can only run a single BPF program per
-> NAPI context.
+These are OK I suppose.
 
-Yeah, there's nothing limiting each program to a single map (of any
-type)...
+> diff --git a/kernel/events/core.c b/kernel/events/core.c
+> index 059ee7116008..d9db414f2197 100644
+> --- a/kernel/events/core.c
+> +++ b/kernel/events/core.c
+> @@ -9056,7 +9056,7 @@ static int perf_kprobe_event_init(struct perf_event *event)
+>  	if (event->attr.type != perf_kprobe.type)
+>  		return -ENOENT;
+>  
+> -	if (!capable(CAP_SYS_ADMIN))
+> +	if (!perfmon_capable())
+>  		return -EACCES;
+>  
+>  	/*
 
--Toke
+This one only allows attaching to already extant kprobes, right? It does
+not allow creation of kprobes.
 
+> @@ -9116,7 +9116,7 @@ static int perf_uprobe_event_init(struct perf_event *event)
+>  	if (event->attr.type != perf_uprobe.type)
+>  		return -ENOENT;
+>  
+> -	if (!capable(CAP_SYS_ADMIN))
+> +	if (!perfmon_capable())
+>  		return -EACCES;
+>  
+>  	/*
+
+Idem, I presume.
+
+> @@ -11157,7 +11157,7 @@ SYSCALL_DEFINE5(perf_event_open,
+>  	}
+>  
+>  	if (attr.namespaces) {
+> -		if (!capable(CAP_SYS_ADMIN))
+> +		if (!perfmon_capable())
+>  			return -EACCES;
+>  	}
+
+And given we basically make the entire kernel observable with this CAP,
+busting namespaces shoulnd't be a problem either.
+
+So yeah, I suppose that works.
