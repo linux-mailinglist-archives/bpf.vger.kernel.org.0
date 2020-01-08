@@ -2,223 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E7C1133863
-	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2020 02:20:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35A1913389D
+	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2020 02:40:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726803AbgAHBTv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Jan 2020 20:19:51 -0500
-Received: from mga14.intel.com ([192.55.52.115]:16780 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725996AbgAHBTu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Jan 2020 20:19:50 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 07 Jan 2020 17:19:48 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,408,1571727600"; 
-   d="scan'208";a="422760148"
-Received: from mjmartin-nuc02.mjmartin-nuc02 (HELO mjmartin-nuc02.sea.intel.com) ([10.251.8.166])
-  by fmsmga006.fm.intel.com with ESMTP; 07 Jan 2020 17:19:48 -0800
-From:   Mat Martineau <mathew.j.martineau@linux.intel.com>
-To:     netdev@vger.kernel.org, mptcp@lists.01.org
-Cc:     Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
-        Paolo Abeni <pabeni@redhat.com>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>
-Subject: [PATCH net-next v6 02/11] sock: Make sk_protocol a 16-bit value
-Date:   Tue,  7 Jan 2020 17:19:12 -0800
-Message-Id: <20200108011921.28942-3-mathew.j.martineau@linux.intel.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200108011921.28942-1-mathew.j.martineau@linux.intel.com>
-References: <20200108011921.28942-1-mathew.j.martineau@linux.intel.com>
+        id S1726411AbgAHBkX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Jan 2020 20:40:23 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:62170 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726313AbgAHBkX (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 7 Jan 2020 20:40:23 -0500
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 0081ZJLc010046
+        for <bpf@vger.kernel.org>; Tue, 7 Jan 2020 17:40:21 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=9Mmgem05j6f6Nr0jhMMXWk0BUO7urRKCtMtzYeRm0hE=;
+ b=LyAQumEsARv9eCLHfP9AxYbB9iy1neve30mrmmQuHiXXF7CaIh3moyZsnxpd7q0dKAYU
+ OfqN22X/BSyPsrk8tZpE/lRF3QYEHucISLpn1jJ8YfTP4F3fvrcOf/KBhDfVibWiC9dp
+ oJKRnuRRs9KKS9wtkkHOoExSIZPm2xgxbyI= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0089730.ppops.net with ESMTP id 2xcerhemdx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 07 Jan 2020 17:40:21 -0800
+Received: from intmgw004.06.prn3.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Tue, 7 Jan 2020 17:40:20 -0800
+Received: by dev082.prn2.facebook.com (Postfix, from userid 572249)
+        id 1E7FA3714FB9; Tue,  7 Jan 2020 17:40:17 -0800 (PST)
+Smtp-Origin-Hostprefix: dev
+From:   Andrey Ignatov <rdna@fb.com>
+Smtp-Origin-Hostname: dev082.prn2.facebook.com
+To:     <bpf@vger.kernel.org>
+CC:     Andrey Ignatov <rdna@fb.com>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <kernel-team@fb.com>
+Smtp-Origin-Cluster: prn2c23
+Subject: [PATCH bpf-next] bpf: Document BPF_F_QUERY_EFFECTIVE flag
+Date:   Tue, 7 Jan 2020 17:40:06 -0800
+Message-ID: <20200108014006.938363-1-rdna@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-01-07_08:2020-01-07,2020-01-07 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
+ malwarescore=0 impostorscore=0 mlxscore=0 suspectscore=13 spamscore=0
+ lowpriorityscore=0 clxscore=1015 bulkscore=0 mlxlogscore=411 phishscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-2001080013
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Match the 16-bit width of skbuff->protocol. Fills an 8-bit hole so
-sizeof(struct sock) does not change.
+Document BPF_F_QUERY_EFFECTIVE flag, mostly to clarify how it affects
+attach_flags what may not be obvious and what may lead to confision.
 
-Also take care of BPF field access for sk_type/sk_protocol. Both of them
-are now outside the bitfield, so we can use load instructions without
-further shifting/masking.
+Specifically attach_flags is returned only for target_fd but if programs
+are inherited from an ancestor cgroup then returned attach_flags for
+current cgroup may be confusing. For example, two effective programs of
+same attach_type can be returned but w/o BPF_F_ALLOW_MULTI in
+attach_flags.
 
-v5 -> v6:
- - update eBPF accessors, too (Intel's kbuild test robot)
-v2 -> v3:
- - keep 'sk_type' 2 bytes aligned (Eric)
-v1 -> v2:
- - preserve sk_pacing_shift as bit field (Eric)
+Simple repro:
+  # bpftool c s /sys/fs/cgroup/path/to/task
+  ID       AttachType      AttachFlags     Name
+  # bpftool c s /sys/fs/cgroup/path/to/task effective
+  ID       AttachType      AttachFlags     Name
+  95043    ingress                         tw_ipt_ingress
+  95048    ingress                         tw_ingress
 
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: bpf@vger.kernel.org
-Co-developed-by: Paolo Abeni <pabeni@redhat.com>
-Signed-off-by: Paolo Abeni <pabeni@redhat.com>
-Co-developed-by: Matthieu Baerts <matthieu.baerts@tessares.net>
-Signed-off-by: Matthieu Baerts <matthieu.baerts@tessares.net>
-Signed-off-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
+Signed-off-by: Andrey Ignatov <rdna@fb.com>
 ---
- include/net/sock.h          | 25 ++++------------
- include/trace/events/sock.h |  2 +-
- net/core/filter.c           | 60 ++++++++++++++-----------------------
- 3 files changed, 28 insertions(+), 59 deletions(-)
+ include/uapi/linux/bpf.h       | 7 ++++++-
+ tools/include/uapi/linux/bpf.h | 7 ++++++-
+ 2 files changed, 12 insertions(+), 2 deletions(-)
 
-diff --git a/include/net/sock.h b/include/net/sock.h
-index 091e55428415..8766f9bc3e70 100644
---- a/include/net/sock.h
-+++ b/include/net/sock.h
-@@ -436,30 +436,15 @@ struct sock {
- 	 * Because of non atomicity rules, all
- 	 * changes are protected by socket lock.
- 	 */
--	unsigned int		__sk_flags_offset[0];
--#ifdef __BIG_ENDIAN_BITFIELD
--#define SK_FL_PROTO_SHIFT  16
--#define SK_FL_PROTO_MASK   0x00ff0000
--
--#define SK_FL_TYPE_SHIFT   0
--#define SK_FL_TYPE_MASK    0x0000ffff
--#else
--#define SK_FL_PROTO_SHIFT  8
--#define SK_FL_PROTO_MASK   0x0000ff00
--
--#define SK_FL_TYPE_SHIFT   16
--#define SK_FL_TYPE_MASK    0xffff0000
--#endif
--
--	unsigned int		sk_padding : 1,
-+	u8			sk_padding : 1,
- 				sk_kern_sock : 1,
- 				sk_no_check_tx : 1,
- 				sk_no_check_rx : 1,
--				sk_userlocks : 4,
--				sk_protocol  : 8,
--				sk_type      : 16;
--	u16			sk_gso_max_segs;
-+				sk_userlocks : 4;
- 	u8			sk_pacing_shift;
-+	u16			sk_type;
-+	u16			sk_protocol;
-+	u16			sk_gso_max_segs;
- 	unsigned long	        sk_lingertime;
- 	struct proto		*sk_prot_creator;
- 	rwlock_t		sk_callback_lock;
-diff --git a/include/trace/events/sock.h b/include/trace/events/sock.h
-index 51fe9f6719eb..3ff12b90048d 100644
---- a/include/trace/events/sock.h
-+++ b/include/trace/events/sock.h
-@@ -147,7 +147,7 @@ TRACE_EVENT(inet_sock_set_state,
- 		__field(__u16, sport)
- 		__field(__u16, dport)
- 		__field(__u16, family)
--		__field(__u8, protocol)
-+		__field(__u16, protocol)
- 		__array(__u8, saddr, 4)
- 		__array(__u8, daddr, 4)
- 		__array(__u8, saddr_v6, 16)
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 42fd17c48c5f..ef01c5599501 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -7607,21 +7607,21 @@ u32 bpf_sock_convert_ctx_access(enum bpf_access_type type,
- 		break;
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 7df436da542d..dc4b8a2d2a86 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -357,7 +357,12 @@ enum bpf_attach_type {
+ /* Enable memory-mapping BPF map */
+ #define BPF_F_MMAPABLE		(1U << 10)
  
- 	case offsetof(struct bpf_sock, type):
--		BUILD_BUG_ON(HWEIGHT32(SK_FL_TYPE_MASK) != BITS_PER_BYTE * 2);
--		*insn++ = BPF_LDX_MEM(BPF_W, si->dst_reg, si->src_reg,
--				      offsetof(struct sock, __sk_flags_offset));
--		*insn++ = BPF_ALU32_IMM(BPF_AND, si->dst_reg, SK_FL_TYPE_MASK);
--		*insn++ = BPF_ALU32_IMM(BPF_RSH, si->dst_reg, SK_FL_TYPE_SHIFT);
--		*target_size = 2;
-+		*insn++ = BPF_LDX_MEM(
-+			BPF_FIELD_SIZEOF(struct sock, sk_type),
-+			si->dst_reg, si->src_reg,
-+			bpf_target_off(struct sock, sk_type,
-+				       sizeof_field(struct sock, sk_type),
-+				       target_size));
- 		break;
+-/* flags for BPF_PROG_QUERY */
++/* Flags for BPF_PROG_QUERY. */
++
++/* Query effective (directly attached + inherited from ancestor cgroups)
++ * programs that will be executed for events within a cgroup.
++ * attach_flags with this flag are returned only for directly attached programs.
++ */
+ #define BPF_F_QUERY_EFFECTIVE	(1U << 0)
  
- 	case offsetof(struct bpf_sock, protocol):
--		BUILD_BUG_ON(HWEIGHT32(SK_FL_PROTO_MASK) != BITS_PER_BYTE);
--		*insn++ = BPF_LDX_MEM(BPF_W, si->dst_reg, si->src_reg,
--				      offsetof(struct sock, __sk_flags_offset));
--		*insn++ = BPF_ALU32_IMM(BPF_AND, si->dst_reg, SK_FL_PROTO_MASK);
--		*insn++ = BPF_ALU32_IMM(BPF_RSH, si->dst_reg, SK_FL_PROTO_SHIFT);
--		*target_size = 1;
-+		*insn++ = BPF_LDX_MEM(
-+			BPF_FIELD_SIZEOF(struct sock, sk_protocol),
-+			si->dst_reg, si->src_reg,
-+			bpf_target_off(struct sock, sk_protocol,
-+				       sizeof_field(struct sock, sk_protocol),
-+				       target_size));
- 		break;
+ enum bpf_stack_build_id_status {
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 7df436da542d..dc4b8a2d2a86 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -357,7 +357,12 @@ enum bpf_attach_type {
+ /* Enable memory-mapping BPF map */
+ #define BPF_F_MMAPABLE		(1U << 10)
  
- 	case offsetof(struct bpf_sock, src_ip4):
-@@ -7903,20 +7903,13 @@ static u32 sock_addr_convert_ctx_access(enum bpf_access_type type,
- 		break;
+-/* flags for BPF_PROG_QUERY */
++/* Flags for BPF_PROG_QUERY. */
++
++/* Query effective (directly attached + inherited from ancestor cgroups)
++ * programs that will be executed for events within a cgroup.
++ * attach_flags with this flag are returned only for directly attached programs.
++ */
+ #define BPF_F_QUERY_EFFECTIVE	(1U << 0)
  
- 	case offsetof(struct bpf_sock_addr, type):
--		SOCK_ADDR_LOAD_NESTED_FIELD_SIZE_OFF(
--			struct bpf_sock_addr_kern, struct sock, sk,
--			__sk_flags_offset, BPF_W, 0);
--		*insn++ = BPF_ALU32_IMM(BPF_AND, si->dst_reg, SK_FL_TYPE_MASK);
--		*insn++ = BPF_ALU32_IMM(BPF_RSH, si->dst_reg, SK_FL_TYPE_SHIFT);
-+		SOCK_ADDR_LOAD_NESTED_FIELD(struct bpf_sock_addr_kern,
-+					    struct sock, sk, sk_type);
- 		break;
- 
- 	case offsetof(struct bpf_sock_addr, protocol):
--		SOCK_ADDR_LOAD_NESTED_FIELD_SIZE_OFF(
--			struct bpf_sock_addr_kern, struct sock, sk,
--			__sk_flags_offset, BPF_W, 0);
--		*insn++ = BPF_ALU32_IMM(BPF_AND, si->dst_reg, SK_FL_PROTO_MASK);
--		*insn++ = BPF_ALU32_IMM(BPF_RSH, si->dst_reg,
--					SK_FL_PROTO_SHIFT);
-+		SOCK_ADDR_LOAD_NESTED_FIELD(struct bpf_sock_addr_kern,
-+					    struct sock, sk, sk_protocol);
- 		break;
- 
- 	case offsetof(struct bpf_sock_addr, msg_src_ip4):
-@@ -8835,11 +8828,11 @@ sk_reuseport_is_valid_access(int off, int size,
- 				    skb,				\
- 				    SKB_FIELD)
- 
--#define SK_REUSEPORT_LOAD_SK_FIELD_SIZE_OFF(SK_FIELD, BPF_SIZE, EXTRA_OFF) \
--	SOCK_ADDR_LOAD_NESTED_FIELD_SIZE_OFF(struct sk_reuseport_kern,	\
--					     struct sock,		\
--					     sk,			\
--					     SK_FIELD, BPF_SIZE, EXTRA_OFF)
-+#define SK_REUSEPORT_LOAD_SK_FIELD(SK_FIELD)				\
-+	SOCK_ADDR_LOAD_NESTED_FIELD(struct sk_reuseport_kern,		\
-+				    struct sock,			\
-+				    sk,					\
-+				    SK_FIELD)
- 
- static u32 sk_reuseport_convert_ctx_access(enum bpf_access_type type,
- 					   const struct bpf_insn *si,
-@@ -8863,16 +8856,7 @@ static u32 sk_reuseport_convert_ctx_access(enum bpf_access_type type,
- 		break;
- 
- 	case offsetof(struct sk_reuseport_md, ip_protocol):
--		BUILD_BUG_ON(HWEIGHT32(SK_FL_PROTO_MASK) != BITS_PER_BYTE);
--		SK_REUSEPORT_LOAD_SK_FIELD_SIZE_OFF(__sk_flags_offset,
--						    BPF_W, 0);
--		*insn++ = BPF_ALU32_IMM(BPF_AND, si->dst_reg, SK_FL_PROTO_MASK);
--		*insn++ = BPF_ALU32_IMM(BPF_RSH, si->dst_reg,
--					SK_FL_PROTO_SHIFT);
--		/* SK_FL_PROTO_MASK and SK_FL_PROTO_SHIFT are endian
--		 * aware.  No further narrowing or masking is needed.
--		 */
--		*target_size = 1;
-+		SK_REUSEPORT_LOAD_SK_FIELD(sk_protocol);
- 		break;
- 
- 	case offsetof(struct sk_reuseport_md, data_end):
+ enum bpf_stack_build_id_status {
 -- 
-2.24.1
+2.17.1
 
