@@ -2,234 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E0C7134DEF
-	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2020 21:52:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABD6F134EA2
+	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2020 22:14:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726667AbgAHUwk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Jan 2020 15:52:40 -0500
-Received: from mga02.intel.com ([134.134.136.20]:41598 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726155AbgAHUwk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Jan 2020 15:52:40 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga101.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 08 Jan 2020 12:52:38 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,411,1571727600"; 
-   d="scan'208";a="371056896"
-Received: from orsmsx105.amr.corp.intel.com ([10.22.225.132])
-  by orsmga004.jf.intel.com with ESMTP; 08 Jan 2020 12:52:38 -0800
-Received: from orsmsx121.amr.corp.intel.com (10.22.225.226) by
- ORSMSX105.amr.corp.intel.com (10.22.225.132) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Wed, 8 Jan 2020 12:52:38 -0800
-Received: from orsmsx112.amr.corp.intel.com ([169.254.3.41]) by
- ORSMSX121.amr.corp.intel.com ([169.254.10.204]) with mapi id 14.03.0439.000;
- Wed, 8 Jan 2020 12:52:37 -0800
-From:   "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-To:     "peterz@infradead.org" <peterz@infradead.org>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "nadav.amit@gmail.com" <nadav.amit@gmail.com>
-CC:     "songliubraving@fb.com" <songliubraving@fb.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "jeyu@kernel.org" <jeyu@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "kuznet@ms2.inr.ac.ru" <kuznet@ms2.inr.ac.ru>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "mjg59@google.com" <mjg59@google.com>,
-        "thgarnie@chromium.org" <thgarnie@chromium.org>,
-        "kpsingh@chromium.org" <kpsingh@chromium.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "revest@chromium.org" <revest@chromium.org>,
-        "jannh@google.com" <jannh@google.com>,
-        "namit@vmware.com" <namit@vmware.com>,
-        "jackmanb@chromium.org" <jackmanb@chromium.org>,
-        "kafai@fb.com" <kafai@fb.com>, "yhs@fb.com" <yhs@fb.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "yoshfuji@linux-ipv6.org" <yoshfuji@linux-ipv6.org>,
-        "mhalcrow@google.com" <mhalcrow@google.com>,
-        "andriin@fb.com" <andriin@fb.com>
-Subject: Re: [PATCH bpf-next] bpf: Make trampolines W^X
-Thread-Topic: [PATCH bpf-next] bpf: Make trampolines W^X
-Thread-Index: AQHVwpjLpCzVLdPZ5Em9CS0HIZ/iOKfewVwAgAA1aoCAASP/gIAA5QwAgADMRYA=
-Date:   Wed, 8 Jan 2020 20:52:37 +0000
-Message-ID: <400be86aab208d0e50a237cdbd3195763396e3ed.camel@intel.com>
-References: <21bf6bb46544eab79e792980f82520f8fbdae9b5.camel@intel.com>
-         <DB882EE8-20B2-4631-A808-E5C968B24CEB@amacapital.net>
-         <cdd157ef011efda92c9434f76141fc3aef174d85.camel@intel.com>
-         <CALCETrV_tGk=B3Hw0h9viW45wMqB_W+rwWzx6LnC3-vSATOUOA@mail.gmail.com>
-In-Reply-To: <CALCETrV_tGk=B3Hw0h9viW45wMqB_W+rwWzx6LnC3-vSATOUOA@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.54.75.11]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <B95E02B7A23B6A438D41816EEF61C87F@intel.com>
-Content-Transfer-Encoding: base64
+        id S1727258AbgAHVOB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 8 Jan 2020 16:14:01 -0500
+Received: from mail-io1-f65.google.com ([209.85.166.65]:43177 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726836AbgAHVOB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 8 Jan 2020 16:14:01 -0500
+Received: by mail-io1-f65.google.com with SMTP id n21so4751518ioo.10;
+        Wed, 08 Jan 2020 13:14:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:date:message-id:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=N2nei71pLCshVif89pL4b+GrQ+Q+f/VZ0XknSaj1BN0=;
+        b=ez6aX3yyaaksdnA4FAOTaEvUTItH9zIdPty6cNHH2Xf11KlR4HWcCS7kWc3I8hfXLi
+         ov5If4LCW1uSl5/QdnikfzJV/8TnVapsj7wR2gvWWxphV3eLoM8cOwZ4+liwF1XSB1rd
+         cIzEC7PLafyG5zS87ERC+b6WqlpEKeBXYQq2EsCrFqatcLW0blab8seG72N6TXAHJPkl
+         WtNh8ZKBRGw45EC6EI7Ic1LP+ciI/U8BoAZfkDoOB9mWrzuOtvQ21I7FYTqptWONkQnX
+         NKxDOWLCCXbtxLChfSIzIT6RBq5hUf5BP1nm5jRkNHYcxXgG08o5kQOfgRZ6u3CGCqKc
+         zArQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:date:message-id:user-agent
+         :mime-version:content-transfer-encoding;
+        bh=N2nei71pLCshVif89pL4b+GrQ+Q+f/VZ0XknSaj1BN0=;
+        b=ZJNKWGen6xpo2Np+OgpmWjx/FNsa+7NzIZodDgaKTTWFIFKcaljgRlocik1OVT5l96
+         FSWcvmDplws7pphYxcRhuHX8B5OI4CnKwytXIERGhcnyexhJIatLYcllaN0ovI2feTBu
+         UzSQ56Kj/ToxmKhc5pXp43RckSXB3hMy61UX8m2qo1CTbduyD3TsFfnq/yfm8F2eTLfH
+         vNPkT0vDfdXRYz9KVJ+/TSvmtQ5zXRnwTqCETbzYk3JkXaoiI7f7TrA1wMZYsz30bt2U
+         q1ggs5spOYapNOqS7/h/M7KKDuP1+gcNqBm5jmL+Ik47zwfRKVG6n6Nw3tOfpHN0uue4
+         9u1g==
+X-Gm-Message-State: APjAAAVMpaujfaOysxoKCJ6aThC+3/+xNsgfydJZV75dPGOhFj+J7alE
+        +w372wMOg/u6BKUQL8PSg64sjEkn
+X-Google-Smtp-Source: APXvYqzUC0QkZytrHLGqYoPfJG/poQmibjx9lixbwxTIndUV98ugaU3zC1UrDRvSGF+rDa60c1aBhg==
+X-Received: by 2002:a6b:6f07:: with SMTP id k7mr4931133ioc.174.1578518040980;
+        Wed, 08 Jan 2020 13:14:00 -0800 (PST)
+Received: from [127.0.1.1] ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id 81sm1314393ilx.40.2020.01.08.13.13.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Jan 2020 13:14:00 -0800 (PST)
+Subject: [bpf PATCH 0/9] Fixes for sockmap/tls from more complex BPF progs
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, john.fastabend@gmail.com, ast@kernel.org,
+        daniel@iogearbox.net
+Date:   Wed, 08 Jan 2020 21:13:49 +0000
+Message-ID: <157851776348.1732.12600714815781177085.stgit@ubuntu3-kvm2>
+User-Agent: StGit/0.17.1-dirty
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-T24gV2VkLCAyMDIwLTAxLTA4IGF0IDAwOjQxIC0wODAwLCBBbmR5IEx1dG9taXJza2kgd3JvdGU6
-DQo+ID4gT24gSmFuIDcsIDIwMjAsIGF0IDk6MDEgQU0sIEVkZ2Vjb21iZSwgUmljayBQIDxyaWNr
-LnAuZWRnZWNvbWJlQGludGVsLmNvbT4NCj4gPiB3cm90ZToNCj4gPiANCj4gPiDvu79DQyBOYWRh
-diBhbmQgSmVzc2ljYS4NCj4gPiANCj4gPiBPbiBNb24sIDIwMjAtMDEtMDYgYXQgMTU6MzYgLTEw
-MDAsIEFuZHkgTHV0b21pcnNraSB3cm90ZToNCj4gPiA+ID4gT24gSmFuIDYsIDIwMjAsIGF0IDEy
-OjI1IFBNLCBFZGdlY29tYmUsIFJpY2sgUCA8DQo+ID4gPiA+IHJpY2sucC5lZGdlY29tYmVAaW50
-ZWwuY29tPg0KPiA+ID4gPiB3cm90ZToNCj4gPiA+ID4gDQo+ID4gPiA+IO+7v09uIFNhdCwgMjAy
-MC0wMS0wNCBhdCAwOTo0OSArMDkwMCwgQW5keSBMdXRvbWlyc2tpIHdyb3RlOg0KPiA+ID4gPiA+
-ID4gPiA+IE9uIEphbiA0LCAyMDIwLCBhdCA4OjQ3IEFNLCBLUCBTaW5naCA8a3BzaW5naEBjaHJv
-bWl1bS5vcmc+DQo+ID4gPiA+ID4gPiA+ID4gd3JvdGU6DQo+ID4gPiA+ID4gPiA+IA0KPiA+ID4g
-PiA+ID4gPiDvu79Gcm9tOiBLUCBTaW5naCA8a3BzaW5naEBnb29nbGUuY29tPg0KPiA+ID4gPiA+
-ID4gPiANCj4gPiA+ID4gPiA+ID4gVGhlIGltYWdlIGZvciB0aGUgQlBGIHRyYW1wb2xpbmVzIGlz
-IGFsbG9jYXRlZCB3aXRoDQo+ID4gPiA+ID4gPiA+IGJwZl9qaXRfYWxsb2NfZXhlX3BhZ2Ugd2hp
-Y2ggbWFya3MgdGhpcyBhbGxvY2F0ZWQgcGFnZSBleGVjdXRhYmxlLg0KPiA+ID4gPiA+ID4gPiBU
-aGlzDQo+ID4gPiA+ID4gPiA+IG1lYW5zIHRoYXQgdGhlIGFsbG9jYXRlZCBtZW1vcnkgaXMgVyBh
-bmQgWCBhdCB0aGUgc2FtZSB0aW1lIG1ha2luZw0KPiA+ID4gPiA+ID4gPiBpdA0KPiA+ID4gPiA+
-ID4gPiBzdXNjZXB0aWJsZSB0byBXWCBiYXNlZCBhdHRhY2tzLg0KPiA+ID4gPiA+ID4gPiANCj4g
-PiA+ID4gPiA+ID4gU2luY2UgdGhlIGFsbG9jYXRlZCBtZW1vcnkgaXMgc2hhcmVkIGJldHdlZW4g
-dHdvIHRyYW1wb2xpbmVzICh0aGUNCj4gPiA+ID4gPiA+ID4gY3VycmVudCBhbmQgdGhlIG5leHQp
-LCAyIHBhZ2VzIG11c3QgYmUgYWxsb2NhdGVkIHRvIGFkaGVyZSB0byBXXlgNCj4gPiA+ID4gPiA+
-ID4gYW5kDQo+ID4gPiA+ID4gPiA+IHRoZSBmb2xsb3dpbmcgc2VxdWVuY2UgaXMgb2JleWVkIHdo
-ZXJlIHRyYW1wb2xpbmVzIGFyZSBtb2RpZmllZDoNCj4gPiA+ID4gPiA+IA0KPiA+ID4gPiA+ID4g
-Q2FuIHdlIHBsZWFzZSBkbyBiZXR0ZXIgcmF0aGVyIHRoYW4gcGlsaW5nIGdhcmJhZ2Ugb24gdG9w
-IG9mDQo+ID4gPiA+ID4gPiBnYXJiYWdlPw0KPiA+ID4gPiA+ID4gDQo+ID4gPiA+ID4gPiA+IA0K
-PiA+ID4gPiA+ID4gPiAtIE1hcmsgbWVtb3J5IGFzIG5vbiBleGVjdXRhYmxlIChzZXRfbWVtb3J5
-X254KS4gV2hpbGUNCj4gPiA+ID4gPiA+ID4gbW9kdWxlX2FsbG9jIGZvcg0KPiA+ID4gPiA+ID4g
-PiB4ODYgYWxsb2NhdGVzIHRoZSBtZW1vcnkgYXMgUEFHRV9LRVJORUwgYW5kIG5vdCBQQUdFX0tF
-Uk5FTF9FWEVDLA0KPiA+ID4gPiA+ID4gPiBub3QNCj4gPiA+ID4gPiA+ID4gYWxsIGltcGxlbWVu
-dGF0aW9ucyBvZiBtb2R1bGVfYWxsb2MgZG8gc28NCj4gPiA+ID4gPiA+IA0KPiA+ID4gPiA+ID4g
-SG93IGFib3V0IGZpeGluZyB0aGlzIGluc3RlYWQ/DQo+ID4gPiA+ID4gPiANCj4gPiA+ID4gPiA+
-ID4gLSBNYXJrIHRoZSBtZW1vcnkgYXMgcmVhZC93cml0ZSAoc2V0X21lbW9yeV9ydykNCj4gPiA+
-ID4gPiA+IA0KPiA+ID4gPiA+ID4gUHJvYmFibHkgaGFybWxlc3MsIGJ1dCBzZWUgYWJvdmUgYWJv
-dXQgZml4aW5nIGl0Lg0KPiA+ID4gPiA+ID4gDQo+ID4gPiA+ID4gPiA+IC0gTW9kaWZ5IHRoZSB0
-cmFtcG9saW5lDQo+ID4gPiA+ID4gPiANCj4gPiA+ID4gPiA+IFNlZW1zIHJlYXNvbmFibGUuIEl0
-4oCZcyB3b3J0aCBub3RpbmcgdGhhdCB0aGlzIHdob2xlIGFwcHJvYWNoIGlzDQo+ID4gPiA+ID4g
-PiBzdWJvcHRpbWFsOg0KPiA+ID4gPiA+ID4gdGhlIOKAnG1vZHVsZeKAnSBhbGxvY2F0b3Igc2hv
-dWxkIHJlYWxseSBiZSByZXR1cm5pbmcgYSBsaXN0IG9mIHBhZ2VzIHRvDQo+ID4gPiA+ID4gPiBi
-ZQ0KPiA+ID4gPiA+ID4gd3JpdHRlbiAobm90IGF0IHRoZSBmaW5hbCBhZGRyZXNzISkgd2l0aCB0
-aGUgYWN0dWFsIGV4ZWN1dGFibGUNCj4gPiA+ID4gPiA+IG1hcHBpbmcgdG8NCj4gPiA+ID4gPiA+
-IGJlDQo+ID4gPiA+ID4gPiBtYXRlcmlhbGl6ZWQgbGF0ZXIsIGJ1dCB0aGF04oCZcyBhIGJpZ2dl
-ciBwcm9qZWN0IHRoYXQgeW914oCZcmUgd2VsY29tZQ0KPiA+ID4gPiA+ID4gdG8NCj4gPiA+ID4g
-PiA+IGlnbm9yZQ0KPiA+ID4gPiA+ID4gZm9yIG5vdy4gIChDb25jcmV0ZWx5LCBpdCBzaG91bGQg
-cHJvZHVjZSBhIHZtYXAgYWRkcmVzcyB3aXRoIGJhY2tpbmcNCj4gPiA+ID4gPiA+IHBhZ2VzDQo+
-ID4gPiA+ID4gPiBidXQNCj4gPiA+ID4gPiA+IHdpdGggdGhlIHZtYXAgYWxpYXMgZWl0aGVyIGVu
-dGlyZWx5IHVubWFwcGVkIG9yIHJlYWQtb25seS4gQQ0KPiA+ID4gPiA+ID4gc3Vic2VxdWVudA0K
-PiA+ID4gPiA+ID4gaGVhbGVyDQo+ID4gPiA+ID4gPiB3b3VsZCwgYWxsIGF0IG9uY2UsIG1ha2Ug
-dGhlIGRpcmVjdCBtYXAgcGFnZXMgUk8gb3Igbm90LXByZXNlbnQgYW5kDQo+ID4gPiA+ID4gPiBt
-YWtlDQo+ID4gPiA+ID4gPiB0aGUNCj4gPiA+ID4gPiA+IHZtYXAgYWxpYXMgUlguKQ0KPiA+ID4g
-PiA+ID4gPiAtIE1hcmsgdGhlIG1lbW9yeSBhcyByZWFkLW9ubHkgKHNldF9tZW1vcnlfcm8pDQo+
-ID4gPiA+ID4gPiA+IC0gTWFyayB0aGUgbWVtb3J5IGFzIGV4ZWN1dGFibGUgKHNldF9tZW1vcnlf
-eCkNCj4gPiA+ID4gPiA+IA0KPiA+ID4gPiA+ID4gTm8sIHRoYW5rcy4gVGhlcmXigJlzIHZlcnkg
-bGl0dGxlIGV4Y3VzZSBmb3IgZG9pbmcgdHdvIElQSSBmbHVzaGVzDQo+ID4gPiA+ID4gPiB3aGVu
-IG9uZQ0KPiA+ID4gPiA+ID4gd291bGQgc3VmZmljZS4NCj4gPiA+ID4gPiA+IA0KPiA+ID4gPiA+
-ID4gQXMgZmFyIGFzIEkga25vdywgYWxsIGFyY2hpdGVjdHVyZXMgY2FuIGRvIHRoaXMgd2l0aCBh
-IHNpbmdsZSBmbHVzaA0KPiA+ID4gPiA+ID4gd2l0aG91dA0KPiA+ID4gPiA+ID4gcmFjZXMgIHg4
-NiBjZXJ0YWlubHkgY2FuLiBUaGUgbW9kdWxlIGZyZWVpbmcgY29kZSBnZXRzIHRoaXMgc2VxdWVu
-Y2UNCj4gPiA+ID4gPiA+IHJpZ2h0Lg0KPiA+ID4gPiA+ID4gUGxlYXNlIHJldXNlIGl0cyBtZWNo
-YW5pc20gb3IsIGlmIG5lZWRlZCwgZXhwb3J0IHRoZSByZWxldmFudA0KPiA+ID4gPiA+ID4gaW50
-ZXJmYWNlcy4NCj4gPiA+ID4gDQo+ID4gPiA+IFNvIGlmIEkgdW5kZXJzdGFuZCB0aGlzIHJpZ2h0
-LCBzb21lIHRyYW1wb2xpbmVzIGhhdmUgYmVlbiBhZGRlZCB0aGF0IGFyZQ0KPiA+ID4gPiBjdXJy
-ZW50bHkgc2V0IGFzIFJXWCBhdCBtb2RpZmljYXRpb24gdGltZSBBTkQgbGVmdCB0aGF0IHdheSBk
-dXJpbmcNCj4gPiA+ID4gcnVudGltZT8NCj4gPiA+ID4gVGhlDQo+ID4gPiA+IGRpc2N1c3Npb24g
-b24gdGhlIG9yZGVyIG9mIHNldF9tZW1vcnlfKCkgY2FsbHMgaW4gdGhlIGNvbW1pdCBtZXNzYWdl
-DQo+ID4gPiA+IG1hZGUgbWUNCj4gPiA+ID4gdGhpbmsgdGhhdCB0aGlzIHdhcyBqdXN0IGEgbW9k
-aWZpY2F0aW9uIHRpbWUgdGhpbmcgYXQgZmlyc3QuDQo+ID4gPiANCj4gPiA+IEnigJltIG5vdCBz
-dXJlIHdoYXQgdGhlIHN0YXR1cyBxdW8gaXMuDQo+ID4gPiANCj4gPiA+IFdlIHJlYWxseSBvdWdo
-dCB0byBoYXZlIGEgZ2VudWluZWx5IGdvb2QgQVBJIGZvciBhbGxvY2F0aW9uIGFuZA0KPiA+ID4g
-aW5pdGlhbGl6YXRpb24NCj4gPiA+IG9mIHRleHQuICBXZSBjYW4gZG8gc28gbXVjaCBiZXR0ZXIg
-dGhhbiBzZXRfbWVtb3J5X2JsYWhibGFoLg0KPiA+ID4gDQo+ID4gPiBGV0lXLCBJIGhhdmUgc29t
-ZSBpZGVhcyBhYm91dCBtYWtpbmcga2VybmVsIGZsdXNoZXMgY2hlYXBlci4gSXTigJlzDQo+ID4g
-PiBjdXJyZW50bHkNCj4gPiA+IGJsb2NrZWQgb24gZmluZGluZyBzb21lIHRpbWUgYW5kIG9uIHRn
-bHjigJlzIGlycXRyYWNlIHdvcmsuDQo+ID4gPiANCj4gPiANCj4gPiBNYWtlcyBzZW5zZSB0byBt
-ZS4gSSBndWVzcyB0aGVyZSBhcmUgNiB0eXBlcyBvZiB0ZXh0IGFsbG9jYXRpb25zIG5vdzoNCj4g
-PiAtIFRoZXNlIHR3byBCUEYgdHJhbXBvbGluZXMNCj4gPiAtIEJQRiBKSVRzDQo+ID4gLSBNb2R1
-bGVzDQo+ID4gLSBLcHJvYmVzDQo+ID4gLSBGdHJhY2UNCj4gPiANCj4gPiBBbGwgZG9pbmcgKG9y
-IHNob3VsZCBiZSBkb2luZykgcHJldHR5IG11Y2ggdGhlIHNhbWUgdGhpbmcuIEkgYmVsaWV2ZSBK
-ZXNzaWNhDQo+ID4gaGFkDQo+ID4gc2FpZCBhdCBvbmUgcG9pbnQgdGhhdCBzaGUgZGlkbid0IGxp
-a2UgYWxsIHRoZSBvdGhlciBmZWF0dXJlcyB1c2luZw0KPiA+IG1vZHVsZV9hbGxvYygpIGFzIGl0
-IHdhcyBzdXBwb3NlZCB0byBiZSBqdXN0IGZvciByZWFsIG1vZHVsZXMuIFdoZXJlIHdvdWxkDQo+
-ID4gdGhlDQo+ID4gQVBJIGxpdmU/DQo+IA0KPiBOZXcgaGVhZGVyPyAgVGhpcyBzaG91bGRu4oCZ
-dCBtYXR0ZXIgdGhhdCBtdWNoLg0KPiANCj4gSGVyZSBhcmUgdHdvIHN0cmF3bWFuIHByb3Bvc2Fs
-cy4gIEFsbCBvZiB0aGlzIGlzIHZlcnkgcm91Z2ggLS0gdGhlDQo+IGFjdHVhbCBkYXRhIHN0cnVj
-dHVyZXMgYW5kIHNpZ25hdHVyZXMgYXJlIGxpa2VseSBwcm9ibGVtYXRpYyBmb3INCj4gbXVsdGlw
-bGUgcmVhc29ucy4NCj4gDQo+IC0tLSBGaXJzdCBwcm9wb3NhbCAtLS0NCj4gDQo+IHN0cnVjdCB0
-ZXh0X2FsbG9jYXRpb24gew0KPiAgIHZvaWQgKmZpbmFsX2FkZHI7DQo+ICAgc3RydWN0IHBhZ2Ug
-KnBhZ2VzOw0KPiAgIGludCBucGFnZXM7DQo+IH07DQo+IA0KPiBpbnQgdGV4dF9hbGxvYyhzdHJ1
-Y3QgdGV4dF9hbGxvY2F0aW9uICpvdXQsIHNpemVfdCBzaXplKTsNCj4gDQo+IC8qIG5vdyBmaW5h
-bF9hZGRyIGlzIG5vdCBhY2Nlc3NpYmxlIGFuZCBwYWdlcyBpcyB3cml0YWJsZS4gKi8NCj4gDQo+
-IGludCB0ZXh0X2ZyZWV6ZShzdHJ1Y3QgdGV4dF9hbGxvY2F0aW9uICphbGxvYyk7DQo+IA0KPiAv
-KiBub3cgcGFnZXMgYXJlIG5vdCBhY2Nlc3NpYmxlIGFuZCBmaW5hbF9hZGRyIGlzIFJPLiAgQWx0
-ZXJuYXRpdmVseSwNCj4gcGFnZXMgYXJlIFJPIGFuZCBmaW5hbF9hZGRyIGlzIHVubWFwcGVkLiAq
-Lw0KPiANCj4gaW50IHRleHRfZmluaXNoKHN0cnVjdCB0ZXh0X2FsbG9jYXRpb24gKmFsbG9jKTsN
-Cj4gDQo+IC8qIG5vdyBmaW5hbF9hZGRyIGlzIFJYLiAgQWxsIGRvbmUuICovDQo+IA0KPiBUaGlz
-IGdldHMgaXQgd2l0aCBqdXN0IG9uZSBmbHVzaCBhbmQgZ2l2ZXMgYSBjaGFuY2UgdG8gZG91Ymxl
-LWNoZWNrIGluDQo+IGNhc2Ugb2YgcmFjZSBhdHRhY2tzIGZyb20gb3RoZXIgQ1BVcy4gIERvdWJs
-ZS1jaGVja2luZyBpcyBhbm5veWluZywNCj4gdGhvdWdoLg0KPiANCj4gLS0tIFNlY29uZCBwcm9w
-b3NhbCAtLS0NCj4gDQo+IHN0cnVjdCB0ZXh0X2FsbG9jYXRpb24gew0KPiAgIHZvaWQgKmZpbmFs
-X2FkZHI7DQo+ICAgLyogbG90cyBvZiBvcGFxdWUgc3R1ZmYgaW5jbHVkaW5nIGFuIG1tX3N0cnVj
-dCAqLw0KPiAgIC8qIG9wdGlvbmFsOiBsaXN0IG9mIHN0cnVjdCBwYWdlLCBidXQgdGhpcyBpc24n
-dCBvYnZpb3VzbHkgdXNlZnVsICovDQo+IH07DQo+IA0KPiBpbnQgdGV4dF9hbGxvYyhzdHJ1Y3Qg
-dGV4dF9hbGxvY2F0aW9uICpvdXQsIHNpemVfdCBzaXplKTsNCj4gDQo+IC8qIE1lbW9yeSBpcyBh
-bGxvY2F0ZWQuICBUaGVyZSBpcyBubyB3YXkgdG8gYWNjZXNzIGl0IGF0IGFsbCByaWdodA0KPiBu
-b3cuICBUaGUgbWVtb3J5IGlzIFJPIG9yIG5vdCBwcmVzZW50IGluIHRoZSBkaXJlY3QgbWFwLiAq
-Lw0KPiANCj4gdm9pZCBfX3VzZXIgKnRleHRfYWN0aXZhdGVfbWFwcGluZyhzdHJ1Y3QgdGV4dF9h
-bGxvY2F0aW9uICpvdXQpOw0KPiANCj4gLyogTm93IHRoZSB0ZXh0IGlzIFJXIGF0ICp1c2VyKiBh
-ZGRyZXNzIGdpdmVuIGJ5IHJldHVybiB2YWx1ZS4NCj4gUHJlZW1wdGlvbiBpcyBvZmYgaWYgcmVx
-dWlyZWQgYnkgdXNlX3RlbXBvcmFyeV9tbSgpLiAgUmVhbCB1c2VyIG1lbW9yeQ0KPiBjYW5ub3Qg
-YmUgYWNjZXNzZWQuICovDQo+IA0KPiB2b2lkIHRleHRfZGVhY3RpdmF0ZV9tYXBwaW5nKHN0cnVj
-dCB0ZXh0X2FsbG9jYXRpb24gKmFsbG9jKTsNCj4gDQo+IC8qIE5vdyB0aGUgbWVtb3J5IGlzIGlu
-YWNjZXNzaWJsZSBhZ2Fpbi4gKi8NCj4gDQo+IHZvaWQgdGV4dF9maW5hbGl6ZShzdHJ1Y3QgdGV4
-dF9hbGxvY2F0aW9uICphbGxvYyk7DQo+IA0KPiAvKiBOb3cgaXQncyBSWCBvciBYTyBhdCB0aGUg
-ZmluYWwgYWRkcmVzcy4gKi8NCj4gDQo+IA0KPiBQcm9zIG9mIHNlY29uZCBhcHByb2FjaDoNCj4g
-DQo+ICAtIEluaGVyZW50bHkgaW1tdW5lIHRvIGNyb3NzLUNQVSBhdHRhY2suICBObyBkb3VibGUt
-Y2hlY2suDQo+IA0KPiAgLSBJZiB3ZSBldmVyIGltcGxlbWVudCBhIGNhY2hlIG9mIG5vbi1kaXJl
-Y3QtbWFwcGVkLCB1bmFsaWFzZWQgcGFnZXMsDQo+IHRoZW4gaXQgd29ya3Mgd2l0aCBubyBmbHVz
-aGVzIGF0IGFsbC4gIFdlIGNvdWxkIGV2ZW4gcmVsYXggaXQgYSBiaXQgdG8NCj4gYWxsb3cgbm9u
-LWRpcmVjdC1tYXBwZWQgcGFnZXMgdGhhdCBtYXkgaGF2ZSBSWCAvIFhPIGFsaWFzZXMgYnV0IG5v
-IFcNCj4gYWxpYXNlcy4NCj4gDQo+ICAtIENhbiBlYXNpbHkgYWNjZXNzIHdpdGhvdXQgd29ycnlp
-bmcgYWJvdXQgcGFnZSBib3VuZGFyaWVzLg0KPiANCj4gQ29uczoNCj4gDQo+ICAtIFRoZSB1c2Ug
-b2YgYSB0ZW1wb3JhcnkgbW0gaXMgYW5ub3lpbmcgLS0geW91IGNhbid0IGNvcHkgZnJvbSB1c2Vy
-DQo+IG1lbW9yeSwgZm9yIGV4YW1wbGUuDQoNClByb2JhYmx5IHRoZSBmaXJzdCBwcm9wb3NhbCBp
-cyBiZXR0ZXIgZm9yIHVzYWdlcyB3aGVyZSB0aGVyZSBpcyBhIHNpZ25hdHVyZSB0aGF0DQpjYW4g
-YmUgY2hlY2tlZCBsaWtlIG1vZHVsZXMsIGJlY2F1c2UgeW91IGNvdWxkIG1vcmUgZWFzaWx5IGNo
-ZWNrIHRoZSBzaWduYXR1cmUNCmFmdGVyIHRoZSB0ZXh0IGlzIFJPLiBJIGd1ZXNzIGxlYXZpbmcg
-dGhlIGRpcmVjdCBtYXAgYXMgUk8gY291bGQgd29yayBmb3IgdGhlDQpzZWNvbmQgb3B0aW9uIHRv
-by4gQm90aCB3b3VsZCBwcm9iYWJseSByZXF1aXJlIHNpZ25pZmljYW50IGNoYW5nZXMgdG8gbW9k
-dWxlDQpzaWduYXR1cmUgdmVyaWZpY2F0aW9uIHRob3VnaC4NCg0KSnVzdCBhIG1pbm9yIHBvaW50
-L2NsYXJpZmljYXRpb24sIGJ1dCBvdXRzaWRlIG9mIGFuIGVuaGFuY2VkIHNpZ25lZCBtb2R1bGUg
-Y2FzZSwNCkkgdGhpbmsgdGhlIGNyb3NzLUNQVSBhdHRhY2sgbWl0aWdhdGlvbiBjYW4ndCBiZSBm
-dWxsLiBGb3IgZXhhbXBsZSwgYXR0YWNraW5nDQp0aGUgdmVyaWZpZWQgQlBGIGJ5dGUgY29kZSAo
-d2hpY2ggaXMgYXBwYXJlbnRseSBwbGFubmVkIHRvIG5vIGxvbmdlciBiZSBSTyksIG9yDQp0aGUg
-cG9pbnRlcnMgYmVpbmcgbG9hZGVkIGludG8gdGhlc2UgdHJhbXBvbGluZXMuIFRoZXJlIGlzIGFs
-d2F5cyBnb2luZyB0byBiZQ0Kc29tZSB3cml0YWJsZSBzb3VyY2Ugb3IgcG9pbnRlciB0byB0aGUg
-c291cmNlLCBhbmQgdW5sZXNzIHRoZXJlIGlzIGEgd2F5IHRvDQp2ZXJpZnkgdGhlIGVuZCBSTyBy
-ZXN1bHQsIGl0J3MgYW4gdW4td2lubmFibGUgZ2FtZSBvZiB3aGFjay1hLW1vbGUgdG8gZG8gaXQg
-aW4NCmZ1bGwuIFN0aWxsIHRoZSBsZXNzIGV4cG9zZWQgc3VyZmFjZXMgdGhlIGJldHRlciBzaW5j
-ZSB0aGUgd3JpdGVzIHdlIGFyZQ0Kd29ycnlpbmcgYWJvdXQgaW4gdGhpcyBjYXNlIGFyZSBwcm9i
-YWJseSBub3QgZnVsbHkgYXJiaXRyYXJ5Lg0KDQpJIGRvbid0IHNlZSB3aHkgaXQgd291bGQgYmUg
-c28gYmFkIHRvIHJlcXVpcmUgY29weWluZyBkYXRhIHRvIHRoZSBrZXJuZWwgYmVmb3JlDQpzZW5k
-aW5nIGl0IHRocm91Z2ggdGhpcyBwcm9jZXNzLiBOb3RoaW5nIGNvcGllcyB0byBmaW5hbCBhbGxv
-Y2F0aW9uIGRpcmVjdGx5DQpmcm9tIHVzZXJzcGFjZSB0b2RheSwgYW5kIGZyb20gYSBwZXJmIHBl
-cnNwZWN0aXZlLCBob3cgYmFkIGlzIGFuIGV4dHJhIGNvcHkgd2hlbg0Kd2UgYXJlIHNhdmluZyBU
-TEIgc2hvb3Rkb3ducz8gQXJlIHlvdSB0aGlua2luZyB0byBwcm90ZWN0IHRoZSBkYXRhIHRoYXQn
-cyBiZWluZw0KbG9hZGVkIGZyb20gb3RoZXIgQ1BVcz8NCg0KT3RoZXJ3aXNlLCBjb3VsZCB3ZSBs
-YXppbHkgY2xvbmUvc3luYyB0aGUgb3JpZ2luYWwgbW0gaW50byB0aGUgdGVtcG9yYXJ5IG9uZSB0
-bw0KYWxsb3cgdGhpcz8gKHBvc3NpYmx5IHRvdGFsbHkgbWlzZ3VpZGVkIGlkZWEpDQoNCkZXSVcs
-IEkgcmVhbGx5IGxpa2UgdGhlIGlkZWEgb2YgYSBjYWNoZSBvZiB1bm1hcHBlZCBvciBSTyBwYWdl
-cy4gUG90ZW50aWFsbHkNCnNldmVyYWwgb3B0aW1pemF0aW9ucyB3ZSBjb3VsZCBkbyB0aGVyZS4N
-Cg0KSWYgdGhpcyBBUEkgc2hvdWxkIGJlIGNyb3NzIHBsYXRmb3JtLCB3ZSBtaWdodCB3YW50IHRv
-IGFic3RyYWN0IHRoZSBjb3B5IGl0c2VsZg0KYXMgd2VsbCwgc2luY2Ugb3RoZXIgYXJjaCdzIG1p
-Z2h0IGhhdmUgbm9uIF9fdXNlciBzb2x1dGlvbnMgZm9yIGNvcHlpbmcgZGF0YSBpbi4NCg0KVW5s
-ZXNzIHNvbWVvbmUgZWxzZSB3YW50cyB0bywgSSBjYW4gcHJvYmFibHkgdGFrZSBhIGxvb2sgYXQg
-YSBmaXJzdCBjdXQgb2YgdGhpcw0KYWZ0ZXIgSSBnZXQgdGhlIGN1cnJlbnQgdGhpbmcgSSdtIHdv
-cmtpbmcgb24gb3V0LiBQcm9iYWJseSBiZXR0ZXIgdG8gbGV0IHRoZQ0KZHVzdCBzZXR0bGUgb24g
-dGhlIGZ0cmFjZSBjaGFuZ2VzIGFzIHdlbGwuDQo=
+To date our usage of sockmap/tls has been fairly simple, the BPF programs
+did only well-defined pop, push, pull and apply/cork operations.
+
+Now that we started to push more complex programs into sockmap we uncovered
+a series of issues addressed here. Further OpenSSL3.0 version should be
+released soon with kTLS support so its important to get any remaining
+issues on BPF and kTLS support resolved.
+
+Additionally, I have a patch under development to allow sockmap to be
+enabled/disabled at runtime for Cilium endpoints. This allows us to stress
+the map insert/delete with kTLS more than previously where Cilium only
+added the socket to the map when it entered ESTABLISHED state and never
+touched it from the control path side again relying on the sockets own
+close() hook to remove it. The selftests are great but a cluster
+full of thousands of sockets finds these things fairly quickly.
+
+To test I have a set of test cases in test_sockmap.c that expose these
+issues. Once we get fixes here merged and in bpf-next I'll submit the
+tests to bpf-next tree to ensure we don't regress again. Also I've run
+these patches in the Cilium CI with OpenSSL (master branch) this will
+run tools such as netperf, ab, wrk2, curl, etc. to get a broad set of
+testing.
+
+I'm aware of two more issues that we are working to resolve in another
+couple (probably two) patches. First we see an auth tag corruption in
+kTLS when sending small 1byte chunks under stress. I've not pinned this
+down yet. But, guessing because its under 1B stress tests it must be
+some error path being triggered. And second we need to ensure BPF RX
+programs are not skipped when kTLS ULP is loaded. This breaks some of
+the sockmap selftests when running with kTLS. I'll send a follow up
+for this.
+
+Any review/comments appreciated. Thanks!
+
+---
+
+John Fastabend (9):
+      bpf: sockmap/tls, during free we may call tcp_bpf_unhash() in loop
+      bpf: sockmap, ensure sock lock held during tear down
+      bpf: sockmap/tls, push write_space updates through ulp updates
+      bpf: sockmap, skmsg helper overestimates push, pull, and pop bounds
+      bpf: sockmap/tls, msg_push_data may leave end mark in place
+      bpf: sockmap/tls, tls_sw can create a plaintext buf > encrypt buf
+      bpf: sockmap/tls, skmsg can have wrapped skmsg that needs extra chaining
+      bpf: sockmap/tls, tls_push_record can not handle zero length skmsg
+      bpf: sockmap/tls, fix pop data with SK_DROP return code
+
+
+ include/linux/skmsg.h |   13 +++++++++----
+ include/net/tcp.h     |    6 ++++--
+ net/core/filter.c     |   11 ++++++-----
+ net/core/skmsg.c      |    2 ++
+ net/core/sock_map.c   |    7 ++++++-
+ net/ipv4/tcp_bpf.c    |    5 +----
+ net/ipv4/tcp_ulp.c    |    6 ++++--
+ net/tls/tls_main.c    |   10 +++++++---
+ net/tls/tls_sw.c      |   34 ++++++++++++++++++++++++++++++----
+ 9 files changed, 69 insertions(+), 25 deletions(-)
+
+--
+Signature
