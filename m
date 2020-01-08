@@ -2,315 +2,223 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A1AC1337F5
-	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2020 01:33:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E7C1133863
+	for <lists+bpf@lfdr.de>; Wed,  8 Jan 2020 02:20:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726281AbgAHAdN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 7 Jan 2020 19:33:13 -0500
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:35160 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725908AbgAHAdN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 7 Jan 2020 19:33:13 -0500
-Received: by mail-lj1-f196.google.com with SMTP id j1so1513463lja.2;
-        Tue, 07 Jan 2020 16:33:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+Psvm9LJ7IluzH0skOPU3QbG029tkF0t15sChZCq5Co=;
-        b=liz5nlX/0WhjXeVkxHfg2p5/bPmAyZtTYgLd1Ue5kc1Khtd4kFwydm0LJmLxyP/ga2
-         BC//476fvHjd3rW7zMWjfWXHk9JDrjMvJY2uULaDwkpSA9ouD2191wsPM5ybIxKPy9vd
-         hmq+qK9MSikKS322F/di6+Tq7ECTo2ljtM8sTJu3NJ4WdSmQ2cLQldqfP/+40JEnILG0
-         XWqxhNHiZR23AytiNO//Aaw4P0nYOqKoDPfzQB7qtbF5+1nrhFHz+S8qzkIRPe6D8J/a
-         fyE8nYc/0lQjvi+rfLrPRAP5g0kyvuxOpE49dE3NNYxb/dRzCZJ9qaSVSOjNsEI6wI5s
-         hKcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+Psvm9LJ7IluzH0skOPU3QbG029tkF0t15sChZCq5Co=;
-        b=nXs4fPWtwF1QffXcGsxjHXWxnX2zoH3pXf4raPguNoTdBN4oq9v1wLAvHWGH0POMcI
-         eT/lhxCr8BW9TSYsQN2WBasGHfQIlslTkIJlA2rQ8eMSFd97A2idwFJrB31ZHqzb7TPG
-         NQ7it/ho7U70GCMKRft9EVXiDDelf2ZmZmkOHVDlqsdHGkmVqjjKXuDoOBnLYjNRGi+9
-         26nXlxDyJ/AkIdcJRS3VQ+egBs10ZNXz4dzZcUiwGcvk9DrQFkeYlK3Y802pIcBtRvoB
-         gYkdgiGz9nRZypJmOFvkLKnU8c6oQ1QxKdmRbArzNmVy9SA3FsPnTjfgrApjFXcXUXQa
-         BcgQ==
-X-Gm-Message-State: APjAAAV5YW+fOdy/knhRTG/aEI4zytklh5YUkMwlr5jLFpRIfaywvLGf
-        ulcwtv4+JlEOZ3QcYIhjK+ymtV6nj0VQ7cEplO0=
-X-Google-Smtp-Source: APXvYqxDmVIVb2/2b9j3QpddNsdJNbyxqujhgTR1axhpW6MEh40gig3MFCHC7uRGEccswHf7qfPP5XRj5FDprHcPv3g=
-X-Received: by 2002:a2e:93d5:: with SMTP id p21mr1325892ljh.50.1578443589704;
- Tue, 07 Jan 2020 16:33:09 -0800 (PST)
-MIME-Version: 1.0
-References: <20191211223344.165549-1-brianvv@google.com> <20191211223344.165549-7-brianvv@google.com>
- <a33dab7b-0f46-c29f-0db1-a5539c433b3d@fb.com> <CABCgpaVC-gCf58VmCx2XwwHoZ2FXHmtBfqzqJoPeeg2Q=DvRzg@mail.gmail.com>
- <8ba54068-0a0f-479e-e4d7-42bfb7f8ed55@fb.com>
-In-Reply-To: <8ba54068-0a0f-479e-e4d7-42bfb7f8ed55@fb.com>
-From:   Brian Vazquez <brianvv.kernel@gmail.com>
-Date:   Tue, 7 Jan 2020 18:32:58 -0600
-Message-ID: <CABCgpaV-7x1aBjd+NguOD5tqAaZigHjvSsirTFu_oT+7o8WtLQ@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 06/11] bpf: add batch ops to all htab bpf map
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Brian Vazquez <brianvv@google.com>,
+        id S1726803AbgAHBTv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 7 Jan 2020 20:19:51 -0500
+Received: from mga14.intel.com ([192.55.52.115]:16780 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725996AbgAHBTu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 7 Jan 2020 20:19:50 -0500
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 07 Jan 2020 17:19:48 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.69,408,1571727600"; 
+   d="scan'208";a="422760148"
+Received: from mjmartin-nuc02.mjmartin-nuc02 (HELO mjmartin-nuc02.sea.intel.com) ([10.251.8.166])
+  by fmsmga006.fm.intel.com with ESMTP; 07 Jan 2020 17:19:48 -0800
+From:   Mat Martineau <mathew.j.martineau@linux.intel.com>
+To:     netdev@vger.kernel.org, mptcp@lists.01.org
+Cc:     Mat Martineau <mathew.j.martineau@linux.intel.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S . Miller" <davem@davemloft.net>,
-        Stanislav Fomichev <sdf@google.com>,
-        Petar Penkov <ppenkov@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
+        Paolo Abeni <pabeni@redhat.com>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>
+Subject: [PATCH net-next v6 02/11] sock: Make sk_protocol a 16-bit value
+Date:   Tue,  7 Jan 2020 17:19:12 -0800
+Message-Id: <20200108011921.28942-3-mathew.j.martineau@linux.intel.com>
+X-Mailer: git-send-email 2.24.1
+In-Reply-To: <20200108011921.28942-1-mathew.j.martineau@linux.intel.com>
+References: <20200108011921.28942-1-mathew.j.martineau@linux.intel.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 7, 2020 at 12:18 PM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 1/6/20 11:02 PM, Brian Vazquez wrote:
-> > On Fri, Dec 13, 2019 at 12:58 PM Yonghong Song <yhs@fb.com> wrote:
-> >>
-> >>
-> >>
-> >> On 12/11/19 2:33 PM, Brian Vazquez wrote:
-> >>> From: Yonghong Song <yhs@fb.com>
-> >>>
-> >>> htab can't use generic batch support due some problematic behaviours
-> >>> inherent to the data structre, i.e. while iterating the bpf map  a
-> >>> concurrent program might delete the next entry that batch was about to
-> >>> use, in that case there's no easy solution to retrieve the next entry,
-> >>> the issue has been discussed multiple times (see [1] and [2]).
-> >>>
-> >>> The only way hmap can be traversed without the problem previously
-> >>> exposed is by making sure that the map is traversing entire buckets.
-> >>> This commit implements those strict requirements for hmap, the
-> >>> implementation follows the same interaction that generic support with
-> >>> some exceptions:
-> >>>
-> >>>    - If keys/values buffer are not big enough to traverse a bucket,
-> >>>      ENOSPC will be returned.
-> >>>    - out_batch contains the value of the next bucket in the iteration, not
-> >>>      the next key, but this is transparent for the user since the user
-> >>>      should never use out_batch for other than bpf batch syscalls.
-> >>>
-> >>> Note that only lookup and lookup_and_delete batch ops require the hmap
-> >>> specific implementation, update/delete batch ops can be the generic
-> >>> ones.
-> >>>
-> >>> [1] https://lore.kernel.org/bpf/20190724165803.87470-1-brianvv@google.com/
-> >>> [2] https://lore.kernel.org/bpf/20190906225434.3635421-1-yhs@fb.com/
-> >>>
-> >>> Signed-off-by: Yonghong Song <yhs@fb.com>
-> >>> Signed-off-by: Brian Vazquez <brianvv@google.com>
-> >>> ---
-> >>>    kernel/bpf/hashtab.c | 242 +++++++++++++++++++++++++++++++++++++++++++
-> >>>    1 file changed, 242 insertions(+)
-> >>>
-> >>> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-> >>> index 22066a62c8c97..fac107bdaf9ec 100644
-> >>> --- a/kernel/bpf/hashtab.c
-> >>> +++ b/kernel/bpf/hashtab.c
-> >>> @@ -17,6 +17,17 @@
-> >>>        (BPF_F_NO_PREALLOC | BPF_F_NO_COMMON_LRU | BPF_F_NUMA_NODE |    \
-> >>>         BPF_F_ACCESS_MASK | BPF_F_ZERO_SEED)
-> >>>
-> >>> +#define BATCH_OPS(_name)                     \
-> >>> +     .map_lookup_batch =                     \
-> >>> +     _name##_map_lookup_batch,               \
-> >>> +     .map_lookup_and_delete_batch =          \
-> >>> +     _name##_map_lookup_and_delete_batch,    \
-> >>> +     .map_update_batch =                     \
-> >>> +     generic_map_update_batch,               \
-> >>> +     .map_delete_batch =                     \
-> >>> +     generic_map_delete_batch
-> >>> +
-> >>> +
-> >>>    struct bucket {
-> >>>        struct hlist_nulls_head head;
-> >>>        raw_spinlock_t lock;
-> >>> @@ -1232,6 +1243,233 @@ static void htab_map_seq_show_elem(struct bpf_map *map, void *key,
-> >>>        rcu_read_unlock();
-> >>>    }
-> >>>
-> >>> +static int
-> >>> +__htab_map_lookup_and_delete_batch(struct bpf_map *map,
-> >>> +                                const union bpf_attr *attr,
-> >>> +                                union bpf_attr __user *uattr,
-> >>> +                                bool do_delete, bool is_lru_map,
-> >>> +                                bool is_percpu)
-> >>> +{
-> >>> +     struct bpf_htab *htab = container_of(map, struct bpf_htab, map);
-> >>> +     u32 bucket_cnt, total, key_size, value_size, roundup_key_size;
-> >>> +     void *keys = NULL, *values = NULL, *value, *dst_key, *dst_val;
-> >>> +     void __user *uvalues = u64_to_user_ptr(attr->batch.values);
-> >>> +     void __user *ukeys = u64_to_user_ptr(attr->batch.keys);
-> >>> +     void *ubatch = u64_to_user_ptr(attr->batch.in_batch);
-> >>> +     u64 elem_map_flags, map_flags;
-> >>> +     struct hlist_nulls_head *head;
-> >>> +     u32 batch, max_count, size;
-> >>> +     struct hlist_nulls_node *n;
-> >>> +     unsigned long flags;
-> >>> +     struct htab_elem *l;
-> >>> +     struct bucket *b;
-> >>> +     int ret = 0;
-> >>> +
-> >>> +     max_count = attr->batch.count;
-> >>> +     if (!max_count)
-> >>> +             return 0;
-> >>> +
-> >>> +     elem_map_flags = attr->batch.elem_flags;
-> >>> +     if ((elem_map_flags & ~BPF_F_LOCK) ||
-> >>> +         ((elem_map_flags & BPF_F_LOCK) && !map_value_has_spin_lock(map)))
-> >>> +             return -EINVAL;
-> >>> +
-> >>> +     map_flags = attr->batch.flags;
-> >>> +     if (map_flags)
-> >>> +             return -EINVAL;
-> >>> +
-> >>> +     batch = 0;
-> >>> +     if (ubatch && copy_from_user(&batch, ubatch, sizeof(batch)))
-> >>> +             return -EFAULT;
-> >>> +
-> >>> +     if (batch >= htab->n_buckets)
-> >>> +             return -ENOENT;
-> >>> +
-> >>> +     /* We cannot do copy_from_user or copy_to_user inside
-> >>> +      * the rcu_read_lock. Allocate enough space here.
-> >>> +      */
-> >>> +     key_size = htab->map.key_size;
-> >>> +     roundup_key_size = round_up(htab->map.key_size, 8);
-> >>> +     value_size = htab->map.value_size;
-> >>> +     size = round_up(value_size, 8);
-> >>> +     if (is_percpu)
-> >>> +             value_size = size * num_possible_cpus();
-> >>> +     keys = kvmalloc(key_size, GFP_USER | __GFP_NOWARN);
-> >>> +     values = kvmalloc(value_size, GFP_USER | __GFP_NOWARN);
-> >>> +     if (!keys || !values) {
-> >>> +             ret = -ENOMEM;
-> >>> +             goto out;
-> >>> +     }
-> >>> +
-> >>> +     dst_key = keys;
-> >>> +     dst_val = values;
-> >>> +     total = 0;
-> >>> +
-> >>> +     preempt_disable();
-> >>> +     this_cpu_inc(bpf_prog_active);
-> >>> +     rcu_read_lock();
-> >>> +
-> >>> +again:
-> >>> +     b = &htab->buckets[batch];
-> >>> +     head = &b->head;
-> >>> +     raw_spin_lock_irqsave(&b->lock, flags);
-> >>> +
-> >>> +     bucket_cnt = 0;
-> >>> +     hlist_nulls_for_each_entry_rcu(l, n, head, hash_node)
-> >>> +             bucket_cnt++;
-> >>> +
-> >>> +     if (bucket_cnt > (max_count - total)) {
-> >>> +             if (total == 0)
-> >>> +                     ret = -ENOSPC;
-> >>> +             goto after_loop;
-> >>> +     }
-> >>> +
-> >>> +     hlist_nulls_for_each_entry_safe(l, n, head, hash_node) {
-> >>> +             memcpy(dst_key, l->key, key_size);
-> >>> +
-> >>> +             if (is_percpu) {
-> >>> +                     int off = 0, cpu;
-> >>> +                     void __percpu *pptr;
-> >>> +
-> >>> +                     pptr = htab_elem_get_ptr(l, map->key_size);
-> >>> +                     for_each_possible_cpu(cpu) {
-> >>> +                             bpf_long_memcpy(dst_val + off,
-> >>> +                                             per_cpu_ptr(pptr, cpu), size);
-> >>> +                             off += size;
-> >>> +                     }
-> >>> +             } else {
-> >>> +                     value = l->key + roundup_key_size;
-> >>> +                     if (elem_map_flags & BPF_F_LOCK)
-> >>> +                             copy_map_value_locked(map, dst_val, value,
-> >>> +                                                   true);
-> >>> +                     else
-> >>> +                             copy_map_value(map, dst_val, value);
-> >>> +                     check_and_init_map_lock(map, dst_val);
-> >>> +             }
-> >>> +             if (do_delete) {
-> >>> +                     hlist_nulls_del_rcu(&l->hash_node);
-> >>> +                     if (is_lru_map)
-> >>> +                             bpf_lru_push_free(&htab->lru, &l->lru_node);
-> >>> +                     else
-> >>> +                             free_htab_elem(htab, l);
-> >>> +             }
-> >>> +             if (copy_to_user(ukeys + total * key_size, keys, key_size) ||
-> >>> +                copy_to_user(uvalues + total * value_size, values,
-> >>> +                value_size)) {
-> >>
-> >> We cannot do copy_to_user inside atomic region where irq is disabled
-> >> with raw_spin_lock_irqsave(). We could do the following:
-> >>      . we kalloc memory before preempt_disable() with the current count
-> >>        of bucket size.
-> >>      . inside the raw_spin_lock_irqsave() region, we can do copy to kernel
-> >>        memory.
-> >>      . inside the raw_spin_lock_irqsave() region, if the bucket size
-> >>        changes, we can have a few retries to increase allocation size
-> >>        before giving up.
-> >> Do you think this may work?
-> >
-> > Yes, it does.
-> >
-> > What should be the initial value for the allocated memory
-> > max_entries/2? Do you see any issue if we just kalloc the entire
-> > buffer?
->
-> Allocating max_entries/2 or entire buffer risks allocating too much
-> memory from the system, which may not be a good thing in a production
-> system. That is why I proposed to allocate memory at bucket level.
-> For a reasonable balanced hash table, this should not cause large
-> memory pressure on the host. What do you think?
+Match the 16-bit width of skbuff->protocol. Fills an 8-bit hole so
+sizeof(struct sock) does not change.
 
-Sounds reasonable, I'll do that! Thanks for the feedback!
->
-> >
-> >>
-> >>> +                     ret = -EFAULT;
-> >>> +                     goto after_loop;
-> >>> +             }
-> >>> +             total++;
-> >>> +     }
-> >>> +
-> >>> +     batch++;
-> >>> +     if (batch >= htab->n_buckets) {
-> >>> +             ret = -ENOENT;
-> >>> +             goto after_loop;
-> >>> +     }
-> >>> +
-> >>> +     raw_spin_unlock_irqrestore(&b->lock, flags);
-> >>> +     goto again;
-> >>> +
-> >>> +after_loop:
-> >>> +     raw_spin_unlock_irqrestore(&b->lock, flags);
-> >>> +
-> >>> +     rcu_read_unlock();
-> >>> +     this_cpu_dec(bpf_prog_active);
-> >>> +     preempt_enable();
-> >>> +
-> >>> +     if (ret && ret != -ENOENT)
-> >>> +             goto out;
-> >>> +
-> >>> +     /* copy data back to user */
-> >>> +     ubatch = u64_to_user_ptr(attr->batch.out_batch);
-> >>> +     if (copy_to_user(ubatch, &batch, sizeof(batch)) ||
-> >>> +         put_user(total, &uattr->batch.count))
-> >>> +             ret = -EFAULT;
-> >>> +
-> >>> +out:
-> >>> +     kvfree(keys);
-> >>> +     kvfree(values);
-> >>> +     return ret;
-> >>> +}
-> >>> +
-> >> [...]
+Also take care of BPF field access for sk_type/sk_protocol. Both of them
+are now outside the bitfield, so we can use load instructions without
+further shifting/masking.
+
+v5 -> v6:
+ - update eBPF accessors, too (Intel's kbuild test robot)
+v2 -> v3:
+ - keep 'sk_type' 2 bytes aligned (Eric)
+v1 -> v2:
+ - preserve sk_pacing_shift as bit field (Eric)
+
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: bpf@vger.kernel.org
+Co-developed-by: Paolo Abeni <pabeni@redhat.com>
+Signed-off-by: Paolo Abeni <pabeni@redhat.com>
+Co-developed-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+Signed-off-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+Signed-off-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
+---
+ include/net/sock.h          | 25 ++++------------
+ include/trace/events/sock.h |  2 +-
+ net/core/filter.c           | 60 ++++++++++++++-----------------------
+ 3 files changed, 28 insertions(+), 59 deletions(-)
+
+diff --git a/include/net/sock.h b/include/net/sock.h
+index 091e55428415..8766f9bc3e70 100644
+--- a/include/net/sock.h
++++ b/include/net/sock.h
+@@ -436,30 +436,15 @@ struct sock {
+ 	 * Because of non atomicity rules, all
+ 	 * changes are protected by socket lock.
+ 	 */
+-	unsigned int		__sk_flags_offset[0];
+-#ifdef __BIG_ENDIAN_BITFIELD
+-#define SK_FL_PROTO_SHIFT  16
+-#define SK_FL_PROTO_MASK   0x00ff0000
+-
+-#define SK_FL_TYPE_SHIFT   0
+-#define SK_FL_TYPE_MASK    0x0000ffff
+-#else
+-#define SK_FL_PROTO_SHIFT  8
+-#define SK_FL_PROTO_MASK   0x0000ff00
+-
+-#define SK_FL_TYPE_SHIFT   16
+-#define SK_FL_TYPE_MASK    0xffff0000
+-#endif
+-
+-	unsigned int		sk_padding : 1,
++	u8			sk_padding : 1,
+ 				sk_kern_sock : 1,
+ 				sk_no_check_tx : 1,
+ 				sk_no_check_rx : 1,
+-				sk_userlocks : 4,
+-				sk_protocol  : 8,
+-				sk_type      : 16;
+-	u16			sk_gso_max_segs;
++				sk_userlocks : 4;
+ 	u8			sk_pacing_shift;
++	u16			sk_type;
++	u16			sk_protocol;
++	u16			sk_gso_max_segs;
+ 	unsigned long	        sk_lingertime;
+ 	struct proto		*sk_prot_creator;
+ 	rwlock_t		sk_callback_lock;
+diff --git a/include/trace/events/sock.h b/include/trace/events/sock.h
+index 51fe9f6719eb..3ff12b90048d 100644
+--- a/include/trace/events/sock.h
++++ b/include/trace/events/sock.h
+@@ -147,7 +147,7 @@ TRACE_EVENT(inet_sock_set_state,
+ 		__field(__u16, sport)
+ 		__field(__u16, dport)
+ 		__field(__u16, family)
+-		__field(__u8, protocol)
++		__field(__u16, protocol)
+ 		__array(__u8, saddr, 4)
+ 		__array(__u8, daddr, 4)
+ 		__array(__u8, saddr_v6, 16)
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 42fd17c48c5f..ef01c5599501 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -7607,21 +7607,21 @@ u32 bpf_sock_convert_ctx_access(enum bpf_access_type type,
+ 		break;
+ 
+ 	case offsetof(struct bpf_sock, type):
+-		BUILD_BUG_ON(HWEIGHT32(SK_FL_TYPE_MASK) != BITS_PER_BYTE * 2);
+-		*insn++ = BPF_LDX_MEM(BPF_W, si->dst_reg, si->src_reg,
+-				      offsetof(struct sock, __sk_flags_offset));
+-		*insn++ = BPF_ALU32_IMM(BPF_AND, si->dst_reg, SK_FL_TYPE_MASK);
+-		*insn++ = BPF_ALU32_IMM(BPF_RSH, si->dst_reg, SK_FL_TYPE_SHIFT);
+-		*target_size = 2;
++		*insn++ = BPF_LDX_MEM(
++			BPF_FIELD_SIZEOF(struct sock, sk_type),
++			si->dst_reg, si->src_reg,
++			bpf_target_off(struct sock, sk_type,
++				       sizeof_field(struct sock, sk_type),
++				       target_size));
+ 		break;
+ 
+ 	case offsetof(struct bpf_sock, protocol):
+-		BUILD_BUG_ON(HWEIGHT32(SK_FL_PROTO_MASK) != BITS_PER_BYTE);
+-		*insn++ = BPF_LDX_MEM(BPF_W, si->dst_reg, si->src_reg,
+-				      offsetof(struct sock, __sk_flags_offset));
+-		*insn++ = BPF_ALU32_IMM(BPF_AND, si->dst_reg, SK_FL_PROTO_MASK);
+-		*insn++ = BPF_ALU32_IMM(BPF_RSH, si->dst_reg, SK_FL_PROTO_SHIFT);
+-		*target_size = 1;
++		*insn++ = BPF_LDX_MEM(
++			BPF_FIELD_SIZEOF(struct sock, sk_protocol),
++			si->dst_reg, si->src_reg,
++			bpf_target_off(struct sock, sk_protocol,
++				       sizeof_field(struct sock, sk_protocol),
++				       target_size));
+ 		break;
+ 
+ 	case offsetof(struct bpf_sock, src_ip4):
+@@ -7903,20 +7903,13 @@ static u32 sock_addr_convert_ctx_access(enum bpf_access_type type,
+ 		break;
+ 
+ 	case offsetof(struct bpf_sock_addr, type):
+-		SOCK_ADDR_LOAD_NESTED_FIELD_SIZE_OFF(
+-			struct bpf_sock_addr_kern, struct sock, sk,
+-			__sk_flags_offset, BPF_W, 0);
+-		*insn++ = BPF_ALU32_IMM(BPF_AND, si->dst_reg, SK_FL_TYPE_MASK);
+-		*insn++ = BPF_ALU32_IMM(BPF_RSH, si->dst_reg, SK_FL_TYPE_SHIFT);
++		SOCK_ADDR_LOAD_NESTED_FIELD(struct bpf_sock_addr_kern,
++					    struct sock, sk, sk_type);
+ 		break;
+ 
+ 	case offsetof(struct bpf_sock_addr, protocol):
+-		SOCK_ADDR_LOAD_NESTED_FIELD_SIZE_OFF(
+-			struct bpf_sock_addr_kern, struct sock, sk,
+-			__sk_flags_offset, BPF_W, 0);
+-		*insn++ = BPF_ALU32_IMM(BPF_AND, si->dst_reg, SK_FL_PROTO_MASK);
+-		*insn++ = BPF_ALU32_IMM(BPF_RSH, si->dst_reg,
+-					SK_FL_PROTO_SHIFT);
++		SOCK_ADDR_LOAD_NESTED_FIELD(struct bpf_sock_addr_kern,
++					    struct sock, sk, sk_protocol);
+ 		break;
+ 
+ 	case offsetof(struct bpf_sock_addr, msg_src_ip4):
+@@ -8835,11 +8828,11 @@ sk_reuseport_is_valid_access(int off, int size,
+ 				    skb,				\
+ 				    SKB_FIELD)
+ 
+-#define SK_REUSEPORT_LOAD_SK_FIELD_SIZE_OFF(SK_FIELD, BPF_SIZE, EXTRA_OFF) \
+-	SOCK_ADDR_LOAD_NESTED_FIELD_SIZE_OFF(struct sk_reuseport_kern,	\
+-					     struct sock,		\
+-					     sk,			\
+-					     SK_FIELD, BPF_SIZE, EXTRA_OFF)
++#define SK_REUSEPORT_LOAD_SK_FIELD(SK_FIELD)				\
++	SOCK_ADDR_LOAD_NESTED_FIELD(struct sk_reuseport_kern,		\
++				    struct sock,			\
++				    sk,					\
++				    SK_FIELD)
+ 
+ static u32 sk_reuseport_convert_ctx_access(enum bpf_access_type type,
+ 					   const struct bpf_insn *si,
+@@ -8863,16 +8856,7 @@ static u32 sk_reuseport_convert_ctx_access(enum bpf_access_type type,
+ 		break;
+ 
+ 	case offsetof(struct sk_reuseport_md, ip_protocol):
+-		BUILD_BUG_ON(HWEIGHT32(SK_FL_PROTO_MASK) != BITS_PER_BYTE);
+-		SK_REUSEPORT_LOAD_SK_FIELD_SIZE_OFF(__sk_flags_offset,
+-						    BPF_W, 0);
+-		*insn++ = BPF_ALU32_IMM(BPF_AND, si->dst_reg, SK_FL_PROTO_MASK);
+-		*insn++ = BPF_ALU32_IMM(BPF_RSH, si->dst_reg,
+-					SK_FL_PROTO_SHIFT);
+-		/* SK_FL_PROTO_MASK and SK_FL_PROTO_SHIFT are endian
+-		 * aware.  No further narrowing or masking is needed.
+-		 */
+-		*target_size = 1;
++		SK_REUSEPORT_LOAD_SK_FIELD(sk_protocol);
+ 		break;
+ 
+ 	case offsetof(struct sk_reuseport_md, data_end):
+-- 
+2.24.1
+
