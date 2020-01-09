@@ -2,164 +2,215 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C0DF1135C0C
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2020 16:00:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A7C8135D00
+	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2020 16:43:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730293AbgAIO6z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Jan 2020 09:58:55 -0500
-Received: from mail-il1-f193.google.com ([209.85.166.193]:36421 "EHLO
-        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732156AbgAIO6y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Jan 2020 09:58:54 -0500
-Received: by mail-il1-f193.google.com with SMTP id b15so5943226iln.3;
-        Thu, 09 Jan 2020 06:58:53 -0800 (PST)
+        id S1730568AbgAIPnB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Jan 2020 10:43:01 -0500
+Received: from mail-eopbgr1310075.outbound.protection.outlook.com ([40.107.131.75]:64736
+        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728098AbgAIPnB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Jan 2020 10:43:01 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KZqQQDuBZZNtcI3Lj6rbIvnlX2dDyg2yiniv3/AwHfM7H51J09tUGlnNbcsiy5YHU3o/pqzna7kIRVyV74IGyJtHsmrV+omJL5/vixqNGaNzhcOiXGeBhZ2CTwVYMjgCAWbwVDyvXykKIWXKhFbttQobFjNqfujyQgZhcYnNpmXR029h1PzyaKFRq1aQtZoVEAIbdDL0R2aS6hkJcuXQvVOghtj46etW/YeU3mHyD94Um4QlIqH+yXZDHQtvcADoB5gkrxrscUhr33EwRp+BWOQ/mHYnB2wEjCdc9Okzs/tftvFI0i04VFPDtczBBr/+Fw6/A7v8NV6ae9J7ckONTw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZzyTqtbOfq3Ig0yXTX1EWjydOU+uAenurCB81rAkFjg=;
+ b=YOVdNthcBLkMAN7XTCEijShhFVg+PRi7Q3bnUq6mt32w49a5qUbViQ90gMoGWa8CUdLF+XC+HCZAkp3mvO+H7ijpVwTfBIWVBVDe43V9hZ+44Gesk9b73GhA516P0/5O8w8EENGslq0Ppzufw/j3nmalDTFTKht5yV4KIPb6pi30E9asB6u5/VYhjoaIOAVhvQaFKSVisQPlugzLTzJdtTSJcrUeEu7HBfe+ttEA5JYqTYN4q70MamvS6p+7nPuGJZ6baXN0v9H84pVDH8Sh67s+DGoL3zoNDWOXuDKQ6czCxE5aPleSAf8Flpl6Q5R73g0xeWvJdS52e13dRg4VaA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=teo-en-ming-corp.com; dmarc=pass action=none
+ header.from=teo-en-ming-corp.com; dkim=pass header.d=teo-en-ming-corp.com;
+ arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=XLp4HzIibE892QDHCqNKq4lozGRKQ0dXyrjbBEHkh4E=;
-        b=l4Bzalxpj9qAWjG2OjZBfaX8qE9AN2lGm2PF1169VF6BfEUpHXYIDZIN08Xe2VY5H5
-         0++X8jERaPQNYEPI8pPF5c1s6/Ljg8Klww8bjOKZnBifpERhUI8ICdswpTnYm56zvgH5
-         T2K9Lm/9m2t+dqH8c4KzBt4p/vjKBQEeH4lYpQW7u09SluiT18hNu4Uz55aGfEJLpaVd
-         qRVe0ec8TndRSZ8xO8QwceZ+DZRZqJAtNAKVEtYAmhB1Ex3jq+SjQAr7SE8ux/f4QQ8a
-         O1yY253Bgial2+dW15DXzE08+pIKXAXI28e4F5eAC3KQCooSkRVFhJ2HdQwhXsmOYYrn
-         ByrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=XLp4HzIibE892QDHCqNKq4lozGRKQ0dXyrjbBEHkh4E=;
-        b=Ug2634qZODYyu8wP/jXvn1rHzS5BO8eUBQRwhZHO6fbqjR0DA0V+PG9hnoWGApuLLo
-         9HoJztSBLUpca69vBy4fFVWZ3bfBQck7GVS0GbjsXn7tg3OS2/1AX2broBkJhYLf8W8Y
-         /L82KVDd9j0GltBFaRiLHSS19xOAGkyjT+3FJtAC73iuPzgZHVGSQGtm6CktU+VxR4YW
-         sMRNI81RCqcO32xPKp1I4FgmKbjCVNGhNZtcpfvw4wF5TWuUuvqOuZCCe/vH7Fp2TwMC
-         d9DnZH18ID/S65dvzxZrq9MYbSUONj/d6woD+VCsrKsfAjhugOM2M2DiHJhqQD7LvMXE
-         vZng==
-X-Gm-Message-State: APjAAAVF3VYZ9coc3ntOOXpaQ1PlWCKHyObHf3+DRL7YIQdaZUIPqa4e
-        ar9//2raJ6cigA63bswxEP4=
-X-Google-Smtp-Source: APXvYqyEBUOMgjTc1BHjPyJhEHDdIck25bZwD98UM7E6mlmAai2a415h1rU67EqIw7CbycFG608R1A==
-X-Received: by 2002:a92:d183:: with SMTP id z3mr8884912ilz.214.1578581933490;
-        Thu, 09 Jan 2020 06:58:53 -0800 (PST)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id v21sm1458410ios.69.2020.01.09.06.58.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jan 2020 06:58:52 -0800 (PST)
-Date:   Thu, 09 Jan 2020 06:58:44 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Toshiaki Makita <toshiaki.makita1@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        bjorn.topel@gmail.com, bpf@vger.kernel.org, toke@redhat.com,
-        jbrouer@redhat.com
-Cc:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net
-Message-ID: <5e173fa42e1d5_35982ae92e9d45bc4b@john-XPS-13-9370.notmuch>
-In-Reply-To: <b74865dd-c8ff-4a93-a4b6-0dfd021eca66@gmail.com>
-References: <157851907534.21459.1166135254069483675.stgit@john-Precision-5820-Tower>
- <157851930654.21459.7236323146782270917.stgit@john-Precision-5820-Tower>
- <a4bb8f06-f960-cdda-f73a-8b87744445af@gmail.com>
- <5e16c99ecc70b_279f2af4a0e725c49a@john-XPS-13-9370.notmuch>
- <b74865dd-c8ff-4a93-a4b6-0dfd021eca66@gmail.com>
-Subject: Re: [bpf PATCH 2/2] bpf: xdp, remove no longer required
- rcu_read_{un}lock()
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+ d=teoenmingcorp.onmicrosoft.com; s=selector2-teoenmingcorp-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZzyTqtbOfq3Ig0yXTX1EWjydOU+uAenurCB81rAkFjg=;
+ b=GUXhJEzIfb+veQcY1cPFjEIK7SLh+7E8a8wFHc1A0Ot0u87rWfLbXH/EGIBPUzPMz+McNkBX0i3c+ZFzlmohwU7rOFrlu5w/U9gRpna5genQtDEFKEpxxrudLzMn3+KbgBA8Z1OSnhck8zJZVY3FoCO+2rdUQ+35sukmYl+J9Gs=
+Received: from KU1PR01MB2134.apcprd01.prod.exchangelabs.com (10.170.174.138)
+ by KU1PR01MB2005.apcprd01.prod.exchangelabs.com (52.133.203.15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2602.15; Thu, 9 Jan
+ 2020 15:42:56 +0000
+Received: from KU1PR01MB2134.apcprd01.prod.exchangelabs.com
+ ([fe80::8122:ca17:cba6:19aa]) by KU1PR01MB2134.apcprd01.prod.exchangelabs.com
+ ([fe80::8122:ca17:cba6:19aa%5]) with mapi id 15.20.2623.010; Thu, 9 Jan 2020
+ 15:42:56 +0000
+From:   Turritopsis Dohrnii Teo En Ming <ceo@teo-en-ming-corp.com>
+To:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+CC:     Turritopsis Dohrnii Teo En Ming <ceo@teo-en-ming-corp.com>
+Subject: Singapore Citizen Mr. Teo En Ming's Refugee Seeking Attempts as at 9
+ Jan 2020 Thursday
+Thread-Topic: Singapore Citizen Mr. Teo En Ming's Refugee Seeking Attempts as
+ at 9 Jan 2020 Thursday
+Thread-Index: AdXHA2tFPmIUAZNGTAWnJSF576GrxA==
+Date:   Thu, 9 Jan 2020 15:42:56 +0000
+Message-ID: <KU1PR01MB2134DC143E5182FDCB19FC3087390@KU1PR01MB2134.apcprd01.prod.exchangelabs.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=ceo@teo-en-ming-corp.com; 
+x-originating-ip: [2401:7400:c802:de67:f1ab:6fde:d925:5c0c]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: fc73331a-362e-4de1-abc2-08d7951a98ed
+x-ms-traffictypediagnostic: KU1PR01MB2005:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <KU1PR01MB2005D95097E2893FB25DC5C187390@KU1PR01MB2005.apcprd01.prod.exchangelabs.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5797;
+x-forefront-prvs: 02778BF158
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(136003)(396003)(39830400003)(346002)(366004)(376002)(199004)(189003)(107886003)(6916009)(66556008)(4000180100002)(8936002)(52536014)(66446008)(66946007)(71200400001)(66476007)(64756008)(966005)(76116006)(186003)(2906002)(508600001)(4326008)(5660300002)(7696005)(316002)(6506007)(81156014)(8676002)(81166006)(9686003)(86362001)(33656002)(55016002);DIR:OUT;SFP:1101;SCL:1;SRVR:KU1PR01MB2005;H:KU1PR01MB2134.apcprd01.prod.exchangelabs.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: teo-en-ming-corp.com does not
+ designate permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: HwjdgBCXdFWJQRZfr7a4b3Lq0VKU27zhfc4hT1uqCu/b2HoY+DyBk/ryKIMv0O2Ffvy7q6U9/NNRfuMnLQLaHe++rKvwRayT/GQF3+TzyVktz45cI8QPwKn0vfELptmYc77VHQKFOBhE27LZWDXgY/xH2KzYwj/fdIL3nRLxCv39Z+jjZvShPW+A8FsJ8H38xnSwTFiwBXeBGkDByI469XJuO3BlbEYMqu8DIPKQpeQYfsnRATKZdErQ7Y9pdG8aO2LLl3I2K0rR7YsLPKOGYBtpNQGg3qDRaYN6DBH9gxS8bTsYthNYcLvSof5/WCgSUR6estzqhLb/nH0U/+FANza9m09dli3t8+FsKTVwppQR2rLG7z4rJJ726aYJAJHySQeX2x8FpbNzWgYljN4Oxna+EzBADKlznCGb0jPs2Ih5ioMfm573hKXP7CQ4oKn9NSaPGVw46VBh/W8X0Be1F+uYMY1QZ4hrPfHr1drAVGuK4CDqOYW0KbRK4fcaeaidDM9o4gFx6UteP4lJld2G1A==
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: teo-en-ming-corp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fc73331a-362e-4de1-abc2-08d7951a98ed
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Jan 2020 15:42:56.1656
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 23b3f6ae-c453-4b93-aec9-f17508e5885c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: zmdik+oW3f/UKkVI7VzcLZTukvTzMaj4UPC4V77gbZUxbsKP9Xf7y5cSsqtkQi3iA34ME23pI5rd+4j7nPxwcWvAYrTWvVAZ+eoTz9MTOlc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: KU1PR01MB2005
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Toshiaki Makita wrote:
-> On 2020/01/09 15:35, John Fastabend wrote:
-> > Toshiaki Makita wrote:
-> >> On 2020/01/09 6:35, John Fastabend wrote:
-> >>> Now that we depend on rcu_call() and synchronize_rcu() to also wait
-> >>> for preempt_disabled region to complete the rcu read critical section
-> >>> in __dev_map_flush() is no longer relevant.
-> >>>
-> >>> These originally ensured the map reference was safe while a map was
-> >>> also being free'd. But flush by new rules can only be called from
-> >>> preempt-disabled NAPI context. The synchronize_rcu from the map free
-> >>> path and the rcu_call from the delete path will ensure the reference
-> >>> here is safe. So lets remove the rcu_read_lock and rcu_read_unlock
-> >>> pair to avoid any confusion around how this is being protected.
-> >>>
-> >>> If the rcu_read_lock was required it would mean errors in the above
-> >>> logic and the original patch would also be wrong.
-> >>>
-> >>> Fixes: 0536b85239b84 ("xdp: Simplify devmap cleanup")
-> >>> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-> >>> ---
-> >>>    kernel/bpf/devmap.c |    2 --
-> >>>    1 file changed, 2 deletions(-)
-> >>>
-> >>> diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-> >>> index f0bf525..0129d4a 100644
-> >>> --- a/kernel/bpf/devmap.c
-> >>> +++ b/kernel/bpf/devmap.c
-> >>> @@ -378,10 +378,8 @@ void __dev_map_flush(void)
-> >>>    	struct list_head *flush_list = this_cpu_ptr(&dev_map_flush_list);
-> >>>    	struct xdp_bulk_queue *bq, *tmp;
-> >>>    
-> >>> -	rcu_read_lock();
-> >>>    	list_for_each_entry_safe(bq, tmp, flush_list, flush_node)
-> >>>    		bq_xmit_all(bq, XDP_XMIT_FLUSH);
-> >>> -	rcu_read_unlock();
-> >>
-> >> I introduced this lock because some drivers have assumption that
-> >> .ndo_xdp_xmit() is called under RCU. (commit 86723c864063)
-> >>
-> >> Maybe devmap deletion logic does not need this anymore, but is it
-> >> OK to drivers?
-> > 
-> > Ah OK thanks for catching this. So its a strange requirement from
-> > virto_net to need read_lock like this. Quickly scanned the drivers
-> > and seems its the only one.
-> > 
-> > I think the best path forward is to fix virtio_net so it doesn't
-> > need rcu_read_lock() here then the locking is much cleaner IMO.
-> 
-> Actually veth is calling rcu_dereference in .ndo_xdp_xmit() so it needs
-> the same treatment. In the reference I sent in another mail, Jesper
-> said mlx5 also has some RCU dependency.
+SUBJECT: Singapore Citizen Mr. Teo En Ming's Refugee Seeking Attempts as at=
+ 9 Jan 2020 Thursday
 
-So veth, virtio and tun seem to need rcu_read_lock/unlock because
-they use an rcu_dereference() in the xdp_xmit path. I'll audit the
-rest today.
+In reverse chronological order:
 
-@Jesper, recall why mlx5 would require rcu_read_lock()/unlock()
-pair? I just looked at mlx5_xdp_xmit and I'm not seeing a
-rcu_dereference in there so if it is required I would want
-to understand why.
+[1] Application for Offshore Refugee/Humanitarian Visa to Australia, 25 Dec=
+ 2019 (Christmas) to 9 Jan 2020
 
-> 
-> > I'll send a v2 and either move the xdp enabled check (the piece
-> > using the rcu_read_lock) into a bitmask flag or push the
-> > rcu_read_lock() into virtio_net so its clear that this is a detail
-> > of virtio_net and not a general thing. FWIW I don't think the
-> > rcu_read_lock is actually needed in the virtio_net case anymore
-> > either but pretty sure the rcu_dereference will cause an rcu
-> > splat. Maybe there is another annotation we can use. I'll dig
-> > into it tomorrow. Thanks
-> 
-> I'm thinking we can just move the rcu_lock to wrap around only ndo_xdp_xmit.
-> But as you suggest if we can identify all drivers which depends on RCU and move the
-> rcu_lock into the drivers (or remove the dependency) it's better.
+Photo #1: Page 1 of Form 842 Application for an Offshore Humanitarian visa,=
+ Refugee and Humanitarian (Class XB) visa
 
-I think we are working in bpf-next tree here so it would be best
-to identify the minimal set of drivers that require the read_lock
-and push that into the driver. I prefer these things are a precise
-so its easy to understand when reading the code. Otherwise its
-really not clear without grepping through the code or walking
-the git history why we wrapped this in a rcu_read_lock/unlock.
-At minimum we want a comment but that feels like a big hammer
-that is not needed.
+Photo #2: Front of DHL Express plastic envelope (yellow)
 
-Most drivers should not care about the rcu_read_lock it seems
-to just be special cases in the software devices where this happens.
-veth for example is dereferencing the peer netdev. tun is dereference
-the tun_file. virtio_net usage seems to be arbitrary to me and
-is simply used to decide if xdp is enabled but we can do that
-in a cleaner way.
+Photo #3: Back of DHL Express plastic envelope (white)
 
-I'll put a v2 together today and send it out for review.
+Photo #4: DHL Express Shipment Waybill
+
+Photo #5: DHL Express Shipment Tracking Online Page, showing that my applic=
+ation for offshore refugee visa to Australia=20
+was picked up at 1619 hours on 25 Dec 2019 in Singapore and delivered to Ca=
+nberra - Braddon - Australia
+on 30 Dec 2019 at 11:10 AM Braddon, Australian Capital Territory (ACT) Time
+
+Photo #6: DHL Express Electronic Proof of Delivery, showing that my applica=
+tion for offshore refugee visa to Australia=20
+was received and signed by staff Mohsin Mahmood at the Special Humanitarian=
+ Processing Center,=20
+3 Lonsdale Street, Braddon, Australian Capital Territory (ACT) 2612, Canber=
+ra, Australia.
+
+Photo #7: Page 5 of Form 842 Application for an Offshore Humanitarian visa,=
+ Refugee and Humanitarian (Class XB) visa, bearing the=20
+official stamp of the Australian Government Department of Home Affairs at N=
+ew South Wales (NSW):=20
+"COURIER RECEIVED; HOME AFFAIRS; NSW; 27 DEC 2019" and=20
+"HOME AFFAIRS; NSW; 27 DEC 2019" at the bottom.
+
+References:
+
+For the above-mentioned seven photos, please refer to my RAID 1 mirroring r=
+edundant Blogger and Wordpress blogs at
+
+https://tdtemcerts.blogspot.sg/
+
+https://tdtemcerts.wordpress.com/
+
+
+
+[2] Petition to the Government of Taiwan for Refugee Status, 5th
+August 2019 Monday
+
+Photo #1: At the building of the National Immigration Agency, Ministry
+of the Interior, Taipei, Taiwan, 5th August 2019
+
+Photo #2: Queue ticket no. 515 at the National Immigration Agency,
+Ministry of the Interior, Taipei, Taiwan, 5th August 2019
+
+Photo #3: Submission of documents/petition to the National Immigration
+Agency, Ministry of the Interior, Taipei, Taiwan, 5th August 2019
+
+Photos #4 and #5: Acknowledgement of Receipt (no. 03142) for the
+submission of documents/petition from the National Immigration Agency,
+Ministry of the Interior, Taipei, Taiwan, 5th August 2019, 10:00 AM
+
+References:
+
+(a) Petition to the Government of Taiwan for Refugee Status, 5th
+August 2019 Monday (Blogger blog)
+
+Link: https://tdtemcerts.blogspot.sg/2019/08/petition-to-government-of-taiw=
+an-for.html
+
+(b) Petition to the Government of Taiwan for Refugee Status, 5th
+August 2019 Monday (Wordpress blog)
+
+Link: https://tdtemcerts.wordpress.com/2019/08/23/petition-to-the-governmen=
+t-of-taiwan-for-refugee-status/
+
+
+
+[3] Application for Refugee Status at the United Nations High Commissioner =
+for Refugees (UNHCR),=20
+Bangkok, Thailand, 21st March 2017 Tuesday
+
+References:
+
+(a) [YOUTUBE] Vlog: The Road to Application for Refugee Status at the
+United Nations High Commissioner for Refugees (UNHCR), Bangkok
+
+Link: https://www.youtube.com/watch?v=3DutpuAa1eUNI
+
+YouTube video Published on March 22nd, 2017
+
+Views as at 9 Jan 2020: 659
+
+YouTube Channel: Turritopsis Dohrnii Teo En Ming
+Subscribers as at 9 Jan 2020: 3.14K
+Link: https://www.youtube.com/channel/UC__F2hzlqNEEGx-IXxQi3hA
+
+
+
+
+
+
+-----BEGIN EMAIL SIGNATURE-----
+
+The Gospel for all Targeted Individuals (TIs):
+
+[The New York Times] Microwave Weapons Are Prime Suspect in Ills of
+U.S. Embassy Workers
+
+Link:=A0https://www.nytimes.com/2018/09/01/science/sonic-attack-cuba-microw=
+ave.html
+
+***************************************************************************=
+*****************
+
+Singaporean Mr. Turritopsis Dohrnii Teo En Ming's Academic
+Qualifications as at 14 Feb 2019 and refugee seeking attempts at the
+United Nations Refugee Agency Bangkok (21 Mar 2017) and in Taiwan (5
+Aug 2019):
+
+[1]=A0https://tdtemcerts.wordpress.com/
+
+[2]=A0https://tdtemcerts.blogspot.sg/
+
+[3]=A0https://www.scribd.com/user/270125049/Teo-En-Ming
+
+-----END EMAIL SIGNATURE-----
+
