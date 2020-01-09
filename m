@@ -2,55 +2,44 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 67553135E84
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2020 17:43:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F614135EEB
+	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2020 18:10:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729919AbgAIQny (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Jan 2020 11:43:54 -0500
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:39713 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725791AbgAIQny (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Jan 2020 11:43:54 -0500
-Received: by mail-lj1-f195.google.com with SMTP id l2so7953732lja.6;
-        Thu, 09 Jan 2020 08:43:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LstMW2CeiYcPoqZkf4bg1xOXdmhfKRp00gDByJT6DSE=;
-        b=kltnbXuntI/H/jDYjgovcp6nWBDQMzX3eS+ZtOdRWXZHypHJmK7SvjMAjrq0Zshk4z
-         4QfdSdx/X28cHxEFSMGwFmz9CqFZlJOF7L3jFxQTs/wu3y3efGmBHC+R8Ecd2YKotN59
-         y5sCmzGWO8rNlPfiOpq/TLswVJ57CcHyRcR1hxixohmyKOmSZpvSorYVh3fMSE5jSqn2
-         NfwfS561T0wPWD3JMJz2kBp1P8LzBDeaYbQj5x0jkAEopP469ZoXhal47MOK12NtvYdL
-         pXOO/JZNulPWw0ym+LN08w0zw4ONdkt6CW4EoD23WabPHFRzM8ktNYnF58mFcW0Z0uhc
-         vwkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LstMW2CeiYcPoqZkf4bg1xOXdmhfKRp00gDByJT6DSE=;
-        b=gaLJeF7955HVI6E9iuDzx5J7oGWHAo7lulgZ6lLxS8OoY7jqktfj2+vDTWcxXy3mIx
-         Pkz2sf9hiTwMw388lyUWDwBegcSZ0CQLGJrCqXB5GBjAHGmrzDz1Ll+PuOSMiZiG6wNL
-         eU+SY2R88ffBSzDHFr+EB7L3Rlojsn6E38CxvOFGL2k3dOg2rkfQhlprMK8+LNXPv5ZH
-         SBA0tkn3DroGBfUVJYXELieiKzAf4yCaq2OKPifEr0DLg4tb4rrE8/CHrMyeHxv/Mp5M
-         vKVeNzYpKwRlDC0QHhVstrwW58VcYBGinVBEqVbPj0k69nUHtgJWSww+8Q2fqUrhiy67
-         NxOQ==
-X-Gm-Message-State: APjAAAXHCOkATmzLBNX7DD3XqpHXxiXq4E3kqQoAI1ZYsvPNtkmR1qPN
-        Wro8kDywMAFasxb0do8meqt0lgYpvhItemws1h4=
-X-Google-Smtp-Source: APXvYqwBiTR85br0hmaAJGwV0RxrMee7f0r77b5ZsIRyEDGgSErSKU8WL1jR1AcYkwFujc2mwtkGEZVb1RGcu+HEWM4=
-X-Received: by 2002:a2e:9cd8:: with SMTP id g24mr7014355ljj.243.1578588231956;
- Thu, 09 Jan 2020 08:43:51 -0800 (PST)
+        id S1731582AbgAIRKi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Jan 2020 12:10:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47296 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731544AbgAIRKi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Jan 2020 12:10:38 -0500
+Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com [209.85.219.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C6F352067D;
+        Thu,  9 Jan 2020 17:10:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1578589837;
+        bh=lsmfN75tT3y2ZzCHh1gZs0tkBZ8Qzf3q8K+xDOnI9Lg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=DY+i+bSZcVP598O9FzGDOOxSWqOE2RIxedZW0w5ofNupS5TQcQrsEtwqsI/XPBA9k
+         SMiTOKGLF10gf5u7Q2sa2revWsxLxqyQJRVLCBco3OsdADi7maYg1Ce7w9O9UFYbfy
+         +9HO8Hvy+NZJ8qIQlZNtH+uE1+8cJD9LyCeXueoE=
+Received: by mail-qv1-f48.google.com with SMTP id y8so3265864qvk.6;
+        Thu, 09 Jan 2020 09:10:37 -0800 (PST)
+X-Gm-Message-State: APjAAAUof1C6Dgsow2pEm8rm9QesUSo+LviCXf3MWRPfXZE6RnH8U0dO
+        /4pVNYaBXL+94dATLQ56atYHTUndnQZDFe2zge4=
+X-Google-Smtp-Source: APXvYqzJx++tLk9e5/Pav1+ioq++/OIhjqGNoyldFYjVbM+ULektPHWvA9pQzIyayWBIRRKRy9HAfQcFSCFlPb3DeT0=
+X-Received: by 2002:a05:6214:14a6:: with SMTP id bo6mr9935842qvb.8.1578589836935;
+ Thu, 09 Jan 2020 09:10:36 -0800 (PST)
 MIME-Version: 1.0
-References: <20200108192132.189221-1-sdf@google.com>
-In-Reply-To: <20200108192132.189221-1-sdf@google.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 9 Jan 2020 08:43:40 -0800
-Message-ID: <CAADnVQJX9b22SuzgPoMUjyaeUaJA2cvgybZ-KhYHEWKfi_FV7w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: restore original comm in test_overhead
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
+References: <157851776348.1732.12600714815781177085.stgit@ubuntu3-kvm2> <157851806382.1732.8320375873100251133.stgit@ubuntu3-kvm2>
+In-Reply-To: <157851806382.1732.8320375873100251133.stgit@ubuntu3-kvm2>
+From:   Song Liu <song@kernel.org>
+Date:   Thu, 9 Jan 2020 09:10:25 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW697e5umg2JLBiFLmSQ-hYLLeVxGAvc9W0BPzMAs0cH8Q@mail.gmail.com>
+Message-ID: <CAPhsuW697e5umg2JLBiFLmSQ-hYLLeVxGAvc9W0BPzMAs0cH8Q@mail.gmail.com>
+Subject: Re: [bpf PATCH 2/9] bpf: sockmap, ensure sock lock held during tear down
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>
 Content-Type: text/plain; charset="UTF-8"
@@ -59,21 +48,31 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 8, 2020 at 11:21 AM Stanislav Fomichev <sdf@google.com> wrote:
+On Wed, Jan 8, 2020 at 1:14 PM John Fastabend <john.fastabend@gmail.com> wrote:
 >
-> test_overhead changes task comm in order to estimate BPF trampoline
-> overhead but never sets the comm back to the original one.
-> We have the tests (like core_reloc.c) that have 'test_progs'
-> as hard-coded expected comm, so let's try to preserve the
-> original comm.
+> The sock_map_free() and sock_hash_free() paths used to delete sockmap
+> and sockhash maps walk the maps and destroy psock and bpf state associated
+> with the socks in the map. When done the socks no longer have BPF programs
+> attached and will function normally. This can happen while the socks in
+> the map are still "live" meaning data may be sent/received during the walk.
 >
-> Currently, everything works because the order of execution is:
-> first core_recloc, then test_overhead; but let's make it a bit
-> future-proof.
+> Currently, though we don't take the sock_lock when the psock and bpf state
+> is removed through this path. Specifically, this means we can be writing
+> into the ops structure pointers such as sendmsg, sendpage, recvmsg, etc.
+> while they are also being called from the networking side. This is not
+> safe, we never used proper READ_ONCE/WRITE_ONCE semantics here if we
+> believed it was safe. Further its not clear to me its even a good idea
+> to try and do this on "live" sockets while networking side might also
+> be using the socket. Instead of trying to reason about using the socks
+> from both sides lets realize that every use case I'm aware of rarely
+> deletes maps, in fact kubernetes/Cilium case builds map at init and
+> never tears it down except on errors. So lets do the simple fix and
+> grab sock lock.
 >
-> Other related changes: use 'test_overhead' as new comm instead of
-> 'test' to make it easy to debug and drop '\n' at the end.
+> This patch wraps sock deletes from maps in sock lock and adds some
+> annotations so we catch any other cases easier.
 >
-> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> Fixes: 604326b41a6fb ("bpf, sockmap: convert to generic sk_msg interface")
+> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
 
-Applied. Thanks
+Acked-by: Song Liu <songliubraving@fb.com>
