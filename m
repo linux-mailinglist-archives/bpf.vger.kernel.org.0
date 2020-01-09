@@ -2,115 +2,165 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7911E135114
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2020 02:54:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80D4313525D
+	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2020 06:05:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727770AbgAIByd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 8 Jan 2020 20:54:33 -0500
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:46559 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726913AbgAIByd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 8 Jan 2020 20:54:33 -0500
-Received: by mail-pl1-f195.google.com with SMTP id y8so1860566pll.13;
-        Wed, 08 Jan 2020 17:54:32 -0800 (PST)
+        id S1725776AbgAIFFE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Jan 2020 00:05:04 -0500
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:35625 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725308AbgAIFFD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Jan 2020 00:05:03 -0500
+Received: by mail-qt1-f195.google.com with SMTP id e12so4906008qto.2;
+        Wed, 08 Jan 2020 21:05:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=oTyqhoIX3DQ+f9hJq5TbGda1i2+Ze2UfFAEdDafc8q8=;
-        b=GmDO/WGd93UwUu1yW3PvrXncmirI1deCSL4bb2jBkwJiEYaJJDe2PbxRj4l125ei+r
-         hy5/0Sh3jdmoq2v49c8oT7SZYXjSJ/EwrRyHRulT85suNST5bT7mi6ooviV+lJux9lpC
-         IGAVxaJSyXs4JeTbt4CBcHYFja8bniih5mgRaQe41sMEzOwFfm86iHCoSmzXQRbPVs4e
-         EBrtlAhayhpiTsFWq3hjqSQKuyuVGSoHxhjRUmpc5/ptVOhn/81aZuJ1J20rNbn6GbAv
-         wikuOlgGDtPX4xaj/AfvZ9oRsatt11siQmhA8FCI3MHy8vZHB3wZKQ7gUv3o6xpgeAOg
-         YTKg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=WO1xlXl3G5txspw5Zxg8/vsaEoLUt4YPZhmg0QyQivs=;
+        b=RLxfFQ7M/T/ZbCqjir4TBUzKYBgg9YWFAKi8hd4yzJxvqnk7aX11giNLdOb4yiA+s2
+         L2nN0f0o4/PGN66tzr40QzxTwXEY3Cpli72JymeHheikmKqpT1qvDahqKF9ZX0/ggRu/
+         JRSU0KUHW8DK4LJIZRbM8fI/QSClcwdis1Zu6kQvhjjVNRRzgMwPMD2ePdmEz6ME30hL
+         oDblcQPe4bh6je+CvppjP/rho4FV830S5SSRkxUFS23yO2GvgUHbMLkmv8P6/Y8aAs2n
+         oHjP//U6IxCZbdkR/uAPg4EmFISeNl1OR2VoiGigO4x3fRysQVYI38mRTostN6WOaPHY
+         O7Cg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=oTyqhoIX3DQ+f9hJq5TbGda1i2+Ze2UfFAEdDafc8q8=;
-        b=J73BOpMmL+GXB9xSo+x5YnKlepV9qoi6t7HwuUhJ7wZDm6qPg8xGogJbT4ApuWLnz9
-         VpFdO1E1LdVPTIrEcZh0wz1I83yiYE6PpXH2IkzTjh6Y5peQDhrwbGrcFrRMn6zBGGuc
-         rxhRbAnrbqqIJL5D8yMSrtNcJy0G2uJ9u/6ohe4XHbWePMUWGJNF8JURRM2WDLSdqL3K
-         8eRKopZ4f3kezF9Gx4yb8CSkswnzIvFvajY1Ktx8FlEqONVcLfLTdqeJlYAVfjD3MubB
-         H8AvrlCudDY41k7mM5kjLnXE9y8rneNvoC2eeisnIxldls90UjrDzXF4iaXAKGPZ0SKW
-         xbOQ==
-X-Gm-Message-State: APjAAAWzzKB07WWvq7MS4yLGCJ3tSzmPY9MdvlT3QtCfHBrmm5jlHzK5
-        /XmH8v8QxfGnJzoPqpxB504=
-X-Google-Smtp-Source: APXvYqxgSaZlh8DNyp/Ta+6TiAGMk7UVF2E/i9VnUsKohjyQ972AWVLZTjak/sDUHFtrb5N/aE3BQg==
-X-Received: by 2002:a17:90a:b30b:: with SMTP id d11mr2186521pjr.22.1578534570464;
-        Wed, 08 Jan 2020 17:49:30 -0800 (PST)
-Received: from localhost.localdomain ([150.109.61.200])
-        by smtp.gmail.com with ESMTPSA id j20sm4725635pfe.168.2020.01.08.17.49.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Jan 2020 17:49:29 -0800 (PST)
-From:   Lingpeng Chen <forrest0579@gmail.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Song Liu <songliubraving@fb.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Lingpeng Chen <forrest0579@gmail.com>,
-        stable@vger.kernel.org
-Subject: [PATCH v2] bpf/sockmap: read psock ingress_msg before sk_receive_queue
-Date:   Thu,  9 Jan 2020 09:48:33 +0800
-Message-Id: <20200109014833.18951-1-forrest0579@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <5e1620c332f3c_159a2af0aa9505b861@john-XPS-13-9370.notmuch>
-References: <5e1620c332f3c_159a2af0aa9505b861@john-XPS-13-9370.notmuch>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=WO1xlXl3G5txspw5Zxg8/vsaEoLUt4YPZhmg0QyQivs=;
+        b=B3xUpLRT9i01M+JEn/ymLXZyiLDo2Tlpv0g4uuAkolf0Dx+uCSTmbdn8P8gcY5cqQx
+         7t3BoRDOUM30zq0ad2GyGKav6EkL2pe0tQUZzXUFguHqK/Kc8HYqY7JG5jiwaPmcZl76
+         4QunlSJ2lB606Y9S4Cu60mZCcEp+DKsHz9n5fAC4gItexTaux7mXZ6ie/CFjUKt8J7Aa
+         vETRzS3/A2QG573iJ9n0gs+ZfMMiKfJ6Q8PjxQrWxucYJ0K5G5GUdnUU2AAcEU6dEzyp
+         Bw4TIT1Jd1KRLA2bOmoLHGB+Ti0AwD7V0zco1/p+eq6VZwSGIK2q45gKPirLCBD9KL9+
+         EUFA==
+X-Gm-Message-State: APjAAAWZBSdpQ5zqMATazJGufvEfkb+NoDnrFJC1ymRkDFd9GKuTfUoE
+        3sXFfXEKfSfuisb1meR+I2dyaqoHpJnFw3MgN3s=
+X-Google-Smtp-Source: APXvYqy1PyKYvW1h0mWCGJX++OryAXtuFYgYdjcjqp27sOiJ37F+M3jJQd9PEoG7OGiCitiVd90Etys+oCffX9UOuvI=
+X-Received: by 2002:ac8:7b29:: with SMTP id l9mr6320386qtu.141.1578546302879;
+ Wed, 08 Jan 2020 21:05:02 -0800 (PST)
+MIME-Version: 1.0
+References: <157675340354.60799.13351496736033615965.stgit@xdp-tutorial>
+ <CAEf4BzYxDE5VoBiCaPwv=buUk87Cv0JF09usmQf0WvUceb8A5A@mail.gmail.com> <8F140E5A-2E29-4594-94BA-4D43B592A5B1@redhat.com>
+In-Reply-To: <8F140E5A-2E29-4594-94BA-4D43B592A5B1@redhat.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 8 Jan 2020 21:04:51 -0800
+Message-ID: <CAEf4Bzb1pwv9a6pdY+Tjb17O-7YXhyRe3=nZuujoM5zjgq4SBA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Add a test for attaching a bpf
+ fentry/fexit trace to an XDP program
+To:     Eelco Chaudron <echaudro@redhat.com>
+Cc:     bpf <bpf@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Networking <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Right now in tcp_bpf_recvmsg, sock read data first from sk_receive_queue
-if not empty than psock->ingress_msg otherwise. If a FIN packet arrives
-and there's also some data in psock->ingress_msg, the data in
-psock->ingress_msg will be purged. It is always happen when request to a
-HTTP1.0 server like python SimpleHTTPServer since the server send FIN
-packet after data is sent out.
+On Thu, Jan 2, 2020 at 6:13 AM Eelco Chaudron <echaudro@redhat.com> wrote:
+>
+>
+>
+> On 20 Dec 2019, at 0:02, Andrii Nakryiko wrote:
+>
+> > On Thu, Dec 19, 2019 at 3:04 AM Eelco Chaudron <echaudro@redhat.com>
+> > wrote:
+> >>
+> >> Add a test that will attach a FENTRY and FEXIT program to the XDP
+> >> test
+> >> program. It will also verify data from the XDP context on FENTRY and
+> >> verifies the return code on exit.
+> >>
+> >> Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
+> >> ---
+> >>  .../testing/selftests/bpf/prog_tests/xdp_bpf2bpf.c |   95
+> >> ++++++++++++++++++++
+> >>  .../testing/selftests/bpf/progs/test_xdp_bpf2bpf.c |   44 +++++++++
+> >>  2 files changed, 139 insertions(+)
+> >>  create mode 100644
+> >> tools/testing/selftests/bpf/prog_tests/xdp_bpf2bpf.c
+> >>  create mode 100644
+> >> tools/testing/selftests/bpf/progs/test_xdp_bpf2bpf.c
+> >>
+> >
+> > [...]
+> >
+> >> +       /* Load XDP program to introspect */
+> >> +       err =3D bpf_prog_load(file, BPF_PROG_TYPE_XDP, &obj, &prog_fd)=
+;
+> >
+> > Please use BPF skeleton for this test. It will make it significantly
+> > shorter and clearer. See other fentry_fexit selftest for example.
+> >
+>
+> Trying to do this, however, I=E2=80=99m getting the following when trying=
+ to
+> execute the test:
+>
+> test_xdp_bpf2bpf:PASS:pkt_skel_load 0 nsec
+> libbpf: fentry/_xdp_tx_iptunnel is not found in vmlinux BTF
+> libbpf: failed to load object 'test_xdp_bpf2bpf'
+> libbpf: failed to load BPF skeleton 'test_xdp_bpf2bpf': -2
+> test_xdp_bpf2bpf:FAIL:ftrace_skel_load ftrace skeleton failed
+>
+>
+> My program is straight forward following the fentry_fexit.c example:
+>
+>      pkt_skel =3D test_xdp__open_and_load()
+>      if (CHECK(!pkt_skel, "pkt_skel_load", "test_xdp skeleton
+> failed\n"))
+>          return;
+>
+>      map_fd =3D bpf_map__fd(pkt_skel->maps.vip2tnl);
+>      bpf_map_update_elem(map_fd, &key4, &value4, 0);
+>
+>      /* Load eBPF trace program */
+>      ftrace_skel =3D test_xdp_bpf2bpf__open_and_load();
+>      if (CHECK(!ftrace_skel, "ftrace_skel_load", "ftrace skeleton
+> failed\n"))
+>          goto out;
+>
+> I assume this is due to the missing link from the XDP program to the
+> eBPF trace program.
 
-Fixes: 604326b41a6fb ("bpf, sockmap: convert to generic sk_msg interface")
-Reported-by: Arika Chen <eaglesora@gmail.com>
-Suggested-by: Arika Chen <eaglesora@gmail.com>
-Signed-off-by: Lingpeng Chen <forrest0579@gmail.com>
-Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-Cc: stable@vger.kernel.org # v4.20+
-Acked-by: Song Liu <songliubraving@fb.com>
----
- net/ipv4/tcp_bpf.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+yes, exactly
 
-diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
-index e38705165ac9..e6b08b5a0895 100644
---- a/net/ipv4/tcp_bpf.c
-+++ b/net/ipv4/tcp_bpf.c
-@@ -121,14 +121,14 @@ int tcp_bpf_recvmsg(struct sock *sk, struct msghdr *msg, size_t len,
- 	struct sk_psock *psock;
- 	int copied, ret;
- 
--	if (unlikely(flags & MSG_ERRQUEUE))
--		return inet_recv_error(sk, msg, len, addr_len);
--	if (!skb_queue_empty(&sk->sk_receive_queue))
--		return tcp_recvmsg(sk, msg, len, nonblock, flags, addr_len);
--
- 	psock = sk_psock_get(sk);
- 	if (unlikely(!psock))
- 		return tcp_recvmsg(sk, msg, len, nonblock, flags, addr_len);
-+	if (unlikely(flags & MSG_ERRQUEUE))
-+		return inet_recv_error(sk, msg, len, addr_len);
-+	if (!skb_queue_empty(&sk->sk_receive_queue) &&
-+	    sk_psock_queue_empty(psock))
-+		return tcp_recvmsg(sk, msg, len, nonblock, flags, addr_len);
- 	lock_sock(sk);
- msg_bytes_ready:
- 	copied = __tcp_bpf_recvmsg(sk, psock, msg, len, flags);
-@@ -139,7 +139,7 @@ int tcp_bpf_recvmsg(struct sock *sk, struct msghdr *msg, size_t len,
- 		timeo = sock_rcvtimeo(sk, nonblock);
- 		data = tcp_bpf_wait_data(sk, psock, flags, timeo, &err);
- 		if (data) {
--			if (skb_queue_empty(&sk->sk_receive_queue))
-+			if (!sk_psock_queue_empty(psock))
- 				goto msg_bytes_ready;
- 			release_sock(sk);
- 			sk_psock_put(sk, psock);
--- 
-2.17.1
+> Previously I did this trough:
+>
+> +       DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts,
+> +                           .attach_prog_fd =3D prog_fd,
+> +                          );
+> +
+> +       tracer_obj =3D bpf_object__open_file("./test_xdp_bpf2bpf.o", &opt=
+s);
+>
+>
+> If I use this approach as before it works, i.e.:
+>
+>          DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts,
+>                              .attach_prog_fd =3D pkt_fd,
+>                             );
+>
+>          ftrace_skel =3D test_xdp_bpf2bpf__open_opts(&opts);
+>          if (CHECK(!ftrace_skel, "__open_opts=E2=80=9D, "ftrace skeleton
+> failed\n"))
+>            goto out;
+>          if (CHECK(test_xdp_bpf2bpf__load(ftrace_skel), "__load",
+> "ftrace skeleton failed\n"))
+>            goto out;
+>
+> But I do not see this in the fentry_fexit.c example, guess I might be
+> missing something that is right in front of me :(
 
+you are not missing anything, and this second variant is what you have
+to do. __open_and_load() is just an convenience wrapper around
+separate __open() followed by __load(), for cases where user doesn't
+have to specify any extra options.
+
+>
+>
+> [...]
+>
