@@ -2,109 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 04B161352F5
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2020 07:01:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54D58135310
+	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2020 07:09:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727749AbgAIGBQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Jan 2020 01:01:16 -0500
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:40843 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726541AbgAIGBQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Jan 2020 01:01:16 -0500
-Received: by mail-pg1-f196.google.com with SMTP id k25so2671123pgt.7;
-        Wed, 08 Jan 2020 22:01:15 -0800 (PST)
+        id S1726541AbgAIGJ3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Jan 2020 01:09:29 -0500
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:38011 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725899AbgAIGJ3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Jan 2020 01:09:29 -0500
+Received: by mail-qk1-f195.google.com with SMTP id k6so4999191qki.5;
+        Wed, 08 Jan 2020 22:09:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=YJI+8nBaX+YClMtWDKO/JvFrqW7bGFHCvyKaisEeMn4=;
-        b=uBg7Kw8RPem8bWQ/DYpUSbNGkay8DVaYObkJffe51E1kLTYg35jmsLvMbEQXdf/crA
-         co/xDQ4iVgKAdH7Pp5tL38Cb/H+p+cZA2DD8ZKKfJceCLmKQ7zUDpjNZ76fagMiRHJB8
-         qn+Ba7LrDzYBERICP8FU/wwFVjwHM92JSEadv/L8E62iRhtmczb0OjrxfD28yNQd0q/y
-         uY1J3cdqsdibPqZE1VCtCt+0rBKEwccX1P+klG0Swz2PoPYPp5Uq7boiAa6wHwIuYeL3
-         a+d4O2viEk02ptziZBPdmT1uLN81ffB/S7refXVEF0IwjSzrn1RjOhmhCBvUX8k3odZo
-         TjkA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=X+RhLbVc3KJZZjKfiDgwDLr/Cdtt/34QV4MsKViVdGg=;
+        b=OqiPkOt9FJmPq8svPyvQB/Eh/HkjS965/26GzpewZtw4twZtJYZ+V5Va+jsNJI9hEx
+         C1Kbhz+FzWHMWfKy5+MPObB5T9kugUpgiVBI9fmqYkCnEJe0KmnzzigJT6aj63UnKFHp
+         vpf1o7ww9G5pn6bFvdUbcfz4kyL/sBzJ8DOyNY4bLsAuJCbENGR8CUvwJlZxH7ApLwxN
+         Kqb4s55v6KUPQlNUhzFY3Ec2yRTn2wTMBh0kzFsHF66wKfQzUkeXMLZ3TEbpbZIduDQp
+         IrpseRuJsiBFqudr9Ws9UYa58bTQocoq0IyiuY7AgZXGoJaWnSQcL5Y8PA0ZNQCBVHHN
+         tKJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=YJI+8nBaX+YClMtWDKO/JvFrqW7bGFHCvyKaisEeMn4=;
-        b=DNbvKDP5LV+BqhlvTSKZqn09VXHYGRU0kq+FqD2ZYJoiaoq6SAFQytFTQocZsT0iCL
-         vNkr95bm84vtSPzzUUmC3XyM+DJOP73FbNMkz56WvyMLxjKX6Kh3QI4pZOfZkR/bYCsL
-         chCsjMmxsq6sK12Pa5E4h+7WOxOycHkXKqBVeoxwOf3gL4uFfPowpXVwBikvT9HPJPo/
-         sbCn2xaiob3rDUotFUPjQZaCsYVF+Spd8E64cJNIuRWS/KqD7A8RI7JgL4Pth4COF4KC
-         PHJLJmAaPN4XL/xHCUkNcyoE6FJwlpmV18QhULwPGkBI9CQta/B+B/CnWIT2GNAI5ESf
-         dwpw==
-X-Gm-Message-State: APjAAAWzdzdFfBcJK9QMepEpb+UHIAzqb7O0m8D+N/Yh3tckstUenV6F
-        Dy6kkmuTYtr5EoRZGo8xU20=
-X-Google-Smtp-Source: APXvYqyJerfI+ICq2cwl9GhOGJy/axJr/Cb4bSjaJXBizTWJfYQRt5HeuzByImnF+q+hy5naYIeDXQ==
-X-Received: by 2002:a62:8f0d:: with SMTP id n13mr9809271pfd.38.1578549674714;
-        Wed, 08 Jan 2020 22:01:14 -0800 (PST)
-Received: from [172.20.20.103] ([222.151.198.97])
-        by smtp.gmail.com with ESMTPSA id v143sm6135132pfc.71.2020.01.08.22.01.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Jan 2020 22:01:14 -0800 (PST)
-Subject: Re: [bpf PATCH 2/2] bpf: xdp, remove no longer required
- rcu_read_{un}lock()
-To:     John Fastabend <john.fastabend@gmail.com>, bjorn.topel@gmail.com,
-        bpf@vger.kernel.org, toke@redhat.com
-Cc:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net
-References: <157851907534.21459.1166135254069483675.stgit@john-Precision-5820-Tower>
- <157851930654.21459.7236323146782270917.stgit@john-Precision-5820-Tower>
-From:   Toshiaki Makita <toshiaki.makita1@gmail.com>
-Message-ID: <a4bb8f06-f960-cdda-f73a-8b87744445af@gmail.com>
-Date:   Thu, 9 Jan 2020 15:01:09 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=X+RhLbVc3KJZZjKfiDgwDLr/Cdtt/34QV4MsKViVdGg=;
+        b=qv7TVETjCNiCQ/+oRPYTanqzKV1ArADHCciTS0ClKMdHLiuGfZAhaIPOf7ZATyKAZq
+         NZy53byVic7dcETXUd4NrlvGyYZn1kbAC6WykZmOSA7Q6HCQm1n5LQpU6+cQEvKOhNN0
+         3W8Ghj7gLf5qHjzMXqS7tPVEguWJqsjN330xQTu1YJo8XPbp7GbTt183h7LsZw24tupQ
+         VtFJLpeYZ30IyrVDNsTZ1B9K7TVHcxW4mkGJD+DVWs/2OKRJwn77goJDQmSo6+dEE+ID
+         oQlqqKV1tSFx8UyTLee0du07mkMl3/f5Wic0eiFP4VQFLNIKoAWCeBDF14+u6bifH8hc
+         uWkw==
+X-Gm-Message-State: APjAAAVbP3o0ApZQicW3nJ2MTeHm8R1ebnoVClXgATMwoMwqFZDTmlpW
+        MP/o8tCUZBHOqX8wI59+4FYRbpqQkFNcaDtSCJ4=
+X-Google-Smtp-Source: APXvYqzCE9JoeRyZ8YZ6++pQz1TRJTqR3biFwZkc62cyUb2OyjvsnNox9uyPDyPeQid7XpVrRKhJZ0G71AtbcKyWTXk=
+X-Received: by 2002:a37:63c7:: with SMTP id x190mr7926002qkb.232.1578550168691;
+ Wed, 08 Jan 2020 22:09:28 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <157851930654.21459.7236323146782270917.stgit@john-Precision-5820-Tower>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <157851907534.21459.1166135254069483675.stgit@john-Precision-5820-Tower>
+In-Reply-To: <157851907534.21459.1166135254069483675.stgit@john-Precision-5820-Tower>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Thu, 9 Jan 2020 07:09:17 +0100
+Message-ID: <CAJ+HfNiK4g9Ak_ZBSMP1bQXSOLJELu1=Hfs+o02MXVWy1H2z3g@mail.gmail.com>
+Subject: Re: [bpf PATCH 0/2] xdp devmap improvements cleanup
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Netdev <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2020/01/09 6:35, John Fastabend wrote:
-> Now that we depend on rcu_call() and synchronize_rcu() to also wait
-> for preempt_disabled region to complete the rcu read critical section
-> in __dev_map_flush() is no longer relevant.
-> 
-> These originally ensured the map reference was safe while a map was
-> also being free'd. But flush by new rules can only be called from
-> preempt-disabled NAPI context. The synchronize_rcu from the map free
-> path and the rcu_call from the delete path will ensure the reference
-> here is safe. So lets remove the rcu_read_lock and rcu_read_unlock
-> pair to avoid any confusion around how this is being protected.
-> 
-> If the rcu_read_lock was required it would mean errors in the above
-> logic and the original patch would also be wrong.
-> 
-> Fixes: 0536b85239b84 ("xdp: Simplify devmap cleanup")
-> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+On Wed, 8 Jan 2020 at 22:34, John Fastabend <john.fastabend@gmail.com> wrot=
+e:
+>
+> Couple cleanup patches to recently posted series[0] from Bjorn to
+> cleanup and optimize the devmap usage. Patches have commit ids
+> the cleanup applies to.
+>
+> [0] https://www.spinics.net/lists/netdev/msg620639.html
+>
 > ---
->   kernel/bpf/devmap.c |    2 --
->   1 file changed, 2 deletions(-)
-> 
-> diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-> index f0bf525..0129d4a 100644
-> --- a/kernel/bpf/devmap.c
-> +++ b/kernel/bpf/devmap.c
-> @@ -378,10 +378,8 @@ void __dev_map_flush(void)
->   	struct list_head *flush_list = this_cpu_ptr(&dev_map_flush_list);
->   	struct xdp_bulk_queue *bq, *tmp;
->   
-> -	rcu_read_lock();
->   	list_for_each_entry_safe(bq, tmp, flush_list, flush_node)
->   		bq_xmit_all(bq, XDP_XMIT_FLUSH);
-> -	rcu_read_unlock();
+>
+> John Fastabend (2):
+>       bpf: xdp, update devmap comments to reflect napi/rcu usage
+>       bpf: xdp, remove no longer required rcu_read_{un}lock()
+>
 
-I introduced this lock because some drivers have assumption that
-.ndo_xdp_xmit() is called under RCU. (commit 86723c864063)
+Thanks for the clean-up, John!
 
-Maybe devmap deletion logic does not need this anymore, but is it
-OK to drivers?
+For the series:
+Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
 
-Toshiaki Makita
+>
+>  kernel/bpf/devmap.c |   23 +++++++++++------------
+>  1 file changed, 11 insertions(+), 12 deletions(-)
+>
+> --
+> Signature
