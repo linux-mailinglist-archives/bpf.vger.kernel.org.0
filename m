@@ -2,193 +2,212 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A64C135FEE
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2020 18:59:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E670135FFB
+	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2020 19:09:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732027AbgAIR7t (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Jan 2020 12:59:49 -0500
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:36254 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728653AbgAIR7t (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Jan 2020 12:59:49 -0500
-Received: by mail-qk1-f196.google.com with SMTP id a203so6843009qkc.3;
-        Thu, 09 Jan 2020 09:59:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8PkSoGPOiy4o4DnP2NNYtjoXFAX8iabjQVoKoqIqz5c=;
-        b=rqb+UPXBmbt9LxqHLWb2wQkjHE/m7Zrgy3kUrI+o7jFU+3/M3dfv69Wzsn4wrpWbYy
-         zUHOy33yGGfU4PoO72twqpbkFq0KLL4V7csznzM287joigW0bMkLi/aqxGH9yaCKvf/w
-         upqYKRrZSPc6e3khXFG+KxdZHeQ5gfJEmKxQJ4WaF/1hWuZgICoVSZb8aazY6XvLPsPj
-         Ddf0NIvw/o5BsSfIq+PRt0D/R+bTzwWR+3qbIcpRZfnrnj4Nb7tnoZ2LILoyKq0eTYBb
-         ryN78osR5tE0T0Veu21LPfmqW4WPVaHWB1sWGdfwrgBdeQ5izrHS31ZUitUE2RijpKrC
-         J/uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8PkSoGPOiy4o4DnP2NNYtjoXFAX8iabjQVoKoqIqz5c=;
-        b=Rbrj0jn1pXT/xqwoyqKaPaYK9sQ8caaC7aijtdYpCC9UiU502+6embF5889syEWc2s
-         cnZT/gBFfmPxidQwwfyf0FiPA8MKhqgyUDcMp/OORw2YEWp3BwWT9WcdSXHZOVuTOBTt
-         St1LTGv1Y8jh59B3cEtnezTMeZA6Vz5GpVWMWVxdsypM6wcIY86jatXyVYStpVffmImd
-         w+KA+PdpazdHLxprRcnVmEhvopdvw64hQ6uLlOfWRSdm3tQeLsqnGXUc/8ZQn8oo49V9
-         4eAS830B9ZZXjT9TnF5MGtYZVciIJDNxbLtP6cuOQ6GK8lAPHWg2yZynvsDh1K2sHnR6
-         T2jg==
-X-Gm-Message-State: APjAAAVTZ2MctjBDGQ59VSGwZoNrvCR3MiEUwHt7kcd9R/R7u/SDbASp
-        gnvXdeqHFk33opqaQLWUTebYMmQaujhL/qUycDE=
-X-Google-Smtp-Source: APXvYqwRSsDCOH2S2S4sv60fEnTRBs947fHi9e247NVahrgq8MxV2kgGpalTMfJ5tYF7+Kk+WnPM2QEv6CIOPhJJzh8=
-X-Received: by 2002:ae9:e809:: with SMTP id a9mr10590771qkg.92.1578592787759;
- Thu, 09 Jan 2020 09:59:47 -0800 (PST)
+        id S1732072AbgAISJ6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Jan 2020 13:09:58 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:9220 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728653AbgAISJ6 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 9 Jan 2020 13:09:58 -0500
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 009I9fg9026657;
+        Thu, 9 Jan 2020 10:09:41 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=x2ocn6toyw87uXf7LZGL2A6O8oO9dWZ+0wfkwomDkJo=;
+ b=LNgSgcgHGGHCOYAl/st8WVlPkFWCfjhRFb3J4tkvBUZLaO00W37qijResFqdMV/B7AsG
+ lq3aVpRNnKsGUNrlehDhRGtUHZFrgxgoiKGA1Ui8nv1wEEEZQHQHNDrlusP5az4HAucT
+ X1Dmn6ZP4Wz6qg+7qKfFt4ZMoO6ixKqxn7A= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2xe2exta27-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 09 Jan 2020 10:09:41 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 9 Jan 2020 10:09:11 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=k3JpGLLDoW3otAYu7gNyCGWK6z5++722QX9ulq7oTEbu+XcRe7BqSOkLByg1BOG5rvf5WeFxvu38nACrWaDmEVlE/xyqkc+xnVzXyyKpYBZ8AKa6j7tn583eo44WT2T4rHYfkC/dWQaO0LqzfRRIKQmlQltdnosdHEruuTlFn/v909TDHhOQKHA3xmRDTU4qanBngY3GHBEjh+xiyQV/4h8+InbZ//YZl/2lJ4r3m7hf6EuEeEGR+b4acEvQrTXPE+L3FfumGKUGNpa2R/oDiYA1Smh5zxkOoMcYQgWeS4F2FLBzu1V5BR9vxky27ZQUIO53+k7wTEPIKUEKTePZDg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=x2ocn6toyw87uXf7LZGL2A6O8oO9dWZ+0wfkwomDkJo=;
+ b=Nc5dItn1y23bOMwHxkt/PK6EWJeLUZ3htODe2WpbQ/5jz4GGNtIj4ci1S1U1T9mLwC8qiqormKvCA3tyowomcmw2IlQOiTxW5mAksTaRKSiX031ee3mbhJIaSk/qYgRumNfB/Zy2mgSqL7EfE9YCtnhiLIiVWvlcwmiMMosiO+ECQSxO24cEOL4/cSbJnGkpHorMwvcC+mvdafwGD3/OvmfrdAL8OLuM4PSUKMaBcG3ucTFjLyNW9Q1ByDQq87O9J+GdWqre8e09nSyU63rwJ032Xv4RCbadEuuwy2w+HaEgzRKZGoqfoK86AWc41Keo11sEnGCAKECOFBMMOBGAhQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=x2ocn6toyw87uXf7LZGL2A6O8oO9dWZ+0wfkwomDkJo=;
+ b=Z+uykXygawIqEwbS6Xh27tfUqLFzvB6PS43idsV5g0Gnz/91AYOKNGQ73FXGEifcVpzV+YC9YY6yYbm8nVZh2svlqfNOaepJP7d9ZnW7LTmYdaqNEuOcVf308j0GDWcfxEOkmTxjvObokbyMg11tVTyHwykdwfEKhApr9BGCd4I=
+Received: from BYAPR15MB3029.namprd15.prod.outlook.com (20.178.238.208) by
+ BYAPR15MB3461.namprd15.prod.outlook.com (20.179.57.205) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2623.8; Thu, 9 Jan 2020 18:09:08 +0000
+Received: from BYAPR15MB3029.namprd15.prod.outlook.com
+ ([fe80::3541:85d8:c4c8:760d]) by BYAPR15MB3029.namprd15.prod.outlook.com
+ ([fe80::3541:85d8:c4c8:760d%3]) with mapi id 15.20.2602.017; Thu, 9 Jan 2020
+ 18:09:08 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Alexei Starovoitov <ast@kernel.org>
+CC:     David Miller <davem@davemloft.net>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>
+Subject: Re: [PATCH v2 bpf-next 3/7] bpf: Introduce function-by-function
+ verification
+Thread-Topic: [PATCH v2 bpf-next 3/7] bpf: Introduce function-by-function
+ verification
+Thread-Index: AQHVxrdeNOx9FMXwt0uTmbe0Gk8rjqfiolYA
+Date:   Thu, 9 Jan 2020 18:09:08 +0000
+Message-ID: <B7A2A8DD-B070-4F80-A9A0-6570260D4346@fb.com>
+References: <20200109063745.3154913-1-ast@kernel.org>
+ <20200109063745.3154913-4-ast@kernel.org>
+In-Reply-To: <20200109063745.3154913-4-ast@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.40.2.2.4)
+x-originating-ip: [2620:10d:c090:200::455d]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d2c6a583-b64e-474d-2dfc-08d7952f05b1
+x-ms-traffictypediagnostic: BYAPR15MB3461:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR15MB34616CE501C4565B542C3109B3390@BYAPR15MB3461.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-forefront-prvs: 02778BF158
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(366004)(39860400002)(136003)(396003)(346002)(376002)(189003)(199004)(53546011)(6506007)(186003)(6486002)(2906002)(5660300002)(54906003)(81166006)(6916009)(8936002)(15650500001)(8676002)(81156014)(71200400001)(2616005)(6512007)(4326008)(86362001)(66556008)(66946007)(66476007)(478600001)(66446008)(316002)(64756008)(76116006)(36756003)(33656002)(91956017);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB3461;H:BYAPR15MB3029.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: B8doMEOIdPMepTfoNmJodOUl6/5MdxoX3eSUIfWJg3gJ+0MNKcjvPmHoe7CGNX64JfDC//2XXP6OYVmyXcojKATzD/s40utYhxG3NfCqqyA3QnTN6qr7SFzJM74DopkBCQKV8EU56zPubnSvh+odyZRkCbYTjavknwqr1cbyW3eXhSMoGO/zxhW02sXJA9itCrteyI13FDpJ8q61NZcBRjO+4ASVXyv8v/5LeSAj1zpnhrdTKlfGR9+e1YPqf1U0r7yz/GZ7PKCbt2UQHdmzpMLMvv8e3ERjBZepUrKTA83UU4sDK8uGRYuMC44yeh1MxFQVyCcgXKSM3IPTBHED+Y01Y2Jgl5+c1qCeGfIEDY/XVDo7VZAMShZntlsG3s4IGDkHmHoFYqIev2jou1NDuKTNaZtDsuiaskZfiNz6b03Av7XkDIuvnlBUf7/pjU6N
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <32FBEBA2318D274DB30CDF6D9DBC69FD@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20191220154208.15895-1-kpsingh@chromium.org> <20191220154208.15895-13-kpsingh@chromium.org>
- <CAEf4BzY4K-vgSFPjV=pn3quc5DT1+eGkJnZfSw4+b0fERzPVfw@mail.gmail.com> <20200104000955.GB23487@chromium.org>
-In-Reply-To: <20200104000955.GB23487@chromium.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 9 Jan 2020 09:59:35 -0800
-Message-ID: <CAEf4Bzam_k99z-bh_kH=M9HUS3+nh_eSGJLffPO4y=_9psH9GA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 12/13] bpf: lsm: Add selftests for BPF_PROG_TYPE_LSM
-To:     KP Singh <kpsingh@chromium.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, linux-security-module@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        James Morris <jmorris@namei.org>,
-        Kees Cook <keescook@chromium.org>,
-        Thomas Garnier <thgarnie@chromium.org>,
-        Michael Halcrow <mhalcrow@google.com>,
-        Paul Turner <pjt@google.com>,
-        Brendan Gregg <brendan.d.gregg@gmail.com>,
-        Jann Horn <jannh@google.com>,
-        Matthew Garrett <mjg59@google.com>,
-        Christian Brauner <christian@brauner.io>,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Quentin Monnet <quentin.monnet@netronome.com>,
-        Andrey Ignatov <rdna@fb.com>, Joe Stringer <joe@wand.net.nz>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-CrossTenant-Network-Message-Id: d2c6a583-b64e-474d-2dfc-08d7952f05b1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Jan 2020 18:09:08.6514
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: gZCDQV1vDooZGZsARp8Vw8xX0lUdQN9nnzyogSjf5diX4MNvwJHAjiPKXGWjjQKxz01/sxwyTtmw4ORnmPtd6g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3461
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-01-09_03:2020-01-09,2020-01-09 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
+ impostorscore=0 spamscore=0 suspectscore=0 malwarescore=0
+ priorityscore=1501 mlxlogscore=604 mlxscore=0 clxscore=1015 adultscore=0
+ bulkscore=0 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-1910280000 definitions=main-2001090150
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jan 3, 2020 at 4:09 PM KP Singh <kpsingh@chromium.org> wrote:
->
-> On 23-Dez 22:49, Andrii Nakryiko wrote:
-> > On Fri, Dec 20, 2019 at 7:42 AM KP Singh <kpsingh@chromium.org> wrote:
-> > >
-> > > From: KP Singh <kpsingh@google.com>
-> > >
-> > > * Load a BPF program that audits mprotect calls
-> > > * Attach the program to the "file_mprotect" LSM hook
-> > > * Verify if the program is actually loading by reading
-> > >   securityfs
-> > > * Initialize the perf events buffer and poll for audit events
-> > > * Do an mprotect on some memory allocated on the heap
-> > > * Verify if the audit event was received
-> > >
-> > > Signed-off-by: KP Singh <kpsingh@google.com>
-> > > ---
-> > >  MAINTAINERS                                   |   2 +
-> > >  .../bpf/prog_tests/lsm_mprotect_audit.c       | 129 ++++++++++++++++++
-> > >  .../selftests/bpf/progs/lsm_mprotect_audit.c  |  58 ++++++++
-> > >  3 files changed, 189 insertions(+)
-> > >  create mode 100644 tools/testing/selftests/bpf/prog_tests/lsm_mprotect_audit.c
-> > >  create mode 100644 tools/testing/selftests/bpf/progs/lsm_mprotect_audit.c
-> > >
-> >
-> > [...]
-> >
-> > > +/*
-> > > + * Define some of the structs used in the BPF program.
-> > > + * Only the field names and their sizes need to be the
-> > > + * same as the kernel type, the order is irrelevant.
-> > > + */
-> > > +struct mm_struct {
-> > > +       unsigned long start_brk, brk, start_stack;
-> > > +};
-> > > +
-> > > +struct vm_area_struct {
-> > > +       unsigned long start_brk, brk, start_stack;
-> > > +       unsigned long vm_start, vm_end;
-> > > +       struct mm_struct *vm_mm;
-> > > +       unsigned long vm_flags;
-> > > +};
-> > > +
-> > > +BPF_TRACE_3("lsm/file_mprotect", mprotect_audit,
-> > > +           struct vm_area_struct *, vma,
-> > > +           unsigned long, reqprot, unsigned long, prot)
-> > > +{
-> > > +       struct mprotect_audit_log audit_log = {};
-> > > +       int is_heap = 0;
-> > > +
-> > > +       __builtin_preserve_access_index(({
-> >
-> > you don't need __builtin_preserve_access_index, if you mark
-> > vm_area_struct and mm_struct with
-> > __attribute__((preserve_access_index)
->
-> Cool, updated!
->
-> >
-> > > +               is_heap = (vma->vm_start >= vma->vm_mm->start_brk &&
-> > > +                                    vma->vm_end <= vma->vm_mm->brk);
-> > > +       }));
-> > > +
-> > > +       audit_log.magic = MPROTECT_AUDIT_MAGIC;
-> > > +       audit_log.is_heap = is_heap;
-> > > +       bpf_lsm_event_output(&perf_buf_map, BPF_F_CURRENT_CPU, &audit_log,
-> > > +                            sizeof(audit_log));
-> >
-> > You test would be much simpler if you use global variables to pass
-> > data back to userspace, instead of using perf buffer.
-> >
-> > Also please see fentry_fexit.c test for example of using BPF skeleton
-> > to shorten and simpify userspace part of test.
->
-> Thanks for the skeleton work!
->
-> This makes using global variables easier and the tests are indeed much
-> simpler, I have updated it for the next revision.
->
-> One follow up question regarding global variables, let's say I have
-> the following global variable defined in the BPF program:
->
-> struct result_info {
->         __u32 count;
-> };
->
-> struct result_info result = {
->         .count = 0,
-> };
->
-> The defintion of result_info needs to be included before the .skel.h
-> as it's not automatically generated or maybe I am missing a
-> trick here?
->
-> For now, I have defined this in a header which gets included both in
-> the program and the test.
 
-Yes, ideally all common types should be shared in a common header. My
-initial implementation actually supported dumping out all the types in
-a generated skeleton, but that was inconvenient in a lot of cases, so
-I dropped that.
 
->
-> - KP
->
-> >
-> > > +       return 0;
-> > > +}
-> > > --
-> > > 2.20.1
-> > >
+> On Jan 8, 2020, at 10:37 PM, Alexei Starovoitov <ast@kernel.org> wrote:
+
+[...]
+
+>=20
+> Note that the stack limit of 512 still applies to the call chain regardle=
+ss whether
+> functions were static or global. The nested level of 8 also still applies=
+. The
+> same recursion prevention checks are in place as well.
+>=20
+> The type information and static/global kind is preserved after the verifi=
+cation
+> hence in the above example global function f2() and f3() can be replaced =
+later
+> by equivalent functions with the same types that are loaded and verified =
+later
+> without affecting safety of this main() program. Such replacement (re-lin=
+king)
+> of global functions is a subject of future patches.
+>=20
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+
+Acked-by: Song Liu <songliubraving@fb.com>
+
+With one nit below.=20
+
+[...]
+
+> +
+> +static int do_check_common(struct bpf_verifier_env *env, int subprog)
+> +{
+> +	struct bpf_verifier_state *state;
+> +	struct bpf_reg_state *regs;
+> +	int ret, i;
+> +
+> +	env->prev_linfo =3D NULL;
+> +	env->pass_cnt++;
+> +
+> +	state =3D kzalloc(sizeof(struct bpf_verifier_state), GFP_KERNEL);
+> +	if (!state)
+> +		return -ENOMEM;
+> +	state->curframe =3D 0;
+> +	state->speculative =3D false;
+> +	state->branches =3D 1;
+> +	state->frame[0] =3D kzalloc(sizeof(struct bpf_func_state), GFP_KERNEL);
+> +	if (!state->frame[0]) {
+> +		kfree(state);
+> +		return -ENOMEM;
+> +	}
+> +	env->cur_state =3D state;
+> +	init_func_state(env, state->frame[0],
+> +			BPF_MAIN_FUNC /* callsite */,
+> +			0 /* frameno */,
+> +			subprog);
+> +
+> +	regs =3D state->frame[state->curframe]->regs;
+> +	if (subprog) {
+> +		ret =3D btf_prepare_func_args(env, subprog, regs);
+> +		if (ret)
+> +			goto out;
+> +		for (i =3D BPF_REG_1; i <=3D BPF_REG_5; i++) {
+> +			if (regs[i].type =3D=3D PTR_TO_CTX)
+> +				mark_reg_known_zero(env, regs, i);
+> +			else if (regs[i].type =3D=3D SCALAR_VALUE)
+> +				mark_reg_unknown(env, regs, i);
+> +		}
+> +	} else {
+> +		/* 1st arg to a function */
+> +		regs[BPF_REG_1].type =3D PTR_TO_CTX;
+> +		mark_reg_known_zero(env, regs, BPF_REG_1);
+> +		ret =3D btf_check_func_arg_match(env, subprog, regs);
+> +		if (ret =3D=3D -EFAULT)
+> +			/* unlikely verifier bug. abort.
+> +			 * ret =3D=3D 0 and ret < 0 are sadly acceptable for
+> +			 * main() function due to backward compatibility.
+> +			 * Like socket filter program may be written as:
+> +			 * int bpf_prog(struct pt_regs *ctx)
+> +			 * and never dereference that ctx in the program.
+> +			 * 'struct pt_regs' is a type mismatch for socket
+> +			 * filter that should be using 'struct __sk_buff'.
+> +			 */
+> +			goto out;
+> +	}
+> +
+> +	ret =3D do_check(env);
+> +out:
+> +	if (env->cur_state) {
+
+I think env->cur_state will never be NULL here. This check is necessary=20
+before this patch (when we allocate cur_state in do_check()).=20
+
+Thanks,
+Song
+
