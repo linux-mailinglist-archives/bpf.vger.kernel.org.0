@@ -2,131 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A4E9136348
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2020 23:37:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4019113638F
+	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2020 00:03:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726380AbgAIWhB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Jan 2020 17:37:01 -0500
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:41075 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725840AbgAIWhB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Jan 2020 17:37:01 -0500
-Received: by mail-qk1-f194.google.com with SMTP id x129so140399qke.8;
-        Thu, 09 Jan 2020 14:37:00 -0800 (PST)
+        id S1727749AbgAIXDe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Jan 2020 18:03:34 -0500
+Received: from mail-pl1-f195.google.com ([209.85.214.195]:39243 "EHLO
+        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726267AbgAIXDe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Jan 2020 18:03:34 -0500
+Received: by mail-pl1-f195.google.com with SMTP id g6so60879plp.6;
+        Thu, 09 Jan 2020 15:03:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=a0ymKDSrFHTTcKEwOLDygYHEK2TyXdhplOIm/izNpc0=;
-        b=vg29O69/gxbVEUO96QSWkkt+wE3+ZA8yqO/VaizxLClCtiYtonrXDdifyU19LG78Rw
-         +Wsf7CTiW1j2HuqrnHoX+ZCwLH+KwTYKuLGWdWbmF4xCw6lxUh9Dv5/mA0OulJpAt9Zr
-         HG5kkJ3dl38z4vS8d2xbEFgMr/Jh3uPzYM8r+NiE/NNuo09c1HXYdpmU+bLYHXKJrmbe
-         YHCiLhhEWNE7D32MEq0BasFDt7o8p61/wCn1H08wZHtoQE92n2N4IcccmDSMGlxsvZbi
-         dFuA7Q1M17oKDIbFYH0tefb37s1kTIIaY31kSnzmQPCVcBwItDYRDPSiUWqRH3OjFgqk
-         /DCA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=yVY4gK57hnmK7Q2J8KFryRadxlBxV/Wa/QpNyN+IfM0=;
+        b=PXpmXB69SITodoyiTXv48OBDv1otgtZDvDR00qtl5uyCvdoTWH1SS72/bOsdkW0QKJ
+         9yFgqzpSWxYHA/f+DxZAfRv2NweDx/Fh0L/Hp2E9EgAUztLdUgVN5EhWfML177Zv7BJK
+         DYKKvQo/rruXbyY6z9Ln5qA9IbZnzczNL0kZzYle9QXqRDnzvirvwrwGZ5zHs+EiVSyK
+         VUnxP8DQP6DeUPeblLujGpLJz+wkaNvDY6jh2gb4jsCmAIF55oUpj/z7ZtzPVKFQdmPd
+         vPA+MM2C88UIoisPItEXFfKpAeFDWInZuzcw3ptY2/BUwyDuFfCmMnswW51+E67One5Q
+         vcBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=a0ymKDSrFHTTcKEwOLDygYHEK2TyXdhplOIm/izNpc0=;
-        b=JkmyGVfhNgjAf76vf5l4q2TS2ApZNvdybrRH16MZ2K4z+UbvIdcTCMM1lLDYHvyyfz
-         jjBsWCsSPRg0dKDiHhA6hcIBtIYR0uYC0UeLyEFPYnHNssQP9dPgLnpy7tQcp59CctCm
-         a0DxvPWLvMRAZ1Pbodwj9DYaVnGXGoxZmeAsbgzMEYAxSw5BGTnlU9fLIlKRHvbP+uH6
-         myK8nHchmlCOkdpv/3lhx29x19che5/+73Wq4Uefrdt54h64McE0x3CYOP1ekb6KIIyl
-         FaD+1YYZKtV7ShQCk4eE/j3j/ZeZ5CqvSbRDHa/OGGwXbTF4qGlmehGHOPX9h6jAe25W
-         ArCQ==
-X-Gm-Message-State: APjAAAW+C29er8+G7DSBqBDK6S1VF27PYj4eot1GyumP1FHp7QwVEK3g
-        HvvAi6UGrL9tKqTHFbalASuH2jqLlLWfTn5tfow=
-X-Google-Smtp-Source: APXvYqy8Y19/m0UOMT5N6FBA8j5nLprpXICzzzRwTuOtmgEGrneSO9gwbndalb7nGWa8Xp9wep+JbHtmt7W2E8KTUVs=
-X-Received: by 2002:a37:e408:: with SMTP id y8mr184176qkf.39.1578609420094;
- Thu, 09 Jan 2020 14:37:00 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=yVY4gK57hnmK7Q2J8KFryRadxlBxV/Wa/QpNyN+IfM0=;
+        b=bnZ33Bjf4OJlDg61QXQaACr67WCrzEBIHJDvtHaH1E1H+ZgOxBnpS4sM2bhgmv+ePU
+         XWSW39vfR8do8QriXk0RfCHz2JOn8uEtNGUM14MYwvS2P+Krk14ggnPz5HHyqxlQUJWo
+         39jgN8v+PunLXzG+vAF6lJfVYHI0h5Rf2pYX7tl+b3yH8dnpBU9Fvon3i5fnNaRKBRGd
+         QhzOrnNA1SPEGQuyEvQJtQRYHNg3nKwKhVDNSmEsE1AccJkacIseXpIllW3JTvJUWz9e
+         t+HB2OaZ/fXtNGCVHgZnfSi/EaKESMLKCy63fCrG5WKr22IjCbgLvLAR7/3/JuaUkCZd
+         ep1Q==
+X-Gm-Message-State: APjAAAVPiNbjeEXFzeLl1L0nqa05Zzfnei3LCCKwQoE8OzPRnpQgR2TO
+        FvEQvqaLuzewAeJK60arsRo=
+X-Google-Smtp-Source: APXvYqzXctqXplHUOGVwkejnFSg9l/WyAzdpu96aK429iO6peZxP0EOt1RnK2OlbjLsgprJGx9BALA==
+X-Received: by 2002:a17:902:59c9:: with SMTP id d9mr445980plj.184.1578611013433;
+        Thu, 09 Jan 2020 15:03:33 -0800 (PST)
+Received: from ast-mbp ([2620:10d:c090:200::3:d3c9])
+        by smtp.gmail.com with ESMTPSA id s26sm76505pfe.166.2020.01.09.15.03.32
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 09 Jan 2020 15:03:32 -0800 (PST)
+Date:   Thu, 9 Jan 2020 15:03:31 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>, davem@davemloft.net,
+        daniel@iogearbox.net, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH bpf-next 3/6] bpf: Introduce function-by-function
+ verification
+Message-ID: <20200109230328.i6zuva5gqezpltwp@ast-mbp>
+References: <20200108072538.3359838-1-ast@kernel.org>
+ <20200108072538.3359838-4-ast@kernel.org>
+ <87y2uigs3e.fsf@toke.dk>
+ <20200108200655.vfjqa7pq65f7evkq@ast-mbp>
+ <87ftgpgg6p.fsf@toke.dk>
 MIME-Version: 1.0
-References: <20200109003453.3854769-1-kafai@fb.com> <CAADnVQ+nkr5+KJ8GAH7=TwA72ttB7xxrU8T5+RxkDKvn4FbWHg@mail.gmail.com>
-In-Reply-To: <CAADnVQ+nkr5+KJ8GAH7=TwA72ttB7xxrU8T5+RxkDKvn4FbWHg@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 9 Jan 2020 14:36:49 -0800
-Message-ID: <CAEf4BzZ_LahEL_tJQhzSAxeoyEq_8_hA7QM80qRFG2tQBN3WPQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 00/11] Introduce BPF STRUCT_OPS
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Network Development <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87ftgpgg6p.fsf@toke.dk>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 9, 2020 at 12:39 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Wed, Jan 8, 2020 at 4:35 PM Martin KaFai Lau <kafai@fb.com> wrote:
-> >
-> > This series introduces BPF STRUCT_OPS.  It is an infra to allow
-> > implementing some specific kernel's function pointers in BPF.
-> > The first use case included in this series is to implement
-> > TCP congestion control algorithm in BPF  (i.e. implement
-> > struct tcp_congestion_ops in BPF).
-> >
-> > There has been attempt to move the TCP CC to the user space
-> > (e.g. CCP in TCP).   The common arguments are faster turn around,
-> > get away from long-tail kernel versions in production...etc,
-> > which are legit points.
-> >
-> > BPF has been the continuous effort to join both kernel and
-> > userspace upsides together (e.g. XDP to gain the performance
-> > advantage without bypassing the kernel).  The recent BPF
-> > advancements (in particular BTF-aware verifier, BPF trampoline,
-> > BPF CO-RE...) made implementing kernel struct ops (e.g. tcp cc)
-> > possible in BPF.
-> >
-> > The idea is to allow implementing tcp_congestion_ops in bpf.
-> > It allows a faster turnaround for testing algorithm in the
-> > production while leveraging the existing (and continue growing) BPF
-> > feature/framework instead of building one specifically for
-> > userspace TCP CC.
-> >
-> > Please see individual patch for details.
-> >
-> > The bpftool support will be posted in follow-up patches.
-> >
-> > v4:
-> > - Expose tcp_ca_find() to tcp.h in patch 7.
-> >   It is used to check the same bpf-tcp-cc
-> >   does not exist to guarantee the register()
-> >   will succeed.
-> > - set_memory_ro() and then set_memory_x() only after all
-> >   trampolines are written to the image in patch 6. (Daniel)
-> >   spinlock is replaced by mutex because set_memory_*
-> >   requires sleepable context.
->
-> Applied. Thanks
->
-> Please address any future follow up
-> and please remember to provide 'why' details in commit log
-> no matter how obvious the patch looks as Arnaldo pointed out.
->
-> Re: 'bpftool module' command.
-> I think it's too early to call anything 'a module',
-> since in this context people will immediately assume 'a kernel module'
-> It's a loaded phrase with a lot of consequences.
-> bpf-tcp-cc cubic and dctcp do look like kernel modules, but they are
-> not kernel modules at all. imo making them look like kernel modules
-> has plenty of downsides.
-> So as an immediate followup for bpftool I'd recommend to stick
-> with 'bpftool struct_ops' command or whatever other name.
-> Just not 'bpftool module'.
->
-> I think there is a makefile issue with selftests.
-> make clean;make -j50
-> kept failing for me three times in a row with:
-> progs/bpf_dctcp.c:138:4: warning: implicit declaration of function
-> 'bpf_tcp_send_ack' is invalid in C99 [-Wimplicit-function-declaration]
->                         bpf_tcp_send_ack(sk, *prior_rcv_nxt);
-> but single threaded 'make clean;make' succeeded.
-> Andrii, you have a chance to take a look and reproduce would be great.
+On Thu, Jan 09, 2020 at 09:57:50AM +0100, Toke Høiland-Jørgensen wrote:
+> 
+> > As far as future plans when libbpf sees FUNC_EXTERN it will do the linking the
+> > way we discussed in the other thread. The kernel will support FUNC_EXTERN when
+> > we introduce dynamic libraries. A collection of bpf functions will be loaded
+> > into the kernel first (like libc.so) and later programs will have FUNC_EXTERN
+> > as part of their BTF to be resolved while loading. The func name to btf_id
+> > resolution will be done by libbpf. The kernel verifier will do the type
+> > checking on BTFs.
+> 
+> Right, FUNC_EXTERN will be rejected by the kernel unless it's patched up
+> with "target" btf_ids by libbpf before load? So it'll be
+> FUNC_GLOBAL-linked functions that will be replaceable after the fact
+> with the "dynamic re-linking" feature?
 
-Spotted few problems that might have caused this, will send a fix shortly.
+Right. When libbpf statically links two .o it will need to produce a combined
+BTF out of these two .o. That new BTF will not have FUNC_EXTERN anymore if they
+are resolved. When the kernel sees FUNC_EXTERN it's a directive for the kernel
+to resolve it. BPF program with FUNC_EXTERN references would be loadable, but
+not executable. Anyhow the extern work is not immediate. I don't think any of
+that is necessary for dynamic re-linking.
