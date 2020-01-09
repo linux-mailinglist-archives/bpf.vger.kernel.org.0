@@ -2,82 +2,181 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C72B1357A6
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2020 12:10:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEEFA135817
+	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2020 12:37:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729687AbgAILK5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Jan 2020 06:10:57 -0500
-Received: from mx22.baidu.com ([220.181.50.185]:57424 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728635AbgAILK5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Jan 2020 06:10:57 -0500
-X-Greylist: delayed 1858 seconds by postgrey-1.27 at vger.kernel.org; Thu, 09 Jan 2020 06:10:51 EST
-Received: from BC-Mail-Ex14.internal.baidu.com (unknown [172.31.51.54])
-        by Forcepoint Email with ESMTPS id 8747FB60B5079E3797D2;
-        Thu,  9 Jan 2020 18:24:16 +0800 (CST)
-Received: from BJHW-Mail-Ex13.internal.baidu.com (10.127.64.36) by
- BC-Mail-Ex14.internal.baidu.com (172.31.51.54) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1531.3; Thu, 9 Jan 2020 18:24:16 +0800
-Received: from BJHW-Mail-Ex13.internal.baidu.com ([100.100.100.36]) by
- BJHW-Mail-Ex13.internal.baidu.com ([100.100.100.36]) with mapi id
- 15.01.1713.004; Thu, 9 Jan 2020 18:24:15 +0800
-From:   "Li,Rongqing" <lirongqing@baidu.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        id S1726139AbgAILhB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Jan 2020 06:37:01 -0500
+Received: from mga01.intel.com ([192.55.52.88]:55961 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725997AbgAILhA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Jan 2020 06:37:00 -0500
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 09 Jan 2020 03:37:00 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.69,413,1571727600"; 
+   d="scan'208";a="216275607"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga008.jf.intel.com with ESMTP; 09 Jan 2020 03:36:59 -0800
+Received: from [10.125.253.127] (abudanko-mobl.ccr.corp.intel.com [10.125.253.127])
+        by linux.intel.com (Postfix) with ESMTP id 2707C58043A;
+        Thu,  9 Jan 2020 03:36:50 -0800 (PST)
+Subject: Re: [PATCH v4 2/9] perf/core: open access for CAP_SYS_PERFMON
+ privileged process
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "jani.nikula@linux.intel.com" <jani.nikula@linux.intel.com>,
+        "joonas.lahtinen@linux.intel.com" <joonas.lahtinen@linux.intel.com>,
+        "rodrigo.vivi@intel.com" <rodrigo.vivi@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        "james.bottomley@hansenpartnership.com" 
+        <james.bottomley@hansenpartnership.com>,
+        Serge Hallyn <serge@hallyn.com>,
+        James Morris <jmorris@namei.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Robert Richter <rric@kernel.org>, Jiri Olsa <jolsa@redhat.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Stephane Eranian <eranian@google.com>,
+        Igor Lubashev <ilubashe@akamai.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Jann Horn <jannh@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        Lionel Landwerlin <lionel.g.landwerlin@intel.com>,
+        Song Liu <songliubraving@fb.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "selinux@vger.kernel.org" <selinux@vger.kernel.org>,
+        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
         "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "brouer@redhat.com" <brouer@redhat.com>
-Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0hdW2JwZi1uZXh0XSBicGY6IHJldHVybiBFT1BOT1RT?=
- =?utf-8?B?VVBQIHdoZW4gaW52YWxpZCBtYXAgdHlwZSBpbiBfX2JwZl90eF94ZHBfbWFw?=
-Thread-Topic: [PATCH][bpf-next] bpf: return EOPNOTSUPP when invalid map type
- in __bpf_tx_xdp_map
-Thread-Index: AQHVxkeQgEkOVjljp0O7vuYzoFX93afiITqQ
-Date:   Thu, 9 Jan 2020 10:24:15 +0000
-Message-ID: <7010fba902ac4720bedb641516880c65@baidu.com>
-References: <1578032749-18197-1-git-send-email-lirongqing@baidu.com>
- <5185e163-2c63-34bf-f521-5d643c95c0e6@iogearbox.net>
-In-Reply-To: <5185e163-2c63-34bf-f521-5d643c95c0e6@iogearbox.net>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.22.197.249]
-x-baidu-bdmsfe-datecheck: 1_BC-Mail-Ex14_2020-01-09 18:24:16:469
-x-baidu-bdmsfe-viruscheck: BC-Mail-Ex14_GRAY_Inside_WithoutAtta_2020-01-09
- 18:24:16:454
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org, oprofile-list@lists.sf.net
+References: <c0460c78-b1a6-b5f7-7119-d97e5998f308@linux.intel.com>
+ <c93309dc-b920-f5fa-f997-e8b2faf47b88@linux.intel.com>
+ <20200108160713.GI2844@hirez.programming.kicks-ass.net>
+From:   Alexey Budankov <alexey.budankov@linux.intel.com>
+Organization: Intel Corp.
+Message-ID: <cc239899-5c52-2fd0-286d-4bff18877937@linux.intel.com>
+Date:   Thu, 9 Jan 2020 14:36:50 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.1
 MIME-Version: 1.0
+In-Reply-To: <20200108160713.GI2844@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-DQoNCj4gLS0tLS3pgq7ku7bljp/ku7YtLS0tLQ0KPiDlj5Hku7bkuro6IERhbmllbCBCb3JrbWFu
-biBbbWFpbHRvOmRhbmllbEBpb2dlYXJib3gubmV0XQ0KPiDlj5HpgIHml7bpl7Q6IDIwMjDlubQx
-5pyIOeaXpSAxOjE4DQo+IOaUtuS7tuS6ujogTGksUm9uZ3FpbmcgPGxpcm9uZ3FpbmdAYmFpZHUu
-Y29tPg0KPiDmioTpgIE6IG5ldGRldkB2Z2VyLmtlcm5lbC5vcmc7IGJwZkB2Z2VyLmtlcm5lbC5v
-cmc7IGJyb3VlckByZWRoYXQuY29tDQo+IOS4u+mimDogUmU6IFtQQVRDSF1bYnBmLW5leHRdIGJw
-ZjogcmV0dXJuIEVPUE5PVFNVUFAgd2hlbiBpbnZhbGlkIG1hcCB0eXBlIGluDQo+IF9fYnBmX3R4
-X3hkcF9tYXANCj4gDQo+IE9uIDEvMy8yMCA3OjI1IEFNLCBMaSBSb25nUWluZyB3cm90ZToNCj4g
-PiBhIG5lZ2F0aXZlIHZhbHVlIC1FT1BOT1RTVVBQIHNob3VsZCBiZSByZXR1cm5lZCBpZiBtYXAt
-Pm1hcF90eXBlIGlzDQo+ID4gaW52YWxpZCBhbHRob3VnaCB0aGF0IHNlZW1zIHVubGlrZWx5IG5v
-dywgdGhlbiB0aGUgY2FsbGVyIHdpbGwNCj4gPiBjb250aW51ZSB0byBoYW5kbGUgYnVmZmVyLCBv
-ciBlbHNlIHRoZSBidWZmZXIgd2lsbCBiZSBsZWFrZWQNCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6
-IExpIFJvbmdRaW5nIDxsaXJvbmdxaW5nQGJhaWR1LmNvbT4NCj4gPiAtLS0NCj4gPiAgIG5ldC9j
-b3JlL2ZpbHRlci5jIHwgMiArLQ0KPiA+ICAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCsp
-LCAxIGRlbGV0aW9uKC0pDQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEvbmV0L2NvcmUvZmlsdGVyLmMg
-Yi9uZXQvY29yZS9maWx0ZXIuYyBpbmRleA0KPiA+IDFjYmFjMzRhNGUxMS4uNDBmYTU5MDUzMjFj
-IDEwMDY0NA0KPiA+IC0tLSBhL25ldC9jb3JlL2ZpbHRlci5jDQo+ID4gKysrIGIvbmV0L2NvcmUv
-ZmlsdGVyLmMNCj4gPiBAQCAtMzUxMiw3ICszNTEyLDcgQEAgc3RhdGljIGludCBfX2JwZl90eF94
-ZHBfbWFwKHN0cnVjdCBuZXRfZGV2aWNlDQo+ICpkZXZfcngsIHZvaWQgKmZ3ZCwNCj4gPiAgIAlj
-YXNlIEJQRl9NQVBfVFlQRV9YU0tNQVA6DQo+ID4gICAJCXJldHVybiBfX3hza19tYXBfcmVkaXJl
-Y3QoZndkLCB4ZHApOw0KPiA+ICAgCWRlZmF1bHQ6DQo+ID4gLQkJYnJlYWs7DQo+ID4gKwkJcmV0
-dXJuIC1FT1BOT1RTVVBQOw0KPiANCj4gU28gaW4gY2FzZSBvZiBnZW5lcmljIFhEUCB3ZSByZXR1
-cm4gd2l0aCAtRUJBRFJRQyBpbg0KPiB4ZHBfZG9fZ2VuZXJpY19yZWRpcmVjdF9tYXAoKS4NCj4g
-SSB3b3VsZCBzdWdnZXN0IHdlIGFkYXB0IHRoZSBzYW1lIGVycm9yIGNvZGUgaGVyZSBhcyB3ZWxs
-LCBzbyBpdCdzIGNvbnNpc3RlbnQNCj4gZm9yIHRoZSB0cmFjZXBvaW50IG91dHB1dCBhbmQgbm90
-IHRvIGJlIGNvbmZ1c2VkIHdpdGggLUVPUE5PVFNVUFAgZnJvbSBvdGhlcg0KPiBsb2NhdGlvbnMg
-bGlrZSBkZXZfbWFwX2VucXVldWUoKSB3aGVuIG5kb194ZHBfeG1pdCBpcyBtaXNzaW5nIG9yIHN1
-Y2guDQoNCk9rLCBJIHdpbGwgc2VuZCB2Mg0KDQpUaGFua3MNCg0KLUxpDQoNCg0KPiANCj4gPiAg
-IAl9DQo+ID4gICAJcmV0dXJuIDA7DQo+ID4gICB9DQo+ID4NCg0K
+
+On 08.01.2020 19:07, Peter Zijlstra wrote:
+> On Wed, Dec 18, 2019 at 12:25:35PM +0300, Alexey Budankov wrote:
+>>
+>> Open access to perf_events monitoring for CAP_SYS_PERFMON privileged
+>> processes. For backward compatibility reasons access to perf_events
+>> subsystem remains open for CAP_SYS_ADMIN privileged processes but
+>> CAP_SYS_ADMIN usage for secure perf_events monitoring is discouraged
+>> with respect to CAP_SYS_PERFMON capability.
+>>
+>> Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
+>> ---
+>>  include/linux/perf_event.h | 6 +++---
+>>  kernel/events/core.c       | 6 +++---
+>>  2 files changed, 6 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+>> index 34c7c6910026..f46acd69425f 100644
+>> --- a/include/linux/perf_event.h
+>> +++ b/include/linux/perf_event.h
+>> @@ -1285,7 +1285,7 @@ static inline int perf_is_paranoid(void)
+>>  
+>>  static inline int perf_allow_kernel(struct perf_event_attr *attr)
+>>  {
+>> -	if (sysctl_perf_event_paranoid > 1 && !capable(CAP_SYS_ADMIN))
+>> +	if (sysctl_perf_event_paranoid > 1 && !perfmon_capable())
+>>  		return -EACCES;
+>>  
+>>  	return security_perf_event_open(attr, PERF_SECURITY_KERNEL);
+>> @@ -1293,7 +1293,7 @@ static inline int perf_allow_kernel(struct perf_event_attr *attr)
+>>  
+>>  static inline int perf_allow_cpu(struct perf_event_attr *attr)
+>>  {
+>> -	if (sysctl_perf_event_paranoid > 0 && !capable(CAP_SYS_ADMIN))
+>> +	if (sysctl_perf_event_paranoid > 0 && !perfmon_capable())
+>>  		return -EACCES;
+>>  
+>>  	return security_perf_event_open(attr, PERF_SECURITY_CPU);
+>> @@ -1301,7 +1301,7 @@ static inline int perf_allow_cpu(struct perf_event_attr *attr)
+>>  
+>>  static inline int perf_allow_tracepoint(struct perf_event_attr *attr)
+>>  {
+>> -	if (sysctl_perf_event_paranoid > -1 && !capable(CAP_SYS_ADMIN))
+>> +	if (sysctl_perf_event_paranoid > -1 && !perfmon_capable())
+>>  		return -EPERM;
+>>  
+>>  	return security_perf_event_open(attr, PERF_SECURITY_TRACEPOINT);
+> 
+> These are OK I suppose.
+> 
+>> diff --git a/kernel/events/core.c b/kernel/events/core.c
+>> index 059ee7116008..d9db414f2197 100644
+>> --- a/kernel/events/core.c
+>> +++ b/kernel/events/core.c
+>> @@ -9056,7 +9056,7 @@ static int perf_kprobe_event_init(struct perf_event *event)
+>>  	if (event->attr.type != perf_kprobe.type)
+>>  		return -ENOENT;
+>>  
+>> -	if (!capable(CAP_SYS_ADMIN))
+>> +	if (!perfmon_capable())
+>>  		return -EACCES;
+>>  
+>>  	/*
+> 
+> This one only allows attaching to already extant kprobes, right? It does
+> not allow creation of kprobes.
+
+This unblocks creation of local trace kprobes and uprobes by CAP_SYS_PERFMON 
+privileged process, exactly the same as for CAP_SYS_ADMIN privileged process.
+
+> 
+>> @@ -9116,7 +9116,7 @@ static int perf_uprobe_event_init(struct perf_event *event)
+>>  	if (event->attr.type != perf_uprobe.type)
+>>  		return -ENOENT;
+>>  
+>> -	if (!capable(CAP_SYS_ADMIN))
+>> +	if (!perfmon_capable())
+>>  		return -EACCES;
+>>  
+>>  	/*
+> 
+> Idem, I presume.
+> 
+>> @@ -11157,7 +11157,7 @@ SYSCALL_DEFINE5(perf_event_open,
+>>  	}
+>>  
+>>  	if (attr.namespaces) {
+>> -		if (!capable(CAP_SYS_ADMIN))
+>> +		if (!perfmon_capable())
+>>  			return -EACCES;
+>>  	}
+> 
+> And given we basically make the entire kernel observable with this CAP,
+> busting namespaces shoulnd't be a problem either.
+> 
+> So yeah, I suppose that works.
+> 
