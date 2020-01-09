@@ -2,124 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 168201359FD
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2020 14:23:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0DF1135C0C
+	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2020 16:00:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728052AbgAINXL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Jan 2020 08:23:11 -0500
-Received: from mail-qv1-f67.google.com ([209.85.219.67]:42841 "EHLO
-        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727861AbgAINXL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Jan 2020 08:23:11 -0500
-Received: by mail-qv1-f67.google.com with SMTP id dc14so2913155qvb.9;
-        Thu, 09 Jan 2020 05:23:10 -0800 (PST)
+        id S1730293AbgAIO6z (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Jan 2020 09:58:55 -0500
+Received: from mail-il1-f193.google.com ([209.85.166.193]:36421 "EHLO
+        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732156AbgAIO6y (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Jan 2020 09:58:54 -0500
+Received: by mail-il1-f193.google.com with SMTP id b15so5943226iln.3;
+        Thu, 09 Jan 2020 06:58:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gHn0DTphjj03asL3iOA7THQryvYrwo9Swn5bZMEu/Uo=;
-        b=b9C+6E6yblXFpvQVBMn7gtrDQWz729YAwVEOl+5LFkbKdWVFNG9+9P1Z4o3jl+3moX
-         o/8h48cBrHsjQJ38tt1gb9ZktrB8H+m6wLKAeRe/p+VtnU19DC53uz+Xjf2nDOtK5QeS
-         s/1QDQAzrS9OJGn1cnzCCSvBcAk28XuZO9Wk2yOTtOuQpMJb9QThp2TUi1aQhV2jv2hJ
-         0fDOaGXD/WGX8xfNF8NdNK9f3bCFNKK4zXVGAaCOFZdYkiB3TmqJmVkpVGDhvyTPOteL
-         RVSNFwWYI446zE73eXLEleBwMiJexQPHb7qZnqrD2x1kRmEs1dEg9WSp+B2xu2vQGQGN
-         FpMA==
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=XLp4HzIibE892QDHCqNKq4lozGRKQ0dXyrjbBEHkh4E=;
+        b=l4Bzalxpj9qAWjG2OjZBfaX8qE9AN2lGm2PF1169VF6BfEUpHXYIDZIN08Xe2VY5H5
+         0++X8jERaPQNYEPI8pPF5c1s6/Ljg8Klww8bjOKZnBifpERhUI8ICdswpTnYm56zvgH5
+         T2K9Lm/9m2t+dqH8c4KzBt4p/vjKBQEeH4lYpQW7u09SluiT18hNu4Uz55aGfEJLpaVd
+         qRVe0ec8TndRSZ8xO8QwceZ+DZRZqJAtNAKVEtYAmhB1Ex3jq+SjQAr7SE8ux/f4QQ8a
+         O1yY253Bgial2+dW15DXzE08+pIKXAXI28e4F5eAC3KQCooSkRVFhJ2HdQwhXsmOYYrn
+         ByrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gHn0DTphjj03asL3iOA7THQryvYrwo9Swn5bZMEu/Uo=;
-        b=O5tWhiK0bnSM8u+PHSOht83dn/tkfnmXB7JOZlq1tUAYb2b9gmnl4Rs1HF20ostgVu
-         TjoywWOUdTs+Er0UTesgEzCI/T9KJOKkZPxo9AHxD54jkHdrbfZ3zatAutN7Eq2p6snS
-         jKFRlJqH41iZkkItpMgovrQTYCxxQf7r2XUQ5OfkRMYFtlqr7tL5zOQXzGvzHLpmWARs
-         O23Xe/o1l9nEAeuI2kyUeTaAnfyiNmnUXT0rcu+Hh7qnZr5jAc3Re1c8nBbQgEUaxD9S
-         ZJGb56QSsWjCDhEgsASZjL7BR0KJTPQn5sOf7EoE08U24ny6loKECq/sPyRMF7IIdupm
-         pB6A==
-X-Gm-Message-State: APjAAAVedLfGuifzuGTLWN0D1t0jWAkW8NcHKH9O0KiARAMY3JWpK/g5
-        onL9hqVwzw5a5dfwDfxEo0Y=
-X-Google-Smtp-Source: APXvYqzRJEThNlX0fsuuLm2WmQbGJXLyGL76XM7lMYUKN6wZ/0iULCQ/rvx1/+CYO5gmklP08MRlzQ==
-X-Received: by 2002:a0c:e58e:: with SMTP id t14mr8629177qvm.131.1578576190161;
-        Thu, 09 Jan 2020 05:23:10 -0800 (PST)
-Received: from quaco.ghostprotocols.net ([179.97.37.151])
-        by smtp.gmail.com with ESMTPSA id r28sm3419391qtr.3.2020.01.09.05.23.09
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=XLp4HzIibE892QDHCqNKq4lozGRKQ0dXyrjbBEHkh4E=;
+        b=Ug2634qZODYyu8wP/jXvn1rHzS5BO8eUBQRwhZHO6fbqjR0DA0V+PG9hnoWGApuLLo
+         9HoJztSBLUpca69vBy4fFVWZ3bfBQck7GVS0GbjsXn7tg3OS2/1AX2broBkJhYLf8W8Y
+         /L82KVDd9j0GltBFaRiLHSS19xOAGkyjT+3FJtAC73iuPzgZHVGSQGtm6CktU+VxR4YW
+         sMRNI81RCqcO32xPKp1I4FgmKbjCVNGhNZtcpfvw4wF5TWuUuvqOuZCCe/vH7Fp2TwMC
+         d9DnZH18ID/S65dvzxZrq9MYbSUONj/d6woD+VCsrKsfAjhugOM2M2DiHJhqQD7LvMXE
+         vZng==
+X-Gm-Message-State: APjAAAVF3VYZ9coc3ntOOXpaQ1PlWCKHyObHf3+DRL7YIQdaZUIPqa4e
+        ar9//2raJ6cigA63bswxEP4=
+X-Google-Smtp-Source: APXvYqyEBUOMgjTc1BHjPyJhEHDdIck25bZwD98UM7E6mlmAai2a415h1rU67EqIw7CbycFG608R1A==
+X-Received: by 2002:a92:d183:: with SMTP id z3mr8884912ilz.214.1578581933490;
+        Thu, 09 Jan 2020 06:58:53 -0800 (PST)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id v21sm1458410ios.69.2020.01.09.06.58.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jan 2020 05:23:09 -0800 (PST)
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 71A0740DFD; Thu,  9 Jan 2020 10:23:07 -0300 (-03)
-Date:   Thu, 9 Jan 2020 10:23:07 -0300
-To:     Martin Lau <kafai@fb.com>
-Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>,
-        Kernel Team <Kernel-team@fb.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v4 01/11] bpf: Save PTR_TO_BTF_ID register state
- when spilling to stack
-Message-ID: <20200109132307.GA32252@kernel.org>
-References: <20200109003453.3854769-1-kafai@fb.com>
- <20200109004424.3894196-1-kafai@fb.com>
- <9EC7DCC9-B219-4545-BA93-E2AC0569C843@kernel.org>
- <20200109054701.bog4btwk4724gwfw@kafai-mbp>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200109054701.bog4btwk4724gwfw@kafai-mbp>
-X-Url:  http://acmel.wordpress.com
+        Thu, 09 Jan 2020 06:58:52 -0800 (PST)
+Date:   Thu, 09 Jan 2020 06:58:44 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Toshiaki Makita <toshiaki.makita1@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        bjorn.topel@gmail.com, bpf@vger.kernel.org, toke@redhat.com,
+        jbrouer@redhat.com
+Cc:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net
+Message-ID: <5e173fa42e1d5_35982ae92e9d45bc4b@john-XPS-13-9370.notmuch>
+In-Reply-To: <b74865dd-c8ff-4a93-a4b6-0dfd021eca66@gmail.com>
+References: <157851907534.21459.1166135254069483675.stgit@john-Precision-5820-Tower>
+ <157851930654.21459.7236323146782270917.stgit@john-Precision-5820-Tower>
+ <a4bb8f06-f960-cdda-f73a-8b87744445af@gmail.com>
+ <5e16c99ecc70b_279f2af4a0e725c49a@john-XPS-13-9370.notmuch>
+ <b74865dd-c8ff-4a93-a4b6-0dfd021eca66@gmail.com>
+Subject: Re: [bpf PATCH 2/2] bpf: xdp, remove no longer required
+ rcu_read_{un}lock()
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Thu, Jan 09, 2020 at 05:47:06AM +0000, Martin Lau escreveu:
-> On Wed, Jan 08, 2020 at 10:06:44PM -0300, Arnaldo Carvalho de Melo wrote:
-> > On January 8, 2020 9:44:24 PM GMT-03:00, Martin KaFai Lau <kafai@fb.com> wrote:
-> > >This patch makes the verifier save the PTR_TO_BTF_ID register state
-> > >when
-> > >spilling to the stack.
+Toshiaki Makita wrote:
+> On 2020/01/09 15:35, John Fastabend wrote:
+> > Toshiaki Makita wrote:
+> >> On 2020/01/09 6:35, John Fastabend wrote:
+> >>> Now that we depend on rcu_call() and synchronize_rcu() to also wait
+> >>> for preempt_disabled region to complete the rcu read critical section
+> >>> in __dev_map_flush() is no longer relevant.
+> >>>
+> >>> These originally ensured the map reference was safe while a map was
+> >>> also being free'd. But flush by new rules can only be called from
+> >>> preempt-disabled NAPI context. The synchronize_rcu from the map free
+> >>> path and the rcu_call from the delete path will ensure the reference
+> >>> here is safe. So lets remove the rcu_read_lock and rcu_read_unlock
+> >>> pair to avoid any confusion around how this is being protected.
+> >>>
+> >>> If the rcu_read_lock was required it would mean errors in the above
+> >>> logic and the original patch would also be wrong.
+> >>>
+> >>> Fixes: 0536b85239b84 ("xdp: Simplify devmap cleanup")
+> >>> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+> >>> ---
+> >>>    kernel/bpf/devmap.c |    2 --
+> >>>    1 file changed, 2 deletions(-)
+> >>>
+> >>> diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
+> >>> index f0bf525..0129d4a 100644
+> >>> --- a/kernel/bpf/devmap.c
+> >>> +++ b/kernel/bpf/devmap.c
+> >>> @@ -378,10 +378,8 @@ void __dev_map_flush(void)
+> >>>    	struct list_head *flush_list = this_cpu_ptr(&dev_map_flush_list);
+> >>>    	struct xdp_bulk_queue *bq, *tmp;
+> >>>    
+> >>> -	rcu_read_lock();
+> >>>    	list_for_each_entry_safe(bq, tmp, flush_list, flush_node)
+> >>>    		bq_xmit_all(bq, XDP_XMIT_FLUSH);
+> >>> -	rcu_read_unlock();
+> >>
+> >> I introduced this lock because some drivers have assumption that
+> >> .ndo_xdp_xmit() is called under RCU. (commit 86723c864063)
+> >>
+> >> Maybe devmap deletion logic does not need this anymore, but is it
+> >> OK to drivers?
 > > 
-> > You say what it does, but not why that is needed :-/
-> It is the same as other existing bpf_reg_type (i.e. the above switch
-> cases in is_spillable_regtype()).
+> > Ah OK thanks for catching this. So its a strange requirement from
+> > virto_net to need read_lock like this. Quickly scanned the drivers
+> > and seems its the only one.
+> > 
+> > I think the best path forward is to fix virtio_net so it doesn't
+> > need rcu_read_lock() here then the locking is much cleaner IMO.
 > 
-> When a register spills to the stack, the verifier decides if the reg's
-> state can be saved (i.e. what the is_spillable_regtype() is checking).
-> If the state is not saved, the verifier cannot recognize its state
-> later.
+> Actually veth is calling rcu_dereference in .ndo_xdp_xmit() so it needs
+> the same treatment. In the reference I sent in another mail, Jesper
+> said mlx5 also has some RCU dependency.
 
-Thanks for the explanation, I suggest that next time you include it in
-the cset comment, to help make sense of the patch by having a why + how
-to match with the actual patch.
+So veth, virtio and tun seem to need rcu_read_lock/unlock because
+they use an rcu_dereference() in the xdp_xmit path. I'll audit the
+rest today.
 
-- Arnaldo
- 
+@Jesper, recall why mlx5 would require rcu_read_lock()/unlock()
+pair? I just looked at mlx5_xdp_xmit and I'm not seeing a
+rcu_dereference in there so if it is required I would want
+to understand why.
 
-> > - Arnaldo
-> > >
-> > >Acked-by: Yonghong Song <yhs@fb.com>
-> > >Signed-off-by: Martin KaFai Lau <kafai@fb.com>
-> > >---
-> > > kernel/bpf/verifier.c | 1 +
-> > > 1 file changed, 1 insertion(+)
-> > >
-> > >diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > >index 6f63ae7a370c..d433d70022fd 100644
-> > >--- a/kernel/bpf/verifier.c
-> > >+++ b/kernel/bpf/verifier.c
-> > >@@ -1916,6 +1916,7 @@ static bool is_spillable_regtype(enum
-> > >bpf_reg_type type)
-> > > 	case PTR_TO_TCP_SOCK:
-> > > 	case PTR_TO_TCP_SOCK_OR_NULL:
-> > > 	case PTR_TO_XDP_SOCK:
-> > >+	case PTR_TO_BTF_ID:
-> > > 		return true;
-> > > 	default:
-> > > 		return false;
-> > 
+> 
+> > I'll send a v2 and either move the xdp enabled check (the piece
+> > using the rcu_read_lock) into a bitmask flag or push the
+> > rcu_read_lock() into virtio_net so its clear that this is a detail
+> > of virtio_net and not a general thing. FWIW I don't think the
+> > rcu_read_lock is actually needed in the virtio_net case anymore
+> > either but pretty sure the rcu_dereference will cause an rcu
+> > splat. Maybe there is another annotation we can use. I'll dig
+> > into it tomorrow. Thanks
+> 
+> I'm thinking we can just move the rcu_lock to wrap around only ndo_xdp_xmit.
+> But as you suggest if we can identify all drivers which depends on RCU and move the
+> rcu_lock into the drivers (or remove the dependency) it's better.
 
--- 
+I think we are working in bpf-next tree here so it would be best
+to identify the minimal set of drivers that require the read_lock
+and push that into the driver. I prefer these things are a precise
+so its easy to understand when reading the code. Otherwise its
+really not clear without grepping through the code or walking
+the git history why we wrapped this in a rcu_read_lock/unlock.
+At minimum we want a comment but that feels like a big hammer
+that is not needed.
 
-- Arnaldo
+Most drivers should not care about the rcu_read_lock it seems
+to just be special cases in the software devices where this happens.
+veth for example is dereferencing the peer netdev. tun is dereference
+the tun_file. virtio_net usage seems to be arbitrary to me and
+is simply used to decide if xdp is enabled but we can do that
+in a cleaner way.
+
+I'll put a v2 together today and send it out for review.
