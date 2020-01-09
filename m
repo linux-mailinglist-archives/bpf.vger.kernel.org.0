@@ -2,119 +2,242 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BE615136214
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2020 21:59:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CEC4A136262
+	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2020 22:22:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728611AbgAIU7g (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Jan 2020 15:59:36 -0500
-Received: from mail-eopbgr60077.outbound.protection.outlook.com ([40.107.6.77]:27853
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728508AbgAIU7e (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Jan 2020 15:59:34 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eAUPlnz6OWBgTTwNNU6xzojnDz5MXmPLdIDFky+UttRzc+RYrIjWa/K80bFjNO/EEK4CNJnf93vZs3CqFv/fbqX4WSwAYsd/dal64nacURgk5Sf+sXK5b+LCMR9eJWuLcP7NzlT7AuPSPZ55dvgnaBapQjUNH/LbUKnYG36qgP9QeqUs3tGUYIemtrK/Ku1h1WbcMC/WrxvhCqRi9eIJhtOetUo9lSyAEnELPAeQ3KmB4CF6AH81raaDcJCC28yTUFjUWe01MBjgfrAQA3qtx37fh3VFskynWNc++1heiBPwO5QGaUU9vH8pQ/vcoIQ6s21cW9x6IrurM2MnlKZsMA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tP5FZbpLd938kmTEfhl0oqHxaovzMo8dYURXWFhR/DQ=;
- b=U7gPLeumKJVoDoMnGRL9pBte1Le6aw66ElTrqZ6Upk5CRHnU6QI6GDLafnxDxgkXZcK2TyYpkvlm8rCzO+XtLLiWAkPPo9rtALtuwcANTqEpjrKcIWWniGTov0iwSENchKaDuvlcWgeaFuz8VJjQndCwfjxzq1v1v0fkBtTJMzUhJPxmHFzw/hD6qvX/sz+8835NNV62uiKdfg0BwYJjhR4PQiLgZLh2igh3KsDIVS6KpgwOIH/1L74Y0gXvFalrQT4+BH56JQglEKSqOPVKiUGNqzTMhfT2vZxQkOWRYtyRKWwBdeR1zN5+GQ29mzsb0DnuQqBt5Rc1tU9fQPU2IQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tP5FZbpLd938kmTEfhl0oqHxaovzMo8dYURXWFhR/DQ=;
- b=KeaFL4PRlXWluwgVDEkBH3bZZNmVwt2zIYr/UeXhUrcQepyIn1OpowYQQiV6vdw9yl5zEMmhEAJikvcOnWfa1GTh3/CkBKO9e2WoaH1cxjSXby2kxtH5vK85SWWjQP4YaLe4d6kzoHNoSGAB7CCzaCfzMo4T8qkLWlq+uIZqNE4=
-Received: from VI1PR05MB5102.eurprd05.prod.outlook.com (20.177.51.151) by
- VI1PR05MB5024.eurprd05.prod.outlook.com (20.177.51.28) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2623.10; Thu, 9 Jan 2020 20:59:29 +0000
-Received: from VI1PR05MB5102.eurprd05.prod.outlook.com
- ([fe80::d830:96fc:e928:c096]) by VI1PR05MB5102.eurprd05.prod.outlook.com
- ([fe80::d830:96fc:e928:c096%6]) with mapi id 15.20.2623.010; Thu, 9 Jan 2020
- 20:59:29 +0000
-From:   Saeed Mahameed <saeedm@mellanox.com>
-To:     "bjorn.topel@gmail.com" <bjorn.topel@gmail.com>,
-        Maxim Mikityanskiy <maximmi@mellanox.com>,
-        "song@kernel.org" <song@kernel.org>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "piotr.raczynski@intel.com" <piotr.raczynski@intel.com>,
-        "ttoukan.linux@gmail.com" <ttoukan.linux@gmail.com>,
-        "peter.waskiewicz.jr@intel.com" <peter.waskiewicz.jr@intel.com>,
-        "magnus.karlsson@gmail.com" <magnus.karlsson@gmail.com>,
-        "andrii.nakryiko@gmail.com" <andrii.nakryiko@gmail.com>,
-        "dsahern@gmail.com" <dsahern@gmail.com>,
-        "brouer@redhat.com" <brouer@redhat.com>,
-        "toshiaki.makita1@gmail.com" <toshiaki.makita1@gmail.com>,
-        "jonathan.lemon@gmail.com" <jonathan.lemon@gmail.com>,
-        "toke@redhat.com" <toke@redhat.com>,
-        "ilias.apalodimas@linaro.org" <ilias.apalodimas@linaro.org>,
-        Tariq Toukan <tariqt@mellanox.com>,
-        "neerav.parikh@intel.com" <neerav.parikh@intel.com>,
-        "jakub.kicinski@netronome.com" <jakub.kicinski@netronome.com>
-CC:     "jhs@mojatatu.com" <jhs@mojatatu.com>,
-        "dev@zabiplane.groups.io" <dev@zabiplane.groups.io>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "tom@herbertland.com" <tom@herbertland.com>
-Subject: netdev 0x14 XDP workshop, call for participation
-Thread-Topic: netdev 0x14 XDP workshop, call for participation
-Thread-Index: AQHVxy+vdxlw26BUCEyr2AiSM4ZQzQ==
-Date:   Thu, 9 Jan 2020 20:59:29 +0000
-Message-ID: <feee123711a3d79f0b9c0c26b49934e9d1b4a46a.camel@mellanox.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.34.2 (3.34.2-1.fc31) 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=saeedm@mellanox.com; 
-x-originating-ip: [209.116.155.178]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 5f565df0-2741-4551-406c-08d79546d1c6
-x-ms-traffictypediagnostic: VI1PR05MB5024:|VI1PR05MB5024:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VI1PR05MB5024B140379BBA7740E94F55BE390@VI1PR05MB5024.eurprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-forefront-prvs: 02778BF158
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(136003)(39860400002)(346002)(396003)(366004)(376002)(189003)(199004)(53754006)(91956017)(2906002)(66946007)(64756008)(66446008)(66556008)(76116006)(6486002)(4744005)(7416002)(6506007)(26005)(186003)(54906003)(110136005)(316002)(36756003)(966005)(66476007)(71200400001)(2616005)(8936002)(478600001)(81166006)(5660300002)(81156014)(86362001)(8676002)(6512007)(4326008)(921003)(1121003);DIR:OUT;SFP:1101;SCL:1;SRVR:VI1PR05MB5024;H:VI1PR05MB5102.eurprd05.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ZcpRKzV0BQlr2px9M2V+pTmvQkjGYNE73+7QlFkEvxL/2+FCx6FSjkceTyXSTrV4pvkoRl2Skt+CW1F3F+94kMNqDmcV+UECBYeLFVFRXP5LSlJ2W0Og9FZDoc4rqnQwFXCGop3qv6nlnkznmnM2g8PLIxDLsAAhncRfso1De2DTFSjSYJ/12piyynhaRDPIy8MY6MNVt0H+EO3d1vtimt8pjr9+03hpqTkpd+CJx6fXq/jaFrS1smVn8CpFL8ibqa2QGWVSV/HT/kRSMRfnT4RRNLf25GA5tMsq1Py74rhl33LpquLGrZ8nsLbM6ZJPdULvmji5fCGdHxb9leRgTsrsbY7qxV+4PlSI4NMryQJ0+6bIp+QTlIdVfaKugJgq0SMSKLce87fjnOpPErNUSa//xvnftbkc/Zte8svx8f2US3EXxdqCuDUTD9GldWt74ewAN0hkkdk+Q9PIn+bDVbCKM41bEGoj4pR/VwVdYN66qQn0+t8V6y5BrcU7BoBdvpLNMYrebSMBaG3KJyxtPQyZz4dinKw3ajjdXAqP86D9/3ePPUsCjU6TgdLjpIqCXyRyHGisWyRGU/esGTfsF+T2SPPN6Q4XFhMUt6xuJjE=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <D92E103742327C42B16D2E051A0DB4AC@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5f565df0-2741-4551-406c-08d79546d1c6
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Jan 2020 20:59:29.4295
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: G8O4VDk/7vlWd0kCZj34Kdioz39P/08UvnSfVWxrZMj5aTZTNCaThI3+zaadCMhk5XO5w82buQoKcWb4jKH/tQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB5024
+        id S1725840AbgAIVW7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Jan 2020 16:22:59 -0500
+Received: from mail-il1-f194.google.com ([209.85.166.194]:46247 "EHLO
+        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725763AbgAIVW6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Jan 2020 16:22:58 -0500
+Received: by mail-il1-f194.google.com with SMTP id t17so38899ilm.13;
+        Thu, 09 Jan 2020 13:22:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=WraloYdZdtwOOBnxS9mfcGbFdjEwYDgsrd/DfdbfkyU=;
+        b=ouzldhhTo+VzZh84orsDT+6EKe8vJ8V5wn+iJl6jfbeZMcz7bMuvEqtiz/cKsuQtM6
+         NeLjdlKsGhhfnQkwF4duEhm8FvFcxvSammZbUNz1BKvDYYDXVmUvMp5spJmTGFD5Xkh+
+         +KoN148i9ekHT6U7iNJt9XjUTWTMeATQWZBPnAjIfRBMlFgjw5veKgMyptkXq6i1G6oK
+         hVYK5DUEBFuAh2QyNvt8qh3pPxawhqipPHLTt9OIbRvTHqPW+Eszsp85Kch1GjPuWVCs
+         D1a/OuUzBq0X7Nx9ZLxhjaOZB5G6RJeF/tRXR16yT7AvWhBwKzqTQ1OXD9lqh0v/AXGP
+         B6Mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=WraloYdZdtwOOBnxS9mfcGbFdjEwYDgsrd/DfdbfkyU=;
+        b=HbWpwsoTZVzDIpxOfR7OK6sBKW59RTeLVAR6oiAtXBurjVaHozYa2wOSE0vLryIME+
+         crzDmUyAsss8dELgnd7tL98xxmTC0CPV0tZFSRxuuMy4XJN3e1m/04sNANHAfJ0mPsWD
+         dq4w3Ue1oVJbnorH9xreAbSAcxLqqov2Dr6fCK0tRvOi9S4EOwMXHs4be0OW4clWaM8s
+         AqGCncFHBOAC0gh5M9rWd3PTL5CZR7sJ2D9gcydFJTjKsz+LwZXIuB8lsNdMfTwn8GhJ
+         pPX4vrpyfN0YcZQOIsmmRm2J87dLdKRt+OtT+OEoN64eY/8oPcj2K900gzjdvsjNNHOZ
+         pvyw==
+X-Gm-Message-State: APjAAAXqCWDsU4sEVQC3Jqwa+liZ74Gda9+/6cufa/NmVKApuxiquwuW
+        D4jsCjPmA8i79QPM4dM/nadCaFNJ
+X-Google-Smtp-Source: APXvYqw47TA2cvVV8aJb4Fr9g2EPKZPjT6APv7mCmh/xR3oxsmevx+sk2sLKqvHhu4yMaxz7npwjSQ==
+X-Received: by 2002:a92:914a:: with SMTP id t71mr10960389ild.293.1578604977822;
+        Thu, 09 Jan 2020 13:22:57 -0800 (PST)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id n22sm2519iog.14.2020.01.09.13.22.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Jan 2020 13:22:57 -0800 (PST)
+Date:   Thu, 09 Jan 2020 13:22:49 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Jakub Sitnicki <jakub@cloudflare.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net
+Message-ID: <5e1799a913185_35982ae92e9d45bcc9@john-XPS-13-9370.notmuch>
+In-Reply-To: <87tv54syv8.fsf@cloudflare.com>
+References: <157851776348.1732.12600714815781177085.stgit@ubuntu3-kvm2>
+ <157851808101.1732.11616068811837364406.stgit@ubuntu3-kvm2>
+ <87tv54syv8.fsf@cloudflare.com>
+Subject: Re: [bpf PATCH 3/9] bpf: sockmap/tls, push write_space updates
+ through ulp updates
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-SGkgQWxsLA0KDQpJIGFtIHdvcmtpbmcgb24gcHJlcGFyaW5nIGEgWERQIHdvcmtzaG9wIHByb3Bv
-c2FsIGZvciB0aGUgY29taW5nIG5ldGRldg0KMHgxNCBjb25mZXJlbmNlLg0KDQpJIHdvdWxkIGxp
-a2UgdG8gY2FsbCBmb3IgcGFydGljaXBhdGlvbiBhbmQgaWYgYW55b25lIHdhbnQgdG8gam9pbiBh
-bmQNCmhhcyBhIFhEUCByZWxhdGVkIHRvcGljcywgZGV2ZWxvcG1lbnQsIGV4cGVyaWVuY2VzLCBp
-ZGVhcyBhbmQgaXNzdWVzIHRvDQpzaGFyZSBhbmQgZGlzY3VzcyBpbiB0aGlzIHdvcmtzaG9wLCB0
-aGlzIGlzIHRoZSByaWdodCBmb3J1bSwgaSB3aWxsDQptYWtlIHN1cmUgdG8gaW5jbHVkZSB5b3Ug
-aW4gdGhlIHByb3Bvc2FsLg0KDQpGb3Igbm93IHdlIGhhdmU6DQoxKSBYRFAgSFcgaGludHMsIFNh
-ZWVkDQpTaW1pbGFyIHRvIHdoYXQgd2FzIHByZXNlbnRlZCBpbiBlYnBsYW5lIEhXIGFjY2VsIFdH
-IGJhY2sgb24gRGVjIDE5dGgsIA0KaHR0cHM6Ly96YWJpcGxhbmUuZ3JvdXBzLmlvL2cvZGV2L21l
-c3NhZ2UvNTYNCjIpIEJyaW5nIHVwIGlzc3VlcyBhbmQgaWRlYXMsIERhdmlkIEFoZXJuLg0KDQpJ
-ZiB5b3UgYXJlIGludGVyZXN0ZWQgaW4gam9pbmluZyBwbGVhc2UgcmVwbHkgdG8gbWUgQVNBUCwg
-d2l0aCBhIHRvcGljDQp0aXRsZS4NCg0KSWYgeW91IGhhdmUgYSB0b3BpYyB0aGF0IHlvdSB3YW50
-IHRvIGRpc2N1c3MgYnV0IHlvdSB0aGluayBpdCBkb2Vzbid0DQpuZWVkIGEgZnVsbCBibG93biB0
-YWxrIG9yIHNlc3Npb24sIHRoZW4gdGhpcyBpcyB0aGUgcmlnaHQgcGxhdGZvcm0gZm9yDQp5b3Uu
-DQoNClRoYW5rcywNClNhZWVkLg0K
+Jakub Sitnicki wrote:
+> On Wed, Jan 08, 2020 at 10:14 PM CET, John Fastabend wrote:
+> > When sockmap sock with TLS enabled is removed we cleanup bpf/psock state
+> > and call tcp_update_ulp() to push updates to TLS ULP on top. However, we
+> > don't push the write_space callback up and instead simply overwrite the
+> > op with the psock stored previous op. This may or may not be correct so
+> > to ensure we don't overwrite the TLS write space hook pass this field to
+> > the ULP and have it fixup the ctx.
+> >
+> > This completes a previous fix that pushed the ops through to the ULP
+> > but at the time missed doing this for write_space, presumably because
+> > write_space TLS hook was added around the same time.
+> >
+> > Fixes: 95fa145479fbc ("bpf: sockmap/tls, close can race with map free")
+> > Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+> > ---
+> >  include/linux/skmsg.h |   12 ++++++++----
+> >  include/net/tcp.h     |    6 ++++--
+> >  net/ipv4/tcp_ulp.c    |    6 ++++--
+> >  net/tls/tls_main.c    |   10 +++++++---
+> >  4 files changed, 23 insertions(+), 11 deletions(-)
+> >
+> > diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
+> > index b6afe01f8592..14d61bba0b79 100644
+> > --- a/include/linux/skmsg.h
+> > +++ b/include/linux/skmsg.h
+> > @@ -359,17 +359,21 @@ static inline void sk_psock_restore_proto(struct sock *sk,
+> >  					  struct sk_psock *psock)
+> >  {
+> >  	sk->sk_prot->unhash = psock->saved_unhash;
+> > -	sk->sk_write_space = psock->saved_write_space;
+> >
+> >  	if (psock->sk_proto) {
+> >  		struct inet_connection_sock *icsk = inet_csk(sk);
+> >  		bool has_ulp = !!icsk->icsk_ulp_data;
+> >
+> > -		if (has_ulp)
+> > -			tcp_update_ulp(sk, psock->sk_proto);
+> > -		else
+> > +		if (has_ulp) {
+> > +			tcp_update_ulp(sk, psock->sk_proto,
+> > +				       psock->saved_write_space);
+> > +		} else {
+> >  			sk->sk_prot = psock->sk_proto;
+> > +			sk->sk_write_space = psock->saved_write_space;
+> > +		}
+> 
+> I'm wondering if we need the above fallback branch for no-ULP case?
+> tcp_update_ulp repeats the ULP check and has the same fallback. Perhaps
+> it can be reduced to:
+> 
+> 	if (psock->sk_proto) {
+> 		tcp_update_ulp(sk, psock->sk_proto, psock->saved_write_space);
+> 		psock->sk_proto = NULL;
+> 	} else {
+> 		sk->sk_write_space = psock->saved_write_space;
+> 	}
+
+Yeah that is a bit nicer. How about pushing it for bpf-next? I'm not
+sure its needed for bpf and the patch I pushed is the minimal change
+needed for the fix and pushes the saved_write_space around.
+
+> 
+> Then there's the question if it's okay to leave psock->sk_proto set and
+> potentially restore it more than once? Reading tls_update, the only user
+> ULP 'update' callback, it looks fine.
+> 
+> Can sk_psock_restore_proto be as simple as:
+> 
+> static inline void sk_psock_restore_proto(struct sock *sk,
+> 					  struct sk_psock *psock)
+> {
+> 	tcp_update_ulp(sk, psock->sk_proto, psock->saved_write_space);
+> }
+> 
+> ... or am I missing something?
+
+I think that is good. bpf-next?
+
+> 
+> Asking becuase I have a patch [0] like this in the queue and haven't
+> seen issues with it during testing.
+
++1 Want to push it after we sort out this series?
+
+> 
+> -jkbs
+> 
+> [0] https://github.com/jsitnicki/linux/commit/2d2152593c8e6c5f38548796501a81a6ba20b6dc
+> 
+> >  		psock->sk_proto = NULL;
+> > +	} else {
+> > +		sk->sk_write_space = psock->saved_write_space;
+> >  	}
+> >  }
+> >
+> > diff --git a/include/net/tcp.h b/include/net/tcp.h
+> > index e460ea7f767b..e6f48384dc71 100644
+> > --- a/include/net/tcp.h
+> > +++ b/include/net/tcp.h
+> > @@ -2147,7 +2147,8 @@ struct tcp_ulp_ops {
+> >  	/* initialize ulp */
+> >  	int (*init)(struct sock *sk);
+> >  	/* update ulp */
+> > -	void (*update)(struct sock *sk, struct proto *p);
+> > +	void (*update)(struct sock *sk, struct proto *p,
+> > +		       void (*write_space)(struct sock *sk));
+> >  	/* cleanup ulp */
+> >  	void (*release)(struct sock *sk);
+> >  	/* diagnostic */
+> > @@ -2162,7 +2163,8 @@ void tcp_unregister_ulp(struct tcp_ulp_ops *type);
+> >  int tcp_set_ulp(struct sock *sk, const char *name);
+> >  void tcp_get_available_ulp(char *buf, size_t len);
+> >  void tcp_cleanup_ulp(struct sock *sk);
+> > -void tcp_update_ulp(struct sock *sk, struct proto *p);
+> > +void tcp_update_ulp(struct sock *sk, struct proto *p,
+> > +		    void (*write_space)(struct sock *sk));
+> >
+> >  #define MODULE_ALIAS_TCP_ULP(name)				\
+> >  	__MODULE_INFO(alias, alias_userspace, name);		\
+> > diff --git a/net/ipv4/tcp_ulp.c b/net/ipv4/tcp_ulp.c
+> > index 12ab5db2b71c..38d3ad141161 100644
+> > --- a/net/ipv4/tcp_ulp.c
+> > +++ b/net/ipv4/tcp_ulp.c
+> > @@ -99,17 +99,19 @@ void tcp_get_available_ulp(char *buf, size_t maxlen)
+> >  	rcu_read_unlock();
+> >  }
+> >
+> > -void tcp_update_ulp(struct sock *sk, struct proto *proto)
+> > +void tcp_update_ulp(struct sock *sk, struct proto *proto,
+> > +		    void (*write_space)(struct sock *sk))
+> >  {
+> >  	struct inet_connection_sock *icsk = inet_csk(sk);
+> >
+> >  	if (!icsk->icsk_ulp_ops) {
+> > +		sk->sk_write_space = write_space;
+> >  		sk->sk_prot = proto;
+> >  		return;
+> >  	}
+> >
+> >  	if (icsk->icsk_ulp_ops->update)
+> > -		icsk->icsk_ulp_ops->update(sk, proto);
+> > +		icsk->icsk_ulp_ops->update(sk, proto, write_space);
+> >  }
+> >
+> >  void tcp_cleanup_ulp(struct sock *sk)
+> > diff --git a/net/tls/tls_main.c b/net/tls/tls_main.c
+> > index dac24c7aa7d4..94774c0e5ff3 100644
+> > --- a/net/tls/tls_main.c
+> > +++ b/net/tls/tls_main.c
+> > @@ -732,15 +732,19 @@ static int tls_init(struct sock *sk)
+> >  	return rc;
+> >  }
+> >
+> > -static void tls_update(struct sock *sk, struct proto *p)
+> > +static void tls_update(struct sock *sk, struct proto *p,
+> > +		       void (*write_space)(struct sock *sk))
+> >  {
+> >  	struct tls_context *ctx;
+> >
+> >  	ctx = tls_get_ctx(sk);
+> > -	if (likely(ctx))
+> > +	if (likely(ctx)) {
+> > +		ctx->sk_write_space = write_space;
+> >  		ctx->sk_proto = p;
+> > -	else
+> > +	} else {
+> >  		sk->sk_prot = p;
+> > +		sk->sk_write_space = write_space;
+> > +	}
+> >  }
+> >
+> >  static int tls_get_info(const struct sock *sk, struct sk_buff *skb)
+
+
