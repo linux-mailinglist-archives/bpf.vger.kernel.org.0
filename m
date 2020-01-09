@@ -2,95 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 55FFF135F80
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2020 18:41:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73B17135FDF
+	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2020 18:53:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729228AbgAIRl6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Jan 2020 12:41:58 -0500
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:43006 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728724AbgAIRl6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Jan 2020 12:41:58 -0500
-Received: by mail-lf1-f66.google.com with SMTP id y19so5801680lfl.9
-        for <bpf@vger.kernel.org>; Thu, 09 Jan 2020 09:41:57 -0800 (PST)
+        id S1731918AbgAIRxH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Jan 2020 12:53:07 -0500
+Received: from mail-lf1-f67.google.com ([209.85.167.67]:36626 "EHLO
+        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730326AbgAIRxH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Jan 2020 12:53:07 -0500
+Received: by mail-lf1-f67.google.com with SMTP id n12so5851541lfe.3;
+        Thu, 09 Jan 2020 09:53:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=lGlYWgAGF8qoUquyRtx90hCoUVsvvIgSFud8ncEZfoo=;
-        b=Reuu3EC3UTGCFyoHH+Fuluy3COFmN61EN1Y3Hlqny6bKH7N0sFwswWyCxTqQm3rYt5
-         ej26glTP7Cnq5kSJ0ZyIxM9++BMoJC7meq7i2EKK29HnHdtrjf43zJtdHPDwi3/jkrXN
-         s7OHWF/ehaZvPZxCGmOYgRGkEWC9ropBYabJdPAVIvFrGZNAjk3bnNigdzaAjYh/LAPF
-         wuNox2EaHg4WcNcQ81MBgOF8cIq+n337z6O82VsxJNblExDDQ1APPCDhCnoyFGO2WqYB
-         /LjVFaDniOXPMhjU9bDKhZ6mpnKpFKZ6kVWDYQLBrpSsuCNuvEMT/dj9tqeaeEzunP3R
-         6tAg==
+        bh=gE9Y5ECnaA5y/G3Oq/1mhBQAFOudM6qoOofRQi0t/RQ=;
+        b=RA7VLeHUl85U4Z7omEUtRZFBQsf2W28qXz5EtPeM8XKVrm7xf8Ooya7DM4lOk9qu5A
+         8fftAaZuuvDWKoJwUTZNdfXz4XAtLN2DT0dkum7GAp/Yef4m+ITodJxjKN19TOH4cE45
+         zaDVuwvNbtXG4U2xJ9FauK2eOZ4N2tioTX2fr94gVarYr2/OsvmzGecq+bglwa7hmxdj
+         IjcpzGrstitmjbrEnWsRlQQmtszDlaYIULYd7JqaXrDLSlamvbp7CTQzcxugQutw56om
+         U8veGx0ZHAm/r33Fx8Hbt65UTJ9t2KsgguL5O9PYIgPoOtrb50LqRt4uyFv3FH7JHQtv
+         azHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=lGlYWgAGF8qoUquyRtx90hCoUVsvvIgSFud8ncEZfoo=;
-        b=oeES8/RePmsKeyFqfNrAgfTwl58jjc1H3naL+RcS7y5n99ocr3Ef66edCjtrN5j7vr
-         J2RnQzkA36/IdAePQfLlfUJx/zLVb39yBuuZ7nQd8enIvD97v57uPtY0xLNnwYxnCxLP
-         GxsLSBWTUpAI/hQJGRFPzpeBf19WShxhs0IHNiiRHyd42pqQPgXDJsyRQyXq8DWbT6rv
-         hmIrSFGHckV2Dl3Uiq1YjXdxNnT4RzgEpY+u2f8L79f8+imStl+sUJToWxONJEuELWgI
-         SH7fJlt2plqYVykFDBCeJbsFBTbvcBdmVzC6YR22YQ3pPSiGhPe4HKDICMzri9O0gyB8
-         bvCg==
-X-Gm-Message-State: APjAAAXtrMroF8E+QZbIV+wW8bYejaCJKRYxnhsaqMGPXWMrpk+ILBL8
-        /HEUn0bEExv3d99DVkzf66sFiPmx87PO0TpoQBA=
-X-Google-Smtp-Source: APXvYqw3DvB/1jWz8Vjtf65otMhdJVxNNF+sVtIc6TH9vEsVk1ChL4VGcK31bSU6nMYclA8I+izuTHDseRAIOO6XfHQ=
-X-Received: by 2002:a19:48c5:: with SMTP id v188mr7044247lfa.100.1578591716252;
- Thu, 09 Jan 2020 09:41:56 -0800 (PST)
+        bh=gE9Y5ECnaA5y/G3Oq/1mhBQAFOudM6qoOofRQi0t/RQ=;
+        b=n7qYo33N2OppaUo7vIX9JvlEVjKg66HuBonE+Vy31LFVoIwziXdgvzLMUFE22CIpjG
+         biefbq0DP0BmzWYfd/7L+63XNHIV2ESOxsmqzSGfLjTsyNKOsfzGaZ0k0JF5N03a4g9r
+         IvIas5iac/UVDz9XA/aFVY++ehoPoy75B5iwPcbbrmx82dRwV+ZtF/ack3iptljYXJR3
+         /hVcY4kNa3uQDRr1eYqLkIoIvjQIjDPLC9zSZQKqDu4xH3uHXZ+l66x87IqUK3ynClxC
+         5wI6HdHEUCRVPqYRmcR3ct+JOQ1b1DJLQCya8AQwOiIl1af2EBkNDRVSKSESq+jR9Awy
+         VsJA==
+X-Gm-Message-State: APjAAAXEnjpPZsUjXNc77kwVzDlJU+9tCUI1FIs5289C/ZXjzcKIS3La
+        8vuEiWn5M1EwWL6iSVTTSBYZznXg8QSVErIYCKo=
+X-Google-Smtp-Source: APXvYqyU96xY1YnjNk04+rd/JS/JxMyZCKVccvYZUo/Jlzs2MKno2O9may8YKGt3uNjXiTcg4lig9F4we2hY36PiKkY=
+X-Received: by 2002:a19:be93:: with SMTP id o141mr7373284lff.181.1578592385497;
+ Thu, 09 Jan 2020 09:53:05 -0800 (PST)
 MIME-Version: 1.0
-References: <20200108014006.938363-1-rdna@fb.com> <67C42A60-A9C3-4B3D-9F27-C38827EDA73B@fb.com>
- <20200108171949.GA96819@rdna-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20200108171949.GA96819@rdna-mbp.dhcp.thefacebook.com>
+References: <20200109003453.3854769-1-kafai@fb.com>
+In-Reply-To: <20200109003453.3854769-1-kafai@fb.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 9 Jan 2020 09:41:44 -0800
-Message-ID: <CAADnVQJOZK380e8=vbkfNuG3xu375CJfrPmWH6Pf7ptB1LngYA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Document BPF_F_QUERY_EFFECTIVE flag
-To:     Andrey Ignatov <rdna@fb.com>
-Cc:     Song Liu <songliubraving@fb.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+Date:   Thu, 9 Jan 2020 09:52:54 -0800
+Message-ID: <CAADnVQ+nkr5+KJ8GAH7=TwA72ttB7xxrU8T5+RxkDKvn4FbWHg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 00/11] Introduce BPF STRUCT_OPS
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <Kernel-team@fb.com>
+        David Miller <davem@davemloft.net>,
+        Kernel Team <kernel-team@fb.com>,
+        Network Development <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 8, 2020 at 9:20 AM Andrey Ignatov <rdna@fb.com> wrote:
+On Wed, Jan 8, 2020 at 4:35 PM Martin KaFai Lau <kafai@fb.com> wrote:
 >
-> Song Liu <songliubraving@fb.com> [Wed, 2020-01-08 08:31 -0800]:
-> [...]
-> > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > > index 7df436da542d..dc4b8a2d2a86 100644
-> > > --- a/include/uapi/linux/bpf.h
-> > > +++ b/include/uapi/linux/bpf.h
-> > > @@ -357,7 +357,12 @@ enum bpf_attach_type {
-> > > /* Enable memory-mapping BPF map */
-> > > #define BPF_F_MMAPABLE              (1U << 10)
-> > >
-> > > -/* flags for BPF_PROG_QUERY */
-> > > +/* Flags for BPF_PROG_QUERY. */
-> > > +
-> > > +/* Query effective (directly attached + inherited from ancestor cgroups)
-> > > + * programs that will be executed for events within a cgroup.
-> > > + * attach_flags with this flag are returned only for directly attached programs.
-> >
-> > This line is more than 75 byte long, I guess ./scripts/checkpatch.pl would
-> > complain about it?
+> This series introduces BPF STRUCT_OPS.  It is an infra to allow
+> implementing some specific kernel's function pointers in BPF.
+> The first use case included in this series is to implement
+> TCP congestion control algorithm in BPF  (i.e. implement
+> struct tcp_congestion_ops in BPF).
 >
-> I run checkpatch.pl before sending it but it didn't complain:
+> There has been attempt to move the TCP CC to the user space
+> (e.g. CCP in TCP).   The common arguments are faster turn around,
+> get away from long-tail kernel versions in production...etc,
+> which are legit points.
 >
->   % scripts/checkpatch.pl p/0001-bpf-Document-BPF_F_QUERY_EFFECTIVE-flag.patch
->   total: 0 errors, 0 warnings, 26 lines checked
+> BPF has been the continuous effort to join both kernel and
+> userspace upsides together (e.g. XDP to gain the performance
+> advantage without bypassing the kernel).  The recent BPF
+> advancements (in particular BTF-aware verifier, BPF trampoline,
+> BPF CO-RE...) made implementing kernel struct ops (e.g. tcp cc)
+> possible in BPF.
 >
->   p/0001-bpf-Document-BPF_F_QUERY_EFFECTIVE-flag.patch has no obvious style problems and is ready for submission.
+> The idea is to allow implementing tcp_congestion_ops in bpf.
+> It allows a faster turnaround for testing algorithm in the
+> production while leveraging the existing (and continue growing) BPF
+> feature/framework instead of building one specifically for
+> userspace TCP CC.
 >
-> I haven't debugged why, but this header has plenty of lines like this:
+> Please see individual patch for details.
 >
->   % awk 'length($0) >= 75' include/uapi/linux/bpf.h | wc -l
->   74
+> The bpftool support will be posted in follow-up patches.
+>
+> v4:
+> - Expose tcp_ca_find() to tcp.h in patch 7.
+>   It is used to check the same bpf-tcp-cc
+>   does not exist to guarantee the register()
+>   will succeed.
+> - set_memory_ro() and then set_memory_x() only after all
+>   trampolines are written to the image in patch 6. (Daniel)
+>   spinlock is replaced by mutex because set_memory_*
+>   requires sleepable context.
 
 Applied. Thanks
+
+Please address any future follow up
+and please remember to provide 'why' details in commit log
+no matter how obvious the patch looks as Arnaldo pointed out.
+
+Re: 'bpftool module' command.
+I think it's too early to call anything 'a module',
+since in this context people will immediately assume 'a kernel module'
+It's a loaded phrase with a lot of consequences.
+bpf-tcp-cc cubic and dctcp do look like kernel modules, but they are
+not kernel modules at all. imo making them look like kernel modules
+has plenty of downsides.
+So as an immediate followup for bpftool I'd recommend to stick
+with 'bpftool struct_ops' command or whatever other name.
+Just not 'bpftool module'.
+
+I think there is a makefile issue with selftests.
+make clean;make -j50
+kept failing for me three times in a row with:
+progs/bpf_dctcp.c:138:4: warning: implicit declaration of function
+'bpf_tcp_send_ack' is invalid in C99 [-Wimplicit-function-declaration]
+                        bpf_tcp_send_ack(sk, *prior_rcv_nxt);
+but single threaded 'make clean;make' succeeded.
+Andrii, you have a chance to take a look and reproduce would be great.
