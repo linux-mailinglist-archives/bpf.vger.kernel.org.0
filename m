@@ -2,81 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1909413626A
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2020 22:25:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBD78136309
+	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2020 23:07:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728588AbgAIVZn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Jan 2020 16:25:43 -0500
-Received: from mail-io1-f67.google.com ([209.85.166.67]:36655 "EHLO
-        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725763AbgAIVZn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Jan 2020 16:25:43 -0500
-Received: by mail-io1-f67.google.com with SMTP id d15so8807000iog.3;
-        Thu, 09 Jan 2020 13:25:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=AuCVOpJkuZYE65RYLpf1B4iFvHjGfRQouDs+XczOndo=;
-        b=p64eofYK9oeCPFw8Zo1/iEf2/4l1dCaGTq73L+5EpPn0fZK4PM/bzOqdiyrieA3NF1
-         PsLWKLMpIsCAgSfzy7oCqWz3R5WHGrNQ30yfo4uwO4Ds6GhU9lACB0W7Oex39GjuUPJ9
-         nY8cFJBgl8NOd/ng0BnBsx2P4J5OaXrAq5OcBfBsp9wo0FuYFbjytJFfjctmlN+382cc
-         NjZtQ9D4krYQsfAmE6ePS2hNsq6npBDXVeqQPa+Hi5xaLiyP5092XdgWV9SFgjS+kE+I
-         sU3e0/GoX0EvDhtoXzGOVxypF2E2YDf8fsv5FoMnmSkSNM7qPZqcQoVQId+WyKYNzYWd
-         vy5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=AuCVOpJkuZYE65RYLpf1B4iFvHjGfRQouDs+XczOndo=;
-        b=qrUN8rCGDkt95O+VrtjeyEkdu6Z2ys92fAmuUPu1uvyKgSNvAktqfc68TVYS3mMuan
-         eF7iMsS5MMotGldxUaDuME86z2DCv4OEIMQre5UGiFUoA1Mks/+eqIrLIlTOEXNP/3/p
-         UIm4HlFCUF5FE7flxOyioFECrePJKr9TxWBOrZDFnFqr7F3LxojzW77KX+kUVUlWFVVL
-         i/csJk6U889txRpIdtxQCG88iOMdF26w2eiFfbzLo7jJGB8OwJWSpT6mF8+LqvnfYeCY
-         Q+PoxsSQg95HzsLLjtoGOQJVCNdhE5y3tJuEGnmtKmk+9s37aLHMiye9ZS/YN90Vbvut
-         AkVw==
-X-Gm-Message-State: APjAAAUuSsfX/kOR/8A0O42dWoIqawd48H0yZByrBPnu+WWtJ2zKOiJx
-        04nFcJKIOTbEO01Hum8H7Tc=
-X-Google-Smtp-Source: APXvYqxC12MAF27FGhFHFxwOJMwZeqbmfBs0U9vrTtY43nOyCc10QKpGBcY6i/DQr/WWgfS7NHmhAw==
-X-Received: by 2002:a05:6602:cd:: with SMTP id z13mr9821376ioe.291.1578605142509;
-        Thu, 09 Jan 2020 13:25:42 -0800 (PST)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id g62sm16043ile.39.2020.01.09.13.25.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jan 2020 13:25:42 -0800 (PST)
-Date:   Thu, 09 Jan 2020 13:25:33 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Song Liu <song@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <5e179a4def787_28762abb601485c027@john-XPS-13-9370.notmuch>
-In-Reply-To: <CAPhsuW774z68g_Y-C1XU70H-x6S2mr+Hd0-qY02E9aZBJjepkA@mail.gmail.com>
-References: <157851776348.1732.12600714815781177085.stgit@ubuntu3-kvm2>
- <157851817088.1732.14988301389495595092.stgit@ubuntu3-kvm2>
- <CAPhsuW774z68g_Y-C1XU70H-x6S2mr+Hd0-qY02E9aZBJjepkA@mail.gmail.com>
-Subject: Re: [bpf PATCH 8/9] bpf: sockmap/tls, tls_push_record can not handle
- zero length skmsg
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+        id S1726380AbgAIWHl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Jan 2020 17:07:41 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:12965 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725775AbgAIWHk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Jan 2020 17:07:40 -0500
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5e17a4190000>; Thu, 09 Jan 2020 14:07:21 -0800
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Thu, 09 Jan 2020 14:07:39 -0800
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Thu, 09 Jan 2020 14:07:39 -0800
+Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 9 Jan
+ 2020 22:07:38 +0000
+Subject: Re: [PATCH v12 00/22] mm/gup: prereqs to track dma-pinned pages:
+ FOLL_PIN
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     Al Viro <viro@zeniv.linux.org.uk>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Chinner <david@fromorbit.com>,
+        David Airlie <airlied@linux.ie>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, <bpf@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <kvm@vger.kernel.org>,
+        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <linux-media@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <netdev@vger.kernel.org>,
+        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>
+References: <20200107224558.2362728-1-jhubbard@nvidia.com>
+From:   John Hubbard <jhubbard@nvidia.com>
+X-Nvconfidentiality: public
+Message-ID: <2a9145d4-586e-6489-64e4-0c54f47afaa1@nvidia.com>
+Date:   Thu, 9 Jan 2020 14:07:38 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.1
+MIME-Version: 1.0
+In-Reply-To: <20200107224558.2362728-1-jhubbard@nvidia.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1578607641; bh=+NEvkiCKN4muU9xEMv7O0vL5DDgA+srq0dD5KyM2g5Y=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=pAGT+6E4t/5Sgzls83W8rrhD73PbNnbQX0v+uLgN6NdK6ox1s0YILXA5+Q9WkB7U5
+         Qgdq4MfQKXM00HXiVUvw/MN1+0Npjsn2yckDImY4OPUy9vKTHUQrRr5b/32qyPv6Y4
+         G8uphKhloBfTQ9ova5uKctNKv/z/ybtCLuSP2dniMP6oLwVdc9frqv+uSdiahegES7
+         HZtKpaUzMnUGCyRfUKLB2LXhSyGZIEwOR/UkaAhKUOx0B4NaRtt8Qz56svVPCLTYZD
+         6dBjR9cwNa9He9WTH1/ZpC5nBgZ5v8YIJX6cYUd/1MLjMgnC8wrJfdT7uC+HoO76Fq
+         StnhQb6FNJNXA==
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Song Liu wrote:
-> On Wed, Jan 8, 2020 at 1:17 PM John Fastabend <john.fastabend@gmail.com> wrote:
-> >
-> > When passed a zero length skmsg tls_push_record() causes a NULL ptr
-> > deref. To resolve for fixes do a simple length check at start of
-> > routine.
+On 1/7/20 2:45 PM, John Hubbard wrote:
+> Hi,
 > 
-> Could you please include the stack dump for the NULL deref?
+> The "track FOLL_PIN pages" would have been the very next patch, but it is
+> not included here because I'm still debugging a bug report from Leon.
+> Let's get all of the prerequisite work (it's been reviewed) into the tree
+> so that future reviews are easier. It's clear that any fixes that are
+> required to the tracking patch, won't affect these patches here.
 > 
-> Thanks,
-> Song
+> This implements an API naming change (put_user_page*() -->
+> unpin_user_page*()), and also adds FOLL_PIN page support, up to
+> *but not including* actually tracking FOLL_PIN pages. It extends
+> the FOLL_PIN support to a few select subsystems. More subsystems will
+> be added in follow up work.
+> 
 
-Sure I'll send a v2 with the stack dump.
+Hi Andrew and all,
+
+To clarify: I'm hoping that this series can go into 5.6.
+
+Meanwhile, I'm working on tracking down and solving the problem that Leon
+reported, in the "track FOLL_PIN pages" patch, and that patch is not part of
+this series.
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
