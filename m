@@ -2,77 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F614135EEB
-	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2020 18:10:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E6E9135F46
+	for <lists+bpf@lfdr.de>; Thu,  9 Jan 2020 18:27:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731582AbgAIRKi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Jan 2020 12:10:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47296 "EHLO mail.kernel.org"
+        id S2388106AbgAIR1j (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Jan 2020 12:27:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51284 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731544AbgAIRKi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Jan 2020 12:10:38 -0500
-Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com [209.85.219.48])
+        id S1728444AbgAIR1j (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 9 Jan 2020 12:27:39 -0500
+Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C6F352067D;
-        Thu,  9 Jan 2020 17:10:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 352B1206ED;
+        Thu,  9 Jan 2020 17:27:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1578589837;
-        bh=lsmfN75tT3y2ZzCHh1gZs0tkBZ8Qzf3q8K+xDOnI9Lg=;
+        s=default; t=1578590858;
+        bh=G7fm2aOiqB15WSbDOO/6Efnwsn1ynfNPyOky+BBEQ/4=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=DY+i+bSZcVP598O9FzGDOOxSWqOE2RIxedZW0w5ofNupS5TQcQrsEtwqsI/XPBA9k
-         SMiTOKGLF10gf5u7Q2sa2revWsxLxqyQJRVLCBco3OsdADi7maYg1Ce7w9O9UFYbfy
-         +9HO8Hvy+NZJ8qIQlZNtH+uE1+8cJD9LyCeXueoE=
-Received: by mail-qv1-f48.google.com with SMTP id y8so3265864qvk.6;
-        Thu, 09 Jan 2020 09:10:37 -0800 (PST)
-X-Gm-Message-State: APjAAAUof1C6Dgsow2pEm8rm9QesUSo+LviCXf3MWRPfXZE6RnH8U0dO
-        /4pVNYaBXL+94dATLQ56atYHTUndnQZDFe2zge4=
-X-Google-Smtp-Source: APXvYqzJx++tLk9e5/Pav1+ioq++/OIhjqGNoyldFYjVbM+ULektPHWvA9pQzIyayWBIRRKRy9HAfQcFSCFlPb3DeT0=
-X-Received: by 2002:a05:6214:14a6:: with SMTP id bo6mr9935842qvb.8.1578589836935;
- Thu, 09 Jan 2020 09:10:36 -0800 (PST)
+        b=qM2IIu80AxrENYrbfam/fOuLNPJ6pzgGXGEgHkAzsIHa9xMOWdd02hKJXUL3iTXLO
+         RiazmjbKSJI+qsxCX+cq6UxaucfW/IFSEw8ahTa2G8pvBBRO6D06omXkapxF1rvVdp
+         G0BjVPo3llYrS4MyS55YSDw0fHmra6nEt7we0MjQ=
+Received: by mail-qv1-f42.google.com with SMTP id dc14so3283150qvb.9;
+        Thu, 09 Jan 2020 09:27:38 -0800 (PST)
+X-Gm-Message-State: APjAAAUSxY5l9Zhl2420gA63XWS8h/HdDs5WfGCRvs7ygkdEG1o68bii
+        Osmtk2KqoEqIv3BHg0ESVmxnyVYlFRjXxlvbmTA=
+X-Google-Smtp-Source: APXvYqxIg/+n2oyOt0Rp23NunbNC2kRcjb63OfcVyITyeUcfnPpEa+f+sOLPb+6AEZJzO0q/Xz0DQhEFRS1VZXDIqkw=
+X-Received: by 2002:ad4:580b:: with SMTP id dd11mr9694536qvb.242.1578590857321;
+ Thu, 09 Jan 2020 09:27:37 -0800 (PST)
 MIME-Version: 1.0
-References: <157851776348.1732.12600714815781177085.stgit@ubuntu3-kvm2> <157851806382.1732.8320375873100251133.stgit@ubuntu3-kvm2>
-In-Reply-To: <157851806382.1732.8320375873100251133.stgit@ubuntu3-kvm2>
+References: <20200109063745.3154913-1-ast@kernel.org> <20200109063745.3154913-8-ast@kernel.org>
+In-Reply-To: <20200109063745.3154913-8-ast@kernel.org>
 From:   Song Liu <song@kernel.org>
-Date:   Thu, 9 Jan 2020 09:10:25 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW697e5umg2JLBiFLmSQ-hYLLeVxGAvc9W0BPzMAs0cH8Q@mail.gmail.com>
-Message-ID: <CAPhsuW697e5umg2JLBiFLmSQ-hYLLeVxGAvc9W0BPzMAs0cH8Q@mail.gmail.com>
-Subject: Re: [bpf PATCH 2/9] bpf: sockmap, ensure sock lock held during tear down
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
+Date:   Thu, 9 Jan 2020 09:27:26 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW67HfWZ7JLMWtXSURc97SSP4MOT7d65F+r075qGqpW9Cg@mail.gmail.com>
+Message-ID: <CAPhsuW67HfWZ7JLMWtXSURc97SSP4MOT7d65F+r075qGqpW9Cg@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 7/7] selftests/bpf: Add unit tests for global functions
+To:     Alexei Starovoitov <ast@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 8, 2020 at 1:14 PM John Fastabend <john.fastabend@gmail.com> wrote:
+On Wed, Jan 8, 2020 at 10:39 PM Alexei Starovoitov <ast@kernel.org> wrote:
 >
-> The sock_map_free() and sock_hash_free() paths used to delete sockmap
-> and sockhash maps walk the maps and destroy psock and bpf state associated
-> with the socks in the map. When done the socks no longer have BPF programs
-> attached and will function normally. This can happen while the socks in
-> the map are still "live" meaning data may be sent/received during the walk.
+> test_global_func[12] - check 512 stack limit.
+> test_global_func[34] - check 8 frame call chain limit.
+> test_global_func5    - check that non-ctx pointer cannot be passed into
+>                        a function that expects context.
+> test_global_func6    - check that ctx pointer is unmodified.
 >
-> Currently, though we don't take the sock_lock when the psock and bpf state
-> is removed through this path. Specifically, this means we can be writing
-> into the ops structure pointers such as sendmsg, sendpage, recvmsg, etc.
-> while they are also being called from the networking side. This is not
-> safe, we never used proper READ_ONCE/WRITE_ONCE semantics here if we
-> believed it was safe. Further its not clear to me its even a good idea
-> to try and do this on "live" sockets while networking side might also
-> be using the socket. Instead of trying to reason about using the socks
-> from both sides lets realize that every use case I'm aware of rarely
-> deletes maps, in fact kubernetes/Cilium case builds map at init and
-> never tears it down except on errors. So lets do the simple fix and
-> grab sock lock.
->
-> This patch wraps sock deletes from maps in sock lock and adds some
-> annotations so we catch any other cases easier.
->
-> Fixes: 604326b41a6fb ("bpf, sockmap: convert to generic sk_msg interface")
-> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 
 Acked-by: Song Liu <songliubraving@fb.com>
+
+> ---
+>  .../bpf/prog_tests/test_global_funcs.c        | 81 +++++++++++++++++++
+>  .../selftests/bpf/progs/test_global_func1.c   | 45 +++++++++++
+>  .../selftests/bpf/progs/test_global_func2.c   |  4 +
+>  .../selftests/bpf/progs/test_global_func3.c   | 65 +++++++++++++++
+>  .../selftests/bpf/progs/test_global_func4.c   |  4 +
+>  .../selftests/bpf/progs/test_global_func5.c   | 31 +++++++
+>  .../selftests/bpf/progs/test_global_func6.c   | 31 +++++++
+>  7 files changed, 261 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_global_func1.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_global_func2.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_global_func3.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_global_func4.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_global_func5.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_global_func6.c
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c b/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
+> new file mode 100644
+> index 000000000000..bc588fa87d65
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
+> @@ -0,0 +1,81 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2020 Facebook */
+> +#include <test_progs.h>
+> +
+> +const char *err_str;
+> +bool found;
+> +
+> +static int libbpf_debug_print(enum libbpf_print_level level,
+> +                             const char *format, va_list args)
+> +{
+> +       char *log_buf;
+> +
+> +       if (level != LIBBPF_WARN ||
+> +           strcmp(format, "libbpf: \n%s\n")) {
+> +               vprintf(format, args);
+> +               return 0;
+> +       }
+> +
+> +       log_buf = va_arg(args, char *);
+> +       if (!log_buf)
+> +               goto out;
+> +       if (strstr(log_buf, err_str) == 0)
+> +               found = true;
+> +out:
+> +       printf(format, log_buf);
+> +       return 0;
+> +}
+
+libbpf_debug_print() looks very useful. Maybe we can move it to some
+header files?
+
+Thanks,
+Song
