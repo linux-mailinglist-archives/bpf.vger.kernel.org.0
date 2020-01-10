@@ -2,88 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D8D6B13727B
-	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2020 17:08:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1F121373A7
+	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2020 17:30:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728605AbgAJQIj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Jan 2020 11:08:39 -0500
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:33299 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728603AbgAJQIj (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 10 Jan 2020 11:08:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1578672518;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vDJkiqYoLVts1s0YKct62CR2aPtFmE+HM3i87sBNnmw=;
-        b=R2pJ02sJDfD4e0S39Bas7qkBbHwqlJ1WJUy8rPBurPQ4E2/XnOoBEph3kI/DjXGAsBLi/P
-        Dk/ZS0mBZ1iW+6MdW4i1lEAjC/wkzhjmZdBlApKZd09ciygBMFWBUo0POqmbgn30cx9zTK
-        R2QGc9BfuqYYe263ynmwmMTdys7HrDA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-61-O3a4WS5-PrWDgLpJZYMgUw-1; Fri, 10 Jan 2020 11:08:36 -0500
-X-MC-Unique: O3a4WS5-PrWDgLpJZYMgUw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 55409477;
-        Fri, 10 Jan 2020 16:08:34 +0000 (UTC)
-Received: from carbon (ovpn-200-25.brq.redhat.com [10.40.200.25])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9ADBD7C382;
-        Fri, 10 Jan 2020 16:08:25 +0000 (UTC)
-Date:   Fri, 10 Jan 2020 17:08:24 +0100
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>, brouer@redhat.com
-Subject: Re: [PATCH bpf-next 1/2] xdp: Move devmap bulk queue into struct
- net_device
-Message-ID: <20200110170824.7379adbf@carbon>
-In-Reply-To: <157866612285.432695.6722430952732620313.stgit@toke.dk>
-References: <157866612174.432695.5077671447287539053.stgit@toke.dk>
-        <157866612285.432695.6722430952732620313.stgit@toke.dk>
+        id S1728209AbgAJQaF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Jan 2020 11:30:05 -0500
+Received: from www62.your-server.de ([213.133.104.62]:56808 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727928AbgAJQaF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Jan 2020 11:30:05 -0500
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1ipxAW-0006L3-Gj; Fri, 10 Jan 2020 17:29:57 +0100
+Received: from [2001:1620:665:0:5795:5b0a:e5d5:5944] (helo=linux-3.fritz.box)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1ipxAW-000Fxw-8h; Fri, 10 Jan 2020 17:29:52 +0100
+Subject: Re: [PATCH v3 bpf-next 0/6] bpf: Introduce global functions
+To:     Alexei Starovoitov <ast@kernel.org>, davem@davemloft.net
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com
+References: <20200110064124.1760511-1-ast@kernel.org>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <5ba36dd3-f9f0-a7c3-e9cf-88bc7c1dce88@iogearbox.net>
+Date:   Fri, 10 Jan 2020 17:29:50 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <20200110064124.1760511-1-ast@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.101.4/25690/Fri Jan 10 11:02:58 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 10 Jan 2020 15:22:02 +0100
-Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com> wrote:
+On 1/10/20 7:41 AM, Alexei Starovoitov wrote:
+> v2->v3:
+> - cleaned up a check spotted by Song.
+> - rebased and dropped patch 2 that was trying to improve BTF based on ELF.
+> - added one more unit test for scalar return value from global func.
+> 
+> v1->v2:
+> - addressed review comments from Song, Andrii, Yonghong
+> - fixed memory leak in error path
+> - added modified ctx check
+> - added more tests in patch 7
+> 
+> v1:
+> Introduce static vs global functions and function by function verification.
+> This is another step toward dynamic re-linking (or replacement) of global
+> functions. See patch 2 for details.
+> 
+> Alexei Starovoitov (6):
+>    libbpf: Sanitize global functions
+>    bpf: Introduce function-by-function verification
+>    selftests/bpf: Add fexit-to-skb test for global funcs
+>    selftests/bpf: Add a test for a large global function
+>    selftests/bpf: Modify a test to check global functions
+>    selftests/bpf: Add unit tests for global functions
+> 
+>   include/linux/bpf.h                           |   7 +-
+>   include/linux/bpf_verifier.h                  |  10 +-
+>   include/uapi/linux/btf.h                      |   6 +
+>   kernel/bpf/btf.c                              | 175 +++++++++---
+>   kernel/bpf/verifier.c                         | 252 ++++++++++++++----
+>   tools/include/uapi/linux/btf.h                |   6 +
+>   tools/lib/bpf/libbpf.c                        |  35 ++-
+>   .../bpf/prog_tests/bpf_verif_scale.c          |   2 +
+>   .../selftests/bpf/prog_tests/fexit_bpf2bpf.c  |   1 +
+>   .../bpf/prog_tests/test_global_funcs.c        |  82 ++++++
+>   .../selftests/bpf/progs/fexit_bpf2bpf.c       |  15 ++
+>   tools/testing/selftests/bpf/progs/pyperf.h    |   9 +-
+>   .../selftests/bpf/progs/pyperf_global.c       |   5 +
+>   .../selftests/bpf/progs/test_global_func1.c   |  45 ++++
+>   .../selftests/bpf/progs/test_global_func2.c   |   4 +
+>   .../selftests/bpf/progs/test_global_func3.c   |  65 +++++
+>   .../selftests/bpf/progs/test_global_func4.c   |   4 +
+>   .../selftests/bpf/progs/test_global_func5.c   |  31 +++
+>   .../selftests/bpf/progs/test_global_func6.c   |  31 +++
+>   .../selftests/bpf/progs/test_global_func7.c   |  18 ++
+>   .../selftests/bpf/progs/test_pkt_access.c     |  28 ++
+>   .../selftests/bpf/progs/test_xdp_noinline.c   |   4 +-
+>   22 files changed, 746 insertions(+), 89 deletions(-)
+>   create mode 100644 tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
+>   create mode 100644 tools/testing/selftests/bpf/progs/pyperf_global.c
+>   create mode 100644 tools/testing/selftests/bpf/progs/test_global_func1.c
+>   create mode 100644 tools/testing/selftests/bpf/progs/test_global_func2.c
+>   create mode 100644 tools/testing/selftests/bpf/progs/test_global_func3.c
+>   create mode 100644 tools/testing/selftests/bpf/progs/test_global_func4.c
+>   create mode 100644 tools/testing/selftests/bpf/progs/test_global_func5.c
+>   create mode 100644 tools/testing/selftests/bpf/progs/test_global_func6.c
+>   create mode 100644 tools/testing/selftests/bpf/progs/test_global_func7.c
+> 
 
-> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-> index 2741aa35bec6..1b2bc2a7522e 100644
-> --- a/include/linux/netdevice.h
-> +++ b/include/linux/netdevice.h
-[...]
-> @@ -1993,6 +1994,8 @@ struct net_device {
->  	spinlock_t		tx_global_lock;
->  	int			watchdog_timeo;
-> =20
-> +	struct xdp_dev_bulk_queue __percpu *xdp_bulkq;
-> +
->  #ifdef CONFIG_XPS
->  	struct xps_dev_maps __rcu *xps_cpus_map;
->  	struct xps_dev_maps __rcu *xps_rxqs_map;
-
-We need to check that the cache-line for this location in struct
-net_device is not getting updated (write operation) from different CPUs.
-
-The test you ran was a single queue single CPU test, which will not
-show any regression for that case.
-
---=20
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
-
+Applied, thanks!
