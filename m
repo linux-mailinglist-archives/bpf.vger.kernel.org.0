@@ -2,112 +2,169 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C078136A8D
-	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2020 11:08:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A38E6136B4E
+	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2020 11:50:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727435AbgAJKIF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Jan 2020 05:08:05 -0500
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:50948 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727429AbgAJKIF (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 10 Jan 2020 05:08:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1578650884;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ouxJJ7ApnaANEobDq55HQTWUJCot4siEbVgtMOtq/Lg=;
-        b=MGYMSQ+3Zx9W9HtK/BfrRP3DwWYKjxCbQqWMNhB+r8ZTMfC1byIKFipG3DxGWJYiZ//Wyi
-        wexFbRMIL+nSlHOcQco37B4IsgNYkNgT1kCTZaJRVKrgYvyaw3QOYZzvf5gLN6wqYKYztY
-        k47lkNO+kFOuj8XwJAqaUvXoV2w4uF4=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-135-E8zKYt1TMvyeBWM8NDSBLA-1; Fri, 10 Jan 2020 05:08:02 -0500
-X-MC-Unique: E8zKYt1TMvyeBWM8NDSBLA-1
-Received: by mail-wm1-f71.google.com with SMTP id w205so560421wmb.5
-        for <bpf@vger.kernel.org>; Fri, 10 Jan 2020 02:08:02 -0800 (PST)
+        id S1727613AbgAJKud (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Jan 2020 05:50:33 -0500
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:40204 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727570AbgAJKuc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Jan 2020 05:50:32 -0500
+Received: by mail-wr1-f66.google.com with SMTP id c14so1340466wrn.7
+        for <bpf@vger.kernel.org>; Fri, 10 Jan 2020 02:50:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IjThV9OS0Wopmdl3TAa4LjOlOjIBPkiMjuaQhWbmimQ=;
+        b=fNCdagR42tt9NqWoAbZtBAyCEfw+3CAp5OSg02NWSlmikpSQjlugLenW0u0VixSqXO
+         Zh9LRB61BRBRwtscmEh9u7WRf9Z77Q72PWG7+Hk0gBehfgaeotnLW30NggXw7OHbkC8O
+         SntM8fRjIzjUxJgbecU1Fv4H9hMhnYVcbETBI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=ouxJJ7ApnaANEobDq55HQTWUJCot4siEbVgtMOtq/Lg=;
-        b=KfAiEA3tIXTsGyl85bRqg6QKNqRslKHlUigiG9PPTCyyz8/I4hVBye0skzz8k4NGIP
-         6Jj614DhYk+YMtGtIiS+yG4sJkh9nZueIsYnNRto9kUhsyD8rXLD8GQAnNe3VMFeVkeD
-         2oFqHzjchwRZSaxJN9Q2McX/8QOMxoIobzI3Yh2xgFUbyvwhO2lekrbnf26vpeUokMSj
-         5ftZK5X72pLeV545sxNDyEcqxT+4Kevqx8E0NbGOSx5xfgB8ekfzKpIVv4Kf0yKn9eAx
-         HyfT9I3yI0vTgzxrbD7mLCTupQaxEQgPnZ47PlksrHRqE3G4beB6j4KTPYqmFGaipKOY
-         FkDQ==
-X-Gm-Message-State: APjAAAVRHfaDzkaS1Ferk+XUo3ACvCQfXQsvqoe0V4sUly95dJmSAiDU
-        TmQiIIVMnS8BPRMHKG7/BEfJO6tWf7KKdwANPIlCNQEoTyl1I1Wy4puICcEXAA4MSH2iADsrcLm
-        6z3vYtU/EQWLs
-X-Received: by 2002:adf:ff8a:: with SMTP id j10mr2659497wrr.312.1578650881746;
-        Fri, 10 Jan 2020 02:08:01 -0800 (PST)
-X-Google-Smtp-Source: APXvYqz0wViHteUrRixfoC9FsfmfvNOAdWKhVGBdPLZE6foMdNRyk41CPeTuX5udMW3Q3TdRcNkJuA==
-X-Received: by 2002:adf:ff8a:: with SMTP id j10mr2659480wrr.312.1578650881546;
-        Fri, 10 Jan 2020 02:08:01 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id d16sm1718416wrg.27.2020.01.10.02.08.00
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IjThV9OS0Wopmdl3TAa4LjOlOjIBPkiMjuaQhWbmimQ=;
+        b=b3cJOsX1GW+JU/wqzNMD9dMMfoDYCQvyJvwpn8ASoL/anORPBiv/PoGzV0g6/y7iNb
+         IjQRAWsh852UslGj9kccEOQaFm4NPISc+cBTurdyIEew2g7jTNHWKpPlRxG3cfpzbU0w
+         BzWe2XzgGb2/e2ml7xcHfoceoEkglVduUjjfR+dCp8v/Y+0+lF+UAig/DaPDnLNC5gZh
+         dw7WG0o79kMPT9vhShBOOiZ9WerZ2+191AjOaVUNbnzsKGZdK/iAEUMwYMQNotdDkrQj
+         MpLTL7uFyVNSQfe9iS7cwOcGF8PwiEHNJs+U02y/A5YoQYSTokA216vEB6CU2/m/jlbu
+         Mr7A==
+X-Gm-Message-State: APjAAAW5MyKAzeL5KauvVJEm6MK5W4A0KqcemIN4l3+5VRZvCcEW3KbP
+        1yzjl7sOoo6jV6WzcLGmASWOCxY0SMYFhg==
+X-Google-Smtp-Source: APXvYqxwfnZPV7yT8UvTaHriAV6/7en6RTmG44bOkm/nVicbELbbWe/hdl0M1rJQzJagOdQXUyb6Jg==
+X-Received: by 2002:adf:e78a:: with SMTP id n10mr2948609wrm.62.1578653429324;
+        Fri, 10 Jan 2020 02:50:29 -0800 (PST)
+Received: from cloudflare.com ([176.221.114.230])
+        by smtp.gmail.com with ESMTPSA id f12sm1737608wmf.28.2020.01.10.02.50.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jan 2020 02:08:00 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 6E3C2180099; Fri, 10 Jan 2020 11:08:00 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>, davem@davemloft.net,
-        daniel@iogearbox.net, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH bpf-next 3/6] bpf: Introduce function-by-function verification
-In-Reply-To: <20200109230328.i6zuva5gqezpltwp@ast-mbp>
-References: <20200108072538.3359838-1-ast@kernel.org> <20200108072538.3359838-4-ast@kernel.org> <87y2uigs3e.fsf@toke.dk> <20200108200655.vfjqa7pq65f7evkq@ast-mbp> <87ftgpgg6p.fsf@toke.dk> <20200109230328.i6zuva5gqezpltwp@ast-mbp>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 10 Jan 2020 11:08:00 +0100
-Message-ID: <87sgknzksf.fsf@toke.dk>
+        Fri, 10 Jan 2020 02:50:28 -0800 (PST)
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, kernel-team@cloudflare.com,
+        Eric Dumazet <edumazet@google.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Martin KaFai Lau <kafai@fb.com>
+Subject: [PATCH bpf-next v2 00/11] Extend SOCKMAP to store listening sockets
+Date:   Fri, 10 Jan 2020 11:50:16 +0100
+Message-Id: <20200110105027.257877-1-jakub@cloudflare.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+With the realization that properly cloning listening sockets that have
+psock state/callbacks is tricky, comes the second version of patches.
 
-> On Thu, Jan 09, 2020 at 09:57:50AM +0100, Toke H=C3=B8iland-J=C3=B8rgense=
-n wrote:
->>=20
->> > As far as future plans when libbpf sees FUNC_EXTERN it will do the lin=
-king the
->> > way we discussed in the other thread. The kernel will support FUNC_EXT=
-ERN when
->> > we introduce dynamic libraries. A collection of bpf functions will be =
-loaded
->> > into the kernel first (like libc.so) and later programs will have FUNC=
-_EXTERN
->> > as part of their BTF to be resolved while loading. The func name to bt=
-f_id
->> > resolution will be done by libbpf. The kernel verifier will do the type
->> > checking on BTFs.
->>=20
->> Right, FUNC_EXTERN will be rejected by the kernel unless it's patched up
->> with "target" btf_ids by libbpf before load? So it'll be
->> FUNC_GLOBAL-linked functions that will be replaceable after the fact
->> with the "dynamic re-linking" feature?
->
-> Right. When libbpf statically links two .o it will need to produce a comb=
-ined
-> BTF out of these two .o. That new BTF will not have FUNC_EXTERN anymore i=
-f they
-> are resolved. When the kernel sees FUNC_EXTERN it's a directive for the k=
-ernel
-> to resolve it. BPF program with FUNC_EXTERN references would be loadable,=
- but
-> not executable. Anyhow the extern work is not immediate. I don't think an=
-y of
-> that is necessary for dynamic re-linking.
+The spirit of the patch set stays the same - make SOCKMAP a generic
+collection for listening and established sockets. This would let us use the
+SOCKMAP with reuseport today, and in the future hopefully with BPF programs
+that run at socket lookup time [0]. For a bit more context, please see v1
+cover letter [1].
 
-Right, makes sense. I'll just wait for your follow-up series for the
-dynamic re-linking, then. Thanks for the explanation :)
+The biggest change that happened since v1 is how we deal with clearing
+psock state in a copy of parent socket when cloning it (patches 3 & 4).
 
--Toke
+As much as I did not want to touch icsk/tcp clone path, it seems
+unavoidable. The changes were kept down to a minimum, with attention to not
+break existing users. That said, a review from the TCP maintainer would be
+invaluable (patches 3 & 4).
+
+Patches 1 & 2 will conflict with recently posted "Fixes for sockmap/tls
+from more complex BPF progs" series [0]. I'll adapt or split them out this
+series once sockmap/tls fixes from John land in bpf-next branch.
+
+Some food for thought - is mixing listening and established sockets in the
+same BPF map a good idea? I don't know but I couldn't find a good reason to
+restrict the user.
+
+Considering how much the code evolved, I didn't carry over Acks from v1.
+
+Thanks,
+jkbs
+
+[0] https://lore.kernel.org/bpf/157851776348.1732.12600714815781177085.stgit@ubuntu3-kvm2/T/#t
+[1] https://lore.kernel.org/bpf/20191123110751.6729-1-jakub@cloudflare.com/
+
+v1 -> v2:
+
+- af_ops->syn_recv_sock callback is no longer overridden and burdened with
+  restoring sk_prot and clearing sk_user_data in the child socket. As child
+  socket is already hashed when syn_recv_sock returns, it is too late to
+  put it in the right state. Instead patches 3 & 4 restore sk_prot and
+  clear sk_user_data before we hash the child socket. (Pointed out by
+  Martin Lau)
+
+- Annotate shared access to sk->sk_prot with READ_ONCE/WRITE_ONCE macros as
+  we write to it from sk_msg while socket might be getting cloned on
+  another CPU. (Suggested by John Fastabend)
+
+- Convert tests for SOCKMAP holding listening sockets to return-on-error
+  style, and hook them up to test_progs. Also use BPF skeleton for setup.
+  Add new tests to cover the race scenario discovered during v1 review.
+
+RFC -> v1:
+
+- Switch from overriding proto->accept to af_ops->syn_recv_sock, which
+  happens earlier. Clearing the psock state after accept() does not work
+  for child sockets that become orphaned (never got accepted). v4-mapped
+  sockets need special care.
+
+- Return the socket cookie on SOCKMAP lookup from syscall to be on par with
+  REUSEPORT_SOCKARRAY. Requires SOCKMAP to take u64 on lookup/update from
+  syscall.
+
+- Make bpf_sk_redirect_map (ingress) and bpf_msg_redirect_map (egress)
+  SOCKMAP helpers fail when target socket is a listening one.
+
+- Make bpf_sk_select_reuseport helper fail when target is a TCP established
+  socket.
+
+- Teach libbpf to recognize SK_REUSEPORT program type from section name.
+
+- Add a dedicated set of tests for SOCKMAP holding listening sockets,
+  covering map operations, overridden socket callbacks, and BPF helpers.
+
+
+Jakub Sitnicki (11):
+  bpf, sk_msg: Don't reset saved sock proto on restore
+  net, sk_msg: Annotate lockless access to sk_prot on clone
+  net, sk_msg: Clear sk_user_data pointer on clone if tagged
+  tcp_bpf: Don't let child socket inherit parent protocol ops on copy
+  bpf, sockmap: Allow inserting listening TCP sockets into sockmap
+  bpf, sockmap: Don't set up sockmap progs for listening sockets
+  bpf, sockmap: Return socket cookie on lookup from syscall
+  bpf, sockmap: Let all kernel-land lookup values in SOCKMAP
+  bpf: Allow selecting reuseport socket from a SOCKMAP
+  selftests/bpf: Extend SK_REUSEPORT tests to cover SOCKMAP
+  selftests/bpf: Tests for SOCKMAP holding listening sockets
+
+ include/linux/skmsg.h                         |   14 +-
+ include/net/sock.h                            |   37 +-
+ include/net/tcp.h                             |    1 +
+ kernel/bpf/verifier.c                         |    6 +-
+ net/core/filter.c                             |   15 +-
+ net/core/skmsg.c                              |    2 +-
+ net/core/sock.c                               |   11 +-
+ net/core/sock_map.c                           |  120 +-
+ net/ipv4/tcp_bpf.c                            |   19 +-
+ net/ipv4/tcp_minisocks.c                      |    2 +
+ net/ipv4/tcp_ulp.c                            |    2 +-
+ net/tls/tls_main.c                            |    2 +-
+ .../bpf/prog_tests/select_reuseport.c         |   60 +-
+ .../selftests/bpf/prog_tests/sockmap_listen.c | 1378 +++++++++++++++++
+ .../selftests/bpf/progs/test_sockmap_listen.c |   76 +
+ tools/testing/selftests/bpf/test_maps.c       |    6 +-
+ 16 files changed, 1696 insertions(+), 55 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_sockmap_listen.c
+
+-- 
+2.24.1
 
