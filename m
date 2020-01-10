@@ -2,124 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C6DE4136FF5
-	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2020 15:50:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C7F3137089
+	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2020 16:02:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728279AbgAJOuH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Jan 2020 09:50:07 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:31585 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728294AbgAJOuG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Jan 2020 09:50:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1578667805;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7mPPMOgg1rdT11VKLhfqGPbIrYZLHOhMvTiS0wn3BR8=;
-        b=bRm1mG7siBP7cKe2Y9s3ZMyvcFOkJpfBw5B5l77k8JV2nknXf1vl+ma4EwHnHEQagu43vU
-        ntWX5X3EfGckQLoxEBUZ2rTcqgKQbpqsJGAfbDSI1FrEIHrg6erbxjhInQktIrbaj+33DY
-        YbbjWj/ezs+0q8vY1vVvjNWfxrHTsFw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-210-9Uet1PL0OC2VrKRfkBNolQ-1; Fri, 10 Jan 2020 09:50:01 -0500
-X-MC-Unique: 9Uet1PL0OC2VrKRfkBNolQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1728224AbgAJPBy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Jan 2020 10:01:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56794 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728152AbgAJPBy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Jan 2020 10:01:54 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AE0C980557E;
-        Fri, 10 Jan 2020 14:49:57 +0000 (UTC)
-Received: from krava (ovpn-205-164.brq.redhat.com [10.40.205.164])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id EAEEF610D7;
-        Fri, 10 Jan 2020 14:49:38 +0000 (UTC)
-Date:   Fri, 10 Jan 2020 15:49:36 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>,
+        by mail.kernel.org (Postfix) with ESMTPSA id 6DDC02072E;
+        Fri, 10 Jan 2020 15:01:51 +0000 (UTC)
+Date:   Fri, 10 Jan 2020 10:01:49 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     syzbot <syzbot+704bfe2c7d156640ad7a@syzkaller.appspotmail.com>,
         Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
+        arvid.brodin@alten.se, Alexei Starovoitov <ast@kernel.org>,
+        bpf <bpf@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Quentin Monnet <quentin.monnet@netronome.com>
-Subject: Re: [PATCH 0/3] tracing: perf: Rename ring_buffer to perf_buffer and
- trace_buffer
-Message-ID: <20200110144936.GF82989@krava>
-References: <20200110020308.977313200@goodmis.org>
+        David Miller <davem@davemloft.net>,
+        Josef Bacik <jbacik@fb.com>, jolsa@redhat.com,
+        Martin KaFai Lau <kafai@fb.com>, kernel-team@fb.com,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Song Liu <songliubraving@fb.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Yonghong Song <yhs@fb.com>
+Subject: Re: WARNING in add_event_to_ctx
+Message-ID: <20200110100149.58ef4893@gandalf.local.home>
+In-Reply-To: <CACT4Y+Z2M3p+26KROAAnGH-HuuWZdu8Cx1TrN7YhWTh9Exj+rQ@mail.gmail.com>
+References: <000000000000946842058bc1291d@google.com>
+        <000000000000ddae64059bc388dc@google.com>
+        <20200110094502.2d6015ab@gandalf.local.home>
+        <CACT4Y+Z2M3p+26KROAAnGH-HuuWZdu8Cx1TrN7YhWTh9Exj+rQ@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200110020308.977313200@goodmis.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 09, 2020 at 09:03:08PM -0500, Steven Rostedt wrote:
-> 
-> As we discussed, to remove the generic structure "ring_buffer" from the kernel,
-> and switch it to "perf_buffer" and "trace_buffer", this patch series does
-> just that.
-> 
-> Anyone have any issues of me carrying this in my tree? I'll rebase it to
-> v5.5-rc6 when it comes out, as it depends on some commits in v5.5-rc5.
+On Fri, 10 Jan 2020 15:48:34 +0100
+Dmitry Vyukov <dvyukov@google.com> wrote:
 
-ack ;-) and
-
-Tested-by: Jiri Olsa <jolsa@kernel.org>
-
-thanks,
-jirka
-
+> On Fri, Jan 10, 2020 at 3:45 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+> >
+> > On Thu, 09 Jan 2020 22:50:00 -0800
+> > syzbot <syzbot+704bfe2c7d156640ad7a@syzkaller.appspotmail.com> wrote:
+> >  
+> > > syzbot suspects this bug was fixed by commit:  
+> >
+> > I think these reports need some more information. Like the sample crash
+> > report, so we don't need to be clicking through links to find it.
+> > Because I have no idea what bug was fixed.  
 > 
-> -- Steve
+> Hi Steve,
 > 
-> Steven Rostedt (VMware) (3):
->       perf: Make struct ring_buffer less ambiguous
->       tracing: Rename trace_buffer to array_buffer
->       tracing: Make struct ring_buffer less ambiguous
-> 
-> ----
->  drivers/oprofile/cpu_buffer.c        |   2 +-
->  include/linux/perf_event.h           |   6 +-
->  include/linux/ring_buffer.h          | 110 ++++++-------
->  include/linux/trace_events.h         |   8 +-
->  include/trace/trace_events.h         |   2 +-
->  kernel/events/core.c                 |  42 ++---
->  kernel/events/internal.h             |  34 ++--
->  kernel/events/ring_buffer.c          |  54 +++----
->  kernel/trace/blktrace.c              |   8 +-
->  kernel/trace/ftrace.c                |   8 +-
->  kernel/trace/ring_buffer.c           | 124 +++++++--------
->  kernel/trace/ring_buffer_benchmark.c |   2 +-
->  kernel/trace/trace.c                 | 292 +++++++++++++++++------------------
->  kernel/trace/trace.h                 |  38 ++---
->  kernel/trace/trace_branch.c          |   6 +-
->  kernel/trace/trace_events.c          |  20 +--
->  kernel/trace/trace_events_hist.c     |   4 +-
->  kernel/trace/trace_functions.c       |   8 +-
->  kernel/trace/trace_functions_graph.c |  14 +-
->  kernel/trace/trace_hwlat.c           |   2 +-
->  kernel/trace/trace_irqsoff.c         |   8 +-
->  kernel/trace/trace_kdb.c             |   8 +-
->  kernel/trace/trace_kprobe.c          |   4 +-
->  kernel/trace/trace_mmiotrace.c       |  12 +-
->  kernel/trace/trace_output.c          |   2 +-
->  kernel/trace/trace_sched_wakeup.c    |  20 +--
->  kernel/trace/trace_selftest.c        |  26 ++--
->  kernel/trace/trace_syscalls.c        |   8 +-
->  kernel/trace/trace_uprobe.c          |   2 +-
->  29 files changed, 437 insertions(+), 437 deletions(-)
+> Isn't it threaded to the original report in your client? The message
+> has both matching subject and In-Reply-To header. At least that was
+> the idea.
 > 
 
+Ah, if I go to lore.kernel.org, I see the original report. But that's
+from back in June. I only keep up to two months of emails before I
+archive them.
+
+Perhaps add something like:
+
+ Original report: https://lore.kernel.org/bpf/000000000000946842058bc1291d@google.com/
+
+?
+
+Thanks!
+
+-- Steve
