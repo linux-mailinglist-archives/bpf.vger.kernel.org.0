@@ -2,148 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CAC5C137A01
-	for <lists+bpf@lfdr.de>; Sat, 11 Jan 2020 00:16:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0883137A06
+	for <lists+bpf@lfdr.de>; Sat, 11 Jan 2020 00:16:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727324AbgAJXQV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Jan 2020 18:16:21 -0500
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:36644 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727369AbgAJXQU (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 10 Jan 2020 18:16:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1578698178;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BDYSZvcxplbrm/hl6PFrbxqi7+nmX07S7UZy05z2BNU=;
-        b=HaWHJdyBtHbePOjKVO37kw4Z3SD98WKZl25dd0G9dCkxDHjlSwx/BnHZJy480TunTpEBBh
-        sKVTFGtirq9OudAWA857N1UqC1CA4e1eEWDFoPiNdSp1lJ1/j6EKAXwf5i9tigu6uMK/3U
-        DezcOJlmEJjVLLI66zNoeZsk7A41HOE=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-62-pFnlTkw0PYay7eugswypGw-1; Fri, 10 Jan 2020 18:16:15 -0500
-X-MC-Unique: pFnlTkw0PYay7eugswypGw-1
-Received: by mail-wr1-f72.google.com with SMTP id w6so1561070wrm.16
-        for <bpf@vger.kernel.org>; Fri, 10 Jan 2020 15:16:15 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=BDYSZvcxplbrm/hl6PFrbxqi7+nmX07S7UZy05z2BNU=;
-        b=jxMRMOPl9G9wvEFaM3/xALisi3XVzT5R5zZl7YxZEiXDDLuLf6tRkkH3RkfDBU+D6b
-         p/ieYjvmW71Hrx/cuLjNwg+Q8P4Ch7Ms4TagaH/FY5NnhV3jTctlgn3x8b+Ct4gARy5w
-         dWXa1zcxR4D4yiKi2mp6bOHFhJz9uPrP36NPF9JKYwmwUUg3hzmR//pEQzvUG+9jmUbr
-         PGAQogLbwkNNsaaN712l08yj5E3XKxoxZRPBtCxCEdHX8y11Bd54IWE59gwRTfxL0jx0
-         qsVRBH8f6oLNhZwU+qnAyfwmJnd4/Aw+k6bOjFb+zufzDjW9bDcx25fCapycGn8B5p1t
-         L8Ig==
-X-Gm-Message-State: APjAAAXdExGpD7UvJz0gNX+2vT+UUSTR7v/3MufQap/wlcPce1EWrPIW
-        oIZ7qBsMpaIqutsCPAuAVC00cPmdwavW064CwbQaU4l5qdTSTP6bqocoplfOqxThg87LAUJk2NL
-        lAARqz4zhsnEv
-X-Received: by 2002:adf:fd43:: with SMTP id h3mr5542548wrs.169.1578698174373;
-        Fri, 10 Jan 2020 15:16:14 -0800 (PST)
-X-Google-Smtp-Source: APXvYqz8fTNkmSN6BSViNXxU/x5V/ooLYXrYK884Z2B1m+hNPFpaxrYoWQ70Ex7WI3CLzUxZ0/vqrA==
-X-Received: by 2002:adf:fd43:: with SMTP id h3mr5542534wrs.169.1578698174125;
-        Fri, 10 Jan 2020 15:16:14 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id t1sm3998418wma.43.2020.01.10.15.16.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jan 2020 15:16:12 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 58C751804D6; Sat, 11 Jan 2020 00:16:12 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Eric Dumazet <eric.dumazet@gmail.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        id S1727463AbgAJXQv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Jan 2020 18:16:51 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:59678 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727324AbgAJXQv (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 10 Jan 2020 18:16:51 -0500
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 00ANCW66004910
+        for <bpf@vger.kernel.org>; Fri, 10 Jan 2020 15:16:50 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=/ktD/Q1IY9kit9Yj2BJN5qP5d4ytbTQTL3TqvB1cE6k=;
+ b=bFVZNeKBncSg4dZl021I/tUZGf+YgO0lrImSl88V0MZ5V7uXBQzFuQXNth6V7xVl+oSW
+ DrMt7o+f85cphYzLR4c81NgAwu7FyTPDszzXwyOdwFxsOo10DMwJF94n5dhmp5ety/0K
+ NRlie6nsda+RzP8EyQ7HSsC0iNtqQFF6RXU= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by m0001303.ppops.net with ESMTP id 2xenyt4vdx-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 10 Jan 2020 15:16:49 -0800
+Received: from intmgw003.08.frc2.facebook.com (2620:10d:c081:10::13) by
+ mail.thefacebook.com (2620:10d:c081:35::126) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
+ Fri, 10 Jan 2020 15:16:48 -0800
+Received: by devbig005.ftw2.facebook.com (Postfix, from userid 6611)
+        id 347EE29431EF; Fri, 10 Jan 2020 15:16:44 -0800 (PST)
+Smtp-Origin-Hostprefix: devbig
+From:   Martin KaFai Lau <kafai@fb.com>
+Smtp-Origin-Hostname: devbig005.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] xdp: Move devmap bulk queue into struct net_device
-In-Reply-To: <968491aa-01c7-ae8d-4e7f-8ec58f1750b1@gmail.com>
-References: <157866612174.432695.5077671447287539053.stgit@toke.dk> <157866612285.432695.6722430952732620313.stgit@toke.dk> <20200110170824.7379adbf@carbon> <871rs7x7nc.fsf@toke.dk> <968491aa-01c7-ae8d-4e7f-8ec58f1750b1@gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Sat, 11 Jan 2020 00:16:12 +0100
-Message-ID: <87y2uex5qb.fsf@toke.dk>
+        David Miller <davem@davemloft.net>, <kernel-team@fb.com>,
+        <netdev@vger.kernel.org>,
+        Quentin Monnet <quentin.monnet@netronome.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf] bpftool: Fix printing incorrect pointer in btf_dump_ptr
+Date:   Fri, 10 Jan 2020 15:16:44 -0800
+Message-ID: <20200110231644.3484151-1-kafai@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-01-10_03:2020-01-10,2020-01-10 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ lowpriorityscore=0 mlxscore=0 adultscore=0 clxscore=1015 bulkscore=0
+ impostorscore=0 priorityscore=1501 mlxlogscore=658 spamscore=0
+ phishscore=0 suspectscore=1 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-1910280000 definitions=main-2001100190
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Eric Dumazet <eric.dumazet@gmail.com> writes:
+For plain text output, it incorrectly prints the pointer value
+"void *data".  The "void *data" is actually pointing to memory that
+contains a bpf-map's value.  The intention is to print the content of
+the bpf-map's value instead of printing the pointer pointing to the
+bpf-map's value.
 
-> On 1/10/20 2:34 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->> Jesper Dangaard Brouer <brouer@redhat.com> writes:
->>=20
->>> On Fri, 10 Jan 2020 15:22:02 +0100
->>> Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com> wrote:
->>>
->>>> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
->>>> index 2741aa35bec6..1b2bc2a7522e 100644
->>>> --- a/include/linux/netdevice.h
->>>> +++ b/include/linux/netdevice.h
->>> [...]
->>>> @@ -1993,6 +1994,8 @@ struct net_device {
->>>>  	spinlock_t		tx_global_lock;
->>>>  	int			watchdog_timeo;
->>>>=20=20
->>>> +	struct xdp_dev_bulk_queue __percpu *xdp_bulkq;
->>>> +
->>>>  #ifdef CONFIG_XPS
->>>>  	struct xps_dev_maps __rcu *xps_cpus_map;
->>>>  	struct xps_dev_maps __rcu *xps_rxqs_map;
->>>
->>> We need to check that the cache-line for this location in struct
->>> net_device is not getting updated (write operation) from different CPUs.
->>>
->>> The test you ran was a single queue single CPU test, which will not
->>> show any regression for that case.
->>=20
->> Well, pahole says:
->>=20
->> 	/* --- cacheline 14 boundary (896 bytes) --- */
->> 	struct netdev_queue *      _tx __attribute__((__aligned__(64))); /*   8=
-96     8 */
->> 	unsigned int               num_tx_queues;        /*   904     4 */
->> 	unsigned int               real_num_tx_queues;   /*   908     4 */
->> 	struct Qdisc *             qdisc;                /*   912     8 */
->> 	struct hlist_head  qdisc_hash[16];               /*   920   128 */
->> 	/* --- cacheline 16 boundary (1024 bytes) was 24 bytes ago --- */
->> 	unsigned int               tx_queue_len;         /*  1048     4 */
->> 	spinlock_t                 tx_global_lock;       /*  1052     4 */
->> 	int                        watchdog_timeo;       /*  1056     4 */
->>=20
->> 	/* XXX 4 bytes hole, try to pack */
->>=20
->> 	struct xdp_dev_bulk_queue * xdp_bulkq;           /*  1064     8 */
->> 	struct xps_dev_maps *      xps_cpus_map;         /*  1072     8 */
->> 	struct xps_dev_maps *      xps_rxqs_map;         /*  1080     8 */
->> 	/* --- cacheline 17 boundary (1088 bytes) --- */
->>=20
->>=20
->> of those, tx_queue_len is the max queue len (so only set on init),
->> tx_global_lock is not used by multi-queue devices, watchdog_timeo also
->> seems to be a static value thats set on init, and the xps* pointers also
->> only seems to be set once on init. So I think we're fine?
->>=20
->> I can run a multi-CPU test just to be sure, but I really don't see which
->> of those fields might be updated on TX...
->>=20
->
-> Note that another interesting field is miniq_egress, your patch
-> moves it to another cache line.
+In this case, a member of the bpf-map's value is a pointer type.
+Thus, it should print the "*(void **)data".
 
-Hmm, since there's that 4-byte hole, I gust we could just move
-watchdog_timeo down to fix that. Any reason that's a bad idea?
+Fixes: 22c349e8db89 ("tools: bpftool: fix format strings and arguments for jsonw_printf()")
+Cc: Quentin Monnet <quentin.monnet@netronome.com>
+Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+---
+ tools/bpf/bpftool/btf_dumper.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> We probably should move qdisc_hash array elsewhere.
-
-You certainly won't hear me object to that :)
-
--Toke
+diff --git a/tools/bpf/bpftool/btf_dumper.c b/tools/bpf/bpftool/btf_dumper.c
+index d66131f69689..397e5716ab6d 100644
+--- a/tools/bpf/bpftool/btf_dumper.c
++++ b/tools/bpf/bpftool/btf_dumper.c
+@@ -26,7 +26,7 @@ static void btf_dumper_ptr(const void *data, json_writer_t *jw,
+ 			   bool is_plain_text)
+ {
+ 	if (is_plain_text)
+-		jsonw_printf(jw, "%p", data);
++		jsonw_printf(jw, "%p", *(void **)data);
+ 	else
+ 		jsonw_printf(jw, "%lu", *(unsigned long *)data);
+ }
+-- 
+2.17.1
 
