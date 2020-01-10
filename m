@@ -2,83 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F99E136688
-	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2020 06:21:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 908181366D6
+	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2020 06:43:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726273AbgAJFVj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Jan 2020 00:21:39 -0500
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:38485 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726096AbgAJFVi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Jan 2020 00:21:38 -0500
-Received: by mail-lf1-f65.google.com with SMTP id r14so499965lfm.5;
-        Thu, 09 Jan 2020 21:21:37 -0800 (PST)
+        id S1726787AbgAJFn3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Jan 2020 00:43:29 -0500
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:38578 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726676AbgAJFn3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Jan 2020 00:43:29 -0500
+Received: by mail-qk1-f194.google.com with SMTP id k6so861684qki.5
+        for <bpf@vger.kernel.org>; Thu, 09 Jan 2020 21:43:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eR5y3a3f3BPZsiatf03/jVe40cjOfydQRG1w0tgstds=;
-        b=mL6fX4VbQ9AT2OvUpmn/xF6Pcy8oGO1g5nB9Dlef6P1VqWSThvNqlckEZwaEiFiRJF
-         SUksoFZnrlpVnuou38VKOi6LVBKuPsm9KNdbYDhTEUblmgxlSpsFK8f8Ggvp2JSmVyg8
-         gCo3z/NzF0fddG97IxqGMH8HGj63S4YOMQsqt0hTYh7f0OFj+uDOtQYK2e9QR8ZyLwaM
-         F60aDw/Gkw6d+moK9Rx7sTRnCx7b+QVwhZVNMzSwWqB2aAcYas1oRHMmc4uirjgVCWA4
-         NTkUtM7ScLKaExv2N5b3HsbVmWFt1WoSoMFtoSsk83p/q3fArxxBkxXe2kmgK3/88RCR
-         msOQ==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=Rjbe3pVeMfYVPdmVklZ4b2stSqI32LIYp+bn/8NyJvk=;
+        b=StL8xyES500U87IKhLGPuK69KRf4TlP+XyEsemi8C3pIXJxdz38NrYtIHtHtsE5CwI
+         mcX5hFVnOkFr4jEPZtckvJXwe9nuN3+DddPblb7J2caosmbk3r+Zq8P+HSf+e1ttcmpm
+         WOEXernmeuYo91zUirtZDaNja2xyjDK3f7iGZgU35y4gdFdAoCySJS7hQJWXaxtY1EbA
+         B0o6pAFPy/yydpv2I7x/SclYR2FJ5hCSX90qwxJl7czN6UdonS9rAR//m1BpVvf4EYwi
+         S9REWzjkyALFEt5GaLOuS3Qtr53rG6uB6PuoC5pDZG69YQvOWljAQ3eW04qSmBLuYI/c
+         CRzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eR5y3a3f3BPZsiatf03/jVe40cjOfydQRG1w0tgstds=;
-        b=a54ot/ohaZt5x1cLdgGwOJ9T5W13NsIN/YfHAgnV6RJ5/QyInSXxAmSbQzlNDB/je6
-         DlrZi0EeuUu+5Qvy4LdCgNsTiqTRLrHeXBatKoeQfUjecWpp1kawXEBVIULAaiivuPUy
-         tz02FcCGfjhWAgx12kJ0rudGobfqgmKuasK6AOoM+xCnVmqe+rpEsw3yr2RJDnMoTJYj
-         nT2O4W+A4Pb60oBQ3P0wBal0iGNdZ/JBIfU7mKmRYzeMr3xHi0sFi8y1MtpdbGuB5sZX
-         jR4ra8nzkO9iby8R+yJhfJRbtmhD2dYIA6VfnT8o7Ycaq18o2/bry4FsCLdil9FwSzTD
-         woIA==
-X-Gm-Message-State: APjAAAUSCmQ37dI0vadbED/tuHQMSYUY02twu+TpliORcaMs1xC4IIci
-        QZ4W9fXK6ZT2U7yo4zRW/egGpseiuTYa77i+DQU=
-X-Google-Smtp-Source: APXvYqxEo5ZLuiz8LGWn/f/QaQgj1iHRAq0+9hlBk//ELuOo8rHVV5wkJdZM+b9t8AqpPkZXEK5pLm7wcS5aLnfc/9A=
-X-Received: by 2002:ac2:47ec:: with SMTP id b12mr942142lfp.162.1578633696633;
- Thu, 09 Jan 2020 21:21:36 -0800 (PST)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=Rjbe3pVeMfYVPdmVklZ4b2stSqI32LIYp+bn/8NyJvk=;
+        b=cGUA28lnpF5EfMnwcwcKcFXFGYk4bq5mDh5fhoiIF/k5hljPJYNdqvQ746dZlrqRKg
+         HPZL4jWneiI9HLHjvIEamDMRJqrnxP61FZjALKwQ8MSXtuJvmU68BOYKQ3dInlUdo599
+         wBTOPWVNToKTnh5XbMHI1pZWnp2amUQ+hJG9TH48dpoUXCqyRlxJkFSKfrSgDTdrKwoM
+         xHp8RZfkXihICsFy0EdsbxjxE22i37MBO+BgXTkYOdR8k6yRCvQyNRtr7SbrUrupJzUB
+         Yn7c01cqJifKkRGwYS5TASWGfsm/BHMGp1P5goc25KXawgKnYUbq8+/Q4nvYlIKp65ny
+         HxTw==
+X-Gm-Message-State: APjAAAVPgWMUcM6PQRo7Rrby1oYyW3tsMTe6MbWMLEZgtk3ctqp6YOql
+        EW/eX4LOQp+e+/Qf/D2UMusTUOL0/uXAljWL1UE=
+X-Google-Smtp-Source: APXvYqwbQvPSUsyDGUY9xx992b/PSHhXb/CVc5YrO4FkELVv4HXvW3x9OtVvEVkEHBHo18ohyS2eFtL8hE75VLqLcys=
+X-Received: by 2002:ae9:f719:: with SMTP id s25mr1486443qkg.209.1578635008766;
+ Thu, 09 Jan 2020 21:43:28 -0800 (PST)
 MIME-Version: 1.0
-References: <20200110034247.1220142-1-andriin@fb.com>
-In-Reply-To: <20200110034247.1220142-1-andriin@fb.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 9 Jan 2020 21:21:24 -0800
-Message-ID: <CAADnVQJYw=_arNNWc_PBHK=WL9KwgHZqZ-92sH6RPA0sgr_wKw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: make bpf_map order and indices stable
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Kernel Team <kernel-team@fb.com>
+Received: by 2002:a0c:f94e:0:0:0:0:0 with HTTP; Thu, 9 Jan 2020 21:43:28 -0800 (PST)
+Reply-To: rickschaech@gmail.com
+From:   Rick Schaech <cicija016@gmail.com>
+Date:   Fri, 10 Jan 2020 01:43:28 -0400
+Message-ID: <CAERxQtQ21aJh0eASNTZAOb-WH3P7_hqzWeKWMP7nVO_oWHZ7vw@mail.gmail.com>
+Subject: I wait for your swift response
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 9, 2020 at 7:43 PM Andrii Nakryiko <andriin@fb.com> wrote:
->
-> Currently, libbpf re-sorts bpf_map structs after all the maps are added and
-> initialized, which might change their relative order and invalidate any
-> bpf_map pointer or index taken before that. This is inconvenient and
-> error-prone. For instance, it can cause .kconfig map index to point to a wrong
-> map.
->
-> Furthermore, libbpf itself doesn't rely on any specific ordering of bpf_maps,
-> so it's just an unnecessary complication right now. This patch drops sorting
-> of maps and makes their relative positions fixed. If efficient index is ever
-> needed, it's better to have a separate array of pointers as a search index,
-> instead of reordering bpf_map struct in-place. This will be less error-prone
-> and will allow multiple independent orderings, if necessary (e.g., either by
-> section index or by name).
->
-> Fixes: 166750bc1dd2 ("libbpf: Support libbpf-provided extern variables")
-> Reported-by: Martin KaFai Lau <kafai@fb.com>
-> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+Dear, I'm Mr Rick Schaech, I am the General Account Auditor, Though i
+know we have not meet each other before but sometimes in life God have
+a reason of bringing two people from two different countries together
+as business partners or life partners.
 
-Applied. Thanks
+My dear friend, I have the sum of 15.7 Million USD i wish to put in
+your name due to the death of my late client who died several years
+ago as his next of kin column still remain blank. Though the internet
+medium is highly abuse these days but am assuring you that this
+transaction is legitimate and I am contacting you that we may have a
+deal, note for your cooperation and collaboration 40% of the sum will
+be for you while the other 60% will be for me as well. I wait for your
+swift response for more details. please forward your response to my
+personal E-mail: rickschaech@gmail.com
+
+Yours sincerely,
+Rick Schaech.
