@@ -2,74 +2,155 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A7463136E03
-	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2020 14:27:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C787136E4C
+	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2020 14:40:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727501AbgAJN1d (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Jan 2020 08:27:33 -0500
-Received: from mail-oi1-f170.google.com ([209.85.167.170]:46239 "EHLO
-        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727716AbgAJN1c (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Jan 2020 08:27:32 -0500
-Received: by mail-oi1-f170.google.com with SMTP id 13so1780158oij.13
-        for <bpf@vger.kernel.org>; Fri, 10 Jan 2020 05:27:31 -0800 (PST)
+        id S1728263AbgAJNkY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Jan 2020 08:40:24 -0500
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:36356 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727639AbgAJNkX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Jan 2020 08:40:23 -0500
+Received: by mail-wr1-f65.google.com with SMTP id z3so1861773wru.3
+        for <bpf@vger.kernel.org>; Fri, 10 Jan 2020 05:40:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AUwd8glpr6kfXtb89k6x9PBA9ykDSCHrcjOXwyj5hTA=;
-        b=Ua35ReYLIwp5dAjcfnRe5d717jLPnKQgnOXgwoQa55EKXMOyC62yk19zvYaYTRpOk9
-         W3EkIJ8KAInm0Gi/SBabPmttucc5vhWdBkJCWmCCM2YFIRGDXIl0x1owC9dTR7zBbJaV
-         WWz4MAs/RlsTY82k3bvZe1mgkRTBbDbwbYdhg=
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=5oUcV86C7JSKtfppsGNQxdaoGiUUdDpnfFPB5wLrxXo=;
+        b=kipYCdJUBW7L3pVnHxGoxNxk1mBpQdgi5fLW30e0Ue29wGwfAb+eGmeJpRkSoNEGdu
+         FJulPgHPqOl3gWCyy7eH9Ap4CDSvTwGbezEyTZTZRuu+BF5d3tZmE7X6rwN+9QolpV8N
+         WSfbIWwW7fFtnZg1VZMRox5e3+/BrKx9VmfmE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AUwd8glpr6kfXtb89k6x9PBA9ykDSCHrcjOXwyj5hTA=;
-        b=lyIUvrf+0OtUBIM4z0pXXk1Fnm2GzGqB+/OCYFcmvyywcxuWfJNMYa8+yd8YVE0mBI
-         icPY6ym9Cvnrg10vo7UkN7rs0vOI0/a0Ecszp2YCuky3ylKbJ7ugylutqSMQ75vmxcFj
-         4E7FYBM60EhBbKkbRHcq4Ahmte79D0niihh13fST5xcJK8jXhbrR20RPP+uCzv7pPdUH
-         p8SZM8kfKn8xJ+7HgysFueuHAwrLCuz4rnAqeqbe2chtGiiTQsPT7MK8o31PdqizI/2v
-         3s8qTErj8l0LePBV8M6eIhsojpuIfmi879CID0T+/uuqAVjQ5fA8fi6lLP7t8Bz7RDol
-         o4mw==
-X-Gm-Message-State: APjAAAULu4sDPd342SUkpn5s6AOB53wfzOR1h5t4NKciW/z9Ypwcgmtu
-        x1JmLySOCm4f8v5Hbl4nKe7vt9sLZ2mgdLeRhCl2vw==
-X-Google-Smtp-Source: APXvYqxEQdRC03cg2f9SLLL9UIZBDwiOjLVn6ykjZjCp6YeJgL1s35yJA44vdEuwG59QZYLKKl73qp4FjS+FnaXcQI8=
-X-Received: by 2002:aca:b60a:: with SMTP id g10mr2064783oif.102.1578662851371;
- Fri, 10 Jan 2020 05:27:31 -0800 (PST)
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=5oUcV86C7JSKtfppsGNQxdaoGiUUdDpnfFPB5wLrxXo=;
+        b=V5sqehU27IDxaG7Po7ebyEg3Ss89e1mYwNusXk1aKX/6B1kqePthBHaKXWva3WBHVz
+         ulqK651EKWtjwqDaOKBZr6R3TK0HEY3tHSPo+OP7kpY9PerjGDR2Ni0MMP+eC+Px+csQ
+         BCdMnoiZR+l/wgWCWc4TMmO6sev/b8FakuSUb3LaPb3YVrkcIWY3Hw7JxX8A350u1z8j
+         L7pY5DHj9TQiKypl8oPBxa/LioSVrpJTWDqFABOVOWoaprCb4fvxK5dwgP0irVNxf+Ce
+         WOCj77/NtefaDE9CcPcPO0PCdDOYpe4etZn8+zoryRGjcpdo+hKNBoc9xoIKlMVf6p0U
+         J8Gg==
+X-Gm-Message-State: APjAAAUcGjOiKOf8eKawFnEMQkVmIhLKhvztXm8nofQNx5X08f+rfVrQ
+        qYi5wQy9clkpZ2LLGUI9WRWwTg==
+X-Google-Smtp-Source: APXvYqwlnrWya14IiTSuRAHlp6HurNXuYl+C/QNtJ82vPYJiA3uB8jfjv4gCpuymNyp47hNglqCRhw==
+X-Received: by 2002:adf:ed83:: with SMTP id c3mr3572130wro.51.1578663621578;
+        Fri, 10 Jan 2020 05:40:21 -0800 (PST)
+Received: from cloudflare.com ([176.221.114.230])
+        by smtp.gmail.com with ESMTPSA id d14sm2351222wru.9.2020.01.10.05.40.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Jan 2020 05:40:20 -0800 (PST)
+References: <157851776348.1732.12600714815781177085.stgit@ubuntu3-kvm2> <157851808101.1732.11616068811837364406.stgit@ubuntu3-kvm2> <87tv54syv8.fsf@cloudflare.com> <5e1799a913185_35982ae92e9d45bcc9@john-XPS-13-9370.notmuch>
+User-agent: mu4e 1.1.0; emacs 26.3
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net
+Subject: Re: [bpf PATCH 3/9] bpf: sockmap/tls, push write_space updates through ulp updates
+In-reply-to: <5e1799a913185_35982ae92e9d45bcc9@john-XPS-13-9370.notmuch>
+Date:   Fri, 10 Jan 2020 14:40:20 +0100
+Message-ID: <87sgknsa4b.fsf@cloudflare.com>
 MIME-Version: 1.0
-References: <20200109115749.12283-1-lmb@cloudflare.com> <20200109115749.12283-2-lmb@cloudflare.com>
- <20200109182335.um72tp73krvvubnl@kafai-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20200109182335.um72tp73krvvubnl@kafai-mbp.dhcp.thefacebook.com>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Fri, 10 Jan 2020 13:27:19 +0000
-Message-ID: <CACAyw98A_Y1r0S9jDQds332whureyxRRZCDhFbXV6Bo9NsG4NQ@mail.gmail.com>
-Subject: Re: [PATCH bpf 1/1] net: bpf: don't leak time wait and request sockets
-To:     Martin Lau <kafai@fb.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Joe Stringer <joe@isovalent.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kernel-team@cloudflare.com" <kernel-team@cloudflare.com>,
-        "edumazet@google.com" <edumazet@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 9 Jan 2020 at 18:23, Martin Lau <kafai@fb.com> wrote:
+On Thu, Jan 09, 2020 at 10:22 PM CET, John Fastabend wrote:
+> Jakub Sitnicki wrote:
+>> On Wed, Jan 08, 2020 at 10:14 PM CET, John Fastabend wrote:
+>> > When sockmap sock with TLS enabled is removed we cleanup bpf/psock state
+>> > and call tcp_update_ulp() to push updates to TLS ULP on top. However, we
+>> > don't push the write_space callback up and instead simply overwrite the
+>> > op with the psock stored previous op. This may or may not be correct so
+>> > to ensure we don't overwrite the TLS write space hook pass this field to
+>> > the ULP and have it fixup the ctx.
+>> >
+>> > This completes a previous fix that pushed the ops through to the ULP
+>> > but at the time missed doing this for write_space, presumably because
+>> > write_space TLS hook was added around the same time.
+>> >
+>> > Fixes: 95fa145479fbc ("bpf: sockmap/tls, close can race with map free")
+>> > Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+>> > ---
+>> >  include/linux/skmsg.h |   12 ++++++++----
+>> >  include/net/tcp.h     |    6 ++++--
+>> >  net/ipv4/tcp_ulp.c    |    6 ++++--
+>> >  net/tls/tls_main.c    |   10 +++++++---
+>> >  4 files changed, 23 insertions(+), 11 deletions(-)
+>> >
+>> > diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
+>> > index b6afe01f8592..14d61bba0b79 100644
+>> > --- a/include/linux/skmsg.h
+>> > +++ b/include/linux/skmsg.h
+>> > @@ -359,17 +359,21 @@ static inline void sk_psock_restore_proto(struct sock *sk,
+>> >  					  struct sk_psock *psock)
+>> >  {
+>> >  	sk->sk_prot->unhash = psock->saved_unhash;
+>> > -	sk->sk_write_space = psock->saved_write_space;
+>> >
+>> >  	if (psock->sk_proto) {
+>> >  		struct inet_connection_sock *icsk = inet_csk(sk);
+>> >  		bool has_ulp = !!icsk->icsk_ulp_data;
+>> >
+>> > -		if (has_ulp)
+>> > -			tcp_update_ulp(sk, psock->sk_proto);
+>> > -		else
+>> > +		if (has_ulp) {
+>> > +			tcp_update_ulp(sk, psock->sk_proto,
+>> > +				       psock->saved_write_space);
+>> > +		} else {
+>> >  			sk->sk_prot = psock->sk_proto;
+>> > +			sk->sk_write_space = psock->saved_write_space;
+>> > +		}
+>>
+>> I'm wondering if we need the above fallback branch for no-ULP case?
+>> tcp_update_ulp repeats the ULP check and has the same fallback. Perhaps
+>> it can be reduced to:
+>>
+>> 	if (psock->sk_proto) {
+>> 		tcp_update_ulp(sk, psock->sk_proto, psock->saved_write_space);
+>> 		psock->sk_proto = NULL;
+>> 	} else {
+>> 		sk->sk_write_space = psock->saved_write_space;
+>> 	}
 >
-> Would this work too?
->         if (!sk_fullsock(sk) || !sock_flag(sk, SOCK_RCU_FREE))
+> Yeah that is a bit nicer. How about pushing it for bpf-next? I'm not
+> sure its needed for bpf and the patch I pushed is the minimal change
+> needed for the fix and pushes the saved_write_space around.
 
-Thank you for the suggestion, this makes the patch much nicer.
+Yeah, this is bpf-next material.
 
--- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+>> Then there's the question if it's okay to leave psock->sk_proto set and
+>> potentially restore it more than once? Reading tls_update, the only user
+>> ULP 'update' callback, it looks fine.
+>>
+>> Can sk_psock_restore_proto be as simple as:
+>>
+>> static inline void sk_psock_restore_proto(struct sock *sk,
+>> 					  struct sk_psock *psock)
+>> {
+>> 	tcp_update_ulp(sk, psock->sk_proto, psock->saved_write_space);
+>> }
+>>
+>> ... or am I missing something?
+>
+> I think that is good. bpf-next?
 
-www.cloudflare.com
+Great, I needed to confirm my thinking.
+
+>> Asking becuase I have a patch [0] like this in the queue and haven't
+>> seen issues with it during testing.
+>
+> +1 Want to push it after we sort out this series?
+
+I've actually pushed it earlier today with next iteration of "Extend
+SOCKMAP to store listening sockets" to collect feedback [0]. I will
+adapt it once it shows up in bpf-next (or split it out and submit
+separately).
+
+-jkbs
+
+[0] https://lore.kernel.org/bpf/20200110105027.257877-1-jakub@cloudflare.com/
