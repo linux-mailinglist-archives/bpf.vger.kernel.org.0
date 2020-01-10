@@ -2,122 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 799CD137618
-	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2020 19:36:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAB0113762E
+	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2020 19:39:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728023AbgAJSgP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Jan 2020 13:36:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43908 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728020AbgAJSgO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Jan 2020 13:36:14 -0500
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ED7C1206DA
-        for <bpf@vger.kernel.org>; Fri, 10 Jan 2020 18:36:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1578681373;
-        bh=ZUQib7bnoTZU/304mmRL5Mwvrc5MIbAoLniN4Uk/qYw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=h+t8K1VgQO2sqGDI7eQ7fhLz4uqrI7kcD8o9E7GRSvSk41bGfpwcP9glUFoAvpEDO
-         vKIazUnxJip7Y+EjMYX0HhhIVOP6z+pIhksR/gsQBuQuSZmDtqtPngJW4t/hkoWZMQ
-         2xFlT4rI9w8G0PDoS9dgMdPkyWxgZOQAOXfipC44=
-Received: by mail-wr1-f42.google.com with SMTP id z7so2721778wrl.13
-        for <bpf@vger.kernel.org>; Fri, 10 Jan 2020 10:36:12 -0800 (PST)
-X-Gm-Message-State: APjAAAUPt4HpVe/BL3Ct3nCj0T6n0ZWkrYeTCf/4OjNxDs7WxuGxtg0g
-        Vy7/zyZhXifLSN8GBRI0kL1Tj0/46/5DAnWfsEQrSQ==
-X-Google-Smtp-Source: APXvYqzCH1wGkq2uxYvjqfJcJaKKKqpsUBHA/6LICwgzdTRsCsItPO4rziFdbUkhHPuHyevVbw3EbFyp7cT5odZ4Uhs=
-X-Received: by 2002:adf:f20b:: with SMTP id p11mr4718822wro.195.1578681371413;
- Fri, 10 Jan 2020 10:36:11 -0800 (PST)
+        id S1728520AbgAJSj1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Jan 2020 13:39:27 -0500
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:40232 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728083AbgAJSj0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Jan 2020 13:39:26 -0500
+Received: by mail-lj1-f195.google.com with SMTP id u1so3134022ljk.7;
+        Fri, 10 Jan 2020 10:39:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=O8BBayz11KI8jrry4YeUfuKszWxU2ZCu2ty4ubcQMKc=;
+        b=ucfkJtRQxca15g7uqz6oTV8SD3ZikcZi0pHSGqUO9AYRBpJYz4tenZeFI78S/CG/hr
+         pgCk2VgUvv1XPQ41sYwGyWHwRPgwFC9q4XZsTIDESoILDtXPhVB/V70niekIIPDRQs0l
+         lbZZwDv9mzMPYndptc1XLP3n5yIZa3xjvs87z0C2P1HoeNGRfHCXhtbEuXLAM36HILbz
+         LHxwWj3u2qBoHXMfrKWAPFq61IuSmZOcAbCSksVbFJkJezxZhFyRmyyEZ+pPJfNi53Ub
+         nhHQv4Mjr3KFo2JiKu2NdwV3rFMj8DkxpzHR/LIgCSMLmNqtpgKjrdaSCNGhtCpgbD8O
+         uvFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=O8BBayz11KI8jrry4YeUfuKszWxU2ZCu2ty4ubcQMKc=;
+        b=lQ4wZO+TLsVhY8G5bf/vrGxf8fP2sYkjb1Z71pFQoYWkrVZ3xg1c6Jwe3V/hCWfY+i
+         6VnRi7Mc58XQU0U5mqUWpqJFD2VXuVnb1/6kPJVdsnXkF1UX/Fmx9Ay/FWbGmvd985yR
+         J8tQYnjbGj6SZ77j9ff93yfZEewyE6w4h0zWwzyCfOYVx1oUul49RGR9E6hihg+8nZT9
+         3hHEww2yHWPTjVN64DPDyfdsvcGOEf9VHpGOML5+lCr7zPXdQtwT0yUCm11YkftOTQ7Y
+         WGNrwNNj6GXS4V1+rpzKg6AMOHzxoT55qMLtc/06gWKRxboZ6ACLv4e71SGMwEjpLUYt
+         TIzQ==
+X-Gm-Message-State: APjAAAUQiBavuxxcqs5fi/glTcDorp4K3DxXD/bz7mSOCvSQ3QhZE1Gf
+        Pt2PG+fpfiy7EgDgqQ5wdsFY4RIAzGnQbvjCSNA=
+X-Google-Smtp-Source: APXvYqxGo2q3u3oNVdCae+dyEq31/bbKT2GgpClN+7idaT2rzmOpoFdU9QWCGxCKfyK5xCB6L4CZ4raKXpdSF87Ios8=
+X-Received: by 2002:a2e:990e:: with SMTP id v14mr3442515lji.23.1578681564719;
+ Fri, 10 Jan 2020 10:39:24 -0800 (PST)
 MIME-Version: 1.0
-References: <21bf6bb46544eab79e792980f82520f8fbdae9b5.camel@intel.com>
- <DB882EE8-20B2-4631-A808-E5C968B24CEB@amacapital.net> <cdd157ef011efda92c9434f76141fc3aef174d85.camel@intel.com>
- <CALCETrV_tGk=B3Hw0h9viW45wMqB_W+rwWzx6LnC3-vSATOUOA@mail.gmail.com>
- <400be86aab208d0e50a237cdbd3195763396e3ed.camel@intel.com>
- <CALCETrXXJhkNXmjTX_8VEO39+uE4XECtm=QNTDh1DpncXKhKhw@mail.gmail.com> <96dd98b3c4f73b205b6e669ca87fa64901c117d6.camel@intel.com>
-In-Reply-To: <96dd98b3c4f73b205b6e669ca87fa64901c117d6.camel@intel.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Fri, 10 Jan 2020 10:35:59 -0800
-X-Gmail-Original-Message-ID: <CALCETrWjx-D2sdJZbnydPgunNKmxuhYm=+6iPoy0DHEKCMkMsw@mail.gmail.com>
-Message-ID: <CALCETrWjx-D2sdJZbnydPgunNKmxuhYm=+6iPoy0DHEKCMkMsw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Make trampolines W^X
-To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc:     "luto@kernel.org" <luto@kernel.org>,
-        "songliubraving@fb.com" <songliubraving@fb.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "jeyu@kernel.org" <jeyu@kernel.org>,
-        "kuznet@ms2.inr.ac.ru" <kuznet@ms2.inr.ac.ru>,
-        "mjg59@google.com" <mjg59@google.com>,
-        "nadav.amit@gmail.com" <nadav.amit@gmail.com>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "thgarnie@chromium.org" <thgarnie@chromium.org>,
-        "kpsingh@chromium.org" <kpsingh@chromium.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "revest@chromium.org" <revest@chromium.org>,
-        "jannh@google.com" <jannh@google.com>,
-        "namit@vmware.com" <namit@vmware.com>,
-        "jackmanb@chromium.org" <jackmanb@chromium.org>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "kafai@fb.com" <kafai@fb.com>, "yhs@fb.com" <yhs@fb.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "yoshfuji@linux-ipv6.org" <yoshfuji@linux-ipv6.org>,
-        "mhalcrow@google.com" <mhalcrow@google.com>,
-        "andriin@fb.com" <andriin@fb.com>
+References: <20200110181916.271446-1-andriin@fb.com>
+In-Reply-To: <20200110181916.271446-1-andriin@fb.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 10 Jan 2020 10:39:13 -0800
+Message-ID: <CAADnVQLzN_N4fuGG2f73D1NtAV3YM1q6-Fea-6c4hVT-dYDH-Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: poison kernel-only integer types
+To:     Andrii Nakryiko <andriin@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> On Jan 9, 2020, at 3:01 PM, Edgecombe, Rick P <rick.p.edgecombe@intel.com=
-> wrote:
-
->> The vmap code immediately removes PTEs when unmaps occur (which it may
->> very well do right now -- I haven't checked) but also tracks the
->> kernel_tlb_gen associated with each record of an
->> unmapped-but-not-zapped area.  Then we split vm_unmap_aliases() into a
->> variant that unmaps all aliases and a variant that merely promises to
->> unmap at least one alias.  The former does what the current code does
->> except that it skips the IPI if all areas in question have tlb_gen <
->> flushed_kernel_tlb_gen.  The latter clears all areas with tlb_gen <
->> flushed_kernel_tlb_gen and, if there weren't any, does
->> flush_tlb_kernel_range() and flushes everything.
->>
->> (Major caveat: this is wrong for the case where
->> flush_tlb_kernel_range() only flushes some but not all of the kernel.
->> So this needs considerable work if it's actually going to me useful.
->> The plain old "take locks and clean up" approach might be a better
->> bet.)
->>
+On Fri, Jan 10, 2020 at 10:19 AM Andrii Nakryiko <andriin@fb.com> wrote:
 >
-> Hmm. In normal usage (!DEBUG_PAGE_ALLOC), are kernel range tlb shootdowns=
- common
-> outside of module space users and lazy vmap stuff? A tlb_gen solution mig=
-ht only
-> be worth it in cases where something other than vm_unmap_aliases() and he=
-lpers
-> was doing this frequently.
+> It's been a recurring issue with types like u32 slipping into libbpf source
+> code accidentally. This is not detected during builds inside kernel source
+> tree, but becomes a compilation error in libbpf's Github repo. Libbpf is
+> supposed to use only __{s,u}{8,16,32,64} typedefs, so poison {s,u}{8,16,32,64}
+> explicitly in every .c file. Doing that in a bit more centralized way, e.g.,
+> inside libbpf_internal.h breaks selftests, which are both using kernel u32 and
+> libbpf_internal.h.
+>
+> This patch also fixes a new u32 occurence in libbpf.c, added recently.
+>
+> Fixes: 590a00888250 ("bpf: libbpf: Add STRUCT_OPS support")
+> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 
-I suspect that the two bug users aside from vunmap() will be eBPF and,
-eventually, XPFO / =E2=80=9Cexclusive pages=E2=80=9D / less crappy SEV-like
-implementations / actual high quality MKTME stuff / KVM
-side-channel-proof memory.  The latter doesn=E2=80=99t actually exist yet (=
-the
-SEV implementation sidesteps this with a horrible hack involving
-incoherent mappings that are left active with fingers crossed), but it
-really seems like it=E2=80=99s coming.
-
-In general, if we=E2=80=99re going to have a pool of non-RW-direct-mapped
-pages, we also want some moderately efficient way to produce such
-pages.
-
-Right now, creating and freeing eBPF programs in a loop is probably a
-performance disaster on large systems.
+Applied. Thanks
