@@ -2,171 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E7A56137547
-	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2020 18:53:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA8BC13756C
+	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2020 18:56:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728485AbgAJRxK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Jan 2020 12:53:10 -0500
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:34800 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728248AbgAJRxJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Jan 2020 12:53:09 -0500
-Received: by mail-pl1-f194.google.com with SMTP id x17so1130056pln.1;
-        Fri, 10 Jan 2020 09:53:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=7CDQhFdn9jkHo+6/IKHK0dztZerzShVqNerNdFNibYI=;
-        b=huBJfB29GhBFOE6ibGq9rZro83Y9Ry5BVWo7VwnsQnYFJ4BgczzUmF8H9eGx6jMZ2S
-         E7AfCJD4D2kIMp2dTi3SBsXGrju8f7kZHinSSNyqCbc/2hQOefdlR8X+fCeAHtGB6P4N
-         zPf64RFjC82FB2fAeTw6K61/viGwGsDCShGaVxiZSIfuFVzH4rm0YSwHdm/9zG3Km+ZX
-         0LFaoJDiYy6uRdUiUSi6RyUCn7tB9R9BoY+qvuwa3v1pgAfeaMdAOuRbC/rXJTdSEBBo
-         Z0K7m3OF6X0T3n+T5vYsQen7lAih4jZSeI3+6CdNEPvNXEEB+tNg7lm8KUf42GW16loT
-         VDkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=7CDQhFdn9jkHo+6/IKHK0dztZerzShVqNerNdFNibYI=;
-        b=sDJnwVhzgcJ1idgb9GoTPjwPdZ5LI2ZmtWUMbgnL9rajxW0jjAfoDEyy0GZCcIFLTZ
-         zoJGGyYpd0u1CLYNM4pbG9gaPWd4MI8NSUERueZd2MK+ZIs5Ga0a3q04+iiEEuuAzn4E
-         sKEEUaZj+IHWH+5peMBIt+EFBT7pnxLQWNp8hx6RMEIQObw2bKTdUNL+moG2fhfj5J+H
-         bzzLte1FHutOhfOaK9JBA+pcWuUQsMLdOCOZWhzTF50h5MNFvAArp5zQY4qe5D8RyKRY
-         5qFR0W6uCcQRjE5/rIC5z+slbWJlUFqJYNS2OjN449+vdH5SOPucomQHeexFuWG4ysVs
-         w1RQ==
-X-Gm-Message-State: APjAAAXomNmfpnLjJ+ijZMUuq3KWmH3EXprA2DII+8YU55qL283DSiWW
-        9uj850cSw2IEf/jeLKI7xX4=
-X-Google-Smtp-Source: APXvYqxSppu3yeNvSqY0JqfiaAqCaesNlytAiUS9HnsE+dbJvdkreE5lle13ppca3R6I/dd3W3n5rA==
-X-Received: by 2002:a17:902:343:: with SMTP id 61mr5753565pld.332.1578678788962;
-        Fri, 10 Jan 2020 09:53:08 -0800 (PST)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:200::2:ba5e])
-        by smtp.gmail.com with ESMTPSA id w3sm1423944pgj.48.2020.01.10.09.53.06
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 10 Jan 2020 09:53:08 -0800 (PST)
-Date:   Fri, 10 Jan 2020 09:53:05 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     KP Singh <kpsingh@chromium.org>
-Cc:     Stephen Smalley <sds@tycho.nsa.gov>,
-        James Morris <jmorris@namei.org>,
-        Kees Cook <keescook@chromium.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, linux-security-module@vger.kernel.org,
+        id S1728927AbgAJRxp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Jan 2020 12:53:45 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:59225 "EHLO
+        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728926AbgAJRxo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Jan 2020 12:53:44 -0500
+Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tip-bot2@linutronix.de>)
+        id 1ipyTJ-0001k0-Jb; Fri, 10 Jan 2020 18:53:21 +0100
+Received: from [127.0.1.1] (localhost [IPv6:::1])
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 051B31C2D5B;
+        Fri, 10 Jan 2020 18:53:17 +0100 (CET)
+Date:   Fri, 10 Jan 2020 17:53:16 -0000
+From:   "tip-bot2 for Andrey Zhizhikin" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: perf/core] tools lib api fs: Fix gcc9 stringop-truncation
+ compilation error
+Cc:     Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
+        Petr Mladek <pmladek@suse.com>, Jiri Olsa <jolsa@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Thomas Garnier <thgarnie@chromium.org>,
-        Michael Halcrow <mhalcrow@google.com>,
-        Paul Turner <pjt@google.com>,
-        Brendan Gregg <brendan.d.gregg@gmail.com>,
-        Jann Horn <jannh@google.com>,
-        Matthew Garrett <mjg59@google.com>,
-        Christian Brauner <christian@brauner.io>,
-        =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
         Martin KaFai Lau <kafai@fb.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Quentin Monnet <quentin.monnet@netronome.com>,
-        Andrey Ignatov <rdna@fb.com>, Joe Stringer <joe@wand.net.nz>,
-        Paul Moore <paul@paul-moore.com>
-Subject: Re: [PATCH bpf-next v1 00/13] MAC and Audit policy using eBPF (KRSI)
-Message-ID: <20200110175304.f3j4mtach4mccqtg@ast-mbp.dhcp.thefacebook.com>
-References: <201912301112.A1A63A4@keescook>
- <c4e6cdf2-1233-fc82-ca01-ba84d218f5aa@tycho.nsa.gov>
- <alpine.LRH.2.21.2001090551000.27794@namei.org>
- <e59607cc-1a84-cbdd-5117-7efec86b11ff@tycho.nsa.gov>
- <alpine.LRH.2.21.2001100437550.21515@namei.org>
- <e90e03e3-b92f-6e1a-132f-1b648d9d2139@tycho.nsa.gov>
- <alpine.LRH.2.21.2001100558550.31925@namei.org>
- <20200109194302.GA85350@google.com>
- <8e035f4d-5120-de6a-7ac8-a35841a92b8a@tycho.nsa.gov>
- <20200110152758.GA260168@google.com>
+        bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20191211080109.18765-1-andrey.zhizhikin@leica-geosystems.com>
+References: <20191211080109.18765-1-andrey.zhizhikin@leica-geosystems.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200110152758.GA260168@google.com>
-User-Agent: NeoMutt/20180223
+Message-ID: <157867879690.30329.5750963934087709252.tip-bot2@tip-bot2>
+X-Mailer: tip-git-log-daemon
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jan 10, 2020 at 04:27:58PM +0100, KP Singh wrote:
-> On 09-Jan 14:47, Stephen Smalley wrote:
-> > On 1/9/20 2:43 PM, KP Singh wrote:
-> > > On 10-Jan 06:07, James Morris wrote:
-> > > > On Thu, 9 Jan 2020, Stephen Smalley wrote:
-> > > > 
-> > > > > On 1/9/20 1:11 PM, James Morris wrote:
-> > > > > > On Wed, 8 Jan 2020, Stephen Smalley wrote:
-> > > > > > 
-> > > > > > > The cover letter subject line and the Kconfig help text refer to it as a
-> > > > > > > BPF-based "MAC and Audit policy".  It has an enforce config option that
-> > > > > > > enables the bpf programs to deny access, providing access control. IIRC,
-> > > > > > > in
-> > > > > > > the earlier discussion threads, the BPF maintainers suggested that Smack
-> > > > > > > and
-> > > > > > > other LSMs could be entirely re-implemented via it in the future, and that
-> > > > > > > such an implementation would be more optimal.
-> > > > > > 
-> > > > > > In this case, the eBPF code is similar to a kernel module, rather than a
-> > > > > > loadable policy file.  It's a loadable mechanism, rather than a policy, in
-> > > > > > my view.
-> > > > > 
-> > > > > I thought you frowned on dynamically loadable LSMs for both security and
-> > > > > correctness reasons?
-> > > 
-> > > Based on the feedback from the lists we've updated the design for v2.
-> > > 
-> > > In v2, LSM hook callbacks are allocated dynamically using BPF
-> > > trampolines, appended to a separate security_hook_heads and run
-> > > only after the statically allocated hooks.
-> > > 
-> > > The security_hook_heads for all the other LSMs (SELinux, AppArmor etc)
-> > > still remains __lsm_ro_after_init and cannot be modified. We are still
-> > > working on v2 (not ready for review yet) but the general idea can be
-> > > seen here:
-> > > 
-> > >    https://github.com/sinkap/linux-krsi/blob/patch/v1/trampoline_prototype/security/bpf/lsm.c
-> > > 
-> > > > 
-> > > > Evaluating the security impact of this is the next step. My understanding
-> > > > is that eBPF via BTF is constrained to read only access to hook
-> > > > parameters, and that its behavior would be entirely restrictive.
-> > > > 
-> > > > I'd like to understand the security impact more fully, though.  Can the
-> > > > eBPF code make arbitrary writes to the kernel, or read anything other than
-> > > > the correctly bounded LSM hook parameters?
-> > > > 
-> > > 
-> > > As mentioned, the BPF verifier does not allow writes to BTF types.
-> > > 
-> > > > > And a traditional security module would necessarily fall
-> > > > > under GPL; is the eBPF code required to be likewise?  If not, KRSI is a
-> > > > > gateway for proprietary LSMs...
-> > > > 
-> > > > Right, we do not want this to be a GPL bypass.
-> > > 
-> > > This is not intended to be a GPL bypass and the BPF verifier checks
-> > > for license compatibility of the loaded program with GPL.
-> > 
-> > IIUC, it checks that the program is GPL compatible if it uses a function
-> > marked GPL-only.  But what specifically is marked GPL-only that is required
-> > for eBPF programs using KRSI?
-> 
-> Good point! If no-one objects, I can add it to the BPF_PROG_TYPE_LSM
-> specific verification for the v2 of the patch-set which would require
-> all BPF-LSM programs to be GPL.
+The following commit has been merged into the perf/core branch of tip:
 
-I don't think it's a good idea to enforce license on the program.
-The kernel doesn't do it for modules.
-For years all of BPF tracing progs were GPL because they have to use
-GPL-ed helpers to do anything meaningful.
-So for KRSI just make sure that all helpers are GPL-ed as well.
+Commit-ID:     6794200fa3c9c3e6759dae099145f23e4310f4f7
+Gitweb:        https://git.kernel.org/tip/6794200fa3c9c3e6759dae099145f23e4310f4f7
+Author:        Andrey Zhizhikin <andrey.z@gmail.com>
+AuthorDate:    Wed, 11 Dec 2019 08:01:09 
+Committer:     Arnaldo Carvalho de Melo <acme@redhat.com>
+CommitterDate: Mon, 06 Jan 2020 11:46:09 -03:00
+
+tools lib api fs: Fix gcc9 stringop-truncation compilation error
+
+GCC9 introduced string hardening mechanisms, which exhibits the error
+during fs api compilation:
+
+error: '__builtin_strncpy' specified bound 4096 equals destination size
+[-Werror=stringop-truncation]
+
+This comes when the length of copy passed to strncpy is is equal to
+destination size, which could potentially lead to buffer overflow.
+
+There is a need to mitigate this potential issue by limiting the size of
+destination by 1 and explicitly terminate the destination with NULL.
+
+Signed-off-by: Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>
+Reviewed-by: Petr Mladek <pmladek@suse.com>
+Acked-by: Jiri Olsa <jolsa@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Andrii Nakryiko <andriin@fb.com>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc: Martin KaFai Lau <kafai@fb.com>
+Cc: Petr Mladek <pmladek@suse.com>
+Cc: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Cc: Song Liu <songliubraving@fb.com>
+Cc: Yonghong Song <yhs@fb.com>
+Cc: bpf@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Link: http://lore.kernel.org/lkml/20191211080109.18765-1-andrey.zhizhikin@leica-geosystems.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+---
+ tools/lib/api/fs/fs.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/tools/lib/api/fs/fs.c b/tools/lib/api/fs/fs.c
+index 11b3885..027b18f 100644
+--- a/tools/lib/api/fs/fs.c
++++ b/tools/lib/api/fs/fs.c
+@@ -210,6 +210,7 @@ static bool fs__env_override(struct fs *fs)
+ 	size_t name_len = strlen(fs->name);
+ 	/* name + "_PATH" + '\0' */
+ 	char upper_name[name_len + 5 + 1];
++
+ 	memcpy(upper_name, fs->name, name_len);
+ 	mem_toupper(upper_name, name_len);
+ 	strcpy(&upper_name[name_len], "_PATH");
+@@ -219,7 +220,8 @@ static bool fs__env_override(struct fs *fs)
+ 		return false;
+ 
+ 	fs->found = true;
+-	strncpy(fs->path, override_path, sizeof(fs->path));
++	strncpy(fs->path, override_path, sizeof(fs->path) - 1);
++	fs->path[sizeof(fs->path) - 1] = '\0';
+ 	return true;
+ }
+ 
