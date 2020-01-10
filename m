@@ -2,115 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 29B7B137146
-	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2020 16:31:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB6F11371E3
+	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2020 16:55:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728339AbgAJPbA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Jan 2020 10:31:00 -0500
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:22090 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728336AbgAJPbA (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 10 Jan 2020 10:31:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1578670259;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mqdhgHKDxkpsagVFs1MAPtfnHMhpz7EhVbv+10PrkT4=;
-        b=csOUolbJb4jxFZnMGYYQVMv2YmifkEzVVehazHA35NWIygIit7gfINPYjNeoMzmAMb5WNC
-        RIEQaCs2OXnHHq0H8qLbykCcNE1Xwk7apMSXSw/OtYz+19QhLRPSZ+YgSRnXJOGenL41Gh
-        mD/7b1ntuzgvRFMuroiWGmZZ2v/nB5M=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-411-paRq4ftNOOaW7kBAeY64og-1; Fri, 10 Jan 2020 10:30:56 -0500
-X-MC-Unique: paRq4ftNOOaW7kBAeY64og-1
-Received: by mail-wm1-f72.google.com with SMTP id t17so551373wmi.7
-        for <bpf@vger.kernel.org>; Fri, 10 Jan 2020 07:30:56 -0800 (PST)
+        id S1728462AbgAJPyn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Jan 2020 10:54:43 -0500
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:44499 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728427AbgAJPyn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Jan 2020 10:54:43 -0500
+Received: by mail-qt1-f194.google.com with SMTP id t3so2267078qtr.11;
+        Fri, 10 Jan 2020 07:54:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=7kS34Kh824MXdqzaT9xZaYUn4IjVN8JAkErv6PrL1oo=;
+        b=eOoUpUgMuOAo5W1Yq39zLBY9p+Ow4wBVv+qSgQD0qqozIVPDs9813bpHqWOPNRN9OD
+         /BD3lGTIsBMFxNerOMJlg+psCX7rEQY6nwMIzB3boYLRUMXd4tihgfiEuo7Dqmiw2qFG
+         JZLICVJfGumQXaMowXrv5Emw7JI0m6YmCi+bh+sVvNIbXn/a0kwC7cHXll+yZYUU9kpA
+         hhQXBM0eem+TTiuREiQmltDPLBMM9MynHdJsSphT4SirxkVWxRMy4ECkn9VPf09n1GZ3
+         UUBRIncRGeu7c0q5Cgqaih+A4B8cIMruOjFHc3GTuLwmx0w1M3+rVRUS9ZDgs3xsYe+O
+         YJtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=mqdhgHKDxkpsagVFs1MAPtfnHMhpz7EhVbv+10PrkT4=;
-        b=pQ/FBI+uWTHK5WQlbyP+HjCh+2117OApSfmOeEaL+ILOhkSKJ/KaPXbnkRgbWlyHxA
-         OevMBvdqwEdrLWxIJebmyllHiquSYyBy44oXf+KRVYcHHmrZEU0k3GEhigyamhIG2PHe
-         YPmLlW/PLtYHYfVbLmhKktVHNd7mE50GwESYoj7mbQvDJyA/7PNDooL6UY+oOVlBxUiB
-         AheV3OuOR3KJfHVeEIMZr3Ssym2kEJEfebll8Pw7guNR1pXjbOaHmXOtNpwXXrNdKwYo
-         BtM20a3OtpJAW1eA9LMttBLmlGL7pbvgrtCg7Dwkr7dSAM4Su9TYy8WBsYxQxkn52zd5
-         QjTA==
-X-Gm-Message-State: APjAAAULCQ1cc2jCPalzDAtxEFmqnTF5WMKvu29gqa2NzJlWmo9OA+X4
-        /BDrAu53j+39NIBtkvzyKADcFYcWJ19FkgGi40KvQ5TuGEh7nkM9tYWbHjhZtS1nkayMlfn9c+r
-        fvtquR0wGAh7o
-X-Received: by 2002:a5d:5345:: with SMTP id t5mr4384735wrv.0.1578670255109;
-        Fri, 10 Jan 2020 07:30:55 -0800 (PST)
-X-Google-Smtp-Source: APXvYqy9DPLK89p2Vnj67k7onQHiuU/vOE5G+SNIsSOj9jehTu+ESKDQCEEVTq3AEu6RpqjJdC7PAw==
-X-Received: by 2002:a5d:5345:: with SMTP id t5mr4384717wrv.0.1578670254873;
-        Fri, 10 Jan 2020 07:30:54 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id l18sm2561105wme.30.2020.01.10.07.30.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jan 2020 07:30:54 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 9347818009F; Fri, 10 Jan 2020 16:30:53 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=7kS34Kh824MXdqzaT9xZaYUn4IjVN8JAkErv6PrL1oo=;
+        b=SMLHfJxaQGvpzfcdEsqzJB44y8vENY5GnYneKXbDEC8VFymJ2pXfx3652yX2TpMHd9
+         ccDraIsUYYgdxLRAoEr9cxPnKzgjRnD/4A0no2xSUZnjQiGfyo0iuyqRVfJEcD6hu/Io
+         CwoGnlZTeiw7cV1ZENR2+/aJKMj0eJqGGzGgcR1Ndm71z5r0ag4yGCso8DpvZ/PjxwZj
+         AjmisxWvzAPrRDbpknaBzjfqmAzix5yi2z+epqqq9VsMx6M+0c9Z0GcxNnh7hq/EsLtJ
+         7lftREQIoAemfnrXLmp3/shp6RYK3K2tk5KunTi4SF+9WI2qlsue8SrTotUkkA2f/xUi
+         mFwA==
+X-Gm-Message-State: APjAAAW3T1NfF1GpZ70hyGXR1Os0HHM++sDyGCvlgeUW6x/Jav70tSq8
+        Rv1AMjeR984OjBTI+pSzkYTbaaFooIIsSGLFbBHvvTsiwug=
+X-Google-Smtp-Source: APXvYqxKH4YSYwLbkCQwYZ3b3GNdrwrSv5W2G6WyRW7Zft0PURGas2pFnfSgAosTc5aSYtiD70R9wSAtfRqG8aflDfU=
+X-Received: by 2002:ac8:33a5:: with SMTP id c34mr2998546qtb.359.1578671682025;
+ Fri, 10 Jan 2020 07:54:42 -0800 (PST)
+MIME-Version: 1.0
+References: <157866612174.432695.5077671447287539053.stgit@toke.dk>
+ <157866612392.432695.249078779633883278.stgit@toke.dk> <CAJ+HfNhM8SQK6dem9vhvAh68AqaxouSDhhWjXiidB3=LBRmsUA@mail.gmail.com>
+ <87d0brxr9u.fsf@toke.dk>
+In-Reply-To: <87d0brxr9u.fsf@toke.dk>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Fri, 10 Jan 2020 16:54:30 +0100
+Message-ID: <CAJ+HfNhO9Mn-hzysEfri3hAH29HXiBWDZE1XUVhOj1UFbBrp4w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] xdp: Use bulking for non-map XDP_REDIRECT
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
 Cc:     Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <ast@kernel.org>,
         David Miller <davem@davemloft.net>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
         John Fastabend <john.fastabend@gmail.com>
-Subject: Re: [PATCH bpf-next 2/2] xdp: Use bulking for non-map XDP_REDIRECT
-In-Reply-To: <CAJ+HfNhM8SQK6dem9vhvAh68AqaxouSDhhWjXiidB3=LBRmsUA@mail.gmail.com>
-References: <157866612174.432695.5077671447287539053.stgit@toke.dk> <157866612392.432695.249078779633883278.stgit@toke.dk> <CAJ+HfNhM8SQK6dem9vhvAh68AqaxouSDhhWjXiidB3=LBRmsUA@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 10 Jan 2020 16:30:53 +0100
-Message-ID: <87d0brxr9u.fsf@toke.dk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> writes:
-
-> On Fri, 10 Jan 2020 at 15:22, Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
-at.com> wrote:
->>
->> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->>
->> Since the bulk queue used by XDP_REDIRECT now lives in struct net_device,
->> we can re-use the bulking for the non-map version of the bpf_redirect()
->> helper. This is a simple matter of having xdp_do_redirect_slow() queue t=
-he
->> frame on the bulk queue instead of sending it out with __bpf_tx_xdp().
->>
->> Unfortunately we can't make the bpf_redirect() helper return an error if
->> the ifindex doesn't exit (as bpf_redirect_map() does), because we don't
->> have a reference to the network namespace of the ingress device at the t=
-ime
->> the helper is called. So we have to leave it as-is and keep the device
->> lookup in xdp_do_redirect_slow().
->>
->> With this change, the performance of the xdp_redirect sample program goes
->> from 5Mpps to 8.4Mpps (a 68% increase).
->>
+On Fri, 10 Jan 2020 at 16:30, Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat=
+.com> wrote:
 >
-> After these changes, does the noinline (commit 47b123ed9e99 ("xdp:
-> split code for map vs non-map redirect")) still make sense?
+> Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> writes:
+>
+[...]
+> >
+> > After these changes, does the noinline (commit 47b123ed9e99 ("xdp:
+> > split code for map vs non-map redirect")) still make sense?
+>
+> Hmm, good question. The two code paths are certainly close to one
+> another; and I guess they could be consolidated further.
+>
+> The best case would be if we had a way to lookup the ifindex directly in
+> the helper. Do you know if there's a way to get the current net
+> namespace from the helper? Can we use current->nsproxy->net_ns in that
+> context?
+>
 
-Hmm, good question. The two code paths are certainly close to one
-another; and I guess they could be consolidated further.
+Nope, interrupt context. :-( Another (ugly) way is adding a netns
+member to the bpf_redirect_info, that is populated by the driver
+(driver changes everywhere -- ick). So no.
 
-The best case would be if we had a way to lookup the ifindex directly in
-the helper. Do you know if there's a way to get the current net
-namespace from the helper? Can we use current->nsproxy->net_ns in that
-context?
+(And *if* one would go the route of changing all drivers, I think the
+percpu bpf_redirect_info should be replaced a by a context that is
+passed from the driver to the XDP program execution and
+xdp_do_redirect/flush. But that's a much bigger patch. :-))
 
-If we can, and if we don't mind merging the two different tracepoints,
-the xdp_do_redirect() function could be made quite a bit leaner...
 
--Toke
+Bj=C3=B6rn
 
+
+> If we can, and if we don't mind merging the two different tracepoints,
+> the xdp_do_redirect() function could be made quite a bit leaner...
+>
+> -Toke
+>
