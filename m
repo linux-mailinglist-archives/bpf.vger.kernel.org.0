@@ -2,102 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A451C1378E6
-	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2020 23:04:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FC7E13796D
+	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2020 23:08:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727191AbgAJWEq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Jan 2020 17:04:46 -0500
-Received: from mail-pj1-f68.google.com ([209.85.216.68]:54726 "EHLO
-        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727185AbgAJWEq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Jan 2020 17:04:46 -0500
-Received: by mail-pj1-f68.google.com with SMTP id kx11so1505274pjb.4;
-        Fri, 10 Jan 2020 14:04:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=eb9Zu4ng3OFqsu040N9uJfSobuP+HTIZaWYh+4c4MGU=;
-        b=Jw7ulMnHhi1YOBpqwEdBLml7YAwubcJCZcoToV/R0C8wYwVEcWMyuZ4bjkjUf8+ZfH
-         VO5KMRPDx9PvPvp6ZuJRARBI5veWbkLa4lbAX/HWM3fEGHBD5FWPPkm0IxFqM1K4mjU5
-         Jj7ZeyE726wmedlcfCkur+OTHpk/D1e+T1FJr0X4PZFSdiPY0Pu5b/0GwScM6QK65jnk
-         +taKEZwtxcDeOMcsdImrRlziMp/OFCvqyZ0qqT7ScjyQavM3LIjwF7OT7mZ8UpyRzeNK
-         XOpNzJEp1TAhHIcp6JrdPB9HHQfel/gKuVnYnsrzkqtEBhQNiG8268N9m0P5D+gEpf6Q
-         SECg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=eb9Zu4ng3OFqsu040N9uJfSobuP+HTIZaWYh+4c4MGU=;
-        b=K6RQqfG5B4Q+aEwb+14OVEh3pchkAwws6TqW7WNwEnsAIyK4U2qIMU+JK3yCQzv8Us
-         /IDejAuqToH+Zl2V7H4CAu3S7aJ6JWeagnXIYygoDAIa6i+l4xhKnO2qDPTqd097DzDU
-         XpmH57x8Ol+3E20y1Ny+U3ik2wqpSLIVSOjK9JPlQuGUdsM6mXblbWFIzd+CLpsDRuFL
-         G4Q+VOiiWxSmAIsMj4bKU0kuAya6pWSykIsLAjOOcXytubYq3KbS1sPs6yE399iQmCch
-         Cx7ITAzLFH0Fyg3NB3pqByku0FZWMknA837Sc7Z8hPU79dujfQTE0JdBQp9fQu8CMJhd
-         s4uA==
-X-Gm-Message-State: APjAAAWbUc0E31M2u15B/yVW7WkMg119SAViWIFPsMKPndYXFNdJUINU
-        /hxBEedNm684KN3eZzuqRJk=
-X-Google-Smtp-Source: APXvYqwzcNzzjZTeNYqD22n3zkIm0G4tZqFkBwHfbfRvfsFZUW+TC3MUL8MNnVHfRP2HISTMBmDh9A==
-X-Received: by 2002:a17:90a:8584:: with SMTP id m4mr7552496pjn.123.1578693885765;
-        Fri, 10 Jan 2020 14:04:45 -0800 (PST)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:200::2:ba5e])
-        by smtp.gmail.com with ESMTPSA id k1sm3941926pgk.90.2020.01.10.14.04.44
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 10 Jan 2020 14:04:44 -0800 (PST)
-Date:   Fri, 10 Jan 2020 14:04:43 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
-        daniel@iogearbox.net, kafai@fb.com, andrii.nakryiko@gmail.com,
-        kernel-team@fb.com
-Subject: Re: [PATCH v5 bpf-next] selftests/bpf: add BPF_PROG, BPF_KPROBE, and
- BPF_KRETPROBE macros
-Message-ID: <20200110220441.rwbxg4c452eupvjt@ast-mbp.dhcp.thefacebook.com>
-References: <20200110211634.1614739-1-andriin@fb.com>
+        id S1728483AbgAJWIQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Jan 2020 17:08:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51526 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727787AbgAJWFk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Jan 2020 17:05:40 -0500
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DC39E20838;
+        Fri, 10 Jan 2020 22:05:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1578693939;
+        bh=FaD2lQgwj++PgBdNqXW0xbro1IUzunfmBSm2JEWFPHk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=BFvMtK7RSXnbA1hSsulyFrCou5k7vZ8BMwp906IKny9kltJC/VElfEvLzZkj6fclq
+         g4LkH8W8tQSe0PB3hYqPu10HKoFDjurNE4xyZdjaBmipXxvPpwtnSr5vsEJQqLLW0a
+         L45kE7EKw1vDwRS/sesLPNHw1MokOhkDxGJKi1BE=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Taehee Yoo <ap420073@gmail.com>,
+        syzbot+9328206518f08318a5fd@syzkaller.appspotmail.com,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 21/26] hsr: fix slab-out-of-bounds Read in hsr_debugfs_rename()
+Date:   Fri, 10 Jan 2020 17:05:14 -0500
+Message-Id: <20200110220519.28250-16-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200110220519.28250-1-sashal@kernel.org>
+References: <20200110220519.28250-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200110211634.1614739-1-andriin@fb.com>
-User-Agent: NeoMutt/20180223
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jan 10, 2020 at 01:16:34PM -0800, Andrii Nakryiko wrote:
-> Streamline BPF_TRACE_x macro by moving out return type and section attribute
-> definition out of macro itself. That makes those function look in source code
-> similar to other BPF programs. Additionally, simplify its usage by determining
-> number of arguments automatically (so just single BPF_TRACE vs a family of
-> BPF_TRACE_1, BPF_TRACE_2, etc). Also, allow more natural function argument
-> syntax without commas inbetween argument type and name.
-> 
-> Given this helper is useful not only for tracing tp_btf/fenty/fexit programs,
-> but could be used for LSM programs and others following the same pattern,
-> rename BPF_TRACE macro into more generic BPF_PROG. Existing BPF_TRACE_x
-> usages in selftests are converted to new BPF_PROG macro.
-> 
-> Following the same pattern, define BPF_KPROBE and BPF_KRETPROBE macros for
-> nicer usage of kprobe/kretprobe arguments, respectively. BPF_KRETPROBE, adopts
-> same convention used by fexit programs, that last defined argument is probed
-> function's return result.
-...
->  SEC("kretprobe/__set_task_comm")
-> -int prog2(struct pt_regs *ctx)
-> +int BPF_KRETPROBE(prog2,
-> +		  struct task_struct *tsk, const char *buf, bool exec,
-> +		  int ret)
->  {
-> -	return 0;
-> +	return PT_REGS_PARM1(ctx) == 0 && ret != 0;
->  }
->  
->  SEC("raw_tp/task_rename")
->  int prog3(struct bpf_raw_tracepoint_args *ctx)
->  {
-> -	return 0;
-> +	return ctx->args[0] == 0;;
+From: Taehee Yoo <ap420073@gmail.com>
 
-I've corrected this typo
-and converted != 0 and == 0 to more traditional checks for null.
-And applied.
+[ Upstream commit 04b69426d846cd04ca9acefff1ea39e1c64d2714 ]
+
+hsr slave interfaces don't have debugfs directory.
+So, hsr_debugfs_rename() shouldn't be called when hsr slave interface name
+is changed.
+
+Test commands:
+    ip link add dummy0 type dummy
+    ip link add dummy1 type dummy
+    ip link add hsr0 type hsr slave1 dummy0 slave2 dummy1
+    ip link set dummy0 name ap
+
+Splat looks like:
+[21071.899367][T22666] ap: renamed from dummy0
+[21071.914005][T22666] ==================================================================
+[21071.919008][T22666] BUG: KASAN: slab-out-of-bounds in hsr_debugfs_rename+0xaa/0xb0 [hsr]
+[21071.923640][T22666] Read of size 8 at addr ffff88805febcd98 by task ip/22666
+[21071.926941][T22666]
+[21071.927750][T22666] CPU: 0 PID: 22666 Comm: ip Not tainted 5.5.0-rc2+ #240
+[21071.929919][T22666] Hardware name: innotek GmbH VirtualBox/VirtualBox, BIOS VirtualBox 12/01/2006
+[21071.935094][T22666] Call Trace:
+[21071.935867][T22666]  dump_stack+0x96/0xdb
+[21071.936687][T22666]  ? hsr_debugfs_rename+0xaa/0xb0 [hsr]
+[21071.937774][T22666]  print_address_description.constprop.5+0x1be/0x360
+[21071.939019][T22666]  ? hsr_debugfs_rename+0xaa/0xb0 [hsr]
+[21071.940081][T22666]  ? hsr_debugfs_rename+0xaa/0xb0 [hsr]
+[21071.940949][T22666]  __kasan_report+0x12a/0x16f
+[21071.941758][T22666]  ? hsr_debugfs_rename+0xaa/0xb0 [hsr]
+[21071.942674][T22666]  kasan_report+0xe/0x20
+[21071.943325][T22666]  hsr_debugfs_rename+0xaa/0xb0 [hsr]
+[21071.944187][T22666]  hsr_netdev_notify+0x1fe/0x9b0 [hsr]
+[21071.945052][T22666]  ? __module_text_address+0x13/0x140
+[21071.945897][T22666]  notifier_call_chain+0x90/0x160
+[21071.946743][T22666]  dev_change_name+0x419/0x840
+[21071.947496][T22666]  ? __read_once_size_nocheck.constprop.6+0x10/0x10
+[21071.948600][T22666]  ? netdev_adjacent_rename_links+0x280/0x280
+[21071.949577][T22666]  ? __read_once_size_nocheck.constprop.6+0x10/0x10
+[21071.950672][T22666]  ? lock_downgrade+0x6e0/0x6e0
+[21071.951345][T22666]  ? do_setlink+0x811/0x2ef0
+[21071.951991][T22666]  do_setlink+0x811/0x2ef0
+[21071.952613][T22666]  ? is_bpf_text_address+0x81/0xe0
+[ ... ]
+
+Reported-by: syzbot+9328206518f08318a5fd@syzkaller.appspotmail.com
+Fixes: 4c2d5e33dcd3 ("hsr: rename debugfs file when interface name is changed")
+Signed-off-by: Taehee Yoo <ap420073@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ net/hsr/hsr_main.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/net/hsr/hsr_main.c b/net/hsr/hsr_main.c
+index d2ee7125a7f1..9e389accbfc7 100644
+--- a/net/hsr/hsr_main.c
++++ b/net/hsr/hsr_main.c
+@@ -46,7 +46,8 @@ static int hsr_netdev_notify(struct notifier_block *nb, unsigned long event,
+ 		hsr_check_carrier_and_operstate(hsr);
+ 		break;
+ 	case NETDEV_CHANGENAME:
+-		hsr_debugfs_rename(dev);
++		if (is_hsr_master(dev))
++			hsr_debugfs_rename(dev);
+ 		break;
+ 	case NETDEV_CHANGEADDR:
+ 		if (port->type == HSR_PT_MASTER) {
+-- 
+2.20.1
+
