@@ -2,121 +2,181 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E9DE137128
-	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2020 16:27:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FDF013712D
+	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2020 16:28:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728152AbgAJP0j (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Jan 2020 10:26:39 -0500
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:24006 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728141AbgAJP0j (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 10 Jan 2020 10:26:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1578669997;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3vAXUBzgCVtjH+yaI1yeAUtLpb8LH57sAuY25T356fo=;
-        b=CNZGR5jb4Zk0MrqX8m+xT3pwAIaH21PiaVZctlwkKqTzNkCqbBNCTVUliSKm1QNbwiJh6+
-        ZzqOsVq8+FWmYf1juyyT3dkdvnPIADhjPCvX+Kfql2BYPTJ6wkIj5BVrB8fDyx3hNB73py
-        GW9UDGfiotQ8IVjHJvX6bb6FocQjahc=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-314-7NTi8WN9PDaGB4kOtBkpNA-1; Fri, 10 Jan 2020 10:26:36 -0500
-X-MC-Unique: 7NTi8WN9PDaGB4kOtBkpNA-1
-Received: by mail-wr1-f70.google.com with SMTP id f17so1057108wrt.19
-        for <bpf@vger.kernel.org>; Fri, 10 Jan 2020 07:26:36 -0800 (PST)
+        id S1728137AbgAJP2D (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Jan 2020 10:28:03 -0500
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:37437 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728152AbgAJP2D (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Jan 2020 10:28:03 -0500
+Received: by mail-wm1-f66.google.com with SMTP id f129so2401648wmf.2
+        for <bpf@vger.kernel.org>; Fri, 10 Jan 2020 07:28:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=aXkYk1wr3xOcC4kmVHKlnMGgZqSHONG6or7V3cMRBfw=;
+        b=F33T91L+0exJkm4W6ymnTYAWlH6C8rI++wYC55+vSK+32TVCw3utrIIHPL9gWWuR4z
+         Ooq0VqOPl3V1PZOQCVH3wmxk0C3bUiD8MhUezkehT3gFsnucpt/tuSILyO27GZyOpdZV
+         xb0Y2RP5w4A8Lh7Rvv8nzlGJNO4J12Pj6NZ+Y=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=3vAXUBzgCVtjH+yaI1yeAUtLpb8LH57sAuY25T356fo=;
-        b=HSIizPlLkQhLu2R2kA37OYEXF+DFSLc9tzHnCQZCfOLPSL5UiabquQjTSkvI2phFxQ
-         S46CHjGqMJN70DF0EDM6KPOY07m3+3Lyp/bsgSeqieuafRwU4KFp9M1R3mHnwFdLiNmD
-         1oN9kOVo5hRjSkrBL8BrzFdNFrT5GTma3aVT9lfl3EGCMWkYdLhsyyH3is+55wDDFn0d
-         Ai+lD2YIbgmoXVzZ4QWdd298g5/1FxNS0LkdXcKlkyLpWtCixSn77C/I7nWOqbWsysee
-         MkeKcbPr0J31ZV+Ne+N/cIfSFmC+eLcCv3ez31xuDrCQhszaIgYTDLgCK2NxHbv7AW2f
-         tllg==
-X-Gm-Message-State: APjAAAXRMXUigMuVc2E8G+NmUjgErg4GoFN9oPq5nQAdKhhehBCWYiGo
-        fzX/uAhIilmfBlNWfhzRJUAx/vgUAqT5/YinXxMOU7L/vs35jvnX5gpubnyQMFu2fPEhc0/eY0i
-        geVrCV9BZilnO
-X-Received: by 2002:a05:600c:2549:: with SMTP id e9mr5165911wma.6.1578669994785;
-        Fri, 10 Jan 2020 07:26:34 -0800 (PST)
-X-Google-Smtp-Source: APXvYqwCp80Y1ye3xZIZjQUNlok/NaqdULkmUuIboYWbtJ3IsHrtrf6OqdtizfN4G8oLhtMR62zp3A==
-X-Received: by 2002:a05:600c:2549:: with SMTP id e9mr5165885wma.6.1578669994592;
-        Fri, 10 Jan 2020 07:26:34 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id a1sm2487350wmj.40.2020.01.10.07.26.33
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=aXkYk1wr3xOcC4kmVHKlnMGgZqSHONG6or7V3cMRBfw=;
+        b=HE9AHFYJjtFH9fDICIcKfmNgUl3fmcu7jyYIiHu7pILHgDjYDwRoSEKZlCJEefyUvg
+         bIL7yIDlh1k4ZHpTaFNw5J5anP+XGeWkequ5uSjNjOx6rmklfVs9uEsUOWOOBcZOFpfa
+         8Qp8rGjJo3FR5vF+gKCY3MpOtifJO0qlgjGVfDC+HhXUAPKjALSxcwXEjKbhOt6bDeT3
+         cz/Hkbim+J+CoDdXgXvaOXs7YP2AKpYD6hRmd6VsL7N6Fie5Cs+npkgrrVPe2hD3cIA9
+         gsH1gGCjZJc4CiZjZ466tzus1n3hh0yEYFEj+tGtynUs8n2E+W2gDLn7n9HVJTJD1sZF
+         +qvw==
+X-Gm-Message-State: APjAAAUhZAM7zSfuO7JUBaFU80cR266AuhUfgXKwm25yi7w9umgFaBBa
+        ruaJcisObUd5UPf6zKf1KcK5Jw==
+X-Google-Smtp-Source: APXvYqw0ag02q22hPKuOzI3/vkzH86GFjij0AS1uLwSH4KQPjjBom3rLw/8TFnXp5EIU2M4mQ97Qxw==
+X-Received: by 2002:a1c:541b:: with SMTP id i27mr5205966wmb.137.1578670081018;
+        Fri, 10 Jan 2020 07:28:01 -0800 (PST)
+Received: from google.com ([2a00:79e0:42:204:8a21:ba0c:bb42:75ec])
+        by smtp.gmail.com with ESMTPSA id f1sm2560213wro.85.2020.01.10.07.27.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jan 2020 07:26:33 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 6E5C518009F; Fri, 10 Jan 2020 16:26:33 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Cc:     Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        Fri, 10 Jan 2020 07:28:00 -0800 (PST)
+From:   KP Singh <kpsingh@chromium.org>
+X-Google-Original-From: KP Singh <kpsingh>
+Date:   Fri, 10 Jan 2020 16:27:58 +0100
+To:     Stephen Smalley <sds@tycho.nsa.gov>
+Cc:     KP Singh <kpsingh@chromium.org>, James Morris <jmorris@namei.org>,
+        Kees Cook <keescook@chromium.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, linux-security-module@vger.kernel.org,
         Alexei Starovoitov <ast@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] xdp: Move devmap bulk queue into struct net_device
-In-Reply-To: <CAJ+HfNgkouU8=T2+Of1nAfwBQ-eqCKKAqrNzhhEafw5qW8bO_w@mail.gmail.com>
-References: <157866612174.432695.5077671447287539053.stgit@toke.dk> <157866612285.432695.6722430952732620313.stgit@toke.dk> <CAJ+HfNgkouU8=T2+Of1nAfwBQ-eqCKKAqrNzhhEafw5qW8bO_w@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 10 Jan 2020 16:26:33 +0100
-Message-ID: <87ftgnxrh2.fsf@toke.dk>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Thomas Garnier <thgarnie@chromium.org>,
+        Michael Halcrow <mhalcrow@google.com>,
+        Paul Turner <pjt@google.com>,
+        Brendan Gregg <brendan.d.gregg@gmail.com>,
+        Jann Horn <jannh@google.com>,
+        Matthew Garrett <mjg59@google.com>,
+        Christian Brauner <christian@brauner.io>,
+        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Quentin Monnet <quentin.monnet@netronome.com>,
+        Andrey Ignatov <rdna@fb.com>, Joe Stringer <joe@wand.net.nz>,
+        Paul Moore <paul@paul-moore.com>
+Subject: Re: [PATCH bpf-next v1 00/13] MAC and Audit policy using eBPF (KRSI)
+Message-ID: <20200110152758.GA260168@google.com>
+References: <CACYkzJ5nYh7eGuru4vQ=2ZWumGPszBRbgqxmhd4WQRXktAUKkQ@mail.gmail.com>
+ <201912301112.A1A63A4@keescook>
+ <c4e6cdf2-1233-fc82-ca01-ba84d218f5aa@tycho.nsa.gov>
+ <alpine.LRH.2.21.2001090551000.27794@namei.org>
+ <e59607cc-1a84-cbdd-5117-7efec86b11ff@tycho.nsa.gov>
+ <alpine.LRH.2.21.2001100437550.21515@namei.org>
+ <e90e03e3-b92f-6e1a-132f-1b648d9d2139@tycho.nsa.gov>
+ <alpine.LRH.2.21.2001100558550.31925@namei.org>
+ <20200109194302.GA85350@google.com>
+ <8e035f4d-5120-de6a-7ac8-a35841a92b8a@tycho.nsa.gov>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8e035f4d-5120-de6a-7ac8-a35841a92b8a@tycho.nsa.gov>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> writes:
+On 09-Jan 14:47, Stephen Smalley wrote:
+> On 1/9/20 2:43 PM, KP Singh wrote:
+> > On 10-Jan 06:07, James Morris wrote:
+> > > On Thu, 9 Jan 2020, Stephen Smalley wrote:
+> > > 
+> > > > On 1/9/20 1:11 PM, James Morris wrote:
+> > > > > On Wed, 8 Jan 2020, Stephen Smalley wrote:
+> > > > > 
+> > > > > > The cover letter subject line and the Kconfig help text refer to it as a
+> > > > > > BPF-based "MAC and Audit policy".  It has an enforce config option that
+> > > > > > enables the bpf programs to deny access, providing access control. IIRC,
+> > > > > > in
+> > > > > > the earlier discussion threads, the BPF maintainers suggested that Smack
+> > > > > > and
+> > > > > > other LSMs could be entirely re-implemented via it in the future, and that
+> > > > > > such an implementation would be more optimal.
+> > > > > 
+> > > > > In this case, the eBPF code is similar to a kernel module, rather than a
+> > > > > loadable policy file.  It's a loadable mechanism, rather than a policy, in
+> > > > > my view.
+> > > > 
+> > > > I thought you frowned on dynamically loadable LSMs for both security and
+> > > > correctness reasons?
+> > 
+> > Based on the feedback from the lists we've updated the design for v2.
+> > 
+> > In v2, LSM hook callbacks are allocated dynamically using BPF
+> > trampolines, appended to a separate security_hook_heads and run
+> > only after the statically allocated hooks.
+> > 
+> > The security_hook_heads for all the other LSMs (SELinux, AppArmor etc)
+> > still remains __lsm_ro_after_init and cannot be modified. We are still
+> > working on v2 (not ready for review yet) but the general idea can be
+> > seen here:
+> > 
+> >    https://github.com/sinkap/linux-krsi/blob/patch/v1/trampoline_prototype/security/bpf/lsm.c
+> > 
+> > > 
+> > > Evaluating the security impact of this is the next step. My understanding
+> > > is that eBPF via BTF is constrained to read only access to hook
+> > > parameters, and that its behavior would be entirely restrictive.
+> > > 
+> > > I'd like to understand the security impact more fully, though.  Can the
+> > > eBPF code make arbitrary writes to the kernel, or read anything other than
+> > > the correctly bounded LSM hook parameters?
+> > > 
+> > 
+> > As mentioned, the BPF verifier does not allow writes to BTF types.
+> > 
+> > > > And a traditional security module would necessarily fall
+> > > > under GPL; is the eBPF code required to be likewise?  If not, KRSI is a
+> > > > gateway for proprietary LSMs...
+> > > 
+> > > Right, we do not want this to be a GPL bypass.
+> > 
+> > This is not intended to be a GPL bypass and the BPF verifier checks
+> > for license compatibility of the loaded program with GPL.
+> 
+> IIUC, it checks that the program is GPL compatible if it uses a function
+> marked GPL-only.  But what specifically is marked GPL-only that is required
+> for eBPF programs using KRSI?
 
-> On Fri, 10 Jan 2020 at 15:22, Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
-at.com> wrote:
->>
->> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->>
->> Commit 96360004b862 ("xdp: Make devmap flush_list common for all map
->> instances"), changed devmap flushing to be a global operation instead of=
- a
->> per-map operation. However, the queue structure used for bulking was sti=
-ll
->> allocated as part of the containing map.
->>
->> This patch moves the devmap bulk queue into struct net_device. The
->> motivation for this is reusing it for the non-map variant of XDP_REDIREC=
-T,
->> which will be changed in a subsequent commit.
->>
->> We defer the actual allocation of the bulk queue structure until the
->> NETDEV_REGISTER notification devmap.c. This makes it possible to check f=
-or
->> ndo_xdp_xmit support before allocating the structure, which is not possi=
-ble
->> at the time struct net_device is allocated. However, we keep the freeing=
- in
->> free_netdev() to avoid adding another RCU callback on NETDEV_UNREGISTER.
->>
->> Because of this change, we lose the reference back to the map that
->> originated the redirect, so change the tracepoint to always return 0 as =
-the
->> map ID and index. Otherwise no functional change is intended with this
->> patch.
->>
->
-> Nice work, Toke!
+Good point! If no-one objects, I can add it to the BPF_PROG_TYPE_LSM
+specific verification for the v2 of the patch-set which would require
+all BPF-LSM programs to be GPL.
 
-Thanks!
+- KP
 
-> I'm getting some checkpatch warnings (>80 char lines), other than
-> that:
-
-Oh, right, totally forgot to run checkpatch; will fix and respin :)
-
--Toke
-
+> 
+> > 
+> > - KP
+> > 
+> > > 
+> > > If these issues can be resolved, this may be a "safe" way to support
+> > > loadable LSM applications.
+> > > 
+> > > Again, I'd be interested in knowing how this is is handled in the
+> > > networking stack (keeping in mind that LSM is a much more invasive API,
+> > > and may not be directly comparable).
+> > > 
+> > > -- 
+> > > James Morris
+> > > <jmorris@namei.org>
+> > > 
+> 
