@@ -2,148 +2,266 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AC23137587
-	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2020 18:56:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 090511375F2
+	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2020 19:19:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728728AbgAJRz6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Jan 2020 12:55:58 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:22794 "EHLO
+        id S1726789AbgAJST3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Jan 2020 13:19:29 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:32052 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728616AbgAJRz5 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 10 Jan 2020 12:55:57 -0500
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 00AHqVmD021583;
-        Fri, 10 Jan 2020 09:55:45 -0800
+        by vger.kernel.org with ESMTP id S1726346AbgAJST3 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 10 Jan 2020 13:19:29 -0500
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 00AIAP3s018506
+        for <bpf@vger.kernel.org>; Fri, 10 Jan 2020 10:19:27 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=vf2ZGddOq2mWOez5j3NmAhttRNAAlLkbvn+ZhfWe0o8=;
- b=Xr9YNrla4uc9waqkzvGd2U5URrK/Tm6ti6JRNtmVsNwXefP9Lv7vEKsRpDnRk0ePJM4v
- WFbz2jqWrQh2256C96oFbq4Z8ng9f3Uoh2++KIihEHT/Dv5S+WF3cLVSnRdHpt3bzw5x
- Kmpsa+En2m94vbTTkrwFJG3GoIZMBqhc23w= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 2xev8f8r6x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 10 Jan 2020 09:55:45 -0800
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.230) with Microsoft SMTP Server
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=FNaAQjUrfcPszeDXTnf2J0FJpty/Rq0SaU+zTFujQiU=;
+ b=KIz2jMvAi8vl7OpKXkVLrBFu7RQ6D91TqczjrYupKdhL5JJM5uMsxmbPZYyA4QpQf6lI
+ yXsYLmvZYfYmKWO16bCJ44vOQRo6843CrLr0iEwF6oDrp7tUHzn5CwKc9FkPnIMOP5fn
+ DUZANDTgTzvz/dRyNelZ0e9wYUgfYxQk9ws= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2xehgum7fk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 10 Jan 2020 10:19:27 -0800
+Received: from intmgw001.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Fri, 10 Jan 2020 09:55:44 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PeI/q6k5NkoeRzE0rFjjmFFGi5DsI7xHLKRFMfToUGList0DdAobvyv5uUdTCIP/A59WcA93ht+tIpmwKRCMdATdLJ6rXhxDnl1XDmjvNNHoc511wOG3xWNjyxGf4hTRbuwSqde7yfjdK6nM41xUw1LKx9GVnaZGjzVPI2LOp6WlJVIbxScFE++XayFV0QbcqCaqClplrKjY12mAfL6w2z43NUgGKEAR2eumH82AvtVp329XMc560ka+dp8u64/OjA6NCfNDu0ifS8AZapGZM+2z36XplMFHHODYfBNeHvwzlhM4l9xapumWKz+qyVLgTb1n/swUCO1fZx0NgZmClw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vf2ZGddOq2mWOez5j3NmAhttRNAAlLkbvn+ZhfWe0o8=;
- b=aVcsk7NVP87V/R+xPeLDMh+Izo1CctlZNTK81fJmSw5PRnoOR8ayEI4YHZyVbqeJWWuzboAcBUx78ywZm9sooyxnbDkVmnwLmUs2I2RFinKbRM0F010Xx6bSr+xPi9ZKAI7IBRXwVGFyR8hbdUz3rteILLURBFYF5xnNG6SSa+PmMH15GjtyObYpE5bVkgcnCd6CJ21eLm4/E3J/+KlKKdbrctaGMWqxY7HmOD3dsp36LKXZviRx2bmvOmHPFV/ZKLqXQnrEZC5Qnlf1vPnGNRkQjr1XfwL0rF/KbDTJ+1GpcSVire/1sPFKF0hECpVqG9qjJYyJaOJrNg8A1zI8xQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vf2ZGddOq2mWOez5j3NmAhttRNAAlLkbvn+ZhfWe0o8=;
- b=kJIFpBF+O2mOjZ/hP2SZWTrWwD+fqtqEAvknRSEMCScTaDfL+apN73vDLAm8+s3dgOKT3qbOlH6LldWQaaz+6AARrIjhtEvGXp1Xj0knXMU2FY8qaBg/Tbc+rJ81V9YKSrd4MFhxiS2Kw0IyOx7ckA2F6ONxiSqbc6TzT1SU8GY=
-Received: from MN2PR15MB3213.namprd15.prod.outlook.com (20.179.21.76) by
- MN2PR15MB3583.namprd15.prod.outlook.com (52.132.173.30) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2623.9; Fri, 10 Jan 2020 17:55:43 +0000
-Received: from MN2PR15MB3213.namprd15.prod.outlook.com
- ([fe80::6d1e:f2f7:d36:a42f]) by MN2PR15MB3213.namprd15.prod.outlook.com
- ([fe80::6d1e:f2f7:d36:a42f%4]) with mapi id 15.20.2623.011; Fri, 10 Jan 2020
- 17:55:43 +0000
-Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:200::3:1c91) by MWHPR11CA0039.namprd11.prod.outlook.com (2603:10b6:300:115::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2623.10 via Frontend Transport; Fri, 10 Jan 2020 17:55:42 +0000
-From:   Martin Lau <kafai@fb.com>
-To:     Andrii Nakryiko <andriin@fb.com>
-CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "andrii.nakryiko@gmail.com" <andrii.nakryiko@gmail.com>,
-        Kernel Team <Kernel-team@fb.com>
-Subject: Re: [Potential Spoof] [PATCH v3 bpf-next] selftests/bpf: add
- BPF_HANDLER, BPF_KPROBE, and BPF_KRETPROBE macros
-Thread-Topic: [Potential Spoof] [PATCH v3 bpf-next] selftests/bpf: add
- BPF_HANDLER, BPF_KPROBE, and BPF_KRETPROBE macros
-Thread-Index: AQHVx92OlyP5WyGy/UGdk3xN4u2gDKfkLpqA
-Date:   Fri, 10 Jan 2020 17:55:43 +0000
-Message-ID: <20200110175539.7gqu3itjb5cs6kvg@kafai-mbp.dhcp.thefacebook.com>
-References: <20200110174350.101403-1-andriin@fb.com>
-In-Reply-To: <20200110174350.101403-1-andriin@fb.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MWHPR11CA0039.namprd11.prod.outlook.com
- (2603:10b6:300:115::25) To MN2PR15MB3213.namprd15.prod.outlook.com
- (2603:10b6:208:3d::12)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:200::3:1c91]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: e7065aa7-499e-4555-f2fa-08d795f64ffc
-x-ms-traffictypediagnostic: MN2PR15MB3583:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MN2PR15MB3583AD0FB346E5643C97156FD5380@MN2PR15MB3583.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-forefront-prvs: 02788FF38E
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(39860400002)(396003)(376002)(346002)(366004)(136003)(189003)(199004)(55016002)(6862004)(4326008)(9686003)(6636002)(2906002)(81156014)(5660300002)(54906003)(1076003)(316002)(7696005)(8676002)(86362001)(52116002)(6506007)(8936002)(66556008)(66446008)(66946007)(66476007)(64756008)(186003)(16526019)(478600001)(71200400001)(81166006);DIR:OUT;SFP:1102;SCL:1;SRVR:MN2PR15MB3583;H:MN2PR15MB3213.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: cv7DGO7NRiBD9gs4nZQATG3SR3DP7k5wBHlnbiEUWcVmpxoimhoR99mCuOtrH7KP1tb5fdD9/Dko7Ftf7DySqtGKpxMT84OBc9JXhsIyNo1KNEbi1lXcZ+1iOnnts5inps+O0VphtD/dfYQW8A624XR1UDzXJlWw1SD0IMDKmmtUXPkwwmGxqDbG+Nr/w0DbkvyxafFNpocoKVglCN8MOCmxfr6jB7k1D+BGrPvByBKUW68b0t/YwhKYIkXqjlXbtixQjq0U2M37Im5lzYuqx/J4zwRUIHQjfAS2n8pqebDiPY9vAosDhskSO2peIcpFW0aEwn9Lh93yXpDFqsQnuZdy07OcIcyLbDjTUUCiDjXk2T/zH2LSBtYrvqLjFPMCaq77t8McogUabN1pv3d0TQUSgKd8RwUda4o6YGUnhfBEL0i8L5sGsjKumC4ibJa5
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <89A4B3A9B886884A97056C801367556C@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+ 15.1.1713.5; Fri, 10 Jan 2020 10:19:26 -0800
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 0C2512EC15C2; Fri, 10 Jan 2020 10:19:22 -0800 (PST)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>, <kafai@fb.com>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next] libbpf: poison kernel-only integer types
+Date:   Fri, 10 Jan 2020 10:19:16 -0800
+Message-ID: <20200110181916.271446-1-andriin@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: e7065aa7-499e-4555-f2fa-08d795f64ffc
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Jan 2020 17:55:43.4394
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ULfY4hnVpvMdyp8Mag04DErSlqsNQL9O9hXpG/JhY09e4oEYx3V8P2lPUCPoAc5h
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB3583
-X-OriginatorOrg: fb.com
+Content-Type: text/plain
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
  definitions=2020-01-10_01:2020-01-10,2020-01-09 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=871
- spamscore=0 impostorscore=0 suspectscore=0 bulkscore=0 lowpriorityscore=0
- mlxscore=0 adultscore=0 clxscore=1015 malwarescore=0 phishscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1910280000 definitions=main-2001100144
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ suspectscore=8 bulkscore=0 malwarescore=0 clxscore=1015 phishscore=0
+ priorityscore=1501 adultscore=0 mlxlogscore=999 mlxscore=0 spamscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-2001100148
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jan 10, 2020 at 09:43:50AM -0800, Andrii Nakryiko wrote:
-> Streamline BPF_TRACE_x macro by moving out return type and section attrib=
-ute
-> definition out of macro itself. That makes those function look in source =
-code
-> similar to other BPF programs. Additionally, simplify its usage by determ=
-ining
-> number of arguments automatically (so just single BPF_TRACE vs a family o=
-f
-> BPF_TRACE_1, BPF_TRACE_2, etc). Also, allow more natural function argumen=
-t
-> syntax without commas inbetween argument type and name.
->=20
-> Given this helper is useful not only for tracing tp_btf/fenty/fexit progr=
-ams,
-> but could be used for LSM programs and others following the same pattern,
-> rename BPF_TRACE macro into more generic BPF_HANDLER. Existing BPF_TRACE_=
-x
-> usages in selftests are converted to new BPF_HANDLER macro.
->=20
-> Following the same pattern, define BPF_KPROBE and BPF_KRETPROBE macros fo=
-r
-> nicer usage of kprobe/kretprobe arguments, respectively. BPF_KRETPROBE, a=
-dopts
-> same convention used by fexit programs, that last defined argument is pro=
-bed
-> function's return result.
-Acked-by: Martin KaFai Lau <kafai@fb.com>
+It's been a recurring issue with types like u32 slipping into libbpf source
+code accidentally. This is not detected during builds inside kernel source
+tree, but becomes a compilation error in libbpf's Github repo. Libbpf is
+supposed to use only __{s,u}{8,16,32,64} typedefs, so poison {s,u}{8,16,32,64}
+explicitly in every .c file. Doing that in a bit more centralized way, e.g.,
+inside libbpf_internal.h breaks selftests, which are both using kernel u32 and
+libbpf_internal.h.
+
+This patch also fixes a new u32 occurence in libbpf.c, added recently.
+
+Fixes: 590a00888250 ("bpf: libbpf: Add STRUCT_OPS support")
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+---
+ tools/lib/bpf/bpf.c            | 3 +++
+ tools/lib/bpf/bpf_prog_linfo.c | 3 +++
+ tools/lib/bpf/btf.c            | 3 +++
+ tools/lib/bpf/btf_dump.c       | 3 +++
+ tools/lib/bpf/hashmap.c        | 3 +++
+ tools/lib/bpf/libbpf.c         | 5 ++++-
+ tools/lib/bpf/libbpf_errno.c   | 3 +++
+ tools/lib/bpf/libbpf_probes.c  | 3 +++
+ tools/lib/bpf/netlink.c        | 3 +++
+ tools/lib/bpf/nlattr.c         | 3 +++
+ tools/lib/bpf/str_error.c      | 3 +++
+ tools/lib/bpf/xsk.c            | 3 +++
+ 12 files changed, 37 insertions(+), 1 deletion(-)
+
+diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+index b0ecbe9ef2d4..500afe478e94 100644
+--- a/tools/lib/bpf/bpf.c
++++ b/tools/lib/bpf/bpf.c
+@@ -32,6 +32,9 @@
+ #include "libbpf.h"
+ #include "libbpf_internal.h"
+ 
++/* make sure libbpf doesn't use kernel-only integer typedefs */
++#pragma GCC poison u8 u16 u32 u64 s8 s16 s32 s64
++
+ /*
+  * When building perf, unistd.h is overridden. __NR_bpf is
+  * required to be defined explicitly.
+diff --git a/tools/lib/bpf/bpf_prog_linfo.c b/tools/lib/bpf/bpf_prog_linfo.c
+index 3ed1a27b5f7c..bafca49cb1e6 100644
+--- a/tools/lib/bpf/bpf_prog_linfo.c
++++ b/tools/lib/bpf/bpf_prog_linfo.c
+@@ -8,6 +8,9 @@
+ #include "libbpf.h"
+ #include "libbpf_internal.h"
+ 
++/* make sure libbpf doesn't use kernel-only integer typedefs */
++#pragma GCC poison u8 u16 u32 u64 s8 s16 s32 s64
++
+ struct bpf_prog_linfo {
+ 	void *raw_linfo;
+ 	void *raw_jited_linfo;
+diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+index 5f04f56e1eb6..cfeb6a44480b 100644
+--- a/tools/lib/bpf/btf.c
++++ b/tools/lib/bpf/btf.c
+@@ -17,6 +17,9 @@
+ #include "libbpf_internal.h"
+ #include "hashmap.h"
+ 
++/* make sure libbpf doesn't use kernel-only integer typedefs */
++#pragma GCC poison u8 u16 u32 u64 s8 s16 s32 s64
++
+ #define BTF_MAX_NR_TYPES 0x7fffffff
+ #define BTF_MAX_STR_OFFSET 0x7fffffff
+ 
+diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
+index e95f7710f210..885acebd4396 100644
+--- a/tools/lib/bpf/btf_dump.c
++++ b/tools/lib/bpf/btf_dump.c
+@@ -18,6 +18,9 @@
+ #include "libbpf.h"
+ #include "libbpf_internal.h"
+ 
++/* make sure libbpf doesn't use kernel-only integer typedefs */
++#pragma GCC poison u8 u16 u32 u64 s8 s16 s32 s64
++
+ static const char PREFIXES[] = "\t\t\t\t\t\t\t\t\t\t\t\t\t";
+ static const size_t PREFIX_CNT = sizeof(PREFIXES) - 1;
+ 
+diff --git a/tools/lib/bpf/hashmap.c b/tools/lib/bpf/hashmap.c
+index 6122272943e6..54c30c802070 100644
+--- a/tools/lib/bpf/hashmap.c
++++ b/tools/lib/bpf/hashmap.c
+@@ -12,6 +12,9 @@
+ #include <linux/err.h>
+ #include "hashmap.h"
+ 
++/* make sure libbpf doesn't use kernel-only integer typedefs */
++#pragma GCC poison u8 u16 u32 u64 s8 s16 s32 s64
++
+ /* start with 4 buckets */
+ #define HASHMAP_MIN_CAP_BITS 2
+ 
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 3afd780b0f06..0c229f00a67e 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -55,6 +55,9 @@
+ #include "libbpf_internal.h"
+ #include "hashmap.h"
+ 
++/* make sure libbpf doesn't use kernel-only integer typedefs */
++#pragma GCC poison u8 u16 u32 u64 s8 s16 s32 s64
++
+ #ifndef EM_BPF
+ #define EM_BPF 247
+ #endif
+@@ -6475,7 +6478,7 @@ static int bpf_object__collect_struct_ops_map_reloc(struct bpf_object *obj,
+ 	Elf_Data *symbols;
+ 	unsigned int moff;
+ 	const char *name;
+-	u32 member_idx;
++	__u32 member_idx;
+ 	GElf_Sym sym;
+ 	GElf_Rel rel;
+ 	int i, nrels;
+diff --git a/tools/lib/bpf/libbpf_errno.c b/tools/lib/bpf/libbpf_errno.c
+index 4343e40588c6..0afb51f7a919 100644
+--- a/tools/lib/bpf/libbpf_errno.c
++++ b/tools/lib/bpf/libbpf_errno.c
+@@ -13,6 +13,9 @@
+ 
+ #include "libbpf.h"
+ 
++/* make sure libbpf doesn't use kernel-only integer typedefs */
++#pragma GCC poison u8 u16 u32 u64 s8 s16 s32 s64
++
+ #define ERRNO_OFFSET(e)		((e) - __LIBBPF_ERRNO__START)
+ #define ERRCODE_OFFSET(c)	ERRNO_OFFSET(LIBBPF_ERRNO__##c)
+ #define NR_ERRNO	(__LIBBPF_ERRNO__END - __LIBBPF_ERRNO__START)
+diff --git a/tools/lib/bpf/libbpf_probes.c b/tools/lib/bpf/libbpf_probes.c
+index 320697f8e4c7..8cc992bc532a 100644
+--- a/tools/lib/bpf/libbpf_probes.c
++++ b/tools/lib/bpf/libbpf_probes.c
+@@ -17,6 +17,9 @@
+ #include "libbpf.h"
+ #include "libbpf_internal.h"
+ 
++/* make sure libbpf doesn't use kernel-only integer typedefs */
++#pragma GCC poison u8 u16 u32 u64 s8 s16 s32 s64
++
+ static bool grep(const char *buffer, const char *pattern)
+ {
+ 	return !!strstr(buffer, pattern);
+diff --git a/tools/lib/bpf/netlink.c b/tools/lib/bpf/netlink.c
+index 5065c1aa1061..431bd25c6cdb 100644
+--- a/tools/lib/bpf/netlink.c
++++ b/tools/lib/bpf/netlink.c
+@@ -15,6 +15,9 @@
+ #include "libbpf_internal.h"
+ #include "nlattr.h"
+ 
++/* make sure libbpf doesn't use kernel-only integer typedefs */
++#pragma GCC poison u8 u16 u32 u64 s8 s16 s32 s64
++
+ #ifndef SOL_NETLINK
+ #define SOL_NETLINK 270
+ #endif
+diff --git a/tools/lib/bpf/nlattr.c b/tools/lib/bpf/nlattr.c
+index 8db44bbfc66d..0ad41dfea8eb 100644
+--- a/tools/lib/bpf/nlattr.c
++++ b/tools/lib/bpf/nlattr.c
+@@ -13,6 +13,9 @@
+ #include <string.h>
+ #include <stdio.h>
+ 
++/* make sure libbpf doesn't use kernel-only integer typedefs */
++#pragma GCC poison u8 u16 u32 u64 s8 s16 s32 s64
++
+ static uint16_t nla_attr_minlen[LIBBPF_NLA_TYPE_MAX+1] = {
+ 	[LIBBPF_NLA_U8]		= sizeof(uint8_t),
+ 	[LIBBPF_NLA_U16]	= sizeof(uint16_t),
+diff --git a/tools/lib/bpf/str_error.c b/tools/lib/bpf/str_error.c
+index b8064eedc177..146da01979c7 100644
+--- a/tools/lib/bpf/str_error.c
++++ b/tools/lib/bpf/str_error.c
+@@ -4,6 +4,9 @@
+ #include <stdio.h>
+ #include "str_error.h"
+ 
++/* make sure libbpf doesn't use kernel-only integer typedefs */
++#pragma GCC poison u8 u16 u32 u64 s8 s16 s32 s64
++
+ /*
+  * Wrapper to allow for building in non-GNU systems such as Alpine Linux's musl
+  * libc, while checking strerror_r() return to avoid having to check this in
+diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
+index 8e0ffa800a71..9807903f121e 100644
+--- a/tools/lib/bpf/xsk.c
++++ b/tools/lib/bpf/xsk.c
+@@ -32,6 +32,9 @@
+ #include "libbpf_internal.h"
+ #include "xsk.h"
+ 
++/* make sure libbpf doesn't use kernel-only integer typedefs */
++#pragma GCC poison u8 u16 u32 u64 s8 s16 s32 s64
++
+ #ifndef SOL_XDP
+  #define SOL_XDP 283
+ #endif
+-- 
+2.17.1
+
