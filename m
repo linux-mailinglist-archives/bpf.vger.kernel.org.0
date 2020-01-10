@@ -2,87 +2,196 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1087C137655
-	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2020 19:46:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1F0B137822
+	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2020 21:53:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726767AbgAJSqH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 10 Jan 2020 13:46:07 -0500
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:34375 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728023AbgAJSqH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 10 Jan 2020 13:46:07 -0500
-Received: by mail-lj1-f193.google.com with SMTP id z22so3183060ljg.1;
-        Fri, 10 Jan 2020 10:46:05 -0800 (PST)
+        id S1726788AbgAJUxe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 10 Jan 2020 15:53:34 -0500
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:35227 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726779AbgAJUxd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 10 Jan 2020 15:53:33 -0500
+Received: by mail-qk1-f196.google.com with SMTP id z76so3246332qka.2;
+        Fri, 10 Jan 2020 12:53:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=pd/iAF0AV9/4gg2SZG7bs3ivDHHCsN5CHjs199AFcsc=;
-        b=L5of4Laa/yIOI7ON4xWOoR67Jtq0IvWH1ljWi4h5TxifsJdHyPR6wEGhfzYF4jwgqL
-         ogam1Q0EGbfUfIyjsUNLVgvUXQLyYgkUFcGXwKeOthN4bitP0jevT1QX8e1kPFVYcN/n
-         w9zVfp6CIsS06S/UndGMBxG08kIn/dAs22bk/HJXomi2lvrxZ79v872BwVE78BeDyIFv
-         FF81HWoDUk2X0ERYojuAsFSlxQe7EVjxXWkj5T3/+1Jg2akmT3uJ82cuJzOGG/AG9FBV
-         dXV7V5Wg5zZt27x9p63KE/ZHaBVwQvkWTYPyZrh4w41mBLcnvNP4dplx0nblypUp3IzG
-         LPPA==
+        bh=p0OVjw7QitRm9+hih1vwOpgccxzVYk1W5EJHuP7Vu9I=;
+        b=QzGUzUb0cXrcrUMHjWHU3YYO0wbjeAdhYBLZgtaIE2pdmHZXiXkzVyPX0mkVVr09qz
+         Ihw/cpyGVbk6gmX9yZTbGpijJyimlGQY2C8SVlnYJA4gwwE5xn7hgjbH2HvUtIpio9tK
+         ugrPqlnE3ycAhNSUKNZcT9423gyRsJF/pS5GcmK7tNRgQnyaa/9uoL+OgBcSUBMU4rfK
+         ybFYq2pHXBS65uvyd/L5P5Lle0WWfOJeaRebdnKYfeK+0jl9xQiwWQabsxtmkHU8aNao
+         yvTM7W+V3GkgXNu1jAcFzk4N3YoiD++xJcGUHjllvQDfGfFSR1EBcD0b1CAzbIvUS+du
+         C/2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=pd/iAF0AV9/4gg2SZG7bs3ivDHHCsN5CHjs199AFcsc=;
-        b=XqqvVu+jZ0VNawfcCCRRNVrMFKIKBoPdyK0ZdxS7TvFOKbSpRpmoCrJkLk+izDcxnJ
-         010O+YcvHnMk5iZqwaAK3r+wF+zKQv01l/QilhgkL5cOdezOc9jeDu6IgBkczV3Pn67y
-         uLNY3f8OzGB8uPoTeYjfCzar2ioP48yG/3xTzbDUsYqyqngO0CPjj0WAMbCDG+fDHZ+P
-         4rBT/LV52N4R/pgBATB5f5L3Wm4d23l5MY4yIlZ9XqH1uUo5RaY7sKjom2a6Y2Oe6MvC
-         djMApVB/TuT9owZR6x/i1VVkrU9223sf90mGVQ55nzuGIHtteNhjOptuObuQHGbaVVgJ
-         gJCg==
-X-Gm-Message-State: APjAAAUqyYn8lfOK96NDTgXKXAJM8s5h2WZSgJvZG6ONag2OP5i7rcxM
-        YcvaYGg3wCoHnFt/xkbCMYSvsWmuvzJpj/JjCww=
-X-Google-Smtp-Source: APXvYqxQKkHJH+BvtDAWm2UalBtTeK1JvursvyMIzoD61WSEnmFlGgSKwKs+6pxBN1DP55ZP9fXTFg0xoUNR67LdepE=
-X-Received: by 2002:a05:651c:8f:: with SMTP id 15mr3541230ljq.109.1578681964526;
- Fri, 10 Jan 2020 10:46:04 -0800 (PST)
+        bh=p0OVjw7QitRm9+hih1vwOpgccxzVYk1W5EJHuP7Vu9I=;
+        b=LlUGGWv4AmLU9P8TQeHJ2bYkA8B32ftOEkaMhXJH7BEjdEJWa9KepKTXVN2ihOTB2p
+         e74/IAVNl/StQGIHXut52BnWVd0w1vgTFRWFUmXh2A68X92H16/soHWdOgdTbeHFz9ZU
+         U0Rsm4r8cDxEKiirj9FjIAfAZadFZMrgulyNDdw+sNwk7mnIczn333KFuFEAi3akDOOD
+         LS0rkWCfG52h3M+sw/hnljv7rVM7KYh5Cy4eXwzTfDO2NpP6LhT/TJvnhaAqe5hBHBYv
+         GpM5btC4sgWPsnIlQg+ZKuO3EUDoDk9GyuZFTvAeDVqk3sKN+cI8FJyPKzC2U43YXwvQ
+         WVkg==
+X-Gm-Message-State: APjAAAXd/HBWmM5hkpghAVYjOjVnzuR/sTF+EfcBz5wvcARO9RwPleWQ
+        tR8Xzl+DHCzQUxqRlCqUSfYGrtpGgaxR4bBlhnY=
+X-Google-Smtp-Source: APXvYqzD6BQ06xQ1HzXtzXT+wQBYO1pgmZR3IS9/4XS4bHbn20N2Bxm99uaWJQv1gfiz40GqLbuq3x+rdyUXILv6NAA=
+X-Received: by 2002:a05:620a:5ae:: with SMTP id q14mr497400qkq.437.1578689612612;
+ Fri, 10 Jan 2020 12:53:32 -0800 (PST)
 MIME-Version: 1.0
-References: <20200109115749.12283-1-lmb@cloudflare.com> <20200110132336.26099-1-lmb@cloudflare.com>
- <20200110164328.aosamgjk5hfw7r7d@kafai-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20200110164328.aosamgjk5hfw7r7d@kafai-mbp.dhcp.thefacebook.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 10 Jan 2020 10:45:53 -0800
-Message-ID: <CAADnVQ+QhS-qCNQt7Gs2tQo=mxj7cKOk-zwzdTyBLHwy6u7aiw@mail.gmail.com>
-Subject: Re: [PATCH bpf v2] net: bpf: don't leak time wait and request sockets
-To:     Martin Lau <kafai@fb.com>
-Cc:     Lorenz Bauer <lmb@cloudflare.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+References: <20191229225103.311569-1-eric@sage.org>
+In-Reply-To: <20191229225103.311569-1-eric@sage.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 10 Jan 2020 12:53:21 -0800
+Message-ID: <CAEf4BzbGvmy97q4RMyBSdK0zAyyCfkZaz5-ZZbTb18DX0vCcGQ@mail.gmail.com>
+Subject: Re: [PATCH] samples/bpf: Add xdp_stat sample program
+To:     Eric Sage <eric@sage.org>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Martin Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        john fastabend <john.fastabend@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
-        Joe Stringer <joe@isovalent.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kernel-team@cloudflare.com" <kernel-team@cloudflare.com>
+        Networking <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jan 10, 2020 at 8:43 AM Martin Lau <kafai@fb.com> wrote:
+On Sun, Dec 29, 2019 at 2:51 PM Eric Sage <eric@sage.org> wrote:
 >
-> On Fri, Jan 10, 2020 at 01:23:36PM +0000, Lorenz Bauer wrote:
-> > It's possible to leak time wait and request sockets via the following
-> > BPF pseudo code:
-> >
-> >   sk = bpf_skc_lookup_tcp(...)
-> >   if (sk)
-> >     bpf_sk_release(sk)
-> >
-> > If sk->sk_state is TCP_NEW_SYN_RECV or TCP_TIME_WAIT the refcount taken
-> > by bpf_skc_lookup_tcp is not undone by bpf_sk_release. This is because
-> > sk_flags is re-used for other data in both kinds of sockets. The check
-> >
-> >   !sock_flag(sk, SOCK_RCU_FREE)
-> >
-> > therefore returns a bogus result. Check that sk_flags is valid by calling
-> > sk_fullsock. Skip checking SOCK_RCU_FREE if we already know that sk is
-> > not a full socket.
-> Acked-by: Martin KaFai Lau <kafai@fb.com>
+> At Facebook we use tail calls to jump between our firewall filters and
+> our L4LB. This is a program I wrote to estimate per program performance
+> by swapping out the entries in the program array with interceptors that
+> take measurements and then jump to the original entries.
+>
+> I found the sample programs to be invaluable in understanding how to use
+> the libbpf API (as well as the test env from the xdp-tutorial repo for
+> testing), and want to return the favor. I am currently working on
+> my next iteration that uses fentry/fexit to be less invasive,
+> but I thought it was an interesting PoC of what you can do with program
+> arrays.
+>
+> Signed-off-by: Eric Sage <eric@sage.org>
+> ---
 
-Applied. Thanks
+Hey Eric,
+
+Thanks for contributing this to samples. Ideally this would use BPF
+skeleton to simplify all the map and program look ups, but given
+samples/bpf doesn't have a infrastructure set up for this, it might be
+a bit too much effort at this point. So I think it's ok to do it this
+way, even though it would be really nice to try.
+
+But please update the old-style bpf_map_def to BTF-defined maps before
+this gets merged (see below).
+
+>  samples/bpf/Makefile          |   3 +
+>  samples/bpf/xdp_stat_common.h |  28 ++
+>  samples/bpf/xdp_stat_kern.c   | 169 ++++++++
+>  samples/bpf/xdp_stat_user.c   | 746 ++++++++++++++++++++++++++++++++++
+>  4 files changed, 946 insertions(+)
+>  create mode 100644 samples/bpf/xdp_stat_common.h
+>  create mode 100644 samples/bpf/xdp_stat_kern.c
+>  create mode 100644 samples/bpf/xdp_stat_user.c
+>
+
+[...]
+
+> +#include <uapi/linux/bpf.h>
+> +#include "bpf_helpers.h"
+> +
+> +#include "xdp_stat_common.h"
+> +
+> +#define MAX_PROG_ARRAY 64
+> +
+> +/* NR is used to map interceptors to the programs that are being intercepted. */
+> +#define INTERCEPTOR(INDEX)                                                     \
+> +       SEC("xdp/interceptor_" #INDEX)                                         \
+> +       int interceptor_##INDEX(struct xdp_md *ctx)                            \
+> +       {                                                                      \
+> +               return interceptor_impl(ctx, INDEX);                           \
+> +       }
+> +
+> +       /* Required to use bpf_ktime_get_ns() */
+> +       char _license[] SEC("license") = "GPL";
+
+Wrong indentation?
+
+> +
+> +/* interception_info holds a single record per CPU to pass global state between
+> + * interceptor programs.
+> + */
+> +struct bpf_map_def SEC("maps") interception_info = {
+> +       .type = BPF_MAP_TYPE_PERCPU_ARRAY,
+> +       .key_size = sizeof(__u32),
+> +       .value_size = sizeof(struct interception_info_rec),
+> +       .max_entries = 1,
+> +};
+
+With BTF-define maps this would be
+
+struct {
+    __uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
+    __uint(max_entries, 1);
+    __type(key, __u32);
+    __type(value, struct interception_info_rec);
+} interception_info SEC(".maps");
+
+Can you please switch all the maps to this new syntax?
+
+> +
+> +/* interceptor_stats maps interceptor indexes to measurements of an intercepted
+> + * BPF program. Index 0 maps the interceptor entrypoint to measurements of the
+> + * original entrypoint.
+> + */
+> +struct bpf_map_def SEC("maps") prog_stats = {
+> +       .type = BPF_MAP_TYPE_PERCPU_ARRAY,
+> +       .key_size = sizeof(__u32),
+> +       .value_size = sizeof(struct prog_stats_rec),
+> +       .max_entries = MAX_PROG_ARRAY,
+> +};
+> +
+
+[...]
+
+> +static struct intercept_ctx *intercept__setup(char *mappath, int ifindex)
+> +{
+> +       struct intercept_ctx *ctx = malloc(sizeof(struct intercept_ctx));
+> +
+> +       ctx->ifindex = ifindex;
+> +
+> +       ctx->stats_enabled_oldval =
+> +               _update_sysctl("/proc/sys/kernel/bpf_stats_enabled", 1);
+> +       if (ctx->stats_enabled_oldval < 0)
+> +               perror("ERR: set bpf_stats_enabled sysctl failed\n");
+> +
+> +       if (bpf_prog_load(FILENAME_XDP_STAT_KERN, BPF_PROG_TYPE_XDP,
+> +                         &ctx->bpf_obj, &ctx->entry_fd)) {
+
+bpf_object__open() + bpf_object__load() is preferred over
+bpf_prog_load() way to open and load BPF object files, would be nice
+to use that instead.
+
+Alternative is BPF skeleton, but as I said, it will require a bit more
+set up in Makefile (you'd need to generate skeleton with `bpftool gen
+skeleton <your-bpf-object>.o`). Few benefits of BPF skeleton, though:
+  - you wouldn't need to look up maps and programs by name, they would
+be accessible as struct fields of skeleton (e.g.,
+skel->maps.interception_info);
+  - BPF object file would be embedded into userspace program, so when
+distributing this you wouldn't need to drag along a separate .o file.
+
+
+> +               fprintf(stderr, "ERR: failed to load %s\n",
+> +                       FILENAME_XDP_STAT_KERN);
+> +               return NULL;
+> +       }
+> +
+
+[...]
