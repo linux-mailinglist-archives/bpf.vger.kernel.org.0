@@ -2,55 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E500136580
-	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2020 03:43:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C27A41365DE
+	for <lists+bpf@lfdr.de>; Fri, 10 Jan 2020 04:43:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730870AbgAJCnm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 9 Jan 2020 21:43:42 -0500
-Received: from shards.monkeyblade.net ([23.128.96.9]:60874 "EHLO
-        shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730764AbgAJCnm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 9 Jan 2020 21:43:42 -0500
-Received: from localhost (unknown [IPv6:2601:601:9f00:1c3::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id E455A1573FEF3;
-        Thu,  9 Jan 2020 18:43:40 -0800 (PST)
-Date:   Thu, 09 Jan 2020 18:43:40 -0800 (PST)
-Message-Id: <20200109.184340.89665512479537332.davem@davemloft.net>
-To:     fw@strlen.de
-Cc:     mathew.j.martineau@linux.intel.com, netdev@vger.kernel.org,
-        mptcp@lists.01.org, ast@kernel.org, daniel@iogearbox.net,
-        bpf@vger.kernel.org
-Subject: Re: [MPTCP] Re: [PATCH net-next v7 02/11] sock: Make sk_protocol a
- 16-bit value
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200109212528.GF795@breakpoint.cc>
-References: <20200109155924.30122-3-mathew.j.martineau@linux.intel.com>
-        <20200109.110514.747612850299504416.davem@davemloft.net>
-        <20200109212528.GF795@breakpoint.cc>
-X-Mailer: Mew version 6.8 on Emacs 26.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Thu, 09 Jan 2020 18:43:41 -0800 (PST)
+        id S1731162AbgAJDnD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 9 Jan 2020 22:43:03 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:5596 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731161AbgAJDnD (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 9 Jan 2020 22:43:03 -0500
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 00A3d4ev028066
+        for <bpf@vger.kernel.org>; Thu, 9 Jan 2020 19:43:02 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=WMQdM3Yc1ZLVoIH2D7ePm3eIluLs6r/rpw4ZG5y8Y1Y=;
+ b=kVhyK5rYmmfybZHv0lD+oeychFqbIVjoc3oOYLhCe6ALK2rQODEw8AwGqgn/sW4Vo21M
+ qRa/J2ATu57lWNgTYTCAYG9+QMv7NzdRBANZNPqJdyp6+XL+DYYltwp/In+NSBc/rF/k
+ S2y13WdNiD2gT55qukmny2ggg+7a4bEsjwc= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2xe7ubb75s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 09 Jan 2020 19:43:02 -0800
+Received: from intmgw005.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 9 Jan 2020 19:43:01 -0800
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id C98E32EC1652; Thu,  9 Jan 2020 19:42:55 -0800 (PST)
+Smtp-Origin-Hostprefix: devbig
+From:   Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>, <kafai@fb.com>
+CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next] libbpf: make bpf_map order and indices stable
+Date:   Thu, 9 Jan 2020 19:42:46 -0800
+Message-ID: <20200110034247.1220142-1-andriin@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-01-09_06:2020-01-09,2020-01-09 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0 clxscore=1015
+ impostorscore=0 suspectscore=8 adultscore=0 mlxscore=0 spamscore=0
+ lowpriorityscore=0 priorityscore=1501 malwarescore=0 mlxlogscore=999
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-2001100029
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Florian Westphal <fw@strlen.de>
-Date: Thu, 9 Jan 2020 22:25:28 +0100
+Currently, libbpf re-sorts bpf_map structs after all the maps are added and
+initialized, which might change their relative order and invalidate any
+bpf_map pointer or index taken before that. This is inconvenient and
+error-prone. For instance, it can cause .kconfig map index to point to a wrong
+map.
 
-> If you think such a size increase is ok I could give that solution a shot
-> and see what other problems with 8bit sk_protocol might remain.
-> 
-> Mat reported /sys/kernel/debug/tracing/trace lists mptcp sockets as
-> IPPROTO_TCP in the '8 bit sk_protocol' case, but if thats the only issue
-> this might have a smaller/acceptable "avoidance fix".
+Furthermore, libbpf itself doesn't rely on any specific ordering of bpf_maps,
+so it's just an unnecessary complication right now. This patch drops sorting
+of maps and makes their relative positions fixed. If efficient index is ever
+needed, it's better to have a separate array of pointers as a search index,
+instead of reordering bpf_map struct in-place. This will be less error-prone
+and will allow multiple independent orderings, if necessary (e.g., either by
+section index or by name).
 
-Ok I'll apply the current series as-is with the 16-bit sk_protocol.  Let's
-see how this goes in practice.
+Fixes: 166750bc1dd2 ("libbpf: Support libbpf-provided extern variables")
+Reported-by: Martin KaFai Lau <kafai@fb.com>
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+---
+ tools/lib/bpf/libbpf.c | 14 --------------
+ 1 file changed, 14 deletions(-)
 
-Thanks for explaining.
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 35a4422ef655..ee2620b2aa55 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -1123,16 +1123,6 @@ bpf_object__init_kversion(struct bpf_object *obj, void *data, size_t size)
+ 	return 0;
+ }
+ 
+-static int compare_bpf_map(const void *_a, const void *_b)
+-{
+-	const struct bpf_map *a = _a;
+-	const struct bpf_map *b = _b;
+-
+-	if (a->sec_idx != b->sec_idx)
+-		return a->sec_idx - b->sec_idx;
+-	return a->sec_offset - b->sec_offset;
+-}
+-
+ static bool bpf_map_type__is_map_in_map(enum bpf_map_type type)
+ {
+ 	if (type == BPF_MAP_TYPE_ARRAY_OF_MAPS ||
+@@ -2196,10 +2186,6 @@ static int bpf_object__init_maps(struct bpf_object *obj,
+ 	if (err)
+ 		return err;
+ 
+-	if (obj->nr_maps) {
+-		qsort(obj->maps, obj->nr_maps, sizeof(obj->maps[0]),
+-		      compare_bpf_map);
+-	}
+ 	return 0;
+ }
+ 
+-- 
+2.17.1
+
