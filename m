@@ -2,49 +2,49 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 54EAB1383F3
-	for <lists+bpf@lfdr.de>; Sun, 12 Jan 2020 00:14:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F784138419
+	for <lists+bpf@lfdr.de>; Sun, 12 Jan 2020 00:39:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731646AbgAKXOx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 11 Jan 2020 18:14:53 -0500
-Received: from mail-il1-f195.google.com ([209.85.166.195]:35203 "EHLO
+        id S1731665AbgAKXiq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 11 Jan 2020 18:38:46 -0500
+Received: from mail-il1-f195.google.com ([209.85.166.195]:35890 "EHLO
         mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731641AbgAKXOx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 11 Jan 2020 18:14:53 -0500
-Received: by mail-il1-f195.google.com with SMTP id g12so4857585ild.2;
-        Sat, 11 Jan 2020 15:14:52 -0800 (PST)
+        with ESMTP id S1731643AbgAKXiq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 11 Jan 2020 18:38:46 -0500
+Received: by mail-il1-f195.google.com with SMTP id b15so4867917iln.3;
+        Sat, 11 Jan 2020 15:38:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:message-id:in-reply-to:references:subject
          :mime-version:content-transfer-encoding;
-        bh=Va4b13i55Mfugq8R6nigFZvjFx0difsOtedLg/4J7hc=;
-        b=UmqCpKFjzGYVpfM6VPxhh3vW74uYldV4gcIu2vn2WUK7lmKHyyBZihVNzFC9FXjFdI
-         z+VDfL3glj9v6zbr8g9FYpDUr8yStArMOlgjkgQ+uQCpAwvOcZLzg9x/wr9FIvyTO9Kv
-         oDo01u8OyqQD9dO4rB4N0eS1LxEboeHJnykmcRWfHOxmuaCgmcP+5TJF06A/vAvgO4tZ
-         yxx6H1x9BBaAiOY9/ffiWOu1ce8r6LWDbgKpCuefL5p5sW0hI0UqMdjqs7yy95wZSXxJ
-         BNlP1gmPrV44tF4UaicYf0p2YQ9O2QTkhUjUgDMxH2yqhCG2GsJlYNt3JTI7jvnLercV
-         skow==
+        bh=m8hySsS7iSwjJyeKoswQfatUDrXA5gwU1m6Vc0C7tyk=;
+        b=peptKuCwgIYkcPlHFA0dw7c90Kf4cI0sRXEpRlTC73q7V+WQXZMFNTbr/mpsQ5t+Jl
+         tSMaahfdlYposPr1/8wj0fxlhKPL4U0vGuda4nmaEglIiAhehuBRiW9DUGnYj1pefZ2Q
+         Qzi17emtdfI5I0jMRbPzJ5k8hZAv/fLjvroxkR4HEJOhJOo8W+q8n9wOF7QhppZhMb9U
+         XBnrxrMmgCd7QL3UlZaP2sagfjuoSJxhC3qh0/21UL+VGOHlIaI2Ea6wmr8UeD0T9y7f
+         9gSZoH8iAAY+wraO9B7bhke0APm4nRU7oLYvwfIFCBgTW7JCV93GM5mlSX7CCE4faavo
+         Bxsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
          :references:subject:mime-version:content-transfer-encoding;
-        bh=Va4b13i55Mfugq8R6nigFZvjFx0difsOtedLg/4J7hc=;
-        b=rvVUsztdlp1xZ27DrSSdE8jDmn4/tzh6ZHEEFNytrcN9P61/J4dF6a4KkC7iSig1Qn
-         VQFxnT8L6gQpUnEqESy89uQQZeRTNnPTjd7es3bM3KWOeNx54MdkHC8WAo7ayp+FzJ0d
-         3y+zVnjLGxxCnSHb14GTf6Uzb6kip5yYdvfJbhHWxT7ysVmoWxEBbKEcoS4fW1pwfER5
-         G+0986R1luHPDccGKnKd464giCkWu1G4dwC2lcc/Y7ZVJhdVRXM5c2hDCRNZbri60Hgf
-         Eh7j7o+68BCykRRwNja3ohYzH5B4KWK2bhZsV3sbjnxi20x7620lvsQxIjotqNl1dWQH
-         I1CA==
-X-Gm-Message-State: APjAAAVljsC3GR14o1DlNyHD93XxbsP2GP561K9MaeZQGMqlXda0q1wA
-        mYR4j5J/nt4cFn9fz1epFqSUP5ya
-X-Google-Smtp-Source: APXvYqz2GaoRRN1Kgoodk1V+FsWq248+f4757dppZeAJjy9tVKj0Bog1o6xJunNo5Tc5CepJAG5U2A==
-X-Received: by 2002:a92:914a:: with SMTP id t71mr9335783ild.293.1578784492628;
-        Sat, 11 Jan 2020 15:14:52 -0800 (PST)
+        bh=m8hySsS7iSwjJyeKoswQfatUDrXA5gwU1m6Vc0C7tyk=;
+        b=VwxUHzc6i5m/U51IZtx6dBu78pvWZ67QsmLugmjRBE0DkphAJsNpIUM3qppOiBPd6e
+         eQ7JikX5gEx0sWfYjLeo8EkV3ipxbJg24Q0Zj3hKB+94A6FiUCwpS1rtfH+e7kLx4YtK
+         uYZt+86PAEHNsSCFHoFLf30hl1XrgxF7WDUHP56w7DWY6OLelobEwgjefr7AQxby7Ga3
+         OwREcd1877c00T2sL5jM2XqPiRAr7MiyDrPbqgpEqXOTEWcxAWzjjJJ92jMBALcNDgTx
+         hq2ZezJg0mP9feSPcdrXj1IvhBD5DNPPmeulqUUzbYu/VPGZISvby1hu6Lb5E35n+EEQ
+         dPlw==
+X-Gm-Message-State: APjAAAVAwGAhtifEIUxfLlT8cp98TiksrRUj9SjQH+Aluo3SuTsrqDvM
+        WTKcrBabqR6j6YKn+gOXJQ0=
+X-Google-Smtp-Source: APXvYqwCuaOrhSPUJz4LPoA44OXjBMw3CLUCVk0JQOsX2fDJBDMHiGDRdwIEHR/zSBsYLSyKp2znuQ==
+X-Received: by 2002:a92:838f:: with SMTP id p15mr8726614ilk.91.1578785925217;
+        Sat, 11 Jan 2020 15:38:45 -0800 (PST)
 Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id g4sm2209406iln.81.2020.01.11.15.14.50
+        by smtp.gmail.com with ESMTPSA id a12sm1602205ion.73.2020.01.11.15.38.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 11 Jan 2020 15:14:52 -0800 (PST)
-Date:   Sat, 11 Jan 2020 15:14:46 -0800
+        Sat, 11 Jan 2020 15:38:44 -0800 (PST)
+Date:   Sat, 11 Jan 2020 15:38:35 -0800
 From:   John Fastabend <john.fastabend@gmail.com>
 To:     Jakub Sitnicki <jakub@cloudflare.com>, bpf@vger.kernel.org
 Cc:     netdev@vger.kernel.org, kernel-team@cloudflare.com,
@@ -52,12 +52,12 @@ Cc:     netdev@vger.kernel.org, kernel-team@cloudflare.com,
         John Fastabend <john.fastabend@gmail.com>,
         Lorenz Bauer <lmb@cloudflare.com>,
         Martin KaFai Lau <kafai@fb.com>
-Message-ID: <5e1a56e630ee1_1e7f2b0c859c45c0c4@john-XPS-13-9370.notmuch>
-In-Reply-To: <20200110105027.257877-3-jakub@cloudflare.com>
+Message-ID: <5e1a5c7bb3cbd_1e7f2b0c859c45c0b4@john-XPS-13-9370.notmuch>
+In-Reply-To: <20200110105027.257877-4-jakub@cloudflare.com>
 References: <20200110105027.257877-1-jakub@cloudflare.com>
- <20200110105027.257877-3-jakub@cloudflare.com>
-Subject: RE: [PATCH bpf-next v2 02/11] net, sk_msg: Annotate lockless access
- to sk_prot on clone
+ <20200110105027.257877-4-jakub@cloudflare.com>
+Subject: RE: [PATCH bpf-next v2 03/11] net, sk_msg: Clear sk_user_data pointer
+ on clone if tagged
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
@@ -68,25 +68,65 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 Jakub Sitnicki wrote:
-> sk_msg and ULP frameworks override protocol callbacks pointer in
-> sk->sk_prot, while TCP accesses it locklessly when cloning the listening
-> socket.
+> sk_user_data can hold a pointer to an object that is not intended to be
+> shared between the parent socket and the child that gets a pointer copy on
+> clone. This is the case when sk_user_data points at reference-counted
+> object, like struct sk_psock.
 > 
-> Once we enable use of listening sockets with sockmap (and hence sk_msg),
-> there can be shared access to sk->sk_prot if socket is getting cloned while
-> being inserted/deleted to/from the sockmap from another CPU. Mark the
-> shared access with READ_ONCE/WRITE_ONCE annotations.
+> One way to resolve it is to tag the pointer with a no-copy flag by
+> repurposing its lowest bit. Based on the bit-flag value we clear the child
+> sk_user_data pointer after cloning the parent socket.
+> 
+> The no-copy flag is stored in the pointer itself as opposed to externally,
+> say in socket flags, to guarantee that the pointer and the flag are copied
+> from parent to child socket in an atomic fashion. Parent socket state is
+> subject to change while copying, we don't hold any locks at that time.
+> 
+> This approach relies on an assumption that sk_user_data holds a pointer to
+> an object aligned to 2 or more bytes. A manual audit of existing users of
+> rcu_dereference_sk_user_data helper confirms it. Also, an RCU-protected
+> sk_user_data is not likely to hold a pointer to a char value or a
+> pathological case of "struct { char c; }". To be safe, warn when the
+> flag-bit is set when setting sk_user_data to catch any future misuses.
+> 
+> It is worth considering why clearing sk_user_data unconditionally is not an
+> option. There exist users, DRBD, NVMe, and Xen drivers being among them,
+> that rely on the pointer being copied when cloning the listening socket.
+> 
+> Potentially we could distinguish these users by checking if the listening
+> socket has been created in kernel-space via sock_create_kern, and hence has
+> sk_kern_sock flag set. However, this is not the case for NVMe and Xen
+> drivers, which create sockets without marking them as belonging to the
+> kernel.
 > 
 > Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+> ---
 
-In sockmap side I fixed this by wrapping the access in a lock_sock[0]. So
-Do you think this is still needed with that in mind? The bpf_clone call
-is using sk_prot_creater and also setting the newsk's proto field. Even
-if the listening parent sock was being deleted in parallel would that be
-a problem? We don't touch sk_prot_creator from the tear down path. I've
-only scanned the 3..11 patches so maybe the answer is below. If that is
-the case probably an improved commit message would be helpful.
+LGTM.
+Acked-by: John Fastabend <john.fastabend@gmail.com>
 
-[0] https://patchwork.ozlabs.org/patch/1221536/
+> diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
+> index e6ffdb47b619..f6c83747c71e 100644
+> --- a/net/ipv4/tcp_bpf.c
+> +++ b/net/ipv4/tcp_bpf.c
+> @@ -535,6 +535,10 @@ static void tcp_bpf_remove(struct sock *sk, struct sk_psock *psock)
+>  {
+>  	struct sk_psock_link *link;
+>  
+> +	/* Did a child socket inadvertently inherit parent's psock? */
+> +	if (WARN_ON(sk != psock->sk))
+> +		return;
+> +
 
-Thanks.
+Not sure if this is needed. We would probably have hit problems before
+we get here anyways for example if the parent sock was deleted while
+the child is still around. I think I would just drop it.
+
+>  	while ((link = sk_psock_link_pop(psock))) {
+>  		sk_psock_unlink(sk, link);
+>  		sk_psock_free_link(link);
+> -- 
+> 2.24.1
+> 
+
+
