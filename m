@@ -2,85 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B88013811B
-	for <lists+bpf@lfdr.de>; Sat, 11 Jan 2020 12:29:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38D43138377
+	for <lists+bpf@lfdr.de>; Sat, 11 Jan 2020 21:07:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729583AbgAKL3q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 11 Jan 2020 06:29:46 -0500
-Received: from mail-io1-f65.google.com ([209.85.166.65]:36607 "EHLO
-        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729580AbgAKL3p (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 11 Jan 2020 06:29:45 -0500
-Received: by mail-io1-f65.google.com with SMTP id d15so4881592iog.3
-        for <bpf@vger.kernel.org>; Sat, 11 Jan 2020 03:29:45 -0800 (PST)
+        id S1731119AbgAKUH4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 11 Jan 2020 15:07:56 -0500
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:43192 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731028AbgAKUH4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 11 Jan 2020 15:07:56 -0500
+Received: by mail-wr1-f65.google.com with SMTP id d16so4836362wre.10
+        for <bpf@vger.kernel.org>; Sat, 11 Jan 2020 12:07:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=NvAZUv5ZGB55ThY+bLBf8tvOip6guzklAz3av6cc2wU=;
-        b=gaYu+1MUseUYMKUqD5yxBP9FSvJpanFv5uTkiNjJOR/g0oQrvSC+Bpbolqydhnb9qA
-         SdcU8XP6eEewN/5yHdRIIu8Npt3WV7xe1nABpToCT9I1ZaePFJgSG/3GopVKhelBC5OH
-         l1hLqZ8vCc04Jp5aJoexYZC9P+BBLLZ6NPtN/Mr9R/P4RcvkNqnteVzy0KjeHveCx3Kz
-         /rCQLexWF9Lr856x1/5e0+d5Wc+34C1EhzMgUhcJXkhi5YuZp9cu1BlpU2pgg8qFAFsV
-         PuYV7tZLkxz5cfETajMGv5QsF+YCaJbIVnUmC5owua8NziGfdaRXDfsoXHQnrSWRo3h8
-         PG+A==
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=+VNlPdwEIw1gLI8EYc+Oh+CzRTvoHGfPoZx4pybzXSg=;
+        b=O0noVxh6LzCvy0EKWBAEYz6Y7s6KAH9TvYIkqlK1My+ZxZnPLRcFtrG+80+5diVvE7
+         iPKMhWBav5t90BTwaDbcIBYUjrvfZnEbR3SIiOPdKXv+NdNglG6eaOKGhB92W6LMpg6J
+         MV7z6ZDamg/O5cFqc2O/7GZF63ykA2SwDu1BzauYyVU1ARgBjCU1DTeIe4MwiSqPmI4B
+         qE4jUq/wSd+Eqvc9rZ+EwPFdWXmEBffWsvO+60NTQLARuSM7nUXPIZBoG3dTC0qa9pjp
+         AbdOPdqBFQuBh4+91CdFz59OTRrGsFBlq6rNXPMdQCccDn8caHGpHxajmH0wCHjEanqh
+         v6EQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=NvAZUv5ZGB55ThY+bLBf8tvOip6guzklAz3av6cc2wU=;
-        b=n0f2OiRHs9Ps8yWfI0L3lf/tnpBQYCTqvEN02ihIy7ZmPe9YQRSTnzh2Aec7Q58ONt
-         mT4ZrVU9GsVVTPy0pq5IWn+uiTSbC0RlSf6EwaIlCmm0bNENNmuPdqcXazyq6z03N8tn
-         ySgjWA+ZCkkS2MAj22QZYZg3KzGJwv5VL2M3u6E9qPh8FNfgplnZnycmnGmibIulmYhS
-         BODoo0UKWrKBj+R+OSGFpupe88+DV8UFlJhEC9/tW1FaeoiBQ0dbNytnOH7L/OYnmGjZ
-         2OGthWfW5lVRL3SPoeJE4KbUzo2y3nXmW2RldZQfuqBxaqOY4lv/61pxzZTjrtxVM9s0
-         QrfQ==
-X-Gm-Message-State: APjAAAVmP5fDDSgiMlQ3ALxfgR9IBARLpYZv1ngflIfWJ3Mge4XNC0S1
-        d/khEK9e9IcS24BO2Ll/hsj5wQfpBd4C7RxHFtk=
-X-Google-Smtp-Source: APXvYqzvJ22PocdmwdWtsGtPhQQE4xFdaLuIxZD/Vu+Gy81aXVvgrDldhbkEDtbRXMrJtt1KmLJ8gC5BH9Fhs3M315g=
-X-Received: by 2002:a5d:9c4e:: with SMTP id 14mr6350601iof.166.1578742184957;
- Sat, 11 Jan 2020 03:29:44 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+VNlPdwEIw1gLI8EYc+Oh+CzRTvoHGfPoZx4pybzXSg=;
+        b=CD1vKNxuVVY36czbjt9RTY6aoYTttjUYnQGU+gkp8rTKhXM6u2UVyDZ3pa4qj3cqQh
+         pwVbwv+11HTkY0YBdMyTdfCarXIZVAdOPHYki5Dbt6lG+CGq+nw6qsZUEpm1qPjRPvhw
+         mbHjWv2T9vkGWSbwmf9dttNWcsTr3x7gpNOUSOfuIXRDUFldHOTwsIjVuInR0DMKS/1R
+         SmtUOA3gOZeHlHlpvLVS2unC786MtfOD9iCLc8cMY4FyyL1g/K/DlNoCNSKPoqq6pDwP
+         zvJjRvovplSZr6rpZT7ox3NM2L8lIfdjhleyFHXx9yaKYZRSy9226/c1S/qCga3bVBPV
+         Wm8g==
+X-Gm-Message-State: APjAAAWuBagqDZffBwS7Jq5U4jlNsr1Kot7fJMdFwX7VgkcEPw8s05Wh
+        HKJXauSDa7fV1tlI8ig7KdiLHw==
+X-Google-Smtp-Source: APXvYqyYHrS775LClc2nEuhBuINtxjvrZY80MRLMdlmpOZ8pppvXe1BLqjShxYxZIbzVde9VoN7xDA==
+X-Received: by 2002:adf:c746:: with SMTP id b6mr9647283wrh.298.1578773274680;
+        Sat, 11 Jan 2020 12:07:54 -0800 (PST)
+Received: from [192.168.1.2] ([194.35.117.39])
+        by smtp.gmail.com with ESMTPSA id b10sm7726368wrt.90.2020.01.11.12.07.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 11 Jan 2020 12:07:53 -0800 (PST)
+Subject: Re: [PATCH bpf] bpftool: Fix printing incorrect pointer in
+ btf_dump_ptr
+To:     Martin KaFai Lau <kafai@fb.com>, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>, kernel-team@fb.com,
+        netdev@vger.kernel.org
+References: <20200110231644.3484151-1-kafai@fb.com>
+From:   Quentin Monnet <quentin.monnet@netronome.com>
+Message-ID: <2e5a0dfc-6b22-4a5f-d305-da920c9a44c7@netronome.com>
+Date:   Sat, 11 Jan 2020 20:07:52 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.1
 MIME-Version: 1.0
-Received: by 2002:a5e:da0c:0:0:0:0:0 with HTTP; Sat, 11 Jan 2020 03:29:44
- -0800 (PST)
-Reply-To: mr.mahmouda@yahoo.com
-From:   "Mr.Mahmoud Abbas" <anmadosman2000@gmail.com>
-Date:   Sat, 11 Jan 2020 11:29:44 +0000
-Message-ID: <CAL0KRENiMWrURa8jA4c2d=enS0hROVxGB1SvQo75J-FrU=2s+w@mail.gmail.com>
-Subject: =?UTF-8?B?RHIuIE1ycy4gTGVlIFfDoW5n?=
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200110231644.3484151-1-kafai@fb.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
---=20
-Dear Friend,
+2020-01-10 15:16 UTC-0800 ~ Martin KaFai Lau <kafai@fb.com>
+> For plain text output, it incorrectly prints the pointer value
+> "void *data".  The "void *data" is actually pointing to memory that
+> contains a bpf-map's value.  The intention is to print the content of
+> the bpf-map's value instead of printing the pointer pointing to the
+> bpf-map's value.
+> 
+> In this case, a member of the bpf-map's value is a pointer type.
+> Thus, it should print the "*(void **)data".
+> 
+> Fixes: 22c349e8db89 ("tools: bpftool: fix format strings and arguments for jsonw_printf()")
+> Cc: Quentin Monnet <quentin.monnet@netronome.com>
+> Signed-off-by: Martin KaFai Lau <kafai@fb.com>
 
-I am Mr.Mahmoud Abbas, the accountant personal confident to Dr. S=C3=B2ng W=
-=C3=A1ng
-who died together with his wife Dr. Mrs. Lee W=C3=A1ng in a plane crash on =
-the
-1st Oct. 2003 on their way to attend wedding in Boston. Dr. S=C3=B2ng W=C3=
-=A1ng, is
-an Chinese, a physician and industrialist, he died without having any
-beneficiary to his assets including his account here in Burkina Faso which
-he opened in one of the Bank in the year 2000 as his personal savings for
-the purpose of expansion and development of his company before his untimely
-death in 2003.
+My bad, thank you for the fix!
 
-The amount involved is (USD 10,500,000.00) Ten Million Five Hundred
-Thousand USD, no other person knows about this account, I am contacting you
-for us to transfer this funds to your account as the beneficiary,) but I
-don't know any foreigner, I am only contacting you as a foreigner because
-this money can not be approved to a local person here.
-
-Reply urgently so that I will inform you the next step to take urgently.
-
-Sincerely,
-
-Mr.Mahmoud Abbas.
-
-Reply to this e-mail addess:mr.mahmouda@yahoo.com
+Reviewed-by: Quentin Monnet <quentin.monnet@netronome.com>
