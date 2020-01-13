@@ -2,514 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 55687139860
-	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2020 19:11:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03763139A9B
+	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2020 21:15:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726878AbgAMSLE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Jan 2020 13:11:04 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:49807 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726985AbgAMSLD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Jan 2020 13:11:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1578939062;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CnyPPlY6Kv7nU3kCGgPT7acTvati/h0l0qlxzOiyN6I=;
-        b=iA/J5bH62Y2DM68lGEPDoB8wgN5uN+IcODxJ8xQq4UC+kzmKFlzT8iBDxme7mhfVpc+9Ax
-        W08LXbLqs2bHe1SitWRFMhVFd5sgDyINAU27soRlp1iRpkrYU3BYwLqwLLkMAFM5E4ao95
-        9MWa1DEI10QhhlHj1x4Wra3585UBTE4=
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
- [209.85.208.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-181-qxYYzLo2O92WvNXNkuvt0A-1; Mon, 13 Jan 2020 13:11:00 -0500
-X-MC-Unique: qxYYzLo2O92WvNXNkuvt0A-1
-Received: by mail-lj1-f199.google.com with SMTP id o9so2279579ljc.6
-        for <bpf@vger.kernel.org>; Mon, 13 Jan 2020 10:11:00 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:date:message-id:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=CnyPPlY6Kv7nU3kCGgPT7acTvati/h0l0qlxzOiyN6I=;
-        b=rA3E3ICi2VNc8vAxuJ4k0pebCQLasKV+Bkn9Rp4dRopwIASswS/uSSSHH48bRBezMV
-         1hcg1ITkd5Ju/BFdhzOsMt+5xkJGmIejN3maUkj3XFuKr1geo9AF5aRmgVyQx2A0pTyF
-         mrhUs6OeZUg1YVHfGEh+ewDU8juNk0jvabviSqHA9Y4lxNQaEHNQxmaPD397vsdOUAnj
-         tElcEVYnSG4bypQE8ia6eV8nBg3cZ8zc8lTyh9muVh5Gx2ma9r/4OOHXcvyVLOJzh3eA
-         586GgAekJYSTW8DYObL/OGA7XTPD197/V68SEqIZe1y/plvHaRhxxQ5k4FzaEtt+F5Ov
-         NplA==
-X-Gm-Message-State: APjAAAU8wGAxs3Dqo+6XwQ/HnMnA0+oVpGb+veQdTQ23rnZhJXMsOcuC
-        7k6teZXazRkfkhuCd5fICiukqldkLyJTqz8tBDTYqzyP1bJ3gSgWXxPEHjOpWdqcUrtUhXAdY94
-        TIcQvl9SDTFzZ
-X-Received: by 2002:a05:651c:111a:: with SMTP id d26mr11643870ljo.153.1578939059214;
-        Mon, 13 Jan 2020 10:10:59 -0800 (PST)
-X-Google-Smtp-Source: APXvYqw8F5Fw3Fm4UIbaPKFtvfTtJ8RQTMf/1exvwR2klH2wncSWwz9/Zxcf1luq4nkm6SHfjTYI3g==
-X-Received: by 2002:a05:651c:111a:: with SMTP id d26mr11643848ljo.153.1578939058887;
-        Mon, 13 Jan 2020 10:10:58 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id v26sm6354933ljv.92.2020.01.13.10.10.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jan 2020 10:10:58 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id D32941804D6; Mon, 13 Jan 2020 19:10:56 +0100 (CET)
-Subject: [PATCH bpf-next v2 2/2] xdp: Use bulking for non-map XDP_REDIRECT and
- consolidate code paths
-From:   =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     netdev@vger.kernel.org
-Cc:     bpf@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?utf-8?b?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Date:   Mon, 13 Jan 2020 19:10:56 +0100
-Message-ID: <157893905677.861394.8918679692049579682.stgit@toke.dk>
-In-Reply-To: <157893905455.861394.14341695989510022302.stgit@toke.dk>
-References: <157893905455.861394.14341695989510022302.stgit@toke.dk>
-User-Agent: StGit/0.21
+        id S1727331AbgAMUPJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Jan 2020 15:15:09 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:3450 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726878AbgAMUPI (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 13 Jan 2020 15:15:08 -0500
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 00DKAnpf022355;
+        Mon, 13 Jan 2020 12:15:03 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=yK011gqg2Xa4jCpgMCdQM3yemgz2G4m9cPuz3ChorIM=;
+ b=Kjkm/lsjsNymioecuWmRx9WZhTqfoNhoGBdpTf1prtLEbxMeeky6pGHEIPWAlYv2ay9P
+ lCPTsWMrC3uAdiyaZmbKxNrgoEMASsI4tOePf5sWIR/mq3HOTj1tmGSFALV0ImESz9H1
+ bOgq0cis+1+4odny82sbb+tQgZsWFTqMYss= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2xfydne808-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 13 Jan 2020 12:15:03 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.175) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 13 Jan 2020 12:15:02 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FwAzAVYf1UrbdM/fvr514qcP4hvs/3t2db/sTJw29KaGb5CH+CF68w3OOpsKJ3MDh0Bfp4Ovr0lBKodX4kIocfOODx7phExn0Gs+NOHm1bTyGxMLtATu2aSLw9ZkLFZdUC6dQt70bRBF+RpjyU2xrvTkHj1q1U4k21HSiKGUX6sBiByhH3CCngOqhl8jS2rWrDkNW94fh1K0FkSOrhI1qGrQbH36GydFq4Y3BqK2HJXUvTEcC0pRgOb/34T4mVBevexocVgRpFetoQkxgAHsjtvEeHIZDNWIoW2vp5CyzbpUrdosIRanxIRM3TSytf23iURb5w4mXow1DWr6Df5b8g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yK011gqg2Xa4jCpgMCdQM3yemgz2G4m9cPuz3ChorIM=;
+ b=FaxvRdRxKGu2M0JMKbIFc/Hh92vc3mZTreeq5QTJSVTbxyux8K4TDoyzJNjs+uYZnzQnY8M/xePluvKGGse6Ms071Q128+jnx3M0rtjDusA1Hi8mRrnCBVAxq6mg8Z3efkIeyBgtqfJsSLM8tTE6uafzc2NYULKxqB3rgazNAEM/YbN+DxGD98v9AijMESfhvDDEX9izl5vLlh3OfyfKdsnotnAzQtzFaNlCKzmD5Ew+VnN9OhcLeR3vqIoOeUNSQ9sbv1FvsxaMQPvkMGLak/qXOjG5PNaysCUyQxUfM1WBWM4MHhNJGQkvswmAO6AvKvBqbwmeGwpy/qIGl4KVTA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yK011gqg2Xa4jCpgMCdQM3yemgz2G4m9cPuz3ChorIM=;
+ b=LokofnzTKZJgUMIdIIBb4OyQc6opKxNO+93Ckjq9uMGQyxfnDNdm1M5M/S6G3d4TEIiwX7+24h0IYWTL06af4WQG4XZbNgclWs1kGR1lTDU+/tYJAT5fVNC3dJJKFzUbYCsCTiJHuA+U0IcxCKJJATam8Bhl6ehvUYBX6iUmJqE=
+Received: from MN2PR15MB3213.namprd15.prod.outlook.com (20.179.21.76) by
+ MN2PR15MB2783.namprd15.prod.outlook.com (20.179.145.215) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2623.15; Mon, 13 Jan 2020 20:15:01 +0000
+Received: from MN2PR15MB3213.namprd15.prod.outlook.com
+ ([fe80::6d1e:f2f7:d36:a42f]) by MN2PR15MB3213.namprd15.prod.outlook.com
+ ([fe80::6d1e:f2f7:d36:a42f%4]) with mapi id 15.20.2623.015; Mon, 13 Jan 2020
+ 20:15:01 +0000
+Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:200::1:34fe) by MWHPR10CA0011.namprd10.prod.outlook.com (2603:10b6:301::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2623.12 via Frontend Transport; Mon, 13 Jan 2020 20:14:59 +0000
+From:   Martin Lau <kafai@fb.com>
+To:     Jakub Sitnicki <jakub@cloudflare.com>
+CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "kernel-team@cloudflare.com" <kernel-team@cloudflare.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "John Fastabend" <john.fastabend@gmail.com>,
+        Lorenz Bauer <lmb@cloudflare.com>
+Subject: Re: [PATCH bpf-next v2 03/11] net, sk_msg: Clear sk_user_data pointer
+ on clone if tagged
+Thread-Topic: [PATCH bpf-next v2 03/11] net, sk_msg: Clear sk_user_data
+ pointer on clone if tagged
+Thread-Index: AQHVx6PNoYuTANqsXU2uEYENNwDHMKfpDPcA
+Date:   Mon, 13 Jan 2020 20:15:01 +0000
+Message-ID: <20200113201456.t5apbcjdqdr6by5t@kafai-mbp.dhcp.thefacebook.com>
+References: <20200110105027.257877-1-jakub@cloudflare.com>
+ <20200110105027.257877-4-jakub@cloudflare.com>
+In-Reply-To: <20200110105027.257877-4-jakub@cloudflare.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MWHPR10CA0011.namprd10.prod.outlook.com (2603:10b6:301::21)
+ To MN2PR15MB3213.namprd15.prod.outlook.com (2603:10b6:208:3d::12)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c090:200::1:34fe]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 5e1ffe99-058d-435a-101a-08d7986544c6
+x-ms-traffictypediagnostic: MN2PR15MB2783:
+x-microsoft-antispam-prvs: <MN2PR15MB2783552D6A283BBA130B0FDED5350@MN2PR15MB2783.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:4714;
+x-forefront-prvs: 028166BF91
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(366004)(376002)(39860400002)(396003)(346002)(136003)(189003)(199004)(52116002)(8936002)(9686003)(6666004)(16526019)(71200400001)(7696005)(186003)(86362001)(478600001)(66476007)(66556008)(81166006)(64756008)(66446008)(66946007)(8676002)(81156014)(5660300002)(6506007)(55016002)(1076003)(54906003)(4326008)(316002)(4744005)(6916009)(2906002);DIR:OUT;SFP:1102;SCL:1;SRVR:MN2PR15MB2783;H:MN2PR15MB3213.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: vbSEs57+VbUmBqlSeVgTT5wpj7aRU414z5cxk4AZC7dZYZOK4lY0ZZYV5zfcAKsigj6IEdk7SGvAqx+mTuJMEM0N1LFlivDcDf2ctwRP+C9pDtILrmprrRFxBe6zH77tOwrusjwEmW3+IL8ITw9Zi7oqJXA6rQmTZLIr+uK1qOw3nn8NZkBUpidHW2XW7G/A8Cv5tqkrNeSz5f89tKAsg3sj9NsglVhNd0HUAx4kxKr8UiBB4rTs4oQyBXbNPVInzwf5lyqhWZoj7P0FPQeAZPAskTtNiAPb+3Cq6RsjQFa16KOVQR0/IgMuUX6cowneBARoSCaJHrbcU/miOqeesktmE2J1igo/iypgOmF0igmAElRTCgi2ktS5E5DMobFa0o/SnxZJKiDyyGZZb+bMaJfjbWnRaKg2+cucRRhFRrzcjhbtiECUi4sgCgK3tbHq
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <F89ED11D0836F54D89CCA5E324450517@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5e1ffe99-058d-435a-101a-08d7986544c6
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Jan 2020 20:15:01.1053
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: /0/Quj86t6HHdAL1Iku3RMCxpwsTJg7NZVfX0520bu79QX3Nc1tKlH2wn5feHo8O
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB2783
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-01-13_06:2020-01-13,2020-01-13 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
+ mlxlogscore=606 spamscore=0 impostorscore=0 lowpriorityscore=0 bulkscore=0
+ mlxscore=0 clxscore=1015 priorityscore=1501 malwarescore=0 phishscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-2001130164
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Toke Høiland-Jørgensen <toke@redhat.com>
+On Fri, Jan 10, 2020 at 11:50:19AM +0100, Jakub Sitnicki wrote:
+> sk_user_data can hold a pointer to an object that is not intended to be
+> shared between the parent socket and the child that gets a pointer copy o=
+n
+> clone. This is the case when sk_user_data points at reference-counted
+> object, like struct sk_psock.
+>=20
+> One way to resolve it is to tag the pointer with a no-copy flag by
+> repurposing its lowest bit. Based on the bit-flag value we clear the chil=
+d
+> sk_user_data pointer after cloning the parent socket.
+LGTM.  One nit, WARN_ON_ONCE should be enough for all the cases if they
+would ever happen.  Having continuous splat on the same thing is not
+necessary useful while it could be quite distributing for people
+capture/log them.
 
-Since the bulk queue used by XDP_REDIRECT now lives in struct net_device,
-we can re-use the bulking for the non-map version of the bpf_redirect()
-helper. This is a simple matter of having xdp_do_redirect_slow() queue the
-frame on the bulk queue instead of sending it out with __bpf_tx_xdp().
-
-Unfortunately we can't make the bpf_redirect() helper return an error if
-the ifindex doesn't exit (as bpf_redirect_map() does), because we don't
-have a reference to the network namespace of the ingress device at the time
-the helper is called. So we have to leave it as-is and keep the device
-lookup in xdp_do_redirect_slow().
-
-Since this leaves less reason to have the non-map redirect code in a
-separate function, so we get rid of the xdp_do_redirect_slow() function
-entirely. This does lose us the tracepoint disambiguation, but fortunately
-the xdp_redirect and xdp_redirect_map tracepoints use the same tracepoint
-entry structures. This means both can contain a map index, so we can just
-amend the tracepoint definitions so we always emit the xdp_redirect(_err)
-tracepoints, but with the map ID only populated if a map is present. This
-means we retire the xdp_redirect_map(_err) tracepoints entirely, but keep
-the definitions around in case someone is still listening for them.
-
-With this change, the performance of the xdp_redirect sample program goes
-from 5Mpps to 8.4Mpps (a 68% increase).
-
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
----
- include/linux/bpf.h        |   13 +++++-
- include/trace/events/xdp.h |  102 +++++++++++++++++++-------------------------
- kernel/bpf/devmap.c        |   31 +++++++++----
- net/core/filter.c          |   86 +++++++------------------------------
- 4 files changed, 95 insertions(+), 137 deletions(-)
-
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index b14e51d56a82..25c050202536 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -962,7 +962,9 @@ struct sk_buff;
- 
- struct bpf_dtab_netdev *__dev_map_lookup_elem(struct bpf_map *map, u32 key);
- struct bpf_dtab_netdev *__dev_map_hash_lookup_elem(struct bpf_map *map, u32 key);
--void __dev_map_flush(void);
-+void __dev_flush(void);
-+int dev_xdp_enqueue(struct net_device *dev, struct xdp_buff *xdp,
-+		    struct net_device *dev_rx);
- int dev_map_enqueue(struct bpf_dtab_netdev *dst, struct xdp_buff *xdp,
- 		    struct net_device *dev_rx);
- int dev_map_generic_redirect(struct bpf_dtab_netdev *dst, struct sk_buff *skb,
-@@ -1071,13 +1073,20 @@ static inline struct net_device  *__dev_map_hash_lookup_elem(struct bpf_map *map
- 	return NULL;
- }
- 
--static inline void __dev_map_flush(void)
-+static inline void __dev_flush(void)
- {
- }
- 
- struct xdp_buff;
- struct bpf_dtab_netdev;
- 
-+static inline
-+int dev_xdp_enqueue(struct net_device *dev, struct xdp_buff *xdp,
-+		    struct net_device *dev_rx)
-+{
-+	return 0;
-+}
-+
- static inline
- int dev_map_enqueue(struct bpf_dtab_netdev *dst, struct xdp_buff *xdp,
- 		    struct net_device *dev_rx)
-diff --git a/include/trace/events/xdp.h b/include/trace/events/xdp.h
-index 72bad13d4a3c..cf568a38f852 100644
---- a/include/trace/events/xdp.h
-+++ b/include/trace/events/xdp.h
-@@ -79,14 +79,27 @@ TRACE_EVENT(xdp_bulk_tx,
- 		  __entry->sent, __entry->drops, __entry->err)
- );
- 
-+#ifndef __DEVMAP_OBJ_TYPE
-+#define __DEVMAP_OBJ_TYPE
-+struct _bpf_dtab_netdev {
-+	struct net_device *dev;
-+};
-+#endif /* __DEVMAP_OBJ_TYPE */
-+
-+#define devmap_ifindex(tgt, map)				\
-+	(((map->map_type == BPF_MAP_TYPE_DEVMAP ||	\
-+		  map->map_type == BPF_MAP_TYPE_DEVMAP_HASH)) ? \
-+	  ((struct _bpf_dtab_netdev *)tgt)->dev->ifindex : 0)
-+
-+
- DECLARE_EVENT_CLASS(xdp_redirect_template,
- 
- 	TP_PROTO(const struct net_device *dev,
- 		 const struct bpf_prog *xdp,
--		 int to_ifindex, int err,
--		 const struct bpf_map *map, u32 map_index),
-+		 const void *tgt, int err,
-+		 const struct bpf_map *map, u32 index),
- 
--	TP_ARGS(dev, xdp, to_ifindex, err, map, map_index),
-+	TP_ARGS(dev, xdp, tgt, err, map, index),
- 
- 	TP_STRUCT__entry(
- 		__field(int, prog_id)
-@@ -103,90 +116,65 @@ DECLARE_EVENT_CLASS(xdp_redirect_template,
- 		__entry->act		= XDP_REDIRECT;
- 		__entry->ifindex	= dev->ifindex;
- 		__entry->err		= err;
--		__entry->to_ifindex	= to_ifindex;
-+		__entry->to_ifindex	= map ? devmap_ifindex(tgt, map) :
-+						index;
- 		__entry->map_id		= map ? map->id : 0;
--		__entry->map_index	= map_index;
-+		__entry->map_index	= map ? index : 0;
- 	),
- 
--	TP_printk("prog_id=%d action=%s ifindex=%d to_ifindex=%d err=%d",
-+	TP_printk("prog_id=%d action=%s ifindex=%d to_ifindex=%d err=%d"
-+		  " map_id=%d map_index=%d",
- 		  __entry->prog_id,
- 		  __print_symbolic(__entry->act, __XDP_ACT_SYM_TAB),
- 		  __entry->ifindex, __entry->to_ifindex,
--		  __entry->err)
-+		  __entry->err, __entry->map_id, __entry->map_index)
- );
- 
- DEFINE_EVENT(xdp_redirect_template, xdp_redirect,
- 	TP_PROTO(const struct net_device *dev,
- 		 const struct bpf_prog *xdp,
--		 int to_ifindex, int err,
--		 const struct bpf_map *map, u32 map_index),
--	TP_ARGS(dev, xdp, to_ifindex, err, map, map_index)
-+		 const void *tgt, int err,
-+		 const struct bpf_map *map, u32 index),
-+	TP_ARGS(dev, xdp, tgt, err, map, index)
- );
- 
- DEFINE_EVENT(xdp_redirect_template, xdp_redirect_err,
- 	TP_PROTO(const struct net_device *dev,
- 		 const struct bpf_prog *xdp,
--		 int to_ifindex, int err,
--		 const struct bpf_map *map, u32 map_index),
--	TP_ARGS(dev, xdp, to_ifindex, err, map, map_index)
-+		 const void *tgt, int err,
-+		 const struct bpf_map *map, u32 index),
-+	TP_ARGS(dev, xdp, tgt, err, map, index)
- );
- 
- #define _trace_xdp_redirect(dev, xdp, to)		\
--	 trace_xdp_redirect(dev, xdp, to, 0, NULL, 0);
-+	 trace_xdp_redirect(dev, xdp, NULL, 0, NULL, to);
- 
- #define _trace_xdp_redirect_err(dev, xdp, to, err)	\
--	 trace_xdp_redirect_err(dev, xdp, to, err, NULL, 0);
-+	 trace_xdp_redirect_err(dev, xdp, NULL, err, NULL, to);
-+
-+#define _trace_xdp_redirect_map(dev, xdp, to, map, index)		\
-+	 trace_xdp_redirect(dev, xdp, to, 0, map, index);
- 
--DEFINE_EVENT_PRINT(xdp_redirect_template, xdp_redirect_map,
-+#define _trace_xdp_redirect_map_err(dev, xdp, to, map, index, err)	\
-+	 trace_xdp_redirect_err(dev, xdp, to, err, map, index);
-+
-+/* not used anymore, but kept around so as not to break old programs */
-+DEFINE_EVENT(xdp_redirect_template, xdp_redirect_map,
- 	TP_PROTO(const struct net_device *dev,
- 		 const struct bpf_prog *xdp,
--		 int to_ifindex, int err,
--		 const struct bpf_map *map, u32 map_index),
--	TP_ARGS(dev, xdp, to_ifindex, err, map, map_index),
--	TP_printk("prog_id=%d action=%s ifindex=%d to_ifindex=%d err=%d"
--		  " map_id=%d map_index=%d",
--		  __entry->prog_id,
--		  __print_symbolic(__entry->act, __XDP_ACT_SYM_TAB),
--		  __entry->ifindex, __entry->to_ifindex,
--		  __entry->err,
--		  __entry->map_id, __entry->map_index)
-+		 const void *tgt, int err,
-+		 const struct bpf_map *map, u32 index),
-+	TP_ARGS(dev, xdp, tgt, err, map, index)
- );
- 
--DEFINE_EVENT_PRINT(xdp_redirect_template, xdp_redirect_map_err,
-+DEFINE_EVENT(xdp_redirect_template, xdp_redirect_map_err,
- 	TP_PROTO(const struct net_device *dev,
- 		 const struct bpf_prog *xdp,
--		 int to_ifindex, int err,
--		 const struct bpf_map *map, u32 map_index),
--	TP_ARGS(dev, xdp, to_ifindex, err, map, map_index),
--	TP_printk("prog_id=%d action=%s ifindex=%d to_ifindex=%d err=%d"
--		  " map_id=%d map_index=%d",
--		  __entry->prog_id,
--		  __print_symbolic(__entry->act, __XDP_ACT_SYM_TAB),
--		  __entry->ifindex, __entry->to_ifindex,
--		  __entry->err,
--		  __entry->map_id, __entry->map_index)
-+		 const void *tgt, int err,
-+		 const struct bpf_map *map, u32 index),
-+	TP_ARGS(dev, xdp, tgt, err, map, index)
- );
- 
--#ifndef __DEVMAP_OBJ_TYPE
--#define __DEVMAP_OBJ_TYPE
--struct _bpf_dtab_netdev {
--	struct net_device *dev;
--};
--#endif /* __DEVMAP_OBJ_TYPE */
--
--#define devmap_ifindex(fwd, map)				\
--	((map->map_type == BPF_MAP_TYPE_DEVMAP ||		\
--	  map->map_type == BPF_MAP_TYPE_DEVMAP_HASH) ?		\
--	  ((struct _bpf_dtab_netdev *)fwd)->dev->ifindex : 0)
--
--#define _trace_xdp_redirect_map(dev, xdp, fwd, map, idx)		\
--	 trace_xdp_redirect_map(dev, xdp, devmap_ifindex(fwd, map),	\
--				0, map, idx)
--
--#define _trace_xdp_redirect_map_err(dev, xdp, fwd, map, idx, err)	\
--	 trace_xdp_redirect_map_err(dev, xdp, devmap_ifindex(fwd, map),	\
--				    err, map, idx)
--
- TRACE_EVENT(xdp_cpumap_kthread,
- 
- 	TP_PROTO(int map_id, unsigned int processed,  unsigned int drops,
-diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-index 030d125c3839..db32272c4f77 100644
---- a/kernel/bpf/devmap.c
-+++ b/kernel/bpf/devmap.c
-@@ -81,7 +81,7 @@ struct bpf_dtab {
- 	u32 n_buckets;
- };
- 
--static DEFINE_PER_CPU(struct list_head, dev_map_flush_list);
-+static DEFINE_PER_CPU(struct list_head, dev_flush_list);
- static DEFINE_SPINLOCK(dev_map_lock);
- static LIST_HEAD(dev_map_list);
- 
-@@ -357,16 +357,16 @@ static int bq_xmit_all(struct xdp_dev_bulk_queue *bq, u32 flags)
- 	goto out;
- }
- 
--/* __dev_map_flush is called from xdp_do_flush_map() which _must_ be signaled
-+/* __dev_flush is called from xdp_do_flush_map() which _must_ be signaled
-  * from the driver before returning from its napi->poll() routine. The poll()
-  * routine is called either from busy_poll context or net_rx_action signaled
-  * from NET_RX_SOFTIRQ. Either way the poll routine must complete before the
-  * net device can be torn down. On devmap tear down we ensure the flush list
-  * is empty before completing to ensure all flush operations have completed.
-  */
--void __dev_map_flush(void)
-+void __dev_flush(void)
- {
--	struct list_head *flush_list = this_cpu_ptr(&dev_map_flush_list);
-+	struct list_head *flush_list = this_cpu_ptr(&dev_flush_list);
- 	struct xdp_dev_bulk_queue *bq, *tmp;
- 
- 	rcu_read_lock();
-@@ -398,7 +398,7 @@ static int bq_enqueue(struct net_device *dev, struct xdp_frame *xdpf,
- 		      struct net_device *dev_rx)
- 
- {
--	struct list_head *flush_list = this_cpu_ptr(&dev_map_flush_list);
-+	struct list_head *flush_list = this_cpu_ptr(&dev_flush_list);
- 	struct xdp_dev_bulk_queue *bq = this_cpu_ptr(dev->xdp_bulkq);
- 
- 	if (unlikely(bq->count == DEV_MAP_BULK_SIZE))
-@@ -419,10 +419,9 @@ static int bq_enqueue(struct net_device *dev, struct xdp_frame *xdpf,
- 	return 0;
- }
- 
--int dev_map_enqueue(struct bpf_dtab_netdev *dst, struct xdp_buff *xdp,
--		    struct net_device *dev_rx)
-+static inline int _xdp_enqueue(struct net_device *dev, struct xdp_buff *xdp,
-+			       struct net_device *dev_rx)
- {
--	struct net_device *dev = dst->dev;
- 	struct xdp_frame *xdpf;
- 	int err;
- 
-@@ -440,6 +439,20 @@ int dev_map_enqueue(struct bpf_dtab_netdev *dst, struct xdp_buff *xdp,
- 	return bq_enqueue(dev, xdpf, dev_rx);
- }
- 
-+int dev_xdp_enqueue(struct net_device *dev, struct xdp_buff *xdp,
-+		    struct net_device *dev_rx)
-+{
-+	return _xdp_enqueue(dev, xdp, dev_rx);
-+}
-+
-+int dev_map_enqueue(struct bpf_dtab_netdev *dst, struct xdp_buff *xdp,
-+		    struct net_device *dev_rx)
-+{
-+	struct net_device *dev = dst->dev;
-+
-+	return _xdp_enqueue(dev, xdp, dev_rx);
-+}
-+
- int dev_map_generic_redirect(struct bpf_dtab_netdev *dst, struct sk_buff *skb,
- 			     struct bpf_prog *xdp_prog)
- {
-@@ -762,7 +775,7 @@ static int __init dev_map_init(void)
- 	register_netdevice_notifier(&dev_map_notifier);
- 
- 	for_each_possible_cpu(cpu)
--		INIT_LIST_HEAD(&per_cpu(dev_map_flush_list, cpu));
-+		INIT_LIST_HEAD(&per_cpu(dev_flush_list, cpu));
- 	return 0;
- }
- 
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 42fd17c48c5f..f023f3a8f351 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -3458,58 +3458,6 @@ static const struct bpf_func_proto bpf_xdp_adjust_meta_proto = {
- 	.arg2_type	= ARG_ANYTHING,
- };
- 
--static int __bpf_tx_xdp(struct net_device *dev,
--			struct bpf_map *map,
--			struct xdp_buff *xdp,
--			u32 index)
--{
--	struct xdp_frame *xdpf;
--	int err, sent;
--
--	if (!dev->netdev_ops->ndo_xdp_xmit) {
--		return -EOPNOTSUPP;
--	}
--
--	err = xdp_ok_fwd_dev(dev, xdp->data_end - xdp->data);
--	if (unlikely(err))
--		return err;
--
--	xdpf = convert_to_xdp_frame(xdp);
--	if (unlikely(!xdpf))
--		return -EOVERFLOW;
--
--	sent = dev->netdev_ops->ndo_xdp_xmit(dev, 1, &xdpf, XDP_XMIT_FLUSH);
--	if (sent <= 0)
--		return sent;
--	return 0;
--}
--
--static noinline int
--xdp_do_redirect_slow(struct net_device *dev, struct xdp_buff *xdp,
--		     struct bpf_prog *xdp_prog, struct bpf_redirect_info *ri)
--{
--	struct net_device *fwd;
--	u32 index = ri->tgt_index;
--	int err;
--
--	fwd = dev_get_by_index_rcu(dev_net(dev), index);
--	ri->tgt_index = 0;
--	if (unlikely(!fwd)) {
--		err = -EINVAL;
--		goto err;
--	}
--
--	err = __bpf_tx_xdp(fwd, NULL, xdp, 0);
--	if (unlikely(err))
--		goto err;
--
--	_trace_xdp_redirect(dev, xdp_prog, index);
--	return 0;
--err:
--	_trace_xdp_redirect_err(dev, xdp_prog, index, err);
--	return err;
--}
--
- static int __bpf_tx_xdp_map(struct net_device *dev_rx, void *fwd,
- 			    struct bpf_map *map, struct xdp_buff *xdp)
- {
-@@ -3529,7 +3477,7 @@ static int __bpf_tx_xdp_map(struct net_device *dev_rx, void *fwd,
- 
- void xdp_do_flush_map(void)
- {
--	__dev_map_flush();
-+	__dev_flush();
- 	__cpu_map_flush();
- 	__xsk_map_flush();
- }
-@@ -3568,10 +3516,11 @@ void bpf_clear_redirect_map(struct bpf_map *map)
- 	}
- }
- 
--static int xdp_do_redirect_map(struct net_device *dev, struct xdp_buff *xdp,
--			       struct bpf_prog *xdp_prog, struct bpf_map *map,
--			       struct bpf_redirect_info *ri)
-+int xdp_do_redirect(struct net_device *dev, struct xdp_buff *xdp,
-+		    struct bpf_prog *xdp_prog)
- {
-+	struct bpf_redirect_info *ri = this_cpu_ptr(&bpf_redirect_info);
-+	struct bpf_map *map = READ_ONCE(ri->map);
- 	u32 index = ri->tgt_index;
- 	void *fwd = ri->tgt_value;
- 	int err;
-@@ -3580,7 +3529,18 @@ static int xdp_do_redirect_map(struct net_device *dev, struct xdp_buff *xdp,
- 	ri->tgt_value = NULL;
- 	WRITE_ONCE(ri->map, NULL);
- 
--	err = __bpf_tx_xdp_map(dev, fwd, map, xdp);
-+	if (unlikely(!map)) {
-+		fwd = dev_get_by_index_rcu(dev_net(dev), index);
-+		if (unlikely(!fwd)) {
-+			err = -EINVAL;
-+			goto err;
-+		}
-+
-+		err = dev_xdp_enqueue(fwd, xdp, dev);
-+	} else {
-+		err = __bpf_tx_xdp_map(dev, fwd, map, xdp);
-+	}
-+
- 	if (unlikely(err))
- 		goto err;
- 
-@@ -3590,18 +3550,6 @@ static int xdp_do_redirect_map(struct net_device *dev, struct xdp_buff *xdp,
- 	_trace_xdp_redirect_map_err(dev, xdp_prog, fwd, map, index, err);
- 	return err;
- }
--
--int xdp_do_redirect(struct net_device *dev, struct xdp_buff *xdp,
--		    struct bpf_prog *xdp_prog)
--{
--	struct bpf_redirect_info *ri = this_cpu_ptr(&bpf_redirect_info);
--	struct bpf_map *map = READ_ONCE(ri->map);
--
--	if (likely(map))
--		return xdp_do_redirect_map(dev, xdp, xdp_prog, map, ri);
--
--	return xdp_do_redirect_slow(dev, xdp, xdp_prog, ri);
--}
- EXPORT_SYMBOL_GPL(xdp_do_redirect);
- 
- static int xdp_do_generic_redirect_map(struct net_device *dev,
-
+Acked-by: Martin KaFai Lau <kafai@fb.com>
