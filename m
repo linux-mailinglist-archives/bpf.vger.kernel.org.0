@@ -2,46 +2,46 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 67562139463
-	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2020 16:09:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A8B313952A
+	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2020 16:48:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727286AbgAMPJu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Jan 2020 10:09:50 -0500
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:41383 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726399AbgAMPJt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Jan 2020 10:09:49 -0500
-Received: by mail-wr1-f68.google.com with SMTP id c9so8939262wrw.8
-        for <bpf@vger.kernel.org>; Mon, 13 Jan 2020 07:09:49 -0800 (PST)
+        id S1728757AbgAMPsu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Jan 2020 10:48:50 -0500
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:39240 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726567AbgAMPsu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Jan 2020 10:48:50 -0500
+Received: by mail-lj1-f195.google.com with SMTP id l2so10608913lja.6
+        for <bpf@vger.kernel.org>; Mon, 13 Jan 2020 07:48:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
         h=references:user-agent:from:to:cc:subject:in-reply-to:date
          :message-id:mime-version;
-        bh=ScqIMW/ZuA4+mryk/Y5OCnzbnoTHNJOtXEPLhT1giFk=;
-        b=K1PNmBm2lgkvDZh2jm81EF4WzLkIHdADaBY6ljeuktfa9GAciHFkTA4LzrnpmH8uEQ
-         QXZXTZ+1jEFOoz+RkO0y52uSJuXan/ZEJV94rVD59QlZZPoyR8pevV5flEJlrWeYRK47
-         0nyAZi5TuXmklryPv785EdBJsJTxnACSu5oKg=
+        bh=51yD4BqU0bWqVd7ntuW6FnYah+NnBC6M9yv7K4akYVA=;
+        b=XJFwoj52wly3jJcjqf7SiTLkYHTharJdMxLePTalVF8djqcUG95tORny36WSidwH7f
+         j9EXfxV1euwyhx5ExXWL4DQbtm8o++EGsDsuMRgdH018gohVqUCs1/gKKGpXE970rTco
+         M/tSO7SagFeU03/cJS7OVqRvBTcR2vacaWhCc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:references:user-agent:from:to:cc:subject
          :in-reply-to:date:message-id:mime-version;
-        bh=ScqIMW/ZuA4+mryk/Y5OCnzbnoTHNJOtXEPLhT1giFk=;
-        b=ERyNu5ZSBTMTXzFirzMBk+AVrZaKnSw6i1YsfRsPhTY4nXKxwUU6LaX5fafUZTDKI4
-         WRjLNLA0pj9Po5YG6wzSb5JgRmr93m+n6c4HuXasGg1AOr29Rxhy8CtYxDzkJPKXRCHE
-         RZCX944GWt3gAJ8kuFAhckoVzUYxjdSPR2cms7ggWVZADuCPkYd1vxOuudyhdgjjNIA7
-         A0KBZE6LVihTt50csvedv1wtqBCIryjVClqgTmolKdyaqLroC9SqhOeTvybc3SrvBxnZ
-         hEiuavYERsxJZpJ4aVArE1qO5SrFEtmejJ31gPsjf9jTlFGWtQpEN2dTHNt4XmKw+z6k
-         N05w==
-X-Gm-Message-State: APjAAAXN3aqhJIcBgyuw6wcfEep8Rc8/h34Js0IIOn5G0Hg1bNAbBfD5
-        EPs2nYbKi97vwTzDxoJvWtVhTg==
-X-Google-Smtp-Source: APXvYqxy4hA8z/zHhR8+1uXsR2hLIf3WeMd0g1E+0HS17wbL82rVXeT92WAhFiF3znTZMX23ceam8Q==
-X-Received: by 2002:a05:6000:1288:: with SMTP id f8mr19152226wrx.66.1578928188541;
-        Mon, 13 Jan 2020 07:09:48 -0800 (PST)
+        bh=51yD4BqU0bWqVd7ntuW6FnYah+NnBC6M9yv7K4akYVA=;
+        b=IgKm53gjPbwo5+Sz1YmWUlHoktUg77QHO2L8D4SUfvmZ+tuY6+EQr/1k9aDeh63DDE
+         lVQa6rkdwvpdV87Oxtapo7s6cyM3baD1pWvxsasvgGlkQZBBBedrv6o9OTOnSaSqjX9Z
+         cn51jD+dGrQAVjqzvJiVCzgGJC4GaHjhfiSRN0SJE/e2btp5kRTK3jHPllz0gIlqWkAG
+         PRv3Vp3gIQAp7kjUYQoKXLQob7R61flG7QIVg/hUQNzBYCRTKKSBsai/2LiAMf6jSbGC
+         Er1jUjzxM+jQJ5J0J4wogziWs/T6M0SvwIWXOvFe2/I6K1K0g9M7pdFJH/msa8H1ySFV
+         ahig==
+X-Gm-Message-State: APjAAAW+LGSk9n22tKxibwhw51zD3SZr5ag8FcrZMGGnQCrftR/Hz8t0
+        Gfud6bpZqkGItDgZ8dAOUBgfFg==
+X-Google-Smtp-Source: APXvYqwQYyi0Xo2b7UiFJ4L8MGTDZHWjzoOfMioSSKq+3kDzllwtsOIVk5rGXwkTR8StfHHujlFeJQ==
+X-Received: by 2002:a2e:93c5:: with SMTP id p5mr10879289ljh.192.1578930527948;
+        Mon, 13 Jan 2020 07:48:47 -0800 (PST)
 Received: from cloudflare.com ([176.221.114.230])
-        by smtp.gmail.com with ESMTPSA id x10sm15180463wrp.58.2020.01.13.07.09.47
+        by smtp.gmail.com with ESMTPSA id t27sm6178162ljd.26.2020.01.13.07.48.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jan 2020 07:09:48 -0800 (PST)
-References: <20200110105027.257877-1-jakub@cloudflare.com> <20200110105027.257877-3-jakub@cloudflare.com> <5e1a56e630ee1_1e7f2b0c859c45c0c4@john-XPS-13-9370.notmuch>
+        Mon, 13 Jan 2020 07:48:47 -0800 (PST)
+References: <20200110105027.257877-1-jakub@cloudflare.com> <20200110105027.257877-6-jakub@cloudflare.com> <5e1a615bedf9c_1e7f2b0c859c45c01f@john-XPS-13-9370.notmuch>
 User-agent: mu4e 1.1.0; emacs 26.3
 From:   Jakub Sitnicki <jakub@cloudflare.com>
 To:     John Fastabend <john.fastabend@gmail.com>
@@ -49,10 +49,10 @@ Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
         kernel-team@cloudflare.com, Eric Dumazet <edumazet@google.com>,
         Lorenz Bauer <lmb@cloudflare.com>,
         Martin KaFai Lau <kafai@fb.com>
-Subject: Re: [PATCH bpf-next v2 02/11] net, sk_msg: Annotate lockless access to sk_prot on clone
-In-reply-to: <5e1a56e630ee1_1e7f2b0c859c45c0c4@john-XPS-13-9370.notmuch>
-Date:   Mon, 13 Jan 2020 16:09:47 +0100
-Message-ID: <87muars890.fsf@cloudflare.com>
+Subject: Re: [PATCH bpf-next v2 05/11] bpf, sockmap: Allow inserting listening TCP sockets into sockmap
+In-reply-to: <5e1a615bedf9c_1e7f2b0c859c45c01f@john-XPS-13-9370.notmuch>
+Date:   Mon, 13 Jan 2020 16:48:46 +0100
+Message-ID: <87lfqbs6g1.fsf@cloudflare.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
@@ -60,74 +60,112 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Jan 12, 2020 at 12:14 AM CET, John Fastabend wrote:
+On Sun, Jan 12, 2020 at 12:59 AM CET, John Fastabend wrote:
 > Jakub Sitnicki wrote:
->> sk_msg and ULP frameworks override protocol callbacks pointer in
->> sk->sk_prot, while TCP accesses it locklessly when cloning the listening
->> socket.
+>> In order for sockmap type to become a generic collection for storing TCP
+>> sockets we need to loosen the checks during map update, while tightening
+>> the checks in redirect helpers.
 >>
->> Once we enable use of listening sockets with sockmap (and hence sk_msg),
->> there can be shared access to sk->sk_prot if socket is getting cloned while
->> being inserted/deleted to/from the sockmap from another CPU. Mark the
->> shared access with READ_ONCE/WRITE_ONCE annotations.
+>> Currently sockmap requires the TCP socket to be in established state (or
+>> transitioning out of SYN_RECV into established state when done from BPF),
+>> which prevents inserting listening sockets.
+>>
+>> Change the update pre-checks so that the socket can also be in listening
+>> state. If the state is not white-listed, return -EINVAL to be consistent
+>> with REUSEPORT_SOCKARRY map type.
+>>
+>> Since it doesn't make sense to redirect with sockmap to listening sockets,
+>> add appropriate socket state checks to BPF redirect helpers too.
 >>
 >> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+>> ---
+>>  net/core/sock_map.c                     | 46 ++++++++++++++++++++-----
+>>  tools/testing/selftests/bpf/test_maps.c |  6 +---
+>>  2 files changed, 39 insertions(+), 13 deletions(-)
+>>
+>> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+>> index eb114ee419b6..99daea502508 100644
+>> --- a/net/core/sock_map.c
+>> +++ b/net/core/sock_map.c
+>> @@ -396,6 +396,23 @@ static bool sock_map_sk_is_suitable(const struct sock *sk)
+>>  	       sk->sk_protocol == IPPROTO_TCP;
+>>  }
+>>
+>> +/* Is sock in a state that allows inserting into the map?
+>> + * SYN_RECV is needed for updates on BPF_SOCK_OPS_PASSIVE_ESTABLISHED_CB.
+>> + */
+>> +static bool sock_map_update_okay(const struct sock *sk)
+>> +{
+>> +	return (1 << sk->sk_state) & (TCPF_ESTABLISHED |
+>> +				      TCPF_SYN_RECV |
+>> +				      TCPF_LISTEN);
+>> +}
+>> +
+>> +/* Is sock in a state that allows redirecting into it? */
+>> +static bool sock_map_redirect_okay(const struct sock *sk)
+>> +{
+>> +	return (1 << sk->sk_state) & (TCPF_ESTABLISHED |
+>> +				      TCPF_SYN_RECV);
+>> +}
+>> +
+>>  static int sock_map_update_elem(struct bpf_map *map, void *key,
+>>  				void *value, u64 flags)
+>>  {
+>> @@ -413,11 +430,14 @@ static int sock_map_update_elem(struct bpf_map *map, void *key,
+>>  		ret = -EINVAL;
+>>  		goto out;
+>>  	}
+>> -	if (!sock_map_sk_is_suitable(sk) ||
+>> -	    sk->sk_state != TCP_ESTABLISHED) {
+>> +	if (!sock_map_sk_is_suitable(sk)) {
+>>  		ret = -EOPNOTSUPP;
+>>  		goto out;
+>>  	}
+>> +	if (!sock_map_update_okay(sk)) {
+>> +		ret = -EINVAL;
+>> +		goto out;
+>> +	}
 >
-> In sockmap side I fixed this by wrapping the access in a lock_sock[0]. So
-> Do you think this is still needed with that in mind? The bpf_clone call
-> is using sk_prot_creater and also setting the newsk's proto field. Even
-> if the listening parent sock was being deleted in parallel would that be
-> a problem? We don't touch sk_prot_creator from the tear down path. I've
-> only scanned the 3..11 patches so maybe the answer is below. If that is
-> the case probably an improved commit message would be helpful.
+> I nit but seeing we need a v3 anyways. How about consolidating
+> this state checks into sock_map_sk_is_suitable() so we don't have
+> multiple if branches or this '|| TCP_ESTABLISHED' like we do now.
 
-I think it is needed. Not because of tcp_bpf_clone or that we access
-listener's sk_prot_creator from there, if I'm grasping your question.
+Ah, I see the pattern now :-)
 
-Either way I'm glad this came up. Let's go though my reasoning and
-verify it. tcp stack accesses the listener sk_prot while cloning it:
+>>
+>>  	sock_map_sk_acquire(sk);
+>>  	ret = sock_map_update_common(map, idx, sk, flags);
+>> @@ -433,6 +453,7 @@ BPF_CALL_4(bpf_sock_map_update, struct bpf_sock_ops_kern *, sops,
+>>  	WARN_ON_ONCE(!rcu_read_lock_held());
+>>
+>>  	if (likely(sock_map_sk_is_suitable(sops->sk) &&
+>> +		   sock_map_update_okay(sops->sk) &&
+>>  		   sock_map_op_okay(sops)))
+>>  		return sock_map_update_common(map, *(u32 *)key, sops->sk,
+>>  					      flags);
+>> @@ -454,13 +475,17 @@ BPF_CALL_4(bpf_sk_redirect_map, struct sk_buff *, skb,
+>>  	   struct bpf_map *, map, u32, key, u64, flags)
+>>  {
+>>  	struct tcp_skb_cb *tcb = TCP_SKB_CB(skb);
+>> +	struct sock *sk;
+>>
+>>  	if (unlikely(flags & ~(BPF_F_INGRESS)))
+>>  		return SK_DROP;
+>> -	tcb->bpf.flags = flags;
+>> -	tcb->bpf.sk_redir = __sock_map_lookup_elem(map, key);
+>> -	if (!tcb->bpf.sk_redir)
+>> +
+>> +	sk = __sock_map_lookup_elem(map, key);
+>> +	if (!sk || !sock_map_redirect_okay(sk))
+>>  		return SK_DROP;
+>
+> unlikely(!sock_map_redirect_okay)? Or perhaps unlikely the entire case,
+> if (unlikely(!sk || !sock_map_redirect_okay(sk)). I think users should
+> know if the sk is a valid sock or not and this is just catching the
+> error case. Any opinion?
+>
+> Otherwise looks good.
 
-tcp_v4_rcv
-  sk = __inet_lookup_skb(...)
-  tcp_check_req(sk)
-    inet_csk(sk)->icsk_af_ops->syn_recv_sock
-      tcp_v4_syn_recv_sock
-        tcp_create_openreq_child
-          inet_csk_clone_lock
-            sk_clone_lock
-              READ_ONCE(sk->sk_prot)
+Both ideas SGTM. Will incorporate into next version. Thanks!
 
-It grabs a reference to the listener, but doesn't grab the sk_lock.
-
-On another CPU we can be inserting/removing the listener socket from the
-sockmap and writing to its sk_prot. We have the update and the remove
-path:
-
-sock_map_ops->map_update_elem
-  sock_map_update_elem
-    sock_map_update_common
-      sock_map_link_no_progs
-        tcp_bpf_init
-          tcp_bpf_update_sk_prot
-            sk_psock_update_proto
-              WRITE_ONCE(sk->sk_prot, ops)
-
-sock_map_ops->map_delete_elem
-  sock_map_delete_elem
-    __sock_map_delete
-     sock_map_unref
-       sk_psock_put
-         sk_psock_drop
-           sk_psock_restore_proto
-             tcp_update_ulp
-               WRITE_ONCE(sk->sk_prot, proto)
-
-Following the guidelines from KTSAN project [0], sk_prot looks like a
-candidate for annotating it. At least on these 3 call paths.
-
-If that sounds correct, I can add it to the patch description.
-
-Thanks,
 -jkbs
-
-[0] https://github.com/google/ktsan/wiki/READ_ONCE-and-WRITE_ONCE
