@@ -2,27 +2,40 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 50B4113911E
-	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2020 13:31:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75B4513912A
+	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2020 13:37:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726074AbgAMMbm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Jan 2020 07:31:42 -0500
-Received: from mga06.intel.com ([134.134.136.31]:2101 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725832AbgAMMbm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Jan 2020 07:31:42 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga104.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 13 Jan 2020 04:31:42 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,428,1571727600"; 
-   d="scan'208";a="273017199"
-Received: from arydygie-mobl.ger.corp.intel.com (HELO btopel-mobl.ger.intel.com) ([10.252.51.144])
-  by FMSMGA003.fm.intel.com with ESMTP; 13 Jan 2020 04:31:39 -0800
-Subject: Re: [PATCH 5/5] bpf: Allow to resolve bpf trampoline in unwind
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
-To:     Jiri Olsa <jolsa@redhat.com>
+        id S1726934AbgAMMhj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Jan 2020 07:37:39 -0500
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:36037 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726435AbgAMMhj (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 13 Jan 2020 07:37:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1578919058;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zPc0nhNotVAJC0F3RNpLz0PpmAUiDRCJKvm5aCqEAik=;
+        b=e3MhX1G0jr/BjiujJuNmayg3mwab+twMZnwjso7P0bn9Lmlk0rUBbKqFKEWFo9ywFU2Xw7
+        AotIQjC9BnTZBPw3T5fnLTi/0ZaczxNGD6S+iAepJs4+VjyMPq3KUTgeQxJ479eNbe8Rz9
+        Z+LNXBmL3Ig2jrGz6TWJhRfPCRL5L1o=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-306-OyERcqybNTy89wxQ8IQ6eQ-1; Mon, 13 Jan 2020 07:37:35 -0500
+X-MC-Unique: OyERcqybNTy89wxQ8IQ6eQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2F650477;
+        Mon, 13 Jan 2020 12:37:33 +0000 (UTC)
+Received: from krava (unknown [10.43.17.48])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B6AEB5C241;
+        Mon, 13 Jan 2020 12:37:30 +0000 (UTC)
+Date:   Mon, 13 Jan 2020 13:37:28 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>
 Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         Jiri Olsa <jolsa@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -31,45 +44,64 @@ Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
         Jakub Kicinski <jakub.kicinski@netronome.com>,
         David Miller <davem@redhat.com>
+Subject: Re: [PATCH 5/5] bpf: Allow to resolve bpf trampoline in unwind
+Message-ID: <20200113123728.GA120834@krava>
 References: <20191229143740.29143-1-jolsa@kernel.org>
  <20191229143740.29143-6-jolsa@kernel.org>
- <20200106234639.fo2ctgkb5vumayyl@ast-mbp> <20200107130546.GI290055@krava>
+ <20200106234639.fo2ctgkb5vumayyl@ast-mbp>
+ <20200107130546.GI290055@krava>
  <76a10338-391a-ffca-9af8-f407265d146a@intel.com>
  <20200113094310.GE35080@krava>
  <a2e2b84e-71dd-e32c-bcf4-09298e9f4ce7@intel.com>
-Message-ID: <9da1c8f9-7ca5-e10b-8931-6871fdbffb23@intel.com>
-Date:   Mon, 13 Jan 2020 13:31:38 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+ <9da1c8f9-7ca5-e10b-8931-6871fdbffb23@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <a2e2b84e-71dd-e32c-bcf4-09298e9f4ce7@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+In-Reply-To: <9da1c8f9-7ca5-e10b-8931-6871fdbffb23@intel.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2020-01-13 13:21, Björn Töpel wrote:
-> 
-> On 2020-01-13 10:43, Jiri Olsa wrote:
->> hi,
->> attached patch seems to work for me (trampoline usecase), but I don't 
->> know
->> how to test it for dispatcher.. also I need to check if we need to 
->> decrease
->> BPF_TRAMP_MAX or BPF_DISPATCHER_MAX, it might take more time;-)
->>
-> 
-> Thanks for working on it! I'll take the patch for a spin.
-> 
-> To test the dispatcher, just run XDP!
-> 
-> With your change, the BPF_DISPATCHER_MAX is still valid. 48 entries =>
-> 1890B which is < (BPF_IMAGE_SIZE / 2).
+On Mon, Jan 13, 2020 at 01:31:38PM +0100, Bj=F6rn T=F6pel wrote:
+> On 2020-01-13 13:21, Bj=F6rn T=F6pel wrote:
+> >=20
+> > On 2020-01-13 10:43, Jiri Olsa wrote:
+> > > hi,
+> > > attached patch seems to work for me (trampoline usecase), but I
+> > > don't know
+> > > how to test it for dispatcher.. also I need to check if we need to
+> > > decrease
+> > > BPF_TRAMP_MAX or BPF_DISPATCHER_MAX, it might take more time;-)
+> > >=20
+> >=20
+> > Thanks for working on it! I'll take the patch for a spin.
+> >=20
+> > To test the dispatcher, just run XDP!
+> >=20
+> > With your change, the BPF_DISPATCHER_MAX is still valid. 48 entries =3D=
 >
+> > 1890B which is < (BPF_IMAGE_SIZE / 2).
 
-...and FWIW, it would be nice with bpf_dispatcher_<...> entries in 
-kallsyms as well. If that code could be shared with the trampoline code 
-as well (bpf_trampoline_<btf_id>), that'd be great!
+great
+
+> >=20
+>=20
+> ...and FWIW, it would be nice with bpf_dispatcher_<...> entries in kall=
+syms
+
+ok so it'd be 'bpf_dispatcher_<name>'
+
+from DEFINE_BPF_DISPATCHER(name)
+
+> as well. If that code could be shared with the trampoline code as well
+> (bpf_trampoline_<btf_id>), that'd be great!
+>=20
+
+ok, will add it
+
+thanks,
+jirka
+
