@@ -2,55 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 12DD91392EC
-	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2020 14:59:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67562139463
+	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2020 16:09:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726593AbgAMN71 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Jan 2020 08:59:27 -0500
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:42812 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728688AbgAMN70 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Jan 2020 08:59:26 -0500
-Received: by mail-lj1-f196.google.com with SMTP id y4so10164901ljj.9
-        for <bpf@vger.kernel.org>; Mon, 13 Jan 2020 05:59:24 -0800 (PST)
+        id S1727286AbgAMPJu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Jan 2020 10:09:50 -0500
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:41383 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726399AbgAMPJt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Jan 2020 10:09:49 -0500
+Received: by mail-wr1-f68.google.com with SMTP id c9so8939262wrw.8
+        for <bpf@vger.kernel.org>; Mon, 13 Jan 2020 07:09:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
         h=references:user-agent:from:to:cc:subject:in-reply-to:date
          :message-id:mime-version;
-        bh=XSi8i2Kt/EnemjdYBrbpnoQ4qWsZGk/zx9LWUXbD/B4=;
-        b=Si/408Yhep/bGbyAvgzfjOPNfm4qFtbR1c+6s7ZpgqR59mS54QWrI8NOrhOjG06MS7
-         cLrJkT3xtsSpSrXhjD1WzstPLpx9+yR+B3Rgf2GySE9BeHzDh76cbckU3aIon6KTDLxF
-         n8/k8apWKjX7fdYNzWGX9rhyMxDod3DONzji8=
+        bh=ScqIMW/ZuA4+mryk/Y5OCnzbnoTHNJOtXEPLhT1giFk=;
+        b=K1PNmBm2lgkvDZh2jm81EF4WzLkIHdADaBY6ljeuktfa9GAciHFkTA4LzrnpmH8uEQ
+         QXZXTZ+1jEFOoz+RkO0y52uSJuXan/ZEJV94rVD59QlZZPoyR8pevV5flEJlrWeYRK47
+         0nyAZi5TuXmklryPv785EdBJsJTxnACSu5oKg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:references:user-agent:from:to:cc:subject
          :in-reply-to:date:message-id:mime-version;
-        bh=XSi8i2Kt/EnemjdYBrbpnoQ4qWsZGk/zx9LWUXbD/B4=;
-        b=uhyOeF1AyM2MtyXXU2hPVd1ILCiCOmacKQiFyuU4JnMIcG2czeA9i7qQh4myYhu530
-         gJkrKptItXMadXo7MFZJi1/e8NEdr6TiahNUp6LumZjziE+cUrLOfRT0S8jEuEA/5tQo
-         XKvfn+sGhRB5ekRiDFAFLIFozA1E/HhEBqOAyh00v2H+fS+xUo0TNz1vH4EGnmOvdlmR
-         1OiMjPWblGsgQoOvE3/DncjjcEKkSH4pBAwan/F4qVETmkSjXOT8E7uahTls8TCCafK/
-         6oTOX5WrfzjXBSaGpsRKNuTumqdrU6bc5TnNHizZhUNcWj8tVznJoYE0yA7iBixlZkkf
-         jGFw==
-X-Gm-Message-State: APjAAAUU2nm8AbRfQUpA9Q+lS9CGnIjK0EI7bbV10ULPpbzhf7k2G8qW
-        072JukNql5YfTSNAYnu64r9U/w==
-X-Google-Smtp-Source: APXvYqzNkw0Q184HcKUUTZ1aTMRthZfI7Ptt89lGmuW7rL9QakfPRieDU0cvvQlrmNgDH4ICprnLFg==
-X-Received: by 2002:a2e:3608:: with SMTP id d8mr10831203lja.152.1578923964076;
-        Mon, 13 Jan 2020 05:59:24 -0800 (PST)
+        bh=ScqIMW/ZuA4+mryk/Y5OCnzbnoTHNJOtXEPLhT1giFk=;
+        b=ERyNu5ZSBTMTXzFirzMBk+AVrZaKnSw6i1YsfRsPhTY4nXKxwUU6LaX5fafUZTDKI4
+         WRjLNLA0pj9Po5YG6wzSb5JgRmr93m+n6c4HuXasGg1AOr29Rxhy8CtYxDzkJPKXRCHE
+         RZCX944GWt3gAJ8kuFAhckoVzUYxjdSPR2cms7ggWVZADuCPkYd1vxOuudyhdgjjNIA7
+         A0KBZE6LVihTt50csvedv1wtqBCIryjVClqgTmolKdyaqLroC9SqhOeTvybc3SrvBxnZ
+         hEiuavYERsxJZpJ4aVArE1qO5SrFEtmejJ31gPsjf9jTlFGWtQpEN2dTHNt4XmKw+z6k
+         N05w==
+X-Gm-Message-State: APjAAAXN3aqhJIcBgyuw6wcfEep8Rc8/h34Js0IIOn5G0Hg1bNAbBfD5
+        EPs2nYbKi97vwTzDxoJvWtVhTg==
+X-Google-Smtp-Source: APXvYqxy4hA8z/zHhR8+1uXsR2hLIf3WeMd0g1E+0HS17wbL82rVXeT92WAhFiF3znTZMX23ceam8Q==
+X-Received: by 2002:a05:6000:1288:: with SMTP id f8mr19152226wrx.66.1578928188541;
+        Mon, 13 Jan 2020 07:09:48 -0800 (PST)
 Received: from cloudflare.com ([176.221.114.230])
-        by smtp.gmail.com with ESMTPSA id z13sm5843067lfi.69.2020.01.13.05.59.23
+        by smtp.gmail.com with ESMTPSA id x10sm15180463wrp.58.2020.01.13.07.09.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jan 2020 05:59:23 -0800 (PST)
-References: <20200111061206.8028-1-john.fastabend@gmail.com> <20200111061206.8028-4-john.fastabend@gmail.com>
+        Mon, 13 Jan 2020 07:09:48 -0800 (PST)
+References: <20200110105027.257877-1-jakub@cloudflare.com> <20200110105027.257877-3-jakub@cloudflare.com> <5e1a56e630ee1_1e7f2b0c859c45c0c4@john-XPS-13-9370.notmuch>
 User-agent: mu4e 1.1.0; emacs 26.3
 From:   Jakub Sitnicki <jakub@cloudflare.com>
 To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, daniel@iogearbox.net,
-        ast@kernel.org, song@kernel.org, jonathan.lemon@gmail.com
-Subject: Re: [bpf PATCH v2 3/8] bpf: sockmap/tls, push write_space updates through ulp updates
-In-reply-to: <20200111061206.8028-4-john.fastabend@gmail.com>
-Date:   Mon, 13 Jan 2020 14:59:22 +0100
-Message-ID: <87o8v7sbid.fsf@cloudflare.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        kernel-team@cloudflare.com, Eric Dumazet <edumazet@google.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Martin KaFai Lau <kafai@fb.com>
+Subject: Re: [PATCH bpf-next v2 02/11] net, sk_msg: Annotate lockless access to sk_prot on clone
+In-reply-to: <5e1a56e630ee1_1e7f2b0c859c45c0c4@john-XPS-13-9370.notmuch>
+Date:   Mon, 13 Jan 2020 16:09:47 +0100
+Message-ID: <87muars890.fsf@cloudflare.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
@@ -58,134 +60,74 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jan 11, 2020 at 07:12 AM CET, John Fastabend wrote:
-> When sockmap sock with TLS enabled is removed we cleanup bpf/psock state
-> and call tcp_update_ulp() to push updates to TLS ULP on top. However, we
-> don't push the write_space callback up and instead simply overwrite the
-> op with the psock stored previous op. This may or may not be correct so
-> to ensure we don't overwrite the TLS write space hook pass this field to
-> the ULP and have it fixup the ctx.
+On Sun, Jan 12, 2020 at 12:14 AM CET, John Fastabend wrote:
+> Jakub Sitnicki wrote:
+>> sk_msg and ULP frameworks override protocol callbacks pointer in
+>> sk->sk_prot, while TCP accesses it locklessly when cloning the listening
+>> socket.
+>>
+>> Once we enable use of listening sockets with sockmap (and hence sk_msg),
+>> there can be shared access to sk->sk_prot if socket is getting cloned while
+>> being inserted/deleted to/from the sockmap from another CPU. Mark the
+>> shared access with READ_ONCE/WRITE_ONCE annotations.
+>>
+>> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
 >
-> This completes a previous fix that pushed the ops through to the ULP
-> but at the time missed doing this for write_space, presumably because
-> write_space TLS hook was added around the same time.
->
-> Cc: stable@vger.kernel.org
-> Fixes: 95fa145479fbc ("bpf: sockmap/tls, close can race with map free")
-> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-> ---
->  include/linux/skmsg.h | 12 ++++++++----
->  include/net/tcp.h     |  6 ++++--
->  net/ipv4/tcp_ulp.c    |  6 ++++--
->  net/tls/tls_main.c    | 10 +++++++---
->  4 files changed, 23 insertions(+), 11 deletions(-)
->
-> diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
-> index b6afe01f8592..14d61bba0b79 100644
-> --- a/include/linux/skmsg.h
-> +++ b/include/linux/skmsg.h
-> @@ -359,17 +359,21 @@ static inline void sk_psock_restore_proto(struct sock *sk,
->  					  struct sk_psock *psock)
->  {
->  	sk->sk_prot->unhash = psock->saved_unhash;
-> -	sk->sk_write_space = psock->saved_write_space;
->  
->  	if (psock->sk_proto) {
->  		struct inet_connection_sock *icsk = inet_csk(sk);
->  		bool has_ulp = !!icsk->icsk_ulp_data;
->  
-> -		if (has_ulp)
-> -			tcp_update_ulp(sk, psock->sk_proto);
-> -		else
-> +		if (has_ulp) {
-> +			tcp_update_ulp(sk, psock->sk_proto,
-> +				       psock->saved_write_space);
-> +		} else {
->  			sk->sk_prot = psock->sk_proto;
-> +			sk->sk_write_space = psock->saved_write_space;
-> +		}
->  		psock->sk_proto = NULL;
-> +	} else {
-> +		sk->sk_write_space = psock->saved_write_space;
->  	}
->  }
->  
-> diff --git a/include/net/tcp.h b/include/net/tcp.h
-> index e460ea7f767b..e6f48384dc71 100644
-> --- a/include/net/tcp.h
-> +++ b/include/net/tcp.h
-> @@ -2147,7 +2147,8 @@ struct tcp_ulp_ops {
->  	/* initialize ulp */
->  	int (*init)(struct sock *sk);
->  	/* update ulp */
-> -	void (*update)(struct sock *sk, struct proto *p);
-> +	void (*update)(struct sock *sk, struct proto *p,
-> +		       void (*write_space)(struct sock *sk));
->  	/* cleanup ulp */
->  	void (*release)(struct sock *sk);
->  	/* diagnostic */
-> @@ -2162,7 +2163,8 @@ void tcp_unregister_ulp(struct tcp_ulp_ops *type);
->  int tcp_set_ulp(struct sock *sk, const char *name);
->  void tcp_get_available_ulp(char *buf, size_t len);
->  void tcp_cleanup_ulp(struct sock *sk);
-> -void tcp_update_ulp(struct sock *sk, struct proto *p);
-> +void tcp_update_ulp(struct sock *sk, struct proto *p,
-> +		    void (*write_space)(struct sock *sk));
->  
->  #define MODULE_ALIAS_TCP_ULP(name)				\
->  	__MODULE_INFO(alias, alias_userspace, name);		\
-> diff --git a/net/ipv4/tcp_ulp.c b/net/ipv4/tcp_ulp.c
-> index 12ab5db2b71c..38d3ad141161 100644
-> --- a/net/ipv4/tcp_ulp.c
-> +++ b/net/ipv4/tcp_ulp.c
-> @@ -99,17 +99,19 @@ void tcp_get_available_ulp(char *buf, size_t maxlen)
->  	rcu_read_unlock();
->  }
->  
-> -void tcp_update_ulp(struct sock *sk, struct proto *proto)
-> +void tcp_update_ulp(struct sock *sk, struct proto *proto,
-> +		    void (*write_space)(struct sock *sk))
->  {
->  	struct inet_connection_sock *icsk = inet_csk(sk);
->  
->  	if (!icsk->icsk_ulp_ops) {
-> +		sk->sk_write_space = write_space;
->  		sk->sk_prot = proto;
->  		return;
->  	}
->  
->  	if (icsk->icsk_ulp_ops->update)
-> -		icsk->icsk_ulp_ops->update(sk, proto);
-> +		icsk->icsk_ulp_ops->update(sk, proto, write_space);
->  }
->  
->  void tcp_cleanup_ulp(struct sock *sk)
-> diff --git a/net/tls/tls_main.c b/net/tls/tls_main.c
-> index dac24c7aa7d4..94774c0e5ff3 100644
-> --- a/net/tls/tls_main.c
-> +++ b/net/tls/tls_main.c
-> @@ -732,15 +732,19 @@ static int tls_init(struct sock *sk)
->  	return rc;
->  }
->  
-> -static void tls_update(struct sock *sk, struct proto *p)
-> +static void tls_update(struct sock *sk, struct proto *p,
-> +		       void (*write_space)(struct sock *sk))
->  {
->  	struct tls_context *ctx;
->  
->  	ctx = tls_get_ctx(sk);
-> -	if (likely(ctx))
-> +	if (likely(ctx)) {
-> +		ctx->sk_write_space = write_space;
->  		ctx->sk_proto = p;
-> -	else
-> +	} else {
->  		sk->sk_prot = p;
-> +		sk->sk_write_space = write_space;
-> +	}
->  }
->  
->  static int tls_get_info(const struct sock *sk, struct sk_buff *skb)
+> In sockmap side I fixed this by wrapping the access in a lock_sock[0]. So
+> Do you think this is still needed with that in mind? The bpf_clone call
+> is using sk_prot_creater and also setting the newsk's proto field. Even
+> if the listening parent sock was being deleted in parallel would that be
+> a problem? We don't touch sk_prot_creator from the tear down path. I've
+> only scanned the 3..11 patches so maybe the answer is below. If that is
+> the case probably an improved commit message would be helpful.
 
-Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
+I think it is needed. Not because of tcp_bpf_clone or that we access
+listener's sk_prot_creator from there, if I'm grasping your question.
+
+Either way I'm glad this came up. Let's go though my reasoning and
+verify it. tcp stack accesses the listener sk_prot while cloning it:
+
+tcp_v4_rcv
+  sk = __inet_lookup_skb(...)
+  tcp_check_req(sk)
+    inet_csk(sk)->icsk_af_ops->syn_recv_sock
+      tcp_v4_syn_recv_sock
+        tcp_create_openreq_child
+          inet_csk_clone_lock
+            sk_clone_lock
+              READ_ONCE(sk->sk_prot)
+
+It grabs a reference to the listener, but doesn't grab the sk_lock.
+
+On another CPU we can be inserting/removing the listener socket from the
+sockmap and writing to its sk_prot. We have the update and the remove
+path:
+
+sock_map_ops->map_update_elem
+  sock_map_update_elem
+    sock_map_update_common
+      sock_map_link_no_progs
+        tcp_bpf_init
+          tcp_bpf_update_sk_prot
+            sk_psock_update_proto
+              WRITE_ONCE(sk->sk_prot, ops)
+
+sock_map_ops->map_delete_elem
+  sock_map_delete_elem
+    __sock_map_delete
+     sock_map_unref
+       sk_psock_put
+         sk_psock_drop
+           sk_psock_restore_proto
+             tcp_update_ulp
+               WRITE_ONCE(sk->sk_prot, proto)
+
+Following the guidelines from KTSAN project [0], sk_prot looks like a
+candidate for annotating it. At least on these 3 call paths.
+
+If that sounds correct, I can add it to the patch description.
+
+Thanks,
+-jkbs
+
+[0] https://github.com/google/ktsan/wiki/READ_ONCE-and-WRITE_ONCE
