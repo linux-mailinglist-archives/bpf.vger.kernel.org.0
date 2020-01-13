@@ -2,106 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 75B4513912A
-	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2020 13:37:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48D9A13922F
+	for <lists+bpf@lfdr.de>; Mon, 13 Jan 2020 14:29:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726934AbgAMMhj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Jan 2020 07:37:39 -0500
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:36037 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726435AbgAMMhj (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 13 Jan 2020 07:37:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1578919058;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zPc0nhNotVAJC0F3RNpLz0PpmAUiDRCJKvm5aCqEAik=;
-        b=e3MhX1G0jr/BjiujJuNmayg3mwab+twMZnwjso7P0bn9Lmlk0rUBbKqFKEWFo9ywFU2Xw7
-        AotIQjC9BnTZBPw3T5fnLTi/0ZaczxNGD6S+iAepJs4+VjyMPq3KUTgeQxJ479eNbe8Rz9
-        Z+LNXBmL3Ig2jrGz6TWJhRfPCRL5L1o=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-306-OyERcqybNTy89wxQ8IQ6eQ-1; Mon, 13 Jan 2020 07:37:35 -0500
-X-MC-Unique: OyERcqybNTy89wxQ8IQ6eQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2F650477;
-        Mon, 13 Jan 2020 12:37:33 +0000 (UTC)
-Received: from krava (unknown [10.43.17.48])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B6AEB5C241;
-        Mon, 13 Jan 2020 12:37:30 +0000 (UTC)
-Date:   Mon, 13 Jan 2020 13:37:28 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Andrii Nakryiko <andriin@fb.com>,
-        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        David Miller <davem@redhat.com>
-Subject: Re: [PATCH 5/5] bpf: Allow to resolve bpf trampoline in unwind
-Message-ID: <20200113123728.GA120834@krava>
-References: <20191229143740.29143-1-jolsa@kernel.org>
- <20191229143740.29143-6-jolsa@kernel.org>
- <20200106234639.fo2ctgkb5vumayyl@ast-mbp>
- <20200107130546.GI290055@krava>
- <76a10338-391a-ffca-9af8-f407265d146a@intel.com>
- <20200113094310.GE35080@krava>
- <a2e2b84e-71dd-e32c-bcf4-09298e9f4ce7@intel.com>
- <9da1c8f9-7ca5-e10b-8931-6871fdbffb23@intel.com>
+        id S1728688AbgAMN3x (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 13 Jan 2020 08:29:53 -0500
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:35087 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726934AbgAMN3x (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 13 Jan 2020 08:29:53 -0500
+Received: by mail-lf1-f68.google.com with SMTP id 15so6876606lfr.2
+        for <bpf@vger.kernel.org>; Mon, 13 Jan 2020 05:29:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=9ZyL8OSm8vrEXo1UYjGMABGrTGFBa8Ctc4C1U+D88J0=;
+        b=NJBo1RzdWcamq73kNcIChwee7ZBvOTqHhmt7OYDK9EBB91iPtjrtdRnkIRluAiialZ
+         njkYQdytlvdzA3+4g8mNh96+9bdkWMjeJTL5DYpmzHnVDVXuQIRURO8xfbCDmPUkOL9M
+         6Zw91yHHyF1czt0t4ZCacJToI7EoVPZ3QUCOM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=9ZyL8OSm8vrEXo1UYjGMABGrTGFBa8Ctc4C1U+D88J0=;
+        b=rncW5C831jXgfdVO5Hq6gTJxEDhirQrfVIAoTo77cRifUOY3CsFEDejvAaC1Q0Tr8W
+         PC0OQLxZb1rSmM0qSL5imV6zhUTRPf+FbGRcEcF7n0j5WSxBSwK8LPjjsBI/Z2ABLtOP
+         HJBJy95rYgBrxU7wo7SFAsUTi/1x6Aeq7khaQQfmlc1ZbJSSEj5G7t8Jl8F0P2UMcl7q
+         kCT53PhBCwWI3YTfHFgmccZKYDpeoWzkiAtBPuNvIUJtJOLpbdc/5dB6KAg4R778T6f6
+         u8kWYHecPS7Tjvcguh3FqWYp8nUOOWXuLUparaJlIItAbTpMBQKlfnD2pGhgvebNbYrD
+         tMQg==
+X-Gm-Message-State: APjAAAVg3ogYWpZTf+MNGeylBttS6ghq+Ag+f69WQkFO165khEDfVT2S
+        7jhHany0RNONbEO0oFn2AQfrVg==
+X-Google-Smtp-Source: APXvYqz/bAdH5V+maVueOYptSS9P4ybmSaqJOve4ssz5VKGDVkL+SywNg4QyFGPA5hEMKTCft6nWEg==
+X-Received: by 2002:ac2:4c2b:: with SMTP id u11mr9832482lfq.46.1578922191366;
+        Mon, 13 Jan 2020 05:29:51 -0800 (PST)
+Received: from cloudflare.com ([176.221.114.230])
+        by smtp.gmail.com with ESMTPSA id u7sm5683773lfn.31.2020.01.13.05.29.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Jan 2020 05:29:50 -0800 (PST)
+References: <20200111061206.8028-1-john.fastabend@gmail.com> <20200111061206.8028-2-john.fastabend@gmail.com>
+User-agent: mu4e 1.1.0; emacs 26.3
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, daniel@iogearbox.net,
+        ast@kernel.org, song@kernel.org, jonathan.lemon@gmail.com
+Subject: Re: [bpf PATCH v2 1/8] bpf: sockmap/tls, during free we may call tcp_bpf_unhash() in loop
+In-reply-to: <20200111061206.8028-2-john.fastabend@gmail.com>
+Date:   Mon, 13 Jan 2020 14:29:50 +0100
+Message-ID: <87pnfnscvl.fsf@cloudflare.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-In-Reply-To: <9da1c8f9-7ca5-e10b-8931-6871fdbffb23@intel.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 13, 2020 at 01:31:38PM +0100, Bj=F6rn T=F6pel wrote:
-> On 2020-01-13 13:21, Bj=F6rn T=F6pel wrote:
-> >=20
-> > On 2020-01-13 10:43, Jiri Olsa wrote:
-> > > hi,
-> > > attached patch seems to work for me (trampoline usecase), but I
-> > > don't know
-> > > how to test it for dispatcher.. also I need to check if we need to
-> > > decrease
-> > > BPF_TRAMP_MAX or BPF_DISPATCHER_MAX, it might take more time;-)
-> > >=20
-> >=20
-> > Thanks for working on it! I'll take the patch for a spin.
-> >=20
-> > To test the dispatcher, just run XDP!
-> >=20
-> > With your change, the BPF_DISPATCHER_MAX is still valid. 48 entries =3D=
+On Sat, Jan 11, 2020 at 07:11 AM CET, John Fastabend wrote:
+> When a sockmap is free'd and a socket in the map is enabled with tls
+> we tear down the bpf context on the socket, the psock struct and state,
+> and then call tcp_update_ulp(). The tcp_update_ulp() call is to inform
+> the tls stack it needs to update its saved sock ops so that when the tls
+> socket is later destroyed it doesn't try to call the now destroyed psock
+> hooks.
 >
-> > 1890B which is < (BPF_IMAGE_SIZE / 2).
+> This is about keeping stacked ULPs in good shape so they always have
+> the right set of stacked ops.
+>
+> However, recently unhash() hook was removed from TLS side. But, the
+> sockmap/bpf side is not doing any extra work to update the unhash op
+> when is torn down instead expecting TLS side to manage it. So both
+> TLS and sockmap believe the other side is managing the op and instead
+> no one updates the hook so it continues to point at tcp_bpf_unhash().
+> When unhash hook is called we call tcp_bpf_unhash() which detects the
+> psock has already been destroyed and calls sk->sk_prot_unhash() which
+> calls tcp_bpf_unhash() yet again and so on looping and hanging the core.
+>
+> To fix have sockmap tear down logic fixup the stale pointer.
+>
+> Fixes: 5d92e631b8be ("net/tls: partially revert fix transition through disconnect with close")
+> Reported-by: syzbot+83979935eb6304f8cd46@syzkaller.appspotmail.com
+> Cc: stable@vger.kernel.org
+> Acked-by: Song Liu <songliubraving@fb.com>
+> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+> ---
+>  include/linux/skmsg.h | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
+> index ef7031f8a304..b6afe01f8592 100644
+> --- a/include/linux/skmsg.h
+> +++ b/include/linux/skmsg.h
+> @@ -358,6 +358,7 @@ static inline void sk_psock_update_proto(struct sock *sk,
+>  static inline void sk_psock_restore_proto(struct sock *sk,
+>  					  struct sk_psock *psock)
+>  {
+> +	sk->sk_prot->unhash = psock->saved_unhash;
 
-great
+We could also restore it from psock->sk_proto->unhash if we were not
+NULL'ing on first call, right?
 
-> >=20
->=20
-> ...and FWIW, it would be nice with bpf_dispatcher_<...> entries in kall=
-syms
+I've been wondering what is the purpose of having psock->saved_unhash
+and psock->saved_close if we have the whole sk->sk_prot saved in
+psock->sk_proto.
 
-ok so it'd be 'bpf_dispatcher_<name>'
+>  	sk->sk_write_space = psock->saved_write_space;
+>
+>  	if (psock->sk_proto) {
 
-from DEFINE_BPF_DISPATCHER(name)
-
-> as well. If that code could be shared with the trampoline code as well
-> (bpf_trampoline_<btf_id>), that'd be great!
->=20
-
-ok, will add it
-
-thanks,
-jirka
-
+Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
