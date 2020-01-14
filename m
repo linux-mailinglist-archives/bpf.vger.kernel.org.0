@@ -2,81 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D5AB213AAB1
-	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2020 14:22:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9171B13ADFB
+	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2020 16:48:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728689AbgANNWS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Jan 2020 08:22:18 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:44852 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725994AbgANNWS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Jan 2020 08:22:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1579008138;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BMr4t19r9FDBxMiNqZ17ABTwdjTXfkzRestAINYUs2o=;
-        b=e1VlJtm4ceba32t3NE4bQ53Iuc0QPnDvph+S8g/2acLX7jwsQihK9pUwDvc0KTArA+XWHk
-        pjUNf0Jru3ztc0eJ8vtD1EiBKdN5nhY83LN4c6dkLX+uURXfDWd93lLd1qNCeOLto3G5Tf
-        PhzxtN/L6fXT78uC+7RutJXrJTa/vyk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-187-hY50GWhqMJyc0ARApPk7RQ-1; Tue, 14 Jan 2020 08:22:14 -0500
-X-MC-Unique: hY50GWhqMJyc0ARApPk7RQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 59D0F8DC401;
-        Tue, 14 Jan 2020 13:22:12 +0000 (UTC)
-Received: from krava (unknown [10.43.17.48])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B18E350A8F;
-        Tue, 14 Jan 2020 13:22:10 +0000 (UTC)
-Date:   Tue, 14 Jan 2020 14:22:08 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
-        daniel@iogearbox.net, andrii.nakryiko@gmail.com, kernel-team@fb.com
-Subject: Re: [PATCH v2 bpf-next 5/6] tools/bpf: add runqslower tool to
- tools/bpf
-Message-ID: <20200114132208.GC170376@krava>
-References: <20200113073143.1779940-1-andriin@fb.com>
- <20200113073143.1779940-6-andriin@fb.com>
+        id S1728688AbgANPs1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Jan 2020 10:48:27 -0500
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:35168 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728695AbgANPs1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Jan 2020 10:48:27 -0500
+Received: by mail-lj1-f196.google.com with SMTP id j1so14889241lja.2
+        for <bpf@vger.kernel.org>; Tue, 14 Jan 2020 07:48:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=dLbjHKuyCSdvL37+hmsui6qZ9EwBG7rzByZNk6nyh4c=;
+        b=tgvoiZI6l59IuleGfm//PJpb7gertpUzKN0IamEWqiPPgE7T6kOWTwbagxp6E6QbM0
+         El87f6PJCR/8kNUiNtFEDg844zxQ+8jQatF31Q+lVOJU5CbgKexiKpjLKetg/ucrRlv6
+         wWhIm2NVvymkm9FPkmM9lpie7t4w7ECSEbxaE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=dLbjHKuyCSdvL37+hmsui6qZ9EwBG7rzByZNk6nyh4c=;
+        b=lgypx7OK+EWrnGfbKLnQi5C+laaEpAB8kFcIpYvGtfSPaSiP4xkVEizQjSxmj+oZ4n
+         bsmak+gGnKmEwwW6nvIlSh6HAVw57+nCW2RSM8RMA/iJZkc2PiOCjWwc09p0G4zCNMjl
+         jbz+8U35hsd00zF62iQ7jBQxQVfwmKpktJjqylIcRf2ZGag+nbOKzsIof69+Lp3g6gsi
+         A/j036nnoB24dBAIbdQdMmffF5FY3zR3bVXISQwGgGsSakcsNQpb/kg6Y0iVyilUXPnq
+         GzImNPT0jMG4ybtpjf+31YP+FYE+CvdxjL8w+3K0ejcsJ9qnZR0oE47Rw1J1dwGQzrhp
+         p0gw==
+X-Gm-Message-State: APjAAAWFfM3PgSpr1NvvkWqzfelAUER2U7lXME1UtR8LFUJN1Sl0PH9q
+        sGNYad+c9SkX/Stkh5ItXLEd1Q==
+X-Google-Smtp-Source: APXvYqx+CUX33laMHA9Cyf1lrkU3CChvyiNtZzGRhKUGdEVMwLMOUGDWk4EK/dVmL5gl2ebKdd0+wA==
+X-Received: by 2002:a2e:81c3:: with SMTP id s3mr14991096ljg.168.1579016905323;
+        Tue, 14 Jan 2020 07:48:25 -0800 (PST)
+Received: from cloudflare.com ([176.221.114.230])
+        by smtp.gmail.com with ESMTPSA id w19sm7378995lfl.55.2020.01.14.07.48.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Jan 2020 07:48:24 -0800 (PST)
+References: <20200110105027.257877-1-jakub@cloudflare.com> <20200110105027.257877-8-jakub@cloudflare.com> <20200113231223.cl77bxxs44bl6uhw@kafai-mbp.dhcp.thefacebook.com> <5e1d328d760e_78752af1940225b4b7@john-XPS-13-9370.notmuch>
+User-agent: mu4e 1.1.0; emacs 26.3
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Martin Lau <kafai@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     "bpf\@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev\@vger.kernel.org" <netdev@vger.kernel.org>,
+        "kernel-team\@cloudflare.com" <kernel-team@cloudflare.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Lorenz Bauer <lmb@cloudflare.com>
+Subject: Re: [PATCH bpf-next v2 07/11] bpf, sockmap: Return socket cookie on lookup from syscall
+In-reply-to: <5e1d328d760e_78752af1940225b4b7@john-XPS-13-9370.notmuch>
+Date:   Tue, 14 Jan 2020 16:48:23 +0100
+Message-ID: <87blr6rqd4.fsf@cloudflare.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200113073143.1779940-6-andriin@fb.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Jan 12, 2020 at 11:31:42PM -0800, Andrii Nakryiko wrote:
+On Tue, Jan 14, 2020 at 04:16 AM CET, John Fastabend wrote:
+> Martin Lau wrote:
+>> On Fri, Jan 10, 2020 at 11:50:23AM +0100, Jakub Sitnicki wrote:
+>> > Tooling that populates the SOCKMAP with sockets from user-space needs a way
+>> > to inspect its contents. Returning the struct sock * that SOCKMAP holds to
+>> > user-space is neither safe nor useful. An approach established by
+>> > REUSEPORT_SOCKARRAY is to return a socket cookie (a unique identifier)
+>> > instead.
+>> >
+>> > Since socket cookies are u64 values SOCKMAP needs to support such a value
+>> > size for lookup to be possible. This requires special handling on update,
+>> > though. Attempts to do a lookup on SOCKMAP holding u32 values will be met
+>> > with ENOSPC error.
+>> >
+>> > Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+>> > ---
+>
+> [...]
+>
+>> > +static void *sock_map_lookup_sys(struct bpf_map *map, void *key)
+>> > +{
+>> > +	struct sock *sk;
+>> > +
+>> > +	WARN_ON_ONCE(!rcu_read_lock_held());
+>> It seems unnecessary.  It is only called by syscall.c which
+>> holds the rcu_read_lock().  Other than that,
+>>
+>
+> +1 drop it. The normal rcu annotations/splats should catch anything
+> here.
 
-SNIP
+Oh, okay. Thanks for pointing it out.
 
-> diff --git a/tools/bpf/runqslower/Makefile b/tools/bpf/runqslower/Makefile
-> new file mode 100644
-> index 000000000000..f1363ae8e473
-> --- /dev/null
-> +++ b/tools/bpf/runqslower/Makefile
-> @@ -0,0 +1,80 @@
-> +# SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
-> +OUTPUT := .output
-> +CLANG := clang
-> +LLC := llc
-> +LLVM_STRIP := llvm-strip
-> +DEFAULT_BPFTOOL := $(OUTPUT)/sbin/bpftool
-> +BPFTOOL ?= $(DEFAULT_BPFTOOL)
-> +LIBBPF_SRC := $(abspath ../../lib/bpf)
-> +CFLAGS := -g -Wall
-> +
-> +# Try to detect best kernel BTF source
-> +KERNEL_REL := $(shell uname -r)
-> +ifneq ("$(wildcard /sys/kenerl/btf/vmlinux)","")
+I noticed __sock_map_lookup_elem called from sock_map_lookup_sys has the
+same WARN_ON_ONCE check. Looks like it can be cleaned up.
 
-s/kenerl/kernel/
-
-jirka
-
+Granted, __sock_map_lookup_elem also gets invoked by sockmap BPF helpers
+for redirecting (bpf_msg_redirect_map, bpf_sk_redirect_map). But we
+always run sk_skb and sk_msg progs RCU read lock held.
