@@ -2,132 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D62DC13B37C
-	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2020 21:15:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EE9A13B413
+	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2020 22:11:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727285AbgANUPM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Jan 2020 15:15:12 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:13500 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726839AbgANUPL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Jan 2020 15:15:11 -0500
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5e1e21390001>; Tue, 14 Jan 2020 12:14:49 -0800
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Tue, 14 Jan 2020 12:15:09 -0800
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Tue, 14 Jan 2020 12:15:09 -0800
-Received: from [10.110.48.28] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 14 Jan
- 2020 20:15:09 +0000
-Subject: Re: [PATCH v12 00/22] mm/gup: prereqs to track dma-pinned pages:
- FOLL_PIN
-From:   John Hubbard <jhubbard@nvidia.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     Al Viro <viro@zeniv.linux.org.uk>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Chinner <david@fromorbit.com>,
-        David Airlie <airlied@linux.ie>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, <bpf@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <kvm@vger.kernel.org>,
-        <linux-block@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-media@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>, <netdev@vger.kernel.org>,
-        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>
-References: <20200107224558.2362728-1-jhubbard@nvidia.com>
- <2a9145d4-586e-6489-64e4-0c54f47afaa1@nvidia.com>
-X-Nvconfidentiality: public
-Message-ID: <9d7f3c1a-6020-bdec-c513-80c5399e55d7@nvidia.com>
-Date:   Tue, 14 Jan 2020 12:15:08 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S1728808AbgANVLu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Jan 2020 16:11:50 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:18952 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727285AbgANVLu (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 14 Jan 2020 16:11:50 -0500
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 00EL0X34000864
+        for <bpf@vger.kernel.org>; Tue, 14 Jan 2020 13:11:49 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=BXkBeIGxqIgZAP8Er8p4aSa/8SVyVssIZqKKSI542mI=;
+ b=PneMx0ecWAUXwxCuKiw8z5czkhzCqyo4USaGp3Pf7uKJsyE7YCmKiXKt59He0R75k98+
+ bbEjuadYR75MYhp5yax3gYjFoTwrdulJI3Z4NncMmbts5w8ki10MCvkIdAqixCyG9zSj
+ L3C3tlDcQ2yWVTzSYEil+qSUMCTqTZYv+r8= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2xhbr7378s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 14 Jan 2020 13:11:48 -0800
+Received: from intmgw004.06.prn3.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 14 Jan 2020 13:11:48 -0800
+Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
+        id 05E93370257F; Tue, 14 Jan 2020 13:11:43 -0800 (PST)
+Smtp-Origin-Hostprefix: devbig
+From:   Yonghong Song <yhs@fb.com>
+Smtp-Origin-Hostname: devbig003.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next v2 0/2] bpf: add bpf_send_signal_thread() helper
+Date:   Tue, 14 Jan 2020 13:11:43 -0800
+Message-ID: <20200114211143.3201505-1-yhs@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-In-Reply-To: <2a9145d4-586e-6489-64e4-0c54f47afaa1@nvidia.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1579032890; bh=wLxNzNFRStaOZ7jAQIV4tH1wBKaWmBKZBOUdkq/PVGQ=;
-        h=X-PGP-Universal:Subject:From:To:CC:References:X-Nvconfidentiality:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=bNQcHd+kt2S6qArSD90PMkNX5LSRoo2toPf1fdY/D3ysgVjnnuMPbcBLvU4mGjBbT
-         LR4uZiIEi3/mAViybdXB1PH001dny/ndD230xDMGlhs7NAYpQR6mGLaj5Fl0H44uol
-         s/WH8SaFGbiYHrC+Jf2F7bChe3A2NqguquLvhseggPHll2epR/FoT6c0YMA6JGSKkp
-         eSDWR40pps95gbxdKKvy2DClT3lBSMdUwcemTQnf2Jrxy6nLuQLIDhcegQ+kyGcscI
-         uknj/1R1Mw2ETSzcXASW/vo/Q3g+SHupTZUPph9j3ZAnq/QlpAxhi10ckpA46Ke/0I
-         HjefW3dJ5Akvg==
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-01-14_06:2020-01-14,2020-01-14 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0 adultscore=0
+ mlxscore=0 bulkscore=0 spamscore=0 lowpriorityscore=0 malwarescore=0
+ mlxlogscore=853 priorityscore=1501 clxscore=1015 suspectscore=13
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-2001140161
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 1/9/20 2:07 PM, John Hubbard wrote:
-> On 1/7/20 2:45 PM, John Hubbard wrote:
->> Hi,
->>
->> The "track FOLL_PIN pages" would have been the very next patch, but it is
->> not included here because I'm still debugging a bug report from Leon.
->> Let's get all of the prerequisite work (it's been reviewed) into the tree
->> so that future reviews are easier. It's clear that any fixes that are
->> required to the tracking patch, won't affect these patches here.
->>
->> This implements an API naming change (put_user_page*() -->
->> unpin_user_page*()), and also adds FOLL_PIN page support, up to
->> *but not including* actually tracking FOLL_PIN pages. It extends
->> the FOLL_PIN support to a few select subsystems. More subsystems will
->> be added in follow up work.
->>
-> 
-> Hi Andrew and all,
-> 
-> To clarify: I'm hoping that this series can go into 5.6.
-> 
-> Meanwhile, I'm working on tracking down and solving the problem that Leon
-> reported, in the "track FOLL_PIN pages" patch, and that patch is not part of
-> this series.
-> 
+Commit 8b401f9ed244 ("bpf: implement bpf_send_signal() helper")
+added helper bpf_send_signal() which permits bpf program to
+send a signal to the current process. The signal may send to
+any thread of the process.
 
-Hi Andrew and all,
+This patch implemented a new helper bpf_send_signal_thread()
+to send a signal to the thread corresponding to the kernel current task.
+This helper can simplify user space code if the thread context of
+bpf sending signal is needed in user space. Please see Patch #1 for
+details of use case and kernel implementation.
 
-Any thoughts on this?
+Patch #2 added some bpf self tests for the new helper.
 
-As for the not-included-yet tracking patch, my local testing still suggests the
-need to allow for larger refcounts of huge pages (in other words, I can write a test
-to pin huge pages many times, and overflow with the same backtrace that Leon has
-reported).
+Changelogs:
+  v1 -> v2:
+    - More description for the difference between bpf_send_signal()
+      and bpf_send_signal_thread() in the uapi header bpf.h.
+    - Use skeleton and mmap for send_signal test.
 
-The second struct page (I recall Jan suggested) can hold those, so I'm going to proceed
-with that approach, while waiting to see if Leon has any more test data for me.
+Yonghong Song (2):
+  bpf: add bpf_send_signal_thread() helper
+  tools/bpf: add self tests for bpf_send_signal_thread()
 
-Again, I think this series is worth getting out of the way, in the meantime.
+ include/uapi/linux/bpf.h                      |  19 ++-
+ kernel/trace/bpf_trace.c                      |  27 ++++-
+ tools/include/uapi/linux/bpf.h                |  19 ++-
+ .../selftests/bpf/prog_tests/send_signal.c    | 111 ++++++++++--------
+ .../bpf/progs/test_send_signal_kern.c         |  51 ++++----
+ 5 files changed, 145 insertions(+), 82 deletions(-)
 
-
-thanks,
 -- 
-John Hubbard
-NVIDIA
+2.17.1
+
