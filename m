@@ -2,75 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EF6D2139FF2
-	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2020 04:27:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B31613A20F
+	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2020 08:27:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729324AbgAND1K (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 13 Jan 2020 22:27:10 -0500
-Received: from mail-io1-f66.google.com ([209.85.166.66]:45425 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728802AbgAND1K (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 13 Jan 2020 22:27:10 -0500
-Received: by mail-io1-f66.google.com with SMTP id i11so12225121ioi.12;
-        Mon, 13 Jan 2020 19:27:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=NdHwss5c0gFIX5FaAZPICDBlWdT07YSHa5J4ZYcV8kg=;
-        b=qOqoA/y+BV0wRnH8dlAm42FVWDuBmqn8BMW+QIc2cwji2fhOxO14oWoK8VwEzmR4Kv
-         HD1jM05+LDfCorK2E9usu+94SpICKBf5euPP7l5x7FrD7nMjDovcM+qW9Iw6QKz318+M
-         uCHfApEGl+qszsouUbRJ5v7/rwj85WAoFthdq9ZpPMckVmJuMbRvxfiG47aDfSiopT+N
-         PooMUUtat93BNmc8SdA7D3vPqpWYf4hEUnJBhhJtmd5IrPK69LUgb57UMB5iBHv+M6JF
-         FRak/fXXIzt/JRx6jWV9LSwRBCDmlBmhyCurPJyrlnAU9kgsTvmn8FoQTNnjfrJ0LMs+
-         jYYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=NdHwss5c0gFIX5FaAZPICDBlWdT07YSHa5J4ZYcV8kg=;
-        b=S1CbRChrMtAw9HhOXOK6TatrI5lcFE+SC5FGT/iGXtqfSZBBydZSSvbFldaXVab4Ej
-         0ArtqwdoWpevkLA953b74vSwkHyg4XppXRxbY9uOJcGYMLPb+JoAEIJlnh7XgNicsgV5
-         ZjzjSkm6KNsD2xbGTrlvJTnxYaotYNn7WcuYZuCUb5cje2K2+Ll+ReAWrgpaEwwZ3zcs
-         Qc0dmPX+IYhL2cP7zw76pF1TR9pmK2yF5mmmkv31t3aqjF4UzN/AqurU9sgcMvqCWAAx
-         yDo69iifZ/iYSxZ2wttys/wStiWnpH6uNKi1OPug6PUraWTZZlmi1QCB7ayfhRPH/yoW
-         37FA==
-X-Gm-Message-State: APjAAAXFr0WV4MbWC7sk05Boph/0O7uSu8tLnjT79AEMzTUuLghmE7BR
-        XO6ASlqbAK8cY3wkJFm+O+g=
-X-Google-Smtp-Source: APXvYqzTtkDB4NLN3gsklDMwM8y32KEJIW8VZ33GjmH7itmbbfysYjOtURHYmuFUyZInvmfqasIRCQ==
-X-Received: by 2002:a5e:d616:: with SMTP id w22mr14666792iom.57.1578972429125;
-        Mon, 13 Jan 2020 19:27:09 -0800 (PST)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id x13sm3124783ioj.80.2020.01.13.19.27.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jan 2020 19:27:08 -0800 (PST)
-Date:   Mon, 13 Jan 2020 19:27:00 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     bjorn.topel@gmail.com, bpf@vger.kernel.org, toke@redhat.com,
-        toshiaki.makita1@gmail.com, netdev@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net
-Message-ID: <5e1d3504820a_78752af1940225b491@john-XPS-13-9370.notmuch>
-In-Reply-To: <20200112074722.GA24420@ranger.igk.intel.com>
-References: <157879606461.8200.2816751890292483534.stgit@john-Precision-5820-Tower>
- <157879664156.8200.4955971883120344808.stgit@john-Precision-5820-Tower>
- <20200112074722.GA24420@ranger.igk.intel.com>
-Subject: Re: [bpf-next PATCH v2 1/2] bpf: xdp, update devmap comments to
- reflect napi/rcu usage
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        id S1728933AbgANH06 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Jan 2020 02:26:58 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:31442 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728877AbgANH05 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 14 Jan 2020 02:26:57 -0500
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 00E7QqOV022934
+        for <bpf@vger.kernel.org>; Mon, 13 Jan 2020 23:26:57 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=Jn/vM3BLOJYAU6XhXbI0LB+2RbDZv9JnGkvvY5EkGck=;
+ b=ag/i49CMnINMjLcgl4ia8Q2krEfqkbWySH2wGFsu+TEdMKWeIY1P7KOfJrY0cSgv3ZE4
+ jRmJW3jvSUfEGztzV+qTGfR+OZQ6qgDblQpKZwOagwdDTsUVKWqVY+wzsZOY1hyLxrru
+ e1e341tBiV+VHHvTwqACZX4o8RKQAYV8NG8= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2xfxt48sd3-10
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 13 Jan 2020 23:26:57 -0800
+Received: from intmgw001.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 13 Jan 2020 23:26:55 -0800
+Received: by devbig005.ftw2.facebook.com (Postfix, from userid 6611)
+        id DE34D29440CF; Mon, 13 Jan 2020 23:26:47 -0800 (PST)
+Smtp-Origin-Hostprefix: devbig
+From:   Martin KaFai Lau <kafai@fb.com>
+Smtp-Origin-Hostname: devbig005.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>, <kernel-team@fb.com>,
+        <netdev@vger.kernel.org>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next] bpf: Fix seq_show for BPF_MAP_TYPE_STRUCT_OPS
+Date:   Mon, 13 Jan 2020 23:26:47 -0800
+Message-ID: <20200114072647.3188298-1-kafai@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-01-14_01:2020-01-13,2020-01-14 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
+ clxscore=1015 mlxlogscore=707 impostorscore=0 priorityscore=1501
+ spamscore=0 adultscore=0 lowpriorityscore=0 suspectscore=38 bulkscore=0
+ malwarescore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-2001140064
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Maciej Fijalkowski wrote:
-> On Sat, Jan 11, 2020 at 06:37:21PM -0800, John Fastabend wrote:
-> 
-> Small nits for typos, can be ignored.
+Instead of using bpf_struct_ops_map_lookup_elem() which is
+not implemented, bpf_struct_ops_map_seq_show_elem() should
+also use bpf_struct_ops_map_sys_lookup_elem() which does
+an inplace update to the value.  The change allocates
+a value to pass to bpf_struct_ops_map_sys_lookup_elem().
 
-thanks better to not have typos and I'll send a v3 anyways
-for the rcu_access_pointer comment in virtio_net.
+[root@arch-fb-vm1 bpf]# cat /sys/fs/bpf/dctcp
+{{{1}},BPF_STRUCT_OPS_STATE_INUSE,{{00000000df93eebc,00000000df93eebc},0,2, ...
+
+Fixes: 85d33df357b6 ("bpf: Introduce BPF_MAP_TYPE_STRUCT_OPS")
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+---
+ kernel/bpf/bpf_struct_ops.c | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
+
+diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
+index ddf48f49914b..8ad1c9ea26b2 100644
+--- a/kernel/bpf/bpf_struct_ops.c
++++ b/kernel/bpf/bpf_struct_ops.c
+@@ -496,14 +496,20 @@ static void bpf_struct_ops_map_seq_show_elem(struct bpf_map *map, void *key,
+ 					     struct seq_file *m)
+ {
+ 	void *value;
++	int err;
+ 
+-	value = bpf_struct_ops_map_lookup_elem(map, key);
++	value = kmalloc(map->value_size, GFP_USER | __GFP_NOWARN);
+ 	if (!value)
+ 		return;
+ 
+-	btf_type_seq_show(btf_vmlinux, map->btf_vmlinux_value_type_id,
+-			  value, m);
+-	seq_puts(m, "\n");
++	err = bpf_struct_ops_map_sys_lookup_elem(map, key, value);
++	if (!err) {
++		btf_type_seq_show(btf_vmlinux, map->btf_vmlinux_value_type_id,
++				  value, m);
++		seq_puts(m, "\n");
++	}
++
++	kfree(value);
+ }
+ 
+ static void bpf_struct_ops_map_free(struct bpf_map *map)
+-- 
+2.17.1
+
