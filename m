@@ -2,199 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F5F213AF9D
-	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2020 17:40:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F40B313AFAE
+	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2020 17:43:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726195AbgANQkn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Jan 2020 11:40:43 -0500
-Received: from mga01.intel.com ([192.55.52.88]:36275 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726053AbgANQkn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Jan 2020 11:40:43 -0500
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 14 Jan 2020 08:40:43 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,433,1574150400"; 
-   d="scan'208";a="397565711"
-Received: from ranger.igk.intel.com ([10.102.21.164])
-  by orsmga005.jf.intel.com with ESMTP; 14 Jan 2020 08:40:40 -0800
-Date:   Tue, 14 Jan 2020 10:33:43 +0100
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     Eelco Chaudron <echaudro@redhat.com>
-Cc:     bpf@vger.kernel.org, davem@davemloft.net, ast@kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2] selftests/bpf: Add a test for attaching a
- bpf fentry/fexit trace to an XDP program
-Message-ID: <20200114093343.GB9130@ranger.igk.intel.com>
-References: <157901745600.30872.10096561620432101095.stgit@xdp-tutorial>
+        id S1727285AbgANQnG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Jan 2020 11:43:06 -0500
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:22866 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726379AbgANQnE (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 14 Jan 2020 11:43:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1579020183;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=gDOl5oOf2cpVq2YFw06OX+4Yf7QXZq+3GEoWn2wy/eA=;
+        b=fgoTbixrXviBKpif+lOBdDX492LW7sQGGwpGf4M5MAaPgxikqrzR/TPfVJ/hREp8h6aLzA
+        6Gx3NEr9d5UuMbSh95dVpKD4sqhaWgr5f6D02/e0W2PVJplVi+c8t+cMHh4HnLDRah+y4x
+        syoyOzR3QVwL3O+RGeb8/Ipug6mcgrw=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-253-LA1t9d5jNwGjQeTzX0Ug_g-1; Tue, 14 Jan 2020 11:43:00 -0500
+X-MC-Unique: LA1t9d5jNwGjQeTzX0Ug_g-1
+Received: by mail-lj1-f200.google.com with SMTP id o9so3138514ljc.6
+        for <bpf@vger.kernel.org>; Tue, 14 Jan 2020 08:43:00 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gDOl5oOf2cpVq2YFw06OX+4Yf7QXZq+3GEoWn2wy/eA=;
+        b=ek9c/DlanR9xJLOuM2m2rLeiSEVAsNKyDnNuhcgPyloNS7E6byW58SY5NSaFBsRf+f
+         S+Wb2fGgGqUYnfuBA7ZTve5GskTKNkG3SjRQmZq7TAGm/kKWg/l3sufvqYoB/i4bM4X4
+         SkXyO40l9hpDOuNk5TMY5PgeGWzyuqDBxSX5uSHRZB5uImFJ2tYpVtp6pPGb5auZEcU4
+         25kEuTDxAMZRwYgYDudxp/1Hs77DSrGdk5Trhi7vCPZ0bRWFlleh1LCY5WU3GF/Wpj9t
+         t6WcOn/3TUaHopXW67WoV0NRJR+iu/SZjUtHFW9lFd+88V/47VhSIhlzXV4Iu1tcu/oL
+         bNSA==
+X-Gm-Message-State: APjAAAVdkvPjo8sU54Kr6azQOExx4li11uClmCZw4kWD9xCXceBoQB1B
+        rkK2+yFg/kiNLbaRVYF3MUxf6GA+lVEyMyviSvwpHCfqZ7gnSJbUqWZNxDOTm82rqFfJ/m8Dkyf
+        05PBHuMbN83O5
+X-Received: by 2002:a05:6512:40e:: with SMTP id u14mr2277056lfk.161.1579020179185;
+        Tue, 14 Jan 2020 08:42:59 -0800 (PST)
+X-Google-Smtp-Source: APXvYqzfpQ0TbloNrejHB7aTPs3vqYhNyYGz8aXpQBBk+AqMb7yu1+Uh487I+uLHWk7n92xlo/xlbg==
+X-Received: by 2002:a05:6512:40e:: with SMTP id u14mr2277015lfk.161.1579020177990;
+        Tue, 14 Jan 2020 08:42:57 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id d20sm7773851ljg.95.2020.01.14.08.42.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Jan 2020 08:42:57 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 7BB4B1804D6; Tue, 14 Jan 2020 17:42:56 +0100 (CET)
+From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andriin@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH bpf-next] libbpf: Fix include of bpf_helpers.h when libbpf is installed on system
+Date:   Tue, 14 Jan 2020 17:42:50 +0100
+Message-Id: <20200114164250.922192-1-toke@redhat.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <157901745600.30872.10096561620432101095.stgit@xdp-tutorial>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 14, 2020 at 03:58:16PM +0000, Eelco Chaudron wrote:
-> Add a test that will attach a FENTRY and FEXIT program to the XDP test
-> program. It will also verify data from the XDP context on FENTRY and
-> verifies the return code on exit.
-> 
-> Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
-> 
-> ---
-> v1 -> v2:
->   - Changed code to use the BPF skeleton
->   - Replace static volatile with global variable in eBPF code
-> 
->  .../testing/selftests/bpf/prog_tests/xdp_bpf2bpf.c |   69 ++++++++++++++++++++
->  .../testing/selftests/bpf/progs/test_xdp_bpf2bpf.c |   44 +++++++++++++
->  2 files changed, 113 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_bpf2bpf.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_bpf2bpf.c
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_bpf2bpf.c b/tools/testing/selftests/bpf/prog_tests/xdp_bpf2bpf.c
-> new file mode 100644
-> index 000000000000..e6e849df2632
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/xdp_bpf2bpf.c
-> @@ -0,0 +1,69 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <test_progs.h>
-> +#include <net/if.h>
-> +#include "test_xdp.skel.h"
-> +#include "test_xdp_bpf2bpf.skel.h"
-> +
-> +void test_xdp_bpf2bpf(void)
-> +{
-> +
-> +	struct test_xdp *pkt_skel = NULL;
-> +        struct test_xdp_bpf2bpf *ftrace_skel = NULL;
-> +	__u64 *ftrace_res;
+The change to use angled includes for bpf_helper_defs.h breaks compilation
+against libbpf when it is installed in the include path, since the file is
+installed in the bpf/ subdirectory of $INCLUDE_PATH. Fix this by adding the
+bpf/ prefix to the #include directive.
 
-Wanted to point out the RCT here but I see that
-tools/testing/selftests/bpf/prog_tests don't really follow that rule.
+Fixes: 6910d7d3867a ("selftests/bpf: Ensure bpf_helper_defs.h are taken from selftests dir")
+Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+---
+Not actually sure this fix works for all the cases you originally tried to
+fix with the referred commit; please check. Also, could we please stop breaking
+libbpf builds? :)
 
-> +
-> +	struct vip key4 = {.protocol = 6, .family = AF_INET};
-> +	struct iptnl_info value4 = {.family = AF_INET};
-> +	char buf[128];
-> +	struct iphdr *iph = (void *)buf + sizeof(struct ethhdr);
-> +	__u32 duration = 0, retval, size;
-> +	int err, pkt_fd, map_fd;
-> +
-> +	/* Load XDP program to introspect */
-> +	pkt_skel = test_xdp__open_and_load();
-> +	if (CHECK(!pkt_skel, "pkt_skel_load", "test_xdp skeleton failed\n"))
-> +		return;
-> +
-> +	pkt_fd = bpf_program__fd(pkt_skel->progs._xdp_tx_iptunnel);
-> +
-> +	map_fd = bpf_map__fd(pkt_skel->maps.vip2tnl);
-> +	bpf_map_update_elem(map_fd, &key4, &value4, 0);
-> +
-> +	DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts,
-> +			    .attach_prog_fd = pkt_fd,
-> +			   );
-> +
-> +	ftrace_skel = test_xdp_bpf2bpf__open_opts(&opts);
-> +	if (CHECK(!ftrace_skel, "__open", "ftrace skeleton failed\n"))
-> +	  goto out;
+ tools/lib/bpf/bpf_helpers.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Hmm do you have here mixed tabs and spaces? Maybe my client messes this
-line up.
+diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
+index 050bb7bf5be6..fa43d649e7a2 100644
+--- a/tools/lib/bpf/bpf_helpers.h
++++ b/tools/lib/bpf/bpf_helpers.h
+@@ -2,7 +2,7 @@
+ #ifndef __BPF_HELPERS__
+ #define __BPF_HELPERS__
+ 
+-#include <bpf_helper_defs.h>
++#include <bpf/bpf_helper_defs.h>
+ 
+ #define __uint(name, val) int (*name)[val]
+ #define __type(name, val) typeof(val) *name
+-- 
+2.24.1
 
-> +
-> +	if (CHECK(test_xdp_bpf2bpf__load(ftrace_skel), "__load", "ftrace skeleton failed\n"))
-
-line too long?
-
-> +	  goto out;
-> +
-> +	err = test_xdp_bpf2bpf__attach(ftrace_skel);
-> +	if (CHECK(err, "ftrace_attach", "ftrace attach failed: %d\n", err))
-> +		goto out;
-> +
-> +        /* Run test program */
-> +	err = bpf_prog_test_run(pkt_fd, 1, &pkt_v4, sizeof(pkt_v4),
-> +				buf, &size, &retval, &duration);
-> +
-> +	CHECK(err || retval != XDP_TX || size != 74 ||
-> +	      iph->protocol != IPPROTO_IPIP, "ipv4",
-> +	      "err %d errno %d retval %d size %d\n",
-> +	      err, errno, retval, size);
-> +
-> +	/* Verify test results */
-> +	ftrace_res = (__u64 *)ftrace_skel->bss;
-> +
-> +	if (CHECK(ftrace_res[0] != if_nametoindex("lo"), "result",
-> +		  "fentry failed err %llu\n", ftrace_res[0]))
-> +		goto out;
-> +
-> +	if (CHECK(ftrace_res[1] != XDP_TX, "result",
-> +		  "fexit failed err %llu\n", ftrace_res[1]))
-> +		goto out;
-
-this goto doesn't really make sense, can be dropped.
-
-> +
-> +out:
-> +	test_xdp__destroy(pkt_skel);
-> +	test_xdp_bpf2bpf__destroy(ftrace_skel);
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/test_xdp_bpf2bpf.c b/tools/testing/selftests/bpf/progs/test_xdp_bpf2bpf.c
-> new file mode 100644
-> index 000000000000..74c78b30ae07
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/test_xdp_bpf2bpf.c
-> @@ -0,0 +1,44 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <linux/bpf.h>
-> +#include "bpf_helpers.h"
-> +#include "bpf_trace_helpers.h"
-> +
-> +struct net_device {
-> +	/* Structure does not need to contain all entries,
-> +	 * as "preserve_access_index" will use BTF to fix this...
-> +	 */
-> +	int ifindex;
-> +} __attribute__((preserve_access_index));
-> +
-> +struct xdp_rxq_info {
-> +	/* Structure does not need to contain all entries,
-> +	 * as "preserve_access_index" will use BTF to fix this...
-> +	 */
-> +	struct net_device *dev;
-> +	__u32 queue_index;
-> +} __attribute__((preserve_access_index));
-> +
-> +struct xdp_buff {
-> +	void *data;
-> +	void *data_end;
-> +	void *data_meta;
-> +	void *data_hard_start;
-> +	unsigned long handle;
-> +	struct xdp_rxq_info *rxq;
-> +} __attribute__((preserve_access_index));
-> +
-> +__u64 test_result_fentry = 0;
-> +BPF_TRACE_1("fentry/_xdp_tx_iptunnel", trace_on_entry,
-> +	    struct xdp_buff *, xdp)
-> +{
-> +	test_result_fentry = xdp->rxq->dev->ifindex;
-> +	return 0;
-> +}
-> +
-> +__u64 test_result_fexit = 0;
-> +BPF_TRACE_2("fexit/_xdp_tx_iptunnel", trace_on_exit,
-> +	    struct xdp_buff*, xdp, int, ret)
-> +{
-> +	test_result_fexit = ret;
-> +	return 0;
-> +}
-> 
