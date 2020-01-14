@@ -2,102 +2,196 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9171B13ADFB
-	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2020 16:48:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D70A13AE2D
+	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2020 16:58:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728688AbgANPs1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Jan 2020 10:48:27 -0500
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:35168 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728695AbgANPs1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Jan 2020 10:48:27 -0500
-Received: by mail-lj1-f196.google.com with SMTP id j1so14889241lja.2
-        for <bpf@vger.kernel.org>; Tue, 14 Jan 2020 07:48:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=dLbjHKuyCSdvL37+hmsui6qZ9EwBG7rzByZNk6nyh4c=;
-        b=tgvoiZI6l59IuleGfm//PJpb7gertpUzKN0IamEWqiPPgE7T6kOWTwbagxp6E6QbM0
-         El87f6PJCR/8kNUiNtFEDg844zxQ+8jQatF31Q+lVOJU5CbgKexiKpjLKetg/ucrRlv6
-         wWhIm2NVvymkm9FPkmM9lpie7t4w7ECSEbxaE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=dLbjHKuyCSdvL37+hmsui6qZ9EwBG7rzByZNk6nyh4c=;
-        b=lgypx7OK+EWrnGfbKLnQi5C+laaEpAB8kFcIpYvGtfSPaSiP4xkVEizQjSxmj+oZ4n
-         bsmak+gGnKmEwwW6nvIlSh6HAVw57+nCW2RSM8RMA/iJZkc2PiOCjWwc09p0G4zCNMjl
-         jbz+8U35hsd00zF62iQ7jBQxQVfwmKpktJjqylIcRf2ZGag+nbOKzsIof69+Lp3g6gsi
-         A/j036nnoB24dBAIbdQdMmffF5FY3zR3bVXISQwGgGsSakcsNQpb/kg6Y0iVyilUXPnq
-         GzImNPT0jMG4ybtpjf+31YP+FYE+CvdxjL8w+3K0ejcsJ9qnZR0oE47Rw1J1dwGQzrhp
-         p0gw==
-X-Gm-Message-State: APjAAAWFfM3PgSpr1NvvkWqzfelAUER2U7lXME1UtR8LFUJN1Sl0PH9q
-        sGNYad+c9SkX/Stkh5ItXLEd1Q==
-X-Google-Smtp-Source: APXvYqx+CUX33laMHA9Cyf1lrkU3CChvyiNtZzGRhKUGdEVMwLMOUGDWk4EK/dVmL5gl2ebKdd0+wA==
-X-Received: by 2002:a2e:81c3:: with SMTP id s3mr14991096ljg.168.1579016905323;
-        Tue, 14 Jan 2020 07:48:25 -0800 (PST)
-Received: from cloudflare.com ([176.221.114.230])
-        by smtp.gmail.com with ESMTPSA id w19sm7378995lfl.55.2020.01.14.07.48.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jan 2020 07:48:24 -0800 (PST)
-References: <20200110105027.257877-1-jakub@cloudflare.com> <20200110105027.257877-8-jakub@cloudflare.com> <20200113231223.cl77bxxs44bl6uhw@kafai-mbp.dhcp.thefacebook.com> <5e1d328d760e_78752af1940225b4b7@john-XPS-13-9370.notmuch>
-User-agent: mu4e 1.1.0; emacs 26.3
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Martin Lau <kafai@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     "bpf\@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev\@vger.kernel.org" <netdev@vger.kernel.org>,
-        "kernel-team\@cloudflare.com" <kernel-team@cloudflare.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Lorenz Bauer <lmb@cloudflare.com>
-Subject: Re: [PATCH bpf-next v2 07/11] bpf, sockmap: Return socket cookie on lookup from syscall
-In-reply-to: <5e1d328d760e_78752af1940225b4b7@john-XPS-13-9370.notmuch>
-Date:   Tue, 14 Jan 2020 16:48:23 +0100
-Message-ID: <87blr6rqd4.fsf@cloudflare.com>
+        id S1728633AbgANP6g (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Jan 2020 10:58:36 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:43668 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725904AbgANP6f (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Jan 2020 10:58:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1579017514;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Uy4YJgrTcWparC2pHLkmLg4durdZNvNcFnKqwjSMblI=;
+        b=BWWGzoUi9MSuqvDOZJSy9Z/B52PDNJfKufxDMzHWk20ldY/lW6eU6NOH+zC5WrBv49hl8T
+        74BiJgrIN5mSND8hsUtfB3F3YEMVvY7uJnKzP50fzOgG2qSV2bHXk7TJHWzxUbMSUgaeLe
+        HT3BM2YUnDigyAquA/qfGHYCZRy59Ws=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-131-hxH4zZvtNG6FrdKCJp3rRA-1; Tue, 14 Jan 2020 10:58:30 -0500
+X-MC-Unique: hxH4zZvtNG6FrdKCJp3rRA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E48D6189CD37;
+        Tue, 14 Jan 2020 15:58:28 +0000 (UTC)
+Received: from localhost.localdomain (wsfd-netdev76.ntdv.lab.eng.bos.redhat.com [10.19.188.157])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 420F0390;
+        Tue, 14 Jan 2020 15:58:28 +0000 (UTC)
+From:   Eelco Chaudron <echaudro@redhat.com>
+To:     bpf@vger.kernel.org
+Cc:     davem@davemloft.net, ast@kernel.org, netdev@vger.kernel.org
+Subject: [PATCH bpf-next v2] selftests/bpf: Add a test for attaching a bpf fentry/fexit trace to an XDP program
+Date:   Tue, 14 Jan 2020 15:58:16 +0000
+Message-Id: <157901745600.30872.10096561620432101095.stgit@xdp-tutorial>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 14, 2020 at 04:16 AM CET, John Fastabend wrote:
-> Martin Lau wrote:
->> On Fri, Jan 10, 2020 at 11:50:23AM +0100, Jakub Sitnicki wrote:
->> > Tooling that populates the SOCKMAP with sockets from user-space needs a way
->> > to inspect its contents. Returning the struct sock * that SOCKMAP holds to
->> > user-space is neither safe nor useful. An approach established by
->> > REUSEPORT_SOCKARRAY is to return a socket cookie (a unique identifier)
->> > instead.
->> >
->> > Since socket cookies are u64 values SOCKMAP needs to support such a value
->> > size for lookup to be possible. This requires special handling on update,
->> > though. Attempts to do a lookup on SOCKMAP holding u32 values will be met
->> > with ENOSPC error.
->> >
->> > Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
->> > ---
->
-> [...]
->
->> > +static void *sock_map_lookup_sys(struct bpf_map *map, void *key)
->> > +{
->> > +	struct sock *sk;
->> > +
->> > +	WARN_ON_ONCE(!rcu_read_lock_held());
->> It seems unnecessary.  It is only called by syscall.c which
->> holds the rcu_read_lock().  Other than that,
->>
->
-> +1 drop it. The normal rcu annotations/splats should catch anything
-> here.
+Add a test that will attach a FENTRY and FEXIT program to the XDP test
+program. It will also verify data from the XDP context on FENTRY and
+verifies the return code on exit.
 
-Oh, okay. Thanks for pointing it out.
+Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
 
-I noticed __sock_map_lookup_elem called from sock_map_lookup_sys has the
-same WARN_ON_ONCE check. Looks like it can be cleaned up.
+---
+v1 -> v2:
+  - Changed code to use the BPF skeleton
+  - Replace static volatile with global variable in eBPF code
 
-Granted, __sock_map_lookup_elem also gets invoked by sockmap BPF helpers
-for redirecting (bpf_msg_redirect_map, bpf_sk_redirect_map). But we
-always run sk_skb and sk_msg progs RCU read lock held.
+ .../testing/selftests/bpf/prog_tests/xdp_bpf2bpf.c |   69 ++++++++++++++=
+++++++
+ .../testing/selftests/bpf/progs/test_xdp_bpf2bpf.c |   44 +++++++++++++
+ 2 files changed, 113 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_bpf2bpf.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_bpf2bpf.c
+
+diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_bpf2bpf.c b/tools=
+/testing/selftests/bpf/prog_tests/xdp_bpf2bpf.c
+new file mode 100644
+index 000000000000..e6e849df2632
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/xdp_bpf2bpf.c
+@@ -0,0 +1,69 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <test_progs.h>
++#include <net/if.h>
++#include "test_xdp.skel.h"
++#include "test_xdp_bpf2bpf.skel.h"
++
++void test_xdp_bpf2bpf(void)
++{
++
++	struct test_xdp *pkt_skel =3D NULL;
++        struct test_xdp_bpf2bpf *ftrace_skel =3D NULL;
++	__u64 *ftrace_res;
++
++	struct vip key4 =3D {.protocol =3D 6, .family =3D AF_INET};
++	struct iptnl_info value4 =3D {.family =3D AF_INET};
++	char buf[128];
++	struct iphdr *iph =3D (void *)buf + sizeof(struct ethhdr);
++	__u32 duration =3D 0, retval, size;
++	int err, pkt_fd, map_fd;
++
++	/* Load XDP program to introspect */
++	pkt_skel =3D test_xdp__open_and_load();
++	if (CHECK(!pkt_skel, "pkt_skel_load", "test_xdp skeleton failed\n"))
++		return;
++
++	pkt_fd =3D bpf_program__fd(pkt_skel->progs._xdp_tx_iptunnel);
++
++	map_fd =3D bpf_map__fd(pkt_skel->maps.vip2tnl);
++	bpf_map_update_elem(map_fd, &key4, &value4, 0);
++
++	DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts,
++			    .attach_prog_fd =3D pkt_fd,
++			   );
++
++	ftrace_skel =3D test_xdp_bpf2bpf__open_opts(&opts);
++	if (CHECK(!ftrace_skel, "__open", "ftrace skeleton failed\n"))
++	  goto out;
++
++	if (CHECK(test_xdp_bpf2bpf__load(ftrace_skel), "__load", "ftrace skelet=
+on failed\n"))
++	  goto out;
++
++	err =3D test_xdp_bpf2bpf__attach(ftrace_skel);
++	if (CHECK(err, "ftrace_attach", "ftrace attach failed: %d\n", err))
++		goto out;
++
++        /* Run test program */
++	err =3D bpf_prog_test_run(pkt_fd, 1, &pkt_v4, sizeof(pkt_v4),
++				buf, &size, &retval, &duration);
++
++	CHECK(err || retval !=3D XDP_TX || size !=3D 74 ||
++	      iph->protocol !=3D IPPROTO_IPIP, "ipv4",
++	      "err %d errno %d retval %d size %d\n",
++	      err, errno, retval, size);
++
++	/* Verify test results */
++	ftrace_res =3D (__u64 *)ftrace_skel->bss;
++
++	if (CHECK(ftrace_res[0] !=3D if_nametoindex("lo"), "result",
++		  "fentry failed err %llu\n", ftrace_res[0]))
++		goto out;
++
++	if (CHECK(ftrace_res[1] !=3D XDP_TX, "result",
++		  "fexit failed err %llu\n", ftrace_res[1]))
++		goto out;
++
++out:
++	test_xdp__destroy(pkt_skel);
++	test_xdp_bpf2bpf__destroy(ftrace_skel);
++}
+diff --git a/tools/testing/selftests/bpf/progs/test_xdp_bpf2bpf.c b/tools=
+/testing/selftests/bpf/progs/test_xdp_bpf2bpf.c
+new file mode 100644
+index 000000000000..74c78b30ae07
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_xdp_bpf2bpf.c
+@@ -0,0 +1,44 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/bpf.h>
++#include "bpf_helpers.h"
++#include "bpf_trace_helpers.h"
++
++struct net_device {
++	/* Structure does not need to contain all entries,
++	 * as "preserve_access_index" will use BTF to fix this...
++	 */
++	int ifindex;
++} __attribute__((preserve_access_index));
++
++struct xdp_rxq_info {
++	/* Structure does not need to contain all entries,
++	 * as "preserve_access_index" will use BTF to fix this...
++	 */
++	struct net_device *dev;
++	__u32 queue_index;
++} __attribute__((preserve_access_index));
++
++struct xdp_buff {
++	void *data;
++	void *data_end;
++	void *data_meta;
++	void *data_hard_start;
++	unsigned long handle;
++	struct xdp_rxq_info *rxq;
++} __attribute__((preserve_access_index));
++
++__u64 test_result_fentry =3D 0;
++BPF_TRACE_1("fentry/_xdp_tx_iptunnel", trace_on_entry,
++	    struct xdp_buff *, xdp)
++{
++	test_result_fentry =3D xdp->rxq->dev->ifindex;
++	return 0;
++}
++
++__u64 test_result_fexit =3D 0;
++BPF_TRACE_2("fexit/_xdp_tx_iptunnel", trace_on_exit,
++	    struct xdp_buff*, xdp, int, ret)
++{
++	test_result_fexit =3D ret;
++	return 0;
++}
+
