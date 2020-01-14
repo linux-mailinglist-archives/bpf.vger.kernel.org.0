@@ -2,101 +2,167 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F40B313AFAE
-	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2020 17:43:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 683E813AFEA
+	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2020 17:47:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727285AbgANQnG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Jan 2020 11:43:06 -0500
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:22866 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726379AbgANQnE (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 14 Jan 2020 11:43:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1579020183;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=gDOl5oOf2cpVq2YFw06OX+4Yf7QXZq+3GEoWn2wy/eA=;
-        b=fgoTbixrXviBKpif+lOBdDX492LW7sQGGwpGf4M5MAaPgxikqrzR/TPfVJ/hREp8h6aLzA
-        6Gx3NEr9d5UuMbSh95dVpKD4sqhaWgr5f6D02/e0W2PVJplVi+c8t+cMHh4HnLDRah+y4x
-        syoyOzR3QVwL3O+RGeb8/Ipug6mcgrw=
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
- [209.85.208.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-253-LA1t9d5jNwGjQeTzX0Ug_g-1; Tue, 14 Jan 2020 11:43:00 -0500
-X-MC-Unique: LA1t9d5jNwGjQeTzX0Ug_g-1
-Received: by mail-lj1-f200.google.com with SMTP id o9so3138514ljc.6
-        for <bpf@vger.kernel.org>; Tue, 14 Jan 2020 08:43:00 -0800 (PST)
+        id S1728880AbgANQqg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Jan 2020 11:46:36 -0500
+Received: from mail-pf1-f202.google.com ([209.85.210.202]:36001 "EHLO
+        mail-pf1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728753AbgANQqf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Jan 2020 11:46:35 -0500
+Received: by mail-pf1-f202.google.com with SMTP id 6so9106161pfv.3
+        for <bpf@vger.kernel.org>; Tue, 14 Jan 2020 08:46:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=Y5paa4AX/DtiLn+XUHqwYVRo7c1ie192vd9rP9qKaQo=;
+        b=N9fADKpD0r9H67g2GPg3lDqgyoOfXJ8fqkefx5tT9gD6k1n1ANE1BcES4cW6eSVSL9
+         m+mHNzJRVgEZS2iHDBajZL7jTWuBsnomJVrGNzqSjNAcbpbfc28gOJiWeOuf8v+RpdyC
+         YEbKbD3B6s6a6emwyWBU+a2sAg273K8jbVDUaju/k9cIhXGUMurcMo4RmOW0pskS8Tvv
+         mzKHKBn/LykPk70TiHrKaxE7pkc60BF+jRKWehBV9fd7ewxx1sv3NGEgGumWizqgmBeQ
+         v4rYFbMsfGhSJUubHXCdH8TgiilWkeiptjsmMBhOxcQoq0uEwWs7Nwhyt2Fui2hoAiHG
+         eBKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gDOl5oOf2cpVq2YFw06OX+4Yf7QXZq+3GEoWn2wy/eA=;
-        b=ek9c/DlanR9xJLOuM2m2rLeiSEVAsNKyDnNuhcgPyloNS7E6byW58SY5NSaFBsRf+f
-         S+Wb2fGgGqUYnfuBA7ZTve5GskTKNkG3SjRQmZq7TAGm/kKWg/l3sufvqYoB/i4bM4X4
-         SkXyO40l9hpDOuNk5TMY5PgeGWzyuqDBxSX5uSHRZB5uImFJ2tYpVtp6pPGb5auZEcU4
-         25kEuTDxAMZRwYgYDudxp/1Hs77DSrGdk5Trhi7vCPZ0bRWFlleh1LCY5WU3GF/Wpj9t
-         t6WcOn/3TUaHopXW67WoV0NRJR+iu/SZjUtHFW9lFd+88V/47VhSIhlzXV4Iu1tcu/oL
-         bNSA==
-X-Gm-Message-State: APjAAAVdkvPjo8sU54Kr6azQOExx4li11uClmCZw4kWD9xCXceBoQB1B
-        rkK2+yFg/kiNLbaRVYF3MUxf6GA+lVEyMyviSvwpHCfqZ7gnSJbUqWZNxDOTm82rqFfJ/m8Dkyf
-        05PBHuMbN83O5
-X-Received: by 2002:a05:6512:40e:: with SMTP id u14mr2277056lfk.161.1579020179185;
-        Tue, 14 Jan 2020 08:42:59 -0800 (PST)
-X-Google-Smtp-Source: APXvYqzfpQ0TbloNrejHB7aTPs3vqYhNyYGz8aXpQBBk+AqMb7yu1+Uh487I+uLHWk7n92xlo/xlbg==
-X-Received: by 2002:a05:6512:40e:: with SMTP id u14mr2277015lfk.161.1579020177990;
-        Tue, 14 Jan 2020 08:42:57 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id d20sm7773851ljg.95.2020.01.14.08.42.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jan 2020 08:42:57 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 7BB4B1804D6; Tue, 14 Jan 2020 17:42:56 +0100 (CET)
-From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andriin@fb.com>,
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=Y5paa4AX/DtiLn+XUHqwYVRo7c1ie192vd9rP9qKaQo=;
+        b=DBIR2TMkUNP8pN4W1g/aRekiTHU95srKZAmWCGX1ZPjgNKyJ3Grarzx5yjxCFN6vti
+         dPvtaf/Sv4MVzmMX0lXLq1GcoJLWcciEEeVb+Fbcgqzdk+d6SbJRAD6oicmOfM9ljzpO
+         44EvNPzU4/VRfPreJ2AVA44Rqj1o7xk4lz6RVZoaJvUsmLlCfOaRw/Or3z8C1nfMK/ho
+         d3HeiOf1TKeSN9LY717c53ml5KwkM+Kj059xAPWURmjjp45CeI+1Z0WiAEgR3ViuVAHv
+         jEbuslGZDcS6SbHLZGhncoCl55BaQZKjPwd/+78jRm+H2TZsDlzX0c+hPNNuc0jUGHX4
+         tp1Q==
+X-Gm-Message-State: APjAAAVSkp/UOXtd24dnWX7NHIuB4WJWgt28NzaAYUKsBPn6vIOvYQpa
+        Dt1izcxCl5OJU0+48+XENql4utseeTBK
+X-Google-Smtp-Source: APXvYqzONT7nLLWPpiU9vD9Wp+N2yEKNO5DIOd5gU9RA8R5M3Deo/90nrxFN27n0MUo+5JWiD7QC2wZsDKqu
+X-Received: by 2002:a63:303:: with SMTP id 3mr27857755pgd.372.1579020394568;
+ Tue, 14 Jan 2020 08:46:34 -0800 (PST)
+Date:   Tue, 14 Jan 2020 08:46:04 -0800
+Message-Id: <20200114164614.47029-1-brianvv@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.25.0.rc1.283.g88dfdc4193-goog
+Subject: [PATCH v4 bpf-next 0/9] add bpf batch ops to process more than 1 elem
+From:   Brian Vazquez <brianvv@google.com>
+To:     Brian Vazquez <brianvv.kernel@gmail.com>,
+        Brian Vazquez <brianvv@google.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH bpf-next] libbpf: Fix include of bpf_helpers.h when libbpf is installed on system
-Date:   Tue, 14 Jan 2020 17:42:50 +0100
-Message-Id: <20200114164250.922192-1-toke@redhat.com>
-X-Mailer: git-send-email 2.24.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S . Miller" <davem@davemloft.net>
+Cc:     Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Petar Penkov <ppenkov@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The change to use angled includes for bpf_helper_defs.h breaks compilation
-against libbpf when it is installed in the include path, since the file is
-installed in the bpf/ subdirectory of $INCLUDE_PATH. Fix this by adding the
-bpf/ prefix to the #include directive.
+This patch series introduce batch ops that can be added to bpf maps to
+lookup/lookup_and_delete/update/delete more than 1 element at the time,
+this is specially useful when syscall overhead is a problem and in case
+of hmap it will provide a reliable way of traversing them.
 
-Fixes: 6910d7d3867a ("selftests/bpf: Ensure bpf_helper_defs.h are taken from selftests dir")
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
----
-Not actually sure this fix works for all the cases you originally tried to
-fix with the referred commit; please check. Also, could we please stop breaking
-libbpf builds? :)
+The implementation inclues a generic approach that could potentially be
+used by any bpf map and adds it to arraymap, it also includes the specific
+implementation of hashmaps which are traversed using buckets instead
+of keys.
 
- tools/lib/bpf/bpf_helpers.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The bpf syscall subcommands introduced are:
 
-diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
-index 050bb7bf5be6..fa43d649e7a2 100644
---- a/tools/lib/bpf/bpf_helpers.h
-+++ b/tools/lib/bpf/bpf_helpers.h
-@@ -2,7 +2,7 @@
- #ifndef __BPF_HELPERS__
- #define __BPF_HELPERS__
- 
--#include <bpf_helper_defs.h>
-+#include <bpf/bpf_helper_defs.h>
- 
- #define __uint(name, val) int (*name)[val]
- #define __type(name, val) typeof(val) *name
+  BPF_MAP_LOOKUP_BATCH
+  BPF_MAP_LOOKUP_AND_DELETE_BATCH
+  BPF_MAP_UPDATE_BATCH
+  BPF_MAP_DELETE_BATCH
+
+The UAPI attribute is:
+
+  struct { /* struct used by BPF_MAP_*_BATCH commands */
+         __aligned_u64   in_batch;       /* start batch,
+                                          * NULL to start from beginning
+                                          */
+         __aligned_u64   out_batch;      /* output: next start batch */
+         __aligned_u64   keys;
+         __aligned_u64   values;
+         __u32           count;          /* input/output:
+                                          * input: # of key/value
+                                          * elements
+                                          * output: # of filled elements
+                                          */
+         __u32           map_fd;
+         __u64           elem_flags;
+         __u64           flags;
+  } batch;
+
+
+in_batch and out_batch are only used for lookup and lookup_and_delete since
+those are the only two operations that attempt to traverse the map.
+
+update/delete batch ops should provide the keys/values that user wants
+to modify.
+
+Here are the previous discussions on the batch processing:
+ - https://lore.kernel.org/bpf/20190724165803.87470-1-brianvv@google.com/
+ - https://lore.kernel.org/bpf/20190829064502.2750303-1-yhs@fb.com/
+ - https://lore.kernel.org/bpf/20190906225434.3635421-1-yhs@fb.com/
+
+Changelog sinve v3:
+ - Do not use copy_to_user inside atomic region (Yonghong Song)
+ - Use _opts approach on libbpf APIs (Andrii Nakryiko)
+ - Drop generic_map_lookup_and_delete_batch support
+ - Free malloc-ed memory in tests (Yonghong Song)
+ - Reverse christmas tree (Yonghong Song)
+ - Add acked labels
+
+Changelog sinve v2:
+ - Add generic batch support for lpm_trie and test it (Yonghong Song)
+ - Use define MAP_LOOKUP_RETRIES for retries (John Fastabend)
+ - Return errors directly and remove labels (Yonghong Song)
+ - Insert new API functions into libbpf alphabetically (Yonghong Song)
+ - Change hlist_nulls_for_each_entry_rcu to
+   hlist_nulls_for_each_entry_safe in htab batch ops (Yonghong Song)
+
+Changelog since v1:
+ - Fix SOB ordering and remove Co-authored-by tag (Alexei Starovoitov)
+
+Changelog since RFC:
+ - Change batch to in_batch and out_batch to support more flexible opaque
+   values to iterate the bpf maps.
+ - Remove update/delete specific batch ops for htab and use the generic
+   implementations instead.
+
+Brian Vazquez (5):
+  bpf: add bpf_map_{value_size,update_value,map_copy_value} functions
+  bpf: add generic support for lookup batch op
+  bpf: add generic support for update and delete batch ops
+  bpf: add lookup and update batch ops to arraymap
+  selftests/bpf: add batch ops testing to array bpf map
+
+Yonghong Song (4):
+  bpf: add batch ops to all htab bpf map
+  tools/bpf: sync uapi header bpf.h
+  libbpf: add libbpf support to batch ops
+  selftests/bpf: add batch ops testing for htab and htab_percpu map
+
+ include/linux/bpf.h                           |  18 +
+ include/uapi/linux/bpf.h                      |  21 +
+ kernel/bpf/arraymap.c                         |   2 +
+ kernel/bpf/hashtab.c                          | 258 +++++++++
+ kernel/bpf/syscall.c                          | 548 ++++++++++++++----
+ tools/include/uapi/linux/bpf.h                |  21 +
+ tools/lib/bpf/bpf.c                           |  60 ++
+ tools/lib/bpf/bpf.h                           |  22 +
+ tools/lib/bpf/libbpf.map                      |   4 +
+ .../bpf/map_tests/array_map_batch_ops.c       | 131 +++++
+ .../bpf/map_tests/htab_map_batch_ops.c        | 285 +++++++++
+ 11 files changed, 1242 insertions(+), 128 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/map_tests/array_map_batch_ops.c
+ create mode 100644 tools/testing/selftests/bpf/map_tests/htab_map_batch_ops.c
+
 -- 
-2.24.1
+2.25.0.rc1.283.g88dfdc4193-goog
 
