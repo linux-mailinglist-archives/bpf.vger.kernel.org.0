@@ -2,147 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 07A9D13B50A
-	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2020 23:04:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A932413B565
+	for <lists+bpf@lfdr.de>; Tue, 14 Jan 2020 23:44:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728873AbgANWEW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Jan 2020 17:04:22 -0500
-Received: from mail-il1-f199.google.com ([209.85.166.199]:35939 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728769AbgANWEN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Jan 2020 17:04:13 -0500
-Received: by mail-il1-f199.google.com with SMTP id t2so11795310ilp.3
-        for <bpf@vger.kernel.org>; Tue, 14 Jan 2020 14:04:13 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=OMN3C/VoYyKIvwTqw2B7b50mrKvNUjoFBtsQzpL17pw=;
-        b=V2CmQvMgtBkZ27pWhLIjWNCxpSxCCiE7pG+YUmJ3x3T4MxinKeMBAsGbvMRODKOprR
-         dwsk5YEe4jJYT/ZIdfNIOjT/Hj/sw6NXzuIKBDjgHxT2N/TGUPZrQ26QeQYQ9z8aZyee
-         s4QFu8+ATq+BZpvqm6r912VKEQZbVkysmgFjieH7pNS1avUdX0NNvzHaloV4qM/EQWdf
-         31P0MgDw/b1zSBCUpSiXDt002AcJSnYtX5SZkCVqGJgkEjP+S2GETh4eSGQaFmu5OrPf
-         sMmHqfzilfPMPC988NOd1BmWnDm2ttZEq5Brh2rrybsvOwiuoXmCHYT/GbCFpT0NTZ0f
-         nl/Q==
-X-Gm-Message-State: APjAAAWBeQGs4R6mQcN63vtf/nkzb3Qc06WKJPM1r4jHX7UmKcVDMVs2
-        rN5ICmEBrbpBIaztHR+TuRIEMqWFdhqLCHETOnLsiRCPJuo8
-X-Google-Smtp-Source: APXvYqwT5gXgVOW2dudlVYr3OrjQUlenltw3HdN1hwCoQje3ZeeWmf8prgS/U+Qse+oz3HaCUTBqLCpufZngjUDXwJlPy1cnd1QE
+        id S1728795AbgANWoG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Jan 2020 17:44:06 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:37522 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728827AbgANWoE (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 14 Jan 2020 17:44:04 -0500
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 00EMhsT8020064
+        for <bpf@vger.kernel.org>; Tue, 14 Jan 2020 14:44:03 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=Jv/VhNZ8ABSGPShN5dnCdYgIamQhgkzjl0EizyqxjPQ=;
+ b=OGcajhWNxzJNIlV8uzOAbd/8nYkr9ywYZVpHbHD8AlYNwFHOgE+okJPBkGwnoW91TaJf
+ EpDJ23aj+fn1gotBfP4Y/jnirm92e7b2vnhdhzY96BBUWY/BgsMy7rSpAYw0Atrc2OzX
+ oiv2yNAtcRcCJNQFb3+94kwo6yEegQ63ikA= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2xhd7r35c4-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 14 Jan 2020 14:44:03 -0800
+Received: from intmgw001.06.prn3.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 14 Jan 2020 14:44:02 -0800
+Received: by devbig005.ftw2.facebook.com (Postfix, from userid 6611)
+        id EAED629438DC; Tue, 14 Jan 2020 14:43:58 -0800 (PST)
+Smtp-Origin-Hostprefix: devbig
+From:   Martin KaFai Lau <kafai@fb.com>
+Smtp-Origin-Hostname: devbig005.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>, <kernel-team@fb.com>,
+        <netdev@vger.kernel.org>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next 0/5] bpftool: Support dumping a map with btf_vmlinux_value_type_id
+Date:   Tue, 14 Jan 2020 14:43:58 -0800
+Message-ID: <20200114224358.3027079-1-kafai@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-X-Received: by 2002:a92:cd07:: with SMTP id z7mr583436iln.124.1579039452376;
- Tue, 14 Jan 2020 14:04:12 -0800 (PST)
-Date:   Tue, 14 Jan 2020 14:04:12 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a539c1059c20c5aa@google.com>
-Subject: WARNING: refcount bug in free_nsproxy (2)
-From:   syzbot <syzbot+a98eee31f5df4261d88c@syzkaller.appspotmail.com>
-To:     allison@lohutok.net, armijn@tjaldur.nl, ast@kernel.org,
-        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        gregkh@linuxfoundation.org, jakub.kicinski@netronome.com,
-        jhs@mojatatu.com, jiri@resnulli.us, kafai@fb.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de, xiyou.wangcong@gmail.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-01-14_06:2020-01-14,2020-01-14 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=13
+ impostorscore=0 adultscore=0 malwarescore=0 mlxscore=0 phishscore=0
+ spamscore=0 mlxlogscore=536 lowpriorityscore=0 clxscore=1015 bulkscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-2001140175
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+When a map is storing a kernel's struct, its
+map_info->btf_vmlinux_value_type_id is set.  The first map type
+supporting it is BPF_MAP_TYPE_STRUCT_OPS.
 
-syzbot found the following crash on:
+This series adds support to dump this kind of map with BTF.
+The first two patches are bug fixes which only applicable to
+in bpf-next.
 
-HEAD commit:    6c09d7db Add linux-next specific files for 20200110
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=102b2156e00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7dc7ab9739654fbe
-dashboard link: https://syzkaller.appspot.com/bug?extid=a98eee31f5df4261d88c
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=162f16aee00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13457571e00000
+Please see individual patches for details.
 
-The bug was bisected to:
+Martin KaFai Lau (5):
+  bpftool: Fix a leak of btf object
+  bpftool: Fix missing BTF output for json during map dump
+  libbpf: Expose bpf_find_kernel_btf to libbpf_internal.h
+  bpftool: Add struct_ops map name
+  bpftool: Support dumping a map with btf_vmlinux_value_type_id
 
-commit 14215108a1fd7e002c0a1f9faf8fbaf41fdda50d
-Author: Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Thu Feb 21 05:37:42 2019 +0000
+ tools/bpf/bpftool/map.c         | 84 ++++++++++++++++++---------------
+ tools/lib/bpf/libbpf.c          |  3 +-
+ tools/lib/bpf/libbpf_internal.h |  1 +
+ 3 files changed, 49 insertions(+), 39 deletions(-)
 
-     net_sched: initialize net pointer inside tcf_exts_init()
+-- 
+2.17.1
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1063da9ee00000
-final crash:    https://syzkaller.appspot.com/x/report.txt?x=1263da9ee00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1463da9ee00000
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+a98eee31f5df4261d88c@syzkaller.appspotmail.com
-Fixes: 14215108a1fd ("net_sched: initialize net pointer inside  
-tcf_exts_init()")
-
-R13: 0000000000000008 R14: 0000000000000000 R15: 0000000000000000
-------------[ cut here ]------------
-refcount_t: underflow; use-after-free.
-WARNING: CPU: 1 PID: 9780 at lib/refcount.c:28  
-refcount_warn_saturate+0x1dc/0x1f0 lib/refcount.c:28
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 1 PID: 9780 Comm: syz-executor174 Not tainted  
-5.5.0-rc5-next-20200110-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-Google 01/01/2011
-Call Trace:
-  __dump_stack lib/dump_stack.c:77 [inline]
-  dump_stack+0x197/0x210 lib/dump_stack.c:118
-  panic+0x2e3/0x75c kernel/panic.c:221
-  __warn.cold+0x2f/0x3e kernel/panic.c:582
-  report_bug+0x289/0x300 lib/bug.c:195
-  fixup_bug arch/x86/kernel/traps.c:176 [inline]
-  fixup_bug arch/x86/kernel/traps.c:171 [inline]
-  do_error_trap+0x11b/0x200 arch/x86/kernel/traps.c:269
-  do_invalid_op+0x37/0x50 arch/x86/kernel/traps.c:288
-  invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1027
-RIP: 0010:refcount_warn_saturate+0x1dc/0x1f0 lib/refcount.c:28
-Code: e9 d8 fe ff ff 48 89 df e8 b1 a6 13 fe e9 85 fe ff ff e8 47 6e d5 fd  
-48 c7 c7 80 64 91 88 c6 05 4f 5b 00 07 01 e8 e3 f5 a5 fd <0f> 0b e9 ac fe  
-ff ff 0f 1f 00 66 2e 0f 1f 84 00 00 00 00 00 55 48
-RSP: 0018:ffffc90005fd7cf8 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffffffff815e8546 RDI: fffff52000bfaf91
-RBP: ffffc90005fd7d08 R08: ffff8880a65ee500 R09: ffffed1015d26659
-R10: ffffed1015d26658 R11: ffff8880ae9332c7 R12: 0000000000000003
-R13: ffff88809aff6040 R14: ffff88809aff6044 R15: 00000000000002bc
-  refcount_sub_and_test include/linux/refcount.h:261 [inline]
-  refcount_dec_and_test include/linux/refcount.h:281 [inline]
-  put_net include/net/net_namespace.h:259 [inline]
-  free_nsproxy+0x2eb/0x330 kernel/nsproxy.c:180
-  switch_task_namespaces+0xb3/0xd0 kernel/nsproxy.c:225
-  exit_task_namespaces+0x18/0x20 kernel/nsproxy.c:230
-  do_exit+0xbc6/0x2f70 kernel/exit.c:800
-  do_group_exit+0x135/0x360 kernel/exit.c:899
-  __do_sys_exit_group kernel/exit.c:910 [inline]
-  __se_sys_exit_group kernel/exit.c:908 [inline]
-  __x64_sys_exit_group+0x44/0x50 kernel/exit.c:908
-  do_syscall_64+0xfa/0x790 arch/x86/entry/common.c:294
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-RIP: 0033:0x441228
-Code: 74 20 63 6f 64 65 20 62 61 73 65 2e 00 00 00 00 00 00 72 73 79 73 6c  
-6f 67 64 3a 20 24 41 62 6f 72 74 4f 6e 55 6e 63 6c 65 61 <6e> 43 6f 6e 66  
-69 67 20 69 73 20 73 65 74 2c 20 61 6e 64 20 63 6f
-RSP: 002b:00007ffedb54aa88 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
-RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 0000000000441228
-RDX: 0000000000000001 RSI: 000000000000003c RDI: 0000000000000001
-RBP: 00000000004c79d0 R08: 00000000000000e7 R09: ffffffffffffffd0
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
-R13: 00000000006daa80 R14: 0000000000000000 R15: 0000000000000000
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
-
-
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
