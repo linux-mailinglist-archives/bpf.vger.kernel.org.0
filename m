@@ -2,150 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BB0713B941
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2020 06:57:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 473AD13B94B
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2020 06:58:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725962AbgAOF42 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Jan 2020 00:56:28 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:17234 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725999AbgAOF42 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 15 Jan 2020 00:56:28 -0500
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 00F5rGg5004499;
-        Tue, 14 Jan 2020 21:56:14 -0800
+        id S1726071AbgAOF6c (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Jan 2020 00:58:32 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:46564 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726018AbgAOF6c (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 15 Jan 2020 00:58:32 -0500
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 00F5vLaW027605;
+        Tue, 14 Jan 2020 21:58:20 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=zJ0oOBf9uLQbHKC4/0it0OjJL7n+Y079cwhFFUnlZ/U=;
- b=dusOYn/VueZsO9gPa+B7fSqJ2nHM2tVwt7+s/bCiJfq/s+k1n0OJYeoG1DJMNpU+rzzf
- dM+yzur7yCNUBFnwDVwclF7j/clBj7EcANtwcoZiraSgAE0Afuse/wWH3vPJujxkCMSK
- he0DeLWoYkwFIbo7/sSiNnp9DNbzO5oLCVc= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2xhaj2damd-1
+ : date : message-id : content-type : content-id :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=LNXyxDsdHPhwU2oqLzjVcx5HU6SlJT1N/Any2QyCfXA=;
+ b=ZVWWbxdo/6LeLSecSyQr6Pln1S1Yqe2KWz49Dp3pUDG8+JBlZ4sdwze0LZng71td5kQS
+ S3+62lrGuUlp4qAEh6KGSYuweNdY2eOJVJKIa3vw+tJoeX5wGZzE1i6CpQX5XJzAXicO
+ VCoroLMP+33E6ShQDDt9B5rqE+IOjUjLIH8= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 2xhahpn898-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 14 Jan 2020 21:56:14 -0800
-Received: from NAM04-BN3-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
+        Tue, 14 Jan 2020 21:58:20 -0800
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.228) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 14 Jan 2020 21:56:13 -0800
+ 15.1.1779.2; Tue, 14 Jan 2020 21:58:19 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TnTmG7Bx5I4rMM2clNCY4PUnAx4ir7aOQn8S7NUXMJFKTD8UKpNL9F2zZfQrPtM0Nzzm8o67aZVfqETTrL7opFf3wBep52zy8g3m183gzjjQz/8kfqf2HWzPZ6HBlI899Ut2wZSV9xebBcKF06ARLzQdVkUfEWuF9Juh0lo1i8fNuwO8SiQRoeh00PoZ3BRZajYIde3S5OTK/SMKjRTRrPgybpSws+UNz/ILypFE3Q8DD3IN8P7NrUiG9NSBXhL5PRqvwZ5POc1rF5rW4V4dNPF02unImjwpXApIxWh5LRZ17qLz6tZglB4B9n56oph1/7WpdECFNz+hJIzsAWGSmQ==
+ b=meQm1jsTTJcfWBmyUBywHCdPfY46cij250SSEaKY3Udnhg8s2kKuV6gBUEvFeC5qytl6f61A5d1ArNdr+2nCPKdpsfNxpThVJ7r60Qbwua2t71ZRW8HF1MrOwHLcucFyX9Y3whE4Vtq0cefdnGXx2FHjXiL+RwxxU0MUhkGDYP260csQZiAUHMoJ6Fyhu6LW9RccIrB1WBi1FsEljsMq5Wf4Ve8YMqX5IkGWwyC0fA/8/YpZaZobf1o2Z8/XUMrgF0uSODAWu+iQ3UMDJFsw02zPI3MpH8NxHoKn74CPJj9qriTWcVYBDlRvy1Pb+JhB9k0gqOLR4hE0eH1vCueHDQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zJ0oOBf9uLQbHKC4/0it0OjJL7n+Y079cwhFFUnlZ/U=;
- b=cj8esaiZfguzBDPtYetJAfLXBhIr0riea1W7gysPm55Nv03swwzfCUFiW+t1HW/IoZWDQJb6DU/e5HOpsWX6mIVAkBirkWntzGhyva+teWR5e/HMY7kxOyeJ6MSJl+EIkWx7Vr8aIS2PpBlQqbYJunHqUmiDfjzq28ZIPNkMhKyF0Ein62Z8eLmbFI7dzlgu5Gufsa5119atIYHpMx1SYrGgsg2w6t2gmeLWtbzsQz3DCAvNWnIOclTeqv2U1Sxr3udsVL17iitAJh0N/Dw1Sz/6KTVx0Tdr56zWQcbWlabVBHY4Jumt/I6OTDvBM02xXiarDOchy6KJkasoMxW5pQ==
+ bh=LNXyxDsdHPhwU2oqLzjVcx5HU6SlJT1N/Any2QyCfXA=;
+ b=mwMjmfJe0mJNExMP6rB3pA6Zzch7xPZk7Km7S0NvBuyBHE3dcyYhPFr85cju1pY2Dt0EoCvJzWCK3tBYvZViIQH+WITRBCj8AegeB1Eg+Ipwjk4myd47ZQXTIjYaHdZJiAWkkn6UdqiWRkinsAIUEb6jiMs+ojaN68UkbK2jstxH6xS9ykuIQHMWRrCRWXUFMkDQMkPVOkNeCjbMgWuOaO6hyOYsaQSQ2LwS9lM8qN5qsDybPvcljOA8lTZq2+EYJTi78Gg9Rkt/SDOHRvUN/hMpHz27wTDGse/6l9UKasRB5gx+3TfTSrV9PC0aDearLTemVdMU/SqW7KbM66FyxA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
  s=selector2-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zJ0oOBf9uLQbHKC4/0it0OjJL7n+Y079cwhFFUnlZ/U=;
- b=hwBVFgdMuWOhhB7wUoiNGFW7L/ML7wUV98vXMFzQMxGMO7QQzu0P3ZCTMkIpdjpve8t9S3ojkl6n1u61wa+Ke7CcZ6iA7E6Jxze0r6F2vOBBLTS1aQdUY4jSXqJX9G3ZvE/d+V9TcDdOycXvks6wTwfXASe7Dv8Njruh6GTSh74=
-Received: from MN2PR15MB3213.namprd15.prod.outlook.com (20.179.21.76) by
- MN2PR15MB2848.namprd15.prod.outlook.com (20.178.252.32) with Microsoft SMTP
+ bh=LNXyxDsdHPhwU2oqLzjVcx5HU6SlJT1N/Any2QyCfXA=;
+ b=GbDjeoDc8pvQgjgfvR4A0GdPedC/2l7BGd7tZwzoO1MYPSD8grV7k0bF4kLvAqAD4cgbpHFkhQq4PphCt9JgfvtwSQDO7S7dTihPXuAV+KbJRoitXW2Ro+Q0yMId/S1lNAvWP+j/T5nEsXCE71TGRsKiHYUB8CmbsAffgG2SgsI=
+Received: from DM5PR15MB1675.namprd15.prod.outlook.com (10.175.107.145) by
+ DM5PR15MB1371.namprd15.prod.outlook.com (10.173.224.146) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2623.9; Wed, 15 Jan 2020 05:56:12 +0000
-Received: from MN2PR15MB3213.namprd15.prod.outlook.com
- ([fe80::6d1e:f2f7:d36:a42f]) by MN2PR15MB3213.namprd15.prod.outlook.com
- ([fe80::6d1e:f2f7:d36:a42f%4]) with mapi id 15.20.2623.017; Wed, 15 Jan 2020
- 05:56:12 +0000
-Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:180::55) by MWHPR11CA0021.namprd11.prod.outlook.com (2603:10b6:301:1::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2623.10 via Frontend Transport; Wed, 15 Jan 2020 05:56:10 +0000
-From:   Martin Lau <kafai@fb.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        "Daniel Borkmann" <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>,
-        "Kernel Team" <Kernel-team@fb.com>,
-        Networking <netdev@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 3/5] libbpf: Expose bpf_find_kernel_btf to
- libbpf_internal.h
-Thread-Topic: [PATCH bpf-next 3/5] libbpf: Expose bpf_find_kernel_btf to
- libbpf_internal.h
-Thread-Index: AQHVy0VKApD4lsQFrEyp1aVQzbhgSafrOmqA
-Date:   Wed, 15 Jan 2020 05:56:12 +0000
-Message-ID: <20200115055607.x54orahytzq5siuk@kafai-mbp.dhcp.thefacebook.com>
-References: <20200114224358.3027079-1-kafai@fb.com>
- <20200114224412.3028054-1-kafai@fb.com>
- <CAEf4BzYOjgCbbr_zofZcGMiJj=fpH5JMBbL=jZqD5KXzYjmahA@mail.gmail.com>
-In-Reply-To: <CAEf4BzYOjgCbbr_zofZcGMiJj=fpH5JMBbL=jZqD5KXzYjmahA@mail.gmail.com>
+ 15.20.2623.8; Wed, 15 Jan 2020 05:58:04 +0000
+Received: from DM5PR15MB1675.namprd15.prod.outlook.com
+ ([fe80::1cbf:c518:3a4d:291b]) by DM5PR15MB1675.namprd15.prod.outlook.com
+ ([fe80::1cbf:c518:3a4d:291b%11]) with mapi id 15.20.2623.017; Wed, 15 Jan
+ 2020 05:58:04 +0000
+Received: from MacBook-Pro-52.local (2620:10d:c090:180::6ad1) by MWHPR08CA0051.namprd08.prod.outlook.com (2603:10b6:300:c0::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2644.18 via Frontend Transport; Wed, 15 Jan 2020 05:58:03 +0000
+From:   Yonghong Song <yhs@fb.com>
+To:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+CC:     Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@fb.com>
+Subject: headsup: latest llvm breaks libbpf/selftests
+Thread-Topic: headsup: latest llvm breaks libbpf/selftests
+Thread-Index: AQHVy2jA4EATUeuWXkqmraiIeyhMzw==
+Date:   Wed, 15 Jan 2020 05:58:04 +0000
+Message-ID: <18b7e7a4-dd3c-6e1b-c410-3b876320da97@fb.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-clientproxiedby: MWHPR11CA0021.namprd11.prod.outlook.com
- (2603:10b6:301:1::31) To MN2PR15MB3213.namprd15.prod.outlook.com
- (2603:10b6:208:3d::12)
+x-clientproxiedby: MWHPR08CA0051.namprd08.prod.outlook.com
+ (2603:10b6:300:c0::25) To DM5PR15MB1675.namprd15.prod.outlook.com
+ (2603:10b6:3:11f::17)
 x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:180::55]
+x-originating-ip: [2620:10d:c090:180::6ad1]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: ff826070-436e-46e0-47eb-08d7997fa023
-x-ms-traffictypediagnostic: MN2PR15MB2848:
+x-ms-office365-filtering-correlation-id: 566dce95-62dc-4947-5a84-08d7997fe2c3
+x-ms-traffictypediagnostic: DM5PR15MB1371:
 x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MN2PR15MB28485CADBA562995EFEFAB2BD5370@MN2PR15MB2848.namprd15.prod.outlook.com>
+x-microsoft-antispam-prvs: <DM5PR15MB13713CEE5920D134E3806FB8D3370@DM5PR15MB1371.namprd15.prod.outlook.com>
 x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-oob-tlc-oobclassifiers: OLM:1265;
 x-forefront-prvs: 02830F0362
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(366004)(396003)(376002)(346002)(39860400002)(136003)(189003)(199004)(81156014)(8676002)(81166006)(1076003)(66446008)(8936002)(16526019)(66476007)(66556008)(64756008)(54906003)(186003)(66946007)(4326008)(5660300002)(6506007)(86362001)(6916009)(2906002)(71200400001)(478600001)(9686003)(7696005)(52116002)(55016002)(53546011)(316002);DIR:OUT;SFP:1102;SCL:1;SRVR:MN2PR15MB2848;H:MN2PR15MB3213.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(136003)(376002)(39860400002)(346002)(396003)(366004)(189003)(199004)(36756003)(54906003)(4326008)(6916009)(316002)(31696002)(8936002)(8676002)(71200400001)(966005)(5660300002)(81166006)(86362001)(2616005)(2906002)(6486002)(186003)(6512007)(81156014)(6506007)(52116002)(66556008)(478600001)(64756008)(66446008)(66946007)(66476007)(16526019)(31686004);DIR:OUT;SFP:1102;SCL:1;SRVR:DM5PR15MB1371;H:DM5PR15MB1675.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
 received-spf: None (protection.outlook.com: fb.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: vm8dOvrFmll0m1BKF3WQas0Qp7kH3P0PvHb83dMnOwWH3Ommhn240WTz0KK43c74twiBYkGyf+Y9kxz8juefQDy5vetDciSjvPVWYj9ap2eZDkDGBchawoz0JE0YomX5+ki19BrJ8zPBu2DsWpsNSRB0+NX3w5gsIOzSwqErj+6SOUC73sL2FKoxzs9yxqNv0vWeNNSVPEvUacVZEfbNysi0r0XFIQWj5WpM7VrmevJrHQ1jDpo2eZd9LypdgI2oQTD1x6T+tRGpwQqUGclK4OIniHsNREHW4EkS7AvOJ2R4tpCDWxD3Pu8ob0Lwj9b6MfdFt+4MuyEySuQ6qSE4kYJOfArZXGbGJpq+633xCs4OpQaO/xyb1sut6dSQuB4YHkdITxBFcrg8Aw7w8oggbob+E1TvN4pLClBVfEM6Bkv/YRGGpO3/S3t6ZgMW3rnb
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <43E01CBE45AC8A4882563133C90206EA@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+x-microsoft-antispam-message-info: X0oBON6lZ8N+d6Q8NGLzNimSVdrFDobHvcqV0FHqHPaWZvKa/7hFzNNClb+HiSTVL+ILRin1BAJuVb+h3d+znBFkrtNZb6HLrDneatoGukYI9uTNC8rTbjt+by6BrvyuMVNW6e3rKTqDP6ksWML5uspBgl6J/QrPwvTGkcBDWQacVPUc/0FjVh/cUQSN5DAy918Spd0AUm7MF3V7tFLGVatrBk2QONxx4Xt37U7VBWZcvfbyLZkPZTe1hhr8wruI1gc2DjGY1PKMHs15Ntv/+zLB9eKjUNg6Na8YPo+ifUWIDh3pMMJ0FuQHeW1BH0SdGip+/x+LZo3J2PFh8zzGf4+1J/Zkq/5/ZTx5xsgXY7mQcTfCvI0/+AAMCayvFnJ1MILQaWjryQeRYv0aFy2Rhl+yhNK8rRKwoC94Gc9pGa4QBdXNVM2dZ9Jt1kvR+FTJy1LIlH8y5h8isHAtWY6AIUFUpciY15YM703H4yqzpqo=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <5B6FF05BE6F4C842BFFDE02366AFD676@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: ff826070-436e-46e0-47eb-08d7997fa023
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Jan 2020 05:56:12.6265
+X-MS-Exchange-CrossTenant-Network-Message-Id: 566dce95-62dc-4947-5a84-08d7997fe2c3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Jan 2020 05:58:04.2753
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: nSVtrCypge0m6+ZA/Xmjqx3GO0x/GlNIpQIkYWl2yvYLyPewUvgghKPkU/D/Rli2
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB2848
+X-MS-Exchange-CrossTenant-userprincipalname: IRg7IqAjlc0QcwQfkSNBfUvSdDGLgH413Qgd4i3gXgY1Ok6a8QU3eeGove3g/O2l
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR15MB1371
 X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
  definitions=2020-01-14_06:2020-01-14,2020-01-14 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
- bulkscore=0 impostorscore=0 mlxscore=0 phishscore=0 clxscore=1015
- mlxlogscore=504 priorityscore=1501 lowpriorityscore=0 spamscore=0
- adultscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-1910280000 definitions=main-2001150047
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ bulkscore=0 mlxscore=0 phishscore=0 impostorscore=0 lowpriorityscore=0
+ mlxlogscore=921 malwarescore=0 suspectscore=0 spamscore=0 adultscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-2001150047
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 14, 2020 at 05:43:58PM -0800, Andrii Nakryiko wrote:
-> On Tue, Jan 14, 2020 at 2:44 PM Martin KaFai Lau <kafai@fb.com> wrote:
-> >
-> > This patch exposes bpf_find_kernel_btf() to libbpf_internal.h.
-> > It will be used in 'bpftool map dump' in a following patch
-> > to dump a map with btf_vmlinux_value_type_id set.
-> >
-> > Signed-off-by: Martin KaFai Lau <kafai@fb.com>
-> > ---
->=20
-> This function comes up not a first time, I guess it makes sense to
-> finally make it a public API. We should also try to minimize number of
-> internal APIs used by bpftool.
->=20
-> So if no one objects to expose it, should we call it a bit more
-> precisely and according to libbpf naming guidelines:
-> libbpf_load_kernel_btf? libbpf_find_kernel_btf is acceptable, but it
-> does more than just finding, thus "load". It should also probably live
-> in btf.c+btf.h? WDYT?
-Sure, I will add it as LIBBPF_API in btf.h
-
->=20
->=20
-> >  tools/lib/bpf/libbpf.c          | 3 +--
-> >  tools/lib/bpf/libbpf_internal.h | 1 +
-> >  2 files changed, 2 insertions(+), 2 deletions(-)
-> >
->=20
-> [...]
+SGksDQoNClRoZSBMTFZNIHBhdGNoIGh0dHBzOi8vcmV2aWV3cy5sbHZtLm9yZy9ENzIxOTcsIHdo
+aWNoIGlzIG1lcmdlZCB0byBsbHZtIA0KdHJ1bmsgb24gU3VuZGF5ICgwMS8xMiksIGVtaXR0ZWQg
+ZnVuY3Rpb24gY2FsbCByZWxvY2F0aW9ucyB3aXRoaW4gdGhlDQpzYW1lIHNlY3Rpb24uIFRoaXMg
+YnJlYWtzIGxpYmJwZiBhbmQgc2VsZnRlc3RzIGFzIGxpYmJwZiBhc3N1bWVzIG5vIHNhbWUNCnNl
+Y3Rpb24gcmVsb2NhdGlvbnMuDQoNClRvIHdvcmsgYXJvdW5kIHRoZSBpc3N1ZSwgYWZ0ZXIgeW91
+IHB1bGwgaW4gbGF0ZXN0IGxsdm0sIGp1c3QgY2hlY2tvdXQNCnRoZSBjb21taXQgYmVmb3JlIHRo
+ZSBmb2xsb3dpbmcgb25lOg0KICAgIGNvbW1pdCAyYmZlZTM1Y2I4NjA4NTliNDM2ZGUwYjc4MGZi
+ZDAwZDY4ZTE5OGE0DQogICAgQXV0aG9yOiBGYW5ncnVpIFNvbmcgPG1hc2tyYXlAZ29vZ2xlLmNv
+bT4NCiAgICBEYXRlOiAgIEZyaSBKYW4gMyAyMTo0NDo1NyAyMDIwIC0wODAwDQoNCiAgICBbTUNd
+W0VMRl0gRW1pdCBhIHJlbG9jYXRpb24gaWYgdGFyZ2V0IGlzIGRlZmluZWQgaW4gdGhlIHNhbWUg
+c2VjdGlvbg0KICAgIGFuZCBpcyBub24tbG9jYWwNCg0KLi4uDQphZGEyMmM4MDRjZDk1NmYzZWU3
+Y2M5ZGM4MmU2ZDU0ZWFkOGE0ZmZlIEZpeCAicG9pbnRlciBpcyBudWxsIiBzdGF0aWMgDQphbmFs
+eXplciB3YXJuaW5nLiBORkNJLg0KMmJmZWUzNWNiODYwODU5YjQzNmRlMGI3ODBmYmQwMGQ2OGUx
+OThhNCBbTUNdW0VMRl0gRW1pdCBhIHJlbG9jYXRpb24gaWYgDQp0YXJnZXQgaXMgZGVmaW5lZCBp
+biB0aGUgc2FtZSBzZWN0aW9uIGFuZCBpcyBub24tbG9jYWwNCjI0MWYzMzBkNmJhYjUyYWI0ZTNh
+MDFjYmI5YTNlZGQ0MTdkMDdjNTkgW0FNREdQVV0gQWRkIGdmeDggYXNzZW1ibGVyIGFuZCANCmRp
+c2Fzc2VtYmxlciB0ZXN0IGNhc2VzDQogICAgXl5eXl5eDQogICAgY2hlY2tvdXQgdGhpcyBjb21t
+aXQNCjdmYTUyOTBkNWJkNTYzMmQ3YTM2YTRlYTlmNDZlODFlMDRmYjgxOWUgX19wYXRjaGFibGVf
+ZnVuY3Rpb25fZW50cmllczogDQpkb24ndCB1c2UgbGlua2FnZSBmaWVsZCAndW5pcXVlJyB3aXRo
+IC1uby1pbnRlZ3JhdGVkLWFzDQouLi4NCg0KbGliYnBmIGFuZCBzZWxmdGVzdHMgc2hvdWxkIHdv
+cmsgYWdhaW4uDQoNClRoZSBpc3N1ZSB3aWxsIGJlIGFkZHJlc3NlZCBzb29uLg0KDQpUaGFua3Ms
+DQoNCllvbmdob25nDQo=
