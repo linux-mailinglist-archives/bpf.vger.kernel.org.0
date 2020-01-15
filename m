@@ -2,258 +2,188 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AD08013D00A
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2020 23:23:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3DDE13D023
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2020 23:34:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730673AbgAOWXV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Jan 2020 17:23:21 -0500
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:35715 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730588AbgAOWXU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Jan 2020 17:23:20 -0500
-Received: by mail-pl1-f196.google.com with SMTP id g6so7437019plt.2;
-        Wed, 15 Jan 2020 14:23:19 -0800 (PST)
+        id S1729736AbgAOWbu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Jan 2020 17:31:50 -0500
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:36467 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728899AbgAOWbu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Jan 2020 17:31:50 -0500
+Received: by mail-qk1-f193.google.com with SMTP id a203so17355080qkc.3;
+        Wed, 15 Jan 2020 14:31:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=39CS5GpmXuTwg03W2SVR081VJD0zzg51XXxFz2HsFP8=;
-        b=dEGsyMKiCZp/BhyZOc1rCAcVCdnQ84+uPow5LTQ61QN8w0yqWJJnIVMvN3mYa0/WR5
-         OiFpAIZtmuViFzfHFkoZteAisypniJFqDJRv6Oz8RQ9Z6gcRMd6aU0dXkILjmS0qRqYu
-         4FBp0ZcMblEd6eLSxJRkkDoPabSQd4RZCthIkchHUOZUtgZQ+eKgLMR84xoPmKtayl3Y
-         N/QWTqdoACAAsokCN5d1+B4Djode8dPylCpy01j2JKUl4wHqHrpnLUoj5KQevOa7er/E
-         /b0idl2rvOafFMFBcx3DG7Aan3VAn63/S+O1crbdpCbBOSUa5h9SSIie0k0Gk/KHgk8O
-         2ceg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=m3ykeEiv2DWhC3YDv/3M+ztOkLKwpMGFjEqD6cnUt4s=;
+        b=cNt51iDcDZI6zelQEGvFbm8lPIlIGnZldM0f2rIq1AgcoCCdkQIbVvR19pY8xHwYlP
+         7R2OMxb5sfqI39LAluJjBuUlrFm8jXcFHwHzpQsVk9IHMN/xpCMK491szpikUKk8RT8X
+         m7307OpYrbxFQJI8OakwrfTa3HGJZ4eJBfI86Xby5q50ox6WVd4PzkYEVcAciFBIwS8u
+         f7mRKTLIgkBP65rlD0vn09o9FPFOgGm1EUGPVidZ+W/ZFmk+dDe2ZjwrZvCB++dEJ8sV
+         SkthSvzz+nTTMBTamfNnFkYTRMY01cXfsbE7dr+lHGbkVSn+2SSSqgQh18vnIuXka7P3
+         jZ8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=39CS5GpmXuTwg03W2SVR081VJD0zzg51XXxFz2HsFP8=;
-        b=JnPLI0dlNG7OvEevAJZqYo9BmneUUe6wPwJ+BRpx/CoG6lImxM17lwzQlvX+5PZkUt
-         o5Nzu382OnGaZnvPPFbJ2iC3wV8SfJuYoO3lOWUDnoVUB2+fwBGXtFt/2GTDYVL1gNRm
-         n984iEpTwBnrU2wCb72BFMufy4dqcBCjPiQeNNeuKpHzOxfmPisC5Dvu+d7xxiE3PB+A
-         KaWLFiC9QbPINDMiAUnBY+/PgSwbdIvVJuh6No9o1LJ8rJqhsxUe+XO3GwCtANtAb7Tn
-         aBZ2jWnD0+8sshHooyzJfZoAewgYIluJHm/egd2joVP7T4GI6ViD9yyqYXHe2hSIceqW
-         WiCg==
-X-Gm-Message-State: APjAAAWiAtjwGPaYOCdLZu0DUA9Mp0SynAtPrOiWMhslsPDzaTr3JX7v
-        9k8HqQ872MWm41A2yOEbK5w=
-X-Google-Smtp-Source: APXvYqyFkR+Wo+opdxJwELWfWISoegQhZNyLFiV4T0QPKL1sB9AmjY8V1fcGllMB/XZ4jFR5UMaooA==
-X-Received: by 2002:a17:902:6904:: with SMTP id j4mr12433225plk.88.1579126999203;
-        Wed, 15 Jan 2020 14:23:19 -0800 (PST)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:200::3:e760])
-        by smtp.gmail.com with ESMTPSA id h126sm23617846pfe.19.2020.01.15.14.23.17
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 15 Jan 2020 14:23:18 -0800 (PST)
-Date:   Wed, 15 Jan 2020 14:23:15 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Stephen Smalley <sds@tycho.nsa.gov>,
-        KP Singh <kpsingh@chromium.org>,
-        James Morris <jmorris@namei.org>,
-        Kees Cook <keescook@chromium.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, linux-security-module@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=m3ykeEiv2DWhC3YDv/3M+ztOkLKwpMGFjEqD6cnUt4s=;
+        b=cK76LIAP5ynqr0Qta/8qtkniBiwY6z2LvYl36KzJhC160HWZAgWe7jrqSs6rdz51KO
+         jvOYzc5iDZ5jEMidCg5GTs6O4px3Y9vBjWG95814auLdEtPiisD6EOzE4jAM7pZ/if06
+         Y73rLUhWf5YehK9/0knabFTx+SmCHoRVm0XkuQh9SeHo7s/9OBXRisdV1InonIhgnHvY
+         kvxy66xTcUm0LeQKyHsjwPbDFOeJueNg0/TXS9c/A/cnPj84VMNww/UfbaRJatW8cJtH
+         Mte43cYFkUJjnqhSIxlzcsWwulykNHHh+yVSJd6j9xHx2a9ykwKoTYMCxPM9qh21vYh7
+         XOIg==
+X-Gm-Message-State: APjAAAVLiYLb8203H9f0aSWU+jQBOW6ieGh/6E8+TWrMNMJgtQICPqfV
+        ZOGrpVd0Z2SQwg49NYDkGtG7+lsqO9IdXO45MaU=
+X-Google-Smtp-Source: APXvYqzukFfHfNkIeKb+uK+DszszlveC2wPehwk6e8vAwphJhtnuhVoFPfjcvFFmRoCVVG49lShaKmldjnY1Y1hDegY=
+X-Received: by 2002:ae9:e809:: with SMTP id a9mr13631663qkg.92.1579127508368;
+ Wed, 15 Jan 2020 14:31:48 -0800 (PST)
+MIME-Version: 1.0
+References: <157909756858.1192265.6657542187065456112.stgit@toke.dk>
+ <157909757089.1192265.9038866294345740126.stgit@toke.dk> <CAEf4BzbqY8zivZy637Xy=iTECzBAYQ7vo=M7TvsLM2Yp12bJpg@mail.gmail.com>
+ <87v9pctlvn.fsf@toke.dk>
+In-Reply-To: <87v9pctlvn.fsf@toke.dk>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 15 Jan 2020 14:31:37 -0800
+Message-ID: <CAEf4BzZpGe-1S5_iwS8GBw9iiyFJmDUkOaO+2qaftRn_iy5cNA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 02/10] tools/bpf/runqslower: Fix override
+ option for VMLINUX_BTF
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Thomas Garnier <thgarnie@chromium.org>,
-        Michael Halcrow <mhalcrow@google.com>,
-        Paul Turner <pjt@google.com>,
-        Brendan Gregg <brendan.d.gregg@gmail.com>,
-        Jann Horn <jannh@google.com>,
-        Matthew Garrett <mjg59@google.com>,
-        Christian Brauner <christian@brauner.io>,
-        =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
         "David S. Miller" <davem@davemloft.net>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Quentin Monnet <quentin.monnet@netronome.com>,
-        Andrey Ignatov <rdna@fb.com>, Joe Stringer <joe@wand.net.nz>,
-        Paul Moore <paul@paul-moore.com>
-Subject: Re: [PATCH bpf-next v1 00/13] MAC and Audit policy using eBPF (KRSI)
-Message-ID: <20200115222314.wiqamvax7vckgfv7@ast-mbp.dhcp.thefacebook.com>
-References: <alpine.LRH.2.21.2001100558550.31925@namei.org>
- <20200109194302.GA85350@google.com>
- <8e035f4d-5120-de6a-7ac8-a35841a92b8a@tycho.nsa.gov>
- <20200110152758.GA260168@google.com>
- <20200110175304.f3j4mtach4mccqtg@ast-mbp.dhcp.thefacebook.com>
- <554ab109-0c23-aa82-779f-732d10f53d9c@tycho.nsa.gov>
- <49a45583-b4fb-6353-a8d4-6f49287b26eb@tycho.nsa.gov>
- <20200115024830.4ogd3mi5jy5hwr2v@ast-mbp.dhcp.thefacebook.com>
- <38a82df5-7610-efe1-d6cd-76f6f68c6110@tycho.nsa.gov>
- <20200115140953.GB3627564@kroah.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200115140953.GB3627564@kroah.com>
-User-Agent: NeoMutt/20180223
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-rdma@vger.kernel.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        clang-built-linux@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 15, 2020 at 03:09:53PM +0100, Greg Kroah-Hartman wrote:
-> On Wed, Jan 15, 2020 at 08:59:08AM -0500, Stephen Smalley wrote:
-> > On 1/14/20 9:48 PM, Alexei Starovoitov wrote:
-> > > On Tue, Jan 14, 2020 at 12:42:22PM -0500, Stephen Smalley wrote:
-> > > > On 1/14/20 11:54 AM, Stephen Smalley wrote:
-> > > > > On 1/10/20 12:53 PM, Alexei Starovoitov wrote:
-> > > > > > On Fri, Jan 10, 2020 at 04:27:58PM +0100, KP Singh wrote:
-> > > > > > > On 09-Jan 14:47, Stephen Smalley wrote:
-> > > > > > > > On 1/9/20 2:43 PM, KP Singh wrote:
-> > > > > > > > > On 10-Jan 06:07, James Morris wrote:
-> > > > > > > > > > On Thu, 9 Jan 2020, Stephen Smalley wrote:
-> > > > > > > > > > 
-> > > > > > > > > > > On 1/9/20 1:11 PM, James Morris wrote:
-> > > > > > > > > > > > On Wed, 8 Jan 2020, Stephen Smalley wrote:
-> > > > > > > > > > > > 
-> > > > > > > > > > > > > The cover letter subject line and the
-> > > > > > > > > > > > > Kconfig help text refer to it as a
-> > > > > > > > > > > > > BPF-based "MAC and Audit policy".  It
-> > > > > > > > > > > > > has an enforce config option that
-> > > > > > > > > > > > > enables the bpf programs to deny access,
-> > > > > > > > > > > > > providing access control. IIRC,
-> > > > > > > > > > > > > in
-> > > > > > > > > > > > > the earlier discussion threads, the BPF
-> > > > > > > > > > > > > maintainers suggested that Smack
-> > > > > > > > > > > > > and
-> > > > > > > > > > > > > other LSMs could be entirely
-> > > > > > > > > > > > > re-implemented via it in the future, and
-> > > > > > > > > > > > > that
-> > > > > > > > > > > > > such an implementation would be more optimal.
-> > > > > > > > > > > > 
-> > > > > > > > > > > > In this case, the eBPF code is similar to a
-> > > > > > > > > > > > kernel module, rather than a
-> > > > > > > > > > > > loadable policy file.  It's a loadable
-> > > > > > > > > > > > mechanism, rather than a policy, in
-> > > > > > > > > > > > my view.
-> > > > > > > > > > > 
-> > > > > > > > > > > I thought you frowned on dynamically loadable
-> > > > > > > > > > > LSMs for both security and
-> > > > > > > > > > > correctness reasons?
-> > > > > > > > > 
-> > > > > > > > > Based on the feedback from the lists we've updated the design for v2.
-> > > > > > > > > 
-> > > > > > > > > In v2, LSM hook callbacks are allocated dynamically using BPF
-> > > > > > > > > trampolines, appended to a separate security_hook_heads and run
-> > > > > > > > > only after the statically allocated hooks.
-> > > > > > > > > 
-> > > > > > > > > The security_hook_heads for all the other LSMs (SELinux, AppArmor etc)
-> > > > > > > > > still remains __lsm_ro_after_init and cannot be modified. We are still
-> > > > > > > > > working on v2 (not ready for review yet) but the general idea can be
-> > > > > > > > > seen here:
-> > > > > > > > > 
-> > > > > > > > >       https://github.com/sinkap/linux-krsi/blob/patch/v1/trampoline_prototype/security/bpf/lsm.c
-> > > > > > > > > 
-> > > > > > > > > 
-> > > > > > > > > > 
-> > > > > > > > > > Evaluating the security impact of this is the next
-> > > > > > > > > > step. My understanding
-> > > > > > > > > > is that eBPF via BTF is constrained to read only access to hook
-> > > > > > > > > > parameters, and that its behavior would be entirely restrictive.
-> > > > > > > > > > 
-> > > > > > > > > > I'd like to understand the security impact more
-> > > > > > > > > > fully, though.  Can the
-> > > > > > > > > > eBPF code make arbitrary writes to the kernel, or
-> > > > > > > > > > read anything other than
-> > > > > > > > > > the correctly bounded LSM hook parameters?
-> > > > > > > > > > 
-> > > > > > > > > 
-> > > > > > > > > As mentioned, the BPF verifier does not allow writes to BTF types.
-> > > > > > > > > 
-> > > > > > > > > > > And a traditional security module would necessarily fall
-> > > > > > > > > > > under GPL; is the eBPF code required to be
-> > > > > > > > > > > likewise?  If not, KRSI is a
-> > > > > > > > > > > gateway for proprietary LSMs...
-> > > > > > > > > > 
-> > > > > > > > > > Right, we do not want this to be a GPL bypass.
-> > > > > > > > > 
-> > > > > > > > > This is not intended to be a GPL bypass and the BPF verifier checks
-> > > > > > > > > for license compatibility of the loaded program with GPL.
-> > > > > > > > 
-> > > > > > > > IIUC, it checks that the program is GPL compatible if it
-> > > > > > > > uses a function
-> > > > > > > > marked GPL-only.  But what specifically is marked GPL-only
-> > > > > > > > that is required
-> > > > > > > > for eBPF programs using KRSI?
-> > > > > > > 
-> > > > > > > Good point! If no-one objects, I can add it to the BPF_PROG_TYPE_LSM
-> > > > > > > specific verification for the v2 of the patch-set which would require
-> > > > > > > all BPF-LSM programs to be GPL.
-> > > > > > 
-> > > > > > I don't think it's a good idea to enforce license on the program.
-> > > > > > The kernel doesn't do it for modules.
-> > > > > > For years all of BPF tracing progs were GPL because they have to use
-> > > > > > GPL-ed helpers to do anything meaningful.
-> > > > > > So for KRSI just make sure that all helpers are GPL-ed as well.
-> > > > > 
-> > > > > IIUC, the example eBPF code included in this patch series showed a
-> > > > > program that used a GPL-only helper for the purpose of reporting event
-> > > > > output to userspace. But it could have just as easily omitted the use of
-> > > > > that helper and still implemented its own arbitrary access control model
-> > > > > on the LSM hooks to which it attached.  It seems like the question is
-> > > > > whether the kernel developers are ok with exposing the entire LSM hook
-> > > > > interface and all the associated data structures to non-GPLd code,
-> > > > > irrespective of what helpers it may or may not use.
-> > > > 
-> > > > Also, to be clear, while kernel modules aren't necessarily GPL, prior to
-> > > > this patch series, all Linux security modules were necessarily GPLd in order
-> > > > to use the LSM interface.
-> > > 
-> > > Because they use securityfs_create_file() GPL-ed api, right?
-> > > but not because module license is enforced.
-> > 
-> > No, securityfs was a later addition and is not required by all LSMs either.
-> > Originally LSMs had to register their hooks via register_security(), which
-> > was intentionally EXPORT_SYMBOL_GPL() to avoid exposing the LSM interface to
-> > non-GPLd modules because there were significant concerns with doing so when
-> > LSM was first merged.  Then in 20510f2f4e2dabb0ff6c13901807627ec9452f98
-> > ("security: Convert LSM into a static interface"), the ability for loadable
-> > modules to use register_security() at all was removed, limiting its use to
-> > built-in modules.  In commit b1d9e6b0646d0e5ee5d9050bd236b6c65d66faef ("LSM:
-> > Switch to lists of hooks"), register_security() was replaced by
-> > security_add_hooks(), but this was likewise not exported for use by modules
-> > and could only be used by built-in code.  The bpf LSM is providing a shim
-> > that allows eBPF code to attach to these hooks that would otherwise not be
-> > exposed to non-GPLd code, so if the bpf LSM does not require the eBPF
-> > programs to also be GPLd, then that is a change from current practice.
-> > 
-> > > > So allowing non-GPL eBPF-based LSMs would be a
-> > > > change.
-> > > 
-> > > I don't see it this way. seccomp progs technically unlicensed. Yet they can
-> > > disallow any syscall. Primitive KRSI progs like
-> > > int bpf-prog(void*) { return REJECT; }
-> > > would be able to do selectively disable a syscall with an overhead acceptable
-> > > in production systems (unlike seccomp). I want this use case to be available to
-> > > people. It's a bait, because to do real progs people would need to GPL them.
-> > > Key helpers bpf_perf_event_output, bpf_ktime_get_ns, bpf_trace_printk are all
-> > > GPL-ed. It may look that most networking helpers are not-GPL, but real life is
-> > > different. To debug programs bpf_trace_printk() is necessary. To have
-> > > communication with user space bpf_perf_event_output() is necssary. To measure
-> > > anything or implement timestamps bpf_ktime_get_ns() is necessary. So today all
-> > > meaninful bpf programs are GPL. Those that are not GPL probably exist, but
-> > > they're toy programs. Hence I have zero concerns about GPL bypass coming from
-> > > tracing, networking, and, in the future, KRSI progs too.
-> > 
-> > You have more confidence than I do about that.  I would anticipate
-> > developers of out-of-tree LSMs latching onto this bpf LSM and using it to
-> > avoid GPL.  I don't see that any of those helpers are truly needed to
-> > implement an access control model.
-> 
-> Yeah, I'm with Stephen here, this should be explicitly marked for
-> GPL-only bpf code to prevent anyone from trying to route around the LSM
-> apis we have today.  We have enough problem with companies trying to do
-> that as-is, let's not give them any other ways to abuse our license.
+On Wed, Jan 15, 2020 at 2:06 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
+>
+> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+>
+> > On Wed, Jan 15, 2020 at 6:13 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@=
+redhat.com> wrote:
+> >>
+> >> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> >>
+> >> The runqslower tool refuses to build without a file to read vmlinux BT=
+F
+> >> from. The build fails with an error message to override the location b=
+y
+> >> setting the VMLINUX_BTF variable if autodetection fails. However, the
+> >> Makefile doesn't actually work with that override - the error message =
+is
+> >> still emitted.
+> >
+> > Do you have example command with VMLINUX_BTF override that didn't work
+> > (and what error message was emitted)?
+>
+> Before this patch:
+>
+> $ cd ~/build/linux/tools/bpf/runqslower
+> $ make
+> Makefile:18: *** "Can't detect kernel BTF, use VMLINUX_BTF to specify it =
+explicitly".  Stop.
+>
+> $ make VMLINUX_BTF=3D~/build/linux/vmlinux
+> Makefile:18: *** "Can't detect kernel BTF, use VMLINUX_BTF to specify it =
+explicitly".  Stop.
 
-Fine. Let's do per prog type check. We can undo it later when this early
-concerns prove to be overblown.
+Ok, so this is strange. Try make clean and run with V=3D1, it might help
+to debug this. This could happen if ~/build/linux/vmlinux doesn't
+exist, but I assume you double-checked that. It works for me just fine
+(Makefile won't do VMLINUX_BTF :=3D assignment, if it's defined through
+make invocation, so your change should be a no-op in that regard):
+
+$ make clean
+$ make VMLINUX_BTF=3D~/linux-build/default/vmlinux V=3D1
+...
+.output/sbin/bpftool btf dump file ~/linux-build/default/vmlinux
+format c > .output/vmlinux.h
+...
+
+Wonder what your output looks like?
+
+>
+> >> Fix this by only doing auto-detection if no override is set. And while
+> >> we're at it, also look for a vmlinux file in the current kernel build =
+dir
+> >> if none if found on the running kernel.
+> >>
+> >> Fixes: 9c01546d26d2 ("tools/bpf: Add runqslower tool to tools/bpf")
+> >> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> >> ---
+> >>  tools/bpf/runqslower/Makefile |   16 ++++++++++------
+> >>  1 file changed, 10 insertions(+), 6 deletions(-)
+> >>
+> >> diff --git a/tools/bpf/runqslower/Makefile b/tools/bpf/runqslower/Make=
+file
+> >> index cff2fbcd29a8..fb93ce2bf2fe 100644
+> >> --- a/tools/bpf/runqslower/Makefile
+> >> +++ b/tools/bpf/runqslower/Makefile
+> >> @@ -10,12 +10,16 @@ CFLAGS :=3D -g -Wall
+> >>
+> >>  # Try to detect best kernel BTF source
+> >>  KERNEL_REL :=3D $(shell uname -r)
+> >> -ifneq ("$(wildcard /sys/kernel/btf/vmlinux)","")
+> >> -VMLINUX_BTF :=3D /sys/kernel/btf/vmlinux
+> >> -else ifneq ("$(wildcard /boot/vmlinux-$(KERNEL_REL))","")
+> >> -VMLINUX_BTF :=3D /boot/vmlinux-$(KERNEL_REL)
+> >> -else
+> >> -$(error "Can't detect kernel BTF, use VMLINUX_BTF to specify it expli=
+citly")
+> >> +ifeq ("$(VMLINUX_BTF)","")
+> >> +  ifneq ("$(wildcard /sys/kernel/btf/vmlinux)","")
+> >> +  VMLINUX_BTF :=3D /sys/kernel/btf/vmlinux
+> >> +  else ifneq ("$(wildcard /boot/vmlinux-$(KERNEL_REL))","")
+> >> +  VMLINUX_BTF :=3D /boot/vmlinux-$(KERNEL_REL)
+> >> +  else ifneq ("$(wildcard $(abspath ../../../vmlinux))","")
+> >> +  VMLINUX_BTF :=3D $(abspath ../../../vmlinux)
+> >
+> > I'm planning to mirror runqslower into libbpf Github repo and this
+> > ../../../vmlinux piece will be completely out of place in that
+> > context. Also it only will help when building kernel in-tree. So I'd
+> > rather not add this.
+>
+> Well building the kernel in-tree is something people sometimes want to do=
+ ;)
+>
+> Specifically, the selftests depend on this, so we should at least fix
+> those; but I guess it could work to just pass in VMLINUX_BTF as part of
+> the make -C from the selftests dir? I'll try that...
+
+Yes, it can be handled through VMLINUX_BTF override for selftests. As
+I said, this will be a self-contained example in libbpf's Github repo,
+so this "in kernel tree" assumption doesn't stand there.
+
+
+>
+> -Toke
+>
