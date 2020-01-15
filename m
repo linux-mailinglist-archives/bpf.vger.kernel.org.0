@@ -2,89 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0110D13CFFD
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2020 23:18:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECD8A13D007
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2020 23:23:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729785AbgAOWRz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Jan 2020 17:17:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37364 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728899AbgAOWRz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Jan 2020 17:17:55 -0500
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B31C32187F;
-        Wed, 15 Jan 2020 22:17:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579126674;
-        bh=KRACwXXWKO/EznwyzDu7lnYus4D5z0F5HFebQ6mV67A=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=vQDz4L3I+zNXlHoV/yl0mng1PqZTdqI34xdNfY1tpzXxo7DwkfhndIBNVHQSuk5eS
-         bxE1ZS1d7WJnGwLZyKWeRL2QjzRf8jLzTN1R5FgFEY9cfNOCrkzdXaiKM2RS3tyd3U
-         Et/ca6hqUoSBV4mLJ/Y7o52mj9EGSwqjE4zs3zqQ=
-Date:   Thu, 16 Jan 2020 07:17:50 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jaswinder.singh@linaro.org,
-        bpf@vger.kernel.org, daniel@iogearbox.net
-Subject: Re: [BUGFIX PATCH] selftests: Fix pthread link option
-Message-Id: <20200116071750.0bde391266ea7637ee041d8c@kernel.org>
-In-Reply-To: <20200115192528.kq44bg24ezsgo5hm@ast-mbp.dhcp.thefacebook.com>
-References: <157907976750.14189.12829891067375600434.stgit@devnote2>
-        <20200115192528.kq44bg24ezsgo5hm@ast-mbp.dhcp.thefacebook.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1730661AbgAOWW6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Jan 2020 17:22:58 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:13120 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730129AbgAOWW6 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 15 Jan 2020 17:22:58 -0500
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 00FMMoZf026607
+        for <bpf@vger.kernel.org>; Wed, 15 Jan 2020 14:22:56 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=qtFzyE4iiZiPqTpnphin2/gfu5t99YfwSg3NBgCO4xY=;
+ b=UTWObrSB2d4GrS0OQmQxks6ApSxmtZIWuUyOhyhVudPvQWQ6+ejl3eODNJa7kjgg5h5x
+ iwPjqaigjXEwFViPULgJRovKWfCyNxo/TR/JBWW3b0ZX6y6ZXEJe0GTtCOHG+lABfCa8
+ aettlOx+NfWqqPv/8Gj4SBWPXlwgdEIoNF0= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2xj9vcrfsy-14
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 15 Jan 2020 14:22:56 -0800
+Received: from intmgw002.41.prn1.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 15 Jan 2020 14:22:42 -0800
+Received: by devbig005.ftw2.facebook.com (Postfix, from userid 6611)
+        id 6678C294163F; Wed, 15 Jan 2020 14:22:41 -0800 (PST)
+Smtp-Origin-Hostprefix: devbig
+From:   Martin KaFai Lau <kafai@fb.com>
+Smtp-Origin-Hostname: devbig005.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>, <kernel-team@fb.com>,
+        <netdev@vger.kernel.org>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH v2 bpf-next 0/5] bpftool: Support dumping a map with btf_vmlinux_value_type_id
+Date:   Wed, 15 Jan 2020 14:22:41 -0800
+Message-ID: <20200115222241.945672-1-kafai@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-01-15_03:2020-01-15,2020-01-15 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=529
+ clxscore=1015 bulkscore=0 phishscore=0 adultscore=0 spamscore=0
+ suspectscore=13 priorityscore=1501 malwarescore=0 impostorscore=0
+ mlxscore=0 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-1910280000 definitions=main-2001150167
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 15 Jan 2020 11:25:30 -0800
-Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+When a map is storing a kernel's struct, its
+map_info->btf_vmlinux_value_type_id is set.  The first map type
+supporting it is BPF_MAP_TYPE_STRUCT_OPS.
 
-> On Wed, Jan 15, 2020 at 06:16:07PM +0900, Masami Hiramatsu wrote:
-> > To support pthread correctly, it is better to use -pthread
-> > instead of -lpthread.
-> > 
-> > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> > ---
-> >  tools/testing/selftests/bpf/Makefile               |    2 +-
-> >  tools/testing/selftests/membarrier/Makefile        |    2 +-
-> >  tools/testing/selftests/mqueue/Makefile            |    2 +-
-> >  tools/testing/selftests/net/Makefile               |    4 ++--
-> >  .../testing/selftests/powerpc/benchmarks/Makefile  |    4 ++--
-> >  tools/testing/selftests/powerpc/dscr/Makefile      |    2 +-
-> >  tools/testing/selftests/powerpc/mm/Makefile        |    2 +-
-> >  tools/testing/selftests/rseq/Makefile              |    2 +-
-> >  tools/testing/selftests/rtc/Makefile               |    2 +-
-> >  tools/testing/selftests/seccomp/Makefile           |    2 +-
-> >  tools/testing/selftests/timers/Makefile            |    2 +-
-> >  tools/testing/selftests/vm/Makefile                |    2 +-
-> >  12 files changed, 14 insertions(+), 14 deletions(-)
-> > 
-> > diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> > index e2fd6f8d579c..419f58c53d12 100644
-> > --- a/tools/testing/selftests/bpf/Makefile
-> > +++ b/tools/testing/selftests/bpf/Makefile
-> > @@ -22,7 +22,7 @@ CFLAGS += -g -Wall -O2 $(GENFLAGS) -I$(APIDIR) -I$(LIBDIR) -I$(BPFDIR)	\
-> >  	  -I$(GENDIR) -I$(TOOLSDIR) -I$(CURDIR)				\
-> >  	  -Dbpf_prog_load=bpf_prog_test_load				\
-> >  	  -Dbpf_load_program=bpf_test_load_program
-> > -LDLIBS += -lcap -lelf -lrt -lpthread
-> > +LDLIBS += -lcap -lelf -lrt -pthread
-> 
-> Please split this bit into separate patch and send it to bpf@vger targeting
-> bpf-next. selftests/bpf are going through a lot of changes and I'd like to
-> avoid any chance of conflicts.
+This series adds support to dump this kind of map with BTF.
+The first two patches are bug fixes which only applicable to
+in bpf-next.
 
-OK, I'll split it.
+Please see individual patches for details.
 
-Thank you,
+v2:
+- Expose bpf_find_kernel_btf() as a LIBBPF_API in patch 3 (Andrii)
+- Cache btf_vmlinux in bpftool/map.c (Andrii)
 
+Martin KaFai Lau (5):
+  bpftool: Fix a leak of btf object
+  bpftool: Fix missing BTF output for json during map dump
+  libbpf: Expose bpf_find_kernel_btf as a LIBBPF_API
+  bpftool: Add struct_ops map name
+  bpftool: Support dumping a map with btf_vmlinux_value_type_id
+
+ tools/bpf/bpftool/map.c  | 103 ++++++++++++++++++++++++---------------
+ tools/lib/bpf/btf.c      | 102 +++++++++++++++++++++++++++++++++++---
+ tools/lib/bpf/btf.h      |   2 +
+ tools/lib/bpf/libbpf.c   |  93 ++---------------------------------
+ tools/lib/bpf/libbpf.map |   1 +
+ 5 files changed, 167 insertions(+), 134 deletions(-)
 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+2.17.1
+
