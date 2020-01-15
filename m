@@ -2,100 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 98E6413B97E
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2020 07:23:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70BD913B986
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2020 07:25:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726550AbgAOGXB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Jan 2020 01:23:01 -0500
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:34640 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725999AbgAOGXB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Jan 2020 01:23:01 -0500
-Received: by mail-qk1-f194.google.com with SMTP id j9so14720130qkk.1
-        for <bpf@vger.kernel.org>; Tue, 14 Jan 2020 22:23:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6kXsttBJF8NRX6Il8q8x+MiRaD6ZTas5L0xvuDQ/jOI=;
-        b=uIo8tjCugf+Mpdo7KVPthS4iFx8NNyrsrb75V8wHfJGO6mXJjPN2TO+s3EKFH3HK1o
-         XpYcTBSTC6FIj5ZbstN48846BlG+W8s8JElBW+pcmiwwFU2Ig7YV60VqYjkYVuE1vMzz
-         H4BUzUWUANJRahBFeDY1c7pgd0pe5n2cFQpJrt2dPMvazOjKfSHky7XJssZej9S68N5B
-         mOOOtRVwyde3O7p/vRq8KUqwYOVIqKLYqyG18jbOTxxCCLv38EJhu6f+ZPJtH8KMpxVs
-         aO/o4/HbgKei6QnI5EwJegVLcwTxCs9ctJQX6/bvURrP5WOPZ+QxDovghcuxurpxr8tS
-         WLzQ==
+        id S1726562AbgAOGZK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Jan 2020 01:25:10 -0500
+Received: from mail-il1-f197.google.com ([209.85.166.197]:33152 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726045AbgAOGZK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Jan 2020 01:25:10 -0500
+Received: by mail-il1-f197.google.com with SMTP id s9so12540618ilk.0
+        for <bpf@vger.kernel.org>; Tue, 14 Jan 2020 22:25:10 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6kXsttBJF8NRX6Il8q8x+MiRaD6ZTas5L0xvuDQ/jOI=;
-        b=hYaxSoruc9tBeLYl1MzAur5Re0qOGuhRjJIj4gqD+MeDxHb2TrlCCIT9O4mWoPIAji
-         +kBOhNpm7BT2Q4bAcGIKaaZuxzgtbe9ADLAD2KCHUs7n3wZpoE62xAwUYGgXkKfugER3
-         1ePWRXp3n9kOFbXWJgldlEFXW8CYkv23eLwT8jwgXEYDXAELsTqFOOroSRz1TcmNSCI0
-         e0PO7AI6ljhNbB8GQoDkrfKZbeoGYygIRO8hZ7ETn5HPLMJiccIg/VheZ6nw0MxtqmOI
-         qszu2G3Oj/EZWm0F+T9HWJ/lkr1cRlaCZSk+E9h5gmO3TynJixDAIdCgtvYCgc5Xcadu
-         iLhg==
-X-Gm-Message-State: APjAAAVarut13+NzGQAoJG/hkd+IDaVDQyQ6n3qxeJzw+quHOjQG5bR9
-        V3twhaV7gMOlNPy4O4LZidfmGvdVGkj4194TRywgzg==
-X-Google-Smtp-Source: APXvYqxTCZYTt6BOvaHrAJzpLqUV7fe+nZMBx4Z/5alaq1BgxTbxmDe/95BeQm5A7OaLq4RPB1C0keTgomT/TORt3v0=
-X-Received: by 2002:ae9:e809:: with SMTP id a9mr9497545qkg.92.1579069380308;
- Tue, 14 Jan 2020 22:23:00 -0800 (PST)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=eW4Xg4UoPEB3a/2AZhweqhOWkYfz9yjercWeCE8lc/U=;
+        b=GEOSkCKygUx9lZOkN8haAL8F021Z/epkwXIHRDZgn0WRrgDB3CFPYULgE/VTNOj2Ht
+         VXd4QC6qd+oLLkFFAJLCSrDRBV8wsAIa+3COZxIBsYiCgx4RnHwnU7DzQt54POFQPVvA
+         CEkYJohCCF3m83tm3Reo+0okYT9XVcaSWqz2LkKrJJVErB7Ez7458CMpJ8VsXOmauqQI
+         vZauUwoPvi1XUCcMy1TkHppDr3Z6iCsex+m/BmKdO+Ts/FX+/Gf4IoXjCxBuHj7Tp96U
+         hpFbq9VKVWtK5uTuqrjOmcIeOQGbw/itDGAJs9kdohS1z6VI3vS9xSz0v0TUgstDCdLR
+         3rOA==
+X-Gm-Message-State: APjAAAUMzl5Os//6uRuhoexhbgbKNH3BjJgKYBFxc2hjxiUydv69S5FV
+        i0yCs4nSj1ee+67J7SMGjTpo670R0yx107HPSnNeFKy9kuFj
+X-Google-Smtp-Source: APXvYqxML7d3L5Iw4ZulrZXdY2U62wtdVprZnJIEN29JJJ44LTFXEhQ5v2TG6VzttbZ8fg8QmdfCS48D2VQcTt90ZkkHQRKWwgmW
 MIME-Version: 1.0
-References: <20200115035002.602280-1-yhs@fb.com>
-In-Reply-To: <20200115035002.602280-1-yhs@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 14 Jan 2020 22:22:49 -0800
-Message-ID: <CAEf4BzYi7PuQsnn-fL4O4xFBu+kQKwBObyS6_2vzvUEi7607CQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 0/2] bpf: add bpf_send_signal_thread() helper
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+X-Received: by 2002:a5e:a614:: with SMTP id q20mr19404414ioi.36.1579069509574;
+ Tue, 14 Jan 2020 22:25:09 -0800 (PST)
+Date:   Tue, 14 Jan 2020 22:25:09 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000031a8d7059c27c540@google.com>
+Subject: general protection fault in free_verifier_state (3)
+From:   syzbot <syzbot+b296579ba5015704d9fa@syzkaller.appspotmail.com>
+To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
+        clang-built-linux@googlegroups.com, daniel@iogearbox.net,
+        davem@davemloft.net, hawk@kernel.org, jakub.kicinski@netronome.com,
+        john.fastabend@gmail.com, kafai@fb.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 14, 2020 at 7:50 PM Yonghong Song <yhs@fb.com> wrote:
->
-> Commit 8b401f9ed244 ("bpf: implement bpf_send_signal() helper")
-> added helper bpf_send_signal() which permits bpf program to
-> send a signal to the current process. The signal may send to
-> any thread of the process.
->
-> This patch implemented a new helper bpf_send_signal_thread()
-> to send a signal to the thread corresponding to the kernel current task.
-> This helper can simplify user space code if the thread context of
-> bpf sending signal is needed in user space. Please see Patch #1 for
-> details of use case and kernel implementation.
->
-> Patch #2 added some bpf self tests for the new helper.
->
-> Changelogs:
->   v2 -> v3:
->     - More simplification for skeleton codes by removing not-needed
->       mmap code and redundantly created tracepoint link.
->   v1 -> v2:
->     - More description for the difference between bpf_send_signal()
->       and bpf_send_signal_thread() in the uapi header bpf.h.
->     - Use skeleton and mmap for send_signal test.
->
-> Yonghong Song (2):
->   bpf: add bpf_send_signal_thread() helper
->   tools/bpf: add self tests for bpf_send_signal_thread()
->
->  include/uapi/linux/bpf.h                      |  19 ++-
->  kernel/trace/bpf_trace.c                      |  27 +++-
->  tools/include/uapi/linux/bpf.h                |  19 ++-
->  .../selftests/bpf/prog_tests/send_signal.c    | 128 +++++++-----------
->  .../bpf/progs/test_send_signal_kern.c         |  51 +++----
->  5 files changed, 131 insertions(+), 113 deletions(-)
->
-> --
-> 2.17.1
->
+Hello,
 
-For the series:
+syzbot found the following crash on:
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+HEAD commit:    6dd42aa1 Merge branch 'runqslower'
+git tree:       bpf-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=14e61349e00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a736c99e9fe5a676
+dashboard link: https://syzkaller.appspot.com/bug?extid=b296579ba5015704d9fa
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+
+Unfortunately, I don't have any reproducer for this crash yet.
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+b296579ba5015704d9fa@syzkaller.appspotmail.com
+
+kasan: CONFIG_KASAN_INLINE enabled
+kasan: GPF could be caused by NULL-ptr deref or user memory access
+general protection fault: 0000 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 3213 Comm: syz-executor.2 Not tainted 5.5.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+Google 01/01/2011
+RIP: 0010:free_verifier_state+0x49/0x1d0 kernel/bpf/verifier.c:744
+Code: db 48 83 ec 20 48 89 45 b8 48 c1 e8 03 4c 01 f8 89 75 c4 48 89 45 c8  
+e8 65 ae f2 ff 4c 63 f3 4f 8d 2c f4 4c 89 e8 48 c1 e8 03 <42> 80 3c 38 00  
+0f 85 2b 01 00 00 4f 8d 34 f4 49 8b 3e 48 85 ff 48
+RSP: 0018:ffffc900017c7688 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffc9000d65b000
+RDX: 0000000000040000 RSI: ffffffff818251eb RDI: 0000000000000000
+RBP: ffffc900017c76d0 R08: ffff88806f496640 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: dffffc0000000000
+FS:  00007fdb4648e700(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000010f6e80 CR3: 00000000690e9000 CR4: 00000000001406f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000600
+Call Trace:
+  do_check_common+0x2ec7/0x9650 kernel/bpf/verifier.c:9597
+  do_check_main kernel/bpf/verifier.c:9654 [inline]
+  bpf_check+0x84ed/0xbb07 kernel/bpf/verifier.c:10009
+  bpf_prog_load+0xeab/0x17f0 kernel/bpf/syscall.c:1859
+  __do_sys_bpf+0x1269/0x37a0 kernel/bpf/syscall.c:3096
+  __se_sys_bpf kernel/bpf/syscall.c:3055 [inline]
+  __x64_sys_bpf+0x73/0xb0 kernel/bpf/syscall.c:3055
+  do_syscall_64+0xfa/0x790 arch/x86/entry/common.c:294
+  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+RIP: 0033:0x45af49
+Code: ad b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7  
+48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
+ff 0f 83 7b b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007fdb4648dc78 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 000000000045af49
+RDX: 0000000000000024 RSI: 0000000020000200 RDI: 0000000000000005
+RBP: 000000000075bf20 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007fdb4648e6d4
+R13: 00000000004c1697 R14: 00000000004d66a0 R15: 00000000ffffffff
+Modules linked in:
+---[ end trace d725571ef2f4cce3 ]---
+RIP: 0010:free_verifier_state+0x49/0x1d0 kernel/bpf/verifier.c:744
+Code: db 48 83 ec 20 48 89 45 b8 48 c1 e8 03 4c 01 f8 89 75 c4 48 89 45 c8  
+e8 65 ae f2 ff 4c 63 f3 4f 8d 2c f4 4c 89 e8 48 c1 e8 03 <42> 80 3c 38 00  
+0f 85 2b 01 00 00 4f 8d 34 f4 49 8b 3e 48 85 ff 48
+RSP: 0018:ffffc900017c7688 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffc9000d65b000
+RDX: 0000000000040000 RSI: ffffffff818251eb RDI: 0000000000000000
+RBP: ffffc900017c76d0 R08: ffff88806f496640 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: dffffc0000000000
+FS:  00007fdb4648e700(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000000075c000 CR3: 00000000690e9000 CR4: 00000000001406f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000600
+
+
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
