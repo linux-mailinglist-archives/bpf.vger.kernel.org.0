@@ -2,278 +2,209 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FA2213CA98
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2020 18:13:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1F0213CAD7
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2020 18:22:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729240AbgAORNg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Jan 2020 12:13:36 -0500
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:50565 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729254AbgAORNf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Jan 2020 12:13:35 -0500
-Received: by mail-wm1-f68.google.com with SMTP id a5so775909wmb.0
-        for <bpf@vger.kernel.org>; Wed, 15 Jan 2020 09:13:33 -0800 (PST)
+        id S1728912AbgAORWO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Jan 2020 12:22:14 -0500
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:46686 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726574AbgAORWO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Jan 2020 12:22:14 -0500
+Received: by mail-qk1-f193.google.com with SMTP id r14so16340078qke.13;
+        Wed, 15 Jan 2020 09:22:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=irVenSBk+qsWtPOnLfffjUTanFCczadJPyzi1GpXUI4=;
-        b=a//MelKGTTeEPFAZ8QADS5Z8uj/uFdQChD92Dj6apjnnBYpt9gKl/YmEguk6YRTFPv
-         SFUzm3VB9+TvPOnNrtNxJeNRxKSVNjTKfGxIotIxfbJNp4b/gR3ib679Xl3FWX2JWOal
-         acK9dmUlomW7rFWZ/X8zGHyyO8WSv8g5xez3k=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=c+q9bObKfV/TNxL1HH2wA5LqldoKCgE44YTN9MzEObM=;
+        b=GrMEzUhQn0zT6crSejZhHzxJ565zwTFsxUR9ki86EyRy2cx7HvDN74IZyaV6aroql8
+         K3fgFCmV1hnJaRrk6iJf0Tg94tPjQrxxg4vuKsRva69odUjEQ4f4j2772ygYz+WmMFhL
+         cjrTGWoirgaXuP/24safNCO032yWaugbswo5hvRBFFN/4Ck+Dc1U7D+bf2ToYXx6Josa
+         W3ljqEgmBLdUSYqIwoM7CATcCYyJqse5xecvkBpyk5y2UoWJKzXNJU9v8zFVtbs8/AbH
+         ctM1VPLWN5+dHqy0WrXYem4qJXV+5LScvIQix21l+e/GP2j4mnZa2P2a72TqKUP5PgvQ
+         vx0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=irVenSBk+qsWtPOnLfffjUTanFCczadJPyzi1GpXUI4=;
-        b=Mat88mO3QykkqFsRyxSS2dZ6YF2z/Ql0PUD7hvl7gZHi8Si4QNIVfXV/7Wdzgi6u3J
-         eyiq56HTCSInf93oU6s2thxhV//Blpin4edaCzIpuhjBwB/5epjwT24xnKc7NH1BuGrf
-         bdoCC+8xBGc4w6s4zsh2q4KUldFjNyn7KgaU03BD8ktKcMnPhJ8FjQd1/Syjk4NQJ4fv
-         ksD7ZjeHq/1WSSyveB5R9cbYSS8kDsD3dAkMbRJI0tdL1wfpGDgH2Bzl8hR74Oew9ZyE
-         z8KJjpmdRng6eypK0IdIGXixfdEJoVsRGE2MkzH8g4BI+NSDSRQWQOqwbM4TWbrN6QwG
-         8Apw==
-X-Gm-Message-State: APjAAAW5KlBKDikepPIMzJRX32AtzEIy3UaG1ffK+YNLziPjMntxXWk9
-        laD8OE/WgsUevBB9n8qLIva7DA==
-X-Google-Smtp-Source: APXvYqyq8Y0listaQwfuHlfsGtWorsrBUDEQxn03dRh8XEsYAWMqFyOm7c4bfHb/zSQJFrYZ0loj6w==
-X-Received: by 2002:a1c:48c1:: with SMTP id v184mr942072wma.5.1579108412501;
-        Wed, 15 Jan 2020 09:13:32 -0800 (PST)
-Received: from kpsingh-kernel.localdomain ([2620:0:105f:fd00:84f3:4331:4ae9:c5f1])
-        by smtp.gmail.com with ESMTPSA id d16sm26943227wrg.27.2020.01.15.09.13.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Jan 2020 09:13:32 -0800 (PST)
-From:   KP Singh <kpsingh@chromium.org>
-To:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-security-module@vger.kernel.org
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=c+q9bObKfV/TNxL1HH2wA5LqldoKCgE44YTN9MzEObM=;
+        b=tDXIFNgiMY6acOiV1NpgEXjQR6zYvEA0TSOfdkFhAxyGbodDwF7z41CrrMr9e3ReXw
+         Mgo8bR9mHKY2JW/A37gx7kteRqcMm2xkmLCe8/qvec1Vl9992g4oH0CNmHUdGvR42FL9
+         Lwpp63vjegzdjtX+pIzWxI0qUIENRreYVTHrClAB71T0ZR77+mKUv1gdABwJAWlxyVgD
+         6XbAxrG5p6EIB0Dgv2Qa6Xll7Zw4L1uJdKYXwPJzg8klzXjp1SejJErhoXE1ef+woECI
+         wNPU6ZyczaePQE4s5bnyN27rBh4UW3D0ujaRMNrV22ubQNRwzvDDG7/TuwfTHwBVzZUm
+         vggA==
+X-Gm-Message-State: APjAAAVmrvtqVMgfGrycNLtD1ciZttIyyrvkVL0sTroVprZAzeXsQiQP
+        4gb/HUOdp5SZ18k0sD2yn3CSrZRLdK06Cm3ASlY=
+X-Google-Smtp-Source: APXvYqyScdlmdVrGF9w3giFftAWTK3e0Gn2ZeH9X7LVvi8//1y3KSjgGhLXpszFvMNhgWxx4uor59cXxWZRukp51R/I=
+X-Received: by 2002:a05:620a:5ae:: with SMTP id q14mr24418928qkq.437.1579108932557;
+ Wed, 15 Jan 2020 09:22:12 -0800 (PST)
+MIME-Version: 1.0
+References: <157909756858.1192265.6657542187065456112.stgit@toke.dk> <157909757860.1192265.1725940708658939712.stgit@toke.dk>
+In-Reply-To: <157909757860.1192265.1725940708658939712.stgit@toke.dk>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 15 Jan 2020 09:22:01 -0800
+Message-ID: <CAEf4BzZ2jAQPKzzp+NhWXbUFcfdcXs+akFSY4O0JhabJy=9vag@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 09/10] selftests: Remove tools/lib/bpf from
+ include path
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        James Morris <jmorris@namei.org>,
-        Kees Cook <keescook@chromium.org>,
-        Thomas Garnier <thgarnie@chromium.org>,
-        Michael Halcrow <mhalcrow@google.com>,
-        Paul Turner <pjt@google.com>,
-        Brendan Gregg <brendan.d.gregg@gmail.com>,
-        Jann Horn <jannh@google.com>,
-        Matthew Garrett <mjg59@google.com>,
-        Christian Brauner <christian@brauner.io>,
-        =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
         "David S. Miller" <davem@davemloft.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Quentin Monnet <quentin.monnet@netronome.com>,
-        Andrey Ignatov <rdna@fb.com>, Joe Stringer <joe@wand.net.nz>
-Subject: [PATCH bpf-next v2 10/10] bpf: lsm: Add Documentation
-Date:   Wed, 15 Jan 2020 18:13:33 +0100
-Message-Id: <20200115171333.28811-11-kpsingh@chromium.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200115171333.28811-1-kpsingh@chromium.org>
-References: <20200115171333.28811-1-kpsingh@chromium.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-rdma@vger.kernel.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        clang-built-linux@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: KP Singh <kpsingh@google.com>
+On Wed, Jan 15, 2020 at 6:16 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
+>
+> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+>
+> To make sure no new files are introduced that doesn't include the bpf/
+> prefix in its #include, remove tools/lib/bpf from the include path
+> entirely, and use tools/lib instead. To fix the original issue with
+> bpf_helper_defs.h being stale, change the Makefile rule to regenerate the
+> file in the lib/bpf dir instead of having a local copy in selftests.
+>
+> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> ---
+>  tools/testing/selftests/bpf/.gitignore |    3 ++-
+>  tools/testing/selftests/bpf/Makefile   |   16 ++++++++--------
+>  2 files changed, 10 insertions(+), 9 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selft=
+ests/bpf/.gitignore
+> index 1d14e3ab70be..17dd02651dee 100644
+> --- a/tools/testing/selftests/bpf/.gitignore
+> +++ b/tools/testing/selftests/bpf/.gitignore
+> @@ -33,10 +33,11 @@ libbpf.pc
+>  libbpf.so.*
+>  test_hashmap
+>  test_btf_dump
+> +test_cgroup_attach
+> +test_select_reuseport
 
-Document how eBPF programs (BPF_PROG_TYPE_LSM) can be loaded and
-attached (BPF_LSM_MAC) to the LSM hooks.
+These were moved into test_progs, they are not independent binaries
+anymore, you probably just had old leftovers lying in your
+selftests/bpf directory. Let's not re-add them.
 
-Signed-off-by: KP Singh <kpsingh@google.com>
----
- Documentation/security/bpf.rst   | 150 +++++++++++++++++++++++++++++++
- Documentation/security/index.rst |   1 +
- MAINTAINERS                      |   1 +
- 3 files changed, 152 insertions(+)
- create mode 100644 Documentation/security/bpf.rst
+>  xdping
+>  test_cpp
+>  *.skel.h
+>  /no_alu32
+>  /bpf_gcc
+>  /tools
+> -bpf_helper_defs.h
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftes=
+ts/bpf/Makefile
+> index cd98ae875e30..4889cc3ead4b 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -21,7 +21,7 @@ LLC           ?=3D llc
+>  LLVM_OBJCOPY   ?=3D llvm-objcopy
+>  BPF_GCC                ?=3D $(shell command -v bpf-gcc;)
+>  CFLAGS +=3D -g -Wall -O2 $(GENFLAGS) -I$(CURDIR) -I$(APIDIR) -I$(LIBDIR)=
+  \
+> -         -I$(BPFDIR) -I$(GENDIR) -I$(TOOLSINCDIR)                      \
+> +         -I$(GENDIR) -I$(TOOLSINCDIR)                  \
+>           -Dbpf_prog_load=3Dbpf_prog_test_load                           =
+ \
+>           -Dbpf_load_program=3Dbpf_test_load_program
+>  LDLIBS +=3D -lcap -lelf -lz -lrt -lpthread
+> @@ -129,7 +129,7 @@ $(OUTPUT)/runqslower: force
+>         $(Q)$(MAKE) $(submake_extras) -C $(TOOLSDIR)/bpf/runqslower      =
+     \
+>                     OUTPUT=3D$(CURDIR)/tools/
+>
+> -BPFOBJ :=3D $(OUTPUT)/libbpf.a
+> +BPFOBJ :=3D $(BPFDIR)/libbpf.a
 
-diff --git a/Documentation/security/bpf.rst b/Documentation/security/bpf.rst
-new file mode 100644
-index 000000000000..4d115c07c370
---- /dev/null
-+++ b/Documentation/security/bpf.rst
-@@ -0,0 +1,150 @@
-+.. SPDX-License-Identifier: GPL-2.0+
-+.. Copyright 2019 Google LLC.
-+
-+==========================
-+eBPF Linux Security Module
-+==========================
-+
-+This LSM allows runtime instrumentation of the LSM hooks by privileged users to
-+implement system-wide MAC (Mandatory Access Control) and Audit policies using
-+eBPF. The LSM is privileged and stackable and requires both ``CAP_SYS_ADMIN``
-+and ``CAP_MAC_ADMIN`` for the loading of BPF programs and modification of MAC
-+policies respectively.
-+
-+eBPF Programs
-+==============
-+
-+`eBPF (extended BPF) <https://cilium.readthedocs.io/en/latest/bpf>`_ is a
-+virtual machine-like construct in the Linux Kernel allowing the execution of
-+verifiable, just-in-time compiled byte code at various points in the Kernel.
-+
-+The eBPF LSM adds a new type, ``BPF_PROG_TYPE_LSM``, of eBPF programs which
-+have the following characteristics:
-+
-+	* Multiple eBPF programs can be attached to the same LSM hook
-+	* The programs are always run after the static hooks (i.e. the ones
-+	  registered by SELinux, AppArmor, Smack etc.)
-+	* LSM hooks can return an ``-EPERM`` to indicate the decision of the
-+	  MAC policy being enforced or simply be used for auditing
-+	* If ``CONFIG_SECURITY_BPF_ENFORCE`` is enabled and a non-zero error
-+	  code is returned from the BPF program, no further BPF programs for the hook are executed
-+	* Allowing the eBPF programs to be attached to all the LSM hooks by
-+	  making :doc:`/bpf/btf` type information available for all LSM hooks
-+	  and allowing the BPF verifier to perform runtime relocations and
-+	  validation on the programs
-+
-+Structure
-+---------
-+
-+The example shows an eBPF program that can be attached to the ``file_mprotect``
-+LSM hook:
-+
-+.. c:function:: int file_mprotect(struct vm_area_struct *vma, unsigned long reqprot, unsigned long prot);
-+
-+eBPF programs that use :doc:`/bpf/btf` do not need to include kernel headers
-+for accessing information from the attached eBPF program's context. They can
-+simply declare the structures in the eBPF program and only specify the fields
-+that need to be accessed.
-+
-+.. code-block:: c
-+
-+	struct mm_struct {
-+		unsigned long start_brk, brk, start_stack;
-+	} __attribute__((preserve_access_index));
-+
-+	struct vm_area_struct {
-+		unsigned long start_brk, brk, start_stack;
-+		unsigned long vm_start, vm_end;
-+		struct mm_struct *vm_mm;
-+	} __attribute__((preserve_access_index));
-+
-+
-+.. note:: Only the size and the names of the fields must match the type in the
-+	  kernel and the order of the fields is irrelevant.
-+
-+The eBPF programs can be declared using macros similar to the ``BPF_TRACE_<N>``
-+macros defined in `tools/testing/selftests/bpf/bpf_trace_helpers.h`_. In this
-+example:
-+
-+	* The LSM hook takes 3 args so we use ``BPF_TRACE_3``
-+	* ``"lsm/file_mprotect"`` indicates the LSM hook that the program must
-+	  be attached to
-+	* ``mprotect_audit`` is the name of the eBPF program
-+
-+.. code-block:: c
-+
-+        SEC("lsm/file_mprotect")
-+        int BPF_PROG(mprotect_audit, struct vm_area_struct *vma,
-+                     unsigned long reqprot, unsigned long prot)
-+	{
-+		int is_heap;
-+
-+		is_heap = (vma->vm_start >= vma->vm_mm->start_brk &&
-+			   vma->vm_end <= vma->vm_mm->brk);
-+
-+		/*
-+		 * Return an -EPERM or write information to the perf events buffer
-+		 * for auditing
-+		 */
-+	}
-+
-+The ``__attribute__((preserve_access_index))`` is a clang feature that allows
-+the BPF verifier to update the offsets for the access at runtime using the
-+:doc:`/bpf/btf` information. Since the BPF verifier is aware of the types, it
-+also validates all the accesses made to the various types in the eBPF program.
-+
-+Loading
-+-------
-+
-+eBPP programs can be loaded with the :manpage:`bpf(2)` syscall's
-+``BPF_PROG_LOAD`` operation or more simply by using the the libbpf helper
-+``bpf_prog_load_xattr``:
-+
-+
-+.. code-block:: c
-+
-+	struct bpf_prog_load_attr attr = {
-+		.file = "./prog.o",
-+	};
-+	struct bpf_object *prog_obj;
-+	struct bpf_program *prog;
-+	int prog_fd;
-+
-+	bpf_prog_load_xattr(&attr, &prog_obj, &prog_fd);
-+
-+Attachment to LSM Hooks
-+-----------------------
-+
-+The LSM allows attachment of eBPF programs as LSM hooks using :manpage:`bpf(2)`
-+syscall's ``BPF_PROG_ATTACH`` operation or more simply by
-+using the libbpf helper ``bpf_program__attach_lsm``. In the code shown below
-+``prog`` is the eBPF program loaded using ``BPF_PROG_LOAD``:
-+
-+.. code-block:: c
-+
-+	struct bpf_link *link;
-+
-+	link = bpf_program__attach_lsm(prog);
-+
-+The program can be detached from the LSM hook by *destroying* the ``link``
-+link returned by ``bpf_program__attach_lsm``:
-+
-+.. code-block:: c
-+
-+	link->destroy();
-+
-+Examples
-+--------
-+
-+An example eBPF program can be found in
-+`tools/testing/selftests/bpf/progs/lsm_mprotect_audit.c`_ and the corresponding
-+userspace code in
-+`tools/testing/selftests/bpf/prog_tests/lsm_mprotect_audit.c`_
-+
-+.. Links
-+.. _tools/testing/selftests/bpf/bpf_trace_helpers.h:
-+   https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/tools/testing/selftests/selftests/bpf/bpf_trace_helpers.h
-+.. _tools/testing/selftests/bpf/progs/lsm_mprotect_audit.c:
-+   https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/tools/testing/selftests/bpf/progs/lsm_mprotect_audit.c
-+.. _tools/testing/selftests/bpf/prog_tests/lsm_mprotect_audit.c:
-+   https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/tools/testing/selftests/bpf/prog_tests/lsm_mprotect_audit.c
-diff --git a/Documentation/security/index.rst b/Documentation/security/index.rst
-index fc503dd689a7..844463df4547 100644
---- a/Documentation/security/index.rst
-+++ b/Documentation/security/index.rst
-@@ -5,6 +5,7 @@ Security Documentation
- .. toctree::
-    :maxdepth: 1
- 
-+   bpf
-    credentials
-    IMA-templates
-    keys/index
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 5d553c2e7452..dd4c4ee151b0 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3212,6 +3212,7 @@ F:	security/bpf/
- F:	include/linux/bpf_lsm.h
- F:	tools/testing/selftests/bpf/progs/lsm_mprotect_audit.c
- F:	tools/testing/selftests/bpf/prog_tests/lsm_mprotect_audit.c
-+F:	Documentation/security/bpf.rst
- 
- BROADCOM B44 10/100 ETHERNET DRIVER
- M:	Michael Chan <michael.chan@broadcom.com>
--- 
-2.20.1
+We can't do that. See fa633a0f8919 ("libbpf: Fix build on read-only
+filesystems") for why and why we have this problem with
+bpf_helper_defs.h in the first place.
 
+>
+>  $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED): $(OUTPUT)/test_stub.o $(BP=
+FOBJ)
+>
+> @@ -155,17 +155,17 @@ force:
+>  DEFAULT_BPFTOOL :=3D $(OUTPUT)/tools/sbin/bpftool
+>  BPFTOOL ?=3D $(DEFAULT_BPFTOOL)
+>
+> -$(DEFAULT_BPFTOOL): force
+> +$(DEFAULT_BPFTOOL): force $(BPFOBJ)
+
+do we need this? bpftool's makefile will build its own libbpf.a
+independently. We can probably optimize that, but see above, we need
+to ensure that we build only within selftest/bpf dirs.
+
+This "read-only outside of selftests/bpf" requirement actually made me
+realize that we probably need to specify OUTPUT pointing somewhere
+inside selftests/bpf/tools subdir to build entire bpftool within
+selftests/bpf directory and not touch anything outside. Do you mind
+fixing that while you are at it?
+
+>         $(Q)$(MAKE) $(submake_extras)  -C $(BPFTOOLDIR)                  =
+     \
+>                     prefix=3D DESTDIR=3D$(OUTPUT)/tools/ install
+>
+>  $(BPFOBJ): force
+> -       $(Q)$(MAKE) $(submake_extras) -C $(BPFDIR) OUTPUT=3D$(OUTPUT)/
+> +       $(Q)$(MAKE) $(submake_extras) -C $(BPFDIR) OUTPUT=3D$(BPFDIR)/ $(=
+BPFOBJ)
+>
+> -BPF_HELPERS :=3D $(OUTPUT)/bpf_helper_defs.h $(wildcard $(BPFDIR)/bpf_*.=
+h)
+> -$(OUTPUT)/bpf_helper_defs.h: $(BPFOBJ)
+> +BPF_HELPERS :=3D $(BPFDIR)/bpf_helper_defs.h $(wildcard $(BPFDIR)/bpf_*.=
+h)
+> +$(BPFDIR)/bpf_helper_defs.h: $(BPFOBJ)
+>         $(Q)$(MAKE) $(submake_extras) -C $(BPFDIR)                       =
+     \
+> -                   OUTPUT=3D$(OUTPUT)/ $(OUTPUT)/bpf_helper_defs.h
+> +               OUTPUT=3D$(BPFDIR)/ $(BPFDIR)/bpf_helper_defs.h
+>
+>  # Get Clang's default includes on this system, as opposed to those seen =
+by
+>  # '-target bpf'. This fixes "missing" files on some architectures/distro=
+s,
+> @@ -186,7 +186,7 @@ MENDIAN=3D$(if $(IS_LITTLE_ENDIAN),-mlittle-endian,-m=
+big-endian)
+>  CLANG_SYS_INCLUDES =3D $(call get_sys_includes,$(CLANG))
+>  BPF_CFLAGS =3D -g -D__TARGET_ARCH_$(SRCARCH) $(MENDIAN)                 =
+ \
+>              -I$(OUTPUT) -I$(CURDIR) -I$(CURDIR)/include/uapi           \
+> -            -I$(APIDIR) -I$(LIBDIR) -I$(BPFDIR) -I$(abspath $(OUTPUT)/..=
+/usr/include)
+> +            -I$(APIDIR) -I$(LIBDIR) -I$(abspath $(OUTPUT)/../usr/include=
+)
+>
+>  CLANG_CFLAGS =3D $(CLANG_SYS_INCLUDES) \
+>                -Wno-compare-distinct-pointer-types
+>
