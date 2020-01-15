@@ -2,358 +2,218 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C8D413B85F
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2020 04:50:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C976913B92F
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2020 06:46:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729057AbgAODuM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Jan 2020 22:50:12 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:49516 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728904AbgAODuM (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 14 Jan 2020 22:50:12 -0500
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 00F3npQu021939
-        for <bpf@vger.kernel.org>; Tue, 14 Jan 2020 19:50:11 -0800
+        id S1726075AbgAOFqd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Jan 2020 00:46:33 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:11894 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725962AbgAOFqc (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 15 Jan 2020 00:46:32 -0500
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 00F5d3QC009208;
+        Tue, 14 Jan 2020 21:46:16 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=facebook; bh=YZEbXFmkALfdCtcxmF12s0q0wu5zhLvEEwvCSmYpJRU=;
- b=gRk6jszAcBz40GmjLsvMpQzH/3WMtxkec1j0xlBCAvAhMPkT4YSLyltSWdal7P8D3NOy
- L2hb4GYOoRFRpgLxWD2pBKvWOzCLcafhnwRqOAZ4piY5Y0zT2w8T0crzqOvtDse18Rik
- u01InJTHXq3QavfJLuSG3UDWQIngOTBwgq4= 
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=4lD3+jxgFaxDhY4Bb8K2ABVt4vPpVvy932m1iaNNPB4=;
+ b=ezkJrIfSk2YS4z4mS/qxeM137VDUKh+b3hvVwBYqnv6/Goqi303Y4RInQlc2Ud15ySjc
+ vscHVW4PGaWe4BLK5pUQqTHYunOOfAaNB66/H6avHJIbREgEY4SePxr73ArrjBHxWxby
+ /trDXi4b2Cezdf+O2dEMJAq27b6r86Lw9OU= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 2xhp0fh6mm-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 14 Jan 2020 19:50:11 -0800
-Received: from intmgw003.08.frc2.facebook.com (2620:10d:c085:108::8) by
- mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
+        by mx0a-00082601.pphosted.com with ESMTP id 2xhaj2d9mw-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 14 Jan 2020 21:46:15 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.198) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Tue, 14 Jan 2020 19:50:10 -0800
-Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
-        id A976D37047F1; Tue, 14 Jan 2020 19:50:03 -0800 (PST)
-Smtp-Origin-Hostprefix: devbig
-From:   Yonghong Song <yhs@fb.com>
-Smtp-Origin-Hostname: devbig003.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next v3 2/2] tools/bpf: add self tests for bpf_send_signal_thread()
-Date:   Tue, 14 Jan 2020 19:50:03 -0800
-Message-ID: <20200115035003.602425-1-yhs@fb.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200115035002.602280-1-yhs@fb.com>
-References: <20200115035002.602280-1-yhs@fb.com>
-X-FB-Internal: Safe
+ 15.1.1779.2; Tue, 14 Jan 2020 21:46:14 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EwrspRzFTOax16OeaQMqXM3QlFRtTsQUuExCj6hIl8RXlGPdo8L2COP3li38jNA19lcvALbaOMT9Xh7pAQ4Y/PVYTXjRfdmw0/iDZ1T74Ktehcu3U/YCDbLw0kDc7rB5c4rSWLo+DJIcTWkWpF8O8W9+whkwpjRz86d2FzDNHVOuSX51i5GEeSpwe14cLtL1kVvx6JVhUkqRWcnie9P0VmVOXDMUI59Q8ZVvQpFSuVCJmKD7HLi7OzrbOub1MRiQuAjwZPgtHo5/TLLv6GpPdqdn78Fc7vxEwbVS8Eq82oi7bDbDQg0wYyeGB+7MO4HumsEruBLdyee3NbS1IFP4/Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4lD3+jxgFaxDhY4Bb8K2ABVt4vPpVvy932m1iaNNPB4=;
+ b=WFgEMjuhA8nrKmgDgZcdxMzg0jCOFx8ROGcsFNL17BVZeGNkDt2ORUyRLUH+BykQ2Tq2ohHL9FprP0tcFKv9iODS/lnd1cTK8G9ooFEHB/9qbitD7uSVxdVkra4BcV/qmMMeVFk2J+eO5pjQLWz/IoTDo/Fo4BwC+jdbhztdyYrQso0hn0fdsqZnP8iT9wdgTkQx4UJmTzytv/L5FSrw3G+kvqtS86UkkVjUQcFfp3UzFCPkN9VUQbuvwXtrZMhYztrW8c8UuLlw3lHouR3gxIDHiUJ52pZqNa+CCjtUK2jkXSHkMphgpWR56SFboMXBoWWqg7HLa4Yyi7C8XUJB1g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4lD3+jxgFaxDhY4Bb8K2ABVt4vPpVvy932m1iaNNPB4=;
+ b=F2wuxqvnijKNU6alFtUOQxftAy+8oAfU0Vnp2XY0LkomQkvAXdS1Z1tySLsQQg7CtKXBJgZukCHUKKJPSOZSqdHtfMQvFN3TA3m9/ZX0243D0od/4Ih7Uba8q5WDDzfg+VSiAaeIAviMD9+/bcYWg1jSLufQOxiMm1GN9ecNvd8=
+Received: from MN2PR15MB3213.namprd15.prod.outlook.com (20.179.21.76) by
+ MN2PR15MB3358.namprd15.prod.outlook.com (20.178.255.141) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2623.9; Wed, 15 Jan 2020 05:46:00 +0000
+Received: from MN2PR15MB3213.namprd15.prod.outlook.com
+ ([fe80::6d1e:f2f7:d36:a42f]) by MN2PR15MB3213.namprd15.prod.outlook.com
+ ([fe80::6d1e:f2f7:d36:a42f%4]) with mapi id 15.20.2623.017; Wed, 15 Jan 2020
+ 05:46:00 +0000
+Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:180::55) by MWHPR22CA0039.namprd22.prod.outlook.com (2603:10b6:300:69::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2644.18 via Frontend Transport; Wed, 15 Jan 2020 05:45:58 +0000
+From:   Martin Lau <kafai@fb.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>,
+        "Kernel Team" <Kernel-team@fb.com>,
+        Networking <netdev@vger.kernel.org>,
+        Paul Chaignon <paul.chaignon@orange.com>
+Subject: Re: [PATCH bpf-next 1/5] bpftool: Fix a leak of btf object
+Thread-Topic: [PATCH bpf-next 1/5] bpftool: Fix a leak of btf object
+Thread-Index: AQHVy0CcGU1wwbV1C0WwVNWoyIearqfrN5kA
+Date:   Wed, 15 Jan 2020 05:46:00 +0000
+Message-ID: <20200115054554.sb4nrpmvaulnqya3@kafai-mbp.dhcp.thefacebook.com>
+References: <20200114224358.3027079-1-kafai@fb.com>
+ <20200114224400.3027140-1-kafai@fb.com>
+ <CAEf4BzZd-NmpJqYStpDTSAFmN=EDCLftqoYBaSAKECOY8ooR_w@mail.gmail.com>
+In-Reply-To: <CAEf4BzZd-NmpJqYStpDTSAFmN=EDCLftqoYBaSAKECOY8ooR_w@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MWHPR22CA0039.namprd22.prod.outlook.com
+ (2603:10b6:300:69::25) To MN2PR15MB3213.namprd15.prod.outlook.com
+ (2603:10b6:208:3d::12)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c090:180::55]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f6ee2439-8cee-4b7e-51ff-08d7997e332d
+x-ms-traffictypediagnostic: MN2PR15MB3358:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MN2PR15MB335862285A90E1D92DF396C8D5370@MN2PR15MB3358.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-forefront-prvs: 02830F0362
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(366004)(39860400002)(396003)(136003)(346002)(376002)(189003)(199004)(5660300002)(8676002)(478600001)(1076003)(8936002)(6666004)(86362001)(81156014)(81166006)(66946007)(16526019)(55016002)(64756008)(66446008)(66556008)(66476007)(186003)(53546011)(6506007)(54906003)(71200400001)(4326008)(52116002)(7696005)(316002)(2906002)(9686003)(6916009);DIR:OUT;SFP:1102;SCL:1;SRVR:MN2PR15MB3358;H:MN2PR15MB3213.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 06+UkhTUFi4NPSnJTFT31PP/PiM22xngadWxV7KEof/pXN9dcxLcKB7AFmcbwh+5OzkPtuJ+HkA3l6aZtqvaK/rgnJG2U1lvFD1P3IOQWW70kFwWBkmDfOt24eXbdwDJHZxANsOyUnU0EM6Wak06mrMawSwdOALTSE6JIk7CTcOYH50LQv5ar+yGQ+cW8Dog5n0B2neBCD4+ERqjIvUpEMGBiqDOB076bHl6TAAoBTTXYoj7U8AJALYT2HPqWZ8t7cUv++I7FdVc6ccRQbQoPrHEVoT/lmtqGOq3WrpsUMenHlZTZtcVYGWqTlw/LgHCvi3CesWHM/gAytCFaeVa37T7bMezNdt17+yvw4MakUC7IKASuMpsQus13kvZrOk/BUXqOc1k0nvTlI/b112whGfGo+8JBwMBaYdz0GWppARgAC83uG8TJ1XLxt1BVYOq
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <167702DB855F654AA094103A43E500AE@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
+X-MS-Exchange-CrossTenant-Network-Message-Id: f6ee2439-8cee-4b7e-51ff-08d7997e332d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Jan 2020 05:46:00.3459
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: b+WGtNulrcUGYXfg30pyCCFluXG/X4ojHyeqMpZTjaFDW+x3MXqW7jYD+4pKC2d5
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB3358
+X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
  definitions=2020-01-14_06:2020-01-14,2020-01-14 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- impostorscore=0 bulkscore=0 phishscore=0 adultscore=0 spamscore=0
- clxscore=1015 mlxscore=0 priorityscore=1501 suspectscore=13
- mlxlogscore=999 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-1910280000 definitions=main-2001150031
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
+ bulkscore=0 impostorscore=0 mlxscore=0 phishscore=0 clxscore=1015
+ mlxlogscore=999 priorityscore=1501 lowpriorityscore=0 spamscore=0
+ adultscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-1910280000 definitions=main-2001150045
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The test_progs send_signal() is amended to test
-bpf_send_signal_thread() as well.
+On Tue, Jan 14, 2020 at 05:10:03PM -0800, Andrii Nakryiko wrote:
+> On Tue, Jan 14, 2020 at 2:44 PM Martin KaFai Lau <kafai@fb.com> wrote:
+> >
+> > When testing a map has btf or not, maps_have_btf() tests it by actually
+> > getting a btf_fd from sys_bpf(BPF_BTF_GET_FD_BY_ID). However, it
+> > forgot to btf__free() it.
+> >
+> > In maps_have_btf() stage, there is no need to test it by really
+> > calling sys_bpf(BPF_BTF_GET_FD_BY_ID). Testing non zero
+> > info.btf_id is good enough.
+> >
+> > Also, the err_close case is unnecessary, and also causes double
+> > close() because the calling func do_dump() will close() all fds again.
+> >
+> > Fixes: 99f9863a0c45 ("bpftool: Match maps by name")
+> > Cc: Paul Chaignon <paul.chaignon@orange.com>
+> > Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+> > ---
+>=20
+> this is clearly a simplification, but isn't do_dump still buggy? see belo=
+w
+>=20
+> >  tools/bpf/bpftool/map.c | 16 ++--------------
+> >  1 file changed, 2 insertions(+), 14 deletions(-)
+> >
+> > diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
+> > index c01f76fa6876..e00e9e19d6b7 100644
+> > --- a/tools/bpf/bpftool/map.c
+> > +++ b/tools/bpf/bpftool/map.c
+> > @@ -915,32 +915,20 @@ static int maps_have_btf(int *fds, int nb_fds)
+> >  {
+> >         struct bpf_map_info info =3D {};
+> >         __u32 len =3D sizeof(info);
+> > -       struct btf *btf =3D NULL;
+> >         int err, i;
+> >
+> >         for (i =3D 0; i < nb_fds; i++) {
+> >                 err =3D bpf_obj_get_info_by_fd(fds[i], &info, &len);
+> >                 if (err) {
+> >                         p_err("can't get map info: %s", strerror(errno)=
+);
+> > -                       goto err_close;
+> > -               }
+> > -
+> > -               err =3D btf__get_from_id(info.btf_id, &btf);
+> > -               if (err) {
+> > -                       p_err("failed to get btf");
+> > -                       goto err_close;
+> > +                       return -1;
+> >                 }
+> >
+> > -               if (!btf)
+> > +               if (!info.btf_id)
+> >                         return 0;
+>=20
+> if info.btf_id is non-zero, shouldn't we immediately return 1 and be
+> done with it?
+No.  maps_have_btf() returns 1 only if all the maps have btf.
 
-   $ ./test_progs -n 40
-   #40/1 send_signal_tracepoint:OK
-   #40/2 send_signal_perf:OK
-   #40/3 send_signal_nmi:OK
-   #40/4 send_signal_tracepoint_thread:OK
-   #40/5 send_signal_perf_thread:OK
-   #40/6 send_signal_nmi_thread:OK
-   #40 send_signal:OK
-   Summary: 1/6 PASSED, 0 SKIPPED, 0 FAILED
+>=20
+> I'm also worried about do_dump logic. What's the behavior when some
+> maps do have BTF and some don't? Should we use btf_writer for all,
+> some or none maps for that case?
+For plain_text, btf output is either for all or for none.
+It is the intention of the "Fixes" patch if I read it correctly,
+and it is kept as is in this bug fix.
+It will become clear by doing a plain text dump on maps with and
+without btf.  They are very different.
 
-Also took this opportunity to rewrite the send_signal test
-using skeleton framework and array mmap to make code
-simpler and more readable.
+Can the output format for with and without BTF somehow merged for
+plain text?  May be if it is still common to have no-BTF map
+going forward but how this may look like will need another
+discussion.
 
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- .../selftests/bpf/prog_tests/send_signal.c    | 128 +++++++-----------
- .../bpf/progs/test_send_signal_kern.c         |  51 +++----
- 2 files changed, 73 insertions(+), 106 deletions(-)
+> I'd expect we'd use BTF info for
+> those maps that have BTF and fall back to raw output for those that
+> don't, but I'm not sure that how code behaves right now.
+The json_output is doing what you described, print BTF info
+whenever available.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/send_signal.c b/tools/testing/selftests/bpf/prog_tests/send_signal.c
-index b607112c64e7..d4cedd86c424 100644
---- a/tools/testing/selftests/bpf/prog_tests/send_signal.c
-+++ b/tools/testing/selftests/bpf/prog_tests/send_signal.c
-@@ -1,5 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- #include <test_progs.h>
-+#include "test_send_signal_kern.skel.h"
- 
- static volatile int sigusr1_received = 0;
- 
-@@ -9,17 +10,15 @@ static void sigusr1_handler(int signum)
- }
- 
- static void test_send_signal_common(struct perf_event_attr *attr,
--				    int prog_type,
-+				    bool signal_thread,
- 				    const char *test_name)
- {
--	int err = -1, pmu_fd, prog_fd, info_map_fd, status_map_fd;
--	const char *file = "./test_send_signal_kern.o";
--	struct bpf_object *obj = NULL;
-+	struct test_send_signal_kern *skel;
- 	int pipe_c2p[2], pipe_p2c[2];
--	__u32 key = 0, duration = 0;
-+	int err = -1, pmu_fd = -1;
-+	__u32 duration = 0;
- 	char buf[256];
- 	pid_t pid;
--	__u64 val;
- 
- 	if (CHECK(pipe(pipe_c2p), test_name,
- 		  "pipe pipe_c2p error: %s\n", strerror(errno)))
-@@ -73,45 +72,42 @@ static void test_send_signal_common(struct perf_event_attr *attr,
- 	close(pipe_c2p[1]); /* close write */
- 	close(pipe_p2c[0]); /* close read */
- 
--	err = bpf_prog_load(file, prog_type, &obj, &prog_fd);
--	if (CHECK(err < 0, test_name, "bpf_prog_load error: %s\n",
--		  strerror(errno)))
--		goto prog_load_failure;
--
--	pmu_fd = syscall(__NR_perf_event_open, attr, pid, -1,
--			 -1 /* group id */, 0 /* flags */);
--	if (CHECK(pmu_fd < 0, test_name, "perf_event_open error: %s\n",
--		  strerror(errno))) {
--		err = -1;
--		goto close_prog;
--	}
--
--	err = ioctl(pmu_fd, PERF_EVENT_IOC_ENABLE, 0);
--	if (CHECK(err < 0, test_name, "ioctl perf_event_ioc_enable error: %s\n",
--		  strerror(errno)))
--		goto disable_pmu;
-+	skel = test_send_signal_kern__open_and_load();
-+	if (CHECK(!skel, "skel_open_and_load", "skeleton open_and_load failed\n"))
-+		goto skel_open_load_failure;
- 
--	err = ioctl(pmu_fd, PERF_EVENT_IOC_SET_BPF, prog_fd);
--	if (CHECK(err < 0, test_name, "ioctl perf_event_ioc_set_bpf error: %s\n",
--		  strerror(errno)))
--		goto disable_pmu;
-+	/* add a delay for child thread to ramp up */
-+	usleep(100);
- 
--	err = -1;
--	info_map_fd = bpf_object__find_map_fd_by_name(obj, "info_map");
--	if (CHECK(info_map_fd < 0, test_name, "find map %s error\n", "info_map"))
--		goto disable_pmu;
-+	if (!attr) {
-+		err = test_send_signal_kern__attach(skel);
-+		if (CHECK(err, "skel_attach", "skeleton attach failed\n")) {
-+			err = -1;
-+			goto destroy_skel;
-+		}
-+	} else {
-+		pmu_fd = syscall(__NR_perf_event_open, attr, pid, -1,
-+				 -1 /* group id */, 0 /* flags */);
-+		if (CHECK(pmu_fd < 0, test_name, "perf_event_open error: %s\n",
-+			strerror(errno))) {
-+			err = -1;
-+			goto destroy_skel;
-+		}
- 
--	status_map_fd = bpf_object__find_map_fd_by_name(obj, "status_map");
--	if (CHECK(status_map_fd < 0, test_name, "find map %s error\n", "status_map"))
--		goto disable_pmu;
-+		skel->links.send_signal_perf =
-+			bpf_program__attach_perf_event(skel->progs.send_signal_perf, pmu_fd);
-+		if (CHECK(IS_ERR(skel->links.send_signal_perf), "attach_perf_event",
-+			  "err %ld\n", PTR_ERR(skel->links.send_signal_perf)))
-+			goto disable_pmu;
-+	}
- 
- 	/* wait until child signal handler installed */
- 	read(pipe_c2p[0], buf, 1);
- 
- 	/* trigger the bpf send_signal */
--	key = 0;
--	val = (((__u64)(SIGUSR1)) << 32) | pid;
--	bpf_map_update_elem(info_map_fd, &key, &val, 0);
-+	skel->bss->pid = pid;
-+	skel->bss->sig = SIGUSR1;
-+	skel->bss->signal_thread = signal_thread;
- 
- 	/* notify child that bpf program can send_signal now */
- 	write(pipe_p2c[1], buf, 1);
-@@ -132,46 +128,20 @@ static void test_send_signal_common(struct perf_event_attr *attr,
- 
- disable_pmu:
- 	close(pmu_fd);
--close_prog:
--	bpf_object__close(obj);
--prog_load_failure:
-+destroy_skel:
-+	test_send_signal_kern__destroy(skel);
-+skel_open_load_failure:
- 	close(pipe_c2p[0]);
- 	close(pipe_p2c[1]);
- 	wait(NULL);
- }
- 
--static void test_send_signal_tracepoint(void)
-+static void test_send_signal_tracepoint(bool signal_thread)
- {
--	const char *id_path = "/sys/kernel/debug/tracing/events/syscalls/sys_enter_nanosleep/id";
--	struct perf_event_attr attr = {
--		.type = PERF_TYPE_TRACEPOINT,
--		.sample_type = PERF_SAMPLE_RAW | PERF_SAMPLE_CALLCHAIN,
--		.sample_period = 1,
--		.wakeup_events = 1,
--	};
--	__u32 duration = 0;
--	int bytes, efd;
--	char buf[256];
--
--	efd = open(id_path, O_RDONLY, 0);
--	if (CHECK(efd < 0, "tracepoint",
--		  "open syscalls/sys_enter_nanosleep/id failure: %s\n",
--		  strerror(errno)))
--		return;
--
--	bytes = read(efd, buf, sizeof(buf));
--	close(efd);
--	if (CHECK(bytes <= 0 || bytes >= sizeof(buf), "tracepoint",
--		  "read syscalls/sys_enter_nanosleep/id failure: %s\n",
--		  strerror(errno)))
--		return;
--
--	attr.config = strtol(buf, NULL, 0);
--
--	test_send_signal_common(&attr, BPF_PROG_TYPE_TRACEPOINT, "tracepoint");
-+	test_send_signal_common(NULL, signal_thread, "tracepoint");
- }
- 
--static void test_send_signal_perf(void)
-+static void test_send_signal_perf(bool signal_thread)
- {
- 	struct perf_event_attr attr = {
- 		.sample_period = 1,
-@@ -179,11 +149,10 @@ static void test_send_signal_perf(void)
- 		.config = PERF_COUNT_SW_CPU_CLOCK,
- 	};
- 
--	test_send_signal_common(&attr, BPF_PROG_TYPE_PERF_EVENT,
--				"perf_sw_event");
-+	test_send_signal_common(&attr, signal_thread, "perf_sw_event");
- }
- 
--static void test_send_signal_nmi(void)
-+static void test_send_signal_nmi(bool signal_thread)
- {
- 	struct perf_event_attr attr = {
- 		.sample_freq = 50,
-@@ -210,16 +179,21 @@ static void test_send_signal_nmi(void)
- 		close(pmu_fd);
- 	}
- 
--	test_send_signal_common(&attr, BPF_PROG_TYPE_PERF_EVENT,
--				"perf_hw_event");
-+	test_send_signal_common(&attr, signal_thread, "perf_hw_event");
- }
- 
- void test_send_signal(void)
- {
- 	if (test__start_subtest("send_signal_tracepoint"))
--		test_send_signal_tracepoint();
-+		test_send_signal_tracepoint(false);
- 	if (test__start_subtest("send_signal_perf"))
--		test_send_signal_perf();
-+		test_send_signal_perf(false);
- 	if (test__start_subtest("send_signal_nmi"))
--		test_send_signal_nmi();
-+		test_send_signal_nmi(false);
-+	if (test__start_subtest("send_signal_tracepoint_thread"))
-+		test_send_signal_tracepoint(true);
-+	if (test__start_subtest("send_signal_perf_thread"))
-+		test_send_signal_perf(true);
-+	if (test__start_subtest("send_signal_nmi_thread"))
-+		test_send_signal_nmi(true);
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_send_signal_kern.c b/tools/testing/selftests/bpf/progs/test_send_signal_kern.c
-index 0e6be01157e6..726733f9f20b 100644
---- a/tools/testing/selftests/bpf/progs/test_send_signal_kern.c
-+++ b/tools/testing/selftests/bpf/progs/test_send_signal_kern.c
-@@ -4,44 +4,37 @@
- #include <linux/version.h>
- #include "bpf_helpers.h"
- 
--struct {
--	__uint(type, BPF_MAP_TYPE_ARRAY);
--	__uint(max_entries, 1);
--	__type(key, __u32);
--	__type(value, __u64);
--} info_map SEC(".maps");
--
--struct {
--	__uint(type, BPF_MAP_TYPE_ARRAY);
--	__uint(max_entries, 1);
--	__type(key, __u32);
--	__type(value, __u64);
--} status_map SEC(".maps");
--
--SEC("send_signal_demo")
--int bpf_send_signal_test(void *ctx)
-+__u32 sig = 0, pid = 0, status = 0, signal_thread = 0;
-+
-+static __always_inline int bpf_send_signal_test(void *ctx)
- {
--	__u64 *info_val, *status_val;
--	__u32 key = 0, pid, sig;
- 	int ret;
- 
--	status_val = bpf_map_lookup_elem(&status_map, &key);
--	if (!status_val || *status_val != 0)
--		return 0;
--
--	info_val = bpf_map_lookup_elem(&info_map, &key);
--	if (!info_val || *info_val == 0)
-+	if (status != 0 || sig == 0 || pid == 0)
- 		return 0;
- 
--	sig = *info_val >> 32;
--	pid = *info_val & 0xffffFFFF;
--
- 	if ((bpf_get_current_pid_tgid() >> 32) == pid) {
--		ret = bpf_send_signal(sig);
-+		if (signal_thread)
-+			ret = bpf_send_signal_thread(sig);
-+		else
-+			ret = bpf_send_signal(sig);
- 		if (ret == 0)
--			*status_val = 1;
-+			status = 1;
- 	}
- 
- 	return 0;
- }
-+
-+SEC("tracepoint/syscalls/sys_enter_nanosleep")
-+int send_signal_tp(void *ctx)
-+{
-+	return bpf_send_signal_test(ctx);
-+}
-+
-+SEC("perf_event")
-+int send_signal_perf(void *ctx)
-+{
-+	return bpf_send_signal_test(ctx);
-+}
-+
- char __license[] SEC("license") = "GPL";
--- 
-2.17.1
-
+>=20
+> Maybe Paul can clarify...
+>=20
+>=20
+> >         }
+> >
+> >         return 1;
+> > -
+> > -err_close:
+> > -       for (; i < nb_fds; i++)
+> > -               close(fds[i]);
+> > -       return -1;
+> >  }
+> >
+> >  static int
+> > --
+> > 2.17.1
+> >
