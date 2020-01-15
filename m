@@ -2,46 +2,46 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D17E313C139
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2020 13:41:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 329F213C21B
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2020 13:58:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726418AbgAOMlZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Jan 2020 07:41:25 -0500
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:40135 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726248AbgAOMlZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Jan 2020 07:41:25 -0500
-Received: by mail-lj1-f193.google.com with SMTP id u1so18382023ljk.7
-        for <bpf@vger.kernel.org>; Wed, 15 Jan 2020 04:41:23 -0800 (PST)
+        id S1728895AbgAOM6A (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Jan 2020 07:58:00 -0500
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:40458 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726187AbgAOM6A (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Jan 2020 07:58:00 -0500
+Received: by mail-lj1-f194.google.com with SMTP id u1so18441179ljk.7
+        for <bpf@vger.kernel.org>; Wed, 15 Jan 2020 04:57:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
         h=references:user-agent:from:to:cc:subject:in-reply-to:date
          :message-id:mime-version;
-        bh=hDEaIYv8oHK5XCkZ/NcUnB5EfEhHDTzkrgkJdoO1LTc=;
-        b=O/WaBccO0m2mZzmU9Ar92NvJbM2FXZhoR4S+6AkVrjY7b1Dv19NipwHSfZCsMtGONI
-         m7k0v54wnRlmJqWYELZDjH753cij9EhYvE6hisEPuFn411avJ6qb6UgiQE8kwlUuVBrh
-         YHvzIn3EJ0dvuwl9f0POx5jT8MRthwdB1sU8k=
+        bh=6DnDCUiyyqJKN2DG70Yq2b93d7JD3y/mTOSX4rA9ZiQ=;
+        b=AlXzWKuReozNzqgJ15bDIBqJP7CCqSOPj3AmJjrKNnU+ijffijtyJSM8Qjn9lcwttZ
+         MifhDEBjdNR9LgL0+KA+iK5uCJrxVrk6r9v/Ci0O3eU1wZhtQzMTD4fxSln58JGwnsMW
+         jFgofrD7tiLgj9CdJ6lMlv55Wg4VVF5tQdKEk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:references:user-agent:from:to:cc:subject
          :in-reply-to:date:message-id:mime-version;
-        bh=hDEaIYv8oHK5XCkZ/NcUnB5EfEhHDTzkrgkJdoO1LTc=;
-        b=LrL9Y/DU5YfH4UUFaGJaLiTjKrBbo0GF28+aYFGZYJ9QbfRiHYc3Et8xe+x3tqX3n9
-         jeVu9ZiRxXW5blVagSfU0yVQPVgMzPHMwYcMP0VuSNu891zAk1u3x/Ku41vzULuF2bq5
-         Q+rcUibKFFm829eLQT3dnznEkXXUSRaUcs+O+2dqGDrysret6uc7sh4DdSZVGB4cOPdY
-         dekkVrLKcF8RrB+ntVY58hxRTqisQUE0FC5lv2NwOYWGsIEfH6q8fAwV+WnY99iL/zoK
-         5E9mH+rDEcKu0tme2gjP1c2Rkk3LAn9ZFkPqoI1tBj1w6cVSCXC3iFMUbOLNDwGqiiU/
-         ZQ/Q==
-X-Gm-Message-State: APjAAAWkFkU6TIFDLL5E6IlV2NxzVKOs9v7vdYVSaffh7L7aOo3dBa69
-        7NFK605GTqv1+TzLvcoiTg22tQ==
-X-Google-Smtp-Source: APXvYqyF3d9w+FnEma3M1fwg8sPVtrznM/lTdwMgKU04gNeZWWcqeYWgg4t4scssD5wjzTSMIGxZPQ==
-X-Received: by 2002:a2e:3609:: with SMTP id d9mr1541486lja.188.1579092082531;
-        Wed, 15 Jan 2020 04:41:22 -0800 (PST)
+        bh=6DnDCUiyyqJKN2DG70Yq2b93d7JD3y/mTOSX4rA9ZiQ=;
+        b=g4e+9lAfMRs6Fg2ECD82sJxZdtLVVssDcWKpRsYQmXImBwxVbZ3woUwbwwdpZljWsC
+         +PJC+IS6k6VO7IYzrYiy2DEkSyYFWZigJ7Bfods5Dgpf7KJi5GSyci2Aqxvj8M6xXt3Q
+         kf//6fJhGhycBmHyHLCcZQXKjQmlFCCtY7FrKbQr05evOJocyBKDmtCI78mjRQCYHyaY
+         C+KPnoWm+afkOxqFELXpvY3a4WEXjUNR/BqeeSySJRB/vSEp8JdW/mIQDRz3AEWA6SeD
+         R2ElTplFVaR03s2lG2PqJAaEAJ7PelKC0xzp/a4AxJKLZRV+Ei0XplcuPTiBPyDzCf7B
+         lmPg==
+X-Gm-Message-State: APjAAAWf9+4sFLHDrWNFzUI82ia8zlQVSsPARv7AaXXo/nxmKkSRH8iY
+        y9vrgfI00q1l9Oebh87XE/1odw==
+X-Google-Smtp-Source: APXvYqxFoptahdtRrQgA64/SXQdiYnOBla3l655akCs8mn+CXvHBDPFxAQiT3JOGakMGMZ6Gnqr3nw==
+X-Received: by 2002:a05:651c:1110:: with SMTP id d16mr1718791ljo.86.1579093078213;
+        Wed, 15 Jan 2020 04:57:58 -0800 (PST)
 Received: from cloudflare.com ([176.221.114.230])
-        by smtp.gmail.com with ESMTPSA id l12sm9108588lji.52.2020.01.15.04.41.21
+        by smtp.gmail.com with ESMTPSA id d24sm9120285lja.82.2020.01.15.04.57.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Jan 2020 04:41:21 -0800 (PST)
-References: <20200110105027.257877-1-jakub@cloudflare.com> <20200110105027.257877-10-jakub@cloudflare.com> <20200113234541.sru7domciovzijnx@kafai-mbp.dhcp.thefacebook.com>
+        Wed, 15 Jan 2020 04:57:57 -0800 (PST)
+References: <20200110105027.257877-1-jakub@cloudflare.com> <20200110105027.257877-10-jakub@cloudflare.com> <20200113235100.ewx2dviaolg6n6a2@kafai-mbp.dhcp.thefacebook.com>
 User-agent: mu4e 1.1.0; emacs 26.3
 From:   Jakub Sitnicki <jakub@cloudflare.com>
 To:     Martin Lau <kafai@fb.com>
@@ -52,9 +52,9 @@ Cc:     "bpf\@vger.kernel.org" <bpf@vger.kernel.org>,
         "John Fastabend" <john.fastabend@gmail.com>,
         Lorenz Bauer <lmb@cloudflare.com>
 Subject: Re: [PATCH bpf-next v2 09/11] bpf: Allow selecting reuseport socket from a SOCKMAP
-In-reply-to: <20200113234541.sru7domciovzijnx@kafai-mbp.dhcp.thefacebook.com>
-Date:   Wed, 15 Jan 2020 13:41:21 +0100
-Message-ID: <878sm8sxhq.fsf@cloudflare.com>
+In-reply-to: <20200113235100.ewx2dviaolg6n6a2@kafai-mbp.dhcp.thefacebook.com>
+Date:   Wed, 15 Jan 2020 13:57:56 +0100
+Message-ID: <877e1sswq3.fsf@cloudflare.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Sender: bpf-owner@vger.kernel.org
@@ -62,7 +62,7 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 14, 2020 at 12:45 AM CET, Martin Lau wrote:
+On Tue, Jan 14, 2020 at 12:51 AM CET, Martin Lau wrote:
 > On Fri, Jan 10, 2020 at 11:50:25AM +0100, Jakub Sitnicki wrote:
 >> SOCKMAP now supports storing references to listening sockets. Nothing keeps
 >> us from using it as an array of sockets to select from in SK_REUSEPORT
@@ -113,49 +113,35 @@ On Tue, Jan 14, 2020 at 12:45 AM CET, Martin Lau wrote:
 >>  	   struct bpf_map *, map, void *, key, u32, flags)
 >>  {
 >> +	bool is_sockarray = map->map_type == BPF_MAP_TYPE_REUSEPORT_SOCKARRAY;
->>  	struct sock_reuseport *reuse;
->>  	struct sock *selected_sk;
->>
->> @@ -8685,12 +8686,16 @@ BPF_CALL_4(sk_select_reuseport, struct sk_reuseport_kern *, reuse_kern,
->>  		return -ENOENT;
->>
->>  	reuse = rcu_dereference(selected_sk->sk_reuseport_cb);
->> -	if (!reuse)
->> -		/* selected_sk is unhashed (e.g. by close()) after the
->> -		 * above map_lookup_elem().  Treat selected_sk has already
->> -		 * been removed from the map.
->> +	if (!reuse) {
->> +		/* reuseport_array has only sk with non NULL sk_reuseport_cb.
->> +		 * The only (!reuse) case here is - the sk has already been
->> +		 * unhashed (e.g. by close()), so treat it as -ENOENT.
->> +		 *
->> +		 * Other maps (e.g. sock_map) do not provide this guarantee and
->> +		 * the sk may never be in the reuseport group to begin with.
->>  		 */
->> -		return -ENOENT;
->> +		return is_sockarray ? -ENOENT : -EINVAL;
->> +	}
->>
->>  	if (unlikely(reuse->reuseport_id != reuse_kern->reuseport_id)) {
-> I guess the later testing patch passed is because reuseport_id is init to 0.
->
-> Note that in reuseport_array, reuseport_get_id() is called at update_elem() to
-> init the reuse->reuseport_id.  It was done there because reuseport_array
-> was the only one requiring reuseport_id.  It is to ensure the bpf_prog
-> cannot accidentally use a sk from another reuseport-group.
->
-> The same has to be done in patch 5 or may be considering to
-> move it to reuseport_alloc() itself.
+> A nit.
+> Since map_type is tested, reuseport_array_lookup_elem() or sock_map_lookup()
+> can directly be called also.  mostly for consideration.  will not
+> insist.
 
-I see what you're saying.
+sock_map_lookup() isn't global currently.
 
-With these patches, it is possible to redirect connections across
-reuseport groups with reuseport BPF and sockmap. While it should be
-prohibited to be consistent with sockarray. Redirect helper should
-return an error.
+If I'm following your thinking, you're suggesting an optimization
+against retpoline overhead along the lines of INDIRECT_CALL_$n wrappers:
 
-Will try to pull up reuseport_id initialization to reuseport_alloc(),
-and add a test for a sockmap with two listening sockets that belong to
-different reuseport groups.
+/*
+ * INDIRECT_CALL_$NR - wrapper for indirect calls with $NR known builtin
+ *  @f: function pointer
+ *  @f$NR: builtin functions names, up to $NR of them
+ *  @__VA_ARGS__: arguments for @f
+ *
+ * Avoid retpoline overhead for known builtin, checking @f vs each of them and
+ * eventually invoking directly the builtin function. The functions are check
+ * in the given order. Fallback to the indirect call.
+ */
+#define INDIRECT_CALL_1(f, f1, ...)					\
+	({								\
+		likely(f == f1) ? f1(__VA_ARGS__) : f(__VA_ARGS__);	\
+	})
+#define INDIRECT_CALL_2(f, f2, f1, ...)					\
+	({								\
+		likely(f == f2) ? f2(__VA_ARGS__) :			\
+				  INDIRECT_CALL_1(f, f1, __VA_ARGS__);	\
+	})
 
-Thanks for catching this bug.
+Will resist the temptation to optimize it as part of this series,
+because the indirect call is already there.
