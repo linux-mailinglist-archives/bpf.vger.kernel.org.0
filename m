@@ -2,140 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 62F6713CD1D
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2020 20:30:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC72A13CD4D
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2020 20:43:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729138AbgAOTaP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Jan 2020 14:30:15 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:28844 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725999AbgAOTaO (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 15 Jan 2020 14:30:14 -0500
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 00FJRQjY030068;
-        Wed, 15 Jan 2020 11:30:01 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=6tL51HUWwt1fR/kCMXZP9ibKtgflwGZEHpcElxhFVOw=;
- b=LXQk4M+UgnqhK6TPDTo5l/WdVuQzmr+sx6YkYdEsSsTQRz9618n/Wzde0JDZw7O8DE8N
- WDrcBDmYKsdLSZXjQE8oR2wuW+LvQFHn7zSVPY9ARpo/QHMZXv/sAWRr7ijYod4YAFmK
- CvBL0X1j6c2FZEdsAQ5YlRM4raPkjbymvXI= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net with ESMTP id 2xj5pt93s5-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 15 Jan 2020 11:30:00 -0800
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Wed, 15 Jan 2020 11:29:58 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kXSs33Wbutc3WNPTBoLsGqsyO9Mwcu9Het8v7yOsseV3x1gIp/CUVnr0ek67yNpp0dpaVzXioAmrOB/mxt2sm6YvWRAd4iGAGnMwRVcb7gtPsksiSjgLEDQYCWsJ4xhaZddGHKCYrA4Ov/lv+5BQYjA3nc83sn3EvTcCoiLpj/hXjU2FnUt0xTOXQRaVsd4GOmSwUvJQi2O7yICYtxYwqpzceOsiwsXkqAHMf8mDagFIKONkXtKSoOxbXQ0VjirtcpjzChEE4xa3nN3fr00jVKvXn1PlHHEsK+fsLvpnIvbqA36euSQwW4lMFwWVvoTv4UXB4EnN0KGZw6XcqV5y5Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6tL51HUWwt1fR/kCMXZP9ibKtgflwGZEHpcElxhFVOw=;
- b=TUuXyEQfqVqAKylYQR8diBNEWEddyocGA9d7oHUdNGWYYOyMRWXZ8tkw2mv/cAP4Q24kfe1VF+H1N4bbv1FLHgmutH1yz613BWHoAACAsOeQ4do3+FvUdzbYjB7osXsqw+6pUkIUBo/eY/fKob48ECHQpZWMhnGSrkY/6UiqinFTX1QmY9p81moge6f6UNmzw2neYHD7ph1bGQbfqXisVbAptTwNDYA//JQHsDCJhxJDCNfpa2rAdDYNU7f+PGo/o2zRbOtmjjvdNaCc/DI2ArnRCk/EjE485dkzwfzuQWJywI1y1vndyXrxKAS8s364T+8JmvaEnITyNT3C5orCWw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6tL51HUWwt1fR/kCMXZP9ibKtgflwGZEHpcElxhFVOw=;
- b=I/1ZblcEMdM4aCy6fZQuxlMRl8m4FAvDUskrl8YqBkN5munVJOxqXP6oZQsv/LAJC/x34gmQ1Thw/3V2U9qKLJRCmRH5XyHV5xp4mslI1Ipi0eC82TWFdJTgMKieMVVI2YfcALHG0tCpSvbDrebdGwas02S4ewRTCypyxHFu3o8=
-Received: from DM6PR15MB3001.namprd15.prod.outlook.com (20.178.231.16) by
- DM6PR15MB2380.namprd15.prod.outlook.com (20.176.68.21) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2623.13; Wed, 15 Jan 2020 19:29:57 +0000
-Received: from DM6PR15MB3001.namprd15.prod.outlook.com
- ([fe80::1d74:b392:183e:c8c2]) by DM6PR15MB3001.namprd15.prod.outlook.com
- ([fe80::1d74:b392:183e:c8c2%6]) with mapi id 15.20.2623.018; Wed, 15 Jan 2020
- 19:29:57 +0000
-Received: from MacBook-Pro-52.local (2620:10d:c090:200::2:a3ec) by MWHPR14CA0044.namprd14.prod.outlook.com (2603:10b6:300:12b::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2644.19 via Frontend Transport; Wed, 15 Jan 2020 19:29:56 +0000
-From:   Yonghong Song <yhs@fb.com>
-To:     Andrii Nakryiko <andriin@fb.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>
-CC:     "andrii.nakryiko@gmail.com" <andrii.nakryiko@gmail.com>,
-        Kernel Team <Kernel-team@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>
-Subject: Re: [PATCH v2 bpf-next] libbpf: support .text sub-calls relocations
-Thread-Topic: [PATCH v2 bpf-next] libbpf: support .text sub-calls relocations
-Thread-Index: AQHVy9or8lWMceNptE2+ChMCbmw5Ig==
-Date:   Wed, 15 Jan 2020 19:29:57 +0000
-Message-ID: <ea3953ba-6ee2-d565-c8ed-be3e32c9d70f@fb.com>
-References: <20200115190856.2391325-1-andriin@fb.com>
-In-Reply-To: <20200115190856.2391325-1-andriin@fb.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MWHPR14CA0044.namprd14.prod.outlook.com
- (2603:10b6:300:12b::30) To DM6PR15MB3001.namprd15.prod.outlook.com
- (2603:10b6:5:13c::16)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:200::2:a3ec]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: e400f0c8-3472-4a24-d525-08d799f14df8
-x-ms-traffictypediagnostic: DM6PR15MB2380:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR15MB23804EC7B0752F997E912BF1D3370@DM6PR15MB2380.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:2089;
-x-forefront-prvs: 02830F0362
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(396003)(136003)(376002)(366004)(346002)(39860400002)(189003)(199004)(66446008)(52116002)(6486002)(2616005)(31696002)(110136005)(6506007)(66556008)(5660300002)(53546011)(316002)(8676002)(54906003)(66946007)(86362001)(66476007)(4326008)(8936002)(478600001)(36756003)(71200400001)(6512007)(81156014)(966005)(81166006)(64756008)(31686004)(16526019)(2906002)(186003)(142923001);DIR:OUT;SFP:1102;SCL:1;SRVR:DM6PR15MB2380;H:DM6PR15MB3001.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: YAJZlTHZbzjUUW4NPCiyG58PdpdsF7pvN12KirsZ3ZUWB6ZEhtXbTpsvJWLUMTv8U/rNsJiKQuOKLL+VmcnJw0bsH7HzV3GvnjxVHHUji1tm/LWOvmH1y9QMZ8Fl/XIzVVJlJe45cLjuILuvDCq4jWQVz9ibBlYfFSCvYYKl+UTM57TFoOXNFbo7/x+PNANDlDZsqOVVskJUqALViSwdGFZE8O2zFiITmOuXQoutY8vzoNj0b/jNwXMT1mNakg9k6c5IwsRDlHGqTO2wcwrnlMzoYxWQdB6qgKDOm/ON+rn/kHP+X2Qz93yg4bAs5vzlQa5sFaxqGXBgducILhc/3m2a9ln9P6L6xv1bNAJsaMpp2Sj0aq9EA6xyOYED4PZGS+oWc76h4wAmrqlBpR8CiRl1WFBIsSHz+28of2Oavh9ZXEwMNXoFvA4u8keUQEQgxNmJZX0g8P8Kv/1/ZJ5vrYsLRhXbsoX01q7OSt3rJYSEDy9A++hE+wLZx0dNzmTa/3uluSLak9FBECRfBMkDDw==
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <1309A7A24943B94083DCF2366311430B@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: e400f0c8-3472-4a24-d525-08d799f14df8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Jan 2020 19:29:57.2064
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ZBwzWXmFPhsrmHprfB1JUHwKTTDBzetnJrUbe1rCjSbsp+mabUrSL/6Cse8jPJdm
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB2380
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
- definitions=2020-01-15_02:2020-01-15,2020-01-15 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 adultscore=0
- malwarescore=0 suspectscore=0 clxscore=1015 spamscore=0 phishscore=0
- bulkscore=0 priorityscore=1501 mlxlogscore=999 impostorscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1910280000 definitions=main-2001150149
-X-FB-Internal: deliver
+        id S1726566AbgAOTnc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Jan 2020 14:43:32 -0500
+Received: from mail-pl1-f178.google.com ([209.85.214.178]:46383 "EHLO
+        mail-pl1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726527AbgAOTnb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Jan 2020 14:43:31 -0500
+Received: by mail-pl1-f178.google.com with SMTP id y8so7244582pll.13;
+        Wed, 15 Jan 2020 11:43:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=Atrc4M+lXKJWelgGLCJ59DSdh2EROfwZs1v02Dm2Dso=;
+        b=idEmVS+HLIAuQW46Bc4UwAAedJAyx3ywzMWLMxOW7Sjs3OT1PKHGc1Vs5LPvgqwzJV
+         zhRtaN+zouEcj+HEsqMPlSphvDzWuArZNjXYfH6u/O6mxbeoX+kiJmW7SyJG2wsswPGE
+         Az8iszlXuR9GepFyFqXO9LEV3GR5/3EubQIxxxScmmjV4Vrz6QWn/4JZgXO022c0Rt5E
+         mllAAbYg0K4wx/YBt5PEa7m3AlHtPzNIMlhQRQ3C1FFCrgw4pzWkEICKM3oYW07XIbX8
+         E1uiqwBkP9YicfdUwL/3KIZZnxIcwMmg6xxAlAj6XBnC5/6fJwYsBhgsBTSn4PDQa8cx
+         ttrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=Atrc4M+lXKJWelgGLCJ59DSdh2EROfwZs1v02Dm2Dso=;
+        b=CXE7EZ68retcPADlABZVZwxTJT82BZuOMk+6spImtlC8q3TCFViEH6snAR4rL4KDvb
+         SP3kFWsyuJWk0GKFp4s2iin9C4WGlDL6LGwu+FzjUerEKD2DyPbZ4fbTN/Y2n0IiTiD0
+         UbxrL01NSzANMrPXVgQrzECAI99cBzehu3OxOJQqKx3TRiUYDE8o/Z0gEYg9Z5L1AvXP
+         7AXMYT6qsbPS/E92a8wgksd+2iQh3iA3VZlyRdI0I/l/xxBwu6Ii7G9C+11G+kJ9deVA
+         vevL/maPb9e1vxrRy5Hf/coO5eK3ft7PIppwYiAq8bFdKJhwop8YpkEJcblFKIMovtPX
+         ip5A==
+X-Gm-Message-State: APjAAAWk5nKiwB9PyxAlfbG+VQ1XizhbP/fhF+vfHXv5tdskAWL4j6gu
+        kBenhR/WcAqYcTBuujC0Vbw=
+X-Google-Smtp-Source: APXvYqwpBaCtvOuxXhHNrBBQqAlszhopj4+SyjAoiRjirw9lGKYBjO0N+6365iHKU0DuW8Ma3WF6WQ==
+X-Received: by 2002:a17:902:6ac3:: with SMTP id i3mr27761026plt.111.1579117411161;
+        Wed, 15 Jan 2020 11:43:31 -0800 (PST)
+Received: from localhost (198-0-60-179-static.hfc.comcastbusiness.net. [198.0.60.179])
+        by smtp.gmail.com with ESMTPSA id h7sm23992205pfq.36.2020.01.15.11.43.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Jan 2020 11:43:30 -0800 (PST)
+Date:   Wed, 15 Jan 2020 11:43:29 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        netdev@vger.kernel.org
+Cc:     bpf@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Message-ID: <5e1f6b61c9d74_72f02acbae15e5c460@john-XPS-13-9370.notmuch>
+In-Reply-To: <157893905677.861394.8918679692049579682.stgit@toke.dk>
+References: <157893905455.861394.14341695989510022302.stgit@toke.dk>
+ <157893905677.861394.8918679692049579682.stgit@toke.dk>
+Subject: RE: [PATCH bpf-next v2 2/2] xdp: Use bulking for non-map XDP_REDIRECT
+ and consolidate code paths
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-DQoNCk9uIDEvMTUvMjAgMTE6MDggQU0sIEFuZHJpaSBOYWtyeWlrbyB3cm90ZToNCj4gVGhlIExM
-Vk0gcGF0Y2ggaHR0cHM6Ly91cmxkZWZlbnNlLnByb29mcG9pbnQuY29tL3YyL3VybD91PWh0dHBz
-LTNBX19yZXZpZXdzLmxsdm0ub3JnX0Q3MjE5NyZkPUR3SUJBZyZjPTVWRDBSVHRObFRoM3ljZDQx
-YjNNVXcmcj1EQThlMUI1cjA3M3ZJcVJyRno3TVJBJm09UHcyQmxqcWcxRDV6UFZITm1HNVc3TVRM
-X2p4UF9teWZPT0M0Ty1ZU3BfTSZzPVNVbTJZX3VnaDVOVy1QOEllazI2M3NVTHZ1ZWJpUFN6V3d0
-SjlKMVozMzAmZT0gIG1ha2VzIExMVk0gZW1pdCBmdW5jdGlvbiBjYWxsDQo+IHJlbG9jYXRpb25z
-IHdpdGhpbiB0aGUgc2FtZSBzZWN0aW9uLiBUaGlzIGluY2x1ZGVzIGEgZGVmYXVsdCAudGV4dCBz
-ZWN0aW9uLA0KPiB3aGljaCBjb250YWlucyBhbnkgQlBGIHN1Yi1wcm9ncmFtcy4gVGhpcyB3YXNu
-J3QgdGhlIGNhc2UgYmVmb3JlIGFuZCBzbyBsaWJicGYNCj4gd2FzIGFibGUgdG8gZ2V0IGEgd2F5
-IHdpdGggc2xpZ2h0bHkgc2ltcGxlciBoYW5kbGluZyBvZiBzdWJwcm9ncmFtIGNhbGwNCj4gcmVs
-b2NhdGlvbnMuDQo+IA0KPiBUaGlzIHBhdGNoIGFkZHMgc3VwcG9ydCBmb3IgLnRleHQgc2VjdGlv
-biByZWxvY2F0aW9ucy4gSXQgbmVlZHMgdG8gZW5zdXJlDQo+IGNvcnJlY3Qgb3JkZXIgb2YgcmVs
-b2NhdGlvbnMsIHNvIGRvZXMgdHdvIHBhc3NlczoNCj4gLSBmaXJzdCwgcmVsb2NhdGUgLnRleHQg
-aW5zdHJ1Y3Rpb25zLCBpZiB0aGVyZSBhcmUgYW55IHJlbG9jYXRpb25zIGluIGl0Ow0KPiAtIHRo
-ZW4gcHJvY2VzcyBhbGwgdGhlIG90aGVyIHByb2dyYW1zIGFuZCBjb3B5IG92ZXIgcGF0Y2hlZCAu
-dGV4dCBpbnN0cnVjdGlvbnMNCj4gZm9yIGFsbCBzdWItcHJvZ3JhbSBjYWxscy4NCj4gDQo+IHYx
-LT52MjoNCj4gLSBicmVhayBlYXJseSBvbmNlIC50ZXh0IHByb2dyYW0gaXMgcHJvY2Vzc2VkLg0K
-PiANCj4gQ2M6IFlvbmdob25nIFNvbmcgPHloc0BmYi5jb20+DQo+IENjOiBBbGV4ZWkgU3Rhcm92
-b2l0b3YgPGFzdEBrZXJuZWwub3JnPg0KPiBTaWduZWQtb2ZmLWJ5OiBBbmRyaWkgTmFrcnlpa28g
-PGFuZHJpaW5AZmIuY29tPg0KDQpUaGFua3MgZm9yIHRoZSBxdWljayBmaXghDQpBY2tlZC1ieTog
-WW9uZ2hvbmcgU29uZyA8eWhzQGZiLmNvbT4NCg==
+Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> =
+
+> Since the bulk queue used by XDP_REDIRECT now lives in struct net_devic=
+e,
+> we can re-use the bulking for the non-map version of the bpf_redirect()=
+
+> helper. This is a simple matter of having xdp_do_redirect_slow() queue =
+the
+> frame on the bulk queue instead of sending it out with __bpf_tx_xdp().
+> =
+
+> Unfortunately we can't make the bpf_redirect() helper return an error i=
+f
+> the ifindex doesn't exit (as bpf_redirect_map() does), because we don't=
+
+> have a reference to the network namespace of the ingress device at the =
+time
+> the helper is called. So we have to leave it as-is and keep the device
+> lookup in xdp_do_redirect_slow().
+> =
+
+> Since this leaves less reason to have the non-map redirect code in a
+> separate function, so we get rid of the xdp_do_redirect_slow() function=
+
+> entirely. This does lose us the tracepoint disambiguation, but fortunat=
+ely
+> the xdp_redirect and xdp_redirect_map tracepoints use the same tracepoi=
+nt
+> entry structures. This means both can contain a map index, so we can ju=
+st
+> amend the tracepoint definitions so we always emit the xdp_redirect(_er=
+r)
+> tracepoints, but with the map ID only populated if a map is present. Th=
+is
+> means we retire the xdp_redirect_map(_err) tracepoints entirely, but ke=
+ep
+> the definitions around in case someone is still listening for them.
+> =
+
+> With this change, the performance of the xdp_redirect sample program go=
+es
+> from 5Mpps to 8.4Mpps (a 68% increase).
+> =
+
+> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+
+Acked-by: John Fastabend <john.fastabend@gmail.com>=
