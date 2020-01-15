@@ -2,118 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C91B513CD5C
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2020 20:45:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EC0213CD72
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2020 20:51:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729378AbgAOTpX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Jan 2020 14:45:23 -0500
-Received: from mail-pf1-f182.google.com ([209.85.210.182]:34656 "EHLO
-        mail-pf1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726362AbgAOTpW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Jan 2020 14:45:22 -0500
-Received: by mail-pf1-f182.google.com with SMTP id i6so8997506pfc.1;
-        Wed, 15 Jan 2020 11:45:22 -0800 (PST)
+        id S1729437AbgAOTvH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Jan 2020 14:51:07 -0500
+Received: from mail-pj1-f65.google.com ([209.85.216.65]:52346 "EHLO
+        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729398AbgAOTvH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Jan 2020 14:51:07 -0500
+Received: by mail-pj1-f65.google.com with SMTP id a6so392705pjh.2
+        for <bpf@vger.kernel.org>; Wed, 15 Jan 2020 11:51:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=5V5r0J0r7JgcBTcJZajxVuQ4bhqXd9Nr9nyhb0J6tzQ=;
-        b=BJsgtvI/dl+ODR/UECf+HSQZty6cI5cpEOtm6gmNtMB9XZDPJI7WKrDFAJkgEPQpK2
-         T83Fvtgez3cFfhUjHvLlrhZbnuwXRmzya1ZKeFR++X9uZQOOBDok5o+wM24XPj1MP8CL
-         Y3UryILoDp9mWPy/CiJ0+6crKy2yE7CZvxstlrpzuWnNvQWYteTeIXKacT5HdzRfTwoe
-         gu1+iCxjS7hcoeGyx7WWsmUmQtK9MjV/K7d45rpN0IU3ZAbTmO9sJvjY3agjkQ1uMREz
-         CjykrD30btJV4hteG4xDmybYQFh8z273HWfWifUodcscjiH4hnQNoVN4y0+NuaeHC/l2
-         9FCg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=3ThaTxuo87ns4krckkkwEe3+1A1nRGxaYkFtAmXa64M=;
+        b=YmyKdY1BDmTZZ9xS3oGVXhFGAgSjNopD7FZ2o7TdnVojWMJ9p/SHV8xIS6l35Aoz0v
+         8987NFa5clGoQiiVae47isXrKym0mF3N/u1pBrnQdlyDF2FvGNKrBRz/Jl1Dz6w43i3D
+         ogX30Xx0+VKv8H9HeuZMoHIPTkUaEDcH9mlBYkVMyFPD5hXJmaz1jjjtuAeMqBm7lW7n
+         /Ci3rLW3yglshJmOjuO3+glx1fk6NKiLVbqOQ0yVqIpg28MKg5SMs9r8d5Z0fhhlj17V
+         u68oOtEWysTZc2n5YLV9ziRb0KBCYH6rYYnyMQBZjZ9oYnc+d7ErXCX/rj2Cf7NgpYEQ
+         PsgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=5V5r0J0r7JgcBTcJZajxVuQ4bhqXd9Nr9nyhb0J6tzQ=;
-        b=Tucebyq4vHpqiSIRGYqLGGtyp6blfdz3Z+Nb7IpVeI3fA16/FTRzRNhOsWuVA3uoK/
-         nU2BmutAnlGWiOepauPQc66r3p64gBqvlzBBjbrfWmatnnHcoXHVK1Xr6uqZKV3+palL
-         /m+M/jqlpFwde1Lz9KSQ5QSAZPEoMG58111vVXBkX9gKRf4qAOwkn5EugobHAELd0zRl
-         iBTrytII95G02L/+ElMLfe9szMJM5zalIoPVAxPxPERWxEkGikit9hYuoVCDNT1taPw2
-         1FPG67kC8ZIA4GVMB87cYrp+k+/O/AMmPmxcDWkTZaYrTkxeIhjC5j/Ieup1FEDpgqp0
-         NhSA==
-X-Gm-Message-State: APjAAAWN2pvuXoHIAiOP+DSoh8wEheJQxvCJyPqUGsVxDJhrlgugQWHy
-        mXucSGByUGbnldgmx/Q4T3E=
-X-Google-Smtp-Source: APXvYqzT9aYBz3/7MPDvcf9f3RghcGuGIfBwl51biDCA08aiGGpUuGJFJY11axuw408xg1EDmNmMhg==
-X-Received: by 2002:aa7:86c3:: with SMTP id h3mr34070039pfo.225.1579117522010;
-        Wed, 15 Jan 2020 11:45:22 -0800 (PST)
-Received: from localhost (198-0-60-179-static.hfc.comcastbusiness.net. [198.0.60.179])
-        by smtp.gmail.com with ESMTPSA id c14sm22569404pfn.8.2020.01.15.11.45.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Jan 2020 11:45:21 -0800 (PST)
-Date:   Wed, 15 Jan 2020 11:45:20 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        netdev@vger.kernel.org
-Cc:     bpf@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Message-ID: <5e1f6bd0cb367_72f02acbae15e5c44a@john-XPS-13-9370.notmuch>
-In-Reply-To: <157893905569.861394.457637639114847149.stgit@toke.dk>
-References: <157893905455.861394.14341695989510022302.stgit@toke.dk>
- <157893905569.861394.457637639114847149.stgit@toke.dk>
-Subject: RE: [PATCH bpf-next v2 1/2] xdp: Move devmap bulk queue into struct
- net_device
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=3ThaTxuo87ns4krckkkwEe3+1A1nRGxaYkFtAmXa64M=;
+        b=i7fF2XBK6f4Zj4tApG7Y2QObDn8ui702bjTEmdwUHm3miH251nQNfYx2VrOmaM6lP2
+         N36grjaY2bnc3wy5qOcRUCU1JU35NgJ7Pk8RwSzYbwh8w40dqlmnQSEUTO11r/fTm708
+         58O38CK10L5kAhZ24NsJ5ROo+9Y9IrcIFCCuh4bWUErYbN+K3/Gbzif6+hpPTuS+YWeE
+         MRHQ4Mu91xsydPfSBIxTrRv0JPcFiOtiPcxbzcZFu2133Hqr5I51PHV/psYiALnBLNOJ
+         C71kmh7EapSLfMC4077VzHfaFYDp/f7nmZ5z8m2JdacxMRK4Udz6LFhTJtsB8tVTuaQb
+         DbEg==
+X-Gm-Message-State: APjAAAWZb6EDW45g9NHeBKauARMmPhbxmN/taD8dFvnF2/CP6ZwwCxuK
+        aMQT9u+o2Lo763tIYr29bV4=
+X-Google-Smtp-Source: APXvYqxUXtIMcztdHYfT9G6qj/FRMylDjrojVZR5EaUnRDH+FrWGuvjxxVGwZsopYJ7W/tjcti8CKg==
+X-Received: by 2002:a17:90a:a05:: with SMTP id o5mr1836384pjo.77.1579117866830;
+        Wed, 15 Jan 2020 11:51:06 -0800 (PST)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:200::3:e760])
+        by smtp.gmail.com with ESMTPSA id b22sm22171899pft.110.2020.01.15.11.51.05
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 15 Jan 2020 11:51:06 -0800 (PST)
+Date:   Wed, 15 Jan 2020 11:51:04 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com
+Subject: Re: [PATCH bpf-next v3 0/2] bpf: add bpf_send_signal_thread() helper
+Message-ID: <20200115195103.vncvolqjcu72odg7@ast-mbp.dhcp.thefacebook.com>
+References: <20200115035002.602280-1-yhs@fb.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200115035002.602280-1-yhs@fb.com>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> =
+On Tue, Jan 14, 2020 at 07:50:02PM -0800, Yonghong Song wrote:
+> Commit 8b401f9ed244 ("bpf: implement bpf_send_signal() helper") 
+> added helper bpf_send_signal() which permits bpf program to
+> send a signal to the current process. The signal may send to 
+> any thread of the process.
+>  
+> This patch implemented a new helper bpf_send_signal_thread()
+> to send a signal to the thread corresponding to the kernel current task. 
+> This helper can simplify user space code if the thread context of
+> bpf sending signal is needed in user space. Please see Patch #1 for 
+> details of use case and kernel implementation.
+>  
+> Patch #2 added some bpf self tests for the new helper.
+>  
+> Changelogs:
+>   v2 -> v3:
+>     - More simplification for skeleton codes by removing not-needed
+>       mmap code and redundantly created tracepoint link.
+>   v1 -> v2: 
+>     - More description for the difference between bpf_send_signal()
+>       and bpf_send_signal_thread() in the uapi header bpf.h. 
+>     - Use skeleton and mmap for send_signal test.
 
-> Commit 96360004b862 ("xdp: Make devmap flush_list common for all map
-> instances"), changed devmap flushing to be a global operation instead o=
-f a
-> per-map operation. However, the queue structure used for bulking was st=
-ill
-> allocated as part of the containing map.
-> =
+Applied. Thanks.
 
-> This patch moves the devmap bulk queue into struct net_device. The
-> motivation for this is reusing it for the non-map variant of XDP_REDIRE=
-CT,
-> which will be changed in a subsequent commit.  To avoid other fields of=
-
-> struct net_device moving to different cache lines, we also move a coupl=
-e of
-> other members around.
-> =
-
-> We defer the actual allocation of the bulk queue structure until the
-> NETDEV_REGISTER notification devmap.c. This makes it possible to check =
-for
-> ndo_xdp_xmit support before allocating the structure, which is not poss=
-ible
-> at the time struct net_device is allocated. However, we keep the freein=
-g in
-> free_netdev() to avoid adding another RCU callback on NETDEV_UNREGISTER=
-.
-> =
-
-> Because of this change, we lose the reference back to the map that
-> originated the redirect, so change the tracepoint to always return 0 as=
- the
-> map ID and index. Otherwise no functional change is intended with this
-> patch.
-> =
-
-> Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
-> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> ---
-
-LGTM. I didn't check the net_device layout with pahole though so I'm
-trusting they are good from v1 discussion.
-
-Acked-by: John Fastabend <john.fastabend@gmail.com>=
+Though extra tests were added it's nice to see that skeleton keeps deleting
+lines from selftests:
+2 files changed, 73 insertions(+), 106 deletions(-)
