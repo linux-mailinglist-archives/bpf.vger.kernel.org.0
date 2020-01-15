@@ -2,188 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C3DDE13D023
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2020 23:34:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99F8613D029
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2020 23:37:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729736AbgAOWbu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Jan 2020 17:31:50 -0500
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:36467 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728899AbgAOWbu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Jan 2020 17:31:50 -0500
-Received: by mail-qk1-f193.google.com with SMTP id a203so17355080qkc.3;
-        Wed, 15 Jan 2020 14:31:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=m3ykeEiv2DWhC3YDv/3M+ztOkLKwpMGFjEqD6cnUt4s=;
-        b=cNt51iDcDZI6zelQEGvFbm8lPIlIGnZldM0f2rIq1AgcoCCdkQIbVvR19pY8xHwYlP
-         7R2OMxb5sfqI39LAluJjBuUlrFm8jXcFHwHzpQsVk9IHMN/xpCMK491szpikUKk8RT8X
-         m7307OpYrbxFQJI8OakwrfTa3HGJZ4eJBfI86Xby5q50ox6WVd4PzkYEVcAciFBIwS8u
-         f7mRKTLIgkBP65rlD0vn09o9FPFOgGm1EUGPVidZ+W/ZFmk+dDe2ZjwrZvCB++dEJ8sV
-         SkthSvzz+nTTMBTamfNnFkYTRMY01cXfsbE7dr+lHGbkVSn+2SSSqgQh18vnIuXka7P3
-         jZ8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=m3ykeEiv2DWhC3YDv/3M+ztOkLKwpMGFjEqD6cnUt4s=;
-        b=cK76LIAP5ynqr0Qta/8qtkniBiwY6z2LvYl36KzJhC160HWZAgWe7jrqSs6rdz51KO
-         jvOYzc5iDZ5jEMidCg5GTs6O4px3Y9vBjWG95814auLdEtPiisD6EOzE4jAM7pZ/if06
-         Y73rLUhWf5YehK9/0knabFTx+SmCHoRVm0XkuQh9SeHo7s/9OBXRisdV1InonIhgnHvY
-         kvxy66xTcUm0LeQKyHsjwPbDFOeJueNg0/TXS9c/A/cnPj84VMNww/UfbaRJatW8cJtH
-         Mte43cYFkUJjnqhSIxlzcsWwulykNHHh+yVSJd6j9xHx2a9ykwKoTYMCxPM9qh21vYh7
-         XOIg==
-X-Gm-Message-State: APjAAAVLiYLb8203H9f0aSWU+jQBOW6ieGh/6E8+TWrMNMJgtQICPqfV
-        ZOGrpVd0Z2SQwg49NYDkGtG7+lsqO9IdXO45MaU=
-X-Google-Smtp-Source: APXvYqzukFfHfNkIeKb+uK+DszszlveC2wPehwk6e8vAwphJhtnuhVoFPfjcvFFmRoCVVG49lShaKmldjnY1Y1hDegY=
-X-Received: by 2002:ae9:e809:: with SMTP id a9mr13631663qkg.92.1579127508368;
- Wed, 15 Jan 2020 14:31:48 -0800 (PST)
+        id S1730643AbgAOWhT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Jan 2020 17:37:19 -0500
+Received: from www62.your-server.de ([213.133.104.62]:57334 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729697AbgAOWhT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Jan 2020 17:37:19 -0500
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1irrHp-0003XL-1w; Wed, 15 Jan 2020 23:37:17 +0100
+Received: from [178.197.249.11] (helo=pc-9.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1irrHo-000480-On; Wed, 15 Jan 2020 23:37:16 +0100
+Subject: Re: [bpf PATCH v2 0/8] Fixes for sockmap/tls from more complex BPF
+ progs
+To:     John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, ast@kernel.org, song@kernel.org,
+        jonathan.lemon@gmail.com
+References: <20200111061206.8028-1-john.fastabend@gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <5cde124f-9ba4-b178-7fb6-e8340e23faee@iogearbox.net>
+Date:   Wed, 15 Jan 2020 23:37:16 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <157909756858.1192265.6657542187065456112.stgit@toke.dk>
- <157909757089.1192265.9038866294345740126.stgit@toke.dk> <CAEf4BzbqY8zivZy637Xy=iTECzBAYQ7vo=M7TvsLM2Yp12bJpg@mail.gmail.com>
- <87v9pctlvn.fsf@toke.dk>
-In-Reply-To: <87v9pctlvn.fsf@toke.dk>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 15 Jan 2020 14:31:37 -0800
-Message-ID: <CAEf4BzZpGe-1S5_iwS8GBw9iiyFJmDUkOaO+2qaftRn_iy5cNA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 02/10] tools/bpf/runqslower: Fix override
- option for VMLINUX_BTF
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-rdma@vger.kernel.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200111061206.8028-1-john.fastabend@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.101.4/25696/Wed Jan 15 14:34:23 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 15, 2020 at 2:06 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
-at.com> wrote:
->
-> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
->
-> > On Wed, Jan 15, 2020 at 6:13 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@=
-redhat.com> wrote:
-> >>
-> >> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> >>
-> >> The runqslower tool refuses to build without a file to read vmlinux BT=
-F
-> >> from. The build fails with an error message to override the location b=
-y
-> >> setting the VMLINUX_BTF variable if autodetection fails. However, the
-> >> Makefile doesn't actually work with that override - the error message =
-is
-> >> still emitted.
-> >
-> > Do you have example command with VMLINUX_BTF override that didn't work
-> > (and what error message was emitted)?
->
-> Before this patch:
->
-> $ cd ~/build/linux/tools/bpf/runqslower
-> $ make
-> Makefile:18: *** "Can't detect kernel BTF, use VMLINUX_BTF to specify it =
-explicitly".  Stop.
->
-> $ make VMLINUX_BTF=3D~/build/linux/vmlinux
-> Makefile:18: *** "Can't detect kernel BTF, use VMLINUX_BTF to specify it =
-explicitly".  Stop.
+On 1/11/20 7:11 AM, John Fastabend wrote:
+> To date our usage of sockmap/tls has been fairly simple, the BPF programs
+> did only well-defined pop, push, pull and apply/cork operations.
+> 
+> Now that we started to push more complex programs into sockmap we uncovered
+> a series of issues addressed here. Further OpenSSL3.0 version should be
+> released soon with kTLS support so its important to get any remaining
+> issues on BPF and kTLS support resolved.
+> 
+> Additionally, I have a patch under development to allow sockmap to be
+> enabled/disabled at runtime for Cilium endpoints. This allows us to stress
+> the map insert/delete with kTLS more than previously where Cilium only
+> added the socket to the map when it entered ESTABLISHED state and never
+> touched it from the control path side again relying on the sockets own
+> close() hook to remove it.
+> 
+> To test I have a set of test cases in test_sockmap.c that expose these
+> issues. Once we get fixes here merged and in bpf-next I'll submit the
+> tests to bpf-next tree to ensure we don't regress again. Also I've run
+> these patches in the Cilium CI with OpenSSL (master branch) this will
+> run tools such as netperf, ab, wrk2, curl, etc. to get a broad set of
+> testing.
+> 
+> I'm aware of two more issues that we are working to resolve in another
+> couple (probably two) patches. First we see an auth tag corruption in
+> kTLS when sending small 1byte chunks under stress. I've not pinned this
+> down yet. But, guessing because its under 1B stress tests it must be
+> some error path being triggered. And second we need to ensure BPF RX
+> programs are not skipped when kTLS ULP is loaded. This breaks some of
+> the sockmap selftests when running with kTLS. I'll send a follow up
+> for this.
+> 
+> v2: I dropped a patch that added !0 size check in tls_push_record
+>      this originated from a panic I caught awhile ago with a trace
+>      in the crypto stack. But I can not reproduce it anymore so will
+>      dig into that and send another patch later if needed. Anyways
+>      after a bit of thought it would be nicer if tls/crypto/bpf didn't
+>      require special case handling for the !0 size.
+> 
+> John Fastabend (8):
+>    bpf: sockmap/tls, during free we may call tcp_bpf_unhash() in loop
+>    bpf: sockmap, ensure sock lock held during tear down
+>    bpf: sockmap/tls, push write_space updates through ulp updates
+>    bpf: sockmap, skmsg helper overestimates push, pull, and pop bounds
+>    bpf: sockmap/tls, msg_push_data may leave end mark in place
+>    bpf: sockmap/tls, tls_sw can create a plaintext buf > encrypt buf
+>    bpf: sockmap/tls, skmsg can have wrapped skmsg that needs extra
+>      chaining
+>    bpf: sockmap/tls, fix pop data with SK_DROP return code
+> 
+>   include/linux/skmsg.h | 13 +++++++++----
+>   include/net/tcp.h     |  6 ++++--
+>   net/core/filter.c     | 11 ++++++-----
+>   net/core/skmsg.c      |  2 ++
+>   net/core/sock_map.c   |  7 ++++++-
+>   net/ipv4/tcp_bpf.c    |  5 +----
+>   net/ipv4/tcp_ulp.c    |  6 ++++--
+>   net/tls/tls_main.c    | 10 +++++++---
+>   net/tls/tls_sw.c      | 31 +++++++++++++++++++++++++++----
+>   9 files changed, 66 insertions(+), 25 deletions(-)
+> 
 
-Ok, so this is strange. Try make clean and run with V=3D1, it might help
-to debug this. This could happen if ~/build/linux/vmlinux doesn't
-exist, but I assume you double-checked that. It works for me just fine
-(Makefile won't do VMLINUX_BTF :=3D assignment, if it's defined through
-make invocation, so your change should be a no-op in that regard):
-
-$ make clean
-$ make VMLINUX_BTF=3D~/linux-build/default/vmlinux V=3D1
-...
-.output/sbin/bpftool btf dump file ~/linux-build/default/vmlinux
-format c > .output/vmlinux.h
-...
-
-Wonder what your output looks like?
-
->
-> >> Fix this by only doing auto-detection if no override is set. And while
-> >> we're at it, also look for a vmlinux file in the current kernel build =
-dir
-> >> if none if found on the running kernel.
-> >>
-> >> Fixes: 9c01546d26d2 ("tools/bpf: Add runqslower tool to tools/bpf")
-> >> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> >> ---
-> >>  tools/bpf/runqslower/Makefile |   16 ++++++++++------
-> >>  1 file changed, 10 insertions(+), 6 deletions(-)
-> >>
-> >> diff --git a/tools/bpf/runqslower/Makefile b/tools/bpf/runqslower/Make=
-file
-> >> index cff2fbcd29a8..fb93ce2bf2fe 100644
-> >> --- a/tools/bpf/runqslower/Makefile
-> >> +++ b/tools/bpf/runqslower/Makefile
-> >> @@ -10,12 +10,16 @@ CFLAGS :=3D -g -Wall
-> >>
-> >>  # Try to detect best kernel BTF source
-> >>  KERNEL_REL :=3D $(shell uname -r)
-> >> -ifneq ("$(wildcard /sys/kernel/btf/vmlinux)","")
-> >> -VMLINUX_BTF :=3D /sys/kernel/btf/vmlinux
-> >> -else ifneq ("$(wildcard /boot/vmlinux-$(KERNEL_REL))","")
-> >> -VMLINUX_BTF :=3D /boot/vmlinux-$(KERNEL_REL)
-> >> -else
-> >> -$(error "Can't detect kernel BTF, use VMLINUX_BTF to specify it expli=
-citly")
-> >> +ifeq ("$(VMLINUX_BTF)","")
-> >> +  ifneq ("$(wildcard /sys/kernel/btf/vmlinux)","")
-> >> +  VMLINUX_BTF :=3D /sys/kernel/btf/vmlinux
-> >> +  else ifneq ("$(wildcard /boot/vmlinux-$(KERNEL_REL))","")
-> >> +  VMLINUX_BTF :=3D /boot/vmlinux-$(KERNEL_REL)
-> >> +  else ifneq ("$(wildcard $(abspath ../../../vmlinux))","")
-> >> +  VMLINUX_BTF :=3D $(abspath ../../../vmlinux)
-> >
-> > I'm planning to mirror runqslower into libbpf Github repo and this
-> > ../../../vmlinux piece will be completely out of place in that
-> > context. Also it only will help when building kernel in-tree. So I'd
-> > rather not add this.
->
-> Well building the kernel in-tree is something people sometimes want to do=
- ;)
->
-> Specifically, the selftests depend on this, so we should at least fix
-> those; but I guess it could work to just pass in VMLINUX_BTF as part of
-> the make -C from the selftests dir? I'll try that...
-
-Yes, it can be handled through VMLINUX_BTF override for selftests. As
-I said, this will be a self-contained example in libbpf's Github repo,
-so this "in kernel tree" assumption doesn't stand there.
-
-
->
-> -Toke
->
+Applied, thanks!
