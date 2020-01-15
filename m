@@ -2,51 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B5CCF13B6B0
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2020 02:10:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE1DD13B6F6
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2020 02:36:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728844AbgAOBKP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 14 Jan 2020 20:10:15 -0500
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:46710 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728824AbgAOBKP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 14 Jan 2020 20:10:15 -0500
-Received: by mail-qk1-f193.google.com with SMTP id r14so14157433qke.13;
-        Tue, 14 Jan 2020 17:10:15 -0800 (PST)
+        id S1728848AbgAOBep (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 14 Jan 2020 20:34:45 -0500
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:40599 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728844AbgAOBep (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 14 Jan 2020 20:34:45 -0500
+Received: by mail-qt1-f195.google.com with SMTP id v25so14392767qto.7;
+        Tue, 14 Jan 2020 17:34:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=qtGRCHCTEMrYI0dapSAaJ8F4Dq1twtUKjbRbZ5wXw6I=;
-        b=Wir09snb6xDM/jw9+G9k2n9gDAK9f9WguNPYryCEilpCd7YdFswBCXIaDjErqBpAaR
-         VZxIud0H5Loxr1TTGC8RiLou7CzextAv6o1i6EVVJ+dbI1okG7Yr/SlCCblHnSjDcMYc
-         ALNt14vv69ywR0olWs+grd+hooKbasARNauGr1PI44sdcDmCRx2SRa6KLtCpsMYnSHge
-         a7cJP8jxf7R9g9QvMkXpILs4UnzlnkWTnT5A5cbMhUHVBFkoUTksOrypo41gPeABsN2X
-         EtpnZYq1Kd5XEcHPl48I0vBWA4ISX5kAzRR//FhilsXGf8ME/AKm2AjkaaqFqaS7vNFb
-         D3dQ==
+        bh=aTU0fuqgiVzPDtBDRAgLUQD6JAhl3bPev7AC09eClmQ=;
+        b=fwb3Gz9yB/Cflt44p3dJXyBfK0QX29rFRDz9PkLrLAw9iSA3CVJE/QYTbthvVY8Sso
+         DHpHzmBiaMcoWTtYvexM9j8NFPDTji0i/61kwg0AzVtv/0Ib04zXDPdSu129czzYF02t
+         5/GcTU1KWxAXLb7UxZ8geVCrQ5sg+b0s9kntARzZe7WrXmbjBHo2Hv1bdstIaKrPBXGu
+         lA6ilb+PVKb960neBZor4S0ncjDQC26LeeED/zgYp7S3VmhefE3U2eEnzPTBOIXaCOn1
+         YF69WMt3hETjdyAOI2Xvx7aLqGG9gMuKh63U2+mggoMAlcEmN8nwHfcwXkkOVPjWuLIp
+         wy7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=qtGRCHCTEMrYI0dapSAaJ8F4Dq1twtUKjbRbZ5wXw6I=;
-        b=XbFfxdmnlEHfCu5AAFJFwLgJQgBSvsZunpDbNXystwL9grYJOL6aaQSVicmdBWAF0f
-         X2c0ccxZ5CTQBN+Lgd0MOKr5PuStfStkpUPMbASK3XK2JANXGua6mq53uu9YJZpR1WH6
-         PZ2fEoiQ/6fFp+2yQzVIT8cNq3HhcP1/AI7XVtVfgd4Dajg0OhdLk0yQxANaetmmPo5j
-         YZlzGuJtaMJV75mGiOZD3W0APUrrXIloMod9uSW8dwUKG1LvH8Hbxcj2YwxDpnPvo/vZ
-         PNoKif1GWhcfUUf59QuwF3WCFikQbdy/7mOGpCvUxgDr0SCPtDh5nDHB+0KgYGTwuhYU
-         vNdA==
-X-Gm-Message-State: APjAAAW/F16/eh38jjk6qKuNoeb9XwcgWOvQ7f33WAWQxRs566pesvSG
-        HCpvMwbN9Wce6inTP7ajFRc1UPT/9niPRONE0r8=
-X-Google-Smtp-Source: APXvYqziXaySvA/eS9Ji+z80tz7X3E4oBU+NKaFp6x9liCgFH4t3XFOgy9k5L1WcXBRnvdk6K5ukFbsJN7M7o1U7e0c=
-X-Received: by 2002:a37:e408:: with SMTP id y8mr24768199qkf.39.1579050614544;
- Tue, 14 Jan 2020 17:10:14 -0800 (PST)
+        bh=aTU0fuqgiVzPDtBDRAgLUQD6JAhl3bPev7AC09eClmQ=;
+        b=LN2V1Bw4g03bK1XmBoAL/GqgEMJCod0GFpIiqTYGHz17NKlBiJjwLRRQkUQBYUOGNt
+         P4oED9fxZ+rOq1p3z5+Uoztxg6AIihBzxjx8D5hlFT03SNc0/d3gBy/JGBC8pL39hUb5
+         xuzgT9MitgoD7RVt/NxUM3n0Llo41sAOtLFOhM+/CmnIIerGAqVGqVfz0hfrui+MDFAN
+         7YxeIqEYoZpYzC6R7AslpJIpVPAC+PUiaBclQoqAWYySjKM5XbChAXJYbyEeDBJ77ThG
+         XY5pFqe8gEOC8mTB5vhtWirH971SxzVWew5e4OaV7QHSwrjvmkMKC63k90x1RsWo7PPJ
+         /B7A==
+X-Gm-Message-State: APjAAAXs64dEm0lkLxIKUzuWxp2ONqisWHdFnewaaUGYpFP6PgfkatA8
+        yXGh1X66r9fchPae49rAzIGHl8rfLttwu0EKMwU=
+X-Google-Smtp-Source: APXvYqzsDp5+QK8GRG9ieSS1qze0LEhzgA5rmoJY4bpi9nrF12/wEXwPe6YdX9Yg2KIm5eClJlpPPQK+ojPqS4omxA4=
+X-Received: by 2002:ac8:4050:: with SMTP id j16mr1376367qtl.171.1579052084250;
+ Tue, 14 Jan 2020 17:34:44 -0800 (PST)
 MIME-Version: 1.0
-References: <20200114224358.3027079-1-kafai@fb.com> <20200114224400.3027140-1-kafai@fb.com>
-In-Reply-To: <20200114224400.3027140-1-kafai@fb.com>
+References: <20200114224358.3027079-1-kafai@fb.com> <20200114224406.3027562-1-kafai@fb.com>
+In-Reply-To: <20200114224406.3027562-1-kafai@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 14 Jan 2020 17:10:03 -0800
-Message-ID: <CAEf4BzZd-NmpJqYStpDTSAFmN=EDCLftqoYBaSAKECOY8ooR_w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/5] bpftool: Fix a leak of btf object
+Date:   Tue, 14 Jan 2020 17:34:33 -0800
+Message-ID: <CAEf4BzbrcKLKvgKY+nSxV22T2nHgucmB2N01bEQiXS+g7npQfw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/5] bpftool: Fix missing BTF output for json
+ during map dump
 To:     Martin KaFai Lau <kafai@fb.com>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -60,81 +61,72 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 14, 2020 at 2:44 PM Martin KaFai Lau <kafai@fb.com> wrote:
+On Tue, Jan 14, 2020 at 2:45 PM Martin KaFai Lau <kafai@fb.com> wrote:
 >
-> When testing a map has btf or not, maps_have_btf() tests it by actually
-> getting a btf_fd from sys_bpf(BPF_BTF_GET_FD_BY_ID). However, it
-> forgot to btf__free() it.
+> The btf availability check is only done for plain text output.
+> It causes the whole BTF output went missing when json_output
+> is used.
 >
-> In maps_have_btf() stage, there is no need to test it by really
-> calling sys_bpf(BPF_BTF_GET_FD_BY_ID). Testing non zero
-> info.btf_id is good enough.
+> This patch simplifies the logic a little by avoiding passing "int btf" to
+> map_dump().
 >
-> Also, the err_close case is unnecessary, and also causes double
-> close() because the calling func do_dump() will close() all fds again.
+> For plain text output, the btf_wtr is only created when the map has
+> BTF (i.e. info->btf_id != 0).  The nullness of "json_writer_t *wtr"
+> in map_dump() alone can decide if dumping BTF output is needed.
+> As long as wtr is not NULL, map_dump() will print out the BTF-described
+> data whenever a map has BTF available (i.e. info->btf_id != 0)
+> regardless of json or plain-text output.
+>
+> In do_dump(), the "int btf" is also renamed to "int do_plain_btf".
 >
 > Fixes: 99f9863a0c45 ("bpftool: Match maps by name")
 > Cc: Paul Chaignon <paul.chaignon@orange.com>
 > Signed-off-by: Martin KaFai Lau <kafai@fb.com>
 > ---
 
-this is clearly a simplification, but isn't do_dump still buggy? see below
+just one nit below
 
->  tools/bpf/bpftool/map.c | 16 ++--------------
->  1 file changed, 2 insertions(+), 14 deletions(-)
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+
+>  tools/bpf/bpftool/map.c | 42 ++++++++++++++++++++---------------------
+>  1 file changed, 20 insertions(+), 22 deletions(-)
 >
 > diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
-> index c01f76fa6876..e00e9e19d6b7 100644
+> index e00e9e19d6b7..45c1eda6512c 100644
 > --- a/tools/bpf/bpftool/map.c
 > +++ b/tools/bpf/bpftool/map.c
-> @@ -915,32 +915,20 @@ static int maps_have_btf(int *fds, int nb_fds)
->  {
->         struct bpf_map_info info = {};
->         __u32 len = sizeof(info);
-> -       struct btf *btf = NULL;
->         int err, i;
->
->         for (i = 0; i < nb_fds; i++) {
->                 err = bpf_obj_get_info_by_fd(fds[i], &info, &len);
->                 if (err) {
->                         p_err("can't get map info: %s", strerror(errno));
-> -                       goto err_close;
-> -               }
-> -
-> -               err = btf__get_from_id(info.btf_id, &btf);
-> -               if (err) {
-> -                       p_err("failed to get btf");
-> -                       goto err_close;
-> +                       return -1;
->                 }
->
-> -               if (!btf)
-> +               if (!info.btf_id)
->                         return 0;
-
-if info.btf_id is non-zero, shouldn't we immediately return 1 and be
-done with it?
-
-I'm also worried about do_dump logic. What's the behavior when some
-maps do have BTF and some don't? Should we use btf_writer for all,
-some or none maps for that case? I'd expect we'd use BTF info for
-those maps that have BTF and fall back to raw output for those that
-don't, but I'm not sure that how code behaves right now.
-
-Maybe Paul can clarify...
-
-
->         }
->
->         return 1;
-> -
-> -err_close:
-> -       for (; i < nb_fds; i++)
-> -               close(fds[i]);
-> -       return -1;
->  }
+> @@ -933,7 +933,7 @@ static int maps_have_btf(int *fds, int nb_fds)
 >
 >  static int
-> --
-> 2.17.1
+>  map_dump(int fd, struct bpf_map_info *info, json_writer_t *wtr,
+> -        bool enable_btf, bool show_header)
+> +        bool show_header)
+>  {
+>         void *key, *value, *prev_key;
+>         unsigned int num_elems = 0;
+> @@ -950,18 +950,16 @@ map_dump(int fd, struct bpf_map_info *info, json_writer_t *wtr,
 >
+>         prev_key = NULL;
+>
+> -       if (enable_btf) {
+> -               err = btf__get_from_id(info->btf_id, &btf);
+> -               if (err || !btf) {
+> -                       /* enable_btf is true only if we've already checked
+> -                        * that all maps have BTF information.
+> -                        */
+> -                       p_err("failed to get btf");
+> -                       goto exit_free;
+> +       if (wtr) {
+> +               if (info->btf_id) {
+
+combine into if (wtr && info->btf_id) and reduce nestedness?
+
+
+> +                       err = btf__get_from_id(info->btf_id, &btf);
+> +                       if (err || !btf) {
+> +                               err = err ? : -ESRCH;
+> +                               p_err("failed to get btf");
+> +                               goto exit_free;
+> +                       }
+
+[...]
