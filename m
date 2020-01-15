@@ -2,169 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 045D013CB41
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2020 18:44:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11A5213CB5D
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2020 18:51:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728928AbgAORof (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Jan 2020 12:44:35 -0500
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:42857 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726574AbgAORoe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Jan 2020 12:44:34 -0500
-Received: by mail-qk1-f196.google.com with SMTP id z14so16438752qkg.9;
-        Wed, 15 Jan 2020 09:44:34 -0800 (PST)
+        id S1728896AbgAORtn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Jan 2020 12:49:43 -0500
+Received: from mail-pj1-f65.google.com ([209.85.216.65]:36240 "EHLO
+        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726418AbgAORtn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Jan 2020 12:49:43 -0500
+Received: by mail-pj1-f65.google.com with SMTP id n59so265188pjb.1;
+        Wed, 15 Jan 2020 09:49:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=m6xoPR2neNY7jGKcJU1Zrb+VdDyMT3eChB1zKABN77U=;
-        b=Lydwo7gZw7DHX1UX8PkZjddlzWtbrHgVeBQKfmcbrQQ2zg8nr/TdBbQ0YxU/giO6aR
-         0TtxdBx4nVycooprexn/hDVNpFgiO3kl/AZtSSRBWfN8PJBDtoAaGV8NXDjphuCPPBxp
-         sZ3t/cssjIigtX52RPxYRbfFD/41u4kxFdKs3hbXB5G3TAUn1bWfkWEXLxEMmvxxZtHH
-         +hOLJto3HpzQxG8aOR1mIKwluA8te3ndO6L3iXF0XJAVtm/APh5WX5pLxsKq8VzJ9HmM
-         x43V4757USzVgJFMzq0KU3H6VMStTxObsDnscBV90st+SHjNON+mpEBnSv8/WF2CaojS
-         7vbQ==
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=OziLB12L1c4/xldafs8TFNbJdMMXchHDGr185qg7eQQ=;
+        b=sPjEhRYgwWsw4PQWVVjNy5OfarApTQkAfsrrgaZtEhQx2FL8jE3fwhu3Kf5RGpF+PG
+         uOLYmEHfq/rdptTOHcymPBrhJoXv2pqft9wxGmAyrj/dFUp7elA30miAY0Il+x3i8alo
+         6MNtX95tkZQ1N8KN5XUeDolRcBFzHTrjXeoA34KAC/liejS8xsSjDZ+tSu93AG4olksU
+         tEfEHMrlekKPKU+6kyMr6ppHuuIo1pY8ks8gQVVEB3qrJ6ikWl1wpz6jzOHZwJM6TDPx
+         BNGKLeQJOtJwoPTaqDV1zNdA20qYuE87yvkgnpkdUq426CMqAQeI5lnUU4gUL/BcidR/
+         Stuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=m6xoPR2neNY7jGKcJU1Zrb+VdDyMT3eChB1zKABN77U=;
-        b=o/xVT8Tj9vMo44AepvlwbW84JKFRXKlHle20cu1RGpjPqxwSSxmhTGIVDbBmmPAE8M
-         YqLnr50OQ8+15ahAVFyuesLbYDEgyGod7qDtKlXMx3FcPWOs3vr01pEhRtlHw97abq+2
-         3dWcRG5BM70GeIn/zEdwinSsQD4uc0a4pkkdpdSxIW3+Aiif5pK+0ySfeojeIBdkV6xg
-         +NbQxNKxYbvtFFX3nuXnhyHtIVlCAuxI0i8K6peI+9OSvHfdcLNRCEnJKC8X4WP01oXI
-         GUJakXeasojiyDHmv7+E9HLrW1vGAthEWpSOyix9vnZLfwLsc2CCBce18tqPmFQrGY6S
-         oqSA==
-X-Gm-Message-State: APjAAAVko4lL37oIC5cdyysbTEBK6RFFd1Ue3ij6jRvLC1baA/TtEc2d
-        L1dgd2u5l2LEDtGH8gRUrw1VSvgjtmDRqW08MDA=
-X-Google-Smtp-Source: APXvYqzVE7hG98oGxZ/GsYNMIScGI3tkchCjPm5Bw57HzNx39uCyOLh6ur5DFPK7G8zjO1kCh1N9vis1zB3NdNxq8Vw=
-X-Received: by 2002:a05:620a:14a2:: with SMTP id x2mr28882285qkj.36.1579110273560;
- Wed, 15 Jan 2020 09:44:33 -0800 (PST)
-MIME-Version: 1.0
-References: <157909756858.1192265.6657542187065456112.stgit@toke.dk> <157909757421.1192265.7677168164515639742.stgit@toke.dk>
-In-Reply-To: <157909757421.1192265.7677168164515639742.stgit@toke.dk>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 15 Jan 2020 09:44:22 -0800
-Message-ID: <CAEf4BzZO4yV61zwjiU5fhARCSBqDDtVx+GmLfRueXFS43BPAhw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 05/10] bpftool: Use consistent include paths
- for libbpf
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=OziLB12L1c4/xldafs8TFNbJdMMXchHDGr185qg7eQQ=;
+        b=fBOKBq4LyeYiK7yPlrKCRKWDWNdmOOT5HwHQ2ZKW7DGtoPOQJQu97Pycpawn/CrEN0
+         wZbqHDPDJmTRmh4cQFIAQrZZcvM7Fkbqr6rJHDNxFIEVqa7lrrOnMQiPwNhDhqndUSBv
+         E3HBBtcYJH0f+kQ4jquYvERqQBgfQx+l/TXH3No+rM/GDSR/EnZcGrlKuHJwgiDE0FIR
+         O2WNgtJfb9Rx+GZptQAw1lhtpheyAG4PLVnJUsk70cuniFifYJhYpoOVc4HOxAq9QiEs
+         cUdBrf+9NW+HIewXdvFIQ2TLiqYG+qDIar/kMcKxBi9w9rbDKjR5QAa+XBpG/KknMT9t
+         3C7w==
+X-Gm-Message-State: APjAAAUxyScmQ6+vRqdvZt1rDrrybbNKTpPma2pS4SHZ86UtiPPnbStl
+        3e+Pm5HMXisIQz3PJK9oHKs=
+X-Google-Smtp-Source: APXvYqxVxzOx9wj/g2ZqslqwknaIumrpdyqw/rcb151ThwL914v3ucf1lPVSJ94xGLmkCxkGq04Bog==
+X-Received: by 2002:a17:902:9889:: with SMTP id s9mr19185233plp.252.1579110582314;
+        Wed, 15 Jan 2020 09:49:42 -0800 (PST)
+Received: from localhost (198-0-60-179-static.hfc.comcastbusiness.net. [198.0.60.179])
+        by smtp.gmail.com with ESMTPSA id m19sm433584pjv.10.2020.01.15.09.49.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Jan 2020 09:49:41 -0800 (PST)
+Date:   Wed, 15 Jan 2020 09:49:41 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        David Miller <davem@davemloft.net>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-rdma@vger.kernel.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Message-ID: <5e1f50b55663_201b2acc3bfce5b8da@john-XPS-13-9370.notmuch>
+In-Reply-To: <CAADnVQ+Kr_zv9eWF2+eDLJVtva48o04Jj0v4wjzmERVGKSA+ng@mail.gmail.com>
+References: <157893905455.861394.14341695989510022302.stgit@toke.dk>
+ <CAADnVQ+Kr_zv9eWF2+eDLJVtva48o04Jj0v4wjzmERVGKSA+ng@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 0/2] xdp: Introduce bulking for non-map
+ XDP_REDIRECT
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 15, 2020 at 6:14 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
-at.com> wrote:
->
-> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->
-> Fix bpftool to include libbpf header files with the bpf/ prefix, to be
-> consistent with external users of the library. Also ensure that all
-> includes of exported libbpf header files (those that are exported on 'mak=
-e
-> install' of the library) use bracketed includes instead of quoted.
->
-> To make sure no new files are introduced that doesn't include the bpf/
-> prefix in its include, remove tools/lib/bpf from the include path entirel=
-y,
-> and use tools/lib instead.
->
-> Fixes: 6910d7d3867a ("selftests/bpf: Ensure bpf_helper_defs.h are taken f=
-rom selftests dir")
-> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> ---
->  tools/bpf/bpftool/Documentation/bpftool-gen.rst |    2 +-
->  tools/bpf/bpftool/Makefile                      |    2 +-
->  tools/bpf/bpftool/btf.c                         |    8 ++++----
->  tools/bpf/bpftool/btf_dumper.c                  |    2 +-
->  tools/bpf/bpftool/cgroup.c                      |    2 +-
->  tools/bpf/bpftool/common.c                      |    4 ++--
->  tools/bpf/bpftool/feature.c                     |    4 ++--
->  tools/bpf/bpftool/gen.c                         |   10 +++++-----
->  tools/bpf/bpftool/jit_disasm.c                  |    2 +-
->  tools/bpf/bpftool/main.c                        |    4 ++--
->  tools/bpf/bpftool/map.c                         |    4 ++--
->  tools/bpf/bpftool/map_perf_ring.c               |    4 ++--
->  tools/bpf/bpftool/net.c                         |    8 ++++----
->  tools/bpf/bpftool/netlink_dumper.c              |    4 ++--
->  tools/bpf/bpftool/perf.c                        |    2 +-
->  tools/bpf/bpftool/prog.c                        |    6 +++---
->  tools/bpf/bpftool/xlated_dumper.c               |    2 +-
->  17 files changed, 35 insertions(+), 35 deletions(-)
->
+Alexei Starovoitov wrote:
+> On Mon, Jan 13, 2020 at 10:11 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke=
+@redhat.com> wrote:
+> >
+> > Since commit 96360004b862 ("xdp: Make devmap flush_list common for al=
+l map
+> > instances"), devmap flushing is a global operation instead of tied to=
+ a
+> > particular map. This means that with a bit of refactoring, we can fin=
+ally fix
+> > the performance delta between the bpf_redirect_map() and bpf_redirect=
+() helper
+> > functions, by introducing bulking for the latter as well.
+> >
+> > This series makes this change by moving the data structure used for t=
+he bulking
+> > into struct net_device itself, so we can access it even when there is=
+ not
+> > devmap. Once this is done, moving the bpf_redirect() helper to use th=
+e bulking
+> > mechanism becomes quite trivial, and brings bpf_redirect() up to the =
+same as
+> > bpf_redirect_map():
+> >
+> >                        Before:   After:
+> > 1 CPU:
+> > bpf_redirect_map:      8.4 Mpps  8.4 Mpps  (no change)
+> > bpf_redirect:          5.0 Mpps  8.4 Mpps  (+68%)
+> > 2 CPUs:
+> > bpf_redirect_map:     15.9 Mpps  16.1 Mpps  (+1% or ~no change)
+> > bpf_redirect:          9.5 Mpps  15.9 Mpps  (+67%)
+> >
+> > After this patch series, the only semantics different between the two=
+ variants
+> > of the bpf() helper (apart from the absence of a map argument, obviou=
+sly) is
+> > that the _map() variant will return an error if passed an invalid map=
+ index,
+> > whereas the bpf_redirect() helper will succeed, but drop packets on
+> > xdp_do_redirect(). This is because the helper has no reference to the=
+ calling
+> > netdev, so unfortunately we can't do the ifindex lookup directly in t=
+he helper.
+> >
+> > Changelog:
+> >
+> > v2:
+> >   - Consolidate code paths and tracepoints for map and non-map redire=
+ct variants
+> >     (Bj=C3=B6rn)
+> >   - Add performance data for 2-CPU test (Jesper)
+> >   - Move fields to avoid shifting cache lines in struct net_device (E=
+ric)
+> =
 
-[...]
+> John, since you commented on v1 please review this v2. Thanks!
 
-> diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-> index 7ce09a9a6999..b0695aa543d2 100644
-> --- a/tools/bpf/bpftool/gen.c
-> +++ b/tools/bpf/bpftool/gen.c
-> @@ -12,15 +12,15 @@
->  #include <stdio.h>
->  #include <string.h>
->  #include <unistd.h>
-> -#include <bpf.h>
-> -#include <libbpf.h>
-> +#include <bpf/bpf.h>
-> +#include <bpf/libbpf.h>
->  #include <sys/types.h>
->  #include <sys/stat.h>
->  #include <sys/mman.h>
->  #include <unistd.h>
-> +#include <bpf/btf.h>
->
-> -#include "btf.h"
-> -#include "libbpf_internal.h"
-> +#include "bpf/libbpf_internal.h"
->  #include "json_writer.h"
->  #include "main.h"
->
-> @@ -333,7 +333,7 @@ static int do_skeleton(int argc, char **argv)
->                 #define %2$s                                             =
-   \n\
->                                                                          =
-   \n\
->                 #include <stdlib.h>                                      =
-   \n\
-> -               #include <libbpf.h>                                      =
-   \n\
-> +               #include <bpf/libbpf.h>                             \n\
-
-please fix \n\ alignment
-
->                                                                          =
-   \n\
->                 struct %1$s {                                            =
-   \n\
->                         struct bpf_object_skeleton *skeleton;            =
-   \n\
-
-[...]
+hmm don't think I had an initial comment but will review regardless ;)=
