@@ -2,218 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ED5C13CE33
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2020 21:47:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B888313CEBB
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2020 22:19:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729306AbgAOUrp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Jan 2020 15:47:45 -0500
-Received: from www62.your-server.de ([213.133.104.62]:40974 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729263AbgAOUro (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Jan 2020 15:47:44 -0500
-Received: from 11.249.197.178.dynamic.dsl-lte-bonding.lssmb00p-msn.res.cust.swisscom.ch ([178.197.249.11] helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1irpZk-0003Pi-J0; Wed, 15 Jan 2020 21:47:40 +0100
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     ast@kernel.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        anatoly.trosinenko@gmail.com, yhs@fb.com,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: [PATCH bpf] bpf: Fix incorrect verifier simulation of ARSH under ALU32
-Date:   Wed, 15 Jan 2020 21:47:33 +0100
-Message-Id: <20200115204733.16648-1-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
+        id S1729955AbgAOVTF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Jan 2020 16:19:05 -0500
+Received: from mail-pj1-f68.google.com ([209.85.216.68]:39600 "EHLO
+        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729950AbgAOVTF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Jan 2020 16:19:05 -0500
+Received: by mail-pj1-f68.google.com with SMTP id e11so504404pjt.4;
+        Wed, 15 Jan 2020 13:19:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=Sr5D3Vmy2L4zBjOZJ4kwZ5hGeIC3RIyoZkA5ktLyrSY=;
+        b=CnNUH7zAw+/bJk6LxlmjXA0sLWhAkxwwNLCsne1NlHcoEkQygRFgZH9U10USJfcOhR
+         8T5/jg7Ly270/Aq9oDjdpfz3wA9dMAuzncMMQ+c20kO4AONHvQJq/GiFrXkVXoIlDEab
+         ITSwIntxIptfuIf3sXD3Kf+jCx5QIqGDw62NAhl1WX6uzHWEA7EynysNBzzmxNg9Qwe2
+         rWlocg/cEOxu5vjpbtyuQbf+k6s92MkR0O7atrXOfgppJMfBqn16k72wtPfvMw1vFCNh
+         h4kSp03F4vvF/ymOCVf/u5qNxHUFQ1rRH+hLvIJ9SNmFW0IE8Q5JQtf0vH1StRCRqyru
+         Ievg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=Sr5D3Vmy2L4zBjOZJ4kwZ5hGeIC3RIyoZkA5ktLyrSY=;
+        b=MiNwOi5Fp/TbRIK0vyBF71FU0CK3Gwvzdhj1ZcDdQNwRVi6C4XoJydigZeQRBkuoX+
+         fdx2mLbAFm3hz0k5aTa+RTQCW6OQKmjvsvN9jQ0mIi8GCW4EFZnSiIPWeWgmdNoXqtiE
+         lqtp6i+nhwo6Quf/MaCaLF/4I/sZyWWgeF/C3Rb/1DfMzsB4d+0h2OilU5yUABZBIwWt
+         go7tGqfCQlM6L/VG/QgcqTZuBsnKHL2wl4yq1uoQYK/BPGoTep2Ca/qegIwgvUBW5bso
+         o4mWnFYVZzyCY1UzTVwwErdLNU29+0Lq0QyGlBECYEfUDMcuxYv1+d7m42W/KtZVxlkX
+         Q/9Q==
+X-Gm-Message-State: APjAAAWFi07P7Mtgj/VEc/MXISs/P6e0DJE3PcXdYP6mWeX2G+OaA9WM
+        IH3ojD32IW/7byoxr4R6O1I=
+X-Google-Smtp-Source: APXvYqzTB/kQWcNCbH6qWL8ALjnNfda6sZfEu5yGyPZ46PNXpF3lLh5Pnl9X61gJaRhkzWLyOUbcvg==
+X-Received: by 2002:a17:902:9003:: with SMTP id a3mr28071089plp.224.1579123144650;
+        Wed, 15 Jan 2020 13:19:04 -0800 (PST)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:200::3:e760])
+        by smtp.gmail.com with ESMTPSA id x65sm24047764pfb.171.2020.01.15.13.19.02
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 15 Jan 2020 13:19:03 -0800 (PST)
+Date:   Wed, 15 Jan 2020 13:19:02 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH bpf-next v2 00/10] tools: Use consistent libbpf include
+ paths everywhere
+Message-ID: <20200115211900.h44pvhe57szzzymc@ast-mbp.dhcp.thefacebook.com>
+References: <157909756858.1192265.6657542187065456112.stgit@toke.dk>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.101.4/25696/Wed Jan 15 14:34:23 2020)
+In-Reply-To: <157909756858.1192265.6657542187065456112.stgit@toke.dk>
+User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Anatoly has been fuzzing with kBdysch harness and reported a hang in one
-of the outcomes:
+On Wed, Jan 15, 2020 at 03:12:48PM +0100, Toke Høiland-Jørgensen wrote:
+> The recent commit 6910d7d3867a ("selftests/bpf: Ensure bpf_helper_defs.h are
+> taken from selftests dir") broke compilation against libbpf if it is installed
+> on the system, and $INCLUDEDIR/bpf is not in the include path.
+> 
+> Since having the bpf/ subdir of $INCLUDEDIR in the include path has never been a
+> requirement for building against libbpf before, this needs to be fixed. One
+> option is to just revert the offending commit and figure out a different way to
+> achieve what it aims for. However, this series takes a different approach:
+> Changing all in-tree users of libbpf to consistently use a bpf/ prefix in
+> #include directives for header files from libbpf.
 
-  0: R1=ctx(id=0,off=0,imm=0) R10=fp0
-  0: (85) call bpf_get_socket_cookie#46
-  1: R0_w=invP(id=0) R10=fp0
-  1: (57) r0 &= 808464432
-  2: R0_w=invP(id=0,umax_value=808464432,var_off=(0x0; 0x30303030)) R10=fp0
-  2: (14) w0 -= 810299440
-  3: R0_w=invP(id=0,umax_value=4294967295,var_off=(0xcf800000; 0x3077fff0)) R10=fp0
-  3: (c4) w0 s>>= 1
-  4: R0_w=invP(id=0,umin_value=1740636160,umax_value=2147221496,var_off=(0x67c00000; 0x183bfff8)) R10=fp0
-  4: (76) if w0 s>= 0x30303030 goto pc+216
-  221: R0_w=invP(id=0,umin_value=1740636160,umax_value=2147221496,var_off=(0x67c00000; 0x183bfff8)) R10=fp0
-  221: (95) exit
-  processed 6 insns (limit 1000000) [...]
-
-Taking a closer look, the program was xlated as follows:
-
-  # ./bpftool p d x i 12
-  0: (85) call bpf_get_socket_cookie#7800896
-  1: (bf) r6 = r0
-  2: (57) r6 &= 808464432
-  3: (14) w6 -= 810299440
-  4: (c4) w6 s>>= 1
-  5: (76) if w6 s>= 0x30303030 goto pc+216
-  6: (05) goto pc-1
-  7: (05) goto pc-1
-  8: (05) goto pc-1
-  [...]
-  220: (05) goto pc-1
-  221: (05) goto pc-1
-  222: (95) exit
-
-Meaning, the visible effect is very similar to f54c7898ed1c ("bpf: Fix
-precision tracking for unbounded scalars"), that is, the fall-through
-branch in the instruction 5 is considered to be never taken given the
-conclusion from the min/max bounds tracking in w6, and therefore the
-dead-code sanitation rewrites it as goto pc-1. However, real-life input
-disagrees with verification analysis since a soft-lockup was observed.
-
-The bug sits in the analysis of the ARSH. The definition is that we shift
-the target register value right by K bits through shifting in copies of
-its sign bit. In adjust_scalar_min_max_vals(), we do first coerce the
-register into 32 bit mode, same happens after simulating the operation.
-However, for the case of simulating the actual ARSH, we don't take the
-mode into account and act as if it's always 64 bit, but location of sign
-bit is different:
-
-  dst_reg->smin_value >>= umin_val;
-  dst_reg->smax_value >>= umin_val;
-  dst_reg->var_off = tnum_arshift(dst_reg->var_off, umin_val);
-
-Consider an unknown R0 where bpf_get_socket_cookie() (or others) would
-for example return 0xffff. With the above ARSH simulation, we'd see the
-following results:
-
-  [...]
-  1: R1=ctx(id=0,off=0,imm=0) R2_w=invP65535 R10=fp0
-  1: (85) call bpf_get_socket_cookie#46
-  2: R0_w=invP(id=0) R10=fp0
-  2: (57) r0 &= 808464432
-    -> R0_runtime = 0x3030
-  3: R0_w=invP(id=0,umax_value=808464432,var_off=(0x0; 0x30303030)) R10=fp0
-  3: (14) w0 -= 810299440
-    -> R0_runtime = 0xcfb40000
-  4: R0_w=invP(id=0,umax_value=4294967295,var_off=(0xcf800000; 0x3077fff0)) R10=fp0
-                              (0xffffffff)
-  4: (c4) w0 s>>= 1
-    -> R0_runtime = 0xe7da0000
-  5: R0_w=invP(id=0,umin_value=1740636160,umax_value=2147221496,var_off=(0x67c00000; 0x183bfff8)) R10=fp0
-                              (0x67c00000)           (0x7ffbfff8)
-  [...]
-
-In insn 3, we have a runtime value of 0xcfb40000, which is '1100 1111 1011
-0100 0000 0000 0000 0000', the result after the shift has 0xe7da0000 that
-is '1110 0111 1101 1010 0000 0000 0000 0000', where the sign bit is correctly
-retained in 32 bit mode. In insn4, the umax was 0xffffffff, and changed into
-0x7ffbfff8 after the shift, that is, '0111 1111 1111 1011 1111 1111 1111 1000'
-and means here that the simulation didn't retain the sign bit. With above
-logic, the updates happen on the 64 bit min/max bounds and given we coerced
-the register, the sign bits of the bounds are cleared as well, meaning, we
-need to force the simulation into s32 space for 32 bit alu mode.
-
-Verification after the fix below. We're first analyzing the fall-through branch
-on 32 bit signed >= test eventually leading to rejection of the program in this
-specific case:
-
-  0: R1=ctx(id=0,off=0,imm=0) R10=fp0
-  0: (b7) r2 = 808464432
-  1: R1=ctx(id=0,off=0,imm=0) R2_w=invP808464432 R10=fp0
-  1: (85) call bpf_get_socket_cookie#46
-  2: R0_w=invP(id=0) R10=fp0
-  2: (bf) r6 = r0
-  3: R0_w=invP(id=0) R6_w=invP(id=0) R10=fp0
-  3: (57) r6 &= 808464432
-  4: R0_w=invP(id=0) R6_w=invP(id=0,umax_value=808464432,var_off=(0x0; 0x30303030)) R10=fp0
-  4: (14) w6 -= 810299440
-  5: R0_w=invP(id=0) R6_w=invP(id=0,umax_value=4294967295,var_off=(0xcf800000; 0x3077fff0)) R10=fp0
-  5: (c4) w6 s>>= 1
-  6: R0_w=invP(id=0) R6_w=invP(id=0,umin_value=3888119808,umax_value=4294705144,var_off=(0xe7c00000; 0x183bfff8)) R10=fp0
-                                              (0x67c00000)          (0xfffbfff8)
-  6: (76) if w6 s>= 0x30303030 goto pc+216
-  7: R0_w=invP(id=0) R6_w=invP(id=0,umin_value=3888119808,umax_value=4294705144,var_off=(0xe7c00000; 0x183bfff8)) R10=fp0
-  7: (30) r0 = *(u8 *)skb[808464432]
-  BPF_LD_[ABS|IND] uses reserved fields
-  processed 8 insns (limit 1000000) [...]
-
-Fixes: 9cbe1f5a32dc ("bpf/verifier: improve register value range tracking with ARSH")
-Reported-by: Anatoly Trosinenko <anatoly.trosinenko@gmail.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
----
- include/linux/tnum.h  |  2 +-
- kernel/bpf/tnum.c     |  9 +++++++--
- kernel/bpf/verifier.c | 13 ++++++++++---
- 3 files changed, 18 insertions(+), 6 deletions(-)
-
-diff --git a/include/linux/tnum.h b/include/linux/tnum.h
-index c17af77f3fae..ea627d1ab7e3 100644
---- a/include/linux/tnum.h
-+++ b/include/linux/tnum.h
-@@ -30,7 +30,7 @@ struct tnum tnum_lshift(struct tnum a, u8 shift);
- /* Shift (rsh) a tnum right (by a fixed shift) */
- struct tnum tnum_rshift(struct tnum a, u8 shift);
- /* Shift (arsh) a tnum right (by a fixed min_shift) */
--struct tnum tnum_arshift(struct tnum a, u8 min_shift);
-+struct tnum tnum_arshift(struct tnum a, u8 min_shift, u8 insn_bitness);
- /* Add two tnums, return @a + @b */
- struct tnum tnum_add(struct tnum a, struct tnum b);
- /* Subtract two tnums, return @a - @b */
-diff --git a/kernel/bpf/tnum.c b/kernel/bpf/tnum.c
-index ca52b9642943..d4f335a9a899 100644
---- a/kernel/bpf/tnum.c
-+++ b/kernel/bpf/tnum.c
-@@ -44,14 +44,19 @@ struct tnum tnum_rshift(struct tnum a, u8 shift)
- 	return TNUM(a.value >> shift, a.mask >> shift);
- }
- 
--struct tnum tnum_arshift(struct tnum a, u8 min_shift)
-+struct tnum tnum_arshift(struct tnum a, u8 min_shift, u8 insn_bitness)
- {
- 	/* if a.value is negative, arithmetic shifting by minimum shift
- 	 * will have larger negative offset compared to more shifting.
- 	 * If a.value is nonnegative, arithmetic shifting by minimum shift
- 	 * will have larger positive offset compare to more shifting.
- 	 */
--	return TNUM((s64)a.value >> min_shift, (s64)a.mask >> min_shift);
-+	if (insn_bitness == 32)
-+		return TNUM((u32)(((s32)a.value) >> min_shift),
-+			    (u32)(((s32)a.mask)  >> min_shift));
-+	else
-+		return TNUM((s64)a.value >> min_shift,
-+			    (s64)a.mask  >> min_shift);
- }
- 
- struct tnum tnum_add(struct tnum a, struct tnum b)
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index ce85e7041f0c..7d530ce8719d 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -5049,9 +5049,16 @@ static int adjust_scalar_min_max_vals(struct bpf_verifier_env *env,
- 		/* Upon reaching here, src_known is true and
- 		 * umax_val is equal to umin_val.
- 		 */
--		dst_reg->smin_value >>= umin_val;
--		dst_reg->smax_value >>= umin_val;
--		dst_reg->var_off = tnum_arshift(dst_reg->var_off, umin_val);
-+		if (insn_bitness == 32) {
-+			dst_reg->smin_value = (u32)(((s32)dst_reg->smin_value) >> umin_val);
-+			dst_reg->smax_value = (u32)(((s32)dst_reg->smax_value) >> umin_val);
-+		} else {
-+			dst_reg->smin_value >>= umin_val;
-+			dst_reg->smax_value >>= umin_val;
-+		}
-+
-+		dst_reg->var_off = tnum_arshift(dst_reg->var_off, umin_val,
-+						insn_bitness);
- 
- 		/* blow away the dst_reg umin_value/umax_value and rely on
- 		 * dst_reg var_off to refine the result.
--- 
-2.20.1
-
+I don't think such approach will work in all cases.
+Consider the user installing libbpf headers into /home/somebody/include/bpf/,
+passing that path to -I and trying to build bpf progs
+that do #include "bpf_helpers.h"...
+In the current shape of libbpf everything will compile fine,
+but after patch 8 of this series the compiler will not find bpf/bpf_helper_defs.h.
+So I think we have no choice, but to revert that part of Andrii's patch.
+Note that doing #include "" for additional library headers is a common practice.
+There was nothing wrong about #include "bpf_helper_defs.h" in bpf_helpers.h.
