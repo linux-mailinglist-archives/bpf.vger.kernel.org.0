@@ -2,131 +2,236 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 70BD913B986
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2020 07:25:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 781D613B9A6
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2020 07:35:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726562AbgAOGZK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Jan 2020 01:25:10 -0500
-Received: from mail-il1-f197.google.com ([209.85.166.197]:33152 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726045AbgAOGZK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Jan 2020 01:25:10 -0500
-Received: by mail-il1-f197.google.com with SMTP id s9so12540618ilk.0
-        for <bpf@vger.kernel.org>; Tue, 14 Jan 2020 22:25:10 -0800 (PST)
+        id S1726100AbgAOGfW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Jan 2020 01:35:22 -0500
+Received: from mail-qk1-f178.google.com ([209.85.222.178]:40101 "EHLO
+        mail-qk1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726075AbgAOGfW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Jan 2020 01:35:22 -0500
+Received: by mail-qk1-f178.google.com with SMTP id c17so14683164qkg.7
+        for <bpf@vger.kernel.org>; Tue, 14 Jan 2020 22:35:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ucdavis.edu; s=google;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=zbOWMa1V00Wj13aEpzXaQ5FFJYR5dXyE0ZcIZDvJ1fU=;
+        b=WZSn/mRXN+oCZI9EvLUOQNdACUlewk1gBaOaO0/6ElgkpqZCwd8JuuR3TlEAVcTnab
+         KbdT6BNfM8OSP6HLraNN+CJvTwlVaOIJR77CuEv9V0/9aKsVXR7tq/qpvD5SYIiTuZI+
+         fv8AE6dyuOodUpSToJ7CsCKaP7Cr4bF86F7v8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=eW4Xg4UoPEB3a/2AZhweqhOWkYfz9yjercWeCE8lc/U=;
-        b=GEOSkCKygUx9lZOkN8haAL8F021Z/epkwXIHRDZgn0WRrgDB3CFPYULgE/VTNOj2Ht
-         VXd4QC6qd+oLLkFFAJLCSrDRBV8wsAIa+3COZxIBsYiCgx4RnHwnU7DzQt54POFQPVvA
-         CEkYJohCCF3m83tm3Reo+0okYT9XVcaSWqz2LkKrJJVErB7Ez7458CMpJ8VsXOmauqQI
-         vZauUwoPvi1XUCcMy1TkHppDr3Z6iCsex+m/BmKdO+Ts/FX+/Gf4IoXjCxBuHj7Tp96U
-         hpFbq9VKVWtK5uTuqrjOmcIeOQGbw/itDGAJs9kdohS1z6VI3vS9xSz0v0TUgstDCdLR
-         3rOA==
-X-Gm-Message-State: APjAAAUMzl5Os//6uRuhoexhbgbKNH3BjJgKYBFxc2hjxiUydv69S5FV
-        i0yCs4nSj1ee+67J7SMGjTpo670R0yx107HPSnNeFKy9kuFj
-X-Google-Smtp-Source: APXvYqxML7d3L5Iw4ZulrZXdY2U62wtdVprZnJIEN29JJJ44LTFXEhQ5v2TG6VzttbZ8fg8QmdfCS48D2VQcTt90ZkkHQRKWwgmW
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=zbOWMa1V00Wj13aEpzXaQ5FFJYR5dXyE0ZcIZDvJ1fU=;
+        b=eEOBrDJHFsVFCpNlc/rwIGhD/1EJh8i87ks0fclb7IMwBi696+M3lZ1sNB0GpHcK/B
+         xt5kaYrUv8i77vnZu4QKByvSVVA4o9qVRbyTzooJ+ut5bW+BPllOX3xR/e6TW0DMAxK9
+         q4sZfWf/g8YxvVoyn6QCf9menxnsJ2U1ZsS87p3wYC0JUNVYCzAZ/DMb13qy0VsXbAs2
+         njDqCDO16KW/5ql7dY0357PwWpDcPGE6tc0WLK0hYJU48PrwJEd3GmnkSpzq9s+3qvsr
+         iKqMm+0AHQ7WNU488Ve9rfmLwF217XiV6SeI8Zx63oNMhnYnCvL6m7CW6du+fvpT3/OX
+         676w==
+X-Gm-Message-State: APjAAAVvvAb4bX8VpbRrijKXPJxUpCK6kWgPOBsLJjPa17ATwommdzyS
+        FbJvVwF5y+zZFsj25lKL/ZNtM2lU/kJ8UYqvv498PUYFQ6c=
+X-Google-Smtp-Source: APXvYqw5qSP2EK/ysFjfPv6SvatHeGBuwlc5GHtNw8EYnCY2Aj6ATV+QXFlNkjBXA4KJv+K0gCw6leqYknV1pufRKEM=
+X-Received: by 2002:ae9:ebca:: with SMTP id b193mr25489893qkg.53.1579070120017;
+ Tue, 14 Jan 2020 22:35:20 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a5e:a614:: with SMTP id q20mr19404414ioi.36.1579069509574;
- Tue, 14 Jan 2020 22:25:09 -0800 (PST)
-Date:   Tue, 14 Jan 2020 22:25:09 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000031a8d7059c27c540@google.com>
-Subject: general protection fault in free_verifier_state (3)
-From:   syzbot <syzbot+b296579ba5015704d9fa@syzkaller.appspotmail.com>
-To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
-        clang-built-linux@googlegroups.com, daniel@iogearbox.net,
-        davem@davemloft.net, hawk@kernel.org, jakub.kicinski@netronome.com,
-        john.fastabend@gmail.com, kafai@fb.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+From:   Benjamin Nilsen <bcnilsen@ucdavis.edu>
+Date:   Tue, 14 Jan 2020 22:35:09 -0800
+Message-ID: <CAKRbtyV6jSDjXAjViJTm9frCcR83UijDRobFTRcfjNU9z_APdA@mail.gmail.com>
+Subject: Bugs with libbpf
+To:     bpf@vger.kernel.org
+Content-Type: multipart/mixed; boundary="00000000000095924e059c27e996"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+--00000000000095924e059c27e996
+Content-Type: text/plain; charset="UTF-8"
+
 Hello,
 
-syzbot found the following crash on:
+I believe I found some bugs with libbpf and just wanted to share them here.
+I have attached them below.
 
-HEAD commit:    6dd42aa1 Merge branch 'runqslower'
-git tree:       bpf-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=14e61349e00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a736c99e9fe5a676
-dashboard link: https://syzkaller.appspot.com/bug?extid=b296579ba5015704d9fa
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-
-Unfortunately, I don't have any reproducer for this crash yet.
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+b296579ba5015704d9fa@syzkaller.appspotmail.com
-
-kasan: CONFIG_KASAN_INLINE enabled
-kasan: GPF could be caused by NULL-ptr deref or user memory access
-general protection fault: 0000 [#1] PREEMPT SMP KASAN
-CPU: 0 PID: 3213 Comm: syz-executor.2 Not tainted 5.5.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-Google 01/01/2011
-RIP: 0010:free_verifier_state+0x49/0x1d0 kernel/bpf/verifier.c:744
-Code: db 48 83 ec 20 48 89 45 b8 48 c1 e8 03 4c 01 f8 89 75 c4 48 89 45 c8  
-e8 65 ae f2 ff 4c 63 f3 4f 8d 2c f4 4c 89 e8 48 c1 e8 03 <42> 80 3c 38 00  
-0f 85 2b 01 00 00 4f 8d 34 f4 49 8b 3e 48 85 ff 48
-RSP: 0018:ffffc900017c7688 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffc9000d65b000
-RDX: 0000000000040000 RSI: ffffffff818251eb RDI: 0000000000000000
-RBP: ffffc900017c76d0 R08: ffff88806f496640 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: dffffc0000000000
-FS:  00007fdb4648e700(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000010f6e80 CR3: 00000000690e9000 CR4: 00000000001406f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000600
-Call Trace:
-  do_check_common+0x2ec7/0x9650 kernel/bpf/verifier.c:9597
-  do_check_main kernel/bpf/verifier.c:9654 [inline]
-  bpf_check+0x84ed/0xbb07 kernel/bpf/verifier.c:10009
-  bpf_prog_load+0xeab/0x17f0 kernel/bpf/syscall.c:1859
-  __do_sys_bpf+0x1269/0x37a0 kernel/bpf/syscall.c:3096
-  __se_sys_bpf kernel/bpf/syscall.c:3055 [inline]
-  __x64_sys_bpf+0x73/0xb0 kernel/bpf/syscall.c:3055
-  do_syscall_64+0xfa/0x790 arch/x86/entry/common.c:294
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-RIP: 0033:0x45af49
-Code: ad b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7  
-48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
-ff 0f 83 7b b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007fdb4648dc78 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 000000000045af49
-RDX: 0000000000000024 RSI: 0000000020000200 RDI: 0000000000000005
-RBP: 000000000075bf20 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007fdb4648e6d4
-R13: 00000000004c1697 R14: 00000000004d66a0 R15: 00000000ffffffff
-Modules linked in:
----[ end trace d725571ef2f4cce3 ]---
-RIP: 0010:free_verifier_state+0x49/0x1d0 kernel/bpf/verifier.c:744
-Code: db 48 83 ec 20 48 89 45 b8 48 c1 e8 03 4c 01 f8 89 75 c4 48 89 45 c8  
-e8 65 ae f2 ff 4c 63 f3 4f 8d 2c f4 4c 89 e8 48 c1 e8 03 <42> 80 3c 38 00  
-0f 85 2b 01 00 00 4f 8d 34 f4 49 8b 3e 48 85 ff 48
-RSP: 0018:ffffc900017c7688 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffc9000d65b000
-RDX: 0000000000040000 RSI: ffffffff818251eb RDI: 0000000000000000
-RBP: ffffc900017c76d0 R08: ffff88806f496640 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: dffffc0000000000
-FS:  00007fdb4648e700(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000000075c000 CR3: 00000000690e9000 CR4: 00000000001406f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000600
+Regards,
+Ben
 
 
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+The first one:
+I believe there is an error with: libbpf_nla_dump_errormsg();
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+The second one:
+libbpf_nla_parse();
+
+Third one:
+I believe there is a stack buffer overflow with the method
+bpf_object__open_buffer() when running the attached program with the
+input:
+./LibbpfTest15.c (executable version) LibbpfTest15buginput LibbpfTest15buginput
+
+--00000000000095924e059c27e996
+Content-Type: application/octet-stream; name="LibbpfTest15.c"
+Content-Disposition: attachment; filename="LibbpfTest15.c"
+Content-Transfer-Encoding: base64
+Content-ID: <f_k5exkb7f3>
+X-Attachment-Id: f_k5exkb7f3
+
+I2luY2x1ZGUgPHN0ZGlvLmg+CiNpbmNsdWRlIDxzdGRsaWIuaD4KI2luY2x1ZGUgPHN0cmluZy5o
+PgojaW5jbHVkZSA8bWVtb3J5Lmg+CiNpbmNsdWRlIDx1bmlzdGQuaD4KI2luY2x1ZGUgPGFzbS91
+bmlzdGQuaD4KI2luY2x1ZGUgPGxpbnV4L2JwZi5oPgojaW5jbHVkZSAiYnBmLmgiCi8vI2luY2x1
+ZGUgImxpYmJwZjIuaCIKI2luY2x1ZGUgPGVycm5vLmg+CiNpbmNsdWRlICJubGF0dHIuaCIKI2lu
+Y2x1ZGUgPGxpbnV4L3J0bmV0bGluay5oPgojaW5jbHVkZSA8c3lzL3NvY2tldC5oPgojaW5jbHVk
+ZSAibGliYnBmLmgiCiNpbmNsdWRlIDxzeXMvdHlwZXMuaD4gIC8vIGZvciBzaXplX3QKCgppbnQg
+bWFpbihpbnQgYXJnYywgY2hhciAqKmFyZ3YpewoKCnR5cGVkZWYgc3RydWN0IGFyZ3N7CgppbnQg
+ZXJyOwpjaGFyIGJ1ZlsxMDBdOwpzaXplX3Qgc2l6ZTsKc2l6ZV90IG9mZnNldDsKCmludCBidWZm
+ZXJbMTUwXTsKaW50IGZsYWdzOwoKc2l6ZV90IG9ial9idWZfc3o7CmNoYXIgbmFtZTsKCgpjaGFy
+IG5hbWUxOwppbnQgcmFuZDE7CmludCByYW5kMjsKaW50IHJhbmQzOwppbnQgcmFuZDQ7CmJvb2wg
+YjE7Cgp9IGFyZ3NfdDsKCmFyZ3NfdCBwdGE7CgoKLyoKcHJpbnRmKCJPcGVuaW5nIHRoZSBmaWxl
+XG4iKTsKCkZJTEUgKmZwOwpmcCA9IGZvcGVuKGFyZ3ZbMV0sICJyYiIpOwpwcmludGYoIkZpbGUg
+bmFtZSBpczogJXNcbiIsIGFyZ3ZbMV0pOwpwcmludGYoIkZpbGUgd2FzIG9wZW5lZFxuIik7Cgpz
+dHJ1Y3QgYnBmX29iamVjdDsKc3RydWN0IGJwZl9vYmplY3QgKmJvOwoKYm8gPSBicGZfb2JqZWN0
+X19vcGVuKGFyZ3ZbMV0pOwoKcHJpbnRmKCJPcGVuaW5nIGJwZiBPYmplY3Qgd2l0aCBhcmd2WzFd
+XG4iKTsKYnBmX29iamVjdF9fb3Blbihhcmd2WzFdKTsKCi8vYnBmX29iamVjdF9fb3Blbihhcmd2
+WzFdKTsKKi8KCgpzdHJ1Y3QgYnBmX29iamVjdDsKc3RydWN0IGJwZl9vYmplY3QgKmJvOwoKcHJp
+bnRmKCJPcGVuaW5nIHRoZSBmaWxlXG4iKTsKCgpGSUxFICpmcDsKZnAgPSBmb3Blbihhcmd2WzFd
+LCAicmIiKTsKcHJpbnRmKCJGaWxlIG5hbWUgaXM6ICVzXG4iLCBhcmd2WzFdKTsKcHJpbnRmKCJG
+aWxlIHdhcyBvcGVuZWRcbiIpOwppZihmcmVhZCgmcHRhLCBzaXplb2YocHRhKSwgMSwgZnApICE9
+IDEpewogICAgICAgIHByaW50ZigiRmlsZSBub3QgYmlnIGVub3VnaFxuIik7CiAgICAgICAgZmNs
+b3NlKGZwKTsKICAgICAgICByZXR1cm4gMDsKfQoKCkZJTEUgKmZwMjsKZnAyID0gZm9wZW4oYXJn
+dlsyXSwgInJiIik7CnByaW50ZigiRmlsZSBuYW1lIGlzOiAlc1xuIiwgYXJndlsyXSk7CnByaW50
+ZigiU2Vjb25kIEZpbGUgd2FzIG9wZW5lZFxuIik7CmlmKGZyZWFkKCZwdGEsIHNpemVvZihwdGEp
+LCAxLCBmcDIpICE9IDEpewogICAgICAgIHByaW50ZigiRmlsZSBub3QgYmlnIGVub3VnaFxuIik7
+CiAgICAgICAgZmNsb3NlKGZwMik7CiAgICAgICAgcmV0dXJuIDA7Cn0KCgpwcmludGYoIlxuT3Bl
+bmluZyBicGYgb2JqZWN0IHZpYTogYnBmX29iamVjdF9fb3Blbl9idWZmZXIoKVxuIik7CmNoYXIg
+bmFtZTUgPSAiYSI7CnNpemVfdCBvYmpfYnVmX3N6ID0gNTsKYm8gPSBicGZfb2JqZWN0X19vcGVu
+X2J1ZmZlcihhcmd2WzFdLCBwdGEub2JqX2J1Zl9zeiwgJnB0YS5uYW1lKTsKcHJpbnRmKCJPcGVu
+ZWQgYSBicGYgZmlsZSB3aXRoIGJwZl9vYmplY3RfX29wZW5fYnVmZmVyKClcblxuIik7CgoKaWYg
+KGJvID09IE5VTEwpewoKCXByaW50ZigiUmV0dXJuZWQ6IEludmFsaWQgQlBGX1Byb2dcbiIpOwoJ
+cmV0dXJuIDA7Cn0KCnByaW50ZigiQ2FsbGluZyBtZXRob2RzIHRoYXQgdXNlIHRoZSBicGYgb2Jq
+ZWN0cyIpOwoKYnBmX29iamVjdF9fbG9hZCgmYm8pOwoKYnBmX29iamVjdF9fa3ZlcnNpb24oJmJv
+KTsKCmJwZl9vYmplY3RfX2J0ZigmYm8pOwoKYnBmX29iamVjdF9fYnRmX2ZkKCZibyk7CgpicGZf
+b2JqZWN0X191bmxvYWQoJmJvKTsKCgoKCgoKCgoKCgoKLy9lbnVtIGJwZl9wcm9nX3R5cGUgcHJv
+Z190eXBlID0gQlBGX1BST0dfVFlQRV9UUkFDRVBPSU5UOwoKZmNsb3NlKGZwKTsKZmNsb3NlKGZw
+Mik7CgpwcmludGYoIlRlc3QgY29tcGxldGUuIE9wZW5lZCBhIGJwZl9wcm9ncmFtLlxuIik7CgoK
+cmV0dXJuIDA7Cn0K
+--00000000000095924e059c27e996
+Content-Type: application/octet-stream; name="LibbpfTest5.c"
+Content-Disposition: attachment; filename="LibbpfTest5.c"
+Content-Transfer-Encoding: base64
+Content-ID: <f_k5exkb7a2>
+X-Attachment-Id: f_k5exkb7a2
+
+I2luY2x1ZGUgPHN0ZGlvLmg+CiNpbmNsdWRlIDxzdGRsaWIuaD4KI2luY2x1ZGUgPHN0cmluZy5o
+PgojaW5jbHVkZSA8bWVtb3J5Lmg+CiNpbmNsdWRlIDx1bmlzdGQuaD4KI2luY2x1ZGUgPGFzbS91
+bmlzdGQuaD4KI2luY2x1ZGUgPGxpbnV4L2JwZi5oPgojaW5jbHVkZSAiYnBmLmgiCiNpbmNsdWRl
+ICJsaWJicGYyLmgiCiNpbmNsdWRlIDxlcnJuby5oPgojaW5jbHVkZSAibmxhdHRyLmgiCiNpbmNs
+dWRlIDxsaW51eC9ydG5ldGxpbmsuaD4KCgppbnQgbWFpbihpbnQgYXJnYywgY2hhciAqKmFyZ3Yp
+ewoKCnR5cGVkZWYgc3RydWN0IGFyZ3N7CgogICAgaW50IG9uZTsKICAgIGludCB0d287CiAgICBp
+bnQgbWF4dHlwZTsKICAgIGludCBsZW47Cglib29sIGIxOwoJYm9vbCBiMjsKCWJvb2wgYjM7Cgli
+b29sIGI0OwogICAgaW50IHNpemU7CiAgICBzdHJ1Y3QgbmxhdHRyIG5sOwoKICAgIHN0cnVjdCBu
+bGF0dHIgaGVhZDsKICAgIHN0cnVjdCBsaWJicGZfbmxhX3BvbGljeSBwb2xpY3k7CgoKfSBhcmdz
+X3Q7CgphcmdzX3QgcHRhOwoKCgoKcHJpbnRmKCJEcml2ZXIgcHJvZ3JhbSBmb3IgbmxhdHRyLmMg
+Y2xhc3NcbiIpOwoKcHJpbnRmKCJPcGVuaW5nIHRoZSBmaWxlXG4iKTsKCkZJTEUgKmZwOwpmcCA9
+IGZvcGVuKGFyZ3ZbMV0sICJyYiIpOwpwcmludGYoIkZpbGUgbmFtZSBpczogJXNcbiIsIGFyZ3Zb
+MV0pOwpwcmludGYoIkZpbGUgd2FzIG9wZW5lZFxuIik7CmlmKGZyZWFkKCZwdGEsIHNpemVvZihw
+dGEpLCAxLCBmcCkgIT0gMSl7CiAgICAgICAgcHJpbnRmKCJGaWxlIG5vdCBiaWcgZW5vdWdoXG4i
+KTsKICAgICAgICBmY2xvc2UoZnApOwogICAgICAgIHJldHVybiAwOwp9CgoKCgoKCgovL3ByaW50
+ZigiQ2FsbGluZyBsaWJicGZfbmxhX2R1bXBfZXJyb3Jtc2dcbiIpOwovL2xpYmJwZl9ubGFfZHVt
+cF9lcnJvcm1zZygmbmxoKTsKLy9saWJicGZfbmxhX3BhcnNlKHN0cnVjdCBubGF0dHIgKnRiW10s
+IGludCBtYXh0eXBlLCBzdHJ1Y3QgbmxhdHRyICpoZWFkLAovLyAgICAgICAgICAgICBpbnQgbGVu
+LCBzdHJ1Y3QgbGliYnBmX25sYV9wb2xpY3kgKnBvbGljeSk7CgoKCmludCBzaXplID0gNTsKCgpp
+ZihwdGEuc2l6ZSA+IDAgJiYgcHRhLiBzaXplIDwgOTk5OTk5KXsKICAgIHNpemUgPSBwdGEuc2l6
+ZTsKfQoKc3RydWN0IG5sYXR0ciB0YltzaXplXTsKCgpmb3IoaW50IGkgPSAwOyBpIDwgc2l6ZTsg
+aSsrKXsKICAgIHRiW2ldID0gcHRhLm5sOwp9CgoKCnN0cnVjdCBubGF0dHIgaGVhZDsKc3RydWN0
+IGxpYmJwZl9ubGFfcG9saWN5IHBvbGljeTsKCnByaW50ZigiQ2FsbGluZyBsaWJicGZfbmxhX3Bh
+cnNlXG4iKTsKCmxpYmJwZl9ubGFfcGFyc2UoJnRiLCBwdGEubWF4dHlwZSwgJnB0YS5oZWFkLApw
+dGEubGVuLCAmcHRhLnBvbGljeSk7CgoKCnByaW50ZigiVGVzdCBjb21wbGV0ZS5cbiIpOwoKCnJl
+dHVybiAwOwp9Cg==
+--00000000000095924e059c27e996
+Content-Type: application/octet-stream; name=libbpfTest4bug
+Content-Disposition: attachment; filename=libbpfTest4bug
+Content-Transfer-Encoding: base64
+Content-ID: <f_k5exkb751>
+X-Attachment-Id: f_k5exkb751
+
+NwIAAAAzMjQxMzEzMTQ0MzM1NjIzNTM1MzYzNjUzNTM1MzQ1MzUzCjM1MzUzNQp1uNH4HNGUOtm4
+g5uiRfzMCeakt76hjpww9y+vSq9RrgDQxPbpwlxxhhSrEcq6hyvcgeS+pKAbsL+cRDFVqqc7X7jS
+N7cBcCBpdqCTct274Kqmqz+P/AaNGx4hPUzV+TzculwuG4M8iculk867KBnslR1Ci8QEwfo/hFX+
+39uEW7THM09VpY3pc0rGNMQ/8H0tlnKZhjXULjE/7od0dfSeGuGiXdGRcdyOyr8uM+Umq2X6Ulnh
+NikOgHBb+JxfyVed4iPwVdkAf3WRHi7PpC2gwH9dHiVv1buT7NOU4j/M6vbWVD9cQA3B3HcylE98
+b6lToMrwGQS2sMrNFES46mpIL244OjUH428q01A8unEaV79WjryT/ZO/a1wAQb+LNAa7it3fbylQ
+rpjDxgPIF8kW+OkhAp2aCayPZ6eQwKHGbPi299/PMZv5PLurr4yFOqhhdu09xqMMRxHo7iDHqGV0
+xX47i1mPuQsc5kj6M+qUPyEZqqyhltWopyuelGp+ywsoyMDOlb7SfxukksG7yIOggBEuuBqVhDVS
+mvKsQ46MlXhgBWGuINMPrhrwYACYGH1OPO8uRxmhOeitSB8X4QkL0NdG9f1re1aWKokvzHN5sIUV
+jmgLJqU4dCZGQ3daLUUJLJLfcNe+favmOzl68mASxaqiwH/m0UDZlGa+loLmqUmwZOeKR1slMNwJ
+50rjpwXuFXwmvv5EiQKtLZi3YXoH/4YbhES98tvpnN2jP/PgTFMX3EYnge0Z2g+9ypPq1J28S+uK
+DNzEAno5gS5Yrzd89I+6IjyTC2OVZKBh3f9CCg7KFlpERO5rG6H3PVKxbGbiHxZZag7Wqy3Y1RQ2
+XeVSGIrWebQesfPXhOHND0fARuqTon7EDI5lWc5wO16UAJ8wsAyRdknVE+ZWiskynI0eQat3jesB
+b6upPtIer0ow5HfM5ajyDYM/Wpua5Cg2bmbcXWx+OZ0XO/kGzx/mNDJL+x49BogyeQVHwHsu9uWn
+9tai2aW7EwuElzoFeqJOW5y9zbsVrNRonQ04MmZrUhMg32avo7zWw09d1lOG4NhqGf+hBRpE/b7N
+jy6abFFaOQ4z/Qnuap6kQwFxUlfJTZ7i11YWFCp88lPD93E4l9I1PIpSefymizeE3ueKe5n11LPh
+BX70ceNrajyE/5XiqeGXtaO5pzA9NiPMOCBdSfSzDtxc/tgbsdzr3yMp00Ubdni2Ig1v0GsjrQ76
+PURTfsneOinNR7cJR2P1Ssh9PAaVy1iRzon/E/qNfvCtr4UXjJddzU2L+sTpyV8FiZ16vAK//A==
+--00000000000095924e059c27e996
+Content-Type: application/octet-stream; name=LibbpfTest15buginput
+Content-Disposition: attachment; filename=LibbpfTest15buginput
+Content-Transfer-Encoding: base64
+Content-ID: <f_k5exkb7l4>
+X-Attachment-Id: f_k5exkb7l4
+
+NwIAAAAzMjQxMzEzMTQ0MzM1NjIzNTM1MzYzNjUzNTM1MzQ1MzUzCjM1MzUzNQp6O0Se56bMGcDv
+YLoo5hCeS9sxZNb6x1qs7kjqEwgJX089gdtj082ERZ7Vrp/WOkW9jZGvSjOKajW+s/Ubob6TVOBa
+ATsp9WJPwwFyFrs7DtxfAMWTa+9/Jzk0YqxYpPv9JWdYU2qDZbQVhdpqFgXYDLs/LClNrfY9siFV
+M1JIa/+XQQIXTiReFcaphOXhGzAxRG02OKutW/RXgngtdncj5Omt3t3dExh3l2rPihph6/Qv5wDs
+iyoaJx4P5UjrM7t4nuWm38yPkxR23rfLDyNb53EOcwSV9m/kMV+NpVZjES0iQqgrnHlEgwcxf/SR
+vyevGUva/wNWNAyXTCKGrS2KQH7LS8k7a7+LYDmhx1B8+YNrQbKIroKx4o8c4mgcgTA7kAVggNdN
+kYMjQa9SDvU5C7f8ZK/sWlJO6vcMF2/B99tSioN7F4+tqgLB+7wYaH3ZZSwTsZL5ckdmtSF0ZYAJ
+MgZQbL4VXe0aDJE6/KHjqUauEwJmkoriJhSKxoMkUNgEZ/sRM+K0T+Zo3TfWJtq0zx3cj8VsxYUV
+l7lMaQ+8zKw2uKETpMvYZWgp2kRPFAPvSm68IZTY9Hs+MOsUMI0cJTRLdcnDu2WnKWpMQemLHj6h
+0g6KPHM3jBu1OvaA/OqQKc1wrUxK7zlbxujWNxDWcHEX0zl3XwvqPb9ABuYtJUuQsRtmmJ65L+RH
+ErnN8YWDxOeqRncymIFoWtqeYUFLFoz+levMadBVOkGJpZgSPLe+uxBzUMMO/9VuWv2/mCPiMz3t
+bZdL3Zmw1heSVivaUxhwERnfosUupFKZWpN+5fpblQFWhPjwzmqmW5oorgCBj2tOUSnmin12nuJh
+nZw9rBnUlRaTFKaLR3YZV2SbM9b0kRhPBQpJLhwIRbrtrNW/tq/mEQzEE48ahTbcY9R+C7/t5XpL
+6uG5uPbiXpdpX13xzy8lcUx4fnyDXk5GisBscLTuJN2OINZcUUSdUchn2zHHsEOcyPyVxUmDcQDD
+wB9dwKCrPlqT3w==
+--00000000000095924e059c27e996
+Content-Type: application/octet-stream; name="LibbpfTest4.c"
+Content-Disposition: attachment; filename="LibbpfTest4.c"
+Content-Transfer-Encoding: base64
+Content-ID: <f_k5exkb6x0>
+X-Attachment-Id: f_k5exkb6x0
+
+I2luY2x1ZGUgPHN0ZGlvLmg+CiNpbmNsdWRlIDxzdGRsaWIuaD4KI2luY2x1ZGUgPHN0cmluZy5o
+PgojaW5jbHVkZSA8bWVtb3J5Lmg+CiNpbmNsdWRlIDx1bmlzdGQuaD4KI2luY2x1ZGUgPGFzbS91
+bmlzdGQuaD4KI2luY2x1ZGUgPGxpbnV4L2JwZi5oPgojaW5jbHVkZSAiYnBmLmgiCiNpbmNsdWRl
+ICJsaWJicGYyLmgiCiNpbmNsdWRlIDxlcnJuby5oPgojaW5jbHVkZSAibmxhdHRyLmgiCiNpbmNs
+dWRlIDxsaW51eC9ydG5ldGxpbmsuaD4KCgppbnQgbWFpbihpbnQgYXJnYywgY2hhciAqKmFyZ3Yp
+ewoKCnR5cGVkZWYgc3RydWN0IGFyZ3N7CgogICAgaW50IG9uZTsKICAgIGludCB0d287Cglib29s
+IGIxOwoJYm9vbCBiMjsKCWJvb2wgYjM7Cglib29sIGI0OwoJX191MzIgbmxtc2dfbGVuOyAgICAv
+KiBMZW5ndGggb2YgbWVzc2FnZSBpbmNsdWRpbmcgaGVhZGVyICovCiAgICBfX3UxNiBubG1zZ190
+eXBlOyAgIC8qIFR5cGUgb2YgbWVzc2FnZSBjb250ZW50ICovCiAgICBfX3UxNiBubG1zZ19mbGFn
+czsgIC8qIEFkZGl0aW9uYWwgZmxhZ3MgKi8KICAgIF9fdTMyIG5sbXNnX3NlcTsgICAgLyogU2Vx
+dWVuY2UgbnVtYmVyICovCiAgICBfX3UzMiBubG1zZ19waWQ7ICAgIC8qIFNlbmRlciBwb3J0IElE
+ICovCgoKfSBhcmdzX3Q7CgphcmdzX3QgcHRhOwoKCgoKcHJpbnRmKCJEcml2ZXIgcHJvZ3JhbSBm
+b3IgbmxhdHRyLmMgY2xhc3NcbiIpOwoKcHJpbnRmKCJPcGVuaW5nIHRoZSBmaWxlXG4iKTsKCkZJ
+TEUgKmZwOwpmcCA9IGZvcGVuKGFyZ3ZbMV0sICJyYiIpOwpwcmludGYoIkZpbGUgbmFtZSBpczog
+JXNcbiIsIGFyZ3ZbMV0pOwpwcmludGYoIkZpbGUgd2FzIG9wZW5lZFxuIik7CmlmKGZyZWFkKCZw
+dGEsIHNpemVvZihwdGEpLCAxLCBmcCkgIT0gMSl7CiAgICAgICAgcHJpbnRmKCJGaWxlIG5vdCBi
+aWcgZW5vdWdoXG4iKTsKICAgICAgICBmY2xvc2UoZnApOwogICAgICAgIHJldHVybiAwOwp9CgoK
+CgpzdHJ1Y3Qgbmxtc2doZHIgewogICAgX191MzIgbmxtc2dfbGVuOyAgICAvKiBMZW5ndGggb2Yg
+bWVzc2FnZSBpbmNsdWRpbmcgaGVhZGVyICovCiAgICBfX3UxNiBubG1zZ190eXBlOyAgIC8qIFR5
+cGUgb2YgbWVzc2FnZSBjb250ZW50ICovCiAgICBfX3UxNiBubG1zZ19mbGFnczsgIC8qIEFkZGl0
+aW9uYWwgZmxhZ3MgKi8KICAgIF9fdTMyIG5sbXNnX3NlcTsgICAgLyogU2VxdWVuY2UgbnVtYmVy
+ICovCiAgICBfX3UzMiBubG1zZ19waWQ7ICAgIC8qIFNlbmRlciBwb3J0IElEICovCn07CgoKc3Ry
+dWN0IG5sbXNnaGRyIG5saDsKICAgIG5saC5ubG1zZ19sZW4gPSBwdGEubmxtc2dfbGVuOyAgICAv
+KiBMZW5ndGggb2YgbWVzc2FnZSBpbmNsdWRpbmcgaGVhZGVyICovCiAgICBubGgubmxtc2dfdHlw
+ZSA9IHB0YS5ubG1zZ190eXBlOyAgIC8qIFR5cGUgb2YgbWVzc2FnZSBjb250ZW50ICovCiAgICBu
+bGgubmxtc2dfZmxhZ3MgPSBwdGEubmxtc2dfZmxhZ3M7ICAvKiBBZGRpdGlvbmFsIGZsYWdzICov
+CiAgICBubGgubmxtc2dfc2VxID0gcHRhLm5sbXNnX3NlcTsgICAgLyogU2VxdWVuY2UgbnVtYmVy
+ICovCiAgICBubGgubmxtc2dfcGlkID0gcHRhLm5sbXNnX3BpZDsgICAgLyogU2VuZGVyIHBvcnQg
+SUQgKi8KCnByaW50ZigiQ2FsbGluZyBsaWJicGZfbmxhX2R1bXBfZXJyb3Jtc2dcbiIpOwpsaWJi
+cGZfbmxhX2R1bXBfZXJyb3Jtc2coJm5saCk7CgoKCnByaW50ZigiVGVzdCBjb21wbGV0ZS5cbiIp
+OwoKCnJldHVybiAwOwp9Cg==
+--00000000000095924e059c27e996--
