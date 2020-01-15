@@ -2,130 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 11A5213CB5D
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2020 18:51:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76BFA13CBA0
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2020 19:06:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728896AbgAORtn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Jan 2020 12:49:43 -0500
-Received: from mail-pj1-f65.google.com ([209.85.216.65]:36240 "EHLO
-        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726418AbgAORtn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Jan 2020 12:49:43 -0500
-Received: by mail-pj1-f65.google.com with SMTP id n59so265188pjb.1;
-        Wed, 15 Jan 2020 09:49:42 -0800 (PST)
+        id S1728921AbgAOSGO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Jan 2020 13:06:14 -0500
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:42042 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729092AbgAOSGN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Jan 2020 13:06:13 -0500
+Received: by mail-qt1-f193.google.com with SMTP id j5so16546955qtq.9;
+        Wed, 15 Jan 2020 10:06:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=OziLB12L1c4/xldafs8TFNbJdMMXchHDGr185qg7eQQ=;
-        b=sPjEhRYgwWsw4PQWVVjNy5OfarApTQkAfsrrgaZtEhQx2FL8jE3fwhu3Kf5RGpF+PG
-         uOLYmEHfq/rdptTOHcymPBrhJoXv2pqft9wxGmAyrj/dFUp7elA30miAY0Il+x3i8alo
-         6MNtX95tkZQ1N8KN5XUeDolRcBFzHTrjXeoA34KAC/liejS8xsSjDZ+tSu93AG4olksU
-         tEfEHMrlekKPKU+6kyMr6ppHuuIo1pY8ks8gQVVEB3qrJ6ikWl1wpz6jzOHZwJM6TDPx
-         BNGKLeQJOtJwoPTaqDV1zNdA20qYuE87yvkgnpkdUq426CMqAQeI5lnUU4gUL/BcidR/
-         Stuw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ELr/XxVqul6D20WrUY/+l7F3oFFhw69GAu+JHpk3Rbk=;
+        b=mSPCnteKMSkRqwiFoHYESYY9gfGWLfp6Wj/BRJUP4Q4KxvpnfSxnw0X2O3+zDKrdi2
+         ekhtzKXCQeB5Bs/+1KwVMaTkntDXBIcn8z87XMb0VBhZ9vRds4BnOJ1RRijlj0bhsXHM
+         MZqAwB0pn1lfKVRjzfD44HEDbEIJxlOANTTPhWK6WNDmflh7dEDPIboreBKEPBUAh3kE
+         IAx9DqhXMDYiSV+XZ3WFIbmx316U4AmPfTEFqArYRwMbcAj7g7BvaI+9n4mjdfVvUFP2
+         s0RQjCh/hK3MfGFEow+MTXJv1aobh9vIOraqaNtR1Kin1ku2oqwOpZ5jPUKyq+siMEgq
+         +tWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=OziLB12L1c4/xldafs8TFNbJdMMXchHDGr185qg7eQQ=;
-        b=fBOKBq4LyeYiK7yPlrKCRKWDWNdmOOT5HwHQ2ZKW7DGtoPOQJQu97Pycpawn/CrEN0
-         wZbqHDPDJmTRmh4cQFIAQrZZcvM7Fkbqr6rJHDNxFIEVqa7lrrOnMQiPwNhDhqndUSBv
-         E3HBBtcYJH0f+kQ4jquYvERqQBgfQx+l/TXH3No+rM/GDSR/EnZcGrlKuHJwgiDE0FIR
-         O2WNgtJfb9Rx+GZptQAw1lhtpheyAG4PLVnJUsk70cuniFifYJhYpoOVc4HOxAq9QiEs
-         cUdBrf+9NW+HIewXdvFIQ2TLiqYG+qDIar/kMcKxBi9w9rbDKjR5QAa+XBpG/KknMT9t
-         3C7w==
-X-Gm-Message-State: APjAAAUxyScmQ6+vRqdvZt1rDrrybbNKTpPma2pS4SHZ86UtiPPnbStl
-        3e+Pm5HMXisIQz3PJK9oHKs=
-X-Google-Smtp-Source: APXvYqxVxzOx9wj/g2ZqslqwknaIumrpdyqw/rcb151ThwL914v3ucf1lPVSJ94xGLmkCxkGq04Bog==
-X-Received: by 2002:a17:902:9889:: with SMTP id s9mr19185233plp.252.1579110582314;
-        Wed, 15 Jan 2020 09:49:42 -0800 (PST)
-Received: from localhost (198-0-60-179-static.hfc.comcastbusiness.net. [198.0.60.179])
-        by smtp.gmail.com with ESMTPSA id m19sm433584pjv.10.2020.01.15.09.49.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Jan 2020 09:49:41 -0800 (PST)
-Date:   Wed, 15 Jan 2020 09:49:41 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ELr/XxVqul6D20WrUY/+l7F3oFFhw69GAu+JHpk3Rbk=;
+        b=o6P6EnTCuaZSr0tBobB7yb1CyQJQy+i75avetHdcLfLvhSlZRIPhgBTGLNZGWXUEVr
+         qCDwXRkx+sH557gWzBs3EK0drowdhqEIDCxtr0yVP2SzHahmy/Mxg0bxzYvAYMCYxLco
+         p27Bj7E3a9t/ylAGFj/sKqlgLuTELBlXhearyl1/RrgRQr5lYQNZa2+diHptJompcdUP
+         yBz9tom61Edd6dNQrIYt55Drgg9N5S08cE6chlzxllccxzGpszm1+jymDdIew/qyfola
+         HwqJPy2oO3LsaI7ZcWD0Zyf4aoanOHGtwSkIfFfCyOAT43Tk49gK7wWGDq6k9JEnNw9L
+         CosA==
+X-Gm-Message-State: APjAAAX1Y7CClWRwDv/055D8SB80n6uC+hQcEJjArGkuseilKvYokLLx
+        U7skErymyYvvFUjiopK35x5LtoU1GblZjvbSWsg=
+X-Google-Smtp-Source: APXvYqyxmKUFZijBXdkuTtHh/L21hbP+2dYNdVYZ+ehzOljvqjBV6f2i6/sb3FoGBrunVSLpiVTX+WlgbzOZ4rbNNQg=
+X-Received: by 2002:ac8:1385:: with SMTP id h5mr4640404qtj.59.1579111572469;
+ Wed, 15 Jan 2020 10:06:12 -0800 (PST)
+MIME-Version: 1.0
+References: <157909756858.1192265.6657542187065456112.stgit@toke.dk>
+In-Reply-To: <157909756858.1192265.6657542187065456112.stgit@toke.dk>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 15 Jan 2020 10:06:01 -0800
+Message-ID: <CAEf4Bza+dNoD7HbVQGtXBq=raz4DQg0yTShKZHRbCo+zHYfoSA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 00/10] tools: Use consistent libbpf include
+ paths everywhere
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        David Miller <davem@davemloft.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Message-ID: <5e1f50b55663_201b2acc3bfce5b8da@john-XPS-13-9370.notmuch>
-In-Reply-To: <CAADnVQ+Kr_zv9eWF2+eDLJVtva48o04Jj0v4wjzmERVGKSA+ng@mail.gmail.com>
-References: <157893905455.861394.14341695989510022302.stgit@toke.dk>
- <CAADnVQ+Kr_zv9eWF2+eDLJVtva48o04Jj0v4wjzmERVGKSA+ng@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 0/2] xdp: Introduce bulking for non-map
- XDP_REDIRECT
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+        John Fastabend <john.fastabend@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-rdma@vger.kernel.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        clang-built-linux@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov wrote:
-> On Mon, Jan 13, 2020 at 10:11 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke=
-@redhat.com> wrote:
-> >
-> > Since commit 96360004b862 ("xdp: Make devmap flush_list common for al=
-l map
-> > instances"), devmap flushing is a global operation instead of tied to=
- a
-> > particular map. This means that with a bit of refactoring, we can fin=
-ally fix
-> > the performance delta between the bpf_redirect_map() and bpf_redirect=
-() helper
-> > functions, by introducing bulking for the latter as well.
-> >
-> > This series makes this change by moving the data structure used for t=
-he bulking
-> > into struct net_device itself, so we can access it even when there is=
- not
-> > devmap. Once this is done, moving the bpf_redirect() helper to use th=
-e bulking
-> > mechanism becomes quite trivial, and brings bpf_redirect() up to the =
-same as
-> > bpf_redirect_map():
-> >
-> >                        Before:   After:
-> > 1 CPU:
-> > bpf_redirect_map:      8.4 Mpps  8.4 Mpps  (no change)
-> > bpf_redirect:          5.0 Mpps  8.4 Mpps  (+68%)
-> > 2 CPUs:
-> > bpf_redirect_map:     15.9 Mpps  16.1 Mpps  (+1% or ~no change)
-> > bpf_redirect:          9.5 Mpps  15.9 Mpps  (+67%)
-> >
-> > After this patch series, the only semantics different between the two=
- variants
-> > of the bpf() helper (apart from the absence of a map argument, obviou=
-sly) is
-> > that the _map() variant will return an error if passed an invalid map=
- index,
-> > whereas the bpf_redirect() helper will succeed, but drop packets on
-> > xdp_do_redirect(). This is because the helper has no reference to the=
- calling
-> > netdev, so unfortunately we can't do the ifindex lookup directly in t=
-he helper.
-> >
-> > Changelog:
-> >
-> > v2:
-> >   - Consolidate code paths and tracepoints for map and non-map redire=
-ct variants
-> >     (Bj=C3=B6rn)
-> >   - Add performance data for 2-CPU test (Jesper)
-> >   - Move fields to avoid shifting cache lines in struct net_device (E=
-ric)
-> =
+On Wed, Jan 15, 2020 at 6:13 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
+>
+> The recent commit 6910d7d3867a ("selftests/bpf: Ensure bpf_helper_defs.h =
+are
+> taken from selftests dir") broke compilation against libbpf if it is inst=
+alled
+> on the system, and $INCLUDEDIR/bpf is not in the include path.
+>
+> Since having the bpf/ subdir of $INCLUDEDIR in the include path has never=
+ been a
+> requirement for building against libbpf before, this needs to be fixed. O=
+ne
+> option is to just revert the offending commit and figure out a different =
+way to
+> achieve what it aims for. However, this series takes a different approach=
+:
+> Changing all in-tree users of libbpf to consistently use a bpf/ prefix in
+> #include directives for header files from libbpf.
+>
+> This turns out to be a somewhat invasive change in the number of files to=
+uched;
+> however, the actual changes to files are fairly trivial (most of them are=
+ simply
+> made with 'sed'). Also, this approach has the advantage that it makes ext=
+ernal
+> and internal users consistent with each other, and ensures no future chan=
+ges
+> breaks things in the same way as the commit referenced above.
+>
+> The series is split to make the change for one tool subdir at a time, whi=
+le
+> trying not to break the build along the way. It is structured like this:
+>
+> - Patch 1-2: Trivial fixes to Makefiles for issues I discovered while cha=
+nging
+>   the include paths.
+>
+> - Patch 3-7: Change the include directives to use the bpf/ prefix, and up=
+dates
+>   Makefiles to make sure tools/lib/ is part of the include path, but with=
+out
+>   removing tools/lib/bpf
+>
+> - Patch 8: Change the bpf_helpers file in libbpf itself to use the bpf/ p=
+refix
+>   when including (the original source of breakage).
+>
+> - Patch 9-10: Remove tools/lib/bpf from include paths to make sure we don=
+'t
+>   inadvertently re-introduce includes without the bpf/ prefix.
+>
+> ---
 
-> John, since you commented on v1 please review this v2. Thanks!
+Thanks, Toke, for this clean up! I tested it locally for my set up:
+runqslower, bpftool, libbpf, and selftests all build fine, so it looks
+good. My only concern is with selftests/bpf Makefile, we shouldn't
+build anything outside of selftests/bpf. Let's fix that. Thanks!
 
-hmm don't think I had an initial comment but will review regardless ;)=
+>
+> Toke H=C3=B8iland-J=C3=B8rgensen (10):
+>       samples/bpf: Don't try to remove user's homedir on clean
+>       tools/bpf/runqslower: Fix override option for VMLINUX_BTF
+>       tools/runqslower: Use consistent include paths for libbpf
+>       selftests: Use consistent include paths for libbpf
+>       bpftool: Use consistent include paths for libbpf
+>       perf: Use consistent include paths for libbpf
+>       samples/bpf: Use consistent include paths for libbpf
+>       libbpf: Fix include of bpf_helpers.h when libbpf is installed on sy=
+stem
+>       selftests: Remove tools/lib/bpf from include path
+>       tools/runqslower: Remove tools/lib/bpf from include path
+>
+>
+
+[...]
