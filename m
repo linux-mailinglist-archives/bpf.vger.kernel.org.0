@@ -2,137 +2,173 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C99413CC29
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2020 19:34:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AFF813CC4B
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2020 19:43:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729113AbgAOSeR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Jan 2020 13:34:17 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:35226 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729061AbgAOSeR (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 15 Jan 2020 13:34:17 -0500
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 00FINtRi032029
-        for <bpf@vger.kernel.org>; Wed, 15 Jan 2020 10:34:16 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=facebook;
- bh=Jx8s4CKKt4J45A0PMR6bQal52l5GqJsevyG/EvivopM=;
- b=dNjY1WiQAyB7xYKzU6JNSo5YRnIzXSXs5OHyf/R2Qulizygi85FiISLw32oc3hSm96Eb
- KwWfzAJHZyquqyR3XmWzxRe71EhoQEmd2KRd0L7t/f+uhsYHomgktfedxyJGQLYYVYPQ
- Ypcc4Doa7PWmHmPZnjsIXW/e1cRYibZWIJM= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 2xhd7r7bky-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 15 Jan 2020 10:34:16 -0800
-Received: from intmgw002.06.prn3.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Wed, 15 Jan 2020 10:34:15 -0800
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 645B02EC20B7; Wed, 15 Jan 2020 10:34:11 -0800 (PST)
-Smtp-Origin-Hostprefix: devbig
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>, <yhs@fb.com>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next] libbpf: support .text sub-calls relocations
-Date:   Wed, 15 Jan 2020 10:34:09 -0800
-Message-ID: <20200115183409.2274797-1-andriin@fb.com>
-X-Mailer: git-send-email 2.17.1
-X-FB-Internal: Safe
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
- definitions=2020-01-15_02:2020-01-15,2020-01-15 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
- impostorscore=0 adultscore=0 malwarescore=0 mlxscore=0 phishscore=0
- spamscore=0 mlxlogscore=999 lowpriorityscore=0 clxscore=1015 bulkscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1910280000 definitions=main-2001150141
-X-FB-Internal: deliver
+        id S1729107AbgAOSnW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Jan 2020 13:43:22 -0500
+Received: from mail-pg1-f202.google.com ([209.85.215.202]:49944 "EHLO
+        mail-pg1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726778AbgAOSnW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Jan 2020 13:43:22 -0500
+Received: by mail-pg1-f202.google.com with SMTP id u14so10791525pgq.16
+        for <bpf@vger.kernel.org>; Wed, 15 Jan 2020 10:43:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=quGuCKW4EISGK4Hy3QkXGiA4O368RfnyVO/5mhv/zy0=;
+        b=Y3cA+BWUSe9akT5omGsDbcfs51Z43HYfnbw4ChN9ZtZigtQkZQ6CaDsQx/0x/Ti7ef
+         ffcFvdtz4TLUdDR6fzYYWyfV/0qzfWpqkLdV8Qklhpi7O/tagoRRpRntD/HElkizyrRL
+         xQYZ3DtH3dtbOElyGa9/poaqWS8Sj+nQsfY1Y2E8juFusIp6HLwPy6F1YNexpBZ+hVdc
+         7NQRIkD72A4DNQbUr+UkqSzUke1YeoNNhn4RCfErO8Mdcx9XO931ftK5PyCqF8L4t9JJ
+         5lHacg5KeIe3WHBaHrFx3VjN0KSLeTNDcbktb2qwPb4Avk+X+YVNugBjtp0X6LIEwL31
+         I+Nw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=quGuCKW4EISGK4Hy3QkXGiA4O368RfnyVO/5mhv/zy0=;
+        b=RhtStLuPKghYi16TcOO2T3cGMlbpuunq9+qUxcy36qbe3+pwGilCt533Z43Q4MsGxL
+         1eRHySaW7HV0jkQyUXuSKtN1X5DLbjtsbdyLpDK1PIrFCiqfJ+DGm7+aTtvb21OU17KA
+         z38/qY7FDX3gKgb0hwzMw7zx2mEj+Vc61HseJw+HegswiYT8oRTmnAWDhxlXgOGeIEkM
+         lXg02rOGASLbdmKd6ag1+HjJItXPeVK5Q81qxMsqBRITzVsrhLMayNNTNpmUN/zYqH3s
+         +u9zH0VR4i3JXHR5iHp7OgUTFrR59JoVthfrqRgS1hAQp3iyoNzfrJRJOVzvyfRIHKjT
+         wdYg==
+X-Gm-Message-State: APjAAAXBh/8uajnTiy/AardomoMt6RGwqaoIexuYI/i+ZcEbu5B4+Asv
+        3cptRDXFKUxwyJ3V91faVZuAWYi4O6i/
+X-Google-Smtp-Source: APXvYqwnWiWJM3nIWopzaQLOFXUvYOBDJHYtnbHtV4I6g6NTAk1EW1MagpO1ixh0/8tS7jTs6Sfe6SL7vSQ9
+X-Received: by 2002:a65:55cc:: with SMTP id k12mr35481833pgs.184.1579113801410;
+ Wed, 15 Jan 2020 10:43:21 -0800 (PST)
+Date:   Wed, 15 Jan 2020 10:42:59 -0800
+Message-Id: <20200115184308.162644-1-brianvv@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.25.0.rc1.283.g88dfdc4193-goog
+Subject: [PATCH v5 bpf-next 0/9] add bpf batch ops to process more than 1 elem
+From:   Brian Vazquez <brianvv@google.com>
+To:     Brian Vazquez <brianvv.kernel@gmail.com>,
+        Brian Vazquez <brianvv@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S . Miller" <davem@davemloft.net>
+Cc:     Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Petar Penkov <ppenkov@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The LLVM patch https://reviews.llvm.org/D72197 makes LLVM emit function call
-relocations within the same section. This includes a default .text section,
-which contains any BPF sub-programs. This wasn't the case before and so libbpf
-was able to get a way with slightly simpler handling of subprogram call
-relocations.
+This patch series introduce batch ops that can be added to bpf maps to
+lookup/lookup_and_delete/update/delete more than 1 element at the time,
+this is specially useful when syscall overhead is a problem and in case
+of hmap it will provide a reliable way of traversing them.
 
-This patch adds support for .text section relocations. It needs to ensure
-correct order of relocations, so does two passes:
-- first, relocate .text instructions, if there are any relocations in it;
-- then process all the other programs and copy over patched .text instructions
-for all sub-program calls.
+The implementation inclues a generic approach that could potentially be
+used by any bpf map and adds it to arraymap, it also includes the specific
+implementation of hashmaps which are traversed using buckets instead
+of keys.
 
-Cc: Yonghong Song <yhs@fb.com>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
----
- tools/lib/bpf/libbpf.c | 28 +++++++++++++++++++++-------
- 1 file changed, 21 insertions(+), 7 deletions(-)
+The bpf syscall subcommands introduced are:
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 0c229f00a67e..c46769d558b5 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -4692,13 +4692,7 @@ bpf_program__reloc_text(struct bpf_program *prog, struct bpf_object *obj,
- 	size_t new_cnt;
- 	int err;
- 
--	if (prog->idx == obj->efile.text_shndx) {
--		pr_warn("relo in .text insn %d into off %d (insn #%d)\n",
--			relo->insn_idx, relo->sym_off, relo->sym_off / 8);
--		return -LIBBPF_ERRNO__RELOC;
--	}
--
--	if (prog->main_prog_cnt == 0) {
-+	if (prog->idx != obj->efile.text_shndx && prog->main_prog_cnt == 0) {
- 		text = bpf_object__find_prog_by_idx(obj, obj->efile.text_shndx);
- 		if (!text) {
- 			pr_warn("no .text section found yet relo into text exist\n");
-@@ -4728,6 +4722,7 @@ bpf_program__reloc_text(struct bpf_program *prog, struct bpf_object *obj,
- 			 text->insns_cnt, text->section_name,
- 			 prog->section_name);
- 	}
-+
- 	insn = &prog->insns[relo->insn_idx];
- 	insn->imm += relo->sym_off / 8 + prog->main_prog_cnt - relo->insn_idx;
- 	return 0;
-@@ -4807,8 +4802,27 @@ bpf_object__relocate(struct bpf_object *obj, const char *targ_btf_path)
- 			return err;
- 		}
- 	}
-+	/* ensure .text is relocated first, as it's going to be copied as-is
-+	 * later for sub-program calls
-+	 */
- 	for (i = 0; i < obj->nr_programs; i++) {
- 		prog = &obj->programs[i];
-+		if (prog->idx != obj->efile.text_shndx)
-+			continue;
-+
-+		err = bpf_program__relocate(prog, obj);
-+		if (err) {
-+			pr_warn("failed to relocate '%s'\n", prog->section_name);
-+			return err;
-+		}
-+	}
-+	/* now relocate everything but .text, which by now is relocated
-+	 * properly, so we can copy raw sub-program instructions as is safely
-+	 */
-+	for (i = 0; i < obj->nr_programs; i++) {
-+		prog = &obj->programs[i];
-+		if (prog->idx == obj->efile.text_shndx)
-+			continue;
- 
- 		err = bpf_program__relocate(prog, obj);
- 		if (err) {
+  BPF_MAP_LOOKUP_BATCH
+  BPF_MAP_LOOKUP_AND_DELETE_BATCH
+  BPF_MAP_UPDATE_BATCH
+  BPF_MAP_DELETE_BATCH
+
+The UAPI attribute is:
+
+  struct { /* struct used by BPF_MAP_*_BATCH commands */
+         __aligned_u64   in_batch;       /* start batch,
+                                          * NULL to start from beginning
+                                          */
+         __aligned_u64   out_batch;      /* output: next start batch */
+         __aligned_u64   keys;
+         __aligned_u64   values;
+         __u32           count;          /* input/output:
+                                          * input: # of key/value
+                                          * elements
+                                          * output: # of filled elements
+                                          */
+         __u32           map_fd;
+         __u64           elem_flags;
+         __u64           flags;
+  } batch;
+
+
+in_batch and out_batch are only used for lookup and lookup_and_delete since
+those are the only two operations that attempt to traverse the map.
+
+update/delete batch ops should provide the keys/values that user wants
+to modify.
+
+Here are the previous discussions on the batch processing:
+ - https://lore.kernel.org/bpf/20190724165803.87470-1-brianvv@google.com/
+ - https://lore.kernel.org/bpf/20190829064502.2750303-1-yhs@fb.com/
+ - https://lore.kernel.org/bpf/20190906225434.3635421-1-yhs@fb.com/
+
+Changelog sinve v4:
+ - Remove unnecessary checks from libbpf API (Andrii Nakryiko)
+ - Move DECLARE_LIBBPF_OPTS with all var declarations (Andrii Nakryiko)
+ - Change bucket internal buffer size to 5 entries (Yonghong Song)
+ - Fix some minor bugs in hashtab batch ops implementation (Yonghong Song)
+
+Changelog sinve v3:
+ - Do not use copy_to_user inside atomic region (Yonghong Song)
+ - Use _opts approach on libbpf APIs (Andrii Nakryiko)
+ - Drop generic_map_lookup_and_delete_batch support
+ - Free malloc-ed memory in tests (Yonghong Song)
+ - Reverse christmas tree (Yonghong Song)
+ - Add acked labels
+
+Changelog sinve v2:
+ - Add generic batch support for lpm_trie and test it (Yonghong Song)
+ - Use define MAP_LOOKUP_RETRIES for retries (John Fastabend)
+ - Return errors directly and remove labels (Yonghong Song)
+ - Insert new API functions into libbpf alphabetically (Yonghong Song)
+ - Change hlist_nulls_for_each_entry_rcu to
+   hlist_nulls_for_each_entry_safe in htab batch ops (Yonghong Song)
+
+Changelog since v1:
+ - Fix SOB ordering and remove Co-authored-by tag (Alexei Starovoitov)
+
+Changelog since RFC:
+ - Change batch to in_batch and out_batch to support more flexible opaque
+   values to iterate the bpf maps.
+ - Remove update/delete specific batch ops for htab and use the generic
+   implementations instead.
+
+Brian Vazquez (5):
+  bpf: add bpf_map_{value_size,update_value,map_copy_value} functions
+  bpf: add generic support for lookup batch op
+  bpf: add generic support for update and delete batch ops
+  bpf: add lookup and update batch ops to arraymap
+  selftests/bpf: add batch ops testing to array bpf map
+
+Yonghong Song (4):
+  bpf: add batch ops to all htab bpf map
+  tools/bpf: sync uapi header bpf.h
+  libbpf: add libbpf support to batch ops
+  selftests/bpf: add batch ops testing for htab and htab_percpu map
+
+ include/linux/bpf.h                           |  18 +
+ include/uapi/linux/bpf.h                      |  21 +
+ kernel/bpf/arraymap.c                         |   2 +
+ kernel/bpf/hashtab.c                          | 264 +++++++++
+ kernel/bpf/syscall.c                          | 554 ++++++++++++++----
+ tools/include/uapi/linux/bpf.h                |  21 +
+ tools/lib/bpf/bpf.c                           |  58 ++
+ tools/lib/bpf/bpf.h                           |  22 +
+ tools/lib/bpf/libbpf.map                      |   4 +
+ .../bpf/map_tests/array_map_batch_ops.c       | 129 ++++
+ .../bpf/map_tests/htab_map_batch_ops.c        | 283 +++++++++
+ 11 files changed, 1248 insertions(+), 128 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/map_tests/array_map_batch_ops.c
+ create mode 100644 tools/testing/selftests/bpf/map_tests/htab_map_batch_ops.c
+
 -- 
-2.17.1
+2.25.0.rc1.283.g88dfdc4193-goog
 
