@@ -2,236 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 781D613B9A6
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2020 07:35:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B662B13B9C2
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2020 07:37:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726100AbgAOGfW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Jan 2020 01:35:22 -0500
-Received: from mail-qk1-f178.google.com ([209.85.222.178]:40101 "EHLO
-        mail-qk1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726075AbgAOGfW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Jan 2020 01:35:22 -0500
-Received: by mail-qk1-f178.google.com with SMTP id c17so14683164qkg.7
-        for <bpf@vger.kernel.org>; Tue, 14 Jan 2020 22:35:20 -0800 (PST)
+        id S1726506AbgAOGhD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Jan 2020 01:37:03 -0500
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:39199 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726408AbgAOGhD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Jan 2020 01:37:03 -0500
+Received: by mail-qt1-f195.google.com with SMTP id e5so14862331qtm.6;
+        Tue, 14 Jan 2020 22:37:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ucdavis.edu; s=google;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=zbOWMa1V00Wj13aEpzXaQ5FFJYR5dXyE0ZcIZDvJ1fU=;
-        b=WZSn/mRXN+oCZI9EvLUOQNdACUlewk1gBaOaO0/6ElgkpqZCwd8JuuR3TlEAVcTnab
-         KbdT6BNfM8OSP6HLraNN+CJvTwlVaOIJR77CuEv9V0/9aKsVXR7tq/qpvD5SYIiTuZI+
-         fv8AE6dyuOodUpSToJ7CsCKaP7Cr4bF86F7v8=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uCV3OdMIlfxmQUB7b73DLTCy3NtPcS6hNnVmkkoXKEo=;
+        b=W+UtXvuaDmEC/TwN+x0Ow7z7zmi/aZt/6h/paZ6Lr57qbQF3P963NCJCVcX3Aoagqa
+         YZu6A7g1p4CQ2RYP7s7Au/edZzPfHWORiXahaFFfbGsIJvrHeOpK4NT+J2kTo8x5ZdBA
+         Iu5m4fSdLaFPbCmj7MJJns6Acst7BMyFt0B9UlrTekUq7/zbBunPnmQsy5Z4jVS3oxgW
+         XVk81iVPCYNj1MFxpOD36Mb80Iv9TuPJccTCfwZkzrbYhIDHAGKT1NspHVBe8TFXMkPg
+         vNl+7w/n2VLrErbHMMMS02TyfpLCk2ExS/ObSBQ7jRXiYbnudMU9cMGhSgDYEIAPO3CV
+         PrtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=zbOWMa1V00Wj13aEpzXaQ5FFJYR5dXyE0ZcIZDvJ1fU=;
-        b=eEOBrDJHFsVFCpNlc/rwIGhD/1EJh8i87ks0fclb7IMwBi696+M3lZ1sNB0GpHcK/B
-         xt5kaYrUv8i77vnZu4QKByvSVVA4o9qVRbyTzooJ+ut5bW+BPllOX3xR/e6TW0DMAxK9
-         q4sZfWf/g8YxvVoyn6QCf9menxnsJ2U1ZsS87p3wYC0JUNVYCzAZ/DMb13qy0VsXbAs2
-         njDqCDO16KW/5ql7dY0357PwWpDcPGE6tc0WLK0hYJU48PrwJEd3GmnkSpzq9s+3qvsr
-         iKqMm+0AHQ7WNU488Ve9rfmLwF217XiV6SeI8Zx63oNMhnYnCvL6m7CW6du+fvpT3/OX
-         676w==
-X-Gm-Message-State: APjAAAVvvAb4bX8VpbRrijKXPJxUpCK6kWgPOBsLJjPa17ATwommdzyS
-        FbJvVwF5y+zZFsj25lKL/ZNtM2lU/kJ8UYqvv498PUYFQ6c=
-X-Google-Smtp-Source: APXvYqw5qSP2EK/ysFjfPv6SvatHeGBuwlc5GHtNw8EYnCY2Aj6ATV+QXFlNkjBXA4KJv+K0gCw6leqYknV1pufRKEM=
-X-Received: by 2002:ae9:ebca:: with SMTP id b193mr25489893qkg.53.1579070120017;
- Tue, 14 Jan 2020 22:35:20 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uCV3OdMIlfxmQUB7b73DLTCy3NtPcS6hNnVmkkoXKEo=;
+        b=ia/WfTmFX7H2qoMgZaFzTy7P51m2l6Pf8YGADybKLuoBC6GIu+duCdtetjKHKjgFro
+         S2jpD5TCN4vC2MpBdY2JrJbZ5qUq74mg1QhfOUl3KioEa6owidlEBm6V/+egK17CTDc2
+         MCTbKeZCK/F+BDlal6xd/wWckZ3ImJ8GMRNJC+gJGTI4uKZLrqLOMWp3cLDnik6Wzr5a
+         1E2RH/KGUHzQ6m4xZfo/zbejOqsBzrR+F6wjpjhRdeo29g/AQA4LXfzlHg2NlrIqULXe
+         s2s2Tnzuij99O8RYZBNN7EazthRpahFPUnwIje9J2jiWOLm+L9GqqLX2QCKPOjKycooE
+         sEYQ==
+X-Gm-Message-State: APjAAAWgEgczM/n9k9fQ2m1bAclaws4Xzgzs4lqftw1piijr09Q5G6HF
+        pN6oLcX6QOkCmSYTdlns2gFzfVtvbN/q2w72m7o=
+X-Google-Smtp-Source: APXvYqw1GF3tEl8d4zG6FEiNHWXrrdaEuwikABOuJT+vsnSiRjK7AmG36OpxUaZ1AVqVrkwgUQulfr81KKD4BRkewU8=
+X-Received: by 2002:ac8:1385:: with SMTP id h5mr2091837qtj.59.1579070221937;
+ Tue, 14 Jan 2020 22:37:01 -0800 (PST)
 MIME-Version: 1.0
-From:   Benjamin Nilsen <bcnilsen@ucdavis.edu>
-Date:   Tue, 14 Jan 2020 22:35:09 -0800
-Message-ID: <CAKRbtyV6jSDjXAjViJTm9frCcR83UijDRobFTRcfjNU9z_APdA@mail.gmail.com>
-Subject: Bugs with libbpf
-To:     bpf@vger.kernel.org
-Content-Type: multipart/mixed; boundary="00000000000095924e059c27e996"
+References: <20200114224358.3027079-1-kafai@fb.com> <20200114224406.3027562-1-kafai@fb.com>
+ <CAEf4BzbrcKLKvgKY+nSxV22T2nHgucmB2N01bEQiXS+g7npQfw@mail.gmail.com> <20200115055406.gsouajufdzussm6e@kafai-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20200115055406.gsouajufdzussm6e@kafai-mbp.dhcp.thefacebook.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 14 Jan 2020 22:36:51 -0800
+Message-ID: <CAEf4BzZpvt+zNxMwAUjebNCQLpwHzX_Abj=efQXghjxjL6VKzg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/5] bpftool: Fix missing BTF output for json
+ during map dump
+To:     Martin Lau <kafai@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>,
+        Kernel Team <Kernel-team@fb.com>,
+        Networking <netdev@vger.kernel.org>,
+        Paul Chaignon <paul.chaignon@orange.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
---00000000000095924e059c27e996
-Content-Type: text/plain; charset="UTF-8"
+On Tue, Jan 14, 2020 at 9:54 PM Martin Lau <kafai@fb.com> wrote:
+>
+> On Tue, Jan 14, 2020 at 05:34:33PM -0800, Andrii Nakryiko wrote:
+> > On Tue, Jan 14, 2020 at 2:45 PM Martin KaFai Lau <kafai@fb.com> wrote:
+> > >
+> > > The btf availability check is only done for plain text output.
+> > > It causes the whole BTF output went missing when json_output
+> > > is used.
+> > >
+> > > This patch simplifies the logic a little by avoiding passing "int btf" to
+> > > map_dump().
+> > >
+> > > For plain text output, the btf_wtr is only created when the map has
+> > > BTF (i.e. info->btf_id != 0).  The nullness of "json_writer_t *wtr"
+> > > in map_dump() alone can decide if dumping BTF output is needed.
+> > > As long as wtr is not NULL, map_dump() will print out the BTF-described
+> > > data whenever a map has BTF available (i.e. info->btf_id != 0)
+> > > regardless of json or plain-text output.
+> > >
+> > > In do_dump(), the "int btf" is also renamed to "int do_plain_btf".
+> > >
+> > > Fixes: 99f9863a0c45 ("bpftool: Match maps by name")
+> > > Cc: Paul Chaignon <paul.chaignon@orange.com>
+> > > Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+> > > ---
+> >
+> > just one nit below
+> >
+> > Acked-by: Andrii Nakryiko <andriin@fb.com>
+> >
+> > >  tools/bpf/bpftool/map.c | 42 ++++++++++++++++++++---------------------
+> > >  1 file changed, 20 insertions(+), 22 deletions(-)
+> > >
+> > > diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
+> > > index e00e9e19d6b7..45c1eda6512c 100644
+> > > --- a/tools/bpf/bpftool/map.c
+> > > +++ b/tools/bpf/bpftool/map.c
+> > > @@ -933,7 +933,7 @@ static int maps_have_btf(int *fds, int nb_fds)
+> > >
+> > >  static int
+> > >  map_dump(int fd, struct bpf_map_info *info, json_writer_t *wtr,
+> > > -        bool enable_btf, bool show_header)
+> > > +        bool show_header)
+> > >  {
+> > >         void *key, *value, *prev_key;
+> > >         unsigned int num_elems = 0;
+> > > @@ -950,18 +950,16 @@ map_dump(int fd, struct bpf_map_info *info, json_writer_t *wtr,
+> > >
+> > >         prev_key = NULL;
+> > >
+> > > -       if (enable_btf) {
+> > > -               err = btf__get_from_id(info->btf_id, &btf);
+> > > -               if (err || !btf) {
+> > > -                       /* enable_btf is true only if we've already checked
+> > > -                        * that all maps have BTF information.
+> > > -                        */
+> > > -                       p_err("failed to get btf");
+> > > -                       goto exit_free;
+> > > +       if (wtr) {
+> > > +               if (info->btf_id) {
+> >
+> > combine into if (wtr && info->btf_id) and reduce nestedness?
+> There is other logic under the same "if (wtr)".
+> Thus, it is better to leave it as is.
 
-Hello,
+My bad, missed those tiny minuses in diff :) Of course that would be incorrect.
 
-I believe I found some bugs with libbpf and just wanted to share them here.
-I have attached them below.
-
-Regards,
-Ben
-
-
-The first one:
-I believe there is an error with: libbpf_nla_dump_errormsg();
-
-The second one:
-libbpf_nla_parse();
-
-Third one:
-I believe there is a stack buffer overflow with the method
-bpf_object__open_buffer() when running the attached program with the
-input:
-./LibbpfTest15.c (executable version) LibbpfTest15buginput LibbpfTest15buginput
-
---00000000000095924e059c27e996
-Content-Type: application/octet-stream; name="LibbpfTest15.c"
-Content-Disposition: attachment; filename="LibbpfTest15.c"
-Content-Transfer-Encoding: base64
-Content-ID: <f_k5exkb7f3>
-X-Attachment-Id: f_k5exkb7f3
-
-I2luY2x1ZGUgPHN0ZGlvLmg+CiNpbmNsdWRlIDxzdGRsaWIuaD4KI2luY2x1ZGUgPHN0cmluZy5o
-PgojaW5jbHVkZSA8bWVtb3J5Lmg+CiNpbmNsdWRlIDx1bmlzdGQuaD4KI2luY2x1ZGUgPGFzbS91
-bmlzdGQuaD4KI2luY2x1ZGUgPGxpbnV4L2JwZi5oPgojaW5jbHVkZSAiYnBmLmgiCi8vI2luY2x1
-ZGUgImxpYmJwZjIuaCIKI2luY2x1ZGUgPGVycm5vLmg+CiNpbmNsdWRlICJubGF0dHIuaCIKI2lu
-Y2x1ZGUgPGxpbnV4L3J0bmV0bGluay5oPgojaW5jbHVkZSA8c3lzL3NvY2tldC5oPgojaW5jbHVk
-ZSAibGliYnBmLmgiCiNpbmNsdWRlIDxzeXMvdHlwZXMuaD4gIC8vIGZvciBzaXplX3QKCgppbnQg
-bWFpbihpbnQgYXJnYywgY2hhciAqKmFyZ3YpewoKCnR5cGVkZWYgc3RydWN0IGFyZ3N7CgppbnQg
-ZXJyOwpjaGFyIGJ1ZlsxMDBdOwpzaXplX3Qgc2l6ZTsKc2l6ZV90IG9mZnNldDsKCmludCBidWZm
-ZXJbMTUwXTsKaW50IGZsYWdzOwoKc2l6ZV90IG9ial9idWZfc3o7CmNoYXIgbmFtZTsKCgpjaGFy
-IG5hbWUxOwppbnQgcmFuZDE7CmludCByYW5kMjsKaW50IHJhbmQzOwppbnQgcmFuZDQ7CmJvb2wg
-YjE7Cgp9IGFyZ3NfdDsKCmFyZ3NfdCBwdGE7CgoKLyoKcHJpbnRmKCJPcGVuaW5nIHRoZSBmaWxl
-XG4iKTsKCkZJTEUgKmZwOwpmcCA9IGZvcGVuKGFyZ3ZbMV0sICJyYiIpOwpwcmludGYoIkZpbGUg
-bmFtZSBpczogJXNcbiIsIGFyZ3ZbMV0pOwpwcmludGYoIkZpbGUgd2FzIG9wZW5lZFxuIik7Cgpz
-dHJ1Y3QgYnBmX29iamVjdDsKc3RydWN0IGJwZl9vYmplY3QgKmJvOwoKYm8gPSBicGZfb2JqZWN0
-X19vcGVuKGFyZ3ZbMV0pOwoKcHJpbnRmKCJPcGVuaW5nIGJwZiBPYmplY3Qgd2l0aCBhcmd2WzFd
-XG4iKTsKYnBmX29iamVjdF9fb3Blbihhcmd2WzFdKTsKCi8vYnBmX29iamVjdF9fb3Blbihhcmd2
-WzFdKTsKKi8KCgpzdHJ1Y3QgYnBmX29iamVjdDsKc3RydWN0IGJwZl9vYmplY3QgKmJvOwoKcHJp
-bnRmKCJPcGVuaW5nIHRoZSBmaWxlXG4iKTsKCgpGSUxFICpmcDsKZnAgPSBmb3Blbihhcmd2WzFd
-LCAicmIiKTsKcHJpbnRmKCJGaWxlIG5hbWUgaXM6ICVzXG4iLCBhcmd2WzFdKTsKcHJpbnRmKCJG
-aWxlIHdhcyBvcGVuZWRcbiIpOwppZihmcmVhZCgmcHRhLCBzaXplb2YocHRhKSwgMSwgZnApICE9
-IDEpewogICAgICAgIHByaW50ZigiRmlsZSBub3QgYmlnIGVub3VnaFxuIik7CiAgICAgICAgZmNs
-b3NlKGZwKTsKICAgICAgICByZXR1cm4gMDsKfQoKCkZJTEUgKmZwMjsKZnAyID0gZm9wZW4oYXJn
-dlsyXSwgInJiIik7CnByaW50ZigiRmlsZSBuYW1lIGlzOiAlc1xuIiwgYXJndlsyXSk7CnByaW50
-ZigiU2Vjb25kIEZpbGUgd2FzIG9wZW5lZFxuIik7CmlmKGZyZWFkKCZwdGEsIHNpemVvZihwdGEp
-LCAxLCBmcDIpICE9IDEpewogICAgICAgIHByaW50ZigiRmlsZSBub3QgYmlnIGVub3VnaFxuIik7
-CiAgICAgICAgZmNsb3NlKGZwMik7CiAgICAgICAgcmV0dXJuIDA7Cn0KCgpwcmludGYoIlxuT3Bl
-bmluZyBicGYgb2JqZWN0IHZpYTogYnBmX29iamVjdF9fb3Blbl9idWZmZXIoKVxuIik7CmNoYXIg
-bmFtZTUgPSAiYSI7CnNpemVfdCBvYmpfYnVmX3N6ID0gNTsKYm8gPSBicGZfb2JqZWN0X19vcGVu
-X2J1ZmZlcihhcmd2WzFdLCBwdGEub2JqX2J1Zl9zeiwgJnB0YS5uYW1lKTsKcHJpbnRmKCJPcGVu
-ZWQgYSBicGYgZmlsZSB3aXRoIGJwZl9vYmplY3RfX29wZW5fYnVmZmVyKClcblxuIik7CgoKaWYg
-KGJvID09IE5VTEwpewoKCXByaW50ZigiUmV0dXJuZWQ6IEludmFsaWQgQlBGX1Byb2dcbiIpOwoJ
-cmV0dXJuIDA7Cn0KCnByaW50ZigiQ2FsbGluZyBtZXRob2RzIHRoYXQgdXNlIHRoZSBicGYgb2Jq
-ZWN0cyIpOwoKYnBmX29iamVjdF9fbG9hZCgmYm8pOwoKYnBmX29iamVjdF9fa3ZlcnNpb24oJmJv
-KTsKCmJwZl9vYmplY3RfX2J0ZigmYm8pOwoKYnBmX29iamVjdF9fYnRmX2ZkKCZibyk7CgpicGZf
-b2JqZWN0X191bmxvYWQoJmJvKTsKCgoKCgoKCgoKCgoKLy9lbnVtIGJwZl9wcm9nX3R5cGUgcHJv
-Z190eXBlID0gQlBGX1BST0dfVFlQRV9UUkFDRVBPSU5UOwoKZmNsb3NlKGZwKTsKZmNsb3NlKGZw
-Mik7CgpwcmludGYoIlRlc3QgY29tcGxldGUuIE9wZW5lZCBhIGJwZl9wcm9ncmFtLlxuIik7CgoK
-cmV0dXJuIDA7Cn0K
---00000000000095924e059c27e996
-Content-Type: application/octet-stream; name="LibbpfTest5.c"
-Content-Disposition: attachment; filename="LibbpfTest5.c"
-Content-Transfer-Encoding: base64
-Content-ID: <f_k5exkb7a2>
-X-Attachment-Id: f_k5exkb7a2
-
-I2luY2x1ZGUgPHN0ZGlvLmg+CiNpbmNsdWRlIDxzdGRsaWIuaD4KI2luY2x1ZGUgPHN0cmluZy5o
-PgojaW5jbHVkZSA8bWVtb3J5Lmg+CiNpbmNsdWRlIDx1bmlzdGQuaD4KI2luY2x1ZGUgPGFzbS91
-bmlzdGQuaD4KI2luY2x1ZGUgPGxpbnV4L2JwZi5oPgojaW5jbHVkZSAiYnBmLmgiCiNpbmNsdWRl
-ICJsaWJicGYyLmgiCiNpbmNsdWRlIDxlcnJuby5oPgojaW5jbHVkZSAibmxhdHRyLmgiCiNpbmNs
-dWRlIDxsaW51eC9ydG5ldGxpbmsuaD4KCgppbnQgbWFpbihpbnQgYXJnYywgY2hhciAqKmFyZ3Yp
-ewoKCnR5cGVkZWYgc3RydWN0IGFyZ3N7CgogICAgaW50IG9uZTsKICAgIGludCB0d287CiAgICBp
-bnQgbWF4dHlwZTsKICAgIGludCBsZW47Cglib29sIGIxOwoJYm9vbCBiMjsKCWJvb2wgYjM7Cgli
-b29sIGI0OwogICAgaW50IHNpemU7CiAgICBzdHJ1Y3QgbmxhdHRyIG5sOwoKICAgIHN0cnVjdCBu
-bGF0dHIgaGVhZDsKICAgIHN0cnVjdCBsaWJicGZfbmxhX3BvbGljeSBwb2xpY3k7CgoKfSBhcmdz
-X3Q7CgphcmdzX3QgcHRhOwoKCgoKcHJpbnRmKCJEcml2ZXIgcHJvZ3JhbSBmb3IgbmxhdHRyLmMg
-Y2xhc3NcbiIpOwoKcHJpbnRmKCJPcGVuaW5nIHRoZSBmaWxlXG4iKTsKCkZJTEUgKmZwOwpmcCA9
-IGZvcGVuKGFyZ3ZbMV0sICJyYiIpOwpwcmludGYoIkZpbGUgbmFtZSBpczogJXNcbiIsIGFyZ3Zb
-MV0pOwpwcmludGYoIkZpbGUgd2FzIG9wZW5lZFxuIik7CmlmKGZyZWFkKCZwdGEsIHNpemVvZihw
-dGEpLCAxLCBmcCkgIT0gMSl7CiAgICAgICAgcHJpbnRmKCJGaWxlIG5vdCBiaWcgZW5vdWdoXG4i
-KTsKICAgICAgICBmY2xvc2UoZnApOwogICAgICAgIHJldHVybiAwOwp9CgoKCgoKCgovL3ByaW50
-ZigiQ2FsbGluZyBsaWJicGZfbmxhX2R1bXBfZXJyb3Jtc2dcbiIpOwovL2xpYmJwZl9ubGFfZHVt
-cF9lcnJvcm1zZygmbmxoKTsKLy9saWJicGZfbmxhX3BhcnNlKHN0cnVjdCBubGF0dHIgKnRiW10s
-IGludCBtYXh0eXBlLCBzdHJ1Y3QgbmxhdHRyICpoZWFkLAovLyAgICAgICAgICAgICBpbnQgbGVu
-LCBzdHJ1Y3QgbGliYnBmX25sYV9wb2xpY3kgKnBvbGljeSk7CgoKCmludCBzaXplID0gNTsKCgpp
-ZihwdGEuc2l6ZSA+IDAgJiYgcHRhLiBzaXplIDwgOTk5OTk5KXsKICAgIHNpemUgPSBwdGEuc2l6
-ZTsKfQoKc3RydWN0IG5sYXR0ciB0YltzaXplXTsKCgpmb3IoaW50IGkgPSAwOyBpIDwgc2l6ZTsg
-aSsrKXsKICAgIHRiW2ldID0gcHRhLm5sOwp9CgoKCnN0cnVjdCBubGF0dHIgaGVhZDsKc3RydWN0
-IGxpYmJwZl9ubGFfcG9saWN5IHBvbGljeTsKCnByaW50ZigiQ2FsbGluZyBsaWJicGZfbmxhX3Bh
-cnNlXG4iKTsKCmxpYmJwZl9ubGFfcGFyc2UoJnRiLCBwdGEubWF4dHlwZSwgJnB0YS5oZWFkLApw
-dGEubGVuLCAmcHRhLnBvbGljeSk7CgoKCnByaW50ZigiVGVzdCBjb21wbGV0ZS5cbiIpOwoKCnJl
-dHVybiAwOwp9Cg==
---00000000000095924e059c27e996
-Content-Type: application/octet-stream; name=libbpfTest4bug
-Content-Disposition: attachment; filename=libbpfTest4bug
-Content-Transfer-Encoding: base64
-Content-ID: <f_k5exkb751>
-X-Attachment-Id: f_k5exkb751
-
-NwIAAAAzMjQxMzEzMTQ0MzM1NjIzNTM1MzYzNjUzNTM1MzQ1MzUzCjM1MzUzNQp1uNH4HNGUOtm4
-g5uiRfzMCeakt76hjpww9y+vSq9RrgDQxPbpwlxxhhSrEcq6hyvcgeS+pKAbsL+cRDFVqqc7X7jS
-N7cBcCBpdqCTct274Kqmqz+P/AaNGx4hPUzV+TzculwuG4M8iculk867KBnslR1Ci8QEwfo/hFX+
-39uEW7THM09VpY3pc0rGNMQ/8H0tlnKZhjXULjE/7od0dfSeGuGiXdGRcdyOyr8uM+Umq2X6Ulnh
-NikOgHBb+JxfyVed4iPwVdkAf3WRHi7PpC2gwH9dHiVv1buT7NOU4j/M6vbWVD9cQA3B3HcylE98
-b6lToMrwGQS2sMrNFES46mpIL244OjUH428q01A8unEaV79WjryT/ZO/a1wAQb+LNAa7it3fbylQ
-rpjDxgPIF8kW+OkhAp2aCayPZ6eQwKHGbPi299/PMZv5PLurr4yFOqhhdu09xqMMRxHo7iDHqGV0
-xX47i1mPuQsc5kj6M+qUPyEZqqyhltWopyuelGp+ywsoyMDOlb7SfxukksG7yIOggBEuuBqVhDVS
-mvKsQ46MlXhgBWGuINMPrhrwYACYGH1OPO8uRxmhOeitSB8X4QkL0NdG9f1re1aWKokvzHN5sIUV
-jmgLJqU4dCZGQ3daLUUJLJLfcNe+favmOzl68mASxaqiwH/m0UDZlGa+loLmqUmwZOeKR1slMNwJ
-50rjpwXuFXwmvv5EiQKtLZi3YXoH/4YbhES98tvpnN2jP/PgTFMX3EYnge0Z2g+9ypPq1J28S+uK
-DNzEAno5gS5Yrzd89I+6IjyTC2OVZKBh3f9CCg7KFlpERO5rG6H3PVKxbGbiHxZZag7Wqy3Y1RQ2
-XeVSGIrWebQesfPXhOHND0fARuqTon7EDI5lWc5wO16UAJ8wsAyRdknVE+ZWiskynI0eQat3jesB
-b6upPtIer0ow5HfM5ajyDYM/Wpua5Cg2bmbcXWx+OZ0XO/kGzx/mNDJL+x49BogyeQVHwHsu9uWn
-9tai2aW7EwuElzoFeqJOW5y9zbsVrNRonQ04MmZrUhMg32avo7zWw09d1lOG4NhqGf+hBRpE/b7N
-jy6abFFaOQ4z/Qnuap6kQwFxUlfJTZ7i11YWFCp88lPD93E4l9I1PIpSefymizeE3ueKe5n11LPh
-BX70ceNrajyE/5XiqeGXtaO5pzA9NiPMOCBdSfSzDtxc/tgbsdzr3yMp00Ubdni2Ig1v0GsjrQ76
-PURTfsneOinNR7cJR2P1Ssh9PAaVy1iRzon/E/qNfvCtr4UXjJddzU2L+sTpyV8FiZ16vAK//A==
---00000000000095924e059c27e996
-Content-Type: application/octet-stream; name=LibbpfTest15buginput
-Content-Disposition: attachment; filename=LibbpfTest15buginput
-Content-Transfer-Encoding: base64
-Content-ID: <f_k5exkb7l4>
-X-Attachment-Id: f_k5exkb7l4
-
-NwIAAAAzMjQxMzEzMTQ0MzM1NjIzNTM1MzYzNjUzNTM1MzQ1MzUzCjM1MzUzNQp6O0Se56bMGcDv
-YLoo5hCeS9sxZNb6x1qs7kjqEwgJX089gdtj082ERZ7Vrp/WOkW9jZGvSjOKajW+s/Ubob6TVOBa
-ATsp9WJPwwFyFrs7DtxfAMWTa+9/Jzk0YqxYpPv9JWdYU2qDZbQVhdpqFgXYDLs/LClNrfY9siFV
-M1JIa/+XQQIXTiReFcaphOXhGzAxRG02OKutW/RXgngtdncj5Omt3t3dExh3l2rPihph6/Qv5wDs
-iyoaJx4P5UjrM7t4nuWm38yPkxR23rfLDyNb53EOcwSV9m/kMV+NpVZjES0iQqgrnHlEgwcxf/SR
-vyevGUva/wNWNAyXTCKGrS2KQH7LS8k7a7+LYDmhx1B8+YNrQbKIroKx4o8c4mgcgTA7kAVggNdN
-kYMjQa9SDvU5C7f8ZK/sWlJO6vcMF2/B99tSioN7F4+tqgLB+7wYaH3ZZSwTsZL5ckdmtSF0ZYAJ
-MgZQbL4VXe0aDJE6/KHjqUauEwJmkoriJhSKxoMkUNgEZ/sRM+K0T+Zo3TfWJtq0zx3cj8VsxYUV
-l7lMaQ+8zKw2uKETpMvYZWgp2kRPFAPvSm68IZTY9Hs+MOsUMI0cJTRLdcnDu2WnKWpMQemLHj6h
-0g6KPHM3jBu1OvaA/OqQKc1wrUxK7zlbxujWNxDWcHEX0zl3XwvqPb9ABuYtJUuQsRtmmJ65L+RH
-ErnN8YWDxOeqRncymIFoWtqeYUFLFoz+levMadBVOkGJpZgSPLe+uxBzUMMO/9VuWv2/mCPiMz3t
-bZdL3Zmw1heSVivaUxhwERnfosUupFKZWpN+5fpblQFWhPjwzmqmW5oorgCBj2tOUSnmin12nuJh
-nZw9rBnUlRaTFKaLR3YZV2SbM9b0kRhPBQpJLhwIRbrtrNW/tq/mEQzEE48ahTbcY9R+C7/t5XpL
-6uG5uPbiXpdpX13xzy8lcUx4fnyDXk5GisBscLTuJN2OINZcUUSdUchn2zHHsEOcyPyVxUmDcQDD
-wB9dwKCrPlqT3w==
---00000000000095924e059c27e996
-Content-Type: application/octet-stream; name="LibbpfTest4.c"
-Content-Disposition: attachment; filename="LibbpfTest4.c"
-Content-Transfer-Encoding: base64
-Content-ID: <f_k5exkb6x0>
-X-Attachment-Id: f_k5exkb6x0
-
-I2luY2x1ZGUgPHN0ZGlvLmg+CiNpbmNsdWRlIDxzdGRsaWIuaD4KI2luY2x1ZGUgPHN0cmluZy5o
-PgojaW5jbHVkZSA8bWVtb3J5Lmg+CiNpbmNsdWRlIDx1bmlzdGQuaD4KI2luY2x1ZGUgPGFzbS91
-bmlzdGQuaD4KI2luY2x1ZGUgPGxpbnV4L2JwZi5oPgojaW5jbHVkZSAiYnBmLmgiCiNpbmNsdWRl
-ICJsaWJicGYyLmgiCiNpbmNsdWRlIDxlcnJuby5oPgojaW5jbHVkZSAibmxhdHRyLmgiCiNpbmNs
-dWRlIDxsaW51eC9ydG5ldGxpbmsuaD4KCgppbnQgbWFpbihpbnQgYXJnYywgY2hhciAqKmFyZ3Yp
-ewoKCnR5cGVkZWYgc3RydWN0IGFyZ3N7CgogICAgaW50IG9uZTsKICAgIGludCB0d287Cglib29s
-IGIxOwoJYm9vbCBiMjsKCWJvb2wgYjM7Cglib29sIGI0OwoJX191MzIgbmxtc2dfbGVuOyAgICAv
-KiBMZW5ndGggb2YgbWVzc2FnZSBpbmNsdWRpbmcgaGVhZGVyICovCiAgICBfX3UxNiBubG1zZ190
-eXBlOyAgIC8qIFR5cGUgb2YgbWVzc2FnZSBjb250ZW50ICovCiAgICBfX3UxNiBubG1zZ19mbGFn
-czsgIC8qIEFkZGl0aW9uYWwgZmxhZ3MgKi8KICAgIF9fdTMyIG5sbXNnX3NlcTsgICAgLyogU2Vx
-dWVuY2UgbnVtYmVyICovCiAgICBfX3UzMiBubG1zZ19waWQ7ICAgIC8qIFNlbmRlciBwb3J0IElE
-ICovCgoKfSBhcmdzX3Q7CgphcmdzX3QgcHRhOwoKCgoKcHJpbnRmKCJEcml2ZXIgcHJvZ3JhbSBm
-b3IgbmxhdHRyLmMgY2xhc3NcbiIpOwoKcHJpbnRmKCJPcGVuaW5nIHRoZSBmaWxlXG4iKTsKCkZJ
-TEUgKmZwOwpmcCA9IGZvcGVuKGFyZ3ZbMV0sICJyYiIpOwpwcmludGYoIkZpbGUgbmFtZSBpczog
-JXNcbiIsIGFyZ3ZbMV0pOwpwcmludGYoIkZpbGUgd2FzIG9wZW5lZFxuIik7CmlmKGZyZWFkKCZw
-dGEsIHNpemVvZihwdGEpLCAxLCBmcCkgIT0gMSl7CiAgICAgICAgcHJpbnRmKCJGaWxlIG5vdCBi
-aWcgZW5vdWdoXG4iKTsKICAgICAgICBmY2xvc2UoZnApOwogICAgICAgIHJldHVybiAwOwp9CgoK
-CgpzdHJ1Y3Qgbmxtc2doZHIgewogICAgX191MzIgbmxtc2dfbGVuOyAgICAvKiBMZW5ndGggb2Yg
-bWVzc2FnZSBpbmNsdWRpbmcgaGVhZGVyICovCiAgICBfX3UxNiBubG1zZ190eXBlOyAgIC8qIFR5
-cGUgb2YgbWVzc2FnZSBjb250ZW50ICovCiAgICBfX3UxNiBubG1zZ19mbGFnczsgIC8qIEFkZGl0
-aW9uYWwgZmxhZ3MgKi8KICAgIF9fdTMyIG5sbXNnX3NlcTsgICAgLyogU2VxdWVuY2UgbnVtYmVy
-ICovCiAgICBfX3UzMiBubG1zZ19waWQ7ICAgIC8qIFNlbmRlciBwb3J0IElEICovCn07CgoKc3Ry
-dWN0IG5sbXNnaGRyIG5saDsKICAgIG5saC5ubG1zZ19sZW4gPSBwdGEubmxtc2dfbGVuOyAgICAv
-KiBMZW5ndGggb2YgbWVzc2FnZSBpbmNsdWRpbmcgaGVhZGVyICovCiAgICBubGgubmxtc2dfdHlw
-ZSA9IHB0YS5ubG1zZ190eXBlOyAgIC8qIFR5cGUgb2YgbWVzc2FnZSBjb250ZW50ICovCiAgICBu
-bGgubmxtc2dfZmxhZ3MgPSBwdGEubmxtc2dfZmxhZ3M7ICAvKiBBZGRpdGlvbmFsIGZsYWdzICov
-CiAgICBubGgubmxtc2dfc2VxID0gcHRhLm5sbXNnX3NlcTsgICAgLyogU2VxdWVuY2UgbnVtYmVy
-ICovCiAgICBubGgubmxtc2dfcGlkID0gcHRhLm5sbXNnX3BpZDsgICAgLyogU2VuZGVyIHBvcnQg
-SUQgKi8KCnByaW50ZigiQ2FsbGluZyBsaWJicGZfbmxhX2R1bXBfZXJyb3Jtc2dcbiIpOwpsaWJi
-cGZfbmxhX2R1bXBfZXJyb3Jtc2coJm5saCk7CgoKCnByaW50ZigiVGVzdCBjb21wbGV0ZS5cbiIp
-OwoKCnJldHVybiAwOwp9Cg==
---00000000000095924e059c27e996--
+> and this indentation will be gone in patch 5.
+>
+> >
+> >
+> > > +                       err = btf__get_from_id(info->btf_id, &btf);
+> > > +                       if (err || !btf) {
+> > > +                               err = err ? : -ESRCH;
+> > > +                               p_err("failed to get btf");
+> > > +                               goto exit_free;
+> > > +                       }
+> >
+> > [...]
