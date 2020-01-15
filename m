@@ -2,148 +2,182 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D87B913D005
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2020 23:22:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6D5113D00E
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2020 23:23:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730655AbgAOWW5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Jan 2020 17:22:57 -0500
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:22182 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730335AbgAOWWy (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 15 Jan 2020 17:22:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1579126973;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Pb5kk13hCn5LKgLoa/PR7zWqYWBA2ovo8ll8r6arVRU=;
-        b=G9NgvEyzSasorSSA6j4F7be2B5kgY0VfIX0bMrXqJR/R5cp4HQthX3R/T23ZWXS7iII1J8
-        wHs6S5N68pMuV2BouB4jT9s6NSX7oNtwq9j5NGXrkoLQ4YtT9m/zT/CNF0goVkAJvLruTR
-        JazJg+HgI1D29KzeZ84fix21kTu5X1w=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-430-o_Ta4hmaPcKdWScJIzLEpg-1; Wed, 15 Jan 2020 17:22:52 -0500
-X-MC-Unique: o_Ta4hmaPcKdWScJIzLEpg-1
-Received: by mail-lf1-f70.google.com with SMTP id y21so3536415lfl.11
-        for <bpf@vger.kernel.org>; Wed, 15 Jan 2020 14:22:51 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=Pb5kk13hCn5LKgLoa/PR7zWqYWBA2ovo8ll8r6arVRU=;
-        b=tO29/yIEglLee+uaoGkhMfZp7z/fkazf34Belas4TOt8GJQl8eRmZmn4zgKT2zV2Yd
-         6TQcnE2vxHEKzamq7DNyCyONiZOuJU4L4Oaw63Ydkho3yue4RQqR/2QETDP799wUMcIW
-         ZVwJblpDLDFmjzuLRDyeZ4od3nDumOSvNUeXJ9LAAg6XCpCoH8QrNRJWfkqlO5siEBNB
-         Nc0/6+apOsKqdbIs9p0Chwvz/ke3Ar5ynOCIjxtkQZPs6Ux3oPJpfCZNJM3B2OiX54q5
-         Z+Nt3fQHeKus+MKWCeyUed7I3hPWEyaWtza0XpPsKeuzXrWKl2a2da9bj4aEj8/LJl5i
-         wM8A==
-X-Gm-Message-State: APjAAAUWmrbgB49JeuQwIrKRCCDJKWKv5MSPDAHElFsGp4SvIw2RH5VL
-        LC8RQErDOF/uTVaGG4HyH/jwJayvNz8tgMZXf4oQ8ssNXeOqy0C33B2jTyl84bW5llSU+yuOgeD
-        M38aiQ2sKqoS5
-X-Received: by 2002:a05:651c:327:: with SMTP id b7mr375231ljp.22.1579126968750;
-        Wed, 15 Jan 2020 14:22:48 -0800 (PST)
-X-Google-Smtp-Source: APXvYqxhxH4gFZXsNjM2JkURV8FcMiFxuLIWJLSeibNOlvTg86PWP63JcNetHVuKrHQveyIzWdbXsg==
-X-Received: by 2002:a05:651c:327:: with SMTP id b7mr375222ljp.22.1579126968569;
-        Wed, 15 Jan 2020 14:22:48 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id a12sm9783496ljk.48.2020.01.15.14.22.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Jan 2020 14:22:47 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 56AD01804D6; Wed, 15 Jan 2020 23:22:47 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org
-Cc:     bpf@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Subject: RE: [PATCH bpf-next v2 1/2] xdp: Move devmap bulk queue into struct net_device
-In-Reply-To: <5e1f6bd0cb367_72f02acbae15e5c44a@john-XPS-13-9370.notmuch>
-References: <157893905455.861394.14341695989510022302.stgit@toke.dk> <157893905569.861394.457637639114847149.stgit@toke.dk> <5e1f6bd0cb367_72f02acbae15e5c44a@john-XPS-13-9370.notmuch>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 15 Jan 2020 23:22:47 +0100
-Message-ID: <87d0bktl54.fsf@toke.dk>
+        id S1730588AbgAOWXh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Jan 2020 17:23:37 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:10024 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730443AbgAOWXg (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 15 Jan 2020 17:23:36 -0500
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 00FMMjH9004791
+        for <bpf@vger.kernel.org>; Wed, 15 Jan 2020 14:23:36 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=facebook; bh=9VH56y3ZQHCyXSOzxN57qROtjofX6HIj3I83EeRYkGA=;
+ b=SWtgrXVAAcm2FvXnuZWXD7gyMdaLo51QYcE8lSnSMehNNESH7hPPJcYA95JUDayX7oaJ
+ f/DN3EagNWFSTeUJeufJQiKC98Gj6L/vmL7FyQ1TcZEyjsa0xcMpK2pLWPNrwEZw2j/C
+ 7YwGTADsN9PmOdD+Lho45hx0PcgcmXaY8hI= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2xhwp4bqx3-13
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 15 Jan 2020 14:23:36 -0800
+Received: from intmgw001.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 15 Jan 2020 14:22:55 -0800
+Received: by devbig005.ftw2.facebook.com (Postfix, from userid 6611)
+        id E11E7294163F; Wed, 15 Jan 2020 14:22:53 -0800 (PST)
+Smtp-Origin-Hostprefix: devbig
+From:   Martin KaFai Lau <kafai@fb.com>
+Smtp-Origin-Hostname: devbig005.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>, <kernel-team@fb.com>,
+        <netdev@vger.kernel.org>, Paul Chaignon <paul.chaignon@orange.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH v2 bpf-next 2/5] bpftool: Fix missing BTF output for json during map dump
+Date:   Wed, 15 Jan 2020 14:22:53 -0800
+Message-ID: <20200115222253.946486-1-kafai@fb.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200115222241.945672-1-kafai@fb.com>
+References: <20200115222241.945672-1-kafai@fb.com>
+X-FB-Internal: Safe
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-01-15_03:2020-01-15,2020-01-15 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=38
+ clxscore=1015 mlxscore=0 mlxlogscore=749 malwarescore=0 bulkscore=0
+ phishscore=0 priorityscore=1501 spamscore=0 adultscore=0 impostorscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-2001150167
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-John Fastabend <john.fastabend@gmail.com> writes:
+The btf availability check is only done for plain text output.
+It causes the whole BTF output went missing when json_output
+is used.
 
-> Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->>=20
->> Commit 96360004b862 ("xdp: Make devmap flush_list common for all map
->> instances"), changed devmap flushing to be a global operation instead of=
- a
->> per-map operation. However, the queue structure used for bulking was sti=
-ll
->> allocated as part of the containing map.
->>=20
->> This patch moves the devmap bulk queue into struct net_device. The
->> motivation for this is reusing it for the non-map variant of XDP_REDIREC=
-T,
->> which will be changed in a subsequent commit.  To avoid other fields of
->> struct net_device moving to different cache lines, we also move a couple=
- of
->> other members around.
->>=20
->> We defer the actual allocation of the bulk queue structure until the
->> NETDEV_REGISTER notification devmap.c. This makes it possible to check f=
-or
->> ndo_xdp_xmit support before allocating the structure, which is not possi=
-ble
->> at the time struct net_device is allocated. However, we keep the freeing=
- in
->> free_netdev() to avoid adding another RCU callback on NETDEV_UNREGISTER.
->>=20
->> Because of this change, we lose the reference back to the map that
->> originated the redirect, so change the tracepoint to always return 0 as =
-the
->> map ID and index. Otherwise no functional change is intended with this
->> patch.
->>=20
->> Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
->> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->> ---
->
-> LGTM. I didn't check the net_device layout with pahole though so I'm
-> trusting they are good from v1 discussion.
+This patch simplifies the logic a little by avoiding passing "int btf" to
+map_dump().
 
-I believe so; looks like this now:
+For plain text output, the btf_wtr is only created when the map has
+BTF (i.e. info->btf_id != 0).  The nullness of "json_writer_t *wtr"
+in map_dump() alone can decide if dumping BTF output is needed.
+As long as wtr is not NULL, map_dump() will print out the BTF-described
+data whenever a map has BTF available (i.e. info->btf_id != 0)
+regardless of json or plain-text output.
 
-	/* --- cacheline 14 boundary (896 bytes) --- */
-	struct netdev_queue *      _tx __attribute__((__aligned__(64))); /*   896 =
-    8 */
-	unsigned int               num_tx_queues;        /*   904     4 */
-	unsigned int               real_num_tx_queues;   /*   908     4 */
-	struct Qdisc *             qdisc;                /*   912     8 */
-	unsigned int               tx_queue_len;         /*   920     4 */
-	spinlock_t                 tx_global_lock;       /*   924     4 */
-	struct xdp_dev_bulk_queue * xdp_bulkq;           /*   928     8 */
-	struct xps_dev_maps *      xps_cpus_map;         /*   936     8 */
-	struct xps_dev_maps *      xps_rxqs_map;         /*   944     8 */
-	struct mini_Qdisc *        miniq_egress;         /*   952     8 */
-	/* --- cacheline 15 boundary (960 bytes) --- */
-	struct hlist_head  qdisc_hash[16];               /*   960   128 */
-	/* --- cacheline 17 boundary (1088 bytes) --- */
-	struct timer_list  watchdog_timer;               /*  1088    40 */
+In do_dump(), the "int btf" is also renamed to "int do_plain_btf".
 
-	/* XXX last struct has 4 bytes of padding */
+Fixes: 99f9863a0c45 ("bpftool: Match maps by name")
+Cc: Paul Chaignon <paul.chaignon@orange.com>
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+---
+ tools/bpf/bpftool/map.c | 42 ++++++++++++++++++++---------------------
+ 1 file changed, 20 insertions(+), 22 deletions(-)
 
-	int                        watchdog_timeo;       /*  1128     4 */
-
-	/* XXX 4 bytes hole, try to pack */
-
-	int *                      pcpu_refcnt;          /*  1136     8 */
-	struct list_head   todo_list;                    /*  1144    16 */
-	/* --- cacheline 18 boundary (1152 bytes) was 8 bytes ago --- */
-
--Toke
+diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
+index e00e9e19d6b7..45c1eda6512c 100644
+--- a/tools/bpf/bpftool/map.c
++++ b/tools/bpf/bpftool/map.c
+@@ -933,7 +933,7 @@ static int maps_have_btf(int *fds, int nb_fds)
+ 
+ static int
+ map_dump(int fd, struct bpf_map_info *info, json_writer_t *wtr,
+-	 bool enable_btf, bool show_header)
++	 bool show_header)
+ {
+ 	void *key, *value, *prev_key;
+ 	unsigned int num_elems = 0;
+@@ -950,18 +950,16 @@ map_dump(int fd, struct bpf_map_info *info, json_writer_t *wtr,
+ 
+ 	prev_key = NULL;
+ 
+-	if (enable_btf) {
+-		err = btf__get_from_id(info->btf_id, &btf);
+-		if (err || !btf) {
+-			/* enable_btf is true only if we've already checked
+-			 * that all maps have BTF information.
+-			 */
+-			p_err("failed to get btf");
+-			goto exit_free;
++	if (wtr) {
++		if (info->btf_id) {
++			err = btf__get_from_id(info->btf_id, &btf);
++			if (err || !btf) {
++				err = err ? : -ESRCH;
++				p_err("failed to get btf");
++				goto exit_free;
++			}
+ 		}
+-	}
+ 
+-	if (wtr) {
+ 		if (show_header) {
+ 			jsonw_start_object(wtr);	/* map object */
+ 			show_map_header_json(info, wtr);
+@@ -1009,7 +1007,7 @@ static int do_dump(int argc, char **argv)
+ {
+ 	json_writer_t *wtr = NULL, *btf_wtr = NULL;
+ 	struct bpf_map_info info = {};
+-	int nb_fds, i = 0, btf = 0;
++	int nb_fds, i = 0;
+ 	__u32 len = sizeof(info);
+ 	int *fds = NULL;
+ 	int err = -1;
+@@ -1029,17 +1027,17 @@ static int do_dump(int argc, char **argv)
+ 	if (json_output) {
+ 		wtr = json_wtr;
+ 	} else {
+-		btf = maps_have_btf(fds, nb_fds);
+-		if (btf < 0)
++		int do_plain_btf;
++
++		do_plain_btf = maps_have_btf(fds, nb_fds);
++		if (do_plain_btf < 0)
+ 			goto exit_close;
+-		if (btf) {
++
++		if (do_plain_btf) {
+ 			btf_wtr = get_btf_writer();
+-			if (btf_wtr) {
+-				wtr = btf_wtr;
+-			} else {
++			wtr = btf_wtr;
++			if (!btf_wtr)
+ 				p_info("failed to create json writer for btf. falling back to plain output");
+-				btf = 0;
+-			}
+ 		}
+ 	}
+ 
+@@ -1050,7 +1048,7 @@ static int do_dump(int argc, char **argv)
+ 			p_err("can't get map info: %s", strerror(errno));
+ 			break;
+ 		}
+-		err = map_dump(fds[i], &info, wtr, btf, nb_fds > 1);
++		err = map_dump(fds[i], &info, wtr, nb_fds > 1);
+ 		if (!wtr && i != nb_fds - 1)
+ 			printf("\n");
+ 
+@@ -1061,7 +1059,7 @@ static int do_dump(int argc, char **argv)
+ 	if (wtr && nb_fds > 1)
+ 		jsonw_end_array(wtr);	/* root array */
+ 
+-	if (btf)
++	if (btf_wtr)
+ 		jsonw_destroy(&btf_wtr);
+ exit_close:
+ 	for (; i < nb_fds; i++)
+-- 
+2.17.1
 
