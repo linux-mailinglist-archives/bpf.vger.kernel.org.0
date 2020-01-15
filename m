@@ -2,182 +2,168 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EC0A13CF7B
-	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2020 22:54:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7FDF13CFC3
+	for <lists+bpf@lfdr.de>; Wed, 15 Jan 2020 23:07:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730357AbgAOVyN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Jan 2020 16:54:13 -0500
-Received: from mail-qt1-f175.google.com ([209.85.160.175]:34718 "EHLO
-        mail-qt1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729516AbgAOVyM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Jan 2020 16:54:12 -0500
-Received: by mail-qt1-f175.google.com with SMTP id 5so17191409qtz.1
-        for <bpf@vger.kernel.org>; Wed, 15 Jan 2020 13:54:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:subject:message-id:mime-version:content-disposition
-         :content-transfer-encoding;
-        bh=JtTvNccN+0/+lCGUOatY00GbzmTZrZ9tQej/2dZXgxw=;
-        b=KePd9ZfqDfmOkXqFFTc3Q9LwzsdRxP/xYXtHcwOYE2P45KBCjSc7c09L/RvSjEB3lY
-         QMzCYCg4J138ouYNcOygau/65JCD6GLK9yg6ZujG+wHqgyj6xyoPj6PIg6EXpnaufwh7
-         Z510eSm16ZQQlyVQUQ6H4u455OeTZzrZoL2cHWu/2KDD55t3Dg3KPfSsFqOK1sG2ro6C
-         wpw0NoTRojtNoZ1Mm/O6vJrSogBMAqYbLVyoBo6in2wt4xTkU/Q6oi+gH+1liu+6xGtu
-         DNYenwCawyAjhSHWPmBnnZtQIznYZmw6UFDfQNPmBQgDGs4Z4KR8S2bmvh8uklxplGW+
-         9kVA==
+        id S1730052AbgAOWHB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Jan 2020 17:07:01 -0500
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:33963 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730050AbgAOWG6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Jan 2020 17:06:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1579126017;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2oZ0/KEDQ6dTwiAcIr2E5jK3OjJKgPjKG2s+1U8IzDY=;
+        b=F7CD6zPgqEcj45Vc3Y5yVQs1h8jAohsbwZat45fNNg8W5YBLs8phGcT6ceCgxiQ2IlQNuo
+        D3Lj1pBPbhno8r1eEJ4A+4959bU9tatNcFHf1P4ajQ9tsMeGI+PG6haZY7XONT0fEZL8HZ
+        R3EJy18qylTINOJcIa+5ctd5b/t+Tf4=
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
+ [209.85.208.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-16-ubrKIknrMpqASqd25SWrRA-1; Wed, 15 Jan 2020 17:06:56 -0500
+X-MC-Unique: ubrKIknrMpqASqd25SWrRA-1
+Received: by mail-lj1-f197.google.com with SMTP id z17so4452494ljz.2
+        for <bpf@vger.kernel.org>; Wed, 15 Jan 2020 14:06:56 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
-         :content-disposition:content-transfer-encoding;
-        bh=JtTvNccN+0/+lCGUOatY00GbzmTZrZ9tQej/2dZXgxw=;
-        b=nvHE8JKph6sPWVoSljNw3Zq7YwdrTQrxst4canLq17DR/78TOi3Ctpa2W0pSI6+YiB
-         IEU/KLJAWvUiQEAstKHnLqoKwkVWACzlA9ANr+QTujPdW1ywgVmFvOAR+kU/7XRbWU7A
-         tROIC6EYAEQ89v9crov/fmr1Tf+tIpwXV9/k9EZRI6yVYy/drHNzOioSNVlXm2/yLdxQ
-         7skAp4tiyv3urWZNijuRKFJSt6mfWukm1F8/6/Meo4BY/jysgvaOF0hU2jBtudkRlIkH
-         WtYrOGB1SXYdR2sbwGoxlxMQ8+qznZ8umbvajkaBoEaiu2zcxe1zc60vT36SYMHlWBwj
-         Nyxg==
-X-Gm-Message-State: APjAAAWVkefV2VJz6gfb1/FKmeqJWI5kxKz+a0RBJby2rkk+JpXgry/u
-        JCqiKypXzzmdA6U4YIO87Jgqww==
-X-Google-Smtp-Source: APXvYqxcRE3B5iQiFW7B0tOZ3c36MzfvnKAl5xIFQTt35nmhPCQoqb66aA5/hose3wVQiuv4Glt7kQ==
-X-Received: by 2002:aed:2150:: with SMTP id 74mr707121qtc.323.1579125251168;
-        Wed, 15 Jan 2020 13:54:11 -0800 (PST)
-Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id g21sm9058033qkl.116.2020.01.15.13.54.10
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=2oZ0/KEDQ6dTwiAcIr2E5jK3OjJKgPjKG2s+1U8IzDY=;
+        b=RQuxnpM6qkdVkjNLJaXrLMvl6ncDpb+U+XnPohoopAe9nNLKvzf5PksDeusJrypbyb
+         YtK5xCUFXvuHGTBFJbap6gudZ+MTnzAo4tIS1ljlERjF8zx76Xo+Y4NtNek9df2KzKDh
+         H7OnlgGMB+uQzBNTM6viIR9LnGm904zx0SqbcqNJhyQ2XjgCsfhefLLMHWk7zu+18GMj
+         ows6pYaI3r4OgNGX7tE5xRsPL5KAS0QqwHhybz5IPoX82+e0s3Om5qARUEpxglBBFiYu
+         efzM4UFnWDfU8GZUDdPtrswoXkfJpKjhVCXMfcVqeuj5yJ211JKje94ZaZCFD+1NBzAA
+         RPFw==
+X-Gm-Message-State: APjAAAXxfAvPOGiRpti0Ts/nMeIhlcb+v1oAL1Ddbk8CRilR1Sra429+
+        kkE8UAVqjTj0LvC6yW4zLLLwvtjfPFLv+jcvOh1MveCs1GialltvGw6MRbZtWwd+Rg8GlayOYaL
+        DGdCKFfOdicnb
+X-Received: by 2002:a2e:3e03:: with SMTP id l3mr298592lja.237.1579126014942;
+        Wed, 15 Jan 2020 14:06:54 -0800 (PST)
+X-Google-Smtp-Source: APXvYqyICy0H3yi0QO3D1AnqbT83z5lYl+AEoYsdeygh7OdbhjgdnK2+SYcwTz5CjSsgq/x/PPJOpQ==
+X-Received: by 2002:a2e:3e03:: with SMTP id l3mr298563lja.237.1579126014662;
+        Wed, 15 Jan 2020 14:06:54 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id k5sm9561045lfd.86.2020.01.15.14.06.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Jan 2020 13:54:10 -0800 (PST)
-Date:   Wed, 15 Jan 2020 16:54:09 -0500
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     lsf-pc <lsf-pc@lists.linuxfoundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-nvme@lists.infradead.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: REMINDER: LSF/MM/BPF: 2020: Call for Proposals
-Message-ID: <20200115215409.5pd4fnoawqzs7rvw@jbacik-mbp>
+        Wed, 15 Jan 2020 14:06:53 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id BEFA11804D6; Wed, 15 Jan 2020 23:06:52 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-rdma@vger.kernel.org,
+        "open list\:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH bpf-next v2 02/10] tools/bpf/runqslower: Fix override option for VMLINUX_BTF
+In-Reply-To: <CAEf4BzbqY8zivZy637Xy=iTECzBAYQ7vo=M7TvsLM2Yp12bJpg@mail.gmail.com>
+References: <157909756858.1192265.6657542187065456112.stgit@toke.dk> <157909757089.1192265.9038866294345740126.stgit@toke.dk> <CAEf4BzbqY8zivZy637Xy=iTECzBAYQ7vo=M7TvsLM2Yp12bJpg@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 15 Jan 2020 23:06:52 +0100
+Message-ID: <87v9pctlvn.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This is a reminder that we are still taking requests for this years Linux
-Storage, Filesystem, Memory Management, and BPF Summit.  Below is the original
-announcement but we would like to hilight a few changes and re-iterate a few
-things.
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-1) The venue has been finalized and as such the website is now live
+> On Wed, Jan 15, 2020 at 6:13 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
+dhat.com> wrote:
+>>
+>> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+>>
+>> The runqslower tool refuses to build without a file to read vmlinux BTF
+>> from. The build fails with an error message to override the location by
+>> setting the VMLINUX_BTF variable if autodetection fails. However, the
+>> Makefile doesn't actually work with that override - the error message is
+>> still emitted.
+>
+> Do you have example command with VMLINUX_BTF override that didn't work
+> (and what error message was emitted)?
 
-	https://events.linuxfoundation.org/lsfmm/
+Before this patch:
 
-2) Please make sure to fill out the google form to make sure we don't miss your
-request.
+$ cd ~/build/linux/tools/bpf/runqslower
+$ make
+Makefile:18: *** "Can't detect kernel BTF, use VMLINUX_BTF to specify it ex=
+plicitly".  Stop.
 
-3) PLEASE STILL SUBMIT TOPICS TO THE RELEVANT MAILINGLISTS.  The topics of
-interest part of the form is so we can figure out what topics from the
-mailinglist are the relevant discussions to have.  If you submit a topic please
-feel free to paste a lore link in your form if you've not already filled out the
-form.
+$ make VMLINUX_BTF=3D~/build/linux/vmlinux
+Makefile:18: *** "Can't detect kernel BTF, use VMLINUX_BTF to specify it ex=
+plicitly".  Stop.
 
-The rest of the details of course are in the original announcment which is
-included below.  Thanks,
+>> Fix this by only doing auto-detection if no override is set. And while
+>> we're at it, also look for a vmlinux file in the current kernel build dir
+>> if none if found on the running kernel.
+>>
+>> Fixes: 9c01546d26d2 ("tools/bpf: Add runqslower tool to tools/bpf")
+>> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+>> ---
+>>  tools/bpf/runqslower/Makefile |   16 ++++++++++------
+>>  1 file changed, 10 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/tools/bpf/runqslower/Makefile b/tools/bpf/runqslower/Makefi=
+le
+>> index cff2fbcd29a8..fb93ce2bf2fe 100644
+>> --- a/tools/bpf/runqslower/Makefile
+>> +++ b/tools/bpf/runqslower/Makefile
+>> @@ -10,12 +10,16 @@ CFLAGS :=3D -g -Wall
+>>
+>>  # Try to detect best kernel BTF source
+>>  KERNEL_REL :=3D $(shell uname -r)
+>> -ifneq ("$(wildcard /sys/kernel/btf/vmlinux)","")
+>> -VMLINUX_BTF :=3D /sys/kernel/btf/vmlinux
+>> -else ifneq ("$(wildcard /boot/vmlinux-$(KERNEL_REL))","")
+>> -VMLINUX_BTF :=3D /boot/vmlinux-$(KERNEL_REL)
+>> -else
+>> -$(error "Can't detect kernel BTF, use VMLINUX_BTF to specify it explici=
+tly")
+>> +ifeq ("$(VMLINUX_BTF)","")
+>> +  ifneq ("$(wildcard /sys/kernel/btf/vmlinux)","")
+>> +  VMLINUX_BTF :=3D /sys/kernel/btf/vmlinux
+>> +  else ifneq ("$(wildcard /boot/vmlinux-$(KERNEL_REL))","")
+>> +  VMLINUX_BTF :=3D /boot/vmlinux-$(KERNEL_REL)
+>> +  else ifneq ("$(wildcard $(abspath ../../../vmlinux))","")
+>> +  VMLINUX_BTF :=3D $(abspath ../../../vmlinux)
+>
+> I'm planning to mirror runqslower into libbpf Github repo and this
+> ../../../vmlinux piece will be completely out of place in that
+> context. Also it only will help when building kernel in-tree. So I'd
+> rather not add this.
 
-Josef
+Well building the kernel in-tree is something people sometimes want to do ;)
 
--------------- Original announcement ---------------------
-The annual Linux Storage, Filesystem, Memory Management, and BPF
-(LSF/MM/BPF) Summit for 2020 will be held from April 27 - April 29 at
-The Riviera Palm Springs, A Tribute Portfolio Resort in Palm Springs,
-California. LSF/MM/BPF is an invitation-only technical workshop to map
-out improvements to the Linux storage, filesystem, BPF, and memory
-management subsystems that will make their way into the mainline kernel
-within the coming years.
+Specifically, the selftests depend on this, so we should at least fix
+those; but I guess it could work to just pass in VMLINUX_BTF as part of
+the make -C from the selftests dir? I'll try that...
 
-LSF/MM/BPF 2020 will be a three day, stand-alone conference with four
-subsystem-specific tracks, cross-track discussions, as well as BoF and
-hacking sessions.
+-Toke
 
-On behalf of the committee I am issuing a call for agenda proposals
-that are suitable for cross-track discussion as well as technical
-subjects for the breakout sessions.
-
-If advance notice is required for visa applications then please point
-that out in your proposal or request to attend, and submit the topic
-as soon as possible.
-
-This year will be a little different for requesting attendance.  Please
-do the following by February 15th, 2020.
-
-1) Fill out the following Google form to request attendance and
-suggest any topics
-
-	https://forms.gle/voWi1j9kDs13Lyqf9
-
-In previous years we have accidentally missed people's attendance
-requests because they either didn't cc lsf-pc@ or we simply missed them
-in the flurry of emails we get.  Our community is large and our
-volunteers are busy, filling this out will help us make sure we don't
-miss anybody.
-
-2) Proposals for agenda topics should still be sent to the following
-lists to allow for discussion among your peers.  This will help us
-figure out which topics are important for the agenda.
-
-        lsf-pc@lists.linux-foundation.org
-
-and CC the mailing lists that are relevant for the topic in question:
-
-        FS:     linux-fsdevel@vger.kernel.org
-        MM:     linux-mm@kvack.org
-        Block:  linux-block@vger.kernel.org
-        ATA:    linux-ide@vger.kernel.org
-        SCSI:   linux-scsi@vger.kernel.org
-        NVMe:   linux-nvme@lists.infradead.org
-        BPF:    bpf@vger.kernel.org
-
-Please tag your proposal with [LSF/MM/BPF TOPIC] to make it easier to
-track. In addition, please make sure to start a new thread for each
-topic rather than following up to an existing one. Agenda topics and
-attendees will be selected by the program committee, but the final
-agenda will be formed by consensus of the attendees on the day.
-
-We will try to cap attendance at around 25-30 per track to facilitate
-discussions although the final numbers will depend on the room sizes
-at the venue.
-
-For discussion leaders, slides and visualizations are encouraged to
-outline the subject matter and focus the discussions. Please refrain
-from lengthy presentations and talks; the sessions are supposed to be
-interactive, inclusive discussions.
-
-There will be no recording or audio bridge. However, we expect that
-written minutes will be published as we did in previous years:
-
-2019: https://lwn.net/Articles/lsfmm2019/
-
-2018: https://lwn.net/Articles/lsfmm2018/
-
-2017: https://lwn.net/Articles/lsfmm2017/
-
-2016: https://lwn.net/Articles/lsfmm2016/
-
-2015: https://lwn.net/Articles/lsfmm2015/
-
-2014: http://lwn.net/Articles/LSFMM2014/
-
-3) If you have feedback on last year's meeting that we can use to
-improve this year's, please also send that to:
-
-        lsf-pc@lists.linux-foundation.org
-
-Thank you on behalf of the program committee:
-
-	Josef Bacik (Filesystems)
-	Amir Goldstein (Filesystems)
-	Martin K. Petersen (Storage)
-	Omar Sandoval (Storage)
-	Michal Hocko (MM)
-	Dan Williams (MM)
-	Alexei Starovoitov (BPF)
-	Daniel Borkmann (BPF)
