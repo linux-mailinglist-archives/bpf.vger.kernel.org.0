@@ -2,92 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C14DB13FB99
-	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2020 22:32:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D6FF13FBC1
+	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2020 22:56:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729990AbgAPVcI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Jan 2020 16:32:08 -0500
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:43319 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388928AbgAPVcI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Jan 2020 16:32:08 -0500
-Received: by mail-lj1-f196.google.com with SMTP id a13so24214340ljm.10
-        for <bpf@vger.kernel.org>; Thu, 16 Jan 2020 13:32:06 -0800 (PST)
+        id S1732847AbgAPV4P (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Jan 2020 16:56:15 -0500
+Received: from mail-qv1-f65.google.com ([209.85.219.65]:46697 "EHLO
+        mail-qv1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729153AbgAPV4P (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Jan 2020 16:56:15 -0500
+Received: by mail-qv1-f65.google.com with SMTP id u1so9818497qvk.13;
+        Thu, 16 Jan 2020 13:56:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pgfrlKWCSye7BCAkvG0/EhbwJql3BERc4KUSd7jQy2c=;
-        b=NmFAQ03/6oGpywExVe4tRPqmo5hTEBsQ9qAXTNUL4148AFTXKb43mbFEL6DC4Ptlz2
-         eWxo6Exx/T0HvrwCz+MFNcaiPxbM69O1fT4kKuKD9NVa/6KcAnY7CG+Xc8AVmn4EfG8N
-         yOgewat/hsYHKFXFy7AskTuBfTiNSC2MsTDxAFgLH3ytgdJ5F6b86Gw7fDWTAx4s2Ca3
-         Z1jo5WZVVTzbZjoSwZN7r+17NCiqDoSZuNkbG4J+kgTCKH0zlQ3mQ+sOMAR0f+g7eOLd
-         Z2Cc09G9n5hs9LQ3rTZw4jr9f233FVzE6iGYn/FNE8JWiNNsyrdhLDJ0NFC1ea/knFiy
-         tm3A==
+         :cc:content-transfer-encoding;
+        bh=uYKEJj/GMP8sSDQFNnAjGhqY9XFCpZEuY6M+a4dSQeU=;
+        b=cJQqdoXQ0CnuvxdB8UKCrMhFl3pfRQmYy0E92RMM7YS3wWK2bpd1cVGG91pnVQXD6D
+         rVVDFwxqb0Bjzruz80mumk7k7PS+s0ClROc1+BN8zTeA5pWi+P+IHdOmLprmEwX7yJAW
+         dqMeWRZ5J5c98Fg6EpqQuCllyNOrZ5bJmWsj6a/IVjGkaQUl14Fe1YIqJ2owcDK2AAo+
+         NAb8l0yhDKmxNbogqSxC9iGP0ExKSRkgv8RGfpbY7V7AEJxEAE0FYhRZbS8mKBW4ZrgV
+         /mKkM8/aWPkiRjp0tHyin5jY8DtO2rosRPOk82GMb/F70zFzicESv+/TzeAw6SkbPDEA
+         y/pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pgfrlKWCSye7BCAkvG0/EhbwJql3BERc4KUSd7jQy2c=;
-        b=TYRV4Qvpzb7KJggtiMkyAC19cP3UA5CH7szRZ70WvbZ+P95sXimzwc+tM8UXlthbhY
-         /faZUxns0X4kTu875e3r+Td4698Tac1GJ870GbTSDrZcfu+1FPRZRlhmawWhd387iXys
-         9mh7YRaqzUwGBYfsvYt6VnWbczhv8Otvlaiqzqa2PWPirST8Tbq3iW1lLLHfeaZzU/JV
-         QQzDbQrXWV+ItkpjbrckrA3ta6nbhLYUuqeq9ZNlC56wKNQis5DBdIn6YupUW/+cGJsB
-         8Umbdcwl49T7guJWKGPAmsN447rbkBuFiBN4sT+gkkG6q+x/c+h5H2IgS+4pRFYmueRv
-         JxZg==
-X-Gm-Message-State: APjAAAXcjQICQDiuMF62oMefhy95g3WoNjsS6e15aNIWtIOwgMdP72f2
-        fgu6JYpZiL97C2hu1DKSBpLwzRRcyCIDgNA31wI=
-X-Google-Smtp-Source: APXvYqyXyDaX0SVEwrtwBSwNwK8yn5qQoat+dbBIXYT/B8flXVxZYDjDLu432+hgtgPPU8BfoKAsQ8iwZMGXakk1LXE=
-X-Received: by 2002:a2e:8016:: with SMTP id j22mr3393143ljg.24.1579210325840;
- Thu, 16 Jan 2020 13:32:05 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=uYKEJj/GMP8sSDQFNnAjGhqY9XFCpZEuY6M+a4dSQeU=;
+        b=rY0zitNH7C93O9XTk5wzjKhEB1/Jr+Ft0ZBUENM2v1zMpZI5odnlWlfwsJT4taGwI2
+         XRBfyudTOcovcMbRDAKMIdAn8Lp6Ve4FgJBMxZPeFrzHPVh+KvvmU3O4AGQkvPEx886t
+         uEryrjIVphyzReiP9hA0gUtVXbcc4PFI9EaGssa/wR35G1CdFhN6bKnOMsriaJYFwSIG
+         i1gR9TkxtfAh0Oe3SYusdSPMvzOdLYsD1rd91UmjC/PCF/vwTD4r1DF0ZLKymuY6rKGu
+         vofBtwQta0/amI2+tE6gqgwnMZtcFNtDm8gOe3WJSR1TzbxEZxAechSl5pzz04h152Sd
+         +kHg==
+X-Gm-Message-State: APjAAAWmyajr2ynBx4VB9Q00D7bDNMjIvIrUDfjrdyrG4QpE660+5qjx
+        Pl/JhXENcq8Zwm41inL3uwjZqwytqJs4gc9p5fY=
+X-Google-Smtp-Source: APXvYqwlOZAAm2G/5rmcVaC/i2nVwG0ZnEs5LNd+BqKVMpk8A+zSDsOF78JgY+/NQIXhKjtj4+TM9cz9V/EWM8Z9T/4=
+X-Received: by 2002:ad4:54d3:: with SMTP id j19mr4651801qvx.247.1579211774124;
+ Thu, 16 Jan 2020 13:56:14 -0800 (PST)
 MIME-Version: 1.0
-References: <20200116174004.1522812-1-yhs@fb.com> <CAEf4Bzbi0T5P=Dnja=pz3Nj0jhO9S+q_q1U4vfBwYP8enX+Zag@mail.gmail.com>
-In-Reply-To: <CAEf4Bzbi0T5P=Dnja=pz3Nj0jhO9S+q_q1U4vfBwYP8enX+Zag@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 16 Jan 2020 13:31:54 -0800
-Message-ID: <CAADnVQJRD1Wb6rhwfx1Te6oyAfpAk_A8fuM7T5FPicv9Z7mckA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: fix test_progs send_signal
- flakiness with nmi mode
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+References: <157918093154.1357254.7616059374996162336.stgit@toke.dk> <157918093613.1357254.10230277763921623892.stgit@toke.dk>
+In-Reply-To: <157918093613.1357254.10230277763921623892.stgit@toke.dk>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 16 Jan 2020 13:56:03 -0800
+Message-ID: <CAEf4BzbJZ7JUyr8p3YKX-Rrth_B7OMbih50xxyt_YNBd--107w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 04/11] tools/runqslower: Use consistent
+ include paths for libbpf
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-rdma@vger.kernel.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        clang-built-linux@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 16, 2020 at 10:25 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Thu, Jan 16, 2020 at 5:23 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
 >
-> On Thu, Jan 16, 2020 at 10:06 AM Yonghong Song <yhs@fb.com> wrote:
-> >
-> > Alexei observed that test_progs send_signal may fail if run
-> > with command line "./test_progs" and the tests will pass
-> > if just run "./test_progs -n 40".
-> >
-> > I observed similar issue with nmi subtest failure
-> > and added a delay 100 us in Commit ab8b7f0cb358
-> > ("tools/bpf: Add self tests for bpf_send_signal_thread()")
-> > and the problem is gone for me. But the issue still exists
-> > in Alexei's testing environment.
-> >
-> > The current code uses sample_freq = 50 (50 events/second), which
-> > may not be enough. But if the sample_freq value is larger than
-> > sysctl kernel/perf_event_max_sample_rate, the perf_event_open
-> > syscall will fail.
-> >
-> > This patch changed nmi perf testing to use sample_period = 1,
-> > which means trying to sampling every event. This seems fixing
-> > the issue.
-> >
-> > Fixes: ab8b7f0cb358 ("tools/bpf: Add self tests for bpf_send_signal_thread()")
-> > Signed-off-by: Yonghong Song <yhs@fb.com>
-> > ---
+> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 >
-> Good not to have to rely on arbitrary timeout!
+> Fix the runqslower tool to include libbpf header files with the bpf/
+> prefix, to be consistent with external users of the library. Also ensure
+> that all includes of exported libbpf header files (those that are exporte=
+d
+> on 'make install' of the library) use bracketed includes instead of quote=
+d.
+>
+> To not break the build, keep the old include path until everything has be=
+en
+> changed to the new one; a subsequent patch will remove that.
+>
+> Fixes: 6910d7d3867a ("selftests/bpf: Ensure bpf_helper_defs.h are taken f=
+rom selftests dir")
+> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> ---
+>  tools/bpf/runqslower/Makefile         |    5 +++--
+>  tools/bpf/runqslower/runqslower.bpf.c |    2 +-
+>  tools/bpf/runqslower/runqslower.c     |    4 ++--
+>  3 files changed, 6 insertions(+), 5 deletions(-)
+>
+> diff --git a/tools/bpf/runqslower/Makefile b/tools/bpf/runqslower/Makefil=
+e
+> index 89fb7cd30f1a..c0512b830805 100644
+> --- a/tools/bpf/runqslower/Makefile
+> +++ b/tools/bpf/runqslower/Makefile
+> @@ -5,6 +5,7 @@ LLC :=3D llc
+>  LLVM_STRIP :=3D llvm-strip
+>  DEFAULT_BPFTOOL :=3D $(OUTPUT)/sbin/bpftool
+>  BPFTOOL ?=3D $(DEFAULT_BPFTOOL)
+> +LIBBPF_INCLUDE :=3D -I$(abspath ../../lib) -I$(abspath ../../lib/bpf)
 
-Indeed.
-Applied. Thanks
+I'd probably put all the -I's into single INCLUDES var and include
+that one instead of mixing -I$(OUTPUT) and $(LIBBPF_INCLUDE), but this
+works too.
+
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+
+>  LIBBPF_SRC :=3D $(abspath ../../lib/bpf)
+>  CFLAGS :=3D -g -Wall
+>
+
+[...]
