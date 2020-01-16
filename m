@@ -2,36 +2,36 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8092413F958
-	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2020 20:24:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7342D13F952
+	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2020 20:24:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730427AbgAPQwu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Jan 2020 11:52:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36168 "EHLO mail.kernel.org"
+        id S1730480AbgAPQww (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Jan 2020 11:52:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36192 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729387AbgAPQwu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Jan 2020 11:52:50 -0500
+        id S1730461AbgAPQwv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Jan 2020 11:52:51 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CFF48208C3;
-        Thu, 16 Jan 2020 16:52:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 053702081E;
+        Thu, 16 Jan 2020 16:52:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579193569;
-        bh=HDJI+cWZbtRLZamgfp2m4CUDmGjhDhsihypHESYsrfw=;
+        s=default; t=1579193570;
+        bh=18TLQobk9WamORS6tuASBwCzT2OWcQr0TMc4s4k2JGM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wzuu5CWEgBxMecjveow9Ruy+FceQig/qMovGFJYPOzPlBHwoW9cnu64eyyqExR7yG
-         tZkY3hvGuyY93/fRTNVp+lw/LVA5BSHl322ZoCIUdP77bMSzwAwI8+zXTxhubtiOUg
-         wtWel7Gpdh9csTAFupPK90t74hlB3Miq8OVY74w4=
+        b=uvTYi7ctg6VrDJKuVJmP/GdHCunO57X0/7pEtlHAonfYK8KENfSugscQO8hqZbxAk
+         x3XZ3/ztrHvlRZnq/uMfr8VXlxhYz+Na/P9YUTapZZ0Q9dERhRz0s6kJZEv2BIj/og
+         FDRTpdzGo5lgAlicWU3sMqejVxAsJxIsgLAUUNcU=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Andrii Nakryiko <andriin@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 113/205] libbpf: Fix another potential overflow issue in bpf_prog_linfo
-Date:   Thu, 16 Jan 2020 11:41:28 -0500
-Message-Id: <20200116164300.6705-113-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 114/205] libbpf: Make btf__resolve_size logic always check size error condition
+Date:   Thu, 16 Jan 2020 11:41:29 -0500
+Message-Id: <20200116164300.6705-114-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200116164300.6705-1-sashal@kernel.org>
 References: <20200116164300.6705-1-sashal@kernel.org>
@@ -46,63 +46,37 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Andrii Nakryiko <andriin@fb.com>
 
-[ Upstream commit dd3ab126379ec040b3edab8559f9c72de6ef9d29 ]
+[ Upstream commit 994021a7e08477f7e51285920aac99fc967fae8a ]
 
-Fix few issues found by Coverity and LGTM.
+Perform size check always in btf__resolve_size. Makes the logic a bit more
+robust against corrupted BTF and silences LGTM/Coverity complaining about
+always true (size < 0) check.
 
-Fixes: b053b439b72a ("bpf: libbpf: bpftool: Print bpf_line_info during prog dump")
+Fixes: 69eaab04c675 ("btf: extract BTF type size calculation")
 Signed-off-by: Andrii Nakryiko <andriin@fb.com>
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Link: https://lore.kernel.org/bpf/20191107020855.3834758-4-andriin@fb.com
+Link: https://lore.kernel.org/bpf/20191107020855.3834758-5-andriin@fb.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/lib/bpf/bpf_prog_linfo.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ tools/lib/bpf/btf.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/tools/lib/bpf/bpf_prog_linfo.c b/tools/lib/bpf/bpf_prog_linfo.c
-index 8c67561c93b0..3ed1a27b5f7c 100644
---- a/tools/lib/bpf/bpf_prog_linfo.c
-+++ b/tools/lib/bpf/bpf_prog_linfo.c
-@@ -101,6 +101,7 @@ struct bpf_prog_linfo *bpf_prog_linfo__new(const struct bpf_prog_info *info)
- {
- 	struct bpf_prog_linfo *prog_linfo;
- 	__u32 nr_linfo, nr_jited_func;
-+	__u64 data_sz;
+diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+index 1aa189a9112a..d606a358480d 100644
+--- a/tools/lib/bpf/btf.c
++++ b/tools/lib/bpf/btf.c
+@@ -269,10 +269,9 @@ __s64 btf__resolve_size(const struct btf *btf, __u32 type_id)
+ 		t = btf__type_by_id(btf, type_id);
+ 	}
  
- 	nr_linfo = info->nr_line_info;
++done:
+ 	if (size < 0)
+ 		return -EINVAL;
+-
+-done:
+ 	if (nelems && size > UINT32_MAX / nelems)
+ 		return -E2BIG;
  
-@@ -122,11 +123,11 @@ struct bpf_prog_linfo *bpf_prog_linfo__new(const struct bpf_prog_info *info)
- 	/* Copy xlated line_info */
- 	prog_linfo->nr_linfo = nr_linfo;
- 	prog_linfo->rec_size = info->line_info_rec_size;
--	prog_linfo->raw_linfo = malloc(nr_linfo * prog_linfo->rec_size);
-+	data_sz = (__u64)nr_linfo * prog_linfo->rec_size;
-+	prog_linfo->raw_linfo = malloc(data_sz);
- 	if (!prog_linfo->raw_linfo)
- 		goto err_free;
--	memcpy(prog_linfo->raw_linfo, (void *)(long)info->line_info,
--	       nr_linfo * prog_linfo->rec_size);
-+	memcpy(prog_linfo->raw_linfo, (void *)(long)info->line_info, data_sz);
- 
- 	nr_jited_func = info->nr_jited_ksyms;
- 	if (!nr_jited_func ||
-@@ -142,13 +143,12 @@ struct bpf_prog_linfo *bpf_prog_linfo__new(const struct bpf_prog_info *info)
- 	/* Copy jited_line_info */
- 	prog_linfo->nr_jited_func = nr_jited_func;
- 	prog_linfo->jited_rec_size = info->jited_line_info_rec_size;
--	prog_linfo->raw_jited_linfo = malloc(nr_linfo *
--					     prog_linfo->jited_rec_size);
-+	data_sz = (__u64)nr_linfo * prog_linfo->jited_rec_size;
-+	prog_linfo->raw_jited_linfo = malloc(data_sz);
- 	if (!prog_linfo->raw_jited_linfo)
- 		goto err_free;
- 	memcpy(prog_linfo->raw_jited_linfo,
--	       (void *)(long)info->jited_line_info,
--	       nr_linfo * prog_linfo->jited_rec_size);
-+	       (void *)(long)info->jited_line_info, data_sz);
- 
- 	/* Number of jited_line_info per jited func */
- 	prog_linfo->nr_jited_linfo_per_func = malloc(nr_jited_func *
 -- 
 2.20.1
 
