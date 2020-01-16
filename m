@@ -2,113 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DC4FC13D246
-	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2020 03:42:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C884913D352
+	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2020 05:59:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729598AbgAPCmg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Jan 2020 21:42:36 -0500
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:41487 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729012AbgAPCmf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Jan 2020 21:42:35 -0500
-Received: by mail-lf1-f65.google.com with SMTP id m30so14317337lfp.8;
-        Wed, 15 Jan 2020 18:42:34 -0800 (PST)
+        id S1729567AbgAPE7Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Jan 2020 23:59:24 -0500
+Received: from mail-pf1-f201.google.com ([209.85.210.201]:46015 "EHLO
+        mail-pf1-f201.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728939AbgAPE7X (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Jan 2020 23:59:23 -0500
+Received: by mail-pf1-f201.google.com with SMTP id x21so12310889pfp.12
+        for <bpf@vger.kernel.org>; Wed, 15 Jan 2020 20:59:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HI+xV3bsEIgulj7uKMX2W6C7zKygWyvz6NNY/styFTY=;
-        b=BKdjjZNMr7gUJbajEu6uDlpuDWmV+FZ9mX4RTHaaayZxgfW+bvItK+gh4cg6+fKj3J
-         mEe+EsEK8BNBi9iEBBGTqedI2dOtYXcvF4WBbL0eJmN8vFh/LFfeRLz+JzmzkU7fiutt
-         ulUR7gsVyO/fnDA1NuXhsoFz9e7ZDuLkhvsNtOucvc2Wv3t6h8NDweHoiFX1x/kKXRXB
-         ZaOvvA92FuY57ygzSExQXyE870M6VApZlDU7zcg5SSESkdXOaXx3wUXKTB6XoxwP3LTS
-         vFPxqcMFg8wkUqPahqpKF4EZ2XGVM7oQStLRVyazZYEO5SjNfisxkO1kPy0oQ6YR0RMP
-         JK2g==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=Yujd7NYO/Gpv5hGCan+Hwvd6fcY54ztoBNLrmT1puBg=;
+        b=nTEBofKCmnS3/2Efie7j4FZM7iYpE9k7Y1Z9TsJLPzuhnrp5h87vi8ctGlA2+HfJAl
+         opiTgWmaY7DX0H/+B1r6K6Tg64BvXYhhD+ShVHVdU0vIj7oMvLT5OPdIBFqk1wtlkG4b
+         G0eiPMDFBf8NZsdmCdkSL8vw80EVcjJfeGLKpid+7f0y/zZTbcAgZ9y5ibio3uXvSI46
+         jyoeSWHvjVLfTKMUipCNT2kCx97J5p9Rcr8QXZIVRCEitkKtbEs9qjMvvVJO/p2d0rwc
+         ldkk6YdzhMKWycWNdoaaVP8O6REhdqAYPhUL9WJaRLMLfdb7/Zwu2VS3l4VQXmxB9JH4
+         QvFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HI+xV3bsEIgulj7uKMX2W6C7zKygWyvz6NNY/styFTY=;
-        b=qF3eQ7CYZ7p4L2rvdui9CB8w4bwAClWqJy2YsKsdvwNe3dHsEEeIkRHvZK1wlJ/yzD
-         Ry/DbBum/+xw+J7tuOteOnkiGYIOpAT7F+o8+zHNObZaK4tj2neJjhXEY1amci/6Vc86
-         8ZQYKqiFIVYB9sIDIOQWpPjQFFyunKIOEysuut6ZOmRc3qzn2BH6Zo1dkAoQPdUpu1fK
-         iYC5CJxS+wXNgbK3NY1ciwZDWH2vdDrbh2//2SWTwOYZ3qy4KTmLLXGcdDB2KP2L2zub
-         qBnMbugRwJx234fZUwxgs2uAhNzN4v6w6wN/SE/gmZuBOd/tjOHYdz5+etohSOZJ6/3S
-         p9tw==
-X-Gm-Message-State: APjAAAXY26B8ariyM2skQRLAjw6AZgcmjD4S6avtxF+tCkaiTWxImQYI
-        dsiUfiQv1AHlJa6SGiZED+bG0+P3xJ8d7+Rttt0=
-X-Google-Smtp-Source: APXvYqzcYQG7zGfFpsRr10PuOrm81bu/T9LhblAmPepC32I/97Mxn4kcpZ5yQ0UVii6Vl/pkhkE007k5xX7O8JNe4AY=
-X-Received: by 2002:a19:c80a:: with SMTP id y10mr1027154lff.177.1579142553893;
- Wed, 15 Jan 2020 18:42:33 -0800 (PST)
-MIME-Version: 1.0
-References: <20200116005549.3644118-1-andriin@fb.com>
-In-Reply-To: <20200116005549.3644118-1-andriin@fb.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 15 Jan 2020 18:42:22 -0800
-Message-ID: <CAADnVQ++qp83cW_1M4WyD8qiGzyPBDC5a-DJLLwgU97rh_EvSg@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next] selftests/bpf: add whitelist/blacklist of
- test names to test_progs
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=Yujd7NYO/Gpv5hGCan+Hwvd6fcY54ztoBNLrmT1puBg=;
+        b=Cstqx6dQ7g0Asbued2ULMaiphZBQEZpLXB/xZZItkzfCNKADIoFUsQhglE3ELIoDr8
+         EvfaQqOCRnKQynnKWUuFOAcEcHUKKdIkWVId15aEodCMxDWuRM9+YM6BdV4w6Q97v9I7
+         U7KCF0lZA2aEXwhWpdVBxZc+T7QEe2mm0BZvl8cmerjPlPLunNf0Qblf3i2od4rB0Nfu
+         c6LKdshv5EZpXZpYbyg5SiNsQ3JBckQt80fObHTasS2k7iWD3E3V1HpN+w3JcTEobL12
+         BZMH6qzeZXDv9OAHJZ4IV7MOqndh2Hb7/byohckmdRusSLTkMnOVCFN/1sa53isrr6Os
+         mrzQ==
+X-Gm-Message-State: APjAAAW7Vu5kn7PnKNNAcOde+P3gwE22ygUtqWwbXwplkN6lVyf8+muJ
+        sHYS8+va8mZURIKvzn/w5X5ybOr2KygV
+X-Google-Smtp-Source: APXvYqztiY0Q4ZmmaSQYCImVDBFiPoKpJXtaMUoBTv6utaLXpsOu5sO8VaU8H9zbSEU0+Q8RUA3PyWHvcwVI
+X-Received: by 2002:a65:48cb:: with SMTP id o11mr37361408pgs.313.1579150763148;
+ Wed, 15 Jan 2020 20:59:23 -0800 (PST)
+Date:   Wed, 15 Jan 2020 20:59:18 -0800
+Message-Id: <20200116045918.75597-1-brianvv@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.25.0.rc1.283.g88dfdc4193-goog
+Subject: [PATCH bpf-next] libbpf: Fix unneeded extra initialization in bpf_map_batch_common
+From:   Brian Vazquez <brianvv@google.com>
+To:     Brian Vazquez <brianvv.kernel@gmail.com>,
+        Brian Vazquez <brianvv@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        "David S . Miller" <davem@davemloft.net>
+Cc:     Yonghong Song <yhs@fb.com>,
         Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Kernel Team <kernel-team@fb.com>, Julia Kartseva <hex@fb.com>
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Andrii Nakryiko <andriin@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 15, 2020 at 6:16 PM Andrii Nakryiko <andriin@fb.com> wrote:
->
-> Add ability to specify a list of test name substrings for selecting which
-> tests to run. So now -t is accepting a comma-separated list of strings,
-> similarly to how -n accepts a comma-separated list of test numbers.
->
-> Additionally, add ability to blacklist tests by name. Blacklist takes
-> precedence over whitelist. Blacklisting is important for cases where it's
-> known that some tests can't pass (e.g., due to perf hardware events that are
-> not available within VM). This is going to be used for libbpf testing in
-> Travis CI in its Github repo.
->
-> Example runs with just whitelist and whitelist + blacklist:
->
->   $ sudo ./test_progs -tattach,core/existence
->   #1 attach_probe:OK
->   #6 cgroup_attach_autodetach:OK
->   #7 cgroup_attach_multi:OK
->   #8 cgroup_attach_override:OK
->   #9 core_extern:OK
->   #10/44 existence:OK
->   #10/45 existence___minimal:OK
->   #10/46 existence__err_int_sz:OK
->   #10/47 existence__err_int_type:OK
->   #10/48 existence__err_int_kind:OK
->   #10/49 existence__err_arr_kind:OK
->   #10/50 existence__err_arr_value_type:OK
->   #10/51 existence__err_struct_type:OK
->   #10 core_reloc:OK
->   #19 flow_dissector_reattach:OK
->   #60 tp_attach_query:OK
->   Summary: 8/8 PASSED, 0 SKIPPED, 0 FAILED
->
->   $ sudo ./test_progs -tattach,core/existence -bcgroup,flow/arr
->   #1 attach_probe:OK
->   #9 core_extern:OK
->   #10/44 existence:OK
->   #10/45 existence___minimal:OK
->   #10/46 existence__err_int_sz:OK
->   #10/47 existence__err_int_type:OK
->   #10/48 existence__err_int_kind:OK
->   #10/51 existence__err_struct_type:OK
->   #10 core_reloc:OK
->   #60 tp_attach_query:OK
->   Summary: 4/6 PASSED, 0 SKIPPED, 0 FAILED
->
-> Cc: Julia Kartseva <hex@fb.com>
-> Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+bpf_attr doesn't required to be declared with '= {}' as memset is used
+in the code.
 
-Nice. Even things like "test_progs -n 11-16 -b exit" work as expected.
-Applied. Thanks!
+Fixes: 2ab3d86ea1859 ("libbpf: Add libbpf support to batch ops")
+Reported-by: Andrii Nakryiko <andriin@fb.com>
+Signed-off-by: Brian Vazquez <brianvv@google.com>
+---
+ tools/lib/bpf/bpf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+index 317727d612149..ed42b006533c4 100644
+--- a/tools/lib/bpf/bpf.c
++++ b/tools/lib/bpf/bpf.c
+@@ -457,7 +457,7 @@ static int bpf_map_batch_common(int cmd, int fd, void  *in_batch,
+ 				__u32 *count,
+ 				const struct bpf_map_batch_opts *opts)
+ {
+-	union bpf_attr attr = {};
++	union bpf_attr attr;
+ 	int ret;
+ 
+ 	if (!OPTS_VALID(opts, bpf_map_batch_opts))
+-- 
+2.25.0.rc1.283.g88dfdc4193-goog
+
