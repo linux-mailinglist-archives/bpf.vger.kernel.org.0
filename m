@@ -2,52 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A5FB13FC59
-	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2020 23:44:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69D5E13FCAD
+	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2020 00:06:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389564AbgAPWoS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Jan 2020 17:44:18 -0500
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:43215 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732417AbgAPWoS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Jan 2020 17:44:18 -0500
-Received: by mail-qt1-f195.google.com with SMTP id d18so20308837qtj.10;
-        Thu, 16 Jan 2020 14:44:17 -0800 (PST)
+        id S2390267AbgAPXF7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Jan 2020 18:05:59 -0500
+Received: from mail-qv1-f67.google.com ([209.85.219.67]:40878 "EHLO
+        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389860AbgAPXF7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Jan 2020 18:05:59 -0500
+Received: by mail-qv1-f67.google.com with SMTP id dp13so9906484qvb.7;
+        Thu, 16 Jan 2020 15:05:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=Z40vm1f2Y9AUyQeVuDM7FK496qjba6pNnZApm+zKg8s=;
-        b=f68nTpVikVudIMyr/yBfNuBVkVtsWEXalZ2/1odpmfSP6Y/jXeBkcpHFDP1HNH0c+7
-         Jv+yz1iEjZNTT3gJ+tG0Lq2ueFEc+5W1cHUwcsiSd6wLUCub0Yp93FNp8vfHKIPBfk0U
-         NV3mkk+yrzGKnMHzGjKbnYOClq5q2keHMLABozbxfq3KYnHz3qKU/HvCfyZVC2pXL4h3
-         cE6siTe9EqdgOqE0EByp1G+/AjLVC6UrHZfbJsfo7f2BdT5Z7Sj1a96vf0ohyT+kfIJW
-         QHEaz80JkVoQqCQpr56HKUH43Yllv2Uzy+0BrujylKsWyza7EEADQ/V5LuYzX6Heq+Mx
-         c6gg==
+        bh=gMt8+SnETNvSb3er2IKqZvH30KrtlFraAAc0+bmLfy8=;
+        b=aCo9b38KWts8WXzzWZLO6NyHm24NRK5AZ1gyZAy0kzRKfAU758kF2Caxkzd/cNs8UF
+         1Y8csThLqPBq8MV4gMUlPRbQMfTrbVU4ve/TYfafcsMa6ISYnsX/X24pU+0IgDNRgbPU
+         VQzI33opWjFxxHmrVAR7q1TDpN6HGbs7uqOtdAaEiaL0TRv068c3wVlJeW6Y9wZIFvpH
+         dyG1KI7f82lNj618TBmExEyl1E3Qndm82VdXwdhsmwk144mBfOuAD+ooWTZK2pZQzsRq
+         Gk5SzY5PDoEG90on7p6PJKtdQAp2U/B4eZrUiyE4MqfnP9yEK2q4RdGZ5pPcEVTjwGS6
+         gTew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Z40vm1f2Y9AUyQeVuDM7FK496qjba6pNnZApm+zKg8s=;
-        b=VAyrBkjUh+xxvqepOAS6ulNesX6NDN1+vaEoZ8GNZVdYppoo4EwsnlGbNIDoALsfQH
-         bgs1HSy+Bc+T5QRQqK/KKEUhd5c3Mlk9X6WRBbb9Jv8wOpSuj6716oGduhLVo2ONmJ6z
-         GIBsfBfiwWu26XApSz11z/ElEshahsRvF40CNXxjjVPdWLcIAvD3i5/YOMpS6GRwGfSD
-         xBfepc/dUtI2Dr1hZNMl6a7VolpiNBVV1pyLVreW88WXowQkEm1a887iqltZMr0qz0sZ
-         HgNgfqWtjyTcAjI90ao2cAEpOcOj4MC3ebyXWfbRLrL/cVjErS+2yuyAsB0SzouyQ6gG
-         yUgw==
-X-Gm-Message-State: APjAAAVbSg3Jj+dO4nPgTrx8y0HzmQy6w+aHu/6j/A54ORuSCEhha8mv
-        c7O6L7v88tDkODRJcaIs6ljzA/xhplHM5T61owU=
-X-Google-Smtp-Source: APXvYqz9ZIMD9IfSCRtDvT8wls+18NqfkkAaEjHuBU+FhlxrzVexTBwiv2DXYHpd9IvPMcc0W+U+s2eKOehTkdNj5J0=
-X-Received: by 2002:ac8:4050:: with SMTP id j16mr4681494qtl.171.1579214656952;
- Thu, 16 Jan 2020 14:44:16 -0800 (PST)
+        bh=gMt8+SnETNvSb3er2IKqZvH30KrtlFraAAc0+bmLfy8=;
+        b=F4dyuqYpKlEUA4rU1Wmu7S3cEGL68j57PQQYJUz6n0SE3fyo+7jPQYNDHHYHtiyrUZ
+         mJetTi9Tz6TkqWnkojEarrNhqtAZ9dlBPdMicbKuBjUJi7GBGxKyIyoFjklf7AA5kuvT
+         Jva9TGU/FnL3120sn4GO/zUyZsxuQRJIKWoocOlVn/VNpVtomNONZb+3tLhzNFSus3Y2
+         zA9108RivJTDSXI9oQ2etoxFwTxMDIa6VEcxykl452Jbh9jHVdWKctiv6JvHEM9Ys9Kl
+         IJVz1EnZ2r+GTH3IzTR0GlCUmVouirSWoS6c4ZUQ0U2PQNvgd4AnrsrHKR4KrssNrcpB
+         ZgWw==
+X-Gm-Message-State: APjAAAUmFRJnaoW2xMFA9bkHQoiOARbWGaZ40Fp6b/LtUdNmIIdz3QKt
+        3YblHM0iN0k5mUiN5BEbhcRG8MYvDrRBdaY7JEc=
+X-Google-Smtp-Source: APXvYqxm0/W2knBcgV6QmcH9v3GrczUEyP9YA3sjHEkH2lQPEIR3SHv0joKQo9NtxDo2DxqWajM/E2SZxnAnRTfXpJ8=
+X-Received: by 2002:ad4:514e:: with SMTP id g14mr5152752qvq.196.1579215958396;
+ Thu, 16 Jan 2020 15:05:58 -0800 (PST)
 MIME-Version: 1.0
-References: <157918093154.1357254.7616059374996162336.stgit@toke.dk> <157918094293.1357254.438435835284838644.stgit@toke.dk>
-In-Reply-To: <157918094293.1357254.438435835284838644.stgit@toke.dk>
+References: <157918093154.1357254.7616059374996162336.stgit@toke.dk>
+ <157918094179.1357254.14428494370073273452.stgit@toke.dk> <CAEf4Bzba5FHN_iN52qRiGisRcauur1FqDY545EwE+RVR-nFvQA@mail.gmail.com>
+In-Reply-To: <CAEf4Bzba5FHN_iN52qRiGisRcauur1FqDY545EwE+RVR-nFvQA@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 16 Jan 2020 14:44:05 -0800
-Message-ID: <CAEf4BzYm0aqfXW+dTak_4HiZ46AdQGdUf8ZXXJoacRc-eHTP7Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 10/11] tools/runqslower: Remove tools/lib/bpf
- from include path
+Date:   Thu, 16 Jan 2020 15:05:47 -0800
+Message-ID: <CAEf4BzYaLd25P7Uu=aFHW_=nHOCPdCpZCcoJobhRoSGQUA49HQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 09/11] selftests: Remove tools/lib/bpf from
+ include path
 To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -81,37 +82,35 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 16, 2020 at 5:23 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
-at.com> wrote:
+On Thu, Jan 16, 2020 at 2:41 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->
-> Since we are now consistently using the bpf/ prefix on #include directive=
-s,
-> we don't need to include tools/lib/bpf in the include path. Remove it to
-> make sure we don't inadvertently introduce new includes without the prefi=
-x.
->
-> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> ---
+> On Thu, Jan 16, 2020 at 5:28 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
+dhat.com> wrote:
+> >
+> > From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> >
+> > To make sure no new files are introduced that doesn't include the bpf/
+> > prefix in its #include, remove tools/lib/bpf from the include path
+> > entirely.
+> >
+> > Instead, we introduce a new header files directory under the scratch to=
+ols/
+> > dir, and add a rule to run the 'install_headers' rule from libbpf to ha=
+ve a
+> > full set of consistent libbpf headers in $(OUTPUT)/tools/include/bpf, a=
+nd
+> > then use $(OUTPUT)/tools/include as the include path for selftests.
+> >
+> > For consistency we also make sure we put all the scratch build files fr=
+om
+> > other bpftool and libbpf into tools/build/, so everything stays within
+> > selftests/.
+> >
+> > Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> > ---
 
-Acked-by: Andrii Nakryiko <andriin@fb.com>
+BTW, this change also now forces full rebuild regardless if anything
+changed or not :(
 
->  tools/bpf/runqslower/Makefile |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/bpf/runqslower/Makefile b/tools/bpf/runqslower/Makefil=
-e
-> index c0512b830805..d474608159f5 100644
-> --- a/tools/bpf/runqslower/Makefile
-> +++ b/tools/bpf/runqslower/Makefile
-> @@ -5,7 +5,7 @@ LLC :=3D llc
->  LLVM_STRIP :=3D llvm-strip
->  DEFAULT_BPFTOOL :=3D $(OUTPUT)/sbin/bpftool
->  BPFTOOL ?=3D $(DEFAULT_BPFTOOL)
-> -LIBBPF_INCLUDE :=3D -I$(abspath ../../lib) -I$(abspath ../../lib/bpf)
-> +LIBBPF_INCLUDE :=3D -I$(abspath ../../lib)
->  LIBBPF_SRC :=3D $(abspath ../../lib/bpf)
->  CFLAGS :=3D -g -Wall
->
->
+[...]
