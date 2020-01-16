@@ -2,342 +2,213 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DED5F13D7C8
-	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2020 11:19:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1641413D8E1
+	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2020 12:24:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729751AbgAPKTp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Jan 2020 05:19:45 -0500
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:41218 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729476AbgAPKTp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Jan 2020 05:19:45 -0500
-Received: by mail-wr1-f68.google.com with SMTP id c9so18530652wrw.8
-        for <bpf@vger.kernel.org>; Thu, 16 Jan 2020 02:19:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=LYW1HOJkWkm8CkG4oZz8YW0hjzojvqbDd54in9oxxos=;
-        b=kitK2vhT79YAfMD37ZxfYkn6cuCv4N1172ZfT/Jc0lrw5MlyGD/+VpUVlv14X2eb/e
-         DOQmREfmLXdXAQrmOQtZl62RLY4AobIxaYXgzAe3dIkYIvx8xEqtIZzDLBAwUodM5Wgn
-         avhUJExN45TU+azYYtWtlS5WYkQKi+36usi3M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=LYW1HOJkWkm8CkG4oZz8YW0hjzojvqbDd54in9oxxos=;
-        b=gn8wx8Az0CCG/tkuplYUOkBpjSGbggnhqiveASsRd7+H59ehwSWwH7yxFFNidUS09K
-         o/ibkplATT3sbgbtANjZ96tWLpE/Spj/WqBL4EOGkvjibt3IreLhrAPL3TClVyGOp8xN
-         pDQSbZO4X3eC6GazIF3QFqYuK8z+n98N/u13zt4boJMSVjrGmYFhHjETL/+Bk/5VpwxD
-         20Y6oj/+yZdFTXMBneRZnYsF3/ruXTrR3hEtadgMWpm6PDMrP9sA+fvDGOH6VzYXCmeO
-         oPlJuk90uIO/dq18qKPVu7NVsurIGXrXJRRjL22QL9zx8EK38YSxSkdq+zgvV2WbmLAR
-         GR4w==
-X-Gm-Message-State: APjAAAXmF6x5+evhOjLkVZuZPMJqE7Q+dU8bfrZi3kIbOTNMzZs4zj1c
-        ucUrRhhMXnwqPLj62VdLDgtWpw==
-X-Google-Smtp-Source: APXvYqweqJDSX004q0/RK04ZxcjXOYN7ZJt8Ce3ugut7zFw0fG8PPYsN1hWUxd5ntRVClW7juCRbkw==
-X-Received: by 2002:adf:dc8d:: with SMTP id r13mr2552880wrj.357.1579169981939;
-        Thu, 16 Jan 2020 02:19:41 -0800 (PST)
-Received: from google.com ([2a00:79e0:42:204:8a21:ba0c:bb42:75ec])
-        by smtp.gmail.com with ESMTPSA id i8sm29584201wro.47.2020.01.16.02.19.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jan 2020 02:19:41 -0800 (PST)
-From:   KP Singh <kpsingh@chromium.org>
-X-Google-Original-From: KP Singh <kpsingh>
-Date:   Thu, 16 Jan 2020 11:19:40 +0100
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     KP Singh <kpsingh@chromium.org>, bpf@vger.kernel.org,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v2 04/10] bpf: lsm: Add mutable hooks list for
- the BPF LSM
-Message-ID: <20200116101940.GC240584@google.com>
-References: <20200115171333.28811-1-kpsingh@chromium.org>
- <20200115171333.28811-5-kpsingh@chromium.org>
- <5793e9a8-e9cf-dd2d-261d-61f533cca20c@schaufler-ca.com>
+        id S1726220AbgAPLYO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Jan 2020 06:24:14 -0500
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:39934 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725800AbgAPLYO (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 16 Jan 2020 06:24:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1579173853;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1rQ8ILGdkeDAnX6ru6DSvx74Y8T+PgBbA+5w3vPuC4I=;
+        b=gdwQhbzKHxSAHXegTY1uSyoslR0bbpSqvDQrkYA2DXjDM9Ejeo0lUVoTvIiwgJXrjg9vC2
+        9XwzbK92CbRcNs4EP+CCRoMSnVWR8lp6RHNMDu4NRH/Yfd+raX+T19RaQYP/d3xzYIVerO
+        quCfNoTusZ1f76D8dyHRSpCNi5uoDaM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-431-cRf3JjuDM36tOTW9L6amNg-1; Thu, 16 Jan 2020 06:24:11 -0500
+X-MC-Unique: cRf3JjuDM36tOTW9L6amNg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DC9F51800D48;
+        Thu, 16 Jan 2020 11:24:09 +0000 (UTC)
+Received: from carbon (ovpn-200-25.brq.redhat.com [10.40.200.25])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8FB0F19C5B;
+        Thu, 16 Jan 2020 11:24:01 +0000 (UTC)
+Date:   Thu, 16 Jan 2020 12:24:00 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>, brouer@redhat.com
+Subject: Re: [PATCH bpf-next v2 1/2] xdp: Move devmap bulk queue into struct
+ net_device
+Message-ID: <20200116122400.499c2b1e@carbon>
+In-Reply-To: <87imlctlo6.fsf@toke.dk>
+References: <157893905455.861394.14341695989510022302.stgit@toke.dk>
+        <157893905569.861394.457637639114847149.stgit@toke.dk>
+        <20200115211734.2dfcffd4@carbon>
+        <87imlctlo6.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5793e9a8-e9cf-dd2d-261d-61f533cca20c@schaufler-ca.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 15-Jan 22:33, Casey Schaufler wrote:
-> On 1/15/2020 9:13 AM, KP Singh wrote:
-> > From: KP Singh <kpsingh@google.com>
+On Wed, 15 Jan 2020 23:11:21 +0100
+Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com> wrote:
+
+> Jesper Dangaard Brouer <brouer@redhat.com> writes:
+>=20
+> > On Mon, 13 Jan 2020 19:10:55 +0100
+> > Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com> wrote:
+> > =20
+> >> diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
+> >> index da9c832fc5c8..030d125c3839 100644
+> >> --- a/kernel/bpf/devmap.c
+> >> +++ b/kernel/bpf/devmap.c =20
+> > [...] =20
+> >> @@ -346,8 +340,7 @@ static int bq_xmit_all(struct xdp_bulk_queue *bq, =
+u32 flags)
+> >>  out:
+> >>  	bq->count =3D 0;
+> >> =20
+> >> -	trace_xdp_devmap_xmit(&obj->dtab->map, obj->idx,
+> >> -			      sent, drops, bq->dev_rx, dev, err);
+> >> +	trace_xdp_devmap_xmit(NULL, 0, sent, drops, bq->dev_rx, dev, err); =
+=20
 > >
-> > - The list of hooks registered by an LSM is currently immutable as they
-> >   are declared with __lsm_ro_after_init and they are attached to a
-> >   security_hook_heads struct.
-> > - For the BPF LSM we need to de/register the hooks at runtime. Making
-> >   the existing security_hook_heads mutable broadens an
-> >   attack vector, so a separate security_hook_heads is added for only
-> >   those that ~must~ be mutable.
-> > - These mutable hooks are run only after all the static hooks have
-> >   successfully executed.
-> >
-> > This is based on the ideas discussed in:
-> >
-> >   https://lore.kernel.org/lkml/20180408065916.GA2832@ircssh-2.c.rugged-nimbus-611.internal
-> >
-> > Signed-off-by: KP Singh <kpsingh@google.com>
-> > ---
-> >  MAINTAINERS             |  1 +
-> >  include/linux/bpf_lsm.h | 71 +++++++++++++++++++++++++++++++++++++++++
-> >  security/bpf/Kconfig    |  1 +
-> >  security/bpf/Makefile   |  2 +-
-> >  security/bpf/hooks.c    | 20 ++++++++++++
-> >  security/bpf/lsm.c      |  9 +++++-
-> >  security/security.c     | 24 +++++++-------
-> >  7 files changed, 115 insertions(+), 13 deletions(-)
-> >  create mode 100644 include/linux/bpf_lsm.h
-> >  create mode 100644 security/bpf/hooks.c
-> >
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index 0941f478cfa5..02d7e05e9b75 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -3209,6 +3209,7 @@ L:	linux-security-module@vger.kernel.org
-> >  L:	bpf@vger.kernel.org
-> >  S:	Maintained
-> >  F:	security/bpf/
-> > +F:	include/linux/bpf_lsm.h
-> >  
-> >  BROADCOM B44 10/100 ETHERNET DRIVER
-> >  M:	Michael Chan <michael.chan@broadcom.com>
-> > diff --git a/include/linux/bpf_lsm.h b/include/linux/bpf_lsm.h
-> > new file mode 100644
-> > index 000000000000..9883cf25241c
-> > --- /dev/null
-> > +++ b/include/linux/bpf_lsm.h
-> > @@ -0,0 +1,71 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +
-> > +/*
-> > + * Copyright 2019 Google LLC.
-> > + */
-> > +
-> > +#ifndef _LINUX_BPF_LSM_H
-> > +#define _LINUX_BPF_LSM_H
-> > +
-> > +#include <linux/bpf.h>
-> > +#include <linux/lsm_hooks.h>
-> > +
-> > +#ifdef CONFIG_SECURITY_BPF
-> > +
-> > +/* Mutable hooks defined at runtime and executed after all the statically
-> > + * define LSM hooks.
-> > + */
-> > +extern struct security_hook_heads bpf_lsm_hook_heads;
-> > +
-> > +int bpf_lsm_srcu_read_lock(void);
-> > +void bpf_lsm_srcu_read_unlock(int idx);
-> > +
-> > +#define CALL_BPF_LSM_VOID_HOOKS(FUNC, ...)			\
-> > +	do {							\
-> > +		struct security_hook_list *P;			\
-> > +		int _idx;					\
-> > +								\
-> > +		if (hlist_empty(&bpf_lsm_hook_heads.FUNC))	\
-> > +			break;					\
-> > +								\
-> > +		_idx = bpf_lsm_srcu_read_lock();		\
-> > +		hlist_for_each_entry(P, &bpf_lsm_hook_heads.FUNC, list) \
-> > +			P->hook.FUNC(__VA_ARGS__);		\
-> > +		bpf_lsm_srcu_read_unlock(_idx);			\
-> > +	} while (0)
-> > +
-> > +#define CALL_BPF_LSM_INT_HOOKS(RC, FUNC, ...) ({		\
-> > +	do {							\
-> > +		struct security_hook_list *P;			\
-> > +		int _idx;					\
-> > +								\
-> > +		if (hlist_empty(&bpf_lsm_hook_heads.FUNC))	\
-> > +			break;					\
-> > +								\
-> > +		_idx = bpf_lsm_srcu_read_lock();		\
-> > +								\
-> > +		hlist_for_each_entry(P,				\
-> > +			&bpf_lsm_hook_heads.FUNC, list) {	\
-> > +			RC = P->hook.FUNC(__VA_ARGS__);		\
-> > +			if (RC && IS_ENABLED(CONFIG_SECURITY_BPF_ENFORCE)) \
-> > +				break;				\
-> > +		}						\
-> > +		bpf_lsm_srcu_read_unlock(_idx);			\
-> > +	} while (0);						\
-> > +	IS_ENABLED(CONFIG_SECURITY_BPF_ENFORCE) ? RC : 0;	\
-> > +})
-> > +
-> > +#else /* !CONFIG_SECURITY_BPF */
-> > +
-> > +#define CALL_BPF_LSM_INT_HOOKS(RC, FUNC, ...) (RC)
-> > +#define CALL_BPF_LSM_VOID_HOOKS(...)
-> > +
-> > +static inline int bpf_lsm_srcu_read_lock(void)
-> > +{
-> > +	return 0;
-> > +}
-> > +static inline void bpf_lsm_srcu_read_unlock(int idx) {}
-> > +
-> > +#endif /* CONFIG_SECURITY_BPF */
-> > +
-> > +#endif /* _LINUX_BPF_LSM_H */
-> > diff --git a/security/bpf/Kconfig b/security/bpf/Kconfig
-> > index a5f6c67ae526..595e4ad597ae 100644
-> > --- a/security/bpf/Kconfig
-> > +++ b/security/bpf/Kconfig
-> > @@ -6,6 +6,7 @@ config SECURITY_BPF
-> >  	bool "BPF-based MAC and audit policy"
-> >  	depends on SECURITY
-> >  	depends on BPF_SYSCALL
-> > +	depends on SRCU
-> >  	help
-> >  	  This enables instrumentation of the security hooks with
-> >  	  eBPF programs.
-> > diff --git a/security/bpf/Makefile b/security/bpf/Makefile
-> > index c78a8a056e7e..c526927c337d 100644
-> > --- a/security/bpf/Makefile
-> > +++ b/security/bpf/Makefile
-> > @@ -2,4 +2,4 @@
-> >  #
-> >  # Copyright 2019 Google LLC.
-> >  
-> > -obj-$(CONFIG_SECURITY_BPF) := lsm.o ops.o
-> > +obj-$(CONFIG_SECURITY_BPF) := lsm.o ops.o hooks.o
-> > diff --git a/security/bpf/hooks.c b/security/bpf/hooks.c
-> > new file mode 100644
-> > index 000000000000..b123d9cb4cd4
-> > --- /dev/null
-> > +++ b/security/bpf/hooks.c
-> > @@ -0,0 +1,20 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +
-> > +/*
-> > + * Copyright 2019 Google LLC.
-> > + */
-> > +
-> > +#include <linux/bpf_lsm.h>
-> > +#include <linux/srcu.h>
-> > +
-> > +DEFINE_STATIC_SRCU(security_hook_srcu);
-> > +
-> > +int bpf_lsm_srcu_read_lock(void)
-> > +{
-> > +	return srcu_read_lock(&security_hook_srcu);
-> > +}
-> > +
-> > +void bpf_lsm_srcu_read_unlock(int idx)
-> > +{
-> > +	return srcu_read_unlock(&security_hook_srcu, idx);
-> > +}
-> > diff --git a/security/bpf/lsm.c b/security/bpf/lsm.c
-> > index 5c5c14f990ce..d4ea6aa9ddb8 100644
-> > --- a/security/bpf/lsm.c
-> > +++ b/security/bpf/lsm.c
-> > @@ -4,14 +4,21 @@
-> >   * Copyright 2019 Google LLC.
-> >   */
-> >  
-> > +#include <linux/bpf_lsm.h>
-> >  #include <linux/lsm_hooks.h>
-> >  
-> >  /* This is only for internal hooks, always statically shipped as part of the
-> > - * BPF LSM. Statically defined hooks are appeneded to the security_hook_heads
-> > + * BPF LSM. Statically defined hooks are appended to the security_hook_heads
-> >   * which is common for LSMs and R/O after init.
-> >   */
-> >  static struct security_hook_list lsm_hooks[] __lsm_ro_after_init = {};
-> >  
-> > +/* Security hooks registered dynamically by the BPF LSM and must be accessed
-> > + * by holding bpf_lsm_srcu_read_lock and bpf_lsm_srcu_read_unlock. The mutable
-> > + * hooks dynamically allocated by the BPF LSM are appeneded here.
-> > + */
-> > +struct security_hook_heads bpf_lsm_hook_heads;
-> > +
-> >  static int __init lsm_init(void)
-> >  {
-> >  	security_add_hooks(lsm_hooks, ARRAY_SIZE(lsm_hooks), "bpf");
-> > diff --git a/security/security.c b/security/security.c
-> > index cd2d18d2d279..4a2eb4c089b2 100644
-> > --- a/security/security.c
-> > +++ b/security/security.c
-> > @@ -27,6 +27,7 @@
-> >  #include <linux/backing-dev.h>
-> >  #include <linux/string.h>
-> >  #include <linux/msg.h>
-> > +#include <linux/bpf_lsm.h>
-> >  #include <net/flow.h>
-> >  
-> >  #define MAX_LSM_EVM_XATTR	2
-> > @@ -652,20 +653,21 @@ static void __init lsm_early_task(struct task_struct *task)
-> >  								\
-> >  		hlist_for_each_entry(P, &security_hook_heads.FUNC, list) \
-> >  			P->hook.FUNC(__VA_ARGS__);		\
-> > +		CALL_BPF_LSM_VOID_HOOKS(FUNC, __VA_ARGS__);	\
-> >  	} while (0)
-> >  
-> > -#define call_int_hook(FUNC, IRC, ...) ({			\
-> > -	int RC = IRC;						\
-> > -	do {							\
-> > -		struct security_hook_list *P;			\
-> > -								\
-> > +#define call_int_hook(FUNC, IRC, ...) ({				\
-> > +	int RC = IRC;							\
-> > +	do {								\
-> > +		struct security_hook_list *P;				\
-> >  		hlist_for_each_entry(P, &security_hook_heads.FUNC, list) { \
-> > -			RC = P->hook.FUNC(__VA_ARGS__);		\
-> > -			if (RC != 0)				\
-> > -				break;				\
-> > -		}						\
-> > -	} while (0);						\
-> > -	RC;							\
-> > +			RC = P->hook.FUNC(__VA_ARGS__);			\
-> > +			if (RC != 0)					\
-> > +				break;					\
-> > +		}							\
-> > +		RC = CALL_BPF_LSM_INT_HOOKS(RC, FUNC, __VA_ARGS__);	\
-> 
-> Do not do this. Add LSM_ORDER_LAST for the lsm_order field of lsm_info
-> and use that to identify your module as one to be put on the list last.
-> Update the LSM registration code to do this. It will be much like the code
-> that uses LSM_ORDER_FIRST to put the capabilities at the head of the lists.
-> 
-> What you have here to way to much like the way Yama was invoked before
-> stacking.
+> > Hmm ... I don't like that we lose the map_id and map_index identifier.
+> > This is part of our troubleshooting interface. =20
+>=20
+> Hmm, I guess I can take another look at whether there's a way to avoid
+> that. Any ideas?
 
-Thanks for taking a look!
+Looking at the code and the other tracepoints...
 
-The BPF LSM has two kinds of hooks. The static hooks which are
-appended to the security_hook_heads in security.c and mutable hooks
-which are allocated at runtime and attached to a separate
-security_hook_heads (bpf_lsm_hook_heads) defined in security/bpf/lsm.c
-This macro runs these mutable hooks (dynamically allocated at runtime)
-under SRCU protection.
+I will actually suggest to remove these two arguments, because the
+trace_xdp_redirect_map tracepoint also contains the ifindex'es, and to
+troubleshoot people can record both tracepoints and do the correlation
+themselves.
 
-Having a separate security_hook_heads allows:
+When changing the tracepoint I would like to keep member 'drops' and
+'sent' at the same struct offsets.  As our xdp_monitor example reads
+these and I hope we can kept it working this way.
 
-- The security_hook_heads in security.c to be __lsm_ro_after_init
-  and thus limits the attack surface does not change the existing
-  behaviour
-- The SRCU critical section be limited to the execution of dynamically
-  allocated hooks
+I've coded it up, and tested it.  The new xdp_monitor will work on
+older kernels, but the old xdp_monitor will fail attaching on newer
+kernels. I think this is fair enough, as we are backwards compatible.
 
-I agree that the static hooks should indeed be LSM_ORDER_LAST which
-makes logical sense and represents correctly how the LSM will behave
-in reality. (i.e. its hooks are executed last irrespective of the
-position it is mentioned in the list of LSMs.)
 
-I will update this for v3.
+[PATCH] devmap: adjust tracepoing after Tokes changes
 
-- KP
+From: Jesper Dangaard Brouer <brouer@redhat.com>
 
-> 
-> > +	} while (0);							\
-> > +	RC;								\
-> >  })
-> >  
-> >  /* Security operations */
-> 
+Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+---
+ include/trace/events/xdp.h     |   29 ++++++++++++-----------------
+ kernel/bpf/devmap.c            |    2 +-
+ samples/bpf/xdp_monitor_kern.c |    8 +++-----
+ 3 files changed, 16 insertions(+), 23 deletions(-)
+
+diff --git a/include/trace/events/xdp.h b/include/trace/events/xdp.h
+index cf568a38f852..f1e64689ce94 100644
+--- a/include/trace/events/xdp.h
++++ b/include/trace/events/xdp.h
+@@ -247,43 +247,38 @@ TRACE_EVENT(xdp_cpumap_enqueue,
+=20
+ TRACE_EVENT(xdp_devmap_xmit,
+=20
+-	TP_PROTO(const struct bpf_map *map, u32 map_index,
+-		 int sent, int drops,
+-		 const struct net_device *from_dev,
+-		 const struct net_device *to_dev, int err),
++	TP_PROTO(const struct net_device *from_dev,
++		 const struct net_device *to_dev,
++		 int sent, int drops, int err),
+=20
+-	TP_ARGS(map, map_index, sent, drops, from_dev, to_dev, err),
++	TP_ARGS(from_dev, to_dev, sent, drops, err),
+=20
+ 	TP_STRUCT__entry(
+-		__field(int, map_id)
++		__field(int, from_ifindex)
+ 		__field(u32, act)
+-		__field(u32, map_index)
++		__field(int, to_ifindex)
+ 		__field(int, drops)
+ 		__field(int, sent)
+-		__field(int, from_ifindex)
+-		__field(int, to_ifindex)
+ 		__field(int, err)
+ 	),
+=20
+ 	TP_fast_assign(
+-		__entry->map_id		=3D map ? map->id : 0;
++		__entry->from_ifindex	=3D from_dev->ifindex;
+ 		__entry->act		=3D XDP_REDIRECT;
+-		__entry->map_index	=3D map_index;
++		__entry->to_ifindex	=3D to_dev->ifindex;
+ 		__entry->drops		=3D drops;
+ 		__entry->sent		=3D sent;
+-		__entry->from_ifindex	=3D from_dev->ifindex;
+-		__entry->to_ifindex	=3D to_dev->ifindex;
+ 		__entry->err		=3D err;
+ 	),
+=20
+ 	TP_printk("ndo_xdp_xmit"
+-		  " map_id=3D%d map_index=3D%d action=3D%s"
++		  " from_ifindex=3D%d to_ifindex=3D%d action=3D%s"
+ 		  " sent=3D%d drops=3D%d"
+-		  " from_ifindex=3D%d to_ifindex=3D%d err=3D%d",
+-		  __entry->map_id, __entry->map_index,
++		  " err=3D%d",
++		  __entry->from_ifindex, __entry->to_ifindex,
+ 		  __print_symbolic(__entry->act, __XDP_ACT_SYM_TAB),
+ 		  __entry->sent, __entry->drops,
+-		  __entry->from_ifindex, __entry->to_ifindex, __entry->err)
++		  __entry->err)
+ );
+=20
+ /* Expect users already include <net/xdp.h>, but not xdp_priv.h */
+diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
+index db32272c4f77..1b4bfe4e06d6 100644
+--- a/kernel/bpf/devmap.c
++++ b/kernel/bpf/devmap.c
+@@ -340,7 +340,7 @@ static int bq_xmit_all(struct xdp_dev_bulk_queue *bq, u=
+32 flags)
+ out:
+ 	bq->count =3D 0;
+=20
+-	trace_xdp_devmap_xmit(NULL, 0, sent, drops, bq->dev_rx, dev, err);
++	trace_xdp_devmap_xmit(bq->dev_rx, dev, sent, drops, err);
+ 	bq->dev_rx =3D NULL;
+ 	__list_del_clearprev(&bq->flush_node);
+ 	return 0;
+diff --git a/samples/bpf/xdp_monitor_kern.c b/samples/bpf/xdp_monitor_kern.c
+index ad10fe700d7d..39458a44472e 100644
+--- a/samples/bpf/xdp_monitor_kern.c
++++ b/samples/bpf/xdp_monitor_kern.c
+@@ -222,14 +222,12 @@ struct bpf_map_def SEC("maps") devmap_xmit_cnt =3D {
+  */
+ struct devmap_xmit_ctx {
+ 	u64 __pad;		// First 8 bytes are not accessible by bpf code
+-	int map_id;		//	offset:8;  size:4; signed:1;
++	int from_ifindex;	//	offset:8;  size:4; signed:1;
+ 	u32 act;		//	offset:12; size:4; signed:0;
+-	u32 map_index;		//	offset:16; size:4; signed:0;
++	int to_ifindex; 	//	offset:16; size:4; signed:1;
+ 	int drops;		//	offset:20; size:4; signed:1;
+ 	int sent;		//	offset:24; size:4; signed:1;
+-	int from_ifindex;	//	offset:28; size:4; signed:1;
+-	int to_ifindex;		//	offset:32; size:4; signed:1;
+-	int err;		//	offset:36; size:4; signed:1;
++	int err;		//	offset:28; size:4; signed:1;
+ };
+=20
+ SEC("tracepoint/xdp/xdp_devmap_xmit")
+
