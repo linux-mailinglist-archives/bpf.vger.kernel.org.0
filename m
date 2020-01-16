@@ -2,43 +2,42 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 09AC913F8DF
-	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2020 20:21:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFD1113F89D
+	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2020 20:20:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729710AbgAPQyB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Jan 2020 11:54:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38250 "EHLO mail.kernel.org"
+        id S1731586AbgAPQyK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Jan 2020 11:54:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38518 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731391AbgAPQyB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Jan 2020 11:54:01 -0500
+        id S1731575AbgAPQyK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Jan 2020 11:54:10 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9468A214AF;
-        Thu, 16 Jan 2020 16:53:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5014D24656;
+        Thu, 16 Jan 2020 16:54:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579193640;
-        bh=ejBNIGZGMxjzJ1lBq89t0fo9r5nqDm5BVFfXjSVWCUI=;
+        s=default; t=1579193649;
+        bh=hzYUfnj+TvROFTnB8URu/LAAbLUAone1jW+IXrnDv94=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=liLlk0aCw/ShY/8XOQYgqbmJ6H8xh/o9/29EpjhlN1oLbOvVKmWWG0wM+UvUlc5Up
-         Vm1aNOrz+XktAGIjgozrJ7mUaJ0si2JESte7uZfs9bbDUt7Mpgwp5tPhXhBHoQncmB
-         +2DcPPzxup9BudSirPc+rL3kP0zlfIr5b4a1f18w=
+        b=rIm7q0EPYvltQ9rP4MnkrxPYwItgW1IYaE4oKqRxy+XbwPl/rGMvMGgmzE2WPg0pn
+         9b2H//x6DMAviMPLRPUUMKCGNU0o2rATwOZAwrQSB0KleGoFeViD0bBnHSzsrUKXxO
+         zmg5pZ+IIBBFuagU+URstqkuNz1JaDLdJcq/c2Zc=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+Cc:     Stanislav Fomichev <sdf@google.com>,
         Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 172/205] xdp: Fix cleanup on map free for devmap_hash map type
-Date:   Thu, 16 Jan 2020 11:42:27 -0500
-Message-Id: <20200116164300.6705-172-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, linux-kbuild@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 179/205] bpf: Support pre-2.25-binutils objcopy for vmlinux BTF
+Date:   Thu, 16 Jan 2020 11:42:34 -0500
+Message-Id: <20200116164300.6705-179-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200116164300.6705-1-sashal@kernel.org>
 References: <20200116164300.6705-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -47,169 +46,64 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Toke Høiland-Jørgensen <toke@redhat.com>
+From: Stanislav Fomichev <sdf@google.com>
 
-[ Upstream commit 071cdecec57fb5d5df78e6a12114ad7bccea5b0e ]
+[ Upstream commit da5fb18225b49b97bb37c51bcbbb2990a507c364 ]
 
-Tetsuo pointed out that it was not only the device unregister hook that was
-broken for devmap_hash types, it was also cleanup on map free. So better
-fix this as well.
+If vmlinux BTF generation fails, but CONFIG_DEBUG_INFO_BTF is set,
+.BTF section of vmlinux is empty and kernel will prohibit
+BPF loading and return "in-kernel BTF is malformed".
 
-While we're at it, there's no reason to allocate the netdev_map array for
-DEVMAP_HASH, so skip that and adjust the cost accordingly.
+--dump-section argument to binutils' objcopy was added in version 2.25.
+When using pre-2.25 binutils, BTF generation silently fails. Convert
+to --only-section which is present on pre-2.25 binutils.
 
-Fixes: 6f9d451ab1a3 ("xdp: Add devmap_hash map type for looking up devices by hashed index")
-Reported-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+Documentation/process/changes.rst states that binutils 2.21+
+is supported, not sure those standards apply to BPF subsystem.
+
+v2:
+* exit and print an error if gen_btf fails (John Fastabend)
+
+v3:
+* resend with Andrii's Acked-by/Tested-by tags
+
+Fixes: 341dfcf8d78ea ("btf: expose BTF info through sysfs")
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Acked-by: John Fastabend <john.fastabend@gmail.com>
-Link: https://lore.kernel.org/bpf/20191121133612.430414-1-toke@redhat.com
+Tested-by: Andrii Nakryiko <andriin@fb.com>
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+Cc: John Fastabend <john.fastabend@gmail.com>
+Link: https://lore.kernel.org/bpf/20191127161410.57327-1-sdf@google.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/devmap.c | 74 ++++++++++++++++++++++++++++-----------------
- 1 file changed, 46 insertions(+), 28 deletions(-)
+ scripts/link-vmlinux.sh | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-index 3867864cdc2f..3d3d61b5985b 100644
---- a/kernel/bpf/devmap.c
-+++ b/kernel/bpf/devmap.c
-@@ -74,7 +74,7 @@ struct bpf_dtab_netdev {
- 
- struct bpf_dtab {
- 	struct bpf_map map;
--	struct bpf_dtab_netdev **netdev_map;
-+	struct bpf_dtab_netdev **netdev_map; /* DEVMAP type only */
- 	struct list_head __percpu *flush_list;
- 	struct list_head list;
- 
-@@ -101,6 +101,12 @@ static struct hlist_head *dev_map_create_hash(unsigned int entries)
- 	return hash;
+diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+index 06495379fcd8..2998ddb323e3 100755
+--- a/scripts/link-vmlinux.sh
++++ b/scripts/link-vmlinux.sh
+@@ -127,7 +127,8 @@ gen_btf()
+ 		cut -d, -f1 | cut -d' ' -f2)
+ 	bin_format=$(LANG=C ${OBJDUMP} -f ${1} | grep 'file format' | \
+ 		awk '{print $4}')
+-	${OBJCOPY} --dump-section .BTF=.btf.vmlinux.bin ${1} 2>/dev/null
++	${OBJCOPY} --set-section-flags .BTF=alloc -O binary \
++		--only-section=.BTF ${1} .btf.vmlinux.bin 2>/dev/null
+ 	${OBJCOPY} -I binary -O ${bin_format} -B ${bin_arch} \
+ 		--rename-section .data=.BTF .btf.vmlinux.bin ${2}
  }
+@@ -253,6 +254,10 @@ btf_vmlinux_bin_o=""
+ if [ -n "${CONFIG_DEBUG_INFO_BTF}" ]; then
+ 	if gen_btf .tmp_vmlinux.btf .btf.vmlinux.bin.o ; then
+ 		btf_vmlinux_bin_o=.btf.vmlinux.bin.o
++	else
++		echo >&2 "Failed to generate BTF for vmlinux"
++		echo >&2 "Try to disable CONFIG_DEBUG_INFO_BTF"
++		exit 1
+ 	fi
+ fi
  
-+static inline struct hlist_head *dev_map_index_hash(struct bpf_dtab *dtab,
-+						    int idx)
-+{
-+	return &dtab->dev_index_head[idx & (dtab->n_buckets - 1)];
-+}
-+
- static int dev_map_init_map(struct bpf_dtab *dtab, union bpf_attr *attr)
- {
- 	int err, cpu;
-@@ -120,8 +126,7 @@ static int dev_map_init_map(struct bpf_dtab *dtab, union bpf_attr *attr)
- 	bpf_map_init_from_attr(&dtab->map, attr);
- 
- 	/* make sure page count doesn't overflow */
--	cost = (u64) dtab->map.max_entries * sizeof(struct bpf_dtab_netdev *);
--	cost += sizeof(struct list_head) * num_possible_cpus();
-+	cost = (u64) sizeof(struct list_head) * num_possible_cpus();
- 
- 	if (attr->map_type == BPF_MAP_TYPE_DEVMAP_HASH) {
- 		dtab->n_buckets = roundup_pow_of_two(dtab->map.max_entries);
-@@ -129,6 +134,8 @@ static int dev_map_init_map(struct bpf_dtab *dtab, union bpf_attr *attr)
- 		if (!dtab->n_buckets) /* Overflow check */
- 			return -EINVAL;
- 		cost += (u64) sizeof(struct hlist_head) * dtab->n_buckets;
-+	} else {
-+		cost += (u64) dtab->map.max_entries * sizeof(struct bpf_dtab_netdev *);
- 	}
- 
- 	/* if map size is larger than memlock limit, reject it */
-@@ -143,24 +150,22 @@ static int dev_map_init_map(struct bpf_dtab *dtab, union bpf_attr *attr)
- 	for_each_possible_cpu(cpu)
- 		INIT_LIST_HEAD(per_cpu_ptr(dtab->flush_list, cpu));
- 
--	dtab->netdev_map = bpf_map_area_alloc(dtab->map.max_entries *
--					      sizeof(struct bpf_dtab_netdev *),
--					      dtab->map.numa_node);
--	if (!dtab->netdev_map)
--		goto free_percpu;
--
- 	if (attr->map_type == BPF_MAP_TYPE_DEVMAP_HASH) {
- 		dtab->dev_index_head = dev_map_create_hash(dtab->n_buckets);
- 		if (!dtab->dev_index_head)
--			goto free_map_area;
-+			goto free_percpu;
- 
- 		spin_lock_init(&dtab->index_lock);
-+	} else {
-+		dtab->netdev_map = bpf_map_area_alloc(dtab->map.max_entries *
-+						      sizeof(struct bpf_dtab_netdev *),
-+						      dtab->map.numa_node);
-+		if (!dtab->netdev_map)
-+			goto free_percpu;
- 	}
- 
- 	return 0;
- 
--free_map_area:
--	bpf_map_area_free(dtab->netdev_map);
- free_percpu:
- 	free_percpu(dtab->flush_list);
- free_charge:
-@@ -228,21 +233,40 @@ static void dev_map_free(struct bpf_map *map)
- 			cond_resched();
- 	}
- 
--	for (i = 0; i < dtab->map.max_entries; i++) {
--		struct bpf_dtab_netdev *dev;
-+	if (dtab->map.map_type == BPF_MAP_TYPE_DEVMAP_HASH) {
-+		for (i = 0; i < dtab->n_buckets; i++) {
-+			struct bpf_dtab_netdev *dev;
-+			struct hlist_head *head;
-+			struct hlist_node *next;
- 
--		dev = dtab->netdev_map[i];
--		if (!dev)
--			continue;
-+			head = dev_map_index_hash(dtab, i);
- 
--		free_percpu(dev->bulkq);
--		dev_put(dev->dev);
--		kfree(dev);
-+			hlist_for_each_entry_safe(dev, next, head, index_hlist) {
-+				hlist_del_rcu(&dev->index_hlist);
-+				free_percpu(dev->bulkq);
-+				dev_put(dev->dev);
-+				kfree(dev);
-+			}
-+		}
-+
-+		kfree(dtab->dev_index_head);
-+	} else {
-+		for (i = 0; i < dtab->map.max_entries; i++) {
-+			struct bpf_dtab_netdev *dev;
-+
-+			dev = dtab->netdev_map[i];
-+			if (!dev)
-+				continue;
-+
-+			free_percpu(dev->bulkq);
-+			dev_put(dev->dev);
-+			kfree(dev);
-+		}
-+
-+		bpf_map_area_free(dtab->netdev_map);
- 	}
- 
- 	free_percpu(dtab->flush_list);
--	bpf_map_area_free(dtab->netdev_map);
--	kfree(dtab->dev_index_head);
- 	kfree(dtab);
- }
- 
-@@ -263,12 +287,6 @@ static int dev_map_get_next_key(struct bpf_map *map, void *key, void *next_key)
- 	return 0;
- }
- 
--static inline struct hlist_head *dev_map_index_hash(struct bpf_dtab *dtab,
--						    int idx)
--{
--	return &dtab->dev_index_head[idx & (dtab->n_buckets - 1)];
--}
--
- struct bpf_dtab_netdev *__dev_map_hash_lookup_elem(struct bpf_map *map, u32 key)
- {
- 	struct bpf_dtab *dtab = container_of(map, struct bpf_dtab, map);
 -- 
 2.20.1
 
