@@ -2,41 +2,42 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 05F7D13F3D1
-	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2020 19:46:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB48E13F389
+	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2020 19:44:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729876AbgAPSpi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Jan 2020 13:45:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49164 "EHLO mail.kernel.org"
+        id S2390343AbgAPSmk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Jan 2020 13:42:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52014 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729290AbgAPRKh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Jan 2020 12:10:37 -0500
+        id S2389471AbgAPRLZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Jan 2020 12:11:25 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 45CD42468B;
-        Thu, 16 Jan 2020 17:10:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 959DD21D56;
+        Thu, 16 Jan 2020 17:11:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579194637;
-        bh=UjDRz+2jQ+4DGwwvu1ypOz4jh6xd6EedOG9bfUkItyg=;
+        s=default; t=1579194685;
+        bh=7pl7lK1KOW0b4GqLq3o0CUIRMgonuai131WNRNpX6/U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yECtWdrdobRuWl9m/oCXb3Y8K7z7SQK5FKGcOHjXHOBy35uQ2e8vS6DICpiFp9MZH
-         FSSiGD64YnbtsxIirrHSddkJI5yREx8g7Y/rBROmt76qh6JHPsGqbs6EiMwPItJokd
-         WoCCvtEihKsdmI4ixgEJxTH3lXfKuSRm3EPYqZRs=
+        b=2JctedowzlH7nwWDLpBfsG/QRNICScbDHiUM1hga5P3d+hAM42hbomrEQPYVnHKj+
+         LebhAxNZ11paoKWtVmdJG0ANnPzGiiheAFpbXsssnv3LQGWmhPStUoJpGsGMAHPkcT
+         iRJLtgfhf80Bo7VkSEaJjdZCD59PzEQo7vlZ3R/g=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Quentin Monnet <quentin.monnet@netronome.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 495/671] tools: bpftool: fix format strings and arguments for jsonw_printf()
-Date:   Thu, 16 Jan 2020 12:02:13 -0500
-Message-Id: <20200116170509.12787-232-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 529/671] xsk: avoid store-tearing when assigning queues
+Date:   Thu, 16 Jan 2020 12:02:47 -0500
+Message-Id: <20200116170509.12787-266-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200116170509.12787-1-sashal@kernel.org>
 References: <20200116170509.12787-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -45,58 +46,36 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Quentin Monnet <quentin.monnet@netronome.com>
+From: Björn Töpel <bjorn.topel@intel.com>
 
-[ Upstream commit 22c349e8db89df86804d3ba23cef037ccd44a8bf ]
+[ Upstream commit 94a997637c5b562fa0ca44fca1d2cd02ec08236f ]
 
-There are some mismatches between format strings and arguments passed to
-jsonw_printf() in the BTF dumper for bpftool, which seems harmless but
-may result in warnings if the "__printf()" attribute is used correctly
-for jsonw_printf(). Let's fix relevant format strings and type cast.
+Use WRITE_ONCE when doing the store of tx, rx, fq, and cq, to avoid
+potential store-tearing. These members are read outside of the control
+mutex in the mmap implementation.
 
-Fixes: b12d6ec09730 ("bpf: btf: add btf print functionality")
-Signed-off-by: Quentin Monnet <quentin.monnet@netronome.com>
-Reviewed-by: Jakub Kicinski <jakub.kicinski@netronome.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Acked-by: Jonathan Lemon <jonathan.lemon@gmail.com>
+Fixes: 37b076933a8e ("xsk: add missing write- and data-dependency barrier")
+Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/bpf/bpftool/btf_dumper.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ net/xdp/xsk.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/bpf/bpftool/btf_dumper.c b/tools/bpf/bpftool/btf_dumper.c
-index e4e6e2b3fd84..ff0cc3c17141 100644
---- a/tools/bpf/bpftool/btf_dumper.c
-+++ b/tools/bpf/bpftool/btf_dumper.c
-@@ -26,9 +26,9 @@ static void btf_dumper_ptr(const void *data, json_writer_t *jw,
- 			   bool is_plain_text)
- {
- 	if (is_plain_text)
--		jsonw_printf(jw, "%p", *(unsigned long *)data);
-+		jsonw_printf(jw, "%p", data);
- 	else
--		jsonw_printf(jw, "%u", *(unsigned long *)data);
-+		jsonw_printf(jw, "%lu", *(unsigned long *)data);
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index c90854bc3048..b580078f04d1 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -320,7 +320,7 @@ static int xsk_init_queue(u32 entries, struct xsk_queue **queue,
+ 
+ 	/* Make sure queue is ready before it can be seen by others */
+ 	smp_wmb();
+-	*queue = q;
++	WRITE_ONCE(*queue, q);
+ 	return 0;
  }
  
- static int btf_dumper_modifier(const struct btf_dumper *d, __u32 type_id,
-@@ -129,7 +129,7 @@ static int btf_dumper_int(const struct btf_type *t, __u8 bit_offset,
- 	switch (BTF_INT_ENCODING(*int_type)) {
- 	case 0:
- 		if (BTF_INT_BITS(*int_type) == 64)
--			jsonw_printf(jw, "%lu", *(__u64 *)data);
-+			jsonw_printf(jw, "%llu", *(__u64 *)data);
- 		else if (BTF_INT_BITS(*int_type) == 32)
- 			jsonw_printf(jw, "%u", *(__u32 *)data);
- 		else if (BTF_INT_BITS(*int_type) == 16)
-@@ -142,7 +142,7 @@ static int btf_dumper_int(const struct btf_type *t, __u8 bit_offset,
- 		break;
- 	case BTF_INT_SIGNED:
- 		if (BTF_INT_BITS(*int_type) == 64)
--			jsonw_printf(jw, "%ld", *(long long *)data);
-+			jsonw_printf(jw, "%lld", *(long long *)data);
- 		else if (BTF_INT_BITS(*int_type) == 32)
- 			jsonw_printf(jw, "%d", *(int *)data);
- 		else if (BTF_INT_BITS(*int_type) == 16)
 -- 
 2.20.1
 
