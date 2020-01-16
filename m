@@ -2,41 +2,43 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E45E13F8BC
-	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2020 20:20:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09AC913F8DF
+	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2020 20:21:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731268AbgAPQxz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Jan 2020 11:53:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37938 "EHLO mail.kernel.org"
+        id S1729710AbgAPQyB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Jan 2020 11:54:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38250 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731221AbgAPQxv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Jan 2020 11:53:51 -0500
+        id S1731391AbgAPQyB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Jan 2020 11:54:01 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DB9912464B;
-        Thu, 16 Jan 2020 16:53:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9468A214AF;
+        Thu, 16 Jan 2020 16:53:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579193630;
-        bh=64x82PQuv5pebgDgHhtSr+hFf0pKyR4SaaHfSStuJYU=;
+        s=default; t=1579193640;
+        bh=ejBNIGZGMxjzJ1lBq89t0fo9r5nqDm5BVFfXjSVWCUI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Piat3vyyqytUa/5WiJyI56c9wyzuGNQd5XuC9KHUahU7brCcjE6jtcoAr8r0Gte8D
-         Ysb0g/gPC5++4a+oY76TFmVPaKnL00V9bk5Fyk+CHAECwUcYJ3RjK7ToQRlbqJCdJ/
-         2BQ4dlqr+T5ybTNMQSYa40hTrbIgWZhoiT/LHKbo=
+        b=liLlk0aCw/ShY/8XOQYgqbmJ6H8xh/o9/29EpjhlN1oLbOvVKmWWG0wM+UvUlc5Up
+         Vm1aNOrz+XktAGIjgozrJ7mUaJ0si2JESte7uZfs9bbDUt7Mpgwp5tPhXhBHoQncmB
+         +2DcPPzxup9BudSirPc+rL3kP0zlfIr5b4a1f18w=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     John Fastabend <john.fastabend@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        "David S . Miller" <davem@davemloft.net>,
+Cc:     =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        Alexei Starovoitov <ast@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 164/205] bpf: skmsg, fix potential psock NULL pointer dereference
-Date:   Thu, 16 Jan 2020 11:42:19 -0500
-Message-Id: <20200116164300.6705-164-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 172/205] xdp: Fix cleanup on map free for devmap_hash map type
+Date:   Thu, 16 Jan 2020 11:42:27 -0500
+Message-Id: <20200116164300.6705-172-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200116164300.6705-1-sashal@kernel.org>
 References: <20200116164300.6705-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -45,64 +47,169 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: John Fastabend <john.fastabend@gmail.com>
+From: Toke Høiland-Jørgensen <toke@redhat.com>
 
-[ Upstream commit 8163999db445021f2651a8a47b5632483e8722ea ]
+[ Upstream commit 071cdecec57fb5d5df78e6a12114ad7bccea5b0e ]
 
-Report from Dan Carpenter,
+Tetsuo pointed out that it was not only the device unregister hook that was
+broken for devmap_hash types, it was also cleanup on map free. So better
+fix this as well.
 
- net/core/skmsg.c:792 sk_psock_write_space()
- error: we previously assumed 'psock' could be null (see line 790)
+While we're at it, there's no reason to allocate the netdev_map array for
+DEVMAP_HASH, so skip that and adjust the cost accordingly.
 
- net/core/skmsg.c
-   789 psock = sk_psock(sk);
-   790 if (likely(psock && sk_psock_test_state(psock, SK_PSOCK_TX_ENABLED)))
- Check for NULL
-   791 schedule_work(&psock->work);
-   792 write_space = psock->saved_write_space;
-                     ^^^^^^^^^^^^^^^^^^^^^^^^
-   793          rcu_read_unlock();
-   794          write_space(sk);
-
-Ensure psock dereference on line 792 only occurs if psock is not null.
-
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Fixes: 604326b41a6f ("bpf, sockmap: convert to generic sk_msg interface")
-Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 6f9d451ab1a3 ("xdp: Add devmap_hash map type for looking up devices by hashed index")
+Reported-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Acked-by: John Fastabend <john.fastabend@gmail.com>
+Link: https://lore.kernel.org/bpf/20191121133612.430414-1-toke@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/core/skmsg.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ kernel/bpf/devmap.c | 74 ++++++++++++++++++++++++++++-----------------
+ 1 file changed, 46 insertions(+), 28 deletions(-)
 
-diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-index 0675d022584e..ded2d5227678 100644
---- a/net/core/skmsg.c
-+++ b/net/core/skmsg.c
-@@ -793,15 +793,18 @@ static void sk_psock_strp_data_ready(struct sock *sk)
- static void sk_psock_write_space(struct sock *sk)
- {
- 	struct sk_psock *psock;
--	void (*write_space)(struct sock *sk);
-+	void (*write_space)(struct sock *sk) = NULL;
+diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
+index 3867864cdc2f..3d3d61b5985b 100644
+--- a/kernel/bpf/devmap.c
++++ b/kernel/bpf/devmap.c
+@@ -74,7 +74,7 @@ struct bpf_dtab_netdev {
  
- 	rcu_read_lock();
- 	psock = sk_psock(sk);
--	if (likely(psock && sk_psock_test_state(psock, SK_PSOCK_TX_ENABLED)))
--		schedule_work(&psock->work);
--	write_space = psock->saved_write_space;
-+	if (likely(psock)) {
-+		if (sk_psock_test_state(psock, SK_PSOCK_TX_ENABLED))
-+			schedule_work(&psock->work);
-+		write_space = psock->saved_write_space;
-+	}
- 	rcu_read_unlock();
--	write_space(sk);
-+	if (write_space)
-+		write_space(sk);
+ struct bpf_dtab {
+ 	struct bpf_map map;
+-	struct bpf_dtab_netdev **netdev_map;
++	struct bpf_dtab_netdev **netdev_map; /* DEVMAP type only */
+ 	struct list_head __percpu *flush_list;
+ 	struct list_head list;
+ 
+@@ -101,6 +101,12 @@ static struct hlist_head *dev_map_create_hash(unsigned int entries)
+ 	return hash;
  }
  
- int sk_psock_init_strp(struct sock *sk, struct sk_psock *psock)
++static inline struct hlist_head *dev_map_index_hash(struct bpf_dtab *dtab,
++						    int idx)
++{
++	return &dtab->dev_index_head[idx & (dtab->n_buckets - 1)];
++}
++
+ static int dev_map_init_map(struct bpf_dtab *dtab, union bpf_attr *attr)
+ {
+ 	int err, cpu;
+@@ -120,8 +126,7 @@ static int dev_map_init_map(struct bpf_dtab *dtab, union bpf_attr *attr)
+ 	bpf_map_init_from_attr(&dtab->map, attr);
+ 
+ 	/* make sure page count doesn't overflow */
+-	cost = (u64) dtab->map.max_entries * sizeof(struct bpf_dtab_netdev *);
+-	cost += sizeof(struct list_head) * num_possible_cpus();
++	cost = (u64) sizeof(struct list_head) * num_possible_cpus();
+ 
+ 	if (attr->map_type == BPF_MAP_TYPE_DEVMAP_HASH) {
+ 		dtab->n_buckets = roundup_pow_of_two(dtab->map.max_entries);
+@@ -129,6 +134,8 @@ static int dev_map_init_map(struct bpf_dtab *dtab, union bpf_attr *attr)
+ 		if (!dtab->n_buckets) /* Overflow check */
+ 			return -EINVAL;
+ 		cost += (u64) sizeof(struct hlist_head) * dtab->n_buckets;
++	} else {
++		cost += (u64) dtab->map.max_entries * sizeof(struct bpf_dtab_netdev *);
+ 	}
+ 
+ 	/* if map size is larger than memlock limit, reject it */
+@@ -143,24 +150,22 @@ static int dev_map_init_map(struct bpf_dtab *dtab, union bpf_attr *attr)
+ 	for_each_possible_cpu(cpu)
+ 		INIT_LIST_HEAD(per_cpu_ptr(dtab->flush_list, cpu));
+ 
+-	dtab->netdev_map = bpf_map_area_alloc(dtab->map.max_entries *
+-					      sizeof(struct bpf_dtab_netdev *),
+-					      dtab->map.numa_node);
+-	if (!dtab->netdev_map)
+-		goto free_percpu;
+-
+ 	if (attr->map_type == BPF_MAP_TYPE_DEVMAP_HASH) {
+ 		dtab->dev_index_head = dev_map_create_hash(dtab->n_buckets);
+ 		if (!dtab->dev_index_head)
+-			goto free_map_area;
++			goto free_percpu;
+ 
+ 		spin_lock_init(&dtab->index_lock);
++	} else {
++		dtab->netdev_map = bpf_map_area_alloc(dtab->map.max_entries *
++						      sizeof(struct bpf_dtab_netdev *),
++						      dtab->map.numa_node);
++		if (!dtab->netdev_map)
++			goto free_percpu;
+ 	}
+ 
+ 	return 0;
+ 
+-free_map_area:
+-	bpf_map_area_free(dtab->netdev_map);
+ free_percpu:
+ 	free_percpu(dtab->flush_list);
+ free_charge:
+@@ -228,21 +233,40 @@ static void dev_map_free(struct bpf_map *map)
+ 			cond_resched();
+ 	}
+ 
+-	for (i = 0; i < dtab->map.max_entries; i++) {
+-		struct bpf_dtab_netdev *dev;
++	if (dtab->map.map_type == BPF_MAP_TYPE_DEVMAP_HASH) {
++		for (i = 0; i < dtab->n_buckets; i++) {
++			struct bpf_dtab_netdev *dev;
++			struct hlist_head *head;
++			struct hlist_node *next;
+ 
+-		dev = dtab->netdev_map[i];
+-		if (!dev)
+-			continue;
++			head = dev_map_index_hash(dtab, i);
+ 
+-		free_percpu(dev->bulkq);
+-		dev_put(dev->dev);
+-		kfree(dev);
++			hlist_for_each_entry_safe(dev, next, head, index_hlist) {
++				hlist_del_rcu(&dev->index_hlist);
++				free_percpu(dev->bulkq);
++				dev_put(dev->dev);
++				kfree(dev);
++			}
++		}
++
++		kfree(dtab->dev_index_head);
++	} else {
++		for (i = 0; i < dtab->map.max_entries; i++) {
++			struct bpf_dtab_netdev *dev;
++
++			dev = dtab->netdev_map[i];
++			if (!dev)
++				continue;
++
++			free_percpu(dev->bulkq);
++			dev_put(dev->dev);
++			kfree(dev);
++		}
++
++		bpf_map_area_free(dtab->netdev_map);
+ 	}
+ 
+ 	free_percpu(dtab->flush_list);
+-	bpf_map_area_free(dtab->netdev_map);
+-	kfree(dtab->dev_index_head);
+ 	kfree(dtab);
+ }
+ 
+@@ -263,12 +287,6 @@ static int dev_map_get_next_key(struct bpf_map *map, void *key, void *next_key)
+ 	return 0;
+ }
+ 
+-static inline struct hlist_head *dev_map_index_hash(struct bpf_dtab *dtab,
+-						    int idx)
+-{
+-	return &dtab->dev_index_head[idx & (dtab->n_buckets - 1)];
+-}
+-
+ struct bpf_dtab_netdev *__dev_map_hash_lookup_elem(struct bpf_map *map, u32 key)
+ {
+ 	struct bpf_dtab *dtab = container_of(map, struct bpf_dtab, map);
 -- 
 2.20.1
 
