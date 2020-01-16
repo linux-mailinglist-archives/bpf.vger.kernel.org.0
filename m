@@ -2,34 +2,34 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DDA3313D135
-	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2020 01:41:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2412E13D14C
+	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2020 01:56:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729366AbgAPAlV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Jan 2020 19:41:21 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:62260 "EHLO
+        id S1726513AbgAPA4A (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Jan 2020 19:56:00 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:28506 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728931AbgAPAlV (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 15 Jan 2020 19:41:21 -0500
+        by vger.kernel.org with ESMTP id S1729125AbgAPAz7 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 15 Jan 2020 19:55:59 -0500
 Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 00G0blcQ006884
-        for <bpf@vger.kernel.org>; Wed, 15 Jan 2020 16:41:19 -0800
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 00G0rda3002814
+        for <bpf@vger.kernel.org>; Wed, 15 Jan 2020 16:55:58 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : mime-version : content-type; s=facebook;
- bh=5fw0EdQWhPregdFqrz5HdcFntTryiFK3a6OZkKg8buA=;
- b=nKsSRODJgnLzEXWptZjmtc9iaPdyOL5/2mL/tZj3+tlyR0B392Z6EJP0+cTN5JJxUxet
- sWl+jOsrGGL7qh+JasKuV29q/wCY9e58896ZwTmUiZxAl1fy3mWpXi5YKNCqoWoBwpbF
- BYohZ98DOJW5Ll9bh7WQBQ+pC7ZjV7jef3w= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net with ESMTP id 2xj5ptadma-1
+ bh=AXUzoGhL1JE0ZSHtdJfUzay0wgBrAYWZN7sLS55H4as=;
+ b=HeJtYEQX9w5ics7Ck8xBu9ICKj1fq5r8YRJOpVaNp/K9sf63jLR5WinKTHBeqteDp+xu
+ fbO5Bq7/ukV81b7yHTtocbyK1XszPkEhUdwjMisBaEVjgv/hcNGedpEUNZy5ES9ephhP
+ jMLag8kePqDfiGb6UE5ulR2lykJNcb4nhcI= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net with ESMTP id 2xj5ptaf42-3
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 15 Jan 2020 16:41:19 -0800
-Received: from intmgw003.06.prn3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Wed, 15 Jan 2020 16:55:58 -0800
+Received: from intmgw003.08.frc2.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 15 Jan 2020 16:41:18 -0800
+ 15.1.1779.2; Wed, 15 Jan 2020 16:55:56 -0800
 Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 42F062EC20D3; Wed, 15 Jan 2020 16:41:06 -0800 (PST)
+        id 9B4532EC1D7C; Wed, 15 Jan 2020 16:55:51 -0800 (PST)
 Smtp-Origin-Hostprefix: devbig
 From:   Andrii Nakryiko <andriin@fb.com>
 Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
@@ -38,9 +38,9 @@ To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
 CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
         Andrii Nakryiko <andriin@fb.com>, Julia Kartseva <hex@fb.com>
 Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next] selftests/bpf: add whitelist/blacklist of test names to test_progs
-Date:   Wed, 15 Jan 2020 16:41:01 -0800
-Message-ID: <20200116004101.3596474-1-andriin@fb.com>
+Subject: [PATCH v2 bpf-next] selftests/bpf: add whitelist/blacklist of test names to test_progs
+Date:   Wed, 15 Jan 2020 16:55:49 -0800
+Message-ID: <20200116005549.3644118-1-andriin@fb.com>
 X-Mailer: git-send-email 2.17.1
 X-FB-Internal: Safe
 MIME-Version: 1.0
@@ -51,7 +51,7 @@ X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlx
  malwarescore=0 suspectscore=29 clxscore=1015 spamscore=0 phishscore=0
  bulkscore=0 priorityscore=1501 mlxlogscore=999 impostorscore=0
  lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1910280000 definitions=main-2001160002
+ engine=8.12.0-1910280000 definitions=main-2001160004
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
@@ -70,11 +70,37 @@ Travis CI in its Github repo.
 
 Example runs with just whitelist and whitelist + blacklist:
 
-$ sudo ./test_progs -tattach,core/existence
-Summary: 8/8 PASSED, 0 SKIPPED, 0 FAILED
+  $ sudo ./test_progs -tattach,core/existence
+  #1 attach_probe:OK
+  #6 cgroup_attach_autodetach:OK
+  #7 cgroup_attach_multi:OK
+  #8 cgroup_attach_override:OK
+  #9 core_extern:OK
+  #10/44 existence:OK
+  #10/45 existence___minimal:OK
+  #10/46 existence__err_int_sz:OK
+  #10/47 existence__err_int_type:OK
+  #10/48 existence__err_int_kind:OK
+  #10/49 existence__err_arr_kind:OK
+  #10/50 existence__err_arr_value_type:OK
+  #10/51 existence__err_struct_type:OK
+  #10 core_reloc:OK
+  #19 flow_dissector_reattach:OK
+  #60 tp_attach_query:OK
+  Summary: 8/8 PASSED, 0 SKIPPED, 0 FAILED
 
-$ sudo ./test_progs -tattach,core/existence -bcgroup,flow/arr
-Summary: 4/6 PASSED, 0 SKIPPED, 0 FAILED
+  $ sudo ./test_progs -tattach,core/existence -bcgroup,flow/arr
+  #1 attach_probe:OK
+  #9 core_extern:OK
+  #10/44 existence:OK
+  #10/45 existence___minimal:OK
+  #10/46 existence__err_int_sz:OK
+  #10/47 existence__err_int_type:OK
+  #10/48 existence__err_int_kind:OK
+  #10/51 existence__err_struct_type:OK
+  #10 core_reloc:OK
+  #60 tp_attach_query:OK
+  Summary: 4/6 PASSED, 0 SKIPPED, 0 FAILED
 
 Cc: Julia Kartseva <hex@fb.com>
 Signed-off-by: Andrii Nakryiko <andriin@fb.com>
