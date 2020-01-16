@@ -2,119 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8104C13DB8B
-	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2020 14:24:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFA2213DC68
+	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2020 14:53:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729133AbgAPNWy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Jan 2020 08:22:54 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:21789 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726366AbgAPNWa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Jan 2020 08:22:30 -0500
+        id S1726566AbgAPNvt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Jan 2020 08:51:49 -0500
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:38580 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726366AbgAPNvs (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 16 Jan 2020 08:51:48 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1579180949;
+        s=mimecast20190719; t=1579182708;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=xYGxxZgSLFtlH8jcI3Nu4qoKg9CPPVXnWephfx6aPc4=;
-        b=A9wQgrs8/TEaPDSljURzycYnOsG0n6U9ZiCzUhQezl9lDEs74qXmiwSDvH7AdCQRvjIiRc
-        nNnRlkrHnZKQaHMOVN3S6BcIYQAdl+v9dxSxD/O//xYiHKLuV5LOEoG6wGR6NcEVsszAEG
-        RBPGASFMhlccUMQuACB6/sQsAvMfjbI=
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
- [209.85.208.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-332-kr-IDM-tMCKGSNXSxOq3FQ-1; Thu, 16 Jan 2020 08:22:28 -0500
-X-MC-Unique: kr-IDM-tMCKGSNXSxOq3FQ-1
-Received: by mail-lj1-f199.google.com with SMTP id y15so5136121lji.1
-        for <bpf@vger.kernel.org>; Thu, 16 Jan 2020 05:22:28 -0800 (PST)
+        bh=HSQVRIo5T/T5M3nGFCM1g0cRJLehKx87k0xRn1tRw/I=;
+        b=Ds0GJHtD5sEQ3OvHo1R/Qotu5pJBP9u7vq2bS3DMdkranifv3aSYXG9U4LUlxwMJTVv4mF
+        wqy2ig/iAbVrmMZZJKcf0XCi5ggCMdOqhqqtlosp4Q52PTDYE4FyDpzP/BAgrhDuxFIuZs
+        tbtjQj1sZJ8lMIV3G+dviSuLQmAIFFU=
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
+ [209.85.208.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-241-DxkD6LSLOw2TYqG81AEtWQ-1; Thu, 16 Jan 2020 08:51:45 -0500
+X-MC-Unique: DxkD6LSLOw2TYqG81AEtWQ-1
+Received: by mail-lj1-f197.google.com with SMTP id a19so5184459ljp.15
+        for <bpf@vger.kernel.org>; Thu, 16 Jan 2020 05:51:44 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:date:message-id:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=xYGxxZgSLFtlH8jcI3Nu4qoKg9CPPVXnWephfx6aPc4=;
-        b=fCcZUQnS4bhnIgW8ePYge4czdIyc+9zsMEFR3w1BQNd3Yznpv82UTEIM4S1dmUOcHU
-         QO7H0rEtLSgG8vrz8SVR9BZuD3ahffoVE3ZIzUWiaXEL++bRx3gFyMEBOzHMKaeqJCal
-         1kcKrLorlpRIV4br8iUIwDhAWyPuBOw92sW4CAMEutx6c64CD06iNhXKAjxR+VVZYt8b
-         LKCzf/jKfZRX57M5sETcdIfpqsacVVMZw/UJ2G+wjdLzZBw1sWd4Q2Is/kRh7+QzeOL7
-         YlGT1eBXDG/N3dnuAQSTQTZ1LCXg74AE2Z3JmIW1TWy5l/m/ckb13PN9NGDipjHr0Qd9
-         +oyA==
-X-Gm-Message-State: APjAAAVFd+uJq7OnMQILg1px7BeB8AMCwIxPlKekOd8sQPv8QjPzEF8P
-        B7lsDoLPBb/6bGk8W5sXxIFkqkCNwHc7cX7zbdc198nnRGl8xAbedmGiRqzQTVWnpT+Cim7EVaP
-        lrYM1FAhXKVDW
-X-Received: by 2002:a2e:b52b:: with SMTP id z11mr2348632ljm.155.1579180947071;
-        Thu, 16 Jan 2020 05:22:27 -0800 (PST)
-X-Google-Smtp-Source: APXvYqxfmdIbBJX76Kqg7+Yyy3+Jb6vlAiz8KLU+B3P9UXhqphkNxoSBonQsyrf+47I652QC3NESmg==
-X-Received: by 2002:a2e:b52b:: with SMTP id z11mr2348613ljm.155.1579180946842;
-        Thu, 16 Jan 2020 05:22:26 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=HSQVRIo5T/T5M3nGFCM1g0cRJLehKx87k0xRn1tRw/I=;
+        b=gjYBiUjGiO4/ao2PBfSSVBUxp4219mPW6CyZs+IwqJPps+1/2p5efW6l+tQcQDw16E
+         ouyKlV28JBwQGP614FKMBbbf/znMui6KRJMeBWGDYFLapFyWggsM9TgY06tQFz0nfcd1
+         BoyFcp7KstoH1iqxxIU7bGGvmgwcm7pa3HgqiP+4KKR6PaoRNFB9+i0izX6RfDov8xRE
+         MSKQ2Lg7yYpd90AxUvigPenQ+jb2ZJu4k2fxkn5IRNv0MSUcQQK22YOjmxLZciS2Fgwf
+         2dHqt7pQIwZb+qFBxg/3niloPCL8lrhZ+e9gPz/htjeR7G3Z4D1WOmaym2t+lSf7c4sL
+         wlMQ==
+X-Gm-Message-State: APjAAAW7F0ccHXx5V33fpKR38YAVrnJfDXwB7bCUFW37iKSMhjwrHjLB
+        sF5XUHAU5npUPS22j/JfOoZGGUv/J92HgCMEjzByvf9qa3C3y5xNZnIcTBhdsczRN99ByxkegWP
+        ifcj5Qmhq6JUL
+X-Received: by 2002:a2e:9f17:: with SMTP id u23mr2468611ljk.112.1579182703739;
+        Thu, 16 Jan 2020 05:51:43 -0800 (PST)
+X-Google-Smtp-Source: APXvYqx5xWH2dF5z9n9RENXRXJOekRF4nc4sEZeF/z5EVeEgZaDID+Q1VUd2+8YwPCybuhIS5I/IHQ==
+X-Received: by 2002:a2e:9f17:: with SMTP id u23mr2468585ljk.112.1579182703425;
+        Thu, 16 Jan 2020 05:51:43 -0800 (PST)
 Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id s22sm10945565ljm.41.2020.01.16.05.22.25
+        by smtp.gmail.com with ESMTPSA id b6sm10570279lfq.11.2020.01.16.05.51.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jan 2020 05:22:25 -0800 (PST)
+        Thu, 16 Jan 2020 05:51:42 -0800 (PST)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 19EEE1808D8; Thu, 16 Jan 2020 14:22:24 +0100 (CET)
-Subject: [PATCH bpf-next v3 11/11] libbpf: Fix include of bpf_helpers.h when
- libbpf is installed on system
-From:   =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <ast@kernel.org>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Date:   Thu, 16 Jan 2020 14:22:24 +0100
-Message-ID: <157918094400.1357254.5646603555325507261.stgit@toke.dk>
-In-Reply-To: <157918093154.1357254.7616059374996162336.stgit@toke.dk>
-References: <157918093154.1357254.7616059374996162336.stgit@toke.dk>
-User-Agent: StGit/0.21
+        id 375971804D6; Thu, 16 Jan 2020 14:51:41 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>, brouer@redhat.com
+Subject: Re: [PATCH bpf-next v2 1/2] xdp: Move devmap bulk queue into struct net_device
+In-Reply-To: <20200116122400.499c2b1e@carbon>
+References: <157893905455.861394.14341695989510022302.stgit@toke.dk> <157893905569.861394.457637639114847149.stgit@toke.dk> <20200115211734.2dfcffd4@carbon> <87imlctlo6.fsf@toke.dk> <20200116122400.499c2b1e@carbon>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Thu, 16 Jan 2020 14:51:41 +0100
+Message-ID: <87lfq7se4y.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Toke Høiland-Jørgensen <toke@redhat.com>
+Jesper Dangaard Brouer <brouer@redhat.com> writes:
 
-The change to use angled includes for bpf_helper_defs.h breaks compilation
-against libbpf when it is installed in the include path, since the file is
-installed in the bpf/ subdirectory of $INCLUDE_PATH. Since we've now fixed
-the selftest Makefile to not require this anymore, revert back to
-double-quoted include so bpf_helpers.h works regardless of include path.
+> On Wed, 15 Jan 2020 23:11:21 +0100
+> Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com> wrote:
+>
+>> Jesper Dangaard Brouer <brouer@redhat.com> writes:
+>>=20
+>> > On Mon, 13 Jan 2020 19:10:55 +0100
+>> > Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com> wrote:
+>> >=20=20
+>> >> diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
+>> >> index da9c832fc5c8..030d125c3839 100644
+>> >> --- a/kernel/bpf/devmap.c
+>> >> +++ b/kernel/bpf/devmap.c=20=20
+>> > [...]=20=20
+>> >> @@ -346,8 +340,7 @@ static int bq_xmit_all(struct xdp_bulk_queue *bq,=
+ u32 flags)
+>> >>  out:
+>> >>  	bq->count =3D 0;
+>> >>=20=20
+>> >> -	trace_xdp_devmap_xmit(&obj->dtab->map, obj->idx,
+>> >> -			      sent, drops, bq->dev_rx, dev, err);
+>> >> +	trace_xdp_devmap_xmit(NULL, 0, sent, drops, bq->dev_rx, dev, err);=
+=20=20
+>> >
+>> > Hmm ... I don't like that we lose the map_id and map_index identifier.
+>> > This is part of our troubleshooting interface.=20=20
+>>=20
+>> Hmm, I guess I can take another look at whether there's a way to avoid
+>> that. Any ideas?
+>
+> Looking at the code and the other tracepoints...
+>
+> I will actually suggest to remove these two arguments, because the
+> trace_xdp_redirect_map tracepoint also contains the ifindex'es, and to
+> troubleshoot people can record both tracepoints and do the correlation
+> themselves.
+>
+> When changing the tracepoint I would like to keep member 'drops' and
+> 'sent' at the same struct offsets.  As our xdp_monitor example reads
+> these and I hope we can kept it working this way.
+>
+> I've coded it up, and tested it.  The new xdp_monitor will work on
+> older kernels, but the old xdp_monitor will fail attaching on newer
+> kernels. I think this is fair enough, as we are backwards compatible.
 
-Fixes: 6910d7d3867a ("selftests/bpf: Ensure bpf_helper_defs.h are taken from selftests dir")
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
----
- tools/lib/bpf/bpf_helpers.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+SGTM - thanks! I'll respin and include this :)
 
-diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
-index 050bb7bf5be6..f69cc208778a 100644
---- a/tools/lib/bpf/bpf_helpers.h
-+++ b/tools/lib/bpf/bpf_helpers.h
-@@ -2,7 +2,7 @@
- #ifndef __BPF_HELPERS__
- #define __BPF_HELPERS__
- 
--#include <bpf_helper_defs.h>
-+#include "bpf_helper_defs.h"
- 
- #define __uint(name, val) int (*name)[val]
- #define __type(name, val) typeof(val) *name
+-Toke
 
