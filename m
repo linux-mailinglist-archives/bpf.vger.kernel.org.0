@@ -2,27 +2,27 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 07FEA13DDE9
-	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2020 15:46:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B1BF13DDEC
+	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2020 15:46:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726559AbgAPOqN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Jan 2020 09:46:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36804 "EHLO mail.kernel.org"
+        id S1726527AbgAPOqY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Jan 2020 09:46:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36976 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726362AbgAPOqN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Jan 2020 09:46:13 -0500
+        id S1726362AbgAPOqY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Jan 2020 09:46:24 -0500
 Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 21DD12072B;
-        Thu, 16 Jan 2020 14:46:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1F47820684;
+        Thu, 16 Jan 2020 14:46:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579185972;
-        bh=WKp9TaCHvXe+OIL/Jsjsxj34PxTjaSn/9cbxee71PeQ=;
+        s=default; t=1579185982;
+        bh=VutGjxWwdtEPcCBYrGyCDjwJ75btz6UR1pL3UbFs08c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zxRG/xiqmSkx8p5oddGIFI69vxRorwuvf2EYOufZQWwsNqhS7GOQFnOxoS06NEn2I
-         WvcVE9WjPh6zFFGsOGbr6PdFJBRA/yHon9P3yWGDjp/qCshy+IZ2AatSxK2nFMOZ4f
-         wiG5bYP2I296arGgxPbA1Q4Yni8AJoCvlwiJtbGQ=
+        b=qCopYxEeBllyD83t5ggx9lLCMEqXOioXxFbSCQYI7g2LtcvQJ+qALffU9m3YOzIU3
+         9iV9mxRqVVBkBKJ3PY2MpI/Q1qpOXdsfillIc1IfIksCIQfudpXlGrnArkVNTJ0ceG
+         RLw8DQq7KHGJV/3hnu7IvzrmRfI+Vw7Wqo6YhXBs=
 From:   Masami Hiramatsu <mhiramat@kernel.org>
 To:     Brendan Gregg <brendan.d.gregg@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
@@ -35,9 +35,9 @@ Cc:     mhiramat@kernel.org, Ingo Molnar <mingo@kernel.org>,
         joel@joelfernandes.org,
         "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
         Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>
-Subject: [RFT PATCH 11/13] kprobes: Add asynchronous unregistration APIs
-Date:   Thu, 16 Jan 2020 23:46:07 +0900
-Message-Id: <157918596704.29301.4085897993817952679.stgit@devnote2>
+Subject: [RFT PATCH 12/13] tracing/kprobe: Free probe event asynchronously
+Date:   Thu, 16 Jan 2020 23:46:17 +0900
+Message-Id: <157918597739.29301.3329193112465223174.stgit@devnote2>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <157918584866.29301.6941815715391411338.stgit@devnote2>
 References: <157918584866.29301.6941815715391411338.stgit@devnote2>
@@ -50,135 +50,110 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add asynchronous unregistration APIs for kprobes and kretprobes.
-These APIs can accelerate the unregistration process of multiple
-probes because user do not need to wait for RCU sync.
-
-However, caller must take care of following notes.
-
-- If you wants to synchronize unregistration (for example, making
-  sure all handlers are running out), you have to use
-  synchronize_rcu() once at last.
-
-- If you need to free objects which related to the kprobes, you
-  can pass a callback, but that callback must call
-  kprobe_free_callback() or kretprobe_free_callback() at first.
-
-Since it is easy to shoot your foot, at this moment I don't
-export these APIs to modules.
+Free each probe event data structure asynchronously when
+deleting probe events. But this finally synchronizes RCU
+so that we make sure all event handlers have finished.
 
 Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 ---
- include/linux/kprobes.h |    9 ++++++++
- kernel/kprobes.c        |   56 +++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 65 insertions(+)
+ kernel/trace/trace_dynevent.c |    5 ++++
+ kernel/trace/trace_kprobe.c   |   46 +++++++++++++++++++++++++++++++++++------
+ 2 files changed, 44 insertions(+), 7 deletions(-)
 
-diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
-index 1cd53b7b8409..f892c3a11dac 100644
---- a/include/linux/kprobes.h
-+++ b/include/linux/kprobes.h
-@@ -98,6 +98,9 @@ struct kprobe {
- 	 * Protected by kprobe_mutex after this kprobe is registered.
- 	 */
- 	u32 flags;
+diff --git a/kernel/trace/trace_dynevent.c b/kernel/trace/trace_dynevent.c
+index 89779eb84a07..2d5e8d457309 100644
+--- a/kernel/trace/trace_dynevent.c
++++ b/kernel/trace/trace_dynevent.c
+@@ -70,6 +70,9 @@ int dyn_event_release(int argc, char **argv, struct dyn_event_operations *type)
+ 		if (ret)
+ 			break;
+ 	}
 +
-+	/* For asynchronous unregistration callback */
-+	struct rcu_head rcu;
- };
++	/* Wait for running events because of async event unregistration */
++	synchronize_rcu();
+ 	mutex_unlock(&event_mutex);
  
- /* Kprobe status flags */
-@@ -364,6 +367,12 @@ void unregister_kretprobe(struct kretprobe *rp);
- int register_kretprobes(struct kretprobe **rps, int num);
- void unregister_kretprobes(struct kretprobe **rps, int num);
+ 	return ret;
+@@ -164,6 +167,8 @@ int dyn_events_release_all(struct dyn_event_operations *type)
+ 		if (ret)
+ 			break;
+ 	}
++	/* Wait for running events because of async event unregistration */
++	synchronize_rcu();
+ out:
+ 	mutex_unlock(&event_mutex);
  
-+/* Async unregister APIs (Do not wait for rcu sync) */
-+void kprobe_free_callback(struct rcu_head *head);
-+void kretprobe_free_callback(struct rcu_head *head);
-+void unregister_kprobe_async(struct kprobe *kp, rcu_callback_t free_cb);
-+void unregister_kretprobe_async(struct kretprobe *kp, rcu_callback_t free_cb);
-+
- void kprobe_flush_task(struct task_struct *tk);
- void recycle_rp_inst(struct kretprobe_instance *ri, struct hlist_head *head);
- 
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index 5c12eb7fa8e1..ab57c22b64f9 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -1887,6 +1887,31 @@ void unregister_kprobes(struct kprobe **kps, int num)
+diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+index 906af1ffe2b2..f7e0370b10ae 100644
+--- a/kernel/trace/trace_kprobe.c
++++ b/kernel/trace/trace_kprobe.c
+@@ -551,7 +551,35 @@ static void __unregister_trace_kprobe(struct trace_kprobe *tk)
+ 	}
  }
- EXPORT_SYMBOL_GPL(unregister_kprobes);
  
-+void kprobe_free_callback(struct rcu_head *head)
-+{
-+	struct kprobe *kp = container_of(head, struct kprobe, rcu);
-+
-+	__unregister_kprobe_bottom(kp);
-+}
-+
-+/*
-+ * If you call this function, you must call kprobe_free_callback() at first
-+ * in your free_cb(), or set free_cb = NULL.
-+ */
-+void unregister_kprobe_async(struct kprobe *kp, rcu_callback_t free_cb)
-+{
-+	mutex_lock(&kprobe_mutex);
-+	if (__unregister_kprobe_top(kp) < 0)
-+		kp->addr = NULL;
-+	mutex_unlock(&kprobe_mutex);
-+
-+	if (!kp->addr)
-+		return;
-+	if (!free_cb)
-+		free_cb = kprobe_free_callback;
-+	call_rcu(&kp->rcu, free_cb);
-+}
-+
- int __weak kprobe_exceptions_notify(struct notifier_block *self,
- 					unsigned long val, void *data)
- {
-@@ -2080,6 +2105,29 @@ void unregister_kretprobes(struct kretprobe **rps, int num)
- }
- EXPORT_SYMBOL_GPL(unregister_kretprobes);
- 
-+void kretprobe_free_callback(struct rcu_head *head)
+-/* Unregister a trace_probe and probe_event */
++static void free_trace_kprobe_cb(struct rcu_head *head)
 +{
 +	struct kprobe *kp = container_of(head, struct kprobe, rcu);
 +	struct kretprobe *rp = container_of(kp, struct kretprobe, kp);
++	struct trace_kprobe *tk = container_of(rp, struct trace_kprobe, rp);
 +
-+	__unregister_kprobe_bottom(kp);
-+	cleanup_rp_inst(rp);
++	if (trace_kprobe_is_return(tk))
++		kretprobe_free_callback(head);
++	else
++		kprobe_free_callback(head);
++	free_trace_kprobe(tk);
 +}
 +
-+void unregister_kretprobe_async(struct kretprobe *rp, rcu_callback_t free_cb)
++static void __unregister_trace_kprobe_async(struct trace_kprobe *tk)
 +{
-+	mutex_lock(&kprobe_mutex);
-+	if (__unregister_kprobe_top(&rp->kp) < 0)
-+		rp->kp.addr = NULL;
-+	mutex_unlock(&kprobe_mutex);
-+
-+	if (!rp->kp.addr)
-+		return;
-+	if (!free_cb)
-+		free_cb = kretprobe_free_callback;
-+	call_rcu(&rp->kp.rcu, free_cb);
++	if (trace_kprobe_is_registered(tk)) {
++		if (trace_kprobe_is_return(tk))
++			unregister_kretprobe_async(&tk->rp,
++						   free_trace_kprobe_cb);
++		else
++			unregister_kprobe_async(&tk->rp.kp,
++						free_trace_kprobe_cb);
++	}
 +}
 +
- #else /* CONFIG_KRETPROBES */
- int register_kretprobe(struct kretprobe *rp)
++/*
++ * Unregister a trace_probe and probe_event asynchronously.
++ * Caller must wait for RCU.
++ */
+ static int unregister_trace_kprobe(struct trace_kprobe *tk)
  {
-@@ -2109,6 +2157,14 @@ static int pre_handler_kretprobe(struct kprobe *p, struct pt_regs *regs)
+ 	/* If other probes are on the event, just unregister kprobe */
+@@ -570,9 +598,17 @@ static int unregister_trace_kprobe(struct trace_kprobe *tk)
+ 		return -EBUSY;
+ 
+ unreg:
+-	__unregister_trace_kprobe(tk);
+ 	dyn_event_remove(&tk->devent);
++	/*
++	 * This trace_probe_unlink() can free the trace_event_call linked to
++	 * this probe.
++	 * We can do this before unregistering because this probe is
++	 * already disabled and the disabling process waits enough period
++	 * for all handlers finished. IOW, the disabling process must wait
++	 * RCU sync at least once before returning to its caller.
++	 */
+ 	trace_probe_unlink(&tk->tp);
++	__unregister_trace_kprobe_async(tk);
+ 
+ 	return 0;
  }
- NOKPROBE_SYMBOL(pre_handler_kretprobe);
+@@ -928,11 +964,7 @@ static int create_or_delete_trace_kprobe(int argc, char **argv)
+ static int trace_kprobe_release(struct dyn_event *ev)
+ {
+ 	struct trace_kprobe *tk = to_trace_kprobe(ev);
+-	int ret = unregister_trace_kprobe(tk);
+-
+-	if (!ret)
+-		free_trace_kprobe(tk);
+-	return ret;
++	return unregister_trace_kprobe(tk);
+ }
  
-+void kretprobe_free_callback(struct rcu_head *head)
-+{
-+}
-+
-+void unregister_kretprobe_async(struct kretprobe *rp, rcu_callback_t free_cb)
-+{
-+}
-+
- #endif /* CONFIG_KRETPROBES */
- 
- /* Set the kprobe gone and remove its instruction buffer. */
+ static int trace_kprobe_show(struct seq_file *m, struct dyn_event *ev)
 
