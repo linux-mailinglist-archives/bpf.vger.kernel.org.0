@@ -2,122 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5844413F58F
-	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2020 19:57:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10ACA13F95D
+	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2020 20:24:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389091AbgAPS5D (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Jan 2020 13:57:03 -0500
-Received: from mail-qv1-f66.google.com ([209.85.219.66]:36178 "EHLO
-        mail-qv1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726892AbgAPS44 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Jan 2020 13:56:56 -0500
-Received: by mail-qv1-f66.google.com with SMTP id m14so9576781qvl.3;
-        Thu, 16 Jan 2020 10:56:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=X5psP6nW/Y1xNS1QkA2tl6VWc1qbUvTdajI5ErCGOQg=;
-        b=YZ6F46+0Ql9tiDax2D3pRIqtWb2uH/6clZ/R4Lr6fbgSm0ysX5ou/uyy5BuoC5KZHx
-         8st8/A/fzbPc5MEDM8ka45IeaEdn287jnQ09ulnDDbRU2Z+X+SJB5TGaya8YvZDQZOHo
-         dosE7fMsjYfRWSHJFTE2tfk+zQaKAlXFEsWRPQzjn2hNrk9bFtq/mkpNzaZhl1g/GU1r
-         /+QJBjUZvcHrQ3jOdx7G9oHco9tGCc12KUjRM/QhMKCAPh/G07H1B7cSxvYrsikb5slG
-         vuDOE2v9862YneE/V0EEIreA/AdnAlOtO3CsJiZ5ZnNjMhfQbY7dKZH2ZsZ4jo9fb65f
-         nbaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=X5psP6nW/Y1xNS1QkA2tl6VWc1qbUvTdajI5ErCGOQg=;
-        b=mmkwYGlsmoQcb6LyDk7pU17YWhomuo+9MwJIoTvwwdL3ygeov+ZAbMRUVze8p6nzAh
-         nu6PLm82nCxlNYN9uJalTPRyi/eFgxHq4IeriAQIxj/AJttAskOanqucUxNtta++Mx8W
-         y/YXHZsPygqIbZibOQXuIQRK+Ky9Ou0FGLTN06yBduGagIdLVhWcxBw08LKJLXERe113
-         cTlXE++xyHfOrICcXyeCssItK21dFkvKB7+G8I6zaDLt+q+BeUGDNoYdE59Bo9EzbsGI
-         BzqNMHkHLADjeVBrcdoF7eUNhW3npcsaNmBITRB2BLEsgipSdeY/c+6I5+VfwSN8WIeZ
-         f3qw==
-X-Gm-Message-State: APjAAAWRG4zY8xicW3o5o5fGkitJVhemICSUOcYMrTyrxd1nU3rWO3Kh
-        zPMlrsIQuqDqv46RIUn6jZoP3OB3/8uvOkyvAPs=
-X-Google-Smtp-Source: APXvYqwzM3eLifLjAwpflD/TvQsrWRZ8GO/WliSVFamg0MQXjTAHinaBTtjRPHfbzbRCU0WVklRUjmr9Sw4Bcdol86I=
-X-Received: by 2002:ad4:4e34:: with SMTP id dm20mr4141595qvb.163.1579201015134;
- Thu, 16 Jan 2020 10:56:55 -0800 (PST)
-MIME-Version: 1.0
-References: <157918093154.1357254.7616059374996162336.stgit@toke.dk> <157918093501.1357254.2594464485570114583.stgit@toke.dk>
-In-Reply-To: <157918093501.1357254.2594464485570114583.stgit@toke.dk>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 16 Jan 2020 10:56:43 -0800
-Message-ID: <CAEf4Bzb2NYxCG69s1f9NzFbLr+ZO6-ZWYyFGvFJFM_HUOX5YLA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 03/11] selftests: Pass VMLINUX_BTF to
- runqslower Makefile
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        id S2404784AbgAPTYg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Jan 2020 14:24:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36066 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729546AbgAPQwr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Jan 2020 11:52:47 -0500
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 86B8622522;
+        Thu, 16 Jan 2020 16:52:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1579193567;
+        bh=oVEpUpIzVKUCnt2/4jdogUGDwyi7Ehjqtc97o16UCeo=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=QZREzzWsnHLYydb4OlYFa7rBCaondM2Om07Mf9ggfNavhHDyYDQOKdvPFsyzsibyP
+         ZeZuqL3il8TuzU1Errx1kJr00YT5GdWGxmtHnyZgmwWGAgUZB38WoYtgFFksi5BMx7
+         VxrsXyFseq/uGd3o+eLOQqtk18q+hy8wk4gQDuvM=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Andrii Nakryiko <andriin@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-rdma@vger.kernel.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 111/205] libbpf: Fix memory leak/double free issue
+Date:   Thu, 16 Jan 2020 11:41:26 -0500
+Message-Id: <20200116164300.6705-111-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200116164300.6705-1-sashal@kernel.org>
+References: <20200116164300.6705-1-sashal@kernel.org>
+MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 16, 2020 at 5:22 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
-at.com> wrote:
->
-> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->
-> Add a VMLINUX_BTF variable with the locally-built path when calling the
-> runqslower Makefile from selftests. This makes sure a simple 'make'
-> invocation in the selftests dir works even when there is no BTF informati=
-on
-> for the running kernel. Because of the previous changes to the runqslower
-> Makefile, if no locally-built vmlinux file exists, the wildcard search wi=
-ll
-> fall back to the pre-defined paths (and error out if they don't exist).
->
-> Fixes: 3a0d3092a4ed ("selftests/bpf: Build runqslower from selftests")
-> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> ---
->  tools/testing/selftests/bpf/Makefile |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftes=
-ts/bpf/Makefile
-> index 246d09ffb296..30d0e7a813d2 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -127,7 +127,7 @@ $(OUTPUT)/test_stub.o: test_stub.c
->  .PHONY: $(OUTPUT)/runqslower
->  $(OUTPUT)/runqslower: force
->         $(Q)$(MAKE) $(submake_extras) -C $(TOOLSDIR)/bpf/runqslower      =
-     \
-> -                   OUTPUT=3D$(CURDIR)/tools/
-> +                   OUTPUT=3D$(CURDIR)/tools/ VMLINUX_BTF=3D$(abspath ../=
-../../../vmlinux)
+From: Andrii Nakryiko <andriin@fb.com>
 
-we can do "first match" wildcard trick here instead
+[ Upstream commit 3dc5e059821376974177cc801d377e3fcdac6712 ]
 
->
->  BPFOBJ :=3D $(OUTPUT)/libbpf.a
->
->
+Coverity scan against Github libbpf code found the issue of not freeing memory and
+leaving already freed memory still referenced from bpf_program. Fix it by
+re-assigning successfully reallocated memory sooner.
+
+Fixes: 2993e0515bb4 ("tools/bpf: add support to read .BTF.ext sections")
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Link: https://lore.kernel.org/bpf/20191107020855.3834758-2-andriin@fb.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ tools/lib/bpf/libbpf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index a267cd0c0ce2..d98838c5820c 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -3220,6 +3220,7 @@ bpf_program__reloc_text(struct bpf_program *prog, struct bpf_object *obj,
+ 			pr_warning("oom in prog realloc\n");
+ 			return -ENOMEM;
+ 		}
++		prog->insns = new_insn;
+ 
+ 		if (obj->btf_ext) {
+ 			err = bpf_program_reloc_btf_ext(prog, obj,
+@@ -3231,7 +3232,6 @@ bpf_program__reloc_text(struct bpf_program *prog, struct bpf_object *obj,
+ 
+ 		memcpy(new_insn + prog->insns_cnt, text->insns,
+ 		       text->insns_cnt * sizeof(*insn));
+-		prog->insns = new_insn;
+ 		prog->main_prog_cnt = prog->insns_cnt;
+ 		prog->insns_cnt = new_cnt;
+ 		pr_debug("added %zd insn from %s to prog %s\n",
+-- 
+2.20.1
+
