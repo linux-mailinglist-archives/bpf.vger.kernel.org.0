@@ -2,44 +2,41 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9378E13F554
-	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2020 19:56:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7ED513F51A
+	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2020 19:54:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389150AbgAPRHV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Jan 2020 12:07:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39006 "EHLO mail.kernel.org"
+        id S2389278AbgAPSyN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Jan 2020 13:54:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41004 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389109AbgAPRHV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Jan 2020 12:07:21 -0500
+        id S2389264AbgAPRIC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Jan 2020 12:08:02 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 44BF921D56;
-        Thu, 16 Jan 2020 17:07:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8071B205F4;
+        Thu, 16 Jan 2020 17:08:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579194440;
-        bh=P6tLADLspSSeMaFKOgqI3Hqx8n+Ij3phNyn87HCQQao=;
+        s=default; t=1579194481;
+        bh=y/nZ42/FMMXceNUw7WAIY9pg7MUgfngQZU/ejKKMVf0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2YRz/gR7h2547YagzxoOavDCvZrB9jcY9L/uK8YIYVF/mYR56ENf9yrRet1EQUwlq
-         liyy+9sf1VOIEp70+nfOVsJWXbx23DqcmnNPn249eZDAtvY6RgA7ccTY2Xpo+swcsv
-         4UBV8DTt/d1+YGCi5li2XqAZgONoxBt6ywrkPIfg=
+        b=lxkRJdz/Jg0ZVpe+LoRAy28Ehf5LtnGp+nCQ2F3hsLJeeeIH+HEY5Y0zzIG+GhiIM
+         HahhqQt/ycuNTwkS31ps1paXfX5sfkAOcsEe+g032PgfZimBx6DpfN/P8iVEQjpv9e
+         BFhYnGhGyRk/M91POHi9lkPbc8jw7RakF6FLAORg=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jiong Wang <jiong.wang@netronome.com>,
-        Oleksandr Natalenko <oleksandr@natalenko.name>,
-        Quentin Monnet <quentin.monnet@netronome.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
         Alexei Starovoitov <ast@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, oss-drivers@netronome.com
-Subject: [PATCH AUTOSEL 4.19 353/671] nfp: bpf: fix static check error through tightening shift amount adjustment
-Date:   Thu, 16 Jan 2020 11:59:51 -0500
-Message-Id: <20200116170509.12787-90-sashal@kernel.org>
+        bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 383/671] signal/bpfilter: Fix bpfilter_kernl to use send_sig not force_sig
+Date:   Thu, 16 Jan 2020 12:00:21 -0500
+Message-Id: <20200116170509.12787-120-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200116170509.12787-1-sashal@kernel.org>
 References: <20200116170509.12787-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -48,60 +45,47 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Jiong Wang <jiong.wang@netronome.com>
+From: "Eric W. Biederman" <ebiederm@xmission.com>
 
-[ Upstream commit 69e168ebdcfcb87ce7252d4857d570f99996fa27 ]
+[ Upstream commit 1dfd1711de2952fd1bfeea7152bd1687a4eea771 ]
 
-NFP shift instruction has something special. If shift direction is left
-then shift amount of 1 to 31 is specified as 32 minus the amount to shift.
+The locking in force_sig_info is not prepared to deal with
+a task that exits or execs (as sighand may change).  As force_sig
+is only built to handle synchronous exceptions.
 
-But no need to do this for indirect shift which has shift amount be 0. Even
-after we do this subtraction, shift amount 0 will be turned into 32 which
-will eventually be encoded the same as 0 because only low 5 bits are
-encoded, but shift amount be 32 will fail the FIELD_PREP check done later
-on shift mask (0x1f), due to 32 is out of mask range. Such error has been
-observed when compiling nfp/bpf/jit.c using gcc 8.3 + O3.
+Further the function force_sig_info changes the signal state if the
+signal is ignored, or blocked or if SIGNAL_UNKILLABLE will prevent the
+delivery of the signal.  The signal SIGKILL can not be ignored and can
+not be blocked and SIGNAL_UNKILLABLE won't prevent it from being
+delivered.
 
-This issue has started when indirect shift support added after which the
-incoming shift amount to __emit_shf could be 0, therefore it is at that
-time shift amount adjustment inside __emit_shf should have been tightened.
+So using force_sig rather than send_sig for SIGKILL is pointless.
 
-Fixes: 991f5b3651f6 ("nfp: bpf: support logic indirect shifts (BPF_[L|R]SH | BPF_X)")
-Reported-by: Oleksandr Natalenko <oleksandr@natalenko.name>
-Reported-by: Pablo Cascón <pablo.cascon@netronome.com
-Reviewed-by: Quentin Monnet <quentin.monnet@netronome.com>
-Reviewed-by: Jakub Kicinski <jakub.kicinski@netronome.com>
-Signed-off-by: Jiong Wang <jiong.wang@netronome.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Because it won't impact the sending of the signal and and because
+using force_sig is wrong, replace force_sig with send_sig.
+
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: David S. Miller <davem@davemloft.net>
+Fixes: d2ba09c17a06 ("net: add skeleton of bpfilter kernel module")
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/netronome/nfp/bpf/jit.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ net/bpfilter/bpfilter_kern.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/netronome/nfp/bpf/jit.c b/drivers/net/ethernet/netronome/nfp/bpf/jit.c
-index 4e18d95e548f..c3ce0fb47a0f 100644
---- a/drivers/net/ethernet/netronome/nfp/bpf/jit.c
-+++ b/drivers/net/ethernet/netronome/nfp/bpf/jit.c
-@@ -326,7 +326,18 @@ __emit_shf(struct nfp_prog *nfp_prog, u16 dst, enum alu_dst_ab dst_ab,
+diff --git a/net/bpfilter/bpfilter_kern.c b/net/bpfilter/bpfilter_kern.c
+index 94e88f510c5b..450b257afa84 100644
+--- a/net/bpfilter/bpfilter_kern.c
++++ b/net/bpfilter/bpfilter_kern.c
+@@ -25,7 +25,7 @@ static void shutdown_umh(struct umh_info *info)
  		return;
+ 	tsk = get_pid_task(find_vpid(info->pid), PIDTYPE_PID);
+ 	if (tsk) {
+-		force_sig(SIGKILL, tsk);
++		send_sig(SIGKILL, tsk, 1);
+ 		put_task_struct(tsk);
  	}
- 
--	if (sc == SHF_SC_L_SHF)
-+	/* NFP shift instruction has something special. If shift direction is
-+	 * left then shift amount of 1 to 31 is specified as 32 minus the amount
-+	 * to shift.
-+	 *
-+	 * But no need to do this for indirect shift which has shift amount be
-+	 * 0. Even after we do this subtraction, shift amount 0 will be turned
-+	 * into 32 which will eventually be encoded the same as 0 because only
-+	 * low 5 bits are encoded, but shift amount be 32 will fail the
-+	 * FIELD_PREP check done later on shift mask (0x1f), due to 32 is out of
-+	 * mask range.
-+	 */
-+	if (sc == SHF_SC_L_SHF && shift)
- 		shift = 32 - shift;
- 
- 	insn = OP_SHF_BASE |
+ 	fput(info->pipe_to_umh);
 -- 
 2.20.1
 
