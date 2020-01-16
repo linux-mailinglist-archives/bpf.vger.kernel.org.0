@@ -2,41 +2,43 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 394B913F501
-	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2020 19:53:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C699F13F4C1
+	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2020 19:53:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389167AbgAPSx3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Jan 2020 13:53:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41432 "EHLO mail.kernel.org"
+        id S2389507AbgAPSvV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Jan 2020 13:51:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43304 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729262AbgAPRIN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Jan 2020 12:08:13 -0500
+        id S2387629AbgAPRIs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Jan 2020 12:08:48 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 47CC224687;
-        Thu, 16 Jan 2020 17:08:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E9516205F4;
+        Thu, 16 Jan 2020 17:08:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579194492;
-        bh=t9t6gy9pWd6c2UzdRr7ngXWkrFc5wXb5Du/woiRoHnE=;
+        s=default; t=1579194528;
+        bh=+1SbirVJ/IyS3tu9c+GI5RoSNlHihK6fBZBfyPRruwo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Yxht9JtTwu4QISo4JeeXgxgGWxHDirrq1B/18c8aq6BZfXmVkF/2V/p3fFrHj5gTU
-         QKm2SRroZk3Vh05JNa8F7BiZMqeXafkMCkZ1P04vx0jzDMK12Rj6zgxNfcoDmKrcUU
-         Ld2SdCDi2w9wWo90DvRNWlU3jvvytphPBwsmswug=
+        b=HVug6EDA5OYxbISIueoQejRNE15OstowuFGI0Iwb1pv4DstGBlN1oykYafdN+W8z8
+         JmC3TTl5o+xivjpaBYEPyxSu4g7Fk2ydAHc9tcbeQlI5jrHsdu5Z6SOWbbSgROOVcN
+         yz+SgnOWlkgbYC9iJt/rJp8rz0yTRGaYX0CKAf0s=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Stephen Hemminger <stephen@networkplumber.org>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        "David S . Miller" <davem@davemloft.net>,
+Cc:     Anton Protopopov <a.s.protopopov@gmail.com>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        David Ahern <dsahern@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 390/671] net: core: support XDP generic on stacked devices.
-Date:   Thu, 16 Jan 2020 12:00:28 -0500
-Message-Id: <20200116170509.12787-127-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 417/671] bpf: fix the check that forwarding is enabled in bpf_ipv6_fib_lookup
+Date:   Thu, 16 Jan 2020 12:00:55 -0500
+Message-Id: <20200116170509.12787-154-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200116170509.12787-1-sashal@kernel.org>
 References: <20200116170509.12787-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -45,121 +47,38 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Stephen Hemminger <stephen@networkplumber.org>
+From: Anton Protopopov <a.s.protopopov@gmail.com>
 
-[ Upstream commit 458bf2f224f04a513b0be972f8708e78ee2c986e ]
+[ Upstream commit 56f0f84e69c7a7f229dfa524b13b0ceb6ce9b09e ]
 
-When a device is stacked like (team, bonding, failsafe or netvsc) the
-XDP generic program for the parent device was not called.
+The bpf_ipv6_fib_lookup function should return BPF_FIB_LKUP_RET_FWD_DISABLED
+when forwarding is disabled for the input device.  However instead of checking
+if forwarding is enabled on the input device, it checked the global
+net->ipv6.devconf_all->forwarding flag.  Change it to behave as expected.
 
-Move the call to XDP generic inside __netif_receive_skb_core where
-it can be done multiple times for stacked case.
-
-Fixes: d445516966dc ("net: xdp: support xdp generic on virtual devices")
-Signed-off-by: Stephen Hemminger <sthemmin@microsoft.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 87f5fc7e48dd ("bpf: Provide helper to do forwarding lookups in kernel FIB table")
+Signed-off-by: Anton Protopopov <a.s.protopopov@gmail.com>
+Acked-by: Toke Høiland-Jørgensen <toke@redhat.com>
+Reviewed-by: David Ahern <dsahern@gmail.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/core/dev.c | 58 +++++++++++---------------------------------------
- 1 file changed, 12 insertions(+), 46 deletions(-)
+ net/core/filter.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/core/dev.c b/net/core/dev.c
-index a26d87073f71..935fe158cfaf 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -4465,23 +4465,6 @@ static int netif_rx_internal(struct sk_buff *skb)
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 91b950261975..9daf1a4118b5 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -4367,7 +4367,7 @@ static int bpf_ipv6_fib_lookup(struct net *net, struct bpf_fib_lookup *params,
+ 		return -ENODEV;
  
- 	trace_netif_rx(skb);
+ 	idev = __in6_dev_get_safely(dev);
+-	if (unlikely(!idev || !net->ipv6.devconf_all->forwarding))
++	if (unlikely(!idev || !idev->cnf.forwarding))
+ 		return BPF_FIB_LKUP_RET_FWD_DISABLED;
  
--	if (static_branch_unlikely(&generic_xdp_needed_key)) {
--		int ret;
--
--		preempt_disable();
--		rcu_read_lock();
--		ret = do_xdp_generic(rcu_dereference(skb->dev->xdp_prog), skb);
--		rcu_read_unlock();
--		preempt_enable();
--
--		/* Consider XDP consuming the packet a success from
--		 * the netdev point of view we do not want to count
--		 * this as an error.
--		 */
--		if (ret != XDP_PASS)
--			return NET_RX_SUCCESS;
--	}
--
- #ifdef CONFIG_RPS
- 	if (static_key_false(&rps_needed)) {
- 		struct rps_dev_flow voidflow, *rflow = &voidflow;
-@@ -4815,6 +4798,18 @@ static int __netif_receive_skb_core(struct sk_buff *skb, bool pfmemalloc,
- 
- 	__this_cpu_inc(softnet_data.processed);
- 
-+	if (static_branch_unlikely(&generic_xdp_needed_key)) {
-+		int ret2;
-+
-+		preempt_disable();
-+		ret2 = do_xdp_generic(rcu_dereference(skb->dev->xdp_prog), skb);
-+		preempt_enable();
-+
-+		if (ret2 != XDP_PASS)
-+			return NET_RX_DROP;
-+		skb_reset_mac_len(skb);
-+	}
-+
- 	if (skb->protocol == cpu_to_be16(ETH_P_8021Q) ||
- 	    skb->protocol == cpu_to_be16(ETH_P_8021AD)) {
- 		skb = skb_vlan_untag(skb);
-@@ -5133,19 +5128,6 @@ static int netif_receive_skb_internal(struct sk_buff *skb)
- 	if (skb_defer_rx_timestamp(skb))
- 		return NET_RX_SUCCESS;
- 
--	if (static_branch_unlikely(&generic_xdp_needed_key)) {
--		int ret;
--
--		preempt_disable();
--		rcu_read_lock();
--		ret = do_xdp_generic(rcu_dereference(skb->dev->xdp_prog), skb);
--		rcu_read_unlock();
--		preempt_enable();
--
--		if (ret != XDP_PASS)
--			return NET_RX_DROP;
--	}
--
- 	rcu_read_lock();
- #ifdef CONFIG_RPS
- 	if (static_key_false(&rps_needed)) {
-@@ -5166,7 +5148,6 @@ static int netif_receive_skb_internal(struct sk_buff *skb)
- 
- static void netif_receive_skb_list_internal(struct list_head *head)
- {
--	struct bpf_prog *xdp_prog = NULL;
- 	struct sk_buff *skb, *next;
- 	struct list_head sublist;
- 
-@@ -5179,21 +5160,6 @@ static void netif_receive_skb_list_internal(struct list_head *head)
- 	}
- 	list_splice_init(&sublist, head);
- 
--	if (static_branch_unlikely(&generic_xdp_needed_key)) {
--		preempt_disable();
--		rcu_read_lock();
--		list_for_each_entry_safe(skb, next, head, list) {
--			xdp_prog = rcu_dereference(skb->dev->xdp_prog);
--			skb_list_del_init(skb);
--			if (do_xdp_generic(xdp_prog, skb) == XDP_PASS)
--				list_add_tail(&skb->list, &sublist);
--		}
--		rcu_read_unlock();
--		preempt_enable();
--		/* Put passed packets back on main list */
--		list_splice_init(&sublist, head);
--	}
--
- 	rcu_read_lock();
- #ifdef CONFIG_RPS
- 	if (static_key_false(&rps_needed)) {
+ 	if (flags & BPF_FIB_LOOKUP_OUTPUT) {
 -- 
 2.20.1
 
