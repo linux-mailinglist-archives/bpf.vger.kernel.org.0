@@ -2,37 +2,37 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EA50213F3E5
-	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2020 19:46:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0992613F41B
+	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2020 19:48:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389874AbgAPRKX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Jan 2020 12:10:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48412 "EHLO mail.kernel.org"
+        id S2389836AbgAPSr3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Jan 2020 13:47:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49080 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389911AbgAPRKX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Jan 2020 12:10:23 -0500
+        id S2390038AbgAPRKg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Jan 2020 12:10:36 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3B356205F4;
-        Thu, 16 Jan 2020 17:10:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EEB9B24684;
+        Thu, 16 Jan 2020 17:10:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579194622;
-        bh=GxpxSfn4Aog9jObkkwzJClYhMneNU3fTJqn+IXbCiGo=;
+        s=default; t=1579194635;
+        bh=2B3bXT8CnI5hWe6k7KaJCeDE79boiM4jCqVDhJWvomA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Wyz+O5Rwk/jbC8uaAyi+p+7sltSdczBBFyYQEAZ9cSDrEjrm3czSklo4fgikssVbQ
-         uFK52lkIgZ4Cv4p3oIVftIMLGNRGO8dfzkOJsXi5VdUZpmMlKaoo1qJVaaSEhUah66
-         qckkt7DThFaicMLB7iDYDm5RlT8fMqtANF+saWjQ=
+        b=02vIvWHcevE37jvquAF9jqTq4UGdCWfDv5/X7DrGqMaeZXqIS59ABEpqJtF3/vrzY
+         TWRdfiVI82vhVsNyhOHcH60W+VYNHYhTtp0BwIY6ZntypcqMxEJlJJij21h3WSiJ7P
+         X+EgRNPRzDZEL5oSmwrrlR6eTckf/6z/mJ6xT05E=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        Brandon Cazander <brandon.cazander@multapplied.net>,
-        "David S . Miller" <davem@davemloft.net>,
+Cc:     Quentin Monnet <quentin.monnet@netronome.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 483/671] net: fix bpf_xdp_adjust_head regression for generic-XDP
-Date:   Thu, 16 Jan 2020 12:02:01 -0500
-Message-Id: <20200116170509.12787-220-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 494/671] tools: bpftool: fix arguments for p_err() in do_event_pipe()
+Date:   Thu, 16 Jan 2020 12:02:12 -0500
+Message-Id: <20200116170509.12787-231-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200116170509.12787-1-sashal@kernel.org>
 References: <20200116170509.12787-1-sashal@kernel.org>
@@ -45,55 +45,46 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Jesper Dangaard Brouer <brouer@redhat.com>
+From: Quentin Monnet <quentin.monnet@netronome.com>
 
-[ Upstream commit 065af355470519bd184019a93ac579f22b036045 ]
+[ Upstream commit 9def249dc8409ffc1f5a1d7195f1c462f2b49c07 ]
 
-When generic-XDP was moved to a later processing step by commit
-458bf2f224f0 ("net: core: support XDP generic on stacked devices.")
-a regression was introduced when using bpf_xdp_adjust_head.
+The last argument passed to some calls to the p_err() functions is not
+correct, it should be "*argv" instead of "**argv". This may lead to a
+segmentation fault error if CPU IDs or indices from the command line
+cannot be parsed correctly. Let's fix this.
 
-The issue is that after this commit the skb->network_header is now
-changed prior to calling generic XDP and not after. Thus, if the header
-is changed by XDP (via bpf_xdp_adjust_head), then skb->network_header
-also need to be updated again.  Fix by calling skb_reset_network_header().
-
-Fixes: 458bf2f224f0 ("net: core: support XDP generic on stacked devices.")
-Reported-by: Brandon Cazander <brandon.cazander@multapplied.net>
-Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: f412eed9dfde ("tools: bpftool: add simple perf event output reader")
+Signed-off-by: Quentin Monnet <quentin.monnet@netronome.com>
+Reviewed-by: Jakub Kicinski <jakub.kicinski@netronome.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/core/dev.c | 15 ++++++++++-----
- 1 file changed, 10 insertions(+), 5 deletions(-)
+ tools/bpf/bpftool/map_perf_ring.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 935fe158cfaf..73ebacabfde8 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -4349,12 +4349,17 @@ static u32 netif_receive_generic_xdp(struct sk_buff *skb,
+diff --git a/tools/bpf/bpftool/map_perf_ring.c b/tools/bpf/bpftool/map_perf_ring.c
+index 6d41323be291..8ec0148d7426 100644
+--- a/tools/bpf/bpftool/map_perf_ring.c
++++ b/tools/bpf/bpftool/map_perf_ring.c
+@@ -205,7 +205,7 @@ int do_event_pipe(int argc, char **argv)
+ 			NEXT_ARG();
+ 			cpu = strtoul(*argv, &endptr, 0);
+ 			if (*endptr) {
+-				p_err("can't parse %s as CPU ID", **argv);
++				p_err("can't parse %s as CPU ID", *argv);
+ 				goto err_close_map;
+ 			}
  
- 	act = bpf_prog_run_xdp(xdp_prog, xdp);
+@@ -216,7 +216,7 @@ int do_event_pipe(int argc, char **argv)
+ 			NEXT_ARG();
+ 			index = strtoul(*argv, &endptr, 0);
+ 			if (*endptr) {
+-				p_err("can't parse %s as index", **argv);
++				p_err("can't parse %s as index", *argv);
+ 				goto err_close_map;
+ 			}
  
-+	/* check if bpf_xdp_adjust_head was used */
- 	off = xdp->data - orig_data;
--	if (off > 0)
--		__skb_pull(skb, off);
--	else if (off < 0)
--		__skb_push(skb, -off);
--	skb->mac_header += off;
-+	if (off) {
-+		if (off > 0)
-+			__skb_pull(skb, off);
-+		else if (off < 0)
-+			__skb_push(skb, -off);
-+
-+		skb->mac_header += off;
-+		skb_reset_network_header(skb);
-+	}
- 
- 	/* check if bpf_xdp_adjust_tail was used. it can only "shrink"
- 	 * pckt.
 -- 
 2.20.1
 
