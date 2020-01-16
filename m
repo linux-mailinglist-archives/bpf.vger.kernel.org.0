@@ -2,43 +2,41 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BD51413F436
-	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2020 19:48:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA50213F3E5
+	for <lists+bpf@lfdr.de>; Thu, 16 Jan 2020 19:46:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388926AbgAPSsM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Jan 2020 13:48:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46612 "EHLO mail.kernel.org"
+        id S2389874AbgAPRKX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Jan 2020 12:10:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48412 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389758AbgAPRJv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Jan 2020 12:09:51 -0500
+        id S2389911AbgAPRKX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Jan 2020 12:10:23 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 38CAB205F4;
-        Thu, 16 Jan 2020 17:09:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3B356205F4;
+        Thu, 16 Jan 2020 17:10:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1579194590;
-        bh=6Wvt9vJWgQlGcJlbt5KEJbH/p4c5jmdOeNTFfjihnc4=;
+        s=default; t=1579194622;
+        bh=GxpxSfn4Aog9jObkkwzJClYhMneNU3fTJqn+IXbCiGo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V7sqlYPKkRtZgf/dbgK55YcuEHNqq3xlwFlpDrh34AFB8h9YOsOHGQf/6L/8K2m5r
-         ON9V2Kcs4qptgGVMN1ej6YfppoQym3eI73U+TJBTH7WfMYGp7UiFXNw4VYyifAvBRQ
-         PG6/cAO7ySyj04kKvE4NGUx443byLq2if+Kslmbg=
+        b=Wyz+O5Rwk/jbC8uaAyi+p+7sltSdczBBFyYQEAZ9cSDrEjrm3czSklo4fgikssVbQ
+         uFK52lkIgZ4Cv4p3oIVftIMLGNRGO8dfzkOJsXi5VdUZpmMlKaoo1qJVaaSEhUah66
+         qckkt7DThFaicMLB7iDYDm5RlT8fMqtANF+saWjQ=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ilya Maximets <i.maximets@samsung.com>,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
-        William Tu <u9012063@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        Brandon Cazander <brandon.cazander@multapplied.net>,
+        "David S . Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 461/671] xdp: fix possible cq entry leak
-Date:   Thu, 16 Jan 2020 12:01:39 -0500
-Message-Id: <20200116170509.12787-198-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 483/671] net: fix bpf_xdp_adjust_head regression for generic-XDP
+Date:   Thu, 16 Jan 2020 12:02:01 -0500
+Message-Id: <20200116170509.12787-220-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200116170509.12787-1-sashal@kernel.org>
 References: <20200116170509.12787-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -47,64 +45,55 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Ilya Maximets <i.maximets@samsung.com>
+From: Jesper Dangaard Brouer <brouer@redhat.com>
 
-[ Upstream commit 675716400da6f15b9d3db04ef74ee74ca9a00af3 ]
+[ Upstream commit 065af355470519bd184019a93ac579f22b036045 ]
 
-Completion queue address reservation could not be undone.
-In case of bad 'queue_id' or skb allocation failure, reserved entry
-will be leaked reducing the total capacity of completion queue.
+When generic-XDP was moved to a later processing step by commit
+458bf2f224f0 ("net: core: support XDP generic on stacked devices.")
+a regression was introduced when using bpf_xdp_adjust_head.
 
-Fix that by moving reservation to the point where failure is not
-possible. Additionally, 'queue_id' checking moved out from the loop
-since there is no point to check it there.
+The issue is that after this commit the skb->network_header is now
+changed prior to calling generic XDP and not after. Thus, if the header
+is changed by XDP (via bpf_xdp_adjust_head), then skb->network_header
+also need to be updated again.  Fix by calling skb_reset_network_header().
 
-Fixes: 35fcde7f8deb ("xsk: support for Tx")
-Signed-off-by: Ilya Maximets <i.maximets@samsung.com>
-Acked-by: Björn Töpel <bjorn.topel@intel.com>
-Tested-by: William Tu <u9012063@gmail.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Fixes: 458bf2f224f0 ("net: core: support XDP generic on stacked devices.")
+Reported-by: Brandon Cazander <brandon.cazander@multapplied.net>
+Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/xdp/xsk.c | 11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
+ net/core/dev.c | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
 
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index 547fc4554b22..c90854bc3048 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -218,6 +218,9 @@ static int xsk_generic_xmit(struct sock *sk, struct msghdr *m,
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 935fe158cfaf..73ebacabfde8 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -4349,12 +4349,17 @@ static u32 netif_receive_generic_xdp(struct sk_buff *skb,
  
- 	mutex_lock(&xs->mutex);
+ 	act = bpf_prog_run_xdp(xdp_prog, xdp);
  
-+	if (xs->queue_id >= xs->dev->real_num_tx_queues)
-+		goto out;
++	/* check if bpf_xdp_adjust_head was used */
+ 	off = xdp->data - orig_data;
+-	if (off > 0)
+-		__skb_pull(skb, off);
+-	else if (off < 0)
+-		__skb_push(skb, -off);
+-	skb->mac_header += off;
++	if (off) {
++		if (off > 0)
++			__skb_pull(skb, off);
++		else if (off < 0)
++			__skb_push(skb, -off);
 +
- 	while (xskq_peek_desc(xs->tx, &desc)) {
- 		char *buffer;
- 		u64 addr;
-@@ -228,12 +231,6 @@ static int xsk_generic_xmit(struct sock *sk, struct msghdr *m,
- 			goto out;
- 		}
++		skb->mac_header += off;
++		skb_reset_network_header(skb);
++	}
  
--		if (xskq_reserve_addr(xs->umem->cq))
--			goto out;
--
--		if (xs->queue_id >= xs->dev->real_num_tx_queues)
--			goto out;
--
- 		len = desc.len;
- 		skb = sock_alloc_send_skb(sk, len, 1, &err);
- 		if (unlikely(!skb)) {
-@@ -245,7 +242,7 @@ static int xsk_generic_xmit(struct sock *sk, struct msghdr *m,
- 		addr = desc.addr;
- 		buffer = xdp_umem_get_data(xs->umem, addr);
- 		err = skb_store_bits(skb, 0, buffer, len);
--		if (unlikely(err)) {
-+		if (unlikely(err) || xskq_reserve_addr(xs->umem->cq)) {
- 			kfree_skb(skb);
- 			goto out;
- 		}
+ 	/* check if bpf_xdp_adjust_tail was used. it can only "shrink"
+ 	 * pckt.
 -- 
 2.20.1
 
