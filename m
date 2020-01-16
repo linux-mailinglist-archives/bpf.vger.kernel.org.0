@@ -2,100 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C4DCC14010B
-	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2020 01:41:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECAF614017D
+	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2020 02:38:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726925AbgAQAlK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Jan 2020 19:41:10 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:60316 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726378AbgAQAlJ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 16 Jan 2020 19:41:09 -0500
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 00H0ejNZ013278
-        for <bpf@vger.kernel.org>; Thu, 16 Jan 2020 16:41:09 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type :
- content-transfer-encoding; s=facebook;
- bh=OIK0nGQttnwsrA0P1KDa219DcaSHxTSwYYVHr6JOWbc=;
- b=HRI0pKnzvX6oryfGLMR042zlUtyaUHP9DLi1fjIQ6bKAhk+qHVM0BJ0iv0QQCCF0zJAn
- +X7rWyRRHvVn6FAQzzUS1bi2kvEQxS0APsY658Zjbca6y5UZ/fPwkhhARaJvTrW0/ecx
- aY/UlL5iP3/Kluh0UBYP3WYdA/DSrsFSyUM= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 2xk0sxgdmy-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 16 Jan 2020 16:41:08 -0800
-Received: from intmgw003.08.frc2.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Thu, 16 Jan 2020 16:41:08 -0800
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 7D5012EC18D7; Thu, 16 Jan 2020 16:41:04 -0800 (PST)
-Smtp-Origin-Hostprefix: devbig
-From:   Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Hostname: devbig012.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii.nakryiko@gmail.com>, <kernel-team@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next] libbpf: revert bpf_helper_defs.h inclusion regression
-Date:   Thu, 16 Jan 2020 16:41:02 -0800
-Message-ID: <20200117004103.148068-1-andriin@fb.com>
-X-Mailer: git-send-email 2.17.1
+        id S1731058AbgAQBiX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Jan 2020 20:38:23 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9180 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730720AbgAQBiX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Jan 2020 20:38:23 -0500
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 7529E2450DA21B6F08DA;
+        Fri, 17 Jan 2020 09:38:20 +0800 (CST)
+Received: from localhost (10.133.213.239) by DGGEMS413-HUB.china.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server id 14.3.439.0; Fri, 17 Jan 2020
+ 09:38:12 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <ast@kernel.org>, <daniel@iogearbox.net>, <kafai@fb.com>,
+        <songliubraving@fb.com>, <yhs@fb.com>, <andriin@fb.com>,
+        <brianvv@google.com>
+CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH bpf-next] bpf: Remove set but not used variable 'first_key'
+Date:   Thu, 16 Jan 2020 22:53:00 +0800
+Message-ID: <20200116145300.59056-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
- definitions=2020-01-16_06:2020-01-16,2020-01-16 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0 adultscore=0
- spamscore=0 clxscore=1015 lowpriorityscore=0 impostorscore=0
- mlxlogscore=781 priorityscore=1501 phishscore=0 mlxscore=0 malwarescore=0
- suspectscore=8 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1910280000 definitions=main-2001170004
-X-FB-Internal: deliver
+Content-Type: text/plain
+X-Originating-IP: [10.133.213.239]
+X-CFilter-Loop: Reflected
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Revert bpf_helpers.h's change to include auto-generated bpf_helper_defs.h
-through <> instead of "", which causes it to be searched in include path.=
- This
-can break existing applications that don't have their include path pointi=
-ng
-directly to where libbpf installs its headers.
+kernel/bpf/syscall.c: In function generic_map_lookup_batch:
+kernel/bpf/syscall.c:1339:7: warning: variable first_key set but not used [-Wunused-but-set-variable]
 
-There is ongoing work to make all (not just bpf_helper_defs.h) includes m=
-ore
-consistent across libbpf and its consumers, but this unbreaks user code a=
-s is
-right now without any regressions. Selftests still behave sub-optimally
-(taking bpf_helper_defs.h from libbpf's source directory, if it's present
-there), which will be fixed in subsequent patches.
+It is never used, so remove it.
 
-Fixes: 6910d7d3867a ("selftests/bpf: Ensure bpf_helper_defs.h are taken f=
-rom selftests dir")
-Reported-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 ---
- tools/lib/bpf/bpf_helpers.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/bpf/syscall.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
-index 050bb7bf5be6..f69cc208778a 100644
---- a/tools/lib/bpf/bpf_helpers.h
-+++ b/tools/lib/bpf/bpf_helpers.h
-@@ -2,7 +2,7 @@
- #ifndef __BPF_HELPERS__
- #define __BPF_HELPERS__
-=20
--#include <bpf_helper_defs.h>
-+#include "bpf_helper_defs.h"
-=20
- #define __uint(name, val) int (*name)[val]
- #define __type(name, val) typeof(val) *name
---=20
-2.17.1
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 0d94d36..c26a714 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -1336,7 +1336,6 @@ int generic_map_lookup_batch(struct bpf_map *map,
+ 	void *buf, *buf_prevkey, *prev_key, *key, *value;
+ 	int err, retry = MAP_LOOKUP_RETRIES;
+ 	u32 value_size, cp, max_count;
+-	bool first_key = false;
+ 
+ 	if (attr->batch.elem_flags & ~BPF_F_LOCK)
+ 		return -EINVAL;
+@@ -1365,7 +1364,6 @@ int generic_map_lookup_batch(struct bpf_map *map,
+ 	}
+ 
+ 	err = -EFAULT;
+-	first_key = false;
+ 	prev_key = NULL;
+ 	if (ubatch && copy_from_user(buf_prevkey, ubatch, map->key_size))
+ 		goto free_buf;
+-- 
+2.7.4
+
 
