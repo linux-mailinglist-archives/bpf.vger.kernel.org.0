@@ -2,106 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C15D140443
-	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2020 08:09:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 579D21405AB
+	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2020 09:57:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729238AbgAQHJb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Jan 2020 02:09:31 -0500
-Received: from mail-pj1-f68.google.com ([209.85.216.68]:52528 "EHLO
-        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729011AbgAQHJb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Jan 2020 02:09:31 -0500
-Received: by mail-pj1-f68.google.com with SMTP id a6so2746885pjh.2;
-        Thu, 16 Jan 2020 23:09:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=RK6UZgBmhgEaIuXMKp36pKBJr/MfZBh5b9X7zcGawqQ=;
-        b=T1regV3zY65rFQ4cAN0QS9yAC71rCeI56atdE5P8FjvM1Pabnm/kJTqtVCp8E1fMSl
-         aeNyfMxoW7u0ss6/mhGgBT4P/y1+tsuHFdJUfP2+JQWLNIjxnMlvR7Y7ajseV+OV2HGE
-         SuLmCgx6yxaby8QJDugt+NTy00wn/tMhBl2dooYagoMfMRGByYA/gUCD1f+etGltq+2C
-         wezFeCiRq6UAXPU24/7YfjmyfdKn05Ad71qr3Pe7dZYeQ6zzBgni+MGgE6IXDa5zSSyD
-         tnAxyGRuXMCo8lZ/EGpOcddFvTMhkqwp/ilBW+Bicyny1CGPJ3jR0CCvQRuQxD0063kO
-         P7Lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=RK6UZgBmhgEaIuXMKp36pKBJr/MfZBh5b9X7zcGawqQ=;
-        b=GM9TMSbjnqfMxY1R/Mm27WfcHu5LqpXrR6yh1quhA8u9+GbQLHQ+1s0ur0Ai/rIxn6
-         lLIXMUMSrIz66pcyp8YR5pvBz7FnG3O2A5RPTk4FG0bq7BbbEtU1rJkMWfDahtsMlIqR
-         Oypu+inDA2pCpOLpKSspPVaZ3pbPgye2HViD8kPDqS5kKsNt2J6sBBWOTDCp2NyUxCpt
-         hEuXV+78cbnApobKfJqxROYVur9Ye0DsXiHPvlKmgVSHjG9iftuSfdfyLr+GoGh/t0NZ
-         ed58LUcZbCWD7tjf/srk18HEz1Q13EnyePUxmoBN9n5gapd4Ou9q83GBO60AtizMtYu0
-         UXWw==
-X-Gm-Message-State: APjAAAVNz4rfZrfqIT2QeRash/Z85dqv/z8ZKHZryKMtwfj9D8ESgNG7
-        jHoG/1axDYH+zEt4dmsl4SjDUrDp
-X-Google-Smtp-Source: APXvYqwGh+XubKBcjJppor0qa+63gq1314RAIqyPIQYDqMiYHhyop9TV1GQI0tvKKJ2nSiVn4+l5CQ==
-X-Received: by 2002:a17:90a:cf11:: with SMTP id h17mr3982656pju.103.1579244970768;
-        Thu, 16 Jan 2020 23:09:30 -0800 (PST)
-Received: from hpg8-3.kern.oss.ntt.co.jp ([222.151.198.97])
-        by smtp.gmail.com with ESMTPSA id d4sm407499pjg.19.2020.01.16.23.09.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jan 2020 23:09:30 -0800 (PST)
-From:   Yoshiki Komachi <komachi.yoshiki@gmail.com>
-To:     "David S. Miller" <davem@davemloft.net>,
+        id S1728512AbgAQI5n (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Jan 2020 03:57:43 -0500
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:46861 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726908AbgAQI5n (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 17 Jan 2020 03:57:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1579251461;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5wGVm7vGifojmQs18rmKxAMnZ1ofaqDbsZAnJ2KgVM8=;
+        b=Z8gRccMgWKxmhcgATAsxjnPG7ZJeUjB36/8jg3uC3HTCZ629w2TCD05qOGKtAS4qTlf/b0
+        8sHV+nNAlBw7b58V8EzLDJsJaPKBrkXI58NvM/+P/FJ86jvjilwSU/6m7hTwKOVe2g7PXK
+        w/b2MdlHYEh3ODfBiuW6Qn0FNzWchxo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-326-bAqU4dETMIa9LQgbw4bJAg-1; Fri, 17 Jan 2020 03:57:40 -0500
+X-MC-Unique: bAqU4dETMIa9LQgbw4bJAg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F022BDB60;
+        Fri, 17 Jan 2020 08:57:36 +0000 (UTC)
+Received: from carbon (ovpn-200-25.brq.redhat.com [10.40.200.25])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 80A8219C5B;
+        Fri, 17 Jan 2020 08:57:24 +0000 (UTC)
+Date:   Fri, 17 Jan 2020 09:57:21 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         Andrii Nakryiko <andriin@fb.com>,
-        Petar Penkov <ppenkov.kernel@gmail.com>
-Cc:     Yoshiki Komachi <komachi.yoshiki@gmail.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Petar Penkov <ppenkov@google.com>
-Subject: [PATCH v2 bpf 2/2] selftests/bpf: Add test based on port range for BPF flow dissector
-Date:   Fri, 17 Jan 2020 16:05:33 +0900
-Message-Id: <20200117070533.402240-3-komachi.yoshiki@gmail.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20200117070533.402240-1-komachi.yoshiki@gmail.com>
-References: <20200117070533.402240-1-komachi.yoshiki@gmail.com>
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        clang-built-linux@googlegroups.com, brouer@redhat.com
+Subject: Re: [PATCH bpf-next v3 00/11] tools: Use consistent libbpf include
+ paths everywhere
+Message-ID: <20200117095721.0030f414@carbon>
+In-Reply-To: <20200117041431.h7vvc32fungenyhg@ast-mbp.dhcp.thefacebook.com>
+References: <157918093154.1357254.7616059374996162336.stgit@toke.dk>
+        <20200117041431.h7vvc32fungenyhg@ast-mbp.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add a simple test to make sure that a filter based on specified port
-range classifies packets correctly.
+On Thu, 16 Jan 2020 20:14:32 -0800
+Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
 
-Signed-off-by: Yoshiki Komachi <komachi.yoshiki@gmail.com>
-Acked-by: Petar Penkov <ppenkov@google.com>
----
- tools/testing/selftests/bpf/test_flow_dissector.sh | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+> On Thu, Jan 16, 2020 at 02:22:11PM +0100, Toke H=C3=B8iland-J=C3=B8rgense=
+n wrote:
+> > The recent commit 6910d7d3867a ("selftests/bpf: Ensure bpf_helper_defs.=
+h are
+> > taken from selftests dir") broke compilation against libbpf if it is in=
+stalled
+> > on the system, and $INCLUDEDIR/bpf is not in the include path.
+> >=20
+> > Since having the bpf/ subdir of $INCLUDEDIR in the include path has nev=
+er been a
+> > requirement for building against libbpf before, this needs to be fixed.=
+ One
+> > option is to just revert the offending commit and figure out a differen=
+t way to
+> > achieve what it aims for.  =20
+>=20
+> The offending commit has been in the tree for a week. So I applied Andrii=
+'s
+> revert of that change. It reintroduced the build dependency issue, but we=
+ lived
+> with it for long time, so we can take time to fix it cleanly.
+> I suggest to focus on that build dependency first.
+>=20
+> > However, this series takes a different approach:
+> > Changing all in-tree users of libbpf to consistently use a bpf/ prefix =
+in
+> > #include directives for header files from libbpf. =20
+>=20
+> I'm not sure it's a good idea. It feels nice, but think of a message we're
+> sending to everyone. We will get spamed with question: does bpf community
+> require all libbpf users to use bpf/ prefix ? What should be our answer?
 
-diff --git a/tools/testing/selftests/bpf/test_flow_dissector.sh b/tools/testing/selftests/bpf/test_flow_dissector.sh
-index a8485ae..174b72a 100755
---- a/tools/testing/selftests/bpf/test_flow_dissector.sh
-+++ b/tools/testing/selftests/bpf/test_flow_dissector.sh
-@@ -139,6 +139,20 @@ echo "Testing IPv4 + GRE..."
- 
- tc filter del dev lo ingress pref 1337
- 
-+echo "Testing port range..."
-+# Drops all IP/UDP packets coming from port 8-10
-+tc filter add dev lo parent ffff: protocol ip pref 1337 flower ip_proto \
-+	udp src_port 8-10 action drop
-+
-+# Send 10 IPv4/UDP packets from port 7. Filter should not drop any.
-+./test_flow_dissector -i 4 -f 7
-+# Send 10 IPv4/UDP packets from port 9. Filter should drop all.
-+./test_flow_dissector -i 4 -f 9 -F
-+# Send 10 IPv4/UDP packets from port 11. Filter should not drop any.
-+./test_flow_dissector -i 4 -f 11
-+
-+tc filter del dev lo ingress pref 1337
-+
- echo "Testing IPv6..."
- # Drops all IPv6/UDP packets coming from port 9
- tc filter add dev lo parent ffff: protocol ipv6 pref 1337 flower ip_proto \
--- 
-1.8.3.1
+The answer should be: Yes. When libbpf install the header files the are
+installed under bpf/ prefix.  It is very confusing that samples and
+selftests can include libbpf.h without this prefix. Even worse
+including "bpf.h" pickup the libbpf version bpf/bpf.h, which have
+caused confusion.  The only reason for the direct "libbpf.h" include is
+historical, as there used-to-be a local file for that.
+
+
+> Require or recommend? If require.. what for? It works as-is. If recommend=
+ then
+> why suddenly we're changing all files in selftests and samples?
+> There is no good answer here. I think we should leave the things as-is.
+
+I strongly believe we should correct this.  It doesn't make sense that
+someone copying out a sample or selftests, into a git-submodule libbpf
+(or distro installed libbpf-devel) have to understand that they have to
+update the include path for all the libbpf header files.
+
+--=20
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
