@@ -2,133 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 579D21405AB
-	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2020 09:57:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0315014066C
+	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2020 10:40:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728512AbgAQI5n (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Jan 2020 03:57:43 -0500
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:46861 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726908AbgAQI5n (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 17 Jan 2020 03:57:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1579251461;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5wGVm7vGifojmQs18rmKxAMnZ1ofaqDbsZAnJ2KgVM8=;
-        b=Z8gRccMgWKxmhcgATAsxjnPG7ZJeUjB36/8jg3uC3HTCZ629w2TCD05qOGKtAS4qTlf/b0
-        8sHV+nNAlBw7b58V8EzLDJsJaPKBrkXI58NvM/+P/FJ86jvjilwSU/6m7hTwKOVe2g7PXK
-        w/b2MdlHYEh3ODfBiuW6Qn0FNzWchxo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-326-bAqU4dETMIa9LQgbw4bJAg-1; Fri, 17 Jan 2020 03:57:40 -0500
-X-MC-Unique: bAqU4dETMIa9LQgbw4bJAg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F022BDB60;
-        Fri, 17 Jan 2020 08:57:36 +0000 (UTC)
-Received: from carbon (ovpn-200-25.brq.redhat.com [10.40.200.25])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 80A8219C5B;
-        Fri, 17 Jan 2020 08:57:24 +0000 (UTC)
-Date:   Fri, 17 Jan 2020 09:57:21 +0100
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        clang-built-linux@googlegroups.com, brouer@redhat.com
-Subject: Re: [PATCH bpf-next v3 00/11] tools: Use consistent libbpf include
- paths everywhere
-Message-ID: <20200117095721.0030f414@carbon>
-In-Reply-To: <20200117041431.h7vvc32fungenyhg@ast-mbp.dhcp.thefacebook.com>
-References: <157918093154.1357254.7616059374996162336.stgit@toke.dk>
-        <20200117041431.h7vvc32fungenyhg@ast-mbp.dhcp.thefacebook.com>
+        id S1729122AbgAQJjM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Jan 2020 04:39:12 -0500
+Received: from mail-il1-f200.google.com ([209.85.166.200]:33370 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726957AbgAQJjL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Jan 2020 04:39:11 -0500
+Received: by mail-il1-f200.google.com with SMTP id s9so18334041ilk.0
+        for <bpf@vger.kernel.org>; Fri, 17 Jan 2020 01:39:11 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=A4/U4UrkTKcxcGAlIspe/ocMHXIdH0kJgqb8CqaSZic=;
+        b=p7NjASEAuZyfT1Sh4NETG0/k6nz5shWMucyZ+kEMRnhnoELdAXS2E3QdUCd49IG09X
+         gCmFnElwE9O4a1b0HBvkXCmvZhvLIm8iMVzkNkfbHFW/UhIqzpGycwTH8MAqhGee8ce6
+         FolvbLFk0hrAyi85Bq1zb+L3KyOANQf61hUEWe3s4dmJ13tvQoMKfXhWrVjTo/TaP/AH
+         8xNc+yOydhg1+5x9ny/gLMskC9lRZvyGKzzeT8SSUpWp8KJcL3YPvXB2jsWSJ7/0xnEL
+         N9JEIrt6x12kI8GbcJXoFHvPu72EiHGG17QHfzgWnDWE6sYQf14eKWBJ2w2GNekdg433
+         LCSg==
+X-Gm-Message-State: APjAAAX90qvxnBvefKw4aRV7470A8hXVfwPyQfV5RgVSMGgpuuenU3Zg
+        W9dsBX1VI9RV97AEKMBARz64NK4oncts8LGBaX7YPdBMDl71
+X-Google-Smtp-Source: APXvYqzzHR8vGnogFsiE07xYB2aNaD3AJPyjJ2yf2kqHMWgTxoo+rbUTnUtk9KghvrjYg8BG9lV4/4ISO3yT96xk91v3N9E+eeaK
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-Received: by 2002:a92:88d0:: with SMTP id m77mr2373438ilh.9.1579253950789;
+ Fri, 17 Jan 2020 01:39:10 -0800 (PST)
+Date:   Fri, 17 Jan 2020 01:39:10 -0800
+In-Reply-To: <0000000000003e5aa90598ed7415@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000bf411c059c52b660@google.com>
+Subject: Re: BUG: sleeping function called from invalid context in lock_sock_nested
+From:   syzbot <syzbot+c2f1558d49e25cc36e5e@syzkaller.appspotmail.com>
+To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, eric.dumazet@gmail.com,
+        herbert@gondor.apana.org.au, john.fastabend@gmail.com,
+        kafai@fb.com, linux-crypto@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk,
+        yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 16 Jan 2020 20:14:32 -0800
-Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+syzbot has found a reproducer for the following crash on:
 
-> On Thu, Jan 16, 2020 at 02:22:11PM +0100, Toke H=C3=B8iland-J=C3=B8rgense=
-n wrote:
-> > The recent commit 6910d7d3867a ("selftests/bpf: Ensure bpf_helper_defs.=
-h are
-> > taken from selftests dir") broke compilation against libbpf if it is in=
-stalled
-> > on the system, and $INCLUDEDIR/bpf is not in the include path.
-> >=20
-> > Since having the bpf/ subdir of $INCLUDEDIR in the include path has nev=
-er been a
-> > requirement for building against libbpf before, this needs to be fixed.=
- One
-> > option is to just revert the offending commit and figure out a differen=
-t way to
-> > achieve what it aims for.  =20
->=20
-> The offending commit has been in the tree for a week. So I applied Andrii=
-'s
-> revert of that change. It reintroduced the build dependency issue, but we=
- lived
-> with it for long time, so we can take time to fix it cleanly.
-> I suggest to focus on that build dependency first.
->=20
-> > However, this series takes a different approach:
-> > Changing all in-tree users of libbpf to consistently use a bpf/ prefix =
-in
-> > #include directives for header files from libbpf. =20
->=20
-> I'm not sure it's a good idea. It feels nice, but think of a message we're
-> sending to everyone. We will get spamed with question: does bpf community
-> require all libbpf users to use bpf/ prefix ? What should be our answer?
+HEAD commit:    93ad0f96 net: wan: lapbether.c: Use built-in RCU list chec..
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=1159eb8ee00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7e89bd00623fe71e
+dashboard link: https://syzkaller.appspot.com/bug?extid=c2f1558d49e25cc36e5e
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1070cad1e00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17de84a5e00000
 
-The answer should be: Yes. When libbpf install the header files the are
-installed under bpf/ prefix.  It is very confusing that samples and
-selftests can include libbpf.h without this prefix. Even worse
-including "bpf.h" pickup the libbpf version bpf/bpf.h, which have
-caused confusion.  The only reason for the direct "libbpf.h" include is
-historical, as there used-to-be a local file for that.
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+c2f1558d49e25cc36e5e@syzkaller.appspotmail.com
 
-
-> Require or recommend? If require.. what for? It works as-is. If recommend=
- then
-> why suddenly we're changing all files in selftests and samples?
-> There is no good answer here. I think we should leave the things as-is.
-
-I strongly believe we should correct this.  It doesn't make sense that
-someone copying out a sample or selftests, into a git-submodule libbpf
-(or distro installed libbpf-devel) have to understand that they have to
-update the include path for all the libbpf header files.
-
---=20
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+BUG: sleeping function called from invalid context at net/core/sock.c:2935
+in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 3198, name:  
+kworker/0:112
+4 locks held by kworker/0:112/3198:
+  #0: ffff8880aa426d28 ((wq_completion)events){+.+.}, at: __write_once_size  
+include/linux/compiler.h:226 [inline]
+  #0: ffff8880aa426d28 ((wq_completion)events){+.+.}, at: arch_atomic64_set  
+arch/x86/include/asm/atomic64_64.h:34 [inline]
+  #0: ffff8880aa426d28 ((wq_completion)events){+.+.}, at: atomic64_set  
+include/asm-generic/atomic-instrumented.h:855 [inline]
+  #0: ffff8880aa426d28 ((wq_completion)events){+.+.}, at: atomic_long_set  
+include/asm-generic/atomic-long.h:40 [inline]
+  #0: ffff8880aa426d28 ((wq_completion)events){+.+.}, at: set_work_data  
+kernel/workqueue.c:615 [inline]
+  #0: ffff8880aa426d28 ((wq_completion)events){+.+.}, at:  
+set_work_pool_and_clear_pending kernel/workqueue.c:642 [inline]
+  #0: ffff8880aa426d28 ((wq_completion)events){+.+.}, at:  
+process_one_work+0x88b/0x1740 kernel/workqueue.c:2235
+  #1: ffffc9000951fdc0 ((work_completion)(&map->work)){+.+.}, at:  
+process_one_work+0x8c1/0x1740 kernel/workqueue.c:2239
+  #2: ffffffff899a3f00 (rcu_read_lock){....}, at: sock_hash_free+0x0/0x540  
+net/core/sock_map.c:317
+  #3: ffffc90002478d20 (&htab->buckets[i].lock){+...}, at:  
+sock_hash_free+0x131/0x540 net/core/sock_map.c:865
+Preemption disabled at:
+[<ffffffff86341331>] sock_hash_free+0x131/0x540 net/core/sock_map.c:865
+CPU: 0 PID: 3198 Comm: kworker/0:112 Not tainted 5.5.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+Google 01/01/2011
+Workqueue: events bpf_map_free_deferred
+Call Trace:
+  __dump_stack lib/dump_stack.c:77 [inline]
+  dump_stack+0x197/0x210 lib/dump_stack.c:118
+  ___might_sleep.cold+0x1fb/0x23e kernel/sched/core.c:6800
+  __might_sleep+0x95/0x190 kernel/sched/core.c:6753
+  lock_sock_nested+0x39/0x120 net/core/sock.c:2935
+  lock_sock include/net/sock.h:1531 [inline]
+  sock_hash_free+0x29f/0x540 net/core/sock_map.c:868
+  bpf_map_free_deferred+0xb3/0x100 kernel/bpf/syscall.c:327
+  process_one_work+0x9af/0x1740 kernel/workqueue.c:2264
+  worker_thread+0x98/0xe40 kernel/workqueue.c:2410
+  kthread+0x361/0x430 kernel/kthread.c:255
+  ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
+BUG: scheduling while atomic: kworker/0:112/3198/0x00000202
+4 locks held by kworker/0:112/3198:
+  #0: ffff8880aa426d28 ((wq_completion)events){+.+.}, at: __write_once_size  
+include/linux/compiler.h:226 [inline]
+  #0: ffff8880aa426d28 ((wq_completion)events){+.+.}, at: arch_atomic64_set  
+arch/x86/include/asm/atomic64_64.h:34 [inline]
+  #0: ffff8880aa426d28 ((wq_completion)events){+.+.}, at: atomic64_set  
+include/asm-generic/atomic-instrumented.h:855 [inline]
+  #0: ffff8880aa426d28 ((wq_completion)events){+.+.}, at: atomic_long_set  
+include/asm-generic/atomic-long.h:40 [inline]
+  #0: ffff8880aa426d28 ((wq_completion)events){+.+.}, at: set_work_data  
+kernel/workqueue.c:615 [inline]
+  #0: ffff8880aa426d28 ((wq_completion)events){+.+.}, at:  
+set_work_pool_and_clear_pending kernel/workqueue.c:642 [inline]
+  #0: ffff8880aa426d28 ((wq_completion)events){+.+.}, at:  
+process_one_work+0x88b/0x1740 kernel/workqueue.c:2235
+  #1: ffffc9000951fdc0 ((work_completion)(&map->work)){+.+.}, at:  
+process_one_work+0x8c1/0x1740 kernel/workqueue.c:2239
+  #2: ffffffff899a3f00 (rcu_read_lock){....}, at: sock_hash_free+0x0/0x540  
+net/core/sock_map.c:317
+  #3: ffffc90002478d20 (&htab->buckets[i].lock){+...}, at:  
+sock_hash_free+0x131/0x540 net/core/sock_map.c:865
+Modules linked in:
+Preemption disabled at:
+[<ffffffff86341331>] sock_hash_free+0x131/0x540 net/core/sock_map.c:865
 
