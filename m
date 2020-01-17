@@ -2,127 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A7E5C140F90
-	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2020 18:02:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67032141058
+	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2020 18:59:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727519AbgAQRCK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Jan 2020 12:02:10 -0500
-Received: from mail-io1-f72.google.com ([209.85.166.72]:43320 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726559AbgAQRCK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Jan 2020 12:02:10 -0500
-Received: by mail-io1-f72.google.com with SMTP id b25so15525747ioh.10
-        for <bpf@vger.kernel.org>; Fri, 17 Jan 2020 09:02:10 -0800 (PST)
+        id S1726935AbgAQR7P (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Jan 2020 12:59:15 -0500
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:44227 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726761AbgAQR7O (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Jan 2020 12:59:14 -0500
+Received: by mail-qk1-f193.google.com with SMTP id w127so23482652qkb.11
+        for <bpf@vger.kernel.org>; Fri, 17 Jan 2020 09:59:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=i5cGw8JTgwtzajQUHbgFc2d+oU0Cah3x2GwqH42ikzA=;
+        b=vtfBp0anBwWxPfqiU2pIRD3NArSsoD+qv28x0JODt9JXAktdwN6W7yRP9YNNUFHM+g
+         J9ZrZ5JVtFhIRCj8Q6mevoslC+XfdsJjCDQLITSQ6UwPUM9QlCdrq4gqQbCpU91bMy3p
+         ucK7jyIbs3fhs0wesm/QjYWx6flWlYC4AVoNxX1Xg3v2Gc6FGyNM+0rRPdKRkJmIK34+
+         3pvnIu9kk6KXMJlGuCa6lBYSLbXt2wVFYivgFsGSO+elmIlkxEjQQsllF1ShlXwnRn7u
+         2rjDskEbJ/wr5vRZgomKDHtV17HOSoOP0VEcm48/ADlpbQXk/qugwDlzL6TUddJhs4Ms
+         HS5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=v5pjtR02fy58Q0F+yGRHUalTapXO5wj8rc74RPMAdFo=;
-        b=mEFsCkICcxd30h/YB9ZA4ip/ifc2g8Oar7exoBmHXcZhKf10zIaHbUYkRBMPO8WhIL
-         ECBsSq2WZuHRtnEg5mOnUMqJ6PW1K5x1BRwN+uL7FwtZKkkd9szaqxDZ9lWHO9ZM2Kp/
-         +BPenDRNdHhitve+XiU6YmX2JqXKllnfMRdpG4kathd16R11b/EnkD/ovOK720zIObGx
-         AqSbgko6sKATMlglUUNr1iWCogXe7HDklFWMnNdE67HSSyOUNkVllw1p+HLIO6Jb+Gf+
-         q+NkUQtk4dhHNLnaS5HcMhPmVcvjfLz5R8omPwaGyxaRHh0HLfgsi2VDab++zzZYx97F
-         XVxw==
-X-Gm-Message-State: APjAAAWtYZkBdaAydN/s0qUnS0PNncRVYX5n86G6Dgp9WzTDh6EweW5v
-        /VhxIAKRvSkfB66yVSSkTRzg/VsrPYvtSGVc75kEoF1df/zv
-X-Google-Smtp-Source: APXvYqx9fV6JY5/xPbPrPjDCBFFRB1kzTHVwoX/M/Y1KpDho67tX+WnzMrih5MbDiAUH+3DgROagb2aBsX27wXXhQ7WaysMBF691
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=i5cGw8JTgwtzajQUHbgFc2d+oU0Cah3x2GwqH42ikzA=;
+        b=b61Udbf/234meAcvFcoXITOrpamuhcgU3ULelC1VtI7NdaYc/ELBSDEumlK8dMvRRE
+         iO/gtrxFbCKok8meJjG2qO6xnT1CM69zse4RIKeG3TuemYOjPkBRO1IeZWcgn93qGtE6
+         p5OFJj3aYNWfh/x4ZHLyNC6M/OagM5uog56xYH03J7lwxnKq1O1UMxFkVh+lQ0DGEsdz
+         dYiCxmDPbFJwdKZgodXoUJTmUuld67l6EE9U4ZXhQhAphhEK5uiboRTTaPnRbbpdLnon
+         JQqIRFw/mwzK5JpITpN2q71xNaC0nDVgiA2i+mujLq6o7d2NkC6CEL1EXvLTM0I+G0Dd
+         gTIQ==
+X-Gm-Message-State: APjAAAWHXMyh39ewuGr5CP+N9YSBn9Xch/kbvBhMrWctw8GHx7zAbeqe
+        TZLcu4AN9ToDbLuW0FyUxiZ0QuZ2mP3tBlxhrIU1Z/5Ojp53ew==
+X-Google-Smtp-Source: APXvYqwXRDUlwJRcB2H9LoRkuFRAZcHzyT1TRq/qfmp1keSsF7jbgngh5ZNPzrUwLbHANWqRscOI6pr6DFKuDlHvOFE=
+X-Received: by 2002:a05:620a:1010:: with SMTP id z16mr35130151qkj.237.1579283953316;
+ Fri, 17 Jan 2020 09:59:13 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a92:ba93:: with SMTP id t19mr2301537ill.0.1579280530118;
- Fri, 17 Jan 2020 09:02:10 -0800 (PST)
-Date:   Fri, 17 Jan 2020 09:02:10 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ffc1f1059c58e648@google.com>
-Subject: WARNING in sk_psock_drop
-From:   syzbot <syzbot+d73682fcf7fee6982fe3@syzkaller.appspotmail.com>
-To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net,
-        john.fastabend@gmail.com, kafai@fb.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+References: <20200117104400.iwfowq7z4epdvoww@kili.mountain>
+In-Reply-To: <20200117104400.iwfowq7z4epdvoww@kili.mountain>
+From:   Brian Vazquez <brianvv@google.com>
+Date:   Fri, 17 Jan 2020 09:59:02 -0800
+Message-ID: <CAMzD94ShnYFL_n0XseKt3XbX2yQF+3LPZuM2w--MTqXDxmXECw@mail.gmail.com>
+Subject: Re: [bug report] bpf: Add generic support for update and delete batch ops
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+On Fri, Jan 17, 2020 at 2:44 AM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+>
+> Hello Brian Vazquez,
+>
+> The patch aa2e93b8e58e: "bpf: Add generic support for update and
+> delete batch ops" from Jan 15, 2020, leads to the following static
+> checker warning:
+>
+>         kernel/bpf/syscall.c:1322 generic_map_update_batch()
+>         error: 'key' dereferencing possible ERR_PTR()
+>
+> kernel/bpf/syscall.c
+>   1296
+>   1297          value = kmalloc(value_size, GFP_USER | __GFP_NOWARN);
+>   1298          if (!value)
+>   1299                  return -ENOMEM;
+>   1300
+>   1301          for (cp = 0; cp < max_count; cp++) {
+>   1302                  key = __bpf_copy_key(keys + cp * map->key_size, map->key_size);
+>   1303                  if (IS_ERR(key)) {
+>   1304                          err = PTR_ERR(key);
+>   1305                          break;
+>                                 ^^^^^
+> This will Oops.
+>
+>   1306                  }
+>   1307                  err = -EFAULT;
+>   1308                  if (copy_from_user(value, values + cp * value_size, value_size))
+>   1309                          break;
+>   1310
+>   1311                  err = bpf_map_update_value(map, f, key, value,
+>   1312                                             attr->batch.elem_flags);
+>   1313
+>   1314                  if (err)
+>   1315                          break;
+>
+> But the success path seems to leak.  Anyway, either we free the last
+> successful key or we are leaking so this doesn't seem workable.  Does
+> map->key_size change?  Maybe move the allocation from __bpf_copy_key()
+> to before the start of the loop.
 
-syzbot found the following crash on:
+Thanks for the report, you're right that part is buggy. The allocation
+should happen before the loop, and we can do copy_from_user for the
+key. I also see the leaking in generic_map_delete_batch, will send the
+fixes shortly.
 
-HEAD commit:    93ad0f96 net: wan: lapbether.c: Use built-in RCU list chec..
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=132caa76e00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7e89bd00623fe71e
-dashboard link: https://syzkaller.appspot.com/bug?extid=d73682fcf7fee6982fe3
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-
-Unfortunately, I don't have any reproducer for this crash yet.
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+d73682fcf7fee6982fe3@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 11793 at include/net/sock.h:1578 sock_owned_by_me  
-include/net/sock.h:1578 [inline]
-WARNING: CPU: 1 PID: 11793 at include/net/sock.h:1578  
-sk_psock_drop+0x5fa/0x7f0 net/core/skmsg.c:597
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 1 PID: 11793 Comm: syz-executor.3 Not tainted 5.5.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-Google 01/01/2011
-Call Trace:
-  __dump_stack lib/dump_stack.c:77 [inline]
-  dump_stack+0x197/0x210 lib/dump_stack.c:118
-  panic+0x2e3/0x75c kernel/panic.c:221
-  __warn.cold+0x2f/0x3e kernel/panic.c:582
-  report_bug+0x289/0x300 lib/bug.c:195
-  fixup_bug arch/x86/kernel/traps.c:174 [inline]
-  fixup_bug arch/x86/kernel/traps.c:169 [inline]
-  do_error_trap+0x11b/0x200 arch/x86/kernel/traps.c:267
-  do_invalid_op+0x37/0x50 arch/x86/kernel/traps.c:286
-  invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1027
-RIP: 0010:sock_owned_by_me include/net/sock.h:1578 [inline]
-RIP: 0010:sk_psock_drop+0x5fa/0x7f0 net/core/skmsg.c:597
-Code: d0 7c 08 84 d2 0f 85 c7 01 00 00 44 8b 2d 22 89 4b 04 31 ff 44 89 ee  
-e8 f4 01 45 fb 45 85 ed 0f 84 4e fa ff ff e8 66 00 45 fb <0f> 0b e9 42 fa  
-ff ff e8 5a 00 45 fb 48 8d bb 70 02 00 00 48 b8 00
-RSP: 0018:ffffc90001667a58 EFLAGS: 00010212
-RAX: 0000000000040000 RBX: ffff888098091800 RCX: ffffc900102eb000
-RDX: 00000000000001a2 RSI: ffffffff862ff52a RDI: 0000000000000005
-RBP: ffffc90001667aa0 R08: ffff8880a7a824c0 R09: ffffed101301234c
-R10: ffffed101301234b R11: ffff888098091a5b R12: ffff8880a4606e80
-R13: 0000000000000001 R14: ffff888098091800 R15: ffff8880a4606e80
-  sk_psock_put include/linux/skmsg.h:437 [inline]
-  tcp_bpf_recvmsg+0xb69/0xc90 net/ipv4/tcp_bpf.c:157
-  inet6_recvmsg+0x136/0x610 net/ipv6/af_inet6.c:592
-  sock_recvmsg_nosec net/socket.c:873 [inline]
-  sock_recvmsg net/socket.c:891 [inline]
-  sock_recvmsg+0xce/0x110 net/socket.c:887
-  __sys_recvfrom+0x1ff/0x350 net/socket.c:2042
-  __do_sys_recvfrom net/socket.c:2060 [inline]
-  __se_sys_recvfrom net/socket.c:2056 [inline]
-  __x64_sys_recvfrom+0xe1/0x1a0 net/socket.c:2056
-  do_syscall_64+0xfa/0x790 arch/x86/entry/common.c:294
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-RIP: 0033:0x45aff9
-Code: ad b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7  
-48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
-ff 0f 83 7b b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f83349d7c78 EFLAGS: 00000246 ORIG_RAX: 000000000000002d
-RAX: ffffffffffffffda RBX: 00007f83349d86d4 RCX: 000000000045aff9
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000005
-RBP: 000000000075bf20 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000ffffffff
-R13: 000000000000085c R14: 00000000004c9852 R15: 000000000075bf2c
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
-
-
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>
+>   1316          }
+>   1317
+>   1318          if (copy_to_user(&uattr->batch.count, &cp, sizeof(cp)))
+>   1319                  err = -EFAULT;
+>   1320
+>   1321          kfree(value);
+>   1322          kfree(key);
+>   1323          return err;
+>   1324  }
+>
+> regards,
+> dan carpenter
