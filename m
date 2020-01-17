@@ -2,69 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4473D140F0D
-	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2020 17:35:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76381140F63
+	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2020 17:54:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726915AbgAQQfh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Jan 2020 11:35:37 -0500
-Received: from mail-pj1-f67.google.com ([209.85.216.67]:36071 "EHLO
-        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726889AbgAQQfh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Jan 2020 11:35:37 -0500
-Received: by mail-pj1-f67.google.com with SMTP id n59so3548875pjb.1;
-        Fri, 17 Jan 2020 08:35:37 -0800 (PST)
+        id S1729260AbgAQQyO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Jan 2020 11:54:14 -0500
+Received: from mail-io1-f67.google.com ([209.85.166.67]:42177 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726761AbgAQQyO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Jan 2020 11:54:14 -0500
+Received: by mail-io1-f67.google.com with SMTP id n11so26709757iom.9
+        for <bpf@vger.kernel.org>; Fri, 17 Jan 2020 08:54:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Tk6HLdN1zImWu1L0zmIhWUOzNebvVonDSsfb4q+YHz8=;
-        b=Jh/xNtzIiLcsPs6q+FZeQju+kqrSx/KfPbmmB1oGKz2bW5VEfQwt/SrdAetiFzYu6n
-         z7ra4zR+GqaLJ1nCmwqDezn+SwPCAHM+9H2xsglKh5/3Gilq1rP5rq9nBkF62/1EoGRn
-         OhAI8gv+flQ/UiMObrUYDIvJxkx0ZAMzSEFq1jd7VNFls2Pz9LbGVNEHY2fdI6O37NIL
-         mgWUKIPN8L5s2Ti2MuE2r1tT5P/gbmNg5poKasrisNOExERwrpwLRw1Q+lYzSM8S0IDf
-         XBijQXb54RdmR1b2GlSIsbV94e0vD3AFezaqFrXFKxY6sIhmkTvoR+T9zhPG3SNCw+3n
-         Dqeg==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=uFIUVKsz4aPMvzp5H7zdGJcmUXpH7dHc5gmMJqmLGlg=;
+        b=Ju3I1Jfs9dGT84Iy5fhqRFLUVMNJ2DaIdE+XAgBGJVq2WI7cBhYBPlKCVOfqs4VjMZ
+         5ICq/oE45Eg7QmU2ztU/ugOzLpOvQ2sTLgH4W6CEG5igTtgl1kKoVhX3J3f1sfZ7fO+I
+         JlYaxN8NlIaKixzCZBXnSUCbPBdtD6QReoBvllPp/KtRlRs4nS+7Hm4udEoIrUm8C0m7
+         Bv5BGlkrns50GvcaB7Bf+XmCIptl1fNUe3m5b7HoaXRW5F86S/8vnDbb3AuiE2juhPi+
+         5AJL6a9LVL5rapntmvKmiWEqM1aM55VyhUm/u1S9BHEP0VaaVuXAx4M5wkLazCr15Z/M
+         67ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Tk6HLdN1zImWu1L0zmIhWUOzNebvVonDSsfb4q+YHz8=;
-        b=jj4Cg0uIIKHMrVXksoKKZP2pUcy+JN7dIBXHKJ2DajmTNoZEpFj7Zrk0Hr0ANwNTeM
-         JvTHae3anmb/UQeZJ9DZMLZH4YG9sIfaUbzk9RQZB/mu7nMIpTx3HC2k7wkcm6aGPQWF
-         EUqO6LrCrW/aRrRnoBK6LWRT6jVEI1+LSAKQH7ayFq+yluLp60Ecew6txTpTpoB59eAB
-         jOqz2xoUHmSDq0PbQShX8P2QH2JQXq7AwihUZaxDzJssUA9dLEMnnbG6RwI6I3tbRnVx
-         TZc4XfKApLIUbbgMHXaSkOCcCsjgX9qoVfj4T6g0tE6n8B3CRl4w3ZsYNvclgRyOFVN1
-         VZSQ==
-X-Gm-Message-State: APjAAAXyYJzsnMqBOfeFNn5T9K0kBIYRRWh0bbA+ExxHVYRdG5ay6E4k
-        zovRuGfdWzyV9+0AyJi4Kdw=
-X-Google-Smtp-Source: APXvYqw0v/QeeV9dxrpipz3FQeMY4zLHACy6De7ju/2lpJ9r6AFaOZ4/r9kyXbEyz8nARu8XhqxoOQ==
-X-Received: by 2002:a17:90a:d156:: with SMTP id t22mr6456665pjw.108.1579278936738;
-        Fri, 17 Jan 2020 08:35:36 -0800 (PST)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:180::ac8c])
-        by smtp.gmail.com with ESMTPSA id v4sm29707789pff.174.2020.01.17.08.35.34
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 17 Jan 2020 08:35:36 -0800 (PST)
-Date:   Fri, 17 Jan 2020 08:35:23 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Andrii Nakryiko <andriin@fb.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
-        daniel@iogearbox.net, andrii.nakryiko@gmail.com, kernel-team@fb.com
-Subject: Re: [PATCH bpf-next 0/4] Fix few unrelated small bugs and issues
-Message-ID: <20200117163520.njanhhs64zy5na6k@ast-mbp.dhcp.thefacebook.com>
-References: <20200117060801.1311525-1-andriin@fb.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=uFIUVKsz4aPMvzp5H7zdGJcmUXpH7dHc5gmMJqmLGlg=;
+        b=iUpI3OdN7UyBTHeBcrvFDqOCYDlf9URASVX/Gq7DBkb/HRY2/Oh1gCxEsHaikzJtGA
+         sqE0UXdKL0oP7jozEKZNUQc4qmdvMct6wN78Mt8Of6gqvZ4zB/jeqXTH/mEToc7r6vKj
+         ibhL2Qf+BXCnMKfgdN5xJEfx1RuhESky4RPgwEgRYqILAzRcQZDULMlGbejq5S0zb/nD
+         Zua6pOUt26E9prmO0sRSMsryUHwYlCsDqhYVKgJEcKusPHDweS9cX0h5R+xNnsfveaYU
+         l+ZaVZKZgJTYNl9y4CuOxD7lRmgFJ50wb6J6nJk8jjLRG3AzTx5PIyp2lIpJ/Ds7VLj/
+         DyFg==
+X-Gm-Message-State: APjAAAXdOaNhfBb3IAdL7DbvNHkJwlMu6ER8DL+zcYbYmRU+w58z0dcs
+        ghRqmN80y7egV2rWM2a1e1+enQ==
+X-Google-Smtp-Source: APXvYqyb7lB/rV1ivpPHirD+5CsQ4f/jRvFS49kUJduVxa9UCt1nkgGP/tUwxXBNpRlOKcvyPaLpjg==
+X-Received: by 2002:a5e:9748:: with SMTP id h8mr23496836ioq.121.1579280053465;
+        Fri, 17 Jan 2020 08:54:13 -0800 (PST)
+Received: from alago.cortijodelrio.net (CableLink-189-219-74-147.Hosts.InterCable.net. [189.219.74.147])
+        by smtp.googlemail.com with ESMTPSA id f16sm8120662ilq.16.2020.01.17.08.54.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Jan 2020 08:54:12 -0800 (PST)
+From:   =?UTF-8?q?Daniel=20D=C3=ADaz?= <daniel.diaz@linaro.org>
+To:     shuah@kernel.org
+Cc:     =?UTF-8?q?Daniel=20D=C3=ADaz?= <daniel.diaz@linaro.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK),
+        netdev@vger.kernel.org (open list:BPF (Safe dynamic programs and tools)),
+        bpf@vger.kernel.org (open list:BPF (Safe dynamic programs and tools)),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH 3/3] selftests/bpf: Build urandom_read with LDFLAGS and LDLIBS
+Date:   Fri, 17 Jan 2020 10:53:28 -0600
+Message-Id: <20200117165330.17015-3-daniel.diaz@linaro.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200117165330.17015-1-daniel.diaz@linaro.org>
+References: <20200117165330.17015-1-daniel.diaz@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200117060801.1311525-1-andriin@fb.com>
-User-Agent: NeoMutt/20180223
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 16, 2020 at 10:07:57PM -0800, Andrii Nakryiko wrote:
-> Fix few unrelated issues, found by static analysis tools (performed against
-> libbpf's Github repo). Also fix compilation warning in bpftool polluting
-> selftests Makefile output.
+During cross-compilation, it was discovered that LDFLAGS and
+LDLIBS were not being used while building binaries, leading
+to defaults which were not necessarily correct.
 
-Applied first three patches. Thanks
+OpenEmbedded reported this kind of problem:
+  ERROR: QA Issue: No GNU_HASH in the ELF binary [...], didn't pass LDFLAGS?
+
+Signed-off-by: Daniel Díaz <daniel.diaz@linaro.org>
+---
+ tools/testing/selftests/bpf/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index e2fd6f8d579c..f1740113d5dc 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -88,7 +88,7 @@ $(notdir $(TEST_GEN_PROGS)						\
+ 	 $(TEST_CUSTOM_PROGS)): %: $(OUTPUT)/% ;
+ 
+ $(OUTPUT)/urandom_read: urandom_read.c
+-	$(CC) -o $@ $< -Wl,--build-id
++	$(CC) $(LDFLAGS) -o $@ $< $(LDLIBS) -Wl,--build-id
+ 
+ $(OUTPUT)/test_stub.o: test_stub.c
+ 	$(CC) -c $(CFLAGS) -o $@ $<
+-- 
+2.20.1
+
