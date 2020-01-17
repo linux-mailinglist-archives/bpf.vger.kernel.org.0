@@ -2,115 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EC631402D1
-	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2020 05:14:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0A271402F2
+	for <lists+bpf@lfdr.de>; Fri, 17 Jan 2020 05:20:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726566AbgAQEOh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Jan 2020 23:14:37 -0500
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:43868 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726370AbgAQEOh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Jan 2020 23:14:37 -0500
-Received: by mail-pl1-f193.google.com with SMTP id p27so9294974pli.10;
-        Thu, 16 Jan 2020 20:14:36 -0800 (PST)
+        id S1726378AbgAQETq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Jan 2020 23:19:46 -0500
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:45412 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726370AbgAQETq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Jan 2020 23:19:46 -0500
+Received: by mail-lj1-f194.google.com with SMTP id j26so24982933ljc.12;
+        Thu, 16 Jan 2020 20:19:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=twnxve9B2urmxTvx/xi2EnR9KZMdG4EBxb61wIeJtkM=;
-        b=BSzmU+mWlBUNhq6SrtaJyXRUEy6MRHfr053SGujImlwUDkuFYAs9H8E6mcQR290vjD
-         gTkb0juZP5oxrBfoEOd87+w/svGn/A/inFXreV9mjAhl7aEoGj4eRM59wNO/MLVrgjNJ
-         riGtylwTCX/6wfOCQjyKXBIkHP98+yAk0g+vYB0RTWk6vXjOFKbI8eokVzykD1EDPyNZ
-         EQTN+CqC9IdV5zXcC4bORRjk1n09BZPrv1uY0+zBGGjWBq19pxkDfeRElNrY1dMG2Euc
-         7fW85AtGRAD6b5bzcXDpgN093ZheAyhL70iLvaM6EubxQnHdcQfxRKecy2BCPd/a8z9s
-         NJxQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=imSKWoC291eohZgsrWD/LjCtAqZICIklk9Wyz8HO8IY=;
+        b=Pvy9KYBiXH03e36P8s+6tBl671hsS8qjrJCk9h9JlzINU0ywwm5RcsoG7hIigjT2SM
+         2P5K74yX7ecNg7TTMunbxjaZf4KOWnx+/D53phoBptlSM8egR54Z3zJZeRoMqQ8rQDzj
+         4Fw5pyJnSQgUWiDVMV/s72o2EeD4jDQRMJrkEYZlXeC0O5p+nn6z/ENyW065b4HMkPOf
+         lSpr/GFQDfVDWnAABrr4v3Og0F8FANk9hrcZx6nN5YDAJkcv7xp0sSOaABM7Y7nuaacA
+         LGD81kItcNTSYNScfDU4WZejj3Z2Pgse3rej/r7gyBUuBPfNXo2RXEVcoYthRw0vWkgZ
+         hIlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=twnxve9B2urmxTvx/xi2EnR9KZMdG4EBxb61wIeJtkM=;
-        b=TnqRDYhbBnIO5r6UxKMGMT1HEK6ODrgPB7F2XjOMOd/KyYJbocUy/Q5KgnH5xhdHEg
-         vTa6gCI3vXuqBf7U4ZdSzAowl52SLjmJ0Ppsc5nmC3KtJiNWx6RhWjCCsuTAV1F40vXB
-         TXgGwiKD5cJF81H6urMwWH5a8/69sjr6CVFkdjLQkAHumwPrzkL3gfBCOFkZaAEXQwwi
-         eYaBS+x4NvOAuBbDbP93coYtM0lwcBVIPuozXC9zqW5JbO0ZOeJ7FPbVsZ2BAyppCi7t
-         DUyRJ0lEAY8ALcqEvjaxyNzOWjruv67o4ZzfLAaIuIYDrcF213FpHKlpTLMsbGfhDZ2z
-         NAdA==
-X-Gm-Message-State: APjAAAX1VqIvH5MuV05FJElwDegZwDaqUQDhYXOhq7cytliW26TOgCdi
-        65ixS/zz96N0LFGx6AFTGiQ=
-X-Google-Smtp-Source: APXvYqwWDzxtWtq69PKr0RljRlYADIezN3T1Qi10F9SS3lxibRUtqAla77kK4XulE5yE4gu+WGbLJQ==
-X-Received: by 2002:a17:90a:2223:: with SMTP id c32mr3474800pje.15.1579234476283;
-        Thu, 16 Jan 2020 20:14:36 -0800 (PST)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:180::98ac])
-        by smtp.gmail.com with ESMTPSA id h128sm28232584pfe.172.2020.01.16.20.14.33
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 16 Jan 2020 20:14:35 -0800 (PST)
-Date:   Thu, 16 Jan 2020 20:14:32 -0800
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=imSKWoC291eohZgsrWD/LjCtAqZICIklk9Wyz8HO8IY=;
+        b=Y4m4rgJBs7f5/aBZtqu2cK8JWcEC/xswSqwauOKL3/ihZDODdVJyfrs4KbgJz9i4v0
+         T2LcVFurJoXgeKZk8B14MOvObjhLBgiUByH+HOurAyr83XV9UNq7jcI2VIYUBbCsMkKj
+         /TXURsXc52JzlEz6Mfi/tyd3x5H86WZHwJJvN3zhdsoi6V8MUnhL61xvSZhks3r7QCtK
+         Nd7dmPzZookdKUx4i3NhObgydqm/nUz5SDEZ/kQdzxvYPtdDiQqTKFxxuXhxxQ9AArda
+         y3/2LmC1iGgJ9BmLr5Ebm0I7XrMiuCFuuxg+BqjAePfU9CI007Yl30fsjeNtJKdMoW75
+         MTWQ==
+X-Gm-Message-State: APjAAAXN3TeAcnB1+7n8qsR3liVODhQQeP+wR3GXpWejZMT7ZbQdH6ku
+        tBA6cejG7doT1517/DU+likaW9+uESiW79Fv3pw=
+X-Google-Smtp-Source: APXvYqzSEUXMlBj6dlKaHS7YXkz2fO4BuQk4KT4Tx/YQFscvfB/UfytOxrU6dSOWVwLi/Mp+XD8M89vCtQocmhysvYI=
+X-Received: by 2002:a2e:89d0:: with SMTP id c16mr4357865ljk.228.1579234783953;
+ Thu, 16 Jan 2020 20:19:43 -0800 (PST)
+MIME-Version: 1.0
+References: <20200116145300.59056-1-yuehaibing@huawei.com> <CAMzD94T3TowoygCu3mAtd3WaZtSk1m1AVVpUHYB_bPAyE9QS3A@mail.gmail.com>
+In-Reply-To: <CAMzD94T3TowoygCu3mAtd3WaZtSk1m1AVVpUHYB_bPAyE9QS3A@mail.gmail.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+Date:   Thu, 16 Jan 2020 20:19:32 -0800
+Message-ID: <CAADnVQL_BwWCMGvxPjC-bFiSskhzDypRifQFRUmTZtWN11qx=w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: Remove set but not used variable 'first_key'
+To:     Brian Vazquez <brianvv@google.com>
+Cc:     YueHaibing <yuehaibing@huawei.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         Andrii Nakryiko <andriin@fb.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH bpf-next v3 00/11] tools: Use consistent libbpf include
- paths everywhere
-Message-ID: <20200117041431.h7vvc32fungenyhg@ast-mbp.dhcp.thefacebook.com>
-References: <157918093154.1357254.7616059374996162336.stgit@toke.dk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <157918093154.1357254.7616059374996162336.stgit@toke.dk>
-User-Agent: NeoMutt/20180223
+        Linux NetDev <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 16, 2020 at 02:22:11PM +0100, Toke Høiland-Jørgensen wrote:
-> The recent commit 6910d7d3867a ("selftests/bpf: Ensure bpf_helper_defs.h are
-> taken from selftests dir") broke compilation against libbpf if it is installed
-> on the system, and $INCLUDEDIR/bpf is not in the include path.
-> 
-> Since having the bpf/ subdir of $INCLUDEDIR in the include path has never been a
-> requirement for building against libbpf before, this needs to be fixed. One
-> option is to just revert the offending commit and figure out a different way to
-> achieve what it aims for. 
+On Thu, Jan 16, 2020 at 5:41 PM Brian Vazquez <brianvv@google.com> wrote:
+>
+> On Thu, Jan 16, 2020 at 5:38 PM YueHaibing <yuehaibing@huawei.com> wrote:
+> >
+> > kernel/bpf/syscall.c: In function generic_map_lookup_batch:
+> > kernel/bpf/syscall.c:1339:7: warning: variable first_key set but not used [-Wunused-but-set-variable]
+> >
+> > It is never used, so remove it.
+>
+> Previous logic was using it but I forgot to delete it. Thanks for fixing it!
+>
+> Acked-by: Brian Vazquez <brianvv@google.com>
 
-The offending commit has been in the tree for a week. So I applied Andrii's
-revert of that change. It reintroduced the build dependency issue, but we lived
-with it for long time, so we can take time to fix it cleanly.
-I suggest to focus on that build dependency first.
-
-> However, this series takes a different approach:
-> Changing all in-tree users of libbpf to consistently use a bpf/ prefix in
-> #include directives for header files from libbpf.
-
-I'm not sure it's a good idea. It feels nice, but think of a message we're
-sending to everyone. We will get spamed with question: does bpf community
-require all libbpf users to use bpf/ prefix ? What should be our answer?
-Require or recommend? If require.. what for? It works as-is. If recommend then
-why suddenly we're changing all files in selftests and samples?
-There is no good answer here. I think we should leave the things as-is.
-And fix build dep differently.
-
-Patches 1-3 are still worth doing.
+Applied. Thanks
