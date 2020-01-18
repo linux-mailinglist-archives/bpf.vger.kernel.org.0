@@ -2,1116 +2,667 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DE098141502
-	for <lists+bpf@lfdr.de>; Sat, 18 Jan 2020 01:02:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEB3B14150C
+	for <lists+bpf@lfdr.de>; Sat, 18 Jan 2020 01:07:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730336AbgARACG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Jan 2020 19:02:06 -0500
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:37418 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730232AbgARACG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Jan 2020 19:02:06 -0500
-Received: by mail-oi1-f194.google.com with SMTP id z64so23820453oia.4;
-        Fri, 17 Jan 2020 16:02:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id;
-        bh=64TW///3TRDRG1az2FaPqi7q4JLjIQS8lQu334/RHgA=;
-        b=TAv5B45TSP0cSE7f8TLXp8zg53wovvuTOXwCn1BQQPyk3C+N3JJypaysy3ACKlev6G
-         1SUBRrxfMS9ZLjQJoXnxGbGDXcfTZlxl3g501AXflUR0VL0pnPmeaoTWWeg2oklC0YVy
-         uOu7LvXT+MlKdWCnhH10iTyCO/DQGCHslb3fCB89W4sKpZKAgxLdz4b/RFjf4fp9qJcm
-         HHm7RbLjeBOn7d5cumGHYitHpDrwlwYiLe3w0n5bp0SPOEnhJCikU/N79c7MUfn0uGdr
-         DqSHGiQ8tiuwoHnN9FxVCC440MibUWV5q0WDmH4wkmNOC+6k3iy3oL2CWyXj7HEhIAPx
-         zDxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id;
-        bh=64TW///3TRDRG1az2FaPqi7q4JLjIQS8lQu334/RHgA=;
-        b=Gq/7sYAnnwzaoAL5vy1g12HqWBsWcFTent7L6V8gs5gWJu+DcBAPXRSFkFoNZyCyVP
-         svqTPpoI32rYvanW3bLsFFx1BPhvqEDf/4HVuE1c9nX9kPdj7HevdB18hZe3jQT3rClp
-         UL1uRULCiKktOHye1GCN8HEF6R14DJGBT5UH4pYfvyaAkuPmoXF6aDrYlUn4alOCp3hA
-         mRpWNx+Kaeok3XnfSiSh3rsBlpHLzrFqnq20CPz/lshYqYQDi9FD6ayM8/ZhP1TqT6U/
-         A4/u7ZW+8gbNUb6pCE92GN6BXAm6Vx9pD7gtvF248bNLDuEq8mg0OSw1r6oSkzgfAmKe
-         uI8Q==
-X-Gm-Message-State: APjAAAVFHbA+554Wbmr0Z4rfQxOUmSIsneu79xt36E3XlS7nl/QdPZmG
-        V6nR2O3vqWq8COYR9U35hgc=
-X-Google-Smtp-Source: APXvYqy+7Z6gfnpT3mnTAV+sodDFCDiFZW/AFFICOD937anvPngOqwIbyzg/SUpnD3QWDvH/6lVr4w==
-X-Received: by 2002:aca:4309:: with SMTP id q9mr5441418oia.158.1579305723983;
-        Fri, 17 Jan 2020 16:02:03 -0800 (PST)
-Received: from localhost.localdomain (ip24-56-44-135.ph.ph.cox.net. [24.56.44.135])
-        by smtp.gmail.com with ESMTPSA id 17sm9423597oty.48.2020.01.17.16.02.01
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 17 Jan 2020 16:02:03 -0800 (PST)
-From:   Matthew Cover <werekraken@gmail.com>
-X-Google-Original-From: Matthew Cover <matthew.cover@stackpath.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Shuah Khan <shuah@kernel.org>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Quentin Monnet <quentin.monnet@netronome.com>,
-        Matthew Cover <matthew.cover@stackpath.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Andrey Ignatov <rdna@fb.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Jiong Wang <jiong.wang@netronome.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH bpf-next] bpf: add bpf_ct_lookup_{tcp,udp}() helpers
-Date:   Fri, 17 Jan 2020 17:01:28 -0700
-Message-Id: <20200118000128.15746-1-matthew.cover@stackpath.com>
-X-Mailer: git-send-email 2.15.2 (Apple Git-101.1)
+        id S1730385AbgARAHM convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 17 Jan 2020 19:07:12 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:2808 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730263AbgARAHL (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 17 Jan 2020 19:07:11 -0500
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 00HNqOoS000349
+        for <bpf@vger.kernel.org>; Fri, 17 Jan 2020 16:07:09 -0800
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2xka35ugny-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 17 Jan 2020 16:07:09 -0800
+Received: from intmgw002.06.prn3.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Fri, 17 Jan 2020 16:07:07 -0800
+Received: by devbig007.ftw2.facebook.com (Postfix, from userid 572438)
+        id D20DE760922; Fri, 17 Jan 2020 16:06:59 -0800 (PST)
+Smtp-Origin-Hostprefix: devbig
+From:   Alexei Starovoitov <ast@kernel.org>
+Smtp-Origin-Hostname: devbig007.ftw2.facebook.com
+To:     <davem@davemloft.net>
+CC:     <daniel@iogearbox.net>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <kernel-team@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next 1/3] bpf: Introduce dynamic program extensions
+Date:   Fri, 17 Jan 2020 16:06:55 -0800
+Message-ID: <20200118000657.2135859-2-ast@kernel.org>
+X-Mailer: git-send-email 2.23.0
+In-Reply-To: <20200118000657.2135859-1-ast@kernel.org>
+References: <20200118000657.2135859-1-ast@kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-01-17_05:2020-01-16,2020-01-17 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1034
+ phishscore=0 malwarescore=0 mlxlogscore=999 mlxscore=0 suspectscore=1
+ spamscore=0 lowpriorityscore=0 priorityscore=1501 impostorscore=0
+ adultscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-2001170179
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Allow looking up an nf_conn. This allows eBPF programs to leverage
-nf_conntrack state for similar purposes to socket state use cases,
-as provided by the socket lookup helpers. This is particularly
-useful when nf_conntrack state is locally available, but socket
-state is not.
+Introduce dynamic program extensions. The users can load additional BPF
+functions and replace global functions in previously loaded BPF programs while
+these programs are executing.
 
-Signed-off-by: Matthew Cover <matthew.cover@stackpath.com>
+Global functions are verified individually by the verifier based on their types only.
+Hence the global function in the new program which types match older function can
+safely replace that corresponding function.
+
+This new function/program is called 'an extension' of old program. At load time
+the verifier uses (attach_prog_fd, attach_btf_id) pair to identify the function
+to be replaced. The BPF program type is derived from the target program into
+extension program. Technically bpf_verifier_ops is copied from target program.
+The BPF_PROG_TYPE_EXT program type is a placeholder. It has empty verifier_ops.
+The extension program can call the same bpf helper functions as target program.
+Single BPF_PROG_TYPE_EXT type is used to extend XDP, SKB and all other program
+types. The verifier allows only one level of replacement. Meaning that the
+extension program cannot recursively extend an extension. That also means that
+the maximum stack size is increasing from 512 to 1024 bytes and maximum
+function nesting level from 8 to 16. The programs don't always consume that
+much. The stack usage is determined by the number of on-stack variables used by
+the program. The verifier could have enforced 512 limit for combined original
+plus extension program, but it makes for difficult user experience. The main
+use case for extensions is to provide generic mechanism to plug external
+programs into policy program or function call chaining.
+
+BPF trampoline is used to track both fentry/fexit and program extensions
+because both are using the same nop slot at the beginning of every BPF
+function. Attaching fentry/fexit to a function that was replaced is not
+allowed. The opposite is true as well. Replacing a function that currently
+being analyzed with fentry/fexit is not allowed. The executable page allocated
+by BPF trampoline is not used by program extensions. This inefficiency will be
+optimized in future patches.
+
+Function by function verification of global function supports scalars and
+pointer to context only. Hence program extensions are supported for such class
+of global functions only. In the future the verifier will be extended with
+support to pointers to structures, arrays with sizes, etc.
+
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 ---
- include/linux/bpf.h                                |  28 +++
- include/uapi/linux/bpf.h                           | 111 ++++++++-
- kernel/bpf/verifier.c                              | 105 +++++++-
- net/core/filter.c                                  | 277 +++++++++++++++++++++
- scripts/bpf_helpers_doc.py                         |   4 +
- tools/include/uapi/linux/bpf.h                     | 111 ++++++++-
- tools/testing/selftests/bpf/test_verifier.c        |  18 ++
- .../testing/selftests/bpf/verifier/ref_tracking.c  |  48 ++++
- 8 files changed, 694 insertions(+), 8 deletions(-)
+ include/linux/bpf.h       |  10 ++-
+ include/linux/bpf_types.h |   2 +
+ include/linux/btf.h       |   5 ++
+ include/uapi/linux/bpf.h  |   1 +
+ kernel/bpf/btf.c          | 152 +++++++++++++++++++++++++++++++++++++-
+ kernel/bpf/syscall.c      |  15 +++-
+ kernel/bpf/trampoline.c   |  38 +++++++++-
+ kernel/bpf/verifier.c     |  84 ++++++++++++++++-----
+ 8 files changed, 281 insertions(+), 26 deletions(-)
 
 diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 8e3b8f4..28d35c3 100644
+index 8e3b8f4ad183..05d16615054c 100644
 --- a/include/linux/bpf.h
 +++ b/include/linux/bpf.h
-@@ -239,6 +239,7 @@ enum bpf_arg_type {
- 	ARG_PTR_TO_LONG,	/* pointer to long */
- 	ARG_PTR_TO_SOCKET,	/* pointer to bpf_sock (fullsock) */
- 	ARG_PTR_TO_BTF_ID,	/* pointer to in-kernel struct */
-+	ARG_PTR_TO_NF_CONN,	/* pointer to bpf_nf_conn */
+@@ -465,7 +465,8 @@ void notrace __bpf_prog_exit(struct bpf_prog *prog, u64 start);
+ enum bpf_tramp_prog_type {
+ 	BPF_TRAMP_FENTRY,
+ 	BPF_TRAMP_FEXIT,
+-	BPF_TRAMP_MAX
++	BPF_TRAMP_MAX,
++	BPF_TRAMP_REPLACE, /* more than MAX */
  };
  
- /* type of values returned from helper functions */
-@@ -250,6 +251,7 @@ enum bpf_return_type {
- 	RET_PTR_TO_SOCKET_OR_NULL,	/* returns a pointer to a socket or NULL */
- 	RET_PTR_TO_TCP_SOCK_OR_NULL,	/* returns a pointer to a tcp_sock or NULL */
- 	RET_PTR_TO_SOCK_COMMON_OR_NULL,	/* returns a pointer to a sock_common or NULL */
-+	RET_PTR_TO_NF_CONN_OR_NULL,	/* returns a pointer to a nf_conn or NULL */
- };
+ struct bpf_trampoline {
+@@ -480,6 +481,11 @@ struct bpf_trampoline {
+ 		void *addr;
+ 		bool ftrace_managed;
+ 	} func;
++	/* if !NULL this is BPF_PROG_TYPE_EXT program that extends another BPF
++	 * program by replacing one of its functions. func.addr is the address
++	 * of the function it replaced.
++	 */
++	struct bpf_prog *extension_prog;
+ 	/* list of BPF programs using this trampoline */
+ 	struct hlist_head progs_hlist[BPF_TRAMP_MAX];
+ 	/* Number of attached programs. A counter per kind. */
+@@ -1107,6 +1113,8 @@ int btf_check_func_arg_match(struct bpf_verifier_env *env, int subprog,
+ 			     struct bpf_reg_state *regs);
+ int btf_prepare_func_args(struct bpf_verifier_env *env, int subprog,
+ 			  struct bpf_reg_state *reg);
++int btf_check_type_match(struct bpf_verifier_env *env, struct bpf_prog *prog,
++			 struct btf *btf, const struct btf_type *t);
  
- /* eBPF function prototype used by verifier to allow BPF_CALLs from eBPF programs
-@@ -316,6 +318,8 @@ enum bpf_reg_type {
- 	PTR_TO_TP_BUFFER,	 /* reg points to a writable raw tp's buffer */
- 	PTR_TO_XDP_SOCK,	 /* reg points to struct xdp_sock */
- 	PTR_TO_BTF_ID,		 /* reg points to kernel struct */
-+	PTR_TO_NF_CONN,		 /* reg points to struct nf_conn */
-+	PTR_TO_NF_CONN_OR_NULL,	 /* reg points to struct nf_conn or NULL */
- };
+ struct bpf_prog *bpf_prog_by_id(u32 id);
  
- /* The information passed from prog-specific *_is_valid_access
-@@ -1513,4 +1517,28 @@ enum bpf_text_poke_type {
- int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type t,
- 		       void *addr1, void *addr2);
+diff --git a/include/linux/bpf_types.h b/include/linux/bpf_types.h
+index 9f326e6ef885..c81d4ece79a4 100644
+--- a/include/linux/bpf_types.h
++++ b/include/linux/bpf_types.h
+@@ -68,6 +68,8 @@ BPF_PROG_TYPE(BPF_PROG_TYPE_SK_REUSEPORT, sk_reuseport,
+ #if defined(CONFIG_BPF_JIT)
+ BPF_PROG_TYPE(BPF_PROG_TYPE_STRUCT_OPS, bpf_struct_ops,
+ 	      void *, void *)
++BPF_PROG_TYPE(BPF_PROG_TYPE_EXT, bpf_extension,
++	      void *, void *)
+ #endif
  
-+#if IS_BUILTIN(CONFIG_NF_CONNTRACK)
-+bool bpf_nf_conn_is_valid_access(int off, int size, enum bpf_access_type type,
-+				 struct bpf_insn_access_aux *info);
-+
-+u32 bpf_nf_conn_convert_ctx_access(enum bpf_access_type type,
-+				   const struct bpf_insn *si,
-+				   struct bpf_insn *insn_buf,
-+				   struct bpf_prog *prog, u32 *target_size);
-+#else
-+bool bpf_nf_conn_is_valid_access(int off, int size, enum bpf_access_type type,
-+				 struct bpf_insn_access_aux *info)
+ BPF_MAP_TYPE(BPF_MAP_TYPE_ARRAY, array_map_ops)
+diff --git a/include/linux/btf.h b/include/linux/btf.h
+index 881e9b76ef49..5c1ea99b480f 100644
+--- a/include/linux/btf.h
++++ b/include/linux/btf.h
+@@ -107,6 +107,11 @@ static inline u16 btf_type_vlen(const struct btf_type *t)
+ 	return BTF_INFO_VLEN(t->info);
+ }
+ 
++static inline u16 btf_func_linkage(const struct btf_type *t)
 +{
-+	return false;
++	return BTF_INFO_VLEN(t->info);
 +}
 +
-+u32 bpf_nf_conn_convert_ctx_access(enum bpf_access_type type,
-+				   const struct bpf_insn *si,
-+				   struct bpf_insn *insn_buf,
-+				   struct bpf_prog *prog, u32 *target_size)
-+{
-+	return 0;
-+}
-+#endif /* CONFIG_NF_CONNTRACK */
-+
- #endif /* _LINUX_BPF_H */
+ static inline bool btf_type_kflag(const struct btf_type *t)
+ {
+ 	return BTF_INFO_KFLAG(t->info);
 diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 033d90a..12e16ad 100644
+index 033d90a2282d..e81628eb059c 100644
 --- a/include/uapi/linux/bpf.h
 +++ b/include/uapi/linux/bpf.h
-@@ -2885,6 +2885,88 @@ struct bpf_stack_build_id {
-  *		**-EPERM** if no permission to send the *sig*.
-  *
-  *		**-EAGAIN** if bpf program can try again.
-+ *
-+ * struct bpf_nf_conn *bpf_ct_lookup_tcp(void *ctx, struct bpf_nf_conntrack_tuple *tuple, u32 tuple_size, u64 netns, u64 flags)
-+ *	Description
-+ *		Look for TCP nf_conntrack entry matching *tuple*, optionally in
-+ *		a child network namespace *netns*. The return value must be
-+ *		checked, and if non-**NULL**, released via
-+ *		**bpf_ct_release**\ ().
-+ *
-+ *		The *ctx* should point to the context of the program, such as
-+ *		the skb or xdp_md (depending on the hook in use). This is used
-+ *		to determine the base network namespace for the lookup.
-+ *
-+ *		*tuple_size* must be one of:
-+ *
-+ *		**sizeof**\ (*tuple*\ **->ipv4**)
-+ *			Look for an IPv4 nf_conn.
-+ *		**sizeof**\ (*tuple*\ **->ipv6**)
-+ *			Look for an IPv6 nf_conn.
-+ *
-+ *		If the *netns* is a negative signed 32-bit integer, then the
-+ *		nf_conn lookup table in the netns associated with the *ctx* will
-+ *		will be used. For the TC hooks, this is the netns of the device
-+ *		in the skb. For XDP hooks, this is the netns of the device in
-+ *		the xdp_md. If *netns* is any other signed 32-bit value greater
-+ *		than or equal to zero then it specifies the ID of the netns
-+ *		relative to the netns associated with the *ctx*. *netns* values
-+ *		beyond the range of 32-bit integers are reserved for future
-+ *		use.
-+ *
-+ *		All values for *flags* are reserved for future usage, and must
-+ *		be left at zero.
-+ *
-+ *		This helper is available only if the kernel was compiled with
-+ *		**CONFIG_NF_CONNTRACK=y** configuration option.
-+ *	Return
-+ *		Pointer to **struct bpf_nf_conn**, or **NULL** in case of
-+ *		failure.
-+ *
-+ * struct bpf_nf_conn *bpf_ct_lookup_udp(void *ctx, struct bpf_nf_conntrack_tuple *tuple, u32 tuple_size, u64 netns, u64 flags)
-+ *	Description
-+ *		Look for UDP nf_conntrack entry matching *tuple*, optionally in
-+ *		a child network namespace *netns*. The return value must be
-+ *		checked, and if non-**NULL**, released via
-+ *		**bpf_ct_release**\ ().
-+ *
-+ *		The *ctx* should point to the context of the program, such as
-+ *		the skb or xdp_md (depending on the hook in use). This is used
-+ *		to determine the base network namespace for the lookup.
-+ *
-+ *		*tuple_size* must be one of:
-+ *
-+ *		**sizeof**\ (*tuple*\ **->ipv4**)
-+ *			Look for an IPv4 nf_conn.
-+ *		**sizeof**\ (*tuple*\ **->ipv6**)
-+ *			Look for an IPv6 nf_conn.
-+ *
-+ *		If the *netns* is a negative signed 32-bit integer, then the
-+ *		nf_conn lookup table in the netns associated with the *ctx* will
-+ *		will be used. For the TC hooks, this is the netns of the device
-+ *		in the skb. For XDP hooks, this is the netns of the device in
-+ *		the xdp_md. If *netns* is any other signed 32-bit value greater
-+ *		than or equal to zero then it specifies the ID of the netns
-+ *		relative to the netns associated with the *ctx*. *netns* values
-+ *		beyond the range of 32-bit integers are reserved for future
-+ *		use.
-+ *
-+ *		All values for *flags* are reserved for future usage, and must
-+ *		be left at zero.
-+ *
-+ *		This helper is available only if the kernel was compiled with
-+ *		**CONFIG_NF_CONNTRACK=y** configuration option.
-+ *	Return
-+ *		Pointer to **struct bpf_nf_conn**, or **NULL** in case of
-+ *		failure.
-+ *
-+ * int bpf_ct_release(struct bpf_nf_conn *ct)
-+ *	Description
-+ *		Release the reference held by *ct*. *ct* must be a
-+ *		non-**NULL** pointer that was returned from
-+ *		**bpf_ct_lookup_xxx**\ ().
-+ *	Return
-+ *		0 on success, or a negative error in case of failure.
-  */
- #define __BPF_FUNC_MAPPER(FN)		\
- 	FN(unspec),			\
-@@ -3004,7 +3086,10 @@ struct bpf_stack_build_id {
- 	FN(probe_read_user_str),	\
- 	FN(probe_read_kernel_str),	\
- 	FN(tcp_send_ack),		\
--	FN(send_signal_thread),
-+	FN(send_signal_thread),		\
-+	FN(ct_lookup_tcp),		\
-+	FN(ct_lookup_udp),		\
-+	FN(ct_release),
- 
- /* integer value in 'imm' field of BPF_CALL instruction selects which helper
-  * function eBPF program intends to call
-@@ -3278,6 +3363,30 @@ struct bpf_sock_tuple {
- 	};
+@@ -180,6 +180,7 @@ enum bpf_prog_type {
+ 	BPF_PROG_TYPE_CGROUP_SOCKOPT,
+ 	BPF_PROG_TYPE_TRACING,
+ 	BPF_PROG_TYPE_STRUCT_OPS,
++	BPF_PROG_TYPE_EXT,
  };
  
-+struct bpf_nf_conn {
-+	__u32 cpu;
-+	__u32 mark;
-+	__u32 status;
-+	__u32 timeout;
-+};
-+
-+struct bpf_nf_conntrack_tuple {
-+	union {
-+		struct {
-+			__be32 saddr;
-+			__be32 daddr;
-+			__be16 sport;
-+			__be16 dport;
-+		} ipv4;
-+		struct {
-+			__be32 saddr[4];
-+			__be32 daddr[4];
-+			__be16 sport;
-+			__be16 dport;
-+		} ipv6;
-+	};
-+};
-+
- struct bpf_xdp_sock {
- 	__u32 queue_id;
+ enum bpf_attach_type {
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 832b5d7fd892..32963b6d5a9c 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -276,6 +276,11 @@ static const char * const btf_kind_str[NR_BTF_KINDS] = {
+ 	[BTF_KIND_DATASEC]	= "DATASEC",
  };
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index ca17dccc..0ea0ee7 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -362,6 +362,11 @@ static const char *ltrim(const char *s)
- 	env->prev_linfo = linfo;
- }
  
-+static bool type_is_nf_ct_pointer(enum bpf_reg_type type)
++static const char *btf_type_str(const struct btf_type *t)
 +{
-+	return type == PTR_TO_NF_CONN;
++	return btf_kind_str[BTF_INFO_KIND(t->info)];
 +}
 +
- static bool type_is_pkt_pointer(enum bpf_reg_type type)
- {
- 	return type == PTR_TO_PACKET ||
-@@ -381,7 +386,8 @@ static bool reg_type_may_be_null(enum bpf_reg_type type)
- 	return type == PTR_TO_MAP_VALUE_OR_NULL ||
- 	       type == PTR_TO_SOCKET_OR_NULL ||
- 	       type == PTR_TO_SOCK_COMMON_OR_NULL ||
--	       type == PTR_TO_TCP_SOCK_OR_NULL;
-+	       type == PTR_TO_TCP_SOCK_OR_NULL ||
-+	       type == PTR_TO_NF_CONN_OR_NULL;
- }
- 
- static bool reg_may_point_to_spin_lock(const struct bpf_reg_state *reg)
-@@ -395,12 +401,15 @@ static bool reg_type_may_be_refcounted_or_null(enum bpf_reg_type type)
- 	return type == PTR_TO_SOCKET ||
- 		type == PTR_TO_SOCKET_OR_NULL ||
- 		type == PTR_TO_TCP_SOCK ||
--		type == PTR_TO_TCP_SOCK_OR_NULL;
-+		type == PTR_TO_TCP_SOCK_OR_NULL ||
-+		type == PTR_TO_NF_CONN ||
-+		type == PTR_TO_NF_CONN_OR_NULL;
- }
- 
- static bool arg_type_may_be_refcounted(enum bpf_arg_type type)
- {
--	return type == ARG_PTR_TO_SOCK_COMMON;
-+	return type == ARG_PTR_TO_SOCK_COMMON ||
-+		type == ARG_PTR_TO_NF_CONN;
- }
- 
- /* Determine whether the function releases some resources allocated by another
-@@ -409,14 +418,17 @@ static bool arg_type_may_be_refcounted(enum bpf_arg_type type)
-  */
- static bool is_release_function(enum bpf_func_id func_id)
- {
--	return func_id == BPF_FUNC_sk_release;
-+	return func_id == BPF_FUNC_sk_release ||
-+		func_id == BPF_FUNC_ct_release;
- }
- 
- static bool is_acquire_function(enum bpf_func_id func_id)
- {
- 	return func_id == BPF_FUNC_sk_lookup_tcp ||
- 		func_id == BPF_FUNC_sk_lookup_udp ||
--		func_id == BPF_FUNC_skc_lookup_tcp;
-+		func_id == BPF_FUNC_skc_lookup_tcp ||
-+		func_id == BPF_FUNC_ct_lookup_tcp ||
-+		func_id == BPF_FUNC_ct_lookup_udp;
- }
- 
- static bool is_ptr_cast_function(enum bpf_func_id func_id)
-@@ -447,6 +459,8 @@ static bool is_ptr_cast_function(enum bpf_func_id func_id)
- 	[PTR_TO_TP_BUFFER]	= "tp_buffer",
- 	[PTR_TO_XDP_SOCK]	= "xdp_sock",
- 	[PTR_TO_BTF_ID]		= "ptr_",
-+	[PTR_TO_NF_CONN]	= "nf_conn",
-+	[PTR_TO_NF_CONN_OR_NULL] = "nf_conn_or_null",
- };
- 
- static char slot_type_char[] = {
-@@ -1913,6 +1927,8 @@ static bool is_spillable_regtype(enum bpf_reg_type type)
- 	case PTR_TO_TCP_SOCK_OR_NULL:
- 	case PTR_TO_XDP_SOCK:
- 	case PTR_TO_BTF_ID:
-+	case PTR_TO_NF_CONN:
-+	case PTR_TO_NF_CONN_OR_NULL:
- 		return true;
- 	default:
- 		return false;
-@@ -2440,6 +2456,35 @@ static int check_flow_keys_access(struct bpf_verifier_env *env, int off,
+ struct btf_kind_operations {
+ 	s32 (*check_meta)(struct btf_verifier_env *env,
+ 			  const struct btf_type *t,
+@@ -4115,6 +4120,148 @@ int btf_distill_func_proto(struct bpf_verifier_log *log,
  	return 0;
  }
  
-+static int check_nf_ct_access(struct bpf_verifier_env *env, int insn_idx,
-+			     u32 regno, int off, int size,
-+			     enum bpf_access_type t)
++/* Compare BTFs of two functions assuming only scalars and pointers to context.
++ * t1 points to BTF_KIND_FUNC in btf1
++ * t2 points to BTF_KIND_FUNC in btf2
++ * Returns:
++ * EINVAL - function prototype mismatch
++ * EFAULT - verifier bug
++ * 0 - 99% match. The last 1% is validated by the verifier.
++ */
++int btf_check_func_type_match(struct bpf_verifier_log *log,
++			      struct btf *btf1, const struct btf_type *t1,
++			      struct btf *btf2, const struct btf_type *t2)
 +{
-+	struct bpf_reg_state *regs = cur_regs(env);
-+	struct bpf_reg_state *reg = &regs[regno];
-+	struct bpf_insn_access_aux info = {};
-+	bool valid;
++	const struct btf_param *args1, *args2;
++	const char *fn1, *fn2, *s1, *s2;
++	u32 nargs1, nargs2, i;
 +
-+	switch (reg->type) {
-+	case PTR_TO_NF_CONN:
-+		valid = bpf_nf_conn_is_valid_access(off, size, t, &info);
-+		break;
-+	default:
-+		valid = false;
++	fn1 = btf_name_by_offset(btf1, t1->name_off);
++	fn2 = btf_name_by_offset(btf2, t2->name_off);
++
++	if (btf_func_linkage(t1) != BTF_FUNC_GLOBAL) {
++		bpf_log(log, "%s() is not a global function\n", fn1);
++		return -EINVAL;
++	}
++	if (btf_func_linkage(t2) != BTF_FUNC_GLOBAL) {
++		bpf_log(log, "%s() is not a global function\n", fn2);
++		return -EINVAL;
 +	}
 +
-+	if (valid) {
-+		env->insn_aux_data[insn_idx].ctx_field_size =
-+			info.ctx_field_size;
-+		return 0;
++	t1 = btf_type_by_id(btf1, t1->type);
++	if (!t1 || !btf_type_is_func_proto(t1))
++		return -EFAULT;
++	t2 = btf_type_by_id(btf2, t2->type);
++	if (!t2 || !btf_type_is_func_proto(t2))
++		return -EFAULT;
++
++	args1 = (const struct btf_param *)(t1 + 1);
++	nargs1 = btf_type_vlen(t1);
++	args2 = (const struct btf_param *)(t2 + 1);
++	nargs2 = btf_type_vlen(t2);
++
++	if (nargs1 != nargs2) {
++		bpf_log(log, "%s() has %d args while %s() has %d args\n",
++			fn1, nargs1, fn2, nargs2);
++		return -EINVAL;
 +	}
 +
-+	verbose(env, "R%d invalid %s access off=%d size=%d\n",
-+		regno, reg_type_str[reg->type], off, size);
++	t1 = btf_type_skip_modifiers(btf1, t1->type, NULL);
++	t2 = btf_type_skip_modifiers(btf2, t2->type, NULL);
++	if (t1->info != t2->info) {
++		bpf_log(log,
++			"Return type %s of %s() doesn't match type %s of %s()\n",
++			btf_type_str(t1), fn1,
++			btf_type_str(t2), fn2);
++		return -EINVAL;
++	}
 +
-+	return -EACCES;
-+}
++	for (i = 0; i < nargs1; i++) {
++		t1 = btf_type_skip_modifiers(btf1, args1[i].type, NULL);
++		t2 = btf_type_skip_modifiers(btf2, args2[i].type, NULL);
 +
- static int check_sock_access(struct bpf_verifier_env *env, int insn_idx,
- 			     u32 regno, int off, int size,
- 			     enum bpf_access_type t)
-@@ -2511,6 +2556,13 @@ static bool is_ctx_reg(struct bpf_verifier_env *env, int regno)
- 	return reg->type == PTR_TO_CTX;
- }
- 
-+static bool is_nf_ct_reg(struct bpf_verifier_env *env, int regno)
-+{
-+	const struct bpf_reg_state *reg = reg_state(env, regno);
-+
-+	return type_is_nf_ct_pointer(reg->type);
-+}
-+
- static bool is_sk_reg(struct bpf_verifier_env *env, int regno)
- {
- 	const struct bpf_reg_state *reg = reg_state(env, regno);
-@@ -2635,6 +2687,9 @@ static int check_ptr_alignment(struct bpf_verifier_env *env,
- 	case PTR_TO_XDP_SOCK:
- 		pointer_desc = "xdp_sock ";
- 		break;
-+	case PTR_TO_NF_CONN:
-+		pointer_desc = "nf_conn ";
-+		break;
- 	default:
- 		break;
- 	}
-@@ -3050,6 +3105,15 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
- 		err = check_sock_access(env, insn_idx, regno, off, size, t);
- 		if (!err && value_regno >= 0)
- 			mark_reg_unknown(env, regs, value_regno);
-+	} else if (type_is_nf_ct_pointer(reg->type)) {
-+		if (t == BPF_WRITE) {
-+			verbose(env, "R%d cannot write into %s\n",
-+				regno, reg_type_str[reg->type]);
-+			return -EACCES;
++		if (t1->info != t2->info) {
++			bpf_log(log, "arg%d in %s() is %s while %s() has %s\n",
++				i, fn1, btf_type_str(t1),
++				fn2, btf_type_str(t2));
++			return -EINVAL;
 +		}
-+		err = check_nf_ct_access(env, insn_idx, regno, off, size, t);
-+		if (!err && value_regno >= 0)
-+			mark_reg_unknown(env, regs, value_regno);
- 	} else if (reg->type == PTR_TO_TP_BUFFER) {
- 		err = check_tp_buffer_access(env, reg, regno, off, size);
- 		if (!err && t == BPF_READ && value_regno >= 0)
-@@ -3099,7 +3163,8 @@ static int check_xadd(struct bpf_verifier_env *env, int insn_idx, struct bpf_ins
- 	if (is_ctx_reg(env, insn->dst_reg) ||
- 	    is_pkt_reg(env, insn->dst_reg) ||
- 	    is_flow_key_reg(env, insn->dst_reg) ||
--	    is_sk_reg(env, insn->dst_reg)) {
-+	    is_sk_reg(env, insn->dst_reg) ||
-+	    is_nf_ct_reg(env, insn->dst_reg)) {
- 		verbose(env, "BPF_XADD stores into R%d %s is not allowed\n",
- 			insn->dst_reg,
- 			reg_type_str[reg_state(env, insn->dst_reg)->type]);
-@@ -3501,6 +3566,19 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 regno,
- 				regno);
- 			return -EACCES;
- 		}
-+	} else if (arg_type == ARG_PTR_TO_NF_CONN) {
-+		expected_type = PTR_TO_NF_CONN;
-+		if (!type_is_nf_ct_pointer(type))
-+			goto err_type;
-+		if (reg->ref_obj_id) {
-+			if (meta->ref_obj_id) {
-+				verbose(env, "verifier internal error: more than one arg with ref_obj_id R%d %u %u\n",
-+					regno, reg->ref_obj_id,
-+					meta->ref_obj_id);
-+				return -EFAULT;
-+			}
-+			meta->ref_obj_id = reg->ref_obj_id;
++		if (btf_type_has_size(t1) && t1->size != t2->size) {
++			bpf_log(log,
++				"arg%d in %s() has size %d while %s() has %d\n",
++				i, fn1, t1->size,
++				fn2, t2->size);
++			return -EINVAL;
 +		}
- 	} else if (arg_type == ARG_PTR_TO_SPIN_LOCK) {
- 		if (meta->func_id == BPF_FUNC_spin_lock) {
- 			if (process_spin_lock(env, regno, true))
-@@ -4368,6 +4446,10 @@ static int check_helper_call(struct bpf_verifier_env *env, int func_id, int insn
- 		mark_reg_known_zero(env, regs, BPF_REG_0);
- 		regs[BPF_REG_0].type = PTR_TO_TCP_SOCK_OR_NULL;
- 		regs[BPF_REG_0].id = ++env->id_gen;
-+	} else if (fn->ret_type == RET_PTR_TO_NF_CONN_OR_NULL) {
-+		mark_reg_known_zero(env, regs, BPF_REG_0);
-+		regs[BPF_REG_0].type = PTR_TO_NF_CONN_OR_NULL;
-+		regs[BPF_REG_0].id = ++env->id_gen;
- 	} else {
- 		verbose(env, "unknown return type %d of func %s#%d\n",
- 			fn->ret_type, func_id_name(func_id), func_id);
-@@ -4649,6 +4731,8 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
- 	case PTR_TO_TCP_SOCK:
- 	case PTR_TO_TCP_SOCK_OR_NULL:
- 	case PTR_TO_XDP_SOCK:
-+	case PTR_TO_NF_CONN:
-+	case PTR_TO_NF_CONN_OR_NULL:
- 		verbose(env, "R%d pointer arithmetic on %s prohibited\n",
- 			dst, reg_type_str[ptr_reg->type]);
- 		return -EACCES;
-@@ -5915,6 +5999,8 @@ static void mark_ptr_or_null_reg(struct bpf_func_state *state,
- 			reg->type = PTR_TO_SOCK_COMMON;
- 		} else if (reg->type == PTR_TO_TCP_SOCK_OR_NULL) {
- 			reg->type = PTR_TO_TCP_SOCK;
-+		} else if (reg->type == PTR_TO_NF_CONN_OR_NULL) {
-+			reg->type = PTR_TO_NF_CONN;
- 		}
- 		if (is_null) {
- 			/* We don't need id and ref_obj_id from this point
-@@ -7232,6 +7318,8 @@ static bool regsafe(struct bpf_reg_state *rold, struct bpf_reg_state *rcur,
- 	case PTR_TO_TCP_SOCK:
- 	case PTR_TO_TCP_SOCK_OR_NULL:
- 	case PTR_TO_XDP_SOCK:
-+	case PTR_TO_NF_CONN:
-+	case PTR_TO_NF_CONN_OR_NULL:
- 		/* Only valid matches are exact, which memcmp() above
- 		 * would have accepted
- 		 */
-@@ -7760,6 +7848,8 @@ static bool reg_type_mismatch_ok(enum bpf_reg_type type)
- 	case PTR_TO_TCP_SOCK_OR_NULL:
- 	case PTR_TO_XDP_SOCK:
- 	case PTR_TO_BTF_ID:
-+	case PTR_TO_NF_CONN:
-+	case PTR_TO_NF_CONN_OR_NULL:
- 		return false;
- 	default:
- 		return true;
-@@ -8867,6 +8957,9 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
- 				return -EINVAL;
- 			}
- 			continue;
-+		case PTR_TO_NF_CONN:
-+			convert_ctx_access = bpf_nf_conn_convert_ctx_access;
-+			break;
- 		default:
- 			continue;
- 		}
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 17de674..39ba965 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -74,6 +74,12 @@
- #include <net/ipv6_stubs.h>
- #include <net/bpf_sk_storage.h>
- 
-+#if IS_BUILTIN(CONFIG_NF_CONNTRACK)
-+#include <net/netfilter/nf_conntrack_tuple.h>
-+#include <net/netfilter/nf_conntrack_core.h>
-+#include <net/netfilter/nf_conntrack.h>
-+#endif
 +
- /**
-  *	sk_filter_trim_cap - run a packet through a socket filter
-  *	@sk: sock associated with &sk_buff
-@@ -5122,6 +5128,253 @@ static void bpf_update_srh_state(struct sk_buff *skb)
- };
- #endif /* CONFIG_IPV6_SEG6_BPF */
- 
-+#if IS_BUILTIN(CONFIG_NF_CONNTRACK)
-+bool bpf_nf_conn_is_valid_access(int off, int size, enum bpf_access_type type,
-+				 struct bpf_insn_access_aux *info)
-+{
-+	if (off < 0 || off >= offsetofend(struct bpf_nf_conn,
-+					  timeout))
-+		return false;
-+
-+	if (off % size != 0)
-+		return false;
-+
-+	return size == sizeof(__u32);
-+}
-+
-+u32 bpf_nf_conn_convert_ctx_access(enum bpf_access_type type,
-+				   const struct bpf_insn *si,
-+				   struct bpf_insn *insn_buf,
-+				   struct bpf_prog *prog, u32 *target_size)
-+{
-+	struct bpf_insn *insn = insn_buf;
-+
-+	switch (si->off) {
-+	case offsetof(struct bpf_nf_conn, cpu):
-+		BUILD_BUG_ON(FIELD_SIZEOF(struct nf_conn, cpu) != 2);
-+
-+		*insn++ = BPF_LDX_MEM(BPF_H, si->dst_reg, si->src_reg,
-+				      offsetof(struct nf_conn, cpu));
-+
-+		break;
-+
-+	case offsetof(struct bpf_nf_conn, mark):
-+#if IS_ENABLED(CONFIG_NF_CONNTRACK_MARK)
-+		BUILD_BUG_ON(FIELD_SIZEOF(struct nf_conn, mark) != 4);
-+
-+		*insn++ = BPF_LDX_MEM(BPF_W, si->dst_reg, si->src_reg,
-+				      offsetof(struct nf_conn, mark));
-+#else
-+		*target_size = 4;
-+		*insn++ = BPF_MOV64_IMM(si->dst_reg, 0);
-+#endif
-+		break;
-+
-+	case offsetof(struct bpf_nf_conn, status):
-+		BUILD_BUG_ON(FIELD_SIZEOF(struct nf_conn, status) < 4 ||
-+			     __IPS_MAX_BIT > 32);
-+
-+		*insn++ = BPF_LDX_MEM(BPF_W, si->dst_reg, si->src_reg,
-+				      offsetof(struct nf_conn, status));
-+
-+		break;
-+
-+	case offsetof(struct bpf_nf_conn, timeout):
-+		BUILD_BUG_ON(FIELD_SIZEOF(struct nf_conn, timeout) != 4);
-+
-+		*insn++ = BPF_LDX_MEM(BPF_W, si->dst_reg, si->src_reg,
-+				      offsetof(struct nf_conn, timeout));
-+
-+		break;
++		/* global functions are validated with scalars and pointers
++		 * to context only. And only global functions can be replaced.
++		 * Hence type check only those types.
++		 */
++		if (btf_type_is_int(t1) || btf_type_is_enum(t1))
++			continue;
++		if (!btf_type_is_ptr(t1)) {
++			bpf_log(log,
++				"arg%d in %s() has unrecognized type\n",
++				i, fn1);
++			return -EINVAL;
++		}
++		t1 = btf_type_skip_modifiers(btf1, t1->type, NULL);
++		t2 = btf_type_skip_modifiers(btf2, t2->type, NULL);
++		if (!btf_type_is_struct(t1)) {
++			bpf_log(log,
++				"arg%d in %s() is not a pointer to context\n",
++				i, fn1);
++			return -EINVAL;
++		}
++		if (!btf_type_is_struct(t2)) {
++			bpf_log(log,
++				"arg%d in %s() is not a pointer to context\n",
++				i, fn2);
++			return -EINVAL;
++		}
++		/* This is an optional check to make program writing easier.
++		 * Compare names of structs and report an error to the user.
++		 * btf_prepare_func_args() already checked that t2 struct
++		 * is a context type. btf_prepare_func_args() will check
++		 * later that t1 struct is a context type as well.
++		 */
++		s1 = btf_name_by_offset(btf1, t1->name_off);
++		s2 = btf_name_by_offset(btf2, t2->name_off);
++		if (strcmp(s1, s2)) {
++			bpf_log(log,
++				"arg%d %s(struct %s *) doesn't match %s(struct %s *)\n",
++				i, fn1, s1, fn2, s2);
++			return -EINVAL;
++		}
 +	}
-+
-+	return insn - insn_buf;
-+}
-+
-+static struct nf_conn *
-+ct_lookup(struct net *net, struct bpf_nf_conntrack_tuple *tuple,
-+	  u8 family, u8 proto)
-+{
-+	struct nf_conntrack_tuple_hash *hash;
-+	struct nf_conntrack_tuple tup;
-+	struct nf_conn *ct = NULL;
-+
-+	memset(&tup, 0, sizeof(tup));
-+
-+	tup.dst.protonum = proto;
-+	tup.src.l3num = family;
-+
-+	if (family == AF_INET) {
-+		tup.src.u3.ip = tuple->ipv4.saddr;
-+		tup.dst.u3.ip = tuple->ipv4.daddr;
-+		tup.src.u.tcp.port = tuple->ipv4.sport;
-+		tup.dst.u.tcp.port = tuple->ipv4.dport;
-+#if IS_ENABLED(CONFIG_IPV6)
-+	} else {
-+		memcpy(tup.src.u3.ip6, tuple->ipv6.saddr, sizeof(tup.src.u3.ip6));
-+		memcpy(tup.dst.u3.ip6, tuple->ipv6.daddr, sizeof(tup.dst.u3.ip6));
-+		tup.src.u.tcp.port = tuple->ipv6.sport;
-+		tup.dst.u.tcp.port = tuple->ipv6.dport;
-+#endif
-+	}
-+
-+	hash = nf_conntrack_find_get(net, &nf_ct_zone_dflt, &tup);
-+	if (!hash)
-+		goto out;
-+	ct = nf_ct_tuplehash_to_ctrack(hash);
-+
-+out:
-+	return ct;
-+}
-+
-+static struct nf_conn *
-+__bpf_ct_lookup(struct sk_buff *skb, struct bpf_nf_conntrack_tuple *tuple, u32 len,
-+		struct net *caller_net, u8 proto, u64 netns_id, u64 flags)
-+{
-+	struct nf_conn *ct = NULL;
-+	u8 family = AF_UNSPEC;
-+	struct net *net;
-+
-+	if (len == sizeof(tuple->ipv4))
-+		family = AF_INET;
-+	else if (len == sizeof(tuple->ipv6))
-+		family = AF_INET6;
-+	else
-+		goto out;
-+
-+	if (unlikely(family == AF_UNSPEC || flags ||
-+		     !((s32)netns_id < 0 || netns_id <= S32_MAX)))
-+		goto out;
-+
-+	if ((s32)netns_id < 0) {
-+		net = caller_net;
-+		ct = ct_lookup(net, tuple, family, proto);
-+	} else {
-+		net = get_net_ns_by_id(caller_net, netns_id);
-+		if (unlikely(!net))
-+			goto out;
-+		ct = ct_lookup(net, tuple, family, proto);
-+		put_net(net);
-+	}
-+
-+out:
-+	return ct;
-+}
-+
-+static struct nf_conn *
-+bpf_ct_lookup(struct sk_buff *skb, struct bpf_nf_conntrack_tuple *tuple, u32 len,
-+	      u8 proto, u64 netns_id, u64 flags)
-+{
-+	struct net *caller_net;
-+
-+	if (skb->dev) {
-+		caller_net = dev_net(skb->dev);
-+	} else {
-+		caller_net = sock_net(skb->sk);
-+	}
-+
-+	return __bpf_ct_lookup(skb, tuple, len, caller_net, proto,
-+			       netns_id, flags);
-+}
-+
-+BPF_CALL_5(bpf_ct_lookup_tcp, struct sk_buff *, skb,
-+	   struct bpf_nf_conntrack_tuple *, tuple, u32, len, u64, netns_id,
-+	   u64, flags)
-+{
-+	return (unsigned long)bpf_ct_lookup(skb, tuple, len, IPPROTO_TCP,
-+					     netns_id, flags);
-+}
-+
-+static const struct bpf_func_proto bpf_ct_lookup_tcp_proto = {
-+	.func		= bpf_ct_lookup_tcp,
-+	.gpl_only	= true,
-+	.pkt_access	= true,
-+	.ret_type	= RET_PTR_TO_NF_CONN_OR_NULL,
-+	.arg1_type	= ARG_PTR_TO_CTX,
-+	.arg2_type	= ARG_PTR_TO_MEM,
-+	.arg3_type	= ARG_CONST_SIZE,
-+	.arg4_type	= ARG_ANYTHING,
-+	.arg5_type	= ARG_ANYTHING,
-+};
-+
-+BPF_CALL_5(bpf_xdp_ct_lookup_tcp, struct xdp_buff *, ctx,
-+	   struct bpf_nf_conntrack_tuple *, tuple, u32, len, u32, netns_id,
-+	   u64, flags)
-+{
-+	struct net *caller_net = dev_net(ctx->rxq->dev);
-+
-+	return (unsigned long)__bpf_ct_lookup(NULL, tuple, len, caller_net,
-+					      IPPROTO_TCP, netns_id, flags);
-+}
-+
-+static const struct bpf_func_proto bpf_xdp_ct_lookup_tcp_proto = {
-+	.func		= bpf_xdp_ct_lookup_tcp,
-+	.gpl_only	= true,
-+	.pkt_access	= true,
-+	.ret_type	= RET_PTR_TO_NF_CONN_OR_NULL,
-+	.arg1_type	= ARG_PTR_TO_CTX,
-+	.arg2_type	= ARG_PTR_TO_MEM,
-+	.arg3_type	= ARG_CONST_SIZE,
-+	.arg4_type	= ARG_ANYTHING,
-+	.arg5_type	= ARG_ANYTHING,
-+};
-+
-+BPF_CALL_5(bpf_ct_lookup_udp, struct sk_buff *, skb,
-+	   struct bpf_nf_conntrack_tuple *, tuple, u32, len, u64, netns_id,
-+	   u64, flags)
-+{
-+	return (unsigned long)bpf_ct_lookup(skb, tuple, len, IPPROTO_UDP,
-+					     netns_id, flags);
-+}
-+
-+static const struct bpf_func_proto bpf_ct_lookup_udp_proto = {
-+	.func		= bpf_ct_lookup_udp,
-+	.gpl_only	= true,
-+	.pkt_access	= true,
-+	.ret_type	= RET_PTR_TO_NF_CONN_OR_NULL,
-+	.arg1_type	= ARG_PTR_TO_CTX,
-+	.arg2_type	= ARG_PTR_TO_MEM,
-+	.arg3_type	= ARG_CONST_SIZE,
-+	.arg4_type	= ARG_ANYTHING,
-+	.arg5_type	= ARG_ANYTHING,
-+};
-+
-+BPF_CALL_5(bpf_xdp_ct_lookup_udp, struct xdp_buff *, ctx,
-+	   struct bpf_nf_conntrack_tuple *, tuple, u32, len, u32, netns_id,
-+	   u64, flags)
-+{
-+	struct net *caller_net = dev_net(ctx->rxq->dev);
-+
-+	return (unsigned long)__bpf_ct_lookup(NULL, tuple, len, caller_net,
-+					      IPPROTO_UDP, netns_id, flags);
-+}
-+
-+static const struct bpf_func_proto bpf_xdp_ct_lookup_udp_proto = {
-+	.func		= bpf_xdp_ct_lookup_udp,
-+	.gpl_only	= true,
-+	.pkt_access	= true,
-+	.ret_type	= RET_PTR_TO_NF_CONN_OR_NULL,
-+	.arg1_type	= ARG_PTR_TO_CTX,
-+	.arg2_type	= ARG_PTR_TO_MEM,
-+	.arg3_type	= ARG_CONST_SIZE,
-+	.arg4_type	= ARG_ANYTHING,
-+	.arg5_type	= ARG_ANYTHING,
-+};
-+
-+BPF_CALL_1(bpf_ct_release, struct nf_conn *, ct)
-+{
-+	nf_conntrack_put(&ct->ct_general);
 +	return 0;
 +}
 +
-+static const struct bpf_func_proto bpf_ct_release_proto = {
-+	.func		= bpf_ct_release,
-+	.gpl_only	= true,
-+	.ret_type	= RET_INTEGER,
-+	.arg1_type	= ARG_PTR_TO_NF_CONN,
-+};
-+#endif
++/* Compare BTFs of given program with BTF of target program */
++int btf_check_type_match(struct bpf_verifier_env *env, struct bpf_prog *prog,
++			 struct btf *btf2, const struct btf_type *t2)
++{
++	struct btf *btf1 = prog->aux->btf;
++	const struct btf_type *t1;
++	u32 btf_id = 0;
 +
- #ifdef CONFIG_INET
- static struct sock *sk_lookup(struct net *net, struct bpf_sock_tuple *tuple,
- 			      int dif, int sdif, u8 family, u8 proto)
-@@ -6139,6 +6392,14 @@ bool bpf_helper_changes_pkt_data(void *func)
- 	case BPF_FUNC_tcp_gen_syncookie:
- 		return &bpf_tcp_gen_syncookie_proto;
- #endif
-+#if IS_BUILTIN(CONFIG_NF_CONNTRACK)
-+	case BPF_FUNC_ct_lookup_tcp:
-+		return &bpf_ct_lookup_tcp_proto;
-+	case BPF_FUNC_ct_lookup_udp:
-+		return &bpf_ct_lookup_udp_proto;
-+	case BPF_FUNC_ct_release:
-+		return &bpf_ct_release_proto;
-+#endif
- 	default:
- 		return bpf_base_func_proto(func_id);
++	if (!prog->aux->func_info) {
++		bpf_log(&env->log, "Program extension requires BTF\n");
++		return -EINVAL;
++	}
++
++	btf_id = prog->aux->func_info[0].type_id;
++	if (!btf_id)
++		return -EFAULT;
++
++	t1 = btf_type_by_id(btf1, btf_id);
++	if (!t1 || !btf_type_is_func(t1))
++		return -EFAULT;
++
++	return btf_check_func_type_match(&env->log, btf1, t1, btf2, t2);
++}
++
+ /* Compare BTF of a function with given bpf_reg_state.
+  * Returns:
+  * EFAULT - there is a verifier bug. Abort verification.
+@@ -4224,6 +4371,7 @@ int btf_prepare_func_args(struct bpf_verifier_env *env, int subprog,
+ {
+ 	struct bpf_verifier_log *log = &env->log;
+ 	struct bpf_prog *prog = env->prog;
++	enum bpf_prog_type prog_type = prog->type;
+ 	struct btf *btf = prog->aux->btf;
+ 	const struct btf_param *args;
+ 	const struct btf_type *t;
+@@ -4261,6 +4409,8 @@ int btf_prepare_func_args(struct bpf_verifier_env *env, int subprog,
+ 		bpf_log(log, "Verifier bug in function %s()\n", tname);
+ 		return -EFAULT;
  	}
-@@ -6180,6 +6441,14 @@ bool bpf_helper_changes_pkt_data(void *func)
- 	case BPF_FUNC_tcp_gen_syncookie:
- 		return &bpf_tcp_gen_syncookie_proto;
- #endif
-+#if IS_BUILTIN(CONFIG_NF_CONNTRACK)
-+	case BPF_FUNC_ct_lookup_tcp:
-+		return &bpf_xdp_ct_lookup_tcp_proto;
-+	case BPF_FUNC_ct_lookup_udp:
-+		return &bpf_xdp_ct_lookup_udp_proto;
-+	case BPF_FUNC_ct_release:
-+		return &bpf_ct_release_proto;
-+#endif
- 	default:
- 		return bpf_base_func_proto(func_id);
++	if (prog_type == BPF_PROG_TYPE_EXT)
++		prog_type = prog->aux->linked_prog->type;
+ 
+ 	t = btf_type_by_id(btf, t->type);
+ 	if (!t || !btf_type_is_func_proto(t)) {
+@@ -4296,7 +4446,7 @@ int btf_prepare_func_args(struct bpf_verifier_env *env, int subprog,
+ 			continue;
+ 		}
+ 		if (btf_type_is_ptr(t) &&
+-		    btf_get_prog_ctx_type(log, btf, t, prog->type, i)) {
++		    btf_get_prog_ctx_type(log, btf, t, prog_type, i)) {
+ 			reg[i + 1].type = PTR_TO_CTX;
+ 			continue;
+ 		}
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index c26a71460f02..4aaea62b33b9 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -1924,13 +1924,15 @@ bpf_prog_load_check_attach(enum bpf_prog_type prog_type,
+ 		switch (prog_type) {
+ 		case BPF_PROG_TYPE_TRACING:
+ 		case BPF_PROG_TYPE_STRUCT_OPS:
++		case BPF_PROG_TYPE_EXT:
+ 			break;
+ 		default:
+ 			return -EINVAL;
+ 		}
  	}
-@@ -6284,6 +6553,14 @@ bool bpf_helper_changes_pkt_data(void *func)
- 	case BPF_FUNC_skc_lookup_tcp:
- 		return &bpf_skc_lookup_tcp_proto;
- #endif
-+#if IS_BUILTIN(CONFIG_NF_CONNTRACK)
-+	case BPF_FUNC_ct_lookup_tcp:
-+		return &bpf_ct_lookup_tcp_proto;
-+	case BPF_FUNC_ct_lookup_udp:
-+		return &bpf_ct_lookup_udp_proto;
-+	case BPF_FUNC_ct_release:
-+		return &bpf_ct_release_proto;
-+#endif
+ 
+-	if (prog_fd && prog_type != BPF_PROG_TYPE_TRACING)
++	if (prog_fd && prog_type != BPF_PROG_TYPE_TRACING &&
++	    prog_type != BPF_PROG_TYPE_EXT)
+ 		return -EINVAL;
+ 
+ 	switch (prog_type) {
+@@ -1973,6 +1975,10 @@ bpf_prog_load_check_attach(enum bpf_prog_type prog_type,
+ 		default:
+ 			return -EINVAL;
+ 		}
++	case BPF_PROG_TYPE_EXT:
++		if (expected_attach_type)
++			return -EINVAL;
++		/* fallthrough */
  	default:
- 		return bpf_base_func_proto(func_id);
+ 		return 0;
  	}
-diff --git a/scripts/bpf_helpers_doc.py b/scripts/bpf_helpers_doc.py
-index 90baf7d..26f0c2a 100755
---- a/scripts/bpf_helpers_doc.py
-+++ b/scripts/bpf_helpers_doc.py
-@@ -398,6 +398,8 @@ class PrinterHelpers(Printer):
+@@ -2175,7 +2181,8 @@ static int bpf_tracing_prog_attach(struct bpf_prog *prog)
+ 	int tr_fd, err;
  
-     type_fwds = [
-             'struct bpf_fib_lookup',
-+            'struct bpf_nf_conn',
-+            'struct bpf_nf_conntrack_tuple',
-             'struct bpf_perf_event_data',
-             'struct bpf_perf_event_value',
-             'struct bpf_sock',
-@@ -433,6 +435,8 @@ class PrinterHelpers(Printer):
-             '__wsum',
+ 	if (prog->expected_attach_type != BPF_TRACE_FENTRY &&
+-	    prog->expected_attach_type != BPF_TRACE_FEXIT) {
++	    prog->expected_attach_type != BPF_TRACE_FEXIT &&
++	    prog->type != BPF_PROG_TYPE_EXT) {
+ 		err = -EINVAL;
+ 		goto out_put_prog;
+ 	}
+@@ -2242,12 +2249,14 @@ static int bpf_raw_tracepoint_open(const union bpf_attr *attr)
  
-             'struct bpf_fib_lookup',
-+            'struct bpf_nf_conn',
-+            'struct bpf_nf_conntrack_tuple',
-             'struct bpf_perf_event_data',
-             'struct bpf_perf_event_value',
-             'struct bpf_sock',
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 033d90a..12e16ad 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -2885,6 +2885,88 @@ struct bpf_stack_build_id {
-  *		**-EPERM** if no permission to send the *sig*.
-  *
-  *		**-EAGAIN** if bpf program can try again.
-+ *
-+ * struct bpf_nf_conn *bpf_ct_lookup_tcp(void *ctx, struct bpf_nf_conntrack_tuple *tuple, u32 tuple_size, u64 netns, u64 flags)
-+ *	Description
-+ *		Look for TCP nf_conntrack entry matching *tuple*, optionally in
-+ *		a child network namespace *netns*. The return value must be
-+ *		checked, and if non-**NULL**, released via
-+ *		**bpf_ct_release**\ ().
-+ *
-+ *		The *ctx* should point to the context of the program, such as
-+ *		the skb or xdp_md (depending on the hook in use). This is used
-+ *		to determine the base network namespace for the lookup.
-+ *
-+ *		*tuple_size* must be one of:
-+ *
-+ *		**sizeof**\ (*tuple*\ **->ipv4**)
-+ *			Look for an IPv4 nf_conn.
-+ *		**sizeof**\ (*tuple*\ **->ipv6**)
-+ *			Look for an IPv6 nf_conn.
-+ *
-+ *		If the *netns* is a negative signed 32-bit integer, then the
-+ *		nf_conn lookup table in the netns associated with the *ctx* will
-+ *		will be used. For the TC hooks, this is the netns of the device
-+ *		in the skb. For XDP hooks, this is the netns of the device in
-+ *		the xdp_md. If *netns* is any other signed 32-bit value greater
-+ *		than or equal to zero then it specifies the ID of the netns
-+ *		relative to the netns associated with the *ctx*. *netns* values
-+ *		beyond the range of 32-bit integers are reserved for future
-+ *		use.
-+ *
-+ *		All values for *flags* are reserved for future usage, and must
-+ *		be left at zero.
-+ *
-+ *		This helper is available only if the kernel was compiled with
-+ *		**CONFIG_NF_CONNTRACK=y** configuration option.
-+ *	Return
-+ *		Pointer to **struct bpf_nf_conn**, or **NULL** in case of
-+ *		failure.
-+ *
-+ * struct bpf_nf_conn *bpf_ct_lookup_udp(void *ctx, struct bpf_nf_conntrack_tuple *tuple, u32 tuple_size, u64 netns, u64 flags)
-+ *	Description
-+ *		Look for UDP nf_conntrack entry matching *tuple*, optionally in
-+ *		a child network namespace *netns*. The return value must be
-+ *		checked, and if non-**NULL**, released via
-+ *		**bpf_ct_release**\ ().
-+ *
-+ *		The *ctx* should point to the context of the program, such as
-+ *		the skb or xdp_md (depending on the hook in use). This is used
-+ *		to determine the base network namespace for the lookup.
-+ *
-+ *		*tuple_size* must be one of:
-+ *
-+ *		**sizeof**\ (*tuple*\ **->ipv4**)
-+ *			Look for an IPv4 nf_conn.
-+ *		**sizeof**\ (*tuple*\ **->ipv6**)
-+ *			Look for an IPv6 nf_conn.
-+ *
-+ *		If the *netns* is a negative signed 32-bit integer, then the
-+ *		nf_conn lookup table in the netns associated with the *ctx* will
-+ *		will be used. For the TC hooks, this is the netns of the device
-+ *		in the skb. For XDP hooks, this is the netns of the device in
-+ *		the xdp_md. If *netns* is any other signed 32-bit value greater
-+ *		than or equal to zero then it specifies the ID of the netns
-+ *		relative to the netns associated with the *ctx*. *netns* values
-+ *		beyond the range of 32-bit integers are reserved for future
-+ *		use.
-+ *
-+ *		All values for *flags* are reserved for future usage, and must
-+ *		be left at zero.
-+ *
-+ *		This helper is available only if the kernel was compiled with
-+ *		**CONFIG_NF_CONNTRACK=y** configuration option.
-+ *	Return
-+ *		Pointer to **struct bpf_nf_conn**, or **NULL** in case of
-+ *		failure.
-+ *
-+ * int bpf_ct_release(struct bpf_nf_conn *ct)
-+ *	Description
-+ *		Release the reference held by *ct*. *ct* must be a
-+ *		non-**NULL** pointer that was returned from
-+ *		**bpf_ct_lookup_xxx**\ ().
-+ *	Return
-+ *		0 on success, or a negative error in case of failure.
-  */
- #define __BPF_FUNC_MAPPER(FN)		\
- 	FN(unspec),			\
-@@ -3004,7 +3086,10 @@ struct bpf_stack_build_id {
- 	FN(probe_read_user_str),	\
- 	FN(probe_read_kernel_str),	\
- 	FN(tcp_send_ack),		\
--	FN(send_signal_thread),
-+	FN(send_signal_thread),		\
-+	FN(ct_lookup_tcp),		\
-+	FN(ct_lookup_udp),		\
-+	FN(ct_release),
+ 	if (prog->type != BPF_PROG_TYPE_RAW_TRACEPOINT &&
+ 	    prog->type != BPF_PROG_TYPE_TRACING &&
++	    prog->type != BPF_PROG_TYPE_EXT &&
+ 	    prog->type != BPF_PROG_TYPE_RAW_TRACEPOINT_WRITABLE) {
+ 		err = -EINVAL;
+ 		goto out_put_prog;
+ 	}
  
- /* integer value in 'imm' field of BPF_CALL instruction selects which helper
-  * function eBPF program intends to call
-@@ -3278,6 +3363,30 @@ struct bpf_sock_tuple {
- 	};
- };
+-	if (prog->type == BPF_PROG_TYPE_TRACING) {
++	if (prog->type == BPF_PROG_TYPE_TRACING ||
++	    prog->type == BPF_PROG_TYPE_EXT) {
+ 		if (attr->raw_tracepoint.name) {
+ 			/* The attach point for this category of programs
+ 			 * should be specified via btf_id during program load.
+diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+index 79a04417050d..194f25a1a448 100644
+--- a/kernel/bpf/trampoline.c
++++ b/kernel/bpf/trampoline.c
+@@ -5,6 +5,12 @@
+ #include <linux/filter.h>
+ #include <linux/ftrace.h>
  
-+struct bpf_nf_conn {
-+	__u32 cpu;
-+	__u32 mark;
-+	__u32 status;
-+	__u32 timeout;
++/* dummy _ops. The verifier will operate on target program's ops. */
++const struct bpf_verifier_ops bpf_extension_verifier_ops = {
++};
++const struct bpf_prog_ops bpf_extension_prog_ops = {
 +};
 +
-+struct bpf_nf_conntrack_tuple {
-+	union {
-+		struct {
-+			__be32 saddr;
-+			__be32 daddr;
-+			__be16 sport;
-+			__be16 dport;
-+		} ipv4;
-+		struct {
-+			__be32 saddr[4];
-+			__be32 daddr[4];
-+			__be16 sport;
-+			__be16 dport;
-+		} ipv6;
-+	};
-+};
-+
- struct bpf_xdp_sock {
- 	__u32 queue_id;
- };
-diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
-index 87eaa49..7569db2 100644
---- a/tools/testing/selftests/bpf/test_verifier.c
-+++ b/tools/testing/selftests/bpf/test_verifier.c
-@@ -294,6 +294,24 @@ static void bpf_fill_scale(struct bpf_test *self)
+ /* btf_vmlinux has ~22k attachable functions. 1k htab is enough. */
+ #define TRAMPOLINE_HASH_BITS 10
+ #define TRAMPOLINE_TABLE_SIZE (1 << TRAMPOLINE_HASH_BITS)
+@@ -186,8 +192,10 @@ static enum bpf_tramp_prog_type bpf_attach_type_to_tramp(enum bpf_attach_type t)
+ 	switch (t) {
+ 	case BPF_TRACE_FENTRY:
+ 		return BPF_TRAMP_FENTRY;
+-	default:
++	case BPF_TRACE_FEXIT:
+ 		return BPF_TRAMP_FEXIT;
++	default:
++		return BPF_TRAMP_REPLACE;
  	}
  }
  
-+/* BPF_CT_LOOKUP contains 13 instructions, if you need to fix up maps */
-+#define BPF_CT_LOOKUP(func)						\
-+	/* struct bpf_nf_conntrack_tuple tuple = {} */			\
-+	BPF_MOV64_IMM(BPF_REG_2, 0),					\
-+	BPF_STX_MEM(BPF_W, BPF_REG_10, BPF_REG_2, -8),			\
-+	BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_2, -16),		\
-+	BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_2, -24),		\
-+	BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_2, -32),		\
-+	BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_2, -40),		\
-+	BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_2, -48),		\
-+	/* ct = func(ctx, &tuple, sizeof tuple, 0, 0) */		\
-+	BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),				\
-+	BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -48),				\
-+	BPF_MOV64_IMM(BPF_REG_3, sizeof(struct bpf_nf_conntrack_tuple)),\
-+	BPF_MOV64_IMM(BPF_REG_4, 0),					\
-+	BPF_MOV64_IMM(BPF_REG_5, 0),					\
-+	BPF_EMIT_CALL(BPF_FUNC_ ## func)
+@@ -200,6 +208,26 @@ int bpf_trampoline_link_prog(struct bpf_prog *prog)
+ 	tr = prog->aux->trampoline;
+ 	kind = bpf_attach_type_to_tramp(prog->expected_attach_type);
+ 	mutex_lock(&tr->mutex);
++	if (kind == BPF_TRAMP_REPLACE) {
++		/* If this program already has an extension program
++		 * or it has fentry/fexit attached then return EBUSY.
++		 */
++		if (tr->extension_prog ||
++		    tr->progs_cnt[BPF_TRAMP_FENTRY] +
++		    tr->progs_cnt[BPF_TRAMP_FEXIT]) {
++			err = -EBUSY;
++			goto out;
++		}
++		tr->extension_prog = prog;
++		err = bpf_arch_text_poke(tr->func.addr, BPF_MOD_JUMP, NULL,
++					 prog->bpf_func);
++		goto out;
++	}
++	if (tr->extension_prog) {
++		/* cannot attach fentry/fexit if extension prog is attached */
++		err = -EBUSY;
++		goto out;
++	}
+ 	if (tr->progs_cnt[BPF_TRAMP_FENTRY] + tr->progs_cnt[BPF_TRAMP_FEXIT]
+ 	    >= BPF_MAX_TRAMP_PROGS) {
+ 		err = -E2BIG;
+@@ -232,9 +260,17 @@ int bpf_trampoline_unlink_prog(struct bpf_prog *prog)
+ 	tr = prog->aux->trampoline;
+ 	kind = bpf_attach_type_to_tramp(prog->expected_attach_type);
+ 	mutex_lock(&tr->mutex);
++	if (kind == BPF_TRAMP_REPLACE) {
++		WARN_ON_ONCE(!tr->extension_prog);
++		err = bpf_arch_text_poke(tr->func.addr, BPF_MOD_JUMP,
++					 tr->extension_prog->bpf_func, NULL);
++		tr->extension_prog = NULL;
++		goto out;
++	}
+ 	hlist_del(&prog->aux->tramp_hlist);
+ 	tr->progs_cnt[kind]--;
+ 	err = bpf_trampoline_update(prog->aux->trampoline);
++out:
+ 	mutex_unlock(&tr->mutex);
+ 	return err;
+ }
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index ca17dccc17ba..19cf18d52aeb 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -9564,7 +9564,7 @@ static int do_check_common(struct bpf_verifier_env *env, int subprog)
+ 			subprog);
+ 
+ 	regs = state->frame[state->curframe]->regs;
+-	if (subprog) {
++	if (subprog || env->prog->type == BPF_PROG_TYPE_EXT) {
+ 		ret = btf_prepare_func_args(env, subprog, regs);
+ 		if (ret)
+ 			goto out;
+@@ -9737,6 +9737,7 @@ static int check_struct_ops_btf_id(struct bpf_verifier_env *env)
+ static int check_attach_btf_id(struct bpf_verifier_env *env)
+ {
+ 	struct bpf_prog *prog = env->prog;
++	bool prog_extension = prog->type == BPF_PROG_TYPE_EXT;
+ 	struct bpf_prog *tgt_prog = prog->aux->linked_prog;
+ 	u32 btf_id = prog->aux->attach_btf_id;
+ 	const char prefix[] = "btf_trace_";
+@@ -9752,7 +9753,7 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
+ 	if (prog->type == BPF_PROG_TYPE_STRUCT_OPS)
+ 		return check_struct_ops_btf_id(env);
+ 
+-	if (prog->type != BPF_PROG_TYPE_TRACING)
++	if (prog->type != BPF_PROG_TYPE_TRACING && !prog_extension)
+ 		return 0;
+ 
+ 	if (!btf_id) {
+@@ -9788,8 +9789,58 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
+ 			return -EINVAL;
+ 		}
+ 		conservative = aux->func_info_aux[subprog].unreliable;
++		if (prog_extension) {
++			if (conservative) {
++				verbose(env,
++					"Cannot replace static functions\n");
++				return -EINVAL;
++			}
++			if (!prog->jit_requested) {
++				verbose(env,
++					"Extension programs should be JITed\n");
++				return -EINVAL;
++			}
++			env->ops = bpf_verifier_ops[tgt_prog->type];
++		}
++		if (!tgt_prog->jited) {
++			verbose(env, "Can attach to only JITed progs\n");
++			return -EINVAL;
++		}
++		if (tgt_prog->type == prog->type) {
++			/* Cannot fentry/fexit another fentry/fexit program.
++			 * Cannot attach program extension to another extension.
++			 * It's ok to attach fentry/fexit to extension program.
++			 */
++			verbose(env, "Cannot recursively attach\n");
++			return -EINVAL;
++		}
++		if (tgt_prog->type == BPF_PROG_TYPE_TRACING &&
++		    tgt_prog->expected_attach_type != BPF_TRACE_RAW_TP &&
++		    prog_extension) {
++			/* Program extensions can extend all program types
++			 * except fentry/fexit. The reason is the following.
++			 * The fentry/fexit programs are used for performance
++			 * analysis, stats and can be attached to any program
++			 * type except themselves. When extension program is
++			 * replacing XDP function it is necessary to allow
++			 * performance analysis of all functions. Both original
++			 * XDP program and its program extension. Hence
++			 * attaching fentry/fexit to BPF_PROG_TYPE_EXT is
++			 * allowed. If extending of fentry/fexit was allowed it
++			 * would be possible to create long call chain
++			 * fentry->extension->fentry->extension beyond
++			 * reasonable stack size. Hence extending fentry is not
++			 * allowed.
++			 */
++			verbose(env, "Cannot extend fentry/fexit\n");
++			return -EINVAL;
++		}
+ 		key = ((u64)aux->id) << 32 | btf_id;
+ 	} else {
++		if (prog_extension) {
++			verbose(env, "Cannot replace kernel functions\n");
++			return -EINVAL;
++		}
+ 		key = btf_id;
+ 	}
+ 
+@@ -9827,6 +9878,10 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
+ 		prog->aux->attach_func_proto = t;
+ 		prog->aux->attach_btf_trace = true;
+ 		return 0;
++	default:
++		if (!prog_extension)
++			return -EINVAL;
++		/* fallthrough */
+ 	case BPF_TRACE_FENTRY:
+ 	case BPF_TRACE_FEXIT:
+ 		if (!btf_type_is_func(t)) {
+@@ -9834,6 +9889,9 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
+ 				btf_id);
+ 			return -EINVAL;
+ 		}
++		if (prog_extension &&
++		    btf_check_type_match(env, prog, btf, t))
++			return -EINVAL;
+ 		t = btf_type_by_id(btf, t->type);
+ 		if (!btf_type_is_func_proto(t))
+ 			return -EINVAL;
+@@ -9857,18 +9915,6 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
+ 		if (ret < 0)
+ 			goto out;
+ 		if (tgt_prog) {
+-			if (!tgt_prog->jited) {
+-				/* for now */
+-				verbose(env, "Can trace only JITed BPF progs\n");
+-				ret = -EINVAL;
+-				goto out;
+-			}
+-			if (tgt_prog->type == BPF_PROG_TYPE_TRACING) {
+-				/* prevent cycles */
+-				verbose(env, "Cannot recursively attach\n");
+-				ret = -EINVAL;
+-				goto out;
+-			}
+ 			if (subprog == 0)
+ 				addr = (long) tgt_prog->bpf_func;
+ 			else
+@@ -9890,8 +9936,6 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
+ 		if (ret)
+ 			bpf_trampoline_put(tr);
+ 		return ret;
+-	default:
+-		return -EINVAL;
+ 	}
+ }
+ 
+@@ -9961,10 +10005,6 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr,
+ 		goto skip_full_check;
+ 	}
+ 
+-	ret = check_attach_btf_id(env);
+-	if (ret)
+-		goto skip_full_check;
+-
+ 	env->strict_alignment = !!(attr->prog_flags & BPF_F_STRICT_ALIGNMENT);
+ 	if (!IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS))
+ 		env->strict_alignment = true;
+@@ -10001,6 +10041,10 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr,
+ 	if (ret < 0)
+ 		goto skip_full_check;
+ 
++	ret = check_attach_btf_id(env);
++	if (ret)
++		goto skip_full_check;
 +
- /* BPF_SK_LOOKUP contains 13 instructions, if you need to fix up maps */
- #define BPF_SK_LOOKUP(func)						\
- 	/* struct bpf_sock_tuple tuple = {} */				\
-diff --git a/tools/testing/selftests/bpf/verifier/ref_tracking.c b/tools/testing/selftests/bpf/verifier/ref_tracking.c
-index 604b461..de5c550a 100644
---- a/tools/testing/selftests/bpf/verifier/ref_tracking.c
-+++ b/tools/testing/selftests/bpf/verifier/ref_tracking.c
-@@ -21,6 +21,17 @@
- 	.result = REJECT,
- },
- {
-+	"reference tracking: leak potential reference to nf_conn",
-+	.insns = {
-+	BPF_CT_LOOKUP(ct_lookup_tcp),
-+	BPF_MOV64_REG(BPF_REG_6, BPF_REG_0), /* leak reference */
-+	BPF_EXIT_INSN(),
-+	},
-+	.prog_type = BPF_PROG_TYPE_SCHED_CLS,
-+	.errstr = "Unreleased reference",
-+	.result = REJECT,
-+},
-+{
- 	"reference tracking: leak potential reference on stack",
- 	.insns = {
- 	BPF_SK_LOOKUP(sk_lookup_tcp),
-@@ -72,6 +83,17 @@
- 	.result = REJECT,
- },
- {
-+	"reference tracking: zero potential reference to nf_conn",
-+	.insns = {
-+	BPF_CT_LOOKUP(ct_lookup_tcp),
-+	BPF_MOV64_IMM(BPF_REG_0, 0), /* leak reference */
-+	BPF_EXIT_INSN(),
-+	},
-+	.prog_type = BPF_PROG_TYPE_SCHED_CLS,
-+	.errstr = "Unreleased reference",
-+	.result = REJECT,
-+},
-+{
- 	"reference tracking: copy and zero potential references",
- 	.insns = {
- 	BPF_SK_LOOKUP(sk_lookup_tcp),
-@@ -113,6 +135,20 @@
- 	.result = REJECT,
- },
- {
-+	"reference tracking: release reference to nf_conn without check",
-+	.insns = {
-+	BPF_CT_LOOKUP(ct_lookup_tcp),
-+	/* reference in r0 may be NULL */
-+	BPF_MOV64_REG(BPF_REG_1, BPF_REG_0),
-+	BPF_MOV64_IMM(BPF_REG_2, 0),
-+	BPF_EMIT_CALL(BPF_FUNC_ct_release),
-+	BPF_EXIT_INSN(),
-+	},
-+	.prog_type = BPF_PROG_TYPE_SCHED_CLS,
-+	.errstr = "type=nf_conn_or_null expected=nf_conn",
-+	.result = REJECT,
-+},
-+{
- 	"reference tracking: release reference",
- 	.insns = {
- 	BPF_SK_LOOKUP(sk_lookup_tcp),
-@@ -137,6 +173,18 @@
- 	.result = ACCEPT,
- },
- {
-+	"reference tracking: release reference to nf_conn",
-+	.insns = {
-+	BPF_CT_LOOKUP(ct_lookup_tcp),
-+	BPF_MOV64_REG(BPF_REG_1, BPF_REG_0),
-+	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 1),
-+	BPF_EMIT_CALL(BPF_FUNC_ct_release),
-+	BPF_EXIT_INSN(),
-+	},
-+	.prog_type = BPF_PROG_TYPE_SCHED_CLS,
-+	.result = ACCEPT,
-+},
-+{
- 	"reference tracking: release reference 2",
- 	.insns = {
- 	BPF_SK_LOOKUP(sk_lookup_tcp),
+ 	ret = check_cfg(env);
+ 	if (ret < 0)
+ 		goto skip_full_check;
 -- 
-1.8.3.1
+2.23.0
 
