@@ -2,210 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E9BBA1417CE
-	for <lists+bpf@lfdr.de>; Sat, 18 Jan 2020 14:50:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06D701417D0
+	for <lists+bpf@lfdr.de>; Sat, 18 Jan 2020 14:54:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726846AbgARNu0 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Sat, 18 Jan 2020 08:50:26 -0500
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:37041 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726838AbgARNu0 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 18 Jan 2020 08:50:26 -0500
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-183-TuKaoaYPMzidp0uEwB5OUw-1; Sat, 18 Jan 2020 08:50:20 -0500
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DE7E4800D41;
-        Sat, 18 Jan 2020 13:50:18 +0000 (UTC)
-Received: from krava.redhat.com (ovpn-204-18.brq.redhat.com [10.40.204.18])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 72C8E84BC9;
-        Sat, 18 Jan 2020 13:50:16 +0000 (UTC)
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        David Miller <davem@redhat.com>,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>
-Subject: [PATCH 6/6] selftest/bpf: Add test for allowed trampolines count
-Date:   Sat, 18 Jan 2020 14:49:45 +0100
-Message-Id: <20200118134945.493811-7-jolsa@kernel.org>
-In-Reply-To: <20200118134945.493811-1-jolsa@kernel.org>
-References: <20200118134945.493811-1-jolsa@kernel.org>
+        id S1726334AbgARNye (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 18 Jan 2020 08:54:34 -0500
+Received: from mail-vs1-f66.google.com ([209.85.217.66]:40620 "EHLO
+        mail-vs1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726208AbgARNye (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 18 Jan 2020 08:54:34 -0500
+Received: by mail-vs1-f66.google.com with SMTP id g23so16521326vsr.7
+        for <bpf@vger.kernel.org>; Sat, 18 Jan 2020 05:54:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=GalFxYOfqSeY6Gzt4siRi3JYgyfRpIahsz2tKrCqTBU=;
+        b=nx06wnkvqi4VDPq7DRM+ncF9nEvFTxR28qoXTBFgPugPpTtl8L2y9M2AsgYwViSugt
+         pN9p9zDLm/GJpNypFVZJk4AY3vujCINdbsowEt431HIG1DmkHpx5KANVSnM3PliSUC5/
+         wK/xWx+kuhRm3zK948K9hHS3E2FE62bQEf7LDJAdXKep1JyO7R5YDI+wFq4hSp9SRdjl
+         55J0wvxcd1ECAQHu3C1yXXlqkrnswMHSW8MXyKk3Ctt4NgPGtsP2xEb6hF4dwr8GmMw/
+         s3C+X0vkq3ZnN6YRWXddluGRV1pnK7e8zLBViVAy875CbiYFG7xnbTgkfe4iEyAebN4h
+         HL0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=GalFxYOfqSeY6Gzt4siRi3JYgyfRpIahsz2tKrCqTBU=;
+        b=Mu9856OHSjhsr5TcOfmw7bBAcW1MCK+gycsIY3iUN9DhDWohSo6Av6BYTxDHf1jIqb
+         VVZEjoynFBwdcQQoIDe9tbW6L0BhBcqXdJnC2MVeXyfL9TdCyTHDSKy2Oya6Kbsr+pDu
+         E2JQ8lKfjmMNH7oFggWFq5BJlQjTlGSPG3l+JTBECpm+ywCNtDjlwUom1ekRjDV84REP
+         2Ao6vMmNp4IQY/d2DHr7qIJoz7ybf1Wcrv6XiR3KKuYEnto2su5kgwlhBXhrouM2HWd9
+         WhK2W1VTyNgOT9Tl9CeNKWcLmS0v8BAYcjG4Tu8lTGhizueo9ophT7CGVqi+MoUZlZsy
+         /aYg==
+X-Gm-Message-State: APjAAAWYSVfJCipuJMEGTNYK4U3bg4L4oFDdOE6gV9UwcIJCFKb68YBu
+        1drXOpHJ7f1STqrHYe6PCjhngVTqjmVeR2A+s9A=
+X-Google-Smtp-Source: APXvYqxpn7nXwuYAAFAC1f8xCGfRxU0XC2Cs5+iBJhyKRQm50KGkcm2UtGw9CEipSMZ/gYhaDMgaZmjhj0XMBrDCC68=
+X-Received: by 2002:a67:c798:: with SMTP id t24mr7749043vsk.62.1579355672794;
+ Sat, 18 Jan 2020 05:54:32 -0800 (PST)
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
-X-MC-Unique: TuKaoaYPMzidp0uEwB5OUw-1
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kernel.org
-Content-Type: text/plain; charset=WINDOWS-1252
-Content-Transfer-Encoding: 8BIT
+Reply-To: mrshenritapieres1@gmail.com
+Received: by 2002:a67:f581:0:0:0:0:0 with HTTP; Sat, 18 Jan 2020 05:54:32
+ -0800 (PST)
+From:   Henrita Pieres <henritapieres@gmail.com>
+Date:   Sat, 18 Jan 2020 05:54:32 -0800
+X-Google-Sender-Auth: OO53ZUXcMIXUIgKNN9WbovkvPy4
+Message-ID: <CANCj5oZ4n05hUPFxuUqDfRRDOhw18whao=sjz62rs2NDNCF45w@mail.gmail.com>
+Subject: Hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-There's limit of 40 programs tht can be attached
-to trampoline for one function. Adding test that
-tries to attach that many plus one extra that needs
-to fail.
+Hello Dear,
 
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- .../bpf/prog_tests/trampoline_count.c         | 112 ++++++++++++++++++
- .../bpf/progs/test_trampoline_count.c         |  21 ++++
- 2 files changed, 133 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/trampoline_count.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_trampoline_count.c
+Please forgive me for stressing you with my predicaments as I know
+that this letter may come to you as big surprise. Actually, I came
+across your E-mail from my personal search afterward I decided to
+email you directly believing that you will be honest to fulfill my
+final wish before i die. Meanwhile, I am Mrs. Henrita Pieres, 62 years
+old, from France, and I am suffering from a long time cancer and from
+all indication my condition is really deteriorating as my doctors have
+confirmed and courageously Advised me that I may not live beyond two
+months from now for the reason that my tumor has reached a critical
+stage which has defiled all forms of medical treatment, As a matter of
+fact, registered nurse by profession while my husband was dealing on
+Gold Dust and Gold Dory Bars in Burkina Faso till his sudden death the
+year 2016 then I took over his business till date. In fact, at this
+moment I have a deposit sum of four million five hundred thousand US
+dollars [$4,500,000.00] with one of the leading bank in Burkina Faso
+but unfortunately I cannot visit the bank since I=E2=80=99m critically sick
+and powerless to do anything myself but my bank account officer
+advised me to assign any of my trustworthy relative, friends or
+partner with authorization letter to stand as the recipient of my
+money but sorrowfully I don=E2=80=99t have any reliable relative and no chi=
+ld.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/trampoline_count.c b/tools/testing/selftests/bpf/prog_tests/trampoline_count.c
-new file mode 100644
-index 000000000000..1235f3d1cc50
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/trampoline_count.c
-@@ -0,0 +1,112 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+#define _GNU_SOURCE
-+#include <sched.h>
-+#include <sys/prctl.h>
-+#include <test_progs.h>
-+
-+#define MAX_TRAMP_PROGS 40
-+
-+struct inst {
-+	struct bpf_object *obj;
-+	struct bpf_link   *link_fentry;
-+	struct bpf_link   *link_fexit;
-+};
-+
-+static int test_task_rename(void)
-+{
-+	int fd, duration = 0, err;
-+	char buf[] = "test_overhead";
-+
-+	fd = open("/proc/self/comm", O_WRONLY|O_TRUNC);
-+	if (CHECK(fd < 0, "open /proc", "err %d", errno))
-+		return -1;
-+	err = write(fd, buf, sizeof(buf));
-+	if (err < 0) {
-+		CHECK(err < 0, "task rename", "err %d", errno);
-+		close(fd);
-+		return -1;
-+	}
-+	close(fd);
-+	return 0;
-+}
-+
-+static struct bpf_link *load(struct bpf_object *obj, const char *name)
-+{
-+	struct bpf_program *prog;
-+	int duration = 0;
-+
-+	prog = bpf_object__find_program_by_title(obj, name);
-+	if (CHECK(!prog, "find_probe", "prog '%s' not found\n", name))
-+		return ERR_PTR(-EINVAL);
-+	return bpf_program__attach_trace(prog);
-+}
-+
-+void test_trampoline_count(void)
-+{
-+	const char *fentry_name = "fentry/__set_task_comm";
-+	const char *fexit_name = "fexit/__set_task_comm";
-+	const char *object = "test_trampoline_count.o";
-+	struct inst inst[MAX_TRAMP_PROGS] = { 0 };
-+	int err, i = 0, duration = 0;
-+	struct bpf_object *obj;
-+	struct bpf_link *link;
-+	char comm[16] = {};
-+
-+	/* attach 'allowed' 40 trampoline programs */
-+	for (i = 0; i < MAX_TRAMP_PROGS; i++) {
-+		obj = bpf_object__open_file(object, NULL);
-+		if (CHECK(IS_ERR(obj), "obj_open_file", "err %ld\n", PTR_ERR(obj)))
-+			goto cleanup;
-+
-+		err = bpf_object__load(obj);
-+		if (CHECK(err, "obj_load", "err %d\n", err))
-+			goto cleanup;
-+		inst[i].obj = obj;
-+
-+		if (rand() % 2) {
-+			link = load(obj, fentry_name);
-+			if (CHECK(IS_ERR(link), "attach prog", "err %ld\n", PTR_ERR(link)))
-+				goto cleanup;
-+			inst[i].link_fentry = link;
-+		} else {
-+			link = load(obj, fexit_name);
-+			if (CHECK(IS_ERR(link), "attach prog", "err %ld\n", PTR_ERR(link)))
-+				goto cleanup;
-+			inst[i].link_fexit = link;
-+		}
-+	}
-+
-+	/* and try 1 extra.. */
-+	obj = bpf_object__open_file(object, NULL);
-+	if (CHECK(IS_ERR(obj), "obj_open_file", "err %ld\n", PTR_ERR(obj)))
-+		goto cleanup;
-+
-+	err = bpf_object__load(obj);
-+	if (CHECK(err, "obj_load", "err %d\n", err))
-+		goto cleanup_extra;
-+
-+	/* ..that needs to fail */
-+	link = load(obj, fentry_name);
-+	if (CHECK(!IS_ERR(link), "cannot attach over the limit", "err %ld\n", PTR_ERR(link))) {
-+		bpf_link__destroy(link);
-+		goto cleanup_extra;
-+	}
-+
-+	/* with E2BIG error */
-+	CHECK(PTR_ERR(link) != -E2BIG, "proper error check", "err %ld\n", PTR_ERR(link));
-+
-+	/* and finaly execute the probe */
-+	if (CHECK_FAIL(prctl(PR_GET_NAME, comm, 0L, 0L, 0L)))
-+		goto cleanup_extra;
-+	CHECK_FAIL(test_task_rename());
-+	CHECK_FAIL(prctl(PR_SET_NAME, comm, 0L, 0L, 0L));
-+
-+cleanup_extra:
-+	bpf_object__close(obj);
-+cleanup:
-+	while (--i) {
-+		bpf_link__destroy(inst[i].link_fentry);
-+		bpf_link__destroy(inst[i].link_fexit);
-+		bpf_object__close(inst[i].obj);
-+	}
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_trampoline_count.c b/tools/testing/selftests/bpf/progs/test_trampoline_count.c
-new file mode 100644
-index 000000000000..e51e6e3a81c2
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_trampoline_count.c
-@@ -0,0 +1,21 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <stdbool.h>
-+#include <stddef.h>
-+#include <linux/bpf.h>
-+#include "bpf_trace_helpers.h"
-+
-+struct task_struct;
-+
-+SEC("fentry/__set_task_comm")
-+int BPF_PROG(prog1, struct task_struct *tsk, const char *buf, bool exec)
-+{
-+	return 0;
-+}
-+
-+SEC("fexit/__set_task_comm")
-+int BPF_PROG(prog2, struct task_struct *tsk, const char *buf, bool exec)
-+{
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.24.1
+Therefore, I want you to receive the money and take 50% to take care
+of yourself and family while 50% should be use basically on
+humanitarian purposes mostly to orphanages home, Motherless babies
+home, less privileged and disable citizens and widows around the
+world. As soon as I receive your respond I shall send you the full
+details with my pictures, banking records and with full contacts of my
+banking institution to communicate them on the matter.
 
+Hope to hear from you soon.
+
+Yours Faithfully,
+Mrs. Henrita Pieres
