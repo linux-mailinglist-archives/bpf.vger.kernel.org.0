@@ -2,287 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 06070142330
-	for <lists+bpf@lfdr.de>; Mon, 20 Jan 2020 07:21:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 404A314271D
+	for <lists+bpf@lfdr.de>; Mon, 20 Jan 2020 10:22:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725837AbgATGVI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Jan 2020 01:21:08 -0500
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:34650 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725783AbgATGVI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 20 Jan 2020 01:21:08 -0500
-Received: by mail-qk1-f195.google.com with SMTP id j9so29127135qkk.1;
-        Sun, 19 Jan 2020 22:21:07 -0800 (PST)
+        id S1727031AbgATJWK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Jan 2020 04:22:10 -0500
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:36539 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727018AbgATJWK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 20 Jan 2020 04:22:10 -0500
+Received: by mail-pl1-f194.google.com with SMTP id a6so12947531plm.3;
+        Mon, 20 Jan 2020 01:22:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=HzgwQjk23FH9alWYUZE6q0CWsQkjBSTe2jUKbbfrMf8=;
-        b=CvqTeXhX9F6eVJZp+SYzLBQGk1j0R2KFNWPCi2rapCMh4k2e1ccT//93/BPrWl82y1
-         vGarXBJzdbATNWwv/w9OlWb+ZVhBtDiyan/veftuq9TC5NB1wKROhJDgjUBLx/V5dUZc
-         0Q9/RlS3HmjPLQPgJctAqVzZIicj/l8DEDtcVKSn7KnbOdwd+4jWGhZI6KbpxLNBXEmt
-         MQqnbeDlWSshcgQOKRHQ181Hhbj7+ZqVt6uq82LMofX5Nk20WVSmM99TD+NwzwTMgYLj
-         PJP0O6DGp9v8ZdizZZdoFOu7lAfFobH/Je2qQXRCAC2D2J7+d/WnDcDgQsOlve/gUbys
-         JpeQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2U8BCFqH7p7t9lGKEloYuR2Tk0skT6QfoLljk5teH2g=;
+        b=ORq92HCW3W/1wiId9JaX3gJpoJhdTu8kozeY0GEFGZTFypLrTeqHBMKiPLKRLhRad4
+         CeOcnS1Cu8oFg5w9QRhITqNXVo7ZJYYRuBunohDU0MViyW0Oi7Cu43SeEK3o5/Orxys6
+         LIW+oeJqbLPWRaQ0aAvW4QKu3o9EnN4E3nDIZL3F6zm/x9D3aUXU0YZhPitA2hB0NoWj
+         mhKYgEGjTd/HgtL8jE7QkMhqhZBCU6I7CgWvkXJS0OfqYyuAxU0gUUAoyEuPH/Dse23K
+         7/3CqApWlD70tqOj3A4r4HZXeBTWZi1hzn9NwtVyb9A92SQ+kK6GDJR9UJRa6Tfv1sL+
+         1/vQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=HzgwQjk23FH9alWYUZE6q0CWsQkjBSTe2jUKbbfrMf8=;
-        b=iJZ3V8n3haQHUpA4YYze4a8YBOFdIOHUlKDJKyVxoYJmkdcMtuCoS7X1fdznTK78b3
-         jRvZcasBZT1etMtzara6WS/l00uS+GXvAFyYBxQ502X99a3WQjekUvJqp1mb0nuP1w6A
-         LiDiLBitNS7QnNimpvOtU49BgiETGPuz8fcq4aclG9DJ74gGmdz2PXbNOwrP+4cLjDdk
-         FF3lKmAoCtbXO6iFFHsN6E9n/yUhVRCVjoufy89VNq7SlQnUKJ6DAHXn/tw2/aj45mj1
-         idigrvaFo+JgUxxllVVmgwjMpbl96+nTnSSK1PpfQCIu+mot217iWy8vV5W0xRNDZMZC
-         Lc7g==
-X-Gm-Message-State: APjAAAUTNUXCUQY6d9H4LkkfFZ66QqzD6+ooSQQ2Qa5X5wtikuKJ8vPz
-        Hb2RiJBwhwphHxhsAu5Lc++iSaUWmcmpHp6G/Cg=
-X-Google-Smtp-Source: APXvYqyf+AOg23rg7WeXYxqzp4r3mgJLIWtxn6tckbkEE2rtwGF9JOexPu3kHucfyEKTtHP4YPeGHwAWjvVI+3UbALs=
-X-Received: by 2002:a05:620a:5ae:: with SMTP id q14mr46460647qkq.437.1579501266863;
- Sun, 19 Jan 2020 22:21:06 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2U8BCFqH7p7t9lGKEloYuR2Tk0skT6QfoLljk5teH2g=;
+        b=avDyuNvO19PGWjueZFcOW7Ekl4DAtfWY08OzB6kdv87KzjniCUD0CTWbQR0dg/AZAr
+         iEDD2lxvlGmVFb01GMbfGou/3uQwqjRvDGx/dJpzNClT2HNjlqa6pCygmeY0A3lH1rrb
+         vOM+xig4nmEuj8TJzN/PIWxkKavV2g83g2y1JSNZIVXMyk+K6/2R5wfD1yJ7bCadJHjd
+         pdb70N+8Kwt8rfz+C7DXIxAijt8zJVtCfuhhQpCuPtLCNUsau5ehtkbei2tMHlIhQPg2
+         EI5xhjgCiJJmvoKfXPDZvMiwy8rwzouyWakItPDnB2RQ6upGk++YgwFx0A/0IrUlYeB4
+         1TlA==
+X-Gm-Message-State: APjAAAUbN5FHIExnBI6ixmxgLgeydxHA6I2wSuCF/Hp6Z2iHQB1f3RwJ
+        umID2FFzwDJVdGVkqORTrQsSEGmNOGQ=
+X-Google-Smtp-Source: APXvYqw7kSJkQRdbjuC1S4eR288xHi27yrWS4R7Mnc8zhQge1IyPeK28BG6nwVMmjsKS4Xho7HG6iw==
+X-Received: by 2002:a17:902:b781:: with SMTP id e1mr14444603pls.128.1579512129391;
+        Mon, 20 Jan 2020 01:22:09 -0800 (PST)
+Received: from btopel-mobl.ger.intel.com ([192.55.54.44])
+        by smtp.gmail.com with ESMTPSA id r2sm36098475pgv.16.2020.01.20.01.22.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Jan 2020 01:22:08 -0800 (PST)
+From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
+To:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net
+Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
+        bpf@vger.kernel.org, magnus.karlsson@intel.com,
+        jonathan.lemon@gmail.com
+Subject: [PATCH bpf-next] xsk: update rings for load-acquire/store-release semantics
+Date:   Mon, 20 Jan 2020 10:21:48 +0100
+Message-Id: <20200120092149.13775-1-bjorn.topel@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <157926819690.1555735.10756593211671752826.stgit@toke.dk> <157926820677.1555735.5437255599683298212.stgit@toke.dk>
-In-Reply-To: <157926820677.1555735.5437255599683298212.stgit@toke.dk>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Sun, 19 Jan 2020 22:20:55 -0800
-Message-ID: <CAEf4Bzb9zUmhxTyYahJqySJzgfyB-zMEd+o4ybv=a8-t+iZS4w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 09/10] selftests: Remove tools/lib/bpf from
- include path
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-rdma@vger.kernel.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jan 17, 2020 at 5:43 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
-at.com> wrote:
->
-> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->
-> To make sure no new files are introduced that doesn't include the bpf/
-> prefix in its #include, remove tools/lib/bpf from the include path
-> entirely.
->
-> Instead, we introduce a new header files directory under the scratch tool=
-s/
-> dir, and add a rule to run the 'install_headers' rule from libbpf to have=
- a
-> full set of consistent libbpf headers in $(OUTPUT)/tools/include/bpf, and
-> then use $(OUTPUT)/tools/include as the include path for selftests.
->
-> For consistency we also make sure we put all the scratch build files from
-> other bpftool and libbpf into tools/build/, so everything stays within
-> selftests/.
->
-> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> ---
->  tools/testing/selftests/bpf/.gitignore |    2 +
->  tools/testing/selftests/bpf/Makefile   |   49 +++++++++++++++++++++-----=
-------
->  2 files changed, 33 insertions(+), 18 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selft=
-ests/bpf/.gitignore
-> index 1d14e3ab70be..8c9eac626996 100644
-> --- a/tools/testing/selftests/bpf/.gitignore
-> +++ b/tools/testing/selftests/bpf/.gitignore
-> @@ -39,4 +39,4 @@ test_cpp
->  /no_alu32
->  /bpf_gcc
->  /tools
-> -bpf_helper_defs.h
+From: Björn Töpel <bjorn.topel@intel.com>
 
-can you please also drop libbpf.pc and libbpf.so.* rules from .gitignore?
+Currently, the AF_XDP rings uses fences for the kernel-side
+produce/consume functions. By updating rings for
+load-acquire/store-release semantics, the full barrier (smp_mb()) on
+the consumer side can be replaced.
 
-> +
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftes=
-ts/bpf/Makefile
-> index 858d4e3369ad..ac0292a82fdc 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -20,8 +20,8 @@ CLANG         ?=3D clang
->  LLC            ?=3D llc
->  LLVM_OBJCOPY   ?=3D llvm-objcopy
->  BPF_GCC                ?=3D $(shell command -v bpf-gcc;)
-> -CFLAGS +=3D -g -Wall -O2 $(GENFLAGS) -I$(CURDIR) -I$(APIDIR) -I$(LIBDIR)=
-  \
-> -         -I$(BPFDIR) -I$(GENDIR) -I$(TOOLSINCDIR)                      \
-> +CFLAGS +=3D -g -Wall -O2 $(GENFLAGS) -I$(CURDIR) -I$(APIDIR)            =
-  \
+Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
+---
+ net/xdp/xsk_queue.h | 31 ++++++++++++++-----------------
+ 1 file changed, 14 insertions(+), 17 deletions(-)
 
-extra space here
+diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
+index bec2af11853a..2fff80576ee1 100644
+--- a/net/xdp/xsk_queue.h
++++ b/net/xdp/xsk_queue.h
+@@ -39,19 +39,18 @@ struct xsk_queue {
+ 	u64 invalid_descs;
+ };
+ 
+-/* The structure of the shared state of the rings are the same as the
+- * ring buffer in kernel/events/ring_buffer.c. For the Rx and completion
+- * ring, the kernel is the producer and user space is the consumer. For
+- * the Tx and fill rings, the kernel is the consumer and user space is
+- * the producer.
++/* The structure of the shared state of the rings are a simple
++ * circular buffer, as outlined in
++ * Documentation/core-api/circular-buffers.rst. For the Rx and
++ * completion ring, the kernel is the producer and user space is the
++ * consumer. For the Tx and fill rings, the kernel is the consumer and
++ * user space is the producer.
+  *
+  * producer                         consumer
+  *
+- * if (LOAD ->consumer) {           LOAD ->producer
+- *                    (A)           smp_rmb()       (C)
++ * if (LOAD ->consumer) {  (A)      LOAD.acq ->producer  (C)
+  *    STORE $data                   LOAD $data
+- *    smp_wmb()       (B)           smp_mb()        (D)
+- *    STORE ->producer              STORE ->consumer
++ *    STORE.rel ->producer (B)      STORE.rel ->consumer (D)
+  * }
+  *
+  * (A) pairs with (D), and (B) pairs with (C).
+@@ -220,15 +219,14 @@ static inline bool xskq_cons_read_desc(struct xsk_queue *q,
+ 
+ static inline void __xskq_cons_release(struct xsk_queue *q)
+ {
+-	smp_mb(); /* D, matches A */
+-	WRITE_ONCE(q->ring->consumer, q->cached_cons);
++	/* D, matches A */
++	smp_store_release(&q->ring->consumer, q->cached_cons);
+ }
+ 
+ static inline void __xskq_cons_peek(struct xsk_queue *q)
+ {
+-	/* Refresh the local pointer */
+-	q->cached_prod = READ_ONCE(q->ring->producer);
+-	smp_rmb(); /* C, matches B */
++	/* C, matches B */
++	q->cached_prod = smp_load_acquire(&q->ring->producer);
+ }
+ 
+ static inline void xskq_cons_get_entries(struct xsk_queue *q)
+@@ -340,9 +338,8 @@ static inline int xskq_prod_reserve_desc(struct xsk_queue *q,
+ 
+ static inline void __xskq_prod_submit(struct xsk_queue *q, u32 idx)
+ {
+-	smp_wmb(); /* B, matches C */
+-
+-	WRITE_ONCE(q->ring->producer, idx);
++	/* B, matches C */
++	smp_store_release(&q->ring->producer, idx);
+ }
+ 
+ static inline void xskq_prod_submit(struct xsk_queue *q)
+-- 
+2.20.1
 
-> +         -I$(INCLUDE_DIR) -I$(GENDIR) -I$(LIBDIR) -I$(TOOLSINCDIR)     \
->           -Dbpf_prog_load=3Dbpf_prog_test_load                           =
- \
->           -Dbpf_load_program=3Dbpf_test_load_program
->  LDLIBS +=3D -lcap -lelf -lz -lrt -lpthread
-> @@ -97,11 +97,15 @@ OVERRIDE_TARGETS :=3D 1
->  override define CLEAN
->         $(call msg,CLEAN)
->         $(RM) -r $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED) $(TEST_GEN_=
-FILES) $(EXTRA_CLEAN)
-> -       $(MAKE) -C $(BPFDIR) OUTPUT=3D$(OUTPUT)/ clean
->  endef
->
->  include ../lib.mk
->
-> +SCRATCH_DIR :=3D $(OUTPUT)/tools
-> +BUILD_DIR :=3D $(SCRATCH_DIR)/build
-> +INCLUDE_DIR :=3D $(SCRATCH_DIR)/include
-> +INCLUDE_BPF :=3D $(INCLUDE_DIR)/bpf
-> +
->  # Define simple and short `make test_progs`, `make test_sysctl`, etc tar=
-gets
->  # to build individual tests.
->  # NOTE: Semicolon at the end is critical to override lib.mk's default st=
-atic
-> @@ -120,7 +124,7 @@ $(OUTPUT)/urandom_read: urandom_read.c
->         $(call msg,BINARY,,$@)
->         $(CC) -o $@ $< -Wl,--build-id
->
-> -$(OUTPUT)/test_stub.o: test_stub.c
-> +$(OUTPUT)/test_stub.o: test_stub.c $(INCLUDE_BPF)
->         $(call msg,CC,,$@)
->         $(CC) -c $(CFLAGS) -o $@ $<
->
-> @@ -133,7 +137,7 @@ $(OUTPUT)/runqslower: force
->         $(Q)$(MAKE) $(submake_extras) -C $(TOOLSDIR)/bpf/runqslower     \
->                     OUTPUT=3D$(OUTPUT)/tools/ VMLINUX_BTF=3D$(VMLINUX_BTF=
-)
->
-> -BPFOBJ :=3D $(OUTPUT)/libbpf.a
-> +BPFOBJ :=3D $(BUILD_DIR)/libbpf/libbpf.a
->
->  $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED): $(OUTPUT)/test_stub.o $(BP=
-FOBJ)
->
-> @@ -159,17 +163,28 @@ force:
->  DEFAULT_BPFTOOL :=3D $(OUTPUT)/tools/sbin/bpftool
->  BPFTOOL ?=3D $(DEFAULT_BPFTOOL)
->
-> -$(DEFAULT_BPFTOOL): force
-> -       $(Q)$(MAKE) $(submake_extras)  -C $(BPFTOOLDIR)                  =
-     \
-> +$(BUILD_DIR)/libbpf $(BUILD_DIR)/bpftool $(INCLUDE_DIR):
-> +       $(call msg,MKDIR,,$@)
-> +       mkdir -p $@
-> +
-> +$(DEFAULT_BPFTOOL): force | $(BUILD_DIR)/bpftool
-> +       $(Q)$(MAKE) $(submake_extras)  -C $(BPFTOOLDIR)         \
-
-slash alignment
-
-
-> +                   OUTPUT=3D$(BUILD_DIR)/bpftool/                       =
- \
->                     prefix=3D DESTDIR=3D$(OUTPUT)/tools/ install
->
-> -$(BPFOBJ): force
-> -       $(Q)$(MAKE) $(submake_extras) -C $(BPFDIR) OUTPUT=3D$(OUTPUT)/
-> +$(BPFOBJ): force | $(BUILD_DIR)/libbpf
-> +       $(Q)$(MAKE) $(submake_extras) -C $(BPFDIR) \
-> +               OUTPUT=3D$(BUILD_DIR)/libbpf/
-> +
-> +$(INCLUDE_BPF): $(BPFOBJ) | $(INCLUDE_DIR)
-> +       $(Q)$(MAKE) $(submake_extras) -C $(BPFDIR) install_headers \
-> +               OUTPUT=3D$(BUILD_DIR)/libbpf/ DESTDIR=3D$(SCRATCH_DIR) pr=
-efix=3D
-> +
-> +BPF_HELPERS :=3D $(or $(wildcard $(INCLUDE_BPF)/bpf_*.h),$(INCLUDE_BPF))
-> +ifneq ($(BPF_HELPERS),$(INCLUDE_BPF))
-> +$(BPF_HELPERS): $(INCLUDE_BPF)
-> +endif
->
-> -BPF_HELPERS :=3D $(OUTPUT)/bpf_helper_defs.h $(wildcard $(BPFDIR)/bpf_*.=
-h)
-> -$(OUTPUT)/bpf_helper_defs.h: $(BPFOBJ)
-> -       $(Q)$(MAKE) $(submake_extras) -C $(BPFDIR)                       =
-     \
-> -                   OUTPUT=3D$(OUTPUT)/ $(OUTPUT)/bpf_helper_defs.h
->
-
-I really-really didn't like this alternating dependency on directory
-or a set of file, depending on current state of those temporary
-directories. Then also this ugly check to avoid circular dependency.
-All that seemed wrong. So I played a bit with how to achieve the same
-differently, and here's what I came up with, which I like a bit
-better. What do you think?
-
-$(BPFOBJ): $(wildcard $(BPFDIR)/*.c $(BPFDIR)/*.h $(BPFDIR)/Makefile)      =
-    \
-           ../../../include/uapi/linux/bpf.h                               =
-    \
-           | $(INCLUDE_DIR) $(BUILD_DIR)/libbpf
-        $(Q)$(MAKE) $(submake_extras) -C $(BPFDIR) OUTPUT=3D$(BUILD_DIR)/li=
-bbpf/ \
-                    DESTDIR=3D$(SCRATCH_DIR) prefix=3D all install_headers
-
-So, essentially, just make sure that we install local copies of
-headers whenever libbpf.a needs to be re-built.
-../../../include/uapi/linux/bpf.h ensures we don't miss uapi header
-changes as well. Now anything that uses libbpf headers will need to
-depend on $(BPFOBJ) and will automatically get up-to-date local copies
-of headers.
-
-This seems much simpler. Please give it a try, thanks!
-
->  # Get Clang's default includes on this system, as opposed to those seen =
-by
->  # '-target bpf'. This fixes "missing" files on some architectures/distro=
-s,
-> @@ -189,8 +204,8 @@ MENDIAN=3D$(if $(IS_LITTLE_ENDIAN),-mlittle-endian,-m=
-big-endian)
->
->  CLANG_SYS_INCLUDES =3D $(call get_sys_includes,$(CLANG))
->  BPF_CFLAGS =3D -g -D__TARGET_ARCH_$(SRCARCH) $(MENDIAN)                 =
- \
-> -            -I$(OUTPUT) -I$(CURDIR) -I$(CURDIR)/include/uapi           \
-> -            -I$(APIDIR) -I$(LIBDIR) -I$(BPFDIR) -I$(abspath $(OUTPUT)/..=
-/usr/include)
-> +            -I$(INCLUDE_DIR) -I$(CURDIR) -I$(CURDIR)/include/uapi      \
-> +            -I$(APIDIR) -I$(abspath $(OUTPUT)/../usr/include)
->
->  CLANG_CFLAGS =3D $(CLANG_SYS_INCLUDES) \
->                -Wno-compare-distinct-pointer-types
-> @@ -392,7 +407,7 @@ $(OUTPUT)/test_cpp: test_cpp.cpp $(OUTPUT)/test_core_=
-extern.skel.h $(BPFOBJ)
->         $(call msg,CXX,,$@)
->         $(CXX) $(CFLAGS) $^ $(LDLIBS) -o $@
->
-> -EXTRA_CLEAN :=3D $(TEST_CUSTOM_PROGS)                                   =
- \
-> +EXTRA_CLEAN :=3D $(TEST_CUSTOM_PROGS) $(SCRATCH_DIR)                    =
- \
->         prog_tests/tests.h map_tests/tests.h verifier/tests.h           \
->         feature                                                         \
-> -       $(addprefix $(OUTPUT)/,*.o *.skel.h no_alu32 bpf_gcc tools)
-> +       $(addprefix $(OUTPUT)/,*.o *.skel.h no_alu32 bpf_gcc)
->
