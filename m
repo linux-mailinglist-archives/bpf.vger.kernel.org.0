@@ -2,122 +2,358 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EAD951428D1
-	for <lists+bpf@lfdr.de>; Mon, 20 Jan 2020 12:06:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BC621428E1
+	for <lists+bpf@lfdr.de>; Mon, 20 Jan 2020 12:09:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726417AbgATLGv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Jan 2020 06:06:51 -0500
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:56738 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726421AbgATLGu (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 20 Jan 2020 06:06:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1579518409;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GBr/Vebb3VXffLj0Is78F4eUTgwO3xgPG3+P62qQsx8=;
-        b=OlGKxe1nsdIbr/r6w8+QG0mCo8XAeeDXG4nFc4SSHyb/qM6KvHMLOXaioqDGQHdSGf2ZBj
-        9lE+YrlEGug5ws9OHip+LDmbbfwpcTvrWHa+3QjrN42x4RE7VE4IDkcrBDm5VrQ0kWpJe7
-        wvLlOMTu9HTc46BVcah6CkQyHAA9jJY=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-325-RQAqVYseOHG4cbD2yWaIKA-1; Mon, 20 Jan 2020 06:06:48 -0500
-X-MC-Unique: RQAqVYseOHG4cbD2yWaIKA-1
-Received: by mail-lf1-f70.google.com with SMTP id q16so6179903lfa.13
-        for <bpf@vger.kernel.org>; Mon, 20 Jan 2020 03:06:48 -0800 (PST)
+        id S1726589AbgATLJ4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Jan 2020 06:09:56 -0500
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:34178 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726451AbgATLJ4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 20 Jan 2020 06:09:56 -0500
+Received: by mail-wm1-f65.google.com with SMTP id w5so14477942wmi.1
+        for <bpf@vger.kernel.org>; Mon, 20 Jan 2020 03:09:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=RspWDOuWB94i7/kbi7JammXa2EW0J7yWnKwQFB9cKlM=;
+        b=P8NpeW3AeZuEVz1jzbkL4MKGPOrL4M6IoO7+omC7PffznVE2d1lCJnOXNeIrcaYUsK
+         jrzuhj7R3li5vMlT0ntHsE2GUWJHdxa1v6aJWcoEGmFdYBnoYPdbcoGBiPLPNVNLMebT
+         8ZohB3jfFbzXsC0alSRXzSAHBMmQh6q8MFaJM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=GBr/Vebb3VXffLj0Is78F4eUTgwO3xgPG3+P62qQsx8=;
-        b=sJEpEDJ1FRMx4O5C0M/wkTffKY6mYRFdWYwEQb8wFHpB1ARNLOCHtD4CzKu+iikMIq
-         /7/erKejyccusphp9nqsT2aOMEsgIleb4ETU+6Jz0uiV8FtYLE+hT/TvG4OgYSfqziEV
-         25txnk6aTxaVCeTGw8DbOtBCjfTwlg+TjaMduyYXO262bT4BKV6Sd8iQayPTi3QPHDyA
-         J4LsJYqNY4NSGK3ln8EcHXShNW3+KcxBttoGszPEh9V/+MpGd29vAulu5RYwpbc1BjNc
-         EAX3QdoR7aMQYgkNpMhBdjLFpbLhsCIMN7NFSXcI1bmMNsIXMNSW//xmxs7KfcZEwU0v
-         PCWw==
-X-Gm-Message-State: APjAAAU3fGEV5BxVPL7bW+ZvIDaRl9ioKRUFopNAj93DIxm8Ic23ybvZ
-        hP/fBVeVzL6Lm2+SdlTXymkT7HTQkaewMbDzzlc3VzenTpzV4Gl8Mx2oNu/TQhpi+TNzC0fOXRy
-        sjcvBQxIs7+fB
-X-Received: by 2002:a2e:8e22:: with SMTP id r2mr12213814ljk.51.1579518406712;
-        Mon, 20 Jan 2020 03:06:46 -0800 (PST)
-X-Google-Smtp-Source: APXvYqwRHGGNFbd5H0/cF1REV/7+jcnpPn0KrgS8p2w5aL+jlmOCDTBslDcW/9arMdp3KMXCx8EM9A==
-X-Received: by 2002:a2e:8e22:: with SMTP id r2mr12213786ljk.51.1579518406456;
-        Mon, 20 Jan 2020 03:06:46 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([85.204.121.218])
-        by smtp.gmail.com with ESMTPSA id p136sm16758946lfa.8.2020.01.20.03.06.45
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=RspWDOuWB94i7/kbi7JammXa2EW0J7yWnKwQFB9cKlM=;
+        b=c9Y3mgbCmqnamS0txOvsBh25CFqh6QyUE0PQx0e/VEPLTo8G15AWKfXAuyoB6xqg6B
+         TZY8MKFLfLSGLxSrh3C1caq7gAJWZ6GR+D061YHWUzKtSNagS6FOIxf0lMydjZZn5alG
+         oLr8ehr+7VHUVc+6ibBelvQEWVArflCVh6gfBcnvhdWYW0nnANMySSw8PF678jVMuRhG
+         ntSLYNCCw7I6rnT7MV4Xm9KH4hXpQjBTMuBwvQDiQQAm/+P2KGK4w+ZHbRp9aJAkIuFu
+         m5SYUEeTeOLwmnxDTeT87E9DZW3BNyAjaZ7UiXayx9R8kp5N0oBL2pPbWnCnjImycl6v
+         vMrQ==
+X-Gm-Message-State: APjAAAUYyIxcFjyU0fVCjqh1U62y9ruXACvIAbA8CLH4kgK+sR8ZaTic
+        9Rl8HymfCIDOfOKqEPXQoU9tGw==
+X-Google-Smtp-Source: APXvYqyDk4jizH/XUJGSaGOPu6EqrnnUUjF7Yly9Etd4JBrzZfrlvh8zaBDXhks0HUetnI71eaCagQ==
+X-Received: by 2002:a1c:f009:: with SMTP id a9mr18379484wmb.73.1579518592324;
+        Mon, 20 Jan 2020 03:09:52 -0800 (PST)
+Received: from chromium.org ([2620:0:105f:fd00:24a7:c82b:86d8:5ae9])
+        by smtp.gmail.com with ESMTPSA id l15sm45167551wrv.39.2020.01.20.03.09.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jan 2020 03:06:45 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id C1D8A1804D6; Mon, 20 Jan 2020 12:06:44 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+        Mon, 20 Jan 2020 03:09:51 -0800 (PST)
+From:   KP Singh <kpsingh@chromium.org>
+X-Google-Original-From: KP Singh <kpsingh>
+Date:   Mon, 20 Jan 2020 12:10:14 +0100
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, linux-security-module@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        James Morris <jmorris@namei.org>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Garnier <thgarnie@chromium.org>,
+        Michael Halcrow <mhalcrow@google.com>,
+        Paul Turner <pjt@google.com>,
+        Brendan Gregg <brendan.d.gregg@gmail.com>,
+        Jann Horn <jannh@google.com>,
+        Matthew Garrett <mjg59@google.com>,
+        Christian Brauner <christian@brauner.io>,
+        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-rdma@vger.kernel.org,
-        "open list\:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH bpf-next v4 09/10] selftests: Remove tools/lib/bpf from include path
-In-Reply-To: <CAEf4Bzb9zUmhxTyYahJqySJzgfyB-zMEd+o4ybv=a8-t+iZS4w@mail.gmail.com>
-References: <157926819690.1555735.10756593211671752826.stgit@toke.dk> <157926820677.1555735.5437255599683298212.stgit@toke.dk> <CAEf4Bzb9zUmhxTyYahJqySJzgfyB-zMEd+o4ybv=a8-t+iZS4w@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Mon, 20 Jan 2020 12:06:44 +0100
-Message-ID: <878sm2pet7.fsf@toke.dk>
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Quentin Monnet <quentin.monnet@netronome.com>,
+        Andrey Ignatov <rdna@fb.com>, Joe Stringer <joe@wand.net.nz>
+Subject: Re: [PATCH bpf-next v2 05/10] bpf: lsm: BTF API for LSM hooks
+Message-ID: <20200120111014.GB26394@chromium.org>
+References: <20200115171333.28811-1-kpsingh@chromium.org>
+ <20200115171333.28811-6-kpsingh@chromium.org>
+ <CAEf4BzYJy40csmwfBgtD+UZY3X+hjqpQ=NwjUQ-cwy+RPF8VHA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzYJy40csmwfBgtD+UZY3X+hjqpQ=NwjUQ-cwy+RPF8VHA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-[...]
-> I really-really didn't like this alternating dependency on directory
-> or a set of file, depending on current state of those temporary
-> directories. Then also this ugly check to avoid circular dependency.
-> All that seemed wrong. So I played a bit with how to achieve the same
-> differently, and here's what I came up with, which I like a bit
-> better. What do you think?
->
-> $(BPFOBJ): $(wildcard $(BPFDIR)/*.c $(BPFDIR)/*.h $(BPFDIR)/Makefile)          \
->            ../../../include/uapi/linux/bpf.h                                   \
->            | $(INCLUDE_DIR) $(BUILD_DIR)/libbpf
->         $(Q)$(MAKE) $(submake_extras) -C $(BPFDIR) OUTPUT=$(BUILD_DIR)/libbpf/ \
->                     DESTDIR=$(SCRATCH_DIR) prefix= all install_headers
->
-> So, essentially, just make sure that we install local copies of
-> headers whenever libbpf.a needs to be re-built.
-> ../../../include/uapi/linux/bpf.h ensures we don't miss uapi header
-> changes as well. Now anything that uses libbpf headers will need to
-> depend on $(BPFOBJ) and will automatically get up-to-date local copies
-> of headers.
->
-> This seems much simpler. Please give it a try, thanks!
+Thanks for reviewing!
 
-Yes, this is a good idea! It did actually occur to me that the $(BPFOBJ)
-rule could just include the install_headers make arg, but only after I
-sent out this latest version. Thank you for taking the time to work out
-the details, I'll fold this in :)
+On 16-Jan 16:28, Andrii Nakryiko wrote:
+> On Wed, Jan 15, 2020 at 9:14 AM KP Singh <kpsingh@chromium.org> wrote:
+> >
+> > From: KP Singh <kpsingh@google.com>
+> >
+> > The BTF API provides information required by the BPF verifier to
+> > attach eBPF programs to the LSM hooks by using the BTF information of
+> > two types:
+> >
+> > - struct security_hook_heads: This type provides the offset which
+> >   a new dynamically allocated security hook must be attached to.
+> > - union security_list_options: This provides the information about the
+> >   function prototype required by the hook.
+> >
+> > When the program is loaded:
+> >
+> > - The verifier receives the index of a member in struct
+> >   security_hook_heads to which a program must be attached as
+> >   prog->aux->lsm_hook_index. The index is one-based for better
+> >   verification.
+> > - bpf_lsm_type_by_index is used to determine the func_proto of
+> >   the LSM hook and updates prog->aux->attach_func_proto
+> > - bpf_lsm_head_by_index is used to determine the hlist_head to which
+> >   the BPF program must be attached.
+> >
+> > Signed-off-by: KP Singh <kpsingh@google.com>
+> > ---
+> >  include/linux/bpf_lsm.h |  12 +++++
+> >  security/bpf/Kconfig    |   1 +
+> >  security/bpf/hooks.c    | 104 ++++++++++++++++++++++++++++++++++++++++
+> >  3 files changed, 117 insertions(+)
+> >
+> > diff --git a/include/linux/bpf_lsm.h b/include/linux/bpf_lsm.h
+> > index 9883cf25241c..a9b4f7b41c65 100644
+> > --- a/include/linux/bpf_lsm.h
+> > +++ b/include/linux/bpf_lsm.h
+> > @@ -19,6 +19,8 @@ extern struct security_hook_heads bpf_lsm_hook_heads;
+> >
+> >  int bpf_lsm_srcu_read_lock(void);
+> >  void bpf_lsm_srcu_read_unlock(int idx);
+> > +const struct btf_type *bpf_lsm_type_by_index(struct btf *btf, u32 offset);
+> > +const struct btf_member *bpf_lsm_head_by_index(struct btf *btf, u32 id);
+> >
+> >  #define CALL_BPF_LSM_VOID_HOOKS(FUNC, ...)                     \
+> >         do {                                                    \
+> > @@ -65,6 +67,16 @@ static inline int bpf_lsm_srcu_read_lock(void)
+> >         return 0;
+> >  }
+> >  static inline void bpf_lsm_srcu_read_unlock(int idx) {}
+> > +static inline const struct btf_type *bpf_lsm_type_by_index(
+> > +       struct btf *btf, u32 index)
+> > +{
+> > +       return ERR_PTR(-EOPNOTSUPP);
+> > +}
+> > +static inline const struct btf_member *bpf_lsm_head_by_index(
+> > +       struct btf *btf, u32 id)
+> > +{
+> > +       return ERR_PTR(-EOPNOTSUPP);
+> > +}
+> >
+> >  #endif /* CONFIG_SECURITY_BPF */
+> >
+> > diff --git a/security/bpf/Kconfig b/security/bpf/Kconfig
+> > index 595e4ad597ae..9438d899b618 100644
+> > --- a/security/bpf/Kconfig
+> > +++ b/security/bpf/Kconfig
+> > @@ -7,6 +7,7 @@ config SECURITY_BPF
+> >         depends on SECURITY
+> >         depends on BPF_SYSCALL
+> >         depends on SRCU
+> > +       depends on DEBUG_INFO_BTF
+> >         help
+> >           This enables instrumentation of the security hooks with
+> >           eBPF programs.
+> > diff --git a/security/bpf/hooks.c b/security/bpf/hooks.c
+> > index b123d9cb4cd4..82725611693d 100644
+> > --- a/security/bpf/hooks.c
+> > +++ b/security/bpf/hooks.c
+> > @@ -5,6 +5,8 @@
+> >   */
+> >
+> >  #include <linux/bpf_lsm.h>
+> > +#include <linux/bpf.h>
+> > +#include <linux/btf.h>
+> >  #include <linux/srcu.h>
+> >
+> >  DEFINE_STATIC_SRCU(security_hook_srcu);
+> > @@ -18,3 +20,105 @@ void bpf_lsm_srcu_read_unlock(int idx)
+> >  {
+> >         return srcu_read_unlock(&security_hook_srcu, idx);
+> >  }
+> > +
+> > +static inline int validate_hlist_head(struct btf *btf, u32 type_id)
+> > +{
+> > +       s32 hlist_id;
+> > +
+> > +       hlist_id = btf_find_by_name_kind(btf, "hlist_head", BTF_KIND_STRUCT);
+> > +       if (hlist_id < 0 || hlist_id != type_id)
+> > +               return -EINVAL;
+> 
+> This feels backwards and expensive. You already have type_id you want
+> to check. Do a quick look up, check type and other attributes, if you
+> want. There is no need to do linear search for struct named
+> "hlist_head".
+> 
+> But in reality, you should trust kernel BTF, you already know that you
+> found correct "security_hook_heads" struct, so its member has to be
+> hlist_head, no?
 
--Toke
+We had a discussion internally and also came the same conclusion (it's
+okay to trust the BTF) and will remove sone of the "over-cautious"
+checks in the next revision.
 
+This one, however, in particular is to protect against the case when a
+new member which is not a hlist_head is added to security_hook_heads
+and the user-space tries to attach at that index.
+
+I admit that the likelyhood of that happening is very little  but I
+think it's worth checking. I do, like your idea and will update the
+code to use the type_id and do a quick check rather than a linear
+search to look for the type_id.
+
+This is what remains of all the pedantic checks pertaining to
+hlist_head:
+
+	t = btf_type_by_id(btf, member->type);
+	if (unlikely(!t))
+		return -EINVAL;
+
+	if (BTF_INFO_KIND(t->info) != BTF_KIND_STRUCT)
+		return -EINVAL;
+
+	if (t->size != sizeof(struct hlist_head))
+		return -EINVAL;
+
+> 
+> > +
+> > +       return 0;
+> > +}
+> > +
+> > +/* Find the BTF representation of the security_hook_heads member for a member
+> > + * with a given index in struct security_hook_heads.
+> > + */
+> > +const struct btf_member *bpf_lsm_head_by_index(struct btf *btf, u32 index)
+> > +{
+> > +       const struct btf_member *member;
+> > +       const struct btf_type *t;
+> > +       u32 off, i;
+> > +       int ret;
+> > +
+> > +       t = btf_type_by_name_kind(btf, "security_hook_heads", BTF_KIND_STRUCT);
+> > +       if (WARN_ON_ONCE(IS_ERR(t)))
+> > +               return ERR_CAST(t);
+> > +
+> > +       for_each_member(i, t, member) {
+> > +               /* We've found the id requested and need to check the
+
+> > +                * the following:
+> > +                *
+> > +                * - Is it at a valid alignment for struct hlist_head?
+> > +                *
+> > +                * - Is it a valid hlist_head struct?
+> > +                */
+> > +               if (index == i) {
+> 
+> Also not efficient. Check index to be < vlen(t), then member =
+> btf_type_member(t) + index;
+
+Neat! Updated.
+
+> 
+> 
+> > +                       off = btf_member_bit_offset(t, member);
+> > +                       if (off % 8)
+> > +                               /* valid c code cannot generate such btf */
+> > +                               return ERR_PTR(-EINVAL);
+> > +                       off /= 8;
+> > +
+> > +                       if (off % __alignof__(struct hlist_head))
+> > +                               return ERR_PTR(-EINVAL);
+> > +
+> > +                       ret = validate_hlist_head(btf, member->type);
+> > +                       if (ret < 0)
+> > +                               return ERR_PTR(ret);
+> > +
+> > +                       return member;
+> 
+> This feels a bit over-cautious to double-check this. If
+> security_hook_heads definition is controlled by kernel sources, then
+> we could just trust vmlinux BTF?
+
+Yep, makes sense. Removed some of these checks.
+
+> 
+> > +               }
+> > +       }
+> > +
+> > +       return ERR_PTR(-ENOENT);
+> > +}
+> > +
+> > +/* Given an index of a member in security_hook_heads return the
+> > + * corresponding type for the LSM hook. The members of the union
+> > + * security_list_options have the same name as the security_hook_heads which
+> > + * is ensured by the LSM_HOOK_INIT macro defined in include/linux/lsm_hooks.h
+> > + */
+> > +const struct btf_type *bpf_lsm_type_by_index(struct btf *btf, u32 index)
+> > +{
+> > +       const struct btf_member *member, *hook_head = NULL;
+> > +       const struct btf_type *t, *hook_type = NULL;
+> > +       u32 i;
+> > +
+> > +       hook_head = bpf_lsm_head_by_index(btf, index);
+> > +       if (IS_ERR(hook_head))
+> > +               return ERR_PTR(PTR_ERR(hook_head));
+> > +
+> > +       t = btf_type_by_name_kind(btf, "security_list_options", BTF_KIND_UNION);
+> > +       if (WARN_ON_ONCE(IS_ERR(t)))
+> > +               return ERR_CAST(t);
+> 
+> btf_type_by_name_kind() is a linear search (at least right now), so it
+> might be a good idea to cache found type_id's of security_list_options
+> and security_hook_heads?
+
+I am already caching these types in the next patch (struct
+bpf_lsm_info) of the series which implements attachment. I moved it to
+this patch so that it's clearer.
+
+> 
+> > +
+> > +       for_each_member(i, t, member) {
+> > +               if (hook_head->name_off == member->name_off) {
+> > +                       /* There should be only one member with the same name
+> > +                        * as the LSM hook. This should never really happen
+> > +                        * and either indicates malformed BTF or someone trying
+> > +                        * trick the LSM.
+> > +                        */
+> > +                       if (WARN_ON(hook_type))
+> > +                               return ERR_PTR(-EINVAL);
+> > +
+> > +                       hook_type = btf_type_by_id(btf, member->type);
+> > +                       if (unlikely(!hook_type))
+> > +                               return ERR_PTR(-EINVAL);
+> > +
+> > +                       if (!btf_type_is_ptr(hook_type))
+> > +                               return ERR_PTR(-EINVAL);
+> > +               }
+> > +       }
+> > +
+> > +       if (!hook_type)
+> > +               return ERR_PTR(-ENOENT);
+> > +
+> > +       t = btf_type_by_id(btf, hook_type->type);
+> > +       if (unlikely(!t))
+> > +               return ERR_PTR(-EINVAL);
+> 
+> why not do this inside the loop when you find correct member and not
+> continue processing all the fields?
+
+Updated.
+
+- KP
+
+> 
+> > +
+> > +       return t;
+> > +}
+> > --
+> > 2.20.1
+> >
