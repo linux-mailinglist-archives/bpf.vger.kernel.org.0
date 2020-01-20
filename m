@@ -2,144 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C2191143470
-	for <lists+bpf@lfdr.de>; Tue, 21 Jan 2020 00:29:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84E0B14348A
+	for <lists+bpf@lfdr.de>; Tue, 21 Jan 2020 00:51:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727018AbgATX3D (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Jan 2020 18:29:03 -0500
-Received: from zeniv.linux.org.uk ([195.92.253.2]:56548 "EHLO
-        ZenIV.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726843AbgATX3C (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 20 Jan 2020 18:29:02 -0500
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1itgTa-00CJ1b-La; Mon, 20 Jan 2020 23:28:58 +0000
-Date:   Mon, 20 Jan 2020 23:28:58 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH][bpf] don't bother with getname/kern_path - use user_path_at
-Message-ID: <20200120232858.GF8904@ZenIV.linux.org.uk>
+        id S1727075AbgATXvo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Jan 2020 18:51:44 -0500
+Received: from www62.your-server.de ([213.133.104.62]:39224 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727045AbgATXvo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 20 Jan 2020 18:51:44 -0500
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1itgSH-0007F0-5u; Tue, 21 Jan 2020 00:27:37 +0100
+Received: from [178.197.248.27] (helo=pc-9.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1itgSG-000IpE-R6; Tue, 21 Jan 2020 00:27:36 +0100
+Subject: Re: [PATCH bpf-next] xsk: update rings for load-acquire/store-release
+ semantics
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        netdev@vger.kernel.org, ast@kernel.org
+Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        bpf@vger.kernel.org, magnus.karlsson@intel.com,
+        jonathan.lemon@gmail.com
+References: <20200120092149.13775-1-bjorn.topel@gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <28b2b6ba-7f43-6cab-9b3a-174fc71d5a62@iogearbox.net>
+Date:   Tue, 21 Jan 2020 00:27:35 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <20200120092149.13775-1-bjorn.topel@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.101.4/25701/Mon Jan 20 12:41:43 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-	kernel/bpf/inode.c misuses kern_path...() - it's much simpler
-(and more efficient, on top of that) to use user_path...() counterparts
-rather than bothering with doing getname() manually.
+On 1/20/20 10:21 AM, Björn Töpel wrote:
+> From: Björn Töpel <bjorn.topel@intel.com>
+> 
+> Currently, the AF_XDP rings uses fences for the kernel-side
+> produce/consume functions. By updating rings for
+> load-acquire/store-release semantics, the full barrier (smp_mb()) on
+> the consumer side can be replaced.
+> 
+> Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
 
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
----
-diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
-index ecf42bec38c0..e11059b99f18 100644
---- a/kernel/bpf/inode.c
-+++ b/kernel/bpf/inode.c
-@@ -380,7 +380,7 @@ static const struct inode_operations bpf_dir_iops = {
- 	.unlink		= simple_unlink,
- };
- 
--static int bpf_obj_do_pin(const struct filename *pathname, void *raw,
-+static int bpf_obj_do_pin(const char __user *pathname, void *raw,
- 			  enum bpf_type type)
- {
- 	struct dentry *dentry;
-@@ -389,7 +389,7 @@ static int bpf_obj_do_pin(const struct filename *pathname, void *raw,
- 	umode_t mode;
- 	int ret;
- 
--	dentry = kern_path_create(AT_FDCWD, pathname->name, &path, 0);
-+	dentry = user_path_create(AT_FDCWD, pathname, &path, 0);
- 	if (IS_ERR(dentry))
- 		return PTR_ERR(dentry);
- 
-@@ -422,30 +422,22 @@ static int bpf_obj_do_pin(const struct filename *pathname, void *raw,
- 
- int bpf_obj_pin_user(u32 ufd, const char __user *pathname)
- {
--	struct filename *pname;
- 	enum bpf_type type;
- 	void *raw;
- 	int ret;
- 
--	pname = getname(pathname);
--	if (IS_ERR(pname))
--		return PTR_ERR(pname);
--
- 	raw = bpf_fd_probe_obj(ufd, &type);
--	if (IS_ERR(raw)) {
--		ret = PTR_ERR(raw);
--		goto out;
--	}
-+	if (IS_ERR(raw))
-+		return PTR_ERR(raw);
- 
--	ret = bpf_obj_do_pin(pname, raw, type);
-+	ret = bpf_obj_do_pin(pathname, raw, type);
- 	if (ret != 0)
- 		bpf_any_put(raw, type);
--out:
--	putname(pname);
-+
- 	return ret;
- }
- 
--static void *bpf_obj_do_get(const struct filename *pathname,
-+static void *bpf_obj_do_get(const char __user *pathname,
- 			    enum bpf_type *type, int flags)
- {
- 	struct inode *inode;
-@@ -453,7 +445,7 @@ static void *bpf_obj_do_get(const struct filename *pathname,
- 	void *raw;
- 	int ret;
- 
--	ret = kern_path(pathname->name, LOOKUP_FOLLOW, &path);
-+	ret = user_path_at(AT_FDCWD, pathname, LOOKUP_FOLLOW, &path);
- 	if (ret)
- 		return ERR_PTR(ret);
- 
-@@ -480,36 +472,27 @@ static void *bpf_obj_do_get(const struct filename *pathname,
- int bpf_obj_get_user(const char __user *pathname, int flags)
- {
- 	enum bpf_type type = BPF_TYPE_UNSPEC;
--	struct filename *pname;
--	int ret = -ENOENT;
- 	int f_flags;
- 	void *raw;
-+	int ret;
- 
- 	f_flags = bpf_get_file_flag(flags);
- 	if (f_flags < 0)
- 		return f_flags;
- 
--	pname = getname(pathname);
--	if (IS_ERR(pname))
--		return PTR_ERR(pname);
--
--	raw = bpf_obj_do_get(pname, &type, f_flags);
--	if (IS_ERR(raw)) {
--		ret = PTR_ERR(raw);
--		goto out;
--	}
-+	raw = bpf_obj_do_get(pathname, &type, f_flags);
-+	if (IS_ERR(raw))
-+		return PTR_ERR(raw);
- 
- 	if (type == BPF_TYPE_PROG)
- 		ret = bpf_prog_new_fd(raw);
- 	else if (type == BPF_TYPE_MAP)
- 		ret = bpf_map_new_fd(raw, f_flags);
- 	else
--		goto out;
-+		return -ENOENT;
- 
- 	if (ret < 0)
- 		bpf_any_put(raw, type);
--out:
--	putname(pname);
- 	return ret;
- }
- 
+If I'm not missing something from the ring update scheme, don't you also need
+to adapt to STORE.rel ->producer with matching barrier in tools/lib/bpf/xsk.h ?
+
+Btw, alternative model could also be 09d62154f613 ("tools, perf: add and use
+optimized ring_buffer_{read_head, write_tail} helpers") for the kernel side
+in order to get rid of the smp_mb() on x86.
+
+Thanks,
+Daniel
