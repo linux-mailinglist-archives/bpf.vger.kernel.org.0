@@ -2,117 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FFA1142741
-	for <lists+bpf@lfdr.de>; Mon, 20 Jan 2020 10:29:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D42651428AC
+	for <lists+bpf@lfdr.de>; Mon, 20 Jan 2020 12:00:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726148AbgATJ30 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Jan 2020 04:29:26 -0500
-Received: from mail-pj1-f66.google.com ([209.85.216.66]:38819 "EHLO
-        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726039AbgATJ30 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 20 Jan 2020 04:29:26 -0500
-Received: by mail-pj1-f66.google.com with SMTP id l35so6900836pje.3;
-        Mon, 20 Jan 2020 01:29:25 -0800 (PST)
+        id S1726798AbgATLA1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Jan 2020 06:00:27 -0500
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:33990 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726587AbgATLA0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 20 Jan 2020 06:00:26 -0500
+Received: by mail-wr1-f67.google.com with SMTP id t2so29063774wrr.1
+        for <bpf@vger.kernel.org>; Mon, 20 Jan 2020 03:00:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=sH9LEkgfmGifYi4XLAbxzQIiktpMa8GeYyvOnqKR3Bc=;
-        b=Z22z8WDPRAJTVSKpwx+SiW14Dp1AyvGi9myR+Rol7435elpTB/qNLsd588uVNlmmHG
-         hl9MACKu5jYqjVrYDsfk1yXmjT2yJCQoUjwQvijFUSCBEnxpqlf6XB0SOGdqj27iOEJq
-         9gfnX/NdtHx4+hSOT6t6buMUXIsUHRhGlGbcgfT0Wt4GBZl+j1WVU6HXUqXTsojjZgkd
-         2XKcobHWeIs4ThTF85LIAnm9Ar+5j9Pk0sD5seyDMy6jjb3SWITU2+PXoh88qa056vhz
-         xIs6pdQXPs/BKiD5QoQP4y/LJSgNLLRpbbfyLYqzpHx2mTvaexkycd3GGRgmEyAuKY1r
-         pptw==
+        d=chromium.org; s=google;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=h0kvQ4eCX79cpNR9tBb856KH4IB2MxohzQIizX2CeOI=;
+        b=B6/6xZTEr6V0++DfY1ylmdTYxdhl/GcgB1ZbHA6eMl5px5cB/qiivsacOUp74gwG5C
+         gejERd4IdLUidU9rCmQL5ivW2cjrv609ZzKDtji1yVhfW2D4ZY9hVSQwlScAhDiDwBh/
+         GMl3Mb090BjevPnMdSIu4rkvdfG+KM5RjLj98=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=sH9LEkgfmGifYi4XLAbxzQIiktpMa8GeYyvOnqKR3Bc=;
-        b=XvZ/2kIQZfjoM899sBa2+MzroS6cF2Jfb+5YR4kavciueZROBXjrfzk6HwBAXpEUFK
-         j2HeWApNZyfk551hBLkG9QqTGBtl+hnyPdxhWgx581PDQpM1JDMb5mSTPjSUMTfs26iO
-         lK6qhnTbcuhKuZzpIF9EmBd9tS8Xk0ILAX+YM7DVH/wmLdWbTCQORxuhKDDJYjAmra/3
-         ihBMh4ms51ulyhR4f+UnBxg1AwbcNorjcqRwmxul2PisJC9kiWHwBy4nCtnezU9+s1xR
-         bazodEFka4w0VKMTb9C4Es4UYBrbgTxzYpS7paVDtDOAdAg4Ost3Vz/OieTv03NW4IgS
-         cfNw==
-X-Gm-Message-State: APjAAAX2JnVm81MLCqWrKJcGmRWZAKsVgYbMn3gnYjpiOEKu08dwWLc9
-        4LiK5VUWEAMtV3LzxzKVq4Gi2s7S/ps=
-X-Google-Smtp-Source: APXvYqyiFoDknMSkjq34ylWg77dBmDVa48tU+6JTgMdR0Q9M/SNH+jeR/VJj9p6hVBecdHh77q9UzA==
-X-Received: by 2002:a17:902:6906:: with SMTP id j6mr13857856plk.117.1579512565449;
-        Mon, 20 Jan 2020 01:29:25 -0800 (PST)
-Received: from btopel-mobl.ger.intel.com ([192.55.54.44])
-        by smtp.gmail.com with ESMTPSA id g2sm38107147pgn.59.2020.01.20.01.29.23
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=h0kvQ4eCX79cpNR9tBb856KH4IB2MxohzQIizX2CeOI=;
+        b=P7aiAtS/Da+RSk1bJla8LGdiPPdYrk3RGXa349BD0zz2rRGvg9d63q23UWfhsZjwr7
+         TFniX+5d7S0NzoZm/galN7NAT48V1C7/Le8J+JoipiBNxwzzpeWy7jcipvrmDwdkybPI
+         QwI0WjJjQJfXVJWFLpVN7eWUKEeLXXOutnZUQPyV16mBSi/MwxcP6k7cuofRvmfWTmJW
+         at9axrzbXz9ZM2qJUbXuzJzIZAPbvVKorC22doGSPBMQDlzVit6gfwiFDb04eiNUNXqG
+         ossqI5wkiJ1xpa4/dkSzc6ZLV+6E8Z3n8XpFpVCxdxBY6F0wbqRGhDrXnAAMCOPwMikR
+         u5nA==
+X-Gm-Message-State: APjAAAVN3pHfTvZy630O2iFhIzwX1MLHvI4lvR+WVrqVINtGjjLfC1Al
+        VpzTJzCn91jeLfO7XXnTNBDQ+g==
+X-Google-Smtp-Source: APXvYqxMSc51FxkyiwRzhynXKNNeeQtMip5aCjqZxIyrjKMZGMDBa8eIDMoS5v8dmDLw25owEHo1Zg==
+X-Received: by 2002:adf:f484:: with SMTP id l4mr18387323wro.207.1579518024273;
+        Mon, 20 Jan 2020 03:00:24 -0800 (PST)
+Received: from chromium.org ([2620:0:105f:fd00:24a7:c82b:86d8:5ae9])
+        by smtp.gmail.com with ESMTPSA id h66sm25546490wme.41.2020.01.20.03.00.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jan 2020 01:29:25 -0800 (PST)
-From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
-To:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
-        bpf@vger.kernel.org, magnus.karlsson@intel.com,
-        jonathan.lemon@gmail.com
-Subject: [PATCH bpf-next] xsk, net: make sock_def_readable() have external linkage
-Date:   Mon, 20 Jan 2020 10:29:17 +0100
-Message-Id: <20200120092917.13949-1-bjorn.topel@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        Mon, 20 Jan 2020 03:00:23 -0800 (PST)
+From:   KP Singh <kpsingh@chromium.org>
+X-Google-Original-From: KP Singh <kpsingh>
+Date:   Mon, 20 Jan 2020 12:00:44 +0100
+To:     kbuild test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        James Morris <jmorris@namei.org>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Garnier <thgarnie@chromium.org>,
+        Michael Halcrow <mhalcrow@google.com>,
+        Paul Turner <pjt@google.com>,
+        Brendan Gregg <brendan.d.gregg@gmail.com>,
+        Jann Horn <jannh@google.com>,
+        Matthew Garrett <mjg59@google.com>,
+        Christian Brauner <christian@brauner.io>,
+        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Quentin Monnet <quentin.monnet@netronome.com>,
+        Andrey Ignatov <rdna@fb.com>, Joe Stringer <joe@wand.net.nz>
+Subject: Re: [PATCH bpf-next v2 01/10] bpf: btf: Make some of the API visible
+ outside BTF
+Message-ID: <20200120110044.GA26394@chromium.org>
+References: <20200115171333.28811-2-kpsingh@chromium.org>
+ <202001182045.QaQ0kGP8%lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202001182045.QaQ0kGP8%lkp@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Björn Töpel <bjorn.topel@intel.com>
+Thanks! I have fixed this in the v3 of the series. btf_find_by_name_kind
+is independant of CONFIG_BPF_SYSCALL and btf_type_by_name_kind needs
+to be as well.
 
-XDP sockets use the default implementation of struct sock's
-sk_data_ready callback, which is sock_def_readable(). This function is
-called in the XDP socket fast-path, and involves a retpoline. By
-letting sock_def_readable() have external linkage, and being called
-directly, the retpoline can be avoided.
+The mistake was adding a static inline definition of the function
+in the !CONFIG_BPF_SYSCALL section which is not needed in this case.
 
-Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
----
- include/net/sock.h | 2 ++
- net/core/sock.c    | 2 +-
- net/xdp/xsk.c      | 2 +-
- 3 files changed, 4 insertions(+), 2 deletions(-)
+- KP
 
-diff --git a/include/net/sock.h b/include/net/sock.h
-index 8dff68b4c316..0891c55f1e82 100644
---- a/include/net/sock.h
-+++ b/include/net/sock.h
-@@ -2612,4 +2612,6 @@ static inline bool sk_dev_equal_l3scope(struct sock *sk, int dif)
- 	return false;
- }
- 
-+void sock_def_readable(struct sock *sk);
-+
- #endif	/* _SOCK_H */
-diff --git a/net/core/sock.c b/net/core/sock.c
-index 8459ad579f73..a4c8fac781ff 100644
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -2786,7 +2786,7 @@ static void sock_def_error_report(struct sock *sk)
- 	rcu_read_unlock();
- }
- 
--static void sock_def_readable(struct sock *sk)
-+void sock_def_readable(struct sock *sk)
- {
- 	struct socket_wq *wq;
- 
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index 02ada7ab8c6e..df600487a68d 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -217,7 +217,7 @@ static int xsk_rcv(struct xdp_sock *xs, struct xdp_buff *xdp)
- static void xsk_flush(struct xdp_sock *xs)
- {
- 	xskq_prod_submit(xs->rx);
--	xs->sk.sk_data_ready(&xs->sk);
-+	sock_def_readable(&xs->sk);
- }
- 
- int xsk_generic_rcv(struct xdp_sock *xs, struct xdp_buff *xdp)
--- 
-2.20.1
+On 18-Jan 20:44, kbuild test robot wrote:
+> Hi KP,
+> 
+> Thank you for the patch! Yet something to improve:
+> 
+> [auto build test ERROR on next-20200116]
+> [cannot apply to bpf-next/master bpf/master linus/master security/next-testing v5.5-rc6 v5.5-rc5 v5.5-rc4 v5.5-rc6]
+> [if your patch is applied to the wrong git tree, please drop us a note to help
+> improve the system. BTW, we also suggest to use '--base' option to specify the
+> base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
+> 
+> url:    https://github.com/0day-ci/linux/commits/KP-Singh/MAC-and-Audit-policy-using-eBPF-KRSI/20200117-070342
+> base:    2747d5fdab78f43210256cd52fb2718e0b3cce74
+> config: nds32-defconfig (attached as .config)
+> compiler: nds32le-linux-gcc (GCC) 9.2.0
+> reproduce:
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # save the attached .config to linux build tree
+>         GCC_VERSION=9.2.0 make.cross ARCH=nds32 
+> 
+> If you fix the issue, kindly add following tag
+> Reported-by: kbuild test robot <lkp@intel.com>
+> 
+> All errors (new ones prefixed by >>):
+> 
+>    In file included from kernel/bpf/core.c:27:
+> >> include/linux/btf.h:148:38: error: static declaration of 'btf_type_by_name_kind' follows non-static declaration
+>      148 | static inline const struct btf_type *btf_type_by_name_kind(
+>          |                                      ^~~~~~~~~~~~~~~~~~~~~
+>    include/linux/btf.h:70:24: note: previous declaration of 'btf_type_by_name_kind' was here
+>       70 | const struct btf_type *btf_type_by_name_kind(
+>          |                        ^~~~~~~~~~~~~~~~~~~~~
+> 
+> vim +/btf_type_by_name_kind +148 include/linux/btf.h
+> 
+>    136	
+>    137	#ifdef CONFIG_BPF_SYSCALL
+>    138	const struct btf_type *btf_type_by_id(const struct btf *btf, u32 type_id);
+>    139	const char *btf_name_by_offset(const struct btf *btf, u32 offset);
+>    140	struct btf *btf_parse_vmlinux(void);
+>    141	struct btf *bpf_prog_get_target_btf(const struct bpf_prog *prog);
+>    142	#else
+>    143	static inline const struct btf_type *btf_type_by_id(const struct btf *btf,
+>    144							    u32 type_id)
+>    145	{
+>    146		return NULL;
+>    147	}
+>  > 148	static inline const struct btf_type *btf_type_by_name_kind(
+>    149		struct btf *btf, const char *name, u8 kind)
+>    150	{
+>    151		return ERR_PTR(-EOPNOTSUPP);
+>    152	}
+>    153	static inline const char *btf_name_by_offset(const struct btf *btf,
+>    154						     u32 offset)
+>    155	{
+>    156		return NULL;
+>    157	}
+>    158	#endif
+>    159	
+> 
+> ---
+> 0-DAY kernel test infrastructure                 Open Source Technology Center
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org Intel Corporation
+
 
