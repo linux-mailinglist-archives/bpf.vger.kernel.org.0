@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 404A314271D
-	for <lists+bpf@lfdr.de>; Mon, 20 Jan 2020 10:22:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FFA1142741
+	for <lists+bpf@lfdr.de>; Mon, 20 Jan 2020 10:29:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727031AbgATJWK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Jan 2020 04:22:10 -0500
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:36539 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727018AbgATJWK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 20 Jan 2020 04:22:10 -0500
-Received: by mail-pl1-f194.google.com with SMTP id a6so12947531plm.3;
-        Mon, 20 Jan 2020 01:22:09 -0800 (PST)
+        id S1726148AbgATJ30 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Jan 2020 04:29:26 -0500
+Received: from mail-pj1-f66.google.com ([209.85.216.66]:38819 "EHLO
+        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726039AbgATJ30 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 20 Jan 2020 04:29:26 -0500
+Received: by mail-pj1-f66.google.com with SMTP id l35so6900836pje.3;
+        Mon, 20 Jan 2020 01:29:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=2U8BCFqH7p7t9lGKEloYuR2Tk0skT6QfoLljk5teH2g=;
-        b=ORq92HCW3W/1wiId9JaX3gJpoJhdTu8kozeY0GEFGZTFypLrTeqHBMKiPLKRLhRad4
-         CeOcnS1Cu8oFg5w9QRhITqNXVo7ZJYYRuBunohDU0MViyW0Oi7Cu43SeEK3o5/Orxys6
-         LIW+oeJqbLPWRaQ0aAvW4QKu3o9EnN4E3nDIZL3F6zm/x9D3aUXU0YZhPitA2hB0NoWj
-         mhKYgEGjTd/HgtL8jE7QkMhqhZBCU6I7CgWvkXJS0OfqYyuAxU0gUUAoyEuPH/Dse23K
-         7/3CqApWlD70tqOj3A4r4HZXeBTWZi1hzn9NwtVyb9A92SQ+kK6GDJR9UJRa6Tfv1sL+
-         1/vQ==
+        bh=sH9LEkgfmGifYi4XLAbxzQIiktpMa8GeYyvOnqKR3Bc=;
+        b=Z22z8WDPRAJTVSKpwx+SiW14Dp1AyvGi9myR+Rol7435elpTB/qNLsd588uVNlmmHG
+         hl9MACKu5jYqjVrYDsfk1yXmjT2yJCQoUjwQvijFUSCBEnxpqlf6XB0SOGdqj27iOEJq
+         9gfnX/NdtHx4+hSOT6t6buMUXIsUHRhGlGbcgfT0Wt4GBZl+j1WVU6HXUqXTsojjZgkd
+         2XKcobHWeIs4ThTF85LIAnm9Ar+5j9Pk0sD5seyDMy6jjb3SWITU2+PXoh88qa056vhz
+         xIs6pdQXPs/BKiD5QoQP4y/LJSgNLLRpbbfyLYqzpHx2mTvaexkycd3GGRgmEyAuKY1r
+         pptw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=2U8BCFqH7p7t9lGKEloYuR2Tk0skT6QfoLljk5teH2g=;
-        b=avDyuNvO19PGWjueZFcOW7Ekl4DAtfWY08OzB6kdv87KzjniCUD0CTWbQR0dg/AZAr
-         iEDD2lxvlGmVFb01GMbfGou/3uQwqjRvDGx/dJpzNClT2HNjlqa6pCygmeY0A3lH1rrb
-         vOM+xig4nmEuj8TJzN/PIWxkKavV2g83g2y1JSNZIVXMyk+K6/2R5wfD1yJ7bCadJHjd
-         pdb70N+8Kwt8rfz+C7DXIxAijt8zJVtCfuhhQpCuPtLCNUsau5ehtkbei2tMHlIhQPg2
-         EI5xhjgCiJJmvoKfXPDZvMiwy8rwzouyWakItPDnB2RQ6upGk++YgwFx0A/0IrUlYeB4
-         1TlA==
-X-Gm-Message-State: APjAAAUbN5FHIExnBI6ixmxgLgeydxHA6I2wSuCF/Hp6Z2iHQB1f3RwJ
-        umID2FFzwDJVdGVkqORTrQsSEGmNOGQ=
-X-Google-Smtp-Source: APXvYqw7kSJkQRdbjuC1S4eR288xHi27yrWS4R7Mnc8zhQge1IyPeK28BG6nwVMmjsKS4Xho7HG6iw==
-X-Received: by 2002:a17:902:b781:: with SMTP id e1mr14444603pls.128.1579512129391;
-        Mon, 20 Jan 2020 01:22:09 -0800 (PST)
+        bh=sH9LEkgfmGifYi4XLAbxzQIiktpMa8GeYyvOnqKR3Bc=;
+        b=XvZ/2kIQZfjoM899sBa2+MzroS6cF2Jfb+5YR4kavciueZROBXjrfzk6HwBAXpEUFK
+         j2HeWApNZyfk551hBLkG9QqTGBtl+hnyPdxhWgx581PDQpM1JDMb5mSTPjSUMTfs26iO
+         lK6qhnTbcuhKuZzpIF9EmBd9tS8Xk0ILAX+YM7DVH/wmLdWbTCQORxuhKDDJYjAmra/3
+         ihBMh4ms51ulyhR4f+UnBxg1AwbcNorjcqRwmxul2PisJC9kiWHwBy4nCtnezU9+s1xR
+         bazodEFka4w0VKMTb9C4Es4UYBrbgTxzYpS7paVDtDOAdAg4Ost3Vz/OieTv03NW4IgS
+         cfNw==
+X-Gm-Message-State: APjAAAX2JnVm81MLCqWrKJcGmRWZAKsVgYbMn3gnYjpiOEKu08dwWLc9
+        4LiK5VUWEAMtV3LzxzKVq4Gi2s7S/ps=
+X-Google-Smtp-Source: APXvYqyiFoDknMSkjq34ylWg77dBmDVa48tU+6JTgMdR0Q9M/SNH+jeR/VJj9p6hVBecdHh77q9UzA==
+X-Received: by 2002:a17:902:6906:: with SMTP id j6mr13857856plk.117.1579512565449;
+        Mon, 20 Jan 2020 01:29:25 -0800 (PST)
 Received: from btopel-mobl.ger.intel.com ([192.55.54.44])
-        by smtp.gmail.com with ESMTPSA id r2sm36098475pgv.16.2020.01.20.01.22.06
+        by smtp.gmail.com with ESMTPSA id g2sm38107147pgn.59.2020.01.20.01.29.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jan 2020 01:22:08 -0800 (PST)
+        Mon, 20 Jan 2020 01:29:25 -0800 (PST)
 From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
 To:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net
 Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
         bpf@vger.kernel.org, magnus.karlsson@intel.com,
         jonathan.lemon@gmail.com
-Subject: [PATCH bpf-next] xsk: update rings for load-acquire/store-release semantics
-Date:   Mon, 20 Jan 2020 10:21:48 +0100
-Message-Id: <20200120092149.13775-1-bjorn.topel@gmail.com>
+Subject: [PATCH bpf-next] xsk, net: make sock_def_readable() have external linkage
+Date:   Mon, 20 Jan 2020 10:29:17 +0100
+Message-Id: <20200120092917.13949-1-bjorn.topel@gmail.com>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -63,80 +63,56 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Björn Töpel <bjorn.topel@intel.com>
 
-Currently, the AF_XDP rings uses fences for the kernel-side
-produce/consume functions. By updating rings for
-load-acquire/store-release semantics, the full barrier (smp_mb()) on
-the consumer side can be replaced.
+XDP sockets use the default implementation of struct sock's
+sk_data_ready callback, which is sock_def_readable(). This function is
+called in the XDP socket fast-path, and involves a retpoline. By
+letting sock_def_readable() have external linkage, and being called
+directly, the retpoline can be avoided.
 
 Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
 ---
- net/xdp/xsk_queue.h | 31 ++++++++++++++-----------------
- 1 file changed, 14 insertions(+), 17 deletions(-)
+ include/net/sock.h | 2 ++
+ net/core/sock.c    | 2 +-
+ net/xdp/xsk.c      | 2 +-
+ 3 files changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
-index bec2af11853a..2fff80576ee1 100644
---- a/net/xdp/xsk_queue.h
-+++ b/net/xdp/xsk_queue.h
-@@ -39,19 +39,18 @@ struct xsk_queue {
- 	u64 invalid_descs;
- };
- 
--/* The structure of the shared state of the rings are the same as the
-- * ring buffer in kernel/events/ring_buffer.c. For the Rx and completion
-- * ring, the kernel is the producer and user space is the consumer. For
-- * the Tx and fill rings, the kernel is the consumer and user space is
-- * the producer.
-+/* The structure of the shared state of the rings are a simple
-+ * circular buffer, as outlined in
-+ * Documentation/core-api/circular-buffers.rst. For the Rx and
-+ * completion ring, the kernel is the producer and user space is the
-+ * consumer. For the Tx and fill rings, the kernel is the consumer and
-+ * user space is the producer.
-  *
-  * producer                         consumer
-  *
-- * if (LOAD ->consumer) {           LOAD ->producer
-- *                    (A)           smp_rmb()       (C)
-+ * if (LOAD ->consumer) {  (A)      LOAD.acq ->producer  (C)
-  *    STORE $data                   LOAD $data
-- *    smp_wmb()       (B)           smp_mb()        (D)
-- *    STORE ->producer              STORE ->consumer
-+ *    STORE.rel ->producer (B)      STORE.rel ->consumer (D)
-  * }
-  *
-  * (A) pairs with (D), and (B) pairs with (C).
-@@ -220,15 +219,14 @@ static inline bool xskq_cons_read_desc(struct xsk_queue *q,
- 
- static inline void __xskq_cons_release(struct xsk_queue *q)
- {
--	smp_mb(); /* D, matches A */
--	WRITE_ONCE(q->ring->consumer, q->cached_cons);
-+	/* D, matches A */
-+	smp_store_release(&q->ring->consumer, q->cached_cons);
+diff --git a/include/net/sock.h b/include/net/sock.h
+index 8dff68b4c316..0891c55f1e82 100644
+--- a/include/net/sock.h
++++ b/include/net/sock.h
+@@ -2612,4 +2612,6 @@ static inline bool sk_dev_equal_l3scope(struct sock *sk, int dif)
+ 	return false;
  }
  
- static inline void __xskq_cons_peek(struct xsk_queue *q)
- {
--	/* Refresh the local pointer */
--	q->cached_prod = READ_ONCE(q->ring->producer);
--	smp_rmb(); /* C, matches B */
-+	/* C, matches B */
-+	q->cached_prod = smp_load_acquire(&q->ring->producer);
++void sock_def_readable(struct sock *sk);
++
+ #endif	/* _SOCK_H */
+diff --git a/net/core/sock.c b/net/core/sock.c
+index 8459ad579f73..a4c8fac781ff 100644
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -2786,7 +2786,7 @@ static void sock_def_error_report(struct sock *sk)
+ 	rcu_read_unlock();
  }
  
- static inline void xskq_cons_get_entries(struct xsk_queue *q)
-@@ -340,9 +338,8 @@ static inline int xskq_prod_reserve_desc(struct xsk_queue *q,
- 
- static inline void __xskq_prod_submit(struct xsk_queue *q, u32 idx)
+-static void sock_def_readable(struct sock *sk)
++void sock_def_readable(struct sock *sk)
  {
--	smp_wmb(); /* B, matches C */
--
--	WRITE_ONCE(q->ring->producer, idx);
-+	/* B, matches C */
-+	smp_store_release(&q->ring->producer, idx);
+ 	struct socket_wq *wq;
+ 
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index 02ada7ab8c6e..df600487a68d 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -217,7 +217,7 @@ static int xsk_rcv(struct xdp_sock *xs, struct xdp_buff *xdp)
+ static void xsk_flush(struct xdp_sock *xs)
+ {
+ 	xskq_prod_submit(xs->rx);
+-	xs->sk.sk_data_ready(&xs->sk);
++	sock_def_readable(&xs->sk);
  }
  
- static inline void xskq_prod_submit(struct xsk_queue *q)
+ int xsk_generic_rcv(struct xdp_sock *xs, struct xdp_buff *xdp)
 -- 
 2.20.1
 
