@@ -2,196 +2,196 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 96094143D09
-	for <lists+bpf@lfdr.de>; Tue, 21 Jan 2020 13:42:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FA39143E96
+	for <lists+bpf@lfdr.de>; Tue, 21 Jan 2020 14:50:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727350AbgAUMm0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Jan 2020 07:42:26 -0500
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:44379 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727059AbgAUMm0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Jan 2020 07:42:26 -0500
-Received: by mail-wr1-f68.google.com with SMTP id q10so2987181wrm.11
-        for <bpf@vger.kernel.org>; Tue, 21 Jan 2020 04:42:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=T8LTDpV4SYvFT+svgavRLIeF6WcPBcW9R80yIXDdth8=;
-        b=AuTB3b3IBRqzf+sft2bF0mxHV6glEKpQTbyHppOs+lgLtSI4G7td+0KTO1Dnlk0cFi
-         cGK58ZXaStQFd6QIPzx2Yf5HjgNUsyUUE1K4SM4mMQK8BgKCRQ1wDLnPrdwtb9yoc/bX
-         SlxBdlfaVWye8UdN9cFsF6TDP3GVptX/6Vcvw=
+        id S1728916AbgAUNuT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Jan 2020 08:50:19 -0500
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:56950 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729081AbgAUNuS (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 21 Jan 2020 08:50:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1579614617;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QSA9nedBLY+hJJ/U902gs3UmyLK6X1rNeQVNhq9BcRk=;
+        b=DpBjrrCfpL3ADMet6GmkzlxC3y2FWkxNkrspbkdvVlHQl/kSKsosELnCk/gXcj64Iczrfx
+        8rsqbiGkLjrsLFOcMcEX4l0MXjhBJgzCMmhaHibVEGF+K3Kwb/F7Ywj5yxfTOepQotLMVI
+        eVwEOjNHo280x9GWw9J754ygDx/X/Y8=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-160-Y71-dM3jMsqycW_Ou9d84A-1; Tue, 21 Jan 2020 08:50:16 -0500
+X-MC-Unique: Y71-dM3jMsqycW_Ou9d84A-1
+Received: by mail-lf1-f71.google.com with SMTP id w72so885633lff.20
+        for <bpf@vger.kernel.org>; Tue, 21 Jan 2020 05:50:15 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=T8LTDpV4SYvFT+svgavRLIeF6WcPBcW9R80yIXDdth8=;
-        b=Z58mBbqjiJWUmuRE8RR8wEAAHP3OUOEAdtzCMs2vX37LvzredeD+hLWuuQDbImgSx5
-         +xTpryDS2pFJ2BnTNhRy3la5WXLeuDcyiATITZu+Qbfo6Ci700+gzYps0UKsfNdMLRmc
-         19xnRQz9/1FQ0QkkpEiLJW6DbpmxDG7oWUttRugxQvAODTGNs3Ka7Y54YUZQLtgRujeH
-         JmxH37/P6ALlOxtStIsLsll2oCrjlgc1kB9WXCe/0A7iFod+P84wwQuqQ82H2aBgiMF6
-         9vgy9rLBgHzbzwXN1Y5sgENzRMrqXlR/vV5iKhzcZh6feBbUKaYNTWKlIeVIulo9A6sp
-         bAog==
-X-Gm-Message-State: APjAAAXv5WP/3YtMm29mq5u9mp9D+6HJvYNh77BYtfISneOLHQ7/0CKW
-        JZoycnbC/dGJeDZ0ZqIZ38Fhjw==
-X-Google-Smtp-Source: APXvYqze9aGSsYl2P1uvmHLfqXt4wmAXuCH59vhyTaBzMT2DbW3oldw81z8aYyxkkEkRlfB8+3/uVQ==
-X-Received: by 2002:adf:fa12:: with SMTP id m18mr4967629wrr.309.1579610543539;
-        Tue, 21 Jan 2020 04:42:23 -0800 (PST)
-Received: from cloudflare.com ([176.221.114.230])
-        by smtp.gmail.com with ESMTPSA id x10sm51573340wrp.58.2020.01.21.04.42.22
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=QSA9nedBLY+hJJ/U902gs3UmyLK6X1rNeQVNhq9BcRk=;
+        b=rHpY6Y6gPltCzTZlxP72ikpsGwNYC/Fr3jfgqD9uqX4Pr40TCMSeEGZzsSoWOzwOX7
+         GMrhRCGnS5gYk3gTz99CMnSk/QUxBdYYckxGxNYgH75yH1zlczeFltF2bf5sm5UnkPzk
+         +NOJAe3Cygf9wkgTh4tw/wUNhmmqaF6rfnixgWB0spAdjbCQiWH6XfOPoqXSasSvl7kr
+         UNKo48Sg3lDctp2gwTUCJP1M1y6M9Xz6r9eu0I5TuT/z1ex+cIq4XKIQdD32cFSwP6Pd
+         +Zo8cNnFsbzrYm4b3AzpeELevEAQ5+KKvwU8rLx8PuxQNf43skDIEX1kzU/AHBRjb6lv
+         kUdg==
+X-Gm-Message-State: APjAAAUfZIL8wopwGyYcJnqmNB9+uzRO3qfqn9WRHQSmVJxrQjs6+eXD
+        8Z4mXCcjKG4nxR3Xl0ybrpbTvpiReUdtD4O0RD5qGBKqJ3q3fWYuQCa4xuOknkdFZsx+nj3jHzw
+        MEBE/lnPJER0A
+X-Received: by 2002:a19:48c5:: with SMTP id v188mr2838254lfa.100.1579614614304;
+        Tue, 21 Jan 2020 05:50:14 -0800 (PST)
+X-Google-Smtp-Source: APXvYqyn5xqRhHmPpySMcmkFZmX06i6ruLvGvbAL8D8ASe1wRGX+vhBALjz8OzpwILxiqeG3ZXt2kA==
+X-Received: by 2002:a19:48c5:: with SMTP id v188mr2838216lfa.100.1579614613963;
+        Tue, 21 Jan 2020 05:50:13 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([85.204.121.218])
+        by smtp.gmail.com with ESMTPSA id r2sm18840207lfn.13.2020.01.21.05.50.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jan 2020 04:42:22 -0800 (PST)
-References: <20200110105027.257877-1-jakub@cloudflare.com> <20200110105027.257877-3-jakub@cloudflare.com> <5e1a56e630ee1_1e7f2b0c859c45c0c4@john-XPS-13-9370.notmuch> <87muars890.fsf@cloudflare.com> <5e25dc995d7d_74082aaee6e465b441@john-XPS-13-9370.notmuch> <874kwqroap.fsf@cloudflare.com>
-User-agent: mu4e 1.1.0; emacs 26.3
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        kernel-team@cloudflare.com, Eric Dumazet <edumazet@google.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Martin KaFai Lau <kafai@fb.com>
-Subject: Re: [PATCH bpf-next v2 02/11] net, sk_msg: Annotate lockless access to sk_prot on clone
-In-reply-to: <874kwqroap.fsf@cloudflare.com>
-Date:   Tue, 21 Jan 2020 13:42:22 +0100
-Message-ID: <8736c9rnf5.fsf@cloudflare.com>
+        Tue, 21 Jan 2020 05:50:13 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 1B9471804D6; Tue, 21 Jan 2020 14:33:47 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-rdma@vger.kernel.org,
+        "open list\:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH bpf-next v5 00/11] tools: Use consistent libbpf include paths everywhere
+In-Reply-To: <CAEf4BzYNp81_bOFSEZR=AcruC2ms76fCWQGit+=2QZrFAXpGqg@mail.gmail.com>
+References: <157952560001.1683545.16757917515390545122.stgit@toke.dk> <CAEf4BzYNp81_bOFSEZR=AcruC2ms76fCWQGit+=2QZrFAXpGqg@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 21 Jan 2020 14:33:46 +0100
+Message-ID: <874kwpndc5.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 20, 2020 at 07:11 PM CET, Jakub Sitnicki wrote:
-> On Mon, Jan 20, 2020 at 06:00 PM CET, John Fastabend wrote:
->> Jakub Sitnicki wrote:
->>> On Sun, Jan 12, 2020 at 12:14 AM CET, John Fastabend wrote:
->>> > Jakub Sitnicki wrote:
->>> >> sk_msg and ULP frameworks override protocol callbacks pointer in
->>> >> sk->sk_prot, while TCP accesses it locklessly when cloning the listening
->>> >> socket.
->>> >>
->>> >> Once we enable use of listening sockets with sockmap (and hence sk_msg),
->>> >> there can be shared access to sk->sk_prot if socket is getting cloned while
->>> >> being inserted/deleted to/from the sockmap from another CPU. Mark the
->>> >> shared access with READ_ONCE/WRITE_ONCE annotations.
->>> >>
->>> >> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
->>> >
->>> > In sockmap side I fixed this by wrapping the access in a lock_sock[0]. So
->>> > Do you think this is still needed with that in mind? The bpf_clone call
->>> > is using sk_prot_creater and also setting the newsk's proto field. Even
->>> > if the listening parent sock was being deleted in parallel would that be
->>> > a problem? We don't touch sk_prot_creator from the tear down path. I've
->>> > only scanned the 3..11 patches so maybe the answer is below. If that is
->>> > the case probably an improved commit message would be helpful.
->>>
->>> I think it is needed. Not because of tcp_bpf_clone or that we access
->>> listener's sk_prot_creator from there, if I'm grasping your question.
->>>
->>> Either way I'm glad this came up. Let's go though my reasoning and
->>> verify it. tcp stack accesses the listener sk_prot while cloning it:
->>>
->>> tcp_v4_rcv
->>>   sk = __inet_lookup_skb(...)
->>>   tcp_check_req(sk)
->>>     inet_csk(sk)->icsk_af_ops->syn_recv_sock
->>>       tcp_v4_syn_recv_sock
->>>         tcp_create_openreq_child
->>>           inet_csk_clone_lock
->>>             sk_clone_lock
->>>               READ_ONCE(sk->sk_prot)
->>>
->>> It grabs a reference to the listener, but doesn't grab the sk_lock.
->>>
->>> On another CPU we can be inserting/removing the listener socket from the
->>> sockmap and writing to its sk_prot. We have the update and the remove
->>> path:
->>>
->>> sock_map_ops->map_update_elem
->>>   sock_map_update_elem
->>>     sock_map_update_common
->>>       sock_map_link_no_progs
->>>         tcp_bpf_init
->>>           tcp_bpf_update_sk_prot
->>>             sk_psock_update_proto
->>>               WRITE_ONCE(sk->sk_prot, ops)
->>>
->>> sock_map_ops->map_delete_elem
->>>   sock_map_delete_elem
->>>     __sock_map_delete
->>>      sock_map_unref
->>>        sk_psock_put
->>>          sk_psock_drop
->>>            sk_psock_restore_proto
->>>              tcp_update_ulp
->>>                WRITE_ONCE(sk->sk_prot, proto)
->>>
->>> Following the guidelines from KTSAN project [0], sk_prot looks like a
->>> candidate for annotating it. At least on these 3 call paths.
->>>
->>> If that sounds correct, I can add it to the patch description.
->>>
->>> Thanks,
->>> -jkbs
->>>
->>> [0] https://github.com/google/ktsan/wiki/READ_ONCE-and-WRITE_ONCE
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+
+> On Mon, Jan 20, 2020 at 5:08 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
+dhat.com> wrote:
 >>
->> Hi Jakub, can push this to bpf tree as well? There is another case
->> already in-kernel where this is needed. If the map is removed while
->> a recvmsg is in flight.
+>> We are currently being somewhat inconsistent with the libbpf include pat=
+hs,
+>> which makes it difficult to move files from the kernel into an external
+>> libbpf-using project without adjusting include paths.
 >>
->>  tcp_bpf_recvmsg()
->>   psock = sk_psock_get(sk)                         <- refcnt 2
->>   lock_sock(sk);
->>   ...
->>                                   sock_map_free()  <- refcnt 1
->>   release_sock(sk)
->>   sk_psock_put()                                   <- refcnt 0
+>> Having the bpf/ subdir of $INCLUDEDIR in the include path has never been=
+ a
+>> requirement for building against libbpf before, and indeed the libbpf pk=
+g-config
+>> file doesn't include it. So let's make all libbpf includes across the ke=
+rnel
+>> tree use the bpf/ prefix in their includes. Since bpftool skeleton gener=
+ation
+>> emits code with a libbpf include, this also ensures that those can be us=
+ed in
+>> existing external projects using the regular pkg-config include path.
 >>
->> Then can you add this diff as well I got a bit too carried away
->> with that. If your busy I can do it as well if you want. Thanks!
+>> This turns out to be a somewhat invasive change in the number of files t=
+ouched;
+>> however, the actual changes to files are fairly trivial (most of them ar=
+e simply
+>> made with 'sed'). The series is split to make the change for one tool su=
+bdir at
+>> a time, while trying not to break the build along the way. It is structu=
+red like
+>> this:
+>>
+>> - Patch 1-3: Trivial fixes to Makefiles for issues I discovered while ch=
+anging
+>>   the include paths.
+>>
+>> - Patch 4-8: Change the include directives to use the bpf/ prefix, and u=
+pdates
+>>   Makefiles to make sure tools/lib/ is part of the include path, but wit=
+hout
+>>   removing tools/lib/bpf
+>>
+>> - Patch 9-11: Remove tools/lib/bpf from include paths to make sure we do=
+n't
+>>   inadvertently re-introduce includes without the bpf/ prefix.
+>>
+>> Changelog:
+>>
+>> v5:
+>>   - Combine the libbpf build rules in selftests Makefile (using Andrii's
+>>     suggestion for a make rule).
+>>   - Re-use self-tests libbpf build for runqslower (new patch 10)
+>>   - Formatting fixes
+>>
+>> v4:
+>>   - Move runqslower error on missing BTF into make rule
+>>   - Make sure we don't always force a rebuild selftests
+>>   - Rebase on latest bpf-next (dropping patch 11)
+>>
+>> v3:
+>>   - Don't add the kernel build dir to the runqslower Makefile, pass it i=
+n from
+>>     selftests instead.
+>>   - Use libbpf's 'make install_headers' in selftests instead of trying to
+>>     generate bpf_helper_defs.h in-place (to also work on read-only files=
+ystems).
+>>   - Use a scratch builddir for both libbpf and bpftool when building in =
+selftests.
+>>   - Revert bpf_helpers.h to quoted include instead of angled include wit=
+h a bpf/
+>>     prefix.
+>>   - Fix a few style nits from Andrii
+>>
+>> v2:
+>>   - Do a full cleanup of libbpf includes instead of just changing the
+>>     bpf_helper_defs.h include.
+>>
+>> ---
+>>
 >
-> Hi John, I get the race between map_free and tcp_bpf_recvmsg, and how we
-> end up dropping psock on a path where we don't hold the sock lock. What
-> a rare case, since we don't destory maps that often usually.
+> Looks good, it's a clear improvement on what we had before, thanks!
 >
-> However, I'm not sure I follow where shared lockless access to
-> sk->sk_prot is in this case?
->
-> Perhaps between drop path:
->
-> sk_psock_put
->   sk_psock_drop
->     sk_psock_restore_proto
->       WRITE_ONCE(sk->sk_prot, proto)
->
-> ... and update path where we grab sk_callback_lock a little too late,
-> that is after updating the proto?
->
-> sock_map_update_common
->   sock_map_link
->     tcp_bpf_init
->       tcp_bpf_update_sk_prot
->         sk_psock_update_proto
->           WRITE_ONCE(sk->sk_prot, ops)
->
-> I'm getting v3 ready to post, so happy to help you spin these bits.
-> I'll need to do it with a fresh head tomorrow, though.
->
-> If I don't see any patches from you hit the ML, I'll split out the
-> chunks that annotate sk_prot access in sk_psock_{retore,update}_proto
-> and post them together with the revert you suggested below.
+> It doesn't re-build bpftool when bpftool sources changes, but I think
+> it was like that even before, so no need to block on that. Would be
+> nice to have a follow up fixing that, though. $(wildcard
+> $(BPFTOOL_DIR)/*.[ch] $(BPFTOOL_DIR)/Makefile) should do it, same as
+> for libbpf.
 
-I've sent out the partial revert you wanted:
+Yeah, I did realise there was some potential for improvement for bpftool
+as well, but I got enough of Makefiles for now :)
 
-https://lore.kernel.org/netdev/20200121123147.706666-1-jakub@cloudflare.com/T/#u
+I'll see if I can't circle back to this at some point...
 
-But otherwise didn't manage to convince myself that we need to annotate
-access to sk_prot with READ/WRITE_ONCE in sk_psock_update/restore_proto.
+> So, for the series:
+>
+> Acked-by: Andrii Nakryiko <andriin@fb.com>
+> Tested-by: Andrii Nakryiko <andriin@fb.com>
 
-Instead, I believe we might need to the extend critical section that
-grabs sk_callback_lock in sock_map_link over tcp_bpf_init/reinit() to
-serialize the writers.
+Thanks!
 
-Unless I'm missing the point here and you had some other race in mind?
+-Toke
 
--jkbs
