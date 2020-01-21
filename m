@@ -2,80 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 872261434E0
-	for <lists+bpf@lfdr.de>; Tue, 21 Jan 2020 01:52:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BFCB1434E9
+	for <lists+bpf@lfdr.de>; Tue, 21 Jan 2020 01:54:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727403AbgAUAwI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Jan 2020 19:52:08 -0500
-Received: from mail-io1-f45.google.com ([209.85.166.45]:46920 "EHLO
-        mail-io1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727009AbgAUAwI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 20 Jan 2020 19:52:08 -0500
-Received: by mail-io1-f45.google.com with SMTP id t26so957250ioi.13
-        for <bpf@vger.kernel.org>; Mon, 20 Jan 2020 16:52:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=4SbfaI5DC3X7gOQ8xR5km/thfmK+wEb60lhNjDUdCsw=;
-        b=X/3IvH4rG3+g3MWW7FznW+FBzOecZkKsaj+Plf+aE4GkeijwW556YxppdxL4SA1Vah
-         JdYm0jVScvN8q4sVKXOuoKmbUVxfyUx+9pI6aEJdrxeKbDw7/BgeUx22L9ymqGlDgyb2
-         Yf/v30GOoh5MPy8xpydozUN6zbsBLDypWoLGMUZZu2KoUDiyGfg4chjflM9cmmIB3N+y
-         Pjw52dUEW7hyXHel+tY8dwtNVkicKyiPZQ6yIiKxVvS1FxbkX8K+5crMXpkU1LBMpmUE
-         SxSvJgZpLsm2MB9c/7kFDH+HEznS5uSNP8Bl8NLYFLI/RQ7ffGgxhK1fyV76AuNQcRlb
-         WYkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=4SbfaI5DC3X7gOQ8xR5km/thfmK+wEb60lhNjDUdCsw=;
-        b=VDKxW3ay3A3urkzzNsSGJRikRD3aOgDNgaR0/oRk5HwzctNxPHDeUfeByLP/eUBePg
-         YxI3g9mPE9qr8kR1Vzeyf9sj85W1Ps5RED3o6S7NJihrap6KkNfYNvQJ0q7KqMNlW7UO
-         TVh8DbMLVauPMk6amlnfToasSs5nzuDrTlFvz5eCVBctRCUJzCbzoHgHllxPHb91EQc+
-         sE8RntPNDfVt5L2cfZql98Cb54ocw/Aw6XVQyW3j5O25foiKFF3YkUGHH4f31DJ5ALfn
-         Z+AH/UtLnG4HxdrgCfYbRXwQpSVX/97c/7FXDZyJ21gCVlh2tVLRMn+B6HUbOKbhqqDI
-         pPuw==
-X-Gm-Message-State: APjAAAU51xd881iVwi9Kw0v5zyrsowNSRA3HxFxLzro7UmRpGBwpH3yM
-        V8hcw7GYtEZoezZANgY0hmytKin8rBTkXT60qg==
-X-Google-Smtp-Source: APXvYqya+dZueS5v3iprRLPj6Uu+F0xiwTq6CcIBEIC4VQIFHW4wvuGn3MFOldRbQSPJPxNhfLZaNixiX3sDjUt6L5o=
-X-Received: by 2002:a5d:8cd6:: with SMTP id k22mr1147632iot.283.1579567927186;
- Mon, 20 Jan 2020 16:52:07 -0800 (PST)
+        id S1728901AbgAUAyK convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Mon, 20 Jan 2020 19:54:10 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:10460 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728816AbgAUAyK (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 20 Jan 2020 19:54:10 -0500
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 00L0s8lr017834
+        for <bpf@vger.kernel.org>; Mon, 20 Jan 2020 16:54:08 -0800
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 2xm0qqrvy2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 20 Jan 2020 16:54:08 -0800
+Received: from intmgw001.06.prn3.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Mon, 20 Jan 2020 16:53:56 -0800
+Received: by devbig007.ftw2.facebook.com (Postfix, from userid 572438)
+        id 98D6E760B6E; Mon, 20 Jan 2020 16:53:48 -0800 (PST)
+Smtp-Origin-Hostprefix: devbig
+From:   Alexei Starovoitov <ast@kernel.org>
+Smtp-Origin-Hostname: devbig007.ftw2.facebook.com
+To:     <davem@davemloft.net>
+CC:     <daniel@iogearbox.net>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <kernel-team@fb.com>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH v2 bpf-next 0/3] bpf: Program extensions or dynamic re-linking
+Date:   Mon, 20 Jan 2020 16:53:45 -0800
+Message-ID: <20200121005348.2769920-1-ast@kernel.org>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Received: by 2002:a5d:8a11:0:0:0:0:0 with HTTP; Mon, 20 Jan 2020 16:52:06
- -0800 (PST)
-Reply-To: mrsnicoleApollonia11@yandex.com
-From:   "Mrs Nicole Apollonia," <mrsnicoleapollonia9@gmail.com>
-Date:   Tue, 21 Jan 2020 00:52:06 +0000
-Message-ID: <CAE-HGpt=Gz1jndYY_BjT5RegbmG4Luva8YtzSmoOrV53Or1zcQ@mail.gmail.com>
-Subject: I NEED YOUR URGENT RESPOND AND TRUST,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-01-20_10:2020-01-20,2020-01-20 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=1 mlxscore=0
+ mlxlogscore=291 spamscore=0 phishscore=0 priorityscore=1501 malwarescore=0
+ clxscore=1015 bulkscore=0 adultscore=0 lowpriorityscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-1910280000
+ definitions=main-2001210005
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Dear friend,
+The last few month BPF community has been discussing an approach to call
+chaining, since exiting bpt_tail_call() mechanism used in production XDP
+programs has plenty of downsides. The outcome of these discussion was a
+conclusion to implement dynamic re-linking of BPF programs. Where rootlet XDP
+program attached to a netdevice can programmatically define a policy of
+execution of other XDP programs. Such rootlet would be compiled as normal XDP
+program and provide a number of placeholder global functions which later can be
+replaced with future XDP programs. BPF trampoline, function by function
+verification were building blocks towards that goal. The patch 1 is a final
+building block. It introduces dynamic program extensions. A number of
+improvements like more flexible function by function verification and better
+libbpf api will be implemented in future patches.
 
-My name is Mrs. Nicole Apollonia, from Toulouse France. I have been
-suffering from ovarian cancer disease and the doctor says that I have
-just a short time to live. For the past Twelve years, I have being
-dealing on gold exportation, before falling ill due to the Cancer.
+v1->v2:
+- addressed Andrii's comments
+- rebase
 
-Now that I am very sick and according to the doctor,i will not survive
-the sickness.The worst of it all is that I do not have any family
-members or children to inherit my wealth.I am writing this letter now
-through the help of the computer beside my sick bed.I have $4.5
-Million US Dollars deposited in Eco-Bank here in Burkina Faso and I am
-willing to instruct my bank to transfer the fund to you as my foreign
-Trustee.You will apply to the bank, that they should release the fund
-to you, but you will assure me that you will take 50% of the fund and
-give 50% to the orphanages home in your country for my soul to rest
-after i have gone.In my next email, I will send you the copy of the
-Certificate of Deposit which will enable you apply to the bank and
-receive the money with no case.Respond to me immediately for further
-details and instructions since I am in the end times of my life due to
-the ovarian cancer disease.
-Hoping to receive your response as soon as possible.
+Alexei Starovoitov (3):
+  bpf: Introduce dynamic program extensions
+  libbpf: Add support for program extensions
+  selftests/bpf: Add tests for program extensions
 
-Yours Faithfully,
-Mrs. Nicole Apollonia,
+ include/linux/bpf.h                           |  10 +-
+ include/linux/bpf_types.h                     |   2 +
+ include/linux/btf.h                           |   5 +
+ include/uapi/linux/bpf.h                      |   1 +
+ kernel/bpf/btf.c                              | 152 +++++++++++++++++-
+ kernel/bpf/syscall.c                          |  15 +-
+ kernel/bpf/trampoline.c                       |  41 ++++-
+ kernel/bpf/verifier.c                         |  85 +++++++---
+ tools/include/uapi/linux/bpf.h                |   1 +
+ tools/lib/bpf/bpf.c                           |   3 +-
+ tools/lib/bpf/libbpf.c                        |  13 +-
+ tools/lib/bpf/libbpf.h                        |   2 +
+ tools/lib/bpf/libbpf.map                      |   2 +
+ tools/lib/bpf/libbpf_probes.c                 |   1 +
+ .../selftests/bpf/prog_tests/fexit_bpf2bpf.c  |  20 ++-
+ .../selftests/bpf/progs/fexit_bpf2bpf.c       |  57 +++++++
+ .../selftests/bpf/progs/test_pkt_access.c     |   8 +-
+ 17 files changed, 384 insertions(+), 34 deletions(-)
+
+-- 
+2.23.0
+
