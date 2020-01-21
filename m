@@ -2,749 +2,1092 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AE34144577
-	for <lists+bpf@lfdr.de>; Tue, 21 Jan 2020 20:55:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2694C1445CE
+	for <lists+bpf@lfdr.de>; Tue, 21 Jan 2020 21:21:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728853AbgAUTyg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Jan 2020 14:54:36 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:39746 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728842AbgAUTyg (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 21 Jan 2020 14:54:36 -0500
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 00LJpqM7000670
-        for <bpf@vger.kernel.org>; Tue, 21 Jan 2020 11:54:33 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=facebook; bh=UqEHpDrlk8LGG/5uK6sWrXt4r1qO+zxBK+dEyDVLebo=;
- b=p185XumMNesm1EDNlzwduQfVXtT3gYxzM32LYHx7GsRdcIt54sIIn/QziiZV3CPL4fz8
- 3PnCv4ZJULStxMxeV94Jepzre/DFQIPolLLDyYver0ZgxcC4/LCvyLDTCZF93ah8onCz
- 9UE+bBB9m+fUfQ50kH5fEZqWIyY5jU6KgNg= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2xnwtvjtdy-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 21 Jan 2020 11:54:32 -0800
-Received: from intmgw001.06.prn3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Tue, 21 Jan 2020 11:54:31 -0800
-Received: by devbig005.ftw2.facebook.com (Postfix, from userid 6611)
-        id 3A6AA29420B3; Tue, 21 Jan 2020 11:54:27 -0800 (PST)
-Smtp-Origin-Hostprefix: devbig
-From:   Martin KaFai Lau <kafai@fb.com>
-Smtp-Origin-Hostname: devbig005.ftw2.facebook.com
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
+        id S1729037AbgAUUU5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Jan 2020 15:20:57 -0500
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:44732 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727383AbgAUUU5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Jan 2020 15:20:57 -0500
+Received: by mail-ot1-f65.google.com with SMTP id h9so4136676otj.11;
+        Tue, 21 Jan 2020 12:20:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:in-reply-to:references;
+        bh=bxcxuoICG+7VUQzgNMPLqeuHsZhAgZCuowebAdeeuRA=;
+        b=Dkr3yMX6hCxSvCsMKTGAUEh0SYnYlGOanJh2lFj9vAicgmCwcfTqq2Fk9vuBdPgJCi
+         TxNVE103GlWd63FJzhUsCLaEx1Ocna9W4xH6bk07US4d9mWGXxreVhTFi4UfM53d5Kkp
+         AZFRuFF67zr06FywtO8f7M2Lr20O4XlLh9+NIDffGl7D0f0nN2gSKAzZlTNbRIap2AJD
+         RZmocCI/iDqsdoTkqMJnC9tVxnLmoZ1mrkh8kBKlDFyu5/GWeqTtfdZHA+bk0ggg6s7p
+         AkVsIBmQDxMKrtK5wz6WukF9szTR0OeqhrBd+5jvRaeZjzA6dny/8gdSg02EhCBm6zvP
+         I9dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references;
+        bh=bxcxuoICG+7VUQzgNMPLqeuHsZhAgZCuowebAdeeuRA=;
+        b=RXE4o6fx9A9Fc7XgIoaoj8M1ByMNqeQ1yTe6uWo9Sn+ue6GaO2dCXa3Lm7f27Q4WF0
+         lqMlgHdZx05VpBJktU3qZGfpVRsbJMyNJAhWOJ2+i7gbn42jR/sOGTFj/WH9WOgUzGuR
+         6jXk7lU5u6jOx9bvWYbEcN6UnkCnHOOATqNJXD0fTrzdSWmHavhlVMm7HxQAXe6LKikr
+         WatFi0hHd2ted2+GqMfqrw1AaMTt25QbZc/IqjRRiQyAGqfSSIVRO2s3crnkMos+2coo
+         8NKxH305r4q6va50tLRWGpFbsBUxvbyarGKxfNyoHJXr9+UaCFlt+PvW++yPNeTe9SOq
+         KGpw==
+X-Gm-Message-State: APjAAAUj0YB+3VfvGJjnsKDRX4ZvYjZWZtoHgd+1VZhBS3LDGm6Jls+p
+        2yuIcFVnZDJr1Qep67+zskc=
+X-Google-Smtp-Source: APXvYqwQsctn/tiocTjfJzLRZPYEk4SpcLafOPnnYaYghUtdDSsyBZG655OJsm1j90lq1fVcYeoOGA==
+X-Received: by 2002:a05:6830:1607:: with SMTP id g7mr4890086otr.320.1579638054730;
+        Tue, 21 Jan 2020 12:20:54 -0800 (PST)
+Received: from localhost.localdomain (ip24-56-44-135.ph.ph.cox.net. [24.56.44.135])
+        by smtp.gmail.com with ESMTPSA id n25sm12265329oic.6.2020.01.21.12.20.52
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 21 Jan 2020 12:20:54 -0800 (PST)
+From:   Matthew Cover <werekraken@gmail.com>
+X-Google-Original-From: Matthew Cover <matthew.cover@stackpath.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, <kernel-team@fb.com>,
-        <netdev@vger.kernel.org>
-Smtp-Origin-Cluster: ftw2c04
-Subject: [PATCH bpf-next 3/3] bpf: tcp: Add bpf_cubic example
-Date:   Tue, 21 Jan 2020 11:54:27 -0800
-Message-ID: <20200121195427.3758504-1-kafai@fb.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200121195408.3756734-1-kafai@fb.com>
-References: <20200121195408.3756734-1-kafai@fb.com>
-X-FB-Internal: Safe
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.634
- definitions=2020-01-21_06:2020-01-21,2020-01-21 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0 mlxscore=0
- adultscore=0 clxscore=1015 suspectscore=13 priorityscore=1501 phishscore=0
- impostorscore=0 malwarescore=0 spamscore=0 mlxlogscore=999
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1910280000 definitions=main-2001210147
-X-FB-Internal: deliver
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Shuah Khan <shuah@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Quentin Monnet <quentin.monnet@netronome.com>,
+        Matthew Cover <matthew.cover@stackpath.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Andrey Ignatov <rdna@fb.com>,
+        Lorenz Bauer <lmb@cloudflare.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: [PATCH bpf-next v2 1/2] bpf: add bpf_ct_lookup_{tcp,udp}() helpers
+Date:   Tue, 21 Jan 2020 13:20:38 -0700
+Message-Id: <20200121202038.26490-1-matthew.cover@stackpath.com>
+X-Mailer: git-send-email 2.15.2 (Apple Git-101.1)
+In-Reply-To: <20200118000128.15746-1-matthew.cover@stackpath.com>
+References: <20200118000128.15746-1-matthew.cover@stackpath.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch adds a bpf_cubic example.  Some highlights:
-1. CONFIG_HZ kconfig is used.  For example, CONFIG_HZ is used in the usecs
-   to jiffies conversion in usecs_to_jiffies().
-2. In bitctcp_update() [under tcp_friendliness], the original
-   "while (ca->ack_cnt > delta)" loop is changed to the equivalent
-   "ca->ack_cnt / delta" operation.
+Allow looking up an nf_conn. This allows eBPF programs to leverage
+nf_conntrack state for similar purposes to socket state use cases,
+as provided by the socket lookup helpers. This is particularly
+useful when nf_conntrack state is locally available, but socket
+state is not.
 
-Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+v2:
+  - Fix functions in need of and missing static inline (kbuild)
+  - Move tests to separate patch and submit as a series (John)
+  - Improve clarity in helper documentation (John)
+  - Add CONFIG_NF_CONNTRACK=m support (Daniel)
+
+Signed-off-by: Matthew Cover <matthew.cover@stackpath.com>
 ---
- tools/testing/selftests/bpf/bpf_tcp_helpers.h |  16 +
- .../selftests/bpf/prog_tests/bpf_tcp_ca.c     |  25 +
- tools/testing/selftests/bpf/progs/bpf_cubic.c | 573 ++++++++++++++++++
- 3 files changed, 614 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_cubic.c
+ include/linux/bpf.h               |  29 ++++
+ include/linux/netfilter.h         |  12 ++
+ include/uapi/linux/bpf.h          | 111 ++++++++++++++-
+ kernel/bpf/verifier.c             | 105 ++++++++++++++-
+ net/core/filter.c                 | 277 ++++++++++++++++++++++++++++++++++++++
+ net/netfilter/core.c              |  16 +++
+ net/netfilter/nf_conntrack_core.c |   1 +
+ scripts/bpf_helpers_doc.py        |   4 +
+ tools/include/uapi/linux/bpf.h    | 111 ++++++++++++++-
+ 9 files changed, 658 insertions(+), 8 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/bpf_tcp_helpers.h b/tools/testing/selftests/bpf/bpf_tcp_helpers.h
-index 6fee732f0297..8f21965ffc6c 100644
---- a/tools/testing/selftests/bpf/bpf_tcp_helpers.h
-+++ b/tools/testing/selftests/bpf/bpf_tcp_helpers.h
-@@ -6,13 +6,28 @@
- #include <linux/types.h>
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_core_read.h>
-+#include "bpf_trace_helpers.h"
-+
-+#define BPF_STRUCT_OPS(name, args...) \
-+SEC("struct_ops/"#name) \
-+BPF_PROG(name, args)
-+
-+#define tcp_jiffies32 ((__u32)bpf_jiffies64())
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 8e3b8f4..f502e1f 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -239,6 +239,7 @@ enum bpf_arg_type {
+ 	ARG_PTR_TO_LONG,	/* pointer to long */
+ 	ARG_PTR_TO_SOCKET,	/* pointer to bpf_sock (fullsock) */
+ 	ARG_PTR_TO_BTF_ID,	/* pointer to in-kernel struct */
++	ARG_PTR_TO_NF_CONN,	/* pointer to bpf_nf_conn */
+ };
  
- struct sock_common {
- 	unsigned char	skc_state;
- } __attribute__((preserve_access_index));
+ /* type of values returned from helper functions */
+@@ -250,6 +251,7 @@ enum bpf_return_type {
+ 	RET_PTR_TO_SOCKET_OR_NULL,	/* returns a pointer to a socket or NULL */
+ 	RET_PTR_TO_TCP_SOCK_OR_NULL,	/* returns a pointer to a tcp_sock or NULL */
+ 	RET_PTR_TO_SOCK_COMMON_OR_NULL,	/* returns a pointer to a sock_common or NULL */
++	RET_PTR_TO_NF_CONN_OR_NULL,	/* returns a pointer to a nf_conn or NULL */
+ };
  
-+enum sk_pacing {
-+	SK_PACING_NONE		= 0,
-+	SK_PACING_NEEDED	= 1,
-+	SK_PACING_FQ		= 2,
+ /* eBPF function prototype used by verifier to allow BPF_CALLs from eBPF programs
+@@ -316,6 +318,8 @@ enum bpf_reg_type {
+ 	PTR_TO_TP_BUFFER,	 /* reg points to a writable raw tp's buffer */
+ 	PTR_TO_XDP_SOCK,	 /* reg points to struct xdp_sock */
+ 	PTR_TO_BTF_ID,		 /* reg points to kernel struct */
++	PTR_TO_NF_CONN,		 /* reg points to struct nf_conn */
++	PTR_TO_NF_CONN_OR_NULL,	 /* reg points to struct nf_conn or NULL */
+ };
+ 
+ /* The information passed from prog-specific *_is_valid_access
+@@ -1513,4 +1517,29 @@ enum bpf_text_poke_type {
+ int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type t,
+ 		       void *addr1, void *addr2);
+ 
++#if IS_ENABLED(CONFIG_NF_CONNTRACK)
++bool bpf_nf_conn_is_valid_access(int off, int size, enum bpf_access_type type,
++				 struct bpf_insn_access_aux *info);
++
++u32 bpf_nf_conn_convert_ctx_access(enum bpf_access_type type,
++				   const struct bpf_insn *si,
++				   struct bpf_insn *insn_buf,
++				   struct bpf_prog *prog, u32 *target_size);
++#else
++static inline bool bpf_nf_conn_is_valid_access(int off, int size,
++				enum bpf_access_type type,
++				struct bpf_insn_access_aux *info)
++{
++	return false;
++}
++
++static inline u32 bpf_nf_conn_convert_ctx_access(enum bpf_access_type type,
++				const struct bpf_insn *si,
++				struct bpf_insn *insn_buf,
++				struct bpf_prog *prog, u32 *target_size)
++{
++	return 0;
++}
++#endif /* CONFIG_NF_CONNTRACK */
++
+ #endif /* _LINUX_BPF_H */
+diff --git a/include/linux/netfilter.h b/include/linux/netfilter.h
+index eb312e7..a360ced 100644
+--- a/include/linux/netfilter.h
++++ b/include/linux/netfilter.h
+@@ -451,6 +451,9 @@ static inline int nf_hook(u_int8_t pf, unsigned int hook, struct net *net,
+ struct nf_conntrack_tuple;
+ bool nf_ct_get_tuple_skb(struct nf_conntrack_tuple *dst_tuple,
+ 			 const struct sk_buff *skb);
++struct nf_conntrack_tuple_hash *
++nf_ct_find_get(struct net *net, const struct nf_conntrack_zone *zone,
++	       const struct nf_conntrack_tuple *tuple);
+ #else
+ static inline void nf_ct_attach(struct sk_buff *new, struct sk_buff *skb) {}
+ struct nf_conntrack_tuple;
+@@ -459,6 +462,12 @@ static inline bool nf_ct_get_tuple_skb(struct nf_conntrack_tuple *dst_tuple,
+ {
+ 	return false;
+ }
++static inline struct nf_conntrack_tuple_hash *
++nf_ct_find_get(struct net *net, const struct nf_conntrack_zone *zone,
++	       const struct nf_conntrack_tuple *tuple)
++{
++	return NULL;
++}
+ #endif
+ 
+ struct nf_conn;
+@@ -469,6 +478,9 @@ struct nf_ct_hook {
+ 	void (*destroy)(struct nf_conntrack *);
+ 	bool (*get_tuple_skb)(struct nf_conntrack_tuple *,
+ 			      const struct sk_buff *);
++	struct nf_conntrack_tuple_hash *
++	(*find_get)(struct net *net, const struct nf_conntrack_zone *zone,
++                    const struct nf_conntrack_tuple *tuple);
+ };
+ extern struct nf_ct_hook __rcu *nf_ct_hook;
+ 
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 033d90a..85c4b3f 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -2885,6 +2885,88 @@ struct bpf_stack_build_id {
+  *		**-EPERM** if no permission to send the *sig*.
+  *
+  *		**-EAGAIN** if bpf program can try again.
++ *
++ * struct bpf_nf_conn *bpf_ct_lookup_tcp(void *ctx, struct bpf_nf_conntrack_tuple *tuple, u32 tuple_size, u64 netns, u64 flags)
++ *	Description
++ *		Look for TCP nf_conntrack entry matching *tuple*, optionally in
++ *		a child network namespace *netns*. The return value must be
++ *		checked, and if non-**NULL**, released via
++ *		**bpf_ct_release**\ ().
++ *
++ *		The *ctx* should point to the context of the program, such as
++ *		the skb or xdp_md (depending on the hook in use). This is used
++ *		to determine the base network namespace for the lookup.
++ *
++ *		*tuple_size* must be one of:
++ *
++ *		**sizeof**\ (*tuple*\ **->ipv4**)
++ *			Look for an IPv4 nf_conn.
++ *		**sizeof**\ (*tuple*\ **->ipv6**)
++ *			Look for an IPv6 nf_conn.
++ *
++ *		If the *netns* is a negative signed 32-bit integer, then the
++ *		nf_conn lookup table in the netns associated with the *ctx* will
++ *		will be used. For the TC hooks, this is the netns of the device
++ *		in the skb. For XDP hooks, this is the netns of the device in
++ *		the xdp_md. If *netns* is any other signed 32-bit value greater
++ *		than or equal to zero then it specifies the ID of the netns
++ *		relative to the netns associated with the *ctx*. *netns* values
++ *		beyond the range of 32-bit integers are reserved for future
++ *		use.
++ *
++ *		All values for *flags* are reserved for future usage, and must
++ *		be left at zero.
++ *
++ * 		This helper will always return NULL if the kernel was compiled
++ * 		without **CONFIG_NF_CONNTRACK**.
++ *	Return
++ *		Pointer to **struct bpf_nf_conn**, or **NULL** in case of
++ *		failure.
++ *
++ * struct bpf_nf_conn *bpf_ct_lookup_udp(void *ctx, struct bpf_nf_conntrack_tuple *tuple, u32 tuple_size, u64 netns, u64 flags)
++ *	Description
++ *		Look for UDP nf_conntrack entry matching *tuple*, optionally in
++ *		a child network namespace *netns*. The return value must be
++ *		checked, and if non-**NULL**, released via
++ *		**bpf_ct_release**\ ().
++ *
++ *		The *ctx* should point to the context of the program, such as
++ *		the skb or xdp_md (depending on the hook in use). This is used
++ *		to determine the base network namespace for the lookup.
++ *
++ *		*tuple_size* must be one of:
++ *
++ *		**sizeof**\ (*tuple*\ **->ipv4**)
++ *			Look for an IPv4 nf_conn.
++ *		**sizeof**\ (*tuple*\ **->ipv6**)
++ *			Look for an IPv6 nf_conn.
++ *
++ *		If the *netns* is a negative signed 32-bit integer, then the
++ *		nf_conn lookup table in the netns associated with the *ctx* will
++ *		will be used. For the TC hooks, this is the netns of the device
++ *		in the skb. For XDP hooks, this is the netns of the device in
++ *		the xdp_md. If *netns* is any other signed 32-bit value greater
++ *		than or equal to zero then it specifies the ID of the netns
++ *		relative to the netns associated with the *ctx*. *netns* values
++ *		beyond the range of 32-bit integers are reserved for future
++ *		use.
++ *
++ *		All values for *flags* are reserved for future usage, and must
++ *		be left at zero.
++ *
++ * 		This helper will always return NULL if the kernel was compiled
++ * 		without **CONFIG_NF_CONNTRACK**.
++ *	Return
++ *		Pointer to **struct bpf_nf_conn**, or **NULL** in case of
++ *		failure.
++ *
++ * int bpf_ct_release(struct bpf_nf_conn *ct)
++ *	Description
++ *		Release the reference held by *ct*. *ct* must be a
++ *		non-**NULL** pointer that was returned from
++ *		**bpf_ct_lookup_xxx**\ ().
++ *	Return
++ *		0 on success, or a negative error in case of failure.
+  */
+ #define __BPF_FUNC_MAPPER(FN)		\
+ 	FN(unspec),			\
+@@ -3004,7 +3086,10 @@ struct bpf_stack_build_id {
+ 	FN(probe_read_user_str),	\
+ 	FN(probe_read_kernel_str),	\
+ 	FN(tcp_send_ack),		\
+-	FN(send_signal_thread),
++	FN(send_signal_thread),		\
++	FN(ct_lookup_tcp),		\
++	FN(ct_lookup_udp),		\
++	FN(ct_release),
+ 
+ /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+  * function eBPF program intends to call
+@@ -3278,6 +3363,30 @@ struct bpf_sock_tuple {
+ 	};
+ };
+ 
++struct bpf_nf_conn {
++	__u32 cpu;
++	__u32 mark;
++	__u32 status;
++	__u32 timeout;
 +};
 +
- struct sock {
- 	struct sock_common	__sk_common;
-+	unsigned long		sk_pacing_rate;
-+	__u32			sk_pacing_status; /* see enum sk_pacing */
- } __attribute__((preserve_access_index));
- 
- struct inet_sock {
-@@ -54,6 +69,7 @@ struct tcp_sock {
- 	__u32	max_packets_out;
- 	__u32	lsndtime;
- 	__u32	prior_cwnd;
-+	__u64	tcp_mstamp;	/* most recent packet received/sent */
- } __attribute__((preserve_access_index));
- 
- static __always_inline struct inet_connection_sock *inet_csk(const struct sock *sk)
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c b/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-index 517318f05b1d..8482bbc67eec 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-@@ -4,6 +4,7 @@
- #include <linux/err.h>
- #include <test_progs.h>
- #include "bpf_dctcp.skel.h"
-+#include "bpf_cubic.skel.h"
- 
- #define min(a, b) ((a) < (b) ? (a) : (b))
- 
-@@ -158,6 +159,28 @@ static void do_test(const char *tcp_ca)
- 	close(fd);
++struct bpf_nf_conntrack_tuple {
++	union {
++		struct {
++			__be32 saddr;
++			__be32 daddr;
++			__be16 sport;
++			__be16 dport;
++		} ipv4;
++		struct {
++			__be32 saddr[4];
++			__be32 daddr[4];
++			__be16 sport;
++			__be16 dport;
++		} ipv6;
++	};
++};
++
+ struct bpf_xdp_sock {
+ 	__u32 queue_id;
+ };
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index ca17dccc..0ea0ee7 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -362,6 +362,11 @@ static const char *ltrim(const char *s)
+ 	env->prev_linfo = linfo;
  }
  
-+static void test_cubic(void)
++static bool type_is_nf_ct_pointer(enum bpf_reg_type type)
 +{
-+	struct bpf_cubic *cubic_skel;
-+	struct bpf_link *link;
-+
-+	cubic_skel = bpf_cubic__open_and_load();
-+	if (CHECK(!cubic_skel, "bpf_cubic__open_and_load", "failed\n"))
-+		return;
-+
-+	link = bpf_map__attach_struct_ops(cubic_skel->maps.cubic);
-+	if (CHECK(IS_ERR(link), "bpf_map__attach_struct_ops", "err:%ld\n",
-+		  PTR_ERR(link))) {
-+		bpf_cubic__destroy(cubic_skel);
-+		return;
-+	}
-+
-+	do_test("bpf_cubic");
-+
-+	bpf_link__destroy(link);
-+	bpf_cubic__destroy(cubic_skel);
++	return type == PTR_TO_NF_CONN;
 +}
 +
- static void test_dctcp(void)
+ static bool type_is_pkt_pointer(enum bpf_reg_type type)
  {
- 	struct bpf_dctcp *dctcp_skel;
-@@ -184,4 +207,6 @@ void test_bpf_tcp_ca(void)
- {
- 	if (test__start_subtest("dctcp"))
- 		test_dctcp();
-+	if (test__start_subtest("cubic"))
-+		test_cubic();
+ 	return type == PTR_TO_PACKET ||
+@@ -381,7 +386,8 @@ static bool reg_type_may_be_null(enum bpf_reg_type type)
+ 	return type == PTR_TO_MAP_VALUE_OR_NULL ||
+ 	       type == PTR_TO_SOCKET_OR_NULL ||
+ 	       type == PTR_TO_SOCK_COMMON_OR_NULL ||
+-	       type == PTR_TO_TCP_SOCK_OR_NULL;
++	       type == PTR_TO_TCP_SOCK_OR_NULL ||
++	       type == PTR_TO_NF_CONN_OR_NULL;
  }
-diff --git a/tools/testing/selftests/bpf/progs/bpf_cubic.c b/tools/testing/selftests/bpf/progs/bpf_cubic.c
-new file mode 100644
-index 000000000000..0fb2f0e5f817
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/bpf_cubic.c
-@@ -0,0 +1,573 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+/* WARNING: This implemenation is not necessarily the same
-+ * as the tcp_cubic.c.  The purpose is mainly for testing
-+ * the kernel BPF logic.
-+ *
-+ * Highlights:
-+ * 1. CONFIG_HZ kconfig is used.  For example, CONFIG_HZ is used
-+ *    in the usecs to jiffies conversion in usecs_to_jiffies().
-+ * 2. In bitctcp_update() [under tcp_friendliness], the original
-+ *    "while (ca->ack_cnt > delta)" loop is changed to the equivalent
-+ *    "ca->ack_cnt / delta" operation.
-+ */
-+
-+#include <linux/bpf.h>
-+#include "bpf_tcp_helpers.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+#define clamp(val, lo, hi) min((typeof(val))max(val, lo), hi)
-+
-+#define BICTCP_BETA_SCALE    1024	/* Scale factor beta calculation
-+					 * max_cwnd = snd_cwnd * beta
-+					 */
-+#define	BICTCP_HZ		10	/* BIC HZ 2^10 = 1024 */
-+
-+/* Two methods of hybrid slow start */
-+#define HYSTART_ACK_TRAIN	0x1
-+#define HYSTART_DELAY		0x2
-+
-+/* Number of delay samples for detecting the increase of delay */
-+#define HYSTART_MIN_SAMPLES	8
-+#define HYSTART_DELAY_MIN	(4000U)	/* 4ms */
-+#define HYSTART_DELAY_MAX	(16000U)	/* 16 ms */
-+#define HYSTART_DELAY_THRESH(x)	clamp(x, HYSTART_DELAY_MIN, HYSTART_DELAY_MAX)
-+
-+static int fast_convergence = 1;
-+static const int beta = 717;	/* = 717/1024 (BICTCP_BETA_SCALE) */
-+static int initial_ssthresh;
-+static const int bic_scale = 41;
-+static int tcp_friendliness = 1;
-+
-+static int hystart = 1;
-+static int hystart_detect = HYSTART_ACK_TRAIN | HYSTART_DELAY;
-+static int hystart_low_window = 16;
-+static int hystart_ack_delta_us = 2000;
-+
-+static const __u32 cube_rtt_scale = (bic_scale * 10);	/* 1024*c/rtt */
-+static const __u32 beta_scale = 8*(BICTCP_BETA_SCALE+beta) / 3
-+				/ (BICTCP_BETA_SCALE - beta);
-+/* calculate the "K" for (wmax-cwnd) = c/rtt * K^3
-+ *  so K = cubic_root( (wmax-cwnd)*rtt/c )
-+ * the unit of K is bictcp_HZ=2^10, not HZ
-+ *
-+ *  c = bic_scale >> 10
-+ *  rtt = 100ms
-+ *
-+ * the following code has been designed and tested for
-+ * cwnd < 1 million packets
-+ * RTT < 100 seconds
-+ * HZ < 1,000,00  (corresponding to 10 nano-second)
-+ */
-+
-+/* 1/c * 2^2*bictcp_HZ * srtt, 2^40 */
-+static const __u64 cube_factor = (__u64)(1ull << (10+3*BICTCP_HZ))
-+				/ (bic_scale * 10);
-+
-+/* BIC TCP Parameters */
-+struct bictcp {
-+	__u32	cnt;		/* increase cwnd by 1 after ACKs */
-+	__u32	last_max_cwnd;	/* last maximum snd_cwnd */
-+	__u32	last_cwnd;	/* the last snd_cwnd */
-+	__u32	last_time;	/* time when updated last_cwnd */
-+	__u32	bic_origin_point;/* origin point of bic function */
-+	__u32	bic_K;		/* time to origin point
-+				   from the beginning of the current epoch */
-+	__u32	delay_min;	/* min delay (usec) */
-+	__u32	epoch_start;	/* beginning of an epoch */
-+	__u32	ack_cnt;	/* number of acks */
-+	__u32	tcp_cwnd;	/* estimated tcp cwnd */
-+	__u16	unused;
-+	__u8	sample_cnt;	/* number of samples to decide curr_rtt */
-+	__u8	found;		/* the exit point is found? */
-+	__u32	round_start;	/* beginning of each round */
-+	__u32	end_seq;	/* end_seq of the round */
-+	__u32	last_ack;	/* last time when the ACK spacing is close */
-+	__u32	curr_rtt;	/* the minimum rtt of current round */
-+};
-+
-+static inline void bictcp_reset(struct bictcp *ca)
+ 
+ static bool reg_may_point_to_spin_lock(const struct bpf_reg_state *reg)
+@@ -395,12 +401,15 @@ static bool reg_type_may_be_refcounted_or_null(enum bpf_reg_type type)
+ 	return type == PTR_TO_SOCKET ||
+ 		type == PTR_TO_SOCKET_OR_NULL ||
+ 		type == PTR_TO_TCP_SOCK ||
+-		type == PTR_TO_TCP_SOCK_OR_NULL;
++		type == PTR_TO_TCP_SOCK_OR_NULL ||
++		type == PTR_TO_NF_CONN ||
++		type == PTR_TO_NF_CONN_OR_NULL;
+ }
+ 
+ static bool arg_type_may_be_refcounted(enum bpf_arg_type type)
+ {
+-	return type == ARG_PTR_TO_SOCK_COMMON;
++	return type == ARG_PTR_TO_SOCK_COMMON ||
++		type == ARG_PTR_TO_NF_CONN;
+ }
+ 
+ /* Determine whether the function releases some resources allocated by another
+@@ -409,14 +418,17 @@ static bool arg_type_may_be_refcounted(enum bpf_arg_type type)
+  */
+ static bool is_release_function(enum bpf_func_id func_id)
+ {
+-	return func_id == BPF_FUNC_sk_release;
++	return func_id == BPF_FUNC_sk_release ||
++		func_id == BPF_FUNC_ct_release;
+ }
+ 
+ static bool is_acquire_function(enum bpf_func_id func_id)
+ {
+ 	return func_id == BPF_FUNC_sk_lookup_tcp ||
+ 		func_id == BPF_FUNC_sk_lookup_udp ||
+-		func_id == BPF_FUNC_skc_lookup_tcp;
++		func_id == BPF_FUNC_skc_lookup_tcp ||
++		func_id == BPF_FUNC_ct_lookup_tcp ||
++		func_id == BPF_FUNC_ct_lookup_udp;
+ }
+ 
+ static bool is_ptr_cast_function(enum bpf_func_id func_id)
+@@ -447,6 +459,8 @@ static bool is_ptr_cast_function(enum bpf_func_id func_id)
+ 	[PTR_TO_TP_BUFFER]	= "tp_buffer",
+ 	[PTR_TO_XDP_SOCK]	= "xdp_sock",
+ 	[PTR_TO_BTF_ID]		= "ptr_",
++	[PTR_TO_NF_CONN]	= "nf_conn",
++	[PTR_TO_NF_CONN_OR_NULL] = "nf_conn_or_null",
+ };
+ 
+ static char slot_type_char[] = {
+@@ -1913,6 +1927,8 @@ static bool is_spillable_regtype(enum bpf_reg_type type)
+ 	case PTR_TO_TCP_SOCK_OR_NULL:
+ 	case PTR_TO_XDP_SOCK:
+ 	case PTR_TO_BTF_ID:
++	case PTR_TO_NF_CONN:
++	case PTR_TO_NF_CONN_OR_NULL:
+ 		return true;
+ 	default:
+ 		return false;
+@@ -2440,6 +2456,35 @@ static int check_flow_keys_access(struct bpf_verifier_env *env, int off,
+ 	return 0;
+ }
+ 
++static int check_nf_ct_access(struct bpf_verifier_env *env, int insn_idx,
++			     u32 regno, int off, int size,
++			     enum bpf_access_type t)
 +{
-+	ca->cnt = 0;
-+	ca->last_max_cwnd = 0;
-+	ca->last_cwnd = 0;
-+	ca->last_time = 0;
-+	ca->bic_origin_point = 0;
-+	ca->bic_K = 0;
-+	ca->delay_min = 0;
-+	ca->epoch_start = 0;
-+	ca->ack_cnt = 0;
-+	ca->tcp_cwnd = 0;
-+	ca->found = 0;
-+}
++	struct bpf_reg_state *regs = cur_regs(env);
++	struct bpf_reg_state *reg = &regs[regno];
++	struct bpf_insn_access_aux info = {};
++	bool valid;
 +
-+extern unsigned long CONFIG_HZ __kconfig __weak;
-+#define HZ CONFIG_HZ
-+#define NSEC_PER_SEC    1000000000UL
-+#define USEC_PER_MSEC	1000UL
-+#define NSEC_PER_USEC	1000UL
-+#define USEC_PER_SEC	1000000L
++	switch (reg->type) {
++	case PTR_TO_NF_CONN:
++		valid = bpf_nf_conn_is_valid_access(off, size, t, &info);
++		break;
++	default:
++		valid = false;
++	}
 +
-+static __always_inline __u64 div64_u64(__u64 dividend, __u64 divisor)
-+{
-+	return dividend / divisor;
-+}
-+
-+#define div64_ul div64_u64
-+
-+#define BITS_PER_U64 (sizeof(__u64) * 8)
-+static __always_inline int fls64(__u64 x)
-+{
-+	int num = BITS_PER_U64 - 1;
-+
-+	if (x == 0)
++	if (valid) {
++		env->insn_aux_data[insn_idx].ctx_field_size =
++			info.ctx_field_size;
 +		return 0;
-+
-+	if (!(x & (~0ull << (BITS_PER_U64-32)))) {
-+		num -= 32;
-+		x <<= 32;
 +	}
-+	if (!(x & (~0ull << (BITS_PER_U64-16)))) {
-+		num -= 16;
-+		x <<= 16;
-+	}
-+	if (!(x & (~0ull << (BITS_PER_U64-8)))) {
-+		num -= 8;
-+		x <<= 8;
-+	}
-+	if (!(x & (~0ull << (BITS_PER_U64-4)))) {
-+		num -= 4;
-+		x <<= 4;
-+	}
-+	if (!(x & (~0ull << (BITS_PER_U64-2)))) {
-+		num -= 2;
-+		x <<= 2;
-+	}
-+	if (!(x & (~0ull << (BITS_PER_U64-1))))
-+		num -= 1;
 +
-+	return num + 1;
++	verbose(env, "R%d invalid %s access off=%d size=%d\n",
++		regno, reg_type_str[reg->type], off, size);
++
++	return -EACCES;
 +}
 +
-+static __always_inline __u64 nsecs_to_jiffies64(__u64 n)
+ static int check_sock_access(struct bpf_verifier_env *env, int insn_idx,
+ 			     u32 regno, int off, int size,
+ 			     enum bpf_access_type t)
+@@ -2511,6 +2556,13 @@ static bool is_ctx_reg(struct bpf_verifier_env *env, int regno)
+ 	return reg->type == PTR_TO_CTX;
+ }
+ 
++static bool is_nf_ct_reg(struct bpf_verifier_env *env, int regno)
 +{
-+	if (NSEC_PER_SEC % HZ == 0)
-+		/* Common case, HZ = 100, 128, 200, 250, 256, 500, 512 etc. */
-+		return div64_u64(n, NSEC_PER_SEC / HZ);
-+	else if (HZ % 512 == 0)
-+		/* overflow after 292 years if HZ = 1024 */
-+		return div64_u64(n * HZ / 512, NSEC_PER_SEC / 512);
-+	else
-+		/*
-+		 * Generic case - optimized for cases where HZ is a multiple of 3.
-+		 * overflow after 64.99 years, exact for HZ = 60, 72, 90, 120 etc.
-+		 */
-+		return div64_u64(n * 9, (9ull * NSEC_PER_SEC + HZ / 2) / HZ);
++	const struct bpf_reg_state *reg = reg_state(env, regno);
++
++	return type_is_nf_ct_pointer(reg->type);
 +}
 +
-+static __always_inline __u32 usecs_to_jiffies(__u32 u)
-+{
-+	/* The CONFIG_HZ is a constant, so the verifier will remove
-+	 * the conditional jmp.
-+	 *
-+	 * It is currrently optimized for 1000.  Other common cases
-+	 * can be done in the future.
-+	 */
-+	if (HZ == 1000)
-+		return ((__u64)u + 999) / 1000;
-+	else
-+		return nsecs_to_jiffies64((__u64)u * NSEC_PER_USEC);
-+}
-+
-+static __always_inline __u32 bictcp_clock_us(const struct sock *sk)
-+{
-+	return tcp_sk(sk)->tcp_mstamp;
-+}
-+
-+static __always_inline void bictcp_hystart_reset(struct sock *sk)
-+{
-+	struct tcp_sock *tp = tcp_sk(sk);
-+	struct bictcp *ca = inet_csk_ca(sk);
-+
-+	ca->round_start = ca->last_ack = bictcp_clock_us(sk);
-+	ca->end_seq = tp->snd_nxt;
-+	ca->curr_rtt = ~0U;
-+	ca->sample_cnt = 0;
-+}
-+
-+/* "struct_ops/" prefix is not a requirement
-+ * It will be recognized as BPF_PROG_TYPE_STRUCT_OPS
-+ * as long as it is used in one of the func ptr
-+ * under SEC(".struct_ops").
-+ */
-+SEC("struct_ops/bictcp_init")
-+void BPF_PROG(bictcp_init, struct sock *sk)
-+{
-+	struct bictcp *ca = inet_csk_ca(sk);
-+
-+	bictcp_reset(ca);
-+
-+	if (hystart)
-+		bictcp_hystart_reset(sk);
-+
-+	if (!hystart && initial_ssthresh)
-+		tcp_sk(sk)->snd_ssthresh = initial_ssthresh;
-+}
-+
-+/* No prefix in SEC will also work.
-+ * The remaining tcp-cubic functions have an easier way.
-+ */
-+SEC("no-sec-prefix-bictcp_cwnd_event")
-+void BPF_PROG(bictcp_cwnd_event, struct sock *sk, enum tcp_ca_event event)
-+{
-+	if (event == CA_EVENT_TX_START) {
-+		struct bictcp *ca = inet_csk_ca(sk);
-+		__u32 now = tcp_jiffies32;
-+		__s32 delta;
-+
-+		delta = now - tcp_sk(sk)->lsndtime;
-+
-+		/* We were application limited (idle) for a while.
-+		 * Shift epoch_start to keep cwnd growth to cubic curve.
-+		 */
-+		if (ca->epoch_start && delta > 0) {
-+			ca->epoch_start += delta;
-+			if (after(ca->epoch_start, now))
-+				ca->epoch_start = now;
+ static bool is_sk_reg(struct bpf_verifier_env *env, int regno)
+ {
+ 	const struct bpf_reg_state *reg = reg_state(env, regno);
+@@ -2635,6 +2687,9 @@ static int check_ptr_alignment(struct bpf_verifier_env *env,
+ 	case PTR_TO_XDP_SOCK:
+ 		pointer_desc = "xdp_sock ";
+ 		break;
++	case PTR_TO_NF_CONN:
++		pointer_desc = "nf_conn ";
++		break;
+ 	default:
+ 		break;
+ 	}
+@@ -3050,6 +3105,15 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
+ 		err = check_sock_access(env, insn_idx, regno, off, size, t);
+ 		if (!err && value_regno >= 0)
+ 			mark_reg_unknown(env, regs, value_regno);
++	} else if (type_is_nf_ct_pointer(reg->type)) {
++		if (t == BPF_WRITE) {
++			verbose(env, "R%d cannot write into %s\n",
++				regno, reg_type_str[reg->type]);
++			return -EACCES;
 +		}
-+		return;
-+	}
-+}
-+
-+/*
-+ * cbrt(x) MSB values for x MSB values in [0..63].
-+ * Precomputed then refined by hand - Willy Tarreau
-+ *
-+ * For x in [0..63],
-+ *   v = cbrt(x << 18) - 1
-+ *   cbrt(x) = (v[x] + 10) >> 6
-+ */
-+static const __u8 v[] = {
-+	/* 0x00 */    0,   54,   54,   54,  118,  118,  118,  118,
-+	/* 0x08 */  123,  129,  134,  138,  143,  147,  151,  156,
-+	/* 0x10 */  157,  161,  164,  168,  170,  173,  176,  179,
-+	/* 0x18 */  181,  185,  187,  190,  192,  194,  197,  199,
-+	/* 0x20 */  200,  202,  204,  206,  209,  211,  213,  215,
-+	/* 0x28 */  217,  219,  221,  222,  224,  225,  227,  229,
-+	/* 0x30 */  231,  232,  234,  236,  237,  239,  240,  242,
-+	/* 0x38 */  244,  245,  246,  248,  250,  251,  252,  254,
-+};
-+
-+/* calculate the cubic root of x using a table lookup followed by one
-+ * Newton-Raphson iteration.
-+ * Avg err ~= 0.195%
-+ */
-+static __always_inline __u32 cubic_root(__u64 a)
-+{
-+	__u32 x, b, shift;
-+
-+	if (a < 64) {
-+		/* a in [0..63] */
-+		return ((__u32)v[(__u32)a] + 35) >> 6;
-+	}
-+
-+	b = fls64(a);
-+	b = ((b * 84) >> 8) - 1;
-+	shift = (a >> (b * 3));
-+
-+	/* it is needed for verifier's bound check on v */
-+	if (shift >= 64)
-+		return 0;
-+
-+	x = ((__u32)(((__u32)v[shift] + 10) << b)) >> 6;
-+
-+	/*
-+	 * Newton-Raphson iteration
-+	 *                         2
-+	 * x    = ( 2 * x  +  a / x  ) / 3
-+	 *  k+1          k         k
-+	 */
-+	x = (2 * x + (__u32)div64_u64(a, (__u64)x * (__u64)(x - 1)));
-+	x = ((x * 341) >> 10);
-+	return x;
-+}
-+
-+/*
-+ * Compute congestion window to use.
-+ */
-+static __always_inline void bictcp_update(struct bictcp *ca, __u32 cwnd,
-+					  __u32 acked)
-+{
-+	__u32 delta, bic_target, max_cnt;
-+	__u64 offs, t;
-+
-+	ca->ack_cnt += acked;	/* count the number of ACKed packets */
-+
-+	if (ca->last_cwnd == cwnd &&
-+	    (__s32)(tcp_jiffies32 - ca->last_time) <= HZ / 32)
-+		return;
-+
-+	/* The CUBIC function can update ca->cnt at most once per jiffy.
-+	 * On all cwnd reduction events, ca->epoch_start is set to 0,
-+	 * which will force a recalculation of ca->cnt.
-+	 */
-+	if (ca->epoch_start && tcp_jiffies32 == ca->last_time)
-+		goto tcp_friendliness;
-+
-+	ca->last_cwnd = cwnd;
-+	ca->last_time = tcp_jiffies32;
-+
-+	if (ca->epoch_start == 0) {
-+		ca->epoch_start = tcp_jiffies32;	/* record beginning */
-+		ca->ack_cnt = acked;			/* start counting */
-+		ca->tcp_cwnd = cwnd;			/* syn with cubic */
-+
-+		if (ca->last_max_cwnd <= cwnd) {
-+			ca->bic_K = 0;
-+			ca->bic_origin_point = cwnd;
-+		} else {
-+			/* Compute new K based on
-+			 * (wmax-cwnd) * (srtt>>3 / HZ) / c * 2^(3*bictcp_HZ)
-+			 */
-+			ca->bic_K = cubic_root(cube_factor
-+					       * (ca->last_max_cwnd - cwnd));
-+			ca->bic_origin_point = ca->last_max_cwnd;
++		err = check_nf_ct_access(env, insn_idx, regno, off, size, t);
++		if (!err && value_regno >= 0)
++			mark_reg_unknown(env, regs, value_regno);
+ 	} else if (reg->type == PTR_TO_TP_BUFFER) {
+ 		err = check_tp_buffer_access(env, reg, regno, off, size);
+ 		if (!err && t == BPF_READ && value_regno >= 0)
+@@ -3099,7 +3163,8 @@ static int check_xadd(struct bpf_verifier_env *env, int insn_idx, struct bpf_ins
+ 	if (is_ctx_reg(env, insn->dst_reg) ||
+ 	    is_pkt_reg(env, insn->dst_reg) ||
+ 	    is_flow_key_reg(env, insn->dst_reg) ||
+-	    is_sk_reg(env, insn->dst_reg)) {
++	    is_sk_reg(env, insn->dst_reg) ||
++	    is_nf_ct_reg(env, insn->dst_reg)) {
+ 		verbose(env, "BPF_XADD stores into R%d %s is not allowed\n",
+ 			insn->dst_reg,
+ 			reg_type_str[reg_state(env, insn->dst_reg)->type]);
+@@ -3501,6 +3566,19 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 regno,
+ 				regno);
+ 			return -EACCES;
+ 		}
++	} else if (arg_type == ARG_PTR_TO_NF_CONN) {
++		expected_type = PTR_TO_NF_CONN;
++		if (!type_is_nf_ct_pointer(type))
++			goto err_type;
++		if (reg->ref_obj_id) {
++			if (meta->ref_obj_id) {
++				verbose(env, "verifier internal error: more than one arg with ref_obj_id R%d %u %u\n",
++					regno, reg->ref_obj_id,
++					meta->ref_obj_id);
++				return -EFAULT;
++			}
++			meta->ref_obj_id = reg->ref_obj_id;
 +		}
+ 	} else if (arg_type == ARG_PTR_TO_SPIN_LOCK) {
+ 		if (meta->func_id == BPF_FUNC_spin_lock) {
+ 			if (process_spin_lock(env, regno, true))
+@@ -4368,6 +4446,10 @@ static int check_helper_call(struct bpf_verifier_env *env, int func_id, int insn
+ 		mark_reg_known_zero(env, regs, BPF_REG_0);
+ 		regs[BPF_REG_0].type = PTR_TO_TCP_SOCK_OR_NULL;
+ 		regs[BPF_REG_0].id = ++env->id_gen;
++	} else if (fn->ret_type == RET_PTR_TO_NF_CONN_OR_NULL) {
++		mark_reg_known_zero(env, regs, BPF_REG_0);
++		regs[BPF_REG_0].type = PTR_TO_NF_CONN_OR_NULL;
++		regs[BPF_REG_0].id = ++env->id_gen;
+ 	} else {
+ 		verbose(env, "unknown return type %d of func %s#%d\n",
+ 			fn->ret_type, func_id_name(func_id), func_id);
+@@ -4649,6 +4731,8 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
+ 	case PTR_TO_TCP_SOCK:
+ 	case PTR_TO_TCP_SOCK_OR_NULL:
+ 	case PTR_TO_XDP_SOCK:
++	case PTR_TO_NF_CONN:
++	case PTR_TO_NF_CONN_OR_NULL:
+ 		verbose(env, "R%d pointer arithmetic on %s prohibited\n",
+ 			dst, reg_type_str[ptr_reg->type]);
+ 		return -EACCES;
+@@ -5915,6 +5999,8 @@ static void mark_ptr_or_null_reg(struct bpf_func_state *state,
+ 			reg->type = PTR_TO_SOCK_COMMON;
+ 		} else if (reg->type == PTR_TO_TCP_SOCK_OR_NULL) {
+ 			reg->type = PTR_TO_TCP_SOCK;
++		} else if (reg->type == PTR_TO_NF_CONN_OR_NULL) {
++			reg->type = PTR_TO_NF_CONN;
+ 		}
+ 		if (is_null) {
+ 			/* We don't need id and ref_obj_id from this point
+@@ -7232,6 +7318,8 @@ static bool regsafe(struct bpf_reg_state *rold, struct bpf_reg_state *rcur,
+ 	case PTR_TO_TCP_SOCK:
+ 	case PTR_TO_TCP_SOCK_OR_NULL:
+ 	case PTR_TO_XDP_SOCK:
++	case PTR_TO_NF_CONN:
++	case PTR_TO_NF_CONN_OR_NULL:
+ 		/* Only valid matches are exact, which memcmp() above
+ 		 * would have accepted
+ 		 */
+@@ -7760,6 +7848,8 @@ static bool reg_type_mismatch_ok(enum bpf_reg_type type)
+ 	case PTR_TO_TCP_SOCK_OR_NULL:
+ 	case PTR_TO_XDP_SOCK:
+ 	case PTR_TO_BTF_ID:
++	case PTR_TO_NF_CONN:
++	case PTR_TO_NF_CONN_OR_NULL:
+ 		return false;
+ 	default:
+ 		return true;
+@@ -8867,6 +8957,9 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
+ 				return -EINVAL;
+ 			}
+ 			continue;
++		case PTR_TO_NF_CONN:
++			convert_ctx_access = bpf_nf_conn_convert_ctx_access;
++			break;
+ 		default:
+ 			continue;
+ 		}
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 17de674..80319d3 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -74,6 +74,12 @@
+ #include <net/ipv6_stubs.h>
+ #include <net/bpf_sk_storage.h>
+ 
++#if IS_ENABLED(CONFIG_NF_CONNTRACK)
++#include <net/netfilter/nf_conntrack_tuple.h>
++#include <net/netfilter/nf_conntrack_core.h>
++#include <net/netfilter/nf_conntrack.h>
++#endif
++
+ /**
+  *	sk_filter_trim_cap - run a packet through a socket filter
+  *	@sk: sock associated with &sk_buff
+@@ -5122,6 +5128,253 @@ static void bpf_update_srh_state(struct sk_buff *skb)
+ };
+ #endif /* CONFIG_IPV6_SEG6_BPF */
+ 
++#if IS_ENABLED(CONFIG_NF_CONNTRACK)
++bool bpf_nf_conn_is_valid_access(int off, int size, enum bpf_access_type type,
++				 struct bpf_insn_access_aux *info)
++{
++	if (off < 0 || off >= offsetofend(struct bpf_nf_conn,
++					  timeout))
++		return false;
++
++	if (off % size != 0)
++		return false;
++
++	return size == sizeof(__u32);
++}
++
++u32 bpf_nf_conn_convert_ctx_access(enum bpf_access_type type,
++				   const struct bpf_insn *si,
++				   struct bpf_insn *insn_buf,
++				   struct bpf_prog *prog, u32 *target_size)
++{
++	struct bpf_insn *insn = insn_buf;
++
++	switch (si->off) {
++	case offsetof(struct bpf_nf_conn, cpu):
++		BUILD_BUG_ON(FIELD_SIZEOF(struct nf_conn, cpu) != 2);
++
++		*insn++ = BPF_LDX_MEM(BPF_H, si->dst_reg, si->src_reg,
++				      offsetof(struct nf_conn, cpu));
++
++		break;
++
++	case offsetof(struct bpf_nf_conn, mark):
++#if IS_ENABLED(CONFIG_NF_CONNTRACK_MARK)
++		BUILD_BUG_ON(FIELD_SIZEOF(struct nf_conn, mark) != 4);
++
++		*insn++ = BPF_LDX_MEM(BPF_W, si->dst_reg, si->src_reg,
++				      offsetof(struct nf_conn, mark));
++#else
++		*target_size = 4;
++		*insn++ = BPF_MOV64_IMM(si->dst_reg, 0);
++#endif
++		break;
++
++	case offsetof(struct bpf_nf_conn, status):
++		BUILD_BUG_ON(FIELD_SIZEOF(struct nf_conn, status) < 4 ||
++			     __IPS_MAX_BIT > 32);
++
++		*insn++ = BPF_LDX_MEM(BPF_W, si->dst_reg, si->src_reg,
++				      offsetof(struct nf_conn, status));
++
++		break;
++
++	case offsetof(struct bpf_nf_conn, timeout):
++		BUILD_BUG_ON(FIELD_SIZEOF(struct nf_conn, timeout) != 4);
++
++		*insn++ = BPF_LDX_MEM(BPF_W, si->dst_reg, si->src_reg,
++				      offsetof(struct nf_conn, timeout));
++
++		break;
 +	}
 +
-+	/* cubic function - calc*/
-+	/* calculate c * time^3 / rtt,
-+	 *  while considering overflow in calculation of time^3
-+	 * (so time^3 is done by using 64 bit)
-+	 * and without the support of division of 64bit numbers
-+	 * (so all divisions are done by using 32 bit)
-+	 *  also NOTE the unit of those veriables
-+	 *	  time  = (t - K) / 2^bictcp_HZ
-+	 *	  c = bic_scale >> 10
-+	 * rtt  = (srtt >> 3) / HZ
-+	 * !!! The following code does not have overflow problems,
-+	 * if the cwnd < 1 million packets !!!
-+	 */
++	return insn - insn_buf;
++}
 +
-+	t = (__s32)(tcp_jiffies32 - ca->epoch_start);
-+	t += usecs_to_jiffies(ca->delay_min);
-+	/* change the unit from HZ to bictcp_HZ */
-+	t <<= BICTCP_HZ;
-+	t /= HZ;
++static struct nf_conn *
++ct_lookup(struct net *net, struct bpf_nf_conntrack_tuple *tuple,
++	  u8 family, u8 proto)
++{
++	struct nf_conntrack_tuple_hash *hash;
++	struct nf_conntrack_tuple tup;
++	struct nf_conn *ct = NULL;
 +
-+	if (t < ca->bic_K)		/* t - K */
-+		offs = ca->bic_K - t;
-+	else
-+		offs = t - ca->bic_K;
++	memset(&tup, 0, sizeof(tup));
 +
-+	/* c/rtt * (t-K)^3 */
-+	delta = (cube_rtt_scale * offs * offs * offs) >> (10+3*BICTCP_HZ);
-+	if (t < ca->bic_K)                            /* below origin*/
-+		bic_target = ca->bic_origin_point - delta;
-+	else                                          /* above origin*/
-+		bic_target = ca->bic_origin_point + delta;
++	tup.dst.protonum = proto;
++	tup.src.l3num = family;
 +
-+	/* cubic function - calc bictcp_cnt*/
-+	if (bic_target > cwnd) {
-+		ca->cnt = cwnd / (bic_target - cwnd);
++	if (family == AF_INET) {
++		tup.src.u3.ip = tuple->ipv4.saddr;
++		tup.dst.u3.ip = tuple->ipv4.daddr;
++		tup.src.u.tcp.port = tuple->ipv4.sport;
++		tup.dst.u.tcp.port = tuple->ipv4.dport;
++#if IS_ENABLED(CONFIG_IPV6)
 +	} else {
-+		ca->cnt = 100 * cwnd;              /* very small increment*/
++		memcpy(tup.src.u3.ip6, tuple->ipv6.saddr, sizeof(tup.src.u3.ip6));
++		memcpy(tup.dst.u3.ip6, tuple->ipv6.daddr, sizeof(tup.dst.u3.ip6));
++		tup.src.u.tcp.port = tuple->ipv6.sport;
++		tup.dst.u.tcp.port = tuple->ipv6.dport;
++#endif
 +	}
 +
-+	/*
-+	 * The initial growth of cubic function may be too conservative
-+	 * when the available bandwidth is still unknown.
-+	 */
-+	if (ca->last_max_cwnd == 0 && ca->cnt > 20)
-+		ca->cnt = 20;	/* increase cwnd 5% per RTT */
++	hash = nf_ct_find_get(net, &nf_ct_zone_dflt, &tup);
++	if (!hash)
++		goto out;
++	ct = nf_ct_tuplehash_to_ctrack(hash);
 +
-+tcp_friendliness:
-+	/* TCP Friendly */
-+	if (tcp_friendliness) {
-+		__u32 scale = beta_scale;
-+		__u32 n;
-+
-+		/* update tcp cwnd */
-+		delta = (cwnd * scale) >> 3;
-+		if (ca->ack_cnt > delta && delta) {
-+			n = ca->ack_cnt / delta;
-+			ca->ack_cnt -= n * delta;
-+			ca->tcp_cwnd += n;
-+		}
-+
-+		if (ca->tcp_cwnd > cwnd) {	/* if bic is slower than tcp */
-+			delta = ca->tcp_cwnd - cwnd;
-+			max_cnt = cwnd / delta;
-+			if (ca->cnt > max_cnt)
-+				ca->cnt = max_cnt;
-+		}
-+	}
-+
-+	/* The maximum rate of cwnd increase CUBIC allows is 1 packet per
-+	 * 2 packets ACKed, meaning cwnd grows at 1.5x per RTT.
-+	 */
-+	ca->cnt = max(ca->cnt, 2U);
++out:
++	return ct;
 +}
 +
-+/* Or simply use the BPF_STRUCT_OPS to avoid the SEC boiler plate. */
-+void BPF_STRUCT_OPS(bictcp_cong_avoid, struct sock *sk, __u32 ack, __u32 acked)
++static struct nf_conn *
++__bpf_ct_lookup(struct sk_buff *skb, struct bpf_nf_conntrack_tuple *tuple, u32 len,
++		struct net *caller_net, u8 proto, u64 netns_id, u64 flags)
 +{
-+	struct tcp_sock *tp = tcp_sk(sk);
-+	struct bictcp *ca = inet_csk_ca(sk);
++	struct nf_conn *ct = NULL;
++	u8 family = AF_UNSPEC;
++	struct net *net;
 +
-+	if (!tcp_is_cwnd_limited(sk))
-+		return;
-+
-+	if (tcp_in_slow_start(tp)) {
-+		if (hystart && after(ack, ca->end_seq))
-+			bictcp_hystart_reset(sk);
-+		acked = tcp_slow_start(tp, acked);
-+		if (!acked)
-+			return;
-+	}
-+	bictcp_update(ca, tp->snd_cwnd, acked);
-+	tcp_cong_avoid_ai(tp, ca->cnt, acked);
-+}
-+
-+__u32 BPF_STRUCT_OPS(bictcp_recalc_ssthresh, struct sock *sk)
-+{
-+	const struct tcp_sock *tp = tcp_sk(sk);
-+	struct bictcp *ca = inet_csk_ca(sk);
-+
-+	ca->epoch_start = 0;	/* end of epoch */
-+
-+	/* Wmax and fast convergence */
-+	if (tp->snd_cwnd < ca->last_max_cwnd && fast_convergence)
-+		ca->last_max_cwnd = (tp->snd_cwnd * (BICTCP_BETA_SCALE + beta))
-+			/ (2 * BICTCP_BETA_SCALE);
++	if (len == sizeof(tuple->ipv4))
++		family = AF_INET;
++	else if (len == sizeof(tuple->ipv6))
++		family = AF_INET6;
 +	else
-+		ca->last_max_cwnd = tp->snd_cwnd;
++		goto out;
 +
-+	return max((tp->snd_cwnd * beta) / BICTCP_BETA_SCALE, 2U);
-+}
++	if (unlikely(family == AF_UNSPEC || flags ||
++		     !((s32)netns_id < 0 || netns_id <= S32_MAX)))
++		goto out;
 +
-+void BPF_STRUCT_OPS(bictcp_state, struct sock *sk, __u8 new_state)
-+{
-+	if (new_state == TCP_CA_Loss) {
-+		bictcp_reset(inet_csk_ca(sk));
-+		bictcp_hystart_reset(sk);
-+	}
-+}
-+
-+#define GSO_MAX_SIZE		65536
-+
-+/* Account for TSO/GRO delays.
-+ * Otherwise short RTT flows could get too small ssthresh, since during
-+ * slow start we begin with small TSO packets and ca->delay_min would
-+ * not account for long aggregation delay when TSO packets get bigger.
-+ * Ideally even with a very small RTT we would like to have at least one
-+ * TSO packet being sent and received by GRO, and another one in qdisc layer.
-+ * We apply another 100% factor because @rate is doubled at this point.
-+ * We cap the cushion to 1ms.
-+ */
-+static __always_inline __u32 hystart_ack_delay(struct sock *sk)
-+{
-+	unsigned long rate;
-+
-+	rate = sk->sk_pacing_rate;
-+	if (!rate)
-+		return 0;
-+	return min((__u64)USEC_PER_MSEC,
-+		   div64_ul((__u64)GSO_MAX_SIZE * 4 * USEC_PER_SEC, rate));
-+}
-+
-+static __always_inline void hystart_update(struct sock *sk, __u32 delay)
-+{
-+	struct tcp_sock *tp = tcp_sk(sk);
-+	struct bictcp *ca = inet_csk_ca(sk);
-+	__u32 threshold;
-+
-+	if (hystart_detect & HYSTART_ACK_TRAIN) {
-+		__u32 now = bictcp_clock_us(sk);
-+
-+		/* first detection parameter - ack-train detection */
-+		if ((__s32)(now - ca->last_ack) <= hystart_ack_delta_us) {
-+			ca->last_ack = now;
-+
-+			threshold = ca->delay_min + hystart_ack_delay(sk);
-+
-+			/* Hystart ack train triggers if we get ack past
-+			 * ca->delay_min/2.
-+			 * Pacing might have delayed packets up to RTT/2
-+			 * during slow start.
-+			 */
-+			if (sk->sk_pacing_status == SK_PACING_NONE)
-+				threshold >>= 1;
-+
-+			if ((__s32)(now - ca->round_start) > threshold) {
-+				ca->found = 1;
-+				tp->snd_ssthresh = tp->snd_cwnd;
-+			}
-+		}
++	if ((s32)netns_id < 0) {
++		net = caller_net;
++		ct = ct_lookup(net, tuple, family, proto);
++	} else {
++		net = get_net_ns_by_id(caller_net, netns_id);
++		if (unlikely(!net))
++			goto out;
++		ct = ct_lookup(net, tuple, family, proto);
++		put_net(net);
 +	}
 +
-+	if (hystart_detect & HYSTART_DELAY) {
-+		/* obtain the minimum delay of more than sampling packets */
-+		if (ca->sample_cnt < HYSTART_MIN_SAMPLES) {
-+			if (ca->curr_rtt > delay)
-+				ca->curr_rtt = delay;
++out:
++	return ct;
++}
 +
-+			ca->sample_cnt++;
-+		} else {
-+			if (ca->curr_rtt > ca->delay_min +
-+			    HYSTART_DELAY_THRESH(ca->delay_min >> 3)) {
-+				ca->found = 1;
-+				tp->snd_ssthresh = tp->snd_cwnd;
-+			}
-+		}
++static struct nf_conn *
++bpf_ct_lookup(struct sk_buff *skb, struct bpf_nf_conntrack_tuple *tuple, u32 len,
++	      u8 proto, u64 netns_id, u64 flags)
++{
++	struct net *caller_net;
++
++	if (skb->dev) {
++		caller_net = dev_net(skb->dev);
++	} else {
++		caller_net = sock_net(skb->sk);
 +	}
++
++	return __bpf_ct_lookup(skb, tuple, len, caller_net, proto,
++			       netns_id, flags);
 +}
 +
-+void BPF_STRUCT_OPS(bictcp_acked, struct sock *sk,
-+		    const struct ack_sample *sample)
++BPF_CALL_5(bpf_ct_lookup_tcp, struct sk_buff *, skb,
++	   struct bpf_nf_conntrack_tuple *, tuple, u32, len, u64, netns_id,
++	   u64, flags)
 +{
-+	const struct tcp_sock *tp = tcp_sk(sk);
-+	struct bictcp *ca = inet_csk_ca(sk);
-+	__u32 delay;
-+
-+	/* Some calls are for duplicates without timetamps */
-+	if (sample->rtt_us < 0)
-+		return;
-+
-+	/* Discard delay samples right after fast recovery */
-+	if (ca->epoch_start && (__s32)(tcp_jiffies32 - ca->epoch_start) < HZ)
-+		return;
-+
-+	delay = sample->rtt_us;
-+	if (delay == 0)
-+		delay = 1;
-+
-+	/* first time call or link delay decreases */
-+	if (ca->delay_min == 0 || ca->delay_min > delay)
-+		ca->delay_min = delay;
-+
-+	/* hystart triggers when cwnd is larger than some threshold */
-+	if (!ca->found && tcp_in_slow_start(tp) && hystart &&
-+	    tp->snd_cwnd >= hystart_low_window)
-+		hystart_update(sk, delay);
++	return (unsigned long)bpf_ct_lookup(skb, tuple, len, IPPROTO_TCP,
++					     netns_id, flags);
 +}
 +
-+__u32 BPF_STRUCT_OPS(tcp_reno_undo_cwnd, struct sock *sk)
-+{
-+	const struct tcp_sock *tp = tcp_sk(sk);
-+
-+	return max(tp->snd_cwnd, tp->prior_cwnd);
-+}
-+
-+SEC(".struct_ops")
-+struct tcp_congestion_ops cubic = {
-+	.init		= (void *)bictcp_init,
-+	.ssthresh	= (void *)bictcp_recalc_ssthresh,
-+	.cong_avoid	= (void *)bictcp_cong_avoid,
-+	.set_state	= (void *)bictcp_state,
-+	.undo_cwnd	= (void *)tcp_reno_undo_cwnd,
-+	.cwnd_event	= (void *)bictcp_cwnd_event,
-+	.pkts_acked     = (void *)bictcp_acked,
-+	.name		= "bpf_cubic",
++static const struct bpf_func_proto bpf_ct_lookup_tcp_proto = {
++	.func		= bpf_ct_lookup_tcp,
++	.gpl_only	= true,
++	.pkt_access	= true,
++	.ret_type	= RET_PTR_TO_NF_CONN_OR_NULL,
++	.arg1_type	= ARG_PTR_TO_CTX,
++	.arg2_type	= ARG_PTR_TO_MEM,
++	.arg3_type	= ARG_CONST_SIZE,
++	.arg4_type	= ARG_ANYTHING,
++	.arg5_type	= ARG_ANYTHING,
 +};
++
++BPF_CALL_5(bpf_xdp_ct_lookup_tcp, struct xdp_buff *, ctx,
++	   struct bpf_nf_conntrack_tuple *, tuple, u32, len, u32, netns_id,
++	   u64, flags)
++{
++	struct net *caller_net = dev_net(ctx->rxq->dev);
++
++	return (unsigned long)__bpf_ct_lookup(NULL, tuple, len, caller_net,
++					      IPPROTO_TCP, netns_id, flags);
++}
++
++static const struct bpf_func_proto bpf_xdp_ct_lookup_tcp_proto = {
++	.func		= bpf_xdp_ct_lookup_tcp,
++	.gpl_only	= true,
++	.pkt_access	= true,
++	.ret_type	= RET_PTR_TO_NF_CONN_OR_NULL,
++	.arg1_type	= ARG_PTR_TO_CTX,
++	.arg2_type	= ARG_PTR_TO_MEM,
++	.arg3_type	= ARG_CONST_SIZE,
++	.arg4_type	= ARG_ANYTHING,
++	.arg5_type	= ARG_ANYTHING,
++};
++
++BPF_CALL_5(bpf_ct_lookup_udp, struct sk_buff *, skb,
++	   struct bpf_nf_conntrack_tuple *, tuple, u32, len, u64, netns_id,
++	   u64, flags)
++{
++	return (unsigned long)bpf_ct_lookup(skb, tuple, len, IPPROTO_UDP,
++					     netns_id, flags);
++}
++
++static const struct bpf_func_proto bpf_ct_lookup_udp_proto = {
++	.func		= bpf_ct_lookup_udp,
++	.gpl_only	= true,
++	.pkt_access	= true,
++	.ret_type	= RET_PTR_TO_NF_CONN_OR_NULL,
++	.arg1_type	= ARG_PTR_TO_CTX,
++	.arg2_type	= ARG_PTR_TO_MEM,
++	.arg3_type	= ARG_CONST_SIZE,
++	.arg4_type	= ARG_ANYTHING,
++	.arg5_type	= ARG_ANYTHING,
++};
++
++BPF_CALL_5(bpf_xdp_ct_lookup_udp, struct xdp_buff *, ctx,
++	   struct bpf_nf_conntrack_tuple *, tuple, u32, len, u32, netns_id,
++	   u64, flags)
++{
++	struct net *caller_net = dev_net(ctx->rxq->dev);
++
++	return (unsigned long)__bpf_ct_lookup(NULL, tuple, len, caller_net,
++					      IPPROTO_UDP, netns_id, flags);
++}
++
++static const struct bpf_func_proto bpf_xdp_ct_lookup_udp_proto = {
++	.func		= bpf_xdp_ct_lookup_udp,
++	.gpl_only	= true,
++	.pkt_access	= true,
++	.ret_type	= RET_PTR_TO_NF_CONN_OR_NULL,
++	.arg1_type	= ARG_PTR_TO_CTX,
++	.arg2_type	= ARG_PTR_TO_MEM,
++	.arg3_type	= ARG_CONST_SIZE,
++	.arg4_type	= ARG_ANYTHING,
++	.arg5_type	= ARG_ANYTHING,
++};
++
++BPF_CALL_1(bpf_ct_release, struct nf_conn *, ct)
++{
++	nf_conntrack_put(&ct->ct_general);
++	return 0;
++}
++
++static const struct bpf_func_proto bpf_ct_release_proto = {
++	.func		= bpf_ct_release,
++	.gpl_only	= true,
++	.ret_type	= RET_INTEGER,
++	.arg1_type	= ARG_PTR_TO_NF_CONN,
++};
++#endif
++
+ #ifdef CONFIG_INET
+ static struct sock *sk_lookup(struct net *net, struct bpf_sock_tuple *tuple,
+ 			      int dif, int sdif, u8 family, u8 proto)
+@@ -6139,6 +6392,14 @@ bool bpf_helper_changes_pkt_data(void *func)
+ 	case BPF_FUNC_tcp_gen_syncookie:
+ 		return &bpf_tcp_gen_syncookie_proto;
+ #endif
++#if IS_ENABLED(CONFIG_NF_CONNTRACK)
++	case BPF_FUNC_ct_lookup_tcp:
++		return &bpf_ct_lookup_tcp_proto;
++	case BPF_FUNC_ct_lookup_udp:
++		return &bpf_ct_lookup_udp_proto;
++	case BPF_FUNC_ct_release:
++		return &bpf_ct_release_proto;
++#endif
+ 	default:
+ 		return bpf_base_func_proto(func_id);
+ 	}
+@@ -6180,6 +6441,14 @@ bool bpf_helper_changes_pkt_data(void *func)
+ 	case BPF_FUNC_tcp_gen_syncookie:
+ 		return &bpf_tcp_gen_syncookie_proto;
+ #endif
++#if IS_ENABLED(CONFIG_NF_CONNTRACK)
++	case BPF_FUNC_ct_lookup_tcp:
++		return &bpf_xdp_ct_lookup_tcp_proto;
++	case BPF_FUNC_ct_lookup_udp:
++		return &bpf_xdp_ct_lookup_udp_proto;
++	case BPF_FUNC_ct_release:
++		return &bpf_ct_release_proto;
++#endif
+ 	default:
+ 		return bpf_base_func_proto(func_id);
+ 	}
+@@ -6284,6 +6553,14 @@ bool bpf_helper_changes_pkt_data(void *func)
+ 	case BPF_FUNC_skc_lookup_tcp:
+ 		return &bpf_skc_lookup_tcp_proto;
+ #endif
++#if IS_ENABLED(CONFIG_NF_CONNTRACK)
++	case BPF_FUNC_ct_lookup_tcp:
++		return &bpf_ct_lookup_tcp_proto;
++	case BPF_FUNC_ct_lookup_udp:
++		return &bpf_ct_lookup_udp_proto;
++	case BPF_FUNC_ct_release:
++		return &bpf_ct_release_proto;
++#endif
+ 	default:
+ 		return bpf_base_func_proto(func_id);
+ 	}
+diff --git a/net/netfilter/core.c b/net/netfilter/core.c
+index 78f046e..855c6b0 100644
+--- a/net/netfilter/core.c
++++ b/net/netfilter/core.c
+@@ -617,6 +617,22 @@ bool nf_ct_get_tuple_skb(struct nf_conntrack_tuple *dst_tuple,
+ }
+ EXPORT_SYMBOL(nf_ct_get_tuple_skb);
+ 
++struct nf_conntrack_tuple_hash *
++nf_ct_find_get(struct net *net, const struct nf_conntrack_zone *zone,
++	       const struct nf_conntrack_tuple *tuple)
++{
++	struct nf_ct_hook *ct_hook;
++	struct nf_conntrack_tuple_hash *ret = NULL;
++
++	rcu_read_lock();
++	ct_hook = rcu_dereference(nf_ct_hook);
++	if (ct_hook)
++		ret = ct_hook->find_get(net, zone, tuple);
++	rcu_read_unlock();
++	return ret;
++}
++EXPORT_SYMBOL_GPL(nf_ct_find_get);
++
+ /* Built-in default zone used e.g. by modules. */
+ const struct nf_conntrack_zone nf_ct_zone_dflt = {
+ 	.id	= NF_CT_DEFAULT_ZONE_ID,
+diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
+index f4c4b46..a44df88 100644
+--- a/net/netfilter/nf_conntrack_core.c
++++ b/net/netfilter/nf_conntrack_core.c
+@@ -2484,6 +2484,7 @@ int nf_conntrack_init_start(void)
+ 	.update		= nf_conntrack_update,
+ 	.destroy	= destroy_conntrack,
+ 	.get_tuple_skb  = nf_conntrack_get_tuple_skb,
++	.find_get	= nf_conntrack_find_get,
+ };
+ 
+ void nf_conntrack_init_end(void)
+diff --git a/scripts/bpf_helpers_doc.py b/scripts/bpf_helpers_doc.py
+index 90baf7d..26f0c2a 100755
+--- a/scripts/bpf_helpers_doc.py
++++ b/scripts/bpf_helpers_doc.py
+@@ -398,6 +398,8 @@ class PrinterHelpers(Printer):
+ 
+     type_fwds = [
+             'struct bpf_fib_lookup',
++            'struct bpf_nf_conn',
++            'struct bpf_nf_conntrack_tuple',
+             'struct bpf_perf_event_data',
+             'struct bpf_perf_event_value',
+             'struct bpf_sock',
+@@ -433,6 +435,8 @@ class PrinterHelpers(Printer):
+             '__wsum',
+ 
+             'struct bpf_fib_lookup',
++            'struct bpf_nf_conn',
++            'struct bpf_nf_conntrack_tuple',
+             'struct bpf_perf_event_data',
+             'struct bpf_perf_event_value',
+             'struct bpf_sock',
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 033d90a..85c4b3f 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -2885,6 +2885,88 @@ struct bpf_stack_build_id {
+  *		**-EPERM** if no permission to send the *sig*.
+  *
+  *		**-EAGAIN** if bpf program can try again.
++ *
++ * struct bpf_nf_conn *bpf_ct_lookup_tcp(void *ctx, struct bpf_nf_conntrack_tuple *tuple, u32 tuple_size, u64 netns, u64 flags)
++ *	Description
++ *		Look for TCP nf_conntrack entry matching *tuple*, optionally in
++ *		a child network namespace *netns*. The return value must be
++ *		checked, and if non-**NULL**, released via
++ *		**bpf_ct_release**\ ().
++ *
++ *		The *ctx* should point to the context of the program, such as
++ *		the skb or xdp_md (depending on the hook in use). This is used
++ *		to determine the base network namespace for the lookup.
++ *
++ *		*tuple_size* must be one of:
++ *
++ *		**sizeof**\ (*tuple*\ **->ipv4**)
++ *			Look for an IPv4 nf_conn.
++ *		**sizeof**\ (*tuple*\ **->ipv6**)
++ *			Look for an IPv6 nf_conn.
++ *
++ *		If the *netns* is a negative signed 32-bit integer, then the
++ *		nf_conn lookup table in the netns associated with the *ctx* will
++ *		will be used. For the TC hooks, this is the netns of the device
++ *		in the skb. For XDP hooks, this is the netns of the device in
++ *		the xdp_md. If *netns* is any other signed 32-bit value greater
++ *		than or equal to zero then it specifies the ID of the netns
++ *		relative to the netns associated with the *ctx*. *netns* values
++ *		beyond the range of 32-bit integers are reserved for future
++ *		use.
++ *
++ *		All values for *flags* are reserved for future usage, and must
++ *		be left at zero.
++ *
++ * 		This helper will always return NULL if the kernel was compiled
++ * 		without **CONFIG_NF_CONNTRACK**.
++ *	Return
++ *		Pointer to **struct bpf_nf_conn**, or **NULL** in case of
++ *		failure.
++ *
++ * struct bpf_nf_conn *bpf_ct_lookup_udp(void *ctx, struct bpf_nf_conntrack_tuple *tuple, u32 tuple_size, u64 netns, u64 flags)
++ *	Description
++ *		Look for UDP nf_conntrack entry matching *tuple*, optionally in
++ *		a child network namespace *netns*. The return value must be
++ *		checked, and if non-**NULL**, released via
++ *		**bpf_ct_release**\ ().
++ *
++ *		The *ctx* should point to the context of the program, such as
++ *		the skb or xdp_md (depending on the hook in use). This is used
++ *		to determine the base network namespace for the lookup.
++ *
++ *		*tuple_size* must be one of:
++ *
++ *		**sizeof**\ (*tuple*\ **->ipv4**)
++ *			Look for an IPv4 nf_conn.
++ *		**sizeof**\ (*tuple*\ **->ipv6**)
++ *			Look for an IPv6 nf_conn.
++ *
++ *		If the *netns* is a negative signed 32-bit integer, then the
++ *		nf_conn lookup table in the netns associated with the *ctx* will
++ *		will be used. For the TC hooks, this is the netns of the device
++ *		in the skb. For XDP hooks, this is the netns of the device in
++ *		the xdp_md. If *netns* is any other signed 32-bit value greater
++ *		than or equal to zero then it specifies the ID of the netns
++ *		relative to the netns associated with the *ctx*. *netns* values
++ *		beyond the range of 32-bit integers are reserved for future
++ *		use.
++ *
++ *		All values for *flags* are reserved for future usage, and must
++ *		be left at zero.
++ *
++ * 		This helper will always return NULL if the kernel was compiled
++ * 		without **CONFIG_NF_CONNTRACK**.
++ *	Return
++ *		Pointer to **struct bpf_nf_conn**, or **NULL** in case of
++ *		failure.
++ *
++ * int bpf_ct_release(struct bpf_nf_conn *ct)
++ *	Description
++ *		Release the reference held by *ct*. *ct* must be a
++ *		non-**NULL** pointer that was returned from
++ *		**bpf_ct_lookup_xxx**\ ().
++ *	Return
++ *		0 on success, or a negative error in case of failure.
+  */
+ #define __BPF_FUNC_MAPPER(FN)		\
+ 	FN(unspec),			\
+@@ -3004,7 +3086,10 @@ struct bpf_stack_build_id {
+ 	FN(probe_read_user_str),	\
+ 	FN(probe_read_kernel_str),	\
+ 	FN(tcp_send_ack),		\
+-	FN(send_signal_thread),
++	FN(send_signal_thread),		\
++	FN(ct_lookup_tcp),		\
++	FN(ct_lookup_udp),		\
++	FN(ct_release),
+ 
+ /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+  * function eBPF program intends to call
+@@ -3278,6 +3363,30 @@ struct bpf_sock_tuple {
+ 	};
+ };
+ 
++struct bpf_nf_conn {
++	__u32 cpu;
++	__u32 mark;
++	__u32 status;
++	__u32 timeout;
++};
++
++struct bpf_nf_conntrack_tuple {
++	union {
++		struct {
++			__be32 saddr;
++			__be32 daddr;
++			__be16 sport;
++			__be16 dport;
++		} ipv4;
++		struct {
++			__be32 saddr[4];
++			__be32 daddr[4];
++			__be16 sport;
++			__be16 dport;
++		} ipv6;
++	};
++};
++
+ struct bpf_xdp_sock {
+ 	__u32 queue_id;
+ };
 -- 
-2.17.1
+1.8.3.1
 
