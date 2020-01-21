@@ -2,86 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B3891444E8
-	for <lists+bpf@lfdr.de>; Tue, 21 Jan 2020 20:16:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B92B514456F
+	for <lists+bpf@lfdr.de>; Tue, 21 Jan 2020 20:54:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727350AbgAUTQr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Jan 2020 14:16:47 -0500
-Received: from mail-lf1-f67.google.com ([209.85.167.67]:33064 "EHLO
-        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726229AbgAUTQr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Jan 2020 14:16:47 -0500
-Received: by mail-lf1-f67.google.com with SMTP id n25so3291201lfl.0;
-        Tue, 21 Jan 2020 11:16:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yH4ULRCvH4cIDF7hD9SOh0HJDCpz6O0XU2vMhvkwdOE=;
-        b=Z1RfHvzAJPA/StIKZHDEekvQyA0VUlR1vmzUjSrVy0rGP1l702BDP+NRdzLf/mbFkj
-         /25wksgnCFXLuFH3meS2QWhOtOLmA7ZFYl9R/wvQwi1UoZN70mg+peRJ565Dq3/0GmBZ
-         hiE1Wxs9KqVV3+msNPh6H3dQK3AiLXRl670WQTcNp3v/qQg+WRtkEoOkmDLix0voBC30
-         Q6+puIlj1cO68FdcbwN8+y0nYyMV19SstBVcXCr0lgZPzauVp273AqUQzfcua/w++cIh
-         fma7F+ml8F66/yipQB6c2MdQzcoZQ7jXwS8j5ADncUcZkHBEv/7g7ke/dL7KchEwFdaa
-         jFYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yH4ULRCvH4cIDF7hD9SOh0HJDCpz6O0XU2vMhvkwdOE=;
-        b=LVwavKy2j87GnoleWH0KKedQNoJpEZ1AWmDssfWEe4ofajHc7r/LORKISKck7Qx4Ac
-         bexNI6WrTsbf/1i5aqUMpV+srxhcQO0A3SmGXdX8aNtKxq0Gt3t5sOgR1D4DT0L/O9Bn
-         G/tvd7/wf779yJQtiY9SWtT08mnrDTjCfbvWrS7QGAjrjnM630V5Q4sZmGRhMhr/q/fw
-         kMAoXvvBx2s1Zi8GJJQBliouWkiPt97JUBcM6BwIO3nmvUSNPYElq+uRpc+wIMYBaukv
-         rIub/E7ywihWkYRqs8uKdr9fQ8yw7TC5W4nJDI/AUmEdBtUU6jD+wCDZFgcl/aLADy/L
-         31MA==
-X-Gm-Message-State: APjAAAVaTMjLx6lisv6HUTJ1feV3C+sM4fIskqMipCGCbaYHJu1HAOxn
-        TvnkHFUbzkQK07u7JzuaS/+VcBrLd5dRwOjIuE8=
-X-Google-Smtp-Source: APXvYqxBYVgdpErMAXSCI8pmoUIGY/wO9CBLiGd4fNVY01TGZK0ZF/ly0kg8E6SVOc6FFy6MoRusPEJoH8+GoAsAgys=
-X-Received: by 2002:a05:6512:4c6:: with SMTP id w6mr3497249lfq.157.1579634205243;
- Tue, 21 Jan 2020 11:16:45 -0800 (PST)
-MIME-Version: 1.0
-References: <00000000000031a8d7059c27c540@google.com> <00000000000048111c059cab1695@google.com>
-In-Reply-To: <00000000000048111c059cab1695@google.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 21 Jan 2020 11:16:33 -0800
-Message-ID: <CAADnVQ+jS2C=TxPvyKJmoj7HENCZVr3O_N1tHQ4uTewPDUu0_A@mail.gmail.com>
-Subject: Re: general protection fault in free_verifier_state (3)
-To:     syzbot <syzbot+b296579ba5015704d9fa@syzkaller.appspotmail.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        id S1727829AbgAUTyW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Jan 2020 14:54:22 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:10194 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727383AbgAUTyW (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 21 Jan 2020 14:54:22 -0500
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 00LJqPds026335
+        for <bpf@vger.kernel.org>; Tue, 21 Jan 2020 11:54:21 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=M9tKYq5S8olI+roSrIUlCjG3W5Rekg0pHlLXt2E0X4Q=;
+ b=DgIy0B8CAzdXtWxUhYMjqchR8sF//x4nJi9a2/82tCbgt1fYoeGaKKLRdSUFzyDcn2h6
+ lApCq2xHu5OOG8/udfat+SvdWL0l4JynayZZSwNL/L6Xbmw20mgQu0H3bZGCLdB/1yxo
+ q3KiabSi9D7Qa7CH20e/8LaroxJLbBatE84= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0089730.ppops.net with ESMTP id 2xp51m0y0v-11
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 21 Jan 2020 11:54:21 -0800
+Received: from intmgw001.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Tue, 21 Jan 2020 11:54:10 -0800
+Received: by devbig005.ftw2.facebook.com (Postfix, from userid 6611)
+        id 7254729420B3; Tue, 21 Jan 2020 11:54:08 -0800 (PST)
+Smtp-Origin-Hostprefix: devbig
+From:   Martin KaFai Lau <kafai@fb.com>
+Smtp-Origin-Hostname: devbig005.ftw2.facebook.com
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        David Miller <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, <kernel-team@fb.com>,
+        <netdev@vger.kernel.org>
+Smtp-Origin-Cluster: ftw2c04
+Subject: [PATCH bpf-next 0/3] bpf: tcp: Add bpf_cubic example
+Date:   Tue, 21 Jan 2020 11:54:08 -0800
+Message-ID: <20200121195408.3756734-1-kafai@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.634
+ definitions=2020-01-21_06:2020-01-21,2020-01-21 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
+ mlxlogscore=929 malwarescore=0 suspectscore=1 priorityscore=1501
+ spamscore=0 bulkscore=0 phishscore=0 clxscore=1015 lowpriorityscore=0
+ mlxscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-2001210147
+X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 21, 2020 at 11:05 AM syzbot
-<syzbot+b296579ba5015704d9fa@syzkaller.appspotmail.com> wrote:
->
-> syzbot has found a reproducer for the following crash on:
->
-> HEAD commit:    2e3a94aa bpf: Fix memory leaks in generic update/delete ba..
-> git tree:       bpf-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=15aefc6ee00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=a736c99e9fe5a676
-> dashboard link: https://syzkaller.appspot.com/bug?extid=b296579ba5015704d9fa
-> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10a4280de00000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1411544ee00000
+This set adds bpf_cubic.c example.  It was separated from the
+earlier BPF STRUCT_OPS series.  Some highlights since the
+last post:
 
-Since it's in the verifier I'm guessing it's related to some of my
-earlier patches.
-I'll try to take a look soon.
+1. It is based on EricD recent fixes to the kernel tcp_cubic. [1]
+2. The bpf jiffies reading helper is inlined by the verifier.
+   Different from the earlier version, it only reads jiffies alone
+   and does not do usecs/jiffies conversion.
+3. The bpf .kconfig map is used to read CONFIG_HZ which
+   is then used in the usecs_to_jiffies() conversion.
+
+[1]: https://patchwork.ozlabs.org/cover/1215066/
+
+Martin KaFai Lau (3):
+  bpf: Add BPF_FUNC_jiffies64
+  bpf: Sync uapi bpf.h to tools/
+  bpf: tcp: Add bpf_cubic example
+
+ include/linux/bpf.h                           |   2 +
+ include/uapi/linux/bpf.h                      |   9 +-
+ kernel/bpf/core.c                             |   1 +
+ kernel/bpf/helpers.c                          |  27 +
+ kernel/bpf/verifier.c                         |  18 +
+ net/core/filter.c                             |   2 +
+ tools/include/uapi/linux/bpf.h                |   9 +-
+ tools/testing/selftests/bpf/bpf_tcp_helpers.h |  16 +
+ .../selftests/bpf/prog_tests/bpf_tcp_ca.c     |  25 +
+ tools/testing/selftests/bpf/progs/bpf_cubic.c | 573 ++++++++++++++++++
+ 10 files changed, 680 insertions(+), 2 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_cubic.c
+
+-- 
+2.17.1
+
