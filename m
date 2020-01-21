@@ -2,88 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C9E551434DB
-	for <lists+bpf@lfdr.de>; Tue, 21 Jan 2020 01:48:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 872261434E0
+	for <lists+bpf@lfdr.de>; Tue, 21 Jan 2020 01:52:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728512AbgAUAsE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Jan 2020 19:48:04 -0500
-Received: from mail-io1-f42.google.com ([209.85.166.42]:38726 "EHLO
-        mail-io1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727403AbgAUAsE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 20 Jan 2020 19:48:04 -0500
-Received: by mail-io1-f42.google.com with SMTP id i7so1000801ioo.5;
-        Mon, 20 Jan 2020 16:48:03 -0800 (PST)
+        id S1727403AbgAUAwI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Jan 2020 19:52:08 -0500
+Received: from mail-io1-f45.google.com ([209.85.166.45]:46920 "EHLO
+        mail-io1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727009AbgAUAwI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 20 Jan 2020 19:52:08 -0500
+Received: by mail-io1-f45.google.com with SMTP id t26so957250ioi.13
+        for <bpf@vger.kernel.org>; Mon, 20 Jan 2020 16:52:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=muGQKO5jcbVtHtfxPoG4PyZ3XF34eZZhDHliWSoD5WM=;
-        b=PkTqZ7XfeCblc7He33zGQcrlb2wmjuKLebwQZPxDO01Q9XlzUM5/ABDn7sF3OTp0ws
-         wfX55eCIeKn3ps+CvQwJjDHTcDV0RGtb0dG221T8ExndHur5jcIWzsMCWfa845ZCVaLN
-         +4UbhBNShcLh1Ro4oceNDfTSBiTuP6TSPlhuMRb8H1zMxA9CAae/+8ovwCO/9q4dr4Zk
-         oIY9iyIQYcVaEjXHTzCnXJpYOTQ9ZRRkikZtBIhfGK0m4OmQ6T9Xi17bLN8VTU3y0Ih6
-         224dPUh1wYKx5ztzG7vLZLZesQdajpEjCAnB7yBIEs3Y5rfWRLOisEfRU/NQyEmeXAiO
-         YxrQ==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=4SbfaI5DC3X7gOQ8xR5km/thfmK+wEb60lhNjDUdCsw=;
+        b=X/3IvH4rG3+g3MWW7FznW+FBzOecZkKsaj+Plf+aE4GkeijwW556YxppdxL4SA1Vah
+         JdYm0jVScvN8q4sVKXOuoKmbUVxfyUx+9pI6aEJdrxeKbDw7/BgeUx22L9ymqGlDgyb2
+         Yf/v30GOoh5MPy8xpydozUN6zbsBLDypWoLGMUZZu2KoUDiyGfg4chjflM9cmmIB3N+y
+         Pjw52dUEW7hyXHel+tY8dwtNVkicKyiPZQ6yIiKxVvS1FxbkX8K+5crMXpkU1LBMpmUE
+         SxSvJgZpLsm2MB9c/7kFDH+HEznS5uSNP8Bl8NLYFLI/RQ7ffGgxhK1fyV76AuNQcRlb
+         WYkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=muGQKO5jcbVtHtfxPoG4PyZ3XF34eZZhDHliWSoD5WM=;
-        b=dBs9M5pHE23iPt40YvJaAXHZf7mBJZBiAWDzs706Ciu7d5EQUps1/5/TuV696Yg8e3
-         QZ8GVdpr0R/hIN4tOY+nDpxKW1722Tb3BVkNcX+2SXcoMHjpojmXwXm7ImwpVku+DJiS
-         abWQjVu5hM89qSsfER9CyIku1IX1rz9NMry0NIl6Zdn3W7rRM9xdnxJw0nVLQeghsHjD
-         h/W+89jexYw3xcV5zsRsyLnn8G1/NabkyHfQJX85J1DDg/El7tnST7mqAxSXk5qyjinE
-         bZkOvuHRUUk3WRHO7S1bQmbYBcwcyxqPrGDThgvlaa4LdgXMRM4NiNyEKtdKwWTamWdy
-         wDsw==
-X-Gm-Message-State: APjAAAU/Img7KfC+ZfjHb8Y86oHawFWgIyRSS+iW+XdNh2vLaWC5hTiO
-        76QQUQ4WF5c1UDYoMOFRHrI=
-X-Google-Smtp-Source: APXvYqzOtFbkyneRwVMD42JhnDwJq1KSFx3XbwWbTQPiIJd/82lOaRVC9QTgY83Q8ig80sjrT2RmiA==
-X-Received: by 2002:a02:c90a:: with SMTP id t10mr1343221jao.25.1579567683413;
-        Mon, 20 Jan 2020 16:48:03 -0800 (PST)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id a6sm12314327iln.87.2020.01.20.16.48.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jan 2020 16:48:02 -0800 (PST)
-Date:   Mon, 20 Jan 2020 16:47:54 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        bpf@vger.kernel.org, magnus.karlsson@intel.com,
-        jonathan.lemon@gmail.com
-Message-ID: <5e264a3a5d5e6_20912afc5c86e5c4b5@john-XPS-13-9370.notmuch>
-In-Reply-To: <20200120092917.13949-1-bjorn.topel@gmail.com>
-References: <20200120092917.13949-1-bjorn.topel@gmail.com>
-Subject: RE: [PATCH bpf-next] xsk, net: make sock_def_readable() have external
- linkage
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=4SbfaI5DC3X7gOQ8xR5km/thfmK+wEb60lhNjDUdCsw=;
+        b=VDKxW3ay3A3urkzzNsSGJRikRD3aOgDNgaR0/oRk5HwzctNxPHDeUfeByLP/eUBePg
+         YxI3g9mPE9qr8kR1Vzeyf9sj85W1Ps5RED3o6S7NJihrap6KkNfYNvQJ0q7KqMNlW7UO
+         TVh8DbMLVauPMk6amlnfToasSs5nzuDrTlFvz5eCVBctRCUJzCbzoHgHllxPHb91EQc+
+         sE8RntPNDfVt5L2cfZql98Cb54ocw/Aw6XVQyW3j5O25foiKFF3YkUGHH4f31DJ5ALfn
+         Z+AH/UtLnG4HxdrgCfYbRXwQpSVX/97c/7FXDZyJ21gCVlh2tVLRMn+B6HUbOKbhqqDI
+         pPuw==
+X-Gm-Message-State: APjAAAU51xd881iVwi9Kw0v5zyrsowNSRA3HxFxLzro7UmRpGBwpH3yM
+        V8hcw7GYtEZoezZANgY0hmytKin8rBTkXT60qg==
+X-Google-Smtp-Source: APXvYqya+dZueS5v3iprRLPj6Uu+F0xiwTq6CcIBEIC4VQIFHW4wvuGn3MFOldRbQSPJPxNhfLZaNixiX3sDjUt6L5o=
+X-Received: by 2002:a5d:8cd6:: with SMTP id k22mr1147632iot.283.1579567927186;
+ Mon, 20 Jan 2020 16:52:07 -0800 (PST)
+MIME-Version: 1.0
+Received: by 2002:a5d:8a11:0:0:0:0:0 with HTTP; Mon, 20 Jan 2020 16:52:06
+ -0800 (PST)
+Reply-To: mrsnicoleApollonia11@yandex.com
+From:   "Mrs Nicole Apollonia," <mrsnicoleapollonia9@gmail.com>
+Date:   Tue, 21 Jan 2020 00:52:06 +0000
+Message-ID: <CAE-HGpt=Gz1jndYY_BjT5RegbmG4Luva8YtzSmoOrV53Or1zcQ@mail.gmail.com>
+Subject: I NEED YOUR URGENT RESPOND AND TRUST,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Bj=C3=B6rn T=C3=B6pel wrote:
-> From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
-> =
+Dear friend,
 
-> XDP sockets use the default implementation of struct sock's
-> sk_data_ready callback, which is sock_def_readable(). This function is
-> called in the XDP socket fast-path, and involves a retpoline. By
-> letting sock_def_readable() have external linkage, and being called
-> directly, the retpoline can be avoided.
-> =
+My name is Mrs. Nicole Apollonia, from Toulouse France. I have been
+suffering from ovarian cancer disease and the doctor says that I have
+just a short time to live. For the past Twelve years, I have being
+dealing on gold exportation, before falling ill due to the Cancer.
 
-> Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
-> ---
->  include/net/sock.h | 2 ++
->  net/core/sock.c    | 2 +-
->  net/xdp/xsk.c      | 2 +-
->  3 files changed, 4 insertions(+), 2 deletions(-)
-> =
+Now that I am very sick and according to the doctor,i will not survive
+the sickness.The worst of it all is that I do not have any family
+members or children to inherit my wealth.I am writing this letter now
+through the help of the computer beside my sick bed.I have $4.5
+Million US Dollars deposited in Eco-Bank here in Burkina Faso and I am
+willing to instruct my bank to transfer the fund to you as my foreign
+Trustee.You will apply to the bank, that they should release the fund
+to you, but you will assure me that you will take 50% of the fund and
+give 50% to the orphanages home in your country for my soul to rest
+after i have gone.In my next email, I will send you the copy of the
+Certificate of Deposit which will enable you apply to the bank and
+receive the money with no case.Respond to me immediately for further
+details and instructions since I am in the end times of my life due to
+the ovarian cancer disease.
+Hoping to receive your response as soon as possible.
 
-
-I think this is fine but curious were you able to measure the
-difference with before/after pps or something?=
+Yours Faithfully,
+Mrs. Nicole Apollonia,
