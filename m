@@ -2,114 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 30455144860
-	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2020 00:36:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69E5514488F
+	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2020 00:49:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726584AbgAUXgO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Jan 2020 18:36:14 -0500
-Received: from www62.your-server.de ([213.133.104.62]:41308 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725933AbgAUXgO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Jan 2020 18:36:14 -0500
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iu348-0003LX-7z; Wed, 22 Jan 2020 00:36:12 +0100
-Received: from [178.197.248.28] (helo=pc-9.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1iu347-00033r-S3; Wed, 22 Jan 2020 00:36:11 +0100
-Subject: Re: [PATCH bpf-next] xsk, net: make sock_def_readable() have external
- linkage
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     Netdev <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        bpf <bpf@vger.kernel.org>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>
-References: <20200120092917.13949-1-bjorn.topel@gmail.com>
- <5e264a3a5d5e6_20912afc5c86e5c4b5@john-XPS-13-9370.notmuch>
- <CAJ+HfNirBncXGcath_MKpzbcf3JRBRU7ThpapCQh_zMNqQVtxQ@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <38c0f2f6-436d-f0d6-42c6-242e550c06f2@iogearbox.net>
-Date:   Wed, 22 Jan 2020 00:36:11 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1728733AbgAUXtY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Jan 2020 18:49:24 -0500
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:44330 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725933AbgAUXtW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Jan 2020 18:49:22 -0500
+Received: by mail-wr1-f65.google.com with SMTP id q10so5345501wrm.11
+        for <bpf@vger.kernel.org>; Tue, 21 Jan 2020 15:49:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=tK7af4Yj21EpvGAZIaTRTJBlx41+rY2B9mDlWdbfbi8=;
+        b=bTd9UkGog9xWCbHsbf0wHxECfn6qCYjmBs2H9GP/J+PfVO7g2dIAVALlh0QDr048GE
+         aD0eafCfACbl+CDgL/jt7fkiQsb83EbB9QtXGcbbIGPR3RZ8Z/6d1Zu9dq19gNO0lvEa
+         2vGvHLvS3XqTTA7qvK/yi9a1C7j7Zb2rxoMzQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tK7af4Yj21EpvGAZIaTRTJBlx41+rY2B9mDlWdbfbi8=;
+        b=MQMi6MITMg3is3Cym6MAWL0l9N/cf0ndypbhSVO7sBz6a0ZCiNIWbU9DWZcmctiIXU
+         XmfVTfO6HL262WPPmqyef4csGebYG2eerti/z9VFLWkSsYJ54VLOCt/NIB5wvAL6YAKh
+         gPMLKhWDRMgg6HIkagDRim83W5UDe7nMlqHQMRtedohJ0e9sIn3s9cb3nqs2z+hT0osi
+         puEdJtLWO2ruKN6yRlfZvRXNwJtXUA7uAju1pxiXfwEA7hjzQyGmPmxbcNdnn52QOdv9
+         GhbkQEvGJNNrmSt2W2+i7r7uMPgu51xMvWjcca0B8AafnIj3QdlqTlqM4BwJtU0d5pOC
+         5K2w==
+X-Gm-Message-State: APjAAAXFJHS2swMpMEfWlJlN0Jri1BGalwlND+0SXAJ5DyEmOEEmUITP
+        RIfY7IhPavi1x/ZIX6gKvtwaWQ==
+X-Google-Smtp-Source: APXvYqwoGBU6WnXPqYPEDv/r4bHvegGsbO7skJxxBVcEi/7SH5NMS2jak/GYVfHybnuWj7SYgBZ9Tw==
+X-Received: by 2002:adf:eb89:: with SMTP id t9mr7679388wrn.5.1579650560374;
+        Tue, 21 Jan 2020 15:49:20 -0800 (PST)
+Received: from localhost ([2620:10d:c092:180::1:58ec])
+        by smtp.gmail.com with ESMTPSA id x11sm56093615wre.68.2020.01.21.15.49.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Jan 2020 15:49:19 -0800 (PST)
+Date:   Tue, 21 Jan 2020 23:49:19 +0000
+From:   Chris Down <chris@chrisdown.name>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH] bpf: btf: Always output invariant hit in pahole DWARF to
+ BTF transform
+Message-ID: <20200121234919.GA309703@chrisdown.name>
+References: <20200121150431.GA240246@chrisdown.name>
+ <CAEf4BzZj4PEamHktYLHqHrau0_pkr_q-J85MPCzFbe7mtLQ_+Q@mail.gmail.com>
+ <20200121202916.GA204956@chrisdown.name>
+ <CAEf4BzZ5wR_jTEbwYVU-z3ZBP+06p9ZTOeF_DNxqe_nQW493CA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAJ+HfNirBncXGcath_MKpzbcf3JRBRU7ThpapCQh_zMNqQVtxQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.101.4/25702/Tue Jan 21 12:39:19 2020)
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzZ5wR_jTEbwYVU-z3ZBP+06p9ZTOeF_DNxqe_nQW493CA@mail.gmail.com>
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 1/21/20 1:06 PM, Björn Töpel wrote:
-> On Tue, 21 Jan 2020 at 01:48, John Fastabend <john.fastabend@gmail.com> wrote:
->> Björn Töpel wrote:
->>> From: Björn Töpel <bjorn.topel@intel.com>
->>>
->>> XDP sockets use the default implementation of struct sock's
->>> sk_data_ready callback, which is sock_def_readable(). This function is
->>> called in the XDP socket fast-path, and involves a retpoline. By
->>> letting sock_def_readable() have external linkage, and being called
->>> directly, the retpoline can be avoided.
->>>
->>> Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
->>> ---
->>>   include/net/sock.h | 2 ++
->>>   net/core/sock.c    | 2 +-
->>>   net/xdp/xsk.c      | 2 +-
->>>   3 files changed, 4 insertions(+), 2 deletions(-)
->>>
+Andrii Nakryiko writes:
+>On Tue, Jan 21, 2020 at 12:29 PM Chris Down <chris@chrisdown.name> wrote:
 >>
->> I think this is fine but curious were you able to measure the
->> difference with before/after pps or something?
-> 
-> Ugh, yeah, of course I've should have added that. Sorry for that! Here
-> goes; Benchmark is xdpsock rxdrop, NAPI running on core 20:
-> 
-> **Pre-patch: xdpsock rxdrop: 22.8 Mpps
->   Performance counter stats for 'CPU(s) 20':
-> 
->           10,000.58 msec cpu-clock                 #    1.000 CPUs
-> utilized
->                  12      context-switches          #    0.001 K/sec
->                   1      cpu-migrations            #    0.000 K/sec
->                   0      page-faults               #    0.000 K/sec
->      29,931,407,416      cycles                    #    2.993 GHz
->      82,538,852,331      instructions              #    2.76  insn per
-> cycle
->      15,894,169,979      branches                  # 1589.324 M/sec
->          30,916,486      branch-misses             #    0.19% of all
-> branches
-> 
->        10.000636027 seconds time elapsed
-> 
-> **Post-patch: xdpsock rxdrop: 23.2 Mpps
->           10,000.90 msec cpu-clock                 #    1.000 CPUs
-> utilized
->                  12      context-switches          #    0.001 K/sec
->                   1      cpu-migrations            #    0.000 K/sec
->                   0      page-faults               #    0.000 K/sec
->      29,932,353,067      cycles                    #    2.993 GHz
->      84,299,636,827      instructions              #    2.82  insn per
-> cycle
->      16,228,795,437      branches                  # 1622.733 M/sec
->          28,113,847      branch-misses             #    0.17% of all
-> branches
-> 
->        10.000596454 seconds time elapsed
-> 
-> This could fall into the category of noise. :-) PPS and IPC is up a
-> bit. OTOH, maybe UDP can benefit from this as well?
+>> Andrii Nakryiko writes:
+>> >> --- a/scripts/link-vmlinux.sh
+>> >> +++ b/scripts/link-vmlinux.sh
+>> >> @@ -108,13 +108,15 @@ gen_btf()
+>> >>         local bin_arch
+>> >>
+>> >>         if ! [ -x "$(command -v ${PAHOLE})" ]; then
+>> >> -               info "BTF" "${1}: pahole (${PAHOLE}) is not available"
+>> >> +               printf 'BTF: %s: pahole (%s) is not available\n' \
+>> >> +                       "${1}" "${PAHOLE}" >&2
+>> >
+>> >any reason not to use echo instead of printf? would be more minimal change
+>>
+>> I generally avoid using echo because it has a bunch of portability gotchas
+>> which printf mostly doesn't have. If you'd prefer echo, that's fine though,
+>> just let me know and I can send v2.
+>
+>The rest of the script is using echo for errors, so let's stick to it
+>for consistency. Thanks!
 
-Yeah, might be within noise range though getting rid of retpolines in XDP
-[socket] fast-path is fine and patch is tiny, so applied, thanks!
+Sure thing, I'll send v2. Thanks! :-)
