@@ -2,115 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 94B7E144019
-	for <lists+bpf@lfdr.de>; Tue, 21 Jan 2020 16:04:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62B1414409F
+	for <lists+bpf@lfdr.de>; Tue, 21 Jan 2020 16:37:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726968AbgAUPEf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Jan 2020 10:04:35 -0500
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:33778 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727817AbgAUPEe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Jan 2020 10:04:34 -0500
-Received: by mail-wr1-f65.google.com with SMTP id b6so3623309wrq.0
-        for <bpf@vger.kernel.org>; Tue, 21 Jan 2020 07:04:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=3fX8yqVdokeUbIrwEfgnVCmcXTtAwRGxuX8ZNd4rp/U=;
-        b=lqbjIQovQBhxj+xtgVpB8uPL58iOhyecjOyhwTyWj62vfntLi4PpGJ6VfGKjJ2QUnK
-         JMumsdiQl5V6T7LB2vFENkf8ojE07zTSr/3BJxxB/9O7BC4rZwYKSzfyCvx7JknD3GMV
-         Ea2K+iKl2ejNEzovb915Aw97aYSA1UGVo51PM=
+        id S1729108AbgAUPhi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Jan 2020 10:37:38 -0500
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:58427 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727817AbgAUPhi (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 21 Jan 2020 10:37:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1579621057;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KEbtb5iPk+ToPcHf5Qqxgw96P5QADIf6QorZP19ushc=;
+        b=f0BJ2kGksH7lNdA/SFizeD1ld4mMnMu9RhoPt0H5OAzea8e+ZM9BlRcfL2ymMgZeuzAoy2
+        UPAbws/SMmEypBwiDns/E9+RMwCvsTn+d6i6oUBEIOzQPNKCj9pdurfcLE16AE5fpFKGKN
+        5j9HqwrT8rpL028+1N5lz9iq4RXZTj0=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-358-11SHWrFfOhSVAdHGVfA8mQ-1; Tue, 21 Jan 2020 10:37:35 -0500
+X-MC-Unique: 11SHWrFfOhSVAdHGVfA8mQ-1
+Received: by mail-lf1-f70.google.com with SMTP id z3so963424lfq.22
+        for <bpf@vger.kernel.org>; Tue, 21 Jan 2020 07:37:35 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=3fX8yqVdokeUbIrwEfgnVCmcXTtAwRGxuX8ZNd4rp/U=;
-        b=UPxv1KahUgrp4imipsxbvHN0RIJ3Rk/tFBAdS2DYwjy86rKCWyIgAEWN3e5P7B8qDU
-         JnfeMd5XseuE2zXREP4/zhaMObOM9U8kw6waAjoAhBLM0aMqT+RkN+HdTjMJpbW9Y6rN
-         gjbBNcyPvmP4PNVV/g5WftYHjaToTdxJEqTs4VwMnKFVKXB2Ufcco9y5SfWxpsXAcqj4
-         LAgh34rN98dZxIak/jXqw5m+E/kXb71KpG90EvISpZfmtWdyVGFwV7KkGraMyLL+UQF1
-         YkGBQ9n1fZSoMfWkR5OgYg10efcW0JTbJrb84v20P5gbzXa5JPokS51jD9KE6ENdiQ4/
-         urOw==
-X-Gm-Message-State: APjAAAXP7WFc2JzTdnwT9GzZTYwHUCGsfF/sVSU4VhVcHLQV6oQMrHCc
-        YH0/6JrcYBP+41/4ZmkY8po1JMVjYQ4=
-X-Google-Smtp-Source: APXvYqw/n/eK5Xu7u+qMpNfuL8mmr6BDT1kDRYsC9l5O4JsvXRyvkzv097K0+46FPQDNAoOyCpapCg==
-X-Received: by 2002:a5d:4d8d:: with SMTP id b13mr5816499wru.6.1579619072431;
-        Tue, 21 Jan 2020 07:04:32 -0800 (PST)
-Received: from localhost ([2620:10d:c092:180::1:db6c])
-        by smtp.gmail.com with ESMTPSA id s15sm49352115wrp.4.2020.01.21.07.04.31
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=KEbtb5iPk+ToPcHf5Qqxgw96P5QADIf6QorZP19ushc=;
+        b=MnZA43mnQzzWvBYh0OA6evBIGK4JRjEySBdV5TzyMTzYZEXwkqC1AwtuiSu1db5qzD
+         ODArZ1E8ex/OG2WRcs1zIvLvfQNwQY1O6k9wq9dwdowrPksiMYRGR/dMmbj7S1MFvn+z
+         9gxgvImB4STeA+4J3r79KippJgFCtluv5sR7jzDmJ8bcJJRGMsUVcx/zZmvcxE+6c6v4
+         gwWdRfRtYJNEgXtDefRUY2Im7ctrXu2Bl5StmnMqL/0neXKcG5IIh/cK52OG73Q9864x
+         3R39+JJfPIMIflg2NTO5Ym4yJqsMEPZrvY4kuaI05Pi9oPmVpo6QKXaYu/C9SFZpPgFr
+         57nw==
+X-Gm-Message-State: APjAAAWzqcMIreiPR0omVny7WO2X1U6HqJsNWIWMJXYrYgR+LmHmtrdH
+        N03zvQJn5Bn7mqu/0Map0zde2XDzn9T7p0Vr1WsrNNu0dnDToP2Ri1hA3IzYQ5pUQc5SQII+TAu
+        pLt2aZonyjJlQ
+X-Received: by 2002:ac2:5964:: with SMTP id h4mr2950785lfp.213.1579621054189;
+        Tue, 21 Jan 2020 07:37:34 -0800 (PST)
+X-Google-Smtp-Source: APXvYqy6uaYdLVGSTACmkFUIlBWi+Ha5SsSLjiSCZDkG7dr7z3tLFd30yps7dKGbcY0cYUdeEr7ISw==
+X-Received: by 2002:ac2:5964:: with SMTP id h4mr2950770lfp.213.1579621053832;
+        Tue, 21 Jan 2020 07:37:33 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id o19sm22699778lji.54.2020.01.21.07.37.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jan 2020 07:04:31 -0800 (PST)
-Date:   Tue, 21 Jan 2020 15:04:31 +0000
-From:   Chris Down <chris@chrisdown.name>
-To:     bpf@vger.kernel.org, netdev@vger.kernel.org
-Cc:     Stanislav Fomichev <sdf@google.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH] bpf: btf: Always output invariant hit in pahole DWARF to BTF
- transform
-Message-ID: <20200121150431.GA240246@chrisdown.name>
+        Tue, 21 Jan 2020 07:37:32 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id AE53118006B; Tue, 21 Jan 2020 16:37:31 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alexei Starovoitov <ast@kernel.org>, davem@davemloft.net
+Cc:     daniel@iogearbox.net, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH v2 bpf-next 0/3] bpf: Program extensions or dynamic re-linking
+In-Reply-To: <20200121005348.2769920-1-ast@kernel.org>
+References: <20200121005348.2769920-1-ast@kernel.org>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 21 Jan 2020 16:37:31 +0100
+Message-ID: <87k15kbz2c.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When trying to compile with CONFIG_DEBUG_INFO_BTF enabled, I got this
-error:
+Alexei Starovoitov <ast@kernel.org> writes:
 
-    % make -s
-    Failed to generate BTF for vmlinux
-    Try to disable CONFIG_DEBUG_INFO_BTF
-    make[3]: *** [vmlinux] Error 1
+> The last few month BPF community has been discussing an approach to call
+> chaining, since exiting bpt_tail_call() mechanism used in production XDP
+> programs has plenty of downsides. The outcome of these discussion was a
+> conclusion to implement dynamic re-linking of BPF programs. Where rootlet=
+ XDP
+> program attached to a netdevice can programmatically define a policy of
+> execution of other XDP programs. Such rootlet would be compiled as normal=
+ XDP
+> program and provide a number of placeholder global functions which later =
+can be
+> replaced with future XDP programs. BPF trampoline, function by function
+> verification were building blocks towards that goal. The patch 1 is a fin=
+al
+> building block. It introduces dynamic program extensions. A number of
+> improvements like more flexible function by function verification and bet=
+ter
+> libbpf api will be implemented in future patches.
 
-Compiling again without -s shows the true error (that pahole is
-missing), but since this is fatal, we should show the error
-unconditionally on stderr as well, not silence it using the `info`
-function. With this patch:
+This is great, thank you! I'll go play around with it; couldn't spot
+anything obvious from eye-balling the code, except that yeah, it does
+need a more flexible libbpf api :)
 
-    % make -s
-    BTF: .tmp_vmlinux.btf: pahole (pahole) is not available
-    Failed to generate BTF for vmlinux
-    Try to disable CONFIG_DEBUG_INFO_BTF
-    make[3]: *** [vmlinux] Error 1
+One thing that's not obvious to me: How can userspace tell which
+programs replace which functions after they are loaded? Is this put into
+prog_tags in struct bpf_prog_info, or?
 
-Signed-off-by: Chris Down <chris@chrisdown.name>
-Cc: Stanislav Fomichev <sdf@google.com>
-Cc: Andrii Nakryiko <andriin@fb.com>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: linux-kernel@vger.kernel.org
-Cc: netdev@vger.kernel.org
-Cc: bpf@vger.kernel.org
-Cc: kernel-team@fb.com
----
- scripts/link-vmlinux.sh | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
-index c287ad9b3a67..c8e9f49903a0 100755
---- a/scripts/link-vmlinux.sh
-+++ b/scripts/link-vmlinux.sh
-@@ -108,13 +108,15 @@ gen_btf()
- 	local bin_arch
- 
- 	if ! [ -x "$(command -v ${PAHOLE})" ]; then
--		info "BTF" "${1}: pahole (${PAHOLE}) is not available"
-+		printf 'BTF: %s: pahole (%s) is not available\n' \
-+			"${1}" "${PAHOLE}" >&2
- 		return 1
- 	fi
- 
- 	pahole_ver=$(${PAHOLE} --version | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/')
- 	if [ "${pahole_ver}" -lt "113" ]; then
--		info "BTF" "${1}: pahole version $(${PAHOLE} --version) is too old, need at least v1.13"
-+		printf 'BTF: %s: pahole version %s is too old, need at least v1.13\n' \
-+			"${1}" "$(${PAHOLE} --version)" >&2
- 		return 1
- 	fi
- 
--- 
-2.25.0
+For the series:
+Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+
+
+-Toke
 
