@@ -2,109 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E35EB144123
-	for <lists+bpf@lfdr.de>; Tue, 21 Jan 2020 17:00:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8B3A1442AE
+	for <lists+bpf@lfdr.de>; Tue, 21 Jan 2020 18:00:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729255AbgAUQAW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Jan 2020 11:00:22 -0500
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:36912 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729240AbgAUQAW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Jan 2020 11:00:22 -0500
-Received: by mail-pf1-f194.google.com with SMTP id p14so1713895pfn.4;
-        Tue, 21 Jan 2020 08:00:22 -0800 (PST)
+        id S1728186AbgAURAE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Jan 2020 12:00:04 -0500
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:39413 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726555AbgAURAE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Jan 2020 12:00:04 -0500
+Received: by mail-pg1-f196.google.com with SMTP id 4so1809356pgd.6;
+        Tue, 21 Jan 2020 09:00:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=DiBYNmXcXzLpV1vT3exTVSZVbWSYf4SQdXKVlOWQPJI=;
-        b=W3ymVDlnQNVtZCOKp2Eh6TE37/5Bz94g+01nragD/ut9cwR/XJTvL6vyt+AFjmrbP6
-         Ot6gjD9vnHbI2v07CeDAzHMWDmEBlO4SmsJpNe7jIwnuQlQQi5LDNVqR295GxRXL5YmT
-         jdZ0V+x2c58lzaontIgXHJNVhdyRcd7c25jpEN95sv3tz+UKQROR2cfbM4WPXmjVdGmX
-         OSh6ONgPP1cgnnA78VBOe5wgAydLCcz6w8tOEV/mqi1dy27QJFF95apxwQR/qV+w9fTB
-         pOLUrCAcXcx/B4LtgaNsaf1OjbKpwDwgdf9+PAwF5hLXZAvBMXl7q1t5MQYy4O8YFfLn
-         BhWQ==
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=YxAdGehcuaknnMHNzXpLp8sLstU9M2dpQjvG1NuR//U=;
+        b=lRg0grQbeA9l30X0RwgBmEjC3//VETs5RUp5TBfgBA2UvgG+ZAlhS5CnsfvSkiH8IH
+         +DEiyxeL/0q7Wkh1gh4X2qc24GpH+9Wrvc9egg9xxIgLa5MkaNpjtB71LmVT4gdS+HtD
+         rgF0Xp2pEv/DIftXbT5XIN3qOmJ860IQh1yeAhwvvsK4UE2ya8rtZPn1Z6XwGiIt6CV5
+         +Jck2i2YpXSSG5ACr8Dei/PkhTzPap3JfeE9F/+y7i/1+Mycz+aqejfMJfMrq7QZszWC
+         hW1yEp9pedXVCvJ0tw7P6AH5zfS4capOWxh9ARFvLuBvRi1FBu1Znslh9ZQR5APWp4AX
+         UTGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=DiBYNmXcXzLpV1vT3exTVSZVbWSYf4SQdXKVlOWQPJI=;
-        b=G76PTbfdJdj6eZ8/asR9SPe4aqN5JBumYMm7hLDHquHBw0rMO10z3uMH+2zJNrpKcN
-         ArNKArxKTzm4BoGnK9fzr1UEUbjdw5SvV5XQmQxJ9xfGl7oze9YFq8OHPj5FugNK4cCy
-         KbtuKIgXIfnTQG5uV0RDVKbFHkdbw5/4XBuV7GH+03k4C1Eg/5a4r/qb/qD/0Gmrf/ud
-         b3l1Q9478PGp0KC3s3dawAdFARHkjOBRV3bcu36xVQpFV9t/Qm6Mi5tbU4NDSw2Y3UNV
-         pRNzSbsask1pUKPGT5aIQ4qAWAWpZda0OlTp/jy5jAc3P9arzKkfNr/AncbW9Onnym/g
-         iFEw==
-X-Gm-Message-State: APjAAAU2rsBpVDufJ5jGZzlMjDPKKGEfu6RmXvdcWPDA77A+EoO/+erw
-        hexuc6J4ytOpNYzZkLAH2Io=
-X-Google-Smtp-Source: APXvYqwQeo6pAprxZlgMFKBrW7OuTr97rXRoi0L3MNG9QBcZ9VVLPwshA85FOe6JcNbTeNIgyBeRXw==
-X-Received: by 2002:a63:70e:: with SMTP id 14mr6020005pgh.266.1579622421955;
-        Tue, 21 Jan 2020 08:00:21 -0800 (PST)
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=YxAdGehcuaknnMHNzXpLp8sLstU9M2dpQjvG1NuR//U=;
+        b=EuhP/RLWCWtUesk3+LkHtr5QVsxDx73u1UMIVhRu9U5FTRPAmTBcwZgtTnswcco7p2
+         HTy5/8bpW9LvnmG2pzUlKOmxSkqWLunqQOVFAOal/o1cwitlyUJUCFSdp+5ESnbafWdP
+         LAGAA53g06hzWW9y0RUtH+z6gBOC0ORB0kdm44SmYM0B02zKoKk9rGzCyKillpZrVaKZ
+         OnyfCNxy04wLxA1EpmBj1raURqK7FPzPAiid8AQrnlvFj7nYSSRRCa2K97r1lQ4NZRQT
+         NvZunjzXI5hjoCutJWDFG2uaeP4h6/uS5pBsj4Q3ZUDdrOShCVecEaWeZTkuZccbwbdV
+         OdAw==
+X-Gm-Message-State: APjAAAW7H6HpO75F3iYnNa/gTGx4yfmLeTP8TyUigtkwRYLUiQP5fHTy
+        3w95vKtBLSMRd6R4RMFtRROBCkXB
+X-Google-Smtp-Source: APXvYqz9PQw0VwzbBR5Pn5Tmh6/+qvhLRDHK6KKs/E2u9nUB1maRQZwpW3PkNjMdkegqHyjruQ2F5Q==
+X-Received: by 2002:a65:6914:: with SMTP id s20mr6337086pgq.44.1579626003167;
+        Tue, 21 Jan 2020 09:00:03 -0800 (PST)
 Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:200::3:8f80])
-        by smtp.gmail.com with ESMTPSA id r37sm3854097pjb.7.2020.01.21.08.00.20
+        by smtp.gmail.com with ESMTPSA id hg11sm4138033pjb.14.2020.01.21.09.00.01
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 21 Jan 2020 08:00:21 -0800 (PST)
-Date:   Tue, 21 Jan 2020 08:00:19 -0800
+        Tue, 21 Jan 2020 09:00:02 -0800 (PST)
+Date:   Tue, 21 Jan 2020 09:00:01 -0800
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     John Fastabend <john.fastabend@gmail.com>
+To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>, davem@davemloft.net,
         daniel@iogearbox.net, netdev@vger.kernel.org, bpf@vger.kernel.org,
         kernel-team@fb.com
-Subject: Re: [PATCH v2 bpf-next 1/3] bpf: Introduce dynamic program extensions
-Message-ID: <20200121160018.2w4o6o5nnhbdqicn@ast-mbp.dhcp.thefacebook.com>
+Subject: Re: [PATCH v2 bpf-next 0/3] bpf: Program extensions or dynamic
+ re-linking
+Message-ID: <20200121165958.zfpvsz7kdcx2dotr@ast-mbp.dhcp.thefacebook.com>
 References: <20200121005348.2769920-1-ast@kernel.org>
- <20200121005348.2769920-2-ast@kernel.org>
- <5e26aa0bc382b_32772acafb17c5b410@john-XPS-13-9370.notmuch>
+ <87k15kbz2c.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <5e26aa0bc382b_32772acafb17c5b410@john-XPS-13-9370.notmuch>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87k15kbz2c.fsf@toke.dk>
 User-Agent: NeoMutt/20180223
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 20, 2020 at 11:36:43PM -0800, John Fastabend wrote:
+On Tue, Jan 21, 2020 at 04:37:31PM +0100, Toke Høiland-Jørgensen wrote:
+> Alexei Starovoitov <ast@kernel.org> writes:
 > 
-> > +
-> > +	t1 = btf_type_skip_modifiers(btf1, t1->type, NULL);
-> > +	t2 = btf_type_skip_modifiers(btf2, t2->type, NULL);
+> > The last few month BPF community has been discussing an approach to call
+> > chaining, since exiting bpt_tail_call() mechanism used in production XDP
+> > programs has plenty of downsides. The outcome of these discussion was a
+> > conclusion to implement dynamic re-linking of BPF programs. Where rootlet XDP
+> > program attached to a netdevice can programmatically define a policy of
+> > execution of other XDP programs. Such rootlet would be compiled as normal XDP
+> > program and provide a number of placeholder global functions which later can be
+> > replaced with future XDP programs. BPF trampoline, function by function
+> > verification were building blocks towards that goal. The patch 1 is a final
+> > building block. It introduces dynamic program extensions. A number of
+> > improvements like more flexible function by function verification and better
+> > libbpf api will be implemented in future patches.
 > 
-> Is it really best to skip modifiers? I would expect that if the
-> signature is different including modifiers then we should just reject it.
-> OTOH its not really C code here either so modifiers may not have the same
-> meaning. With just integers and struct it may be ok but if we add pointers
-> to ints then what would we expect from a const int*?
+> This is great, thank you! I'll go play around with it; couldn't spot
+> anything obvious from eye-balling the code, except that yeah, it does
+> need a more flexible libbpf api :)
 > 
-> So whats the reasoning for skipping modifiers? Is it purely an argument
-> that its not required for safety so solve it elsewhere? In that case then
-> checking names of functions is also equally not required.
+> One thing that's not obvious to me: How can userspace tell which
+> programs replace which functions after they are loaded? Is this put into
+> prog_tags in struct bpf_prog_info, or?
 
-Function names are not checked by the kernel. It's purely libbpf and bpf_prog.c
-convention. The kernel operates on prog_fd+btf_id only. The names of function
-arguments are not compared either.
-
-The code has to skip modifiers. Otherwise the type comparison algorithm will be
-quite complex, since typedef is such modifier. Like 'u32' in original program
-and 'u32' in extension program would have to be recursively checked.
-
-Another reason to skip modifiers is 'volatile' modifier. I suspect we would
-have to use it from time to time in original placeholder functions. Yet new
-replacement function will be written without volatile. The placeholder may need
-volatile to make sure compiler doesn't optimize things away. I found cases
-where 'noinline' in placeholder was not enough. clang would still inline the
-body of the function and remove call instruction. So far I've been using
-volatile as a workaround. May be we will introduce new function attribute to
-clang.
-
-Having said that I share your concern regarding skipping 'const'. For 'const
-int arg' it's totally ok to skip it, since it's meaningless from safety pov,
-but for 'const int *arg' and 'const struct foo *arg' I'm planning to preserve
-it. It will be preserved at the verifier bpf_reg_state level though. Just
-checking that 'const' is present in extension prog's BTF doesn't help safety.
-I'm planing to make the verifier enforce that bpf prog cannot write into
-argument which type is pointer to const struct. That part is still wip. It will
-be implemented for global functions first and then for extension programs.
-Currently the verifier rejects any pointer to struct (other than context), so
-no backward compatibility issues.
+good point. Would be good to extend bpf_prog_info. Since prog-to-prog
+connection is unidirectional the bpf_prog_info of extension prog will be able
+to say which original program it's replacing. bpftool prog show will be able to
+print all this data. I think fenry/fexit progs would need the same
+bpf_prog_info extension. attach_prog_id + attach_btf_id would be enough.
+In the mean time I can try to hack drgn script to do the same.
