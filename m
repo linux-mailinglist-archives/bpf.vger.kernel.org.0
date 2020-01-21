@@ -2,194 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E37991437BB
-	for <lists+bpf@lfdr.de>; Tue, 21 Jan 2020 08:36:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DD67143A0F
+	for <lists+bpf@lfdr.de>; Tue, 21 Jan 2020 10:56:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726911AbgAUHgw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Jan 2020 02:36:52 -0500
-Received: from mail-il1-f178.google.com ([209.85.166.178]:41218 "EHLO
-        mail-il1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726729AbgAUHgw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Jan 2020 02:36:52 -0500
-Received: by mail-il1-f178.google.com with SMTP id f10so1588505ils.8;
-        Mon, 20 Jan 2020 23:36:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=lp58E/8stuhXM5/3F8Nh67g/n/xCRI1N+d2OSBx51qM=;
-        b=rSL34f+CneD77G6ycLuZe73FFpbS7l4lQFAzIe1HQRGYCQskSIdPTXRUzKu26W6u3O
-         5xAUH+zxWqy9boy1kbqjoGqbd9+oa5OP4fsvDtcUqDDIHgweohQN+XdlEbLGXbW1xaYU
-         KdIpSoXF8/gHtOsbmUkTJd22405ww5F4yFWNaV+0ucY0P1jAuRHjnhBfSXle7CQ1DkIB
-         n8bUOc4qU/4km9O5VzuxB1hDa8aO4QwUCqB/oKqEyx+UoIBQ0I8UZ7g1HtxZJI9k1EoR
-         E2bqY+lKKhuPsvzGxlsJc97IW+FGTEDhyZfgW0wAG0HetlKrMb810hd2XmdEML3qEMQ4
-         tqYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=lp58E/8stuhXM5/3F8Nh67g/n/xCRI1N+d2OSBx51qM=;
-        b=Tin7k9R+zWa07URvqAcKhrHFujZT5wSL8Xd1BCuwEIPDib4rqovxSsh2npwYGAS7+S
-         ytzb0wOJyIxejJNVMq5X9Rsy5X1fQsDe34U8n4N4duTJuLkyNooVvZ2kSZ2PnUERyrnB
-         dhogd8RmH8uALci/C8v8S15aSo1pmQYFMpI4l5e0NivpKM5iQw0Wxt0B14VFX3tVC+LY
-         oYc3Ul6jwBgCN78fGlkskcsIhwYdPrpN1QIG/WMk/1zZKS1iXrsAxnANYQjit24wZXab
-         RzZYoSw2hUBoZoTlyYpbAbo9a4BmblCPaLa5Z8IFZrfF85czcQ0Wl64PkH020cUTGYXT
-         8CBg==
-X-Gm-Message-State: APjAAAVOw2A4HROn7Um2AxqNR/pkwrhdQ7bdks5AjjmXpvebJMHW8Ghs
-        +L1CRgqe5neAcWXbcFtDQEM=
-X-Google-Smtp-Source: APXvYqxki1Hr4pE2upWWMfUOhH8OsIPpKh503+YGa4LlY4q+b3QGFdixTc9X9W2u5cu41CBt6mFQfQ==
-X-Received: by 2002:a92:5d16:: with SMTP id r22mr2677517ilb.230.1579592211364;
-        Mon, 20 Jan 2020 23:36:51 -0800 (PST)
-Received: from localhost ([184.63.162.180])
-        by smtp.gmail.com with ESMTPSA id k78sm12766969ila.80.2020.01.20.23.36.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jan 2020 23:36:50 -0800 (PST)
-Date:   Mon, 20 Jan 2020 23:36:43 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Alexei Starovoitov <ast@kernel.org>, davem@davemloft.net
-Cc:     daniel@iogearbox.net, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-team@fb.com
-Message-ID: <5e26aa0bc382b_32772acafb17c5b410@john-XPS-13-9370.notmuch>
-In-Reply-To: <20200121005348.2769920-2-ast@kernel.org>
-References: <20200121005348.2769920-1-ast@kernel.org>
- <20200121005348.2769920-2-ast@kernel.org>
-Subject: RE: [PATCH v2 bpf-next 1/3] bpf: Introduce dynamic program extensions
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        id S1728826AbgAUJ40 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Jan 2020 04:56:26 -0500
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:40974 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728797AbgAUJ40 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 21 Jan 2020 04:56:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1579600584;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iOa1sC3/AVktbj+jAQ0sD61zOCtTdHzvUutS6GN0AiQ=;
+        b=MXtxev4Jou/k3B3lj2Jyzs1ghOwLV3urj5j+D+xM93Zkm+YMyTjL8KIQSA+O8FkgRGDsek
+        TPniJtupwRygqjxxe+XF/oUuBUVxT5UsMOngyD/rKd4W6qBd5G5q66BMwLLbKC0GpteXvo
+        3Z32aOQyjyf/P0jYxO9yeSo8M8A631A=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-384-0EksdND7MBWocWiE4sjqiA-1; Tue, 21 Jan 2020 04:56:21 -0500
+X-MC-Unique: 0EksdND7MBWocWiE4sjqiA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AE66B10120A1;
+        Tue, 21 Jan 2020 09:56:19 +0000 (UTC)
+Received: from krava (unknown [10.43.17.48])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id EFD4F8BE1B;
+        Tue, 21 Jan 2020 09:56:16 +0000 (UTC)
+Date:   Tue, 21 Jan 2020 10:56:14 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        David Miller <davem@redhat.com>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>
+Subject: Re: [PATCH 5/6] bpf: Allow to resolve bpf trampoline and dispatcher
+ in unwind
+Message-ID: <20200121095614.GB707582@krava>
+References: <20200118134945.493811-1-jolsa@kernel.org>
+ <20200118134945.493811-6-jolsa@kernel.org>
+ <133ecb39-c739-02b9-3c83-37ee24846037@iogearbox.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <133ecb39-c739-02b9-3c83-37ee24846037@iogearbox.net>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov wrote:
-> Introduce dynamic program extensions. The users can load additional BPF
-> functions and replace global functions in previously loaded BPF programs while
-> these programs are executing.
+On Tue, Jan 21, 2020 at 12:55:10AM +0100, Daniel Borkmann wrote:
+> On 1/18/20 2:49 PM, Jiri Olsa wrote:
+> > When unwinding the stack we need to identify each address
+> > to successfully continue. Adding latch tree to keep trampolines
+> > for quick lookup during the unwind.
+> > 
+> > The patch uses first 48 bytes for latch tree node, leaving 4048
+> > bytes from the rest of the page for trampoline or dispatcher
+> > generated code.
+> > 
+> > It's still enough not to affect trampoline and dispatcher progs
+> > maximum counts.
+> > 
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >   include/linux/bpf.h     | 12 ++++++-
+> >   kernel/bpf/core.c       |  2 ++
+> >   kernel/bpf/dispatcher.c |  4 +--
+> >   kernel/bpf/trampoline.c | 76 +++++++++++++++++++++++++++++++++++++----
+> >   4 files changed, 84 insertions(+), 10 deletions(-)
+> > 
+> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > index 8e3b8f4ad183..41eb0cf663e8 100644
+> > --- a/include/linux/bpf.h
+> > +++ b/include/linux/bpf.h
+> > @@ -519,7 +519,6 @@ struct bpf_trampoline *bpf_trampoline_lookup(u64 key);
+> >   int bpf_trampoline_link_prog(struct bpf_prog *prog);
+> >   int bpf_trampoline_unlink_prog(struct bpf_prog *prog);
+> >   void bpf_trampoline_put(struct bpf_trampoline *tr);
+> > -void *bpf_jit_alloc_exec_page(void);
+> >   #define BPF_DISPATCHER_INIT(name) {			\
+> >   	.mutex = __MUTEX_INITIALIZER(name.mutex),	\
+> >   	.func = &name##func,				\
+> > @@ -551,6 +550,13 @@ void *bpf_jit_alloc_exec_page(void);
+> >   #define BPF_DISPATCHER_PTR(name) (&name)
+> >   void bpf_dispatcher_change_prog(struct bpf_dispatcher *d, struct bpf_prog *from,
+> >   				struct bpf_prog *to);
+> > +struct bpf_image {
+> > +	struct latch_tree_node tnode;
+> > +	unsigned char data[];
+> > +};
+> > +#define BPF_IMAGE_SIZE (PAGE_SIZE - sizeof(struct bpf_image))
+> > +bool is_bpf_image(void *addr);
+> > +void *bpf_image_alloc(void);
+> >   #else
+> >   static inline struct bpf_trampoline *bpf_trampoline_lookup(u64 key)
+> >   {
+> > @@ -572,6 +578,10 @@ static inline void bpf_trampoline_put(struct bpf_trampoline *tr) {}
+> >   static inline void bpf_dispatcher_change_prog(struct bpf_dispatcher *d,
+> >   					      struct bpf_prog *from,
+> >   					      struct bpf_prog *to) {}
+> > +static inline bool is_bpf_image(void *addr)
+> > +{
+> > +	return false;
+> > +}
+> >   #endif
+> >   struct bpf_func_info_aux {
+> > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> > index 29d47aae0dd1..b3299dc9adda 100644
+> > --- a/kernel/bpf/core.c
+> > +++ b/kernel/bpf/core.c
+> > @@ -704,6 +704,8 @@ bool is_bpf_text_address(unsigned long addr)
+> >   	rcu_read_lock();
+> >   	ret = bpf_prog_kallsyms_find(addr) != NULL;
+> > +	if (!ret)
+> > +		ret = is_bpf_image((void *) addr);
+> >   	rcu_read_unlock();
 > 
-> Global functions are verified individually by the verifier based on their types only.
-> Hence the global function in the new program which types match older function can
-> safely replace that corresponding function.
+> Btw, shouldn't this be a separate entity entirely to avoid unnecessary inclusion
+> in bpf_arch_text_poke() for the is_bpf_text_address() check there?
+
+right, we dont want poking in trampolines/dispatchers.. I'll change that
+
 > 
-> This new function/program is called 'an extension' of old program. At load time
-> the verifier uses (attach_prog_fd, attach_btf_id) pair to identify the function
-> to be replaced. The BPF program type is derived from the target program into
-> extension program. Technically bpf_verifier_ops is copied from target program.
-> The BPF_PROG_TYPE_EXT program type is a placeholder. It has empty verifier_ops.
-> The extension program can call the same bpf helper functions as target program.
-> Single BPF_PROG_TYPE_EXT type is used to extend XDP, SKB and all other program
-> types. The verifier allows only one level of replacement. Meaning that the
-> extension program cannot recursively extend an extension. That also means that
-> the maximum stack size is increasing from 512 to 1024 bytes and maximum
-> function nesting level from 8 to 16. The programs don't always consume that
-> much. The stack usage is determined by the number of on-stack variables used by
-> the program. The verifier could have enforced 512 limit for combined original
-> plus extension program, but it makes for difficult user experience. The main
-> use case for extensions is to provide generic mechanism to plug external
-> programs into policy program or function call chaining.
-> 
-> BPF trampoline is used to track both fentry/fexit and program extensions
-> because both are using the same nop slot at the beginning of every BPF
-> function. Attaching fentry/fexit to a function that was replaced is not
-> allowed. The opposite is true as well. Replacing a function that currently
-> being analyzed with fentry/fexit is not allowed. The executable page allocated
-> by BPF trampoline is not used by program extensions. This inefficiency will be
-> optimized in future patches.
-> 
-> Function by function verification of global function supports scalars and
-> pointer to context only. Hence program extensions are supported for such class
-> of global functions only. In the future the verifier will be extended with
-> support to pointers to structures, arrays with sizes, etc.
-> 
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> ---
+> Did you drop the bpf_{trampoline,dispatcher}_<...> entry addition in kallsyms?
 
-[...]
+working on that, will send it separately
 
-> +
-> +	t1 = btf_type_skip_modifiers(btf1, t1->type, NULL);
-> +	t2 = btf_type_skip_modifiers(btf2, t2->type, NULL);
+jirka
 
-Is it really best to skip modifiers? I would expect that if the
-signature is different including modifiers then we should just reject it.
-OTOH its not really C code here either so modifiers may not have the same
-meaning. With just integers and struct it may be ok but if we add pointers
-to ints then what would we expect from a const int*?
-
-So whats the reasoning for skipping modifiers? Is it purely an argument
-that its not required for safety so solve it elsewhere? In that case then
-checking names of functions is also equally not required.
-
-Otherwise LGTM.
-
-
-> +	if (t1->info != t2->info) {
-> +		bpf_log(log,
-> +			"Return type %s of %s() doesn't match type %s of %s()\n",
-> +			btf_type_str(t1), fn1,
-> +			btf_type_str(t2), fn2);
-> +		return -EINVAL;
-> +	}
-> +
-> +	for (i = 0; i < nargs1; i++) {
-> +		t1 = btf_type_skip_modifiers(btf1, args1[i].type, NULL);
-> +		t2 = btf_type_skip_modifiers(btf2, args2[i].type, NULL);
-> +
-> +		if (t1->info != t2->info) {
-> +			bpf_log(log, "arg%d in %s() is %s while %s() has %s\n",
-> +				i, fn1, btf_type_str(t1),
-> +				fn2, btf_type_str(t2));
-> +			return -EINVAL;
-> +		}
-> +		if (btf_type_has_size(t1) && t1->size != t2->size) {
-> +			bpf_log(log,
-> +				"arg%d in %s() has size %d while %s() has %d\n",
-> +				i, fn1, t1->size,
-> +				fn2, t2->size);
-> +			return -EINVAL;
-> +		}
-> +
-> +		/* global functions are validated with scalars and pointers
-> +		 * to context only. And only global functions can be replaced.
-> +		 * Hence type check only those types.
-> +		 */
-> +		if (btf_type_is_int(t1) || btf_type_is_enum(t1))
-> +			continue;
-> +		if (!btf_type_is_ptr(t1)) {
-> +			bpf_log(log,
-> +				"arg%d in %s() has unrecognized type\n",
-> +				i, fn1);
-> +			return -EINVAL;
-> +		}
-> +		t1 = btf_type_skip_modifiers(btf1, t1->type, NULL);
-> +		t2 = btf_type_skip_modifiers(btf2, t2->type, NULL);
-> +		if (!btf_type_is_struct(t1)) {
-> +			bpf_log(log,
-> +				"arg%d in %s() is not a pointer to context\n",
-> +				i, fn1);
-> +			return -EINVAL;
-> +		}
-> +		if (!btf_type_is_struct(t2)) {
-> +			bpf_log(log,
-> +				"arg%d in %s() is not a pointer to context\n",
-> +				i, fn2);
-> +			return -EINVAL;
-> +		}
-> +		/* This is an optional check to make program writing easier.
-> +		 * Compare names of structs and report an error to the user.
-> +		 * btf_prepare_func_args() already checked that t2 struct
-> +		 * is a context type. btf_prepare_func_args() will check
-> +		 * later that t1 struct is a context type as well.
-> +		 */
-> +		s1 = btf_name_by_offset(btf1, t1->name_off);
-> +		s2 = btf_name_by_offset(btf2, t2->name_off);
-> +		if (strcmp(s1, s2)) {
-> +			bpf_log(log,
-> +				"arg%d %s(struct %s *) doesn't match %s(struct %s *)\n",
-> +				i, fn1, s1, fn2, s2);
-> +			return -EINVAL;
-> +		}
-> +	}
-> +	return 0;
-> +}
