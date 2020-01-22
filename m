@@ -2,117 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 86B15144CA1
-	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2020 08:51:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91567144E66
+	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2020 10:14:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725883AbgAVHvh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Jan 2020 02:51:37 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:29129 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726181AbgAVHvh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Jan 2020 02:51:37 -0500
+        id S1726026AbgAVJOB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Jan 2020 04:14:01 -0500
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:30774 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726170AbgAVJOB (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 22 Jan 2020 04:14:01 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1579679495;
+        s=mimecast20190719; t=1579684440;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=ZidysynA2t0TjHonfp4kkvTRVsqXyi0UzzW9qMz3Zig=;
-        b=cNV/DiwDvh1i1lziv0DOaYGF2oaBeQln5yloJWp2b8fodVkHR0c27PjJz7GUG3XPPsh5jd
-        mJ+qxZxBaUTb4WLmpPtqgWMjn5n7JdgNaYe9WzrWZdjhxa/YM4CEZHiDgAqPGGPzKp4h07
-        jXIjbNhkcLIuXpBOMMy43EfCfFtUadA=
+        bh=KYS56R1UsNZJ8fJM8BHO+cjdDskI/GYF3zalFp7uT70=;
+        b=M/XFD2E6L2mDgi+CCcd3nyTya2bZXg544rB6Y3wZi6YXxyz/WhJxi0LNPoRQ2ED7oTnndD
+        97wDhxhZnQ1pmyscwRESoTRqdleP6E2Jeub38+5sE7Oa0K6ZHAGBap/4Wofi3mN5OIddQl
+        /ahwDKZiQvHwusE8GoH6D70dNOeUJRs=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-27-B-l5Xh6zMUue72oWXga7pQ-1; Wed, 22 Jan 2020 02:51:31 -0500
-X-MC-Unique: B-l5Xh6zMUue72oWXga7pQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+ us-mta-357-UOUvOiqjPP6i7rWwH0MLUg-1; Wed, 22 Jan 2020 04:13:56 -0500
+X-MC-Unique: UOUvOiqjPP6i7rWwH0MLUg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C30B28017CC;
-        Wed, 22 Jan 2020 07:51:29 +0000 (UTC)
-Received: from krava (ovpn-204-206.brq.redhat.com [10.40.204.206])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B0CC385780;
-        Wed, 22 Jan 2020 07:51:26 +0000 (UTC)
-Date:   Wed, 22 Jan 2020 08:51:24 +0100
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 77C7B800D4E;
+        Wed, 22 Jan 2020 09:13:54 +0000 (UTC)
+Received: from krava (ovpn-205-123.brq.redhat.com [10.40.205.123])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1A70D5D9C9;
+        Wed, 22 Jan 2020 09:13:50 +0000 (UTC)
+Date:   Wed, 22 Jan 2020 10:13:36 +0100
 From:   Jiri Olsa <jolsa@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Andrii Nakryiko <andriin@fb.com>,
-        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andriin@fb.com>,
+        Martin Lau <kafai@fb.com>,
         Jakub Kicinski <jakub.kicinski@netronome.com>,
         David Miller <davem@redhat.com>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Subject: Re: [PATCH 2/6] bpf: Add bpf_perf_event_output_kfunc
-Message-ID: <20200122075124.GD801240@krava>
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>
+Subject: Re: [PATCH 1/6] bpf: Allow ctx access for pointers to scalar
+Message-ID: <20200122091336.GE801240@krava>
 References: <20200121120512.758929-1-jolsa@kernel.org>
- <20200121120512.758929-3-jolsa@kernel.org>
- <20200122000322.ogarpgwv3xut75m3@ast-mbp.dhcp.thefacebook.com>
+ <20200121120512.758929-2-jolsa@kernel.org>
+ <CAADnVQKeR1VFEaRGY7Zy=P7KF8=TKshEy2inhFfi9qis9osS3A@mail.gmail.com>
+ <0e114cc9-421d-a30d-db40-91ec7a2a7a34@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200122000322.ogarpgwv3xut75m3@ast-mbp.dhcp.thefacebook.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <0e114cc9-421d-a30d-db40-91ec7a2a7a34@fb.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 21, 2020 at 04:03:23PM -0800, Alexei Starovoitov wrote:
-> On Tue, Jan 21, 2020 at 01:05:08PM +0100, Jiri Olsa wrote:
-> > Adding support to use perf_event_output in
-> > BPF_TRACE_FENTRY/BPF_TRACE_FEXIT programs.
+On Wed, Jan 22, 2020 at 02:33:32AM +0000, Yonghong Song wrote:
+> 
+> 
+> On 1/21/20 5:51 PM, Alexei Starovoitov wrote:
+> > On Tue, Jan 21, 2020 at 4:05 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> >>
+> >> When accessing the context we allow access to arguments with
+> >> scalar type and pointer to struct. But we omit pointer to scalar
+> >> type, which is the case for many functions and same case as
+> >> when accessing scalar.
+> >>
+> >> Adding the check if the pointer is to scalar type and allow it.
+> >>
+> >> Acked-by: John Fastabend <john.fastabend@gmail.com>
+> >> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> >> ---
+> >>   kernel/bpf/btf.c | 13 ++++++++++++-
+> >>   1 file changed, 12 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> >> index 832b5d7fd892..207ae554e0ce 100644
+> >> --- a/kernel/bpf/btf.c
+> >> +++ b/kernel/bpf/btf.c
+> >> @@ -3668,7 +3668,7 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
+> >>                      const struct bpf_prog *prog,
+> >>                      struct bpf_insn_access_aux *info)
+> >>   {
+> >> -       const struct btf_type *t = prog->aux->attach_func_proto;
+> >> +       const struct btf_type *tp, *t = prog->aux->attach_func_proto;
+> >>          struct bpf_prog *tgt_prog = prog->aux->linked_prog;
+> >>          struct btf *btf = bpf_prog_get_target_btf(prog);
+> >>          const char *tname = prog->aux->attach_func_name;
+> >> @@ -3730,6 +3730,17 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
+> >>                   */
+> >>                  return true;
+> >>
+> >> +       tp = btf_type_by_id(btf, t->type);
+> >> +       /* skip modifiers */
+> >> +       while (btf_type_is_modifier(tp))
+> >> +               tp = btf_type_by_id(btf, tp->type);
+> >> +
+> >> +       if (btf_type_is_int(tp) || btf_type_is_enum(tp))
+> >> +               /* This is a pointer scalar.
+> >> +                * It is the same as scalar from the verifier safety pov.
+> >> +                */
+> >> +               return true;
 > > 
-> > Using nesting regs array from raw tracepoint helpers.
-> > 
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  kernel/trace/bpf_trace.c | 41 ++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 41 insertions(+)
-> > 
-> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> > index 19e793aa441a..6a18e2ae6e30 100644
-> > --- a/kernel/trace/bpf_trace.c
-> > +++ b/kernel/trace/bpf_trace.c
-> > @@ -1172,6 +1172,43 @@ raw_tp_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
-> >  	}
-> >  }
-> >  
-> > +BPF_CALL_5(bpf_perf_event_output_kfunc, void *, ctx, struct bpf_map *, map,
-> > +	   u64, flags, void *, data, u64, size)
-> > +{
-> > +	struct pt_regs *regs = get_bpf_raw_tp_regs();
-> > +	int ret;
-> > +
-> > +	if (IS_ERR(regs))
-> > +		return PTR_ERR(regs);
-> > +
-> > +	perf_fetch_caller_regs(regs);
-> > +	ret = ____bpf_perf_event_output(regs, map, flags, data, size);
-> > +	put_bpf_raw_tp_regs();
-> > +	return ret;
-> > +}
+> > The reason I didn't do it earlier is I was thinking to represent it
+> > as PTR_TO_BTF_ID as well, so that corresponding u8..u64
+> > access into this memory would still be possible.
+> > I'm trying to analyze the situation that returning a scalar now
+> > and converting to PTR_TO_BTF_ID in the future will keep progs
+> > passing the verifier. Is it really the case?
+> > Could you give a specific example that needs this support?
+> > It will help me understand this backward compatibility concern.
+> > What prog is doing with that 'u32 *' that is seen as scalar ?
+> > It cannot dereference it. Use it as what?
 > 
-> I'm not sure why copy paste bpf_perf_event_output_raw_tp() into new function.
-> 
-> > @@ -1181,6 +1218,10 @@ tracing_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
-> >  		return &bpf_skb_output_proto;
-> >  #endif
-> >  	default:
-> > +		if (prog->expected_attach_type == BPF_TRACE_FENTRY ||
-> > +		    prog->expected_attach_type == BPF_TRACE_FEXIT)
-> > +			return kfunc_prog_func_proto(func_id, prog);
-> > +
-> >  		return raw_tp_prog_func_proto(func_id, prog);
-> 
-> Are you saying bpf_perf_event_output_raw_tp() for some reason
-> didn't work for fentry/fexit?
-> But above is exact copy-paste and it somehow worked?
-> 
-> Ditto for patches 3,4.
+> If this is from original bcc code, it will use bpf_probe_read for 
+> dereference. This is what I understand when I first reviewed this patch.
+> But it will be good to get Jiri's confirmation.
 
-ugh right.. did not realize that after switching to the rawtp
-regs nest arrays it's identical and we don't need that
+it blocked me from accessing 'filename' argument when I probed
+do_sys_open via trampoline in bcc, like:
+
+	KRETFUNC_PROBE(do_sys_open)
+	{
+	    const char *filename = (const char *) args[1];
+
+AFAICS the current code does not allow for trampoline arguments
+being other pointers than to void or struct, the patch should
+detect that the argument is pointer to scalar type and let it
+pass
 
 jirka
 
