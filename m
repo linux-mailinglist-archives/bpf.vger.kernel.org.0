@@ -2,139 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 91567144E66
-	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2020 10:14:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15D0F145299
+	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2020 11:29:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726026AbgAVJOB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Jan 2020 04:14:01 -0500
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:30774 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726170AbgAVJOB (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 22 Jan 2020 04:14:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1579684440;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KYS56R1UsNZJ8fJM8BHO+cjdDskI/GYF3zalFp7uT70=;
-        b=M/XFD2E6L2mDgi+CCcd3nyTya2bZXg544rB6Y3wZi6YXxyz/WhJxi0LNPoRQ2ED7oTnndD
-        97wDhxhZnQ1pmyscwRESoTRqdleP6E2Jeub38+5sE7Oa0K6ZHAGBap/4Wofi3mN5OIddQl
-        /ahwDKZiQvHwusE8GoH6D70dNOeUJRs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-357-UOUvOiqjPP6i7rWwH0MLUg-1; Wed, 22 Jan 2020 04:13:56 -0500
-X-MC-Unique: UOUvOiqjPP6i7rWwH0MLUg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 77C7B800D4E;
-        Wed, 22 Jan 2020 09:13:54 +0000 (UTC)
-Received: from krava (ovpn-205-123.brq.redhat.com [10.40.205.123])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1A70D5D9C9;
-        Wed, 22 Jan 2020 09:13:50 +0000 (UTC)
-Date:   Wed, 22 Jan 2020 10:13:36 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>,
+        id S1728939AbgAVK3M (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Jan 2020 05:29:12 -0500
+Received: from www62.your-server.de ([213.133.104.62]:53456 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728931AbgAVK3M (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Jan 2020 05:29:12 -0500
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1iuDFt-0000Qo-GA; Wed, 22 Jan 2020 11:29:02 +0100
+Received: from [2001:1620:665:0:5795:5b0a:e5d5:5944] (helo=linux-3.fritz.box)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1iuDFt-000LOf-57; Wed, 22 Jan 2020 11:29:01 +0100
+Subject: Re: [PATCH v2 bpf 0/2] Fix the classification based on port ranges in
+ bpf hook
+To:     Yoshiki Komachi <komachi.yoshiki@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andriin@fb.com>,
-        Martin Lau <kafai@fb.com>,
-        Jakub Kicinski <jakub.kicinski@netronome.com>,
-        David Miller <davem@redhat.com>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>
-Subject: Re: [PATCH 1/6] bpf: Allow ctx access for pointers to scalar
-Message-ID: <20200122091336.GE801240@krava>
-References: <20200121120512.758929-1-jolsa@kernel.org>
- <20200121120512.758929-2-jolsa@kernel.org>
- <CAADnVQKeR1VFEaRGY7Zy=P7KF8=TKshEy2inhFfi9qis9osS3A@mail.gmail.com>
- <0e114cc9-421d-a30d-db40-91ec7a2a7a34@fb.com>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Petar Penkov <ppenkov.kernel@gmail.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
+References: <20200117070533.402240-1-komachi.yoshiki@gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <d2c7815c-22a0-0004-5151-f3a43941af0a@iogearbox.net>
+Date:   Wed, 22 Jan 2020 11:29:00 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0e114cc9-421d-a30d-db40-91ec7a2a7a34@fb.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <20200117070533.402240-1-komachi.yoshiki@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.101.4/25702/Tue Jan 21 12:39:19 2020)
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 22, 2020 at 02:33:32AM +0000, Yonghong Song wrote:
+On 1/17/20 8:05 AM, Yoshiki Komachi wrote:
+> When I tried a test based on the selftest program for BPF flow dissector
+> (test_flow_dissector.sh), I observed unexpected result as below:
 > 
+> $ tc filter add dev lo parent ffff: protocol ip pref 1337 flower ip_proto \
+> 	udp src_port 8-10 action drop
+> $ tools/testing/selftests/bpf/test_flow_dissector -i 4 -f 9 -F
+> inner.dest4: 127.0.0.1
+> inner.source4: 127.0.0.3
+> pkts: tx=10 rx=10
 > 
-> On 1/21/20 5:51 PM, Alexei Starovoitov wrote:
-> > On Tue, Jan 21, 2020 at 4:05 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> >>
-> >> When accessing the context we allow access to arguments with
-> >> scalar type and pointer to struct. But we omit pointer to scalar
-> >> type, which is the case for many functions and same case as
-> >> when accessing scalar.
-> >>
-> >> Adding the check if the pointer is to scalar type and allow it.
-> >>
-> >> Acked-by: John Fastabend <john.fastabend@gmail.com>
-> >> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> >> ---
-> >>   kernel/bpf/btf.c | 13 ++++++++++++-
-> >>   1 file changed, 12 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> >> index 832b5d7fd892..207ae554e0ce 100644
-> >> --- a/kernel/bpf/btf.c
-> >> +++ b/kernel/bpf/btf.c
-> >> @@ -3668,7 +3668,7 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
-> >>                      const struct bpf_prog *prog,
-> >>                      struct bpf_insn_access_aux *info)
-> >>   {
-> >> -       const struct btf_type *t = prog->aux->attach_func_proto;
-> >> +       const struct btf_type *tp, *t = prog->aux->attach_func_proto;
-> >>          struct bpf_prog *tgt_prog = prog->aux->linked_prog;
-> >>          struct btf *btf = bpf_prog_get_target_btf(prog);
-> >>          const char *tname = prog->aux->attach_func_name;
-> >> @@ -3730,6 +3730,17 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
-> >>                   */
-> >>                  return true;
-> >>
-> >> +       tp = btf_type_by_id(btf, t->type);
-> >> +       /* skip modifiers */
-> >> +       while (btf_type_is_modifier(tp))
-> >> +               tp = btf_type_by_id(btf, tp->type);
-> >> +
-> >> +       if (btf_type_is_int(tp) || btf_type_is_enum(tp))
-> >> +               /* This is a pointer scalar.
-> >> +                * It is the same as scalar from the verifier safety pov.
-> >> +                */
-> >> +               return true;
-> > 
-> > The reason I didn't do it earlier is I was thinking to represent it
-> > as PTR_TO_BTF_ID as well, so that corresponding u8..u64
-> > access into this memory would still be possible.
-> > I'm trying to analyze the situation that returning a scalar now
-> > and converting to PTR_TO_BTF_ID in the future will keep progs
-> > passing the verifier. Is it really the case?
-> > Could you give a specific example that needs this support?
-> > It will help me understand this backward compatibility concern.
-> > What prog is doing with that 'u32 *' that is seen as scalar ?
-> > It cannot dereference it. Use it as what?
+> The last rx means the number of received packets. I expected rx=0 in this
+> test (i.e., all received packets should have been dropped), but it resulted
+> in acceptance.
 > 
-> If this is from original bcc code, it will use bpf_probe_read for 
-> dereference. This is what I understand when I first reviewed this patch.
-> But it will be good to get Jiri's confirmation.
+> Although the previous commit 8ffb055beae5 ("cls_flower: Fix the behavior
+> using port ranges with hw-offload") added new flag and field toward filtering
+> based on port ranges with hw-offload, it missed applying for BPF flow dissector
+> then. As a result, BPF flow dissector currently stores data extracted from
+> packets in incorrect field used for exact match whenever packets are classified
+> by filters based on port ranges. Thus, they never match rules in such cases
+> because flow dissector gives rise to generating incorrect flow keys.
+> 
+> This series fixes the issue by replacing incorrect flag and field with new
+> ones in BPF flow dissector, and adds a test for filtering based on specified
+> port ranges to the existing selftest program.
+> 
+> Changes in v2:
+>   - set key_ports to NULL at the top of __skb_flow_bpf_to_target()
+> 
+> Yoshiki Komachi (2):
+>    flow_dissector: Fix to use new variables for port ranges in bpf hook
+>    selftests/bpf: Add test based on port range for BPF flow dissector
+> 
+>   net/core/flow_dissector.c                          |  9 ++++++++-
+>   tools/testing/selftests/bpf/test_flow_dissector.sh | 14 ++++++++++++++
+>   2 files changed, 22 insertions(+), 1 deletion(-)
+> 
 
-it blocked me from accessing 'filename' argument when I probed
-do_sys_open via trampoline in bcc, like:
-
-	KRETFUNC_PROBE(do_sys_open)
-	{
-	    const char *filename = (const char *) args[1];
-
-AFAICS the current code does not allow for trampoline arguments
-being other pointers than to void or struct, the patch should
-detect that the argument is pointer to scalar type and let it
-pass
-
-jirka
-
+Applied, thanks!
