@@ -2,180 +2,217 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6071B145E75
-	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2020 23:17:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE1D5145ED1
+	for <lists+bpf@lfdr.de>; Wed, 22 Jan 2020 23:55:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725972AbgAVWRr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Jan 2020 17:17:47 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:29806 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725884AbgAVWRr (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 22 Jan 2020 17:17:47 -0500
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 00MM8x8J021854;
-        Wed, 22 Jan 2020 14:17:29 -0800
+        id S1725924AbgAVWzz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Jan 2020 17:55:55 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:46916 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725884AbgAVWzy (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 22 Jan 2020 17:55:54 -0500
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 00MMsYBA004104;
+        Wed, 22 Jan 2020 14:55:40 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : references : in-reply-to : content-type : content-id
  : content-transfer-encoding : mime-version; s=facebook;
- bh=GN3kjQ1Gfv57lPQ4zHImwcQZd07Ww75wlrsECSixLbY=;
- b=a/K6ZKr5v3G+2sitJW/0V/aR0kGxwJG2VvfQmMb5ZkZ/5aqiZmU3JgoyOFjYZz5ZZcw5
- GTZvciOi9pnEsO2/ABClz9L5xSGL2hl7JaU40mkNi9pzaiETwkTUQWmFjQveQTVfDbUx
- +OPBDh/O1Q1uM2BYc+usQO14Kq/meOe/HZY= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net with ESMTP id 2xp5vs6hvd-2
+ bh=jvac6lEiodtg8/xIxnPclINRBTAedKlHsTUlDUEdLe8=;
+ b=WgEPTMmqtaq/eRGFs0n2LUSju19InewdwMT2lcfp+XatG9JaQjlA+dEo/W7nkNfwZexZ
+ F2WPklqEpoRzil1LiiP0Eun2Db/aL/Y9mq31LaBldE3RhoU1+tPZXhmy5w6jbafSAQkx
+ nX1fuqPJI8QlciL2x0z/H48bWDc1N+dsW+k= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 2xpr4ka98b-3
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 22 Jan 2020 14:17:29 -0800
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.175) with Microsoft SMTP Server
+        Wed, 22 Jan 2020 14:55:40 -0800
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Wed, 22 Jan 2020 14:17:28 -0800
+ 15.1.1779.2; Wed, 22 Jan 2020 14:54:00 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZJHsIHTmXnzT97ZhJbXYRS5dG6Ncf46II1NGu4i6k7oXjzgSdctbgs44S3QTiPPkitYAVFq3LzkpLPBd+rCVpcqAX4bYb5HHvxqpo1On3Z0gQZH9Y0zgwNBvGxpCMqK++ilQkPWoymCtM0GZ9yqpgni9aRizWLBEWxkhjq6M22yjIqgHnRSVxVN4S20Dl7WJFuVHiSlgVRT8/ZngY9du6C80CRp0sMqdJz5B8EXfmPOLjqgw5g+KzOg25wuf4E0j7j2+JDE1B/Wx7J7iPJAbi8UT/Pv1aHAFurmmDQqzESoCQI4uz7ZOj+xU6nImGOXC0HLzuP7V6LioCUHTvjJGHQ==
+ b=FN0HpVKIrHPDiIo3GTu70Alex7GvrThevd3RO+KM7Gtg9kK8VL3T3JGN6ZOVQMvVlsoLFF8xe6Xu2Dst8wVqTGnHqyZeLztlW7aUa62QFRqrZ/VR0akv0R+E8KRCztmxl8extMwLXfXMITbEArJG6Dw/cvxQCIsUB+74w86dFIBPP1eSlpbGax18gz6k8G31j5+fhL8+WNvv7qSWn+eFDo+jne3MK7c6OCc3Pl0n+nc0Oybj60q8/fxAio3CLyEWvhKLoQ1JZ3GTv7fciwrTmNDacJqobosE6uBhky7NSIOuIfEvC7zcVTaAIq9gKNW2+gz9hBGbyojDXT2CDvmJXg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GN3kjQ1Gfv57lPQ4zHImwcQZd07Ww75wlrsECSixLbY=;
- b=H9tQfkX/g50znUuMQedqL768RfkgjqzPgYa87iPiOASMec/1Sd5cdh9KxHcVhTvF/IGiPc+JttmYErtjoAeO9ICRTwe6zvzXUTlhMNHNVCc9KMxJhnBjNRWQZ4t00o5GDxscQNEbdU0ViVSQq7BIQmgAgc7GEIAbZ2u2LuoCuhPbzCdFGPQN/rXxMKWbkhxeZydp5EN3FAXD2YlYG4x3a+lCeTJ6CYVo0ZRIMusDZDlfnMLG0HWP2BQh+K/FLloKS86IEqAr5/CD4tKxAnUWGIISqxM2xfTH+I++QEZZwtLNtr3xjZkf4L5rOWxkGXY4EBPzWYdjoYdiMuAt8vORGg==
+ bh=jvac6lEiodtg8/xIxnPclINRBTAedKlHsTUlDUEdLe8=;
+ b=iRbCtxYgjUa4tdC0RpovgCCViDds6Ljf3NiHj4osotoBGoM7FxCuzW7f0a4FNh0dmRAgah4X2ay9Ukglo/7vKZPipQtb0ojXieQ8joLtr+WBl2GqCbPvaUpr+MugIyi69/79DhgB3fBFEE4WRnBJIGcj1YACc/TiBIvFyNFtTb0nD5Vm+yuJeTzaVVm6VgAQevYRAwC2crQfPWCv0xtrwpsf9InV+bj9AOlWakiDB3lx+wu9hSBChXz/Shv20bfJY42/bXVfnT8R4Pfk3VF0mIbf1B2Sxp7c7uvt4GEZP0yigrZgvxc47+3ANHwUQl+e/sLWfdoQ2vqPcFSN7DE+7g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
  s=selector2-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GN3kjQ1Gfv57lPQ4zHImwcQZd07Ww75wlrsECSixLbY=;
- b=RLFlRRnc9hzhX3xFVtXmHtpFGfA+gZf8XEh6gUnm/+zBt0UliPHjSZHiJLAKK2WGuOWXbvvj+kzU6t96Asg6L/82j/bwp1h/gbQ4ifNP7BaYDGHLAGtJAIuo4dcbMP8/ymB1DLlzWuPbuQ4mixVKSgGhDgaEwWtCXokeax6tqLo=
+ bh=jvac6lEiodtg8/xIxnPclINRBTAedKlHsTUlDUEdLe8=;
+ b=bLAIWcrCUvseOu2KDfCdoqjdWutH7EHS5+x7Sc2btBbPTQ/gejiymtwm9UVh8rpgfgSvUVeoVGpYmakzR5LLzMJX8xW+3l3hjg23ATvMhKCgmamkOSZljbtFKb+EHHN6d4MaCS40n1WxIHhNE61X+HgUFyorbE6zwXYPKLEBmD4=
 Received: from MN2PR15MB3213.namprd15.prod.outlook.com (20.179.21.76) by
- MN2PR15MB2637.namprd15.prod.outlook.com (20.179.148.79) with Microsoft SMTP
+ MN2PR15MB2575.namprd15.prod.outlook.com (20.179.146.92) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2644.20; Wed, 22 Jan 2020 22:17:24 +0000
+ 15.20.2644.24; Wed, 22 Jan 2020 22:53:56 +0000
 Received: from MN2PR15MB3213.namprd15.prod.outlook.com
  ([fe80::6d1e:f2f7:d36:a42f]) by MN2PR15MB3213.namprd15.prod.outlook.com
  ([fe80::6d1e:f2f7:d36:a42f%4]) with mapi id 15.20.2644.027; Wed, 22 Jan 2020
- 22:17:24 +0000
-Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:180::ccdf) by MWHPR18CA0045.namprd18.prod.outlook.com (2603:10b6:320:31::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2665.19 via Frontend Transport; Wed, 22 Jan 2020 22:17:23 +0000
+ 22:53:56 +0000
+Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:180::ccdf) by CO2PR07CA0072.namprd07.prod.outlook.com (2603:10b6:100::40) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2644.19 via Frontend Transport; Wed, 22 Jan 2020 22:53:54 +0000
 From:   Martin Lau <kafai@fb.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        "Daniel Borkmann" <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>,
-        "Eric Dumazet" <edumazet@google.com>,
-        Kernel Team <Kernel-team@fb.com>,
-        Networking <netdev@vger.kernel.org>
-Subject: Re: [PATCH v2 bpf-next 3/3] bpf: tcp: Add bpf_cubic example
-Thread-Topic: [PATCH v2 bpf-next 3/3] bpf: tcp: Add bpf_cubic example
-Thread-Index: AQHV0O8Y5b/yD+QqlkOxhucFUYMpGaf3OveAgAAGlwA=
-Date:   Wed, 22 Jan 2020 22:17:24 +0000
-Message-ID: <20200122221720.fdfw2sp5fwagl3rm@kafai-mbp.dhcp.thefacebook.com>
-References: <20200122064152.1833564-1-kafai@fb.com>
- <20200122064210.1834848-1-kafai@fb.com>
- <CAEf4BzYU2xZkUvK-JP53jrKXnWryACHsaX4JO_trEn=1N9-k1A@mail.gmail.com>
-In-Reply-To: <CAEf4BzYU2xZkUvK-JP53jrKXnWryACHsaX4JO_trEn=1N9-k1A@mail.gmail.com>
+To:     Jakub Sitnicki <jakub@cloudflare.com>
+CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "kernel-team@cloudflare.com" <kernel-team@cloudflare.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "John Fastabend" <john.fastabend@gmail.com>,
+        Lorenz Bauer <lmb@cloudflare.com>
+Subject: Re: [PATCH bpf-next v3 10/12] net: Generate reuseport group ID on
+ group creation
+Thread-Topic: [PATCH bpf-next v3 10/12] net: Generate reuseport group ID on
+ group creation
+Thread-Index: AQHV0SS4nGLET2x3Kkm+ShCvFrAG2af3S1eA
+Date:   Wed, 22 Jan 2020 22:53:56 +0000
+Message-ID: <20200122225351.hajnt4u7au24mj5g@kafai-mbp.dhcp.thefacebook.com>
+References: <20200122130549.832236-1-jakub@cloudflare.com>
+ <20200122130549.832236-11-jakub@cloudflare.com>
+In-Reply-To: <20200122130549.832236-11-jakub@cloudflare.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-clientproxiedby: MWHPR18CA0045.namprd18.prod.outlook.com
- (2603:10b6:320:31::31) To MN2PR15MB3213.namprd15.prod.outlook.com
- (2603:10b6:208:3d::12)
+x-clientproxiedby: CO2PR07CA0072.namprd07.prod.outlook.com (2603:10b6:100::40)
+ To MN2PR15MB3213.namprd15.prod.outlook.com (2603:10b6:208:3d::12)
 x-ms-exchange-messagesentrepresentingtype: 1
 x-originating-ip: [2620:10d:c090:180::ccdf]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 00db61a3-3df6-4924-4e91-08d79f88db73
-x-ms-traffictypediagnostic: MN2PR15MB2637:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MN2PR15MB26372760744C085FE1708668D50C0@MN2PR15MB2637.namprd15.prod.outlook.com>
+x-ms-office365-filtering-correlation-id: 85b65efb-7cbb-4740-33f9-08d79f8df5c0
+x-ms-traffictypediagnostic: MN2PR15MB2575:
+x-microsoft-antispam-prvs: <MN2PR15MB2575ECAF074AF11D53B2DC47D50C0@MN2PR15MB2575.namprd15.prod.outlook.com>
 x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
 x-forefront-prvs: 029097202E
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(366004)(39860400002)(136003)(396003)(346002)(376002)(199004)(189003)(16526019)(5660300002)(186003)(478600001)(7696005)(4326008)(6916009)(52116002)(86362001)(2906002)(8676002)(81166006)(53546011)(81156014)(8936002)(71200400001)(6506007)(55016002)(66946007)(64756008)(66476007)(66446008)(66556008)(316002)(9686003)(1076003)(54906003);DIR:OUT;SFP:1102;SCL:1;SRVR:MN2PR15MB2637;H:MN2PR15MB3213.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(39860400002)(396003)(376002)(346002)(136003)(366004)(199004)(189003)(5660300002)(478600001)(81166006)(8676002)(81156014)(1076003)(64756008)(66556008)(66946007)(66446008)(66476007)(4326008)(6916009)(16526019)(316002)(86362001)(2906002)(71200400001)(8936002)(6506007)(54906003)(186003)(9686003)(7696005)(52116002)(55016002);DIR:OUT;SFP:1102;SCL:1;SRVR:MN2PR15MB2575;H:MN2PR15MB3213.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
 received-spf: None (protection.outlook.com: fb.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: M1QPBsPwV6hpxtTFXRAt1cRRcFyqCSAniIFU1lP3PxT33cvjGH6xc8s60uAEYNx2uXkyf9U6duEVzNZz9WBVOtDHWTv93yYsGFEoEQdmDHn6bifUgJTbTFAZ6yNvAnTPVXW8FrotPlNBtP1fBKBEc0z3OGTKqbbMYI8H3neqF8MfW9BfB1o1Bce43kqoNpdJ5yh1+EYbnLNm2ylUfgtfuhnE7UKrzkEVLBYWprMwkxJlYaph06cZnAHaMzsZyxiSfGZn8cX5sGwS6Ro5T5HdP6+rAFIXM8nlBpGrcBjgBN2AE5NHXRU8mIVxNHcXyMsFz/mnXmMQ/ujQ167N4D2pUH/X6zbdGrkWZhj8uSGTqYHsNgrbvdwrPoAg4hh9HyDdvpbGAxAyYlkJcHCLbFXN+3tcB4IBPSL+lbN8rrL0NVVNBpYpBBd1i6G6glh51etr
+x-microsoft-antispam-message-info: lrFOkAKi1RurcaAHKzrGKzdtkYqQLPfCbYEd3yF89gfgEkzYXrrJx1dCxupYEdOa8FtWFi8FqelOphTtAQ1q5t48oQ3DxJPQfbNSZHvnRAE+pCfaGaH8wNfKpkg0XejFiASo7wV7NxwRC6vgpzTSxd7iwBKEyl0LvtNS/45UHm428XbE7uQvcTOWQ8fEztiALsVKJ09q545QeXrWCW9mHlIoLMqtQ/42c+UTkMIXW84ygj6ZNUPHlsdn/8YC9p7YZfbPu33x0RngOluO89Yw7F/Kq0EWcgZyTBbuU0fyawGbWjapHiYJadeMBOrQTL0hp3ymgilUnIJVfCDvi/bvMu3Qx52sqawYStY0+vGDAMrlg5seKpToq3zQwS42xrWcW+9Y0wXruKMFFuC4BvFNiXCjMX9yewWNtJNUPWUZ+R7AGJJOpbbXsXSAEhfWvoBd
+x-ms-exchange-transport-forked: True
 Content-Type: text/plain; charset="us-ascii"
-Content-ID: <62E4E214827523419BA1D297E46007F3@namprd15.prod.outlook.com>
+Content-ID: <17152243CA44E24A9FF306DC0E3BD232@namprd15.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 00db61a3-3df6-4924-4e91-08d79f88db73
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Jan 2020 22:17:24.4109
+X-MS-Exchange-CrossTenant-Network-Message-Id: 85b65efb-7cbb-4740-33f9-08d79f8df5c0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Jan 2020 22:53:56.4700
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: cG49Wbl8qbZPokd0aDfBGtgX6QxhrdUOlgnCVsoZbkZ2GzMS//7CHpRL2npLPiy/
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB2637
+X-MS-Exchange-CrossTenant-userprincipalname: lZtbt7R/1LO4D0Ubtgiu+HAMlvB6uVzeWQKUk77VBMpGHG+B+PFGUNfJqVYVLV7A
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB2575
 X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
  definitions=2020-01-22_08:2020-01-22,2020-01-22 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
- clxscore=1015 adultscore=0 lowpriorityscore=0 mlxscore=0 mlxlogscore=969
- bulkscore=0 spamscore=0 malwarescore=0 priorityscore=1501 impostorscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1910280000 definitions=main-2001220185
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0 mlxscore=0
+ phishscore=0 priorityscore=1501 spamscore=0 clxscore=1015 impostorscore=0
+ malwarescore=0 mlxlogscore=999 lowpriorityscore=0 suspectscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-2001220192
 X-FB-Internal: deliver
 Sender: bpf-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 22, 2020 at 01:53:45PM -0800, Andrii Nakryiko wrote:
-> On Tue, Jan 21, 2020 at 10:42 PM Martin KaFai Lau <kafai@fb.com> wrote:
-> >
-> > This patch adds a bpf_cubic example.  Some highlights:
-> > 1. CONFIG_HZ .kconfig map is used.
-> > 2. In bictcp_update(), calculation is changed to use usec
-> >    resolution (i.e. USEC_PER_JIFFY) instead of using jiffies.
-> >    Thus, usecs_to_jiffies() is not used in the bpf_cubic.c.
-> > 3. In bitctcp_update() [under tcp_friendliness], the original
-> >    "while (ca->ack_cnt > delta)" loop is changed to the equivalent
-> >    "ca->ack_cnt / delta" operation.
-> >
-> > Signed-off-by: Martin KaFai Lau <kafai@fb.com>
-> > ---
+On Wed, Jan 22, 2020 at 02:05:47PM +0100, Jakub Sitnicki wrote:
+> Commit 736b46027eb4 ("net: Add ID (if needed) to sock_reuseport and expos=
+e
+> reuseport_lock") has introduced lazy generation of reuseport group IDs th=
+at
+> survive group resize.
 >=20
-> just my few cents below...
+> By comparing the identifier we check if BPF reuseport program is not tryi=
+ng
+> to select a socket from a BPF map that belongs to a different reuseport
+> group than the one the packet is for.
 >=20
-> [...]
+> Because SOCKARRAY used to be the only BPF map type that can be used with
+> reuseport BPF, it was possible to delay the generation of reuseport group
+> ID until a socket from the group was inserted into BPF map for the first
+> time.
 >=20
-> >
-> > +static void test_cubic(void)
-> > +{
-> > +       struct bpf_cubic *cubic_skel;
-> > +       struct bpf_link *link;
-> > +
-> > +       cubic_skel =3D bpf_cubic__open_and_load();
-> > +       if (CHECK(!cubic_skel, "bpf_cubic__open_and_load", "failed\n"))
-> > +               return;
-> > +
-> > +       link =3D bpf_map__attach_struct_ops(cubic_skel->maps.cubic);
+> Now that SOCKMAP can be used with reuseport BPF we have two options, eith=
+er
+> generate the reuseport ID on map update, like SOCKARRAY does, or allocate
+> an ID from the start when reuseport group gets created.
 >=20
-> we should probably teach bpftool and libbpf to generate a link for
-> struct_ops map and also auto-attach it as part of skeleton's attach...
-> I'll add it if noone gets to it sooner
-It is in my TODO list.  I am happy to be beaten though ;)
+> This patch goes the latter approach to keep SOCKMAP free of calls into
+> reuseport code. This streamlines the reuseport_id access as its lifetime
+> now matches the longevity of reuseport object.
+>=20
+> The cost of this simplification, however, is that we allocate reuseport I=
+Ds
+> for all SO_REUSEPORT users. Even those that don't use SOCKARRAY in their
+> setups. With the way identifiers are currently generated, we can have at
+> most S32_MAX reuseport groups, which hopefully is sufficient.
+Not sure if it would be a concern.  I think it is good as is.
+For TCP, that would mean billion different ip:port listening socks
+in inet_hashinfo.
+
+If it came to that, another idea is to use a 64bit reuseport_id which
+practically won't wrap around.  It could use the very first sk->sk_cookie
+as the reuseport_id.  All the ida logic will go away also in the expense
+of +4 bytes.
 
 >=20
-> > +       if (CHECK(IS_ERR(link), "bpf_map__attach_struct_ops", "err:%ld\=
-n",
-> > +                 PTR_ERR(link))) {
-> > +               bpf_cubic__destroy(cubic_skel);
-> > +               return;
-> > +       }
-> > +
-> > +       do_test("bpf_cubic");
-> > +
-> > +       bpf_link__destroy(link);
-> > +       bpf_cubic__destroy(cubic_skel);
-> > +}
-> > +
+> Another change is that we now always call into SOCKARRAY logic to unlink
+> the socket from the map when unhashing or closing the socket. Previously =
+we
+> did it only when at least one socket from the group was in a BPF map.
 >=20
-> [...]
+> It is worth noting that this doesn't conflict with SOCKMAP tear-down in
+> case a socket is in a SOCKMAP and belongs to a reuseport group. SOCKMAP
+> tear-down happens first:
 >=20
-> > +
-> > +extern unsigned long CONFIG_HZ __kconfig __weak;
+>   prot->unhash
+>   `- tcp_bpf_unhash
+>      |- tcp_bpf_remove
+>      |  `- while (sk_psock_link_pop(psock))
+>      |     `- sk_psock_unlink
+>      |        `- sock_map_delete_from_link
+>      |           `- __sock_map_delete
+>      |              `- sock_map_unref
+>      |                 `- sk_psock_put
+>      |                    `- sk_psock_drop
+>      |                       `- rcu_assign_sk_user_data(sk, NULL)
+>      `- inet_unhash
+>         `- reuseport_detach_sock
+>            `- bpf_sk_reuseport_detach
+>               `- WRITE_ONCE(sk->sk_user_data, NULL)
+Thanks for the details.
+
+[ ... ]
+
+> @@ -200,12 +189,10 @@ void reuseport_detach_sock(struct sock *sk)
+>  	reuse =3D rcu_dereference_protected(sk->sk_reuseport_cb,
+>  					  lockdep_is_held(&reuseport_lock));
+> =20
+> -	/* At least one of the sk in this reuseport group is added to
+> -	 * a bpf map.  Notify the bpf side.  The bpf map logic will
+> -	 * remove the sk if it is indeed added to a bpf map.
+> +	/* Notify the bpf side. The sk may be added to bpf map. The
+> +	 * bpf map logic will remove the sk from the map if indeed.
+s/indeed/needed/ ?
+
+I think it will be good to have a few words here like, that is needed
+by sockarray but not necessary for sockmap which has its own ->unhash
+to remove itself from the map.
+
+Others lgtm.
+
+>  	 */
+> -	if (reuse->reuseport_id)
+> -		bpf_sk_reuseport_detach(sk);
+> +	bpf_sk_reuseport_detach(sk);
+> =20
+>  	rcu_assign_pointer(sk->sk_reuseport_cb, NULL);
+> =20
+> --=20
+> 2.24.1
 >=20
-> you probably don't want __weak, if CONFIG_HZ is not defined in
-> Kconfig, then something wrong is going on, probably, so it's better to
-> error out early
-Thanks for pointing it out.  Will do.
